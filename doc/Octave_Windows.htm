@@ -1165,6 +1165,7 @@ to /usr/local/bin and type:</font></font>
 <p><font face="Arial"><font size=+0>./octave-&lt;version-number></font></font>
 <p><font face="Arial"><font size=+0>After a while, you should see the welcome
 message of Octave. You can try by typing:</font></font>
+
 <p><font face="Arial"><font size=+0>help -i eig</font></font>
 <p><font face="Arial"><font size=+0>If all goes well, you'll see the TexInfo
 message about usage of basic matrix functions. Quit by typing:</font></font>
@@ -2414,7 +2415,20 @@ binary&nbsp; Cygwin distribution</u></font></font><br>
 
 <font face="ARIAL"><font size=+0>Fire up Cygwin setup, select "Install from local directory"
 and browse to the directory where you downloaded the new octave tarball. Next select it for installing 
-and press the Next button a number of times. This should do! </font></font>&nbsp;
+and press the Next button a number of times. This should do! </font></font>
+
+<p><font face="ARIAL"><font size=+0><u>Step 6: Adding shortcuts and rounding up</u></font></font><br>
+<font face="ARIAL"><font size=+0>It is wise to leave your "old" Octave intact until you 
+are sure the new version is equally good or better than the old one (remember, we almost
+all use development versions). Two or more Octave versions can very happily live together;
+they all use the same .m file hierarchy, including .octaverc in ./site/m/startup and the
+gnuplot stuff.<br>
+How to test Octave from a cygwin terminal and how to make shortcuts in your Start Menu and/or
+desktop is described under Step 2 of Method 1 ("Revamping the bash terminal") and further.<br>
+Only problem I foresee is that the new Octave version may grab the Cygwin shortcut: the latter, 
+octave or octave-sh, is usually linked to a file octave-&lt;version&gt;. The Windows link often refers to the 
+Cygwin link rather than the octave-&lt;version&gt; file itself.</font></font>
+&nbsp;
 
 <p><a NAME="Q_A"></a><b><font face="ARIAL"><font size=+0>Q #?: </font></font><font face="Arial"><font size=-1>E-mail
 me your Q&amp;A suggestion!</font></font></b>
@@ -2518,6 +2532,7 @@ question.</font></font>
 distro (now 2.1.36).</font></font>
 <p><u><font face="Arial"><font size=+0>6 May 2002</font></font></u>
 <br><font face="Arial"><font size=+0>(A long-awaited update.)</font></font>
+
 <br><font face="Arial"><font size=+0>Adapted to new Cygwin versions (PATHs,
 etc).</font></font>
 <br><font face="Arial"><font size=+0>Added comments on dynamic functions

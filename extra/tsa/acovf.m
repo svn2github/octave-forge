@@ -50,7 +50,7 @@ if nargin<3, Mode='biased'; end;
 
 MISSES = sum(isnan(Z)')';
 if any(MISSES); % missing values
-	M = double(~isnan(Z));
+	M = real(~isnan(Z));
 	Z(isnan(Z))=0;
 end;
 

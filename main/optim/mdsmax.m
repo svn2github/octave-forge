@@ -54,7 +54,11 @@ mu = 2;      % Expansion factor.
 theta = 0.5; % Contraction factor.
 
 % Set up convergence parameters etc.
-if nargin < 3 | isempty(stopit), stopit(1) = 1e-3; end
+if nargin < 3
+	stopit(1) = 1e-3;
+elseif isempty(stopit)
+	stopit(1) = 1e-3;
+endif
 tol = stopit(1);  % Tolerance for cgce test based on relative size of simplex.
 if length(stopit) == 1, stopit(2) = inf; end  % Max no. of f-evaluations.
 if length(stopit) == 2, stopit(3) = inf; end  % Default target for f-values.

@@ -10,7 +10,6 @@ use File::Find;
 use File::Basename;
 use Text::Wrap;
 use FileHandle;
-use FileHandle;
 use IPC::Open3;
 use POSIX ":sys_wait_h";
 
@@ -64,7 +63,7 @@ if ( open(IN,$file) ) {
         }
 	close (DOC);
 	if (! $found) {
-	  print STDERR "Did not find function $func\n";
+	  print "\@emph{Not implemented}\n";
 	}
       } else {
 	print STDERR "Could not open file $docfile\n";
@@ -84,7 +83,7 @@ if ( open(IN,$file) ) {
 	  next unless /^[^ ]/;
 	  my $section = $_;
 	  $section =~ s/[\n\r]+//;
-	  if ($section =~ />>/) {
+	  if ($section =~ /^(.*?)\s*>>\s*(.*?)$/) {
 	    $section =~ s/.*>>(.*)/\1/;
 	    $seccat = 1;
 	  }
@@ -109,19 +108,29 @@ if ( open(IN,$file) ) {
 		  $category =~ s/[\n\r]+//;
 		  print "\@subsection $category\n";
 		  print "\@table \@asis\n";
+		} elsif (/^\s+(\S.*\S)\s*=\s*(\S.*\S)\s*$/) {
+		  my $func = $1;
+		  my $desc = $2;
+		  print "\@item $func\n";
+		  print "$desc\n";
+		  print "\n";
 		} else {
 		  if ($firstcat) {
 		    print STDERR "Error parsing index file\n";
 		    exit 1;
 		  }
-		  my $indline = $_;
-		  $indline =~ s/^ *//;
-		  $indline =~ s/[\n\r]+//;
-		  push @listfunc, $indline;
-		  $nfunc = $nfunc + 1;
-		  print "\@item $indline\n";
-		  print func_summary($indline, $docfile);
-                  print "\n";
+		  s/^\s+//;
+		  my @funcs = split /\s+/;
+		  while ($#funcs >= 0) {
+		    my $func = shift @funcs;
+		    $func =~ s/^ *//;
+		    $func =~ s/[\n\r]+//;
+		    push @listfunc, $func;
+		    $nfunc = $nfunc + 1;
+		    print "\@item $func\n";
+		    print func_summary($func, $docfile);
+		    print "\n";
+		  }
 		}
 	      }
 	      if (! $firstcat) {
@@ -133,10 +142,18 @@ if ( open(IN,$file) ) {
 	      # Get the list of functions to index
 	      my $indline;
 	      while (($indline = <IND>) && ($indline =~ /^ /)) {
-		$indline =~ s/^ *//;
-		$indline =~ s/[\n\r]+//;
-		push @listfunc, $indline;
-		$nfunc = $nfunc + 1;
+		if ($indline =~ /^\s+(\S.*\S)\s*=\s*(\S.*\S)\s*$/) {
+		  next;
+		}
+		$indline =~ s/^\s+//;
+		my @funcs = split(/\s+/,$indline);
+		while ($#funcs >= 0) {
+		  my $func = shift @funcs;
+		  $func =~ s/^ *//;
+		  $func =~ s/[\n\r]+//;
+		  push @listfunc, $func;
+		  $nfunc = $nfunc + 1;
+		}
 	      }
 	    }
 	    $secfound = 1;
@@ -153,13 +170,33 @@ if ( open(IN,$file) ) {
       }
 
       @listfunc = sort(@listfunc);
-
+      my @listfunc2 = ();
       my $indent = 16 - 3;
       print "\@menu\n";
       foreach my $func (@listfunc) {
-	my $func0 = "${func}::";
-	my $entry = sprintf("* %-*s %s",$indent,$func0,func_summary($func,$docfile));
-	print wrap("","\t\t","$entry"), "\n";
+	if ( open(DOC,$docfile) ) {
+	  my $found = 0;
+	  while (<DOC>) {
+	    next unless /\037/;
+	    my $function = $_;
+	    $function =~ s/\037//;
+	    $function =~ s/[\n\r]+//;
+	    if ($function =~ /^$func$/) {
+	      $found = 1;
+	      last;
+	    }
+	  }
+	  close (DOC);
+	  if ($found) {
+	    push @listfunc2, $func;
+	    my $func0 = "${func}::";
+	    my $entry = sprintf("* %-*s %s",$indent,$func0,func_summary($func,$docfile));
+	    print wrap("","\t\t","$entry"), "\n";
+	  }
+	} else {
+	  print STDERR "Could not open file $indexfile\n";
+	  exit 1;
+	}
       }
       print "\@end menu\n";
 
@@ -167,11 +204,11 @@ if ( open(IN,$file) ) {
       my $next;
       my $prev;
       my $mfunc = 1;
-      foreach my $func (@listfunc) {
+      foreach my $func (@listfunc2) {
 	if ($mfunc == $nfunc) {
 	  $next = "";
 	} else {
-	  $next = @listfunc[$mfunc];
+	  $next = @listfunc2[$mfunc];
 	  $mfunc = $mfunc + 1;
 	}
 	print "\n\@node $func, $next, $prev, $up\n";
@@ -182,6 +219,7 @@ if ( open(IN,$file) ) {
 	}
 	$prev = $func;
 	my $found = 0;
+	my $desc = "";
 	if ( open(DOC,$docfile) ) {
 	  while (<DOC>) {
 	    next unless /\037/;
@@ -189,7 +227,6 @@ if ( open(IN,$file) ) {
 	    $function =~ s/\037//;
 	    $function =~ s/[\n\r]+//;
 	    if ($function =~ /^$func$/) {
-	      my $desc = "";
 	      my $docline;
 	      my $doctex = 0;
 	      while (($docline = <DOC>) && ($docline !~ /^\037/)) {
@@ -213,7 +250,7 @@ if ( open(IN,$file) ) {
 	  }
 	  close (DOC);
 	  if (! $found) {
-	    print STDERR "Did not find function $func\n";
+	    print "\@emph{Not implemented}\n";
 	  }
         } else {
 	  print STDERR "Could not open file $docfile\n";
@@ -274,7 +311,7 @@ sub func_summary { # {{{1
     }
     close (DOC);
     if (! $found) {
-      print STDERR "Did not find function $func\n";
+      $desc = "\@emph{Not implemented}";
     }
   } else {
     print STDERR "Could not open file $docfile\n";

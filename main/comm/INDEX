@@ -10,13 +10,19 @@ Random Signals
  symerr
  wgn
 Source Coding
+ arithenco
+ arithdeco
  compand
+ dpcmdeco
+ dpcmenco
+ dpcmopt
  lloyds
  quantiz
 Block Coding
  bchdeco
  bchenco
  bchpoly
+ convenc
  cyclgen
  cyclpoly
  decode
@@ -29,10 +35,38 @@ Block Coding
  rsenc
  rsencof
  syndtable
+ vitdec
 Modulations
+ ademod
  ademodce
+ amod
  amodce
+ apkconst
+ ddemod
+ ddemodce
+ demodmap
+ dmod
+ dmodce
+ modmap
+ qaskdeco
+ qaskenco
+Special Filters
+ hank2sys
+ hilbiir
+ rcosflt
+ rcosiir
+ rcosine
+ rcosfir
 Galois Fields
+ + - = Addition and subtraction in a Galois Field.
+ * / \ = Matrix multiplication and division of Galois arrays.
+ .* ./ .\ = Element by element multiplication and division of Galois arrays.
+ ** ^ =  Matrix exponentiation of Galois arrays.
+ .** .^ = Element by element matrix exponentiation of Galois arrays.
+ ' .' = Matrix transpose of Galois arrays.
+ == ~= != > >= < <= = Logical operators on Galois arrays.
+ all = True if all elements of Galois array are non-zero.
+ any = True if any element of Galois array are non-zero.
  cosets
  galois
  gconv
@@ -58,11 +92,37 @@ Galois Fields
  groots
  gsum
  gsumsq
+ isempty = True if Galois array is empty.
  isgalois
  isprimitive
+ length = Length of a Galois vector.
  minpol
+ polyval = Evaluate polynomial in a Galois Field.
  primpoly
- vec2mat
+ size = The size of a Galois array.
+Galois Fields of Odd Characteristic
+ gfadd
+ gfconv
+ gfcosets
+ gfdeconv
+ gfdiv
+ gffilter
+ gflineq
+ gfminpol
+ gfmul
+ gfpretty
+ gfprimck
+ gfprimdf
+ gfprimfd
+ gfrank
+ gfrepcov
+ gfroots
+ gfsub
+ gftrunc
+ gftuple
 Utility Functions
  bi2de
  de2bi
+ istrellis
+ poly2trellis
+ vec2mat

@@ -119,12 +119,14 @@ function hout = scatterplot (x, n, _off, str, h)
       error ("scatterplot: gnuplot must have frames for figure handles");
     endif
     hout = figure (h);
+    hold on;
   else
     if (!gnuplot_has_frames)
       hout = figure ();
     else
       hout = 0;
     endif
+    hold off;
   endif
 
   if (strcmp(signal,"complex"))

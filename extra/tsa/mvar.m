@@ -1,4 +1,4 @@
-function [MAR,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
+function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 % function  [MAR,RC,PE] = mvar(Y [,Pmax]);
 % estimates a multivariate AR(p) model parameter by solving the
 % multivariate Yule-Walker with various methods [2]
@@ -326,14 +326,10 @@ end;
 VAR{1} = eye(M);
 MAR    = zeros(M,M*Pmax);
 DC     = zeros(M);
-if 1,
-	MAR = ARF;
-else
-    for K  = 1:Pmax,
+
+for K  = 1:Pmax,
         VAR{K+1} = -ARF(:,K*M+(1-M:0))';
-        MAR(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0)); 
-        DC = DC + ARF(:,K*M+(1-M:0)) '.^2; %DC meausure [3]
-    end;
+        DC = DC + ARF(:,K*M+(1-M:0))'.^2; %DC meausure [3]
 end;
 
 DC = sqrt(DC);

@@ -2,6 +2,10 @@
 # $Id$
 #
 # $Log$
+# Revision 1.10  2002/12/25 01:32:59  aadler
+# fixed bug which allowed zero values to be stored in sparse matrices.
+# improved print output
+#
 # Revision 1.9  2002/12/11 17:19:31  aadler
 # sparse .^ scalar operations added
 # improved test suite
@@ -142,13 +146,12 @@
 # CCDEFS = -DVERBOSE -v
 # CCDEFS = -v
 # CCDEFS = -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE
-
+  CCDEFS = -DNDEBUG
 
 sinclude ../../Makeconf
 
 ifndef OCTAVE_FORGE
 
-#	OCTVER   =  -2.1.32
 	OCTAVE   =   octave$(OCTVER)
 #	MKOCTFILE= mkoctfile-gcc3-2.1.35 -v
 	MKOCTFILE= mkoctfile$(OCTVER) -s
@@ -254,6 +257,9 @@ test: $(NAME).oct
 	@echo "Testing sparse solution for a Finite Element Model ..." 
 	@echo 
 	$(OCTAVE) -qf fem_test.m
+
+mostlyclean:
+	-$(RM) $(NAME).oct $(OBJLINKS) $(OCTOBJ)
 
 clean:
 	-$(RM) $(NAME).oct $(OBJLINKS) $(OCTOBJ) $(S_DOUBLE) $(LIBSUPERLU) octave-core core *~

@@ -31,7 +31,7 @@ for tries = 1:NTRIES;
 
 % print some relevant info from ps
 if 0
-   printf("t=%03d: %s", tries, system(["ps -uh ", num2str(getpid)],1 ) );
+   printf('t=%03d: %s', tries, system(['ps -uh ', num2str(getpid)],1 ) );
 end
 
 % choose some random sizes for the test matrices   
@@ -106,7 +106,8 @@ end
    sely= ceil( sz1*rand(1,2*ceil( rand(1)*sz1 )) );
    sel1= ceil(sz12*rand(1,2*ceil( rand(1)*sz12 )))';
 
-% save save_fil arf brf crf erf acf bcf ccf dcf ecf
+%  save save_fil arf brf crf erf acf bcf ccf dcf ecf selx sely sel1 fcn
+%  load -force save_fil
 
    ars= sparse(arf);
    brs= sparse(brf);
@@ -796,6 +797,10 @@ end
 
 %
 % $Log$
+% Revision 1.8  2002/12/25 01:33:00  aadler
+% fixed bug which allowed zero values to be stored in sparse matrices.
+% improved print output
+%
 % Revision 1.7  2002/12/11 17:19:31  aadler
 % sparse .^ scalar operations added
 % improved test suite

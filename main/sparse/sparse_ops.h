@@ -19,6 +19,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.7  2002/12/25 01:33:00  aadler
+fixed bug which allowed zero values to be stored in sparse matrices.
+improved print output
+
 Revision 1.6  2002/11/27 04:46:42  pkienzle
 Use new exception handling infrastructure.
 
@@ -257,28 +261,32 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    bool cf_scalar = (coefA.length() == 1); \
  \
    sort_idxl sidx[ nnz ]; \
+   int actual_nnz=0; \
    OCTAVE_QUIT; \
    for (int i=0; i<nnz; i++) { \
-      sidx[i].val = (long) ( \
-                ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1 + \
-           m * (( ci_scalar ? cidxA(0) : cidxA(i) ) - 1) );  \
-      sidx[i].idx = i; \
+      if ( coefA(i) != 0. || cf_scalar ) { \
+         sidx[actual_nnz].val = (long) ( \
+                   ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1 + \
+              m * (( ci_scalar ? cidxA(0) : cidxA(i) ) - 1) );  \
+         sidx[actual_nnz].idx = i; \
+         actual_nnz++; \
+      } \
    } \
  \
    OCTAVE_QUIT; \
-   qsort( sidx, nnz, sizeof(sort_idxl), sidxl_comp ); \
+   qsort( sidx, actual_nnz, sizeof(sort_idxl), sidxl_comp ); \
     \
    OCTAVE_QUIT; \
    int cx= 0; \
    long prev_val=-1;  \
    int ii= -1; \
-   for (int i=0; i<nnz; i++) { \
+   for (int i=0; i<actual_nnz; i++) { \
       OCTAVE_QUIT; \
       long  idx= (long) sidx[i].idx; \
       long  val= (long) sidx[i].val; \
       if (prev_val < val) { \
          ii++; \
-         coefX[ii]=      ( cf_scalar ? coefA(0) : coefA(idx) ); \
+         coefX[ii]=     ( cf_scalar ? coefA(0) : coefA(idx) ); \
          double ri  =   ( ri_scalar ? ridxA(0) : ridxA(idx) ) - 1 ; \
          ridxX[ii]= (long) (ri - ((long) (ri/m))*m ) ; \
          long ci  = (long)( ci_scalar ? cidxA(0) : cidxA(idx) ) - 1 ; \
@@ -293,7 +301,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    } \
    while( cx < n ) cidxX[++cx]= ii+1; \
    OCTAVE_QUIT; \
-   maybe_shrink( ii+1, nnz, ridxX, coefX ); \
+   maybe_shrink( ii+1, actual_nnz, ridxX, coefX ); \
  \
    OCTAVE_QUIT; \
    SuperMatrix X= create_SuperMatrix( m, n, ii+1, coefX, ridxX, cidxX );
@@ -364,7 +372,7 @@ fixrow_comp( const void *i, const void *j)  \
    for ( int i=0; i < Xnr ; i++) { \
       OCTAVE_QUIT; \
       assert( cidxX[i] >= 0.); \
-      assert( cidxX[i] <  nnz); \
+      assert( cidxX[i] <= nnz); \
       assert( cidxX[i] <=  cidxX[i+1]); \
       int reorder=0; \
       for( int j= cidxX[i]; \

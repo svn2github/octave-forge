@@ -593,7 +593,9 @@ octave_complex_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
      for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
          OCTAVE_QUIT;
          os << "  (" << ridxX[i]+1 <<
-               " , "  << j+1 << ") -> " << coefX[i] << "\n";
+               " , "  << j+1 << ") -> ";
+	 octave_print_internal( os, coefX[i], false );
+	 os << "\n";
      }
 #endif                  
 } // print
@@ -1269,6 +1271,7 @@ SuperMatrix assemble_sparse( int n, int m,
 {
    DEBUGMSG("complex_sparse - assemble_sparse");
    ASSEMBLE_SPARSE( Complex )
+// oct_sparse_verify_supermatrix( X );
    return X;
 }      
 
@@ -1536,6 +1539,10 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.12  2002/12/25 01:33:00  aadler
+ * fixed bug which allowed zero values to be stored in sparse matrices.
+ * improved print output
+ *
  * Revision 1.11  2002/12/11 17:19:31  aadler
  * sparse .^ scalar operations added
  * improved test suite

@@ -43,7 +43,7 @@ oct_sparse_verify_supermatrix( SuperMatrix X)
    for ( int i=0; i < Xnr ; i++) {
       OCTAVE_QUIT;
       assert( cidxX[i] >= 0);
-      assert( cidxX[i] <  nnz);
+      assert( cidxX[i] <= nnz);
       assert( cidxX[i] <=  cidxX[i+1]);
       for( int j= cidxX[i];
                j< cidxX[i+1];
@@ -413,6 +413,10 @@ SPINV : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.8  2002/12/25 01:33:00  aadler
+ * fixed bug which allowed zero values to be stored in sparse matrices.
+ * improved print output
+ *
  * Revision 1.7  2002/12/11 17:19:32  aadler
  * sparse .^ scalar operations added
  * improved test suite

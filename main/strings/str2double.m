@@ -50,7 +50,6 @@ function [num,status] = str2double(s,cdelim,rdelim)
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-##	$Id$
 ##	Copyright (C) 2004 by Alois Schloegl
 ##	a.schloegl@ieee.org	
 
@@ -72,12 +71,12 @@ elseif ischar(s),
         nc = 0;	% number of columns 
         while ~isempty(s),
                 [u,s] = strtok(s,rdelim);	%% get next row 
-                if isempty(u), return; end;
-                k1 = k1 + 1;
+                if ~isempty(u),
+	                k1 = k1 + 1;
+		end;
                 k2 = 0;
-                
                 while ~isempty(u),
-                        [t,u] = strtok(u,cdelim);	%% get next element
+                        [t,u] = strtok(u,cdelim);	%% get next token
                         if ~isempty(t),
                                 k2 = k2 + 1;
                                 if k2 > nc,			%% add column if neccessary
@@ -87,6 +86,7 @@ elseif ischar(s),
                         end;
                 end; 
         end;
+
 else
         error('invalid input argument');
 end;

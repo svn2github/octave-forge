@@ -295,7 +295,7 @@ sub interpret
 
    # we need to leave octave blocked doing something,
    # otherwise it can't handle a CTRL-C
-   print $Oin "fread(stdin,1);\n";
+   print $Oin "\nfread(stdin,1);\n";
    return substr($input,0,-$marker_len);
 }   
 
@@ -474,6 +474,9 @@ sub name
 __END__
 
 $Log$
+Revision 1.8  2001/11/18 03:29:06  aadler
+bug in fread fix - add \n
+
 Revision 1.7  2001/11/18 03:22:42  aadler
 multisections now ok, cleaned up singleton object,
 octave no longer freaks out on ctrl-c

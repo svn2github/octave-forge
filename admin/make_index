@@ -36,7 +36,9 @@ my @index_files = ();
 find(\&index_files, ".");
 sub index_files { # {{{1 populates global array @files
     return unless -f and /INDEX$/;  # INDEX files
-    push @index_files, "$File::Find::dir/$_";
+    my $path = "$File::Find::dir/$_";
+    $path =~ s|^[.]/||;
+    push @index_files, $path; 
 } # 1}}}
 foreach my $f ( @index_files ) {
     load_index($f,
@@ -57,10 +59,12 @@ find(\&cc_and_m_files, ".");
 find(\&cc_and_m_files, "$OCTAVE/scripts") if $include_octave;
 sub cc_and_m_files { # {{{1 populates global array @files
     return unless -f and /\.(m|cc)$/;  # .m and .cc files
+    my $path = "$File::Find::dir/$_";
+    $path =~ s|^[.]/||;
     if (/\.m$/) {
-        push @m_files, "$File::Find::dir/$_";
+        push @m_files, $path;
     } else {
-        push @C_files, "$File::Find::dir/$_";
+        push @C_files, $path;
     }
 } # 1}}}
 
@@ -167,6 +171,7 @@ if ( $summary ) {
 		my $entry = sprintf("%-13s %s",$func,$desc);
 		print wrap("","\t\t","  $entry"), "\n";
 	    }
+	    print "\n";
 	}
     } 
 }
@@ -181,10 +186,10 @@ else {
 
 
 if (@uncategorized) {
-    print "\n", scalar(@uncategorized), " uncategorized functions ";
-    print "(out of ", $n_functions, " total)\n";
-    my $rs = $,; $, = "\n";
-    print sort(@uncategorized); $, = $rs;
+    print scalar(@uncategorized), " uncategorized functions ";
+    print "(out of ", $n_functions, " total)";
+    my $rs = $,; $, = "\n  ";
+    print "  ", sort(@uncategorized); $, = $rs;
     print "\n";
 #    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
 }
@@ -314,7 +319,12 @@ sub register_function { # {{{1
     }
     $octave_forge_function{$function} = 1 unless $file =~ /^$OCTAVE/;
     if (!defined $index_by_function{$function}) {
-        push @uncategorized, "$file/$function";
+	if ($file =~ /.m$/) {
+	    push @uncategorized, "$file";
+	}
+	else {
+	    push @uncategorized, "$file: $function"
+	}
     }
 
     my $oneline = first_sentence($desc);

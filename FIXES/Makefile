@@ -21,7 +21,7 @@ $(RAND_LINKS):
 	$(LN_S) rand.oct $@
 
 rand.oct : randmtzig.c rand.cc MersenneTwister.h
-	$(MKOCTFILE) $(HAVE_ND_ARRAYS) rand.cc
+	$(MKOCTFILE) $(HAVE_ND_ARRAYS) $(ALLBITS) rand.cc
 
 sort.oct : sort.cc oct-sort.cc oct-sort.h
 	$(MKOCTFILE) $(SORTDEFINES) $<

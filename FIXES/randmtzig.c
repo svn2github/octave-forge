@@ -6,7 +6,7 @@
    David Bateman added normal and exponential distributions following
    Marsaglia and Tang's Ziggurat algorithm.
 
-   Before using, initialize the state by using init_genrand(seed) 
+   Before using, initialize the state by using init_by_int(seed) 
    or init_by_array(init_key, key_length).
 
    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
@@ -56,25 +56,36 @@
    * 2004-07-13 Paul Kienzle
    * * make into an independent library with some docs.
    * * introduce new main and test code.
+   *
+   * 2004-07-28 Paul Kienzle & David Bateman
+   * * add -DALLBITS flag for 32 vs. 53 bits of randomness in mantissa
+   * * make the naming scheme more uniform
    */
 
 /* Provides:
-   void init_genrand(ulong s)          32-bit initial state
-   void init_by_array(ulong k[],int m) m*32-bit initial state
-   void init_by_entropy(void)          random initial state
-   void get_state(ulong save[MT_N+1])  saves state in array
-   void set_state(ulong save[MT_N+1])  restores state from array
-   inline ulong randi(void)            returns v in [0,0xffffffff]
-   inline double randu(void)           returns 32-bit v in (0,1)
-   inline double rand53(void)          returns 53-bit v in (0,1)
-   inline double randn (void)          returns 32-bit standard normal
-   inline double rande (void)          returns 32-bit standard exponential
+   void init_by_int(uint32_t s)           32-bit initial state
+   void init_by_array(uint32_t k[],int m) m*32-bit initial state
+   void init_by_entropy(void)             random initial state
+   void get_state(uint32_t save[MT_N+1])  saves state in array
+   void set_state(uint32_t save[MT_N+1])  restores state from array
+   uint32_t randi32(void)          returns 32-bit unsigned int
+   uint64_t randi53(void)          returns 53-bit unsigned int
+   uint64_t randi54(void)          returns 54-bit unsigned int
+   uint64_t randi64(void)          returns 64-bit unsigned int
+
+   double randu32(void)       returns 32-bit uniform in (0,1)
+   double randu53(void)       returns 53-bit uniform in [0,1)
+   double randu (void)        returns M-bit uniform in [0,1)
+   double randn (void)        returns M-bit standard normal
+   double rande (void)        returns N-bit standard exponential
 
    You should be able to #include <randmtzig.c> in C or C++ code.
-   Compile with -Dinline= if you wish to create a standalone module.
+   Compile with -Dinline= if you wish to export all symbols.
    Compile with -DHAVE_GETTIMEOFDAY if the gettimeofday function is available.
-   Compile with -DSIZEOF_LONG=4 or 8 if SIZEOF_LONG is not already defined.
-   Compile with -DTEST to generate a short main driver program.
+   Compile with -DALLBITS for M=53 bit random numbers
+   Compile with -DTEST to generate a small main() test program
+
+   cc randmtzig.c -DTEST -lm
 */
 
 #ifdef __cplusplus
@@ -86,12 +97,20 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <time.h>
+# include <inttypes.h>
 #endif
 #ifdef HAVE_GETTIMEOFDAY
 # include <sys/time.h>
 #endif
 
-/* Period parameters */  
+/* Determine default mantissa for uniform double */
+#ifdef ALLBITS
+#define randu randu53
+#else
+#define randu randu32
+#endif
+
+/* Mersenne Twister parameters */  
 #define MT_N 624
 #define MT_M 397
 #define MATRIX_A 0x9908b0dfUL   /* constant vector a */
@@ -100,31 +119,51 @@
 #define MIXBITS(u,v) ( ((u) & UMASK) | ((v) & LMASK) )
 #define TWIST(u,v) ((MIXBITS(u,v) >> 1) ^ ((v)&1UL ? MATRIX_A : 0UL))
 
+static uint32_t *next;
+static uint32_t state[MT_N]; /* the array for the state vector  */
+static int left = 1;
+static int initf = 0;
+static int initt = 1;
+
 /* Ziggurat parameters */
+#ifdef ALLBITS
+# define ZIGINT uint64_t
+# define EMANTISSA 9007199254740992.0  /* 53 bit mantissa */
+# define ERANDI randi53() /* 53 bits for mantissa */
+#if 1
+# define NMANTISSA EMANTISSA  
+# define NRANDI randi54() /* 53 bits for mantissa + 1 bit sign */
+#else
+# define NMANTISSA 4503599627370496.0
+# define NRANDI randi53()
+#endif
+# define RANDU randu53()
+#else
+# define ZIGINT uint32_t
+# define EMANTISSA 4294967296.0 /* 32 bit mantissa */
+# define ERANDI randi32() /* 32 bits for mantissa */
+# define NMANTISSA 2147483648.0 /* 31 bit mantissa */
+# define NRANDI randi32() /* 31 bits for mantissa + 1 bit sign */
+# define RANDU randu32()
+#endif
+
 #define ZIGGURAT_TABLE_SIZE 256
 
 #define ZIGGURAT_NOR_R 3.6541528853610088
 #define ZIGGURAT_NOR_INV_R 0.27366123732975828
-#define TWO_TO_POWER_31 2147483648.0
 #define NOR_SECTION_AREA 0.00492867323399
 
 #define ZIGGURAT_EXP_R 7.69711747013104972
 #define ZIGGURAT_EXP_INV_R 0.129918765548341586
-#define TWO_TO_POWER_32 4294967296.0
 #define EXP_SECTION_AREA 0.0039496598225815571993
 
-static unsigned long state[MT_N]; /* the array for the state vector  */
-static int left = 1;
-static int initf = 0;
-static int initt = 1;
-static unsigned long *next;
-static unsigned long ki[ZIGGURAT_TABLE_SIZE];
+static ZIGINT ki[ZIGGURAT_TABLE_SIZE];
 static double wi[ZIGGURAT_TABLE_SIZE], fi[ZIGGURAT_TABLE_SIZE];
-static unsigned long ke[ZIGGURAT_TABLE_SIZE];
+static ZIGINT ke[ZIGGURAT_TABLE_SIZE];
 static double we[ZIGGURAT_TABLE_SIZE], fe[ZIGGURAT_TABLE_SIZE];
 
 /* initializes state[MT_N] with a seed */
-void init_genrand(unsigned long s)
+void init_by_int(uint32_t s)
 {
     int j;
     state[0]= s & 0xffffffffUL;
@@ -142,10 +181,10 @@ void init_genrand(unsigned long s)
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void init_by_array(unsigned long init_key[], int key_length)
+void init_by_array(uint32_t init_key[], int key_length)
 {
     int i, j, k;
-    init_genrand(19650218UL);
+    init_by_int(19650218UL);
     i=1; j=0;
     k = (MT_N>key_length ? MT_N : key_length);
     for (; k; k--) {
@@ -170,7 +209,7 @@ void init_by_array(unsigned long init_key[], int key_length)
 
 void init_by_entropy(void)
 {
-    unsigned long entropy[MT_N];
+    uint32_t entropy[MT_N];
     int n = 0;
 
     /* Look for entropy in /dev/urandom */
@@ -204,15 +243,14 @@ void init_by_entropy(void)
     init_by_array(entropy,n);
 }
 
-void set_state(unsigned long save[])
+void set_state(uint32_t save[])
 {
     int i;
-    for (i=0; i < MT_N; i++) state[i] = save[i];
-    left = save[MT_N];
-    next = state + (MT_N-left+1);
+    for (i=0; i < MT_N; i++) save[i] = state[i];
+    save[MT_N] = left;
 }
 
-void get_state(unsigned long save[])
+void get_state(uint32_t save[])
 {
     int i;
     for (i=0; i < MT_N; i++) save[i] = state[i];
@@ -221,12 +259,12 @@ void get_state(unsigned long save[])
 
 static void next_state(void)
 {
-    unsigned long *p=state;
+    uint32_t *p=state;
     int j;
 
-    /* if init_genrand() has not been called, */
+    /* if init_by_int() has not been called, */
     /* a default initial seed is used         */
-    /* if (initf==0) init_genrand(5489UL); */
+    /* if (initf==0) init_by_int(5489UL); */
     /* Or better yet, a random seed! */
     if (initf==0) init_by_entropy();
 
@@ -243,9 +281,9 @@ static void next_state(void)
 }
 
 /* generates a random number on [0,0xffffffff]-interval */
-inline unsigned long randi(void)
+inline uint32_t randi32(void)
 {
-    unsigned long y;
+    uint32_t y;
 
     if (--left == 0) next_state();
     y = *next++;
@@ -259,17 +297,44 @@ inline unsigned long randi(void)
     return y;
 }
 
-/* generates a random number on (0,1)-real-interval */
-inline double randu(void)
+inline uint64_t quad(uint32_t hi, uint32_t lo)
 {
-    return ((double)randi() + 0.5) * (1.0/4294967296.0); 
+  return ((((uint64_t)hi)<<32)|lo);
+}
+
+inline uint64_t randi53(void)
+{
+  const uint32_t lo = randi32();
+  const uint32_t hi = randi32()&0x1FFFFF;
+  return quad(hi,lo);
+}
+
+inline uint64_t randi54(void)
+{
+  const uint32_t lo = randi32();
+  const uint32_t hi = randi32()&0x3FFFFF;
+  return quad(hi,lo);
+}
+
+inline uint64_t randi64(void)
+{
+  const uint32_t lo = randi32();
+  const uint32_t hi = randi32();
+  return quad(hi,lo);
+}
+
+/* generates a random number on (0,1)-real-interval */
+inline double randu32(void)
+{
+    return ((double)randi32() + 0.5) * (1.0/4294967296.0); 
     /* divided by 2^32 */
 }
 
-/* generates a random number on [0,1) with 53-bit resolution*/
-inline double rand53(void) 
+/* generates a random number on [0,1) with 53-bit resolution */
+inline double randu53(void) 
 { 
-    unsigned long a=randi()>>5, b=randi()>>6; 
+    const uint32_t a=randi32()>>5;
+    const uint32_t b=randi32()>>6; 
     return(a*67108864.0+b)*(1.0/9007199254740992.0); 
 } 
 
@@ -283,12 +348,13 @@ Mersenne Twister as the integer generator and uses 256 levels in the
 Ziggurat. This has several advantages.
 
   1) As Marsaglia and Tsang themselves states, the more levels the few 
-    times the expensive tail algorithm must be called
+     times the expensive tail algorithm must be called
   2) The cycle time of the generator is determined by the integer 
-    generator, thus the use of a Mersenne Twister for the core random 
-    generator makes this cycle extremely long.
+     generator, thus the use of a Mersenne Twister for the core random 
+     generator makes this cycle extremely long.
   3) The license on the original code was unclear, thus rewriting the code 
-    from the article means we are free of copyright issues.
+     from the article means we are free of copyright issues.
+  4) Compile flag for full 53-bit random mantissa.
 
 It should be stated that the authors made my life easier, by the fact that
 the algorithm developed in the text of the article is for a 256 level
@@ -298,7 +364,9 @@ One modification to the algorithm developed in the article, is that it is
 assumed that 0 <= x < Inf, and "unsigned long"s are used, thus resulting in
 terms like 2^32 in the code. As the normal distribution is defined between
 -Inf < x < Inf, we effectively only have 31 bit integers plus a sign. Thus
-in Marsaglia and Tsang, terms like 2^32 become 2^31. 
+in Marsaglia and Tsang, terms like 2^32 become 2^31. We use NMANTISSA for
+this term.  The exponential distribution is one sided so we use the 
+full 32 bits.  We use EMANTISSA for this term.
 
 It appears that I'm slightly slower than the code in the article, this
 is partially due to a better generator of random integers than they
@@ -308,14 +376,14 @@ Twister is only 25% faster than this code I suspect that the main
 reason is just the use of the Mersenne Twister and not the inlining,
 so I'm not going to try and optimize further.
 */
-inline void create_ziggurat_tables (void)
+void create_ziggurat_tables (void)
 {
   int i;
   double x, x1;
  
   // Ziggurat tables for the normal distribution
   x1 = ZIGGURAT_NOR_R;
-  wi[255] = x1 / TWO_TO_POWER_31;
+  wi[255] = x1 / NMANTISSA;
   fi[255] = exp (-0.5 * x1 * x1);
 
   /* Index zero is special for tail strip, where Marsaglia and Tsang 
@@ -323,9 +391,8 @@ inline void create_ziggurat_tables (void)
    * k_0 = 2^31 * r * f(r) / v, w_0 = 0.5^31 * v / f(r), f_0 = 1,
    * where v is the area of each strip of the ziggurat. 
    */
-  ki[0] = (unsigned long int) (x1 * fi[255] / NOR_SECTION_AREA * 
-			       TWO_TO_POWER_31);
-  wi[0] = NOR_SECTION_AREA / fi[255] / TWO_TO_POWER_31;
+  ki[0] = (ZIGINT) (x1 * fi[255] / NOR_SECTION_AREA * NMANTISSA);
+  wi[0] = NOR_SECTION_AREA / fi[255] / NMANTISSA;
   fi[0] = 1.;
 
   for (i = 254; i > 0; i--)
@@ -334,8 +401,8 @@ inline void create_ziggurat_tables (void)
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
       x = sqrt(-2. * log(NOR_SECTION_AREA / x1 + fi[i+1]));
-      ki[i+1] = (unsigned long int)(x / x1 * TWO_TO_POWER_31);
-      wi[i] = x / TWO_TO_POWER_31;
+      ki[i+1] = (ZIGINT)(x / x1 * NMANTISSA);
+      wi[i] = x / NMANTISSA;
       fi[i] = exp (-0.5 * x * x);
       x1 = x;
     }
@@ -344,7 +411,7 @@ inline void create_ziggurat_tables (void)
 
   // Zigurrat tables for the exponential distribution
   x1 = ZIGGURAT_EXP_R;
-  we[255] = x1 / TWO_TO_POWER_32;
+  we[255] = x1 / EMANTISSA;
   fe[255] = exp (-x1);
 
   /* Index zero is special for tail strip, where Marsaglia and Tsang 
@@ -352,9 +419,8 @@ inline void create_ziggurat_tables (void)
    * k_0 = 2^32 * r * f(r) / v, w_0 = 0.5^32 * v / f(r), f_0 = 1,
    * where v is the area of each strip of the ziggurat. 
    */
-  ke[0] = (unsigned long int) (x1 * fe[255] / EXP_SECTION_AREA * 
-			       TWO_TO_POWER_32);
-  we[0] = EXP_SECTION_AREA / fe[255] / TWO_TO_POWER_32;
+  ke[0] = (ZIGINT) (x1 * fe[255] / EXP_SECTION_AREA * EMANTISSA);
+  we[0] = EXP_SECTION_AREA / fe[255] / EMANTISSA;
   fe[0] = 1.;
 
   for (i = 254; i > 0; i--)
@@ -363,8 +429,8 @@ inline void create_ziggurat_tables (void)
        * need inverse operator of y = exp(-x) -> x = -ln(y)
        */
       x = - log(EXP_SECTION_AREA / x1 + fe[i+1]);
-      ke[i+1] = (unsigned long int)(x / x1 * TWO_TO_POWER_32);
-      we[i] = x / TWO_TO_POWER_32;
+      ke[i+1] = (ZIGINT)(x / x1 * EMANTISSA);
+      we[i] = x / EMANTISSA;
       fe[i] = exp (-x);
       x1 = x;
     }
@@ -377,7 +443,7 @@ inline void create_ziggurat_tables (void)
  * Here is the guts of the algorithm. As Marsaglia and Tsang state the
  * algorithm in their paper
  *
- * 1) Calculate a 32-bit random signed integer j and let i be the index
+ * 1) Calculate a random signed integer j and let i be the index
  *     provided by the rightmost 8-bits of j
  * 2) Set x = j * w_i. If j < k_i return x
  * 3) If i = 0, then return x from the tail
@@ -392,14 +458,29 @@ inline double randn (void)
   if (initt) create_ziggurat_tables();
   while (1)
     {
-      long ri = (signed long) randi ();
-#if SIZEOF_LONG > 4
-      if (ri > 2147483647) ri-=4294967296;
+      /* The following code is specialized for 32-bit mantissa.
+       * Compared to the arbitrary mantissa code, there is a performance
+       * gain for 32-bits:  PPC: 2%, MIPS: 8%, x86: 40%
+       * There is a bigger performance gain compared to using a full
+       * 53-bit mantissa:  PPC: 60%, MIPS: 65%, x86: 240%
+       * Of course, different compilers and operating systems may
+       * have something to do with this.
+       */
+#if defined(ALLBITS)
+      /* arbitrary mantissa */
+      const ZIGINT r = NRANDI;
+      const ZIGINT rabs=r>>1;
+      const int idx = (int)(rabs&0xFF);
+      const double x = ( r&1 ? -(rabs*wi[idx]) : (rabs*wi[idx]) );
+#else
+      /* 32-bit mantissa */
+      const uint32_t r = randi32();
+      const uint32_t rabs = r&LMASK;
+      const int idx = (int)(r&0xFF);
+      const double x = ((int32_t)r) * wi[idx];
 #endif
-      const int idx = ri & 0xFF;
-      const double x = ri * wi[idx];
-      if ((ri&LMASK) < ki[idx]) /* LMASK is all but the top bit */
-	return x;		/* 99.3% of the time we return here 1st try */
+      if (rabs < ki[idx])
+	return x;        /* 99.3% of the time we return here 1st try */
       else if (idx == 0)
 	{
 	  /* As stated in Marsaglia and Tsang
@@ -408,19 +489,18 @@ inline double randn (void)
 	   * generate x = -ln(U_1)/r, y = -ln(U_2), until y+y > x*x,
 	   * then return r+x. Except that r+x is always in the positive 
 	   * tail!!!! Any thing random might be used to determine the
-	   * sign, but as we already have ri we might as well use it
+	   * sign, but as we already have r we might as well use it
 	   */
 	  double xx, yy;
 	  do
 	    {
-	      xx = - ZIGGURAT_NOR_INV_R * log (randu());
-	      yy = - log (randu());
+	      xx = - ZIGGURAT_NOR_INV_R * log (RANDU);
+	      yy = - log (RANDU);
 	    } 
 	  while ( yy+yy <= xx*xx);
-	  return (ri < 0 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
+	  return (r&1 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
 	}
-      else if ((fi[idx-1] - fi[idx]) * randu() + fi[idx] < 
-	       exp(-0.5*x*x))
+      else if ((fi[idx-1] - fi[idx]) * RANDU + fi[idx] < exp(-0.5*x*x))
 	return x;
     }
 }
@@ -430,8 +510,8 @@ inline double rande (void)
   if (initt) create_ziggurat_tables();
   while (1)
     {
-      unsigned long ri = randi ();
-      const int idx = ri & 0xFF;
+      ZIGINT ri = ERANDI;
+      const int idx = (int)(ri & 0xFF);
       const double x = ri * we[idx];
       if (ri < ke[idx])
 	return x;		// 98.9% of the time we return here 1st try
@@ -442,9 +522,9 @@ inline double rande (void)
 	   * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
 	   */
-	  return ZIGGURAT_NOR_R - log(randu());
+	  return ZIGGURAT_NOR_R - log(RANDU);
 	}
-      else if ((fe[idx-1] - fe[idx]) * randu() + fe[idx] < exp(-x))
+      else if ((fe[idx-1] - fe[idx]) * RANDU + fe[idx] < exp(-x))
 	return x;
     }
 }
@@ -452,17 +532,17 @@ inline double rande (void)
 #ifdef TEST
 int main(int argc, char *argv[])
 {
-  unsigned long state[]={5,6,7};
+  uint32_t state[]={5,6,7};
 
   if (argc == 1) {
-    init_genrand(0);
-    printf("rand(state=0)=%lx\n",randi());
-    init_genrand(5);
-    printf("rand(state=5)=%lx\n",randi());
+    init_by_int(0);
+    printf("rand(state=0)=%x\n",randi32());
+    init_by_int(5);
+    printf("rand(state=5)=%x\n",randi32());
     init_by_array(state,3);
-    printf("rand(state=[5,6,7])=%lx\n",randi());
+    printf("rand(state=[5,6,7])=%x\n",randi32());
     init_by_entropy();
-    printf("rand(state=entropy)=%lx\n",randi());
+    printf("rand(state=entropy)=%x\n",randi32());
     printf("randn(0,1)=[%f,%f,%f,%f]\n",randn(),randn(),randn(),randn());
     printf("rande(1)=[%f,%f,%f,%f]\n",rande(),rande(),rande(),rande());
     printf("\nTo generate a stream of M random numbers, use:\n");
@@ -471,19 +551,32 @@ int main(int argc, char *argv[])
     printf("  rand n M       [standard normal]\n");
     printf("  rand e M       [standard exponential]\n");
     printf("Generator i is the default.\n");
+    printf("If M < 0, generate but don't print.\n");
   } else {
     int i,m;
     init_by_entropy();
     if (argc==2) m = atoi(argv[1]);
     else m = atoi(argv[2]);
-    if (argc==2 || *argv[1]=='i')
-      for (i=0; i < m; i++) printf("%ld\n",randi()); 
-    else if (*argv[1]=='u')
-      for (i=0; i < m; i++) printf("%.9f\n",randu()); 
-    else if (*argv[1]=='n')
-      for (i=0; i < m; i++) printf("%.9f\n",randn()); 
-    else if (*argv[1]=='e')
-      for (i=0; i < m; i++) printf("%.9f\n",rande()); 
+    if (m < 0) {
+      m = -m;
+      if (argc==2 || *argv[1]=='i')
+	for (i=0; i < m; i++) randi32(); 
+      else if (*argv[1]=='u')
+	for (i=0; i < m; i++) randu(); 
+      else if (*argv[1]=='n')
+	for (i=0; i < m; i++) randn(); 
+      else if (*argv[1]=='e')
+	for (i=0; i < m; i++) rande(); 
+    } else {
+      if (argc==2 || *argv[1]=='i')
+	for (i=0; i < m; i++) printf("%d\n",randi32()); 
+      else if (*argv[1]=='u')
+	for (i=0; i < m; i++) printf("%.9f\n",randu()); 
+      else if (*argv[1]=='n')
+	for (i=0; i < m; i++) printf("%.9f\n",randn()); 
+      else if (*argv[1]=='e')
+	for (i=0; i < m; i++) printf("%.9f\n",rande()); 
+    }
   }
   exit(0);
   return 0;

@@ -40,14 +40,14 @@ do_seed (octave_value_list args)
   if (s_arg == "seed")
     {
       // If they ask for the current "seed", then reseed with the next
-      // available random number
-      unsigned long a = randi();
-      init_genrand(a);
+      // available random number and return that.
+      uint32_t a = randi32();
+      init_by_int(a);
       retval = (double)a;
     }
   else if (s_arg == "state")
     {
-      unsigned long state[MT_N+1];
+      uint32_t state[MT_N+1];
       get_state(state);
       RowVector a(MT_N+1);
       for (int i=0; i < MT_N+1; i++)
@@ -68,9 +68,9 @@ do_seed (octave_value_list args)
   octave_value tmp = args(1);
   if (tmp.is_scalar_type ())
     {
-      unsigned long n = (unsigned long)(tmp.double_value());
+      uint32_t n = (uint32_t)(tmp.double_value());
       if (! error_state)
-	init_genrand(n);
+	init_by_int(n);
     }
   else if (tmp.is_matrix_type () && (tmp.rows() == 1 || tmp.columns() == 1))
     {
@@ -79,11 +79,9 @@ do_seed (octave_value_list args)
 	{
           const int input_len = a.length();
 	  const int n = input_len < MT_N+1 ? input_len : MT_N+1;
-	  unsigned long state[MT_N+1];
-	  for (int i = 0; i < n; i++)
-            {
-	      state[i] = (unsigned long)a(i);
-            }
+	  uint32_t state[MT_N+1];
+	  for (int i = 0; i < n; i++) 
+	    state[i] = (uint32_t)a(i);
           if (input_len == MT_N+1 && state[MT_N] <= MT_N && state[MT_N] > 0)
             set_state (state);
           else
@@ -206,7 +204,7 @@ do_size(octave_value_list args, int& nr, int& nc)
 
 void fill_randu(int n, double *p)
 {
-  for (int i=0; i < n; i++) p[i] = rand53();
+  for (int i=0; i < n; i++) p[i] = randu();
 }
 
 /*

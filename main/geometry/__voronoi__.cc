@@ -149,9 +149,7 @@ Internal function for voronoi.\n\
 			//free short memory and memory allocator
 		
 		if (curlong || totlong) {
-    		cerr << "qhull internal warning (delaunay): did not free ";
-			cerr << totlong << " bytes of long memory (";
-			cerr << curlong << " pieces)" << endl;
+    		    warning("__voronoi__: did not free %d bytes of long memory (%d pieces)", totlong, curlong);
 		}
 	}
 	return retval;

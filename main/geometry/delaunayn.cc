@@ -104,9 +104,8 @@ dimension (dim-1).  The 3d simplex is a tetrahedron.\n  @end deftypefn")
       //free short memory and memory allocator
     
     if (curlong || totlong) {
-      cerr << "qhull internal warning (delaunay): did not free ";
-      cerr << totlong << " bytes of long memory (";
-      cerr << curlong << " pieces)" << endl;
+	warning("delaunay: did not free %d bytes of long memory (%d pieces)",
+	        totlong, curlong);
     }
   } else if (n == dim + 1) {
     // one should check if nx points span a simplex

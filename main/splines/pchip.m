@@ -18,20 +18,18 @@
 ## @deftypefn {Function File} {@var{pp} = } pchip (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} = } pchip (@var{x}, @var{y}, @var{xi})
 ## piecewise cubic hermite interpolating polynom.
-## @var{x} must be a vector of increasing values.
+## @var{x} must be a strictly monotonic vector (either increasing or decreasing).
 ## @var{y} is a vector of same length as @var{x},
 ## or a matrix where the number of columns must match the length
 ## of @var{x}. In this case the interpolating polynoms are calculated
 ## for each column. 
-## In contrast to spline preserves pchip the monotonicity of (@var{x},@var{y}).
+## In contrast to spline, pchip preserves the monotonicity of (@var{x},@var{y}).
 ## 
 ## @seealso{ppval, spline, csape}
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 ## Date: 9. mar 2001
-## 2001-04-03 Paul Kienzle
-##   * move (:) from definition of l,r to use of l,r so it works with 2.0
 ##
 ## S_k = a_k + b_k*x + c_k*x^2 + d_k*x^3; (spline polynom)
 ##
@@ -50,12 +48,17 @@ function ret = pchip (x, y, xi)
   x = x(:);
   n = length (x);
 
-  if any(diff(x)<0) 
-    error('x must be increasing')
-  endif
-
   if (columns(y) == n) y = y'; endif
   
+  h = diff(x);
+  if all(h<0)
+    x = flipud(x);
+    h = diff(x);
+    y = flipud(y);
+  elseif any(h<=0)
+    error('x must be strictly monotonic')
+  endif
+
   if (rows(y) != n)
     error("size of x and y must match");
   endif
@@ -63,8 +66,6 @@ function ret = pchip (x, y, xi)
   [ry,cy] = size (y);
   if (cy > 1)
     h = kron (diff (x), ones (1, cy));
-  else
-    h = diff (x);
   endif
   
   dy = diff (y) ./ h;

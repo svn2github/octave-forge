@@ -36,12 +36,15 @@ and some flexibility.\n\
     for (int i = 1; i<nargin; i++) {
 
       if (args(i).is_string ()) {
-	std::string s = args(i).string_value ();
-	octave_value tmp = args(0).do_struct_elt_index_op (s, true);
+	octave_value tmp = args(0).subsref (".", args(i)); 
 
 	if (tmp.is_defined ())	  retval(i-1) = tmp;
 
-	else  error ("structure has no member `%s'", s.c_str ());
+	else {
+          std::string s = args(i).string_value ();
+          error ("structure has no member `%s'", s.c_str ());
+        }
+
 
       } else 
 	error ("argument number %i is not a string",i+1);

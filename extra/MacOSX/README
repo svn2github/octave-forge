@@ -2,26 +2,13 @@ These files provide additional functionality on Mac OS X
 
 image.m
 -------
-This file will use 'convert' to turn an image into TIFF format and then send it to Preview.app (or your viewer of choice). If that fails, it will fallback to try the standard X11 viewers.
+This file will use 'convert' to turn an image into TIFF format and then send it to Preview.app (or your viewer of choice). If that fails, it will fall back to the standard X11 viewers.
 
-'convert' is part of the ImageMagick suite, but can be installed on its own, see
- 
-    http://darkwing.uoregon.edu/~koch/texshop/conversion.html
+'convert' is part of the ImageMagick suite, see http://www.imagemagick.org/
 
-
-figure.m
---------
-This file will set plot output to the viewer set by environment variable GNUTERM, its main purpose is to send plots to AquaTerm instead of an XTerm window. Add 'setenv GNUTERM aqua' to your .cshrc file to make AquaTerm the default.
-
-For more info about AquaTerm, see
-
-    http://aquaterm.sf.net
-    
-    
-With the combination of image.m and figure.m you do not need to have an X11 installation to run octave.
 
 doc/ofosx.tex
 --------------
 This is a document that details the Mac OS X port of octave and octave-forge to some extent. 
---- Work in progress ---
+(The document is now (2004-04-15) mostly of archeological interest...)
      

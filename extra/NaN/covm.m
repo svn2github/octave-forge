@@ -27,8 +27,8 @@ function [CC,NN] = covm(X,Y,Mode);
 %	C is not scaled, provides the scaling factor   
 %	C./N gives the scaled version. 
 
-%	Version 1.28   Date: 23.Sep.2002
-%	Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	Version 1.28   Date: 10.Oct.2002
+%	CopyLeft (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ end;
 
 if ~isempty(Y),
         if ~any(Mode=='ED')        
-        	NN = (~isnan(X)')*(~isnan(Y));
+        	NN = real(~isnan(X)')*real(~isnan(Y));
 	        X(isnan(X)) = 0; % skip NaN's
 	        Y(isnan(Y)) = 0; % skip NaN's
         	CC = X'*Y;
@@ -98,7 +98,7 @@ if ~isempty(Y),
 	        [S1,N1] = sumskipnan(X,1);
                 [S2,N2] = sumskipnan(Y,1);
                 
-                NN = (~isnan(X)')*(~isnan(Y));
+                NN = real(~isnan(X)')*real(~isnan(Y));
         
 	        if any(Mode=='D'), % detrending mode
         		X  = X - ones(r1,1)*(S1./N1);
@@ -118,12 +118,12 @@ if ~isempty(Y),
 	
 else        
         if ~any(Mode=='ED')        
-        	NN = (~isnan(X)')*(~isnan(X));
+        	NN = real(~isnan(X)')*real(~isnan(X));
 	        X(isnan(X)) = 0; % skip NaN's
 	        CC = X'*X;
         else
 	        [S,N] = sumskipnan(X,1);
-                NN = (~isnan(X)')*(~isnan(X));
+                NN = real(~isnan(X)')*real(~isnan(X));
         	if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);
                         NN = max(NN-1,0);

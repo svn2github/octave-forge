@@ -1,8 +1,10 @@
-% Time Series Analysis (Ver 3.10)
-% Schloegl A. (1996-2003) Time Series Analysis - A Toolbox for the use with Matlab. 
+% Time Series Analysis (Ver 3.20)
+% Schloegl A. (1996-2003) Time Series Analysis - A toolbox for the use with Matlab. 
 % WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
 %
-%	Version 3.10    Date: 25. Feb 2003
+%	$Revision$ 
+%	$Id$
+%	Version 3.21    Date: 23 Juni 2003
 %	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>
 %
 %  Time Series Analysis - a toolbox for the use with Matlab
@@ -26,13 +28,16 @@
 %   ar_spa	(*) spectral analysis based on the autoregressive model
 %   detrend 	(*) removes trend, can handle missing values, non-equidistant sampled data       
 %   flix	floating index, interpolates data for non-interger indices
-%   quantiles   calculates quantiles 
 %
-% Multivariate analysis (planned in future)
+%
+% Multivariate analysis 
+%   adim	adaptive information matrix (inverse correlation matrix) 
 %   mvar	multivariate (vector) autoregressive estimation 
 %   mvfilter	multivariate filter
+%   mvfreqz	multivariate spectra 	
 %   arfit2	provides compatibility to ARFIT [Schneider and Neumaier, 2001]
-       	
+%
+%   	
 %  Conversions between Autocorrelation (AC), Autoregressive parameters (AR), 
 %             	prediction polynom (POLY) and Reflection coefficient (RC)  
 %   ac2poly 	(*) transforms autocorrelation into prediction polynom

@@ -164,6 +164,7 @@ fixed-int.o : int/fixed.cc fixed-int.d
 	@echo "Depending $<"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M $<
 
+%.o:%.cc
 %.o:%.cc %.d
 	@echo "Compiling $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 

@@ -37,9 +37,12 @@
 ##    if options(6)==0 - Nelder & Mead simplex (default)
 ##    if options(6)==1 - Multidirectional search Method
 ##    if options(6)==2 - Alternating Directions search
-## options(5) - Strategy
+## options(5)
 ##    if options(6)==0 && options(5)==0 - regular simplex
 ##    if options(6)==0 && options(5)==1 - right-angled simplex
+##       Comment: the default is set to "right-angled simplex".
+##         this works better for me on a broad range of problems,
+##         although the default in nmsmax is "regular simplex"
 ## options(10) - Maximum number of function evaluations
 ## @item grad
 ## Unused (For compatibility with Matlab)
@@ -50,7 +53,7 @@
 ## @end deftypefn
 
 function ret=fmins(funfun, X0, options, grad, varargin)
-    stopit = [1e-3, inf, inf, 0, 0, -1];
+    stopit = [1e-3, inf, inf, 1, 0, -1];
     minfun = 'nmsmax'; 
 
     if nargin<=3; options=[]; end

@@ -104,12 +104,12 @@ k = k+1;
        if ~isempty(savit)
           x(:) = V(:,1); eval(['save ' savit ' x fmax nf'])
        end
-       if trace
-          fprintf('Iter. %2.0f,', k)
-          fprintf(['  how = ' how '  ']);
-          fprintf('nf = %3.0f,  f = %9.4e  (%2.1f%%)\n', nf, fmax, ...
-                  100*(fmax-fmax_old)/(abs(fmax_old)+eps))
-       end
+    end
+    if trace
+       fprintf('Iter. %2.0f,', k)
+       fprintf(['  how = ' how '  ']);
+       fprintf('nf = %3.0f,  f = %9.4e  (%2.1f%%)\n', nf, fmax, ...
+               100*(fmax-fmax_old)/(abs(fmax_old)+eps))
     end
     fmax_old = fmax;
 
@@ -148,41 +148,41 @@ k = k+1;
     nf = nf + 1;
     vk = vr;  fk = fr; how = 'reflect, ';
     if fr > f(n)
-            if fr > f(1)
-               ve = gamma*vr + (1-gamma)*vbar;
-               x(:) = ve;
-               fe = dirn*feval(fun,x,varargin{:});
-               nf = nf + 1;
-               if fe > f(1)
-                  vk = ve; fk = fe;
-                  how = 'expand,  ';
-               end
-            end
+        if fr > f(1)
+           ve = gamma*vr + (1-gamma)*vbar;
+           x(:) = ve;
+           fe = dirn*feval(fun,x,varargin{:});
+           nf = nf + 1;
+           if fe > f(1)
+              vk = ve; fk = fe;
+              how = 'expand,  ';
+           end
+        end
     else
-            vt = V(:,n+1); ft = f(n+1);
-            if fr > ft
-               vt = vr;  ft = fr;
-            end
-            vc = beta*vt + (1-beta)*vbar;
-            x(:) = vc;
-            fc = dirn*feval(fun,x,varargin{:});
-            nf = nf + 1;
-            if fc > f(n)
-               vk = vc; fk = fc;
-               how = 'contract,';
-            else
-               for j = 2:n
-                   V(:,j) = (V(:,1) + V(:,j))/2;
-                   x(:) = V(:,j);
-                   f(j) = dirn*feval(fun,x,varargin{:});
-               end
-               nf = nf + n-1;
-               vk = (V(:,1) + V(:,n+1))/2;
-               x(:) = vk;
-               fk = dirn*feval(fun,x,varargin{:});
-               nf = nf + 1;
-               how = 'shrink,  ';
-            end
+        vt = V(:,n+1); ft = f(n+1);
+        if fr > ft
+           vt = vr;  ft = fr;
+        end
+        vc = beta*vt + (1-beta)*vbar;
+        x(:) = vc;
+        fc = dirn*feval(fun,x,varargin{:});
+        nf = nf + 1;
+        if fc > f(n)
+           vk = vc; fk = fc;
+           how = 'contract,';
+        else
+           for j = 2:n
+               V(:,j) = (V(:,1) + V(:,j))/2;
+               x(:) = V(:,j);
+               f(j) = dirn*feval(fun,x,varargin{:});
+           end
+           nf = nf + n-1;
+           vk = (V(:,1) + V(:,n+1))/2;
+           x(:) = vk;
+           fk = dirn*feval(fun,x,varargin{:});
+           nf = nf + 1;
+           how = 'shrink,  ';
+        end
     end
     V(:,n+1) = vk;
     f(n+1) = fk;

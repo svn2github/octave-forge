@@ -30,7 +30,9 @@
 ##   Batch processing.  Write errors to already open file fid (hopefully
 ##   then when octave crashes this file will tell you what was happening
 ##   when it did).  You can use stdout if you want to see the results as
-##   they happen.
+##   they happen.  You can also give a file name rather than an fid, in
+##   which case the contents of the file will be replaced with the log
+##   from the current test.
 ##
 ## success = test(...)
 ##   return true if all the tests succeeded.
@@ -186,6 +188,13 @@
 ## PKG_ADD: mark_as_command test
 
 function [__ret1, __ret2] = test (__name, __flag, __fid)
+  ## information from test will be introduced by "key" 
+  persistent __signal_fail =  "!!!!! ";
+  persistent __signal_empty = "????? ";
+  persistent __signal_error = "  ##### ";
+  persistent __signal_block = "  ***** ";
+  persistent __signal_file =  ">>>>> ";
+
   if (nargin < 2 || isempty(__flag))
     __flag = 'quiet';
   endif
@@ -197,12 +206,20 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   endif
   __batch = (!isempty(__fid));
 
-  ## information from test will be introduced by "key" 
-  persistent __signal_fail =  "!!!!! ";
-  persistent __signal_empty = "????? ";
-  persistent __signal_error = "  ##### ";
-  persistent __signal_block = "  ***** ";
-  persistent __signal_file =  ">>>>> ";
+  ## decide if error messages should be collected
+  if (__batch)
+    if (isstr(__fid))
+      __fid = fopen(__fid, "w");
+      if __fid < 0, error("could not open log file"); endif
+      __close_fid = 1;
+    else
+      __close_fid = 0;
+    endif
+    fputs (__fid, [__signal_file, "processing ", __name, "\n" ]);
+  else
+    __fid = stdout;
+  endif
+
 
   if (strcmp(__flag, "normal"))
     __grabdemo = 0;
@@ -237,16 +254,10 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     fputs (__fid, "# The result may be an unexpected failure (in which\n");
     fputs (__fid, "# case an error will be reported) or an unexpected\n");
     fputs (__fid, "# success (in which case no error will be reported).\n");
+    if (__close_fid) fclose(__fid); endif
     return;
   else
     error(["test unknown flag '", __flag, "'"]);
-  endif
-
-  ## decide if error messages should be collected
-  if (__batch)
-    fputs (__fid, [__signal_file, "processing ", __name, "\n" ]);
-  else
-    __fid = stdout;
   endif
 
   ## locate the file to test
@@ -265,6 +276,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       fputs(__fid, [__signal_empty, __name, " does not exist in path\n" ]);
       if (nargout > 0) __ret1 = __ret2 = 0; endif
     endif
+    if (__close_fid) fclose(__fid); endif
     return;
   endif
 
@@ -285,6 +297,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       fputs(__fid, [ __signal_empty, __file, " has no tests available\n" ]);
       if (nargout > 0) __ret1 = __ret2 = 0; endif
     endif
+    if (__close_fid) fclose(__fid); endif
     return;
   else
     ## add a dummy comment block to the end for ease of indexing
@@ -495,6 +508,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       	## stop after one error if not in batch mode
       if (!__batch)
     	if (nargout > 0) __ret1 = __ret2 = 0; endif
+	if (__close_fid) fclose(__fid); endif
       	return;
       endif
     endif

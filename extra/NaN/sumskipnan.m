@@ -10,7 +10,7 @@ function [o,count,SSQ] = sumskipnan(i,DIM)
 % Also the second output argument return the number of valid elements (not NaNs) 
 % 
 % Y = sumskipnan(x [,DIM])
-% [Y,N,SSQ,S4M] = sumskipnan(x [,DIM])
+% [Y,N,SSQ] = sumskipnan(x [,DIM])
 % 
 % DIM	dimension
 %	1 sum of columns
@@ -20,7 +20,6 @@ function [o,count,SSQ] = sumskipnan(i,DIM)
 % Y	resulting sum
 % N	number of valid (not missing) elements
 % SSQ	sum of squares
-% S4M	sum of fourth raw moment
 %
 % The mean & standard error of the mean and 
 %	Y./N & sqrt((SSQ-Y.*Y./N)./(N.*max(N-1,0))); 
@@ -62,7 +61,9 @@ if nargin<2,
         if isempty(DIM), DIM=1; end;
 end;
 
-if exist('OCTAVE_VERSION') >= 5, 
+tmp = version;
+if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6)) < 2136,
+
 	%%% This part is neccessary for the following reasons: 
         %%% 1) its workaround for a bug in Octave version <= 2.1.35
         %%%    sum(1:4,1) has not resulted in 1:4
@@ -101,6 +102,7 @@ if exist('OCTAVE_VERSION') >= 5,
                 SSQ = sumskipnan(i,DIM);
         end
 else 
+
 	% an efficient implementation in C of the following lines 
         % could significantly increase performance 
         % only one loop and only one check for isnan is needed

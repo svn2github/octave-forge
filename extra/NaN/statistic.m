@@ -54,7 +54,7 @@ function [varargout]=statistic(i,DIM,fun)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.25	Date: 15 Aug 2002	
+%    	Version 1.27  Date: 12 Sep 2002
 %	Copyright (C) 2000-2002 by Alois Schloegl  <a.schloegl@ieee.org>	
 
 % .changelog
@@ -134,13 +134,13 @@ R.CM4 	= sumskipnan(i.^4,DIM)./n1;
 
 R.SKEWNESS = R.CM3./(R.STD.^3);
 R.KURTOSIS = R.CM4./(R.VAR.^2)-3;
-[R.MAD,N] = sumskipnan(abs(i),DIM);	% mean absolute deviation
+[R.MAD,N]  = sumskipnan(abs(i),DIM);	% mean absolute deviation
 R.MAD = R.MAD./n1;
-
 
 R.datatype = 'STAT Level 3';
 
-if exist('OCTAVE_VERSION')>4,
+tmp = version;
+if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6))<2136,
         if strcmp(fun(1:2),'CM') 
                 oo = str2num(fun(3:length(fun)));
                 varargout  = sumskipnan(i.^oo,DIM)./n1;
@@ -159,7 +159,7 @@ else
                     		varargout{k}  = getfield(R,upper(fun{k}));
 	                end;
     	        end;
-	elseif ischar(fun),
+	elseif isstr(fun),
             	if strcmp(fun(1:2),'CM') 
                     	oo = str2num(fun(3:length(fun)));
                 	varargout{1}  = sumskipnan(i.^oo,DIM)./n1;

@@ -4,6 +4,9 @@ sinclude ../../Makeconf
 ifeq ($(HAVE_OCTAVE_MAP_INDEX),)
 STRUCT=struct.oct
 endif
+ifeq ($(HAVE_BUILTIN_STRUCT),1)
+STRUCT=
+endif
 
 all: getfield.oct setfield.oct $(STRUCT)
 

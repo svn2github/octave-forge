@@ -41,8 +41,7 @@ function [IR, CC, D] = adim(U, UC, IR, CC, arg5);
 % Boston, MA  02111-1307, USA.
 
 
-[ur,uc] = size(U);
-p = uc;
+[ur,p] = size(U);
 
 Mode_E = 1;
 if nargin < 4,
@@ -57,7 +56,7 @@ else
                 fprintf(2,'Error ADIM: update coefficient not within range [0,1]\n');
                 return;
         end;
-        if UC < 1/uc,
+        if UC > 1/p,
                 fprintf(2,'Warning ADIM: update coefficient should be smaller than 1/number_of_dimensions\n');
         end;
 end;

@@ -26,7 +26,7 @@
 function d = double(in)
 
   if isstr(in)
-      d = toascii(in);
+      d = mod(in+0,256);
   else
       d = in;
   end

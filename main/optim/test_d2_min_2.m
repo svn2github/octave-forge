@@ -38,6 +38,10 @@ ok = 0;
 
 if ! exist ("verbose"), verbose = 0; end
 
+if verbose
+  printf ("\n   Testing d2_min () on a quadratic programming problem\n\n");
+end
+
 P = 10+floor(30*rand(1)) ;	# Nparams
 R = P+floor(30*rand(1)) ;	# Nobses
 noise = 0 ;
@@ -94,9 +98,7 @@ endfunction
 
 ctl = nan*zeros(1,5); ctl(5) = 1;
 
-if verbose
-    printf ( "gonna do : d2_min\n");
-end
+if verbose, printf ( "Going to call d2_min()\n"); end
 mytic() ;
 [xlev,vlev,nev] = d2_min ("ff", "d2ff", list (xinit,y), ctl) ;
 tlev = mytic ();

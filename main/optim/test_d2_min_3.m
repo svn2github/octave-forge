@@ -27,6 +27,10 @@ ok = 0;
 
 if ! exist ("verbose"), verbose = 0; end
 
+if verbose
+  printf ("\n   Testing d2_min () on a strange 2-dimensional function\n\n");
+end
+
 P = 2;	# Nparams
 noise = 0 ;
 truep = [0;0] ;
@@ -70,7 +74,7 @@ endfunction
 ctl = nan*zeros(1,5); ctl(5) = 1;
 
 if verbose
-    printf ( "gonna do : d2_min\n");
+  printf ( "Going to call d2_min\n");
 end
 mytic() ;
 [xlev,vlev,nev] = d2_min ("ff", "d2ff", list (xinit,y),ctl) ;

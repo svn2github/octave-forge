@@ -23,6 +23,10 @@
 
 if ! exist ("verbose"), verbose = 0; end
 
+if verbose
+  printf ("\n   Testing d2_min () on a quadratic programming problem\n\n");
+end
+
 P = 10+floor(30*rand(1)) ;	# Nparams
 R = P+floor(30*rand(1)) ;	# Nobses
 noise = 0 ;
@@ -41,7 +45,7 @@ if noise, obses = adnois(obses,noise); end
 function v = ff(x)
   global obsmat;
   global obses;
-  v = msq(obses - obsmat*x ) ;
+  v = msq (obses - obsmat*x ) ;
 endfunction
 
 function [v,dv,d2v] = d2ff(x) # Return pseudo-inverse
@@ -50,7 +54,7 @@ function [v,dv,d2v] = d2ff(x) # Return pseudo-inverse
   er = -obses + obsmat*x ;
   dv = er'*obsmat ;
   v = msq(er ) ;
-  d2v = pinv(obsmat'*obsmat ) ;
+  d2v = pinv (obsmat'*obsmat ) ;
 endfunction
 
 function [v,dv,d2v] = d2ff_2(x)	# Return 2nd derivs, not pseudo-inv
@@ -96,10 +100,10 @@ ok = 1;
 ctl = nan*zeros(1,5); ctl(5) = 1;
 
 if verbose
-    printf ("gonna do : d2_min\n");
+  printf ("Going to call d2_min\n");
 end
 mytic() ;
-[xlev,vlev,nev] = d2_min("ff","d2ff",xinit,ctl) ;
+[xlev,vlev,nev] = d2_min ("ff","d2ff",xinit,ctl);
 tlev = mytic() ;
 
 if verbose,
@@ -136,7 +140,7 @@ end
 cnt++;
 
 if verbose
-    printf ("gonna do : d2_min\n");
+  printf ("Going to call d2_min() \n");
 end
 mytic() ;
 [xlev,vlev,nev] = d2_min("ff","d2ff_2",xinit) ;

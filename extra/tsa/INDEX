@@ -6,6 +6,7 @@ Analysis functions
    bispec
    durlev
    lattice
+   parcor
    invest0
    invest1
    selmo
@@ -21,6 +22,10 @@ Analysis functions
 Multivariate analysis
    mvar
    mvfilter
+   arfit2    
+
+Adaptive (time-varying) analysis
+   aar   
  
 Conversions between forms
    ac2poly

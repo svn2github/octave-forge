@@ -11,6 +11,7 @@
 %   aar		adaptive autoregressive estimator 
 %   acovf       (*) Autocovariance function
 %   acorf (acf)	(*) autocorrelation function	
+%   parcor	(*) partial autocorrelation function
 %   biacovf	biautocovariance function (3rd order cumulant)
 %   bispec	Bi-spectrum 
 %   durlev      (*) solves Yule-Walker equation - converts ACOVF into AR parameters
@@ -30,7 +31,7 @@
 % Multivariate analysis (planned in future)
 %   mvar	multivariate (vector) autoregressive estimation 
 %   mvfilter	multivariate filter
-%
+%   arfit2	provides compatibility to ARFIT [Schneider and Neumaier, 2001]
        	
 %  Conversions between Autocorrelation (AC), Autoregressive parameters (AR), 
 %             	prediction polynom (POLY) and Reflection coefficient (RC)  
@@ -71,8 +72,11 @@
 %  S.L. Marple "Digital Spetral Analysis with Applications" Prentice Hall, 1987.
 %  C.L. Nikias and A.P. Petropulu "Higher-Order Spectra Analysis" Prentice Hall, 1993.
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
+%  T. Schneider and A. Neumaier "Algorithm 808: ARFIT - a matlab package for the estimation of parameters and eigenmodes of multivariate autoregressive models" 
+%               ACM Transactions on Mathematical software, 27(Mar), 58-65.
 %  C.E. Shannon and W. Weaver "The mathematical theory of communication" University of Illinois Press, Urbana 1949 (reprint 1963).
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
+% 
 % 
 % REFERENCES (applications):
 % [1] A. Schlögl, B. Kemp, T. Penzel, D. Kunz, S.-L. Himanen,A. Värri, G. Dorffner, G. Pfurtscheller.

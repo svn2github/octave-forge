@@ -1,29 +1,27 @@
 % Time Series Analysis (Ver 2.90)
-% Schloegl A. (1996-2001) Time Series Analysis - A Toolbox for the use with Matlab. 
+% Schloegl A. (1996-2002) Time Series Analysis - A Toolbox for the use with Matlab. 
 % WWW: http://www.dpmi.tu-graz.ac.at:~schloegl/matlab/tsa
 %
 %	Version 2.90
-%	last revision 05.04.2002
+%	last revision 10.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 %
 %  Time Series Analysis - a toolbox for the use with Matlab
+%   aar		adaptive autoregressive estimator 
 %   acovf       (*) Autocovariance function
 %   acorf (acf)	(*) autocorrelation function	
+%   parcor	(*) partial autocorrelation function
 %   biacovf	biautocovariance function (3rd order cumulant)
 %   bispec	Bi-spectrum 
-%   hiocum	higher order cumulant function
-%   pacf	partial autocorrelation function 
 %   durlev      (*) solves Yule-Walker equation - converts ACOVF into AR parameters
 %   lattice     (*) calcultes AR parameters with lattice method
 %   invest0	(*) a prior investigation (used by invest1)
 %   invest1	(*) investigates signal (useful for 1st evaluation of the data)
 %   selmo	(*) Select Order of Autoregressive model using different criteria
-%   histo	(*) histogram
-%   entropy	(*) entropy function
+%   histo3	(*) histogram
 %   hup     	(*) test Hurwitz polynomials
 %   ucp     	(*) test Unit Circle Polynomials   
-%   hist2res	(*) computes mean, variance, skewness, kurtosis, entropy, etc.from the histogram
 %   y2res	(*) computes mean, variance, skewness, kurtosis, entropy, etc. from data series 
 %   ar_spa	(*) spectral analysis based on the autoregressive model
 %   detrend 	(*) removes trend, can handle missing values, non-equidistant sampled data       
@@ -31,10 +29,10 @@
 %   quantiles   calculates quantiles 
 %
 % Multivariate analysis (planned in future)
-%   mdurlev	multivariate (vector) autoregressive estimation 
-%   mfilter	multivariate filter
-%   mfreqz	vector freqz	
-%   	
+%   mvar	multivariate (vector) autoregressive estimation 
+%   mvfilter	multivariate filter
+%   arfit2	provides compatibility to ARFIT [Schneider and Neumaier, 2001]
+       	
 %  Conversions between Autocorrelation (AC), Autoregressive parameters (AR), 
 %             	prediction polynom (POLY) and Reflection coefficient (RC)  
 %   ac2poly 	(*) transforms autocorrelation into prediction polynom
@@ -53,12 +51,9 @@
 %   sinvest1	shows the parameter calculated by INVEST1
 %
 % Test suites
-%   demo        	demo of TSA-tb
 %   tsademo		demonstrates INVEST1 on EEG data
-%   bisdemo		shows BISPECTRUM on EEG data
 %   invfdemo		demonstration of matched, inverse filtering
-%   vardemo		demonstrates VAR-estimation
-%   bstest_VAR		validation of various VAR algorithms	
+%   bisdemo		demonstrates bispectral estimation
 %
 % (*) indicates univariate analysis of multiple data series (each in a row) can be processed.
 % (-) indicates that these functions will be removed in future 
@@ -77,8 +72,11 @@
 %  S.L. Marple "Digital Spetral Analysis with Applications" Prentice Hall, 1987.
 %  C.L. Nikias and A.P. Petropulu "Higher-Order Spectra Analysis" Prentice Hall, 1993.
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
+%  T. Schneider and A. Neumaier "Algorithm 808: ARFIT - a matlab package for the estimation of parameters and eigenmodes of multivariate autoregressive models" 
+%               ACM Transactions on Mathematical software, 27(Mar), 58-65.
 %  C.E. Shannon and W. Weaver "The mathematical theory of communication" University of Illinois Press, Urbana 1949 (reprint 1963).
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
+% 
 % 
 % REFERENCES (applications):
 % [1] A. Schlögl, B. Kemp, T. Penzel, D. Kunz, S.-L. Himanen,A. Värri, G. Dorffner, G. Pfurtscheller.

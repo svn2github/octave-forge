@@ -1,6 +1,6 @@
 function [PARCOR,ARP, PE] = parcor(AutoCov);
 % estimates partial autocorrelation coefficients 
-% Multiple channels can be used (one per row)
+% Multiple channels can be used (one per row).
 %
 % [PARCOR, ARP, PE] = parcor(AutoCov); % calculates Partial autocorrelation, autoregressive coefficients and residual error variance from the Autocorrelation function. 
 %
@@ -15,9 +15,10 @@ function [PARCOR,ARP, PE] = parcor(AutoCov);
 % PE    remaining error variance
 %
 % All input and output parameters are organized in rows, one row 
-% corresponds to the parameters of one channel
+% corresponds to the parameters of one channel. 
+% The PARCOR coefficients are the negative reflection coefficients 
 %
-% see also ACOVF ACORF IDURLEV DURLEV YUWA 
+% see also ACOVF ACORF DURLEV AC2RC
 % 
 % REFERENCES:
 %  P.J. Brockwell and R.A. Davis "Time Series: Theory and Methods", 2nd ed. Springer, 1991.
@@ -25,9 +26,8 @@ function [PARCOR,ARP, PE] = parcor(AutoCov);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%       Version 2.66
-%       07 April 2000
-%	Copyright (c) 1998-2000 by  Alois Schloegl
+%       Version 2.90       10 April 2002
+%	Copyright (c) 1998-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or

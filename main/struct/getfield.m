@@ -14,15 +14,19 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##        v = getfield(s,key) = s.key
-## 
-## For m****b compatibility and flexibility.
-##
-## See also cmpstruct, fields, setfield, rmfield, isfield, isstruct,
-## struct. 
+## -*- texinfo -*-
+## deftypefn {Built-in Function} {} [@var{v1},...] =
+## getfield (@var{s}, 'k1',...) = [@var{s}.k1,...]
+## Return selected values from a struct. Provides m*tlab compatibility
+## and some flexibility.
+## @seealso{setfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}
+## @end deftypefn
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: January 2000
+## Last modified: January 2003
 
-function v = getfield(s,key)
-eval(['v=s.',key,';']);
+function [varargout] = getfield(s,varargin)
+    for i=length(varargin):-1:1
+	varargout{i} = s.(varargin{i});
+    end
+

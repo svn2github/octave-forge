@@ -1,4 +1,7 @@
-Summary:	Additional functions for octave
+%define octave_ep  %(rpm -q --qf '%%{epoch}' octave)
+%define octave_ver %(rpm -q --qf '%%{version}' octave)
+
+Summary:	additional functions for octave
 Name:		octave-forge
 Version:	@OCTAVE_FORGE_RELEASE@
 Release:	1
@@ -6,21 +9,22 @@ License:	GPL
 Group:		Applications/Engineering
 URL:		http://octave.sourceforge.net
 Source:		%{url}/cgi-bin/viewcvs.cgi/octave/%{name}-%{version}.tar.gz
-Requires:	octave
-Requires:	libjpeg libpng ImageMagick GiNaC qhull
+Packager:	Quentin Spencer <qspencer ieee org>
+Requires:	octave = %{octave_ep}:%{octave_ver}
+Requires:	ImageMagick GiNaC
 BuildPrereq:	octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg-devel
 BuildPrereq:	libpng-devel zlib-devel libtermcap-devel libstdc++-devel
-BuildPrereq:	GiNaC-devel qhull-devel
+BuildPrereq:	GiNaC-devel gsl-devel qhull-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 ExcludeArch:	ppc64 s390x
 
-### Description taken from http://wiki.octave.org/wiki.pl?OctaveForge
 %description
-octave-forge (http://octave.sf.net) is a community project for
-collaborative development of octave extensions. If you have a large
-package that you want to open up to collaborative development, or a
-couple of m-files that you want to contribute to an existing package,
-octave-forge is the place to do it.
+octave-forge is a community project for collaborative development of
+octave extensions. The extensions in this package include additional
+data types such as sparse matrices, and functions for a variety of
+different applications including signal and image processing,
+communications, control, optimization, statistics, geometry, and
+symbolic math.
  
 %prep
 %setup -q
@@ -29,20 +33,18 @@ octave-forge is the place to do it.
 LC_ALL=POSIX
 export LC_ALL
 export CXXFLAGS="%optflags -fno-use-cxa-atexit"
-HOST_TYPE=`echo "disp(octave_config_info('canonical_host_type'))" | octave -qf`
-OCT_DIR="octave/"`echo "disp(OCTAVE_VERSION)" | octave -qf`
-OF_ALT="octave-forge-alternatives"
+%define host_type %(echo "disp(octave_config_info('canonical_host_type'))" | octave -qf)
 %configure --prefix=$RPM_BUILD_ROOT/%{_prefix} \
 	--exec-prefix=$RPM_BUILD_ROOT/%{_prefix} \
-	--with-mpath=$RPM_BUILD_ROOT/%{_prefix}/share/$OCT_DIR/site/m/octave-forge \
-	--with-opath=$RPM_BUILD_ROOT/%{_prefix}/libexec/$OCT_DIR/site/oct/$HOST_TYPE/octave-forge \
-	--with-xpath=$RPM_BUILD_ROOT/%{_prefix}/libexec/$OCT_DIR/site/exec/$HOST_TYPE \
-	--with-altpath=$RPM_BUILD_ROOT/%{_prefix}/share/$OCT_DIR/site/$OF_ALT/m \
-	--with-altmpath=$RPM_BUILD_ROOT/%{_prefix}/share/$OCT_DIR/site/$OF_ALT/m/octave-forge \
-	--with-altopath=$RPM_BUILD_ROOT/%{_prefix}/libexec/$OCT_DIR/site/$OF_ALT/oct/$HOST_TYPE \
+	--with-mpath=$RPM_BUILD_ROOT/%{_prefix}/share/octave/%{octave_ver}/site/m/octave-forge \
+	--with-opath=$RPM_BUILD_ROOT/%{_prefix}/libexec/octave/%{octave_ver}/site/oct/%{host_type}/octave-forge \
+	--with-xpath=$RPM_BUILD_ROOT/%{_prefix}/libexec/octave/%{octave_ver}/site/exec/%{host_type} \
+	--with-altpath=$RPM_BUILD_ROOT/%{_prefix}/share/octave/%{octave_ver}/site/octave-forge-alternative/m \
+	--with-altmpath=$RPM_BUILD_ROOT/%{_prefix}/share/octave/%{octave_ver}/site/octave-forge-alternative/m/octave-forge \
+	--with-altopath=$RPM_BUILD_ROOT/%{_prefix}/libexec/octave/%{octave_ver}/site/octave-forge-alternative/oct/%{host_type} \
 	--with-x
-
 make
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -68,22 +70,28 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/mex*
 
 %changelog
-* Tue Jun 15 2004 Quentin Spencer <qspencer [AT] ieee [dot] org>
+* Thu Feb 24 2005 Quentin Spencer <qspencer ieee org>
+- Updated spec file to get octave version at build time.
+
+* Wed Nov 17 2004 Quentin Spencer <qspencer ieee org>
+- Revised package description.
+
+* Tue Jun 15 2004 Quentin Spencer <qspencer ieee org>
 - Added qhull support.
 
-* Tue Feb 24 2004 Quentin Spencer <qspencer [AT] ieee [dot] org>
+* Tue Feb 24 2004 Quentin Spencer <qspencer ieee org>
 - Added GiNaC as a dependency. Fixed install directories for
   octave-forge alternatives.
 
-* Fri Jun 13 2003 Quentin Spencer <qspencer [AT] ieee [dot] org>
+* Fri Jun 13 2003 Quentin Spencer <qspencer ieee org>
 - Added new package description, revised so that configure
   automatically generates the correct octave version and
   octave-forge version, added dependencies.
 
-* Wed May 14 2003 Quentin Spencer <qspencer [AT] ieee [dot] org> 2.1.48-2
+* Wed May 14 2003 Quentin Spencer <qspencer ieee org>
 - Commented out code for ls-R files because of recent changes in
   Octave's use of kpathsea. Didn't delete it yet because it may
   yet be needed in the future.
 
-* Tue Feb  4 2003 Quentin Spencer <qspencer [AT] ieee [dot] org> 2.1.44-1
+* Tue Feb  4 2003 Quentin Spencer <qspencer ieee org>
 - First Version, loosely based on Red Hat's spec file for octave.

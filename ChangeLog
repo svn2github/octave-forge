@@ -1,4 +1,1209 @@
 # Automatically generated file --- DO NOT EDIT
+2004-07-07 13:32  pkienzle
+
+	* Makefile, release.sh, admin/get_contents: Streamline release
+	process; update docs.  
+
+2004-07-07 11:25  pkienzle
+
+	* main/: optim/polyconf.m, sparse/buildtests.sh, strings/strtok.m,
+	struct/struct.cc: Correct tests; hide unimplemented features and
+	known bugs in sparse 
+
+2004-07-07 10:21  pkienzle
+
+	* RELEASE-NOTES: Add new functions. Clarify known test failures.
+	make -k is now implicit.  
+
+2004-07-07 10:13  pkienzle
+
+	* Makefile: Remove duplicate code.  Propagate dist to
+	subdirectories.  Clean build log 
+
+2004-07-07 05:38  adb014
+
+	* Makefile, FIXES/Makefile, extra/Makefile,
+	extra/graceplot/Makefile, extra/linear-algebra/Makefile,
+	extra/symband/Makefile, extra/testfun/Makefile, main/Makefile,
+	main/audio/Makefile, main/comm/Makefile, main/comm/doc/Makefile,
+	main/comm/doc/comms.info, main/comm/doc/comms.ps,
+	main/fixed/Makefile, main/fixed/doc/Makefile,
+	main/fixed/doc/fixed.info, main/fixed/doc/fixed.ps,
+	main/general/Makefile, main/gsl/Makefile, main/image/Makefile,
+	main/io/Makefile, main/linear-algebra/Makefile,
+	main/miscellaneous/Makefile, main/optim/Makefile,
+	main/parallel/Makefile, main/signal/Makefile,
+	main/specfun/Makefile, main/splines/Makefile,
+	main/strings/Makefile, main/struct/Makefile, nonfree/Makefile,
+	nonfree/splines/Makefile: Allow dist, distclean and clean targets
+	to run without Makeconf. Replace include with sinclude in Makefiles.
+	Build fixed and comm docs as part of dist target 
+
+2004-07-07 03:58  persquare
+
+	* main/image/bmpwrite.m: Fixing off-by-one error in color map
+	indexing.  
+
+2004-07-07 01:19  pkienzle
+
+	* batch_test.m: Add fixedpoint tests 
+
+2004-07-07 01:13  pkienzle
+
+	* Makefile, extra/Makefile, main/Makefile, nonfree/Makefile: Have
+	make continue after errors, but report which portions did not build.  
+
+2004-07-06 17:48  persquare
+
+	* extra/MacOSX/image.m: From J. Koski: image.m now relies on
+	bmpwrite from octave-forge rather than convert from  ImageMagick.  
+
+2004-07-06 17:36  pkienzle
+
+	* main/io/dlmread.cc: Use OCTAVE_LOCAL_BUFFER for runtime array
+	allocation 
+
+2004-07-06 16:58  pkienzle
+
+	* main/fixed/: fixedCNDArray.cc, fixedNDArray.cc: ::cat_ra not
+	available in early versions of n-D array support 
+
+2004-07-06 16:55  pkienzle
+
+	* main/fixed/fixedComplex.cc: MipsPro 7.3 has broken abs(complex)
+	template, so avoid std::abs 
+
+2004-07-06 16:53  pkienzle
+
+	* main/fixed/examples/ffft.cc: Fixes for SGI MipsPro 7.3 compiler.  
+
+2004-07-06 16:52  pkienzle
+
+	* main/fixed/examples/Makefile: Not all architectures support
+	stripped oct-files.  
+
+2004-07-06 16:50  pkienzle
+
+	* main/fixed/int/: fixed.cc, fixed.h: Not all compilers support
+	varying length macro argument lists.  
+
+2004-07-06 10:54  qspencer
+
+	* admin/RPM/octave-forge.spec.in: Change packaged file list to
+	reflect the removal of INDEX from the root directory.  
+
+2004-07-06 05:49  adb014
+
+	* main/fixed/: Makefile, doc/Makefile, doc/fixed.info,
+	doc/fixed.ps: Store ps and texinfo docs so that they don't
+	generally need to be rebuilt 
+
+2004-07-06 05:45  adb014
+
+	* main/comm/: Makefile, doc/Makefile, doc/comms.info, doc/comms.ps: 
+	Store ps and texinfo docs so that they don't generally need to be
+	rebuilt 
+
+2004-07-05 08:17  adb014
+
+	* main/comm/Makefile: typo 
+
+2004-07-05 05:49  adb014
+
+	* main/: comm/Makefile, fixed/Makefile: Don't build *.d files on
+	clean 
+
+2004-07-05 05:13  schloegl
+
+	* extra/tsa/: contents.m, mvaar.m: multivariate adaptivive
+	autoregerssive estimation added 
+
+2004-07-05 03:03  schloegl
+
+	* extra/NaN/median.m: typo in docu corrected 
+
+2004-07-02 11:27  pkienzle
+
+	* main/fixed/ov-fixed-mat.cc: Missing CLASS_HAS_LOAD_SAVE clause
+	around includes 
+
+2004-07-02 06:42  pkienzle
+
+	* RELEASE-NOTES: Note new functions 
+
+2004-07-02 06:38  pkienzle
+
+	* INSTALL: Recommend use of make -k 
+
+2004-07-02 06:16  pkienzle
+
+	* admin/RPM/.cvsignore, main/gsl/.cvsignore, main/io/.cvsignore: 
+	Ignore build outputs 
+
+2004-06-30 05:35  mcreel
+
+	* main/optim/INDEX: more accurate sorting 
+
+2004-06-29 06:31  pkienzle
+
+	* main/image/fftconv2.m: [for Stefan van der Walt]: faster but less
+	accurate conv2 
+
+2004-06-29 06:28  pkienzle
+
+	* main/image/conv2.cc: Don't create arrays of negative dimensions.  
+
+2004-06-29 05:45  mcreel
+
+	* main/optim/lbfgsmin.cc: more realistic default tolerance for
+	gradient - was too picky 
+
+2004-06-29 05:44  mcreel
+
+	* main/optim/bfgsmin.cc: more realistic default tolerance for
+	gradient, was too picky 
+
+2004-06-28 15:35  adb014
+
+	* main/fixed/: Makeconf.add, Makefile, configure.add, fixed.cc,
+	fixedCNDArray.cc, fixedNDArray.cc: Patch for change to
+	MX_ND_REDUCTION args for octave CVS. Seems to be only change needed
+	for octave cvs relative to 2.1.57 
+
+2004-06-28 08:11  mcreel
+
+	* main/optim/samin-example.m: applied insecticide, function minimum
+	really is zero now 
+
+2004-06-28 07:57  mcreel
+
+	* main/optim/: bfgsmin.cc, bisectionstep.cc, celleval.cc,
+	finitedifference.cc, lbfgsmin.cc, newtonstep.cc, numgradient.cc,
+	numhessian.cc, samin.cc: re-indented using emacs 
+
+2004-06-26 19:46  adb014
+
+	* main/general/ifftshift.m: Missing second arg in ifftshift 
+
+2004-06-25 20:14  pkienzle
+
+	* FIXES/hankel.m: Fix docs; add tests 
+
+2004-06-25 19:07  pkienzle
+
+	* doc/octave-forge-home.html: Chemical and Biological engineering 
+
+2004-06-25 08:08  adb014
+
+	* main/comm/primpoly.cc: prevent seg fault with primpoly called
+	without args 
+
+2004-06-25 07:53  adb014
+
+	* main/comm/doc/comms.txi: texinfo fix in multi-column tables 
+
+2004-06-24 19:21  pkienzle
+
+	* main/signal/invfreq.m: [for J.O. Smith] fix links 
+
+2004-06-23 16:52  schloegl
+
+	* main/strings/str2double.m: improved performance using SSCANF 
+
+2004-06-23 10:30  schloegl
+
+	* main/io/filesep.m: filesep is now part of Octave; its not needed
+	here eanymore 
+
+2004-06-23 10:21  schloegl
+
+	* main/strings/str2double.m: decimal delimiter included; works with
+	xlsread; minor fixes for 2.1.57 
+
+2004-06-23 10:18  schloegl
+
+	* main/io/xlsread.m: hack to read Excel files; reads Tab-delimited
+	text files 
+
+2004-06-21 12:30  mcreel
+
+	* main/optim/mintoolkit/: Makefile, battery.m, bfgsmin.cc,
+	bisectionstep.cc, celleval.cc, finitedifference.cc, lbfgsmin.cc,
+	newtonstep.cc, numgradient.cc, numhessian.cc, samin.cc: remove old
+	files 
+
+2004-06-21 12:29  mcreel
+
+	* main/optim/doc/: mintoolkit.lyx, mintoolkit.tex, readme.txt: 
+	commit mintoolkit documentation 
+
+2004-06-21 05:26  adb014
+
+	* main/fixed/Array-f.cc: fix up use of INSTANTIATE_ARRAY_CAT 
+
+2004-06-21 05:15  adb014
+
+	* main/comm/: cyclgen.cc, cyclpoly.cc: Yet another attemptted fix
+	for cyclpoly/cyclgen, I think this one is right 
+
+2004-06-21 03:36  adb014
+
+	* main/fixed/Array-f.cc: Use INSTANTIAT_ARRAY_CAT macro 
+
+2004-06-19 16:18  pkienzle
+
+	* extra/NaN/INDEX, main/INDEX, main/control/INDEX,
+	main/optim/INDEX, main/signal/INDEX, main/statistics/INDEX,
+	main/strings/INDEX: categorize new functions 
+
+2004-06-19 15:38  pkienzle
+
+	* admin/make_index, INDEX, main/INDEX: Windows/OS X have
+	case-insensitive file names, so move INDEX out of the way of index,
+	and make sure the index building still works.  
+
+2004-06-19 14:55  pkienzle
+
+	* main/sparse/: nonzeros.m, speye.m, spfun.m, spones.m: Add tests;
+	support full as well as sparse matrices 
+
+2004-06-19 10:51  pkienzle
+
+	* main/sparse/speye.m: sparse identity matrix 
+
+2004-06-19 09:19  pkienzle
+
+	* main/sparse/spones.m: faster implementation 
+
+2004-06-19 09:12  pkienzle
+
+	* main/sparse/nonzeros.m: return just the 'v' vector of spfind 
+
+2004-06-19 09:06  pkienzle
+
+	* main/sparse/spfun.m: compute f(t) for non-zero elements of sparse
+	t 
+
+2004-06-19 08:57  pkienzle
+
+	* main/sparse/spones.m: matrix of ones for non-zero entries 
+
+2004-06-19 01:53  pkienzle
+
+	* RELEASE-NOTES: Initial release nots for June '04 
+
+2004-06-18 17:39  pkienzle
+
+	* main/plot/zoom.m: Null command 
+
+2004-06-18 16:44  pkienzle
+
+	* main/plot/text.m: fix keyword-only form of position,string spec.  
+
+2004-06-18 16:27  pkienzle
+
+	* main/geometry/: Makeconf.add, Makefile, README, __voronoi__.cc,
+	configure.add, convhulln.cc, delaunayn.cc: Check if qh_version is
+	needed before defining it.  
+
+2004-06-17 19:10  pkienzle
+
+	* main/io/dlmread.cc: Need lo-ieee.h 
+
+2004-06-17 19:07  pkienzle
+
+	* FIXES/rand.cc: Fixed initialization from entropy.  
+
+2004-06-17 15:30  etienne
+
+	* main/vrml/vrml_browse.m: Laurent's '-' -> '--' patch 
+
+2004-06-17 10:05  qspencer
+
+	* admin/RPM/: README, configure.add, octave-forge.spec.in,
+	update_spec.sh: Modified and added files in this directory: 
+	  - octave-forge.spec has the correct version number (the name of
+	    the release rather than the octave variable OCTAVE_FORGE_VERSION).  
+	  - octave version dependencies are not present in octave-forge.spec 
+	    by default so that it will build on systems with different
+	    octave installations.  
+	  - a script to add octave version dependencies (update_spec.sh) 
+	  - a README file explaining all of this 
+
+2004-06-17 08:09  mazet
+
+	* admin/RPM/qhull.spec: Qhull .spec file to build RPM 
+
+2004-06-16 21:45  pkienzle
+
+	* main/io/Makefile: Build dlmread.cc 
+
+2004-06-16 19:41  adb014
+
+	* main/comm/cyclgen.cc: typo 
+
+2004-06-16 19:29  adb014
+
+	* main/comm/: cyclgen.cc, cyclpoly.cc: Conflicts?? 
+
+2004-06-16 19:05  adb014
+
+	* main/comm/: cyclgen.cc, cyclpoly.cc, gf.cc: Another try and
+	fixing test for irreducible polynomials. Minor bug fix for gfilter 
+
+2004-06-16 13:30  pkienzle
+
+	* FIXES/rand.cc: Fix docs; allow vectors longer than 625 for state
+	without crashing.  
+
+2004-06-16 11:13  adb014
+
+	* main/comm/lloyds.m: Fix for changed behaviour of != for vectors
+	used as an expr 
+
+2004-06-16 10:51  etienne
+
+	* main/optim/: bfgsmin.cc, minimize.m, test_min_4.m,
+	test_minimize_1.m: cruft for bfgs -> bfgsmin transition 
+
+2004-06-16 10:03  adb014
+
+	* main/comm/: cyclgen.cc, cyclpoly.cc, primpoly.cc: seg-fault fix
+	and better irreducible polynomial test 
+
+2004-06-16 07:22  adb014
+
+	* main/fixed/Array-f.cc: instantiated cat_ra template in fixed
+	point 
+
+2004-06-16 02:18  mazet
+
+	* extra/tk_octave/: rainbow.m, tk_busy_cancel.m, tk_dialog.m,
+	tk_entry.m, tk_matrix: Various bug fixed 
+
+2004-06-15 18:42  persquare
+
+	* INSTALL.MacOSX: Updating to reflect current status.  
+
+2004-06-15 18:41  persquare
+
+	* extra/MacOSX/README: Update to reflect current status.  
+
+2004-06-15 17:43  pkienzle
+
+	* extra/tk_octave/README: Warn deprecated 
+
+2004-06-15 17:09  qspencer
+
+	* main/comm/decode.m: Added missing semicolon in decode.m 
+
+2004-06-15 14:55  etienne
+
+	* main/vrml/vrml_lines.m: s/varagin/varargin/ 
+
+2004-06-15 11:58  etienne
+
+	* main/vrml/: test_vmesh.m, vmesh.m, vrml_faces.m: Changes to the
+	'demo' of vmesh and vrml_faces 
+
+2004-06-15 11:46  adb014
+
+	* main/fixed/fixedCNDArray.cc: Attempt at NDArray build fix 
+
+2004-06-15 04:51  tpikonen
+
+	* main/gsl/: Makefile, coupling_3j.cc, coupling_6j.cc,
+	coupling_9j.cc: Add functions for Wigner 3j, 6j and 9j coupling
+	coefficients.  
+
+2004-06-15 03:50  adb014
+
+	* main/fixed/examples/Makefile: Disable fixed point examples on OS
+	X till someone fixes it 
+
+2004-06-14 14:07  pkienzle
+
+	* main/optim/wpolyfit.m: Explain what 'good fit' means.  Describe
+	F-test for determining polynomial order.  
+
+2004-06-14 07:32  adb014
+
+	* main/fixed/fixed.h: Fix typo in header file 
+
+2004-06-11 14:52  pkienzle
+
+	* doc/README: bourne shell syntax for OFHOME 
+
+2004-06-11 14:49  pkienzle
+
+	* doc/octave-forge-home.html: Add donation information 
+
+2004-06-10 11:16  schloegl
+
+	* extra/NaN/corrcoef.m: nargout is not reentrant in Octave, fixed 
+
+2004-06-09 04:50  mazet
+
+	* main/vrml/: select_3D_points.m, vrml_browse.m, vrml_cyl.m,
+	vrml_demo_tutorial_2.m, vrml_demo_tutorial_4.m, vrml_points.m,
+	vrml_select_points.m: Fix 'space bug' 
+
+2004-06-09 02:45  mazet
+
+	* main/: general/cplxpair.m, signal/dct.m: Fix 'space bug' 
+
+2004-06-09 02:40  mazet
+
+	* extra/tk_octave/tk_scale.m: Fix 'space bug' 
+
+2004-06-08 05:26  mazet
+
+	* FIXES/hankel.m: Fix an incorrect concatenation (space bug) 
+
+2004-06-03 20:27  pkienzle
+
+	* main/optim/minimize.m: use struct rather than setfield 
+
+2004-06-02 15:54  adb014
+
+	* admin/make_index: make_index fix for help strings with macros
+	like load or fft 
+
+2004-06-02 15:52  adb014
+
+	* main/fixed/fixed.cc: Small macro fix, to allow make_index to
+	correctly pick up the help strings 
+
+2004-06-02 12:15  pkienzle
+
+	* INDEX, main/miscellaneous/inputname.m: compatible version of argn 
+
+2004-06-01 11:44  adb014
+
+	* main/fixed/: Makefile, fixed.h, fixedCNDArray.cc,
+	fixedCNDArray.h, fixedComplex.h, fixedNDArray.cc, fixedNDArray.h,
+	doc/fixed.txi: Add NDArray classes. First step to fixed NDArrays as
+	needs further integration to rest of code 
+
+2004-06-01 08:32  pkienzle
+
+	* main/optim/wpolyfit.m: Report probability rather than raw chi^2
+	numbers.  
+
+2004-06-01 07:57  mazet
+
+	* main/miscellaneous/xmlwrite.m: Exclude NDArray > 2 
+
+2004-05-31 20:02  pkienzle
+
+	* main/optim/: wpolyfit.m, wsolve.m: details: sumsq( (y-f(x))/sigma
+	) is chisq, chisq/df is normalized chisq 
+
+2004-05-31 14:12  pkienzle
+
+	* main/optim/wpolyfit.m: Update documentation; provide access to
+	the internal plot function 
+
+2004-05-31 13:31  pkienzle
+
+	* main/optim/polyconf.m: Add test against Hocking data 
+
+2004-05-30 22:48  pkienzle
+
+	* main/: optim/polyconf.m, optim/test_wpolyfit.m, optim/wpolyfit.m,
+	optim/wsolve.m, statistics/polyconf.m: wpolyfit now returns a
+	struction compatible with polyfit.  
+
+2004-05-29 23:41  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Add tests for builtin() 
+
+2004-05-29 23:29  pkienzle
+
+	* main/miscellaneous/Makefile: Add links for dispatch_help and
+	builtin 
+
+2004-05-29 23:04  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Fix help so that base file help
+	is loaded as needed.  Fix bug which caused dispatch to be ignored if
+	base called before dispatch.  Add 'any' type which allows complete
+	replacement of builtin functions even if called without arguments.  
+	Fix clear bug (which may or may not have been committed to CVS).  
+
+2004-05-29 17:59  pkienzle
+
+	* main/miscellaneous/map.m: Fix header so help works 
+
+2004-05-28 16:04  pkienzle
+
+	* main/statistics/polyconf.m: Default to prediction interval for
+	compatibility; provide flag for confidence interval for use in
+	inference on the mean.  
+
+2004-05-28 16:02  pkienzle
+
+	* main/strings/strmatch.m: Fix copyright statement so help works;
+	clean up formatting 
+
+2004-05-28 02:40  pkienzle
+
+	* main/statistics/polyconf.m: New function to compute confidence
+	intervals on fitted polynomials.  
+
+2004-05-27 05:49  adb014
+
+	* main/fixed/int/fixed.cc: Alternate fix for OS X build problem 
+
+2004-05-26 16:06  adb014
+
+	* main/fixed/: fixedpoint.m, examples/ffft.cc, examples/ffft.h,
+	examples/fixed_inc.cc, examples/testfixed.m, examples/testofdm.m,
+	int/fixed.cc, int/fixed.h: Small test code fixed, and fixed for
+	over-zealous script to add copyright 
+
+2004-05-26 10:42  adb014
+
+	* main/fixed/int/fixed.cc: Fix for OS X build problem 
+
+2004-05-26 10:18  adb014
+
+	* main/fixed/: Array-f.cc, Makefile, concat.m,
+	create_lookup_table.m, fixed-conv.cc, fixed-conv.h, fixed-def.h,
+	fixed-var.cc, fixed-var.h, fixed.cc, fixed.h, fixedCColVector.cc,
+	fixedCColVector.h, fixedCMatrix.cc, fixedCMatrix.h,
+	fixedCRowVector.cc, fixedCRowVector.h, fixedColVector.cc,
+	fixedColVector.h, fixedComplex.cc, fixedComplex.h, fixedMatrix.cc,
+	fixedMatrix.h, fixedRowVector.cc, fixedRowVector.h, fixedpoint.m,
+	float.m, fsort.m, lookup_table.m, op-fcm-fcm.cc, op-fcm-fcs.cc,
+	op-fcm-fm.cc, op-fcm-fs.cc, op-fcs-fcm.cc, op-fcs-fcs.cc,
+	op-fcs-fm.cc, op-fcs-fs.cc, op-fil-fcm.cc, op-fil-fcs.cc,
+	op-fil-fm.cc, op-fil-fs.cc, op-fm-fcm.cc, op-fm-fcs.cc,
+	op-fm-fm.cc, op-fm-fs.cc, op-fs-fcm.cc, op-fs-fcs.cc, op-fs-fm.cc,
+	op-fs-fs.cc, ov-base-fixed-mat.cc, ov-base-fixed-mat.h,
+	ov-base-fixed.cc, ov-base-fixed.h, ov-fixed-complex.cc,
+	ov-fixed-complex.h, ov-fixed-cx-mat.cc, ov-fixed-cx-mat.h,
+	ov-fixed-mat.cc, ov-fixed-mat.h, ov-fixed.cc, ov-fixed.h,
+	doc/fixed.txi, examples/ffft.cc, examples/ffft.h,
+	examples/fixed_inc.cc, examples/testfixed.m, examples/testofdm.m,
+	int/fixed.cc, int/fixed.h: Errr, forgot my employers Copyright :-)
+	in initial commit 
+
+2004-05-26 10:12  adb014
+
+	* main/gsl/: Makeconf.add, Makefile, configure.add: Fixed test for
+	libgsl, so that gsl toolbox doesn't try to build if missing 
+
+2004-05-26 09:29  mcreel
+
+	* main/optim/: bfgsmin.cc, lbfgsmin.cc: improvements in determining
+	convergence when stepsize goes to zero 
+
+2004-05-26 09:28  mcreel
+
+	* main/optim/: bfgsmin-example.m, lbfgsmin-example.m,
+	samin-example.m: add mintoolkit example files 
+
+2004-05-25 15:39  pkienzle
+
+	* main/optim/wpolyfit.m: Support matrix inputs:
+	wpolyfit([x,y,dy],n).  Correct comments.  Use 'uncertainty' instead
+	of 'error'.  Remove GPL license (trivial amounts of John's code or
+	comments left).  
+
+2004-05-25 15:35  pkienzle
+
+	* main/optim/wsolve.m: Avoid assumptions about inv(Q) during
+	derivation; check for underdetermined systems.  
+
+2004-05-25 12:18  mazet
+
+	* extra/testfun/speed.m: Remove gnuplot_has_multiplot as deleted
+	2.1.51 
+
+2004-05-25 12:14  mazet
+
+	* main/: signal/freqs_plot.m, comm/eyediagram.m: Remove
+	gnuplot_has_multiplot as deleted 2.1.51 
+
+2004-05-25 11:03  adb014
+
+	* main/fixed/: .cvsignore, doc/.cvsignore, doc/Makefile,
+	doc/fixed.txi, doc/ofdmber.eps, doc/ofdmber.png, doc/ofdmsnr.eps,
+	doc/ofdmsnr.png, examples/.cvsignore, examples/Makefile,
+	examples/README, examples/ffft.cc, examples/ffft.h,
+	examples/fixed_inc.cc, examples/testfixed.m, examples/testofdm.m,
+	int/fixed.cc, int/fixed.h, int/fixedversion.h: Initial commit of
+	fixed-point toolbox 
+
+2004-05-25 11:00  adb014
+
+	* main/fixed/: Array-f.cc, COPYING, INDEX, Makeconf.add, Makefile,
+	concat.m, configure.add, create_lookup_table.m, fixed-conv.cc,
+	fixed-conv.h, fixed-def.h, fixed-var.cc, fixed-var.h, fixed.cc,
+	fixed.h, fixedCColVector.cc, fixedCColVector.h, fixedCMatrix.cc,
+	fixedCMatrix.h, fixedCRowVector.cc, fixedCRowVector.h,
+	fixedColVector.cc, fixedColVector.h, fixedComplex.cc,
+	fixedComplex.h, fixedMatrix.cc, fixedMatrix.h, fixedRowVector.cc,
+	fixedRowVector.h, fixedpoint.m, float.m, fsort.m, lookup_table.m,
+	op-fcm-fcm.cc, op-fcm-fcs.cc, op-fcm-fm.cc, op-fcm-fs.cc,
+	op-fcs-fcm.cc, op-fcs-fcs.cc, op-fcs-fm.cc, op-fcs-fs.cc,
+	op-fil-fcm.cc, op-fil-fcs.cc, op-fil-fm.cc, op-fil-fs.cc,
+	op-fm-fcm.cc, op-fm-fcs.cc, op-fm-fm.cc, op-fm-fs.cc, op-fs-fcm.cc,
+	op-fs-fcs.cc, op-fs-fm.cc, op-fs-fs.cc, ov-base-fixed-mat.cc,
+	ov-base-fixed-mat.h, ov-base-fixed.cc, ov-base-fixed.h,
+	ov-fixed-complex.cc, ov-fixed-complex.h, ov-fixed-cx-mat.cc,
+	ov-fixed-cx-mat.h, ov-fixed-mat.cc, ov-fixed-mat.h, ov-fixed.cc,
+	ov-fixed.h: Initial commit of fixed-point toolbox 
+
+2004-05-25 10:59  adb014
+
+	* main/comm/: Makefile, awgn.m, randerr.m, randint.m, randsrc.m,
+	wgn.m: Split some tests an pass random seed correctly for randerr 
+
+2004-05-25 10:21  pkienzle
+
+	* main/specfun/nchoosek.m: Fix comments 
+
+2004-05-24 22:35  pkienzle
+
+	* main/special-matrix/hadamard.m: vectorize normalization
+	operations 
+
+2004-05-24 22:02  pkienzle
+
+	* main/special-matrix/hadamard.m: like sylvester_matrix, but faster
+	and handles 2^k*p for p in 1,12,20,28 
+
+2004-05-24 07:34  pkienzle
+
+	* main/general/interp2.m: [for Stefan van der Walt] remove
+	ambiguous spaces from within [ ... ] 
+
+2004-05-24 06:57  mcreel
+
+	* main/optim/Makefile: new .cc files 
+
+2004-05-24 06:56  mcreel
+
+	* main/optim/celleval.cc: oops, forgot to add it 
+
+2004-05-22 02:06  pkienzle
+
+	* main/signal/hilbert.m: Add examples 
+
+2004-05-21 20:01  pkienzle
+
+	* main/optim/: wpolyfit.m, wsolve.m: Separate system solver from
+	observation matrix construction; the solver is useful by itself, for
+	example in solving weighted systems.  
+
+2004-05-21 19:39  pkienzle
+
+	* main/statistics/: ff2n.m, fullfact.m: basic factorial designs 
+
+2004-05-21 16:57  pkienzle
+
+	* main/optim/: test_wpolyfit.m, wpolyfit.m: Correct the
+	fit-through-origin test; add monte carlo test; warn in documentation
+	that monte carlo results do not match fit results.  
+
+2004-05-21 15:57  pkienzle
+
+	* main/optim/wpolyfit.m: More accurate and faster computation of
+	uncertainty in parameters.  
+	
+	For weighted fits, use weights to compute uncertainty in parameters.  
+	Now computing the standard deviation on the parameters from a monte 
+	carlo simulation of an unweighted fit to data selected from a
+	gaussian distribution according to weights matches the uncertainty
+	computed from the weighted fit.  
+	
+	For unweighted data, continue to estimate uncertainty from chisq.  
+
+2004-05-21 10:26  przykry2004
+
+	* main/sparse/pcg.m: Added 4 demos and 4 tests 
+
+2004-05-20 08:09  mcreel
+
+	* main/optim/: battery.m, bfgsmin.cc, bisectionstep.cc,
+	finitedifference.cc, lbfgsmin.cc, newtonstep.cc, numgradient.cc,
+	numhessian.cc, samin.cc: add the .cc files from mintoolkit 
+
+2004-05-20 08:05  mcreel
+
+	* main/optim/: Makefile, bfgs.m, bs_gradient.m, test_min_1.m,
+	test_min_2.m, test_min_3.m: move ./optim mintoolkit to ./optim,
+	replace bfgs.m and bs_gradient.m 
+
+2004-05-19 20:35  pkienzle
+
+	* main/optim/Makefile: Build and install mintoolkit subdirectory
+	(build works, install untested) 
+
+2004-05-19 20:29  pkienzle
+
+	* main/optim/: Makefile, mintoolkit/bisectionstep.cc,
+	mintoolkit/newtonstep.cc: Use lo_ieee_isnan rather than isnan.  
+
+2004-05-18 21:10  pkienzle
+
+	* main/miscellaneous/dispatch.cc: [for Philippe Leroux] add class
+	keyword for template class 
+
+2004-05-18 09:28  przykry2004
+
+	* main/sparse/pcg.m: Warning messages use warning() function 
+
+2004-05-18 09:10  przykry2004
+
+	* main/sparse/pcg.m: First commit 
+
+2004-05-18 07:55  mcreel
+
+	* main/optim/mdsmax.m: fix crash when stopit is not provided
+	(failure to use default) 
+
+2004-05-18 07:54  mcreel
+
+	* main/optim/adsmax.m: fix crash when either stopit or P are not
+	provided (failure to use defaults) 
+
+2004-05-17 04:42  mcreel
+
+	* main/optim/mintoolkit/lbfgsmin.cc: minor retouches 
+
+2004-05-14 09:02  pkienzle
+
+	* admin/template.ndev: Update new developer docs with new cvs
+	address.  
+
+2004-05-14 06:33  mcreel
+
+	* main/optim/mintoolkit/lbfgsmin.cc: brain transplant, not more
+	intelligent 
+
+2004-05-14 06:32  mcreel
+
+	* main/optim/mintoolkit/bfgsmin.cc: buxfix - not intelligent enough
+	- Thanks Teemu Ikonen for noticing problem 
+
+2004-05-14 06:29  pkienzle
+
+	* main/signal/pwelch.m: [for Roland Kaufmann] support complex
+	inputs 
+
+2004-05-13 10:01  tpikonen
+
+	* main/gsl/: Makefile, legendre_sphPlm_array.cc: Add function
+	legendre_sphPlm_array.oct 
+
+2004-05-13 09:48  tpikonen
+
+	* extra/pdb/: creadpdb.cc, plotpdb.m, read_pdb.m, strtoz.m,
+	write_pdb.m, write_pdb_quick.m: Rewrite of read_pdb in C++, new
+	implementation of strtoz.m 
+
+2004-05-13 09:46  tpikonen
+
+	* extra/pdb/data/elements_struct.mat: Data file for new strtoz
+	implementation 
+
+2004-05-12 17:03  pkienzle
+
+	* main/statistics/princomp.m: use economy SVD; add tests; add
+	warning that Tsq is not always correct 
+
+2004-05-12 07:06  pkienzle
+
+	* main/statistics/princomp.m: principal components calculation 
+
+2004-05-12 04:20  pkienzle
+
+	* main/statistics/zscore.m: syntax error in prototype 
+
+2004-05-11 14:45  schloegl
+
+	* main/strings/str2double.m: bug fix for case that last number is a
+	single digit 
+
+2004-05-11 06:16  pkienzle
+
+	* main/signal/xcorr.m: [asbjorn sabo] formula modified (and output
+	reversed) for compatibility 
+
+2004-05-07 23:48  pkienzle
+
+	* main/set/unique.m: use size(x,1) instead of rows(x); add tests 
+
+2004-05-06 04:42  tpikonen
+
+	* main/gsl/buildgsl_sf.sh: Add function sinc_gsl 
+
+2004-05-04 11:49  tpikonen
+
+	* main/gsl/: Makefile, buildgsl_sf.sh, configure.add,
+	double_double_to_double.cc.template,
+	double_mode_to_double.cc.template, double_to_double.cc.template,
+	int_double_to_double.cc.template,
+	int_int_double_to_double.cc.template, int_to_double.cc.template,
+	precode.cc.template, replace_template.sh: Special functions from
+	GNU Scientific Library 
+
+2004-04-28 04:55  adb014
+
+	* FIXES/sort.cc: gcc 3.4.0 fix for sort.cc 
+
+2004-04-26 00:24  adb014
+
+	* FIXES/ziggurat.h: Remove old ziggurat.h file that is no longer
+	used 
+
+2004-04-26 00:22  adb014
+
+	* Makeconf.base, FIXES/Makefile: Include OCTAVE_VERSION in Makeconf
+	and use to to decide whether to build FIXES/sort.oct or not 
+
+2004-04-23 22:15  pkienzle
+
+	* main/general/ifftshift.m: [for David Bateman] NDArray support 
+
+2004-04-23 22:14  pkienzle
+
+	* main/general/: rat.m, rats.m: [for David Bateman] texinfo
+	documentation, NDArray support 
+
+2004-04-23 10:14  schloegl
+
+	* main/strings/str2double.m: allow delimiters :/ these are useful
+	for date&time conversion; deal with empty input 
+
+2004-04-21 23:22  pkienzle
+
+	* main/signal/zplane.m: [for Stefan van der Welt] 
+	 * plot correct nr of zeros at 0 
+	 * label nr of zeros/poles at a point 
+	 * use different colours for plotting each column (matrix
+	 zeros/poles) 
+	* set automatic_replot to 0 for duration of demo 
+
+2004-04-21 19:55  pkienzle
+
+	* main/miscellaneous/inline.m: Return a function handle rather than
+	a function name.  
+
+2004-04-21 12:20  adb014
+
+	* main/specfun/perms.m: Vectorize argument of perms for matlab
+	compatiability 
+
+2004-04-21 09:51  pkienzle
+
+	* extra/mex/README: Note the requirement for -Wl,-Bsymbolic flag on
+	link line.  
+
+2004-04-19 10:47  pkienzle
+
+	* extra/mex/mex.in: exit with error after usage statement 
+
+2004-04-15 18:06  aadler
+
+	* extra/perl/Octave.pm: [no log message] 
+
+2004-04-13 06:54  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Hack around dld protected
+	problems 
+
+2004-04-13 01:12  mazet
+
+	* main/miscellaneous/: Makefile, cell2csv.cc, csv2cell.cc,
+	csvconcat.cc, csvexplode.cc: News CSV functions 
+
+2004-04-12 13:11  aadler
+
+	* extra/perl/Octave.pm: added wnohang signalling 
+
+2004-04-12 12:12  aadler
+
+	* extra/perl/: Octave.pm, t/2_calling.t: set SIGnals only when
+	doing a read 
+
+2004-04-11 22:56  pkienzle
+
+	* main/signal/filtic.m: [for David Billinghurst] compute initial
+	conditions for filter.  
+
+2004-04-11 21:47  pkienzle
+
+	* configure.base: Simplify canonical_host_type defn using
+	OCTAVE_EVAL macro.  
+
+2004-04-09 21:26  pkienzle
+
+	* extra/mex/mex.cc: Don't forget to initialize pmap, otherwise
+	mxArray thinks it is a map 
+
+2004-04-08 06:53  mcreel
+
+	* main/optim/mintoolkit/doc/: mintoolkit.lyx, mintoolkit.pdf,
+	mintoolkit.tex, readme.txt: remove pdf, add lyx and tex 
+
+2004-04-07 07:19  adb014
+
+	* main/specfun/factorial.m: factorial.m allows matrix and NDArray
+	args 
+
+2004-04-06 05:49  adb014
+
+	* main/statistics/: nanmedian.m, nanstd.m: NDArray update for
+	nanstd.m and nanmedian.m 
+
+2004-04-04 16:11  adb014
+
+	* FIXES/sort.cc: Small update to sort for old versions of octave 
+
+2004-04-02 11:04  adb014
+
+	* FIXES/sort.cc: Update sort to allow optional dim argument 
+
+2004-04-02 08:21  adb014
+
+	* main/statistics/: geomean.m, harmmean.m, mad.m, nanmax.m,
+	nanmin.m, nanstd.m, trimmean.m, zscore.m: More NDArray fixes 
+
+2004-04-02 04:41  mcreel
+
+	* main/optim/mintoolkit/doc/mintoolkit.pdf: add documentation 
+
+2004-04-02 04:40  mcreel
+
+	* main/optim/mintoolkit/README: [no log message] 
+
+2004-04-02 04:37  mcreel
+
+	* main/optim/mintoolkit/: battery.m, bfgsmin.cc, lbfgsmin.cc,
+	samin.cc: update 
+
+2004-04-01 10:48  adb014
+
+	* FIXES/: Makefile, sort.cc: NDArray update to sort 
+
+2004-04-01 09:21  adb014
+
+	* main/statistics/nanstd.m: NDArray fix nanstd.m 
+
+2004-04-01 08:49  adb014
+
+	* main/general/bitand.cc: get rid of debug message 
+
+2004-04-01 08:43  adb014
+
+	* main/general/: Makefile, bitand.cc, bitget.m, bitset.m,
+	bitshift.m: NDArray updates for btand, etc 
+
+2004-03-31 23:33  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Avoid loading base function when
+	dispatch is specified --- saves 10 seconds off startup under
+	windows, but loses nice help text.  
+
+2004-03-30 09:41  mcreel
+
+	* main/optim/mintoolkit/README: add readme 
+
+2004-03-30 09:38  mcreel
+
+	* main/optim/mintoolkit/lbfgsmin.cc: add lbfgs 
+
+2004-03-30 09:37  mcreel
+
+	* main/optim/mintoolkit/: Example2SA.m, ExampleMin.m, ExampleSA.m,
+	Makefile, bfgsmin.cc, bisectionstep.cc, finitedifference.cc,
+	newtonmin.cc, newtonstep.cc, samin.cc: update files 
+
+2004-03-26 12:23  schloegl
+
+	* extra/tsa/arfit2.m: fix typo 
+
+2004-03-23 20:16  adb014
+
+	* main/comm/doc/Makefile: Update Makefile to force use of
+	texinfo.tex at toplevel 
+
+2004-03-23 20:15  adb014
+
+	* texinfo.tex: Copy texinfo.tex from octave itself to avoid
+	problems with broken texinfo 
+
+2004-03-22 03:16  mcreel
+
+	* main/optim/mintoolkit/Makefile: make makefile work 
+
+2004-03-20 11:17  h_fujiwara
+
+	* main/parallel/: README, connect.cc, pserver.cc, recv.cc,
+	reval.cc, sclose.cc, send.cc, swab.h: Support endian conversion 
+
+2004-03-19 10:51  mcreel
+
+	* main/optim/mintoolkit/: Example2SA.m, ExampleMin.m, ExampleSA.m,
+	Makefile, battery.m, bfgsmin.cc, bisectionstep.cc, celleval.cc,
+	finitedifference.cc, newtonmin.cc, newtonstep.cc, numgradient.cc,
+	numhessian.cc, samin.cc: add mintoolkit files 
+
+2004-03-18 09:36  rlaboiss
+
+	* main/geometry/: __voronoi__.cc, configure.add, convhulln.cc,
+	delaunayn.cc: [RL for Dirk Eddelbuettel] 
+	
+	Applied patch from Dirk for the Debian octave-forge package.  From
+	the debian/changelog: 
+	
+	  * main/geometry/{convhulln,delaunayn,voronoi}.cc: Change version 
+	    identifier declaration to `char *qh_version' to match libqhull5 
+
+2004-03-18 03:34  persquare
+
+	* main/miscellaneous/edit.m: Fixing custom license string 
+
+2004-03-16 08:54  pkienzle
+
+	* main/plot/orient.m: fix typo in variable name; add tests! 
+
+2004-03-15 21:19  pkienzle
+
+	* main/miscellaneous/listen.cc: Make forking a runtime parameter 
+
+2004-03-15 21:17  pkienzle
+
+	* configure.base: Ask octave what libs are needed.  
+
+2004-03-15 17:23  adb014
+
+	* main/comm/: apkconst.m, eyediagram.m, galois-def.h, modmap.m,
+	ov-galois.cc, ov-galois.h, qaskenco.m, scatterplot.m: Changes for
+	2.1.57 compatiablity: automatic_replot, array_value and return value
+	of == 
+
+2004-03-15 10:55  pkienzle
+
+	* doc/octave-forge-home.html: Convenience package for octcl 
+
+2004-03-14 18:05  schloegl
+
+	* main/strings/strmatch.m: fix for CELL; strcmp must be used 
+
+2004-03-13 00:41  pkienzle
+
+	* doc/octave-forge-home.html: include link to nightly cvs tarball 
+
+2004-03-12 04:32  abcollier
+
+	* extra/mapping/: azimuth.m, deg2rad.m, distance.m, rad2deg.m: 
+	Initial commit into CVS.  
+
+2004-03-06 17:48  schloegl
+
+	* main/strings/str2double.m: dealing with char-array more
+	straightforward 
+
+2004-03-05 14:16  schloegl
+
+	* main/strings/str2double.m: deblanking character array 
+
+2004-03-05 09:30  pkienzle
+
+	* main/sparse/sparse_full.cc: Add dispatch commands for spfind 
+
+2004-03-05 00:46  pkienzle
+
+	* main/miscellaneous/edit.m: remove quotes around editor name when
+	no file is given.  
+
+2004-03-03 01:46  pkienzle
+
+	* main/image/isind.m: Allow ind value of 1; allow empty matrices;
+	add tests 
+
+2004-02-28 09:02  pkienzle
+
+	* main/plot/plot3.m: [for Jean-Michel besnard] match for/endfor 
+
+2004-02-25 00:48  pkienzle
+
+	* octinst.sh.in: (for David Billinghurst) avoid bashisms: in sh,
+	shift fails if no more args 
+
+2004-02-24 21:27  pkienzle
+
+	* main/image/imnoise.m: (with Stefan van der Walt): correct
+	variance on 'speckle'; clip output [0,1]; add tests 
+
+2004-02-24 14:07  qspencer
+
+	* admin/RPM/octave-forge.spec.in: [no log message] 
+
+2004-02-23 19:09  pkienzle
+
+	* main/splines/fnval.m: compatibility wrapper for ppval 
+
+2004-02-23 10:29  schloegl
+
+	* extra/tsa/ar_spa.m: fix bug if multiple realizations are used 
+
+2004-02-20 05:48  persquare
+
+	* extra/MacOSX/figure.m: This is no longer needed. Octave's
+	figure.m now uses GNUTERM to select output device.  
+
+2004-02-18 09:54  pkienzle
+
+	* main/image/imread.m: Colour values from ppm are 0-255 not 1-256 
+
+2004-02-18 08:05  adb014
+
+	* FIXES/: Makefile, rand.cc: Add Ziggurat rande function as well 
+
+2004-02-18 03:26  schloegl
+
+	* extra/tsa/mvfreqz.m: removed display of debugging information 
+
+2004-02-17 08:17  adb014
+
+	* FIXES/Makefile: Include HAVE_ND_ARRAYS in build of rand.oct 
+
+2004-02-16 12:17  qspencer
+
+	* admin/RPM/octave-forge.spec.in: added dependencies for png and
+	jpeg support 
+
+2004-02-15 10:37  etienne
+
+	* main/vrml/: save_vrml.m, test_vrml_faces.m, vmesh.m,
+	vrml_Background.m, vrml_PointLight.m, vrml_browse.m, vrml_faces.m,
+	vrml_group.m, vrml_parallelogram.m, vrml_thick_surf.m,
+	vrml_transfo.m: fix space-in-[] breakage; add demo code 
+
+2004-02-13 09:14  mazet
+
+	* main/miscellaneous/: Makefile, xmlread.cc, xmltree_read.act,
+	xmltree_read.c, xmltree_read.l: Fix xmlread compilation trouble and
+	yy* symbol conflicts 
+
+2004-02-12 15:32  pkienzle
+
+	* doc/: octave-forge-home.html, coda/Makefile, coda/oct/matpow.png,
+	coda/out/matpow.eps, coda/out/matpow.png: Revise build system to
+	include www-dist target; add matpow.eps for pdf; include links to
+	source and html tarballs on octave-forge home 
+
+2004-02-12 02:58  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: R2004-02-12
+	release 
+
 2004-02-12 02:55  pkienzle
 
 	* .cvsignore, doc/coda/.cvsignore: Fixup output of cvs update 
@@ -62,11 +1267,6 @@
 
 	* extra/testfun/test.m: Better hack for broken system function 
 
-2004-02-06 14:41  pkienzle
-
-	* main/optim/Optimize/ExampleBFGSMin.m: Make sure this is
-	interpreted as a script, and not as a function file 
-
 2004-02-06 14:33  pkienzle
 
 	* extra/tk_octave/: Makeconf.add, Makefile, README, configure.add,
@@ -127,15 +1327,6 @@
 2004-02-02 16:21  schloegl
 
 	* main/strings/str2double.m: support for user-defined delimiters 
-
-2004-02-02 10:32  mcreel
-
-	* main/optim/Optimize/BFGSMin.m: isstr --> ischar 
-
-2004-02-02 06:59  mcreel
-
-	* main/optim/Optimize/: BFGSMin.m, ExampleBFGSMin.m: interface
-	change 
 
 2004-02-01 13:40  schloegl
 
@@ -315,13 +1506,6 @@
 2004-01-26 09:34  adb014
 
 	* extra/linear-algebra/chol.cc: Initialization bug in chol.cc 
-
-2004-01-26 05:29  mcreel
-
-	* main/optim/Optimize/: BFGSMin.m, Battery.m, BisectionStep.m,
-	ExampleBFGSMin.m, ExampleNumGradient.m, FiniteDifference.m,
-	NewtonStep.m, NumGradient.m, NumHessian.m, QuadInterpStep.m: [no
-	log message] 
 
 2004-01-25 11:07  adb014
 

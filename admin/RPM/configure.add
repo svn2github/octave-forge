@@ -1,5 +1,3 @@
-OCTAVE_FORGE_VERSION=`grep "v=[[0-9]]" main/miscellaneous/OCTAVE_FORGE_VERSION.m | sed -e 's/^.*=\(.*\);/\1/'`
-AC_SUBST(OCTAVE_VERSION)
-AC_SUBST(canonical_host_type)
-AC_SUBST(OCTAVE_FORGE_VERSION)
+OCTAVE_FORGE_RELEASE=`date +%Y.%m.%d`
+AC_SUBST(OCTAVE_FORGE_RELEASE)
 CONFIGURE_OUTPUTS="$CONFIGURE_OUTPUTS admin/RPM/octave-forge.spec"

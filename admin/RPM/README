@@ -1,0 +1,20 @@
+Builds of octave-forge are closely tied to the octave version
+installed on the system at build time. The octave-forge.spec file
+should therefore depend on that specific version. This and several
+other details were originally configured by autoconf, but that fixes
+the dependency to the version of octave installed on the system
+requires the system on which the octave-forge release was generated,
+which does not allow the flexbility of using this octave-forge.spec
+file on a system with a different version of octave without editing
+it. The spec file has now been modified so that it is general enough
+to work with any octave release installed on the user's system.
+However, to be completely correct, the RPM package built with the
+octave-forge.spec file should depend on the exact octave version
+installed on the system, so the update_spec.sh file included in this
+directory can be used to automatically update the octave-forge.spec
+file by the end user. All other build-time octave dependency
+information are now determined at build time by the scripts in the
+spec file.
+
+Quentin Spencer
+17 June 2004

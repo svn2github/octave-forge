@@ -1,26 +1,18 @@
-###%define __libtoolize /bin/true    # From the octave file--do I need this?
-%define octave_version @OCTAVE_VERSION@
-%define octave_epoch 6
-%define host_type @canonical_host_type@
-%define ofalt octave-forge-alternatives
-
-Summary: Additional functions for octave
-Name: octave-forge
-Version: @OCTAVE_FORGE_VERSION@
-Release: 1
-###Epoch: 1
-License: GPL
-Group: Applications/Engineering
-Source: http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge-%{version}.tar.gz
-URL: http://octave.sourceforge.net
-Requires: octave = %{octave_epoch}:%{octave_version}
-Requires: libjpeg libpng ImageMagick GiNaC
-###Prereq: info
-BuildPrereq: octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg-devel
-BuildPrereq: libpng-devel zlib-devel libtermcap-devel libstdc++-devel
-BuildPrereq: GiNaC-devel
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
-ExcludeArch: ppc64 s390x
+Summary:	Additional functions for octave
+Name:		octave-forge
+Version:	@OCTAVE_FORGE_RELEASE@
+Release:	1
+License:	GPL
+Group:		Applications/Engineering
+URL:		http://octave.sourceforge.net
+Source:		%{url}/cgi-bin/viewcvs.cgi/octave/%{name}-%{version}.tar.gz
+Requires:	octave
+Requires:	libjpeg libpng ImageMagick GiNaC qhull
+BuildPrereq:	octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg-devel
+BuildPrereq:	libpng-devel zlib-devel libtermcap-devel libstdc++-devel
+BuildPrereq:	GiNaC-devel qhull-devel
+BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+ExcludeArch:	ppc64 s390x
 
 ### Description taken from http://wiki.octave.org/wiki.pl?OctaveForge
 %description
@@ -29,7 +21,7 @@ collaborative development of octave extensions. If you have a large
 package that you want to open up to collaborative development, or a
 couple of m-files that you want to contribute to an existing package,
 octave-forge is the place to do it.
-
+ 
 %prep
 %setup -q
 
@@ -37,14 +29,17 @@ octave-forge is the place to do it.
 LC_ALL=POSIX
 export LC_ALL
 export CXXFLAGS="%optflags -fno-use-cxa-atexit"
-%configure --prefix=%{?buildroot:%{buildroot}}%{_prefix} \
-	--exec-prefix=%{?buildroot:%{buildroot}}%{_prefix} \
-	--with-mpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/%{octave_version}/site/m/%{name} \
-	--with-opath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/%{octave_version}/site/oct/%{host_type}/%{name} \
-	--with-xpath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/%{octave_version}/site/exec/%{host_type} \
-	--with-altpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/%{octave_version}/site/%{ofalt}/m \
-	--with-altmpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/%{octave_version}/site/%{ofalt}/m/%{name} \
-	--with-altopath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/%{octave_version}/site/%{ofalt}/oct/%{host_type} \
+HOST_TYPE=`echo "disp(octave_config_info('canonical_host_type'))" | octave -qf`
+OCT_DIR="octave/"`echo "disp(OCTAVE_VERSION)" | octave -qf`
+OF_ALT="octave-forge-alternatives"
+%configure --prefix=$RPM_BUILD_ROOT/%{_prefix} \
+	--exec-prefix=$RPM_BUILD_ROOT/%{_prefix} \
+	--with-mpath=$RPM_BUILD_ROOT/%{_prefix}/share/$OCT_DIR/site/m/octave-forge \
+	--with-opath=$RPM_BUILD_ROOT/%{_prefix}/libexec/$OCT_DIR/site/oct/$HOST_TYPE/octave-forge \
+	--with-xpath=$RPM_BUILD_ROOT/%{_prefix}/libexec/$OCT_DIR/site/exec/$HOST_TYPE \
+	--with-altpath=$RPM_BUILD_ROOT/%{_prefix}/share/$OCT_DIR/site/$OF_ALT/m \
+	--with-altmpath=$RPM_BUILD_ROOT/%{_prefix}/share/$OCT_DIR/site/$OF_ALT/m/octave-forge \
+	--with-altopath=$RPM_BUILD_ROOT/%{_prefix}/libexec/$OCT_DIR/site/$OF_ALT/oct/$HOST_TYPE \
 	--with-x
 
 make
@@ -57,20 +52,10 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %post
-### The following is no longer used by octave
-#ls -LR %{_prefix}/share/octave > %{_prefix}/share/octave/ls-R
-#chmod 644 %{_prefix}/share/octave/ls-R
-#ls -LR %{_prefix}/libexec/octave > %{_prefix}/libexec/octave/ls-R
-#chmod 644 %{_prefix}/libexec/octave/ls-R
 
 %preun
 
 %postun
-### The following is no longer used by octave
-#ls -LR %{_prefix}/share/octave > %{_prefix}/share/octave/ls-R
-#chmod 644 %{_prefix}/share/octave/ls-R
-#ls -LR %{_prefix}/libexec/octave > %{_prefix}/libexec/octave/ls-R
-#chmod 644 %{_prefix}/libexec/octave/ls-R
 
 %files
 %defattr(-,root,root)
@@ -83,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/mex*
 
 %changelog
+* Tue Jun 15 2004 Quentin Spencer <qspencer [AT] ieee [dot] org>
+- Added qhull support.
+
 * Tue Feb 24 2004 Quentin Spencer <qspencer [AT] ieee [dot] org>
 - Added GiNaC as a dependency. Fixed install directories for
   octave-forge alternatives.

@@ -71,7 +71,7 @@ while (@ARGV && ($ARGV[0] =~ /^\-/)) {
     elsif ($ARGV[0] =~ /^\-(v|\-verbose)$/){ $verbose = 1;}
     elsif ($ARGV[0] =~ /^\-(p|\-patch)$/) { 
 	$patch = 1;
-    elsif ($ARGV[0] =~ /^\-(d)$/) { 
+    } elsif ($ARGV[0] =~ /^\-(d)$/) { 
 	$patch = 0;
     } else {
 	die "Unknown option '$ARGV[0]'. Try '$0 --help'";

@@ -18,7 +18,6 @@ all: $(SUBMAKEDIRS)
 	@echo "Please read FIXES/README before you install."
 
 install: $(SUBMAKEDIRS)
-	@chmod a+x $(INSTALLOCT)
 	@echo " "
 	@echo "Installation complete."
 	@echo " "

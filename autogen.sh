@@ -10,6 +10,8 @@ if test ! -z "$files" ; then
 fi
 cat <<EOF >> configure.in
   AC_OUTPUT(Makeconf octinst.sh)
+  dnl XXX FIXME XXX chmod is not in autoconf's list of portable functions
+  chmod 0771 octinst.sh
   AC_MSG_RESULT([\$STATUS_MSG
 
 find . -name NOINSTALL -print    # shows which toolboxes won't be installed

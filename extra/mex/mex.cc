@@ -18,6 +18,8 @@
 // * use unsigned short for mxChar rather than char
 // 2001-09-20 Paul Kienzle <pkienzle@users.sf.net>
 // * Need <float.h> for DBL_EPSILON
+// 2001-11-02 Paul Kienzle <pkienzle@users.sf.net>
+// * fixed mxGetString to put in the zero-terminator
 
 #include <float.h>
 #include <iomanip.h>
@@ -681,7 +683,7 @@ extern "C" {
 	{
 	  const int nr = ptr->rows();
 	  const int nc = ptr->columns();
-	  const int n = nr*nc > buflen ? nr*nc : buflen;
+	  const int n = nr*nc < buflen ? nr*nc : buflen;
 	  const double *pr = ptr->real();
 	  for (int i = 0; i < n; i++) buf[i] = NINT(pr[i]);
 	  if (n < buflen) buf[n] = '\0';

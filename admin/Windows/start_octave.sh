@@ -7,5 +7,5 @@ export PS_VIEWER=
 export EDITOR=notepad
 cd "$HOME"
 #ulimit -c 0 # no core files
-octave.exe --traditional
+octave.exe
 rm -f /tmp/*

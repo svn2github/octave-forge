@@ -2,7 +2,15 @@
 // (C) 2002 Andy Adler
 // Licensed under the GNU GPL. 
 #include <octave/oct.h>
-#include <octave/pt-plot.h>
+
+#if 0
+#include <octave/file-io.h>
+#else
+// The following declaration moved from pt-plot.h to file-io.h
+// We duplicate it here so that octave-forge can support earlier
+// versions of octave.  This is cruft that needs to be removed.
+extern void mark_for_deletion (const std::string&);
+#endif
 
 DEFUN_DLD (mark_for_deletion, args,,
 "mark_for_deletion ( filename1, filename2, ... );\n\
@@ -20,7 +28,4 @@ This is useful for any function which uses temprorary files.")
     }
   }
   return retval;
-
 }
-
-

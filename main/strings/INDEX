@@ -33,6 +33,7 @@ Search and replace
  index rindex
  strrep
  substr
+ cellidx
 Operations
  deblank split 
  strcat 
@@ -66,6 +67,7 @@ Conversion
  dec2base 
  strptime
  base64encode
+ csvexplode csvconcat
 Flags
  warn_num_to_str
  warn_str_to_num

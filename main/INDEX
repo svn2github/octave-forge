@@ -123,6 +123,7 @@ Environment
  ! = use <f>system</f><code>("command")</code>
  dump_prefs
  bug_report warranty
+ native_float_format
 Debugging
  dbclear
  dbstatus
@@ -389,7 +390,12 @@ Lists
  leval
  map
 Operations
- comma horzcat semicolon vertcat not paren
+ comma horzcat semicolon vertcat not paren cat
+Types
+ sparse cell struct 
+ int8 int16 int32 int64
+ uint8 uint16 uint32 uint64
+ sizeof
 
 matrix >> Linear Algehra
 Generating matrices
@@ -397,7 +403,7 @@ Generating matrices
  ones 
  eye 
  rand texas_lotto
- randn 
+ randn rande
  linspace 
  logspace 
  randperm
@@ -470,6 +476,7 @@ Linear algebra
  condeig 
  trisolve
  syl
+ pcg
 Matrix factorization
  chol 
  lu 
@@ -595,6 +602,7 @@ Coordinate transformations
  cart2pol 
  pol2cart 
  sph2cart 
+ deg2rad rad2deg azimuth distance
 
 analysis >> Data analysis
 Sorting
@@ -609,7 +617,7 @@ Filtering
  deconv 
  detrend center clip
 Fourier analysis
- fft 
+ fft fft_wisdom
  fft2 
  fftn 
  ifft 
@@ -624,8 +632,8 @@ Interpolation
  interp3 
  interpn 
  spline 
- pchip 
- ppval 
+ pchip pchip_deriv
+ ppval fnval
  mkpp 
  unmkpp 
  lookup
@@ -884,6 +892,7 @@ Import/Export
  xmlwrite
  wk1read 
  wk1write 
+ csv2cell cell2csv
  auload
  ausave
  imread

@@ -2,12 +2,15 @@ optimization >> Optimization
 Minimization
  minimize 
  nelder_mead_min
- bracket_min d2_min
+ d2_min
  bfgs nrm
- lp
+ lp samin
  fmin fminbnd
  line_min
  fmins adsmax mdsmax nmsmax
+ bisectionstep bfgsmin finitdifference
+ lbfgsmin newtonstep numgradient numhessian
+ battery
 Data fitting
  expfit expdemo
  wpolyfit wpolyfitdemo 

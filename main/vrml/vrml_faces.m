@@ -1,4 +1,4 @@
-## s = vrml_faces(x,f,...)
+## s = vrml_faces(x,f,...) - VRML facet object (IndexedFaceSet node)
 ##
 ## x : 3xP   : The 3D points
 ## f : 3xQ   : The indexes of the points forming the faces. Indexes
@@ -48,8 +48,9 @@
 ## "DEFcoord",n : string : DEF the coord VRML node with name n. Default = ''
 ## "DEFcol",  n : string : DEF the color VRML node with name n. Default = ''
 ##
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## See also: vrml_surf(), vmesh()
 
+## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 function s = vrml_faces (x,f,varargin)
 
   ## mytic; starttime = cputime();
@@ -271,5 +272,5 @@ s = sprintf([... 			# string of indexed face set
 ## printf ("Total Time : %f\n",cputime() - starttime);
 
 %!demo
+%! % Test the vrml_faces and vrml_browse functions with the test_vrml_faces script
 %! test_vrml_faces
-%! Test the vrml_faces and vrml_browse functions with the test_vrml_faces script

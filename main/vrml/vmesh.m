@@ -48,7 +48,7 @@
 ## "lcol", lc   : Nx3 : Color of the plane(s).          Default = [.7 .7 .7]
 ## "ltran",lt   : Nx1 : Transparency of the plane(s).   Default =        0.3
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann  <etienne@cs.uky.edu>
 
 function s = vmesh (x, y, z, varargin)
 
@@ -135,6 +135,7 @@ minpts = min (pt2');
 maxpts = max (pt2');
 medpts = (minpts + maxpts)/2;
 ptssz  = (maxpts - minpts);
+ptssz  = max (ptssz, max (ptssz/10));
 
 if frame, fr = vrml_frame (minpts-ptssz/10,
 			   "scale", ptssz * 1.2, "col",(ones(3)+eye(3))/2);
@@ -182,5 +183,29 @@ vrml_browse (s);
 if ! nargout,  clear s; end
 
 %!demo
-%! test_vmesh
-%! Test the vmesh and vrml_browse functions with the test_vmesh script
+%! % Test the vmesh and vrml_browse functions with the test_vmesh script
+%! R = 41; C = 26; 
+%! [x,y] = meshgrid (linspace (-8+eps,8+eps,C), linspace (-8+eps,8+eps,R));
+%! z = sin (sqrt (x.^2 + y.^2)) ./ (sqrt (x.^2 + y.^2));
+%! vmesh (z);
+%! printf ("Press a key.\n"); pause;
+%! 
+%! ############## The same surface, with holes (NaN's) in it. ###############
+%! z(3,3) = nan;		# Bore a hole
+%!  				# Bore more holes
+%! z(1+floor(rand(1,5+R*C/30)*R*C)) = nan;
+%! vmesh (z);
+%! printf ("Press a key.\n"); pause;
+%!
+%! ###### The same surface, with checkered stripes - 'checker' option ######
+%! vmesh (z,"checker",-[6,5]);
+%! printf ("Press a key.\n"); pause;
+%! 
+%! ##### With z-dependent coloring - 'zrb', 'zgrey' and'zcol' options. #####
+%! vmesh (z,"zrb");
+%! printf ("That's it!\n");
+
+
+
+
+## %! test_vmesh

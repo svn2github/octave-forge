@@ -1,4 +1,4 @@
-
+###key test_vmesh
 ##
 ## Test vmesh.m
 
@@ -44,3 +44,4 @@ printf (["The same surface, with z-dependent coloring (see 'zrb', 'zgrey'\n",\
 vmesh (z,"zrb");
 
 printf ("That's it!\n");
+

@@ -56,7 +56,8 @@ function text(varargin)
   text="";
   rotate="norotate";
   align="left";
-  fontname=fontsize=[];
+  fontname="";
+  fontsize=[];
   units="first";
 
   ## Process text(x,y[,z],'text') forms
@@ -135,8 +136,10 @@ function text(varargin)
       warning(["ignoring property ", prop]);
     endif
   endfor
-  if !isempty(fontname) || !isempty(fontsize)
+  if !isempty(fontsize)
     font = sprintf(' font "%s,%d"', fontname, fontsize);
+  elseif !isempty(fontname)
+    font = sprintf(' font "%s"', fontname);
   else
     font = "";
   endif

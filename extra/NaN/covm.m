@@ -92,12 +92,12 @@ if (c1>r1) | (c2>r2),
 end;
 
 if ~isempty(Y),
-        if ~any(Mode=='ED')        
+        if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
         	NN = real(~isnan(X)')*real(~isnan(Y));
 	        X(isnan(X)) = 0; % skip NaN's
 	        Y(isnan(Y)) = 0; % skip NaN's
         	CC = X'*Y;
-        else
+        else  % if Mode==D or Mode == E, 
 	        [S1,N1] = sumskipnan(X,1);
                 [S2,N2] = sumskipnan(Y,1);
                 
@@ -119,16 +119,16 @@ if ~isempty(Y),
                 
                 if any(Mode=='E'), % extended mode
                         NN = [r1, N1; N2', NN];
-                        CC = [r1, S1; S2', CC ];
+                        CC = [r1, S1; S2', CC];
                 end;
 	end;
         
 else        
-        if ~any(Mode=='ED')        
+        if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
         	NN = real(~isnan(X)')*real(~isnan(X));
 	        X(isnan(X)) = 0; % skip NaN's
 	        CC = X'*X;
-        else
+        else  % if Mode==D or Mode == E, 
 	        [S,N] = sumskipnan(X,1);
                 NN = real(~isnan(X)')*real(~isnan(X));
         	if any(Mode=='D'), % detrending mode
@@ -145,7 +145,7 @@ else
                 
                 if any(Mode=='E'), % extended mode
                         NN = [r1, N; N', NN];
-                        CC = [r1, S; S', CC ];
+                        CC = [r1, S; S', CC];
                 end;
 	end
 end;

@@ -567,7 +567,12 @@ FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
 int
 FixedNDArray::cat (const FixedNDArray& ra_arg, int dim, int iidx, int move)
 {
+#ifdef INSTANTIATE_ARRAY_CAT
   return ::cat_ra (*this, ra_arg, dim, iidx, move);
+#else
+  error("fixed cat not implemented");
+  return 0;
+#endif
 }
 
 FixedNDArray
@@ -701,14 +706,23 @@ FixedNDArray::increment_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension)
 {
+#ifdef INSTANTIATE_ARRAY_CAT
   ::increment_index (ra_idx, dimensions, start_dimension);
+#else
+  error("fixed increment_index not implemented");
+#endif
 }
 
 int
 FixedNDArray::compute_index (Array<int>& ra_idx,
 			     const dim_vector& dimensions)
 {
+#ifdef INSTANTIATE_ARRAY_CAT
   return ::compute_index (ra_idx, dimensions);
+#else
+  error("fixed compute_index not implemented");
+  return 0;
+#endif
 }
 
 std::ostream&

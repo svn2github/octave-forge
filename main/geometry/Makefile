@@ -10,7 +10,7 @@ endif
 %.oct: %.cc ; $(MKOCTFILE) -lqhull $<
 
 ifdef HAVE_LIBQHULL
-all: convhulln.oct __voronoi__.oct delaunayn.oct
+all: griddata.oct convhulln.oct __voronoi__.oct delaunayn.oct
 else
 all:
 endif

@@ -20,6 +20,7 @@ my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
 my $OCTAVECVS = "http://www.octave.org/cgi-bin/cvsweb.cgi/~checkout~/octave";
 my $FORGECVS = "http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/";
 my $tmpdir = "/tmp";
+my $catdir = "index";
 
 my $forgebar = qq~<center>
 <A href="http://octave.sourceforge.net">Home</A> |
@@ -61,7 +62,8 @@ foreach my $f ( @index_files ) {
 	       \%index_by_function);
 }
 
-die "No INDEX in current directory" if !-e "INDEX";
+# XXX FIXME XXX should die if the index is empty
+# die "No INDEX in current directory" if !-e "INDEX";
 my $summary = !-e "admin/make_index";  # if not in the root, just summarize
 my $include_octave = !$summary;        # only include octave if not summarizing
 
@@ -500,10 +502,10 @@ sub load_index { # {{{1
 } # 1}}}
 sub write_html { # {{{1
     # make empty html directories
-    unlink <index/*.html>;
-    unlink <index/f/*.html>;
-    mkdir "index";
-    mkdir "index/f";
+    unlink <$catdir/*.html>;
+    unlink <$catdir/f/*.html>;
+    mkdir "$catdir";
+    mkdir "$catdir/f";
 
     write_main();
     write_forgebar();
@@ -525,7 +527,7 @@ sub write_html { # {{{1
 	my $body = long_desc($func);
 	if ($body ne "") {
 	    # XXX FIXME XXX this will die if the punctuation is too wild
-	    open FUNC, ">index/f/$func.html" or die "Could not open $func.html";
+	    open FUNC, ">$catdir/f/$func.html" or die "Could not open $func.html";
 	    print FUNC "<html><head><title>$func</title></head>\n";
 	    print FUNC "<body>\n";
 	    print FUNC "<table width=100%><tr><td align=left><b>$func</b>\n";
@@ -560,7 +562,7 @@ sub write_html { # {{{1
 		} else {
 		    $head = "Z";
 		}
-		my $file = ">index/$head.html";
+		my $file = ">$catdir/$head.html";
 		open(OUT, $file) or die "Cannot write $file";
 		print OUT "<html><head>\n";
 		print OUT "<title>Octave Functions: $head</title>\n";
@@ -595,7 +597,7 @@ sub writenav { # 1{{{
 
 } # 1}}}
 sub write_main { # {{{1
-    open(OUT,">index/index.html") or die "Could not open index/index.html";
+    open(OUT,">$catdir/index.html") or die "Could not open $catdir/index.html";
     print OUT <<EOF;
 <HTML><HEAD>
 <TITLE>Octave-forge combined index</TITLE>
@@ -623,7 +625,7 @@ EOF
     close OUT;
 } # 1}}}
 sub write_forgebar {
-    open(OUT,">index/forgebar.html") or die "Could not open index/forgebar.html";
+    open(OUT,">$catdir/forgebar.html") or die "Could not open index/forgebar.html";
     print OUT <<EOF;
 <html><title>Octave Forge site navigator</title>
 <base target=_top>
@@ -647,7 +649,7 @@ sub download_ref {
     }
 }
 sub write_intro { # 1{{{
-    open(OUT,">index/intro.html") or die "Could not open index/intro.html";
+    open(OUT,">$catdir/intro.html") or die "Could not open $catdir/intro.html";
     print OUT <<EOF;
 <HTML><HEAD><TITLE>Octave-forge index intro</TITLE></HEAD>
 <BODY>
@@ -660,7 +662,7 @@ sub write_TBnavbar { # 1{{{
     my $openTB = shift;
     my $file = "categorical";
     $file = "nav$openTB" if $openTB ne "";
-    open(OUT,">index/$file.html") or die "Could not open index/$file.html";
+    open(OUT,">$catdir/$file.html") or die "Could not open $catdir/$file.html";
     print OUT <<EOF;
 <html><head><title>Octave-forge categorical index</title></head>
 <body>
@@ -688,7 +690,7 @@ $TB_description{$TB}</a></a>";
 } # 1}}}
 sub write_TBdetails { # 1{{{
     my $TB = shift;
-    my $file   = "index/$TB.html";
+    my $file   = "$catdir/$TB.html";
     
     open(OUT, ">$file") or die "Cannot write $file:  $!\n";
     print OUT <<EOF;
@@ -730,7 +732,7 @@ EOF
     close(OUT);
 } # 1}}}
 sub write_alphabetic_navbar { # 1{{{
-    open(OUT,">index/alphabetic.html") or die "Could not open index/alphabetic.html";
+    open(OUT,">$catdir/alphabetic.html") or die "Could not open $catdir/alphabetic.html";
     print OUT <<EOF;
 <html><head><title>Octave-Forge alphabetic list</title></head>
 <base target=content>

@@ -86,7 +86,9 @@
 ##
 ## @table @asis
 ## @item The computed approximation to the zero of FCN is returned in X. FX is then equal
-## to FCN(X). If the iteration converged, INFO == 1.
+## to FCN(X). If the iteration converged, INFO == 1. If Brent's method is used,
+## and the function seems discontinuous, INFO is set to -5. If fsolve is used,
+## INFO is determined by its convergence.
 ## @end table
 ##
 ## @table @asis
@@ -118,11 +120,11 @@
 function [Z, FZ, INFO] =fzero(Func,bracket,options)
 
 	if (nargin < 2) 
-	  usage("[z, f(z), info] = fzero(@f,[lo,hi]|start,options)"); 
+	  usage("[x, fx, info] = fzero(@fcn, [lo,hi]|start, options)"); 
 	endif
 
 	if !isstr(Func) && !isa(Func,"function handle") && !isa(Func,"inline function")
-	  error("fzero expects a function handle");
+	  error("fzero expects a function as the first argument");
 	endif
 	bracket = bracket(:);
 	if all(length(bracket)!=[1,2])
@@ -134,17 +136,13 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options)
 	if (nargin >= 2) 			% check for the options
 		if (nargin == 2)
 			set_default_options = true;
+			options = [];
 		 else 				% nargin > 2
 			if ~isstruct(options)
 				warning('Options incorrect. Setting default values.');
 				set_default_options = true;
 			end
 		end
-	end
-
-	if set_default_options
-		options.do = 1; 		% a hack to turn (otherwise unset yet) options parameter
-						%  into a structure
 	end
 
 	if ~isfield(options,'abstol')
@@ -330,8 +328,7 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options)
 		 	 case 1
 				MSG = "Solution converged within specified tolerance";
 		 	 case -5
-				MSG = strcat("Probably a discontinuity/singularity point of '", ...
-				Func, "'\n encountered close to X = ", sprintf('%8.4e',Z),...
+				MSG = strcat("Probably a discontinuity/singularity point of F()\n encountered close to X = ", sprintf('%8.4e',Z),...
 				".\n Value of the residual at X, |F(X)| = ",...
 				sprintf('%8.4e',abs(FZ)), ...
 				".\n Another possibility is that you use too large tolerance parameters",...
@@ -351,9 +348,10 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options)
 			fprintf(stderr,"============================\n");
 		end
 		% check for zeros in APPROX
-		fb=feval(Func,b); fcount=fcount+1;
+		fb=feval(Func,b);
+		fcount=fcount+1;
 		tol_save = fsolve_options('tolerance');
-		fsolve_options('tolerance',options.abstol);
+		fsolve_options("tolerance",options.abstol);
 		[Z, INFO, MSG] = fsolve(Func, b);
 		fsolve_options('tolerance',tol_save);
 		FZ = feval(Func,Z);
@@ -425,7 +423,7 @@ endfunction;
 %! options.prl=1;
 %! [X,FX]=fzero(demofun,bracket,options)
 %!demo
-%! demofun=inline('2*x.*exp(-x.^2)','x');
+%! demofun=inline('2*x*exp(-x^2)','x');
 %! bracket=1;
 %! options.abstol=1e-14; options.prl=2;
 %! [X,FX]=fzero(demofun,bracket,options)

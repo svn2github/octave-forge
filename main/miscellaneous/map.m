@@ -108,21 +108,25 @@ function return_type = map (fun_str,data_struct,varargin)
 	
 	funcall = [fun_str, " ( "];
 	
-	data = ["data_struct",index_str,", "];
+	data = ["data_struct",index_str];
 	
-	otherdata = columns(varargin);
+	otherdata = length(varargin);
 	
 	for k=1:(otherdata-1)
 	  
-	  data = [data,"varargin{1,",int2str(k),"}",index_str,", "];
+	  data = [data,", varargin{",int2str(k),"}",index_str];
 	  
 	endfor
-	
-	data = [data,"varargin{1,",int2str(otherdata),"}",index_str," ); "];
+        
+        if otherdata != 0
+          data = [data,", varargin{",int2str(otherdata),"}",index_str];
+        endif
+        
+        data = [data," ); "];
 	
 	map_str = [LHS,funcall,data];
-	
-	error_str = ["error(\"map: ",error_text,"\n\" )"];
+
+	error_str = ["error(\"map: ",error_text,"\" )"];
 	
 	eval(map_str,error_str);
 		 

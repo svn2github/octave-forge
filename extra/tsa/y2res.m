@@ -18,17 +18,11 @@ function [R,MU,SD2,EM3,EM4,Max,Min,I,th1prm]=y2res(Y)
 % [1] http://www.itl.nist.gov/
 % [2] http://mathworld.wolfram.com/
 
-%	Version 2.90	last revision 10.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Version 2.99
+%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
-% .CHANGELOG
-% 20.09.2001  calc of Quantiles improved, using FLIX.M    
-% 31.01.2002  minor changes
 
-R.N   = sum(~isnan(Y),1);
-R.SUM = sumskipnan(Y,1);
-R.SSQ = sumskipnan(Y.*Y,1);
+[R.SUM, R.N, R.SSQ, R.S4P] = sumskipnan(Y,1);
 %R.S3P = sumskipnan(Y.^3,1);
 %R.S4P = sumskipnan(Y.^4,1);
 %R.S5P = sumskipnan(Y.^5,1);

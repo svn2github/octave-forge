@@ -39,9 +39,9 @@ z = (x-m)./s;			% check size of arguments
 
 p = ((2*pi)^(-1/2))*exp(-z.^2/2)./s;
 
-p(isnan(x) | isnan(m) | isnan(s) | (s<0)) = nan;
-
 p((x==m) & (s==0)) = inf;
 
 p(isinf(z)) = 0;
+
+p(isnan(x) | isnan(m) | isnan(s) | (s<0)) = nan;
 

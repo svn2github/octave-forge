@@ -40,8 +40,6 @@ z = (x-m)./s;			% check size of arguments
 
 p = (1 + erf(z/sqrt(2)))/2;
 
-p(isnan(x) | isnan(m) | isnan(s) | (s<0)) = nan;
-
 p(z==+inf) = 1;
 
 p(z==-inf) = 0;
@@ -51,6 +49,8 @@ p((x<m) &(s==0)) = 0;
 p((x==m)&(s==0)) = 0.5;
 
 p((x>m) &(s==0)) = 1;
+
+p(isnan(x) | isnan(m) | isnan(s) | (s<0)) = nan;
 
 
 

@@ -29,21 +29,36 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct.h>
 #include <octave/pager.h>
 
-Array<int> get_errs (const int& nmin, const int& nmax, const int &nerrs)
-{
-  Array<int> pos;
+#ifdef NEED_OCTAVE_QUIT
+#define OCTAVE_QUIT do {} while (0)
+#else
+#include <octave/quit.h>
+#endif
 
+#define COL_MAJ(N) (N / (SIZEOF_INT << 3))
+#define COL_MIN(N) (N % (SIZEOF_INT << 3))
+
+Array2<int> get_errs (const int& nmin, const int& nmax, const int &nerrs)
+{
+  Array2<int> pos;
+  int cols = COL_MAJ(nmax)+1;
+
+  OCTAVE_QUIT;
   if (nerrs == 1) {
-    pos.resize(nmax-nmin);
-    for (int i = nmin; i < nmax; i++)
-      pos(i-nmin) = (1<<i);
+    pos.resize(nmax-nmin,cols,0);
+    for (int i = nmin; i < nmax; i++) {
+      pos(i-nmin,COL_MAJ(i)) = (1<<COL_MIN(i));
+    } 
   } else {
     for (int i = nmin; i < nmax - nerrs + 1; i++) {
-      Array<int> new_pos = get_errs(i+1, nmax, nerrs-1);
-      int l = pos.length();
-      pos.resize(l+new_pos.length());
-      for (int j=0; j<new_pos.length(); j++)
-	pos(l+j) = (1<<i) + new_pos(j);
+      Array2<int> new_pos = get_errs(i+1, nmax, nerrs-1);
+      int l = pos.rows();
+      pos.resize(l+new_pos.rows(),cols,0);
+      for (int j=0; j<new_pos.rows(); j++) {
+	for (int k=0; k<cols; k++)
+	  pos(l+j,k) = new_pos(j,k);
+	pos(l+j,COL_MAJ(i)) += (1<<COL_MIN(i));
+      }
     }
   }
   return pos;
@@ -79,20 +94,19 @@ DEFUN_DLD (syndtable, args, nargout,
   int n = h.columns();
   unsigned int nrows = ((unsigned int)1 << m);
 
-
   // Could convert this to unsigned long long, but there isn't much point.
   // the syndrome table can already have 2^32 rows with n columns, which
   // is already unrealistically large. The result is DON'T use this with
   // large BCH codes!!!!
-  if (n > (int)(sizeof(unsigned int) << 3)) {
-    error("syndtable: message and codeword length must be less than %d", 
+  if (m > (int)(sizeof(int) << 3)) {
+    error("syndtable: codeword minus message length must be less than %d", 
 	  (sizeof(int) << 3));
     return retval;
   }
 
   // Check that the data in h is valid in GF(2)
   for (int i = 0; i < m; i++)
-    for (int j = 0; j < m; j++)
+    for (int j = 0; j < n; j++)
       if (((h(i,j) != 0) && (h(i,j) != 1)) || 
 	  ((h(i,j) - (double)((int)h(i,j))) != 0)) {
 	error ("syndtable: parity check matrix contains invalid data");
@@ -110,25 +124,29 @@ DEFUN_DLD (syndtable, args, nargout,
 
   while (nfilled != 0) {
     // Get all possible combinations of nerrs bit errors in n bits
-    Array<int> errpos = get_errs(0, n, nerrs);
+    Array2<int> errpos = get_errs(0, n, nerrs);
 
     // Calculate the syndrome with the error vectors just calculated
-    Array<int> syndrome(errpos.length(),0);
-    for (int i = 0; i < m; i++)
-      for (int j = 0;  j < errpos.length(); j++)
+    for (int j = 0;  j < errpos.rows(); j++) {
+      int syndrome = 0;
+      for (int i = 0; i < m; i++) {
 	for (int k = 0;  k < n; k++)
-	  syndrome(j) ^= (errpos(j) & ((unsigned int)h(i,k) << k)  ? 
-			  ((unsigned int)1<<(m-i-1)) : 0);
-    
-    // Now use the syndrome as the rows indices to put the error vectors
-    // in place
-    for (int j = 0;  j < syndrome.length(); j++)
-      if (((unsigned int)syndrome(j) < nrows) && !filled(syndrome(j))) {
-	filled(syndrome(j)) = 1;
+	  syndrome ^= (errpos(j,COL_MAJ(k)) & 
+		       ((unsigned int)h(i,k) << COL_MIN(k)) ? 
+		       ((unsigned int)1<<(m-i-1)) : 0);
+      }
+
+      // Now use the syndrome as the rows indices to put the error vectors
+      // in place
+      if (((unsigned int)syndrome < nrows) && !filled(syndrome)) {
+	filled(syndrome) = 1;
 	nfilled--;
 	for (int i = 0; i < n; i++) 
-	  table(syndrome(j),i) = ((errpos(j) & ((unsigned int)1 << i)) != 0);
+	  table(syndrome,i) = ((errpos(j,COL_MAJ(i)) & 
+				((unsigned int)1 << COL_MIN(i))) != 0);
       }
+    }
+
     nerrs++;
   }
 

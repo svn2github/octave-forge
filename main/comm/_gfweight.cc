@@ -29,6 +29,35 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct.h>
 #include <octave/pager.h>
 
+#ifdef NEED_OCTAVE_QUIT
+#define OCTAVE_QUIT do {} while (0)
+#else
+#include <octave/quit.h>
+#endif
+
+static int
+get_weight (const Array<char>& codeword, const Matrix& gen, 
+	    int weight, int depth, int start, int n, int k) 
+{
+  int retval = weight;
+
+  for (int i = start; i < k ; i++)
+    {
+      OCTAVE_QUIT;
+
+      Array<char> new_codeword (codeword);
+      int tmp = 0;
+      for (int j = 0; j < n; j++)
+	if (new_codeword (j) ^= (char)gen(i,j))
+	  tmp++;
+      if (tmp < retval)
+	retval = tmp;
+      if (depth < retval)
+	retval = get_weight(new_codeword, gen, retval, depth+1, i+1, n, k);
+    }
+  return retval;
+}
+
 DEFUN_DLD (_gfweight, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{w} =} _gfweight (@var{gen})\n"
@@ -40,11 +69,10 @@ DEFUN_DLD (_gfweight, args, ,
 "rather than use this function directly.\n"
 "@end deftypefn\n"
 "@seealso{gfweight}") {
-  octave_value retval;
 
   if (args.length() != 1) {
     error("_gfweight: wrong number of arguments");
-    return retval;
+    return octave_value();
   }
 
   Matrix gen = args(0).matrix_value();
@@ -52,28 +80,14 @@ DEFUN_DLD (_gfweight, args, ,
   int n = gen.columns();
   unsigned long long nsym = ((unsigned long long)1 << k);
 
-  if (k > 64) {
-    error("_gfweight: can only handle message sizes up to 64");
-    return retval;
-  } else if (k > 20)
-    octave_stdout << "_gfweight: this is likely to take a very long time!!\n";
-
-  int w = n;
-  for (unsigned long long i=1; i<nsym; i++) {
-    int wtmp = 0;
-    for (int j=0; j<n; j++) {
-      int rtmp = 0;
-      for (int l=0; l<k; l++)
-	if (i & ((unsigned long long)1<<l))
-	  rtmp ^= (int)gen(l,j);
-      wtmp += rtmp;
+  if (k > 128)
+    {
+      octave_stdout << "_gfweight: this is likely to take a very long time!!\n";
+      flush_octave_stdout ();
     }
-    if (wtmp < w) 
-      w = wtmp;
-  }
-  
-  retval = octave_value((double)w);
-  return retval;
+
+  Array<char> codeword (n, 0);
+  return octave_value((double)get_weight (codeword, gen, n - k + 1, 1, 0, n, k));
 }
 
 /*

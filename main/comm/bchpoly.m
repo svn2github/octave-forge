@@ -149,7 +149,7 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
 	    cl = glog(c{i});
 	    for j=2*(t-1)+1:2*t
 	      if (find(cl == j))
-		f = [f, c{i}];
+		f = [f, c{i}.x];
 		fc(i) = 1;
 		break;
 	      endif
@@ -161,6 +161,7 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
 	if (k < 2)
 	  break;
 	endif
+
 	if (!isempty(p) && (k == p(size(p,1),2)))
 	  p(size(p,1),:) = [nn(ni), k, t];
 	else
@@ -185,7 +186,7 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
 	  cl = glog(c{i});
 	  for j=2*(t-1)+1:2*t
 	    if (find(cl == j))
-	      f1 = [f1, c{i}];
+	      f1 = [f1, c{i}.x];
 	      fc(i) = 1;
 	      ptmp = gf([c{i}(1), 1], m, prim);
 	      for l=2:length(c{i})

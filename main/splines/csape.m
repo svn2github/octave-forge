@@ -47,9 +47,7 @@ function pp = csape (x, y, cond, valc)
 
   x = x(:);
   n = length(x);
-  if n < 3
-    error("splines need at least three points"); 
-  endif
+  if n < 3, error("csape requires at least 3 points"); endif
 
   transpose = (columns(y) == n);
   if (transpose) y = y'; endif
@@ -65,23 +63,30 @@ function pp = csape (x, y, cond, valc)
       valc = [0, 0];
     endif
 
-    dg = 2 * (h(1:n - 2) .+ h(2:n - 1));
-    dg(1) = dg(1) - 0.5 * h(1);
-    dg(n - 2) = dg(n-2) - 0.5 * h(n - 1);
+    if (n == 3)
+      dg = 1.5 * h(1) - 0.5 * h(2);
+      c(2:n - 1,:) = 1/dg(1);
+    else
+      dg = 2 * (h(1:n - 2) .+ h(2:n - 1));
+      dg(1) = dg(1) - 0.5 * h(1);
+      dg(n - 2) = dg(n-2) - 0.5 * h(n - 1);
 
-    e = h(2:n - 2);
+      e = h(2:n - 2);
 
-    g = 3 * diff (a(2:n,:)) ./ h(2:n - 1,idx)\
-      - 3 * diff (a(1:n - 1,:)) ./ h(1:n - 2,idx);
-    g(1,:) = 3 * (a(3,:) - a(2,:)) / h(2) \
-        - 3 / 2 * (3 * (a(2,:) - a(1,:)) / h(1) - valc(1));
-    g(n - 2,:) = 3 / 2 * (3 * (a(n,:) - a(n - 1,:)) / h(n - 1) - valc(2))\
-        - 3 * (a(n - 1,:) - a(n - 2,:)) / h(n - 2);
+      g = 3 * diff (a(2:n,:)) ./ h(2:n - 1,idx)\
+        - 3 * diff (a(1:n - 1,:)) ./ h(1:n - 2,idx);
+      g(1,:) = 3 * (a(3,:) - a(2,:)) / h(2) \
+          - 3 / 2 * (3 * (a(2,:) - a(1,:)) / h(1) - valc(1));
+      g(n - 2,:) = 3 / 2 * (3 * (a(n,:) - a(n - 1,:)) / h(n - 1) - valc(2))\
+          - 3 * (a(n - 1,:) - a(n - 2,:)) / h(n - 2);
 
-    c(2:n - 1,:) = trisolve(dg,e,g);
+      c(2:n - 1,:) = trisolve(dg,e,g);
+    end
+
     c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * valc(1) 
 	      - c(2,:) * h(1)) / (2 * h(1)); 
     c(n,:) = - (3 / h(n - 1) * (a(n,:) - a(n - 1,:)) - 3 * valc(2) 
+
 		+ c(n - 1,:) * h(n - 1)) / (2 * h(n - 1));
     b(1:n - 1,:) = diff (a) ./ h(1:n - 1, idx)\
       - h(1:n - 1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n - 1,:));
@@ -103,10 +108,15 @@ function pp = csape (x, y, cond, valc)
     g(1,:) = g(1,:) - h(1) * c(1,:);
     g(n - 2,:) = g(n-2,:) - h(n - 1) * c(n,:);
 
-    dg = 2 * (h(1:n - 2) .+ h(2:n - 1));
-    e = h(2:n - 2); 
-    
-    c(2:n - 1,:) = trisolve (dg,e,g);
+    if( n == 3)
+      dg = 2 * h(1);
+      c(2:n - 1,:) = g / dg;
+    else
+      dg = 2 * (h(1:n - 2) .+ h(2:n - 1));
+      e = h(2:n - 2);
+      c(2:n - 1,:) = trisolve (dg,e,g);
+    end
+        
     b(1:n - 1,:) = diff (a) ./ h(1:n - 1,idx)\
       - h(1:n - 1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n - 1,:));
     d = diff (c) ./ (3 * h(1:n - 1, idx));
@@ -127,10 +137,6 @@ function pp = csape (x, y, cond, valc)
       dg = 2 * (h(1:n - 1) .+ h(2:n));
       e = h(2:n - 1);
       c(2:n,idx) = trisolve(dg,e,g,h(1),h(1));
-    elseif (n == 3)
-      A = [2 * (h(1) + h(2)), (h(1) + h(2));
-          (h(1) + h(2)), 2 * (h(1) + h(2))];
-      c(2:n,idx) = A \ g;
     endif
 
     c(1,:) = c(n,:);
@@ -142,7 +148,17 @@ function pp = csape (x, y, cond, valc)
 
   elseif (strcmp(cond,"not-a-knot"))
 
+    g = zeros(n - 2,columns(y));
+    g(1,:) = 3 / (h(1) + h(2)) * (a(3,:) - a(2,:)\
+          - h(2) / h(1) * (a(2,:) - a(1,:)));
+    g(n - 2,:) = 3 / (h(n - 1) + h(n - 2)) *\
+ 	(h(n - 2) / h(n - 1) * (a(n,:) - a(n - 1,:)) -\
+	 (a(n - 1,:) - a(n - 2,:)));
+
     if (n > 4)
+
+      g(2:n - 3,:) = 3 * diff (a(3:n - 1,:)) ./ h(3:n - 2,idx)\
+        - 3 * diff (a(2:n - 2,:)) ./ h(2:n - 3,idx);
 
       dg = 2 * (h(1:n - 2) .+ h(2:n - 1));
       dg(1) = dg(1) - h(1);
@@ -151,29 +167,22 @@ function pp = csape (x, y, cond, valc)
       ldg = udg = h(2:n - 2);
       udg(1) = udg(1) - h(1);
       ldg(n - 3) = ldg(n-3) - h(n - 1);
- 
-    elseif (n==4)
+      c(2:n - 1,:) = trisolve(ldg,dg,udg,g);
+
+    elseif (n == 4)
 
       dg = [h(1) + 2 * h(2), 2 * h(2) + h(3)];
       ldg = h(2) - h(3);
       udg = h(2) - h(1);
-
-    else
-      ## XXX FIXME XXX this case falls through the cracks
-      error("what to do for not-a-knot and n==4?");
+      c(2:n - 1,:) = trisolve(ldg,dg,udg,g);
+      
+    else # n == 3
+	    
+      dg= [h(1) + 2 * h(2)];
+      c(2:n - 1,:) = g/dg(1);
 
     endif
-    g = zeros(n - 2,columns(y));
-    g(1,:) = 3 / (h(1) + h(2)) * (a(3,:) - a(2,:)\
-          - h(2) / h(1) * (a(2,:) - a(1,:)));
-    if (n > 4)
-      g(2:n - 3,:) = 3 * diff (a(3:n - 1,:)) ./ h(3:n - 2,idx)\
-        - 3 * diff (a(2:n - 2,:)) ./ h(2:n - 3,idx);
-    endif
-    g(n - 2,:) = 3 / (h(n - 1) + h(n - 2)) *\
- 	(h(n - 2) / h(n - 1) * (a(n,:) - a(n - 1,:)) -\
-	 (a(n - 1,:) - a(n - 2,:)));
-    c(2:n - 1,:) = trisolve(ldg,dg,udg,g);
+
     c(1,:) = c(2,:) + h(1) / h(2) * (c(2,:) - c(3,:));
     c(n,:) = c(n - 1,:) + h(n - 1) / h(n - 2) * (c(n - 1,:) - c(n - 2,:));
     b = diff (a) ./ h(1:n - 1, idx)\

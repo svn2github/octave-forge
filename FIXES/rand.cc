@@ -238,9 +238,19 @@ do_size(octave_value_list args, int& nr, int& nc)
 %! rand('seed',s); y=rand(1,2);
 %! assert(x,y);
 %!# querying 'seed' disturbs the sequence, so don't test that it doesn't
-%!# XXX FIXME XXX tests of uniformity
 */
 
+/*
+%!test
+%! % statistical tests may fail occasionally.
+%! x = rand(100000,1);
+%! assert(max(x)<1.); %*** Please report this!!! ***
+%! assert(min(x)>0.); %*** Please report this!!! ***
+%! assert(mean(x),0.5,0.0024);
+%! assert(var(x),1/48,0.0632);
+%! assert(skewness(x),0,0.012); 
+%! assert(kurtosis(x),-6/5,0.0094);
+*/
 DEFUN_DLD (rand, args, nargout, 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} rand (@var{x})\n\
@@ -352,6 +362,15 @@ http://www.math.keio.ac.jp/~matumoto/emt.html\n\
   return retval;
 }
 
+/*
+%!test
+%! % statistical tests may fail occasionally.
+%! x = randn(100000,1);
+%! assert(mean(x),0,0.01);
+%! assert(var(x),1,0.02);
+%! assert(skewness(x),0,0.02);
+%! assert(kurtosis(x),0,0.04);
+*/
 DEFUN_DLD (randn, args, nargout, 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} randn (@var{x})\n\
@@ -364,6 +383,9 @@ arguments are handled the same as the arguments for @code{rand}.\n\
 @code{randn} uses a Marsaglia and Tsang[1] Ziggurat technique to\n\
 transform from U to N(0,1). The technique uses a 256 level Ziggurat\n\
 with the Mersenne Twister from @code{rand} used to generate U.\n\
+\n\
+To generate a normally distributed random element with mean m and standard\n\
+deviation s use s*randn+m.\n\
 \n\
 [1] G. Marsaglia and W.W. Tsang, 'Ziggurat method for generating random\n\
 variables', J. Statistical Software, vol 5, 2000\n\
@@ -428,6 +450,15 @@ variables', J. Statistical Software, vol 5, 2000\n\
   return retval;
 }
 
+/*
+%!test
+%! % statistical tests may fail occasionally
+%! x = rande(100000,1);
+%! assert(mean(x),1,0.01);
+%! assert(var(x),1,0.03);
+%! assert(skewness(x),2,0.06);
+%! assert(kurtosis(x),6,0.7);
+*/
 DEFUN_DLD (rande, args, nargout, 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} rande (@var{x})\n\
@@ -508,12 +539,36 @@ variables', J. Statistical Software, vol 5, 2000\n\
 }
 
 #undef NAN
+#undef ISINF
 #define NAN octave_NaN
+#define INFINITE lo_ieee_isinf
 #define RUNI randu()
 #define RNOR randn()
+#define REXP rande()
 #define LGAMMA xlgamma
-#include "randpoisson.c"
 
+/*
+%!test
+%! % statistical tests may fail occasionally.
+%! for a=[5 15]
+%!   x = randp(a,100000,1);
+%!   assert(mean(x),a,0.03);
+%!   assert(var(x),a,0.2);
+%!   assert(skewness(x),1/sqrt(a),0.03);
+%!   assert(kurtosis(x),1/a,0.08);
+%! end
+%!test
+%! % statistical tests may fail occasionally.
+%! for a=[5 15]
+%!   x = randp(a*ones(100000,1),100000,1);
+%!   assert(mean(x),a,0.03);
+%!   assert(var(x),a,0.2);
+%!   assert(skewness(x),1/sqrt(a),0.03);
+%!   assert(kurtosis(x),1/a,0.08);
+%! end
+*/
+
+#include "randpoisson.c"
 DEFUN_DLD (randp, args, nargout, 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} randp (@var{l})\n\
@@ -582,6 +637,126 @@ D 50 p1284, 1994\n\
     {
       const double *pL = lambda.data();
       for (int i=nr*nc-1; i >= 0; i--) pX[i] = randp(pL[i]);
+    }
+
+  retval(0) = X;
+  return retval;
+}
+
+/*
+%!test
+%! % statistical tests may fail occasionally.
+%! a=0.1; x = randg(a,100000,1);
+%! assert(mean(x),    a,         0.01);
+%! assert(var(x),     a,         0.01);
+%! assert(skewness(x),2/sqrt(a), 1.);
+%! assert(kurtosis(x),6/a,       50.);
+%!test
+%! % statistical tests may fail occasionally.
+%! a=0.95; x = randg(a,100000,1);
+%! assert(mean(x),    a,         0.01);
+%! assert(var(x),     a,         0.04);
+%! assert(skewness(x),2/sqrt(a), 0.2);
+%! assert(kurtosis(x),6/a,       2.);
+%!test
+%! % statistical tests may fail occasionally.
+%! a=1; x = randg(a,100000,1);
+%! assert(mean(x),a,             0.01);
+%! assert(var(x),a,              0.04);
+%! assert(skewness(x),2/sqrt(a), 0.2);
+%! assert(kurtosis(x),6/a,       2.);
+%!test
+%! % statistical tests may fail occasionally.
+%! a=10; x = randg(a,100000,1);
+%! assert(mean(x),    a,         0.1);
+%! assert(var(x),     a,         0.5);
+%! assert(skewness(x),2/sqrt(a), 0.1);
+%! assert(kurtosis(x),6/a,       0.5);
+%!test
+%! % statistical tests may fail occasionally.
+%! a=100; x = randg(a,100000,1);
+%! assert(mean(x),    a,         0.2);
+%! assert(var(x),     a,         2.);
+%! assert(skewness(x),2/sqrt(a), 0.05);
+%! assert(kurtosis(x),6/a,       0.2);
+*/
+#include "randgamma.c"
+DEFUN_DLD (randg, args, nargout, 
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} randg (@var{a})\n\
+@deftypefnx {Loadable Function} {} randg (@var{a}, [@var{n}, @var{m}])\n\
+@deftypefnx {Loadable Function} {} randg (@var{a}, @var{n}, @var{m})\n\
+Return a matrix with gamma(A,1) distributed random elements.  This can\n\
+be used to generate many distributions:\n\n\
+gamma(a,b) for a>-1, b>0 (from R)\n\
+  r = b*randg(a)\n\n\
+beta(a,b) for a>-1, b>-1\n\
+  r1 = randg(a,1)\n\
+  r = r1 / (r1 + randg(b,1))\n\n\
+Erlang(a,n)\n\
+  r = a*randg(n)\n\n\
+chisq(df) for df>0\n\
+  r = 2*randg(df/2)\n\n\
+t(df) for 0<df<inf (use randn if df is infinite)\n\
+  r = randn() / sqrt(2*randg(df/2)/df)\n\n\
+F(n1,n2) for 0<n1, 0<n2\n\
+  r1 = 2*randg(n1/2)/n1 or 1 if n1 is infinite\n\
+  r2 = 2*randg(n2/2)/n2 or 1 if n2 is infinite\n\
+  r = r1 / r2\n\n\
+negative binonial (n, p) for n>0, 0<p<=1\n\
+  r = randp((1-p)/p * randg(n))\n\
+  (from R, citing Devroye(1986), Non-Uniform Random Variate Generation)\n\n\
+non-central chisq(df,L), for df>=0 and L>0 (use chisq if L=0)\n\
+  r = randp(L/2)\n\
+  r(r>0) = 2*randg(r(r>0))\n\
+  r(df>0) += 2*randg(df(df>0)/2)\n\
+  (from R, citing formula 29.5b-c in Johnson, Kotz, Balkrishnan(1995))\n\n\
+Dirichlet(a1,...,ak)\n\
+  r = (randg(a1),...,randg(ak))\n\
+  r = r / sum(r)\n\
+  (from GSL, citing Law & Kelton(1991), Simulation Modeling and Analysis)\n\n\
+@end deftypefn\n\
+@seealso{rand, randn, rande, randp}\n")
+{
+  octave_value_list retval;	// list of return values
+
+  int nargin = args.length ();	// number of arguments supplied
+  if (nargin > 3 || nargin < 1) 
+    {
+      print_usage("randg");
+      return retval;
+    }
+
+  Matrix alpha(args(0).matrix_value());
+  if (error_state) return retval;
+
+  int nr=0, nc=0;
+  switch (nargin) {
+  case 1: nr = alpha.rows(); nc = alpha.columns(); break;
+  case 2: get_dimensions(args(1), "randg", nr, nc); break;
+  case 3: get_dimensions(args(1), args(2), "randg", nr, nc); break;
+  }
+
+  if (error_state) return retval;
+
+  if ( (alpha.length()!=1 && (nr != alpha.rows() || nc != alpha.columns())) )
+    {
+      error("randg: dimensions of alpha must match requested matrix size");
+      return retval;
+    }
+
+  Matrix X(nr, nc);
+  double *pX = X.fortran_vec();
+
+  if (alpha.length()==1)
+    {
+      fill_randg(alpha(0,0),nr*nc,pX);
+    }
+  else
+    {
+      const double *pA = alpha.data();
+      for (int i=nr*nc-1; i >= 0; i--) // pX[i] = randg(pA[i]);
+	fill_randg(pA[i],1,pX+i);
     }
 
   retval(0) = X;

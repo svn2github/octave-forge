@@ -56,14 +56,8 @@ op = setfield ();		# Empty struct
 op0 = op1 = " ";
 skipnan = prefix = quiet = nocase = quiet = 0;
 
-<<<<<<< read_options.m
-nargin = nargin();
-nargin--;
-if rem (nargin, 2), error ("odd number of optional args"); end
-=======
 args = nargin-1;  # nargin is now a function
 if rem (args, 2), error ("odd number of optional args"); end
->>>>>>> 1.9
 
 
 ## beginpos 2.1.39

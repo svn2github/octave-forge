@@ -10,21 +10,18 @@ TEST_PATH=$(shell admin/runpath.sh)
 RUN_OCTAVE=$(OCTAVE) --norc -p "$(TEST_PATH)"
 
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
-.PHONY:  $(SUBMAKEDIRS)
+.PHONY: subdirs clearlog $(SUBMAKEDIRS)
 
 ifdef OCTAVE_FORGE
 
 .PHONY: all install check icheck
 
-all: setup $(SUBMAKEDIRS)
+all: subdirs
 	@echo "Build finished."
 	@echo "Please read FIXES/README before you install."
 	@if test -f build.fail ; then cat build.fail; false; fi
 
-setup:
-	@-$(RM) build.log build.fail
-
-install: $(SUBMAKEDIRS)
+install: subdirs
 	@echo " "
 	@echo "Installation complete."
 	@echo " "
@@ -70,27 +67,21 @@ endif
 
 .PHONY: clean distclean dist
 
-clean: $(SUBMAKEDIRS)
+clean: subdirs
 	-$(RM) core octave-core octave configure.in
 
-distclean: 
-	$(MAKE) clean
-	-$(RM) Makeconf octinst.sh config.cache config.status config.log *~
+distclean: clean
+	-$(RM) Makeconf octinst.sh config.cache config.status config.log \
+		build.log build.fail *~
 
-dist: distclean
+dist: subdirs distclean
 	@echo Follow the instructions in octave-forge/release.sh
 
+
+subdirs: clearlog $(SUBMAKEDIRS)
+clearlog: ; @-$(RM) build.log build.fail
 $(SUBMAKEDIRS):
 	@echo Processing $@
 	@if cd $@ && ! $(MAKE) -k $(MAKECMDGOALS) 2>&1; then \
-	   echo "$@ not complete. See $@log for details" >>../build.fail ; \
-	fi | tee -a $@log
-
-else
-
-.PHONY: all install
-
-all install:
-	@echo "./configure ; make ; make install"
-
-endif
+	   echo "$@ not complete. See log for details" >>../build.fail ; \
+	fi | tee -a build.log

@@ -118,33 +118,38 @@ fi
 
 dnl *******************************************************************
 
-dnl XXX FIXME XXX should we allow the user to override these?
+dnl XXX FIXME XXX Should we allow the user to override these?
+dnl Do we even need them?  The individual makefiles can call mkoctfile -p
+dnl themselves, so the only reason to keep them is for configure, and
+dnl for those things which are not built using mkoctfile (e.g., aurecord)
+dnl but it is not clear we should be using octave compile flags for those.
+
 dnl C compiler and flags
 AC_MSG_RESULT([retrieving compile and link flags from $MKOCTFILE])
 CC=`$MKOCTFILE -p CC`
 CFLAGS=`$MKOCTFILE -p CFLAGS`
 CPPFLAGS=`$MKOCTFILE -p CPPFLAGS`
-CPICFLAGS=`$MKOCTFILE -p CPICFLAGS`
+CPICFLAG=`$MKOCTFILE -p CPICFLAG`
 AC_SUBST(CC)
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
-AC_SUBST(CPICFLAGS)
+AC_SUBST(CPICFLAG)
 
 dnl Fortran compiler and flags
 F77=`$MKOCTFILE -p F77`
 FFLAGS=`$MKOCTFILE -p FFLAGS`
-FPICFLAGS=`$MKOCTFILE -p FPICFLAGS`
+FPICFLAG=`$MKOCTFILE -p FPICFLAG`
 AC_SUBST(F77)
 AC_SUBST(FFLAGS)
-AC_SUBST(FPICFLAGS)
+AC_SUBST(FPICFLAG)
 
 dnl C++ compiler and flags
 CXX=`$MKOCTFILE -p CXX`
 CXXFLAGS=`$MKOCTFILE -p CXXFLAGS`
-CXXPICFLAGS=`$MKOCTFILE -p CXXPICFLAGS`
+CXXPICFLAG=`$MKOCTFILE -p CXXPICFLAG`
 AC_SUBST(CXX)
 AC_SUBST(CXXFLAGS)
-AC_SUBST(CXXPICFLAGS)
+AC_SUBST(CXXPICFLAG)
 
 dnl *******************************************************************
 
@@ -169,6 +174,7 @@ dnl **********************************************************
 
 dnl should check that $(OCTAVE) --version matches $(MKOCTFILE) --version
 AC_CHECK_PROG(OCTAVE,octave,octave)
+OCTAVE_VERSION=`echo "disp(OCTAVE_VERSION)" | $OCTAVE -q`
 
 AC_PROG_LN_S
 AC_PROG_INSTALL
@@ -195,8 +201,8 @@ else
 	XSTATUS="yes"
 fi
 
-STATUS_MSG="
 
+STATUS_MSG="
 octave commands will install into the following directories:
    m-files:   $mpath
    oct-files: $opath
@@ -209,7 +215,7 @@ shell commands will install into the following directories:
    headers:   $includedir
 
 octave-forge is configured with
-   octave:      $OCTAVE
+   octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
    X11 support:	$XSTATUS"
 

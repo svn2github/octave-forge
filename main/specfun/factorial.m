@@ -17,5 +17,15 @@
 ## factorial(n)
 ##   ==prod(1:n)
 function x = factorial(n)
-  x = prod(2:n);
+  if (any (n (:) < 0))
+    error ("factorial: n be be a scalar or matrix of positive integers");
+  endif
+  if (isscalar (n))
+    x = prod(2:n)
+  else
+    n (find (n < 1)) = 1;
+    m = max(n(:));
+    c = cumprod(1:m);
+    x = c(floor(n));
+  endif
 endfunction

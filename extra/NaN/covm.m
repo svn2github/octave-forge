@@ -50,16 +50,11 @@ function [CC,NN] = covm(X,Y,Mode);
 
 if nargin<3,
         if nargin==2,
-		if exist('OCTAVE_VERSION')>5,
-			tmp = isascii(Y);
-		else
-			tmp = ischar(Y);
-                end;
-		if tmp,
+		if isnumeric(Y),
+                        Mode='M';
+                else
 		        Mode=Y;
                         Y=[];
-                else
-                        Mode='M';
                 end;
         elseif nargin==1,
                 Mode = 'M';
@@ -70,11 +65,6 @@ if nargin<3,
 end;        
 
 Mode = upper(Mode);
-
-[r1,c1]=size(X);
-if (c1>r1),
-        warning('Covariance is ill-defined, because of too less observations (rows)');
-end;
 
 [r1,c1]=size(X);
 if ~isempty(Y)
@@ -97,7 +87,7 @@ if ~isempty(Y),
 	        X(isnan(X)) = 0; % skip NaN's
 	        Y(isnan(Y)) = 0; % skip NaN's
         	CC = X'*Y;
-        else  % if Mode==D or Mode == E, 
+        else  % if any(Mode=='D') | any(Mode=='E'), 
 	        [S1,N1] = sumskipnan(X,1);
                 [S2,N2] = sumskipnan(Y,1);
                 
@@ -118,8 +108,8 @@ if ~isempty(Y),
                 CC = X'*Y;
                 
                 if any(Mode=='E'), % extended mode
-                        NN = [r1, N1; N2', NN];
-                        CC = [r1, S1; S2', CC];
+                        NN = [r1, N2; N1', NN];
+                        CC = [r1, S2; S1', CC];
                 end;
 	end;
         
@@ -128,7 +118,7 @@ else
         	NN = real(~isnan(X)')*real(~isnan(X));
 	        X(isnan(X)) = 0; % skip NaN's
 	        CC = X'*X;
-        else  % if Mode==D or Mode == E, 
+        else  % if any(Mode=='D') | any(Mode=='E'), 
 	        [S,N] = sumskipnan(X,1);
                 NN = real(~isnan(X)')*real(~isnan(X));
         	if any(Mode=='D'), % detrending mode

@@ -38,7 +38,7 @@ function r = spearman(x,y)
 % warning('SPEARMAN might become obsolete; use CORRCOEF(...,''Spearman'') instead');
 
 if nargin < 2
-   r = corrcoef(x,'Spearman')
+   r = corrcoef(x,'Spearman');
 else
-   r = corrcoef(x,y,'Spearman')
+   r = corrcoef(x,y,'Spearman');
 end

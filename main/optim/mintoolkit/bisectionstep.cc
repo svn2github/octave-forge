@@ -30,6 +30,7 @@
 #include <oct.h>
 #include <octave/parse.h>
 #include <octave/Cell.h>
+#include <octave/lo-ieee.h>
 #include <float.h>
 
 DEFUN_DLD(bisectionstep, args, , "bisectionstep.cc")
@@ -76,7 +77,7 @@ DEFUN_DLD(bisectionstep, args, , "bisectionstep.cc")
 		obj = f_return(0).double_value();
  
  		// reduce stepsize if worse, or if function can't be evaluated
-		if ((obj >= obj_0) || isnan(obj))
+		if ((obj >= obj_0) || lo_ieee_isnan(obj))
 		{
 			a = 0.5 * a;
 		}	
@@ -106,7 +107,7 @@ DEFUN_DLD(bisectionstep, args, , "bisectionstep.cc")
 		obj = f_return(0).double_value();
  
 		// if improved, record new best and try another step
-		if ((obj < obj_0) & !isnan(obj))
+		if ((obj < obj_0) & !lo_ieee_isnan(obj))
 		{
 			obj_0 = obj;
 		}	

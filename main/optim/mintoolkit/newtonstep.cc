@@ -25,6 +25,7 @@
 #include <oct.h>
 #include <octave/parse.h>
 #include <octave/Cell.h>
+#include <octave/lo-ieee.h>
 #include <float.h>
 
 DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
@@ -107,7 +108,7 @@ DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
 	obj = f_return(0).double_value();
 
 	// if not, fall back to bisection
-	if ((obj > obj_0) || isnan(obj))
+	if ((obj > obj_0) || lo_ieee_isnan(obj))
 	{
 		 f_return = feval("bisectionstep", args);
 		 a = f_return(0).double_value();

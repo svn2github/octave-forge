@@ -1,4 +1,4 @@
-#!/usr/local/bin/octave-pthreads
+#!/usr/lib/octave -q
 
 colorbar = [1:100]';
 load sample.dat

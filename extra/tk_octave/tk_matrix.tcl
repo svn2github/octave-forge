@@ -6,7 +6,7 @@ wm deiconify .
 
 set HaveTable [expr [ catch { package require Tktable } ] == 0 ]
 set HaveVTK [expr [ string equal [ info commands oct_mtovtk ] {} ] && \
-	          [ catch {load ./vtktcl} ] == 0 ]
+	          [ catch { package require vtk } ] == 0 ]
 
 
 set Matrix {}

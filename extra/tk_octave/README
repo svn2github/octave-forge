@@ -31,7 +31,7 @@ tk_*.m			Various user interaction dialogs
 Compiling Octave with tk_interp.cc
 ==================================
 
-In order to use tk_interp, we needed to relink the Octave binary with
+In order to use tk_interp, you may need to relink the Octave binary with
 pthreads.
 
 1) Untar/gz the octave source to /someplace/octave
@@ -62,8 +62,8 @@ Creating tk_interp.oct
 After relinking a custom version of Octave with pthreads, you'll need to 
 create tk_interp.oct.  Modify Makefile in the tk_octave directory to
 reference the appropriate mkoctfile for your custom version of Octave,
-and include either or both of $(BLT_OPTS) and $(VTK_OPTS) on the
-OPTS = ... line.  Type make and it should create tk_interp.oct for you.
+and comment out TCL_OPTS=, BLT_OPTS= or VTK_OPTS= as appropriate.
+Type make and it should create tk_interp.oct for you.
 
 Note that to use BLT and VTK, you will need to link with code distributed
 under four different licenses:
@@ -224,10 +224,3 @@ octave main loop is going to be sitting in tk_cmd or tk_loop during almost
 all GUI interaction, so the issue will never come up, but you will have to
 think carefully about what you put in your tk_cmd and oct_cmd commands to
 be sure.  See SAFE_VAR in tk_interp.cc.
-
-Add an FSF approved "arm's length" separation between octave and tcl by
-sending matrices and commands through a pipe to a separate executable
-rather than copying them to a separate thread.  Alternatively, find a
-GPL compatible replacement for BLT and VTK.  You may still want to keep
-a separate thread in octave for the communication so that you can continue
-to access octave data asynchronously.

@@ -2,37 +2,29 @@ sinclude ../../Makeconf
 
 ## Change this to the location of mkoctfile for your version of
 ## octave linked against pthreads (see README).
-MKOCTFILE ?= mkoctfile-pthreads
+MKOCTFILE ?= mkoctfile
 
-ifndef OCTAVE_FORGE
-	HAVE_TCLTK ?= 1
-	HAVE_BLT ?= 1
-	HAVE_VTK ?= 0
-endif
-
-VTK_OPTS = -DHAVE_VTK -lVTKCommon -lVTKGraphics -lVTKImaging -lGL
+## Compile and link opts --- set as appropriate for your system
+TCL_OPTS = -I/usr/include/tcl8.4 -ltcl8.4 -ltk8.4 -lpthread
+VTK_OPTS = -DHAVE_VTK -lvtkCommon -lvtkGraphics -lvtkImaging -lGL
 BLT_OPTS = -DHAVE_BLT -lBLT
 
-## Include either or both VTK_OPTS and BLT_OPTS if you have VTK/BLT installed
-ifdef HAVE_BLT
-OPTS += $(BLT_OPTS)
-endif
-ifdef HAVE_VTK
-OPTS += $(VTK_OPTS)
-endif
-
 ## The remainder of this file should not need changing
-LIBS = -ltcl -ltk -lpthread
+OPTS  = $(TCL_OPTS) $(BLT_OPTS) $(VTK_OPTS)
+LINKS = tk_loop.oct tk_end.oct tk_cmd.oct
 
-ifdef HAVE_TCLTK
-all: tk_interp.oct
+ifdef TCL_OPTS
+all: tk_interp.oct $(LINKS)
 else
-all:
-	@echo No Tcl/TK: tk_octave is not being built
+all: ; @echo No Tcl/TK: tk_octave is not being built
 endif
 
 tk_interp.oct: tk_interp.cc
-	$(MKOCTFILE) -v $^ -o $@ $(OPTS) $(LIBS)
+	$(MKOCTFILE) -v $^ -o $@ $(OPTS)
+
+$(LINKS):
+	-$(RM) $@
+	$(LN_S) tk_interp.oct $@
 
 clean: ; -$(RM) core octave-core *.o *.oct *~
 

@@ -49,7 +49,6 @@ without modification, or license it as you see fit.
 #endif
 
 #if HAVE_VTK
-#include <vtk/vtk.h>
 #include <vtk/vtkRenderer.h>
 #include <vtk/vtkRenderWindow.h>
 #include <vtk/vtkRenderWindowInteractor.h>
@@ -57,7 +56,6 @@ without modification, or license it as you see fit.
 #include <vtk/vtkTransform.h>
 #include <vtk/vtkTransformPolyDataFilter.h>
 #include <vtk/vtkPoints.h>
-#include <vtk/vtkScalars.h>
 #include <vtk/vtkWarpScalar.h>
 #include <vtk/vtkDataSetMapper.h>
 #include <vtk/vtkPolyData.h>
@@ -66,14 +64,8 @@ without modification, or license it as you see fit.
 #endif /* HAVE_VTK */
 
 #include <string>
-#include <strstream>
-
-#include <string.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <unistd.h>
+#include <iostream>
 #include <pthread.h>
-#include <iostream.h>
 
 #define TRUE  1
 #define FALSE 0
@@ -444,7 +436,7 @@ stringName options\"", NULL);
          argv[1], "\" defined.", NULL);
       return TCL_ERROR;
    }
-   string s = def.string_value();
+   std::string s = def.string_value();
    Tcl_AppendResult(interp, s.c_str(), NULL);
    return TCL_OK;
 }
@@ -702,8 +694,9 @@ int oct_mtovtk(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char
    int numPts = input->GetNumberOfPoints();
    vtkPoints *newPts = vtkPoints::New();
    newPts->SetNumberOfPoints(numPts);
-   vtkScalars *colors = vtkScalars::New();
-   colors->SetNumberOfScalars(numPts);
+   // XXX FIXME XXX color handling has changed
+   // vtkScalars *colors = vtkScalars::New();
+   // colors->SetNumberOfScalars(numPts);
 
    // Convert values from Octave matrix and store in VTK object
    float p[3];
@@ -714,19 +707,19 @@ int oct_mtovtk(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char
       int col = int((p[1] + 0.5) * (float) (m.cols() - 1));
       p[2] = ((m.elem(row, col) - min) / (max - min)) - 0.5;
       newPts->SetPoint(k, p);
-      colors->SetScalar(k, p[2]);
+      // colors->SetScalar(k, p[2]);
    }   
 
    surface->CopyStructure(input);
    surface->SetPoints(newPts);
-   surface->GetPointData()->SetScalars(colors);
+   // surface->GetPointData()->SetScalars(colors);
 
    // Clean up VTK objects
    plane->Delete();
    transform->Delete();
    transF->Delete();
    newPts->Delete();
-   colors->Delete();
+   // colors->Delete();
 
    return TCL_OK;
 }
@@ -1024,8 +1017,8 @@ See also: tk_start, tk_end, tk_cmd")
       pthread_mutex_unlock(&tk_mutex);
       while(command_to_do)
       {
-         cout << "Processing command: " << command_to_do << "\n";
-         const string octave_cmd = string(command_to_do);
+	 std::cout << "Processing command: " << command_to_do << "\n";
+         const std::string octave_cmd = std::string(command_to_do);
          int parse_status = 0;
 #if SAFE_VAR
 	 pthread_mutex_lock(&oct_mutex);
@@ -1034,7 +1027,7 @@ See also: tk_start, tk_end, tk_cmd")
 #if SAFE_VAR
 	 pthread_mutex_unlock(&oct_mutex);
 #endif
-         cout << "Finished\n";
+	 std::cout << "Finished\n";
 
          pthread_mutex_lock(&tk_mutex);
          tk_fifo.pop();

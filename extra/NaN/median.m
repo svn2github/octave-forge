@@ -46,45 +46,28 @@ if nargin<2,
         if isempty(DIM), DIM=1; end;
 end;
 
-% number of valid elements
-if flag_implicit_skip_nan,	% default
-	n = sumskipnan(~isnan(x),DIM);   % make it compatible to 2.0.17
-else				%  
-	n = sumskipnan(ones(size(x)),DIM);
+if DIM>length(sz),
+        sz = [sz,ones(1,DIM-length(sz))];
 end;
+
+D1 = prod(sz(1:DIM-1));
+%D2 = sz(DIM);
+D3 = prod(sz(DIM+1:length(sz)));
+D0 = [sz(1:DIM-1),1,sz(DIM+1:length(sz))];
+y  = repmat(nan,D0);
+for k = 0:D1-1,
+for l = 0:D3-1,
+        xi = k + l * D1*sz(DIM) + 1 ;
+        xo = k + l * D1 + 1;
+        t = sort(x(xi+(0:sz(DIM)-1)*D1));
+        n = sum(~isnan(t));
         
-if 0; %~exist('OCTAVE_VERSION'),
-        [x,ix] = sort(x,DIM); % this relays on the sort order of IEEE754 inf < nan
-else        
-	if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),  %~exist('OCTAVE_VERSION'),
-    		warning('MEDIAN: sort does not handle NaN, workaround with bad performance necessary');
-    		for k1=1:size(x,1),
-            		for k2=1:size(x,2),	% needed for 2.0.17 
-                    		if isnan(x(k1,k2)), 
-                            		x(k1,k2) = inf;
-                    		end;
-			end;
-                end;
-        end;
-	
-	if DIM==1,
-                [x,ix] = sort([x ; NaN*ones(1,sz(2))]);
-        elseif DIM==2,
-                [x,ix] = sort([x'; NaN*ones(1,sz(1))]);
-        else
-                fprintf('Error MEDIAN: DIM argument should be 1 or 2\n');	
-                return;        
+        if n==0,
+                y(xo) = nan;
+        elseif ~rem(n,2),
+                y(xo) = (t(n/2) + t(n/2+1)) / 2;
+        elseif rem(n,2),
+                y(xo) = t((n+1)/2);
         end;
 end;
-
-y = zeros(size(n));
-for k = 1:prod(size(y)),
-        if n(k)==0,
-                y(k) = nan;
-        elseif ~rem(n(k),2),
-                y(k) = (x(n(k)/2,k) + x(n(k)/2+1,k)) / 2;
-        elseif rem(n(k),2),
-                y(k) = x((n(k)+1)/2,k);
-        end;
 end;
-

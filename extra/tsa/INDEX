@@ -4,18 +4,14 @@ Analysis functions
    acorf
    biacovf
    bispec
-   hiocum
-   pac
    durlev
    lattice
    invest0
    invest1
    selmo
-   histo
-   entropy
+   histo3
    hup
    ucp
-   hist2res
    y2res
    ar_spa
    detrend
@@ -23,9 +19,8 @@ Analysis functions
    quantiles
 
 Multivariate analysis (planned in future)
-   mdurlev
-   mfilter
-   mfreqz
+   mvar
+   mvfilter
  
 Conversions between forms
    ac2poly

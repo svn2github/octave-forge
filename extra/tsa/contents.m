@@ -1,9 +1,9 @@
 % Time Series Analysis (Ver 2.90)
-% Schloegl A. (1996-2001) Time Series Analysis - A Toolbox for the use with Matlab. 
+% Schloegl A. (1996-2002) Time Series Analysis - A Toolbox for the use with Matlab. 
 % WWW: http://www.dpmi.tu-graz.ac.at:~schloegl/matlab/tsa
 %
 %	Version 2.90
-%	last revision 05.04.2002
+%	last revision 10.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 %
@@ -18,11 +18,9 @@
 %   invest0	(*) a prior investigation (used by invest1)
 %   invest1	(*) investigates signal (useful for 1st evaluation of the data)
 %   selmo	(*) Select Order of Autoregressive model using different criteria
-%   histo	(*) histogram
-%   entropy	(*) entropy function
+%   histo3	(*) histogram
 %   hup     	(*) test Hurwitz polynomials
 %   ucp     	(*) test Unit Circle Polynomials   
-%   hist2res	(*) computes mean, variance, skewness, kurtosis, entropy, etc.from the histogram
 %   y2res	(*) computes mean, variance, skewness, kurtosis, entropy, etc. from data series 
 %   ar_spa	(*) spectral analysis based on the autoregressive model
 %   detrend 	(*) removes trend, can handle missing values, non-equidistant sampled data       
@@ -32,7 +30,8 @@
 % Multivariate analysis (planned in future)
 %   mvar	multivariate (vector) autoregressive estimation 
 %   mvfilter	multivariate filter
-    %   	
+%
+       	
 %  Conversions between Autocorrelation (AC), Autoregressive parameters (AR), 
 %             	prediction polynom (POLY) and Reflection coefficient (RC)  
 %   ac2poly 	(*) transforms autocorrelation into prediction polynom

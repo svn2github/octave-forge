@@ -112,4 +112,4 @@ else
         w = zeros(M,1);
 end;
 
-%if nargout>5,	th=[];	fprintf(2,'Warning ARFIT2: output TH not defined\n'); end;
+if nargout>5,	th=[];	fprintf(2,'Warning ARFIT2: output TH not defined\n'); end;

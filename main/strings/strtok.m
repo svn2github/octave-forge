@@ -96,7 +96,7 @@ endfunction
 %!assert(strtok("this is"), "this");  # delimiter in middle
 %!assert(strtok(" this"), "this");    # delimiter at start
 %!assert(strtok(" this "), "this");   # delimiter at start and end
-%!assert(strtok(" "), "");            # delimiter only
+%!assert(strtok(" "), ""(1:0));            # delimiter only
 
 %!# test the remainder for all cases
 %!test [t,r] = strtok(""); assert(r, "");
@@ -119,4 +119,4 @@ endfunction
 %!assert(strtok("this is","jkl "), "this");
 %!assert(strtok(" this","jkl "), "this");
 %!assert(strtok(" this ","jkl "), "this");
-%!assert(strtok(" ","jkl "), "");
+%!assert(strtok(" ","jkl "), ""(1:0));

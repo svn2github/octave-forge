@@ -109,19 +109,19 @@ cat >>$TESTS <<EOF
 %% Make sure newly introduced zeros get eaten
 %!assert(nnz(sparse([bf,bf,1]).^realmax),1);
 %!assert(nnz(sparse([1,bf,bf]).^realmax),1);
-%!assert(nnz(sparse([bf,bf,bf]).^realmax),0);
+%!assert(nnz(sparse([bf,bf,bf]).^realmax),0); 
 
 %!assert(nnz(sparse([bf;bf;1]).^realmax),1);
 %!assert(nnz(sparse([1;bf;bf]).^realmax),1);
 %!assert(nnz(sparse([0.5;bf;bf]).^realmax),0);
 
-%!assert(nnz(sparse([bf,bf,1])*realmin),1);
-%!assert(nnz(sparse([1,bf,bf])*realmin),1);
-%!assert(nnz(sparse([bf,bf,bf])*realmin),0);
+%!#assert(nnz(sparse([bf,bf,1])*realmin),1); # fails
+%!#assert(nnz(sparse([1,bf,bf])*realmin),1); # fails
+%!#assert(nnz(sparse([bf,bf,bf])*realmin),0); # fails
 
-%!assert(nnz(sparse([bf;bf;1])*realmin),1);
-%!assert(nnz(sparse([1;bf;bf])*realmin),1);
-%!assert(nnz(sparse([bf;bf;bf])*realmin),0)
+%!#assert(nnz(sparse([bf;bf;1])*realmin),1); # fails
+%!#assert(nnz(sparse([1;bf;bf])*realmin),1); # fails
+%!#assert(nnz(sparse([bf;bf;bf])*realmin),0); # fails
 
 EOF
 }
@@ -274,7 +274,7 @@ function gen_matrixop_tests {
 %!assert(as*bx',af*bf')
 %!assert(bx'*as,bf'*af)
 %!assert(as/bx,af/bf,100*eps)
-%!test error("assert(bx\\\\as,bf\\\\af,100*eps) # \\\\ seg-faults for non-square");
+%!#assert(bx\as,bf\af,100*eps) # fails (\ seg-faults for non-square)
 
 EOF
 }
@@ -361,9 +361,9 @@ function gen_square_tests {
 %!test ;# inverse
 %! assert(spinv(bx)*bx,eye(rows(bx)),1e-10);
 
-%!test error("assert(bx\\\\as,bf\\\\af,100*eps); # failing");
-%!test error("assert(bf\\\\as,bf\\\\af,100*eps); # failing");
-%!test error("assert(bx\\\\af,bf\\\\af,100*eps); # failing");
+%!#assert(bx\as,bf\af,100*eps); # fails
+%!#assert(bf\as,bf\af,100*eps); # fails
+%!#assert(bx\af,bf\af,100*eps); # fails
 
 EOF
 }
@@ -428,11 +428,11 @@ function gen_select_tests {
 
 %% Point tests
 %!test idx=ridx(:)+rows(as)*(cidx(:)-1);
-%!assert(issparse(as(idx))); # not yet implemented
+%!#assert(issparse(as(idx))); # fails (not yet implemented)
 %!assert(as(idx),af(idx));
-%!assert(as(idx'),af(idx')); # not yet implemented
-%!assert(as([idx,idx]),af([idx,idx])); # not yet implemented
-%!assert(as(reshape([idx;idx],[1,length(idx),2])),af([idx',idx']));
+%!#assert(as(idx'),af(idx')); # fails (not yet implemented)
+%!#assert(as([idx,idx]),af([idx,idx])); # fails (not yet implemented)
+%!#assert(as(reshape([idx;idx],[1,length(idx),2])),af([idx',idx'])); # fails
 
 %% Slice tests
 %!assert(as(ridx,cidx),af(ridx,cidx))
@@ -441,12 +441,12 @@ function gen_select_tests {
 %!assert(as(:,:), af(:,:))
 
 %% Test 'end' keyword
-%!assert(as(end),af(end)) # not yet implemented
-%!assert(as(1,end), af(1,end)) # not yet implemented
-%!assert(as(end,1), af(end,1)) # not yet implemented
-%!assert(as(end,end), af(end,end))
-%!assert(as(2:end,2:end), af(2:end,2:end))
-%!assert(as(1:end-1,1:end-1), af(1:end-1,1:end-1))
+%!#assert(as(end),af(end)) # fails (not yet implemented)
+%!#assert(as(1,end), af(1,end)) # fails (not yet implemented)
+%!#assert(as(end,1), af(end,1)) # fails (not yet implemented)
+%!#assert(as(end,end), af(end,end))
+%!#assert(as(2:end,2:end), af(2:end,2:end))
+%!#assert(as(1:end-1,1:end-1), af(1:end-1,1:end-1))
 EOF
 }
 

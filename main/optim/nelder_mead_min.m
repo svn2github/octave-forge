@@ -30,8 +30,8 @@
 ## nev : number   : Number of function evaluations
 ## 
 ## CONTROL VARIABLE : (optional) may be named arguments (i.e. "name",value
-## ------------------ pairs), a struct, or a vector of length 6 or less.
-##                    Nan's are ignored. Default values are written <value>.
+## ------------------ pairs), a struct, or a vector of length <= 6, where
+##                    NaN's are ignored. Default values are written <value>.
 ##  OPT.   VECTOR
 ##  NAME    POS
 ## ftol,f  N/A    : Stopping criterion : stop search when values at simplex
@@ -50,16 +50,15 @@
 ##            
 ##              ctl(2) > Vol
 ##
-## crit,c ctl(1)  : Select one of stopping criteria : 'ftol' (c=1), 'rtol'
-##                  (c=2) or 'vtol' (c=3) criteria. The value of the
-##                  parameter is specified by the 'tol' option.
+## crit,c ctl(1)  : Set one stopping criterion, 'ftol' (c=1), 'rtol' (c=2)
+##                  or 'vtol' (c=3) to the value of the 'tol' option.    <1>
 ##
-## tol, t ctl(2)  : Threshold used in termination test selected by 'crit'.
+## tol, t ctl(2)  : Threshold in termination test chosen by 'crit'  <10*eps>
 ##
-## argn  ctl(3) : Position of the minimized argument in args             <1>
-## maxev ctl(4) : Maximum number of function evaluations. This number  <inf>
-##                may be slightly exceeded.
-## isz   ctl(5) : Size of initial simplex, which is :                    <1>
+## argn  ctl(3)  : Position of the minimized argument in args            <1>
+## maxev ctl(4)  : Maximum number of function evaluations. This number <inf>
+##                 may be slightly exceeded.
+## isz   ctl(5)  : Size of initial simplex, which is :                   <1>
 ##
 ##                { x + e_i | i in 0..N } 
 ## 
@@ -71,11 +70,11 @@
 ##                Set ctl(5) to the distance you expect between the starting
 ##                point and the minimum.
 ##
-## rst   ctl(6) : When a minimum is found the algorithm restarts next to it
-##                until the minimum does not improve anymore. ctl(6) is the
-##                maximum number of restarts. Set ctl(6) to zero if you know
-##                the function is well-behaved or if you don't mind not
-##                getting a true minimum.                              <inf>
+## rst   ctl(6)   : When a minimum is found the algorithm restarts next to
+##                  it until the minimum does not improve anymore. ctl(6) is
+##                  the maximum number of restarts. Set ctl(6) to zero if
+##                  you know the function is well-behaved or if you don't
+##                  mind not getting a true minimum.                   <inf>
 ##
 ## verbose, v     Be more or less verbose (quiet=0)                      <0>
 function [x,v,nev] = nelder_mead_min (f, args, ...)
@@ -126,9 +125,11 @@ if nargin >= 3,			# Read control arguments
 end
 
 
-if     crit == 1, ftol = tol; rtol = vtol = nan; 
-elseif crit == 2, rtol = tol; ftol = vtol = nan; 
-elseif crit == 3, vtol = tol; ftol = rtol = nan; end
+if     crit == 1, ftol = tol; 
+elseif crit == 2, rtol = tol; 
+elseif crit == 3, vtol = tol;
+elseif crit, error ("crit is %i. Should be 1,2 or 3.\n");
+end
 
 if is_list (args),		# List of arguments 
   x = nth (args, narg);

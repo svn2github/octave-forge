@@ -16,11 +16,11 @@ SORT_BUILD=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58)))
 # The default is 53 bits.
 # There are special optimizations for X86 architecture.  These are turned
 # on automatically for -Di386, which is the default for gcc and icc on x86
-# architectures.  You can override this by adding -DHAVE_X86=1 to enable or
-# -DHAVE_X86=1 to suppress onto the RANDFLAGS. Enabling it will give incorrect 
-# results for BIG_ENDIAN architectures!  Also, it is important to choose the
-# correct optimization level and CPU type for X86 to get maximum performance. 
-# The following works well for me:
+# architectures, or for -DHAVE_X86_32.  You can override this by adding 
+# -DUSE_X86_32=1 to enable or -DUSE_X86_32=0 to suppress onto the RANDFLAGS. 
+# Enabling it will give incorrect results for BIG_ENDIAN architectures!  
+# Also, it is important to choose the correct optimization level and CPU 
+# type for X86 to get maximum performance.  The following works well for me:
 #	CFLAGS="-O2 -march=i686" make
 # Note that -O3 is much slower than -O2 for me.
 RANDFLAGS = -DALLBITS

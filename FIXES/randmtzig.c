@@ -58,6 +58,9 @@
    * * add -DALLBITS flag for 32 vs. 53 bits of randomness in mantissa
    * * make the naming scheme more uniform
    * * add -DHAVE_X86 for faster support of 53 bit mantissa on x86 arch.
+   *
+   * 2005-02-23 Paul Kienzle
+   * * fix -DHAVE_X86_32 flag and add -DUSE_X86_32=0|1 for explicit control
    */
 
 /*
@@ -85,9 +88,11 @@
    Compile with -DALLBITS for 53-bit random numbers. This is about
    50% slower than using 32-bit random numbers.
 
-   Uses implicit -Di386 to determine if CPU=x86.  You can force X86
-   behaviour with -DHAVE_X86=1, or suppress it with -DHAVE_X86=0. You
-   should also consider -march=i686 or similar for extra performance.
+   Uses implicit -Di386 or explicit -DHAVE_X86_32 to determine if CPU=x86.  
+   You can force X86 behaviour with -DUSE_X86_32=1, or suppress it with 
+   -DUSE_X86_32=0. You should also consider -march=i686 or similar for 
+   extra performance. Check whether -DUSE_X86_32=0 is faster on 64-bit
+   x86 architectures.
 
    If you want to replace the Mersenne Twister with another
    generator then redefine randi32 appropriately.
@@ -151,11 +156,11 @@
 
    
 /* XXX FIXME XXX may want to suppress X86 if sizeof(long)>4 */
-#if !defined(HAVE_X86)
-# if defined(i386)
-#  define HAVE_X86 1
+#if !defined(USE_X86_32)
+# if defined(i386) || defined(HAVE_X86_32)
+#  define USE_X86_32 1
 # else
-#  define HAVE_X86 0
+#  define USE_X86_32 0
 # endif
 #endif
 
@@ -335,7 +340,7 @@ USE_INLINE uint64_t randi53(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32()&0x1FFFFF;
-#if HAVE_X86
+#if HAVE_X86_32
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -350,7 +355,7 @@ USE_INLINE uint64_t randi54(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32()&0x3FFFFF;
-#if HAVE_X86
+#if HAVE_X86_32
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -365,7 +370,7 @@ USE_INLINE uint64_t randi64(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32();
-#if HAVE_X86
+#if HAVE_X86_32
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -552,7 +557,7 @@ USE_INLINE double randn (void)
        * have something to do with this.
        */
 #if defined(ALLBITS)
-# if HAVE_X86
+# if HAVE_X86_32
       /* 53-bit mantissa, 1-bit sign, x86 32-bit architecture */
       double x;
       int si,idx;
@@ -566,13 +571,13 @@ USE_INLINE double randn (void)
       p[0] = lo;
       p[1] = hi&0x1FFFFF;
       x = ( si ? -rabs : rabs ) * wi[idx];
-# else /* !HAVE_X86 */
+# else /* !HAVE_X86_32 */
       /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
       const uint64_t r = NRANDI;
       const int64_t rabs=r>>1;
       const int idx = (int)(rabs&0xFF);
       const double x = ( r&1 ? -rabs : rabs) * wi[idx];
-# endif /* !HAVE_X86 */
+# endif /* !HAVE_X86_32 */
 #else /* !ALLBITS */
       /* 32-bit mantissa */
       const uint32_t r = randi32();

@@ -57,7 +57,7 @@ Provides m*tlab compatibility and some flexibility.\n\
     
     if (args(i).is_string ()) {
       std::string s = args(i).string_value ();
-      tmp [s] = args(i+1);
+      tmp.assign (s, args(i+1));
     } else 
       error ("argument number %i is not a string",i+1);
   }

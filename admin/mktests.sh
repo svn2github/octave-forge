@@ -6,8 +6,8 @@ echo "if fid<0,error('could not open fntests.log for writing');end" >>fntests.m
 echo "test('','explain',fid);" >> fntests.m
 echo "passes=0; tests=0;" >>fntests.m
 
-# Find all non-cvs directories
-DIRS=`find . -type d ! -name CVS`
+# Find all toplevel non-cvs directories
+DIRS="FIXES `find main extra nonfree -mindepth 1 -maxdepth 1 -type d ! -name CVS`"
 
 # Find the tests in that directory
 for dir in $DIRS; do

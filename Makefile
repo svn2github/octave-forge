@@ -49,7 +49,7 @@ clean:
 	@cd FIXES && $(MAKE) clean
 
 distclean: clean
-	-$(RM) Makeconf Makeconf.in octinst.sh config.cache config.status config.log
+	-$(RM) Makeconf octinst.sh config.cache config.status config.log
 
 dist: distclean
 	@echo Follow the instructions in octave-forge/release.sh

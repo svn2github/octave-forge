@@ -1,6 +1,6 @@
 include ../../Makeconf
 
-PROGS=lp.oct
+PROGS=lp.oct leval.oct
 
 all:$(PROGS)
 

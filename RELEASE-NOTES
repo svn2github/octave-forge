@@ -8,9 +8,14 @@ immediately on startup.  Either install into a system directory, or
 remove the comm/PKG_ADD and sparse/PKG_ADD from the install directory
 (octave-2.1.49 on RedHat 7.3 exhibits this problem).
 
-Latest release notes available at:
+See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/RELEASE-NOTES?rev=HEAD&content-type=text/plain">RELEASE-NOTES</a> for a summary of all releases.
 
-http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/main/RELEASE-NOTES?rev=HEAD&content-type=text/plain
+See <a
+href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/ChangeLog?rev=HEAD&content-type=text/plain">ChangeLog</a> for details of every change.
+
+CVS ==========================================================================
+
+* no changes yet
 
 2003-06-02 for Octave 2.1.36 and up ==========================================
 

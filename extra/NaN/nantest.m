@@ -19,7 +19,7 @@
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%    	Version 1.28  Date: 24 Sep 2002
+%    	Version 1.28  Date: 30 Sep 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>
 
 
@@ -115,11 +115,18 @@ end;
 
 % output
 if all(tmp) & all(~q),
-        fprintf(1,'NANTEST successful - your NaN-tools are correctely installed\n');
+        fprintf(1,'NANTEST successful - your NaN-tools are correctly installed\n');
 else
         fprintf(1,'NANTEST %i not successful \n', find(~tmp));
 	fprintf(1,'Some functions must still be replaced\n');
 end;
 
+% commutativity of 0*NaN
+x=[-2:2;4:8]';
+y=x;y(2,1)=nan;y(4,2)=nan;
+B=[1,0,2;0,3,1];
+if ~all(all(isnan(y*B)==isnan(B'*y')')),
+        fprintf(2,'Warning: 0*NaN is not commutative\n');
+end;
 
 

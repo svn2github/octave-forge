@@ -15,27 +15,17 @@ function Y=flix(D,x)
 %	Version 2.99  	9 May 2002
 %	Copyright (C) by 2001-2002 Alois Schloegl    <a.schloegl@ieee.org>	
 
+D  = D(:);
+Y  = x;
 
-% In case you need to restore the flag, de-comment the following and the last line, 
-% if exist('OCTAVE_VERSION')>2, FLAG_DFI = do_fortran_indexing; end;
-
-do_fortran_indexing = 1; 
-
-
-[dr,dc] = size(D);
-D  = reshape(D,dr*dc,1);
-Y  = zeros(size(x));
-
-k1 = ((x >= 1) & (x <= dr*dc));
+k1 = ((x >= 1) & (x <= size(D,1)));
 Y(~k1) = NaN;
 
-k  = rem(x,1); 		% distance to next sample	 
+k  = x - floor(x);	% distance to next sample	 
 
-ix = find(~k & k1); 	% find integer indices
+ix = ~k & k1; 	        % find integer indices
 Y(ix) = D(x(ix)); 	% put integer indices
 
-ix = find(~~k & k1); 	% find non-integer indices
+ix = k & k1;     	% find non-integer indices
 Y(ix) = D(floor(x(ix))).*(1-k(ix)) + D(ceil(x(ix))).*k(ix);  
 
-
-% if exist('OCTAVE_VERSION')>2, do_fortran_indexing = FLAG_DFI; end;

@@ -6,7 +6,7 @@
 
 package Inline::Octave;
 
-$VERSION = '0.19';
+$VERSION = '0.20';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
@@ -316,9 +316,7 @@ sub interpret
 
    croak "octave interpreter not alive"  unless $Oin and $Oerr;
 
-#  DEBUG octave commands here
-#  print "INTERP: $cmd\n";
-
+#  print STDERR "INTERP: $cmd\n";
    print $Oin "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
 
    my $input;
@@ -328,7 +326,7 @@ sub interpret
           if ($fh eq $Oerr) {
               process_errors();
           } else {
-              sysread $fh, (my $line), 16384;
+              sysread $fh, (my $line), 16386;
               $input.= $line;
               # delay if we're reading nothing, not sure why select doesn't block
               select undef, undef, undef, 0.5 unless $line;
@@ -356,22 +354,28 @@ sub process_errors
    # not stderr input
    while ( my @fh = $select->can_read(0.1) ) {
       sysread $fh[0], (my $line), 1024;
+      last unless $line;
       $input.= $line;
    }
 
    #parse input, looking for warning and error patterns
-   my $error;
+#  print STDERR "#########$input########\n";
+   my ($error, $warning);
    while ($input =~ /\n (warning:|error:)  \s+
                      (.*?)
                    (?=
                      ( \nwarning: \s+ | \nerror: \s+ | $) ) /gsx) {
        my $type=    $1;
-       my $message= "(from Inline::Octave) $2";
-          $message=~ s/[\012\015]+/ /g; # turn newlines into spaces
-       $error.= $message.";" if $type eq "error:" && $message;
-       carp $message;
+       my $message= $2;
+          $message=~ s/[\012\015]+/ /gs; # turn newlines into spaces
+       if ($type eq "error:") {
+           $error.=   $message."; " if $message;
+       } else {
+           $warning.= $message."; " if $message;
+       }
    }
-   croak $error if $error;
+   carp  "$warning (in octave code)" if $warning;
+   croak "$error (in octave code)"   if $error;
 }
 
 
@@ -1071,6 +1075,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.23  2003/12/04 19:22:27  aadler
+working errors and warnings
+
 Revision 1.22  2003/12/04 18:20:07  aadler
 does warnings right
 

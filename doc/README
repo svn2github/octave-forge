@@ -1,0 +1,18 @@
+This directory contains documentation about octave in general.  Documentation
+for specific packages should go in the individual package directories.
+
+New documents must be referenced from index.html
+
+To access the document from the octave.sf.net home page, upload it as
+follows:
+
+  scp file.html user@octave.sf.net:/home/groups/o/oc/octave/htdocs
+
+If this is a new document, then you will need to reference it from 
+octave.sf home page and make the file group writable:
+
+  ssh -l user octave.sf.net
+  cd /home/groups/o/oc/octave/htdocs
+  vi index.html
+  chmod g+w file.html
+

@@ -147,9 +147,9 @@ function text(varargin)
     font = "";
   endif
   if position(3)!=0,
-    atstr = sprintf("%f,%f,%f", position(1),position(2),position(3));
+    atstr = sprintf("%g,%g,%g", position(1),position(2),position(3));
   else
-    atstr = sprintf("%f,%f", position(1),position(2));
+    atstr = sprintf("%g,%g", position(1),position(2));
   endif
   command = sprintf('gset label "%s" at %s %s %s %s%s',
 		    str, units, atstr, align, rotate, font);

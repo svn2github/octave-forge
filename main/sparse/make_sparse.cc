@@ -23,6 +23,9 @@ Open Source Initiative (www.opensource.org)
 
 $Id$
 
+2001-12-04 Paul Kienzle <pkienzle@users.sf.net>
+* sparse(i,j,s,...) now checks that the lengths of i,j,s match
+
 */
 
 #define  SPARSE_COMPLEX_CODE
@@ -247,6 +250,20 @@ signal( SIGSEGV, SIG_DFL );
          else
             { ColumnVector x( args(2).vector_value() ); coefA= x; }
 
+	 // Confirm that i,j,s all have the same number of elements
+	 int ns;
+	 if (use_complex) {
+	    ns = coefAC.length();
+	 } else {
+	    ns = coefA.length();
+         }
+	 int ni = ridxA.length();
+	 int nj = cidxA.length();
+	 int nnz = MAX(ni,nj);
+	 if ( ( ns != 1 && ns != nnz ) || ( ni != 1 && ni != nnz )
+	      || ( nj != 1 && nj != nnz ) )
+	    SP_FATAL_ERR ("i, j and s must have the same length");
+
          if (nargin == 3) {
             m= (int) ridxA.max();
             n= (int) cidxA.max();
@@ -267,7 +284,7 @@ signal( SIGSEGV, SIG_DFL );
                   if ( vv== "unique" )
                      assemble_do_sum=0;
                   else
-                     SP_FATAL_ERR("sparse:must specify sum or unique");
+                     SP_FATAL_ERR("must specify sum or unique");
                }
 
             }
@@ -295,6 +312,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.5  2001/12/04 19:13:42  pkienzle
+ * sparse(i,j,s,...) now check that lengths of i,j,s match
+ *
  * Revision 1.4  2001/11/04 19:54:49  aadler
  * fix bug with multiple entries in sparse creation.
  * Added "summation" mode for matrix creation

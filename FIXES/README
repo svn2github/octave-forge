@@ -31,7 +31,6 @@ union
 
 Interface extensions
 ====================
-freqz           (plots filter response)
 polyder		(accepts a*b, a/b; auto-reduction of common terms)
 polyderiv	(accepts a*b, a/b; auto-reduction of common terms)
 polygcd		(new function for auto-reduction on polyder)
@@ -57,17 +56,4 @@ triu
 tril
 index
 rindex
-kron            (both C++ and m-file)
 chol.oct	(use triangle matrix type; in extra/linear-algebra/chol.cc)
-
-In Octave 2.1.36
-================
-cross		(warn if receiving mixed row/column vectors)
-cross		(accepts matrices)
-contour		(default number of contours; note that usage(...) is wrong)
-fftfilt		(accepts matrices)
-findstr         (speedup)
-freqz		(accepts frequency vector)
-imagesc		(only display if not returning scaled image)
-invhilb         (extends valid range; faster)
-vander          (speedup)

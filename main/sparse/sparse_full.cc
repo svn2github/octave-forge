@@ -199,6 +199,8 @@ returns number of non zero elements in SM\n\
 //
 // spfind - find elements in sparse matrices
 //
+// PKG_ADD: dispatch ("find", "spfind", "sparse")
+// PKG_ADD: dispatch ("find", "spfind", "complex_sparse")
 DEFUN_DLD (spfind, args, nargout ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[...] =} spfind (...)\n\
@@ -312,6 +314,9 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
 
 /*
  * $Log$
+ * Revision 1.10  2004/03/05 14:30:30  pkienzle
+ * Add dispatch commands for spfind
+ *
  * Revision 1.9  2003/12/22 15:09:25  pkienzle
  * Use properties tests (real/complex) rather than type tests
  * (matrix/complex matrix) so that full automatically generalizes

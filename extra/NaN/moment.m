@@ -2,7 +2,9 @@ function M=moment(i,p,opt,DIM)
 % MOMENT estimates the p-th moment 
 % 
 % M = moment(x, p [,opt] [,DIM])
-%   calculates p-th central moment of x in dimension DIM
+% M = moment(H, p [,opt])
+%   calculates p-th central moment from data x in dimension DIM
+%	of from Histogram H
 %
 % p	moment of order p
 % opt   'ac': absolute 'a' and/or central ('c') moment
@@ -36,7 +38,7 @@ function M=moment(i,p,opt,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.23;	07 Jun 2002
+%	Version 1.24;	09 Dec 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 if nargin==2,
@@ -61,23 +63,43 @@ if isnumeric(opt) | ~isnumeric(DIM),
         DIM = opt;
 	opt = tmp;        
 end;
+if isempty(opt), 
+	opt='r';
+end;
 if isempty(DIM), 
-        DIM=min(find(size(i)>1));
+        DIM = min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;
-        
-if ~isempty(opt),
-        if any(opt=='c')
-		[S,N] = sumskipnan(i,DIM);	% sum
-		i = i - repmat(S./N,size(i)./size(S));
+
+N = nan;        
+if isstruct(i),
+    if isfield(i,'HISTOGRAM'),
+	sz = size(i.H)./size(i.X);
+	X  = repmat(i.X,sz);
+	if any(opt=='c'),
+		N = sumskipnan(i.H,1);	% N
+	        N = max(N-1,0);		% for unbiased estimation 
+		S = sumskipnan(i.H.*X,1);	% sum
+		X = X - repmat(S./N, size(X)./size(S)); % remove mean
 	end;
-        if any(opt=='a')
+	if any(opt=='a'),
+		X = abs(X);
+	end;
+    	[M,n] = sumskipnan(X.^p.*i.H,1);
+    else
+	warning('invalid datatype')		
+    end;
+else
+        if any(opt=='c'),
+	    	[S,N] = sumskipnan(i,DIM);	% gemerate N and SUM
+	        N = max(N-1,0);			% for unbiased estimation
+		i = i - repmat(S./N, size(i)./size(S)); % remove mean
+	end;
+	if any(opt=='a'),
 		i = abs(i);	
-	end;
+    	end;
+	[M,n] = sumskipnan(i.^p,DIM);
 end;
 
-[M,N] = sumskipnan(i.^p,DIM);
-%if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
-        N = max(N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
-%end;	
+if isnan(N), N=n; end; 
 M = M./N;

@@ -46,6 +46,7 @@ else
 end
 
 M  = S./N;
-%S = real(S).^2 + imag(S).^2;	% squared sum 
-SE = sqrt((SSQ.*N - real(S).^2 - imag(S).^2)./(N.*N.*(N-1))); 
+SE = (SSQ.*N - real(S).^2 - imag(S).^2)./(N.*N.*(N-1)); 
+SE(SE<=0) = 0; 	% prevent negative value caused by round-off error  
+SE = sqrt(real(SE));
 

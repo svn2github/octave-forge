@@ -40,14 +40,15 @@ x = sqrt(2)*erfinv(2*p - 1).*s + m;  % if this line causes an error, input argum
 
 x((p>1) | (p<0) | isnan(p) | isnan(m) | isnan(s) | (s<0)) = nan;
 
-x((p==0) & (s==0) & ~isnan(m)) = -inf;
+k = (s==0) & ~isnan(m);		% temporary variable, reduces number of tests.
 
-x((p==1) & (s==0) & ~isnan(m)) = inf;
+x((p==0) & k) = -inf;
 
-k = (p>0) & (p<1) & (s==0) & ~isnan(m);
+x((p==1) & k) = inf;
+
+k = (p>0) & (p<1) & k;
 if prod(size(m))==1,
         x(k) = m;
 else
         x(k) = m(k);
 end;        
-

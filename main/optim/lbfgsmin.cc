@@ -117,7 +117,7 @@ Arguments:\n\
 * {tols}: an optional cell array of 3 elements\n\
 	* elem 1: function change tolerance, default 1e-12\n\
 	* elem 2: parameter change tolerance, default 1e-6\n\
-	* elem 3: gradient tolerance, default 1e-5\n\
+	* elem 3: gradient tolerance, default 1e-4\n\
 \n\
 Returns:\n\
 * x: the minimizer\n\
@@ -219,7 +219,7 @@ ans =\n\
       // Default values for tolerances
       func_tol  = 1e-12;
       param_tol = 1e-6;
-      gradient_tol = 1e-5;  
+      gradient_tol = 1e-4;  
 
     }
 		

@@ -18,6 +18,14 @@ scalar (const dim_vector& dims)
 %!assert(struct('a',{1,2},'b',{3}),x)
 %!assert(struct('b',3,'a',{1,2}),x)
 %!assert(struct('b',{3},'a',{1,2}),x) 
+%!test x=struct([]);
+%!assert(size(x),[0,0]);
+%!assert(isstruct(x));
+%!assert(isempty(fieldnames(x)));
+%!fail("struct('a',{1,2},'b',{1,2,3})","dimensions of parameter 2 do not match those of parameter 4")
+%!fail("struct(1,2,3,4)","struct expects alternating 'field',value pairs");
+%!fail("struct('1',2,'3')","struct expects alternating 'field',value pairs");
+
  */
 
 DEFUN_DLD (struct, args, , "\
@@ -33,47 +41,53 @@ struct('field',{},'field',{},...)\n\n\
   octave_value_list retval;
   int nargin = args.length ();
 
-  // Check that there is an even number of args
-  if (nargin == 0 || nargin%2 == 1) 
+  // struct([]) returns an empty struct.
+  // XXX FIXME XXX should struct() also create an empty struct?
+  if (nargin == 1 && args (0).is_empty () && args (0).is_real_matrix ())
+    {
+      return octave_value (Octave_map ());
+    }
+    
+  // Check that we have some args
+  if (nargin == 0) 
     {
       print_usage ("struct");
       return retval;
     }
 
-  // Check that every second arg is a field name
+  // Check for 'field',value pairs
   for (int i=0; i < nargin; i+=2) 
     {
-      if (!args (i).is_string ()) 
+      if (!args (i).is_string () || i+1 >= nargin)
 	{
 	  error ("struct expects alternating 'field',value pairs");
 	  return retval;
 	}
     }
 
-  // Check that the dimensions of the fields correspond
-  dim_vector dims (args (1).is_cell () ? args (1).dims () : dim_vector (1,1));
-  // std::cout << "initial dims = " << dims.str() << std::endl;
-  for (int i=3; i < nargin; i+=2) 
+  // Check that the dimensions of the values correspond
+  dim_vector dims(1,1);
+  int first_dimensioned_value = 0;
+  for (int i=1; i < nargin; i+=2) 
     {
       if (args (i).is_cell ()) 
 	{
-	  if (scalar (dims)) 
+	  dim_vector argdims (args (i).dims ());
+	  if (!scalar (argdims))
 	    {
-	      dims = args (i).dims ();
-	      // std::cout << "scalar dims, using " << dims.str() << std::endl;
-	    } 
-	  else 
-	    {
-	      dim_vector testdim (args (i).dims ());
-	      if (!scalar (testdim) && dims != testdim) 
+	      if (!first_dimensioned_value)
 		{
-		  error ("dimensions must match for all fields");
+		  dims = argdims;
+		  first_dimensioned_value = i+1;
+		}
+	      else if (dims != argdims)
+		{
+		  error ("struct: dimensions of parameter %d do not match those of parameter %d",
+			 first_dimensioned_value, i+1);
 		  return retval;
 		}
-	      //std::cout<<dims.str()<<" matches "<<testdim.str()<<std::endl;
 	    }
-	} 
-      // else std::cout << dims.str() << " matches scalar" << std::endl;
+	}
     }
 
   // Create the return value

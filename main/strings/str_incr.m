@@ -1,4 +1,4 @@
-## Copyright (C) 2001 Albert Danial
+## Copyright (C) 2001 Albert Danial <alnd@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,18 +14,19 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+## usage: [new_name] = str_incr(old_name, nLetters);
+##
+##  Increments by one letter the substring comprising the first nLetters
+##  of old_name.  The first nLetters may contain only characters in
+##  'a'.. 'z'.
+##  
+##  Examples:  str_incr("aa",   2) returns "ab"  
+##             str_incr("ab",   2) returns "ac"  
+##             str_incr("az",   2) returns "ba"  
+##             str_incr("zz",   2) returns an overflow error
+##             str_incr("abcd", 2) returns "accd"  
+
 function [new_name] = str_incr(old_name, nLetters);
-    # [new_name] = str_incr(old_name, nLetters);
-    #
-    #  Increments by one letter the substring comprising the first nLetters
-    #  of old_name.  The first nLetters may contain only characters in
-    #  'a'.. 'z'.
-    #  
-    #  Examples:  str_incr("aa",   2) returns "ab"  
-    #             str_incr("ab",   2) returns "ac"  
-    #             str_incr("az",   2) returns "ba"  
-    #             str_incr("zz",   2) returns an overflow error
-    #             str_incr("abcd", 2) returns "accd"  
 
     letters = toascii(old_name);
     if (nLetters > size(old_name, 2))

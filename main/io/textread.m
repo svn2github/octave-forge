@@ -1,4 +1,4 @@
-## Copyright (C) 2001 Albert Danial
+## Copyright (C) 2001 Albert Danial <alnd@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,31 +14,31 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function [...] = textread(file, format, n);
+## usage: [a,b,c,...] = textread(file, format, n);
+##
+## Reads data from the file using the provided format string.  The
+## first return value will contain the first column of the file,
+## the second return value gets the second column, et cetera.
+## If n is given, the format string will be reused n times.  
+## If n is omitted or negative, the entire file will be read.
+##
+## Example:  say the file 'info.txt' contains the following lines:
+##    Bunny Bugs   5.5     age=30
+##    Duck Daffy  -7.5e-5  age=27
+##    Penguin Tux   6      age=10
+## Columns from this file could be read with the line:
+##   [Lname, Fname, x, a] = textread('info.txt', '%s %s %e age=%d');
+## then,
+##   Lname(3,:)  is 'Penguin'
+##   Fname(3,:)  is 'Tux'
+##   x(3)        is  6
+##   a(3)        is 10
+##
+## Limitations:  fails if the format string contains literal
+##               percent signs (ie, '%%'), or literal strings
+##               containing characters 's' or 'c'.
 
-    # [a,b,c,...] = textread(file, format, n);
-    #
-    # Reads data from the file using the provided format string.  The
-    # first return value will contain the first column of the file,
-    # the second return value gets the second column, et cetera.
-    # If n is given, the format string will be reused n times.  
-    # If n is omitted or negative, the entire file will be read.
-    #
-    # Example:  say the file 'info.txt' contains the following lines:
-    #    Bunny Bugs   5.5     age=30
-    #    Duck Daffy  -7.5e-5  age=27
-    #    Penguin Tux   6      age=10
-    # Columns from this file could be read with the line:
-    #   [Lname, Fname, x, a] = textread('info.txt', '%s %s %e age=%d');
-    # then,
-    #   Lname(3,:)  is 'Penguin'
-    #   Fname(3,:)  is 'Tux'
-    #   x(3)        is  6
-    #   a(3)        is 10
-    #
-    # Limitations:  fails if the format string contains literal
-    #               percent signs (ie, '%%'), or literal strings
-    #               containing characters 's' or 'c'.
+function [...] = textread(file, format, n);
 
     if ((nargin == 2) || n < 0)
         n = 0;

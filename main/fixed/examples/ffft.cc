@@ -24,6 +24,7 @@ Open Source Initiative (www.opensource.org)
 
 */
 
+#include <cmath>
 #include <octave/config.h>
 #include <octave/oct.h>
 #include "ffft.h"
@@ -417,7 +418,7 @@ void Fft<double,Complex,ComplexRowVector>::computetemplatevalues (
 	const unsigned int &FftInputI, const unsigned int &FftInputD) {
 
   j_complex = Complex(0, 1.);
-  output_gain = sqrt(size);
+  output_gain = sqrt(double(size));
   inv_sqrt_2 = 1 / sqrt(2.0);
 }
 
@@ -497,11 +498,11 @@ CV Ifft<S,C,CV>::process (CV &x) {
 
 /* class instantiation */
 
-template Fft<double,Complex,ComplexRowVector>;
-template Fft<FixedPoint,FixedPointComplex,FixedComplexRowVector>;
+template class Fft<double,Complex,ComplexRowVector>;
+template class Fft<FixedPoint,FixedPointComplex,FixedComplexRowVector>;
 
-template Ifft<double,Complex,ComplexRowVector>;
-template Ifft<FixedPoint,FixedPointComplex,FixedComplexRowVector>;
+template class Ifft<double,Complex,ComplexRowVector>;
+template class Ifft<FixedPoint,FixedPointComplex,FixedComplexRowVector>;
 
 DEFUN_DLD (ffft, args, ,
 "-*- texinfo -*-\n\

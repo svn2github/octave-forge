@@ -1,21 +1,21 @@
 /*
 
-Copyright (C) 2001 Rafael Laboissiere
+Copyright (C) 2001, 2004  Rafael Laboissiere
 
-This file is part of octave-gpc.
+This file is part of Octave-GPC.
 
-octave-gpc is free software; you can redistribute it and/or modify it
+Octave-GPC is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2, or (at your option) any
 later version.
 
-octave-gpc is distributed in the hope that it will be useful, but WITHOUT
+Octave-GPC is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with octave-gpc; see the file COPYING.  If not, write to the Free
+along with Octave-GPC; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -25,12 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Registration of the octave_gpc_polygon object type.
 DEFINE_OCTAVE_ALLOCATOR (octave_gpc_polygon);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_gpc_polygon, "gpc_polygon");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_gpc_polygon, "gpc_polygon",
+                                     "gpc_polygon");
 
 // Member function
 
-void 
-octave_gpc_polygon::print (std::ostream& os, 
+void
+octave_gpc_polygon::print (std::ostream& os,
 			   bool pr_as_read_syntax = false) const
 {
   os << "Variable is of type " <<  t_name << ".\n"
@@ -108,14 +109,14 @@ map_to_gpc (Octave_map& m, gpc_polygon* p)
     }
 }
 
-void 
+void
 gpc_to_map (gpc_polygon* p, Octave_map* map)
 {
   int n = p->num_contours;
   ColumnVector hol (n);
   Matrix idx (n, 2);
   int m = 0;
-  for (int i = 0; i < n; i++) 
+  for (int i = 0; i < n; i++)
     {
       hol (i) = p->hole[i];
       idx (i, 0) = m + 1;
@@ -138,9 +139,9 @@ gpc_to_map (gpc_polygon* p, Octave_map* map)
   (*map) ["vertices"] (0) = vtx;
   (*map) ["indices"] (0) = idx;
   (*map) ["hole"] (0) = hol;
-}  
-  
-bool 
+}
+
+bool
 assert_gpc_polygon (Octave_map* m)
 {
   if ( ! m->contains ("vertices") )
@@ -190,7 +191,7 @@ assert_gpc_polygon (Octave_map* m)
   else
     {
       octave_value h = (*m) ["hole"] (0);
-    
+
       if ( (! h.is_matrix_type () || h.columns () != 1)
 	   && ! h.is_real_scalar () )
 	{

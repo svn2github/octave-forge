@@ -1,6 +1,9 @@
+#!perl -w
+# Makefile.pl for Inline::Octave
+# $Id$
+
+use strict;
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
 
 #
 #   Find the octave interpreter
@@ -19,18 +22,19 @@ foreach (@ARGV) {
 }   
 
 while (not $octave_validated) {
-   $octave_validated= 1 if `$octave -v` =~ /Octave, version 2/;
+   $octave_validated= 1 if `$octave -v` =~ /Octave, version ([2-9]\.\d+\.\d+)/;
+   my $octave_version= $1;
 
    if ($octave_validated) {
-      print "Found GNU Octave interpreter:[$octave]\n";
-      print "Enter new path or <RETURN> to accept: ";
+      print "Found GNU Octave interpreter:[$octave] (version $octave_version)\n";
+      print "Enter new executable path or <RETURN> to accept: ";
    } else {
       print "Unable to find GNU Octave interpreter at:[$octave]\n";
-      print "Please enter new path: " ;
+      print "Please enter new path to executable: " ;
 
    }
    
-   chomp( $inp= <STDIN> );
+   chomp( my $inp= <STDIN> );
    if ($inp) {
       $octave_validated= 0;
       $octave= $inp;
@@ -48,7 +52,7 @@ while (not $octave_validated) {
    open(OCTAVE, ">Octave.pm") or die "Can't open Octave.pm for writing" ;
    foreach my $line (@lines) {
       $line =~ 
-         s{($octave_interpreter_bin\s*=\s*)'.+?'(\s*#\s*_EDITLINE_MARKER_)}
+         s{(\$octave_interpreter_bin\s*=\s*)'.+?'(\s*#\s*_EDITLINE_MARKER_)}
           {$1\'$octave\'$2};
       print OCTAVE $line ;
    }
@@ -58,6 +62,6 @@ while (not $octave_validated) {
 WriteMakefile(
     'NAME'         => 'Inline::Octave',
     'VERSION_FROM' => 'Octave.pm',
-    'PREREQ_PM'    => { Inline => 0.4 },
+    'PREREQ_PM'    => { Inline => 0.43 },
     'clean'        => {FILES => '_Inline/'},  
 );

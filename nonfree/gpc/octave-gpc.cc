@@ -81,10 +81,9 @@ get_gpc_pt (octave_value v)
 void
 map_to_gpc (Octave_map& m, gpc_polygon* p)
 {
-
-  Matrix vtx = m ["vertices"](0).matrix_value ();
-  Matrix idx = m ["indices"](0).matrix_value ();
-  ColumnVector hol = m ["hole"](0).column_vector_value ();
+  Matrix vtx = m.contents ("vertices") (0).matrix_value ();
+  Matrix idx = m.contents ("indices") (0).matrix_value ();
+  ColumnVector hol = m.contents ("hole") (0).column_vector_value ();
   int n = idx.rows ();
 
   p->num_contours = n;
@@ -136,9 +135,9 @@ gpc_to_map (gpc_polygon* p, Octave_map* map)
 	}
     }
 
-  (*map) ["vertices"] (0) = vtx;
-  (*map) ["indices"] (0) = idx;
-  (*map) ["hole"] (0) = hol;
+  map->assign ("vertices", vtx);
+  map->assign ("indices", idx);
+  map->assign ("hole", hol);
 }
 
 bool
@@ -149,7 +148,7 @@ assert_gpc_polygon (Octave_map* m)
       warning ("No vertices !");
       return false;
     }
-  octave_value v = (*m) ["vertices"] (0);
+  octave_value v = m->contents ("vertices") (0);
   if ( ! assert_nx2_matrix (v) )
     {
       warning ("assert_gpc_polygon: vertices member should be a "
@@ -162,11 +161,11 @@ assert_gpc_polygon (Octave_map* m)
       Matrix im (1, 2);
       im (0, 0) = (double) 1;
       im (0, 1) = (double) v.rows ();
-      i = (*m) ["indices"] (0) = im;
+      i = m->contents ("indices") (0) = im;
     }
   else
     {
-      i = (*m) ["indices"] (0);
+      i = m->contents ("indices") (0);
       if ( ! assert_nx2_matrix (i) )
 	{
 	  warning ("assert_gpc_polygon: indices member should be a "
@@ -186,11 +185,11 @@ assert_gpc_polygon (Octave_map* m)
     {
       ColumnVector h (i.rows ());
       h.fill ((double) 0);
-      (*m) ["hole"] (0) = h;
+      m->contents ("hole") (0) = h;
     }
   else
     {
-      octave_value h = (*m) ["hole"] (0);
+      octave_value h = m->contents ("hole") (0);
 
       if ( (! h.is_matrix_type () || h.columns () != 1)
 	   && ! h.is_real_scalar () )

@@ -20,13 +20,13 @@ dnl Process this file with autoconf to produce a configure script.
 
 
 dnl Initialize Autoconf and Automake
-AC_INIT(octave-gpc, 0.1.4, [Rafael Laboissiere <rafael@laboissiere.net>])
+AC_INIT(octave-gpc, 0.1.5, [Rafael Laboissiere <rafael@laboissiere.net>])
 AC_CONFIG_SRCDIR(octave-gpc.h)
 AM_INIT_AUTOMAKE
 
 dnl --with-* Options, Octave related
 AC_ARG_WITH(octave,
-  AC_HELP_STRING([--with-octave], [Specify the octave path (version 2.1.52
+  AC_HELP_STRING([--with-octave], [Specify the octave path (version 2.1.57
     or later)]),
   [OCTAVE=$withval])
 
@@ -62,8 +62,8 @@ AC_MSG_CHECKING(for Octave version)
 AC_MSG_RESULT($OCTVER)
 [if echo "$OCTVER" | \
      perl -ne '/([0-9]+)\.([0-9]+)\.([0-9]+)/; \
-               exit 1 if ($1>=2 and $2>=1 and $3>=52); exit 0' ; then]
-  AC_MSG_ERROR(version of octave must be 2.1.52 or later)
+               exit 1 if ($1>=2 and $2>=1 and $3>=57); exit 0' ; then]
+  AC_MSG_ERROR(version of octave must be 2.1.57 or later)
 fi
 
 dnl Installation directories for Octave-GPC files

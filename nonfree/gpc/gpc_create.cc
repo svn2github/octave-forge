@@ -78,12 +78,12 @@ DEFUN_DLD (gpc_create, args, ,
 	{
 	  m = new Octave_map ();
 
-	  (*m) ["vertices"] = args (0);
+	  m->contents ("vertices") = args (0);
 	  if (nargin > 1)
 	    {
-	      (*m) ["indices"] = args (1);
+	      m->contents ("indices") = args (1);
 	      if (nargin > 2)
-		(*m) ["hole"] = args (2);	  
+		m->contents ("hole") = args (2);	  
 	    }
 	}
 

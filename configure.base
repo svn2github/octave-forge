@@ -273,8 +273,7 @@ AC_CHECK_PROG(OCTAVE,octave,octave)
 OCTAVE_EVAL(OCTAVE_VERSION,OCTAVE_VERSION)
 
 dnl grab canonical host type so we can write system specific install stuff
-canonical_host_type=`echo "disp(octave_config_info('canonical_host_type'))" | $OCTAVE -qf`
-AC_SUBST(canonical_host_type)
+OCTAVE_EVAL(octave_config_info('canonical_host_type'),canonical_host_type)
 
 dnl grab SHLEXT from octave config
 OCTAVE_EVAL(octave_config_info('SHLEXT'),SHLEXT)

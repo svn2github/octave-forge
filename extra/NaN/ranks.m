@@ -40,7 +40,7 @@ function r = ranks(X,Mode);
 % + compatible with Octave and Matlab
 
 
-if nargin<2, Mode='  '; end;
+if nargin<2, Mode='advanced   '; end;
 
 [N,M]=size(X);
 if (N==1) & (M>0)
@@ -56,6 +56,17 @@ r = zeros(size(X));
         for i = 1:M;
                 p = X(:, i(ones(1,N)));
                 r(:,i) = [(sum (p < p') + (sum (p == p') + 1) / 2)'];
+        end;
+        % r(r<1)=NaN;
+        
+elseif strcmp(Mode(1:min(12,length(Mode))),'mtraditional'), % advanced
+        % + memory effort is lower
+        
+	r = zeros(size(X));
+        for k = 1:N;
+        for i = 1:M;
+                r(k,i) = [(sum (X(:,i) < X(k,i)) + (sum (X(:,i)  == X(k,i)) + 1) / 2)];
+        end;
         end;
         % r(r<1)=NaN;
         
@@ -90,7 +101,7 @@ elseif strcmp(Mode(1:min(11,length(Mode))),'advanced   '), % advanced
         end;
         r(isnan(X)) = nan;
         
-else %if strcmp(Mode(1:min(11,length(Mode))),''), 
+elseif strcmp(Mode,'=='), 
 % the results of both algorithms are compared for testing.    
 %
 % if the Mode-argument is omitted, both methods are applied and 
@@ -100,7 +111,11 @@ else %if strcmp(Mode(1:min(11,length(Mode))),''),
         r  = ranks(X,'advanced   ');
         r(isnan(r)) = 1/2;
         
-        r1 = ranks(X,'traditional');
+        if N>100,
+	        r1 = ranks(X,'mtraditional');  % Memory effort is lower 
+        else
+                r1 = ranks(X,'traditional');
+        end;
         if ~all(all(r==r1)),
                 fprintf(2,'WARNING RANKS: advanced algorithm does not agree with traditional one\n Please report to <a.schloegl@ieee.org>\n');
                 r = r1;

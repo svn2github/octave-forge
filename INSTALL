@@ -31,6 +31,8 @@ one that you do indeed want to install.
 
 $ ./configure --with-path=$HOME/octave-forge --prefix=$HOME
 $ make
+$ make check
+$ make icheck
 $ make install
 
 Remove anything from ~/octave-forge/FIXES that are superceded by recent 
@@ -64,6 +66,8 @@ one that you do indeed want to install.
 
 $ ./configure
 $ make
+$ make check
+$ make icheck
 $ su
 root$ cd <path-to>/octave-forge-<ver>
 root$ make install
@@ -90,14 +94,10 @@ Then change to the octave-forge directory
 
 This assumes you have a file octave-forge-<ver>.tar.gz.  If you are
 building from CVS sources, you will need to login to the server 
-	$ cvs -d:pserver:anonymous@cvs.octave.sf.net:/cvsroot/octave login 
-[press <Enter> when it asks for a password] and check out the source tree
 	$ cvs -z3 -d:pserver:anonymous@cvs.octave.sf.net:/cvsroot/octave co \
 		octave-forge
 If you want a specific version yyyy.mm.dd, then specify "-r Ryyyy-mm-dd".
-Next remove the CVS control files
-	$ find octave-forge -name CVS -print | xargs rm -rf
-Then change to the octave-forge directory
+Next change to the octave-forge directory
 	$ cd octave-forge
 and build the configure script
 	$ ./autogen.sh
@@ -195,12 +195,14 @@ Make targets:
 
     make 
 	Build the supporting executables and the oct-files
+    make check
+	Check that the functions in the repository work as expected
+    make icheck
+	Demonstrate that the interactive functions work
     make clean
 	Remove all the temporary files and constructed files
     make install
 	Install files to the appropriate path
-    make dist
-	Build the distribution tar file
 
 
 Functions which are fixes to m-files distributed with Octave are

@@ -1,21 +1,33 @@
-function o=std(i,opt,DIM)
+function [o,v]=std(i,opt,DIM)
 % STD calculates the standard deviation.
 % 
-% y = std(x [, opt[, DIM]])
+% [y,v] = std(x [, opt[, DIM]])
 % 
-% opt   option (not supported)
+% opt   option 
+%	0:  normalizes with N-1 [default]
+%		provides the square root of best unbiased estimator of the variance
+%	1:  normalizes with N, 
+%		this provides the square root of the second moment around the mean
+% 	otherwise: 
+%               best unbiased estimator of the standard deviation (see [1])      
+%
 % DIM	dimension
-%	1 STD of columns
-%	2 STD of rows
 % 	N STD of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
 %
+% y	estimated standard deviation
+%
 % features:
+% - provides an unbiased estimation of the S.D. 
 % - can deal with NaN's (missing values)
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
 % see also: RMS, SUMSKIPNAN, MEAN, VAR, MEANSQ,
+%
+%
+% References(s):
+% [1] http://mathworld.wolfram.com/StandardDeviationDistribution.html
 
 
 %    This program is free software; you can redistribute it and/or modify
@@ -37,13 +49,47 @@ function o=std(i,opt,DIM)
 %	Copyright (c) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
-if nargin<3,
-        o=sqrt(var(i));
-        if nargin==2,
-                if ~isempty(opt) & opt~=0, 
-                        fprintf(2,'Warning STD: OPTION not supported.\n');
-                end;
-        end;
+if nargin>2
+        [s,n,y] = sumskipnan(i,DIM);
 else
-        o=sqrt(var(i,opt,DIM));
-end;   
+        [s,n,y] = sumskipnan(i);
+        if nargin<2,
+                opt = 0;
+        end;
+end;
+
+y = (y - s.*s./n);   % n * (summed squares with removed mean)
+
+if opt==0, 
+        % square root if the best unbiased estimator of the variance 
+        ib = inf;
+        o  = sqrt(y./max(n-1,0));	% normalize
+        
+elseif opt==1, 
+	ib = NaN;        
+        o  = sqrt(y./n);
+else
+        % best unbiased estimator of the mean
+        if exist('unique')==2, 
+		% usually only a few n's differ
+                [N,tmp,tix] = unique(n(:));	% compress n and calculate ib(n)
+        	ib = sqrt(N/2).*gamma((N-1)./2)./gamma(N./2);	%inverse b(n) [1]
+	        ib = ib(reshape(tix,size(y)));	% expand ib to correct size
+                
+        elseif exist('histo3')==2, 
+		% usually only a few n's differ
+                [N,tix] = histo3(n(:)); N = N.X;
+                ib = sqrt(N/2).*gamma((N-1)./2)./gamma(N./2);	%inverse b(n) [1]
+	        ib = ib(reshape(tix,size(y)));	% expand ib to correct size
+                
+        else	% gamma is called prod(size(n)) times 
+                ib = sqrt(n/2).*gamma((n-1)./2)./gamma(n./2);	%inverse b(n) [1]
+        end;	
+        o  = sqrt(y./n).*ib;
+end;
+
+if nargout>1,
+	v = y.*((max(n-1,0)./(n.*n))-1./(n.*ib.*ib)); % variance of the estimated S.D. ??? needs further checks
+end;
+
+

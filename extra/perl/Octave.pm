@@ -604,6 +604,46 @@ sub new
    $self->store_size();
 
    return $self;
+   tie @array, $class, $self;
+   return \@array;
+}
+
+sub TIEARRAY {
+    my $class = shift;
+    my $self  = shift;
+    return bless $self, $class;
+}
+
+# fetch index is perl style (0 based), not octave style (1 based)
+sub FETCH {
+    my $self = shift;
+    my $index= shift() +1;
+    my $size = $self->{rows} * $self->{cols};
+    croak "index ($index) exceeds matrix size ($size)"
+       unless $index>0 && $index<=$size;
+    return $self->read_back_matrix("($index)")->[0];
+}
+
+sub FETCHSIZE {
+    my $self = shift;
+    return $self->{rows} * $self->{cols};
+}
+
+sub STORE {
+    die "can't store";
+}
+
+sub STORESIZE {
+    my $self = shift;
+    croak "can't change size of ".ref($self)." variables";
+}
+
+sub EXISTS {
+    my $self = shift;
+    my $index= shift() +1;
+    my $size = $self->{rows} * $self->{cols};
+    return 1 if $index>0 && $index<=$size;
+    return 0;
 }
 
 sub write_out_matrix {
@@ -701,37 +741,62 @@ sub as_list
    return @$list;
 }
 
+# convert list to matrix: $list, $cols, $rows
+sub list_to_matrix
+{
+    my $list= shift;
+    my @idx = @_;
+    if    ( @idx==1 || $idx[0]==1 || $idx[1]==1 ){
+        return $list;
+    }
+    elsif ( @idx==2 ){
+       my @m;
+       for (0..$idx[1]-1) {
+          my @index= $_*$idx[0] .. ($_+1)*$idx[0]-1;
+          push @m, [ @$list[@index] ];
+       }
+       return \@m;
+    }
+    else {
+        die "can't handle more than 2D matrices"
+    }
+}
+
 sub as_matrix
 {
    my $self = shift;
-   my @list= @{ $self->read_back_matrix("'") };
-   my @m;
-   my $cols= $self->cols();
-   my $rows= $self->rows();
-   for (0..$rows-1) {
-      push @m, [ (@list)[$_*$cols .. ($_+1)*$cols-1] ];
-   }
-   return \@m;
+   return list_to_matrix(
+       $self->read_back_matrix("'"),
+       $self->cols(),
+       $self->rows() );
 }
 
 # $oct_var->sub_matrix( $row_spec, $col_spec )
+sub idx { return sub_matrix( @_ ) }
 sub sub_matrix
 {
    my $self = shift;
 
-   my $row_specv = new Inline::Octave( shift );
-   my $row_specn = $row_specv->name;
-   my $col_specv = new Inline::Octave( shift );
-   my $col_specn = $col_specv->name;
+   my @specv; my @specn;
+   for ( @_ ) {
+       my $specv = new Inline::Octave( $_ );
+       my $specn = $specv->name;
+       push @specv, $specv;
+       push @specn, $specn;
+   }
 
-   my @list= @{ $self->read_back_matrix("($row_specn,$col_specn)'") };
+   my $spec= "(". join(",",@specn). ")'";
+   my @list= @{ $self->read_back_matrix( $spec ) };
    my @m;
-   my $cols= $col_specv->max_dim();
-   my $rows= $row_specv->max_dim();
-   for (0..$rows-1) {
-      push @m, [ (@list)[$_*$cols .. ($_+1)*$cols-1] ];
+   my $cols= $specv[0]->max_dim();
+   my $rows= $specv[1]->max_dim();
+   for (0..$cols-1) {
+      push @m, [ (@list)[$_*$rows .. ($_+1)*$rows-1] ];
    }
    return \@m;
+   return list_to_matrix(
+       $self->read_back_matrix("'"),
+       map { $_->max_dim() } @specv );
 }
 
 
@@ -931,6 +996,7 @@ TODO LIST:
    4. control waiting in the interpret loop
        - seems ok, except sysread reads small buffers
    5. support for complex variables
+       - done
    6. octave gets wierd when you CTRL-C out of a 
        running program
        - seems ok
@@ -938,12 +1004,17 @@ TODO LIST:
    8. Come up with an OO way to avoid
        Inline::Octave::interpret(0, $code );
    9. Add support for passing Strings to Octave
+        - done
   10. Errors in Octave should die in perl
        - this involves a tricky Open3 read of stderr.
   11. Refactor out the common code in Inline::Octave::Matrix
        into an Inline::Octave::Variable class
+       - done
 
 $Log$
+Revision 1.20  2003/12/01 03:46:21  aadler
+tried to tie to an array ref. Didn't work
+
 Revision 1.19  2003/11/30 14:33:02  aadler
 cleanups of OO interface
 
@@ -1215,15 +1286,13 @@ Returns a perl scalar if $oct_var
 is a 1x1 matrix, dies with an error otherwise
 
 5. $oct_var->sub_matrix( $row_spec, $col_spec )
+Returns the sub matrix specified
 
-Returns the sub
-$x= Inline::Octave->new([1,2,3,4]);
-$y=$x x $x->transpose();
-$y->sub_matrix( [2,4], [2,3] )'
+    $x= Inline::Octave->new([1,2,3,4]);
+    $y=$x x $x->transpose();
+    $y->sub_matrix( [2,4], [2,3] )'
 
-gives:  [ [4,6],[8,9] ]
-
-Returns the sub matrix of
+    gives:  [ [4,6],[8,9] ]
 
 =head1 Using Inline::Octave variables
 

@@ -44,6 +44,7 @@
 #include <octave/Cell.h>
 #include <octave/lo-mappers.h>
 #include <octave/oct-rand.h>
+#include <float.h>
 
 // define argument checks
 static bool
@@ -279,7 +280,7 @@ ans = 3.1416\n\
   // bounds grow to cover parameter space
   t = 1000;
   converge = 0;    
-  while(converge==0)
+  while((converge==0) & t < sqrt(DBL_MAX))
     {	
       nup = 0;
       nrej = 0;

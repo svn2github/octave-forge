@@ -48,7 +48,7 @@ and some flexibility.\n\
     }
     
   } else
-    print_usage ("getfield2");
+    print_usage ("getfield");
 
   return retval;
 }

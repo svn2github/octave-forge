@@ -1,9 +1,9 @@
 sinclude ../../Makeconf
 
 PROGS=regexp.oct
-ifeq($(HAVE_PCRE),yes)
+ifeq ($(HAVE_PCRE),yes)
   PROGS:=$PROGS pcregexp.oct
-fi
+endif
 
 all: $(PROGS)
 

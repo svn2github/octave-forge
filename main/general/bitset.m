@@ -49,7 +49,7 @@ function X = bitset (A, n, value)
   if (!is_matrix (A) || is_complex (A))
     error ("first argument must be a real value");
   else
-	X = bitand (pow2 (n - 1), value);
+	X = value * pow2 (n - 1);
 	Y = bitand (A, bitmax - pow2 (n - 1));
 	X = bitor (X, Y);
   endif

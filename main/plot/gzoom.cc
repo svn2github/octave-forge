@@ -32,7 +32,7 @@ DEFUN_DLD (gzoom, args, ,
 	   " * Press any key to quit and recover old axis setting") {
 
   /* Ask gnuplot for current figure */
-  string name = find_gnuplot_window ("gzoom");
+  std::string name = find_gnuplot_window ("gzoom");
   if (name.length() == 0)
     return octave_value();
 

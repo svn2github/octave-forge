@@ -38,11 +38,12 @@ DEFUN_DLD (gtext, args, ,
            "\n"
 	   "res will be 1 if the operation is successful, otherwise it will be 0.\n"
 	   "\n"
-           "Note that gtext() doesn't work with multiplot().") {
+           "Note that gtext() doesn't work with multiplot().") 
+{
   int nargin = args.length ();
   if (nargin != 1) {
     print_usage ("gtext");
-    return octave_value(0.0);
+    return octave_value_list();
   }
 
   /* Ask gnuplot for current figure */

@@ -29,7 +29,7 @@ using namespace std;
  * Ask gnuplot for current figure
  */
 
-string find_gnuplot_window (string func) 
+string find_gnuplot_window (const char* const func) 
 {
   /* send gget command to get terminal */
   octave_value_list gget_args;
@@ -45,7 +45,7 @@ string find_gnuplot_window (string func)
 
   /* check if there is a gnuplot figure */
   if (fig_nb < 0) {
-    cerr << func << ": no figure." << endl;
+    warning("%s: no figure.", func);
     return ("");
   }
 
@@ -63,7 +63,7 @@ string find_gnuplot_window (string func)
  * Recursively search the window heirarchy for a window of the given name
  */
 
-Window find_x11_window(Display *display, Window top, string name)
+Window find_x11_window(Display *display, Window top, std::string name)
 {
   Window root, parent, *children, found;
   char *window_name;
@@ -92,7 +92,7 @@ Window find_x11_window(Display *display, Window top, string name)
  * Initialize gwindow structure
  */
 
-int init_gwindow (gwindow &gw, string wname, string func)
+int init_gwindow (gwindow &gw, string wname, const char* const func)
 {
   
   /* Find plot window from title */
@@ -101,7 +101,7 @@ int init_gwindow (gwindow &gw, string wname, string func)
   gw.root = RootWindow(gw.display, gw.screen);
   gw.window = find_x11_window(gw.display, gw.root, wname);
   if (gw.window == 0) {
-    cerr << func << ": plot window not found." << endl;
+    warning("%s: plot window not found.", func);
     XCloseDisplay (gw.display);
     return 0;
   }
@@ -110,7 +110,7 @@ int init_gwindow (gwindow &gw, string wname, string func)
   XWindowAttributes wattr;
   XGetWindowAttributes(gw.display, gw.window, &wattr);
   if (wattr.all_event_masks & ButtonPressMask) {
-    cerr << func << ": could not capture button events." << endl;
+    warning ("%s: could not capture button events.", func);
     XCloseDisplay (gw.display);
     return 0;
   }
@@ -351,7 +351,7 @@ ColumnVector guess_border (gwindow &gw)
  * Guess axis
  */
 
-ColumnVector guess_axis (string func)
+ColumnVector guess_axis (const char* const func)
 {
   ColumnVector axis(4);
   octave_value_list gget_args, gget_ret;
@@ -364,7 +364,7 @@ ColumnVector guess_axis (string func)
 
   /* Check if axis are set or if nowriteback option is not active */
   if (st.find("[ * : * ]") == 0 && st.find("nowriteback") < st.length()) {
-    cerr << func << ": no axis set and `nowriteback' option active." << endl;
+    warning("%s: no axis set and `nowriteback' option active.", func);
     return (ColumnVector (0));
   }
 
@@ -386,7 +386,7 @@ ColumnVector guess_axis (string func)
 
   /* Check if axis are set or if nowriteback option is not active */
   if (st.find("[ * : * ]") == 0 && st.find("nowriteback") < st.length()) {
-    cerr << func << ": no axis set and `nowriteback' option active." << endl;
+    warning("%s: no axis set and `nowriteback' option active.",func);
     return (ColumnVector (0));
   }
 

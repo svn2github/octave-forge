@@ -27,6 +27,7 @@
 
 #include <octave/oct.h>
 #include <octave/toplev.h>
+#include <octave/pager.h>
 
 extern "C" {
 #include <X11/Xlib.h>
@@ -84,16 +85,16 @@ DEFUN_DLD (grab, args, nargout,
     
   switch (nc) {
   case 2:
-    cout << "First click on x-axis " << axis(0) << endl;
-    cout << "Then click on x-axis " << axis(1) << endl;
-    cout.flush();
+    octave_stdout << "First click on x-axis " << axis(0) << endl;
+    octave_stdout << "Then click on x-axis " << axis(1) << endl;
+    flush_octave_stdout();
     break;
   case 4:
-    cout << "First click on point "
+    octave_stdout << "First click on point "
                   << "(" << axis(0) << "," << axis(2) << ")" << endl;
-    cout << "Then click on point "
+    octave_stdout << "Then click on point "
                   << "(" << axis(1) << "," << axis(3) << ")" << endl;
-    cout.flush();
+    flush_octave_stdout();
     break;
   }
 

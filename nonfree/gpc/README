@@ -153,7 +153,7 @@ line format for the plot.  For instance:
 will plot the polygon with the blue, dotted lines.  You can use a third
 argument with value 1 if the polygon is actually a tristrip.  In this case,
 if the `fill' function is available, a fill plot will be done.  (`fill' is
-available in the matcompat package; see http://octave.sf.net).
+available in the octave-forge package; see http://octave.sf.net).
 
 ----------------------------------------------------------------------
 Copyright information:

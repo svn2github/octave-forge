@@ -52,7 +52,7 @@ function gpc_plot (p, f, t)
         endif
       endif	
 
-      ## Test for existence of fill.m function (in matcompat package)
+      ## Test for existence of fill.m function (in octave-forge package)
       ## for plotting tristrips
       if exist ("fill") == 2
 	plot_fcn = "fill";

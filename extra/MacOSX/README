@@ -2,10 +2,11 @@ These files provide additional functionality on Mac OS X
 
 image.m
 -------
-This file will use 'convert' to turn an image into TIFF format and then send it to Preview.app (or your viewer of choice). If that fails, it will fall back to the standard X11 viewers.
+This file will use bmpwrite to turn an image into .bmp format and then send it to Preview.app (or your viewer of choice). 
 
-'convert' is part of the ImageMagick suite, see http://www.imagemagick.org/
-
+OFSndPlay.cc
+------------
+Provides the utility 'ofsndplay' to play various sound formats. Despite being Obejctive-C, the source uses a .cc suffix to be detected by PKG_ADD.
 
 doc/ofosx.tex
 --------------

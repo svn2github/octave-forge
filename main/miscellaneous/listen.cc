@@ -1,4 +1,8 @@
 #define STATUS(x) do { if (debug) std::cout << x << std::endl << std::flush; } while (0)
+#define USE_DEFUN_INTERNAL 1
+// Temporary hack (I hope).  For some reason the interpreter
+// is not finding the send/send_error commands, so I install
+// them by hand..
 
 #include <iomanip>
 
@@ -17,12 +21,15 @@
 #include <octave/oct.h>
 #include <octave/parse.h>
 #include <octave/variables.h>
+#if 0
 #include <octave/unwind-prot.h>
+#endif
 #include <octave/oct-syscalls.h>
 #include <octave/oct-time.h>
 #include <octave/lo-mappers.h>
 
 static bool debug = false;
+static char* context = NULL;
 
 static double timestamp = 0.0;
 inline void tic(void) { timestamp = octave_time(); }
@@ -35,6 +42,7 @@ lowercase (std::string& s)
   for (std::string::iterator i=s.begin(); i != s.end(); i++) *i = tolower(*i);
 }
 
+#if 0
 octave_value
 get_builtin_value (const std::string& nm)
 {
@@ -56,7 +64,7 @@ get_builtin_value (const std::string& nm)
 
   return retval;
 }
-
+#endif
 
 // XXX FIXME XXX autoconf stuff
 #if 0 && defined(_sgi)
@@ -195,13 +203,12 @@ process_commands(int channel)
   // XXX FIXME XXX check read/write return values
   assert(sizeof(unsigned long int) == 4);
   char command[5];
-  char def_buffer[16536];
+  char def_context[16536];
   bool ok;
-  char *buffer;
   STATUS("waiting for command");
 
-  // XXX FIXME XXX do we need to specify the buffer size?
-  //  int bufsize=sizeof(def_buffer);
+  // XXX FIXME XXX do we need to specify the context size?
+  //  int bufsize=sizeof(def_context);
   //  socklen_t ol;
   //  ol=sizeof(bufsize);
   //  setsockopt(channel,SOL_SOCKET,SO_SNDBUF,&bufsize,ol);
@@ -231,34 +238,34 @@ process_commands(int channel)
     len = ntohl(len);
     // STATUS("read 4 byte command length in " << toc() << "us"); 
 
-    // Read the command buffer, allocating a new one if the default
+    // Read the command context, allocating a new one if the default
     // is too small.
-    if (len > (signed)sizeof(def_buffer)-1) {
+    if (len > (signed)sizeof(def_context)-1) {
       // XXX FIXME XXX use octave allocators
       // XXX FIXME XXX unwind_protect
-      buffer = new char[len+1];
-      if (buffer == NULL) {
+      context= new char[len+1];
+      if (context== NULL) {
 	// Requested command is too large --- skip to the next command
 	// XXX FIXME XXX maybe we want to kill the connection instead?
 	channel_error(channel,"out of memory");
 	ok = true;
 	STATUS("skip big command loop");
-	while (ok && len > (signed)sizeof(def_buffer)) {
-	  ok = reads(channel, def_buffer, sizeof(def_buffer));
-	  len -= sizeof(def_buffer);
+	while (ok && len > (signed)sizeof(def_context)) {
+	  ok = reads(channel, def_context, sizeof(def_context));
+	  len -= sizeof(def_context);
 	}
 	STATUS("done skip big command loop");
 	if (!ok) break;
-	ok = reads(channel, def_buffer, sizeof(def_buffer));
+	ok = reads(channel, def_context, sizeof(def_context));
 	if (!ok) break;
 	continue;
       }
     } else {
-      buffer = def_buffer;
+      context = def_context;
     }
     // if (debug) tic();
-    ok = reads(channel, buffer, len);
-    buffer[len] = '\0';
+    ok = reads(channel, context, len);
+    context[len] = '\0';
     STATUS("read " << len << " byte command in " << toc() << "us");
 
     // Process the command
@@ -266,11 +273,11 @@ process_commands(int channel)
     case 'm': // send the named matrix 
       {
 	// XXX FIXME XXX this can be removed: app can do send(name,value)
-	STATUS("sending " << buffer);
+	STATUS("sending " << context);
 	unsigned long t;
 	
 	// read the matrix contents
-	octave_value def = get_octave_value(buffer);
+	octave_value def = get_octave_value(context);
 	if(!def.is_defined() || !def.is_real_matrix()) 
 	  channel_error(channel,"not a matrix");
 	Matrix m = def.matrix_value();
@@ -285,7 +292,7 @@ process_commands(int channel)
 	if (ok) ok = writes(channel,&t,4);            // columns
 	t = htonl(len); 
 	if (ok) ok = writes(channel, &t, 4);          // name length
-	if (ok) ok = writes(channel,buffer,len);      // name
+	if (ok) ok = writes(channel,context,len);      // name
 	
 	// write the matrix contents
 	const double *v = m.data();                   // data
@@ -306,23 +313,29 @@ process_commands(int channel)
 		// XXX FIXME XXX can we limit the maximum output width for a
 		// string?  The setprecision() io manipulator doesn't do it.
 		// In the meantime, a hack ...
-		char t = buffer[400]; buffer[400] = '\0';
+		char t = context[400]; context[400] = '\0';
 		STATUS("evaluating (" << len << ") " 
-		       << buffer << std::endl 
+		       << context << std::endl 
 		       << "..." << std::endl 
-		       << buffer+len-100);
-		buffer[400] = t;
+		       << context+len-100);
+		context[400] = t;
 	      }
 	    else
 	      {
-		STATUS("evaluating (" << len << ") " << buffer);
+		STATUS("evaluating (" << len << ") " << context);
 	      }
 	  }
 
 	if (debug) tic();
+#if 1
+	octave_value_list evalargs;
+	evalargs(1) = "send_error(lasterr);";
+	evalargs(0) = context;
+	feval("eval",evalargs,0);
+#else
 	int parse_status = 0;
 	error_state = 0;
-	eval_string(buffer, true, parse_status, 0);
+	eval_string(context, true, parse_status, 0);
 	STATUS("parse status = " << parse_status << ", error state = " 
 	       << error_state << ", processing time = " << toc() << "us");
 	if (parse_status != 0 || error_state)
@@ -335,17 +348,18 @@ process_commands(int channel)
 	    str += "when evaluating:\n";
 	    if (len > 100) 
 	      {	
-		char t=buffer[100]; 
-	        buffer[100] = '\0'; 
-	        str+=buffer; 
-	        buffer[100]=t;
+		char t=context[100]; 
+	        context[100] = '\0'; 
+	        str+=context; 
+	        context[100]=t;
 	      }
 	    else
-              str += buffer;
+              str += context;
 	    STATUS("error is " << str);
 	    channel_error(channel,str.c_str());
 	    clear_global_error_variable(NULL);
 	  }
+#endif
       }
       break;
       
@@ -358,7 +372,7 @@ process_commands(int channel)
       break;
     }
 
-    if (buffer != def_buffer) delete[] buffer;
+    if (context != def_context) delete[] context;
     // STATUS("done " << command);
     if (!ok) break;
     if (debug) tic();
@@ -368,11 +382,39 @@ process_commands(int channel)
 
 int channel = -1;
 
-#if 1
-// Temporary hack (I hope).  For some reason 
-// the DEFUN_DLD isn't being found from
-// within listen, so I install it by hand.
+#if USE_DEFUN_INTERNAL
+DEFUN_INTERNAL(send_error,args,,false,"\
+Send the given error message across the socket.  The error context\n\
+is taken to be the last command received from the socket.")
+#else
+DEFUN_DLD(send_error,args,,"\
+Send the given error message across the socket.  The error context\n\
+is taken to be the last command received from the socket.")
+#endif
+{
+  std::string str;
+  const int nargin = args.length();
+  if (nargin != 1) str="send_error not called with error";
+  else str = args(0).string_value();
 
+  // provide a context for the error (but not too much!)
+  str += "when evaluating:\n";
+  if (strlen(context) > 100) 
+    {	
+      char t=context[100]; 
+      context[100] = '\0'; 
+      str+=context; 
+      context[100]=t;
+    }
+  else
+    str += context;
+ 
+  STATUS("error is " << str);
+  channel_error(channel,str.c_str());
+  return octave_value_list();
+}
+
+#if USE_DEFUN_INTERNAL
 DEFUN_INTERNAL(send,args,,false,"\
 send(str)\n\
   Send a command on the current connection\n\
@@ -560,9 +602,11 @@ listen(...,debug|nodebug)\n\
     return ret;
   }
 
+#if 0
   unwind_protect::begin_frame("Flisten");
   unwind_protect_bool (buffer_error_messages);
   buffer_error_messages = true;
+#endif
 
   sigchld_setup();
 
@@ -633,6 +677,8 @@ listen(...,debug|nodebug)\n\
 
   STATUS("could not read commands; returning");
   close(sockfd);
+#if 0
   unwind_protect::run_frame("Flisten");
+#endif
   return ret;
 }

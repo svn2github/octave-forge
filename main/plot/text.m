@@ -60,24 +60,23 @@ function text(varargin)
   units="first";
 
   ## Process text(x,y[,z],'text') forms
-  va_arg_cnt = 1; n=1;
-
-  arg = nth (varargin, va_arg_cnt++); n=n+1;
+  n=1;
+  arg = varargin{n++};
   if is_scalar(arg),
     position(1) = arg;
     if nargin < 2, usage(usage_str); endif
-    arg = nth (varargin, va_arg_cnt++); n=n+1;
+    arg = varargin{n++};
     if !is_scalar(arg), usage(usage_str); endif
     position(2) = arg;
 
     if nargin < 3, usage(usage_str); endif
-    arg = nth (varargin, va_arg_cnt++); n=n+1;
+    arg = varargin{n++};
     if isstr(arg)
       text=arg;
     else
       position(3) = arg;
       if nargin < 4, usage(usage_str); endif
-      text=nth (varargin, va_arg_cnt++); n=n+1; 
+      text=varargin{n++};
     endif
     if !isstr(text), usage(usage_str); endif
   endif
@@ -85,7 +84,7 @@ function text(varargin)
   ## Process text('property',value) forms
   if rem(nargin-n+1, 2) != 0, error(usage_str); endif
   for i=n:2:nargin
-    prop=nth (varargin, va_arg_cnt++); val=nth (varargin, va_arg_cnt++);
+    prop=varargin{i}; val=varargin{i+1};
     if !isstr(prop), error(usage_str); endif
     prop = tolower(prop);
     if strcmp(prop, "fontname"),

@@ -564,8 +564,8 @@ D 50 p1284, 1994\n\
 
   if (error_state) return retval;
 
-  if ( (nr != lambda.rows() && lambda.rows() != 1)
-       || (nc != lambda.columns() && lambda.columns() != 1) )
+  if (lambda.length() != 1 
+      && (nr != lambda.rows() || nc != lambda.columns()) )
     {
       error("randp: dimensions of lambda must match requested matrix size");
       return retval;

@@ -208,22 +208,22 @@ int check_dimensions(RowVector c,Matrix A,ColumnVector b,ColumnVector vlb,Column
 
   if(Matrix(c).cols() != num_cols)
     {
-      octave_stdout << "Columns in first arguement do not match rows in the second arguement.\n";
+      error("lp: columns in first argument do not match rows in the second argument.");
       errors--;
     }
-  if(Matrix(b).rows() != num_rows)
+  else if(Matrix(b).rows() != num_rows)
     {
-      octave_stdout << "The rows in the second arguement do not match the third arguement.\n";
+      error("lp: rows in the second argument do not match the third argument.");
       errors--;
     }
-  if(Matrix(vlb).rows() != num_cols)
+  else if(Matrix(vlb).rows() != num_cols)
     {
-      octave_stdout << "The columns in the second arguement do not match the fourth arguement.\n";
+      error("lp: columns in the second argument do not match the fourth argument.");
       errors--;
     }
-  if(Matrix(vub).rows() != num_cols)
+  else if(Matrix(vub).rows() != num_cols)
     {
-      octave_stdout << "The columns in the second arguement do not match the fifth arguement.\n";
+      error("lp: columns in the second argument do not match the fifth argument.");
       errors--;
     }
   return(errors);
@@ -268,7 +268,6 @@ Subject to: @var{a}*x <= @var{b}\n\
   octave_value_list retval;
   int nargin = args.length();
   int ne = 0; // The number of equality constraints
-  int fatal_errors = 0;
   int include_in_basis;
   ColumnVector x;
   Matrix T;
@@ -280,9 +279,10 @@ Subject to: @var{a}*x <= @var{b}\n\
   Matrix A;
   ColumnVector b,vlb,vub,orig_vub;
   // Start checking arguements 
-  if(nargin<3)
+  if(nargin<3 || nargin > 6)
     {
-      fatal_errors++;
+	print_usage("lp");
+	return retval;
     }
   else
     {
@@ -299,8 +299,8 @@ Subject to: @var{a}*x <= @var{b}\n\
 	}
       else
 	{
-	  cerr << "You must supply a scalar for the number of constraints that are equalities\n";
-	  fatal_errors++;
+	  error("You must supply a scalar for the number of constraints that are equalities");
+	  return retval;
 	}
     case 5:
       vub = ColumnVector(args(4).vector_value());
@@ -310,19 +310,12 @@ Subject to: @var{a}*x <= @var{b}\n\
       break;
     case 3:
       break;
-    default:
-      cerr << "Incorrect number of arguements.\n";
-      fatal_errors++;
     }
 
   int nr = A.rows();
   int nc = A.columns();
   
-  if(check_dimensions(c,A,b,vlb,vub) < 0){fatal_errors++;}
-  if(fatal_errors > 0){
-    print_usage("lp");
-    return(retval);
-  }
+  if(check_dimensions(c,A,b,vlb,vub) < 0){return retval;}
   
   // Now take care of upper and lower bounds
   idx_vector aRange;
@@ -393,7 +386,7 @@ Subject to: @var{a}*x <= @var{b}\n\
     }
   else
     {
-      octave_stdout << "It does not make sense to have more equalities than the rank of the system\n";
+      error("lp: it does not make sense to have more equalities than the rank of the system");
       return(retval);
     }
   
@@ -547,6 +540,7 @@ Subject to: @var{a}*x <= @var{b}\n\
 		  octave_stdout << "Something that should be mathematically impossible occured\n";
 		  octave_stdout << "The answer given may or may not be correct\n";
 		  octave_stdout << "Please report the problem\n";
+		  return retval;
 		}
 	      T = Matrix(x);
 	      aRange = idx_vector(Range(1,freeVars(j,1)-1));

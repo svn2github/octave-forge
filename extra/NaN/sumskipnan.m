@@ -62,7 +62,8 @@ if nargin<2,
 end;
 
 tmp = version;
-if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6)) < 2136,
+ver = str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6));
+if ver < 2136,
 
 	%%% This part is neccessary for the following reasons: 
         %%% 1) its workaround for a bug in Octave version <= 2.1.35
@@ -70,7 +71,7 @@ if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6)) < 2136,
 	%%% 2) DIM argument is not implemented in SUM of Octave 2.0.x 
 	%%% Once these points are fixed, this part can be removed  
 
-	if exist('nansum') == 2,
+	if (ver > 2100) & (exist('nansum') == 2),
                 count = sum(~isnan(i),DIM); 
 	        o     = nansum(i,DIM);
 	else 

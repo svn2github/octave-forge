@@ -1,5 +1,5 @@
 function [RC,r0] = poly2rc(a,efinal);
-% converts AR-polynomial into reflection coefficients
+% converts AR-polynomial into reflection coefficients
 % [k,r0] = poly2rc(a [,efinal])
 %
 % see also ACOVF ACORF AR2RC RC2AR DURLEV AC2POLY, POLY2RC, RC2POLY, RC2AC, AC2RC, POLY2AC
@@ -25,7 +25,7 @@ function [RC,r0] = poly2rc(a,efinal);
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 % Boston, MA  02111-1307, USA.
 
-if all(size(a)>1,
+if all(size(a))>1,
         fprintf(2,'Error poly2rc: "a" must be a vector\n');
         return;
 end;

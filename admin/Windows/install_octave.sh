@@ -1,48 +1,49 @@
 #!/bin/sh
-# This script is executed by the nsis installer
-# just after files have been unpacked
 export PATH="/bin:$PATH"
 
 echo '                Welcome to Octave'
 echo
 echo
-echo 'Octave has been successfully installed on'
-echo 'your computer. At this point the software will customize'
-echo 'the octave installation for your machine.'
+echo 'Octave has been successfully installed on your computer.'
+echo 'At this point the software will customize the octave'
+echo 'installation for your machine.'
 echo
+
 echo 'STEP 1'
 echo
-echo 'Octave has been optimized for various computer architectures.'
-echo 'The following optimized versions of octave are available:'
+echo 'There is no step one for now.'
 echo
-
-maxchoice=0;
-for oct in /bin/octave-2.*.*-*atlas.exe ; do 
-    maxchoice=`expr $maxchoice + 1`;
-    echo "$maxchoice: "`basename $oct .exe` ; 
-done
-
-if [ "$maxchoice" = "1" ] ; then
-    echo "Selecting default octave version: $oct";
-    choice=1;
-else
-    choice=-1;
-fi
-
-while [ "$choice" -lt 1 -o "$choice" -gt $maxchoice ] ; do
-    echo -n 'Choose which version to install:'
-    read choice;
-done
-
-idx=0 ;
-for oct in /bin/octave-2.*.*-*atlas.exe ; do 
-    idx=`expr $idx + 1`;
-    if [ "$idx" = "$choice" ] ; then
-        ln -sf $oct /bin/octave.exe ;
-    else
-        rm $oct;
-    fi
-done
+#echo 'Octave has been optimized for various computer architectures.'
+#echo 'The following optimized versions of octave are available:'
+#echo
+#
+#maxchoice=0;
+#for oct in /bin/octave-2.*.*-*atlas.exe ; do 
+#    maxchoice=`expr $maxchoice + 1`;
+#    echo "$maxchoice: "`basename $oct .exe` ; 
+#done
+#
+#if [ "$maxchoice" = "1" ] ; then
+#    echo "Selecting default octave version: $oct";
+#    choice=1;
+#else
+#    choice=-1;
+#fi
+#
+#while [ "$choice" -lt 1 -o "$choice" -gt $maxchoice ] ; do
+#    echo -n 'Choose which version to install:'
+#    read choice;
+#done
+#
+#idx=0 ;
+#for oct in /bin/octave-2.*.*-*atlas.exe ; do 
+#    idx=`expr $idx + 1`;
+#    if [ "$idx" = "$choice" ] ; then
+#        ln -sf $oct /bin/octave.exe ;
+#    else
+#        rm $oct;
+#    fi
+#done
 
 echo
 echo 'STEP 2'
@@ -60,6 +61,24 @@ for drive in A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ; do
         ln -sf /cygdrive/$drive /$drive ;
     fi
 done
+
+echo
+echo 'Setting links to your oct-files'
+echo
+
+dir=`pwd`
+
+ARCH=i686-pc-cygwin
+cd /opt/octave/libexec/octave/2.*/oct/$ARCH
+for file in *.link ; do . $file ; done
+
+cd /opt/octave/libexec/octave/2.*/site/oct/$ARCH/octave-forge
+for file in *.link ; do . $file ; done
+
+cd /bin
+for file in *.link ; do . $file ; done
+
+cd $dir
 
 echo
 echo 'STEP 3'
@@ -128,7 +147,7 @@ mv /tmp/$soct /bin/$soct
 echo
 echo "COMPLETE"
 echo
-echo "Configuration of octave-2.1.42 is now complete"
+echo "Configuration of octave is now complete"
 echo "Press <return> key to continue"
 echo
 read choice

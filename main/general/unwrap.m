@@ -14,25 +14,26 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## Usage: b = unwrap(a{,tol{,dim}})
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{b} =} unwrap(@var{a},@var{tol},@var{dim})
 ## 
-## Unwrap radian phases by detecting jumps greater in magnitude
-## than "tol" (default pi) and adding or subtracting 2*pi as
-## appropriate.
+## Unwrap radian phases by adding multiples of 2*pi as appropriate to
+## remove jumps greater than @var{tol}. @var{tol} defaults to pi.
 ##
-## Unwrap will unwrap along the columns of "a" unless the row
-## dimension of "a" is 1 or the "dim" argument is given with a
+## Unwrap will unwrap along the columns of @var{a} unless the row
+## dimension of @var{a} is 1 or @var{dim} is given with a
 ## value of 1, when it will unwrap along the row(s).
+## @end deftypefn
 
 ## Author: Bill Lash <lash@tellabs.com>
 
-function retval = unwrap(a,tol,dim)
+function retval = unwrap (a,tol,dim)
         
   if ((nargin<1) || (nargin>3))
-    usage("unwrap(a,[tol,[dim]])")
+    usage("unwrap (a,[tol,[dim]])")
   endif
   if (nargin < 3)
-    if (rows(a)==1)
+    if (rows (a) == 1)
       dim = 1;        #row vector, go along the row
     else
       dim = 2;        # Otherwise go along the columns
@@ -44,7 +45,7 @@ function retval = unwrap(a,tol,dim)
   if (tol == [])      # if tol is not provided but dim is, handle it
     tol = pi;
   endif
-  tol = abs(tol);     # don't let anyone use a negative tol
+  tol = abs (tol);     # don't let anyone use a negative tol
   
   rng = 2*pi;
   
@@ -54,8 +55,8 @@ function retval = unwrap(a,tol,dim)
   else
     ra = a;
   endif
-  n = columns(ra);
-  m = rows(ra);
+  n = columns (ra);
+  m = rows (ra);
 	
   if (m == 1)       # Handle case where we are trying to unwrap 
     retval = a;     # a scalar, or only have one sample in the 
@@ -64,7 +65,7 @@ function retval = unwrap(a,tol,dim)
 
   ## take first order difference to see so that wraps will show up
   ## as large values, and the sign will show direction
-  d = [zeros(1,n);ra(1:m-1,:)-ra(2:m,:)];
+  d = [ zeros(1,n); ra(1:m-1,:)-ra(2:m,:) ];
 
   ## Find only the peaks, and multiply them by the range so that there
   ## are kronecker deltas at each wrap point multiplied by the range
@@ -72,7 +73,7 @@ function retval = unwrap(a,tol,dim)
   p =  rng * (((d > tol)>0) - ((d < -tol)>0));
 
   ## Now need to "integrate" this so that the deltas become steps
-  r = cumsum(p);
+  r = cumsum (p);
 
   ## Now add the "steps" to the original data and put output in the
   ## same shape as originally

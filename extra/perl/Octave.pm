@@ -247,9 +247,9 @@ sub get_defined_functions
    my $o = shift;
    my $data= $o->interpret("whos -functions");
    my @funclist;
-   while ( $data =~ /user-defined function +- +- +(\w+)/g )
+   while ( $data =~ /user(-defined|) function +- +- +(\w+)/g )
    {
-      push @funclist, $1;
+      push @funclist, $2;
    }
    return @funclist;
 
@@ -416,6 +416,9 @@ sub name
 __END__
 
 $Log$
+Revision 1.5  2001/11/11 03:36:31  aadler
+mod to work with octave-2.0 as well as 2.1
+
 Revision 1.4  2001/11/11 03:00:54  aadler
 added makefile and tests
 added as_scalar method

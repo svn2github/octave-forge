@@ -87,9 +87,6 @@ endif
 	@echo "Compiling $@"; \
 	$(MKOCTFILE) $(INCLUDES) -c $< 
 
-install: all
-	@echo "Installing..."; \
-	install -C $(TARGETS) $(INSTALLDIR)
 
 clean:
 	@echo "Cleaning..."

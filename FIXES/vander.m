@@ -49,23 +49,23 @@
 ## @end deftypefn
 ## @seealso{hankel, sylvester_matrix, hilb, invhilb, and toeplitz}
 
-## Author: John W. Eaton
-## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-##    vectorized for speed
+## Author: jwe
 
 function retval = vander (c)
 
-  if (nargin != 1) 
+  if (nargin != 1)
     usage ("vander (c)");
   endif
 
-  if (!is_vector (c))
-    error ("vander: argument must be a vector"); 
+  if (is_vector(c))
+    n = length (c);
+    retval = zeros (n, n);
+    j = 1:n;
+    for i = 1:n
+      retval (i, j) = c(i) .^ (n - j);
+    endfor
+  else
+    error ("vander: argument must be a vector");
   endif
-
-  n = length (c);
-  retval = c ([1:n]' * ones (1, n));
-  retval = reshape (retval, n, n);
-  retval = retval .^ (ones (n, 1) * [n-1:-1:0]);
 
 endfunction

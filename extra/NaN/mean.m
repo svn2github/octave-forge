@@ -4,9 +4,9 @@ function [y]=mean(x,DIM,opt)
 %  y = mean(x [,DIM] [,opt])
 %
 % DIM	dimension
-%	1 STD of columns
-%	2 STD of rows
-% 	N STD of  N-th dimension 
+%	1 MEAN of columns
+%	2 MEAN of rows
+% 	N MEAN of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
 %
 % opt	options 

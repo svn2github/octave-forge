@@ -1,7 +1,7 @@
 function y=var(x,opt,DIM)
 % VAR calculates the variance.
 % 
-% y = std(x [, opt[, DIM]])
+% y = var(x [, opt[, DIM]])
 %   calculates the variance in dimension DIM
 %   the default DIM is the first non-single dimension
 %

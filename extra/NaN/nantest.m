@@ -63,11 +63,35 @@ end;
 % check if result is correct
 tmp = abs(r(:,1)-r(:,2))<eps;
 
+
+
+% check NORMPDF, NORMCDF, NORMINV
+x = [-inf,-2,-1,-.5,0,.5,1,2,3,inf,nan]';
+q(1) = sum(isnan(normpdf(x,2,0)))>sum(isnan(x));
+if q(1),
+        fprintf(1,'NORMPDF should be replaced\n.');
+end;
+
+q(2) = sum(isnan(normcdf(x,2,0)))>sum(isnan(x));
+if q(2),
+        fprintf(1,'NORMCDF should be replaced\n.');
+end;
+
+p = [-inf,-.2,0,.2,.5,1,2,inf,nan];
+q(3) = sum(~isnan(norminv(p,2,0)))<4;
+if q(3),
+        fprintf(1,'NORMINV should be replaced\n.');
+end;
+
+
 % output
-if all(tmp)
+if all(tmp) & all(~q),
         fprintf(1,'NANTEST successful - your NaN-tools are correctely installed\n');
 else
         fprintf(1,'NANTEST %i not successful \n', find(~tmp));
 	fprintf(1,'Some functions must still be replaced\n');
 end;
+
+
+
 

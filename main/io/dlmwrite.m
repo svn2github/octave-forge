@@ -25,12 +25,11 @@ function [ ret ] = dlmwrite (file, A, delim, r, c)
     error(msg);
   else
     if (r > 0)
-      repmat([repmat(delim,1,c+columns(A)-1),"\n"],1,r)
       fprintf(fid,"%s",repmat([repmat(delim,1,c+columns(A)-1),"\n"],1,r));
     endif
     template = [ "%.16g", repmat([delim,"%.16g"],1,columns(A)-1), "\n" ];
     if (c > 0)
-        template = [ repmat(delim,1,c), template ]
+        template = [ repmat(delim,1,c), template ];
     endif
     fprintf(fid,template,A.');
     fclose(fid);

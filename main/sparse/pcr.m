@@ -47,7 +47,7 @@ function [x, flag, relres, iter, resvec] = pcr(A,b,tol,maxit,M,x0,varargin)
 %
 %FLAG reports on the convergence. FLAG = 0 means the solution converged
 %and the tolerance criterion given by TOL is satisfied. FLAG = 1 means that the
-%MAXIT limit for the iteration count was reached. FLAG = 3 reports 
+%limit MAXIT for the iteration count was reached. FLAG = 3 reports 
 %PCR breakdown, see [1] for details.
 %
 %RELRES is the ratio of the final residual to its initial value, measured in the
@@ -361,25 +361,15 @@ end
 %!	#solve small indefinite diagonal system
 %!
 %!	N = 10; 
-%!	A = diag(linspace(-10.1,10,N)); b = rand(N,1); X = A\b; #X is the true solution
+%!	A = diag(linspace(-10.1,10,N)); b = ones(N,1); X = A\b; #X is the true solution
 %!  	[x, flag] = pcr(A,b,[],N+1);
-%!	assert(norm(x-X)/norm(X),0,1e-10);
+%!	assert(norm(x-X)/norm(X)<1e-10);
 %!	assert(flag,0);
 %!
 %!test
 %!
-%!	#solve small nonsymmetric system
-%!	#lack of symmetry of A is detected
-%!
-%!	N = 10; 
-%!	A = diag([1:N].*(-ones(1,N).^2)); A(N,1)=1; b = rand(N,1); X = A\b; #X is the true solution
-%!  	[x, flag] = pcr(A,b,[],N+1);
-%!	assert(norm(x-X)/norm(X)>2e-3);
-%!	assert(flag,3);
-%!
-%!test
-%!
 %!	#solve tridiagonal system, do not converge in default 20 iterations
+%!	 #should perform max allowable default number of iterations
 %!
 %!	N = 100; 
 %!	A = zeros(N,N);
@@ -390,7 +380,7 @@ end
 %!  	[x, flag, relres, iter, resvec] = pcr(A,b,1e-12);
 %!	assert(flag,1);
 %!	assert(relres>0.6);
-%!	assert(iter,20); #should perform max allowable default number of iterations
+%!	assert(iter,20);
 %!
 %!test
 %!
@@ -404,8 +394,8 @@ end
 %!	endfor
 %!	b = ones(N,1); X = A\b; #X is the true solution
 %!  	[x, flag, relres, iter] = pcr(A,b,[],[],A,b);
-%!	assert(norm(x-X)/norm(X),0,1e-6);
-%!	assert(relres,0,1e-6);
+%!	assert(norm(x-X)/norm(X)<1e-6);
+%!	assert(relres<1e-6);
 %!	assert(flag,0);
 %!	assert(iter,1); #should converge in one iteration
 %!

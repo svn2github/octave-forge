@@ -31,7 +31,7 @@ TODO:
 #include <config.h>
 #endif
 #include <octave/oct.h>
-#include <octave/lo-mappers.h>
+#include <octave/lo-ieee.h>
 
 using namespace std;
 

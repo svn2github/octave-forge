@@ -108,7 +108,8 @@ function retval = datestr(date,code,P)
 			  "Jul";"Aug";"Sep";"Oct";"Nov";"Dec"];
   global __time_names = ["AM";"PM"];
   for i=1:rows(V)
-    [Y, M, D, h, m, s] = deal(V(i,:));
+    Y=V(i,1); M=V(i,2); D=V(i,3);
+    h=V(i,4); m=V(i,5); s=V(i,6);
     Y2 = rem(Y,100);
     switch (code)
       case { 0, 'dd-mmm-yyyy HH:MM:SS' }

@@ -1,12 +1,18 @@
-Tested against octave-2.1.45.  Probably requires octave-2.1.43. 
-Some functions may work with older versions of Octave.  
-Use make -k to build whatever can be built ignoring the rest.
+Tested against octave-2.1.49.  Compiles for 2.1.36 and up.
+Some functions will not work with older versions of Octave.  
+For versions prior to 2.1.35, use make -k to build whatever 
+can be built ignoring the rest.
+
+*** WARNING *** if installing in a user directory, octave may crash
+immediately on startup.  Either install into a system directory, or
+remove the comm/PKG_ADD and sparse/PKG_ADD and try again
+(octave-2.1.49 on RedHat 7.3 exhibits this problem).
 
 Latest release notes available at:
 
 http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/main/RELEASE-NOTES?rev=HEAD&content-type=text/plain
 
-xxxx-xx-xx for Octave 2.1.36 and up ==========================================
+2003-06-01 for Octave 2.1.36 and up ==========================================
 
 * Extended support backward to octave 2.1.36 and forward to octave 2.1.49
   for all oct-files.  Some scripts make use of features only available in

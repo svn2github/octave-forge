@@ -27,7 +27,7 @@ function [X,T]=detrend(t,X,p)
 % X is the detrended data
 % T is the removed trend
 % 
-% see also: SUMSKIPNAN 
+% see also: SUMSKIPNAN, ZSCORE		
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

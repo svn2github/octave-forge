@@ -38,7 +38,7 @@ for dir in $DIRS; do
 
     # if no files have tests in them, skip
     if test -z "$TESTS" ; then
-	echo "printf('%-40s --- no tests\n','$dir');" >>fntests.m
+	echo "printf('%-40s --- no tests','$dir');disp('');" >>fntests.m
     else 
 	echo "dp=dn=0;" >>fntests.m
 	for file in $TESTS ; do
@@ -46,13 +46,13 @@ for dir in $DIRS; do
             echo "dp += p; dn += n;" >>fntests.m
 	done
 	echo "printf('%-40s --- ','$dir');" >>fntests.m
-	echo "if dp==dn, printf('success\n'); else" >>fntests.m
-        echo "printf('passes %d out of %d tests\n',dp,dn); end" >>fntests.m
-        echo "passes += dp; tests += dn;" >>fntests.m
+	echo "if dp==dn, printf('success'); else" >>fntests.m
+        echo "printf('passes %d out of %d tests',dp,dn); end" >>fntests.m
+        echo "disp(''); passes += dp; tests += dn;" >>fntests.m
     fi
 
 done
 
-echo "printf('passes %d out of %d tests\n',passes,tests);" >> fntests.m
-echo "printf('see fntests.log for details\n');" >> fntests.m
+echo "printf('passes %d out of %d tests',passes,tests);disp('');" >> fntests.m
+echo "printf('see fntests.log for details');disp('');" >> fntests.m
 echo "fclose(fid);" >> fntests.m

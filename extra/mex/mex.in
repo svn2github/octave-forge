@@ -16,7 +16,7 @@ fi
 
 first=""
 for arg in $*; do
-    case "$arg" in -*) ;; *) first="$arg"; break ;; esac
+    case "$arg" in -c) compileonly=1 ;; -*) ;; *) first="$arg"; break ;; esac
 done
 
 if test -z "$first" ; then
@@ -24,13 +24,18 @@ if test -z "$first" ; then
    exit
 fi
 
-if grep -iq mexfunction $first ; then
+if test -n "$compileonly" ; then
+   set -x
+   @MKOCTFILE@ -I@OPATH@ $*
+   exit
+elif grep -iq mexfunction $first ; then
    echo building $first
 else
    echo $first does not contain mexfunction
    exit 1
 fi
 
+# default the name of the octave function from the first filename
 name=${first%%.*}
 ext=${first#*.}
 #echo $name . $ext

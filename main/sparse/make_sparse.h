@@ -19,6 +19,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.11  2002/12/11 17:19:31  aadler
+sparse .^ scalar operations added
+improved test suite
+improved documentation
+new is_sparse
+new spabs
+
 Revision 1.10  2002/11/27 04:46:42  pkienzle
 Use new exception handling infrastructure.
 
@@ -164,6 +171,7 @@ public:
 
    int rows    (void) const ;
    int columns (void) const ;
+   int cols    (void) const ;
    int nnz     (void) const ;
 
    bool is_defined (void) const ;
@@ -222,6 +230,7 @@ public:
 
    int rows    (void) const ;
    int columns (void) const ;
+   int cols    (void) const ;
    int nnz     (void) const ;
 
    bool is_defined (void) const ;
@@ -391,6 +400,8 @@ maybe_shrink( int lim, int bound, int*& idx, Complex*& coef) {
    oct_sparse_maybe_shrink( lim, bound, idx,
                             (void *&) coef, sizeof(Complex));
 }   
+
+Complex * new_SuperLU_Complex( int size );
 
 SuperMatrix
 create_SuperMatrix( int nr, int nc, int nnz,

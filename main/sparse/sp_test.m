@@ -25,7 +25,7 @@ SZ=10;
 NTRIES=100;
 
 errortol= 1e-10;
-res=zeros(1,200); # should be enough space
+res=zeros(1,300); % should be enough space
 
 for tries = 1:NTRIES;
 
@@ -189,137 +189,187 @@ end
    i=i+1;      % i=24
    res(i)= res(i)     +   (  nnz(acs) == nnz(acf));  
    i=i+1;      % i=25
+
+%
+% spabs
+%
+   res(i)= res(i)     +   all(all(  full(spabs(ars)) == abs(arf) ));  
+   i=i+1;      % i=26
+   res(i)= res(i)     +   all(all(  full(spabs(acs)) == abs(acf) ));  
+   i=i+1;      % i=27
 %    
 % test sparse op scalar operations
 %
    res(i)= res(i)     +all(all( (ars==frn) == (arf==frn) ));
-   i=i+1;      % i=26
-   res(i)= res(i)     +all(all( (frn==ars) == (frn==arf) ));
-   i=i+1;      % i=27
-   res(i)= res(i)     +all(all( (frn+ars) == (frn+arf) ));
    i=i+1;      % i=28
-   res(i)= res(i)     +all(all( (ars+frn) == (arf+frn) ));
+   res(i)= res(i)     +all(all( (frn==ars) == (frn==arf) ));
    i=i+1;      % i=29
-   res(i)= res(i)     +all(all( (frn-ars) == (frn-arf) ));
+   res(i)= res(i)     +all(all( (frn+ars) == (frn+arf) ));
    i=i+1;      % i=30
-   res(i)= res(i)     +all(all( (ars-frn) == (arf-frn) ));
+   res(i)= res(i)     +all(all( (ars+frn) == (arf+frn) ));
    i=i+1;      % i=31
-   res(i)= res(i)     +all(all( (frn*ars) == (frn*arf) ));
+   res(i)= res(i)     +all(all( (frn-ars) == (frn-arf) ));
    i=i+1;      % i=32
-   res(i)= res(i)     +all(all( (ars*frn) == (arf*frn) ));
+   res(i)= res(i)     +all(all( (ars-frn) == (arf-frn) ));
    i=i+1;      % i=33
-   res(i)= res(i)     +all(all( (frn.*ars) == (frn.*arf) ));
+   res(i)= res(i)     +all(all( (frn*ars) == (frn*arf) ));
    i=i+1;      % i=34
-   res(i)= res(i)     +all(all( (ars.*frn) == (arf.*frn) ));
+   res(i)= res(i)     +all(all( (ars*frn) == (arf*frn) ));
    i=i+1;      % i=35
-   res(i)= res(i)     +all(all( abs( (frn\ars) - (frn\arf) )<errortol ));
+   res(i)= res(i)     +all(all( (frn.*ars) == (frn.*arf) ));
    i=i+1;      % i=36
-   res(i)= res(i)     +all(all( abs( (ars/frn) - (arf/frn) )<errortol ));
+   res(i)= res(i)     +all(all( (ars.*frn) == (arf.*frn) ));
    i=i+1;      % i=37
+   res(i)= res(i)     +all(all( abs( (frn\ars) - (frn\arf) )<errortol ));
+   i=i+1;      % i=38
+   res(i)= res(i)     +all(all( abs( (ars/frn) - (arf/frn) )<errortol ));
+   i=i+1;      % i=39
+   [jnk1,jnk2, sp_values] = spfind( ars.^frn );
+   full_vals=                       arf.^frn;
+   full_vals= full_vals(~isnan(full_vals) & ~isinf(full_vals) & (full_vals~=0));
+   res(i)= res(i)     +all(all( (sp_values(:) - full_vals(:)) <errortol ));
+   i=i+1;      % i=40
 %    
 % test sparse op complex scalar operations
 %
    res(i)= res(i)     +all(all( (ars==fcn) == (arf==fcn) ));
-   i=i+1;      % i=38
-   res(i)= res(i)     +all(all( (fcn==ars) == (fcn==arf) ));
-   i=i+1;      % i=39
-   res(i)= res(i)     +all(all( (fcn+ars) == (fcn+arf) ));
-   i=i+1;      % i=40
-   res(i)= res(i)     +all(all( (ars+fcn) == (arf+fcn) ));
    i=i+1;      % i=41
-   res(i)= res(i)     +all(all( (fcn-ars) == (fcn-arf) ));
+   res(i)= res(i)     +all(all( (fcn==ars) == (fcn==arf) ));
    i=i+1;      % i=42
-   res(i)= res(i)     +all(all( (ars-fcn) == (arf-fcn) ));
+   res(i)= res(i)     +all(all( (fcn+ars) == (fcn+arf) ));
    i=i+1;      % i=43
-   res(i)= res(i)     +all(all( (fcn*ars) == (fcn*arf) ));
+   res(i)= res(i)     +all(all( (ars+fcn) == (arf+fcn) ));
    i=i+1;      % i=44
-   res(i)= res(i)     +all(all( (ars*fcn) == (arf*fcn) ));
+   res(i)= res(i)     +all(all( (fcn-ars) == (fcn-arf) ));
    i=i+1;      % i=45
-   res(i)= res(i)     +all(all( (fcn.*ars) == (fcn.*arf) ));
+   res(i)= res(i)     +all(all( (ars-fcn) == (arf-fcn) ));
    i=i+1;      % i=46
-   res(i)= res(i)     +all(all( (ars.*fcn) == (arf.*fcn) ));
+   res(i)= res(i)     + issparse( (fcn*ars) );
    i=i+1;      % i=47
-   res(i)= res(i)     +all(all( abs( (fcn\ars) - (fcn\arf) )<errortol ));
+   res(i)= res(i)     +all(all( (fcn*ars) == (fcn*arf) ));
    i=i+1;      % i=48
-   res(i)= res(i)     +all(all( abs( (ars/fcn) - (arf/fcn) )<errortol ));
+   res(i)= res(i)     + issparse( (ars*fcn) );
    i=i+1;      % i=49
+   res(i)= res(i)     +all(all( (ars*fcn) == (arf*fcn) ));
+   i=i+1;      % i=50
+   res(i)= res(i)     + issparse( (fcn.*ars) );
+   i=i+1;      % i=51
+   res(i)= res(i)     +all(all( (fcn.*ars) == (fcn.*arf) ));
+   i=i+1;      % i=52
+   res(i)= res(i)     + issparse( (ars.*fcn) );
+   i=i+1;      % i=53
+   res(i)= res(i)     +all(all( (ars.*fcn) == (arf.*fcn) ));
+   i=i+1;      % i=54
+   res(i)= res(i)     + issparse( (fcn\ars) );
+   i=i+1;      % i=55
+   res(i)= res(i)     +all(all( abs( (fcn\ars) - (fcn\arf) )<errortol ));
+   i=i+1;      % i=56
+   res(i)= res(i)     + issparse( (ars/fcn) );
+   i=i+1;      % i=57
+   res(i)= res(i)     +all(all( abs( (ars/fcn) - (arf/fcn) )<errortol ));
+   i=i+1;      % i=58
+   [jnk1,jnk2, sp_values] = spfind( ars.^fcn );
+   full_vals=                       arf.^fcn;
+   full_vals= full_vals(~isnan(full_vals) & ~isinf(full_vals) & (full_vals~=0));
+   res(i)= res(i)     +all(all( (sp_values(:) - full_vals(:)) <errortol ));
+   i=i+1;      % i=59
 %    
 % test complex sparse op scalar operations
 %
-   res(i)= res(i)     +all(all( (acs==frn) == (acf==frn) ));
-   i=i+1;      % i=50
-   res(i)= res(i)     +all(all( (frn==acs) == (frn==acf) ));
-   i=i+1;      % i=51
-   res(i)= res(i)     +all(all( (frn+acs) == (frn+acf) ));
-   i=i+1;      % i=52
-   res(i)= res(i)     +all(all( (acs+frn) == (acf+frn) ));
-   i=i+1;      % i=53
-   res(i)= res(i)     +all(all( (frn-acs) == (frn-acf) ));
-   i=i+1;      % i=54
-   res(i)= res(i)     +all(all( (acs-frn) == (acf-frn) ));
-   i=i+1;      % i=55
-   res(i)= res(i)     +all(all( (frn*acs) == (frn*acf) ));
-   i=i+1;      % i=56
-   res(i)= res(i)     +all(all( (acs*frn) == (acf*frn) ));
-   i=i+1;      % i=57
-   res(i)= res(i)     +all(all( (frn.*acs) == (frn.*acf) ));
-   i=i+1;      % i=58
-   res(i)= res(i)     +all(all( (acs.*frn) == (acf.*frn) ));
-   i=i+1;      % i=59
-   res(i)= res(i)     +all(all( abs( (frn\acs) - (frn\acf) )<errortol ));
+   res(i)= res(i)     + issparse( (acs*frn) );
    i=i+1;      % i=60
-   res(i)= res(i)     +all(all( abs( (acs/frn) - (acf/frn) )<errortol ));
+   res(i)= res(i)     +all(all( (acs==frn) == (acf==frn) ));
    i=i+1;      % i=61
+   res(i)= res(i)     + issparse( (frn*acs) );
+   i=i+1;      % i=62
+   res(i)= res(i)     +all(all( (frn==acs) == (frn==acf) ));
+   i=i+1;      % i=63
+   res(i)= res(i)     +all(all( (frn+acs) == (frn+acf) ));
+   i=i+1;      % i=64
+   res(i)= res(i)     +all(all( (acs+frn) == (acf+frn) ));
+   i=i+1;      % i=65
+   res(i)= res(i)     +all(all( (frn-acs) == (frn-acf) ));
+   i=i+1;      % i=66
+   res(i)= res(i)     +all(all( (acs-frn) == (acf-frn) ));
+   i=i+1;      % i=67
+   res(i)= res(i)     + issparse( (frn*acs) );
+   i=i+1;      % i=68
+   res(i)= res(i)     +all(all( (frn*acs) == (frn*acf) ));
+   i=i+1;      % i=69
+   res(i)= res(i)     +all(all( (acs*frn) == (acf*frn) ));
+   i=i+1;      % i=70
+   res(i)= res(i)     + issparse( (frn.*acs) );
+   i=i+1;      % i=71
+   res(i)= res(i)     +all(all( (frn.*acs) == (frn.*acf) ));
+   i=i+1;      % i=72
+   res(i)= res(i)     +all(all( (acs.*frn) == (acf.*frn) ));
+   i=i+1;      % i=73
+   res(i)= res(i)     + issparse( (frn\acs) );
+   i=i+1;      % i=74
+   res(i)= res(i)     +all(all( abs( (frn\acs) - (frn\acf) )<errortol ));
+   i=i+1;      % i=75
+   res(i)= res(i)     +all(all( abs( (acs/frn) - (acf/frn) )<errortol ));
+   i=i+1;      % i=76
+   [jnk1,jnk2, sp_values] = spfind( acs.^frn );
+   full_vals=                       acf.^frn;
+   full_vals= full_vals(~isnan(full_vals) & ~isinf(full_vals) & (full_vals~=0));
+   res(i)= res(i)     +all(all( sp_values(:) == full_vals(:) ));
+   i=i+1;      % i=77
 %    
 % test complex sparse op complex scalar operations
 %
    res(i)= res(i)     +all(all( (acs==fcn) == (acf==fcn) ));
-   i=i+1;      % i=62
+   i=i+1;      % i=78
    res(i)= res(i)     +all(all( (fcn==acs) == (fcn==acf) ));
-   i=i+1;      % i=63
+   i=i+1;      % i=79
    res(i)= res(i)     +all(all( (fcn+acs) == (fcn+acf) ));
-   i=i+1;      % i=64
+   i=i+1;      % i=80
    res(i)= res(i)     +all(all( (acs+fcn) == (acf+fcn) ));
-   i=i+1;      % i=65
+   i=i+1;      % i=81
    res(i)= res(i)     +all(all( (fcn-acs) == (fcn-acf) ));
-   i=i+1;      % i=66
+   i=i+1;      % i=82
    res(i)= res(i)     +all(all( (acs-fcn) == (acf-fcn) ));
-   i=i+1;      % i=67
+   i=i+1;      % i=83
    res(i)= res(i)     +all(all( (fcn*acs) == (fcn*acf) ));
-   i=i+1;      % i=68
+   i=i+1;      % i=84
    res(i)= res(i)     +all(all( (acs*fcn) == (acf*fcn) ));
-   i=i+1;      % i=69
+   i=i+1;      % i=85
    res(i)= res(i)     +all(all( (fcn.*acs) == (fcn.*acf) ));
-   i=i+1;      % i=70
+   i=i+1;      % i=86
    res(i)= res(i)     +all(all( (acs.*fcn) == (acf.*fcn) ));
-   i=i+1;      % i=71
+   i=i+1;      % i=87
    res(i)= res(i)     +all(all( abs( (fcn\acs) - (fcn\acf) )<errortol ));
-   i=i+1;      % i=72
+   i=i+1;      % i=88
    res(i)= res(i)     +all(all( abs( (acs/fcn) - (acf/fcn) )<errortol ));
-   i=i+1;      % i=73
+   i=i+1;      % i=89
+   [jnk1,jnk2, sp_values] = spfind( acs.^fcn );
+   full_vals=                       acf.^fcn;
+   full_vals= full_vals(~isnan(full_vals) & ~isinf(full_vals) & (full_vals~=0));
+   res(i)= res(i)     +all(all( sp_values(:) == full_vals(:) ));
+   i=i+1;      % i=90
 
 %
 % sparse uary ops
 %
    res(i)= res(i)     +all(all( ars.' ==  arf.' ));  
-   i=i+1;      % i=74
+   i=i+1;      % i=91
    res(i)= res(i)     +all(all( ars'  ==  arf' ));  
-   i=i+1;      % i=75
+   i=i+1;      % i=92
    res(i)= res(i)     +all(all( -ars  == -arf ));  
-   i=i+1;      % i=76
+   i=i+1;      % i=93
    res(i)= res(i)     +all(all( ~ars  == ~arf ));  
-   i=i+1;      % i=77
+   i=i+1;      % i=94
 %
 % complex sparse uary ops
 %
    res(i)= res(i)     +all(all( acs.' ==  acf.' ));  
-   i=i+1;      % i=78
+   i=i+1;      % i=95
    res(i)= res(i)     +all(all( acs'  ==  acf' ));  
-   i=i+1;      % i=79
+   i=i+1;      % i=96
    res(i)= res(i)     +all(all( -acs  == -acf ));  
-   i=i+1;      % i=80
+   i=i+1;      % i=97
    res(i)= res(i)     +all(all( ~acs  == ~acf ));  
-   i=i+1;      % i=81
+   i=i+1;      % i=98
 
 %
 % sparse op sparse and  sparse op matrix
@@ -330,52 +380,52 @@ end
    # FIXME: this breaks if drs is 1x1
    rdif= abs(drs\erf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=82
+   i=i+1;      % i=99
 
    rdif= abs(drf\ers - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=83
+   i=i+1;      % i=100
 
    rdif= abs(drs\ers - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=84
+   i=i+1;      % i=101
 
    res(i)= res(i)     +all(all( ars+brs == arf+brf )); 
-   i=i+1;      % i=85
-   res(i)= res(i)     +all(all( arf+brs == arf+brf ));  
-   i=i+1;      % i=86
-   res(i)= res(i)     +all(all( ars+brf == arf+brf ));  
-   i=i+1;      % i=87
-   res(i)= res(i)     +all(all( ars-brs == arf-brf ));  
-   i=i+1;      % i=88
-   res(i)= res(i)     +all(all( arf-brs == arf-brf ));  
-   i=i+1;      % i=89
-   res(i)= res(i)     +all(all( ars-brf == arf-brf ));  
-   i=i+1;      % i=90
-   res(i)= res(i)     +all(all( (ars>brs) == (arf>brf) ));  
-   i=i+1;      % i=91
-   res(i)= res(i)     +all(all( (ars<brs) == (arf<brf) ));  
-   i=i+1;      % i=92
-   res(i)= res(i)     +all(all( (ars!=brs) == (arf!=brf) ));  
-   i=i+1;      % i=93
-   res(i)= res(i)     +all(all( (ars>=brs) == (arf>=brf) ));  
-   i=i+1;      % i=94
-   res(i)= res(i)     +all(all( (ars<=brs) == (arf<=brf) ));  
-   i=i+1;      % i=95
-   res(i)= res(i)     +all(all( (ars==brs) == (arf==brf) ));  
-   i=i+1;      % i=96
-   res(i)= res(i)     +all(all( ars.*brs == arf.*brf ));  
-   i=i+1;      % i=97
-   res(i)= res(i)     +all(all( arf.*brs == arf.*brf ));  
-   i=i+1;      % i=98
-   res(i)= res(i)     +all(all( ars.*brf == arf.*brf ));  
-   i=i+1;      % i=99
-   res(i)= res(i)     +all(all( ars*crs == arf*crf ));  
-   i=i+1;      % i=100
-   res(i)= res(i)     +all(all( arf*crs == arf*crf ));  
-   i=i+1;      % i=101
-   res(i)= res(i)     +all(all( ars*crf == arf*crf ));  
    i=i+1;      % i=102
+   res(i)= res(i)     +all(all( arf+brs == arf+brf ));  
+   i=i+1;      % i=103
+   res(i)= res(i)     +all(all( ars+brf == arf+brf ));  
+   i=i+1;      % i=104
+   res(i)= res(i)     +all(all( ars-brs == arf-brf ));  
+   i=i+1;      % i=105
+   res(i)= res(i)     +all(all( arf-brs == arf-brf ));  
+   i=i+1;      % i=106
+   res(i)= res(i)     +all(all( ars-brf == arf-brf ));  
+   i=i+1;      % i=107
+   res(i)= res(i)     +all(all( (ars>brs) == (arf>brf) ));  
+   i=i+1;      % i=108
+   res(i)= res(i)     +all(all( (ars<brs) == (arf<brf) ));  
+   i=i+1;      % i=109
+   res(i)= res(i)     +all(all( (ars!=brs) == (arf!=brf) ));  
+   i=i+1;      % i=110
+   res(i)= res(i)     +all(all( (ars>=brs) == (arf>=brf) ));  
+   i=i+1;      % i=111
+   res(i)= res(i)     +all(all( (ars<=brs) == (arf<=brf) ));  
+   i=i+1;      % i=112
+   res(i)= res(i)     +all(all( (ars==brs) == (arf==brf) ));  
+   i=i+1;      % i=113
+   res(i)= res(i)     +all(all( ars.*brs == arf.*brf ));  
+   i=i+1;      % i=114
+   res(i)= res(i)     +all(all( arf.*brs == arf.*brf ));  
+   i=i+1;      % i=115
+   res(i)= res(i)     +all(all( ars.*brf == arf.*brf ));  
+   i=i+1;      % i=116
+   res(i)= res(i)     +all(all( ars*crs == arf*crf ));  
+   i=i+1;      % i=117
+   res(i)= res(i)     +all(all( arf*crs == arf*crf ));  
+   i=i+1;      % i=118
+   res(i)= res(i)     +all(all( ars*crf == arf*crf ));  
+   i=i+1;      % i=119
 
 %
 % sparse op complex sparse and  sparse op complex matrix
@@ -386,53 +436,53 @@ end
    # FIXME: this breaks if drs is 1x1
    rdif= abs(drs\ecf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=103
+   i=i+1;      % i=120
 
    rdif= abs(drf\ecs - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=104
+   i=i+1;      % i=121
 
 # TODO: not avail yet
 #  rdif= abs(drs\ecs - df_ef) < abs(mag*df_ef);
 #  res(i)= res(i)     +all(all( rdif ));
-#  i=i+1;      % i=105
+#  i=i+1;      % i=122
 
    res(i)= res(i)     +all(all( ars+bcs == arf+bcf )); 
-   i=i+1;      % i=106
-   res(i)= res(i)     +all(all( arf+bcs == arf+bcf ));  
-   i=i+1;      % i=107
-   res(i)= res(i)     +all(all( ars+bcf == arf+bcf ));  
-   i=i+1;      % i=108
-   res(i)= res(i)     +all(all( ars-bcs == arf-bcf ));  
-   i=i+1;      % i=109
-   res(i)= res(i)     +all(all( arf-bcs == arf-bcf ));  
-   i=i+1;      % i=110
-   res(i)= res(i)     +all(all( ars-bcf == arf-bcf ));  
-   i=i+1;      % i=111
-   res(i)= res(i)     +all(all( (ars>bcs) == (arf>bcf) ));  
-   i=i+1;      % i=112
-   res(i)= res(i)     +all(all( (ars<bcs) == (arf<bcf) ));  
-   i=i+1;      % i=113
-   res(i)= res(i)     +all(all( (ars!=bcs) == (arf!=bcf) ));  
-   i=i+1;      % i=114
-   res(i)= res(i)     +all(all( (ars>=bcs) == (arf>=bcf) ));  
-   i=i+1;      % i=115
-   res(i)= res(i)     +all(all( (ars<=bcs) == (arf<=bcf) ));  
-   i=i+1;      % i=116
-   res(i)= res(i)     +all(all( (ars==bcs) == (arf==bcf) ));  
-   i=i+1;      % i=117
-   res(i)= res(i)     +all(all( ars.*bcs == arf.*bcf ));  
-   i=i+1;      % i=118
-   res(i)= res(i)     +all(all( arf.*bcs == arf.*bcf ));  
-   i=i+1;      % i=119
-   res(i)= res(i)     +all(all( ars.*bcf == arf.*bcf ));  
-   i=i+1;      % i=120
-   res(i)= res(i)     +all(all( ars*ccs == arf*ccf ));  
-   i=i+1;      % i=121
-   res(i)= res(i)     +all(all( arf*ccs == arf*ccf ));  
-   i=i+1;      % i=122
-   res(i)= res(i)     +all(all( ars*ccf == arf*ccf ));  
    i=i+1;      % i=123
+   res(i)= res(i)     +all(all( arf+bcs == arf+bcf ));  
+   i=i+1;      % i=124
+   res(i)= res(i)     +all(all( ars+bcf == arf+bcf ));  
+   i=i+1;      % i=125
+   res(i)= res(i)     +all(all( ars-bcs == arf-bcf ));  
+   i=i+1;      % i=126
+   res(i)= res(i)     +all(all( arf-bcs == arf-bcf ));  
+   i=i+1;      % i=127
+   res(i)= res(i)     +all(all( ars-bcf == arf-bcf ));  
+   i=i+1;      % i=128
+   res(i)= res(i)     +all(all( (ars>bcs) == (arf>bcf) ));  
+   i=i+1;      % i=129
+   res(i)= res(i)     +all(all( (ars<bcs) == (arf<bcf) ));  
+   i=i+1;      % i=130
+   res(i)= res(i)     +all(all( (ars!=bcs) == (arf!=bcf) ));  
+   i=i+1;      % i=131
+   res(i)= res(i)     +all(all( (ars>=bcs) == (arf>=bcf) ));  
+   i=i+1;      % i=132
+   res(i)= res(i)     +all(all( (ars<=bcs) == (arf<=bcf) ));  
+   i=i+1;      % i=133
+   res(i)= res(i)     +all(all( (ars==bcs) == (arf==bcf) ));  
+   i=i+1;      % i=134
+   res(i)= res(i)     +all(all( ars.*bcs == arf.*bcf ));  
+   i=i+1;      % i=135
+   res(i)= res(i)     +all(all( arf.*bcs == arf.*bcf ));  
+   i=i+1;      % i=136
+   res(i)= res(i)     +all(all( ars.*bcf == arf.*bcf ));  
+   i=i+1;      % i=137
+   res(i)= res(i)     +all(all( ars*ccs == arf*ccf ));  
+   i=i+1;      % i=138
+   res(i)= res(i)     +all(all( arf*ccs == arf*ccf ));  
+   i=i+1;      % i=139
+   res(i)= res(i)     +all(all( ars*ccf == arf*ccf ));  
+   i=i+1;      % i=140
 
 %
 % complex sparse op sparse and  complex sparse op matrix
@@ -443,58 +493,58 @@ end
    # FIXME: this breaks if drs is 1x1
    rdif= abs(dcs\erf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=124
+   i=i+1;      % i=141
 
    rdif= abs(dcf\ers - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=125
+   i=i+1;      % i=142
 
    df_ef= dcf\erf;
    rdif= abs(dcs\ers - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=126
+   i=i+1;      % i=143
 
    df_ef= drf\ecf;
    rdif= abs(drs\ecs - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=127
+   i=i+1;      % i=144
 
    res(i)= res(i)     +all(all( acs+brs == acf+brf )); 
-   i=i+1;      % i=128
-   res(i)= res(i)     +all(all( acf+brs == acf+brf ));  
-   i=i+1;      % i=129
-   res(i)= res(i)     +all(all( acs+brf == acf+brf ));  
-   i=i+1;      % i=130
-   res(i)= res(i)     +all(all( acs-brs == acf-brf ));  
-   i=i+1;      % i=131
-   res(i)= res(i)     +all(all( acf-brs == acf-brf ));  
-   i=i+1;      % i=132
-   res(i)= res(i)     +all(all( acs-brf == acf-brf ));  
-   i=i+1;      % i=133
-   res(i)= res(i)     +all(all( (acs>brs) == (acf>brf) ));  
-   i=i+1;      % i=134
-   res(i)= res(i)     +all(all( (acs<brs) == (acf<brf) ));  
-   i=i+1;      % i=135
-   res(i)= res(i)     +all(all( (acs!=brs) == (acf!=brf) ));  
-   i=i+1;      % i=136
-   res(i)= res(i)     +all(all( (acs>=brs) == (acf>=brf) ));  
-   i=i+1;      % i=137
-   res(i)= res(i)     +all(all( (acs<=brs) == (acf<=brf) ));  
-   i=i+1;      % i=138
-   res(i)= res(i)     +all(all( (acs==brs) == (acf==brf) ));  
-   i=i+1;      % i=139
-   res(i)= res(i)     +all(all( acs.*brs == acf.*brf ));  
-   i=i+1;      % i=140
-   res(i)= res(i)     +all(all( acf.*brs == acf.*brf ));  
-   i=i+1;      % i=141
-   res(i)= res(i)     +all(all( acs.*brf == acf.*brf ));  
-   i=i+1;      % i=142
-   res(i)= res(i)     +all(all( acs*crs == acf*crf ));  
-   i=i+1;      % i=143
-   res(i)= res(i)     +all(all( acf*crs == acf*crf ));  
-   i=i+1;      % i=144
-   res(i)= res(i)     +all(all( acs*crf == acf*crf ));  
    i=i+1;      % i=145
+   res(i)= res(i)     +all(all( acf+brs == acf+brf ));  
+   i=i+1;      % i=146
+   res(i)= res(i)     +all(all( acs+brf == acf+brf ));  
+   i=i+1;      % i=147
+   res(i)= res(i)     +all(all( acs-brs == acf-brf ));  
+   i=i+1;      % i=148
+   res(i)= res(i)     +all(all( acf-brs == acf-brf ));  
+   i=i+1;      % i=149
+   res(i)= res(i)     +all(all( acs-brf == acf-brf ));  
+   i=i+1;      % i=150
+   res(i)= res(i)     +all(all( (acs>brs) == (acf>brf) ));  
+   i=i+1;      % i=151
+   res(i)= res(i)     +all(all( (acs<brs) == (acf<brf) ));  
+   i=i+1;      % i=152
+   res(i)= res(i)     +all(all( (acs!=brs) == (acf!=brf) ));  
+   i=i+1;      % i=153
+   res(i)= res(i)     +all(all( (acs>=brs) == (acf>=brf) ));  
+   i=i+1;      % i=154
+   res(i)= res(i)     +all(all( (acs<=brs) == (acf<=brf) ));  
+   i=i+1;      % i=155
+   res(i)= res(i)     +all(all( (acs==brs) == (acf==brf) ));  
+   i=i+1;      % i=156
+   res(i)= res(i)     +all(all( acs.*brs == acf.*brf ));  
+   i=i+1;      % i=157
+   res(i)= res(i)     +all(all( acf.*brs == acf.*brf ));  
+   i=i+1;      % i=158
+   res(i)= res(i)     +all(all( acs.*brf == acf.*brf ));  
+   i=i+1;      % i=159
+   res(i)= res(i)     +all(all( acs*crs == acf*crf ));  
+   i=i+1;      % i=160
+   res(i)= res(i)     +all(all( acf*crs == acf*crf ));  
+   i=i+1;      % i=161
+   res(i)= res(i)     +all(all( acs*crf == acf*crf ));  
+   i=i+1;      % i=162
 
 %
 % complex sparse op complex sparse and  complex sparse op complex matrix
@@ -505,52 +555,52 @@ end
    # FIXME: this breaks if drs is 1x1
    rdif= abs(dcs\ecf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=146
+   i=i+1;      % i=163
 
    rdif= abs(dcf\ecs - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=147
+   i=i+1;      % i=164
 
    rdif= abs(dcs\ecs - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
-   i=i+1;      % i=148
+   i=i+1;      % i=165
 
    res(i)= res(i)     +all(all( acs+bcs == acf+bcf )); 
-   i=i+1;      % i=149
-   res(i)= res(i)     +all(all( acf+bcs == acf+bcf ));  
-   i=i+1;      % i=150
-   res(i)= res(i)     +all(all( acs+bcf == acf+bcf ));  
-   i=i+1;      % i=151
-   res(i)= res(i)     +all(all( acs-bcs == acf-bcf ));  
-   i=i+1;      % i=152
-   res(i)= res(i)     +all(all( acf-bcs == acf-bcf ));  
-   i=i+1;      % i=153
-   res(i)= res(i)     +all(all( acs-bcf == acf-bcf ));  
-   i=i+1;      % i=154
-   res(i)= res(i)     +all(all( (acs>bcs) == (acf>bcf) ));  
-   i=i+1;      % i=155
-   res(i)= res(i)     +all(all( (acs<bcs) == (acf<bcf) ));  
-   i=i+1;      % i=156
-   res(i)= res(i)     +all(all( (acs!=bcs) == (acf!=bcf) ));  
-   i=i+1;      % i=157
-   res(i)= res(i)     +all(all( (acs>=bcs) == (acf>=bcf) ));  
-   i=i+1;      % i=158
-   res(i)= res(i)     +all(all( (acs<=bcs) == (acf<=bcf) ));  
-   i=i+1;      % i=159
-   res(i)= res(i)     +all(all( (acs==bcs) == (acf==bcf) ));  
-   i=i+1;      % i=160
-   res(i)= res(i)     +all(all( acs.*bcs == acf.*bcf ));  
-   i=i+1;      % i=161
-   res(i)= res(i)     +all(all( acf.*bcs == acf.*bcf ));  
-   i=i+1;      % i=162
-   res(i)= res(i)     +all(all( acs.*bcf == acf.*bcf ));  
-   i=i+1;      % i=163
-   res(i)= res(i)     +all(all( abs( acs*ccs - acf*ccf ) < errortol ));  
-   i=i+1;      % i=164
-   res(i)= res(i)     +all(all( abs( acf*ccs - acf*ccf ) < errortol ));  
-   i=i+1;      % i=165
-   res(i)= res(i)     +all(all( abs( acs*ccf - acf*ccf ) < errortol ));  
    i=i+1;      % i=166
+   res(i)= res(i)     +all(all( acf+bcs == acf+bcf ));  
+   i=i+1;      % i=167
+   res(i)= res(i)     +all(all( acs+bcf == acf+bcf ));  
+   i=i+1;      % i=168
+   res(i)= res(i)     +all(all( acs-bcs == acf-bcf ));  
+   i=i+1;      % i=169
+   res(i)= res(i)     +all(all( acf-bcs == acf-bcf ));  
+   i=i+1;      % i=170
+   res(i)= res(i)     +all(all( acs-bcf == acf-bcf ));  
+   i=i+1;      % i=171
+   res(i)= res(i)     +all(all( (acs>bcs) == (acf>bcf) ));  
+   i=i+1;      % i=172
+   res(i)= res(i)     +all(all( (acs<bcs) == (acf<bcf) ));  
+   i=i+1;      % i=173
+   res(i)= res(i)     +all(all( (acs!=bcs) == (acf!=bcf) ));  
+   i=i+1;      % i=174
+   res(i)= res(i)     +all(all( (acs>=bcs) == (acf>=bcf) ));  
+   i=i+1;      % i=175
+   res(i)= res(i)     +all(all( (acs<=bcs) == (acf<=bcf) ));  
+   i=i+1;      % i=176
+   res(i)= res(i)     +all(all( (acs==bcs) == (acf==bcf) ));  
+   i=i+1;      % i=177
+   res(i)= res(i)     +all(all( acs.*bcs == acf.*bcf ));  
+   i=i+1;      % i=178
+   res(i)= res(i)     +all(all( acf.*bcs == acf.*bcf ));  
+   i=i+1;      % i=179
+   res(i)= res(i)     +all(all( acs.*bcf == acf.*bcf ));  
+   i=i+1;      % i=180
+   res(i)= res(i)     +all(all( abs( acs*ccs - acf*ccf ) < errortol ));  
+   i=i+1;      % i=181
+   res(i)= res(i)     +all(all( abs( acf*ccs - acf*ccf ) < errortol ));  
+   i=i+1;      % i=182
+   res(i)= res(i)     +all(all( abs( acs*ccf - acf*ccf ) < errortol ));  
+   i=i+1;      % i=183
 
 %
 % sparse select operations
@@ -559,17 +609,17 @@ end
    r1= ars(sel1); r2=arf(sel1);
    res(i)= res(i)     +all( r1(:) == r2(:) );
 %  res(i)= res(i)     +all( ars(sel1) == arf(sel1 ));
-   i=i+1;      % i=167
+   i=i+1;      % i=184
    res(i)= res(i)     +all( ars(:) == arf(:));
-   i=i+1;      % i=168
+   i=i+1;      % i=185
    res(i)= res(i)     +all(all( ars(sely,selx) == arf(sely,selx) ));
-   i=i+1;      % i=169
+   i=i+1;      % i=186
    res(i)= res(i)     +all(all( ars( :  ,selx) == arf( :  ,selx) ));
-   i=i+1;      % i=170
+   i=i+1;      % i=187
    res(i)= res(i)     +all(all( ars(sely, :  ) == arf(sely, :  ) ));
-   i=i+1;      % i=171
+   i=i+1;      % i=188
    res(i)= res(i)     +all(all( ars(:,:) == arf(:,:) ));
-   i=i+1;      % i=172
+   i=i+1;      % i=189
 
 %
 % complex sparse select operations
@@ -577,17 +627,17 @@ end
    r1= acs(sel1); r2=acf(sel1);
    res(i)= res(i)     +all( r1(:) == r2(:) );
 %  res(i)= res(i)     +all( ars(sel1) == arf(sel1 ));
-   i=i+1;      % i=173
+   i=i+1;      % i=190
    res(i)= res(i)     +all( ars(:) == arf(:));
-   i=i+1;      % i=174
+   i=i+1;      % i=191
    res(i)= res(i)     +all(all( ars(sely,selx) == arf(sely,selx) ));
-   i=i+1;      % i=175
+   i=i+1;      % i=192
    res(i)= res(i)     +all(all( ars( :  ,selx) == arf( :  ,selx) ));
-   i=i+1;      % i=176
+   i=i+1;      % i=193
    res(i)= res(i)     +all(all( ars(sely, :  ) == arf(sely, :  ) ));
-   i=i+1;      % i=177
+   i=i+1;      % i=194
    res(i)= res(i)     +all(all( ars(:,:) == arf(:,:) ));
-   i=i+1;      % i=178
+   i=i+1;      % i=195
 
 %
 % sparse LU and inverse
@@ -606,7 +656,7 @@ end
    res(i)= res(i) + all( [  ...
                all(all( abs(Ls2*Us2 - Lf2*Uf2 )< mag )) ; ...
                       1 ] );
-   i=i+1;      % i=179
+   i=i+1;      % i=196
                                         
    if OCTAVE
       [Ls4,Us4,PsR,PsC] = splu( drs );
@@ -624,13 +674,13 @@ end
                   all(all( Us4 .* UU == Us4 )) ] );
    end
 
-   i=i+1;      % i=180
+   i=i+1;      % i=197
 
    dsi = spinv( drs );
    mag= errortol;
    res(i)= res(i) + all(all( ...
            abs( inv(drf) - dsi ) <= mag*(1+abs(inv(drf))) ));
-   i=i+1;      % i=181
+   i=i+1;      % i=198
 
    if OCTAVE
       res(i)= res(i)    +all( spfind(ars) == find(arf) );
@@ -640,11 +690,11 @@ end
       [I,J,S]= find(ars);
       [N,M]  = size(ars);
    end
-   i=i+1;      % i=182
+   i=i+1;      % i=199
 
    asnew= sparse(I,J,S,N,M);
    res(i)= res(i)    +all( all( asnew == ars ));
-   i=i+1;      % i=183
+   i=i+1;      % i=200
 
 %
 % complex sparse LU and inverse
@@ -663,7 +713,7 @@ end
    res(i)= res(i) + all( [  ...
                all(all( abs(Ls2*Us2 - Lf2*Uf2 )< mag )) ; ...
                       1 ] );
-   i=i+1;      % i=184
+   i=i+1;      % i=201
 
    if OCTAVE
       [Ls4,Us4,PsR,PsC] = splu( dcs );
@@ -680,13 +730,13 @@ end
                   all(all( Ls4 .* LL == Ls4 )) ;
                   all(all( Us4 .* UU == Us4 )) ] );
    end
-   i=i+1;      % i=185
+   i=i+1;      % i=202
 
    dci = spinv( dcs );
    mag= errortol;
    res(i)= res(i) + all(all( ...
            abs( inv(dcf) - dci ) <= mag*(1+abs(inv(dcf))) ));
-   i=i+1;      % i=186
+   i=i+1;      % i=203
 
    if OCTAVE
       res(i)= res(i)    +all( spfind(acs) == find(acf) );
@@ -696,11 +746,11 @@ end
       [I,J,S]= find(acs);
       [N,M]  = size(acs);
    end
-   i=i+1;      % i=187
+   i=i+1;      % i=204
 
    asnew= sparse(I,J,S,N,M);
    res(i)= res(i)    +all( all( asnew == acs ));
-   i=i+1;      % i=188
+   i=i+1;      % i=205
 
    % test sparse assembly using 'sum' or 'unique'
    tf1= zeros(N,M);
@@ -717,15 +767,15 @@ end
 
    % test normal assembly
    res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M) == tf1 ));
-   i=i+1;      % i=189
+   i=i+1;      % i=206
 
    % test 'unique' assembly
    res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M,'unique') == tf1 ));
-   i=i+1;      % i=190
+   i=i+1;      % i=207
 
    % test 'sum' assembly
    res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M,'sum') == tf2 ));
-   i=i+1;      % i=191
+   i=i+1;      % i=208
 
 end 
 
@@ -746,6 +796,13 @@ end
 
 %
 % $Log$
+% Revision 1.7  2002/12/11 17:19:31  aadler
+% sparse .^ scalar operations added
+% improved test suite
+% improved documentation
+% new is_sparse
+% new spabs
+%
 % Revision 1.6  2002/11/05 19:21:07  aadler
 % added indexing for complex_sparse. added tests
 %

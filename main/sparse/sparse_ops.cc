@@ -111,6 +111,10 @@ int octave_sparse::columns (void) const {
    return X.ncol;
 }
 
+int octave_sparse::cols (void) const {
+   return X.ncol;
+}
+
 int octave_sparse::nnz     (void) const {
    NCformat * NCF  = (NCformat * ) X.Store;
    return   NCF->nnz ;
@@ -593,6 +597,65 @@ DEFBINOP (n_s_ldiv, scalar, sparse) {
   return sparse_scalar_multiply (v2, 1 / d);
 }  
 
+
+DEFBINOP (s_n_pow, sparse, scalar) {
+  CAST_BINOP_ARGS (const octave_sparse&, const octave_scalar&);
+  DEBUGMSG("sparse - sparse_scalar_power");
+  double s= v2.scalar_value();
+
+  SuperMatrix X= v1.super_matrix();
+  DEFINE_SP_POINTERS_REAL( X )
+  int nnz= NCFX->nnz;
+
+  double *coefB = doubleMalloc(nnz);
+  int *   ridxB = intMalloc(nnz);
+  int *   cidxB = intMalloc(X.ncol+1);
+  int found_a_negative_value= 0;
+  int scalar_isnot_integer= ( s != (int) s );
+
+  for ( int i=0; i<=Xnc; i++)
+     cidxB[i]=  cidxX[i];
+
+  int idx;
+  for ( idx=0; idx< nnz; idx++) {
+     double val= coefX[idx];
+     if (scalar_isnot_integer && val<0) {
+         found_a_negative_value=1;
+         break;
+     }
+     coefB[idx]=  pow( val , s);
+     ridxB[idx]=  ridxX[idx];
+  }
+
+  if (!found_a_negative_value) {
+      SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+      return new octave_sparse ( B );
+  }
+  
+  // since the matrix has negative values, the output is
+  // complex. Copy what's been done to a complex, and
+  // then continue with complex output
+
+  Complex *coefBc = new_SuperLU_Complex(nnz);
+  for (int i=0; i< idx; i++) {
+     coefBc[i]=  coefB[i];
+  }
+  oct_sparse_free( coefB);
+
+  for (int i=idx; i< nnz; i++) {
+     Complex val= coefX[i];
+     coefBc[i]=  pow( val , s);
+     ridxB[i]=  ridxX[i];
+  }
+
+  SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefBc, ridxB, cidxB );
+  return new octave_complex_sparse ( B );
+}  
+
+// a scalar .^ sparse has no value, as the result will be
+// nearly full -> ie scal^0 = scal;
+//DEFBINOP (n_s_pow, scalar, sparse) {
+
 //
 // sparse by matrix  operations
 //
@@ -980,6 +1043,7 @@ void install_sparse_ops() {
    INSTALL_BINOP (op_mul,      octave_scalar, octave_sparse, n_s_mul);
    INSTALL_BINOP (op_el_mul,   octave_sparse, octave_scalar, s_n_mul);
    INSTALL_BINOP (op_el_mul,   octave_scalar, octave_sparse, n_s_mul);
+   INSTALL_BINOP (op_el_pow,   octave_sparse, octave_scalar, s_n_pow);
 
    INSTALL_BINOP (op_div,      octave_sparse, octave_scalar, s_n_div);
    INSTALL_BINOP (op_ldiv,     octave_scalar, octave_sparse, n_s_ldiv);
@@ -1169,6 +1233,13 @@ sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.9  2002/12/11 17:19:32  aadler
+ * sparse .^ scalar operations added
+ * improved test suite
+ * improved documentation
+ * new is_sparse
+ * new spabs
+ *
  * Revision 1.8  2002/11/27 04:46:42  pkienzle
  * Use new exception handling infrastructure.
  *

@@ -2,6 +2,13 @@
 # $Id$
 #
 # $Log$
+# Revision 1.9  2002/12/11 17:19:31  aadler
+# sparse .^ scalar operations added
+# improved test suite
+# improved documentation
+# new is_sparse
+# new spabs
+#
 # Revision 1.8  2002/04/29 13:57:56  pkienzle
 # Restore CPICFLAG definition
 # Get OCTAVE from OCTAVE_FORGE if compiling within octave-forge
@@ -155,7 +162,8 @@ CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
 CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
 
 NAME     =   make_sparse
-OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct spinv.oct
+OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct \
+             spinv.oct is_sparse.oct spabs.oct
 SUPERLU  =   SuperLU
 S_INC=   -I$(SUPERLU)/SRC/ -I$(SUPERLU)/CBLAS
 

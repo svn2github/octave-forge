@@ -190,7 +190,7 @@ SPFIND: a sparse version of the find operator\n\
    x = spfind( a )                 \n\
       is analagous to x= find(A(:)) \n\
       where A= full(a)\n\
-   [i,j.v,nr,nc] = spfind( a )\n\
+   [i,j,v,nr,nc] = spfind( a )\n\
       give column vectors i j v such that\n\
       a= sparse(i,j,v,nr,nc)\n\
   ")
@@ -287,6 +287,13 @@ SPFIND: a sparse version of the find operator\n\
 
 /*
  * $Log$
+ * Revision 1.6  2002/12/11 17:19:32  aadler
+ * sparse .^ scalar operations added
+ * improved test suite
+ * improved documentation
+ * new is_sparse
+ * new spabs
+ *
  * Revision 1.5  2002/11/27 04:46:42  pkienzle
  * Use new exception handling infrastructure.
  *

@@ -348,8 +348,78 @@ rather than\n\
    return retval;
 }
 
+DEFUN_DLD (spabs, args, nargout ,
+  "real_a = spabs( a );\n\
+SPINV : Absolute value of a sparse matrix\n\
+  ")
+{
+   octave_value_list retval;
+
+   if (args.length() < 1) {
+      print_usage ("spabs");
+      return retval;
+   }
+
+   if (args(0).type_name () == "sparse" ) {
+      const octave_sparse& A =
+           (const octave_sparse&) args(0).get_rep();
+      SuperMatrix X= A.super_matrix();
+
+      DEFINE_SP_POINTERS_REAL( X )
+      int nnz= NCFX->nnz;
+
+      double *coefB = doubleMalloc(nnz);
+      int *   ridxB = intMalloc(nnz);
+      int *   cidxB = intMalloc(X.ncol+1);
+
+      for ( int i=0; i<=Xnc; i++)
+         cidxB[i]=  cidxX[i];
+
+      for ( int i=0; i< nnz; i++) {
+         coefB[i]=  fabs( coefX[i] );
+         ridxB[i]=  ridxX[i];
+      }
+
+      SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+      retval(0)= new octave_sparse(B);
+   } else
+   if ( args(0).type_name () == "complex_sparse" ) {
+      const octave_sparse& A =
+           (const octave_sparse&) args(0).get_rep();
+      SuperMatrix X= A.super_matrix();
+
+      DEFINE_SP_POINTERS_CPLX( X )
+      int nnz= NCFX->nnz;
+
+      double *coefB = doubleMalloc(nnz);
+      int *   ridxB = intMalloc(nnz);
+      int *   cidxB = intMalloc(X.ncol+1);
+
+      for ( int i=0; i<=Xnc; i++)
+         cidxB[i]=  cidxX[i];
+
+      for ( int i=0; i< nnz; i++) {
+         coefB[i]=  abs( coefX[i] );
+         ridxB[i]=  ridxX[i];
+      }
+
+      SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+      retval(0)= new octave_sparse(B);
+   } else
+     gripe_wrong_type_arg ("spabs", args(0));
+
+   return retval;
+}
+
 /*
  * $Log$
+ * Revision 1.7  2002/12/11 17:19:32  aadler
+ * sparse .^ scalar operations added
+ * improved test suite
+ * improved documentation
+ * new is_sparse
+ * new spabs
+ *
  * Revision 1.6  2002/11/27 04:46:42  pkienzle
  * Use new exception handling infrastructure.
  *

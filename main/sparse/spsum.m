@@ -29,7 +29,7 @@ if     nargin==1
       dim=2;
    endif
 elseif nargin==2
-   #ok
+   #ok -> no change required
 else
    print_usage("sp_sum");
    return;

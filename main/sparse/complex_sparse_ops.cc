@@ -68,6 +68,13 @@ create_SuperMatrix( int nr, int nc, int nnz,
    return X;
 }
 
+// this is required so that code that can't include
+// complex sparse headers (because they conflict)
+// can still access this
+Complex * new_SuperLU_Complex( int size ) {
+    return (Complex *) doublecomplexMalloc( size );
+}
+
 //
 // Octave complex sparse methods
 //
@@ -115,6 +122,9 @@ int octave_complex_sparse::rows    (void) const {
    return X.nrow;
 }
 int octave_complex_sparse::columns (void) const {
+   return X.ncol;
+}
+int octave_complex_sparse::cols (void) const {
    return X.ncol;
 }
 
@@ -624,26 +634,26 @@ complex_sparse_complex_multiply (
 // complex_sparse by scalar operations
 //
 
-DEFBINOP (s_n_mul, complex_sparse, scalar) {
+DEFBINOP (cs_n_mul, complex_sparse, scalar) {
   CAST_BINOP_ARGS (const octave_complex_sparse&, const octave_scalar&);
   Complex cv( v2.double_value(), 0 );
   return complex_sparse_complex_multiply (v1, cv);
 }  
 
-DEFBINOP (n_s_mul,  scalar, complex_sparse) {
+DEFBINOP (n_cs_mul,  scalar, complex_sparse) {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_sparse&);
   Complex cv( v1.double_value(), 0 );
   return complex_sparse_complex_multiply (v2, cv);
 }  
 
-DEFBINOP (s_n_div, complex_sparse, scalar) {
+DEFBINOP (cs_n_div, complex_sparse, scalar) {
   CAST_BINOP_ARGS (const octave_complex_sparse&, const octave_scalar&);
   Complex cv ( v2.double_value (), 0);
   if (cv == Complex(0,0) ) gripe_divide_by_zero ();
   return complex_sparse_complex_multiply (v1, 1.0 / cv );
 }  
 
-DEFBINOP (n_s_ldiv, scalar, complex_sparse) {
+DEFBINOP (n_cs_ldiv, scalar, complex_sparse) {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_sparse&);
   Complex cv ( v1.double_value (), 0);
   if (cv == Complex(0,0) ) gripe_divide_by_zero ();
@@ -651,31 +661,162 @@ DEFBINOP (n_s_ldiv, scalar, complex_sparse) {
 }  
 
 //
+// sparse by complex operations
+//
+
+octave_value
+sparse_complex_multiply (
+            const octave_sparse&  spar,
+            const octave_complex& cplx)
+{
+  DEBUGMSG("complex_sparse - sparse_complex_multiply");
+  Complex c= cplx.complex_value();
+
+  SuperMatrix X= spar.super_matrix();
+  DEFINE_SP_POINTERS_REAL( X )
+  int nnz= NCFX->nnz;
+
+  Complex *coefB = (Complex *) doublecomplexMalloc(nnz);
+  int *    ridxB = intMalloc(nnz);
+  int *    cidxB = intMalloc(X.ncol+1);
+
+  for ( int i=0; i<=Xnc; i++)
+     cidxB[i]=  cidxX[i];
+
+  for ( int i=0; i< nnz; i++) {
+     coefB[i]=  coefX[i] * c;
+     ridxB[i]=  ridxX[i];
+  }
+
+  SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+  return new octave_complex_sparse ( B );
+}
+
+DEFBINOP (s_c_mul, sparse, complex) {
+  CAST_BINOP_ARGS (const octave_sparse&, const octave_complex&);
+  return sparse_complex_multiply (v1, v2);
+}  
+
+DEFBINOP (c_s_mul, complex, sparse) {
+  CAST_BINOP_ARGS (const octave_complex&, const octave_sparse&);
+  return sparse_complex_multiply (v2, v1);
+}  
+
+DEFBINOP (s_c_div, sparse, complex) {
+  CAST_BINOP_ARGS (const octave_sparse&, const octave_complex&);
+  Complex cv= v2.complex_value();
+  if (cv == Complex(0,0) ) gripe_divide_by_zero ();
+  return sparse_complex_multiply (v1, 1.0 / cv );
+}  
+
+DEFBINOP (c_s_ldiv, complex, sparse) {
+  CAST_BINOP_ARGS (const octave_complex&, const octave_sparse&);
+  Complex cv= v1.complex_value();
+  if (cv == Complex(0,0) ) gripe_divide_by_zero ();
+  return sparse_complex_multiply (v2, 1.0 / cv );
+}  
+
+//
 // complex_sparse by complex operations
 //
 
-DEFBINOP (s_c_mul, complex_sparse, complex) {
+DEFBINOP (cs_c_mul, complex_sparse, complex) {
   CAST_BINOP_ARGS (const octave_complex_sparse&, const octave_complex&);
   return complex_sparse_complex_multiply (v1, v2);
 }  
 
-DEFBINOP (c_s_mul, complex, complex_sparse) {
+DEFBINOP (c_cs_mul, complex, complex_sparse) {
   CAST_BINOP_ARGS (const octave_complex&, const octave_complex_sparse&);
   return complex_sparse_complex_multiply (v2, v1);
 }  
 
-DEFBINOP (s_c_div, complex_sparse, complex) {
+DEFBINOP (cs_c_div, complex_sparse, complex) {
   CAST_BINOP_ARGS (const octave_complex_sparse&, const octave_complex&);
   Complex cv= v2.complex_value();
   if (cv == Complex(0,0) ) gripe_divide_by_zero ();
   return complex_sparse_complex_multiply (v1, 1.0 / cv );
 }  
 
-DEFBINOP (c_s_ldiv, complex, complex_sparse) {
+DEFBINOP (c_cs_ldiv, complex, complex_sparse) {
   CAST_BINOP_ARGS (const octave_complex&, const octave_complex_sparse&);
   Complex cv= v1.complex_value();
   if (cv == Complex(0,0) ) gripe_divide_by_zero ();
   return complex_sparse_complex_multiply (v2, 1.0 / cv );
+}  
+
+// complex exponentition
+
+octave_value
+complex_sparse_complex_power (
+            const octave_complex_sparse& spar,
+            const octave_complex&        cplx)
+{
+  DEBUGMSG("complex_sparse - complex_sparse_complex_power");
+  Complex c= cplx.complex_value();
+
+  SuperMatrix X= spar.super_matrix();
+  DEFINE_SP_POINTERS_CPLX( X )
+  int nnz= NCFX->nnz;
+
+  Complex *coefB = (Complex *) doublecomplexMalloc(nnz);
+  int *    ridxB = intMalloc(nnz);
+  int *    cidxB = intMalloc(X.ncol+1);
+
+  for ( int i=0; i<=Xnc; i++)
+     cidxB[i]=  cidxX[i];
+
+  for ( int i=0; i< nnz; i++) {
+     coefB[i]=  pow (coefX[i] , c);
+     ridxB[i]=  ridxX[i];
+  }
+
+  SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+  return new octave_complex_sparse ( B );
+}
+
+DEFBINOP (cs_n_pow, complex_sparse, scalar) {
+  CAST_BINOP_ARGS (const octave_complex_sparse&, const octave_scalar&);
+  Complex cv( v2.double_value(), 0 );
+  return complex_sparse_complex_power (v1, cv);
+}  
+
+DEFBINOP (cs_c_pow, complex_sparse, complex) {
+  CAST_BINOP_ARGS (const octave_complex_sparse&, const octave_complex&);
+  return complex_sparse_complex_power (v1, v2);
+}  
+
+octave_value
+sparse_complex_power (
+            const octave_sparse&   spar,
+            const octave_complex&  cplx)
+{
+  DEBUGMSG("complex_sparse - sparse_complex_power");
+  Complex c= cplx.complex_value();
+
+  SuperMatrix X= spar.super_matrix();
+  DEFINE_SP_POINTERS_REAL( X )
+  int nnz= NCFX->nnz;
+
+  Complex *coefB = (Complex *) doublecomplexMalloc(nnz);
+  int *    ridxB = intMalloc(nnz);
+  int *    cidxB = intMalloc(X.ncol+1);
+
+  for ( int i=0; i<=Xnc; i++)
+     cidxB[i]=  cidxX[i];
+
+  for ( int i=0; i< nnz; i++) {
+     Complex cv( coefX[i], 0 );
+     coefB[i]=  pow (cv , c);
+     ridxB[i]=  ridxX[i];
+  }
+
+  SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+  return new octave_complex_sparse ( B );
+}
+
+DEFBINOP (s_c_pow, sparse, complex) {
+  CAST_BINOP_ARGS (const octave_sparse&, const octave_complex&);
+  return sparse_complex_power (v1, v2);
 }  
 
 //
@@ -1151,19 +1292,31 @@ void install_complex_sparse_ops() {
    // binary operations: sparse with scalar
    //
 
-   INSTALL_BINOP (op_mul,      octave_complex_sparse, octave_scalar,         s_n_mul);
-   INSTALL_BINOP (op_mul,      octave_scalar,         octave_complex_sparse, n_s_mul);
-   INSTALL_BINOP (op_el_mul,   octave_complex_sparse, octave_scalar,         s_n_mul);
-   INSTALL_BINOP (op_el_mul,   octave_scalar,         octave_complex_sparse, n_s_mul);
-   INSTALL_BINOP (op_div,      octave_complex_sparse, octave_scalar,         s_n_div);
-   INSTALL_BINOP (op_ldiv,     octave_scalar,         octave_complex_sparse, n_s_ldiv);
+   INSTALL_BINOP (op_mul,      octave_complex_sparse, octave_scalar,         cs_n_mul);
+   INSTALL_BINOP (op_mul,      octave_scalar,         octave_complex_sparse, n_cs_mul);
+   INSTALL_BINOP (op_el_mul,   octave_complex_sparse, octave_scalar,         cs_n_mul);
+   INSTALL_BINOP (op_el_mul,   octave_scalar,         octave_complex_sparse, n_cs_mul);
+   INSTALL_BINOP (op_div,      octave_complex_sparse, octave_scalar,         cs_n_div);
+   INSTALL_BINOP (op_ldiv,     octave_scalar,         octave_complex_sparse, n_cs_ldiv);
+   INSTALL_BINOP (op_el_pow,   octave_complex_sparse, octave_scalar,         cs_n_pow);
 
-   INSTALL_BINOP (op_mul,      octave_complex_sparse, octave_complex,        s_c_mul);
-   INSTALL_BINOP (op_mul,      octave_complex,        octave_complex_sparse, c_s_mul);
-   INSTALL_BINOP (op_el_mul,   octave_complex_sparse, octave_complex,        s_c_mul);
-   INSTALL_BINOP (op_el_mul,   octave_complex,        octave_complex_sparse, c_s_mul);
-   INSTALL_BINOP (op_div,      octave_complex_sparse, octave_complex,        s_c_div);
-   INSTALL_BINOP (op_ldiv,     octave_complex,        octave_complex_sparse, c_s_ldiv);
+   INSTALL_BINOP (op_mul,      octave_complex_sparse, octave_complex,        cs_c_mul);
+   INSTALL_BINOP (op_mul,      octave_complex,        octave_complex_sparse, c_cs_mul);
+   INSTALL_BINOP (op_el_mul,   octave_complex_sparse, octave_complex,        cs_c_mul);
+   INSTALL_BINOP (op_el_mul,   octave_complex,        octave_complex_sparse, c_cs_mul);
+   INSTALL_BINOP (op_div,      octave_complex_sparse, octave_complex,        cs_c_div);
+   INSTALL_BINOP (op_ldiv,     octave_complex,        octave_complex_sparse, c_cs_ldiv);
+   INSTALL_BINOP (op_ldiv,     octave_complex,        octave_complex_sparse, c_cs_ldiv);
+   INSTALL_BINOP (op_el_pow,   octave_complex_sparse, octave_complex,        cs_c_pow);
+
+   INSTALL_BINOP (op_mul,      octave_sparse,         octave_complex,        s_c_mul);
+   INSTALL_BINOP (op_mul,      octave_complex,        octave_sparse,         c_s_mul);
+   INSTALL_BINOP (op_el_mul,   octave_sparse,         octave_complex,        s_c_mul);
+   INSTALL_BINOP (op_el_mul,   octave_complex,        octave_sparse,         c_s_mul);
+   INSTALL_BINOP (op_div,      octave_sparse,         octave_complex,        s_c_div);
+   INSTALL_BINOP (op_ldiv,     octave_complex,        octave_sparse,         c_s_ldiv);
+   INSTALL_BINOP (op_ldiv,     octave_complex,        octave_sparse,         c_s_ldiv);
+   INSTALL_BINOP (op_el_pow,   octave_sparse,         octave_complex,        s_c_pow);
 
    //
    // binary operations: sparse with matrix 
@@ -1383,6 +1536,13 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.11  2002/12/11 17:19:31  aadler
+ * sparse .^ scalar operations added
+ * improved test suite
+ * improved documentation
+ * new is_sparse
+ * new spabs
+ *
  * Revision 1.10  2002/11/27 04:46:42  pkienzle
  * Use new exception handling infrastructure.
  *

@@ -60,6 +60,7 @@
    * 2004-07-28 Paul Kienzle & David Bateman
    * * add -DALLBITS flag for 32 vs. 53 bits of randomness in mantissa
    * * make the naming scheme more uniform
+   * * add -DCPU_X86_32 for faster support of 53 bit mantissa on x86 arch.
    */
 
 /* Provides:
@@ -69,8 +70,6 @@
    void get_state(uint32_t save[MT_N+1])  saves state in array
    void set_state(uint32_t save[MT_N+1])  restores state from array
    uint32_t randi32(void)          returns 32-bit unsigned int
-   uint64_t randi53(void)          returns 53-bit unsigned int
-   uint64_t randi54(void)          returns 54-bit unsigned int
    uint64_t randi64(void)          returns 64-bit unsigned int
 
    double randu32(void)       returns 32-bit uniform in (0,1)
@@ -83,6 +82,7 @@
    Compile with -Dinline= if you wish to export all symbols.
    Compile with -DHAVE_GETTIMEOFDAY if the gettimeofday function is available.
    Compile with -DALLBITS for M=53 bit random numbers
+   Compile with -DCPU_X86_32 for faster 53-bit support on x86 arch
    Compile with -DTEST to generate a small main() test program
 
    cc randmtzig.c -DTEST -lm
@@ -295,30 +295,49 @@ inline uint32_t randi32(void)
     return (y ^ (y >> 18));
 }
 
-inline uint64_t makequad(uint32_t hi, uint32_t lo)
-{
-  return ((((uint64_t)hi)<<32)|lo);
-}
-
 inline uint64_t randi53(void)
 {
-  const uint32_t lo = randi32();
-  const uint32_t hi = randi32()&0x1FFFFF;
-  return makequad(hi,lo);
+    const uint32_t lo = randi32();
+    const uint32_t hi = randi32()&0x1FFFFF;
+#if defined(CPU_X86_32)
+    uint64_t u;
+    uint32_t *p = (uint32_t *)&u;
+    p[0] = lo;
+    p[1] = hi;
+    return u;
+#else
+    return (((uint64_t)hi<<32)|lo);
+#endif
 }
 
 inline uint64_t randi54(void)
 {
-  const uint32_t lo = randi32();
-  const uint32_t hi = randi32()&0x3FFFFF;
-  return makequad(hi,lo);
+    const uint32_t lo = randi32();
+    const uint32_t hi = randi32()&0x3FFFFF;
+#if defined(CPU_X86_32)
+    uint64_t u;
+    uint32_t *p = (uint32_t *)&u;
+    p[0] = lo;
+    p[1] = hi;
+    return u;
+#else
+    return (((uint64_t)hi<<32)|lo);
+#endif
 }
 
 inline uint64_t randi64(void)
 {
-  const uint32_t lo = randi32();
-  const uint32_t hi = randi32();
-  return makequad(hi,lo);
+    const uint32_t lo = randi32();
+    const uint32_t hi = randi32();
+#if defined(CPU_X86_32)
+    uint64_t u;
+    uint32_t *p = (uint32_t *)&u;
+    p[0] = lo;
+    p[1] = hi;
+    return u;
+#else
+    return (((uint64_t)hi<<32)|lo);
+#endif
 }
 
 /* generates a random number on (0,1)-real-interval */
@@ -328,12 +347,12 @@ inline double randu32(void)
     /* divided by 2^32 */
 }
 
-/* generates a random number on [0,1) with 53-bit resolution */
+/* generates a random number on (0,1) with 53-bit resolution */
 inline double randu53(void) 
 { 
     const uint32_t a=randi32()>>5;
     const uint32_t b=randi32()>>6; 
-    return(a*67108864.0+b)*(1.0/9007199254740992.0); 
+    return(a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
 } 
 
 
@@ -465,18 +484,34 @@ inline double randn (void)
        * have something to do with this.
        */
 #if defined(ALLBITS)
-      /* arbitrary mantissa */
-      const ZIGINT r = NRANDI;
-      const ZIGINT rabs=r>>1;
+# ifdef CPU_X86_32
+      /* 53-bit mantissa, 1-bit sign, x86 32-bit architecture */
+      double x;
+      int si,idx;
+      register uint32_t lo, hi;
+      int64_t rabs;
+      uint32_t *p = (uint32_t *)&rabs;
+      lo = randi32();
+      idx = lo&0xFF;
+      hi = randi32();
+      si = hi&UMASK;
+      p[0] = lo;
+      p[1] = hi&0x1FFFFF;
+      x = ( si ? -rabs : rabs ) * wi[idx];
+# else /* !CPU_X86_32 */
+      /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
+      const uint64_t r = NRANDI;
+      const int64_t rabs=r>>1;
       const int idx = (int)(rabs&0xFF);
-      const double x = ( r&1 ? -(rabs*wi[idx]) : (rabs*wi[idx]) );
-#else
+      const double x = ( r&1 ? -rabs : rabs) * wi[idx];
+# endif /* !CPU_X86_32 */
+#else /* !ALLBITS */
       /* 32-bit mantissa */
       const uint32_t r = randi32();
       const uint32_t rabs = r&LMASK;
       const int idx = (int)(r&0xFF);
       const double x = ((int32_t)r) * wi[idx];
-#endif
+#endif /* !ALLBITS */
       if (rabs < ki[idx])
 	return x;        /* 99.3% of the time we return here 1st try */
       else if (idx == 0)
@@ -488,6 +523,8 @@ inline double randn (void)
 	   * then return r+x. Except that r+x is always in the positive 
 	   * tail!!!! Any thing random might be used to determine the
 	   * sign, but as we already have r we might as well use it
+	   *
+	   * [PAK] but not the bottom 8 bits, since they are all 0 here!
 	   */
 	  double xx, yy;
 	  do
@@ -496,7 +533,7 @@ inline double randn (void)
 	      yy = - log (RANDU);
 	    } 
 	  while ( yy+yy <= xx*xx);
-	  return (r&1 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
+	  return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
 	}
       else if ((fi[idx-1] - fi[idx]) * RANDU + fi[idx] < exp(-0.5*x*x))
 	return x;

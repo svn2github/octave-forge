@@ -118,7 +118,7 @@ to put the code, then issue the CVS <i>checkout</i>
 <pre>
    $ cd <FONT COLOR="#800000"><i>working_directory</i></FONT>
    $ export CVS_RSH=ssh
-   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave co octave-forge
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.sourceforge.net:/cvsroot/octave co octave-forge
 </pre>
 
 <h3>Where does your code belong?</h3>

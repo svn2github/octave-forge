@@ -14,7 +14,6 @@
 ##
 ## returns gnuplot's setting of option.
 ##
-## REQUIRES: unix piping functionality, grep, sed
 ## COMMENT: would be much better to have the result directly from gnuplot,
 ##          but show/gshow deliver a human readable format, which cannot
 ##          be read by a machine clearly
@@ -25,6 +24,10 @@
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 
+## 2003-03-04 Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+##     * got rid of grep and sed, now parses with octave
+##     * can read options whose values are longer than ~70 characters
+##       (ie. span more than one line in the optfile)
 ## 2001-03-30 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##     * strip spaces
 ##     * use proper temporary files
@@ -40,35 +43,42 @@ function gout = gget(option)
   optfile = tmpnam;
   graw (["save set \"", optfile, "\"\n"]);
   f = fopen(optfile);
+  rmcmd = sprintf("rm -f %s", optfile);
   while f == -1
     sleep (1);
     f = fopen(optfile);
   endwhile
-  fclose(f);
+
+  gout = "";
+  s = strcat("set ", option, " ");
+  buf = blanks(80); 
+  idx = [];
+  buf = fgetl(f);
+  while(!feof(f))
+    idx = findstr(s, buf);
+    if(!isempty(idx))
+      break;
+    endif
+    buf = fgetl(f);
+  endwhile
   
-  cmd = sprintf("grep \"[# ]*set %s\" %s | sed 's/.*set %s *//'; rm -f %s", ...
-		option, optfile, option, optfile);
-  gout = system(cmd);
-  if (length(gout) == 0) 
-    ## warning("gget: option %s not found", option);
+  if(feof(f) || isempty(gout = buf((idx + length(s)):end)))
+    fclose(f);
+    system(rmcmd);
     return
   endif
 
-  ## grab the first output line only, without newline
-  ## XXX FIXMEXXX --- some options (e.g., key) may return multiple lines
-  ## since the real options are actually "key title" and "key".  Tricky...
-  idx = find(gout == "\n");
-  if !isempty(idx)
-    gout = gout(1:idx(1)-1); 
-    if (length(gout) == 0) return; endif
-  endif
-
-  ## strip leading and trailing blanks
-  idx = find(gout != " ");
-  if isempty(idx)
-    gout = "";
-  else
-    gout = gout(min(idx) : max(idx));
-  endif
+  while(gout(end) == '\\')
+    buf = fgetl(f);
+    idx = find(buf != " ");
+    if isempty(idx)
+      buf = "";
+    else
+      buf = buf(min(idx) : max(idx));
+    endif
+    gout = strcat(gout(1:(end-1)), buf);
+  endwhile
+  fclose(f);
+  system(rmcmd);
 
 endfunction

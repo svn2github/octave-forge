@@ -567,6 +567,19 @@ octave_complex_sparse::load_ascii (std::istream& is)
 
   return success;
 }
+
+bool 
+octave_complex_sparse::save_binary (std::ostream& os, bool& save_as_floats)
+{
+  return false;
+}
+
+bool 
+octave_complex_sparse::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  return false;
+}
 #endif
 
 octave_value
@@ -1664,6 +1677,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.28  2004/08/02 15:46:33  aadler
+ * tests for sparse saving
+ *
  * Revision 1.27  2004/08/02 14:47:52  aadler
  * complex save and load ascii
  *

@@ -450,6 +450,21 @@ function gen_select_tests {
 EOF
 }
 
+# =======================================================
+# sparse save and load tests
+
+function gen_save_tests {
+    cat >>$TESTS <<EOF
+%!test
+%! savefile= tmpnam();
+%! mark_for_deletion( savefile );
+%! save(savefile,'bf','as','af');
+%! clear as;
+%! load(savefile,'as');
+%!assert(as,af);
+EOF
+}
+
 # =============================================================
 # Putting it all together: defining the combined tests
 
@@ -497,12 +512,14 @@ fi
 
 gen_rectangular_tests
 gen_section
+gen_save_tests
 echo '%!test bf=real(bf);' >> $TESTS
 gen_rectangular_tests
 gen_section
 echo '%!test af=real(af);' >> $TESTS
 gen_rectangular_tests
 gen_section
+gen_save_tests
 echo '%!test bf=bf+1i*(bf~=0);' >> $TESTS
 gen_rectangular_tests
 gen_section

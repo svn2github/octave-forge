@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.26  2004/08/02 15:46:33  aadler
+tests for sparse saving
+
 Revision 1.25  2004/07/27 20:56:44  aadler
 first steps to concatenation working
 
@@ -306,12 +309,10 @@ public:
 
   bool load_ascii (std::istream& is);
 
-#if 0
   bool save_binary (std::ostream& os, bool& save_as_floats);
   
   bool load_binary (std::istream& is, bool swap, 
   		    oct_mach_info::float_format fmt);
-#endif
 
 #if defined (HAVE_HDF5)
 // TODO
@@ -407,12 +408,10 @@ public:
 
   bool load_ascii (std::istream& is);
 
-#if 0
   bool save_binary (std::ostream& os, bool& save_as_floats);
   
   bool load_binary (std::istream& is, bool swap, 
   		    oct_mach_info::float_format fmt);
-#endif
 
 #if defined (HAVE_HDF5)
 // TODO

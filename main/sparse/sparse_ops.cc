@@ -488,7 +488,8 @@ octave_sparse::save_ascii (std::ostream& os, bool& infnan_warned,
   DEFINE_SP_POINTERS_REAL( X )
   int nnz = NCFX->nnz;
 
-  // use N-D way of writing matrix
+  // TODO: how should we manage infnan warnings?
+  // use 2-D way of writing matrix
   os << "# nnz: "      << nnz << "\n";
   os << "# rows: "     << Xnr << "\n";
   os << "# columns: "  << Xnc << "\n";
@@ -527,6 +528,102 @@ octave_sparse::load_ascii (std::istream& is)
   }
 
   return success;
+}
+
+bool 
+octave_sparse::save_binary (std::ostream& os, bool& save_as_floats)
+{
+  return true;
+#if 0
+  char tmp = m ();
+  os.write (X_CAST (char *, &tmp), 1);
+  FOUR_BYTE_INT itmp = primpoly ();
+  os.write (X_CAST (char *, &itmp), 4);
+
+  dim_vector d = dims ();
+
+  // Don't handle N-D arrays yet
+  if (d.length() != 2)
+    return false;
+
+  // Use negative value for ndims to be consistent with other formats
+  itmp = - d.length();
+  os.write (X_CAST (char *, &itmp), 4);
+  for (int i=0; i < d.length (); i++)
+    {
+      itmp = d(i);
+      os.write (X_CAST (char *, &itmp), 4);
+    }
+
+  Matrix m = matrix_value ();
+  save_type st;
+  if (tmp < 8)
+    st = LS_U_CHAR;
+  else if (tmp < 16)
+    st = LS_U_SHORT;
+  else
+    st = LS_U_INT;
+  const double *mtmp = m.data ();
+  write_doubles (os, mtmp, st, d.numel ());
+
+  return true;
+#endif
+}
+
+bool 
+octave_sparse::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  return true;
+#if 0
+  char mord;
+  FOUR_BYTE_INT prim, mdims;
+
+  if (! is.read (X_CAST (char *, &mord), 1))
+    return false;
+
+  if (! is.read (X_CAST (char *, &prim), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &prim));
+
+  if (! is.read (X_CAST (char *, &mdims), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &mdims));
+
+  // Don't treat N-D arrays yet
+  if (mdims == -2)
+    {
+      mdims = - mdims;
+      FOUR_BYTE_INT di;
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+	{
+	  if (! is.read (X_CAST (char *, &di), 4))
+	    return false;
+	  if (swap)
+	    swap_4_bytes (X_CAST (char *, &di));
+	  dv(i) = di;
+	}
+
+      char tmp;
+      if (! is.read (X_CAST (char *, &tmp), 1))
+	return false;
+
+      Matrix m (dv(0), dv(1));
+      double *re = m.fortran_vec ();
+      read_doubles (is, re, X_CAST (save_type, tmp), dv.numel (), swap, fmt);
+      if (error_state || ! is)
+	return false;
+
+      gval = galois (m, mord, prim);
+    }
+
+  return true;
+#endif
 }
 #endif
 
@@ -1385,6 +1482,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.21  2004/08/02 15:46:33  aadler
+ * tests for sparse saving
+ *
  * Revision 1.20  2004/07/27 20:56:44  aadler
  * first steps to concatenation working
  *

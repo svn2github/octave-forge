@@ -1,7 +1,7 @@
 function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, arg8, arg9); 
 % Calculates adaptive autoregressive (AAR) and adaptive autoregressive moving average estimates (AARMA)
 % of real-valued data series using Kalman filter algorithm.
-% [a,e,REV] = aar(y, mode, MOP, UC, a0, A); 
+% [a,e,REV] = aar(y, mode, MOP, UC, a0, A, W, V); 
 %
 % The AAR process is described as following  
 %       y(k) - a(k,1)*y(t-1) -...- a(k,p)*y(t-p) = e(k);
@@ -24,6 +24,8 @@ function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, 
 %       a0      Initial AAR parameters [a(0,1), a(0,2), ..., a(0,p),b(0,1),b(0,2), ..., b(0,q)]
 %                (row vector with p+q elements, default zeros(1,p) )
 %       A       Initial Covariance matrix (positive definite pxp-matrix, default eye(p))
+%	W	system noise (required for aMode==0)
+%	V	observation noise (required for vMode==0)
 %      
 % Output:
 %       a       AAR(MA) estimates [a(k,1), a(k,2), ..., a(k,p),b(k,1),b(k,2), ..., b(k,q]
@@ -42,8 +44,9 @@ function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, 
 %     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
 
 %
-%       Version 2.99     23 May 2002
-%       Copyright (c) 1998-2002 by  Alois Schloegl <a.schloegl@ieee.org>
+%	$Revision$
+%	$Id$
+%       Copyright (c) 1998-2003 by  Alois Schloegl <a.schloegl@ieee.org>
 %
 
 %
@@ -76,7 +79,7 @@ if prod(size(Mode))==2
         aMode=Mode(1);
         vMode=Mode(2);
 end;
-if any(aMode==(1:14)) & any(vMode==(1:7)), 
+if any(aMode==(0:14)) & any(vMode==(0:7)), 
         fprintf(1,['a' int2str(aMode) 'e' int2str(vMode) ' ']);
 else
         fprintf(2,'Error AAR.M: invalid Mode argument\n');
@@ -89,7 +92,6 @@ if length(MOP)==0 p=10; q=0; MOP=p;
 elseif length(MOP)==1 p=MOP(1); q=0; MOP=p;
 elseif length(MOP)>=2 p=MOP(1); q=MOP(2); MOP=p+q;
 end;
-
 
 if nargin<4 UC=0; else UC= arg4; end;
 
@@ -107,9 +109,38 @@ if nargin>4,
 	end;
 end;
 
-if nargin<7 TH=3; else TH = arg7;  end;
+if nargin<7, W  = []; else W  = arg7; end;
+        
+if all(size(W)==MOP), 
+        if aMode ~= 0, 
+                fprintf(1,'aMode should be 0, because W is given.\n');
+        end;
+elseif isempty(W),
+        if aMode == 0, 
+                fprintf(1,'aMode must be non-zero, because W is not given.\n');
+        end;
+elseif any(size(W)~=MOP), 
+        fprintf(1,'size of W does not fit. It must be %i x %i.\n',MOP,MOP);
+        return;
+end;
+
+if nargin<8, V0 = []; else V0 = arg8; end;
+if all(size(V0)==nr), 
+        if vMode ~= 0, 
+                fprintf(1,'vMode should be 0, because V is given.\n');
+        end;
+elseif isempty(V0),
+        if aMode == 0, 
+                fprintf(1,'vMode must be non-zero, because V is not given.\n');
+        end;
+else 
+        fprintf(1,'size of V does not fit. It must be 1x1.\n');
+        return;
+end;
+
+% if nargin<7 TH=3; else TH = arg7;  end;
 %       TH=TH*var(y);
-%        TH=TH*mean(detrend(y,0).^2);
+%       TH=TH*mean(detrend(y,0).^2);
 MSY=mean(detrend(y,0).^2);
 
 e=zeros(nc,1);
@@ -140,8 +171,12 @@ at=a0;
 A=A0;
 E=y(1);
 e(1)=E;
-V(1)=(1-UC)+UC*E*E;
-ESU(1)= 1; %Y'*A*Y;
+if ~isempty(V0)
+        V(1) = V0;
+else
+        V(1) = (1-UC) + UC*E*E;
+end;
+ESU(1) = 1; %Y'*A*Y;
 
 A1=zeros(MOP);A2=A1;
 tic;CPUTIME=cputime;
@@ -171,7 +206,7 @@ for t=T0:nc,
         esu=Y'*AY;
         ESU(t)=esu;
         
-        if isnan(E)
+        if isnan(E),
                 a(t,:)=a(t-1,:);
         else
                 V(t) = V(t-1)*(1-UC)+UC*E2;        
@@ -182,7 +217,9 @@ for t=T0:nc,
                         a(t,:)=a(t-1,:) + UC/V(t)*E*Y';
                         
                 else    % Kalman filtering (including RLS) 
-                        if vMode==1,            %eMode==4
+                        if vMode==0,            %eMode==4
+                                Q(t) = (esu + V0);      
+                        elseif vMode==1,            %eMode==4
                                 Q(t) = (esu + V(t));      
                         elseif vMode==2,        %eMode==2
                                 Q(t) = (esu + 1);          
@@ -211,7 +248,9 @@ for t=T0:nc,
                         k = AY / Q(t);          % Kalman Gain
                         a(t,:) = a(t-1,:) + k'*E;
                         
-                        if aMode==1,                    %AMode=1
+                        if aMode==0,                    %AMode=0
+                                A = A - k*AY' + W;                   % Schloegl et al. 2003
+                        elseif aMode==1,                    %AMode=1
                                 A = (1+UC)*(A - k*AY');                   % Schloegl et al. 1997
                         elseif aMode==2,                %AMode=11
                                 A = A - k*AY';

@@ -5,6 +5,10 @@ Copyright (C) 2001  Rafael Laboissiere
 See the end for copying conditions.
 
 
+* octave-gpc 0.1.2: The .oct files are symlinked to gpc_create.oct.
+  No hard links.
+
+
 * octave-gpc 0.1.1 is a bug-fix release with few user-visible changes
   Thanks to Etienne Grossmann <etienne@anonimo.isr.ist.utl.pt> for the bug
   hunting. 

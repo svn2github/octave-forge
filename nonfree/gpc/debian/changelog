@@ -1,3 +1,12 @@
+octave-gpc (0.1.2-1) unstable; urgency=low
+
+  * New upstream release.
+  
+  * debian/control: Recommends octave-forge.  Upgraded Standards-Version
+    to 3.5.6.  Updated maintainer's e-mail address.
+  
+ -- Rafael Laboissiere <rafael@debian.org>  Thu, 13 Dec 2001 20:01:28 +0100
+
 octave-gpc (0.1.1-1) unstable; urgency=low
 
   * New upstream release.
@@ -16,6 +25,4 @@ octave-gpc (0.1-1) unstable; urgency=low
 
  -- Rafael Laboissiere <rafael@icp.inpg.fr>  Fri,  4 Aug 2000 15:13:57 +0200
 
-Local variables:
-mode: debian-changelog
-End:
+

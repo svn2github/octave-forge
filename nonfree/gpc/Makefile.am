@@ -35,11 +35,11 @@ gpc_create.oct: $(OBJFILES)
 	$(MKOCTFILE) -v -s -lgpcl -o $@ $^
 
 %.oct: gpc_create.oct
-	ln -f $< $@
+	ln -sf $< $@
 
 install-data-hook:
 	for i in $(linked_oct_files) ; \
-	  do ln -f $(octdir)/gpc_create.oct $(octdir)/$$i ; \
+	  do ln -sf $(octdir)/gpc_create.oct $(octdir)/$$i ; \
 	done
 
 clean:

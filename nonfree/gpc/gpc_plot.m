@@ -1,4 +1,4 @@
-## Copyright (C) 2000 Rafael Laboissiere
+## Copyright (C) 2001 Rafael Laboissiere
 ##
 ## This program is free software.
 ##

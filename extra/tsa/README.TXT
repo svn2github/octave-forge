@@ -1,4 +1,4 @@
-TSA (Time Series Analysis) Toolbox 2.90
+TSA (Time Series Analysis) Toolbox 3.10
 =======================================
 
 The TSA toolbox is useful for analysing Time Series. 
@@ -44,7 +44,7 @@ other useful staff. Demo programs can be started with "demo" or "demotsa".
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 % Boston, MA  02111-1307, USA.
 
-Copyright (c) 1996-2002 by Alois Schloegl 
+Copyright (c) 1996-2003 by Alois Schloegl 
 E-Mail:   a.schloegl@ieee.org
 WWW:      http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa
 

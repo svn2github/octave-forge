@@ -35,6 +35,7 @@
 %   lpc		(*) calculates the prediction coefficients form a given time series
 %   invest0	(*) a prior investigation (used by invest1)
 %   invest1	(*) investigates signal (useful for 1st evaluation of the data)
+%   rmle        AR estimation using recursive maximum likelihood function 
 %   selmo	(*) Select Order of Autoregressive model using different criteria
 %   histo	(*) histogram
 %   hup     	(*) test Hurwitz polynomials

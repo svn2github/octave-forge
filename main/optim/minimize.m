@@ -64,16 +64,27 @@
 ##
 ## MISC. OPTIONS
 ## -------------
-## 'maxev', m     : Maximum number of function evaluations     Default=inf
+## 'maxev', m     : Maximum number of function evaluations             <inf>
 ##
-## 'narg',  narg  : Position of the minimized argument in args Default=1
+## 'narg',  narg  : Position of the minimized argument in args           <1>
+##
+## 'verbose'      : Display messages during execution
 ##
 ## 'backend'      : Instead of performing the minimization itself, return
 ##                  [backend, control], the name and control argument of the
 ##                  backend used by minimize(). Minimimzation can then be
-##                  obtained without the overhead of minimize by calling :
+##                  obtained without the overhead of minimize by calling, if
+##                  a 0-order method is used :
 ##
-##                  [x,v,nev] = feval (backend, args, ctl)
+##              [x,v,nev] = feval (backend, args, control)
+##                   
+##                  or, if a 1st order method is used :
+##
+##              [x,v,nev] = feval (backend, control.df, args, control)
+##
+##                  or, if a 2nd order method is used :
+##
+##              [x,v,nev] = feval (backend, control.d2f, args, control)
 ##
 function [x,v,nev,...] = minimize (f,args,...)
 
@@ -83,18 +94,19 @@ if minimize_warn
 endif
 minimize_warn = 0;
 
+backend = 0;
 verbose = 0;
 
 df = d2f = d2i = "";
-tol = utol = dtol = nan;
+ftol = utol = dtol = nan;
 
-order = crit = tol = narg = maxev = nan;
+order = narg = maxev = nan;
 
 # ####################################################################
 # Read the options ###################################################
 # ####################################################################
 # Options with a value
-opt1 = " tol utol dtol df d2f d2i maxev narg order " ;
+opt1 = " ftol utol dtol df d2f d2i maxev narg order " ;
 # Boolean options 
 opt0 = " verbose backend " ;
 filename = "minimize";
@@ -104,65 +116,129 @@ nargin = nargin - 2 ;
 
 read_options
 
-if     ! isnan (tol) , crit = 1;
-elseif ! isnan (utol), crit = 2; tol = utol;
-elseif ! isnan (dtol), crit = 3; tol = dtol;
+				# Basic coherence checks
+
+ws = "";			# Warning string
+es = "";			# Error string
+
+				# Warn if more than 1 differential is given
+if !!length (df) + !!length (d2f) + !!length (d2i) > 1
+				# Order of preference of 
+  if length (d2i), ws = [ws,"d2i='",d2i,"', "]; end
+  if length (d2f), ws = [ws,"d2f='",d2f,"', "]; end
+  if length (df),  ws = [ws,"df='",df,"', "]; end
+  ws = ws(1:length(ws)-2);
+  ws = ["Options ",ws," were passed. Only one will be used\n"]
 end
 
+				# Check that enough args are passed to call
+				# f(), unless backend is specified, in which
+				# case I don't need to call f()
+if ! isnan (narg) && ! backend
+  if is_list (args)
+    if narg > length (args)
+      es = [es,sprintf ("narg=%i > length(args)=%i\n",narg, length(args))];
+    end
+  elseif narg > 1
+    es = [es,sprintf ("narg=%i, but a single argument was passed\n",narg)];
+  end
+end
 
-if     length (d2i), method = "d2_min"; 
-elseif length (d2f), method = "d2_min", 
+if length (ws), warn (ws); end
+if length (es), error (es); end
+
+
+op = 0;				# Set if any option is passed and should be
+				# passed to backend
+
+if ! isnan (ftol)   , ctls.ftol    = ftol;  op = 1; end
+if ! isnan (utol)   , ctls.utol    = utol;  op = 1; end
+if ! isnan (dtol)   , ctls.dtol    = dtol;  op = 1; end
+if ! isnan (maxev)  , ctls.maxev   = maxev; op = 1; end
+if ! isnan (narg)   , ctls.narg    = narg;  op = 1; end
+if         verbose  , ctls.verbose = 1;     op = 1; end
+
+				# defaults That are used in this function :
+if isnan (narg), narg = 1; end
+
+				# ##########################################
+				# Choose method according to available
+				# derivatives (overriden below)
+if     length (d2i), method = "d2_min"; ctls.id2f = 1; op = 1;
+elseif length (d2f), method = "d2_min";
 elseif length (df),  method = "cg_min";
 else                 method = "nelder_mead_min";
 end
 
+if verbose
+  printf ("minimize(): Using '%s' as back-end\n",method);
+end
+				# ##########################################
 				# Choose method by specifying order ########
 
 must_clear_ndiff = 0;		# Flag telling to clear ndiff function
 
 if ! isnan (order)
 
-  if order == 0, method = "nelder_mead_min";
+  if     order == 0, method = "nelder_mead_min";
   elseif order == 1
+    method = "cg_min";
     if ! length (df)		# If necessary, define numerical diff
 
       df = temp_name (["d",f]);	# Choose a name
 				# Define the function
       eval (cdiff (f, narg, length (args), df));
       must_clear_ndiff = 1;
+
+      if verbose
+	printf ("minimize(): Defining numerical diff. function\n");
+      end
+    end
+  elseif order == 2
+    if ! (length (d2f) || length (d2i))
+      error ("minimize(): 'order' is 2, but 2nd differential is missing\n");
     end
   else
-    error ("minimize : 'order' option only implemented for order<2\n");
+    error ("minimize(): 'order' option only implemented for order<=2\n");
   end
 end				# EOF choose method by specifying order ####
 
 
-ctl = nan*zeros (1,6);
-ctl(1) = crit;
-ctl(2) = tol;
-ctl(3) = narg;
-ctl(4) = maxev;
 
-if strcmp (method, "d2_min"),
-  ctl = ctl(1:5); 
-  if length (d2i), ctl(5) = 1; d2f = d2i; end
+if strcmp (method, "d2_min"),    all_args = list (f, d2f, args);
+elseif strcmp (method, "cg_min") all_args = list (f, df, args);
+else                             all_args = list (f, args);
+end
+				# Eventually add ctls to argument list
+if op, all_args = append (all_args, list (ctls)); end
 
-  if backend, x = "d2_min"; v = ctl; return; end
+if ! backend			# Call the backend ###################
+  if strcmp (method, "d2_min"),
+    [x,v,nev,h] = leval (method, all_args);
+  else
+    [x,v,nev] = leval (method, all_args);
+  end
 
-  [x, v, nev, h] = d2_min (f, d2f, args, ctl);
-  if nargout > 3, vr_val (h); end
-  
-elseif strcmp (method, "cg_min")
-  ctl = ctl(1:4);
+else				# Don't call backend, just return its name
+				# and arguments. 
 
-  if backend, x = "cg_min"; v = ctl; return; end
+				# If I just defined a numerical
+				# differentiation function and I want user
+				# to use it later, I should not clear it.
+  if must_clear_ndiff
+    if verbose
+      printf ("minimize(): Keeping num diff function '%s' for future use",\
+	      df);
+    end
+    must_clear_ndiff = 0;
+    ctls.ndiff = df; op = 1;
+  end
 
-  [x, v, nev] = cg_min (f, df, args, ctl);
-else 
+  x = method;
+  if op, v = ctls; else v = []; end
 
-  if backend, x = "nelder_mead_min"; v = ctl; return; end
 
-  [x, v, nev] = nelder_mead_min (f, args, ctl);
 end
 
+				# Eventually clear num diff function
 if must_clear_ndiff, clear(df); end

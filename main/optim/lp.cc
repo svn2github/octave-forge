@@ -594,6 +594,6 @@ Subject to: @var{a}*x <= @var{b}\n\
     }
   // --------------------------------------------------------
   
-  return(x);
+  return octave_value(x);
 #endif /* !HAVE_OCTAVE_20 */
 }

@@ -166,7 +166,7 @@ DEFUN_DLD(waitbar, args, nargout,
       // check to see if we got this far without initialization
       if(init==false)
 	{
-	  Fwaitbar(0.0,0);
+	  Fwaitbar(octave_value(0.0),0);
 	  printf(print_buf);
 	  fflush(stdout);
 	}

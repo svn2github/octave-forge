@@ -4,7 +4,7 @@
 #
 # Creates .html files documenting all the functions in octave and
 # octave-forge.
-#
+
 use strict;
 use File::Find;
 use File::Basename;
@@ -452,13 +452,13 @@ sub write_html { # {{{1
 	    open FUNC, ">index/f/$func.html" or die "Could not open $func.html";
 	    print FUNC "<html><head><title>$func</title></head>\n";
 	    print FUNC "<body>\n";
-	    print FUNC "<b>$func</b>";
-	    print FUNC "    ", download_ref($func,"[source]"), "\n";
+	    print FUNC "<table width=100%><tr><td align=left><b>$func</b>\n";
 	    # The toolboxes to which it belongs
 	    foreach my $pair ( @{$index_by_function{$func}} ) {
 		my ( $TB, $cat ) = @{$pair};
-		print FUNC "    ", cat_ref_up($TB, $cat, "[$TB\::$cat]"), "\n";
+		print FUNC "    ", cat_ref_up($TB, $cat, "[$TB]"), "\n";
 	    }
+	    print FUNC "    <td align=right>", download_ref($func), "</table>\n";
 	    print FUNC "$body\n";
 	    print FUNC "</body></html>";
             close FUNC;
@@ -497,13 +497,13 @@ sub write_html { # {{{1
 	}
 
 	# Function reference
-	print OUT "<dt><b>",func_ref($func,$func),"</b>\n";
-	print OUT "    ", download_ref($func,"[source]"), "\n";
+	print OUT "<dt><table width=100%><tr><td align=left><b>",func_ref($func,$func),"</b>\n";
 	# The toolboxes to which it belongs
 	foreach my $pair ( @{$index_by_function{$func}} ) {
 	    my ( $TB, $cat ) = @{$pair};
-	    print OUT "    ", cat_ref($TB, $cat, "[$TB\::$cat]"), "\n";
+	    print OUT "    ", cat_ref($TB, $cat, "[$TB]"), "\n";
 	}
+	print OUT "    <td align=right>", download_ref($func), "</table>\n";
 
 
 	# column 3:  the function description
@@ -558,11 +558,11 @@ EOF
 }
 sub download_ref { 
 # download_ref($func,$desc) returns a link to download $func described by $desc
-    my ($func, $desc) = @_;
+    my ($func) = @_;
 
     my $path = $function_description{$func}[0];
     if ($path ne "" && $path !~ /^$OCTAVE/) {
-	return "<a href=\"http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/\~checkout\~/octave/octave-forge/$path\?rev=HEAD\&content-type=text/plain\">$desc</a>";
+	return "<a href=\"http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/\~checkout\~/octave/octave-forge/$path\?rev=HEAD\&content-type=text/plain\">[$function_description{$func}[0]]</a>";
     } else {
 	return "";
     }
@@ -638,8 +638,8 @@ EOF
 	    
 	    # column 1:  the function (x-ref to full description in
 	    #                          cvs-tree's html file)
-	    print OUT "<dt><b>",func_ref($func,$func),"</b>\n";
-	    print OUT "    ", download_ref($func,"[source]"), "\n";
+	    print OUT "<dt><table width=100%><tr><td align=left><b>",func_ref($func,$func),"</b>\n";
+	    print OUT "    <td align=right>", download_ref($func), "</table>\n";
 	    
 	    # column 2: the description, if it exists
 	    #
@@ -732,11 +732,12 @@ sub cat_anchor { # 1{{{
 sub func_ref { # 1{{{
 # func_ref($func) returns an html link to $func described by $ref
     my ($func,$ref) = @_;
-    if ($function_description{$func}[2] ne "") {
+    if ( defined $function_description{$func}[2] &&
+	 $function_description{$func}[2] ne "") {
 	return "<a href=\"f/$func.html\">$ref</a>";
     } elsif ( $ref ne $func ) {
 	# XXX FIXME XXX do we want "$ref ($func)"? Check how it is called.
-	return "$ref";
+	return $ref;
     } else {
 	return $ref;
     }
@@ -774,7 +775,7 @@ sub letter_ref { # 1{{{
 sub ascii_desc { # 1{{{
 # ascii_desc($func) returns a decription of $func using ascii markup
     my ( $func ) = @_;
-    if (! defined @function_description{$func} ) {
+    if (! defined $function_description{$func}[1] ) {
 	my $notes = $index_notes{$func};
 	$notes = "<missing>" if $notes eq "";
 	# convert "<a link>desc</a>" to "desc (link)"
@@ -782,30 +783,32 @@ sub ascii_desc { # 1{{{
 	# strip all remaining html formatting
 	$notes =~ s|<[^>]*>||g;
 	return $notes;	    
-    }
-    my $desc = $function_description{$func}[1];
-    if ($desc eq "") {
-	return "<no description>";
     } else {
-	return $desc;
+	my $desc = $function_description{$func}[1];
+	if ($desc eq "") {
+	    return "<no description>";
+	} else {
+	    return $desc;
+	}
     }
 } #}}}
 sub html_desc { # 1{{{
 # html_desc($func) returns a description of $func using html markup
     my ( $func ) = @_;
-    if (! defined @function_description{$func} ) {
+    if (! defined $function_description{$func}[1] ) {
 	my $notes = $index_notes{$func};
 	$notes = "not implemented" if $notes eq "";
 	# shut of the bold italics during "code" formatting
 	$notes =~ s|<code>|</i><code>|g;
 	$notes =~ s|</code>|</code><i>|g;
 	return "<i>$notes</i>";
-    }
-    my $desc = $function_description{$func}[1];
-    if ($desc eq "") {
-	return "<i>no description</i>";
     } else {
-	return $desc;
+	my $desc = $function_description{$func}[1];
+	if ($desc eq "") {
+	    return "<i>no description</i>";
+	} else {
+	    return $desc;
+	}
     }
 } # 1}}}
 sub long_desc {

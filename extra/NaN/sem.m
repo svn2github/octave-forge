@@ -1,4 +1,4 @@
-function [y,M]=sem(x,DIM)
+function [SE,M]=sem(x,DIM)
 % SEM calculates the standard error of the mean
 % 
 % [SE,M] = SEM(x [, DIM])
@@ -55,7 +55,5 @@ if ~DIM;
 end;
 
 [Y,N,SSQ] = sumskipnan(x,DIM);
-y = sqrt((SSQ-Y.*Y./N)./(N.*max(N-1,0))); 
-if nargout>1,
-        M = Y./N;
-end;
+M  = Y./N;
+SE = sqrt((SSQ-Y.*M)./(N.*(N-1))); 

@@ -18,17 +18,42 @@
 //  finite differences for numeric differentiation
 #include <oct.h>
 #include <float.h>
+
+
+static bool
+any_bad_argument(const octave_value_list& args)
+{
+  if (!args(0).is_real_scalar())
+    {
+      error("finitedifference: first argument must be a real double value");
+      return true;
+    }
+  if (!args(1).is_real_scalar())
+    {
+      error("finitedifference: second argument must be a real double value");
+      return true;
+    }
+
+  return false;
+}
+
+
+
 DEFUN_DLD(finitedifference, args, ,"finitedifference,\n\
 for internal use by numgradient and numhessian")
 {
   
 	
   int nargin = args.length ();
+
   if (!(nargin == 2))
     {
       error("finitedifference: you must supply exactly 2 arguments");
       return octave_value_list();
     }
+
+  // check the arguments
+  if (any_bad_argument(args)) return octave_value_list();
 	
   double x = args(0).double_value();
   int order = args(1).int_value();

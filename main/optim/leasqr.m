@@ -1,6 +1,4 @@
-% Copyright (C) 1992-1994 Richard Shrager
-% Copyright (C) 1992-1994 Arthur Jutan
-% Copyright (C) 1992-1994 Ray Muzic
+% Copyright (C) 1992-1994 Richard Shrager, Arthur Jutan, Ray Muzic
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -18,12 +16,13 @@
 
 function [f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       leasqr(x,y,pin,F,stol,niter,wt,dp,dFdp,options)
-%function[f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]=
+%function [f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]=
 %                   leasqr(x,y,pin,F,{stol,niter,wt,dp,dFdp,options})
+%
+% Levenberg-Marquardt nonlinear regression of f(x,p) to y(x).
 %
 % Version 3.beta
 %  {}= optional parameters
-% Levenberg-Marquardt nonlinear regression of f(x,p) to y(x), where:
 % x=vec or mat of indep variables, 1 row/observation: x=[x0 x1....xm]
 % y=vec of obs values, same no. of rows as x.
 % wt=vec(dim=length(x)) of statistical weights.  These should be set

@@ -107,8 +107,7 @@ void CholeskyFactorization(Matrix &A,int nr, int nc){
   tmprow=new double[nc];
   for(int k=0; k<nr-1; k++) {
     if ( fabs(A(k,0))<=TOL ) {
-      octave_stdout << "Problem at step # " << k ;
-      error("possible division by 0");
+      error("Problem at step # %d, possible division by 0", k);
       return  ;
     }
     jMax=min(nc,nr-k);
@@ -125,8 +124,7 @@ void CholeskyFactorization(Matrix &A,int nr, int nc){
 #ifdef OLD
   for(int k=0; k<nr-1; k++) {
     if ( fabs(A(k,0))<=TOL ) {
-      octave_stdout << "Problem at step # " << k ;
-      error("possible division by 0");
+      error("Problem at step # %d, possible division by 0", k);
       return  ;
     }
     jMax=min(nc,nr-k);
@@ -155,8 +153,7 @@ void CholeskyFactorization2(Matrix &A,int nr, int nc){
   tmprow=new double[nc];
   for(int k=0; k<nr-1; k++) {
     if ( fabs(pA[k])<=TOL ) {
-      octave_stdout << "Problem at step # " << k ;
-      error("possible division by 0");
+      error("Problem at step # %d, possible division by 0", k);
       return  ;
     }
     jMax=min(nc,nr-k);
@@ -188,8 +185,7 @@ void CholeskyFactorization3(Matrix &A,int nr, int nc){
 
   for(int k=0; k<nr-1; k++) {
     if ( fabs(pA[k])<=TOL ) {
-      octave_stdout << "Problem at step # " << k ;
-      error("possible division by 0");
+      error("Problem at step # %d, possible division by 0", k);
       return  ;
     }
     jMax=min(nc,nr-k);
@@ -542,8 +538,7 @@ DEFUN_DLD (SBProd, args, , "[...] = SBProd (...)\n\
   int bc= B_arg.columns();
   int br= B_arg.rows();
   if (length != br) {
-    cout <<length<<" "<<br<<endl;
-    error ("Columns in A and rows B not equal");
+    error ("Columns in A and rows B not equal (%d != %d)", length, br);
     return retval;
   }
 

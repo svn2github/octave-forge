@@ -17,8 +17,9 @@ else
 endif
 
 eval(sprintf('gset nokey'))
-eval(sprintf('gset yrange [1:%d] reverse',m))
-eval(sprintf('gset xrange [1:%d] noreverse',n))
+eval(sprintf('gset yrange [0:%d] reverse',m+1))
+eval(sprintf('gset xrange [0:%d] noreverse',n+1))
+
 
 if (length(i)<1000)
   plot(j,i,'*');
@@ -32,6 +33,10 @@ axis;
 
 #
 # $Log$
+# Revision 1.3  2002/08/02 17:35:57  pkienzle
+# Make xy range a little bit bigger so that points don't fall right on the
+# boundary (thanks to Victor Eijkhout <eijkhout@cs.utk.edu> for the patch)
+#
 # Revision 1.2  2002/08/01 17:10:24  pkienzle
 # handle dense matrices as well
 #

@@ -30,6 +30,17 @@ Open Source Initiative (www.opensource.org)
 #pragma interface
 #endif
 
+#include "int/fixed.h"
+#include "fixedComplex.h"
+#include "fixedRowVector.h"
+#include "fixedColVector.h"
+#include "fixedMatrix.h"
+#include "fixedNDArray.h"
+#include "fixedCRowVector.h"
+#include "fixedCColVector.h"
+#include "fixedCMatrix.h"
+#include "fixedCNDArary.h"
+
 #include "ov-fixed.h"
 #include "ov-fixed-mat.h"
 #include "ov-fixed-complex.h"

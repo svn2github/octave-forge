@@ -1353,6 +1353,27 @@ object leaving the imaginary part at zero.
 @item FixedPointComplex::FixedPointComplex (const FixedPoint &r, const FixedPoint &i)
 Create a copy of the fixed point objects @code{r} and @code{i}, into a 
 the real and imaginary parts of a complex fixed point object respectively
+
+@item FixedPointComplex::FixedPointComplex (const int x)
+Create a fixed point object with the minimum number of bits for the integer
+part @code{is} needed to represent @code{x}. If @code{is} is greater than
+@code{sizeof(int)*8 - 2}, the error handler is called.
+
+@item FixedPointComplex::FixedPointComplex (const double x)
+Create a fixed point object with the minimum number of bits for the integer
+part @code{is} needed to represent the integer part of @code{x}. If 
+@code{is} is greater than @code{sizeof(int)*8 - 2}, the error handler is 
+called.
+
+@item FixedPointComplex (const Complex& is, const Complex& ds, const double& d)
+Create a complex fixed point object with @code{is} bits for the integer part 
+and @code{ds} bits for the decimal part of both real and imaginary parts, 
+loaded with the double value @code{d} in the real and zero in the imaginary
+parts. The real part of @code{is} is used for the real part of the
+complex fixed point object, while the imaginary part of @code{is} is used
+for the imaginary part. If either the sum of the real or imaginary parts
+of @code{is + ds} is greater than @code{sizeof(int)*8 - 2}, the error 
+handler is called.
 @end table
 
 @node FPCSpecific, FPCOperators, FPCConstructors, FixedPointComplex

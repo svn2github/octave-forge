@@ -56,6 +56,7 @@ ifeq (,$(findstring cygwin,$(canonical_host_type)))
   FIXEDSOURCES = fixedColVector.cc fixedRowVector.cc \
 	fixedMatrix.cc fixedComplex.cc fixedCColVector.cc fixedCRowVector.cc \
 	fixedCMatrix.cc Array-f.cc fixed-conv.cc ov-fixed.cc ov-fixed-mat.cc \
+	fixedNDArray.cc fixedCNDArray.cc \
 	ov-fixed-complex.cc ov-fixed-cx-mat.cc \
 	op-fs-fs.cc   op-fs-fm.cc   op-fm-fs.cc   op-fm-fm.cc \
 	op-fs-fcs.cc  op-fs-fcm.cc  op-fm-fcs.cc  op-fm-fcm.cc \
@@ -81,6 +82,7 @@ else
   FIXEDLIBSOURCES = fixedColVector.cc fixedRowVector.cc \
 	fixedMatrix.cc fixedComplex.cc fixedCColVector.cc fixedCRowVector.cc \
 	fixedCMatrix.cc Array-f.cc fixed-conv.cc ov-fixed.cc ov-fixed-mat.cc \
+	fixedNDArray.cc fixedCNDArray.cc \
 	ov-fixed-complex.cc ov-fixed-cx-mat.cc \
 	op-fs-fs.cc   op-fs-fm.cc   op-fm-fs.cc   op-fm-fm.cc \
 	op-fs-fcs.cc  op-fs-fcm.cc  op-fm-fcs.cc  op-fm-fcm.cc \

@@ -47,6 +47,12 @@ public:
   FixedPointComplex (const FixedPoint& f) :
     std::complex<FixedPoint> (f, FixedPoint(f.getintsize(),f.getdecsize())) { }
 
+  FixedPointComplex (const int x) :
+    std::complex<FixedPoint> (FixedPoint (x), FixedPoint ()) { }
+
+  FixedPointComplex (const double x) :
+    std::complex<FixedPoint> (FixedPoint (x), FixedPoint ()) { }
+
   FixedPointComplex (const FixedPoint& r, const FixedPoint& i) :
     std::complex<FixedPoint> (r, i) { }
 
@@ -91,6 +97,11 @@ public:
 
   FixedPointComplex (const Complex& is, const Complex& ds) :
     std::complex<FixedPoint> (FixedPoint((int)is.real(), (int)ds.real()), 
+			      FixedPoint((int)is.imag(), (int)ds.imag())) { }
+
+  FixedPointComplex (const Complex& is, const Complex& ds, const double& d) :
+    std::complex<FixedPoint> (FixedPoint((int)is.real(), (int)ds.real(), 
+					 d), 
 			      FixedPoint((int)is.imag(), (int)ds.imag())) { }
 
   FixedPointComplex (const Complex& is, const Complex& ds, const Complex& c) :

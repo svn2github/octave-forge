@@ -1,43 +1,51 @@
 Status as of Octave version 2.0.16/2.1.31
 
-Interface compatibility changes
-===============================
-lin2mu.m        (defaults to -1:1 audio range)
-mu2lin.m	(defaults to -1:1 audio range)
+Interface changes
+=================
+lin2mu
+   Octave tries to guess based on the input range whether to use 8 bit
+   or 16 bit samples.  This behaviour is wrong for quiet 16 bit recordings.
+   A warning is issued if Octave guesses it is receiving 8 bit input.
 
-Interface compatibility extensions
-==================================
-contour.m       (default number of contours)
-__pltopt1__.m   (accepts line types)
-cross.m		(accepts matrices)
-deblank.m	(trims \0 as well as " ")
-fftfilt.m	(accepts matrices)
-freqz.m		(lots of changes)
-imagesc.m	(only display if not returning scaled image)
-polyder.m       (accepts a*b, a/b)
-polyderiv.m     (accepts a*b, a/b)
-polygcd.m	(new function for auto-reduction on polyder)
-rand.cc         (accepts "state" argument; use MT)
-MersenneTwister.h (faster and longer period random number generator)
+mu2lin
+   Octave defaults to returning 8 bit samples.  I have left this behaviour
+   in place even though it is a silly default.  Change the default to 0 for
+   compatibility with matlab.
+
+deblank
+   Trims \0 as well as " ".
 
 Interface extensions
 ====================
-grid.m          (control x/y grids and grid density independently)
+cross		(warn if receiving mixed row/column vectors)
+contour		(default number of contours)
+fftfilt		(accepts matrices)
+freqz		(accepts frequency vector; plots filter response)
+imagesc		(only display if not returning scaled image)
+polyder		(accepts a*b, a/b; auto-reduction of common terms)
+polyderiv	(accepts a*b, a/b; auto-reduction of common terms)
+polygcd		(new function for auto-reduction on polyder)
+rand/randn	(accepts "state" argument; use the Mersenne twister,
+		 a long period random number generator; faster)
+mu2lin		(accepts -1:1 audio range; accepts matrix; 3x faster)
+lin2mu		(accepts -1:1 audio range; accepts matrix)
+cross		(accepts matrices)
+grid		(control x/y grids and grid density independently)
 
 Bug fixes
 =========
-tf2zp.m         (don't remember the test case)
-zp2tf.m         (don't remember the test case)
+tf2zp		(search site:www.octave.org for test case)
+zp2tf		(search site:www.octave.org for test case)
 
 Speedups
 ========
-findstr.m
-hankel.m
-hilb.m
-index.m
-invhilb.m
-kron.m
-rindex.m
-toeplitz.m
-vander.m
+findstr
+hankel
+hilb
+index
+invhilb
+kron
+rindex
+toeplitz
+vander
 

@@ -3,7 +3,7 @@
 #   source is in /c/src/octave-2.1.xx
 #   octave-forge is in /c/src/octave-forge
 #   install into /opt/octave-2.1.xx
-ROOT=/c/src
+ROOT=/cygdrive/c/src
 ifeq (,$(OCTVER))
   $(error usage: OCTVER=2.1.xx make)
 endif
@@ -16,7 +16,7 @@ FORGE=$(ROOT)/octave-forge
 ADMIN=$(FORGE)/admin/Windows
 DEST=/opt/octave-$(OCTVER)
 WINDEST=C:\\opt\\octave-$(OCTVER)
-NSIS="/c/Program Files/NSIS/makensis" 
+NSIS="/cygdrive/c/Program Files/NSIS/makensis" 
 NSISPARS=/DVERSION=$(OCTVER) $(nsis_minor) /DROOT=$(WINDEST)
 PACKAGEDIR=/opt
 
@@ -31,17 +31,21 @@ PACKAGE_TARGETS=$(patsubst %,$(DEST)/unpack.%,$(EXTERNAL_PACKAGES))
 
 # cygkey and octkey must be exactly the same length
 cygkey=Cygnus Solutions
-octkey=GNUoctave $(OCTVER)
+octkey=GNUOctave $(OCTVER)
 
 .PHONY: all setup stdc++ ranlibhack confighack config build check \
-	install strip docs forge epstk cygwin dist mklinks
+	install strip docs forge epstk cygwin dist \
+	mklinks mkoctlinks mkoflinks
 
 all: build check install forge epstk strip docs
 	@echo "Done octave build: test using $(DEST)/bin/octave"
 
 
 # ==== create install directory, unpack dependencies, and generate stdc++ dll
-setup: $(DEST) $(BUILD) stdc++ $(PACKAGE_TARGETS)
+setup: $(SOURCE) $(DEST) $(BUILD) stdc++ $(PACKAGE_TARGETS)
+$(SOURCE): $(ROOT)/octave-$(OCTVER).tar.gz
+	@echo "Preparing source directory $(SOURCE)"
+	tar xzf $(ROOT)/octave-$(OCTVER).tar.gz -C $(ROOT)
 $(DEST): 
 	@echo "Preparing install directory $(DEST)"
 	-mkdir $(DEST)
@@ -180,13 +184,17 @@ $(CYGDIR):
 	-mkdir $(DEST)/cygwin
 
 # ==== build octave-forge
-dist: forge cygwin mklinks
-	$(NSIS) $(NSISPARS)
+dist: forge cygwin mklinks octave.nsi
+	$(NSIS) $(NSISPARS) octave.nsi
 
-mklinks:
+mklinks: mkoctlinks mkoflinks
+
+mkoflinks:
 	cd $(DEST)/site/oct/octave-forge && ls -l | grep ^l \
 		| sed -e 's,^.* \([^ ]*\) -> *\(.*\)$$,rm \1;ln -s \2 \1,' \
 		> mklinks.sh
+
+mkoctlinks:
 	cd $(BUILD)/src && $(SOURCE)/src/mk-oct-links -p \
 		`cd $(SOURCE)/src/DLD-FUNCTIONS&&ls *.cc|sed -e's/cc$$/df/g'` \
 		| sed -e 's,^\([^ ]*\)  *\([^ ]*\)$$,rm \2;ln -s \1 \2,' \

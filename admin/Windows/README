@@ -3,51 +3,74 @@ encoded in admin/Windows/Makefile.
 
 1) Setup environment
 
-First you will need a cygwin environment.
-Search the net for details.  As of this writing,
-only the gcc 3.2 compiler is acceptable, later
-versions being too slow.  
+First you will need a cygwin environment.  Search 
+the net for details.  I'm assuming it is installed
+in C:.  If it is in D:, then you will need to change
+C: to D: and /cygdrive/c to /cygdrive/d below.
+
+As of this writing, only the gcc 3.2 compiler is 
+acceptable, later versions being too slow.  Search
+the octave-forge mailing list archives for details
+where you can find the right cygwin packages.
 
 Note that the gcc 3.2 compiler is missing stdint.h.  
-For our purposes you can do the following to get 
-around this using:
+For our purposes you can do the following from
+cygwin to get around this:
 
-  cat "#include <sys/types.h>" >/usr/include/stdint.h
+  if test ! -f /usr/include/stdint.h
+  then cat "#include <sys/types.h>" >/usr/include/stdint.h
+  fi
 
-You will need to download octave-forge (which
-presumably you have already done, otherwise you
-wouldn't be reading this) and octave sources.
-I put them in /c/src/octave-forge-YYYY.MM.DD
-and /c/src/octave-2.1.xx, and I build octave
-in /c/src/cygwin/octave-2.1.xx.  If for some 
-reason this is not acceptable, modify the top 
-few lines of the Makefile to reflect your 
-environment.
+Within cygwin, create a few directories:
 
-You will need a directory /opt which has a
-number of supplementary packages.  These
-will be distributed from the octave-forge
-download site.  Grab all of the files listed
-in the windows-dev section.
+  mkdir /cygdrive/c/src        # SOURCE
+  mkdir /cygdrive/c/src/cygwin # BUILD
+  mkdir /opt                   # DEST
 
-The configuration options are hardcoded in 
-config-octave.
+Unbundle octave-forge-YYYY.MM.DD.tar.gz in the SOURCE directory:
+
+  tar xzf octave-forge-YYYY.MM.DD.tar.gz -C /cygdrive/c/src
+
+or use CVS:
+
+  cd /cygdrive/c/src
+  cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/octave login
+  cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/octave co octave-forge
+
+If you are using different SOURCE BUILD and DEST directories
+you will need to change octave-forge/admin/Windows/Makefile
+to reflect the directories you are actually using.
+
+Download the various windows-dev packages from the
+octave-forge download site into C:\cygwin\opt:
+
+  http://sourceforge.net/project/showfiles.php?group_id=2888
+
+These will be unbundled automatically during build.
+
+Download the latest octave from the octave download site 
+into C:\src:
+
+  http://www.octave.org/download
+
+This will be unbundled automatically during build.
+
 
 2) Build octave and octave-forge
 
 Start in the Windows admin directory.
 
-  cd /c/src/octave-forge/admin/Windows
+  cd /cygdrive/c/src/octave-forge/admin/Windows
 
-Update the octave-forge version from cvs:
+If using CVS, update the octave-forge version:
 
-  (cd /c/src/octave-forge; cvs -q update -dP)
+  (cd /cygdrive/c/src/octave-forge; cvs -q update -dP)
 
 Set your octave version:
 
   export OCTVER=2.1.xx
 
-Clean out any old version:
+Clean out any old version of octave-forge:
 
   make clean.forge
 
@@ -72,6 +95,9 @@ will need to remove the corresponding results file
 in order to rebuild it.  This will likely be 
 build.octave or build.forge.
 
+If external packages are causing a problem, remove
+them from the EXTERNAL_PACKAGES line in the Makefile.
+
 It may be helpful when fixing problems to run
 octave-forge in place:
 
@@ -82,9 +108,7 @@ See the results of the tests:
   less check.octave
   less check.forge
 
-Both will have some errors, but there shouldn't be
-too many.
-
+Both will have some errors, but there shouldn't be too many.
 
 The following make targets are available:
 
@@ -144,19 +168,14 @@ installer from
 
   http://www.nullsoft.com/free/nsis/#download
 
-Hack the links
-	# Some hand modifications were done in /opt/octave/bin
-	# /opt/octave/libexec/.../oct and opt/octave/libexec/...octave-forge
-	# to replace linked files with *.link, where *.link contains
-	# the required link command:  ln -sf base name
-	# This process needs to be automated, but I don't know how.
-
-	# find all links
-	find /opt/octave-2.1.57 -type l
+Update the Makefile with NSIS containing the path to your 
+makensis.exe.  You will probably need to set WINDEST to
+C:\\cygwin\\opt\\octave-${OCTVER} as well since currently
+I'm building into C:\opt.
 
 To build the installer, use:
 
   make dist
 
 Paul Kienzle
-2004-09-29
+2004-11-30

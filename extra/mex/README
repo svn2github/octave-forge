@@ -26,6 +26,23 @@ There are two test programs:
 	value for the variable in the caller and the global space,
 	and set the new value in the caller space.
 
+NOTE: for ELF systems running older versions of octave (2.1.57 and earlier), 
+you will need to include the -Wl,-Bsymbolic on the link line for the mex 
+file explicitly, otherwise only one mex file can be loaded at a time.  
+Check the output of
+
+	mkoctfile -p DL_LDFLAGS
+
+If it is empty, use:
+
+    SH_LDFLAGS="`mkoctfile -p SH_LDFLAGS` -Wl,-Bsymbolic" mex ...
+
+If it does not contain -Wl,-Bsymbolic, use:
+
+    DL_LDFLAGS="`mkoctfile -p DL_LDFLAGS` -Wl,-Bsymbolic" mex ...
+
+This is Bourne shell syntax.  If using something else, adjust appropriately.
+
 
 The following functions are implemented:
 

@@ -1,0 +1,314 @@
+<html><head><title>Octave Compatibility FAQ</title>
+<body><h1>Octave Compatibility FAQ</h1>
+
+Octave is mostly compatible with Matlab.  Most matlab functions can
+be made to run with very little change.  With careful coding, you can 
+get your code to run without change in Matlab and Octave.  This document 
+outlines the things that you need to watch out for.<p>
+
+You may want to start Octave with the option --traditional, which sets
+a number flags so that the interpreter handles things in a more
+compatible way.  See the "porting" section of the octave FAQ:
+	http://www.octave.org/FAQ.html#SEC24
+
+<h2>Resources</h2>
+
+<dl>
+<dt>octave-forge
+<dd>http://octave.sf.net
+<dt>Joao Cardoso's summary of the octave mailing lists
+<dd>http://merlin.inescn.pt/~qual/Octave/Octave_links.html
+<dt>Octave mailing list archives
+<dd>http://www.octave.org/octave-lists/archive/index.html
+</dl>
+
+<h2>Language Elements</h2>
+<ul>
+<li>Q. How do I handle varargin, varargout?
+<br>A. Instead of
+   <code><pre>
+	[varargout] = f(a,b,varargin)
+   </pre></code>
+   use
+   <code><pre> 
+	[...] = f(a,b,...)
+   </pre></code>
+   Within the function all_va_args instead of varargin{:}
+   and use
+   <code><pre>
+	va_start()
+	for i=n:nargin  % n is the number of named args
+	   a = va_arg()
+	end
+   </pre></code>
+   instead of
+   <code><pre>
+	for i=1:length(varargin)
+	   a = varargin{i}
+        end
+   </pre></code>
+   If you only send some of varargin to a function, then you will
+   need build a command string to send to eval.  See the cell-array
+   question in the Types section for more information.
+
+<li>Q. Do load and save work for structures?
+<br>A. Yes for some file formats.  Use patch in octave-forge for structure
+   support in more file formats.
+
+<li>Q. Does octave support 'end' indexing?
+<br>A. No.  Use length(A) or rows(A),columns(A) as you did before matlab
+   added the 'end' indexing syntax.
+
+<li>Q. Why do "grid on" and other commands give me a syntax error?
+<br>A. Only Octave built-ins can be ``text functions'' (and only a few
+   are defined to be).  You should instead use the functional form:
+   <code><pre>
+	grid('on');
+   </pre></code>
+   This will work identically in Octave and Matlab.  If you are
+   ambitious you can fix octave-forge/main/general/command.cc, which 
+   is supposed to allow you to register functions as commands.  When
+   that works, then you can register all the usually suspects in your
+   ~/.octaverc.
+
+<li>Q. Why isn't Octave seeing my .matlabrc file?
+<br>A. Because it is not called .octaverc.
+
+<li>Q. How do I compile my mex functions?
+<br>A. See the mex subdirectory of octave-forge/extras.   
+
+<li>Q. debugging?
+<br>A. it exists but is not well documented
+<table>
+<tr><td>  dbstop if error            <td>-> <td>debug_on_error = 1
+<tr><td>   dbstop in mfile at lineno  <td>-> <td>dbg_set (func, line)
+<tr><td>   dbclear in mfile at lineno <td>-> <td>dbg_delete (func, line)
+<tr><td>   dbquit    <td>-> <td>quit
+<tr><td>   dbstack   <td>-> <td>dbg_where
+<tr><td>   dbcont    <td>-> <td>dbg_cont
+<tr><td>   dbstep in <td>-> <td>dbg_step
+<tr><td>   dbstep    <td>-> <td>dbg_next
+<tr><td>   dbstatus  <td>-> <td>dbg_list
+</table>
+</ul>
+
+<h2>Types</h2>
+<ul>
+<li>Q. Does Octave support sparse matrices?
+<br>A. Use sparse package in octave-forge.  Since user-defined types cannot
+   override builtin functions, must use spinv, spsum, splu, etc.
+   Alternatively, use my work-in-progress dispatch registration 
+   mechanism (search for "dispatch" on the www.octave.org archive).
+
+<li>Q. Does Octave support nD arrays?
+<br>A. No.
+
+<p>John Eaton (jwe@bevo.che.wisc.edu) says:
+      <blockquote>
+      Actually, there is some code in the development sources (in the files
+      liboctave/ArrayN.{h,cc}, liboctave/ArrayN-idx.h, and 
+      src/ov-re-nd-array.{h,cc}) that are a start, but they need to be
+      finished, and then lots of other code will need to be changed to make
+      use of the new N-d array data type(s).
+      </blockquote>
+
+<p>You could use a list of matrices if you just want to organize your
+   arrays, but not slice them arbitrarily.
+
+<p>You could define and indexing function on a very long vector as
+   suggested in
+   http://www.octave.org/octave-lists/archive/help-octave.2001/msg01170.html
+
+<p>If you want a general 3D matrix you could arrange your matrix as:
+      <code><pre>
+      M.xn = rows
+      M.yn = columns
+      M.zn = number of slices
+      M.data = [ M1; M2; ...; Mzn ];
+      </pre></code>
+   and use the following indexing functions:
+      <code><pre>
+      function y = elem(A,i,j,k)      
+         y = A.data(i + A.xn*(k-1), j);
+      endfunction
+
+      function M = slice(A,xidx,yidx,zidx)
+         if length(zidx) == 1
+	    M = A.data ( xidx+(zidx-1)*A.xn, yidx );
+         elseif length(yidx) == 1
+	    # XXX FIXME XXX maybe can do this in one step ?
+ 	    M = reshape ( A.data ( : , yidx ), A.xn, A.zn);
+	    M = M(xidx,zidx);
+         elseif length(xidx) == 1
+	    M = A.data ( xidx+[zidx-1]*A.xn, yidx );
+         else
+            error("subvolumes not yet supported"); 
+         end
+      endfunction
+      </pre></code>
+   It would be nice to have a functions for setting elements and
+   slices as well.
+   
+<li>Q. Does octave support cell arrays?
+<br>A. With the octave-forge cell-array patch it mostly does. Check the
+   octave-sources archives at www.octave.org for more recent versions.
+   It does not handle the A{i,j} dereferencing syntax.  IIRC, use 
+   nth(A,i,j) instead.  f(A{i:j}) is not handled at all, so you will
+   have to use a for loop to turn this into the string
+	"f(nth(A,i),nth(A,i+1),...,nth(A,j))"
+   and eval() that string.
+
+<li>Q. Does octave support different precisions char, short, float, etc?
+<br>A. No.  There is some support for extended precision/fixed precision
+   scalars as part of the symbolic toolbox of octave-forge at
+	http://octave.sf.net
+
+<li>Q. Does octave support symbolic variables?
+<br>A. Use symbolic package in octave-forge.  There is no support for symbolic
+   matrices.  Symbolic equivalents to builtin functions use uppercase first
+   letter since Octave can overload built-in functions for user-defined 
+   types (see Sparse answer above for alternative).
+</ul>
+
+
+<h2>Toolboxes</h2>
+
+<ul>
+<li>Q. Is there an optimization tool box?
+<br>A. Use octave-forge.  This is incomplete.  If you need more see
+   Joao's summary of the octave lists.
+
+<li>Q. ODE's?
+<br>A. Octave has lsode.  octave-forge has matlab style ode23, etc.
+
+<li>Q. Integration?
+<br>A. Octave has quad. octave-forge has matlab V5 style quadrature functions
+
+<li>Q. Are there matlab style UI functions?
+<br>A. No. some work on Tcl/Tk links to Octave, but it is incomplete.  There
+   are two separate branches.  See octave archives and octave-forge. 
+
+<li>Q. Signal processing package?
+<br>A. octave-forge has many functions.  Others are available:
+
+<dl>
+<dt>	vco, modulate, demod
+<dd>	Time Frequency Toolbox
+<br>	http://www-isis.enst.fr/Applications/tftb/iutsn.univ-nantes.fr/auger/tftb.html
+
+<dt>	arcov, armcov, prony, pmusic
+<dd>	SPC Tools spline directory
+<br>	ftp://svr-ftp.eng.cam.ac.uk/pub/comp.speech/tools/spctools/
+
+<dt>	ac2rc, ac2poly, rc2ac, etc.
+<dd>	Time Series Analysis toolbox
+<br>	www-dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+
+<dd>	ellip 
+<dd>	search www.octave.org (it will probably show up in octave-forge at
+	some point)
+</dl>
+
+<li>Q. Statistics toolbox
+<br>A. many of the functions exist but often under different names in base octave
+
+<li>Q. Control systems toolbox
+<br>A. many of the functions exist but often under different names in base octave
+</ul>
+
+<h2>Individual functions</h2>
+
+<ul>
+<li>Q. Where do I find the matlab function XXX?
+<br>A. Many XXX are in the octave-forge package at http://octave.sf.net.  This
+   is a collection of Octave functions contributed by the user community
+   but not (yet) included in Octave.  If it is not there, then you can
+   try Joao Cardoso's summary of the octave mailing lists at
+	http://merlin.inescn.pt/~qual/Octave/Octave_links.html
+   or search the Octave mailing list archives directly at
+	http://www.octave.org/octave-lists/archive/index.html
+   You can also search the matlab contributions site and the wider net for 
+   alternatives to existing matlab functions.
+
+<li>Q. Why is the title of my graph not showing up on my graph.
+<br>A. Try setting automatic_replot = 1
+
+<li>Q. sqrtm, logm don't work well for ill-conditioned matrices.
+<br>A. Ask pkienzle@users.sf.net to post the work he and Ross Lippert did
+   on this.
+
+<li>Q. Does eig solve the generalized eigenvalue problem?
+<br>A. Use eiggen.m on octave-forge
+
+<li>Q. Can parameters be passed through the call to fsolve() to the
+    user-supplied function?
+<br>A. use FIXES/fsolve.cc on octave-forge.
+
+<li>Q. economy QR factorization is slow
+<br>A. ask pkienzle to post his patch
+
+<li>Q. exist(a,'var') fails.
+<br>A. octave-forge exist-type patch.
+
+<li>Q. inmem
+<br>A. who -functions
+
+<li>Q. delete
+<br>A. unlink
+
+<li>Q. computer
+<br>A. exists in octave, but probably returns different output
+
+<li>Q. persistent
+<br>A. static
+
+<li>Q. ! shell command
+<br>A. system("shell command")
+
+<li>Q. inputname
+<br>A. argn (sort of)
+
+<li>Q. gallery, compan, hadamard
+<br>A. http://www.ma.man.ac.uk/~higham/testmat.html
+
+<li>Q. subspace
+<br>A. http://www.mathworks.com/support/ftp/linalgv5.shtml
+
+<li>Q. gammaln
+<br>A. lgamma.
+
+<li>Q. inline
+<br>A. The usual case, e.g., feval(inline('x^2'), 3) == 9, can be faked 
+   with something like:
+
+   <code><pre>
+   function name = inline(expr)
+     while (1)
+       name = sprintf('__inline%d',rand(1)*100000);
+       if !exist(name), break;
+     endwhile
+     eval("function __return=", name, ...
+	"(x)\n  __return=", expr, "; endfunction");
+   endfunction
+   </pre></code>
+
+   <p>A more correct version would scan expr for the required variables. 
+
+   <p>A complete version, able to handle, e.g., 
+   <code><pre>
+	g=inline('x^2'); g(3) == 9, 
+   </pre></code>
+   will require a user defined type which overloads the () operator. The 
+   same underlying technique should work, though. Remember to 'clear name' 
+   for the destructor. 
+
+<li>Q. audio functions
+<br>A. octave-forge/main/audio
+
+<li>Q. datetick
+<br>A. gset xdata time; gset timefmt "%d/%m"; gset format x "%b %d"
+
+<li>Q. datenum
+<br>A. limited to 1902-2038
+</ul>
+</body></html>

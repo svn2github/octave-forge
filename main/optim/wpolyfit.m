@@ -16,7 +16,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{p}, @var{dp}] =} wpolyfit (@var{n}, @var{x}, @var{y}, @var{dy})
+## @deftypefn {Function File} {[@var{p}, @var{dp}] =} wpolyfit (@var{x}, @var{y}, @var{dy}, @var{n}, 'origin')
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 ## @var{n} that minimizes
 ## @iftex
@@ -43,6 +43,13 @@
 ## If no output arguments are requested, then it plots the data, the
 ## fitted line and polynomials defining the standard error range.
 ##
+## If 'origin' is specified, then the fitted polynomial will go through
+## the origin.
+##
+## To compute the predicted values of y, including an error estimate use
+##     y = polyval(p,x);
+##     dy = sqrt(polyval(dp.^2, x.^2));
+##
 ## Farebrother, RW (1988). Linear least squares computations.
 ## New York: Marcel Dekker, Inc.
 ##
@@ -52,21 +59,45 @@
 ## 2002-03-25 Paul Kienzle
 ## * accept weight term and return error estimate.
 ## * use more accurate economy QR decomposition.
+## 2002-05-30 Paul Kienzle
+## * go through the origin if requested
+## * only return p,dp
+## * tidy the output
 
-function [p, yf, dp] = wpolyfit (x, y, dy, n)
+function [p, dp] = wpolyfit (x, y, dy, n, origin)
 
 
-  if (nargin < 3 || nargin > 4)
-    usage ("wpolyfit (x, y [, dy], n)");
+  if (nargin < 3 || nargin > 5)
+    usage ("wpolyfit (x, y [, dy], n [, 'origin'])");
   endif
-  if (nargin < 4) 
+  if (nargin ==3) 
     n = dy; 
-    dy = ones(size(y));
+    dy = [];
+    origin='';
+  elseif (nargin == 4)
+    if isstr(n)
+      origin = n;
+      n = dy;
+      dy = [];
+    else
+      origin='';
+    endif
+  endif
+
+  if (length(origin) == 0)
+    through_origin = 0;
+  elseif strcmp(origin,'origin')
+    through_origin = 1;
+  else
+    error ("wpolyfit: expected 'origin' but found %s", origin)
   endif
 
   if (! (is_vector (x) && is_vector (y) && is_vector (dy) && \
         all(size (x) == size (y)) && all(size (x) == size (dy))))
     error ("wpolyfit: x and y must be vectors of the same size");
+  endif
+  if ( !isempty(dy) && !(is_vector(dy) && all(size(y) == size(dy))) )
+    error ("wpolyfit: dy must be a vector the same length as y");
   endif
 
   if (! (is_scalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
@@ -78,18 +109,21 @@ function [p, yf, dp] = wpolyfit (x, y, dy, n)
   k = length (x);
 
   ## observation matrix
-  ## polynomial least squares y = a + bx + cx^2 + dx^3 + ...
-  A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (0 : n));
-  ## polynomial through the origin y = ax + bx^2 + cx^3 + ...
-  % A = x(:) * ones(1,n) .^ (ones(k,1) * (1:n));
+  if through_origin
+    ## polynomial through the origin y = ax + bx^2 + cx^3 + ...
+    A = (x(:) * ones(1,n)) .^ (ones(k,1) * (n:-1:1));
+  else
+    ## polynomial least squares y = a + bx + cx^2 + dx^3 + ...
+    A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
+  endif
 
   ## apply weighting term, if it was given
-  if (nargin > 3)
-    X = A ./ (dy(:) * ones (1, columns(A)));
-    b = y(:) ./ dy(:);
-  else
+  if (isempty(dy))
     X = A;
     b = y(:);
+  else
+    X = A ./ (dy(:) * ones (1, columns(A)));
+    b = y(:) ./ dy(:);
   endif
 
   ## system solution
@@ -97,9 +131,8 @@ function [p, yf, dp] = wpolyfit (x, y, dy, n)
   p = R\(Q'*b); 
   p(P) = p;
 
-  if (nargout != 1)
-    ## find the predicted y values
-    yf = y(:) - A*p(:);
+  compute_dp = nargout == 0 || nargout >= 2;
+  if (compute_dp)
     ## estimate sigma from the weighted data
     sigmasq = sumsq(b - X*p)/(length(b)-length(p));
     ## compute error estimate --- note that we shouldn't need the
@@ -107,26 +140,34 @@ function [p, yf, dp] = wpolyfit (x, y, dy, n)
     ## some of the diag entries come out negative. :-(
     dp = flipud(sqrt(sigmasq*abs(diag(inv(X'*X)))));
   endif
-  p = flipud(p);
+
+  if through_origin
+    p(n+1) = 0;
+    if (compute_dp) dp(n+1) = 0; endif
+  endif
   if (!y_is_row_vector && rows (x) == 1)
     p = p';
-    if (nargout > 1) dp = dp'; endif
+    if (compute_dp) dp = dp'; endif
   endif
 
   if nargout == 0
-    if (any(dy != 1.0))
-      errorbar (x, y, dy, "~;data;");
-    else
+    if (isempty(dy))
       plot(x,y,";data;");
+    else
+      errorbar (x, y, dy, "~;data;");
     endif
     hold on;
+    grid('on');
     xlabel('abscissa X'), ylabel('data Y'), 
-    title('Least-squares Fit (with Error Bounds)');
-    plot(x,polyval(p,x),"g-;p(x);",...
-         x,polyval(p-sign(p).*dp,x),"c-;p+dp;",...
-         x,polyval(p+sign(p).*dp,x),"c-;p-dp;")
+    title('Least-squares Polynomial Fit (with Error Bounds)');
+#    plot(x,polyval(p,x),"g-;p(x);",...
+#         x,polyval(p-sign(p).*dp,x),"c-;p+dp;",...
+#         x,polyval(p+sign(p).*dp,x),"c-;p-dp;")
+    errorbar (x, polyval(p,x), sqrt(polyval(dp.^2,x.^2)), "~b;fit;");
     hold off;
-    p = [p(:), dp(:)];
+    ## display p,dp as a two column vector
+    printf("%15s %15s\n", "Coefficient", "Error");
+    printf("%15f %15f\n", [p(:), dp(:)]');
   endif
 
 endfunction

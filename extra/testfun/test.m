@@ -287,13 +287,16 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   endif
 
   ## grab the test code from the file
-  __body = system([ "sed -n 's/^%!//p' '", __file, "'"]);
-  ## XXX FIXME XXX quick hack --- try sed a few times
-  __attempt = 0;
-  while isempty(__body) && __attempt < 6
-    __body = system([ "sed -n 's/^%!//p' '", __file, "'"]);
-    __attempt++;
-  endwhile
+  ## XXX FIXME XXX why doesn't the following work?
+  ##     __body = system(["sed -n 's/^%!//p' '", __file, "'"]);
+  __tmp = tmpnam();
+  unwind_protect
+    system(["sed -n 's/^%!//p' '", __file, "' > '", __tmp, "'"]);
+    fid = fopen(__tmp,"r");
+    __body = setstr(fread(fid,Inf,'char')');
+  unwind_protect_cleanup
+    unlink(__tmp);
+  end_unwind_protect
 
   if (isempty (__body))
     if (__grabdemo)

@@ -123,7 +123,7 @@ op1 = "ftol utol dtol df d2f d2i order narg maxev isz";
 # Boolean options 
 op0 = "verbose backend jac hess ihess ndiff" ;
 
-default = setfield ("backend",0,"verbose",0,\
+default = struct ("backend",0,"verbose",0,\
 		    "df","", "df","","d2f","","d2i","",  \
 		    "hess", 0,  "ihess", 0,  "jac", 0,"ndiff", 0,  \
 		    "ftol" ,nan, "utol",nan, "dtol", nan,\

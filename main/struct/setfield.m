@@ -16,16 +16,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Built-in Function} {} [@var{k1},..., @var{v1}] =
-## setfield (@var{s}, 'k1',..., 'v1')
-## set field members in a structure
-## example: oo(1,1).f0= 1;
-##          oo= setfield(oo,{1,2},'fd',{3},'b', 6);
-##   gives  oo(1,2).fd(3).b == 6
+## @code{setfield (@var{s}, 'k1',..., 'v1')} sets field members in a structure
+##
+## @example
+## @group
+## oo(1,1).f0= 1;
+## oo= setfield(oo,@{1,2@},'fd',@{3@},'b', 6);
+## oo(1,2).fd(3).b == 6
+## @result{} ans = 1
+## @end group
+## @end example
 ##
 ## Note that this function is deprecated in favour of 'dynamic
 ## fields'. So the previous could be written
-##          i1= {1,2}; i2= 'fd'; i3= {3}; i4= 'b';
-##          oo( i1{:} ).( i2 )( i3{:} ).( i4 ) == 6;
+##
+## @example
+##          i1= @{1,2@}; i2= 'fd'; i3= @{3@}; i4= 'b';
+##          oo( i1@{:@} ).( i2 )( i3@{:@} ).( i4 ) == 6;
+## @end example
 ## @end deftypefn
 ## @seealso{getfield,setfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 

@@ -16,15 +16,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Built-in Function} {} [@var{v1},...] =
-## getfield (@var{s}, 'k1',...)
-## extract fields from a structure
-## example: given  ss(1,2).fd(3).b=5;
-##          getfield(ss,{1,2},'fd',{3},'b') => 5
+## @code{getfield (@var{s}, 'k1',...)} extract fields from a structure.
+## For example
+##
+## @example
+## @group
+## ss(1,2).fd(3).b=5;
+## getfield(ss,@{1,2@},'fd',@{3@},'b')
+## @result{} ans = 5
+## @end group
+## @end example
 ##
 ## Note that this function is deprecated in favour of 'dynamic
 ## fields'. So the previous could be written
-##          i1= {1,2}; i2= 'fd'; i3= {3}; i4= 'b';
-##          ss( i1{:} ).( i2 )( i3{:} ).( i4 )
+##
+## @example
+##          i1= @{1,2@}; i2= 'fd'; i3= @{3@}; i4= 'b';
+##          ss( i1@{:@} ).( i2 )( i3@{:@} ).( i4 )
+## @end example
 ## @end deftypefn
 ## @seealso{setfield,getfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 

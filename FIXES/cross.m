@@ -37,48 +37,35 @@
 ## Created: 15 October 1994
 ## Adapted-By: jwe
 
+## 2001-10-22 Paul Kienzle
+## * handle matrix inputs
+## * output row vector if either input is a row vector
 function z = cross (x, y)
 	
   if (nargin != 2)
     usage ("cross (x, y)");
   endif
- 
-  if (is_vector(x) && is_vector(y))
-    if (length (x) == 3 && length (y) == 3)
 
-      z = [x(2)*y(3) - x(3)*y(2);\
-           x(3)*y(1) - x(1)*y(3);\
-           x(1)*y(2) - x(2)*y(1)];
+  if (columns(x) == 1 && rows(y) == 1)
+    x = x.';
+  elseif (rows(x) == 1 && columns(y) == 1)
+    y = y.';
+  endif
 
-      x_nr = rows (x);
-      y_nr = rows (y);
-
-      if (x_nr == y_nr && x_nr == 1)
-        z = z.';
-      endif
-
+  if (size(x) == size(y))
+    if (rows(x) == 3)
+      z = [x(2,:).*y(3,:) - x(3,:).*y(2,:)
+           x(3,:).*y(1,:) - x(1,:).*y(3,:)
+           x(1,:).*y(2,:) - x(2,:).*y(1,:)];
+    elseif (columns(x) == 3)
+      z = [x(:,2).*y(:,3) - x(:,3).*y(:,2)\
+           x(:,3).*y(:,1) - x(:,1).*y(:,3)\
+           x(:,1).*y(:,2) - x(:,2).*y(:,1)];
     else
-      error ("cross: both x and y must be 3-dimensional vectors");
-    endif
-  elseif (size(x) == size(y))
-
-    [xr,xc]=size(x);
-
-    if (xr == 3)
-      x=x';y=y';
-	elseif (xc != 3)
-      error ("cross: x and y must have one dimension with 3 elements")
-    endif
-
-	z = [x(:,2).*y(:,3) .- x(:,3).*y(:,2)\
-         x(:,3).*y(:,1) .- x(:,1).*y(:,3)\
-         x(:,1).*y(:,2) .- x(:,2).*y(:,1)];
-
-    if (xr == 3)
-      z=z';
+      error ("cross: x,y must have dimension nx3 or 3xn");
     endif
   else
-    error ("cross: for matrix arguments x and y must have same size");
+    error ("cross: x and y must have the same dimensions");
   endif
 
 endfunction

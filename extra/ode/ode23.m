@@ -1,6 +1,6 @@
-function [tout, xout] = ode23(F,tspan,x0,ode_fcn_format,tol,trace,count)
+function [tout,xout] = ode23(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 
-% Copyright (C) 2000 Marc Compere
+% Copyright (C) 2001, 2000 Marc Compere
 % This file is intended for use with Octave.
 % ode23.m is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
@@ -14,23 +14,47 @@ function [tout, xout] = ode23(F,tspan,x0,ode_fcn_format,tol,trace,count)
 %
 % --------------------------------------------------------------------
 %
-% ode23 (v1.07) Integrates a system of ordinary differential equations using
-% 2nd & 3rd order Runge-Kutta formulas.  The particular 3rd order method is
-% Simpson's 1/3 rule.
-% This particular implementation uses the 3rd order estimate for xout, although
-% the truncation error is of order(h^2), therefore this method, overall is
-% a 2nd-order method.
+% ode23 (v1.14) Integrates a system of ordinary differential equations using
+% 2nd & 3rd order Runge-Kutta formulas.  This particular 3rd-order method reduces
+% to Simpson's 1/3 rule and uses the 3rd order estimate for xout.
+%
+% 3rd-order accurate RK methods have local and global errors of O(h^4) and O(h^3),
+% respectively and yield exact results when the solution is a cubic.
+%
+% The order of the RK method is the order of the local *truncation* error, d,
+% which is the principle error term in the portion of the Taylor series
+% expansion that gets dropped, or intentionally truncated.  This is different
+% from the local error which is the difference between the estimated solution
+% and the actual, or true solution.  The local error is used in stepsize
+% selection and may be approximated by the difference between two estimates of
+% different order, l(h) = x_(O(h+1)) - x_(O(h)).  With this definition, the
+% local error will be as large as the error in the lower order method.
+% The local truncation error is within the group of terms that gets multipled
+% by h when solving for a solution from the general RK method.  Therefore, the
+% order-p solution created by the RK method will be roughly accurate to O(h^(p+1))
+% since the local truncation error shows up in the solution as h*d, which is
+% h times an O(h^(p)) term, or rather O(h^(p+1)).
+% Summary:   For an order-p accurate RK method,
+%            - the local truncation error is O(h^p)
+%            - the local error used for stepsize adjustment and that
+%              is actually realized in a solution is O(h^(p+1))
+%
 % This requires 3 function evaluations per integration step.
 %
+% Relevant discussion on step size choice can be found on pp.90,91 in
+% U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations
+% and Differential-Agebraic Equations, Society for Industrial and Applied Mathematics
+% (SIAM), Philadelphia, 1998
+%
 % The error estimate formula and slopes are from
-% Numerical Methods for Engineers, 2nd Ed., Chappra & Cannle, McGraw-Hill, 1985
+% Numerical Methods for Engineers, 2nd Ed., Chapra & Canale, McGraw-Hill, 1985
 %
 % Usage:
-%         [tout, xout] = ode23(F, tspan, x0, ode_fcn_format, tol, trace, count)
+%         [tout, xout] = ode23(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 %
 % INPUT:
-% F     - String containing name of user-supplied problem description.
-%         Call: xprime = fun(t,x) where F = 'fun'.
+% FUN   - String containing name of user-supplied problem description.
+%         Call: xprime = fun(t,x) where FUN = 'fun'.
 %         t      - Time (scalar).
 %         x      - Solution column-vector.
 %         xprime - Returned derivative COLUMN-vector; xprime(i) = dx(i)/dt.
@@ -47,6 +71,7 @@ function [tout, xout] = ode23(F,tspan,x0,ode_fcn_format,tol,trace,count)
 %         and counts the number of state-dot function evaluations
 %         'rhs_counter' is incremented in here, not in the state-dot file
 %         simply make 'rhs_counter' global in the file that calls ode23
+% hmax  - limit the maximum stepsize to be less than or equal to hmax
 %
 % OUTPUT:
 % tout  - Returned integration time points (column-vector).
@@ -55,16 +80,17 @@ function [tout, xout] = ode23(F,tspan,x0,ode_fcn_format,tol,trace,count)
 % The result can be displayed by: plot(tout, xout).
 %
 % Marc Compere
-% compere@mail.utexas.edu
+% CompereM@asme.org
 % created : 06 October 1999
-% modified: 15 May 2000
+% modified: 27 June 2001
 
+if nargin < 8, hmax = (tspan(2) - tspan(1))/2.5; end
 if nargin < 7, count = 0; end
 if nargin < 6, trace = 0; end
 if nargin < 5, tol = 1.e-3; end
 if nargin < 4, ode_fcn_format = 0; end
 
-pow = 1/8;
+pow = 1/4; % see p.91 in the Ascher & Petzold reference for more infomation.
 
 % The 2(3) coefficients:
  a(1,1)=0;
@@ -82,7 +108,6 @@ pow = 1/8;
 t0 = tspan(1);
 tfinal = tspan(2);
 t = t0;
-hmax = (tfinal - t)/2.5;
 hmin = (tfinal - t)/1e12;
 h = (tfinal - t)/200; % initial guess at a step size
 x = x0(:);            % this always creates a column vector, x
@@ -103,20 +128,18 @@ end
       if t + h > tfinal, h = tfinal - t; end
 
       % compute the slopes
-      if (ode_fcn_format==0),
-       k(:,1)=feval(F,t,x);
-       k(:,2)=feval(F,t+c(2)*h,x+h*(a(2,1)*k(:,1)));
-       k(:,3)=feval(F,t+c(3)*h,x+h*(a(3,1)*k(:,1)+a(3,2)*k(:,2)));
-      else,
-       k(:,1)=feval(F,x,t);
-       k(:,2)=feval(F,x+h*(a(2,1)*k(:,1)),t+c(2)*h);
-       k(:,3)=feval(F,x+h*(a(3,1)*k(:,1)+a(3,2)*k(:,2)),t+c(3)*h);
-      end % if (ode_fcn_format==0)
+      if (ode_fcn_format==0), % (default)
+         k(:,1)=feval(FUN,t,x);
+         k(:,2)=feval(FUN,t+c(2)*h,x+h*(a(2,1)*k(:,1)));
+         k(:,3)=feval(FUN,t+c(3)*h,x+h*(a(3,1)*k(:,1)+a(3,2)*k(:,2)));
+      else, % ode_fcn_format==1
+         k(:,1)=feval(FUN,x,t);
+         k(:,2)=feval(FUN,x+h*(a(2,1)*k(:,1)),t+c(2)*h);
+         k(:,3)=feval(FUN,x+h*(a(3,1)*k(:,1)+a(3,2)*k(:,2)),t+c(3)*h);
+      end % if (ode_fcn_format==1)
 
       % increment rhs_counter
-      if count==1,
-       rhs_counter = rhs_counter + 3;
-      end % if
+      if count==1, rhs_counter = rhs_counter + 3; end
 
       % compute the 2nd order estimate
       x2=x + h*b2(2)*k(:,2);

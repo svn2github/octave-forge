@@ -1,6 +1,6 @@
-function [tout,xout] = rk8fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
+function [tout,xout] = rk8fixed(FUN,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 
-% Copyright (C) 2000 Marc Compere
+% Copyright (C) 2001, 2000 Marc Compere
 % This file is intended for use with Octave.
 % rk8fixed.m is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
@@ -14,17 +14,20 @@ function [tout,xout] = rk8fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 %
 % --------------------------------------------------------------------
 %
-% rk8fixed (v1.07) is an 8th order Runge-Kutta numerical integration routine.
+% rk8fixed (v1.14) is an 8th order Runge-Kutta numerical integration routine.
 % It requires 13 function evaluations per step.  This is not the most
 % efficient 8th order implementation.  It was just the easiest to put
 % together as a variant from ode78.m.
 %
+% 8th-order accurate RK methods have a local error estimate of O(h^9).
+%
+%
 % Usage:
-%         [tout, xout] = rk8fixed(F, tspan, x0, Nsteps, ode_fcn_format, trace, count)
+%         [tout, xout] = rk8fixed(FUN, tspan, x0, Nsteps, ode_fcn_format, trace, count)
 %
 % INPUT:
-% F      - String containing name of user-supplied problem derivatives.
-%          Call: xprime = fun(t,x) where F = 'fun'.
+% FUN    - String containing name of user-supplied problem derivatives.
+%          Call: xprime = fun(t,x) where FUN = 'fun'.
 %          t      - Time or independent variable (scalar).
 %          x      - Solution column-vector.
 %          xprime - Returned derivative COLUMN-vector; xprime(i) = dx(i)/dt.
@@ -49,9 +52,9 @@ function [tout,xout] = rk8fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 % The result can be displayed by: plot(tout, xout).
 %
 % Marc Compere
-% compere@mail.utexas.edu
+% CompereM@asme.org
 % created : 06 October 1999
-% modified: 15 May 2000
+% modified: 19 May 2001
 
 if nargin < 7, count = 0; end
 if nargin < 6, trace = 0; end
@@ -64,22 +67,20 @@ if count==1,
  if ~exist('rhs_counter'),rhs_counter=0;,end
 end % if count
 
-alpha_ = [ 2./27. 1/9 1/6 5/12 .5 5/6 1/6 2/3 1/3 1 0 1 ]';
-beta_ = [ [  2/27  0  0   0   0  0  0  0  0  0  0   0  0  ]
-[  1/36 1/12  0  0  0  0  0  0   0  0  0  0  0  ]
-[  1/24  0  1/8  0  0  0  0  0  0  0  0  0  0 ]
-[  5/12  0  -25/16  25/16  0  0  0  0  0  0   0  0  0  ]
-[ .05   0  0  .25  .2  0  0  0  0  0  0  0  0 ]
-[ -25/108  0  0  125/108  -65/27  125/54  0  0  0  0  0  0   0  ]
-[ 31/300  0  0  0  61/225  -2/9  13/900  0  0  0   0  0  0  ]
-[ 2  0  0  -53/6  704/45  -107/9  67/90  3  0  0  0  0  0  ]
-[ -91/108  0  0  23/108  -976/135  311/54  -19/60  17/6  -1/12  0  0  0  0 ]
-[2383/4100 0 0 -341/164 4496/1025 -301/82 2133/4100 45/82 45/164 18/41 0 0 0]
-[ 3/205  0   0  0   0    -6/41  -3/205   -3/41     3/41   6/41   0   0  0 ]
-[-1777/4100 0 0 -341/164 4496/1025 -289/82 2193/4100 ...
-51/82 33/164 12/41 0 1 0]...
-]';
-chi_ = [ 0 0 0 0 0 34/105 9/35 9/35 9/280 9/280 0 41/840 41/840]';
+alpha_ = [ 2./27., 1/9, 1/6, 5/12, 0.5, 5/6, 1/6, 2/3, 1/3, 1, 0, 1 ]';
+beta_  = [ 2/27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          1/36, 1/12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          1/24, 0, 1/8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          5/12, 0, -25/16, 25/16, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          0.05, 0, 0, 0.25, 0.2, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          -25/108, 0, 0, 125/108, -65/27, 125/54, 0, 0, 0, 0, 0, 0, 0 ;
+          31/300, 0, 0, 0, 61/225, -2/9, 13/900, 0, 0, 0, 0, 0, 0 ;
+          2, 0, 0, -53/6, 704/45, -107/9, 67/90, 3, 0, 0, 0, 0, 0 ;
+          -91/108, 0, 0, 23/108, -976/135, 311/54, -19/60, 17/6, -1/12, 0, 0, 0, 0 ;
+          2383/4100, 0, 0, -341/164, 4496/1025, -301/82, 2133/4100, 45/82, 45/164, 18/41, 0, 0, 0 ;
+          3/205, 0, 0, 0, 0, -6/41, -3/205, -3/41, 3/41, 6/41, 0, 0, 0 ;
+          -1777/4100, 0, 0, -341/164, 4496/1025, -289/82, 2193/4100, 51/82, 33/164, 12/41, 0, 1, 0 ]';
+chi_   = [ 0, 0, 0, 0, 0, 34/105, 9/35, 9/35, 9/280, 9/280, 0, 41/840, 41/840]';
 
 % Initialization
 t = tspan(1);
@@ -89,18 +90,22 @@ tout(1) = t;
 x = x0(:);
 f = x*zeros(1,13);
 
+if trace
+ clc, t, h, x
+end
+
 for i=1:Nsteps,
 
      % Compute the slopes
      if (ode_fcn_format==0),
-      f(:,1) = feval(F,t,x);
+      f(:,1) = feval(FUN,t,x);
       for j = 1:12
-         f(:,j+1) = feval(F, t+alpha_(j)*h, x+h*f*beta_(:,j));
+         f(:,j+1) = feval(FUN, t+alpha_(j)*h, x+h*f*beta_(:,j));
       end
      else,
-      f(:,1) = feval(F,x,t);
+      f(:,1) = feval(FUN,x,t);
       for j = 1:12
-         f(:,j+1) = feval(F, x+h*f*beta_(:,j), t+alpha_(j)*h);
+         f(:,j+1) = feval(FUN, x+h*f*beta_(:,j), t+alpha_(j)*h);
       end
      end % if (ode_fcn_format==0)
 

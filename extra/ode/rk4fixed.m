@@ -1,6 +1,6 @@
-function [tout,xout] = rk4fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
+function [tout,xout] = rk4fixed(FUN,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 
-% Copyright (C) 2000 Marc Compere
+% Copyright (C) 2001, 2000 Marc Compere
 % This file is intended for use with Octave.
 % rk4fixed.m is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
@@ -14,15 +14,18 @@ function [tout,xout] = rk4fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 %
 % --------------------------------------------------------------------
 %
-% rk4fixed (v1.07) is a 4th order Runge-Kutta numerical integration routine.
+% rk4fixed (v1.14) is a 4th order Runge-Kutta numerical integration routine.
 % It requires 4 function evaluations per step.
 %
+% 4th-order accurate RK methods have a local error estimate of O(h^5).
+%
+%
 % Usage:
-%         [tout, xout] = rk4fixed(F, tspan, x0, Nsteps, ode_fcn_format, trace, count)
+%         [tout, xout] = rk4fixed(FUN, tspan, x0, Nsteps, ode_fcn_format, trace, count)
 %
 % INPUT:
-% F      - String containing name of user-supplied problem derivatives.
-%          Call: xprime = fun(t,x) where F = 'fun'.
+% FUN    - String containing name of user-supplied problem derivatives.
+%          Call: xprime = fun(t,x) where FUN = 'fun'.
 %          t      - Time or independent variable (scalar).
 %          x      - Solution column-vector.
 %          xprime - Returned derivative COLUMN-vector; xprime(i) = dx(i)/dt.
@@ -47,9 +50,9 @@ function [tout,xout] = rk4fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 % The result can be displayed by: plot(tout, xout).
 %
 % Marc Compere
-% compere@mail.utexas.edu
+% CompereM@asme.org
 % created : 06 October 1999
-% modified: 15 May 2000
+% modified: 19 May 2001
 
 if nargin < 7, count = 0; end
 if nargin < 6, trace = 0; end
@@ -70,27 +73,31 @@ tout(1) = t;
 x = x0(:);
 halfh = 0.5*h;
 
+if trace
+ clc, t, h, x
+end
+
 for i=1:Nsteps,
      if (ode_fcn_format==0),
-      RK1 = feval(F,t,x);
+      RK1 = feval(FUN,t,x);
       thalf = t+halfh;
       xtemp = x+halfh*RK1;
-      RK2 = feval(F,thalf,xtemp);
+      RK2 = feval(FUN,thalf,xtemp);
       xtemp = x+halfh*RK2;
-      RK3 = feval(F,thalf,xtemp);
+      RK3 = feval(FUN,thalf,xtemp);
       tfull = t+h;
       xtemp = x+h*RK3;
-      RK4 = feval(F,tfull,xtemp);
+      RK4 = feval(FUN,tfull,xtemp);
      else,
-      RK1 = feval(F,x,t);
+      RK1 = feval(FUN,x,t);
       thalf = t+halfh;
       xtemp = x+halfh*RK1;
-      RK2 = feval(F,xtemp,thalf);
+      RK2 = feval(FUN,xtemp,thalf);
       xtemp = x+halfh*RK2;
-      RK3 = feval(F,xtemp,thalf);
+      RK3 = feval(FUN,xtemp,thalf);
       tfull = t+h;
       xtemp = x+h*RK3;
-      RK4 = feval(F,xtemp,tfull);
+      RK4 = feval(FUN,xtemp,tfull);
      end % if (ode_fcn_format==0)
 
      % increment rhs_counter

@@ -1,6 +1,6 @@
-function [tout,xout] = rk2fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
+function [tout,xout] = rk2fixed(FUN,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 
-% Copyright (C) 2000 Marc Compere
+% Copyright (C) 2001, 2000 Marc Compere
 % This file is intended for use with Octave.
 % rk2fixed.m is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
@@ -14,20 +14,22 @@ function [tout,xout] = rk2fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 %
 % --------------------------------------------------------------------
 %
-% rk2fixed (v1.07) integrates a system of ordinary differential equations using a
+% rk2fixed (v1.14) integrates a system of ordinary differential equations using a
 % 2nd order Runge-Kutta formula called Ralston's method.
 % This choice of 2nd order coefficients provides a minimum bound on truncation error.
 % For more, see Ralston & Rabinowitz (1978) or 
 % Numerical Methods for Engineers, 2nd Ed., Chappra & Cannle, McGraw-Hill, 1985
 %
+% 2nd-order accurate RK methods have a local error estimate of O(h^3).
+%
 % rk2fixed() requires 2 function evaluations per integration step.
 %
 % Usage:
-%         [tout, xout] = rk2fixed(F, tspan, x0, Nsteps, ode_fcn_format, trace, count)
+%         [tout, xout] = rk2fixed(FUN, tspan, x0, Nsteps, ode_fcn_format, trace, count)
 %
 % INPUT:
-% F      - String containing name of user-supplied problem derivatives.
-%          Call: xprime = fun(t,x) where F = 'fun'.
+% FUN    - String containing name of user-supplied problem derivatives.
+%          Call: xprime = fun(t,x) where FUN = 'fun'.
 %          t      - Time (scalar).
 %          x      - Solution column-vector.
 %          xprime - Returned derivative COLUMN-vector; xprime(i) = dx(i)/dt.
@@ -52,9 +54,9 @@ function [tout,xout] = rk2fixed(F,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 % The result can be displayed by: plot(tout, xout).
 %
 % Marc Compere
-% compere@mail.utexas.edu
+% CompereM@asme.org
 % created : 06 October 1999
-% modified: 15 May 2000
+% modified: 19 May 2001
 
 if nargin < 7, count = 0; end
 if nargin < 6, trace = 0; end
@@ -83,11 +85,11 @@ h = (tspan(2)-tspan(1))/Nsteps;
 
 for i=1:Nsteps,
      if (ode_fcn_format==0),
-      k1 = feval(F,t,x);
-      k2 = feval(F,t+3/4*h,x+3/4*h*k1);
+      k1 = feval(FUN,t,x);
+      k2 = feval(FUN,t+3/4*h,x+3/4*h*k1);
      else,
-      k1 = feval(F,x,t);
-      k2 = feval(F,x+3/4*h*k1,t+3/4*h);
+      k1 = feval(FUN,x,t);
+      k2 = feval(FUN,x+3/4*h*k1,t+3/4*h);
      end % if (ode_fcn_format==0)
 
      % increment rhs_counter

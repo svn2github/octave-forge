@@ -1,6 +1,6 @@
-function [tout, xout] = ode78(F,tspan,x0,ode_fcn_format,tol,trace,count)
+function [tout,xout] = ode78(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 
-% Copyright (C) 2000 Marc Compere
+% Copyright (C) 2001, 2000 Marc Compere
 % This file is intended for use with Octave.
 % ode78.m is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
@@ -14,12 +14,38 @@ function [tout, xout] = ode78(F,tspan,x0,ode_fcn_format,tol,trace,count)
 %
 % --------------------------------------------------------------------
 %
-% ode78 (v1.07) Integrates a system of ordinary differential equations using
+% ode78 (v1.14) Integrates a system of ordinary differential equations using
 % 7th order formulas.
-% This particular implementation uses the 8th order estimate for xout, which
-% is called 'local extrapolation'.  The truncation error, gamma1, is of order(h^8).
-% Therefore this method, overall is a 7th-order method.
+%
+% This is a 7th-order accurate integrator therefore the local error normally
+% expected is O(h^8).  However, because this particular implementation
+% uses the 8th-order estimate for xout (i.e. local extrapolation) moving
+% forward with the 8th-order estimate will yield errors on the order of O(h^9).
+%
+% The order of the RK method is the order of the local *truncation* error, d,
+% which is the principle error term in the portion of the Taylor series
+% expansion that gets dropped, or intentionally truncated.  This is different
+% from the local error which is the difference between the estimated solution
+% and the actual, or true solution.  The local error is used in stepsize
+% selection and may be approximated by the difference between two estimates of
+% different order, l(h) = x_(O(h+1)) - x_(O(h)).  With this definition, the
+% local error will be as large as the error in the lower order method.
+% The local truncation error is within the group of terms that gets multipled
+% by h when solving for a solution from the general RK method.  Therefore, the
+% order-p solution created by the RK method will be roughly accurate to O(h^(p+1))
+% since the local truncation error shows up in the solution as h*d, which is
+% h times an O(h^(p)) term, or rather O(h^(p+1)).
+% Summary:   For an order-p accurate RK method,
+%            - the local truncation error is O(h^p)
+%            - the local error used for stepsize adjustment and that
+%              is actually realized in a solution is O(h^(p+1))
+%
 % This requires 13 function evaluations per integration step.
+%
+% Relevant discussion on step size choice can be found on pp.90,91 in
+% U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations
+% and Differential-Agebraic Equations, Society for Industrial and Applied Mathematics
+% (SIAM), Philadelphia, 1998
 %
 % More may be found in the original author's text containing numerous
 % applications on ordinary and partial differential equations using Matlab:
@@ -28,11 +54,11 @@ function [tout, xout] = ode78(F,tspan,x0,ode_fcn_format,tol,trace,count)
 %     Mechanics Applications Using MATLAB', 2nd Ed, CRC Press, 1997
 %
 %
-% [tout, xout] = ode78(F, tspan, x0, ode_fcn_format, tol, trace, count)
+% [tout, xout] = ode78(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 %
 % INPUT:
-% F     - String containing name of user-supplied problem description.
-%         Call: xprime = fun(t,x) where F = 'fun'.
+% FUN   - String containing name of user-supplied problem description.
+%         Call: xprime = fun(t,x) where FUN = 'fun'.
 %         t      - Time (scalar).
 %         x      - Solution column-vector.
 %         xprime - Returned derivative COLUMN-vector; xprime(i) = dx(i)/dt.
@@ -49,6 +75,7 @@ function [tout, xout] = ode78(F,tspan,x0,ode_fcn_format,tol,trace,count)
 %         and counts the number of state-dot function evaluations
 %         'rhs_counter' is incremented in here, not in the state-dot file
 %         simply make 'rhs_counter' global in the file that calls ode78
+% hmax  - limit the maximum stepsize to be less than or equal to hmax
 %
 % OUTPUT:
 % tout  - Returned integration time points (row-vector).
@@ -62,31 +89,32 @@ function [tout, xout] = ode78(F,tspan,x0,ode_fcn_format,tol,trace,count)
 %
 % modified by:
 % Marc Compere
-% compere@mail.utexas.edu
+% CompereM@asme.org
 % created : 06 October 1999
-% modified: 15 May 2000
+% modified: 19 May 2001
 
 
 % The Fehlberg coefficients:
-alpha_ = [ 2./27. 1/9 1/6 5/12 .5 5/6 1/6 2/3 1/3 1 0 1 ]';
-beta_ = [ [  2/27  0  0   0   0  0  0  0  0  0  0   0  0  ]
-[  1/36 1/12  0  0  0  0  0  0   0  0  0  0  0  ]
-[  1/24  0  1/8  0  0  0  0  0  0  0  0  0  0 ]
-[  5/12  0  -25/16  25/16  0  0  0  0  0  0   0  0  0  ]
-[ .05   0  0  .25  .2  0  0  0  0  0  0  0  0 ]
-[ -25/108  0  0  125/108  -65/27  125/54  0  0  0  0  0  0   0  ]
-[ 31/300  0  0  0  61/225  -2/9  13/900  0  0  0   0  0  0  ]
-[ 2  0  0  -53/6  704/45  -107/9  67/90  3  0  0  0  0  0  ]
-[ -91/108  0  0  23/108  -976/135  311/54  -19/60  17/6  -1/12  0  0  0  0 ]
-[2383/4100 0 0 -341/164 4496/1025 -301/82 2133/4100 45/82 45/164 18/41 0 0 0]
-[ 3/205  0   0  0   0    -6/41  -3/205   -3/41     3/41   6/41   0   0  0 ]
-[-1777/4100 0 0 -341/164 4496/1025 -289/82 2193/4100 ...
-51/82 33/164 12/41 0 1 0]...
-]';
- chi_ = [ 0 0 0 0 0 34/105 9/35 9/35 9/280 9/280 0 41/840 41/840]';
- psi_ = [1  0  0  0  0  0  0  0  0  0  1 -1  -1 ]';
-pow = 1/8;
+alpha_ = [ 2./27., 1/9, 1/6, 5/12, 0.5, 5/6, 1/6, 2/3, 1/3, 1, 0, 1 ]';
+beta_  = [ 2/27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          1/36, 1/12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          1/24, 0, 1/8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          5/12, 0, -25/16, 25/16, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          0.05, 0, 0, 0.25, 0.2, 0, 0, 0, 0, 0, 0, 0, 0 ;
+          -25/108, 0, 0, 125/108, -65/27, 125/54, 0, 0, 0, 0, 0, 0, 0 ;
+          31/300, 0, 0, 0, 61/225, -2/9, 13/900, 0, 0, 0, 0, 0, 0 ;
+          2, 0, 0, -53/6, 704/45, -107/9, 67/90, 3, 0, 0, 0, 0, 0 ;
+          -91/108, 0, 0, 23/108, -976/135, 311/54, -19/60, 17/6, -1/12, 0, 0, 0, 0 ;
+          2383/4100, 0, 0, -341/164, 4496/1025, -301/82, 2133/4100, 45/82, 45/164, 18/41, 0, 0, 0 ;
+          3/205, 0, 0, 0, 0, -6/41, -3/205, -3/41, 3/41, 6/41, 0, 0, 0 ;
+          -1777/4100, 0, 0, -341/164, 4496/1025, -289/82, 2193/4100, 51/82, 33/164, 12/41, 0, 1, 0 ]';
+chi_  = [ 0, 0, 0, 0, 0, 34/105, 9/35, 9/35, 9/280, 9/280, 0, 41/840, 41/840]';
+psi_  = [ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, -1 ]';
 
+pow = 1/8; % see p.91 in the Ascher & Petzold reference for more infomation.
+
+
+if nargin < 8, hmax = (tspan(2) - tspan(1))/2.5; end
 if nargin < 7, count = 0; end
 if nargin < 6, trace = 0; end
 if nargin < 5, tol = 1.e-6; end
@@ -102,15 +130,14 @@ t = t0;
 % h = (tfinal - t)/100;
 % The following parameters were taken because the integrator has
 % higher order than ODE45. This choice is somewhat subjective.
-hmax = (tfinal - t)/2.5;
 %hmin = (tfinal - t)/10000;
-hmin = (tfinal - t)/1000000000;
+hmin = (tfinal - t)/1e20;
 h = (tfinal - t)/50;
 x = x0(:);          % the '(:)' ensures x is initialized as a column vector
-f = x*zeros(1,13);  % f needs to be an Nx13 matrix where N=number of cols in x
+f = x*zeros(1,13);  % f needs to be an Nx13 matrix where N=number of rows in x
 tout = t;
 xout = x.';
-tau = tol * max(norm(x, 'inf'), 1);
+tau = tol * max(norm(x,'inf'), 1);
 
 if count==1,
  global rhs_counter
@@ -119,30 +146,30 @@ end % if count
 
 if trace
 %  clc, t, h, x
-   clc, t, x
+%   clc, t, x
+   clc, t
 end
+
 % The main loop
    while (t < tfinal) & (h >= hmin)
       if t + h > tfinal, h = tfinal - t; end
 
       % Compute the slopes
-      if (ode_fcn_format==0),
-       f(:,1) = feval(F,t,x);
-       for j = 1: 12
-          f(:,j+1) = feval(F, t+alpha_(j)*h, x+h*f*beta_(:,j));
-       end
-      else,
-       f(:,1) = feval(F,x,t);
-       for j = 1: 12
-          f(:,j+1) = feval(F, x+h*f*beta_(:,j), t+alpha_(j)*h);
-       end
-      end %  if (ode_fcn_format==0)
+      if (ode_fcn_format==0), % (default)
+         f(:,1) = feval(FUN,t,x);
+         for j = 1: 12,
+            f(:,j+1) = feval(FUN, t+alpha_(j)*h, x+h*f*beta_(:,j));
+         end
+      else, % ode_fcn_format==1
+         f(:,1) = feval(FUN,x,t);
+         for j = 1: 12,
+            f(:,j+1) = feval(FUN, x+h*f*beta_(:,j), t+alpha_(j)*h);
+         end
+      end % if (ode_fcn_format==1)
 
 
       % increment rhs_counter
-      if count==1,
-       rhs_counter = rhs_counter + 13;
-      end % if
+      if count==1, rhs_counter = rhs_counter + 13; end
 
       % Truncation error term
       gamma1 = h*41/840*f*psi_;
@@ -159,8 +186,9 @@ end
          xout = [xout; x.'];
       end
       if trace
-         home, t, h, x
+%        home, t, h, x
 %        home, t, x
+         home, t, h
       end
 
       % Update the step size

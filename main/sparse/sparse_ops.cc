@@ -460,10 +460,38 @@ octave_sparse::subsref( const std::string SUBSREF_STRREF type,
 }
 
 #if HAVE_OCTAVE_CONCAT
+octave_value 
+octave_sparse::resize (const dim_vector& dv) const
+{
+  DEBUGMSG("sparse_resize");
+  if (dv.length() > 2) {
+    error ("Can not resize sparse matrix to NDArray");
+    return octave_value ();
+  }
+
+  // Do the magic needed to change the number of rows and columns while
+  // leaving the elements of retval alone //
+  // Since we don't know how much space will be required, we can't
+  // allocate any space
+  int cols= (int) dv(0);
+  int rows= (int) dv(1);
+  octave_value_list find_val= find();
+  ColumnVector ridx= find_val(0).column_vector_value();
+  ColumnVector cidx= find_val(1).column_vector_value();
+  ColumnVector coef= find_val(2).column_vector_value();
+  octave_stdout << "r="<<ridx <<"c="<< cidx << "C="<<coef << "m="<<cols<<"n="<<rows ;
+
+  const SuperMatrix B= assemble_sparse( cols, rows, coef, ridx, cidx, 0);
+//dPrint_CompCol_Matrix("octave sparse", (SuperMatrix *) &B);
+//dPrint_CompCol_Matrix("octave sparse", (SuperMatrix *) &X);
+  return new octave_sparse (B);
+}
+
 octave_sparse concat (const octave_sparse& ra,
                       const octave_sparse& rb,
 		      const Array<int>& ra_idx)
 {
+  DEBUGMSG("sparse - concat");
   octave_sparse retval (ra);
   if (ra.numel() > 0)
     retval.insert (rb, ra_idx(0), ra_idx(1));
@@ -473,7 +501,7 @@ octave_sparse concat (const octave_sparse& ra,
 octave_sparse&
 octave_sparse::insert( const octave_sparse& b, int r, int c)
 {
-   DEBUGMSG("sparse - insert");
+  DEBUGMSG("sparse - insert");
   fprintf(stderr,"doing sp_cat with r=%d c=%d\n", r, c);
   error("can't do this");
   return *this;
@@ -1239,6 +1267,27 @@ SuperMatrix oct_matrix_to_sparse(const Matrix & A) {
    return X;
 }
 
+#ifdef HAVE_OCTAVE_CONCAT
+#define DEFCATOP_SPARSE_FN(name, t1, t2, f) \
+  CATOPDECL (name, a1, a2)	     \
+  { \
+    DEBUGMSG("CATOP ## name ## t1 ## t2 ## f"); \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    return new octave_sparse (f (v1.t1 ## _value (), v2.t2 ## _value (), ra_idx)); \
+  }
+
+#define INSTALL_SPARSE_CATOP(t1, t2, f) INSTALL_CATOP(t1, t2, f) 
+#else
+#define DEFCATOP_SPARSE_FN(name, t1, t2, f) 
+#define INSTALL_SPARSE_CATOP(t1, t2, f)
+#endif
+
+DEFCATOP_SPARSE_FN (sm_sm, sparse, sparse, concat)
+// DEFCATOP_SPARSE_FN (sm_csm, sparse, complex_sparse, concat)
+// DEFCATOP_SPARSE_FN (csm_sm, complex_sparse, sparse, concat)
+// DEFCATOP_SPARSE_FN (csm_csm, complex_sparse, complex_sparse, concat)
+
+
 void install_sparse_ops() {
    //
    // unitary operations
@@ -1278,6 +1327,12 @@ void install_sparse_ops() {
    INSTALL_BINOP (op_mul,      octave_sparse, octave_matrix, s_f_mul);
    INSTALL_BINOP (op_mul,      octave_matrix, octave_sparse, f_s_mul);
    INSTALL_BINOP (op_mul,      octave_sparse, octave_sparse, s_s_mul);
+
+   fprintf(stderr,"install sm_sm\n");
+   INSTALL_SPARSE_CATOP (octave_sparse, octave_sparse, sm_sm);
+//    INSTALL_SPARSE_CATOP (octave_sparse, octave_complex_sparse, sm_csm);
+//    INSTALL_SPARSE_CATOP (octave_complex_sparse, octave_sparse, csm_sm);
+//    INSTALL_SPARSE_CATOP (octave_complex_sparse, octave_complex_sparse, csm_csm);
 }
 
 // functions for splu and inverse
@@ -1455,6 +1510,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.23  2004/08/02 18:46:57  aadler
+ * some code for concat operators
+ *
  * Revision 1.22  2004/08/02 16:35:41  aadler
  * saving to the octave -binary format
  *

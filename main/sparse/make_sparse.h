@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.27  2004/08/02 18:46:57  aadler
+some code for concat operators
+
 Revision 1.26  2004/08/02 15:46:33  aadler
 tests for sparse saving
 
@@ -389,6 +392,9 @@ public:
    octave_value_list find( void ) const;
 
 #ifdef HAVE_OCTAVE_CONCAT
+   octave_value 
+   octave_sparse::resize (const dim_vector& dv) const;
+   
    friend octave_sparse concat (const octave_sparse& ra,
                                 const octave_sparse& rb, 
                                 const Array<int>& ra_idx);

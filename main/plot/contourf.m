@@ -6,7 +6,11 @@
 ## E.g.,
 ##     [x,y] = meshgrid(linspace(-2,2,200));
 ##     z = sinc(sqrt(x.^2 + y.^2)) + 0.5*randn(size(x));
-##     filled_contour(z);
+##     contourf(z);
+##
+## Note that the algorithm computes incorrect contours near the
+## edges, which you can see using contourf(sinc(sqrt(x.^2+y.^2)))
+## with x,y from above.
 
 ## This program is in the public domain
 
@@ -17,9 +21,6 @@ function contourf(z,n,w)
     usage("contourf(z [, n [, w]])");
   endif
 
-  ## generate the gradient image from the original
-  M = imagesc(z);
-
   ## convolute the original with a gaussian if desired
   if w > 0
     [x,y] = meshgrid(2.5*linspace(-1,1,w));
@@ -29,13 +30,13 @@ function contourf(z,n,w)
 
   ## find the contours
   C = colormap;
-  colormap(rand(n+1,3));
+  colormap(repmat(linspace(0.5,1,n+1)',1,3));
   z = filter2(ones(2)/4,imagesc(z));
-  M(z!=fix(z)) = 0;
+  z(z!=fix(z)) = 0;
 
-  ## draw the gradient image with contours
-  colormap([0,0,0; C]);
-  image(flipud(M)+1);
+  ## plot the image, with the contours drawn in black.
+  colormap([0,0,0; C(linspace(1,rows(C),n+1),:)]);
+  image(flipud(z)+1);
 
   ## restore the colormap
   colormap(C);

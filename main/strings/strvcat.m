@@ -29,18 +29,19 @@
 ##           str2mat to strvcat.  Same function except that strvcat
 ##           ignores empty strings.
 
-function retval = strvcat (...)
+function retval = strvcat (varargin)
 
   if (nargin == 0)
     usage ("strvcat (s1, ...)");
   endif
 
-  va_start ();
+  va_arg_cnt = 1;
+
 
   nr = zeros (nargin, 1);
   nc = zeros (nargin, 1);
   for k = 1 : nargin
-    s = va_arg ();
+    s = nth (varargin, va_arg_cnt++);
     [nr(k), nc(k)] = size (s);
   endfor
 
@@ -49,11 +50,12 @@ function retval = strvcat (...)
 
   retval = setstr (ones (retval_nr, retval_nc) * toascii (" "));
 
-  va_start ();
+  va_arg_cnt = 1;
+
 
   row_offset = 0;
   for k = 1 : nargin
-    s = va_arg ();
+    s = nth (varargin, va_arg_cnt++);
     if (! isstr (s))
       s = setstr (s);
     endif

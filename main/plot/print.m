@@ -100,7 +100,7 @@
 ##     * add font size support to fig option
 ##     * update documentation
 
-function print(...)
+function print(varargin)
 
   ## take care of the settings we had before
   origterm = gget("terminal");
@@ -115,9 +115,10 @@ function print(...)
   force_solid = 0; # 0=default, -1=dashed, +1=solid
   fontsize = font = name = devopt = printer = "";
   
-  va_start();
+  va_arg_cnt = 1;
+
   for i=1:nargin
-    arg = va_arg();
+    arg = nth (varargin, va_arg_cnt++);
     if isstr(arg)
       if strcmp(arg, "-color")
 	use_color = 1;

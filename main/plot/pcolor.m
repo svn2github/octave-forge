@@ -23,8 +23,8 @@
 ##
 ## If x,y are not given, assume they would define a uniform grid.
 ## This is all that is presently implemented.
-function pcolor(...)
+function pcolor(varargin)
   if nargin > 1
     warning("pcolor: x,y ignored.");
   endif
-  imagesc(all_va_args);
+  imagesc(varargin{:});

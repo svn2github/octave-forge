@@ -37,7 +37,7 @@
 ## Author: Paul Kienzle
 ##         (modified from __plt__.m)
 
-function plot3(...)
+function plot3(varargin)
 
   hold_state = ishold ();
   
@@ -49,9 +49,10 @@ function plot3(...)
     
     ## Gather arguments, decode format, and plot lines.
     
+    va_arg_cnt = 1;
     while (nargin-- > 0)
       
-      new = va_arg ();
+      new = nth (varargin, va_arg_cnt++);
       
       if (isstr (new))
 	if (! z_set)

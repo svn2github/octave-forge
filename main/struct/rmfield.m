@@ -32,16 +32,17 @@
 ## November 2000: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##     return error rather than trapping to keyboard
 
-function t = rmfield(s,...)
+function t = rmfield(s,varargin)
 if ! is_struct(s) ,			
   t = s ;
   return
 end
-va_start() ; 
+va_arg_cnt = 1 ; 
+
 rmf = ' ' ;
 nargin-- ;
 while nargin-- ,
-  tmp = va_arg() ;
+  tmp = nth (varargin, va_arg_cnt++) ;
   if ! isstr(tmp) ,
     error('rmfield: called with non-string key');
   else

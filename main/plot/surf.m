@@ -15,5 +15,5 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## Draw a surface plot.  Presently only draws mesh surfaces.
-function surf(...)
-   mesh(all_va_args);
+function surf(varargin)
+   mesh(varargin{:});

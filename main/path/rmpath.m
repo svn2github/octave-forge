@@ -24,10 +24,11 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: January 2000
 
-function rmpath(...)
+function rmpath(varargin)
 
+  va_arg_cnt = 1;
   while nargin--,
-    p = va_arg() ;
+    p = nth (varargin, va_arg_cnt++) ;
     lp = length(p) 
     printf("removing %s\n",p);
 				# Nothing like perl for strings!

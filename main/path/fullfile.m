@@ -14,23 +14,30 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##  barely tested *and* undocumented
+## s = fullfile(dir1, dir2, ..., filename)
 ##
-## s = fullfile(...)
+## Joins all the arguments with "/"s,  suppresses multiple "/"s and
+## substrings like "/./".
+##
+## Example : 
+## > fullfile ("main/","/plot/./","plot.m")
+## ans = main/plot/plot.m
+
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: January 2000
 
-function s = fullfile(...)
+function s = fullfile(varargin)
   filesep = "/" ;		# Change this for non-unix
+  va_arg_cnt = 1;
   if nargin--, 
-    s = va_arg(); 
+    s = nth (varargin, va_arg_cnt++); 
   else 
     s=""; 
     return
   end
   while nargin--,
-    s=[s,filesep,va_arg()];
+    s=[s,filesep,nth (varargin, va_arg_cnt++)];
   end 
   t='';
   while !strcmp(t,s), 

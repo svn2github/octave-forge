@@ -8,7 +8,7 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: October 2000
 
-function s = tar(...)
+function s = tar(varargin)
 
 ## keyboard
 ## form and eval a string like
@@ -16,4 +16,4 @@ function s = tar(...)
 
 eval(setstr(nze([ones(nargin,1)*toascii("s."),\
 		 toascii(argn),\
-		 ones(nargin,1)*toascii("=va_arg();")]')')) ;
+		 ones(nargin,1)*toascii("=nth (varargin, va_arg_cnt++);")]')')) ;

@@ -38,17 +38,18 @@
 ## 2002-09-18 Paul Kienzle
 ##   * make the pause check every .1 seconds
 
-function legend (...)
+function legend (varargin)
 
   gset key;
   
   ## Data type
 
   data_type = 0;
-  va_start();
+  va_arg_cnt = 1;
+
   str = "";
   if (nargin > 0)
-    str = va_arg();
+    str = nth (varargin, va_arg_cnt++);
   endif;
       
   ## Test for off
@@ -63,8 +64,9 @@ function legend (...)
   
   if (length(str) != 0) && (isstr(str(1,:))) && (rows(str) != 1)
     data_type = 1;
-    va_start();
-    data = va_arg();
+    va_arg_cnt = 1;
+
+    data = nth (varargin, va_arg_cnt++);
     nb_data = rows(data);
     nargin--;
   endif;
@@ -134,7 +136,8 @@ function legend (...)
   
   new_plot = [];
   if (data_type == 0)
-    va_start();
+    va_arg_cnt = 1;
+
   endif;
   fig = 0;
   i = 1;
@@ -147,7 +150,7 @@ function legend (...)
       leg = "\"\"";
     else
       if (data_type == 0)
-        leg = va_arg () ;
+        leg = nth (varargin, va_arg_cnt++) ;
         nargin--;
       else
         leg = data(fig+1,:);
@@ -192,7 +195,7 @@ function legend (...)
   ## Check for the last argument if we don't already get it
   
   while (nargin-- > 0)
-    pos_leg = va_arg () ;
+    pos_leg = nth (varargin, va_arg_cnt++) ;
     if (isstr(pos_leg))
       pos_leg = 0;
     endif;

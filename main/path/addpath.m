@@ -32,11 +32,12 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: January 2000
 
-function addpath(...)
+function addpath(varargin)
 
   app = 0 ;			# Append? Default is 'no'.
+  va_arg_cnt = 1;
   while nargin--,
-    p = va_arg() ;
+    p = nth (varargin, va_arg_cnt++) ;
     if strcmp(p,"-end") | strcmp(p,"-END") ,
       app = 1 ;
     elseif strcmp(p,"-begin") | strcmp(p,"-BEGIN") ,

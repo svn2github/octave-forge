@@ -48,7 +48,7 @@
 ## TODO:   to clear all the labels for the next graph.
 ## TODO: several properties missing
 ## TODO: permit text(blah,'units','screen') before subplot as well as after
-function text(...)
+function text(varargin)
   usage_str = "text(x,y[,z],'text', 'property',value...)";
   if nargin == 0, gset nolabel; return; endif
 
@@ -60,23 +60,24 @@ function text(...)
   units="first";
 
   ## Process text(x,y[,z],'text') forms
-  va_start(); n=1;
-  arg = va_arg(); n=n+1;
+  va_arg_cnt = 1; n=1;
+
+  arg = nth (varargin, va_arg_cnt++); n=n+1;
   if is_scalar(arg),
     position(1) = arg;
     if nargin < 2, usage(usage_str); endif
-    arg = va_arg(); n=n+1;
+    arg = nth (varargin, va_arg_cnt++); n=n+1;
     if !is_scalar(arg), usage(usage_str); endif
     position(2) = arg;
 
     if nargin < 3, usage(usage_str); endif
-    arg = va_arg(); n=n+1;
+    arg = nth (varargin, va_arg_cnt++); n=n+1;
     if isstr(arg)
       text=arg;
     else
       position(3) = arg;
       if nargin < 4, usage(usage_str); endif
-      text=va_arg(); n=n+1; 
+      text=nth (varargin, va_arg_cnt++); n=n+1; 
     endif
     if !isstr(text), usage(usage_str); endif
   endif
@@ -84,7 +85,7 @@ function text(...)
   ## Process text('property',value) forms
   if rem(nargin-n+1, 2) != 0, error(usage_str); endif
   for i=n:2:nargin
-    prop=va_arg(); val=va_arg();
+    prop=nth (varargin, va_arg_cnt++); val=nth (varargin, va_arg_cnt++);
     if !isstr(prop), error(usage_str); endif
     prop = tolower(prop);
     if strcmp(prop, "fontname"),

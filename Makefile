@@ -16,7 +16,7 @@ all: $(SUBMAKEDIRS)
 	@echo "Build complete."
 	@echo "Please read FIXES/README before you install."
 
-install: $(SUBMAKE)
+install: $(SUBMAKEDIRS)
 	@chmod a+x $(INSTALLOCT)
 	@echo " "
 	@echo "Installation complete."

@@ -1,3 +1,53 @@
+CVS as of 2002-09-19
+
+New functions
+
+	* image/colfilt: image block filtering function
+	* miscellaneous/inline: generate a function from an expression
+	* plot/contour.f: filled contours
+	* sparse/sprand: random sparse matrix
+	* splines/pchip: Piecewise Cubic Hermitian Interpolating Polynomial
+	* symbolic/{cheb,chebwin}: Dolph-Chebyshev windows
+
+Extended interfaces
+
+	* audio/au{load,save}: support floating point .wav formats
+	* image/colorgradient: allow instantaneous transitions (weight 0)
+	* optim/wpolyfit: option to fit through origin
+	* signal/{ellip,ellipord}: compatible interfac
+	* sparse/spy: accept dense matrices
+	* strings/mat2string: accept [] and complex
+	* symbolic/*: relational operators
+	* time/datestr: more format codes; handle vectors of dates
+
+Changed interfaces
+
+	* image/bwlabel: C++ version---may be different from m-file interface
+	* extra/ode: moved from v1.06 to v1.14
+	* optim/*: unified interface supporting options
+	* optim/wpolyfit: don't return yf
+	* optim/wpolyfit: return row vectors for compatibility with polyfit
+	* signal/nellip: replaced by ellip, ellipord
+
+Internal changes
+
+	* extra/symband: eigenvector bug removed
+	* io/dlmread: returned matrix was transposed
+	* general/rat: use 1/0 for infinity
+	* plot/ginput: m-file version based on grab.cc
+	* plot/legend: give gnuplot time to respond to parameter request
+	* signal/buttord: parser error
+	* sparse/spy: prettier graph
+	* symbolic/*: incorporate octave_sym functionality in octave_ex class
+	* *: don't use cout/cerr from *.cc functions
+
+Administration
+
+	* Octave for Windows FAQ updates
+	* INSTALL.WINDOWS installation notes
+	* support for static build under Windows
+
+2002-05-09 ============================================================
 
 This is a bug fix release.  Many thanks to the good folks at Debian for
 finding the portability problems.

@@ -338,6 +338,7 @@ cp -r $OCTAVEFORGE/extra/tsa/*.m  $OCTAVEM/tsa
 cp -r $OCTAVEFORGE/extra/symband/*.m  $OCTAVEM/symband
 cp -r $OCTAVEFORGE/main/comm/*.m  $OCTAVEM/comm
 cp -r $OCTAVEFORGE/main/control/*.m  $OCTAVEM/control
+cp -r $OCTAVEFORGE/main/general/*.m  $OCTAVEM/general
 cp -r $OCTAVEFORGE/main/ident/*.m  $OCTAVEM/ident
 cp -r $OCTAVEFORGE/main/image/*.m  $OCTAVEM/image
 cp -r $OCTAVEFORGE/main/io/*.m  $OCTAVEM/io
@@ -490,3 +491,34 @@ main/symbolic
 main/symbolic/doc
 - looks like quite a bit of work - later ...
 
+NOTES:
+
+How to link windows resources to octave
+information from www.cygwin.com/cygwin-ug-net/programming.html
+
+   1. BUILD A SIMPLE RESOURCE FILE
+
+   octave.rc 
+   ----
+    IDR_MAINFRAME ICON    DISCARDABLE     "octave.ico"
+
+    VS_VERSION_INFO VERSIONINFO
+      FILEVERSION   2,1,42,1
+
+    BEGIN
+      BLOCK "StringFileInfo"
+      BEGIN
+        BLOCK "040904b0"
+        BEGIN
+          VALUE "FileDescription","Octave Version 2.1.42\0"
+        END
+      END
+    END
+   ----
+
+   2. COMPILE
+
+   windres octave.rc -O coff -o octave.res
+   
+   Now, add octave.res to link
+   gcc octave.c octave.res -o octave.exe

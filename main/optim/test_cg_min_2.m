@@ -73,9 +73,9 @@ endfunction
 
 
 if verbose
-  printf ("test_cg_min_2 : try solving a quadratic problem\n");
-  printf ( "  Going to test : %s\n",optim_func);
+  printf ("\n   Testing %s on a quadratic problem\n\n", optim_func);
   printf ("  Nparams = P = %i,  Nobses = R = %i\n",P,R);
+  fflush (stdout);
 end
 
 

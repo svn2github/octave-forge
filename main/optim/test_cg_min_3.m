@@ -62,9 +62,10 @@ endfunction
 
 
 if verbose
-  printf ("test_cg_min_3 : Check that extra arguments are accepted\n");
-  printf ("  Tested function : %s\n",optim_func);
-  printf ("  Nparams = P = %i,  Nobses = R = %i\n",P,R);
+  printf ("   Checking that extra arguments are accepted\n\n");
+  printf ("   Tested function : %s\n",optim_func);
+  printf ("   Nparams = P = %i,  Nobses = R = %i\n",P,R);
+  fflush (stdout);
 end
 
 

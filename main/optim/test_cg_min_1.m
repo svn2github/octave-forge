@@ -21,8 +21,10 @@ ok = 1;
 if ! exist ("verbose"), verbose = 0; end
 
 if verbose
-    printf ( "gonna test : %s\n",optim_func);
+  printf ("\n   Testing '%s' on a quadratic programming problem\n\n",\
+	  optim_func);
 end
+
 
 
 N = 1+floor(30*rand(1)) ;
@@ -58,13 +60,13 @@ end
 xinit = 10*randn(N,1) ;
 
 if verbose,
-  printf("test_cg_min : test cg_min with a quadratic function\n");
   printf (["   Dimension is %i\n",\
-	   "   Condition in %f\n"],\
+	   "   Condition is %f\n"],\
 	  N, cond (metric));
+  fflush (stdout);
 end
 
-[x,v,niter] = feval (optim_func, "testfunc","dtestf", xinit) ;
+[x,v,niter] = feval (optim_func, "testfunc","dtestf", xinit);
 
 if verbose 
   printf ("nev=%d  N=%d  errx=%8.3g   errv=%8.3g\n",\

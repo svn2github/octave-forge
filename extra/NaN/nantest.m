@@ -26,6 +26,14 @@
 FLAG_WARNING = warning;
 warning('off');
 
+try,
+	x = randn([3,4,5]); 
+	x(~isnan(x)) = 0;
+	[s,n] = sumskipnan(randn([3,4,5]),3);
+catch,
+	fprintf(1,'WARNING: NANTEST fails for 3-DIM matrices. \n');
+end;
+
 % check NORMPDF, NORMCDF, NORMINV
 x = [-inf,-2,-1,-.5,0,.5,1,2,3,inf,nan]';
 if exist('normpdf')==2,
@@ -97,7 +105,7 @@ if exist('nanstd')==2,
 end;
 %%%%% GEOMEAN - this test addresses a problem in Octave
 if exist('geomean')==2,
-        if isnan(geomean(0:3)),
+        if isnan(geomean([0:3]')),
                 fprintf(1,'GEOMEAN should be replaced\n');
                 % fprintf(1,'Warning: GEOMEAN([0,1,2,3]) NaN instead of 0\n');
         end;

@@ -24,6 +24,8 @@ Manipulate sparse matrices
 Linear algebra
  spinv splu
  svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
+ pcg
+ pcr
 Statistics
  spsum
  spstats

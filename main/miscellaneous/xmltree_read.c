@@ -5,8 +5,8 @@
  */
 
 #define FLEX_SCANNER
-#define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
+#define XML__FLEX_MAJOR_VERSION 2
+#define XML__FLEX_MINOR_VERSION 5
 
 #include <stdio.h>
 #include <errno.h>
@@ -27,17 +27,17 @@
 #endif
 
 /* Use prototypes in function declarations. */
-#define YY_USE_PROTOS
+#define XML__USE_PROTOS
 
 /* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
+#define XML__USE_CONST
 
 #else	/* ! __cplusplus */
 
 #if __STDC__
 
-#define YY_USE_PROTOS
-#define YY_USE_CONST
+#define XML__USE_PROTOS
+#define XML__USE_CONST
 
 #endif	/* __STDC__ */
 #endif	/* ! __cplusplus */
@@ -47,62 +47,62 @@
  #pragma warn -use
 #include <io.h>
 #include <stdlib.h>
-#define YY_USE_CONST
-#define YY_USE_PROTOS
+#define XML__USE_CONST
+#define XML__USE_PROTOS
 #endif
 
-#ifdef YY_USE_CONST
-#define yyconst const
+#ifdef XML__USE_CONST
+#define xml_const const
 #else
-#define yyconst
+#define xml_const
 #endif
 
 
-#ifdef YY_USE_PROTOS
-#define YY_PROTO(proto) proto
+#ifdef XML__USE_PROTOS
+#define XML__PROTO(proto) proto
 #else
-#define YY_PROTO(proto) ()
+#define XML__PROTO(proto) ()
 #endif
 
 
 /* Returned upon end-of-file. */
-#define YY_NULL 0
+#define XML__NULL 0
 
 /* Promotes a possibly negative, possibly signed char to an unsigned
  * integer for use as an array index.  If the signed char is negative,
  * we want to instead treat it as an 8-bit unsigned char, hence the
  * double cast.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define XML__SC_TO_UI(c) ((unsigned int) (unsigned char) c)
 
 /* Enter a start condition.  This macro really ought to take a parameter,
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
-#define BEGIN yy_start = 1 + 2 *
+#define BEGIN xml__start = 1 + 2 *
 
 /* Translate the current start state into a value that can be later handed
- * to BEGIN to return to the state.  The YYSTATE alias is for lex
+ * to BEGIN to return to the state.  The XML_STATE alias is for lex
  * compatibility.
  */
-#define YY_START ((yy_start - 1) / 2)
-#define YYSTATE YY_START
+#define XML__START ((xml__start - 1) / 2)
+#define XML_STATE XML__START
 
 /* Action number for EOF rule of a given start state. */
-#define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
+#define XML__STATE_EOF(state) (XML__END_OF_BUFFER + state + 1)
 
 /* Special action meaning "start processing a new file". */
-#define YY_NEW_FILE yyrestart( yyin )
+#define XML__NEW_FILE xml_restart( xml_in )
 
-#define YY_END_OF_BUFFER_CHAR 0
+#define XML__END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
-#define YY_BUF_SIZE 16384
+#define XML__BUF_SIZE 16384
 
-typedef struct yy_buffer_state *YY_BUFFER_STATE;
+typedef struct xml__buffer_state *XML__BUFFER_STATE;
 
-extern int yyleng;
-extern FILE *yyin, *yyout;
+extern int xml_leng;
+extern FILE *xml_in, *xml_out;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
@@ -113,184 +113,184 @@ extern FILE *yyin, *yyout;
  * avoids problems with code like:
  *
  * 	if ( condition_holds )
- *		yyless( 5 );
+ *		xml_less( 5 );
  *	else
  *		do_something_else();
  *
  * Prior to using the do-while the compiler would get upset at the
  * "else" because it interpreted the "if" statement as being all
- * done when it reached the ';' after the yyless() call.
+ * done when it reached the ';' after the xml_less() call.
  */
 
 /* Return all but the first 'n' matched characters back to the input stream. */
 
-#define yyless(n) \
+#define xml_less(n) \
 	do \
 		{ \
-		/* Undo effects of setting up yytext. */ \
-		*yy_cp = yy_hold_char; \
-		YY_RESTORE_YY_MORE_OFFSET \
-		yy_c_buf_p = yy_cp = yy_bp + n - YY_MORE_ADJ; \
-		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
+		/* Undo effects of setting up xml_text. */ \
+		*xml__cp = xml__hold_char; \
+		XML__RESTORE_XML__MORE_OFFSET \
+		xml__c_buf_p = xml__cp = xml__bp + n - XML__MORE_ADJ; \
+		XML__DO_BEFORE_ACTION; /* set up xml_text again */ \
 		} \
 	while ( 0 )
 
-#define unput(c) yyunput( c, yytext_ptr )
+#define unput(c) xml_unput( c, xml_text_ptr )
 
 /* The following is because we cannot portably get our hands on size_t
  * (without autoconf's help, which isn't available because we want
  * flex-generated scanners to compile on their own).
  */
-typedef unsigned int yy_size_t;
+typedef unsigned int xml__size_t;
 
 
-struct yy_buffer_state
+struct xml__buffer_state
 	{
-	FILE *yy_input_file;
+	FILE *xml__input_file;
 
-	char *yy_ch_buf;		/* input buffer */
-	char *yy_buf_pos;		/* current position in input buffer */
+	char *xml__ch_buf;		/* input buffer */
+	char *xml__buf_pos;		/* current position in input buffer */
 
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	xml__size_t xml__buf_size;
 
-	/* Number of characters read into yy_ch_buf, not including EOB
+	/* Number of characters read into xml__ch_buf, not including EOB
 	 * characters.
 	 */
-	int yy_n_chars;
+	int xml__n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
 	 * delete it.
 	 */
-	int yy_is_our_buffer;
+	int xml__is_our_buffer;
 
 	/* Whether this is an "interactive" input source; if so, and
 	 * if we're using stdio for input, then we want to use getc()
 	 * instead of fread(), to make sure we stop fetching input after
 	 * each newline.
 	 */
-	int yy_is_interactive;
+	int xml__is_interactive;
 
 	/* Whether we're considered to be at the beginning of a line.
 	 * If so, '^' rules will be active on the next match, otherwise
 	 * not.
 	 */
-	int yy_at_bol;
+	int xml__at_bol;
 
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
-	int yy_fill_buffer;
+	int xml__fill_buffer;
 
-	int yy_buffer_status;
-#define YY_BUFFER_NEW 0
-#define YY_BUFFER_NORMAL 1
+	int xml__buffer_status;
+#define XML__BUFFER_NEW 0
+#define XML__BUFFER_NORMAL 1
 	/* When an EOF's been seen but there's still some text to process
-	 * then we mark the buffer as YY_EOF_PENDING, to indicate that we
+	 * then we mark the buffer as XML__EOF_PENDING, to indicate that we
 	 * shouldn't try reading from the input source any more.  We might
 	 * still have a bunch of tokens to match, though, because of
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via yyrestart()), so that the user can continue scanning by
-	 * just pointing yyin at a new input file.
+	 * (via xml_restart()), so that the user can continue scanning by
+	 * just pointing xml_in at a new input file.
 	 */
-#define YY_BUFFER_EOF_PENDING 2
+#define XML__BUFFER_EOF_PENDING 2
 	};
 
-static YY_BUFFER_STATE yy_current_buffer = 0;
+static XML__BUFFER_STATE xml__current_buffer = 0;
 
 /* We provide macros for accessing buffer states in case in the
  * future we want to put the buffer states in a more general
  * "scanner state".
  */
-#define YY_CURRENT_BUFFER yy_current_buffer
+#define XML__CURRENT_BUFFER xml__current_buffer
 
 
-/* yy_hold_char holds the character lost when yytext is formed. */
-static char yy_hold_char;
+/* xml__hold_char holds the character lost when xml_text is formed. */
+static char xml__hold_char;
 
-static int yy_n_chars;		/* number of characters read into yy_ch_buf */
+static int xml__n_chars;		/* number of characters read into xml__ch_buf */
 
 
-int yyleng;
+int xml_leng;
 
 /* Points to current character in buffer. */
-static char *yy_c_buf_p = (char *) 0;
-static int yy_init = 1;		/* whether we need to initialize */
-static int yy_start = 0;	/* start state number */
+static char *xml__c_buf_p = (char *) 0;
+static int xml__init = 1;		/* whether we need to initialize */
+static int xml__start = 0;	/* start state number */
 
-/* Flag which is used to allow yywrap()'s to do buffer switches
- * instead of setting up a fresh yyin.  A bit of a hack ...
+/* Flag which is used to allow xml_wrap()'s to do buffer switches
+ * instead of setting up a fresh xml_in.  A bit of a hack ...
  */
-static int yy_did_buffer_switch_on_eof;
+static int xml__did_buffer_switch_on_eof;
 
-void yyrestart YY_PROTO(( FILE *input_file ));
+void xml_restart XML__PROTO(( FILE *input_file ));
 
-void yy_switch_to_buffer YY_PROTO(( YY_BUFFER_STATE new_buffer ));
-void yy_load_buffer_state YY_PROTO(( void ));
-YY_BUFFER_STATE yy_create_buffer YY_PROTO(( FILE *file, int size ));
-void yy_delete_buffer YY_PROTO(( YY_BUFFER_STATE b ));
-void yy_init_buffer YY_PROTO(( YY_BUFFER_STATE b, FILE *file ));
-void yy_flush_buffer YY_PROTO(( YY_BUFFER_STATE b ));
-#define YY_FLUSH_BUFFER yy_flush_buffer( yy_current_buffer )
+void xml__switch_to_buffer XML__PROTO(( XML__BUFFER_STATE new_buffer ));
+void xml__load_buffer_state XML__PROTO(( void ));
+XML__BUFFER_STATE xml__create_buffer XML__PROTO(( FILE *file, int size ));
+void xml__delete_buffer XML__PROTO(( XML__BUFFER_STATE b ));
+void xml__init_buffer XML__PROTO(( XML__BUFFER_STATE b, FILE *file ));
+void xml__flush_buffer XML__PROTO(( XML__BUFFER_STATE b ));
+#define XML__FLUSH_BUFFER xml__flush_buffer( xml__current_buffer )
 
-YY_BUFFER_STATE yy_scan_buffer YY_PROTO(( char *base, yy_size_t size ));
-YY_BUFFER_STATE yy_scan_string YY_PROTO(( yyconst char *yy_str ));
-YY_BUFFER_STATE yy_scan_bytes YY_PROTO(( yyconst char *bytes, int len ));
+XML__BUFFER_STATE xml__scan_buffer XML__PROTO(( char *base, xml__size_t size ));
+XML__BUFFER_STATE xml__scan_string XML__PROTO(( xml_const char *xml__str ));
+XML__BUFFER_STATE xml__scan_bytes XML__PROTO(( xml_const char *bytes, int len ));
 
-static void *yy_flex_alloc YY_PROTO(( yy_size_t ));
-static void *yy_flex_realloc YY_PROTO(( void *, yy_size_t ));
-static void yy_flex_free YY_PROTO(( void * ));
+static void *xml__flex_alloc XML__PROTO(( xml__size_t ));
+static void *xml__flex_realloc XML__PROTO(( void *, xml__size_t ));
+static void xml__flex_free XML__PROTO(( void * ));
 
-#define yy_new_buffer yy_create_buffer
+#define xml__new_buffer xml__create_buffer
 
-#define yy_set_interactive(is_interactive) \
+#define xml__set_interactive(is_interactive) \
 	{ \
-	if ( ! yy_current_buffer ) \
-		yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE ); \
-	yy_current_buffer->yy_is_interactive = is_interactive; \
+	if ( ! xml__current_buffer ) \
+		xml__current_buffer = xml__create_buffer( xml_in, XML__BUF_SIZE ); \
+	xml__current_buffer->xml__is_interactive = is_interactive; \
 	}
 
-#define yy_set_bol(at_bol) \
+#define xml__set_bol(at_bol) \
 	{ \
-	if ( ! yy_current_buffer ) \
-		yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE ); \
-	yy_current_buffer->yy_at_bol = at_bol; \
+	if ( ! xml__current_buffer ) \
+		xml__current_buffer = xml__create_buffer( xml_in, XML__BUF_SIZE ); \
+	xml__current_buffer->xml__at_bol = at_bol; \
 	}
 
-#define YY_AT_BOL() (yy_current_buffer->yy_at_bol)
+#define XML__AT_BOL() (xml__current_buffer->xml__at_bol)
 
 
-#define yywrap() 1
-#define YY_SKIP_YYWRAP
-typedef unsigned char YY_CHAR;
-FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
-typedef int yy_state_type;
-extern char *yytext;
-#define yytext_ptr yytext
+#define xml_wrap() 1
+#define XML__SKIP_XML_WRAP
+typedef unsigned char XML__CHAR;
+FILE *xml_in = (FILE *) 0, *xml_out = (FILE *) 0;
+typedef int xml__state_type;
+extern char *xml_text;
+#define xml_text_ptr xml_text
 
-static yy_state_type yy_get_previous_state YY_PROTO(( void ));
-static yy_state_type yy_try_NUL_trans YY_PROTO(( yy_state_type current_state ));
-static int yy_get_next_buffer YY_PROTO(( void ));
-static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
+static xml__state_type xml__get_previous_state XML__PROTO(( void ));
+static xml__state_type xml__try_NUL_trans XML__PROTO(( xml__state_type current_state ));
+static int xml__get_next_buffer XML__PROTO(( void ));
+static void xml__fatal_error XML__PROTO(( xml_const char msg[] ));
 
 /* Done after the current pattern has been matched and before the
- * corresponding action - sets up yytext.
+ * corresponding action - sets up xml_text.
  */
-#define YY_DO_BEFORE_ACTION \
-	yytext_ptr = yy_bp; \
-	yyleng = (int) (yy_cp - yy_bp); \
-	yy_hold_char = *yy_cp; \
-	*yy_cp = '\0'; \
-	yy_c_buf_p = yy_cp;
+#define XML__DO_BEFORE_ACTION \
+	xml_text_ptr = xml__bp; \
+	xml_leng = (int) (xml__cp - xml__bp); \
+	xml__hold_char = *xml__cp; \
+	*xml__cp = '\0'; \
+	xml__c_buf_p = xml__cp;
 
-#define YY_NUM_RULES 157
-#define YY_END_OF_BUFFER 158
-static yyconst short int yy_accept[1064] =
+#define XML__NUM_RULES 157
+#define XML__END_OF_BUFFER 158
+static xml_const short int xml__accept[1064] =
     {   0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -411,7 +411,7 @@ static yyconst short int yy_accept[1064] =
         0,   19,    0
     } ;
 
-static yyconst int yy_ec[256] =
+static xml_const int xml__ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    2,    4,    1,    1,    1,    1,    1,    1,    1,
@@ -443,7 +443,7 @@ static yyconst int yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst int yy_meta[55] =
+static xml_const int xml__meta[55] =
     {   0,
         1,    2,    2,    2,    1,    1,    1,    1,    1,    3,
         3,    1,    4,    5,    1,    1,    1,    6,    1,    7,
@@ -453,7 +453,7 @@ static yyconst int yy_meta[55] =
         5,    5,    5,    5
     } ;
 
-static yyconst short int yy_base[1112] =
+static xml_const short int xml__base[1112] =
     {   0,
         0,    0,    0,    3,    6,    9,   24,   27,   11,   14,
        15,   17,   29,   38,   45,   52,   59,   61,   67,   70,
@@ -580,7 +580,7 @@ static yyconst short int yy_base[1112] =
      2958
     } ;
 
-static yyconst short int yy_def[1112] =
+static xml_const short int xml__def[1112] =
     {   0,
      1064, 1064, 1065, 1065, 1065, 1065, 1066, 1066, 1067, 1067,
      1068, 1068, 1069, 1069, 1069, 1069, 1070, 1070, 1071, 1071,
@@ -707,7 +707,7 @@ static yyconst short int yy_def[1112] =
      1063
     } ;
 
-static yyconst short int yy_nxt[3144] =
+static xml_const short int xml__nxt[3144] =
     {   0,
      1063,   98,   99,   98,   98,   99,   98,   98,   99,   98,
        98,   99,   98,  106,  775,  100,  106,  109,  100,  109,
@@ -1057,7 +1057,7 @@ static yyconst short int yy_nxt[3144] =
      1063, 1063, 1063
     } ;
 
-static yyconst short int yy_chk[3144] =
+static xml_const short int xml__chk[3144] =
     {   0,
         0,    3,    3,    3,    4,    4,    4,    5,    5,    5,
         6,    6,    6,    9,  763,    3,   10,   11,    4,   12,
@@ -1407,17 +1407,17 @@ static yyconst short int yy_chk[3144] =
      1063, 1063, 1063
     } ;
 
-static yy_state_type yy_last_accepting_state;
-static char *yy_last_accepting_cpos;
+static xml__state_type xml__last_accepting_state;
+static char *xml__last_accepting_cpos;
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
  */
 #define REJECT reject_used_but_not_detected
-#define yymore() yymore_used_but_not_detected
-#define YY_MORE_ADJ 0
-#define YY_RESTORE_YY_MORE_OFFSET
-char *yytext;
+#define xml_more() xml_more_used_but_not_detected
+#define XML__MORE_ADJ 0
+#define XML__RESTORE_XML__MORE_OFFSET
+char *xml_text;
 #line 1 "xmltree_read.l"
 #define INITIAL 0
 /* Validating XML processor for octave.dtd.
@@ -1542,8 +1542,8 @@ static AT_string_name A_string_name;
   static void debug_leave(void);
   static void debug_set(int, char*);
 #else
-# define ENTER(state)	(yy_push_state(state))
-# define LEAVE		(yy_pop_state())
+# define ENTER(state)	(xml__push_state(state))
+# define LEAVE		(xml__pop_state())
 # define SET(state)	BEGIN(state)
 #endif
 
@@ -1567,7 +1567,7 @@ char* next = bufferstack;
 #define BUFFERPUTC(C) (assert(next<limit), *(next++) = (C))
 #define BUFFERDONE    (BUFFERPUTC('\0'))
 
-#define BUFFERLITERAL(C,P) bufferliteral(C,&(P),yytext)
+#define BUFFERLITERAL(C,P) bufferliteral(C,&(P),xml_text)
 static void bufferliteral(char c, char** pp, char* text)
 {
   char *s = strchr(text,c), *e = strrchr(text,c);
@@ -1605,11 +1605,11 @@ static char* popbuffer(void)
   { char *s = (T), *e = s+strlen(s);\
     while (--e >= s) { unput(*e); }}
 /* Flex standard options. */
-#define YY_STACK_USED 1
-#define YY_NO_TOP_STATE 1
-#define YY_NO_INPUT 1
+#define XML__STACK_USED 1
+#define XML__NO_TOP_STATE 1
+#define XML__NO_INPUT 1
 /* Flex user-requested options. */
-#define YY_NO_UNPUT 1
+#define XML__NO_UNPUT 1
 /* XML character classes (currently restricted to ASCII). */
 /* "Common syntactic structures." */
 /* "Names and Tokens." */
@@ -1743,56 +1743,56 @@ void FleXML_init(void)
  * section 1.
  */
 
-#ifndef YY_SKIP_YYWRAP
+#ifndef XML__SKIP_XML_WRAP
 #ifdef __cplusplus
-extern "C" int yywrap YY_PROTO(( void ));
+extern "C" int xml_wrap XML__PROTO(( void ));
 #else
-extern int yywrap YY_PROTO(( void ));
+extern int xml_wrap XML__PROTO(( void ));
 #endif
 #endif
 
-#ifndef YY_NO_UNPUT
-static void yyunput YY_PROTO(( int c, char *buf_ptr ));
+#ifndef XML__NO_UNPUT
+static void xml_unput XML__PROTO(( int c, char *buf_ptr ));
 #endif
 
-#ifndef yytext_ptr
-static void yy_flex_strncpy YY_PROTO(( char *, yyconst char *, int ));
+#ifndef xml_text_ptr
+static void xml__flex_strncpy XML__PROTO(( char *, xml_const char *, int ));
 #endif
 
-#ifdef YY_NEED_STRLEN
-static int yy_flex_strlen YY_PROTO(( yyconst char * ));
+#ifdef XML__NEED_STRLEN
+static int xml__flex_strlen XML__PROTO(( xml_const char * ));
 #endif
 
-#ifndef YY_NO_INPUT
+#ifndef XML__NO_INPUT
 #ifdef __cplusplus
-static int yyinput YY_PROTO(( void ));
+static int xml_input XML__PROTO(( void ));
 #else
-static int input YY_PROTO(( void ));
+static int input XML__PROTO(( void ));
 #endif
 #endif
 
-#if YY_STACK_USED
-static int yy_start_stack_ptr = 0;
-static int yy_start_stack_depth = 0;
-static int *yy_start_stack = 0;
-#ifndef YY_NO_PUSH_STATE
-static void yy_push_state YY_PROTO(( int new_state ));
+#if XML__STACK_USED
+static int xml__start_stack_ptr = 0;
+static int xml__start_stack_depth = 0;
+static int *xml__start_stack = 0;
+#ifndef XML__NO_PUSH_STATE
+static void xml__push_state XML__PROTO(( int new_state ));
 #endif
-#ifndef YY_NO_POP_STATE
-static void yy_pop_state YY_PROTO(( void ));
+#ifndef XML__NO_POP_STATE
+static void xml__pop_state XML__PROTO(( void ));
 #endif
-#ifndef YY_NO_TOP_STATE
-static int yy_top_state YY_PROTO(( void ));
+#ifndef XML__NO_TOP_STATE
+static int xml__top_state XML__PROTO(( void ));
 #endif
 
 #else
-#define YY_NO_PUSH_STATE 1
-#define YY_NO_POP_STATE 1
-#define YY_NO_TOP_STATE 1
+#define XML__NO_PUSH_STATE 1
+#define XML__NO_POP_STATE 1
+#define XML__NO_TOP_STATE 1
 #endif
 
-#ifdef YY_MALLOC_DECL
-YY_MALLOC_DECL
+#ifdef XML__MALLOC_DECL
+XML__MALLOC_DECL
 #else
 #if __STDC__
 #ifndef __cplusplus
@@ -1807,8 +1807,8 @@ YY_MALLOC_DECL
 #endif
 
 /* Amount of stuff to slurp up with each read. */
-#ifndef YY_READ_BUF_SIZE
-#define YY_READ_BUF_SIZE 8192
+#ifndef XML__READ_BUF_SIZE
+#define XML__READ_BUF_SIZE 8192
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -1817,87 +1817,87 @@ YY_MALLOC_DECL
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO (void) fwrite( yytext, yyleng, 1, yyout )
+#define ECHO (void) fwrite( xml_text, xml_leng, 1, xml_out )
 #endif
 
-/* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
+/* Gets input and stuffs it into "buf".  number of characters read, or XML__NULL,
  * is returned in "result".
  */
-#ifndef YY_INPUT
-#define YY_INPUT(buf,result,max_size) \
-	if ( yy_current_buffer->yy_is_interactive ) \
+#ifndef XML__INPUT
+#define XML__INPUT(buf,result,max_size) \
+	if ( xml__current_buffer->xml__is_interactive ) \
 		{ \
 		int c = '*', n; \
 		for ( n = 0; n < max_size && \
-			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
+			     (c = getc( xml_in )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
 		if ( c == '\n' ) \
 			buf[n++] = (char) c; \
-		if ( c == EOF && ferror( yyin ) ) \
-			YY_FATAL_ERROR( "input in flex scanner failed" ); \
+		if ( c == EOF && ferror( xml_in ) ) \
+			XML__FATAL_ERROR( "input in flex scanner failed" ); \
 		result = n; \
 		} \
 	else \
 		{ \
 		errno=0; \
-		while ( (result = fread(buf, 1, max_size, yyin))==0 && ferror(yyin)) \
+		while ( (result = fread(buf, 1, max_size, xml_in))==0 && ferror(xml_in)) \
 			{ \
 			if( errno != EINTR) \
 				{ \
-				YY_FATAL_ERROR( "input in flex scanner failed" ); \
+				XML__FATAL_ERROR( "input in flex scanner failed" ); \
 				break; \
 				} \
 			errno=0; \
-			clearerr(yyin); \
+			clearerr(xml_in); \
 			} \
 		}
 #endif
 
-/* No semi-colon after return; correct usage is to write "yyterminate();" -
+/* No semi-colon after return; correct usage is to write "xml_terminate();" -
  * we don't want an extra ';' after the "return" because that will cause
  * some compilers to complain about unreachable statements.
  */
-#ifndef yyterminate
-#define yyterminate() return YY_NULL
+#ifndef xml_terminate
+#define xml_terminate() return XML__NULL
 #endif
 
 /* Number of entries by which start-condition stack grows. */
-#ifndef YY_START_STACK_INCR
-#define YY_START_STACK_INCR 25
+#ifndef XML__START_STACK_INCR
+#define XML__START_STACK_INCR 25
 #endif
 
 /* Report a fatal error. */
-#ifndef YY_FATAL_ERROR
-#define YY_FATAL_ERROR(msg) yy_fatal_error( msg )
+#ifndef XML__FATAL_ERROR
+#define XML__FATAL_ERROR(msg) xml__fatal_error( msg )
 #endif
 
 /* Default declaration of generated scanner - a define so the user can
  * easily add parameters.
  */
-#ifndef YY_DECL
-#define YY_DECL int yylex YY_PROTO(( void ))
+#ifndef XML__DECL
+#define XML__DECL int xml_lex XML__PROTO(( void ))
 #endif
 
-/* Code executed at the beginning of each rule, after yytext and yyleng
+/* Code executed at the beginning of each rule, after xml_text and xml_leng
  * have been set up.
  */
-#ifndef YY_USER_ACTION
-#define YY_USER_ACTION
+#ifndef XML__USER_ACTION
+#define XML__USER_ACTION
 #endif
 
 /* Code executed at the end of each rule. */
-#ifndef YY_BREAK
-#define YY_BREAK break;
+#ifndef XML__BREAK
+#define XML__BREAK break;
 #endif
 
-#define YY_RULE_SETUP \
-	YY_USER_ACTION
+#define XML__RULE_SETUP \
+	XML__USER_ACTION
 
-YY_DECL
+XML__DECL
 	{
-	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
-	register int yy_act;
+	register xml__state_type xml__current_state;
+	register char *xml__cp, *xml__bp;
+	register int xml__act;
 
 #line 298 "xmltree_read.l"
 
@@ -1908,365 +1908,365 @@ YY_DECL
  /* COMMENTS and PIs: handled uniformly for efficiency. */
 
 
-	if ( yy_init )
+	if ( xml__init )
 		{
-		yy_init = 0;
+		xml__init = 0;
 
-#ifdef YY_USER_INIT
-		YY_USER_INIT;
+#ifdef XML__USER_INIT
+		XML__USER_INIT;
 #endif
 
-		if ( ! yy_start )
-			yy_start = 1;	/* first start state */
+		if ( ! xml__start )
+			xml__start = 1;	/* first start state */
 
-		if ( ! yyin )
-			yyin = stdin;
+		if ( ! xml_in )
+			xml_in = stdin;
 
-		if ( ! yyout )
-			yyout = stdout;
+		if ( ! xml_out )
+			xml_out = stdout;
 
-		if ( ! yy_current_buffer )
-			yy_current_buffer =
-				yy_create_buffer( yyin, YY_BUF_SIZE );
+		if ( ! xml__current_buffer )
+			xml__current_buffer =
+				xml__create_buffer( xml_in, XML__BUF_SIZE );
 
-		yy_load_buffer_state();
+		xml__load_buffer_state();
 		}
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
-		yy_cp = yy_c_buf_p;
+		xml__cp = xml__c_buf_p;
 
-		/* Support of yytext. */
-		*yy_cp = yy_hold_char;
+		/* Support of xml_text. */
+		*xml__cp = xml__hold_char;
 
-		/* yy_bp points to the position in yy_ch_buf of the start of
+		/* xml__bp points to the position in xml__ch_buf of the start of
 		 * the current run.
 		 */
-		yy_bp = yy_cp;
+		xml__bp = xml__cp;
 
-		yy_current_state = yy_start;
-yy_match:
+		xml__current_state = xml__start;
+xml__match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
-			if ( yy_accept[yy_current_state] )
+			register XML__CHAR xml__c = xml__ec[XML__SC_TO_UI(*xml__cp)];
+			if ( xml__accept[xml__current_state] )
 				{
-				yy_last_accepting_state = yy_current_state;
-				yy_last_accepting_cpos = yy_cp;
+				xml__last_accepting_state = xml__current_state;
+				xml__last_accepting_cpos = xml__cp;
 				}
-			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
+			while ( xml__chk[xml__base[xml__current_state] + xml__c] != xml__current_state )
 				{
-				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 1064 )
-					yy_c = yy_meta[(unsigned int) yy_c];
+				xml__current_state = (int) xml__def[xml__current_state];
+				if ( xml__current_state >= 1064 )
+					xml__c = xml__meta[(unsigned int) xml__c];
 				}
-			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-			++yy_cp;
+			xml__current_state = xml__nxt[xml__base[xml__current_state] + (unsigned int) xml__c];
+			++xml__cp;
 			}
-		while ( yy_base[yy_current_state] != 3089 );
+		while ( xml__base[xml__current_state] != 3089 );
 
-yy_find_action:
-		yy_act = yy_accept[yy_current_state];
-		if ( yy_act == 0 )
+xml__find_action:
+		xml__act = xml__accept[xml__current_state];
+		if ( xml__act == 0 )
 			{ /* have to back up */
-			yy_cp = yy_last_accepting_cpos;
-			yy_current_state = yy_last_accepting_state;
-			yy_act = yy_accept[yy_current_state];
+			xml__cp = xml__last_accepting_cpos;
+			xml__current_state = xml__last_accepting_state;
+			xml__act = xml__accept[xml__current_state];
 			}
 
-		YY_DO_BEFORE_ACTION;
+		XML__DO_BEFORE_ACTION;
 
 
 do_action:	/* This label is used only to access EOF actions. */
 
 
-		switch ( yy_act )
+		switch ( xml__act )
 	{ /* beginning of action switch */
 			case 0: /* must back up */
-			/* undo the effects of YY_DO_BEFORE_ACTION */
-			*yy_cp = yy_hold_char;
-			yy_cp = yy_last_accepting_cpos;
-			yy_current_state = yy_last_accepting_state;
-			goto yy_find_action;
+			/* undo the effects of XML__DO_BEFORE_ACTION */
+			*xml__cp = xml__hold_char;
+			xml__cp = xml__last_accepting_cpos;
+			xml__current_state = xml__last_accepting_state;
+			goto xml__find_action;
 
 
 case 1:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 306 "xmltree_read.l"
 ENTER(INCOMMENT);
-	YY_BREAK
+	XML__BREAK
 case 2:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 307 "xmltree_read.l"
 ENTER(INPI);
-	YY_BREAK
+	XML__BREAK
 
 
 case 3:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 310 "xmltree_read.l"
 LEAVE;
-	YY_BREAK
+	XML__BREAK
 case 4:
 #line 312 "xmltree_read.l"
 case 5:
 #line 313 "xmltree_read.l"
 case 6:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 313 "xmltree_read.l"
 SKIP;
-	YY_BREAK
-case YY_STATE_EOF(INCOMMENT):
+	XML__BREAK
+case XML__STATE_EOF(INCOMMENT):
 #line 314 "xmltree_read.l"
 FAIL("EOF in comment.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 7:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 317 "xmltree_read.l"
 LEAVE;
-	YY_BREAK
+	XML__BREAK
 case 8:
 #line 319 "xmltree_read.l"
 case 9:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 319 "xmltree_read.l"
 SKIP;
-	YY_BREAK
-case YY_STATE_EOF(INPI):
+	XML__BREAK
+case XML__STATE_EOF(INPI):
 #line 320 "xmltree_read.l"
 FAIL("EOF in PI (processing instruction).");
-	YY_BREAK
+	XML__BREAK
 
 /* SPACES: skipped uniformly */
 case 10:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 325 "xmltree_read.l"
 SKIP;
-	YY_BREAK
+	XML__BREAK
 /* PROLOG: determine root element and process it. */
 
 case 11:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 330 "xmltree_read.l"
 SET(DOCTYPE);
-	YY_BREAK
+	XML__BREAK
 case 12:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 331 "xmltree_read.l"
-FAIL("Bad declaration %s.",yytext);
-	YY_BREAK
+FAIL("Bad declaration %s.",xml_text);
+	XML__BREAK
 
 
 case 13:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 335 "xmltree_read.l"
 SET(ROOT_scalar);
-	YY_BREAK
+	XML__BREAK
 case 14:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 336 "xmltree_read.l"
 SET(ROOT_octave);
-	YY_BREAK
+	XML__BREAK
 case 15:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 337 "xmltree_read.l"
 SET(ROOT_complex);
-	YY_BREAK
+	XML__BREAK
 case 16:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 338 "xmltree_read.l"
 SET(ROOT_string);
-	YY_BREAK
+	XML__BREAK
 case 17:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 339 "xmltree_read.l"
 SET(ROOT_matrix);
-	YY_BREAK
+	XML__BREAK
 case 18:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 340 "xmltree_read.l"
 SET(ROOT_array);
-	YY_BREAK
+	XML__BREAK
 case 19:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 341 "xmltree_read.l"
 SET(ROOT_structure);
-	YY_BREAK
+	XML__BREAK
 case 20:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 342 "xmltree_read.l"
 SET(ROOT_cell);
-	YY_BREAK
+	XML__BREAK
 case 21:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 343 "xmltree_read.l"
 SET(ROOT_list);
-	YY_BREAK
+	XML__BREAK
 case 22:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 344 "xmltree_read.l"
-FAIL("Bad declaration %s.",yytext);
-	YY_BREAK
+FAIL("Bad declaration %s.",xml_text);
+	XML__BREAK
 case 23:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 345 "xmltree_read.l"
-FAIL("Unexpected character `%c' in prolog.", yytext[0]);
-	YY_BREAK
-case YY_STATE_EOF(PROLOG):
-case YY_STATE_EOF(DOCTYPE):
+FAIL("Unexpected character `%c' in prolog.", xml_text[0]);
+	XML__BREAK
+case XML__STATE_EOF(PROLOG):
+case XML__STATE_EOF(DOCTYPE):
 #line 346 "xmltree_read.l"
 FAIL("EOF in prolog.");
-	YY_BREAK
+	XML__BREAK
 
 /* RULES DERIVED FROM DTD. */
 case 24:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 351 "xmltree_read.l"
 {
   ENTER(AL_octave);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 25:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 356 "xmltree_read.l"
 {
   LEAVE; STag_octave(); pcdata = NULL; ENTER(S_octave);
  }
-	YY_BREAK
+	XML__BREAK
 case 26:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 359 "xmltree_read.l"
 FAIL("`octave' element cannot be empty.");
-	YY_BREAK
+	XML__BREAK
 case 27:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 360 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of octave element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of octave element.", xml_text[0]);
+	XML__BREAK
 case 28:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 361 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `octave' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_octave):
+FAIL("Bad attribute `%s' in `octave' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_octave):
 #line 362 "xmltree_read.l"
 FAIL("EOF in attribute list of `octave' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 29:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 366 "xmltree_read.l"
 {
   LEAVE;
   ETag_octave();
-  switch (YY_START) {
+  switch (XML__START) {
    case ROOT_octave: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 30:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 373 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</octave>' expected.",yytext);
-	YY_BREAK
+FAIL("Unexpected end-tag `%s': `</octave>' expected.",xml_text);
+	XML__BREAK
 case 31:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 374 "xmltree_read.l"
-FAIL("Unexpected character `%c': `</octave>' expected.",yytext[0]);
-	YY_BREAK
-case YY_STATE_EOF(E_octave):
+FAIL("Unexpected character `%c': `</octave>' expected.",xml_text[0]);
+	XML__BREAK
+case XML__STATE_EOF(E_octave):
 #line 375 "xmltree_read.l"
 FAIL("Premature EOF: `</octave>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 /* 	value (undefined | true | false | inf | neginf | na | nan) "undefined"
   * 	name CDATA #IMPLIED>  */
 case 32:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 381 "xmltree_read.l"
 {
   A_scalar_value = A_scalar_value_undefined;
   A_scalar_name = NULL;
   ENTER(AL_scalar);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 33:
 #line 389 "xmltree_read.l"
 case 34:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 389 "xmltree_read.l"
 A_scalar_value = A_scalar_value_undefined;
-	YY_BREAK
+	XML__BREAK
 case 35:
 #line 391 "xmltree_read.l"
 case 36:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 391 "xmltree_read.l"
 A_scalar_value = A_scalar_value_true;
-	YY_BREAK
+	XML__BREAK
 case 37:
 #line 393 "xmltree_read.l"
 case 38:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 393 "xmltree_read.l"
 A_scalar_value = A_scalar_value_false;
-	YY_BREAK
+	XML__BREAK
 case 39:
 #line 395 "xmltree_read.l"
 case 40:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 395 "xmltree_read.l"
 A_scalar_value = A_scalar_value_inf;
-	YY_BREAK
+	XML__BREAK
 case 41:
 #line 397 "xmltree_read.l"
 case 42:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 397 "xmltree_read.l"
 A_scalar_value = A_scalar_value_neginf;
-	YY_BREAK
+	XML__BREAK
 case 43:
 #line 399 "xmltree_read.l"
 case 44:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 399 "xmltree_read.l"
 A_scalar_value = A_scalar_value_na;
-	YY_BREAK
+	XML__BREAK
 case 45:
 #line 401 "xmltree_read.l"
 case 46:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 401 "xmltree_read.l"
 A_scalar_value = A_scalar_value_nan;
-	YY_BREAK
+	XML__BREAK
 case 47:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 403 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_scalar_name);
-	YY_BREAK
+	XML__BREAK
 case 48:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 404 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_scalar_name);
-	YY_BREAK
+	XML__BREAK
 case 49:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 406 "xmltree_read.l"
 {
   LEAVE; STag_scalar(); pcdata = BUFFERSET(pcdata); ENTER(IN_scalar);
  }
-	YY_BREAK
+	XML__BREAK
 case 50:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 409 "xmltree_read.l"
 {
   LEAVE; STag_scalar(); pcdata = ""; ETag_scalar();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_complex_1: SET(E_complex); break;
    case S_octave: SET(E_octave); break;
    case S_complex: SET(S_complex_1); break;
@@ -2274,31 +2274,31 @@ YY_RULE_SETUP
    case ROOT_scalar: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 51:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 419 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of scalar element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of scalar element.", xml_text[0]);
+	XML__BREAK
 case 52:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 420 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `scalar' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_scalar):
+FAIL("Bad attribute `%s' in `scalar' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_scalar):
 #line 421 "xmltree_read.l"
 FAIL("EOF in attribute list of `scalar' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 53:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 425 "xmltree_read.l"
 {
   LEAVE;
   BUFFERDONE;
   ETag_scalar();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_complex_1: SET(E_complex); break;
    case S_octave: SET(E_octave); break;
    case S_complex: SET(S_complex_1); break;
@@ -2306,281 +2306,281 @@ YY_RULE_SETUP
    case ROOT_scalar: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 54:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 437 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</scalar>' expected.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(IN_scalar):
+FAIL("Unexpected end-tag `%s': `</scalar>' expected.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(IN_scalar):
 #line 438 "xmltree_read.l"
 FAIL("Premature EOF: `</scalar>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 case 55:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 441 "xmltree_read.l"
 {
   A_complex_name = NULL;
   ENTER(AL_complex);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 56:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 447 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_complex_name);
-	YY_BREAK
+	XML__BREAK
 case 57:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 448 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_complex_name);
-	YY_BREAK
+	XML__BREAK
 case 58:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 450 "xmltree_read.l"
 {
   LEAVE; STag_complex(); pcdata = NULL; ENTER(S_complex);
  }
-	YY_BREAK
+	XML__BREAK
 case 59:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 453 "xmltree_read.l"
 FAIL("`complex' element cannot be empty.");
-	YY_BREAK
+	XML__BREAK
 case 60:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 454 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of complex element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of complex element.", xml_text[0]);
+	XML__BREAK
 case 61:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 455 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `complex' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_complex):
+FAIL("Bad attribute `%s' in `complex' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_complex):
 #line 456 "xmltree_read.l"
 FAIL("EOF in attribute list of `complex' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 62:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 460 "xmltree_read.l"
 {
   LEAVE;
   ETag_complex();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case S_matrix_1: case S_matrix: case S_matrix_2: SET(S_matrix_2); break;
    case ROOT_complex: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 63:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 469 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</complex>' expected.",yytext);
-	YY_BREAK
+FAIL("Unexpected end-tag `%s': `</complex>' expected.",xml_text);
+	XML__BREAK
 case 64:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 470 "xmltree_read.l"
-FAIL("Unexpected character `%c': `</complex>' expected.",yytext[0]);
-	YY_BREAK
-case YY_STATE_EOF(E_complex):
+FAIL("Unexpected character `%c': `</complex>' expected.",xml_text[0]);
+	XML__BREAK
+case XML__STATE_EOF(E_complex):
 #line 471 "xmltree_read.l"
 FAIL("Premature EOF: `</complex>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 /* 	length CDATA #REQUIRED
   * 	name CDATA #IMPLIED>  */
 case 65:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 477 "xmltree_read.l"
 {
   A_string_length = NULL;
   A_string_name = NULL;
   ENTER(AL_string);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 66:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 484 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_string_length);
-	YY_BREAK
+	XML__BREAK
 case 67:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 485 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_string_length);
-	YY_BREAK
+	XML__BREAK
 case 68:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 487 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_string_name);
-	YY_BREAK
+	XML__BREAK
 case 69:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 488 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_string_name);
-	YY_BREAK
+	XML__BREAK
 case 70:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 490 "xmltree_read.l"
 {
   if (!A_string_length) FAIL("Required attribute `length' not set for `string' element.");
   LEAVE; STag_string(); pcdata = BUFFERSET(pcdata); ENTER(IN_string);
  }
-	YY_BREAK
+	XML__BREAK
 case 71:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 494 "xmltree_read.l"
 {
   if (!A_string_length) FAIL("Required attribute `length' not set for `string' element.");
   LEAVE; STag_string(); pcdata = ""; ETag_string();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case S_array_2: case S_array_3: case S_array_1: SET(S_array_3); break;
    case ROOT_string: SET(EPILOG); break;
    case S_array: SET(S_array_1); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 72:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 504 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of string element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of string element.", xml_text[0]);
+	XML__BREAK
 case 73:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 505 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `string' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_string):
+FAIL("Bad attribute `%s' in `string' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_string):
 #line 506 "xmltree_read.l"
 FAIL("EOF in attribute list of `string' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 74:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 510 "xmltree_read.l"
 {
   LEAVE;
   BUFFERDONE;
   ETag_string();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case S_array_2: case S_array_3: case S_array_1: SET(S_array_3); break;
    case ROOT_string: SET(EPILOG); break;
    case S_array: SET(S_array_1); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 75:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 521 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</string>' expected.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(IN_string):
+FAIL("Unexpected end-tag `%s': `</string>' expected.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(IN_string):
 #line 522 "xmltree_read.l"
 FAIL("Premature EOF: `</string>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 /* 	rows CDATA #REQUIRED
   * 	name CDATA #IMPLIED>  */
 case 76:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 528 "xmltree_read.l"
 {
   A_array_rows = NULL;
   A_array_name = NULL;
   ENTER(AL_array);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 77:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 535 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_array_rows);
-	YY_BREAK
+	XML__BREAK
 case 78:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 536 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_array_rows);
-	YY_BREAK
+	XML__BREAK
 case 79:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 538 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_array_name);
-	YY_BREAK
+	XML__BREAK
 case 80:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 539 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_array_name);
-	YY_BREAK
+	XML__BREAK
 case 81:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 541 "xmltree_read.l"
 {
   if (!A_array_rows) FAIL("Required attribute `rows' not set for `array' element.");
   LEAVE; STag_array(); pcdata = NULL; ENTER(S_array);
  }
-	YY_BREAK
+	XML__BREAK
 case 82:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 545 "xmltree_read.l"
 FAIL("`array' element cannot be empty.");
-	YY_BREAK
+	XML__BREAK
 case 83:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 546 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of array element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of array element.", xml_text[0]);
+	XML__BREAK
 case 84:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 547 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `array' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_array):
+FAIL("Bad attribute `%s' in `array' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_array):
 #line 548 "xmltree_read.l"
 FAIL("EOF in attribute list of `array' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 85:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 552 "xmltree_read.l"
 {
   LEAVE;
   ETag_array();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case ROOT_array: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 86:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 560 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</array>' expected.",yytext);
-	YY_BREAK
+FAIL("Unexpected end-tag `%s': `</array>' expected.",xml_text);
+	XML__BREAK
 case 87:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 561 "xmltree_read.l"
-FAIL("Unexpected character `%c': `</array>' expected.",yytext[0]);
-	YY_BREAK
-case YY_STATE_EOF(S_array_3):
-case YY_STATE_EOF(E_array):
+FAIL("Unexpected character `%c': `</array>' expected.",xml_text[0]);
+	XML__BREAK
+case XML__STATE_EOF(S_array_3):
+case XML__STATE_EOF(E_array):
 #line 562 "xmltree_read.l"
 FAIL("Premature EOF: `</array>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 /* 	rows CDATA #REQUIRED
   * 	columns  CDATA #REQUIRED
   * 	name CDATA #IMPLIED>  */
 case 88:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 569 "xmltree_read.l"
 {
   A_matrix_rows = NULL;
@@ -2588,275 +2588,275 @@ YY_RULE_SETUP
   A_matrix_name = NULL;
   ENTER(AL_matrix);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 89:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 577 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_matrix_rows);
-	YY_BREAK
+	XML__BREAK
 case 90:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 578 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_matrix_rows);
-	YY_BREAK
+	XML__BREAK
 case 91:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 580 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_matrix_columns);
-	YY_BREAK
+	XML__BREAK
 case 92:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 581 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_matrix_columns);
-	YY_BREAK
+	XML__BREAK
 case 93:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 583 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_matrix_name);
-	YY_BREAK
+	XML__BREAK
 case 94:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 584 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_matrix_name);
-	YY_BREAK
+	XML__BREAK
 case 95:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 586 "xmltree_read.l"
 {
   if (!A_matrix_rows) FAIL("Required attribute `rows' not set for `matrix' element.");
   if (!A_matrix_columns) FAIL("Required attribute `columns' not set for `matrix' element.");
   LEAVE; STag_matrix(); pcdata = NULL; ENTER(S_matrix);
  }
-	YY_BREAK
+	XML__BREAK
 case 96:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 591 "xmltree_read.l"
 {
   if (!A_matrix_rows) FAIL("Required attribute `rows' not set for `matrix' element.");
   if (!A_matrix_columns) FAIL("Required attribute `columns' not set for `matrix' element.");
   LEAVE; STag_matrix(); pcdata = NULL; ETag_matrix();
-  switch (YY_START) {
+  switch (XML__START) {
    case ROOT_matrix: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 97:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 599 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of matrix element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of matrix element.", xml_text[0]);
+	XML__BREAK
 case 98:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 600 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `matrix' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_matrix):
+FAIL("Bad attribute `%s' in `matrix' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_matrix):
 #line 601 "xmltree_read.l"
 FAIL("EOF in attribute list of `matrix' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 99:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 605 "xmltree_read.l"
 {
   LEAVE;
   ETag_matrix();
-  switch (YY_START) {
+  switch (XML__START) {
    case ROOT_matrix: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 100:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 612 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</matrix>' expected.",yytext);
-	YY_BREAK
+FAIL("Unexpected end-tag `%s': `</matrix>' expected.",xml_text);
+	XML__BREAK
 case 101:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 613 "xmltree_read.l"
-FAIL("Unexpected character `%c': `</matrix>' expected.",yytext[0]);
-	YY_BREAK
-case YY_STATE_EOF(S_matrix):
-case YY_STATE_EOF(S_matrix_2):
-case YY_STATE_EOF(E_matrix):
+FAIL("Unexpected character `%c': `</matrix>' expected.",xml_text[0]);
+	XML__BREAK
+case XML__STATE_EOF(S_matrix):
+case XML__STATE_EOF(S_matrix_2):
+case XML__STATE_EOF(E_matrix):
 #line 614 "xmltree_read.l"
 FAIL("Premature EOF: `</matrix>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 case 102:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 617 "xmltree_read.l"
 {
   A_structure_name = NULL;
   ENTER(AL_structure);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 103:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 623 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_structure_name);
-	YY_BREAK
+	XML__BREAK
 case 104:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 624 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_structure_name);
-	YY_BREAK
+	XML__BREAK
 case 105:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 626 "xmltree_read.l"
 {
   LEAVE; STag_structure(); pcdata = BUFFERSET(pcdata); ENTER(IN_structure);
  }
-	YY_BREAK
+	XML__BREAK
 case 106:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 629 "xmltree_read.l"
 {
   LEAVE; STag_structure(); pcdata = ""; ETag_structure();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case ROOT_structure: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 107:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 636 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of structure element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of structure element.", xml_text[0]);
+	XML__BREAK
 case 108:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 637 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `structure' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_structure):
+FAIL("Bad attribute `%s' in `structure' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_structure):
 #line 638 "xmltree_read.l"
 FAIL("EOF in attribute list of `structure' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 109:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 642 "xmltree_read.l"
 {
   LEAVE;
   BUFFERDONE;
   ETag_structure();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case ROOT_structure: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 110:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 651 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</structure>' expected.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(IN_structure):
+FAIL("Unexpected end-tag `%s': `</structure>' expected.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(IN_structure):
 #line 652 "xmltree_read.l"
 FAIL("Premature EOF: `</structure>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 /* 	length CDATA #REQUIRED
   * 	name CDATA #IMPLIED>  */
 case 111:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 658 "xmltree_read.l"
 {
   A_list_length = NULL;
   A_list_name = NULL;
   ENTER(AL_list);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 112:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 665 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_list_length);
-	YY_BREAK
+	XML__BREAK
 case 113:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 666 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_list_length);
-	YY_BREAK
+	XML__BREAK
 case 114:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 668 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_list_name);
-	YY_BREAK
+	XML__BREAK
 case 115:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 669 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_list_name);
-	YY_BREAK
+	XML__BREAK
 case 116:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 671 "xmltree_read.l"
 {
   if (!A_list_length) FAIL("Required attribute `length' not set for `list' element.");
   LEAVE; STag_list(); pcdata = BUFFERSET(pcdata); ENTER(IN_list);
  }
-	YY_BREAK
+	XML__BREAK
 case 117:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 675 "xmltree_read.l"
 {
   if (!A_list_length) FAIL("Required attribute `length' not set for `list' element.");
   LEAVE; STag_list(); pcdata = ""; ETag_list();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case ROOT_list: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 118:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 683 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of list element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of list element.", xml_text[0]);
+	XML__BREAK
 case 119:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 684 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `list' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_list):
+FAIL("Bad attribute `%s' in `list' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_list):
 #line 685 "xmltree_read.l"
 FAIL("EOF in attribute list of `list' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 120:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 689 "xmltree_read.l"
 {
   LEAVE;
   BUFFERDONE;
   ETag_list();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case ROOT_list: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 121:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 698 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</list>' expected.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(IN_list):
+FAIL("Unexpected end-tag `%s': `</list>' expected.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(IN_list):
 #line 699 "xmltree_read.l"
 FAIL("Premature EOF: `</list>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 /* 	rows CDATA #REQUIRED
   * 	columns CDATA #REQUIRED
   * 	name CDATA #IMPLIED>  */
 case 122:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 706 "xmltree_read.l"
 {
   A_cell_rows = NULL;
@@ -2864,150 +2864,150 @@ YY_RULE_SETUP
   A_cell_name = NULL;
   ENTER(AL_cell);
   }
-	YY_BREAK
+	XML__BREAK
 
 case 123:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 714 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_cell_rows);
-	YY_BREAK
+	XML__BREAK
 case 124:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 715 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_cell_rows);
-	YY_BREAK
+	XML__BREAK
 case 125:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 717 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_cell_columns);
-	YY_BREAK
+	XML__BREAK
 case 126:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 718 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_cell_columns);
-	YY_BREAK
+	XML__BREAK
 case 127:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 720 "xmltree_read.l"
 ENTER(VALUE1); BUFFERSET(A_cell_name);
-	YY_BREAK
+	XML__BREAK
 case 128:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 721 "xmltree_read.l"
 ENTER(VALUE2); BUFFERSET(A_cell_name);
-	YY_BREAK
+	XML__BREAK
 case 129:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 723 "xmltree_read.l"
 {
   if (!A_cell_rows) FAIL("Required attribute `rows' not set for `cell' element.");
   if (!A_cell_columns) FAIL("Required attribute `columns' not set for `cell' element.");
   LEAVE; STag_cell(); pcdata = BUFFERSET(pcdata); ENTER(IN_cell);
  }
-	YY_BREAK
+	XML__BREAK
 case 130:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 728 "xmltree_read.l"
 {
   if (!A_cell_rows) FAIL("Required attribute `rows' not set for `cell' element.");
   if (!A_cell_columns) FAIL("Required attribute `columns' not set for `cell' element.");
   LEAVE; STag_cell(); pcdata = ""; ETag_cell();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case ROOT_cell: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 131:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 737 "xmltree_read.l"
-FAIL("Unexpected character `%c' in attribute list of cell element.", yytext[0]);
-	YY_BREAK
+FAIL("Unexpected character `%c' in attribute list of cell element.", xml_text[0]);
+	XML__BREAK
 case 132:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 738 "xmltree_read.l"
-FAIL("Bad attribute `%s' in `cell' element start tag.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(AL_cell):
+FAIL("Bad attribute `%s' in `cell' element start tag.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(AL_cell):
 #line 739 "xmltree_read.l"
 FAIL("EOF in attribute list of `cell' element.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 133:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 743 "xmltree_read.l"
 {
   LEAVE;
   BUFFERDONE;
   ETag_cell();
-  switch (YY_START) {
+  switch (XML__START) {
    case S_octave: SET(E_octave); break;
    case ROOT_cell: SET(EPILOG); break;
   }
  }
-	YY_BREAK
+	XML__BREAK
 case 134:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 752 "xmltree_read.l"
-FAIL("Unexpected end-tag `%s': `</cell>' expected.",yytext);
-	YY_BREAK
-case YY_STATE_EOF(IN_cell):
+FAIL("Unexpected end-tag `%s': `</cell>' expected.",xml_text);
+	XML__BREAK
+case XML__STATE_EOF(IN_cell):
 #line 753 "xmltree_read.l"
 FAIL("Premature EOF: `</cell>' expected.");
-	YY_BREAK
+	XML__BREAK
 
 /* EPILOG: after the root element. */
 
 case 135:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 759 "xmltree_read.l"
-FAIL("Unexpected character `%c' after document.", yytext[0]);
-	YY_BREAK
-case YY_STATE_EOF(EPILOG):
+FAIL("Unexpected character `%c' after document.", xml_text[0]);
+	XML__BREAK
+case XML__STATE_EOF(EPILOG):
 #line 760 "xmltree_read.l"
 SUCCEED;
-	YY_BREAK
+	XML__BREAK
 
 /* CHARACTER DATA. */
 
 /* Non-defined standard entities... */
 case 136:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 767 "xmltree_read.l"
 BUFFERPUTC('&');
-	YY_BREAK
+	XML__BREAK
 case 137:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 768 "xmltree_read.l"
 BUFFERPUTC('<');
-	YY_BREAK
+	XML__BREAK
 case 138:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 769 "xmltree_read.l"
 BUFFERPUTC('>');
-	YY_BREAK
+	XML__BREAK
 case 139:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 770 "xmltree_read.l"
 BUFFERPUTC('\'');
-	YY_BREAK
+	XML__BREAK
 case 140:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 771 "xmltree_read.l"
 BUFFERPUTC('"');
-	YY_BREAK
+	XML__BREAK
 /* Character entities. */
 case 141:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 774 "xmltree_read.l"
-BUFFERPUTC((unsigned char)atoi(yytext+2));
-	YY_BREAK
+BUFFERPUTC((unsigned char)atoi(xml_text+2));
+	XML__BREAK
 case 142:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 775 "xmltree_read.l"
-BUFFERPUTC((unsigned char)strtol(yytext+3,NULL,16));
-	YY_BREAK
+BUFFERPUTC((unsigned char)strtol(xml_text+3,NULL,16));
+	XML__BREAK
 
 
 case 143:
@@ -3017,242 +3017,242 @@ case 144:
 case 145:
 #line 782 "xmltree_read.l"
 case 146:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 782 "xmltree_read.l"
 BUFFERPUTC('\n');
-	YY_BREAK
+	XML__BREAK
 
 
 case 147:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 786 "xmltree_read.l"
 ENTER(CDATA);
-	YY_BREAK
+	XML__BREAK
 case 148:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 787 "xmltree_read.l"
 FAIL("Unexpected `]]>' in character data.");
-	YY_BREAK
+	XML__BREAK
 
 
 case 149:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 791 "xmltree_read.l"
 BUFFERDONE; LEAVE;
-	YY_BREAK
-case YY_STATE_EOF(VALUE1):
+	XML__BREAK
+case XML__STATE_EOF(VALUE1):
 #line 792 "xmltree_read.l"
 FAIL("EOF in literal (\"'\" expected).");
-	YY_BREAK
+	XML__BREAK
 
 
 case 150:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 796 "xmltree_read.l"
 BUFFERDONE; LEAVE;
-	YY_BREAK
-case YY_STATE_EOF(VALUE2):
+	XML__BREAK
+case XML__STATE_EOF(VALUE2):
 #line 797 "xmltree_read.l"
 FAIL("EOF in literal (`\"' expected).");
-	YY_BREAK
+	XML__BREAK
 
 
 case 151:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 801 "xmltree_read.l"
-BUFFERPUTC(yytext[0]);
-	YY_BREAK
+BUFFERPUTC(xml_text[0]);
+	XML__BREAK
 case 152:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 802 "xmltree_read.l"
-FAIL("Spurious `%c' in character data.",yytext[0]);
-	YY_BREAK
+FAIL("Spurious `%c' in character data.",xml_text[0]);
+	XML__BREAK
 
 
 case 153:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 806 "xmltree_read.l"
 LEAVE;
-	YY_BREAK
+	XML__BREAK
 case 154:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 807 "xmltree_read.l"
-BUFFERPUTC(yytext[0]); BUFFERPUTC(yytext[1]);
-	YY_BREAK
+BUFFERPUTC(xml_text[0]); BUFFERPUTC(xml_text[1]);
+	XML__BREAK
 case 155:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 808 "xmltree_read.l"
-BUFFERPUTC(yytext[0]);
-	YY_BREAK
-case YY_STATE_EOF(CDATA):
+BUFFERPUTC(xml_text[0]);
+	XML__BREAK
+case XML__STATE_EOF(CDATA):
 #line 809 "xmltree_read.l"
 FAIL("EOF in CDATA section.");
-	YY_BREAK
+	XML__BREAK
 
 /* Impossible rules to avoid warnings from flex(1). */
 
 case 156:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 815 "xmltree_read.l"
 FAIL("The Impossible Happened: INITIAL or IMPOSSIBLE state entered?");
-	YY_BREAK
+	XML__BREAK
 
 case 157:
-YY_RULE_SETUP
+XML__RULE_SETUP
 #line 818 "xmltree_read.l"
 ECHO;
-	YY_BREAK
-case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(ROOT_octave):
-case YY_STATE_EOF(S_octave):
-case YY_STATE_EOF(ROOT_scalar):
-case YY_STATE_EOF(ROOT_complex):
-case YY_STATE_EOF(S_complex):
-case YY_STATE_EOF(S_complex_1):
-case YY_STATE_EOF(ROOT_string):
-case YY_STATE_EOF(ROOT_array):
-case YY_STATE_EOF(S_array):
-case YY_STATE_EOF(S_array_1):
-case YY_STATE_EOF(S_array_2):
-case YY_STATE_EOF(ROOT_matrix):
-case YY_STATE_EOF(S_matrix_1):
-case YY_STATE_EOF(ROOT_structure):
-case YY_STATE_EOF(ROOT_list):
-case YY_STATE_EOF(ROOT_cell):
-case YY_STATE_EOF(IMPOSSIBLE):
-	yyterminate();
+	XML__BREAK
+case XML__STATE_EOF(INITIAL):
+case XML__STATE_EOF(ROOT_octave):
+case XML__STATE_EOF(S_octave):
+case XML__STATE_EOF(ROOT_scalar):
+case XML__STATE_EOF(ROOT_complex):
+case XML__STATE_EOF(S_complex):
+case XML__STATE_EOF(S_complex_1):
+case XML__STATE_EOF(ROOT_string):
+case XML__STATE_EOF(ROOT_array):
+case XML__STATE_EOF(S_array):
+case XML__STATE_EOF(S_array_1):
+case XML__STATE_EOF(S_array_2):
+case XML__STATE_EOF(ROOT_matrix):
+case XML__STATE_EOF(S_matrix_1):
+case XML__STATE_EOF(ROOT_structure):
+case XML__STATE_EOF(ROOT_list):
+case XML__STATE_EOF(ROOT_cell):
+case XML__STATE_EOF(IMPOSSIBLE):
+	xml_terminate();
 
-	case YY_END_OF_BUFFER:
+	case XML__END_OF_BUFFER:
 		{
 		/* Amount of text matched not including the EOB char. */
-		int yy_amount_of_matched_text = (int) (yy_cp - yytext_ptr) - 1;
+		int xml__amount_of_matched_text = (int) (xml__cp - xml_text_ptr) - 1;
 
-		/* Undo the effects of YY_DO_BEFORE_ACTION. */
-		*yy_cp = yy_hold_char;
-		YY_RESTORE_YY_MORE_OFFSET
+		/* Undo the effects of XML__DO_BEFORE_ACTION. */
+		*xml__cp = xml__hold_char;
+		XML__RESTORE_XML__MORE_OFFSET
 
-		if ( yy_current_buffer->yy_buffer_status == YY_BUFFER_NEW )
+		if ( xml__current_buffer->xml__buffer_status == XML__BUFFER_NEW )
 			{
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
-			 * just pointed yyin at a new source and called
-			 * yylex().  If so, then we have to assure
-			 * consistency between yy_current_buffer and our
+			 * just pointed xml_in at a new source and called
+			 * xml_lex().  If so, then we have to assure
+			 * consistency between xml__current_buffer and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
 			 * back-up) that will match for the new input source.
 			 */
-			yy_n_chars = yy_current_buffer->yy_n_chars;
-			yy_current_buffer->yy_input_file = yyin;
-			yy_current_buffer->yy_buffer_status = YY_BUFFER_NORMAL;
+			xml__n_chars = xml__current_buffer->xml__n_chars;
+			xml__current_buffer->xml__input_file = xml_in;
+			xml__current_buffer->xml__buffer_status = XML__BUFFER_NORMAL;
 			}
 
-		/* Note that here we test for yy_c_buf_p "<=" to the position
-		 * of the first EOB in the buffer, since yy_c_buf_p will
+		/* Note that here we test for xml__c_buf_p "<=" to the position
+		 * of the first EOB in the buffer, since xml__c_buf_p will
 		 * already have been incremented past the NUL character
 		 * (since all states make transitions on EOB to the
 		 * end-of-buffer state).  Contrast this with the test
 		 * in input().
 		 */
-		if ( yy_c_buf_p <= &yy_current_buffer->yy_ch_buf[yy_n_chars] )
+		if ( xml__c_buf_p <= &xml__current_buffer->xml__ch_buf[xml__n_chars] )
 			{ /* This was really a NUL. */
-			yy_state_type yy_next_state;
+			xml__state_type xml__next_state;
 
-			yy_c_buf_p = yytext_ptr + yy_amount_of_matched_text;
+			xml__c_buf_p = xml_text_ptr + xml__amount_of_matched_text;
 
-			yy_current_state = yy_get_previous_state();
+			xml__current_state = xml__get_previous_state();
 
 			/* Okay, we're now positioned to make the NUL
 			 * transition.  We couldn't have
-			 * yy_get_previous_state() go ahead and do it
+			 * xml__get_previous_state() go ahead and do it
 			 * for us because it doesn't know how to deal
 			 * with the possibility of jamming (and we don't
 			 * want to build jamming into it because then it
 			 * will run more slowly).
 			 */
 
-			yy_next_state = yy_try_NUL_trans( yy_current_state );
+			xml__next_state = xml__try_NUL_trans( xml__current_state );
 
-			yy_bp = yytext_ptr + YY_MORE_ADJ;
+			xml__bp = xml_text_ptr + XML__MORE_ADJ;
 
-			if ( yy_next_state )
+			if ( xml__next_state )
 				{
 				/* Consume the NUL. */
-				yy_cp = ++yy_c_buf_p;
-				yy_current_state = yy_next_state;
-				goto yy_match;
+				xml__cp = ++xml__c_buf_p;
+				xml__current_state = xml__next_state;
+				goto xml__match;
 				}
 
 			else
 				{
-				yy_cp = yy_c_buf_p;
-				goto yy_find_action;
+				xml__cp = xml__c_buf_p;
+				goto xml__find_action;
 				}
 			}
 
-		else switch ( yy_get_next_buffer() )
+		else switch ( xml__get_next_buffer() )
 			{
 			case EOB_ACT_END_OF_FILE:
 				{
-				yy_did_buffer_switch_on_eof = 0;
+				xml__did_buffer_switch_on_eof = 0;
 
-				if ( yywrap() )
+				if ( xml_wrap() )
 					{
 					/* Note: because we've taken care in
-					 * yy_get_next_buffer() to have set up
-					 * yytext, we can now set up
-					 * yy_c_buf_p so that if some total
+					 * xml__get_next_buffer() to have set up
+					 * xml_text, we can now set up
+					 * xml__c_buf_p so that if some total
 					 * hoser (like flex itself) wants to
 					 * call the scanner after we return the
-					 * YY_NULL, it'll still work - another
-					 * YY_NULL will get returned.
+					 * XML__NULL, it'll still work - another
+					 * XML__NULL will get returned.
 					 */
-					yy_c_buf_p = yytext_ptr + YY_MORE_ADJ;
+					xml__c_buf_p = xml_text_ptr + XML__MORE_ADJ;
 
-					yy_act = YY_STATE_EOF(YY_START);
+					xml__act = XML__STATE_EOF(XML__START);
 					goto do_action;
 					}
 
 				else
 					{
-					if ( ! yy_did_buffer_switch_on_eof )
-						YY_NEW_FILE;
+					if ( ! xml__did_buffer_switch_on_eof )
+						XML__NEW_FILE;
 					}
 				break;
 				}
 
 			case EOB_ACT_CONTINUE_SCAN:
-				yy_c_buf_p =
-					yytext_ptr + yy_amount_of_matched_text;
+				xml__c_buf_p =
+					xml_text_ptr + xml__amount_of_matched_text;
 
-				yy_current_state = yy_get_previous_state();
+				xml__current_state = xml__get_previous_state();
 
-				yy_cp = yy_c_buf_p;
-				yy_bp = yytext_ptr + YY_MORE_ADJ;
-				goto yy_match;
+				xml__cp = xml__c_buf_p;
+				xml__bp = xml_text_ptr + XML__MORE_ADJ;
+				goto xml__match;
 
 			case EOB_ACT_LAST_MATCH:
-				yy_c_buf_p =
-				&yy_current_buffer->yy_ch_buf[yy_n_chars];
+				xml__c_buf_p =
+				&xml__current_buffer->xml__ch_buf[xml__n_chars];
 
-				yy_current_state = yy_get_previous_state();
+				xml__current_state = xml__get_previous_state();
 
-				yy_cp = yy_c_buf_p;
-				yy_bp = yytext_ptr + YY_MORE_ADJ;
-				goto yy_find_action;
+				xml__cp = xml__c_buf_p;
+				xml__bp = xml_text_ptr + XML__MORE_ADJ;
+				goto xml__find_action;
 			}
 		break;
 		}
 
 	default:
-		YY_FATAL_ERROR(
+		XML__FATAL_ERROR(
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-	} /* end of yylex */
+	} /* end of xml_lex */
 
 
-/* yy_get_next_buffer - try to read in a new buffer
+/* xml__get_next_buffer - try to read in a new buffer
  *
  * Returns a code representing an action:
  *	EOB_ACT_LAST_MATCH -
@@ -3260,20 +3260,20 @@ case YY_STATE_EOF(IMPOSSIBLE):
  *	EOB_ACT_END_OF_FILE - end of file
  */
 
-static int yy_get_next_buffer()
+static int xml__get_next_buffer()
 	{
-	register char *dest = yy_current_buffer->yy_ch_buf;
-	register char *source = yytext_ptr;
+	register char *dest = xml__current_buffer->xml__ch_buf;
+	register char *source = xml_text_ptr;
 	register int number_to_move, i;
 	int ret_val;
 
-	if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
-		YY_FATAL_ERROR(
+	if ( xml__c_buf_p > &xml__current_buffer->xml__ch_buf[xml__n_chars + 1] )
+		XML__FATAL_ERROR(
 		"fatal flex scanner internal error--end of buffer missed" );
 
-	if ( yy_current_buffer->yy_fill_buffer == 0 )
+	if ( xml__current_buffer->xml__fill_buffer == 0 )
 		{ /* Don't try to fill the buffer, so this is an EOF. */
-		if ( yy_c_buf_p - yytext_ptr - YY_MORE_ADJ == 1 )
+		if ( xml__c_buf_p - xml_text_ptr - XML__MORE_ADJ == 1 )
 			{
 			/* We matched a single character, the EOB, so
 			 * treat this as a final EOF.
@@ -3293,242 +3293,242 @@ static int yy_get_next_buffer()
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (int) (yy_c_buf_p - yytext_ptr) - 1;
+	number_to_move = (int) (xml__c_buf_p - xml_text_ptr) - 1;
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
 
-	if ( yy_current_buffer->yy_buffer_status == YY_BUFFER_EOF_PENDING )
+	if ( xml__current_buffer->xml__buffer_status == XML__BUFFER_EOF_PENDING )
 		/* don't do the read, it's not guaranteed to return an EOF,
 		 * just force an EOF
 		 */
-		yy_current_buffer->yy_n_chars = yy_n_chars = 0;
+		xml__current_buffer->xml__n_chars = xml__n_chars = 0;
 
 	else
 		{
 		int num_to_read =
-			yy_current_buffer->yy_buf_size - number_to_move - 1;
+			xml__current_buffer->xml__buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
-#ifdef YY_USES_REJECT
-			YY_FATAL_ERROR(
+#ifdef XML__USES_REJECT
+			XML__FATAL_ERROR(
 "input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 #else
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = yy_current_buffer;
+			XML__BUFFER_STATE b = xml__current_buffer;
 
-			int yy_c_buf_p_offset =
-				(int) (yy_c_buf_p - b->yy_ch_buf);
+			int xml__c_buf_p_offset =
+				(int) (xml__c_buf_p - b->xml__ch_buf);
 
-			if ( b->yy_is_our_buffer )
+			if ( b->xml__is_our_buffer )
 				{
-				int new_size = b->yy_buf_size * 2;
+				int new_size = b->xml__buf_size * 2;
 
 				if ( new_size <= 0 )
-					b->yy_buf_size += b->yy_buf_size / 8;
+					b->xml__buf_size += b->xml__buf_size / 8;
 				else
-					b->yy_buf_size *= 2;
+					b->xml__buf_size *= 2;
 
-				b->yy_ch_buf = (char *)
+				b->xml__ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					yy_flex_realloc( (void *) b->yy_ch_buf,
-							 b->yy_buf_size + 2 );
+					xml__flex_realloc( (void *) b->xml__ch_buf,
+							 b->xml__buf_size + 2 );
 				}
 			else
 				/* Can't grow it, we don't own it. */
-				b->yy_ch_buf = 0;
+				b->xml__ch_buf = 0;
 
-			if ( ! b->yy_ch_buf )
-				YY_FATAL_ERROR(
+			if ( ! b->xml__ch_buf )
+				XML__FATAL_ERROR(
 				"fatal error - scanner input buffer overflow" );
 
-			yy_c_buf_p = &b->yy_ch_buf[yy_c_buf_p_offset];
+			xml__c_buf_p = &b->xml__ch_buf[xml__c_buf_p_offset];
 
-			num_to_read = yy_current_buffer->yy_buf_size -
+			num_to_read = xml__current_buffer->xml__buf_size -
 						number_to_move - 1;
 #endif
 			}
 
-		if ( num_to_read > YY_READ_BUF_SIZE )
-			num_to_read = YY_READ_BUF_SIZE;
+		if ( num_to_read > XML__READ_BUF_SIZE )
+			num_to_read = XML__READ_BUF_SIZE;
 
 		/* Read in more data. */
-		YY_INPUT( (&yy_current_buffer->yy_ch_buf[number_to_move]),
-			yy_n_chars, num_to_read );
+		XML__INPUT( (&xml__current_buffer->xml__ch_buf[number_to_move]),
+			xml__n_chars, num_to_read );
 
-		yy_current_buffer->yy_n_chars = yy_n_chars;
+		xml__current_buffer->xml__n_chars = xml__n_chars;
 		}
 
-	if ( yy_n_chars == 0 )
+	if ( xml__n_chars == 0 )
 		{
-		if ( number_to_move == YY_MORE_ADJ )
+		if ( number_to_move == XML__MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			yyrestart( yyin );
+			xml_restart( xml_in );
 			}
 
 		else
 			{
 			ret_val = EOB_ACT_LAST_MATCH;
-			yy_current_buffer->yy_buffer_status =
-				YY_BUFFER_EOF_PENDING;
+			xml__current_buffer->xml__buffer_status =
+				XML__BUFFER_EOF_PENDING;
 			}
 		}
 
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	yy_n_chars += number_to_move;
-	yy_current_buffer->yy_ch_buf[yy_n_chars] = YY_END_OF_BUFFER_CHAR;
-	yy_current_buffer->yy_ch_buf[yy_n_chars + 1] = YY_END_OF_BUFFER_CHAR;
+	xml__n_chars += number_to_move;
+	xml__current_buffer->xml__ch_buf[xml__n_chars] = XML__END_OF_BUFFER_CHAR;
+	xml__current_buffer->xml__ch_buf[xml__n_chars + 1] = XML__END_OF_BUFFER_CHAR;
 
-	yytext_ptr = &yy_current_buffer->yy_ch_buf[0];
+	xml_text_ptr = &xml__current_buffer->xml__ch_buf[0];
 
 	return ret_val;
 	}
 
 
-/* yy_get_previous_state - get the state just before the EOB char was reached */
+/* xml__get_previous_state - get the state just before the EOB char was reached */
 
-static yy_state_type yy_get_previous_state()
+static xml__state_type xml__get_previous_state()
 	{
-	register yy_state_type yy_current_state;
-	register char *yy_cp;
+	register xml__state_type xml__current_state;
+	register char *xml__cp;
 
-	yy_current_state = yy_start;
+	xml__current_state = xml__start;
 
-	for ( yy_cp = yytext_ptr + YY_MORE_ADJ; yy_cp < yy_c_buf_p; ++yy_cp )
+	for ( xml__cp = xml_text_ptr + XML__MORE_ADJ; xml__cp < xml__c_buf_p; ++xml__cp )
 		{
-		register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
-		if ( yy_accept[yy_current_state] )
+		register XML__CHAR xml__c = (*xml__cp ? xml__ec[XML__SC_TO_UI(*xml__cp)] : 1);
+		if ( xml__accept[xml__current_state] )
 			{
-			yy_last_accepting_state = yy_current_state;
-			yy_last_accepting_cpos = yy_cp;
+			xml__last_accepting_state = xml__current_state;
+			xml__last_accepting_cpos = xml__cp;
 			}
-		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
+		while ( xml__chk[xml__base[xml__current_state] + xml__c] != xml__current_state )
 			{
-			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 1064 )
-				yy_c = yy_meta[(unsigned int) yy_c];
+			xml__current_state = (int) xml__def[xml__current_state];
+			if ( xml__current_state >= 1064 )
+				xml__c = xml__meta[(unsigned int) xml__c];
 			}
-		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+		xml__current_state = xml__nxt[xml__base[xml__current_state] + (unsigned int) xml__c];
 		}
 
-	return yy_current_state;
+	return xml__current_state;
 	}
 
 
-/* yy_try_NUL_trans - try to make a transition on the NUL character
+/* xml__try_NUL_trans - try to make a transition on the NUL character
  *
  * synopsis
- *	next_state = yy_try_NUL_trans( current_state );
+ *	next_state = xml__try_NUL_trans( current_state );
  */
 
-#ifdef YY_USE_PROTOS
-static yy_state_type yy_try_NUL_trans( yy_state_type yy_current_state )
+#ifdef XML__USE_PROTOS
+static xml__state_type xml__try_NUL_trans( xml__state_type xml__current_state )
 #else
-static yy_state_type yy_try_NUL_trans( yy_current_state )
-yy_state_type yy_current_state;
+static xml__state_type xml__try_NUL_trans( xml__current_state )
+xml__state_type xml__current_state;
 #endif
 	{
-	register int yy_is_jam;
-	register char *yy_cp = yy_c_buf_p;
+	register int xml__is_jam;
+	register char *xml__cp = xml__c_buf_p;
 
-	register YY_CHAR yy_c = 1;
-	if ( yy_accept[yy_current_state] )
+	register XML__CHAR xml__c = 1;
+	if ( xml__accept[xml__current_state] )
 		{
-		yy_last_accepting_state = yy_current_state;
-		yy_last_accepting_cpos = yy_cp;
+		xml__last_accepting_state = xml__current_state;
+		xml__last_accepting_cpos = xml__cp;
 		}
-	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
+	while ( xml__chk[xml__base[xml__current_state] + xml__c] != xml__current_state )
 		{
-		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 1064 )
-			yy_c = yy_meta[(unsigned int) yy_c];
+		xml__current_state = (int) xml__def[xml__current_state];
+		if ( xml__current_state >= 1064 )
+			xml__c = xml__meta[(unsigned int) xml__c];
 		}
-	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 1063);
+	xml__current_state = xml__nxt[xml__base[xml__current_state] + (unsigned int) xml__c];
+	xml__is_jam = (xml__current_state == 1063);
 
-	return yy_is_jam ? 0 : yy_current_state;
+	return xml__is_jam ? 0 : xml__current_state;
 	}
 
 
-#ifndef YY_NO_UNPUT
-#ifdef YY_USE_PROTOS
-static void yyunput( int c, register char *yy_bp )
+#ifndef XML__NO_UNPUT
+#ifdef XML__USE_PROTOS
+static void xml_unput( int c, register char *xml__bp )
 #else
-static void yyunput( c, yy_bp )
+static void xml_unput( c, xml__bp )
 int c;
-register char *yy_bp;
+register char *xml__bp;
 #endif
 	{
-	register char *yy_cp = yy_c_buf_p;
+	register char *xml__cp = xml__c_buf_p;
 
-	/* undo effects of setting up yytext */
-	*yy_cp = yy_hold_char;
+	/* undo effects of setting up xml_text */
+	*xml__cp = xml__hold_char;
 
-	if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
+	if ( xml__cp < xml__current_buffer->xml__ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register int number_to_move = yy_n_chars + 2;
-		register char *dest = &yy_current_buffer->yy_ch_buf[
-					yy_current_buffer->yy_buf_size + 2];
+		register int number_to_move = xml__n_chars + 2;
+		register char *dest = &xml__current_buffer->xml__ch_buf[
+					xml__current_buffer->xml__buf_size + 2];
 		register char *source =
-				&yy_current_buffer->yy_ch_buf[number_to_move];
+				&xml__current_buffer->xml__ch_buf[number_to_move];
 
-		while ( source > yy_current_buffer->yy_ch_buf )
+		while ( source > xml__current_buffer->xml__ch_buf )
 			*--dest = *--source;
 
-		yy_cp += (int) (dest - source);
-		yy_bp += (int) (dest - source);
-		yy_current_buffer->yy_n_chars =
-			yy_n_chars = yy_current_buffer->yy_buf_size;
+		xml__cp += (int) (dest - source);
+		xml__bp += (int) (dest - source);
+		xml__current_buffer->xml__n_chars =
+			xml__n_chars = xml__current_buffer->xml__buf_size;
 
-		if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
+		if ( xml__cp < xml__current_buffer->xml__ch_buf + 2 )
+			XML__FATAL_ERROR( "flex scanner push-back overflow" );
 		}
 
-	*--yy_cp = (char) c;
+	*--xml__cp = (char) c;
 
 
-	yytext_ptr = yy_bp;
-	yy_hold_char = *yy_cp;
-	yy_c_buf_p = yy_cp;
+	xml_text_ptr = xml__bp;
+	xml__hold_char = *xml__cp;
+	xml__c_buf_p = xml__cp;
 	}
-#endif	/* ifndef YY_NO_UNPUT */
+#endif	/* ifndef XML__NO_UNPUT */
 
 
 #ifdef __cplusplus
-static int yyinput()
+static int xml_input()
 #else
 static int input()
 #endif
 	{
 	int c;
 
-	*yy_c_buf_p = yy_hold_char;
+	*xml__c_buf_p = xml__hold_char;
 
-	if ( *yy_c_buf_p == YY_END_OF_BUFFER_CHAR )
+	if ( *xml__c_buf_p == XML__END_OF_BUFFER_CHAR )
 		{
-		/* yy_c_buf_p now points to the character we want to return.
+		/* xml__c_buf_p now points to the character we want to return.
 		 * If this occurs *before* the EOB characters, then it's a
 		 * valid NUL; if not, then we've hit the end of the buffer.
 		 */
-		if ( yy_c_buf_p < &yy_current_buffer->yy_ch_buf[yy_n_chars] )
+		if ( xml__c_buf_p < &xml__current_buffer->xml__ch_buf[xml__n_chars] )
 			/* This was really a NUL. */
-			*yy_c_buf_p = '\0';
+			*xml__c_buf_p = '\0';
 
 		else
 			{ /* need more input */
-			int offset = yy_c_buf_p - yytext_ptr;
-			++yy_c_buf_p;
+			int offset = xml__c_buf_p - xml_text_ptr;
+			++xml__c_buf_p;
 
-			switch ( yy_get_next_buffer() )
+			switch ( xml__get_next_buffer() )
 				{
 				case EOB_ACT_LAST_MATCH:
-					/* This happens because yy_g_n_b()
+					/* This happens because xml__g_n_b()
 					 * sees that we've accumulated a
 					 * token and flags that we need to
 					 * try matching the token before
@@ -3539,404 +3539,404 @@ static int input()
 					 */
 
 					/* Reset buffer status. */
-					yyrestart( yyin );
+					xml_restart( xml_in );
 
 					/* fall through */
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( yywrap() )
+					if ( xml_wrap() )
 						return EOF;
 
-					if ( ! yy_did_buffer_switch_on_eof )
-						YY_NEW_FILE;
+					if ( ! xml__did_buffer_switch_on_eof )
+						XML__NEW_FILE;
 #ifdef __cplusplus
-					return yyinput();
+					return xml_input();
 #else
 					return input();
 #endif
 					}
 
 				case EOB_ACT_CONTINUE_SCAN:
-					yy_c_buf_p = yytext_ptr + offset;
+					xml__c_buf_p = xml_text_ptr + offset;
 					break;
 				}
 			}
 		}
 
-	c = *(unsigned char *) yy_c_buf_p;	/* cast for 8-bit char's */
-	*yy_c_buf_p = '\0';	/* preserve yytext */
-	yy_hold_char = *++yy_c_buf_p;
+	c = *(unsigned char *) xml__c_buf_p;	/* cast for 8-bit char's */
+	*xml__c_buf_p = '\0';	/* preserve xml_text */
+	xml__hold_char = *++xml__c_buf_p;
 
 
 	return c;
 	}
 
 
-#ifdef YY_USE_PROTOS
-void yyrestart( FILE *input_file )
+#ifdef XML__USE_PROTOS
+void xml_restart( FILE *input_file )
 #else
-void yyrestart( input_file )
+void xml_restart( input_file )
 FILE *input_file;
 #endif
 	{
-	if ( ! yy_current_buffer )
-		yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE );
+	if ( ! xml__current_buffer )
+		xml__current_buffer = xml__create_buffer( xml_in, XML__BUF_SIZE );
 
-	yy_init_buffer( yy_current_buffer, input_file );
-	yy_load_buffer_state();
+	xml__init_buffer( xml__current_buffer, input_file );
+	xml__load_buffer_state();
 	}
 
 
-#ifdef YY_USE_PROTOS
-void yy_switch_to_buffer( YY_BUFFER_STATE new_buffer )
+#ifdef XML__USE_PROTOS
+void xml__switch_to_buffer( XML__BUFFER_STATE new_buffer )
 #else
-void yy_switch_to_buffer( new_buffer )
-YY_BUFFER_STATE new_buffer;
+void xml__switch_to_buffer( new_buffer )
+XML__BUFFER_STATE new_buffer;
 #endif
 	{
-	if ( yy_current_buffer == new_buffer )
+	if ( xml__current_buffer == new_buffer )
 		return;
 
-	if ( yy_current_buffer )
+	if ( xml__current_buffer )
 		{
 		/* Flush out information for old buffer. */
-		*yy_c_buf_p = yy_hold_char;
-		yy_current_buffer->yy_buf_pos = yy_c_buf_p;
-		yy_current_buffer->yy_n_chars = yy_n_chars;
+		*xml__c_buf_p = xml__hold_char;
+		xml__current_buffer->xml__buf_pos = xml__c_buf_p;
+		xml__current_buffer->xml__n_chars = xml__n_chars;
 		}
 
-	yy_current_buffer = new_buffer;
-	yy_load_buffer_state();
+	xml__current_buffer = new_buffer;
+	xml__load_buffer_state();
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (yywrap()) processing, but the only time this flag
-	 * is looked at is after yywrap() is called, so it's safe
+	 * EOF (xml_wrap()) processing, but the only time this flag
+	 * is looked at is after xml_wrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
-	yy_did_buffer_switch_on_eof = 1;
+	xml__did_buffer_switch_on_eof = 1;
 	}
 
 
-#ifdef YY_USE_PROTOS
-void yy_load_buffer_state( void )
+#ifdef XML__USE_PROTOS
+void xml__load_buffer_state( void )
 #else
-void yy_load_buffer_state()
+void xml__load_buffer_state()
 #endif
 	{
-	yy_n_chars = yy_current_buffer->yy_n_chars;
-	yytext_ptr = yy_c_buf_p = yy_current_buffer->yy_buf_pos;
-	yyin = yy_current_buffer->yy_input_file;
-	yy_hold_char = *yy_c_buf_p;
+	xml__n_chars = xml__current_buffer->xml__n_chars;
+	xml_text_ptr = xml__c_buf_p = xml__current_buffer->xml__buf_pos;
+	xml_in = xml__current_buffer->xml__input_file;
+	xml__hold_char = *xml__c_buf_p;
 	}
 
 
-#ifdef YY_USE_PROTOS
-YY_BUFFER_STATE yy_create_buffer( FILE *file, int size )
+#ifdef XML__USE_PROTOS
+XML__BUFFER_STATE xml__create_buffer( FILE *file, int size )
 #else
-YY_BUFFER_STATE yy_create_buffer( file, size )
+XML__BUFFER_STATE xml__create_buffer( file, size )
 FILE *file;
 int size;
 #endif
 	{
-	YY_BUFFER_STATE b;
+	XML__BUFFER_STATE b;
 
-	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
+	b = (XML__BUFFER_STATE) xml__flex_alloc( sizeof( struct xml__buffer_state ) );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		XML__FATAL_ERROR( "out of dynamic memory in xml__create_buffer()" );
 
-	b->yy_buf_size = size;
+	b->xml__buf_size = size;
 
-	/* yy_ch_buf has to be 2 characters longer than the size given because
+	/* xml__ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) yy_flex_alloc( b->yy_buf_size + 2 );
-	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+	b->xml__ch_buf = (char *) xml__flex_alloc( b->xml__buf_size + 2 );
+	if ( ! b->xml__ch_buf )
+		XML__FATAL_ERROR( "out of dynamic memory in xml__create_buffer()" );
 
-	b->yy_is_our_buffer = 1;
+	b->xml__is_our_buffer = 1;
 
-	yy_init_buffer( b, file );
+	xml__init_buffer( b, file );
 
 	return b;
 	}
 
 
-#ifdef YY_USE_PROTOS
-void yy_delete_buffer( YY_BUFFER_STATE b )
+#ifdef XML__USE_PROTOS
+void xml__delete_buffer( XML__BUFFER_STATE b )
 #else
-void yy_delete_buffer( b )
-YY_BUFFER_STATE b;
+void xml__delete_buffer( b )
+XML__BUFFER_STATE b;
 #endif
 	{
 	if ( ! b )
 		return;
 
-	if ( b == yy_current_buffer )
-		yy_current_buffer = (YY_BUFFER_STATE) 0;
+	if ( b == xml__current_buffer )
+		xml__current_buffer = (XML__BUFFER_STATE) 0;
 
-	if ( b->yy_is_our_buffer )
-		yy_flex_free( (void *) b->yy_ch_buf );
+	if ( b->xml__is_our_buffer )
+		xml__flex_free( (void *) b->xml__ch_buf );
 
-	yy_flex_free( (void *) b );
+	xml__flex_free( (void *) b );
 	}
 
 
 #ifndef _WIN32
 #include <unistd.h>
 #else
-#ifndef YY_ALWAYS_INTERACTIVE
-#ifndef YY_NEVER_INTERACTIVE
-extern int isatty YY_PROTO(( int ));
+#ifndef XML__ALWAYS_INTERACTIVE
+#ifndef XML__NEVER_INTERACTIVE
+extern int isatty XML__PROTO(( int ));
 #endif
 #endif
 #endif
 
-#ifdef YY_USE_PROTOS
-void yy_init_buffer( YY_BUFFER_STATE b, FILE *file )
+#ifdef XML__USE_PROTOS
+void xml__init_buffer( XML__BUFFER_STATE b, FILE *file )
 #else
-void yy_init_buffer( b, file )
-YY_BUFFER_STATE b;
+void xml__init_buffer( b, file )
+XML__BUFFER_STATE b;
 FILE *file;
 #endif
 
 
 	{
-	yy_flush_buffer( b );
+	xml__flush_buffer( b );
 
-	b->yy_input_file = file;
-	b->yy_fill_buffer = 1;
+	b->xml__input_file = file;
+	b->xml__fill_buffer = 1;
 
-#if YY_ALWAYS_INTERACTIVE
-	b->yy_is_interactive = 1;
+#if XML__ALWAYS_INTERACTIVE
+	b->xml__is_interactive = 1;
 #else
-#if YY_NEVER_INTERACTIVE
-	b->yy_is_interactive = 0;
+#if XML__NEVER_INTERACTIVE
+	b->xml__is_interactive = 0;
 #else
-	b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+	b->xml__is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
 #endif
 #endif
 	}
 
 
-#ifdef YY_USE_PROTOS
-void yy_flush_buffer( YY_BUFFER_STATE b )
+#ifdef XML__USE_PROTOS
+void xml__flush_buffer( XML__BUFFER_STATE b )
 #else
-void yy_flush_buffer( b )
-YY_BUFFER_STATE b;
+void xml__flush_buffer( b )
+XML__BUFFER_STATE b;
 #endif
 
 	{
 	if ( ! b )
 		return;
 
-	b->yy_n_chars = 0;
+	b->xml__n_chars = 0;
 
 	/* We always need two end-of-buffer characters.  The first causes
 	 * a transition to the end-of-buffer state.  The second causes
 	 * a jam in that state.
 	 */
-	b->yy_ch_buf[0] = YY_END_OF_BUFFER_CHAR;
-	b->yy_ch_buf[1] = YY_END_OF_BUFFER_CHAR;
+	b->xml__ch_buf[0] = XML__END_OF_BUFFER_CHAR;
+	b->xml__ch_buf[1] = XML__END_OF_BUFFER_CHAR;
 
-	b->yy_buf_pos = &b->yy_ch_buf[0];
+	b->xml__buf_pos = &b->xml__ch_buf[0];
 
-	b->yy_at_bol = 1;
-	b->yy_buffer_status = YY_BUFFER_NEW;
+	b->xml__at_bol = 1;
+	b->xml__buffer_status = XML__BUFFER_NEW;
 
-	if ( b == yy_current_buffer )
-		yy_load_buffer_state();
+	if ( b == xml__current_buffer )
+		xml__load_buffer_state();
 	}
 
 
-#ifndef YY_NO_SCAN_BUFFER
-#ifdef YY_USE_PROTOS
-YY_BUFFER_STATE yy_scan_buffer( char *base, yy_size_t size )
+#ifndef XML__NO_SCAN_BUFFER
+#ifdef XML__USE_PROTOS
+XML__BUFFER_STATE xml__scan_buffer( char *base, xml__size_t size )
 #else
-YY_BUFFER_STATE yy_scan_buffer( base, size )
+XML__BUFFER_STATE xml__scan_buffer( base, size )
 char *base;
-yy_size_t size;
+xml__size_t size;
 #endif
 	{
-	YY_BUFFER_STATE b;
+	XML__BUFFER_STATE b;
 
 	if ( size < 2 ||
-	     base[size-2] != YY_END_OF_BUFFER_CHAR ||
-	     base[size-1] != YY_END_OF_BUFFER_CHAR )
+	     base[size-2] != XML__END_OF_BUFFER_CHAR ||
+	     base[size-1] != XML__END_OF_BUFFER_CHAR )
 		/* They forgot to leave room for the EOB's. */
 		return 0;
 
-	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
+	b = (XML__BUFFER_STATE) xml__flex_alloc( sizeof( struct xml__buffer_state ) );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
+		XML__FATAL_ERROR( "out of dynamic memory in xml__scan_buffer()" );
 
-	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
-	b->yy_buf_pos = b->yy_ch_buf = base;
-	b->yy_is_our_buffer = 0;
-	b->yy_input_file = 0;
-	b->yy_n_chars = b->yy_buf_size;
-	b->yy_is_interactive = 0;
-	b->yy_at_bol = 1;
-	b->yy_fill_buffer = 0;
-	b->yy_buffer_status = YY_BUFFER_NEW;
+	b->xml__buf_size = size - 2;	/* "- 2" to take care of EOB's */
+	b->xml__buf_pos = b->xml__ch_buf = base;
+	b->xml__is_our_buffer = 0;
+	b->xml__input_file = 0;
+	b->xml__n_chars = b->xml__buf_size;
+	b->xml__is_interactive = 0;
+	b->xml__at_bol = 1;
+	b->xml__fill_buffer = 0;
+	b->xml__buffer_status = XML__BUFFER_NEW;
 
-	yy_switch_to_buffer( b );
+	xml__switch_to_buffer( b );
 
 	return b;
 	}
 #endif
 
 
-#ifndef YY_NO_SCAN_STRING
-#ifdef YY_USE_PROTOS
-YY_BUFFER_STATE yy_scan_string( yyconst char *yy_str )
+#ifndef XML__NO_SCAN_STRING
+#ifdef XML__USE_PROTOS
+XML__BUFFER_STATE xml__scan_string( xml_const char *xml__str )
 #else
-YY_BUFFER_STATE yy_scan_string( yy_str )
-yyconst char *yy_str;
+XML__BUFFER_STATE xml__scan_string( xml__str )
+xml_const char *xml__str;
 #endif
 	{
 	int len;
-	for ( len = 0; yy_str[len]; ++len )
+	for ( len = 0; xml__str[len]; ++len )
 		;
 
-	return yy_scan_bytes( yy_str, len );
+	return xml__scan_bytes( xml__str, len );
 	}
 #endif
 
 
-#ifndef YY_NO_SCAN_BYTES
-#ifdef YY_USE_PROTOS
-YY_BUFFER_STATE yy_scan_bytes( yyconst char *bytes, int len )
+#ifndef XML__NO_SCAN_BYTES
+#ifdef XML__USE_PROTOS
+XML__BUFFER_STATE xml__scan_bytes( xml_const char *bytes, int len )
 #else
-YY_BUFFER_STATE yy_scan_bytes( bytes, len )
-yyconst char *bytes;
+XML__BUFFER_STATE xml__scan_bytes( bytes, len )
+xml_const char *bytes;
 int len;
 #endif
 	{
-	YY_BUFFER_STATE b;
+	XML__BUFFER_STATE b;
 	char *buf;
-	yy_size_t n;
+	xml__size_t n;
 	int i;
 
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = len + 2;
-	buf = (char *) yy_flex_alloc( n );
+	buf = (char *) xml__flex_alloc( n );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
+		XML__FATAL_ERROR( "out of dynamic memory in xml__scan_bytes()" );
 
 	for ( i = 0; i < len; ++i )
 		buf[i] = bytes[i];
 
-	buf[len] = buf[len+1] = YY_END_OF_BUFFER_CHAR;
+	buf[len] = buf[len+1] = XML__END_OF_BUFFER_CHAR;
 
-	b = yy_scan_buffer( buf, n );
+	b = xml__scan_buffer( buf, n );
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
+		XML__FATAL_ERROR( "bad buffer in xml__scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
 	 */
-	b->yy_is_our_buffer = 1;
+	b->xml__is_our_buffer = 1;
 
 	return b;
 	}
 #endif
 
 
-#ifndef YY_NO_PUSH_STATE
-#ifdef YY_USE_PROTOS
-static void yy_push_state( int new_state )
+#ifndef XML__NO_PUSH_STATE
+#ifdef XML__USE_PROTOS
+static void xml__push_state( int new_state )
 #else
-static void yy_push_state( new_state )
+static void xml__push_state( new_state )
 int new_state;
 #endif
 	{
-	if ( yy_start_stack_ptr >= yy_start_stack_depth )
+	if ( xml__start_stack_ptr >= xml__start_stack_depth )
 		{
-		yy_size_t new_size;
+		xml__size_t new_size;
 
-		yy_start_stack_depth += YY_START_STACK_INCR;
-		new_size = yy_start_stack_depth * sizeof( int );
+		xml__start_stack_depth += XML__START_STACK_INCR;
+		new_size = xml__start_stack_depth * sizeof( int );
 
-		if ( ! yy_start_stack )
-			yy_start_stack = (int *) yy_flex_alloc( new_size );
+		if ( ! xml__start_stack )
+			xml__start_stack = (int *) xml__flex_alloc( new_size );
 
 		else
-			yy_start_stack = (int *) yy_flex_realloc(
-					(void *) yy_start_stack, new_size );
+			xml__start_stack = (int *) xml__flex_realloc(
+					(void *) xml__start_stack, new_size );
 
-		if ( ! yy_start_stack )
-			YY_FATAL_ERROR(
+		if ( ! xml__start_stack )
+			XML__FATAL_ERROR(
 			"out of memory expanding start-condition stack" );
 		}
 
-	yy_start_stack[yy_start_stack_ptr++] = YY_START;
+	xml__start_stack[xml__start_stack_ptr++] = XML__START;
 
 	BEGIN(new_state);
 	}
 #endif
 
 
-#ifndef YY_NO_POP_STATE
-static void yy_pop_state()
+#ifndef XML__NO_POP_STATE
+static void xml__pop_state()
 	{
-	if ( --yy_start_stack_ptr < 0 )
-		YY_FATAL_ERROR( "start-condition stack underflow" );
+	if ( --xml__start_stack_ptr < 0 )
+		XML__FATAL_ERROR( "start-condition stack underflow" );
 
-	BEGIN(yy_start_stack[yy_start_stack_ptr]);
+	BEGIN(xml__start_stack[xml__start_stack_ptr]);
 	}
 #endif
 
 
-#ifndef YY_NO_TOP_STATE
-static int yy_top_state()
+#ifndef XML__NO_TOP_STATE
+static int xml__top_state()
 	{
-	return yy_start_stack[yy_start_stack_ptr - 1];
+	return xml__start_stack[xml__start_stack_ptr - 1];
 	}
 #endif
 
-#ifndef YY_EXIT_FAILURE
-#define YY_EXIT_FAILURE 2
+#ifndef XML__EXIT_FAILURE
+#define XML__EXIT_FAILURE 2
 #endif
 
-#ifdef YY_USE_PROTOS
-static void yy_fatal_error( yyconst char msg[] )
+#ifdef XML__USE_PROTOS
+static void xml__fatal_error( xml_const char msg[] )
 #else
-static void yy_fatal_error( msg )
+static void xml__fatal_error( msg )
 char msg[];
 #endif
 	{
 	(void) fprintf( stderr, "%s\n", msg );
-	exit( YY_EXIT_FAILURE );
+	exit( XML__EXIT_FAILURE );
 	}
 
 
 
-/* Redefine yyless() so it works in section 3 code. */
+/* Redefine xml_less() so it works in section 3 code. */
 
-#undef yyless
-#define yyless(n) \
+#undef xml_less
+#define xml_less(n) \
 	do \
 		{ \
-		/* Undo effects of setting up yytext. */ \
-		yytext[yyleng] = yy_hold_char; \
-		yy_c_buf_p = yytext + n; \
-		yy_hold_char = *yy_c_buf_p; \
-		*yy_c_buf_p = '\0'; \
-		yyleng = n; \
+		/* Undo effects of setting up xml_text. */ \
+		xml_text[xml_leng] = xml__hold_char; \
+		xml__c_buf_p = xml_text + n; \
+		xml__hold_char = *xml__c_buf_p; \
+		*xml__c_buf_p = '\0'; \
+		xml_leng = n; \
 		} \
 	while ( 0 )
 
 
 /* Internal utility routines. */
 
-#ifndef yytext_ptr
-#ifdef YY_USE_PROTOS
-static void yy_flex_strncpy( char *s1, yyconst char *s2, int n )
+#ifndef xml_text_ptr
+#ifdef XML__USE_PROTOS
+static void xml__flex_strncpy( char *s1, xml_const char *s2, int n )
 #else
-static void yy_flex_strncpy( s1, s2, n )
+static void xml__flex_strncpy( s1, s2, n )
 char *s1;
-yyconst char *s2;
+xml_const char *s2;
 int n;
 #endif
 	{
@@ -3946,12 +3946,12 @@ int n;
 	}
 #endif
 
-#ifdef YY_NEED_STRLEN
-#ifdef YY_USE_PROTOS
-static int yy_flex_strlen( yyconst char *s )
+#ifdef XML__NEED_STRLEN
+#ifdef XML__USE_PROTOS
+static int xml__flex_strlen( xml_const char *s )
 #else
-static int yy_flex_strlen( s )
-yyconst char *s;
+static int xml__flex_strlen( s )
+xml_const char *s;
 #endif
 	{
 	register int n;
@@ -3963,22 +3963,22 @@ yyconst char *s;
 #endif
 
 
-#ifdef YY_USE_PROTOS
-static void *yy_flex_alloc( yy_size_t size )
+#ifdef XML__USE_PROTOS
+static void *xml__flex_alloc( xml__size_t size )
 #else
-static void *yy_flex_alloc( size )
-yy_size_t size;
+static void *xml__flex_alloc( size )
+xml__size_t size;
 #endif
 	{
 	return (void *) malloc( size );
 	}
 
-#ifdef YY_USE_PROTOS
-static void *yy_flex_realloc( void *ptr, yy_size_t size )
+#ifdef XML__USE_PROTOS
+static void *xml__flex_realloc( void *ptr, xml__size_t size )
 #else
-static void *yy_flex_realloc( ptr, size )
+static void *xml__flex_realloc( ptr, size )
 void *ptr;
-yy_size_t size;
+xml__size_t size;
 #endif
 	{
 	/* The cast to (char *) in the following accommodates both
@@ -3991,20 +3991,20 @@ yy_size_t size;
 	return (void *) realloc( (char *) ptr, size );
 	}
 
-#ifdef YY_USE_PROTOS
-static void yy_flex_free( void *ptr )
+#ifdef XML__USE_PROTOS
+static void xml__flex_free( void *ptr )
 #else
-static void yy_flex_free( ptr )
+static void xml__flex_free( ptr )
 void *ptr;
 #endif
 	{
 	free( ptr );
 	}
 
-#if YY_MAIN
+#if XML__MAIN
 int main()
 	{
-	yylex();
+	xml_lex();
 	return 0;
 	}
 #endif
@@ -4014,35 +4014,35 @@ int main()
 /* Element context stack lookup. */
 int element_context(int i)
 {
-  return (0<i && i<yy_start_stack_depth
-	  ? yy_start_stack[yy_start_stack_ptr - i]
+  return (0<i && i<xml__start_stack_depth
+	  ? xml__start_stack[xml__start_stack_ptr - i]
 	  : 0);
 }
 
 #ifdef FLEX_DEBUG
-void print_yy_stack(char* fmt, ...)
+void print_xml__stack(char* fmt, ...)
 {
   int i = 0; va_list ap; va_start(ap, fmt);
   vfprintf(stderr, fmt, ap);
-  for (i=1; i<yy_start_stack_ptr; i++)
-    fprintf(stderr, "%s/", statenames[yy_start_stack[i]]);
-  fprintf(stderr,"%s\n", statenames[YY_START]);
+  for (i=1; i<xml__start_stack_ptr; i++)
+    fprintf(stderr, "%s/", statenames[xml__start_stack[i]]);
+  fprintf(stderr,"%s\n", statenames[XML__START]);
   va_end(ap);
 }
 
 static void debug_enter(int state, char* statename) {
-  yy_push_state(state);
-  if (yy_flex_debug) print_yy_stack("--ENTER(%s) : ",statename);
+  xml__push_state(state);
+  if (xml__flex_debug) print_xml__stack("--ENTER(%s) : ",statename);
 }
 
 static void debug_leave(void) {
-  if (yy_flex_debug) print_yy_stack("--LEAVE : ");
-  yy_pop_state();
+  if (xml__flex_debug) print_xml__stack("--LEAVE : ");
+  xml__pop_state();
 }
 
 static void debug_set(int state, char* statename) {
   BEGIN(state);
-  if (yy_flex_debug) print_yy_stack("--SET(%s) : ",statename);
+  if (xml__flex_debug) print_xml__stack("--SET(%s) : ",statename);
 }
 #endif
 
@@ -4050,10 +4050,10 @@ static void debug_set(int state, char* statename) {
 static int fail(const char* fmt, ...)
 {
   va_list ap; va_start(ap, fmt);
-#ifdef FLEXML_yylineno
-  fprintf(stderr, "Invalid XML (XML input line %d, state %d): ", yylineno, YY_START);
+#ifdef FLEXML_xml_lineno
+  fprintf(stderr, "Invalid XML (XML input line %d, state %d): ", xml_lineno, XML__START);
 #else
-  fprintf(stderr, "Invalid XML (state %d): ",YY_START);
+  fprintf(stderr, "Invalid XML (state %d): ",XML__START);
 #endif
   vfprintf(stderr, fmt, ap);
   fprintf(stderr, "\n");

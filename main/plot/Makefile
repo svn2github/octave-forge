@@ -31,10 +31,7 @@ gzoom.oct: graphics.o
 	$(RM) $(@:.oct=.o)
 
 clean:
-	$(RM) *.o *~
-
-purge: clean
-	$(RM) -f *.oct
+	$(RM) *.o *~ *.oct
 
 archive:
 	tar cvzf graphics.tgz Makefile *.cc *.h *.m

@@ -46,10 +46,14 @@ clean:
 	@cd main && $(MAKE) clean
 	@cd extra && $(MAKE) clean
 	@cd nonfree && $(MAKE) clean
+	@cd FIXES && $(MAKE) clean
 
-dist: clean
-	-$(RM) Makeconf octinst.sh config.cache config.status config.log
-	find . -name CVS -print > /tmp/octave-forge.CVS
-	tar czf ../octave-forge-`date +%Y.%m.%d`.tar.gz -X /tmp/octave-forge.CVS -C .. octave-forge
-	-$(RM) /tmp/octave-forge.CVS
+distclean: clean
+	-$(RM) Makeconf Makeconf.in octinst.sh config.cache config.status config.log
 
+dist: distclean
+	@echo Follow the instructions in octave-forge/release.sh
+
+#	find . -name CVS -print > /tmp/octave-forge.CVS
+#	tar czf ../octave-forge-`date +%Y.%m.%d`.tar.gz -X /tmp/octave-forge.CVS -C .. octave-forge
+#	-$(RM) /tmp/octave-forge.CVS

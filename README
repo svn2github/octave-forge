@@ -164,7 +164,14 @@ Makefile
 release.sh
 	Generates release tarball
 
+cvsdir.sh
+	Save/restore CVS adminstration files.  You need this to install
+	directly from the CVS tree rather than an exported tarball.  E.g.,
+	   $ cvsdir.sh save
+	   $ make install
+	   $ cvsdir.sh restore
+
 ==========================================================================
 Paul Kienzle
 pkienzle@users.sf.net
-October 10, 2001
+October 22, 2001

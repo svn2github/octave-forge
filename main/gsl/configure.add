@@ -1,0 +1,9 @@
+
+if test ! -e main/gsl/NOINSTALL ; then
+
+	dnl Checking if the GSL library exists. 
+	dnl The results of the check are held in HAVE_LIBGSL.
+	AC_CHECK_LIB(gslcblas,main)
+	AC_CHECK_LIB(gsl,main)
+
+fi

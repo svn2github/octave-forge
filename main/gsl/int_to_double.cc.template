@@ -1,0 +1,50 @@
+DEFUN_DLD(GSL_OCTAVE_NAME, args, nargout, "\
+function y = GSL_OCTAVE_NAME (n)\n\n\
+GSL_FUNC_DOCSTRING
+\n\
+This function is from the GNU Scientific Library,\n\
+see http://www.gnu.org/software/gsl/ for documentation.\n\
+")
+{
+    int i;
+    
+    gsl_set_error_handler (octave_gsl_errorhandler);
+    
+    if(args.length() != 1) {
+	print_usage ("GSL_OCTAVE_NAME");
+	return octave_value_list();
+    }
+    if(!args(0).is_real_type()) {
+        error("The argument must be real.");
+	print_usage ("GSL_OCTAVE_NAME");	    
+	return octave_value_list();
+    }
+
+    NDArray x = args(0).array_value();
+    NDArray y(x.dims());
+    int lx = x.length();
+//    printf("length: %d\n", lx);
+//    printf("nargout: %d\n", nargout);
+    if(nargout < 2) {
+	for(i = 0; i < lx; i++) {
+	    y.xelem(i) = GSL_FUNC_NAME (static_cast<int>(x.xelem(i)));
+	}
+	return octave_value_list(y);	    
+    } else {
+	NDArray err(x.dims());
+	gsl_sf_result result;
+	octave_value_list retval;
+	for(i = 0; i < lx; i++) {
+	    GSL_FUNC_NAME_e (static_cast<int>(x.xelem(i)), &result);
+	    y.xelem(i) = result.val;
+	    err.xelem(i) = result.err;
+	}
+	retval = octave_value_list(y);
+	retval.append(err);
+	return retval;
+    }
+
+    return octave_value_list();
+
+}
+

@@ -72,7 +72,7 @@ double zlangs(char *norm, SuperMatrix *A)
 	value = 0.;
 	for (j = 0; j < A->ncol; ++j)
 	    for (i = Astore->colptr[j]; i < Astore->colptr[j+1]; i++)
-		value = MAX( value, z_abs( &Aval[i]) );
+		value = MAX( value, z_abs0( &Aval[i]) );
 	
     } else if (lsame_(norm, "O") || *(unsigned char *)norm == '1') {
 	/* Find norm1(A). */
@@ -80,7 +80,7 @@ double zlangs(char *norm, SuperMatrix *A)
 	for (j = 0; j < A->ncol; ++j) {
 	    sum = 0.;
 	    for (i = Astore->colptr[j]; i < Astore->colptr[j+1]; i++) 
-		sum += z_abs( &Aval[i] );
+		sum += z_abs0( &Aval[i] );
 	    value = MAX(value,sum);
 	}
 	
@@ -92,7 +92,7 @@ double zlangs(char *norm, SuperMatrix *A)
 	for (j = 0; j < A->ncol; ++j)
 	    for (i = Astore->colptr[j]; i < Astore->colptr[j+1]; i++) {
 		irow = Astore->rowind[i];
-		rwork[irow] += z_abs( &Aval[i] );
+		rwork[irow] += z_abs0( &Aval[i] );
 	    }
 	value = 0.;
 	for (i = 0; i < A->nrow; ++i)

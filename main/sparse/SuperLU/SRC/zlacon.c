@@ -106,14 +106,14 @@ zlacon_(int *n, doublecomplex *v, doublecomplex *x, double *est, int *kase)
   L20:
     if (*n == 1) {
 	v[0] = x[0];
-	*est = z_abs(&v[0]);
+	*est = z_abs0(&v[0]);
 	/*        ... QUIT */
 	goto L150;
     }
     *est = dzsum1_(n, x, &c__1);
 
     for (i = 0; i < *n; ++i) {
-	d__1 = z_abs(&x[i]);
+	d__1 = z_abs0(&x[i]);
 	if (d__1 > safmin) {
 	    d__1 = 1 / d__1;
 	    x[i].r *= d__1;
@@ -158,7 +158,7 @@ L90:
     if (*est <= estold) goto L120;
 
     for (i = 0; i < *n; ++i) {
-	d__1 = z_abs(&x[i]);
+	d__1 = z_abs0(&x[i]);
 	if (d__1 > safmin) {
 	    d__1 = 1 / d__1;
 	    x[i].r *= d__1;

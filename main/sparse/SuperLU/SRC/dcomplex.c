@@ -45,7 +45,7 @@ void z_div(doublecomplex *c, doublecomplex *a, doublecomplex *b)
 
 
 /* Returns sqrt(z.r^2 + z.i^2) */
-double z_abs(doublecomplex *z)
+double z_abs0(doublecomplex *z)
 {
     double temp;
     double real = z->r;

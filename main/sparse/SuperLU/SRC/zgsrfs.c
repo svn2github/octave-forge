@@ -367,9 +367,9 @@ zgsrfs(char *trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
 	
 	for (i = 0; i < A->nrow; ++i)
 	    if (rwork[i] > safe2)
-		rwork[i] = z_abs(&work[i]) + (iwork[i]+1)*eps*rwork[i];
+		rwork[i] = z_abs0(&work[i]) + (iwork[i]+1)*eps*rwork[i];
 	    else
-		rwork[i] = z_abs(&work[i])+(iwork[i]+1)*eps*rwork[i]+safe1;
+		rwork[i] = z_abs0(&work[i])+(iwork[i]+1)*eps*rwork[i]+safe1;
 	kase = 0;
 
 	do {

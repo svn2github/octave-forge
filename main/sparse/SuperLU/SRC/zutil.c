@@ -395,8 +395,8 @@ void zinf_norm_error(int nrhs, SuperMatrix *X, doublecomplex *xtrue)
       err = xnorm = 0.0;
       for (i = 0; i < X->nrow; i++) {
         z_sub(&temp, &soln_work[i], &xtrue[i]);
-	err = MAX(err, z_abs(&temp));
-	xnorm = MAX(xnorm, z_abs(&soln_work[i]));
+	err = MAX(err, z_abs0(&temp));
+	xnorm = MAX(xnorm, z_abs0(&soln_work[i]));
       }
       err = err / xnorm;
       printf("||X - Xtrue||/||X|| = %e\n", err);

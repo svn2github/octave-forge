@@ -81,7 +81,7 @@ function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, g
 	if (nargin > 4) error("\nBFGSMin: you have provided more than 4 arguments\n"); endif
 	
 	# Check types of required arguments
-	if !isstr(func) error("\nBFGSMin: first argument must be a string that gives name of objective function\n"); endif
+	if !ischar(func) error("\nBFGSMin: first argument must be a string that gives name of objective function\n"); endif
 	if !iscell(args) error("\nBFGSMin: arguments to objective function must be in a cell array\n"); endif
 
 	# Set defaults for optional args
@@ -100,7 +100,7 @@ function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, g
 	# Now use options that are user-provided
 	# Control verbosity, max iterations, and arg wrt which we minimize (optional)
 	if nargin > 2 
-		if !isstr(control);
+		if !ischar(control);
 			if (rows(control) != 3)
 				error("\nBFGSMin: 3rd argument must be a 4x1 vector\n");
 			else;
@@ -114,10 +114,10 @@ function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, g
 
 	# Check if analytic gradient is provided (optional - default is to use numeric)	
 	if nargin > 3
-		numeric_gradient = isstr(gradient_type);
+		numeric_gradient = !ischar(gradient_type);
+	numeric_gradient
 	endif
 
-		
 	# initialize things
 	theta = args{1};
   	thetain = theta;

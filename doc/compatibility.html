@@ -10,6 +10,9 @@ You may want to start Octave with the option --traditional, which sets
 a number flags so that the interpreter handles things in a more
 compatible way.  See the "porting" section of the octave FAQ:
 	http://www.octave.org/FAQ.html#SEC24
+<p>
+Be sure you have a recent development version of octave and install
+<a href="http://octave.sf.net">octave-forge</a>.
 
 <h2>Resources</h2>
 
@@ -25,33 +28,6 @@ compatible way.  See the "porting" section of the octave FAQ:
 <h2>Language Elements</h2>
 <ul>
 
-<li>Q. <a name=vararg>How do I handle varargin, varargout?</a>
-<br>A. Instead of
-   <code><pre>
-	[varargout] = f(a,b,varargin)
-   </pre></code>
-   use
-   <code><pre> 
-	[...] = f(a,b,...)
-   </pre></code>
-   Within the function all_va_args instead of varargin{:}
-   and use
-   <code><pre>
-	va_start()
-	for i=n:nargin  % n is the number of named args
-	   a = va_arg()
-	end
-   </pre></code>
-   instead of
-   <code><pre>
-	for i=1:length(varargin)
-	   a = varargin{i}
-        end
-   </pre></code>
-   If you only send some of varargin to a function, then you will
-   need build a command string to send to eval.  See the cell-array
-   question in the Types section for more information.
-
 <li>Q. Do load and save work for structures?
 <br>A. Yes for some file formats.  Use patch in octave-forge for structure
    support in more file formats.
@@ -62,15 +38,10 @@ compatible way.  See the "porting" section of the octave FAQ:
 
 <li>Q. Why do "grid on" and other commands give me a syntax error?
 <br>A. Only Octave built-ins can be ``text functions'' (and only a few
-   are defined to be).  You should instead use the functional form:
-   <code><pre>
-	grid('on');
-   </pre></code>
-   This will work identically in Octave and Matlab.  If you are
-   ambitious you can fix octave-forge/main/general/command.cc, which 
-   is supposed to allow you to register functions as commands.  When
-   that works, then you can register all the usually suspects in your
-   ~/.octaverc.
+   are defined to be).  Those which are not built-in, you can mark
+   as text functions using the following line in your ~/.octaverc:
+	mark_as_text_function grid axis
+   Either that or use the functional form: grid('on')
 
 <li>Q. Why isn't Octave seeing my .matlabrc file?
 <br>A. Because it is not called .octaverc.
@@ -82,14 +53,14 @@ compatible way.  See the "porting" section of the octave FAQ:
 <br>A. it exists but is not well documented
 <table>
 <tr><td>  dbstop if error            <td>-> <td>debug_on_error = 1
-<tr><td>   dbstop in mfile at lineno  <td>-> <td>dbg_set (func, line)
-<tr><td>   dbclear in mfile at lineno <td>-> <td>dbg_delete (func, line)
+<tr><td>   dbstop in mfile at lineno  <td>-> <td>dbstop (func, line)
+<tr><td>   dbclear in mfile at lineno <td>-> <td>dbclear (func, line)
 <tr><td>   dbquit    <td>-> <td>quit
-<tr><td>   dbstack   <td>-> <td>dbg_where
+<tr><td>   dbstack   <td>-> <td>dbwhere
 <tr><td>   dbcont    <td>-> <td>dbg_cont
 <tr><td>   dbstep in <td>-> <td>dbg_step
 <tr><td>   dbstep    <td>-> <td>dbg_next
-<tr><td>   dbstatus  <td>-> <td>dbg_list
+<tr><td>   dbstatus  <td>-> <td>dbstatus
 </table>
 
 <li>Q. assignin
@@ -180,13 +151,7 @@ global context.
    slices as well.
    
 <li>Q. Does octave support cell arrays?
-<br>A. With the octave-forge cell-array patch it mostly does. Check the
-   octave-sources archives at www.octave.org for more recent versions.
-   It does not handle the A{i,j} dereferencing syntax.  IIRC, use 
-   nth(A,i,j) instead.  f(A{i:j}) is not handled at all, so you will
-   have to use a for loop to turn this into the string
-	"f(nth(A,i),nth(A,i+1),...,nth(A,j))"
-   and eval() that string.
+<br>A. Yes, in recent development versions.
 
 <li>Q. Does octave support different precisions char, short, float, etc?
 <br>A. No.  There is some support for extended precision/fixed precision
@@ -200,33 +165,7 @@ global context.
    types (see Sparse answer above for alternative).
 
 <li>Q. Does octave support arrays of structures?
-<br>A. No.  Rather than using arrays of structures, could you use a structure of
-arrays?
-	<code><pre>
-        y = x(i).f becomes y = x.f(i)
-        x(i).f = y becomes x.f(i) = y
-        y = x(i)   becomes clear y; 
-                           foreach key,val=x, 
-                               eval(["y.",key,"=val;"]); 
-                           end
-        x(i) = y   becomes foreach key,val=y, 
-                               eval(["x.",key,"(i)=val;"]); 
-                           end
-	</pre></code>
-
-This doesn't work if your structure elements are matrices or vectors
-though.  In that case, you could use lists of structures:
-
-	<code><pre>
-        y = x(i).f  becomes y = nth(x,i).f
-        x(i).f = y  becomes s = nth(x,i); s.f=y; x(i) = s;
-        y = x(i)    becomes y = nth(x,i)
-        x(i) = y    stays   x(i) = y;
-	</pre></code>
-
-Either approach is ugly.  A better approach is to fix ov-struct.cc in octave/src
-so that octave handles indexed structures natively.
-
+<br>A. Yes in recent development versions.
 
 </ul>
 <h2>Toolboxes</h2>
@@ -263,13 +202,6 @@ for suggested alternatives.
 <dd>	SPC Tools spline directory
 <br>	ftp://svr-ftp.eng.cam.ac.uk/pub/comp.speech/tools/spctools/
 
-<dt>	ac2rc, ac2poly, rc2ac, etc.
-<dd>	Time Series Analysis toolbox
-<br>	www-dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
-
-<dd>	ellip 
-<dd>	search www.octave.org (it will probably show up in octave-forge at
-	some point)
 </dl>
 
 <li>Q. Statistics toolbox
@@ -307,9 +239,6 @@ for suggested alternatives.
     user-supplied function?
 <br>A. use FIXES/fsolve.cc on octave-forge.
 
-<li>Q. economy QR factorization is slow
-<br>A. use FIXES/qr.cc on octave-forge.
-
 <li>Q. exist(a,'var') fails.
 <br>A. octave-forge exist-type patch.
 
@@ -336,34 +265,6 @@ for suggested alternatives.
 
 <li>Q. subspace
 <br>A. http://www.mathworks.com/support/ftp/linalgv5.shtml
-
-<li>Q. gammaln
-<br>A. lgamma
-
-<li>Q. <a name=inline>inline</a>
-<br>A. The usual case, e.g., feval(inline('x^2'), 3) == 9, can be faked 
-   with something like:
-
-   <code><pre>
-   function name = inline(expr)
-     while (1)
-       name = sprintf('__inline%d',rand(1)*100000);
-       if !exist(name), break;
-     endwhile
-     eval("function __return=", name, ...
-	"(x)\n  __return=", expr, "; endfunction");
-   endfunction
-   </pre></code>
-
-   <p>A more correct version would scan expr for the required variables. 
-
-   <p>A complete version, able to handle, e.g., 
-   <code><pre>
-	g=inline('x^2'); g(3) == 9, 
-   </pre></code>
-   will require a user defined type which overloads the () operator. The 
-   same underlying technique should work, though. Remember to 'clear name' 
-   for the destructor. 
 
 <li>Q. audio functions
 <br>A. octave-forge/main/audio

@@ -26,11 +26,12 @@
 ## @strong{Inputs}
 ## @table @var 
 ## @item f 
-## A string contining the name of the function to minimize
+## A string containing the name of the function to minimize
 ## @item X0
 ## A vector of initial parameters fo the function @var{f}.
 ## @item options
-## Vector with control parameters (not all parameters are used) 
+## Vector with control parameters (not all parameters are used)
+## @verbatim
 ## options(1) - Show progress (if 1, default is 0, no progress)
 ## options(2) - Relative size of simplex (default 1e-3)
 ## options(6) - Optimization algorithm
@@ -44,6 +45,7 @@
 ##         this works better for me on a broad range of problems,
 ##         although the default in nmsmax is "regular simplex"
 ## options(10) - Maximum number of function evaluations
+## @end verbatim
 ## @item grad
 ## Unused (For compatibility with Matlab)
 ## @item P1,P2, ...

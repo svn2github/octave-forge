@@ -49,8 +49,6 @@ for k=1:2,
         r(15,k)=moment(x,6);
         r(16,k)=rms(x);
         r(17,k)=sem(x);
-    	%	tmp = center(x); %redundant with test of MEAN 
-	%r(18,k)=tmp(1);
 end;
 
 % check if result is correct

@@ -56,8 +56,8 @@ function s = vrml_faces (x,f,varargin)
 
 tran = 0 ;
 col = [0.3, 0.4, 0.9] ;
-emit = 0;
-convex = tcoord = imsz = tex = smooth = creaseAngle = nan ;
+convex = emit = 0;
+tcoord = imsz = tex = smooth = creaseAngle = nan ;
 colorPerVertex = nan;
 DEFcol = DEFcoord = "";
 

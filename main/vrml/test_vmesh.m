@@ -32,15 +32,15 @@ vmesh (z);
 printf ("Press a key.\n"); pause;
 
 printf (["The same surface, with checkered stripes ",\
-	 "(see 'checker' option).\n"]);
+	 "(see the 'checker' option).\n"]);
 
-vmesh (z,"checker",-[6,3]);
+vmesh (z,"checker",-[6,5]);
 
 printf ("Press a key.\n"); pause;
 
-printf (["The same surface, with heat coloring (see 'zrb', 'zgrey'\n",\
+printf (["The same surface, with z-dependent coloring (see 'zrb', 'zgrey'\n",\
 	 "  and 'zcol' options)\n"]);
 
 vmesh (z,"zrb");
 
-printf ("That's it!\n")
+printf ("That's it!\n");

@@ -13,11 +13,11 @@
 ## 'e'   : Examine : mouse 1 and drag rotates the scene
 ##                   mouse 3 and drag moves closer/farther          
 ## 'w'   : Walk    : mouse 1 and drag moves for/backward, turns
-##                   mouse 3 and drag translates parallely to screen
+##                   mouse 3 and drag translates parallel to the screen
 ## 's'   : Save a snapshot in files 'octave.snapshot.NNNN.ppm'
 ## 'q'   : Quit
 ## 
-## WARNING : FreeWRL >0.25 (http://www.crc.ca/FreeWRL/) must be installed
+## WARNING : FreeWRL >0.25 (http://www.crc.ca/FreeWRL/) must be installed.
 ##
 ## BUG     : The vrml browser is not killed when octave exits. Sometimes the
 ##           vrml browser does not get raised or gets raised improperly
@@ -155,20 +155,14 @@ if vrml_b_pid <= 0
   [out, status] = system ([vrml_b_name," ",b_opt," \"file:",b_temp,"\""], 1);
   if status,
     
-    ## keyboard
-    ## if ([vrml_b_pid] = system([vrml_b_name," ",b_opt," ",b_temp," ",b_log],0,"async")) <= 0
-    ##  [foo,bar,vrml_b_pid] = popen2(vrml_b_name,[b_opt," ",b_temp]) ;
-    ##  if vrml_b_pid <= 0,
-    printf("vrml_browse : Can't spawn browser ...\n");
+    printf("vrml_browse : Can't start browser '%s'. Is it installed?\n",\
+	   vrml_b_name);
     p = vrml_b_pid ;
     return ;
   else
-    ##    pclose (foo);
-    ##    pclose (bar);
+
     vrml_b_pid = str2num (out);
-    if verbose, 
-      printf( "vrml_browse : OK\n");
-    end
+    if verbose, printf( "vrml_browse : OK\n"); end
   end
 end				# End of starting new browser ########
 				# ####################################

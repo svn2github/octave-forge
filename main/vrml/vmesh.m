@@ -14,7 +14,7 @@
 ##
 ## Options : (all options of vrml_surf may be used too)
 ##
-## "col" , col  : 3      : RGB Color,                default = [0.3,0.4,0.9]
+## "col" , col  : 3      : RGB Color,                Default = [0.3,0.4,0.9]
 ##             or 3x(R*C): Color of vertices (vrml colorPerVertex is TRUE).
 ##             or 3x((R-1)*(C-1))
 ##                       : Color of facets
@@ -26,9 +26,18 @@
 ##                       : Reflectivity of facets.
 ##
 ## "checker", c : 1x2 : Color as a checker. If c(1) is positive, checker has
-##            c(1) rows. If it is negative, each checker row is c(1) facets
-##            high c(2) likewise determines width of checker columns.
-## "checker", c : 1x1 : Same as [c,c].
+##                      c(1) rows. If it is negative, each checker row is
+##                      c(1) facets high. c(2) does the same for columns.
+##             or 1x1 : Same as [c,c].
+##
+## "zgray"            : Color varies from black for lowest point to white
+##                      for highest.
+##
+## "zrb"              : Color varies from blue for lowest point to red for
+##                      highest.
+##
+## "zcol", zcol : Mx3 : Color is linearly interpolated between the RGB
+##                      values specified by the rows of zcol.
 ##
 ##        RGB and reflectivity values should be in the [0,1] interval.
 ##
@@ -36,8 +45,8 @@
 ##
 ##                        z == l(i)   (1 <= i <= length(l))
 ## 
-## "lcol", lc   : Color of the plane(s).                        <[.7 .7 .7]>
-## "ltran",lt   : Transparency of the level plane(s).                  <0.3>
+## "lcol", lc   : Nx3 : Color of the plane(s).          Default = [.7 .7 .7]
+## "ltran",lt   : Nx1 : Transparency of the plane(s).   Default =        0.3
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 
@@ -161,16 +170,7 @@ s = [pl, sbg, s , fr, slevel];
 
 
 vrml_browse (s);
-## keyboard
 
 if ! nargout,  clear s; end
 
-## R=5; C=11;
-## x = ones(R,1)*[1:C]; y = [1:R]'*ones(1,C);
-## zz = z = sin(x)+(2*y/R-1).^2 ;
-## ## Punch some holes
-## holes = ind2sub ([R,C],[3,3,3,1,2,3,2,3;1,2,3,5,7,7,9,10]')
-## z(holes) = nan
-## save_vrml("tmp.wrl",vmesh(x,y,z+1))
-## save_vrml("tmp.wrl",vmesh(z,"col",[0.5,0,0],"tran",0.5),vmesh(z+1))
 

@@ -8,9 +8,11 @@ else
 
     dnl Check for term.h
     AC_CHECK_HEADER(term.h, have_term=yes, have_term=no)
-    if test $have_term = yes ; then
-       DEFHAVE_TERM_H="HAVE_TERM_H=1"
-       AC_SUBST(DEFHAVE_TERM_H)
+    AC_CHECK_HEADER(termcap.h, have_termcap=yes, have_termcap=no)
+    if test $have_term = yes || test $have_termcap = yes; then
+       DEFUSE_TERM="USE_TERM=1"
+       AC_SUBST(DEFUSE_TERM)
+       AC_CHECK_LIB(termcap, tgetnum)
        STATUS=yes
     else
        STATUS=no
@@ -20,6 +22,6 @@ else
     dnl have to scan the list for critical details.
 
     STATUS_MSG="$STATUS_MSG
-   have term.h  : $STATUS"
+   have term.h or termcap.h: $STATUS"
 
 fi

@@ -22,9 +22,10 @@
  *************************************************************************/
 
 #include "octave/oct.h"
-#define HAVE_TERM_H 1
-#if HAVE_TERM_H
-#include "term.h"
+#if defined (HAVE_TERM_H)
+#  include "term.h"
+#elif defined (HAVE_TERMCAP_H)
+#  include "termcap.h"
 #endif
 
 #define BUF_SIZE	256
@@ -63,7 +64,7 @@ DEFUN_DLD(waitbar, args, nargout,
   static int n_chars_old;
   static int pct_int_old;
   static int length;
-#if HAVE_TERM_H
+#if defined(USE_TERM)
   static char term_buffer[1024];
   static char *begin_rv, *end_rv;
   static int brvlen, ervlen;
@@ -100,12 +101,12 @@ DEFUN_DLD(waitbar, args, nargout,
 	  no_terminal	= true;
 	  return retval;
 	}
-#if HAVE_TERM_H
+#if defined (USE_TERM)
       i = tgetnum("co");
       smart_term = i ? true : false;
 #endif
       if(nargin==1)
-#if HAVE_TERM_H
+#if defined (USE_TERM)
 	length = smart_term ? i-1 : DEFAULT_LEN;
 #else
         length = DEFAULT_LEN;
@@ -116,7 +117,7 @@ DEFUN_DLD(waitbar, args, nargout,
 	  if(length>MAX_LEN)	length	= MAX_LEN;
 	  if(length<=0)		length	= DEFAULT_LEN;
 	}
-#if HAVE_TERM_H
+#if defined (USE_TERM)
       if(smart_term)
 	{
 	  // get terminal strings ("rv"="reverse video")
@@ -149,7 +150,7 @@ DEFUN_DLD(waitbar, args, nargout,
 	  printf(print_buf);
 	  print_buf[0]		= '[';
 	  print_buf[length+1]	= ']';
-#if HAVE_TERM_H
+#if defined (USE_TERM)
 	}
 #endif
       n_chars_old	= 0;
@@ -173,7 +174,7 @@ DEFUN_DLD(waitbar, args, nargout,
       // check to see of output needs to be updated
       if(n_chars!=n_chars_old || pct_int!=pct_int_old)
 	{
-#if HAVE_TERM_H
+#if defined (USE_TERM)
 	  if(smart_term)
 	    {
 	      static char pct_str[6];
@@ -210,7 +211,7 @@ DEFUN_DLD(waitbar, args, nargout,
 		for(int i=n_chars+1; i<=n_chars_old; ++i)
 		  print_buf[i]	= ' ';
 	      sprintf(&(print_buf[length+3])," %3i%%\r",pct_int);
-#if HAVE_TERM_H
+#if defined (USE_TERM)
 	    }
 #endif
 	  printf(print_buf);

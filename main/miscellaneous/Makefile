@@ -5,7 +5,7 @@ ifdef HAVE_LIB_TERMCAP
 endif
 
 
-all:	waitbar.oct listen.oct
+all:	dispatch.oct waitbar.oct listen.oct
 
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)

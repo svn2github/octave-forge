@@ -1,9 +1,8 @@
 %SINVEST1 shows the parameters of a time series calculated by INVEST1
 % only called by INVEST1
 
-%       Version 2.90,      24.03.2002
-%	Copyright (c) 1998-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%       Version 2.99,      10 May 2002
+%	Copyright (c) 1998-2002 by Alois Schloegl   <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -84,8 +83,8 @@ while 1,
         elseif K==5
                 plot(0:M,E,'r');
                 if exist('OCTAVE_VERSION')<5
-                	v=axis; v(3)=min([v(3); 0]); axis(v);
-		endif
+                        v=axis; v(3)=min([v(3); 0]); axis(v);
+                end
                 title('Mean Square (prediction) Error decrease with increasing model order');
                 xlabel('Model order p');
         elseif K==6 
@@ -108,7 +107,7 @@ while 1,
                                 plot(0:tmp-1,FPE(1:tmp),'r',optFPE,FPE(optFPE+1),'ro');
                                 if exist('OCTAVE_VERSION')<5
                                         text(optFPE,FPE(optFPE+1),sprintf('%i',optFPE));
-                                	v=axis; v(3)=min([v(3); 0]); axis(v);
+                                        v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Final Prediction Error FPE criterion');
                         elseif K==2 
@@ -117,7 +116,7 @@ while 1,
                                 plot(0:tmp-1,AIC(1:tmp),'r',optAIC,AIC(optAIC+1),'ro');
                                 if exist('OCTAVE_VERSION')<5
                                         text(optAIC,AIC(optAIC+1),sprintf('%i',optAIC));
-					v=axis; v(3)=min([v(3); 0]); axis(v);
+                                        v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Akaike''s Information Criterion AIC');
                         elseif K==3
@@ -126,7 +125,7 @@ while 1,
                                 plot(0:tmp-1,BIC(1:tmp),'r',optBIC,BIC(optBIC+1),'ro');
                                 if exist('OCTAVE_VERSION')<5
                                         text(optBIC,BIC(optBIC+1),sprintf('%i',optBIC));
-                                	v=axis; v(3)=min([v(3); 0]); axis(v);
+                                        v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Bayesian Akaike Information Criterion BIC');
                         elseif K==4
@@ -135,7 +134,7 @@ while 1,
                                 plot(0:tmp-1,SBC(1:tmp),'r',optSBC,SBC(optSBC+1),'ro');
                                 if exist('OCTAVE_VERSION')<5
                                         text(optSBC,SBC(optSBC+1),sprintf('%i',optSBC));
-                                	v=axis; v(3)=min([v(3); 0]); axis(v);
+                                        v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Schwartz''s Bayesian Criterion SBC');
                                 %elseif K==5
@@ -151,7 +150,7 @@ while 1,
                                 plot(0:tmp-1,CATcrit(1:tmp),'r',optCAT,CATcrit(optCAT+1),'ro');
                                 if exist('OCTAVE_VERSION')<5
                                         text(optCAT,CATcrit(optCAT+1),sprintf('%i',optCAT));
-                                	v=axis; v(3)=min([v(3); 0]); axis(v);
+                                        v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Parzen''s CAT Criterion ');
                         elseif K==6
@@ -160,7 +159,7 @@ while 1,
                                 plot(0:tmp-1,PHI(1:tmp),'r',optPHI,PHI(optPHI+1),'ro');
                                 if exist('OCTAVE_VERSION')<5
                                         text(optPHI,PHI(optPHI+1),sprintf('%i',optPHI));
-                                	v=axis; v(3)=min([v(3); 0]); axis(v);
+                                        v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Phi criterion ');   
                         elseif K==7
@@ -179,8 +178,9 @@ while 1,
                 for k=1:nr,
                         tmp=freqz(sqrt(E(k,oo+1)),[1 -ARPMX(k,oo/2*(oo-1)+(1:oo))],512);
                         h(:,k)=tmp(:);
-                end;        
-                plot((0:511)/512/2*Fs,abs(h'));
+                end
+                
+                plot((0:511)/512/2*Fs,abs(h));
                 %plot((0:511)/512/2,abs(freqz(1,[1 -ARP]')));
                 title('Matched Filter');
                 xlabel('Frequency f');
@@ -214,11 +214,11 @@ while 1,
                 
                 MATLAB_VERSION = version;
                 if MATLAB_VERSION(1)=='4'
-                	ax = gca;
+                        ax = gca;
                         tmp = get(ax,'Aspect');
                         set(ax,'Aspect',[tmp(1),1]);
                 elseif MATLAB_VERSION(1)=='5'
-                	ax = gca;
+                        ax = gca;
                         tmp = get(ax,'DataAspectRatio');
                         set(ax,'PlotBoxAspectRatio',tmp);
                 end;
@@ -237,10 +237,10 @@ while 1,
                         % sdf(:,k)=sqrt(E(k+1))*sdf(:,k);
                 end;
                 mesh(F/2/pi*Fs,1:N,log10(abs(sdf)'));
-		zlabel('log10 |H(f,p)|');ylabel('model order p'); xlabel('frequency f [2*pi rad/s]');
+                zlabel('log10 |H(f,p)|');ylabel('model order p'); xlabel('frequency f [2*pi rad/s]');
                 if exist('OCTAVE_VERSION')<5
-			view(30,45);
-              	end;
+                        view(30,45);
+                end;
         elseif K==13
                 for k=1:M,
                         xxx=eig(toeplitz(AutoCov(1:k)/E(k)));
@@ -275,17 +275,17 @@ while 1,
                 end;
         elseif K==14,
                 tmp = histo3(MOPS(1:max(1,size(MOPS,1)-1),:));
-                if exist('OCTAVE_VERSION')<5
+                if exist('OCTAVE_VERSION')<5,
                         bar(tmp.X,tmp.H,'stacked');
                 else
                         bar(tmp.X,sum(tmp.H,2));
                 end;
                 xlabel('model order p')
                 if exist('OCTAVE_VERSION')<5
-	                %legend({'FPE','AIC','BIC','SBC','MDL','CAT','PHI','JEW','HAR'});
-        	        legend('FPE','AIC','BIC','SBC','MDL','CAT','PHI','JEW','HAR');
+                        %legend({'FPE','AIC','BIC','SBC','MDL','CAT','PHI','JEW','HAR'});
+                        legend('FPE','AIC','BIC','SBC','MDL','CAT','PHI','JEW','HAR');
                 end;        
-	elseif K==15
+        elseif K==15
                 break; 
         end;
 end;

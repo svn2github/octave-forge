@@ -9,7 +9,6 @@ ifndef OCTAVE_FORGE
 	X_LIBS = -L/usr/X11R6/lib
 endif
 
-%.oct: %.cc ; $(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
 
 ifdef HAVE_X
 all: $(PROGS)
@@ -19,7 +18,18 @@ all:
 endif
 
 $(PROGS:.oct=.o): graphics.h
-$(PROGS): graphics.o
+
+ginput.oct: ginput.o graphics.o
+	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
+
+grab.oct: grab.o graphics.o
+	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
+
+gtext.oct: gtext.o graphics.o
+	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
+
+gzoom.oct: gzoom.o graphics.o
+	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
 
 clean: ; -$(RM) *.o octave-core core *~ *.oct
 

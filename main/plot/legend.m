@@ -35,6 +35,8 @@
 ## 2001-09-28 Paul Söderlind <Paul.Soderlind@hhs.se>
 ##   * add a pause after save request to give gnuplot time to write the file
 ##   * add comment to call plot before legend.
+## 2002-09-18 Paul Kienzle
+##   * make the pause check every .1 seconds
 
 function legend (...)
 
@@ -74,7 +76,6 @@ function legend (...)
   tmpfilename=tmpnam;
   command=["save \"",tmpfilename,"\"\n"];
   graw(command);
-  pause(2);
 
   awk_prog= \
       "BEGIN { \
@@ -105,6 +106,13 @@ function legend (...)
   shell_cmd=["grep \"^pl \" " tmpfilename " | " \
              "sed -e 's/,/ , /g' -e 's/\"/ \" /g'" " | " \
              "awk '" awk_prog "'"];
+
+  # wait for the file to appear
+  attempt=0;
+  while (isempty(stat(tmpfilename))) 
+    if (++attempt > 20) error("gnuplot is not responding"); endif
+    usleep(1e5); 
+  end
   plot_cmd = split(system(shell_cmd),"\n");
   if (~length(deblank(plot_cmd(rows(plot_cmd), :))))
     plot_cmd = plot_cmd ([1:rows(plot_cmd)-1],:);

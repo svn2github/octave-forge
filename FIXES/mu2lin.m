@@ -31,10 +31,12 @@
 ## Created: 18 October 1994
 ## Adapted-By: jwe
 
-## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## Paul Kienzle <pkienzle@users.sf.net>
 ##    handle [-1,1] input range
 ## 2001-10-23 Paul Kienzle <pkienzle@users.sf.net>
 ## * default to 8-bit as in octave
+## 2001-12-11 Paul Kienzle <pkienzle@users.sf.net>
+## * use asymmetric transformation [-32768,32767]->[-1,1] for real
 
 function y = mu2lin (x, bit)
 
@@ -74,7 +76,8 @@ function y = mu2lin (x, bit)
 
   ## convert to real or 8-bit
   if (bit == 0)
-    y = y/32768;
+    ## [ -32768, 32767 ] -> [ -1, 1 ]
+    y = (y+0.5)/32767.5;
   elseif (bit == 8)
     ld = max (max (abs (y)));
     if (ld < 16384) #% && ld > 0)

@@ -31,10 +31,12 @@
 ## Created: 17 October 1994
 ## Adapted-By: jwe
 
-## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## Paul Kienzle <pkienzle@users.sf.net>
 ##    handle [-1,1] input range
-## 2001-10-22 Paul Kienzle
+## 2001-10-22 Paul Kienzle <pkienzle@users.sf.net>
 ## * restore Octave's guessing behaviour for precision, but issue warning
+## 2001-12-11 Paul Kienzle <pkienzle@users.sf.net>
+## * convert 
 
 function y = lin2mu (x, bit)
 
@@ -59,7 +61,8 @@ function y = lin2mu (x, bit)
 
   ## transform real and 8-bit format to 16-bit
   if (bit == 0)
-    x = 32768 .* x;
+    [-1,1] -> [-32768, 32767]
+    x = round(32767.5 * x - 0.5);
   elseif (bit == 8)
     x = 256 .* x;
   endif

@@ -53,7 +53,7 @@ function text(varargin)
   if nargin == 0, gset nolabel; return; endif
 
   position=[0, 0, 0];
-  text="";
+  str="";
   rotate="norotate";
   align="left";
   fontname="";
@@ -61,29 +61,32 @@ function text(varargin)
   units="first";
 
   ## Process text(x,y[,z],'text') forms
-  n=1;
-  arg = varargin{n++};
+  arg = varargin{1};
   if is_scalar(arg),
     position(1) = arg;
     if nargin < 2, usage(usage_str); endif
-    arg = varargin{n++};
+    arg = varargin{2};
     if !is_scalar(arg), usage(usage_str); endif
     position(2) = arg;
 
     if nargin < 3, usage(usage_str); endif
-    arg = varargin{n++};
+    arg = varargin{3};
     if isstr(arg)
-      text=arg;
+      str=arg;
+      n=4;
     else
       position(3) = arg;
       if nargin < 4, usage(usage_str); endif
-      text=varargin{n++};
+      str=varargin{4};
+      n=5;
     endif
-    if !isstr(text), usage(usage_str); endif
+    if !isstr(str), usage(usage_str); endif
+  else
+    n=1;
   endif
 
   ## Process text('property',value) forms
-  if rem(nargin-n+1, 2) != 0, error(usage_str); endif
+  if rem(nargin-(n-1), 2) != 0, error(usage_str); endif
   for i=n:2:nargin
     prop=varargin{i}; val=varargin{i+1};
     if !isstr(prop), error(usage_str); endif
@@ -117,7 +120,7 @@ function text(varargin)
 	warning(["text('Units','", val, "') ignored"]);
       endif
     elseif strcmp(prop, "position")
-      if is_vector(val) || !(length(val)>=2 && length(val)<=3)
+      if !isreal(val) || length(val)<2 || length(val)>3
 	error("text 'Position' expects vector of x,y and maybe z"); 
       elseif length(val)==2, position=postpad(val,3);
       else position = val;
@@ -131,7 +134,7 @@ function text(varargin)
       endif
     elseif strcmp(prop, "string")
       if !isstr(val), error("text 'String' expects a string"); endif
-      text = val;
+      str = val;
     else
       warning(["ignoring property ", prop]);
     endif
@@ -149,7 +152,7 @@ function text(varargin)
     atstr = sprintf("%f,%f", position(1),position(2));
   endif
   command = sprintf('gset label "%s" at %s %s %s %s%s',
-		    text, units, atstr, align, rotate, font);
+		    str, units, atstr, align, rotate, font);
   eval(command);
 
 endfunction
@@ -166,7 +169,7 @@ endfunction
 %! text( 0,9,'tl');
 %! text( 5,9,'tc','HorizontalAlignment','center');
 %! text(10,9,'tr','HorizontalAlignment','right');
-%! text( 2,4,'rotated','Rotation',90);
+%! text('Position', [2,4],'String','rotated','Rotation',90);
 %! plot(0:10,0:10,";;");
 %! text; title("");
 %!

@@ -17,7 +17,7 @@ my $script  = basename($0);
 my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
 			    # beside octave-forge if they are somewhere else
 			    # or modify this script
-my $OCTAVECVS = "http://www.octave.org/cgi-bin/cvsweb.cgi/~checkout~/octave";
+my $OCTAVECVS = "http://www.octave.org/cgi-bin/viewcvs.cgi/~checkout~/octave";
 my $FORGECVS = "http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/";
 my $tmpdir = "/tmp";
 my $catdir = "index";

@@ -46,19 +46,31 @@ function r=mod(x,y)
     r(nz) = x - floor(x./y).*y;
   endif
 
-endfunction;
+endfunction
   
+## empty input test
+%!assert (isempty(mod([], [])));
+
+## x mod y, y != 0 tests
 %!assert (mod(5, 3), 2);
 %!assert (mod(-5, 3), 1);
 %!assert (mod(0, 3), 0);
-%!assert (isempty(mod([], [])));
 %!assert (mod([-5, 5, 0], [3, 3, 3]), [1, 2, 0]);
 %!assert (mod([-5; 5; 0], [3; 3; 3]), [1; 2; 0]);
 %!assert (mod([-5, 5; 0, 3], [3, 3 ; 3, 1]), [1, 2 ; 0, 0]);
+
+## x mod 0 tests
 %!assert (mod(5, 0), 5);
 %!assert (mod(-5, 0), -5);
 %!assert (mod([-5, 5, 0], [3, 0, 3]), [1, 5, 0]);
 %!assert (mod([-5; 5; 0], [3; 0; 3]), [1; 5; 0]);
 %!assert (mod([-5, 5; 0, 3], [3, 0 ; 3, 1]), [1, 5 ; 0, 0]);
+%!assert (mod([-5, 5; 0, 3], [0, 0 ; 0, 0]), [-5, 5; 0, 3]);
+
+## mixed scalar/matrix tests
 %!assert (mod([-5, 5; 0, 3], 0), [-5, 5; 0, 3]); 
+%!assert (mod([-5, 5; 0, 3], 3), [1, 2; 0, 0]);
+%!assert (mod(-5,[0,0; 0,0]), [-5, -5; -5, -5]);
+%!assert (mod(-5,[3,0; 3,1]), [1, -5; 1, 0]);
+%!assert (mod(-5,[3,2; 3,1]), [1, 1; 1, 0]);
 

@@ -1,3 +1,7 @@
+// XXX FIXME XXX leave this in until problems with incorrectly specified
+// number of equality constraints is resolved.
+#define BOUNDS_CHECKING
+
 #include <octave/oct.h>
 #include <octave/pager.h>
 #include <lo-ieee.h>
@@ -211,31 +215,54 @@ static ColumnVector extract_solution(Matrix A,Matrix basis,ColumnVector upper_bo
   return(x);
 }
 
-int check_dimensions(RowVector c,Matrix A,ColumnVector b,ColumnVector vlb,ColumnVector vub)
+int check_dimensions(const RowVector c, const Matrix A, const ColumnVector b,
+		     ColumnVector &vlb, ColumnVector &vub)
 {
   int errors = 0;
   int num_rows = A.rows();
   int num_cols = A.cols();
 
-  if(Matrix(c).cols() != num_cols)
+  if(c.length() != num_cols)
     {
       error("lp: columns in first argument do not match rows in the second argument.");
       errors--;
     }
-  else if(Matrix(b).rows() != num_rows)
+  if(b.length() != num_rows)
     {
       error("lp: rows in the second argument do not match the third argument.");
       errors--;
     }
-  else if(Matrix(vlb).rows() != num_cols)
+  if(vlb.length() != num_cols)
     {
-      error("lp: columns in the second argument do not match the fourth argument.");
-      errors--;
+      if (vlb.length() == 0) 
+	{
+	  vlb.resize (num_cols, -lo_ieee_inf_value());
+	}
+      else if (vlb.length() == 1)
+	{
+	  vlb.resize (num_cols, vlb(0));
+	}
+      else
+	{
+	  error("lp: columns in the second argument do not match the fourth argument.");
+	  errors--;
+	}
     }
-  else if(Matrix(vub).rows() != num_cols)
+  if(vub.length() != num_cols)
     {
-      error("lp: columns in the second argument do not match the fifth argument.");
-      errors--;
+      if (vub.length() == 0)
+	{
+	  vub.resize (num_cols, lo_ieee_inf_value());
+	}
+      else if (vub.length() == 1)
+	{
+	  vub.resize (num_cols, vub(0));
+	}
+      else
+	{
+	  error("lp: columns in the second argument do not match the fifth argument.");
+	  errors--;
+	}
     }
   return(errors);
 }
@@ -258,11 +285,11 @@ Subject to: @var{a}*x <= @var{b}\n\
   @var{n} dimensional vector.\n\
 @item lb\n\
   Additional lower bound constraint vector on x.  Make\n\
-  this -Infinity if you want no lower bound, but you\n\
+  this -Inf if you want no lower bound, but you\n\
   would like an upper bound or equality constraints.\n\
 @item ub\n\
   Additional upper bound contraint vector on x.  If this\n\
-  is Infinity that implies no upper bound constraint.\n\
+  is Inf that implies no upper bound constraint.\n\
 @item h\n\
   An integer representing how many of the constraints are\n\
   equality constraints instead of inequality.\n\
@@ -272,7 +299,7 @@ Subject to: @var{a}*x <= @var{b}\n\
 @end deftypefn" )
 {
 #ifdef HAVE_OCTAVE_20
-  error("lp: unavaible in Octave 2.0");
+  error("lp: unavailable in Octave 2.0");
   return octave_value_list();
 #else  /* !HAVE_OCTAVE_20 */
   const double inf = lo_ieee_inf_value ();
@@ -283,13 +310,11 @@ Subject to: @var{a}*x <= @var{b}\n\
   int include_in_basis;
   ColumnVector x;
   Matrix T;
-  Matrix freeVars(1,2,0.0);
-  int freeVarNum = 0;
-  
+
   // Declarations of arguement variables
   RowVector c;
   Matrix A;
-  ColumnVector b,vlb,vub,orig_vub;
+  ColumnVector b,vlb,vub;
   // Start checking arguements 
   if(nargin<3 || nargin > 6)
     {
@@ -315,41 +340,43 @@ Subject to: @var{a}*x <= @var{b}\n\
 	  return retval;
 	}
     case 5:
-      vub = ColumnVector(args(4).vector_value());
-      orig_vub = vub;
+      if (!args(4).is_empty()) vub = ColumnVector(args(4).vector_value());
     case 4:
-      vlb = ColumnVector(args(3).vector_value());
-      break;
+      if (!args(3).is_empty()) vlb = ColumnVector(args(3).vector_value());
     case 3:
       break;
     }
+  if (error_state) return octave_value_list();
 
+  warning("lp is unreliable: the returned solution does not always lie within the bounds");
+  
   int nr = A.rows();
   int nc = A.columns();
-  
+
   if(check_dimensions(c,A,b,vlb,vub) < 0){return retval;}
-  
+  ColumnVector orig_vub(vub);
+
   // Now take care of upper and lower bounds
-  idx_vector aRange;
-  idx_vector bRange(Range(1,nr));
-  for(i =0;i<nc;i++)
+  Matrix freeVars(0,2,0.0);
+  int freeVarNum = 0;
+  for (i=0; i<nc; i++)
     {
-      if(vlb(i) > -inf)
+      if (!isinf(-vlb(i)))
 	{
-	  // Translate variable up;
+	  // std::cout << i << " translate variable up\n";
 	  // Make the {x_min < x < x_max} constraint now equal to {0 < x_new < x_max - x_min}
-	  aRange = idx_vector(Range(i+1,i+1));
-	  b = b-ColumnVector(Matrix(A.index(bRange,aRange))*double(vlb(i)));
+	  b = b-A.column(i)*vlb(i);
 	  // If the upper bound is Infinity we do not change it.  
-	  if(vub(i) < inf){
+	  if(!isinf(vub(i))){
 	    vub(i) = vub(i)-vlb(i);
 	  }
 	}
-      else if(vub(i) < inf)
+      else if (!isinf(vub(i)))
 	{
+	  // std::cout << i << " translate variable down\n";
 	  // Now we have the following constraint ==> {-Inf < x < x_max}
 	  // After we are done it will be {0 < x_new < Inf}, where {x_new = -x+x_max}
-	  b = b-ColumnVector(Matrix(A.index(bRange,aRange))*double(vub(i)));
+	  b = b-A.column(i)*vub(i);
 	  T = lp_identity_matrix(A.rows());
 	  T(i,i) = -1.0;
 	  A = A*T;
@@ -357,21 +384,18 @@ Subject to: @var{a}*x <= @var{b}\n\
 	}
       else
 	{
+	  // std::cout << i << " split variable\n";
 	  // both bounds are infinity so make this into two variables;
 	  // Now we have the following constraint -Inf < x < Inf 
 	  // After we are done we have {0 < x1_new < Inf} and 
 	  // {0 < x2_new < Inf} where {x = x1_new-x2_new} 
-	  aRange = idx_vector(Range(i+1,i+1));
-	  A = A.append(-Matrix(A.index(bRange,aRange)));
-	  c = RowVector(Matrix(c).append(Matrix(1,1,-c(i))));
-	  if(freeVarNum > 0)
-	    {
-	      freeVars.stack(Matrix(1,2,0.0));
-	    }
-	  freeVars(i,0) = i;
-	  freeVars(i,1) = A.cols()-1;
+	  A = A.append(-A.column(i));
+	  c.resize(c.length()+1,-c(i));
+	  vub.resize(vub.length()+1,inf);
+	  freeVars.resize(freeVarNum+1,2,0.0);
+	  freeVars(freeVarNum,0) = i;
+	  freeVars(freeVarNum,1) = A.cols()-1;
 	  freeVarNum++;
-	  vub = ColumnVector(Matrix(vub).stack(Matrix(1,1,inf)));
 	}
     }
   
@@ -401,7 +425,7 @@ Subject to: @var{a}*x <= @var{b}\n\
       error("lp: it does not make sense to have more equalities than the rank of the system");
       return(retval);
     }
-  
+
   if(index < nr)
     {
       include_in_basis = FALSE;
@@ -444,6 +468,7 @@ Subject to: @var{a}*x <= @var{b}\n\
 	    }
 	}
     }
+
 
   idx_vector tmp_rows;
   idx_vector tmp_cols; 
@@ -512,7 +537,7 @@ Subject to: @var{a}*x <= @var{b}\n\
       which_bound = RowVector(temp);
       A = A.stack(Matrix(c));
       tmp_cols = Range(T.cols(),T.cols());
-      T(nr+1,T.cols()) = 0; 
+      T(nr,T.cols()-1) = 0; 
       tmp_rows = Range(1,nr+1);
       temp = Matrix(T.index(tmp_rows,tmp_cols));
       A = A.append(temp);
@@ -524,18 +549,21 @@ Subject to: @var{a}*x <= @var{b}\n\
       tmp_rows = Range(1,T.rows()-1);
       T = Matrix(T.index(tmp_rows,tmp_cols));
     }
+
   x = extract_solution(T,basis,vub,which_bound);
+
   // --------------------------------------------------------
+  idx_vector aRange;
+  idx_vector bRange(Range(1,1));
   idx_vector cRange;
-  bRange = Range(1,1);
   for(j=0,i=0;i<nc;i++)
     {
-      if(vlb(i) > -inf)
+      if(!isinf(-vlb(i)))
 	{
 	  // Make the {x_min < x < x_max} constraint now equal to {0 < x_new < x_max - x_min}
 	  x(i) = x(i)-vlb(i);
 	}
-      else if(orig_vub(i) < inf)
+      else if(!isinf(orig_vub(i)))
 	{
 	  // Translate negative variable up;
 	  x(i) = -x(i)+orig_vub(i);
@@ -601,6 +629,8 @@ Subject to: @var{a}*x <= @var{b}\n\
 		}	
 	      x = ColumnVector(T);
 	    }
+
+	  j++;
 	}
     }
   // --------------------------------------------------------

@@ -133,7 +133,7 @@ function edit(file,state)
     return
   endif
 
-  ## if editting something other than a m-file or an oct-file, just
+  ## if editing something other than a m-file or an oct-file, just
   ## edit it.
   path = [ FUNCTION_HOME, "/", file ];
   idx = rindex(file,'.');
@@ -242,7 +242,7 @@ SUCH DAMAGE.\
 	comment = ["/*\n", head, "\n\n", tail, "\n\n*/\n\n"];
       endif
       ## if we are shadowing an m-file, paste the code for the m-file
-      if exists == 2
+      if any(exists == [2,103])
 	code = [ "\\ ", strrep(type(name),"\n","\n// ") ];
       else
 	code = " ";
@@ -256,7 +256,7 @@ SUCH DAMAGE.\
       text = [ comment, body ];
     case "m"
       ## if we are editting a function defined on the fly, paste the code
-      if exists == 2
+      if any(exists == [2,103])
 	body = type(name);
       else
 	body = [ "function [ ret ] = ", name, " ()\n\nendfunction\n" ];

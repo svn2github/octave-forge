@@ -10,14 +10,14 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## ok = test_cg_min       - Test that cg_min works
+## test_bfgs              - Test that bfgs works
 ##
-## Check that cg_min treats struct options correctly
+## Check that bfgs treats struct options correctly
 ##
 ## Sets 'ok' to 1 if success, 0 otherwise
 
 ## The name of the optimizing function
-optim_func = "bfgs"; # "cg_min";
+if ! exist ("optim_func"), optim_func = "bfgs"; end
 
 ok = 1;
 cnt = 0;
@@ -48,6 +48,11 @@ endfunction
 if verbose
   printf ("\n   Testing that %s accepts struct control variable\n\n",\
 	  optim_func);
+
+  printf (["     Set 'optim_func' to the name of the optimization\n",\
+	   "     function you want to test (must have same synopsis\n",\
+	   "     as 'bfgs')\n\n"]);
+
   printf ("  Nparams = N = %i\n",N);
   fflush (stdout);
 end

@@ -10,16 +10,16 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## ok = test_cg_min       - Test that cg_min works
+## test_min_2                   - Test that bfgs works
 ##
 ## Defines some simple functions and verifies that calling
 ## 
-## cg_min on them returns the correct minimum.
+## bfgs on them returns the correct minimum.
 ##
 ## Sets 'ok' to 1 if success, 0 otherwise
 
 ## The name of the optimizing function
-optim_func = "bfgs"; # "cg_min";
+if ! exist ("optim_func"), optim_func = "bfgs"; end
 
 ok = 1;
 
@@ -74,6 +74,11 @@ endfunction
 
 if verbose
   printf ("\n   Testing %s on a quadratic problem\n\n", optim_func);
+
+  printf (["     Set 'optim_func' to the name of the optimization\n",\
+	   "     function you want to test (must have same synopsis\n",\
+	   "     as 'bfgs')\n\n"]);
+
   printf ("  Nparams = P = %i,  Nobses = R = %i\n",P,R);
   fflush (stdout);
 end

@@ -12,10 +12,11 @@
 
 
 ##
-## Test cg_min
+## Test an optimization function with the same synopsis as bfgs.m 
 ##
-## optim_func = "cg_min";
-optim_func = "bfgs";
+
+
+if ! exist ("optim_func"), optim_func = "bfgs"; end
 
 ok = 1;
 
@@ -24,6 +25,9 @@ if ! exist ("verbose"), verbose = 0; end
 if verbose
   printf ("\n   Testing '%s' on a quadratic programming problem\n\n",\
 	  optim_func);
+  printf (["     Set 'optim_func' to the name of the optimization\n",\
+	   "     function you want to test (must have same synopsis\n",\
+	   "     as 'bfgs')\n\n"]);
 end
 
 

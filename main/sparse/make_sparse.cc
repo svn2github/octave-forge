@@ -176,13 +176,12 @@ if more than two values are specified for the same @var{i},@var{j}\n\
 position, then the last specified value will be kept\n\
    @end itemize\n\
 \n\
-@item @var{S}=  sparse(@var{i},@var{j},@var{s})          uses @var{m}=max(@var{i}), @var{n}=max(@var{j})\n\
+@item @var{S}=  sparse(@var{i},@var{j},@var{sv})          uses @var{m}=max(@var{i}), @var{n}=max(@var{j})\n\
 \n\
 @item @var{S}=  sparse(@var{m},@var{n})            does sparse([],[],[],@var{m},@var{n},0)\n\
 \n\
-@var{s}, and @var{i} or @var{j} may be scalars, in\n\
-which case they are expanded\n\
-so they all have the same length\n\
+@var{sv}, and @var{i} or @var{j} may be scalars, in\n\
+which case they are expanded to all have the same length\n\
 @end enumerate\n\
 @seealso{full}\n\
 @end deftypefn")
@@ -447,6 +446,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.13  2003/10/27 15:24:13  aadler
+ * doc bug
+ *
  * Revision 1.12  2003/10/18 04:55:47  aadler
  * spreal spimag and new tests
  *

@@ -28,11 +28,11 @@ install:
 ifdef LEAVEHERE
 	@echo "Leaving mex.o, mex.h and matrix.h in place --- do not remove!"
 else
-	@if ! test -e $(OPATH) ; then \
+	 if ! test -e $(OPATH) ; then \
 	  echo creating $(OPATH) ; \
 	  $(INSTALL) -d $(OPATH) ; \
 	fi
-	@if test -d $(OPATH) ; then \
+	 if test -d $(OPATH) ; then \
 	  echo installing mex/mex.o mex/mex.h mex/matrix.h in $(OPATH) ; \
 	  $(INSTALL_DATA) mex.o $(OPATH)/mex.o ; \
 	  $(INSTALL_DATA) mex.h $(OPATH)/mex.h ; \

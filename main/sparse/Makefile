@@ -1,93 +1,7 @@
 # Makefile and README for octave SuperLU routines
 # $Id$
 #
-# $Log$
-# Revision 1.16  2003/10/18 04:55:47  aadler
-# spreal spimag and new tests
-#
-# Revision 1.15  2003/08/30 03:03:05  aadler
-# mods to prevent segfaults for sparse
-#
-# Revision 1.14  2003/08/29 21:21:15  aadler
-# mods to fix bugs for empty sparse
-#
-# Revision 1.13  2003/07/25 19:01:51  pkienzle
-# Use $(LN_S) instead of ln -s
-#
-# Revision 1.12  2003/01/04 16:42:51  aadler
-# mods for SGI compiler (from pkienzle)
-#
-# Revision 1.11  2003/01/03 05:49:20  aadler
-# mods to support 2.1.42
-#
-# Revision 1.10  2002/12/25 01:32:59  aadler
-# fixed bug which allowed zero values to be stored in sparse matrices.
-# improved print output
-#
-# Revision 1.9  2002/12/11 17:19:31  aadler
-# sparse .^ scalar operations added
-# improved test suite
-# improved documentation
-# new is_sparse
-# new spabs
-#
-# Revision 1.8  2002/04/29 13:57:56  pkienzle
-# Restore CPICFLAG definition
-# Get OCTAVE from OCTAVE_FORGE if compiling within octave-forge
-#
-# Revision 1.7  2002/04/12 20:27:30  pkienzle
-# Use mkoctfile -s to strip oct-files
-#
-# Revision 1.6  2002/03/17 18:23:57  aadler
-# bug with function prototypes
-#
-# Revision 1.5  2002/02/19 21:21:48  aadler
-# Modifications to _dtrsv stub to compile.
-# Modifications to makefile to define AR and RANLIB
-#
-# Revision 1.4  2002/01/04 15:53:57  pkienzle
-# Changes required to compile for gcc-3.0 in debian hppa/unstable
-#
-# Revision 1.3  2001/10/14 03:06:31  aadler
-# fixed memory leak in complex sparse solve
-# fixed malloc bugs for zero size allocs
-#
-# Revision 1.2  2001/10/12 02:24:28  aadler
-# Mods to fix bugs
-# add support for all zero sparse matrices
-# add support fom complex sparse inverse
-#
-# Revision 1.1.1.1  2001/10/10 19:54:49  pkienzle
-# revised heirarchy
-#
-# Revision 1.7  2001/04/04 02:13:46  aadler
-# complete complex_sparse, templates, fix memory leaks
-#
-# Revision 1.6  2001/03/30 04:36:30  aadler
-# added multiply, solve, and sparse creation
-#
-# Revision 1.5  2001/03/15 15:47:58  aadler
-# cleaned up duplicated code by using "defined" templates.
-# used default numerical conversions
-#
-# Revision 1.4  2001/03/06 03:20:12  aadler
-# added automatic numeric_conversion_function
-#
-# Revision 1.3  2001/02/27 03:01:51  aadler
-# added rudimentary complex matrix support
-#
-# Revision 1.2  2000/12/18 03:31:16  aadler
-# Split code to multiple files
-# added sparse inverse
-#
-# Revision 1.1  2000/11/11 02:47:11  aadler
-# DLD functions for sparse support in octave
-#
-# Revision 1.2  2000/05/02 00:10:34  andy
-# mods to work with 2.1.30
-#
-# 
-# AUTHOR:  Andy Adler <adler@ncf.ca>
+# AUTHOR:  Andy Adler <adler AT ncf DOT ca>
 # 
 # COPYRIGHT:
 # Copyright (C) 1998-2000 Andy Adler
@@ -133,7 +47,7 @@ ifndef OCTAVE_FORGE
 	MKOCTFILE= mkoctfile$(OCTVER) 
 	AR= ar
 	RANLIB=ranlib
-	LN_S = ln -sf
+	LN_S = ln -s
 endif
 
 # Use same C compiler and options as mkoctfile
@@ -224,7 +138,7 @@ $(LIBSUPERLU): $(S_DOUBLE)
 
 $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 	$(MKOCTFILE)  $(OCTOBJ) -o $(NAME).oct  -lsuperlu -L. $(DLIBS)
-	for i in $(OBJLINKS); do $(LN_S) $(NAME).oct $$i ; done
+	for i in $(OBJLINKS); do rem -f $$i ; $(LN_S) $(NAME).oct $$i ; done
 
 test: $(NAME).oct
 	#export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile

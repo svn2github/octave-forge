@@ -75,7 +75,7 @@ if ~isempty(Y),
         [S1,N1,SSQ1] = sumskipnan(X,1);
         [S2,N2,SSQ2] = sumskipnan(Y,1);
                 
-        NN = (~isnan(X)')*(~isnan(Y));
+        NN = double(~isnan(X)')*double(~isnan(Y));
         X(isnan(X)) = 0; % skip NaN's
 	Y(isnan(Y)) = 0; % skip NaN's
         CC = X'*Y;
@@ -88,7 +88,7 @@ if ~isempty(Y),
 else        
         [S,N,SSQ] = sumskipnan(X,1);
 
-        NN = (~isnan(X)')*(~isnan(X));
+        NN = double(~isnan(X)')*double(~isnan(X));
         X(isnan(X)) = 0; % skip NaN's
         CC = X'*X;
                 

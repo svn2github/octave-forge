@@ -72,6 +72,7 @@
 ##
 ## narg, n ctl(3) : Position of the minimized argument in args           <1>
 ## maxev,m ctl(4) : Maximum number of function evaluations             <inf>
+## maxout,m       : Maximum number of outer loops                      <inf>
 ## id2f, i ctl(5) : 0 if d2f returns the 2nd derivatives, 1 if           <0>
 ##                  it returns its pseudo-inverse.
 ##
@@ -87,7 +88,7 @@ if d2_min_warn, warning("d2_min interface subject to change."); endif
 d2_min_warn = 0;
 
 
-maxouter = inf;
+maxout = inf;
 maxinner = 30 ;
 
 tcoeff = 0.5 ;			# Discount on total weight
@@ -120,8 +121,10 @@ if nargin >= 4			# Read arguments
     if struct_contains (ctl, "tol")    , tol     = ctl.tol    ; end
     if struct_contains (ctl, "narg")   , narg    = ctl.narg   ; end
     if struct_contains (ctl, "maxev")  , maxev   = ctl.maxev  ; end
+    if struct_contains (ctl, "maxout") , maxout  = ctl.maxout ; end
     if struct_contains (ctl, "id2f")   , id2f    = ctl.id2f   ; end
     if struct_contains (ctl, "verbose"), verbose = ctl.verbose; end
+    if struct_contains (ctl, "code")   , code    = ctl.code   ; end
   else 
     error ("The 'ctl' argument should be either a vector or a struct");
   end
@@ -151,12 +154,10 @@ end
 
 if tol <= 0
   printf ("d2_min : tol=%8.3g <= 0\n",tol) ;
-  keyboard
 end
 
 if !isstr (d2f) || !isstr (f)
-  printf ("d2_min : I need f and d2f to be strings!\n");
-  keyboard
+  printf ("d2_min : f and d2f should be strings!\n");
 end
 
 sz = size (x); N = prod (sz);
@@ -176,7 +177,7 @@ if verbose
     printf ( "d2_min : Initially, v=%8.3g\n",v);
 end
 
-while niter++ <= maxouter
+while niter++ <= maxout && nev(1) < maxev
 
   [v,d,h] = leval (d2f, splice (args, narg, 1, list (reshape (x,sz))));
   nev(2)++;
@@ -196,7 +197,6 @@ while niter++ <= maxouter
     nev(1)++;
     if abs(v2-v) > 0.001 * sqrt(eps) * max (abs(v2), 1)
       printf ("d2_min : f and d2f disagree %8.3g\n",abs(v2-v));
-      keyboard
     end
   end
 
@@ -204,8 +204,6 @@ while niter++ <= maxouter
   if ! isnan (vbest)		# Check that v ==vbest 
     if abs (vbest - v) > 1000*eps * max (vbest, 1)
       printf ("d2_min : vbest changed at beginning of outer loop\n");
-      vbest - v
-      keyboard
     end
   end
   vold = vbest = v ;
@@ -219,10 +217,9 @@ while niter++ <= maxouter
 
   if norm (d) < dtol		# Check for small derivative
     if verbose || report 
-      printf ("d2_min : exiting 'cause low gradient\n");
+      printf ("d2_min : Exiting because of low gradient\n");
     end
-    ## keyboard
-    break			# Exit outer loop
+    break;			# Exit outer loop
   end
 
   dnewton = -h*d ;		# Newton step
@@ -247,7 +244,6 @@ while niter++ <= maxouter
     end
     if any(isnan(xnew))
       printf ("d2_min : Whoa!! any(isnan(xnew)) (1)\n"); 
-      keyboard
     end
 
     vnew = leval (f, splice (args, narg, 1, list (reshape (xnew,sz))));
@@ -260,14 +256,14 @@ while niter++ <= maxouter
 
       done_inner = 1 ;		# Will go out at next increase
       if verbose
-          printf ( "d2_min : going down\n");
+        printf ( "d2_min : Found better value\n");
       end
       
     elseif done_inner == 1	# Time to go out
       if verbose
-          printf ( "d2_min : quitting %d th inner loop\n",niter);
+          printf ( "d2_min : Quitting %d th inner loop\n",niter);
       end
-      break			# out of inner loop
+      break;			# out of inner loop
     end
     wt = wt*tcoeff ;		# Reduce norm of proposed step
     wn = wn*ncoeff ;		# And bring it closer to derivative
@@ -279,7 +275,7 @@ while niter++ <= maxouter
 
   if ninner >= maxinner		# There was a problem
     if verbose
-        printf ( "d2_min : inner looping forever (vnew=%8.3g)\n",vnew);
+      printf ( "d2_min : Too many inner loops (vnew=%8.3g)\n",vnew);
     end
 
 				# ##########################################
@@ -287,8 +283,7 @@ while niter++ <= maxouter
     wn = ocoeff ;
     xnew = x+wn*dbest;
     if any(isnan(xnew)),
-      printf ("d2_min : Whoa!! any(isnan(xnew)) (1)\n"); 
-      keyboard
+      printf ("d2_min : Whoa!! any(isnan(xnew)) (2)\n"); 
     end
     vnew = leval (f, splice (args, narg, 1, list (reshape (xnew,sz))));
     nev(1)++;
@@ -311,12 +306,12 @@ while niter++ <= maxouter
   if verbose || rem(niter,max(report,1)) == 1
     if vold,
       if verbose
-	printf ("d2_min : inner : vbest=%8.5g, vbest/vold=%8.5g\n",\
+	printf ("d2_min : Inner loop : vbest=%8.5g, vbest/vold=%8.5g\n",\
 		vbest,vbest/vold);
       end
     else
       if verbose
-        printf ( "d2_min : inner : vbest=%8.5g, vold=0\n", vbest);
+        printf ( "d2_min : Inner loop : vbest=%8.5g, vold=0\n", vbest);
       end
     end
   end
@@ -327,22 +322,22 @@ while niter++ <= maxouter
       tmpv = leval (f, splice (args, narg, 1, list (reshape (xbest,sz))));
       nev(1)++;
 
-      if abs(tmpv-vbest)>eps
-	printf ("d2_min : Whoa! best value is changing\n");
-	keyboard
+      if abs (tmpv-vbest) > eps
+	printf ("d2_min : Whoa! Value at xbest changed by %g\n",\
+		abs(tmpv-vbest));
       end
     end
     v = vbest; x = xbest;
     if ! isempty (code)
       if verbose
-          printf ("d2_min : Gonna eval(\"%s\"\n",code);
+        printf ("d2_min : Going to eval (\"%s\")\n",code);
       end
 
       xstash = xbest;
       astash = abest;
       args = abest;		# Here : added 2001/11/07. Is that right?
       x = xbest;
-      eval (code);
+      eval (code, "printf (\"code fails\\n\");");
       xbest = x; 
       abest = args;
 				# Check whether eval (code) changes value
@@ -350,8 +345,8 @@ while niter++ <= maxouter
 	tmpv = leval (f, splice (args, narg, 1, list (reshape (x,sz))));
 	nev(1)++;
 	if abs (tmpv-vbest) > max (min (100*eps,0.00001*abs(vbest)), eps) ,
-	  printf ("d2_min : Whoa! best value changes after eval (code)\n");
-	  keyboard
+	  printf ("d2_min : Whoa! Value changes by %g after eval (code)\n",\
+		  abs (tmpv-vbest));
 	end
       end
     end
@@ -359,45 +354,43 @@ while niter++ <= maxouter
 
   if ! isnan (ftol) && ftol > (vold-vbest)/max(vold,1), 
     if verbose || report
-      printf ("d2_min : quitting, niter=%-3d v=%8.3g, ",niter,v);
+      printf ("d2_min : Quitting, niter=%-3d v=%8.3g, ",niter,v);
       if vold, printf ("v/vold=%8.3g \n",v/vold);
       else     printf ("vold  =0     \n",v);
       end
     end
-    ## keyboard
     break ;    			# out of outer loop
   end
   if ! isnan (utol) && utol > max (abs (wbest*dbest)) / max(abs (xbest),1)
     if verbose || report
-      printf ("d2_min : quitting, niter=%-3d v=%8.3g, ",niter,v);
+      printf ("d2_min : Quitting, niter=%-3d v=%8.3g, ",niter,v);
       if vold, printf ("v/vold=%8.3g \n",v/vold);
       else     printf ("vold  =0     \n",v);
       end
     end
-    ## keyboard
     break ;			# out of outer loop
   end   
 end				# End of outer loop ##################
 
 xbest = reshape (xbest, sz);
-args0 = args;
-if length (code), 
+if length (code) 
   args = abest;
   args(narg) = xbest; 
 end
 
-if niter >= maxouter ,
+if niter > maxout
   if verbose
-      printf ( "d2_min : outer looping forever\n");
+    printf ( "d2_min : Outer loop lasts forever\n");
   end
 end
 
-				# HERE This should be if prudent, ...
-err = leval (f, splice (args, narg, 1, list (reshape (xbest,sz))));
-nev(1)++;
+				# One last check
+if prudent
+  err = leval (f, splice (args, narg, 1, list (reshape (xbest,sz))));
+  nev(1)++;
 
-if abs (err-vbest) > eps,
-  printf ("d2_min : Whoa!! xbest does not eval to vbest\n");
-  printf ("       : %8.3e - %8.3e = %8.3e != 0\n",err,vbest,err-vbest);
-  keyboard
+  if abs (err-vbest) > eps,
+    printf ("d2_min : Whoa!! xbest does not eval to vbest\n");
+    printf ("       : %8.3e - %8.3e = %8.3e != 0\n",err,vbest,err-vbest);
+  end
 end

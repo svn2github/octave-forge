@@ -51,20 +51,20 @@ sqrtm           (handles ill-conditioned matrices)
 
 Speedups
 ========
-hankel
-index
-kron            (Etienne Grossman has an even faster compiled version)
-rindex
-toeplitz
-triu
+hankel		(for midsized files---better to speed up the interpreter
+toeplitz	 by 5x rather than requiring a 5x bigger memory footprint)
+triu		 
 tril
-chol.oct      (use triangle matrix type; in extra/linear-algebra/chol.cc)
+index
+rindex
+kron            (both C++ and m-file)
+chol.oct	(use triangle matrix type; in extra/linear-algebra/chol.cc)
 
 In Octave 2.1.36
 ================
 cross		(warn if receiving mixed row/column vectors)
 cross		(accepts matrices)
-contour		(default number of contours; note: usage (...) is wrong)
+contour		(default number of contours; note that usage(...) is wrong)
 fftfilt		(accepts matrices)
 findstr         (speedup)
 freqz		(accepts frequency vector)

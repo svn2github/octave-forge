@@ -50,19 +50,20 @@ function ret = imagesc (x, y, A, zoom)
     zoom = [];
   endif
 
-  ## Rescale values to between 1 and length (colormap) inclusive.
-  maxval = max (A (:));
-  minval = min (A (:));
+  maxval = max (A(:));
+  minval = min (A(:));
+
   if (maxval == minval)
-    B = ones ( size (A) );
+    B = ones (size (A));
   else
+    ## Rescale values to between 1 and length (colormap) inclusive.
     B = round ((A - minval) / (maxval - minval) * (rows (colormap) - 1)) + 1;
   endif
 
-  if ( nargout > 0 )
-    ret = B;
-  else
+  if (nargout == 0)
     image (x, y, B, zoom);
+  else
+    ret = B;
   endif
 
 endfunction

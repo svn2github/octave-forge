@@ -1,18 +1,11 @@
-sinclude ../Makeconf
+include ../Makeconf
 
 RAND_LINKS = randn.oct
-PROGS = rand.oct fsolve.oct qr.oct sqrtm.oct $(RAND_LINKS)
-QRSRC = qr.cc CmplxQR.cc  CmplxQRP.cc  dbleQR.cc  dbleQRP.cc
-QROBJ = $(QRSRC:.cc=.o)
-
-%.o : %.cc ; $(MKOCTFILE) -DHAVE_CONFIG_H -c -o $@ $<
+PROGS = kron.oct rand.oct fsolve.oct logm.oct sqrtm.oct $(RAND_LINKS)
 
 all: $(PROGS)
 
 $(PROGS): Makefile
-
-qr.oct: $(QROBJ)
-	$(MKOCTFILE) -o $@ $(QROBJ)
 
 $(RAND_LINKS):
 	-$(RM) $@
@@ -28,7 +21,4 @@ install:
 	fi
 
 clean: 
-	-$(RM) *.o core octave-core core
-
-distclean: clean
-	-$(RM) *.oct *~
+	-$(RM) *.o core octave-core core *.oct *~

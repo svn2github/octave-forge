@@ -56,8 +56,9 @@
 ##
 ## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
 ## Evaluate the response at the specific frequencies in the vector @var{w}.
+## The values for @var{w} are measured in radians.
 ##
-## @deftypefnx {Function File} {... =} freqz (..., @var{Fs})
+## @deftypefnx {Function File} {[@dots{}] =} freqz (@dots{}, @var{Fs})
 ## Return frequencies in Hz instead of radians assuming a sampling rate
 ## @var{Fs}.  If you are evaluating the response at specific frequencies 
 ## @var{w}, those frequencies should be requested in Hz rather than radians.
@@ -68,87 +69,95 @@
 ##
 ## @end deftypefn
 
-## Author: John W. Eaton
-##         (authorship uncertain?)
-## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-##    matlab compatible interface
+## Author: jwe ???
+## Paul Kienzle <pkienzle@users.sf.net>
+## * plot if not returning args
 
-function [h_r, w_r] = freqz(b, a, n, region, Fs)
+function [h_r, w_r] = freqz (b, a, n, region, Fs)
 
-  if (nargin<1 || nargin>5)
-    usage("[h w]=freqz(b, a, n [, 'whole'] [, Fs])");
+  if (nargin < 1 || nargin > 5)
+    usage ("[h, w] = freqz (b, a, n [, \"whole\"] [, Fs])");
   elseif (nargin == 1)
     ## Response of an FIR filter.
-    a=[]; n=[]; region=[]; Fs=[];
+    a = n = region = Fs = [];
   elseif (nargin == 2)
     ## Response of an IIR filter
-    n=[]; region=[]; Fs=[];
+    n = region = Fs = [];
   elseif (nargin == 3)
-    region=[]; Fs=[];
+    region = Fs = [];
   elseif (nargin == 4)
-    Fs=[];
-    if !isstr(region) && !isempty(region)
-      Fs = region; region=[];
+    Fs = [];
+    if (! isstr (region) && ! isempty (region))
+      Fs = region; 
+      region = [];
     endif
   endif
 
-  if isempty(a) a=1; endif
-  if isempty(n) n=512; endif
-  if isempty(region) 
-    if isreal(b) && isreal(a)
+  if (isempty (a)) 
+    a = 1; 
+  endif
+  if (isempty (n))
+    n = 512; 
+  endif
+  if (isempty (region))
+    if (isreal (b) && isreal (a))
       region = "half";
     else
       region = "whole";
     endif
   endif
-  if isempty(Fs) 
-    if (nargout==0) Fs = 2; else Fs = 2*pi; endif
+  if (isempty (Fs)) 
+    if (nargout == 0) 
+      Fs = 2; 
+    else 
+      Fs = 2*pi; 
+    endif
   endif
 
-  la = length(a);
-  a = reshape(a,1,la);
-  lb = length(b);
-  b = reshape(b,1,lb);
-  k = max([la, lb]);
+  la = length (a);
+  a = reshape (a, 1, la);
+  lb = length (b);
+  b = reshape (b, 1, lb);
+  k = max ([la, lb]);
 
-  if !is_scalar(n)
-    if nargin==4 ## Fs was specified
+  if (! is_scalar (n))
+    if (nargin == 4) ## Fs was specified
       w = 2*pi*n/Fs;
     else
       w = n;
     endif
-    n = length(n);
+    n = length (n);
     extent = 0;
-  elseif strcmp(region,"whole")
-    w = 2*pi*[0:(n-1)]/n;
+  elseif (strcmp (region, "whole"))
+    w = 2 * pi * (0:n-1) / n;
     extent = n;
   else
-    w = pi*[0:(n-1)]/n;
-    extent = 2*n;
+    w = pi * (0:n-1) / n;
+    extent = 2 * n;
   endif
 
-  if length(b) == 1
-    if length(a) == 1
-      hb=b*ones(1,n);
+  if (length (b) == 1)
+    if (length (a) == 1)
+      hb = b * ones (1, n);
     else
       hb = b;
     endif
-  elseif extent >= k 
-    hb = fft(postpad(b,extent));
+  elseif (extent >= k) 
+    hb = fft (postpad (b, extent));
     hb = hb(1:n);
   else
-    hb = polyval(postpad(b,k),exp(j*w));
+    hb = polyval (postpad (b, k), exp (j*w));
   endif
-  if length(a) == 1
+  if (length (a) == 1)
     ha = a;
-  elseif  extent >= k
-    ha = fft(postpad(a,extent));
+  elseif (extent >= k)
+    ha = fft (postpad (a, extent));
     ha = ha(1:n);
   else
-    ha = polyval(postpad(a,k),exp(j*w));
+    ha = polyval (postpad (a, k), exp (j*w));
   endif
-  h = hb./ha;
-  w = Fs*w/(2*pi);
+  h = hb ./ ha;
+  w = Fs * w / (2*pi);
 
   if nargout != 0, # return values and don't plot
     h_r = h;

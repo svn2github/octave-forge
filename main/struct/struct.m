@@ -28,11 +28,5 @@
 ##     return error rather than trapping to keyboard
 ## March    2002: Etienne
 ##     use setfield(), which is now an octfile, to do the work
-function s = struct(...)
-va_start(); 
-tmp = va_arg() ;
-if ! isstr(tmp)
-  error('struct: called with non-string key') ; 
-end
-va_start();
-s = setfield (all_va_args);
+function s = struct(varargin)
+s = setfield ([], varargin{:});

@@ -29,19 +29,16 @@
 ## November 2000: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##     return error rather than trapping to keyboard
 
-function s = setfield(s,...)
-va_start() ; 
-nargin-- ;
-while nargin-- ,
-  tmp = va_arg() ;
-  if ! isstr(tmp) ,
+function s = setfield(s,varargin)
+if rem(nargin,2) != 1,
+      error('setfield: called with odd number of arguments\n') ; 
+endif
+	
+for i=1:2:nargin-1
+  if ! isstr(varargin{i}) ,
     error('setfield: called with non-string key') ; 
   else
-    if ! nargin-- ,
-      error('setfield: called with odd number of arguments\n') ; 
-    else
-      value = va_arg() ;
-      eval( ['s.',tmp,'=value;'] ) ;
+    eval( ['s.',varargin{i},'=varargin{i+1};'] ) ;
     end
   end
 end

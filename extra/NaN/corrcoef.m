@@ -53,7 +53,7 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
-%    Version 1.27  Date: 21 Sep 2002
+%    Version 1.28  Date: 15 Dec 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -224,7 +224,7 @@ else
 end;
 
 if nargout<2, 
-        return, 
+        return;
 end;
 
 
@@ -255,13 +255,12 @@ end;
 sig  = 2 * min(sig,1 - sig);
 
 if nargout<3, 
-        return, 
+        return;
 end;
 
 
-
 % CONFIDENCE INTERVAL
-if exist('flag_implicit_significance')==1,
+if exist('flag_implicit_significance')==2,
         alpha = flag_implicit_significance;
 else
 	alpha = 0.01;        

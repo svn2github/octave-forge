@@ -1,4 +1,677 @@
 # Automatically generated file --- DO NOT EDIT
+2003-06-01 18:03  pkienzle
+
+	* main/comm/.cvsignore: ignore more texinfo junk 
+
+2003-06-01 17:24  pkienzle
+
+	* RELEASE-NOTES: note sparse concatenation functions 
+
+2003-06-01 17:11  pkienzle
+
+	* main/miscellaneous/listen.cc: Give evaluation context in error
+	message 
+
+2003-06-01 15:48  pkienzle
+
+	* .cvsignore: octave-forge/.cvsignore accidentally added to root
+	--- add it here instead 
+
+2003-06-01 15:44  pkienzle
+
+	* main/comm/Makefile: GNU make automatically tags rm with - 
+
+2003-06-01 15:36  pkienzle
+
+	* FIXES/.cvsignore, extra/MacOSX/.cvsignore,
+	extra/Windows/.cvsignore, extra/linear-algebra/.cvsignore,
+	extra/mex/.cvsignore, extra/symband/.cvsignore,
+	extra/testfun/.cvsignore, main/comm/.cvsignore,
+	main/general/.cvsignore, main/geometry/.cvsignore,
+	main/image/.cvsignore, main/optim/.cvsignore, main/plot/.cvsignore,
+	main/signal/.cvsignore, main/sparse/.cvsignore,
+	main/specfun/.cvsignore, main/splines/.cvsignore,
+	main/miscellaneous/.cvsignore, main/strings/.cvsignore,
+	main/struct/.cvsignore, main/symbolic/.cvsignore: Ignore build
+	targets when doing cvs -q update -dP --- makes it easier to notice
+	that files have been added.  
+
+2003-05-29 17:10  cgijobs
+
+	* doc/octave-forge-home.html: Added documentation and link for
+	Octave interface on TeXmacs.  The pdf file is not much to look at,
+	but it prints up O.K.  I've requested a better copy from the author.  
+
+2003-05-29 09:00  etienne
+
+	* main/vrml/: test_vmesh.m, vmesh.m, vrml_browse.m, vrml_faces.m: 
+	Misc small fixes in behavior and doc.  
+
+2003-05-27 10:30  schloegl
+
+	* extra/NaN/: std.m, var.m: OPTION as arg2 included (for
+	compataibility reasons) 
+
+2003-05-24 12:49  watsma
+
+	* main/symbolic/: findsymbols.cc, symbols.cc: Added conditional
+	include for octave version 2.1.48.  
+
+2003-05-22 11:19  persquare
+
+	* INSTALL.MacOSX: Minor correction.  
+
+2003-05-22 10:47  persquare
+
+	* INSTALL.MacOSX: Minor clarification.  
+
+2003-05-22 10:44  persquare
+
+	* main/comm/Makefile: Directory must exist before installing info
+	file.  
+
+2003-05-21 16:53  persquare
+
+	* INSTALL.MacOSX: Updating info to reflect current state 
+
+2003-05-21 16:52  persquare
+
+	* configure.base, octinst.sh.in: Use COPY_FLAGS to set options for
+	cp when installing .oct files.  
+
+2003-05-21 14:20  aadler
+
+	* main/sparse/: sp_test.m, sphcat.m, spvcat.m: concatenate sparse
+	matrices 
+
+2003-05-21 11:58  pkienzle
+
+	* RELEASE-NOTES: mention new signal/*freq* functions 
+
+2003-05-21 09:29  pkienzle
+
+	* main/signal/: INDEX, freqs.m, freqs_plot.m, invfreq.m,
+	invfreqs.m, invfreqz.m: [for Julius Smith] new functions 
+
+2003-05-17 08:45  adb014
+
+	* main/comm/: Makeconf.add, Makefile, configure.add: Make use of
+	texinfo optional, and setup by ./configure 
+
+2003-05-17 08:43  adb014
+
+	* main/audio/: aucapture.m, auload.m, auplot.m: Start converting
+	hep to texinfo, with aim of converting all help in this fashion 
+
+2003-05-15 17:34  pkienzle
+
+	* main/general/interp2.m: correct handling of 5+ args (?) 
+
+2003-05-15 17:31  pkienzle
+
+	* main/plot/: surf.m, surfc.m: better handling of gnuplot3.8i? 
+
+2003-05-15 17:30  pkienzle
+
+	* RELEASE-NOTES: prep for next release 
+
+2003-05-15 17:29  pkienzle
+
+	* main/comm/hammgen.m: protect against whitespace_in_literal_matrix
+	= "ignore" 
+
+2003-05-15 17:28  pkienzle
+
+	* main/signal/INDEX: refs for pmusic, etc in spctools 
+
+2003-05-15 17:26  pkienzle
+
+	* extra/mex/mex.h: Protect against multiple inclusion 
+
+2003-05-15 17:25  pkienzle
+
+	* extra/mex/mex.cc, main/comm/gf.cc, main/image/bwfill.cc,
+	main/image/bwlabel.cc, main/signal/remez.cc,
+	main/sparse/make_sparse.h, main/strings/regexp.cc,
+	main/symbolic/sumterms.cc: OCTAVE_LOCAL_BUFFER now requires
+	#include <memory> 
+
+2003-05-15 15:56  etienne
+
+	* main/optim/: test_min_2.m, test_min_3.m, test_min_4.m: Make tests
+	reproducible 
+
+2003-05-15 15:55  etienne
+
+	* main/optim/line_min.m: Tweaking 
+
+2003-05-15 15:55  etienne
+
+	* main/optim/bfgs.m: Tweaking and Michael Creel's bugfix 
+
+2003-05-15 15:20  etienne
+
+	* main/vrml/: save_vrml.m, test_vmesh.m, vmesh.m, vrml_points.m,
+	vrml_surf.m: Misc. fixes and improvements 
+
+2003-05-15 12:05  pkienzle
+
+	* configure.base: suppress init files when querying octave 
+
+2003-05-15 10:32  pkienzle
+
+	* release.sh: Put release # in the changelog, instead of $TAG 
+
+2003-05-14 16:18  watsma
+
+	* main/symbolic/Makefile: Added new target sumterms.  
+
+2003-05-14 16:16  watsma
+
+	* main/symbolic/poly2sym.m: Initial commit. Returns symbolic
+	polynomial given coefficients.  
+
+2003-05-14 16:15  watsma
+
+	* main/symbolic/sym2poly.m: Initial commit. Break down symbolic
+	polynomial in coefficients.  
+
+2003-05-14 16:13  watsma
+
+	* main/symbolic/sumterms.cc: Initial commit. Returns the summed
+	terms of an equation, used in sym2poly.  
+
+2003-05-14 11:14  prnienhuis
+
+	* doc/Octave_Windows.htm: [no log message] 
+
+2003-05-14 10:31  prnienhuis
+
+	* doc/Octave_Windows.htm: [no log message] 
+
+2003-05-14 06:32  etienne
+
+	* main/miscellaneous/read_options.m: Add 'verbose' option 
+
+2003-05-13 09:07  pkienzle
+
+	* main/signal/aryule.m: (for E. Joshua Rigler) can't normalize the
+	autocorrelation if we want to return the correct scale for the
+	returned power spectrum.  
+
+2003-05-09 13:57  schloegl
+
+	* extra/tsa/acovf.m: major change in considering Missing Values
+	(i.e. NaN; remove XCORR since it is useless 
+
+2003-05-06 17:01  adb014
+
+	* main/comm/Makefile: Fix stupid little mistake 
+
+2003-05-06 08:08  watsma
+
+	* main/symbolic/symlsolve.cc: Now accepts list/cell-array arguments
+	and return a list of expressions rather than relations.  
+
+2003-05-06 07:31  watsma
+
+	* main/symbolic/Makefile: Removed an extra target that blocked
+	compilation.  
+
+2003-05-06 06:22  watsma
+
+	* main/symbolic/INDEX: Added new entries: numden, findsymbols,
+	findsym, symlsolve, symfsolve, syminfo 
+
+2003-05-05 17:47  watsma
+
+	* main/symbolic/Makefile: Updated for new targets.  
+
+2003-05-05 17:43  watsma
+
+	* main/symbolic/: findsym.m, findsymbols.cc, numden.cc,
+	symfsolve.m, syminfo.cc, symlsolve.cc: main/symbolic/numden.cc 
+	  Initial version - Oct file to get numerator and denominator of a 
+	  ratio of polynomials.  main/symbolic/findsymbols.cc 
+	  Initial version - Oct file to retrieve a sorted list of symbols in 
+	  expression.  main/symbolic/findsym.m 
+	  Initial version - M file to retrieve list of symbols,
+	  m****b-compatible.  main/symbolic/symlsolve.cc 
+	  Initial version - Oct file to call GiNaC::lsolve() - solve linear
+	  system of equations.  main/symbolic/symfsolve.m 
+	  Initial version - M file generates temporary function file and
+	  applies fsolve() to a (set of) symbolic equations.  
+	main/symbolic/syminfo.cc 
+	  Initial version - Oct file to retrieve information about
+	  expressions - calls GiNaC::info().  main/symbolic/Makefile 
+	  Added new targets.  
+
+2003-05-05 17:39  watsma
+
+	* main/symbolic/: ov-ex.h, ov-ex.cc: main/symbolic/ov-ex.h 
+	main/symbolic/ov-ex.cc 
+	  Modified the constructors and the destructor and added a symbol
+	  list and symbol reference count. New members are: 
+	       void assign_symbol_to_list(GiNaC::symbol &sym); 
+	       class symbol_list_item; 
+	       static std::vector<symbol_list_item> symbol_list; 
+	  This is a work-around for the fact that GiNaC can have different 
+	  symbols with the same string name, while in octave you want a
+	  symbol that appears the same to actually be the same. It works
+	  great as long as symbols are declared in octave. It is still
+	  possible to have same-name symbols that are different to GiNaC, if a
+	  symbol goes out of scope in octave without it being defined in
+	  octave's workspace. This could be fixed by also keeping reference
+	counts for symbols in expressions.  
+
+2003-05-05 17:36  watsma
+
+	* main/symbolic/: symbols.cc, symbols.h: Added get_relation() Fixed
+	a remaining multiline-string - added \n\ Modified subs() to also
+	  accept list or cell arguments for old and new expressions. Updated
+	the documentation string.  
+
+2003-05-05 17:21  adb014
+
+	* main/comm/: Makefile, comms.txi, gf.cc: Minor fixes that can
+	cause a seg fault 
+
+2003-05-05 04:00  etienne
+
+	* main/optim/: d2_min.m, minimize.m, nelder_mead_min.m: Remove
+	'interface subject to change' message 
+
+2003-05-04 19:58  aadler
+
+	* main/optim/: adsmax.m, mdsmax.m: maximize and minimize 
+
+2003-05-04 12:48  aadler
+
+	* main/optim/: adsmax.m, fmins.m, mdsmax.m, nmsmax.m: functions to
+	support fmins (from www.maths.man.ac.uk/~higham) 
+
+2003-05-04 12:45  aadler
+
+	* main/optim/fminbnd.m: remove space at top - interferes with help 
+
+2003-04-19 14:30  pkienzle
+
+	* main/specfun/ellipke.m: (for Jaakko Ruohio) extend for m < 0 
+
+2003-04-15 06:19  schloegl
+
+	* extra/NaN/nantest.m: include test on sorting NaN's 
+
+2003-04-15 04:02  schloegl
+
+	* extra/tsa/: INDEX, quantiles.m: quantiles has been moved to
+	extra/NaN/, now its named Quantile 
+
+2003-04-15 03:56  schloegl
+
+	* extra/NaN/: INDEX, flag_implicit_skip_nan.m, median.m,
+	percentile.m, quantile.m, sumskipnan.m, trimean.m: 
+	flag_implicit_skip_nan added again, it's useful for temporary
+	turnoff of skipping NaN's 
+
+2003-04-11 09:04  pkienzle
+
+	* main/plot/legend.m: minor spelling corrections set valid default
+	legend position 
+
+2003-04-11 00:49  pkienzle
+
+	* main/plot/: meshc.m, surfc.m: pretty surfaces, without the legend
+	lines 
+
+2003-04-11 00:34  pkienzle
+
+	* main/plot/: peaks.m, surf.m: (for Fabio Rainone) surf using
+	gnuplot 3.8i color extensions (for Paul Kienzle) peaks test surface 
+
+2003-04-08 04:43  persquare
+
+	* INSTALL.MacOSX: Updating install instructions for octave+forge on
+	OS X.  
+
+2003-04-08 04:28  mazet
+
+	* main/plot/legend.m: 
+	* Bug fixed for octave 2.1.40+ 
+	* New legend positions (inside, outside...) 
+	* New functionality "boxon", "boxoff", alignment left and right 
+
+2003-04-03 21:29  pkienzle
+
+	* doc/octave-forge-home.html: use gnufans everywhere 
+
+2003-04-03 21:27  pkienzle
+
+	* doc/octave-forge-home.html: link to gnufans 
+
+2003-04-03 17:06  aadler
+
+	* main/sparse/: make_sparse.cc, sp_test.m, sparse_ops.h: sparse
+	create bug - need to use heap for large temp vars 
+
+2003-04-01 14:37  adb014
+
+	* main/comm/: INDEX, Makefile, awgn.png, comms.m, comms.txi,
+	eyediagram.m, eyediagram.png, galois-def.h, galois.cc, galois.h,
+	gf.cc, gftable.m, ov-galois.cc, rsdecof.m, rsencof.m,
+	scatterplot.m, scatterplot.png: Add sqrt over galois field, code
+	cleanup, some optimization and html version of docs 
+
+2003-03-31 15:28  pkienzle
+
+	* main/: time/datestr.m, general/deal.m: Extend the deal function
+	to handle [a,b]=deal(b,a) No change to the incompatible
+	[a,b]=deal([1,2]) behaviour.  
+
+2003-03-29 08:26  schloegl
+
+	* extra/tsa/ar_spa.m: 
+	 investigate whether A<0 is possible, run a few checks, cleaner code 
+
+2003-03-28 09:59  pkienzle
+
+	* admin/make_index: List the ignored notes 
+
+2003-03-28 09:48  pkienzle
+
+	* admin/make_index: fix single character " x = description" INDEX
+	entries 
+
+2003-03-27 16:20  adb014
+
+	* batch_test.m, main/sparse/spsum.m: update batch_test for new
+	comms toolbox script, typo in PKG_ADD in sparse 
+
+2003-03-27 16:18  adb014
+
+	* main/comm/: comms.m, compand.m, galois.m: Change over the test
+	code from galois.m to comms.m, typos 
+
+2003-03-27 16:14  adb014
+
+	* main/comm/: INDEX, Makefile, ademodce.m, comms.txi, demodmap.m,
+	lloyds.m, quantiz.m: update test code for the rest of comms
+	toolbox, more docs and some minor fixes 
+
+2003-03-27 09:39  pkienzle
+
+	* admin/make_index: Fix texinfo->html conversion.  
+
+2003-03-26 15:00  adb014
+
+	* main/comm/: INDEX, apkconst.m, comms.txi, demodmap.m, mktexi,
+	modmap.m, qaskdeco.m, qaskenco.m, scatterplot.m: Add new modulation
+	functions, documentation changes and rewrite index so that 
+	"Communications" is a toolbox 
+
+2003-03-26 14:54  adb014
+
+	* admin/make_index: allow "fn fn = desc" to give a valid index of
+	several function with one description 
+
+2003-03-20 12:26  pkienzle
+
+	* main/miscellaneous/: configure.add, waitbar.cc: support for
+	ncurses; punt on smart_term support for irix.  
+
+2003-03-20 09:36  pkienzle
+
+	* main/symbolic/ov-ex-mat.cc: [for David Bateman] add oct-obj.h to
+	the include list apparently to allow builds on gcc 3.0.4 and
+	octave-2.1.46.  
+
+2003-03-19 22:40  aadler
+
+	* extra/perl/Octave.pm: fix whos handling 
+
+2003-03-18 16:50  adb014
+
+	* main/comm/: INDEX, Makefile, _gfweight.cc, ademodce.m, amodce.m,
+	awgn.eps, awgn.m, bchpoly.m, comms.txi, compand.m, cosets.m,
+	cyclgen.cc, cyclpoly.cc, decode.m, encode.m, eyediagram.eps,
+	galois.cc, galois.m, gf.cc, gfweight.m, isprimitive.cc, mktexi,
+	primpoly.cc, randint.m, rsdecof.m, scatterplot.eps, scatterplot.m,
+	symerr.m, syndtable.cc, wgn.m: add BCH code, start of modulator,
+	additional documentation and bug fixes 
+
+2003-03-16 14:38  kahacjde
+
+	* main/io/dlmread.cc: 
+	
+	fix infinite loop when undefined characters aren't followed by
+	separator 
+
+2003-03-16 12:47  kahacjde
+
+	* main/io/dlmread.cc: 
+	
+	next rewrite, handles user provided range now 
+
+2003-03-14 22:57  pkienzle
+
+	* main/statistics/INDEX: normplot 
+
+2003-03-14 21:43  pkienzle
+
+	* main/statistics/scatter.m: code cleanup, optimize 
+
+2003-03-14 17:20  persquare
+
+	* INSTALL.MacOSX: Updating install instructions 
+
+2003-03-14 11:52  pkienzle
+
+	* main/statistics/normplot.m: Make sure all data points are
+	displayed.  
+
+2003-03-13 14:39  pkienzle
+
+	* main/statistics/normplot.m: Normal probability plot 
+
+2003-03-13 11:07  schloegl
+
+	* extra/NaN/covm.m: First comment line changed, HELP NAN looks
+	better now.  
+
+2003-03-13 11:00  schloegl
+
+	* extra/NaN/: normcdf.m, norminv.m, normpdf.m, README.TXT,
+	coefficient_of_variation.m: First comment line changed, HELP NAN
+	looks better now.  
+
+2003-03-13 09:54  schloegl
+
+	* extra/tsa/quantiles.m: Quantile calculation of sample arrays and
+	histograms implemented 
+
+2003-03-13 05:43  tpikonen
+
+	* main/plot/gget.m: Fixed a race condition between octave and
+	gnuplot when writing the options file 
+
+2003-03-08 22:46  pkienzle
+
+	* main/sparse/spsum.m: Overload sum with spsum for sparse.  Fix
+	error reporting.  Reorder comments.  
+
+2003-03-08 21:48  pkienzle
+
+	* main/comm/: gconv.m, gconvmtx.m, gdeconv.m, gdftmtx.m, gf.cc,
+	gfft.m, gifft.m, groots.m: Use functional form of dispatch 
+
+2003-03-08 21:34  pkienzle
+
+	* octinst.sh.in: [Quentin Spencer] fix syntax error [Paul Kienzle]
+	remove bash-ism 
+
+2003-03-08 21:21  pkienzle
+
+	* main/optim/lp.cc: [Stephane Kian (?)] Fix range error --- someone
+	else will have to confirm that the fix is reasonable.  
+
+2003-03-07 18:20  schloegl
+
+	* extra/tsa/arcext.m: bug fixed and docu improved 
+
+2003-03-06 23:16  pkienzle
+
+	* INDEX: document the 'global' keyword since it doesn't appear in
+	DOCSTRINGS 
+
+2003-03-05 20:05  pkienzle
+
+	* main/signal/cheby2.m: [Doug stewart] correct phase for even order
+	filters, return statespace and laplacian forms.  
+
+2003-03-05 14:39  etienne
+
+	* main/struct/test_struct.m: Test for struct functions 
+
+2003-03-05 11:32  pkienzle
+
+	* admin/template.ndev: replace angle brackets with proper html
+	characters @gt; @lt; 
+
+2003-03-05 10:31  pkienzle
+
+	* RELEASE-NOTES, batch_test.m, configure.base, release.sh,
+	admin/template.ndev, extra/mex/mex.cc, main/comm/galois.h,
+	main/comm/gf.cc, main/comm/ov-galois.cc, main/comm/ov-galois.h,
+	main/general/bitand.cc, main/general/isequal.m,
+	main/geometry/tsearch.cc, main/image/bwfill.cc,
+	main/image/bwlabel.cc, main/miscellaneous/dispatch.cc,
+	main/miscellaneous/listen.doc, main/optim/lp.cc,
+	main/parallel/pserver.cc, main/signal/remez.cc,
+	main/sparse/complex_sparse_ops.cc, main/sparse/make_sparse.h,
+	main/sparse/sparse_ops.cc, main/specfun/ellipj.cc,
+	main/strings/regexp.cc, main/struct/getfield.cc: Backport to
+	octave-2.1.36 
+
+2003-03-04 22:34  pkienzle
+
+	* configure.base, octinst.sh.in, admin/mkpkgadd,
+	main/general/Makefile: [David Bateman] Build and install the
+	PKG_ADD files.  {Modified by PAK without testing to see that the
+	mods worked} 
+
+2003-03-04 21:52  pkienzle
+
+	* main/signal/: cheby1.m, ellip.m: [Doug Stewart] return ss and
+	lapace forms.  
+
+2003-03-04 11:35  tpikonen
+
+	* main/plot/gget.m: Can now handle options whose values span
+	multiple lines. Does not use grep and sed anymore.  
+
+2003-03-03 16:15  aadler
+
+	* main/image/rotate_scale.cc: rotate_scale 
+
+2003-03-03 16:15  aadler
+
+	* extra/Windows/image.m: directory separator fix 
+
+2003-03-03 14:45  pkienzle
+
+	* extra/Windows/Makefile: Oops...reversed the condition 
+
+2003-03-02 14:59  schloegl
+
+	* extra/NaN/cov.m: compatibilty to Octave of cov(x,y) restored 
+
+2003-03-02 01:22  pkienzle
+
+	* main/miscellaneous/listen.cc: assume we can use fork if not on
+	cygwin 
+
+2003-03-01 13:15  schloegl
+
+	* main/general/char.m: hack is replaced by the correct method
+	(setstr) 
+
+2003-02-28 09:54  pkienzle
+
+	* configure.base, Makeconf.base: strip on windows, don't strip on
+	mac or sgi 
+
+2003-02-28 09:28  pkienzle
+
+	* extra/Windows/grab.cc: gcc 3.2 updates 
+
+2003-02-28 08:08  schloegl
+
+	* extra/NaN/rankcorr.m: spelling in documentation corrected,
+	revision and id included 
+
+2003-02-28 07:01  pkienzle
+
+	* extra/MacOSX/Makefile: Only install MacOSX directory on
+	*powerpc-apple-darwin* 
+
+2003-02-27 23:11  pkienzle
+
+	* extra/Windows/NOINSTALL, Makeconf.base, configure.base,
+	extra/Windows/Makefile: Make canonical_host_type available to the
+	build system and use it for cygwin 
+
+2003-02-27 21:22  pkienzle
+
+	* main/comm/: gfweight.m, INDEX, decode.m, encode.m, gen2par.m,
+	rsdecof.m, rsencof.m, vec2mat.m: compatibility updates; more
+	functions 
+
+2003-02-27 13:08  aadler
+
+	* main/comm/mktexi: takes various line endings 
+
+2003-02-27 08:55  pkienzle
+
+	* main/miscellaneous/listen.cc: Octave error messages are reported
+	again! 
+
+2003-02-27 08:03  pkienzle
+
+	* main/miscellaneous/: listen.cc, listencanfork.c, Makefile: Don't
+	fork in Windows 9x --- anyone know how to pass a socket through the
+	command line to another app so that we can use spawn instead?  The
+	other option is threads, but octave really isn't ready for that.  
+
+2003-02-26 08:13  schloegl
+
+	* extra/NaN/: std.m, var.m: documentation improved 
+
+2003-02-25 09:10  schloegl
+
+	* extra/tsa/: README.TXT, content.m, contents.m: Release TSA3.10
+	prepared 
+
+2003-02-25 06:48  schloegl
+
+	* extra/tsa/mvfilter.m: accept column data; warning provides
+	information that data was transposed. bug fixed: when p>q
+	normalization is corrected 
+
+2003-02-22 22:33  pkienzle
+
+	* main/struct/fieldnames.m: Have fieldnames return a cell array
+	rather than a list.  
+
+2003-02-22 22:28  pkienzle
+
+	* main/strings/cellstr.m: convert a character matrix into a cell
+	array 
+
+2003-02-22 12:49  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: $TAG
+	release 
+
 2003-02-22 12:42  pkienzle
 
 	* main/struct/: getfield.cc, setfield.cc, getfield.m, setfield.m: 

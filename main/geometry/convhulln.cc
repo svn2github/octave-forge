@@ -34,8 +34,8 @@ char flags[250];
 DEFUN_DLD (convhulln, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{H} =} convhulln (@var{p})\n\
-returns the index vector to the points of the enclosing convex hull\n\
-The input matrix of size [dim, n] contains n points of dimension dim.
+Returns an index vector to the points of the enclosing convex hull.\n\
+The input matrix of size [dim, n] contains n points of dimension dim.\n\
 @seealso{convhull, delaunayn}\n\
 @end deftypefn")
 {

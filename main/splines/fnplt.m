@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} { } fnplt (@var{pp}, '@var(plt)')
+## @deftypefn {Function File} { } fnplt (@var{pp}, '@var{plt}')
 ## plots spline 
 ##
 ## @seealso{ppval, spline, csape}

@@ -20,6 +20,7 @@
 ## @deftypefn {Function File} {@var{y} =} __nlnewmark_fcn__(@var{x})
 ##
 ## Non-linear function used with fsolve for nlnewmark.m
+## @end deftypefn
 
 ## Author:  Matthew W. Roberts
 ## Created: May, 2000

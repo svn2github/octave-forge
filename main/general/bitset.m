@@ -24,6 +24,8 @@
 ## @example
 ## dec2bin (bitset(10,1))
 ## @result{} 1011
+## @end example
+##
 ## @seealso{bitand,bitor,bitxor,bitget,bitcmp,bitshift,bitmax}
 ## @end deftypefn
 

@@ -31,7 +31,7 @@
 ##      @result{} [ 1, 5 ]
 ## @end example 
 ## @end deftypefn
-##
+
 ## Note that this implementation swaps the strings if second on is longer
 ## than the first, so try to put the longer one first.
 ##

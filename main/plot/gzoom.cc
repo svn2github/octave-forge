@@ -24,7 +24,7 @@ using namespace std;
 
 DEFUN_DLD (gzoom, args, ,
 	   "usage: gzoom()\n"
-	   "\n"
+	   "Use mouse controls to zoom the current gnuplot graph.\n"
 	   "Controls are:\n"
 	   " * Use left button to zoom on an area.\n"
 	   " * Use right button to zoom back on a point.\n"

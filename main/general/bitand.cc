@@ -175,7 +175,7 @@ calculates the bitwise XOR of nonnegative integers.\n\
 DEFUN_DLD (bitmax, args, ,
 	"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{A} =} bitmax\n\
-returns the the maximum unsigned integer.
+returns the the maximum unsigned integer.\n\
 @seealso{bitand,bitor,bitxor,bitset,bitget,bitcmp,bitshift}\n\
 @end deftypefn")
 {

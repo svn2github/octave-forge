@@ -38,6 +38,7 @@
 ##
 ## bitshift ([1, 10],2,[3,4])
 ## @result{} 4  8
+## @end example
 ##
 ## @seealso{bitand,bitor,bitxor,bitset,bitget,bitcmp,bitmax}
 ## @end deftypefn

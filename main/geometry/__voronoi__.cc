@@ -37,6 +37,7 @@ char flags[250];
 DEFUN_DLD (__voronoi__, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{tri}=} __voronoi__ (@var{point})\n\
+Internal function for voronoi.\n\
 @end deftypefn")
 {
 	octave_value_list retval;

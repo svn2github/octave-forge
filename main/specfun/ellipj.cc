@@ -152,7 +152,7 @@ DEFUN_DLD (ellipj, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{sn}, @var{cn}, @var{dn}] =} \
 ellipj (@var{u}, @var{m}, @var{err})\n\
-Compute the Jacobi elliptic functions sn, cn, dn of complex argument and real parameter:\n\
+Compute the Jacobi elliptic functions sn, cn, dn of complex argument and real parameter.\n\
 \n\
 If @var{m} is a scalar, the results are the same size as @var{u}.\n\
 If @var{u} is a scalar, the results are the same size as @var{m}.\n\

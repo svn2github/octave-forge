@@ -26,6 +26,8 @@
 ## @result{} 1011
 ## dec2bin(bitcmp(11))
 ## @result{} 11111111111111111111111111110100
+## @end example
+##
 ## @seealso{bitand,bitor,bitxor,bitset,bitget,bitcmp,bitshift,bitmax}
 ## @end deftypefn
 

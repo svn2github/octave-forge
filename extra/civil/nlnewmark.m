@@ -75,7 +75,7 @@
 ##
 ## @table @var
 ## @item  x
-## Matrix of size (3, @func{length}(@var{f})) with time series of displacement
+## Matrix of size (3, @code{length(@var{f})}) with time series of displacement
 ## (@var{x}(1,:)), velocity (@var{x}(2,:)), and acceleration (@var{x}(3,:))
 ## @end table
 ##

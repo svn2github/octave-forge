@@ -55,11 +55,11 @@
 ## small primes.
 ##
 ## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
-## Evaluate the response at the specific frequencies in the vector @{w}.
+## Evaluate the response at the specific frequencies in the vector @var{w}.
 ##
 ## @deftypefnx {Function File} {... =} freqz (..., @var{Fs})
 ## Return frequencies in Hz instead of radians assuming a sampling rate
-## @{Fs}.  If you are evaluating the response at specific frequencies 
+## @var{Fs}.  If you are evaluating the response at specific frequencies 
 ## @var{w}, those frequencies should be requested in Hz rather than radians.
 ##
 ## @deftypefnx {Function File} freqz(...)

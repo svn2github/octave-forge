@@ -21,7 +21,7 @@
 ## cumulative numerical intergration using trapezodial method.
 ## cumtrapz (@var{y}) computes the cumulative integral of the vector y.
 ## If @var{y} is a matrix the integral is computed columnwise.
-## If the @var(X) argument is omitted a equally spaced vector is assumed. 
+## If the @var{X} argument is omitted a equally spaced vector is assumed. 
 ## cumtrapz (@var{X},@var{Y}) evaluates the cumulative integral
 ## with respect to @var{X}.
 ##  

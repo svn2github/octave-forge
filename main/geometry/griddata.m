@@ -23,6 +23,7 @@
 ## If method is omitted it defaults to 'linear'
 ## @seealso{delaunay}
 ## @end deftypefn
+
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
 function [...] = griddata (x,y,z,xi,yi)

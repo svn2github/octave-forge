@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} { } fnder (@var{pp}, @var(order))
+## @deftypefn {Function File} { } fnder (@var{pp}, @var{order})
 ## differentiate the spline in pp-form 
 ##
 ## @seealso{ppval}

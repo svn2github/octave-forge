@@ -33,6 +33,7 @@ extern "C" {
 }
 
 DEFUN_DLD(trisolve, args, ,"\
+Solve triangular systems.\n\
 x = trisolve(d,e,b)\n\n\
 Solves the symmetric positive definite tridiagonal system:\n\
   / d1 e1  0  . . .  0    0 \\     / b11 b12 . . . b1k \\\n\

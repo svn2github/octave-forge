@@ -27,7 +27,7 @@ using namespace std;
 DEFUN_DLD (gtext, args, ,
 	   "usage: [res] = gtext (\"text\")\n"
 	   "\n"
-           "Click where you want the text.\n"
+           "Place text on the current graph at the position indicated by a mouse click.\n"
            "Use left button for left-justified text, middle button for centered\n"
            "text, or right button for right-justified text. Press any key to abort.\n"
            "\n"

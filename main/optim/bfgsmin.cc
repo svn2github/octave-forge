@@ -64,7 +64,7 @@ any_bad_argument(const octave_value_list& args)
 
 
 DEFUN_DLD(bfgsmin, args, ,
-	  "bfgsmin: bfgs minimization of a function. See bfgsmin-example.m\n\
+	  "bfgsmin: bfgs minimization of a function. See bfgsmin_example.m\n\
 \n\
 [x, obj, convergence] = bfgsmin(\"f\", {args}, {control}, {tols})\n\
 \n\
@@ -149,9 +149,9 @@ ans =\n\
   if (args.length() >= 3)
     {
       Cell control (args(2).cell_value());
-      if (xisinf (control(0).double_value()))
-	max_iters = -1;
-      else 
+      //      if (xisinf (control(0).double_value()))
+      //	max_iters = -1;
+      //else 
 	max_iters = control(0).int_value();
       if (max_iters == -1) max_iters = INT_MAX;
       verbosity = control(1).int_value();

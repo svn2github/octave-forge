@@ -96,7 +96,7 @@ ColumnVector lbfgs_recursion(int memory, Matrix& sigmas, Matrix& gammas, ColumnV
 	
 
 DEFUN_DLD(lbfgsmin, args, ,
-	  "lbfgsmin: limited memory bfgs minimization of a function. See lbfgsmin-example.m\n\
+	  "lbfgsmin: limited memory bfgs minimization of a function. See lbfgsmin_example.m\n\
 \n\
 [x, obj, convergence] = lbfgsmin(\"f\", {args}, {control}, {tols}]\n\
 \n\

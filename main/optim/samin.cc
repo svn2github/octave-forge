@@ -140,7 +140,7 @@ any_bad_argument(const octave_value_list& args)
 
 //-------------- The annealing algorithm --------------
 DEFUN_DLD(samin, args, ,
-	  "samin: simulated annealing minimization of a function.\n\
+	  "samin: simulated annealing minimization of a function. See samin_example.m\n\
 \n\
 [x, obj, convergence] = samin(\"f\", {args}, {control})\n\
 \n\

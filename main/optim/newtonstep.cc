@@ -28,52 +28,52 @@
 #include <octave/lo-ieee.h>
 #include <float.h>
 
-static bool
-any_bad_argument(const octave_value_list& args)
-{
-  if (!args(0).is_string())
-    {
-      error("newtonstep: first argument must be string holding objective function name");
-      return true;
-    }
-  if (!args(1).is_cell())
-    {
-      error("newtonstep: second argument must cell array of function arguments");
-      return true;
-    }
-  if (!args(2).is_real_type())
-    {
-      error("newtonstep: third argument must be column vector of directions");
-      return true;
-    }
+// static bool
+// any_bad_argument(const octave_value_list& args)
+// {
+//   if (!args(0).is_string())
+//     {
+//       error("newtonstep: first argument must be string holding objective function name");
+//       return true;
+//     }
+//   if (!args(1).is_cell())
+//     {
+//       error("newtonstep: second argument must cell array of function arguments");
+//       return true;
+//     }
+//   if (!args(2).is_real_type())
+//     {
+//       error("newtonstep: third argument must be column vector of directions");
+//       return true;
+//     }
+// 
+//   if (args.length() == 4)
+//     {
+//       if (!args(3).is_real_scalar())
+//     	{
+// 	  error("newtonstep: 4th argument, if supplied, must be a scalar specifying which is the minimand");
+// 	  return true;
+//     	}
+//     }	
+// 
+//   return false;
+// }
 
-  if (args.length() == 4)
-    {
-      if (!args(3).is_real_scalar())
-    	{
-	  error("newtonstep: 4th argument, if supplied, must be a scalar specifying which is the minimand");
-	  return true;
-    	}
-    }	
-
-  return false;
-}
 
 
-
-DEFUN_DLD(newtonstep, args, , "newtonstep.cc - for internal use by bfgsmin and related functions")
+DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
 {
   
 	
-  int nargin = args.length ();
-  if ((nargin < 3) || (nargin > 4))
-    {
-      error("newtonstep: you must supply 3 or 4 arguments");
-      return octave_value_list();
-    }
-
-  // check the arguments
-  if (any_bad_argument(args)) return octave_value_list();
+//   int nargin = args.length ();
+//   if ((nargin < 3) || (nargin > 4))
+//     {
+//       error("newtonstep: you must supply 3 or 4 arguments");
+//       return octave_value_list();
+//     }
+// 
+//   // check the arguments
+//   if (any_bad_argument(args)) return octave_value_list();
 
 	
 	
@@ -138,7 +138,7 @@ DEFUN_DLD(newtonstep, args, , "newtonstep.cc - for internal use by bfgsmin and r
 
   if (a < 0) 	// since direction is descending, a must be positive
     { 			// if it is not, go to bisection step
-      f_return = feval("newtonstep", args);
+      f_return = feval("bisectionstep", args);
       a = f_return(0).double_value();
       obj = f_return(1).double_value();
       stepobj(0) = a;
@@ -157,7 +157,7 @@ DEFUN_DLD(newtonstep, args, , "newtonstep.cc - for internal use by bfgsmin and r
   // if not, fall back to bisection
   if ((obj > obj_0) || lo_ieee_isnan(obj))
     {
-      f_return = feval("newtonstep", args);
+      f_return = feval("bisectionstep", args);
       a = f_return(0).double_value();
       obj = f_return(1).double_value();
     }

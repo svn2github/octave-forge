@@ -16,6 +16,7 @@
 ##
 ## Legend puts a legend on the current plot using the specified strings
 ## as labels. Legend works on line graphs, bar graphs, etc...
+## Be sure to call plot before calling legend.
 ##
 ## pos: places the legend in the specified location:
 ##      0 = Don't move the legend box (default)
@@ -31,6 +32,9 @@
 
 ## 2001-03-31 Paul Kienzle
 ##   * use tmpnam for temporary file name; unlink to remove
+## 2001-09-28 Paul Söderlind <Paul.Soderlind@hhs.se>
+##   * add a pause after save request to give gnuplot time to write the file
+##   * add comment to call plot before legend.
 
 function legend (...)
 
@@ -70,6 +74,7 @@ function legend (...)
   tmpfilename=tmpnam;
   command=["save \"",tmpfilename,"\"\n"];
   graw(command);
+  pause(2);
 
   awk_prog= \
       "BEGIN { \

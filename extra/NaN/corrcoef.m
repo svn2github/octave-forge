@@ -1,4 +1,4 @@
-function [R,sig,ci1,ci2,iy] = corrcoef(X,Y,Mode);
+function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % CORRCOEF calculates the correlation coefficient.
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
@@ -31,11 +31,9 @@ function [R,sig,ci1,ci2,iy] = corrcoef(X,Y,Mode);
 %  ci2	upper 0.95 confidence interval 
 %
 % Further recommandation related to the correlation coefficient 
+% + LOOK AT THE SCATTERPLOTS!
 % + Correlation is not causation. The observed correlation between two variables 
-%	might be due to the action of a third, unobserved variable.
-% + Ensure that NaN's are unrelated; otherwise encode NaN's in an 
-%		appropriate way e.g. with X(isnan(X))=max(X(:))+eps;
-% + LOOK AT THE SCATTERPLOTS! [20]
+%	might be due to the action of other, unobserved variables.
 %
 % see also: SUMSKIPNAN, COVM, COV, COR, SPEARMAN, RANKCORR, RANKS
 %
@@ -55,7 +53,7 @@ function [R,sig,ci1,ci2,iy] = corrcoef(X,Y,Mode);
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
-%    Version 1.26  Date: 19 Aug 2002
+%    Version 1.26  Date: 20 Aug 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -74,6 +72,7 @@ function [R,sig,ci1,ci2,iy] = corrcoef(X,Y,Mode);
 
 % .changelog
 % V1.25	16082002	handling missing values (NaN) in Spearman's rank correlation	
+%       20082002	all glitches fixed.
 
 % Features:
 % + interprets NaN's as missing value
@@ -81,7 +80,7 @@ function [R,sig,ci1,ci2,iy] = corrcoef(X,Y,Mode);
 % + Spearman's rank correlation
 % + Rank correlation (non-parametric, non-Spearman)
 % + is fast, using an efficient algorithm O(n.log(n)) for calculating the ranks
-% + significance test included for null-hypthesis: r=0 
+% + significance test for null-hypthesis: r=0 
 % + confidence interval (0.95) included
 % - rank correlation works for cell arrays, too (no check for missing values).
 % + compatible with Octave and Matlab
@@ -109,94 +108,110 @@ if ~isempty(Y)
                 fprintf(2,'Error CORRCOEF: X and Y must have the same number of observations (rows).\n');
                 return;
         end;
+        NN = (~isnan(X)')*(~isnan(Y));
 else
         [r2,c2]=size(X);
+        NN = (~isnan(X)')*(~isnan(X));  
 end;
 
+%%%%% generate combinations using indices for pairwise calculation of the correlation
+YESNAN = any(isnan(X(:))) | any(isnan(Y(:)));
+if isempty(Y),
+        IX = ones(c1);
+else
+        IX = zeros(c1+c2);
+        IX(1:c1,c1+(1:c2)) = 1;
+%        X = [X,Y];
+end;  
+[jx,jy] = find(IX);
+
 if strcmp(lower(Mode(1:7)),'pearson');
-        if ~isempty(Y),
-                [S1,N1,SSQ1] = sumskipnan(X,1);
-                [S2,N2,SSQ2] = sumskipnan(Y,1);
-                
-                NN = (~isnan(X)')*(~isnan(Y));
-                X(isnan(X)) = 0; % skip NaN's
-                Y(isnan(Y)) = 0; % skip NaN's
-                CC = X'*Y;
-                
-                M1 = S1./N1;
-                M2 = S2./N2;
-                cc = CC./NN - M1'*M2;
-                R  = cc./sqrt((SSQ1./N1-M1.*M1)'*(SSQ2./N2-M2.*M2));
-        else        
+        % see http://mathworld.wolfram.com/CorrelationCoefficient.html
+	if ~YESNAN,
                 [S,N,SSQ] = sumskipnan(X,1);
-                
-                NN = (~isnan(X)')*(~isnan(X));
-                X(isnan(X)) = 0; % skip NaN's
-                CC = X'*X;
-                
-                M  = S./N;
-                cc = CC./NN - M'*M;
-                v  = (SSQ./N- M.*M);  %max(N-1,0);
-                R  = cc./sqrt(v'*v);
-                R(logical(eye(size(R))))=1;  % prevent rounding errors 
-        end;
+                if ~isempty(Y),
+	                [S2,N2,SSQ2] = sumskipnan(Y,1);
+                        CC = X'*Y;
+                        M1 = S./N;
+                        M2 = S2./N2;
+                        cc = CC./NN - M1'*M2;
+                        R  = cc./sqrt((SSQ./N-M1.*M1)'*(SSQ2./N2-M2.*M2));
+                else        
+                        CC = X'*X;
+                        M  = S./N;
+                        cc = CC./NN - M'*M;
+                        v  = (SSQ./N- M.*M); %max(N-1,0);
+                        R  = cc./sqrt(v'*v);
+                end;
+        else
+                if ~isempty(Y),
+                        X = [X,Y];
+                end;  
+                for k = 1:length(jx),
+                        ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        [s,n,s2] = sumskipnan(X(ik,[jx(k),jy(k)]));
+                        v  = (s2-s.*s./n)./n;
+                        cc = X(ik,jx(k))'*X(ik,jy(k));
+                        cc = cc/n(1) - prod(s./n);
+                        R(jx(k),jy(k)) = cc./sqrt(prod(v));
+                end;
+        end
         
 elseif strcmp(lower(Mode(1:4)),'rank');
-        if isnumeric(X) & any(isnan(X(:))),
-                warning('Missing values (NaN) might give different ranks')
-        end;
-  	if isempty(Y),      
-	        R = corrcoef(ranks(X));
+        % see [ 6] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
+	if ~YESNAN,
+                if isempty(Y)
+	                R = corrcoef(ranks(X));
+                else
+                        R = corrcoef(ranks(X),ranks(Y));
+                end;        
         else
-                if isnumeric(Y) & any(isnan(Y(:))),
-                        warning('Missing values (NaN) might give different ranks')
+                if ~isempty(Y),
+                        X = [X,Y];
+                end;  
+                for k = 1:length(jx),
+                        ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        il = ranks(X(ik,[jx(k),jy(k)]));
+                        R(jx(k),jy(k)) = corrcoef(il(:,1),il(:,2));
                 end;
-                R = corrcoef(ranks(X),ranks(Y));
         end;
         
 elseif strcmp(lower(Mode(1:8)),'spearman');
-        if isnumeric(X) & any(isnan(X(:))),
-                warning('Missing values (NaN) might give different ranks')
-        end;
-  	%%%%% generate combinations using indices
-        [N,M1] = size(X);
-        if isempty(Y),
-                M2 = M1;	        
-                IX = ones(M1);
-	        iy = ranks(X);	%  calculates ranks;
-        else
-                M2 = size(Y,2);
-                IX = zeros(M1+M2);
-                IX(1:M1,M1+(1:M2)) = 1;
-	        iy = ranks([X,Y]);	%  calculates ranks;
-                if isnumeric(Y) & any(isnan(Y(:))),
-                        warning('Missing values (NaN) might give different ranks')
-                end;
+        % see [ 6] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
+        if ~isempty(Y),
+                X = [X,Y];
         end;  
-        [jx,jy] = find(IX);
-        
-        
-	% see [ 6] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
-        [R,NN] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
-        R      = 1-6*R./(NN.*(NN.*NN-1));
-        R      = reshape(R,M1,M2);
-        
-        if isempty(Y),
-                R(logical(eye(size(R))))=1;	% prevent rounding errors 
+        if ~YESNAN,
+                iy = ranks(X);	%  calculates ranks;
+                
+                [R,N] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
+                R     = 1-6*R./(N.*(N.*N-1));
+                R     = reshape(R,c1,c2);
+        else
+                for k = 1:length(jx),
+                        ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        il = ranks(X(ik,[jx(k),jy(k)]));
+                        % NN is the number of non-missing values
+                        R(jx(k),jy(k)) = sumskipnan((il(:,1) - il(:,2)).^2);
+                end;
+                R = 1-6*R./(NN.*(NN.*NN-1));
         end;
+        
 else
         fprintf(2,'Error CORRCOEF: unknown mode ''%s''\n',Mode);
 end;
 
-if nargout<2, return, end;
+if isempty(Y),
+        R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
+end;
 
-NN     = reshape(NN,M1,M2);
+if nargout<2, return, end;
 
 
 
 % SIGNIFICANCE TEST
 
-%warning off; 	% prevent division-by-zero warnings in Matlab.
+warning off; 	% prevent division-by-zero warnings in Matlab.
 tmp = 1 - R.*R;
 t   = R.*sqrt(max(NN-2,0)./tmp);
 

@@ -1,12 +1,13 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 use strict;
 
+# These should be in your path already:
 # Set environment variables so I can update the cvs tree
-$ENV{CVS_RSH} = 'ssh';
-
+# $ENV{CVS_RSH} = 'ssh';
 # If you're not cgijobs, you need to change the next line
-$ENV{CVSROOT} = 'cgijobs@cvs.octave.sourceforge.net:/cvsroot/octave';
+# $ENV{CVSROOT} = 'cgijobs@cvs.octave.sourceforge.net:/cvsroot/octave';
+# Besides, they aren't even used in this program!
 
 #	 variables used in this file
 my (
@@ -22,7 +23,9 @@ my (
 	$entry,
 	$full,
 	$file,
-	%files
+	%files,
+	$dir,
+	$len
 );
 
 print STDERR "Don't forget to do a cvs update before executing this...\n\n";
@@ -36,7 +39,7 @@ print STDERR "Don't forget to do a cvs update before executing this...\n\n";
 
 
 # where to start the search
-$basedir = './';
+$basedir = '.';  # if you change this, then you must not chop it later
 
 # maximum number of iterations to avoid runaway process
 $maxiter = 10000;
@@ -49,7 +52,7 @@ $extensions = '.m.';
 # file or directory, and that directories do not include trailing 
 # slashes.  Also note that we use the ".=" instead of the "=".
 
-$DMZ = './dld ';
+$DMZ = ' ';
 #$DMZ .= "/usr/www/users/ifunds/cgi-bin ";
 
 unless (-e $basedir) {
@@ -95,7 +98,6 @@ for ($temp=0;$temp<$maxiter;$temp++) {
 }
 
 # Output the page:
-# FIXME: Does not handle multiple unique names (in separate directories)...
 
 print '<html><head><title>Octave Repository Function List</title></head>';
 print "\n<body>\n", titlebar(), hline(), '<p>';
@@ -104,21 +106,34 @@ print 'Unique file names: ', scalar keys %files, "\n<p>\n";
 
 # first, print the summary
 foreach $file (sort keys %files) {
-	$temp = func_name( $files{$file}, $file);
-	print qq[<a href="#$temp">$temp</a> - ];
+
+	# There has got to be a better way of finding the length of a list!!
+	$len = split(/,/, $files{$file});
+
+	foreach $dir (split(/,/, $files{$file})) {
+		$dir = substr($dir,2); # chop ./
+		$temp = func_name( $dir, $file);
+	        $temp = "$dir/$temp" if ($len > 1);
+		print qq[<a href="#$temp">$temp</a> - ];
+        }
 }
 
 # now, print each entry
 print hline();
 foreach $file (sort keys %files) {
 
-	$temp = func_name( $files{$file}, $file);
-	print qq[<p><a name="$temp">$temp</a>];
+	$len = split(/,/, $files{$file});
+	foreach $dir (split(/,/, $files{$file})) {
+ 		$dir = substr($dir,2);  # chop ./
+		$temp = func_name( $dir, $file);
+		$temp = "$dir/$temp" if ($len > 1);
+		print qq[<p><a name="$temp">$temp</a>];
 
-	$temp = cvs_download_link( $files{$file}, $file);
-	print qq+ [<a href="$temp">Download</a>]+;
+		$temp = cvs_download_link( $dir, $file);
+		print qq+ [<a href="$temp">Download</a>]+;
 
-	print '<br><pre>' . func_descript( $files{$file}, $file) . "</pre>\n";
+		print '<br><pre>' . func_descript( $dir, $file) . "</pre>\n";
+	}
 }
 
 print "\n</body></html>\n";
@@ -169,7 +184,7 @@ sub cvs_download_link {
 
 	$_dir =~ s/^[.\/]*//;  # get rid of the leading garbage
 
-	return 'http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave/' .
+	return 'http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/' .
 		$_dir . '/' . $_file . '?rev=HEAD&content-type=text/plain';
 }
  

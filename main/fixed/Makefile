@@ -32,12 +32,6 @@ ifeq (,$(findstring cygwin,$(canonical_host_type)))
 
   EXTRALIBS =
 else
-  SH_LD=g++
-  SH_LDFLAGS=-shared -Wl,--export-all-symbols -Wl,--enable-auto-import
-  SONAME_FLAGS=-Wl,--out-implib=$(FIXEDLIBTARGET).a
-  LFLAGS=-L/usr/lib/octave-$(OCTAVE_VERSION)
-  OCTAVE_LIBS=-loctave -lcruft -loctinterp
-
   FIXEDLIBTARGET = liboctave_fixed.dll
   FIXEDLIBSOURCES = fixedColVector.cc fixedRowVector.cc \
 	fixedMatrix.cc fixedComplex.cc fixedCColVector.cc fixedCRowVector.cc \
@@ -62,7 +56,11 @@ else
 
   EXTRALIBS = -L./ -loctave_fixed
 
+  # The name of this flag changed in version 2.1.54. Use both versions
+  # so that one of them will work.
   MY_SH_LDFLAGS = $(shell $(MKOCTFILE) -p SH_LDFLAGS) \
+	-Wl,--out-implib=$(FIXEDLIBTARGET).a
+  MY_DL_LDFLAGS = $(shell $(MKOCTFILE) -p DL_LDFLAGS) \
 	-Wl,--out-implib=$(FIXEDLIBTARGET).a
 endif
 
@@ -119,7 +117,7 @@ install : $(SUBDIRS)
 $(FIXEDLIBTARGET): $(FIXEDLIBDEPENDS) $(FIXEDLIBOBJECTS) 
 	@echo "Linking $@"; \
 	$(RM) -f $@; \
-	SH_LDFLAGS="$(MY_SH_LDFLAGS)" $(MKOCTFILE) -v -o $@ $(FIXEDLIBOBJECTS)
+	DL_LDFLAGS="$(MY_DL_LDFLAGS)" SH_LDFLAGS="$(MY_SH_LDFLAGS)" $(MKOCTFILE) -v -o $@ $(FIXEDLIBOBJECTS)
 endif
 endif
 

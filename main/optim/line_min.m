@@ -46,21 +46,24 @@ function [a,fx,nev] = line_min (f, dx, args, narg)
   if nargin < 4, narg = 1; end
 
   nev = 0;
-  h = 0.01;
+  h = 0.001;			# Was 0.01 here
   x = nth (args,narg);
   a = 0;
-
-  while (abs (velocity) > 0.0001)
+				# was 1e-4
+  while (abs (velocity) > 0.000001)
     fx = leval (f,splice (args, narg, 1, list (x+a*dx)));
     fxph = leval (f,splice (args, narg,1,list (x+(a+h)*dx)));
     fxmh = leval (f,splice (args, narg,1,list (x+(a-h)*dx)));
 
     velocity = (fxph - fxmh)/(2*h);
     acceleration = (fxph - 2*fx + fxmh)/(h^2);
+    if abs(acceleration) <= eps, acceleration = 1; end # Don't do div by zero
+				# Use abs(accel) to avoid problems due to
+				# concave function
     a = a - velocity/abs(acceleration);
     nev += 3;
   endwhile
 endfunction
 
 ## Rem : Although not clear from the code, the returned a always seems to
-## correspond to optimal fx.
+## correspond to (nearly) optimal fx.

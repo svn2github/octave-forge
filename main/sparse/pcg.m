@@ -24,12 +24,12 @@ function [x, flag, relres, iter, resvec, eigest] = ...
 %MAXIT, or PCG has less arguments, a default value equal to 20 is used.
 %
 %M is the (left) preconditioning matrix, so that the iteration is
-%(theoretically) equivalent to solving by PCG P*x = M\B, with P = M\A or
-%equivalently, P = inv(M)*A. Note that a proper choice of the preconditioner may
-%dramatically improve the overall performance of the method! The user may pass
-%for M a name of a function which returns the results of applying the inverse of
+%(theoretically) equivalent to solving by PCG P*x = M\B, with P = M\A.
+%Note that a proper choice of the preconditioner may
+%dramatically improve the overall performance of the method! Instead of matrix M, 
+%the user may pass a function which returns the results of applying the inverse of
 %M to a vector (usually this is the preferred way of using the preconditioner).
-%If [] or eye(size(A)) is supplied for M, or M is omitted, no preconditioning is
+%If [] is supplied for M, or M is omitted, no preconditioning is
 %applied.
 %
 %X0 is the initial guess. If X0 is empty or omitted, the function sets X0 to a
@@ -58,14 +58,16 @@ function [x, flag, relres, iter, resvec, eigest] = ...
 %Euclidean norm of the residual, and RESVEC(i,2) is the preconditioned residual
 %norm, after the (i-1)-th iteration, i = 1,2,...ITER+1. The preconditioned
 %residual norm is defined as |||r|||^2 = r'*(M\r) where r = B-A*x, see also the
-%description of M. If EIGEST is not required, only RELRES(:,1) is returned.
+%description of M. If EIGEST is not required, only RESVEC(:,1) is returned.
 %
 %EIGEST returns the estimate for the smallest (EIGEST(1)) and largest
-%(EIGEST(2)) eigenvalues of the preconditioned matrix P (see the description of
-%M for the definition of P). In particular, if no preconditioning is used, the
+%(EIGEST(2)) eigenvalues of the preconditioned matrix P=M\A. 
+%In particular, if no preconditioning is used, the
 %estimates for the extreme eigenvalues of A are returned. EIGEST(1) is an
 %overestimate and EIGEST(2) is an underestimate, so that EIGEST(2)/EIGEST(1) is
-%a lower bound for cond(P,2). The method works only for symmetric positive
+%a lower bound for cond(P,2), which nevertheless in the limit should
+%theoretically be equal to the actual value of the condition number. 
+%The method which computes EIGEST works only for symmetric positive
 %definite A and M, and the user is responsible for verifying this assumption. 
 %
 %EXAMPLES 

@@ -6,7 +6,7 @@
 
 function v = vrml_group ( varargin )
 
-
+nargin = nargin();
 if nargin == 0, return end
 
 s = "";
@@ -18,11 +18,11 @@ s = "";
 				# endpre 2.1.38
 if nargin > 0, s = nth (varargin, 1); end
 if nargin > 1
-  for i = 2:nargin, s = [s,",\n", nth (varargin, i)]; end
+  for i = 2:nargin, s = [s,",\n", nth(varargin, i)]; end
 end
 ## indent s
 ni = 4;
-s = [blanks (ni), strrep (s,"\n",["\n",blanks(ni)])(:)'];
+s = [blanks(ni), strrep(s,"\n",["\n",blanks(ni)])(:)'];
 
 v = sprintf (["Group {\n",\
               "  children [\n",\

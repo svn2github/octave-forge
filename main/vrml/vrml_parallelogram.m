@@ -54,7 +54,7 @@ s = vrml_faces (x,list (1:4),"col",col, "tran", tran,"emit",emit);
 				# Decoration : balls on vertices
 if balls
   if isnan (bemit), bemit = emit; end
-  s = [s,vrml_points (x,"balls","rad",brad,"col",bcol,"tran",btran,"emit",bemit)];
+  s = [s,vrml_points(x,"balls","rad",brad,"col",bcol,"tran",btran,"emit",bemit)];
 end
 
 				# Decoration : border
@@ -71,9 +71,9 @@ if border
     
   if !balls			# Make pretty junctions of cylinders
     s = [s,\
-	 vrml_cyl (x(:,[1:columns(x),1]),"rad",borad,"emit",boemit,"col",col),\
-	 vrml_points (x(:,1),"balls","rad",borad,"emit",boemit,"col",col)];
+	 vrml_cyl(x(:,[1:columns(x),1]),"rad",borad,"emit",boemit,"col",col),\
+	 vrml_points(x(:,1),"balls","rad",borad,"emit",boemit,"col",col)];
   else				# but only if balls don't cover them
-    s = [s,vrml_cyl (x(:,[1:columns(x),1]),"rad",borad,"emit",boemit)];
+    s = [s,vrml_cyl(x(:,[1:columns(x),1]),"rad",borad,"emit",boemit)];
   end
 end

@@ -74,7 +74,8 @@ end
 
 frame = 1;
 
-surf_args = list (x,y,z);	# Arguments that'll be passed to vrml_surf
+## surf_args = list (x,y,z);	# Arguments that'll be passed to vrml_surf
+surf_args = {x,y,z};	# Arguments that'll be passed to vrml_surf
 
 if nargin > 3,
 
@@ -87,23 +88,30 @@ if nargin > 3,
   opts = read_options (varargin,"op0",op0,"op1",op1,"default",df);
 
 				# Identify options for vrml_surf()
-  all_surf_opts  = list ("tran", "col", "checker", "creaseAngle", "emit", \
-			 "colorPerVertex", "smooth", "tex",\
-			 "zgrey","zrb","zcol");
+#   all_surf_opts  = list ("tran", "col", "checker", "creaseAngle", "emit", \
+# 			 "colorPerVertex", "smooth", "tex",\
+# 			 "zgrey","zrb","zcol");
+  all_surf_opts  = {"tran", "col", "checker", "creaseAngle", "emit", \
+		    "colorPerVertex", "smooth", "tex",\
+		    "zgrey","zrb","zcol"};
 
   for i = 1:length(all_surf_opts)
-    optname = nth (all_surf_opts, i);
+    ## optname = nth (all_surf_opts, i);
+    optname = all_surf_opts{i};
     if struct_contains (opts, optname)
-      surf_args = append (surf_args, list (optname));
+      ## surf_args = append (surf_args, list (optname));
+      surf_args{length(surf_args)+1} = optname;
       if index (op1,[" ",optname," "])
-	surf_args = append (surf_args, list(opts.(optname)));
+	## surf_args = append (surf_args, list(opts.(optname)));
+	surf_args{length(surf_args)+1} = opts.(optname);
       end
     end
   end
   [level,ltran,lcol] = getfield (opts, "level","ltran","lcol");
 end
 
-s = leval ("vrml_surf", surf_args);
+## s = leval ("vrml_surf", surf_args);
+s = feval ("vrml_surf", surf_args{:});
 
 pts = [x(:)';y(:)';z(:)'];
 ii = find (all (isfinite (pts)));
@@ -111,9 +119,9 @@ pt2 = pts(:,ii); x2 = x(:)(ii); y2 = y(:)(ii); z2 = z(:)(ii);
 ## Addd a point light
 scl = nanstd ((pt2-mean (pt2')'*ones(1,columns (pt2)))(:));
 
-lpos = [min (x2) - 1.1*scl* max (max(x2)-min(x2), 1),
-	mean (y2),
-	max (z2)];
+lpos = [(min(x2) - 1.1*scl* max(max(x2)-min(x2), 1)),
+	mean(y2),
+	max(z2)];
 
 pl = vrml_PointLight ("location", lpos, "intensity", 0.7);
 
@@ -159,10 +167,10 @@ if ! isempty (level)
   
   for i = 1:nlev
     slevel = [slevel, \
-	      vrml_parallelogram ([xmin     xmin     xmax     xmax;\
-				   ymin     ymax     ymax     ymin;\
-				   level(i) level(i) level(i) level(i)],\
-				  "col",lcol(i,:),"tran",ltran(i))];
+	      vrml_parallelogram([xmin     xmin     xmax     xmax;\
+				  ymin     ymax     ymax     ymin;\
+				  level(i) level(i) level(i) level(i)],\
+				 "col",lcol(i,:),"tran",ltran(i))];
   end
 end
 
@@ -173,4 +181,6 @@ vrml_browse (s);
 
 if ! nargout,  clear s; end
 
-
+%!demo
+%! test_vmesh
+%! Test the vmesh and vrml_browse functions with the test_vmesh script

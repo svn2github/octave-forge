@@ -40,14 +40,14 @@ p = vrml_b_pid ;
 bop = "";
 
 if nargin<1
-  s = "";s = "";
+  s = "";
 else
   i = 1;
   while i <= length (varargin)
     o = varargin{i++};
     if strcmp (o, "-kill")
       vrml_kill(); return;
-    elseif strcmp (o, "-bop")
+    elseif strcmp (o, "-bop")	# Browser options
       bop = [bop," ",varargin{i++}," "];
     end
   end
@@ -164,6 +164,7 @@ if vrml_b_pid <= 0
     vrml_b_pid = str2num (out);
     if verbose, printf( "vrml_browse : OK\n"); end
   end
+
 end				# End of starting new browser ########
 				# ####################################
 

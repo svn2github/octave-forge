@@ -101,7 +101,7 @@ if 0
 	   "             G \\\n",\
 	   "                 1\n"]);
   
-  vrml_browse ([slight, s1, vrml_transfo (s2,[2,0,0])]);
+  vrml_browse ([slight, s1, vrml_transfo(s2,[2,0,0])]);
 end
 
 

@@ -60,16 +60,16 @@ for [val,key] = hash,
     if struct_contains (tpl1, key)
 
       body = [body,\
-	      sprintf ("   %-20s   [ %s ]\n",key,\
-		       sprintf (getfield (tpl1,key), val))];
+	      sprintf("   %-20s   [ %s ]\n",key,\
+		      sprintf (getfield (tpl1,key), val))];
 
 
 				# Add string field
     elseif struct_contains (tpl2, key)
 
       body = [body,\
-	      sprintf ("   %-20s   \"%s\"\n",key,\
-		       sprintf (getfield (tpl2,key), val))];
+	      sprintf("   %-20s   \"%s\"\n",key,\
+		      sprintf (getfield (tpl2,key), val))];
     else
       error (sprintf ("vrml_Background : unknown field '%s'",key));
     end

@@ -21,17 +21,34 @@ function v = vrml_transfo(s,t,r,c,DEF)
 
 verbose = 0;
 ## 
-
-if nargin<2 || isnan (t), t = [0,0,0] ; end # Default translation
-if nargin<3 || isnan (r), r = [1,0,0,0] ; end #  Default rotation
-if nargin<4 || isnan (c), c = [1,1,1] ; end # Default scale
+t0 = [0;0;0];
+r0 = [1,0,0,0];
+c0 = [1;1;1];
+if nargin<2 || isnan (t), t = t0; end # Default translation
+if nargin<3 || isnan (r), r = r0; end # Default rotation
+if nargin<4 || isnan (c), c = c0; end # Default scale
 if nargin<5, DEF = ""; end
+
+if verbose > 1
+  if nargin > 1, printf ("vrml_transfo : t   = %s\n",sprintf ("%f ",t)); end
+  if nargin > 2, printf ("vrml_transfo : r   = %s\n",sprintf ("%f ",r)); end
+  if nargin > 3, printf ("vrml_transfo : c   = %s\n",sprintf ("%f ",c)); end
+  if nargin > 4, printf ("vrml_transfo : DEF = %s\n",DEF); end
+end
+t = t(:);
+c = c(:);
 ## if nargin<4, s = "%s" ; end
+
+if prod(size(t)) != 3, error("t has %i elements, not 3",prod(size(t))); end
+
 
 if prod(size(c))==1, c = [c,c,c]; end
 
 if all(size(r) == 3)
-  [axis,ang] = rotparams(r) ;
+  if abs (det (r) - 1) > sqrt (eps), r2 = orthogonalize (r);
+  else                               r2 = r;
+  end
+  [axis,ang] = rotparams (r2);
 elseif prod(size(r)) == 4
   ang = r(4);
   axis = r(1:3);
@@ -53,26 +70,32 @@ if verbose,
 end
 
 				# Indent s by 4
-if length (s) && strcmp(s(prod(size(s))),"\n")
+if length (s) && strcmp(s(prod(size(s))),"\n") # chomp
   s = s(1:prod(size(s))-1) ;
 end
-## strrep is slow, as if it copied everything by hand 
+## strrep is slow, as if it copied everything by hand. So don't indent.
 #  mytic() ;
 #  s = ["    ",strrep(s,"\n","\n    ")] ;
 #  mytic()
 if verbose, printf ("   done indenting s\n"); end
 
-v = sprintf(["Transform {\n",\
-	     "  rotation    %8.3f %8.3f %8.3f %8.3f\n",\
-	     "  translation %8.3f %8.3f %8.3f\n",\
-	     "  scale       %8.3f %8.3f %8.3f\n",\
+sr = st = ss = sd = "";
+if abs (ang) > sqrt (eps)
+  sr = sprintf ("  rotation    %8.3f %8.3f %8.3f %8.3f\n",axis,ang);
+end
+if any (abs (t - t0)>sqrt (eps))
+  st = sprintf ("  translation %8.3f %8.3f %8.3f\n",t);
+end
+if any (abs (c - c0)>sqrt (eps))
+  ss = sprintf ("  scale       %8.3f %8.3f %8.3f\n",c);
+end
+if !isempty (DEF), sd = ["DEF ",DEF," "]; end 
+
+v = sprintf([sd,"Transform {\n",sr,st,ss,\
 	     "  children [\n%s\n",\
 	     "           ]\n",\
 	     "}\n",\
 	     ],\
-	    axis,ang,\
-	    t,\
-	    c,\
 	    s) ;
 ## keyboard
-if !isempty (DEF), v = ["DEF ",DEF," ",v]; end 
+

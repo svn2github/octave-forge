@@ -66,8 +66,9 @@ opt1 = " tex DEFcoord DEFcol imsz tcoord tran col creaseAngle colorPerVertex emi
 opt0 = " smooth convex " ;
 
 verbose = 0 ;
-
+nargin = nargin();
 nargin -= 2 ;
+
 i = 1;
 while nargin>=i	
   tmp = nth (varargin, i++);
@@ -170,7 +171,7 @@ elseif prod (size (col))==3,	# One color has been specified for the whole
 				# surface
 
   col_str_1 = ["  appearance Appearance {\n",...
-	       vrml_material (col, emit, tran,DEFcol),\
+	       vrml_material(col, emit, tran,DEFcol),\
 	       "  }\n"];
 
   col_str_2 = "";
@@ -208,7 +209,7 @@ end
 
 etc_str = "" ;
 if ! isnan (creaseAngle),
-  etc_str = [etc_str, sprintf ("    creaseAngle    %8.3f\n",creaseAngle)];
+  etc_str = [etc_str, sprintf("    creaseAngle    %8.3f\n",creaseAngle)];
 end
 
 				# Faces 
@@ -227,7 +228,7 @@ if is_list (f)
 
   npts = 0;
   for i = 1:length (f), npts += ptsface(i) = 1+length (nth (f,i)); end
-  ii = [0, cumsum (ptsface)]';
+  ii = [0, cumsum(ptsface)]';
   all_indexes = -ones (1,npts);
   for i = 1:length (f), all_indexes(ii(i)+1:ii(i+1)-1) = nth (f,i) - 1; end
 else
@@ -268,3 +269,7 @@ s = sprintf([... 			# string of indexed face set
 	    sprintf("                 %8.3f %8.3f %8.3f,\n",x)) ;
 ## printf ("  Assembly :  %f\n",mytic()); ## Just for measuring time
 ## printf ("Total Time : %f\n",cputime() - starttime);
+
+%!demo
+%! test_vrml_faces
+%! Test the vrml_faces and vrml_browse functions with the test_vrml_faces script

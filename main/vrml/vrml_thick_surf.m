@@ -39,6 +39,7 @@ function s = vrml_thick_surf (x, y, z, varargin)
 tran = 0 ;
 col = [0.3, 0.4, 0.9] ;
 smooth = creaseAngle = nan ;
+nargin = nargin();
 
 if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   zz = x ;

@@ -128,7 +128,7 @@ sub extract_authors { # {{{1
                 # don't exit w/last because there could be multiple copyrights
             } elsif (
                 /^\s*[#%]+                #  one or more leading comment markers
-                    \s*author:?           #  Copyright
+                    \s*author\s*:?        #  Copyright
                     \s+(.*?)              #  name                        $1
                     \s*(<.*>)?            #  email  - optional           $2
                     \s*$/ix) {

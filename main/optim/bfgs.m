@@ -20,12 +20,18 @@
 ## - Allow non-vector optimized argument
 ## - Add help text from cg_min.
 
-## [x0,v,nev] = bfgs (f,df,args,ctl) - Variable metric minimization
+## [x0,v,nev] = bfgs (f,args,ctl) - Variable metric minimization
+##
+## Minimize f() using a variable metric method. By default, derivatives are
+## given by numerical differentiation, but it is possible to use a separate
+## function (see the 'df' options below) or to use f() with two output
+## arguments (see the 'jac' option). f() may take many arguments and
+## minimization can be done wrt to any argument (see 'narg' option).
+##
+## See also : minimize(), d2_min(), nelder_mead_min(), bs_gradient2().
 ##
 ## INPUT ------------
-## f     : string   : Name of function. Takes a RxC matrix as input and
-##                    returns a real value.
-## df    : string   : Name of f's derivative. Returns a (R*C) x 1 vector
+## f     : string   : Name of minimized function.
 ## args  : list     : Arguments passed to f.
 ##      or matrix   : f's only argument
 ## ctl   : vector   : (Optional) Control variable, described below
@@ -33,7 +39,7 @@
 ##
 ## OUTPUT -----------
 ## x0    : matrix   : Local minimum of f
-## v     : real     : Value of f in x0
+## v     : scalar   : Value of f in x0
 ## nev   : 1 x 2    : Number of evaluations of f and of df
 ## 
 ## CONTROL VARIABLE ctl : (optional). A struct or a vector of length 4 or
@@ -62,12 +68,15 @@
 ##
 ## crit, c ctl(1) : Set one of the stopping criterion ftol=tol (c=1),
 ##                  utol=tol (c=2) or dtol=tol (c=3)                     <1>
-##
 ## tol,  t ctl(2) : Threshold of termination test chosen by 'crit'  <10*eps>
 ##
 ## argn, n ctl(3) : Position of the minimized argument in args           <1>
 ## maxev,m ctl(4) : Maximum number of function evaluations             <inf>
-function [x,fmin,nev] = bfgs (func, dfunc, args, ctl)
+## 
+## df   ,s        : Use dfx = s(args) to compute derivative of f().
+## jac  ,x        : Use [fx,dfx] = f(args) to compute derivative of f() 
+##                  Derivatives must be a row vector.
+function [x,fmin,nev] = bfgs (func, args, ctl)
 
   crit = 0;			# Default control variables
   ftol  = 10*sqrt (eps);
@@ -76,8 +85,10 @@ function [x,fmin,nev] = bfgs (func, dfunc, args, ctl)
   narg = 1;
   maxev = inf;
   step = nan;
+  diff = 0;			# 0 : numerical. 1 : separate func. 2 : same
+				# func
 
-  if nargin >= 4,			# Read arguments
+  if nargin >= 3,			# Read arguments
     if isnumeric (ctl)
       if length (ctl)>=1 && !isnan (ctl(1)), crit  = ctl(1); end
       if length (ctl)>=2 && !isnan (ctl(2)), tol   = ctl(2); end
@@ -90,6 +101,8 @@ function [x,fmin,nev] = bfgs (func, dfunc, args, ctl)
       if struct_contains (ctl, "narg")   , narg    = ctl.narg   ; end
       if struct_contains (ctl, "maxev")  , maxev   = ctl.maxev  ; end
       if struct_contains (ctl, "isz")    , step    = ctl.isz    ; end
+      if struct_contains (ctl, "df")     , dfunc   = ctl.df     ; diff = 1;
+      elseif struct_contains (ctl, "jac"), diff    = 2          ;  end
     else 
       error ("The 'ctl' argument should be either a vector or a struct");
     end
@@ -101,7 +114,6 @@ function [x,fmin,nev] = bfgs (func, dfunc, args, ctl)
   elseif crit, error ("crit is %i. Should be 1,2 or 3.\n");
   end
 
-
   if is_list (args),		# List of arguments 
     x = nth (args, narg);
   else				# Single argument
@@ -110,10 +122,18 @@ function [x,fmin,nev] = bfgs (func, dfunc, args, ctl)
   sz = size (x);
 
   H = eye (prod (sz = size (x)));
-  g = leval (dfunc, args)';
   nev = [0,1];
+  if diff == 0
+    g = bs_gradient2 (func, args, narg)';
+    if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
+  elseif diff == 1
+    g = leval (dfunc, args)';
+    if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
+  elseif diff == 2
+    [fmin, g] = leval (func, args); g = g';
+    if norm(g) <= dtol, break; end
+  end
 
-  if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
 
   flast = inf;
 
@@ -134,7 +154,13 @@ function [x,fmin,nev] = bfgs (func, dfunc, args, ctl)
     flast = fmin;
 
     args = splice (args, narg, 1, list (x));
-    g_new = leval (dfunc, args)';
+    if ! diff
+      g_new = bs_gradient2 (func, args, narg)';
+    elseif diff == 1
+      g_new = leval (dfunc, args)';
+    elseif diff == 2
+      [dummy, g_new] = leval (func, args); g_new = g_new';
+    end
     nev(2)++;
 
     q = g_new-g;

@@ -78,9 +78,10 @@ if verbose
   fflush (stdout);
 end
 
-
+ctl.df = "dff";
 mytic() ;
-[xlev,vlev,nlev] = feval(optim_func, "ff", "dff", xinit) ;
+## [xlev,vlev,nlev] = feval(optim_func, "ff", "dff", xinit) ;
+[xlev,vlev,nlev] = feval(optim_func, "ff", xinit, ctl) ;
 tlev = mytic() ;
 
 

@@ -67,7 +67,9 @@ if verbose,
   fflush (stdout);
 end
 
-[x,v,niter] = feval (optim_func, "testfunc","dtestf", xinit);
+## [x,v,niter] = feval (optim_func, "testfunc","dtestf", xinit);
+ctl.df = "dtestf";
+[x,v,niter] = feval (optim_func, "testfunc", xinit, ctl);
 
 if verbose 
   printf ("nev=%d  N=%d  errx=%8.3g   errv=%8.3g\n",\

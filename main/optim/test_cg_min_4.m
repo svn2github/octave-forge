@@ -54,7 +54,9 @@ end
 
 ## Plain run, just to make sure ######################################
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = feval (optim_func, "ff", "dff", list (x0,y0,1));
+## [xlev,vlev,nlev] = feval (optim_func, "ff", "dff", list (x0,y0,1));
+ctl.df = "dff";
+[xlev,vlev,nlev] = feval (optim_func, "ff", list (x0,y0,1), ctl);
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -67,9 +69,10 @@ end
 
 ## Minimize wrt 2nd arg ##############################################
 ## Minimum wrt 'y' is x0
-ctl = struct ("narg", 2);
+ctl = struct ("narg", 2,"df","dff");
 ## ctl = [nan,nan,2];
-[xlev,vlev,nlev] = feval (optim_func, "ff", "dff", list (x0,y0,2),ctl);
+## [xlev,vlev,nlev] = feval (optim_func, "ff", list (x0,y0,2),ctl);
+[xlev,vlev,nlev] = feval (optim_func, "ff", list (x0,y0,2),ctl);
 
 cnt++;
 if max (abs (xlev-x0)) > 100*sqrt (eps)
@@ -82,9 +85,10 @@ end
 
 ## Set the verbose option ############################################
 ## Minimum wrt 'x' is y0
-ctl = struct ("narg", 1,"verbose",verbose);
+ctl = struct ("narg", 1,"verbose",verbose, "df", "dff");
 ## ctl = [nan,nan,2];
-[xlev,vlev,nlev] = feval (optim_func, "ff", "dff", list (x0,y0,1),ctl);
+## [xlev,vlev,nlev] = feval (optim_func, "ff", "dff", list (x0,y0,1),ctl);
+[xlev,vlev,nlev] = feval (optim_func, "ff", list (x0,y0,1),ctl);
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)

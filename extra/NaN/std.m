@@ -58,7 +58,7 @@ else
         end;
 end;
 
-y = (y - s.*s./n);   % n * (summed squares with removed mean)
+y = (y - (real(s).^2+imag(s).^2)./n);   % n * (summed squares with removed mean)
 
 if opt==0, 
         % square root if the best unbiased estimator of the variance 

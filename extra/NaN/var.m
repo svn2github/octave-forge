@@ -37,32 +37,22 @@ function y=var(x,opt,DIM)
 %	$Id$
 %	Copyright (C) 2000-2003 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
-ver = version;
-if nargin < 3,
-        DIM = [];
-        if nargin==2,
-                if ~isempty(opt) & opt~=0, 
-                        fprintf(2,'Warning STD: OPTION not supported.\n');
-                end;
+if nargin>1,
+        if ~isempty(opt) & opt~=0, 
+                fprintf(2,'Warning STD: OPTION not supported.\n');
         end;
-elseif nargin == 3,
-        if ~isnumeric(DIM),
-                DIM = [];
-        end
-else
-        fprintf(2,'Error VAR: invalid number of arguments\n usage: v=var(x [,DIM])\n');
-end
-
-% obtain which DIMENSION should be used
-if isempty(DIM), 
-        DIM = min(find(size(x)>1));
-        if isempty(DIM), DIM=1; end;
+else 
+        opt = 0; 
 end;
 
+if nargin > 2,
+        [s,n,y] = sumskipnan(x, DIM);
+else
+	[s,n,y] = sumskipnan(x);
+end
+
 % actual calculation 
-[s,n,y] = sumskipnan(x, DIM);
-m = s./n;	% mean
-y = (y-s.*m);   % n * (summed squares with removed mean)
+y = (y - (real(s).^2+imag(s).^2)./n);   % n * (summed squares with removed mean)
 
 %if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
     n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF

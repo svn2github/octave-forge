@@ -54,11 +54,10 @@ function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 %    Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
-if nargin<2,
-        DIM=min(find(size(i)>1));
-        if isempty(DIM), DIM=1; end;
-end;
 
+if nargin<2,
+        DIM = [];
+end;
 
 DONE = 0; 
 if flag_implicit_skip_nan & (exist('sumskipnan2')==3);
@@ -98,6 +97,10 @@ end;
 
    
 if ~DONE, % else  
+        if isempty(DIM),
+                DIM=min(find(size(i)>1));
+                if isempty(DIM), DIM = 1; end;
+        end;
         if nargout>1
                 count = sum(~isnan(i),DIM); 
         end;
@@ -106,7 +109,7 @@ if ~DONE, % else
         end;
         o = sum(i,DIM);
         if nargout>2,
-                i = i.^2;
+                i = real(i).^2 + imag(i).^2;
                 SSQ = sum(i,DIM);
                 if nargout>3,
                         S4M = sum(i.^2,DIM);

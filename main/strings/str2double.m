@@ -2,6 +2,9 @@ function [num,status] = str2double(s,cdelim,rdelim)
 %% STR2DOUBLE converts strings into numeric values
 %%  [NUM, STATUS] = STR2DOUBLE(STR) 
 %%  
+%%  STR2DOUBLE can replace STR2NUM, but avoids the insecure use of EVAL 
+%%  on unknown data [1]. 
+%%
 %%    STR can be the form '[+-]d[.]dd[[eE][+-]ddd]' 
 %%	d can be any of digit from 0 to 9, [] indicate optional elements
 %%    NUM is the corresponding numeric value. 
@@ -24,8 +27,8 @@ function [num,status] = str2double(s,cdelim,rdelim)
 %%       CDELIM .. user-specified column delimiter
 %%       RDELIM .. user-specified row delimiter
 %%       CDELIM and RDELIM must contain only 
-%%       NULL, NEWLINE, CARRIAGE RETURN, SEMICOLON, TAB, SPACE, COMMA, or ()[]{}  
-%%       i.e. ASCII 0,9,10,11,12,13,14,32,33,34,40,41,44,59,91,93,123,124,125 
+%%       NULL, NEWLINE, CARRIAGE RETURN, SEMICOLON, COLON, SLASH, TAB, SPACE, COMMA, or ()[]{}  
+%%       i.e. ASCII 0,9,10,11,12,13,14,32,33,34,40,41,44,47,58,59,91,93,123,124,125 
 %%
 %%    Examples: 
 %%	str2double('-.1e-5')
@@ -42,8 +45,8 @@ function [num,status] = str2double(s,cdelim,rdelim)
 %%	   200   300   400   NaN  -Inf   NaN   NaN   NaN   999   NaN   NaN
 %%	status =
 %%	    0     0     0     0     0    -1    -1    -1     0    -1     0
-
-%% References: 
+%%
+%% Reference(s): 
 %% [1] David A. Wheeler, Secure Programming for Linux and Unix HOWTO.
 %%    http://en.tldp.org/HOWTO/Secure-Programs-HOWTO/
 
@@ -64,10 +67,11 @@ function [num,status] = str2double(s,cdelim,rdelim)
 %%	$Revision$
 %%	$Id$
 %%	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%%      This function is part of Octave-Forge http://octave.sourceforge.net/
 
 
 % valid_char = '0123456789eE+-.nNaAiIfF';	% digits, sign, exponent,NaN,Inf
-valid_delim = char(sort([0,9:14,32:34,abs('()[]{},;"|')]));	% valid delimiter
+valid_delim = char(sort([0,9:14,32:34,abs('()[]{},;:"|/')]));	% valid delimiter
 if nargin < 1,
         error('missing input argument.')
 end;
@@ -76,7 +80,7 @@ if nargin < 2,
 else
         % make unique cdelim
         cdelim = sort(cdelim(:)');
-        tmp = [1,1+find(diff(cdelim)>0)];
+        tmp = [1,1+find(diff(abs(cdelim))>0)];
         cdelim = cdelim(tmp);
 end;
 if nargin < 3,
@@ -84,7 +88,7 @@ if nargin < 3,
 else
         % make unique rdelim
         rdelim = sort(rdelim(:)');
-        tmp = [1,1+find(diff(rdelim)>0)];
+        tmp = [1,1+find(diff(abs(rdelim))>0)];
         rdelim = rdelim(tmp);
 end;
 
@@ -117,7 +121,11 @@ if ~all(flag),
 end;
 
 %%%%% various input parameters 
-if iscell(s),
+if isempty(s),
+        num = [];
+        status = 0;
+        return;
+elseif iscell(s),
         strarray = s;
 
 elseif ischar(s) & all(size(s)>1),	%% char array transformed into a string. 
@@ -137,7 +145,7 @@ elseif ischar(s),
         
         sl = length(s);
         ix = 1;
-        while any(s(ix)==[rdelim,cdelim]) & (ix < sl),
+        while (ix < sl) & any(s(ix)==[rdelim,cdelim]),
                 ix = ix + 1;
         end;
         ta = ix; te = [];

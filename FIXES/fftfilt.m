@@ -32,8 +32,11 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 3 September 1994
 ## Adapted-By: jwe
-## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-##    handle matrices
+
+## 2000-04-04 Paul Kienzle <pkienzle@users.sf.net>
+## * handle matrices
+## 2001-01-15 RH <robher@adinet.com.uy>
+## * test for real/integer using matrix rather than column-wise ops
 
 function y = fftfilt (b, x, N)
 
@@ -47,7 +50,7 @@ function y = fftfilt (b, x, N)
     usage (" fftfilt (b, x, N)");
   endif
 
-  transpose = rows(x) == 1;
+  transpose = ( rows (x) == 1 );
   if transpose, x = x.'; endif
   [r_x, c_x] = size (x);
   [r_b, c_b] = size (b);
@@ -62,7 +65,7 @@ function y = fftfilt (b, x, N)
     ## length (b) - 1 as number of points ...
     N    = 2^(ceil (log (r_x + l_b - 1) / log(2)));
     B = fft (b, N);
-    y = ifft(fft (x, N) .* B(:,ones(1,c_x)));
+    y = ifft (fft (x, N) .* B (:,ones(1,c_x)));
   else
     ## Use overlap-add method ...
     if (! (is_scalar (N)))
@@ -71,16 +74,17 @@ function y = fftfilt (b, x, N)
     N = 2^(ceil (log (max ([N, l_b])) / log(2)));
     L = N - l_b + 1;
     B = fft (b, N);
+    B = B (:, ones (c_x,1));
     R = ceil (r_x / L);
     y = zeros (r_x, c_x);
     for r = 1:R;
       lo  = (r - 1) * L + 1;
       hi  = min (r * L, r_x);
-      tmp = zeros(N,c_x);
-      tmp(1:(hi-lo+1),:) = x(lo:hi,:);
-      tmp = ifft(fft (tmp) .* B(:,ones(c_x,1)));
+      tmp = zeros (N, c_x);
+      tmp (1:(hi-lo+1), :) = x (lo:hi,:);
+      tmp = ifft (fft (tmp) .* B);
       hi  = min (lo+N-1, r_x);
-      y(lo:hi,:) = y(lo:hi,:) + tmp(1:(hi-lo+1),:);
+      y (lo:hi, :) = y (lo:hi, :) + tmp (1:(hi-lo+1), :);
     endfor
   endif
 
@@ -88,13 +92,15 @@ function y = fftfilt (b, x, N)
   if transpose, y=y.'; endif
 
   ## Final cleanups: if both x and b are real respectively integer, y
-  ## should also be
+  ## should also be; note that this doesn't handle the case where x is
+  ## mixed real/complex
 
-  if (! (any (imag (x)) || any (imag (b))))
+  if ( isreal (b) && isreal (x) )
     y = real (y);
   endif
-  if (! (any (x - round (x)) || any (b - round (b))))
-    y = round (y);
+  if ( !any (b - round (b)) )
+    idx = !any (x - round (x));
+    y (:, idx) = round (y (:, idx));
   endif
 
 endfunction

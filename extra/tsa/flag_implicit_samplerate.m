@@ -45,14 +45,16 @@ function DIM=flag_implicit_samplerate(i)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.18;	26 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 2.99;	10 May 2002
+%	Copyright (c) 2000-2002 by  Alois Schloegl   <a.schloegl@ieee.org>	
 
 global FLAG_implicit_samplerate;
 
 %%% check whether FLAG was already defined 
 if exist('FLAG_implicit_samplerate')~=1,
+	FLAG_implicit_samplerate = 1;
+end;
+if isempty(FLAG_implicit_samplerate),
 	FLAG_implicit_samplerate = 1;
 end;
 

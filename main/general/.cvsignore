@@ -1,1 +1,5 @@
 *.oct
+bitcmp.m
+bitget.m
+bitset.m
+bitshift.m

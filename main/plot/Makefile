@@ -24,7 +24,7 @@ gtext.oct: graphics.o
 gzoom.oct: graphics.o
 
 %.o: %.cc
-	$(MKOCTFILE) $(MOFLAGS) $< -o $@
+	$(MKOCTFILE) -c $(MOFLAGS) $< -o $@
 
 %.oct: %.cc
 	$(MKOCTFILE) $(MOFLAGS) graphics.o $< -o $@

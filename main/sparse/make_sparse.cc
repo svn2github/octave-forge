@@ -185,7 +185,7 @@ signal( SIGSEGV, SIG_DFL );
    octave_value retval;
 
    int nargin= args.length();
-   if (nargin < 1) {
+   if (nargin < 1 || nargin == 4 || nargin > 6) {
       print_usage ("sparse");
       return retval;
    }
@@ -227,11 +227,13 @@ signal( SIGSEGV, SIG_DFL );
 
    if (nargin == 1) {
       if (use_complex) {
-         ComplexMatrix A = args(0).complex_matrix_value ();
+         ComplexMatrix A(args(0).complex_matrix_value ());
+	 if (error_state) return retval;
          SuperMatrix sm= oct_matrix_to_sparse( A ) ;
          retval = new octave_complex_sparse ( sm );
       } else {
-         Matrix A = args(0).matrix_value ();
+         Matrix A(args(0).matrix_value ());
+	 if (error_state) return retval;
          SuperMatrix sm= oct_matrix_to_sparse( A ) ;
          retval = new octave_sparse ( sm );
       }
@@ -245,6 +247,7 @@ signal( SIGSEGV, SIG_DFL );
       if (nargin == 2) {
          m= (int) args(0).double_value();
          n= (int) args(1).double_value();
+	 if (error_state) return retval;
          cidxA = ColumnVector ();
          ridxA = ColumnVector ();
          coefA = ColumnVector ();
@@ -253,12 +256,13 @@ signal( SIGSEGV, SIG_DFL );
 // 
 //  I use this clumsy construction so that we can use
 //  any orientation of args
-         { ColumnVector x( args(0).vector_value() ); ridxA= x; }
-         { ColumnVector x( args(1).vector_value() ); cidxA= x; }
+         { ColumnVector x( args(0).vector_value(false,true) ); if (error_state) return retval; ridxA= x; }
+         { ColumnVector x( args(1).vector_value(false,true) ); if (error_state) return retval; cidxA= x; }
          if (use_complex) 
-            { ComplexColumnVector x( args(2).complex_vector_value() ); coefAC= x; }
+            { ComplexColumnVector x( args(2).complex_vector_value(false,true) ); coefAC= x; }
          else
-            { ColumnVector x( args(2).vector_value() ); coefA= x; }
+            { ColumnVector x( args(2).vector_value(false,true) ); coefA= x; }
+	 if (error_state) return retval;
 
 	 // Confirm that i,j,s all have the same number of elements
 	 int ns;
@@ -280,12 +284,14 @@ signal( SIGSEGV, SIG_DFL );
          } else {
             m= (int) args(3).double_value();
             n= (int) args(4).double_value();
+	    if (error_state) return retval;
 
             if (nargin >= 6) {
                // if args(5) is not string, then ignore the value
                // otherwise check for summation or unique
                if ( args(5).is_string()) {
                   string vv= args(5).string_value();
+		  if (error_state) return retval;
 
                   if ( vv== "summation" ||
                        vv== "sum" ) 
@@ -322,6 +328,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.8  2003/01/02 18:19:03  pkienzle
+ * more robust input handling
+ *
  * Revision 1.7  2002/02/19 21:21:48  aadler
  * Modifications to _dtrsv stub to compile.
  * Modifications to makefile to define AR and RANLIB

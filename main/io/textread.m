@@ -23,7 +23,7 @@
 ## If n is omitted or negative, the entire file will be read.
 ##
 ## %#c formats return a character array of width #
-## %s formats return a list of strings
+## %s and %[ formats return a list of strings
 ## All other formats (see fscanf) return a column vector of doubles
 ##
 ## Example:  say the file 'info.txt' contains the following lines:
@@ -38,21 +38,38 @@
 ##   x(3)          is  6
 ##   a(3)          is 10
 ##
+## You can skip columns using '%*':
+##   [Lname, x] = textread('info.txt','%s %*s %e age=%*d')
+##
+## You can skip the whole rest of the line using '%*[^\n]':
+##   [Lname, Fname] = textread('info.txt','%s%s%*[^\n]')
+##
 ## Compatibility:
 ##
-## Missing %q for quoted input
-## Need control options:
+##    Missing %q for quoted input
+##    Need control options:
 ##      whitespace (set of characters for word delimiters)
-##      delimiter (sequence?? of characters for record delimiter)
+##      delimiter (field separator character)
 ##      commentstyle  ( 'matlab', 'shell', 'C', 'C++' )
 ##      headerlines (number of lines to skip at the start)
+##      emptyvalue (what to use in place of consecutive delimiters)
 
+## A note on delimiters:
+##   The delimiter is optional if it is obvious that the next field is
+##   starting.  E.g., 3 4 will read as two numbers even with a delimiter
+##   of ",".  If there is no delimiter, then %s treats whitespace as a 
+##   delimiter.  If there is a delimiter, then %s treats whitespace as
+##   part of the string.  The format %[ will eat through delimiters.
 
 ## 2002-03-15 Paul Kienzle
 ## * remove dependency on str_incr
 ## * return list of strings for %s rather than character matrix
 ## * proper handling of leading text
 ## * handle %* and %%
+## 2002-03-15 Paul Kienzle
+## * %[ produces a string
+## * additional documentation
+
 function [...] = textread(file, format, n);
 
   if (nargin < 2 || nargin > 3)
@@ -82,7 +99,11 @@ function [...] = textread(file, format, n);
     if (j == idx(i+1))
       error("textread: invalid format %s", format(idx(i):idx(i+1)-1) );
     endif
-    cat(i) = toascii(format(j));
+    if format(j) == '['
+	cat(i) = toascii('s');
+    else
+        cat(i) = toascii(format(j));
+    endif
   endfor
 
   ## Fix up indices
@@ -129,7 +150,11 @@ function [...] = textread(file, format, n);
     while (!feof(fid))
       for i = 1:nFields
         [data, count] = fscanf(fid, format(idx(i):idx(i+1)-1), "C");
-	if (count == 0) break; endif
+	if (count == 0) 
+	   if (i==1 && feof(fid)) break; endif
+	   error("unable to interpret '%s' for record %d, field %d",...
+		    format(idx(i):idx(i+1)-1),row,i);
+	endif
         if (cat(i) == "s") # list of strings
 	  eval(sprintf("a%d = append(a%d, data);", i, i));
 	elseif (cat(i) == "c" )  # matrix of characters
@@ -152,8 +177,16 @@ function [...] = textread(file, format, n);
   end_unwind_protect
   
   ## Step 4:  populate the return values with the contents of a1, a2, etc.
-  for i = 1:nargout
-    eval( sprintf ("vr_val(a%d);",i) );
-  endfor
+  if nargout == 0
+     ret = list();
+     for i = 1:nFields
+	eval( sprintf("ret(i) = a%d;",i) );
+     endfor
+     vr_val(ret);
+  else
+    for i = 1:nargout
+      eval( sprintf ("vr_val(a%d);",i) );
+    endfor
+  endif
 
 endfunction

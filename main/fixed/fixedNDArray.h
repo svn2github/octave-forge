@@ -44,6 +44,8 @@ Open Source Initiative (www.opensource.org)
 #include "int/fixed.h"
 #include "fixedMatrix.h"
 
+class FixedComplexNDArray;
+
 class
 FixedNDArray : public MArrayN<FixedPoint>
 {
@@ -121,10 +123,18 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
   friend FixedNDArray concat (const FixedNDArray& ra, const FixedNDArray& rb, 
 			      const Array<int>& ra_idx);
+#endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+  FixedNDArray concat (const FixedNDArray& rb, const Array<int>& ra_idx);
+  FixedComplexNDArray concat (const FixedComplexNDArray& rb, 
+			      const Array<int>& ra_idx);
+#endif
+
+#if defined (HAVE_OCTAVE_CONCAT) || (HAVE_OLD_OCTAVE_CONCAT)
   FixedNDArray& insert (const FixedNDArray& a, const Array<int>& ra_idx);
 #endif
 

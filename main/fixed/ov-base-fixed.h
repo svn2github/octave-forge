@@ -79,7 +79,7 @@ public:
 
   octave_value_list dotref (const octave_value_list& idx);
 
-#ifdef HAVE_OCTAVE_CONCAT
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
   size_t byte_size (void) const { return sizeof (ST); }
 #endif
 

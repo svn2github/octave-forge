@@ -34,7 +34,7 @@ Open Source Initiative (www.opensource.org)
 #include <iostream>
 #include <string>
 
-#ifdef HAVE_OCTAVE_CONCAT
+#if defined(HAVE_OCTAVE_CONCAT) || defined(HAVE_OLD_OCTAVE_CONCAT)
 #include <octave/dim-vector.h>
 #endif
 
@@ -111,7 +111,7 @@ public:
   }
 #endif
 
-#ifdef HAVE_OCTAVE_CONCAT
+#if defined(HAVE_OCTAVE_CONCAT) || defined(HAVE_OLD_OCTAVE_CONCAT)
   octave_value resize (const dim_vector& dv) const;
 
   size_t byte_size (void) const { return gval.byte_size (); }

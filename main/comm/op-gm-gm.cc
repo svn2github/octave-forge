@@ -80,7 +80,7 @@ DEFBINOP (el_ldiv, galois, galois)
 DEFBINOP_FN (el_and, galois, galois, mx_el_and)
 DEFBINOP_FN (el_or, galois, galois, mx_el_or)
 
-DEFCATOP_G_FN (gm_gm, galois, galois, concat)
+DEFCATOP_G_METHOD (gm_gm, galois, galois, concat)
 
 DEFASSIGNOP_FN (assign, galois, galois, assign)
 

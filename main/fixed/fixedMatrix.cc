@@ -48,6 +48,7 @@ Open Source Initiative (www.opensource.org)
 #include "fixedColVector.h"
 #include "fixedRowVector.h"
 #include "fixedMatrix.h"
+#include "fixedCMatrix.h"
 
 // Fixed Point Matrix class.
 
@@ -399,11 +400,30 @@ FixedMatrix::is_symmetric (void) const
   return false;
 }
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
 FixedMatrix concat (const FixedMatrix& ra, const FixedMatrix& rb, 
 		    const Array<int>& ra_idx)
 {
   FixedMatrix retval (ra);
+  if (rb.numel() > 0)
+    retval.insert (rb, ra_idx(0), ra_idx(1));
+  return retval;
+}
+#endif
+
+#ifdef HAVE_OCTAVE_CONCAT
+FixedMatrix 
+FixedMatrix::concat (const FixedMatrix& rb, const Array<int>& ra_idx)
+{
+  if (rb.numel() > 0)
+    insert (rb, ra_idx(0), ra_idx(1));
+  return *this;
+}
+
+FixedComplexMatrix 
+FixedMatrix::concat (const FixedComplexMatrix& rb, const Array<int>& ra_idx)
+{
+  FixedComplexMatrix retval (*this);
   if (rb.numel() > 0)
     retval.insert (rb, ra_idx(0), ra_idx(1));
   return retval;

@@ -92,11 +92,19 @@ public:
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
   friend galois concat (const galois& ra, const galois& rb, 
 			 const Array<int>& ra_idx);
   friend galois concat (const galois& ra, const Matrix& rb, 
 			 const Array<int>& ra_idx);
+#endif
+
+#ifdef HAVE_OCTAVE_CONCAT
+  galois concat (const galois& rb, const Array<int>& ra_idx);
+  galois concat (const Matrix& rb, const Array<int>& ra_idx);
+#endif
+
+#if defined(HAVE_OCTAVE_CONCAT) || defined(HAVE_OLD_OCTAVE_CONCAT)
   friend galois concat (const Matrix& ra, const galois& rb, 
 			 const Array<int>& ra_idx);
 

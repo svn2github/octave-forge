@@ -225,7 +225,7 @@ galois  galois::index (idx_vector& i, idx_vector& j, int resize_ok,
   return retval;
 }
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
 galois concat (const galois& ra, const galois& rb, const Array<int>& ra_idx)
 {
   galois retval (ra);
@@ -264,6 +264,50 @@ galois concat (const galois& ra, const Matrix& rb, const Array<int>& ra_idx)
   retval.insert (tmp, ra_idx(0), ra_idx(1));
   return retval;
 }
+#endif
+
+#ifdef HAVE_OCTAVE_CONCAT
+galois 
+galois::concat (const galois& rb, const Array<int>& ra_idx)
+{
+  if (rb.numel() > 0)
+    insert (rb, ra_idx(0), ra_idx(1));
+  return *this;
+}
+
+galois 
+galois::concat (const Matrix& rb, const Array<int>& ra_idx)
+{
+  if (numel() == 1)
+    return *this;
+
+  galois tmp (0, 0, 0, m(), primpoly());
+  int _n = (1<<m()) - 1;
+  int r = rb.rows();
+  int c = rb.columns();
+  tmp.resize (r, c);
+
+  // Check the validity of the data in the matrix
+  for (int i=0; i<r; i++) {
+    for (int j=0; j<c; j++) {
+      if ((rb(i,j) < 0) || (rb(i,j) > _n)) {
+	gripe_range_galois(m());
+	return *this;
+      }
+      if ((rb(i,j) - (double)((int)rb(i,j))) != 0.) {
+	gripe_integer_galois();
+	return *this;
+      }
+      tmp(i,j) = (int)rb(i,j);
+    }
+  }
+
+  insert (tmp, ra_idx(0), ra_idx(1));
+  return *this;
+}
+#endif
+
+#if defined (HAVE_OLD_OCTAVE_CONCAT) || defined (HAVE_OCTAVE_CONCAT)
 
 galois concat (const Matrix& ra, const galois& rb,  const Array<int>& ra_idx)
 {

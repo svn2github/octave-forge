@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.29  2004/11/09 23:34:49  adb014
+Fix concatenation for recent octave core CVS changes
+
 Revision 1.28  2004/08/25 16:13:57  adb014
 Working, but inefficient, concatentaion code
 
@@ -296,7 +299,7 @@ public:
 
    octave_value_list find( void ) const;
 
-#ifdef HAVE_OCTAVE_CONCAT
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
    octave_value resize (const dim_vector& dv) const;
 #endif
 
@@ -385,7 +388,7 @@ public:
 
    octave_value_list find( void ) const;
 
-#ifdef HAVE_OCTAVE_CONCAT
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
    octave_value resize (const dim_vector& dv) const;
 #endif
 
@@ -556,7 +559,7 @@ create_SuperMatrix( int nr, int nc, int nnz,
                     int * ridx,
                     int * cidx );
 
-#if HAVE_OCTAVE_CONCAT
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 SuperMatrix 
 concat (const SuperMatrix& ra, const SuperMatrix& rb,
 	const Array<int>& ra_idx);

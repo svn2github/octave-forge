@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.15  2004/11/09 23:34:49  adb014
+Fix concatenation for recent octave core CVS changes
+
 Revision 1.14  2004/08/31 15:23:45  adb014
 Small build fix for the macro SPARSE_RESIZE
 
@@ -602,12 +605,26 @@ fixrow_comp( const void *i, const void *j)  \
    cidxX[Unr]= cx; \
    maybe_shrink( cx, nnz, ridxX, coefX );
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
 #define DEFCATOP_SPARSE_FN(name, ret, t1, t2, e1, e2, f)	\
   CATOPDECL (name, a1, a2)	     \
   { \
     DEBUGMSG("CATOP ## name ## t1 ## t2 ## f"); \
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    SuperMatrix B = f (v1.e1 (), v2.e2 (), ra_idx); \
+    if (error_state) \
+      return new octave_ ## ret (); \
+    else \
+      return new octave_ ## ret (B); \
+  }
+
+#define INSTALL_SPARSE_CATOP(t1, t2, f) INSTALL_CATOP(t1, t2, f) 
+#elif defined (HAVE_OCTAVE_CONCAT)
+#define DEFCATOP_SPARSE_FN(name, ret, t1, t2, e1, e2, f)	\
+  CATOPDECL (name, a1, a2)	     \
+  { \
+    DEBUGMSG("CATOP ## name ## t1 ## t2 ## f"); \
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
     SuperMatrix B = f (v1.e1 (), v2.e2 (), ra_idx); \
     if (error_state) \
       return new octave_ ## ret (); \

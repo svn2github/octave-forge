@@ -98,7 +98,7 @@ octave_fixed_complex::complex_array_value (bool) const
 }
 #endif
 
-#ifdef HAVE_OCTAVE_CONCAT
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 octave_value 
 octave_fixed_complex::resize (const dim_vector& dv) const
 { 

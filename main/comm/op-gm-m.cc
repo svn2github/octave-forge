@@ -68,7 +68,7 @@ DEFBINOP (el_ldiv, galois, matrix)
 DEFBINOP_FN (el_and, galois, matrix, mx_el_and)
 DEFBINOP_FN (el_or, galois, matrix, mx_el_or)
 
-DEFCATOP_G_FN (gm_m, galois, matrix, concat)
+DEFCATOP_G_METHOD (gm_m, galois, matrix, concat)
 
 // Need to create temporary Galois array so that matrix values are checked
 DEFASSIGNOP (assign, galois, matrix) 

@@ -41,6 +41,8 @@ Open Source Initiative (www.opensource.org)
 
 #include "int/fixed.h"
 
+class FixedComplexMatrix;
+
 #if !defined(octave_FixedColVector_h)
 class FixedColumnVector;
 #endif
@@ -127,8 +129,14 @@ public:
 
   bool is_symmetric (void) const;
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
   friend FixedMatrix concat (const FixedMatrix& ra, const FixedMatrix& rb, 
+			     const Array<int>& ra_idx);
+#endif
+
+#ifdef HAVE_OCTAVE_CONCAT
+  FixedMatrix concat (const FixedMatrix& rb, const Array<int>& ra_idx);
+  FixedComplexMatrix concat (const FixedComplexMatrix& rb, 
 			     const Array<int>& ra_idx);
 #endif
 

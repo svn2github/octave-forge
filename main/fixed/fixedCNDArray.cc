@@ -955,7 +955,29 @@ concat (const FixedNDArray& ra, const FixedComplexNDArray& rb,
     retval.insert (rb, ra_idx);
   return retval;
 }
+#endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+FixedComplexNDArray 
+FixedComplexNDArray ::concat (const FixedComplexNDArray& rb, 
+			      const Array<int>& ra_idx)
+{
+  if (rb.numel () > 0)
+    insert (rb, ra_idx);
+  return *this;
+}
+
+FixedComplexNDArray 
+FixedComplexNDArray::concat (const FixedNDArray& rb, 
+			     const Array<int>& ra_idx)
+{
+  if (rb.numel () > 0)
+    insert (FixedComplexNDArray (rb), ra_idx);
+  return *this;
+}
+#endif
+
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 FixedComplexNDArray& 
 FixedComplexNDArray::insert (const FixedComplexNDArray& a, 
 			     const Array<int>& ra_idx)

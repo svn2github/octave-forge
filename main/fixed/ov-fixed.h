@@ -132,7 +132,7 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const 
     { return ComplexMatrix (1, 1, Complex (::fixedpoint(scalar))); }
 
-#ifdef HAVE_OCTAVE_CONCAT
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
   octave_value resize (const dim_vector& dv) const;
 #endif
 

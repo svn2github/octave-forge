@@ -182,7 +182,7 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
   friend FixedComplexNDArray concat (const FixedComplexNDArray& ra, 
 				     const FixedComplexNDArray& rb, 
 				     const Array<int>& ra_idx);
@@ -194,7 +194,17 @@ public:
   friend FixedComplexNDArray concat (const FixedNDArray& ra, 
 				     const FixedComplexNDArray& rb, 
 				     const Array<int>& ra_idx);
+#endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+  FixedComplexNDArray concat (const FixedComplexNDArray& rb, 
+			      const Array<int>& ra_idx);
+
+  FixedComplexNDArray concat (const FixedNDArray& rb, 
+			      const Array<int>& ra_idx);
+#endif
+
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
   FixedComplexNDArray& insert (const FixedComplexNDArray& a, 
 			       const Array<int>& ra_idx);
 #endif

@@ -358,9 +358,14 @@ int main(void) { Octave_map a; a[["key"]]; }],
 [HAVE_OCTAVE_MAP_INDEX="-DHAVE_OCTAVE_MAP_INDEX"],)
 AC_SUBST(HAVE_OCTAVE_MAP_INDEX)
 
-TRY_MKOCTFILE([for Octave concatenation],
+TRY_MKOCTFILE([for old Octave concatenation],
 [#include <octave/dNDArray.h>
 int main(void) { NDArray a(dim_vector(1,1)); Array<int> idx(2,0); a=concat(a,a,idx); }],
+[HAVE_OCTAVE_CONCAT="-DHAVE_OLD_OCTAVE_CONCAT"],)
+
+TRY_MKOCTFILE([for Octave concatenation],
+[#include <octave/dNDArray.h>
+int main(void) { NDArray a(dim_vector(1,1)); Array<int> idx(2,0); a=a.concat(a,idx); }],
 [HAVE_OCTAVE_CONCAT="-DHAVE_OCTAVE_CONCAT"],)
 AC_SUBST(HAVE_OCTAVE_CONCAT)
 

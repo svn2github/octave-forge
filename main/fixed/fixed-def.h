@@ -61,12 +61,22 @@ Open Source Initiative (www.opensource.org)
     return retval; \
   }
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
 #define FIXED_DEFCATOP_FN(name, t1, t2, e1, e2, ret, f)	\
   CATOPDECL (name, a1, a2)	     \
   { \
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     return new octave_ ## ret (f (v1.e1 ## _value (), v2.e2 ## _value (), ra_idx)); \
+  }
+
+#define FIXED_INSTALL_CATOP(t1, t2, f) INSTALL_CATOP(t1, t2, f) 
+
+#elif defined (HAVE_OCTAVE_CONCAT)
+#define FIXED_DEFCATOP_FN(name, t1, t2, e1, e2, ret, f)	\
+  CATOPDECL (name, a1, a2)	     \
+  { \
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
+    return new octave_ ## ret (v1.e1 ## _value (). f (v2.e2 ## _value (), ra_idx)); \
   }
 
 #define FIXED_INSTALL_CATOP(t1, t2, f) INSTALL_CATOP(t1, t2, f) 

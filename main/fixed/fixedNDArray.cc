@@ -50,6 +50,7 @@ Open Source Initiative (www.opensource.org)
 
 #include "fixedMatrix.h"
 #include "fixedNDArray.h"
+#include "fixedCNDArray.h"
 
 // Fixed Point NDArray class.
 
@@ -690,17 +691,39 @@ FixedNDArray atan2 (const FixedNDArray &x, const FixedNDArray &y)
   return retval;
 }
 
-#ifdef HAVE_OCTAVE_CONCAT
+#ifdef HAVE_OLD_OCTAVE_CONCAT
 FixedNDArray 
 concat (const FixedNDArray& ra, const FixedNDArray& rb, 
 	const Array<int>& ra_idx)
 {
   FixedNDArray retval (ra);
-  if (ra.numel () > 0)
+  if (rb.numel () > 0)
     retval.insert (rb, ra_idx);
   return retval;
 }
+#endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+FixedNDArray 
+FixedNDArray::concat (const FixedNDArray& rb, const Array<int>& ra_idx)
+{
+  if (rb.numel () > 0)
+    insert (rb, ra_idx);
+  return *this;
+}
+
+FixedComplexNDArray 
+FixedNDArray::concat (const FixedComplexNDArray& rb, 
+		      const Array<int>& ra_idx)
+{
+  FixedComplexNDArray retval (*this);
+  if (rb.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
+}
+#endif
+
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 FixedNDArray&
 FixedNDArray::insert (const FixedNDArray& a, const Array<int>& ra_idx)
 {

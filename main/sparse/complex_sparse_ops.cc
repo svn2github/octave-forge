@@ -511,7 +511,7 @@ octave_complex_sparse::subsref( const std::string SUBSREF_STRREF type,
    return retval;
 }
 
-#if HAVE_OCTAVE_CONCAT
+#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 octave_value 
 octave_complex_sparse::resize (const dim_vector& dv) const
 {
@@ -1754,6 +1754,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.33  2004/11/09 23:34:49  adb014
+ * Fix concatenation for recent octave core CVS changes
+ *
  * Revision 1.32  2004/08/31 15:23:37  adb014
  * Small build fix for the macro SPARSE_RESIZE
  *

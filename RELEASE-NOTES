@@ -10,8 +10,7 @@ remove the comm/PKG_ADD and sparse/PKG_ADD from the install directory
 
 See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/RELEASE-NOTES?rev=HEAD&content-type=text/plain">RELEASE-NOTES</a> for a summary of all releases.
 
-See <a
-href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/ChangeLog?rev=HEAD&content-type=text/plain">ChangeLog</a> for details of every change.
+See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/ChangeLog?rev=HEAD&content-type=text/plain">ChangeLog</a> for details of every change.
 
 CVS ==========================================================================
 

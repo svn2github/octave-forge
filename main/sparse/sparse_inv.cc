@@ -72,7 +72,7 @@ Except that row and column permutations are returned\n\
           and permutation matrices Pr,Pc with Pr*A*Pc' = L*U.\n\
 [Lp,Up] = superlu(A) returns permuted triangular L and upper triangular U\n\
           with A = L*U.\n\
-          here Pr*Lp = L  and Up*Pc = U
+          here Pr*Lp = L  and Up*Pc = U\n\
 \n\
 Note: 2nd input funcionality has not been verified\n\
 With a second input, the columns of A are permuted before factoring:\n\
@@ -293,7 +293,7 @@ DEFUN_DLD (spinv, args, nargout ,
   "[ainv] = spinv( a );\n\
 SPINV : Sparse Matrix inverse\n\
     ainv is the inverse of a\n\
-or
+or\n\
    [ainv] = spinv( a,p );\n\
 where p is a specified permutation for the columns of a\n\
 Here psparse will normally be a user-supplied permutation matrix or vector\n\
@@ -302,9 +302,9 @@ to be applied to the columns of A for sparsity. \n\
 Note: 2nd input funcionality has not been verified\n\
 With a second input, the columns of A are permuted before factoring:\n\
 \n\
-Note 2: It is significantly more accurate and faster to do
+Note 2: It is significantly more accurate and faster to do\n\
     x=a\\b\n\
-rather than
+rather than\n\
     x=spinv(a)*b\n\
   ")
 {
@@ -349,6 +349,9 @@ rather than
 
 /*
  * $Log$
+ * Revision 1.5  2002/11/13 15:28:09  pkienzle
+ * Keep gcc 3.2 happy.
+ *
  * Revision 1.4  2001/11/04 19:54:49  aadler
  * fix bug with multiple entries in sparse creation.
  * Added "summation" mode for matrix creation

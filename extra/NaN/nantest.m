@@ -105,6 +105,8 @@ tmp3 = repmat(0,p)/repmat(0,p);
 tmp4 = repmat(0,p)\repmat(0,p);
 tmp5 = repmat(0,p)*repmat(inf,p);
 tmp6 = repmat(inf,p)*repmat(0,p);
+x = randn(100,1)*ones(1,p); y=x'*x; tmp7=y/y;
+x = randn(100,1)*ones(1,p); y=x'*x; tmp8=y\y;
 
 if ~all(isnan(tmp1(:))),
         fprintf(2,'WARNING: matrix division NaN/NaN does not result in NaN\n');
@@ -124,8 +126,16 @@ end;
 if ~all(isnan(tmp6(:))),
         fprintf(2,'WARNING: matrix multiplication inf*0 does not result in NaN\n');
 end;
+if any(any(tmp7==inf));
+        fprintf(2,'WARNING: right division of two singulare matrices return INF\n');
+end;
+if any(any(tmp8==inf));
+        fprintf(2,'WARNING: left division of two singulare matrices return INF\n');
+end;
 
-tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6];
-
+tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6;tmp7;tmp8];
 
 warning(FLAG_WARNING);
+
+
+

@@ -1,4 +1,3 @@
-
 The octave-forge project contains functions for Octave which are not in
 the main distribution.  While the main Octave distribution is
 conservative about accepting new functions and changes, octave-forge is
@@ -12,24 +11,27 @@ instructions.
 =====================================================================
 Project organization
 
-main/
-	Packages which may eventually be included in the main octave 
-	distribution.  As such, they should follow Octave conventions.  
-	The octave-forge CVS tree should be the primary development/release 
-	site.  All functions should work with the latest Octave 
-	interpreter without any special compilation switches or patches
-	applied.
-
 FIXES/
 	Alternatives to existing Octave functions.  Some of these are 
-	needed by the functions in main, some are needed for 
+	needed by the functions in main/, some are needed for 
 	compatibility with Matlab, and some are faster than the Octave
 	alternatives.
 
+admin/
+	Contains files and scripts used to administer the octave-forge
+	website and build the release files.  Nothing in here is needed
+	by octave-forge users.
+
+doc/
+	Documentation for octave in general.  Documentation for specific
+	packages goes into the doc/ subdirectory of the individual package 
+	directories.  There are no standards for documentation at this
+	time.
+
 extra/
 	Packages which:
-	   * are too narrow in scope for main, or
-	   * act as alternatives for functions in main, or
+	   * are too narrow in scope for main/, or
+	   * act as alternatives for functions in main/, or
 	   * do not follow octave conventions (because they want
 	     to retain compatibility with matlab for example), or
 	   * are primarily developed elsewhere, or
@@ -55,6 +57,14 @@ extra/ver20/
 	adding it to the ver20 directory.  By default these are not 
 	installed.
 
+main/
+	Packages which may eventually be included in the main octave 
+	distribution.  As such, they should follow Octave conventions.  
+	The octave-forge CVS tree should be the primary development/release 
+	site.  All functions should work with the latest Octave 
+	interpreter without any special compilation switches or patches
+	applied.
+
 nonfree/
 	Packages which are not freely modifiable and redistributable 
 	with modifications, or which depend on code which is not 
@@ -65,12 +75,6 @@ nonfree/
 	redistributable for non-commercial use.  Functions of unknown
 	license should not be included anywhere, since no license implies
 	default license implies no rights to redistribute.
-
-doc/
-	Documentation for octave in general.  Documentation for specific
-	packages goes into the doc subdirectory of the individual package 
-	directories.  There are no standards for documentation at this
-	time.
 
 ======================================================================
 Package organization

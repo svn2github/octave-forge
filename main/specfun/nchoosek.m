@@ -26,6 +26,8 @@
 ##AUTHORS Rolf Fabian  <fabian@tu-cottbus.de>
 ##        Paul Kienzle <pkienzle@users.sf.net>
 
+## XXX FIXME XXX shouldn't this be an alias for bincoeff?
+## at the very least, compare implementations
 function A = nchoosek(v,k)
 
   n = length(v);

@@ -36,7 +36,10 @@ function i = zscore(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Copyright (C) 2000-2002 by  Alois Schloegl	<a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by  Alois Schloegl	<a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+
 
 if nargin==1,
         DIM=min(find(size(i)>1));
@@ -48,4 +51,5 @@ if any(size(i)==0); return; end;
 [S,N,SSQ] = sumskipnan(i,DIM);		% sum
 M = S./N;
 i = i - repmat(M,size(i)./size(S));		% remove mean
-i = i./repmat(sqrt((SSQ-S.*M)./max(N-1,0)),size(i)./size(S));	 % normalize by STD
+i = i./repmat(sqrt((SSQ-real(S).*real(M)-imag(S).*imag(S))./max(N-1,0)),size(i)./size(S));	 % normalize by STD
+

@@ -1,0 +1,138 @@
+->  Note:  this is not the true README file.  Create the correct top-level
+->         README by running the Perl script 'get_contents'.  get_contents 
+->         reads this file and the CONTENTS files in each subdirectory then 
+->         creates the README by populating the "Project organization" 
+->         section below with the information found in the CONTENTS files.
+->         Albert Danial Jan 2 2002
+
+The octave-forge project contains functions for Octave which are not in
+the main distribution.  While the main Octave distribution is
+conservative about accepting new functions and changes, octave-forge is
+very open.  As a result, be prepared for some lower quality code and
+more rapidly changing interfaces to the functions in octave-forge.
+
+The collection is in the public domain, but the individual functions
+vary.  See COPYING for details.  See INSTALL for installation
+instructions.
+
+=====================================================================
+Project organization
+======================================================================
+Package organization
+
+package/NOINSTALL
+	don't install this package; the user can rename or delete this
+	file if they want the package installed anyway.
+package/*.m 
+	m-files for the package; these will be installed in
+	site/mfiles/octave-forge/package
+package/data/*
+	datafiles to be installed with the mfiles.  You can accesses
+	them from your m-files with x = file_in_load_path("a").
+package/Makefile 
+	Makefile with a default target to build anything that needs
+	building, and a "clean" target to remove anything that has been
+	built.  See Makeconf.base for a list of predefined variables
+	and rules.
+
+	Your Makefile could be as simple as:
+
+		include ../../Makeconf
+
+		all: f1.oct f2.oct
+
+		clean:
+			$(RM) *.o *.oct octave-core core *~
+
+package/configure.add
+package/Makeconf.add
+	Additional configuration-time commands to run in order to 
+	find all the components that your package requires.  You 
+	can look for anything you want in configure.add and note 
+	what you need in Makeconf.add.  The definitions in 
+	Makeconf.add will be available when you include ../../Makeconf 
+	into your Makefile. X11 is already included in Makeconf.base, 
+	so you can just use $(X_LIBS) on your link line and $(X_CFLAGS) 
+	on your compile line.
+package/*.oct
+	oct-files built by Makefile. These will be installed all 
+	together in site-oct-files/octave-forge.  You may assume that
+	HAVE_OCTAVE_20 is defined for 2.0.x series mkoctfile, and
+	HAVE_OCTAVE_21 is defined for 2.1.x series mkoctfile.
+package/bin/*
+	executable files built by Makefile.  These will be 
+	installed in Octave's EXEC_PATH, so they will be available 
+	from Octave but not from the shell.  
+
+Note: If you have files that you want installed in the standard 
+bindir/mandir/libdir/includedir, we need to consider automating
+the procedure.  At the time of writing extra/mex handles this
+case with an install target in its Makefile, but special code is
+put into extra/Makefile to trigger this.
+
+==========================================================================
+Administration files
+
+autogen.sh
+	Generates ./configure and Makeconf.in
+
+configure.base
+Makeconf.base
+	Basic configuration checks, such as locating the install paths,
+	and the associated variables to be put into Makeconf.  Each 
+	package can append checks by including configure.add in the 
+	package directory.
+
+octinst.sh.in
+	Install program for packages, with pieces to be filed in by
+	./configure
+
+install-sh
+	intall program to use if /usr/bin/install does not work
+
+COPYING
+	License for the collection, plus an out-of-date list of functions 
+	in the collection and their licenses.
+
+COPYING.GPL
+	The text of the GPL license
+
+cvs-tree
+	Generate web listing of m-files in the tree
+
+README
+	This file
+
+TODO
+	Things that could/should be done
+
+INSTALL
+	Installation instructions
+
+Makefile
+	Top level makefile
+
+release.sh
+	Generates release tarball
+
+cvsdir.sh
+	Save/restore CVS adminstration files.  You need this to install
+	directly from the CVS tree rather than an exported tarball.  E.g.,
+	   $ cvsdir.sh save
+	   $ make install
+	   $ cvsdir.sh restore
+
+==========================================================================
+Compatibility Issues
+
+Issue the following command:
+	$ grep -d skip "XXX COMPATIBILITY XXX" */* */*/*
+for a list of compatibility issues in various functions.  As of this
+writing, mu2lin is a likely cause of problems when porting audio
+packages.
+
+
+==========================================================================
+Paul Kienzle
+pkienzle@users.sf.net
+October 22, 2001

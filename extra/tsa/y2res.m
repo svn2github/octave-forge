@@ -22,7 +22,7 @@ function [R,MU,SD2,EM3,EM4,Max,Min,I,th1prm]=y2res(Y)
 %	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
-[R.SUM, R.N, R.SSQ, R.S4P] = sumskipnan(Y,1);
+[R.SUM, R.N, R.SSQ] = sumskipnan(Y,1);
 %R.S3P = sumskipnan(Y.^3,1);
 %R.S4P = sumskipnan(Y.^4,1);
 %R.S5P = sumskipnan(Y.^5,1);

@@ -165,10 +165,10 @@ octave_value mxArray::as_octave_value() const
 	pchm[i] = NINT(pr[i]);
       ret = octave_value(chm, true);
     }
-  else if (pmap)
-    {
-      ret = octave_value(*pmap);
-    }
+//  else if (pmap)
+//    {
+//      ret = octave_value(*pmap);
+//    }
   else if (pi)
     {
       ComplexMatrix cm(nr, nc);

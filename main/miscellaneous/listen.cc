@@ -25,6 +25,29 @@
 #include <octave/variables.h>
 #include <octave/unwind-prot.h>
 
+octave_value
+get_builtin_value (const std::string& nm)
+{
+  octave_value retval;
+
+  symbol_record *sr = fbi_sym_tab->lookup (nm);
+
+  if (sr)
+    {
+      octave_value sr_def = sr->def ();
+
+      if (sr_def.is_undefined ())
+        error ("get_builtin_value: undefined symbol `%s'", nm.c_str ());
+      else
+        retval = sr_def;
+      }
+  else
+    error ("get_builtin_value: unknown symbol `$s'", nm.c_str ());
+
+  return retval;
+}
+
+
 // XXX FIXME XXX autoconf stuff
 #if 0 && defined(_sgi)
 typedef int socklen_t;
@@ -286,7 +309,7 @@ process_commands(int channel)
 	  {
 	    error_state = 0;
 	    bind_global_error_variable();
-	    octave_value def = get_global_value("__error_text__");
+	    octave_value def = get_builtin_value("__error_text__");
 	    std::string str = def.string_value();
 	    STATUS("error is " << str);
 	    channel_error(channel,str.c_str());

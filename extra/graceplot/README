@@ -1,5 +1,5 @@
 
-This package replaces the standard Octaves 2d plotting functions with
+This package replaces the standard Octave 2d plotting functions with
 new ones which use Grace (http://plasma-gate.weizmann.ac.il/Grace/).
 
 Installation with Octave-forge

@@ -54,8 +54,8 @@ end;
 
 if any(size(i)==0); return; end;
 
-[S,N] = sumskipnan(i,DIM);		% sum
+[S,N,SSQ] = sumskipnan(i,DIM);		% sum
 i     = i - repmat(S./N,size(i)./size(S));		% remove mean
-[S,N] = sumskipnan(i.^2,DIM);		% sum square N*VAR
+	%[S,N] = sumskipnan(i.^2,DIM);		% sum square N*VAR
 N     = max(N-1,0);           		% unbiased STD
-i     = i./repmat(sqrt(S./N),size(i)./size(S));	 % normalize by STD
+i     = i./repmat(sqrt((SSQ-S.*M)./N),size(i)./size(S));	 % normalize by STD

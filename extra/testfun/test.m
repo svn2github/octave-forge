@@ -207,13 +207,12 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   __batch = (!isempty(__fid));
 
   ## decide if error messages should be collected
+  __close_fid = 0;
   if (__batch)
     if (isstr(__fid))
       __fid = fopen(__fid, "w");
       if __fid < 0, error("could not open log file"); endif
       __close_fid = 1;
-    else
-      __close_fid = 0;
     endif
     fputs (__fid, [__signal_file, "processing ", __name, "\n" ]);
   else

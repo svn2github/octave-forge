@@ -52,6 +52,7 @@
 % Test suites
 %   tsademo		demonstrates INVEST1 on EEG data
 %   invfdemo		demonstration of matched, inverse filtering
+%   bisdemo		demonstrates bispectral estimation
 %
 % (*) indicates univariate analysis of multiple data series (each in a row) can be processed.
 % (-) indicates that these functions will be removed in future 

@@ -18,7 +18,7 @@ Analysis functions
    flix
    quantiles
 
-Multivariate analysis (planned in future)
+Multivariate analysis
    mvar
    mvfilter
  
@@ -41,5 +41,3 @@ Test suites
    tsademo
    bisdemo
    invfdemo
-   vardemo
-   bstest_VAR

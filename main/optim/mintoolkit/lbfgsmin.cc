@@ -267,8 +267,7 @@ ans =\n\
 		d = -d;
 		
 		// if direction not zero, get stepsize
-		if (!((fabs(d.max()) < param_tol) \
-				& ((fabs(d.min()) < param_tol))))
+		if (!(sqrt(d.transpose() * d) < param_tol))
 		{
  	
 			// stepsize: try bfgs direction, then steepest descent if it fails
@@ -295,7 +294,7 @@ ans =\n\
 				}
 			}
 		}
-		else // if gradient zero, then check function conv.
+		else // if direction is approximately zero, use 1 as stepsize
 		{
 			f_args(minarg - 1) = theta;
 			c_args(1) = f_args;
@@ -304,7 +303,7 @@ ans =\n\
 			stepsize = 1;	
 		}	
 
-   		p = stepsize*d;
+   		p = stepsize*d;  // step is stepsize*direction
 
  		// check normal convergence: all 3 must be satisfied
 		// function convergence

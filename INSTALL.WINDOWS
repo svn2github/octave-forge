@@ -1,0 +1,268 @@
+BUILDING octave-2.1.35 for cygwin
+
+This is a description of how I got 
+octave-2.1.35 and gnuplot-3.7.1
+and octave-forge (19 feb 02) to
+build under win2000.
+
+I have made a cygwin tar.bz2 package
+to download of this.
+
+Andy Adler <adler@ncf.ca>
+
+$Id$
+
+COPYRIGHT:
+
+   All components: GNU GPL
+
+   Except GNUPLOT,
+   and some octave-forge components
+
+PREREQUISITES:
+   
+   Download from www.cygwin.com
+   recent version of cygwin (at least jan 2002 )
+   gcc
+   g77
+   readline-4.2a
+   libreadline5
+
+BUILDING
+
+   Download octave-2.1.35.tar.bz2 from www.octave.org
+   tar xvfj octave-2.1.35.tar.bz2
+   cd  octave-2.1.35
+   ./configure --prefix=/usr
+
+OBTAIN GNUPLOT COMPONENTS
+
+   Download from www.gnuplot.info
+
+   get gp371cyg.zip.
+   Unzip the file wgnuplot.exe and put it in /usr/bin
+   
+   Get pipe-gnuplot.exe from 
+   http://www.hhs.se/personal/Psoderlind/Software/Software.htm
+   and put in in /usr/bin
+
+MODIFY octaverc FILE
+
+for the following
+$ cat /usr/share/octave/site/m/startup/octaverc
+   ## System-wide startup file for Octave.
+   ##
+   ## This file should contain any commands that should be executed each
+   ## time Octave starts for every user at this site.
+   
+   # find where cygwin is mounted
+   mount_path= system('mount | grep "on / type"');
+   cut_point = findstr( mount_path, " on / type");
+   mount_path= mount_path( 1:cut_point(1)-1 );
+   mount_path( findstr(mount_path,"\\") ) = "/";
+   
+   putenv('TMPDIR', [ mount_path , "/tmp" ] );
+   
+   clear mount_path;
+   clear cut_point;
+   
+   gnuplot_binary ="pipe-gnuplot wgnuplot.exe";
+   gnuplot_has_multiplot = 1;
+
+BUILD OCTAVE FORGE
+
+1. EDIT /usr/src/octave-2.1.35/src/Makefile
+
+A. REPLACE
+
+#DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colloc.cc dassl.cc \
+#	det.cc eig.cc expm.cc fft.cc fft2.cc filter.cc find.cc \
+#	fsolve.cc gammainc.cc getgrent.cc getpwent.cc getrusage.cc \
+#	givens.cc hess.cc ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc \
+#	lsode.cc lu.cc minmax.cc pinv.cc qr.cc quad.cc qz.cc rand.cc \
+#	schur.cc sort.cc svd.cc syl.cc time.cc
+
+WITH
+
+DLD_XSRC := $(shell cd DLD-FUNCTIONS ; ls *.cc )
+
+B. ADD AFTER LINE
+
+CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
+
+THESE LINES
+
+all: octave
+
+OCTAVEFORGE= /usr/src/octave-forge/
+SPARSE  = $(OCTAVEFORGE)/main/sparse/
+SUPERLU = $(SPARSE)/SuperLU/SRC/
+CPPFLAGS := -I$(SUPERLU) $(CPPFLAGS)
+
+$(SPARSE)/libsuperlu.a:
+	cd $(SPARSE) && make libsuperlu.a
+
+SPLINES = $(OCTAVEFORGE)/main/splines/
+SPLINES_SRC := $(shell ls $(SPLINES)/*.f )
+SPLINES_OBJ := $(patsubst %.f, %.o, $(SPLINES_SRC))
+
+$(SPLINES_OBJ): %.o: %.f
+	$(FC) -c -fPIC -O -o $@ $<
+
+
+C. REPLACE
+
+octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
+        octave.o builtins.o ops.o $(DLD_STATIC_OBJ)
+        $(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+        $(ALL_LDFLAGS) -o octave \
+        octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
+        $(OCTAVE_LFLAGS) \
+        $(OCTAVE_LIBS) \
+        $(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+
+WITH
+
+octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
+	octave.o builtins.o ops.o $(DLD_STATIC_OBJ) \
+        $(SPARSE)/libsuperlu.a $(SPLINES_OBJ) 
+	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+	$(ALL_LDFLAGS) -o octave \
+	octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
+	$(OCTAVE_LFLAGS) \
+	$(OCTAVE_LIBS) \
+	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS) \
+        -L$(SPARSE) -lsuperlu $(SPLINES_OBJ) 
+
+2. CREATE LINKS
+
+cd /usr/src
+cvs -d :pserver:anonymous@cvs.octave.sf.net:/cvsroot/octave checkout
+OCTAVEFORGE=/usr/src/octave-forge
+cd /usr/src/octave-2.1.35/src
+mkdir octave
+cd octave
+ln -s ../../config.h
+ln -s ../defun-dld.h
+ln -s ../error.h
+ln -s ../../libcruft/misc/f77-fcn.h
+ln -s ../gripes.h
+ln -s ../help.h
+ln -s ../../liboctave/lo-ieee.h
+ln -s ../../liboctave/lo-mappers.h
+ln -s ../../liboctave/lo-utils.h
+ln -s ../../liboctave/mx-base.h
+ln -s ../oct-obj.h
+ln -s ../oct.h
+ln -s ../ops.h
+ln -s ../ov-base.h
+ln -s ../ov-complex.h
+ln -s ../ov-cx-mat.h
+ln -s ../ov-re-mat.h
+ln -s ../ov-scalar.h
+ln -s ../ov-typeinfo.h
+ln -s ../ov.h
+ln -s ../pager.h
+ln -s ../parse.h
+ln -s ../pr-output.h
+ln -s ../../liboctave/str-vec.h
+ln -s ../symtab.h
+ln -s ../toplev.h
+ln -s ../utils.h
+ln -s ../variables.h
+cd ../DLD-FUNCTIONS
+ln -s $OCTAVEFORGE/main/linear-algebra/GramSchmidt.cc
+ln -s $OCTAVEFORGE/main/general/bitand.cc
+ln -s $OCTAVEFORGE/main/general/command.cc
+ln -s $OCTAVEFORGE/main/sparse/complex_sparse_ops.cc
+ln -s $OCTAVEFORGE/main/image/conv2.cc
+ln -s $OCTAVEFORGE/main/image/cordflt2.cc
+ln -s $OCTAVEFORGE/main/specfun/ellipj.cc
+ln -s $OCTAVEFORGE/main/optim/lp.cc
+ln -s $OCTAVEFORGE/main/sparse/make_sparse.cc
+ln -s $OCTAVEFORGE/main/sparse/make_sparse.h
+ln -s $OCTAVEFORGE/main/signal/medfilt1.cc
+ln -s $OCTAVEFORGE/extra/linear-algebra/ov-re-tri.cc
+ln -s $OCTAVEFORGE/extra/linear-algebra/ov-re-tri.h
+rm rand.cc
+ln -s $OCTAVEFORGE/FIXES/rand.cc
+ln -s $OCTAVEFORGE/FIXES/MersenneTwister.h
+ln -s $OCTAVEFORGE/main/signal/remez.cc
+ln -s $OCTAVEFORGE/main/linear-algebra/rsf2csf.cc
+ln -s $OCTAVEFORGE/main/sparse/sparse_full.cc
+ln -s $OCTAVEFORGE/main/sparse/sparse_inv.cc
+ln -s $OCTAVEFORGE/main/sparse/sparse_ops.cc
+ln -s $OCTAVEFORGE/main/sparse/sparse_ops.h
+ln -s $OCTAVEFORGE/main/splines/trisolve.cc
+
+3. BUILD OCTAVE AGAIN
+
+cd /usr/src/octave-2.1.35
+make
+make install-strip
+
+4. COPY *.M FILES INTO PLACE
+
+OCTAVEM= /usr/share/octave/2.1.35/m/
+mkdir -p  $OCTAVEM/image
+mkdir -p  $OCTAVEM/integration
+mkdir -p  $OCTAVEM/ode
+mkdir -p  $OCTAVEM/testfun
+mkdir -p  $OCTAVEM/comm
+mkdir -p  $OCTAVEM/control
+mkdir -p  $OCTAVEM/ident
+mkdir -p  $OCTAVEM/image
+mkdir -p  $OCTAVEM/io
+mkdir -p  $OCTAVEM/linear-algebra
+mkdir -p  $OCTAVEM/miscellaneous
+mkdir -p  $OCTAVEM/optim
+mkdir -p  $OCTAVEM/path
+mkdir -p  $OCTAVEM/plot
+mkdir -p  $OCTAVEM/set
+mkdir -p  $OCTAVEM/signal
+mkdir -p  $OCTAVEM/sparse
+mkdir -p  $OCTAVEM/specfun
+mkdir -p  $OCTAVEM/special-matrix
+mkdir -p  $OCTAVEM/splines
+mkdir -p  $OCTAVEM/statistics
+mkdir -p  $OCTAVEM/strings
+mkdir -p  $OCTAVEM/struct
+mkdir -p  $OCTAVEM/time
+
+cp -r $OCTAVEFORGE/extra/Windows/*.m  $OCTAVEM/image
+cp -r $OCTAVEFORGE/extra/integration/*.m  $OCTAVEM/integration
+cp -r $OCTAVEFORGE/extra/ode/*.m  $OCTAVEM/ode
+cp -r $OCTAVEFORGE/extra/testfun/*.m  $OCTAVEM/testfun
+cp -r $OCTAVEFORGE/main/comm/*.m  $OCTAVEM/comm
+cp -r $OCTAVEFORGE/main/control/*.m  $OCTAVEM/control
+cp -r $OCTAVEFORGE/main/ident/*.m  $OCTAVEM/ident
+cp -r $OCTAVEFORGE/main/image/*.m  $OCTAVEM/image
+cp -r $OCTAVEFORGE/main/io/*.m  $OCTAVEM/io
+cp -r $OCTAVEFORGE/main/linear-algebra/*.m  $OCTAVEM/linear-algebra
+cp -r $OCTAVEFORGE/main/miscellaneous/*.m  $OCTAVEM/miscellaneous
+cp -r $OCTAVEFORGE/main/optim/*.m  $OCTAVEM/optim
+cp -r $OCTAVEFORGE/main/path/*.m  $OCTAVEM/path
+cp -r $OCTAVEFORGE/main/plot/*.m  $OCTAVEM/plot
+cp -r $OCTAVEFORGE/main/set/*.m  $OCTAVEM/set
+cp -r $OCTAVEFORGE/main/signal/*.m  $OCTAVEM/signal
+cp -r $OCTAVEFORGE/main/sparse/*.m  $OCTAVEM/sparse
+cp -r $OCTAVEFORGE/main/specfun/*.m  $OCTAVEM/specfun
+cp -r $OCTAVEFORGE/main/special-matrix/*.m  $OCTAVEM/special-matrix
+cp -r $OCTAVEFORGE/main/splines/*.m  $OCTAVEM/splines
+cp -r $OCTAVEFORGE/main/statistics/*.m  $OCTAVEM/statistics
+cp -r $OCTAVEFORGE/main/strings/*.m  $OCTAVEM/strings
+cp -r $OCTAVEFORGE/main/struct/*.m  $OCTAVEM/struct
+cp -r $OCTAVEFORGE/main/time/*.m  $OCTAVEM/time
+
+GENERATE CYGWIN PACKAGE
+
+tar cvfj octave-2.1.35-gnuplot-octaveforge.tar.bz2 \
+         /usr/bin/octave* \
+         /usr/bin/mkoctfile* \
+         /usr/bin/pipe-gnuplot.exe \
+         /usr/bin/wgnuplot.exe \
+         /usr/info/octave.info* \
+         /usr/man/man1/octave* \
+         /usr/share/octave/ \
+         /usr/doc/octave-2.1.35/
+

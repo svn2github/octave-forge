@@ -14,6 +14,7 @@
 #                             licensing terms (ie, granted to public domain)
 #                             but no author.  Show code and comment line
 #                             counts.
+# Dirk Eddelbuettel 07 Jul 2004  also look at .cc files and // comments
 #                             
 use strict;
 use File::Find;
@@ -121,28 +122,28 @@ sub classify_files { # {{{1
         $rhha_data->{$f}{n_comment} = 0;
         while (<IN>) {
             # find the copyright line and extract author info from it
-            if (/^[#%]+/) {      # a comment
+            if (/^[#%\/]+/) {           # a comment
                 ++$rhha_data->{$f}{n_comment};
-            } elsif (!/^\s*$/) { # not a blank line
+            } elsif (!/^\s*$/) {        # not a blank line
                 ++$rhha_data->{$f}{n_code};
             }
             s/all\s+rights\s+reserved\.?//i;
             s/\bby\s+//i;
-            if (/^[#%]+                 #  one or more leading comment markers
+
+            if (/^[#%\/]+               #  one or more leading comment markers
                   \s*copyright          #  Copyright
-                  \s+(\(c\))?           #  (c)    - optional           $1
-                  \s*(\d+([,-]\s*\d+)*) #  Year (or years)             $2, $3
-                  \s+(.*?)              #  name                        $4
-                  \s*(<.*>)?            #  email  - optional           $5
+                  \s*(\(c\))?           #  (c)    - optional           $1
+                  \s*(\d[,\- 0-9]+)     #  Year (or years)             $2
+                  \s+(.*?)              #  name                        $3
+                  \s*(<.*>)?            #  email  - optional           $4
                   \s*$/ix) {
                 $found_copyright = 1;
                 $found_author    = 1;
                 my $year  = $2;
-                   $year .= $3 if defined $3;
-                my $name  = $4;
+                my $name  = $3;
                    $name  = "John W. Eaton" if $name eq "jwe";
                    $name  =~ s/\.\s*$//; # strip trailing period
-                my $email = "" || $5;
+                my $email = "" || $4;
                 $name =~ s/^\s+//;  # strip leading  whitespace
                 $name =~ s/\s+$//;  # strip trailing whitespace
                 push @{$rhha_data->{$f}{name}}, $name;
@@ -151,7 +152,7 @@ sub classify_files { # {{{1
                 push @{$rhha_data->{$f}{cpyr}}, 'C';
                 # don't exit w/last because there could be multiple copyrights
             } elsif (
-                /^\s*[#%]+                #  one or more leading comment markers
+                /^\s*[#%\/]+              # one or more leading comment markers
                     \s*author\s*:?        #  Copyright
                     \s+(.*?)              #  name                        $1
                     \s*(<.*>)?            #  email  - optional           $2
@@ -171,7 +172,7 @@ sub classify_files { # {{{1
                 $found_author = 1;
             } elsif (
                 !$found_author and
-                /^\s*[#%]+                #  one or more leading comment markers
+                /^\s*[#%\/]+              # one or more leading comment markers
                   .*?                     #  some leading text
                   (granted|placed|given|is)\s+(in|to)
                   (\s+the)?\s+public\s+domain
@@ -192,6 +193,6 @@ sub classify_files { # {{{1
 # # # # # # # 
 
 sub wanted { # {{{1 populates global array @files
-    return unless -f and /\.(m)$/;  # only want .m files (for now)
+    return unless -f and /\.(m|cc)$/;  # only want .m files (for now)
     push @files, "$File::Find::name";
 } # 1}}}

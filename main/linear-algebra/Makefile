@@ -1,6 +1,6 @@
 include ../../Makeconf
 
-PROGS=rsf2csf.oct
+PROGS=rsf2csf.oct GramSchmidt.oct
 
 all: $(PROGS)
 

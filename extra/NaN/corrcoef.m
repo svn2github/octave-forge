@@ -81,7 +81,7 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % + Rank correlation (non-parametric, non-Spearman)
 % + is fast, using an efficient algorithm O(n.log(n)) for calculating the ranks
 % + significance test for null-hypthesis: r=0 
-% + confidence interval (0.95) included
+% + confidence interval included
 % - rank correlation works for cell arrays, too (no check for missing values).
 % + compatible with Octave and Matlab
 
@@ -98,6 +98,7 @@ elseif nargin==2
         else
                 Mode='Pearson';
         end;
+
 end;        
 Mode=[Mode,'        '];
 
@@ -147,7 +148,7 @@ if strcmp(lower(Mode(1:7)),'pearson');
                 r = []; % mark that R is calculated
         else
                 if ~isempty(Y),
-                        X = [X,Y];
+                        X  = [X,Y];
                 end;  
                 for k = 1:length(jx),
                         ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
@@ -197,6 +198,16 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
                 end;
         end;
         r = 1-6*r./(n.*(n.*n-1));
+        
+elseif strcmp(lower(Mode(1:7)),'partial');
+        fprintf(2,'Error CORRCOEF: use PARTCORRCOEF \n',Mode);
+        
+        return;
+        
+elseif strcmp(lower(Mode(1:7)),'kendall');
+        fprintf(2,'Error CORRCOEF: mode ''%s'' not implemented yet.\n',Mode);
+        
+        return;
 else
         fprintf(2,'Error CORRCOEF: unknown mode ''%s''\n',Mode);
 end;
@@ -224,12 +235,12 @@ end;
 %warning off; 	% prevent division-by-zero warnings in Matlab.
 
 tmp = 1 - R.*R;
-ix1 =(tmp==0);
-tmp(ix1)=nan;		% avoid division-by-zero warning	
+%ix1 =(tmp==0);
+%tmp(ix1)=nan;		% avoid division-by-zero warning	
 t   = R.*sqrt(max(NN-2,0)./tmp);
 
-ix2 = (t<=0)|(t>1);	% mark abs(r)==1
-if any(ix2(:))
+%ix2 = (t<0)|(t>1);	% mark abs(r)==1
+if 0,any(ix2(:));
         warning('CORRCOEF: t-value out of range - probably due to some rounding error') 
         t(ix2)=nan;
 end;
@@ -251,15 +262,23 @@ end;
 
 
 % CONFIDENCE INTERVAL
+if exist('flag_implicit_significance')==1,
+        alpha = flag_implicit_significance;
+else
+	alpha = 0.01;        
+end;
+
+fprintf(1,'CORRCOEF: confidence interval is based on alpha=%f\n',alpha);
+
 tmp = R;
-tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
+%tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
 z   = log((1+tmp)./(1-tmp))/2; 	% Fisher's z-transform; 
 %sz  = 1./sqrt(NN-3);		% standard error of z
-sz  = 1.96./sqrt(NN-3);		% 0.95 confidence interval (i.e. 1.96*standard error) of z
+sz  = sqrt(2)*erfinv(1-2*alpha)./sqrt(NN-3);		% confidence interval for alpha of z
 
 ci1 = tanh(z-sz);
 ci2 = tanh(z+sz);
 
-ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
-ci2(isnan(ci2))=R(isnan(ci2));
+%ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
+%ci2(isnan(ci2))=R(isnan(ci2));
 return;

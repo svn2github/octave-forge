@@ -26,9 +26,8 @@ function [MX,res,arg3,acf] = rc2ar(rc);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	Version 2.70
-%	last revision 14.02.2001
-%	Copyright (c) 1996-2001 by Alois Schloegl
+%	Version 2.90	last revision 10.04.2002
+%	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or

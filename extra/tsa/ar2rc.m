@@ -1,5 +1,5 @@
 function [MX,res,arg3] = ar2rc(ar);
-% converts reflection coefficients into autoregressive parameters
+% converts autoregressive parameters into reflection coefficients 
 % with the Durbin-Levinson recursion for multiple channels
 % function  [AR,RC,PE] = ar2rc(AR);
 % function  [MX,PE] = ar2rc(AR);
@@ -26,9 +26,8 @@ function [MX,res,arg3] = ar2rc(ar);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	Version 2.71
-%	last revision 16.02.2001
-%	Copyright (c) 1996-2001 by Alois Schloegl
+%	Version 2.90	last revision 10.04.2002
+%	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or

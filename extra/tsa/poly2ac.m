@@ -1,16 +1,12 @@
 function ACF=poly2ac(a,efinal)
-%
+% converts an AR polynomial into an autocorrelation sequence
 % [R] = poly2ac(a [,efinal] );
-%
-%
-% requires TSA-tb >Ver 2.70
 %
 % see also ACOVF ACORF AR2RC RC2AR DURLEV AC2POLY, POLY2RC, RC2POLY, RC2AC, AC2RC, POLY2AC
 % 
 
-%	Version 2.76
-%	last revision 17.12.2001
-%	Copyright (c) 1996-2001 by Alois Schloegl
+%	Version 2.90	last revision 10.04.2002
+%	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or

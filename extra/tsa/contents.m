@@ -13,8 +13,6 @@
 %   acorf (acf)	(*) autocorrelation function	
 %   biacovf	biautocovariance function (3rd order cumulant)
 %   bispec	Bi-spectrum 
-%   hiocum	higher order cumulant function
-%   pacf	partial autocorrelation function 
 %   durlev      (*) solves Yule-Walker equation - converts ACOVF into AR parameters
 %   lattice     (*) calcultes AR parameters with lattice method
 %   invest0	(*) a prior investigation (used by invest1)
@@ -34,8 +32,7 @@
 % Multivariate analysis (planned in future)
 %   mvar	multivariate (vector) autoregressive estimation 
 %   mvfilter	multivariate filter
-%   mvfreqz	multivariate freqz	
-%   	
+    %   	
 %  Conversions between Autocorrelation (AC), Autoregressive parameters (AR), 
 %             	prediction polynom (POLY) and Reflection coefficient (RC)  
 %   ac2poly 	(*) transforms autocorrelation into prediction polynom
@@ -54,12 +51,8 @@
 %   sinvest1	shows the parameter calculated by INVEST1
 %
 % Test suites
-%   demo        	demo of TSA-tb
 %   tsademo		demonstrates INVEST1 on EEG data
-%   bisdemo		shows BISPECTRUM on EEG data
 %   invfdemo		demonstration of matched, inverse filtering
-%   vardemo		demonstrates VAR-estimation
-%   bstest_VAR		validation of various VAR algorithms	
 %
 % (*) indicates univariate analysis of multiple data series (each in a row) can be processed.
 % (-) indicates that these functions will be removed in future 

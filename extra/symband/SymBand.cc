@@ -14,8 +14,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#include <iostream.h>
-#include <math.h>
+#include <iostream>
+#include <cmath>
 
 #include <octave/oct.h>
 
@@ -320,34 +320,32 @@ void GramSchmidtGen(Matrix &V,Matrix &V2,Matrix &B,ColumnVector &norms,int Vr, i
 
 
 DEFUN_DLD (SBSolve, args, , "[...] = SBSolve (...)\n\
-  solve a system of linear equations with a symmetric banded matrix
-
-  X=SBSolve(A,B)
-  [X,R]=SBSolve(A,B)
-
-   solves A X = B
-
-   A is mxt where t-1 is number of non-zero super diagonals
-   B is mxn
-   X is mxn
-   R is mxt
-
-  if A would be ! 11000 ! then A= ! 11 ! 
-                ! 14300 !         ! 43 ! 
-                ! 03520 !         ! 52 ! 
-                ! 00285 !         ! 85 ! 
-                ! 00059 !         ! 90 ! 
-
-  B is a full matrix 
-
-  The code is based on a LDL' decomposition (use L=R'), without pivoting.
-  If A is positive definite, then it reduces to the Cholesky algorithm.
-
-  R is an upper right band matrix
-  The first column of R contains the entries of a diagonal matrix D. 
-  If the first column of R is filled by 1's, then we have R'*D*R = A
-
-")
+  solve a system of linear equations with a symmetric banded matrix\n\
+\n\
+  X=SBSolve(A,B)\n\
+  [X,R]=SBSolve(A,B)\n\
+\n\
+   solves A X = B\n\
+\n\
+   A is mxt where t-1 is number of non-zero super diagonals\n\
+   B is mxn\n\
+   X is mxn\n\
+   R is mxt\n\
+\n\
+  if A would be ! 11000 ! then A= ! 11 !\n\
+                ! 14300 !         ! 43 !\n\
+                ! 03520 !         ! 52 !\n\
+                ! 00285 !         ! 85 !\n\
+                ! 00059 !         ! 90 !\n\
+\n\
+  B is a full matrix\n\
+\n\
+  The code is based on a LDL' decomposition (use L=R'), without pivoting.\n\
+  If A is positive definite, then it reduces to the Cholesky algorithm.\n\
+\n\
+  R is an upper right band matrix\n\
+  The first column of R contains the entries of a diagonal matrix D.\n\
+  If the first column of R is filled by 1's, then we have R'*D*R = A")
 {
   octave_value_list retval;
   int nargin = args.length ();
@@ -388,28 +386,26 @@ DEFUN_DLD (SBSolve, args, , "[...] = SBSolve (...)\n\
 
 
 DEFUN_DLD (SBFactor, args, , "[...] = SBFactor (...)\n\
-  find the R'DR factorization of a symmetric banded matrix
-
-  R=SBFactor(A)
-
-   A is mxt where t-1 is number of non-zero super diagonals
-   R is mxt
-
-  if A would be ! 11000 ! then A= ! 11 ! 
-                ! 14300 !         ! 43 ! 
-                ! 03520 !         ! 52 ! 
-                ! 00285 !         ! 85 ! 
-                ! 00059 !         ! 90 ! 
-
-
-  The code is based on a LDL' decomposition (use L=R'), without pivoting.
-  If A is positive definite, then it reduces to the Cholesky algorithm.
-
-  R is an upper right band matrix
-  The first column of R contains the entries of a diagonal matrix D. 
-  If the first column of R is filled by 1's, then we have R'*D*R = A
-
-")
+  find the R'DR factorization of a symmetric banded matrix\n\
+\n\
+  R=SBFactor(A)\n\
+\n\
+   A is mxt where t-1 is number of non-zero super diagonals\n\
+   R is mxt\n\
+\n\
+  if A would be ! 11000 ! then A= ! 11 !\n\
+                ! 14300 !         ! 43 !\n\
+                ! 03520 !         ! 52 !\n\
+                ! 00285 !         ! 85 !\n\
+                ! 00059 !         ! 90 !\n\
+\n\
+\n\
+  The code is based on a LDL' decomposition (use L=R'), without pivoting.\n\
+  If A is positive definite, then it reduces to the Cholesky algorithm.\n\
+\n\
+  R is an upper right band matrix\n\
+  The first column of R contains the entries of a diagonal matrix D.\n\
+  If the first column of R is filled by 1's, then we have R'*D*R = A")
 {
   octave_value_list retval;
   int nargin = args.length ();
@@ -432,28 +428,25 @@ DEFUN_DLD (SBFactor, args, , "[...] = SBFactor (...)\n\
 
 
 DEFUN_DLD (SBFactor2, args, , "[...] = SBFactor (...)\n\
-  find the R'DR factorization of a symmetric banded matrix
-
-  R=SBFactor(A)
-
-   A is mxt where t-1 is number of non-zero super diagonals
-   R is mxt
-
-  if A would be ! 11000 ! then A= ! 11 ! 
-                ! 14300 !         ! 43 ! 
-                ! 03520 !         ! 52 ! 
-                ! 00285 !         ! 85 ! 
-                ! 00059 !         ! 90 ! 
-
-
-  The code is based on a LDL' decomposition (use L=R'), without pivoting.
-  If A is positive definite, then it reduces to the Cholesky algorithm.
-
-  R is an upper right band matrix
-  The first column of R contains the entries of a diagonal matrix D. 
-  If the first column of R is filled by 1's, then we have R'*D*R = A
-
-")
+  find the R'DR factorization of a symmetric banded matrix\n\
+\n\
+  R=SBFactor(A)\n\
+\n\
+   A is mxt where t-1 is number of non-zero super diagonals\n\
+   R is mxt\n\
+\n\
+  if A would be ! 11000 ! then A= ! 11 !\n\
+                ! 14300 !         ! 43 !\n\
+                ! 03520 !         ! 52 !\n\
+                ! 00285 !         ! 85 !\n\
+                ! 00059 !         ! 90 !\n\
+\n\
+  The code is based on a LDL' decomposition (use L=R'), without pivoting.\n\
+  If A is positive definite, then it reduces to the Cholesky algorithm.\n\
+\n\
+  R is an upper right band matrix\n\
+  The first column of R contains the entries of a diagonal matrix D. \n\
+  If the first column of R is filled by 1's, then we have R'*D*R = A")
 {
   octave_value_list retval;
   int nargin = args.length ();
@@ -476,20 +469,18 @@ DEFUN_DLD (SBFactor2, args, , "[...] = SBFactor (...)\n\
 
 
 DEFUN_DLD (SBBacksub, args, , "[...] = SBBacksub (...)\n\
-  using backsubstitution  to return the solution of a system of linear equations
-  
-  X=SBBacksub(R,B)
-
-   B is mxn
-   X is mxn
-   R is mxt 
-   
-   R is produced by a call of [X,R] = SBSolve(A,B) or R = SBFactor(A)
-   It is an upper right band matrix   
-   The first column of R contains the entries of a diagonal matrix D. 
-   If the first column of R is filled by 1's, then we have R'*D*R = A
-
-")
+  using backsubstitution  to return the solution of a system of linear equations\n\
+\n\
+  X=SBBacksub(R,B)\n\
+\n\
+   B is mxn\n\
+   X is mxn\n\
+   R is mxt\n\
+\n\
+   R is produced by a call of [X,R] = SBSolve(A,B) or R = SBFactor(A)\n\
+   It is an upper right band matrix\n\
+   The first column of R contains the entries of a diagonal matrix D.\n\
+   If the first column of R is filled by 1's, then we have R'*D*R = A")
 {
   octave_value_list retval;
   int nargin = args.length ();
@@ -520,22 +511,21 @@ DEFUN_DLD (SBBacksub, args, , "[...] = SBBacksub (...)\n\
 
 
 DEFUN_DLD (SBProd, args, , "[...] = SBProd (...)\n\
-  multiplies a symmetric banded matrix with a matrix
-
-  X=SBProd(A,B)
-
-   A is mxt where t-1 is number of non-zero superdiagonals
-   B is mxn
-   X is mxn
-
-  if A would be ! 11000 ! then A= ! 11 ! 
-                ! 14300 !         ! 43 ! 
-                ! 03520 !         ! 52 ! 
-                ! 00285 !         ! 85 ! 
-                ! 00059 !         ! 90 ! 
-
-  B is full matrix Ax=B
-")
+  multiplies a symmetric banded matrix with a matrix\n\
+\n\
+  X=SBProd(A,B)\n\
+\n\
+   A is mxt where t-1 is number of non-zero superdiagonals\n\
+   B is mxn\n\
+   X is mxn\n\
+\n\
+  if A would be ! 11000 ! then A= ! 11 !\n\
+                ! 14300 !         ! 43 !\n\
+                ! 03520 !         ! 52 !\n\
+                ! 00285 !         ! 85 !\n\
+                ! 00059 !         ! 90 !\n\
+\n\
+  B is full matrix Ax=B")
 {
   octave_value_list retval;
   int nargin = args.length ();
@@ -567,26 +557,25 @@ DEFUN_DLD (SBProd, args, , "[...] = SBProd (...)\n\
 }
 
 DEFUN_DLD (SBEig, args, nargout , "[...] = SBEig (...)\n\
-  find a few eigenvalues of the symmetric, banded matrix 
-  inverse power iteration is used for the standard and generalized
-  eigenvalue problem
-
-  [Lambda,{Ev,err}] = SBEig(A,V,tol)     solve A*Ev = Ev*diag(Lambda)
-                    standard eigenvalue problem
-
-  [Lambda,{Ev,err}] = SBEig(A,B,V,tol)   solve A*Ev = B*Ev*diag(Lambda)
-                    generalized eigenvalue problem
-
-   A   is mxt, where t-1 is number of non-zero superdiagonals
-   B   is mxs, where s-1 is number of non-zero superdiagonals
-   V   is mxn, where n is the number of eigenvalues desired
-       contains the initial eigenvectors for the iteration
-   tol is the relative error, used as the stopping criterion
-
-   X   is a column vector with the eigenvalues
-   EV  is a matrix whose columns represent normalized eigenvectors
-   err is a vector with the aposteriori error estimates for the eigenvalues
-")
+  find a few eigenvalues of the symmetric, banded matrix\n\
+  inverse power iteration is used for the standard and generalized\n\
+  eigenvalue problem\n\
+\n\
+  [Lambda,{Ev,err}] = SBEig(A,V,tol)     solve A*Ev = Ev*diag(Lambda)\n\
+                    standard eigenvalue problem\n\
+\n\
+  [Lambda,{Ev,err}] = SBEig(A,B,V,tol)   solve A*Ev = B*Ev*diag(Lambda)\n\
+                    generalized eigenvalue problem\n\
+\n\
+   A   is mxt, where t-1 is number of non-zero superdiagonals\n\
+   B   is mxs, where s-1 is number of non-zero superdiagonals\n\
+   V   is mxn, where n is the number of eigenvalues desired\n\
+       contains the initial eigenvectors for the iteration\n\
+   tol is the relative error, used as the stopping criterion\n\
+\n\
+   X   is a column vector with the eigenvalues\n\
+   EV  is a matrix whose columns represent normalized eigenvectors\n\
+   err is a vector with the aposteriori error estimates for the eigenvalues")
 {
   octave_value_list retval;
   //  octave_value_list tmpargs;
@@ -700,7 +689,8 @@ DEFUN_DLD (SBEig, args, nargout , "[...] = SBEig (...)\n\
     }
   }
 
-  if (count>=MAXCOUNTER) cout<<"warning: too many iterations, possibly a convergence problem"<<endl;
+  if (count>=MAXCOUNTER) 
+	octave_stdout<<"warning: too many iterations, possibly a convergence problem"<<std::endl;
 
 
  ColumnVector errorEst(neig);

@@ -339,6 +339,12 @@ signal( SIGSEGV, SIG_DFL );
                assemble_sparse( n, m, coefA, ridxA, cidxA, assemble_do_sum) );
    }
 
+
+    // Lock constructor function in place, otherwise
+    // The below is the function "mlock", but in a way useable
+    // for older versions of octave as well.
+    fbi_sym_tab->lookup("sparse")->mark_as_static ();
+
    return retval;
 }
 
@@ -450,6 +456,9 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 
 /*
  * $Log$
+ * Revision 1.15  2003/12/12 14:35:25  pkienzle
+ * Lock functions in that shouldn't be cleared
+ *
  * Revision 1.14  2003/11/18 04:45:46  pkienzle
  * Octave now defines type class as well as type name.
  *

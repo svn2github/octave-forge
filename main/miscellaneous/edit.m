@@ -78,6 +78,7 @@ function edit(file,state)
   persistent FUNCTION_AUTHOR = getpwuid(getuid).gecos;
   persistent FUNCTION_EMAIL = [];
   persistent FUNCTION_LICENSE = "GPL";
+  mlock; # make sure the state variables survive "clear functions"
 
   if (nargin == 2)
     switch toupper(file)

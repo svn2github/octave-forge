@@ -22,8 +22,9 @@ function [AutoCov,AutoCorr,MX,E,NC]=invest0(Y,Pmax,Mode);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%       Version 2.99        23.05.2002
-%	Copyright (c) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (c) 1998-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -47,7 +48,7 @@ else
 end;	
 
 [nr,nc]=size(Y);
-NC = sumskipnan(~isnan(Y),2);             % number of valid components (data points)
+NC = sumskipnan(real(~isnan(Y)),2);             % number of valid components (data points)
 
 if Mode==0
 	if nargin<2, Pmax = min([100 nc/3]); end;

@@ -240,13 +240,42 @@ TRY_MKOCTFILE([for quit.h],[#include <octave/quit.h>],,
 
 dnl **********************************************************
 
+dnl Evaluate an expression in octave
+dnl
+dnl OCTAVE_EVAL(expr,var) -> var=expr
+dnl
+AC_DEFUN(OCTAVE_EVAL,
+[AC_MSG_CHECKING([for $1 in Octave])
+$2=`echo "disp($1)" | $OCTAVE -qf`
+AC_MSG_RESULT($2)
+AC_SUBST($2)
+])
+
+dnl Check status of an octave variable
+dnl
+dnl OCTAVE_CHECK_EXIST(variable,action_if_true,action_if_false)
+dnl
+AC_DEFUN(OCTAVE_CHECK_EXIST,
+[AC_MSG_CHECKING([for $1 in Octave])
+if test "`echo "disp(exist('$1'))" | $OCTAVE -qf`" != 0 ; then
+   AC_MSG_RESULT(yes)
+   $2
+else
+   AC_MSG_RESULT(no)
+   $3
+fi
+])
+
 dnl should check that $(OCTAVE) --version matches $(MKOCTFILE) --version
 AC_CHECK_PROG(OCTAVE,octave,octave)
-OCTAVE_VERSION=`echo "disp(OCTAVE_VERSION)" | $OCTAVE -qf`
+OCTAVE_EVAL(OCTAVE_VERSION,OCTAVE_VERSION)
 
 dnl grab canonical host type so we can write system specific install stuff
 canonical_host_type=`echo "disp(octave_config_info('canonical_host_type'))" | $OCTAVE -qf`
 AC_SUBST(canonical_host_type)
+
+dnl grab SHLEXT from octave config
+OCTAVE_EVAL(octave_config_info('SHLEXT'),SHLEXT)
 
 AC_PROG_LN_S
 AC_PROG_INSTALL
@@ -294,43 +323,25 @@ else
 	XSTATUS="yes"
 fi
 
-dnl Test for the Vdo_fortran_indexing variable
-TRY_MKOCTFILE([for Vdo_fortran_indexing],
-[#include <octave/ov.h>
-bool x = Vdo_fortran_indexing;],
-[HAVE_DO_FORTRAN_INDEXING="-DHAVE_DO_FORTRAN_INDEXING"],)
+OCTAVE_CHECK_EXIST(do_fortran_indexing,
+	[HAVE_DO_FORTRAN_INDEXING="-DHAVE_DO_FORTRAN_INDEXING"],)
 AC_SUBST(HAVE_DO_FORTRAN_INDEXING)
 
-dnl Test for the Vpropagate_empty_matrices variable
-TRY_MKOCTFILE([for Vpropagate_empty_matrices],
-[#include <octave/ov.h>
-bool x = Vpropagate_empty_matrices;],
-[HAVE_PROPAGATE_EMPTY_MATRICES="-DHAVE_PROPAGATE_EMPTY_MATRICES"],)
+OCTAVE_CHECK_EXIST(propagate_empty_matrices,
+	[PROPAGATE_EMPTY_MATRICES="-DHAVE_PROPAGATE_EMPTY_MATRICES"],)
 AC_SUBST(HAVE_PROPAGATE_EMPTY_MATRICES)
 
-dnl Test for the Vok_to_lose_imaginary_part variable
-TRY_MKOCTFILE([for Vok_to_lose_imaginary_part],
-[#include <octave/ov.h>
-bool x = Vok_to_lose_imaginary_part;],
-[HAVE_="-DOK_TO_LOSE_IMAGINARY_PART"],)
+OCTAVE_CHECK_EXIST(ok_to_lose_imaginary_part,
+  [HAVE_OK_TO_LOSE_IMAGINARY_PART="-DHAVE_OK_TO_LOSE_IMAGINARY_PART"],)
 AC_SUBST(HAVE_OK_TO_LOSE_IMAGINARY_PART)
 
 dnl Test for N-dimensional Arrays
 TRY_MKOCTFILE([for N-dim arrays],
 [#include <octave/dim-vector.h>],
-[HAVE_ND_ARRAYS="-DHAVE_ND_ARRAYS";
-ND_ARRAYS="has N-dimensional Arrays"],
-[ND_ARRAYS="does not have N-dimensional Arrays"])
+[HAVE_ND_ARRAYS="-DHAVE_ND_ARRAYS"],)
 AC_SUBST(HAVE_ND_ARRAYS)
 
-dnl Test if OV_TYPEID has class arg
-TRY_MKOCTFILE([for class argument in OV_TYPEID],
-[#include <octave/oct.h>
-class usertype : public octave_value {
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA;
-};
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(usertype,"name","class");],
-[TYPEID_HAS_CLASS="-DTYPEID_HAS_CLASS"],)
+OCTAVE_CHECK_EXIST(class,[TYPEID_HAS_CLASS="-DTYPEID_HAS_CLASS"],)
 AC_SUBST(TYPEID_HAS_CLASS)
 
 dnl Test for load/save functions in class
@@ -338,10 +349,15 @@ TRY_MKOCTFILE([for load/save functions in class],
 [#include <octave/config.h>
 #include <octave/ov-scalar.h>
 int main (void) { octave_scalar a; a.load_ascii(std::cin); }],
-[CLASS_HAS_LOAD_SAVE="-DCLASS_HAS_LOAD_SAVE";
-LOAD_SAVE="has load/save functions in class"],
-[LOAD_SAVE="does not load/save functions in class"])
+[CLASS_HAS_LOAD_SAVE="-DCLASS_HAS_LOAD_SAVE"],)
 AC_SUBST(CLASS_HAS_LOAD_SAVE)
+
+TRY_MKOCTFILE([for Octave_map indexing],
+[#include <octave/config.h>
+#include <octave/oct-map.h>
+int main(void) { Octave_map a; a["key"]; }],
+[HAVE_OCTAVE_MAP_INDEX="-DHAVE_OCTAVE_MAP_INDEX"],)
+AC_SUBST(HAVE_OCTAVE_MAP_INDEX)
 
 dnl Test for the makeinfo program
 AC_CHECK_PROG(MAKEINFO,makeinfo,makeinfo)
@@ -435,8 +451,7 @@ shell commands will install into the following directories:
    headers:   $includedir
 
 octave-forge is configured with
-   octave:      $OCTAVE (version $OCTAVE_VERSION) $ND_ARRAYS
-                and $LOAD_SAVE
+   octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
    X11 support:	$XSTATUS
    makeinfo:    $MAKEINFO

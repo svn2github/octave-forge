@@ -49,6 +49,7 @@ website http://www.eccpage.com for more details.
 #include "galois.h"
 #include "ov-galois.h"
 #include <octave/utils.h>
+#include <octave/variables.h>
 
 #ifndef OCTAVE_LOCAL_BUFFER
 #define OCTAVE_LOCAL_BUFFER(T,v,n) T v[n]
@@ -101,11 +102,26 @@ DEFUN_DLD (gf, args, nargout,
 "@end deftypefn\n"
 "@seealso{isprimitive,primpoly}")
 {
-  Matrix data = args(0).matrix_value();
+  Matrix data;
   octave_value retval;
   int nargin = args.length ();
   int m = 1;
   int primpoly = 0;
+
+  if ( nargin == 0 ) {
+    print_usage ("gf");
+    return retval;
+  }
+
+  data = args(0).matrix_value();
+  if ( nargin > 1 )
+    m = args(1).int_value();
+  if ( nargin > 2 )
+    primpoly = args(2).int_value();
+  if (nargin > 3) {
+    error ("gf: too many arguments");
+    return retval;
+  }
 
   if (!galois_type_loaded) {
       octave_galois::register_type ();
@@ -116,15 +132,11 @@ DEFUN_DLD (gf, args, nargout,
       install_gm_s_ops ();
       install_fil_gm_ops ();
       galois_type_loaded = true;
-  }
-
-  if ( nargin > 1 )
-    m = args(1).int_value();
-  if ( nargin > 2 )
-    primpoly = args(2).int_value();
-  if (nargin > 3) {
-    error ("gf: too many arguments");
-    return retval;
+      // Lock constructor function in place, otherwise 
+      // "a=gf(1); clear functions; a" generates a seg-fault!!
+      // The below is the function "mlock", but in a way useable
+      // for older versions of octave as well.
+      fbi_sym_tab->lookup("gf")->mark_as_static ();
   }
 
   retval = new octave_galois(data, m, primpoly);
@@ -267,28 +279,29 @@ DEFUN_DLD (greshape, args, ,
 {
   octave_value retval;
   int nargin = args.length ();
-  int mr = 0, mc = 0;
-
-  if ((!galois_type_loaded) || (args(0).type_id () != 
-				octave_galois::static_type_id ())) {
-    gripe_wrong_type_arg ("greshape", args(0));
-    return retval;
-  }
-  galois a = ((const octave_galois&) args(0).get_rep()).galois_value ();
-
-  if (nargin == 2) {
-    RowVector tmp = args(1).row_vector_value();
-    mr = (int)tmp(0);
-    mc = (int)tmp(1);
-  } else if (nargin == 3) {
-    mr = args(1).nint_value ();
-    mc = args(2).nint_value ();
-  } 
 
   if (nargin != 2 && nargin !=3) {
     error("greshape (a, m, m) or greshape (a, size(b))");
     print_usage("greshape");
   } else {
+    int mr = 0, mc = 0;
+
+    if ((!galois_type_loaded) || (args(0).type_id () != 
+				octave_galois::static_type_id ())) {
+      gripe_wrong_type_arg ("greshape", args(0));
+      return retval;
+    }
+    galois a = ((const octave_galois&) args(0).get_rep()).galois_value ();
+
+    if (nargin == 2) {
+      RowVector tmp = args(1).row_vector_value();
+      mr = (int)tmp(0);
+      mc = (int)tmp(1);
+    } else if (nargin == 3) {
+      mr = args(1).nint_value ();
+      mc = args(2).nint_value ();
+    } 
+
     int nr = a.rows();
     int nc = a.cols();
     if ((nr * nc) != (mr * mc))
@@ -400,14 +413,14 @@ DEFUN_DLD (gsqrt, args, ,
   octave_value retval;
   int nargin = args.length ();
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
-    gripe_wrong_type_arg ("gsqrt", args(0));
+  if (nargin != 1) {
+    print_usage("gsqrt");
     return retval;
   }
 
-  if (nargin != 1) {
-    print_usage("gsqrt");
+  if (!galois_type_loaded || (args(0).type_id () != 
+			      octave_galois::static_type_id ())) {
+    gripe_wrong_type_arg ("gsqrt", args(0));
     return retval;
   }
 
@@ -430,14 +443,14 @@ DEFUN_DLD (glog, args, ,
   octave_value retval;
   int nargin = args.length ();
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
-    gripe_wrong_type_arg ("glog", args(0));
+  if (nargin != 1) {
+    print_usage("glog");
     return retval;
   }
 
-  if (nargin != 1) {
-    print_usage("glog");
+  if (!galois_type_loaded || (args(0).type_id () != 
+			      octave_galois::static_type_id ())) {
+    gripe_wrong_type_arg ("glog", args(0));
     return retval;
   }
 
@@ -461,14 +474,14 @@ DEFUN_DLD (gexp, args, ,
   octave_value retval;
   int nargin = args.length ();
 
-  if (!galois_type_loaded || (args(0).type_id () != 
-			      octave_galois::static_type_id ())) {
-    gripe_wrong_type_arg ("gexp", args(0));
+  if (nargin != 1) {
+    print_usage("gexp");
     return retval;
   }
 
-  if (nargin != 1) {
-    print_usage("gexp");
+  if (!galois_type_loaded || (args(0).type_id () != 
+			      octave_galois::static_type_id ())) {
+    gripe_wrong_type_arg ("gexp", args(0));
     return retval;
   }
 

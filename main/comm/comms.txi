@@ -1481,7 +1481,7 @@ Galois field specific version of the function can be used by explicitly
 calling its function name. The correspondence between the internal
 function names and the Galois Field versions is as follows
 
-@multitable @columnfractions .11 .037 .18 .131 .037 .18 .122 .037 .18
+@multitable @columnfractions .11 .036 .17 .122 .036 .17 .122 .036 .17
 @item @code{conv} @tab - @tab @code{gconv}, 
 @tab @code{convmtx} @tab - @tab @code{gconvmtx}, 
 @tab @code{diag} @tab - @tab @code{gdiag}, 

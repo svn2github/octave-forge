@@ -2,8 +2,9 @@ include ../../Makeconf
 
 MAKEINFO = makeinfo --no-split
 TEXI2DVI = texi2dvi --clean
-TEXI2HTML = texi2html -split_chapter
-DVIPS = dvips
+TEXI2HTML = texi2html -split_chapter -number
+MV = /bin/mv
+DVIPDF = dvipdf
 
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
@@ -30,7 +31,7 @@ TARGETS = $(GALOISTARGET) $(GALOISLINKTARGETS) $(OTHERTARGETS)
 OBJECTS = $(GALOISOBJECTS) $(OTHEROBJECTS)
 DEPENDS = $(GALOISDEPENDS) $(OTHERDEPENDS)
 
-DELETES = $(OBJECTS) $(DEPENDS) *~ *.log *.dvi *.ps *.info $(TARGETS) $(DOCS) $(DOCSTRINGS) comms.texi core octave-core
+DELETES = $(OBJECTS) $(DEPENDS) *~ *.log *.dvi *.ps *.pdf *.info $(TARGETS) $(DOCS) $(DOCSTRINGS) comms.texi core octave-core *.html
 
 DEFINES = -DGALOIS_DISP_PRIVATES
 MOFLAGS =
@@ -77,11 +78,15 @@ endif
 
 %.dvi : %.texi
 	@echo "Making dvi $@"; \
-	$(TEXI2DVI) $< ; \
+	$(TEXI2DVI) $< ;
 
 %.ps : %.dvi
 	@echo "Making postscript $@"; \
-	$(DVIPS) -o $@ $< ; \
+	$(DVIPS) -o $@ $< ;
+
+%.pdf : %.dvi
+	@echo "Making pdf $@"; \
+	$(DVIPDF) -o $@ $< ;
 
 %.info : %.texi
 	@echo "Making info $@"; \
@@ -90,6 +95,7 @@ endif
 %.html : %.texi
 	@echo "Making html $@"; \
 	$(TEXI2HTML) $< ; \
+	$(MV) -f $(@:.html=_toc.html) $@
 
 %.texi : %.txi
 	@echo "Making texinfo $@"; \

@@ -17,7 +17,7 @@
 %
 % $Id$
 
-OCTAVE=  exist('__OCTAVE_VERSION__');
+OCTAVE=  exist('OCTAVE_VERSION');
 do_fortran_indexing= 1;
 prefer_zero_one_indexing= 0;
 page_screen_output=1;
@@ -572,9 +572,22 @@ end
    i=i+1;      % i=172
 
 %
-% sparse select operations
+% complex sparse select operations
 %
-% TODO
+   r1= acs(sel1); r2=acf(sel1);
+   res(i)= res(i)     +all( r1(:) == r2(:) );
+%  res(i)= res(i)     +all( ars(sel1) == arf(sel1 ));
+   i=i+1;      % i=173
+   res(i)= res(i)     +all( ars(:) == arf(:));
+   i=i+1;      % i=174
+   res(i)= res(i)     +all(all( ars(sely,selx) == arf(sely,selx) ));
+   i=i+1;      % i=175
+   res(i)= res(i)     +all(all( ars( :  ,selx) == arf( :  ,selx) ));
+   i=i+1;      % i=176
+   res(i)= res(i)     +all(all( ars(sely, :  ) == arf(sely, :  ) ));
+   i=i+1;      % i=177
+   res(i)= res(i)     +all(all( ars(:,:) == arf(:,:) ));
+   i=i+1;      % i=178
 
 %
 % sparse LU and inverse
@@ -593,7 +606,7 @@ end
    res(i)= res(i) + all( [  ...
                all(all( abs(Ls2*Us2 - Lf2*Uf2 )< mag )) ; ...
                       1 ] );
-   i=i+1;      % i=173
+   i=i+1;      % i=179
                                         
    if OCTAVE
       [Ls4,Us4,PsR,PsC] = splu( drs );
@@ -611,13 +624,13 @@ end
                   all(all( Us4 .* UU == Us4 )) ] );
    end
 
-   i=i+1;      % i=174
+   i=i+1;      % i=180
 
    dsi = spinv( drs );
    mag= errortol;
    res(i)= res(i) + all(all( ...
            abs( inv(drf) - dsi ) <= mag*(1+abs(inv(drf))) ));
-   i=i+1;      % i=175
+   i=i+1;      % i=181
 
    if OCTAVE
       res(i)= res(i)    +all( spfind(ars) == find(arf) );
@@ -627,11 +640,11 @@ end
       [I,J,S]= find(ars);
       [N,M]  = size(ars);
    end
-   i=i+1;      % i=176
+   i=i+1;      % i=182
 
    asnew= sparse(I,J,S,N,M);
    res(i)= res(i)    +all( all( asnew == ars ));
-   i=i+1;      % i=177
+   i=i+1;      % i=183
 
 %
 % complex sparse LU and inverse
@@ -650,7 +663,7 @@ end
    res(i)= res(i) + all( [  ...
                all(all( abs(Ls2*Us2 - Lf2*Uf2 )< mag )) ; ...
                       1 ] );
-   i=i+1;      % i=178
+   i=i+1;      % i=184
 
    if OCTAVE
       [Ls4,Us4,PsR,PsC] = splu( dcs );
@@ -667,13 +680,13 @@ end
                   all(all( Ls4 .* LL == Ls4 )) ;
                   all(all( Us4 .* UU == Us4 )) ] );
    end
-   i=i+1;      % i=179
+   i=i+1;      % i=185
 
    dci = spinv( dcs );
    mag= errortol;
    res(i)= res(i) + all(all( ...
            abs( inv(dcf) - dci ) <= mag*(1+abs(inv(dcf))) ));
-   i=i+1;      % i=180
+   i=i+1;      % i=186
 
    if OCTAVE
       res(i)= res(i)    +all( spfind(acs) == find(acf) );
@@ -683,11 +696,11 @@ end
       [I,J,S]= find(acs);
       [N,M]  = size(acs);
    end
-   i=i+1;      % i=181
+   i=i+1;      % i=187
 
    asnew= sparse(I,J,S,N,M);
    res(i)= res(i)    +all( all( asnew == acs ));
-   i=i+1;      % i=182
+   i=i+1;      % i=188
 
    % test sparse assembly using 'sum' or 'unique'
    tf1= zeros(N,M);
@@ -704,15 +717,15 @@ end
 
    % test normal assembly
    res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M) == tf1 ));
-   i=i+1;      % i=183
+   i=i+1;      % i=189
 
    % test 'unique' assembly
    res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M,'unique') == tf1 ));
-   i=i+1;      % i=184
+   i=i+1;      % i=190
 
    % test 'sum' assembly
    res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M,'sum') == tf2 ));
-   i=i+1;      % i=185
+   i=i+1;      % i=191
 
 end 
 
@@ -733,6 +746,9 @@ end
 
 %
 % $Log$
+% Revision 1.6  2002/11/05 19:21:07  aadler
+% added indexing for complex_sparse. added tests
+%
 % Revision 1.5  2002/02/28 04:57:18  aadler
 % global error threshold
 %

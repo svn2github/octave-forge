@@ -299,7 +299,6 @@ UNOPDECL (hermitian, a)
    return v.hermitian();
 } // hermitian
 
-#if 0
 typedef struct { long val;
                  long idx; } sort_idx;   
 // comparison function for sort in index
@@ -332,7 +331,7 @@ sort_with_idx (sort_idx * sidx, const idx_vector& idxv, long ixl)
 
 // Return a full vector output
 // Does it make sense to output a sparse matrix here?
-static ColumnVector
+static ComplexColumnVector
 sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
    DEBUGMSG("complex_sparse_index_oneidx");
    DEFINE_SP_POINTERS_CPLX( X )
@@ -346,7 +345,7 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
    sort_idx ixp[ ixl ];
    sort_with_idx (ixp, ix, ixl);
 
-   ColumnVector O( ixl );
+   ComplexColumnVector O( ixl );
    long ip= -Xnr; // previous column position
    long jj=0,jl=0;
    for (long k=0; k< ixl; k++) {
@@ -395,11 +394,11 @@ sparse_index_twoidx ( SuperMatrix X,
    // extimate the nnz in the output matrix
    int nnz = (int) ceil( (NCFX->nnz) * (1.0*ixl / Xnr) * (1.0*jxl / Xnc) ); 
 
-   double * coefB = doubleMalloc(nnz);
+   Complex * coefB = (Complex *) doublecomplexMalloc(nnz);
    int    * ridxB = intMalloc   (nnz);
    int    * cidxB = intMalloc   (jxl+1);  cidxB[0]= 0;
 
-   double tcol[ixl];  // a column of the extracted matrix
+   Complex tcol[ixl];  // a column of the extracted matrix
 
    int cx= 0, ll=0;
    int ip= -Xnc; // previous column position
@@ -444,8 +443,9 @@ sparse_index_twoidx ( SuperMatrix X,
    maybe_shrink( cx, nnz, ridxB, coefB );
 
    SuperMatrix B;
-   dCreate_CompCol_Matrix(&B, ixl, jxl, cx,
-                       coefB, ridxB, cidxB, NC, _D, GE);
+
+   zCreate_CompCol_Matrix(&B, ixl, jxl, cx,
+         (doublecomplex *) coefB, ridxB, cidxB, NC, _D, GE);
 
    return B;                          
 } // sparse_index_twoidx (
@@ -487,7 +487,7 @@ octave_complex_sparse::do_index_op ( const octave_value_list& idx)
    
    if ( idx.length () == 1) {
       const idx_vector ix = idx (0).index_vector ();
-      ColumnVector O= sparse_index_oneidx( X, ix );
+      ComplexColumnVector O= sparse_index_oneidx( X, ix );
 
       // the rules are complicated here X(Y):
       // X is matrix: result is same shape as Y
@@ -526,7 +526,7 @@ octave_complex_sparse::extract (int r1, int c1, int r2, int c2) const {
    int nnz = (int) ceil( (NCFX->nnz) * (1.0*m / Xnr)
                                      * (1.0*n / Xnc) ); 
 
-   double * coefB = doubleMalloc(nnz);
+   Complex * coefB = (Complex *) doublecomplexMalloc(nnz);
    int    * ridxB = intMalloc   (nnz);
    int    * cidxB = intMalloc   (n+1);  cidxB[0]= 0;
 
@@ -548,13 +548,12 @@ octave_complex_sparse::extract (int r1, int c1, int r2, int c2) const {
    maybe_shrink( cx, nnz, ridxX, coefX );
 
    SuperMatrix B;
-   dCreate_CompCol_Matrix(&B, m, n, cx,
-                          coefB, ridxB, cidxB, NC, _D, GE);
+   zCreate_CompCol_Matrix(&B, m, n, cx,
+        (doublecomplex *) coefB, ridxB, cidxB, NC, _D, GE);
 
    return new octave_complex_sparse ( B );
 } // octave_complex_sparse::extract (int r1, int c1, int r2, int c2) const {
 
-#endif
 
 void
 octave_complex_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
@@ -1367,6 +1366,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.8  2002/11/05 19:21:07  aadler
+ * added indexing for complex_sparse. added tests
+ *
  * Revision 1.7  2002/11/05 15:07:33  aadler
  * fixed for 2.1.39 -
  * TODO: fix complex index ops

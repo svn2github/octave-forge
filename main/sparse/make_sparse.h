@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.9  2002/11/05 19:21:07  aadler
+added indexing for complex_sparse. added tests
+
 Revision 1.8  2002/11/05 15:07:34  aadler
 fixed for 2.1.39 -
 TODO: fix complex index ops
@@ -180,11 +183,9 @@ public:
    octave_value transpose (void) const ;
 
    octave_value extract (int r1, int c1, int r2, int c2) const ;
-#if 0
    octave_value_list subsref (const std::string type,
                               const SLList<octave_value_list>& idx,
                               int nargout);
-#endif
    octave_value do_index_op ( const octave_value_list& idx);
    
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;

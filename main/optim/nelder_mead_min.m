@@ -29,32 +29,37 @@
 ## v   : real     : Value of f in x0
 ## nev : number   : Number of function evaluations
 ## 
-## CONTROL VARIABLE : may be a struct with some of the keys described below
-## ------------------ or a vector. Named arguments ("key", value), are ok
-## STRUCT VECTOR
-## KEY    POS
-## crit   ctl(1)  : 1, 2 or 3 : Select stopping criterion amongst :
-##         1      : Stopping criterion : Stop search when values at simplex
+## CONTROL VARIABLE : (optional) may be named arguments (i.e. "name",value
+## ------------------ pairs), a struct, or a vector of length 6 or less.
+##                    Nan's are ignored. Default values are written <value>.
+##  OPT.   VECTOR
+##  NAME    POS
+## ftol,f  N/A    : Stopping criterion : stop search when values at simplex
 ##                  vertices are all alike, as tested by 
 ##
-##              ctl(2) > (max_i (f_i) - min_i (f_i)) /max(max(|f_i|),1)
+##                   f > (max_i (f_i) - min_i (f_i)) /max(max(|f_i|),1)
 ##
-##                  where f_i are the values of f at the vertices.
+##                  where f_i are the values of f at the vertices.  <10*eps>
 ##
-##         2      : Stop search when biggest diameter of simplex, using
+## rtol,r  N/A    : Stop search when biggest radius of simplex, using
 ##                  infinity-norm, is small, as tested by :
 ##
-##              ctl(2) > Diam
+##              ctl(2) > Radius                                     <10*eps>
 ##
-##         3      : Stop search when volume of simplex is small, tested by
+## vtol,v  N/A    : Stop search when volume of simplex is small, tested by
 ##            
 ##              ctl(2) > Vol
-##                                                            Default=1
 ##
-## tol   ctl(2) : Threshold used in stopping tests.           Default=10*eps
-## argn  ctl(3) : Position of the minimized argument in args  Default=1
-## maxev ctl(4) : Maximum number of function evaluations      Default=inf
-## isz   ctl(5) : Size of initial simplex, which is :         Default=1
+## crit,c ctl(1)  : Select one of stopping criteria : 'ftol' (c=1), 'rtol'
+##                  (c=2) or 'vtol' (c=3) criteria. The value of the
+##                  parameter is specified by the 'tol' option.
+##
+## tol, t ctl(2)  : Threshold used in termination test selected by 'crit'.
+##
+## argn  ctl(3) : Position of the minimized argument in args             <1>
+## maxev ctl(4) : Maximum number of function evaluations. This number  <inf>
+##                may be slightly exceeded.
+## isz   ctl(5) : Size of initial simplex, which is :                    <1>
 ##
 ##                { x + e_i | i in 0..N } 
 ## 
@@ -70,11 +75,9 @@
 ##                until the minimum does not improve anymore. ctl(6) is the
 ##                maximum number of restarts. Set ctl(6) to zero if you know
 ##                the function is well-behaved or if you don't mind not
-##                getting a true minimum.                     Default=inf
-## 
-## ctl may have length smaller than 6 or not have all keys. Default values
-## will be used if ctl is not passed or if nan values are given.
+##                getting a true minimum.                              <inf>
 ##
+## verbose, v     Be more or less verbose (quiet=0)                      <0>
 function [x,v,nev] = nelder_mead_min (f, args, ...)
 
 ## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
@@ -87,13 +90,17 @@ endif
 nelder_mead_min_warn = 0;
 
 verbose = 0;
+
 				# Default control variables
-crit = 1;			# Stopping criterion            ctl(1)
+ftol = rtol = 10*eps;		# Stop either by likeness of values or
+vtol = nan;                     # radius, but don't care about volume.
+crit = 0;			# Stopping criterion            ctl(1)
 tol = 10*eps;			# Stopping test's threshold     ctl(2)
 narg = 1;			# Position of minimized arg     ctl(3)
 maxev = inf;			# Max num of func evaluations   ctl(4)
 isz = 1;			# Initial size                  ctl(5)
 rst = inf;			# Max # of restarts
+
 
 if nargin >= 3,			# Read control arguments
   if nargin > 3, ctl = struct (all_va_args); else ctl = va_arg (); end
@@ -107,14 +114,21 @@ if nargin >= 3,			# Read control arguments
   else
     if struct_contains (ctl, "crit") && ! isnan (ctl.crit ), crit  = ctl.crit ; end
     if struct_contains (ctl,  "tol") && ! isnan (ctl.tol  ), tol   = ctl.tol  ; end
+    if struct_contains (ctl, "ftol") && ! isnan (ctl.ftol ), ftol  = ctl.ftol ; end
+    if struct_contains (ctl, "rtol") && ! isnan (ctl.rtol ), rtol  = ctl.rtol ; end
+    if struct_contains (ctl, "vtol") && ! isnan (ctl.vtol ), vtol  = ctl.vtol ; end
     if struct_contains (ctl, "narg") && ! isnan (ctl.narg ), narg  = ctl.narg ; end
     if struct_contains (ctl,"maxev") && ! isnan (ctl.maxev), maxev = ctl.maxev; end
     if struct_contains (ctl,  "isz") && ! isnan (ctl.isz  ), isz   = ctl.isz  ; end
     if struct_contains (ctl,  "rst") && ! isnan (ctl.rst  ), rst   = ctl.rst  ; end
+    if struct_contains(ctl,"verbose")&& !isnan(ctl.verbose),verbose=ctl.verbose;end
   end
 end
 
-## [crit,tol,narg,maxev,isz,rst]
+
+if     crit == 1, ftol = tol; rtol = vtol = nan; 
+elseif crit == 2, rtol = tol; ftol = vtol = nan; 
+elseif crit == 3, vtol = tol; ftol = rtol = nan; end
 
 if is_list (args),		# List of arguments 
   x = nth (args, narg);
@@ -124,7 +138,7 @@ else				# Single argument
 end
 ## args
 
-if narg > length (args),	# Check
+if narg > length (args)		# Check
   error ("nelder_mead_min : narg==%i, length (args)==%i\n",
 	 narg, length (args));
 end
@@ -141,8 +155,8 @@ for i = 1:N+1,
 end ;
 nev = N+1;
 
-ymin0 = min(y) ;
-
+[ymin,imin] = min(y);
+ymin0 = ymin;
 ## y
 nextprint = 0 ;
 v = nan;
@@ -150,7 +164,7 @@ while nev <= maxev,
 
   ## ymin, ymax, ymx2 : lowest, highest and 2nd highest function values
   ## imin, imax, imx2 : indices of vertices with these values
-  [ymin,imin] = min(y) ;  [ymax,imax] = max(y) ;
+  [ymin,imin] = min(y);  [ymax,imax] = max(y) ;
   y(imax) = ymin ;  
   [ymx2,imx2] = max(y) ;  
   y(imax) = ymax ;
@@ -162,29 +176,29 @@ while nev <= maxev,
   ## end
   
 				# Compute stopping criterion
-  if crit == 1,
-    rt = (max(y)-min(y)) / max(1,max(abs(y)));
-  elseif crit == 2,
-    rt = max (max (u) - min (u));
-  else
-    rt = abs(det(u(1:N,:)-ones(N,1)*u(N+1,:)))^(1/N) ;
-    ## rt = (max(y)-min(y)) / max (max (u) - min(u));
+  done = 0;
+  if ! isnan (ftol), done |= (max(y)-min(y)) / max(1,max(abs(y))) < ftol;end
+  if ! isnan (rtol), done |= 2*max (max (u) - min (u)) < rtol; end
+  if ! isnan (vtol)
+    done |= abs (det (u(1:N,:)-ones(N,1)*u(N+1,:)))/factorial(N) < vtol;
   end
-
+  ## [ 2*max (max (u) - min (u)), abs (det (u(1:N,:)-ones(N,1)*u(N+1,:)))/factorial(N);\
+  ##  rtol, vtol]
+  
 				# Eventually print some info
-  if nev > nextprint
-    if verbose,
-      printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  rt=%-8.3g\n",\
-	     nev,imin,ymin,rt) ;
-    end
+  if verbose && nev > nextprint && ! done 
+
+    printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  done=%i\n",\
+	   nev,imin,ymin,done) ;
+
     nextprint = nextprint + 100 ;
   end
   
-  if rt < tol ,			# Termination test
+  if done			# Termination test
     if (rst > 0) && (isnan (v) || v > ymin)
       rst--;
       if verbose
-	if isnan (v), 
+	if isnan (v),
 	  printf ("Restarting next to minimum %10.3e\n",ymin); 
 	else
 	  printf ("Restarting next to minimum %10.3e\n",ymin-v); 
@@ -201,9 +215,9 @@ while nev <= maxev,
 	    leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
       end
       nev += N+1;
-      [ymin,imin] = min(y) ;  [ymax,imax] = max(y) ;
-      y(imax) = ymin ;  
-      [ymx2,imx2] = max(y) ;  
+      [ymin,imin] = min(y);  [ymax,imax] = max(y);
+      y(imax) = ymin;
+      [ymx2,imx2] = max(y);
       y(imax) = ymax ;
     else
       if isnan (v),
@@ -211,8 +225,8 @@ while nev <= maxev,
 	v = ymin ;
       end
       if verbose,
-	printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  rt=%-8.3g. Done\n",\
-	       nev,imin,ymin,rt) ;
+	printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  done=%i. Done\n",\
+	       nev,imin,ymin,done) ;
       end
       return
     end
@@ -221,7 +235,7 @@ while nev <= maxev,
   ##   [ y' u ]
 
   tra = 0 ;			# 'trace' debug var contains flags
-  if verbose, str = sprintf ("%10.3e : %10.3e --",rt,ymin); end
+  if verbose > 1, str = sprintf (" %i : %10.3e --",done,ymin); end
 
 				# Look for a new point
   xsum = sum(u) ;		# Consider reflection of worst vertice
@@ -236,7 +250,7 @@ while nev <= maxev,
   if ynew <= ymin ,		# Reflection is good
     
     tra += 1 ;
-    if verbose,
+    if verbose > 1
       str = [str,sprintf (" %3i : %10.3e good refl >>",nev,ynew-ymin)];
     end
     y(imax) = ynew; u(imax,:) = xnew ;
@@ -255,14 +269,14 @@ while nev <= maxev,
       ##      'expanded reflection'
       y(imax) = ynew ; u(imax,:) = xnew ;
       xsum = sum(u) ;
-      if verbose,
+      if verbose > 1
 	str = [str,sprintf (" %3i : %10.3e expd refl",nev,ynew-ymin)];
       end
     else
       tra += 4 ;
       ##      'plain reflection'
       ## Updating of y and u has already been done
-      if verbose,
+      if verbose > 1
 	str = [str,sprintf (" %3i : %10.3e plain ref",nev,ynew-ymin)];
       end
     end
@@ -270,7 +284,7 @@ while nev <= maxev,
   elseif ynew >= ymax ,
     
     tra += 8 ;
-    if verbose,
+    if verbose > 1
       str = [str,sprintf (" %3i : %10.3e intermedt >>",nev,ynew-ymin)];
     end
     ## look for intermediate point
@@ -294,7 +308,7 @@ while nev <= maxev,
       end
       ##      'contraction'
       tra += 16 ;
-      if verbose,
+      if verbose > 1
 	str = [str,sprintf (" %3i contractn",nev)];
       end
     else				# Replace highest point
@@ -302,7 +316,7 @@ while nev <= maxev,
       xsum = sum(u) ; 
       ##      'intermediate'
       tra += 32 ;
-      if verbose,
+      if verbose > 1
 	str = [str,sprintf (" %3i : %10.3e intermedt",nev,ynew-ymin)];
       end
     end
@@ -312,17 +326,16 @@ while nev <= maxev,
     xsum = sum(u) ; 
     ##      'plain reflection (2)'
     tra += 64 ;
-    if verbose,
+    if verbose > 1
       str = [str,sprintf (" %3i : %10.3e keep refl",nev,ynew-ymin)];
     end
   end
-  if verbose, printf ("%s\n",str); end
-  ## [tra, nev, ymin, rt]
-  ## [ymin, rt]
-  ## if !isempty (input("","s")), keyboard; end
+  if verbose > 1, printf ("%s\n",str); end
 end
 
-printf ("nelder_mead : Too many iterations. Returning\n");
+if verbose >= 0
+  printf ("nelder_mead : Too many iterations. Returning\n");
+end
 
 if isnan (v) || v > ymin,
   x = reshape (u(imin,:), R, C) ;

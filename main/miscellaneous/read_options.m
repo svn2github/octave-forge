@@ -49,6 +49,9 @@
 ## pre 2.1.39 function [op,nread] = read_options (args, ...)
 function [op,nread] = read_options (args, varargin) ## pos 2.1.39
 
+
+verbose = 0;
+
 op = setfield ();		# Empty struct
 op0 = op1 = " ";
 skipnan = prefix = quiet = nocase = quiet = 0;
@@ -68,6 +71,7 @@ while i<nargin
   elseif strcmp (tmp, "nocase") , nocase  = nth (varargin, i++);
   elseif strcmp (tmp, "quiet")  , quiet   = nth (varargin, i++);
   elseif strcmp (tmp, "skipnan"), skipnan = nth (varargin, i++);
+  elseif strcmp (tmp, "verbose"), verbose = nth (varargin, i++);
   else 
     error ("unknown option '%s' for option-reading function!",tmp);
   end
@@ -159,12 +163,18 @@ while nread < length (args)
 
   fullname = opts_orig(ii:spi(find (spi > ii)(1))-1);
   if ii < iend
+    if verbose, printf ("read_options : found boolean '%s'\n",fullname); end
     op = setfield (op, fullname, 1);
   else
+    if verbose, printf ("read_options : found '%s'\n",fullname); end
     if nread < length (args)
       tmp = nth (args,++nread);
-      if !isnumeric (tmp) || !isnan (tmp) || !struct_contains (op, fullname)
+      if verbose, printf ("read_options : size is %i x %i\n",size(tmp)); end
+      if !isnumeric (tmp) || !all (isnan (tmp(:))) || \
+	    !struct_contains (op, fullname)
 	op = setfield (op, fullname, tmp);
+      else
+	if verbose, printf ("read_options : ignoring nan\n"); end
       end
     else
       error ("options end before I can read value of option '%s'",oname);

@@ -11,7 +11,7 @@
       if (nrhs .lt. 1 .or. mxIsString(prhs(1)) .ne. 1) then
          call mexErrMsgTxt('function name expected')
       endif
-      len = mxGetN(prhs(1));
+      len = mxGetN(prhs(1))
       status = mxGetString (prhs(1), str, 100)
       call mexPrintf('FORTRAN will call the interpreter now')
       status = mexCallMATLAB(nlhs, plhs, nrhs-1, prhs(2), str(1:len))

@@ -108,9 +108,7 @@ install_gm_s_ops (void)
   INSTALL_BINOP (op_el_and, octave_galois, octave_scalar, el_and);
   INSTALL_BINOP (op_el_or, octave_galois, octave_scalar, el_or);
 
-#ifdef DEFCATOP
   INSTALL_G_CATOP (octave_galois, octave_scalar, gm_s);
-#endif
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_galois, octave_scalar, assign);
 }

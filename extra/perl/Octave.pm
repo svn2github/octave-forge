@@ -7,7 +7,7 @@
 package Inline::Octave;
 
 
-$VERSION = '0.10';
+$VERSION = '0.11';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
@@ -416,6 +416,9 @@ sub name
 __END__
 
 $Log$
+Revision 1.6  2001/11/17 02:15:21  aadler
+changed docs, new options for Makefile.PL
+
 Revision 1.5  2001/11/11 03:36:31  aadler
 mod to work with octave-2.0 as well as 2.1
 
@@ -467,19 +470,6 @@ Inline::Octave - Inline octave code into your perl
 Inline::Octave gives you the power of the octave programming language from
 within your Perl programs.
 
-You need to install the Inline module from CPAN. This provides
-the infrastructure to support all the Inline::* modules.
- 
-Then install Octave.pm in an Inline directory in any path in your @INC.
- 
-The easiest is to create a ./Inline directory in your
-working directory, and put Octave.pm in that.
-after that the example code should run.
-
-Note, there is currently no proper Makefile.PL install facility
-for Inline::Octave - this reflects it's maturity.
-                   
-It should work with stock octave - but I'd like to get feedback on this.
 Basically, I create an octave process with controlled stdin and stdout.
 Commands send by stdin. Data is send by stdin and read with
 fread(stdin, [dimx dimy], "double"), and read similarly.
@@ -490,7 +480,30 @@ command to octave.
                    
 I initially tried to bind the C++ and liboctave to perl, but
 it started to get really hard - so I took this route.
+I'm planning to get back to that eventually ...
 
+=head1 INSTALLATION
+
+You need to install the Inline module from CPAN. This provides
+the infrastructure to support all the Inline::* modules.
+
+Then:
+   
+   perl Makefile.PL
+   make 
+   make test
+   make install
+
+This will search for an octave interpreter and give you
+the choice of giving the path to GNU Octave.
+
+If you don't want this interactivity, then specify
+
+   perl Makefile.PL OCTAVE=/path/to/octave
+      or
+   perl Makefile.PL OCTAVE='/path/to/octave -my -special -switches'
+
+ 
 =head1 Why would I use Inline::Octave
 
 If you can't figure out a reason, don't!
@@ -498,6 +511,11 @@ If you can't figure out a reason, don't!
 I use it to grind through long logfiles (using perl),
 and then calculate mathematical results (using octave).
 
+Why not use PDL?
+
+1) Because there's lots of existing code in Octave/Matlab.
+2) Because there's functionality in Octave that's not in PDL.
+3) Because there's more than one way to do it.
 
 =head1 Using Inline::Octave
 
@@ -640,5 +658,7 @@ redistributed and/or modified under the same terms as Perl itself.
    4. control waiting in the interpret loop
        - seems ok, except sysread reads small buffers
    5. support for complex variables
+   6. octave gets wierd when you CTRL-C out of a 
+       running program
 
 

@@ -6,16 +6,26 @@ use ExtUtils::MakeMaker;
 #   Find the octave interpreter
 #
 
-$octave= "octave";
-$octave_validated= 0;
+my $octave= "octave";
+my $octave_validated= 0;
+
+# check if interpreter was specified on cmd line
+foreach (@ARGV) {
+   if (/^OCTAVE=(.+)/) {
+      $octave= $1;
+      $octave_validated= 1;
+      undef $_;
+   }
+}   
+
 while (not $octave_validated) {
    $octave_validated= 1 if `$octave -v` =~ /Octave, version 2/;
 
    if ($octave_validated) {
-      print "Found octave interpreter:[$octave]\n";
+      print "Found GNU Octave interpreter:[$octave]\n";
       print "Enter new path or <RETURN> to accept: ";
    } else {
-      print "Unable to find octave interpreter at:[$octave]\n";
+      print "Unable to find GNU Octave interpreter at:[$octave]\n";
       print "Please enter new path: " ;
 
    }

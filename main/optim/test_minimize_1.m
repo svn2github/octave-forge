@@ -13,8 +13,10 @@
 ## ok = test_minimize           - Test that minimize works
 ##
 
-ok = 1;
-cnt = 0;
+ok = 1;				# Remains set if all ok. Set to 0 otherwise
+cnt = 0;			# Test counter
+page_screen_output = 0;
+page_output_immediately = 1
 
 if ! exist ("verbose"), verbose = 0; end
 
@@ -124,6 +126,19 @@ if max (abs (xlev-y0)) > 100*sqrt (eps)
 elseif verbose,  prn ("ok %i\n",cnt);
 end
 
+## Run, w/ differential returned by function ('jac' option) ##########
+## Minimum wrt 'x' is y0
+[xlev,vlev,nlev] = minimize ("d2ff",list (x0,y0,1),"jac");
+
+cnt++;
+if max (abs (xlev-y0)) > 100*sqrt (eps)
+  if verbose
+    prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
+  end
+  ok = 0;
+elseif verbose,  prn ("ok %i\n",cnt);
+end
+
 ## Run, w/ 2nd differential, just to make sure #######################
 ## Minimum wrt 'x' is y0
 [xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"d2f","d2ff");
@@ -137,9 +152,35 @@ if max (abs (xlev-y0)) > 100*sqrt (eps)
 elseif verbose,  prn ("ok %i\n",cnt);
 end
 
+## Use the 'hess' option, when f can return 2nd differential #########
+## Minimum wrt 'x' is y0
+[xlev,vlev,nlev] = minimize ("d2ff",list (x0,y0,1),"hess");
+
+cnt++;
+if max (abs (xlev-y0)) > 100*sqrt (eps)
+  if verbose
+    prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
+  end
+  ok = 0;
+elseif verbose,  prn ("ok %i\n",cnt);
+end
+
 ## Run, w/ inverse of 2nd differential, just to make sure ############
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"d2f","d2ff");
+[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"d2i","d2iff");
+
+cnt++;
+if max (abs (xlev-y0)) > 100*sqrt (eps)
+  if verbose
+    prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
+  end
+  ok = 0;
+elseif verbose,  prn ("ok %i\n",cnt);
+end
+
+## Use the 'ihess' option, when f can return pinv of 2nd differential 
+## Minimum wrt 'x' is y0
+[xlev,vlev,nlev] = minimize ("d2iff",list (x0,y0,1),"ihess");
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -175,7 +216,7 @@ if ! strcmp (method,"bfgs")
 elseif verbose,  prn ("ok %i\n",cnt);
 end
 
-[xle2,vle2,nle2] = feval (method, "ff",ctl.df,list (x0,y0,1), ctl);
+[xle2,vle2,nle2] = feval (method, "ff",list (x0,y0,1), ctl);
 cnt++;
 if max (abs (xlev-xle2)) > 100*eps
   if verbose

@@ -20,17 +20,26 @@
 ##                  in x : dfx = feval (df, x) where dfx is 1x(M*N). A
 ##                  variable metric method (see bfgs) will be used.
 ##
+## 'jac'          : Use [fx, dfx] = leval(f, args) to compute derivatives
+##                  and use a variable metric method (bfgs).
+##
 ## 'd2f', d2f     : Name of a function that returns the value of f, of its
 ##                  1st and 2nd derivatives : [fx,dfx,d2fx] = feval (d2f, x)
 ##                  where fx is a real number, dfx is 1x(M*N) and d2fx is
 ##                  (M*N)x(M*N). A Newton-like method (d2_min) will be used.
 ##
+## 'hess'         : Use [fx,dfx,d2fx] = leval (f, args) to compute 1st and
+##                  2nd derivatives, and use a Newton-like method (d2_min).
 ##
 ## 'd2i', d2i     : Name of a function that returns the value of f, of its
 ##                  1st and pseudo-inverse of second derivatives : 
-##                  [fx,dfx,id2ix] = feval (d2i, x) where fx is a real
+##                  [fx,dfx,id2fx] = feval (d2i, x) where fx is a real
 ##                  number, dfx is 1x(M*N) and d2ix is (M*N)x(M*N).
 ##                  A Newton-like method will be used (see d2_min).
+##
+## 'ihess'        : Use [fx,dfx,id2fx] = leval (f, args) to compute 1st
+##                  derivative and the pseudo-inverse of 2nd derivatives,
+##                  and use a Newton-like method (d2_min).
 ##
 ##            NOTE : df, d2f or d2i take the same arguments as f.
 ## 
@@ -101,10 +110,11 @@ minimize_warn = 0;
 # Options with a value
 op1 = " ftol utol dtol df d2f d2i order narg maxev isz ";
 # Boolean options 
-op0 = " verbose backend " ;
+op0 = " verbose backend jac hess ihess" ;
 
 default = setfield ("backend",0,"verbose",0,\
-		    "df","", "df","","d2f","", "d2i","", \
+		    "df","", "df","","d2f","","d2i","",  \
+		    "hess", 0,  "ihess", 0,  "jac", 0,   \
 		    "ftol" ,nan, "utol",nan, "dtol", nan,\
 		    "order",nan, "narg",nan, "maxev",nan,\
 		    "isz",  nan);
@@ -112,15 +122,18 @@ default = setfield ("backend",0,"verbose",0,\
 ops = read_options (list (all_va_args),\
 		    "op0",op0, "op1",op1, "default",default);
 
-[backend,verbose, \
- df, df,d2f, d2i, \
- ftol, utol, dtol,\
+[backend,verbose,   \
+ df, df, d2f, d2i,  \
+ hess, ihess, jac,  \
+ ftol, utol, dtol,  \
  order, narg, maxev,\
  isz] = getfield (ops, "backend","verbose",\
 		  "df", "df","d2f", "d2i", \
+		  "hess", "ihess", "jac",  \
 		  "ftol" , "utol", "dtol", \
 		  "order", "narg", "maxev",\
 		  "isz");
+
 
 				# Basic coherence checks #############
 
@@ -128,11 +141,14 @@ ws = "";			# Warning string
 es = "";			# Error string
 
 				# Warn if more than 1 differential is given
-if !!length (df) + !!length (d2f) + !!length (d2i) > 1
+if !!length (df) + !!length (d2f) + !!length (d2i) + jac + hess + ihess > 1
 				# Order of preference of 
   if length (d2i), ws = [ws,"d2i='",d2i,"', "]; end
   if length (d2f), ws = [ws,"d2f='",d2f,"', "]; end
   if length (df),  ws = [ws,"df='",df,"', "]; end
+  if hess       ,  ws = [ws,"hess=1, "]; end
+  if ihess      ,  ws = [ws,"ihess=1, "]; end
+  if jac        ,  ws = [ws,"jac=1, "]; end
   ws = ws(1:length(ws)-2);
   ws = ["Options ",ws," were passed. Only one will be used\n"]
 end
@@ -171,9 +187,15 @@ if isnan (narg), narg = 1; end
 				# ##########################################
 				# Choose method according to available
 				# derivatives (overriden below)
-if     length (d2i), method = "d2_min"; ctls.id2f = 1; op = 1;
+if     ihess, d2f = f;  ctls.id2f = 1; op = 1;
+elseif hess,  d2f = f;
+end
+  
+
+if     length (d2i), method = "d2_min"; ctls.id2f = 1; op = 1; d2f = d2i;
 elseif length (d2f), method = "d2_min";
-elseif length (df),  method = "bfgs";
+elseif length (df) , method = "bfgs"  ; ctls.df  = df; op = 1;
+elseif jac         , method = "bfgs"  ; ctls.jac = 1 ; op = 1;
 else                 method = "nelder_mead_min";
 end
 
@@ -183,24 +205,26 @@ end
 				# ##########################################
 				# Choose method by specifying order ########
 
-must_clear_ndiff = 0;		# Flag telling to clear ndiff function
+## must_clear_ndiff = 0;		# Flag telling to clear ndiff function
 
 if ! isnan (order)
 
   if     order == 0, method = "nelder_mead_min";
   elseif order == 1
     method = "bfgs";
-    if ! length (df)		# If necessary, define numerical diff
-
-      df = temp_name (["d",f]);	# Choose a name
-				# Define the function
-      eval (cdiff (f, narg, length (args), df));
-      must_clear_ndiff = 1;
-
-      if verbose
-	printf ("minimize(): Defining numerical diff. function\n");
-      end
-    end
+    ## if jac, ctls.jac = 1; op = 1; end      
+    ## 2002 / 04 / 28 : Use num. deriv w/ bs_gradient2, by default.
+    ## if ! length (df)		# If necessary, define numerical diff
+    ##
+    ##  df = temp_name (["d",f]);	# Choose a name
+    ##		        		# Define the function
+    ## eval (cdiff (f, narg, length (args), df));
+    ##   must_clear_ndiff = 1;
+    ##
+    ## if verbose
+    ##   printf ("minimize(): Defining numerical diff. function\n");
+    ## end
+    
   elseif order == 2
     if ! (length (d2f) || length (d2i))
       error ("minimize(): 'order' is 2, but 2nd differential is missing\n");
@@ -219,7 +243,7 @@ if length (ws), warn (ws); end
 				# EOF More checks ##########################
 
 if     strcmp (method, "d2_min"), all_args = list (f, d2f, args);
-elseif strcmp (method, "bfgs"),   all_args = list (f, df, args);
+elseif strcmp (method, "bfgs"),   all_args = list (f, args);
 else                              all_args = list (f, args);
 end
 				# Eventually add ctls to argument list
@@ -240,18 +264,18 @@ else				# Don't call backend, just return its name
 				# If I just defined a numerical
 				# differentiation function and I want user
 				# to use it later, I should not clear it.
-  if must_clear_ndiff
-    if verbose
-      printf ("minimize(): Keeping num diff function '%s' for future use",\
-	      df);
-    end
-    must_clear_ndiff = 0;
-    ctls.df = df; op = 1;
-  end
+  ## if must_clear_ndiff
+  ##   if verbose
+  ##     printf ("minimize(): Keeping num diff function '%s' for future use",\
+  ##      df);
+  ##   end
+  ##   must_clear_ndiff = 0;
+  ##   ctls.df = df; op = 1;
+  ## end
 
   x = method;
   if op, v = ctls; else v = []; end
 end
 
 				# Eventually clear num diff function
-if must_clear_ndiff, clear(df); end
+## if must_clear_ndiff, clear(df); end

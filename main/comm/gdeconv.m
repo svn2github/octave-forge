@@ -25,7 +25,7 @@
 ## contain the coefficients of the polynomial quotient and @var{r} will be
 ## a remander polynomial of lowest order.
 ## @end deftypefn
-## @seealso{gconv}
+## @seealso{gconv,deconv,conv}
 
 ## PKG_ADD: dispatch deconv gdeconv galois
 function [b, r] = gdeconv (y, a)

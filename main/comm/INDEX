@@ -4,6 +4,8 @@ Communications
  biterr
  compand
  cosets
+ cyclgen
+ cyclpoly
  de2bi
  eyediagram
  galois
@@ -30,8 +32,10 @@ Communications
  groots
  gsum
  gsumsq
+ hammgen
  isgalois
  isprimitive
+ lloyds
  minpol
  primpoly
  quantiz
@@ -43,5 +47,6 @@ Communications
  rsenc
  scatterplot
  symerr
+ syndtable
  vec2mat
  wgn

@@ -31,9 +31,7 @@
 ##
 ## @item [qidx, q, d] = quantiz(...)
 ##   Compute distortion as mean squared distance of x from the
-##   corresponding table positions.  Note that an equally valid
-##   definition of distortion is the distance from the codebook
-##   values.
+##   corresponding quantization values.
 ## @end table
 ## @end deftypefn
 
@@ -42,13 +40,12 @@ function [qidx, q, d] = quantiz (x, table, codes)
     usage("[qidx, q, d] = quantiz(x, table, codes)");
   endif
 
-  qidx = length(table) - lookup(flipud(table(:)), x);
+  qidx = length(table) - lookup(flipud(table(:)), x(:));
   if (nargin > 2 && nargout > 1)
     q = codes(qidx + 1);
   endif
   if (nargout > 2)
-    warning("distortion is relative to table instead of codes");
     table = [table(1) ; table(:) ];
-    d = sumsq (x(:) - table(qidx+1)) / length(x);
+    d = sumsq (x(:) - q(:)) / length(x);
   endif
 endfunction

@@ -39,10 +39,10 @@ See the website http://www.ka9q.net/code/fec for more details.
 static bool galois_type_loaded = false;
 
 DEFUN_DLD (isgalois, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} isgalois (@var{expr})\n\
-Return 1 if the value of the expression @var{expr} is a Galois Field.\n\
-@end deftypefn") 
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} isgalois (@var{expr})\n"
+"Return 1 if the value of the expression @var{expr} is a Galois Field.\n"
+"@end deftypefn") 
 {
    if (args.length() != 1) 
      print_usage("isgalois");
@@ -56,26 +56,26 @@ Return 1 if the value of the expression @var{expr} is a Galois Field.\n\
 }
 
 DEFUN_DLD (gf, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{y} =} gf (@var{x})\n\
-@deftypefnx {Loadable Function} {@var{y} =} gf (@var{x}, @var{m})\n\
-@deftypefnx {Loadable Function} {@var{y} =} gf (@var{x}, @var{m}, @var{primpoly})\n\
-Creates a Galois field array GF(2^@var{m}) from the matrix @var{x}. The\n\
-Galois field has 2^@var{m} elements, where @var{m} must be between 1 and 16.\n\
-The elements of @var{x} must be between 0 and 2^@var{m} - 1. If @var{m} is\n\
-undefined it defaults to the value 1.\n\
-\n\
-The primitive polynomial to use in the creation of Galois field can be\n\
-specified with the @var{primpoly} variable. If this is undefined a default\n\
-primitive polynomial is used. It should be noted that the primitive\n\
-polynomial must be of the degree @var{m} and it must be irreducible.\n\
-\n\
-The output of this function is recognized as a Galois field by Octave and\n\
-other matrices will be converted to the same Galois field when used in an\n\
-arithmetic operation with a Galois field.\n\
-\n\
-@end deftypefn\n\
-@seealso{isprimitive,primpoly}")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{y} =} gf (@var{x})\n"
+"@deftypefnx {Loadable Function} {@var{y} =} gf (@var{x}, @var{m})\n"
+"@deftypefnx {Loadable Function} {@var{y} =} gf (@var{x}, @var{m}, @var{primpoly})\n"
+"Creates a Galois field array GF(2^@var{m}) from the matrix @var{x}. The\n"
+"Galois field has 2^@var{m} elements, where @var{m} must be between 1 and 16.\n"
+"The elements of @var{x} must be between 0 and 2^@var{m} - 1. If @var{m} is\n"
+"undefined it defaults to the value 1.\n"
+"\n"
+"The primitive polynomial to use in the creation of Galois field can be\n"
+"specified with the @var{primpoly} variable. If this is undefined a default\n"
+"primitive polynomial is used. It should be noted that the primitive\n"
+"polynomial must be of the degree @var{m} and it must be irreducible.\n"
+"\n"
+"The output of this function is recognized as a Galois field by Octave and\n"
+"other matrices will be converted to the same Galois field when used in an\n"
+"arithmetic operation with a Galois field.\n"
+"\n"
+"@end deftypefn\n"
+"@seealso{isprimitive,primpoly}")
 {
   Matrix data = args(0).matrix_value();
   octave_value retval;
@@ -165,24 +165,25 @@ make_gdiag (const octave_value& a, const octave_value& b)
 
 // PKG_ADD: dispatch diag gdiag galois
 DEFUN_DLD (gdiag, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} gdiag (@var{v}, @var{k})\n\
-Return a diagonal matrix with Galois vector @var{v} on diagonal @var{k}.\n\
-The second argument is optional.  If it is positive, the vector is placed on\n\
-the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n\
-@var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the\n\
-vector is placed on the main diagonal.  For example,\n\
-\n\
-@example\n\
-@group\n\
-diag ([1, 2, 3], 1)\n\
-     @result{}  0  1  0  0\n\
-         0  0  2  0\n\
-         0  0  0  3\n\
-         0  0  0  0\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} gdiag (@var{v}, @var{k})\n"
+"Return a diagonal matrix with Galois vector @var{v} on diagonal @var{k}.\n"
+"The second argument is optional.  If it is positive, the vector is placed on\n"
+"the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n"
+"@var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the\n"
+"vector is placed on the main diagonal.  For example,\n"
+"\n"
+"@example\n"
+"@group\n"
+"diag ([1, 2, 3], 1)\n"
+"     @result{}  0  1  0  0\n"
+"         0  0  2  0\n"
+"         0  0  0  3\n"
+"         0  0  0  0\n"
+"@end group\n"
+"@end example\n"
+"@end deftypefn\n"
+"@seealso{diag}")
 {
   octave_value retval;
 
@@ -200,39 +201,39 @@ diag ([1, 2, 3], 1)\n\
 
 // PKG_ADD: dispatch reshape greshape galois
 DEFUN_DLD (greshape, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} greshape (@var{a}, @var{m}, @var{n})\n\
-Return a matrix with @var{m} rows and @var{n} columns whose elements are\n\
-taken from the Galois array @var{a}.  To decide how to order the elements,\n\
-Octave pretends that the elements of a matrix are stored in column-major\n\
-order (like Fortran arrays are stored).\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-@group\n\
-reshape ([1, 2, 3, 4], 2, 2)\n\
-     @result{}  1  3\n\
-         2  4\n\
-@end group\n\
-@end example\n\
-\n\
-If the variable @code{do_fortran_indexing} is nonzero, the\n\
-@code{reshape} function is equivalent to\n\
-\n\
-@example\n\
-@group\n\
-retval = zeros (m, n);\n\
-retval (:) = a;\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-but it is somewhat less cryptic to use @code{reshape} instead of the\n\
-colon operator.  Note that the total number of elements in the original\n\
-matrix must match the total number of elements in the new matrix.\n\
-@end deftypefn\n\
-@seealso{`:' and do_fortran_indexing}") 
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} greshape (@var{a}, @var{m}, @var{n})\n"
+"Return a matrix with @var{m} rows and @var{n} columns whose elements are\n"
+"taken from the Galois array @var{a}.  To decide how to order the elements,\n"
+"Octave pretends that the elements of a matrix are stored in column-major\n"
+"order (like Fortran arrays are stored).\n"
+"\n"
+"For example,\n"
+"\n"
+"@example\n"
+"@group\n"
+"reshape ([1, 2, 3, 4], 2, 2)\n"
+"     @result{}  1  3\n"
+"         2  4\n"
+"@end group\n"
+"@end example\n"
+"\n"
+"If the variable @code{do_fortran_indexing} is nonzero, the\n"
+"@code{reshape} function is equivalent to\n"
+"\n"
+"@example\n"
+"@group\n"
+"retval = zeros (m, n);\n"
+"retval (:) = a;\n"
+"@end group\n"
+"@end example\n"
+"\n"
+"@noindent\n"
+"but it is somewhat less cryptic to use @code{reshape} instead of the\n"
+"colon operator.  Note that the total number of elements in the original\n"
+"matrix must match the total number of elements in the new matrix.\n"
+"@end deftypefn\n"
+"@seealso{reshape,`:' and do_fortran_indexing}") 
 {
   octave_value retval;
   int nargin = args.length ();
@@ -318,50 +319,54 @@ matrix must match the total number of elements in the new matrix.\n\
 
 // PKG_ADD: dispatch prod gprod galois
 DEFUN_DLD (gprod, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} gprod (@var{x}, @var{dim})\n\
-Product of elements along dimension @var{dim} of Galois array.  If\n\
-@var{dim} is omitted, it defaults to 1 (column-wise products).\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} gprod (@var{x}, @var{dim})\n"
+"Product of elements along dimension @var{dim} of Galois array.  If\n"
+"@var{dim} is omitted, it defaults to 1 (column-wise products).\n"
+"@end deftypefn\n"
+"@seealso{prod}")
 {
   DATA_REDUCTION (prod);
 }
 
 // PKG_ADD: dispatch sum gsum galois
 DEFUN_DLD (gsum, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} gsum (@var{x}, @var{dim})\n\
-Sum of elements along dimension @var{dim} of Galois array.  If @var{dim}\n\
-is omitted, it defaults to 1 (column-wise sum).\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} gsum (@var{x}, @var{dim})\n"
+"Sum of elements along dimension @var{dim} of Galois array.  If @var{dim}\n"
+"is omitted, it defaults to 1 (column-wise sum).\n"
+"@end deftypefn\n"
+"@seealso{sum}")
 {
   DATA_REDUCTION (sum);
 }
 
 // PKG_ADD: dispatch sumsq gsumsq galois
 DEFUN_DLD (gsumsq, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} gsumsq (@var{x}, @var{dim})\n\
-Sum of squares of elements along dimension @var{dim} of Galois array.\n\
-If @var{dim} is omitted, it defaults to 1 (column-wise sum of squares).\n\
-\n\
-This function is equivalent to computing\n\
-@example\n\
-gsum (x .* conj (x), dim)\n\
-@end example\n\
-but it uses less memory.\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} gsumsq (@var{x}, @var{dim})\n"
+"Sum of squares of elements along dimension @var{dim} of Galois array.\n"
+"If @var{dim} is omitted, it defaults to 1 (column-wise sum of squares).\n"
+"\n"
+"This function is equivalent to computing\n"
+"@example\n"
+"gsum (x .* conj (x), dim)\n"
+"@end example\n"
+"but it uses less memory.\n"
+"@end deftypefn\n"
+"@seealso{sumsq}")
 {
   DATA_REDUCTION (sumsq);
 }
 
 // PKG_ADD: dispatch log glog galois
 DEFUN_DLD (glog, args, ,
-    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} glog (@var{x})\n\
-Compute the natural logarithm for each element of @var{x} for a Galois\n\
-array.\n\
-@end deftypefn")
+    "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} glog (@var{x})\n"
+"Compute the natural logarithm for each element of @var{x} for a Galois\n"
+"array.\n"
+"@end deftypefn\n"
+"@seealso{log}")
 {
   octave_value retval;
   int nargin = args.length ();
@@ -386,11 +391,12 @@ array.\n\
 
 // PKG_ADD: dispatch exp gexp galois
 DEFUN_DLD (gexp, args, ,
-    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} gexp (@var{x})\n\
-Compute the anti-logarithm for each element of @var{x} for a Galois\n\
-array.\n\
-@end deftypefn")
+    "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} gexp (@var{x})\n"
+"Compute the anti-logarithm for each element of @var{x} for a Galois\n"
+"array.\n"
+"@end deftypefn\n"
+"@seealso{exp}")
 {
   octave_value retval;
   int nargin = args.length ();
@@ -525,74 +531,77 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
 
 // PKG_ADD: dispatch filter gfilter galois
 DEFUN_DLD (gfilter, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {y =} gfilter (@var{b}, @var{a}, @var{x})\n\
-@deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} gfilter (@var{b}, @var{a}, @var{x}, @var{si})\n\
-Return the solution to the following linear, time-invariant difference\n\
-equation over a Galois Field:\n\
-@iftex\n\
-@tex\n\
-$$\n\
-\\sum_{k=0}^N a_{k+1} y_{n-k} = \\sum_{k=0}^M b_{k+1} x_{n-k}, \\qquad\n\
- 1 \\le n \\le P\n\
-$$\n\
-@end tex\n\
-@end iftex\n\
-@ifinfo\n\
-\n\
-@smallexample\n\
-   N                   M\n\
-  SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)\n\
-  k=0                 k=0\n\
-@end smallexample\n\
-@end ifinfo\n\
-\n\
-@noindent\n\
-where\n\
-@ifinfo\n\
- N=length(a)-1 and M=length(b)-1.\n\
-@end ifinfo\n\
-@iftex\n\
-@tex\n\
- $a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
-@end tex\n\
-@end iftex\n\
-An equivalent form of this equation is:\n\
-@iftex\n\
-@tex\n\
-$$\n\
-y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\
- 1 \\le n \\le P\n\
-$$\n\
-@end tex\n\
-@end iftex\n\
-@ifinfo\n\
-\n\
-@smallexample\n\
-            N                   M\n\
-  y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
-           k=1                 k=0\n\
-@end smallexample\n\
-@end ifinfo\n\
-\n\
-@noindent\n\
-where\n\
-@ifinfo\n\
- c = a/a(1) and d = b/a(1).\n\
-@end ifinfo\n\
-@iftex\n\
-@tex\n\
-$c = a/a_1$ and $d = b/a_1$.\n\
-@end tex\n\
-@end iftex\n\
-\n\
-If the fourth argument @var{si} is provided, it is taken as the\n\
-initial state of the system and the final state is returned as\n\
-@var{sf}.  The state vector is a column vector whose length is\n\
-equal to the length of the longest coefficient vector minus one.\n\
-If @var{si} is not supplied, the initial state vector is set to all\n\
-zeros.\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {y =} gfilter (@var{b}, @var{a}, @var{x})\n"
+"@deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} gfilter (@var{b}, @var{a}, @var{x}, @var{si})\n"
+"\n"
+"Digital filtering of vectors in a Galois Field. Returns the solution to\n"
+"the following linear, time-invariant difference equation over a Galois\n"
+"Field:\n"
+"@iftex\n"
+"@tex\n"
+"$$\n"
+"\\sum_{k=0}^N a_{k+1} y_{n-k} = \\sum_{k=0}^M b_{k+1} x_{n-k}, \\qquad\n"
+" 1 \\le n \\le P\n"
+"$$\n"
+"@end tex\n"
+"@end iftex\n"
+"@ifinfo\n"
+"\n"
+"@smallexample\n"
+"   N                   M\n"
+"  SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)\n"
+"  k=0                 k=0\n"
+"@end smallexample\n"
+"@end ifinfo\n"
+"\n"
+"@noindent\n"
+"where\n"
+"@ifinfo\n"
+" N=length(a)-1 and M=length(b)-1.\n"
+"@end ifinfo\n"
+"@iftex\n"
+"@tex\n"
+" $a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n"
+"@end tex\n"
+"@end iftex\n"
+"An equivalent form of this equation is:\n"
+"@iftex\n"
+"@tex\n"
+"$$\n"
+"y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n"
+" 1 \\le n \\le P\n"
+"$$\n"
+"@end tex\n"
+"@end iftex\n"
+"@ifinfo\n"
+"\n"
+"@smallexample\n"
+"            N                   M\n"
+"  y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n"
+"           k=1                 k=0\n"
+"@end smallexample\n"
+"@end ifinfo\n"
+"\n"
+"@noindent\n"
+"where\n"
+"@ifinfo\n"
+" c = a/a(1) and d = b/a(1).\n"
+"@end ifinfo\n"
+"@iftex\n"
+"@tex\n"
+"$c = a/a_1$ and $d = b/a_1$.\n"
+"@end tex\n"
+"@end iftex\n"
+"\n"
+"If the fourth argument @var{si} is provided, it is taken as the\n"
+"initial state of the system and the final state is returned as\n"
+"@var{sf}.  The state vector is a column vector whose length is\n"
+"equal to the length of the longest coefficient vector minus one.\n"
+"If @var{si} is not supplied, the initial state vector is set to all\n"
+"zeros.\n"
+"@end deftypefn\n"
+"@seealso{filter}")
 {
   octave_value_list retval;
 
@@ -701,43 +710,44 @@ zeros.\n\
 
 // PKG_ADD: dispatch lu glu galois
 DEFUN_DLD (glu, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} glu (@var{a})\n\
-@cindex LU decomposition of Galois matrix\n\
-Compute the LU decomposition of @var{a}, The result is returned in a\n\
-permuted form, according to the optional return value @var{p}.  For\n\
-example, given the matrix\n\
-@code{a = gf([1, 2; 3, 4],3)},\n\
-\n\
-@example\n\
-[l, u, p] = lu (a)\n\
-@end example\n\
-\n\
-@noindent\n\
-returns\n\
-\n\
-@example\n\
-l =\n\
-\n\
-  1  0\n\
-  6  1\n\
-\n\
-u =\n\
-\n\
-  3  4\n\
-  0  7\n\
-\n\
-p =\n\
-\n\
-  0  1\n\
-  1  0\n\
-@end example\n\
-\n\
-Such that @code{@var{p} * @var{a} = @var{l} * @var{u}}. If the argument\n\
-@var{p} is not included then the permutations are applied to @var{l}\n\
-so that @code{@var{a} = @var{l} * @var{u}}. @var{l} is then a pseudo-\n\
-lower triangular matrix. The matrix @var{a} can be rectangular.\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} glu (@var{a})\n"
+"@cindex LU decomposition of Galois matrix\n"
+"Compute the LU decomposition of @var{a} in a Galois Field. The result is\n" 
+"returned in a permuted form, according to the optional return value\n"
+"@var{p}.  For example, given the matrix\n"
+"@code{a = gf([1, 2; 3, 4],3)},\n"
+"\n"
+"@example\n"
+"[l, u, p] = lu (a)\n"
+"@end example\n"
+"\n"
+"@noindent\n"
+"returns\n"
+"\n"
+"@example\n"
+"l =\n"
+"\n"
+"  1  0\n"
+"  6  1\n"
+"\n"
+"u =\n"
+"\n"
+"  3  4\n"
+"  0  7\n"
+"\n"
+"p =\n"
+"\n"
+"  0  1\n"
+"  1  0\n"
+"@end example\n"
+"\n"
+"Such that @code{@var{p} * @var{a} = @var{l} * @var{u}}. If the argument\n"
+"@var{p} is not included then the permutations are applied to @var{l}\n"
+"so that @code{@var{a} = @var{l} * @var{u}}. @var{l} is then a pseudo-\n"
+"lower triangular matrix. The matrix @var{a} can be rectangular.\n"
+"@end deftypefn\n"
+"@seealso{lu}")
 {
   octave_value_list retval;
   
@@ -803,12 +813,13 @@ lower triangular matrix. The matrix @var{a} can be rectangular.\n\
 
 // PKG_ADD: dispatch inv ginv galois
 DEFUN_DLD (ginv, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } ginv (@var{a})\n\
-Compute the inverse of the square matrix @var{a}.  Return an estimate\n\
-of the reciprocal condition number if requested, otherwise warn of an\n\
-ill-conditioned matrix if the reciprocal condition number is small.\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } ginv (@var{a})\n"
+"Compute the inverse of the square matrix @var{a}.  Return an estimate\n"
+"of the reciprocal condition number if requested, otherwise warn of an\n"
+"ill-conditioned matrix if the reciprocal condition number is small.\n"
+"@end deftypefn\n"
+"@seealso{inv}")
 {
   octave_value_list retval;
 
@@ -872,20 +883,21 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
 // PKG_ADD: dispatch inverse ginverse galois
 DEFUN_DLD (ginverse, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} ginverse (@var{a})\n\
-See ginv.\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} ginverse (@var{a})\n"
+"See ginv.\n"
+"@end deftypefn")
 {
   return Fginv (args, nargout);
 }
 
 // PKG_ADD: dispatch det gdet galois
 DEFUN_DLD (gdet, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{d} = } gdet (@var{a})\n\
-Compute the determinant of the Galois array @var{a}.\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{d} = } gdet (@var{a})\n"
+"Compute the determinant of the Galois array @var{a}.\n"
+"@end deftypefn\n"
+"@seealso{det}")
 {
   octave_value retval;
 
@@ -929,10 +941,11 @@ Compute the determinant of the Galois array @var{a}.\n\
 
 // PKG_ADD: dispatch rank grank galois
 DEFUN_DLD (grank, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{d} = } grank (@var{a})\n\
-Compute the rank of the Galois array @var{a} using the LU factorization.\n\
-@end deftypefn")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{d} = } grank (@var{a})\n"
+"Compute the rank of the Galois array @var{a} using the LU factorization.\n"
+"@end deftypefn\n"
+"@seealso{rank}")
 {
   octave_value retval;
 
@@ -975,57 +988,57 @@ Compute the rank of the Galois array @var{a} using the LU factorization.\n\
 }
 
 DEFUN_DLD (rsenc, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{code} = } rsenc (@var{msg},@var{n},@var{k})\n\
-@deftypefnx {Loadable Function} {@var{code} =} rsenc (@var{msg},@var{n},@var{k},@var{g})\n\
-@deftypefnx {Loadable Function} {@var{code} =} rsenc (@var{msg},@var{n},@var{k},@var{fcr},@var{prim})\n\
-@deftypefnx {Loadable Function} {@var{code} =} rsenc (@var{...},@var{parpos})\n\
-\n\
-Encodes the message @var{msg} using a [@var{n},@var{k}] Reed-Solomon coding.\n\
-The variable @var{msg} is a Galois array with @var{k} columns and an arbitrary\n\
-number of rows. Each row of @var{msg} represents a single block to be coded\n\
-by the Reed-Solomon coder. The coded message is returned in the Galois\n\
-array @var{code} containing @var{n} columns and the same number of rows as\n\
-@var{msg}.\n\
-\n\
-The use of @dfn{rsenc} can be seen in the following short example.\n\
-\n\
-@example\n\
-m = 3; n = 2^m -1; k = 3;\n\
-msg = gf([1 2 3; 4 5 6], m);\n\
-code = rsenc(msg, n, k);\n\
-@end example\n\
-\n\
-If @var{n} does not equal @code{2^@var{m}-1}, where m is an integer, then a\n\
-shorten Reed-Solomon coding is used where zeros are added to the start of\n\
-each row to obtain an allowable codeword length. The returned @var{code}\n\
-has these prepending zeros stripped.\n\
-\n\
-By default the generator polynomial used in the Reed-Solomon coding is based\n\
-on the properties of the Galois Field in which @var{msg} is given. This\n\
-default generator polynomial can be overridden by a polynomial in @var{g}.\n\
-Suitable generator polynomials can be constructed with @dfn{rsgenpoly}.\n\
-@var{fcr} is an integer value, and it is taken to be the first consecutive\n\
-root of the generator polynomial. The variable @var{prim} is then the\n\
-primitive element used to construct the generator polynomial, such that\n\
-@ifinfo\n\
-\n\
-@var{g} = (@var{x} - A^@var{b}) * (@var{x} - A^(@var{b}+@var{prim})) * ... * (@var{x} - A^(@var{b}+2*@var{t}*@var{prim}-1)).\n\
-@end ifinfo\n\
-@iftex\n\
-@tex\n\
-$g = (x - A^b) (x - A^{b+p})  \\cdots (x - A ^{b+2tp-1})$.\n\
-@end tex\n\
-@end iftex\n\
-\n\
-where @var{b} is equal to @code{@var{fcr} * @var{prim}}. By default @var{fcr}\n\
-and @var{prim} are both 1.\n\
-\n\
-By default the parity symbols are placed at the end of the coded message.\n\
-The variable @var{parpos} controls this positioning and can take the values\n\
-'beginning' or 'end'.\n\
-@end deftypefn\n\
-@seealso{gf,rsdec,rsgenpoly}")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{code} = } rsenc (@var{msg},@var{n},@var{k})\n"
+"@deftypefnx {Loadable Function} {@var{code} =} rsenc (@var{msg},@var{n},@var{k},@var{g})\n"
+"@deftypefnx {Loadable Function} {@var{code} =} rsenc (@var{msg},@var{n},@var{k},@var{fcr},@var{prim})\n"
+"@deftypefnx {Loadable Function} {@var{code} =} rsenc (@var{...},@var{parpos})\n"
+"\n"
+"Encodes the message @var{msg} using a [@var{n},@var{k}] Reed-Solomon coding.\n"
+"The variable @var{msg} is a Galois array with @var{k} columns and an arbitrary\n"
+"number of rows. Each row of @var{msg} represents a single block to be coded\n"
+"by the Reed-Solomon coder. The coded message is returned in the Galois\n"
+"array @var{code} containing @var{n} columns and the same number of rows as\n"
+"@var{msg}.\n"
+"\n"
+"The use of @dfn{rsenc} can be seen in the following short example.\n"
+"\n"
+"@example\n"
+"m = 3; n = 2^m -1; k = 3;\n"
+"msg = gf([1 2 3; 4 5 6], m);\n"
+"code = rsenc(msg, n, k);\n"
+"@end example\n"
+"\n"
+"If @var{n} does not equal @code{2^@var{m}-1}, where m is an integer, then a\n"
+"shorten Reed-Solomon coding is used where zeros are added to the start of\n"
+"each row to obtain an allowable codeword length. The returned @var{code}\n"
+"has these prepending zeros stripped.\n"
+"\n"
+"By default the generator polynomial used in the Reed-Solomon coding is based\n"
+"on the properties of the Galois Field in which @var{msg} is given. This\n"
+"default generator polynomial can be overridden by a polynomial in @var{g}.\n"
+"Suitable generator polynomials can be constructed with @dfn{rsgenpoly}.\n"
+"@var{fcr} is an integer value, and it is taken to be the first consecutive\n"
+"root of the generator polynomial. The variable @var{prim} is then the\n"
+"primitive element used to construct the generator polynomial, such that\n"
+"@ifinfo\n"
+"\n"
+"@var{g} = (@var{x} - A^@var{b}) * (@var{x} - A^(@var{b}+@var{prim})) * ... * (@var{x} - A^(@var{b}+2*@var{t}*@var{prim}-1)).\n"
+"@end ifinfo\n"
+"@iftex\n"
+"@tex\n"
+"$g = (x - A^b) (x - A^{b+p})  \\cdots (x - A ^{b+2tp-1})$.\n"
+"@end tex\n"
+"@end iftex\n"
+"\n"
+"where @var{b} is equal to @code{@var{fcr} * @var{prim}}. By default @var{fcr}\n"
+"and @var{prim} are both 1.\n"
+"\n"
+"By default the parity symbols are placed at the end of the coded message.\n"
+"The variable @var{parpos} controls this positioning and can take the values\n"
+"'beginning' or 'end'.\n"
+"@end deftypefn\n"
+"@seealso{gf,rsdec,rsgenpoly}")
 {
   octave_value retval;
   int nargin = args.length ();
@@ -1447,44 +1460,44 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
 }
 
 DEFUN_DLD (rsdec, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{msg} = } rsdec (@var{code},@var{n},@var{k})\n\
-@deftypefnx {Loadable Function} {@var{msg} =} rsdec (@var{code},@var{n},@var{k},@var{g})\n\
-@deftypefnx {Loadable Function} {@var{msg} =} rsdec (@var{code},@var{n},@var{k},@var{fcr},@var{prim})\n\
-@deftypefnx {Loadable Function} {@var{msg} =} rsdec (@var{...},@var{parpos})\n\
-@deftypefnx {Loadable Function} {[@var{msg},@var{nerr}]=} rsdec (@var{...})\n\
-@deftypefnx {Loadable Function} {[@var{msg},@var{nerr},@var{ccode}]=} rsdec (@var{...})\n\
-\n\
-Decodes the message contained in @var{code} using a [@var{n},@var{k}]\n\
-Reed-Solomon code. The variable @var{code} must be a Galois array with\n\
-@var{n} columns and an arbitrary number of rows. Each row of @var{code}\n\
-represents a single block to be decoded by the Reed-Solomon coder. The\n\
-decoded message is returned in the variable @var{msg} containing @var{k}\n\
-columns and the same number of rows as @var{code}.\n\
-\n\
-If @var{n} does not equal @code{2^@var{m}-1}, where m is an integer, then a\n\
-shorten Reed-Solomon decoding is used where zeros are added to the start of\n\
-each row to obtain an allowable codeword length. The returned @var{msg}\n\
-has these prepending zeros stripped.\n\
-\n\
-By default the generator polynomial used in the Reed-Solomon coding is based\n\
-on the properties of the Galois Field in which @var{msg} is given. This\n\
-default generator polynomial can be overridden by a polynomial in @var{g}.\n\
-Suitable generator polynomials can be constructed with @dfn{rsgenpoly}.\n\
-@var{fcr} is an integer value, and it is taken to be the first consecutive\n\
-root of the generator polynomial. The variable @var{prim} is then the\n\
-primitive element used to construct the generator polynomial. By default\n\
-@var{fcr} and @var{prim} are both 1. It is significantly faster to specify\n\
-the generator polynomial in terms of @var{fcr} and @var{prim}, since @var{g}\n\
-is converted to this form in any case.\n\
-\n\
-By default the parity symbols are placed at the end of the coded message.\n\
-The variable @var{parpos} controls this positioning and can take the values\n\
-'beginning' or 'end'. If the parity symbols are at the end, the message is\n\
-treated with the most-significant symbol first, otherwise the message is\n\
-treated with the least-significant symbol first.\n\
-@end deftypefn\n\
-@seealso{gf,rsenc,rsgenpoly}")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{msg} = } rsdec (@var{code},@var{n},@var{k})\n"
+"@deftypefnx {Loadable Function} {@var{msg} =} rsdec (@var{code},@var{n},@var{k},@var{g})\n"
+"@deftypefnx {Loadable Function} {@var{msg} =} rsdec (@var{code},@var{n},@var{k},@var{fcr},@var{prim})\n"
+"@deftypefnx {Loadable Function} {@var{msg} =} rsdec (@var{...},@var{parpos})\n"
+"@deftypefnx {Loadable Function} {[@var{msg},@var{nerr}]=} rsdec (@var{...})\n"
+"@deftypefnx {Loadable Function} {[@var{msg},@var{nerr},@var{ccode}]=} rsdec (@var{...})\n"
+"\n"
+"Decodes the message contained in @var{code} using a [@var{n},@var{k}]\n"
+"Reed-Solomon code. The variable @var{code} must be a Galois array with\n"
+"@var{n} columns and an arbitrary number of rows. Each row of @var{code}\n"
+"represents a single block to be decoded by the Reed-Solomon coder. The\n"
+"decoded message is returned in the variable @var{msg} containing @var{k}\n"
+"columns and the same number of rows as @var{code}.\n"
+"\n"
+"If @var{n} does not equal @code{2^@var{m}-1}, where m is an integer, then a\n"
+"shorten Reed-Solomon decoding is used where zeros are added to the start of\n"
+"each row to obtain an allowable codeword length. The returned @var{msg}\n"
+"has these prepending zeros stripped.\n"
+"\n"
+"By default the generator polynomial used in the Reed-Solomon coding is based\n"
+"on the properties of the Galois Field in which @var{msg} is given. This\n"
+"default generator polynomial can be overridden by a polynomial in @var{g}.\n"
+"Suitable generator polynomials can be constructed with @dfn{rsgenpoly}.\n"
+"@var{fcr} is an integer value, and it is taken to be the first consecutive\n"
+"root of the generator polynomial. The variable @var{prim} is then the\n"
+"primitive element used to construct the generator polynomial. By default\n"
+"@var{fcr} and @var{prim} are both 1. It is significantly faster to specify\n"
+"the generator polynomial in terms of @var{fcr} and @var{prim}, since @var{g}\n"
+"is converted to this form in any case.\n"
+"\n"
+"By default the parity symbols are placed at the end of the coded message.\n"
+"The variable @var{parpos} controls this positioning and can take the values\n"
+"'beginning' or 'end'. If the parity symbols are at the end, the message is\n"
+"treated with the most-significant symbol first, otherwise the message is\n"
+"treated with the least-significant symbol first.\n"
+"@end deftypefn\n"
+"@seealso{gf,rsenc,rsgenpoly}")
 {
   octave_value_list retval;
 

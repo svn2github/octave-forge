@@ -30,17 +30,17 @@ Open Source Initiative (www.opensource.org)
 #include <octave/pager.h>
 
 DEFUN_DLD (_errcore, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{c} =} _errcore (@var{a}, @var{b})\n\
-\n\
-Returns the number of bit errors comparing the matrices @var{a} and @var{b}.\n\
-These matrices must be of the same size. The return matrix @var{c} will also\n\
-be of the same size.\n\
-\n\
-This is an internal function of @dfn{biterr} and @dfn{symerr}. You should\n\
-use these functions instead.\n\
-@end deftypefn\n\
-@seealso{biterr,symerr}") {
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{c} =} _errcore (@var{a}, @var{b})\n"
+"\n"
+"Returns the number of bit errors comparing the matrices @var{a} and\n"
+"@var{b}. These matrices must be of the same size. The return matrix @var{c}\n"
+"will also be of the same size.\n"
+"\n"
+"This is an internal function of @dfn{biterr} and @dfn{symerr}. You should\n"
+"use these functions instead.\n"
+"@end deftypefn\n"
+"@seealso{biterr,symerr}") {
   octave_value retval;
 
   Matrix a = args(0).matrix_value();

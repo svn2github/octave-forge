@@ -17,9 +17,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} minpol (@var{v})
 ##
-## For a vector @var{v} with @math{N} components, representing
-## @math{N} values in a Galois Field GF(2^@var{m}), return the
-## minimum polynomial in GF(2) representing that value.
+## Finds the minimum polynomial for elements of a Galois Field. For  a 
+## vector @var{v} with @math{N} components, representing @math{N} values 
+## in a Galois Field GF(2^@var{m}), return the minimum polynomial in GF(2)
+## representing thos values.
 ## @end deftypefn
 
 function r = minpol (v)

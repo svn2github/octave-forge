@@ -58,14 +58,14 @@ do_isprimitive (const int& a, const int& m)
 }
 
 DEFUN_DLD (isprimitive, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{y} =} isprimitive (@var{a})\n\
-\n\
-Returns 1 is the polynomial represented by @var{a} is a primitive polynomial\n\
-of GF(2). Otherwise it returns zero.\n\
-\n\
-@end deftypefn\n\
-@seealso{gf,primpoly}")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{y} =} isprimitive (@var{a})\n"
+"\n"
+"Returns 1 is the polynomial represented by @var{a} is a primitive\n"
+"polynomial of GF(2). Otherwise it returns zero.\n"
+"\n"
+"@end deftypefn\n"
+"@seealso{gf,primpoly}")
 {
   octave_value retval;
   int nargin = args.length ();

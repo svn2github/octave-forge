@@ -22,8 +22,8 @@
 ## @deftypefnx {Function File} scatterplot (@var{x},@var{n},@var{off},@var{str},@var{h})
 ## @deftypefnx {Function File} {@var{h} =} scatterplot (@var{...})
 ##
-## Plot the scatter plot of a signal. The signal @var{x} can be either in one
-## of three forms
+## Display the scatter plot of a signal. The signal @var{x} can be either in
+## one of three forms
 ##
 ## @table @asis
 ## @item A real vector

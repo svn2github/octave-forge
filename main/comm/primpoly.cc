@@ -67,36 +67,38 @@ do_isprimitive (const int& a, const int& m)
 }
 
 DEFUN_DLD (primpoly, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{y} =} primpoly (@var{m})\n\
-@deftypefnx {Loadable Function} {@var{y} =} primpoly (@var{m}, @var{opt})\n\
-@deftypefnx {Loadable Function} {@var{y} =} primpoly (@var{m}, ... 'nodisplay')\n\
-\n\
-The first form of this function returns the default primitive polynomial of\n\
-GF(2^@var{m}). This is the minimum primitive polynomial of the field. The\n\
-polynomial representation is printed and an integer representation of the\n\
-polynomial is returned\n\
-\n\
-The call @code{primpoly (@var{m}, @var{opt})} returns one or more primitive\n\
-polynomials. The output of the function is dependent of the value of @var{opt}.\n\
-Valid values of @var{opt} are:\n\
-\n\
-@table @asis\n\
-@item 'all'\n\
-Returns all of the primitive polynomials of GF(2^@var{m})\n\
-@item 'min'\n\
-Returns the minimum primitive polynomial of GF(2^@var{m})\n\
-@item 'max'\n\
-Returns the maximum primitive polynomial of GF(2^@var{m})\n\
-@item k\n\
-Returns the primitive polynomials having exactly k non-zero terms\n\
-@end table\n\
-\n\
-The call @code{primpoly (@var{m}, ... \'nodisplay\')} disables the output of\n\
-the polynomial forms of the primitives. The return value is not affected.\n\
-\n\
-@end deftypefn\n\
-@seealso{gf,isprimitive}")
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{y} =} primpoly (@var{m})\n"
+"@deftypefnx {Loadable Function} {@var{y} =} primpoly (@var{m}, @var{opt})\n"
+"@deftypefnx {Loadable Function} {@var{y} =} primpoly (@var{m}, ... 'nodisplay')\n"
+"\n"
+"Finds the primitive polynomials in GF(2^@var{m}).\n"
+"\n"
+"The first form of this function returns the default primitive polynomial of\n"
+"GF(2^@var{m}). This is the minimum primitive polynomial of the field. The\n"
+"polynomial representation is printed and an integer representation of the\n"
+"polynomial is returned\n"
+"\n"
+"The call @code{primpoly (@var{m}, @var{opt})} returns one or more primitive\n"
+"polynomials. The output of the function is dependent of the value of @var{opt}.\n"
+"Valid values of @var{opt} are:\n"
+"\n"
+"@table @asis\n"
+"@item 'all'\n"
+"Returns all of the primitive polynomials of GF(2^@var{m})\n"
+"@item 'min'\n"
+"Returns the minimum primitive polynomial of GF(2^@var{m})\n"
+"@item 'max'\n"
+"Returns the maximum primitive polynomial of GF(2^@var{m})\n"
+"@item k\n"
+"Returns the primitive polynomials having exactly k non-zero terms\n"
+"@end table\n"
+"\n"
+"The call @code{primpoly (@var{m}, ... \'nodisplay\')} disables the output of\n"
+"the polynomial forms of the primitives. The return value is not affected.\n"
+"\n"
+"@end deftypefn\n"
+"@seealso{gf,isprimitive}")
 {
   octave_value retval;
   int nargin = args.length ();
@@ -107,11 +109,10 @@ the polynomial forms of the primitives. The return value is not affected.\n\
   RowVector primpolys;
 
 
-  if ((m < 1) || (m > 16)) {
-    error("primpoly: m must be between 1 and 16");
+  if (m < 1) {
+    error("primpoly: m must be 1 or greater");
     return retval;
   }
-
   if (nargin > 1) {
     if (args(1).is_scalar_type ()) {
       k = args(1).int_value();

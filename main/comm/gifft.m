@@ -21,6 +21,7 @@
 ## of the Galois Field of @var{x}. If @var{x} is in the Galois  Field
 ## GF(2^@var{m}), then @var{x} must have @code{2^@var{m} - 1} elements.
 ## @end deftypefn
+## @seealso{ifft}
 
 ## PKG_ADD: dispatch ifft gifft galois
 function y = gifft(x)

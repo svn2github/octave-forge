@@ -23,7 +23,7 @@
 ## If @var{a} and @var{b} are polynomial coefficient vectors, @code{gconv}
 ## returns the coefficients of the product polynomial.
 ## @end deftypefn
-## @seealso{gdeconv}
+## @seealso{gdeconv,conv,deconv}
 
 ## PKG_ADD: dispatch conv gconv galois
 function y = gconv (a, b)

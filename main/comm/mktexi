@@ -12,6 +12,7 @@ use FileHandle;
 
 my $file = shift @ARGV;
 my $docfile = shift @ARGV;
+my $indexfile = shift @ARGV;
 my $line;
 
 if ( open(IN,$file) ) {
@@ -56,7 +57,7 @@ if ( open(IN,$file) ) {
 	    $found = 1;
 	    last;
 	  }
-	}
+        }
 	close (DOC);
 	if (! $found) {
 	  print STDERR "Did not find function $func\n";
@@ -64,6 +65,103 @@ if ( open(IN,$file) ) {
       } else {
 	print STDERR "Could not open file $docfile\n";
 	exit 1;
+      }
+    } elsif ($line =~ /^\@REFERENCE_SECTION/) {
+      my $secfound = 0;
+      my $sec = $line;
+      $sec =~ s/\@REFERENCE_SECTION\(//;
+      $sec =~ s/\)\n//;
+      my @listfunc = ();
+      my $nfunc = 0;
+
+      if ( open(IND,$indexfile) ) {
+	while (<IND>) {
+	  next unless /^[^ ]/;
+	  my $section = $_;
+	  $section =~ s/\n//;
+	  my $diff = $section;
+	  if ($section =~ /^$sec$/) {
+	    # Get the list of functions to index
+	    my $indline;
+	    while (($indline = <IND>) && ($indline =~ /^ /)) {
+	      $indline =~ s/^ *//;
+	      $indline =~ s/\n//;
+	      push @listfunc, $indline;
+	      $nfunc = $nfunc + 1;
+	    }
+	    $secfound = 1;
+	    last;
+	  }
+	}
+	close (IND);
+	if (! $secfound) {
+	  print STDERR "Did not find section $sec\n";
+	}
+      } else {
+	print STDERR "Could not open file $indexfile\n";
+	exit 1;
+      }
+
+      @listfunc = sort(@listfunc);
+
+      print "\@menu\n";
+      foreach my $func (@listfunc) {
+	print "* ${func}::\n"
+      }
+      print "\@end menu\n";
+
+      my $next;
+      my $prev;
+      my $up = "Function Reference";
+      my $mfunc = 1;
+      foreach my $func (@listfunc) {
+	if ($mfunc == $nfunc) {
+	  $next = "";
+	} else {
+	  $next = @listfunc[$mfunc];
+	  $mfunc = $mfunc + 1;
+	}
+	print "\n\@node $func, $next, $prev, $up\n";
+	print "\@section $func\n\n";
+	$prev = $func;
+	my $found = 0;
+	if ( open(DOC,$docfile) ) {
+	  while (<DOC>) {
+	    next unless /\037/;
+	    my $function = $_;
+	    $function =~ s/\037//;
+	    $function =~ s/\n//;
+	    if ($function =~ /^$func$/) {
+	      my $desc = "";
+	      my $docline;
+	      my $doctex = 0;
+	      while (($docline = <DOC>) && ($docline !~ /^\037/)) {
+		$docline =~ s/^\s*-[*]- texinfo -[*]-\s*//;
+		if ($docline =~ /\@tex/) {
+		  $doctex = 1;
+		}
+		if ($doctex) {
+		  $docline =~ s/\\\\/\\/g;
+		}
+		if ($docline =~ /\@end tex/) {
+		  $doctex = 0;
+		}
+		$desc .= $docline;
+	      }
+	      $desc =~ s/\@seealso\{(.*[^}])\}/See also: \1/g;
+	      print "$desc", "\n";
+	      $found = 1;
+	      last;
+	    }
+	  }
+	  close (DOC);
+	  if (! $found) {
+	    print STDERR "Did not find function $func\n";
+	  }
+        } else {
+	  print STDERR "Could not open file $docfile\n";
+	  exit 1;
+	}
       }
     } else {
       if ($line =~ /\@tex/) {

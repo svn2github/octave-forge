@@ -36,6 +36,7 @@
 ## The number of roots returned and their value will be determined 
 ## by the order and primitive polynomial of the Galios Field
 ## @end deftypefn
+## @seealso{roots}
 
 ## PKG_ADD: dispatch roots groots galois
 function r = groots (v)

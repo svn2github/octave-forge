@@ -16,8 +16,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gconvmtx (@var{a}, @var{n})
-## If @var{a} is a column vector and @var{x} is a column vector
-## of length @var{n}, in a Galois Field then 
+##
+## Create matrix to perform repeated convolutions with the same vector
+## in a Galois Field. If @var{a} is a column vector and @var{x} is  a 
+## column vector of length @var{n}, in a Galois Field then 
 ##
 ## @code{gconvmtx(@var{a}, @var{n}) * @var{x}}
 ##
@@ -33,7 +35,7 @@
 ##
 ## is the same as @code{gconv(@var{x}, @var{a})}.
 ## @end deftypefn
-## @seealso{gconv}
+## @seealso{gconv,convmtx,conv}
 
 ## PKG_ADD: dispatch convmtx gconvmtx galois
 function b = gconvmtx (a, n)

@@ -17,6 +17,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{d} = } gdftmtx (@var{a})
 ##
+## Form a matrix, that can be used to perform Fourier transforms in
+## a Galois Field.
+##
 ## Given that @var{a} is an element of the Galois Field GF(2^m), and
 ## that the minimum value for @var{k} for which @code{@var{a} ^ @var{k}} 
 ## is equal to one is @code{2^m - 1}, then this function produces a 
@@ -26,6 +29,7 @@
 ##
 ## The inverse Fourier transform is given by @code{gdftmtx(1/@var{a})}
 ## @end deftypefn
+## @seealso{dftmtx}
 
 ## PKG_ADD: dispatch dftmtx gdftmtx galois
 function d = gdftmtx(a)

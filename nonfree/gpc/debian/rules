@@ -62,6 +62,15 @@ binary-arch: build install
 #	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
+
+	( octver=`octave-config --version`                           ; \
+	  next=`echo $$octver                                          \
+	      | perl -ne '/(\d+\.\d+\.)(\d+)/;print($$1,$$2+1)'`     ; \
+	  octpkgver=`echo $$octver | sed 's/\.[0-9]*$$//'`           ; \
+	  pv=octave$$octpkgver                                       ; \
+	  echo "octave:Depends=$$pv (>= $$octver), $$pv (<< $$next)"   \
+	      >> debian/substvars )
+
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb

@@ -62,7 +62,7 @@ public:
   
   bool is_defined (void) const { return true; }
 
-  void print (ostream&, bool) const;
+  void print (std::ostream&, bool) const;
 
   gpc_polygon* polygon_value (void) const { return polygon; }
 

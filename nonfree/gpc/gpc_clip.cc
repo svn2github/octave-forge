@@ -53,7 +53,7 @@ DEFUN_DLD (gpc_clip, args, ,
     {
       if ( nargin == 3 )
 	{
-	  string op = args (2).string_value ();
+          std::string op = args (2).string_value ();
 	  if ( error_state )
 	    {
 	      error ("gpc_clip: operation argument should be a "

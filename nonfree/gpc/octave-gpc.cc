@@ -30,7 +30,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_gpc_polygon, "gpc_polygon");
 // Member function
 
 void 
-octave_gpc_polygon::print (ostream& os, bool pr_as_read_syntax = false) const
+octave_gpc_polygon::print (std::ostream& os, 
+			   bool pr_as_read_syntax = false) const
 {
   os << "Variable is of type " <<  t_name << ".\n"
      << "Its members (accessible with the function gpc_get) are:\n";
@@ -80,9 +81,9 @@ void
 map_to_gpc (Octave_map& m, gpc_polygon* p)
 {
 
-  Matrix vtx = m ["vertices"].matrix_value ();
-  Matrix idx = m ["indices"].matrix_value ();
-  ColumnVector hol = m ["hole"].column_vector_value ();
+  Matrix vtx = m ["vertices"](0).matrix_value ();
+  Matrix idx = m ["indices"](0).matrix_value ();
+  ColumnVector hol = m ["hole"](0).column_vector_value ();
   int n = idx.rows ();
 
   p->num_contours = n;
@@ -134,9 +135,9 @@ gpc_to_map (gpc_polygon* p, Octave_map* map)
 	}
     }
 
-  (*map) ["vertices"] = vtx;
-  (*map) ["indices"] = idx;
-  (*map) ["hole"] = hol;
+  (*map) ["vertices"] (0) = vtx;
+  (*map) ["indices"] (0) = idx;
+  (*map) ["hole"] (0) = hol;
 }  
   
 bool 
@@ -147,7 +148,7 @@ assert_gpc_polygon (Octave_map* m)
       warning ("No vertices !");
       return false;
     }
-  octave_value v = (*m) ["vertices"];
+  octave_value v = (*m) ["vertices"] (0);
   if ( ! assert_nx2_matrix (v) )
     {
       warning ("assert_gpc_polygon: vertices member should be a "
@@ -160,11 +161,11 @@ assert_gpc_polygon (Octave_map* m)
       Matrix im (1, 2);
       im (0, 0) = (double) 1;
       im (0, 1) = (double) v.rows ();
-      i = (*m) ["indices"] = im;
+      i = (*m) ["indices"] (0) = im;
     }
   else
     {
-      i = (*m) ["indices"];
+      i = (*m) ["indices"] (0);
       if ( ! assert_nx2_matrix (i) )
 	{
 	  warning ("assert_gpc_polygon: indices member should be a "
@@ -184,11 +185,11 @@ assert_gpc_polygon (Octave_map* m)
     {
       ColumnVector h (i.rows ());
       h.fill ((double) 0);
-      (*m) ["hole"] = h;
+      (*m) ["hole"] (0) = h;
     }
   else
     {
-      octave_value h = (*m) ["hole"];
+      octave_value h = (*m) ["hole"] (0);
     
       if ( (! h.is_matrix_type () || h.columns () != 1)
 	   && ! h.is_real_scalar () )

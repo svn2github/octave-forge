@@ -1,3 +1,21 @@
+octave-gpc (0.1.2-6) unstable; urgency=low
+
+  * Recompiled for the new Octave packages (2.1.50).
+  * debian/control:
+      - Bumped Standards-Version to 3.5.10.
+      - Added build-dependency on perl.
+      - Changed Architecture field to "any" instead of a list of
+        architectures.
+      - Make automatic detection of octave2.1 version in Depends field.
+  * debian/rules: Add appropriate value for variable ${octave:Depends} file
+    debian/substvars. 
+  * gpc_clip.cc, octave-gpc.cc, octave-gpc.h: Prefixed some types with
+    "std::", such that the package gets compiled with g++ v3.
+  * octave_gpc.cc: Cope with change in operator [] of Octave_map, which now
+    returns a octave_value_list (not octave_value as before).
+
+ -- Rafael Laboissiere <rafael@debian.org>  Thu, 3 Jul 2003 20:51:15 +0200
+
 octave-gpc (0.1.2-5) unstable; urgency=low
 
   * Recompiled for the new Octave packages (2.1.36). Closes: #145762.

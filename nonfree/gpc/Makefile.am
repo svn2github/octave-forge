@@ -26,7 +26,8 @@ EXTRA_DIST = \
   bootstrap.sh \
   gpc_plot.m \
   $(CCFILES) \
-  octave-gpc.h
+  octave-gpc.h \
+  INDEX
 
 %.o: %.cc octave-gpc.h
 	$(MKOCTFILE) -v -s -c $<

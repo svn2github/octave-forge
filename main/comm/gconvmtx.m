@@ -37,7 +37,7 @@
 ## @end deftypefn
 ## @seealso{gconv,convmtx,conv}
 
-## PKG_ADD: dispatch convmtx gconvmtx galois
+## PKG_ADD: dispatch ("convmtx", "gconvmtx", "galois");
 function b = gconvmtx (a, n)
 
   if (!isgalois (a))

@@ -23,7 +23,7 @@
 ## @end deftypefn
 ## @seealso{fft}
 
-## PKG_ADD: dispatch fft gfft galois
+## PKG_ADD: dispatch ("fft", "gfft", "galois");
 function y = gfft(x)
 
   if (nargin != 1)

@@ -27,7 +27,7 @@
 ## @end deftypefn
 ## @seealso{gconv,deconv,conv}
 
-## PKG_ADD: dispatch deconv gdeconv galois
+## PKG_ADD: dispatch ("deconv", "gdeconv", "galois");
 function [b, r] = gdeconv (y, a)
 
 

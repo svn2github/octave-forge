@@ -25,7 +25,7 @@
 ## @end deftypefn
 ## @seealso{gdeconv,conv,deconv}
 
-## PKG_ADD: dispatch conv gconv galois
+## PKG_ADD: dispatch ("conv", "gconv", "galois");
 function y = gconv (a, b)
 
   if (nargin != 2)

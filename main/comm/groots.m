@@ -38,7 +38,7 @@
 ## @end deftypefn
 ## @seealso{roots}
 
-## PKG_ADD: dispatch roots groots galois
+## PKG_ADD: dispatch ("roots", "groots", "galois");
 function r = groots (v)
 
   if (nargin != 1)

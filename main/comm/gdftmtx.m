@@ -31,7 +31,7 @@
 ## @end deftypefn
 ## @seealso{dftmtx}
 
-## PKG_ADD: dispatch dftmtx gdftmtx galois
+## PKG_ADD: dispatch ("dftmtx", "gdftmtx", "galois");
 function d = gdftmtx(a)
 
   if (nargin != 1)

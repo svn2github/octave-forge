@@ -48,19 +48,19 @@ echo
 echo
 echo 'STEP 2'
 echo
-echo 'Setting links to your active drives'
-echo 'you will be able to access C: as /C from octave'
+#echo 'Setting links to your active drives'
+#echo 'you will be able to access C: as /C from octave'
 
-for drive in A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ; do
+#for drive in A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ; do
 #    drvmsg=`cmd /c vol $drive: 2>&1 | sed -e'
 #            1d
-#            s/.*system cannot find.*/NOTOK/'`;
+#           s/.*system cannot find.*/NOTOK/'`;
 #    if [ "$drvmsg" = "NOTOK" ] ; then
 #    else 
 #        echo "Creating link to drive $drive:";
-        ln -sf /cygdrive/$drive /$drive ;
+#        ln -sf /cygdrive/$drive /$drive ;
 #    fi
-done
+#done
 
 echo
 echo 'Setting links to your oct-files'

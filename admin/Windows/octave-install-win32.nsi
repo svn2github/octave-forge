@@ -41,8 +41,8 @@
 CrcCheck On
 
 OutFile "octave-${MUI_VERSION}-inst.exe"
-Icon "octave.ico"
-UninstallIcon "octave.ico"
+#Icon "octave.ico"
+#UninstallIcon "octave.ico"
 
 # ****************** Localization ***********************
 
@@ -55,6 +55,9 @@ LicenseData /LANG=${LANG_SPANISH} "..\..\COPYING.GPL-spanish"
 ; set the caption by hand for each of our languages.
 Caption /LANG=${LANG_ENGLISH} "${MUI_PRODUCT} Setup"
 Caption /LANG=${LANG_SPANISH} "Instalación de ${MUI_PRODUCT}"
+
+UninstallCaption /LANG=${LANG_ENGLISH} "Uninstall ${MUI_PRODUCT}"
+UninstallCaption /LANG=${LANG_SPANISH} "Desinstalar ${MUI_PRODUCT}"
 
 LangString TITLE_Section1 ${LANG_ENGLISH} "${MUI_PRODUCT}"
 LangString TITLE_Section1 ${LANG_SPANISH} "${MUI_PRODUCT}"
@@ -116,11 +119,10 @@ Section $(TITLE_Section1) Section1
   CreateDirectory $INSTDIR\tmp
   CreateDirectory $INSTDIR\octave_files
   SetOutPath $INSTDIR\bin
-  File /r "${ROOT}\opt\octave\bin\*.*"
   File "${ROOT}\opt\octave-support\*.*"
-  File "install_octave.sh"
-  File "start_octave.sh"
-  File "octave.ico"
+  File install_octave.sh start_octave.sh
+  File octave.ico
+  File "${ROOT}\opt\octave\bin\*.*"
   SetOutPath $INSTDIR\opt\octave\share
   File /r "${ROOT}\opt\octave\share\*.*"
   SetOutPath $INSTDIR\opt\octave\libexec
@@ -143,7 +145,7 @@ Section $(TITLE_Section1) Section1
   WriteRegStr HKCR "octfile\DefaultIcon" "" "$INSTDIR\bin\octave.ico"
   WriteRegStr HKCR "octfile\Shell\open\command" "" '"$WINDIR\notepad.exe" "%1"'
 
-  ;Cygwin's registry entries
+  DetailPrint ";Cygwin's registry entries"
   WriteRegStr HKLM \
 	"SOFTWARE\GNU Octave\Cygwin\mounts v2\/" "native" "$INSTDIR"
   WriteRegDWORD HKLM \
@@ -222,6 +224,30 @@ SectionEnd
 Section "$(TITLE_Section3)" Section3
   CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" \
 	"$INSTDIR\bin\run.exe" "${OctaveStart}" "$INSTDIR\bin\octave.ico" 0
+SectionEnd
+
+; Make links to drives
+!include "DetectDrives.nsi"
+Function MakeDriveLink
+   StrCpy $R2 $R0 1
+   # FileOpen $R1 "$INSTDIR/drive.link" a
+   # FileSeek $R1 0 END
+   # FileWrite $R1 "ln -sf /cygdrive/$R2 /$R2"
+   # FileClose $R1
+   DetailPrint "ln -sf /cygdrive/$R2 /$R2"
+   # Shouldn't need PATH=/bin here, but if I don't then cygwin
+   # complains.  I don't know why it doesn't complain below
+   # in section -Local Config
+   Exec `$INSTDIR\bin\sh.exe -c "PATH=/bin ln -sf /cygdrive/$R2 /$R2"`
+FunctionEnd
+Section "-Make drive links"
+   # Delete "$INSTDIR/drive.link"
+   Push "All Local Drives"
+   Push $0
+   GetFunctionAddress $0 "MakeDriveLink"
+   Exch $0
+   Call DetectDrives
+   # Add commands to install_octave.sh to detect and evaluate drive.link
 SectionEnd
 
 ; Post-installation configuration

@@ -86,10 +86,10 @@ if ver < 2136,
                 fprintf('Error SUMSKIPNAN: DIM argument must be 1 or 2\n');	
         end;
         
-        %if ~flag_implicit_skip_nan,
+        if ~flag_implicit_skip_nan,
         % the following command implements NaN-In -> NaN-Out
-        %	o(count<size(i,DIM)) = NaN;         
-        %end;	
+        	o(count<size(i,DIM)) = NaN;         
+        end;	
         if nargout>2,
                 i = i.^2;
                 SSQ = sumskipnan(i,DIM);
@@ -116,9 +116,9 @@ else
 	if nargout>1
                 count = sum(~isnan(i),DIM); 
         end;
-	%if flag_implicit_skip_nan, %%% skip always NaN's
+	if flag_implicit_skip_nan, %%% skip always NaN's
                 i(isnan(i)) = 0;
-        %end;
+        end;
         o = sum(i,DIM);
         if nargout>2,
                 i = i.^2;

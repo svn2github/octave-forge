@@ -4,3 +4,5 @@ Missing data statistics (not installed by default)
  detrend kurtosis moment std mad nantest normpdf 
  normcdf norminv sumskipnan meandev rms var mean 
  sem trimean zscore spearman rankcorr ranks 
+ quantiles percentile
+ 

@@ -8,8 +8,9 @@ function O=trimean(Y,DIM)
 % REFERENCES:
 % [1] http://mathworld.wolfram.com/Trimean.html
 
-%    	Version 1.27  Date: 12 Sep 2002
-%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+%	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
 % check dimension
@@ -25,7 +26,11 @@ if nargin==1,
         if isempty(DIM), DIM=1; end;
 end;
 
-N = sumskipnan(~isnan(Y),DIM);
+if flag_implicit_skip_nan,
+	N = sumskipnan(~isnan(Y),DIM);
+else
+	N = sumskipnan(ones(size(Y)),DIM);
+end;
 
 sz = size(Y);
 sz(DIM) = 1;

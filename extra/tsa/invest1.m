@@ -39,8 +39,8 @@ function [AutoCov,AutoCorr,ARPMX,E,C,s]=invest1(Y,Pmax,D);
 % optPHI 	order where PHI is minimal
 % optRC2        max reflection coefficient larger than std-error
 
-%       Version 2.84
-%       21.02.2002
+%       Version 2.90
+%       15.04.2002
 %	Copyright (c) 1998-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -82,9 +82,13 @@ else
         X = 0:Dmax; H = zeros(1,Dmax+1); for k=1:length(x), H(find(X==x(k)))=h(k); end;
         bar(X,H);
         drawnow;
-        
-        oD=input('Which order should be used for differentiating [default=0] ?: ');
-        if oD>0
+
+	if nargin>2
+		oD=0;
+	else	        
+    		oD=input('Which order should be used for differentiating [default=0] ?: ');
+        end;
+	if oD>0
                 Y=diff(Y,oD,2);
         end;
 end;

@@ -51,22 +51,17 @@ function [o,count] = sumskipnan(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 %	Version 1.16
-%	15 Mar 2002
+%	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
 
-tmp = flag_implicit_dimension;
-if tmp,
-        DIM=tmp;
-else
-        if nargin<2
-                DIM = [];
-        end;	
-        if isempty(DIM), 
-                DIM=min(find(size(i)>1));
-                if isempty(DIM), DIM=1; end;
-        end;
+if nargin<2
+        DIM = [];
+end;	
+if isempty(DIM), 
+        DIM=min(find(size(i)>1));
+        if isempty(DIM), DIM=1; end;
 end;
 
 if exist('OCTAVE_VERSION') >= 5, 
@@ -80,24 +75,24 @@ if exist('OCTAVE_VERSION') >= 5,
                 count = sum(~isnan(i),DIM); 
 	        o     = nansum(i,DIM);
 	else 
-	[nr,nc]=size(i);
-        if DIM==1,
-                o     = zeros(1,nc);
-                count = o;
-                for k = 1:nc,
-       	                count(1,k) = sum(~isnan(i(:,k)));
-                        o(1,k)     = sum(i(find(~isnan(i(:,k))),k));
-                end;		
-        elseif DIM==2,
-                o     = zeros(nr,1);
-                count = o;
-                for k = 1:nr,
-       	                count(k,1) = sum(~isnan(i(k,:)));
-                        o(k,1)     = sum(i(k,find(~isnan(i(k,:)))));
-                end;		
-	else
-		fprintf('Error SUMSKIPNAN: DIM argument must be 1 or 2\n');	
-	end;
+		[nr,nc]=size(i);
+    		if DIM==1,
+            		o     = zeros(1,nc);
+	                count = o;
+    		        for k = 1:nc,
+       	    		        count(1,k) = sum(~isnan(i(:,k)));
+                    		o(1,k)     = sum(i(find(~isnan(i(:,k))),k));
+        	        end;		
+	        elseif DIM==2,
+            		o     = zeros(nr,1);
+	                count = o;
+	                for k = 1:nr,
+       		                count(k,1) = sum(~isnan(i(k,:)));
+            		        o(k,1)     = sum(i(k,find(~isnan(i(k,:)))));
+	                end;		
+		else
+			fprintf('Error SUMSKIPNAN: DIM argument must be 1 or 2\n');	
+		end;
 	end;
 	if ~flag_implicit_skip_nan,
 		% the following command implements NaN-In -> NaN-Out

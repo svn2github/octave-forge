@@ -27,7 +27,7 @@ DEPENDS = $(GALOISDEPENDS) $(OTHERDEPENDS)
 
 DELETES = $(OBJECTS) $(DEPENDS) *~ *.log *.dvi *.ps *.pdf *.info $(TARGETS) $(DOCS) $(DOCSTRINGS) comms.texi core octave-core *.html
 
-DEFINES = -DGALOIS_DISP_PRIVATES
+DEFINES = -DGALOIS_DISP_PRIVATES $(HAVE_DO_FORTRAN_INDEXING) $(HAVE_PROPAGATE_EMPTY_MATRICES)
 MOFLAGS =
 
 # Cancel this rule because I want to use my own to create depend files
@@ -69,7 +69,7 @@ endif
 	$(MKOCTFILE) $(MOFLAGS) -M $<
 
 %.o:%.cc
-	@echo "Compiling $@"; \
+	echo "Compiling $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 
 %.dvi : %.texi

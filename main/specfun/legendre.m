@@ -55,9 +55,15 @@
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
 function L = legendre (n,x)
-  dfi = do_fortran_indexing;
+  try dfi = do_fortran_indexing;
+  catch dfi = 0;
+  end
+  try wfi = warn_fortran_indexing;
+  catch wfi = 0;
+  end
   unwind_protect
     do_fortran_indexing = 1;
+    warn_fortran_indexing = 0;
     warning ("legendre is unstable for higher orders");
     if (nargin != 2)
       usage ("legendre(n,x)");
@@ -116,5 +122,6 @@ function L = legendre (n,x)
     endif
   unwind_protect_cleanup
     do_fortran_indexing = dfi;
+    warn_fortran_indexing = wfi;
   end_unwind_protect
 endfunction

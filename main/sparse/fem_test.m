@@ -14,7 +14,9 @@
 
 % octave commands, but OK in matlab too   
    do_fortran_indexing= 1;
+   warn_fortran_indexing= 0;
    empty_list_elements_ok = 1;
+   warn_empty_list_elements = 0;
 
 TESTTIMES= 5;
 dotheplot=0;
@@ -189,8 +191,11 @@ fprintf('Your machine is %f faster than a 486dx100!\n',  ...
 %    11 Nov 00: Your machine is 16.501822 faster than a 486dx100!
 %
 % $Log$
-% Revision 1.1  2001/10/10 19:54:49  pkienzle
-% Initial revision
+% Revision 1.2  2003/09/12 14:22:42  adb014
+% Changes to allow use with latest CVS of octave (do_fortran_indexing, etc)
+%
+% Revision 1.1.1.1  2001/10/10 19:54:49  pkienzle
+% revised heirarchy
 %
 % Revision 1.4  2001/04/04 02:13:46  aadler
 % complete complex_sparse, templates, fix memory leaks

@@ -155,10 +155,16 @@ function a = qaskdeco(varargin)
   ix = 1 + (inphase - mnmx(1,1))/(mnmx(1,2)-mnmx(1,1))*(size(layout,1)-1);
   qx = 1 + (quadr - mnmx(2,1))/(mnmx(2,2)-mnmx(2,1))*(size(layout,2)-1);
 
+  try    dfi = do_fortran_indexing;
+  catch  dfi = 0;
+  end
+  try    wfi = warn_fortran_indexing;
+  catch  wfi = 0;
+  end
 
-  pfi = do_fortran_indexing;
   unwind_protect
     do_fortran_indexing = 1;
+    warn_fortran_indexing = 0;
     a = layout(size(layout,1)*(max(min(round(qx),size(layout,2)),1)-1) + ...
 	       max(min(round(ix),size(layout,1)),1));
     ## XXX FIXME XXX Why is this necessary??
@@ -187,7 +193,8 @@ function a = qaskdeco(varargin)
 		size(layout,2)),1)-1) + max(min(round(ix),size(layout,1)),1));
     endif
   unwind_protect_cleanup
-    do_fortran_indexing = pfi;
+    do_fortran_indexing = dfi;
+    warn_fortran_indexing = wfi;
   end_unwind_protect
 
 endfunction

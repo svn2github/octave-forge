@@ -99,7 +99,7 @@ octave_galois::do_index_op (const octave_value_list& idx,
 	idx_vector i = idx (0).index_vector ();
 	idx_vector j = idx (1).index_vector ();
   
-	retval = new octave_galois (gval.index (i, j, resize_ok, galois::resize_fill_value ()));
+	retval = new octave_galois (gval.index (i, j, resize_ok));
       }
       break;
 
@@ -107,7 +107,7 @@ octave_galois::do_index_op (const octave_value_list& idx,
       {
 	idx_vector i = idx (0).index_vector ();
 
-	retval = new octave_galois (gval.index (i, resize_ok, galois::resize_fill_value ()));
+	retval = new octave_galois (gval.index (i, resize_ok));
       }
       break;
 
@@ -165,6 +165,7 @@ octave_galois::is_true (void) const
 {
   bool retval = false;
 
+#if defined(HAVE_PROPAGATE_EMPTY_MATRICES)
   if (rows () == 0 || columns () == 0)
     {
       int flag = Vpropagate_empty_matrices;
@@ -175,6 +176,9 @@ octave_galois::is_true (void) const
 	error ("empty matrix used in conditional expression");
     }
   else
+#else
+  if (rows () > 0 && columns () > 0)
+#endif
     {
       boolMatrix m = (gval.all () . all ());
 
@@ -288,9 +292,19 @@ octave_galois::double_value (bool) const
   double retval = lo_ieee_nan_value ();
 
   // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
+#if defined(HAVE_DO_FORTRAN_INDEXING)
   if ((rows () == 1 && columns () == 1)
       || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
     retval = (double) gval (0, 0);
+#else
+  if (rows () > 0 && columns () > 0)
+    {
+      if (Vwarn_fortran_indexing)
+        gripe_implicit_conversion ("real matrix", "real scalar");
+
+      retval = (double) gval (0, 0);
+    }
+#endif
   else
     gripe_invalid_conversion ("galois", "real scalar");
 
@@ -304,9 +318,19 @@ octave_galois::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
+#if defined(HAVE_DO_FORTRAN_INDEXING)
   if ((rows () == 1 && columns () == 1)
       || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
     retval = (double) gval (0, 0);
+#else
+  if (rows () > 0 && columns () > 0)
+    {
+      if (Vwarn_fortran_indexing)
+        gripe_implicit_conversion ("real matrix", "real scalar");
+
+      retval = (double) gval (0, 0);
+    }
+#endif
   else
     gripe_invalid_conversion ("galois", "complex scalar");
 

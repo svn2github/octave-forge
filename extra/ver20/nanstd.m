@@ -33,11 +33,19 @@ function v = nanstd (X, dim)
       endif
     endif
     if (dim == 2) X = X.'; endif
-    dfi = do_fortran_indexing;
-    pzoi = prefer_zero_one_indexing;
+    try dfi = do_fortran_indexing;
+    catch dfi = 0;
+    end
+    try wfi = warn_fortran_indexing;
+    catch wfi = 0;
+    end
+    try pzoi = prefer_zero_one_indexing;
+    catch pzoi = 0;
+    end
     wdz = warn_divide_by_zero;
     unwind_protect
       do_fortran_indexing = 1;
+      warn_fortran_indexing = 0;
       prefer_zero_one_indexing = 1;
       warn_divide_by_zero = 0;
 
@@ -63,6 +71,7 @@ function v = nanstd (X, dim)
       v(n == 1) = 0;
     unwind_protect_cleanup
       do_fortran_indexing = dfi;
+      warn_fortran_indexing = wfi;
       prefer_zero_one_indexing = pzoi;
       warn_divide_by_zero = wdz;
     end_unwind_protect

@@ -263,8 +263,7 @@ DEFUN_DLD (greshape, args, ,
 "  2  4\n"
 "@end example\n"
 "\n"
-"If the variable @code{do_fortran_indexing} is nonzero, the\n"
-"@code{greshape} function is equivalent to\n"
+"The @code{greshape} function is equivalent to\n"
 "\n"
 "@example\n"
 "@group\n"
@@ -275,10 +274,10 @@ DEFUN_DLD (greshape, args, ,
 "\n"
 "@noindent\n"
 "but it is somewhat less cryptic to use @code{reshape} instead of the\n"
-"colon operator.  Note that the total number of elements in the original\n"
+"colon operator. Note that the total number of elements in the original\n"
 "matrix must match the total number of elements in the new matrix.\n"
 "@end deftypefn\n"
-"@seealso{reshape,`:' and do_fortran_indexing}") 
+"@seealso{reshape,`:'}")
 {
   octave_value retval;
   int nargin = args.length ();

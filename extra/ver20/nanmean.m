@@ -24,10 +24,18 @@ function v = nanmean (X, varargin)
   if nargin < 1
     usage ("v = nanmean(X [, dim])");
   else
-    dfi = do_fortran_indexing;
-    pzoi = prefer_zero_one_indexing;
+    try dfi = do_fortran_indexing;
+    catch dfi = 0;
+    end
+    try wfi = warn_fortran_indexing;
+    catch wfi = 0;
+    end
+    try pzoi = prefer_zero_one_indexing;
+    catch pzoi = 0;
+    end
     unwind_protect
       do_fortran_indexing = 1;
+      warn_fortran_indexing = 0;
       prefer_zero_one_indexing = 1;
 
       n = sum (!isnan(X), varargin{:});
@@ -36,6 +44,7 @@ function v = nanmean (X, varargin)
       v = sum (X, varargin{:}) ./ n;
     unwind_protect_cleanup
       do_fortran_indexing = dfi;
+      warn_fortran_indexing = wfi;
       prefer_zero_one_indexing = pzoi;
     end_unwind_protect
   endif

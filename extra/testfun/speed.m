@@ -201,8 +201,11 @@ endfunction
 %!  endfunction
 %!  function x = build(n)
 %!    ## preallocate the target vector
-%!    if (prefer_column_vectors), x = zeros(n*10, 1);
-%!    else x = zeros(1, n*10);  endif
+%!    x = zeros(1, n*10);
+%!    try
+%!      if (prefer_column_vectors), x = x.'; endif
+%!    catch
+%!    end
 %!    for i=0:n-1, x([1:10]+i*10) = 1:10; endfor
 %!  endfunction
 %!
@@ -227,8 +230,11 @@ endfunction
 %!  function x = build(n)
 %!    idx = [1:10]';
 %!    x = idx(:,ones(1,n));
-%!    if (prefer_column_vectors), x = reshape(x, n*10, 1);
-%!    else x = reshape(x, 1, n*10); endif
+%!    x = reshape(x, 1, n*10);
+%!    try
+%!      if (prefer_column_vectors), x = x.'; endif
+%!    catch
+%!    end
 %!  endfunction
 %!
 %!  disp("-----------------------");

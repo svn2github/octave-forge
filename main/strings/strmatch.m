@@ -25,11 +25,23 @@ function idx = strmatch(s,A,exact)
     usage("strmatch(s,A,'exact')");
   endif
 
-  istno = implicit_str_to_num_ok;
-  dfi = do_fortran_indexing;
+  try istno = implicit_str_to_num_ok;
+  catch istno = 0;
+  end
+  try wstno = warn_str_to_num;
+  catch wstno = 0;
+  end
+  try dfi = do_fortran_indexing;
+  catch dfi = 0;
+  end
+  try wfi = warn_fortran_indexing;
+  catch wfi = 0;
+  end
   unwind_protect
     implicit_str_to_num_ok = 1;
+    warn_str_to_num = 0;
     do_fortran_indexing = 1;
+    warn_fortran_indexing = 0;
 
     [nr, nc] = size (A);
     if iscell(A)
@@ -60,6 +72,8 @@ function idx = strmatch(s,A,exact)
 
   unwind_protect_cleanup
     implicit_str_to_num_ok = istno;
+    warn_str_to_num = wstno;
     do_fortran_indexing = dfi;
+    warn_fortran_indexing = wfi;
   end_unwind_protect
 endfunction    

@@ -77,11 +77,10 @@ public:
   galois (const galois& a);
   ~galois (void);
   
-  galois index (idx_vector& i, int resize_ok = 0,
-		   const int& rfv = galois::resize_fill_value ()) const;
+  galois index (idx_vector& i, int resize_ok = 0, const int& rfv = 0) const;
 
   galois index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		   const int& rfv = galois::resize_fill_value ()) const;
+		const int& rfv = 0) const;
 
   // unary operations
 

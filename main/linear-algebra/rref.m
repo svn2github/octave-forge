@@ -27,9 +27,15 @@
 function [A, k] = rref (A, tolerance)
 
   ## Supress empty list warnings
-  eleo = empty_list_elements_ok;
+  try eleo = empty_list_elements_ok;
+  catch eleo = 0;
+  end
+  try wele = warn_empty_list_elements;
+  catch wele = 0;
+  end
   unwind_protect
     empty_list_elements_ok = 1;
+    warn_empty_list_elements = 0;
     
     [rows,cols] = size (A);
 
@@ -72,5 +78,6 @@ function [A, k] = rref (A, tolerance)
   unwind_protect_cleanup
     ## Restore state
     empty_list_elements_ok = eleo;
+    warn_empty_list_elements = wele;
   end_unwind_protect
 endfunction

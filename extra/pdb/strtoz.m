@@ -31,10 +31,18 @@ if isstr(s) == 1,
     #    Z = []; w = [];
     Z = 1;
     w = 1;
-    for p = 1:N,
+    try eleo = empty_list_elements_ok;
+    catch eleo = 0;
+    end
+    try wele = warn_empty_list_elements;
+    catch wele = 0;
+    end
+    unwind_protect
+      empty_list_elements_ok = 1;
+      warn_empty_list_elements = 0;
+      for p = 1:N,
         r = strrep(s(p,:),'Air','N3O'); 
         r = deblank(r);
-        empty_list_elements_ok = 1;
         while(r(1) == " ")
             r = r(2:length(r));
         endwhile
@@ -63,6 +71,10 @@ if isstr(s) == 1,
             component++;
         endwhile
     endfor
+  unwind_protect_cleanup
+      empty_list_elements_ok = eleo;
+      warn_empty_list_elements = wele;
+  end_unwind_protect
 else 
     Z = s; 
     w = ones(size(Z));

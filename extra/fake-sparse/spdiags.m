@@ -35,9 +35,15 @@
 ## Fake sparse function: represents sparse matrices using full matrices
 function [A, c] = spdiags(v,c,m,n)
 
-  dfi = do_fortran_indexing;
+  try dfi = do_fortran_indexing;
+  catch dfi = 0;
+  end
+  try wfi = warn_fortran_indexing;
+  catch wfi = 0;
+  end
   unwind_protect
     do_fortran_indexing = 1;
+    warn_fortran_indexing = 0;
     
     if nargin == 1
       ## extract nonzero diagonals of v into A,c
@@ -88,6 +94,7 @@ function [A, c] = spdiags(v,c,m,n)
     
   unwind_protect_cleanup
     do_fortran_indexing = dfi;
+    warn_fortran_indexing = wfi;
   end_unwind_protect
 
 endfunction

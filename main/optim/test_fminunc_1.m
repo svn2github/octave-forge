@@ -21,6 +21,7 @@ cnt = 0;			# Test counter
 page_screen_output = 0;
 page_output_immediately = 1;
 do_fortran_indexing = 1;
+warn_fortran_indexing = 0;
 
 if ! exist ("verbose"), verbose = 0; end
 

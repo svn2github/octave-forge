@@ -19,6 +19,7 @@
 
 OCTAVE=  exist('OCTAVE_VERSION');
 do_fortran_indexing= 1;
+warn_fortran_indexing= 0;
 prefer_zero_one_indexing= 0;
 page_screen_output=1;
 SZ=10;
@@ -824,6 +825,9 @@ eval( "splu( sparse( [0,0;0,0]   ) );");
 
 %
 % $Log$
+% Revision 1.15  2003/09/12 14:22:42  adb014
+% Changes to allow use with latest CVS of octave (do_fortran_indexing, etc)
+%
 % Revision 1.14  2003/08/30 03:03:05  aadler
 % mods to prevent segfaults for sparse
 %

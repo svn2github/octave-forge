@@ -22,7 +22,7 @@
 ##     columns specified in c.
 ##
 ## Set implicit_str_to_num_ok and implicit_num_to_str_ok to 1 if you 
-## use this for string sorting.
+## use this for string sorting and octave 2.1.50 or earlier.
 
 ## Author: Daniel Calvelo
 ## 2001-02-24 Paul Kienzle

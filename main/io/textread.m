@@ -143,10 +143,18 @@ function [varargout] = textread(file, format, n);
     error("textread('%s',...):  %s\n", file, message);
   endif
   
-  elok = empty_list_elements_ok;
-  pcv = prefer_column_vectors; # so that scalars come out as [ v; v; ... ]
+  try elok = empty_list_elements_ok;
+  catch elok = 0;
+  end
+  try wel = warn_empty_list_elements;
+  catch wel = 0;
+  end
+  try pcv = prefer_column_vectors; # so that scalars come out as [ v; v; ... ]
+  catch pcv = 0;
+  end
   unwind_protect
     empty_list_elements_ok = 1;
+    warn_empty_list_elements = 0;
     prefer_column_vectors = 1;
     
     row = 1;
@@ -175,6 +183,7 @@ function [varargout] = textread(file, format, n);
     endwhile
   unwind_protect_cleanup
     empty_list_elements_ok = elok;
+    warn_empty_list_elements = wel;
     prefer_column_vectors = pcv;
     fclose(fid);
   end_unwind_protect

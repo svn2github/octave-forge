@@ -37,9 +37,15 @@ idx = reshape(idx,size(xi))';
 ptx = lookup(xi(1,3:nc-3),x);
 pty = lookup(yi(3:nr-3,1),y);
 c = rows(t)+2;
-dfi = do_fortran_indexing;
+try dfi = do_fortran_indexing;
+catch dfi = 0;
+end
+try wfi = warn_fortran_indexing;
+catch wfi = 0;
+end
 unwind_protect
   do_fortran_indexing = 1;
+  warn_fortran_indexing = 0;
   pts = nr*pty + ptx + 1;
   idx(pts) = c;
   idx(pts+4) = c;
@@ -52,6 +58,7 @@ unwind_protect
   idx(pts+4*nr+4) = c;
 unwind_protect_cleanup
   do_fortran_indexing = dfi;
+  warn_fortran_indexing = wfi;
 end_unwind_protect
 
 

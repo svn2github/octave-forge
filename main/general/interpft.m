@@ -56,9 +56,15 @@ else
    # it could replace the first code except
    # 1) it depends on sparse being available
    # 2) it's slightly slower
-   save_empty_list_elements_ok= empty_list_elements_ok;
+   try save_empty_list_elements_ok= empty_list_elements_ok;
+   catch save_empty_list_elements_ok= 0;
+   end
+   try save_warn_empty_list_elements= warn_empty_list_elements;
+   catch save_warn_empty_list_elements= 0;
+   end
    unwind_protect
    empty_list_elements_ok= 1;
+   warn_empty_list_elements= 0;
 
    ny= n;
    if nargin==2; my=1; else; my= m; endif
@@ -89,6 +95,7 @@ else
 
    unwind_protect_cleanup
       empty_list_elements_ok= save_empty_list_elements_ok;
+      warn_empty_list_elements= save_warn_empty_list_elements;
    end_unwind_protect
 
 endif

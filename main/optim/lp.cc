@@ -27,7 +27,9 @@ using namespace std;
 #define TRUE 1
 #define FALSE 0
 
-static inline Matrix identity_matrix(int m,int n)
+// 2.1.51 and later have identity matrix defined in utils.h, but can't use
+// it to ensure that the code works with older octave versions
+static inline Matrix lp_identity_matrix(int m,int n)
 {
   int min = (m > n) ? n : m; 
   Matrix me(m,n,0.0);
@@ -37,16 +39,16 @@ static inline Matrix identity_matrix(int m,int n)
   return(me);
 }
 
-static inline Matrix identity_matrix(int n)
+static inline Matrix lp_identity_matrix(int n)
 {
-  return(identity_matrix(n,n));
+  return(lp_identity_matrix(n,n));
 }
 
 // It would be nice if this was a function in the Matrix class
 static Matrix pivot(Matrix T, int the_row,int the_col)
 {
   int nr = T.rows();
-  Matrix Id = identity_matrix(nr);
+  Matrix Id = lp_identity_matrix(nr);
   Matrix result;
   for(int i=0;i<nr;i++){
     Id(i,the_row) = -T(i,the_col)/T(the_row,the_col);
@@ -348,7 +350,7 @@ Subject to: @var{a}*x <= @var{b}\n\
 	  // Now we have the following constraint ==> {-Inf < x < x_max}
 	  // After we are done it will be {0 < x_new < Inf}, where {x_new = -x+x_max}
 	  b = b-ColumnVector(Matrix(A.index(bRange,aRange))*double(vub(i)));
-	  T = identity_matrix(A.rows());
+	  T = lp_identity_matrix(A.rows());
 	  T(i,i) = -1.0;
 	  A = A*T;
 	  vub(i) = inf;
@@ -382,7 +384,7 @@ Subject to: @var{a}*x <= @var{b}\n\
   int slacks = 0;
   if(ne <= nr)
     {
-      A = A.append(identity_matrix(nr,(nr-ne)));
+      A = A.append(lp_identity_matrix(nr,(nr-ne)));
       for(i=0;i<(nr-ne);i++)
 	{
 	  basis(i,1) = i+nc;

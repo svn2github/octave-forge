@@ -26,7 +26,7 @@ if test -n "$compileonly" ; then
    set -x
    @MKOCTFILE@ -I@LIBPATH@ $*
    exit
-elif grep -iq mexfunction $first ; then
+elif grep -i mexfunction $first >/dev/null ; then
    echo building $first
 else
    echo $first does not contain mexfunction
@@ -34,9 +34,12 @@ else
 fi
 
 # default the name of the octave function from the first filename
-name=${first%%.*}
-ext=${first#*.}
-#echo $name . $ext
+first=`basename $first`
+#echo "first= $first"
+ext=`echo $first | sed 's;.*\.;.;g'`
+#echo "ext= $ext"
+name=`basename $first $ext`
+#echo "name=$name ext=$ext"
 
 case "$ext" in
   f*|F*)

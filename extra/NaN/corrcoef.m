@@ -295,7 +295,9 @@ end;
 nan_sig(isnan(nan_R)) = nan;
 
 if any(nan_sig(:) < alpha),
-        fprintf(1,'CORRCOFF Warning: Missing Values (i.e. NaNs) are not independent of data (p-value=%f)\n', min(nan_sig(:)));
+        tmp = nan_sig(:);			% Hack to skip NaN's in MIN(X)
+        min_sig = min(tmp(tmp(~isnan(tmp)))); 	% Necessary, because Octave returns NaN rather than X for min(NaN,X) 
+        fprintf(1,'CORRCOFF Warning: Missing Values (i.e. NaNs) are not independent of data (p-value=%f)\n', min_sig);
         fprintf(1,'   Its recommended to remove all samples with any missing value (NaN).\n');
         fprintf(1,'   In the following combinations the null-hypotheses (NaNs are uncorrelated) must be rejected.\n');
         [ix,iy] = find(nan_sig < alpha);

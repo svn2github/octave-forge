@@ -73,4 +73,5 @@ function n = datenum(Y,M,D,h,m,s)
   ## Correct for time zone
   n -= mktime(gmtime(0))/86400;
 endfunction
-      
+
+%!assert(datevec(datenum(2003,11,28)),[2003,11,28,0,0,0])

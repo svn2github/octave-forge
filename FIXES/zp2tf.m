@@ -20,11 +20,18 @@
 ## zero-pole-gain form f(x)=g*prod(1-z*x)/prod(1-p*x)
 
 function [b, a] = zp2tf(z, p, g)
+
   if nargin != 3 || nargout != 2
     usage("[b, a] = zp2tf(z, p, g)");
   endif
-  try cplxpair(z); catch error("zp2tf: could not pair complex zeros"); end
-  try cplxpair(p); catch error("zp2tf: could not pair complex poles"); end
-  b = g*real(poly(z));
-  a = real(poly(p));
+
+  b = g*poly(z);
+  a = poly(p);
+
+  # check if the system should be real
+  if ( max(imag([a(:);b(:)])) ./ max(abs([a(:);b(:)])) < 100*eps )
+     b = real(b);
+     a = real(a);
+  endif
+
 endfunction

@@ -54,9 +54,13 @@ function [varargout]=statistic(i,DIM,fun)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.23	
+%	Version 1.25	Date: 15 Aug 2002	
 %	Copyright (C) 2000-2002 by Alois Schloegl  <a.schloegl@ieee.org>	
 
+% .changelog
+% 05.07.2002 attempt to make STAT Level 4, 
+% 		however DIM argument difficult to implement for Median, Quantiles
+% 15.08.2002 replace strncmp by strcmp
 
 if nargin==1,
         DIM=[];
@@ -75,9 +79,9 @@ if isempty(DIM),
 end;
 
 %R.N   	= sumskipnan(~isnan(i),DIM); 	% number of elements
-[R.SUM,R.N,R.SSQ,R.S4P] = sumskipnan(i,DIM);	% sum
+[R.SUM,R.N,R.SSQ] = sumskipnan(i,DIM);	% sum
 %R.S3P  = sumskipnan(i.^3,DIM);		% sum of 3rd power
-%R.S4P  = sumskipnan(i.^4,DIM);		% sum of 4th power
+R.S4P  = sumskipnan(i.^4,DIM);		% sum of 4th power
 %R.S5P  = sumskipnan(i.^5,DIM);		% sum of 5th power
 
 R.MEAN 	= R.SUM./R.N;			% mean 
@@ -94,7 +98,33 @@ R.SSQ0	= R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
 R.VAR  	= R.SSQ0./n1;	     		% variance (unbiased) 
 R.STD  	= sqrt(R.VAR);		     	% standard deviation
 R.SEM  	= sqrt(R.SSQ0./(R.N.*n1)); 	% standard error of the mean
+R.SEV	= sqrt(n1.*(n1.*R.S4P./R.N+(R.N.^2-2*R.N+3).*(R.SSQ./R.N).^2)./(R.N.^3)); % standard error of the variance
 R.COEFFICIENT_OF_VARIATION = R.STD./R.MEAN;
+
+%sz=size(i);sz(DIM)=1;
+%Q0500=repmat(nan,sz);
+%Q0250=Q0500;
+%Q0750=Q0500;
+%MODE=Q0500;
+%for k=1:size(i,2),
+%        tmp = sort(i(:,k));
+        %ix = find(~~diff([-inf;tmp;inf]))
+        %ix2=diff(ix)
+        %MODE(k)= tmp(max(ix2)==ix2)
+%        Q0500(k) = flix(tmp,R.N(k)/2   + 0.5);
+%        Q0250(k) = flix(tmp,R.N(k)/4   + 0.5);
+%        Q0750(k) = flix(tmp,R.N(k)*3/4 + 0.5);
+%end;
+%R.MEDIAN	= Q0500;
+%R.Quantiles   	= [Q0250; Q0750];
+
+%R.Skewness.Fisher = (R.CM3)./(R.STD.^3);	%%% same as R.SKEWNESS
+
+%R.Skewness.Pearson_Mode   = (R.MEAN-R.MODE)./R.STD;
+%R.Skewness.Pearson_coeff1 = (3*R.MEAN-R.MODE)./R.STD;
+%R.Skewness.Pearson_coeff2 = (3*R.MEAN-R.MEDIAN)./R.STD;
+%R.Skewness.Bowley = (Q0750+Q0250 - 2*Q0500)./(Q0750-Q0250); % quartile skewness coefficient
+
 
 R.CM2	= R.SSQ0./n1;
 i       = i - repmat(R.MEAN,size(i)./size(R.MEAN));
@@ -107,8 +137,11 @@ R.KURTOSIS = R.CM4./(R.VAR.^2)-3;
 [R.MAD,N] = sumskipnan(abs(i),DIM);	% mean absolute deviation
 R.MAD = R.MAD./n1;
 
+
+R.datatype = 'STAT Level 3';
+
 if exist('OCTAVE_VERSION')>4,
-        if strncmp(fun,'CM',2) 
+        if strcmp(fun(1:2),'CM') 
                 oo = str2num(fun(3:length(fun)));
                 varargout  = sumskipnan(i.^oo,DIM)./n1;
         elseif isempty(fun)
@@ -119,7 +152,7 @@ if exist('OCTAVE_VERSION')>4,
 else
         if iscell(fun),  
         	for k=1:length(fun),
-	                if strncmp(fun{k},'CM',2) 
+	                if strcmp(fun{k}(1:2),'CM') 
             	                oo = str2num(fun{k}(3:length(fun{k})));
                     	        varargout{k}  = sumskipnan(i.^oo,DIM)./n1;
                     	else	            
@@ -127,7 +160,7 @@ else
 	                end;
     	        end;
 	elseif ischar(fun),
-            	if strncmp(fun,'CM',2) 
+            	if strcmp(fun(1:2),'CM') 
                     	oo = str2num(fun(3:length(fun)));
                 	varargout{1}  = sumskipnan(i.^oo,DIM)./n1;
         	else	            

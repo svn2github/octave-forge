@@ -5,16 +5,14 @@ NaN-Tb: A statistics toolbox for handling NaN's and missing values.
 
 FEATURES of the NaN-tb:
 -----------------------
- - can deal with NaN's (be default NaNs are skipped) 
- - handles missing values (encoded as NaN's)
+ - realizes an innovative concept for the future developement for handling NaN's. 
+ - compatible to Matlab and Octave
  - easy to use, does not need special nan-functions like nansum, etc. 
  - only one function instead of two (e.g. mean and nanmean are replaced by mean, etc)
- - contains basic statistical functions.
+ - contains many basic statistical functions.
  - supports DIM argument 
  - supports unbiased estimation; 
- - realizes an innovative concept for the future developement of Matrix-languages. 
- - compatible to Matlab and Octave
-   The toolbox was tested and can be used with 
+ - The toolbox was tested and can be used with 
    Matlab 5.2, 5.3, 6.1 and Octave 2.0.14, 2.0.16.92, 2.1.35-36, 
  
  
@@ -44,8 +42,9 @@ Currently are implemented:
 	DETREND		detrending of data with missing values and non-equidistant sampled data
 	COVM		covariance estimation (several modes)
 	COR		correlation matrix
-	CORRCOEF	correlation coefficient, 
-				including rank correlation, significance test and confidence intervals 
+	CORRCOEF	correlation coefficient, inluding rank correlation, 
+				significance test and confidence intervals 
+	SPEARMAN, RANKCORR spearman's rank correlation coefficient. They might be replaced by CORRCOEF. 
 	COV		covariance matrix
 	
 	

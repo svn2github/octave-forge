@@ -20,7 +20,7 @@
 %	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>
 
 
-r=zeros(18,2);
+r = zeros(18,2);
 
 x = [5,NaN,0,1,nan];
 
@@ -48,7 +48,7 @@ for k=1:2,
         r(15,k)=moment(x,6);
         r(16,k)=rms(x);
         r(17,k)=sem(x);
-        tmp=corrcoef([x',(1:length(x))']);
+        	tmp=corrcoef([x',(1:length(x))']);
         r(18,k)=any(isnan(tmp(:)));
 end;
 

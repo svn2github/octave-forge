@@ -2,4 +2,4 @@ Missing data statistics (not installed by default)
  coefficient_of_variation geomean meansq skewness
  covm cor cov corrcoef harmmean median statistic
  detrend kurtosis moment std mad nantest sumskipnan
- meandev rms var mean sem zscore
+ meandev rms var mean sem zscore spearman rankcorr

@@ -1,4 +1,4 @@
-function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
+function [o,count,SSQ] = sumskipnan(i,DIM)
 % SUMSKIPNAN adds all non-NaN values. 
 %
 % All NaN's are skipped; NaN's are considered as missing values. 
@@ -99,9 +99,6 @@ if exist('OCTAVE_VERSION') >= 5,
         if nargout>2,
                 i=i.^2;
                 SSQ = sumskipnan(i,DIM);
-                if nargout>3,
-                        S4M = sumskipnan(i.^2,DIM);
-                end;        
         end
 else 
 	% an efficient implementation in C of the following lines 
@@ -128,9 +125,6 @@ else
         if nargout>2,
                 i=i.^2;
 	        SSQ = sum(i,DIM);
-	        if nargout>3
-		        S4M = sum(i.^2,DIM);
-                end;
         end;
 end;
 

@@ -44,7 +44,7 @@ if(isstr(pdb))
     endif	
 elseif(is_struct(pdb))
     fname = tmpnam;
-    write_pdb_quick(pdb, fname);
+    write_pdb(pdb, fname, true);
     [forkstat, fmsg] = fork();
     if(forkstat == 0),        
         exec_args = [fname; ptyname];

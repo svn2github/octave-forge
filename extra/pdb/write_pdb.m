@@ -1,7 +1,9 @@
-function write_pdb(p, fname)
-#function write_pdb(p, fname)
+function write_pdb(p, fname, varargin)
+#function write_pdb(p, fname[, quick])
 #
-# Writes a pdb struct p (see read_pdb.m) to a pdb-file fname
+# Writes a pdb struct p (see read_pdb.m) to a pdb-file fname.
+#
+# If the third parameter quick is given, write only ATOM and HETATM lines.
 
 ## Created: 3.8.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
@@ -15,7 +17,14 @@ if(f < 0)
     error("Could not open output file: %s", err);
 endif
 
+quick = false;
+if(nargin() > 2)
+  quick = true;
+endif
+
 buf = blanks(80);
+
+if(!quick)
 
 # Print the Title Section
 
@@ -155,6 +164,9 @@ if( struct_contains(p, "scalem") || struct_contains(p, "scalev") )
   fprintf(f, "%s", buf);
 endif
 
+endif # if(!quick)
+
+serialn = 0;
 if(struct_contains(p, "acoord"))
   natoms = size(p.acoord, 1);
   if(struct_contains(p, "atomname"))
@@ -187,11 +199,11 @@ if(struct_contains(p, "acoord"))
     atempfactor = zeros(natoms, 1);
   endif
   
-  j = 1;
+  i = 1;
   segid = toascii("C")-1;
   first = 1;
-  while(j <= natoms)      
-    if (aresseq(j) == 1)
+  while(i <= natoms)      
+    if (aresseq(i) == 1)
       if(first)
          segid = segid + 1;
          first = 0;
@@ -199,33 +211,42 @@ if(struct_contains(p, "acoord"))
     else
       first = 1;
     endif
-    buf = blanks(80);
-    buf(1:6)   = "ATOM  ";
-    buf(7:11)  = sprintf("%5d", j);
-    buf(13:16) = sprintf("%4s", atomname(j,:));
-    buf(18:20) = aresname(j,:);
-#    buf(18:22) = [aresname(j,:), sprintf(" %c", segid)];
-    buf(23:26) = sprintf("%4d", aresseq(j));
-    buf(31:54) = sprintf("%8.3f%8.3f%8.3f", p.acoord(j,:));
-    buf(55:60) = sprintf(" %5.2f", aoccupancy(j,:));
-    buf(61:66) = sprintf("%6.2f", atempfactor(j,:));
-    buf(73:76) = sprintf("%c   ", segid);
-#    buf(77:78) = sprintf("%s", atomname(j,1:2));
-#    buf(80) = "\n";
-    buf(74) = "\n";
-#    fprintf(f, "%s", buf);
-    fprintf(f, "%s", buf(1:74));
-    j++;
+    serialn++;
+#    buf = blanks(80);
+#    buf(1:6)   = "ATOM  ";
+#    buf(7:11)  = sprintf("%5d", serialn);
+#    buf(13:16) = sprintf("%4s", atomname(i,:));
+#    buf(18:20) = aresname(i,:);
+#    buf(23:26) = sprintf("%4d", aresseq(i));
+#    buf(31:54) = sprintf("%8.3f%8.3f%8.3f", p.acoord(i,:));
+#    buf(55:60) = sprintf(" %5.2f", aoccupancy(i,:));
+#    buf(61:66) = sprintf("%6.2f", atempfactor(i,:));
+#    buf(73:76) = sprintf("%c   ", segid);
+#    buf(74) = "\n";
+#    fprintf(f, "%s", buf(1:74));
+
+    fprintf(f, "ATOM  ");
+    fprintf(f, "%5d", serialn);
+    fprintf(f, " %-4s", atomname(i,:));
+    fprintf(f, " %3s", aresname(i,:));
+    fprintf(f, "  %4d", aresseq(i));
+    fprintf(f, "    %8.3f%8.3f%8.3f", p.acoord(i,:));
+    fprintf(f, " %5.2f", aoccupancy(i,:));
+    fprintf(f, "%6.2f", atempfactor(i,:));
+    fprintf(f, "      %-4c", segid);    
+    fprintf(f, "\n");
+    
+    i++;
   endwhile
 
+  serialn++;
   buf = blanks(80);
   buf(1:6)   = "TER   ";
-  buf(7:11)  = sprintf("%5d", j);
+  buf(7:11)  = sprintf("%5d", serialn);
   buf(18:20) = aresname(natoms, :);
   buf(23:26) = sprintf("%4d", aresseq(natoms));
   buf(80) = "\n";
   fprintf(f, "%s", buf);
-  j++;
 endif
 
 if(struct_contains(p,"hetcoord")) 
@@ -262,19 +283,32 @@ if(struct_contains(p,"hetcoord"))
 
   i = 1;
   while(i <= nhet)
-    buf = blanks(80);
-    buf(1:6)   = "HETATM";
-    buf(7:11)  = sprintf("%5d", j);
-    buf(13:16) = sprintf("%s", hetname(i,:));
-    buf(18:20) = hetresname(i, :);
-    buf(23:26) = sprintf("%4d", hetresseq(i));
-    buf(31:54) = sprintf(" %7.3f %7.3f %7.3f", p.hetcoord(i,:));
-    buf(55:60) = sprintf(" %5.2f", hetoccupancy(i,:));
-    buf(61:66) = sprintf("%6.2f", hettempfactor(i,:));
-    buf(80) = "\n";
-    fprintf(f, "%s", buf);
+    serialn++;
+    
+#    buf = blanks(80);
+#    buf(1:6)   = "HETATM";
+#    buf(7:11)  = sprintf("%5d", serialn);
+#    buf(13:16) = sprintf("%s", hetname(i,:));
+#    buf(18:20) = hetresname(i, :);
+#    buf(23:26) = sprintf("%4d", hetresseq(i));
+#    buf(31:54) = sprintf(" %7.3f %7.3f %7.3f", p.hetcoord(i,:));
+#    buf(55:60) = sprintf(" %5.2f", hetoccupancy(i,:));
+#    buf(61:66) = sprintf("%6.2f", hettempfactor(i,:));
+#    buf(80) = "\n";
+#    fprintf(f, "%s", buf);
+
+    fprintf(f, "HETATM");
+    fprintf(f, "%5d", serialn);
+    fprintf(f, " %-4s", hetname(i,:));
+    fprintf(f, " %3s", hetresname(i,:));
+    fprintf(f, "  %4d", hetresseq(i));
+    fprintf(f, "    %8.3f%8.3f%8.3f", p.hetcoord(i,:));
+    fprintf(f, " %5.2f", hetoccupancy(i,:));
+    fprintf(f, "%6.2f", hettempfactor(i,:));
+#    fprintf(f, "      %-4c", segid);    
+    fprintf(f, "\n");
+
     i++;
-    j++;
   endwhile
 endif
 

@@ -47,7 +47,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
     
     if(args.length() != 6) {
 	print_usage ("coupling_6j");
-	return octave_value_list();
+	return octave_value();
     }
     if(!args(0).is_real_type() ||
        !args(1).is_real_type() ||
@@ -57,7 +57,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
        !args(5).is_real_type()) {
         error("The arguments must be real.");
 	print_usage ("coupling_6j");	    
-	return octave_value_list();
+	return octave_value();
     }
 
     int len = args(0).length();
@@ -68,7 +68,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
        len != args(5).length()) {
         error("The arguments have the same length.");
 	print_usage ("coupling_6j");	    
-	return octave_value_list();
+	return octave_value();
     }	
     
     NDArray ja = args(0).array_value();
@@ -88,7 +88,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 					     static_cast<int>(je.xelem(i)),
 					     static_cast<int>(jf.xelem(i)));
 	}
-	return octave_value_list(y);	    
+	return octave_value(y);	    
     } else {
 	NDArray err(ja.dims());
 	gsl_sf_result result;
@@ -104,7 +104,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 	    y.xelem(i) = result.val;
 	    err.xelem(i) = result.err;
 	}
-	retval = octave_value_list(y);
+	retval(0) = octave_value(y);
 	retval.append(err);
 	return retval;
     }

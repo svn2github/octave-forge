@@ -52,7 +52,13 @@ ROOT=$PROJECT-`date +%Y.%m.%d`
 cvs2cl.pl --fsf --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
-cvs commit -m '$TAG release' ChangeLog
+cat <<EOF > main/miscellaneous/OCTAVE_FORGE_VERSION.m
+## OCTAVE_FORGE_VERSION The release date of octave-forge, as YYYY.MM.DD
+function v=OCTAVE_FORGE_VERSION
+  v="`date +%Y.%m.%d`";
+endfunction
+EOF
+cvs commit -m '$TAG release' ChangeLog main/miscellaneous/OCTAVE_FORGE_VERSION.m
 
 # tag the CVS tree with the revision number
 cvs rtag $TAG $PROJECT

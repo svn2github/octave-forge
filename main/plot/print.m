@@ -290,15 +290,15 @@ function print(...)
   unwind_protect_cleanup
 
     ## Restore init state
-    if isempty (origout)
-      gset output;
-    else
-      eval (sprintf ("gset output %s;", origout));
-    end
     if ! isempty (terminal_default)
       eval (sprintf ("gset terminal %s;", terminal_default));
     endif
     eval (sprintf ("gset terminal %s;", origterm));
+    if isempty (origout)
+      gset output;
+    else
+      eval (sprintf ("gset output \"%s\";", origout));
+    end
     replot;
     
     automatic_replot = _automatic_replot ;

@@ -28,8 +28,8 @@ function [CC,NN,DD] = covm(X,Y,Mode);
 %	C./N gives the scaled version. 
 %
 
-%	Version 0.24
-%	17.02.2002
+%	Version 1.19
+%	7.04.2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -62,8 +62,13 @@ function [CC,NN,DD] = covm(X,Y,Mode);
 
 if nargin<3
         if nargin==2
-                if ischar(Y),
-                        Mode=Y;
+		if exist('OCTAVE_VERSION')>5,
+		    tmp = isascii(Y);
+		else
+		    tmp = ischar(Y);
+                end;
+		if tmp,
+		        Mode=Y;
                         Y=[];
                 else
                         Mode='M';
@@ -75,7 +80,7 @@ if nargin<3
                 fprintf(2,'Error COVM: Missing argument(s)\n');
         end;
 end;        
-Mode=upper(Mode);
+Mode = upper(Mode);
 
 [r1,c1]=size(X);
 if (c1>r1),

@@ -42,12 +42,12 @@ function [q, r] = polyderiv (p, a)
     usage ("q=polyderiv(p) or q=polyderiv(b,a) or [q, r]=polyderiv(b,a)");
   endif
 
-  if (! is_vector (p))
+  if (! isvector (p))
     error ("polyderiv: argument must be a vector");
   endif
 
   if (nargin == 2)
-    if (! is_vector (a))
+    if (! isvector (a))
       error ("polyderiv: argument must be a vector");
     endif
     if (nargout == 1) 
@@ -56,9 +56,9 @@ function [q, r] = polyderiv (p, a)
     else
       ## derivative of p/a returns numerator and denominator
       r = conv(a, a);
-      if length(p) == 1
+      if numel(p) == 1
 	q = -p * polyderiv(a);
-      elseif length(a) == 1
+      elseif numel(a) == 1
 	q = a * polyderiv(p);
       else
       	q = conv(polyderiv(p),a) - conv(p,polyderiv(a));
@@ -76,18 +76,20 @@ function [q, r] = polyderiv (p, a)
       q=q/r(1);
       r=r/r(1);
     endif
-    return;
+  else
+    lp = numel (p);
+    if (lp == 1)
+      q = 0;
+      return;
+    elseif (lp == 0)
+      q = [];
+      return;
+    end
+
+    ## Force P to be a row vector.
+    p = p(:).';
+
+    q = p (1:(lp-1)) .* [(lp-1):-1:1];
   endif
-
-  lp = length (p);
-  if (lp == 1)
-    q = 0;
-    return;
-  elseif (lp == 0)
-    q = [];
-    return;
-  end
-
-  q = p (1:(lp-1)) .* [(lp-1):-1:1];
 
 endfunction

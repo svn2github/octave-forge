@@ -16,11 +16,11 @@
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.25 	Date: 15 Aug 2002
+%    	Version 1.27  Date: 12 Sep 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>
 
 
-r = zeros(19,2);
+r = zeros(23,2);
 
 x = [5,NaN,0,1,nan];
 
@@ -48,9 +48,16 @@ for k=1:2,
         r(15,k)=moment(x,6);
         r(16,k)=rms(x);
         r(17,k)=sem(x);
-        	tmp=corrcoef([x',(1:length(x))']);
+        	tmp=corrcoef(x',(1:length(x))');
         r(18,k)=any(isnan(tmp(:)));
-        r(19,k)=any(isnan(ranks(x')))+k;
+        	tmp=rankcorr(x',(1:length(x))');
+        r(19,k)=any(isnan(tmp(:)));
+        	tmp=spearman(x',(1:length(x))');
+        r(20,k)=any(isnan(tmp(:)));
+        r(21,k)=any(isnan(ranks(x')))+k;
+		tmp=center(x);
+        r(22,k)=tmp(1);
+        r(23,k)=trimean(x);
 end;
 
 % check if result is correct

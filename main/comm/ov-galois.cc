@@ -366,6 +366,23 @@ octave_galois::matrix_value (bool) const
   return retval;
 }
 
+#ifdef HAVE_ND_ARRAYS
+NDArray
+octave_galois::array_value (bool) const
+{
+  int nr = rows ();
+  int nc = columns ();
+  dim_vector dv(nr,nc);
+  NDArray retval (dv);
+
+  for (int i=0; i<nr; i++)
+    for (int j=0; j<nc; j++)
+      retval(i + j*nr) = gval(i,j);
+
+  return retval;
+}
+#endif
+
 void
 octave_galois::assign (const octave_value_list& idx,
 			       const galois& rhs)

@@ -136,6 +136,10 @@ function hout = scatterplot (x, n, _off, str, h)
   endif
   spts = spts(off+1:n:rows(xr),:);
 
+  try ar = automatic_replot;
+  catch ar = 0;
+  end
+
   unwind_protect
     title("Scatter plot");
     xlabel("In-phase");
@@ -153,6 +157,7 @@ function hout = scatterplot (x, n, _off, str, h)
     ylabel("");
     gset autoscale;
     title("");
+    automatic_replot = ar;
   end_unwind_protect
 
 endfunction

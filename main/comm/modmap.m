@@ -148,6 +148,10 @@ function y = modmap(varargin)
     endif
   endif
 
+  try ar = automatic_replot;
+  catch ar = 0;
+  end
+
   if (strcmp(method,"ask"))
     if (nargin > optarg + 1)
       error ("modmap: too many arguments");
@@ -212,6 +216,7 @@ function y = modmap(varargin)
 	title("");
 	gset autoscale;
 	hold off;
+        automatic_replot = ar;
       end_unwind_protect
     else
       if (nargin > optarg)
@@ -250,6 +255,7 @@ function y = modmap(varargin)
 	title("");
 	gset autoscale;
 	hold off;
+        automatic_replot = ar;
       end_unwind_protect
     else
       y = tone * x;
@@ -343,6 +349,7 @@ function y = modmap(varargin)
 	gset autoscale;
 	hold off;
 	text();
+        automatic_replot = ar;
       end_unwind_protect
     else
       y = inphase(x+1) + 1i * quadr(x+1);

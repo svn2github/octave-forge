@@ -145,6 +145,10 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
+#ifdef HAVE_ND_ARRAYS
+  NDArray array_value (bool = false) const;
+#endif
+
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const

@@ -120,6 +120,10 @@ function yout = apkconst(varargin)
   end
 
   if (nargout == 0)
+    try ar = automatic_replot;
+    catch ar = 0;
+    end
+
     unwind_protect
       clearplot;
       title("ASK/PSK Constellation");
@@ -151,6 +155,7 @@ function yout = apkconst(varargin)
       if (printnums)
         text();
       endif
+      automatic_replot = ar;
     end_unwind_protect
   else
     yout = y;

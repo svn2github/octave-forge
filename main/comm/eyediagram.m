@@ -225,6 +225,10 @@ function hout = eyediagram (x, n, _per, _off, str, h)
   endif
   fclose(fid);
 
+  try ar = automatic_replot;
+  catch ar = 0;
+  end
+
   unwind_protect
     if (strcmp(signal,"complex"))
       if (!gnuplot_has_multiplot)
@@ -255,6 +259,7 @@ function hout = eyediagram (x, n, _per, _off, str, h)
     if (strcmp(signal,"complex"))
       oneplot();
     endif
+    automatic_replot = ar;
   end_unwind_protect
 
   ## XXX FIXME XXX

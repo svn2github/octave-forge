@@ -150,7 +150,12 @@ function [a, b] = qaskenco(msg, M)
   endif
 
   if (nargout == 0)
+    try ar = automatic_replot;
+    catch ar = 0;
+    end
+
     unwind_protect
+      automatic_replot = 0
       inphase = inphase(:);
       quadr = quadr(:);
       clearplot;
@@ -182,6 +187,7 @@ function [a, b] = qaskenco(msg, M)
       gset autoscale;
       hold off;
       text();
+      automatic_replot = ar;
     end_unwind_protect
   elseif (nargout == 1)
     a = inphase + 1i * quadr;

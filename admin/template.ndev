@@ -275,17 +275,32 @@ Aside:  the default editor can be defined like so:
 </pre>
 <p>
 
-If you are uploading an entire package, then you must first define
-the subdirectory, then upload all the files:
+If you are uploading an entire package, then put your directory into the
+octave-forge tree and do the following:
 <pre>
    $ cd octave-forge/main
-   $ cvs add mypackage
-   $ cvs commit mypackage
-   $ cd mypackage
+   $ cvs add <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cvs commit <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cd <FONT COLOR="#800000"><i>package</i></FONT>
    $ cvs add *
    $ cvs commit *
 </pre>
-This may be easier using the cvs import command, but I don't know the details.
+
+You may find it easier to use the import command, especially if your
+package contains subdirectories.  In this case, you should not put
+your directory into the octave-forge tree.  Instead, change to the
+root of your package tree and enter the following:
+<pre>
+   $ cd <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave import -m "<FONT COLOR="#800000"><i>package name</i></FONT>" octave-forge/<FONT COLOR="#800000"><i>main/package</i></FONT> <FONT COLOR="#800000"><i>sflogin</i></FONT> start
+</pre>
+
+You can then fetch the new package from octave-forge as follows:
+<pre>
+   $ cd octave-forge
+   $ cvs -q update -d
+</pre>
+
 <p>
 From time to time, you will need to synchronize with CVS:
 <pre>

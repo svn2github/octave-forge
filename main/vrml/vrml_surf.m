@@ -28,6 +28,17 @@
 ##
 ##        RGB and reflectivity values should be in the [0,1] interval.
 ## 
+## "checker", c : 1x2 : Color as a checker. If c(1) is positive, checker has
+##            c(1) rows. If it is negative, each checker row is c(1) facets
+##            high c(2) likewise determines width of checker columns.
+## "checker", c : 1x1 : Same as [c,c].
+##
+## "zcol", zc   : 3xN : Specify a colormap. The color of each vertex is
+##            interpolated according to its height (z).
+##
+## "zgrey"      : Black-to-white colormap. Same as "zcol", [0 1;0 1;0 1].
+## "zrb"        : Red-to-blue. Same as "zcol", [0 7 10;0 0 2;7 19 2]/10.
+##
 ## "tran", tran : 1x1    : Transparency,                        default = 0
 ##
 ## "creaseAngle", a 
@@ -70,20 +81,21 @@ colorPerVertex = 1;
 smooth = creaseAngle = nan ;
 emit = 0;
 DEFcoord = DEFcol = "";
+zrb = zgrey = zcol = 0;
 
 if nargin > 3,
 
-  op1 = " tran col creaseAngle emit colorPerVertex checker DEFcoord DEFcol ";
-  op0 = " smooth " ;
+  op1 = " tran col creaseAngle emit colorPerVertex checker DEFcoord DEFcol zcol ";
+  op0 = " smooth zgrey zrb " ;
 
   default = tar (tran, col, creaseAngle, emit, colorPerVertex, \
-		 DEFcoord, DEFcol, smooth, checker);
+		 DEFcoord, DEFcol, zcol, smooth, checker, zgrey, zrb);
 
   s = read_options (varargin,"op0",op0,"op1",op1,"default",default);
   [tran, col, creaseAngle, emit, colorPerVertex\
-   DEFcoord, DEFcol, smooth, checker] = getfield \
+   DEFcoord, DEFcol, zcol, smooth, checker, zgrey, zrb] = getfield \
       (s, "tran", "col", "creaseAngle", "emit", "colorPerVertex",\
-       "DEFcoord", "DEFcol", "smooth", "checker");
+       "DEFcoord", "DEFcol", "zcol", "smooth", "checker", "zgrey", "zrb");
   ## nargin -= 3 ;
   ## read_options_old ;
 end
@@ -156,6 +168,18 @@ elseif any (prod (size (col)) == [R*C,(R-1)*(C-1)])
   col = [1;1;1]*col(:)';
 end
 
+if zgrey || zrb || any (zcol(:)) # Treat zgrey zrb and zcol options
+  zx = max (z(:));
+  zn = min (z(:));
+  if     zgrey, zcol = [0 0 0; 1 1 1]';
+  elseif zrb  , zcol = [0 0 0.7; 0.7 0 1; 1 0.2 0.2]'; 
+  end
+  ci = 1 + floor (cw = (columns (zcol)-1) * (z(:)' - zn)/(zx - zn));
+  cw =  rem (cw, 1);
+  ci(find (ci >= columns (zcol))) = columns (zcol) - 1;
+  col = zcol(:,ci) .* ([1;1;1]*(1-cw)) + zcol(:,ci+1) .* ([1;1;1]*cw);
+end				# EOF zgrey zrb and zcol options
+
 
 if checker
   if isnan (checker), checker = 10; end
@@ -225,13 +249,13 @@ if ! all(keepp),
   end
   
 end
-
+## printf ("Calling vrml_faces\n");
 s = vrml_faces (pts, trgs, "col", col,\
 		"colorPerVertex",colorPerVertex,\
 		"creaseAngle", creaseAngle,\
 		"tran", tran, "emit", emit,\
 		"DEFcoord",DEFcoord,"DEFcol",DEFcol);
-
+## printf ("Done\n");
 ## R=5; C=11;
 ## x = ones(R,1)*[1:C]; y = [1:R]'*ones(1,C);
 ## zz = z = sin(x)+(2*y/R-1).^2 ;

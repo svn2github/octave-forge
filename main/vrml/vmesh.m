@@ -25,6 +25,11 @@
 ##             or (R-1)*(C-1)
 ##                       : Reflectivity of facets.
 ##
+## "checker", c : 1x2 : Color as a checker. If c(1) is positive, checker has
+##            c(1) rows. If it is negative, each checker row is c(1) facets
+##            high c(2) likewise determines width of checker columns.
+## "checker", c : 1x1 : Same as [c,c].
+##
 ##        RGB and reflectivity values should be in the [0,1] interval.
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
@@ -37,8 +42,7 @@ if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   zz = x ;
   [R,C] = size (zz);
   [xx,yy] = meshgrid (linspace (-1,1,C), linspace (-1,1,R)); 
-  ## ones(R,1)*[1:C] ;
-  ## yy = ## [1:R]'*ones(1,C) ;
+
   if     nargin >=3,
     s = vmesh ( xx, yy, zz, y, z, varargin{:} );
     if ! nargout,  clear s; end;  return
@@ -56,19 +60,23 @@ surf_args = list (x,y,z);	# Arguments that'll be passed to vrml_surf
 
 if nargin > 3,
 
-  op1 = " tran col checker creaseAngle emit colorPerVertex tex ";
-  op0 = " smooth " ;
+  op1 = " tran col checker creaseAngle emit colorPerVertex tex zcol ";
+  op0 = " smooth zgrey zrb ";
 
-  s = read_options (varargin,"op0",op0,"op1",op1);
+  opts = read_options (varargin,"op0",op0,"op1",op1);
 
 				# Identify options for vrml_surf()
   all_surf_opts  = list ("tran", "col", "checker", "creaseAngle", "emit", \
-			 "colorPerVertex", "smooth", "tex");
+			 "colorPerVertex", "smooth", "tex",\
+			 "zgrey","zrb","zcol");
 
   for i = 1:length(all_surf_opts)
     optname = nth (all_surf_opts, i);
-    if struct_contains (s, optname)
-      surf_args = append (surf_args, list (optname, getfield (s, optname)));
+    if struct_contains (opts, optname)
+      surf_args = append (surf_args, list (optname));
+      if index (op1,[" ",optname," "])
+	surf_args = append (surf_args, list(opts.(optname))); 
+      end
     end
   end
 end

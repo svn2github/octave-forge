@@ -1,5 +1,24 @@
-## Author: Joerg Specht
+## -*- texinfo -*-
+## @deftypefn{Function File}{[@var{yi}, @var{p}] =} csaps(@var{x}, @var{y}, @var{p}, @var{xi}, @var{w}=[])
+## @deftypefnx{Function File}{[@var{pp}, @var{p}] =} csaps(@var{x}, @var{y}, @var{p}=-1, [], @var{w}=[])
 ##
+## Cubic spline approximation (smoothing)@*
+## approximate [x,y] weighted w at xi
+##
+## @table @asis
+## @item @var{p}<0
+##       automatic smoothing
+## @item @var{p}=0
+##       maximum smoothing: straight line
+## @item @var{p}=1
+##       no smoothing: interpolation
+## @end table
+##
+## @seealso{csapi, ppval, gcvspl}
+## @end deftypefn
+
+## Author: Joerg Specht
+
 ## This program is granted to the public domain.
 ##
 ## THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
@@ -15,25 +34,6 @@
 ## SUCH DAMAGE.
 
 function [r,p]=csaps(x,y,p,xi,w)
-  ## -*- texinfo -*-
-  ## @deftypefn{Function File}{[@var{yi}, @var{p}] =} csaps(@var{x}, @var{y}, @var{p}, @var{xi}, @var{w}=[])
-  ## @deftypefnx{Function File}{[@var{pp}, @var{p}] =} csaps(@var{x}, @var{y}, @var{p}=-1, [], @var{w}=[])
-  ##
-  ## Cubic spline approximation (smoothing)@*
-  ## approximate [x,y] weighted w at xi
-  ##
-  ## @table @asis
-  ## @item @var{p}<0
-  ##       automatic smoothing
-  ## @item @var{p}=0
-  ##       maximum smoothing: straight line
-  ## @item @var{p}=1
-  ##       no smoothing: interpolation
-  ## @end table
-  ##
-  ## @seealso{csapi, ppval, gcvspl}
-  ## @end deftypefn
-
   if(nargin < 5)
     w = [];
     if(nargin < 4)

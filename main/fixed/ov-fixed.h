@@ -132,6 +132,10 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const 
     { return ComplexMatrix (1, 1, Complex (::fixedpoint(scalar))); }
 
+#ifdef HAVE_OCTAVE_CONCAT
+  octave_value resize (const dim_vector& dv) const;
+#endif
+
   octave_value convert_to_str (bool pad = false) const;
 
   void increment (void) { ++scalar; }

@@ -79,6 +79,10 @@ public:
 
   octave_value_list dotref (const octave_value_list& idx);
 
+#ifdef HAVE_OCTAVE_CONCAT
+  size_t byte_size (void) const { return sizeof (ST); }
+#endif
+
 #ifdef HAVE_ND_ARRAYS
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 #else

@@ -637,10 +637,11 @@ floating to fixed point types for an optimal hardware implementation.
 This mixing of functions that treat both floating and fixed point types
 can even apply to Oct-files (@pxref{Oct-files}).
 
-The main limitation to the above is the use of the concatenation operator,
-such as @code{[a,b]}, that is hard-coded into current versions of Octave
-and is thus not aware of the fixed-point type. Therefore, such code should
-be avoided and the function @dfn{concat} supplied with this package used
+The main limitation to the above is the use of the concatenation
+operator, such as @code{[a,b]}, that is hard-coded in versions of
+Octave prior to 2.1.58 and is thus not aware of the fixed-point
+type. Therefore, such code should be avoided in earlier versions of
+Octave and the function @dfn{concat} supplied with this package used
 instead.
 
 @node Precision, Lookup Tables, Together, Basics
@@ -749,12 +750,12 @@ Before reporting a bug compare it to this list of known problems
 
 @table @asis
 @item Concatenation
-The concatenation of fixed point objects returns a Matrix type. That is 
-@code{[fixed(7,2,[1, 2]), fixed(7,2,3)]} returns a matrix when it should 
-return another fixed point matrix. This problem is due to the implementation
-of matrix concatenation in Octave being hard-coded for the basic types it
-knows rather than being expandable, and thus will require a large change to
-Octave to be fixed.
+For versions of Octave prior to 2.1.58, the concatenation of fixed point 
+objects returns a Matrix type. That is @code{[fixed(7,2,[1, 2]), fixed(7,2,3)]}
+returns a matrix when it should return another fixed point matrix. This 
+problem is due to the implementation of matrix concatenation in earlier
+versions of Octave being hard-coded for the basic types it knows rather than 
+being expandable.
 
 The workaround is to explicitly convert the returned value back to the 
 correct fixed point object. For instance
@@ -768,6 +769,9 @@ octave:3> c = fixed([a.int, b.int], [a.dec, b.dec],
 
 Alternatively, use the supplied function @dfn{concat} that explicitly
 performs the above above, but can also be used for normal matrices.
+
+Since Octave version 2.1.58, @code{[fixed(7,2,[1,2]),fixed(7,2,3)]}
+returns another fixed point object as expected.
 
 @item Saving fixed point objects
 
@@ -809,12 +813,13 @@ operators and functions from the base fixed point operators and functions.
 The relevant file for the gcc 3.x versions of the compiler can be found in
 @file{/usr/include/g++-v3/bits/std_complex.h}.
 
-@item Function @dfn{foo} returns fixed point types while @dfn{bar} does not?
-If the existing functions, written as m-files, respect the use (or rather 
-non-use) of the concatentaion operator, then these functions will operate
-correctly. However, many functions don't and thus will return a floating
-type for a fixed point input. All functions should be checked by the user
-for their correct operation before using them. 
+@item Function @dfn{foo} returns fixed point types while @dfn{bar}
+does not?  If the existing functions, written as m-files, respect the
+use (or rather non-use) of the concatentaion operator, then these
+functions will operate correctly. However, many functions don't and
+thus will return a floating type for a fixed point input, when run on
+versions of Octave earlier than 2.1.58. All functions should be
+checked by the user for their correct operation before using them.
 
 Additionally, existing oct-files will not operate correctly with fixed
 point inputs, as they are not aware of the fixed point type and will

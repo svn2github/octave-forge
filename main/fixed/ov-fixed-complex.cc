@@ -98,6 +98,22 @@ octave_fixed_complex::complex_array_value (bool) const
 }
 #endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+octave_value 
+octave_fixed_complex::resize (const dim_vector& dv) const
+{ 
+  if (dv.length() > 2)
+    {
+      error ("Can not resize fixed point to NDArray");
+      return octave_value ();
+    }
+  FixedComplexMatrix retval (dv(0),dv(1)); 
+  if (dv.numel()) 
+    retval(0) = scalar; 
+  return new octave_fixed_complex_matrix (retval); 
+}
+#endif
+
 octave_value
 octave_fixed_complex::subsasgn (const std::string& type,
 				  const std::list<octave_value_list>& idx,

@@ -94,6 +94,10 @@ public:
   }
 #endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+  size_t byte_size (void) const { return matrix.byte_size (); }
+#endif
+
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 

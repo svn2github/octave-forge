@@ -399,6 +399,17 @@ FixedMatrix::is_symmetric (void) const
   return false;
 }
 
+#ifdef HAVE_OCTAVE_CONCAT
+FixedMatrix concat (const FixedMatrix& ra, const FixedMatrix& rb, 
+		    const Array<int>& ra_idx)
+{
+  FixedMatrix retval (ra);
+  if (ra.numel() > 0)
+    retval.insert (rb, ra_idx(0), ra_idx(1));
+  return retval;
+}
+#endif
+
 FixedMatrix&
 FixedMatrix::insert (const FixedMatrix& a, int r, int c)
 {

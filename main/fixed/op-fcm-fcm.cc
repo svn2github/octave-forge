@@ -118,6 +118,10 @@ CONVDECLX (fixed_complex_matrix_conv)
   return new octave_fixed_complex_matrix ();
 }
 
+FIXED_DEFCATOP_FN (fcm_fcm, fixed_complex_matrix, fixed_complex_matrix, 
+		   fixed_complex_matrix, fixed_complex_matrix,
+		   fixed_complex_matrix, concat)
+
 DEFASSIGNOP_FN (assign, fixed_complex_matrix, fixed_complex_matrix, assign)
 
 void
@@ -163,6 +167,9 @@ install_fcm_fcm_ops (void)
 		 octave_fixed_complex_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_fixed_complex_matrix, 
 		 octave_fixed_complex_matrix, el_or);
+
+  FIXED_INSTALL_CATOP (octave_fixed_complex_matrix, octave_fixed_complex_matrix,
+		       fcm_fcm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_fixed_complex_matrix, 
 		    octave_fixed_complex_matrix, assign);

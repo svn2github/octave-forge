@@ -82,9 +82,6 @@ template int assign (Array2<FixedPointComplex>&, const Array2<FixedPoint>&,
 		const FixedPointComplex&);
 template int assign (Array2<FixedPointComplex>&, 
 		const Array2<FixedPointComplex>&, const FixedPointComplex&);
-#else
-INSTANTIATE_ARRAY_CAT (FixedPoint);
-INSTANTIATE_ARRAY_CAT (FixedPointComplex);
 #endif
 
 INSTANTIATE_MARRAY2_FRIENDS (FixedPoint)

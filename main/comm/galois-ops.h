@@ -102,6 +102,22 @@ Open Source Initiative (www.opensource.org)
     return new octave_galois (f (v1.t1 ## _value (), v2.matrix_value ())); \
   }
 
+#ifdef HAVE_OCTAVE_CONCAT
+#define DEFCATOP_G_FN(name, t1, t2, f) \
+  CATOPDECL (name, a1, a2)	     \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    return new octave_galois (f (v1.t1 ## _value (), v2.t2 ## _value (), ra_idx)); \
+  }
+
+#define INSTALL_G_CATOP(t1, t2, f) INSTALL_CATOP(t1, t2, f) 
+#else
+#define DEFCATOP_G_FN(name, t1, t2, f) 
+#define INSTALL_G_CATOP(t1, t2, f)
+#endif
+
+
+
 #endif
 
 /*

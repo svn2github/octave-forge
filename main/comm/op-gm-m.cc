@@ -68,6 +68,8 @@ DEFBINOP (el_ldiv, galois, matrix)
 DEFBINOP_FN (el_and, galois, matrix, mx_el_and)
 DEFBINOP_FN (el_or, galois, matrix, mx_el_or)
 
+DEFCATOP_G_FN (gm_m, galois, matrix, concat)
+
 // Need to create temporary Galois array so that matrix values are checked
 DEFASSIGNOP (assign, galois, matrix) 
 {
@@ -99,6 +101,8 @@ install_gm_m_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_galois, octave_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_galois, octave_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_galois, octave_matrix, el_or);
+
+  INSTALL_G_CATOP (octave_galois, octave_matrix, gm_m);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_galois, octave_matrix, assign);
   INSTALL_ASSIGNCONV (octave_base_value, octave_galois, octave_matrix);

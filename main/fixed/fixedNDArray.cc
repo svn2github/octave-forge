@@ -564,17 +564,6 @@ FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
   return result;
 }
 
-int
-FixedNDArray::cat (const FixedNDArray& ra_arg, int dim, int iidx, int move)
-{
-#ifdef INSTANTIATE_ARRAY_CAT
-  return ::cat_ra (*this, ra_arg, dim, iidx, move);
-#else
-  error("fixed cat not implemented");
-  return 0;
-#endif
-}
-
 FixedNDArray
 FixedNDArray::abs (void) const
 {
@@ -701,12 +690,31 @@ FixedNDArray atan2 (const FixedNDArray &x, const FixedNDArray &y)
   return retval;
 }
 
+#ifdef HAVE_OCTAVE_CONCAT
+FixedNDArray 
+concat (const FixedNDArray& ra, const FixedNDArray& rb, 
+	const Array<int>& ra_idx)
+{
+  FixedNDArray retval (ra);
+  if (ra.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
+}
+
+FixedNDArray&
+FixedNDArray::insert (const FixedNDArray& a, const Array<int>& ra_idx)
+{
+  Array<FixedPoint>::insert (a, ra_idx);
+  return *this;
+}
+#endif
+
 void
 FixedNDArray::increment_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension)
 {
-#ifdef INSTANTIATE_ARRAY_CAT
+#ifdef HAVE_OCTAVE_CONCAT
   ::increment_index (ra_idx, dimensions, start_dimension);
 #else
   error("fixed increment_index not implemented");
@@ -717,7 +725,7 @@ int
 FixedNDArray::compute_index (Array<int>& ra_idx,
 			     const dim_vector& dimensions)
 {
-#ifdef INSTANTIATE_ARRAY_CAT
+#ifdef HAVE_OCTAVE_CONCAT
   return ::compute_index (ra_idx, dimensions);
 #else
   error("fixed compute_index not implemented");

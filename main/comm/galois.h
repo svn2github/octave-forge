@@ -92,6 +92,17 @@ public:
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;
 
+#ifdef HAVE_OCTAVE_CONCAT
+  friend galois concat (const galois& ra, const galois& rb, 
+			 const Array<int>& ra_idx);
+  friend galois concat (const galois& ra, const Matrix& rb, 
+			 const Array<int>& ra_idx);
+  friend galois concat (const Matrix& ra, const galois& rb, 
+			 const Array<int>& ra_idx);
+
+  galois& insert (const galois& a, int r, int c);
+#endif
+
   galois diag (void) const;
   galois diag (int k) const;
 

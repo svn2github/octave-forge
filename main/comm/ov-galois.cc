@@ -55,6 +55,21 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois", "galois");
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois");
 #endif
 
+
+#ifdef HAVE_OCTAVE_CONCAT
+octave_value octave_galois::resize (const dim_vector& dv) const
+{ 
+  if (dv.length() > 2)
+    {
+      error ("Can not resize galois structure to NDArray");
+      return octave_value ();
+    }
+  galois retval (gval); 
+  retval.resize (dv(0), dv(1)); 
+  return new octave_galois (retval);
+}
+#endif
+
 octave_value_list
 octave_galois::dotref (const octave_value_list& idx)
 {

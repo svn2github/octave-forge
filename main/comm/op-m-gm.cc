@@ -77,6 +77,8 @@ DEFBINOP (el_ldiv, matrix, galois)
 DEFBINOP_FN (el_and, matrix, galois, mx_el_and)
 DEFBINOP_FN (el_or, matrix, galois, mx_el_or)
 
+DEFCATOP_G_FN (m_gm, matrix, galois, concat)
+
 DEFASSIGNOP_FN (assign, matrix, galois, assign)
 
 void
@@ -100,6 +102,8 @@ install_m_gm_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_matrix, octave_galois, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_matrix, octave_galois, el_and);
   INSTALL_BINOP (op_el_or, octave_matrix, octave_galois, el_or);
+
+  INSTALL_G_CATOP (octave_matrix, octave_galois, m_gm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_galois, assign);
   //INSTALL_ASSIGNCONV (octave_base_value, octave_matrix, octave_galois);

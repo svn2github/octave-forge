@@ -46,10 +46,6 @@ galois::galois (const MArray2<int>& a, const int& _m, const int& _primpoly) : MA
 	gripe_range_galois(_m);
 	return;
       }
-      if ((a(i,j) - (double)((int)a(i,j))) != 0.) {
-	gripe_integer_galois();
-	return;
-      }
       xelem(i,j) = (int)a(i,j);
     }
   }
@@ -87,10 +83,6 @@ galois::galois (int nr, int nc, const int& val, const int& _m, const int& _primp
     return;
   }
 
-  for (int i=0; i<rows(); i++)
-    for (int j=0; j<columns(); j++)
-      xelem(i,j) = val;
-
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
@@ -108,10 +100,6 @@ galois::galois (int nr, int nc, double val, const int& _m, const int& _primpoly)
     return;
   }
 
-  for (int i=0; i<rows(); i++)
-    for (int j=0; j<columns(); j++)
-      xelem(i,j) = (int)val;
-
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
@@ -126,7 +114,6 @@ galois :: galois (const galois& a) :
 
   // This call to create_galois_field will just increment the usage counter
   field = stored_galois_fields.create_galois_field(a.m(), a.primpoly());
-
 }
 
 galois :: ~galois (void)
@@ -237,6 +224,98 @@ galois  galois::index (idx_vector& i, idx_vector& j, int resize_ok,
 
   return retval;
 }
+
+#ifdef HAVE_OCTAVE_CONCAT
+galois concat (const galois& ra, const galois& rb, const Array<int>& ra_idx)
+{
+  galois retval (ra);
+  if (ra.numel() > 0)
+    retval.insert (rb, ra_idx(0), ra_idx(1));
+  return retval;
+}
+
+galois concat (const galois& ra, const Matrix& rb, const Array<int>& ra_idx)
+{
+  galois retval (ra);
+  if (ra.numel() == 1)
+    return retval;
+
+  galois tmp (0, 0, 0, ra.m(), ra.primpoly());
+  int _n = (1<<ra.m()) - 1;
+  int r = rb.rows();
+  int c = rb.columns();
+  tmp.resize (r, c);
+
+  // Check the validity of the data in the matrix
+  for (int i=0; i<r; i++) {
+    for (int j=0; j<c; j++) {
+      if ((rb(i,j) < 0) || (rb(i,j) > _n)) {
+	gripe_range_galois(ra.m());
+	return retval;
+      }
+      if ((rb(i,j) - (double)((int)rb(i,j))) != 0.) {
+	gripe_integer_galois();
+	return retval;
+      }
+      tmp(i,j) = (int)rb(i,j);
+    }
+  }
+
+  retval.insert (tmp, ra_idx(0), ra_idx(1));
+  return retval;
+}
+
+galois concat (const Matrix& ra, const galois& rb,  const Array<int>& ra_idx)
+{
+  galois retval (0, 0, 0, rb.m(), rb.primpoly());
+  int _n = (1<<rb.m()) - 1;
+  int r = ra.rows();
+  int c = ra.columns();
+  retval.resize (r, c);
+  if (ra.numel() < 1)
+    return retval;
+
+  // XXX FIXME XXX
+  // Check the validity of the data in the matrix. This is problematic
+  // as "ra" is not initialized on the initial resize and so contains
+  // random data that will be replaced. Humm, disable for now
+  for (int i=0; i<r; i++) {
+    for (int j=0; j<c; j++) {
+#if 0
+      if ((ra(i,j) < 0) || (ra(i,j) > _n)) {
+	gripe_range_galois(rb.m());
+	return retval;
+      }
+      if ((ra(i,j) - (double)((int)ra(i,j))) != 0.) {
+	gripe_integer_galois();
+	return retval;
+      }
+      retval(i,j) = (int)ra(i,j);
+#else
+      int tmp = (int)ra(i,j);
+      if (tmp < 0)
+	retval(i,j) = 0;
+      else if (tmp > _n)
+	retval(i,j) = _n;
+      else
+	retval(i,j) = tmp;
+#endif
+    }
+  }
+
+  retval.insert (rb, ra_idx(0), ra_idx(1));
+  return retval;
+}
+
+galois& galois::insert (const galois& t, int r, int c)
+{
+  if ((m() != t.m()) || (primpoly() != t.primpoly()))
+    (*current_liboctave_error_handler) ("inserted galois variable must be in the same field");
+  else
+    Array<int>::insert (t, r, c);
+  return *this;
+}
+#endif
 
 galois galois::diag (void) const
 {

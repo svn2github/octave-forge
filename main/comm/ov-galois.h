@@ -33,6 +33,11 @@ Open Source Initiative (www.opensource.org)
 
 #include <iostream>
 #include <string>
+
+#ifdef HAVE_OCTAVE_CONCAT
+#include <octave/dim-vector.h>
+#endif
+
 #include "galois.h"
 
 #ifdef HAVE_SLLIST_H
@@ -104,6 +109,12 @@ public:
 
     return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
   }
+#endif
+
+#ifdef HAVE_OCTAVE_CONCAT
+  octave_value resize (const dim_vector& dv) const;
+
+  size_t byte_size (void) const { return gval.byte_size (); }
 #endif
 
   octave_value all (int dim = 0) const { return gval.all(dim); }

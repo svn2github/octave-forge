@@ -1529,11 +1529,14 @@ Before reporting a bug compare it to this list of known problems
 
 @table @asis
 @item Concatenation
-The concatenation of Galois arrays returns a Matrix type. That is 
-@code{[gf([1, 0],m) gf(1, m)]} returns a matrix went it should return
-another Galois array. The workaround is to explicitly convert the 
-returned value back to the correct Galois field using 
+For versions of Octave prior to 2.1.58, the concatenation of Galois arrays 
+returns a Matrix type. That is @code{[gf([1, 0],m) gf(1, m)]} returns a 
+matrix went it should return another Galois array. The workaround is to 
+explicitly convert the  returned value back to the correct Galois field using 
 @code{gf([gf([1, 0],m) gf(1,m)],m)}.
+
+Since Octave version 2.1.58, @code{[gf([1, 0],m) gf(1, m)]} returns another
+Galois array as expected.
 
 @item Saving and loading Galois variables
 
@@ -1687,9 +1690,27 @@ conjunction with a Galois array as long as they contain valid data
 within the Galois field. In this case they will be assumed to be of the
 same field.
 
-As Octave does not yet support concatenation of typed matrices, matrix
-concatenation will force the Galois array back to a normal matrix. For
-instance.
+As Octave supports concatenation of typed matrices only for version
+2.1.58 and later, matrix concatenation will force the Galois array back 
+to a normal matrix for earlier version. For instance for Octave 2.1.58
+and later.
+
+@example
+octave:1> a = [gf([0:7],3); gf([7:-1:0],3)];
+octave:2> b = [a, a];
+octave:3> whos
+
+*** local user variables:
+
+  Prot Name       Size  Bytes  Class
+  ==== ====       ====  =====  ===== 
+   rwd a          2x8      64  galois
+   rwd b          2x16    128  galois
+
+Total is 49 elements using 192 bytes
+@end example
+
+and for  previous versions of Octave
 
 @example
 octave:1> a = [gf([0:7],3); gf([7:-1:0],3)];
@@ -1705,9 +1726,9 @@ prot  type                       rows   cols  name
 @end example
 
 This has the implication that many of the scripts included with Octave
-that should work with Galois fields, won't work correctly at this point.
-Therefore, work is underway to include the capability of typed concatenation.
-For now if you wish to concatenate Galois arrays, use the syntax
+that should work with Galois fields, won't work correctly for versions
+earlier than 2.1.58. If you wish to concatenate Galois arrays with earlier
+versions, use the syntax
 
 @example
 octave:1> a = gf([0:7],3);

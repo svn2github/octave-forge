@@ -182,6 +182,23 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+#ifdef HAVE_OCTAVE_CONCAT
+  friend FixedComplexNDArray concat (const FixedComplexNDArray& ra, 
+				     const FixedComplexNDArray& rb, 
+				     const Array<int>& ra_idx);
+
+  friend FixedComplexNDArray concat (const FixedComplexNDArray& ra, 
+				     const FixedNDArray& rb, 
+				     const Array<int>& ra_idx);
+
+  friend FixedComplexNDArray concat (const FixedNDArray& ra, 
+				     const FixedComplexNDArray& rb, 
+				     const Array<int>& ra_idx);
+
+  FixedComplexNDArray& insert (const FixedComplexNDArray& a, 
+			       const Array<int>& ra_idx);
+#endif
+
   FixedComplexNDArray cumprod (int dim = -1) const;
   FixedComplexNDArray cumsum (int dim = -1) const;
   FixedComplexNDArray prod (int dim = -1) const;
@@ -233,8 +250,6 @@ public:
   FixedNDArray abs (void) const;
 
   FixedComplexMatrix fixed_complex_matrix_value (void) const;
-
-  int cat (const FixedComplexNDArray& ra_arg, int dim, int iidx, int move);
 
   FixedComplexNDArray squeeze (void) const 
     { return ArrayN<FixedPointComplex>::squeeze (); }

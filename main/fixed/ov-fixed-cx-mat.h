@@ -129,6 +129,10 @@ public:
   ComplexNDArray complex_array_value (bool = false) const;
 #endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+  octave_value resize (const dim_vector& dv) const;
+#endif
+
   void increment (void) { matrix += FixedPoint(1,0,1,0); }
 
   void decrement (void) { matrix -= FixedPoint(1,0,1,0); }

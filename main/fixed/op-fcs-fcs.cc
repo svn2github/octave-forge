@@ -189,6 +189,10 @@ DEFBINOP (el_or, fixed_complex, fixed_complex)
   return octave_value ((d1.fixedpoint() != 0.0 || d2.fixedpoint () != 0.0));
 }
 
+FIXED_DEFCATOP_FN (fcs_fcs, fixed_complex, fixed_complex, 
+		   fixed_complex_matrix, fixed_complex_matrix,
+		   fixed_complex_matrix, concat)
+
 void
 install_fcs_fcs_ops (void)
 {
@@ -223,6 +227,8 @@ install_fcs_fcs_ops (void)
   INSTALL_BINOP (op_el_and, octave_fixed_complex, octave_fixed_complex, 
 		 el_and);
   INSTALL_BINOP (op_el_or, octave_fixed_complex, octave_fixed_complex, el_or);
+
+  FIXED_INSTALL_CATOP (octave_fixed_complex, octave_fixed_complex, fcs_fcs);
 
   INSTALL_ASSIGNCONV (octave_fixed_complex, octave_fixed_complex, 
 		      octave_fixed_complex_matrix);

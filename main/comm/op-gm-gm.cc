@@ -80,6 +80,8 @@ DEFBINOP (el_ldiv, galois, galois)
 DEFBINOP_FN (el_and, galois, galois, mx_el_and)
 DEFBINOP_FN (el_or, galois, galois, mx_el_or)
 
+DEFCATOP_G_FN (gm_gm, galois, galois, concat)
+
 DEFASSIGNOP_FN (assign, galois, galois, assign)
 
 void
@@ -108,6 +110,8 @@ install_gm_gm_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_galois, octave_galois, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_galois, octave_galois, el_and);
   INSTALL_BINOP (op_el_or, octave_galois, octave_galois, el_or);
+
+  INSTALL_G_CATOP (octave_galois, octave_galois, gm_gm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_galois, octave_galois, assign);
 }

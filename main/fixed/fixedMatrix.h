@@ -127,6 +127,11 @@ public:
 
   bool is_symmetric (void) const;
 
+#ifdef HAVE_OCTAVE_CONCAT
+  friend FixedMatrix concat (const FixedMatrix& ra, const FixedMatrix& rb, 
+			     const Array<int>& ra_idx);
+#endif
+
   // destructive insert/delete/reorder operations
 
   FixedMatrix& insert (const FixedMatrix& a, int r, int c);

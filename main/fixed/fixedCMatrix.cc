@@ -646,6 +646,39 @@ FixedComplexMatrix::is_symmetric (void) const
   return false;
 }
 
+#ifdef HAVE_OCTAVE_CONCAT
+FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
+			   const FixedComplexMatrix& rb, 
+			   const Array<int>& ra_idx)
+{
+  FixedComplexMatrix retval (ra);
+  if (ra.numel() > 0)
+    retval.insert (rb, ra_idx(0), ra_idx(1));
+  return retval;
+}
+
+FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
+			   const FixedMatrix& rb, 
+			   const Array<int>& ra_idx)
+{
+  FixedComplexMatrix retval (ra);
+  FixedComplexMatrix tmp (rb);
+  if (ra.numel() > 0)
+    retval.insert (tmp, ra_idx(0), ra_idx(1));
+  return retval;
+}
+
+FixedComplexMatrix concat (const FixedMatrix& ra, 
+			   const FixedComplexMatrix& rb, 
+			   const Array<int>& ra_idx)
+{
+  FixedComplexMatrix retval (ra);
+  if (ra.numel() > 0)
+    retval.insert (rb, ra_idx(0), ra_idx(1));
+  return retval;
+}
+#endif
+
 FixedComplexMatrix&
 FixedComplexMatrix::insert (const FixedComplexMatrix& a, int r, int c)
 {

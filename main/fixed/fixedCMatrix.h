@@ -185,6 +185,20 @@ public:
   bool is_hermitian (void) const;
   bool is_symmetric (void) const;
 
+#ifdef HAVE_OCTAVE_CONCAT
+  friend FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
+				    const FixedComplexMatrix& rb, 
+				    const Array<int>& ra_idx);
+
+  friend FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
+				    const FixedMatrix& rb, 
+				    const Array<int>& ra_idx);
+
+  friend FixedComplexMatrix concat (const FixedMatrix& ra, 
+				    const FixedComplexMatrix& rb, 
+				    const Array<int>& ra_idx);
+#endif
+
   // destructive insert/delete/reorder operations
 
   FixedComplexMatrix& insert (const FixedComplexMatrix& a, int r, int c);

@@ -87,6 +87,10 @@ DEFBINOP (el_ldiv, fixed_matrix, fixed_complex_matrix)
 DEFBINOP_FN (el_and, fixed_matrix, fixed_complex_matrix, mx_el_and)
 DEFBINOP_FN (el_or, fixed_matrix, fixed_complex_matrix, mx_el_or)
 
+FIXED_DEFCATOP_FN (fm_fcm, fixed_matrix, fixed_complex_matrix, 
+		   fixed_matrix, fixed_complex_matrix,
+		   fixed_complex_matrix, concat)
+
 DEFCONV (fixed_complex_matrix_conv, fixed_matrix, fixed_complex_matrix)
 {
   CAST_CONV_ARG (const octave_fixed_matrix&);
@@ -123,6 +127,9 @@ install_fm_fcm_ops (void)
 		 el_and);
   INSTALL_BINOP (op_el_or, octave_fixed_matrix, octave_fixed_complex_matrix, 
 		 el_or);
+
+  FIXED_INSTALL_CATOP (octave_fixed_matrix, octave_fixed_complex_matrix,
+		       fm_fcm);
 
   INSTALL_ASSIGNCONV (octave_fixed_matrix, octave_fixed_complex_matrix,
 		      octave_fixed_complex_matrix);

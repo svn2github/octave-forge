@@ -761,18 +761,6 @@ FixedComplexNDArray elem_pow (const FixedPointComplex &a, const FixedComplexNDAr
   return elem_pow (FixedComplexNDArray(dim_vector(1), a), b);
 }
 
-int
-FixedComplexNDArray::cat (const FixedComplexNDArray& ra_arg, int dim, 
-			  int iidx, int move)
-{
-#ifdef INSTANTIATE_ARRAY_CAT
-  return ::cat_ra(*this, ra_arg, dim, iidx, move);
-#else
-  error("fixed cat not implemented");
-  return 0;
-#endif
-}
-
 FixedComplexNDArray
 FixedComplexNDArray::max (int dim) const
 {
@@ -935,12 +923,54 @@ FixedComplexNDArray::fixed_complex_matrix_value (void) const
   return retval;
 }
 
+#ifdef HAVE_OCTAVE_CONCAT
+FixedComplexNDArray 
+concat (const FixedComplexNDArray& ra, const FixedComplexNDArray& rb, 
+	const Array<int>& ra_idx)
+{
+  FixedComplexNDArray retval (ra);
+  if (ra.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
+}
+
+FixedComplexNDArray 
+concat (const FixedComplexNDArray& ra, const FixedNDArray& rb, 
+	const Array<int>& ra_idx)
+{
+  FixedComplexNDArray retval (ra);
+  if (ra.numel () > 0) {
+    FixedComplexNDArray tmp (rb);
+    retval.insert (tmp, ra_idx);
+  }
+  return retval;
+}
+
+FixedComplexNDArray
+concat (const FixedNDArray& ra, const FixedComplexNDArray& rb, 
+	const Array<int>& ra_idx)
+{
+  FixedComplexNDArray retval (ra);
+  if (ra.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
+}
+
+FixedComplexNDArray& 
+FixedComplexNDArray::insert (const FixedComplexNDArray& a, 
+			     const Array<int>& ra_idx)
+{
+  Array<FixedPointComplex>::insert (a, ra_idx);
+  return *this;
+}
+#endif
+
 void
 FixedComplexNDArray::increment_index (Array<int>& ra_idx,
 				 const dim_vector& dimensions,
 				 int start_dimension)
 {
-#ifdef INSTANTIATE_ARRAY_CAT
+#ifdef HAVE_OCTAVE_CONCAT
   ::increment_index (ra_idx, dimensions, start_dimension);
 #else
   error("fixed increment_index not implemented");
@@ -951,7 +981,7 @@ int
 FixedComplexNDArray::compute_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions)
 {
-#ifdef INSTANTIATE_ARRAY_CAT
+#ifdef HAVE_OCTAVE_CONCAT
   return ::compute_index (ra_idx, dimensions);
 #else
   error("fixed compute_index not implemented");

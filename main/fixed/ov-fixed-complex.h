@@ -147,6 +147,10 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const 
     { return ComplexMatrix (1, 1, ::fixedpoint(scalar)); }
 
+#ifdef HAVE_OCTAVE_CONCAT
+  octave_value resize (const dim_vector& dv) const;
+#endif
+
   void increment (void) { scalar += FixedPoint(1,0,1,0); }
 
   void decrement (void) { scalar -= FixedPoint(1,0,1,0); }

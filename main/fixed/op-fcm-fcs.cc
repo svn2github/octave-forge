@@ -125,6 +125,10 @@ DEFBINOP (el_ldiv, fixed_complex_matrix, fixed_complex)
 DEFBINOP_FN (el_and, fixed_complex_matrix, fixed_complex, mx_el_and)
 DEFBINOP_FN (el_or, fixed_complex_matrix, fixed_complex, mx_el_or)
 
+FIXED_DEFCATOP_FN (fcm_fcs, fixed_complex_matrix, fixed_complex, 
+		   fixed_complex_matrix, fixed_complex_matrix,
+		   fixed_complex_matrix, concat)
+
 DEFASSIGNOP_FN (assign, fixed_complex_matrix, fixed_complex, assign)
 
 void
@@ -158,6 +162,9 @@ install_fcm_fcs_ops (void)
 		 el_and);
   INSTALL_BINOP (op_el_or, octave_fixed_complex_matrix, octave_fixed_complex, 
 		 el_or);
+
+  FIXED_INSTALL_CATOP (octave_fixed_complex_matrix, octave_fixed_complex, 
+		       fcm_fcs);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_fixed_complex_matrix,
 		    octave_fixed_complex, assign);

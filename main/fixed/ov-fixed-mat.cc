@@ -114,6 +114,21 @@ octave_fixed_matrix::complex_array_value (bool) const
 }
 #endif
 
+#ifdef HAVE_OCTAVE_CONCAT
+octave_value
+octave_fixed_matrix::resize (const dim_vector& dv) const
+{
+  if (dv.length() > 2)
+    {
+      error ("Can not resize fixed point to NDArray");
+      return octave_value ();
+    }
+  FixedMatrix retval (matrix); 
+  retval.resize (dv(0), dv(1)); 
+  return new octave_fixed_matrix (retval);
+}
+#endif
+
 FixedMatrix
 octave_fixed_matrix::do_index_intern (const octave_value_list& idx,
 				     int resize_ok)

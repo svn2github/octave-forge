@@ -121,12 +121,18 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+#ifdef HAVE_OCTAVE_CONCAT
+  friend FixedNDArray concat (const FixedNDArray& ra, const FixedNDArray& rb, 
+			      const Array<int>& ra_idx);
+
+  FixedNDArray& insert (const FixedNDArray& a, const Array<int>& ra_idx);
+#endif
+
   FixedNDArray cumprod (int dim = -1) const;
   FixedNDArray cumsum (int dim = -1) const;
   FixedNDArray prod (int dim = -1) const;
   FixedNDArray sum (int dim = -1) const;  
   FixedNDArray sumsq (int dim = -1) const;
-  int cat (const FixedNDArray& ra_arg, int dim, int iidx, int move);
 
   FixedNDArray max (int dim = 0) const;
   FixedNDArray max (ArrayN<int>& index, int dim = 0) const;

@@ -372,6 +372,7 @@ fi
 AC_SUBST(HAVE_ND_ARRAYS)
 rm -rf conftest*
 
+CONFIGURE_OUTPUTS="Makeconf octinst.sh"
 STATUS_MSG="
 octave commands will install into the following directories:
    m-files:   $mpath

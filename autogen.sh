@@ -9,7 +9,7 @@ if test ! -z "$files" ; then
   cat $files >> configure.in
 fi
 cat <<EOF >> configure.in
-  AC_OUTPUT(Makeconf octinst.sh)
+  AC_OUTPUT(\$CONFIGURE_OUTPUTS)
   dnl XXX FIXME XXX chmod is not in autoconf's list of portable functions
   chmod 0771 octinst.sh
   echo " "

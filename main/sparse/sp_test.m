@@ -42,22 +42,22 @@ end
 
 % choose random test matrices
    arf=zeros( sz1,sz2 );
-   nz= sz12*rand(1)/2+0;
+   nz= ceil(sz12*rand(1)/2+0);
    arf(ceil(rand(nz,1)*sz12))=randn(nz,1);
 
    brf=zeros( sz1,sz2 );
-   nz= sz12*rand(1)/2+0;
+   nz= ceil(sz12*rand(1)/2+0);
    brf(ceil(rand(nz,1)*sz12))=randn(nz,1);
 
    crf=zeros( sz2,sz3 );
-   nz= sz23*rand(1)/2+0;
+   nz= ceil(sz23*rand(1)/2+0);
    crf(ceil(rand(nz,1)*sz23))=randn(nz,1);
 
    while (1)
 % Choose eye to try to force a non singular a 
 % I wish we could turn off warnings here!
       drf=eye(sz4) * 1e-4;
-      nz= sz4^2 *rand(1)/2;
+      nz= ceil(sz4^2 *rand(1)/2);
       drf(ceil(rand(nz,1)*sz4^2))=randn(nz,1);
 
       if abs(det(drf)) >1e-10 ; break ; end
@@ -72,22 +72,22 @@ end
 
 % complex sparse
    acf=zeros( sz1,sz2 );
-   nz= sz12*rand(1)/2+1;
+   nz= ceil(sz12*rand(1)/2+1);
    acf(ceil(rand(nz,1)*sz12))=randn(nz,1) + 1i*randn(nz,1);
 
    bcf=zeros( sz1,sz2 );
-   nz= sz12*rand(1)/2+1;
+   nz= ceil(sz12*rand(1)/2+1);
    bcf(ceil(rand(nz,1)*sz12))=randn(nz,1) + 1i*randn(nz,1);
 
    ccf=zeros( sz2,sz3 );
-   nz= sz23*rand(1)/2+1;
+   nz= ceil(sz23*rand(1)/2+1);
    ccf(ceil(rand(nz,1)*sz23))=randn(nz,1) + 1i*randn(nz,1);
 
    while (1)
 % Choose eye to try to force a non singular a 
 % I wish we could turn off warnings here!
       dcf=eye(sz4) * 1e-4;
-      nz= sz4^2 *rand(1)/2;
+      nz= ceil(sz4^2 *rand(1)/2);
       dcf(ceil(rand(nz,1)*sz4^2))=randn(nz,1) + 1i*randn(nz,1);
 
       if abs(det(dcf)) >1e-10 ; break ; end
@@ -795,8 +795,12 @@ end
 % clear up variables - so dmalloc works
 #clear L* U* a* b* c* d* e* P*
 
+
 %
 % $Log$
+% Revision 1.9  2003/01/02 18:19:36  pkienzle
+% make sure rand(n,m) receives integer input
+%
 % Revision 1.8  2002/12/25 01:33:00  aadler
 % fixed bug which allowed zero values to be stored in sparse matrices.
 % improved print output

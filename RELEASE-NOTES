@@ -1,7 +1,12 @@
-CVS as of 2002-11-27
+Now requires octave-2.1.40 to work correctly.  Some functions may work
+with older versions of Octave.  Use make -k to build whatever can be
+built ignoring the rest.
 
-Now requires octave-2.1.38 to work correctly.  Some functions may work
-with older versions of octave.
+Latest release notes available at:
+
+http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/main/RELEASE-NOTES?rev=HEAD&content-type=text/plain
+
+2002-11-30 for Octave 2.1.40 =================================================
 
 New functions
 
@@ -78,7 +83,7 @@ Administration
 	* INSTALL.WINDOWS installation notes
 	* support for static build under Windows
 
-2002-05-09 ============================================================
+2002-05-09 for Octave 2.1.31 =================================================
 
 This is a bug fix release.  Many thanks to the good folks at Debian for
 finding the portability problems.

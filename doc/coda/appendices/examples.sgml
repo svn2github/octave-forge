@@ -1,0 +1,172 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+<appendix id = "app-examples">
+<title>Complete examples</title>
+
+<indexterm>
+    <primary>examples</primary>
+</indexterm>
+
+<para>
+    This appendix gathers all examples that are either too long for the main
+    test, or are referenced but not defined in the main text.
+</para>
+
+<sect1 id = "sect-ex-unittest">
+<title>Unit-test</title>
+
+<indexterm>
+    <primary>examples</primary>
+    <secondary>unit test</secondary>
+</indexterm>
+
+<sect2 id = "sect-ex-unittest-unittest-m">
+<title><filename>unittest.m</filename></title>
+
+<programlisting role = "octave">
+function result = unittest(test_title, expect_pass, actual_result,
+                           verbose)
+    ## Function unittest compares the result ACTUAL_RESULT from running
+    ## a test (either  0 for failure, or 1 for success) with the
+    ## expected outcome of the test EXPECT_PASS (either 0 for expecting
+    ## a failure, or 1 for expecting pass).  TEST_TITLE is the name of
+    ## the test.  All test results will be accompanied by the test's
+    ## title.
+    ##
+    ## The result of unittest is on of the following: UNRESOLVED: The
+    ## test did neither return 0 nor 1.  PASS: expected pass, got pass.
+    ## FAIL: expected pass, got fail.  UPASS: expected fail, got pass.
+    ## XFAIL: expected fail, got fail.
+    ##
+    ## A call to unittest typically looks like this:
+    ##
+    ## unittest("scalar integer addition", 1, eval("1 + 1 == 2;"));
+
+    global unittest_results;
+
+    ## Sanity check input parameters
+    if (nargin &lt; 3 | nargin &gt; 4)
+        error("Function run_rest expects 3 or 4 parameters.");
+    endif
+
+    if (!isstr(test_title))
+        error("Expecting TEST_TITLE (arg 1) to be a string.");
+    endif
+
+    if (expect_pass != 0 &amp; expect_pass != 1)
+        error("Expecting EXPECT_PASS (arg 2) to be 0 or 1.");
+    endif
+
+    ## Default: verbose = false
+    if (nargin = 3)
+        verbose = 0;
+    endif
+
+    unittest_results.total++;
+
+    ## Take actions depending on what test result we expect
+    ## (expect_pass), and what we actually got (actual_result).
+    if (actual_result != 0 &amp; actual_result != 1)
+        result = "UNRESOLVED";
+        unittest_results.unresolved++;
+        return;
+    endif
+
+    if (expect_pass == 1 &amp; actual_result == 1)
+        result = "PASS";
+        if (verbose != 0)
+            printf("PASS: %s\n", test_title);
+        endif
+        unittest_results.pass++;
+    elseif (expect_pass == 1 &amp; actual_result == 0)
+        result = "FAIL";
+        printf("FAIL: %s\n", test_title);
+        unittest_results.fail++;
+    elseif (expect_pass == 0 &amp; actual_result == 0)
+        result = "XFAIL";
+        printf("XFAIL: %s\n", test_title);
+        unittest_results.xfail++;
+    elseif (expect_pass == 0 &amp; actual_result == 1)
+        result = "UPASS";
+        printf("UPASS: %s\n", test_title);
+        unittest_results.upass++;
+    endif
+endfunction
+</programlisting>
+</sect2>
+
+<sect2 id = "sect-ex-unittest-getunittest-m">
+<title><filename>getunittest.m</filename></title>
+
+<programlisting role = "scilab">
+function r = getunittest()
+    ## Return the results of previous unittest commands.
+
+    global unittest_results;
+
+    r = unittest_results;
+endfunction
+</programlisting>
+</sect2>
+
+<sect2 id = "sect-ex-unittest-initunittest-m">
+<title><filename>initunittest.m</filename></title>
+
+<programlisting role = "scilab">
+function initunittest()
+    ## Initialize the global structure unittest_results, which is needed
+    ## in all functions of the *unittest module.
+
+    global unittest_results;
+
+    unittest_results.total = 0; # number of testcases attempted
+    unittest_results.pass = 0;  # number of expected passed
+    unittest_results.fail = 0;  # number of unexpected failures
+    unittest_results.upass = 0; # number of unexpected passes
+    unittest_results.xfail = 0; # number of expected failures
+    unittest_results.unresolved = 0; # number of unresolved testcases
+
+    default_eval_print_flag = 0;
+endfunction
+</programlisting>
+</sect2>
+
+<sect2 id = "sect-ex-unittest-prunittest-m">
+<title><filename>prunittest.m</filename></title>
+
+<programlisting role = "scilab">
+function prunittest()
+    ## Print the results from previous unittest calls in pretty format.
+
+    global unittest_results;
+
+    printf("# of testcases attempted   %d\n", unittest_results.total);
+    printf("# of expected passes       %d\n", unittest_results.pass);
+    printf("# of expected failures     %d\n", unittest_results.xfail);
+    printf("# of unexpected passes     %d\n", unittest_results.upass);
+    printf("# of unexpected failures   %d\n", unittest_results.fail);
+    printf("# of unresolved testcases  %d\n", unittest_results.unresolved);
+endfunction
+</programlisting>
+</sect2>
+</sect1>
+</appendix>

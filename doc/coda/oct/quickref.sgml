@@ -1,0 +1,1004 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+
+<sect1 id = "sect-oct-quick-ref">
+<title>Abridged Quick-Reference</title>
+
+<para>
+    Question to Radio Erivan: <quote>Is &octave-app; lacking a Quick
+    Reference?</quote> Answer: <quote>No, &octave-app; ships with a very nice
+    3&nbsp;page Quick Reference card, but it only describes the interpreter,
+    not the library-interface.</quote>
+</para>
+
+<para>
+    Coda has to fill in the gap.  The library quick reference is called
+    <quote>abridged</quote>, which is a fancy word for
+    <quote>incomplete</quote>.  According to the establisheed 80-20&nbsp;rule,
+    the reader will find 80% of the functions she needs for usual programming
+    jobs.  The missing 20% will take 80% of the total coding time to hunt down.
+</para>
+
+<para>
+    All methods listed in this section have public access
+    specification.  Therefore, we have dropped the <literal>public</literal>
+    modifiers in the class' synopis.
+</para>
+
+<sect2 id = "sect-qr-types">
+<title>Types</title>
+
+<para>
+    We follow the old tradition from the days of Pascal, and introduce first
+    the types the &octave-app; library works on.
+</para>
+
+<table id = "tab-qr-types" frame = "top">
+    <title>Types</title>
+
+    <tgroup cols = "3">
+        <thead>
+            <row>
+                <entry align = "center" colsep = "1">Type</entry>
+                <entry align = "center" colsep = "1">Files</entry>
+                <entry align = "center">Description</entry>
+            </row>
+        </thead>
+
+        <tbody>
+            <row>
+                <entry><type>octave_value_list</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">oct-obj.h</filename>
+                </entry>
+
+                <entry>
+                    Heterogenous container that is used in passing arguments to
+                    and from a dynamicaly loadable extension.  I.e. the
+                    parameters and return values of a loadable function are
+                    mapped onto <type>octave_value_list</type>s.  See <xref
+                    linkend = "sect-qr-list-ops"></xref>.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>octave_value</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov.h</filename>
+                </entry>
+
+                <entry>
+                    Single element of an <type>octave_value_list</type>, which
+                    can hold <emphasis>any</emphasis> of Octave's types.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>octave_matrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-re-mat.h</filename>
+                </entry>
+
+                <entry>
+                    Any of Octave's real-valued matrix (<type>Matrix</type>,
+                    <type>DiagMatrix</type>) or vector types
+                    (<type>RowVector</type>, <type>ColumnVector</type>).
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>octave_complex_matrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-cx-mat.h</filename>
+                </entry>
+
+                <entry>
+                    Any of Octave's complex-valued matrix
+                    (<type>ComplexMatrix</type>,
+                    <type>ComplexDiagMatrix</type>) or vector types
+                    (<type>ComplexRowVector</type>,
+                    <type>ComplexColumnVector</type>).
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>octave_bool_matrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-bool-mat.h</filename>
+                </entry>
+
+                <entry>
+                    ?
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>octave_char_matrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-char-mat.h</filename>
+                </entry>
+
+                <entry>
+                    ?
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>octave_scalar</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-scalar.h</filename>
+                </entry>
+
+                <entry>
+                    Real (<type>double</type>) valued, complex
+                    (<type>Complex</type>) valued, or boolean
+                    (<type>bool</type>) scalar.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>RowVector</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">oct-obj.h</filename>,
+                    <filename class = "headerfile">ov-re-mat.h</filename>,
+                    <filename class = "headerfile">ov.h</filename>
+                </entry>
+
+                <entry>
+                    Real (<type>double</type>) valued row vector; works like a
+                    matrix with a single row.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>ComplexRowVector</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">oct-obj.h</filename>,
+                    <filename class = "headerfile">ov-cx-mat.h</filename>,
+                    <filename class = "headerfile">ov.h</filename>
+                </entry>
+
+                <entry>
+                    Complex (<type>double</type>) valued row vector; works like
+                    a matrix with a single row.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>ColumnVector</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">oct-obj.h</filename>,
+                    <filename class = "headerfile">ov-re-mat.h</filename>,
+                    <filename class = "headerfile">ov.h</filename>
+                </entry>
+
+                <entry>
+                    Real (<type>double</type>) valued column vector; works like
+                    a matrix with a single column.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>ComplexColumnVector</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">oct-obj.h</filename>,
+                    <filename class = "headerfile">ov-cx-mat.h</filename>,
+                    <filename class = "headerfile">ov.h</filename>
+                </entry>
+
+                <entry>
+                    Complex (<type>Complex</type>) valued column vector; works
+                    like a matrix with a single column.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>Matrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-re-mat.h</filename>,
+                </entry>
+
+                <entry>
+                    Real (<type>double</type>) valued matrix.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>ComplexMatrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-cx-mat.h</filename>,
+                </entry>
+
+                <entry>
+                    Complex (<type>Complex</type>) valued matrix.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>boolMatrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">?</filename>
+                </entry>
+
+                <entry>
+                    Matrix of booleans (<type>bool</type>).
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>charMatrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">?</filename>
+                </entry>
+
+                <entry>
+                    Matrix of characters (<type>char</type>).
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>DiagMatrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-re-mat.h</filename>,
+                    <filename class = "headerfile">ov.h</filename>
+                </entry>
+
+                <entry>
+                    Real (<type>double</type>) valued diagonal matrix.
+                </entry>
+            </row>
+
+            <row>
+                <entry><type>ComplexDiagMatrix</type></entry>
+
+                <entry>
+                    <filename class = "headerfile">ov-cx-mat.h</filename>,
+                    <filename class = "headerfile">ov.h</filename>
+                </entry>
+
+                <entry>
+                    Complex (<type>double</type>) valued diagonal matrix.
+                </entry>
+            </row>
+        </tbody>
+    </tgroup>
+</table>
+</sect2>
+
+<sect2 id = "sect-qr-list-ops">
+<title>List Operations</title>
+
+<para>
+    .
+</para>
+
+<classsynopsis language = "cpp">
+    <ooclass>
+        <classname>octave_value_list</classname> 
+    </ooclass>
+
+    <constructorsynopsis>
+        <methodname>octave_value_list</methodname>
+
+        <void></void>
+    </constructorsynopsis>
+
+    <constructorsynopsis>
+        <methodname>octave_value_list</methodname>
+
+        <methodparam>
+            <modifier>const</modifier>
+
+            <type><replaceable>T</replaceable>&amp;</type>
+            <!-- see: fpar-qr-conv-constr -->
+
+            <parameter><replaceable>t</replaceable></parameter>
+        </methodparam>        
+    </constructorsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value&amp;</type>
+
+        <methodname>operator()</methodname>
+
+        <methodparam>
+            <type>int</type> <parameter>index</parameter>
+        </methodparam>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value</type>
+
+        <methodname>operator()</methodname>
+
+        <methodparam>
+            <type>int</type> <parameter>index</parameter>
+        </methodparam>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>int</type>
+
+        <methodname>length</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type> <methodname>empty</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value_list&amp;</type>
+
+        <methodname>prepend</methodname>
+
+        <methodparam>
+            <modifier>const</modifier>
+
+            <type>octave_value&amp;</type>
+
+            <parameter>val</parameter>
+        </methodparam>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value_list&amp;</type>
+
+        <methodname>append</methodname>
+
+        <methodparam>
+            <modifier>const</modifier>
+
+            <type>octave_value&amp;</type>
+
+            <parameter>val</parameter>
+        </methodparam>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value_list&amp;</type>
+
+        <methodname>append</methodname>
+
+        <methodparam>
+            <modifier>const</modifier>
+
+            <type>octave_value_list&amp;</type>
+
+            <parameter>lst</parameter>
+        </methodparam>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value_list&amp;</type>
+
+        <methodname>reverse</methodname>
+
+        <void></void>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value_list&amp;</type>
+
+        <methodname>splice</methodname>
+
+        <methodparam>
+            <type>int</type>
+
+            <parameter>offset</parameter>
+        </methodparam>
+
+        <methodparam>
+            <type>int</type>
+
+            <parameter>length</parameter>
+        </methodparam>
+
+        <methodparam>
+            <modifier>const</modifier>
+
+            <type>octave_value_list&amp;</type>
+
+            <parameter>lst</parameter>
+        </methodparam>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_value_list&amp;</type>
+
+        <methodname>index</methodname>
+
+        <methodparam>
+            <type>idx_vector&amp;</type>
+
+            <parameter>i</parameter>   
+        </methodparam>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+</classsynopsis>
+
+<para>
+    Most of the methods in <classname>octave_value_list</classname> are self
+    explaining.  The default constructor, <methodname>splice</methodname>, and
+    <methodname>index</methodname> require some explanation.
+</para>
+
+<formalpara>
+    <title>Default Constructor</title>
+
+    <para>
+        The default constructor makes an empty list.  When an empty list is
+        returned from a dynamically loaded extension, the function at the
+        interpreter level behaves lieka procedure, i.e. returns
+        <quote>void</quote> in other words returns nothing.
+    </para>
+</formalpara>
+
+<formalpara id = "fpar-qr-conv-constr">
+    <title>Converting Constructors</title>
+
+    <para>
+        <classname>octave_value_list</classname> defines constructors for the
+        following types&nbsp;<replaceable>T</replaceable>: <type>double</type>,
+        <type>Matrix</type>, <type>DiagMatrix</type>, <type>RowVector</type>,
+        <type>ColumnVector</type>, <type>Complex</type>,
+        <type>ComplexMatrix</type>, <type>ComplexDiagMatrix</type>,
+        <type>ComplexRowVector</type>, <type>ComplexColumnVector</type>,
+        <type>char*</type>, <type>std::string</type>,
+        <type>string_vector</type>, <type>Range</type>, and
+        <type>octave_value_list</type>.
+    </para>
+</formalpara>
+
+<formalpara>
+    <title><methodname>splice</methodname></title>
+
+    <para>
+        Replaces <replaceable>length</replaceable> elements of the list,
+        starting at <replaceable>offset</replaceable>, and then inserts
+        <replaceable>lst</replaceable>.  See also Octave documentation of
+        <function role = "octave">splice</function>.
+    </para>
+</formalpara>
+
+<formalpara>
+    <title><methodname>index</methodname></title>
+
+    <para>
+        Extract elements at the index values given by <type>idx_vector</type>
+        <replaceable>i</replaceable>.
+    </para>
+</formalpara>
+</sect2>
+
+<sect2 id = "sect-qr-value-access">
+<title>Access to Value</title>
+
+<para>
+    .
+</para>
+
+<classsynopsis language = "cpp">
+    <ooclass>
+        <classname>octave_base_value</classname>
+    </ooclass>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>bool_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>int</type>
+
+        <methodname>int_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>int</type>
+
+        <methodname>nint_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>double</type>
+
+        <methodname>double_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>Complex</type>
+
+        <methodname>complex_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>double</type>
+
+        <methodname>scalar_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>std::string</type>
+
+        <methodname>string_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+
+    <methodsynopsis>
+        <type>Range</type>
+
+        <methodname>range_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>Octave_map</type>
+
+        <methodname>map_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_stream</type>
+
+        <methodname>stream_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>octave_function*</type>
+
+        <methodname>function_value</methodname>
+
+        <methodparam>
+            <type>bool</type> <parameter>silent</parameter>
+        </methodparam>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>Cell</type>
+
+        <methodname>cell_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>boolMatrix</type>
+
+        <methodname>bool_matrix_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>Matrix</type>
+
+        <methodname>matrix_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>ComplexMatrix</type>
+
+        <methodname>complex_matrix_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>charMatrix</type>
+
+        <methodname>char_matrix_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+
+    <methodsynopsis>
+        <type>octave_value_list</type>
+
+        <methodname>list_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+</classsynopsis>
+</sect2>
+
+<sect2 id = "sect-qr-type-classification">
+<title>Type Classification</title>
+
+<para>
+    .
+</para>
+
+<classsynopsis language = "cpp">
+    <ooclass>
+        <classname>octave_base_value</classname>
+    </ooclass>
+
+    <ooclass> 
+        <modifier>public</modifier>
+
+        <classname>foo_value</classname>
+    </ooclass>                          
+
+    <!--
+    <classsynopsisinfo>
+        #include <filename class = "headerfile">foo.h</filename>
+    </classsynopsisinfo>
+    -->
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_scalar_type</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_bool_type</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_complex_type</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_constant</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_numeric_type</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_range</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_real_scalar</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_real_type</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_string</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <!-- built-in matrix -->
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_matrix_type</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_char_matrix</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_complex_matrix</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_complex_scalar</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_real_matrix</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <!-- other stuff -->
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_all_va_args</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_builtin_function</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_cell</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_defined</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_dld_function</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_empty</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_function</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_list</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_magic_colon</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_map</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_stream</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_true</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <type>bool</type>
+
+        <methodname>is_zero_by_zero</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+</classsynopsis>
+</sect2>
+</sect1>

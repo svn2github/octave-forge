@@ -1,0 +1,453 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+
+<sect1 id = "sect-oct-advanced">
+<title>Advanced Extension Programming</title>
+
+<para>
+    ...
+</para>
+
+<indexterm>
+    <primary>definition</primary>
+    <secondary>of a constant (oct)</secondary>
+</indexterm>
+
+<indexterm>
+    <primary>constant</primary>
+    <secondary>definition</secondary>
+    <see>definition of a constant (oct)</see>
+</indexterm>
+
+<indexterm>
+    <primary>definition</primary>
+    <secondary>of a variable (oct)</secondary>
+</indexterm>
+
+<indexterm>
+    <primary>variable</primary>
+    <secondary>definition</secondary>
+    <see>definition of a variable (oct)</see>
+</indexterm>
+
+<sect2 id = "sect-defining-oct-vars-and-const">
+<title>Defining Constants And Variables</title>
+
+<indexterm>
+    <primary>header file</primary>
+    <secondary>defun.h</secondary>
+</indexterm>
+
+<indexterm>
+    <primary>header file</primary>
+    <secondary>defun-dld.h</secondary>
+</indexterm>
+
+<para>
+    The definition of constants and variables in a dynamically linked
+    GNU/Octave extension resembles the header of a dynamically linked function.
+    (See, for example, <xref linkend = "sect-oct-tutorial-oct1"></xref>)
+    However, the appropriate macro <function role = "macro">DEFCONST</function>
+    is not available when creating a dynamically loadable extension for it is
+    defined in <filename class = "headerfile">defun.h</filename> and not in
+    <filename class = "headerfile">defun-dld.h</filename>.  The latter is
+    necessary to set up an dynamically loadable extension.  The easiest,
+    moderately clean way os to duplicate <function role =
+    "macro">DEFCONST</function>'s definition from <filename class =
+    "headerfile">defun.h</filename> into the respective extension.
+</para>
+
+<indexterm>
+    <primary>Octave library</primary>
+    <secondary>macro</secondary>
+    <tertiary>DEFCONST</tertiary>
+</indexterm>
+
+<indexterm>
+    <primary>DEFCONST</primary>
+    <see>Octave library, macro, DEFCONST</see>
+</indexterm>
+
+<programlisting role = "c++">
+// same definition as found in defun.h
+
+#ifndef DEFCONST
+#define DEFCONST(name, defn, doc) DEFCONST_INTERNAL(name, defn, doc)
+#endif
+</programlisting>
+
+<para>
+    <function role = "macro">DEFCONST</function> introduces a constant named
+    <token>constant_name</token> at the interpreter level, giving it the value
+    of <token>defining_expression</token> and endowing it with the
+    documentation <replaceable>documentation_string</replaceable>.  The newly
+    created constant will be protected against deletion, but
+    <emphasis>not</emphasis> against change.
+</para>
+
+<!-- DEFCONST(name, defn, doc) -->
+
+<literallayout class = "monospaced">
+<type>void</type>
+<function role = "macro">DEFCONST</function>(<token>constant_name</token>,
+         <token>defining_expression</token>,
+         <type>const std::string&amp;</type> <replaceable>documentation_string</replaceable>)
+</literallayout>
+
+<para>
+    The name of the constant&nbsp;<token>constant_name</token> must be a valid
+    C++ identifier, because it is <emphasis>not</emphasis> quoted.  Octave
+    automatically casts the variable's definition,
+    <replaceable>defining_expression</replaceable>, to
+    type&nbsp;<type>octave_value</type>.
+</para>
+
+<indexterm>
+    <primary>constant</primary>
+    <secondary>behavior of a</secondary>
+</indexterm>
+
+<indexterm>
+    <primary>Octave function</primary>
+    <secondary>clear</secondary>
+</indexterm>
+
+<para>
+    A constant can be assigned to and then takes on the new value!  Assigning
+    to a constant does not even produce a warning.  <command>clear</command>ing
+    a protected constant does not give raise to a warning either.  Clearing a
+    protected constants re-installs its original value.
+</para>
+
+<example id = "ex-defconst">
+    <title>Constant Definition</title>
+
+    <programlisting role = "c++">
+#include &lt;oct.h&gt;
+
+// `DEFCONST' from "defun.h"
+#ifndef DEFCONST
+#define DEFCONST(name, defn, doc) \
+    DEFCONST_INTERNAL(name, defn, doc)
+#endif
+
+static const double h = 6.626176e-34; // Planck's constant in J*s
+
+DEFUN_DLD(defconst, args, ,
+          "Install some fundamental physical constants.")
+{
+    if (args.length() == 0)
+    {
+        DEFCONST(c, 2.99792458e8,
+                 "Speed of light in m/s.");
+        DEFCONST(hbar, h / (2.0 * M_PI),
+                 "Reduced Planck's constant hbar, this is, h/(2*pi) in J*s.");
+        DEFCONST(G, 6.672e-11,
+                 "Graviation constant in N*m^2/kg^2.");
+        DEFCONST(e, 1.6021892e-19,
+                 "(Absolute value of the) Charge of an electron in C.");
+    }
+    else
+    {
+        error("defconst: expecting no arguments.");
+    }
+
+    return octave_value_list();
+}
+    </programlisting>
+</example>
+
+<tip>
+    <para>
+        Long documentation strings in a long series of definitions tend to
+        obscure the code.  Assigning the documentation string to a macro allows
+        for a separation of the help text and the definition.
+    </para>
+
+    <programlisting role = "c++">
+#define DOCSTRING_HBAR \
+"Reduced Planck's constant hbar, this is, h/(2*pi) in J*s."
+
+...
+
+DEFCONST(hbar, h / (2.0 * M_PI), DOCSTRING_HBAR);
+    </programlisting>
+</tip>
+
+<indexterm>
+    <primary>Octave library</primary>
+    <secondary>macro</secondary>
+    <tertiary>DEFVAR</tertiary>
+</indexterm>
+
+<indexterm>
+    <primary>DEFVAR</primary>
+    <see>Octave library, macro, DEFVAR</see>
+</indexterm>
+
+<indexterm>
+    <primary>Octave library</primary>
+    <secondary>typedef</secondary>
+    <tertiary>change_function</tertiary>
+</indexterm>
+
+<indexterm>
+    <primary>Octave library</primary>
+    <secondary>function</secondary>
+    <tertiary>symbol_record::change_function</tertiary>
+</indexterm>
+
+<para>
+    Like <function role = "macro">DEFCONST</function> is defined in <filename
+    class = "headerfile">defun.h</filename> and not in <filename class =
+    "headerfile">defun-dld.h</filename>.  So, the programmer must introduce the
+    macro himself.
+</para>
+
+<programlisting role = "c++">
+// same definition as found in defun.h
+
+#ifndef DEFVAR
+#define DEFVAR(name, defn, chg_fcn, doc) \
+    DEFVAR_INTERNAL(#name, SBV_ ## name, defn, false, chg_fcn, doc)
+#endif
+</programlisting>
+
+<!-- DEFVAR(name, defn, chg_fcn, doc) -->
+
+<literallayout class = "monospaced">
+<type>void</type>
+<function role = "macro">DEFVAR</function>(<token>variable_name</token>,
+       <token>defining_expression</token>,
+       <type>symbol_record::change_function</type> <replaceable>changing_function</replaceable>,
+       <type>const std::string&amp;</type> <replaceable>documentation_string</replaceable>)
+</literallayout>
+
+<para>
+    The parameters <token>variable_name</token>,
+    <token>defining_expression</token>, and
+    <replaceable>documentation_string</replaceable> are analogous to those of
+    <function role = "macro">DEFCONST</function>.  Only
+    <replaceable>changing_function</replaceable> calls for further explanation.
+</para>
+
+<para>
+     <replaceable>changing_function</replaceable> is a pointer to a function
+     that gets called whenever variable&nbsp;<token>variable_name</token> is
+     given a new value.  <replaceable>changing_function</replaceable> can be
+     <literal>NULL</literal> if there is no function to call.
+     <type>change_function</type> is defined in <filename class =
+     "headerfile">symtab.h</filename>
+</para>
+
+<programlisting role = "c++">
+// symtab.h
+
+typedef <type>int</type> (<type>*change_function</type>) (<type>void</type>);
+</programlisting>
+
+<para>
+    A <replaceable>changing_function</replaceable> never takes on any
+    parameters!  Therefore, it must have a built-in knowledge of which
+    interpreter variable to take care of.  Usually,
+    <replaceable>changing_function</replaceable>s correspond one-to-one with
+    <token>variable_name</token>s.  Note the
+    <replaceable>changing_function</replaceable> is called to initialize
+    <token>variable_name</token> with the value of
+    <token>defining_expression</token>.  This means that
+    <replaceable>changing_function</replaceable> is called at least once even
+    if <token>variable_name</token> never gets changed withing the interpreter.
+    The return value&nbsp;0 from <replaceable>changing_function</replaceable>
+    signals success to the caller, any other value stands for failure.
+</para>
+
+<indexterm>
+    <primary>variable</primary>
+    <secondary>access from dynamical extension</secondary>
+</indexterm>
+
+<indexterm>
+    <primary>constant</primary>
+    <secondary>access from dynamical extension</secondary>
+</indexterm>
+
+<para>
+    <function role = "macro">DEFVAR</function> installs and initializes a
+    variable in the interpreter's workspace.  To access a variable or constant,
+    <filename class = "headerfile">variables.h</filename> declares three
+    functions:
+</para>
+
+<indexterm>
+    <primary>Octave library</primary>
+    <secondary>function</secondary>
+    <tertiary>builtin_string_variable</tertiary>
+</indexterm>
+
+<indexterm>
+    <primary>Octave library</primary>
+    <secondary>function</secondary>
+    <tertiary>builtin_real_scalar_variable</tertiary>
+</indexterm>
+
+<indexterm>
+    <primary>Octave library</primary>
+    <secondary>function</secondary>
+    <tertiary>builtin_any_variable</tertiary>
+</indexterm>
+
+<funcsynopsis>
+    <funcsynopsisinfo>
+#include &lt;variables.h&gt;
+    </funcsynopsisinfo>
+
+   <funcprototype>
+        <funcdef>
+            std::string <function>builtin_string_variable</function>
+        </funcdef>
+
+        <paramdef>
+            const std::string&amp;
+            <parameter>symbol_name</parameter>
+        </paramdef>
+    </funcprototype>
+
+    <funcprototype>
+        <funcdef>
+            int <function>builtin_real_scalar_variable</function>
+        </funcdef>
+
+        <paramdef>
+            const std::string&amp;
+            <parameter>symbol_name</parameter>
+        </paramdef>
+
+        <paramdef>
+            double&amp;
+            <parameter>value</parameter>
+        </paramdef>
+    </funcprototype>
+
+    <funcprototype>
+        <funcdef>
+            octave_value <function>builtin_any_variable</function>
+        </funcdef>
+
+        <paramdef>
+            const std::string&amp;
+            <parameter>symbol_name</parameter>
+        </paramdef>
+    </funcprototype>
+</funcsynopsis>
+
+
+<example id = "ex-defvar">
+    <title>Variable Definition</title>
+
+    <programlisting role = "c++">
+#include &lt;oct.h&gt;
+#include &lt;variables.h&gt;            // for `builtin_*_variable'
+
+// `DEFVAR' from "defun.h"
+#ifndef DEFVAR
+#define DEFVAR(name, defn, chg_fcn, doc) \
+    DEFVAR_INTERNAL(#name, SBV_ ## name, defn, false, chg_fcn, doc)
+#endif
+
+static double counter_var;
+static unsigned count = 0;
+
+static int counter_set();
+
+//
+// documentation strings
+//
+
+#define DOCSTRING_DEFVAR \
+"Define two variables in the workspace: simple and counter.\n\
+See the respective documentations, that is,\n\
+`help simple' and `help counter'."
+
+#define DOCSTRING_SIMPLE \
+"Variable `simple' is initialized to 0.5.\n\
+It is not linked to any low-level variable."
+
+#define DOCSTRING_COUNTER \
+"Variable `counter' is initialized to 1.0.\n\
+It is linked to the C++ variable `counter_var' in file `defvar.cc'.\n\
+Whenever `counter_var' is assigned to the number of assigments\n\
+is printed."
+
+//
+// body
+//
+
+DEFUN_DLD(defvar, args, , DOCSTRING_DEFVAR)
+{
+    if (args.length() == 0)
+    {
+        DEFVAR(simple, 0.5, 0, DOCSTRING_SIMPLE);
+        DEFVAR(counter, 1.0, counter_set, DOCSTRING_COUNTER);
+    }
+    else
+    {
+        error("defvar: expecting no arguments.");
+    }
+
+    return octave_value_list();
+}
+
+static int
+counter_set()
+{
+    if (builtin_real_scalar_variable("counter", counter_var) == 0)
+    {
+        error("counter_set: internal error, non-existent variable");
+        return 1;
+    }
+
+    count++;
+    cout &lt;&lt; "==&gt; `counter' has been assigned to " &lt;&lt; count &lt;&lt; " times;\n"
+         &lt;&lt; "==&gt; its new value is " &lt;&lt; counter_var &lt;&lt; ".\n";
+
+    return 0;
+}
+    </programlisting>
+</example>
+</sect2>
+
+<sect2 id = "sect-oct-documenting-vars-and-const">
+<title>Documenting Constants And Variables</title>
+
+<para>
+    Having studied <xref linkend = "sect-oct-tutorial-spice-texinfo"></xref>,
+    only one new Texinfo function is waiting: <literal>defvr</literal>.
+</para>
+
+<programlisting role = "texinfo">
+-*- texinfo -*-
+@defvr {Built-in Variable} my_own_variable
+...
+@end defvr
+</programlisting>
+</sect2>
+</sect1>

@@ -1,0 +1,209 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+<chapter id = "chap-standalone">
+<title>Building Standalone Applications</title>
+
+<indexterm id = "idx-standalone-applications">
+    <primary>application</primary>
+    <secondary>standalone</secondary>
+</indexterm>
+
+<indexterm id = "idx-standalone-applications-see">
+    <primary>standalone applications</primary>
+    <see>applications, standalone</see>
+</indexterm>
+
+<para>
+    The libraries Octave itself uses, can be utilized in standalone
+    applications.  These applications then have access, for example, to the
+    vector and matrix classes as well to all algorithms of Octave.
+</para>
+
+<para>
+    The following C++ program, <xref linkend = "ex-hello-world"></xref>, uses
+    class&nbsp;<classname>Matrix</classname> from
+    <filename>liboctave.a</filename> or <filename>liboctave.so</filename>.
+</para>
+
+<example id = "ex-hello-world">
+    <title>
+        <quote>Hello World!</quote> program using Octave's libraries.
+    </title>
+
+    <programlisting role = "c++">
+#include &lt;iostream&gt;
+#include "oct.h"
+
+int
+main(void)
+{
+    std::cout &lt;&lt; "Hello Octave world!\n";
+
+    const int size = 2;
+    Matrix a_matrix = Matrix(size, size);
+    for (int row = 0; row &lt; size; ++row)
+    {
+        for (int column = 0; column &lt; size; ++column)
+        {
+            a_matrix(row, column) = (row + 1)*10 + (column + 1);
+        }
+    }
+    std::cout &lt;&lt; a_matrix;
+
+    return 0;
+}
+    </programlisting>
+</example>
+
+<para>
+    The difficulty in our example is not the C++-code, but the
+    <filename>Makefile</filename> that correctly builds the application.
+    <xref linkend = "ex-hello-world-makefile"></xref> shows a
+    <filename>Makefile</filename> that accomplishes the task.
+</para>
+
+<para>
+    To compile and link <filename>hello.cc</filename> the place where Octave
+    has been installed must be known (<varname role =
+    "Makefile">prefix</varname>).  The makefile will find out most of the other
+    important parameters like, for example, the version number of Octave.
+    Variable&nbsp;<varname role = "Makefile">LDLIBS</varname> deserves a closer
+    look.  It lists all three main libraries (octave, octinterp, and cruft) as
+    well as the library used for searching m-files, kpathsea.  If Octave has
+    been linked against more libraries (for example Blas, Lapack, or HDF5), or
+    the standalone application needs further libraries, they can be added here.
+    The auxiliary variable&nbsp;<varname role = "Makefile">lib_dir</varname>
+    assumes that the kpathsea-library is installed in Octave's library
+    directory.  Note that the default installation <emphasis>does
+    not</emphasis> install kpathsea!  So, either the installation must be done
+    manually, or a path to kpathsea must be supplied.
+</para>
+
+<example id = "ex-hello-world-makefile">
+    <title>
+        <filename>Makefile</filename> for <quote>Hello World!</quote> program.
+    </title>
+
+    <programlisting role = "makefile">
+# $(prefix) points to the *installation* root, not the build root.
+# Most folks will have '/usr' or '/usr/local' in the next line.
+prefix:=/site
+
+octave_version:=$(shell octave -v | sed -ne 's/^.*version \([^ ]*\) .*$$/\1/p')
+octave_dir:=octave-$(octave_version)
+
+includes:=-I$(prefix)/include/$(octave_dir) \
+          -I$(prefix)/include/$(octave_dir)/octave
+
+# We could substitute '$(shell mkoctfile -p CXX)' for 'g++'
+CXX:=g++
+
+# As above '$(shell mkoctfile -p CXXFLAGS)' would give the options
+# Octave was built with.
+CXXFLAGS:=-Wall -W -g $(includes)
+
+LD:=$(CXX)
+
+lib_dir:=$(prefix)/lib/$(octave_dir)
+
+LDFLAGS:=-g -Wl,-rpath,$(lib_dir) -L$(lib_dir)
+
+LDLIBS:=-loctave -loctinterp -lcruft -lkpathsea \
+        -ltermcap -lreadline -ldl -lg2c
+
+
+.PHONY: all
+all: hello
+
+.PHONY: clean
+clean:
+        rm -f hello hello.o
+
+.PHONY: distclean
+distclean: clean
+        rm -f *~
+
+
+hello: hello.o
+        $(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+hello.o: hello.cc
+        $(CXX) $(CXXFLAGS) -c -o $@ $^
+    </programlisting>
+</example>
+
+<para>
+    It is recommended to build the kpathsea-library as shared object.  However,
+    by default Octave <emphasis>disables</emphasis> building a shared kpathsea!
+    To enable, apply the following patch to
+    <replaceable>octave_source_directory</replaceable><filename>/kpathsea/acklibtool.m4</filename>.
+</para>
+
+<programlisting role = "unified-diff">
+--- acklibtool.m4       2001/10/19 07:21:38     1.1
++++ acklibtool.m4       2001/10/19 07:22:34
+@@ -20,18 +20,14 @@
+   exit 1
+ fi
+ #
+-## For use with Octave, ignore these options and only build static libraries.
+-##
+-## Argument parsing: we support --enable-shared and --enable-static.
+-#AC_ARG_ENABLE(shared,
+-#[  --enable-shared              build shared libraries [default=no]],,
+-#  enable_shared=no)
+-##
+-#AC_ARG_ENABLE(static,
+-#[  --enable-static              build static libraries [default=yes]],,
+-#  enable_static=yes)
+-enable_shared=no
+-enable_static=yes
++# Argument parsing: we support --enable-shared and --enable-static.
++AC_ARG_ENABLE(shared,
++[  --enable-shared              build shared libraries [default=no]],,
++  enable_shared=no)
++#
++AC_ARG_ENABLE(static,
++[  --enable-static              build static libraries [default=yes]],,
++  enable_static=yes)
+ #
+ # If they explicitly --enable-static, make that the link type.
+ # More commonly, they will just --enable-shared; make that the link type.
+</programlisting>
+
+<para>
+    then, in the kpathsea source directory, run
+</para>
+
+<programlisting role = "bash">
+autoconf
+make distclean
+./configure --disable-static --enable-shared
+make
+cp SHARED/libkpathsea.* <replaceable>your_octave_library_dir</replaceable>
+</programlisting>
+
+<para>
+    On a 32&nbsp;bit platform, linking against a shared kpathsea saves
+    150-200&nbsp;KB for each binary.
+</para>
+</chapter>

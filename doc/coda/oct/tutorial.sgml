@@ -1,0 +1,38 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+
+<sect1 id = "sect-oct-tutorial">
+<title>Tutorial</title>
+
+<para>
+    The tutorial unfurls slowly; we do not want to scare anybody by the
+    complexity of the task ahead.  At any time, if you feel like it, look into
+    the directories OCT<filename class = "directory">/src</filename>, or
+    OCT<filename class = "directory">/src/DLD-FUNCTIONS</filename>, where OCT
+    is the root directory of your Octave source-tree, and consult the
+    header-files and already existent dynamic extensions.
+</para>
+
+&tut-intro;
+&tut-basic;
+&tut-interm;
+</sect1>

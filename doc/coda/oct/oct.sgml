@@ -1,0 +1,81 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+
+<chapter id = "chap-oct">
+<title><filename>OCT</filename> Files</title>
+
+<indexterm id = "idx-file-oct">
+    <primary>file</primary>
+    <secondary>oct</secondary>
+</indexterm>
+
+<indexterm id = "idx-file-oct-see">
+    <primary>oct-file</primary>
+    <see>file, oct</see>
+</indexterm>
+
+<para>
+    Octahedron, octopus, oculist, <filename>oct</filename>-file? &ndash; What?
+</para>
+
+<indexterm id = "idx-dynamic-extension-see">
+    <primary>dynamic extension</primary>
+    <see>file, oct</see>
+</indexterm>
+
+<para>
+    An <filename>oct</filename>-file is a dynamical extension of the
+    &octave-app; interpreter, in other words a <emphasis>shared
+    library</emphasis> or <emphasis>shared object</emphasis>.  The source
+    files, that make up an <filename>oct</filename>-file, are written in C++,
+    and therefore, conventionally, carry the extension <filename>cc</filename>.
+</para>
+
+<para>
+    Why would you ever want to write in C++ again, having the wonderful
+    &octave-app; environment at your service?  Well, sometimes the performance
+    of native Octave-code is not enough to attack a problem.  Octave-code is
+    interpreted, thus it is inherently slow executed (especially if the problem
+    cannot be vectorized).  In such a case moving from
+    <filename>m</filename>-code to compiled C++-code speeds up the execution by
+    a factor of ten or more.  The second group of problems, where reverting to
+    low-level code is necessary, is interfacing with foreign libraries (think
+    of LAPACK) or routines written in a language other than C++, most notably
+    Fortran-77.
+</para>
+
+<para>
+    Having convinced ourselves that we have to bite the bullet, we start with a
+    easy tutorial (<xref linkend = "sect-oct-tutorial"></xref>), which will
+    teach any reader who is sufficiently used to C++, how to write her first
+    dynamically linked extension for &octave-app;.  Having guided the reader
+    with her first steps, <xref linkend = "sect-oct-advanced"></xref> covers
+    more advanded topics of writing extensions.  For later reference, we
+    provide a quick reference of the most helpful methods of the Octave
+    interface classes in <xref linkend = "sect-oct-quick-ref"></xref>.
+</para>
+
+&tutorial;
+&advanced;
+&quickref;
+</chapter>
+

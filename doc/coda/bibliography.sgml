@@ -1,0 +1,36 @@
+<bibliography>
+<title>Bibliography</title>
+
+
+<biblioentry id = "bib-golub-1996">
+    <abbrev>Golub:1996</abbrev>
+
+    <authorgroup>
+        <author>
+            <firstname>Gene</firstname>
+            <othername>H.</othername>
+            <surname>Golub</surname>
+        </author>
+
+        <author>
+            <firstname>Charles</firstname>
+            <othername>F.</othername>
+            <surname>van Loan</surname>
+        </author>
+    </authorgroup>
+
+    <title>Matrix Computations</title>
+
+    <edition>third edition</edition>
+
+    <publisher>
+        <publishername>The Johns Hopkins University Press</publishername>
+    </publisher>
+
+    <pubdate>1996</pubdate>
+
+    <isbn>0-8018-5413-X</isbn>
+</biblioentry>
+
+
+</bibliography>

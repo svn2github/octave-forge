@@ -1,0 +1,184 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1//EN" 
+                      "/usr/share/sgml/db41xml/docbookx.dtd" [
+
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+<!-- include -->
+
+<!ENTITY preface        SYSTEM "preface.sgml">
+<!ENTITY introduction   SYSTEM "introduction.sgml">
+
+<!ENTITY oct            SYSTEM "oct/oct.sgml">
+    <!ENTITY tutorial       SYSTEM "oct/tutorial.sgml">
+        <!ENTITY tut-intro      SYSTEM "oct/tut-intro.sgml">
+        <!ENTITY tut-basic      SYSTEM "oct/tut-basic.sgml">
+        <!ENTITY tut-interm     SYSTEM "oct/tut-interm.sgml">
+
+    <!ENTITY advanced           SYSTEM "oct/advanced.sgml">
+
+    <!ENTITY quickref       SYSTEM "oct/quickref.sgml">
+
+<!ENTITY standalone     SYSTEM "standalone/standalone.sgml">
+
+<!ENTITY examples       SYSTEM "appendices/examples.sgml">
+<!ENTITY partgnufdl     SYSTEM "appendices/gnufdl.sgml">
+<!ENTITY partgnugpl     SYSTEM "appendices/gnugpl.sgml">
+
+<!ENTITY bibliography   SYSTEM "bibliography.sgml">
+<!ENTITY index          SYSTEM "index.sgml">
+
+
+<!-- macros -->
+
+<!ENTITY coda-long      "Da Coda Al Fine">
+<!ENTITY coda           "Coda">
+<!ENTITY octave-app     "<application>Octave</application>">
+<!ENTITY octave-prompt  "<prompt>octave:#&gt;</prompt>">
+]>
+
+
+<book>
+
+<bookinfo>
+    <date>$Revision$ $Date$</date>
+    <title>Da Coda Al Fine</title>
+    <subtitle>Pushing Octave's Limits</subtitle>
+
+    <revhistory>
+        <revision>
+            <revnumber>0.1</revnumber>
+            <date>2001-2-21</date>
+            <authorinitials>cls</authorinitials>
+            <revremark>Initial revision</revremark>
+        </revision>
+    </revhistory>
+
+    <authorgroup>
+        <author>
+            <firstname>Christoph</firstname>
+            <othername>L.</othername>
+            <surname>Spiel</surname>
+            <affiliation>
+                <orgname>Hammersmith Consulting</orgname>
+            </affiliation>
+        </author>
+    </authorgroup>
+
+    <copyright>
+        <year>2000</year>
+        <holder>Ch. L. Spiel</holder>
+    </copyright>
+
+    <legalnotice>
+        <para>
+            Permission is granted to copy, distribute and/or modify this
+            document under the terms of the GNU Free Documentation License,
+            Version&nbsp;1.1 or any later version published by the Free
+            Software Foundation; with no invariant sections, with the
+            Front-Cover Texts being <quote>Da Coda Al Fine</quote>, and with no
+            Back-Cover Texts.  A copy of the license is included in the
+            appendix <quote>GNU Free Documentation License</quote>.
+        </para>
+
+        <blockquote>
+            <para>
+                Copyrights:
+            </para>
+
+            <informaltable frame = "none">
+                <tgroup cols = "1">
+
+                    <tbody>
+                        <row>
+                            <entry>
+                                <trademark class =
+                                "copyright">GNU/Linux</trademark> by Linus
+                                Torvalds
+                            </entry>
+                        </row>
+
+                        <row>
+                            <entry>
+                                <trademark class =
+                                "copyright">Octave</trademark> by John
+                                W.&nbsp;Eaton
+                            </entry>
+                        </row>
+
+                        <row>
+                            <entry>
+                                <trademark class =
+                                "registered">Matlab</trademark> is a registered
+                                trademark by The MathWorks, Inc.
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </blockquote>
+    </legalnotice>
+
+    <abstract>
+        <para>
+            &octave-app; is the <trademark class =
+            "registered">Matlab</trademark>-clone which comes closest to the
+            original.  Though it tries to be fully compatible, it features its
+            own extensions and improvements over the functionality of the
+            commercial <trademark class = "registered">Matlab</trademark>
+            product.
+        </para>
+
+        <para>
+            &octave-app; is shipped with a 340+ page reference manual, which
+            also tries to be a bit of a user guide.  Despite its size the
+            documentation is incomplete, and where it stops, &coda; starts:
+            &coda-long; approaches &octave-app; purely from the user's point of
+            view, explaining e.g. <filename>oct</filename>-file construction in
+            a tutorial like form.
+        </para>
+    </abstract>
+</bookinfo>
+
+
+<toc></toc>
+
+
+<!--
+&preface;
+&introduction;
+-->
+
+<!-- main chapters -->
+&oct;
+&standalone;
+
+<!-- appendices -->
+&examples;
+&partgnufdl;
+&partgnugpl;
+
+<!-- (cdr 'rrt) -->
+&bibliography;
+&index;
+
+</book>

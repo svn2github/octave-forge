@@ -1,0 +1,532 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+
+<sect2 id = "sect-oct-tutorial-oct1">
+<title>Our First Dynamic Extension</title>
+
+<para>
+    Ready for the jump to light speed?  Wait &ndash; we have to feed the
+    navigation computer first!
+</para>
+
+<sect3 id = "sect-oct-tutorial-feature-compatability">
+<title>Feature Compatability</title>
+
+<para>
+    In principle, the functions defined in <filename>oct</filename>-files must
+    have the same capabilities as functions in <filename>m</filename>-files.
+    In particular, the input and output arguments lists must be able to carry
+    different numbers of arguments, which are moreover of different type, just
+    as <filename>m</filename>-file functions can.  This means that there must
+    be a way of mapping a function from &octave-app; like
+</para>
+
+<programlisting role = "octave">
+function [array, real-scalar, integer] =
+    func(complex-scalar, array, list, integer) 
+    ## func frobs the snafu, returning all gromniz coefficients.
+
+    <lineannotation>-- actual function code goes here</lineannotation>
+
+endfunction
+</programlisting>
+
+<para>
+    to C++.  To this end, Octave's core interface supplies the macro (in
+    OCT/src/<filename class = "headerfile">defun-int.h</filename>)
+</para>
+
+<indexterm>
+    <primary>macro</primary>
+    <secondary>DEFUN_DLD</secondary>
+</indexterm>
+
+<indexterm>
+    <primary>DEFUN_DLD</primary>
+    <see>macro, DEFUN_DLD</see>
+</indexterm>
+
+<literallayout class = "monospaced">
+<type>octave_value_list</type>
+<function role = "macro">DEFUN_DLD</function>(<token>function_name</token>,
+          <type>const octave_value_list&amp;</type> <replaceable>input_argument_list</replaceable>,
+          [&nbsp;<type>int</type> <replaceable>number_of_output_arguments</replaceable>&nbsp;],            <lineannotation>-- optional argument</lineannotation>
+          <type>const char*</type> <replaceable>documentation_string</replaceable>)
+</literallayout>
+
+<para>
+    We have decorated the macro arguments with their types.  Note that the
+    first argument is the name of the function to be defined.
+</para>
+
+<para>
+    Of course the macro has to be defined somewhere.  The easiest way to pull
+    in all necessary definitions is to include OCT/src/<filename class =
+    "headerfile">oct.h</filename>.  Now, our skeletal source file of the
+    dynamic extension has the following shape:
+</para>
+
+<programlisting role = "c++">
+#include &lt;oct.h&gt;
+
+DEFUN_DLD(func, args, nargout,
+          "func frobs the snafu, returning the gromniz coefficients.")
+{
+    <lineannotation>-- actual function code goes here</lineannotation>
+
+    return <replaceable>possibly_empty_list_of_values</replaceable>;
+}
+</programlisting>
+
+<para>
+    Often functions do not depend on the actual number of output parameters.
+    Then, the third argument to <function role = "macro">DEFUN_DLD</function>
+    can be omitted.
+</para>
+
+<indexterm>
+    <primary>args (dynamic function parameter)</primary>
+    <see>macro, DEFUN_DLD</see>
+</indexterm>
+
+<indexterm>
+    <primary>nargout (dynamic function parameter)</primary>
+    <see>macro, DEFUN_DLD</see>
+</indexterm>
+
+
+<tip>
+    <title>Naming convention</title>
+
+    <para>
+        <function role = "macro">DEFUN_DLD</function> gives the user the
+        freedom to choose any name for
+        <replaceable>input_argument_list</replaceable> and
+        <replaceable>number_of_output_arguments</replaceable>, but
+        conventionally <literal>args</literal> and <literal>nargout</literal>
+        are used (thus reminding of the parameter names in
+        <function>main</function>, which are <literal>argc</literal> and
+        <literal>argv</literal>).
+    </para>
+</tip>
+</sect3>
+
+<sect3 id = "sect-oct-tutorial-essential">
+<title>Essential types and methods</title>
+
+<para>
+    Before we start to write a low-level implementation of
+    <function>matpow</function>, we look at the most essential types and
+    methods to handle data that flows through the Octave-interpreter interface.
+</para>
+
+<para>
+    As has been said above, the arguments passed to a dynamically loaded
+    functions are bundeled in an <type>octave_value_list</type>.  Results
+    returned from a function are also passed in an
+    <type>octave_value_list</type>.  The default constructor,
+    <methodname>octave_value_list</methodname>, creates an empty list, which
+    when used as return value, yields an Octave function returning
+    <quote>void</quote>.  To access the elements of a list, following methods
+    form class&nbsp;<classname>octave_value_list</classname> (defined in
+    OCT/src/<filename class = "headerfile">oct-obj.h</filename>) are useful:
+</para>
+
+<classsynopsis language = "cpp">
+    <ooclass>
+        <classname>octave_value_list</classname> 
+    </ooclass>
+
+    <!--
+    [classsynopsisinfo]
+        ...
+    [/classsynopsisinfo]
+    -->
+
+    <constructorsynopsis>
+        <modifier>public</modifier>
+
+        <methodname>octave_value_list</methodname>
+
+        <void></void>
+    </constructorsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>octave_value&amp;</type> <methodname>operator()</methodname>
+
+        <methodparam>
+            <type>int</type> <parameter>index</parameter>
+        </methodparam>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>octave_value</type> <methodname>operator()</methodname>
+
+        <methodparam>
+            <type>int</type> <parameter>index</parameter>
+        </methodparam>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>int</type> <methodname>length</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+</classsynopsis>
+
+<para>
+    <methodname>length</methodname> returns the number of elements in the list.
+    The overloaded parenthesis select a single element from the list.  The
+    index base for <replaceable>index</replaceable> is 0, and
+    <emphasis>not</emphasis> 1 as Fortran adepts might infer.  The LHS or RHS
+    values returned by <methodname>operator()</methodname> are
+    <type>octave_value</type>s, i.e., they can carry any type known to Octave,
+    e.g. integers, real matrices, complex matrices, and so on.
+</para>
+
+<para>
+    Knowing how to access the arguments of unspecified type, the next thing we
+    would like to do is get their values.  &octave-app; follows a uniform
+    naming scheme: all functions that return an object of a cerain type end in
+    <literal>_type</literal>.  Some of the more important of these methods
+    (defined in OCT/src/<filename class = "headerfile">ov-base.h</filename>)
+    are:
+</para>
+
+<classsynopsis language = "cpp">
+    <ooclass>
+        <classname>octave_base_value</classname>
+    </ooclass>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>int</type> <methodname>int_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>double</type> <methodname>double_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>Complex</type> <methodname>complex_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>Matrix</type> <methodname>matrix_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>ComplexMatrix</type> <methodname>complex_matrix_value</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+</classsynopsis>
+</sect3>
+
+<sect3 id = "sect-oct-tutorial-low-level">
+<title>Low-level implementation</title>
+
+<para>
+    Now, we are ready to implement <function>matpow</function> as a dynamically
+    loaded extension to Octave.
+</para>
+
+<example id = "ex-cpp-matpow">
+    <title>C++ implementation of <function>matpow</function></title>
+
+    <programlisting role = "c++">
+#include &lt;oct.h&gt;
+
+
+static bool is_even(int n);
+
+
+DEFUN_DLD(matpow, args, ,
+          "Return b = a^n for square matrix a, and non-negative, integral n.")
+{
+    const int n = args(1).int_value();  <co id = "co-int-value"></co>
+
+    if (n == 0)
+        return DiagMatrix(args(0).rows()<co id = "co-matrix-rows"></co>, args(0).columns()<co id = "co-matrix-columns"></co>, 1.0); <co id = "co-diagmatrix-constructor"></co>
+    if (n == 1)
+        return args(0);                 <co id = "co-return-input-arg"></co>
+
+    Matrix p(args(0).matrix_value());   <co id = "co-matrix-copy-constructor"></co>
+    Matrix b(args(0).matrix_value());
+    int np = n - 1;
+    while (np &gt;= 1)
+    {
+        if (is_even(np))
+        {
+            np = np / 2;
+        }
+        else
+        {
+            np = (np - 1) / 2;
+            b = b * p;                  <co id = "co-operator-mul-overloaded"></co>
+        }
+        p = p * p;
+    }
+
+    return b;                           <co id = "co-ovl-from-matrix-constructor"></co>
+}
+
+
+bool
+is_even(int n)
+{
+    return n % 2 == 0;
+}
+    </programlisting>
+
+    <calloutlist>
+        <callout arearefs = "co-int-value">
+            <para>
+                Get the exponent&nbsp;<varname>n</varname>, which is the
+                <emphasis>second</emphasis> argument to
+                <function>matpow</function> through
+                <methodname>args</methodname>(1), and retrieve its integral
+                value with <methodname>int_value</methodname>.
+            </para>
+        </callout>
+
+        <callout arearefs = "co-matrix-rows">
+            <para>
+                The matrix that we want to raise to the n-th power, is the
+                <emphasis>first</emphasis> argument, therefore it is accessed
+                through <methodname>args</methodname>(0).  The method
+                <methodname>rows</methodname> returns the number of rows in the
+                matrix.
+            </para>
+        </callout>
+
+        <callout arearefs = "co-matrix-columns">
+            <para>
+                The method <methodname>columns</methodname> returns the number
+                of columns in the matrix.  (The actual value is assumed to be
+                equal to the number of rows.  At this stage, we are tacitly
+                assuming that all parameters passed to
+                <function>matpow</function> are valid, which means especially
+                that the matrix is square.)
+            </para>
+        </callout>
+
+        <callout arearefs = "co-diagmatrix-constructor">
+            <para>
+                We call a constructor for diagonal matrices, <methodname role =
+                "constructor">DiagMatrix</methodname> (defined in
+                OCT/liboctave/<filename class =
+                "headerfile">dDiagMatrix.h</filename>), that accepts the size
+                of the matrix and the value to put on the diagonal, which is 1
+                in our case.
+            </para>
+        </callout>
+
+        <callout arearefs = "co-return-input-arg">
+            <para>
+                If n&nbsp;=&nbsp;1 the answer is the same matrix as the input
+                matrix.  For we want to save time and space, and not return a
+                copy of the input matrix by using
+            </para>
+
+            <programlisting role = "c++">
+return args(0).matrix_value();
+            </programlisting>
+
+            <para>
+                Though the latter would work, because constructor <methodname
+                role = "constructor">octave_value_list</methodname>(<type>const
+                Matrix&amp;</type> <replaceable>m</replaceable>) converts the
+                matrix into a list, we avoid the copy operation and simply
+                return the <type>octave_value</type>
+                <literal>args(0)</literal>.
+            </para>
+        </callout>
+
+        <callout arearefs = "co-matrix-copy-constructor">
+            <para>
+                Initialize the matrix <varname>p</varname>, that will take the
+                powers of the base.  The <classname>Matrix</classname>
+                constructor cannot take an <type>octave_value</type>, and we
+                have to supply the matrix itself by invoking
+                <methodname>matrix_value</methodname>.
+            </para>
+        </callout>
+
+        <callout arearefs = "co-operator-mul-overloaded">
+            <para>
+                Multiplication has been conveniently overloaded to work on
+                matrices.  Wanna give John a treat for this one?
+            </para>
+
+            <tip>
+                <para>
+                    The Octave library overloads all elementary operations of
+                    scalars, (row-/column-) vectors, and matrices.  If in
+                    doubt, whether a particular operation has been overloaded
+                    it is faster to try by compiling than to look at (read:
+                    grep through) all the sources, because in most cases the
+                    desired elementary operation is implemented.
+                </para>
+            </tip>
+        </callout>
+
+        <callout arearefs = "co-ovl-from-matrix-constructor">
+            <para>
+                We can return the result matrix&nbsp;<varname>b</varname>
+                directly, as an apropriate constructor is invoked to convert it
+                to an <type>octave-value_list</type>.
+            </para>
+        </callout>
+    </calloutlist>
+</example>
+
+<para>
+    We learn from the example that the C++ resembles closely the Octave
+    function.  This is due to the clever class structure of the Octave
+    library.
+</para>
+</sect3>
+
+<sect3 id = "sect-oct-tutorial-compiling">
+<title>Compiling</title>
+
+<indexterm>
+    <primary>mkoctfile</primary>
+</indexterm>
+
+<para>
+    Now that we are done with the coding, we are ready to compile and link.
+    The Octave distribution contains the script <command>mkoctfile</command>,
+    which does exactly this for us.  In the simplest case it is called with the
+    C++-source as its only argument.
+</para>
+
+<screen>
+<prompt>cspiel@hydra$</prompt> <userinput>ls</userinput>
+Makefile  matpow.cc  matrix-power.m  testmp.m
+<prompt>cspiel@hydra$</prompt> <userinput>mkoctfile matpow.cc</userinput>
+</screen>
+
+<para>
+    Nice, but not enough!  Presumably, we shall compile several times, we would
+    like to run our test suite, and finally remove all files that can be
+    re-generated from source.  Enter: <filename>Makefile</filename>.
+</para>
+
+<example id = "ex-simple-oct-makefile">
+    <title>
+        Simple <filename>Makefile</filename> for <filename>oct</filename>-files
+    </title>
+
+    <programlisting role = "make">
+# Makefile for Octave extension matpow
+
+.phony: all
+all: matpow.oct
+
+.phony: clean
+clean:
+        rm -f matpow.oct *.o
+
+.phony: distclean
+distclean: clean
+        rm -f *~ octave-core core
+
+.phony: test
+test: matpow.oct
+        octave --silent testmp.m
+
+
+matpow.oct: matpow.cc
+        mkoctfile matpow.cc
+    </programlisting>
+</example>
+</sect3>
+
+<sect3 id = "sect-oct-tutorial-running">
+<title>Running</title>
+
+<para>
+    If the <filename>oct</filename>-file is in the <envar>LOADPATH</envar>, it
+    will be loaded automatically the first time Octave hits the undefined
+    symbol, either through a call to <command>help</command>, or through a
+    function invocation.
+</para>
+
+<screen>
+<prompt>cspiel@hydra$</prompt> <userinput>ls</userinput>
+Makefile  matpow.cc  matpow.o  matpow.oct  matrix-power.m  testmp.m
+<prompt>cspiel@hydra$</prompt> <userinput>octave -q</userinput>
+<prompt>octave:1&gt;</prompt> <userinput>help matpow</userinput>
+matpow is the dynamically-linked function from the file
+/home/cspiel/hsc/octave/src/matpow/matpow.oct
+
+Return b = a^n for square matrix a, and non-negative, integral n.
+
+<prompt>octave:2&gt;</prompt> <userinput>matpow([2, 0; 0, -1], 4)</userinput>
+ans =
+
+  16   0
+   0   1
+
+<prompt>octave:3&gt;</prompt> <userinput><keycombo><keycap>Ctrl</keycap><keycap>D</keycap></keycombo></userinput>
+</screen>
+</sect3>
+</sect2>

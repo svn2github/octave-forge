@@ -1,0 +1,257 @@
+<!--
+     Copyright (C) 2001 Christoph L. Spiel
+     
+     This file is part of "Da Coda Al Fine".
+     
+     Da Coda Al Fine (CODA) is free documentation; you can redistribute it
+     and/or modify it under the terms of the GNU Free Documentation License as
+     published by the Free Software Foundation; either version 1.1, or (at your
+     option) any later version.
+     
+     CODA is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     FOR A PARTICULAR PURPOSE.  See the GNU Free Documentation License for more
+     details.
+     
+     You should have received a copy of the GNU Free Documentation License
+     along with CODA; see the file "gnufdl.sgml".  If not, write to the Free
+     Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+     USA.
+-->
+
+
+<sect2 id = "sect-oct-tutorial-problem-def">
+<title>Problem Definition</title>
+
+<para>
+    Instead of giving an abstract treatise, we want to explain the whole
+    business if dynamical extensions with the help of a simple, yet non-trivial
+    problem.  This example shall be analyzed in detail from beginning to end,
+    and we shall elucidate some modern software construction principles on
+    the way.
+</para>
+
+<para>
+    We shall implement a matrix power function.<footnote> <para>&octave-app;
+    alread has a matrix power operator, the caret&nbsp;<quote>^</quote>, which
+    is more powerful than our example ever will be.  This should not bother
+    us.</para> </footnote> Given a square
+    matrix&nbsp;<replaceable>A</replaceable> of integers, reals, or complex
+    values, and a non-negative integral
+    exponent&nbsp;<replaceable>n</replaceable>, the
+    function&nbsp;<function>matpow</function>(<replaceable>A</replaceable>,
+    <replaceable>n</replaceable>) is to calculate
+    <replaceable>A</replaceable><superscript><replaceable>n</replaceable></superscript>.
+</para>
+
+<para>
+    Boundary cases, we have to watch out for: an empty
+    matrix&nbsp;<replaceable>A</replaceable>, or a zero
+    exponent&nbsp;<replaceable>n</replaceable>.
+</para>
+</sect2>
+
+<sect2 id = "sect-oct-tutorial-hl-imp">
+<title>High-Level Implementation</title>
+
+<para>
+    We postpone writing the C++-implementation until we are completely
+    satisfied with our implementation in &octave-app;.  Having &octave-app;, a
+    rapid prototyping environment at hand, it would be stupid to throw away its
+    possibilities.
+</para>
+
+<blockquote>
+    <title>Hobby Astronomer's Mirror Making Rule</title>
+
+    <para>
+        It is faster to grind a 3&nbsp;inch mirror and then a 5&nbsp;inch
+        mirror, that to grind a 5&nbsp;inch mirror.
+    </para>
+</blockquote>
+
+<para>
+    Now that the problem is exactly defined, we can start thinking about an
+    implementation.  Here is our naive first shot:
+</para>
+
+<example id = "ex-matpow-high-level-naive">
+    <title>Naive implementation of <function>matpow</function></title>
+
+    <programlisting role = "octave">
+function b = matpow0(a, n)
+    ## Return b = a^n for square matrix a, and non-negative, integral n.
+    ## Note: matpow0() has an extremely naive implementation.
+
+    b = diag(ones(size(a, 1), 1));
+    for i = 1:n
+        b = b * a;
+    endfor
+endfunction
+    </programlisting>
+</example>
+
+<para>
+    Easy does the job!  <function>matpow0</function> looks like it does what we
+    want, but how can we be sure?  We write a test-suite!  A test-suite is
+    needed anyhow when we switch to C++.  We have a piece of running code, so
+    let us write some tests.  The unit testing functions are defined in <xref
+    linkend = "app-examples"></xref>, <xref linkend =
+    "sect-ex-unittest"></xref>.
+</para>
+
+<programlisting role = "octave">
+### name:        testmp.m  --  test matrix power functions
+### author:      Ch. L. Spiel
+### last rev.:   Fri Feb 23 10:00:15 UTC 2001
+### Octave ver.: 2.1.33
+
+1;
+
+
+function eq = mat_equal(m1, m2)
+    ## Return 1 if every element of matrix m1 is equal to the
+    ## corresponding element in matrix m2, i.e., if m1 == m2; return 0
+    ## otherwise.
+
+    eq = any(any(m1 == m2));
+endfunction
+
+
+###
+### The following tests should succeed.
+###
+
+
+<link linkend = "sect-ex-unittest-initunittest-m">initunittest</link>();
+
+a = [ 2.0, -3.0;
+     -1.0,  1.0];
+
+<link linkend = "sect-ex-unittest-unittest-m">unittest</link>("a^0",  1, eval("mat_equal(matpow(a, 0), diag([1, 1]))"));
+<link linkend = "sect-ex-unittest-unittest-m">unittest</link>("a^1",  1, eval("mat_equal(matpow(a, 1), a)"));
+<link linkend = "sect-ex-unittest-unittest-m">unittest</link>("a^2",  1, eval("mat_equal(matpow(a, 2), a^2)"));
+<link linkend = "sect-ex-unittest-unittest-m">unittest</link>("a^3",  1, eval("mat_equal(matpow(a, 3), a^3)"));
+<link linkend = "sect-ex-unittest-unittest-m">unittest</link>("a^4",  1, eval("mat_equal(matpow(a, 4), a^4)"));
+<link linkend = "sect-ex-unittest-unittest-m">unittest</link>("a^22", 1, eval("mat_equal(matpow(a, 22), a^22)"));
+<link linkend = "sect-ex-unittest-unittest-m">unittest</link>("a^23", 1, eval("mat_equal(matpow(a, 23), a^23)"));
+
+
+###
+### print results
+###
+
+
+<link linkend = "sect-ex-unittest-prunittest-m">prunittest</link>();
+</programlisting>
+
+<para>
+    Running the tests on <function>matpow0</function> gives us confidence
+</para>
+
+<screen>
+<prompt>octave:2&gt;</prompt> <userinput>testmp</userinput>
+# of testcases attempted   7
+# of expected passes       7
+# of expected failures     0
+# of unexpected passes     0
+# of unexpected failures   0
+# of unresolved testcases  0
+</screen>
+
+<para>
+    but we also get more ambitious!
+</para>
+
+<para>
+    Our algorithm is really naive, and matrix multiplications are
+    computationally expensive.  Let us cut down on the number of
+    multiplications.  What is the minimum number of multiplications needed to
+    compute
+    <replaceable>A</replaceable><superscript><replaceable>n</replaceable></superscript>?
+    Starting with <replaceable>A</replaceable>, we can only square it, getting
+    <replaceable>A</replaceable><superscript>2</superscript>.  Again squaring
+    is the fastest way to get to the fourth power.  In general squaring our
+    highest power lets us avance with least multiplications.  This is the heart
+    of our new algorithm.
+</para>
+
+<formalpara>
+    <title>Improved matrix power algorithm</title>
+
+    <para>
+        If the exponent&nbsp;<replaceable>n</replaceable> is a
+        <replaceable>w</replaceable>-bit number, we can apply the binary
+        expansion <replaceable>n</replaceable> =
+        sum(<replaceable>b<subscript>i</subscript></replaceable> *
+        2<superscript><replaceable>i</replaceable></superscript>,
+        <replaceable>i</replaceable> = 0..<replaceable>w</replaceable>-1),
+        where the <replaceable>b<subscript>i</subscript></replaceable> are
+        either 0 or 1.  In other words, we square <replaceable>A</replaceable>
+        and its squares for every 1 in the binary expansion of
+        <replaceable>n</replaceable>, adding this partial sum to the final
+        result.  Special care has to be taken for the cases where
+        <replaceable>n</replaceable> = 0 or 1.  See also
+        <citation>Golub:1996</citation>, section&nbsp;11.2.5, page&nbsp;569.
+    </para>
+</formalpara>
+
+<example id = "ex-matpow-high-level">
+    <title>Implementation of improved matrix power algorithm</title>
+
+    <programlisting role = "octave">
+function b = matpow1(a, n)
+    ## Return b = a^n for square matrix a, and non-negative, integral n.
+
+    <lineannotation>-- handle special cases: n = 0, and n = 1</lineannotation>
+    <lineannotation>-- first, to allow for an early return</lineannotation>
+    if (n == 0)
+        b = diag(ones(size(a, 1), 1));
+        return;
+    endif
+
+    if (n == 1)
+        b = a;
+        return;
+    endif
+
+    <lineannotation>-- general case: n &gt;= 2</lineannotation>
+    p = a;                              <lineannotation>-- p holds the current square</lineannotation>
+    b = a;
+    np = n - 1;
+    while (np &gt;= 1)
+        if (is_even(np))                <lineannotation>-- is_even is defined below</lineannotation>
+            <lineannotation>-- zero in the binary expansion</lineannotation>
+            np = np / 2;
+        else
+            <lineannotation>-- one in the binary expansion</lineannotation>
+            np = (np - 1) / 2;
+            b *= p;
+        endif
+        p *= p;
+    endwhile
+endfunction
+
+
+function e = is_even(n)
+    ## Return true (1), if n is even, false (0) otherwise.
+
+    e = (rem(n, 2) == 0)
+endfunction
+    </programlisting>
+</example>
+
+<para>
+    The new algorithm reduces the number of matrix multiplications from
+    O(<replaceable>n</replaceable>), to
+    O(log<subscript>2</subscript>(<replaceable>n</replaceable>)), which is a
+    remarkable improvement for large matrices as matrix multiplication itself
+    is an O(<replaceable>m</replaceable><superscript>3</superscript>) process
+    (<replaceable>m</replaceable> is the number of rows and columns of the
+    matrix).
+</para>
+
+<para>
+    Running the test-suite again ensures that we did not code any nonsense.
+</para>
+</sect2>

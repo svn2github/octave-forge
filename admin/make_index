@@ -848,14 +848,15 @@ sub ascii_desc { # 1{{{
 sub html_desc { # 1{{{
 # html_desc($func) returns a description of $func using html markup
     my ( $func ) = @_;
+    my $notes = $index_notes{$func};
     if (! defined $function_description{$func}[1] ) {
-	my $notes = $index_notes{$func};
 	$notes = "not implemented" if $notes eq "";
 	# shut of the bold italics during "code" formatting
 	$notes =~ s|<code>|</i><code>|g;
 	$notes =~ s|</code>|</code><i>|g;
 	return "<i>$notes</i>";
     } else {
+	print "ignoring $func = $notes\n" if $notes ne "";
 	my $desc = $function_description{$func}[1];
 	if ($desc eq "") {
 	    return "<i>no description</i>";

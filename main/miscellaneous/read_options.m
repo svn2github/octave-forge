@@ -10,116 +10,129 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## read_options is a script that can be called to read options from
-## within a function. Variables in the function's namespace, with same
-## name as the options will be set. read_options stops reading options
-## as soon as it reads an argument that it does not recognize.
+## [ops,nread] = read_opts (args,...) - Read options
 ##
-## nargin   : Should be set to the number of remaining arguments.
+## INPUT -------------
+## args     : list   : Options and values
 ##
-## opt0     : A single-space-separated string of boolean options. Should
-##            be padded with a single space at both extremities.
-##             Default is " ".
-##
-## opt1     : String of options taking one argument. Default is " ".
-##
-## filename : Name of the function, for verbose output or griping.
-##            Default is "unknown_func"
-##
-## verbose  : in {0,1} : be more or less verbose. Default is 0.
-##
-## opt_quiet: in {0,1} : If set, read_options will gripe when it
-##            encounters an unknown option. Otherwise, it just returns
-##
-## Also,  read_options  sets some variables that can be accessed from
-## the calling function :
-##
-## last_option_name : The name of the last option name, OR whatever
-##                    unrecognized argument that caused read_options to
-##                    stop reading the arguments (if any).
-##
-## last_option_value: The value of the last option taking a single
-##                    argument (if any).
+## OPTIONS -------
+## 'op0'    , string : Space-separated names of opt taking no argument  <''>
+## 'op1'    , string : Space-separated names of opt taking one argument <''>
+## 'default', struct : Struct holding default option values           <none>
+## 'prefix' , int    : If set, recognize opt from first chars. Else,     <0>
+##                     only accept whole opt names                       
+## 'nocase' , int    : If set, ignore case in option names               <0>
+## 'quiet'  , int    : Behavior when a non-string or unknown opt is met  <0>
+##              0    - Produce an error
+##              1    - Return quietly (can be diagnosed by checking 'rem')
+##      
+##     Note : At least one of 'op0' or 'op1' should be specified.
 ## 
-## option_number    : The number of arguments that have been read.
+## OUTPUT ------------
+## ops      : struct : Struct whose key/values are option names/values
+## nread    : int    : Number of elements of args that were read
 ##
-## read_options assumes that a script called from a function is executed
-## as if its code was written within the function body. (like a #define
-## in C). I don't think this feature is documented in octave, so it
-## might stop working on some versions of octave. Works with 2.1.19.
+## USAGE -------------
+##
+##                              # Define options and defaults
+## op0 = "is_man is_plane flies"
+## default = struct ("is_man",1, "flies",0);
+##
+##                              # Read the options
+##
+## s = read_opts (list (all_va_arg), "op0",op0,"default",default)
+##
+##                              # Create variables w/ same name as options
+##
+## [is_man, is_plane, flies] = getfield (s,"is_man", "is_plane", "flies")
+function [op,nread] = read_opts (args, ...)
 
-#  if exist("filename","var")!=1  , filename="unkown_func" ; end
-#  if exist("verbose","var")!=1   , verbose=0 ; end
-#  if exist("opt0","var")!=1      , opt0=" "  ; end
-#  if exist("opt1","var")!=1      , opt1=" "  ; end
-# if exist("opt_quiet","var")!=1 , opt_quiet=0  ; end
-if exist("filename")!=1  , filename="unkown_func" ; end
-if exist("verbose")!=1   , verbose=0 ; end
-if exist("opt0")!=1      , opt0=" "  ; end
-if exist("opt1")!=1      , opt1=" "  ; end
-if exist("opt_quiet")!=1 , opt_quiet=0  ; end
+op = setfield ();		# Empty struct
+op0 = op1 = " ";
+guess = quiet = nocase = quiet = 0;
 
-## opt0 
-## opt1
-## Commented 2000/08/13 ... break anything?
-## va_start() ;
-nargin_orig = nargin ;
-option_number = 0 ;
-## igncnt = 0 ;
-while nargin>0 ,
-  last_option_name = va_arg() ;
-  ## opt0
-  nargin-- ;
-  option_number++ ;
-  if ! isstr(last_option_name) ,
-    if ! opt_quiet ,
-      printf("%s : Non-string option : \n",filename) ;
-      keyboard
-    else
-      if verbose,
-	printf("read_options : ignoring non-string option number %d\n",\
-	       option_number) ;
-	## last_option_name 
-      end
-    end
-    ## ignopt(++igncnt) = option_number ;
-    ## if opt_quit_early, break ; end
-    break ;
+nargin--;
+if rem (nargin, 2), error ("odd number of optional args"); end
+
+while nargin
+  nargin -= 2;
+  if ! isstr (tmp = va_arg ()), error ("non-string option"); end
+  if     strcmp (tmp, "op0")    , op0     = va_arg ();
+  elseif strcmp (tmp, "op1")    , op1     = va_arg ();
+  elseif strcmp (tmp, "default"), op      = va_arg ();
+  elseif strcmp (tmp, "prefix") , prefix  = va_arg ();
+  elseif strcmp (tmp, "nocase") , nocase  = va_arg ();
+  elseif strcmp (tmp, "quiet")  , quiet   = va_arg ();
+  else 
+    error ("unknown option '%s' for option-reading function!",tmp);
   end
-  read_options_foo = [" ",last_option_name," "] ;
-  ## keyboard
-  if index(opt1,read_options_foo) ,
-    
-    last_option_value = va_arg() ;		#nargin-- ;
-    ## last_option_value
-    nargin-- ;
-    option_number++ ;
-    eval([last_option_name,"=last_option_value;"]) ;
+end
 
-    if verbose
-      printf ("%s : Read option : %s.\n",filename,last_option_name);
+if length (op0) + length (op1) < 3
+  error ("Either 'op0' or 'op1' should be specified");
+end
+
+###
+
+if length (op0)
+  if op0(1) != " ", op0 = [" ",op0]; end;
+  if op0(length(op0)) != " ", op0 = [op0," "]; end;
+end
+
+if length (op1)
+  if op1(1) != " ", op1 = [" ",op1]; end;
+  if op1(length(op1)) != " ", op1 = [op1," "]; end;
+end
+
+opts = [op0,op1];		# Join options
+				# Before iend : opts w/out arg. After, opts
+iend = length (op0);		# w/ arg
+
+spi = find (opts == " ");
+
+opts_orig = opts;
+
+if nocase, opts = tolower (opts); end
+
+nread = 0;
+while nread < length (args)
+  
+  oname = name = nth (args, ++nread);
+  if ! isstr (name)		# Whoa! Option name is not a string
+    if quiet, nread--; return;
+    else      error ("option name in pos %i is not a string",nread);
     end
-
-  elseif index(opt0,read_options_foo) ,
-    eval([last_option_name,"=1;"]) ;
-    if verbose 
-      printf ("%s : Read boolean option : %s\n",filename,last_option_name);
+  end
+  if nocase, name = tolower (name); end
+  
+  ii = findstr (name, opts);
+  
+  if isempty (ii)		# Whoa! Unknown option name
+    if quiet, nread--; return;
+    else      error ("unknown option '%s'",oname);
     end
+  end
+  
+  if length (ii) > 1		# Ambiguous option name
+    tmp = "";
+    for i = ii
+      tmp = [tmp,"', '",opts(i:spi(find (spi > i)(1))-1)];
+    end
+    tmp = tmp(1:length(tmp)-3);
+    error ("ambiguous option '%s'. Could be '%s'",oname,tmp);
+  end
 
+				# Full name of option (w/ correct case)
+
+  fullname = opts_orig(ii:spi(find (spi > ii)(1))-1);
+
+  if ii < iend
+    op = setfield (op, fullname, 1);
   else
-    if ! opt_quiet ,
-      printf("%s : Unknown option : %s\n",filename,last_option_name) ;
-      keyboard
+    if nread < length (args)
+      op = setfield (op, fullname, nth (args,++nread));
     else
-      if verbose,
-	printf("read_options : ignoring option number %d, '%s'\n",\
-	       option_number,last_option_name) ;
-	last_option_name 
-      end
-
+      error ("options end before I can read value of option '%s'",oname);
     end
-    ## ignopt(++igncnt) = option_number ;
-    ## if opt_quit_early, break ; end
-    break
   end
 end

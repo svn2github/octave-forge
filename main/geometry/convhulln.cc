@@ -29,7 +29,7 @@ extern "C" {
 #endif
 #include <octave/oct.h>
 
-char qh_version[] = "convhulln.oct 2003-12-14";
+char *qh_version = "convhulln.oct 2003-12-14";
 char flags[250];
 const char *options;
 

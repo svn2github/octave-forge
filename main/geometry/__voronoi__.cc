@@ -35,7 +35,7 @@ extern "C" {
 #endif
 #include <octave/oct.h>
 
-char qh_version[] = "__voronoi__.oct 2003-12-14";
+char *qh_version = "__voronoi__.oct 2003-12-14";
 FILE *outfile = stdout;
 FILE *errfile = stderr;
 char flags[250];

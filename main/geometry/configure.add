@@ -12,14 +12,15 @@ AC_CACHE_VAL(ac_cv_lib_qhull_qh_qhull,
 [changequote(, )dnl
 cat > conftest.c <<EOF
 #include <stdio.h>
-#include <qhull/qhull.h>
-char qh_version[] = "version";
+#include <qhull/qhull_a.h>
+char *qh_version = "version";
 int 
 main(argc, argv)
   int argc;
   char *argv[];
 {
-  qh_qhull();
+  qh_init_A (NULL, NULL, NULL, 0, NULL);
+/*  qh_qhull();*/
   return 0;
 }
 EOF

@@ -43,13 +43,15 @@ sinclude ../../Makeconf
 
 ifndef OCTAVE_FORGE
 
-	OCTAVE   =   octave$(OCTVER)
-	MKOCTFILE= mkoctfile$(OCTVER) 
-	AR= ar
-	RANLIB=ranlib
-	LN_S = ln -s
-	HAVE_ND_ARRAYS = -DHAVE_ND_ARRAYS
-	TYPEID_HAS_CLASS = -DTYPEID_HAS_CLASS
+    OCTAVE   =   octave$(OCTVER)
+    MKOCTFILE= mkoctfile$(OCTVER) 
+    AR= ar
+    RANLIB=ranlib
+    LN_S = ln -s
+    HAVE_ND_ARRAYS = -DHAVE_ND_ARRAYS
+    TYPEID_HAS_CLASS = -DTYPEID_HAS_CLASS
+    CLASS_HAS_LOAD_SAVE = -DCLASS_HAS_LOAD_SAVE
+
 endif
 
 # Use same C compiler and options as mkoctfile
@@ -126,10 +128,10 @@ S_DOUBLE= $(DLUSRC) $(ALLAUX) $(DZLAUX) $(ZLUSRC)
 all: $(NAME).oct $(OBJLINKS) sptest.m 
 
 sptest.m: buildtests.sh
-	./buildtests.sh preset
+	bash buildtests.sh preset
 
 sprandomtest.m: buildtests.sh
-	./buildtests.sh random
+	bash buildtests.sh random
 
 $(S_DOUBLE):%.o:%.c
 	$(CC) $(CFLAGS) $(CPICFLAG) $(S_INC) $(SUPERLU_DEFS) -c $< -o $@
@@ -138,7 +140,7 @@ $(OCTOBJ): make_sparse.h
 sparse_ops.o complex_sparse_ops.o: sparse_ops.h
 
 $(OCTOBJ): %.o: %.cc
-	$(MKOCTFILE) -c $< $(S_INC) $(CCDEFS) $(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) -o $@
+	$(MKOCTFILE) -c $< $(S_INC) $(CCDEFS) $(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) $(CLASS_HAS_LOAD_SAVE) -o $@
 
 $(LIBSUPERLU): $(S_DOUBLE)
 	$(AR) $(ARFLAGS) $(LIBSUPERLU) $(S_DOUBLE)

@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.23  2004/07/27 16:05:55  aadler
+simplify find
+
 Revision 1.22  2004/01/29 21:13:20  pkienzle
 Use std::vector rather than std::auto_ptr for temporary memory
 
@@ -270,6 +273,8 @@ public:
    
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 
+   octave_value_list find( void ) const;
+
    type_conv_fcn numeric_conversion_function (void) const;
 
 private:
@@ -334,6 +339,39 @@ public:
    octave_value do_index_op ( const octave_value_list& idx, int resize_ok);
 
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
+
+   octave_value_list find( void ) const;
+
+#ifdef HAVE_OCTAVE_CONCAT
+#if 0
+   octave_sparse concat (const octave_sparse& ra, const octave_sparse& rb, 
+                         const Array<int>& ra_idx);
+   octave_sparse concat (const octave_sparse& ra, const Matrix& rb, 
+                         const Array<int>& ra_idx);
+   octave_sparse concat (const Matrix& ra, const octave_sparse& rb, 
+                         const Array<int>& ra_idx);
+#endif
+
+   octave_sparse& insert (const octave_sparse& a, int r, int c);
+#endif
+
+#ifdef CLASS_HAS_LOAD_SAVE
+  bool save_ascii (std::ostream& os, bool& infnan_warned,
+		 bool strip_nan_and_inf);
+
+  bool load_ascii (std::istream& is);
+
+#if 0
+  bool save_binary (std::ostream& os, bool& save_as_floats);
+  
+  bool load_binary (std::istream& is, bool swap, 
+  		    oct_mach_info::float_format fmt);
+#endif
+
+#if defined (HAVE_HDF5)
+// TODO
+#endif
+#endif
 
    type_conv_fcn numeric_conversion_function (void) const;
 

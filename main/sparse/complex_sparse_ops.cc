@@ -613,6 +613,35 @@ octave_complex_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
 #endif                  
 } // print
 
+octave_value_list 
+octave_complex_sparse::find( void ) const
+{
+   DEBUGMSG("complex_sparse - find");
+   DEFINE_SP_POINTERS_CPLX( X )
+   int nnz = NCFX->nnz;
+
+   octave_value_list retval;
+   ColumnVector I(nnz), J(nnz);
+   ComplexColumnVector S(nnz);
+
+   for (int i=0,cx=0; i< Xnc; i++) {
+      OCTAVE_QUIT;
+      for (int j= cidxX[i]; j< cidxX[i+1]; j++ ) {
+         I( cx ) = (double) ridxX[j]+1;
+         J( cx ) = (double) i+1;
+         S( cx ) =          coefX[j];
+         cx++;
+      }
+   }
+
+   retval(0)= I;
+   retval(1)= J;
+   retval(2)= S;
+   retval(3)= (double) Xnr;
+   retval(4)= (double) Xnc;
+   return retval;
+}
+
 //
 // sparse by complex  operations
 //
@@ -1576,6 +1605,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.24  2004/07/27 16:05:55  aadler
+ * simplify find
+ *
  * Revision 1.23  2003/12/22 15:13:23  pkienzle
  * Use error/return rather than SP_FATAL_ERROR where possible.
  *

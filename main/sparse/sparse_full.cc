@@ -223,7 +223,6 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
 @end deftypefn")
 {
    octave_value_list retval;
-   octave_value tmp;
    int nargin = args.length ();
 
    if (nargin != 1) {
@@ -231,89 +230,36 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
       return retval;
    }
       
+   const octave_value& rep = args(0).get_rep ();
 
-   bool is_sparse=      args(0).type_name () == "sparse";
-   bool is_cplx_sparse= args(0).type_name () == "complex_sparse";
+   if( args(0).type_name () == "sparse" ) {
 
-   if ( is_sparse || is_cplx_sparse ) {
-      const octave_value& rep = args(0).get_rep ();
- 
-      SuperMatrix A = ((const octave_sparse&) rep) . super_matrix ();
-      assert( (A).Stype == NC); 
-      NCformat * NCFA= (NCformat *) (A).Store;
-      int  * ridxA =          NCFA->rowind;
-      int  * cidxA =          NCFA->colptr;
-      int Anr= (A).nrow; 
-      int Anc= (A).ncol;
-      int nnz = NCFA->nnz;
+      const octave_sparse& v = ((const octave_sparse&) rep);
+      retval= v.find();
 
-      if (nargout<=1) {
-         ColumnVector I (nnz);
-         for (int i=0, cx=0; i< Anc; i++) {
-	    OCTAVE_QUIT;
-            for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) 
-               I( cx++ ) = (double) ( (ridxA[j]+1) + i*Anr );
-	 }
+   } else
+   if( args(0).type_name () == "complex_sparse" ) {
 
-         // orientation rules - 
-         //   I is column unless matrix is a rowvector
-         if (Anr == 1)
-            retval(0)= I.transpose();
-         else
-            retval(0)= I;
+      const octave_complex_sparse& v = ((const octave_complex_sparse&) rep);
+      retval= v.find();
 
-      } else
-      {
-         ColumnVector I (nnz), J (nnz);
-
-         for (int i=0,cx=0; i< Anc; i++) {
-	    OCTAVE_QUIT;
-            for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) {
-               I( cx ) = (double) ridxA[j]+1;
-               J( cx ) = (double) i+1;
-               cx++;
-            }
-	 }
-
-         retval(0)= I;
-         retval(1)= J;
-         retval(3)= (double) Anr;
-         retval(4)= (double) Anc;
-
-         if (is_sparse) {
-            assert( A.Dtype == _D );
-            ColumnVector S (nnz);
-            double * coefA = (double *) NCFA->nzval;
-            for (int i=0,cx=0; i< Anc; i++) {
-	       OCTAVE_QUIT;
-               for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) 
-                  S( cx++ ) =          coefA[j];
-	    }
-            retval(2)= S;
-         } else
-         {
-            assert( A.Dtype == _Z );
-            ComplexColumnVector S (nnz);
-            Complex * coefA = (Complex *) NCFA->nzval;
-            for (int i=0,cx=0; i< Anc; i++) {
-	       OCTAVE_QUIT;
-               for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) 
-                  S( cx++ ) =          coefA[j];
-	    }
-            retval(2)= S;
-         }
-
-            
-      } // if nargout
-   }
-   else
+   } else
      gripe_wrong_type_arg ("spfind", args(0));
+
+   if (nargout == 1) { // only return the v value
+      octave_value_list tmp;
+      tmp(0) = retval(2);
+      retval= tmp;
+   }
 
    return retval;
 }
 
 /*
  * $Log$
+ * Revision 1.11  2004/07/27 16:05:55  aadler
+ * simplify find
+ *
  * Revision 1.10  2004/03/05 14:30:30  pkienzle
  * Add dispatch commands for spfind
  *

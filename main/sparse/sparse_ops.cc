@@ -458,6 +458,43 @@ octave_sparse::subsref( const std::string SUBSREF_STRREF type,
    return retval;
 }
 
+#if HAVE_OCTAVE_CONCAT
+octave_sparse&
+octave_sparse::insert( const octave_sparse& b, int r, int c)
+{
+  printf("doing sp_cat with r=%d c=%d", r, c);
+  return *this;
+}
+#endif
+
+#ifdef CLASS_HAS_LOAD_SAVE
+bool 
+octave_sparse::save_ascii (std::ostream& os, bool& infnan_warned, 
+			       bool strip_nan_and_inf)
+{
+  dim_vector d = dims ();
+
+  // Note use N-D way of writing matrix for eventual conversion
+  // of octave_galois to handle N-D arrays
+  os << "# ndims: " << d.length () << "\n";
+
+  for (int i=0; i < d.length (); i++)
+    os << " " << d (i);
+
+  os << "#contents here\n";
+  return true;
+}
+
+bool
+octave_sparse::load_ascii (std::istream& is)
+{
+  int mord, prim, mdims;
+  bool success = true;
+  return success;
+}
+#endif
+
+
 octave_value
 octave_sparse::do_index_op ( const octave_value_list& idx, int) 
 {
@@ -556,6 +593,35 @@ octave_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
       }
 #endif                  
 } // print
+
+octave_value_list 
+octave_sparse::find( void ) const
+{
+   DEBUGMSG("sparse - find");
+   DEFINE_SP_POINTERS_REAL( X )
+   int nnz = NCFX->nnz;
+
+   octave_value_list retval;
+   ColumnVector I(nnz), J(nnz);
+   ColumnVector S(nnz);
+
+   for (int i=0,cx=0; i< Xnc; i++) {
+      OCTAVE_QUIT;
+      for (int j= cidxX[i]; j< cidxX[i+1]; j++ ) {
+         I( cx ) = (double) ridxX[j]+1;
+         J( cx ) = (double) i+1;
+         S( cx ) =          coefX[j];
+         cx++;
+      }
+   }
+
+   retval(0)= I;
+   retval(1)= J;
+   retval(2)= S;
+   retval(3)= (double) Xnr;
+   retval(4)= (double) Xnc;
+   return retval;
+}
 
 //
 // sparse by scalar  operations
@@ -1282,6 +1348,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.18  2004/07/27 16:05:55  aadler
+ * simplify find
+ *
  * Revision 1.17  2003/12/22 15:13:23  pkienzle
  * Use error/return rather than SP_FATAL_ERROR where possible.
  *

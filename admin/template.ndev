@@ -292,12 +292,17 @@ From time to time, you will need to synchronize with CVS:
    $ cd octave-forge
    $ cvs -q update -d
 </pre>
-Code `?' means that you created file but didn't add and commit.
-Code `U' means that your copy of file has been updated.
-Code `M' means that you have modified file without committing it.
-Code `C' means that your modifications to file conflict.  Look inside
-the file to find the lines which could not be resolved.  They will be
-wrapped in ========> if I recall correctly.
+Each file will be listed with one of the following codes:
+<ul>
+<li> `?' for files you created didn't add and commit.
+<li> `M' for files you modified but didn't commit.
+<li> `C' for files which have unresolvable conflicts.  Look inside the file to
+see what it was that couldn't be resolved.  It will be clearly marked, or you
+can do a cvs diff on the file to highlight the conflict.
+<li> `U' for files you haven't touched but are modified on the server.
+<li> `P' for files you have modified in a way consistent with the modifications
+on the server (?), e.g., because you submitted a patch for someone else to apply.
+</ul>
 
 <h3>Learn more about CVS</h3>
 The few CVS commands shown here just scratch the surface of this

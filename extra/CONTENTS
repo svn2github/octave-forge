@@ -1,0 +1,9 @@
+Packages which:
+   * are too narrow in scope for main, or
+   * act as alternatives for functions in main, or
+   * do not follow octave conventions (because they want
+     to retain compatibility with matlab for example), or
+   * are primarily developed elsewhere, or
+   * require patches to Octave, or
+   * are designed for older versions of Octave, or
+   * haven't been tested enough.

@@ -1,0 +1,9 @@
+Backports of functions to the latest Octave 2.0.x interpreter.  
+Unless you volunteer to keep them up to date, these functions 
+will likely fall behind their counterparts in the main
+distribution.  Note that you should try to write your functions 
+so that they work without change in Octave 2.0.x, but if doing 
+so makes them less clean or efficient, then drop 2.0.x 
+compatibility and consider making a 2.0.x specific version and 
+adding it to the ver20 directory.  By default these are not 
+installed.

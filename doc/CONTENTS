@@ -1,0 +1,4 @@
+Documentation for octave in general.  Documentation for specific
+packages goes into the doc subdirectory of the individual package 
+directories.  There are no standards for documentation at this
+time.

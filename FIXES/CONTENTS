@@ -1,0 +1,4 @@
+Alternatives to existing Octave functions.  Some of these are 
+needed by the functions in main, some are needed for 
+compatibility with Matlab, and some are faster than the Octave
+alternatives.

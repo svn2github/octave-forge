@@ -63,6 +63,16 @@ function [y,dy] = polyconf(p,x,varargin)
   end
 end
 
+%!test
+%! # data from Hocking, RR, "Methods and Applications of Linear Models"
+%! temperature=[40;40;40;45;45;45;50;50;50;55;55;55;60;60;60;65;65;65];
+%! strength=[66.3;64.84;64.36;69.70;66.26;72.06;73.23;71.4;68.85;75.78;72.57;76.64;78.87;77.37;75.94;78.82;77.13;77.09];
+%! [p,s] = polyfit(temperature,strength,1);
+%! [y,dy] = polyconf(p,40,s,0.05,'ci');
+%! assert([y,dy],[66.15396825396826,1.71702862681486],100*eps);
+%! [y,dy] = polyconf(p,40,s,0.05,'pi');
+%! assert(dy,4.45345484470743,100*eps);
+
 ## [y,dy] = confidence(A,p,s)
 ##
 ##   Produce prediction intervals for the fitted y. The vector p
@@ -119,5 +129,5 @@ function [y,dy] = confidence(A,p,S,alpha,typestr)
     otherwise, error("use 'ci' or 'pi' for interval type");
   end
   if isempty(alpha), alpha = default_alpha; end
-  s = t_inv(1-alpha/2,S.df)*S.normr/sqrt(S.df); 
+  s = t_inv(1-alpha/2,S.df)*S.normr/sqrt(S.df);
   dy = s*sqrt(pred+sumsq(A/S.R,2));

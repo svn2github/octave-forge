@@ -17,7 +17,7 @@ use vars qw( $octave_object );
 # set values which should change to this,
 # if it doesn't change, we have an error.
 my $retcode_string= "[-101101.101101,-918273.6455,-178.9245867]";
-my $retcode_value=   [-101101.101101,-918273.6455,-178.9245867];
+my $retcode_value=   eval $retcode_string;
 
 sub register {
 #  print "REGISTERING\n";
@@ -401,6 +401,33 @@ sub new
    return $self;
 }   
 
+package Inline::Octave::ComplexMatrix;
+use Carp;
+use Math::Complex;
+@ISA= qw(Inline::Octave::Matrix);
+
+sub write_out_matrix {
+   my $self=  shift;
+   my $rows=  shift;
+   my $cols=  shift;
+   my $vals=  shift;
+   my $trans= shift;
+   my $vname= shift;
+
+   my (@real, @imag);
+   for (@$vals) {
+      push @real, Re( $_ );
+      push @imag, Im( $_ );
+   }
+
+   my $code= "$vname=fread(stdin,[$rows,$cols],'double')$trans +".
+                    "fread(stdin,[$rows,$cols],'double')$trans*I;\n".
+             pack( "d".($rows*$cols*2) , ( @real, @imag)  );
+   return $code;
+}
+
+
+
 #
 # Inline::Octave::Matrix contains the code
 # to handle octave Matrix objects
@@ -411,6 +438,7 @@ sub new
 # new IOM( [1,2,3,4], 2, 2) -> Matrix, rows, cols
 package Inline::Octave::Matrix;
 use Carp;
+use Math::Complex;
 
 $varcounter= 10000001;
 
@@ -471,14 +499,26 @@ sub new
       croak "Matrix is not size ${cols}x${rows}" unless
              @vals == $rows*$cols ;
 
-      $code= "$varname=fread(stdin,[$rows,$cols],'double')$do_transpose;\n".
-             pack( "d".($rows*$cols) , @vals );
+      $code= $self->write_out_matrix( $rows,$cols,\@vals, $do_transpose, $varname );
    }
    Inline::Octave::interpret(0, $code );
 
    $self->store_size();
 
    return $self;
+}
+
+sub write_out_matrix {
+   my $self=  shift;
+   my $rows=  shift;
+   my $cols=  shift;
+   my $vals=  shift;
+   my $trans= shift;
+   my $vname= shift;
+
+   my $code= "$vname=fread(stdin,[$rows,$cols],'double')$trans;\n".
+             pack( "d".($rows*$cols) , @$vals );
+   return $code;
 }
 
 sub rows
@@ -522,27 +562,46 @@ sub store_size
    $self->{string}= $4;
 }             
 
+sub read_back_matrix {
+   my $self   = shift;
+   my $extra  = shift || "";
+   my $varname= $self->name;
+   my @list;
+   if ( $self->{complex} ) {
+      my $code = "fwrite(stdout, real( $varname$extra ),'double');".
+                 "fwrite(stdout, imag( $varname$extra ),'double');";
+      my $retval= Inline::Octave::interpret(0, $code );
+      my $half  = length( $retval ) /2;
+      my $size= $self->elements();
+      my @real= unpack "d$size", substr( $retval,     0, $half);
+      my @imag= unpack "d$size", substr( $retval, $half, $half);
+      for (my $i=0; $i< $size ; $i++ ) {
+         if ($imag[$i] == 0 ) {
+            push @list, $real[$i];
+         } else {
+            push @list, cplx( $real[$i], $imag[$i] );
+         }
+      }
+   } else { # not complex
+      my $code = "fwrite(stdout, $varname$extra,'double');";
+      my $retval= Inline::Octave::interpret(0, $code );
+      my $size= $self->elements();
+      @list= unpack "d$size", $retval;
+   };
+   return \@list;
+}
+
 sub as_list
 {
    my $self = shift;
-   my $varname= $self->name;
-   croak "Can't handle complex" if $self->{complex};
-   my $code = "fwrite(stdout, $varname,'double');";
-   my $retval= Inline::Octave::interpret(0, $code );
-   my $size= $self->elements();
-   my @list= unpack "d$size", $retval;
-   return @list;
+   my $list = $self->read_back_matrix();
+   return @$list;
 }
 
 sub as_matrix
 {
    my $self = shift;
-   my $varname= $self->name;
-   croak "Can't handle complex" if $self->{complex};
-   my $code = "fwrite(stdout, $varname','double');"; # use transpose
-   my $retval= Inline::Octave::interpret(0, $code );
-   my $size= $self->elements();
-   my @list= unpack "d$size", $retval;
+   my @list= @{ $self->read_back_matrix("'") };
    my @m;
    my $cols= $self->cols();
    my $rows= $self->rows();
@@ -562,12 +621,7 @@ sub sub_matrix
    my $col_specv = new Inline::Octave::Matrix( shift );
    my $col_specn = $col_specv->name;
 
-   my $varname= $self->name;
-   croak "Can't handle complex" if $self->{complex};
-   my $code = "fwrite(stdout, $varname($row_specn,$col_specn)','double');";
-   my $retval= Inline::Octave::interpret(0, $code );
-   my $size= $self->elements();
-   my @list= unpack "d$size", $retval;
+   my @list= @{ $self->read_back_matrix("($row_specn,$col_specn)'") };
    my @m;
    my $cols= $col_specv->max_dim();
    my $rows= $row_specv->max_dim();
@@ -606,7 +660,9 @@ sub disp
    my $self = shift;
    my $varname= $self->name;
    my $code = "disp( $varname );";
-   return Inline::Octave::interpret(0, $code );
+   my $retval= Inline::Octave::interpret(0, $code );
+   chomp ($retval);
+   return $retval;
 }   
 
 sub name
@@ -701,7 +757,12 @@ sub replace_matrix
 #
 # create methods for the various math functions
 #
-{
+
+# include guard
+$Inline::Octave::methods_defined=0;
+unless ($Inline::Octave::methods_defined) {
+   $Inline::Octave::methods_defined=0;
+
    my %methods= (
       abs           => 1, acos          => 1, acosh         => 1,
       all           => 1, angle         => 1, any           => 1,
@@ -729,7 +790,7 @@ sub replace_matrix
       tanh          => 1, zeros         => 1,
    );
 
-   for my $meth ( keys %methods ) {
+   for my $meth ( sort keys %methods ) {
       no strict 'refs';
       my $nargout= $methods{$meth};
       *$meth = sub {
@@ -815,6 +876,9 @@ TODO LIST:
   10. Errors in Octave should die in perl
 
 $Log$
+Revision 1.15  2002/05/01 02:19:40  aadler
+Initial work to add Inline::Octave::ComplexMatrix
+
 Revision 1.14  2002/03/08 21:15:34  aadler
 Mods to add sub_matrix, and OO type cleanups
 
@@ -906,6 +970,9 @@ fread(stdin, [dimx dimy], "double"), and read similarly.
 Inline::Octave::Matrix variables in perl are tied to the octave
 variable. When a destructor is called, it sends a "clear varname"
 command to octave.
+
+Additionally, there are Inline::Octave::ComplexMatrix and 
+Inline::Octave::String types for the corresponding variables.
                    
 I initially tried to bind the C++ and liboctave to perl, but
 it started to get really hard - so I took this route.
@@ -1182,6 +1249,20 @@ Then these methods will make life more convenient.
 
    $a->replace_matrix( [1,4], [1,4], [ [8,7],[6,5] ] );
 
+=head1 Using Inline::Octave::ComplexMatrix
+
+Inline::Octave::ComplexMatrix should work very similarly
+to Inline::Octave::Matrix's.  The perl Math::Complex type
+is used to map octave complex numbers.
+
+Note, however, that the Math::Complex type in perl is heavy
+- it takes lots of memory and time compared to the native
+implementation in Octave.
+
+   use Math::Complex;
+   my $x= Inline::Octave::ComplexMatrix->new([1,1,2,3 + 6*i,4]);
+   print $x->disp();
+
 =head1 Using Inline::Octave::String
 
 Inline::Octave::String is a subclass of Inline::Octave::Matrix
@@ -1214,6 +1295,12 @@ By using the strengths of both languages, it should be
 possible to run faster than in each. (ie using octave
 for matrix operations, and running loops and text
 stuff in perl)
+
+One performance issue is Complex matrix math in perl. 
+The perl Math::Complex type is quite heavy, and for 
+large matrices this work is done for each element.
+You should try to do the complex stuff in octave,
+and only pull back small matrices into perl.
 
 
 =head1 AUTHOR

@@ -56,4 +56,4 @@ NAME not directly documented. Try the following:\n\
 EOF
 
 set -x
-@MKOCTFILE@ -o $name mex_$name.cc @opath@/mex.o -I@opath@ $*
+@MKOCTFILE@ -o $name mex_$name.cc @OPATH@/mex.o -I@OPATH@ $*

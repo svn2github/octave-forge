@@ -9,7 +9,7 @@ This lists the packages that won't be installed by default.  For
 explanations, see the end of this file.  Remove NOINSTALL for each 
 one that you do indeed want to install.
 
-$ ./configure --with-path=~/octave-forge --prefix=~
+$ ./configure --with-path=$HOME/octave-forge --prefix=$HOME
 $ make
 $ make install
 

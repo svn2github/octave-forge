@@ -19,7 +19,7 @@ mex.o: mex.cc mex.h matrix.h
 	$(RM) mex.oct
 
 mex: mex.in
-	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):" -e "s:@opath@:$(opath):g" > mex
+	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):" -e "s:@OPATH@:$(OPATH):g" > mex
 	chmod a+x mex
 
 install:

@@ -21,11 +21,11 @@ Analysis functions
    ar_spa
    detrend
    flix
-   quantiles
 
 Multivariate analysis
    mvar
    mvfilter
+   mvfreqz
    arfit2    
 
 Adaptive (time-varying) analysis

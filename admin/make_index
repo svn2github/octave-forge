@@ -432,10 +432,10 @@ sub register_function { # {{{1
 
     my $oneline = first_sentence($desc);
     #printf "%30s %s\n", $function, $oneline;
-    if ($replace_shadow != 0) {
-      @function_description{$function} = [ $file, $oneline, $desc ];
-    } else {
+    if ($replace_shadow == 0 && defined @function_description{$function}) {
       @function_description{$function} = [ $function_description{$function}[0], $oneline, $desc ];
+    } elsif (!defined @function_description{$function}) {
+      @function_description{$function} = [ $file, $oneline, $desc ];
     }
 #    push @function_description{$function}}, "$file\n$oneline\n$desc";
     #printf "%-12s %-20s %s\n", $function,

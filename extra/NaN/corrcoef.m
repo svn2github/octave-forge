@@ -1,28 +1,26 @@
 function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % CORRCOEF calculates the correlation coefficient.
-%   X and Y can contain missing values encoded with NaN.
-%   NaN's are skipped, NaN do not result in a NaN output. 
-%   It is garanteed that abs(R) is not larger than 1. 
-%   A significance test to check the independence of NaN's
+%   The input data can contain missing values encoded with NaN.
+%   Missing data (NaN's) are handled by pairwise deletion [15]. 
+%   In order to avoid possible pitfalls, use case-wise deletion or 
+%   or check the correlation of NaN's with your data (see below). 
+%   A significance test for testing the Hypothesis  
+%   "correlation coefficient R is significantly different to zero" 
 %   is included. 
-%   R = CORRCOEF(X [,Mode]);
+%
+% [...] = CORRCOEF(X [,Mode]);
 %      calculates the (auto-)correlation matrix of X
-%   R = CORRCOEF(X,Y [,Mode]);
+% [...] = CORRCOEF(X,Y [,Mode]);
 %      calculates the crosscorrelation between X and Y
 %
-% Mode='Pearson' or 'parametric' [default]
-%	gives the correlation coefficient  
-%	also known as the "product-moment coefficient of correlation" or "Pearson's correlation" [1]
-% Mode='Spearman' 	gives "Spearman's Rank Correlation Coefficient"
-%	This replaces SPEARMAN.M
-% Mode='Rank' 		gives a nonparametric Rank Correlation Coefficient
-%	This replaces RANKCORR.M
-%
-% The result is only valid if the occurence of NaN's is uncorrelated. 
-%   This can be checked with 
-%       [nan_R,nan_sig]=corrcoef(X,isnan(X))
-%   or  [nan_R,nan_sig]=corrcoef([X,Y],isnan([X,Y]))
-%   or  [R,p,ci1,ci2,nan_sig] = CORRCOEF(...);
+%       Mode='Pearson' or 'parametric' [default]
+%       	gives the correlation coefficient  
+%       	also known as the "product-moment coefficient of correlation" 
+%               or "Pearson's correlation" [1]
+%       Mode='Spearman' 	gives "Spearman's Rank Correlation Coefficient"
+%	        This replaces SPEARMAN.M
+%       Mode='Rank' 		gives a nonparametric Rank Correlation Coefficient
+%	        This replaces RANKCORR.M
 %
 % [R,p,ci1,ci2,nansig] = CORRCOEF(...);
 % 	R is the correlation matrix
@@ -38,12 +36,25 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 %  nan_sig 	p-value whether H0: "NaN's are not correlated" could be correct
 %       if nan_sig < alpha, H1 ("NaNs are correlated") is very likely. 
 % 
+% The result is only valid if the occurence of NaN's is uncorrelated. In
+% order to avoid this pitfall, the correlation of NaN's should be checked 
+% or case-wise deletion should be applied. 
+%   Case-Wise deletion can be implemented 
+%    ix = ~any(isnan([X,Y]))
+%    [...] = CORRCOEF(X(ix,:),Y(ix,:),...) 
+%
+%  Correlation (non-random distribution) of NaN's can be checked with 
+%       [nan_R,nan_sig]=corrcoef(X,isnan(X))
+%   or  [nan_R,nan_sig]=corrcoef([X,Y],isnan([X,Y]))
+%   or  [R,p,ci1,ci2] = CORRCOEF(...);
+%
 % Further recommandation related to the correlation coefficient 
 % + LOOK AT THE SCATTERPLOTS!
 % + Correlation is not causation. The observed correlation between two variables 
 %	might be due to the action of other, unobserved variables.
 %
-% see also: SUMSKIPNAN, COVM, COV, COR, SPEARMAN, RANKCORR, RANKS
+% see also: SUMSKIPNAN, COVM, COV, COR, SPEARMAN, RANKCORR, RANKS,
+%       PARTCORRCOEF
 %
 % REFERENCES:
 % on the correlation coefficient 
@@ -58,12 +69,13 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % [12] http://www.janda.org/c10/Lectures/topic06/L24-significanceR.htm
 % [13] http://faculty.vassar.edu/lowry/ch4apx.html
 % [14] http://davidmlane.com/hyperstat/B134689.html
+% [15] http://www.statsoft.com/textbook/stbasic.html#Correlationsk
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
 %       $Revision$
 %       $Id$
-%       Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
+%       Copyright (C) 2000-2004 by  Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -82,16 +94,18 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 % Features:
-% + interprets NaN's as missing value
-% + Pearson's correlation
-% + Spearman's rank correlation
-% + Rank correlation (non-parametric, non-Spearman)
+% + handles missing values (encoded as NaN's)
+%       + pairwise deletion of missing data
+%       + checks independence of missing values (NaNs) 
+% + parametric and non-parametric (rank) correlation
+%       + Pearson's correlation
+%       + Spearman's rank correlation
+%       + Rank correlation (non-parametric, non-Spearman)
 % + is fast, using an efficient algorithm O(n.log(n)) for calculating the ranks
 % + significance test for null-hypthesis: r=0 
 % + confidence interval included
 % - rank correlation works for cell arrays, too (no check for missing values).
 % + compatible with Octave and Matlab
-% + checks independence of missing values (NaNs) 
 
 
 NARG = nargout;	% needed because nargout is not reentrant in Octave

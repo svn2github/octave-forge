@@ -261,7 +261,7 @@ function legend (varargin)
     fig++;
   endwhile;
 
-  ## Create a new ploting command
+  ## Create a new plotting command
 
   new_plot = [new_plot, "\n"];  
   graw(new_plot);
@@ -308,3 +308,22 @@ function legend (varargin)
   replot;
   
 endfunction;
+
+%!demo
+%! close all;
+%! plot(1:10, 1:10);
+%! title("a very long label can sometimes cause problems");
+%! legend({"hello world"}, -1)
+
+%!demo
+%! close all;
+%! labels = {};
+%! for i = 1:10
+%!     plot(1:100, rand(1)*10 + rand(100,1)); hold on;
+%!     labels = {labels{:}, strcat("Signal ", num2str(i))};
+%! endfor; hold off;
+%! title("Signals with random offset and uniform noise")
+%! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
+%! legend(labels, -1)
+%! legend("boxon")
+

@@ -27,6 +27,8 @@
 
 ## 2001-06-27 Paul Kienzle <pkienzle@users.sf.net>
 ## * cleaner, slightly faster code 
+## 2002-04-29 Paul Kienzle <pkienzle@users.sf.net>
+## * user builtin kron which is faster
 
 function x = repmat (b, m, n)
   if (nargin < 2 || nargin > 3)
@@ -44,11 +46,10 @@ function x = repmat (b, m, n)
     endif
   endif
 
-  [rb, cb] = size (b);
-  if (isempty (b))
-    x = zeros (m*rb, n*cb);
+  if (isstr(b))
+    x = setstr(kron(ones(m,n),toascii(b)));
   else
-    x = b ([1:rb]' * ones(1,m), [1:cb]' * ones(1,n));
+    x = kron(ones(m,n),b);
   endif
 
 endfunction

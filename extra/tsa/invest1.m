@@ -78,8 +78,9 @@ else
         [tmp, orderDIFF] = min(RMS,[],2);
         
         % show a nice histogram
-        [h,x] = histo(orderDIFF-1);
-        X = 0:Dmax; H = zeros(1,Dmax+1); for k=1:length(x), H(find(X==x(k)))=h(k); end;
+        h = histo3(orderDIFF-1);
+        X = 0:Dmax; H = zeros(1,Dmax+1); for k=1:length(h.X), H(find(X==h.X(k)))=h.H(k); end;
+        %X = 0:Dmax; H = zeros(1,Dmax+1); for k=1:length(x), H(find(X==x(k)))=h(k); end;
         bar(X,H);
         drawnow;
 

@@ -61,29 +61,32 @@ function [Y,M,D,h,m,s] = datevec(date,P)
     Y = h = m = s = zeros(rows(date),1);
     M = D = ones(size(Y));
     error("datevec: doesn't handle strings yet");
-  else
-    Y = h = m = s = zeros(size(date));
-    M = D = ones(size(Y));
-    for i = 1:prod(size(date))
-      if date(i) < 1
-	t = 86400*date(i);
-	h(i) = floor(t/3600);
-	t = t - 3600*h(i);
-	m(i) = floor(t/60);
-	t = t - 60*m(i);
-	s(i) = t;
-      else
-      	tm = gmtime((date(i) - 719529)*86400);
-      	Y(i) = tm.year+1900;
-      	M(i) = tm.mon+1;
-      	D(i) = tm.mday;
-      	h(i) = tm.hour;
-      	m(i) = tm.min;
-      	s(i) = tm.sec+tm.usec*1e-6;
-      endif
-    endfor
   endif
 
+  ## From Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
+  ## Move day 0 from midnight -0001-12-31 to midnight 0001-3-1
+  z = floor(date) - 60; 
+  ## Calculate number of centuries; K1=0.25 is to avoid rounding problems.
+  a = floor((z-0.25)/36524.25);
+  ## Days within century;  K2=0.25 is to avoid rounding problems.
+  b = z - 0.25 + a - floor(a/4);
+  ## Calculate the year (year starts on March 1).
+  Y = floor(b/365.25);
+  ## Calculate day in year.
+  c = fix(b-floor(365.25*Y)) + 1;
+  ## Calculate month in year.
+  M = fix((5*c + 456)/153);
+  D = c - fix((153*M-457)/5);
+  ## Move to Jan 1 as start of year.
+  Y(M>12)++;
+  M(M>12)-=12;
+
+  ## Convert hour-minute-seconds
+  s = date-floor(date);
+  h = floor(s/3600);
+  s = s - 3600*h;
+  m = floor(s/60);
+  s = s - 60*m;
   if nargout <= 1
     Y = [ Y(:), M(:), D(:), h(:), m(:), s(:) ];
   endif

@@ -7,21 +7,40 @@ if test -e main/fixed/NOINSTALL ; then
 else
 
 	dnl Test for resize_and_fill function
-	cat > conftest.cc << EOF
+	TRY_MKOCTFILE([resize and fill function],[
 #include <octave/Array.h>
-int test(void) {
- Array<int> t;
- t.resize_and_fill(1, 0);
- return 0;
-}
-EOF
-	ac_try="$MKOCTFILE conftest.cc"
-	if AC_TRY_EVAL(ac_try) ; then
-		AC_MSG_RESULT(yes)
-		HAVE_RESIZE_AND_FILL="-DHAVE_RESIZE_AND_FILL"
-	fi
+int test(void) { Array<int> t; t.resize_and_fill(1, 0);  return 0;}
+	],[HAVE_RESIZE_AND_FILL="-DHAVE_RESIZE_AND_FILL"],)
 	AC_SUBST(HAVE_RESIZE_AND_FILL)
-	rm -f conftest.*
+
+	dnl Check for the number of arguments to MX_ND_REDUCTION
+	dnl this changed between 2.1.57 and 2.158
+	TRY_MKOCTFILE([for 6 argument MX_ND_REDUCTION],[
+#include <octave/oct.h>
+#include <octave/ops.h>
+#include <octave/mx-inlines.cc>
+class testclass : public MArrayN<double>
+{
+ public:
+  testclass (void) : MArrayN<double> () { }
+  testclass (const Matrix& a) :  MArrayN<double> (a) { } 
+  testclass testfun (int dim) {
+    MX_ND_REDUCTION (acc += elem (iter_idx), 
+		     retval.elem(iter_idx) = acc, 0, 
+		     double acc = 0, testclass, double);
+  }
+  static void increment_index (Array<int>& ra_idx,
+			       const dim_vector& dimensions,
+			       int start_dimension = 0) {
+    ::increment_index (ra_idx, dimensions, start_dimension);
+  }
+};
+int main(void) { 
+  testclass a ( Matrix (1,1,1)); 
+  testclass b = a.testfun(0);
+}
+	],[HAVE_6ARG_MX_ND_RED="-DHAVE_6ARG_MX_ND_RED"],)
+	AC_SUBST(HAVE_6ARG_MX_ND_RED)
 
 	dnl version of the fixed point code
 	OCTAVEFIXEDVERSION="0.7.0"

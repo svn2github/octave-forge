@@ -399,7 +399,12 @@ FixedNDArray::prod (int dim) const
 {
   FixedPoint one(1,0,1,0);
   MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
-                   one, FixedPoint acc = one, FixedNDArray);
+                   one, FixedPoint acc = one, FixedNDArray
+#if HAVE_6ARG_MX_ND_RED
+		   ,FixedPoint
+#endif
+		   );
+
 }
 
 FixedNDArray
@@ -407,7 +412,11 @@ FixedNDArray::sum (int dim) const
 {
   FixedPoint zero;
   MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray);
+                   zero, FixedPoint acc = zero, FixedNDArray
+#if HAVE_6ARG_MX_ND_RED
+		   ,FixedPoint
+#endif
+		   );
 }
 
 FixedNDArray
@@ -416,7 +425,11 @@ FixedNDArray::sumsq (int dim) const
   FixedPoint zero;
   MX_ND_REDUCTION (acc += pow (elem (iter_idx), 2), 
 		   retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray);
+                   zero, FixedPoint acc = zero, FixedNDArray
+#if HAVE_6ARG_MX_ND_RED
+		   ,FixedPoint
+#endif
+		   );
 }
 
 FixedNDArray

@@ -35,6 +35,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/lo-error.h>
 #include <octave/lo-utils.h>
 #include <octave/lo-error.h>
+#include <octave/lo-mappers.h>
 #include <octave/error.h>
 #include <octave/dMatrix.h>
 #include <octave/dNDArray.h>
@@ -616,7 +617,13 @@ FixedComplexNDArray::prod (int dim) const
 {
   FixedPointComplex one(1, 0, 1, 0);
   MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
-		   one, FixedPointComplex acc = one, FixedComplexNDArray);
+		   one, FixedPointComplex acc = one, 
+		   FixedComplexNDArray
+#if HAVE_6ARG_MX_ND_RED
+		   ,FixedPointComplex
+#endif
+		   );
+
 }
 
 FixedComplexNDArray
@@ -625,7 +632,11 @@ FixedComplexNDArray::sum (int dim) const
   FixedPointComplex zero;
   MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
 		   zero, FixedPointComplex acc = zero, 
-		   FixedComplexNDArray);
+		   FixedComplexNDArray
+#if HAVE_6ARG_MX_ND_RED
+		   ,FixedPointComplex
+#endif
+		   );
 }
 
 FixedComplexNDArray
@@ -634,7 +645,12 @@ FixedComplexNDArray::sumsq (int dim) const
   FixedPointComplex zero;
   MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
 		   retval.elem (iter_idx) = acc, zero, 
-		   FixedPointComplex acc = zero, FixedComplexNDArray);
+		   FixedPointComplex acc = zero, 
+		   FixedComplexNDArray
+#if HAVE_6ARG_MX_ND_RED
+		   ,FixedPointComplex
+#endif
+		   );
 }
 
 FixedNDArray

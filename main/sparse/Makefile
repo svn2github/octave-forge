@@ -133,10 +133,10 @@ S_DOUBLE= $(DLUSRC) $(ALLAUX) $(DZLAUX) $(ZLUSRC)
 all: $(NAME).oct $(OBJLINKS) sptest.m 
 
 sptest.m: buildtests.sh
-	bash buildtests.sh preset
+	sh buildtests.sh preset
 
 sprandomtest.m: buildtests.sh
-	bash buildtests.sh random
+	sh buildtests.sh random
 
 $(S_DOUBLE):%.o:%.c
 	$(CC) $(CFLAGS) $(CPICFLAG) $(S_INC) $(SUPERLU_DEFS) -c $< -o $@

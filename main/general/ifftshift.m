@@ -26,7 +26,7 @@
 ## Modified-By: Paul Kienzle, converted from fftshift
 ## Modified-By: David Bateman, add NDArray capability and option dim arg
 
-function retval = ifftshift (V)
+function retval = ifftshift (V, dim)
 
   retval = 0;
 

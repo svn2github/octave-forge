@@ -1,17 +1,19 @@
 function [A] = poly2ar(A);
-% converts autoregressive parameters into AR polymials 
-% function  [AR] = poly2ar(AR);
+% Converts AR polymials into autoregressive parameters. 
+% Multiple polynomials can be converted. 
+%
+% function  [AR] = poly2ar(A);
 %
 %  INPUT:
-% A     AR polynomial, i.e. denominator polynom in z-plane
+% A     AR polynomial, each row represents one polynomial
 %
 %  OUTPUT
-% A    autoregressive model parameter	
+% AR    autoregressive model parameter	
 %
 % see also ACOVF ACORF DURLEV RC2AR AR2POLY
 
-%	Version 2.90	last revision 10.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
+%	Version 2.90
+%	Copyright (C) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or

@@ -1,7 +1,7 @@
 #include <octave/oct.h>
 #include <octave/pager.h>
 #include <lo-ieee.h>
-#include <float.h>
+#include <cfloat>
 using namespace std;
 
 // Copyright (C) 2000 Ben Sapp.  All rights reserved.

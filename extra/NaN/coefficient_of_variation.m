@@ -9,13 +9,11 @@ function cv=coefficient_of_variation(i,DIM)
 %
 % see also: SUMSKIPNAN, MEAN, STD
 %
-%   REFERENCE)S):
+%   REFERENCE(S):
 %   http://mathworld.wolfram.com/VariationCoefficient.html
 
 
-%	Version 1.17; 	17 Mar 2002
-%	Copyright (c) 1997-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Copyright (c) 1997-2002 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -43,12 +41,12 @@ if ~DIM
         if isempty(DIM), DIM=1; end;
 end;
 
+[S,N,SSQ] = sumskipnan(i,DIM);
 
-[S,N] = sumskipnan(i,DIM);		% sum
-M     = S./N;
-i     = i - repmat(M,size(i)./size(S));		% remove mean
-[S,N] = sumskipnan(i.^2,DIM);		% 
-N     = max(N-1,0);
+% sqrt((SSQ-S.*S./N)./max(N-1,0))/(S./N);    % = std(i)/mean(i)
 
-cv    = sqrt(S./N)./M;
+cv = sqrt(SSQ.*N./(S.*S)-1);
 
+if flag_implicit_unbiased_estim,
+	cv = cv.*sqrt(N./max(N-1,0));
+end;

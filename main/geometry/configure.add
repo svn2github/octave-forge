@@ -30,6 +30,7 @@ if AC_TRY_EVAL(ac_try) && test -s conftest ; then
 else
     ac_cv_lib_qhull_qh_qhull=no
 fi
+rm -f conftest.c conftest.o conftest
 ])dnl
 if test "$ac_cv_lib_qhull_qh_qhull" = "yes"; then
   AC_MSG_RESULT(yes)

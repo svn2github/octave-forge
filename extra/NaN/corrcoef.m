@@ -53,7 +53,7 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
-%    Version 1.26  Date: 20 Aug 2002
+%    Version 1.27  Date: 21 Sep 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -98,7 +98,6 @@ elseif nargin==2
         else
                 Mode='Pearson';
         end;
-
 end;        
 Mode=[Mode,'        '];
 
@@ -119,13 +118,18 @@ end;
 YESNAN = any(isnan(X(:))) | any(isnan(Y(:)));
 if isempty(Y),
         IX = ones(c1)-diag(ones(c1,1));
+        [jx, jy ] = find(IX);
+        [jxo,jyo] = find(IX);
+	R = eye(c1);        
 else
         IX = zeros(c1+c2);
         IX(1:c1,c1+(1:c2)) = 1;
-%        X = [X,Y];
+        [jx,jy] = find(IX);
+        
+        IX = ones(c1,c2);
+        [jxo,jyo] = find(IX);
+	R = repmat(nan,c1,c2);
 end;  
-[jx,jy] = find(IX);
-R = repmat(nan,size(IX));
 
 if strcmp(lower(Mode(1:7)),'pearson');
         % see http://mathworld.wolfram.com/CorrelationCoefficient.html
@@ -145,7 +149,6 @@ if strcmp(lower(Mode(1:7)),'pearson');
                         v  = (SSQ./N- M.*M); %max(N-1,0);
                         R  = cc./sqrt(v'*v);
                 end;
-                r = []; % mark that R is calculated
         else
                 if ~isempty(Y),
                         X  = [X,Y];
@@ -157,7 +160,8 @@ if strcmp(lower(Mode(1:7)),'pearson');
                         v  = (s2-s.*s./n)./n;
                         cc = X(ik,jx(k))'*X(ik,jy(k));
                         cc = cc/n(1) - prod(s./n);
-                        r(k) = cc./sqrt(prod(v));
+                        %r(k) = cc./sqrt(prod(v));
+                        R(jxo(k),jyo(k)) = cc./sqrt(prod(v));
                 end;
         end
         
@@ -169,7 +173,6 @@ elseif strcmp(lower(Mode(1:4)),'rank');
                 else
                         R = corrcoef(ranks(X),ranks(Y));
                 end;
-                r = []; % mark that R is calculated
         else
                 if ~isempty(Y),
                         X = [X,Y];
@@ -178,7 +181,7 @@ elseif strcmp(lower(Mode(1:4)),'rank');
                         %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
                         ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
                         il = ranks(X(ik,[jx(k),jy(k)]));
-                        r(k) = corrcoef(il(:,1),il(:,2));
+                        R(jxo(k),jyo(k)) = corrcoef(il(:,1),il(:,2));
                 end;
         end;
         
@@ -187,20 +190,25 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
         if ~isempty(Y),
                 X = [X,Y];
         end;  
+        
+        n = repmat(nan,c1,c2);
+        
         if ~YESNAN,
                 iy = ranks(X);	%  calculates ranks;
-                
-                [r,n] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
+		                
+                for k = 1:length(jx),
+                        [R(jxo(k),jyo(k)),n(jxo(k),jyo(k))] = sumskipnan((iy(:,jx(k)) - iy(:,jy(k))).^2);	% NN is the number of non-missing values
+                end;
         else
                 for k = 1:length(jx),
                         %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
                         ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         % NN is the number of non-missing values
-                        [r(k),n(k)] = sumskipnan((il(:,1) - il(:,2)).^2);
+                        [R(jxo(k),jyo(k)),n(jxo(k),jyo(k))] = sumskipnan((il(:,1) - il(:,2)).^2);
                 end;
         end;
-        r = 1-6*r./(n.*(n.*n-1));
+        R = 1 - 6 * R ./ (n.*(n.*n-1));
         
 elseif strcmp(lower(Mode(1:7)),'partial');
         fprintf(2,'Error CORRCOEF: use PARTCORRCOEF \n',Mode);
@@ -215,18 +223,11 @@ else
         fprintf(2,'Error CORRCOEF: unknown mode ''%s''\n',Mode);
 end;
 
-if ~isempty(r), % bring r(k) into position
-        if ~isempty(Y),
-                R     = reshape(r,c1,c2);
-        else
-                for k = 1:length(jx),
-                        R(jx(k),jy(k)) = r(k);
-                end;
-        end;
-end;
+
 if isempty(Y),   % in this case, diagonal must be 1
         R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
 end;
+
 if nargout<2, 
         return, 
 end;

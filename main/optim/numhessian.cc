@@ -26,24 +26,34 @@ static bool
 any_bad_argument(const octave_value_list& args)
 {
   if (!args(0).is_string())
-    {
-      error("numhessian: first argument must be string holding objective function name");
-      return true;
-    }
+  {
+    error("numhessian: first argument must be string holding objective function name");
+    return true;
+  }
+
   if (!args(1).is_cell())
-    {
-      error("numhessian: second argument must cell array of arguments of objective function");
-      return true;
-    }
+  {
+    error("numhessian: second argument must cell array of function arguments");
+    return true;
+  }
+
+	// minarg, if provided
   if (args.length() == 3)
-    {
-      if (!args(2).is_scalar_type())
-    	{
-	  error("numhessian: 3rd argument, if supplied,  must an integer\n\
-			that specifies the argument wrt which differentiation is done");
-	  return true;
-    	}
-    }	
+  {
+ 		int tmp = args(2).int_value();
+		if (error_state)
+		{
+			error("numhessian: 3rd argument, if supplied,  must an integer\n\
+that specifies the argument wrt which differentiation is done");
+			return true;
+		}
+		if ((tmp > args(1).length())||(tmp < 1))  
+		{
+			error("numhessian: 3rd argument must be a positive integer that indicates \n\
+which of the elements of the second argument is the one to differentiate with respect to");
+			return true;
+		}
+  }	
   return false;
 }
 

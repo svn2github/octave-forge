@@ -90,11 +90,21 @@ any_bad_argument(const octave_value_list& args)
 			{
 				if ((tmp > args(1).length())||(tmp < 1))  
 				{
-					error("bfgsmin: 4th argument must be a positive integer that indicates \n\
+					error("bfgsmin: 4th element of controls must be a positive integer that indicates \n\
 which of the elements of the second argument is the one minimization is over");
 					return true;
 				}
 			}		
+			if (i == 4) // memory must be zero or one
+			{
+				if ((tmp > 1) ||(tmp < 0))  
+				{
+					error("bfgsmin: 5th argument of controls, if provided\n\
+must be 0 (bfgs) or 1 (lbfgs)");
+					return true;
+				}
+			}		
+
 		}
   }
 

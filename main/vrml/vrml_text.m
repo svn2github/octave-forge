@@ -34,8 +34,12 @@ if nargin > 1
   df = tar (col, size, family, justify, style, verbose);
 
   s = read_options (varargin{:}, "op1",op1,"op0",op0, "default",df);
-  [col,size,family,justify,style,verbose] = \
-      getfield (s, "col","size","family","justify","style","verbose");
+  col=       s.col;
+  size=      s.size;
+  family=    s.family;
+  justify=   s.justify;
+  style=     s.style;
+  verbose=   s.verbose;
 end
 s = sprintf (["Shape {\n",\
 	      "  appearance Appearance {\n",\

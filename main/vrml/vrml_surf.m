@@ -93,12 +93,18 @@ if nargin > 3,
 
   s = read_options (varargin,"op0",op0,"op1",op1,"default",default);
   
-  [tran, col, creaseAngle, emit, colorPerVertex\
-   DEFcoord, DEFcol, zcol, smooth, checker, zgrey, zrb] = getfield \
-      (s, "tran", "col", "creaseAngle", "emit", "colorPerVertex",\
-       "DEFcoord", "DEFcol", "zcol", "smooth", "checker", "zgrey", "zrb");
-  ## nargin -= 3 ;
-  ## read_options_old ;
+  tran=            s.tran;
+  col=             s.col;
+  creaseAngle=     s.creaseAngle;
+  emit=            s.emit;
+  colorPerVertex=  s.colorPerVertex;
+  DEFcoord=        s.DEFcoord;
+  DEFcol=          s.DEFcol;
+  zcol=            s.zcol;
+  smooth=          s.smooth;
+  checker=         s.checker;
+  zgrey=           s.zgrey;
+  zrb=             s.zrb;
 end
 ## keyboard
 if ! isnan (smooth), creaseAngle = pi ; end

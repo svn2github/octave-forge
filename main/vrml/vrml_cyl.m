@@ -43,9 +43,16 @@ if nargin > 1
 
   s = read_options (varargin, "op1",op1,"op0",op0, "default",df); # pos 2.1.39
 
-  [rad, tran, col, hcol, emit, verbose, balls, noemit, arrow, brad] = \
-      getfield (s, "rad", "tran", "col", "hcol", "emit", "verbose", \
-		"balls", "noemit", "arrow", "brad");
+  rad=     s.rad;
+  tran=    s.tran;
+  col=     s.col;
+  hcol=    s.hcol;
+  emit=    s.emit;
+  verbose= s.verbose;
+  balls=   s.balls;
+  noemit=  s.noemit;
+  arrow=   s.arrow;
+  brad=    s.brad;
 end
 
 if isnan (brad), brad = rad; end

@@ -107,7 +107,9 @@ if nargin > 3,
       end
     end
   end
-  [level,ltran,lcol] = getfield (opts, "level","ltran","lcol");
+  level = opts.level;
+  ltran = opts.ltran;
+  lcol  = opts.lcol;
 end
 
 ## s = leval ("vrml_surf", surf_args);

@@ -36,15 +36,15 @@ if test "$files" != "$source/*.oct" ; then
     cp -fdp $files $opath
 fi
 
-# grab the data files
-files=`echo $source/data/*`
+# grab the data files, skipping the CVS directory
+files=`echo $source/data/* | sed -e "s/[^ ]*CVS//"`
 if test "$files" != "$source/data/*" ; then
     $INSTALL -d $mpath
     $INSTALL_DATA $files $mpath
 fi
 
-# grab the executable files
-files=`echo $source/bin/*`
+# grab the executable files, skipping the CVS directory
+files=`echo $source/bin/* | sed -e "s/[^ ]*CVS//"`
 if test "$files" != "$source/bin/*" ; then
     $INSTALL -d $xpath
     $INSTALL_PROGRAM $files $xpath

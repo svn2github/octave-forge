@@ -3,7 +3,7 @@ include ../Makeconf
 
 SUBMAKES = $(wildcard */Makefile)
 MAKE_SUBDIRS = $(dir $(SUBMAKES))
-INSTALL_SUBDIRS = $(filter-out Makefile, $(wildcard *))
+INSTALL_SUBDIRS = $(filter-out Makefile CVS CONTENTS, $(wildcard *))
 
 .PHONY: all install clean $(MAKE_SUBDIRS) $(INSTALL_SUBDIRS)
 

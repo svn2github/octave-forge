@@ -14,22 +14,22 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##       y = isfield(x,k)
+##       y = isfield(x,k) == struct_contains (x, k)
 ##
 ## Returns 1 if x is a struct and k a string, and x.k exists.
 ## Returns 0 otherwise. 
 ##
 ## For m****b compat and flexibility.
 ##
-## See also cmpstruct, fields, setfield, rmfield, getfield, isstruct,
-## struct. 
+## See also struct_contains, cmpstruct, fields, setfield, rmfield, getfield,
+## isstruct, struct. 
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: January 2000
 
 function y = isfield(x,k)
   if is_struct(x)
-    y = struct_contains (x, k);  
+    y = struct_contains (x, k);
     ## eval(sprintf('x.%s;y=1;',k),'y=0;');
   else
     y = 0 ;

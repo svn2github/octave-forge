@@ -66,7 +66,7 @@ function [m] = cell2mat(c)
     endfor
     c = c1;
   endfor
-  m = cat(1, c{:});
+  m = cat(1, c1{:});
 
 endfunction
 
@@ -77,7 +77,10 @@ endfunction
 %! E = [1 2 3 4; 5 6 7 8; 9 10 11 12];
 %! F = E; F(:,:,2) = E;
 %!assert (cell2mat(C), E);
-%!assert (cell2mat(D), F);
+%!test
+%! if [1e6,1e4,1]*str2num(split(version,'.')) > 2010064
+%!   assert (cell2mat(D), F);  % crashes octave 2.1.64
+%! endif
 
 ## Demos
 %!demo

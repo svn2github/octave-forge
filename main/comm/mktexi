@@ -23,7 +23,7 @@ if ( open(IN,$file) ) {
       my $found = 0;
       my $func = $line;
       $func =~ s/\@DOCSTRING\(//;
-      $func =~ s/\)\n//;
+      $func =~ s/\)[\n\r]+//;
       my $func0 = $func;
       my $func1 = $func;
       $func0 =~ s/,.*$//;
@@ -33,7 +33,7 @@ if ( open(IN,$file) ) {
 	  next unless /\037/;
 	  my $function = $_;
 	  $function =~ s/\037//;
-	  $function =~ s/\n//;
+	  $function =~ s/[\n\r]+//;
 	  if ($function =~ /^$func0$/) {
 	    my $desc = "";
 	    my $docline;
@@ -70,7 +70,7 @@ if ( open(IN,$file) ) {
       my $secfound = 0;
       my $sec = $line;
       $sec =~ s/\@REFERENCE_SECTION\(//;
-      $sec =~ s/\)\n//;
+      $sec =~ s/\)[\n\r]+//;
       my @listfunc = ();
       my $nfunc = 0;
 
@@ -78,14 +78,14 @@ if ( open(IN,$file) ) {
 	while (<IND>) {
 	  next unless /^[^ ]/;
 	  my $section = $_;
-	  $section =~ s/\n//;
+	  $section =~ s/[\n\r]+//;
 	  my $diff = $section;
 	  if ($section =~ /^$sec$/) {
 	    # Get the list of functions to index
 	    my $indline;
 	    while (($indline = <IND>) && ($indline =~ /^ /)) {
 	      $indline =~ s/^ *//;
-	      $indline =~ s/\n//;
+	      $indline =~ s/[\n\r]+//;
 	      push @listfunc, $indline;
 	      $nfunc = $nfunc + 1;
 	    }
@@ -130,7 +130,7 @@ if ( open(IN,$file) ) {
 	    next unless /\037/;
 	    my $function = $_;
 	    $function =~ s/\037//;
-	    $function =~ s/\n//;
+	    $function =~ s/[\n\r]+//;
 	    if ($function =~ /^$func$/) {
 	      my $desc = "";
 	      my $docline;

@@ -1,7 +1,7 @@
 #define STATUS(x) do { if (debug) std::cout << x << std::endl << std::flush; } while (0)
 #define USE_DEFUN_INTERNAL 1
 // Temporary hack (I hope).  For some reason the interpreter
-// is not finding the send/send_error commands, so I install
+// is not finding the send/senderror commands, so I install
 // them by hand..
 
 #include <iomanip>
@@ -328,7 +328,7 @@ process_commands(int channel)
 	if (debug) tic();
 #if 1
 	octave_value_list evalargs;
-	evalargs(1) = "send_error(lasterr);";
+	evalargs(1) = "senderror(lasterr);";
 	evalargs(0) = context;
 	feval("eval",evalargs,0);
 #else
@@ -382,18 +382,18 @@ process_commands(int channel)
 int channel = -1;
 
 #if USE_DEFUN_INTERNAL
-DEFUN_INTERNAL(send_error,args,,false,"\
+DEFUN_INTERNAL(senderror,args,,false,"\
 Send the given error message across the socket.  The error context\n\
 is taken to be the last command received from the socket.")
 #else
-DEFUN_DLD(send_error,args,,"\
+DEFUN_DLD(senderror,args,,"\
 Send the given error message across the socket.  The error context\n\
 is taken to be the last command received from the socket.")
 #endif
 {
   std::string str;
   const int nargin = args.length();
-  if (nargin != 1) str="send_error not called with error";
+  if (nargin != 1) str="senderror not called with error";
   else str = args(0).string_value();
 
   // provide a context for the error (but not too much!)
@@ -523,7 +523,11 @@ listen(...,fork|nofork)\n\
    one connection at a time. Fork is the default (depending on system).\n\
 ")
 {
+#if USE_DEFUN_INTERNAL
   install_builtin_function (Fsend, "send", "builtin send doc", false);
+  install_builtin_function (Fsenderror, 
+			    "senderror", "builtin senderror doc", false);
+#endif
 
 #if defined(__CYGWIN__)
   bool canfork = listencanfork();

@@ -10,6 +10,8 @@ ifndef OCTAVE_FORGE
 endif
 
 
+%.o: %.cc ; $(MKOCTFILE) -c $(X_CFLAGS) $<
+
 ifdef HAVE_X
 all: $(PROGS)
 else
@@ -20,13 +22,13 @@ endif
 $(PROGS:.oct=.o): graphics.h
 
 grab.oct: grab.o graphics.o
-	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
+	$(MKOCTFILE) $< graphics.o $(X_LIBS) -o $@
 
 gtext.oct: gtext.o graphics.o
-	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
+	$(MKOCTFILE) $< graphics.o $(X_LIBS) -o $@
 
 gzoom.oct: gzoom.o graphics.o
-	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
+	$(MKOCTFILE) $< graphics.o $(X_LIBS) -o $@
 
 clean: ; -$(RM) *.o octave-core core *~ *.oct
 

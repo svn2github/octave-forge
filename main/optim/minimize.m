@@ -114,11 +114,6 @@
 ##
 function [x,v,nev,varargout] = minimize (f,args,varargin)
 
-static minimize_warn = 1;
-if minimize_warn
-  warning ("minimize() interface subject to change.");
-endif
-minimize_warn = 0;
 
 # ####################################################################
 # Read the options ###################################################

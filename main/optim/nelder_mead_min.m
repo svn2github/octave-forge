@@ -85,11 +85,6 @@ function [x,v,nev] = nelder_mead_min (f, args, varargin)
 ## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## This software is distributed under the terms of the GPL
 
-static nelder_mead_min_warn = 1;
-if nelder_mead_min_warn
-  warning("nelder_mead_min interface subject to change.");
-endif
-nelder_mead_min_warn = 0;
 
 verbose = 0;
 

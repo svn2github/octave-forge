@@ -33,13 +33,14 @@
 ##     or matrix : argument.
 ##
 ## ctl  : vector : Control arguments (see below)
+##      or struct
 ##
 ## code : string : code will be evaluated after each outer loop that
 ##                 produced some (any) improvement. Variables visible from
 ##                 "code" include "x", the best parameter found, "v" the
 ##                 best value and "args", the list of all arguments. All can
-##                 be modified. This option can be used to change the 
-##                 parameterization of the argument space while optimizing.
+##                 be modified. This option can be used to re-parameterize 
+##                 the argument space during optimization
 ##
 ## CONTROL VARIABLE ctl : (optional). May be a struct or a vector of length
 ## ---------------------- 5 or less where NaNs are ignored. Default values
@@ -82,11 +83,6 @@ function [xbest,vbest,nev,hbest,args] = d2_min (f,d2f,args,ctl,code)
 
 ## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
 ##
-
-static d2_min_warn = 1;
-if d2_min_warn, warning("d2_min interface subject to change."); endif
-d2_min_warn = 0;
-
 
 maxout = inf;
 maxinner = 30 ;

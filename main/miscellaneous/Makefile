@@ -14,3 +14,4 @@ all:	waitbar.oct
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(TERM_DEF) waitbar.cc $(TERM_LIB)
 
+clean: ; -$(RM) *.o octave-core core *.oct *~

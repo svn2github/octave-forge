@@ -1,14 +1,9 @@
 <!ELEMENT data (scalar | complex | string | array | structure | list | cell)*>
 
-<!ELEMENT scalar (#PCDATA | true | false | inf | neginf | na | nan)*>
-<!ATTLIST scalar name CDATA #IMPLIED>
-
-<!ELEMENT true EMPTY>
-<!ELEMENT false EMPTY>
-<!ELEMENT inf EMPTY>
-<!ELEMENT neginf EMPTY>
-<!ELEMENT nan EMPTY>
-<!ELEMENT na EMPTY>
+<!ELEMENT scalar (#PCDATA)>
+<!ATTLIST scalar
+	value (undefined | true | false | inf | neginf | na | nan) "undefined"
+	name CDATA #IMPLIED>
 
 <!ELEMENT complex (scalar, scalar)>
 <!ATTLIST complex name CDATA #IMPLIED>

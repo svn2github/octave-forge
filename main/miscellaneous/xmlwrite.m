@@ -105,31 +105,31 @@ function nb = xmlwrite (filename, value, name)
       ## Boolean type
     
       if value
-	fprintf (fd, "%s<scalar%s><true/></scalar>%s", indent, opt, separator);
+	fprintf (fd, "%s<scalar%s value=\"true\"/>%s", indent, opt, separator);
       else
-	fprintf (fd, "%s<scalar%s><false/></scalar>%s", indent, opt, separator);  
+	fprintf (fd, "%s<scalar%s value=\"false\"/>%s", indent, opt, separator);  
       endif
     
     elseif isinf(value)
       ## Infinite type
     
       if value > 0
-	fprintf (fd, "%s<scalar%s><inf/></scalar>%s",
+	fprintf (fd, "%s<scalar%s value=\"inf\"/>%s",
 		 indent, opt, separator);
       else
-	fprintf (fd, "%s<scalar%s><neginf/></scalar>%s",
+	fprintf (fd, "%s<scalar%s value=\"neginf\"/>%s",
 		 indent, opt, separator);
       endif
     
     elseif isnan(value)
       ## Not-A-Number type
       
-      fprintf (fd, "%s<scalar%s><nan/></scalar>%s", indent, opt, separator);
+      fprintf (fd, "%s<scalar% value=\"nan\"/>%s", indent, opt, separator);
       
     elseif isna(value)
       ## Not-Avaliable
       
-      fprintf (fd, "%s<scalar%s><na/></scalar>%s", indent, opt, separator);
+      fprintf (fd, "%s<scalar%s value=\"na\"/>%s", indent, opt, separator);
       
     else
       sc = sprintf(sprintf("%%.%dg", save_precision), value);

@@ -1315,7 +1315,6 @@ void install_complex_sparse_ops() {
    INSTALL_BINOP (op_el_mul,   octave_complex,        octave_complex_sparse, c_cs_mul);
    INSTALL_BINOP (op_div,      octave_complex_sparse, octave_complex,        cs_c_div);
    INSTALL_BINOP (op_ldiv,     octave_complex,        octave_complex_sparse, c_cs_ldiv);
-   INSTALL_BINOP (op_ldiv,     octave_complex,        octave_complex_sparse, c_cs_ldiv);
    INSTALL_BINOP (op_el_pow,   octave_complex_sparse, octave_complex,        cs_c_pow);
 
    INSTALL_BINOP (op_mul,      octave_sparse,         octave_complex,        s_c_mul);
@@ -1550,6 +1549,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.21  2003/12/11 21:49:35  pkienzle
+ * Remove duplicate installation of c_cs_ldiv
+ *
  * Revision 1.20  2003/11/23 14:21:38  adb014
  * Octave CVS now requires void constructors for register_type
  *

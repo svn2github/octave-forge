@@ -45,6 +45,7 @@ extern "C" int isinf (double);
 #define lo_ieee_isinf(x) isinf(x)
 
 #else
+#include <octave/config.h>
 #include <octave/lo-ieee.h>
 #endif
 

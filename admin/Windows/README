@@ -2,17 +2,19 @@ Most of the work of building a new release is
 encoded in admin/Windows/Makefile.
 
 First you will need a cygwin environment.
-Search the net for details.
+Search the net for details.  As of this writing,
+only the gcc 3.2 compiler is acceptable, later
+versions being too slow.
 
 You will need to download octave-forge (which
 presumably you have already done, otherwise you
 wouldn't be reading this) and octave sources.
 I put them in /c/src/octave-forge-YYYY.MM.DD
 and /c/src/octave-2.1.xx, and I build octave
-in /c/src/cygwin/octave-2.1.xx which you will
-have to create.  If for some reason this is not 
-acceptable, modify the top few lines of the 
-Makefile to reflect your environment.
+in /c/src/cygwin/octave-2.1.xx.  If for some 
+reason this is not acceptable, modify the top 
+few lines of the Makefile to reflect your 
+environment.
 
 You will need a directory /opt which has a
 number of supplementary packages.  These
@@ -26,8 +28,8 @@ Now you are ready to build.  You should be
 able to do:
 
   (cd /c/src/octave-forge; cvs -q update -dP)
-  make clean.forge
-  make 
+  make v=2.1.xx clean.forge
+  make v=2.1.xx
 
 The results of the build will be in:
 

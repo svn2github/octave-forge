@@ -17,14 +17,10 @@ function y=trimean(x,DIM)
 
 % check dimension
 sz=size(x);
-if length(sz)>2,
-        fprintf('Error TRIMEAN: data must have no more than 2 dimensions\n');	
-	return;        
-end;
 
 % find the dimension
 if nargin==1,
-        DIM=min(find(size(Y)>1));
+        DIM=min(find(sz>1));
         if isempty(DIM), DIM=1; end;
 end;
 

@@ -92,13 +92,21 @@ end;
 
 
 if nargin<4 UC=0; else UC= arg4; end;
-if nargin<5 
-        a0=zeros(1,MOP); 
-else 
-        a0=arg5;  
-        %if any(size(a0)~=[1,MOP]),
+
+a0=zeros(1,MOP); 
+A0=eye(MOP);
+if nargin>4, 
+	if all(size(a0)==([1,1]*(MOP+1))); 	% extended covariance matrix of AAR parameters 
+		a0 = arg5(1,2:size(a0,2));
+		A0 = arg5(2:size(a0,1),2:size(a0,2)) - a0'*a0;
+	else
+		a0 = arg5;  
+		if nargin>5 
+			A0 = arg6;  
+		end;
+	end;
 end;
-if nargin<6 A0=eye(MOP); else A0= arg6;  end;
+
 if nargin<7 TH=3; else TH = arg7;  end;
 %       TH=TH*var(y);
 %        TH=TH*mean(detrend(y,0).^2);

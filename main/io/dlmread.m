@@ -65,7 +65,7 @@ function x = dlmread (filename, sep)
     elseif (rem(n, nr) != 0)
       error("dlmread: rows are different lengths")
     else
-      x = reshape(x, nr, n/nr);
+      x = reshape(x, n/nr, nr)';
     endif
   else
     error (["dlmwrite: could not open ", filename]);

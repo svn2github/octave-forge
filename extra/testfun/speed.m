@@ -160,7 +160,7 @@ function __ratio_r = speed (__f1, __init, __max_n, __f2, __tol, __err)
 
   if (speed_test_plot && nargout == 0 && !isempty(__f2))
 
-    if (gnuplot_has_multiplot) subplot(121); endif
+    subplot(121);
     xlabel("test length");
     title (__f1);
     ylabel("speedup ratio");
@@ -168,11 +168,7 @@ function __ratio_r = speed (__f1, __init, __max_n, __f2, __tol, __err)
 	      ["-*r;", strrep(__f1,";","."), "/", strrep(__f2,";","."), ";"],
 	       __test_n(idx), __tnew(idx)./__torig(idx) ,
 	      ["-*g;", strrep(__f2,";","."), "/", strrep(__f1,";","."), ";"]);
-    if (gnuplot_has_multiplot) 
-      subplot (122);
-    else
-      input ("Press any key for the next graph:", "s");
-    endif
+    subplot (122);
 
     ## convert best execution time to milliseconds.
     __torig = 1000*__torig;

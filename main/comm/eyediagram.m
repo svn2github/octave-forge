@@ -231,9 +231,6 @@ function hout = eyediagram (x, n, _per, _off, str, h)
 
   unwind_protect
     if (strcmp(signal,"complex"))
-      if (!gnuplot_has_multiplot)
-	error ("eyediagram: gnuplot must have multiplot for complex signals");
-      endif
       subplot(2,1,1);
       title("Eye-diagram for in-phase signal");
     else

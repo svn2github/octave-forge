@@ -32,7 +32,7 @@ x = [5,NaN,0,1,nan];
 FLAG_WARNING = warning;
 warning('off');
 
-funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','nanmin','nanmax','','','','','','','','','','','','','','','','','',''};
+funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','','','','','','','','','','','','','',''};
 for k=1:2,
         if k==2, x(isnan(x))=[]; end; 
         r(1,k) =sumskipnan(x(1));
@@ -64,25 +64,70 @@ for k=1:2,
         	tmp=corrcoef(x',(1:length(x))');
         r(18,k)=any(isnan(tmp(:)));
         if exist('rankcorr')==2,
-        		tmp=rankcorr(x',(1:length(x))');
+                tmp=rankcorr(x',(1:length(x))');
                 r(19,k)=any(isnan(tmp(:)));
         end;
         if exist('spearman')==2,
-        		tmp=spearman(x',(1:length(x))');
+                tmp=spearman(x',(1:length(x))');
 	        r(20,k)=any(isnan(tmp(:)));
         end;
         if exist('ranks')==2,
                 r(21,k)=any(isnan(ranks(x')))+k;
         end;
         if exist('center')==2,
-        	        tmp=center(x);
+        	tmp=center(x);
 	        r(22,k)=tmp(1);
         end;
         if exist('center')==2,
         	r(23,k)=trimean(x);
         end;
-    	r(24,k)=min(x);
-    	r(25,k)=max(x);
+        r(24,k)=min(x);
+        r(25,k)=max(x);
+        
+        if exist('tpdf')==2, 
+                fun='tpdf'; 
+        elseif exist('t_pdf')==2,
+                fun='t_pdf';
+        end;
+        r(26,k) = k+isnan(feval(fun,x(2),4));	        
+        
+        if exist('tcdf')==2, 
+                fun='tcdf'; 
+        elseif exist('t_cdf')==2,
+                fun='t_cdf';
+        end;
+        try, 
+                r(27,k) = k+isnan(feval(fun,x(2),4));	        
+        catch
+                r(27,k) = k;	
+        end;
+        
+        if exist('tinv')==2, 
+                fun='tinv'; 
+        elseif exist('t_inv')==2,
+                fun='t_inv';
+        end;
+        r(28,k) = k+isnan(feval(fun,x(2),4));	        
+        
+        if exist('normpdf')==2, 
+                fun='normpdf'; 
+        elseif exist('normal_pdf')==2,
+                fun='normal_pdf';
+        end;
+        r(29,k) = feval(fun,5,4,0);	        
+        if exist('normcdf')==2, 
+                fun='normcdf'; 
+        elseif exist('normal_cdf')==2,
+                fun='normal_cdf';
+        end;
+        r(30,k) = feval(fun,5,4,0);	        
+        if exist('norminv')==2, 
+                fun='norminv'; 
+        elseif exist('normal_inv')==2,
+                fun='normal_inv';
+        end;
+        r(31,k) = feval(fun,.5,4,0);	        
+        
 end;
 
 % check if result is correct
@@ -95,8 +140,9 @@ if all(tmp) & all(~q),
         fprintf(1,'NANINSTTEST successful - your NaN-tools are correctly installed\n');
 else
         fprintf(1,'NANINSTTEST %i not successful \n', find(~tmp));
-	fprintf(1,'The following functions do not skip NaNs and should, therefore, be replaced:\n');
-	funlist{find(~tmp)}
+	fprintf(1,'The following functions contain a NaN-related bug:\n');
+	fprintf(1,'  - %s\n',funlist{find(~tmp)});
+	fprintf(1,'Its recommended to install the NaN-toolbox.\n');
 end;
 
 warning(FLAG_WARNING);

@@ -185,11 +185,12 @@ dist: forge cygwin mklinks
 
 mklinks:
 	cd $(DEST)/site/oct/octave-forge && ls -l | grep ^l \
-		| sed -e "s,^.* \([^ ]*\) -> *\(.*\)$,ln -s \\2 \\1," \
+		| sed -e 's,^.* \([^ ]*\) -> *\(.*\)$$,rm \1;ln -s \2 \1,' \
 		> mklinks.sh
 	cd $(BUILD)/src && $(SOURCE)/src/mk-oct-links -p \
-		`cd $(SOURCE)/src/DLD-FUNCTIONS&&ls *.cc|sed -e"s/cc$/df/g"` \
-		| sed -e "s,^,ln -s ," > $(DEST)/base/oct/mklinks.sh
+		`cd $(SOURCE)/src/DLD-FUNCTIONS&&ls *.cc|sed -e's/cc$$/df/g'` \
+		| sed -e 's,^\([^ ]*\)  *\([^ ]*\)$$,rm \2;ln -s \1 \2,' \
+		> $(DEST)/base/oct/mklinks.sh
 
 # ==== build octave-forge
 forge: install config.forge build.forge check.forge install.forge

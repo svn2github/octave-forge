@@ -116,7 +116,7 @@ R.COEFFICIENT_OF_VARIATION = R.STD./R.MEAN;
 %        Q0750(k) = flix(tmp,R.N(k)*3/4 + 0.5);
 %end;
 %R.MEDIAN	= Q0500;
-%R.Quantiles   	= [Q0250; Q0750];
+%R.Quartiles   	= [Q0250; Q0750];
 
 %R.Skewness.Fisher = (R.CM3)./(R.STD.^3);	%%% same as R.SKEWNESS
 
@@ -124,7 +124,6 @@ R.COEFFICIENT_OF_VARIATION = R.STD./R.MEAN;
 %R.Skewness.Pearson_coeff1 = (3*R.MEAN-R.MODE)./R.STD;
 %R.Skewness.Pearson_coeff2 = (3*R.MEAN-R.MEDIAN)./R.STD;
 %R.Skewness.Bowley = (Q0750+Q0250 - 2*Q0500)./(Q0750-Q0250); % quartile skewness coefficient
-
 
 R.CM2	= R.SSQ0./n1;
 i       = i - repmat(R.MEAN,size(i)./size(R.MEAN));

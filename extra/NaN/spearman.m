@@ -17,7 +17,7 @@ function r = spearman(x,y)
 % [1] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
 % [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
-%    Version 1.26  Date: 19 Aug 2002
+%    Version 1.27  Date: 12 Aug 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,7 @@ function r = spearman(x,y)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-fprintf(2,'SPEARMAN might become obsolete; use CORRCOEF(...,''Spearman'') instead\n');
+% warning('SPEARMAN might become obsolete; use CORRCOEF(...,''Spearman'') instead');
 
 if nargin < 2
    r = corrcoef(x,'Spearman')

@@ -1,4 +1,4 @@
-function [o,count,SSQ] = sumskipnan(i,DIM)
+function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 % SUMSKIPNAN adds all non-NaN values. 
 %
 % All NaN's are skipped; NaN's are considered as missing values. 
@@ -100,6 +100,9 @@ if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6)) < 2136,
         if nargout>2,
                 i=i.^2;
                 SSQ = sumskipnan(i,DIM);
+                if nargout>3,
+                        S4M = sum(i.^2,DIM);
+                end;
         end
 else 
 
@@ -127,6 +130,9 @@ else
         if nargout>2,
                 i=i.^2;
 	        SSQ = sum(i,DIM);
+                if nargout>3,
+                        S4M = sum(i.^2,DIM);
+                end;
         end;
 end;
 

@@ -377,6 +377,13 @@ int main(void) {long long a = 1; swap_8_bytes (&a,1);}],,
 [HAVE_SWAP_BYTES="-DHAVE_SWAP_BYTES"])
 AC_SUBST(HAVE_SWAP_BYTES)
 
+TRY_MKOCTFILE([for op_uplus],
+[#include <octave/config.h>
+#include <octave/ov.h>
+int main(void) {int i = octave_value::op_uplus;}],,
+[HAVE_OCTAVE_UPLUS="-DHAVE_OCTAVE_UPLUS"])
+AC_SUBST(HAVE_OCTAVE_UPLUS)
+
 dnl Test for the makeinfo program
 AC_CHECK_PROG(MAKEINFO,makeinfo,makeinfo)
 if [ test -n "$MAKEINFO" ]; then

@@ -52,6 +52,7 @@ ifndef OCTAVE_FORGE
     TYPEID_HAS_CLASS = -DTYPEID_HAS_CLASS
     CLASS_HAS_LOAD_SAVE = -DCLASS_HAS_LOAD_SAVE
     HAVE_OCTAVE_CONCAT = -DHAVE_OCTAVE_CONCAT
+    HAVE_OCTAVE_UPLUS = -DHAVE_OCTAVE_UPLUS
 
 endif
 
@@ -80,7 +81,7 @@ SUPERLU_DEFS = -DAdd_  \
 
 OCT_DEFS= $(CCDEFS) $(HAVE_ND_ARRAYS) \
           $(TYPEID_HAS_CLASS) $(CLASS_HAS_LOAD_SAVE) \
-	  $(HAVE_OCTAVE_CONCAT)
+	  $(HAVE_OCTAVE_CONCAT) $(HAVE_OCTAVE_UPLUS)
 
 OCTOBJ= sparse_ops.o make_sparse.o sparse_full.o sparse_inv.o \
         complex_sparse_ops.o

@@ -229,12 +229,15 @@ UNOPDECL (uminus, a )
    return v.uminus();
 }   
 
+
+#ifdef HAVE_OCTAVE_UPLUS
 UNOPDECL (uplus, a ) 
 { 
    DEBUGMSG("sparse - uplus");
    CAST_UNOP_ARG (const octave_sparse&); 
    return new octave_sparse (v);
 }   
+#endif
 
 SuperMatrix
 oct_sparse_transpose ( SuperMatrix X ) {
@@ -1370,7 +1373,9 @@ void install_sparse_ops() {
    INSTALL_UNOP  (op_transpose, octave_sparse, transpose);
    INSTALL_UNOP  (op_hermitian, octave_sparse, hermitian);
    INSTALL_UNOP  (op_uminus,    octave_sparse, uminus);
+#ifdef HAVE_OCTAVE_UPLUS
    INSTALL_UNOP  (op_uplus,     octave_sparse, uplus);
+#endif
 
    //
    // binary operations: sparse with scalar
@@ -1582,6 +1587,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.29  2004/11/16 10:31:58  adb014
+ * HAVE_OCTAVE_UPLUS config option for backwards compatiability
+ *
  * Revision 1.28  2004/11/15 10:26:55  adb014
  * Add unary plus operators as no-op, due to recent change in octave
  *

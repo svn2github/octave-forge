@@ -46,8 +46,9 @@ Open Source Initiative (www.opensource.org)
 
 FIXED_DEFUNOP_OP (not, fixed_matrix, !)
 FIXED_DEFUNOP_OP (uminus, fixed_matrix, -)
+#ifdef HAVE_OCTAVE_UPLUS
 FIXED_DEFUNOP_OP (uplus, fixed_matrix, /* no-op */)
-
+#endif
 DEFUNOP (transpose, fixed_matrix)
 {
   CAST_UNOP_ARG (const octave_fixed_matrix&);
@@ -123,7 +124,9 @@ install_fm_fm_ops (void)
 {
   INSTALL_UNOP (op_not, octave_fixed_matrix, not);
   INSTALL_UNOP (op_uminus, octave_fixed_matrix, uminus);
+#ifdef HAVE_OCTAVE_UPLUS
   INSTALL_UNOP (op_uplus, octave_fixed_matrix, uplus);
+#endif
   INSTALL_UNOP (op_transpose, octave_fixed_matrix, transpose);
   INSTALL_UNOP (op_hermitian, octave_fixed_matrix, transpose);
 

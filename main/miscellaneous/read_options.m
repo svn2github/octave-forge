@@ -56,13 +56,13 @@ op = setfield ();		# Empty struct
 op0 = op1 = " ";
 skipnan = prefix = quiet = nocase = quiet = 0;
 
-args = nargin-1;  # nargin is now a function
-if rem (args, 2), error ("odd number of optional args"); end
+nargs = nargin-1;  # nargin is now a function
+if rem (nargs, 2), error ("odd number of optional args"); end
 
 
 ## beginpos 2.1.39
 i=1;
-while i<args
+while i<nargs
   if ! isstr (tmp = nth (varargin,i++)), error ("non-string option"); end
   if     strcmp (tmp, "op0")    , op0     = nth (varargin, i++);
   elseif strcmp (tmp, "op1")    , op1     = nth (varargin, i++);

@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <strstream>
 #include <octave/oct.h>
 #include "rsoct.h"
 
@@ -47,7 +46,7 @@ DEFUN_DLD (rsenco, args, ,
            "\n"
            " [B ADDED] = rsenco(...) since the Reed-Solomon code works with\n"
            "      blocks of K elements, zeros will need to be added to A if\n"
-           "      it is not a multiple of K elements long (or K*M in the\n" 
+           "      it is not a multiple of K elements long (or K*M in the\n"
            "      case of \"binary\" messages). So this form of rsenco\n"
            "      returns how many zeros were added to A to meet this\n"
            "      criteria. ADDED is in terms of the same form as A.\n"
@@ -66,17 +65,17 @@ DEFUN_DLD (rsenco, args, ,
   struct rs *rshandle;
 
   if ((msg_matrix.rows() > 1) && (msg_matrix.columns() > 1)) {
-    cerr << "rsenco: message must be a vector" << endl;
+    error("rsenco: message must be a vector");
     return(retval);
   } else {
-    if (msg_matrix.rows() > 1) 
+    if (msg_matrix.rows() > 1)
       msg = msg_matrix.column(0);
     else
       msg = msg_matrix.row(0);
   }
 
   if (args.length() < 3) {
-    cerr << "rsenco: too few arguments" << endl;
+    error("rsenco: too few arguments");
     return(retval);
   }
 
@@ -86,7 +85,7 @@ DEFUN_DLD (rsenco, args, ,
     for (i=0; i<32; i++) {
       if ( (N+1) & (1<<i)) {
 	if (M != 0) {
-	  cerr << "rsenco: N must be of the form 2^M -1" << endl;
+	  error("rsenco: N must be of the form 2^M -1");
 	  return(retval);
 	} else
 	  M = i;
@@ -94,14 +93,13 @@ DEFUN_DLD (rsenco, args, ,
     }
     K = args(2).int_value();
     if (K >= N) {
-      cerr << "rsenco: K must be less than N" << endl;
+      error("rsenco: K must be less than N");
       return(retval);
     }
 
     int indx = find_table_index(M);
     if (indx < 0) {
-      cerr << "rsenco: No default primitive polynominal for" <<
-	" desired symbol length" << endl;
+      error("rsenco: No default primitive polynominal for desired symbol length");
       return(retval);
     }
     rshandle = (rs *)init_rs_int(M, _RS_Tab[indx].genpoly, 1, 1, N-K);
@@ -110,14 +108,14 @@ DEFUN_DLD (rsenco, args, ,
     N = tuple.rows() - 1;
     M = tuple.columns();
     if (N != ((1<<M)-1)) {
-      cerr << "rsenco: Galois field matrix of incorrect form" << endl;
+      error("rsenco: Galois field matrix of incorrect form");
       return(retval);
     }
 
-    /* This case is a pain as the gftuple basically gives me 
+    /* This case is a pain as the gftuple basically gives me
      * alpha_to[] from the rshandle struct. Basically what I
      * have to do, is find the primitive polynominal given
-     * in alpha_to[] and then use it with init_rs. Luckily 
+     * in alpha_to[] and then use it with init_rs. Luckily
      * alpha_to[M] always contains the primitive polynomial!!
      */
     unsigned int gfpoly = 0;
@@ -127,7 +125,7 @@ DEFUN_DLD (rsenco, args, ,
 
     K = args(2).int_value();
     if (K >= N) {
-      cerr << "rsenco: K must be less than N" << endl;
+      error("rsenco: K must be less than N");
       return(retval);
     }
 
@@ -136,56 +134,56 @@ DEFUN_DLD (rsenco, args, ,
 
   if (args.length() > 3) {
     if (args(3).is_string()) {
-      string type = args(3).string_value();
+      std::string type = args(3).string_value();
       for (i=0;i<(int)type.length();i++)
 	type[i] = toupper(type[i]);
-      
-      if (!type.compare("BINARY")) 
+
+      if (!type.compare("BINARY"))
 	msg_type = MSG_TYPE_BINARY;
-      else if (!type.compare("POWER")) 
+      else if (!type.compare("POWER"))
 	msg_type = MSG_TYPE_POWER;
-      else if (!type.compare("DECIMAL")) 
+      else if (!type.compare("DECIMAL"))
 	msg_type = MSG_TYPE_DECIMAL;
       else {
-	cerr << "rsenco: Unknown message type" << endl;
+	error("rsenco: Unknown message type");
 	free_rs_int(rshandle);
 	return(retval);
       }
     } else {
-      cerr << "rsenco: Type of message variable must be a string" << endl;
+      error("rsenco: Type of message variable must be a string");
       free_rs_int(rshandle);
       return(retval);
     }
   }
-    
+
   if (!rshandle) {
     /* Above use default polynomials that are primitive. Thus allocation err */
-    cerr << "rsenco: Memory allocation error" << endl;
+    error("rsenco: Memory allocation error");
     return(retval);
   }
 
   if (args.length() > 4) {
     Matrix VecGg = args(4).matrix_value();
     if ((VecGg.rows() > 1) && (VecGg.columns() > 1)) {
-      cerr << "rsenco: Generator polynomial must be a vector" << endl;
+      error("rsenco: Generator polynomial must be a vector");
       free_rs_int(rshandle);
       return(retval);
     }
 
-    if ((VecGg.rows() > VecGg.columns() ? VecGg.rows() : VecGg.columns()) 
+    if ((VecGg.rows() > VecGg.columns() ? VecGg.rows() : VecGg.columns())
 	< N - K + 1) {
-      cerr << "rsenco: Generator polynomial of incorrect length" << endl;
+      error("rsenco: Generator polynomial of incorrect length");
       free_rs_int(rshandle);
       return(retval);
     }
-    
+
     if (VecGg.rows() > 1) {
       // Paranoia that we just might have to put this back into place
       int *tmpptr = rshandle->genpoly;
       rshandle->nroots = VecGg.rows()-1;
       rshandle->genpoly = (int *)malloc(sizeof(int)*VecGg.rows());
       if (rshandle->genpoly == NULL) {
-	cerr << "rsenco: Memory allocation error" << endl;
+	error("rsenco: Memory allocation error");
 	// Ok we have to be careful here freeing the rs struct, since
 	// we have part of it that is now NULL. Put old ptr ack in place
 	rshandle->genpoly = tmpptr;
@@ -201,7 +199,7 @@ DEFUN_DLD (rsenco, args, ,
       rshandle->nroots = VecGg.columns()-1;
       rshandle->genpoly = (int *)malloc(sizeof(int)*VecGg.columns());
       if (rshandle->genpoly == NULL) {
-	cerr << "rsenco: Memory allocation error" << endl;
+	error("rsenco: Memory allocation error");
 	// Ok we have to be careful here freeing the rs struct, since
 	// we have part of it that is now NULL. Put old ptr ack in place
 	rshandle->genpoly = tmpptr;
@@ -227,7 +225,7 @@ DEFUN_DLD (rsenco, args, ,
   }
 
   if (args.length() > 7) {
-    cerr << "rsenco: Too many arguments" << endl;
+    error("rsenco: Too many arguments");
     free_rs_int(rshandle);
     return(retval);
   }
@@ -237,11 +235,11 @@ DEFUN_DLD (rsenco, args, ,
     packets = (msg.length() / M + K - 1) / K;
     code = (int *)calloc(N * packets, sizeof(int));
     if (code == NULL) {
-      cerr << "rsdeco: Memory allocation error" << endl;
+      error("rsdeco: Memory allocation error");
       free_rs_int(rshandle);
       return(retval);
     }
-    added = packets*K*M - msg.length(); 
+    added = packets*K*M - msg.length();
     for (j=0; j<packets; j++)
       for (i=0; i<K; i++) {
 	code[j*N+i] = 0;
@@ -255,11 +253,11 @@ DEFUN_DLD (rsenco, args, ,
     packets = (msg.length() + K - 1) / K;
     code = (int *)calloc(N * packets, sizeof(int));
     if (code == NULL) {
-      cerr << "rsdeco: Memory allocation error" << endl;
+      error("rsdeco: Memory allocation error");
       free_rs_int(rshandle);
       return(retval);
     }
-    added = packets*K - msg.length(); 
+    added = packets*K - msg.length();
     for (j=0; j<packets; j++)
       for (i=0; i<K; i++) {
 	if (j*K+i > msg.length()-1)
@@ -272,11 +270,11 @@ DEFUN_DLD (rsenco, args, ,
     packets = (msg.length() + K - 1) / K;
     code = (int *)calloc(N * packets, sizeof(int));
     if (code == NULL) {
-      cerr << "rsdeco: Memory allocation error" << endl;
+      error("rsdeco: Memory allocation error");
       free_rs_int(rshandle);
       return(retval);
     }
-    added = packets*K - msg.length(); 
+    added = packets*K - msg.length();
     for (j=0; j<packets; j++)
       for (i=0; i<K; i++) {
 	if (j*K+i > msg.length()-1)
@@ -292,25 +290,25 @@ DEFUN_DLD (rsenco, args, ,
   ptr = code;
   for (j=0; j<N*packets; j++)
     if (*ptr++ > N) {
-      cerr << "rsenco: Illegal symbol" << endl;
+      error("rsenco: Illegal symbol");
       free_rs_int(rshandle);
       free(code);
       return(retval);
     }
-  
+
   ptr = code;
   for (l = 0; l < packets; l++) {
     encode_rs_int(rshandle, ptr, ptr+K);
     ptr += N;
   }
-    
+
   free_rs_int(rshandle);
 
   if (msg_type == MSG_TYPE_BINARY) {
     ColumnVector code_ret(M*N*packets);
     ptr = code;
     for (j = 0; j < N*packets; j++) {
-      for (i=0; i<M; i++) 
+      for (i=0; i<M; i++)
 	code_ret(i + M*j) = (*ptr & (1<<i) ? 1 : 0);
       ptr++;
     }
@@ -322,7 +320,7 @@ DEFUN_DLD (rsenco, args, ,
       code_ret(j) = *ptr++;
       if (msg_type == MSG_TYPE_POWER)
 	code_ret(j) -= 1;
-    }      
+    }
     retval(0) = octave_value(code_ret);
   }
   RowVector tmp(1,added);

@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <strstream>
 #include <octave/oct.h>
 #include "rsoct.h"
 
@@ -33,14 +32,14 @@ DEFUN_DLD (gfprimdf, args, ,
   }
 
   if (args.length() > 2) {
-    cerr << "gfprimdf: Too many arguments" << endl;
+    print_usage("gfprimdf");
     return(retval);
   }
 
   int indx = find_table_index(m);
 
   if ((p < 2) || (indx < 0)) {
-    cerr << "gfprimdf: Invalid args or args out of stored range" << endl;
+    error("gfprimdf: Invalid args or args out of stored range");
     return(retval);
   }
 

@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <strstream>
 #include <octave/oct.h>
 #include "rsoct.h"
 
@@ -20,7 +19,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
            "      and a field generator of 1 + X + X^2 + X^7 + x^8 and a\n"
            "      code generator with first consecutive root of 112 and a\n"
            "      primitive element of 11. This function uses a dual basis\n"
-           "      form\n" 
+           "      form\n"
            "\n"
            " B = rsdeco_ccsds(A, TYPE), as above but the type of the\n"
 	   "      elements of A can be explicitly defined. Type can be\n"
@@ -56,12 +55,12 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
   int i, j, l, N = 255, M = 8, K = 223, count;
   int uncorr_err, packets = 0, quiet = 0;
   unsigned char * code = NULL, * ptr;
-  
+
   if ((msg_matrix.rows() > 1) && (msg_matrix.columns() > 1)) {
-    cerr << "rsdeco_ccsds: message must be a vector" << endl;
+    error("rsdeco_ccsds: message must be a vector");
     return(retval);
   } else {
-    if (msg_matrix.rows() > 1) 
+    if (msg_matrix.rows() > 1)
       msg = msg_matrix.column(0);
     else
       msg = msg_matrix.row(0);
@@ -69,37 +68,36 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
 
   if (args.length() > 1) {
     if (args(1).is_string()) {
-      string type = args(1).string_value();
+      std::string type = args(1).string_value();
       for (i=0;i<(int)type.length();i++)
 	type[i] = toupper(type[i]);
-      
-      if (!type.compare("BINARY")) 
+
+      if (!type.compare("BINARY"))
 	msg_type = MSG_TYPE_BINARY;
-      else if (!type.compare("POWER")) 
+      else if (!type.compare("POWER"))
 	msg_type = MSG_TYPE_POWER;
-      else if (!type.compare("DECIMAL")) 
+      else if (!type.compare("DECIMAL"))
 	msg_type = MSG_TYPE_DECIMAL;
       else {
-	cerr << "rsdeco_ccsds: Unknown message type" << endl;
+	error("rsdeco_ccsds: Unknown message type");
 	return(retval);
       }
     } else {
-      cerr << "rsdeco_ccsds: Type of message variable must be a string" 
-	   << endl;
+      error("rsdeco_ccsds: Type of message variable must be a string");
       return(retval);
     }
   }
 
-  if (args.length() > 2) 
+  if (args.length() > 2)
     quiet = args(2).int_value();
 
   if (args.length() > 3) {
-    cerr << "rsdeco_ccsds: Too many arguments" << endl;
+    error("rsdeco_ccsds: Too many arguments");
     return(retval);
   }
 
   if ( (msg.length() % N) != 0) {
-    cerr << "rsdeco_ccsds: The code vector has the incorrect length" << endl;
+    error("rsdeco_ccsds: The code vector has the incorrect length");
     return(retval);
   }
 
@@ -108,7 +106,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
     packets = msg.length() / M / N;
     code = (unsigned char *)calloc(N * packets, sizeof(unsigned char));
     if (code == NULL) {
-      cerr << "rsdeco_ccsds: Memory allocation error" << endl;
+      error("rsdeco_ccsds: Memory allocation error");
       return(retval);
     }
     for (j=0; j<packets; j++)
@@ -123,7 +121,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
     packets = msg.length() / N;
     code = (unsigned char *)calloc(N * packets, sizeof(unsigned char));
     if (code == NULL) {
-      cerr << "rsdeco_ccsds: Memory allocation error" << endl;
+      error("rsdeco_ccsds: Memory allocation error");
       return(retval);
     }
     for (j=0; j<packets; j++)
@@ -132,7 +130,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
 	  code[j*N+i] = 0;
 	else {
 	  if (msg(j*N+i) > N) {
-	    cerr << "rsdeco_ccsds: Illegal symbol" << endl;
+	    error("rsdeco_ccsds: Illegal symbol");
 	    free(code);
 	    return(retval);
 	  }
@@ -144,7 +142,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
     packets = msg.length() / N;
     code = (unsigned char *)calloc(N * packets, sizeof(unsigned char));
     if (code == NULL) {
-      cerr << "rsdeco_ccsds: Memory allocation error" << endl;
+      error("rsdeco_ccsds: Memory allocation error");
       return(retval);
     }
     for (j=0; j<packets; j++)
@@ -153,7 +151,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
 	  code[j*N+i] = 0;
 	else {
 	  if (msg(j*N+i) > N-1) {
-	    cerr << "rsdeco_ccsds: Illegal symbol" << endl;
+	    error("rsdeco_ccsds: Illegal symbol");
 	    free(code);
 	    return(retval);
 	  }
@@ -173,7 +171,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
       uncorr_err++;
       if (quiet) {
 	quiet = 0;
-	cerr << "rsdeco_ccsds: warning uncorrected errors" << endl;
+	error("rsdeco_ccsds: warning uncorrected errors");
       }
       err_blk(l) = 0;
     } else
@@ -189,7 +187,7 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
     ptr = code;
     for (l = 0; l < packets; l++) {
       for (j = 0; j < K; j++) {
-	for (i=0; i<M; i++) 
+	for (i=0; i<M; i++)
 	  msg_ret((l*K+j)*M+i) = (*ptr & (1<<i) ? 1 : 0);
 	ptr++;
       }
@@ -198,19 +196,19 @@ DEFUN_DLD (rsdeco_ccsds, args, ,
     retval(0) = octave_value(msg_ret);
     for (l = 0; l < packets; l++)
       for (j = 0; j < K; j++)
-	for (i=0; i<M; i++) 
+	for (i=0; i<M; i++)
 	  msg_err_ret((l*K+j)*M+i) = err_blk(l);
     retval(1) = octave_value(msg_err_ret);
     ptr = code;
     for (j = 0; j < N*packets; j++) {
-      for (i=0; i<M; i++) 
+      for (i=0; i<M; i++)
 	code_ret(i + M*j) = (*ptr & (1<<i) ? 1 : 0);
       ptr++;
     }
     retval(2) = octave_value(code_ret);
     for (l = 0; l < packets; l++)
       for (j = 0; j < N; j++)
-	for (i=0; i<M; i++) 
+	for (i=0; i<M; i++)
 	  code_err_ret((l*N+j)*M+i) = err_blk(l);
     retval(3) = octave_value(code_err_ret);
     RowVector tmp(1,uncorr_err);

@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <strstream>
 #include <octave/oct.h>
 #include "rsoct.h"
 
@@ -34,7 +33,7 @@ DEFUN_DLD (rspoly, args, ,
 	   " gen = rspoly(K,Poly,Fcr,Prim) in addition to the above,\n"
 	   "       gives the primitive element used to generate polynomial\n"
 	   "       roots\n") {
-  
+
   octave_value retval;
 
   struct rs *rshandle;
@@ -45,21 +44,20 @@ DEFUN_DLD (rspoly, args, ,
   if (args(1).is_real_scalar()) {
     K = args(1).int_value();
     if (K >= N) {
-      cerr << "rspoly: K must be less than N" << endl;
+      error("rspoly: K must be less than N");
       return(retval);
     }
     if (args.length() > 2) {
       if (args(2).is_real_scalar()) {
 	M = args(2).int_value();
 	if (N != ((1<<M)-1)) {
-	  cerr << "rspoly: N must be of the form 2^M -1" << endl;
+	  error("rspoly: N must be of the form 2^M -1");
 	  return(retval);
 	}
-	
+
 	int indx = find_table_index(M);
 	if (indx < 0) {
-	  cerr << "rspoly: No default primitive polynominal for" <<
-	    " desired symbol length" << endl;
+	  error("rspoly: No default primitive polynominal for desired symbol length");
 	  return(retval);
 	}
 	rshandle = (rs *)init_rs_int(M, _RS_Tab[indx].genpoly,1,1, N-K);
@@ -68,14 +66,14 @@ DEFUN_DLD (rspoly, args, ,
 	N = tuple.rows() - 1;
 	M = tuple.columns();
 	if (N != ((1<<M)-1)) {
-	  cerr << "rspoly: Galois field matrix of incorrect form" << endl;
+	  error("rspoly: Galois field matrix of incorrect form");
 	  return(retval);
 	}
-	
-	/* This case is a pain as the gftuple basically gives me 
+
+	/* This case is a pain as the gftuple basically gives me
 	 * alpha_to[] from the rshandle struct. Basically what I
 	 * have to do, is find the primitive polynominal given
-	 * in alpha_to[] and then use it with init_rs. Luckily 
+	 * in alpha_to[] and then use it with init_rs. Luckily
 	 * alpha_to[M] always contains the primitive polynomial!!
 	 */
 	unsigned int gfpoly = 0;
@@ -89,8 +87,8 @@ DEFUN_DLD (rspoly, args, ,
       M = 0;
       for (int i=0; i< (int)(8*sizeof(int)); i++) {
 	if ( (N+1) & (1<<i)) {
-	  if (M != 0) { 
-	    cerr << "rspoly: N must be of the form 2^M -1" << endl;
+	  if (M != 0) {
+	    error("rspoly: N must be of the form 2^M -1");
 	    return(retval);
 	  } else
 	    M = i;
@@ -98,8 +96,7 @@ DEFUN_DLD (rspoly, args, ,
       }
       int indx = find_table_index(M);
       if (indx < 0) {
-	cerr << "rspoly: No default primitive polynominal for" <<
-	  " desired symbol length" << endl;
+	error("rspoly: No default primitive polynominal for desired symbol length");
 	return(retval);
       }
       rshandle = (rs *)init_rs_int(M, _RS_Tab[indx].genpoly, 1, 1, N-K);
@@ -111,29 +108,28 @@ DEFUN_DLD (rspoly, args, ,
     M = Pp.length() - 1;
     N = (1<<M) - 1;
     if (K >= N) {
-      cerr << "rspoly: Degree of primitive polynomial too short for" <<
-	" message length" << endl;
+      error("rspoly: Degree of primitive polynomial too short for message length");
       return(retval);
     }
     gfpoly = 0;
     for (int i=M; i >=0; i--) {
-      gfpoly = gfpoly << 1; 
+      gfpoly = gfpoly << 1;
       gfpoly += ((unsigned int) Pp(i)) & 1;
     }
     if (args.length() > 2) {
       fcr = args(2).int_value();
       if (fcr > (unsigned int)N) {
-	cerr << "rspoly: Fcr must be less than or equal to N" << endl;
+	error("rspoly: Fcr must be less than or equal to N");
 	return(retval);
       }
       if (args.length() > 3) {
 	prim = args(3).int_value();
 	if ((prim == 0) || (prim > (unsigned int)N)) {
-	  cerr << "rspoly: Prim must be less than or equal to N" << endl;
+	  error("rspoly: Prim must be less than or equal to N");
 	  return(retval);
 	}
 	if (args.length() > 4) {
-	  cerr << "rspoly: Too many arguments" << endl;
+	  error("rspoly: Too many arguments");
 	  return(retval);
 	}
       }
@@ -145,8 +141,7 @@ DEFUN_DLD (rspoly, args, ,
     /* NULL rshandle. This can indicate a variety of things, but the
      * main one is that the generator polynominal is not primitive
      */
-    cerr << "rspoly: Generator polynomial not primitive or allocation error"
-	 << endl;
+    error("rspoly: Generator polynomial not primitive or allocation error");
     return(retval);
   }
 

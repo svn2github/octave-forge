@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <strstream>
 #include <octave/oct.h>
 #include "rsoct.h"
 
@@ -22,7 +21,7 @@ DEFUN_DLD (gftuple, args, ,
            "      is used. If A is a column vector, then the elements\n"
            "      of A should be between 0 and P^M-1. Negative values\n"
            "      of A are treated as zero, while values larger then\n"
-           "      P^M-1 are treated mod(P^M-1). If A is a matrix then the\n" 
+           "      P^M-1 are treated mod(P^M-1). If A is a matrix then the\n"
            "      elements of A must be between 0 and P-1 and each row of\n"
            "      A is used as the polynomial format of a single value\n"
            "\n"
@@ -54,15 +53,14 @@ DEFUN_DLD (gftuple, args, ,
     if (args.length() > 2) {
       P = args(2).int_value();
       if (P != 2) {
-	cerr << "gftuple: P must equal 2 for now" << endl;
+	error("gftuple: P must equal 2 for now");
 	return(retval);
       }
     }
 
     int indx = find_table_index(M);
     if (indx < 0) {
-      cerr << "gftuple: No default primitive polynominal for" <<
-	" desired symbol length" << endl;
+      error("gftuple: No default primitive polynominal for desired symbol length");
       return(retval);
     }
     rshandle = (rs *)init_rs_int(M, _RS_Tab[indx].genpoly, 1, 1, 1);
@@ -71,13 +69,13 @@ DEFUN_DLD (gftuple, args, ,
     M = Pp.length() - 1;
     int gfpoly = 0;
     for (int i=M; i >=0; i--) {
-      gfpoly = gfpoly << 1; 
+      gfpoly = gfpoly << 1;
       gfpoly += ((unsigned int) Pp(i)) & 1;
     }
     if (args.length() > 2) {
       P = args(2).int_value();
       if (P != 2) {
- 	cerr << "gftuple: P must equal 2 for now" << endl;
+ 	error("gftuple: P must equal 2 for now");
 	return(retval);
       }
     }
@@ -94,12 +92,11 @@ DEFUN_DLD (gftuple, args, ,
 	  sr &= N;
 	}
 	if (sr != 1)
-	  cerr << "gftuple: Generator polynomial is not primitive" << endl;
+	  error("gftuple: Generator polynomial is not primitive");
 	else
-	  cerr << "gftuple: Memory allocation error" << endl;
-      } else 
-	cerr << "gftuple: Internal error... Is the generator polynomial" <<
-	  " primitive?" << endl;
+	  error("gftuple: Memory allocation error");
+      } else
+	error("gftuple: Internal error... Is the generator polynomial primitive?");
     }
   }
 
@@ -112,8 +109,7 @@ DEFUN_DLD (gftuple, args, ,
      * So if you get here even though your polynomial is primitive you
      * have memory allocation errors and thus lots of other problems :-)
      */
-    cerr << "gftuple: Internal error... Is the generator polynomial primitive?"
-	 << endl;
+    error("gftuple: Internal error... Is the generator polynomial primitive?");
     return(retval);
   }
 
@@ -122,11 +118,11 @@ DEFUN_DLD (gftuple, args, ,
 
   if (A.columns() > 1) {
     for (i=0; i<A.rows(); i++) {
-      ExpForm(i) = 0; 
+      ExpForm(i) = 0;
       for (j=0; j<A.columns(); j++) {
 	if (A(i,j))
 	  ExpForm(i) += (1<j);
-      } 
+      }
     }
   } else {
     ExpForm = A.column(0);
@@ -138,7 +134,7 @@ DEFUN_DLD (gftuple, args, ,
       if (ExpForm(i) < 0)
 	gftuple(i,j) = 0;
       else
-	gftuple(i,j) = (rshandle->alpha_to[((int)ExpForm(i) & N)] & 
+	gftuple(i,j) = (rshandle->alpha_to[((int)ExpForm(i) & N)] &
 			(1<<j) ? 1 : 0);
     }
   }

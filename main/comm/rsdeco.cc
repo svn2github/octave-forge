@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <strstream>
 #include <octave/oct.h>
 #include "rsoct.h"
 
@@ -66,19 +65,19 @@ DEFUN_DLD (rsdeco, args, ,
   int uncorr_err, packets = 0;
   int * code = NULL, * ptr;
   struct rs *rshandle;
-  
+
   if ((msg_matrix.rows() > 1) && (msg_matrix.columns() > 1)) {
-    cerr << "rsdeco: message must be a vector" << endl;
+    error("rsdeco: message must be a vector");
     return(retval);
   } else {
-    if (msg_matrix.rows() > 1) 
+    if (msg_matrix.rows() > 1)
       msg = msg_matrix.column(0);
     else
       msg = msg_matrix.row(0);
   }
 
   if (args.length() < 3) {
-    cerr << "rsdeco: too few arguments" << endl;
+    error("rsdeco: too few arguments");
     return(retval);
   }
 
@@ -88,7 +87,7 @@ DEFUN_DLD (rsdeco, args, ,
     for (i=0; i<32; i++) {
       if ( (N+1) & (1<<i)) {
 	if (M != 0) {
-	  cerr << "rsdeco: N must be of the form 2^M -1" << endl;
+	  error("rsdeco: N must be of the form 2^M -1");
 	  return(retval);
 	} else
 	  M = i;
@@ -96,14 +95,13 @@ DEFUN_DLD (rsdeco, args, ,
     }
     K = args(2).int_value();
     if (K >= N) {
-      cerr << "rsdeco: K must be less than N" << endl;
+      error("rsdeco: K must be less than N");
       return(retval);
     }
 
     int indx = find_table_index(M);
     if (indx < 0) {
-      cerr << "rsenco: No default primitive polynominal for" <<
-	" desired symbol length" << endl;
+      error("rsenco: No default primitive polynominal for desired symbol length");
       return(retval);
     }
     rshandle = (rs *)init_rs_int(M, _RS_Tab[indx].genpoly, 1, 1, N-K);
@@ -112,14 +110,14 @@ DEFUN_DLD (rsdeco, args, ,
     N = tuple.rows() - 1;
     M = tuple.columns();
     if (N != ((1<<M)-1)) {
-      cerr << "rsdeco: Galois field matrix of incorrect form" << endl;
+      error("rsdeco: Galois field matrix of incorrect form");
       return(retval);
     }
 
-    /* This case is a pain as the gftuple basically gives me 
+    /* This case is a pain as the gftuple basically gives me
      * alpha_to[] from the rshandle struct. Basically what I
      * have to do, is find the primitive polynominal given
-     * in alpha_to[] and then use it with init_rs. Luckily 
+     * in alpha_to[] and then use it with init_rs. Luckily
      * alpha_to[M] always contains the primitive polynomial!!
      */
     unsigned int gfpoly = 0;
@@ -129,7 +127,7 @@ DEFUN_DLD (rsdeco, args, ,
 
     K = args(2).int_value();
     if (K >= N) {
-      cerr << "rsenco: K must be less than N" << endl;
+      error("rsenco: K must be less than N");
       return(retval);
     }
 
@@ -138,30 +136,30 @@ DEFUN_DLD (rsdeco, args, ,
 
   if (args.length() > 3) {
     if (args(3).is_string()) {
-      string type = args(3).string_value();
+      std::string type = args(3).string_value();
       for (i=0;i<(int)type.length();i++)
 	type[i] = toupper(type[i]);
-      
-      if (!type.compare("BINARY")) 
+
+      if (!type.compare("BINARY"))
 	msg_type = MSG_TYPE_BINARY;
-      else if (!type.compare("POWER")) 
+      else if (!type.compare("POWER"))
 	msg_type = MSG_TYPE_POWER;
-      else if (!type.compare("DECIMAL")) 
+      else if (!type.compare("DECIMAL"))
 	msg_type = MSG_TYPE_DECIMAL;
       else {
-	cerr << "rdeco: Unknown message type" << endl;
+	error("rdeco: Unknown message type");
 	free_rs_int(rshandle);
 	return(retval);
       }
     } else {
-      cerr << "rsdeco: Type of message variable must be a string" << endl;
+      error("rsdeco: Type of message variable must be a string");
       free_rs_int(rshandle);
       return(retval);
     }
   }
 
   if ( (msg.length() % N) != 0) {
-    cerr << "rsdeco: The code vector has the incorrect length" << endl;
+    error("rsdeco: The code vector has the incorrect length");
     free_rs_int(rshandle);
     return(retval);
   }
@@ -179,14 +177,14 @@ DEFUN_DLD (rsdeco, args, ,
   }
 
   if (args.length() > 6) {
-    cerr << "rsdeco: Too many arguments" << endl;
+    error("rsdeco: Too many arguments");
     free_rs_int(rshandle);
     return(retval);
   }
 
   if (!rshandle) {
     /* Above use default polynomials that are primitive. Thus allocation err */
-    cerr << "rsenco: Memory allocation error" << endl;
+    error("rsenco: Memory allocation error");
     return(retval);
   }
 
@@ -195,7 +193,7 @@ DEFUN_DLD (rsdeco, args, ,
     packets = msg.length() / M / N;
     code = (int *)calloc(N * packets, sizeof(int));
     if (code == NULL) {
-      cerr << "rsdeco: Memory allocation error" << endl;
+      error("rsdeco: Memory allocation error");
       free_rs_int(rshandle);
       return(retval);
     }
@@ -211,7 +209,7 @@ DEFUN_DLD (rsdeco, args, ,
     packets = msg.length() / N;
     code = (int *)calloc(N * packets, sizeof(int));
     if (code == NULL) {
-      cerr << "rsdeco: Memory allocation error" << endl;
+      error("rsdeco: Memory allocation error");
       free_rs_int(rshandle);
       return(retval);
     }
@@ -227,7 +225,7 @@ DEFUN_DLD (rsdeco, args, ,
     packets = msg.length() / N;
     code = (int *)calloc(N * packets, sizeof(int));
     if (code == NULL) {
-      cerr << "rsdeco: Memory allocation error" << endl;
+      error("rsdeco: Memory allocation error");
       free_rs_int(rshandle);
       return(retval);
     }
@@ -249,7 +247,7 @@ DEFUN_DLD (rsdeco, args, ,
   ptr = code;
   for (l = 0; l < N*packets; l++) {
     if (*ptr++ > N) {
-      cerr << "rsdeco: Illegal symbol" << endl;
+      error("rsdeco: Illegal symbol");
       free_rs_int(rshandle);
       free(code);
       return(retval);
@@ -277,7 +275,7 @@ DEFUN_DLD (rsdeco, args, ,
     ptr = code;
     for (l = 0; l < packets; l++) {
       for (j = 0; j < K; j++) {
-	for (i=0; i<M; i++) 
+	for (i=0; i<M; i++)
 	  msg_ret((l*K+j)*M+i) = (*ptr & (1<<i) ? 1 : 0);
 	ptr++;
       }
@@ -286,19 +284,19 @@ DEFUN_DLD (rsdeco, args, ,
     retval(0) = octave_value(msg_ret);
     for (l = 0; l < packets; l++)
       for (j = 0; j < K; j++)
-	for (i=0; i<M; i++) 
+	for (i=0; i<M; i++)
 	  msg_err_ret((l*K+j)*M+i) = err_blk(l);
     retval(1) = octave_value(msg_err_ret);
     ptr = code;
     for (j = 0; j < N*packets; j++) {
-      for (i=0; i<M; i++) 
+      for (i=0; i<M; i++)
 	code_ret(i + M*j) = (*ptr & (1<<i) ? 1 : 0);
       ptr++;
     }
     retval(2) = octave_value(code_ret);
     for (l = 0; l < packets; l++)
       for (j = 0; j < N; j++)
-	for (i=0; i<M; i++) 
+	for (i=0; i<M; i++)
 	  code_err_ret((l*N+j)*M+i) = err_blk(l);
     retval(3) = octave_value(code_err_ret);
     RowVector tmp(1,uncorr_err);

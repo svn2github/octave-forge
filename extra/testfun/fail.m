@@ -13,16 +13,22 @@
 
 ## PKG_ADD mark_as_command fail
 function ret=fail(code,pattern)
+  ## allow assert(fail())
+  if nargout, ret=1; end  
+
+  ## don't test failure if evalin doesn't exist
+  if !exists('evalin'), return; end
+
+  ## perform the test
   try
     evalin("caller",[code,";"]);
     msg = "expected error but got none";
   catch
     msg = sprintf("expected %s\nbut got %s",pattern,lasterr);
-    if !isempty(regexp(pattern,lasterr))
-      if nargout, ret=1; end  # allow assert(fail())
-      return
-    end
+    if !isempty(regexp(pattern,lasterr)), return; end
   end
+
+  ## if we get here, then code didn't fail or error didn't match
   error(msg);
 end
 

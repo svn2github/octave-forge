@@ -35,8 +35,8 @@ elseif nargin==2,
         s=1;
 end;        
 
-% allocate output memory and check size of arguments
-z = (x-m)./s;	  % if this line causes an error, input arguments do not fit. 
+% allocate output memory and check size of argument
+z = (x-m)./s;		% if this line causes an error, input arguments do not fit. 
 
 %p = ((2*pi)^(-1/2))*exp(-z.^2/2)./s;
 SQ2PI = 2.5066282746310005024157652848110;
@@ -44,7 +44,7 @@ p = exp(-z.^2/2)./(s*SQ2PI);
 
 p((x==m) & (s==0)) = inf;
 
-p(isinf(z)) = 0;
+p(isinf(z)~=0) = 0;
 
 p(isnan(x) | isnan(m) | isnan(s) | (s<0)) = nan;
 

@@ -202,11 +202,6 @@ do_size(octave_value_list args, int& nr, int& nc)
 }
 #endif
 
-void fill_randu(int n, double *p)
-{
-  for (int i=0; i < n; i++) p[i] = randu();
-}
-
 /*
 %!test # 'state' can be a scalar
 %! rand('state',12); x = rand(1,4);
@@ -231,7 +226,7 @@ void fill_randu(int n, double *p)
 %! s=rand('seed'); x=rand(1,2);
 %! rand('seed',s); y=rand(1,2);
 %! assert(x,y);
-%!# querying 'seed' disturbs the sequence, so don't try it
+%!# querying 'seed' disturbs the sequence, so don't test that it doesn't
 %!# XXX FIXME XXX tests of uniformity
 */
 
@@ -345,11 +340,6 @@ http://www.math.keio.ac.jp/~matumoto/emt.html\n\
   return retval;
 }
 
-void fill_randn(int n, double *p)
-{
-  for (int i=0; i < n; i++) p[i] = randn();
-}
-
 DEFUN_DLD (randn, args, nargout, 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} randn (@var{x})\n\
@@ -423,11 +413,6 @@ variables', J. Statistical Software, vol 5, 2000\n\
     }
 
   return retval;
-}
-
-void fill_rande(int n, double *p)
-{
-  for (int i=0; i < n; i++) p[i] = rande();
 }
 
 DEFUN_DLD (rande, args, nargout, 

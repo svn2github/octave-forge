@@ -24,6 +24,8 @@
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 
+## 2003-03-13 Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+##     * kind of fixed a race condition with gnuplot and octave processes
 ## 2003-03-04 Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ##     * got rid of grep and sed, now parses with octave
 ##     * can read options whose values are longer than ~70 characters
@@ -41,9 +43,19 @@ function gout = gget(option)
   ## tell gnuplot to save all its options to a file, scan that file
   ## for the option we are interested in, then delete it.
   optfile = tmpnam;
-  graw (["save set \"", optfile, "\"\n"]);
-  f = fopen(optfile);
+  graw (["save set \"", optfile, "\"\n"]);  
   rmcmd = sprintf("rm -f %s", optfile);
+
+  # FIXME:
+  # this (tries) to prevent a race condition where the file exists,
+  # but is not yet completely written. This is a stupid hack.
+  [s, err, msg] = stat(optfile);
+  while(isempty(s) || s.size <= 4000)
+    sleep(0.1);
+    s = stat(optfile);
+  endwhile
+
+  f = fopen(optfile);
   while f == -1
     sleep (1);
     f = fopen(optfile);
@@ -51,7 +63,7 @@ function gout = gget(option)
 
   gout = "";
   s = strcat("set ", option, " ");
-  buf = blanks(80); 
+  buf = blanks(80);
   idx = [];
   buf = fgetl(f);
   while(!feof(f))

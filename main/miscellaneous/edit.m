@@ -3,7 +3,7 @@
 ##
 ##   If the function is available in a file on your path and that file 
 ##   is modifiable, then it will be editted in place.  If it is a system 
-##   function, then it will first be copied to the directory FUNCTION_HOME 
+##   function, then it will first be copied to the directory HOME 
 ##   and then editted.  
 ##
 ##   If name is the name of a function defined in the interpreter but 
@@ -12,23 +12,23 @@
 ##
 ##   If name.cc is specified, then it will search for name.cc in the
 ##   path and try to modify it, otherwise it will create a new .cc file
-##   in FUNCTION_HOME.  If name happens to be an m-file or interpreter
+##   in HOME.  If name happens to be an m-file or interpreter
 ##   defined function, then the text of that function will be inserted
 ##   into the .cc file as a comment.
 ##
 ##   If name.ext is on your path then it will be editted, otherwise
-##   the editor will be started with FUNCTION_HOME/name.ext as the
+##   the editor will be started with HOME/name.ext as the
 ##   filename.  If name.ext is not modifiable, it will be copied to
-##   FUNCTION_HOME before editting.
+##   HOME before editting.
 ##
 ##   WARNING!! You may need to clear name before the new definition
 ##   is available.  If you are editting a .cc file, you will need
 ##   to mkoctfile name.cc before the definition will be available.
 ##
-## The following global variables are referenced.  You may want to override 
-## these in your .octaverc using "global FUNCTION_xxx = ...; ".
+## The following state variables are referenced.  You may want to override 
+## these in your .octaverc using "edit('xxx','...')".
 ##
-## FUNCTION_EDITOR
+## EDITOR
 ##   This is the editor to use to modify the functions.  By default it uses
 ##   Octave's EDITOR state variable, which comes from getenv("EDITOR") and
 ##   defaults to vi.  Use %s in place of the function name.  E.g.,
@@ -39,21 +39,21 @@
 ##     "gnudoit -q \"(find-file \\\"%s\\\")\""   
 ##       send it to current emacs; must have (gnuserv-start) in .emacs
 ##
-## FUNCTION_HOME
+## HOME
 ##   This is the location of user local m-files. Be be sure it is on LOADPATH.
 ##   The default is ~/octave.
 ##
-## FUNCTION_AUTHOR
+## AUTHOR
 ##   This is the name to put after the "## Author:" field of new functions.
 ##   By default it guesses from the `gecos' field of password database.
 ## 
-## FUNCTION_EMAIL
+## EMAIL
 ##   This is the e-mail address to list after the name in the author field.
 ##   By default it guesses <$LOGNAME@$HOSTNAME>, and if $HOSTNAME is not
 ##   defined it uses "uname -n".  You probably want to override this.  Be
 ##   sure to use "<user@host>" as your format.
 ##
-## FUNCTION_LICENSE
+## LICENSE
 ##   Use "GPL" for the GPL, "BSD" for BSD-style without advertising clause,
 ##   or "PD" for public domain.  Use [] for the default (GPL), or insert
 ##   your own copyright message.  Unless you specify "PD", it will prepend
@@ -68,17 +68,35 @@
 
 ## PKG_ADD mark_as_command edit
 
-function edit(file)
+function edit(file,state)
   ## pick up globals or default them
-  global FUNCTION_EDITOR = [ EDITOR, " %s" ];
-  global FUNCTION_HOME = [ getenv("HOME"), "/octave" ];
-  global FUNCTION_AUTHOR = getpwuid(getuid).gecos;
-  global FUNCTION_EMAIL = [];
-  global FUNCTION_LICENSE = "GPL";
+  persistent FUNCTION_EDITOR = [ EDITOR, " %s" ];
+  persistent FUNCTION_HOME = [ getenv("HOME"), "/octave" ];
+  persistent FUNCTION_AUTHOR = getpwuid(getuid).gecos;
+  persistent FUNCTION_EMAIL = [];
+  persistent FUNCTION_LICENSE = "GPL";
+
+  if (nargin == 2)
+    switch file
+    case 'EDITOR'
+    	FUNCTION_EDITOR=state;
+    case 'HOME'
+    	FUNCTION_HOME=state;
+    case 'AUTHOR'
+    	FUNCTION_AUTHOR=state;
+    case 'EMAIL'
+    	FUNCTION_EMAIL=state;
+    case 'LICENSE'
+    	FUNCTION_LICENSE=state;
+    otherwise
+    	error('expected "edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE val"');
+    end
+    return
+  end
 
   ## start the editor without a file if no file is given
   if nargin < 1
-    system(EDITOR)
+    system(['cd "',FUNCTION_HOME,'" ; ',sprintf(FUNCTION_EDITOR,"")]);
     return
   endif
 

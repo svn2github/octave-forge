@@ -1,48 +1,5 @@
 sinclude ../../Makeconf
 
-# So I can develop this package without octave-forge.
-ifndef OCTAVE_FORGE
-  MKOCTFILE = mkoctfile -v -DHAVE_OCTAVE_21 
-  RM = rm -f
-  LN_S = ln -s
-  OCTAVEFIXEDVERSION = 0.7.0
-  MAKEINFO = makeinfo --no-split
-  TEXI2DVI = texi2dvi --clean
-  TEXI2HTML = texi2html -split_chapter -number
-  INSTALL_DATA = install -c -m 644
-  DVIPDF = dvipdf
-  DVIPS = dvips
-
-  # Ok, so you'll need to copy these two scripts from the octave-forge tree
-  MKDOC = $(shell pwd)/mkdoc
-  MKTEXI = $(shell pwd)/mktexi
-
-  OCTAVE_VERSION=2.1.58
-
-  # The below assumes octave 2.1.58 or later
-  HAVE_DO_FORTRAN_INDEXING =
-  HAVE_PROPAGATE_EMPTY_MATRICES =
-  HAVE_OK_TO_LOSE_IMAGINARY_PART =
-  HAVE_ND_ARRAYS = -DHAVE_ND_ARRAYS
-  HAVE_RESIZE_AND_FILL = -DHAVE_RESIZE_AND_FILL
-  TYPEID_HAS_CLASS = -DTYPEID_HAS_CLASS
-  CLASS_HAS_LOAD_SAVE = -DCLASS_HAS_LOAD_SAVE
-  HAVE_6ARG_MX_ND_RED = -DHAVE_6ARG_MX_ND_RED
-
-  # The below assumes octave 2.1.50 or earlier
-  #HAVE_DO_FORTRAN_INDEXING = -DHAVE_DO_FORTRAN_INDEXING
-  #HAVE_PROPAGATE_EMPTY_MATRICES = -DHAVE_PROPAGATE_EMPTY_MATRICES
-  #HAVE_OK_TO_LOSE_IMAGINARY_PART = -DHAVE_OK_TO_LOSE_IMAGINARY_PART
-  #HAVE_ND_ARRAYS =
-  #HAVE_RESIZE_AND_FILL =
-  #TYPEID_HAS_CLASS =
-  #CLASS_HAS_LOAD_SAVE =
-  #HAVE_6ARG_MX_ND_RED =
-
-  export HAVE_RESIZE_AND_FILL RM LN_S MKOCTFILE OCTAVEFIXEDVERSION
-  export MAKEINFO TEXI2DVI TEXI2HTHL INSTALL_DATA DVIPDF DVIPS MKDOC MKTEXI
-endif
-
 FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
@@ -209,7 +166,11 @@ clean: $(SUBDIRS)
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
-realclean: clean $(SUBDIRS)
+realclean: $(SUBDIRS)
+	@echo "Cleaning..."; \
+	$(RM) -f $(DELETES)
+
+dist: $(SUBDIRS)
 
 count: $(SUBDIRS)
 	wc *{.cc,.h,.m} int/*.{cc,h}

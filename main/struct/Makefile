@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 # struct.cc hasn't been back-ported
 ifeq ($(HAVE_OCTAVE_MAP_INDEX),)

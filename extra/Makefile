@@ -1,4 +1,4 @@
-include ../Makeconf
+sinclude ../Makeconf
 
 # Determine which subdirectories are to be installed.  Of those, determine
 # which have their own Makefile.
@@ -29,6 +29,8 @@ all:
 endif
 
 clean: $(SUBMAKEDIRS)
+
+dist: $(SUBMAKEDIRS)
 
 # Propogate make to the subdirectory if the goal is a valid target
 # in the subdirectory Makefile.

@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 all: pretty.oct
 

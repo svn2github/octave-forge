@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 SF_BUILDSCRIPT=buildgsl_sf.sh
 SF_LINKS=$(shell grep octave_name $(SF_BUILDSCRIPT) | sed 's/^.*octave_name=\([[:alnum:]_]*\) *$$/\1.oct/g')

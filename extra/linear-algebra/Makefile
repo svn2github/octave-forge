@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 OBJ = chol.o ov-re-tri.o
 

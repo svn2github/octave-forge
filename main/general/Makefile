@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 BITAND_LINKS=bitor.oct bitxor.oct bitmax.oct
 PROGS=bitand.oct $(BITAND_LINKS) command.oct deref.oct mark_for_deletion.oct

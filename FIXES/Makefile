@@ -1,4 +1,4 @@
-include ../Makeconf
+sinclude ../Makeconf
 
 # Needed for soct.oct
 SORTDEFINES=$(HAVE_IEEE754_COMPLIANCE) $(HAVE_ND_ARRAYS)
@@ -39,3 +39,5 @@ install:
 clean: 
 	-$(RM) *.o core octave-core core *.oct *~
 
+# Do nothing for dist target
+dist:

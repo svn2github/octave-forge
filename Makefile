@@ -10,10 +10,11 @@ TEST_PATH=$(shell admin/runpath.sh)
 RUN_OCTAVE=$(OCTAVE) --norc -p "$(TEST_PATH)"
 
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
+.PHONY:  $(SUBMAKEDIRS)
 
 ifdef OCTAVE_FORGE
 
-.PHONY: all install check icheck clean distclean dist $(SUBMAKEDIRS)
+.PHONY: all install check icheck
 
 all: setup $(SUBMAKEDIRS)
 	@echo "Build finished."
@@ -57,6 +58,17 @@ icheck:
 
 run:
 	$(RUN_OCTAVE)
+
+else
+
+.PHONY: all install
+
+all install:
+	@echo "./configure ; make ; make install"
+
+endif
+
+.PHONY: clean distclean dist
 
 clean: $(SUBMAKEDIRS)
 	-$(RM) core octave-core octave configure.in

@@ -1,5 +1,5 @@
 
-include ../../Makeconf
+sinclude ../../Makeconf
 
 OCTS = sclose.oct  connect.oct pserver.oct  \
 	recv.oct  reval.oct  send.oct

@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 # extra functions defined in __grcmd__.oct
 gr_LINKS=__grcla__.oct\

@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
@@ -32,7 +32,7 @@ DELETES = $(OBJECTS) $(GALOISDEPENDS) $(OTHERDPENDS) *~ $(TARGETS) core octave-c
 DEFINES = -DGALOIS_DISP_PRIVATES $(HAVE_DO_FORTRAN_INDEXING) $(HAVE_PROPAGATE_EMPTY_MATRICES) $(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) $(CLASS_HAS_LOAD_SAVE)
 MOFLAGS =
 
-.PHONY: all clean count $(SUBDIRS)
+.PHONY: all dist clean realclean count $(SUBDIRS)
 .SUFFIXES:
 
 all : $(DEPENDS) $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(SUBDIRS)
@@ -75,7 +75,11 @@ clean: $(SUBDIRS)
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
-realclean: clean $(SUBDIRS)
+realclean: $(SUBDIRS)
+	@echo "Cleaning..."; \
+	$(RM) -f $(DELETES)
+
+dist: $(SUBDIRS)
 
 count: $(SUBDIRS)
 	wc *{.cc,.h,.m,.txi}

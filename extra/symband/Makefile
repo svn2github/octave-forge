@@ -1,4 +1,4 @@
-include ../../Makeconf
+sinclude ../../Makeconf
 
 SYMBAND_LINKS = SBSolve.oct SBFactor.oct SBBacksub.oct SBProd.oct SBEig.oct
 PROGS = SymBand.oct $(SYMBAND_LINKS)

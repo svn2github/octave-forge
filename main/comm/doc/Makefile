@@ -1,5 +1,14 @@
 sinclude ../../../Makeconf
 
+# "make dist" clears the MKDOC, etc variables. Fill them in if needed
+ifeq ($(MKDOC),)
+MKDOC = ../../../admin/mkdoc
+MKTEXI = ../../../admin/mktexi
+MAKEINFO = makeinfo --no-split
+TEXI2DVI = texi2dvi --clean
+DVIPS = dvips
+endif
+
 INFODOC = comms.info
 PSDOC = $(patsubst %.info,%.ps,$(INFODOC))
 TEXIDOC = $(patsubst %.info,%.texi,$(INFODOC))
@@ -66,6 +75,8 @@ clean:
 
 realclean: clean
 	@$(RM) -f $(DELETES)
+
+dist: all
 
 count:
 	wc *.txi

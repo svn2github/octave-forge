@@ -2,7 +2,7 @@
 Installing the NaN-tb with Octave:
 ----------------------------------
 a) You need repmat.m;
-    If you havenot installed it yet, you should do it now. 
+    If you have not installed it yet, you should do it now. 
 Download e.g. P. Kienzle's version from  
 http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/main/general/repmat.m?rev=HEAD&content-type=text/plain 
 
@@ -35,8 +35,6 @@ This checks whether the installation was successful.
 
 
 
-	Version 1.22
-	06 May 2002
-	Copyright (c) 2000-2002 by  Alois Schloegl
-	a.schloegl@ieee.org	
+	Version 1.25	Date: 15 Aug 2002
+	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

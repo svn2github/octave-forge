@@ -12,10 +12,9 @@ FEATURES of the NaN-tb:
  - contains basic statistical functions.
  - supports DIM argument 
  - supports unbiased estimation; 
- - realizes an experimental concept for the future developement of Matrix-languages. 
-   (give it a try) 	   
+ - realizes an innovative concept for the future developement of Matrix-languages. 
  - compatible to Matlab and Octave
-   The toolbox was tasted and can be used with 
+   The toolbox was tested and can be used with 
    Matlab 5.2, 5.3, 6.1 and Octave 2.0.14, 2.0.16.92, 2.1.35-36, 
  
  
@@ -45,7 +44,8 @@ Currently are implemented:
 	DETREND		detrending of data with missing values and non-equidistant sampled data
 	COVM		covariance estimation (several modes)
 	COR		correlation matrix
-	CORRCOEF	correlation coefficient 
+	CORRCOEF	correlation coefficient, 
+				including rank correlation, significance test and confidence intervals 
 	COV		covariance matrix
 	
 	
@@ -54,6 +54,7 @@ REFERENCE(S):
 [1] http://www.itl.nist.gov/
 [2] http://mathworld.wolfram.com/
 [3] http://mathworld.wolfram.com/TimeSeriesAnalysis.html
+
 
 What is the difference to previous implementations?
 ===================================================
@@ -164,13 +165,9 @@ alternative function definition (except built-in's) with the same name.
 This checks whether all previous functions have been replaced
 
 
-
-	Version 1.23
-	11 June 2002
-	Copyright (C) 2000-2002 by  Alois Schloegl
-	a.schloegl@ieee.org	
+	Version 1.25 	Date: 15 Aug 2002
+	Copyright (C) 2000-2002 by  Alois Schloeg <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
-
 
 
 LICENSE:

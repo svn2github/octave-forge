@@ -1,4 +1,4 @@
-Now requires octave-2.1.40 to work correctly.  
+Now requires octave-2.1.43 to work correctly.  
 Some functions may work with older versions of Octave.  
 Use make -k to build whatever can be built ignoring the rest.
 
@@ -6,6 +6,40 @@ Latest release notes available at:
 
 http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/main/RELEASE-NOTES?rev=HEAD&content-type=text/plain
 
+2003-02-?? for Octave 2.1.43 =================================================
+
+* Updates for octave 2.1.43
+
+* Parallel: Light weight parallel programming paradigm added to main, but
+  flagged NOINSTALL.
+
+* Communications: add galois field functions
+
+* Signal Processing: add convmtx and dftmtx
+
+* Geometry: add (poor) griddata/tsearch support --- please improve!!
+
+* VRML: 
+
+* NaN:
+
+* TSA:
+
+* Sparse: add spstats and x.^a, more robust
+
+* Base functions: add fileparts, filesep, char, dos; improve dlmread
+
+* Function overloading: dispatch() lets you call tf rather than f if the
+  first argument to f is t.
+
+* Octave server: listen() sets up a socket to receive octave commands from
+  a particular host --- please improve!!
+
+Many fixes, compatibility improvements and better Windows support.
+
+Thanks, all!
+
+	
 2002-11-30 for Octave 2.1.40 =================================================
 
 New functions

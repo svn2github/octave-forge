@@ -3,7 +3,7 @@ Section: contrib/math
 Priority: optional
 Maintainer: Rafael Laboissiere <rafael@debian.org>
 Standards-Version: 3.5.10
-Build-Depends: debhelper, perl, libgpcl-dev, octave2.1-headers
+Build-Depends: debhelper, perl, libgpcl-dev, octave2.1-headers (>= 2.1.52)
 
 Package: octave-gpc
 Architecture: any

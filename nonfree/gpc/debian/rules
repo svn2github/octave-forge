@@ -13,8 +13,6 @@ build-stamp:
 	dh_testdir
 
 	./configure --with-octave=/usr/bin/octave2.1 \
-                    --with-mkoctfile=/usr/bin/mkoctfile \
-                    --with-libexec=lib \
                     --prefix=/usr
 
 	# Add here commands to compile the package.
@@ -41,7 +39,7 @@ install: build
 
 	# Add here commands to install the package into debian/tmp.
 	strip -R .note -R .comment gpc_create.oct
-	$(MAKE) install prefix=`pwd`/debian/tmp/usr
+	$(MAKE) install DESTDIR=`pwd`/debian/tmp
 
 
 # Build architecture-independent files here.
@@ -63,13 +61,10 @@ binary-arch: build install
 	dh_installdeb
 	dh_shlibdeps
 
-	( octver=`octave-config --version`                           ; \
-	  next=`echo $$octver                                          \
-	      | perl -ne '/(\d+\.\d+\.)(\d+)/;print($$1,$$2+1)'`     ; \
-	  octpkgver=`echo $$octver | sed 's/\.[0-9]*$$//'`           ; \
-	  pv=octave$$octpkgver                                       ; \
-	  echo "octave:Depends=$$pv (>= $$octver), $$pv (<< $$next)"   \
-	      >> debian/substvars )
+	( octver=`octave-config --version`                             ; \
+	  octpkgver=`echo $$octver | sed 's/\.[0-9]*$$//'`             ; \
+	  pv=octave$$octpkgver                                         ; \
+	  echo "octave:Depends=$$pv (>= $$octver)" >> debian/substvars )
 
 	dh_gencontrol
 	dh_md5sums

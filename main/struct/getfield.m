@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## deftypefn {Built-in Function} {} [@var{v1},...] =
+## @deftypefn {Built-in Function} {} [@var{v1},...] =
 ## getfield (@var{s}, 'k1',...) = [@var{s}.k1,...]
 ## Return selected values from a struct. Provides some compatibility
 ## and some flexibility.

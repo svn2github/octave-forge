@@ -135,7 +135,7 @@ function assert(cond, expected, tol)
       ## Check normal values
       A = A(finite(A)); B=B(finite(B));
       if tol == 0,
-        err = A != B;
+        err = any(A != B);
 	errtype = "values do not match";
       elseif tol >= 0,
 	err = max(abs(A-B));

@@ -23,11 +23,11 @@
 
 // LAPACK 3.0 functions not in libcruft
 extern "C" {
-  extern int F77_FCN (dgtsv, DGTSV)
+  extern int F77_FUNC (dgtsv, DGTSV)
     (const int &n, const int &nrhs, double *l, 
 	  double *d, double *u, double *b, const int &ldb, int *info);
 
-  extern int F77_FCN (dptsv, DPTSV)
+  extern int F77_FUNC (dptsv, DPTSV)
     (const int &n, const int &nrhs, double *d, 
 	  double *e, double *b, const int &ldb, int *info);
 }
@@ -94,7 +94,7 @@ to the cyclic system. See Numerical Recipes, pp 73-75\n\
 	}
 
       int info;
-      F77_FCN (dptsv, DPTSV) (n, nrhs, d.fortran_vec(), e.fortran_vec(), 
+      F77_FUNC (dptsv, DPTSV) (n, nrhs, d.fortran_vec(), e.fortran_vec(), 
 			      b.fortran_vec(), n, &info);
        
       if (info > 0)
@@ -136,7 +136,7 @@ to the cyclic system. See Numerical Recipes, pp 73-75\n\
       z.insert(b, 0, 1);
 
       int info;
-      F77_FCN (dptsv, DPTSV) (n, nrhs+1, d.fortran_vec(), e.fortran_vec(), 
+      F77_FUNC (dptsv, DPTSV) (n, nrhs+1, d.fortran_vec(), e.fortran_vec(), 
 			      z.fortran_vec(), n, &info);
 
       if (info == 0)
@@ -180,7 +180,7 @@ to the cyclic system. See Numerical Recipes, pp 73-75\n\
 	}
 
       int info;
-      F77_FCN (dgtsv, DGTSV) (n, nrhs, l.fortran_vec(), d.fortran_vec(), 
+      F77_FUNC (dgtsv, DGTSV) (n, nrhs, l.fortran_vec(), d.fortran_vec(), 
 			      u.fortran_vec(), b.fortran_vec(), n, &info);
        
       if (info > 0)
@@ -223,7 +223,7 @@ to the cyclic system. See Numerical Recipes, pp 73-75\n\
       z.insert(b, 0, 1);
 
       int info;
-      F77_FCN (dgtsv, DGTSV) (n, nrhs+1, l.fortran_vec(), d.fortran_vec(), 
+      F77_FUNC (dgtsv, DGTSV) (n, nrhs+1, l.fortran_vec(), d.fortran_vec(), 
 			      u.fortran_vec(), z.fortran_vec(), n, &info);
 
       if (info == 0)

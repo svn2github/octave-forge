@@ -460,7 +460,7 @@ void mex::persistent(mxArray* ptr)
 mex* __mex = NULL;
 
 extern "C" {
-  void F77_FCN(mexfunction,MEXFUNCTION)
+  void F77_FUNC(mexfunction,MEXFUNCTION)
     (const int& nargout, mxArray *plhs[], 
      const int& nargin,  mxArray *prhs[]);
   void mexFunction(const int nargout, mxArray *plhs[],
@@ -513,7 +513,7 @@ call_mex(callstyle cs, const octave_value_list& args, const int nargout)
     {
       __mex = &context;
       if (cs == use_fortran)
-	F77_FCN(mexfunction,MEXFUNCTION)(nargout, argout, nargin, argin);
+	F77_FUNC(mexfunction,MEXFUNCTION)(nargout, argout, nargin, argin);
       else
 	mexFunction(nargout, argout, nargin, argin);
     }
@@ -818,7 +818,7 @@ extern "C" {
 // fixed.  It costs and extra function call, but is easier to maintain.
 extern "C" {
 
-  void F77_FCN(mexerrmsgtxt, MEXERRMSGTXT)
+  void F77_FUNC(mexerrmsgtxt, MEXERRMSGTXT)
     (const char *s, const int slen)
     {
       if (slen > 1 || (slen == 1 && s[0] != ' ') ) 
@@ -827,134 +827,134 @@ extern "C" {
       __mex->abort();
     }
 
-  void F77_FCN(mexprintf,MEXPRINTF)
+  void F77_FUNC(mexprintf,MEXPRINTF)
     (const char *s, const int slen)
     {
       mexPrintf("%.*s\n", slen, s);
     }
 
-  double F77_FCN(mexgeteps,MEXGETEPS)() { return mxGetEps(); }
-  double F77_FCN(mexgetinf,MEXGETINF)() { return mxGetInf(); }
-  double F77_FCN(mexgetnan,MEXGETNAN)() { return mxGetNaN(); }
-  int F77_FCN(mexisfinite,MEXISFINITE)(double v) { return mxIsFinite(v); }
-  int F77_FCN(mexisinf,MEXISINF)(double v) { return mxIsInf(v); }
-  int F77_FCN(mexisnan,MEXISNAN)(double v) { return mxIsNaN(v); }
+  double F77_FUNC(mexgeteps,MEXGETEPS)() { return mxGetEps(); }
+  double F77_FUNC(mexgetinf,MEXGETINF)() { return mxGetInf(); }
+  double F77_FUNC(mexgetnan,MEXGETNAN)() { return mxGetNaN(); }
+  int F77_FUNC(mexisfinite,MEXISFINITE)(double v) { return mxIsFinite(v); }
+  int F77_FUNC(mexisinf,MEXISINF)(double v) { return mxIsInf(v); }
+  int F77_FUNC(mexisnan,MEXISNAN)(double v) { return mxIsNaN(v); }
 
   // ====> Array access
-  Pix F77_FCN(mxcreatefull,MXCREATEFULL)
+  Pix F77_FUNC(mxcreatefull,MXCREATEFULL)
     (const int& nr, const int& nc, const int& iscomplex)
     {
       return mxCreateDoubleMatrix(nr,nc,iscomplex);
     }
 
-  void F77_FCN(mxfreematrix,MXFREEMATRIX)
+  void F77_FUNC(mxfreematrix,MXFREEMATRIX)
     (mxArray* &ptr)
     {
       mxDestroyArray(ptr);
     }
 
-  Pix F77_FCN(mxcalloc,MXCALLOC)(const int& n, const int& size)
+  Pix F77_FUNC(mxcalloc,MXCALLOC)(const int& n, const int& size)
     {
       return mxCalloc(n,size);
     }
 
-  void F77_FCN(mxfree,MXFREE)
+  void F77_FUNC(mxfree,MXFREE)
     (const Pix &ptr)
     {
       mxFree(ptr);
     }
   
-  int F77_FCN(mxgetm,MXGETM)
+  int F77_FUNC(mxgetm,MXGETM)
     (const mxArray* &ptr) 
     { 
       return mxGetM(ptr); 
     }
 
-  int F77_FCN(mxgetn,MXGETN)
+  int F77_FUNC(mxgetn,MXGETN)
     (const mxArray* &ptr) 
     { 
       return mxGetN(ptr); 
     }
 
-  Pix F77_FCN(mxgetpi,MXGETPI)
+  Pix F77_FUNC(mxgetpi,MXGETPI)
     (const mxArray* &ptr) 
     {
       return mxGetPi(ptr);
     }
 
-  Pix F77_FCN(mxgetpr,MXGETPR)
+  Pix F77_FUNC(mxgetpr,MXGETPR)
     (const mxArray* &ptr) 
     {
       return mxGetPr(ptr);
     }
 
-  void F77_FCN(mxsetm,MXSETM)
+  void F77_FUNC(mxsetm,MXSETM)
     (mxArray* &ptr, const int& m) 
     { 
       mxSetM(ptr, m); 
     }
 
-  void F77_FCN(mxsetn,MXSETN)
+  void F77_FUNC(mxsetn,MXSETN)
     (mxArray* &ptr, const int& n) 
     { 
       mxSetN(ptr, n);
     }
 
-  void F77_FCN(mxsetpi,MXSETPI)
+  void F77_FUNC(mxsetpi,MXSETPI)
     (mxArray* &ptr, Pix &pi) 
     {
       mxSetPi(ptr, pi);
     }
 
-  void F77_FCN(mxsetpr,MXSETPR)
+  void F77_FUNC(mxsetpr,MXSETPR)
     (mxArray* &ptr, Pix &pr) 
     {
       mxSetPr(ptr, pr);
     }
   
-  int F77_FCN(mxiscomplex,MXISCOMPLEX)
+  int F77_FUNC(mxiscomplex,MXISCOMPLEX)
     (const mxArray* &ptr)
     {
       return mxIsComplex(ptr);
     }
 
-  int F77_FCN(mxisdouble,MXISDOUBLE)
+  int F77_FUNC(mxisdouble,MXISDOUBLE)
     (const mxArray* &ptr)
     {
       return mxIsDouble(ptr);
     }
   
-  int F77_FCN(mxisnumeric,MXISNUMERIC)
+  int F77_FUNC(mxisnumeric,MXISNUMERIC)
     (const mxArray* &ptr)
     {
       return mxIsNumeric(ptr);
     }
   
-  int F77_FCN(mxisfull,MXISFULL)
+  int F77_FUNC(mxisfull,MXISFULL)
     (const mxArray* &ptr)
     {
       return 1 - mxIsSparse(ptr);
     }
   
-  int F77_FCN(mxissparse,MXISSPARSE)
+  int F77_FUNC(mxissparse,MXISSPARSE)
     (const mxArray* &ptr)
     {
       return mxIsSparse(ptr);
     }
   
-  int F77_FCN(mxisstring,MXISSTRING)
+  int F77_FUNC(mxisstring,MXISSTRING)
     (const mxArray* &ptr)
     {
       return mxIsChar(ptr);
     }
 
-  int F77_FCN(mxgetstring,MXGETSTRING)
+  int F77_FUNC(mxgetstring,MXGETSTRING)
     (const mxArray* &ptr, char *str, const int& len)
     {
       return mxGetString(ptr, str, len);
     }
 
-  int F77_FCN(mexcallmatlab,MEXCALLMATLAB)
+  int F77_FUNC(mexcallmatlab,MEXCALLMATLAB)
     (const int& nargout, mxArray** argout, 
      const int& nargin, const mxArray** argin,
      const char* fname,
@@ -967,7 +967,7 @@ extern "C" {
     }
 
   // ======> Fake pointer support
-  void F77_FCN(mxcopyreal8toptr,MXCOPYREAL8TOPTR)
+  void F77_FUNC(mxcopyreal8toptr,MXCOPYREAL8TOPTR)
     (const double *d, const int& prref, const int& len)
     {
       TRACEFN;
@@ -975,7 +975,7 @@ extern "C" {
       for (int i=0; i < len; i++) pr[i] = d[i];
     }
   
-  void F77_FCN(mxcopyptrtoreal8,MXCOPYPTRTOREAL8)
+  void F77_FUNC(mxcopyptrtoreal8,MXCOPYPTRTOREAL8)
     (const int& prref, double *d, const int& len)
     {
       TRACEFN;
@@ -983,7 +983,7 @@ extern "C" {
       for (int i=0; i < len; i++) d[i] = pr[i];
     }
   
-  void F77_FCN(mxcopycomplex16toptr,MXCOPYCOMPLEX16TOPTR)
+  void F77_FUNC(mxcopycomplex16toptr,MXCOPYCOMPLEX16TOPTR)
     (const double *d, int& prref, int& piref, const int& len)
     {
       TRACEFN;
@@ -992,7 +992,7 @@ extern "C" {
       for (int i=0; i < len; i++) pr[i] = d[2*i], pi[i] = d[2*i+1];
     }
   
-  void F77_FCN(mxcopyptrtocomplex16,MXCOPYPTRTOCOMPLEX16)
+  void F77_FUNC(mxcopyptrtocomplex16,MXCOPYPTRTOCOMPLEX16)
     (const int& prref, const int& piref, double *d, const int& len)
     {
       TRACEFN;

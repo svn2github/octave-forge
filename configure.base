@@ -20,14 +20,31 @@ VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_LEVEL
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 
+dnl if mkoctfile doesn't work, then we need the following:
+dnl AC_PROG_CXX
+dnl AC_PROG_F77
+
+dnl Need C compiler regardless so define it in a way that
+dnl makes autoconf happy and we can override whatever we
+dnl need with mkoctfile -p.
+AC_PROG_CC
+
+
+dnl XXX FIXME XXX need tests for -p -c -s in mkoctfile.
+
 dnl *******************************************************************
 dnl Sort out mkoctfile version number and install paths
+
+dnl XXX FIXME XXX latest octave has octave-config so we don't
+dnl need to discover things here.  Doesn't have --exe-site-dir
+dnl but defines --oct-site-dir and --m-site-dir
 
 dnl Check for mkoctfile
 AC_CHECK_PROG(MKOCTFILE,mkoctfile,mkoctfile)
 test -z "$MKOCTFILE" &&	AC_MSG_WARN([no mkoctfile found on path])
 
 AC_SUBST(ver)
+AC_SUBST(subver)
 AC_SUBST(mpath)
 AC_SUBST(opath)
 AC_SUBST(xpath)
@@ -94,7 +111,7 @@ EOF
 
    dnl set the appropriate variables if they are not already set
    ver=`echo $INFOV | sed -e "s/\.//" -e "s/\..*$//"`
-   subver=`echo $INFOV | sed -e "s/^[^.]*.[^.]*.//"`
+   subver=`echo $INFOV | sed -e "s/^[^.]*[.][^.]*[.]//"`
    test -z $mpath && mpath=$INFOM/octave-forge
    test -z $opath && opath=$INFOO/octave-forge
    test -z $xpath && xpath=$INFOX
@@ -102,7 +119,9 @@ fi
 
 dnl *******************************************************************
 
+dnl XXX FIXME XXX should we allow the user to override these?
 dnl C compiler and flags
+AC_MSG_RESULT([retrieving compile and link flags from $MKOCTFILE])
 CC=`$MKOCTFILE -p CC`
 CFLAGS=`$MKOCTFILE -p CFLAGS`
 CPPFLAGS=`$MKOCTFILE -p CPPFLAGS`
@@ -123,15 +142,31 @@ AC_SUBST(FPICFLAGS)
 dnl C++ compiler and flags
 CXX=`$MKOCTFILE -p CXX`
 CXXFLAGS=`$MKOCTFILE -p CXXFLAGS`
-CXXPICFLAGS=`$MKOCTFLIE -p CXXPICFLAGS`
+CXXPICFLAGS=`$MKOCTFILE -p CXXPICFLAGS`
 AC_SUBST(CXX)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(CXXPICFLAGS)
 
-dnl if mkoctfile -p doesn't work, then use the following:
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_F77
+dnl *******************************************************************
+
+dnl Check if F77_FUNC works with MKOCTFILE
+AC_MSG_CHECKING([for F77_FUNC])
+cat > conftest.cc << EOF
+#include <octave/config.h>
+
+int F77_FUNC (hello, HELLO) (const int &n);
+
+EOF
+ac_try="$MKOCTFILE -c conftest.cc"
+if AC_TRY_EVAL(ac_try) ; then
+   AC_MSG_RESULT(yes)
+else
+   dnl "-DHAVE_OCTAVE_2x -s -v" is in Makeconf.base
+   AC_MSG_RESULT(no)
+   MKOCTFILE="$MKOCTFILE -DF77_FUNC=F77_FCN"
+fi
+
+dnl **********************************************************
 
 AC_PROG_LN_S
 AC_PROG_INSTALL
@@ -139,7 +174,8 @@ AC_PROG_RANLIB
 
 dnl Use $(STRIP) in the makefile to strip executables.  If not found, 
 dnl STRIP expands to ':', which in the makefile does nothing.
-if test -z "$STRIP"; then STRIP=strip; fi
+dnl Don't need this for .oct files since mkoctfile handles them directly
+STRIP=${STRIP-strip}
 AC_CHECK_PROG(STRIP,$STRIP,$STRIP,:)
 
 dnl Things needed to link to X11 programs
@@ -160,16 +196,17 @@ fi
 STATUS_MSG="
 
 octave commands will install into the following directories:
-   m-files:     $mpath
-   oct-files:   $opath
-   executables: $xpath
+   m-files:   $mpath
+   oct-files: $opath
+   binaries:  $xpath
 
 shell commands will install into the following directories:
-   shell commands: $bindir
-   man pages:      $mandir
-   libraries:      $libdir
-   include files:  $includedir
+   binaries:  $bindir
+   man pages: $mandir
+   libraries: $libdir
+   headers:   $includedir
 
 octave-forge is configured with
-   mkoctfile: $MKOCTFILE
-   X11 support: $XSTATUS"
+   mkoctfile:	$MKOCTFILE for Octave $subver
+   X11 support:	$XSTATUS"
+

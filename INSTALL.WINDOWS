@@ -29,9 +29,9 @@ PREREQUISITES:
 
 BUILDING
 
-   Download octave-2.1.35.tar.bz2 from www.octave.org
-   tar xvfj octave-2.1.35.tar.bz2
-   cd  octave-2.1.35
+   Download octave-2.1.36.tar.bz2 from www.octave.org
+   tar xvfj octave-2.1.36.tar.bz2
+   cd  octave-2.1.36
    ./configure --prefix=/usr
 
 OBTAIN GNUPLOT COMPONENTS
@@ -41,9 +41,13 @@ OBTAIN GNUPLOT COMPONENTS
    get gp371cyg.zip.
    Unzip the file wgnuplot.exe and put it in /usr/bin
    
-   Get pipe-gnuplot.exe from 
-   http://www.hhs.se/personal/Psoderlind/Software/Software.htm
-   and put in in /usr/bin
+   get gnuplot-3.7.1.tar.gz
+   Compile win/pgnuplot.c
+
+   1. comment out #include <conio.h>
+   2. gcc -o pgnuplot.exe pgnuplot.c -luser32 -s
+   
+   copy pgnuplot.exe to /usr/bin
 
 MODIFY octaverc FILE
 
@@ -55,22 +59,18 @@ $ cat /usr/share/octave/site/m/startup/octaverc
    ## time Octave starts for every user at this site.
    
    # find where cygwin is mounted
-   mount_path= system('mount | grep "on / type"');
-   cut_point = findstr( mount_path, " on / type");
-   mount_path= mount_path( 1:cut_point(1)-1 );
+   mount_path= system('echo -n `cygpath -ws /tmp`');
    mount_path( findstr(mount_path,"\\") ) = "/";
-   
-   putenv('TMPDIR', [ mount_path , "/tmp" ] );
+   putenv('TMPDIR',  mount_path );
    
    clear mount_path;
-   clear cut_point;
    
-   gnuplot_binary ="pipe-gnuplot wgnuplot.exe";
+   gnuplot_binary ="pgnuplot.exe";
    gnuplot_has_multiplot = 1;
 
 BUILD OCTAVE FORGE
 
-1. EDIT /usr/src/octave-2.1.35/src/Makefile
+1. EDIT /usr/src/octave-2.1.36/src/Makefile
 
 A. REPLACE
 
@@ -215,17 +215,22 @@ ln -s $OCTAVEFORGE/main/sparse/sparse_inv.cc
 ln -s $OCTAVEFORGE/main/sparse/sparse_ops.cc
 ln -s $OCTAVEFORGE/main/sparse/sparse_ops.h
 ln -s $OCTAVEFORGE/main/splines/trisolve.cc
+ln -s $OCTAVEFORGE/extra/Windows/grab.cc
+ln -s $OCTAVEFORGE/extra/Windows/grab_win32part.cc
 
 
 3. BUILD OCTAVE AGAIN
 
-cd /usr/src/octave-2.1.35
-make
-make install-strip
+cd /usr/src/octave-2.1.36
+make install
+#make install-strip - doesn't work for some octave subdirectories
+strip /usr/bin/octave*
+find /usr/share/octave -type f | xargs strip
+
 
 4. COPY *.M FILES INTO PLACE
 
-OCTAVEM= /usr/share/octave/2.1.35/m/
+OCTAVEM=/usr/share/octave/2.1.36/m/
 mkdir -p  $OCTAVEM/image
 mkdir -p  $OCTAVEM/integration
 mkdir -p  $OCTAVEM/ode
@@ -249,12 +254,16 @@ mkdir -p  $OCTAVEM/splines
 mkdir -p  $OCTAVEM/statistics
 mkdir -p  $OCTAVEM/strings
 mkdir -p  $OCTAVEM/struct
+mkdir -p  $OCTAVEM/symband
 mkdir -p  $OCTAVEM/time
+mkdir -p  $OCTAVEM/tsa
 
 cp -r $OCTAVEFORGE/extra/Windows/*.m  $OCTAVEM/image
 cp -r $OCTAVEFORGE/extra/integration/*.m  $OCTAVEM/integration
 cp -r $OCTAVEFORGE/extra/ode/*.m  $OCTAVEM/ode
 cp -r $OCTAVEFORGE/extra/testfun/*.m  $OCTAVEM/testfun
+cp -r $OCTAVEFORGE/extra/tsa/*.m  $OCTAVEM/tsa
+cp -r $OCTAVEFORGE/extra/symband/*.m  $OCTAVEM/symband
 cp -r $OCTAVEFORGE/main/comm/*.m  $OCTAVEM/comm
 cp -r $OCTAVEFORGE/main/control/*.m  $OCTAVEM/control
 cp -r $OCTAVEFORGE/main/ident/*.m  $OCTAVEM/ident
@@ -278,15 +287,23 @@ cp -r $OCTAVEFORGE/main/time/*.m  $OCTAVEM/time
 
 GENERATE CYGWIN PACKAGE
 
-tar cvfj octave-2.1.35-gnuplot-octaveforge.tar.bz2 \
-         /usr/bin/octave* \
-         /usr/bin/mkoctfile* \
-         /usr/bin/pipe-gnuplot.exe \
+VER=2.1.36
+tar cvfj octave-$VER-gnuplot-octaveforge.tar.bz2 \
+         /usr/bin/octave \
+         /usr/bin/octave-$VER* \
+         /usr/bin/octave-bug \
+         /usr/bin/octave-bug-$VER* \
+         /usr/bin/octave-config \
+         /usr/bin/octave-config-$VER* \
+         /usr/bin/mkoctfile \
+         /usr/bin/mkoctfile-$VER* \
+         /usr/bin/pgnuplot.exe \
          /usr/bin/wgnuplot.exe \
          /usr/info/octave.info* \
          /usr/man/man1/octave* \
-         /usr/share/octave/ \
-         /usr/doc/octave-2.1.35/
+         /usr/share/octave/site/ \
+         /usr/share/octave/$VER/ \
+         /usr/doc/octave-$VER/
 
 
 ## NOTES: These *.cc files are not included in this build
@@ -355,4 +372,43 @@ nonfree/splines/gcvspl.cc
   - I don't consider these licenses GPL compatible - so they
     can't be linked to octave
 
+## NOTES: These directories of *m files are not included
+
+extra/NaN
+- overwrites octave stat functions - do we want this
+extra/civil
+- too specialized? seems perhaps incomplete
+extra/engine
+- won't work without DLD
+extra/fake-sparse
+- we have real sparse
+extra/integration/test
+extra/integration/testfun
+- I think the test functions aren't necessary for the install
+extra/linear-algebra
+- All *.cc files
+extra/mex
+- won't work without DLD
+extra/patches
+- not applied for this package
+extra/pdb
+extra/pdb/bin
+extra/pdb/data
+- too specialized?
+extra/perl
+- too specialized? - needs to be installed into perl
+extra/symband
+- install except Example* files
+extra/tk_octave
+- won't work without DLD?
+extra/ver20
+- not for 2.1.* build
+main/audio
+main/audio/bin
+main/audio/data
+- can't make audio work under cygwin - yet
+main/optim/doc
+main/symbolic
+main/symbolic/doc
+- looks like quite a bit of work - later ...
 

@@ -7,7 +7,7 @@
 ##   and then editted.  
 ##
 ##   If name is the name of a function defined in the interpreter but 
-##   not in an m-file, then an m-file will be created in FUNCTION_HOME
+##   not in an m-file, then an m-file will be created in HOME
 ##   to contain that function along with its current definition.  
 ##
 ##   If name.cc is specified, then it will search for name.cc in the
@@ -25,8 +25,13 @@
 ##   is available.  If you are editting a .cc file, you will need
 ##   to mkoctfile name.cc before the definition will be available.
 ##
-## The following state variables are referenced.  You may want to override 
-## these in your .octaverc using "edit FIELD VALUE".
+## edit field value
+##   Set the value for an edit control field.
+##
+## edit get field
+##   Return the value for an edit control field.
+##
+## The following control fields are used:
 ##
 ## editor
 ##   This is the editor to use to modify the functions.  By default it uses
@@ -71,27 +76,32 @@
 
 ## PKG_ADD: mark_as_command edit
 
-function edit(file,state)
+function ret = edit(file,state)
   ## pick up globals or default them
-  persistent FUNCTION_EDITOR = [ EDITOR, " %s" ];
-  persistent FUNCTION_HOME = [ getenv("HOME"), "/octave" ];
-  persistent FUNCTION_AUTHOR = getpwuid(getuid).gecos;
-  persistent FUNCTION_EMAIL = [];
-  persistent FUNCTION_LICENSE = "GPL";
+  persistent FUNCTION = struct ("EDITOR", [ EDITOR, " %s" ],
+  				"HOME", [ getenv("HOME"), "/octave" ],
+  				"AUTHOR", getpwuid(getuid).gecos,
+  				"EMAIL",  [],
+  				"LICENSE",  "GPL");
   mlock; # make sure the state variables survive "clear functions"
 
   if (nargin == 2)
     switch toupper(file)
     case 'EDITOR'
-    	FUNCTION_EDITOR=state;
+    	FUNCTION.EDITOR=state;
     case 'HOME'
-    	FUNCTION_HOME=state;
+        if !isempty(state) && state(1) == '~'
+	  state = [ getenv("HOME"), state(2:end) ];
+	endif
+    	FUNCTION.HOME=state;
     case 'AUTHOR'
-    	FUNCTION_AUTHOR=state;
+    	FUNCTION.AUTHOR=state;
     case 'EMAIL'
-    	FUNCTION_EMAIL=state;
+    	FUNCTION.EMAIL=state;
     case 'LICENSE'
-    	FUNCTION_LICENSE=state;
+    	FUNCTION.LICENSE=state;
+    case 'GET'
+        ret = FUNCTION.(toupper(state));
     otherwise
     	error('expected "edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE val"');
     end
@@ -100,7 +110,7 @@ function edit(file,state)
 
   ## start the editor without a file if no file is given
   if nargin < 1
-    system(['cd "',FUNCTION_HOME,'" ; ',sprintf(FUNCTION_EDITOR,"")]);
+    system(['cd "',FUNCTION.HOME,'" ; ',sprintf(FUNCTION.EDITOR,"")]);
     return
   endif
 
@@ -126,23 +136,23 @@ function edit(file,state)
       fclose(fid);
     else
       from = path;
-      path = [ FUNCTION_HOME, from(rindex(from,"/"):length(from)) ] ;
+      path = [ FUNCTION.HOME, from(rindex(from,"/"):length(from)) ] ;
       system (sprintf("cp '%s' '%s'", from, path));
     endif
-    system(sprintf(FUNCTION_EDITOR, ["'", path, "'"]));
+    system(sprintf(FUNCTION.EDITOR, ["'", path, "'"]));
     return
   endif
 
   ## if editing something other than a m-file or an oct-file, just
   ## edit it.
-  path = [ FUNCTION_HOME, "/", file ];
+  path = [ FUNCTION.HOME, "/", file ];
   idx = rindex(file,'.');
   name = file(1:idx-1);
   ext = file(idx+1:length(file));
   switch (ext)
     case { "cc", "m" } 0;
     otherwise
-      system(sprintf(FUNCTION_EDITOR, ["'", path, "'"]));
+      system(sprintf(FUNCTION.EDITOR, ["'", path, "'"]));
       return;
   endswitch
       
@@ -150,7 +160,7 @@ function edit(file,state)
   ## template and edit it.
 
   ## guess the email name if it was not given.
-  if (isempty(FUNCTION_EMAIL))
+  if (isempty(FUNCTION.EMAIL))
     host=getenv("HOSTNAME");
     if isempty(host), 
       host = system("uname -n");
@@ -158,25 +168,25 @@ function edit(file,state)
       if !isempty(host) host = host(1:length(host)-1); endif
     endif
     if isempty(host)
-      FUNCTION_EMAIL = " ";
+      FUNCTION.EMAIL = " ";
     else
-      FUNCTION_EMAIL = [ "<", getpwuid(getuid).name, "@", host, ">" ];
+      FUNCTION.EMAIL = [ "<", getpwuid(getuid).name, "@", host, ">" ];
     endif
   endif
     
   ## fill in the revision string
   now = localtime(time);
-  revs = [ strftime("%Y-%m-%d",now), " ", FUNCTION_AUTHOR, " ", ...
-	  FUNCTION_EMAIL, "\n* Initial revision" ];
+  revs = [ strftime("%Y-%m-%d",now), " ", FUNCTION.AUTHOR, " ", ...
+	  FUNCTION.EMAIL, "\n* Initial revision" ];
 
   ## fill in the copyright string
-  copyright = strftime(["Copyright (C) %Y ", FUNCTION_AUTHOR], now);
+  copyright = strftime(["Copyright (C) %Y ", FUNCTION.AUTHOR], now);
 
   ## fill in the author tag field
-  author = [ "Author: ", FUNCTION_AUTHOR, " ", FUNCTION_EMAIL ];
+  author = [ "Author: ", FUNCTION.AUTHOR, " ", FUNCTION.EMAIL ];
   
   ## fill in the header
-  uclicense=toupper(FUNCTION_LICENSE);
+  uclicense=toupper(FUNCTION.LICENSE);
   switch uclicense
     case "GPL"
       head = [ copyright, "\n\n", "\
@@ -228,7 +238,7 @@ SUCH DAMAGE.\
 	      revs ];
     otherwise
       head = "";
-      tail = [ copyright, "\n\n", FUNCTION_LICENSE, "\n", ...
+      tail = [ copyright, "\n\n", FUNCTION.LICENSE, "\n", ...
 	      author, "\n\n", revs ];
   endswitch
     
@@ -281,6 +291,6 @@ SUCH DAMAGE.\
   fclose(fid);
 
   ## Finally we are ready to edit it!
-  system(sprintf(FUNCTION_EDITOR, ["'", path, "'"]));
+  system(sprintf(FUNCTION.EDITOR, ["'", path, "'"]));
 
 endfunction

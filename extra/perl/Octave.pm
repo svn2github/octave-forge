@@ -123,17 +123,23 @@ sub _validate
   my $o = shift;
 
   my $switches= "-qfH";
+  my $octave_interpreter_bin;
+
+  $octave_interpreter_bin= 'octave' # _EDITLINE_MARKER_
+     unless $octave_object->{INTERP};
+
+  $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
+     if $ENV{PERL_INLINE_OCTAVE_BIN};
+
   while (@_) {
      my ($key, $value) = (shift, shift) ;
      if ($key eq 'OCTAVE_BIN'){
-         $octave_object->{INTERP} = "$value $switches ";
+         $octave_interpreter_bin = $value;
      } 
 #    print "$key--->$value\n";
   }
-  $octave_object->{INTERP} = "$ENV{PERL_INLINE_OCTAVE_BIN} $switches "
-     if $ENV{PERL_INLINE_OCTAVE_BIN};
-  $octave_object->{INTERP} = "octave $switches "
-     unless exists $octave_object->{INTERP};
+
+  $octave_object->{INTERP} = "$octave_interpreter_bin $switches ";
   $octave_object->{MARKER} = "-9Ahv87uhBa8l_8Onq,zU9-"
      unless exists $octave_object->{MARKER};
 }   
@@ -556,8 +562,8 @@ TODO LIST:
        Inline::Octave::interpret(0, $code );
 
 $Log$
-Revision 1.9  2001/11/19 03:13:37  aadler
-fixes for multifiles, nargin/nargout tests, operator overloading
+Revision 1.10  2001/11/20 02:38:05  aadler
+fix for select octave path in Makefile.PL
 
 Revision 1.8  2001/11/18 03:29:06  aadler
 bug in fread fix - add \n

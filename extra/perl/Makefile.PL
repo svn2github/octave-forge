@@ -47,7 +47,9 @@ while (not $octave_validated) {
 
    open(OCTAVE, ">Octave.pm") or die "Can't open Octave.pm for writing" ;
    foreach my $line (@lines) {
-      $line =~ s/(\$o->{ILSM}->{INTERP} = \")octave +-qf/$1$octave -qf/;
+      $line =~ 
+         s{($octave_interpreter_bin\s*=\s*)'.+?'(\s*#\s*_EDITLINE_MARKER_)}
+          {$1\'$octave\'$2};
       print OCTAVE $line ;
    }
    close(OCTAVE) ;

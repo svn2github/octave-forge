@@ -41,7 +41,7 @@ else				# "x", "P1", ...
       end
       i++;
     end
-    argstr = sprintf ("%s,",n,all_va_args);
+    argstr = sprintf ("%s,",n,varargin{:});
   end
   argstr = argstr(1:length(argstr)-1);
 end

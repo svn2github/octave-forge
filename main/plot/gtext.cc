@@ -25,21 +25,22 @@
 using namespace std;
 
 DEFUN_DLD (gtext, args, ,
-	   "usage: [res] = gtext (\"text\")\n"
+	   "-*- texinfo -*-\n"
+	   "@deftypefn {Function File} {[@var{res}] =} gtext (@var{text})\n"
 	   "\n"
-           "Place text on the current graph at the position indicated by a mouse click.\n"
+           "Place @var{text} on the current graph at the position indicated by a mouse click.\n"
            "Use left button for left-justified text, middle button for centered\n"
            "text, or right button for right-justified text. Press any key to abort.\n"
            "\n"
-           "I'm using screen coordinates rather than graph\n"
+           "@var{gtext} uses screen coordinates rather than graph\n"
            "coordinates to position the text, so expect it to shift from screen\n"
            "to print version.  If you want a good solution, get the mouse support\n"
            "patches for gnuplot.\n"
            "\n"
 	   "res will be 1 if the operation is successful, otherwise it will be 0.\n"
 	   "\n"
-           "Note that gtext() doesn't work with multiplot().") 
-{
+           "Warning: @var{gtext}() doesn't work with @var{multiplot}().\n"
+	   "@end deftypefn") {
   int nargin = args.length ();
   if (nargin != 1) {
     print_usage ("gtext");

@@ -77,14 +77,18 @@ Window find_x11_window(Display *display, Window top, std::string name)
   }
 
   /* If not, recursively check all children */
-  if (!XQueryTree(display, top, &root, &parent, &children, &N))
+  if (!XQueryTree(display, top, &root, &parent, &children, &N)) {
+    XFree(window_name);
     return 0;
+  }
+  
   found = 0;
   for (i=0; i < N; i++) {
     found = find_x11_window(display, children[i], name);
     if (found) break;
   }
   XFree(children);
+  XFree(window_name);
   return found;
 }
 
@@ -144,6 +148,10 @@ int init_gwindow (gwindow &gw, string wname, const char* const func)
   gw.xorigin = strtod (st.c_str(), &second);
   gw.yorigin = strtod (second+1, NULL);
 
+  /* now grab the keyboard on window to avoid gnuplot event */
+//   XGrabKeyboard (gw.display, gw.window,
+//                  False, GrabModeSync, GrabModeSync, CurrentTime);
+
   return 1;
 }
 
@@ -153,11 +161,14 @@ int init_gwindow (gwindow &gw, string wname, const char* const func)
 
 void close_gwindow (gwindow &gw)
 {
+//   XUngrabKeyboard (gw.display, CurrentTime);
+
   /* Stop watching for key/button press (among others) */
   XSelectInput (gw.display, gw.window, 0);
 
   /* Restore cursor */
   XUndefineCursor (gw.display, gw.window);
+   
   XCloseDisplay (gw.display);
 }
 
@@ -206,7 +217,7 @@ int get_area_point (gwindow &gw, MArray<int> &x, MArray<int> &y)
 
   /* Watch for key/button press (among others) */
   XSelectInput (gw.display, gw.window, ButtonPressMask|KeyPressMask);
-
+  
   /* First point */
   XEvent event;
   XNextEvent (gw.display, &event);
@@ -247,16 +258,22 @@ int get_area_point (gwindow &gw, MArray<int> &x, MArray<int> &y)
 		      (y(1) < y(0)) ? y(1) : y(0),
 		      abs (x(1) - x(0))+1,
 		      abs (y(1) - y(0))+1);
-    
+   
     switch (event.type) {
     case ButtonPress:
+      
+      XFreeGC(gw.display, gc);
+      
       /* Check button and quit */
       x(1) = event.xbutton.x;
       y(1) = event.xbutton.y;
+      
+      XFlush(gw.display);
       return (event.xbutton.button == 1) ? 1 : -1;
       break;
       
     case MotionNotify:
+    
       /* Draw new rectangle */
       x(1) = event.xmotion.x;
       y(1) = event.xmotion.y;
@@ -269,12 +286,19 @@ int get_area_point (gwindow &gw, MArray<int> &x, MArray<int> &y)
       break;
 
     case KeyPress:
+
+      XFreeGC(gw.display, gc);
+
       /* Quit and send key code */
+      XFlush(gw.display);
       return 0;
       break;
     }
   }
 
+  XFreeGC(gw.display, gc);
+
+  XFlush(gw.display);
   return -1;
 }
 
@@ -342,7 +366,8 @@ ColumnVector guess_border (gwindow &gw)
   axis(3) = (y1 < y2) ? y2 : y1;
   
   // Freed image
-  XFree (image);
+  XDestroyImage (image);
+
 
   return axis;
 }

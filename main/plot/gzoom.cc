@@ -23,13 +23,22 @@
 using namespace std;
 
 DEFUN_DLD (gzoom, args, ,
-	   "usage: gzoom()\n"
+	   "-*- texinfo -*-\n"
+	   "@deftypefn {Function File} {} gzoom()\n"
 	   "Use mouse controls to zoom the current gnuplot graph.\n"
+	   "\n"
 	   "Controls are:\n"
-	   " * Use left button to zoom on an area.\n"
-	   " * Use right button to zoom back on a point.\n"
-	   " * Use middle button to quit and keep current axis settings.\n"
-	   " * Press any key to quit and recover old axis setting") {
+	   "@table @asis\n"
+	   "@item\n"
+	   "  Use left button to zoom on an area.\n"
+	   "@item\n"
+	   "  Use right button to zoom back on a point.\n"
+	   "@item\n"
+	   "  Use middle button to quit and keep current axis settings.\n"
+	   "@item\n"
+	   "  Press any key to quit and recover old axis setting\n"
+	   "@end table\n"
+           "@end deftypefn") {
 
   /* Ask gnuplot for current figure */
   std::string name = find_gnuplot_window ("gzoom");

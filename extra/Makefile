@@ -14,10 +14,14 @@ all: $(BUILDDIRS)
 
 install: $(BUILDDIRS)
 	@test -z "$(NOINSTALLDIRS)" || echo skipping $(NOINSTALLDIRS)
+ifeq ($(INSTALLDIRS),)
+	@echo intalling no packages
+else
 	@for f in $(INSTALLDIRS) ; do \
-	    echo installing $$f... ; \
-	    ../$(INSTALLOCT) $$f $(MPATH)/$$f $(OPATH) $(XPATH) ; \
-	done
+            echo installing $$f... ; \
+            ../$(INSTALLOCT) $$f $(MPATH)/$$f $(OPATH) $(XPATH) ; \
+        done
+endif
 else
 all:
 	@echo not yet configured

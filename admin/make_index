@@ -157,7 +157,14 @@ if ( $summary ) {
 	foreach my $cat ( sort keys %{$index_by_TB_cat{$TB}} ) {
 	    print "$cat\n";
 	    foreach my $func ( sort @{$index_by_TB_cat{$TB}{$cat}} ) {
-		my $entry = sprintf("%-13s %s",$func,$function_description{$func});
+		my $desc;
+		if ( ! defined $function_description{$func} ) {
+		   $desc = "<missing>";
+		}
+		else {
+		   $desc = $function_description{$func}
+		}
+		my $entry = sprintf("%-13s %s",$func,$desc);
 		print wrap("","\t\t","  $entry"), "\n";
 	    }
 	}
@@ -174,7 +181,7 @@ else {
 
 
 if (@uncategorized) {
-    print scalar(@uncategorized), " uncategorized functions ";
+    print "\n", scalar(@uncategorized), " uncategorized functions ";
     print "(out of ", $n_functions, " total)\n";
     my $rs = $,; $, = "\n";
     print sort(@uncategorized); $, = $rs;

@@ -6,6 +6,7 @@ Generate sparse matrix
  sprandsym 
  spdiags 
  spconvert 
+ spvcat sphcat
 Manipulate sparse matrices
  sparse issparse 
  full
@@ -25,5 +26,6 @@ Linear algebra
 Statistics
  spsum
  spstats
+ spabs
 Test
  fem_test sp_test

@@ -76,6 +76,7 @@ Variables
 Functions
  what 
  type 
+ dispatch
  edit 
  open 
  lookfor 
@@ -111,6 +112,7 @@ Environment
  unix
  web 
  computer 
+ listen
  isieee
  isunix
  system
@@ -850,6 +852,7 @@ File operations
  prefdir 
  rename link unlink symlink readlink 
  mkfifo umask stat lstat
+ mark_for_deletion
 Directory operations
  cd pwd ls dir
  filesep 

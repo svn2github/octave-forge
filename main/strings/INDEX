@@ -47,6 +47,7 @@ Operations
  do_string_escapes
  undo_string_escapes
  strappend
+ strsort
 Conversion
  toascii setstr
  num2str com2str str2mat

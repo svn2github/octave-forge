@@ -7,6 +7,7 @@ Minimization
  lp
  fmin fminbnd
  line_min
+ fmins adsmax mdsmax nmsmax
 Data fitting
  expfit expdemo
  wpolyfit wpolyfitdemo 

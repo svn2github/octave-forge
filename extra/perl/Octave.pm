@@ -7,7 +7,7 @@
 package Inline::Octave;
 
 
-$VERSION = '0.14';
+$VERSION = '0.15';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
@@ -131,15 +131,18 @@ sub _validate
   $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
      if $ENV{PERL_INLINE_OCTAVE_BIN};
 
+  $octave_object->{INTERP} = "$octave_interpreter_bin $switches " 
+     unless $octave_object->{INTERP};
+
   while (@_) {
      my ($key, $value) = (shift, shift) ;
      if ($key eq 'OCTAVE_BIN'){
-         $octave_interpreter_bin = $value;
+        $octave_object->{INTERP} = "$value $switches ";
      } 
 #    print "$key--->$value\n";
   }
 
-  $octave_object->{INTERP} = "$octave_interpreter_bin $switches ";
+
   $octave_object->{MARKER} = "-9Ahv87uhBa8l_8Onq,zU9-"
      unless exists $octave_object->{MARKER};
 }   
@@ -414,7 +417,7 @@ sub store_size
    my $varname= $self->name;
    my $code = "disp([size($varname), is_complex($varname)] )";
    my $size=  Inline::Octave::interpret(0, $code );
-   croak "Problem constructing Matrix" unless $size =~ /^ +(\d+) +(\d+) +[01]/;
+   croak "Problem constructing Matrix" unless $size =~ /^ +(\d+) +(\d+) +([01])/;
    $self->{rows}= $1;
    $self->{cols}= $2;
    $self->{complex}= $3;
@@ -521,20 +524,83 @@ sub transpose
    return $v;
 }  
 
-# run_math_code ( $code, $val )
+#
+# create methods for the various math functions
+#
+{
+   my %methods= (
+      abs           => 1, acos          => 1, acosh         => 1,
+      all           => 1, angle         => 1, any           => 1,
+      asin          => 1, asinh         => 1, atan          => 1,
+      atan2         => 1, atanh         => 1, ceil          => 1,
+      conj          => 1, cos           => 1, cosh          => 1,
+      cumprod       => 1, cumsum        => 1, diag          => 1,
+      erf           => 1, erfc          => 1, exp           => 1,
+      eye           => 1, finite        => 1, fix           => 1,
+      floor         => 1, gamma         => 1, gammaln       => 1,
+      imag          => 1, is_bool       => 1, is_complex    => 1,
+      is_global     => 1, is_list       => 1, is_matrix     => 1,
+      is_stream     => 1, is_struct     => 1, isalnum       => 1,
+      isalpha       => 1, isascii       => 1, iscell        => 1,
+      iscntrl       => 1, isdigit       => 1, isempty       => 1,
+      isfinite      => 1, isieee        => 1, isinf         => 1,
+      islogical     => 1, isnan         => 1, isnumeric     => 1,
+      isreal        => 1, length        => 1, lgamma        => 1,
+      linspace      => 2, log           => 1, log10         => 1,
+      ones          => 1, prod          => 1, real          => 1,
+      round         => 1, sign          => 1, sin           => 1,
+      sinh          => 1, size          => 2, sqrt          => 1,
+      sum           => 1, sumsq         => 1, tan           => 1,
+      tanh          => 1, zeros         => 1,
+   );
+
+   for my $meth ( keys %methods ) {
+      no strict 'refs';
+      my $nargout= $methods{$meth};
+      *$meth = sub {
+         my $code= "[";
+
+         my @v;
+         foreach (1..$nargout) {
+            my $v= new Inline::Octave::Matrix( $retcode_value );
+            $code.= $v->name.",";
+            push @v,$v;
+         }
+         chop ($code); #remove last ','
+         $code.= "]= $meth (";
+
+         my @a;
+         foreach (@_) {
+            my $a= new Inline::Octave::Matrix( $_ );
+            $code.= $a->name.",";
+            push @a, $a;
+         }
+         chop ($code); #remove last ','
+         $code.= ");";
+
+         run_math_code( $code, @v);
+         return @v if wantarray();
+         return $v[0];
+      }
+   }
+}
+
+# run_math_code ( $code, $val1, $val2 ... )
 # dies on error, no return
 sub run_math_code
 {
    my $code= shift;
-   my $v   = shift;
-   my $vname= $v->name;
+   my @v   = @_;
+   my $vname= $v[0]->name;
 
    $runcode= "$code  disp (size($vname)==[3,1] && ".
              " all($vname==$retcode_string') );\n";
    my $retval= Inline::Octave::interpret(0, $runcode );
 
    if ($retval == 0) {
-      $v->store_size();
+      foreach my $v (@v) {
+         $v->store_size();
+      }
    } else {
       croak "Error performing operation $code";
    }
@@ -562,6 +628,9 @@ TODO LIST:
        Inline::Octave::interpret(0, $code );
 
 $Log$
+Revision 1.11  2001/11/21 03:20:54  aadler
+fixed make bug, added method support for IOMs
+
 Revision 1.10  2001/11/20 02:38:05  aadler
 fix for select octave path in Makefile.PL
 
@@ -648,6 +717,20 @@ I'm planning to get back to that eventually ...
 
 =head1 INSTALLATION
 
+=head2 Requirements
+
+  perl 5.005  or newer
+  Inline-0.40 or newer
+  octave 2.0  or newer
+
+=head2 Platforms
+
+  I've succeded in getting this to work on win2k (activeperl), 
+  and linux (Mandrake 8.0, Redhat 6.2, Debian 2.0). Please
+  send me tales of success or failure on other platforms
+
+=head2 Install Proceedure  
+
 You need to install the Inline module from CPAN. This provides
 the infrastructure to support all the Inline::* modules.
 
@@ -685,9 +768,9 @@ and then calculate mathematical results (using octave).
 
 Why not use PDL?
 
-1) Because there's lots of existing code in Octave/Matlab.
-2) Because there's functionality in Octave that's not in PDL.
-3) Because there's more than one way to do it.
+   1) Because there's lots of existing code in Octave/Matlab.
+   2) Because there's functionality in Octave that's not in PDL.
+   3) Because there's more than one way to do it.
 
 =head1 Using Inline::Octave
 
@@ -805,11 +888,50 @@ For example, given $var above, we can calculate:
    $v3=  $var x [ [1],[2] ];
 
 The relation between Perl and Octave operators is:   
+
       '+' => '+',
       '-' => '-',
       '*' => '.*',
       '/' => './',
       'x' => '*',
+
+=head1 Methods on Inline::Octave::Matrix -es
+
+Methods can be called on Inline::Octave::Matrix
+variables, and the underlying octave function is called.
+
+   my $b= new Inline::Octave::Matrix( 1 );
+   $s= 4 * ($b->atan());
+   print $s->as_scalar;
+
+Is a labourious way to calculate PI.
+
+The following methods are available, the corresponding
+number is the output args available (nargout).
+
+      abs       => 1    acos      => 1    acosh      => 1
+      all       => 1    angle     => 1    any        => 1
+      asin      => 1    asinh     => 1    atan       => 1
+      atan2     => 1    atanh     => 1    ceil       => 1
+      conj      => 1    cos       => 1    cosh       => 1
+      cumprod   => 1    cumsum    => 1    diag       => 1
+      erf       => 1    erfc      => 1    exp        => 1
+      eye       => 1    finite    => 1    fix        => 1
+      floor     => 1    gamma     => 1    gammaln    => 1
+      imag      => 1    is_bool   => 1    is_complex => 1
+      is_global => 1    is_list   => 1    is_matrix  => 1
+      is_stream => 1    is_struct => 1    isalnum    => 1
+      isalpha   => 1    isascii   => 1    iscell     => 1
+      iscntrl   => 1    isdigit   => 1    isempty    => 1
+      isfinite  => 1    isieee    => 1    isinf      => 1
+      islogical => 1    isnan     => 1    isnumeric  => 1
+      isreal    => 1    length    => 1    lgamma     => 1
+      linspace  => 2    log       => 1    log10      => 1
+      ones      => 1    prod      => 1    real       => 1
+      round     => 1    sign      => 1    sin        => 1
+      sinh      => 1    size      => 2    sqrt       => 1
+      sum       => 1    sumsq     => 1    tan        => 1
+      tanh      => 1    zeros     => 1
 
 =head1 PERFORMANCE
 

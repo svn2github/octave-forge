@@ -1,6 +1,6 @@
 function ACF=rc2ac(RC,R0)
-% converts reflection coefficients to autocorrelation sequence
-% [R] = rc2ac(K,R0);
+% converts reflection coefficients to autocorrelation sequence
+% [R] = rc2ac(RC,R0);
 %
 % see also ACOVF ACORF AR2RC RC2AR DURLEV AC2POLY, POLY2RC, RC2POLY, RC2AC, AC2RC, POLY2AC
 % 
@@ -25,6 +25,9 @@ function ACF=rc2ac(RC,R0)
 % Boston, MA  02111-1307, USA.
 
 
+fprintf(2,'ERROR: RC2AC does not work yet. Sorry\n');
+return;
+
 if all(size(RC)>1,
         fprintf(2,'Error RC2AC: "K" must be a vector\n');
         return;
@@ -36,7 +39,10 @@ if ~exist('rc2ar','file')
         return;
 end;
 
-[AR,RC,PE,ACF] = rc2ar(RC(:).');
+[AR,RC,PE] = rc2ar(RC(:).');
+
+ACF=cumprod(ones(size(RC))-RC.^2,2);
+ACF = ACF./ACF(:,ones(1,size(ACF,2)));
 
 if nargin>1
         ACF=ACF*R0;

@@ -25,11 +25,8 @@ function ACF=poly2ac(a,efinal)
 % Boston, MA  02111-1307, USA.
 
 
-if all(size(a)>1,
-        fprintf(2,'Error POLY2AC: "a" must be a vector\n');
-        return;
-end;
-a=a(:).';
+fprintf(2,'ERROR: POLY2AC does not work yet. Sorry\n');
+return;
 
 mfilename='POLY2AC';
 if ~exist('rc2ar','file')
@@ -37,9 +34,18 @@ if ~exist('rc2ar','file')
         return;
 end;
 
-if nargin<2, efinal=1; end;
+[AR,RC,PE] = ar2rc(poly2ar(a));
+%[AR,RC,PE,ACF] = rc2ar(RC);
 
-[AR,RC,PE] = ar2rc(-a(2:length(a))/a(1));
-[AR,RC,PE,ACF] = rc2ar(RC);
+if nargin<2, efinal=PE(:,size(PE,2)); end;
 
-ACF=ACF*efinal*PE(1)/PE(length(PE));
+ACF=zeros(size(a));
+ACF(:,1) = 1;
+for k=2:size(a,2),
+        ACF(:,k)=sum(AR(:,1:k-1).*ACF(:,k-(1:k-1)),2);
+end;
+R0=(sum(AR(:,1:k-1).*ACF(:,2:size(ACF,2)),2)+1).*efinal; %PE(:,size(PE,2));
+
+ACF = ACF.*R0(:,ones(1,size(ACF,2)));
+
+%ACF=ACF*efinal*PE(1)/PE(length(PE));

@@ -12,7 +12,7 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with this program; if not, write to the Free Software
-** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
+** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 */
 
 /*
@@ -29,7 +29,7 @@
 
 #include "config.h"
 
-extern "C" { 
+extern "C" {
   #include "qhull/qhull_a.h"
 }
 
@@ -39,7 +39,7 @@ extern "C" {
 #endif
 #include <octave/oct.h>
 
-char qh_version[] = "delaunayn.oct 08. August 2000";
+char qh_version[] = "delaunayn.oct 2003-12-14";
 FILE *outfile = stdout;
 FILE *errfile = stderr;
 char flags[250];
@@ -64,7 +64,7 @@ may be useful for joggling the input to cope with non-simplicial cases.\n\
 {
   octave_value_list retval;
   retval(0) = 0.0;
-    
+
   int nargin = args.length();
   if (nargin < 1 || nargin > 2) {
     print_usage ("delaunayn(p,[opt])");
@@ -80,13 +80,13 @@ may be useful for joggling the input to cope with non-simplicial cases.\n\
   }
   else
     options = "";
-  
+
   Matrix p(args(0).matrix_value());
 
   const int dim = p.columns();
   const int n = p.rows();
 
-  if (n > dim) {    
+  if (n > dim) {
 
     p = p.transpose();
     double *pt_array = p.fortran_vec();
@@ -125,7 +125,7 @@ may be useful for joggling the input to cope with non-simplicial cases.\n\
     int curlong, totlong;
     qh_memfreeshort (&curlong, &totlong);
       //free short memory and memory allocator
-    
+
     if (curlong || totlong) {
 	warning("delaunay: did not free %d bytes of long memory (%d pieces)",
 	        totlong, curlong);
@@ -136,7 +136,7 @@ may be useful for joggling the input to cope with non-simplicial cases.\n\
     RowVector vec(n);
     for (int i=0;i<n;i++) {
       vec(i)=i+1.0;
-    } 
+    }
     retval(0) = vec;
   }
   return retval;

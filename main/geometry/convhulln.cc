@@ -12,7 +12,7 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with this program; if not, write to the Free Software
-** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
+** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 */
 
 /*
@@ -21,7 +21,7 @@
 * Use warning(...) function rather than writing to cerr
 */
 
-extern "C" { 
+extern "C" {
 #include "qhull/qhull_a.h"
 }
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,7 @@ extern "C" {
 #endif
 #include <octave/oct.h>
 
-char qh_version[] = "convhulln.oct 08. August 2000";
+char qh_version[] = "convhulln.oct 2003-12-14";
 char flags[250];
 const char *options;
 
@@ -51,7 +51,7 @@ documentation for the available options.)\n\n\
     print_usage ("convhulln(p,[opt])");
     return retval;
   }
-  
+
   if (nargin == 2) {
     if ( ! args (1).is_string () ) {
       error ("convhulln: second argument must be a string");
@@ -61,29 +61,29 @@ documentation for the available options.)\n\n\
   }
   else
     options = "";
-  
+
   Matrix p(args(0).matrix_value());
-  
+
   const int dim = p.columns();
   const int n = p.rows();
   p = p.transpose();
-  
+
   double *pt_array = p.fortran_vec();
-  
+
   boolT ismalloc = False;
 
   // hmm  lot's of options for qhull here
   sprintf(flags,"qhull s Qt Tcv %s",options);
 
   if (!qh_new_qhull (dim,n,pt_array,ismalloc,flags,NULL,stderr)) {
-    
+
     // If you want some debugging information replace the NULL
     // pointer with stdout
-    
+
     vertexT *vertex,**vertexp;
     facetT *facet;
     unsigned int n = qh num_facets;
-    
+
     Matrix idx(n,dim);
     qh_vertexneighbors();
 
@@ -95,7 +95,7 @@ documentation for the available options.)\n\n\
       FOREACHvertex_ (facet->vertices) {
 	// qh_printvertex(stdout,vertex);
 	if (j >= dim)
-	  warning("extra vertex %d of facet %d = %d", 
+	  warning("extra vertex %d of facet %d = %d",
 		  j++,i,1+qh_pointid(vertex->point));
 	else
 	  idx(i,j++)= 1 + qh_pointid(vertex->point);
@@ -110,9 +110,9 @@ documentation for the available options.)\n\n\
   int curlong, totlong;
   qh_memfreeshort (&curlong, &totlong);
   //free short memory and memory allocator
-  
+
   if (curlong || totlong) {
-    warning("convhulln: did not free %d bytes of long memory (%d pieces)", 
+    warning("convhulln: did not free %d bytes of long memory (%d pieces)",
 	    totlong, curlong);
   }
   return retval;

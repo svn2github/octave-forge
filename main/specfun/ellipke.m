@@ -36,6 +36,9 @@
 ## 2001-02-01 Paul Kienzle
 ##   * vectorized
 ##   * included function name in error messages
+## 2003-1-18 Jaakko Ruohio
+##   * extended for m < 0
+
 
 function [k,e] = ellipke( m )
 
@@ -48,8 +51,8 @@ function [k,e] = ellipke( m )
   if any(~isreal(m))
     error("ellipke must have real m"); 
   endif
-  if any(m<0) || any(m>1)
-    error("ellipke must have m in the range [0,1]");
+  if any(m>1)
+    error("ellipke must have m <= 1");
   endif
 
   Nmax = 16;
@@ -62,11 +65,21 @@ function [k,e] = ellipke( m )
       k(idx) = Inf;
       e(idx) = 1.0;
     endif
+      
+    idx = find(m == -Inf);
+    if (!isempty(idx))
+      k(idx) = 0.0;
+      e(idx) = Inf;
+    endif
 
     ## Arithmetic-Geometric Mean (AGM) algorithm
     ## ( Abramowitz and Stegun, Section 17.6 )
-    idx = find(m != 1);
+    idx = find(m != 1 & m != -Inf);
     if (!isempty(idx))
+      idx_neg = find(m < 0 & m != -Inf);
+      mult_k = 1./sqrt(1-m(idx_neg));
+      mult_e = sqrt(1-m(idx_neg));
+      m(idx_neg) = -m(idx_neg)./(1-m(idx_neg));
       a = ones(length(idx),1);
       b = sqrt(1.0-m(idx));
       c = sqrt(m(idx));
@@ -84,7 +97,9 @@ function [k,e] = ellipke( m )
       if n >= Nmax, error("ellipke: not enough workspace"); endif
       k(idx) = 0.5*pi./a;
       e(idx) = 0.5*pi.*(1.0-sum)./a;
-    endif
+      k(idx_neg) = mult_k.*k(idx_neg);
+      e(idx_neg) = mult_e.*e(idx_neg);
+      endif
   unwind_protect_cleanup
     do_fortran_indexing = dfi;
   end_unwind_protect

@@ -18,6 +18,9 @@
 # The flag --enable-auto-image-base may make loading the dll 
 # faster by pre-assigning non-colliding addresses for all the
 # functions loaded from the DLL.
+#
+# Paul Kienzle
+# 2003-07-17
 
 mkdir buildc++
 cd buildc++

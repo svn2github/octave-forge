@@ -8,7 +8,7 @@
 <B><FONT FACE="Arial" SIZE=4><P ALIGN="CENTER">Octave under Windows</P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <P ALIGN="CENTER">A collection of hints and facts for Octave running under Windows</P>
-</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="CENTER">Copyright (C) 2001-2002 by Philip Nienhuis<br>Last version 30 July 2002</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="CENTER">Copyright (C) 2001-2002 by Philip Nienhuis<br>Latest version 6 August 2002</P>
 </FONT><FONT FACE="Arial" SIZE=3>
 <P>&nbsp;</P>
 
@@ -503,11 +503,11 @@ followed by &lt;Ctrl&gt;-D to quit Octave.</P>
 
 <P><A HREF="http://www.hhs.se/personal/psoderlind/Software/pipe-gnuplot.exe">http://www.hhs.se/personal/psoderlind/Software/pipe-gnuplot.exe</A></P>
 
-<P>or (a version of) the source code at:</P>
+<P>The source code is <A HREF="#pipe-gnuplot">here (below)</A>; (a version of) similar source code at:</P>
 
 <P><A HREF="http://luna2.informatik.uni-osnabrueck.de/marc/lectures/www_ts/u21100/slv/pg_noexit_c.html">http://luna2.informatik.uni-osnabrueck.de/marc/lectures/www_ts/u21100/slv/pg_noexit_c.html</A></P>
-<P></FONT><FONT FACE="ARIAL" SIZE=2>(Beware, URLs featuring this source code seem to vanish on a more or less regular basis. I found the above link within 4 seconds using a simple Google search (hint!), so you'll know what to do if the link doesn't work.....).<br>
-(BTW, I copied that file into this web page <A HREF="#Q_14">here</A>.)</FONT><FONT FACE="ARIAL" SIZE=3></P>
+<P></FONT><FONT FACE="ARIAL" SIZE=2>(Beware, URLs featuring the pipe-gnuplot source code seem to vanish on a more or less regular basis. I found the above link within 4 seconds using a simple Google search (hint!), so you'll know what to do if the link doesn't work.....).<br>
+(BTW, I copied the file into this web page to, look <A HREF="#pg_noexit">here</A>.)</FONT><FONT FACE="ARIAL" SIZE=3></P>
 
 <P>OK, in the file /usr/local/share/octave/site/m/startup there should be a file called octaverc. This file contains some important startup settings for Octave.
 </P>
@@ -877,8 +877,90 @@ Indeed, after you have started up Cygwin, you can map additional network drives 
 <P>Knowing this, it cannot be difficult to navigate through your entire Windows network using Cygwin.</P>
 
 <P><A NAME="Q_14"><B>Q 14: Where can I find pipe-gnuplot.c?</B></A><br>
-<B>A 14:</B> Here's a version I found on Internet (I hope it's the right one). BTW the indentation may be somewhat affected, but you'll get the idea:</P>
+<B>A 14:</B><A NAME="pipe-gnuplot"> Here's</A> an old version of pipe-gnuplot.c. I found on my hard disk (it probably dates back from the period I installed ancient Octave 2.0.13). BTW the indentation may be somewhat affected due to conversion into HTML, but you'll get the idea: </>P <br><br>
+
+</FONT><FONT FACE="ARIAL" SIZE=2>/* pipe-gnuplot.c<br>
 <br>
+&nbsp; &nbsp; &nbsp; This program was originally written by jl Hamel<br>
+&nbsp; &nbsp; &nbsp; <hamel@picpus.saclay.cea.fr> and posted to the Usenet newsgroup<br>
+&nbsp; &nbsp; &nbsp; comp.graphics.apps.gnuplot.  I modified it to accept the name of<br>
+&nbsp; &nbsp; &nbsp; the real gnuplot binary on the command line, and to exit when EOF<br>
+&nbsp; &nbsp; &nbsp; is encountered.  If you have any suggestions for improvements,<br>
+&nbsp; &nbsp; &nbsp; please send them to me at the address below.<br>
+<br>
+&nbsp; &nbsp; &nbsp; Thanks,<br>
+<br>
+&nbsp; &nbsp; &nbsp; John W. Eaton<br>
+&nbsp; &nbsp; &nbsp; jwe@bevo.che.wisc.edu<br>
+&nbsp; &nbsp; &nbsp; University of Wisconsin-Madison<br>
+&nbsp; &nbsp; &nbsp; Department of Chemical Engineering<br>
+<br>
+&nbsp; &nbsp; &nbsp; Tue May 19 22:52:47 1998 */<br>
+<br>
+#include &lt; stdio.h &gt;<br>
+#include &lt; windows.h &gt;<br>
+<br>
+int<br>
+main (int argc, char **argv)<br>
+{<br>
+  char *real_gnuplot = "C:\\gnuplot\\wgnuplot.exe";<br>
+<br>
+  /* XXX FIXME XXX */<br>
+  if (argc > 1)<br>
+&nbsp; &nbsp; &nbsp;  real_gnuplot = argv[1];<br>
+<br>
+  /* load gnuplot (minimized in order to show only the graphic window) */<br>
+<br>
+  if (WinExec (real_gnuplot, SW_MINIMIZE) <= 32)<br>
+&nbsp; &nbsp; &nbsp;  fprintf (stderr, "can't load gnuplot\n");<br>
+  else<br>
+&nbsp; &nbsp; &nbsp;  {<br>
+&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  HWND hwnd_parent;<br>
+<br>
+&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  /* wait for the gnuplot window */<br>
+&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  Sleep (1000);<br>
+<br>
+&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  hwnd_parent = FindWindow ((LPSTR) NULL, (LPCTSTR) "gnuplot");<br>
+<br>
+&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  if (! hwnd_parent)<br>
+&nbsp; &nbsp; &nbsp; &nbsp; fprintf (stderr, "can't find the gnuplot window");<br>
+&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  else<br>
+&nbsp; &nbsp; &nbsp; &nbsp; {<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; /* find the child text window */<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; HWND hwnd_text = FindWindowEx (hwnd_parent, (HWND) NULL,<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  (LPCTSTR)"wgnuplot_text",<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  (LPCTSTR) NULL);<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; if (! hwnd_text)<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;   fprintf (stderr, "can't find wgnuplot_text");<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; else<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;   {<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  /* wait for commands on stdin, and send them to the<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  gnuplot text window */<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  int c;<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  while ((c = getchar ()) != EOF)<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PostMessage (hwnd_text, WM_CHAR, c, 1L);<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  /* XXX FIXME XXX -- can't we send a string? */<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  PostMessage (hwnd_text, WM_CHAR, 'q', 1L);<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  PostMessage (hwnd_text, WM_CHAR, 'u', 1L);<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  PostMessage (hwnd_text, WM_CHAR, 'i', 1L);<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  PostMessage (hwnd_text, WM_CHAR, 't', 1L);<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  PostMessage (hwnd_text, WM_CHAR, '\n', 1L);<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  <br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  return 0;<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;   }<br>
+&nbsp; &nbsp; &nbsp; &nbsp; }<br>
+&nbsp; &nbsp; &nbsp;  }<br>
+<br>
+  return 1;<br>
+}<br></FONT><FONT FACE="ARIAL" SIZE=3><br>
+
+
+<P><A NAME="pg_noexit">Here's</A> a version of a similar program I found on the Internet:</P>
 <P></FONT><FONT FACE="ARIAL" SIZE=2>/* pg_noexit.c<br>
 <br>
 &nbsp; &nbsp;    cygwin-compile: gcc -O3 -o pg_noexit pg_noexit.c<br>
@@ -980,8 +1062,11 @@ Therefore, as long as nobody comes up with short description for an easy solutio
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="history">15. This document's history</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 
+<P><U>6 August 2002</U><br>
+6 August 2002 Refreshed some internal URLs and added an (old?) version of pipe-gnuplot.c I stumbled upon in an old archive. Changed internal references of pipe-gnuplot.c to pg_noexit.c (don't know what the latter program does).<br>
+
 <P><U>29 July 2002</U><br>
-29 July Refreshed some URLs, info on Andy Adlers distros and added pipe-gnuplot.c<br>
+29 July 200 Refreshed some URLs, info on Andy Adlers distros and added pipe-gnuplot.c<br>
 
 <P><U>16 May 2002</U><br>
 16 May 2002 Added Emacs & Octave question.<br>

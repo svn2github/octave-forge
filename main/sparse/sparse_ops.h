@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.10  2003/10/13 03:44:26  aadler
+check for out of bounds in allocation
+
 Revision 1.9  2003/04/03 22:06:41  aadler
 sparse create bug - need to use heap for large temp vars
 
@@ -277,9 +280,11 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    OCTAVE_QUIT; \
    for (int i=0; i<nnz; i++) { \
       if ( coefA(i) != 0. || cf_scalar ) { \
-         sidx[actual_nnz].val = (long) ( \
-                   ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1 + \
-              m * (( ci_scalar ? cidxA(0) : cidxA(i) ) - 1) );  \
+         double rowidx=  ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1; \
+         if (rowidx >= m) SP_FATAL_ERR("sparse: row index out of range"); \
+         double colidx=  ( ci_scalar ? cidxA(0) : cidxA(i) ) - 1;  \
+         if (colidx >= n) SP_FATAL_ERR("sparse: col index out of range"); \
+         sidx[actual_nnz].val = (long) ( rowidx + m*colidx ); \
          sidx[actual_nnz].idx = i; \
          actual_nnz++; \
       } \

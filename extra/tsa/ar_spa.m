@@ -1,16 +1,17 @@
 function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
-% AR_SPA Spectral analysis of AR-polynomial
-% function  [w,A,B,R,P,F,ip] = ar_spa(AR,fs,E);
+% AR_SPA decomposes an AR-spectrum into its compontents 
+% [w,A,B,R,P,F,ip] = ar_spa(AR,fs,E);
 %
 %  INPUT:
 % AR   autoregressive parameters
-% fs    sampling rate, gives w and B in [Hz], if not given in radians 
+% fs    sampling rate, provide w and B in [Hz], if not given the result is in radians 
 % E     noise level (mean square),  gives A and F in units of E, if not given as relative amplitude
 %
 %  OUTPUT
-% w	center frequency (in radians)
+% w	center frequency
 % A     Amplitude
 % B     bandwidth
+%       - less important output parameters - 
 % R	residual
 % P	poles
 % ip	number of complex conjugate poles
@@ -23,9 +24,9 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 % see also ACOVF ACORF DURLEV IDURLEV PARCOR YUWA 
 % 
 % REFERENCES:
-% Zetterberg L.H. (1969) Estimation of parameter for linear difference equation with application to EEG analysis. Math. Biosci., 5, 227-275. 
-% Isaksson A. and Wennberg, A. (1975) Visual evaluation and computer analysis of the EEG - A comparison. Electroenceph. clin. Neurophysiol., 38: 79-86.
-% G. Florian and G. Pfurtscheller (1994) Autoregressive model based spectral analysis with application to EEG. IIG - Report Series, University of Technolgy Graz, Austria.
+% [1] Zetterberg L.H. (1969) Estimation of parameter for linear difference equation with application to EEG analysis. Math. Biosci., 5, 227-275. 
+% [2] Isaksson A. and Wennberg, A. (1975) Visual evaluation and computer analysis of the EEG - A comparison. Electroenceph. clin. Neurophysiol., 38: 79-86.
+% [3] G. Florian and G. Pfurtscheller (1994) Autoregressive model based spectral analysis with application to EEG. IIG - Report Series, University of Technolgy Graz, Austria.
 
 %	$Revision$
 % 	$Id$
@@ -71,7 +72,7 @@ for k = 1:NTR, %if ~mod(k,100),k, end;
    	A(k,:) = 1./abs(polyval([1 -ARP(k,:)],exp(i*w(k,:))));	% Amplitude 
    	%A(k,:) = freqz(1,[1 -ARP(k,:)],w(k,:));	% Amplitude 
    	%A2(k,:) = abs(r)'./abs(exp(i*w(k,:))-r');   % Amplitude
-   	B(k,:) = -log(abs(p(idx)'));  %Bandwidth
+   	B(k,:) = -log(abs(p(idx)'));  % Bandwidth
            
         if nargout < 6,  
 
@@ -84,18 +85,20 @@ for k = 1:NTR, %if ~mod(k,100),k, end;
 		F(k,:) = (1+(imag(P)~=0))./(a.*a3); 
         end;	
 end;
+
+A = A.*sqrt(E(:,ones(1,pp)));
 if nargin>1
         w=w*nhz/2/pi;
         B=B*nhz/2/pi;
 end;
-if nargin>2
-        A=A.*sqrt(E(:,ones(1,pp)));
+if nargin>2,
         F=F.*E(:,ones(1,pp));
 end;
 
-ip = sum(imag(R)~=0)/2; return;
+ip = sum(imag(P)~=0)/2; 
+return;
 
-np(:,1) = sum(imag(R')==0)';   % number of real poles
+np(:,1) = sum(imag(P')==0)';	% number of real poles
 np(:,2) = pp-np(:,1);		% number of imaginary poles
 
 

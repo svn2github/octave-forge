@@ -4,6 +4,12 @@
 %
 %
 % see also: NANINSTTEST
+%
+% REFERENCE(S): 
+% [1] W. Kahan (1996) Lecture notes on the Status of "IEEE Standard 754 for 
+%     Binary Floating-point Arithmetic. 
+%
+
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -21,7 +27,7 @@
 
 %	$Revision$
 %	$Id$
-%	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (c) 2000-2004 by  Alois Schloegl <a.schloegl@ieee.org>
 %       This script is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -172,13 +178,24 @@ if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),
         warning('Warning: SORT does not handle NaN.');
 end;
 
-%%%%% commutativity of 0*NaN	%%% This test adresses a problem in Octave
+%%%%% commutativity of 0*NaN	%%% This test adresses a problem in Octave
 x=[-2:2;4:8]';
 y=x;y(2,1)=nan;y(4,2)=nan;
 B=[1,0,2;0,3,1];
 if ~all(all(isnan(y*B)==isnan(B'*y')')),
         fprintf(2,'WARNING: 0*NaN within matrix multiplication is not commutative\n');
 end;
+
+% from Kahan (1996)
+tmp = (0-3*i)/inf;
+if isnan(tmp)
+        fprintf(2,'WARNING: (0-3*i)/inf results in NaN instead of 0.\n');
+end;
+
+%(roots([5,0,0])-[0;0])
+%(roots([2,-10,12])-[3;2])
+%(roots([2e-37,-2,2])-[1e37;1])
+
 
 %%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 p    = 4;

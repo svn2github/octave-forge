@@ -117,6 +117,18 @@ if exist('harmmean')==2,
                 % fprintf(1,'Warning: HARMMEAN([0,1,2,3]) NaN instead of 0\n');
         end;
 end;
+%%%%% BITAND - this test addresses a problem in Octave
+if exist('bitand')>1,
+        if isnan(bitand(2^33-1,13)),
+                fprintf(1,'BITAND can return NaN. \n');
+        end;
+end;
+%%%%% BITSHIFT - this test addresses a problem in Octave
+if exist('bitshift')==2,
+        if isnan(bitshift(5,30,32)),
+                fprintf(1,'BITSHIFT can return NaN.\n');
+        end;
+end;
 
 %%%%% SORT - this was once a problem in Octave Version < 2.1.36 %%%%
 if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]), 

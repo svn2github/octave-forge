@@ -6,6 +6,7 @@ ifeq ($(MPATH),$(OPATH))
 else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
+RUN_OCTAVE=$(OCTAVE) --norc -p FIXES/:main//:extra//:nonfree//:
 
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 
@@ -38,10 +39,24 @@ install: $(SUBMAKEDIRS)
 	@echo "against those in your version of Octave."
 
 check:
-	$(OCTAVE) -q batch_test.m
+	@echo "fid=fopen('fntests.log','w');" > fntests.m
+	@echo "if fid<0,error('could not open fntests.log for writing');end" \
+		>>fntests.m
+	@for file in `grep -l '^%!\(assert\|test\)' */*/*.{cc,m}` ; do \
+		echo "test('$$file','quiet',fid);" >>fntests.m ; done
+	@echo "fclose(fid);" >> fntests.m
+	$(RUN_OCTAVE) -q fntests.m
+	$(RUN_OCTAVE) -q batch_test.m
 
 icheck:
-	$(OCTAVE) -q interact_test.m
+	@echo 'disp("starting demos...")' > fndemos.m
+	@for file in `grep -l '^%!demo' */*/*.{cc,m}` ; do \
+		echo "demo('$$file');" >> fndemos.m ; done
+	$(RUN_OCTAVE) -q fndemos.m
+	$(RUN_OCTAVE) -q interact_test.m
+
+run:
+	$(RUN_OCTAVE)
 
 clean: $(SUBMAKEDIRS)
 	-$(RM) core octave-core octave configure.in

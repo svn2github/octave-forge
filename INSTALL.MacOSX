@@ -37,6 +37,8 @@ You should get a file hello.oct that can be run in octave
 
 Install OCTAVE-FORGE on Mac OS X 10.2.x
 =======================================
+0) The following instructions refer to octave-forge-2002.11.30
+
 1) Preparations
 ---------------
 Read the file extra/MacOSX/README and decide if you want to remove the file NOINSTALL in extra/MacOSX
@@ -48,7 +50,10 @@ Add NOINSTALL to main/struct ('touch main/struct/NOINSTALL')
 
 Set PROGS to an empty string in FIXES/Makefile (Can't override builtins on OSX, yet)
 
-Comment out forced strip command in extra/mex/Makefile
+Remove strip command in extra/mex/Makefile (line 17):
+    $(STRIP) mex.o # mkoctfile doesn't strip .o files
+
+    NB. that command has been removed in later revisions of the makefile 			
 
 Change the options to cp in octinst.sh to read:
 

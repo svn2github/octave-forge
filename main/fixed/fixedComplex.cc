@@ -24,6 +24,7 @@ Open Source Initiative (www.opensource.org)
 */
 
 #include <complex>
+#include <cmath>
 #include "int/fixed.h"
 #include "fixedComplex.h"
 
@@ -89,14 +90,13 @@ FixedPointComplex operator ! (const FixedPointComplex &x)
 
 #define DO_FIXED_CMPLX_FUNC(FUNC, MT) \
   MT FUNC (const FixedPointComplex& x) \
-  {  \
+  { \
     return std:: FUNC (x); \
   }
 
 DO_FIXED_CMPLX_FUNC(real, FixedPoint);
 DO_FIXED_CMPLX_FUNC(imag, FixedPoint);
 DO_FIXED_CMPLX_FUNC(conj, FixedPointComplex);
-DO_FIXED_CMPLX_FUNC(abs, FixedPoint);
 DO_FIXED_CMPLX_FUNC(norm, FixedPoint);
 DO_FIXED_CMPLX_FUNC(arg, FixedPoint);
 DO_FIXED_CMPLX_FUNC(cos, FixedPointComplex);
@@ -124,6 +124,24 @@ DO_FIXED_CMPLX_FUNC2(ceil);
 FixedPointComplex polar (const FixedPoint &r, const FixedPoint &p)
 {
   return std::polar ( r, p);
+}
+
+FixedPoint abs(const FixedPointComplex& z) 
+{
+// SGI MipsPRO 7.3 defines abs(Complex<T>&) as a call to
+// the C-lib hypot(double,double), so avoid using std::abs
+// and instead inline the function here.
+  FixedPoint x = z.real();
+  FixedPoint y = z.imag();
+  if (abs(x) > abs(y)) {
+    y /= x;
+    return x * sqrt (1 + y*y);
+  } else if (x == 0 && y == 0) {
+    return 0;
+  } else {
+    x /= y;
+    return y * sqrt (1 + x*x);
+  }
 }
 
 FixedPointComplex pow (const FixedPointComplex& a, const int b)

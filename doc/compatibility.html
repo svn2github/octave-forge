@@ -30,17 +30,19 @@ Be sure you have a recent development version of octave and install
 
 <li>Q. Do load and save work for structures?
 <br>A. Yes for some file formats.  Use patch in octave-forge for structure
-   support in more file formats.
-
+   support in more file formats. (Don't know the status of this anymore
+   as of 2004-02-11.)
+   
 <li>Q. Does octave support 'end' indexing?
-<br>A. No.  Use length(A) or rows(A),columns(A) as you did before matlab
+<br>A. Yes, for sufficiently new versions of octave.  For older versions,
+   use length(A) or rows(A),columns(A) as you did before matlab
    added the 'end' indexing syntax.
 
 <li>Q. Why do "grid on" and other commands give me a syntax error?
 <br>A. Only Octave built-ins can be ``text functions'' (and only a few
    are defined to be).  Those which are not built-in, you can mark
    as text functions using the following line in your ~/.octaverc:
-	mark_as_text_function grid axis
+	mark_as_command grid axis
    Either that or use the functional form: grid('on')
 
 <li>Q. Why isn't Octave seeing my .matlabrc file?
@@ -64,92 +66,18 @@ Be sure you have a recent development version of octave and install
 </table>
 
 <li>Q. assignin
-<br>A.  It should be possible to write assignin('base',n,V) as a .cc file
-by adding or modifying the variable in top_level_sym_tab.  The alternative
-is to work with global variables:
-<code><pre>
-	eval(['global ', n, '; ', n, '=V;']);
-</pre></code>
-Be sure that in the top level context you do:
-<code><pre>
-	eval(['global ', n, ';']);
-</pre></code>
-<p>
-
-There is no way to write assignin('caller',...) without modifying the octave
-interpreter.  To get the effect of assignin('caller',...), you could write
-your function so that it returns a structure and expand the structure using:
-<code><pre>
-        for [key,val] = my_fun(...)
-            eval([key "=val;"]);
-        end
-</pre></code>
-Or you could write my_fun as a script (not a function!!)  which expects its
-"parameters" to be in particular variables before it is invoked.  You have
-to be a lot more careful with your variables in the my_fun script, though,
-since they might collide with those in the "caller".<p>
-And again, you could use global variables much like you would for the
-global context.
+<br>A. Get a recent version of octave.
 
 </ul>
 <h2>Types</h2>
 <ul>
 
 <li>Q. Does Octave support sparse matrices?
-<br>A. Use sparse package in octave-forge.  Since user-defined types cannot
-   override builtin functions, must use spinv, spsum, splu, etc.
-   Alternatively, use my work-in-progress dispatch registration 
-   mechanism (search for "dispatch" on the www.octave.org archive).
+<br>A. Use sparse package in octave-forge.
 
 <li>Q. Does Octave support nD arrays?
-<br>A. No.
+<br>A. Yes, for sufficiently recent versions of octave
 
-<p>John Eaton (jwe@bevo.che.wisc.edu) says:
-      <blockquote>
-      Actually, there is some code in the development sources (in the files
-      liboctave/ArrayN.{h,cc}, liboctave/ArrayN-idx.h, and 
-      src/ov-re-nd-array.{h,cc}) that are a start, but they need to be
-      finished, and then lots of other code will need to be changed to make
-      use of the new N-d array data type(s).
-      </blockquote>
-
-<p>You could use a list of matrices if you just want to organize your
-   arrays, but not slice them arbitrarily.
-
-<p>You could define and indexing function on a very long vector as
-   suggested in
-   http://www.octave.org/octave-lists/archive/help-octave.2001/msg01170.html
-
-<p>If you want a general 3D matrix you could arrange your matrix as:
-      <code><pre>
-      M.xn = rows
-      M.yn = columns
-      M.zn = number of slices
-      M.data = [ M1; M2; ...; Mzn ];
-      </pre></code>
-   and use the following indexing functions:
-      <code><pre>
-      function y = elem(A,i,j,k)      
-         y = A.data(i + A.xn*(k-1), j);
-      endfunction
-
-      function M = slice(A,xidx,yidx,zidx)
-         if length(zidx) == 1
-	    M = A.data ( xidx+(zidx-1)*A.xn, yidx );
-         elseif length(yidx) == 1
-	    # XXX FIXME XXX maybe can do this in one step ?
- 	    M = reshape ( A.data ( : , yidx ), A.xn, A.zn);
-	    M = M(xidx,zidx);
-         elseif length(xidx) == 1
-	    M = A.data ( xidx+[zidx-1]*A.xn, yidx );
-         else
-            error("subvolumes not yet supported"); 
-         end
-      endfunction
-      </pre></code>
-   It would be nice to have a functions for setting elements and
-   slices as well.
-   
 <li>Q. Does octave support cell arrays?
 <br>A. Yes, in recent development versions.
 
@@ -184,7 +112,8 @@ for suggested alternatives.
 <br>A. Octave has lsode.  octave-forge has matlab style ode23, etc.
 
 <li>Q. Integration?
-<br>A. Octave has quad. octave-forge has matlab V5 style quadrature functions
+<br>A. Octave has quad. octave-forge has matlab V5 style quadrature functions.
+   quadl was recently added to octave-forge.
 
 <li>Q. Are there matlab style UI functions?
 <br>A. No. some work on Tcl/Tk links to Octave, but it is incomplete.  There
@@ -226,11 +155,13 @@ for suggested alternatives.
    alternatives to existing matlab functions.
 
 <li>Q. Why is the title of my graph not showing up on my graph.
-<br>A. Try setting automatic_replot = 1
+<br>A. Octave wants the title before the plot command, matlab
+   wants it after.  Try setting automatic_replot = 1
 
 <li>Q. sqrtm, logm don't work well for ill-conditioned matrices.
-<br>A. use FIXES/sqrtm.cc for sqrtm.  logm is still a work in progress.
-   Ask pkienzle@users.sf.net to post the work he and Ross Lippert did on this.
+<br>A. sqrtm is fixed in recent versions of octave.  logm is a stalled
+   work in progress.  Ask pkienzle@users.sf.net to post the work he and 
+   Ross Lippert did on this.
 
 <li>Q. eig(A,B)
 <br>A. qz(A,B)
@@ -240,7 +171,7 @@ for suggested alternatives.
 <br>A. use FIXES/fsolve.cc on octave-forge.
 
 <li>Q. exist(a,'var') fails.
-<br>A. octave-forge exist-type patch.
+<br>A. use recent version of octave
 
 <li>Q. inmem
 <br>A. who -functions
@@ -252,7 +183,7 @@ for suggested alternatives.
 <br>A. exists in octave, but probably returns different output
 
 <li>Q. persistent
-<br>A. static
+<br>A. static; persistent works in recent versions of octave
 
 <li>Q. ! shell command
 <br>A. system("shell command")

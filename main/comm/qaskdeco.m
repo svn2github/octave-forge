@@ -159,7 +159,8 @@ function a = qaskdeco(varargin)
   pfi = do_fortran_indexing;
   unwind_protect
     do_fortran_indexing = 1;
-    a = layout(size(layout,1)*(round(qx)-1) + round(ix));
+    a = layout(size(layout,1)*(max(min(round(qx),size(layout,2)),1)-1) + ...
+	       max(min(round(ix),size(layout,1)),1));
     ## XXX FIXME XXX Why is this necessary??
     if ((M == 2) &&(size(inphase,1) == 1))
       a = a';

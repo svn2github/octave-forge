@@ -22,6 +22,8 @@
 %	$Revision$
 %	$Id$
 %	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>
+%       This script is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 FLAG_WARNING = warning;
 warning('off');
@@ -29,9 +31,13 @@ warning('off');
 try,
 	x = randn([3,4,5]); 
 	x(~isnan(x)) = 0;
-	[s,n] = sumskipnan(randn([3,4,5]),3);
 catch,
 	fprintf(1,'WARNING: NANTEST fails for 3-DIM matrices. \n');
+end;
+try,
+	[s,n] = sumskipnan([nan,1,4,5]);
+catch,
+	fprintf(1,'WARNING: SUMSKIPNAN is not avaible. \n');
 end;
 
 % check NORMPDF, NORMCDF, NORMINV
@@ -39,14 +45,16 @@ x = [-inf,-2,-1,-.5,0,.5,1,2,3,inf,nan]';
 if exist('normpdf')==2,
         q(1) = sum(isnan(normpdf(x,2,0)))>sum(isnan(x));
         if q(1),
-                fprintf(1,'NORMPDF should be replaced\n');
+                fprintf(1,'NORMPDF cannot handle v=0.\n');
+                fprintf(1,'-> NORMPDF should be replaced\n');
         end;
 end;
 
 if exist('normcdf')==2,
         q(2) = sum(isnan(normcdf(x,2,0)))>sum(isnan(x));
         if q(2),
-                fprintf(1,'NORMCDF should be replaced\n');
+                fprintf(1,'NORMCDF cannot handle v=0.\n');
+                fprintf(1,'-> NORMCDF should be replaced\n');
         end;
 end;
 
@@ -54,7 +62,8 @@ if exist('norminv')==2,
         p = [-inf,-.2,0,.2,.5,1,2,inf,nan];
         q(3) = sum(~isnan(norminv(p,2,0)))<4;
         if q(3),
-                fprintf(1,'NORMINV should be replaced\n');
+                fprintf(1,'NORMINV cannot handle  correctly v=0.\n');
+                fprintf(1,'-> NORMINV should be replaced\n');
         end;
         q(4) = ~isnan(norminv(0,NaN,0)); 
         q(5) = any(norminv(0.5,[1 2 3 ],0)~=[1:3]);
@@ -63,7 +72,8 @@ end;
 if exist('tpdf')==2,
         q(6) = ~isnan(tpdf(nan,4));
         if q(6),
-                fprintf(1,'TPDF should be replaced\n');
+                fprintf(1,'TPDF(NaN,4) does not return NaN\n');
+                fprintf(1,'-> TPDF should be replaced\n');
         end;
 end;
 
@@ -74,7 +84,8 @@ if exist('tcdf')==2,
                 q(7) = 1;
         end;
         if q(7),
-                fprintf(1,'TCDF should be replaced\n');
+                fprintf(1,'TCDF(NaN,4) does not return NaN\n');
+                fprintf(1,'-> TCDF should be replaced\n');
         end;
 end;
 
@@ -85,36 +96,62 @@ if exist('tinv')==2,
                 q(8) = 1;
         end;
         if q(8),
-                fprintf(1,'TINV should be replaced\n');
+                fprintf(1,'TINV(NaN,4) does not return NaN\n');
+                fprintf(1,'-> TINV should be replaced\n');
+        end;
+end;
+
+%%%%% MOD 
+if exist('mod')>1,
+        if (mod(5,0))~=0,
+                fprintf(1,'WARNING: MOD(x,0) does not return 0.\n');
+        end;
+        if isnan(mod(5,0)),
+                fprintf(1,'WARNING: MOD(x,0) returns NaN.\n');
+        end;
+        if isnan(mod(5,inf)),
+                fprintf(1,'WARNING: MOD(x,INF) returns NaN.\n');
+        end;
+end;
+%%%%% REM 
+if exist('rem')>1,
+        if (rem(5,0))~=0,
+                fprintf(1,'WARNING: REM(x,0) does not return 0.\n');
+        end;
+        if isnan(rem(5,0)),
+                fprintf(1,'WARNING: REM(x,0) returns NaN.\n');
+        end;
+        if isnan(mod(5,inf)),
+                fprintf(1,'WARNING: REM(x,INF) returns NaN.\n');
         end;
 end;
 
 %%%%% NANSUM(NAN) - this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 if exist('nansum')==2,
         if isnan(nansum(nan)),
-                fprintf(1,'NANSUM should be replaced\n');
-                % fprintf(1,'Warning: NANSUM(NaN) returns NaN instead of 0\n');
+                fprintf(1,'Warning: NANSUM(NaN) returns NaN instead of 0\n');
+                fprintf(1,'-> NANSUM should be replaced\n');
         end;
 end;
 %%%%% NANSUM(NAN) - this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 if exist('nanstd')==2,
         if ~isnan(nanstd(0)),
-                fprintf(1,'NANSTD should be replaced\n');
-                % fprintf(1,'Warning: NANSTD(x) with isscalar(x) returns 0 instead of NaN\n');
+                fprintf(1,'Warning: NANSTD(x) with isscalar(x) returns 0 instead of NaN\n');
+                fprintf(1,'-> NANSTD should be replaced\n');
         end;
 end;
 %%%%% GEOMEAN - this test addresses a problem in Octave
 if exist('geomean')==2,
         if isnan(geomean([0:3]')),
-                fprintf(1,'GEOMEAN should be replaced\n');
-                % fprintf(1,'Warning: GEOMEAN([0,1,2,3]) NaN instead of 0\n');
+                fprintf(1,'Warning: GEOMEAN([0,1,2,3]) NaN instead of 0\n');
+                fprintf(1,'-> GEOMEAN should be replaced\n');
         end;
 end;
 %%%%% HARMMEAN - this test addresses a problem in Octave
 if exist('harmmean')==2,
         if isnan(harmmean(0:3)),
-                fprintf(1,'HARMMEAN should be replaced\n');
-                % fprintf(1,'Warning: HARMMEAN([0,1,2,3]) NaN instead of 0\n');
+                fprintf(1,'Warning: HARMMEAN([0,1,2,3]) NaN instead of 0\n');
+                fprintf(1,'-> HARMMEAN should be replaced\n');
         end;
 end;
 %%%%% BITAND - this test addresses a problem in Octave

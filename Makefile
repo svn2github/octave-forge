@@ -65,7 +65,7 @@ all install:
 
 endif
 
-.PHONY: clean distclean dist
+.PHONY: clean distclean dist notincvstree changelog
 
 clean: subdirs
 	-$(RM) core octave-core octave configure.in
@@ -74,9 +74,13 @@ distclean: clean
 	-$(RM) Makeconf octinst.sh config.cache config.status config.log \
 		build.log build.fail *~
 
-dist: subdirs distclean
-	@echo Follow the instructions in octave-forge/release.sh
+dist: notincvstree subdirs
+	-$(RM) build.log build.fail
+	admin/get_authors
+	./autogen.sh
 
+notincvstree:
+	@test -d CVS && echo Follow the instructions in octave-forge/release.sh && false
 
 subdirs: clearlog $(SUBMAKEDIRS)
 clearlog: ; @-$(RM) build.log build.fail

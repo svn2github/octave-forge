@@ -76,7 +76,8 @@ sub fill_README {  # {{{1
         }
     }
     close README;
-    warn "Please do cvs commit ${PATH}${RM}\n";
+    warn "Use 'cvs diff ${PATH}${RM}' to determine if updates are needed.\n";
+    warn "Use 'cvs commit ${PATH}${RM}' to update README.\n";
 }  # 1}}}
 
 # # # # # # # 
@@ -128,7 +129,7 @@ sub fill_developer_html {  # {{{1
         }
     }
     close README;
-    warn "Please do scp ${PATH}${RM} \$OFHOME\n";
+    warn "Use 'scp ${PATH}${RM} \$OFHOME' to update the web.\n";
 }  # 1}}}
 
 # # # # # # # 

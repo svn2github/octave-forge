@@ -4,13 +4,12 @@ Minimization
  nelder_mead_min
  d2_min
  bfgs nrm
- lp samin
+ lp
  fmin fminbnd
  line_min
  fmins adsmax mdsmax nmsmax
- bisectionstep bfgsmin finitdifference
- lbfgsmin newtonstep numgradient numhessian
- battery
+ newtonstep bisectionstep
+ bfgsmin lbfgsmin samin battery
 Data fitting
  expfit expdemo
  wpolyfit wpolyfitdemo 
@@ -25,10 +24,12 @@ Compatibility
  linprog= try <f>lp</f>
 Numerical derivatives
  dfdp bs_gradient cdiff deriv leval
+ numgradient numhessian finitedifference
 Tests
   lp_test test_min_1 test_min_2 test_min_3 test_min_4
   test_d2_min_1 test_d2_min_2 test_d2_min_3
   test_nelder_mead_min_1 test_nelder_mead_min_2
   poly_2_ex test_minimize_1
+	bfgsmin-example.m lbfgsmin-example.m samin-example.m
 
 

@@ -34,6 +34,10 @@ Open Source Initiative (www.opensource.org)
 
 #include <iostream>
 #include <cmath>
+#if defined(__APPLE__) && defined(__MACH__) 
+extern "C" int isnan (double); 
+extern "C" int isinf (double); 
+#endif 
 
 #include "fixed.h"
 

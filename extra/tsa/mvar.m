@@ -136,9 +136,9 @@ elseif Mode==1,
                 ARF(:,K*M+(1-M:0)) = D / PEB;	
                 ARB(:,K*M+(1-M:0)) = D'/ PEF;	
                 for L = 1:K-1,
-                        tmp      = ARF(:,L*M+(1-M:0))   - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                        tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
                         ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
-                        ARF(:,L*M+(1-M:0))   = tmp;
+                        ARF(:,L*M+(1-M:0))     = tmp;
                         %tmp      = ARF{L}   - ARF{K}*ARB{K-L};
                         %ARB{K-L} = ARB{K-L} - ARB{K}*ARF{L};
                         %ARF{L}   = tmp;
@@ -264,6 +264,37 @@ elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Me
                 D      = covm(F(K+1:N,:),B(1:N-K,:),'M');
                 ARF(:,K*M+(1-M:0)) = (PEF.^-.5)*D*(PEB.^-.5)';	
                 ARB(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0)); 
+                
+                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
+                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
+                F(K+1:N,:) = tmp;
+                
+                for L = 1:K-1,
+                        tmp      = ARF(:,L*M+(1-M:0))   - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
+                        ARF(:,L*M+(1-M:0))   = tmp;
+                end;
+                
+                %RCF{K} = ARF{K};
+                RCF = ARF(:,K*M+(1-M:0));
+                
+                PEF = covm(F(K+1:N,:),F(K+1:N,:),'M');
+                PEB = covm(B(1:N-K,:),B(1:N-K,:),'M');
+                %PE{K+1} = PEF;        
+                PE(:,K*M+(1:M)) = PEF;        
+        end;
+        
+elseif Mode==7 %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Method
+        fprintf('Warning MDURLEV: It''s not recommended to use this mode\n')        
+        C(:,1:M) = C(:,1:M)/N;
+        F = Y;
+        B = Y;
+        PEF = C(:,1:M);
+        PEB = C(:,1:M);
+        for K=1:Pmax,
+                D      = covm(F(K+1:N,:),B(1:N-K,:),'M');
+                ARF(:,K*M+(1-M:0)) = (PEF.^-.5)*D*(PEB.^-.5);	
+                ARB(:,K*M+(1-M:0)) = (PEF.^-.5)*D'*(PEB.^-.5);	
                 
                 tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
                 B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';

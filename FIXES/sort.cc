@@ -126,225 +126,276 @@ complex_compare (complex_vec_index *a, complex_vec_index *b)
 
 template octave_sort<complex_vec_index *>;
 
+#ifdef HAVE_ND_ARRAYS
 static octave_value_list
-vec_sort (RowVector &vec, bool return_idx)
+mx_sort (NDArray &m, bool return_idx)
 {
-
   octave_value_list retval;
-  int elements = vec.capacity ();
-  if (elements == 1)
-    {
-      if (return_idx)
-	retval(1) = RowVector (elements, 1.0);
-      retval(0) = vec;
-      return retval;
-    }
-  else if (elements > 1)
-    {
+
+  if (m.length () < 1)
+    return retval;
+
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  // Find first non singleton dimension
+  int ns = 0;
+  for (int i = 0; i < dv.length (); i++)
+    if (dv(i) > 1)
+      {
+	ns = i;
+	break;
+      }
+  ns = dv(ns);
+  int iter = nel / ns;
+
 #if defined(HAVE_IEEE754_COMPLIANCE) && defined(EIGHT_BYTE_INT)
-      double *v = vec.fortran_vec ();
+  double *v = m.fortran_vec ();
 
-      unsigned EIGHT_BYTE_INT *p = (unsigned EIGHT_BYTE_INT *)v;
+  unsigned EIGHT_BYTE_INT *p = (unsigned EIGHT_BYTE_INT *)v;
 
-      if (return_idx)
+  if (return_idx)
+    {
+      octave_sort<vec_index *> indexed_ieee754_sort (ieee754_compare);
+
+      OCTAVE_LOCAL_BUFFER (vec_index *, vi, ns);
+      OCTAVE_LOCAL_BUFFER (vec_index, vix, ns);
+      
+      for (int i = 0; i < ns; i++)
+	vi[i] = &vix[i];
+
+      NDArray idx (dv);
+      
+      for (int j = 0; j < iter; j++)
 	{
-	  octave_sort<vec_index *> indexed_ieee754_sort (ieee754_compare);
-
-	  OCTAVE_LOCAL_BUFFER (vec_index *, vi, elements);
-	  OCTAVE_LOCAL_BUFFER (vec_index, vix, elements);
 
 	  /* Flip the data in the vector so that int compares on 
 	   * IEEE754 give the correct ordering
 	   */
-	  for (int i = 0; i < elements; i++)
+	  for (int i = 0; i < ns; i++)
 	    {
-	      vi[i] = & vix[i];
 	      vi[i]->vec = FloatFlip (p[i]);
 	      vi[i]->indx = i + 1;
 	    }
 
-	  indexed_ieee754_sort.sort (vi, elements);
-
-	  RowVector idx (elements);
-
-	  for (int i = 0; i < elements; i++)
-	    {
-	      p[i] = IFloatFlip (vi[i]->vec);
-	      idx(i) = vi[i]->indx;
-	    }
-
-	  /* There are two representations of NaN. One will be sorted to the
-	   * beginning of the vector and the other to the end. If it will be
-	   * sorted to the beginning, fix things up.
-	   */
-	  if (lo_ieee_signbit (octave_NaN))
-	    {
-	      unsigned int i = 0;
-	      while (xisnan(v[i++]));
-	      OCTAVE_LOCAL_BUFFER (double, itmp, i - 1);
-	      for (unsigned int l = 0; l < i -1; l++)
-		itmp[l] = idx(l);
-	      for (unsigned int l = 0; l < elements - i + 1; l++)
-		{
-		  v[l] = v[l+i-1];
-		  idx(l) = idx(l+i-1);
-		}
-	      for (unsigned int k = 0, l = elements - i + 1; l < elements; 
-		   l++, k++)
-		{
-		  v[l] = octave_NaN;
-		  idx(l) = itmp[k];
-		}
-	    }
-	  retval (1) = idx;
-	}
-      else
-	{
-	  octave_sort<unsigned EIGHT_BYTE_INT> ieee754_sort;
- 
-	  /* Flip the data in the vector so that int compares on 
-	   * IEEE754 give the correct ordering
-	   */
-	  for (int i = 0; i < elements; i++)
-	    p[i] = FloatFlip (p[i]);
-
-	  ieee754_sort.sort (p, elements);
+	  indexed_ieee754_sort.sort (vi, ns);
 
 	  /* Flip the data out of the vector so that int compares on
 	   *  IEEE754 give the correct ordering
 	   */
-	  for (int i = 0; i < elements; i++)
-	    p[i] = IFloatFlip (p[i]);
+	  int offset = j * ns;
+	  for (int i = 0; i < ns; i++)
+	    {
+	      p[i] = IFloatFlip (vi[i]->vec);
+	      idx(i+offset) = vi[i]->indx;
+	    }
 
-	  /* There are two representations of NaN. One will be sorted to the
-	   * beginning of the vector and the other to the end. If it will be
-	   * sorted to the beginning, fix things up.
+	  /* There are two representations of NaN. One will be sorted to
+	   * the beginning of the vector and the other to the end. If it
+	   * will be sorted to the beginning, fix things up.
 	   */
 	  if (lo_ieee_signbit (octave_NaN))
 	    {
 	      unsigned int i = 0;
-	      double *v = vec.fortran_vec ();
-	      while (xisnan(v[i++]));
-	      for (unsigned int j = 0; j < elements - i + 1; j++)
-		v[j] = v[j+i-1];
-	      for (unsigned int j = elements - i + 1; j < elements; j++)
-		v[j] = octave_NaN;
+	      double *vtmp = (double *)p;
+	      while (xisnan(vtmp[i++]));
+	      OCTAVE_LOCAL_BUFFER (double, itmp, i - 1);
+	      for (unsigned int l = 0; l < i -1; l++)
+		itmp[l] = idx(l,j);
+	      for (unsigned int l = 0; l < ns - i + 1; l++)
+		{
+		  vtmp[l] = vtmp[l+i-1];
+		  idx(l,j) = idx(l+i-1,j);
+		}
+	      for (unsigned int k = 0, l = ns - i + 1; l < ns; l++, k++)
+		{
+		  vtmp[l] = octave_NaN;
+		  idx(l+offset) = itmp[k];
+		}
 	    }
+
+	  p += ns;
 	}
-#else
-      if (return_idx)
+
+      retval (1) = idx;
+    }
+  else
+    {
+      octave_sort<unsigned EIGHT_BYTE_INT> ieee754_sort;
+ 
+      for (int j = 0; j < iter; j++)
 	{
-	  octave_sort<vec_index *> indexed_double_sort (double_compare);
+	  /* Flip the data in the vector so that int compares on 
+	   * IEEE754 give the correct ordering
+	   */
+	  for (int i = 0; i < ns; i++)
+	    p[i] = FloatFlip (p[i]);
 
-	  OCTAVE_LOCAL_BUFFER (vec_index *, vi, elements);
-	  OCTAVE_LOCAL_BUFFER (vec_index, vix, elements);
+	  ieee754_sort.sort (p, ns);
 
-	  for (int i = 0; i < elements; i++)
+	  /* Flip the data out of the vector so that int compares on
+	   *  IEEE754 give the correct ordering
+	   */
+	  for (int i = 0; i < ns; i++)
+	    p[i] = IFloatFlip (p[i]);
+	  
+	  /* There are two representations of NaN. One will be sorted to
+	   * the beginning of the vector and the other to the end. If it
+	   * will be sorted to the beginning, fix things up.
+	   */
+	  if (lo_ieee_signbit (octave_NaN))
 	    {
-	      vi[i] = &vix[i];
-	      vi[i]->vec = vec(i);
+	      unsigned int i = 0;
+	      double *vtmp = (double *)p;
+	      while (xisnan(vtmp[i++]));
+	      for (unsigned int l = 0; l < ns - i + 1; l++)
+		vtmp[l] = vtmp[l+i-1];
+	      for (unsigned int l = ns - i + 1; l < ns; l++)
+		vtmp[l] = octave_NaN;
+	    }
+
+	  p += ns;
+	}
+    }
+#else
+  if (return_idx)
+    {
+      double *v = m.fortran_vec ();
+      octave_sort<vec_index *> indexed_double_sort (double_compare);
+
+      OCTAVE_LOCAL_BUFFER (vec_index *, vi, ns);
+      OCTAVE_LOCAL_BUFFER (vec_index, vix, ns);
+
+      for (int i = 0; i < ns; i++)
+	vi[i] = &vix[i];
+
+      NDArray idx (dv);
+
+      for (int j = 0; j < iter; j++)
+	{
+	  for (int i = 0; i < ns; i++)
+	    {
+	      vi[i]->vec = v[i];
 	      vi[i]->indx = i + 1;
 	    }
 
-	  indexed_double_sort.sort (vi, elements);
-
-	  RowVector idx (elements);
-
-	  for (int i = 0; i < elements; i++)
+	  indexed_double_sort.sort (vi, ns);
+	  
+	  for (int i = 0; i < ns; i++)
 	    {
-	      vec(i) = vi[i]->vec;
-	      idx(i) = vi[i]->indx;
+	      v[i] = vi[i]->vec;
+	      idx(i,j) = vi[i]->indx;
 	    }
-
-	  retval (1) = idx;
-
+	  v += ns;
 	}
-      else
-	{
-	  double *v = vec.fortran_vec ();
-	  octave_sort<double> double_sort (double_compare);
-	  double_sort.sort (v, elements);
-	}
-#endif
-
-      retval(0) = vec;
+      retval (1) = idx;
     }
-
+  else
+    {
+      double *v = m.fortran_vec ();
+      octave_sort<double> double_sort (double_compare);
+      for (int j = 0; j < iter; j++) 
+	{
+	  double_sort.sort (v, ns);
+	  v += nr2;
+	}
+    }
+#endif
+  retval(0) = m;
   return retval;
 }
 
-// I don't think there is any sane way of doing this with IEEE754 integer
-// compares. As the operation is fundamentally without sense, I don't
-// care that its not optimized....
 static octave_value_list
-vec_sort (ComplexRowVector &vec, bool return_idx)
+mx_sort (ComplexNDArray &m, bool return_idx)
 {
-
   octave_value_list retval;
-  int elements = vec.capacity ();
-  if (elements == 1)
-    {
-      if (return_idx)
-	retval(1) = RowVector (elements, 1.0);
-      retval(0) = vec;
-      return retval;
-    }
-  else if (elements > 1)
-    {
-      octave_sort<complex_vec_index *> indexed_double_sort (complex_compare);
 
-      OCTAVE_LOCAL_BUFFER (complex_vec_index *, vi, elements);
-      OCTAVE_LOCAL_BUFFER (complex_vec_index, vix, elements);
+  if (m.length () < 1)
+    return retval;
 
-      for (int i = 0; i < elements; i++)
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  // Find first non singleton dimension
+  int ns = 0;
+  for (int i = 0; i < dv.length (); i++)
+    if (dv(i) > 1)
+      {
+	ns = i;
+	break;
+      }
+  ns = dv(ns);
+  int iter = nel / ns;
+
+  octave_sort<complex_vec_index *> indexed_double_sort (complex_compare);
+
+  Complex *v = m.fortran_vec ();
+
+  OCTAVE_LOCAL_BUFFER (complex_vec_index *, vi, ns);
+  OCTAVE_LOCAL_BUFFER (complex_vec_index, vix, ns);
+
+  for (int i = 0; i < ns; i++)
+    vi[i] = &vix[i];
+
+  NDArray idx (dv);
+
+  for (int j = 0; j < iter; j++)
+    {
+      for (int i = 0; i < ns; i++)
 	{
-	  vi[i] = &vix[i];
-	  vi[i]->vec = vec(i);
+	  vi[i]->vec = v[i];
 	  vi[i]->indx = i + 1;
 	}
-
-      indexed_double_sort.sort (vi, elements);
-
-
+      
+      indexed_double_sort.sort (vi, ns);
+      
       if (return_idx)
 	{
-	  RowVector idx (elements);
-
-	  for (int i = 0; i < elements; i++)
+	  for (int i = 0; i < ns; i++)
 	    {
-	      vec(i) = vi[i]->vec;
-	      idx(i) = vi[i]->indx;
+	      v[i] = vi[i]->vec;
+	      idx(i,j) = vi[i]->indx;
 	    }
-
-	  retval (1) = idx;
 	}
       else
 	{
-	  for (int i = 0; i < elements; i++)
-	    vec(i) = vi[i]->vec;
+	  for (int i = 0; i < ns; i++)
+	    v[i] = vi[i]->vec;
 	}
-      retval(0) = vec;
+      v += ns;
     }
+
+  if (return_idx)
+    retval (1) = idx;
+  
+  retval(0) = m;
 
   return retval;
 }
+
+#else
 
 static octave_value_list
 mx_sort (Matrix &m, bool return_idx)
 {
   octave_value_list retval;
+
   int nr = m.rows ();
   int nc = m.columns ();
 
-  if (nr == 1 && nc > 0)
+  if ((nr > 1 || nc > 1) && nr > 0 && nc > 0)
     {
-      if (return_idx)
-	retval(1) = Matrix (nr, nc, 1.0);
-      retval(0) = m;
-      return retval;
-    }
-  else if (nr > 1 && nc > 0)
-    {
+      int nr2, nc2;
+      if (nr == 1)
+	{
+	  nr2 = nc;
+	  nc2 = 1;
+	}
+      else
+	{
+	  nr2 = nr;
+	  nc2 = nc;
+	}
 
 #if defined(HAVE_IEEE754_COMPLIANCE) && defined(EIGHT_BYTE_INT)
       double *v = m.fortran_vec ();
@@ -355,32 +406,32 @@ mx_sort (Matrix &m, bool return_idx)
 	{
 	  octave_sort<vec_index *> indexed_ieee754_sort (ieee754_compare);
 
-	  OCTAVE_LOCAL_BUFFER (vec_index *, vi, nr);
-	  OCTAVE_LOCAL_BUFFER (vec_index, vix, nr);
+	  OCTAVE_LOCAL_BUFFER (vec_index *, vi, nr2);
+	  OCTAVE_LOCAL_BUFFER (vec_index, vix, nr2);
 
-	  for (int i = 0; i < nr; i++)
+	  for (int i = 0; i < nr2; i++)
 	    vi[i] = &vix[i];
 
-	  Matrix idx (nr, nc);
+	  Matrix idx (nr2, nc2);
 
-	  for (int j = 0; j < nc; j++)
+	  for (int j = 0; j < nc2; j++)
 	    {
 
 	      /* Flip the data in the vector so that int compares on 
 	       * IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < nr; i++)
+	      for (int i = 0; i < nr2; i++)
 		{
 		  vi[i]->vec = FloatFlip (p[i]);
 		  vi[i]->indx = i + 1;
 		}
 
-	      indexed_ieee754_sort.sort (vi, nr);
+	      indexed_ieee754_sort.sort (vi, nr2);
 
 	      /* Flip the data out of the vector so that int compares on
 	       *  IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < nr; i++)
+	      for (int i = 0; i < nr2; i++)
 		{
 		  p[i] = IFloatFlip (vi[i]->vec);
 		  idx(i,j) = vi[i]->indx;
@@ -398,12 +449,12 @@ mx_sort (Matrix &m, bool return_idx)
 		  OCTAVE_LOCAL_BUFFER (double, itmp, i - 1);
 		  for (unsigned int l = 0; l < i -1; l++)
 		    itmp[l] = idx(l,j);
-		  for (unsigned int l = 0; l < nr - i + 1; l++)
+		  for (unsigned int l = 0; l < nr2 - i + 1; l++)
 		    {
 		      vtmp[l] = vtmp[l+i-1];
 		      idx(l,j) = idx(l+i-1,j);
 		    }
-		  for (unsigned int k = 0, l = nr - i + 1; l < nr; 
+		  for (unsigned int k = 0, l = nr2 - i + 1; l < nr2; 
 		       l++, k++)
 		    {
 		      vtmp[l] = octave_NaN;
@@ -411,29 +462,32 @@ mx_sort (Matrix &m, bool return_idx)
 		    }
 		}
 
-	      p += nr;
+	      p += nr2;
 	    }
 
-	  retval (1) = idx;
+	  if (nr == 1)
+	    retval (1) = idx.transpose ();
+	  else
+	    retval (1) = idx;
 	}
       else
 	{
 	  octave_sort<unsigned EIGHT_BYTE_INT> ieee754_sort;
  
-	  for (int j = 0; j < nc; j++)
+	  for (int j = 0; j < nc2; j++)
 	    {
 	      /* Flip the data in the vector so that int compares on 
 	       * IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < nr; i++)
+	      for (int i = 0; i < nr2; i++)
 		p[i] = FloatFlip (p[i]);
 
-	      ieee754_sort.sort (p, nr);
+	      ieee754_sort.sort (p, nr2);
 
 	      /* Flip the data out of the vector so that int compares on
 	       *  IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < nr; i++)
+	      for (int i = 0; i < nr2; i++)
 		p[i] = IFloatFlip (p[i]);
 
 	      /* There are two representations of NaN. One will be sorted to
@@ -445,60 +499,64 @@ mx_sort (Matrix &m, bool return_idx)
 		  unsigned int i = 0;
 		  double *vtmp = (double *)p;
 		  while (xisnan(vtmp[i++]));
-		  for (unsigned int l = 0; l < nr - i + 1; l++)
+		  for (unsigned int l = 0; l < nr2 - i + 1; l++)
 		    vtmp[l] = vtmp[l+i-1];
-		  for (unsigned int l = nr - i + 1; l < nr; l++)
+		  for (unsigned int l = nr2 - i + 1; l < nr2; l++)
 		    vtmp[l] = octave_NaN;
 		}
 
-	      p += nr;
+	      p += nr2;
 	    }
 	}
 #else
       if (return_idx)
 	{
+	  double *v = m.fortran_vec ();
 	  octave_sort<vec_index *> indexed_double_sort (double_compare);
 
-	  OCTAVE_LOCAL_BUFFER (vec_index *, vi, nr);
-	  OCTAVE_LOCAL_BUFFER (vec_index, vix, nr);
+	  OCTAVE_LOCAL_BUFFER (vec_index *, vi, nr2);
+	  OCTAVE_LOCAL_BUFFER (vec_index, vix, nr2);
 
-	  for (int i = 0; i < nr; i++)
+	  for (int i = 0; i < nr2; i++)
 	    vi[i] = &vix[i];
 
-	  Matrix idx (nr, nc);
+	  Matrix idx (nr2, nc2);
 
-	  for (int j = 0; j < nc; j++)
+	  for (int j = 0; j < nc2; j++)
 	    {
-	      for (int i = 0; i < nr; i++)
+	      for (int i = 0; i < nr2; i++)
 		{
-		  vi[i]->vec = m(i,j);
+		  vi[i]->vec = v[i];
 		  vi[i]->indx = i + 1;
 		}
 
-	      indexed_double_sort.sort (vi, nr);
+	      indexed_double_sort.sort (vi, nr2);
 
-	      for (int i = 0; i < nr; i++)
+	      for (int i = 0; i < nr2; i++)
 		{
-		  m(i,j) = vi[i]->vec;
+		  v[i] = vi[i]->vec;
 		  idx(i,j) = vi[i]->indx;
 		}
+	      v += nr2;
 	    }
-	  retval (1) = idx;
+	  if (nr == 1)
+	    retval (1) = idx.transpose ();
+	  else
+	    retval (1) = idx;
 	}
       else
 	{
 	  double *v = m.fortran_vec ();
 	  octave_sort<double> double_sort (double_compare);
-	  for (int j = 0; j < nc; j++) 
+	  for (int j = 0; j < nc2; j++) 
 	    {
-	      double_sort.sort (v, nr);
-	      v += nr;
+	      double_sort.sort (v, nr2);
+	      v += nr2;
 	    }
 	}
 #endif
       retval(0) = m;
     }
-
   return retval;
 }
 
@@ -512,51 +570,62 @@ mx_sort (ComplexMatrix &m, bool return_idx)
   int nr = m.rows ();
   int nc = m.columns ();
 
-  if (nr == 1 && nc > 0)
+  if ((nr > 1 || nc > 1) && nr > 0 && nc > 0)
     {
-      if (return_idx)
-	retval(1) = Matrix (nr, nc, 1.0);
-      retval(0) = m;
-      return retval;
-    }
-  else if (nr > 1 && nc > 0)
-    {
+      int nr2, nc2;
+      if (nr == 1)
+	{
+	  nr2 = nc;
+	  nc2 = 1;
+	}
+      else
+	{
+	  nr2 = nr;
+	  nc2 = nc;
+	}
+
       octave_sort<complex_vec_index *> indexed_double_sort (complex_compare);
 
-      OCTAVE_LOCAL_BUFFER (complex_vec_index *, vi, nr);
-      OCTAVE_LOCAL_BUFFER (complex_vec_index, vix, nr);
+      Complex *v = m.fortran_vec ();
 
-      for (int i = 0; i < nr; i++)
+      OCTAVE_LOCAL_BUFFER (complex_vec_index *, vi, nr2);
+      OCTAVE_LOCAL_BUFFER (complex_vec_index, vix, nr2);
+
+      for (int i = 0; i < nr2; i++)
 	vi[i] = &vix[i];
 
-      Matrix idx (nr, nc);
+      Matrix idx (nr2, nc2);
 
-      for (int j = 0; j < nc; j++)
+      for (int j = 0; j < nc2; j++)
 	{
-	  for (int i = 0; i < nr; i++)
+	  for (int i = 0; i < nr2; i++)
 	    {
-	      vi[i]->vec = m(i,j);
+	      vi[i]->vec = v[i];
 	      vi[i]->indx = i + 1;
 	    }
 
-	  indexed_double_sort.sort (vi, nr);
+	  indexed_double_sort.sort (vi, nr2);
 
 	  if (return_idx)
 	    {
-	      for (int i = 0; i < nr; i++)
+	      for (int i = 0; i < nr2; i++)
 		{
-		  m(i,j) = vi[i]->vec;
+		  v[i] = vi[i]->vec;
 		  idx(i,j) = vi[i]->indx;
 		}
 	    }
 	  else
 	    {
-	      for (int i = 0; i < nr; i++)
-		m(i,j) = vi[i]->vec;
+	      for (int i = 0; i < nr2; i++)
+		v[i] = vi[i]->vec;
 	    }
+	  v += nr2;
 	}
 
       if (return_idx)
+	if (nr == 1)
+	  retval (1) = idx.transpose ();
+	else
 	  retval (1) = idx;
 
       retval(0) = m;
@@ -564,6 +633,7 @@ mx_sort (ComplexMatrix &m, bool return_idx)
 
   return retval;
 }
+#endif
 
 DEFUN_DLD (sort, args, nargout,
   "-*- texinfo -*-\n\
@@ -622,41 +692,23 @@ ordered lists.\n\
 
   if (arg.is_real_type ())
     {
+#ifdef HAVE_ND_ARRAYS
+      NDArray m = arg.array_value ();
+#else
       Matrix m = arg.matrix_value ();
-
+#endif
       if (! error_state)
-	{
-	  if (m.rows () == 1)
-	    {
-	      int nc = m.columns ();
-	      RowVector v (nc);
-	      for (int i = 0; i < nc; i++)
-		v(i) = m(0,i);
-
-	      retval = vec_sort (v, return_idx);
-	    }
-	  else
-	    retval = mx_sort (m, return_idx);
-	}
+	retval = mx_sort (m, return_idx);
     }
   else if (arg.is_complex_type ())
     {
+#ifdef HAVE_ND_ARRAYS
+      ComplexNDArray cm = arg.complex_array_value ();
+#else      
       ComplexMatrix cm = arg.complex_matrix_value ();
-
+#endif
       if (! error_state)
-	{
-	  if (cm.rows () == 1)
-	    {
-	      int nc = cm.columns ();
-	      ComplexRowVector cv (nc);
-	      for (int i = 0; i < nc; i++)
-		cv(i) = cm(0,i);
-
-	      retval = vec_sort (cv, return_idx);
-	    }
-	  else
-	    retval = mx_sort (cm, return_idx);
-	}
+	retval = mx_sort (cm, return_idx);
     }
   else
     gripe_wrong_type_arg ("sort", arg);

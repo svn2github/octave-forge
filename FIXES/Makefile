@@ -1,7 +1,7 @@
 include ../Makeconf
 
 # Needed for soct.oct
-SORTDEFINES=$(HAVE_IEEE754_COMPLIANCE)
+SORTDEFINES=$(HAVE_IEEE754_COMPLIANCE) $(HAVE_ND_ARRAYS)
 
 RAND_LINKS = randn.oct rande.oct
 PROGS = sort.oct rand.oct $(RAND_LINKS) 

@@ -69,14 +69,15 @@
 function edit(file)
   ## pick up globals or default them
   global FUNCTION_EDITOR = [ EDITOR, " %s" ];
-  global FUNCTION_HOME = [ getenv ("HOME"), "/octave" ];
+  global FUNCTION_HOME = [ getenv("HOME"), "/octave" ];
   global FUNCTION_AUTHOR = getpwuid(getuid).gecos;
   global FUNCTION_EMAIL = [];
   global FUNCTION_LICENSE = "GPL";
 
   ## start the editor without a file if no file is given
   if nargin < 1
-    system(FUNCTION_EDITOR)
+    system(EDITOR)
+    return
   endif
 
   ## find file in path

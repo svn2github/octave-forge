@@ -3,9 +3,9 @@ function [y]=median(x,DIM)
 % [y]=median(x [,DIM])
 %
 % DIM	dimension
-%	1: mean of columns
-%	2: mean of rows
-% 	N: mean of  N-th dimension 
+%	1: median of columns
+%	2: median of rows
+% 	N: median of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
 %
 % features:

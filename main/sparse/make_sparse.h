@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.19  2003/11/21 05:10:17  pkienzle
+Slightly improved formatting of warning message
+
 Revision 1.18  2003/11/17 17:04:40  adb014
 Updates for 2.1.51
 
@@ -120,7 +123,7 @@ DLD functions for sparse support in octave
 #endif
 
 // This is not the right error to thow
-#define SP_FATAL_ERR(str) do { error("sparse: %s" \
+#define SP_FATAL_ERR(str) do { error("sparse: %s\n" \
     "(NOTE: you may ignore following memory error)", str); \
     octave_throw_bad_alloc(); } while (0)
 

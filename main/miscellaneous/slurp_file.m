@@ -10,7 +10,7 @@
 function s = slurp_file (f)
 
 if ! isstr (f),  error ("slurp_file :  f  is not a string"); end
-if ! length (f), error ("slurp_file :  f  is empty"); end
+if isempty (f), error ("slurp_file :  f  is empty"); end
 
 s = "";
 
@@ -20,7 +20,7 @@ if err && f(1) != "/",
   f = file_in_path (LOADPATH, f);
 				# Could not find it anywhere. Open will
 				# fail.
-  if strcmp (f, "undefined"),  
+  if isempty (f)
     f = f0;
     error ("slurp_file : Can't find '%s' anywhere",f0);
   end

@@ -1,7 +1,7 @@
-function i = center(i,DIM)
+function [i,S] = center(i,DIM)
 % CENTER removes the mean 
 %
-% z = center(x,DIM)
+% [z,mu] = center(x,DIM)
 %   removes mean x along dimension DIM
 %
 % DIM	dimension
@@ -33,8 +33,9 @@ function i = center(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.19; 	7 Apr 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
+%	$Revision$
+%	$Id$
+%	Copyright (c) 2000-2003 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 	
 
@@ -46,4 +47,5 @@ end;
 if any(size(i)==0); return; end;
 
 [S,N] = sumskipnan(i,DIM);		% sum
-i     = i - repmat(S./N,size(i)./size(S));		% remove mean
+S     = S./N;
+i     = i - repmat(S,size(i)./size(S));		% remove mean

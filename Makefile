@@ -11,7 +11,7 @@ SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 
 ifdef OCTAVE_FORGE
 
-.PHONY: all install clean distclean dist $(SUBMAKEDIRS)
+.PHONY: all install check icheck clean distclean dist $(SUBMAKEDIRS)
 
 all: $(SUBMAKEDIRS)
 	@echo "Build complete."
@@ -34,6 +34,12 @@ install: $(SUBMAKEDIRS)
 	@echo "   $(MPATH)/FIXES"
 	@echo "   $(OPATH)"
 	@echo "against those in your version of Octave."
+
+check:
+	$(OCTAVE) -q batch_test.m
+
+icheck:
+	$(OCTAVE) -q interact_test.m
 
 clean: $(SUBMAKEDIRS)
 	-$(RM) core octave-core octave configure.in

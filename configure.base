@@ -29,7 +29,6 @@ dnl makes autoconf happy and we can override whatever we
 dnl need with mkoctfile -p.
 AC_PROG_CC
 
-
 dnl XXX FIXME XXX need tests for -p -c -s in mkoctfile.
 
 dnl *******************************************************************
@@ -168,6 +167,9 @@ fi
 
 dnl **********************************************************
 
+dnl should check that $(OCTAVE) --version matches $(MKOCTFILE) --version
+AC_CHECK_PROG(OCTAVE,octave,octave)
+
 AC_PROG_LN_S
 AC_PROG_INSTALL
 AC_PROG_RANLIB
@@ -207,6 +209,7 @@ shell commands will install into the following directories:
    headers:   $includedir
 
 octave-forge is configured with
+   octave:      $OCTAVE
    mkoctfile:	$MKOCTFILE for Octave $subver
    X11 support:	$XSTATUS"
 

@@ -85,7 +85,7 @@ function retval = hankel (c, r)
   endif
 
   if (nc > 1)
-    c = [ c ; r (2:nc) ];
+    c = [ c ; r(2:nc) ];
   endif
   retval = c ( ones (nr, 1) * [1:nc] + [0:nr-1]' * ones (1, nc) );
   retval = reshape (retval, nr, nc);

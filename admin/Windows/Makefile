@@ -4,15 +4,21 @@
 #   octave-forge is in /c/src/octave-forge
 #   install into /opt/octave-2.1.xx
 ROOT=/c/src
-ifeq (,$(v))
-  $(error usage: make v=2.1.xx)
+ifeq (,$(OCTVER))
+  $(error usage: OCTVER=2.1.xx make)
 endif
-OCTVER=$v
+ifneq (,$(minor))
+  nsis_minor=/DMINOR=$minor
+endif
 BUILD=$(ROOT)/cygwin/octave-$(OCTVER)
 SOURCE=$(ROOT)/octave-$(OCTVER)
 FORGE=$(ROOT)/octave-forge
 ADMIN=$(FORGE)/admin/Windows
 DEST=/opt/octave-$(OCTVER)
+WINDEST=C:\\opt\\octave-$(OCTVER)
+NSIS="/c/Program Files/NSIS/makensis" 
+NSISPARS=/DVERSION=$(OCTVER) $(nsis_minor) /DROOT=$(WINDEST)
+PACKAGEDIR=/opt
 
 $(warning ADMIN=$(ADMIN))
 $(warning SOURCE=$(SOURCE))
@@ -20,16 +26,17 @@ $(warning BUILD=$(BUILD))
 $(warning DEST=$(DEST))
 $(warning OCTVER=$(OCTVER))
 
-EXTERNAL_PACKAGES=fftw3 hdf5 lapack gnuplot gsl ginac image qhull
+EXTERNAL_PACKAGES=fftw3 hdf5 lapack gnuplot gsl ginac image qhull epstk
 PACKAGE_TARGETS=$(patsubst %,$(DEST)/unpack.%,$(EXTERNAL_PACKAGES))
 
 # cygkey and octkey must be exactly the same length
 cygkey=Cygnus Solutions
 octkey=GNUoctave $(OCTVER)
 
-.PHONY: all setup stdc++ ranlibhack confighack config build check install strip docs cygwin forge
+.PHONY: all setup stdc++ ranlibhack confighack config build check \
+	install strip docs forge epstk cygwin dist
 
-all: build check install cygwin forge strip docs
+all: build check install forge epstk strip docs
 	@echo "Done octave build: test using $(DEST)/bin/octave"
 
 
@@ -45,7 +52,7 @@ $(BUILD):
 	@echo "Preparing build directory $(BUILD)"
 	-mkdir $(BUILD)
 
-$(DEST)/unpack.% : /opt/%.tar.bz2 ; tar xjf $< -C $(DEST) ; touch $@
+$(DEST)/unpack.% : $(PACKAGEDIR)/%.tar.bz2 ; tar xjf $< -C $(DEST) ; touch $@
 
 stdc++: $(DEST)/lib/libstdc++.dll.a
 $(DEST)/lib/libstdc++.dll.a:
@@ -102,9 +109,10 @@ install.octave:
 # ==== strip octave
 strip: install
 	@echo "Stripping binaries for smaller distribution"
-	strip $(DEST)/bin/*
-	strip $(DEST)/base/oct/*
-	strip $(DEST)/site/oct/*/*
+	strip $(DEST)/bin/*.dll
+	strip $(DEST)/bin/*.exe
+	strip $(DEST)/base/oct/*.oct
+	strip $(DEST)/site/oct/*/*.oct
 
 # ==== install documentation
 docs: build
@@ -118,10 +126,10 @@ docs: build
 # ==== generate a cygwin environment
 # Octave requires a hacked version of the cygwin dll so
 # that it doesn't conflict with an existing cygwin installation.
-# These are stored in the cygwin directory of the installation
-# which gets mounted as /bin in the installed system.  The bin
-# directory itself gets mounted as /usr/bin in the installed
-# system.  By keeping these separate, it is possible to run
+# This is stored in the cygwin directory of the installation
+# which gets mounted as /bin in the installed system.  The octave
+# bin directory gets mounted as /usr/bin in the installed
+# system.  By keeping these separate, it should be possible to run
 # octave from either the hacked cygwin or the users own cygwin,
 # assuming the cygwin1.dll API hasn't changed.
 
@@ -172,10 +180,16 @@ $(CYGDIR):
 	-mkdir $(DEST)/cygwin
 
 # ==== build octave-forge
-forge: config.forge build.forge check.forge install.forge
+dist: forge cygwin
+	$(NSIS) $(NSISPARS)
+
+
+# ==== build octave-forge
+forge: install config.forge build.forge check.forge install.forge
 
 clean.forge:
 	@echo "Cleaning octave-forge"
+	-rm config.forge build.forge check.forge install.forge
 	cd $(FORGE) && make clean
 
 config.forge:
@@ -199,4 +213,3 @@ install.forge: build.forge
 run.forge:
 	@echo "Running with an octave-forge environment"
 	cd $(FORGE) && make run
-

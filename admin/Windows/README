@@ -1,10 +1,18 @@
 Most of the work of building a new release is
 encoded in admin/Windows/Makefile.
 
+1) Setup environment
+
 First you will need a cygwin environment.
 Search the net for details.  As of this writing,
 only the gcc 3.2 compiler is acceptable, later
-versions being too slow.
+versions being too slow.  
+
+Note that the gcc 3.2 compiler is missing stdint.h.  
+For our purposes you can do the following to get 
+around this using:
+
+  cat "#include <sys/types.h>" >/usr/include/stdint.h
 
 You will need to download octave-forge (which
 presumably you have already done, otherwise you
@@ -19,17 +27,33 @@ environment.
 You will need a directory /opt which has a
 number of supplementary packages.  These
 will be distributed from the octave-forge
-download site.
+download site.  Grab all of the files listed
+in the windows-dev section.
 
 The configuration options are hardcoded in 
 config-octave.
 
-Now you are ready to build.  You should be
-able to do:
+2) Build octave and octave-forge
+
+Start in the Windows admin directory.
+
+  cd /c/src/octave-forge/admin/Windows
+
+Update the octave-forge version from cvs:
 
   (cd /c/src/octave-forge; cvs -q update -dP)
-  make v=2.1.xx clean.forge
-  make v=2.1.xx
+
+Set your octave version:
+
+  export OCTVER=2.1.xx
+
+Clean out any old version:
+
+  make clean.forge
+
+Invoke the build:
+
+  make 
 
 The results of the build will be in:
 
@@ -42,9 +66,25 @@ The results of the build will be in:
   check.forge
   install.forge
 
-You should be able to run the new octave with
+If any stage fails for some reason (e.g., because 
+routines haven't been ported to cygwin yet), you 
+will need to remove the corresponding results file 
+in order to rebuild it.  This will likely be 
+build.octave or build.forge.
 
-  /opt/octave-2.1.xx/bin/octave
+It may be helpful when fixing problems to run
+octave-forge in place:
+
+  make run.forge
+
+See the results of the tests:
+
+  less check.octave
+  less check.forge
+
+Both will have some errors, but there shouldn't be
+too many.
+
 
 The following make targets are available:
 
@@ -69,12 +109,6 @@ The following make targets are available:
   docs
     * copies octave docs to the install directory
 
-  cygwin
-    * sets up a cygwin environment for octave, taken
-      from the current environment.  The list of
-      cygwin files is hard-coded.  You may need a
-      different list for your version of cygwin.
-
   clean.forge
     * call make clean in the octave-forge directory
   config.forge -> config.forge
@@ -86,32 +120,29 @@ The following make targets are available:
   install.forge -> install.forge
     * call make install in octave-forge
 
-  dist (not implemented)
+
+  cygwin
+    * sets up a cygwin environment for octave, taken
+      from the current environment.  The list of
+      cygwin files is hard-coded.  You may need a
+      different list for your version of cygwin.  This
+      is only needed for constructing a new distribution.
+
+  dist
     * use nsis to build a new octave distribution.
 
-Check the results files *.octave and *.forge for
-questionable output.  If you need to repeat your 
-build for some reason, you will need to remove 
-the output targets:
+3) Try out the new build.
 
-	rm *.octave *.forge
+You should be able to run the octave with
 
+  /opt/octave-2.1.xx/bin/octave
 
-2004-07-14
+4) Create a new release
 
-Octave+octave-forge windows old build instructions
+To build a release distribution, you will need the Nullsoft NSIS 2.0
+installer from 
 
-Build /opt/octave-2.1.xx
-    rm -rf /opt/octave-2.1.xx
-    mkdir /opt/octave-2.1.xx
-    cd /opt/octave-2.1.xx
-        
-Install epstk
-	cd /opt/octave/share/octave/site/m
-	# Grab the latest epstk from http://epstk.sf.net/down
-	# Skip the manual --- we can link directly to the web
-	unzip epstk2.zip
-	mv m epstk
+  http://www.nullsoft.com/free/nsis/#download
 
 Hack the links
 	# Some hand modifications were done in /opt/octave/bin
@@ -123,8 +154,9 @@ Hack the links
 	# find all links
 	find /opt/octave-2.1.57 -type l
 
-Grab nsis 2.0 from http://www.nullsoft.com/free/nsis/#download
-	cd <octave-forge>/admin/Windows
-	# Modify install_octave.sh to use the appropriate ARCH=dir
-        # then build the exe as follows:
-	<NSIS>/makensis /DVERSION=<ver> octave-install-win32.nsi
+To build the installer, use:
+
+  make dist
+
+Paul Kienzle
+2004-09-29

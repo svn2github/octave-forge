@@ -29,7 +29,7 @@
 ## This program is granted to the public domain.
 
 function n = datenum(Y,M,D,h,m,s)
-  persistent monthstart = cumsum([0,31,28,31,30,31,30,31,31,30,31,30]);
+  persistent monthstart = [306,337,0,31,61,92,122,153,184,214,245,275];
 
   if nargin == 0 || (nargin > 2  && isstr(Y)) || nargin > 6
     usage("n=datenum('date' [, P]) or n=datenum(Y, M, D [, h, m [, s]])");
@@ -39,16 +39,39 @@ function n = datenum(Y,M,D,h,m,s)
     [Y,M,D,h,m,s] = datevec(Y,M);
   else
     if nargin < 6, s = 0; endif
-    if nargin < 5, m = s; endif
-    if nargin < 4, h = s; endif
+    if nargin < 5, m = 0; endif
+    if nargin < 4, h = 0; endif
+    if nargin == 1
+      nc = columns(Y);
+      if nc > 6 || nc < 3,
+        error("expected date vector containing [Y,M,D,h,m,s]");
+      endif
+      s=m=h = 0;
+      if nc >= 6, s = Y(:,6); endif
+      if nc >= 5, m = Y(:,5); endif
+      if nc >= 4, h = Y(:,4); endif
+      D = Y(:,3);
+      M = Y(:,2);
+      Y = Y(:,1);
+    endif 
   endif
 
-  M(M<1) = 1;
-  Y += floor((M-1)/12);
+  M(M<1) = 1; ## For compatibility.  Otherwise allow negative months.
+
+  ## Based on Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
+  ## Set start of year to March by moving Jan. and Feb. to previous year.
+  ## Correct for months > 12 by moving to subsequent years.
+  z = Y + fix((M-14)/12);
+
+  ## Lookup number of days to beginning of the month.
   M = mod(M-1,12)+1;
-  n = 365*Y + ceil(Y/4) - ceil(Y/100) + ceil(Y/400) + monthstart(M) + ...
-	D + (h+(m+s/60)/60)/24;
-  n += mod(Y,4)==0 & (mod(Y,100)~=0 | mod(Y,400)==0) & M>2;
+  f = M;
+  f(:) = monthstart(M);
+
+  ## Add Y+M+D+h+m+s and correct for leap years.
+  n = D + f + 365*z+floor(z/4)-floor(z/100)+floor(z/400) + 60 + ...
+	(h+(m+s/60)/60)/24;
+
 endfunction
 
 %!assert(datevec(datenum(2003,11,28)),[2003,11,28,0,0,0])

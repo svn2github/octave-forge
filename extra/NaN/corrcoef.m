@@ -42,27 +42,18 @@ function [r2,cc] = corrcoef(X,Y,Mode);
 if nargin==1
         Y = [];
 elseif nargin==0
-        fprintf(2,'Error COVM: Missing argument(s)\n');
+        fprintf(2,'Error CORRCOEF: Missing argument(s)\n');
 end;        
-
-[r1,c1]=size(X);
-if (c1>r1),
-        fprintf(2,'Warning CORRCOEF: Covariance is ill-defined, because of too less observations (rows).\n');
-end;
 
 [r1,c1]=size(X);
 if ~isempty(Y)
         [r2,c2]=size(Y);
         if r1~=r2,
-                fprintf(2,'Error COVM: X and Y must have the same number of observations (rows).\n');
+                fprintf(2,'Error CORRCOEF: X and Y must have the same number of observations (rows).\n');
                 return;
         end;
 else
         [r2,c2]=size(X);
-end;
-
-if (c1>r1) | (c2>r2),
-        fprintf(2,'Warning COVM: Covariance is ill-defined, because of too less observations (rows).\n');
 end;
 
 if ~isempty(Y),

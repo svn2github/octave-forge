@@ -121,6 +121,11 @@ if iscell(s),
         strarray = s;
 elseif ischar(s) & all(size(s)>1),	%% char array transformed into a string. 
         strarray = cellstr(s);
+        for k = 1:prod(size(strarray)),
+                txt = strarray{k};
+                tmp = find(~isspace(txt));
+                strarray{k} = txt(min(tmp):max(tmp));
+        end
 elseif ischar(s),
         num = [];
         status = 0;

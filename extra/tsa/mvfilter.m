@@ -21,7 +21,7 @@ function [x,z]=mvfilter(B,A,x,z,Mode)
 % see also: MVAR 
 
 %	Version 2.90
-%	last revision 06.04.2002
+%	last revision 09.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 %
@@ -65,8 +65,8 @@ if nargin<4,
 elseif isempty(z)
         z = zeros(M,oo);
 else
-        if  any(size(z)~=[oo,M])
-                fprintf('Error VFILTER: size of z does not fit\n');
+        if  any(size(z)~=[M,oo])
+                fprintf('Error MVFILTER: size of z does not fit\n');
                 [size(z),oo,M]
                 return;
 	end;	

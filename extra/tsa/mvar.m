@@ -26,13 +26,13 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %  [4] T. Schneider and A. Neumaier, A. 2001. 
 %	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
-%  [5] A. Schloegl 2002. 
+%  [5] A. Schlogl 2002. 
 %	Validation of MVAR estimators or Remark on Algorithm 808: ARFIT, 
 %	ACM-Transactions on Mathematical Software. submitted.
 
 
 %	Version 2.90
-%	last revision 06.04.2002
+%	last revision 09.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
@@ -100,8 +100,8 @@ if Mode==0;  % %%%%% multi-channel Levinsion algorithm [2]
                 ARF(:,K*M+(1-M:0)) = D/PEB;	
                 ARB(:,K*M+(1-M:0)) = D'/PEF;	
                 
-                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF{K}';
-                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB{K}';
+                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0))';
+                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0))';
                 F(K+1:N,:) = tmp;
                 
                 for L = 1:K-1,
@@ -166,7 +166,7 @@ elseif Mode==6,
         for K=1:Pmax,
                 C(:,K*M+(1:M)) = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 %C{K+1} = C{K+1}/N;
-                D = C{K+1};
+                D = C(:,K*M+(1:M));
                 for L = 1:K-1,
                         D = D - ARF(:,L*M+(1-M:0))*C(:,(K-L)*M+(1:M));
                 end;
@@ -200,8 +200,8 @@ elseif Mode==2,
                 ARF(:,K*M+(1-M:0)) = D / PEB;	
                 ARB(:,K*M+(1-M:0)) = D'/ PEF;	
                 
-                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0))';
-                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0))';
+                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
+                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
                 F(K+1:N,:) = tmp;
                 
                 for L = 1:K-1,
@@ -234,8 +234,8 @@ elseif Mode==5, %%%%% multi-channel Levinsion algorithm [2] using Nutall-Strand 
                 ARF(:,K*M+(1-M:0)) = D / PEB;	
                 ARB(:,K*M+(1-M:0)) = D'/ PEF;	
                 
-                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF{K}';
-                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB{K}';
+                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
+                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
                 F(K+1:N,:) = tmp;
                 
                 for L = 1:K-1,
@@ -263,11 +263,11 @@ elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Me
         PEB = C(:,1:M);
         for K=1:Pmax,
                 D      = covm(F(K+1:N,:),B(1:N-K,:),'M');
-                ARF{K} = (PEF.^-.5)*D*(PEB.^-.5)';	
-                ARB{K} = ARF{K}; 
+                ARF(:,K*M+(1-M:0)) = (PEF.^-.5)*D*(PEB.^-.5)';	
+                ARB(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0)); 
                 
-                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF{K}';
-                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB{K}';
+                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
+                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
                 F(K+1:N,:) = tmp;
                 
                 for L = 1:K-1,
@@ -277,7 +277,7 @@ elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Me
                 end;
                 
                 %RCF{K} = ARF{K};
-                RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
+                RCF = ARF(:,K*M+(1-M:0));
                 
                 PEF = covm(F(K+1:N,:),F(K+1:N,:),'M');
                 PEB = covm(B(1:N-K,:),B(1:N-K,:),'M');
@@ -314,8 +314,8 @@ elseif Mode==4,  %%%%% nach Kay, not fixed yet.
                         ARB(:,L*M+(1-M:0))  = ARB(:,L*M+(1-M:0))  - ARF(:,(K-L)*M+(1-M:0)) *ARB(:,K*M+(1-M:0)) ;
                 end;
                 ARF(:,1:(K-1)*M) = ARFtmp;
-                RCF{K} = ARF(:,K*M+(1-M:0)) ;
-                RCB{K} = ARB(:,K*M+(1-M:0)) ;
+                RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0)) ;
+                RCB(:,K*M+(1-M:0)) = ARB(:,K*M+(1-M:0)) ;
                 
                 PEF = PEF*[eye(M) - ARB(:,K*M+(1-M:0)) *ARF(:,K*M+(1-M:0)) ];
                 PEB = PEB*[eye(M) - ARF(:,K*M+(1-M:0)) *ARB(:,K*M+(1-M:0)) ];
@@ -323,21 +323,13 @@ elseif Mode==4,  %%%%% nach Kay, not fixed yet.
         end;
 end;
 
-VAR{1} = eye(M);
 MAR    = zeros(M,M*Pmax);
 DC     = zeros(M);
 
 for K  = 1:Pmax,
-        VAR{K+1} = -ARF(:,K*M+(1-M:0))';
+%       VAR{K+1} = -ARF(:,K*M+(1-M:0))';
         DC = DC + ARF(:,K*M+(1-M:0))'.^2; %DC meausure [3]
 end;
 
-DC = sqrt(DC);
-if (exist('F')==1) & (nargout>4)
-        varargout{1} = F(Pmax+1:N,:);
-        [u,s,v] = svd(F(Pmax+1:N,:),0);
-        varargout{2} = diag(s);
-        varargout{3} = v;
-end;
 
 

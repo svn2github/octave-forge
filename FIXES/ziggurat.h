@@ -24,7 +24,7 @@ integer random number generator. This version of the code, uses the Mersenne
 Twister as the integer generator and uses 256 levels in the Ziggurat. This
 has several advantages.
 
-  1) As Marsaglia and Tsand themselves states, the more levels the few times
+  1) As Marsaglia and Tsang themselves states, the more levels the few times
     the expensive tail algorithm must be called
   2) The cycle time of the generator is determined by the integer generator,
     thus the use of a Mersenne Twister for the core random generator makes
@@ -38,16 +38,16 @@ ziggurat, even if the code itself isn't...
 
 One modification to the algorithm developed in the article, is that it is
 assumed that 0 <= x < Inf, and "unsigned long"s are used, thus resulting in
-terms like 2^31 in the code. As the normal distribution is defined between
+terms like 2^32 in the code. As the normal distribution is defined between
 -Inf < x < Inf, we effectively only have 31 bit integers plus a sign. Thus
-in Marsaglia and Tsang, 2^32 becomes 2^31. 
+in Marsaglia and Tsang, terms like 2^32 become 2^31. 
 
-It appears that I'm about a fact of two slower than the code in the article,
-this is partial due to a better generator of random integers than they use.
+It appears that I'm about a factor of two slower than the code in the article,
+this is partially due to a better generator of random integers than they use.
 But might also be that the case of rapid return was optimized by inlining the
 relevant code with a #define. As the basic Mersenne Twister is only 25% 
 faster than this code I suspect that the main reason is just the use of
-the Mersenne Twister and not the inline, so I'm not going to try and optimize
+the Mersenne Twister and not the inlining, so I'm not going to try and optimize
 further.
 */
 
@@ -144,7 +144,7 @@ inline void Ziggurat::create_tables (void)
   for (int i = 254; i > 0; i--)
     {
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
-       * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2 ln(y))
+       * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
       x = sqrt(-2. * log(SECTION_AREA / x1 + fi[i+1]));
       ki[i+1] = (MTRand::uint32)(x / x1 * TWO_TO_POWER_31);
@@ -186,7 +186,7 @@ inline double Ziggurat::randExc (void)
 	   * 
 	   * For the normal tail, the method of Marsaglia[5] provides:
 	   * generate x = -ln(U_1)/r, y = -ln(U_2), until y+y > x*x,
-	   * the return r+x. Except that r+x is always in the positive 
+	   * then return r+x. Except that r+x is always in the positive 
 	   * tail!!!! Any thing random might be used to determine the
 	   * sign, but as we already have ri we might as well use it
 	   */

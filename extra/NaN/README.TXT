@@ -1,18 +1,19 @@
-NaN-Tb: A statistics toolbox for handling NaN's and missing values. 
--------------------------------------------------------------------
-(c) 2000-2002 Alois Schloegl <a.schloegl@ieee.org>
+NaN-Tb: A statistics toolbox 
+------------------------------------------------------------
+Copyright (C) 2000-2002 Alois Schloegl <a.schloegl@ieee.org>
 
 
 FEATURES of the NaN-tb:
 -----------------------
- - realizes an innovative concept for the future developement for handling NaN's. 
+ - implements statistical tools
+ - NaN's are treated as missing values 
+ - less but more powerful functions (no nan-FUN needed)
+ - fixes known bugs
  - compatible to Matlab and Octave
- - easy to use, does not need special nan-functions like nansum, etc. 
- - only one function instead of two (e.g. mean and nanmean are replaced by mean, etc)
- - contains many basic statistical functions.
+ - easy to use, compatible to existing software
  - supports DIM argument 
  - supports unbiased estimation; 
- - The toolbox was tested and can be used with 
+ - The toolbox was tested with
    Matlab 5.2, 5.3, 6.1 and Octave 2.0.14, 2.0.16.92, 2.1.35-36, 
  
  
@@ -34,8 +35,8 @@ Currently are implemented:
 	SKEWNESS	skewness
 	KURTOSIS	excess 
 	MAD		mean absolute deviation
-	CENTER		removes mean  
-	ZSCORE		normalizes x with z=(x-mean)/std 
+	CENTER		removes mean
+	ZSCORE		normalizes x with z = (x-mean)/std 
 	HARMMEAN	harmonic mean
 	GEOMEAN		geometric mean
 	NANTEST		checks whether all functions have been replaced
@@ -80,7 +81,6 @@ It implements
   second output argument.
 (Note, NANSUM from Matlab does not support the DIM-argument, and NANSUM(NaN)
 gives NaN instead of 0);
-
 
 4) Defining the estimation mode (biased or unbiased) 
 This feature is removed. 

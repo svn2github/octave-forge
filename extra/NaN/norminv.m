@@ -44,7 +44,7 @@ k = (s==0) & ~isnan(m);		% temporary variable, reduces number of tests.
 
 x((p==0) & k) = -inf;
 
-x((p==1) & k) = inf;
+x((p==1) & k) = +inf;
 
 k = (p>0) & (p<1) & k;
 if prod(size(m))==1,

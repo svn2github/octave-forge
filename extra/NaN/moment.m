@@ -79,6 +79,5 @@ end;
 [M,N] = sumskipnan(i.^p,DIM);
 %if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
         N = max(N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
-        
 %end;	
 M = M./N;

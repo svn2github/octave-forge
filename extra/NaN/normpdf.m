@@ -38,7 +38,9 @@ end;
 % allocate output memory and check size of arguments
 z = (x-m)./s;	  % if this line causes an error, input arguments do not fit. 
 
-p = ((2*pi)^(-1/2))*exp(-z.^2/2)./s;
+%p = ((2*pi)^(-1/2))*exp(-z.^2/2)./s;
+SQ2PI = 2.5066282746310005024157652848110;
+p = exp(-z.^2/2)./(s*SQ2PI);
 
 p((x==m) & (s==0)) = inf;
 

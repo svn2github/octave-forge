@@ -348,6 +348,9 @@ dispatch_record(const std::string &f, const std::string &n,
   symbol_record *sr = fbi_sym_tab->lookup(f,true);
   if (sr->def().type_id() != octave_dispatch::static_type_id())
     {
+      // Preserve mark_as_command status
+      bool iscommand = sr->is_command();
+
       // Not an overloaded name, so if only display or clear then we are done
       if ( t.empty() ) return;
 
@@ -386,9 +389,9 @@ dispatch_record(const std::string &f, const std::string &n,
       // Create a symbol record for the dispatch object.
       sr = fbi_sym_tab->lookup(f,true);
       sr->unprotect();
-      // XXX FIXME XXX TEXT_FUNCTION was renamed to COMMAND == 16
-      sr->define(octave_value(dispatch),
-			     symbol_record::BUILTIN_FUNCTION|16); 
+      sr->define(octave_value(dispatch), symbol_record::BUILTIN_FUNCTION); 
+      // std::cout << "iscommand('"<<f<<"')=" << iscommand << std::endl;
+      if (iscommand) sr->mark_as_command();
       sr->document(basedoc + "\n\nOverloaded function\n");
       sr->make_eternal(); // XXX FIXME XXX why??
       sr->mark_as_static();
@@ -482,6 +485,9 @@ in the current directory!  I don't want them installed accidentally.
 %! assert(hello(3i),1+3i)
 %!test 
 %! system("rm dispatch_y.m");
+
+XXX FIXME XXX add tests for preservation of mark_as_command status.
+
 */
 
 DEFUN_DLD(dispatch, args, , "\

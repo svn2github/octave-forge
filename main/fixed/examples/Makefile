@@ -19,8 +19,14 @@ endif
 %.oct : %.cc 
 .SUFFIXES:
 .SUFFIXES: .cc .oct .o .h
-
+# This stuff doesn't build on OS X at the moment. Till someone
+# fixes it, disable the build...
+ifeq (,$(findstring darwin,$(canonical_host_type)))
 all: $(DEPENDS) $(OBJECTS) $(TARGETS)
+else
+all:
+	@echo "****** WARNING: Building of examples disabled for Darwin";
+endif
 
 ifneq (,$(wildcard *.d))
 include $(wildcard *.d)

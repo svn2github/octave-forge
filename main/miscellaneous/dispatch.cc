@@ -87,7 +87,7 @@ public:
 			     int nargout);
   octave_value_list do_multi_index_op (int, const octave_value_list&);
 
-  void add (const std::string t, const std::string n) { tab[t] = n; }
+  void add (const std::string t, const std::string n);
   void clear (const std::string t) { tab.erase(t); }
   void print (std::ostream& os, bool pr_as_read=false) const;
 
@@ -119,6 +119,15 @@ octave_dispatch::octave_dispatch (symbol_record* sr)
     base.define(sr->def(),sr->type());
     base.document(sr->help());
   }
+}
+
+void 
+octave_dispatch::add (const std::string t, const std::string n)
+{ 
+  if (tab.count(t) > 0 && tab[t] != n)
+    warning("replacing %s(%s,...)->%s with %s",
+	    base.name().c_str(), t.c_str(), tab[t].c_str(), n.c_str());
+  tab[t] = n; 
 }
 
 octave_value_list

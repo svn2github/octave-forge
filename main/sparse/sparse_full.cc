@@ -66,6 +66,70 @@ DEFUN_DLD (full, args, ,
 }
 
 //
+// is_sparse and friends
+//
+DEFUN_DLD (is_sparse, args, ,
+"FM= is_sparse (X)\n"
+"  Return true if X is a sparse storage matrix\n"
+"  see also is_real_sparse , is_complex_sparse")
+{
+  octave_value_list retval;
+
+  if (args.length() != 1) {
+     print_usage ("is_sparse");
+     return retval;
+  }
+
+  if (args(0).type_name () == "sparse" || 
+      args(0).type_name () == "complex_sparse") {
+     retval(0)= 1.0;
+  } else
+     retval(0)= 0.0;
+
+  return retval;
+}
+
+DEFUN_DLD (is_real_sparse, args, ,
+"FM= is_real_sparse (X)\n"
+"  Return true if X is a real matrix with sparse storage\n"
+"  see also is_sparse , is_complex_sparse")
+{
+  octave_value_list retval;
+
+  if (args.length() != 1) {
+     print_usage ("is_real_sparse");
+     return retval;
+  }
+
+  if (args(0).type_name () == "sparse" ) {
+     retval(0)= 1.0;
+  } else
+     retval(0)= 0.0;
+
+  return retval;
+}
+
+DEFUN_DLD (is_complex_sparse, args, ,
+"FM= is_complex_sparse (X)\n"
+"  Return true if X is a real matrix with sparse storage\n"
+"  see also is_sparse , is_real_sparse")
+{
+  octave_value_list retval;
+
+  if (args.length() != 1) {
+     print_usage ("is_complex_sparse");
+     return retval;
+  }
+
+  if (args(0).type_name () == "complex_sparse" ) {
+     retval(0)= 1.0;
+  } else
+     retval(0)= 0.0;
+
+  return retval;
+}
+
+//
 // nnz
 //
 DEFUN_DLD (nnz, args, ,
@@ -214,6 +278,9 @@ SPFIND: a sparse version of the find operator\n\
 
 /*
  * $Log$
+ * Revision 1.3  2001/11/16 03:09:42  aadler
+ * added spsum.m, is_sparse, is_real_sparse, is_complex_sparse
+ *
  * Revision 1.2  2001/10/12 02:24:28  aadler
  * Mods to fix bugs
  * add support for all zero sparse matrices

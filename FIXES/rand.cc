@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/time.h>
 #endif
 
-
 /* 
    A C-program for MT19937, with initialization improved 2002/2/10.
    Coded by Takuji Nishimura and Makoto Matsumoto.
@@ -97,10 +96,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /* Ziggurat parameters */
 #define ZIGGURAT_TABLE_SIZE 256
-#define ZIGGURAT_R 3.6541528853610088
-#define ZIGGURAT_INV_R 0.27366123732975828
+
+#define ZIGGURAT_NOR_R 3.6541528853610088
+#define ZIGGURAT_NOR_INV_R 0.27366123732975828
 #define TWO_TO_POWER_31 2147483648.0
-#define SECTION_AREA 0.00492867323399
+#define NOR_SECTION_AREA 0.00492867323399
+
+#define ZIGGURAT_EXP_R 7.69711747013104972
+#define ZIGGURAT_EXP_INV_R 0.129918765548341586
+#define TWO_TO_POWER_32 4294967296.0
+#define EXP_SECTION_AREA 0.0039496598225815571993
 
 static unsigned long state[N]; /* the array for the state vector  */
 static int left = 1;
@@ -109,6 +114,8 @@ static int initt = 1;
 static unsigned long *next;
 static unsigned long ki[ZIGGURAT_TABLE_SIZE];
 static double wi[ZIGGURAT_TABLE_SIZE], fi[ZIGGURAT_TABLE_SIZE];
+static unsigned long ke[ZIGGURAT_TABLE_SIZE];
+static double we[ZIGGURAT_TABLE_SIZE], fe[ZIGGURAT_TABLE_SIZE];
 
 /* initializes state[N] with a seed */
 void init_genrand(unsigned long s)
@@ -263,15 +270,15 @@ inline double rand53(void)
 This code is based on the paper Marsaglia and Tsang, "The ziggurat method
 for generating random variables", Journ. Statistical Software. Code was
 presented in this paper for a Ziggurat of 127 levels and using a 32 bit
-integer random number generator. This version of the code, uses the Mersenne
-Twister as the integer generator and uses 256 levels in the Ziggurat. This
-has several advantages.
+integer random number generator. This version of the code, uses the 
+Mersenne Twister as the integer generator and uses 256 levels in the 
+Ziggurat. This has several advantages.
 
-  1) As Marsaglia and Tsang themselves states, the more levels the few times
-    the expensive tail algorithm must be called
-  2) The cycle time of the generator is determined by the integer generator,
-    thus the use of a Mersenne Twister for the core random generator makes
-    this cycle extremely long.
+  1) As Marsaglia and Tsang themselves states, the more levels the few 
+    times the expensive tail algorithm must be called
+  2) The cycle time of the generator is determined by the integer 
+    generator, thus the use of a Mersenne Twister for the core random 
+    generator makes this cycle extremely long.
   3) The license on the original code was unclear, thus rewriting the code 
     from the article means we are free of copyright issues.
 
@@ -285,29 +292,31 @@ terms like 2^32 in the code. As the normal distribution is defined between
 -Inf < x < Inf, we effectively only have 31 bit integers plus a sign. Thus
 in Marsaglia and Tsang, terms like 2^32 become 2^31. 
 
-It appears that I'm about a factor of two slower than the code in the article,
-this is partially due to a better generator of random integers than they use.
-But might also be that the case of rapid return was optimized by inlining the
-relevant code with a #define. As the basic Mersenne Twister is only 25% 
-faster than this code I suspect that the main reason is just the use of
-the Mersenne Twister and not the inlining, so I'm not going to try and optimize
-further.
+It appears that I'm slightly slower than the code in the article, this
+is partially due to a better generator of random integers than they
+use. But might also be that the case of rapid return was optimized by
+inlining the relevant code with a #define. As the basic Mersenne
+Twister is only 25% faster than this code I suspect that the main
+reason is just the use of the Mersenne Twister and not the inlining,
+so I'm not going to try and optimize further.
 */
 inline void create_ziggurat_tables (void)
 {
   double x, x1;
-  
-  x1 = ZIGGURAT_R;
+ 
+  // Ziggurat tables for the normal distribution
+  x1 = ZIGGURAT_NOR_R;
   wi[255] = x1 / TWO_TO_POWER_31;
   fi[255] = exp (-0.5 * x1 * x1);
 
-  /* Index zero is special for tail strip, where Marsaglia and Tsang defines
-   * this as 
+  /* Index zero is special for tail strip, where Marsaglia and Tsang 
+   * defines this as 
    * k_0 = 2^31 * r * f(r) / v, w_0 = 0.5^31 * v / f(r), f_0 = 1,
    * where v is the area of each strip of the ziggurat. 
    */
-  ki[0] = (unsigned long int) (x1 * fi[255] / SECTION_AREA * TWO_TO_POWER_31);
-  wi[0] = SECTION_AREA / fi[255] / TWO_TO_POWER_31;
+  ki[0] = (unsigned long int) (x1 * fi[255] / NOR_SECTION_AREA * 
+			       TWO_TO_POWER_31);
+  wi[0] = NOR_SECTION_AREA / fi[255] / TWO_TO_POWER_31;
   fi[0] = 1.;
 
   for (int i = 254; i > 0; i--)
@@ -315,7 +324,7 @@ inline void create_ziggurat_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt(-2. * log(SECTION_AREA / x1 + fi[i+1]));
+      x = sqrt(-2. * log(NOR_SECTION_AREA / x1 + fi[i+1]));
       ki[i+1] = (unsigned long int)(x / x1 * TWO_TO_POWER_31);
       wi[i] = x / TWO_TO_POWER_31;
       fi[i] = exp (-0.5 * x * x);
@@ -323,6 +332,35 @@ inline void create_ziggurat_tables (void)
     }
 
   ki[1] = 0;
+
+  // Zigurrat tables for the exponential distribution
+  x1 = ZIGGURAT_EXP_R;
+  we[255] = x1 / TWO_TO_POWER_32;
+  fe[255] = exp (-x1);
+
+  /* Index zero is special for tail strip, where Marsaglia and Tsang 
+   * defines this as 
+   * k_0 = 2^32 * r * f(r) / v, w_0 = 0.5^32 * v / f(r), f_0 = 1,
+   * where v is the area of each strip of the ziggurat. 
+   */
+  ke[0] = (unsigned long int) (x1 * fe[255] / EXP_SECTION_AREA * 
+			       TWO_TO_POWER_32);
+  we[0] = EXP_SECTION_AREA / fe[255] / TWO_TO_POWER_32;
+  fe[0] = 1.;
+
+  for (int i = 254; i > 0; i--)
+    {
+      /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
+       * need inverse operator of y = exp(-x) -> x = -ln(y)
+       */
+      x = - log(EXP_SECTION_AREA / x1 + fe[i+1]);
+      ke[i+1] = (unsigned long int)(x / x1 * TWO_TO_POWER_32);
+      we[i] = x / TWO_TO_POWER_32;
+      fe[i] = exp (-x);
+      x1 = x;
+    }
+  ke[1] = 0;
+
   initt = 0;
 }
 
@@ -352,7 +390,7 @@ inline double randn (void)
       const int idx = ri & 0xFF;
       const double x = ri * wi[idx];
       if (abs(ri) < ki[idx])
-	return x;		// 99.33% of the time we return here 1st try
+	return x;		// 99.3% of the time we return here 1st try
       else if (idx == 0)
 	{
 	  /* As stated in Marsaglia and Tsang
@@ -366,14 +404,38 @@ inline double randn (void)
 	  double xx, yy;
 	  do
 	    {
-	      xx = - ZIGGURAT_INV_R * log (randu());
+	      xx = - ZIGGURAT_NOR_INV_R * log (randu());
 	      yy = - log (randu());
 	    } 
 	  while ( yy+yy <= xx*xx);
-	  return (ri < 0 ? -ZIGGURAT_R-xx : ZIGGURAT_R+xx);
+	  return (ri < 0 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
 	}
       else if ((fi[idx-1] - fi[idx]) * randu() + fi[idx] < 
 	       exp(-0.5*x*x))
+	return x;
+    }
+}
+
+inline double rande (void)
+{
+  if (initt) create_ziggurat_tables();
+  while (1)
+    {
+      unsigned long ri = randi ();
+      const int idx = ri & 0xFF;
+      const double x = ri * we[idx];
+      if (ri < ke[idx])
+	return x;		// 98.9% of the time we return here 1st try
+      else if (idx == 0)
+	{
+	  /* As stated in Marsaglia and Tsang
+	   * 
+	   * For the exponential tail, the method of Marsaglia[5] provides:
+           * x = r - ln(U);
+	   */
+	  return ZIGGURAT_NOR_R - log(randu());
+	}
+      else if ((fe[idx-1] - fe[idx]) * randu() + fe[idx] < exp(-x))
 	return x;
     }
 }
@@ -764,6 +826,89 @@ variables', J. Statistical Software, vol 5, 2000\n\
 	{
 	  Matrix X(nr, nc);
           fill_randn(nr*nc,X.fortran_vec());
+	  retval(0) = X;
+	}
+#endif
+    }
+
+  return retval;
+}
+
+void fill_rande(int n, double *p)
+{
+  for (int i=0; i < n; i++) p[i] = rande();
+}
+
+DEFUN_DLD (rande, args, nargout, 
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} rande (@var{x})\n\
+@deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})\n\
+@deftypefnx {Loadable Function} {@var{v} =} rande (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{s} =} rande (\"seed\", @var{x})\n\
+Return a matrix with exponentially distributed random elements.  The\n\
+arguments are handled the same as the arguments for @code{rand}.\n\
+\n\
+@code{rande} uses a Marsaglia and Tsang[1] Ziggurat technique to\n\
+transform from U to E(0,1). The technique uses a 256 level Ziggurat\n\
+with the Mersenne Twister from @code{rand} used to generate U.\n\
+Exponential distributions with arbitrary @var{lambda} can be\n\
+calculated by multiplying the the values returned by @code{rande}\n\
+by @code{1/@var{lambda}}.\n\
+\n\
+[1] G. Marsaglia and W.W. Tsang, 'Ziggurat method for generating random\n\
+variables', J. Statistical Software, vol 5, 2000\n\
+(http://www.jstatsoft.org/v05/i08/)\n\
+@end deftypefn\n\
+@seealso{rand}\n")
+{
+  octave_value_list retval;	// list of return values
+
+  int nargin = args.length ();	// number of arguments supplied
+
+  if (nargin > 0 && args(0).is_string())
+    retval(0) = do_seed (args);
+
+  else
+    {
+#ifdef HAVE_ND_ARRAYS
+      dim_vector dims;
+      do_size ("rande", args, dims);
+      if (error_state) return retval;
+      int ndim = dims.length();
+      switch (ndim)
+        {
+        case 0:
+	  {
+	    double v;
+            fill_rande(1,&v);
+            retval(0) = v;
+	  }
+          break;
+          
+        case 1: case 2:
+	  {
+            Matrix X(dims(0),dims(ndim==1?0:1));
+            fill_rande(X.capacity(),X.fortran_vec());
+            retval(0) = X;
+	  }
+          break;
+          
+        default:
+	  {
+            NDArray Xn(dims);
+            fill_rande(Xn.capacity(),Xn.fortran_vec());
+            retval(0) = Xn;
+	  }
+          break;
+        }
+#else
+      int nr=0, nc=0;
+      do_size (args, nr, nc);
+
+      if (! error_state)
+	{
+	  Matrix X(nr, nc);
+          fill_rande(nr*nc,X.fortran_vec());
 	  retval(0) = X;
 	}
 #endif

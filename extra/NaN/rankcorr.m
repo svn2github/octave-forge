@@ -17,7 +17,7 @@ function r = rankcorr(X,Y)
 % [1] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
 % [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
-%    Version 1.26  Date: 19 Aug 2002
+%    Version 1.26  Date: 20 Aug 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -37,15 +37,8 @@ function r = rankcorr(X,Y)
 
 fprintf(2,'RANKCORR might become obsolete; use CORRCOEF(ranks(x)) or CORRCOEF(...,''Rank'') instead\n');
 
-if isnumeric(X) & any(isnan(X(:))),
-        warning('Missing values (NaN) might give different ranks')
-end;
-
 if nargin < 2
         r = corrcoef(ranks(X));
 else
-        if isnumeric(Y) & any(isnan(Y(:))),
-                warning('Missing values (NaN) might give different ranks')
-        end;
         r = corrcoef(ranks(X),ranks(Y));
 end

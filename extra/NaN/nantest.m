@@ -23,7 +23,6 @@
 %	$Id$
 %	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>
 
-
 FLAG_WARNING = warning;
 warning('off');
 
@@ -53,6 +52,35 @@ if exist('norminv')==2,
         q(5) = any(norminv(0.5,[1 2 3 ],0)~=[1:3]);
 end;
 
+if exist('tpdf')==2,
+        q(6) = ~isnan(tpdf(nan,4));
+        if q(6),
+                fprintf(1,'TPDF should be replaced\n');
+        end;
+end;
+
+if exist('tcdf')==2,
+        try,	
+                q(7) = ~isnan(tcdf(nan,4));
+        catch,
+                q(7) = 1;
+        end;
+        if q(7),
+                fprintf(1,'TCDF should be replaced\n');
+        end;
+end;
+
+if exist('tinv')==2,
+        try,	
+                q(8) = ~isnan(tinv(nan,4));
+        catch,
+                q(8) = 1;
+        end;
+        if q(8),
+                fprintf(1,'TINV should be replaced\n');
+        end;
+end;
+
 
 %%%%% sorting of NaN's %%%%
 if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),  %~exist('OCTAVE_VERSION'),
@@ -70,7 +98,7 @@ end;
 
 
 %%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3 & 6.1 
-p    = 2;
+p    = 4;
 tmp1 = repmat(nan,p)/repmat(nan,p);
 tmp2 = repmat(nan,p)\repmat(nan,p);
 tmp3 = repmat(0,p)/repmat(0,p);

@@ -17,11 +17,16 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} voronoi (@var{X},@var{Y})
 ## @deftypefnx {Function File} {} voronoi (@var{X},@var{Y},"plotstyle")
+## @deftypefnx {Function File} {} voronoi (@var{X},@var{Y},"plotstyle",@var{OPTIONS})
 ## @deftypefnx {Function File} {[@var{vx}, @var{vy}] =} voronoi (@var{X},@var{Y})
-## plots voronoi diagram of points @var{X},@var{Y}. 
+## plots voronoi diagram of points @var{X},@var{Y}.
 ## The voronoi facets with points at infinity are not drawn.
 ## [@var{vx}, @var{vy}] = voronoi(...) returns the vertices instead plotting the
 ## diagram. plot (@var{vx}, @var{vy}) shows the voronoi diagram.
+##
+## A fourth optional argument, which must be a string, contains extra options
+## passed to the underlying qhull command.  See the documentation for the
+## Qhull library for details.
 ##
 ## @example
 ##   x = rand(10,1); y = rand(size(x));
@@ -29,9 +34,9 @@
 ##   [vx,vy] = voronoi(x,y);
 ##   plot(vx,vy,"-b;;",x,y,"o;points;",x(h),y(h),"-g;hull;")
 ## @end example
-## 
+##
 ## @end deftypefn
-## @seealso{voronoin, delaunay, convhull} 
+## @seealso{voronoin, delaunay, convhull}
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## First Release: 20/08/2000
@@ -41,15 +46,27 @@
 ## * provide example
 ## * use unique(x,"rows") rather than __unique_rows__
 
-function [varargout] = voronoi (x, y, plt)
+## 2003-12-14 Rafael Laboissiere <rafael@laboissiere.net>
+## Added optional fourth argument to pass options to the underlying
+## qhull command
 
-	if (nargin < 2 || nargin > 3)
-		usage ("voronoi (x, y)")
+function [varargout] = voronoi (x, y, plt, opt)
+
+	if (nargin < 2 || nargin > 4)
+		usage ("voronoi (x, y[, plt[, opt]])")
 	endif
-	
+
 	if (nargin < 3)
 		plt = "b;;";
 		## if not specified plot blue solid lines
+	endif
+
+        if (nargin == 4)
+		if (! isstr (opt))
+			error ("fourth argument must be a string");
+		endif
+	else
+		opt = "";
 	endif
 
 	lx = length (x);
@@ -59,7 +76,7 @@ function [varargout] = voronoi (x, y, plt)
 		error ("voronoi: arguments must be vectors of same length");
 	endif
 
-	[p, lst, infi] = __voronoi__ ([x(:),y(:)]);
+	[p, lst, infi] = __voronoi__ ([x(:),y(:)], opt);
 
 	idx = find (!infi);
 	ll = length (idx);

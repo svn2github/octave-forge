@@ -16,25 +16,41 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts})
-## computes n- dimensinal voronoi facets.  The input matrix @var{pts} 
+## @deftypefnx {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts}, @var{options})
+## computes n- dimensinal voronoi facets.  The input matrix @var{pts}
 ## of size [n, dim] contains n points of dimension dim.
 ## @var{C} contains the points of the voronoi facets. The list @var{F}
-## contains for each facet the indices of the voronoi points.   
+## contains for each facet the indices of the voronoi points.
+##
+## A second optional argument, which must be a string, contains extra options
+## passed to the underlying qhull command.  See the documentation for the
+## Qhull library for details.
 ## @end deftypefn
-## @seealso{voronoin, delaunay, convhull} 
+## @seealso{voronoin, delaunay, convhull}
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## First Release: 20/08/2000
 
-function [C, F] = voronoin (pts)
+## 2003-12-14 Rafael Laboissiere <rafael@laboissiere.net>
+## Added optional second argument to pass options to the underlying
+## qhull command
 
-	if (nargin != 1)
-		usage ("voronoin (pts)")
+function [C, F] = voronoin (pts, opt)
+
+	if ((nargin != 1) && (nargin != 2))
+		usage ("voronoin (pts[, options])")
 	endif
-	
+
 	[np,dims] = size (pts);
 	if (np > dims)
-		[C, F, infi] = __voronoi__ (pts);
+		if (nargin == 1)
+			[C, F, infi] = __voronoi__ (pts);
+		elseif isstr(opt)
+ 			[C, F, infi] = __voronoi__ (pts, opt);
+		else
+			error("second argument must be a string");
+		endif
+
 	else
 		error ("voronoin: number of points must be greater than their dimension")
 	endif

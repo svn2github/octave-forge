@@ -12,14 +12,20 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with this program; if not, write to the Free Software
-** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
+** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 */
 
 /*
 20. Augiust 2000 - Kai Habel: first release
 */
 
-extern "C" { 
+/*
+2003-12-14 Rafael Laboissiere <rafael@laboissiere.net>
+Added optional second argument to pass options to the underlying
+qhull command
+*/
+
+extern "C" {
 	#include "qhull/qhull_a.h"
 }
 
@@ -33,21 +39,32 @@ char qh_version[] = "__voronoi__.oct 20. August 2000";
 FILE *outfile = stdout;
 FILE *errfile = stderr;
 char flags[250];
+const char *options;
 
 DEFUN_DLD (__voronoi__, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{tri}=} __voronoi__ (@var{point})\n\
+@deftypefn {Loadable Function} {@var{tri} =} __voronoi__ (@var{point}[, @var{options}])\n\
 Internal function for voronoi.\n\
 @end deftypefn")
 {
 	octave_value_list retval;
 	retval(0) = 0.0;
-    
+
 	int nargin = args.length();
-	if (nargin != 1) {
-		print_usage ("__voronoi__ (points)");
+	if (nargin < 1 || nargin > 2) {
+		print_usage ("__voronoi__ (points[,opt])");
 		return retval;
 	}
+
+	if (nargin == 2) {
+		if ( ! args (1).is_string () ) {
+			error ("__voronoi__: second argument must be a string");
+			return retval;
+		}
+		options = args (1).string_value().c_str();
+	}
+	else
+		options = "";
 
 	Matrix p(args(0).matrix_value());
 
@@ -66,7 +83,7 @@ Internal function for voronoi.\n\
 	boolT ismalloc = False;
 
 	// hmm  lot's of options for qhull here
-	sprintf(flags,"qhull v Fv T0");
+	sprintf(flags,"qhull v Fv T0 %s",options);
 	if (!qh_new_qhull (dim, np, pt_array, ismalloc, flags, NULL, errfile)) {
 
 		/*If you want some debugging information replace the NULL
@@ -77,7 +94,7 @@ Internal function for voronoi.\n\
 		vertexT *vertex;
 		unsigned int i=0,n=0,k=0,ni[np],m=0,fidx=0,j=0,r=0;
 		for (int i=0;i<np;i++) ni[i]=0;
-		qh_setvoronoi_all(); 
+		qh_setvoronoi_all();
 		bool infinity_seen = false;
 		facetT *neighbor,**neighborp;
 		coordT *voronoi_vertex;
@@ -134,20 +151,20 @@ Internal function for voronoi.\n\
 				}
 			}
 			F(r++)=facet_list;
-			j++;	
+			j++;
 		}
 
 		retval(0) = v;
 		retval(1) = F;
 		retval(2) = AtInf;
-	
+
 		qh_freeqhull(!qh_ALL);
 			//free long memory
 
 		int curlong, totlong;
 		qh_memfreeshort (&curlong, &totlong);
 			//free short memory and memory allocator
-		
+
 		if (curlong || totlong) {
     		    warning("__voronoi__: did not free %d bytes of long memory (%d pieces)", totlong, curlong);
 		}

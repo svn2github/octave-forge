@@ -1,7 +1,7 @@
-BUILDING octave-2.1.36 for cygwin
+BUILDING octave-2.1.39 for cygwin
 
 This is a description of how I got 
-octave-2.1.36 and gnuplot-3.7.1
+octave-2.1.39 and gnuplot-3.7.1
 and octave-forge to build under win2000.
 
 I have made a cygwin tar.bz2 package
@@ -66,10 +66,10 @@ PREREQUISITES:
 
 BUILDING
 
-   Download octave-2.1.36.tar.bz2 from www.octave.org
-   tar xvfj octave-2.1.36.tar.bz2
-   cd  octave-2.1.36
-   ./configure --prefix=/usr
+   Download octave-2.1.39.tar.bz2 from www.octave.org
+   tar xvfj octave-2.1.39.tar.bz2
+   cd  octave-2.1.39
+   ./configure --prefix=/usr --enable-static=no --enable-shared --enable-dl
 
 OBTAIN GNUPLOT COMPONENTS
 
@@ -105,7 +105,8 @@ $ cat /usr/share/octave/site/m/startup/octaverc
    gnuplot_binary ="pgnuplot.exe";
    gnuplot_has_multiplot = 1;
 
-BUILD OCTAVE FORGE
+
+BUILD OCTAVE WITH FORGE
 
 1. EDIT /usr/src/octave-2.1.36/src/Makefile
 
@@ -255,10 +256,32 @@ ln -s $OCTAVEFORGE/main/splines/trisolve.cc
 ln -s $OCTAVEFORGE/extra/Windows/grab.cc
 ln -s $OCTAVEFORGE/extra/Windows/grab_win32part.cc
 
+3. BUID ATLAS INTO OCTAVE
 
-3. BUILD OCTAVE AGAIN
+    cd /usr/src
+    wget http://prdownloads.sf.net/math-atlas/atlas3.2.1.tar.bz2
+    tar xvfj atlas3.4.1.tar.bz2
+    cd ATLAS
+    make config
+    #### ANSWER LOTS OF QUESTIONS
+    make install arch=WinNT_P4SSE1
 
-cd /usr/src/octave-2.1.36
+    cd /usr/src/octave-2.1.39
+    cd libcruft/
+    mkdir tmp
+    cd tmp
+    ar x ../libcruft.a
+    for i in atlas.a lapack.a cblas.a f77blas.a ; do
+       ar x ../../../ATLAS/lib/WinNT_P4SSE1/lib$i
+    done
+    cd ..
+    rm libcruft.a ; ar rc libcruft.a tmp/*.o
+    cd ..
+    make
+
+4. BUILD / INSTALL OCTAVE
+
+cd /usr/src/octave-2.1.39
 make install
 #make install-strip - doesn't work for some octave subdirectories
 strip /usr/bin/octave*
@@ -324,7 +347,7 @@ cp -r $OCTAVEFORGE/main/time/*.m  $OCTAVEM/time
 
 GENERATE CYGWIN PACKAGE
 
-VER=2.1.36
+VER=2.1.39
 tar cvfj octave-$VER-gnuplot-octaveforge.tar.bz2 \
          /usr/bin/octave \
          /usr/bin/octave-$VER* \
@@ -345,7 +368,6 @@ tar cvfj octave-$VER-gnuplot-octaveforge.tar.bz2 \
 
 ## NOTES: These *.cc files are not included in this build
 ## for the following reasons
-FIXES/kron.cc - I don't understand the rational for this fix
 
 extra/linear-algebra/chol.cc
   - this doesn't seem complete to me - I'm reluctant to

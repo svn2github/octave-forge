@@ -21,7 +21,7 @@
 ##
 ## fn = inline ("x.^2 + 1","x");
 ## feval (fn, 6)        
-##   ans = 36
+##   ans = 37
 ##
 function [fname,fcode] = inline (str, n, varargin)
 

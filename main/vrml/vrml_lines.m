@@ -1,0 +1,77 @@
+## s = vrml_lines(x,f,...)
+##
+## x : 3xP   : The 3D points
+## f : 3xQ   : The indexes of the points forming the lines. Indexes
+##             should be in 1:P.
+##
+## Returns a Shape -> IndexedLineSet vrml node.
+##
+## No check is done on anything
+##
+## Options :
+## 
+## "col" , col  : 3x1 : Color, default = [1,0,0]
+##
+
+## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Last modified: Setembro 2002
+
+function s = vrml_lines(x,f,...)
+
+col = [1, 0, 0] ;
+
+opt1 = " col " ;
+opt0 = " " ;
+
+verbose = 0 ;
+
+nargin -= 2 ;
+while nargin>0 ,
+  tmp = va_arg() ; nargin-- ;
+  if ! isstr(tmp) ,
+    error ("vrml_lines : Non-string option : \n") ;
+    ## keyboard
+
+  end
+  if index(opt1,[" ",tmp," "]) ,
+    
+    tmp2 = va_arg() ; nargin-- ;
+    nargin-- ;
+    eval([tmp,"=tmp2;"]) ;
+
+    if verbose , printf ("vrml_lines : Read option : %s.\n",tmp); end
+
+  elseif index(opt0,[" ",tmp," "]) ,
+    
+    eval([tmp,"=1;"]) ;
+    if verbose , printf ("vrml_lines : Read boolean option : %s\n",tmp); end
+
+  else
+    error ("vrml_lines : Unknown option : %s\n",tmp) ;
+    ## keyboard
+  end
+endwhile
+
+if exist("col")!=1,  col = [0.5, 0.5, 0.8]; end
+
+s = sprintf([... 			# string of indexed face set
+	     "Shape {\n",...
+	     "  appearance Appearance {\n",...
+	     "    material Material {\n",...
+	     "      diffuseColor %8.3f %8.3f %8.3f \n",...
+	     "      emissiveColor %8.3f %8.3f %8.3f\n",...
+	     "    }\n",...
+	     "  }\n",...
+	     "  geometry IndexedLineSet {\n",...
+	     "    coordIndex [\n%s]\n",...
+	     "    coord Coordinate {\n",...
+	     "      point [\n%s]\n",...
+	     "    }\n",...
+	     "  }\n",...
+	     "}\n",...
+	     ],...
+	    col,col,...
+	    sprintf("                    %4d, %4d, %4d, -1,\n",f-1),...
+	    sprintf("                 %8.3f %8.3f %8.3f,\n",x)) ;
+
+

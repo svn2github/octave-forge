@@ -207,8 +207,12 @@ builtin(const std::string& base, octave_value_list args, int nargout)
       // Move the builtin function out of the way and restore the
       // dispatch fuction.
       // XXX FIXME XXX what if builtin wants to protect itself?
+      symbol_record* found=fbi_sym_tab->lookup(base,0);
+      bool readonly=found->is_read_only();
+      found->unprotect();
       fbi_sym_tab->rename (base, "builtin#"+base);
       fbi_sym_tab->rename ("dispatch#"+base, base);
+      if (readonly) found->protect();
       dispatch->protect();
 
       // remember if there were any errors.

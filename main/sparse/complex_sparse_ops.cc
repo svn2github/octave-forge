@@ -1451,7 +1451,7 @@ LUextract(SuperMatrix *L, SuperMatrix *U, Complex *Lval, int *Lrow,
    *snnzU = lastu;
 }
 
-void
+int
 complex_sparse_LU_fact(SuperMatrix A,
                        SuperMatrix *LC,
                        SuperMatrix *UC,
@@ -1516,6 +1516,7 @@ complex_sparse_LU_fact(SuperMatrix A,
    printf("verify UC\n"); oct_sparse_verify_supermatrix( *UC );
 #endif   
 
+   return info;
 } // complex_sparse_LU_fact(
 
 FIX_ROW_ORDER_SORT_FUNCTIONS( Complex )
@@ -1540,6 +1541,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.16  2003/08/29 19:40:56  aadler
+ * throw error rather than segfault for singular matrices
+ *
  * Revision 1.15  2003/03/05 15:31:53  pkienzle
  * Backport to octave-2.1.36
  *

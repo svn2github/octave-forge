@@ -1150,7 +1150,11 @@ LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
    *snnzU = lastu;
 }
 
-void
+// factors A into LC and UC, given permultations perm_c and perm_r
+// (or calculate perm_c if permc_spec indicates this)
+// return value: =0 -> success
+//               >0 -> matrix is singular, don't use for inverse solutions
+int
 sparse_LU_fact(SuperMatrix A,
                SuperMatrix *LC,
                SuperMatrix *UC,
@@ -1213,7 +1217,7 @@ sparse_LU_fact(SuperMatrix A,
    printf("verify LC\n"); oct_sparse_verify_supermatrix( *LC );
    printf("verify UC\n"); oct_sparse_verify_supermatrix( *UC );
 #endif   
-
+   return info;
 } // sparse_LU_fact(
 
 FIX_ROW_ORDER_SORT_FUNCTIONS( double )
@@ -1237,6 +1241,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.14  2003/08/29 19:40:56  aadler
+ * throw error rather than segfault for singular matrices
+ *
  * Revision 1.13  2003/03/05 15:31:54  pkienzle
  * Backport to octave-2.1.36
  *

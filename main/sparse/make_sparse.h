@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.16  2003/08/29 19:40:56  aadler
+throw error rather than segfault for singular matrices
+
 Revision 1.15  2003/05/15 21:25:40  pkienzle
 OCTAVE_LOCAL_BUFFER now requires #include <memory>
 
@@ -460,10 +463,10 @@ void
 LUextract(SuperMatrix *L, SuperMatrix *U, Complex *Lval, int *Lrow,
           int *Lcol, Complex *Uval, int *Urow, int *Ucol, int *snnzL,
           int *snnzU);
-void
+int 
 sparse_LU_fact(SuperMatrix A, SuperMatrix *LC, SuperMatrix *UC,
                int * perm_c, int * perm_r, int permc_spec );
-void
+int 
 complex_sparse_LU_fact(SuperMatrix A, SuperMatrix *LC, SuperMatrix *UC,
                        int * perm_c, int * perm_r, int permc_spec );
 void

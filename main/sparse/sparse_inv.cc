@@ -215,7 +215,11 @@ oct_sparse_inverse( const octave_sparse& Asp,
    assert(n == m);
 
    OCTAVE_LOCAL_BUFFER (int, perm_r, m );
-   sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+   if ( 0<
+   sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
+      ) {
+      SP_FATAL_ERR ("sparse matrix is singlar to machine precision");
+   }
 
    BUILD_PERM_VECTORS( ridxPr, cidxPr, coefPr, perm_r, m )
    BUILD_PERM_VECTORS( ridxPc, cidxPc, coefPc, perm_c, n )
@@ -262,7 +266,11 @@ oct_sparse_inverse( const octave_complex_sparse& Asp,
    assert(n == m);
 
    OCTAVE_LOCAL_BUFFER (int, perm_r, m );
-   complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+   if ( 0<
+   complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
+      ) {
+      SP_FATAL_ERR ("complex sparse matrix is singlar to machine precision");
+   }
 
    BUILD_PERM_VECTORS( ridxPr, cidxPr, coefPr, perm_r, m )
    BUILD_PERM_VECTORS( ridxPc, cidxPc, coefPc, perm_c, n )
@@ -416,6 +424,9 @@ SPABS : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.11  2003/08/29 19:40:56  aadler
+ * throw error rather than segfault for singular matrices
+ *
  * Revision 1.10  2003/07/23 17:21:54  aadler
  * modified help files
  *

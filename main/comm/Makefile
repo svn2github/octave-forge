@@ -48,8 +48,8 @@ $(GALOISLINKTARGETS) :
 	@echo "Symbolic linking $@"; $(RM) $@ ; \
 	$(LN_S) $(GALOISTARGET) $@
 
-ifneq (,$(wildcard *.d))
-  include $(wildcard *.d)
+ifneq (,$(DEPENDS))
+  include $(DEPENDS)
 endif
 
 $(SUBDIRS) :

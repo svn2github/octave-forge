@@ -175,8 +175,8 @@ $(FIXEDLINKTARGETS) :
 	$(RM) -f $@ ; \
 	$(LN_S) $(FIXEDTARGET) $@
 
-ifneq (,$(wildcard *.d))
-  include $(wildcard *.d)
+ifneq (,$(DEPENDS))
+  include $(DEPENDS)
 endif
 
 $(SUBDIRS) :

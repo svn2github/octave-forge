@@ -935,6 +935,7 @@ extern "C" {
   mxArray *mxCreateStructMatrix(int nr, int nc, int num_keys, 
 				const char **keys)
   {
+    mexPrintf("octave mex corrupts memory for returned structures\n");
     const string_vector ordered_keys(keys,num_keys);
     mxArray *m = __mex->make_value(nr, nc, ordered_keys);
     return m;

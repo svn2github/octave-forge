@@ -532,15 +532,13 @@ octave_complex_sparse::save_ascii (std::ostream& os, bool& infnan_warned,
   os << "# rows: "     << Xnr << "\n";
   os << "# columns: "  << Xnc << "\n";
 
-  os << "\n# sparse: vert-idx, horz-idx, value\n";
   // add one to the printed indices to go from
   //  zero-based to one-based arrays
    for (int j=0; j< Xnc; j++)  {
       OCTAVE_QUIT;
       for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
-         doublecomplex * dc= (doublecomplex *) &coefX[i];
-         os << ridxX[i]+1 << " "  << j+1   << " "
-	    << dc->r      << " "  << dc->i << "\n";
+         os << ridxX[i]+1 << " "  << j+1 << " "
+	    << coefX[i]   << "\n";
       }
    }
   
@@ -550,8 +548,23 @@ octave_complex_sparse::save_ascii (std::ostream& os, bool& infnan_warned,
 bool
 octave_complex_sparse::load_ascii (std::istream& is)
 {
-  int mord, prim, mdims;
   bool success = true;
+  int nnz, cols, rows;
+  if ( extract_keyword (is, "nnz",     nnz)  &&
+       extract_keyword (is, "rows",    rows)  &&
+       extract_keyword (is, "columns", cols) ) {
+     ComplexMatrix tmp( nnz, 3);
+     is >> tmp;
+     ColumnVector ridxA= real( tmp.column(0) );
+     ColumnVector cidxA= real( tmp.column(1) );
+     ComplexColumnVector coefA= tmp.column(2);
+     X= assemble_sparse( cols, rows, coefA, ridxA, cidxA, 0);
+  }
+  else {
+     error("load: failed to load sparse value");
+     success= false;
+  }
+
   return success;
 }
 #endif
@@ -1651,6 +1664,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.27  2004/08/02 14:47:52  aadler
+ * complex save and load ascii
+ *
  * Revision 1.26  2004/07/27 20:56:44  aadler
  * first steps to concatenation working
  *

@@ -5,6 +5,7 @@
  * RUNI: uniform generator on (0,1)
  * RNOR: normal generator
  * LGAMMA: log gamma function
+ * INFINITE: function to test whether a value is infinite
  */
 
 
@@ -333,7 +334,7 @@ poisson_rejection (double lambda, double *p, size_t n)
 void fill_randp(double L, size_t n, double *p)
 {
   size_t i;
-  if (L < 0.0) {
+  if (L < 0.0 || INFINITE(L)) {
     for (i=0; i<n; i++) p[i] = NAN;
   } else if (L <= 10.0) {
     poisson_cdf_lookup(L, p, n);
@@ -367,6 +368,10 @@ double randp(double L)
   } else if (L <= 1e8) {
     /* numerical recipes */
     poisson_rejection(L, &ret, 1);
+  } else if (INFINITE(L)) {
+    /* XXX FIXME XXX R uses NaN, but the normal approx. suggests that as
+     * limit should be inf. Which is correct? */
+    ret = NAN;
   } else {
     /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
     ret = floor(RNOR*sqrt(L) + L + 0.5);

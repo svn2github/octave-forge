@@ -454,6 +454,7 @@ variables', J. Statistical Software, vol 5, 2000\n\
 %!test
 %! % statistical tests may fail occasionally
 %! x = rande(100000,1);
+%! assert(min(x)>0); % *** Please report this!!! ***
 %! assert(mean(x),1,0.01);
 %! assert(var(x),1,0.03);
 %! assert(skewness(x),2,0.06);
@@ -548,10 +549,12 @@ variables', J. Statistical Software, vol 5, 2000\n\
 #define LGAMMA xlgamma
 
 /*
+%!assert(randp([-inf,-1,0,inf,nan]),[nan,nan,0,nan,nan]); % *** Please report
 %!test
 %! % statistical tests may fail occasionally.
 %! for a=[5 15]
 %!   x = randp(a,100000,1);
+%!   assert(min(x)>=0); % *** Please report this!!! ***
 %!   assert(mean(x),a,0.03);
 %!   assert(var(x),a,0.2);
 %!   assert(skewness(x),1/sqrt(a),0.03);
@@ -561,6 +564,7 @@ variables', J. Statistical Software, vol 5, 2000\n\
 %! % statistical tests may fail occasionally.
 %! for a=[5 15]
 %!   x = randp(a*ones(100000,1),100000,1);
+%!   assert(min(x)>=0); % *** Please report this!!! ***
 %!   assert(mean(x),a,0.03);
 %!   assert(var(x),a,0.2);
 %!   assert(skewness(x),1/sqrt(a),0.03);
@@ -644,6 +648,7 @@ D 50 p1284, 1994\n\
 }
 
 /*
+%!assert(randg([-inf,-1,0,inf,nan]),[nan,nan,nan,nan,nan]) % *** Please report
 %!test
 %! % statistical tests may fail occasionally.
 %! a=0.1; x = randg(a,100000,1);

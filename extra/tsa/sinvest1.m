@@ -38,7 +38,6 @@ while 1,
                 'Entropy H=ln(det(R))', ... 
                 'Histogram of MOPS', ...
                 'end');
-	K,	
         subplot(111);	  
         if K==1
                 plot(0:M,AutoCov);

@@ -22,4 +22,7 @@ Create 3D objects
 Demos
  test_vmesh
  test_vrml_faces
- vrml_demo_tutorial_{1,2,3,4}
+ vrml_demo_tutorial_1
+ vrml_demo_tutorial_2
+ vrml_demo_tutorial_3
+ vrml_demo_tutorial_4

@@ -41,6 +41,7 @@
 //
 //-------------------------------------------------------------------
 //#include <stdlib>
+#include <math.h>
 #include "mex.h"
 //-------------------------------------------------------------------
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[])
@@ -57,7 +58,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     unsigned long   LCount, LCountI;
     double  LSum, LSum2, LSum4;
 
-    unsigned		DIM = 1; 
+    unsigned		DIM = 0; 
     unsigned long	D1, D2, D3; 	// NN; 	//  	
     unsigned    	ND, ND2;	// number of dimensions: input, output
     unsigned long	ix1, ix2;	// index to input and output
@@ -81,18 +82,32 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     if(mxIsComplex(PInputs[0]) & (POutputCount > 2))
 	mexErrMsgTxt("More than 2 output arguments only supported for REAL data ");
     LInput  = mxGetPr(PInputs[0]);
-    LInputI = mxGetPi(PInputs[0]);
 
-    // get 2nd argument
-    if  (PInputCount == 2){
-        if ((!mxIsNumeric(PInputs[1])) || (mxGetM(PInputs[1]) != 1) || (mxGetN(PInputs[1]) != 1))
-            mexErrMsgTxt("Second argument must be scalar.");
-        DIM = (unsigned)(mxGetScalar(PInputs[1]));
-    }
+    	// get 2nd argument
+    	if  (PInputCount == 2){
+ 	       	switch (mxGetNumberOfElements(PInputs[1])) {
+		case 0: x = 0.0; 		// accept empty element
+			break;
+		case 1: x = (mxIsNumeric(PInputs[1]) ? mxGetScalar(PInputs[1]) : -1.0); 
+			break;
+		default:x = -1.0;		// invalid 
+		}
+		if ((x < 0) || (x > 65535) || (x != floor(x))) 
+			mexErrMsgTxt("Error SUMSKIPNAN2: DIM-argument must be a positive integer scalar");
 
+		DIM = (unsigned)floor(x);	
+	}
+
+	// get size 
     	ND = mxGetNumberOfDimensions(PInputs[0]);	
     	// NN = mxGetNumberOfElements(PInputs[0]);
     	SZ = mxGetDimensions(PInputs[0]);		
+
+	// if DIM==0 (undefined), look for first dimension with more than 1 element. 
+	for (k = 0; (DIM < 1) && (k < ND); k++) 
+		if (SZ[k]>1) DIM = k+1;
+	
+	if (DIM < 1) DIM=1;		// in case DIM is still undefined 
 
 	ND2 = (ND>DIM ? ND : DIM);	// number of dimensions of output 
 	SZ2 = (int*)mxCalloc(ND2, sizeof(int)); // allocate memory for output size
@@ -108,6 +123,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	SZ2[DIM-1] = 1;		// size of output is same as size of input but SZ(DIM)=1;
 
+
 	    // create outputs
 	#define TYP mxDOUBLE_CLASS
 
@@ -115,6 +131,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	{	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxCOMPLEX);
 		LOutputSum = mxGetPr(POutput[0]);
 		LOutputSumI= mxGetPi(POutput[0]);
+		LInputI = mxGetPi(PInputs[0]);
     	}
 	else
 	{	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
@@ -132,6 +149,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		POutput[3] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
         	LOutputSum4  = mxGetPr(POutput[3]);
     	}
+
 
 	// OUTER LOOP: along dimensions > DIM
 	for (l = 0; l<D3; l++) 	

@@ -497,6 +497,7 @@ listen(...,debug|nodebug)\n\
   int port = args(0).int_value();
   if (error_state) return ret;
 
+  debug = false;
   if (nargin >= 2) {
     std::string lastarg(args(nargin-1).string_value());
     if (error_state) return ret;
@@ -505,10 +506,9 @@ listen(...,debug|nodebug)\n\
       debug = true;
       nargin--;
     } else if (lastarg == "nodebug") {
-      debug = false;
       nargin--;
     } else {
-      debug = false;
+      print_usage("listen");
     }
   }
 

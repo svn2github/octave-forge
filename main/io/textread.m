@@ -19,8 +19,12 @@
 ## Reads data from the file using the provided format string.  The
 ## first return value will contain the first column of the file,
 ## the second return value gets the second column, et cetera.
-## If n is given, the format string will be reused n times.  
+## If n is given, the format string will be reused n times.
 ## If n is omitted or negative, the entire file will be read.
+##
+## %#c formats return a character array of width #
+## %s formats return a list of strings
+## All other formats (see fscanf) return a column vector of doubles
 ##
 ## Example:  say the file 'info.txt' contains the following lines:
 ##    Bunny Bugs   5.5     age=30
@@ -29,80 +33,127 @@
 ## Columns from this file could be read with the line:
 ##   [Lname, Fname, x, a] = textread('info.txt', '%s %s %e age=%d');
 ## then,
-##   Lname(3,:)  is 'Penguin'
-##   Fname(3,:)  is 'Tux'
-##   x(3)        is  6
-##   a(3)        is 10
+##   nth(Lname,3)  is 'Penguin'
+##   nth(Fname,3)  is 'Tux'
+##   x(3)          is  6
+##   a(3)          is 10
 ##
-## Limitations:  fails if the format string contains literal
-##               percent signs (ie, '%%'), or literal strings
-##               containing characters 's' or 'c'.
+## Compatibility:
+##
+## Missing %q for quoted input
+## Need control options:
+##      whitespace (set of characters for word delimiters)
+##      delimiter (sequence?? of characters for record delimiter)
+##      commentstyle  ( 'matlab', 'shell', 'C', 'C++' )
+##      headerlines (number of lines to skip at the start)
 
+
+## 2002-03-15 Paul Kienzle
+## * remove dependency on str_incr
+## * return list of strings for %s rather than character matrix
+## * proper handling of leading text
+## * handle %* and %%
 function [...] = textread(file, format, n);
 
-    if ((nargin == 2) || n < 0)
-        n = 0;
+  if (nargin < 2 || nargin > 3)
+    error("[a1, a2, ...] = textread(file, format [, n])");
+  endif
+
+  if (nargin < 3) n = -1; endif
+  if (n < 0) n = Inf; endif
+  
+  ## Step 1:  Find the format characters
+  idx = [find(format=="%"), length(format)+1];
+  nFields = length(idx) - 1;
+  
+  
+  ## Step 2: categorize the format strings
+  cat = zeros(nFields,1);
+  delidx = zeros(nFields,1);
+  for i = 1:nFields
+    j = idx(i)+1;
+    while (j < idx(i+1) && any(" -0123456789.+" == format(j))) 
+      j++;
+    endwhile
+    if (any(format(j)=="%*")) # skip %% and %* fields
+      delidx(i) = 1;
+      continue;
     endif
-
-    [fid, message] = fopen(file, "r");
-    if (fid == -1)
-        error(sprintf("textread('%s',...):  %s\n", file, message));
+    if (j == idx(i+1))
+      error("textread: invalid format %s", format(idx(i):idx(i+1)-1) );
     endif
+    cat(i) = toascii(format(j));
+  endfor
 
-    # Step 1:  Break apart the format string into an array of formats, 
-    #          one for each column.
+  ## Fix up indices
+  idx(find(delidx)) = [];  # delete any skip fields
+  cat(find(delidx)) = []; 
+  nFields = length(cat);  # count the number of fields remaining
+  idx(1) = 1; # include leading characters in first format
+  if (nargout > nFields) # check that we have enough
+    error("textread: fewer fields than output arguments");
+  endif
 
-    fmts = split(format, "%");          # fails if input file has embedded %'s
-    first_fmt_len = size(fmts(1,:), 2); # the number of columns to expect
-    if (sum(isspace(fmts(1,:))) == first_fmt_len) 
-        # the first string is empty because format started w/%; skip it
-        first_fmt_idx = 2;
+  ## initialize the return values
+  cat = setstr(cat);
+  for i=1:length(cat)
+    if cat(i) == "s"
+      eval(sprintf("a%d=list();",i));
+    elseif cat(i) == "c"
+      eval(sprintf("a%d="";", i));
     else
-        # then the first format substring is not empty; need to use it
-        first_fmt_idx = 1;
+      eval(sprintf("a%d=[];", i));
     endif
-    nFields = size(fmts,1);
+  endfor
 
-
-    # Step 2:  Read the contents of the file one term at a time.
-    #          Place the terms into temporary octave matrices
-    #          called 'aa', 'ab', et cetera.  Each pass through
-    #          the format strings yields one new row in these working
-    #          matrices.
-
+  
+  
+  ## Step 3:  Read the contents of the file one term at a time.
+  ##          Place the terms into temporary octave matrices
+  ##          called 'a1', 'a2', et cetera.  Each pass through
+  ##          the format strings yields one new row in these working
+  ##          matrices.
+  
+  [fid, message] = fopen(file, "r");
+  if (fid == -1)
+    error("textread('%s',...):  %s\n", file, message);
+  endif
+  
+  elok = empty_list_elements_ok;
+  pcv = prefer_column_vectors; # so that scalars come out as [ v; v; ... ]
+  unwind_protect
+    empty_list_elements_ok = 1;
+    prefer_column_vectors = 1;
+    
     row = 1;
     while (!feof(fid))
-        mat_name = "aa"; # iterate through "aa", "ab", "ac", ... "zz"
-        for i = first_fmt_idx:nFields
-            pfmt   = strcat("%", fmts(i,:));  # put % at start of format string
-            [data] = fscanf(fid, pfmt, "C");
-            if (index(pfmt, "%s")                      || 
-                ((pfmt(1) == "%") && index(pfmt, "s")) || # eg, match %17s
-                ((pfmt(1) == "%") && index(pfmt, "c")) )  # eg, match %17c
-                # then this is a string or a group of chars
-                eval(sprintf("%s(%d,1:%d) = data;", 
-                             mat_name, row, size(data,2)));
-            else                       # this is a scalar
-                eval(sprintf("%s(%d) = data;", mat_name, row));
-            endif
-            mat_name = str_incr(mat_name, 2); # eg, "aa" becomes "ab"
-        endfor
-        ++row;
-
-        if (n && row > n)
-            break;
-        endif 
-
+      for i = 1:nFields
+        [data, count] = fscanf(fid, format(idx(i):idx(i+1)-1), "C");
+	if (count == 0) break; endif
+        if (cat(i) == "s") # list of strings
+	  eval(sprintf("a%d = append(a%d, data);", i, i));
+	elseif (cat(i) == "c" )  # matrix of characters
+          eval(sprintf("a%d = [ a%d ; data ];", i, i));
+        else                       # matrix of scalars
+          eval(sprintf("a%d(%d) = data;", i, row));
+        endif
+      endfor
+      ++row;
+      
+      if (count==0 || row > n)
+        break;
+      endif
+      
     endwhile
+  unwind_protect_cleanup
+    empty_list_elements_ok = elok;
+    prefer_column_vectors = pcv;
     fclose(fid);
-
-    # Step 3:  populate the return values with the contents of aa, ab, etc 
-
-    mat_name = "aa";
-    for i = 1:nargout
-        vr_val( eval(mat_name) );
-        mat_name = str_incr(mat_name, 2);
-    endfor
-    return
+  end_unwind_protect
+  
+  ## Step 4:  populate the return values with the contents of a1, a2, etc.
+  for i = 1:nargout
+    eval( sprintf ("vr_val(a%d);",i) );
+  endfor
 
 endfunction

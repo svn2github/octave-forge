@@ -295,7 +295,7 @@ older versions of octave, use:<pre><code>
 #define octave_throw_bad_alloc() \
    do { jump_to_top_level(); panic_impossible(); } while (0)
 #else
-#include <octave/quit.h>
+#include &lt;octave/quit.h&gt;
 #endif
 </code></pre>
 <dt>USE_OCTAVE_NAN

@@ -5,6 +5,8 @@ Known bugs:
     reason: incorrect isnumeric() (no way to evaluate type (string or numeric) of input argument 
 
 
+15.03.2002	NaN-toolbox imported into octave-forge/extra/NaN; stop using changelog. 
+
       14.03.02	FLAG_IMPLICIT_UNBIASED_ESTIM and FLAG_IMPLICIT_SKIP_NAN: 
 		Warning included that FLAG* might become obsolete.
       13.03.02	SUMSKIPNAN: nargout check included

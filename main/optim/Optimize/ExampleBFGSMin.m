@@ -49,21 +49,20 @@ function [obj_value, grad] = objective(args)
 endfunction 
 
 # example obj. fn. - this shows how to use numerical grafient
-function [obj_value, grad] = objective2(args)
+function obj_value = objective2(args)
 	theta = args{1};
 	location = args{2};
 	x = theta - location + ones(rows(theta),1); # move minimizer to "location"
 	obj_value = rosenbrock(x);	
-	grad = "na";
 endfunction 
 
 
 
-tic();
+t = cputime;
 
 # control options and initial value
 control = [1000;2;1];  # max 1000 iterations; only report results of last iteration; strong convergence required
-dim = 50; # dimension of Rosenbrock function
+dim = 10; # dimension of Rosenbrock function
 theta = randn(dim+1,1);  # starting values
 location = 5*(0:dim)/dim;
 location = location';
@@ -73,17 +72,14 @@ args = {theta, location}; # BFGSMin requires arguments to be in a cell array
 # do the minimization
 printf("If this was successful, the minimizer should be\n");
 printf("a vector of even steps from 0 to 5\n\n");
-theta
+
 printf("ANALYTIC GRADIENT\n");
-
-[theta, obj_value, iterations, convergence] = BFGSMin("objective", args, control);
-
-t = toc();
-tic();
+[theta, obj_value, iterations, convergence] = BFGSMin("objective", args, control, "analytic");
+t = cputime() - t;
 printf("Elapsed time = %f\n",t);
 
 printf("NUMERIC GRADIENT\n");
-[theta, obj_value, iterations, convergence] = BFGSMin("objective2", args, control);
-
-t = toc();
-printf("Elapsed time = %f\n",t);
+# without last arg to BFGSMin(), default is numeric
+[theta, obj_value, iterations, convergence] = BFGSMin("objective2", args, control); 
+t = cputime - t;
+fprintf("Elapsed time = %f\n",t);

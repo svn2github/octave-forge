@@ -76,6 +76,10 @@ if exist('OCTAVE_VERSION') >= 5,
 	%%% 2) DIM argument is not implemented in SUM of Octave 2.0.x 
 	%%% Once these points are fixed, this part can be removed  
 
+	if exist('nansum') == 2,
+                count = sum(~isnan(i),DIM); 
+	        o     = nansum(i,DIM);
+	else 
 	[nr,nc]=size(i);
         if DIM==1,
                 o     = zeros(1,nc);
@@ -93,6 +97,7 @@ if exist('OCTAVE_VERSION') >= 5,
                 end;		
 	else
 		fprintf('Error SUMSKIPNAN: DIM argument must be 1 or 2\n');	
+	end;
 	end;
 	if ~flag_implicit_skip_nan,
 		% the following command implements NaN-In -> NaN-Out

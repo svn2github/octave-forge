@@ -158,6 +158,7 @@ while niter++ <= maxouter
   [v,d,h] = leval (d2f, splice (args, narg, 1, list (reshape (x,sz))));
   nev(2)++;
   if ! id2f, h = pinv (h); end
+  d = d(:);
 
   if prudent
     v2 = leval (f, splice (args, narg, 1, list (reshape (x,sz))));
@@ -193,7 +194,7 @@ while niter++ <= maxouter
     break			# Exit outer loop
   end
 
-  dnewton = -h*d' ;		# Newton step
+  dnewton = -h*d ;		# Newton step
   wn = 1 ;			# Weight of Newton step
   wt = 1 ;			# Total weight
   
@@ -203,13 +204,13 @@ while niter++ <= maxouter
   while ninner++ < maxinner	# Inner loop ###############################
 
 				# Proposed step
-    dx = wt*(wn*dnewton - (1-wn)*d') ;
+    dx = wt*(wn*dnewton - (1-wn)*d) ;
     xnew = x+dx ;
 
     if verbose
       printf (["Weight : total=%8.3g, newtons's=%8.3g  vbest=%8.3g ",...
 	       "Norm:Newton=%8.3g, deriv=%8.3g\n"],...
-	      wt,wn,vbest,norm(wt*wn*dnewton),norm(wt*(1-wn)*d'));
+	      wt,wn,vbest,norm(wt*wn*dnewton),norm(wt*(1-wn)*d));
     end
     if any(isnan(xnew))
       printf ("d2_min : Whoa!! any(isnan(xnew)) (1)\n"); 

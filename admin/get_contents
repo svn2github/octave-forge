@@ -76,7 +76,7 @@ sub fill_README {  # {{{1
         }
     }
     close README;
-    warn "Wrote ${PATH}${RM}\n";
+    warn "Please do cvs commit ${PATH}${RM}\n";
 }  # 1}}}
 
 # # # # # # # 
@@ -128,7 +128,7 @@ sub fill_developer_html {  # {{{1
         }
     }
     close README;
-    warn "Wrote ${PATH}${RM}\n";
+    warn "Please do scp ${PATH}${RM} \$OFHOME\n";
 }  # 1}}}
 
 # # # # # # # 

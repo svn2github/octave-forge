@@ -9,23 +9,36 @@
 
 function ret_c = calendar(y,m)
 
+  today = now;
   if nargin < 2
-    if nargin == 0, y = now; endif
+    if nargin == 0, y = today; endif
     v = datevec(y);
     y = v(:,1); m = v(:,2);
   endif
    
   c = zeros(7,6);
   dayone = datenum(y,m,1);
+  dayone_column = weekday(dayone);
   days = eomday(y,m);
-  c(weekday(dayone) + [0:days-1]) = 1:days;
+  c(dayone_column + [0:days-1]) = 1:days;
 
+  today_column = weekday(today);
+  today_row = floor( ((today-dayone) + dayone_column - 1) / 7 ) + 1;
+  
   if nargout > 0
     ret_c = c';
   else
-    printf("         %s\n",datestr(dayone,28));
-    printf(" S   M  Tu   W  Th   F   S\n");
-    printf("%2d  %2d  %2d  %2d  %2d  %2d  %2d\n",c);
+    printf("          %s\n",datestr(dayone,28));
+    printf("  S   M  Tu   W  Th   F   S\n");
+    for i=1:6
+      str = sprintf(" %2d  %2d  %2d  %2d  %2d  %2d  %2d",c(:,i));
+      if i == today_row, 
+        offset = 4*(today_column-1)+1;
+	if str(offset+1) == ' ', offset++; endif
+        str(offset) = '*';
+      endif
+      printf("%s\n",str);
+    endfor
   endif
 
 %!test

@@ -3,7 +3,7 @@ for specific packages should go in the individual package directories.
 
 If you modify an existing document, do the following:
 
-	set OFHOME [forge-ID@]octave.sf.net:/home/groups/o/oc/octave/htdocs
+	export OFHOME=[forge-ID@]octave.sf.net:/home/groups/o/oc/octave/htdocs
 	cvs commit file.html
 	scp file.html $OFHOME
 

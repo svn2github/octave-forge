@@ -1,17 +1,16 @@
 include ../../Makeconf
 
-ifdef USE_TERM
-	TERM_DEF=-DUSE_TERM
-endif
-
 ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap
 endif
 
 
-all:	waitbar.oct
+all:	waitbar.oct listen.oct
 
 waitbar.oct:	waitbar.cc
-	$(MKOCTFILE) $(TERM_DEF) waitbar.cc $(TERM_LIB)
+	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)
+
+listen.oct: listen.cc
+	$(MKOCTFILE) $(MISCDEFS) listen.cc
 
 clean: ; -$(RM) *.o octave-core core *.oct *~

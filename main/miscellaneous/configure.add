@@ -1,3 +1,21 @@
+AC_SUBST(MISCDEFS)
+
+dnl In modern autoconf, we should be able to replace this with something
+dnl the CHECK_TYPE macro
+AC_DEFUN([TYPE_SOCKLEN_T],
+[AC_CACHE_CHECK([for socklen_t], ac_cv_type_socklen_t,
+[
+    AC_TRY_COMPILE(
+    [#include <sys/types.h>
+    #include <sys/socket.h>],
+    [socklen_t len = 42; return 0;],
+    ac_cv_type_socklen_t=yes,
+    ac_cv_type_socklen_t=no)
+])
+    if test $ac_cv_type_socklen_t != yes; then
+       MISCDEFS="$MISCDEFS -Dsocklen_t=int"
+    fi
+])
 
 if test -e main/miscellaneous/NOINSTALL ; then
 
@@ -6,12 +24,14 @@ if test -e main/miscellaneous/NOINSTALL ; then
 
 else
 
+    dnl Check for socklen_t
+    TYPE_SOCKLEN_T
+
     dnl Check for term.h
     AC_CHECK_HEADER(term.h, have_term=yes, have_term=no)
     AC_CHECK_HEADER(termcap.h, have_termcap=yes, have_termcap=no)
     if test $have_term = yes || test $have_termcap = yes; then
-       DEFUSE_TERM="USE_TERM=1"
-       AC_SUBST(DEFUSE_TERM)
+       MISCDEFS="$MISCDEFS -DUSE_TERM"
        AC_CHECK_LIB(termcap, tgetnum)
        STATUS=yes
     else

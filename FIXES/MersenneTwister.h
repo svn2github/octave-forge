@@ -46,10 +46,11 @@
 // Not thread safe (unless auto-initialization is avoided and each thread has
 // its own MTRand object)
 
-#include <stdio.h>
-#include <time.h>
-#include <limits.h>
-#include <iostream.h>
+// #include <stdio.h>
+#include <ctime>
+#include <climits>
+#include <iostream>
+using namespace std;
 
 class MTRand {
 // Data

@@ -189,10 +189,10 @@ Manchester, England, January 1999.\n\
 	  // XXX FIXME XXX can we estimate the error without doing the
 	  // matrix multiply?
 	  err = frobnorm(X*X - ComplexMatrix(A)) / frobnorm(A);
-	  if (xisnan(err)) err = octave_Inf;
+	  if (xisnan(err)) err = lo_ieee_inf_value ();
 
 	  // Find min diagonal
-	  minT=octave_Inf;
+	  minT= lo_ieee_inf_value ();
 	  for (int i=0; i < n; i++) minT = getmin(minT, abs(T(i,i)));
 	} 
       else // if (arg.is_complex_matrix ())
@@ -210,9 +210,9 @@ Manchester, England, January 1999.\n\
 	  retval(0) = X;
 
 	  err = frobnorm(X*X - A) / frobnorm(A);
-	  if (xisnan(err)) err = octave_Inf;
+	  if (xisnan(err)) err = lo_ieee_inf_value ();
 	
-	  minT=octave_Inf;
+	  minT= lo_ieee_inf_value ();
 	  for (int i=0; i < n; i++) minT = getmin(minT, abs(T(i,i)));
 	}
 	  

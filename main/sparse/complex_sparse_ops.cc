@@ -430,7 +430,7 @@ sparse_index_twoidx ( SuperMatrix X,
    
       } // for k
       for (int j=0; j<ixl; j++) {
-         if (tcol[j] !=0 ) {
+         if (tcol[j] != Complex(0) ) {
             check_bounds( cx, nnz, ridxB, coefB );
             ridxB[cx]= j;
             coefB[cx]= tcol[j];
@@ -534,7 +534,7 @@ octave_complex_sparse::extract (int r1, int c1, int r2, int c2) const {
    for (int i=0, ii= c1; i < n ; i++, ii++) {
       for ( int j= cidxX[ii]; j< cidxX[ii+1]; j++) {
          int row = ridxX[ j ];
-         if ( row>= r1 && row<=r2 && coefX[j] !=0 ) {
+         if ( row>= r1 && row<=r2 && coefX[j] != Complex(0) ) {
             check_bounds( cx, nnz, ridxB, coefB );
             ridxB[ cx ]= row - r1;
             coefB[ cx ]= coefX[ j ];
@@ -1366,6 +1366,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.9  2002/11/16 20:38:20  pkienzle
+ * Windows dll and gcc 3.2 problems
+ *
  * Revision 1.8  2002/11/05 19:21:07  aadler
  * added indexing for complex_sparse. added tests
  *

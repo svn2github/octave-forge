@@ -58,7 +58,7 @@ int n, Nn, ii;
 
   if (m < 0. || m > 1.) {
      warning ("ellipj: expecting 0. <= m <= 1."); /* -lc- */
-     sn = cn = dn = octave_NaN;
+     sn = cn = dn = lo_ieee_nan_value ();
      return;
 	}
   sqrt_eps = sqrt(eps);

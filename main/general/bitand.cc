@@ -41,7 +41,7 @@ max(unsigned int x, unsigned int y) {
 
 double
 scalar_bitop(double x,double y,unsigned int op) {
-	double a=octave_NaN;
+	double a=lo_ieee_nan_value();
 	if ((x>=0)&&(x<=ULONG_MAX)&&(y>=0)&&(y<=ULONG_MAX)) {
 			bitop_int xval=static_cast<bitop_int>( floor(x) );
 			bitop_int yval=static_cast<bitop_int>( floor(y) );

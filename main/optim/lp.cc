@@ -264,6 +264,7 @@ Subject to: @var{a}*x <= @var{b}\n\
   error("lp: unavaible in Octave 2.0");
   return octave_value_list();
 #else  /* !HAVE_OCTAVE_20 */
+  const double inf = lo_ieee_inf_value ();
   int i,j,k,l;
   octave_value_list retval;
   int nargin = args.length();
@@ -322,18 +323,18 @@ Subject to: @var{a}*x <= @var{b}\n\
   idx_vector bRange(Range(1,nr));
   for(i =0;i<nc;i++)
     {
-      if(vlb(i) > -octave_Inf)
+      if(vlb(i) > -inf)
 	{
 	  // Translate variable up;
 	  // Make the {x_min < x < x_max} constraint now equal to {0 < x_new < x_max - x_min}
 	  aRange = idx_vector(Range(i+1,i+1));
 	  b = b-ColumnVector(Matrix(A.index(bRange,aRange))*double(vlb(i)));
 	  // If the upper bound is Infinity we do not change it.  
-	  if(vub(i) < octave_Inf){
+	  if(vub(i) < inf){
 	    vub(i) = vub(i)-vlb(i);
 	  }
 	}
-      else if(vub(i) < octave_Inf)
+      else if(vub(i) < inf)
 	{
 	  // Now we have the following constraint ==> {-Inf < x < x_max}
 	  // After we are done it will be {0 < x_new < Inf}, where {x_new = -x+x_max}
@@ -341,7 +342,7 @@ Subject to: @var{a}*x <= @var{b}\n\
 	  T = identity_matrix(A.rows());
 	  T(i,i) = -1.0;
 	  A = A*T;
-	  vub(i) = octave_Inf;
+	  vub(i) = inf;
 	}
       else
 	{
@@ -359,7 +360,7 @@ Subject to: @var{a}*x <= @var{b}\n\
 	  freeVars(i,0) = i;
 	  freeVars(i,1) = A.cols()-1;
 	  freeVarNum++;
-	  vub = ColumnVector(Matrix(vub).stack(Matrix(1,1,octave_Inf)));
+	  vub = ColumnVector(Matrix(vub).stack(Matrix(1,1,inf)));
 	}
     }
   
@@ -381,7 +382,7 @@ Subject to: @var{a}*x <= @var{b}\n\
 	  slacks++;
 	}
       which_bound = which_bound.append(RowVector(nr-ne,1.0));
-      vub = vub.stack(ColumnVector(nr-ne,octave_Inf));
+      vub = vub.stack(ColumnVector(nr-ne,inf));
       c = c.append(RowVector(nr-ne,0));
     }
   else
@@ -518,12 +519,12 @@ Subject to: @var{a}*x <= @var{b}\n\
   bRange = Range(1,1);
   for(j=0,i=0;i<nc;i++)
     {
-      if(vlb(i) > -octave_Inf)
+      if(vlb(i) > -inf)
 	{
 	  // Make the {x_min < x < x_max} constraint now equal to {0 < x_new < x_max - x_min}
 	  x(i) = x(i)-vlb(i);
 	}
-      else if(orig_vub(i) < octave_Inf)
+      else if(orig_vub(i) < inf)
 	{
 	  // Translate negative variable up;
 	  x(i) = -x(i)+orig_vub(i);

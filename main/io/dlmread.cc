@@ -19,57 +19,75 @@
 29. January 2003 - Kai Habel: first release
 
 TODO:
-* handle line terminator \r and \n\r 
-* handle strings within data sane, like: 1.1,test,2,,
-* handle range for reading
+* handle line terminator \r and \n\r (?) 
 */
+
 #include "config.h"
 
 #include <string>
 #include <fstream>
-//#include <iostream>
+#include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <queue>
+#include <climits>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 #include <octave/oct.h>
+#include <octave/lo-mappers.h>
 
 using namespace std;
 
-int insert_zeros(string *line, string sep) {
-  // find double occurance of separator and insert zeros 
-  string::size_type pos = 0;
-  while(1) {
-    pos = line->find(sep+sep,pos);
-    if (pos == string::npos) break;
-    line->erase(pos,1);
-    line->insert(pos,sep+"0");
-    pos += sep.length()+1;
-  }
+bool sep_is_next(istringstream *linestrm, string sep) {
 
-  // find separator at line begin and end insert zeros
-  pos = line->rfind(sep,sep.length()-1);
-  if (pos != string::npos) line->insert(0,"0");
-  pos = line->find(sep,line->length() - 1);
-  if (pos != string::npos) line->insert(line->length(),"0");
-  return 0;
+  bool ret = true;
+  char c;
+  
+  *linestrm >> c;
+  if (c != sep[0]) {
+    ret = false;
+    linestrm->putback(c);
+  }
+  return ret;
 }
 
-unsigned long replace_separator(string *line, string sep) {
+queue<Complex> read_textline(istringstream *linestrm, string sep) {
 
-  // replace separator string with blank
-  string::size_type pos = 0;
-  unsigned long cols = 1;
-  
-  while(1) {
-    pos = line->find(sep,pos);
-    if (pos == string::npos) break;
-    cols++;
-    line->replace(pos++,1," ");
+  queue<Complex> line;
+  Complex cv = 0.0;
+  unsigned long nchr = 0;
+
+  while (1) {
+
+    if ( linestrm->eof() ) break;
+    nchr++;
+    
+    if (sep_is_next(linestrm,sep)) {
+    
+      if (nchr == 1) line.push(0);
+        // first line character is separator
+
+      if (sep_is_next(linestrm,sep)) line.push(0);
+        // double occurance of separator  
+
+      if (linestrm->eof()) line.push(0);
+        // last line character is sparator
+      
+    } else {
+      linestrm->clear();
+      cv = octave_read_double(*linestrm);
+      if (linestrm->fail()) {
+        // invalid charcter(s), try to find next separator
+        linestrm->clear();
+        while ( !sep_is_next(linestrm, sep) ) linestrm->get(); 
+	line.push(0);
+      } else {
+        line.push(cv);
+      }    
+    }
   }
-  // return number of columns for this line
-  return cols;
+  return line;
 }
 
 
@@ -77,6 +95,7 @@ DEFUN_DLD (dlmread, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file})\n\
+@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep},@var{R},@var{C})\n\
 Read the matrix @var{data} from a text file\n\
 @end deftypefn")
 
@@ -84,7 +103,7 @@ Read the matrix @var{data} from a text file\n\
   octave_value_list retval;
   queue<ComplexColumnVector> lines;  
   int nargin = args.length();
-  if (nargin < 1 || nargin > 2) {
+  if (nargin < 1 || nargin > 4) {
     print_usage ("dlmread");
     return retval;
   }
@@ -93,12 +112,39 @@ Read the matrix @var{data} from a text file\n\
     error ("dlmread: 1st argument must be a string");
     return retval;
   }
-
+  
+    // set default values
   string sep(",");
+  unsigned long r0 = 0,c0 = 0,r1 = ULONG_MAX-1,c1 = ULONG_MAX-1;
+  
   if (nargin > 1) {
     sep = args(1).string_value();
+    if (sep.length() != 1) error("separator must be a single character");
   }
-
+    
+  if (nargin == 3) {
+    ColumnVector range(args(2).vector_value());
+    if (range.length() == 4) {
+        // double --> unsigned int     
+      r0 = static_cast<unsigned long> (range(0));
+      c0 = static_cast<unsigned long> (range(1));
+      r1 = static_cast<unsigned long> (range(2));
+      c1 = static_cast<unsigned long> (range(3));
+      if (xisinf(range(2))) r1 = ULONG_MAX-1;
+      if (xisinf(range(3))) c1 = ULONG_MAX-1;
+      
+    } else {
+      error("range must include [R1 C1 R2 C2]");
+    }
+    
+  } else if (nargin == 4) {
+    r0 = args(2).ulong_value();
+    c0 = args(3).ulong_value();
+  }
+  
+  unsigned long dr = r1 - r0 + 1;
+  unsigned long dc = c1 - c0 + 1;
+  
   string fname(args(0).string_value());
   ifstream file(fname.c_str());
   if (!file) {
@@ -106,49 +152,63 @@ Read the matrix @var{data} from a text file\n\
     return retval;
   }
 
+    // find file length 
   file.seekg(0, ios::end);
-  ifstream::pos_type rem,flen = file.tellg();
+  ifstream::pos_type flen = file.tellg();
   file.seekg(0, ios::beg);
-  rem = flen;
+
   char line[(long int)flen];
-
-  string linestr;
-  unsigned long nr = 0, nc = 0, ctmp = 0;
-
-  while(1) {
+  
+  unsigned long nr = 0, nc = 0, curr_len = 0,colIdx;
+  queue<Complex> lineq;
+  
+    //skip first r0 - 1 lines
+  for (unsigned long i=0;i<r0;i++) {
     file.getline(line,flen,'\n');
-    string linestr(line);
-    rem -= linestr.length() + 1;
-    if (rem<0) break;
-   
-    insert_zeros(&linestr, sep);
-    ctmp = replace_separator(&linestr, sep);
-    
-    ComplexColumnVector col(ctmp);
-    istringstream linestrm(linestr);
-    for (unsigned i=0;i<ctmp;i++) {
-      col(i) = octave_read_complex(linestrm);
-    }
-     
-    lines.push(col);
-    
-    //save maximum number of columns and number of rows
-    nc = max(nc,ctmp);
-    nr++;
   }
   
-  unsigned long r = 0;
-  long c = 0;
-  ComplexMatrix cm(nr,nc);
-  ComplexColumnVector cv;
-
-  for (r = 0; r < nr;r++) {
-    cv = lines.front();
-    lines.pop();
-    for (c = 0; c<cv.length(); c++) {
-      cm(r,c) = cv(c);
+    // get first line
+  file.getline(line,flen,'\n');
+  do {
+    istringstream lstrm(line); 
+    lineq = read_textline(&lstrm,sep);
+    
+    curr_len = min(static_cast<unsigned long> (lineq.size()), dc);
+    ComplexColumnVector col2(curr_len);
+    
+    for (colIdx = 0;colIdx < curr_len;colIdx++) {
+      col2(colIdx) = lineq.front();
+      lineq.pop();
     }
+      // save current ColumnVector (current line) in queue
+    lines.push(col2);
+    
+      // save maximum number of columns and number of rows
+    nc = max(nc,curr_len);
+    
+     // early break when user limit R2 is reached, increase row counter
+    if (nr++ > dr) break;
+    
+      // get next line
+    file.getline(line,flen,'\n');
+  } while(!file.eof());
+  
+  unsigned long cend, r, c;
+
+  if (c0 <= nc) {
+    ComplexMatrix cm(nr,nc-c0);
+    ComplexColumnVector cv;
+    
+      // write all ColumnVecotors into Matrix 
+    for (r = 0; r < nr;r++) {
+      cv = lines.front();
+      lines.pop();
+      cend = min(dc, cv.length() - c0);
+      for (c = 0; c < cend; c++)
+        cm(r,c) = cv(c + c0);
+    }
+    retval(0) = cm;
   }
-  retval(0) = cm;
+  
   return retval;
 }

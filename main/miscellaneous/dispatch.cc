@@ -418,8 +418,12 @@ dispatch_record(const std::string &f, const std::string &n,
 %! assert(sin(0),0,10*eps); 
 %!test # 'any' function
 %! dispatch('sin','exp','any')
-%! assert(sin(1),e,eps);
+%! assert(sin(0),1,eps);
 %! assert(sin('abc'),3);
+%!test # 'builtin' function
+%! assert(builtin('sin',0),0,eps);
+%! builtin('eval','x=1;');
+%! assert(x,1);
 %!test # clear function mapping
 %! dispatch('sin','string')
 %! dispatch('sin','any')

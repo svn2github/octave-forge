@@ -148,7 +148,7 @@ x=[-2:2;4:8]';
 y=x;y(2,1)=nan;y(4,2)=nan;
 B=[1,0,2;0,3,1];
 if ~all(all(isnan(y*B)==isnan(B'*y')')),
-        fprintf(2,'Warning: 0*NaN is not commutative\n');
+        fprintf(2,'WARNING: 0*NaN within matrix multiplication is not commutative\n');
 end;
 
 

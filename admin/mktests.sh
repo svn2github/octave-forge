@@ -3,6 +3,7 @@
 # Create a new fntests.m file
 echo "fid=fopen('fntests.log','w');" > fntests.m
 echo "if fid<0,error('could not open fntests.log for writing');end" >>fntests.m
+echo "test('','explain',fid);" >> fntests.m
 echo "passes=0; tests=0;" >>fntests.m
 
 # Find all non-cvs directories

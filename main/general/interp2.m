@@ -58,9 +58,8 @@ function ZI = interp2 (X, Y, Z, XI, YI, method)
     elseif !( (size (X) == size (Y)) && (size (X) == size (Z)) )
       error ("X,Y and Z must be matrices of same size");
     endif
-  endif
   
-  if (((nargin == 4) || (nargin == 3)) && !isstr (Z))
+  elseif (((nargin == 4) || (nargin == 3)) && !isstr (Z))
    
     if (nargin == 4)
       if (isstr (XI))

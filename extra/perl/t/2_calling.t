@@ -7,7 +7,7 @@ BEGIN {
          
 use Inline Octave => q{
    function x=jnk1(u); x=u+1; endfunction
-   function x=jnk2(u); x=inv(u); endfunction
+   function x=jnk2(u); x=1./u; endfunction
    function x=jnk3(u); x=toascii(u); endfunction
 };   
 
@@ -19,7 +19,7 @@ ok( $v, "4" );
 # jnk2 gives warning if u=0
 do {
   local $SIG{__WARN__} = sub {
-     my $ok = ($_[0] =~ /inverse: matrix singular/);
+     my $ok = ($_[0] =~ /division by zero/);
      ok( $ok, 1);
   };
 

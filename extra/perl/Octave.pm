@@ -242,9 +242,6 @@ sub start_interpreter
    # ignore errors from setpriority if it's not available
    croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open3/i;
 
-   $SIG{CHLD}= \&reap_interpreter;
-   $SIG{PIPE}= \&reap_interpreter;
-
    my $select= IO::Select->new($Oout, $Oerr);
 
    $octave_object->{octave_pid} = $pid;
@@ -315,6 +312,11 @@ sub interpret
    my $select= $octave_object->{SELECT};
 
    croak "octave interpreter not alive"  unless $Oin and $Oerr;
+
+#  set SIGnals here, and they will be reset to what the
+#  user set them to outside
+   local $SIG{CHLD}= \&reap_interpreter;
+   local $SIG{PIPE}= \&reap_interpreter;
 
 #  print STDERR "INTERP: $cmd\n";
    print $Oin "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
@@ -1075,6 +1077,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.24  2004/04/12 16:12:07  aadler
+set SIGnals only when doing a read
+
 Revision 1.23  2003/12/04 19:22:27  aadler
 working errors and warnings
 

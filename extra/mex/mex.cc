@@ -501,7 +501,8 @@ call_mex(callstyle cs, const octave_value_list& args, const int nargout)
   // nargout+1 since even for zero specified args, still want to be able
   // to return an ans.
   const int nargin = args.length();
-  mxArray * argin[nargin], * argout[nargout+1];
+  OCTAVE_LOCAL_BUFFER(mxArray*, argin, nargin);
+  OCTAVE_LOCAL_BUFFER(mxArray*, argout, nargout+1);
   for (int i=0; i < nargin; i++) argin[i] = NULL;
   for (int i=0; i < nargout+1; i++) argout[i] = NULL;
 
@@ -668,8 +669,8 @@ extern "C" {
   Pix mxGetPi (const mxArray* ptr) { return ptr->imag(); }
   int mxGetM (const mxArray* ptr) { return ptr->rows(); }
   int mxGetN (const mxArray* ptr) { return ptr->columns(); }
-  void mxSetM (mxArray* ptr, const int M) { return ptr->rows(M); }
-  void mxSetN (mxArray* ptr, const int N) { return ptr->columns(N); }
+  void mxSetM (mxArray* ptr, const int M) { ptr->rows(M); }
+  void mxSetN (mxArray* ptr, const int N) { ptr->columns(N); }
   void mxSetPr (mxArray* ptr, Pix pr) { ptr->real((double *)pr); }
   void mxSetPi (mxArray* ptr, Pix pi) { ptr->imag((double *)pi); }
   double mxGetScalar (const mxArray* ptr)

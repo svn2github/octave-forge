@@ -22,9 +22,8 @@
 */
 
 extern "C" { 
-	#include "qhull/qhull_a.h"
+#include "qhull/qhull_a.h"
 }
-#include <iostream>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -41,66 +40,66 @@ The input matrix of size [dim, n] contains n points of dimension dim.\n\
 @seealso{convhull, delaunayn}\n\
 @end deftypefn")
 {
-	octave_value_list retval;
-    retval(0) = 0.0;
+  octave_value_list retval;
 
-	int nargin = args.length();
-	if (nargin != 1) {
-		print_usage ("convhulln(p)");
-		return retval;
-	}
-
-	Matrix p(args(0).matrix_value());
-
-	const int dim = p.columns();
-	const int n = p.rows();
+  int nargin = args.length();
+  if (nargin != 1) {
+    print_usage ("convhulln(p)");
+    return retval;
+  }
+  
+  Matrix p(args(0).matrix_value());
+  
+  const int dim = p.columns();
+  const int n = p.rows();
   p = p.transpose();
-
+  
   double *pt_array = p.fortran_vec();
-	/*double  pt_array[dim * n];
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < dim; j++) {
-			pt_array[j+i*dim] = p(i,j);
-		}
-	}*/
+  
+  boolT ismalloc = False;
 
-	boolT ismalloc = False;
+  // hmm  lot's of options for qhull here
+  sprintf(flags,"qhull s Qt Tcv");
+  
+  if (!qh_new_qhull (dim,n,pt_array,ismalloc,flags,NULL,stderr)) {
+    
+    // If you want some debugging information replace the NULL
+    // pointer with stdout
+    
+    vertexT *vertex,**vertexp;
+    facetT *facet;
+    unsigned int n = qh num_facets;
+    
+    Matrix idx(n,dim);
+    qh_vertexneighbors();
 
-	// hmm  lot's of options for qhull here
-	sprintf(flags,"qhull s Qt Tcv");
-	
-	if (!qh_new_qhull (dim,n,pt_array,ismalloc,flags,NULL,stderr)) {
-	
-		// If you want some debugging information replace the NULL
-		// pointer with stdout
-	
-		vertexT *vertex,**vertexp;
-		facetT *facet;
-		unsigned int i=0,j=0,n = qh num_facets;
-
-		Matrix idx(n,dim);
-		qh_vertexneighbors();
-		setT *curr_vtc;
-
-		FORALLfacets {
-			//qh_printfacet(stdout,facet);
-			curr_vtc = facet->vertices;
-			FOREACHvertex_ (curr_vtc) {
-				//qh_printvertex(stdout,vertex);
-				idx(i,j++)= 1 + qh_pointid(vertex->point);
-			}
-			i++;j=0;
-		}
-		retval(0)=idx;
-	}
-	qh_freeqhull(!qh_ALL);
-		//free long memory
-	int curlong, totlong;
-	qh_memfreeshort (&curlong, &totlong);
-		//free short memory and memory allocator
-
-	if (curlong || totlong) {
-	    warning("convhulln: did not free %d bytes of long memory (%d pieces)", totlong, curlong);
-	}
-	return retval;
+    int i=0;
+    FORALLfacets {
+      int j=0;
+      //std::cout << "Current index " << i << "," << j << std::endl << std::flush;
+      // qh_printfacet(stdout,facet);
+      FOREACHvertex_ (facet->vertices) {
+	// qh_printvertex(stdout,vertex);
+	if (j >= dim)
+	  warning("extra vertex %d of facet %d = %d", 
+		  j++,i,1+qh_pointid(vertex->point));
+	else
+	  idx(i,j++)= 1 + qh_pointid(vertex->point);
+      }
+      if (j < dim) warning("facet %d only has %d vertices",i,j);
+      i++;
+    }
+    retval(0)=octave_value(idx);
+  }
+  qh_freeqhull(!qh_ALL);
+  //free long memory
+  int curlong, totlong;
+  qh_memfreeshort (&curlong, &totlong);
+  //free short memory and memory allocator
+  
+  if (curlong || totlong) {
+    warning("convhulln: did not free %d bytes of long memory (%d pieces)", 
+	    totlong, curlong);
+  }
+  return retval;
 }

@@ -90,9 +90,9 @@ if nargout<3         % needs O(p^2) memory
         
         % Durbin-Levinson Algorithm
         for K=1:lc,
-                [MX(:,idx+K),nn] = sumskipnan(F(:,K+1:N).*B(:,1:N-K),2);
-                MX(:,idx+K) = MX(:,idx+K)./DEN; %Burg
-                if K>1   %for compatibility with OCTAVE 2.0.13
+                [TMP,nn] = sumskipnan(F(:,K+1:N).*B(:,1:N-K),2);
+                MX(:,idx+K) = TMP./DEN; %Burg
+                if K>1,   %for compatibility with OCTAVE 2.0.13
                         MX(:,idx+(1:K-1))=MX(:,(K-2)*(K-1)/2+(1:K-1))-MX(:,(idx+K)*ones(K-1,1)).*MX(:,(K-2)*(K-1)/2+(K-1:-1:1));
                 end;   
                 
@@ -106,7 +106,7 @@ if nargout<3         % needs O(p^2) memory
                         [b,nb] = sumskipnan(B(:,1:N-K).^2,2); 
                         DEN = sqrt(b.*f); 
                 else
-                        DEN=PE(:,K+1);
+                        DEN = PE(:,K+1);
                 end;
                 idx=idx+K;
 		PE(:,K+1) = PE(:,K+1)./nn; 	% estimate of covariance
@@ -116,10 +116,10 @@ else            % needs O(p) memory
         rc=zeros(lr,lc-1);
         % Durbin-Levinson Algorithm
         for K=1:lc,
-                [arp(:,K),nn] = sumskipnan(F(:,K+1:N).*B(:,1:N-K),2);
-                arp(:,K) = arp(:,K)./DEN; %Burg
+                [TMP,nn] = sumskipnan(F(:,K+1:N).*B(:,1:N-K),2);
+                arp(:,K) = TMP./DEN; %Burg
                 rc(:,K)  = arp(:,K);
-                if K>1   %for compatibility with OCTAVE 2.0.13
+                if K>1,	% for compatibility with OCTAVE 2.0.13
                         arp(:,1:K-1) = arp(:,1:K-1) - arp(:,K*ones(K-1,1)).*arp(:,K-1:-1:1);
                 end;
                 

@@ -14,6 +14,6 @@ function s = tar(...)
 ## form and eval a string like
 ## "s.argn(1,:)=va_arg();s.argn(2,:)=va_arg(); ...."
 
-eval(setstr(grep([ones(nargin,1)*toascii("s."),\
-		  toascii(argn),\
-		  ones(nargin,1)*toascii("=va_arg();")]')')) ;
+eval(setstr(nze([ones(nargin,1)*toascii("s."),\
+		 toascii(argn),\
+		 ones(nargin,1)*toascii("=va_arg();")]')')) ;

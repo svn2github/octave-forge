@@ -32,7 +32,7 @@ end
 
 [u,d,v] = svd (moment);
 d = diag(d);
-d(find(d)) = 1 ./ inz (d) ;
+d(find(d)) = 1 ./ nze (d) ;
 
 [r,a] = rotparams (u');
 

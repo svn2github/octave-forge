@@ -7,7 +7,7 @@ function [BISPEC,BIACF,ACF] = bispec(Z,N);
 % Output:	BiACF  bi-autocorrelation function = 3rd order cumulant
 %		BISPEC Bi-spectrum 
 %
-% Reference(s):
+% Reference(s):
 % C.L. Nikias and A.P. Petropulu "Higher-Order Spectra Analysis" Prentice Hall, 1993.
 % M.B. Priestley, "Non-linear and Non-stationary Time series Analysis", Academic Press, London, 1988.
 

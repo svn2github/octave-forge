@@ -1,9 +1,8 @@
-BUILDING octave-2.1.35 for cygwin
+BUILDING octave-2.1.36 for cygwin
 
 This is a description of how I got 
-octave-2.1.35 and gnuplot-3.7.1
-and octave-forge (19 feb 02) to
-build under win2000.
+octave-2.1.36 and gnuplot-3.7.1
+and octave-forge to build under win2000.
 
 I have made a cygwin tar.bz2 package
 to download of this.
@@ -125,21 +124,21 @@ WITH
 
 octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
 	octave.o builtins.o ops.o $(DLD_STATIC_OBJ) \
-        $(SPARSE)/libsuperlu.a $(SPLINES_OBJ) 
+        $(SPARSE)/libsuperlu.a $(SPLINES_OBJ)   
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o octave \
 	octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
 	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS) \
-        -L$(SPARSE) -lsuperlu $(SPLINES_OBJ) 
+        -L$(SPARSE) -lsuperlu -ljpeg $(SPLINES_OBJ) 
 
 2. CREATE LINKS
 
 cd /usr/src
 cvs -d :pserver:anonymous@cvs.octave.sf.net:/cvsroot/octave checkout
 OCTAVEFORGE=/usr/src/octave-forge
-cd /usr/src/octave-2.1.35/src
+cd /usr/src/octave-2.1.36/src
 mkdir octave
 cd octave
 ln -s ../../config.h
@@ -157,6 +156,7 @@ ln -s ../oct.h
 ln -s ../ops.h
 ln -s ../ov-base.h
 ln -s ../ov-complex.h
+ln -s ../ov-cell.h
 ln -s ../ov-cx-mat.h
 ln -s ../ov-re-mat.h
 ln -s ../ov-scalar.h
@@ -170,30 +170,52 @@ ln -s ../symtab.h
 ln -s ../toplev.h
 ln -s ../utils.h
 ln -s ../variables.h
+ln -s ../../liboctave/EIG.h
+ln -s ../../liboctave/mx-cm-cdm.h
+ln -s ../oct-strstrm.h
+ln -s ../../liboctave/CmplxSCHUR.h
+ln -s ../../liboctave/dbleSCHUR.h
 cd ../DLD-FUNCTIONS
 ln -s $OCTAVEFORGE/main/linear-algebra/GramSchmidt.cc
 ln -s $OCTAVEFORGE/main/general/bitand.cc
 ln -s $OCTAVEFORGE/main/general/command.cc
+ln -s $OCTAVEFORGE/main/general/SHA1.cc
+ln -s $OCTAVEFORGE/main/general/deref.cc
 ln -s $OCTAVEFORGE/main/sparse/complex_sparse_ops.cc
 ln -s $OCTAVEFORGE/main/image/conv2.cc
 ln -s $OCTAVEFORGE/main/image/cordflt2.cc
+ln -s $OCTAVEFORGE/main/image/bwfill.cc
+ln -s $OCTAVEFORGE/main/image/jpgread.cc
+ln -s $OCTAVEFORGE/main/image/jpgwrite.cc
 ln -s $OCTAVEFORGE/main/specfun/ellipj.cc
+ln -s $OCTAVEFORGE/main/optim/leval.cc
 ln -s $OCTAVEFORGE/main/optim/lp.cc
 ln -s $OCTAVEFORGE/main/sparse/make_sparse.cc
 ln -s $OCTAVEFORGE/main/sparse/make_sparse.h
 ln -s $OCTAVEFORGE/main/signal/medfilt1.cc
 ln -s $OCTAVEFORGE/extra/linear-algebra/ov-re-tri.cc
 ln -s $OCTAVEFORGE/extra/linear-algebra/ov-re-tri.h
+ln -s $OCTAVEFORGE/extra/testfun/pretty.cc
+ln -s $OCTAVEFORGE/extra/symband/SymBand.cc
 rm rand.cc
 ln -s $OCTAVEFORGE/FIXES/rand.cc
 ln -s $OCTAVEFORGE/FIXES/MersenneTwister.h
+rm fsolve.cc
+ln -s $OCTAVEFORGE/FIXES/fsolve.cc
+rm log.cc
+ln -s $OCTAVEFORGE/FIXES/logm.cc
+ln -s $OCTAVEFORGE/FIXES/sqrtm.cc
 ln -s $OCTAVEFORGE/main/signal/remez.cc
+ln -s $OCTAVEFORGE/main/strings/regexp.cc
+ln -s $OCTAVEFORGE/main/struct/getfield.cc
+ln -s $OCTAVEFORGE/main/struct/setfield.cc
 ln -s $OCTAVEFORGE/main/linear-algebra/rsf2csf.cc
 ln -s $OCTAVEFORGE/main/sparse/sparse_full.cc
 ln -s $OCTAVEFORGE/main/sparse/sparse_inv.cc
 ln -s $OCTAVEFORGE/main/sparse/sparse_ops.cc
 ln -s $OCTAVEFORGE/main/sparse/sparse_ops.h
 ln -s $OCTAVEFORGE/main/splines/trisolve.cc
+
 
 3. BUILD OCTAVE AGAIN
 
@@ -265,4 +287,72 @@ tar cvfj octave-2.1.35-gnuplot-octaveforge.tar.bz2 \
          /usr/man/man1/octave* \
          /usr/share/octave/ \
          /usr/doc/octave-2.1.35/
+
+
+## NOTES: These *.cc files are not included in this build
+## for the following reasons
+FIXES/kron.cc - I don't understand the rational for this fix
+
+extra/linear-algebra/chol.cc
+  - this doesn't seem complete to me - I'm reluctant to
+    override the chol in octave for this
+
+extra/mex/mex.cc
+  - this is a staticaly linked build - so mex capability
+    doesn't help
+
+extra/tk_octave/tk_interp.cc
+  - this is fairly complicated build - I don't know how
+    to do this right now.
+
+main/audio/aurecord.cc
+main/audio/endpoint.cc
+  - audio for octave on cygwin doesn't seem to work
+
+main/geometry/__voronoi__.cc
+main/geometry/convhulln.cc
+main/geometry/delaunayn.cc
+  - this depends on qhull - I haven't looked into this - 
+    I'm not sure if the extra size is worth it.
+  
+main/plot/grab.cc
+main/plot/graphics.cc
+main/plot/gtext.cc
+main/plot/gzoom.cc
+main/plot/ginput.cc
+  - graphics functions are tied to X11 - we need some
+    windows replacements
+
+main/strings/regexp.cc
+main/struct/getfield.cc
+main/struct/setfield.cc
+main/symbolic/differentiate.cc
+main/symbolic/op-ex-mat.cc
+main/symbolic/op-ex.cc
+main/symbolic/op-sym.cc
+main/symbolic/op-vpa.cc
+main/symbolic/ov-ex-mat.cc
+main/symbolic/ov-ex.cc
+main/symbolic/ov-relational.cc
+main/symbolic/ov-sym.cc
+main/symbolic/ov-vpa.cc
+main/symbolic/probably_prime.cc
+main/symbolic/sym-bool.cc
+main/symbolic/sym-create.cc
+main/symbolic/symbols.cc
+  - these depend on the GiNac library 
+     which is not included with octave-forge
+
+nonfree/gpc/gpc_clip.cc
+nonfree/gpc/gpc_create.cc
+nonfree/gpc/gpc_get.cc
+nonfree/gpc/gpc_is_polygon.cc
+nonfree/gpc/gpc_read.cc
+nonfree/gpc/gpc_tristrip.cc
+nonfree/gpc/gpc_write.cc
+nonfree/gpc/octave-gpc.cc
+nonfree/splines/gcvspl.cc
+  - I don't consider these licenses GPL compatible - so they
+    can't be linked to octave
+
 

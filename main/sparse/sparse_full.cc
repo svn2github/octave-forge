@@ -33,8 +33,11 @@ using namespace std;
 // full
 //
 DEFUN_DLD (full, args, ,
-"FM= full (SM)\n"
-" returns a full storage matrix from a sparse one")
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
+ returns a full storage matrix from a sparse one\n\
+@seealso{sparse}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -70,10 +73,12 @@ DEFUN_DLD (full, args, ,
 // is_sparse and friends
 //
 DEFUN_DLD (is_sparse, args, ,
-"retval= is_sparse (X)\n"
-"  Returns true (ie. 1) if X is a matrix with sparse storage\n"
-"  Returns false (ie. 0) otherwise\n"
-"  see also is_real_sparse , is_complex_sparse")
+     "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{retval} =} is_sparse (@var{X})\n\
+Returns true (ie. 1) if X is a matrix with sparse storage@*\n\
+Returns false (ie. 0) otherwise\n\
+@seealso{is_real_sparse, is_complex_sparse, sparse}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -92,10 +97,12 @@ DEFUN_DLD (is_sparse, args, ,
 }
 
 DEFUN_DLD (is_real_sparse, args, ,
-"retval= is_real_sparse (X)\n"
-"  Returns true (ie. 1) if X is a real matrix with sparse storage\n"
-"  Returns false (ie. 0) otherwise\n"
-"  see also is_sparse , is_complex_sparse")
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{retval}=} is_real_sparse (@var{X})\n\
+Returns true (ie. 1) if @var{X} is a real matrix with sparse storage@*\n\
+Returns false (ie. 0) otherwise\n\
+@seealso{is_sparse, is_complex_sparse, sparse}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -113,10 +120,12 @@ DEFUN_DLD (is_real_sparse, args, ,
 }
 
 DEFUN_DLD (is_complex_sparse, args, ,
-"retval= is_complex_sparse (X)\n"
-"  Returns true (ie. 1) if X is a complex matrix with sparse storage\n"
-"  Returns false (ie. 0) otherwise\n"
-"  see also is_sparse , is_real_sparse")
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{retval}=} is_complex_sparse (@var{X})\n\
+Returns true (ie. 1) if @var{X }is a complex matrix with sparse storage@*\n\
+Returns false (ie. 0) otherwise\n\
+@seealso{is_sparse, is_real_sparse, sparse}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -137,8 +146,11 @@ DEFUN_DLD (is_complex_sparse, args, ,
 // nnz
 //
 DEFUN_DLD (nnz, args, ,
-"int= nnz (SM)\n"
-" returns number of non zero elements in SM")
+   "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{scalar} =} nnz (@var{SM})\n\
+returns number of non zero elements in SM\n\
+@seealso{sparse}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -188,15 +200,25 @@ DEFUN_DLD (nnz, args, ,
 // spfind - find elements in sparse matrices
 //
 DEFUN_DLD (spfind, args, nargout ,
-  "[...] = spfind (...)\n\
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[...] =} spfind (...)\n\
 SPFIND: a sparse version of the find operator\n\
-   x = spfind( a )                 \n\
-      is analagous to x= find(A(:)) \n\
-      where A= full(a)\n\
-   [i,j,v,nr,nc] = spfind( a )\n\
-      give column vectors i j v such that\n\
-      a= sparse(i,j,v,nr,nc)\n\
-  ")
+@enumerate\n\
+    @item\n\
+@var{x }= spfind( @var{a })\n\
+    @itemize @w\n\
+is analagous to @var{x}= find(@var{A}(:))@*\n\
+where @var{A}= full(@var{a})\n\
+    @end itemize\n\
+    @item\n\
+[@var{i},@var{j},@var{v},@var{nr},@var{nc}] = spfind( @var{a} )\n\
+    @itemize @w\n\
+returns column vectors @var{i},@var{j},@var{v} such that@*\n\
+@var{a}= sparse(@var{i},@var{j},@var{v},@var{nr},@var{nc})\n\
+    @end itemize\n\
+@end enumerate\n\
+@seealso{sparse}\n\
+@end deftypefn")
 {
    octave_value_list retval;
    octave_value tmp;
@@ -290,6 +312,9 @@ SPFIND: a sparse version of the find operator\n\
 
 /*
  * $Log$
+ * Revision 1.8  2003/10/18 01:13:00  aadler
+ * texinfo for documentation strings
+ *
  * Revision 1.7  2003/07/23 17:21:54  aadler
  * modified help files
  *

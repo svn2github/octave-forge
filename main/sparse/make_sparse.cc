@@ -141,40 +141,51 @@ oct_sparse_Destroy_SuperMatrix( SuperMatrix X) {
 #endif
 
 DEFUN_DLD (sparse, args, ,
-  "sparse_val = sparse (...)\n\
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{sparse_val} =} sparse (...)\n\
 SPARSE: create a sparse matrix\n\
 \n\
 sparse can be called in the following ways:\n\
 \n\
-1: S = sparse(A)  where 'A' is a full matrix\n\
+@enumerate\n\
+@item @var{S} = sparse(@var{A})  where @var{A} is a full matrix\n\
 \n\
-2: S = sparse(i,j,s,m,n,nzmax)  where\n\
-        i,j   are integer index vectors (1 x nnz)\n\
-        s     is the vector of real or complex entries (1 x nnz)\n\
-        m,n   are the scalar dimentions of S\n\
-        nzmax is ignored (here for compatability with Matlab)\n\
+@item @var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},@var{nzmax})  where\n\
+   @itemize @w \n\
+@var{i},@var{j}   are integer index vectors (1 x nnz) @* \n\
+@var{s}     is the vector of real or complex entries (1 x nnz) @* \n\
+@var{m},@var{n}   are the scalar dimentions of S @* \n\
+@var{nzmax} is ignored (here for compatability with Matlab) @* \n\
 \n\
-        if multiple values are specified with the same i,j\n\
-        position, the corresponding values will be added\n\
+        if multiple values are specified with the same @var{i},@var{j}\n\
+        position, the corresponding values in @var{s} will be added\n\
+   @end itemize\n\
 \n\
-3: S = sparse(i,j,s,m,n)            same as (2) above\n\
-  or\n\
-   S = sparse(i,j,s,m,n,'summation')\n\
-  or\n\
-   S = sparse(i,j,s,m,n,'sum')\n\
+@item The following usages are equivalent to (2) above:\n\
+   @itemize @w \n\
+@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n})@*\n\
+@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'summation')@*\n\
+@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'sum')@*\n\
+   @end itemize\n\
 \n\
-4: S = sparse(i,j,s,m,n,'unique')\n\
+@item @var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'unique')@*\n\
 \n\
-        same as (2) above, except that rather than adding,\n\
-        if more than two values are specified for the same i,j\n\
-        position, then the last specified value will be kept\n\
+   @itemize @w \n\
+same as (2) above, except that rather than adding,\n\
+if more than two values are specified for the same @var{i},@var{j}\n\
+position, then the last specified value will be kept\n\
+   @end itemize\n\
 \n\
-5: S=  sparse(i,j,s)          uses m=max(i), n=max(j)\n\
+@item @var{S}=  sparse(@var{i},@var{j},@var{s})          uses @var{m}=max(@var{i}), @var{n}=max(@var{j})\n\
 \n\
-6: S=  sparse(m,n)            does sparse([],[],[],m,n,0)\n\
+@item @var{S}=  sparse(@var{m},@var{n})            does sparse([],[],[],@var{m},@var{n},0)\n\
 \n\
-s, and i or j may be scalars, in which case they are expanded\n\
-so they all have the same length ")
+@var{s}, and @var{i} or @var{j} may be scalars, in\n\
+which case they are expanded\n\
+so they all have the same length\n\
+@end enumerate\n\
+@seealso{full}\n\
+@end deftypefn")
 {
 #ifdef ANDYS_SEGFAULT_OVERRIDE
 signal( SIGSEGV, SIG_DFL );
@@ -342,6 +353,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.11  2003/10/18 01:13:00  aadler
+ * texinfo for documentation strings
+ *
  * Revision 1.10  2003/04/03 22:06:39  aadler
  * sparse create bug - need to use heap for large temp vars
  *

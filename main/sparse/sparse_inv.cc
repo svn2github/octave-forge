@@ -62,21 +62,35 @@ oct_sparse_verify_supermatrix( SuperMatrix X)
 
 
 DEFUN_DLD (splu, args, nargout ,
-  "[L,U,Prow, Pcol] = splu( a ,p);\n\
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{L},@var{U},@var{Prow}, @var{Pcol}] =} splu( @var{a} ,@var{p});\n\
 SPLU : Sparse Matrix LU factorization\n\
 \n\
-With one input and two or three outputs, SPLU has the same effect as LU,\n\
-Except that row and column permutations are returned\n\
-NOTE: this means that SPLU is _not_ a drop in replacement for LU\n\
+splu can be called in the following ways:\n\
 \n\
+@enumerate\n\
+    @item\n\
+[@var{L},@var{U},@var{Pr},@var{Pc}] = splu(@var{a}) \n\
+    @itemize\n\
+returns unit lower triangular @var{L}, upper triangular @var{U},\n\
+and permutation matrices @var{Pr},@var{Pc}\n\
+such that @var{Pr}*@var{A}*@var{Pc}' = @var{L}*@var{U}.\n\
 \n\
-[L,U,Pr,Pc] = splu(A) \n\
-          returns unit lower triangular L, upper triangular U,\n\
-          and permutation matrices Pr,Pc with Pr*A*Pc' = L*U.\n\
-[Lp,Up] = splu(A) returns permuted triangular L and upper triangular U\n\
-          with A = L*U.\n\
-          here Pr*Lp = L  and Up*Pc = U\n\
-  ")
+NOTE: this means that splu is @strong{not} a drop in replacement for lu.\n\
+Unlike lu, splu calculates both a row and column permutation.\n\
+    @end itemize\n\
+    @item\n\
+[@var{Lp},@var{Up}] = splu(@var{A})\n\
+    @itemize\n\
+returns permuted triangular @var{L} and upper triangular @var{U}\n\
+where @var{Pr}*@var{Lp }= @var{L} and @var{Up}*@var{Pc} = @var{U}\n\
+such that A = L*U.\n\
+\n\
+splu with 2 outputs functions similarly to lu\n\
+    @end itemize\n\
+@end enumerate\n\
+@seealso{sparse, spinv}\n\
+@end deftypefn")
 /*
 Note: 2nd input funcionality has not been verified\n\
 With a second input, the columns of A are permuted before factoring:\n\
@@ -310,23 +324,42 @@ oct_sparse_inverse( const octave_complex_sparse& Asp,
 }   
 
 DEFUN_DLD (spinv, args, nargout ,
-  "[ainv] = spinv( a );\n\
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{ainv} =} spinv( @var{a}, @var{p} );\n\
 SPINV : Sparse Matrix inverse\n\
-    ainv is the inverse of a\n\
-or\n\
-   [ainv] = spinv( a,p );\n\
-where p is a specified permutation for the columns of a\n\
-Here psparse will normally be a user-supplied permutation matrix or vector\n\
-to be applied to the columns of A for sparsity. \n\
 \n\
+spinv can be called in the following ways:\n\
+\n\
+@enumerate\n\
+    @item\n\
+@var{ainv} = spinv( @var{a} );\n\
+    @itemize\n\
+ainv is the inverse of a\n\
+\n\
+@strong{Note}: It is significantly more accurate and faster to do@*\n\
+    x=a\\b@*\n\
+rather than@*\n\
+    x=spinv(a)*b@*\n\
+Firstly, the former is more stable numerically, as it solves for x\n\
+using the LU decomposition, and, secondly, because the algorithm\n\
+used for this function is currently quite slow.\n\
+    @end itemize\n\
+\n\
+    @item\n\
+@var{ainv} = spinv( @var{a},@var{p} );\n\
+    @itemize\n\
+@var{ainv} is the inverse of @var{a}\n\
+where @var{p} is a user-supplied permutation matrix or vector\n\
+to be applied to the columns of @var{a}.\n\
+A good selection of @var{p} will improve the sparsity of @var{ainv}.\n\
+    @end itemize\n\
+@end enumerate\n\
+@seealso{sparse, splu}\n\
+@end deftypefn")
+/*
 Note: 2nd input funcionality has not been verified\n\
 With a second input, the columns of A are permuted before factoring:\n\
-\n\
-Note 2: It is significantly more accurate and faster to do\n\
-    x=a\\b\n\
-rather than\n\
-    x=spinv(a)*b\n\
-  ")
+*/
 {
    octave_value_list retval;
    octave_value tmp;
@@ -368,9 +401,11 @@ rather than\n\
 }
 
 DEFUN_DLD (spabs, args, nargout ,
-  "real_a = spabs( a );\n\
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{abs_a} =} spabs( @var{a} );\n\
 SPABS : Absolute value of a sparse matrix\n\
-  ")
+@seealso{sparse, spreal}\n\
+@end deftypefn")
 {
    octave_value_list retval;
 
@@ -432,6 +467,9 @@ SPABS : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.13  2003/10/18 01:13:00  aadler
+ * texinfo for documentation strings
+ *
  * Revision 1.12  2003/08/30 03:03:05  aadler
  * mods to prevent segfaults for sparse
  *

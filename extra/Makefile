@@ -15,11 +15,12 @@ all: $(BUILDDIRS)
 install: $(BUILDDIRS)
 	@test -z "$(NOINSTALLDIRS)" || echo skipping $(NOINSTALLDIRS)
 ifeq ($(INSTALLDIRS),)
-	@echo intalling no packages
+	@echo installing no packages
 else
 	@for f in $(INSTALLDIRS) ; do \
             echo installing $$f... ; \
-            ../$(INSTALLOCT) $$f $(MPATH)/$$f $(OPATH) $(XPATH) ; \
+            ../$(INSTALLOCT) $$f $(MPATH)/$$f $(OPATH) $(XPATH) \
+		$(ALTMPATH)/$$f $(ALTOPATH)/$$f ; \
         done
 endif
 else

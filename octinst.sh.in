@@ -1,13 +1,14 @@
 #! /bin/sh
 
-# octinst.sh source mpath opath xpath 
+# octinst.sh source mpath opath xpath [altmpath altopath]
 
 # Copies all m-files and oct-files from the source directory to the
 # mpath and opath respectively.  Preserves links.  Files in
 # source/data are copied to mpath.  Files in the source/bin are copied
-# to xpath.
+# to xpath. m-files and oct-files in source/alternatives are copied to 
+# altmpath and altopath respectively
 
-if test $# -ne 4 ; then
+if test $# -lt 4 ; then
     echo 'Not enough arguments'
     exit 1
 fi
@@ -17,6 +18,8 @@ source=$1; shift
 mpath=$1; shift
 opath=$1; shift
 xpath=$1; shift
+altmpath=$1; shift
+altopath=$1; shift
 INSTALL="@INSTALL@"
 INSTALL_DATA="@INSTALL_DATA@"
 INSTALL_PROGRAM="@INSTALL_PROGRAM@"
@@ -36,6 +39,22 @@ if test "$files" != "$source/*.oct" ; then
     $INSTALL -d $opath
 ## Grrr... install doesn't preserve links.  Hope this works.
     cp $COPY_FLAGS $files $opath
+fi
+
+# install alternatives
+if test -d "$source/alternatives" ; then
+    # m-files
+    files=`echo $source/alternatives/*.m`
+    if test "$files" != "$source/alternatives/*.m" ; then
+        $INSTALL -d $altmpath
+	$INSTALL_DATA $files $altmpath
+    fi
+    # oct-files
+    files=`echo $source/alternatives/*.oct`
+    if test "$files" != "$source/alternatives/*.oct" ; then
+        $INSTALL -d $altopath
+	$INSTALL_DATA $files $altopath
+    fi
 fi
 
 # create PKG_ADD

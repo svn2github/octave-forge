@@ -54,7 +54,8 @@ ver = @ver@
 MPATH = @mpath@
 OPATH = @opath@
 XPATH = @xpath@
-
+ALTMPATH = @altmpath@
+ALTOPATH = @altopath@
 
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<

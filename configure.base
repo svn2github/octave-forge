@@ -52,6 +52,9 @@ AC_SUBST(subver)
 AC_SUBST(mpath)
 AC_SUBST(opath)
 AC_SUBST(xpath)
+AC_SUBST(altpath)
+AC_SUBST(altmpath)
+AC_SUBST(altopath)
 
 AC_ARG_WITH(path, 
 	[  --with-path             install path prefix],
@@ -65,16 +68,31 @@ AC_ARG_WITH(opath,
 AC_ARG_WITH(xpath,
 	[  --with-xpath            override path for executables],
 	[xpath=$withval])
+AC_ARG_WITH(altpath, 
+	[  --with-altpath          alternative functions install path prefix],
+	[ altpath=$withval ])
+AC_ARG_WITH(altmpath,
+	[  --with-altmpath         override path for alternative m-files],
+	[altmpath=$withval])
+AC_ARG_WITH(altopath,
+	[  --with-altopath         override path for alternative oct-files],
+	[altopath=$withval])	
 
 if test -n "$path" ; then
    test -z "$mpath" && mpath=$path 
    test -z "$opath" && opath=$path/oct 
    test -z "$xpath" && xpath=$path/bin
+   test -z "$altpath" && altpath=$path-alternatives
+fi
+
+if test -n "$altpath" ; then
+   test -z "$altmpath" && altmpath=$altpath 
+   test -z "$altopath" && altopath=$altpath/oct 
 fi
 
 dnl Don't query if path/ver are given in the configure environment
+#if test -z "$mpath" || test -z "$opath" || test -z "$xpath" || test -z "$altmpath" || test -z "$altopath" || test -z "$ver" ; then
 if test -z "$mpath" || test -z "$opath" || test -z "$xpath" || test -z "$ver" ; then
-
    dnl Construct program to get mkoctfile version and local install paths
    cat > conftest.cc <<EOF
 #include <octave/config.h>
@@ -82,6 +100,8 @@ if test -z "$mpath" || test -z "$opath" || test -z "$xpath" || test -z "$ver" ; 
 #include <octave/defaults.h>
 
 #define INFOV "\nINFOV=" OCTAVE_VERSION "\n"
+
+#define INFOH "\nINFOH=" OCTAVE_CANONICAL_HOST_TYPE "\n"
 
 #ifdef OCTAVE_LOCALVERFCNFILEDIR
 # define INFOM "\nINFOM=" OCTAVE_LOCALVERFCNFILEDIR "\n"
@@ -104,6 +124,7 @@ if test -z "$mpath" || test -z "$opath" || test -z "$xpath" || test -z "$ver" ; 
 const char *infom = INFOM;
 const char *infoo = INFOO;
 const char *infox = INFOX;
+const char *infoh = INFOH;
 const char *infov = INFOV;
 EOF
 
@@ -117,9 +138,13 @@ EOF
    dnl set the appropriate variables if they are not already set
    ver=`echo $INFOV | sed -e "s/\.//" -e "s/\..*$//"`
    subver=`echo $INFOV | sed -e "[s/^[^.]*[.][^.]*[.]//]"`
+   alt_mbase=`echo $INFOM | sed -e "[s,\/[^\/]*$,,]"`
+   alt_obase=`echo $INFOO | sed -e "[s,/site.*$,/site,]"`
    test -z "$mpath" && mpath=$INFOM/octave-forge
    test -z "$opath" && opath=$INFOO/octave-forge
    test -z "$xpath" && xpath=$INFOX
+   test -z "$altmpath" && altmpath=$alt_mbase/octave-forge-alternatives/m
+   test -z "$altopath" && altopath=$alt_obase/octave-forge-alternatives/oct/$INFOH
 fi
 
 dnl *******************************************************************
@@ -272,6 +297,9 @@ octave commands will install into the following directories:
    m-files:   $mpath
    oct-files: $opath
    binaries:  $xpath
+alternatives:
+   m-files:   $altmpath
+   oct-files: $altopath
 
 shell commands will install into the following directories:
    binaries:  $bindir

@@ -320,8 +320,8 @@ gen_matrixop_tests() {
 %!assert(as/bf,af/bf,100*eps)
 %!assert(af/bs,af/bf,100*eps)
 %!assert(as/bs,af/bf,100*eps)
-%!#assert(bs\af,bf\af,100*eps) # fails (\ seg-faults for non-square)
-%!#assert(bf\as,bf\af,100*eps) # fails (\ seg-faults for non-square)
+%!assert(bs\af,bf\af,100*eps) # fails 
+%!assert(bf\as,bf\af,100*eps) # fails 
 %!#assert(bs\as,bf\af,100*eps) # fails (\ seg-faults for non-square)
 
 EOF

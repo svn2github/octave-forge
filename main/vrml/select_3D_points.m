@@ -26,7 +26,9 @@ if nargin > 2
 
   opts = read_options (varargin, "op1", op1,"default",opts);
 end
-[frame, deco, balls] = getfields (opts, "frame", "deco", "balls");
+frame = opts.frame;
+deco = opts.deco;
+balls = opts.balls;
 
 want_list = 0;			# Return list of selected points or 0-1
 				# matrix 

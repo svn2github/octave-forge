@@ -31,10 +31,9 @@ if nargin > 1
   op1 = " col emit tran balls border bcol btran bemit brad borad bocol boemit ";
   df = tar (col,emit,tran,balls,border,bcol,btran,bemit,brad,borad,bocol,boemit);
   s = read_options (varargin, "op1",op1, "default",df);
-  [col,emit,tran,balls,border,bcol,btran,bemit,brad,borad,bocol,boemit] = \
-      getfields (s,\
-		"col","emit","tran","balls","border","bcol","btran","bemit",\
-		"brad","borad","bocol","boemit");
+  col=s.col; emit=s.emit; tran=s.tran; balls=s.balls; border=s.border;
+  bcol = s.bcol; btran = s.btran; bemit = s.bemit; brad = s.brad;
+  borad = s.borad; bocol = s.bocol; boemit = s.boemit;
 end
 
 if ! isnan (bcol) ||! isnan (brad) || ! isnan (bemit), balls = 1; end

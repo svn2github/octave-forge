@@ -76,6 +76,7 @@ Array data
 *   mxSetPi 
 *   mxSetPr 
 *   mxGetScalar
+*   mxGetNumberOfDimensions 
 
 IEEE floating point support
 *   mxGetEps 
@@ -173,7 +174,6 @@ x   mxCreateCellArray
 x   mxCalcSingleSubscript
 x   mxSetDimensions 
 x   mxGetDimensions 
-x   mxGetNumberOfDimensions 
 
 Cell array support
 x   mxIsCell 

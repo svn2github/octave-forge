@@ -105,6 +105,7 @@ extern "C" {
   int mxIsEmpty (const mxArray* ptr);
   int mxGetM (const mxArray* ptr);
   int mxGetN (const mxArray* ptr);
+  int mxGetNumberOfDimensions (const mxArray* ptr);
   double* mxGetPr (const mxArray* ptr);
 
   /* structure support (prototypes only at this point?) */

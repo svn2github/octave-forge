@@ -129,6 +129,7 @@ public:
   int columns() const { return nc; }
   void rows(int r) { nr = r; }
   void columns(int c) { nc = c; }
+  int dims() const { return 2; }
 
   double *imag() const { return pi; }
   double *real() const { return pr; }
@@ -677,6 +678,7 @@ extern "C" {
   Pix mxGetPi (const mxArray* ptr) { return ptr->imag(); }
   int mxGetM (const mxArray* ptr) { return ptr->rows(); }
   int mxGetN (const mxArray* ptr) { return ptr->columns(); }
+  int mxGetNumberOfDimensions (const mxArray* ptr) { return ptr->dims(); }
   void mxSetM (mxArray* ptr, const int M) { ptr->rows(M); }
   void mxSetN (mxArray* ptr, const int N) { ptr->columns(N); }
   void mxSetPr (mxArray* ptr, Pix pr) { ptr->real((double *)pr); }

@@ -103,7 +103,7 @@ DEFUN_DLD (cell2csv, args, nargout,
 	word += str;
       }
 
-      else {
+      else if (!c(i, j).is_empty()) {
 	/* Output NaN value */
 	warning ("not a real or a string\n");
 	word += "NaN";

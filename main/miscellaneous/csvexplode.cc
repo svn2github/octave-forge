@@ -43,6 +43,12 @@ DEFUN_DLD (csvexplode, args, nargout,
   }
 
   /* Get arguments */
+  if (!args(0).is_string()) {
+    if (args(0).is_cell())
+      return octave_value(args(0));
+    else
+      return octave_value(Cell(args(0)));
+  }
   std::string str = args(0).string_value();
 
   std::string _sep = (args.length() > 1) ? args(1).string_value() : ",";

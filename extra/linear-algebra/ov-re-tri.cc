@@ -156,5 +156,9 @@ void install_tri_ops(void)
 
 DEFINE_OCTAVE_ALLOCATOR (octave_tri);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_tri, "tri");
+#ifdef TYPEID_HAS_CLASS
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_tri, "triangular matrix", "double");
+#else
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_tri, "triangular matrix");
+#endif
 

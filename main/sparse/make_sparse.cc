@@ -438,14 +438,21 @@ SPIMAG : imaginary part of a complex sparse matrix\n\
 
 
 DEFINE_OCTAVE_ALLOCATOR (octave_sparse);
-
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse, "sparse");
-
 DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 
+#ifdef TYPEID_HAS_CLASS
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse, "sparse", "sparse");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse", "sparse");
+#else
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse, "sparse");
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
+#endif
+
 /*
  * $Log$
+ * Revision 1.14  2003/11/18 04:45:46  pkienzle
+ * Octave now defines type class as well as type name.
+ *
  * Revision 1.13  2003/10/27 15:24:13  aadler
  * doc bug
  *

@@ -30,15 +30,15 @@
 # rm logfile;  run octave code ; clear variables ; exit
 # look at logfile
 
-# CCDEFS = -DVERBOSE -DHAVE_ND_ARRAYS
-# CCDEFS = -DVERBOSE -DUSE_DMALLOC -DANDYS_SEGFAULT_OVERRIDE -DHAVE_ND_ARRAYS
+
+# CCDEFS = -DVERBOSE
+# CCDEFS = -DVERBOSE -DUSE_DMALLOC -DANDYS_SEGFAULT_OVERRIDE
 # DLIBS = -ldmallocxx -ldmalloc
 # DLIBS = -lefence
-# CCDEFS = -DVERBOSE -v -DHAVE_ND_ARRAYS
-# CCDEFS = -v -DHAVE_ND_ARRAYS
-# CCDEFS = -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE -DDEBUG -DHAVE_ND_ARRAYS
-  CCDEFS = -DNDEBUG -DHAVE_ND_ARRAYS
-
+# CCDEFS = -DVERBOSE -v
+# CCDEFS = -v
+# CCDEFS = -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE -DDEBUG
+  CCDEFS = -DNDEBUG
 sinclude ../../Makeconf
 
 ifndef OCTAVE_FORGE
@@ -48,6 +48,8 @@ ifndef OCTAVE_FORGE
 	AR= ar
 	RANLIB=ranlib
 	LN_S = ln -s
+	HAVE_ND_ARRAYS = -DHAVE_ND_ARRAYS
+	TYPEID_HAS_CLASS = -DTYPEID_HAS_CLASS
 endif
 
 # Use same C compiler and options as mkoctfile
@@ -121,7 +123,7 @@ ZLUSRC = $(S_SRC)/zgssv.o           $(S_SRC)/zgssvx.o \
 
 S_DOUBLE= $(DLUSRC) $(ALLAUX) $(DZLAUX) $(ZLUSRC)
 
-all: $(NAME).oct # test
+all: $(NAME).oct $(OBJLINKS) # test
 
 $(S_DOUBLE):%.o:%.c
 	$(CC) $(CFLAGS) $(CPICFLAG) $(S_INC) $(SUPERLU_DEFS) -c $< -o $@
@@ -130,7 +132,7 @@ $(OCTOBJ): make_sparse.h
 sparse_ops.o complex_sparse_ops.o: sparse_ops.h
 
 $(OCTOBJ): %.o: %.cc
-	$(MKOCTFILE) -c $< $(S_INC) $(CCDEFS) -o $@
+	$(MKOCTFILE) -c $< $(S_INC) $(CCDEFS) $(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) -o $@
 
 $(LIBSUPERLU): $(S_DOUBLE)
 	$(AR) $(ARFLAGS) $(LIBSUPERLU) $(S_DOUBLE)
@@ -138,7 +140,9 @@ $(LIBSUPERLU): $(S_DOUBLE)
 
 $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 	$(MKOCTFILE)  $(OCTOBJ) -o $(NAME).oct  -lsuperlu -L. $(DLIBS)
-	for i in $(OBJLINKS); do rem -f $$i ; $(LN_S) $(NAME).oct $$i ; done
+
+$(OBJLINKS):
+	$(LN_S) $(NAME).oct $@
 
 test: $(NAME).oct
 	#export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile

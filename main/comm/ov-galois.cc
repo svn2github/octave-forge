@@ -37,7 +37,11 @@ Open Source Initiative (www.opensource.org)
 
 DEFINE_OCTAVE_ALLOCATOR(octave_galois);
 
+#ifdef TYPEID_HAS_CLASS
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois", "galois");
+#else
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois");
+#endif
 
 octave_value_list
 octave_galois::dotref (const octave_value_list& idx)

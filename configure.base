@@ -339,7 +339,7 @@ cat > conftest.cc <<EOF
 bool x = Vok_to_lose_imaginary_part;
 EOF
 AC_MSG_CHECKING([for Vok_to_lose_imaginary_part])
-ac_try="$MKOCTFILE conftest.cc"
+ac_try="$MKOCTFILE -c conftest.cc"
 if AC_TRY_EVAL(ac_try) ; then
 	AC_MSG_RESULT(yes)
 	HAVE_OK_TO_LOSE_IMAGINARY_PART="-DHAVE_OK_TO_LOSE_IMAGINARY_PART"
@@ -357,8 +357,8 @@ cat > conftest.cc << EOF
 #include <octave/config.h>
 #include <octave/ArrayN.h>
 #include <octave/ArrayN.cc>
-#include <octave/MArrayN.h>
-#include <octave/MArrayN.cc>
+//#include <octave/MArrayN.h>
+//#include <octave/MArrayN.cc>
 EOF
 ac_try="$MKOCTFILE conftest.cc"
 if AC_TRY_EVAL(ac_try); then
@@ -370,6 +370,25 @@ else
 	ND_ARRYS="does not have N-dimensional Arrays"
 fi
 AC_SUBST(HAVE_ND_ARRAYS)
+rm -rf conftest*
+
+dnl Test if OV_TYPEID has class arg
+AC_MSG_CHECKING([for class argument in OV_TYPEID])
+cat > conftest.cc << EOF
+#include <octave/oct.h>
+class usertype : public octave_value {
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA;
+};
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(usertype,"name","class");
+EOF
+ac_try="$MKOCTFILE -c conftest.cc"
+if AC_TRY_EVAL(ac_try); then
+	AC_MSG_RESULT(yes)
+	TYPEID_HAS_CLASS="-DTYPEID_HAS_CLASS";
+else
+	AC_MSG_RESULT(no)
+fi
+AC_SUBST(TYPEID_HAS_CLASS)
 rm -rf conftest*
 
 dnl Test for the makeinfo program

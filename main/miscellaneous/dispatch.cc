@@ -102,8 +102,11 @@ private:
 
 DEFINE_OCTAVE_ALLOCATOR (octave_dispatch);
 
+#ifdef TYPEID_HAS_CLASS
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dispatch, "overloaded function","function");
+#else
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dispatch, "overloaded function");
-
+#endif
 
 octave_dispatch::octave_dispatch (symbol_record* sr)
   : octave_function (sr->name(), sr->help()), tab (), base() 

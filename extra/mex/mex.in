@@ -10,9 +10,7 @@
 # 2001-09-20 Paul Kienzle <pkienzle@users.sf.net>
 # * use config-like syntax to set the name of mkoctfile and the path to mex
 
-if test $# -lt 1 ; then
-    echo usage: mex -options file.c
-fi
+test $# -lt 1 && echo usage: mex -options file.c && exit 1
 
 first=""
 for arg in $*; do

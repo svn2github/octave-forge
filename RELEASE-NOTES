@@ -8,7 +8,9 @@ http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/ma
 
 xxxx-xx-xx for Octave 2.1.36 and up ==========================================
 
-* Support for octave 2.1.36-2.1.48.
+* Extended support backward to octave 2.1.36 and forward to octave 2.1.48
+  for all oct-files.  Some scripts make use of features only available in
+  more recent versions of Octave.
 
 * Communications: 
   - sqrt over Galois field
@@ -16,23 +18,24 @@ xxxx-xx-xx for Octave 2.1.36 and up ==========================================
   - bug fixes and documentation improvements
 
 * Image:
-  - add rotate_scale() 
+  - added rotate_scale() 
 
 * Optimization:
-  - add Nick Higham's adsmax, mdsmax nmsmax for fmins
+  - added Nick Higham's adsmax, mdsmax nmsmax for fmins
   - lp() fix range error
 
 * Plotting:
   - surf()/surfc() support gnuplot 3.8i shaded surfaces
-  - add peaks()
+  - added peaks()
   - legend() inside/ouside/boxon/boxoff/right/left
 
 * Signal Processing 
+  - added freqs, invfreqs, invfreqz
   - return statespace and laplacian IIR filters (butter, cheby1, cheby2, ellip)
-  - fix aryule
+  - fixed aryule() to return the correct filter
 
 * Statistics: 
-  - add normplot()
+  - added normplot()
   - scatter() optimization
 
 * Symbolic: 
@@ -42,14 +45,13 @@ xxxx-xx-xx for Octave 2.1.36 and up ==========================================
 
 * TSA/NaN:
   - many bug fixes and documentation improvements
-  - quantiles -> Quantile
 
 * Miscellaneous:
-  - add cellstr()
+  - added cellstr()
   - fieldnames() now returns cell array
   - listen() bugfixes
   - ellipke() supports m < 0
-  - extend deal() to handle [a,b] = deal(b,a)
+  - deal() now supports [a,b] = deal(b,a)
   - dlmread() converted to C++ for speed and more flexible input
 
 * administration: 

@@ -6,7 +6,8 @@ ifeq ($(MPATH),$(OPATH))
 else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
-RUN_OCTAVE=$(OCTAVE) --norc -p FIXES/:main//:extra//:nonfree//:
+TEST_PATH=$(shell admin/runpath.sh)
+RUN_OCTAVE=$(OCTAVE) --norc -p "$(TEST_PATH)"
 
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 

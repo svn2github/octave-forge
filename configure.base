@@ -355,10 +355,7 @@ dnl Test for N-dimensional Arrays
 AC_MSG_CHECKING([for N-dim arrays])
 cat > conftest.cc << EOF
 #include <octave/config.h>
-#include <octave/ArrayN.h>
-#include <octave/ArrayN.cc>
-//#include <octave/MArrayN.h>
-//#include <octave/MArrayN.cc>
+#include <octave/dim-vector.h>
 EOF
 ac_try="$MKOCTFILE conftest.cc"
 if AC_TRY_EVAL(ac_try); then

@@ -4,7 +4,7 @@
 ## to start somewhere...
 LOADPATH = "main//:extra//:nonfree//:";
 
-disp("main/optim");
+disp("[main/optim]");
 disp(">leval"); assert(leval("acos", list(-1)), pi, 100*eps);
 
 if 0 # optim tests are failing far too often!
@@ -22,7 +22,7 @@ disp(">nelder_mead_min_1"); test_nelder_mead_min_1; assert(ok,1);
 disp(">nelder_mead_min_2"); test_nelder_mead_min_2; assert(ok,1);
 endif
 
-disp("extra/linear-algebra");
+disp("[extra/linear-algebra]");
 rt2 = sqrt(2);
 disp(">chol"); assert(c=chol([2,1;1,1]),[rt2,1/rt2;0,1/rt2],sqrt(eps));
 assert(c\(c'\[1;1]),[0;1]); 
@@ -30,7 +30,7 @@ assert(typeinfo(c),"tri");
 assert(c+1,[1+rt2,1+1/rt2;1,1+1/rt2],sqrt(eps));
 assert(typeinfo(c+1),"matrix");
 
-disp("main/signal");
+disp("[main/signal]");
 disp(">medfilt"); assert(medfilt1([1, 2, 3, 4, 5], 3), [1.5, 2, 3, 4, 4.5]);
 b = [
    0.0415131831103279
@@ -51,13 +51,13 @@ b = [
    0.0415131831103279];
 disp(">remez"); assert(remez(15,[0,0.3,0.4,1],[1,1,0,0]),b,1e-14);
 
-disp("main/general");
+disp("[main/general]");
 disp(">bitand"); assert(bitand(7,14),6);
 disp(">bitor"); assert(bitor(7,14),15);
 disp(">bitxor"); assert(bitxor(7,14),9);
 disp(">bitmax"); assert(bitmax != 0);
 
-disp("main/image");
+disp("[main/image]");
 b = [
    0,   1,   2,   3;
    1,   8,  12,  12;
@@ -65,23 +65,28 @@ b = [
    7,  22,  25,  18 ];
 disp(">conv2"); assert(conv2([0,1;1,2],[1,2,3;4,5,6;7,8,9]),b);
 disp(">cordflt2"); assert(medfilt2(b),[0,1,2,0;1,4,12,3;4,12,20,12;0,7,20,0]);
-disp(">jpgwrite"); 
-x=linspace(-8,8,200);
-[xx,yy]=meshgrid(x,x);
-r=sqrt(xx.^2+yy.^2) + eps;
-map=colormap(hsv);
-Rw=Gw=Bw=z=imagesc(sin(r)./r);
-Rw(:)=fix(255*map(z,1));
-Gw(:)=fix(255*map(z,2));
-Bw(:)=fix(255*map(z,3));
-jpgwrite('test.jpg',Rw,Gw,Bw);
-assert(stat("test.jpg").size,6423);
-disp(">jpgread");
-[Rr,Gr,Br] = jpgread('test.jpg');
-assert([max(Rw(:)-Rr(:))<30,max(Gw(:)-Gr(:))<30,max(Bw(:)-Br(:))<30]);
-unlink('test.jpg');
+if exists("jpgwrite")
+  disp(">jpgwrite"); 
+  x=linspace(-8,8,200);
+  [xx,yy]=meshgrid(x,x);
+  r=sqrt(xx.^2+yy.^2) + eps;
+  map=colormap(hsv);
+  Rw=Gw=Bw=z=imagesc(sin(r)./r);
+  Rw(:)=fix(255*map(z,1));
+  Gw(:)=fix(255*map(z,2));
+  Bw(:)=fix(255*map(z,3));
+  jpgwrite('test.jpg',Rw,Gw,Bw);
+  assert(stat("test.jpg").size,6423);
+  disp(">jpgread");
+  [Rr,Gr,Br] = jpgread('test.jpg');
+  assert([max(Rw(:)-Rr(:))<30,max(Gw(:)-Gr(:))<30,max(Bw(:)-Br(:))<30]);
+  unlink('test.jpg');
+else
+  disp(">jpgread ... not available");
+  disp(">jpgwrite ... not available");
+endif
 
-disp("main/splines");
+disp("[main/splines]");
 disp(">trisolve(d,e,b)");
 n=6; 
 l=[ 0.16, 0.05, 0.56, 0.94, 0.87 ]';
@@ -104,12 +109,12 @@ disp(">trisolve(l,d,u,b,cl,cu)");
 A=diag(cl,-n+1)+diag(l,-1)+diag(d)+diag(u,1)+diag(cu,n-1);
 assert(A*trisolve(l,d,u,b,cl,cu),b,10000*eps);
 
-disp("main/strings");
+disp("[main/strings]");
 disp(">regexp"); assert(regexp("f(.*)uck"," firetruck "),[2,10;3,7]);
 disp(">[m,b]=regexp"); 
 [m,b]=regexp("f(.*)uck"," firetruck "); assert(b,"iretr");
 
-disp("main/struct");
+disp("[main/struct]");
 x.a = "hello";
 disp(">getfield"); assert(getfield(x,"a"),"hello");
 disp(">setfield"); x = setfield(x,"b","world");
@@ -117,7 +122,7 @@ y.a = "hello";
 y.b = "world";
 assert(x,y);
 
-disp("main/specfun");
+disp("[main/specfun]");
 disp(">ellipj");
 
 ## tests taken from ellipj
@@ -170,6 +175,10 @@ assert([sn;cn;dn],res, 100*eps);
 assert([sn,cn,dn],res', 100*eps);
 
 ## need to check [real,complex]x[scalar,rowvec,colvec,matrix]x[u,m]
+
+disp("[main/sparse]");
+sp_test
+fem_test
 
 
 disp("=====================");

@@ -72,31 +72,7 @@ b = [
 disp(">conv2"); assert(conv2([0,1;1,2],[1,2,3;4,5,6;7,8,9]),b);
 disp(">cordflt2"); assert(medfilt2(b),[0,1,2,0;1,4,12,3;4,12,20,12;0,7,20,0]);
 disp(">bwlabel"); assert(bwlabel([0 1 0; 0 0 0; 1 0 1]),[0 1 0; 0 0 0; 2 0 3]);
-if exist("jpgwrite")
-  disp(">jpgwrite"); 
-  x=linspace(-8,8,200);
-  [xx,yy]=meshgrid(x,x);
-  r=sqrt(xx.^2+yy.^2) + eps;
-  map=colormap(hsv);
-  A=sin(r)./r;
-  minval = min(A(:));
-  maxval = max(A(:));
-  z = round ((A-minval)/(maxval - minval) * (rows(colormap) - 1)) + 1;
-  Rw=Gw=Bw=z;
-  Rw(:)=fix(255*map(z,1));
-  Gw(:)=fix(255*map(z,2));
-  Bw(:)=fix(255*map(z,3));
-  jpgwrite('test.jpg',Rw,Gw,Bw);
-  stats=stat("test.jpg");
-  assert(stats.size,6423);
-  disp(">jpgread");
-  [Rr,Gr,Br] = jpgread('test.jpg');
-  assert([max(Rw(:)-Rr(:))<30,max(Gw(:)-Gr(:))<30,max(Bw(:)-Br(:))<30]);
-  unlink('test.jpg');
-else
-  disp(">jpgread ... not available");
-  disp(">jpgwrite ... not available");
-endif
+testimio
 
 disp("[main/splines]");
 disp(">trisolve(d,e,b)");

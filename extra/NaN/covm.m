@@ -1,5 +1,5 @@
-function [CC,NN,DD] = covm(X,Y,Mode);
-% Generates Covariance matrix
+function [CC,NN] = covm(X,Y,Mode);
+% Generates correlation coefficient
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
 % The output gives NaN only if there are insufficient input data
@@ -28,7 +28,6 @@ function [CC,NN,DD] = covm(X,Y,Mode);
 %	C./N gives the scaled version. 
 %
 
-%	Version 1.20 26.04.2002
 %	Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 
@@ -115,7 +114,8 @@ if ~isempty(Y),
                         NN = [r1, N1; N2', NN];
                         CC = [r1, S1; S2', CC ];
                 end;
-	end
+	end;
+	
 else        
         if ~any(Mode=='ED')        
         	NN = (~isnan(X)')*(~isnan(X));

@@ -64,7 +64,7 @@ REFERENCE(S):
 ----------------------------------
 [1] http://www.itl.nist.gov/
 [2] http://mathworld.wolfram.com/
-
+[3] http://mathworld.wolfram.com/TimeSeriesAnalysis.html
 
 What is the difference to previous implementations?
 ===================================================
@@ -205,8 +205,8 @@ This checks whether all previous functions have been replaced
 
 
 
-	Version 1.17
-	17 Mar 2002
+	Version 1.20
+	30 Apr 2002
 	Copyright (c) 2000-2002 by  Alois Schloegl
 	a.schloegl@ieee.org	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

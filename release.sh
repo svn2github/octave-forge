@@ -24,6 +24,10 @@
 ##
 ## You may also want to send an announcement to 
 ## octave-sources@bevo.che.wisc.edu
+##
+## You should also do:
+## 	./cvs-tree > afunclist.html
+## 	scp afunclist.html octave.sf.net:/home/groups/o/oc/octave/htdocs
 
 # base name of the project
 PROJECT=octave-forge

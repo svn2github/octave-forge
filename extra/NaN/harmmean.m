@@ -37,8 +37,7 @@ function [y] = harmmean(x,DIM)
 % original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 % Copyright (c) 2001 by Alois Schloegl <a.schloegl@ieee.org>	
 
-%	Version 1.15
-%	12 Mar 2002
+%	Version 1.17; 	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -47,8 +46,10 @@ function [y] = harmmean(x,DIM)
 if nargin<2
         DIM=[]; 
 end
-
 if isempty(DIM), 
+        DIM=flag_implicit_dimension;
+end;	
+if ~DIM
         DIM=min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
 end;

@@ -36,18 +36,18 @@ function i = zscore(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.16
-%	17 Mar 2002
+%	Version 1.17; 	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 	
 
 if nargin==1,
-        DIM=[];
+        DIM=0;
 end
-
-% obtain which DIMENSION should be used
-if isempty(DIM), 
+if ~DIM,
+        DIM=flag_implicit_dimension;
+end;	
+if ~DIM,
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;

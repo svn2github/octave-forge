@@ -13,8 +13,7 @@ function cv=coefficient_of_variation(i,DIM)
 %   http://mathworld.wolfram.com/VariationCoefficient.html
 
 
-%	Version 1.15
-%	12 Mar 2002
+%	Version 1.17; 	17 Mar 2002
 %	Copyright (c) 1997-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -36,8 +35,10 @@ function cv=coefficient_of_variation(i,DIM)
 if nargin<2,
         DIM=[];
 end;
-
 if isempty(DIM), 
+        DIM=flag_implicit_dimension;
+end;	
+if ~DIM
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;

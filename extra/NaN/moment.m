@@ -66,7 +66,14 @@ if isnumeric(opt) | ~isnumeric(DIM),
         DIM = opt;
 	opt = tmp;        
 end;
-
+if isempty(DIM), 
+        DIM=flag_implicit_dimension;
+end;	
+if ~DIM,
+        DIM=min(find(size(i)>1));
+        if isempty(DIM), DIM=1; end;
+end;
+        
 if ~isempty(opt),
         if any(opt=='c')
 		[S,N] = sumskipnan(i,DIM);	% sum

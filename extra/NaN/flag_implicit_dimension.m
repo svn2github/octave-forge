@@ -1,5 +1,6 @@
 function DIM=flag_implicit_dimension(i)
-% In future FLAG_IMPLICIT_DIMENSION might become obsolete. 
+% The use of FLAG_IMPLICIT_DIMENSION is in experimental state. 
+% FLAG_IMPLICIT_DIMENSION might even become obsolete.
 % Do not use it. 
 
 % FLAG_IMPLICIT_DIMENSION sets and gets default mode for handling NaNs
@@ -38,8 +39,7 @@ function DIM=flag_implicit_dimension(i)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.16
-%	15 Mar 2002
+%	Version 1.17;	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -50,8 +50,12 @@ if exist('FLAG_implicit_dimension')~=1,
 	FLAG_implicit_dimension = 0;
 end;
 
+if isempty(FLAG_implicit_dimension),
+	FLAG_implicit_dimension = 0;
+end;
+
 if nargin>0,
-        %fprintf(2,'Warning: FLAG_IMPLICIT_DIMENSION might become obsolete in future\n');
+        fprintf(2,'Warning: FLAG_IMPLICIT_DIMENSION is in experimental state\nDo not use it !!!\n');
         FLAG_implicit_dimension = i; 
 end;    
 

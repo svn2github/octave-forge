@@ -35,8 +35,7 @@ function y=var(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.16
-%	17 Mar 2002
+%	Version 1.17; 	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -54,6 +53,9 @@ end
 
 % obtain which DIMENSION should be used
 if isempty(DIM), 
+        DIM=flag_implicit_dimension;
+end;	
+if ~DIM
         DIM=min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
 end;

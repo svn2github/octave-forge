@@ -73,9 +73,10 @@ elseif nargin==2,
                 fun=[];
         end
 end
-
-% obtain which DIMENSION should be used
 if isempty(DIM), 
+        DIM=flag_implicit_dimension;
+end;	
+if ~DIM,
         DIM = min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;

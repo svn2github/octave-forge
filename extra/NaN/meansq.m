@@ -33,8 +33,7 @@ function o=meansq(i,DIM)
 
 
 % original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-%	Version 1.15
-%	12 Mar 2002
+%	Version 1.17; 	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -42,8 +41,10 @@ function o=meansq(i,DIM)
 if nargin<2,
         DIM=[];
 end;
-
 if isempty(DIM), 
+        DIM=flag_implicit_dimension;
+end;	
+if ~DIM,
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;

@@ -13,14 +13,26 @@ use FileHandle;
 use IPC::Open3;
 use POSIX ":sys_wait_h";
 
-my $script  = basename($0);
-my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
-			    # beside octave-forge if they are somewhere else
-			    # or modify this script
+## Local configuration; the OCTAVE directory should contain
+# src/DOCSTRINGS (which is a build product) and scripts/.
+my $OCTAVE  = "../octave";
+my $tmpdir = "/tmp";   # temp directory
+my $catdir = "index";  # output directory
+
+## Commands to grab the last few defs from octave
+## Use the first def if you want to extract from
+## a locally compiled version, or the second if you
+## want to use the installed version.
+#my $OCTAVECMD = "LD_LIBRARY_PATH=$OCTAVE/src/:$OCTAVE/liboctave:$OCTAVE/libcruft $OCTAVE/src/octave -q";
+#my $OCTAVEINIT = "path='.:$OCTAVE/src//:$OCTAVE/scripts//'; suppress_verbose_help_message = 1;";
+my $OCTAVECMD = "octave -q";
+my $OCTAVEINIT = "suppress_verbose_help_message = 1;";
+
+# Links to octave/octave-forge web CVS
 my $OCTAVECVS = "http://www.octave.org/cgi-bin/viewcvs.cgi/~checkout~/octave";
 my $FORGECVS = "http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/";
-my $tmpdir = "/tmp";
-my $catdir = "index";
+
+#my $script  = basename($0);
 
 my $forgebar = qq~<center>
 <A href="http://octave.sourceforge.net">Home</A> |
@@ -35,8 +47,13 @@ my $forgebar = qq~<center>
 <A href="http://sourceforge.net/survey/?group_id=2888">Surveys</A> |
 <A href="http://sourceforge.net/news/?group_id=2888">News</A> |
 <A href="http://sourceforge.net/cvs/?group_id=2888">CVS</A> | 
-<A href="http://sourceforge.net/project/showfiles.php?group_id=2888">Files</A> |
-<a  href="http://sourceforge.net"><img  src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=4"  width="125" height="37" border="0" alt="SourceForge.net Logo"  /></a>
+<A href="http://sourceforge.net/project/showfiles.php?group_id=2888">Files</A> 
+</center>
+    ~;
+
+my $forgelink = qq~
+<hr><center>
+<small>Hosted by</small> <a  href="http://sourceforge.net"><img  src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=4"  width="125" height="37" border="0" alt="SourceForge.net Logo"  /></a>
 </center>
     ~;
 
@@ -211,15 +228,14 @@ else {
 
 # Desperate last measure. Try help <func> within octave. Good for getting
 # keyword and operator descriptions
+print "Perl hacker: please make the following faster\n";
 # XXX FIXME XXX, we shouldn't respawn a new octave process each time !!!
-my $cmd = "LD_LIBRARY_PATH=$OCTAVE/src/:$OCTAVE/liboctave:$OCTAVE/libcruft $OCTAVE/src/octave -q";
-my $initcmd = "path='.:$OCTAVE/src//:$OCTAVE/scripts//'; suppress_verbose_help_message = 1;";
 foreach my $TB ( toolbox_list()) {
   foreach my $cat ( cat_list($TB) ) {
     foreach my $func ( cat_funcs($TB,$cat) ) {
       if (! defined $function_description{$func}[1] && ! defined $index_notes{$func} ) {
-	open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run octave";
-	print Writer $initcmd;
+	open3(*Writer, *Reader, *Errer, $OCTAVECMD) or die "Could not run octave";
+	print Writer $OCTAVEINIT;
         print Writer "help $func; 1"; close(Writer);
 	my @lines = <Reader>; close(Reader);
 	my @err = <Errer>; close(Errer);
@@ -227,12 +243,13 @@ foreach my $TB ( toolbox_list()) {
 
 	# Display errors, if any
 	if (@err) {
-	  print ">>> @err";
+	  print "help $func\n>>> @err";
 	} else {
 	  my $body = join("",@lines);
 	  if ($body =~ /help: sorry,/) {
 	    # do nothing
 	  } else {
+	    print "help $func\n";
 	    # XXX FIXME XXX clipping below is good for ops/keywords only
 	    my $start = index($body,"$func") + 1 + length($func);
 	    my $stop = index($body,"ans =");
@@ -579,7 +596,7 @@ sub write_html { # {{{1
 	    }
 	    print FUNC "    <td align=right>", download_ref($func), "</table>\n";
 	    print FUNC "$body\n";
-	    print FUNC "</body></html>";
+	    print FUNC "$forgelink\n</body></html>";
             close FUNC;
 	}
 
@@ -589,7 +606,7 @@ sub write_html { # {{{1
 	my $next = uc(substr($func, 0, 1));
 	if ($next ne $Letter) {
 	    if ($Letter =~ /[A-Y]/) {
-		print OUT "</dl></body></html>\n";
+		print OUT "</dl>\n$forgelink\n</body></html>\n";
 		close OUT;
 	    } else {
 		print OUT "</dl>\n";
@@ -630,7 +647,7 @@ sub write_html { # {{{1
 	print OUT "    <dd>",html_desc($func),"\n";
     }
 
-    print OUT "</dl>\n</body></html>\n";
+    print OUT "</dl>\n$forgelink\n</body></html>\n";
     close(OUT);
 } # 1}}}
 sub writenav { # 1{{{
@@ -695,6 +712,7 @@ sub write_intro { # 1{{{
 <HTML><HEAD><TITLE>Octave-forge index intro</TITLE></HEAD>
 <BODY>
 <H1>Welcome to Octave-forge</H1>
+$forgelink
 </BODY></HTML>
 EOF
     close OUT;
@@ -726,7 +744,7 @@ $TB_description{$TB}</a></a>";
 	    print OUT "<a name=\"$TB\"><a href=\"nav$TB.html#$TB\" target=navbar>$TB_description{$TB}</a></a>";
 	}
     }
-    print OUT "</ol></body></html>";
+    print OUT "</ol>\n</body></html>";
     close OUT;
 } # 1}}}
 sub write_TBdetails { # 1{{{
@@ -769,7 +787,7 @@ EOF
 	}
 	print OUT "</dl>\n";
     }
-    print OUT "</body></html>\n";
+    print OUT "$forgelink\n</body></html>\n";
     close(OUT);
 } # 1}}}
 sub write_alphabetic_navbar { # 1{{{

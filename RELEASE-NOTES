@@ -1,9 +1,13 @@
 CVS as of 2002-09-19
 
+Now requires octave-2.1.38 to work correctly.  Some functions may work
+with older versions of octave.
+
 New functions
 
         * image/imginfo: determines size of image using 'convert'
 	* image/colfilt: image block filtering function
+	* image/im{rotate,translate,shear}: image transformations
 	* miscellaneous/inline: generate a function from an expression
         * miscellaneous/slurp_file: loads a file into a string
         * miscellaneous/{rotv,rotparams}: parameterize 3D rotation matrices
@@ -37,6 +41,7 @@ Changed interfaces
 extra/tsa
 
 	* significance test and confidence intervals for PACF
+	* added histogram functions for multicolumn data
 	* support for new releases of octave and matlab
 	* bug fixes
 
@@ -59,6 +64,8 @@ Internal changes
 	* sparse/spy: prettier graph
 	* symbolic/*: incorporate octave_sym functionality in octave_ex class
 	* *: don't use cout/cerr from *.cc functions
+	* *: use varargin rather than ...
+	* *: use \n\ for multiline comments
 
 Administration
 

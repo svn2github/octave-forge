@@ -1,16 +1,12 @@
-function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
+function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % CORRCOEF calculates the correlation coefficient.
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
 % A significance test to check the independence of NaN's
 % is included. 
-% The result is only valid if the occurence of NaN's is uncorrelated, 
-%
-% The output gives NaN in case of insufficient input data.
-%
-% CORRCOEF(X [,Mode]);
+%   CORRCOEF(X [,Mode]);
 %      calculates the (auto-)correlation matrix of X
-% CORRCOEF(X,Y [,Mode]);
+%   CORRCOEF(X,Y [,Mode]);
 %      calculates the crosscorrelation between X and Y
 %
 % Mode='Pearson' or 'parametric' [default]
@@ -21,7 +17,13 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % Mode='Rank' 		gives a nonparametric Rank Correlation Coefficient
 %	This replaces RANKCORR.M
 %
-% [R,p,ci1,ci2] = CORRCOEF(...);
+% The result is only valid if the occurence of NaN's is uncorrelated. 
+%   This can be checked with 
+%       [nan_R,nan_sig]=corrcoef(X,isnan(X))
+%   or  [nan_R,nan_sig]=corrcoef([X,Y],isnan([X,Y]))
+%   or  [R,p,ci1,ci2,nan_sig] = CORRCOEF(...);
+%
+% [R,p,ci1,ci2,nansig] = CORRCOEF(...);
 % 	R is the correlation matrix
 %	R(i,j) is the correlation coefficient r between X(:,i) and Y(:,j)
 %  p    gives the significance of R
@@ -32,7 +34,8 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 %  p < alpha: The alternative hypothesis "R2 is larger than zero" is true with probability (1-alpha).
 %  ci1	lower 0.95 confidence interval 
 %  ci2	upper 0.95 confidence interval 
-%
+%  nan_sig 	p-value whether H0: "NaN's are not correlated" must be rejected
+% 
 % Further recommandation related to the correlation coefficient 
 % + LOOK AT THE SCATTERPLOTS!
 % + Correlation is not causation. The observed correlation between two variables 
@@ -101,6 +104,9 @@ elseif nargin==2
         end;
 end;        
 Mode=[Mode,'        '];
+
+FLAG_WARNING = warning;		% save warning status
+warning('off');
 
 [r1,c1]=size(X);
 if ~isempty(Y)
@@ -227,6 +233,12 @@ else
 end;
 
 
+if nargout<2, 
+	warning(FLAG_WARNING); 	% restore warning status
+        return;
+end;
+
+
 % CONFIDENCE INTERVAL
 if exist('flag_implicit_significance')==2,
         alpha = flag_implicit_significance;
@@ -236,69 +248,29 @@ end;
 % fprintf(1,'CORRCOEF: confidence interval is based on alpha=%f\n',alpha);
 
 
-%%%%% ----- check independence of NaNs (missing values) -----
-if YESNAN,
-	tmp = isnan(X);
-	X(tmp) = 0;
-	% [nan_R,nan_sig,nan_ci1,nan_ci2] = corrcoef(X,tmp);
-
-	[nan_R, nan_sig] = corrcoef(X,tmp);
-
-	% remove diagonal elements, because these have not any meaning %
-	tmp = logical(eye(size(nan_sig)));
-	% nan_R(tmp)   = nan;
-	nan_sig(tmp)   = nan;
-	% nan_ci1(tmp) = nan;
-	% nan_ci2(tmp) = nan;
-	
-	if any(nan_sig(:) < alpha),
-		fprintf(1,'Warning CORRCOFF: Missing Values (i.e. NaNs) are not independent of data (p-value=%f)\n', min(nan_sig(:)));
-		fprintf(1,'Its recommended to remove all samples with any missing value (NaN).\n');
-		fprintf(1,'The following combinations show a significant correlation of NaNs\n');
-		[ix,iy] = find(nan_sig < alpha);
-		disp([ix,iy])
-	end;
-end;	
-%%%%% ----- end of independence check ------
-
-
-if nargout<2, 
-        return;
-end;
-
-
 % SIGNIFICANCE TEST
-
-% warning off; 	% prevent division-by-zero warnings in Matlab.
-
 tmp = 1 - R.*R;
-ix1 = (tmp==0);
-tmp(ix1) = nan;		% avoid division-by-zero warning
+tmp(tmp<0) = 0;		% prevent tmp<0 i.e. imag(t)~=0 
 t   = R.*sqrt(max(NN-2,0)./tmp);
-
-ix2 = (t<0)|(t>1);	% mark abs(r)==1
-if 0,any(ix2(:));
-        warning('CORRCOEF: t-value out of range - probably due to some rounding error') 
-        t(ix2)=nan;
-end;
 
 if exist('t_cdf')>1;
         sig = t_cdf(t,NN-2);
 elseif exist('tcdf')>1;
         sig = tcdf(t,NN-2);
 else
-        fprintf('Warning CORRCOEF: significance test not completed because of missing TCDF-function\n')
+        fprintf('CORRCOEF: significance test not completed because of missing TCDF-function\n')
         sig = repmat(nan,size(R));
 end;
 sig  = 2 * min(sig,1 - sig);
 
 if nargout<3, 
+	warning(FLAG_WARNING); 	% restore warning status
         return;
 end;
 
 
 tmp = R;
-tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
+%tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
 z   = log((1+tmp)./(1-tmp))/2; 	% Fisher's z-transform; 
 %sz = 1./sqrt(NN-3);		% standard error of z
 sz  = sqrt(2)*erfinv(1-2*alpha)./sqrt(NN-3);		% confidence interval for alpha of z
@@ -309,4 +281,28 @@ ci2 = tanh(z+sz);
 %ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
 %ci2(isnan(ci2))=R(isnan(ci2));
 
+if nargout<5, 
+	warning(FLAG_WARNING); 	% restore warning status
+        return;
+end;
+
+
+%%%%% ----- check independence of NaNs (missing values) -----
+%[nan_R,nan_sig,nan_ci1,nan_ci2] = corrcoef(X,isnan(X))
+[nan_R, nan_sig] = corrcoef(X,isnan(X));
+
+% remove diagonal elements, because these have not any meaning %
+nan_sig(isnan(nan_R)) = nan;
+
+if any(nan_sig(:) < alpha),
+        fprintf(1,'CORRCOFF Warning: Missing Values (i.e. NaNs) are not independent of data (p-value=%f)\n', min(nan_sig(:)));
+        fprintf(1,'   Its recommended to remove all samples with any missing value (NaN).\n');
+        fprintf(1,'   In the following combinations the null-hypotheses (NaNs are uncorrelated) must be rejected.\n');
+        [ix,iy] = find(nan_sig < alpha);
+        disp([ix,iy])
+end;
+
+%%%%% ----- end of independence check ------
+
+warning(FLAG_WARNING); 	% restore warning status
 return;

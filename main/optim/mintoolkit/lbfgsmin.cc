@@ -166,7 +166,7 @@ ans =\n\
 	octave_value_list f_return; // holder for feval returns
 
 	int criterion, max_iters, convergence, verbosity, minarg, iter;
-	int memory, gradient_failed, i, j, k, conv1, conv2, conv3;
+	int memory, gradient_failed, i, j, k, conv_fun, conv_param, conv_grad;
 	int have_gradient = 0;
 	double func_tol, param_tol, gradient_tol, stepsize, obj_value;
 	double last_obj_value, denominator, test, temp;
@@ -176,7 +176,7 @@ ans =\n\
 	// tolerances
 	func_tol  = 1e-12;
 	param_tol = 1e-6;
-	gradient_tol = 1e-6;  
+	gradient_tol = 1e-5;  
 
  	// use provided controls, if applicable
 	if (args.length() == 3)
@@ -257,13 +257,18 @@ ans =\n\
  	for (iter = 0; iter < max_iters; iter++)
 	{
 
+		// make sure the messages aren't stale
+		conv_fun = -1; 
+		conv_param =  -1;
+		conv_grad = -1;
+
 		if (iter < memory) d = lbfgs_recursion(iter, sigmas, gammas, g);
 		else d = lbfgs_recursion(memory, sigmas, gammas, g);
 		d = -d;
-
+		
 		// if direction not zero, get stepsize
-		if (!((fabs(d.max()) < 2*DBL_EPSILON) \
-				|| (d.min() < 0 & (fabs(d.min()) < 2*DBL_EPSILON))))
+		if (!((fabs(d.max()) < param_tol) \
+				& ((fabs(d.min()) < param_tol))))
 		{
  	
 			// stepsize: try bfgs direction, then steepest descent if it fails
@@ -305,25 +310,25 @@ ans =\n\
 		// function convergence
 		if (fabs(last_obj_value) > 1.0)
 		{
- 			conv1 = (fabs(obj_value - last_obj_value)/fabs(last_obj_value)) < func_tol;
+ 			conv_fun = (fabs(obj_value - last_obj_value)/fabs(last_obj_value)) < func_tol;
 		}
 		else
 		{
-			conv1 = fabs(obj_value - last_obj_value) < func_tol;
+			conv_fun = fabs(obj_value - last_obj_value) < func_tol;
 		}	
 		// parameter change convergence
 		test = sqrt(theta.transpose() * theta);
 		if (test > 1)
 		{
-			conv2 = sqrt(p.transpose() * p) / test < param_tol ;
+			conv_param = sqrt(p.transpose() * p) / test < param_tol ;
 			
 		}
 		else
 		{
-			conv2 = sqrt(p.transpose() * p) < param_tol;
+			conv_param = sqrt(p.transpose() * p) < param_tol;
 		}		
 		// gradient convergence
-		conv3 = sqrt(g.transpose() * g) < gradient_tol;
+		conv_grad = sqrt(g.transpose() * g) < gradient_tol;
 
 
 		// Want intermediate results?
@@ -334,7 +339,7 @@ ans =\n\
 			if (have_gradient) printf("Using analytic gradient\n");
 			else printf("Using numeric gradient\n");
 			printf("Objective function value %16.10f\n", last_obj_value);
-			printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv1, conv2, conv3);	
+			printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv_fun, conv_param, conv_grad);	
 			printf("  params  gradient  change\n");
 	 		for (j = 0; j<k; j++)
 			{
@@ -346,13 +351,13 @@ ans =\n\
 		// Are we done?
 		if (criterion == 1)
 		{
-			if (conv1 && conv2 && conv3)
+			if (conv_fun && conv_param && conv_grad)
 			{
 		  	convergence = 1;
 	     	break;
 			}
 		}		
-		else if (conv1)
+		else if (conv_fun)
 		{
 				convergence = 1;
 				break;
@@ -431,7 +436,7 @@ ans =\n\
 		if (have_gradient) printf("Used analytic gradient\n");
 		else printf("Used numeric gradient\n");
 		printf("\nObj. fn. value %f     Iteration %d\n", last_obj_value, iter);
-		printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv1, conv2, conv3);	
+		printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv_fun, conv_param, conv_grad);	
 		printf("\n  param  gradient  change\n");
 		for (j = 0; j<k; j++)
 		{

@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.18  2003/11/17 17:04:40  adb014
+Updates for 2.1.51
+
 Revision 1.17  2003/10/21 14:35:12  aadler
 minor test and error mods
 
@@ -217,6 +220,10 @@ public:
    octave_complex_sparse sparse_value (bool = false) const ;
    SuperMatrix   super_matrix (bool = false) const ;
 
+#ifdef HAVE_ND_ARRAYS
+  dim_vector dims (void) const {dim_vector dv (rows(), cols()); return dv; }
+#endif
+
    int rows    (void) const ;
    int columns (void) const ;
    int cols    (void) const ;
@@ -275,6 +282,10 @@ public:
    SuperMatrix   super_matrix (bool = false) const ;
 
    octave_complex_sparse complex_sparse_value (bool = false) const;
+
+#ifdef HAVE_ND_ARRAYS
+  dim_vector dims (void) const {dim_vector dv (rows(), cols()); return dv; }
+#endif
 
    int rows    (void) const ;
    int columns (void) const ;

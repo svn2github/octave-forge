@@ -22,3 +22,7 @@
     * moved includes in make_sparse.h to compile
        under cygwin
     * added [dz]glsv.c so that it compiles statically
+
+17 nov 2003  David Bateman <dbateman@free.fr>
+
+    * added dims functions for N-D arrays introduced in 2.1.51

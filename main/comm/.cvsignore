@@ -1,16 +1,3 @@
 *.d
+*.o
 *.oct
-DOCSTRINGS
-*.info*
-*.ps
-*.log
-*.aux
-*.cp
-*.fn
-*.vr
-*.tp
-*.ky
-*.pg
-*.toc
-*.cps
-*.fns

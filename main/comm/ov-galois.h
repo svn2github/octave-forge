@@ -91,6 +91,9 @@ public:
 
   void assign (const octave_value_list& idx, const galois& rhs);
 
+#ifdef HAVE_ND_ARRAYS
+  dim_vector dims (void) const { return gval.dims (); }
+#else
   int rows (void) const { return gval.rows(); }
   int columns (void) const { return gval.columns(); }
 
@@ -101,6 +104,7 @@ public:
 
     return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
   }
+#endif
 
   octave_value all (int dim = 0) const { return gval.all(dim); }
   octave_value any (int dim = 0) const { return gval.any(dim); }

@@ -372,6 +372,73 @@ fi
 AC_SUBST(HAVE_ND_ARRAYS)
 rm -rf conftest*
 
+dnl Test for the makeinfo program
+AC_CHECK_PROG(MAKEINFO,makeinfo,makeinfo)
+if [ test -n "$MAKEINFO" ]; then
+	dnl Check whether the makeinfo command accepts the 
+	dnl "--no-split" option
+	touch conftest.texi
+	AC_MSG_CHECKING([for makeinfo --no-split])
+	ac_try="$MAKEINFO --no-split conftest.texi"
+	if AC_TRY_EVAL(ac_try) ; then
+		MAKEINFO="$MAKEINFO --no-split"
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+	fi
+	rm -f conftest.*
+fi
+
+dnl Test for the texi2dvi program
+AC_CHECK_PROG(TEXI2DVI,texi2dvi,texi2dvi)
+if [ test -n "$TEXI2DVI" ]; then
+	dnl Check whether the texi2dvi command accepts the 
+	dnl "--clean" option
+	cat > conftest.texi <<EOF
+\input texinfo
+@bye
+EOF
+	AC_MSG_CHECKING([for texi2dvi --clean])
+	ac_try="$TEXI2DVI --clean conftest.texi > /dev/null"
+	if AC_TRY_EVAL(ac_try) ; then
+		TEXI2DVI="$TEXI2DVI --clean"
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+	fi
+	rm -f conftest.*
+fi
+
+dnl Test for the texi2html program
+AC_CHECK_PROG(TEXI2HTML,texi2html,texi2html)
+if [ test -n "$TEXI2HTML" ]; then
+	STATUS="yes"
+	dnl Check whether the texi2html command accepts the 
+	dnl "-split_chapter -number" option
+	touch conftest.texi
+	AC_MSG_CHECKING([for texi2html --clean])
+	ac_try="$TEXI2HTML -split_chapter -number conftest.texi"
+	if AC_TRY_EVAL(ac_try) ; then
+		TEXI2HTML="$TEXI2HTML -split_chapter -number"
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+	fi
+	rm -f conftest.*
+fi
+
+dnl Test for the dvipdf program
+AC_CHECK_PROG(DVIPDF,dvipdf,dvipdf)
+
+dnl Test for the dvips program
+AC_CHECK_PROG(DVIPS,dvips,dvips)
+
+MKDOC=$TOPDIR/admin/mkdoc
+AC_SUBST(MKDOC)
+
+MKTEXI=$TOPDIR/admin/mktexi
+AC_SUBST(MKTEXI)
+
 CONFIGURE_OUTPUTS="Makeconf octinst.sh"
 STATUS_MSG="
 octave commands will install into the following directories:
@@ -398,4 +465,11 @@ octave (version $OCTAVE_VERSION) $ND_ARRAYS
 octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
-   X11 support:	$XSTATUS"
+   X11 support:	$XSTATUS
+   makeinfo:    $MAKEINFO
+   texi2dvi:    $TEXI2DVI
+   texi2html:   $TEXI2HTML
+   mkdoc:       $MKDOC
+   mktexi:      $MKTEXI
+   dvips:       $DVIPS
+   dvipdf:      $DVIPDF"

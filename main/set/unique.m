@@ -42,7 +42,7 @@ function [y, i, j] = unique (x, r)
   if (nargin == 1)
     n = prod(size(x));
   else
-    n = rows(x);
+    n = size(x,1);
   endif
 
   y = x; 
@@ -62,7 +62,7 @@ function [y, i, j] = unique (x, r)
     idx = find (match);
     y (idx, :) = [];
   else
-    if (rows(y) != 1) y = y(:); endif
+    if (size(y,1) != 1) y = y(:); endif
     [y, i] = sort(y);
     match = [ y(1:n-1) == y(2:n) ];
     idx = find (match);
@@ -80,3 +80,11 @@ function [y, i, j] = unique (x, r)
   if isstr(x), y = setstr(y); endif
 
 endfunction
+
+%!assert(unique([1 1 2; 1 2 1; 1 1 2]),[1;2])
+%!assert(unique([1 1 2; 1 0 1; 1 1 2],'rows'),[1 0 1; 1 1 2])
+%!assert(unique([]),[])
+%!assert(unique([1]),[1])
+%!assert(unique([1 2]),[1 2])
+%!assert(unique([1;2]),[1;2])
+%!assert(unique([1,NaN,Inf,NaN,Inf]),[1,Inf,NaN,NaN])

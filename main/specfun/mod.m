@@ -31,31 +31,19 @@ function r=mod(x,y)
   endif
 
   nz = y != 0.0;
-  if all(all(nz))
+  if all(nz(:))
     r = x - floor(x./y).*y;
   elseif is_scalar(y)
     r = x;
   elseif is_scalar(x)
-    dfi = do_fortran_indexing;
-    unwind_protect
-      do_fortran_indexing = 1;
-      r = x*ones(size(y));
-      y = y(nz);
-      r(nz) = x - floor(x./y).*y;
-    unwind_protect_cleanup
-      do_fortran_indexing = 0;
-    end_unwind_protect
+    r = x*ones(size(y));
+    y = y(nz);
+    r(nz) = x - floor(x./y).*y;
   else
-    dfi = do_fortran_indexing;
-    unwind_protect
-      do_fortran_indexing = 1;
-      r = x;
-      x = x(nz);
-      y = y(nz);
-      r(nz) = x - floor(x./y).*y;
-    unwind_protect_cleanup
-      do_fortran_indexing = 0;
-    end_unwind_protect
+    r = x;
+    x = x(nz);
+    y = y(nz);
+    r(nz) = x - floor(x./y).*y;
   endif
 
 endfunction;
@@ -72,4 +60,5 @@ endfunction;
 %!assert (mod([-5, 5, 0], [3, 0, 3]), [1, 5, 0]);
 %!assert (mod([-5; 5; 0], [3; 0; 3]), [1; 5; 0]);
 %!assert (mod([-5, 5; 0, 3], [3, 0 ; 3, 1]), [1, 5 ; 0, 0]);
+%!assert (mod([-5, 5; 0, 3], 0), [-5, 5; 0, 3]); 
 

@@ -16,6 +16,7 @@ $(RAND_LINKS):
 	$(LN_S) rand.oct $@
 
 rand.oct : rand.cc ziggurat.h MersenneTwister.h
+	$(MKOCTFILE) $(HAVE_ND_ARRAYS) $<
 
 sort.oct : sort.cc oct-sort.cc oct-sort.h
 	$(MKOCTFILE) $(SORTDEFINES) $<

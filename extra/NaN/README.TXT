@@ -48,7 +48,9 @@ Currently are implemented:
 	COV		covariance matrix
 	RANKS		calculates ranks for non-parametric statistics 
 	TRIMEAN		trimean
-	
+	NORMPDF		normal probability distribution
+	NORMCDF		normal comulative distribution 
+	NORMINV		inverse of the normal cumulative distribution
 
 	
 REFERENCE(S):
@@ -116,6 +118,12 @@ VAR, STD and MEDIAN, respectively.
 11) GPL license
 Permits to implement useful modifications. 
 
+12) NORMPDF, NORMCDF, NORMINV
+fixes a bug when s=0.
+Matlab does not handle it correctly. 
+Moreover, the argument check was difficult. 
+
+
 
 Q: WHY SKIPPING NaN's?:
 ------------------------
@@ -166,7 +174,7 @@ alternative function definition (except built-in's) with the same name.
 This checks whether all previous functions have been replaced
 
 
-	Version 1.27 	Date: 06 Sep 2002
+	Version 1.28 	Date: 23 Sep 2002
 	Copyright (C) 2000-2002 by  Alois Schloeg <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

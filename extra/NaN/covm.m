@@ -46,12 +46,12 @@ function [CC,NN] = covm(X,Y,Mode);
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-if nargin<3
-        if nargin==2
+if nargin<3,
+        if nargin==2,
 		if exist('OCTAVE_VERSION')>5,
-		    tmp = isascii(Y);
+			tmp = isascii(Y);
 		else
-		    tmp = ischar(Y);
+			tmp = ischar(Y);
                 end;
 		if tmp,
 		        Mode=Y;
@@ -59,25 +59,26 @@ if nargin<3
                 else
                         Mode='M';
                 end;
-        elseif nargin==1
+        elseif nargin==1,
                 Mode = 'M';
                 Y = [];
-        elseif nargin==0
-                fprintf(2,'Error COVM: Missing argument(s)\n');
+        elseif nargin==0,
+                error('Missing argument(s)');
         end;
 end;        
+
 Mode = upper(Mode);
 
 [r1,c1]=size(X);
 if (c1>r1),
-        fprintf(2,'Warning COVM: Covariance is ill-defined, because of too less observations (rows).\n');
+        warning('Covariance is ill-defined, because of too less observations (rows)');
 end;
 
 [r1,c1]=size(X);
 if ~isempty(Y)
         [r2,c2]=size(Y);
         if r1~=r2,
-                fprintf(2,'Error COVM: X and Y must have the same number of observations (rows).\n');
+                error('X and Y must have the same number of observations (rows).');
                 return;
         end;
 else
@@ -85,7 +86,7 @@ else
 end;
 
 if (c1>r1) | (c2>r2),
-        fprintf(2,'Warning COVM: Covariance is ill-defined, because of too less observations (rows).\n');
+        warning('Covariance is ill-defined, because of too less observations (rows)');
 end;
 
 if ~isempty(Y),

@@ -625,7 +625,7 @@ USE_INLINE double rande (void)
 	   * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
 	   */
-	  return ZIGGURAT_NOR_R - log(RANDU);
+	  return ZIGGURAT_EXP_R - log(RANDU);
 	}
       else if ((fe[idx-1] - fe[idx]) * RANDU + fe[idx] < exp(-x))
 	return x;

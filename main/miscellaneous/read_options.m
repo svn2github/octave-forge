@@ -18,6 +18,7 @@
 ## OPTIONS -------
 ## 'op0'    , string : Space-separated names of opt taking no argument  <''>
 ## 'op1'    , string : Space-separated names of opt taking one argument <''>
+## 'extra'  , string : Name of nameless trailing arguments.             <''>
 ## 'default', struct : Struct holding default option values           <none>
 ## 'prefix' , int    : If false, only accept whole opt names. Otherwise, <0>
 ##                     recognize opt from first chars, and choose 
@@ -55,49 +56,33 @@ verbose = 0;
 op = setfield ();		# Empty struct
 op0 = op1 = " ";
 skipnan = prefix = quiet = nocase = quiet = 0;
+extra = ""; 
+
 
 nargs = nargin-1;  # nargin is now a function
 if rem (nargs, 2), error ("odd number of optional args"); end
 
 
-## beginpos 2.1.39
 i=1;
 while i<nargs
-  if ! isstr (tmp = nth (varargin,i++)), error ("non-string option"); end
-  if     strcmp (tmp, "op0")    , op0     = nth (varargin, i++);
-  elseif strcmp (tmp, "op1")    , op1     = nth (varargin, i++);
-  elseif strcmp (tmp, "default"), op      = nth (varargin, i++);
-  elseif strcmp (tmp, "prefix") , prefix  = nth (varargin, i++);
-  elseif strcmp (tmp, "nocase") , nocase  = nth (varargin, i++);
-  elseif strcmp (tmp, "quiet")  , quiet   = nth (varargin, i++);
-  elseif strcmp (tmp, "skipnan"), skipnan = nth (varargin, i++);
-  elseif strcmp (tmp, "verbose"), verbose = nth (varargin, i++);
+  if ! isstr (tmp = varargin{i++}), error ("non-string option"); end
+  if     strcmp (tmp, "op0")    , op0     = varargin{i++};
+  elseif strcmp (tmp, "op1")    , op1     = varargin{i++};
+  elseif strcmp (tmp, "extra")  , extra   = varargin{i++};
+  elseif strcmp (tmp, "default"), op      = varargin{i++};
+  elseif strcmp (tmp, "prefix") , prefix  = varargin{i++};
+  elseif strcmp (tmp, "nocase") , nocase  = varargin{i++};
+  elseif strcmp (tmp, "quiet")  , quiet   = varargin{i++};
+  elseif strcmp (tmp, "skipnan"), skipnan = varargin{i++};
+  elseif strcmp (tmp, "verbose"), verbose = varargin{i++};
   else 
     error ("unknown option '%s' for option-reading function!",tmp);
   end
 end
-## endpos 2.1.39
-## beginpre 2.1.39
-# while args
-#   args -= 2;
-#   if ! isstr (tmp = va_arg ()), error ("non-string option"); end
-#   if     strcmp (tmp, "op0")    , op0     = va_arg ();
-#   elseif strcmp (tmp, "op1")    , op1     = va_arg ();
-#   elseif strcmp (tmp, "default"), op      = va_arg ();
-#   elseif strcmp (tmp, "prefix") , prefix  = va_arg ();
-#   elseif strcmp (tmp, "nocase") , nocase  = va_arg ();
-#   elseif strcmp (tmp, "quiet")  , quiet   = va_arg ();
-#   else 
-#     error ("unknown option '%s' for option-reading function!",tmp);
-#   end
-# end
-## endpre 2.1.39
 
 if length (op0) + length (op1) < 3
   error ("Either 'op0' or 'op1' should be specified");
 end
-
-###
 
 if length (op0)
   if op0(1) != " ", op0 = [" ",op0]; end;
@@ -107,6 +92,12 @@ end
 if length (op1)
   if op1(1) != " ", op1 = [" ",op1]; end;
   if op1(length(op1)) != " ", op1 = [op1," "]; end;
+end
+
+if length (extra)
+  lextra = lgrep (cellstr (split (extra, " ")));
+else
+  lextra = {};
 end
 
 opts = [op0,op1];		# Join options
@@ -121,13 +112,21 @@ if nocase, opts = tolower (opts); end
 
 
 nread = 0;
+optread = 0;
 while nread < length (args)
 
-  oname = name = nth (args, ++nread);
+  oname = name = args{++nread};
   if ! isstr (name)		# Whoa! Option name is not a string
-    if quiet, nread--; return;
+    
+    if !optread && length (lextra)
+      op.(lextra{1}) = args{nread};
+      lextra = lextra(2:length(lextra));
+      continue
+    elseif quiet, nread--; return;
     else      error ("option name in pos %i is not a string",nread);
     end
+  else
+    optread = 1;
   end
   if nocase, name = tolower (name); end
 
@@ -164,15 +163,15 @@ while nread < length (args)
   fullname = opts_orig(ii:spi(find (spi > ii)(1))-1);
   if ii < iend
     if verbose, printf ("read_options : found boolean '%s'\n",fullname); end
-    op = setfield (op, fullname, 1);
+    op.(fullname) = 1;
   else
     if verbose, printf ("read_options : found '%s'\n",fullname); end
     if nread < length (args)
-      tmp = nth (args,++nread);
+      tmp = args{++nread};
       if verbose, printf ("read_options : size is %i x %i\n",size(tmp)); end
       if !isnumeric (tmp) || !all (isnan (tmp(:))) || \
 	    !struct_contains (op, fullname)
-	op = setfield (op, fullname, tmp);
+	op.(fullname) =  tmp;
       else
 	if verbose, printf ("read_options : ignoring nan\n"); end
       end

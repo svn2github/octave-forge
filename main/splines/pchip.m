@@ -1,4 +1,4 @@
-## Copyright (C) 2001  Kai Habel
+## Copyright (C) 2001,2002  Kai Habel
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,8 +18,13 @@
 ## @deftypefn {Function File} {@var{pp} = } pchip (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} = } pchip (@var{x}, @var{y}, @var{xi})
 ## piecewise cubic hermite interpolating polynom.
-## pchip preserves the monotonicity of (x,y)
-##
+## @var{x} must be a vector of increasing values.
+## @var{y} is a vector of same length as @var{x},
+## or a matrix where the number of columns must match the length
+## of @var{x}. In this case the interpolating polynoms are calculated
+## for each column. 
+## In contrast to spline preserves pchip the monotonicity of (@var{x},@var{y}).
+## 
 ## @seealso{ppval, spline, csape}
 ## @end deftypefn
 
@@ -27,7 +32,7 @@
 ## Date: 9. mar 2001
 ## 2001-04-03 Paul Kienzle
 ##   * move (:) from definition of l,r to use of l,r so it works with 2.0
-
+##
 ## S_k = a_k + b_k*x + c_k*x^2 + d_k*x^3; (spline polynom)
 ##
 ## 4 conditions:
@@ -35,10 +40,6 @@
 ## S_k(x_k+1) = y_k+1;
 ## S_k'(x_k) = y_k';
 ## S_k'(x_k+1) = y_k+1';
-##
-## 22. april 2001: Hmm, something is wrong, it seems pchip doesn't 
-## preserve the monotonicity, as expected. So if _you_ know how to
-## do it right, please contact me. Kai
 
 function ret = pchip (x, y, xi)
 
@@ -49,7 +50,15 @@ function ret = pchip (x, y, xi)
   x = x(:);
   n = length (x);
 
+  if any(diff(x)<0) 
+    error('x must be increasing')
+  endif
+
   if (columns(y) == n) y = y'; endif
+  
+  if (rows(y) != n)
+    error("size of x and y must match");
+  endif
 
   [ry,cy] = size (y);
   if (cy > 1)
@@ -57,24 +66,16 @@ function ret = pchip (x, y, xi)
   else
     h = diff (x);
   endif
-
-  a = y;
   
   dy = diff (y) ./ h;
-  t = diff (sign (dy)) == 0;
-  l = dy(1:n - 2, :);
-  r = dy(2:n - 1, :);
-  b = zeros (size (y));
-  s = reshape (0.5 * (l(:) + r(:)), ry - 2, cy);
-  b(2:ry - 1,:) = s .* t;
 
+  a = y;
+  b = pchip_deriv(x,y);
   c = - (b(2:n, :) + 2 * b(1:n - 1, :)) ./ h + 3 * diff (a) ./ h .^ 2;
-
   d = (b(1:n - 1, :) + b(2:n, :)) ./ h.^2 - 2 * diff (a) ./ h.^3;
 
   d = d(1:n - 1, :); c = c(1:n - 1, :);
   b = b(1:n - 1, :); a = a(1:n - 1, :);
-
   coeffs = [d(:), c(:), b(:), a(:)];
   pp = mkpp (x, coeffs);
 

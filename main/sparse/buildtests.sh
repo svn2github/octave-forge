@@ -506,7 +506,7 @@ EOF
 # =======================================================
 # sparse save and load tests
 
-function gen_save_tests {
+gen_save_tests() {
     cat >>$TESTS <<EOF
 %!test # save ascii
 %! savefile= tmpnam();

@@ -65,14 +65,12 @@ SuperMatrix assemble_sparse( int n, int m,
 // Octave sparse methods
 //
 
-inline
 octave_sparse::octave_sparse (SuperMatrix A )
 {
       DEBUGMSG("sparse( SuperMatrix A)");
       X= A;
 }
 
-inline
 octave_sparse::~octave_sparse (void)
 {
    DEBUGMSG("sparse destructor");
@@ -81,28 +79,27 @@ octave_sparse::~octave_sparse (void)
 
 //NOTE: I'm not sure when this will get called,
 //      so I don't know what to do
-inline
 octave_sparse::octave_sparse (const octave_sparse& S)
 {
    DEBUGMSG("sparse copy-constructor");
    X= S.super_matrix();
 }   
 
-inline octave_value *
+octave_value *
 octave_sparse::clone (void)
 {
    DEBUGMSG("sparse - clone");
    return new octave_sparse (*this);
 }
 
-inline octave_sparse
-octave_sparse::sparse_value (bool = false) const {
+octave_sparse
+octave_sparse::sparse_value (bool) const {
    DEBUGMSG("sparse_value");
    return  (*this);
 }
 
 SuperMatrix
-octave_sparse::super_matrix (bool = false) const {
+octave_sparse::super_matrix (bool) const {
    return X;
 }
 
@@ -186,7 +183,7 @@ bool octave_sparse::is_true (void) const {
 // rebuild a full matrix from a sparse one
 // this functionality is accessed through 'full'
 Matrix
-octave_sparse::matrix_value (bool = false) const {
+octave_sparse::matrix_value (bool) const {
    DEBUGMSG("sparse - matrix_value");
    Matrix M= oct_sparse_to_full( X );
    return M;
@@ -1124,6 +1121,9 @@ sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.6  2002/11/05 06:03:25  pkienzle
+ * remove inline and parameter initialization from external function implementation
+ *
  * Revision 1.5  2002/01/04 15:53:57  pkienzle
  * Changes required to compile for gcc-3.0 in debian hppa/unstable
  *

@@ -72,14 +72,12 @@ create_SuperMatrix( int nr, int nc, int nnz,
 // Octave complex sparse methods
 //
 
-inline
 octave_complex_sparse::octave_complex_sparse (SuperMatrix A )
 {
    DEBUGMSG("complex_sparse( SuperMatrix A)");
    X= A;
 }
 
-inline
 octave_complex_sparse::~octave_complex_sparse (void)
 {
    DEBUGMSG("complex_sparse destructor");
@@ -88,28 +86,27 @@ octave_complex_sparse::~octave_complex_sparse (void)
 
 //NOTE: I'm not sure when this will get called,
 //      so I don't know what to do
-inline
 octave_complex_sparse::octave_complex_sparse (const octave_complex_sparse& S)
 {
    DEBUGMSG("complex_sparse copy-constructor");
    X= S.super_matrix();
 }   
 
-inline octave_value *
+octave_value *
 octave_complex_sparse::clone (void)
 {
    DEBUGMSG("complex_sparse - clone");
    return new octave_complex_sparse (*this);
 }
 
-inline octave_complex_sparse
-octave_complex_sparse::sparse_value (bool = false) const {
+octave_complex_sparse
+octave_complex_sparse::sparse_value (bool) const {
    DEBUGMSG("complex_sparse_value");
    return  (*this);
 }
 
 SuperMatrix
-octave_complex_sparse::super_matrix (bool = false) const {
+octave_complex_sparse::super_matrix (bool) const {
    return X;
 }
 
@@ -128,7 +125,7 @@ int octave_complex_sparse::nnz     (void) const {
 
 // upconvert octave_sparse to octave_complex_sparse
 octave_complex_sparse
-octave_sparse::complex_sparse_value (bool = false) const {
+octave_sparse::complex_sparse_value (bool) const {
    DEBUGMSG("sparse - complex_sparse_value");
    DEFINE_SP_POINTERS_REAL( X )
    int nnz= NCFX->nnz;
@@ -218,7 +215,7 @@ bool octave_complex_sparse::is_true (void) const {
 // rebuild a full matrix from a sparse one
 // this functionality is accessed through 'full'
 ComplexMatrix
-octave_complex_sparse::complex_matrix_value (bool = false) const {
+octave_complex_sparse::complex_matrix_value (bool) const {
    DEBUGMSG("complex_sparse - complex_matrix_value");
    ComplexMatrix M= oct_complex_sparse_to_full( X );
    return M;
@@ -1342,6 +1339,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.6  2002/11/05 06:03:25  pkienzle
+ * remove inline and parameter initialization from external function implementation
+ *
  * Revision 1.5  2002/01/04 15:53:57  pkienzle
  * Changes required to compile for gcc-3.0 in debian hppa/unstable
  *

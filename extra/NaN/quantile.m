@@ -10,7 +10,7 @@ function Q=quantile(Y,q)
 %
 % If q is a vector, the each row of Q returns the q(i)-th quantile 
 %
-% see also: FLIX, HISTO2, HISTO3, PERCENTILE
+% see also: HISTO2, HISTO3, PERCENTILE
 
 % QUANTILES demonstrates how to calculate quantiles 
 %
@@ -18,10 +18,10 @@ function Q=quantile(Y,q)
 % (1) explicite form
 %	tmp=sort(Y);
 %	N=sum(~isnan(Y));
-%	Q = flix(tmp,N*q + 0.5);
+%	Q = interp1(tmp,N*q + 0.5);
 %
 % (2) in 1 line
-%	Q = flix(sort(Y),sum(~isnan(Y))*q + 0.5);
+%	Q = interp1(sort(Y),sum(~isnan(Y))*q + 0.5);
 %
 % (3) q-quantile Q of histogram H with bins t
 %	tmp=HISTOG>0;
@@ -36,11 +36,10 @@ function Q=quantile(Y,q)
 %		Q(k) = mean(t(find(~tmp)+(0:1)));
 %	end;	
 
-%	$Revision$
 %	$Id$
-%	last revision 13 Mar.2003
-%	Copyright (c) 1996-2003 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (c) 1996-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
 if nargin<2,
@@ -81,9 +80,7 @@ else
                 Y = sort(Y,1);
                 
 		for k1 = 1:yc,
-	                for k2 = 1:length(q),
-				Q(k2,k1) = flix(Y(:,k1),N(k1)*q(k2) + 0.5);                	        
-                	end;
+                        Q(:,k1) = interp1(Y(:,k1),N(k1)*q + 0.5);                	        
                 end;
                 
         else

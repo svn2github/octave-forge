@@ -51,7 +51,7 @@ else		% invalid number of elements
 	fprintf(2,'Warning ARCEXT: Number of elements is different than a triangular matrix\n');
 end;
 
-if K~=P & lc~=(K*(K+1)/2
+if K~=P & lc~=K*(K+1)/2
 	[AR,RC,PE]=rc2ar(MX(:,(1:P).*(2:P+1)/2));
 else
 	AR = MX(:,P*(p-1)/2+(1:P));

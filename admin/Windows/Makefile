@@ -34,7 +34,7 @@ cygkey=Cygnus Solutions
 octkey=GNUOctave $(OCTVER)
 
 .PHONY: all setup stdc++ ranlibhack confighack config build check \
-	install strip docs forge epstk cygwin dist \
+	install strip docs forge epstk cygwin dist clean \
 	mklinks mkoctlinks mkoflinks
 
 all: build check install forge epstk strip docs
@@ -43,7 +43,8 @@ all: build check install forge epstk strip docs
 
 # ==== create install directory, unpack dependencies, and generate stdc++ dll
 setup: $(SOURCE) $(DEST) $(BUILD) stdc++ $(PACKAGE_TARGETS)
-$(SOURCE): $(ROOT)/octave-$(OCTVER).tar.bz2
+#$(SOURCE): $(ROOT)/octave-$(OCTVER).tar.bz2
+$(SOURCE):
 	@echo "Preparing source directory $(SOURCE)"
 	tar xjf $(ROOT)/octave-$(OCTVER).tar.bz2 -C $(ROOT)
 $(DEST): 
@@ -117,6 +118,8 @@ strip: install
 	strip $(DEST)/bin/*.exe
 	strip $(DEST)/base/oct/*.oct
 	strip $(DEST)/site/oct/*/*.oct
+clean: clean.forge
+	-$(RM) *.octave *.forge
 
 # ==== install documentation
 docs: build

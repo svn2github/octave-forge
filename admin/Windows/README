@@ -70,9 +70,9 @@ Set your octave version:
 
   export OCTVER=2.1.xx
 
-Clean out any old version of octave-forge:
+Clean out any old version of octave-forge and force reconfigure/rebuild:
 
-  make clean.forge
+  make clean
 
 Invoke the build:
 

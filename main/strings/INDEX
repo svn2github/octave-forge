@@ -64,6 +64,7 @@ Conversion
  dec2bin 
  dec2base 
  strptime
+ base64encode
 Flags
  implicit_num_to_str_ok
  implicit_str_to_num_ok

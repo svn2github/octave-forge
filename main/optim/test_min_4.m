@@ -26,8 +26,11 @@ if ! exist ("verbose"), verbose = 0; end
 
 N = 2;
 
-x0 = randn(N,1) ;
-y0 = randn(N,1) ;
+## Make test reproducible
+## x0 = randn(N,1) ;
+## y0 = randn(N,1) ;
+x0 = (1:N)'/N;
+y0 = (N:-1:1)'/N;
 
 function v = ff(x,y,t)
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;

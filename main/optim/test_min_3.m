@@ -26,23 +26,23 @@ ok = 1;
 
 if ! exist ("verbose"), verbose = 0; end
 
-if 0,
-  P = 10+floor(30*rand(1)) ;	# Nparams
-  R = P+floor(30*rand(1)) ;	# Nobses
-else
-  P = 2;
-  R = 3;
-end
+P = 2;
+R = 3;
 
-noise = 0 ;
-obsmat = randn(R,P) ;
+## Make tests reproducible
+## obsmat = randn(R,P) ;
+obsmat = zeros (R,P);
+obsmat(sub2ind([R,P],1:R,1+rem(0:R-1,P))) = 1:R;
 
-truep = randn(P,1) ;
-xinit = randn(P,1) ;
+## Make test_min_2 repeatable by using fixed starting point
+## truep = randn(P,1) ;
+## xinit = randn(P,1) ;
+truep = rem (1:P, P/4)';
+xinit = truep + 2*(1:P)'/(P);
+
 
 ## global obses ;
 obses = obsmat*truep ;
-if noise, obses = adnois(obses,noise); end
 
 extra = list (obsmat, obses);
 
@@ -71,6 +71,12 @@ if verbose
   printf ("   Nparams = P = %i,  Nobses = R = %i\n",P,R);
   fflush (stdout);
 end
+function dt = mytic()
+   static last_mytic = 0 ;
+   [t,u,s] = cputime() ;
+   dt = t - last_mytic ;
+   last_mytic = t ;
+endfunction
 
 ctl.df = "dff";
 mytic() ;

@@ -25,24 +25,26 @@ ok = 1;
 
 if ! exist ("verbose"), verbose = 0; end
 
-if 0,
-  P = 10+floor(30*rand(1)) ;	# Nparams
-  R = P+floor(30*rand(1)) ;	# Nobses
-else
-  P = 15;
-  R = 20;			# must have R >= P
-end
+P = 15;
+R = 20;			# must have R >= P
 
-noise = 0 ;
+
 global obsmat ;
-obsmat = randn(R,P) ;
+## Make test_min_2 reproducible by using fixed obsmat
+## obsmat = randn(R,P) ;
+obsmat = zeros (R,P);
+obsmat(sub2ind([R,P],1:R,1+rem(0:R-1,P))) = 1:R;
+
 global truep ;
-truep = randn(P,1) ;
-xinit = randn(P,1) ;
+
+## Make test_min_2 reproducible by using fixed starting point
+## truep = randn(P,1) ;
+## xinit = randn(P,1) ;
+truep = rem (1:P, P/4)';
+xinit = truep + 2*(1:P)'/(P);
 
 global obses ;
 obses = obsmat*truep ;
-if noise, obses = adnois(obses,noise); end
 
 
 function v = ff(x)
@@ -84,6 +86,8 @@ if verbose
 end
 
 ctl.df = "dff";
+ctl.ftol = eps;
+ctl.dtol = 1e-7;
 mytic() ;
 ## [xlev,vlev,nlev] = feval(optim_func, "ff", "dff", xinit) ;
 [xlev,vlev,nlev] = feval(optim_func, "ff", xinit, ctl) ;

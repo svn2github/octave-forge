@@ -33,15 +33,19 @@ function o=meansq(i,DIM)
 
 % original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 %
-%	Copyright (C) 2000-2002 by  Alois Schloegl   <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
 
+
+x = real(i).^2+imag(i).^2;
 
 if nargin<2,
-        DIM=min(find(size(i)>1));
-        if isempty(DIM), DIM=1; end;
+	[o,N] = sumskipnan(x);
+else
+	[o,N] = sumskipnan(x,DIM);
 end;
 
-[tmp,N,o] = sumskipnan(i,DIM);
 o = o./N;
 
    

@@ -1,5 +1,7 @@
 function o=rms(i,DIM)
 % RMS calculates the root mean square
+%   can deal with complex data. 
+%
 % y = rms(x,DIM)
 %
 % DIM	dimension
@@ -31,15 +33,19 @@ function o=rms(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-% Copyright (c) 2001-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
 
+
+i = real(i).^2 + imag(i).^2;
 
 if nargin<2,
-        DIM=min(find(size(i)>1));
-        if isempty(DIM), DIM=1; end;
+	[o,N] = sumskipnan(i);
+else
+	[o,N] = sumskipnan(i,DIM);
 end;
 
-[tmp,N,o] = sumskipnan(i,DIM);
 o = sqrt(o./N);
    
    

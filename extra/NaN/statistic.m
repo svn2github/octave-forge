@@ -54,13 +54,10 @@ function [varargout]=statistic(i,DIM,fun)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%    	Version 1.27  Date: 12 Sep 2002
-%	Copyright (C) 2000-2002 by Alois Schloegl  <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
 
-% .changelog
-% 05.07.2002 attempt to make STAT Level 4, 
-% 		however DIM argument difficult to implement for Median, Quantiles
-% 15.08.2002 replace strncmp by strcmp
 
 if nargin==1,
         DIM=[];
@@ -87,7 +84,8 @@ R.S4P  = sumskipnan(i.^4,DIM);		% sum of 4th power
 R.MEAN 	= R.SUM./R.N;			% mean 
 R.MSQ  	= R.SSQ./R.N;;			% mean square
 R.RMS  	= sqrt(R.MSQ);			% root mean square
-R.SSQ0	= R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
+%R.SSQ0	= R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
+R.SSQ0	= R.SSQ - real(R.SUM).*real(R.MEAN) - imag(R.SUM).*imag(R.MEAN);	% sum square of mean removed
 
 %if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
     n1 	= max(R.N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and SEM are INF

@@ -27,9 +27,9 @@ function [y] = nanstd(i,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+%    Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 %	$Revision$
 %	$Id$
-%    Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
 if nargin>1
@@ -38,10 +38,8 @@ else
         [s,n,y] = sumskipnan(i);
 end;
 
-m = s./n;	% mean
-y = (y-s.*m);   % n * (summed squares with removed mean)
+y = y.*n - real(s).^2 - imag(s).^2;   % n*n * (summed squares with removed mean)
 
-n = max(n-1,0);	
-y = sqrt(y./n);	% normalize
+y = sqrt(y./(n.*max(n-1,0)));	% normalize
 
 

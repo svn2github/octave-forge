@@ -5,6 +5,7 @@ function [SE,M]=sem(x,DIM)
 %   calculates the standard error (SE) in dimension DIM
 %   the default DIM is the first non-single dimension
 %   M returns the mean. 
+%   Can deal with complex data, too. 
 %
 % DIM	dimension
 %	1: SEM of columns
@@ -33,24 +34,16 @@ function [SE,M]=sem(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
 
 
-% check input arguments 
-if nargin==1,
-        DIM=0;
-elseif nargin==2,
-        if ~isnumeric(DIM),
-                DIM=0;
-        end
-else
-        fprintf(2,'Error SEM: invalid number of arguments\n usage: v=var(x [,DIM])\n');
+if nargin>1,
+	[tmp,N,SSQ] = sumskipnan(x,DIM);
+else    
+	[tmp,N,SSQ] = sumskipnan(x);
 end
-if ~DIM;
-        DIM=min(find(size(x)>1));
-        if isempty(DIM), DIM=1; end;
-end;
 
-[Y,N,SSQ] = sumskipnan(x,DIM);
-M  = Y./N;
-SE = sqrt((SSQ-Y.*M)./(N.*(N-1))); 
+tmp = real(tmp).^2 + imag(tmp).^2;	% squared sum 
+SE = sqrt((SSQ.*N-tmp)./(N.*N.*(N-1))); 

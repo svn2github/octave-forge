@@ -9,9 +9,7 @@ ifndef OCTAVE_FORGE
 	X_LIBS = -L/usr/X11R6/lib
 endif
 
-%.o: %.cc ; $(MKOCTFILE) -c $(X_CFLAGS) $< -o $@
-
-%.oct: %.o ; $(MKOCTFILE) $< graphics.o $(X_LIBS) -o $@
+%.oct: %.cc ; $(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
 
 ifdef HAVE_X
 all: $(PROGS)

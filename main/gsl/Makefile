@@ -8,7 +8,7 @@ LN_S=ln -s
 LIBS=-lgsl
 
 # all compiled functions
-PROGS=gsl_sf.oct $(SF_LINKS)
+PROGS=legendre_sphPlm_array.oct gsl_sf.oct $(SF_LINKS)
 
 all: gsl_sf.cc $(PROGS)
 

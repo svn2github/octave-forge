@@ -556,10 +556,10 @@ function retval = fixedpoint(typ, tests)
 	  fatan2(fzero,fone) != fzero ||
 	  fatan2(fone,fzero) != fpi2 ||
 	  fatan2(fone,fone) != fpi4 ||
-	  fatan2(fzeros,fzeros) != fzero || 
-	  fatan2(fzeros,fones) != fzero ||
-	  fatan2(fones,fzeros) != fpi2 ||
-	  fatan2(fones,fones) != fpi4)
+	  any(fatan2(fzeros,fzeros) != fzero) || 
+	  any(fatan2(fzeros,fones) != fzero) ||
+	  any(fatan2(fones,fzeros) != fpi2) ||
+	  any(fatan2(fones,fones) != fpi4))
         error("FAILED");
       else
 	fprintf("PASSED\n");

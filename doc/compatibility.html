@@ -24,6 +24,7 @@ compatible way.  See the "porting" section of the octave FAQ:
 
 <h2>Language Elements</h2>
 <ul>
+
 <li>Q. How do I handle varargin, varargout?
 <br>A. Instead of
    <code><pre>
@@ -122,6 +123,7 @@ global context.
 </ul>
 <h2>Types</h2>
 <ul>
+
 <li>Q. Does Octave support sparse matrices?
 <br>A. Use sparse package in octave-forge.  Since user-defined types cannot
    override builtin functions, must use spinv, spsum, splu, etc.
@@ -196,12 +198,40 @@ global context.
    matrices.  Symbolic equivalents to builtin functions use uppercase first
    letter since Octave can overload built-in functions for user-defined 
    types (see Sparse answer above for alternative).
+
+<li>Q. Does octave support arrays of structures?
+<br>A. No.  Rather than using arrays of structures, could you use a structure of
+arrays?
+	<code><pre>
+        y = x(i).f becomes y = x.f(i)
+        x(i).f = y becomes x.f(i) = y
+        y = x(i)   becomes clear y; 
+                           foreach key,val=x, 
+                               eval(["y.",key,"=val;"]); 
+                           end
+        x(i) = y   becomes foreach key,val=y, 
+                               eval(["x.",key,"(i)=val;"]); 
+                           end
+	</pre></code>
+
+This doesn't work if your structure elements are matrices or vectors
+though.  In that case, you could use lists of structures:
+
+	<code><pre>
+        y = x(i).f  becomes y = nth(x,i).f
+        x(i).f = y  becomes s = nth(x,i); s.f=y; x(i) = s;
+        y = x(i)    becomes y = nth(x,i)
+        x(i) = y    stays   x(i) = y;
+	</pre></code>
+
+Either approach is ugly.  A better approach is to fix ov-struct.cc in octave/src
+so that octave handles indexed structures natively.
+
+
 </ul>
-
-
 <h2>Toolboxes</h2>
-
 <ul>
+
 <li>Q. simulink
 <br>A. Doesn't exist.  Search for simulink in the 
 <a href=http://www.octave.org/octave-lists/archive/index.html">octave archives</a>
@@ -247,11 +277,11 @@ for suggested alternatives.
 
 <li>Q. Control systems toolbox
 <br>A. many of the functions exist but often under different names in base octave
+
 </ul>
-
 <h2>Individual functions</h2>
-
 <ul>
+
 <li>Q. Where do I find the matlab function XXX?
 <br>A. Many XXX are in the octave-forge package at http://octave.sf.net.  This
    is a collection of Octave functions contributed by the user community
@@ -343,5 +373,6 @@ for suggested alternatives.
 
 <li>Q. datenum
 <br>A. limited to 1902-2038
+
 </ul>
 </body></html>

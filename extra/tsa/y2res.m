@@ -32,7 +32,7 @@ R.MSQ   = R.SSQ./R.N;
 R.RMS	= sqrt(R.MSQ);
 R.SSQ0  = R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
 
-if flag_implicit_unbiased_estim,
+if 1,%flag_implicit_unbiased_estim,
     n1 	= max(R.N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
 else
     n1	= R.N;

@@ -1,4 +1,1028 @@
 # Automatically generated file --- DO NOT EDIT
+2004-09-09 11:58  pkienzle
+
+	* main/statistics/pareto.m: small spelling correction; faster and
+	cleaner implementation; added demo 
+
+2004-09-09 11:52  pkienzle
+
+	* main/statistics/tabulate.m: Better support for non-integer bins 
+
+2004-09-09 11:46  pkienzle
+
+	* admin/mktests.sh: Don't use mindepth/maxdepth gnu extenstions to
+	find.  
+
+2004-09-09 09:57  pkienzle
+
+	* main/splines/pchip.m: [for Guenther Palfinger] allow forward or
+	reverse x 
+
+2004-09-09 09:37  pkienzle
+
+	* main/io/: csvread.m, csvwrite.m: Wrappers for dlmread/dlmwrite
+	for compatibility 
+
+2004-09-09 08:17  mcreel
+
+	* main/optim/samin-example.m: [no log message] 
+
+2004-09-09 08:16  mcreel
+
+	* main/optim/: bfgsmin.cc, finitedifference.cc, samin.cc: more
+	complere arg checking 
+
+2004-09-09 08:09  pkienzle
+
+	* main/miscellaneous/configure.add: [for Dan McMahill] prefer
+	termcap.h to term.h 
+
+2004-09-09 07:53  pkienzle
+
+	* Makeconf.base, octinst.sh.in, admin/run_forge,
+	extra/mex/Makefile: [for Dan McMahill] use INSTALL_SCRIPT for
+	scripts 
+
+2004-09-09 07:48  pkienzle
+
+	* extra/mex/mex.in: [for Dan McMahill] remove bashisms 
+
+2004-09-09 07:44  pkienzle
+
+	* configure.base: [for Dan McMahill] portability---use -Rfp as
+	default copy flags 
+
+2004-09-09 00:16  pkienzle
+
+	* main/sparse/buildtests.sh: [for Dan McMahill] remove bashisms 
+
+2004-09-08 23:47  pkienzle
+
+	* main/fixed/Makefile: Fix rule lookup: clear "%.o: %.cc" before
+	defining "%.o: %.cc %.d".  
+
+2004-09-08 23:36  pkienzle
+
+	* configure.base: Fix HAVE_SWAP_BYTES test so that it succeeds in
+	2.1.58 but not 2.1.57.  
+
+2004-09-08 20:26  adb014
+
+	* main/optim/Makefile: Remove deleted target 
+
+2004-09-08 14:52  pkienzle
+
+	* admin/mktests.sh: Print number of files with and without tests. 
+	Use looser output format so warnings come after you know which
+	directory is being tested.  
+
+2004-09-08 12:19  pkienzle
+
+	* main/optim/fzero.m: Clean up argument checking and tests so they
+	work in 2.1.58 
+
+2004-09-08 12:06  jmones
+
+	* main/image/cmunique.m: Solved problem with uint8 indexing and
+	reduced tests on types (suggested by P. Kienzle) 
+
+2004-09-08 11:10  pkienzle
+
+	* admin/mktests.sh: Only run tests in top-level directories.  
+
+2004-09-08 11:07  pkienzle
+
+	* main/image/devel/__bridge_lut_fun__.m: Use new __ name in tests
+	as well.  
+
+2004-09-08 11:01  pkienzle
+
+	* main/image/cmpermute.m: Redo tests: reduce # of shared variables;
+	force full range of uint8 
+
+2004-09-08 10:13  jmones
+
+	* main/image/cmpermute.m: Synchronized with cmunique. uint8 support
+	added. Tests working for 2.1.58 
+
+2004-09-08 10:12  mcreel
+
+	* main/optim/lbfgsmin_example.m: [no log message] 
+
+2004-09-08 10:10  mcreel
+
+	* main/optim/: bfgsmin.cc, bfgsmin_example.m: Integrate bfgsmin and
+	lbfgsmin into same file so convergence, etc. is same. Complete
+	argument checking (Go ahead - hit me!). Beautify output.  
+
+2004-09-08 10:07  mcreel
+
+	* main/optim/bfgsmin-example.m: [no log message] 
+
+2004-09-08 10:07  pkienzle
+
+	* main/image/qtdecomp.m: Fix test for 'inline function' 
+
+2004-09-08 09:58  mcreel
+
+	* main/optim/: lbfgsmin-example.m, lbfgsmin.cc: [no log message] 
+
+2004-09-08 06:31  schloegl
+
+	* extra/tsa/: contents.m, rmle.m: Implementation by Jose L.
+	Guitierrez of AR estimation with RMLE added 
+
+2004-09-08 03:41  adb014
+
+	* main/: comm/Makefile, fixed/Makefile: Makefile fixes for *.d
+	files 
+
+2004-09-08 00:54  pkienzle
+
+	* RELEASE-NOTES: Summarize changelog since last release 
+
+2004-09-07 17:18  pkienzle
+
+	* main/comm/Makefile: Remove all .d files (there was a spelling
+	error in OTHERDEPENDS) 
+
+2004-09-07 10:47  pkienzle
+
+	* main/image/poly2mask.m: Avoid segfaults on pre-2.1.58 octave. 
+	Invisible whitespace changes.  
+
+2004-09-07 06:31  mcreel
+
+	* main/optim/: bfgsmin_example.m, lbfgsmin_example.m,
+	samin_example.m: renamed example files 
+
+2004-09-07 06:30  mcreel
+
+	* main/optim/: bfgsmin.cc, lbfgsmin.cc, newtonstep.cc, samin.cc: 
+	Fix newtonstep bug introduced in July, and add pointers to examples
+	to algorithms 
+
+2004-09-06 10:45  tpikonen
+
+	* extra/graceplot/alternatives/: __errcomm__.m, __errplot__.m,
+	__plr2__.m, __plt2mm__.m, __plt2mv__.m, __plt2ss__.m, __plt2vm__.m,
+	__plt2vv__.m, __plt__.m, __pltopt__.m, bar.m, errorbar.m, mplot.m,
+	multiplot.m, oneplot.m, plot.m, polar.m, semilogx.m, semilogxerr.m,
+	semilogy.m, semilogyerr.m, subplot.m, subwindow.m, xlabel.m,
+	ylabel.m: Cleanup and update alternative plotting functions.  
+
+2004-09-06 09:50  mcreel
+
+	* main/optim/: bisectionstep.cc, finitedifference.cc,
+	newtonstep.cc: full argument checking (number and types) added 
+
+2004-09-06 08:48  mcreel
+
+	* main/optim/: bfgsmin-example.m, bfgsmin.cc, bisectionstep.cc,
+	finitedifference.cc, lbfgsmin.cc, newtonstep.cc: Improvement of
+	help strings and argument checking for internal use functions. Still
+	need to check types.  
+
+2004-09-06 01:59  pkienzle
+
+	* main/image/: graycomatrix.cc, houghtf.cc: strict cmath: no
+	round() and ceil() operates on floating point types.  
+
+2004-09-03 17:07  adb014
+
+	* main/comm/: op-gm-s.cc, op-s-gm.cc: INSTALL_G_CATOP is a null
+	macro < 2.1.58 
+
+2004-09-03 14:36  pkienzle
+
+	* main/comm/: op-gm-s.cc, op-s-gm.cc: DEFCATOP is unavailable in
+	2.1.57 and below 
+
+2004-09-03 14:33  pkienzle
+
+	* main/image/padarray.m: skip tests which use cat(3,X,Y) for octave
+	<= 2.1.57 
+
+2004-09-03 13:57  jmones
+
+	* main/image/col2im.m: Added support for int* and uint* types 
+
+2004-09-03 13:49  jmones
+
+	* main/image/blkproc.m: Improved uint8 and uint16 padding
+	expections 
+
+2004-09-03 13:37  jmones
+
+	* main/image/im2col.m: Added support for int* and uint* types 
+
+2004-09-03 13:12  jmones
+
+	* main/image/poly2mask.m: Uses uint8 to save some temporal memory
+	(suggested by David Bateman) 
+
+2004-09-03 13:07  jmones
+
+	* main/image/cmunique.m: Support for uint8 and uint16 types added.  
+
+2004-09-03 10:25  przykry2004
+
+	* main/optim/fzero.m: Complete replacement for the old wrapper
+	function. Now fzero actually implements the Brent's root-finding
+	method or, if necessary, falls back to fsolve(). This function has
+	been written by a student of mine, Lukasz Bodzon.  
+
+2004-09-03 09:40  jmones
+
+	* main/image/blkproc.m: Check result has same class as function
+	result, and improved fun param checking 
+
+2004-09-03 09:37  jmones
+
+	* main/image/padarray.m: Corrected behaviour for int* and uint*
+	types 
+
+2004-09-03 09:32  jmones
+
+	* main/image/poly2mask.m: Work with logical arrays from BW creation 
+
+2004-09-03 09:28  jmones
+
+	* main/image/nlfilter.m: Corrected behaviour for int* and uint*
+	types 
+
+2004-09-02 08:24  adb014
+
+	* main/image/graycomatrix.cc: Fix for ambiguous return value with
+	2.1.58 
+
+2004-09-01 18:51  jmones
+
+	* main/image/imadjust.m: Fully recoded: NDArray support, docs,
+	tests, more compatible with MATLAB, changed copyright 
+
+2004-09-01 18:35  jmones
+
+	* main/image/bwmorph.m: Added Lantuejoul skeletonizing algorithm
+	from Gonzalez&Woods 
+
+2004-09-01 09:49  schloegl
+
+	* main/strings/str2double.m: returns a cell array of strings as 3rd
+	argout; use of more specific EXIST improves performance 
+
+2004-09-01 04:52  sjvdw
+
+	* main/image/: INDEX, Makefile: Add graycomatrix and houghtf 
+
+2004-08-31 11:24  adb014
+
+	* Makeconf.base, configure.base, main/comm/Makefile,
+	main/comm/ov-galois.cc, main/fixed/Makefile,
+	main/fixed/fixed-conv.h, main/fixed/ov-fixed-cx-mat.cc,
+	main/fixed/ov-fixed-mat.cc: Fix for removal of swap_8_bytes, etc
+	from octave 
+
+2004-08-31 11:23  adb014
+
+	* main/sparse/: complex_sparse_ops.cc, sparse_ops.cc, sparse_ops.h: 
+	Small build fix for the macro SPARSE_RESIZE 
+
+2004-08-31 10:18  adb014
+
+	* doc/compatibility.html: typo 
+
+2004-08-30 07:59  adb014
+
+	* doc/compatibility.html: Add '[a{:}] =' as a compatiability issue 
+
+2004-08-29 10:02  pkienzle
+
+	* doc/compatibility.html: Remove resolved issues 
+
+2004-08-25 21:33  jmones
+
+	* main/image/INDEX: stretchlim added: Finds limits to contrast
+	stretch an image 
+
+2004-08-25 12:35  jmones
+
+	* main/image/stretchlim.m: stretchlim added: Finds limits to
+	contrast stretch an image 
+
+2004-08-25 12:13  adb014
+
+	* main/sparse/: complex_sparse_ops.cc, make_sparse.h,
+	sparse_ops.cc, sparse_ops.h: Working, but inefficient,
+	concatentaion code 
+
+2004-08-25 12:12  adb014
+
+	* main/: fixed/fixedCMatrix.cc, fixed/fixedMatrix.cc,
+	comm/galois.cc: Check for empty intermediate rather than final
+	matrices 
+
+2004-08-23 07:57  przykry2004
+
+	* main/sparse/INDEX: Added pcg and pcr entries 
+
+2004-08-23 07:54  przykry2004
+
+	* main/sparse/pcr.m: First version of PCR function which implements
+	preconditioned conjugate residual method 
+
+2004-08-23 07:52  przykry2004
+
+	* main/sparse/pcg.m: Minor changes to the help text 
+
+2004-08-20 05:09  sjvdw
+
+	* main/image/houghtf.cc: Straight line Hough-transform 
+
+2004-08-20 05:08  sjvdw
+
+	* main/image/graycomatrix.cc: Calculate the gray-level
+	co-occurrence matrix.  
+
+2004-08-18 11:09  jmones
+
+	* main/image/INDEX: col2im and im2col added to block processing
+	functions 
+
+2004-08-18 10:57  jmones
+
+	* main/image/cmpermute.m: speed improvement suggested by Paul
+	Kienzle 
+
+2004-08-18 10:39  jmones
+
+	* main/image/: col2im.m, im2col.m: im2col and col2im added 
+
+2004-08-17 15:18  jmones
+
+	* main/image/cmpermute.m: cmpermute added: Reorders colors in a
+	colormap 
+
+2004-08-17 12:31  jmones
+
+	* main/image/isrgb.m: isrgb added: Returns true if parameter is a
+	RGB image 
+
+2004-08-17 11:48  jmones
+
+	* main/image/cmunique.m: Clarified expected data for RGB images in
+	doc 
+
+2004-08-17 11:45  jmones
+
+	* main/image/cmunique.m: cmunique: Finds colormap with unique
+	colors and corresponding image 
+
+2004-08-16 10:43  jmones
+
+	* main/image/devel/README: README added with info about this
+	directory 
+
+2004-08-16 10:42  jmones
+
+	* main/image/devel/: __bridge_lut_fun__.m,
+	__conditional_mark_patterns_lut_fun__.m,
+	__diagonal_fill_lut_fun__.m,
+	__unconditional_mark_patterns_lut_fun__.m: Functions used to code
+	bwmorph 
+
+2004-08-15 15:47  jmones
+
+	* main/image/bwmorph.m: bwmorph added: Perform a morphological
+	operation on a binary image 
+
+2004-08-15 15:43  jmones
+
+	* main/image/nlfilter.m: corrected a typo in doc 
+
+2004-08-15 15:42  jmones
+
+	* main/image/: INDEX, nlfilter.m: nlfilter: Processes image in
+	siliding blocks using user-supplied function 
+
+2004-08-15 15:38  jmones
+
+	* main/image/: INDEX, conndef.m: conndef added: Creates a
+	connectivity array 
+
+2004-08-15 15:33  jmones
+
+	* main/image/bweuler.m: bweuler: Calculates the Euler number of a
+	binary image 
+
+2004-08-15 15:27  jmones
+
+	* main/image/blkproc.m: blkproc: block process an image using
+	user-supplied function 
+
+2004-08-15 15:21  jmones
+
+	* main/image/padarray.m: support column vector padsize 
+
+2004-08-15 15:01  jmones
+
+	* main/image/: INDEX, bestblk.m: bestblk added: Calculates best
+	block size for block processing 
+
+2004-08-12 10:01  pkienzle
+
+	* main/fixed/fixed-def.h: Correct parameters of FIXED_DEFCATOP_FN
+	dummy macro for !HAVE_OCTAVE_CONCAT 
+
+2004-08-11 15:52  jmones
+
+	* main/image/: qtdecomp.m, qtgetblk.m, qtsetblk.m: qtsetblk added 
+
+2004-08-11 13:39  jmones
+
+	* main/image/poly2mask.m: Algorithm url in docs corrected.  
+
+2004-08-11 13:34  jmones
+
+	* main/image/: INDEX, poly2mask.m: poly2mask added: creates filled
+	polygon bw mask 
+
+2004-08-11 11:04  pkienzle
+
+	* main/image/: padarray.m, roicolor.m, uintlut.m: Convert dos line
+	endings to unix line endings 
+
+2004-08-10 23:06  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Preserve command status through
+	dispatch 
+
+2004-08-10 20:57  jmones
+
+	* main/image/INDEX: qtgetblk and qtsetblk added to INDEX 
+
+2004-08-10 20:05  jmones
+
+	* main/image/qtdecomp.m: seealso qtgetblk added to doc 
+
+2004-08-10 20:03  jmones
+
+	* main/image/qtgetblk.m: new gtgetblk: get blocks from quatree
+	decomposition 
+
+2004-08-09 20:19  jmones
+
+	* main/image/qtdecomp.m: Corrected misleading comment.  
+
+2004-08-08 21:48  jmones
+
+	* main/image/: INDEX, qtdecomp.m: Added qtdecomp: quadtree
+	decomposition 
+
+2004-08-08 17:20  jmones
+
+	* main/image/: INDEX, padarray.m, uintlut.m: uintlut and padarray
+	functions added 
+
+2004-08-08 17:08  jmones
+
+	* main/image/INDEX: Added cathegory region-based processing and
+	roi* functions to it 
+
+2004-08-08 17:02  jmones
+
+	* main/image/roicolor.m: Add roicolor function (selects ROI based
+	on color) 
+
+2004-08-08 10:13  adb014
+
+	* main/: general/.cvsignore, miscellaneous/.cvsignore: Update
+	ignores 
+
+2004-08-07 23:49  pkienzle
+
+	* main/general/isa.m: compatibility function: return true if x is
+	of a particular class 
+
+2004-08-05 04:26  adb014
+
+	* main/miscellaneous/inline.m.in: Depreciate inline.m as it is in
+	2.1.58 
+
+2004-08-05 04:21  adb014
+
+	* main/miscellaneous/: Makefile, inline.m: Depreciate inline.m as
+	it is in 2.1.58 
+
+2004-08-03 10:45  aadler
+
+	* main/sparse/: complex_sparse_ops.cc, sparse_ops.cc, sparse_ops.h: 
+	clean up ASSEMBLE_SPARSE macro 
+
+2004-08-02 19:40  pkienzle
+
+	* main/image/: applylut.m, makelut.m: [for Josep Mones i Teixidor]
+	new image processing functions 
+
+2004-08-02 16:01  pkienzle
+
+	* main/statistics/anderson_darling_test.m: Use estimated parameter
+	form for the exponential/normal distributions.  
+
+2004-08-02 14:46  aadler
+
+	* main/sparse/: make_sparse.h, sparse_ops.cc: some code for concat
+	operators 
+
+2004-08-02 14:39  rlaboiss
+
+	* main/miscellaneous/map.m: Make map work with two input arguments.
+	The following works now: 
+	
+	    map ("mean", {[1,2,5], [3,7,9]}); 
+
+2004-08-02 12:35  aadler
+
+	* main/sparse/: buildtests.sh, complex_sparse_ops.cc,
+	sparse_ops.cc: saving to the octave -binary format 
+
+2004-08-02 12:00  aadler
+
+	* main/sparse/sparse_full.cc: fixed bug in spfind -> will now
+	return fortran_vector index for nargout ==1 
+
+2004-08-02 11:46  aadler
+
+	* main/sparse/: buildtests.sh, complex_sparse_ops.cc,
+	make_sparse.h, sparse_ops.cc: tests for sparse saving 
+
+2004-08-02 11:45  aadler
+
+	* extra/testfun/test.m: specify text mode for fopen since binary is
+	now default 
+
+2004-08-02 10:47  aadler
+
+	* main/sparse/complex_sparse_ops.cc: complex save and load ascii 
+
+2004-08-02 02:23  pkienzle
+
+	* main/statistics/anderson_darling_test.m: Minor doc. change 
+
+2004-08-02 02:17  pkienzle
+
+	* main/statistics/anderson_darling_cdf.m: Improve example 
+
+2004-08-02 01:25  pkienzle
+
+	* main/statistics/histfit.m: Better heuristic for differing bin
+	widths 
+
+2004-08-02 01:10  pkienzle
+
+	* main/statistics/histfit.m: Allow user selection of bins, so long
+	as width is uniform 
+
+2004-07-31 09:29  pkienzle
+
+	* main/general/nthroot.m: Force real roots to the nthroot of x, if
+	they are available 
+
+2004-07-30 19:13  pkienzle
+
+	* main/statistics/INDEX: Note Anderson-Darling test and cdf.  
+
+2004-07-30 19:10  pkienzle
+
+	* main/statistics/anderson_darling_test.m: Anderson-Darling
+	distribution rejection test: this code has unresolved issues 
+
+2004-07-30 19:00  pkienzle
+
+	* main/statistics/anderson_darling_cdf.m: Anderson-Darling CDF 
+
+2004-07-30 18:34  pkienzle
+
+	* FIXES/randmtzig.c: move array generators from rand.cc; more
+	extensive docs; undo set_state damage; reorganize code to separate
+	randmt from uniform from zig.  
+
+2004-07-30 18:30  pkienzle
+
+	* FIXES/rand.cc: Move fill functions to randmtzig 
+
+2004-07-30 18:28  pkienzle
+
+	* FIXES/Makefile: Document rand build.  
+
+2004-07-30 05:28  mazet
+
+	* main/miscellaneous/Makefile: Add some documentation in the
+	Makefile about the flexml/flex proccess 
+
+2004-07-30 04:00  adb014
+
+	* main/statistics/: INDEX, histfit.m, pareto.m, tabulate.m: Add new
+	functions for Alberto Terruzzi <t-albert@libero.it> 
+
+2004-07-29 21:14  pkienzle
+
+	* main/image/: dilate.m, erode.m: Use filter2's default "same" flag
+	to control result size 
+
+2004-07-29 19:37  pkienzle
+
+	* FIXES/randmtzig.c: Fix docs re: range of uniform return value,
+	which is now (0,1) for 53-bit 
+
+2004-07-29 18:31  pkienzle
+
+	* FIXES/randmtzig.c: Add CPU_X86_32 flag and faster 53-bit support; 
+	use (0,1) rather than [0,1) for 53-bit uniform; fix randn sign bit
+	for idx=0 case when value outside of ziggurat 
+
+2004-07-29 11:15  pkienzle
+
+	* FIXES/Makefile: build and clean randtest 
+
+2004-07-29 11:15  pkienzle
+
+	* FIXES/randmtzig.c: Allow g++ build of standalone.  
+
+2004-07-29 10:05  pkienzle
+
+	* FIXES/: Makefile, randmtzig.c: Slight (5%) speed improvement for
+	randi32().  
+
+2004-07-28 20:07  pkienzle
+
+	* main/image/: dilate.m, erode.m: [for Josep Mones i Teixidor] new
+	functions 
+
+2004-07-28 17:16  pkienzle
+
+	* FIXES/: Makefile, rand.cc, randmtzig.c: Allow 'make
+	ALLBITS=-DALLBITS' to generate all 53 bits of mantissa.  
+
+2004-07-28 02:56  mazet
+
+	* main/miscellaneous/xmltree_read.c: change all yy* into xml_* 
+
+2004-07-28 02:10  pkienzle
+
+	* FIXES/rand.cc: Use 53 bits of precision for rand; randn still
+	uses 32.  
+
+2004-07-27 17:39  adb014
+
+	* main/general/: Makefile, bitcmp.m, bitcmp.m.in, bitget.m,
+	bitget.m.in, bitset.m, bitset.m.in, bitshift.m, bitshift.m.in: Make
+	building and installation of bitfcns optional on version 2.1.57 or
+	less 
+
+2004-07-27 16:56  aadler
+
+	* main/sparse/: Makefile, complex_sparse_ops.cc, make_sparse.h,
+	sparse_ops.cc: first steps to concatenation working 
+
+2004-07-27 16:39  pkienzle
+
+	* main/miscellaneous/listen.cc: Need to register senderror as well
+	as send 
+
+2004-07-27 15:46  rlaboiss
+
+	* main/optim/fmins.m: Put the description of the options vector
+	inside a @verbatim environment.  I did not check whether this would
+	look okay when processed by TeX but, at least, the output of "help
+	fmins" is not gibberish anymore.  
+
+2004-07-27 14:24  aadler
+
+	* main/sparse/: buildtests.sh, complex_sparse_ops.cc,
+	make_sparse.h, sparse_ops.cc: save_ascii 
+
+2004-07-27 12:05  aadler
+
+	* main/sparse/: Makefile, complex_sparse_ops.cc, make_sparse.h,
+	sparse_full.cc, sparse_ops.cc: simplify find 
+
+2004-07-27 04:50  mazet
+
+	* main/miscellaneous/: cell2csv.cc, csvexplode.cc: 
+	* Empty cell are no more replaced by NaN 
+	* Fix a bug with string in cell 
+
+2004-07-26 21:04  pkienzle
+
+	* doc/octave-forge-home.html: Add oct2mat 
+
+2004-07-26 17:00  pkienzle
+
+	* main/signal/fir1.m: [with Pers Persson] more flexible argument
+	handling; add tests 
+
+2004-07-26 16:58  pkienzle
+
+	* main/signal/fir2.m: Allow windows to be passed by name or
+	function handle 
+
+2004-07-26 16:54  pkienzle
+
+	* main/signal/flattopwin.m: New window type 
+
+2004-07-26 16:32  pkienzle
+
+	* main/signal/gausswin.m: Use name gausswin throughout 
+
+2004-07-26 10:55  adb014
+
+	* Makeconf.base, configure.base, main/comm/Makefile,
+	main/comm/galois-ops.h, main/comm/galois.cc, main/comm/galois.h,
+	main/comm/op-gm-gm.cc, main/comm/op-gm-m.cc, main/comm/op-gm-s.cc,
+	main/comm/op-m-gm.cc, main/comm/op-s-gm.cc, main/comm/ov-galois.cc,
+	main/comm/ov-galois.h, main/comm/doc/comms.txi,
+	main/fixed/Array-f.cc, main/fixed/Makefile, main/fixed/fixed-def.h,
+	main/fixed/fixedCMatrix.cc, main/fixed/fixedCMatrix.h,
+	main/fixed/fixedCNDArray.cc, main/fixed/fixedCNDArray.h,
+	main/fixed/fixedMatrix.cc, main/fixed/fixedMatrix.h,
+	main/fixed/fixedNDArray.cc, main/fixed/fixedNDArray.h,
+	main/fixed/op-fcm-fcm.cc, main/fixed/op-fcm-fcs.cc,
+	main/fixed/op-fcm-fm.cc, main/fixed/op-fcm-fs.cc,
+	main/fixed/op-fcs-fcm.cc, main/fixed/op-fcs-fcs.cc,
+	main/fixed/op-fcs-fm.cc, main/fixed/op-fcs-fs.cc,
+	main/fixed/op-fm-fcm.cc, main/fixed/op-fm-fcs.cc,
+	main/fixed/op-fm-fm.cc, main/fixed/op-fm-fs.cc,
+	main/fixed/op-fs-fcm.cc, main/fixed/op-fs-fcs.cc,
+	main/fixed/op-fs-fm.cc, main/fixed/op-fs-fs.cc,
+	main/fixed/ov-base-fixed-mat.h, main/fixed/ov-base-fixed.h,
+	main/fixed/ov-fixed-complex.cc, main/fixed/ov-fixed-complex.h,
+	main/fixed/ov-fixed-cx-mat.cc, main/fixed/ov-fixed-cx-mat.h,
+	main/fixed/ov-fixed-mat.cc, main/fixed/ov-fixed-mat.h,
+	main/fixed/ov-fixed.cc, main/fixed/ov-fixed.h,
+	main/fixed/doc/fixed.txi: Add user type concatenation to galois and
+	fixed point types 
+
+2004-07-25 04:06  pkienzle
+
+	* main/time/calendar.m: Slightly more elegant code.  
+
+2004-07-25 03:49  pkienzle
+
+	* main/time/calendar.m: Sacrifice elegance for utility: print an
+	asterisk beside today's date.  
+
+2004-07-25 03:18  pkienzle
+
+	* main/time/: calendar.m, eomday.m: Display calendar month 
+
+2004-07-25 02:22  pkienzle
+
+	* main/time/datevec.m: Add some tests; fix h:m:s portion of
+	converted date.  
+
+2004-07-25 02:09  pkienzle
+
+	* main/time/: datenum.m, datevec.m: Update copyright notice to PD.  
+
+2004-07-25 02:02  pkienzle
+
+	* main/time/datenum.m: Accept datevec output; make it faster by
+	moving start of year to March 1.  
+
+2004-07-25 01:24  pkienzle
+
+	* main/time/datevec.m: Implement Peter Baum's Julian->Gregorian
+	conversion.  
+
+2004-07-24 22:30  rlaboiss
+
+	* nonfree/gpc/: configure.in, octave-gpc.cc, gpc_create.cc: Version
+	0.1.5.  Adjusted assignments to Octave_map objects in octave-gpc.cc 
+	gpc_read.cc to the new API for Octave: instead of using the
+	overloaded operator [], use the member functions assign() and
+	contents().  For this reason, check for version >= 2.1.57 of Octave
+	in configure.in.  
+
+2004-07-24 22:27  rlaboiss
+
+	* nonfree/gpc/acinclude.m4: Overquote definitions to make aclocal
+	happy 
+
+2004-07-23 17:10  aadler
+
+	* main/vrml/: vrml_Background.m, vrml_PointLight.m: modifications
+	for changes to setfields 
+
+2004-07-23 17:08  aadler
+
+	* main/: miscellaneous/xmltree_read.c, vrml/vmesh.m,
+	vrml/vrml_cyl.m, vrml/vrml_surf.m, vrml/vrml_text.m: modifications
+	for changes to getfields 
+
+2004-07-23 16:45  aadler
+
+	* main/struct/getfield.m: some more efficient code 
+
+2004-07-23 16:28  aadler
+
+	* main/struct/: getfield.m, setfield.m, test_struct.m: new Matlab
+	compatible code for getfield 
+
+2004-07-23 15:57  aadler
+
+	* main/struct/: Makefile, getfield.cc, getfields.cc, getfields.m,
+	setfield.cc, setfields.cc, setfields.m, test_struct.m: move
+	getfield -> getfields, etc 
+
+2004-07-23 08:33  etienne
+
+	* main/miscellaneous/read_options.m: list->cell and no more
+	[sg]etfield 
+
+2004-07-20 21:14  pkienzle
+
+	* main/time/weekday.m: Avoid global variables when we can use
+	persistent variables.  
+
+2004-07-20 10:02  adb014
+
+	* main/fixed/concat.m: Minor fixed for stupid case of mixed
+	fixed/galois arguments to concat.m 
+
+2004-07-20 09:52  adb014
+
+	* main/audio/bin/.cvsignore: add .cvsignore 
+
+2004-07-20 09:44  adb014
+
+	* main/fixed/int/.cvsignore: add .cvsignore 
+
+2004-07-20 06:25  adb014
+
+	* main/gsl/: double_double_to_double.cc.template,
+	double_mode_to_double.cc.template, double_to_double.cc.template,
+	int_double_to_double.cc.template,
+	int_int_double_to_double.cc.template, int_to_double.cc.template: 
+	Possible ambiguous use of octave_value_list with latest octave CVS.
+	Use octave_value instead.  
+
+2004-07-20 06:10  adb014
+
+	* main/gsl/: coupling_3j.cc, coupling_6j.cc, coupling_9j.cc: 
+	Possible ambiguous use of octave_value_list with latest octave CVS.
+	Use octave_value instead 
+
+2004-07-20 06:05  adb014
+
+	* extra/graceplot/__grcmd__.cc: Possible ambiguous use of
+	octave_value_list with octave CVS. Use octave_value instead 
+
+2004-07-20 03:34  pkienzle
+
+	* main/time/datenum.m: Rewrite for speed and extended range.  
+
+2004-07-19 12:13  tpikonen
+
+	* main/gsl/INDEX: Index-file for GSL functions.  
+
+2004-07-15 19:11  adb014
+
+	* main/comm/: _gfweight.cc, bchpoly.m, syndtable.cc: Remove
+	restriction on gfweight and reduce restriction on syndtable 
+
+2004-07-14 20:14  pkienzle
+
+	* extra/graceplot/alternatives/__errplot__.m: [for Miki Dovrat]
+	match end to block type 
+
+2004-07-14 15:59  pkienzle
+
+	* main/gsl/Makefile: Make sure -lgsl is used on all gsl oct-files.  
+	Symlinks shouldn't depend on base file.  
+
+2004-07-14 15:57  pkienzle
+
+	* main/gsl/configure.add: Make sure -lgsl comes before -lgslcblas
+	since some linkers care 
+
+2004-07-13 17:29  pkienzle
+
+	* FIXES/: rand.cc, Makefile, randmtzig.c: Split random number
+	generator from the octave interface 
+
+2004-07-13 11:53  pkienzle
+
+	* Makefile, admin/run_forge, admin/runpath.sh: Add libs and bins to
+	the octave-forge runtime environment for "make run" 
+
+2004-07-13 11:10  pkienzle
+
+	* main/audio/configure.add: Set the correct variable when soundcard
+	is detected 
+
+2004-07-12 23:14  pkienzle
+
+	* main/fixed/: fixedCNDArray.cc, fixedNDArray.cc: Use
+	INSTANTIATE_ARRAY_CAT to distinguish >=2.1.57 from <=2.1.55 
+
+2004-07-12 22:56  pkienzle
+
+	* main/fixed/: fixedCNDArray.cc, fixedNDArray.cc: Some compilers
+	don't like #ifdef's in the middle of macro expansions.  
+
+2004-07-12 10:56  pkienzle
+
+	* main/: image/fftconv2.m, optim/polyconf.m: Added copyright
+	notices 
+
+2004-07-12 09:03  pkienzle
+
+	* admin/make_index: [for David Bateman] use viewcvs rather than
+	cvsweb 
+
+2004-07-10 08:12  adb014
+
+	* main/comm/scatterplot.m: Typo in scatterplot for Dmitri A.
+	Sergatskov 
+
+2004-07-09 17:17  schloegl
+
+	* extra/tsa/ar_spa.m: sum(F) is now total power 
+
+2004-07-09 05:03  mcreel
+
+	* main/optim/samin.cc: prevent temperature from becoming infinite
+	in first stage 
+
+2004-07-09 02:36  persquare
+
+	* extra/MacOSX/README: Update.  
+
+2004-07-09 02:26  persquare
+
+	* extra/MacOSX/: Makefile, OFSndPlay.cc: Adding ofsndplay, a
+	utility to play sounds in various formats including wav, aiff and
+	au.  
+
+2004-07-09 01:40  pkienzle
+
+	* main/io/dlmread.m: [for Mark Esplin] skip user-specified number
+	of leading rows.  
+
+2004-07-09 00:13  pkienzle
+
+	* configure.base: Fix Octave_map indexing test.  
+
+2004-07-08 23:58  pkienzle
+
+	* main/plot/quiver.m: Set style on gplot command so clf is no
+	longer required after quiver.  
+
+2004-07-08 23:17  pkienzle
+
+	* main/plot/quiver.m: Add demos; use vector data style rather than
+	drawing vectors individually.  
+
+2004-07-08 22:10  pkienzle
+
+	* main/plot/clf.m: Reset data style to lines after resetting
+	gnuplot 
+
+2004-07-08 21:33  pkienzle
+
+	* main/struct/: Makeconf.add, Makefile, configure.add: Check for
+	builtin struct before building 
+
+2004-07-08 20:51  pkienzle
+
+	* main/miscellaneous/dispatch.cc: [for Philippe Leroux] fix use of
+	template instantiation without class keyword 
+
+2004-07-08 11:13  pkienzle
+
+	* release.sh: Clean the bug-tracker as part of the release cycle.  
+
+2004-07-08 00:56  pkienzle
+
+	* extra/graceplot/toggle_grace_use.m,
+	extra/graceplot/alternatives/multiplot.m, extra/mex/mex.cc,
+	main/geometry/tsearch.cc, main/image/fftconv2.m, main/plot/print.m,
+	main/specfun/nchoosek.m, main/strings/mat2str.m,
+	main/strings/strmatch.m: Fix copyright strings.  Only one allowed
+	on top line so keep the most recent there and move the rest below
+	the license statement.  'And' copyrights still not handled
+	correctly.  
+
+2004-07-08 00:32  pkienzle
+
+	* admin/get_authors: [for Dirk Eddelbuettel] operate on C++ source
+	as well as m-files 
+
+2004-07-07 13:55  pkienzle
+
+	* ChangeLog: R2004-07-07 release 
+
 2004-07-07 13:54  pkienzle
 
 	* release.sh: Add -F option to tag so that tags can be moved.  

@@ -1323,7 +1323,6 @@ void install_complex_sparse_ops() {
    INSTALL_BINOP (op_el_mul,   octave_complex,        octave_sparse,         c_s_mul);
    INSTALL_BINOP (op_div,      octave_sparse,         octave_complex,        s_c_div);
    INSTALL_BINOP (op_ldiv,     octave_complex,        octave_sparse,         c_s_ldiv);
-   INSTALL_BINOP (op_ldiv,     octave_complex,        octave_sparse,         c_s_ldiv);
    INSTALL_BINOP (op_el_pow,   octave_sparse,         octave_complex,        s_c_pow);
 
    //
@@ -1549,6 +1548,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.22  2003/12/11 22:50:29  pkienzle
+ * ... again ... remove duplicate install of ldiv (were there two?)
+ *
  * Revision 1.21  2003/12/11 21:49:35  pkienzle
  * Remove duplicate installation of c_cs_ldiv
  *

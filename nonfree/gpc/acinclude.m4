@@ -27,7 +27,7 @@ dnl If VARIABLE is not yet set, run Octave to extract the CONFIG_INFO of
 dnl octave_config_info().  Put the result in VARIABLE, replacing
 dnl eventually the prefix at the beginning by '${prefix}'.
 dnl --------------------------------------------------------------------
-AC_DEFUN(OCTAVE_CONFIG_INFO, [
+AC_DEFUN([OCTAVE_CONFIG_INFO], [
   if test -z "$[]$1" ; then
     octave_config_info_out=`$OCTAVE -q -f 2>&1 <<EOF
                               printf(octave_config_info("$2"));
@@ -42,7 +42,7 @@ dnl
 dnl Check if PROGRAM is available in the PATH.  If not, issue an error
 dnl message.
 dnl -------------------------------------------------------------------
-AC_DEFUN(CHECK_PROG, [
+AC_DEFUN([CHECK_PROG], [
   if test -z "$[]$1" ; then
     AC_PATH_PROG($1, $2, [not found])
   fi

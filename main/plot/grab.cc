@@ -100,8 +100,7 @@ DEFUN_DLD (grab, args, nargout,
   Display *dpy = XOpenDisplay (displayname);
 
   if (!dpy) {
-    cerr << "grab: unable to open display " << XDisplayName(displayname)
-         << "." << endl;
+    error ("grab: unable to open display %s.", XDisplayName(displayname));
     return octave_value_list();
   }
 

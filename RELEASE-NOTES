@@ -47,6 +47,8 @@ Changed interfaces
 	* optim/wpolyfit: return row vectors for compatibility with polyfit
 	* signal/nellip: replaced by ellip, ellipord
 	* OCTAVE_FORGE_VERSION is now an ordered integer: yyyymmdd
+	* FIXES/fsolve: removed because it hasn't been updated to 2.1.40
+
 
 extra/tsa
 

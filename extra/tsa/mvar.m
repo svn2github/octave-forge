@@ -1,13 +1,13 @@
 function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
-% Estimates Multi-Variate AutoRegressive model parameters 
-% function  [AR,RC,PE] = mvar(Y, Pmax);
+% MVAR estimates Multi-Variate AutoRegressive model parameters 
+% [AR,RC,PE] = mvar(Y, Pmax);
 %
 %  INPUT:
 % Y	Multivariate data series 
 % Pmax 	Model order
 %
 %  OUTPUT
-% AR    multivariate autoregressive model parameter (same format as in [4]	
+% AR    multivariate autoregressive model parameter
 % RC    reflection coefficients (= -PARCOR coefficients)
 % PE    remaining error variance
 %
@@ -16,10 +16,10 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %
 % A multivariate inverse filter can be realized with 
 %       [AR,RC,PE] = mvar(Y,P);
-%	e = mvfilter([eye(size(AR,1)),-AR],eye(size(AR(1))),Y);
+%	e = mvfilter([eye(size(AR,1)),-AR],eye(size(AR,1)),Y);
 %
-% see also: MVFILTER, COVM, SUMSKIPNAN, ARFIT2
-
+% see also: MVFILTER, MVFREQZ, COVM, SUMSKIPNAN, ARFIT2
+%
 % REFERENCES:
 %  [1] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 
 %  [2] S.L. Marple "Digital Spectral Analysis with Applications" Prentice Hall, 1987.
@@ -29,13 +29,15 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %  [4] T. Schneider and A. Neumaier, A. 2001. 
 %	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
-%  [5] A. Schlogl 2002. 
-%	Validation of MVAR estimators or Remark on Algorithm 808: ARFIT, 
-%	ACM-Transactions on Mathematical Software. submitted.
+
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This is part of the TSA-toolbox. See also 
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%       http://octave.sourceforge.net/
+%       http://biosig.sourceforge.net/
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -65,20 +67,6 @@ M2 = N+1;
 if iscell(Y)
         Pmax = min(max(N ,M ),Pmax);
         C    = Y;
-else
-        %%%%% Estimate Autocorrelation funtion 	
-        if 0, 
-                [tmp,LAG]=xcorr(Y,Pmax,'biased');
-                for K=0:Pmax,
-                        %C{K+1}=reshape(tmp(find(LAG==K)),M ,M );	
-                        C(:,K*M+(1:M))=reshape(tmp(find(LAG==K)),M ,M );	
-                end;
-        else
-                for K =0:Pmax;
-                        %C{K+1}=Y(1:N-K,:)'*Y(K+1:N ,:)/N ;
-                        %C{K+1}=Y(K+1:N,:)'*Y(1:N-K,:)/N; % =Rxx(-k)=conj(Rxx(k)) in [2] with K=k+1; 
-                end;
-        end;
 end;
 if nargin<3,
         % tested with a bootstrap validation, Mode 2 or 5 are recommended

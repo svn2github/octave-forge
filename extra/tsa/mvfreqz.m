@@ -12,15 +12,19 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, coh]=mvfreqz(B,A,C,N,Fs)
 %  A=[a0,a1,a2,...,ap] and B=[b0,b1,b2,...,bq] must be matrices of
 %  size  Mx((p+1)*M) and Mx((q+1)*M), respectively. 
 %
-%  X must be of size N*M
-%  a0,a1,...,ap, b0,b1,...,bq are matrices of size MxM
-%  a0 is usually the identity matrix I or must be invertible 
-%	
 %  C is the covariance of the input noise X
 %  N if scalar, N is the number of frequencies 
 %    if N is a vector, N are the designated frequencies. 
 %  Fs sampling rate [default 2*pi]
 % 
+%  A,B and C can by obtained from a multivariate time series 
+%       through the following commands: 
+%  [AR,RC,PE] = mvar(Y,P);
+%       M = size(AR,1); % number of channels       
+%       A = [eye(M),-AR];
+%       B = eye(M); 
+%       C = PE(:,M*P+1:(M+1)*P); 
+%
 %
 % OUTPUT: 
 % ======= 
@@ -48,7 +52,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, coh]=mvfreqz(B,A,C,N,Fs)
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 1996-2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
@@ -177,10 +181,8 @@ for k = 1:p,
 end;        
 
 
-
-return;
-
 if nargout<7, return; end;
+
 
 for n=1:N,
         %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));

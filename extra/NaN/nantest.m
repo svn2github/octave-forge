@@ -95,21 +95,33 @@ if exist('nanstd')==2,
                 % fprintf(1,'Warning: NANSTD(x) with isscalar(x) returns 0 instead of NaN\n');
         end;
 end;
+%%%%% GEOMEAN - this test addresses a problem in Octave
+if exist('geomean')==2,
+        if isnan(geomean(0:3)),
+                fprintf(1,'GEOMEAN should be replaced\n');
+                % fprintf(1,'Warning: GEOMEAN([0,1,2,3]) NaN instead of 0\n');
+        end;
+end;
+%%%%% HARMMEAN - this test addresses a problem in Octave
+if exist('harmmean')==2,
+        if isnan(harmmean(0:3)),
+                fprintf(1,'HARMMEAN should be replaced\n');
+                % fprintf(1,'Warning: HARMMEAN([0,1,2,3]) NaN instead of 0\n');
+        end;
+end;
 
-%%%%% sorting of NaN's %%%%
-if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),  %~exist('OCTAVE_VERSION'),
-    	warning('Warning: SORT does not handle NaN.');
+%%%%% SORT - this was once a problem in Octave Version < 2.1.36 %%%%
+if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]), 
+        warning('Warning: SORT does not handle NaN.');
 end;
 
 %%%%% commutativity of 0*NaN	%%% This test adresses a problem in Octave
-
 x=[-2:2;4:8]';
 y=x;y(2,1)=nan;y(4,2)=nan;
 B=[1,0,2;0,3,1];
 if ~all(all(isnan(y*B)==isnan(B'*y')')),
         fprintf(2,'WARNING: 0*NaN within matrix multiplication is not commutative\n');
 end;
-
 
 %%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 p    = 4;
@@ -151,6 +163,3 @@ end;
 tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6;tmp7;tmp8];
 
 warning(FLAG_WARNING);
-
-
-

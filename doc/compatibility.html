@@ -35,7 +35,7 @@ Be sure you have a recent development version of octave and install
    
 <li>Q. Does octave support 'end' indexing?
 <br>A. Yes, for sufficiently new versions of octave.  For older versions,
-   use length(A) or rows(A),columns(A) as you did before matlab
+   use length(A) or size(A,1) and size(A,2) as you did before matlab
    added the 'end' indexing syntax.
 
 <li>Q. Why do "grid on" and other commands give me a syntax error?
@@ -82,9 +82,7 @@ Be sure you have a recent development version of octave and install
 <br>A. Yes, in recent development versions.
 
 <li>Q. Does octave support different precisions char, short, float, etc?
-<br>A. No.  There is some support for extended precision/fixed precision
-   scalars as part of the symbolic toolbox of octave-forge at
-	http://octave.sf.net
+<br>A. Use 2.1.58 when it is released
 
 <li>Q. Does octave support symbolic variables?
 <br>A. Use symbolic package in octave-forge.  There is no support for symbolic
@@ -158,10 +156,9 @@ for suggested alternatives.
 <br>A. Octave wants the title before the plot command, matlab
    wants it after.  Try setting automatic_replot = 1
 
-<li>Q. sqrtm, logm don't work well for ill-conditioned matrices.
-<br>A. sqrtm is fixed in recent versions of octave.  logm is a stalled
-   work in progress.  Ask pkienzle@users.sf.net to post the work he and 
-   Ross Lippert did on this.
+<li>Q. logm doesn't work well for ill-conditioned matrices.
+<br>A. logm is a stalled work in progress.  Ask pkienzle@users.sf.net 
+   to post the work he and Ross Lippert did on this.
 
 <li>Q. eig(A,B)
 <br>A. qz(A,B)
@@ -170,26 +167,14 @@ for suggested alternatives.
     user-supplied function?
 <br>A. use FIXES/fsolve.cc on octave-forge.
 
-<li>Q. exist(a,'var') fails.
-<br>A. use recent version of octave
-
 <li>Q. inmem
 <br>A. who -functions
-
-<li>Q. delete
-<br>A. unlink
 
 <li>Q. computer
 <br>A. exists in octave, but probably returns different output
 
-<li>Q. persistent
-<br>A. static; persistent works in recent versions of octave
-
 <li>Q. ! shell command
 <br>A. system("shell command")
-
-<li>Q. inputname
-<br>A. argn (sort of)
 
 <li>Q. gallery, compan, hadamard
 <br>A. http://www.ma.man.ac.uk/~higham/testmat.html
@@ -202,9 +187,6 @@ for suggested alternatives.
 
 <li>Q. datetick
 <br>A. gset xdata time; gset timefmt "%d/%m"; gset format x "%b %d"
-
-<li>Q. datenum
-<br>A. limited to 1902-2038
 
 </ul>
 </body></html>

@@ -54,6 +54,8 @@
 ## 2000-07-17 Paul Kienzle
 ##    added '*' methods and matrix y
 ##    check for proper table lengths
+## 2002-01-23 Paul Kienzle
+##    fixed extrapolation
 
 function yi = interp1(x, y, xi, method, extrap)
 
@@ -86,7 +88,7 @@ function yi = interp1(x, y, xi, method, extrap)
 
   ## determine which values are out of range and set them to extrap,
   ## unless extrap=='extrap' in which case, extrapolate them like we
-  ## should have done in the first place.
+  ## should be doing in the first place.
   minx = x(1);
   if (method(1) == '*')
      dx = x(2) - x(1);
@@ -95,7 +97,8 @@ function yi = interp1(x, y, xi, method, extrap)
      maxx = x(nx);
   endif
   if strcmp(extrap,"extrap")
-    range=1:nx;
+    range=1:size(xi,1);
+    yi = zeros(size(xi,1), size(y,2));
   else
     range = find(xi >= minx & xi <= maxx);
     yi = extrap*ones(size(xi,1), size(y,2));
@@ -119,7 +122,6 @@ function yi = interp1(x, y, xi, method, extrap)
     idx = lookup (x(2:nx-1), xi)+1; 
 				# 2:n-1 so that anything beyond the ends
 				# gets dumped into an interval
-
     ## use the endpoints of the interval to define a line
     dy = y(2:ny,:) - y(1:ny-1,:);
     dx = x(2:nx) - x(1:nx-1);

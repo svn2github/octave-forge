@@ -68,8 +68,7 @@ function prn (...), printf (all_va_args); fflush (stdout); end
 
 
 if verbose
-  prn ("\n   Testing that minimize() works as it should\n\n",\
-	  optim_func);
+  prn ("\n   Testing that minimize() works as it should\n\n");
   prn ("  Nparams = N = %i\n",N);
   fflush (stdout);
 end

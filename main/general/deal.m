@@ -31,8 +31,10 @@
 ## Author: Ariel Tankus.
 ## Created: 13.11.98.
 
-function [...] = deal(v)
+## pre 2.1.39 function [...] = deal(v)
+function [varargout] = deal(v) ## pos 2.1.39
 
 for i=1:nargout
-    vr_val(v(i));
+  ## pre 2.1.39     vr_val(v(i));
+  varargout{i} = v(i); ## pos 2.1.39
 end

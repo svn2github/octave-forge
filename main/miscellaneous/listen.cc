@@ -446,7 +446,7 @@ listen(port,host)\n\
 #if defined(__CYGWIN__)
   bool canfork = listencanfork();
 #else
-  bool canfork = false;
+  bool canfork = true;
 #endif
 
 

@@ -29,7 +29,7 @@ function [y]=median(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.23;	07 Jun 2002
+%	Version 1.28;	10 Oct 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 % check dimension of x
@@ -46,16 +46,22 @@ if nargin<2
 end;
 
 % number of valid elements
-n = sum(~isnan(x),DIM);
+n = sumskipnan(~isnan(x),DIM);   % make it compatible to 2.0.17
         
 if all(sort([3,4,NaN,3,4,NaN])==[3,3,4,4,NaN,NaN]),  %~exist('OCTAVE_VERSION'),
         [x,ix] = sort(x,DIM); % this relays on the sort order of IEEE754 inf < nan
 else        
+        warning('MEDIAN: sort does not handle NaN, workaround with bad performance necessary')
+        for k1=1:size(x,1),
+                for k2=1:size(x,2),	% needed for 2.0.17 
+                        if isnan(x(k1,k2)), 
+                                x(k1,k2) = inf;
+                        end;
+                end;
+        end;
         if DIM==1,
-                x(isnan(x)) = inf;
                 [x,ix] = sort([x;inf*ones(1,sz(2))]);
         elseif DIM==2,
-                x(isnan(x)) = inf;
                 [x,ix] = sort([x';inf*ones(1,sz(1))]);
         else
                 fprintf('Warning MEDIAN: DIM argument should be 1 or 2\n');	

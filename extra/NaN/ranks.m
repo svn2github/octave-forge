@@ -107,7 +107,18 @@ elseif strcmp(Mode(1:min(11,length(Mode))),'advanced   '), % advanced
                         r(ix(t),k) = mean(t);
                 end;
         end;
-        r(isnan(X)) = nan;
+        tmp = version;
+	if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6))<=2018,
+                for k1=1:size(X,1),
+                        for k2=1:size(X,2),	% needed for 2.0.17 
+                                if isnan(X(k1,k2)), 
+                                        r(k1,k2) = nan;
+                                end;
+                        end;
+                end;
+        else
+                r(isnan(X)) = nan;
+        end;
         
 elseif strcmp(Mode,'=='), 
 % the results of both algorithms are compared for testing.    

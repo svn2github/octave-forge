@@ -359,13 +359,21 @@ if [ test -n "$TEXI2DVI" ]; then
 \input texinfo
 @bye
 EOF
-	AC_MSG_CHECKING([for texi2dvi --clean])
-	ac_try="$TEXI2DVI --clean conftest.texi > /dev/null"
+	AC_MSG_CHECKING([that texi2dvi runs])
+	ac_try="$TEXI2DVI conftest.texi > /dev/null"
 	if AC_TRY_EVAL(ac_try) ; then
+	    AC_MSG_RESULT(yes)
+	    AC_MSG_CHECKING([for texi2dvi --clean])
+	    ac_try="$TEXI2DVI --clean conftest.texi > /dev/null"
+	    if AC_TRY_EVAL(ac_try) ; then
 		TEXI2DVI="$TEXI2DVI --clean"
 		AC_MSG_RESULT(yes)
-	else
+	    else
 		AC_MSG_RESULT(no)
+	    fi
+	else
+	    TEXI2DVI=""
+	    AC_MSG_RESULT(no)
 	fi
 	rm -f conftest.*
 fi

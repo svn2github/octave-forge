@@ -1,7 +1,13 @@
-#! /bin/sh
+#! /bin/bash
 
-aclocal \
-  && automake --add-missing \
-  && autoconf
+function run {
+  echo -n Running `$1 --version | sed q`"... "
+  $*
+  echo "done"
+}
+
+run aclocal \
+  && run automake --add-missing \
+  && run autoconf
 
 

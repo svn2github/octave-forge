@@ -125,7 +125,7 @@ sub _validate
   my $switches= "-qfH";
   my $octave_interpreter_bin;
 
-  $octave_interpreter_bin= 'octave' # _EDITLINE_MARKER_
+  $octave_interpreter_bin= '/usr/local/bin/octave ' # _EDITLINE_MARKER_
      unless $octave_object->{INTERP};
 
   $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
@@ -304,6 +304,7 @@ sub interpret
 
    croak "octave interpreter not alive"  unless $Oin and $Oout;
 
+#  DEBUG octave commands here
 #  print "INTERP: $cmd\n";
 
    print $Oin "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
@@ -586,6 +587,9 @@ sub oct_matrix_arithmetic
    return $v;
 }   
 
+# usage
+# $a= new Inline::Octave::Matrix ( ...)
+# $b= $a->transpose();
 sub transpose
 {
    my $a= new Inline::Octave::Matrix( shift );
@@ -594,6 +598,52 @@ sub transpose
    run_math_code( $code, $v);
    return $v;
 }  
+
+# usage
+# $a = Inline::Octave::Matrix::zeros(4);
+# $a->replace_rows( [1,3], [ [1,2,3,4],[5,6,7,8] ] );
+sub replace_rows
+{
+   my $a= shift;
+   die "argument must be Inline:Octave:Matrix"
+      unless (ref $a eq "Inline::Octave::Matrix");
+   my $b= new Inline::Octave::Matrix( shift );
+   my $c= new Inline::Octave::Matrix( shift );
+   my $code= $a->name."(". $b->name.",:)= ".$c->name.";";
+   run_math_code( $code );
+   return;
+}
+
+# usage
+# $a = Inline::Octave::Matrix::zeros(4);
+# $a->replace_cols( [2,4], [ [2,4],[2,4],[2,4],[2,4] ] );
+sub replace_cols
+{
+   my $a= shift;
+   die "argument must be Inline:Octave:Matrix"
+      unless (ref $a eq "Inline::Octave::Matrix");
+   my $b= new Inline::Octave::Matrix( shift );
+   my $c= new Inline::Octave::Matrix( shift );
+   my $code= $a->name."(:,". $b->name.")= ".$c->name.";";
+   run_math_code( $code );
+   return;
+}
+
+# usage
+# $a = Inline::Octave::Matrix::zeros(4);
+# $a->replace_matrix( [1,4], [1,4], [ [8,7],[6,5] ] );
+sub replace_matrix
+{
+   my $a= shift;
+   die "argument must be Inline:Octave:Matrix"
+      unless (ref $a eq "Inline::Octave::Matrix");
+   my $b= new Inline::Octave::Matrix( shift );
+   my $c= new Inline::Octave::Matrix( shift );
+   my $d= new Inline::Octave::Matrix( shift );
+   my $code= $a->name."(". $b->name." , ".$c->name.")= ".$d->name.";";
+   run_math_code( $code );
+   return;
+}
 
 #
 # create methods for the various math functions
@@ -617,8 +667,9 @@ sub transpose
       isfinite      => 1, isieee        => 1, isinf         => 1,
       islogical     => 1, isnan         => 1, isnumeric     => 1,
       isreal        => 1, length        => 1, lgamma        => 1,
-      linspace      => 2, log           => 1, log10         => 1,
-      ones          => 1, prod          => 1, real          => 1,
+      linspace      => 1, log           => 1, log10         => 1,
+      logspace      => 1, ones          => 1, prod          => 1,
+      rand          => 1, randn         => 1, real          => 1,
       round         => 1, sign          => 1, sin           => 1,
       sinh          => 1, size          => 2, sqrt          => 1,
       sum           => 1, sumsq         => 1, tan           => 1,
@@ -656,17 +707,27 @@ sub transpose
    }
 }
 
-# run_math_code ( $code, $val1, $val2 ... )
+# usage:
+# with return values:
+#   run_math_code ( $code, $val1, $val2 ... )
+# without return values:
+#   run_math_code ( $code )
+#    
 # dies on error, no return
 sub run_math_code
 {
    my $code= shift;
    my @v   = @_;
-   my $vname= $v[0]->name;
 
-   $runcode= "$code  disp (size($vname)==[3,1] && ".
-             " all($vname==$retcode_string') );\n";
-   my $retval= Inline::Octave::interpret(0, $runcode );
+   if (@v) {
+      my $vname= $v[0]->name;
+      $code.= "; disp (size($vname)==[3,1] && ".
+                " all($vname==$retcode_string') );\n";
+   } else {
+      $code.= "; disp (0);\n";
+   }
+
+   my $retval= Inline::Octave::interpret(0, $code );
 
    if ($retval == 0) {
       foreach my $v (@v) {
@@ -701,6 +762,9 @@ TODO LIST:
   10. Errors in Octave should die in perl
 
 $Log$
+Revision 1.13  2002/01/19 01:08:35  aadler
+new docs and new matrix methods
+
 Revision 1.12  2002/01/17 01:28:33  aadler
 added Inline::Octave::String
 
@@ -977,38 +1041,74 @@ The relation between Perl and Octave operators is:
 Methods can be called on Inline::Octave::Matrix
 variables, and the underlying octave function is called.
 
+for example:
+
    my $b= new Inline::Octave::Matrix( 1 );
    $s= 4 * ($b->atan());
-   print $s->as_scalar;
+   my $pi=  $s->as_scalar;
 
 Is a labourious way to calculate PI.
+
+Additionally, it is possible to call these as functions
+instead of methods
+
+for example:
+
+   $c= Inline::Octave::Matrix::rand(2,3);
+   print $c->disp();
+
+gives:
+
+  0.23229  0.50674  0.25243
+  0.96019  0.17037  0.39687
+
 
 The following methods are available, the corresponding
 number is the output args available (nargout).
 
-      abs       => 1    acos      => 1    acosh      => 1
-      all       => 1    angle     => 1    any        => 1
-      asin      => 1    asinh     => 1    atan       => 1
-      atan2     => 1    atanh     => 1    ceil       => 1
-      conj      => 1    cos       => 1    cosh       => 1
-      cumprod   => 1    cumsum    => 1    diag       => 1
-      erf       => 1    erfc      => 1    exp        => 1
-      eye       => 1    finite    => 1    fix        => 1
-      floor     => 1    gamma     => 1    gammaln    => 1
-      imag      => 1    is_bool   => 1    is_complex => 1
-      is_global => 1    is_list   => 1    is_matrix  => 1
-      is_stream => 1    is_struct => 1    isalnum    => 1
-      isalpha   => 1    isascii   => 1    iscell     => 1
-      iscntrl   => 1    isdigit   => 1    isempty    => 1
-      isfinite  => 1    isieee    => 1    isinf      => 1
-      islogical => 1    isnan     => 1    isnumeric  => 1
-      isreal    => 1    length    => 1    lgamma     => 1
-      linspace  => 2    log       => 1    log10      => 1
-      ones      => 1    prod      => 1    real       => 1
-      round     => 1    sign      => 1    sin        => 1
-      sinh      => 1    size      => 2    sqrt       => 1
-      sum       => 1    sumsq     => 1    tan        => 1
-      tanh      => 1    zeros     => 1
+      abs         => 1   acos        => 1   acosh       => 1  
+      all         => 1   angle       => 1   any         => 1  
+      asin        => 1   asinh       => 1   atan        => 1  
+      atan2       => 1   atanh       => 1   ceil        => 1  
+      conj        => 1   cos         => 1   cosh        => 1  
+      cumprod     => 1   cumsum      => 1   diag        => 1  
+      erf         => 1   erfc        => 1   exp         => 1  
+      eye         => 1   finite      => 1   fix         => 1  
+      floor       => 1   gamma       => 1   gammaln     => 1  
+      imag        => 1   is_bool     => 1   is_complex  => 1  
+      is_global   => 1   is_list     => 1   is_matrix   => 1  
+      is_stream   => 1   is_struct   => 1   isalnum     => 1  
+      isalpha     => 1   isascii     => 1   iscell      => 1  
+      iscntrl     => 1   isdigit     => 1   isempty     => 1  
+      isfinite    => 1   isieee      => 1   isinf       => 1  
+      islogical   => 1   isnan       => 1   isnumeric   => 1  
+      isreal      => 1   length      => 1   lgamma      => 1  
+      linspace    => 1   log         => 1   log10       => 1  
+      logspace    => 1   ones        => 1   prod        => 1  
+      rand        => 1   randn       => 1   real        => 1  
+      round       => 1   sign        => 1   sin         => 1  
+      sinh        => 1   size        => 2   sqrt        => 1  
+      sum         => 1   sumsq       => 1   tan         => 1  
+      tanh        => 1   zeros       => 1  
+
+=head2 Manipulating Inline::Octave::Matrix -es
+
+If you would like to do the octave equivalent of
+
+   a=zeros(4);
+   a( [1,3] , :)= [ 1,2,3,4 ; 5,6,7,8 ];
+   a( : , [2,4])= [ 2,4; 2,4; 2,4; 2,4 ];
+   a( [1,4],[1,4])= [8,7;6,5];
+
+Then these methods will make life more convenient.
+
+   $a = Inline::Octave::Matrix::zeros(4);
+
+   $a->replace_rows( [1,3], [ [1,2,3,4],[5,6,7,8] ] );
+
+   $a->replace_cols( [2,4], [ [2,4],[2,4],[2,4],[2,4] ] );
+
+   $a->replace_matrix( [1,4], [1,4], [ [8,7],[6,5] ] );
 
 =head1 Using Inline::Octave::String
 

@@ -1,7 +1,7 @@
 use strict;
 use Test;
 BEGIN {
-           plan(tests => 69) ;
+           plan(tests => 73) ;
 }
 
          
@@ -25,7 +25,20 @@ ok ( alleq( $a / $b
 ok ( alleq( $a x $b->transpose
           , [ [6,12],[15,30] ])->as_scalar );
 
+#
+# test function calls
+#
 
+ok ( alleq( Inline::Octave::Matrix::zeros( 2,3 ),
+            [ [0,0,0],[0,0,0] ])->as_scalar );
+ok ( alleq( Inline::Octave::Matrix::ones( 2,3 ),
+            [ [1,1,1],[1,1,1] ])->as_scalar );
+ok ( alleq( Inline::Octave::Matrix::linspace( 1,3,5 )->transpose(),
+            [ 1,1.5,2,2.5,3   ])->as_scalar );
+
+#
+# test methods
+#
 my $c= new Inline::Octave::Matrix(  3.1415/4 );
 
 
@@ -102,3 +115,24 @@ foreach my $meth (sort keys %methods) {
    my $v2= $methods{$meth};
    ok ($v1,$v2);
 }
+
+#
+# replacement methods
+#
+use Inline Octave => q{
+function a=makea()
+   a=zeros(4);
+   a( [1,3] , :)= [ 1,2,3,4 ; 5,6,7,8 ];
+   a( : , [2,4])= [ 2,4; 2,4; 2,4; 2,4 ];
+   a( [1,4],[1,4])= [8,7;6,5];
+endfunction
+};
+
+my $ao= makea();
+
+my $an = Inline::Octave::Matrix::zeros(4);
+$an->replace_rows( [1,3], [ [1,2,3,4],[5,6,7,8] ] );
+$an->replace_cols( [2,4], [ [2,4],[2,4],[2,4],[2,4] ] );
+$an->replace_matrix( [1,4], [1,4], [ [8,7],[6,5] ] );
+
+ok ( alleq( $an, $ao ) ->as_scalar );

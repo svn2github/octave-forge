@@ -65,7 +65,8 @@ static int do_debug(const char *fmt, ...) {
 	}
 
 DEFUN_DLD(gcvspl, args, nargout,
-"[yf,wk]=gcvspl(x(n,1),y(n,k), xf(nf,1)=x, wx(n,1)=[],wy(1,k)=[], m=2,md=2,val=1, ider=[0])\n\
+"B-spline data smoothing subroutine.\n\n\
+[yf,wk]=gcvspl(x(n,1),y(n,k), xf(nf,1)=x, wx(n,1)=[],wy(1,k)=[], m=2,md=2,val=1, ider=[0])\n\
 \n\
 uses  GCVSPL.FOR, 1986-05-12\n\
 from  http://www.netlib.org/gcv/index.html\n\

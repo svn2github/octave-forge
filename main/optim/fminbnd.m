@@ -12,8 +12,7 @@
 ## for more details.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}] =}  
-## fminbnd(@var{f},@var{lb},@var{ub},@var{[options]},@var{P1},@var{P2}, ...)
+## @deftypefn {Function File} {[@var{x}] =} fminbnd(@var{f},@var{lb},@var{ub},@var{[options]},@var{P1},@var{P2}, ...)
 ## 
 ## Find the minimum of a scalar function with the Golden Search method.
 ## 

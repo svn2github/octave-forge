@@ -13,7 +13,7 @@ use File::Find;
 use File::Basename;
 use Text::Wrap;
 use FileHandle;
-use IPC::Open2;
+use IPC::Open3;
 use POSIX ":sys_wait_h";
 
 my $script  = basename($0);
@@ -171,62 +171,108 @@ sub first_sentence { # {{{1
     my $next;
     my @lines;
 
+    my $trace = 0;
+    # $trace = 1 if $desc =~ /Levenberg/;
     return "" unless defined $desc;
     if ($desc =~ /^[^\n]*-\*- texinfo -\*-/) {
-	$desc =~ s/-\*- texinfo -\*-//;
+
+	# help text contains texinfo.  Strip the indicator and run it
+	# through makeinfo. (XXX FIXME XXX this needs to be a function)
+	$desc =~ s/-\*- texinfo -\*-\w*//;
 	my $cmd = "makeinfo --fill-column 1600 --no-warn --no-validate --no-headers --force";
-	open2(*Reader, *Writer, $cmd) or die "Could not run info";
+	open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
 	print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
 	print Writer "$desc"; close(Writer);
 	@lines = <Reader>; close(Reader);
+	my @err = <Errer>; close(Errer);
 	waitpid(-1,&WNOHANG);
-	return "" unless @lines;
+
+	# Display source and errors, if any
+	if (@err) {
+	    my $n = 1;
+	    foreach $line ( split(/\n/,$desc) ) {
+		printf "%2d: %s\n",$n++,$line;
+	    }
+	    print ">>> @err";
+	}
+
+	# Print trace showing formatted output
 #	print "<texinfo--------------------------------\n";
 #	print @lines;
 #	print "--------------------------------texinfo>\n";
+
+	# Skip prototype and blank lines
 	while (1) {
-	    return "" if ($#lines < 0);
+	    return "" unless @lines;
 	    $line = shift @lines;
 	    next if $line =~ /^\s*-/;
 	    next if $line =~ /^\s*$/;
 	    last;
 	}
+
     } else {
-	@lines = split(/\n/,$desc);
+
 #	print "<plain--------------------------------\n";
-#	print @lines;
+#	print $desc;
 #	print "--------------------------------plain>\n";
+
+	# Skip prototype and blank lines
+	@lines = split(/\n/,$desc);
 	while (1) {
 	    return "" if ($#lines < 0);
 	    $line = shift @lines;
-	    $line =~ s/^\s*\w+\s*://;            # ignore "blah : "
-	    $line =~ s/^\s*[[:upper:]][[:upper:]]+\s+//; # ignore "BLAH "
-	    $line =~ s/^\s*[Uu]sage\s+//;        # ignore "usage "
-	    $line =~ s/^\s*[Ff]unction\s+//;     # ignore "function "
-	    next if $line =~ /^\s*\[/;           # skip  [a,b] = f(x)
-	    next if $line =~ /^\s*\w+\s*(=|\()/; # skip a = f(x) OR f(x)
-	    next if $line =~ /^\s*or\s*/;        # skip proto \n or \n proto
+	    next if $line =~ /^\s*[Uu][Ss][Aa][Gg][Ee]/; # skip " usage "
+
+	    $line =~ s/^\s*\w+\s*://;             # chop " blah : "
+	    print "strip blah: $line\n" if $trace;
+	    $line =~ s/^\s*[Ff]unction\s+//;      # chop " function "
+	    print "strip function $line\n" if $trace;
+	    $line =~ s/^\s*\[.*\]\s*=\s*//;       # chop " [a,b] = "
+	    print "strip []= $line\n" if $trace;
+	    $line =~ s/^\s*\w+\s*=\s*//;          # chop " a = "
+	    print "strip a= $line\n" if $trace;
+	    $line =~ s/^\s*\w+\s*\([^\)]*\)\s*//; # chop " f(x) "
+	    print "strip f(x) $line\n" if $trace;
+	    $line =~ s/^\s*[;:]\s*//;                # chop " ; "
+	    print "strip ; $line\n" if $trace;
+
+	    $line =~ s/^\s*[[:upper:]][[:upper:]0-9_]+//; # chop " BLAH"
+	    print "strip BLAH $line\n" if $trace;
+	    $line =~ s/^\s*\w*\s*[-]+\s+//;        # chop " blah --- "
+	    print "strip blah --- $line\n" if $trace;
+	    $line =~ s/^\s*\w+ *\t\s*//;          # chop " blah <TAB> "
+	    print "strip blah <TAB> $line\n" if $trace;
+	    $line =~ s/^\s*\w+\s\s+//;            # chop " blah  "
+	    print "strip blah <NL> $line\n" if $trace;
+
+#	    next if $line =~ /^\s*\[/;           # skip  [a,b] = f(x)
+#	    next if $line =~ /^\s*\w+\s*(=|\()/; # skip a = f(x) OR f(x)
+	    next if $line =~ /^\s*or\s*$/;      # skip blah \n or \n blah
 	    next if $line =~ /^\s*$/;            # skip blank line
+	    next if $line =~ /^\s?!\//;          # skip # !/usr/bin/octave
 	    # XXX FIXME XXX should be testing for unmatched () in proto
 	    # before going to the next line!
 	    last;
 	}
     }
 
-    if ( "$line " !~ /[.]\s/ && $#lines >= 0) {
-	# not the end of a sentence, and another line is available
+    # Try to make a complete sentence, including the '.'
+    if ( "$line " !~ /[^.][.]\s/ && $#lines >= 0) {
 	my $next = $lines[0];
 	$line =~ s/\s*$//;  # trim trailing blanks on last
 	$next =~ s/^\s*//;    # trim leading blanks on next
-	$line .= " $next" if "$next " =~ /[.]\s/; # ends the sentence
+	$line .= " $next" if "$next " =~ /[^.][.]\s/; # ends the sentence
     }
-    $line =~ s/^\s*//;    # trim leading blanks on line
-    $line =~ s/[.]\s.*$/./; # trim everything after the sentence
+
+    # Tidy up the sentence.
     chomp $line;          # trim trailing newline, if there is one
-#    print ": $line :\n";
-#    my $prompt = <STDIN>;
+    $line =~ s/^\s*//;    # trim leading blanks on line
+    $line =~ s/([^.][.])\s.*$/$1/; # trim everything after the sentence
     print "Skipping:\n$desc---\n" if $line eq "";
+
+    # And return it.
     return $line;
+
 } # 1}}}
 sub register_function { # {{{1
 # register the function and its one-line description
@@ -242,13 +288,13 @@ sub register_function { # {{{1
     }
     $octave_forge_function{$function} = 1 unless $file =~ /^$OCTAVE/;
     if (!defined $index_by_function{$function}) {
-        push @uncategorized, "$function";
+        push @uncategorized, "$file/$function";
     }
 
     my $oneline = first_sentence($desc);
-    # printf "%-12s %s\n", $function, $oneline;
+    printf "%30s %s\n", $function, $oneline;
     $function_description{$function} = $oneline;
-#    push @function_description{$function} = [$file,$oneline,$desc];
+#    push @function_description{$function}}, "$file\n$oneline\n$desc";
     #printf "%-12s %-20s %s\n", $function,
     #                           $index_by_function{$function}[0],
     #                           $index_by_function{$function}[1];
@@ -269,28 +315,18 @@ sub extract_description { # {{{1
 		last unless /^\s*[%\#]/;
 	    }
 	}
-	# Skip any blank lines here
-	while ( /^\s*$/) {
+	# Skip everything until the next comment block
+	while ( !/^\s*[\#%]/ ) {
 	    $_ = <IN>;
 	    last if not defined $_;
 	}
-	# At this point we should either have a function statement or
-        # the start of the description
-        if( m/^\s*[\#%]/) {
-            # Comment is starting, grab the first line
-	    s/^[\s%\#]*//;    # strip leading comment characters
-	    s/[\cM\s]*$//;   # strip trailing spaces.
-	    $retval .= "$_\n";
-	}
-        else {
-	    return unless m/function/i;
-	}
-        # Print out the rest of the documentation block
-        while (<IN>) {
-	    last unless /^\s*[%\#]/;
+        # Return the next comment block as the documentation
+        while (/^\s*[\#%]/) {
 	    s/^[\s%\#]*//;    # strip leading comment characters
             s/[\cM\s]*$//;   # strip trailing spaces.
 	    $retval .= "$_\n";
+	    $_ = <IN>;
+	    last if not defined $_;
 	}
         close(IN);
 	return $retval;
@@ -410,7 +446,7 @@ sub write_html { # {{{1
 
         print OUT $all_toolboxes_A_Z;
         # Heading 1:  The categories for this toolbox.
-        print OUT "<p><h1>$TB Functions</h1>\n";
+        print OUT "<p><h1>$rh_toolbox_desc->{$TB}</h1>\n";
         print OUT "<ul>\n";
         foreach my $cat (sort keys %{$rhha_TB_cat->{$TB}}) {
             $anchor{$cat} = $cat;

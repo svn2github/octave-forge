@@ -6,14 +6,13 @@ Latest release notes available at:
 
 http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/main/RELEASE-NOTES?rev=HEAD&content-type=text/plain
 
-2003-02-?? for Octave 2.1.43 =================================================
+2003-02-?? for Octave 2.1.45 =================================================
 
 * Updates for octave 2.1.43
 
-* Parallel: Light weight parallel programming paradigm added to main, but
-  flagged NOINSTALL.
+* Parallel: Light weight parallel programming added but flagged NOINSTALL.
 
-* Communications: add galois field functions
+* Communications: add galois field functions and others
 
 * Signal Processing: add convmtx and dftmtx
 
@@ -22,9 +21,9 @@ http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/ma
 * VRML: new options 'z(grey|rb|col)' for vmesh() and
   vrml_surf(). Fixes and improvements to many functions.
 
-* NaN:
+* NaN: enhanced cov/covm, NaN arithmetic fixes 
 
-* TSA:
+* TSA: bug fix (matlab 5.3 bug)
 
 * Sparse: add spstats and x.^a, more robust
 

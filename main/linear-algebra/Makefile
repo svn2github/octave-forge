@@ -1,5 +1,5 @@
 include ../../Makeconf
 
-all: rsf2csf.oct
+all:
 
 clean: ; -$(RM) *.o octave-core core *.oct *~

@@ -192,7 +192,11 @@ Connect hosts and return sockets.")
 	  write(sock,&pid,sizeof(int));
 	  //send name size
 	  strncpy(myname,cm.data(),col);
-	  myname[col]='\0';
+	  pt=strchr(myname,' ');
+	  if(pt==NULL)
+	    myname[col]='\0';
+	  else
+	    *pt='\0';
 	  len=strlen(myname);
 	  write(sock,&len,sizeof(int));
 	  //send name
@@ -218,7 +222,12 @@ Connect hosts and return sockets.")
       }
     }
   else
-    print_usage ("connect");
+    {
+      print_usage ("connect");
+      octave_value retval;
+      return retval;
+    }
+      
 
   Matrix mx(row,2);
   double *tmp =mx.fortran_vec();

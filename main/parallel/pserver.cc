@@ -43,6 +43,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "oct-strstrm.h"
 #include "oct-iostrm.h"
 #include "quit.h"
+#include "unwind-prot.h"
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -58,9 +59,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <setjmp.h>
 
 #define BUFF_SIZE SSIZE_MAX
-
-// Top level context (?)
-jmp_buf toplevel;
 
 static bool quitting_gracefully = false;
 
@@ -94,7 +92,7 @@ sigchld_handler(int /* sig */)
 
 // XXX FIXME XXX -- this should really be static, but that causes
 // problems on some systems.
-SLStack<std::string> octave_atexit_functions;
+std::stack<std::string> octave_atexit_functions;
 
 void
 do_octave_atexit_server (void)
@@ -103,9 +101,11 @@ do_octave_atexit_server (void)
 
   while (! octave_atexit_functions.empty ())
     {
-      octave_value_list fcn = octave_atexit_functions.pop ();
+      std::string fcn = octave_atexit_functions.top ();
 
-      feval (fcn, 0);
+      octave_atexit_functions.pop ();
+
+      feval (fcn, octave_value_list (), 0);
 
       flush_octave_stdout ();
     }
@@ -150,18 +150,23 @@ reval_loop (int sock)
 
   octave_save_signal_mask ();
 
-  if (setjmp (toplevel) != 0)
+  if (octave_set_current_context)
     {
+#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
+      panic_impossible ();
+#else
+      unwind_protect::run_all ();
       raw_mode (0);
-
       std::cout << "\n";
-
       octave_restore_signal_mask ();
+#endif
     }
 
   can_interrupt = true;
 
   octave_catch_interrupts ();
+
+  octave_initialized = true;
 
   // The big loop.
 

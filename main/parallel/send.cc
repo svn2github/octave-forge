@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include <octave/oct.h>
+#include <map>
 
 #include "defun-dld.h"
 #include "dirfns.h"
@@ -51,6 +52,9 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 {
   octave_value retval;
   
+  typedef std::map<std::string, octave_value_list>::iterator iterator;
+  typedef std::map<std::string, octave_value_list>::const_iterator const_iterator;
+
   if(args.length () ==2)
     {
       octave_value val=args(0);
@@ -212,9 +216,10 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	{
 	  Octave_map map=val.map_value();
 	  octave_value_list ov_list;
-	  Pix pix=map.first();
+	  const_iterator p = map.begin();
+	  iterator end=map.end();
 	  int i,length=map.length(),key_len=0;
-	  std::string key=map.key(pix);
+	  std::string key=p->first;
 	  
   	  for (i=0;i<nsock;i++){
   	    sock=(int)sock_m.data()[i];
@@ -229,9 +234,10 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 		ov_list(0)=map[key](0);
 		write(sock,key.c_str(), key_len);
 		Fsend(ov_list,0);
-		map.next(pix);
-		if(pix!=NULL)
-		  key=map.key(pix);
+		p++;
+		if(p==end)
+		  break;
+		key=p->first;
 	      }
 	    }
 	  }

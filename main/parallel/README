@@ -13,7 +13,7 @@ operating systems).
 
 Requirements
 
- 1. GNU Octave that is available at http://www.octave.org/
+ 1. GNU Octave 2.1.43 that is available at http://www.octave.org/
  2. two or more computers
 
 
@@ -24,7 +24,7 @@ How to use
  slave computers.  Run Octave with argument "server.m" on every slave 
  computer.
 
- $ octave /usr/local/share/octave/2.1.40/site/m/octave-forge/parallel/server.m
+ $ octave /usr/local/share/octave/2.1.43/site/m/octave-forge/parallel/server.m
 
  Run Octave without argument "server.m" on the master computer
 

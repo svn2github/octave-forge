@@ -30,12 +30,12 @@ Currently are implemented:
 			SUMSKIPNAN is central, it implements skipping NaN's, the 
 			DIM-argument and returns the number of valid elements, too.
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)
+	SEM		standard error of the mean (does not depend on distribution)
 	VAR 		variance
 	STD 		standard deviation
 	MEDIAN		median (currently only for 2-dim matrices)
 	MEANSQ		mean square
 	RMS		root mean square
-	SEM		standard error of the mean (does not depend on distribution)
 	STATISTIC	estimates various statistics at once
 	MOMENT		moment 	
 	SKEWNESS	skewness
@@ -53,6 +53,9 @@ Currently are implemented:
 			might become obsolete in future
 	FLAG_IMPLICIT_UNBIASED_ESTIM	
 			gets and sets default estimation mode
+			might become obsolete in future
+	FLAG_IMPLICIT_DIMENSION	
+			gets and sets default DIMENSION argument
 			might become obsolete in future
 			
 	
@@ -173,7 +176,6 @@ NaN's can still be checked explicitely. This could eventually result in a
 more readable code and in improved performance, too.  
 
 
-
 Installing the NaN-tb with Octave:
 ----------------------------------
 a) You need repmat.m (e.g. from P.Kienzle's MATCOMPAT) 
@@ -202,8 +204,8 @@ This checks whether all previous functions have been replaced
 
 
 
-	Version 1.16
-	15 Mar 2002
+	Version 1.17
+	17 Mar 2002
 	Copyright (c) 2000-2002 by  Alois Schloegl
 	a.schloegl@ieee.org	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

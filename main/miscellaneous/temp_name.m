@@ -33,23 +33,23 @@ if nargin<1 || !length(rootname), rootname = "temp_name_" ; end
 if nargin<2, quick = 1; end
 
 if quick
-  if ! struct_contains (cnt, rootname) , 
-    cnt = setfield (cnt, rootname,0);
+  if ! struct_contains (cnt, rootname)
+    cnt.(rootname) = 0;
     c = 0 ;
   else
-    c = getfield (cnt, rootname) ;
+    c = cnt.(rootname) ;
   end
 else
   c = 0;
 end
 
 n = sprintf ([rootname,"%i"], c);
-             
+
 while exist (n),
   c++ ;
   n = sprintf ([rootname,"%i"], c);
 end
 
 if quick
-  cnt = setfield (cnt,rootname, c) ;
+  cnt.(rootname) = c ;
 end

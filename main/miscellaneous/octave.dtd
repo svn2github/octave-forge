@@ -1,0 +1,45 @@
+<!ELEMENT data (scalar | complex | string | array | structure | list | cell)*>
+
+<!ELEMENT scalar (#PCDATA | true | false | inf | neginf | na | nan)*>
+<!ATTLIST scalar name CDATA #IMPLIED>
+
+<!ELEMENT true EMPTY>
+<!ELEMENT false EMPTY>
+<!ELEMENT inf EMPTY>
+<!ELEMENT neginf EMPTY>
+<!ELEMENT nan EMPTY>
+<!ELEMENT na EMPTY>
+
+<!ELEMENT complex (scalar, scalar)>
+<!ATTLIST complex name CDATA #IMPLIED>
+
+<!ELEMENT string (#PCDATA)>
+<!ATTLIST string
+	length CDATA #REQUIRED
+	name CDATA #IMPLIED>
+
+<!ELEMENT array (string, string+)>
+<!ATTLIST array
+	length CDATA #REQUIRED
+	rows CDATA #REQUIRED
+	name CDATA #IMPLIED>
+
+<!ELEMENT matrix (scalar | complex)*>
+<!ATTLIST matrix
+	rows CDATA #REQUIRED
+	columns  CDATA #REQUIRED
+	name CDATA #IMPLIED>
+
+<!ELEMENT structure ANY>
+<!ATTLIST structure name CDATA #IMPLIED>
+
+<!ELEMENT list ANY>
+<!ATTLIST list
+	length CDATA #REQUIRED
+	name CDATA #IMPLIED>
+
+<!ELEMENT cell ANY>
+<!ATTLIST cell
+	rows CDATA #REQUIRED
+	columns CDATA #REQUIRED
+	name CDATA #IMPLIED>

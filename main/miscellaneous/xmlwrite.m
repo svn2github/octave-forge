@@ -55,7 +55,9 @@ function nb = xmlwrite (filename, value, name)
 
     ## XML header
     fprintf (fd, "<?xml version=\"1.0\"?>\n");
-    
+    fprintf (fd, "<!DOCTYPE data SYSTEM \"octave.dtd\">\n");
+    fprintf (fd, "<data>\n");
+    indent = "  ";
   else
     isopen = true;
     fd = filename;
@@ -72,13 +74,13 @@ function nb = xmlwrite (filename, value, name)
   if isstr(value) && (rows(value) <= 1)
     ## String type
     
-    fprintf (fd, "%s<string%s length=%d>%s</string>%s",
+    fprintf (fd, "%s<string%s length=\"%d\">%s</string>%s",
 	     indent, opt, length(value), value, separator);
     
   elseif isstr(value)
     ## String array type
     
-    fprintf (fd, "%s<array%s rows=%d>\n", indent, opt, rows(value));
+    fprintf (fd, "%s<array%s rows=\"%d\">\n", indent, opt, rows(value));
     _indent = indent; indent = [indent, "  "];
     for k=1:rows(value),
       nb += xmlwrite (fd, deblank(value(k, :)));
@@ -103,31 +105,31 @@ function nb = xmlwrite (filename, value, name)
       ## Boolean type
     
       if value
-	fprintf (fd, "%s<bool%s>true</bool>%s", indent, opt, separator);
+	fprintf (fd, "%s<scalar%s><true/></scalar>%s", indent, opt, separator);
       else
-	fprintf (fd, "%s<bool%s>false</bool>%s", indent, opt, separator);  
+	fprintf (fd, "%s<scalar%s><false/></scalar>%s", indent, opt, separator);  
       endif
     
     elseif isinf(value)
       ## Infinite type
     
       if value > 0
-	fprintf (fd, "%s<notfinite%s>Inf</notfinite>%s",
+	fprintf (fd, "%s<scalar%s><inf/></scalar>%s",
 		 indent, opt, separator);
       else
-	fprintf (fd, "%s<notfinite%s>-Inf</notfinite>%s",
+	fprintf (fd, "%s<scalar%s><neginf/></scalar>%s",
 		 indent, opt, separator);
       endif
     
     elseif isnan(value)
       ## Not-A-Number type
       
-      fprintf (fd, "%s<notfinite%s>NaN</notfinite>%s", indent, opt, separator);
+      fprintf (fd, "%s<scalar%s><nan/></scalar>%s", indent, opt, separator);
       
     elseif isna(value)
       ## Not-Avaliable
       
-      fprintf (fd, "%s<notfinite%s>NA</notfinite>%s", indent, opt, separator);
+      fprintf (fd, "%s<scalar%s><na/></scalar>%s", indent, opt, separator);
       
     else
       sc = sprintf(sprintf("%%.%dg", save_precision), value);
@@ -138,7 +140,7 @@ function nb = xmlwrite (filename, value, name)
   elseif ismatrix(value) && isnumeric(value)
     ## Matrix type
     
-    fprintf (fd, "%s<matrix%s rows=%d columns=%d>\n",
+    fprintf (fd, "%s<matrix%s rows=\"%d\" columns=\"%d\">\n",
 	     indent, opt, rows(value), columns(value));
     _indent = indent; indent = ""; separator = "";
     for k=1:rows(value),
@@ -157,7 +159,7 @@ function nb = xmlwrite (filename, value, name)
     ## Structure type
 
     st = fieldnames(value);
-    fprintf (fd, "%s<structure%s length=%d>\n", indent, opt, length(st));
+    fprintf (fd, "%s<structure%s>\n", indent, opt);
     _indent = indent; indent = [indent, "  "];
     for k=1:length(st),
       eval(sprintf("nb += xmlwrite (fd, value.%s, \"%s\");", st{k}, st{k}));
@@ -168,7 +170,7 @@ function nb = xmlwrite (filename, value, name)
   elseif iscell(value)
     ## Cell type
     
-    fprintf (fd, "%s<cell%s rows=%d columns=%d>\n",
+    fprintf (fd, "%s<cell%s rows=\"%d\" columns=\"%d\">\n",
 	     indent, opt, rows(value), columns(value));
     _indent = indent; indent = [indent, "  "];
     for k=1:rows(value),
@@ -182,7 +184,7 @@ function nb = xmlwrite (filename, value, name)
   elseif islist(value)
     ## List type
     
-    fprintf (fd, "%s<list%s length=%d>\n", indent, opt, length(value));
+    fprintf (fd, "%s<list%s length=\"%d\">\n", indent, opt, length(value));
     _indent = indent; indent = [indent, "  "];
     for k=1:length(value),
       nb += xmlwrite (fd, value{k});
@@ -197,6 +199,7 @@ function nb = xmlwrite (filename, value, name)
   nb++;
   
   if !isopen
+    fprintf (fd, "</data>\n");
     fclose(fd);
   endif
   

@@ -65,6 +65,7 @@ b = [
    7,  22,  25,  18 ];
 disp(">conv2"); assert(conv2([0,1;1,2],[1,2,3;4,5,6;7,8,9]),b);
 disp(">cordflt2"); assert(medfilt2(b),[0,1,2,0;1,4,12,3;4,12,20,12;0,7,20,0]);
+disp(">bwlabel"); assert(bwlabel([0 1 0; 0 0 0; 1 0 1]),[0 1 0; 0 0 0; 2 0 3]);
 if exist("jpgwrite")
   disp(">jpgwrite"); 
   x=linspace(-8,8,200);

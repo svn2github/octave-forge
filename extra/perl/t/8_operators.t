@@ -2,13 +2,13 @@ use strict;
 use Math::Complex;
 use Test;
 BEGIN {
-           plan(tests => 170) ;
+           plan(tests => 119) ;
 }
 
 
 
 use Inline Octave => q{
-   function t=alleq(a,b); t= all(all(a==b)); endfunction
+   function t=alleq(a,b); t= all(all( abs(a-b)<100*eps )); endfunction
 };   
 
 
@@ -113,20 +113,22 @@ my %notcomplex= (
     "eye"=>1, "ones"=>1,  "zeros"=>1);
 
 foreach my $meth (sort keys %methods) {
-   my $s= $r->$meth;
-   my $v1= $s->as_scalar;
    my $vv= $methods{$meth};
-   ok ($v1,$vv->[0]);
+
+   my $s= $r->$meth;
+   my $ans= $vv->[0];
+#  print $s->disp."    ".$ans."\n";
+   ok ( alleq( $s, $ans )->as_scalar() );
 
    unless ($notcomplex{$meth}) {
       $s= $c->$meth;
-      my $v2= $s->as_scalar;
-      ok (Re($v2),$vv->[1]);
-      ok (Im($v2),$vv->[2]);
+      $ans= cplx( $vv->[1], $vv->[2]);
+#     print $s->disp."    ".$ans."\n";
+      ok ( alleq( $s, $ans )->as_scalar() );
    }
 }
 
-my $c= new Inline::Octave::String( "asdf" );
+my $s= new Inline::Octave::String( "asdf" );
 
 ## TODO: this doesn't work yet
 my %str_methods = (
@@ -138,7 +140,7 @@ my %str_methods = (
 );
 
 foreach my $meth (sort keys %str_methods) {
-   my $s= $c->$meth;
+   my $ss= $s->$meth;
    my $v1= $s->as_scalar;
    my $v2= $methods{$meth};
    ok ($v1,$v2);

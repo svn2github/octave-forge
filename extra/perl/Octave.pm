@@ -423,7 +423,7 @@ sub new
 # new IOS( "string" )
 # new IOS( ["1","2","3"] ) -> Strings as Matrix Rows
 package Inline::Octave::String;
-@ISA= qw( Inline::Octave);
+@ISA= qw( Inline::Octave::Variable);
 use Carp;
 
 $varcounter= 30000001;
@@ -492,7 +492,7 @@ use Math::Complex;
 
 package Inline::Octave::ComplexMatrix;
 use Carp;
-@ISA= qw(Inline::Octave::Matrix Inline::Octave);
+@ISA= qw(Inline::Octave::Matrix Inline::Octave::Variable);
 
 sub cplx { return Inline::Octave::Math::Complex::cplx(@_) };
 sub Re   { return Inline::Octave::Math::Complex::Re  (@_) };
@@ -531,7 +531,7 @@ sub write_out_matrix {
 # new IOM( [1,2,3,4], 2, 2) -> Matrix, rows, cols
 package Inline::Octave::Matrix;
 use Carp;
-@ISA= qw(Inline::Octave);
+@ISA= qw(Inline::Octave::Variable);
 sub cplx { return Inline::Octave::Math::Complex::cplx(@_) };
 sub Re   { return Inline::Octave::Math::Complex::Re  (@_) };
 sub Im   { return Inline::Octave::Math::Complex::Im  (@_) };
@@ -659,7 +659,8 @@ sub write_out_matrix {
    return $code;
 }
 
-package Inline::Octave;
+package Inline::Octave::Variable;
+use Carp;
 sub cplx { return Inline::Octave::Math::Complex::cplx(@_) };
 sub Re   { return Inline::Octave::Math::Complex::Re  (@_) };
 sub Im   { return Inline::Octave::Math::Complex::Im  (@_) };
@@ -812,8 +813,8 @@ sub as_scalar
 
 sub DESTROY
 {
-#  print "DESTROYing $varname\n";
    my $self = shift;
+#  use Data::Dumper; print "DESTROYing ". Dumper($self)."\n";
    my $varname= $self->name;
    my $code = "clear $varname;";
    Inline::Octave::interpret(0, $code );
@@ -948,6 +949,12 @@ unless ($Inline::Octave::methods_defined) {
       tanh          => 1, zeros         => 1,
    );
 
+   # methods to export to Inline::Octave namespace
+   my %export_methods= (
+    "eye"      =>1, "linspace" =>1, "logspace" =>1,
+    "ones"     =>1, "rand"     =>1, "randn"    =>1,
+    "zeros"    =>1, );
+
    for my $meth ( sort keys %methods ) {
       no strict 'refs';
       no warnings 'redefine';
@@ -976,11 +983,12 @@ unless ($Inline::Octave::methods_defined) {
          Inline::Octave::run_math_code( $code, @v);
          return @v if wantarray();
          return $v[0];
-      }
+      };
+      
+      my $IOmeth= "Inline::Octave::$meth";
+      *$IOmeth = *$meth if $export_methods{$meth};
    }
 }
-
-
 
 1;
 
@@ -1012,6 +1020,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.21  2003/12/03 16:46:31  aadler
+move to IO::Variable class
+
 Revision 1.20  2003/12/01 03:46:21  aadler
 tried to tie to an array ref. Didn't work
 

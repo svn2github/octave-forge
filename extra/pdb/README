@@ -1,0 +1,36 @@
+This is a collection of m-files to read PDB-files from the Brookhaven
+protein databank[1] to GNU Octave[2] and display them with Openrasmol[3]. 
+They're not well tested, so use them at your own risk.
+
+Copying:
+--------
+You can distribute these files under the terms of the GNU GPL[4].
+
+Installation:
+-------------
+
+You have to edit the variable RASMOL in file plotpdb.m to point to rasmol.sh.
+If rasmol is not in your path, you also need to edit rasmol.sh to contain the
+path to the rasmol binary.
+
+Usage:
+------
+
+read_pdb.m reads a structure from a pdb-file to an Octave structure. See the
+function file for more details
+
+write_pdb.m tries to write as complete pdb-file as possible given an Octave
+pdb-structure as an argument
+
+write_pdb_quick.m writes a pdb-file containing only the atomic coordinates
+(the ATOM and HETATM lines) suitable for viewing with Rasmol.
+
+plotpdb.m displays a protein structrure with Rasmol. The input can be either
+a pdb-file or an Octave pdb-structure.
+
+References:
+[1] http://www.rcsb.org/pdb/
+[2] http://www.octave.org/
+[3] http://www.openrasmol.org/
+[4] http://www.gnu.org/copyleft/gpl.html
+

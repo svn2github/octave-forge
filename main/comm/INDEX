@@ -7,6 +7,8 @@ Communications
  cyclgen
  cyclpoly
  de2bi
+ decode
+ encode
  eyediagram
  galois
  gconv
@@ -21,6 +23,7 @@ Communications
  gfilter
  gfft
  gftable
+ gfweight
  gifft
  ginv
  ginverse
@@ -44,7 +47,9 @@ Communications
  randsrc
  rsgenpoly
  rsdec
+ rsdecof
  rsenc
+ rsencof
  scatterplot
  symerr
  syndtable

@@ -43,7 +43,7 @@ function par = gen2par (gen)
   if (isequal(gen(:,1:gr),eye(gr)))
     par = [gen(:,gr+1:gc)', eye(gc-gr)];
   elseif (isequal(gen(:,gc-gr+1:gc),eye(gr)))
-    par = [eye(gc-gr), gen(:,gr+1:gc)'];
+    par = [eye(gc-gr), gen(:,1:gc-gr)'];
   else
     error ("gen2par: input matrix must be in standard form");
   endif

@@ -17,16 +17,18 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{m} = } vec2mat (@var{v}, @var{c})
 ## @deftypefnx {Function File} {@var{m} = } vec2mat (@var{v}, @var{c}, @var{d})
+## @deftypefnx {Function File} [{@var{m}, @var{add}] = } vec2mat (@var{..})
 ##
 ## Converts the vector @var{v} into a @var{c} column matrix with row priority
 ## arrangement and with the final column padded with the value @var{d} to the
-## correct length. By default @var{d} is 0.
+## correct length. By default @var{d} is 0. The amount of padding added to
+## the matrix is returned in @var{add}.
 ## @end deftypefn
 
 ## 2001-02-02
 ##   initial release
 
-function M = vec2mat (V, c, val)
+function [M, d] = vec2mat (V, c, val)
 
   switch (nargin)
     case 1,
@@ -37,7 +39,7 @@ function M = vec2mat (V, c, val)
     case 3,
       val = val;
     otherwise
-      error ("usage: M = vec2mat (V, c [, d])");
+      error ("usage: [M, add] = vec2mat (V, c [, d])");
   endswitch
 
   V = V.';

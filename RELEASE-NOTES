@@ -1,6 +1,10 @@
 Tested against octave-2.1.57.  Many functions will also work on 
-earlier versions of Octave.  Use './configure; make -k' to build 
-what functions can be built and ignore the rest.
+earlier versions of Octave.  The usual build instructions apply:
+
+  ./configure; make; make check; make install
+  
+Note that some tests will fail because of known bugs or missing
+features.  This should be indicated in the tests themselves.
 
 *** WARNING *** if installing in a user directory, octave may crash
 immediately on startup.  Either install into a system directory, or
@@ -11,7 +15,7 @@ See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/
 
 See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/ChangeLog?rev=HEAD&content-type=text/plain">ChangeLog</a> for details of every change.
 
-2004-07-02 ===========================================================
+2004-07-07 ===========================================================
 
 * Extends support to Octave 2.1.57.
 
@@ -24,7 +28,7 @@ See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/
 
 * New functions: polyconf wsolve fullfact pcg princomp filtic
   rande azimuth deg2rad rad2deg distance zoom inputname fnval
-  fftconv2
+  fftconv2 mvaar
 
 * Bug fixes everywhere they are found.
 

@@ -24,7 +24,7 @@
 ## 'nocase' , int    : If set, ignore case in option names               <0>
 ## 'quiet'  , int    : Behavior when a non-string or unknown opt is met  <0>
 ##              0    - Produce an error
-##              1    - Return quietly (can be diagnosed by checking 'rem')
+##              1    - Return quietly (can be diagnosed by checking 'nread')
 ##      
 ##     Note : At least one of 'op0' or 'op1' should be specified.
 ## 
@@ -105,14 +105,15 @@ while nread < length (args)
   end
   if nocase, name = tolower (name); end
   
-  ii = findstr (name, opts);
+  ii = findstr ([" ",name], opts);
   
   if isempty (ii)		# Whoa! Unknown option name
     if quiet, nread--; return;
     else      error ("unknown option '%s'",oname);
     end
   end
-  
+  ii++;
+
   if length (ii) > 1		# Ambiguous option name
     tmp = "";
     for i = ii
@@ -125,7 +126,6 @@ while nread < length (args)
 				# Full name of option (w/ correct case)
 
   fullname = opts_orig(ii:spi(find (spi > ii)(1))-1);
-
   if ii < iend
     op = setfield (op, fullname, 1);
   else

@@ -325,7 +325,7 @@ sub interpret
 sub get_defined_functions
 {
    my $o = shift;
-   my $data= $o->interpret("whos -functions");
+   my $data= $o->interpret("whos('-functions')");
    my @funclist;
    while ( $data =~ /user(-defined|) function +- +- +(\w+)/g )
    {
@@ -920,6 +920,9 @@ TODO LIST:
        into an Inline::Octave::Variable class
 
 $Log$
+Revision 1.18  2003/03/20 03:40:26  aadler
+fix whos handling
+
 Revision 1.17  2003/01/07 02:47:49  aadler
 mods to remove warnings from tests
 

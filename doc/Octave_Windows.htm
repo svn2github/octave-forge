@@ -1,0 +1,531 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<TITLE>Octave under Windows</TITLE>
+</HEAD>
+<BODY>
+
+<B><FONT FACE="Arial" SIZE=4><P ALIGN="CENTER">Octave under Windows</P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P ALIGN="CENTER">A collection of hints and facts for Octave running under Windows</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="CENTER">Copyright (C) 2001 by Philip Nienhuis<br>Last version 27 October 2001</P>
+</FONT><FONT FACE="Arial" SIZE=3>
+<P>&nbsp;</P>
+
+<P><U><B>Contents</B></U></P>
+<P><OL>
+<LI><A HREF="#Why_and_whom">Why this document and for who is it intended?</A></LI>
+<LI><A HREF="#Definitions">Definitions</A></LI>
+<LI><A HREF="#Implementation">Implementation of Octave under Windows</A></LI>
+<LI><A HREF="#Overview">Overview of installation methods and other stuff</A></LI>
+<LI><A HREF="#Method1">Method 1: Building Octave yourself</A></LI>
+<UL>
+<LI><A HREF="#Step1">Step 1. Prepare your PC</A></LI>
+<LI><A HREF="#Step2">Step 2. Download and install Cygwin</A></LI>
+<LI><A HREF="#Step3">Step 3. Download the source code for your favorite Octave version</A></LI>
+<LI><A HREF="#Step4">Step 4. Configure, compile and install Octave</A></LI>
+<LI><A HREF="#STEP5">Step 5. Download gnuplot</A></LI>
+<LI><A HREF="#Step6">Step 6. Connect gnuplot to Octave, and other nitty-gritty</A></LI>
+</UL>
+<LI><A HREF="#Method2">Method 2: Installation of available binaries on Matlinks / SourceForge</A></LI>
+<LI><A HREF="#Method3">Method 3: Installation of additional Octave versions, based on method 2</A></LI>
+<LI><A HREF="#Matcompat">Installation of the matcompat package</A></LI>
+<LI><A HREF="#Problems&Fixes">Some known problems and fixes</A></LI>
+<LI><A HREF="#More_info">Where to get more information</A></LI>
+<LI><A HREF="#response">How to give feedback</A></LI>
+<LI><A HREF="#faq">FAQ section</A></LI>
+<LI><A HREF="#acknowledgements">Acknowledgements</A></LI>
+<LI><FONT FACE "Arial" SIZE=2><A HREF="#history">history of this document</A></FONT></LI>
+</OL></P>
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Why_and_whom">1. Why this document and for who is it intended?</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P><U>Why?</U></P>
+
+<UL>
+<LI>Because, according to the constant influx of help-needed-for-Octave-under-Windows-installation messages on the help-octave mailing list, many Windows users would like to use Octave but:</LI>
+<UL>
+<LI>are reluctant to learn and/or install Linux, or</LI>
+<LI>have inadequate PC knowledge to get difficult programs installed themselves, or</LI>
+<LI>run into unexpected problems imposed by silently imposed Windows standards or interference from silently installed Windows programs, or</LI>
+<LI>simply do not know where to collect enough info to solve their Octave-for-Windows problems themselves.</LI>
+</UL>
+<LI>And because I also have struggled a bit with the Windows installation, did not give up but delved a bit deeper into it. I thought that my experience could help others getting Octave to run under Windows. Besides, I got some spare time left to document it all.</LI></UL>
+
+
+<P><U>For whom?</U></P>
+<P>This document is intended as an aid for those souls having trouble setting up or running their Octave version under Windows and who cannot find any clue as to how they can solve their problems. This does not imply that all solutions to all problems can be found here; but at least I have described the most clean way to set up Octave from scratch (= method 1, below), which is -admittedly- a bit of work, but probably bears the least risk of problems.</P>
+<P>Given the fact that installation of Octave under Windows has some tricky aspects, potential Octave-for-Windows users should realize the following:</P>
+
+<UL>
+<LI>Octave is and remains a Linux program. You will have to learn some basic Linux usage once you get to know Octave better. This amounts at least to knowing (a.o.):</LI>
+<UL>
+<LI>some specific Linux syntax (for example, directory separators are "/" rather than "\");</LI>
+<LI>how the various Octave components are put into a specific directory structure imposed by Linux standards;</LI>
+<LI>where and how to put your personal Octave scripts ("m-files") versus e.g., Octave distribution-supplied scripts;</LI>
+<LI>how to navigate through the Tex-info help system.</LI>
+</UL>
+<LI>However, this HOWTO is not the place to learn Linux. Check out the <A HREF="http://linuxdoc.org/">Linux Documentation Project</A> or get yourself a basic book on Linux usage;</LI>
+<LI>Sooner or later, you will want to amend things (or in particularly bad cases, you even might have to fix things) "under the hood". Some knowledge of DOS and Linux will be very helpful.</LI>
+<LI>If you get Octave to run using one of the available binary downloads, you belong to the happy 50&nbsp;% who succeeds without any trouble at all;</LI>
+<LI>Installation of Octave-for-Windows is nothing for computer-nitwits. If you think you are one, you still can give it a try using the available binaries on Matlinks, but if this fails help from more knowledgeable colleagues&nbsp;/ neighbours&nbsp;/ friends is needed. And these colleagues&nbsp;/ neighbours&nbsp;/ friends in turn may benefit from the information in this document.</LI></UL>
+
+<P><U>Some background:</U></P>
+<P>I got Octave running under Windows using the (now unavailable) 2.0.13 Win32 binary and a gnuplot binary. I had to scrape the Internet to get additional stuff like a subset of the Cygwin utils, pipe-gnuplot, less (a Linux pager superior to the DOS-utility "more"), termcap libraries, and lots of other stuff. After considerable troubles, I got it all up and running. I had less troubles when I tried to get Octave running under OS/2. Linux proved the easiest challenge in this respect.</P>
+<P>Later on, I installed the binary 2.1.31 Windows distribution by Tom Weichmann and found that contrary to his predictions, both versions (2.0.13 and 2.1.31) co-existed and ran peacefully together on one and the same PC (with different Cygwin systems installed in different subdirectories on the same hard disk). Next I tried the octave-windows-oct25d.exe binary from SourceForge but found that under my (Dutch) Windows-ME it did not install properly.</P>
+<P>That was enough for a curious soul to delve into it with more rigor. The results are below, but they are at best incomplete.</P>
+<P>Therefore, any suggestions, remarks, criticism, hints and worked out solutions to all kinds of problems related to Octave for Windows are welcome, of course as long as they are of reasonable interest to the Octave-for-Windows community and not personal. Please e-mail them to me and I'll try to incorporate them into this document. See the end of this document for <A HREF="#response">contact info</A>.</P>
+<P>If you try one of the installation methods below, it may help to know the following:<br>
+I have installed Octave more or less along the lines outlined in method #3 (see below), using the original Octave-for-Windows distro by Tom C. Weichmann (octave-windows.exe). Consequently, a number of directory names may be different from the ones you are going to encounter.</P>
+
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Definitions">2. Definitions</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+
+<B><P><A HREF="http://www.gnu.org/copyleft/gpl.html">GPL</A></B> (General Public Licence) is a licensing system which ensures that you, the user, can always obtain, change and redistribute the source code of any GPL-licensed program you want. This source code itself is free, however, that does not necessarily hold for the media on which this source code is delivered to you: you may not only think of costs of CD-ROM, but also phone pulses and subscription rates to your ISP.</P>
+
+<B><P><A HREF="http://www.gnu.org/">GNU</A></B> is an acronym of "GNU's not Unix", i.e. a mission to develop an operating system based on the idea of free (in the sense of accessibility and freedom to change and redistribute it) software.</P>
+
+<B><P><A HREF="http://www.octave.org">Octave</A></B> is a mathematical toolbox / program / system developed under the GPL license.</P>
+
+<B><P><A HREF="http://users.powernet.co.uk/kienzle/octave/matcompat">Matcompat</A></B> is a collection of scripts and other stuff that make Octave more compatible with that other program, <A HREF="http://www.mathworks.com">Matlab</A>.</P>
+
+<B><P><A HREF="http://www.microsoft.com">Windows</A></B> is understood to be that family of operating systems developed by Microsoft that is supposedly 32-bit – i.e., Windows 95, Windows 98, Windows 98 SE (Second Edition), Windows ME (Millenium Edition), Windows NT (any version), Windows 2000 and at some time in the future, Windows XP. But not Windows 3.1 or 3.11, not even with win32s installed.</P>
+<P>I wrote "supposedly", because not all parts of these operating systems are fully 32 bit. For example, Windows 9x versions boot using 16-bit DOS operating kernels, and furthermore, parts of their GDI's (Graphical Device Interface) actually still comprise 16 bit-routines. Windows NT also still contains some 16-bit function calls and API function arguments – although these are translated internally to 32-bit versions.</P>
+<P>Although all these Windows versions seem to function quite similar to the average user, under the hood they do differ considerably. A consequence is that many programs which run happily on one version are not guaranteed to run without problems on another. Octave shares this fate. Moreover, as Windows has been translated to many languages, many install programs which rely on certain (English) directory names will fail if they are started under non-English Windows versions.</P>
+<P>Where I write "Windows" below, I mean all versions of the OS. Where applicable I'll mention the Windows version specifically.</P>
+
+<B><P><A HREF="http://www.gnuplot.org">gnuplot</A></B> is a stand-alone visualization program which – in contrast to what it's name suggests- has nothing to do with GNU. Currently it is the most widely used graphical back-end for Octave.<br>
+<FONT FACE="Arial" SIZE=2>BTW It seems that gnuplot is the preferred name rather than GNUplot or Gnuplot.</FONT></P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Implementation">3. Implementation of Octave under Windows</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>Octave has been developed under Unix/Linux platforms and given this heritage it depends heavily upon a number of features specific to these platforms. Getting Octave to run under Windows is therefore not an easy job. Octave is built using a number of computer languages, i.e. C++, Fortran, plus a number of other tools which take care of parsing command lines, navigation through the built-in help and documentation systems, etc.</P>
+<P>Therefore, Octave runs on Windows platforms under a Linux emulator called <A HREF="http://sources.redhat.com/cygwin/">Cygwin</A>, where all these utilities have been ported to. Similarly, for OS/2 systems Octave is run using the EMX-library, which in fact also emulates a number of Linux routines and interfaces. For yet other platforms other Linux emulators (may) have to be used.</P>
+<P>Apart from a more easy port to other platforms, this has the indispensable advantage that the Octave source code is completely independent from the platform it is to run on, making maintenance of the sources a much more easy job.</P>
+<P>A consequence of this is that Octave is and remains a Linux program, again no matter what platform it runs on. This implies that you, dear Windows user, better have some Linux knowledge, because otherwise some Linux peculiarities will sooner or later bite you in the leg.</P>
+<P>In this respect a notable Linux heritage is the (to the average Windows user) quite complex directory lay-out of the usual Octave installation. E.g., script files are to be found seemingly scattered around subdirectories in e.g., /usr/local/share/octave/2.0.16/m (that is, for octave version 2.0.16); all the intermediate directories are just empty save for just one child directory.<br>
+In case you wonder, this is a consequence of the <A HREF="http://www.pathname.com/fhs/">Filesystem Hierarchy Standard</A>, a standard which suggests (rather than dictates) a very specific directory structure for UNIX and Linux systems.<br>
+Unlike Windows systems, where many carelessly written installers simply dump your programs in the root directory of C: and where the average program dumps all your texts/models/spreadsheets in C:\My Documents, in Linux considerable attention is given to where specific files and programs have to go. It can help a lot if you read the FHS documents on the link above, or read an introductory Linux textbook.</P>
+<P>Just like on Linux systems, Octave for Windows is merely a "terminal program", i.e. it looks like it runs in a DOS-box or DOS-terminal. Under Cygwin this terminal is actually a Linux program called "bash" – a shell program (Bourne Again Shell), which is in many ways similar (but superior) to the DOS-command interpreter COMMAND.COM.</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Overview">4. Overview of installation methods and other stuff</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>There are a number of ways to get Octave installed under Windows:</P>
+<OL>
+<LI>Build Octave yourself, after having installed Cygwin. As most Octave users running Linux&nbsp;/ AIX&nbsp;/ etc. install Octave by simply compiling the sources, this is not such a ridiculous suggestion at all, although the average (in this respect somewhat spoiled, sorry) Windows user may frown a bit here.</LI>
+<P>Although this methods implies some more work, it does have some advantages: </P>
+<P>-You can install any Octave version you like, stable, development or bleeding edge;</P>
+<P>-Maintenance of Octave and installation of matcompat is much easier;</P>
+<P>-You can easily adapt Octave to your own wishes at your own discretion.</P>
+<LI>Download the available Octave-windows binaries from the Matlinks site and cross your fingers. </LI>
+<P>Be warned that the currently (October 2001) available binaries do not always install properly and that the way Cygwin and Octave are installed has some side effects. Moreover, currently only (development-) version 2.1.31 can be installed this way. The matcompat stuff can only be partly installed as this requires a more complete Cygwin installation.</P>
+<LI>A mixture of both; that is, once Octave 2.1.31 is installed from binary, expand Cygwin by downloading and installing additional Cygwin components (gcc, etc.) so that you can compile Octave yourself. </LI>
+<P>In a way, this is the best of both worlds, but to be able to use this method you first must have successfully installed Octave using method 2…..</P>
+</OL>
+<P>The "other stuff" department currently comprises:</P>
+<UL><LI>Installation of Matlab compatible scripts from the matcompat library.</LI></UL>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Method1">5. Method 1: Building Octave yourself</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>This consists of the following steps:</P>
+<OL>
+<LI>Make sure you got about 300 Mb free hard disk space. Octave + Cygwin need about 150 - 200 Mb, but your Windows system might need some additional swap space (virtual memory), too.</LI>
+<LI>Download and install the necessary Cygwin components (about a 70 Mb download altogether);</LI>
+<LI>Download the Octave source code (any version you want; about 4-5 Mb)</LI>
+<LI>Configure, compile and install Octave (all straightforward using the excellent scripts). Your free HD-space has decreased by 60 Mb then;</LI>
+<LI>Download gnuplot (either in binary form (.Zip, about 750 Kb) or source code - .tar.gz, about 1.1 Mb) and install it;</LI>
+<LI>Connect gnuplot to Octave using a bit of nitty-gritty work, plus some other details.</LI></OL>
+
+<B><I><P><A NAME="Step1">Step 1. Prepare your PC</A></P>
+</B></I>
+<P>Make sure your PC is in good condition with regard to:
+<UL>
+<LI>Hard disk integrity (if needed, run SCANDISK.EXE)</LI>
+<LI>Hard disk free space. On my desktop PC, where I got Windows ME running a Cygwin system with gcc, make .... etc. plus Octave 2.1.31 & Octave 2.0.16, the entire Octave & Cygwin fandango occupies some 300 Mb disk space on a FAT32 partition and comprises over 15,000 files, many of which are 1 or 2KB include files. Should you have an old Windows 95 without FAT32 support, much more disk space may be needed as FAT16 is not so efficient regarding disk space usage. So, back up or clean up unneeded files.</LI>
+<LI>Hard disk fragmentation (if needed, run DEFRAG.EXE)</LI>
+</UL></P>
+<P>In addition, in a later stage (when compiling Octave) it can be handy to disable virusscanners, proxy's, firewalls, and all kinds of other gadgets (notably MS-Office stuff) which occupy memory and system tray slots. Just press Ctrl-Alt-Del ONLY ONCE to see which programs have been loaded; you can disable unneeded ones one by one then in order to unload your CPU for more urgent tasks like running gcc.</P>
+
+<B><I><P><A NAME="Step2">Step 2. Download and install Cygwin</A></P>
+</B></I><P>Point your Internet browser to <A HREF="http://sources.redhat.com/cygwin">http://sources.redhat.com/cygwin</A>, and start with reading a few things about Cygwin, notably what is mentioned in the left column under "Documentation".</P>
+<B><P ALIGN=CENTER <FONT FACE="Arial" SIZE=4>** Please read at least the FAQ **</B></FONT><FONT FACE="Arial" SIZE=3>,</P>
+<P>only then download the program setup.exe (click on the black-and-green "C" symbol).</P>
+<P>Next, stay connected to your ISP and doubleclick on the just downloaded file setup.exe.</P>
+<P>Choose "download from Internet" and at the next dialog box, choose a suitable download directory for all your downloaded packages.</P>
+<P>On the next dialog box, choose "Direct connection" (that is, if you are still connected to the Internet using your dial-up connection)</P>
+<P>Then choose a suitable mirror for downloading the packages.</P>
+<P>After a while, a list of packages appears. Be sure to select (by repeated clicking on the leftmost symbol under the "New" column) the following packages (and do NOT download the source code packages, deselect the relevant tick boxes):</P>
+<UL>
+<LI>ash</LI>
+<LI>autoconf</LI>
+<LI>automake</LI>
+<LI>bash</LI>
+<LI>binutils</LI>
+<LI>cygwin</LI>
+<LI>fileutils</LI>
+<LI>gawk</LI>
+<LI>gcc</LI>
+<LI>gettext</LI>
+<LI>groff</LI>
+<LI>gzip</LI>
+<LI>less</LI>
+<LI>login</LI>
+<LI>lynx</LI>
+<LI>make</LI>
+<LI>mingw</LI>
+<LI>mt</LI>
+<LI>ncurses</LI>
+<LI>python</LI>
+<LI>rxvt</LI>
+<LI>sh-utils</LI>
+<LI>tar</LI>
+<LI>texinfo</LI>
+<LI>unzip</LI>
+<LI>w32api</LI>
+<LI>wget</LI>
+<LI>which</LI>
+<LI>zip</LI>
+<LI>zlib</LI></UL>
+<P>(I may have added one or two packages too much here just to be safe, but that should not matter much.)</P>
+<P>If your Internet connection consists of a slow dial-up connection, you can (like I did) divide these downloads over a number of cheap phone rate periods (weekends, nights) – or get a high speed Internet connection like ADSL (like I did too, in a later stage but for other reasons).</P>
+<P>Once you have downloaded all these packages, disconnect from the Internet and again start up setup.exe.</P>
+<P>This time, select "Install from local directory". After some more clicks, you are asked where to install the Cygwin system.<br>
+ NOTE: please install Cygwin in a directory directly in the root of your C:-drive (e.g., C:\cygwin) or in the root of any other hard disk partition. DO NOT USE SPACES in this directory name, as a number of Cygwin utilities (notably mount) cannot cope with names with embedded spaces!</P>
+<P>Somewhere during installation, Cygwin will ask what kind of file setup you need. Actually, it asks for the kind of end-of-line you want. DOS/Windows eol-s are usually CR/LF (CarriageReturn & LineFeed, while Unix/Linux eol-s are usually just LF. I chose CR/LF (DOS/Windows style) and I have not encountered problems yet. But certain problems with TexInfo may be related to this issue. Anybody out there with a good suggestion?</P>
+<P>Cygwin then installs all the packages you downloaded. It installs a convincingly Unix/Linux-like directory structure there, including /usr, /tmp, etc.</P>
+<P>Finally, it installs a file named Cygwin.bat somewhere in the Cygwin directory. Make a copy of this batch file in e.g. your \Windows directory. Make a Windows-shortcut for it, in your Start menu and/or on your desktop, if the setup program did not already do that for you.</P>
+
+<B><I><P><A NAME="Step3">Step 3. Download the source code for your favorite Octave version</A></P>
+</B></I>
+<P>Point your Internet browser to <A HREF="ftp://ftp.octave.org/pub/octave/">ftp://ftp.octave.org/pub/octave/</A>, select one of the source code packages from that site and download it into a subdirectory of your Cygwin directory (e.g., /src/octave). (Windows Explorer and thus all file dialog boxes derived from it can browse without any problem through the Cygwin directory structure.)</P>
+
+<B><I><P><A NAME="Step4">Step 4. Configure, compile and install Octave</A></P>
+</B></I><P>Start up Cygwin using the batch file CYGWIN.BAT. You'll see a DOS-box like Linux terminal.</P>
+<P>=&gt; From now on remember that, unlike Windows, Linux DOES distinguish between upper and lower case letters in file names etc.! So take care when you type a Linux command! <br> <FONT FACE="Arial" SIZE=2>(A somewhat deceptive issue is that not all parts of Cygwin seem to be case sensitive - better be prudent in this respect.)</FONT></P>
+<P>=&gt; Also remember that unlike Windows, programs have to be in a directory in your (Linux-) PATH in order to be able to start them. If you are sure you are in the same directory as where your program file resides but you still cannot start it, the directory is simply not in the PATH. You can start that program anyway then by prepending "./" (without the quotes) to the program file name.</P>
+<P>O.K., Unpack the downloaded Octave source-code distribution:</P><br>
+<P>cd /src/octave</P>
+<P>tar –xvzf octave-&lt;version-number&gt;.tar.gz</P>
+<P>cd octave-&lt;version-number&gt;</P><br>
+<P>(where &lt;version-number&gt; can be e.g. 2.0.16, 2.1.34 etc.)</P>
+<P>All the next steps are described in detail in the files INSTALL and INSTALL.OCTAVE which are in the directory octave-&lt;version number&gt;. You can give it a try by typing (literally):</P><br>
+<P>./configure</P>
+<P>make</P>
+<P>make install</P><br>
+<P>If all goes well, the first command (./configure) takes about 15 minutes or so to prepare Octave for compilation. You can safely neglect the last messages about " … not being found".</P>
+<P>The second step (make) took two hours on my 233 Mhz Pentium MMX (Toshiba Libretto with 64 Mb memory).</P>
+<P>The last step, Octave installation proper, usually takes just a few minutes.</P>
+<P>After the last step you can find octave in the directory /usr/local/bin, as an executable named octave-&lt;version number&gt; (e.g., octave-2.0.16).</P><br>
+<P>If everything up till this step was successfull, you now should already be able to run Octave.</P>
+<P>Go (in the Cygwin terminal window) to /usr/local/bin and type:</P><br>
+<P>./octave-&lt;version-number&gt;</P><br>
+<P>After a while, you should see the welcome message of Octave.</P>
+<P>Finally, if after some time your Octave runs satisfactorily, you can clean up by again going to the /src/octave/octave-&lt;version-number&gt; directory and typing:</P><br>
+<P>make clean</P><br>
+<P>or more rigorously, simply deleting the directory /src/octave</P>
+
+<U><P>What if things go wrong?</P></U>
+<P>I'm afraid I cannot help you much. The output of ./configure gives clues as to what is actually wrong. But it often happens that ./configure may report errors which are not the actual errors themselves but are consequences of errors not detected earlier in het configuration process. In the vast majority of cases, errors detected by ./configure result from missing Cygwin packages.</P>
+<P>Once ./configure has finished successfully, it is unlikely that the next steps fail.</P>
+<P>For an (admittedly incomplete) overview of a number of known problems, see below.</P>
+
+<B><I><P><A NAME="STEP5">Step 5. Download gnuplot</A></P>
+</B></I>
+<P>Point your web browser to <A HREF="http://www.gnuplot.org">www.gnuplot.org</A>, select a mirror site and and download the file gp371cyg.zip (or a later version indicated to be a Win32 binary for Cygwin).</P>
+<P>As this is a regular Windows ZIP-archive, you can unpack it using <A HREF="http://www.winzip.com">Winzip</A> or another archive program supporting ZIP format. After unpacking, follow the instructions for installation of gnuplot.</P>
+<P>Note: Installation of gnuplot in the C:\Program Files directory (where most Windows programs are stored) is no problem for Octave, nor for many other Linux programs run from the Cygwin Linux emulator. As installation under C:\Program Files is a <I>de facto</I> convention for many a Windows package, put gnuplot there to avoid cluttering up your hard drive's root directory.</P>
+<P>If you insist on doing it the hard way, you can also download the gnuplot source code and build gnuplot yourself. I have not done this, so you are on your own if you want to try it.</P>
+<P>A somewhat newer version of gnuplot (3.8.f) -but still beta quality- including <A HREF="http://www.sci.muni.cz/~mikulik/gnuplot.html#pm3d">PM3D</A> and mouse support, can be found on the Web. E.g., early October 2001, using a <A HREF="http://www.google.com">Google</A> search, I found one <A HREF="http://www.vwl.uni-mannheim.de/hellwig/lehre/mikro1ss2001/mikro-I.htm">here</A> <FONT FACE="Arial" SIZE=2> (if you can't read German, no worries, just seach for "gnuplot" on that page)</FONT>.</P>
+<B><I><P><A NAME="Step6">Step 6. Connect gnuplot to Octave, and other nitty-gritty</A></P>
+</B></I>
+<P>Some small things remain and need careful attention:</P>
+<OL>
+<LI>Connecting gnuplot to Octave (or vice versa) using the program pipe-gnuplot;</LI>
+<LI>Revamping the terminal (something like a DOS box) where Octave runs in;</LI>
+<LI>Making a shortcut to the Windows desktop and/or Start menu;</LI>
+<LI>Enabling the function of the Del, Backspace, Insert and arrow keys.</LI>
+</OL>
+
+<U><P>1. Connecting gnuplot to Octave (or vice versa) using the program pipe-gnuplot</P></U>
+<P>Some things to know in advance:</P>
+<OL>
+<LI>Octave uses gnuplot for graphical output. However, because Octave and gnuplot have no native way of communication, Octave sends gnuplot some commands and information through a mechanism called a "pipe". This mechanism comprises a one-way communication: Octave can send info to gnuplot, but not the other way round;</LI>
+<LI>When graphical output is requested by the Octave user, Octave opens two windows:</LI>
+<UL>
+<LI>A graphical output window</LI>
+<LI>A gnuplot command window, where much of the commands sent by Octave can be inspected and -if needed- edited and then re-issued to gnuplot;</LI>
+</UL>
+<LI>If needed, Octave-for-Windows starts up gnuplot and initializes the connection, but it does so only once per session. Therefore, you should not close down the gnuplot command window yourself (but you can close the gnuplot graph window);</LI>
+<LI>Likewise, Octave closes down the gnuplot windows if Octave itself is exited.</LI>
+<LI>The way Octave communicates with gnuplot imposes restrictions on graphical output. Several obviously needed options are simply unavailable. Contouring is a notable problem. Mouse interaction is not possible (but see above for a gnuplot 3.8 version which has preliminary mouse support). Volunteers are needed to make all this possible, so if you got some spare time, motivation and programming skills, please sign up with the appropriate project leaders.</LI>
+</OL>
+
+<P>You need to get the program pipe-gnuplot.exe. You can do a web search for it; mid-2001 it could be found at:</P>
+<P><A HREF="http://www.hhs.se/personal/psoderlind/Software/pipe-gnuplot.exe">http://www.hhs.se/personal/psoderlind/Software/pipe-gnuplot.exe</A></P>
+<P>or the source code at:</P>
+<P><A HREF="http://tech-research.buffalostate.edu/~tom/">http://tech-research.buffalostate.edu/~tom/</A></P>
+<P>OK, in the file /usr/local/share/octave/&lt;version-number&gt;/m/startup there should be a file called octaverc. This file contains some important startup settings for Octave.</P>
+<P>Take any text editor (Windows or Linux) and make sure that the following lines get into octaverc (adapted from Tom C. Weichmann's version):</P>
+
+<P>
+## System-wide startup file for Octave.<br>
+##<br>
+## This file should contain any commands that should be executed each<br>
+## time Octave starts for every user at this site.<br>
+##############################################################<br>
+## Please Do Not Change These Settings<br>
+## They Are Needed For Proper Operation On The Win32 Platform<br>
+gnuplot_binary = 'pipe-gnuplot wgnuplot.exe';<br>
+putenv('TMPDIR','C:/Program Files/Octave 2.1.31/tmp');<br>
+##############################################################<br></P>
+
+<P>(Make any necessary changes if your directory structure is different – take care of upper- and lower case characters).</P>
+
+<P>In the directory /etc there should be a file called profile. This file should contain at least the following lines:<br>
+<br>
+export PATH=/bin:/usr/local/bin:/gnuplot3.7.1<br>
+export HOME=/home/octave<br>
+<br>
+(again, change paths and/or file names if appropriate. If the path to gnuplot contains spaces, enclose it in quotes). This file merely appends some directories to your implicit Cygwin-PATH (which is different than your Windows/DOS search PATH). The important item here is obviously the gnuplot subdirectory.</P>
+
+<P>That should do – if you now (re-) start Octave, you should be able to use gnuplot. Try the following command from an Octave window:</P>
+<P>gplot rand (100,1) with linespoints </P>
+<P>After a while the title bar of your bash shell should show "pipe-gnuplot", and after some time a graphics window containing a 2D-plot should appear.</P>
+
+<U><P><A NAME="rxvt">2. Revamping the bash terminal</A></P></U>
+Instead of the classic white-letters-on-black-background, you'll want black letters on a white background, and probably some neater fonts. To do this, you'll need the rxvt program included in Cygwin.<br>
+Just make a file e.g. called start_octave-&lt;version-number&gt; in /bin and make sure it reads something like:</P>
+
+<P>
+#!/bin/sh<br>
+rxvt --keysym.0xFF50 '^a' --keysym.0xFF57 '^e' --keysym.0xFFFF '^f^h' -fn "Lucida Console-14" -tn linux -title Octave -sr -sl 10000 -e octave-&lt;version-number&gt;</P>
+
+<P>(All stuff starting with "rxvt" on one line!)<br>
+Next, make it executable (from a Cygwin terminal). Go to the /bin directory and type:</P>
+<P>chmod &nbsp ugo+x &nbsp start_octave-&lt;version-number&gt;</P>
+
+<P>(The chmod command is a UNIX/Linux command to set or change file attributes. Replace &lt;version-number&gt; with your desired octave version number, e.g. 2.0.16.)</P>
+
+<P>Finally, make a DOS batch file called OCT&lt;VersionNumber&gt;.BAT (e.g., OCT2016.BAT), place it in /bin and make sure it reads:</P>
+<P>
+@echo off <br>
+chdir C:\Cygwin\bin <br>
+bash --login start_octave-&lt;version-number&gt;
+</P>
+
+<U><P>3. Making a shortcut to the Start Menu and Windows desktop</P></U>
+<P> This must be considered basic Windows proficiency. For completeness:<br>
+<OL>
+<LI>On the Windows desktop, right click</LI>
+<LI>In the dialog box, click on New, Shortcut</LI>
+<LI>Browse to the just made DOS batch file OCT&lt;VersionNumber&gt;.BAT in C:\Cygwin\bin and fill in the details (Tab Memory, initial environment size: 4096; check Protected Memory checkbox; and find yourself a nice icon).</LI>
+</OL></P>
+
+<U><P>4. Making special keys work with Octave</P></U>
+<P>How to do this is described in <A HREF="ftp://ftp.che.wisc.edu/pub/octave/MAILING-LISTS/help-octave/2000/1281">message # 1281</A> in the help-octave mailinglist of 2000. If you proceeded as described above, you have already done this.</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Method2">6. Method 2: Installation of available binaries on Matlinks / SourceForge</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>This is the easiest way of installing Octave. Yet a number of problems are reported with these binaries.</P>
+<P>Simply download one of the files:</P>
+<P>For Windows 95, 98, NT:<br>
+<A HREF="http://download.sourceforge.net/matlinks/octave-windows-2000oct25d.exe">octave-windows-2000oct25d.exe</A></P>
+<P>or for Windows 95, 98, ME:<br>
+<A HREF="http://download.sourceforge.net/matlinks/octave-windows.exe">octave-windows.exe</A></P>
+<P>and then doubleclick on the downloaded .EXE-files in the Explorer window. Installation proceeds cleanly and easily, that is, usually it does.</P>
+<P>On Windows NT or 2000 systems, you may need to have administrator privileges. I do not own nor even have access to a NT system, so I do not know for sure.</P>
+<P>These binaries have a number of problems:</P>
+<OL>
+<LI>Installation of Cygwin, Octave and gnuplot proceeded on my computers under the directory "C:\Program Files\Octave 2.1.31". The big problem here is that the current Cygwin mount command (needed to access directories outside the Octave 2.1.31 directory) cannot cope with spaces in directory names. This implies that you cannot mount e.g. other drives, as the target of the mount is a directory name  ("C:\Program&nbsp;Files\Octave&nbsp;2.1.31"\&lt;mount point&gt;) which contains spaces.</LI>
+<LI>Currently only Octave 2.1.31 is available for download. This version has a few -someArial irritating- bugs which are solved in later versions.</LI>
+<LI>They were compiled with a wrong version of TexInfo, which result in a broken help system.</LI></OL>
+<P>Nevertheless, the makers of these binaries (Notably Tom C. Weichmann, and J. de Marchi) deserve lots of credit for this first comprehensive and easily installable Windows binary!</P>
+<P>Some little glitches in these binaries are easily fixed:<br>
+<UL>
+<LI>In case of octave-windows.exe, the install program assumes the location of the program icon at the wrong place. It is in "C:\Program&nbsp;Files\Octave&nbsp;2.1.31\bin\" and is called octave.ico.</LI>
+<LI>Under NT-systems, installation may break. A possible solution is given in <A HREF="ftp://ftp.che.wisc.edu/pub/octave/MAILING-LISTS/help-octave/2000/1247">message # 1247</A> in the help-octave mailinglist of 2000 and on <A HREF="http://members.localnet.com/~tomcw/">Tom Weichmann's Octave page</A>.</LI>
+</UL></P>
+<P>Tom Weichmann has recently made another Windows binary available, check out his Octave for Windows page. Some mailing list messages indicate that also this binary suffers from installation problems, caused by various Windows peculiarities.</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Method3">7. Method 3: Installation of additional Octave versions, based on method 2</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>Once you've successfully installed one of the binaries using method 2, it is easy to add other Octave versions.</P>
+<P>All you need to do is </P>
+<OL>
+<LI>Expanding your basic Cygwin package installed from the octave-windows binaries to a development system, by downloading setup.exe from the Cygwin site and next, downloading the needed packages and installing them following the steps outlined under method 1, <A HREF="#Step2">Step 2</A> and further;</LI>
+<LI>Downloading the Octave source distribution of your choice and compiling and building it, again see under method 1;</LI>
+<LI>Adding an octaverc file (you can simply copy it from the 2.1.31/m/startup directory);</LI>
+<LI>Revamping the Octave terminal using rxvt (see under method 1 <A HREF="#rxvt">above</A>, too).</LI></OL>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Matcompat">8. Installation of the matcompat package</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>Matlab compatibility (to Matlab version 4.2) can be increased by installation of the <A HREF="http://users.powernet.co.uk/kienzle/octave/matcompat/index.html">matcompat package</A>, assembled and maintained by Paul Kienzle.</P>
+<P>If you have installed Octave using methods 1 or 3, then <I>in principle</I> you can simply follow the steps outlined in the INSTALL file in the matcompat package. <br>
+<B>BUT</B>.... I recently received e-mails that matcompat install script is broken under Windows. To be honest: I have never tried myself to install matcompat package using the script (I simply did what is described in the paragraphs immediately below).<br>
+<FONT SIZE=2>I'll give it a try later this winter when I have to re-install Octave anyway because of a hard-disk upgrade; until then I'll be quite happy with the Octave version currently running on my HD :-)</FONT></P>
+<P>If you have installed Octave using just method 2, you lack the gcc compiler, the make program and other utilities. Then you can either add these and give it a try (see method 3, <A HREF="#Method3">above</A>) or be satisfied with an incomplete installation of the matcompat package.</P>
+<P>In the latter case, you can use WinZip or PowerArchiver to extract all the files under 'scripts" except for those in the directory "fixes" into the /usr/local/share/octave/&lt;<I>version-number</I>&gt;/m directory (be sure to check the "Use folder names" check box to keep the directory structure in the archive). In the "fixes" directory in the matcompat archive, various enhancements to standard Octave functions are supplied, but these are not sorted into the various directories under /usr/local/share/octave/&lt;<I>version-number</I>&gt;/m.</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Problems&Fixes">9. Some known problems and fixes</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+
+<U><P>1. Octave installed from binary, but it doesn't work</P></U>
+<P>Usually this is due to a non-English Windows version or too little default environment space for DOS programs.</P>
+<P>In the typical case there is usually a file OCTAVE.BAT which contains nonsense, and/or the Octave directory contains only 2 or 4 Mb of stuff, and/or doubleclicking on the Octave desktop item or in the Start Menu (if these "shortcuts" exist at all) leads to an error message like "no such file or directory".</P>
+<P>Sorry to tell you that you are one of those unlucky souls with a computer where the Win-Octave binary simply doesn't install (or better: doesn't install in a simple way).<br>
+If you are no programmer, do not know much about Windows and/or Linux, there's little to be done about it, sorry. Only way out is to search the help-octave mailinglist for answers (I'm also collecting them on this page, but I lack time to finish it).</P>
+<P>You might try one of the other Win-Octave distro's. Whereas octave-windows-2000oct25d.exe (from the <A HREF="http://download.sourceforge.net/matlinks/">Matlinks site</A>) did not install properly under my (Dutch) Win-ME, the original distro (octave-windows.exe; also from Matlinks) did. Probably it is a wise thing to delete the complete Cygwin & Octave directories first from your Windows partitions.</P>
+<P>If you do insist on getting Octave under Windows rather than Linux and if you got the time for it, I would still advise you to use Method 1 (above): build Octave from scratch. Currently that is the most reliable way to get Octave installed under Windows.</P>
+
+<U><P>2. Languages</P></U>
+<P>Beware that translated Windows versions (i.e., non-English Windows versions) may have other names for certain standard directories than the English version. However, many setup programs blindly assume English standard directory names.<br>
+Possible candidates are "\Program Files", "My Documents", etc.<br>
+Ofcourse, <I>these</I> problems can simply be tackled by just creating the relevant directories with the proper English names on your C:\-drive :-). Octave will be installed there without problems. IMHO no complex patches to the install binaries are needed.</P>
+<P>AFAIK Cygwin does not rely on these names, but the available Octave-for-Windows binaries on SourceForge / Matlinks seem to do. Nevertheless, in <A HREF="http://www.octave.org/mailing-lists/help-octave/2001/1145">this</A> help-octave mailing list message some more info on this language problem is given.<br></P>
+
+<U><P>3. Environment space</P></U>
+<P>Many programs which are started from a DOS window, including Cygwin bash, need some storage space for so-called environment variables. Those are variables which have a "string value"; e.g. your PATH environment variable, which tells DOS programs where to search for a program, usually has the value "C:\WINDOWS;C:\WINDOWS\COMMAND;" or something like it.</P>
+<P>A number of DOS programs need extra environment space, because they need to store an awful lot of environment variables and/or their environment variables have very long string values.</P>
+<P>Therefore, the DOS-box they are run in should be started with the following setting in the Memory tab of the Properties dialog box (right-click on the DOS-box icon):</P>
+<P>Initial environment = "Automatic" or (preferrably) 4096</P>
+<P>If you encounter problems running Cygwin or Octave, changing this setting may help.</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="More_info">10. Where to get more information</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<U><P>Other Internet sites with info on how to get Octave running under Windows:</P>
+</U>
+<P><A HREF="http://www.hhs.se/personal/psoderlind/Software/Software.htm#OctaveInstallation">Paul S&ouml;derlind's Software pages</A></P>
+
+<P><A HREF="ftp://ftp.uni-erlangen.de/pub/pc/gnuwin32/cygwin/porters/Weichmann_Tom/1.1/">Tom Weichman's download site</A><br>
+<A HREF="http://members.localnet.com/~tomcw/">Tom Weichmann's Octave page</A></P>
+
+<P><A HREF="http://matlinks.sourceforge.net/">Matlinks on SourceForge</A></P>
+
+<U><P>Specific problems when using or trying to install or run Octave</P></U>
+<P>It seems it cannot be stressed often enough that before you submit a request for help in the help-octave mailinglist, you should:</P>
+<B><P ALIGN="CENTER">=> First search the help-octave mailing list archives <=        </P>
+</B><P>to check that your problem has not been reported and/or solved earlier by someone else.</P>
+<P>You can e.g. simply load the annual index file (for example, ftp://ftp.che.wisc.edu/pub/octave/MAILING-LISTS/help-octave/2001/index.html) and then in your browser do a text search for "Windows".</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="response">11. How to give feedback</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>If you have additional information, hints, criticism, or other stuff that you think is useful to enter here, please sent me an <A HREF="mailto:pr.nienhuis@hccnet.nl">e-mail</A>.</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="faq">12. FAQ section</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P><br>
+<A HREF="#Q1">Q 1: How can I get Octave for Windows?</A><br>
+<A HREF="#Q2">Q 2: Why don't several of my Matlab m-files run in Octave?</A><br>
+<A HREF="#Q3">Q 3: Why does Octave-for-Windows use so much Linux conventions?</A><br>
+<A HREF="#Q4">Q 4: Are the Windows binaries really as bad as the mailing list messages suggest?</A><br>
+<A HREF="#Q5">Q 5: Is there no GUI?</A><br>
+<A HREF="#Q6">Q 6: How fast is Octave, e.g. compared to Matlab?</A><br>
+<A HREF="#Q7">Q 7: Why do I get a message "...broken pipe" when I attempt to make another graph?</A><br>
+<A HREF="#Q8">Q 8: Why do contour plots fail? The same script ran perfectly in Matlab....</A><br>
+<A HREF="#Q9">Q 9: E-mail me your Q&A suggestion!</A><br>
+<A HREF="#Q10">...(to be filled in)...</A><br>
+<br></P>
+
+<P><B><A NAME="Q1">Q 1: How can I get Octave for Windows?</B></A><br>
+<B>A 1: </B>See <A HREF="#Overview">above.</A></P>
+
+<P><A NAME="Q2"><B>Q 2: Why don't several of my Matlab m-files run in Octave?</B></A><br>
+<B>A 2: </B>Because Octave is not completely compatible with Matlab. A number of simple things to know:<br>
+<LI>Comments in Octave begin with # rather than %</LI>
+<LI>Octave is compatible with Matlab (maybe) version 4.2. FYI, the current (Oct. 2001) Matlab version is 6.0.</LI>
+<LI>Compatibility is better after installation of the <A HREF="http://users.powernet.co.uk/kienzle/octave/matcompat">matcompat</A> package (see <A HREF="#Matcompat">above</A> for more info on how to get it installed)</LI>
+<LI>Look <A HREF="http://www.octave.org/FAQ.html#SEC24">here</A> at what the Octave maintainers say about Matlab compatibility and porting Matlab scripts.</LI>
+ </P>
+
+<P><A NAME="Q3"><B>Q 3: Why does Octave-for-Windows use so much Linux conventions?</B></A><br>
+<B>A 3: </B>Because it is essentially a set of Linux programs disguised as one big Windows program. Read the start of this web page for more....</P>
+
+<P><A NAME="Q4"><B>Q 4: Are the Windows binaries really as bad as the mailing list messages suggest?</B></A><br>
+<B>A 4: </B>Well, first of all, they are NOT such bad binaries, in fact, they are quite <I><U>good</U></I>. FYI, I use one myself.<br>
+Also remember that people who succeed with installing Octave under Windows probably won't report it in the help-octave mailinglist! so the mailing list messages offer at least a biassed view of the rates of success or failure.<br>
+That said, there are a number of typical problems:
+<LI>Language problems. As Windows has been translated into a multitude of languages, and as the binary distribution installer seems to rely on US-English directory names, chances are that you'll run into trouble when you try to install using a binary distribution on a non-English Windows version. Although there is a <A HREF="http://www.octave.org/mailing-lists/help-octave/2001/1145">possible solution</A>, your best option in such cases is to build Octave yourself along the lines of <A HREF="#Method1">method #1</A> (above).</LI>
+<LI>Little bugs (buglets), for example, the info command (a sort of help system) does not work properly because a wrong Texinfo version has been used to build the binary distribution.</LI>
+If you can live with the buglets, well, go use the binaries.<br>
+If you can't, or cannot get Octave installed, I'd suggest to use <A HREF="#Method1">method #1</A>. Admittedly a bit more work, but it is the most reliable and flexible method there is.</P>
+
+<P><A NAME="Q5"><B>Q 5: Is there no GUI?</B></A><br>
+<B>A 5: </B>Have a look <A HREF="http://merlin.inescn.pt/~qual/tk_octave/tk_octave.html">here</A> for Tcl/Tk front end building blocks. Tcl/Tk is a script language usable for building GUIs. I doubt if it will ever get as slick as the Matlab GUI or Windows or Apple GUIs but it looks very usable to me. Admittedly you will have to learn at least some basic Tcl/Tk, but that is very simple indeed.</P>
+
+<P><A NAME="Q6"><B>Q 6: How fast is Octave, e.g. compared to Matlab?</B></A><br>
+<B>A 6: </B>From my experience I can tell that under Windows, Octave runs about 30 % faster than my Matlab 5.1 student edition. But... nowadays Matlab has a faster numerical LAPACK engine (more or less the same that Octave was using for a long time), so this advantage may now have evaporated.<br>
+Comparing Linux vs. Windows installations on the same PC (I got both, and also OS/2 Warp 3 with Octave 2.1.23, installed on the same computer), the Linux Octave version is about 2 to 3 Arial faster than the Window version; the OS/2 version also runs twice as fast as the Windows one. Typically a case for Linux I'd say.... ;-)<br>
+Under Windows, a very notable delay occurs when gnuplot is invoked. Because of the pipe mechanism, which is not a native Windows interprocess communication design (it is more a Cygwin revival of an old DOS heritage), it may take several seconds before your graph emerges on the screen. Using other operating systems than Windows, gnuplot graphs appear MUCH quicker.</P>
+
+<P><A NAME="Q7"><B>Q 7: Why do I get a message "...broken pipe" when I attempt to make another graph?</B></A><br>
+<B>A 7: </B>You probably manually closed not only the gnuplot <I>graph</I> window but also gnuplot's <I>main</I> window. Octave-for-Windows launches ("spawns") gnuplot automatically during its starting up sequence and does so only once. To be able to make a second graph, simply stay away from gnuplot's command window once you have (re-)started Octave.</P>
+
+<P><A NAME="Q8"><B>Q 8: Why do contour plots fail? The same script ran perfectly in Matlab....</B></A><br>
+<B>A 8: </B>The order of parameters for the contour() call in the original Octave script files are different than those of Matlab. AFAIK in the matcompat package this has been fixed.<br>
+However, I have the impression that gnuplot expects seperate full 2-D matrices with X and Y coordinates in addition to the Z-values, while Matlab uses 1-D X and Y coordinate vectors (or the situation is <I>vice versa</I>, I'm not sure).<br>
+A volunteer will have to sort this out.... you?</P>
+
+<P><A NAME="Q9"><B>Q : <FONT FACE="Arial" SIZE=2>E-mail me your Q&A suggestion!</FONT></B></A><br>
+<B>A :</B> </P>
+
+<P><A NAME="Q10"><B>Q : </B></A><br>
+<B>A :</B> </P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="acknowledgements">13. Acknowledgements</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+<P>The information on this page is collected from web pages, e-mails and mailing list contributions by the following people and parties:</P>
+<UL>
+<LI>John W. Eaton</LI>
+<LI>Paul Kienzle</LI>
+<LI>Tom C. Weichmann</LI>
+<LI>Julian A. de Marchi</LI>
+<LI>Paul S&ouml;derlind</LI>
+<LI>Cygnus & RedHat (Cygwin)</LI>
+<LI>Dartmouth College (gnuplot)</LI>
+<LI>Mumit Khan</LI>
+<LI>Benjamin Armbruster</LI>
+<LI>Roberto Hernandez</LI>
+<LI></LI>
+<LI>etc; apologies to those I forgot to mention here</LI>
+</UL></P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="history">14. This document's history</A></P>
+</B></FONT><FONT FACE="Arial" SIZE=3>
+
+<P><U>27 October 2001</U><br>
+Cleaned up here and there.<br>
+Made base font (Arial) a bit smaller to improve legibility.
+
+<P><U>12 October 2001</U><br>
+Added more info on known problems list.<br>
+Added comment on matcompat package compilation.
+
+<P><U>03 October 2001</U><br>
+Fixed wrong octaverc file listing.<br>
+Replaced the name GNUplot by gnuplot, in accordance with the gnuplot FAQ.<br>
+Mentioned gnuplot3.8.c (beta) w. PM3D support.<br>
+Added listing of profile file in /etc.<br>
+Elaborated somewhat on chmod.<br>
+Cleaned up layout here and there.<br>
+Added a preliminary FAQ section.<br>
+
+<P><U>24 August 2001</U><br>
+First version.</P>
+
+</FONT></BODY>
+</HTML>

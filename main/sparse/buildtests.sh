@@ -221,8 +221,14 @@ function [passes,total] = sprandomtest
   warning("untested --- fix the source in buildtests.sh");
   disp('appending test output to sprandomtest.log');
   fid = fopen('sprandomtest.log','at');
-  [passes, total] = test('sprandomtest','normal',fid);
-  fclose(fid);
+  pso=page_screen_output;
+  unwind_protect
+    page_screen_output=0;
+    [passes, total] = test('sprandomtest','normal',fid);
+  unwind_protect_cleanup
+    page_screen_output=pso;
+    fclose(fid);
+  end_unwind_protect
 endfunction
 
 EOF
@@ -451,12 +457,12 @@ cat >>$TESTS <<EOF
 %! m=max([m;r(:)]);
 %! n=max([n;c(:)]);
 %! funiq=fsum=zeros(m,n);
-%! funiq( r(:) + (max(r(:))-1)*(c(:)-1) ) = ones(size(r(:)));
+%! funiq( r(:) + m*(c(:)-1) ) = ones(size(r(:)));
 %! funiq = sparse(funiq);
 %! for k=1:length(r), fsum(r(k),c(k)) += 1; end
 %! fsum = sparse(fsum);
 %!assert(sparse(r,c,1),fsum(1:max(r),1:max(c)));
-%!#assert(sparse(r,c,1,'sum'),fsum(1:max(r),1:max(x)));     # fails
+%!#assert(sparse(r,c,1,'sum'),fsum(1:max(r),1:max(c)));     # fails
 %!#assert(sparse(r,c,1,'unique'),funiq(1:max(r),1:max(c))); # fails
 %!assert(sparse(r,c,1,m,n),fsum);
 %!assert(sparse(r,c,1,m,n,'sum'),fsum);
@@ -548,16 +554,18 @@ if $preset; then
 fi
 
 # scalar operations
-echo '%!shared as,af,bs,bf' >> $TESTS
 if $preset; then
+    echo '%!shared as,af,bs,bf' >> $TESTS
     echo '%!test af=[1+1i,2-1i,0,0;0,0,0,3+2i;0,0,0,4];' >> $TESTS
     echo '%!test bf=3;' >>$TESTS
 else
     cat >>$TESTS <<EOF
+%!shared as,af,bs,bf,m,n
 %!test
 %! % generate m,n from 1 to <5000
 %! m=floor(lognormal_rnd(8,2)+1);
 %! n=floor(lognormal_rnd(8,2)+1);
+%! printf("random test size m,n = (%d,%d)\n",m,n);
 %! as=sprandn(m,n,0.3); af = full(as+1i*sprandn(as));
 %! bf = randn;
 EOF
@@ -624,7 +632,7 @@ gen_section
 
 # assembly tests
 echo '%!shared r,c,m,n,fsum,funiq' >>$TESTS
-if $use_preset; then
+if $preset; then
     cat >>$TESTS <<EOF
 %!test
 %! r=[1,1,2,1,2,3];
@@ -637,31 +645,34 @@ else
 %! % generate m,n from 1 to <5000
 %! m=floor(lognormal_rnd(8,2)+1);
 %! n=floor(lognormal_rnd(8,2)+1);
+%! printf("random test size m,n = (%d,%d)\n",m,n);
 %! nz=ceil((m+n)/2);
 %! r=floor(rand(5,nz)*n)+1;
-%! c=floor(rand(5,nn)*m)+1;
+%! c=floor(rand(5,nz)*m)+1;
 EOF
 fi
 gen_assembly_tests #includes real and complex tests
 gen_section
 
 # slicing tests
-echo '%!shared ridx,cidx,idx,as,af' >>$TESTS
-if $use_preset; then
+if $preset; then
     cat >>$TESTS <<EOF
+%!shared ridx,cidx,idx,as,af
 %!test
 %! af=[1+1i,2-1i,0,0;0,0,0,3+2i;0,0,0,4];
 %! ridx=[1,3]; cidx=[2,3];
 EOF
 else
     cat >>$TESTS <<EOF
+%!shared ridx,cidx,idx,as,af,m,n
 %!test
 %! % generate m,n from 1 to <5000
 %! m=floor(lognormal_rnd(8,2)+1);
 %! n=floor(lognormal_rnd(8,2)+1);
+%! printf("random test size m,n = (%d,%d)\n",m,n);
 %! as=sprandn(m,n,0.3); af = full(as+1i*sprandn(as));
-%! ridx = ceil(m*rand(1,ceil(rand*m))
-%! cidx = ceil(n*rand(1,ceil(rand*n))
+%! ridx = ceil(m*rand(1,ceil(rand*m)));
+%! cidx = ceil(n*rand(1,ceil(rand*n)));
 EOF
 fi
 gen_select_tests

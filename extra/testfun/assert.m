@@ -94,24 +94,37 @@ function assert(cond, expected, tol)
   elseif (isempty (expected))
     iserror = (any (size (cond) != size (expected)));
 
-  else ## numeric
-    if (any (size (cond) != size (expected)))
+  elseif (any (size (cond) != size (expected)))
+    iserror = 1;
+    coda = "Dimensions don't match";
+  else # numeric
+    A=cond(:); B=expected(:);
+    ## Check exceptional values
+    if any(isnan(A) != isnan(B))
       iserror = 1;
-    elseif ( tol <= 0 || all(expected(:) == 0) )
-      iserror = (any (any (abs (cond-expected) > abs(tol) )));
-      if (iserror)
-	coda = sprintf("|| observed - expected || = %g", norm(cond-expected));
-      endif
+      coda = "NaNs don't match";
+    elseif any(isna(A) != isna(B))
+      iserror = 1;
+      coda = "NAs don't match";
+    elseif any(A(isinf(A)) != B(isinf(B)))
+      iserror = 1;
+      coda = "Infs don't match";
     else
-      comp = zeros(size(expected));
-      idx = (expected != 0);
-      comp(idx) = (abs(cond(idx)-expected(idx)) > abs(tol*expected(idx)));
-      idx = !idx;
-      comp(idx) = (abs(cond(idx)-expected(idx)) > abs(tol));
-      iserror = any (comp(:));
-      if (iserror)
-	coda = sprintf("|| (observed - expected) || / || expected || = %g", \
-		       norm(cond-expected)/norm(expected));
+      ## Check normal values
+      A = A(finite(A)); B=B(finite(B));
+      if tol >= 0,
+	err = max(abs(A-B));
+	errtype = "maximum absolute error %g exceeds tolerance %g";
+      else 
+	abserr = max(abs(A(B==0)));
+	A = A(B!=0); B = B(B!=0);
+	relerr = max(abs(A-B)./abs(B));
+	err = max([abserr;relerr]);
+	errtype = "maximum relative error %g exceeds tolerance %g";
+      endif
+      if err > abs(tol)
+	iserror = 1;
+	coda = sprintf(errtype,err,abs(tol));
       endif
     endif
   endif
@@ -169,19 +182,26 @@ endfunction
 %!error assert([1,4;3,4],[1,2;3,4])
 %!error assert([1,3;2,4;3,5],[1,2;3,4])
 
+## exceptional values
+%!assert([NaN, NA, Inf, -Inf, 1+eps, eps],[NaN, NA, Inf, -Inf, 1, 0],eps)
+%!error assert(NaN, 1)
+%!error assert(NA, 1)
+%!error assert(-Inf, Inf)
+
 ## scalars
 %!error assert(3, [3,3; 3,3])
 %!error assert([3,3; 3,3], 3)
 %!assert(3, 3);
-%!assert(3+eps, 3, -eps);
-%!assert(3, 3+eps, -eps);
-%!error assert(3+2*eps, 3, -eps);
-%!error assert(3, 3+2*eps, -eps);
+%!assert(3+eps, 3, eps);
+%!assert(3, 3+eps, eps);
+%!error assert(3+2*eps, 3, eps);
+%!error assert(3, 3+2*eps, eps);
+
 %## must give a little space for floating point errors on relative
-%!assert(100+100*eps, 100, 2*eps); 
-%!assert(100, 100+100*eps, 2*eps);
-%!error assert(100+300*eps, 100, 2*eps); 
-%!error assert(100, 100+300*eps, 2*eps);
+%!assert(100+100*eps, 100, -2*eps); 
+%!assert(100, 100+100*eps, -2*eps);
+%!error assert(100+300*eps, 100, -2*eps); 
+%!error assert(100, 100+300*eps, -2*eps);
 %!error assert(3, [3,3]);
 %!error assert(3,4);
 

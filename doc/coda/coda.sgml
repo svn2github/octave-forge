@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1//EN" 
-                      "/usr/share/sgml/db41xml/docbookx.dtd" [
+		      "/usr/share/sgml/docbook/xml-dtd-4.1/docbookx.dtd" [
 
 <!--
      Copyright (C) 2001 Christoph L. Spiel

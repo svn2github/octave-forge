@@ -186,7 +186,7 @@ dgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
  */
     /* Local working arrays */
     NCPformat *Astore;
-    int       *iperm_r; /* inverse of perm_r; not used if refact = 'N' */
+    int       *iperm_r=NULL; /* inverse of perm_r; not used if refact = 'N' */
     int       *iperm_c; /* inverse of perm_c */
     int       *iwork;
     double    *dwork;
@@ -290,7 +290,8 @@ dgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
 	    new_next = nextlu + (xlsub[fsupc+1]-xlsub[fsupc])*(kcol-jcol+1);
 	    nzlumax = Glu.nzlumax;
 	    while ( new_next > nzlumax ) {
-		if ( *info = dLUMemXpand(jcol, nextlu, LUSUP, &nzlumax, &Glu) )
+		*info = dLUMemXpand(jcol, nextlu, LUSUP, &nzlumax, &Glu) ;
+		if ( *info )
 		    return;
 	    }
     
@@ -304,8 +305,9 @@ dgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
 	       	/* Numeric update within the snode */
 	        dsnode_bmod(icol, jsupno, fsupc, dense, tempv, &Glu);
 
-		if ( *info = dpivotL(icol, diag_pivot_thresh, &usepr, perm_r,
-				    iperm_r, iperm_c, &pivrow, &Glu) )
+		*info = dpivotL(icol, diag_pivot_thresh, &usepr, perm_r,
+				    iperm_r, iperm_c, &pivrow, &Glu) ;
+		if ( *info )
 		    if ( iinfo == 0 ) iinfo = *info;
 		
 #ifdef DEBUG
@@ -345,22 +347,26 @@ dgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
 
 		nseg = nseg1;	/* Begin after all the panel segments */
 
-	    	if ((*info = dcolumn_dfs(m, jj, perm_r, &nseg, &panel_lsub[k],
-					segrep, &repfnz[k], xprune, marker,
-					parent, xplore, &Glu)) != 0) return;
+	    	*info = dcolumn_dfs(m, jj, perm_r, &nseg, &panel_lsub[k],
+				segrep, &repfnz[k], xprune, marker,
+				parent, xplore, &Glu);
+	    	if (*info != 0) return;
 
 	      	/* Numeric updates */
-	    	if ((*info = dcolumn_bmod(jj, (nseg - nseg1), &dense[k],
-					 tempv, &segrep[nseg1], &repfnz[k],
-					 jcol, &Glu)) != 0) return;
+	    	*info = dcolumn_bmod(jj, (nseg - nseg1), &dense[k],
+				 tempv, &segrep[nseg1], &repfnz[k],
+				 jcol, &Glu);
+	    	if (*info != 0) return;
 		
 	        /* Copy the U-segments to ucol[*] */
-		if ((*info = dcopy_to_ucol(jj, nseg, segrep, &repfnz[k],
-					  perm_r, &dense[k], &Glu)) != 0)
+		*info = dcopy_to_ucol(jj, nseg, segrep, &repfnz[k],
+				  perm_r, &dense[k], &Glu);
+		if (*info != 0)
 		    return;
 
-	    	if ( *info = dpivotL(jj, diag_pivot_thresh, &usepr, perm_r,
-				    iperm_r, iperm_c, &pivrow, &Glu) )
+	    	*info = dpivotL(jj, diag_pivot_thresh, &usepr, perm_r,
+				    iperm_r, iperm_c, &pivrow, &Glu) ;
+	    	if ( *info )
 		    if ( iinfo == 0 ) iinfo = *info;
 
 		/* Prune columns (0:jj-1) using column jj */

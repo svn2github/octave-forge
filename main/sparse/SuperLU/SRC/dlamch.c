@@ -1,3 +1,6 @@
+#include "dsp_defs.h"
+#include "util.h"
+
 #define TRUE_ (1)
 #define FALSE_ (0)
 #define min(a,b) ((a) <= (b) ? (a) : (b))

@@ -116,7 +116,7 @@ dgssv(SuperMatrix *A, int *perm_c, int *perm_r, SuperMatrix *L,
     double   t1;	/* Temporary time */
     char     refact[1], trans[1];
     DNformat *Bstore;
-    SuperMatrix *AA; /* A in NC format used by the factorization routine.*/
+    SuperMatrix *AA=NULL; /* A in NC format used by the factorization routine.*/
     SuperMatrix AC; /* Matrix postmultiplied by Pc */
     int      lwork = 0, *etree, i;
     

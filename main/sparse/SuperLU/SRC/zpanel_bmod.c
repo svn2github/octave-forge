@@ -92,7 +92,9 @@ zpanel_bmod (
     doublecomplex       *tempv1;             /* Used in 1-D update */
     doublecomplex       *TriTmp, *MatvecTmp; /* used in 2-D update */
     doublecomplex      zero = {0.0, 0.0};
+#ifdef USE_VENDOR_BLAS
     doublecomplex      one = {1.0, 0.0};
+#endif
     doublecomplex      comp_temp, comp_temp1;
     register int ldaTmp;
     register int r_ind, r_hi;

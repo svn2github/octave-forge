@@ -88,8 +88,11 @@ sp_dtrsv(char *uplo, char *trans, char *diag, SuperMatrix *L,
     SCformat *Lstore;
     NCformat *Ustore;
     double   *Lval, *Uval;
-    int incx = 1, incy = 1;
+    int incx = 1;
+    /* unused variables -aadler
+    int incy = 1;
     double alpha = 1.0, beta = 1.0;
+    */
     int nrow;
     int fsupc, nsupr, nsupc, luptr, istart, irow;
     int i, k, iptr, jcol;
@@ -389,7 +392,9 @@ sp_dgemv(char *trans, double alpha, SuperMatrix *A, double *x,
     }
 
     /* Quick return if possible. */
-    if (A->nrow == 0 || A->ncol == 0 || alpha == 0. && beta == 1.)
+    if (A->nrow == 0 ||
+        A->ncol == 0 ||
+        (alpha == 0. && beta == 1.) )
 	return 0;
 
     /* Set  LENX  and  LENY, the lengths of the vectors x and y, and set 

@@ -56,7 +56,9 @@ zPivotGrowth(int ncols, SuperMatrix *A, int *perm_c,
     extern   double dlamch_(char *);
     double   smlnum;
     doublecomplex   *luval;
+    /* unused variable -aadler
     doublecomplex   temp_comp;
+    */
    
     /* Get machine constants. */
     smlnum = dlamch_("S");

@@ -88,8 +88,12 @@ sp_ztrsv(char *uplo, char *trans, char *diag, SuperMatrix *L,
     SCformat *Lstore;
     NCformat *Ustore;
     doublecomplex   *Lval, *Uval;
-    int incx = 1, incy = 1;
+    int incx = 1;
+
+/* unused variables -aadler
+    int incy = 1;
     doublecomplex alpha = {1.0, 0.0}, beta = {1.0, 0.0};
+*/    
     doublecomplex comp_zero = {0.0, 0.0};
     int nrow;
     int fsupc, nsupr, nsupc, luptr, istart, irow;
@@ -394,9 +398,11 @@ sp_zgemv(char *trans, doublecomplex alpha, SuperMatrix *A, doublecomplex *x,
     }
 
     /* Quick return if possible. */
-    if (A->nrow == 0 || A->ncol == 0 || 
-	z_eq(&alpha, &comp_zero) && 
-	z_eq(&beta, &comp_one))
+    if ( A->nrow == 0 ||
+         A->ncol == 0 ||
+         ( z_eq(&alpha, &comp_zero) &&
+           z_eq(&beta, &comp_one) )
+       )
 	return 0;
 
 

@@ -52,7 +52,7 @@ extern "C" {
 
 /* Prototypes for functions in dcomplex.c */
 void z_div(doublecomplex *, doublecomplex *, doublecomplex *);
-double z_abs(doublecomplex *);     /* exact */
+double z_abs0(doublecomplex *);     /* exact */
 double z_abs1(doublecomplex *);    /* approximate */
 void z_exp(doublecomplex *, doublecomplex *);
 void d_cnjg(doublecomplex *r, doublecomplex *z);

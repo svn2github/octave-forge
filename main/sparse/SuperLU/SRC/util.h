@@ -8,7 +8,10 @@
 #include <assert.h>
 
 /* Macros */
-#ifndef USER_ABORT
+#ifdef USER_ABORT
+/* We need to prototype it to avoid warnings -aadler*/
+void  USER_ABORT(char * ptr);
+#else
 #define USER_ABORT(msg) superlu_abort_and_exit(msg)
 #endif
 
@@ -18,13 +21,19 @@
    USER_ABORT(msg); }
 
 
-#ifndef USER_MALLOC
+#ifdef USER_MALLOC
+/* We need to prototype it to avoid warnings -aadler*/
+void * USER_MALLOC(size_t size);
+#else
 #define USER_MALLOC(size) superlu_malloc(size)
 #endif
 
 #define SUPERLU_MALLOC(size) USER_MALLOC(size)
 
-#ifndef USER_FREE
+#ifdef USER_FREE
+/* We need to prototype it to avoid warnings -aadler*/
+void  USER_FREE(void * ptr);
+#else
 #define USER_FREE(addr) superlu_free(addr)
 #endif
 

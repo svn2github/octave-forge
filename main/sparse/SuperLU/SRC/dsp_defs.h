@@ -241,6 +241,17 @@ extern void    dPrint_Dense_Matrix(char *, SuperMatrix *);
 extern void    print_lu_col(char *, int, int, int *, GlobalLU_t *);
 extern void    check_tempv(int, double *);
 
+/* definition of stub - allows static compile -aadler */
+int dtrsv_(char *uplo, char *trans, char *diag, int *n,
+        double *a, int *lda, double *x, int *incx);
+/* define prototypes from code in SuperLU/CBLAS
+ */
+#ifndef USE_VENDOR_BLAS
+void dlsolve ( int ldm, int ncol, double *M, double *rhs );
+void dusolve ( int ldm,	int ncol, double *M, double *rhs);
+void dmatvec ( int ldm, int nrow, int ncol, double *M,double *vec, double *Mxvec);
+#endif
+
 #ifdef __cplusplus
   }
 #endif

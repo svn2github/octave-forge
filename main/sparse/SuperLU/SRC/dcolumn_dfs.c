@@ -126,7 +126,8 @@ dcolumn_dfs(
    	if ( kperm == EMPTY ) {
 	    lsub[nextl++] = krow; 	/* krow is indexed into A */
 	    if ( nextl >= nzlmax ) {
-		if ( mem_error = dLUMemXpand(jcol, nextl, LSUB, &nzlmax, Glu) )
+		mem_error = dLUMemXpand(jcol, nextl, LSUB, &nzlmax, Glu) ;
+		if ( mem_error )
 		    return (mem_error);
 		lsub = Glu->lsub;
 	    }
@@ -168,8 +169,9 @@ dcolumn_dfs(
 		   	    if ( chperm == EMPTY ) {
 			    	lsub[nextl++] = kchild;
 				if ( nextl >= nzlmax ) {
-				    if ( mem_error =
-					 dLUMemXpand(jcol,nextl,LSUB,&nzlmax,Glu) )
+				    mem_error =
+					 dLUMemXpand(jcol,nextl,LSUB,&nzlmax,Glu) ;
+				    if ( mem_error )
 					return (mem_error);
 				    lsub = Glu->lsub;
 				}

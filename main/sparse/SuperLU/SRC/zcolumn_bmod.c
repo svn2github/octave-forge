@@ -57,6 +57,7 @@ zcolumn_bmod (
  *    Special processing on the supernodal portion of L\U[*,j]
  *
  */
+#ifdef USE_VENDOR_BLAS
 #ifdef _CRAY
     _fcd ftcs1 = _cptofcd("L", strlen("L")),
          ftcs2 = _cptofcd("N", strlen("N")),
@@ -64,6 +65,7 @@ zcolumn_bmod (
 #endif
     int         incx = 1, incy = 1;
     doublecomplex      alpha, beta;
+#endif    
     
     /* krep = representative of current k-th supernode
      * fsupc = first supernodal column
@@ -91,8 +93,10 @@ zcolumn_bmod (
     int          nzlumax;
     doublecomplex       *tempv1;
     doublecomplex      zero = {0.0, 0.0};
+#ifdef USE_VENDOR_BLAS
     doublecomplex      one = {1.0, 0.0};
     doublecomplex      none = {-1.0, 0.0};
+#endif
     doublecomplex	 comp_temp, comp_temp1;
     int          mem_error;
     extern SuperLUStat_t SuperLUStat;
@@ -283,7 +287,8 @@ zcolumn_bmod (
     /* Copy the SPA dense into L\U[*,j] */
     new_next = nextlu + xlsub[fsupc+1] - xlsub[fsupc];
     while ( new_next > nzlumax ) {
-	if (mem_error = zLUMemXpand(jcol, nextlu, LUSUP, &nzlumax, Glu))
+	mem_error = zLUMemXpand(jcol, nextlu, LUSUP, &nzlumax, Glu);
+	if (mem_error )
 	    return (mem_error);
 	lusup = Glu->lusup;
 	lsub = Glu->lsub;

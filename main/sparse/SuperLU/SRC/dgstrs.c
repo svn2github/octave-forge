@@ -87,8 +87,10 @@ dgstrs (char *trans, SuperMatrix *L, SuperMatrix *U,
 #ifdef _CRAY
     _fcd ftcs1, ftcs2, ftcs3, ftcs4;
 #endif
+    /* unused variables -aadler
     int      incx = 1, incy = 1;
     double   alpha = 1.0, beta = 1.0;
+    */
     DNformat *Bstore;
     double   *Bmat;
     SCformat *Lstore;
@@ -97,7 +99,10 @@ dgstrs (char *trans, SuperMatrix *L, SuperMatrix *U,
     int      nrow, notran;
     int      fsupc, nsupr, nsupc, luptr, istart, irow;
     int      i, j, k, iptr, jcol, n, ldb, nrhs;
+    /* unused variables -aadler
     double   *work, *work_col, *rhs_work, *soln;
+    */
+    double   *work, *rhs_work, *soln;
     flops_t  solve_ops;
     extern SuperLUStat_t SuperLUStat;
     void dprint_soln();

@@ -43,7 +43,7 @@ dpruneL(
  *
  */
     double     utemp;
-    int        jsupno, irep, irep1, kmin, kmax, krow, movnum;
+    int        jsupno, irep, irep1, kmin=0, kmax=0, krow, movnum;
     int        i, ktemp, minloc, maxloc;
     int        do_prune; /* logical variable */
     int        *xsup, *supno;

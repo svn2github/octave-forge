@@ -374,7 +374,11 @@ zgssvx(char *fact, char *trans, char *refact,
     int       colequ, equil, nofact, notran, rowequ;
     char      trant[1], norm[1];
     int       i, j, info1;
-    double    amax, anorm, bignum, smlnum, colcnd, rowcnd, rcmax, rcmin;
+    /* FIXME: bignum and smlnum seem to be used
+     * uninitialized here. We set them to zero
+     *  - aadler Feb02
+     */
+    double    amax, anorm, bignum=0, smlnum=0, colcnd, rowcnd, rcmax, rcmin;
     int       relax, panel_size;
     double    diag_pivot_thresh, drop_tol;
     double    t0;      /* temporary time */

@@ -576,9 +576,11 @@ void
 void
 dStackCompress(GlobalLU_t *Glu)
 {
-    register int iword, dword, bytes_to_copy, ndim;
+    register int iword, dword, /* bytes_to_copy, */ ndim;
     char    *last, *fragment;
+    /* unused -aadler
     char     *src, *dest;
+    */
     int      *ifrom, *ito;
     double   *dfrom, *dto;
     int      *xlsub, *lsub, *xusub, *usub, *xlusup;

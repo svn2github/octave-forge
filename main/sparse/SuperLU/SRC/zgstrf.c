@@ -186,7 +186,7 @@ zgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
  */
     /* Local working arrays */
     NCPformat *Astore;
-    int       *iperm_r; /* inverse of perm_r; not used if refact = 'N' */
+    int       *iperm_r= NULL; /* inverse of perm_r; not used if refact = 'N' */
     int       *iperm_c; /* inverse of perm_c */
     int       *iwork;
     doublecomplex    *zwork;
@@ -290,7 +290,8 @@ zgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
 	    new_next = nextlu + (xlsub[fsupc+1]-xlsub[fsupc])*(kcol-jcol+1);
 	    nzlumax = Glu.nzlumax;
 	    while ( new_next > nzlumax ) {
-		if ( *info = zLUMemXpand(jcol, nextlu, LUSUP, &nzlumax, &Glu) )
+		*info = zLUMemXpand(jcol, nextlu, LUSUP, &nzlumax, &Glu);
+		if ( *info )
 		    return;
 	    }
     
@@ -304,9 +305,11 @@ zgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
 	       	/* Numeric update within the snode */
 	        zsnode_bmod(icol, jsupno, fsupc, dense, tempv, &Glu);
 
-		if ( *info = zpivotL(icol, diag_pivot_thresh, &usepr, perm_r,
-				    iperm_r, iperm_c, &pivrow, &Glu) )
-		    if ( iinfo == 0 ) iinfo = *info;
+		*info = zpivotL(icol, diag_pivot_thresh, &usepr, perm_r,
+				    iperm_r, iperm_c, &pivrow, &Glu) ;
+		if ( *info )
+		    if ( iinfo == 0 )
+                        iinfo = *info;
 		
 #ifdef DEBUG
 		zprint_lu_col("[1]: ", icol, pivrow, xprune, &Glu);
@@ -359,8 +362,9 @@ zgstrf (char *refact, SuperMatrix *A, double diag_pivot_thresh,
 					  perm_r, &dense[k], &Glu)) != 0)
 		    return;
 
-	    	if ( *info = zpivotL(jj, diag_pivot_thresh, &usepr, perm_r,
-				    iperm_r, iperm_c, &pivrow, &Glu) )
+	    	*info = zpivotL(jj, diag_pivot_thresh, &usepr, perm_r,
+				    iperm_r, iperm_c, &pivrow, &Glu) ;
+	    	if ( *info )
 		    if ( iinfo == 0 ) iinfo = *info;
 
 		/* Prune columns (0:jj-1) using column jj */

@@ -576,9 +576,11 @@ void
 void
 zStackCompress(GlobalLU_t *Glu)
 {
-    register int iword, dword, bytes_to_copy, ndim;
+    register int iword, dword, /* bytes_to_copy, */ ndim;
     char    *last, *fragment;
+    /* unused variables -aadler
     char     *src, *dest;
+    */
     int      *ifrom, *ito;
     doublecomplex   *dfrom, *dto;
     int      *xlsub, *lsub, *xusub, *usub, *xlusup;

@@ -75,7 +75,7 @@ int zReadVector(FILE *fp, int n, int *where, int perline, int persize)
 int zReadValues(FILE *fp, int n, doublecomplex *destination, int perline, int persize)
 {
     register int i, j, k, s, pair;
-    register double realpart;
+    register double realpart= 0.;
     char tmp, buf[100];
     
     i = pair = 0;
@@ -178,7 +178,7 @@ zreadhb(int *nrow, int *ncol, int *nonz,
 
     register int i, numer_lines = 0, rhscrd = 0;
     int tmp, colnum, colsize, rownum, rowsize, valnum, valsize;
-    char buf[100], type[4], key[10];
+    char buf[100], type[4];
     FILE *fp;
 
     fp = stdin;

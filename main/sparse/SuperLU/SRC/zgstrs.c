@@ -87,8 +87,10 @@ zgstrs (char *trans, SuperMatrix *L, SuperMatrix *U,
 #ifdef _CRAY
     _fcd ftcs1, ftcs2, ftcs3, ftcs4;
 #endif
+    /* unused variables -aadler
     int      incx = 1, incy = 1;
     doublecomplex   alpha = {1.0, 0.0}, beta = {1.0, 0.0};
+    */
     doublecomplex   temp_comp;
     DNformat *Bstore;
     doublecomplex   *Bmat;
@@ -98,7 +100,7 @@ zgstrs (char *trans, SuperMatrix *L, SuperMatrix *U,
     int      nrow, notran;
     int      fsupc, nsupr, nsupc, luptr, istart, irow;
     int      i, j, k, iptr, jcol, n, ldb, nrhs;
-    doublecomplex   *work, *work_col, *rhs_work, *soln;
+    doublecomplex   *work, /* *work_col, */ *rhs_work, *soln;
     flops_t  solve_ops;
     extern SuperLUStat_t SuperLUStat;
     void zprint_soln();
@@ -331,6 +333,10 @@ zprint_soln(int n, int nrhs, doublecomplex *soln)
 {
     int i;
 
+   /* This doesn't work -aadler
     for (i = 0; i < n; i++) 
   	printf("\t%d: %.4f\n", i, soln[i]);
+        */
+    for (i = 0; i < n; i++) 
+  	printf("\t%d: %.4f\n", i, soln[i].r);
 }

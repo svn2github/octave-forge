@@ -244,6 +244,16 @@ extern void    zPrint_Dense_Matrix(char *, SuperMatrix *);
 extern void    print_lu_col(char *, int, int, int *, GlobalLU_t *);
 extern void    check_tempv(int, doublecomplex *);
 
+/* define prototypes from code in SuperLU/CBLAS
+ */
+#ifndef USE_VENDOR_BLAS
+void zlsolve ( int ldm, int ncol, doublecomplex *M, doublecomplex *rhs );
+void zusolve ( int ldm, int ncol, doublecomplex *M, doublecomplex *rhs);
+void zmatvec ( int ldm, int nrow, int ncol, doublecomplex *M, 
+            doublecomplex *vec, doublecomplex *Mxvec);
+#endif
+
+
 #ifdef __cplusplus
   }
 #endif

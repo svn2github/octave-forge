@@ -98,11 +98,12 @@ void zlsolve ( int ldm, int ncol, doublecomplex *M, doublecomplex *rhs )
  * in the rhs vector.
  */
 void
-zusolve ( ldm, ncol, M, rhs )
-int ldm;	/* in */
-int ncol;	/* in */
-doublecomplex *M;	/* in */
-doublecomplex *rhs;	/* modified */
+zusolve (
+int ldm,	/* in */
+int ncol,	/* in */
+doublecomplex *M,	/* in */
+doublecomplex *rhs	/* modified */
+)
 {
     doublecomplex xj, temp;
     int jcol, j, irow;
@@ -129,13 +130,14 @@ doublecomplex *rhs;	/* modified */
  * Performs a dense matrix-vector multiply: Mxvec = Mxvec + M * vec.
  * The input matrix is M(1:nrow,1:ncol); The product is returned in Mxvec[].
  */
-void zmatvec ( ldm, nrow, ncol, M, vec, Mxvec )
-int ldm;	/* in -- leading dimension of M */
-int nrow;	/* in */ 
-int ncol;	/* in */
-doublecomplex *M;	/* in */
-doublecomplex *vec;	/* in */
-doublecomplex *Mxvec;	/* in/out */
+void zmatvec (
+int ldm,	/* in -- leading dimension of M */
+int nrow,	/* in */ 
+int ncol,	/* in */
+doublecomplex *M,	/* in */
+doublecomplex *vec,	/* in */
+doublecomplex *Mxvec	/* in/out */
+)
 {
     doublecomplex vi0, vi1, vi2, vi3;
     doublecomplex *M0, temp;

@@ -4,6 +4,8 @@ Author: A. Schloegl, 1996-2002 <a.schloegl@ieee.org>
 
 ==== 2002 ====
 
+11.04.02 TSA was included in Octave-forge. Changelog not used anymore. 	
+
 05.04.02	AAR		adaptive autoregressive estimation included
 21.03.02	MDURLEV, MFILTER	VAR parameters changed from cell arrays to a  Mx[M*p] matrix 
 		ARFIT2 		arfit-clone included; demonstrates how to use MDURLEV instead of ARFIT  	

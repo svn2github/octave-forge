@@ -21,8 +21,8 @@ my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
 			    # beside octave-forge if they are somewhere else
 			    # or modify this script
 my $CVSTREE = "cvs-tree.html";
-die "Cannot read $CVSTREE  -- edit $script and define the\n",
-    ".html file which was produced by the cvs-tree script\n" unless -r $CVSTREE;
+#die "Cannot read $CVSTREE  -- edit $script and define the\n",
+#    ".html file which was produced by the cvs-tree script\n" unless -r $CVSTREE;
 
 # initialize the indexing variables
 my %index_by_TB_cat   = (); # i_TB_cat{toolbox}{category} = list of functions
@@ -45,19 +45,16 @@ foreach my $f ( @index_files ) {
 	       \%index_by_function);
 }
 
-my $location = `pwd`;
-my $PATH     = "";
-if ($location =~ m\^(.*)/admin$\) {
-    chdir "..";
-    $PATH = "$1/";
-}
+die "No INDEX in current directory" if !-e "INDEX";
+my $summary = !-e "admin/make_index";  # if not in the root, just summarize
+my $include_octave = !$summary;        # only include octave if not summarizing
 
 # locate all C++ and m-files in octave-forge, and all m-files in octave
 # don't need C++ files from octave because we have DOCSTRINGS
 my @m_files = ();
 my @C_files = ();
 find(\&cc_and_m_files, ".");
-find(\&cc_and_m_files, "$OCTAVE/scripts");
+find(\&cc_and_m_files, "$OCTAVE/scripts") if $include_octave;
 sub cc_and_m_files { # {{{1 populates global array @files
     return unless -f and /\.(m|cc)$/;  # .m and .cc files
     if (/\.m$/) {
@@ -127,7 +124,10 @@ foreach my $f ( @m_files ) {
 }
 
 # grab help from octave's DOCSTRINGS
-if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
+if ( !$include_octave ) {
+  # skip DOCSTRINGS if just summary
+}
+elsif (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
     $_ = <IN>;
     while (/^\c_/) {
 	my $function = $_;
@@ -146,6 +146,33 @@ else {
     print STDERR "could not open $OCTAVE/src/DOCSTRINGS !\n";
 }
 
+
+# print a summary table rather than generating the html
+if ( $summary ) {
+    # XXX FIXME XXX add an option to spit out contents.m
+    # XXX FIXME XXX what if there is no toolbox?
+    # XXX FIXME XXX preserve category order
+    foreach my $TB ( sort keys %index_by_TB_cat ) {
+	print "$TB_description{$TB}\n\n";
+	foreach my $cat ( sort keys %{$index_by_TB_cat{$TB}} ) {
+	    print "$cat\n";
+	    foreach my $func ( sort @{$index_by_TB_cat{$TB}{$cat}} ) {
+		my $entry = sprintf("%-13s %s",$func,$function_description{$func});
+		print wrap("","\t\t","  $entry"), "\n";
+	    }
+	}
+    } 
+}
+else {
+    write_html(\%index_by_TB_cat,
+           \%TB_description,
+           \%function_description,
+           \%octave_forge_function,
+           \%index_by_function);
+}
+
+
+
 if (@uncategorized) {
     print scalar(@uncategorized), " uncategorized functions ";
     print "(out of ", $n_functions, " total)\n";
@@ -154,14 +181,6 @@ if (@uncategorized) {
     print "\n";
 #    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
 }
-
-
-write_html(\%index_by_TB_cat,
-           \%TB_description,
-           \%function_description,
-           \%octave_forge_function,
-           \%index_by_function);
-
 
 sub first_sentence { # {{{1
 # grab the first real sentence from the function documentation
@@ -292,7 +311,7 @@ sub register_function { # {{{1
     }
 
     my $oneline = first_sentence($desc);
-    printf "%30s %s\n", $function, $oneline;
+    #printf "%30s %s\n", $function, $oneline;
     $function_description{$function} = $oneline;
 #    push @function_description{$function}}, "$file\n$oneline\n$desc";
     #printf "%-12s %-20s %s\n", $function,

@@ -1,5 +1,16 @@
 Status as of Octave version 2.0.16/2.1.31
 
+To skip all files, add the file NOINSTALL to the directory.
+
+To skip a particular m-file, rename it to *.m-skip.
+
+To skip a particular oct-file, rename it to *.oct-skip.  Note that
+the oct-file will reappear the next time you do a make.  To keep
+file from being built, remove it from the PROGS line of the Makefile.
+
+Note that you cannot override an octave supplied oct-file unless you 
+have configured octave with --enable-shared --enable-lite-kernel. 
+
 Interface changes
 =================
 lin2mu
@@ -20,23 +31,27 @@ Interface extensions
 cross		(warn if receiving mixed row/column vectors)
 contour		(default number of contours)
 fftfilt		(accepts matrices)
-freqz		(accepts frequency vector; plots filter response)
+freqz		(accepts frequency vector; plots filter response; depends
+		 on freqz_plot.m which requires unwrap.m)
 imagesc		(only display if not returning scaled image)
 polyder		(accepts a*b, a/b; auto-reduction of common terms)
 polyderiv	(accepts a*b, a/b; auto-reduction of common terms)
 polygcd		(new function for auto-reduction on polyder)
-rand/randn	(accepts "state" argument; use the Mersenne twister,
-		 a long period random number generator; faster)
 mu2lin		(accepts -1:1 audio range; accepts matrix; 3x faster)
 lin2mu		(accepts -1:1 audio range; accepts matrix)
 cross		(accepts matrices)
 grid		(control x/y grids and grid density independently)
-fsolve		(allow parameters through fsolve to user function)
+fsolve.oct	(allow parameters through fsolve to user function)
+rand.oct	(accepts "state" argument; use the Mersenne twister,
+		 a long period random number generator; faster, but
+		 returns a different sequence from the old generator)
+randn.oct	(same changes as rand.oct)
 
 Bug fixes
 =========
 tf2zp		(search site:www.octave.org for test case)
 zp2tf		(search site:www.octave.org for test case)
+sqrtm           (handles ill-conditioned matrices)
 
 Speedups
 ========
@@ -49,4 +64,7 @@ kron
 rindex
 toeplitz
 vander
-
+triu
+tril
+qr.oct        (qr(A,0) uses economy QR decomposition)
+chol.oct      (use triangle matrix type; see extra/linear-algebra/chol.cc)

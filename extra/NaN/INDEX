@@ -3,4 +3,4 @@ Missing data statistics (not installed by default)
  covm cor cov corrcoef harmmean median statistic
  detrend kurtosis moment std mad nantest normpdf 
  normcdf norminv sumskipnan meandev rms var mean 
- sem zscore spearman rankcorr ranks 
+ sem trimean zscore spearman rankcorr ranks 

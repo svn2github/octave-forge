@@ -27,6 +27,14 @@
 global use_grace_state
 
 if(isempty(use_grace_state))
+  [verstr, status] = system("xmgrace -version", 1);
+  if(status != 0)
+    error("Grace binary not found");
+  endif
+  [v1, v2, v3] = sscanf(verstr(8:20), "%d.%d.%d", "C");
+  if(v1 > 5 || (v1 == 5 && v2 > 2))
+    error("Grace version 5.99 and above are not supported.");  
+  endif
   use_grace_state = "on";
 else
   if strcmp (use_grace_state, "on")

@@ -151,7 +151,8 @@ if strcmp(lower(Mode(1:7)),'pearson');
                         X  = [X,Y];
                 end;  
                 for k = 1:length(jx),
-                        ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
                         [s,n,s2] = sumskipnan(X(ik,[jx(k),jy(k)]),1);
                         v  = (s2-s.*s./n)./n;
                         cc = X(ik,jx(k))'*X(ik,jy(k));
@@ -174,7 +175,8 @@ elseif strcmp(lower(Mode(1:4)),'rank');
                         X = [X,Y];
                 end;  
                 for k = 1:length(jx),
-                        ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         r(k) = corrcoef(il(:,1),il(:,2));
                 end;
@@ -191,7 +193,8 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
                 [r,n] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
         else
                 for k = 1:length(jx),
-                        ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
+                        ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         % NN is the number of non-missing values
                         [r(k),n(k)] = sumskipnan((il(:,1) - il(:,2)).^2);

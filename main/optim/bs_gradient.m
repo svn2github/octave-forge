@@ -9,61 +9,28 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-
-## bs_gradient(f, x0, [h, O]) 
 ##
+## Changelog :
+## 2002/04/24 Etienne Grossmann <etienne@isr.ist.utl.pt>
+##    - Copy bs_gradient.m
+##    - Remove everything except 1st derivative calculation
+##    - Do modifs to take args, narg as arguments
 
-function dx = bs_gradient(f, x0, ...)
+## [dx, nev] = bs_gradient2 (f, args, narg)
+function [dx,nev] = bs_gradient2(f, args, narg)
 
-  if(nargin < 2)
-    error("not enough arguements\n");
-  endif
-  if(!isstr(f))
-    error("The first arguement must be a string\n");
-  endif
-  if(!is_vector(x0))
-    error("The second arguement must be a vector.\n");
-  endif
-  if(nargin >= 3)
-    va_start();
-    h = va_arg();
-    if(!is_scalar(h))
-      if(is_vector(h))
-	if(size(x0) != size(h))
-	  error("If h is not a scalar it must be the same size as x0.\n");
-	endif
-      endif
-    else
-      h = size(x0)*h;
-    endif
-    if(nargin >= 4)
-      O = va_arg()
-      if((O != 2) && (O != 4))
-	error("Only order 2 or 4 is supported.\n");
-      endif
-      if(nargin >= 5)
-	warning("ignoring arguements beyond the 4th.\n");
-      endif
-    endif
-  else
-    h = size(x0)*0.0000001;
-    O = 2;
-  endif
+  nev = 2*prod (sz = size (x0 = x1 = nth (args,narg)));
 
-  
-  dx = zeros(size(x0));
-  if(O == 2)
-    for i = 1:max(size(x0))
-      del = zeros(size(x0));
-      del(i) = h(i);
-      dx(i) = (feval(f,x0+del)-feval(f,x0-del))./(2*h(i));
-    endfor
-  elseif(O ==4)
-    for i = 1:max(size(x0))
-      del = zeros(size(x0));
-      del(i) = h(i);
-      dx(i) = (-feval(f,x0+2*del)+8*feval(f,x0+del)-8*feval(f,x0-del)+feval(f,x0-2*del))./(12*h(i));
-    endfor	  
-  endif
+  h = 0.00000001;
+  dx = zeros (1, prod (sz));
+  for i = 1:prod(sz)
+    tmp = x0(i);
+    x0(i) += h; x1(i) -= h;
+    dx(i) = \
+	leval (f, splice (args, narg, 1, list (x0))) - \
+	leval (f, splice (args, narg, 1, list (x1)));
+    x0(i) = x1(i) = tmp;
+  endfor
+  dx ./= 2*h;
 endfunction
 

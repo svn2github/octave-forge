@@ -1,18 +1,27 @@
 This directory contains documentation about octave in general.  Documentation
 for specific packages should go in the individual package directories.
 
-New documents must be referenced from index.html
+If you modify an existing document, do the following:
 
-To access the document from the octave.sf.net home page, upload it as
-follows:
+	set OFHOME [forge-ID@]octave.sf.net:/home/groups/o/oc/octave/htdocs
+	cvs commit file.html
+	scp file.html $OFHOME
 
-  scp file.html user@octave.sf.net:/home/groups/o/oc/octave/htdocs
+This copies the document to the octave-forge web server so that the changes
+will be visible there.
 
-If this is a new document, then you will need to reference it from 
-octave.sf home page and make the file group writable:
+If you are creating a new document, you will need to do the following:
 
-  ssh -l user octave.sf.net
-  cd /home/groups/o/oc/octave/htdocs
-  vi index.html
-  chmod g+w file.html
+	cvs add file.html          # tell the CVS server about the new file
+	vi index.html		   # add your page to the octave-forge set
+	vi octave-forge-home.html  # add your page to the octave-forge homepage
+	cvs commit file.html index.html octave-forge-home.html
+				   # update the CVS server
+	scp file.html octave-forge-home.html $OFHOME
+				   # update the octave-forge web
+	ssh [forge-ID@]octave.sf.net
+	cd /home/groups/o/oc/octave/htdocs
+	chmod 664 file.html	   # set group edit permission on the file
 
+Paul Kienzle
+2001-12-21

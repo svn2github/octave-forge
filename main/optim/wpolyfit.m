@@ -37,14 +37,25 @@
 ## @end example
 ## Use @var{dy}=[] if uncertainty is unknown.
 ##
-## You can use a chi^2 test to asses how well the polynomial fits
-## the data:
+## You can use a chi^2 test to reject the polynomial fit:
 ## @example
-## p_good = 1-chisquare_cdf(s.normr^2,s.df);
+## p = 1-chisquare_cdf(s.normr^2,s.df);
 ## @end example
-## p_good is the probability of seeing a chi^2 value higher than
-## that which was observed assuming the data are normally distributed
-## around the fit.
+## p is the probability of seeing a chi^2 value higher than that which 
+## was observed assuming the data are normally distributed around the fit.
+## If p < 0.01, you can reject the fit at the 1% level.
+##
+## You can use an F test to determine if a higher order polynomial 
+## improves the fit:
+## @example
+## [poly1,S1] = wpolyfit(x,y,dy,n);
+## [poly2,S2] = wpolyfit(x,y,dy,n+1);
+## F = (S1.normr^2 - S2.normr^2)/(S2.normr^2/S2.df);
+## p = 1-f_cdf(F,1,S2.df);
+## @end example
+## p is the probability of observing the improvement in chi^2 obtained
+## by adding the extra parameter to the fit.  If p < 0.01, you can reject 
+## the higher order polynomial at the 1% level.
 ##
 ## You can estimate the uncertainty in the polynomial coefficients 
 ## themselves using
@@ -150,7 +161,7 @@ function [p_out, s] = wpolyfit (varargin)
 
   if nargout == 0
     good_fit = 1-chisquare_cdf(s.normr^2,s.df);
-    printf("Polynomial: %s  [ p(good)=%.2f%% ]\n", polyout(p,'x'), good_fit*100);
+    printf("Polynomial: %s  [ p(chi^2>observed)=%.2f%% ]\n", polyout(p,'x'), good_fit*100);
     plt(x,y,dy,p,s,'ci');
   else
     p_out = p;

@@ -1,0 +1,69 @@
+## Copyright (C) 2000 Paul Kienzle
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+## th = poly2th(a,b,c,d,f,v,T)
+## Represent the generalized Multi-Input, Single-Output (MISO) system
+## defined as follows:
+##
+##                      / B_i(q)        \     C(q)
+## A_j(q)y(t) =   sum   | ------ u_i(t) | +   ---- e_j(t) 
+##              1<i<=bn \ F_i(q)        /     D(q)
+##
+## e is white noise
+## u is the input signal
+## y is the output signal
+##
+## v is the variance on the noise (default is 1)
+## T is the sampling interval (default is 1)
+##
+## See also: mktheta, idsim
+
+## TODO: incorporate delays: if system is discrete (T>0), then delay for
+## TODO: input i is the number of leading zeros in b(:,i)
+function th = poly2th(a,b,c,d,f,v,T)
+  if nargin<1 || nargin>7,
+    usage("th = poly2th(a,b,c,d,f,v,T)");
+  endif
+  th.a = a;
+  if nargin<2, th.b=[]; else th.b = b; endif
+  if nargin<3, th.c=1;  else th.c=c; endif
+  if nargin<4, th.d=1;  else th.d=d; endif
+  if nargin<5, th.f=[]; else th.f=f; endif
+  if nargin<6, th.v=1;  else th.v=v; endif
+  if nargin<7, th.T=1;  else th.T=T; endif
+
+  if size(th.a,1) == 1, th.a = th.a.'; endif
+  if size(th.b,1) == 1, th.b = th.b.'; endif
+  if size(th.c,1) == 1, th.c = th.c.'; endif
+  if size(th.d,1) == 1, th.d = th.d.'; endif
+  if size(th.f,1) == 1, th.f = th.f.'; endif
+
+  if isempty(th.f), th.f = ones(1,columns(th.b)); endif
+
+  na = columns(th.a);
+  nb = columns(th.b);
+  nc = columns(th.c);
+  nd = columns(th.d);
+  nf = columns(th.f);
+  
+  if nf != nb
+    error("poly2th f and b must have the same number of columns");
+  endif
+
+  if nc>1 || nd>1
+    error("poly2th: c and d may only have one column");
+  endif
+endfunction

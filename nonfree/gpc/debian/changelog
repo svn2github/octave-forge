@@ -1,0 +1,21 @@
+octave-gpc (0.1.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Rafael Laboissiere <rafael@icp.inpg.fr>  Thu, 26 Jul 2001 16:34:01 +0200
+
+octave-gpc (0.1-2) unstable; urgency=low
+
+  * debian/copyright: Added url location of upstream source.
+
+ -- Rafael Laboissiere <rafael@icp.inpg.fr>  Mon, 23 Jul 2001 13:25:49 +0200
+
+octave-gpc (0.1-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Rafael Laboissiere <rafael@icp.inpg.fr>  Fri,  4 Aug 2000 15:13:57 +0200
+
+Local variables:
+mode: debian-changelog
+End:

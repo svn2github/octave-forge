@@ -1,0 +1,34 @@
+
+dnl Do we have tcl/tk?
+AC_SUBST(DEFHAVE_TCLTK)
+HAVE_TCLTK=1
+AC_CHECK_HEADERS(tcl.h tk.h,, HAVE_TCLTK=0)
+AC_CHECK_LIB(tcl, Tcl_Init,, HAVE_TCLTK=0)
+AC_CHECK_LIB(tk, Tk_Init,, HAVE_TCLTK=0)
+if test $HAVE_TCLTK = 1 ; then
+	DEFHAVE_TCLTK="HAVE_TCLTK=1"
+else
+	DEFHAVE_TCKTK=
+fi
+
+dnl Do we have BLT?
+AC_SUBST(DEFHAVE_BLT)
+HAVE_BLT=1
+AC_CHECK_HEADERS(blt.h,, HAVE_BLT=0)
+AC_CHECK_LIB(BLT, Blt_Init,, HAVE_BLT=0,-ltcl -ltk)
+if test $HAVE_BLT = 1 ; then
+	DEFHAVE_BLT="HAVE_BLT=1"
+else
+	DEFHAVE_BLT=
+fi
+
+dnl Do we have VTK?
+AC_SUBST(DEFHAVE_VTK)
+HAVE_VTK=1
+AC_CHECK_HEADERS(vtk/vtk.h,, HAVE_VTK=0)
+if test $HAVE_VTK = 1 ; then
+	DEFHAVE_VTK="HAVE_VTK=1"
+else
+	DEFHAVE_VTK=
+fi
+

@@ -1,0 +1,60 @@
+These are some function for computational geometry. They depend on
+the qhull library [1]. 
+
+Build Instructions
+------------------
+
+First you need the qhull library.
+
+a.) install the qhull program from [2]. 
+
+    Add the following target to src/Makefile:
+
+libqhull.so: $(OBJS)
+	c++ -shared -Xlinker -soname -Xlinker $@ -o libqhull.so $(OBJS)
+
+    Build the shared library
+
+	make libqhull.so
+
+    Install the lib to place where the linker can find it.
+	cp libqhull.so /usr/local/lib
+	ldconfig -v.
+
+    Copy all the header files where the C compiler can find them
+	mkdir /usr/local/include/qhull
+	cp qhull/src/*.h /usr/local/include/qhull
+
+b.) Download a qhull 'lite' package from my homepage. [3]
+	
+	make
+	make install
+
+    The lite package contains only the files needed to build the 
+    lib and a adapted Makefile. I have removed all docfiles, too. 
+    So, if you want to develop with qhull choose the package from [2].
+
+Next you need to build the geometry toolbox.
+
+a.) if you are using this package as part of OctaveSF, return the root
+    of the OctaveSF tree and follow the instructions in INSTALL
+
+b.) if you are using this package independently, just type
+
+	make
+
+    and either copy the m-files and oct-files from the current
+    directory onto your octave LOADPATH or update your LOADPATH
+    to include the current directory.
+
+
+[1] http://www.geom.umn.edu/software/qhull/
+[2] ftp://ftp.geom.umn.edu/pub/software/qhull.tar.Z
+[3] http://user.berlin.de/~kai.habel/libqhull.tar.gz
+
+Kai Habel
+kai.habel@gmx.de
+
+2001-09-19 Paul Kienzle
+* Instructions for build within unified octaveSF tree
+

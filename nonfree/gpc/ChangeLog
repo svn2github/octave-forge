@@ -1,0 +1,25 @@
+2001-07-27  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* configure.in: Bumped version number to 0.1.1.
+
+	* README: Copyright notice.
+
+	* NEWS: Copyright notice and information about release 0.1.1.
+
+2001-07-26  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* gpc_write.cc (gpc_write): Correctly call get_gpc_pt, avoid
+	segmentation faults.
+
+	* gpc_create.cc (gpc_create): Removed spurious call to warning ().
+
+2001-07-25  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* gpc_plot.m: Fixed logic for assigning values to default input
+	parameters.  Thanks to Etienne Grossmann
+	<etienne@anonimo.isr.ist.utl.pt>.
+
+2001-07-23  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* Initial release 0.1.
+

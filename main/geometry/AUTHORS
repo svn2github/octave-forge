@@ -1,0 +1,8 @@
+Kai Habel (kai.habel@gmx.de)
+ - All .cc and .m files, Makefile rules.
+
+Etienne Grossmann (etienne@isr.ist.utl.pt) 
+ - Wrapping up.
+
+Paul Kienzle
+ - Integrate with the octaveSF tree

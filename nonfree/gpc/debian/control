@@ -1,0 +1,15 @@
+Source: octave-gpc
+Section: contrib/math
+Priority: optional
+Maintainer: Rafael Laboissiere <rafael@icp.inpg.fr>
+Standards-Version: 3.5.2
+Build-Depends: debhelper, libgpcl-dev, octave2.1-headers
+
+Package: octave-gpc
+Architecture: any
+Depends: octave2.1, ${shlibs:Depends}
+Description: Octave bindings for the General Polygon Clipper Library
+ GPC is a flexible and highly robust polygon set operations library for use
+ with C applications.  This package contains bindings for use of the library
+ functions with Octave.
+

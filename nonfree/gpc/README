@@ -1,0 +1,176 @@
+Octave-GPC README
+$Id$
+
+Copyright (C) 2001  Rafael Laboissiere
+See the end for copying conditions.
+
+
+=======================================================
+Octave bindings for the General Polygon Clipper Library
+=======================================================
+
+
+Introduction
+------------
+
+The General Polygon Clipper is a flexible and highly robust polygon set
+operations library for use with C applications written by Alan Murta (see
+http://www.cs.man.ac.uk/~amurta/software/index.html#gpc for details).  The
+octave-gpc package implements Octave bindings for GPC.  Almost all the
+functionalities of the C API are replicated in the Octave API.
+
+
+Requirements
+------------
+
+The code for the Octave DLD functions depends on features specific to the
+2.1.x series of Octave (development branch).  Although the 2.1 branch is
+designated "unstable", the author does not have found major problems in
+using octave-gpc with Octave 2.1.32.  Although, incompatible changes
+may happen across minor versions of the development branch.  If octave-gpc
+does not work with later versions of Octave, please notify the author.
+
+Octave-gpc depends on a shared library version of GPC, version 2.31 or
+later, called libgpcl.  The package distributed in the GPC web site has a
+very rudimentary Makefile, which does not buidl a shared library.  The
+Debian GNU/Linux package for GPC (called gpcl due to clash name with the
+GNU Pascal Compiler) uses a Libtool/Automake configuration setup that
+allows the building and installation of the shared library.  You can obtain
+the Debian package at http://packages.debian.org/libgpcl-dev.  You will
+need both the .orig.tar.gz and the .diff.gz files.
+
+
+Configuration, Build, & Installation
+------------------------------------
+
+Octave-gpc uses autoconf and automake for configuration.  The file INSTALL
+contains general installation intructions.  Configure the package with
+./configure.  The --help option to configure gives a list of options
+available for changing the default behavior.  In particular, options
+--with-octave and --with-mkoctfile should be used to indicate the location
+of version 2.1 for the programs octave and mkoctfile.  The other
+configuration parameters (destination of .m and .oct files, as well as the
+libexec directory) are guessed using the mkoctfile program.
+
+Building and installation should be as simple as typing "make" and "make
+install". 
+
+
+Using the Octave bindings
+-------------------------
+
+The functions of the octave-gpc package manipulate a special type of Octave
+object, called gpc_polygon.  This object stores internally a C gpc_polygon
+structure, as defined by the GPC library.  Since its members cannot be
+directly accessible from Octave, octave-gpc allows an intermediary
+representation.  A gpc_polygon is fully defined by three matrices:
+
+  1) A `vertices' matrix containing the x and y coordinates of the points
+     corresponding to the vertices of the polygon.  This must always be a
+     two-column matrix (x is the first column, y the second, one point per
+     row). The polygon is always assumed to be closed, so there is no need
+     to replicate the first point at the last row.
+
+  2) An `indices' matrix defining the contours that compound the
+     polygon. This is a two-column matrix of integer values, one line for
+     each contour.  The first and second column indicate, respectively, the
+     initial amd final row indices in the "vertices" matrix.
+
+     For example, if vertices = [1, 12; 13, 16], the polygon is composed of
+     two contours, whose vertices are  vertices(1:12,:) and
+     vertices(13:16,:).
+
+  3) A `hole' boolean vector indicating if each contour is a hole or not.
+
+     In the example above, if hole = [0; 1], the polygon defined by the
+     points vertices(13:16,:) is a hole.
+
+These three matrices can be given as arguments to the function gpc_create.
+This function returns a Octave object of type gpc_polygon:
+
+  octave> p = gpc_create (vertices, indices, hole);
+
+The `indices' and `hole' arguments are optional.  `hole' defaults to
+zeroes(size(indices,1),2), while indices defaults to [1,size(vertices,1)].
+
+Polygons in octave-gpc can also be represented by an Octave struct
+containing the fields `vertices', `indices', and `hole'.  gpc_create also
+accept a single struct argument:
+
+    octave> m.vertices = vertices,
+    octave> m.indices = indices;
+    octave> m.hole = hole;
+    octave> p = gpc_create (m);
+
+It is possible to obtain the associated struct of a gpc_polygon object by
+using the gpc_get function:
+
+    octave> m = gpc_get (p);
+
+Another way of creating gpc_polygon objects is by reading a polygon
+definition from a file:
+
+    octave> p = gpc_read ("filename");
+
+The file should be in the format described in the GPC library
+documentation.  gpc_polygon objects can be saved in that format using
+gpc_write:
+
+    octave> gpc_write (p, "filename");
+
+To assert if a given variable is a gpc_polygon object, use the
+gpc_is_polygon funciton:
+
+    octave> if gpc_is_polygon (p), disp "You are in business", endif;
+
+The clipping operations in octave-gpc are realized by the gpc_clip
+function:
+
+    octave> gpc_clip (p, q, operation);
+
+where `p' and `q' are gpc_polygon objects and `operation' is one of the
+strings "DIFF", "INT", "XOR", or "UNION".  If the third argument is
+omitted, `operation' defaults to "INT".  See the GPC documentation for the
+meaning of these operations.
+
+General polygons can be represented by tristrips, a collection of triangles
+suitable for fill plottings.  To transform a gcp_polygon into its tristrip
+representation, use:
+
+    octave> q = gcp_tristrip (p);
+
+In octave-gpc, there is a convenience script for plotting polygons called
+gpc_plot.  Its simplest invocation is as follows:
+
+    octave> gpc_plot (p);
+
+This call will plot the gpc_polygon `p' in the current figure and let it in
+the `hold on' state.  With a second argument, it is possible to specify a
+line format for the plot.  For instance:
+
+   octave> gpc_plot (p, "b.");
+
+will plot the polygon with the blue, dotted lines.  You can use a third
+argument with value 1 if the polygon is actually a tristrip.  In this case,
+if the `fill' function is available, a fill plot will be done.  (`fill' is
+available in the matcompat package; see http://octave.sf.net).
+
+----------------------------------------------------------------------
+Copyright information:
+
+Copyright (C) 2001  Rafael Laboissiere <rafael@laboissiere.net>
+
+   Permission is granted to anyone to make or distribute verbatim copies
+   of this document as received, in any medium, provided that the
+   copyright notice and this permission notice are preserved,
+   thus giving the recipient permission to redistribute in turn.
+
+   Permission is granted to distribute modified versions
+   of this document, or of portions of it,
+   under the above conditions, provided also that they
+   carry prominent notices stating who last changed them.
+
+
+Local variables: 
+mode: indented-text
+End:

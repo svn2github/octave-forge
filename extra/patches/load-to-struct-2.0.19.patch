@@ -1,0 +1,92 @@
+Hi,
+  The patch allows octave to load variables from a file into a structure
+variable, which is possible in Matlab. Patch is against 2.0.14. Cd to
+octave source and use patch -p1
+
+*** orig/ChangeLog	Mon Oct 30 16:49:53 2000
+--- octave-2.0.14/ChangeLog	Mon Oct 30 16:52:30 2000
+***************
+*** 1,3 ****
+--- 1,7 ----
++ Mon Oct 30 16:50:00 2000  K.M.A. Chai
++ 	* src/load-save.cc: included a quick hack in do_load(..) that allows
++ 	loading of variables from file into a structure variable, to make
++ 	octave more Matlab-compatible.
+  Sun Oct  1 17:25:32 2000  K.M.A. Chai
+  	* liboctave/dMatrix.h (Matrix cumprod (int dim = 0) const): Added
+  	extra argument indicate the dimension along which the operation is
+*** orig/src/load-save.cc	Mon Oct 30 16:47:08 2000
+--- octave-2.0.14/src/load-save.cc	Mon Oct 30 16:47:01 2000
+*************** Software Foundation, 59 Temple Place - S
+*** 48,53 ****
+--- 48,54 ----
+  #include "load-save.h"
+  #include "mappers.h"
+  #include "oct-obj.h"
++ #include "oct-map.h"
+  #include "pager.h"
+  #include "pt-exp.h"
+  #include "pt-fvc.h"
+*************** do_load (istream& stream, const string& 
+*** 1534,1539 ****
+--- 1535,1541 ----
+  	 int argv_idx, int argc, int nargout)
+  {
+    octave_value_list retval;
++   Octave_map retstruct;
+  
+    ostrstream output_buf;
+    int count = 0;
+*************** do_load (istream& stream, const string& 
+*** 1608,1614 ****
+  		    }
+  		  else
+  		    {
+! 		      install_loaded_variable (force, name, tc, global, doc);
+  		    }
+  		}
+  
+--- 1610,1623 ----
+  		    }
+  		  else
+  		    {
+! 		      if(nargout==1)
+! 			{
+! 			  retstruct[name]=tc;
+! 			}
+! 		      else
+! 			{
+! 			  install_loaded_variable (force, name, tc, global, doc);
+! 			}
+  		    }
+  		}
+  
+*************** do_load (istream& stream, const string& 
+*** 1636,1641 ****
+--- 1645,1655 ----
+  	}
+      }
+  
++   if(nargout==1)
++     {
++       retval = octave_value(retstruct);
++     }
++ 
+    if (list_only && count)
+      {
+        output_buf << ends;
+*************** do_load (istream& stream, const string& 
+*** 1655,1662 ****
+--- 1669,1680 ----
+  
+  DEFUN_TEXT (load, args, nargout,
+    "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n\
++    argout = load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n\
+  \n\
+  Load variables from a file.\n\
++ \n\
++ if argout is given on the LHS, then the variables are loaded into variable argout\n\
++ as a structure.\n\
+  \n\
+  If no argument is supplied to select a format, load tries to read the\n\
+  named file as an Octave binary, then as a .mat file, and then as an\n\

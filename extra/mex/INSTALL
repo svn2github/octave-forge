@@ -1,0 +1,14 @@
+To use mex, first compile the mex.cc support library.
+
+a.) If you are using the octaveSF package, then you won't
+    need to do anything---it was compiled and installed when you
+    compiled and installed octaveSF and you can skip the remaining
+    instructions.
+
+b.) If you are using mex with octave 2.0.x, edit the Makefile and
+    replace 'mkoctfile' with 'mkoctfile -DHAVE_OCTAVE_20'.
+
+c.) Type make to build mex.o and mex
+
+d.) Move mex to your executable path (e.g., ~/bin) and mex.1 to your
+    man path and you are done

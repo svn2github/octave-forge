@@ -1,0 +1,258 @@
+=======================================================================
+Simple end user installation
+
+$ tar xzf octave-forge-<ver>.tar.gz
+$ cd octave-forge-<ver>
+$ find . -name NOINSTALL -print
+
+This lists the packages that won't be installed by default.  For
+explanations, see the end of this file.  Remove NOINSTALL for each 
+one that you do indeed want to install.
+
+$ ./configure --with-path=~/octave-forge --prefix=~
+$ make
+$ make install
+
+Remove anything from ~/octave-forge/FIXES that are superceded by recent 
+versions of Octave.
+
+Add the following to ~/.octaverc:
+
+    LOADPATH = [ getenv("HOME"), "/octave-forge//:", LOADPATH ];
+    EXEC_PATH = [ getenv("HOME"), "/octave-forge/bin:", EXEC_PATH ];
+
+If you are using Octave 2.0.x, copy extra/ver20 to ~/octave-forge/ver20
+and add 
+    LOADPATH = [ getenv("HOME"), "/octave-forge/ver20:", LOADPATH ];
+after the previous LOADPATH update statement.
+
+If you are using mex files, make sure that ~/bin is on your path.
+The [much too terse] man page for the mex program is in ~/man/man1.  
+You can read it with "nroff -man ~/man/man1/mex.1 | more"
+
+=======================================================================
+Simple system installation
+
+$ tar xzf octave-forge-<ver>.tar.gz
+$ cd octave-forge-<ver>
+$ find . -name NOINSTALL -print
+
+This lists the packages that won't be installed by default.  For
+explanations, see the end of this file.  Remove NOINSTALL for each 
+one that you do indeed want to install.
+
+$ ./configure
+$ make
+$ su
+root$ cd <path-to>/octave-forge-<ver>
+root$ make install
+
+Remove anything from <site-m-files>/octave-forge/FIXES and <site-oct-files>
+that are superceded by recent versions of Octave.
+
+If you are using Octave 2.0.x, copy extra/ver20 to <site-m-files>/ver20,
+and make sure that <site-m-files>/ver20 is listed first on you system
+LOADPATH.  You can set this up in
+	/usr/local/share/octave/<version>/m/startup/octaverc.m
+or whatever the system startup file is on your site. 
+
+=======================================================================
+Details
+
+The source archive is compiled using tar and compressed using gzip.
+Unpack the archive using
+	$ tar xzf octave-forge-<ver>.tar.gz
+or if you are not using GNU tar
+	$ gunzip -c octave-forge-<ver>.tar.gz | tar xf -
+Then change to the octave-forge directory
+	$ cd octave-forge-<ver>
+
+This assumes you have a file octave-forge-<ver>.tar.gz.  If you are
+building from CVS sources, you will need to login to the server 
+	$ cvs -d:pserver:anonymous@cvs.octave.sf.net:/cvsroot/octave login 
+[press <Enter> when it asks for a password] and check out the source tree
+	$ cvs -z3 -d:pserver:anonymous@cvs.octave.sf.net:/cvsroot/octave co \
+		octave-forge
+If you want a specific version yyyy.mm.dd, then specify "-r Ryyyy-mm-dd".
+Next remove the CVS control files
+	$ find octave-forge -name CVS -print | xargs rm -rf
+Then change to the octave-forge directory
+	$ cd octave-forge
+and build the configure script
+	$ ./autogen.sh
+
+Packages containing the file NOINSTALL will not be built or installed.
+    $ find . -name NOINSTALL -print
+Remove any NOINSTALL files from packages that you actually want to install.
+
+Environment variables:
+
+    Some configuration options are taken from the environment.  These 
+    may be specified using
+	$ var1=val1 var2=val2 ... ./configure
+    or if you are not using the borne shell
+	$ env var1=val1 var2=val2 ... ./configure
+
+
+    MKOCTFILE=...
+	Override the default mkoctfile used to build oct-files.  Normally
+	you will not need to specify it, but if you are maintaining
+	separate versions of Octave on your system (e.g., a patched
+	version in addition to the normal version, or version 2.0 in
+	addition to version 2.1), you will need to specify which version
+	you are building for directly.
+
+    CFLAGS=...
+    CC=...
+    CXX=...
+    CXXFLAGS=...
+    etc.
+	Override the compiler options
+
+Configure options:
+
+    --with-path=...
+	Base install directory.  m-files will be installed in
+	mpath=<prefix>/<package>, where <package> is the name 
+	of the directory containing the m-file. oct-files will be 
+	installed in opath=<prefix>/oct.  Supporting executables 
+	will be installed in xpath=<prefix>/bin.  
+
+        The default path, opath, and xpath are extracted from 
+        <octave/defaults.h> and will depend on how your version of 
+        Octave was built.  Watch the output of make install to see 
+        which paths it uses.  If your system is set up correctly, you 
+	will not need to specify --prefix, and upon install all the 
+        scripts will be available to you.  Note that by default the
+        scripts are all placed in the version-specific directories 
+        of Octave, so if you upgrade to a new version of Octave, you 
+        will need to rebuild and reinstall octave-forge.  Any data files 
+        (e.g., main/audio/data/sample.wav) are in the mpath.
+
+	If you are not using the default, you may need to point your 
+        load and exec paths to the new directories.  If you are 
+        installing in a system-wide directory, then update the octave 
+        startup file to set LOADPATH and EXEC_PATH. This is usually
+           /usr/local/share/octave/<version>/m/startup/octaverc.m
+        or something similar.  
+
+	If you are installing as an end user set the loadpath in 
+	your .octaverc file.
+
+    --with-mpath=...
+    --with-opath=...
+    --with-xpath=...
+	Override the default install path for m-files, oct-files
+	and executables.
+
+    --prefix=/usr/local
+    --mandir=$prefix/man
+    --bindir=$prefix/bin
+    --libdir=$prefix/lib
+	Where to put things to be found by the shell, such as the
+	mex command.
+	
+
+    --x-includes=...
+    --x-libraries=...
+	Location of the X11 headers and libraries.  ./configure will
+	usually find these automatically.
+
+    --enable-nonfree
+    --disable-nonfree
+	*** NOT YET IMPLEMENTED ***
+	Include or exclude the non-free software from the build.  The
+	default is to exclude it. 
+
+    --enable-extra
+    --disable-extra
+	*** NOT YET IMPLEMENTED ***
+	Include or exclude the extra software from the build.  The
+	default is to include some of it, but not all.
+
+Make targets:
+
+    make 
+	Build the supporting executables and the oct-files
+    make clean
+	Remove all the temporary files and constructed files
+    make install
+	Install files to the appropriate path
+    make dist
+	Build the distribution tar file
+
+
+Functions which are fixes to m-files distributed with Octave are
+included in the directory octave-forge-<ver>/FIXES.  If you have a 
+bleeding edge version of Octave, then the fixes may have already been
+incorporated and you can simply delete them from the installed tree
+<mpath>/FIXES and <opath>.  Or you can leave them in place and live 
+with a potentially out of date function.  If you find a bug in a 
+function in FIXES, check if it has been fixed in the latest 
+distribution of Octave before reporting it.
+
+*** NOTE *** If/when functions move from octave-forge into Octave proper,
+we are going to have trouble keeping track of stuff in FIXES.  Perhaps
+if we list which version of Octave incorporates the fixes, then we can
+using octave -v to check if the target installation version already
+includes it and customize the installation accordingly.
+
+Sorry, there is no uninstall target.  make install will tell you where
+it put things.  Remember it, so you can remove them later when you
+upgrade octave or octave-forge.
+
+========================================================================
+Uninstalled packages
+
+Not all packages will be installed by default.  To find out which are not,
+run the following command from the octave-forge root:
+
+    $ find . -name NOINSTALL -print
+
+As of this writing, you will see:
+
+nonfree/gpc
+	this package has its own configure script.  Execute that before
+	removing NOINSTALL and running make from the top level.
+
+nonfree/splines
+	nonfree packages will not be installed by default
+
+extra/tk_octave
+	This version of tk_octave depends on octave compiled with
+	pthreads.  Since it isn't usually, this will not be installed
+	by default.
+
+extra/patches
+	The build process does not modify octave itself, but there 
+	are a number of patches included in extra/patches which 
+	you could apply to the octave sources by hand.  Some of the 
+	patches may have already been applied if you are using the 
+	bleeding-edge octave.  Most of them will not apply if you 
+	are using the 2.0 series.  The patches may not apply cleanly 
+	to the bleeding-edge octave and may even conflict with each 
+	other.  Patches should include the Octave version number on
+	which they are based.
+
+extra/ver20
+	Backported functions on which functions in main depend, or
+	backported versions of functions in main.  These were mentioned
+	above
+
+extra/Windows
+	Functions specific to windows. These are things like image, 
+	which load a different image display program than the default 
+	unix image display programs.  Copy this directory somewhere 
+	and put it ahead of all the Octave system directories in 
+	LOADPATH.
+
+extra/engine
+	No installation scripts written yet.
+
+extra/fake-sparse
+	Real sparse routines are included in main, but you may want
+	these if you can't use DLD functions
+
+extra/testfun
+	functions for embedding demo and test scripts in m-files; not
+	sure if we want to use them

@@ -1,0 +1,100 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(octave-gpc.h)
+
+AM_INIT_AUTOMAKE(octave-gpc, 0.1.1)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CPP
+
+AC_PATH_PROG(PERL, perl)
+
+AC_ARG_WITH(octdir,
+  [
+  --with-octdir           Specify the path for installation of .oct
+                          files.  If not given, try to determine it by 
+                          running octave --version.],
+  [OCTDIR=$withval])
+
+AC_ARG_WITH(mdir,
+  [
+  --with-mdir             Specify the path for installation of .m files.
+                          If not given, try to determine it by running
+                          octave --version.],
+  [MDIR=$withval])
+
+AC_ARG_WITH(libexec,
+  [
+  --with-libexec          Name of the lib subdir in octave hierarchy
+                          (default = libexec)],
+  [LIBEXEC=$withval], [LIBEXEC=libexec])
+AC_SUBST(LIBEXEC)
+
+AC_ARG_WITH(octave,
+  [
+  --with-octave           Specify the octave path (version 2.1.* or 
+                          later)],
+  [OCTAVE=$withval])
+
+[if [ "$OCTDIR" = "" \] ; then]
+
+AC_PATH_PROG(OCTAVE, octave)
+
+octave_version_msg=`$OCTAVE --version`
+
+[OCTAVE_VERSION=`echo "$octave_version_msg" | \
+  $PERL -ne '/version ([0-9.]+)/; print $1;'`]
+
+AC_MSG_CHECKING(for version 2.1 of octave)
+[if echo "$OCTAVE_VERSION" | \
+     perl -ne '/([0-9]+)\.([0-9]+)/; exit 1 if ($1>=2 and $2>=1); exit 0' ; then]
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR(version of octave must be 2.1 or later)
+fi
+AC_MSG_RESULT(yes)
+
+[OCTAVE_ARCH=`echo "$octave_version_msg" | \
+  $PERL -ne '/\(([^)]+)\)/; print $1; last;'`]
+
+OCTDIR=$LIBEXEC/octave/$OCTAVE_VERSION/oct/$OCTAVE_ARCH
+
+MDIR=share/octave/$OCTAVE_VERSION/site/m/
+
+fi # if OCTDIR
+AC_SUBST(OCTDIR)
+
+AC_SUBST(MDIR)
+
+AC_ARG_WITH(mkoctfile,
+  [
+  --with-mkoctfile        Specify the mkoctfile path (version 2.1.* 
+                          or later).],
+  [MKOCTFILE=$withval])
+
+AC_PATH_PROG(MKOCTFILE, mkoctfile)
+
+AC_MSG_CHECKING(for version 2.1 of mkoctfile)
+[if perl -ne \
+   'if(/INCFLAGS/){/octave-([0-9]+)\.([0-9]+)/; \
+    exit 1 if ($1>=2 and $2>=1); exit 0}' \
+   < $MKOCTFILE ; then]
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR(version of mkoctfile must be 2.1 or later)
+fi
+AC_MSG_RESULT(yes)
+
+dnl Checks for libraries.
+AC_CHECK_LIB(gpcl, gpc_polygon_clip)
+
+[if [ "$HAVE_GPCLLIBRARY" != "" \] ; then]
+  AC_MSG_ERROR(the gpc library must be available in the system)
+fi
+
+dnl Checks for header files.
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl AC_C_CONST
+
+dnl Checks for library functions.
+
+AC_OUTPUT(Makefile)

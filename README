@@ -1,0 +1,170 @@
+
+The octave-forge project contains functions for Octave which are not in
+the main distribution.  While the main Octave distribution is
+conservative about accepting new functions and changes, octave-forge is
+very open.  As a result, be prepared for some lower quality code and
+more rapidly changing interfaces to the functions in octave-forge.
+
+The collection is in the public domain, but the individual functions
+vary.  See COPYING for details.  See INSTALL for installation
+instructions.
+
+=====================================================================
+Project organization
+
+main/
+	Packages which may eventually be included in the main octave 
+	distribution.  As such, they should follow Octave conventions.  
+	The octave-forge CVS tree should be the primary development/release 
+	site.  All functions should work with the latest Octave 
+	interpreter without any special compilation switches or patches
+	applied.
+
+FIXES/
+	Alternatives to existing Octave functions.  Some of these are 
+	needed by the functions in main, some are needed for 
+	compatibility with Matlab, and some are faster than the Octave
+	alternatives.
+
+extra/
+	Packages which:
+	   * are too narrow in scope for main, or
+	   * act as alternatives for functions in main, or
+	   * do not follow octave conventions (because they want
+	     to retain compatibility with matlab for example), or
+	   * are primarily developed elsewhere, or
+	   * require patches to Octave, or
+	   * are designed for older versions of Octave, or
+	   * haven't been tested enough.
+
+extra/patches/
+	Small patches to Octave. Patches should be labelled as
+	name-version.patch, with version being the Octave version 
+	number on which the patch was based.  The start of the 
+	patch file should contain a description of what it does.  
+	Patches should be generated with diff -c or diff -cp.
+
+extra/ver20/
+	Backports of functions to the latest Octave 2.0.x interpreter.  
+	Unless you volunteer to keep them up to date, these functions 
+	will likely fall behind their counterparts in the main
+	distribution.  Note that you should try to write your functions 
+	so that they work without change in Octave 2.0.x, but if doing 
+	so makes them less clean or efficient, then drop 2.0.x 
+	compatibility and consider making a 2.0.x specific version and 
+	adding it to the ver20 directory.  By default these are not 
+	installed.
+
+nonfree/
+	Packages which are not freely modifiable and redistributable 
+	with modifications, or which depend on code which is not 
+	free.  This includes functions which only permit non-commercial 
+	use and functions which must be kept together as a package.  
+	Functions in all other directories must be freely redistributable 
+	with modifications.  Functions in non-free must be freely 
+	redistributable for non-commercial use.  Functions of unknown
+	license should not be included anywhere, since no license implies
+	default license implies no rights to redistribute.
+
+======================================================================
+Package organization
+
+package/NOINSTALL
+	don't install this package; the user can rename or delete this
+	file if they want the package installed anyway.
+package/*.m 
+	m-files for the package; these will be installed in
+	site/mfiles/octave-forge/package
+package/data/*
+	datafiles to be installed with the mfiles.  You can accesses
+	them from your m-files with x = file_in_load_path("a").
+package/Makefile 
+	Makefile with a default target to build anything that needs
+	building, and a "clean" target to remove anything that has been
+	built.  See Makeconf.base for a list of predefined variables
+	and rules.
+
+	Your Makefile could be as simple as:
+
+		include ../../Makeconf
+
+		all: f1.oct f2.oct
+
+		clean:
+			$(RM) *.o *.oct octave-core core *~
+
+package/configure.add
+package/Makeconf.add
+	Additional configuration-time commands to run in order to 
+	find all the components that your package requires.  You 
+	can look for anything you want in configure.add and note 
+	what you need in Makeconf.add.  The definitions in 
+	Makeconf.add will be available when you include ../../Makeconf 
+	into your Makefile. X11 is already included in Makeconf.base, 
+	so you can just use $(X_LIBS) on your link line and $(X_CFLAGS) 
+	on your compile line.
+package/*.oct
+	oct-files built by Makefile. These will be installed all 
+	together in site-oct-files/octave-forge.  You may assume that
+	HAVE_OCTAVE_20 is defined for 2.0.x series mkoctfile, and
+	HAVE_OCTAVE_21 is defined for 2.1.x series mkoctfile.
+package/bin/*
+	executable files built by Makefile.  These will be 
+	installed in Octave's EXEC_PATH, so they will be available 
+	from Octave but not from the shell.  
+
+Note: If you have files that you want installed in the standard 
+bindir/mandir/libdir/includedir, we need to consider automating
+the procedure.  At the time of writing extra/mex handles this
+case with an install target in its Makefile, but special code is
+put into extra/Makefile to trigger this.
+
+==========================================================================
+Administration files
+
+autogen.sh
+	Generates ./configure and Makeconf.in
+
+configure.base
+Makeconf.base
+	Basic configuration checks, such as locating the install paths,
+	and the associated variables to be put into Makeconf.  Each 
+	package can append checks by including configure.add in the 
+	package directory.
+
+octinst.sh.in
+	Install program for packages, with pieces to be filed in by
+	./configure
+
+install-sh
+	intall program to use if /usr/bin/install does not work
+
+COPYING
+	License for the collection, plus an out-of-date list of functions 
+	in the collection and their licenses.
+
+COPYING.GPL
+	The text of the GPL license
+
+cvs-tree
+	Generate web listing of m-files in the tree
+
+README
+	This file
+
+TODO
+	Things that could/should be done
+
+INSTALL
+	Installation instructions
+
+Makefile
+	Top level makefile
+
+release.sh
+	Generates release tarball
+
+==========================================================================
+Paul Kienzle
+pkienzle@users.sf.net
+October 10, 2001

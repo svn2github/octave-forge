@@ -1,0 +1,43 @@
+Status as of Octave version 2.0.16/2.1.31
+
+Interface compatibility changes
+===============================
+lin2mu.m        (defaults to -1:1 audio range)
+mu2lin.m	(defaults to -1:1 audio range)
+
+Interface compatibility extensions
+==================================
+contour.m       (default number of contours)
+__pltopt1__.m   (accepts line types)
+cross.m		(accepts matrices)
+deblank.m	(accepts matrices, better \0 handling)
+fftfilt.m	(accepts matrices)
+freqz.m		(lots of changes)
+imagesc.m	(only display if not returning scaled image)
+polyder.m       (accepts a*b, a/b)
+polyderiv.m     (accepts a*b, a/b)
+polygcd.m	(new function for auto-reduction on polyder)
+rand.cc         (accepts "state" argument; use MT)
+MersenneTwister.h (long period random number generator)
+
+Interface extensions
+====================
+grid.m          (control x/y grids and grid density independently)
+
+Bug fixes
+=========
+tf2zp.m         (don't remember)
+zp2tf.m         (don't remember)
+
+Speedups
+========
+findstr.m
+hankel.m
+hilb.m
+index.m
+invhilb.m
+kron.m
+rindex.m
+toeplitz.m
+vander.m
+

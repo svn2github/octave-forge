@@ -1,0 +1,9 @@
+2001-04-28  Kai Habel  <kai.habel@gmx.de>
+  
+  * removed __unique_rows__.m: use unique(...,"rows") in voronoi
+  * __voronoi__.cc, convhulln.cc, delaunayn.cc: use x.fortran_vec()
+
+2001-04-26  Etienne Grossmann  <etienne@anonimo.isr.ist.utl.pt>
+
+	* Added configure.in, Makefile.am and friends
+

@@ -1,0 +1,43 @@
+
+## Makeconf is automatically generated from Makeconf.base and Makeconf.add
+## in the various subdirectories.  To regenerate, use ./autogen.sh to
+## create a new ./Makeconf.in, then use ./configure to generate a new
+## Makeconf.
+
+SHELL = /bin/sh
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+mandir = @mandir@
+libdir = @libdir@
+datadir = @datadir@
+infodir = @infodir@
+includedir = @includedir@
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALLOCT=octinst.sh
+
+RANLIB = @RANLIB@
+LN_S = @LN_S@
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+
+CXX = @CXX@
+CXXFLAGS = @CXXFLAGS@
+
+MKOCTFILE = @MKOCTFILE@ -DHAVE_OCTAVE_$(ver) -v
+
+@DEFHAVE_X@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+
+ver = @ver@
+MPATH = @mpath@
+OPATH = @opath@
+XPATH = @xpath@
+
+
+%.oct: %.cc ; $(MKOCTFILE) $<

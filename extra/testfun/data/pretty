@@ -1,0 +1,16 @@
+## -*-octave-*-
+## test scripts for the "pretty" built-in
+
+%!demo disp([ "<" pretty(1) ">" ])
+%!demo disp([ "<" pretty ([1,2,3]) ">" ])
+%!demo disp([ "<" pretty ([1;2;3]) ">" ])
+%!demo disp([ "<" pretty (rand(3,5)) ">" ])
+%!demo disp([ "<" pretty (fix(100*rand(3,5))) ">" ])
+%!demo disp([ "<" pretty ("cat") ">" ])
+%!demo disp([ "<" pretty (["cat"; "dog"]) ">" ])
+%!demo x.a=1; x.b=rand(2,2);
+%! disp([ "<" pretty (x) ">" ])
+%!demo disp([ "<" pretty ([]) ">" ])
+%!demo disp([ "<" pretty (zeros(3,0)) ">" ])
+%!demo disp([ "<" pretty (rand(2,2)+rand(2,2)*1i) ">" ])
+%!demo disp([ "<" pretty (rand(6,1000)) ">" ])

@@ -1,0 +1,52 @@
+#! /bin/sh
+
+# octinst.sh source mpath opath xpath 
+
+# Copies all m-files and oct-files from the source directory to the
+# mpath and opath respectively.  Preserves links.  Files in
+# source/data are copied to mpath.  Files in the source/bin are copied
+# to xpath.
+
+if test $# -ne 4 ; then
+    echo 'Not enough arguments'
+    exit 1
+fi
+
+# interpret input parameters
+source=$1; shift
+mpath=$1; shift
+opath=$1; shift
+xpath=$1; shift
+INSTALL="@INSTALL@"
+INSTALL_DATA="@INSTALL_DATA@"
+INSTALL_PROGRAM="@INSTALL_PROGRAM@"
+
+# grab the m-files
+files=`echo $source/*.m`
+if test "$files" != "$source/*.m" ; then
+    $INSTALL -d $mpath
+    $INSTALL_DATA $files $mpath
+fi
+
+# grab the oct-files
+files=`echo $source/*.oct`
+if test "$files" != "$source/*.oct" ; then
+    $INSTALL -d $opath
+## Grrr... install doesn't preserve links.  Hope this works.
+    cp -fdp $files $opath
+fi
+
+# grab the data files
+files=`echo $source/data/*`
+if test "$files" != "$source/data/*" ; then
+    $INSTALL -d $mpath
+    $INSTALL_DATA $files $mpath
+fi
+
+# grab the executable files
+files=`echo $source/bin/*`
+if test "$files" != "$source/bin/*" ; then
+    $INSTALL -d $xpath
+    $INSTALL_PROGRAM $files $xpath
+fi
+

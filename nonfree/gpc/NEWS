@@ -1,8 +1,11 @@
-Octave-GPC NEWS -- history of user-visible changes.  
+Octave-GPC NEWS -- history of user-visible changes.
 $Id$
 
 Copyright (C) 2001, 2004  Rafael Laboissiere
 See the end for copying conditions.
+
+
+* octave-gpc 0.1.4: Updated for Octave 2.1.52.
 
 
 * octave-gpc 0.1.2: The .oct files are symlinked to gpc_create.oct.
@@ -11,7 +14,7 @@ See the end for copying conditions.
 
 * octave-gpc 0.1.1 is a bug-fix release with few user-visible changes
   Thanks to Etienne Grossmann <etienne@anonimo.isr.ist.utl.pt> for the bug
-  hunting. 
+  hunting.
 
 ----------------------------------------------------------------------
 Copyright information:

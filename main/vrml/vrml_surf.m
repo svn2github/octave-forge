@@ -179,7 +179,7 @@ if checker
   end
   col = reshape (col(:),3,2); 
   col = col(:,icol);
-end
+end				# EOF if checker
 
 
 if prod (size (col)) == 3*(R-1)*(C-1),
@@ -218,6 +218,12 @@ if ! all(keepp),
   pts = pts (:,keepip) ;
   trgs = reshape(renum (trgs (:,keepit)), 3, columns(keepit));
 
+  if prod (size (col)) == 6*(R-1)*(C-1)
+    col = col(:,keepit);
+  elseif prod (size (col)) == 6*R*C
+    col = col(:,keepip);
+  end
+  
 end
 
 s = vrml_faces (pts, trgs, "col", col,\

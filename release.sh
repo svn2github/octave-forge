@@ -10,6 +10,12 @@
 ## 
 ##    export OFHOME=octave.sf.net:/home/groups/o/oc/octave/htdocs
 ## 
+## 0) http://sourceforge.net/tracker/?group_id=2888&atid=102888
+##    http://sourceforge.net/tracker/?group_id=2888&atid=202888
+##    http://sourceforge.net/tracker/?group_id=2888&atid=302888
+##
+##    Try to close out all outstanding issues.
+##
 ## 1) cvs -q update -dP
 ##
 ##    Make sure you haven't forgetten to post anything.  Indexing will 

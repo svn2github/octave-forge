@@ -59,7 +59,7 @@ function assert(cond, expected, tol)
     if (!isnumeric(cond) || !all(cond(:)))
       error ("assert %s failed", in); # say which elements failed?
     endif
-
+  
   elseif (is_list(cond))
     if (!is_list(expected) || length(cond) != length(expected))
       iserror = 1;
@@ -76,19 +76,36 @@ function assert(cond, expected, tol)
   elseif (isstr (expected))
     iserror = (!isstr (cond) || !strcmp (cond, expected));
 
-  elseif (is_struct (expected))
-    if (!is_struct (cond) || ...
+  elseif (iscell(expected))
+    if (!iscell (cond) || any(size(cond)!=size(expected)))
+      iserror = 1;
+    else
+      try
+	for i=1:length(expected(:))
+	  assert(cond{i},expected{i},tol);
+	endfor
+      catch
+	iserror = 1;
+      end
+    endif
+
+  elseif (isstruct (expected))
+    if (!isstruct (cond) || any(size(cond) != size(expected)) || ...
 	rows(struct_elements(cond)) != rows(struct_elements(expected)))
       iserror = 1;
     else
-      for [v,k] = cond
-	if struct_contains(expected,k)
-	  eval(["assert(v,expected.",k,", tol);"], "iserror=1;");
-	else
-	  iserror = 1;
-	  break;
-	endif
-      endfor
+      try
+	empty=prod(size(cond))==0;
+	normal=prod(size(cond))==1;
+	for [v,k] = cond
+	  if !struct_contains(expected,k), error; endif
+	  if empty, v = cell(1,0); endif
+	  if normal, v = {v}; endif
+	  assert(v,{expected.(k)},tol);
+	endfor
+      catch
+	iserror = 1;
+      end
     endif
 
   elseif (isempty (expected))

@@ -14,32 +14,36 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##       addpath(dir1,...)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} addpath(dir1, ...)
 ##
-## Prepends dir1,... to the current LOADPATH.
+## Prepends @code{dir1}, @code{...} to the current @code{LOADPATH}.
 ## 
-##       addpath(dir1,'-end',dir2,'-begin',dir3,'-END',dir4,'-BEGIN',dir5)
-## 
-## Prepends dir1, dir3 and dir5 and appends dir2 and dir4. 
+## @example
+## addpath(dir1,'-end',dir2,'-begin',dir3,'-END',dir4,'-BEGIN',dir5)
+## @result{} Prepends dir1, dir3 and dir5 and appends dir2 and dir4. 
+## @end example
 ##
-## For m****b compat.
-## 
-## BUG : Can't add directories called '-END', '-end', '-BEGIN' or '-begin'
-##       Can't add directories that are not readable by their owner
+## An error will be returned if the string is not a directory, the
+## directory doesn't exist or you don't have read access to it.
 ##
-## FEATURE : Won't add a string that is not a dir. 
+## BUG : Can't add directories called @code{-end} or @code{-begin} (case
+## insensitively)
+##
+## @end deftypefn
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: January 2000
+## Modified-By:   Bill Denney <bill@givebillmoney.com>
+## Last modified: March 2005
 
 function addpath(varargin)
 
   app = 0 ;			# Append? Default is 'no'.
   for arg=1:length(varargin)
     p = nth (varargin, arg) ;
-    if strcmp(p,"-end") | strcmp(p,"-END") ,
+    if strcmpi(p,"-end"),
       app = 1 ;
-    elseif strcmp(p,"-begin") | strcmp(p,"-BEGIN") ,
+    elseif strcmpi(p,"-begin"),
       app = 0 ;
     else
       pp = p ;
@@ -47,14 +51,14 @@ function addpath(varargin)
       ## while rindex(pp,"/") == size(pp,2), pp = pp(1:size(pp,2)-1) ; end
       [s,err,m] = stat(pp) ;		# Check for existence
       if err,
-	printf("addpath : Stat on %s returns\n %s\n",pp,m);
+	error("addpath %s : %s\n",pp,m);
       elseif index(s.modestr,"d")!=1,
-	printf("addpath : >%s< is not a dir (mode=%s)\n",pp, s.modestr);
+	error("addpath %s : not a directory (mode=%s)\n",pp, s.modestr);
 
-      elseif  index(s.modestr,"r")!=2, # Asume I'm owner. That's a bug
-
-	printf("addpath : >%s< is not a readable (mode=%s)\n",...
-	       pp,s.modestr);
+      elseif !((s.modestr(8) == 'r') || ...
+	       ((getgid == s.gid) && (s.modestr(5) == 'r')) || ...
+	       ((getuid == s.uid) && (s.modestr(2) == 'r')))
+	error("addpath %s : not readable (mode=%s)\n", pp,s.modestr);
       elseif ! app,
 	LOADPATH = [p,':',LOADPATH] ;
       else

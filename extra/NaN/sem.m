@@ -40,10 +40,12 @@ function [SE,M]=sem(x,DIM)
 
 
 if nargin>1,
-	[tmp,N,SSQ] = sumskipnan(x,DIM);
+	[S,N,SSQ] = sumskipnan(x,DIM);
 else    
-	[tmp,N,SSQ] = sumskipnan(x);
+	[S,N,SSQ] = sumskipnan(x);
 end
 
-tmp = real(tmp).^2 + imag(tmp).^2;	% squared sum 
-SE = sqrt((SSQ.*N-tmp)./(N.*N.*(N-1))); 
+M  = S./N;
+%S = real(S).^2 + imag(S).^2;	% squared sum 
+SE = sqrt((SSQ.*N - real(S).^2 - imag(S).^2)./(N.*N.*(N-1))); 
+

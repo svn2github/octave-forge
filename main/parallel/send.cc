@@ -42,48 +42,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #define BUFF_SIZE SSIZE_MAX
 
-
-
-
-void obj(octave_value_list args){
-
-  octave_value val=args(0),retval;
-  std::cout << val.matrix_value().row(1) <<'\n';
-  std::cout << "args.length: " << args.length() <<'\n';
-  std::cout << "row: " << val.rows() <<'\n';
-  std::cout << "columns: " << val.columns()  <<'\n';
-  std::cout << "is_defined: " << val.is_defined()  <<'\n';
-  std::cout << "is_real_scalar: " << val.is_real_scalar()  <<'\n';
-  std::cout << "is_real_matrix: " << val.is_real_matrix() <<'\n';
-  std::cout << "is_complex_scalar: " << val.is_complex_scalar()  <<'\n';
-  std::cout << "is_complex_matrix: " << val.is_complex_matrix() <<'\n';
-  std::cout << "is_char_matrix: " << val.is_char_matrix() <<'\n';
-  std::cout << "is_string: " << val.is_string()  <<'\n';
-  std::cout << "is_range: " <<val.is_range()  <<'\n';
-  std::cout << "is_map: " << val.is_map()  <<'\n';
-  std::cout << "is_magic_colon: " << val.is_magic_colon()  <<'\n';
-  std::cout << "is_all_va_args: " << val.is_all_va_args() <<'\n';
-  std::cout << "is_real_type: " << val.is_real_type()  <<'\n';
-  std::cout << "is_complex_type: " << val.is_complex_type()  <<'\n';
-  std::cout << "is_scalar_type: " <<val.is_scalar_type()  <<'\n';
-  std::cout << "is_matrix_type: " <<val.is_matrix_type() <<'\n';
-  std::cout << "is_numeric_type: " << val.is_numeric_type()  <<'\n';
-  //  std::cout << "valid_as_scalar_index: " << val.valid_as_scalar_index() <<'\n';
-  //std::cout << "valid_as_zero_index: " << val.valid_as_zero_index() <<'\n';
-  std::cout << "is_true: " << val.is_true() <<'\n';
-  std::cout << "is_empty: " << val.is_empty() <<'\n';
-  std::cout << "is_zero_by_zero: " << val.is_zero_by_zero() <<'\n';
-  std::cout << "type_id: " << val.type_id()  <<'\n';
-  std::cout << "type_name: " << val.type_name()  <<'\n';
-
-}
-
-
-
-
-
-
-
 // COMM
 
 DEFUN_DLD (send, args, ,

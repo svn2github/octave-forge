@@ -19,9 +19,11 @@
 ## Author: Ben Sapp <bsapp@lanl.gov>
 ## Reference: David G Luenberger's Linear and Nonlinear Programming
 
-## 2001-01-28 Paul Kienzle
+## 2002-01-28 Paul Kienzle
 ## * save two function evaluations by inlining the derivatives
 ## * pass through all_va_args to the function
+## 2002-03-13 Paul Kienzle
+## * simplify update expression
 
 function x = nrm(f,x,...)
   velocity = 1;
@@ -34,10 +36,6 @@ function x = nrm(f,x,...)
     fxmh = feval(f,x-h,all_va_args);
     velocity = (fxph - fxmh)/(2*h);
     acceleration = (fxph - 2*fx + fxmh)/(h^2);
-    if(velocity > 0)
-      x = x-abs(velocity/acceleration);
-    else
-      x = x+abs(velocity/acceleration);
-    endif
+    x = x - velocity/abs(acceleration);
   endwhile
 endfunction

@@ -14,6 +14,7 @@ use File::Basename;
 use Text::Wrap;
 use FileHandle;
 use IPC::Open2;
+use POSIX ":sys_wait_h";
 
 my $script  = basename($0);
 my $OCTAVE  = "../octave";
@@ -50,7 +51,6 @@ foreach (@m_files, @C_files) {
 }
 
 find(\&cc_and_m_files, "$OCTAVE/scripts");
-find(\&cc_and_m_files, "$OCTAVE/src");
 #    print "Found @C_files\n";
 my %octave_function = (); # master index file might list unimplemented functions
 foreach (@m_files, @C_files) {
@@ -61,6 +61,7 @@ foreach (@m_files, @C_files) {
 
 my @uncategorized = ();
 my %n_appearances = ();
+    my $n_functions = 0;
 foreach my $f ( @C_files ) {
     if ( open(IN,$f) ) {
 	while (<IN>) {
@@ -100,7 +101,7 @@ foreach my $f ( @C_files ) {
 	    my $oneline = first_sentence($desc);
 #	    print "::: $function: $oneline\n";
 #	    print $desc;
-	    register_function($function,$oneline);
+	    register_function($function,$oneline,$f);
 	}
 	close (IN);
     } else {
@@ -114,7 +115,7 @@ foreach my $f ( @m_files ) {
     my $oneline  = first_sentence($desc);
     die "Null function?? [$f]\n" unless $function;
     $oneline = "(Octave) $oneline" if $f =~ m/^$OCTAVE/;
-    register_function($function,$oneline);
+    register_function($function,$oneline,$f);
 }
 
 if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
@@ -130,7 +131,7 @@ if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
 	}
 	my $oneline = first_sentence($desc);
 	$oneline = "(Octave) $oneline";
-	register_function($function,$oneline);
+	register_function($function,$oneline,"Octave");
     }
     close(IN);
 }
@@ -139,9 +140,11 @@ else {
 }
 
 if (@uncategorized) {
-    print scalar @uncategorized, " uncategorized functions ";
-    print "(out of ", scalar(@m_files) + scalar (@C_files), " total)\n";
-    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
+    print scalar(@uncategorized), " uncategorized functions ";
+    print "(out of ", $n_functions, " total)\n";
+    my $rs = $,; $, = "\n";
+    print sort(@uncategorized); $, = $rs;
+#    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
 }
 
 write_html(\%index_by_TB_cat, 
@@ -167,6 +170,7 @@ sub first_sentence { # {{{1
 	print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
 	print Writer "$desc"; close(Writer);
 	@lines = <Reader>; close(Reader);
+	waitpid(-1,&WNOHANG);
 	return "" unless @lines;
 #	print "<texinfo--------------------------------\n";
 #	print @lines;
@@ -218,19 +222,22 @@ sub register_function { # {{{1
 # register the function and its one-line description
     my ($function,      # in   $index{toolbox}{category} = [functions]
         $desc,          # in   $toolbox_desc{toolbox} = description
+	$file,
        )      = @_;
     ++$n_appearances{$function};
     if ($n_appearances{$function} > 1) {
-        print "$function appeared previously\n";
+        print "$file:$function appeared previously\n";
+    } else {
+        ++$n_functions;
     }
-    printf "%-12s %s\n", $function, $desc;
+    # printf "%-12s %s\n", $function, $desc;
     if (defined $index_by_function{$function}) {
         $function_description{$function} = $desc;
        #printf "%-12s %-20s %s\n", $function, 
        #                           $index_by_function{$function}[0],
        #                           $index_by_function{$function}[1];
     } else {
-        push @uncategorized, $function;
+        push @uncategorized, "$file/$function";
     }
 } # 1}}}
 sub extract_description { # {{{1
@@ -301,19 +308,22 @@ sub load_index { # {{{1
             $rh_toolbox_desc->{$toolbox} = $description;
         } elsif (/^(\w.*?)\s*$/) {
             $category    = $1;
-        } elsif (/\s(\S+)/) {
-            $function    = $1;
-            die "Function $function (line $.) has no toolbox"  unless $toolbox;
-            die "Function $function (line $.) has no category" unless $category;
-            push @{$rhha_TB_cat->{$toolbox}{$category}}, $function;
-            #warn "Function name collision line $. for $function:\n" .
-            #     "  $function in $rha_func->{$function}[0], " .
-            #                     "$rha_func->{$function}[1]\n" .
-            #     "  $function in $toolbox, $category\n" 
-            #     if defined $rha_func->{$function}[0];
-            push @{$rhaa_func->{$function}}, [$toolbox, $category];
         } else {
-            die "Don't understand line $. of $file:  [$_]\n";
+            s/^\s+//;
+            my @list = split /\s+/;
+            while ($#list >= 0) {
+                $function    = shift @list;
+                die "Function $function (line $.) has no toolbox"  unless $toolbox;
+                die "Function $function (line $.) has no category" unless $category;
+                push @{$rhha_TB_cat->{$toolbox}{$category}}, $function;
+                #warn "Function name collision line $. for $function:\n" .
+                #    "  $function in $rha_func->{$function}[0], " .
+                #        "$rha_func->{$function}[1]\n" .
+                #            "  $function in $toolbox, $category\n" 
+                #                if defined $rha_func->{$function}[0];
+                push @{$rhaa_func->{$function}}, [$toolbox, $category];
+ 
+            }
         }
     }
     close(IN);

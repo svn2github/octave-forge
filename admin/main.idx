@@ -1,0 +1,1137 @@
+finance >> Finance
+Interest
+ fv fvl irr nper npv pmt pv pvl rate vol
+general >> Interpreter
+Help
+ help 
+ demo 
+ ver 
+ version 
+Variables
+ who 
+ whos 
+ workspace 
+ clear 
+ pack 
+ load 
+ save 
+ quit 
+Functions
+ what 
+ type 
+ edit 
+ open 
+ lookfor 
+ which 
+ pcode 
+ inmem 
+ mex 
+Load path
+ path 
+ addpath 
+ rmpath 
+ pathtool 
+ file_in_path file_in_loadpath
+User output
+ echo 
+ more 
+ diary 
+ format 
+Environment
+ cd 
+ copyfile 
+ pwd 
+ dir 
+ delete 
+ getenv 
+ mkdir 
+ dos 
+ unix 
+ vms 
+ web 
+ computer 
+ isunix
+ temp_name
+Debugging
+ dbstop 
+ dbclear 
+ dbcont 
+ dbdown 
+ dbstack 
+ dbstatus 
+ dbstep 
+ dbtype 
+ dbup 
+ dbquit 
+ dbmex 
+ errortrap 
+Profiling
+ profile 
+ flops 
+Demos and Tests.
+ example  demo  test  assert  speed_test 
+lang >> Programming
+Logical functions
+ xor 
+ any 
+ all 
+Bit operations
+ bitand 
+ bitcmp 
+ bitor 
+ bitmax 
+ bitxor 
+ bitset 
+ bitget 
+ bitshift 
+Sets
+ union 
+ unique create_set
+ intersect intersection
+ setdiff  complement
+ setxor 
+ ismember 
+Control structures
+ if 
+ else 
+ elseif 
+ end 
+ for 
+ while 
+ break 
+ switch 
+ case 
+ otherwise 
+ try 
+ catch 
+ return 
+Interpreter interface
+ eval 
+ evalc 
+ feval
+ leval temp_name
+ evalin 
+ builtin 
+ assignin 
+ ans 
+Constants
+ eps 
+ realmax 
+ realmin 
+ pi 
+ i j 
+ inf 
+ NaN 
+ isnan 
+ isinf 
+ isfinite 
+Symbol table
+ exist 
+ global 
+ isglobal 
+ persistent 
+ mfilename 
+ mlock 
+ munlock 
+ mislocked
+ command
+Function arguments
+ nargchk 
+ nargin 
+ nargout 
+ varargin 
+ varargout 
+ inputname
+ fcnchk 
+User I/O
+ disp printf puts
+ error 
+ warning 
+ lasterr 
+ lastwarn 
+ clc 
+ home 
+ input 
+ keyboard 
+ pause 
+Inline functions
+ inline 
+ argnames 
+ formula 
+ char 
+ vectorize 
+matrix >> Linear Algehra
+Generating matrices
+ zeros 
+ ones 
+ eye 
+ rand 
+ randn 
+ linspace 
+ logspace 
+ meshgrid meshdom
+Matrix properties
+ size rows columns common_size
+ length 
+ isempty 
+ isequal 
+ isnumeric is_complex
+ islogical 
+ logical 
+ is_scalar is_vector is_square is_symmetric is_duplicate_entry
+Rearranging matrices
+ reshape 
+ tril 
+ triu 
+ fliplr 
+ flipud 
+ flipdim 
+ rot90 
+ repmat 
+ diag 
+ blkdiag 
+ kron 
+ find 
+ sub2ind 
+ ind2sub 
+ prepad postpad shift vec vech
+Special matrices
+ compan 
+ commutation_matrix
+ duplication_matrix
+ hadamard sylvester_matrix
+ hankel 
+ hilb 
+ invhilb 
+ lauchli
+ magic 
+ pascal 
+ rosser 
+ toeplitz 
+ vander 
+ wilkinson 
+ gallery 
+Linear algebra
+ dmult
+ cross 
+ dot
+ norm 
+ rank 
+ det 
+ trace 
+ null 
+ orth 
+ rref 
+ subspace 
+ cond 
+ inv 
+ pinv 
+ lscov 
+ eig 
+ polyeig 
+ condeig 
+ trisolve
+Matrix factorization
+ chol 
+ lu 
+ qr 
+ svd 
+ gsvd 
+ hess 
+ qz 
+ schur 
+ rsf2csf 
+ cdf2rdf 
+ balance 
+ qrdelete 
+ qrinsert 
+ planerot 
+ cholupdate 
+ qrupdate 
+ housh
+ krylov
+ qzhess
+Matrix functions
+ expm 
+ logm 
+ sqrtm 
+ funm thfm
+math >> Mathematics
+Trigonometry
+ sin 
+ sinh 
+ asin 
+ asinh 
+ cos 
+ cosh 
+ acos 
+ acosh 
+ tan 
+ tanh 
+ atan 
+ atan2 
+ atanh 
+ sec 
+ sech 
+ asec 
+ asech 
+ csc 
+ csch 
+ acsc 
+ acsch 
+ cot 
+ coth 
+ acot 
+ acoth 
+Exponentials
+ exp 
+ log 
+ log10 
+ log2 
+ pow2 
+ sqrt 
+ nextpow2 
+Complex numbers
+ abs 
+ angle 
+ complex 
+ conj 
+ imag 
+ real 
+ unwrap 
+ isreal 
+ cplxpair 
+Floating point operations
+ fix 
+ floor 
+ ceil 
+ round 
+ sign 
+Special functions
+ airy 
+ besselj 
+ bessely 
+ besselh 
+ besseli 
+ besselk  bessel 
+ beta 
+ betainc  betai
+ betaln 
+ ellipj 
+ ellipke 
+ erf 
+ erfc 
+ erfcx 
+ erfinv 
+ expint 
+ gamma 
+ gammainc gammai
+ gammaln 
+ legendre 
+Number theory
+ mod 
+ rem 
+ factor 
+ isprime 
+ primes list_primes
+ gcd 
+ lcm 
+ rat 
+ rats 
+ perms 
+ nchoosek bincoeff 
+ factorial 
+ SHA1
+Coordinate transformations
+ cart2sph 
+ cart2pol 
+ pol2cart 
+ sph2cart 
+analysis >> Data analysis
+Sorting
+ sort 
+ sortrows 
+Filtering
+ filter 
+ filter2 
+ conv fftconv
+ conv2 
+ convn 
+ deconv 
+ detrend center clip
+Fourier analysis
+ fft 
+ fft2 
+ fftn 
+ ifft 
+ ifft2 
+ ifftn 
+ fftshift 
+ ifftshift 
+Interpolation
+ interp1 
+ interpft 
+ interp2 
+ interp3 
+ interpn 
+ spline 
+ pchip 
+ ppval 
+ mkpp 
+ unmkpp 
+ lookup
+Geometry
+ delaunay 
+ delaunay3
+ delaunayn
+ dsearch 
+ dsearchn
+ tsearch 
+ convhull 
+ convhulln
+ voronoi 
+ voronoin
+ griddata 
+ griddata3
+ griddatan
+ inpolygon 
+ rectint 
+ polyarea 
+Polynomials
+ roots 
+ poly 
+ polyval 
+ polyvalm 
+ residue 
+ polyfit 
+ polyder polyderiv
+ polyinteg polyreduce polyout polygcd
+Quaternions
+ quaternion
+ demoquat qconj qcoordinate_polt qderiv qderivmat qinv qmult
+ qtrans qtransv qtransvmat
+optim >> Optimization
+Minimization
+ minimize 
+ bracket_min brent_line_min cg_min d2_min
+ bfgs dfp
+Data fitting
+ expfit expdemo
+ polyfit wpolyfit wpolyfitdemo 
+ leasqr leasqrdemo
+Root finding
+ fzero 
+ fsolve 
+ fsolve_options perror strerror
+Numerical derivatives
+ dfdp bs_gradient cdiff deriv
+ode >> Calculus
+Integration
+ quad 
+ quadl
+ quad8 
+ dblquad 
+Differentiation
+ diff 
+ gradient 
+ del2 
+Ordinary differential equations
+ ode45 
+ ode23 
+ lsode
+ dassl
+sparse >> Sparse matrix support
+Generate sparse matrix
+ speye 
+ sprand 
+ sprandn 
+ sprandsym 
+ spdiags 
+ spconvert 
+Manipulate sparse matrices
+ sparse 
+ full 
+ is_sparse is_real_sparse is_complex_sparse
+ spy 
+ nnz 
+ spfind spdump
+ nonzeros 
+ nzmax 
+ spones 
+ spfun 
+ spalloc 
+ spparms 
+Linear algebra
+ spinv splu
+Statistics
+ spsum
+plot >> Plotting
+Line plots
+ plot mplot fplot
+ plot3 
+ loglog 
+ semilogx 
+ semilogy 
+ polar 
+ plotyy 
+ errorbar 
+ scatter 
+ plotmatrix 
+ stem 
+ stem3 
+ stairs 
+ comet 
+ feather 
+Business graphs
+ pie 
+ pie3 
+ area 
+ bar dhbar
+ barh 
+ bar3 
+ bar3h 
+ ribbon 
+ pareto 
+ fill 
+Contour plots
+ contour 
+ contourf 
+ contour3 
+ clabel 
+ pcolor 
+Surface plots
+ mesh 
+ surf 
+ comet3 
+ quiver 
+ meshc 
+ meshz 
+ scatter3 
+ surfc 
+ trisurf 
+ trimesh 
+ waterfall 
+ fill3 
+plotcontrol >> Plot controls
+Figure controls
+ newplot 	 
+ figure 	 
+ clf 	 
+ shg 	 
+ close 	 
+ refresh
+ drawnow
+Axis controls
+ axis 
+ zoom 
+ grid 
+ hold 
+ ishold 
+ subplot 
+ multiplot subwindow oneplot plot_border
+Labels
+ title bottom_title top_title
+ xlabel 
+ ylabel 
+ zlabel 
+ legend 
+ colorbar 
+ texlabel 
+ gtext 
+Primitives
+ text 
+ patch 
+Printing
+ print 
+ printopt 
+ orient 
+ vrml 
+Colour controls
+ colormap 
+ spinmap 
+ rgbplot 
+ caxis 
+ brighten 
+Colour maps
+ gray 
+ ocean
+ hsv rainbow
+ hot 
+ bone 
+ copper 
+ pink 
+ white 
+ flag 
+ jet 
+ prism 
+ cool 
+ autumn 
+ spring 
+ winter 
+ summer 
+ lines 
+ colorcube 
+ vga 
+ contrast 
+View control
+ view 
+ viewmtx 
+ rotate3d 
+User input
+ ginput gget grab gzoom
+ dragrect 
+ rbbox 
+strings >> Strings
+Creation
+ char 
+ double 
+ cellstr 
+ blanks 
+Tests
+ ischar 
+ iscellstr 
+ isletter 
+ isspace 
+Operations
+ deblank regexp split 
+ strcat 
+ strvcat 
+ strcmp 
+ strncmp 
+ strcmpi 
+ strncmpi 
+ findstr  index rindex
+ strjust 
+ strmatch 
+ strrep 
+ strtok 
+ substr
+ upper 
+ lower 
+Conversion
+ num2str com2str str2mat
+ str2num 
+ mat2str 
+ int2str 
+ str2double 
+ sprintf 
+ sscanf 
+ hex2num 
+ hex2dec 
+ bin2dec 
+ base2dec 
+ dec2hex 
+ dec2bin 
+ dec2base 
+audio >> Audio
+Record and play
+ sound 
+ soundsc 
+ speak 
+ recordsound 
+ wavrecord 
+ soundcap 
+ auplay aurecord aucapture
+ loadaudio saveaudio playaudio record setaudio
+Read and write
+ auload ausave 
+ wavwrite 
+ wavread 
+ readsnd 
+ writesnd 
+Process
+ mu2lin 
+ lin2mu
+ auplot 
+file >> File I/O
+Basic file operations
+ fopen 
+ fclose 
+ fread 
+ fwrite 
+ ferror 
+ feof 
+ fseek 
+ ftell 
+ frewind 
+ textread 
+ fscanf 
+ fgetl 
+ fgets 
+ fprintf
+Pipe operations
+ popen popen2 pclose
+Path operations
+ filesep 
+ pathsep 
+ fullfile 
+ fileparts 
+ partialpath 
+ tempdir 
+ tempname 
+ prefdir 
+Import/Export
+ dlmread 
+ dlmwrite 
+ wk1read 
+ wk1write 
+HDF import/export
+ hdf 
+time >> Date and time
+Clock functions
+ now 
+ date 
+ clock 
+ cputime 
+ tic 
+ toc 
+ etime
+ is_leap_year asctime ctime
+Date conversion
+ datenum 
+ datestr 
+ datevec 
+ weekday 
+ eomday 
+ calendar 
+ datetick 
+types >> Types
+Cell arrays
+ cell 
+ iscell 
+ deref
+ cellfun 
+ celldisp 
+ cellplot 
+ num2cell 
+ deal 
+ cell2struct 
+ struct2cell 
+Structures
+ struct 
+ fieldnames 
+ getfield 
+ setfield 
+ rmfield 
+ isfield 
+ isstruct 
+image >> Image processing
+Display
+ image 
+ imagesc 
+ imshow 
+Read/write
+ imread 
+ imwrite 
+ imfinfo
+ loadimage saveimage bmpwrite jpgread jpgwrite
+Reshape
+ imcrop 
+ imresize 
+ imrotate
+ impad 
+Statistics
+ corr2 
+ imhist 
+ mean2 
+ std2 
+Filtering
+ histeq 
+ imadjust 
+ imnoise 
+ medfilt2 
+ ordfilt2 cordflt2 
+Black and white image functions
+ bwarea 
+ bweuler 
+ bwfill 
+ bwlabel 
+ bwmorph 
+ bwperim 
+ bwselect 
+ dilate 
+ erode 
+ bwborder edge
+Colour controls
+ cmpermute 
+ cmunique 
+ imapprox 
+ hsv2rgb 
+ ntsc2rgb 
+ rgb2hsv 
+ rgb2ntsc 
+ rgb2ycbcr 
+ ycbcr2rgb 
+Representation
+ dither 
+ gray2ind 
+ grayslice 
+ im2bw 
+ ind2gray 
+ ind2rgb 
+ isbw 
+ isgray 
+ isind 
+ isrgb 
+ mat2gray 
+ rgb2gray 
+ rgb2ind 
+spline >> Splines
+Spline functions
+ interp1
+ csapi
+ csape
+ csaps
+ fnplt fnder
+comm >> Communications
+Communications
+ bi2de	
+ de2bi	
+ vec2mat	
+ randint	
+ compand	
+ quantiz 
+signal >> Signal processing
+Signals
+ diric 
+ gauspuls 
+ pulstran 
+ tripuls 
+ rectpuls 
+ sawtooth 
+ sinc 
+ square 
+ sinetone sinewave
+ chirp 
+ vco 
+ modulate 
+ demod 
+ strips 
+ specgram periodogram stft synthesis hurst
+ buffer
+Filtering
+ fftfilt 
+ filtfilt 
+ filtic 
+ latcfilt 
+ sgolayfilt 
+ sosfilt 
+ medfilt1 
+ spencer
+ fractdiff
+Filter analysis
+ freqs 
+ freqspace 
+ freqz freqz_plot
+ grpdelay 
+ impz 
+ zplane 
+Filter conversion
+ ac2poly 
+ poly2ac 
+ ac2rc 
+ rc2ac 
+ poly2rc 
+ rc2poly 
+ convmtx 
+ latc2tf 
+ residuez 
+ sos2ss 
+ sos2tf 
+ sos2zp 
+ ss2sos 
+ ss2tf 
+ ss2zp 
+ tf2latc 
+ tf2sos 
+ tf2ss 
+ tf2zp 
+ zp2sos 
+ zp2ss 
+ zp2tf 
+ polystab 
+IIR Filter design
+ besself 
+ butter 
+ cheby1 
+ cheby2 
+ ellip nellip ncauer nellipdemo
+ maxflat 
+ yulewalk 
+ buttord 
+ cheb1ord 
+ cheb2ord 
+ ellipord 
+ besselap 
+ buttap 
+ cheb1ap 
+ cheb2ap 
+ ellipap 
+ sftrans
+ lp2bp
+ lp2bs 
+ lp2hp 
+ lp2lp 
+ bilinear 
+ impinvar 
+FIR filter design
+ fir1 
+ fir2 
+ fircls 
+ fircls1 
+ firls 
+ firrcos 
+ intfilt 
+ kaiserord 
+ cremez 
+ remez 
+ remezord 
+ sgolay 
+Transforms
+ czt 
+ dctmtx 
+ dct2 
+ idct2 
+ dct 
+ idct 
+ dftmtx 
+ hilbert 
+ rceps 
+ cceps 
+ icceps 
+Power spectrum analysis
+ pwelch 
+ tfe 
+ cohere 
+ csd 
+ pburg 
+ pcov 
+ pmcov 
+ pmtm 
+ pmusic 
+ pyulear 
+ xcorr
+ xcorr2 
+ xcov 
+ spectral_adf spectral_xdf
+Window functions
+ bartlett 
+ blackman 
+ boxcar 
+ chebwin 
+ hamming 
+ hanning 
+ kaiser 
+ triang 
+ gaussian
+System identification
+ arburg yulewalker
+ arcov 
+ armcov 
+ aryule 
+ invfreqs 
+ invfreqz 
+ levinson  durbinlevinson
+ lpc 
+ prony 
+ rlevinson 
+ stmcb 
+ arch_rnd arch_fit arch_test
+ arma_rnd autoreg_matrix autocor autocov
+Sample rate change
+ decimate 
+ interp 
+ resample 
+ upfirdn 
+ident >> System Identification
+Minimalist model simulation functions
+ mktheta 
+ poly2th 
+ idsim	
+ idplot	
+control >> Control theory
+OCST demos
+ DEMOcontrol
+ sysrepdemo
+ bddemo jet707 analdemo
+ frdemo
+ dgkfdemo hinfdemo moddemo rldemo
+System interface functions
+ sysrepdemo
+ fir2sys sys2fir
+ ss2sys sys2ss
+ tf2sys sys2tf
+ zp2sys sys2zp
+ tf2ss ss2tf
+ zp2tf tf2zp
+ zp2ssg2 zp2ss ss2zp
+Data structure access
+ syschnames
+ syschtsam
+ sysdimensions
+ sysgetsignals
+ sysgettsam
+ sysgettype
+ syssetsignals
+ sysupdate
+Data structure internal functions
+ syschnamesl sysdefioname sysdefstname tf2sysl
+System display functions
+ sysout polyout tfout zpout outlist
+Block diagram manipulations
+ bddemo jet707
+ buildssic ord2 parallel series sysadd
+ sysappend sysconnect
+ syscont syscont_disc sysdisc
+ sysdup sysgroup sysgroupn sysmult sysprune
+ sysreorder sysscale syssub ugain wgt1o
+ feedback
+ strappend	
+ starp
+Numerical functions
+ are dare dgram dlyap gram lyap pinv qzval
+ zgfmul zgfslv zginit zgpbal zgreduce zgrownorm zgscal zgsgiv
+ zgshsr
+System properties
+ analdemo
+ abcddim abcddims ctrb h2norm hinfnorm obsv pzmap
+ sysKnames is_abcd is_controllable is_detectable is_dgkf
+ is_digital is_observable is_sample is_siso is_stabilizable
+ is_signal_list is_stable
+Time domain analysis
+ c2d d2c dmr2d damp dcgain impulse step stepimp
+Frequency domain analysis
+ frdemo
+ bode bode_bounds bodquist
+ freqchkw freqresp ltifr nyquist tzero tzero2
+ rlocus
+Controller design
+ dgkfdemo hinfdemo
+ dlqe dlqr lqe lqg lqr gain 
+ hinf_ctr hinfsyn hinfsyn_c hinfsyn_chk
+ lsim place
+Miscellaneous
+ axis2dlim mb prompt sortcom susball swap swapcols
+
+symbolic >> Symbolic algebra
+Symbols
+ symbols sym
+ ex_matrix Pi
+Extended precision arithmetic
+ digits	
+ vpa to_double
+Properties
+ is_ex is_ex_matrix is_sym is_vpa
+Expression manipulation
+  subs
+Special Functions
+ Abs Cos Cosh Exp Gcd Log Sin Sinh Tan Tanh aCos aCosh aSin aSinh
+ aTan aTanh
+Polynomials
+ tcoeff coeff degree ldegree
+Calculus
+ differentiate
+Number theory
+  probably_prime
+  quotient remainder premainder
+Plot
+  splot
+statistics >> Statistics
+Distributions
+ beta_cdf beta_pdf beta_inv beta_rnd		
+ binomial_cdf binomial_pdf binomial_inv binomial_rnd	
+ cauchy_cdf cauchy_pdf cauchy_inv cauchy_rnd
+ chisquare_cdf chisquare_pdf chisquare_inv chisquare_rnd	
+ empirical_cdf empirical_pdf empirical_inv empirical_rnd
+ exponential_cdf exponential_pdf exponential_inv exponential_rnd
+ f_cdf f_pdf f_inv f_rnd
+ gamma_cdf gamma_pdf gamma_inv gamma_rnd		
+ geometric_cdf geometric_pdf geometric_inv geometric_rnd
+ hypergeometric_cdf hypergeometric_pdf hypergeometric_inv hypergeometric_rnd
+ kolmogorov_smirnov_cdf
+ laplace_cdf laplace_pdf laplace_inv laplace_rnd
+ logistic_cdf logistic_pdf logistic_inv logistic_rnd
+ lognormal_cdf lognormal_pdf lognormal_inv lognormal_rnd
+ stdnormal_cdf stdnormal_pdf stdnormal_inv stdnormal_rnd
+ pascal_cdf pascal_pdf pascal_inv pascal_rnd
+ normal_cdf normal_pdf normal_inv normal_rnd
+ poisson_cdf poisson_pdf poisson_inv poisson_rnd
+ t_cdf t_pdf t_inv t_rnd
+ discrete_cdf discrete_pdf discrete_inv discrete_rnd
+ uniform_cdf uniform_pdf uniform_inv uniform_rnd
+ weibull_cdf weibull_pdf weibull_inv weibull_rnd
+ wiener_rnd
+Descriptive statistics
+ max 
+ min 
+ mean meansq
+ median 
+ std 
+ var 
+ cut hist
+ histc 
+ corrcoef 
+ cov cor
+ sum 
+ prod 
+ trapz 
+ cumsum 
+ cumprod 
+ cumtrapz 
+ nansum	
+ nanmax	
+ nanmean	
+ nanmedian	
+ nanmin	
+ nanstd	
+ nanfunc
+ geomean	
+ harmmean	
+ iqr		
+ kurtosis	
+ mad		
+ moment	
+ prctile	
+ range	
+ skewness	
+ trimmean	
+ zscore	
+ spearman
+Linear regression
+ anova	
+ polyfit	
+ polyval	
+ gls ols
+Plots
+ qqplot ppplot
+Nonlinear regression
+ leasqr	
+Models
+ logistic_regression logistic_regression_derivatives 
+ logistic_regression_likelihood
+Hypothesis testing
+ u_test	
+ wilcoxon_test	
+ sign_test	
+ t_test	
+ t_test_2	
+ t_test_regression
+ z_test	
+ z_test_2
+ bartlett_test
+ chisquare_test_homogeneity
+ chisquare_test_independence
+ cor_test
+ f_test_regression
+ hotelling_test
+ hotelling_test_2
+ kolmogorov_smirnov_test
+ kolmogorov_smirnov_test_2
+ kruskal_wallis_test
+ manova
+ mcnemar_test
+ prop_test_2
+ run_test
+ var_test
+ welch_test
+

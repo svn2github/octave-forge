@@ -186,11 +186,15 @@ else
 # 	       "  }\n"];
   if (emit)			# Color is emissive by default
     col_str_1 = "";
+    
 
   else				# If there's a material node, it is not
 				# emissive.
+    if tran, ts = sprintf ("transparency %8.3f",tran);
+    else     ts = "";
+    end
     col_str_1 = ["appearance Appearance {\n",\
-		 "    material Material {}\n}\n"];
+		 "    material Material {",ts,"}\n}\n"];
   end
   if isnan (colorPerVertex)
     if     prod (size (col)) == 3*columns (x), colorPerVertex = 1;

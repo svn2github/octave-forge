@@ -17,6 +17,7 @@
 // ========================= finitedifference ==========================
 //  finite differences for numeric differentiation
 #include <oct.h>
+#include <float.h>
 DEFUN_DLD(finitedifference, args, ,"finitedifference, C++ version\n\
 differences for numgradient and numhessian")
 {
@@ -25,7 +26,7 @@ differences for numgradient and numhessian")
 	int test;
 	double eps, SQRT_EPS, DIFF_EPS, DIFF_EPS1, DIFF_EPS2, diff, d;
 
-	eps = 2.2204e-16; // eps is machine precision - this is for i686
+	eps = DBL_EPSILON; // machine precision
 	SQRT_EPS = sqrt(eps); 
 	DIFF_EPS = exp(log(eps)/2);
 	DIFF_EPS1 = exp(log(eps)/3);

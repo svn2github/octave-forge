@@ -65,50 +65,55 @@ any_bad_argument(const octave_value_list& args)
         return true;
 	}	
 	Cell control (args(2).cell_value());
-	if (!(control.length()==10))
+	if (!(control.length() == 10))
 	{
 	 	error("samin: third argument must be a cell array with 10 elements");
  		return true;
 	}
 	if (!control(0).is_numeric_type())
 	{
-        error("samin: 1st element of controls must be a vector of lower bounds");
+        error("samin: 1st element of controls must be LB: a vector of lower bounds");
         return true;
 	}
 	if (!control(1).is_numeric_type())
 	{
-        error("samin: 2nd element of controls must be a vector of lower bounds");
+        error("samin: 2nd element of controls must be UB: a vector of upper bounds");
         return true;
 	}
 	if (!control(2).is_real_scalar())
 	{
-        error("samin: 3rd element of controls must be integer NT");
+        error("samin: 3rd element of controls must be NT: positive integer\n\
+		 	loops per temperature reduction");
         return true;
 	}
 	if (!control(3).is_real_scalar())
 	{
-        error("samin: 4th element of controls must integer NS");
+        error("samin: 4th element of controls must be NS: positive integer\n\
+		 	loops per stepsize adjustment");
         return true;
 	}
 	if (!control(4).is_real_scalar())
 	{
-        error("samin: 5th element of controls must be integer neps");
+        error("samin: 5th element of controls must be RT:\n\
+		 	temperature reduction factor, between 0 and 1");
         return true;
 	}
 	if (!control(5).is_real_scalar())
 	{
-        error("samin: 6th element of controls must be number \n\
-		 	temperature reduction factor RT, between 0 and 1");
+        error("samin: 6th element of controls must be integer MAXEVALS ");
         return true;
 	}
 	if (!control(6).is_real_scalar())
 	{
-        error("samin: 7th element of controls must be integer MAXEVALS ");
+        error("samin: 7th element of controls must be NEPS: positive integer\n\
+		 	number of final obj. values that must be within EPS of eachother ");
         return true;
 	}
+
 	if (!control(7).is_real_scalar())
 	{
-        error("samin: 8th element of controls must must be TOL (> 0)");
+        error("samin: 8th element of controls must must be EPS (> 0)\n\
+			used to compare the last NEPS obj values for convergence test");
         return true;
 	}
 	if (!control(8).is_real_scalar())
@@ -128,12 +133,14 @@ any_bad_argument(const octave_value_list& args)
 
 //-------------- The annealing algorithm --------------
 DEFUN_DLD(samin, args, ,
-  "simulated annealing minimization of a function.\n\
+"samin: simulated annealing minimization of a function.\n\
 \n\
-* first argument is function name (string)\n\
-* second is a cell array that holds all arguments of the function,\n\
-* third argument is a cell array with 10 elements that controls\n\
-	the algorithm\n\
+[x, obj, convergence] = samin(\"f\", {args}, {control})\n\
+\n\
+Arguments:\n\
+* \"f\": function name (string)\n\
+* {args}: a cell array that holds all arguments of the function,\n\
+* {control}: a cell array with 10 elements\n\
 	* LB  - vector of lower bounds\n\
 	* UB - vector of upper bounds\n\
 	* nt - integer: # of iterations between temperature reductions\n\
@@ -148,6 +155,11 @@ DEFUN_DLD(samin, args, ,
 		* 2 = only final results to screen\n\
 	* minarg - integer: which of function args is minimization over?\n\
 \n\
+Returns:\n\
+* x: the minimizer\n\
+* obj: the value of f() at x\n\
+* convergence: 1 if normal conv, other values if not\n\
+\n\
 Example: A really stupid way to calculate pi\n\
 function a = f(x)\n\
 	a = cos(x) + 0.01*(x-pi)^2;\n\
@@ -156,9 +168,6 @@ endfunction\n\
 Set up the controls:\n\
 ub = 20;\n\
 lb = -ub;\n\
-nt = 20;\n\
-ns = 5;\n\
-neps = 5;\n\
 rt = 0.5;\n\
 maxevals = 1e10;\n\
 eps = 1e-5;\n\
@@ -201,24 +210,24 @@ ans = 3.1416\n\
 	octave_value_list c_args(2,1); // for cellevall {f, f_args}  
 	octave_value_list f_return; // holder for feval returns
 
-	int m, i, j, h, n, nacc, nobds, func_evals;
+	int m, i, j, h, n, nacc, func_evals;
  	int nup, nrej, nnew, ndown, lnobds;
 	int converge, test;
-
+	
  	// user provided controls
 	const Matrix lb (control(0).matrix_value());
 	const Matrix ub (control(1).matrix_value());
-	const int nt (control(2).int_value());  
+	const int nt (control(2).int_value());
 	const int ns (control(3).int_value());
-	const int neps (control(4).int_value());
-	const double maxevals (control(6).double_value());
+	const double rt (control(4).double_value());
+	const double maxevals (control(5).double_value());
+	const int neps (control(6).int_value());
 	const double eps (control(7).double_value());
 	const int verbosity (control(8).int_value());
 	const int minarg (control(9).int_value());	
 	
 	
 	double f, fp, p, pp, fopt, rand_draw, ratio, t;
-	double rt;
  	Matrix x  = f_args(minarg - 1).matrix_value();
 	Matrix bounds = ub - lb;
 
@@ -229,7 +238,6 @@ ans = 3.1416\n\
     
     //  Set initial values  
     nacc = 0;
-    nobds = 0;
     func_evals = 0;
 	
  	Matrix fstar(neps,1);  
@@ -258,8 +266,7 @@ ans = 3.1416\n\
 
 	// First stage: find initial temperature so that
 	// bounds grow to cover parameter space
-	t = 1;
-	rt = 2; // double temperature to make bounds grow
+	t = 1000;
 	converge = 0;    
 	while(converge==0)
 	{	
@@ -288,8 +295,7 @@ ans = 3.1416\n\
 	                {
 						xp(h) = lb(h) + (ub(h) - lb(h)) * rand_draw;
                         lnobds = lnobds + 1;
-                        nobds = nobds + 1;
-                   	}  
+                    }  
 
 	                // Evaluate function at new point
 					f_args(minarg - 1) = xp;
@@ -304,8 +310,24 @@ ans = 3.1416\n\
 	                if(func_evals >= maxevals)
 	                {
 						warning("samin: NO CONVERGENCE: MAXEVALS exceeded before initial temparature found");
+                		if(verbosity >= 1)
+						{
+							printf("\033[2J");
+							printf("\n================================================\n");
+							printf("SAMIN results\n");
+							printf("NO CONVERGENCE: MAXEVALS exceeded\n");
+							printf("Stage 1, increasing temperature\n");
+							printf("\nObj. fn. value %f\n", fopt);
+  							printf("           parameter        search width\n");
+		    				for(i = 0; i < n; i++)
+							{
+								printf("%20f%20f\n", xopt(i), bounds(i));
+							}
+							printf("================================================\n");
+	    				} 
                 		f_return(0) = xopt;
 						f_return(1) = fopt;
+						f_return(2) = 0;
 						return octave_value_list(f_return);
 					}
                 
@@ -366,7 +388,7 @@ ans = 3.1416\n\
 	                bounds(i) = bounds(i) / (1.0 + 2.0 * ((0.4 - ratio) / 0.4));
 	            }
 				// keep within initial bounds
-	            if(bounds(i) > (ub(i) - lb(i)))
+	            if(bounds(i) >= (ub(i) - lb(i)))
 	            {
 	                test = test + 1; // when this gets to n, we're done with fist stage
 					bounds(i) = ub(i) - lb(i);
@@ -378,11 +400,12 @@ ans = 3.1416\n\
     
 	    if(verbosity == 1)
 	    {
-	    	feval("clc");
-			printf("First stage: Increasing temperature to cover parameter space\n");
+	    	printf("\033[2J");
+			printf("\nFirst stage: Increasing temperature to cover parameter space\n");
 		    printf("\nTemperature  %e", t);
 			printf("\nmin function value so far %f", fopt);
-		    printf("\ntotal moves  %d", nup + ndown + nrej);
+			printf("\ntotal evaluations so far %d", func_evals);
+		    printf("\ntotal moves since temp change %d", nup + ndown + nrej);
 		    printf("\ndownhill  %d", nup);
 		    printf("\naccepted uphill %d", ndown);
 		    printf("\nrejected uphill %d", nrej);
@@ -397,7 +420,7 @@ ans = 3.1416\n\
 	    }
     
 	    // Increase temperature
-	    t = rt * t;
+	    t = 10 * t;
 		for(i = neps-1; i > 0; i--)
 		{
 		fstar(i) = fstar(i-1);
@@ -409,7 +432,6 @@ ans = 3.1416\n\
 
 	
 	// Second stage: temperature reduction loop
-	rt = control(5).double_value(); // set to provided value, not that t has been found
 	converge = 0;    
 	while(converge==0)
 	{
@@ -438,8 +460,8 @@ ans = 3.1416\n\
 	                {
 						xp(h) = lb(h) + (ub(h) - lb(h)) * rand_draw;
                         lnobds = lnobds + 1;
-                        nobds = nobds + 1;
-                   	}  
+					}
+                 
 
 	                // Evaluate function at new point
 					f_args(minarg - 1) = xp;
@@ -454,8 +476,24 @@ ans = 3.1416\n\
 	                if(func_evals >= maxevals)
 	                {
 						warning("samin: NO CONVERGENCE to tolerance %f: maxevals exceeded", eps);
-                		f_return(0) = xopt;
+                		if(verbosity >= 1)
+						{
+							printf("\033[2J");
+							printf("\n================================================\n");
+							printf("SAMIN results\n");
+							printf("NO CONVERGENCE: MAXEVALS exceeded\n");
+							printf("Stage 2, decreasing temperature\n");
+							printf("\nObj. fn. value %f\n", fopt);
+  							printf("           parameter        search width\n");
+		    				for(i = 0; i < n; i++)
+							{
+								printf("%20f%20f\n", xopt(i), bounds(i));
+							}
+							printf("================================================\n");
+	    				}						
+						f_return(0) = xopt;
 						f_return(1) = fopt;
+						f_return(2) = 0;
 						return octave_value_list(f_return);
 					}
                 
@@ -525,11 +563,12 @@ ans = 3.1416\n\
     
 	    if(verbosity == 1)
 	    {
-	    	feval("clc");
-			printf("Intermediate results before next temperature reduction\n");
+	    	printf("\033[2J");
+			printf("\nIntermediate results before next temperature reduction\n");
 		    printf("\nTemperature  %e", t);
 			printf("\nmin function value so far %f", fopt);
-		    printf("\ntotal moves  %d", nup + ndown + nrej);
+			printf("\ntotal evaluations so far %d", func_evals);
+		    printf("\ntotal moves since last temp reduction  %d", nup + ndown + nrej);
 		    printf("\ndownhill  %d", nup);
 		    printf("\naccepted uphill %d", ndown);
 		    printf("\nrejected uphill %d", nrej);
@@ -557,18 +596,35 @@ ans = 3.1416\n\
 		test = (test > 0);
 	    if( ((fopt - fstar(0)) <= eps) && (!test))
 		{
-			converge = 1;
+	        // check for bound narrow enough for parameter convergence
+	        for(i = 0;i < n;i++)
+	        {
+	            if(bounds(i) > 1e-3) test = 0; // no conv. if bounds too wide
+	        }
 		}
-    
+		else test = 0;
+		
+		if (test)
+		{
+			converge = 1;
+			if (lnobds > 0) converge = 2;
+    	}
 	    // Are we done yet?    
-	    if(converge)
+	    if(converge>0)
 	    {
 	       	if(verbosity >= 1)
 			{
-				feval("clc");
+				printf("\033[2J");
 				printf("\n================================================\n");
 				printf("SAMIN final results\n");
-				printf("Sucessful convergence to tolerance %f\n", eps);
+				if (converge == 1) printf("NORMAL CONVERGENCE to tolerance %f\n", eps);
+				if (converge == 2)
+				{
+					printf("CONVERGENCE to bound of parameter space\n");
+					printf("WARNING: %d recent trials out of bounds\n", lnobds);
+					printf("consider expanding bounds and re-running\n");
+				}	
+				printf("\ntotal evaluations %d", func_evals);
 				printf("\nObj. fn. value %f\n", fopt);
   				printf("           parameter        search width\n");
 		    	for(i = 0; i < n; i++)
@@ -579,6 +635,8 @@ ans = 3.1416\n\
 	    	}
 			f_return(0) = xopt;
 			f_return(1) = fopt;
+			if (lnobds > 0) converge = 2;
+			f_return(2) = converge;
 			return octave_value_list(f_return); 
 		}
     
@@ -594,6 +652,7 @@ ans = 3.1416\n\
 	}
 	f_return(0) = xopt;
 	f_return(1) = fopt;
+	f_return(2) = converge;
 	return octave_value_list(f_return);
 }
 

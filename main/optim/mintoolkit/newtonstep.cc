@@ -25,6 +25,7 @@
 #include <oct.h>
 #include <octave/parse.h>
 #include <octave/Cell.h>
+#include <float.h>
 
 DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
 {
@@ -83,15 +84,28 @@ DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
   	gradient = (obj_right - obj_left) / (2*delta);  // take central difference
   	hessian =  (obj_right - 2*obj + obj_left) / pow(delta, 2.0);	
 	hessian = fabs(hessian); // ensures we're going in a decreasing direction
-	if (hessian <= 2e-16) hessian = 1.0; // avoid div by zero
+	if (hessian <= 2*DBL_EPSILON) hessian = 1.0; // avoid div by zero
 
 	a = - gradient / hessian;  // hessian inverse gradient: the Newton step
+
+	if (a < 0) 	// since direction is descending, a must be positive
+	{ 			// if it is not, go to bisection step
+		f_return = feval("bisectionstep", args);
+		a = f_return(0).double_value();
+		obj = f_return(1).double_value();
+		stepobj(0) = a;
+		stepobj(1) = obj;
+		return octave_value_list(stepobj);
+ 	}
+
 	a = (a < 5.0)*a + 5.0*(a>=5.0); // Let's avoid extreme steps that might cause crashes
-	// check that this is improvement
+
+	// ensure that this is improvement
 	f_args(minarg - 1) = x + a*dx;
 	c_args(1) = f_args;
 	f_return = feval("celleval", c_args); 
 	obj = f_return(0).double_value();
+
 	// if not, fall back to bisection
 	if ((obj > obj_0) || isnan(obj))
 	{

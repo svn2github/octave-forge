@@ -26,6 +26,7 @@
 #include <octave/parse.h>
 #include <octave/Cell.h>
 #include <octave/lo-mappers.h>
+#include <float.h>
 
 // define argument checks
 static bool
@@ -43,9 +44,9 @@ any_bad_argument(const octave_value_list& args)
     }
  	if (args.length() == 3)
 	{
-		if (!args(2).is_real_matrix() || (!(args(2).length() == 4)))
+		if (!args(2).is_cell() || (!(args(2).length() == 4)))
     	{
-        	error("bfgsmin: 3rd argument, if supplied,  must a 4x1 vector of control options");
+        	error("bfgsmin: 3rd argument, if supplied,  must a 4-element cell array of control options");
 	        return true;
     	}
 	}	
@@ -54,11 +55,14 @@ any_bad_argument(const octave_value_list& args)
 
 
 DEFUN_DLD(bfgsmin, args, ,
- " bfgs minimization of a function.\n\
+"bfgsmin: bfgs minimization of a function.\n\
 \n\
-* first argument is function name (string)\n\
-* second is a cell array that holds all arguments of the function,\n\
-* third argument is a optional 4x1 control vector\n\
+[x, obj, convergence] = bfgsmin(\"f\", {args}, {control})\n\
+\n\
+Arguments:\n\
+* \"f\": function name (string)\n\
+* {args}: a cell array that holds all arguments of the function,\n\
+* {control}: an optional cell array of 4 elements\n\
 	* elem 1: maximum iterations  (-1 = infinity (default))\n\
 	* elem 2: verbosity\n\
 		- 0 = no screen output (default)\n\
@@ -68,7 +72,12 @@ DEFUN_DLD(bfgsmin, args, ,
 		 - 1 = strict (function, gradient and param change) (default)\n\
 		 - 2 = weak - only function convergence required\n\
 	* elem 4: arg with respect to which minimization is done\n\
-	(default = first)\n\
+		(default = first)\n\
+\n\
+Returns:\n\
+* x: the minimizer\n\
+* obj: the value of f() at x\n\
+* convergence: 1 if normal conv, other values if not\n\
 \n\
 Example:\n\
 function a = f(x,y)\n\
@@ -123,39 +132,42 @@ ans =\n\
 	
 	octave_value_list f_return; // holder for feval returns
 
-	int criterion, max_iters, convergence, verbosity, minarg, iter;
+	int max_iters, verbosity, criterion, minarg;
+	int convergence, iter;
 	int gradient_failed, i, j, k, conv1, conv2, conv3;
-
+	int have_gradient = 0;
 	double func_tol, param_tol, gradient_tol, stepsize, obj_value;
-	double last_obj_value, denominator, test, tempscalar;
-	Matrix control, thetain, thetanew, H, g, d, g_new, p, q, temp, H1, H2;
-	
+	double last_obj_value, denominator, test;
+	Matrix H, tempmatrix, H1, H2;
+	ColumnVector thetain, d, g, g_new, p, q;
 	// tolerances
-	func_tol  = 10*sqrt(2.22e-16);
+	func_tol  = 2*DBL_EPSILON;
 	param_tol = 1e-6;
-	gradient_tol = 1e-5;  
+	gradient_tol = 1e-6;  
 
-	// Default values for controls
-	max_iters = INT_MAX; // no limit on iterations
-	verbosity = 0; // by default don't report results to screen
-	criterion = 1; // strong convergence required
-	minarg = 1; // by default, first arg is one over which we minimize
- 
  	// use provided controls, if applicable
 	if (args.length() == 3)
 	{
-		control = args(2).matrix_value();
-		max_iters = (int) control(0);
+		Cell control (args(2).cell_value());
+		max_iters = control(0).int_value();
 		if (max_iters == -1) max_iters = INT_MAX;
-		verbosity = (int) control(1);
-		criterion = (int) control(2);
-		minarg = (int) control(3);
+		verbosity = control(1).int_value();
+		criterion = control(2).int_value();
+		minarg = control(3).int_value();
 	}	
-
+	else
+	{
+		// Default values for controls
+		max_iters = INT_MAX; // no limit on iterations
+		verbosity = 0; // by default don't report results to screen
+		criterion = 1; // strong convergence required
+		minarg = 1; // by default, first arg is one over which we minimize
+ 	}
+	
 	step_args(3) = minarg;
 	g_args(2) = minarg;
 	
- 	Matrix theta  = f_args(minarg - 1).matrix_value();
+ 	ColumnVector theta  = f_args(minarg - 1).column_vector_value();
 
 	k = theta.rows();
 	
@@ -167,11 +179,29 @@ ans =\n\
 	// Initial obj_value
 	f_return = feval("celleval", c_args); 
 	last_obj_value = f_return(0).double_value();
-
-	// initial gradient
-	f_return = feval("numgradient", g_args);
-	g = f_return(0).matrix_value();
-	g = g.transpose();
+	
+	// maybe we have analytic gradient?
+	// if the function returns more than one item, and the second
+	// is a kx1 vector, it is assumed to be the gradient
+	if (f_return.length() > 1)
+	{
+		if (f_return(1).is_real_matrix())
+		{
+			if ((f_return(1).rows() == k) & (f_return(1).columns() == 1))
+			{
+				g = f_return(1).column_vector_value();
+				have_gradient = 1; // future reference
+			}	
+		}
+		else have_gradient = 0;
+		
+	}
+	if (!have_gradient) // use numeric gradient
+	{
+		f_return = feval("numgradient", g_args);
+		tempmatrix = f_return(0).matrix_value();
+		g = tempmatrix.row(0).transpose();
+	}
 
 	// check that gradient is ok
 	gradient_failed = 0;  // test = 1 means gradient failed
@@ -188,36 +218,47 @@ ans =\n\
 	// MAIN LOOP STARTS HERE
  	for (iter = 0; iter < max_iters; iter++)
 	{
- 		d = -H*g;
 
-		// Regular step
-		step_args(2) = d;
-		f_args(minarg - 1) = theta;
-		step_args(1) = f_args;
-		f_return = feval("newtonstep", step_args);
-		stepsize = f_return(0).double_value();
-		obj_value = f_return(1).double_value();
-		
-		// Steepest descent if regular step fails
-		if (xisnan(stepsize)) 
+		d = -H*g;
+		// if direction not zero, get stepsize
+		if (!((fabs(d.max()) < DBL_EPSILON) \
+				|| (d.min() < 0 & (fabs(d.min()) < 2*DBL_EPSILON))))
 		{
-			warning("bfgsmin: Stepsize failure in BFGS direction, trying steepest descent direction");
-			d = -g; // try steepest descent
+ 	
+			// stepsize: try bfgs direction, then steepest descent if it fails
 			step_args(2) = d;
+			f_args(minarg - 1) = theta;
+			step_args(1) = f_args;
 			f_return = feval("newtonstep", step_args);
 			stepsize = f_return(0).double_value();
 			obj_value = f_return(1).double_value();
-
-			// if that didn't work, were out of luck
-			if (xisnan(stepsize))
+			if (stepsize == 0.0) // fall back to steepest descent
 			{
-				warning("bfgsmin: unable to find direction of improvement: exiting");
-				theta = thetain;
-				convergence = 2;
-				break;
+				warning("bfgsmin: Stepsize failure in BFGS direction, trying steepest descent");
+				d = -g; // try steepest descent
+				step_args(2) = d;
+				f_return = feval("newtonstep", step_args);
+				stepsize = f_return(0).double_value();
+				obj_value = f_return(1).double_value();
+				if (stepsize == 0.0) // out of luck on stepsize
+				{
+					warning("bfgsmin: unable to find direction of improvement: exiting");
+					theta = thetain;
+					convergence = 2;
+					break;
+				}
 			}
- 		}
-      	p = stepsize*d;
+		}
+		else // if gradient zero, then check function conv.
+		{
+			f_args(minarg - 1) = theta;
+			c_args(1) = f_args;
+			f_return = feval("celleval", c_args); 
+			obj_value = f_return(0).double_value();
+			stepsize = 1;	
+		}	
+
+		p = stepsize*d;
 
  		// check normal convergence: all 3 must be satisfied
 		// function convergence
@@ -230,29 +271,27 @@ ans =\n\
 			conv1 = fabs(obj_value - last_obj_value) < func_tol;
 		}	
 		// parameter change convergence
-		temp = theta.transpose() * theta;
-		test = sqrt(temp(0,0));
+		test = sqrt(theta.transpose() * theta);
 		if (test > 1)
 		{
-			temp = p.transpose() * p;
-			conv2 = (temp(0,0) / test) < param_tol ;
+			conv2 = p.transpose() * p / test < param_tol ;
 			
 		}
 		else
 		{
-			temp = p.transpose() * p;
-			conv2 = temp(0,0) < param_tol;
+			conv2 = p.transpose() * p < param_tol;
 		}		
 		// gradient convergence
-		temp = g.transpose() * g;
-		conv3 = sqrt(temp(0,0)) < gradient_tol;
+		conv3 = sqrt(g.transpose() * g) < gradient_tol;
 
 
 		// Want intermediate results?
 		if (verbosity == 1)
 		{
-			printf("\nbfgsmin intermediate results: Iteration %d\n",iter);
+			printf("\nBFGSMIN intermediate results: Iteration %d\n",iter);
 			printf("Stepsize %8.7f\n", stepsize);
+			if (have_gradient) printf("Using analytic gradient\n");
+			else printf("Using numeric gradient\n");
 			printf("Objective function value %16.10f\n", last_obj_value);
 			printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv1, conv2, conv3);	
 			printf("  params  gradient  change\n");
@@ -280,15 +319,23 @@ ans =\n\
 		
 			
   	    last_obj_value = obj_value;	
-		thetanew = theta + p;
-		theta = thetanew;
+		theta = theta + p;
 
-		// get gradient at new parameter value
+		// new gradient
 		f_args(minarg - 1) = theta;
-		g_args(1) = f_args;
-		f_return = feval("numgradient", g_args);
-		g_new = f_return(0).matrix_value();
-		g_new = g_new.transpose();
+		if (have_gradient)
+		{
+			c_args(1) = f_args;
+			f_return = feval("celleval", c_args);
+			g_new = f_return(1).column_vector_value();
+		}
+		else // use numeric gradient
+		{
+			g_args(1) = f_args;
+			f_return = feval("numgradient", g_args);
+			tempmatrix = f_return(0).matrix_value();
+			g_new = tempmatrix.row(0).transpose();
+		}
 
 		// Check that gradient is ok
 		gradient_failed = 0;  // test = 1 means gradient failed
@@ -297,48 +344,28 @@ ans =\n\
 			gradient_failed = gradient_failed + xisnan(g_new(i));
 		}
 
-		// Hessian update if gradient ok		
+	// Hessian update if gradient ok		
 		if (!gradient_failed)
 		{
 			q = g_new-g;
   	    	g = g_new;
-			temp = q.transpose() * p;
-			denominator = temp(0,0);
-	  	  	if (fabs(denominator) < 2.2e-16)  // reset Hessian if necessary
+			denominator = q.transpose()*p;
+	  	  	if ((fabs(denominator) < DBL_EPSILON))  // reset Hessian if necessary
 			{  	
-				// if we already reset Hessian then we're out of luck
-				if ((H == identity_matrix(k,k)) & !(iter==0))
-				{					 
-					convergence = 2;
-					theta = thetain;
-				  	warning("bfgsmin: %d unable to find direction of improvement: exiting",iter);
-					break;
-				}	
-				// Here's the Hessian re-set
+				if (verbosity == 1) printf("bfgsmin: Hessian reset\n");
 				H = identity_matrix(k,k);
 			}	
-		  	else // normal update
+		  	else 
 			{
-				temp = (1.0+(q.transpose() * H * q) / denominator) / denominator;
-				tempscalar = temp(0,0);
-				H1 = tempscalar * (p * p.transpose());
+				H1 = (1.0+(q.transpose() * H * q) / denominator) / denominator \
+					* (p * p.transpose());
 				H2 = (p * q.transpose() * H + H*q*p.transpose());
 				H2 = H2 / denominator;
 			  	H = H + H1 - H2;
-  			}
+			}
 		}
-		else // failed gradient - try Hessian reset
-		{
-			// if we already tried it, we're out of luck
-			if (H == identity_matrix(k,k))
-			{
-				convergence = 2;
-				theta = thetain;
-				warning("bfgsmin: failure of gradient: exiting");
-				break;
-			}	
-			H = identity_matrix(k,k);
-		}	
+		else H = identity_matrix(k,k); // reset hessian if gradient fails
+		// then try to start again with steepest descent
 	}
 	
  	// Want last iteration results?
@@ -350,6 +377,8 @@ ans =\n\
 		if ((convergence == 1) & (criterion == 1)) printf("STRONG CONVERGENCE\n");
 		if ((convergence == 1) & !(criterion == 1)) printf("WEAK CONVERGENCE\n");
 		if (convergence == 2) printf("NO CONVERGENCE: algorithm failed\n");
+		if (have_gradient) printf("Used analytic gradient\n");
+		else printf("Used numeric gradient\n");
 		printf("\nObj. fn. value %f     Iteration %d\n", last_obj_value, iter);
 		printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv1, conv2, conv3);	
 		printf("\n  param  gradient  change\n");
@@ -362,7 +391,6 @@ ans =\n\
 	}
 	f_return(0) = theta;
 	f_return(1) = obj_value;
-	f_return(2) = iter;
-	f_return(3) = convergence;
+	f_return(2) = convergence;
 	return octave_value_list(f_return);
 }

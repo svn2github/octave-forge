@@ -311,6 +311,17 @@ process_commands(int channel)
 	    bind_global_error_variable();
 	    octave_value def = get_builtin_value("__error_text__");
 	    std::string str = def.string_value();
+	    // provide a context for the error (but not too much!)
+	    str += "when evaluating:\n";
+	    if (len > 100) 
+	      {	
+		char t=buffer[100]; 
+	        buffer[100] = '\0'; 
+	        str+=buffer; 
+	        buffer[100]=t;
+	      }
+	    else
+              str += buffer;
 	    STATUS("error is " << str);
 	    channel_error(channel,str.c_str());
 	    clear_global_error_variable(NULL);

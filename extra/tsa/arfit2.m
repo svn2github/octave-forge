@@ -1,6 +1,6 @@
 function [w, MAR, C, sbc, fpe, th]=arfit(Y, pmin, pmax, selector, no_const)
 % ARFIT2 estimates multivariate autoregressive parameters
-%   using MDURLEV with the Nuttall-Strand method [1,2]. 
+%   using MVAR with the Nuttall-Strand method [1,2]. 
 % ARFIT2 is included for combatibility reasons to ARFIT [3]
 %  
 %  [w, A, C, sbc, fpe] = arfit2(v, pmin, pmax, selector, no_const)
@@ -13,12 +13,8 @@ function [w, MAR, C, sbc, fpe, th]=arfit(Y, pmin, pmax, selector, no_const)
 %  [3] T. Schneider and A. Neumaier, A. 2001. 
 %	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
-%  
 
-%	Version 2.90
-%	last revision 12.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (C) 1996-2002 by Alois Schloegl  <a.schloegl@ieee.org>	
 
 %%%%% checking of the input arguments was done the same way as ARFIT
 if (pmin ~= round(pmin) | pmax ~= round(pmax))

@@ -1,19 +1,20 @@
-##       v = vrml_frame (t, r, ... )
+##       v = vrml_frame (t, r, ...)
 ##  
 ## t : 3      Translation                          Default : [0,0,0]
 ## r : 3x3    Rotation matrix, or                  Default : eye(3)
 ##     3      Argument for rotv
-## Options
-## "scale" : 3 or 1   : Length of frame's branches (including cone)
+## OPTIONS
+##  name   : size     : function                                   : default
+## "scale" : 3 or 1   : Length of frame's branches (including cone)   <1>
 ## "diam"  : 3 or 1   : Diameter of cone's base
-## "col"   : 3 or 3x3 : Color of branches (eventually stacked vertically)
-## "hcol"  : 3 or 3x3 : Color of head     (eventually stacked vertically)
-##                                                  Default : col
+## "col"   : 3 or 3x3 : Color of branches (may be stacked vertically) <[3 4 9]/10>
+## "hcol"  : 3 or 3x3 : Color of head     (may be stacked vertically) <col>
+##                                                  
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-## pre 2.1.39 function v = vrml_frame(...)
+
 function v = vrml_frame (varargin)
 
 ### Test with : frame with R,G,B vectors of len 3,2,1 and cone's diam are .2,
@@ -34,18 +35,18 @@ hcol = [];
 numeric_args = 0;
 while nargin && numeric_args<2,
 
-  ## pre 2.1.39 tmp = va_arg ();
-  tmp = nth (varargin, numeric_args + 1);   ## pos 2.1.39
+
+  tmp = nth (varargin, numeric_args + 1);
   if isstr (tmp), break; end
   --nargin;
   numeric_args++;
   if numeric_args == 1, t = tmp ; 
-  else                  r = tmp ;  break
+  else                  r = tmp ;  break;
   end
 end
 
 if nargin
-  ## pre 2.1.39 leftover_args = list (all_va_args);
+
   leftover_args = varargin;	# pos 2.1.39
   leftover_args = leftover_args (numeric_args+1:length(leftover_args));
 
@@ -59,7 +60,7 @@ if nargin
 	       "verbose",verbose);
   op1 = " col hcol diam scale ";
   op0 = " verbose ";
-  s = read_options (leftover_args, "op1",op1,"op0",op0,"default",df);
+  s = read_options (leftover_args, "op1",op1,"op0",op0,"default",df,"skipnan",1);
   [col, hcol, diam, scale, verbose] = \
       getfield (s, "col","hcol","diam","scale","verbose");
 end
@@ -83,6 +84,10 @@ scale = scale(:)' ;
 ii = find (scale & ! isnan (scale));
 diam(ii) = diam(ii).*scale(ii);
 rdiam = nan*ones(1,3) ; ## ones (1,3)/24 ;
+
+ml = max (abs (scale(ii)));
+diam(ii) = ml./scale/16;
+rdiam(ii) = ml./scale/32;
 
 sz = [scale; nan*ones(1,3); diam; rdiam] ;
 

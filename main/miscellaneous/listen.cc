@@ -25,7 +25,7 @@
 static bool debug = false;
 
 static double timestamp = 0.0;
-inline double tic(void) { timestamp = octave_time(); }
+inline void tic(void) { timestamp = octave_time(); }
 inline double toc(void) {return round(-1e6*(timestamp-double(octave_time())));}
 
 // XXX FIXME XXX --- surely this is part of the standard library?
@@ -586,7 +586,7 @@ listen(...,debug|nodebug)\n\
       STATUS("failed to accept"  << std::endl 
 	     << "Octave pid: " << octave_syscalls::getpid() );
       perror("accept");
-#if defined(__CYGWIN__) || defined(_sgi)
+#if defined(_sgi)
       break;
 #else
       continue;
@@ -594,11 +594,13 @@ listen(...,debug|nodebug)\n\
     }
     STATUS("connected");
 
-#if !defined(__GNUC__) || !defined(_sgi)
+#if defined(__GNUC__) && defined(_sgi)
     // Known bug: functions which pass or return structures use a
     // different ABI for gcc and native compilers on some architectures.
     // Whether this is a bug depends on the structure length.  SGI's 64-bit
     // architecture makes this a problem for inet_ntoa.
+    STATUS("server: got connection from " << their_addr.sin_addr);
+#else
     STATUS("server: got connection from " << inet_ntoa(their_addr.sin_addr));
 #endif
 

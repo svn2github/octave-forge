@@ -18,15 +18,17 @@
 ## usage: quiver (x, y, u, v)
 ## usage: quiver (u, v)
 ##
-## Plot the (u,v) components of a vector field in a (x,y) meshgrid.
+## Plot the (u,v) components of a vector field in an (x,y) meshgrid.
+## If the grid is uniform, you can specify x and y as vectors.
+## You can plot vectors and lines simultaneously, but the lines
+## must be plotted with style '-' even though that is the default.
 ##
-## You can try:
+## Use clf after you are done plotting vector fields.
 ##
-##   a = b = 1:10;
-##   [x,y] = meshgrid(a,b);
-##   u = rand (10,10);
-##   v = rand (10,10);
-##   quiver(x,y,u,v)
+## Example
+##
+##   [x,y] = meshgrid(1:2:20);
+##   quiver(x,y,sin(2*pi*x/10),sin(2*pi*y/10))
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
@@ -37,7 +39,6 @@
 ##     * allow vector x,y,  defaulting to 1:n, 1:m for mxn u
 ##     * vectorize
 
-## TODO: use gnuplot 'vector' style instead of setting arrows one at a time
 function quiver (x, y, u, v)
 
   if (nargin != 2 && nargin != 4)
@@ -48,11 +49,7 @@ function quiver (x, y, u, v)
     u = x; v = y; x = 1:columns(u); y= 1:rows(u);
   endif
 
-  if (any(size(u)!=size(v)))
-    error ("quiver: u, v must have the same shape.");
-  endif
-
-  if is_vector(x) && is_vector(y)
+  if is_vector(x) && is_vector(y) && !is_vector(u)
     [nr, nc] = size(u);
     if (length(x) != nc || length(y) != nr)
       error ("quiver: x, y vectors must have correct length");
@@ -60,36 +57,25 @@ function quiver (x, y, u, v)
     [x,y] = meshgrid(x,y);
   endif
 
-  if (any (size(x) != size(u) | size(y) != size(u)))
-    error ("quiver: x, y must have the same shape as u, v");
+  if (any (size(v) != size(u) | size(x) != size(u) | size(y) != size(u)))
+    error ("quiver: x, y, u, v must have the same shape");
   endif
 
-
-  ## Calculating the grid limits.
-  
-  minx = min (min (x));
-  maxx = max (max (x));
-  miny = min (min (y));
-  maxy = max (max (y));
-  
-  max_arrow = max ( [max(max (u)) , max(max (v)) , ...
-		     abs(min (min (u))) , abs(min (min (v)))] );
-  border = max_arrow * 1.2;
-  
-  limits = [ minx - border, maxx + border, miny - border, maxy + border ];
-
-  axis (limits);
-  
-  
-  ## Ok, now plot the arrows.
-  
-  gset noarrow;
-  gplot 0 title "";
-  
-  command = sprintf ("gset arrow from %f,%f to %f,%f\n", \
-		     [ x(:)'; y(:)'; x(:)'+u(:)'; y(:)'+v(:)' ]);
-  eval ( [ "if 1\n", command, "\nendif" ] );
-  
-  replot;
-      
+  data = [ x(:), y(:), u(:), v(:) ];
+  gset style data vector
+  gplot data title ""
 endfunction
+
+%!demo
+%! [x,y] = meshgrid(1:2:20);
+%! quiver(x,y,sin(2*pi*x/10),sin(2*pi*y/10))
+
+%!demo
+%! axis('equal');
+%! x=linspace(0,3,80); y=sin(2*pi*x); theta=2*pi*x+pi/2;
+%! quiver(x,y,sin(theta)/10,cos(theta)/10);
+%! hold on; plot(x,y,'-;;'); hold off;
+
+%!demo
+%! % Reset the graph after plotting quivers
+%! clf

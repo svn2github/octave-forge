@@ -117,10 +117,18 @@
 
 function [Z, FZ, INFO] =fzero(Func,bracket,options)
 
-	if (nargin < 2 || !isstr(Func) || !((rows(bracket) == 1 & (columns(bracket) == 1 || columns(bracket)==2)) || (rows(bracket') == 1 & (columns(bracket') == 1 || columns(bracket')==2))))
-		help('fzero');
-		return;
+	if (nargin < 2) 
+	  usage("[z, f(z), info] = fzero(@f,[lo,hi]|start,options)"); 
 	endif
+
+	if !isstr(Func) && !isa(Func,"function handle") && !isa(Func,"inline function")
+	  error("fzero expects a function handle");
+	endif
+	bracket = bracket(:);
+	if all(length(bracket)!=[1,2])
+	  error("fzero expects an initial value or a range");
+	endif
+
 
 	set_default_options = false;
 	if (nargin >= 2) 			% check for the options
@@ -368,11 +376,11 @@ endfunction;
 %!test 
 %! options.abstol=1e-3;
 %! assert (abs(fzero('atan',[-(10^300),10^290],options)), 0, 1e-3)
-%!test				# comparision between the Brent's method and the Powell's method of `fsolve'
+%!test
 %! testfun=inline('(x-1)^3','x');
 %! options.abstol=0;
 %! options.reltol=eps;
-%! assert (abs(fzero(testfun,[0,3],options)), 1, abs(1-fsolve(testfun,0)))
+%! assert (abs(fzero(testfun,[0,3],options)), 1, -eps)
 %!test
 %! testfun=inline('x.^2-100','x');
 %! options.abstol=1e-4;

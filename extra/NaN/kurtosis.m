@@ -41,12 +41,6 @@ function R=kurtosis(i,DIM)
 
 
 if nargin==1,
-        DIM=[];
-end
-if isempty(DIM), 
-        DIM=flag_implicit_dimension;
-end;	
-if ~DIM
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;

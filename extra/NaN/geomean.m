@@ -38,12 +38,6 @@ function [y] = geomean(x,DIM)
 
 
 if nargin<2
-        DIM=[]; 
-end
-if isempty(DIM), 
-        DIM=flag_implicit_dimension;
-end;	
-if ~DIM
         DIM=min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
 end;

@@ -62,13 +62,7 @@ function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 
-if nargin<2
-        DIM = [];
-end;	
-if isempty(DIM), 
-        DIM=flag_implicit_dimension;
-end;	
-if ~DIM, 
+if nargin<2,
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;

@@ -47,9 +47,6 @@ else
         fprintf(2,'Error SEM: invalid number of arguments\n usage: v=var(x [,DIM])\n');
 end
 if ~DIM;
-        DIM=flag_implicit_dimension;
-end;	
-if ~DIM;
         DIM=min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
 end;

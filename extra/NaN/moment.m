@@ -64,9 +64,6 @@ if isnumeric(opt) | ~isnumeric(DIM),
 	opt = tmp;        
 end;
 if isempty(DIM), 
-        DIM=flag_implicit_dimension;
-end;	
-if ~DIM,
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
 end;

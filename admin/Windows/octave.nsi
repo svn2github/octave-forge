@@ -4,7 +4,6 @@
 #
 
 # http://nsis.sourceforge.net/Docs
-
 # Sort out command line parameters
 
 !ifndef VERSION
@@ -17,62 +16,69 @@
 !define ROOT "C:\cygwin"
 !endif
 
-# Product and version
+; Product and version
+!include "MUI.nsh"
 !define MUI_PRODUCT "GNU Octave ${VERSION}"
 !define MUI_VERSION "${VERSION}${MINOR}"
 
-
-!define STARTMENU
-
-!include "${NSISDIR}\Contrib\Modern UI\System.nsh"
-
-!define MUI_LICENSEPAGE
-!define MUI_COMPONENTSPAGE
-!define MUI_DIRECTORYPAGE
-
-!define MUI_ABORTWARNING
-
-!define MUI_UNINSTALLER
-!define MUI_UNCONFIRMPAGE
-
-!insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_LANGUAGE "Spanish"
-
-CrcCheck On
-
+XPStyle on
+CrcCheck on
+	
 OutFile "octave-${MUI_VERSION}-inst.exe"
-#Icon "octave.ico"
-#UninstallIcon "octave.ico"
+Icon "octave.ico"
+UninstallIcon "octave.ico"
+
+;-------------------------------
+;Version Information
+
+VIProductVersion "${VERSION}.0"
+VIAddVersionKey "ProductName" "GNU Octave"
+VIAddVersionKey "FileVersion" "${VERSION}.0"
+VIAddVersionKey "LegalCopyright" "© John W. Eaton, et al."
+VIAddVersionKey "FileDescription" "Octave+octave-forge+gnuplot"
 
 # ****************** Localization ***********************
+; Translate the following strings into all the languages
+; that we support for the installer.  Some things may not
+; yet be translated.  Search for the following strings:
+;
+;    Spanish  ;ESP
 
-LicenseData /LANG=${LANG_ENGLISH} "..\..\COPYING.GPL"
-LicenseData /LANG=${LANG_SPANISH} "..\..\COPYING.GPL-spanish"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\Spanish.nlf"
 
-; The default caption is a language dependent string saying
-;     ${MUI_PRODUCT} ${VERSION} Setup
-; Since our ${MUI_PRODUCT} includes ${VERSION}, we need to
-; set the caption by hand for each of our languages.
-Caption /LANG=${LANG_ENGLISH} "${MUI_PRODUCT} Setup"
-Caption /LANG=${LANG_SPANISH} "Instalación de ${MUI_PRODUCT}"
+; License data files --- put a translation of the GPL into
+; the root of the octave-forge tree.
+LicenseLangString LicenseFile ${LANG_ENGLISH} "..\..\COPYING.GPL"
+LicenseLangString LicenseFile ${LANG_SPANISH} "..\..\COPYING.GPL-spanish"
 
-UninstallCaption /LANG=${LANG_ENGLISH} "Uninstall ${MUI_PRODUCT}"
-UninstallCaption /LANG=${LANG_SPANISH} "Desinstalar ${MUI_PRODUCT}"
+;ESP
+LangString LicenseTextStr ${LANG_ENGLISH} "GNU Octave is free software released under the GNU Public License.  Read below for your rights:" 
+LangString LicenseTextStr ${LANG_SPANISH} "GNU Octave is free software released under the GNU Public License.  Read below for your rights:" 
+
+LangString ^ComponentsText ${LANG_ENGLISH} "${MUI_PRODUCT} Setup"
+LangString ^ComponentsText ${LANG_SPANISH} "Instalación de ${MUI_PRODUCT}"
+
+LangString installcaption ${LANG_ENGLISH} "${MUI_PRODUCT} Setup"
+LangString installcaption ${LANG_SPANISH} "Instalación de ${MUI_PRODUCT}"
+
+LangString uninstcaption ${LANG_ENGLISH} "Uninstall ${MUI_PRODUCT}"
+LangString uninstcaption ${LANG_SPANISH} "Desintalar de ${MUI_PRODUCT}"
 
 LangString TITLE_Section1 ${LANG_ENGLISH} "${MUI_PRODUCT}"
 LangString TITLE_Section1 ${LANG_SPANISH} "${MUI_PRODUCT}"
 
-LangString TITLE_Section2 ${LANG_ENGLISH} "Start Menu Icons"
-LangString TITLE_Section2 ${LANG_SPANISH} "Iconos de Menú de Inicio"
-
-LangString TITLE_Section3 ${LANG_ENGLISH} "Desktop Icons"
-LangString TITLE_Section3 ${LANG_SPANISH} "Iconos de Escritorio"
-
 LangString DESC_Section1 ${LANG_ENGLISH} "Install the ${MUI_PRODUCT} for Windows binary distribution including gnuplot, epstk and the octave-forge extensions."
 LangString DESC_Section1 ${LANG_SPANISH} "Instalar la version ejecutable the ${MUI_PRODUCT} para Windows la cual incluye gnuplot, epstk y las extensiones de octave-forge."
 
+LangString TITLE_Section2 ${LANG_ENGLISH} "Start Menu Icons"
+LangString TITLE_Section2 ${LANG_SPANISH} "Iconos de Menú de Inicio"
+
 LangString DESC_Section2 ${LANG_ENGLISH} "Add a ${MUI_PRODUCT} folder to the Start Menu."
 LangString DESC_Section2 ${LANG_SPANISH} "Agregar una carpeta de ${MUI_PRODUCT} al Menú de Inicio."
+
+LangString TITLE_Section3 ${LANG_ENGLISH} "Desktop Icons"
+LangString TITLE_Section3 ${LANG_SPANISH} "Iconos de Escritorio"
 
 LangString DESC_Section3 ${LANG_ENGLISH} "Add a ${MUI_PRODUCT} icon to the Desktop."
 LangString DESC_Section3 ${LANG_SPANISH} "Agregar un icono de ${MUI_PRODUCT} al Escritorio."
@@ -92,46 +98,103 @@ LangString EpstkLink ${LANG_SPANISH} "$SMPROGRAMS\${MUI_PRODUCT}\Manual de Epstk
 LangString RefcardLink ${LANG_ENGLISH} "$SMPROGRAMS\${MUI_PRODUCT}\${MUI_PRODUCT} Quick Reference (PDF).lnk"
 LangString RefcardLink ${LANG_SPANISH} "$SMPROGRAMS\${MUI_PRODUCT}\Refencia Rápida de ${MUI_PRODUCT} (PDF).lnk"
 
-; The following strings are used by "Function .onInit".  If you are
-; adding a new language, be sure to add new tests therein, otherwise
-; the English language messages will be used.
+LangString PreviousCygwin ${LANG_ENGLISH} "A previous installation of cygwin was detected. This package is not to be used from within a cygwin enviroment. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
+LangString PreviousCygwin ${LANG_SPANISH} "Se detectó una versión de cygwin instalada. Este paquete no fue diseñado para funcionar dentro de un ambiente de cygwin. Presione Aceptar si desea continuar o Cancelar si desea detener el preceso de instalación."
 
-!define PreviousCygwinEnglish "A previous installation of cygwin was detected. This package is not to be used from within a cygwin enviroment. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
-!define PreviousCygwinSpanish "Se detectó una versión de cygwin instalada. Este paquete no fue diseñado para funcionar dentro de un ambiente de cygwin. Presione Aceptar si desea continuar o Cancelar si desea detener el preceso de instalación."
+LangString PreviousOctave ${LANG_ENGLISH} "A previous version of Octave ${VERSION} for Windows was detected. Please uninstall any previous version before running this installer. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
+LangString PreviousOctave ${LANG_SPANISH} "Se detectó una versión anterior de Octave ${VERSION} para Windows. Por favor desinstale cualquier versión anterior antes de ejecutar este instalador. Presione Aceptar si desea continuar o Cancelar si desea detener el proceso de instalación."
 
-!define PreviousOctaveEnglish "A previous version of Octave ${VERSION} for Windows was detected. Please uninstall any previous version before running this installer. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
-!define PreviousOctaveSpanish "Se detectó una versión anterior de Octave ${VERSION} para Windows. Por favor desinstale cualquier versión anterior antes de ejecutar este instalador. Presione Aceptar si desea continuar o Cancelar si desea detener el proceso de instalación."
+LangString GenuineIntel ${LANG_ENGLISH} "This version of Octave for Windows is optimized for Intel x86 processors and is known to cause troubles with other architectures. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
+LangString GenuineIntel ${LANG_SPANISH} "Esta versión de Octave para Windows ha sido optimizada para procesadores Intel x86 y puede no funcionar correctamente sobre otros procesadores. Presione Aceptar si desea continuar o Cancelar si desea detener el proceso de instalación."
 
-!define GenuineIntelEnglish "This version of Octave for Windows is optimized for Intel x86 processors and is known to cause troubles with other architectures. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
-!define GenuineIntelSpanish "Esta versión de Octave para Windows ha sido optimizada para procesadores Intel x86 y puede no funcionar correctamente sobre otros procesadores. Presione Aceptar si desea continuar o Cancelar si desea detener el proceso de instalación."
+;ESP
+LangString Donation ${LANG_ENGLISH} "Octave needs your support!  Please donate to the University of Wisconsin Foundation, dedicated as follows:"
+LangString Donation ${LANG_SPANISH} "Octave needs your support!  Please donate to the University of Wisconsin Foundation, dedicated as follows:"
+
+; This function is for choosing languages.  If you add
+; a new language, you will need to add the name of the
+; language to this function in order for the user to
+; select it.
+Function ChooseLanguage
+  Push ""
+  Push ${LANG_ENGLISH}
+  Push "English"
+  Push ${LANG_SPANISH}
+  Push "Español"
+  Push A ; A means auto count languages
+  ; for the auto count to work the first empty push (Push "") must remain
+  LangDLL::LangDialog "Installer Language" "Please select the language of the installer"
+  Pop $LANGUAGE
+  StrCmp "$LANGUAGE" "cancel" Cancel
+  Return
+  Cancel:
+  Abort
+FunctionEnd
+
+Function .onInit
+  Push Tahoma
+  Push 8
+  Call ChooseLanguage
+FunctionEnd
 
 # ****************** End Localization ***********************
 
-# This is the command to start octave.
-!define OctaveStart "rxvt.exe --keysym.0xFF50 '^a' --keysym.0xFF57 '^e' --keysym.0xFFFF '^f^h' -fn 'Lucida Console-12' -tn linux -title '${MUI_PRODUCT}' -geometry 80x25 -sl 400 -sr -e /bin/start_octave.sh"
+LicenseText $(LicenseTextStr) $(^NextBtn)
+LicenseData $(LicenseFile)
+Name "${MUI_PRODUCT}"
+Caption $(installcaption)
+UninstallCaption $(uninstcaption)
 
-!define OCTKEY "GNUoctave ${VERSION}"
+; Page structure
+!include "MUI.nsh"
+Page license BeforeFirstPage
+Page components
+Page directory
+Page instfiles
+PageEx license
+  LicenseText $(Donation) $(^CloseBtn)
+  LicenseData donation.txt
+PageExEnd
+UninstPage uninstConfirm
+UninstPage instfiles
+
+; Section descriptions
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+!insertmacro MUI_DESCRIPTION_TEXT Section1 $(DESC_Section1)
+!insertmacro MUI_DESCRIPTION_TEXT Section2 $(DESC_Section2)
+!insertmacro MUI_DESCRIPTION_TEXT Section3 $(DESC_Section3)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+; This is the command to start octave.
+!define OctaveStart "rxvt.exe --keysym.0xFF50 '^a' --keysym.0xFF57 '^e' --keysym.0xFFFF '^f^h' -tn linux -title '${MUI_PRODUCT}' -geometry 80x25 -e /bin/sh  /opt/octave-${VERSION}/bin/start_octave.sh"
+
+!define OCTKEY "GNUOctave ${VERSION}"
 !define CYGKEY "${OCTKEY}\Cygwin"
 !define MOUNTKEY "${CYGKEY}\mounts v2"
 
 InstallDir "$PROGRAMFILES\${MUI_PRODUCT}"
 
 ; Files and registry keys
-Section $(TITLE_Section1) Section1
+Section !$(TITLE_Section1) Section1
 
   CreateDirectory $INSTDIR\tmp
   CreateDirectory $INSTDIR\octave_files
+  CreateDirectory $INSTDIR\cygwin
+  CreateDirectory $INSTDIR\bin
+  CreateDirectory $INSTDIR\base
+  CreateDirectory $INSTDIR\site
+  SetOutPath $INSTDIR\cygwin
+  File "${ROOT}\cygwin\*.*"
   SetOutPath $INSTDIR\bin
-  File "${ROOT}\opt\octave-support\*.*"
   File install_octave.sh start_octave.sh
   File octave.ico
-  File "${ROOT}\opt\octave\bin\*.*"
-  SetOutPath $INSTDIR\opt\octave\share
-  File /r "${ROOT}\opt\octave\share\*.*"
-  SetOutPath $INSTDIR\opt\octave\libexec
-  File /r "${ROOT}\opt\octave\libexec\*.*"
-  SetOutPath $INSTDIR\opt\octave\doc
-  File /r "${ROOT}\opt\octave\doc\*.*"
+  File /r ${ROOT}\bin\*.*
+  SetOutPath $INSTDIR\base
+  File /r ${ROOT}\base\*.*
+  SetOutPath $INSTDIR\site
+  File /r ${ROOT}\site\*.*
+  SetOutPath $INSTDIR\doc
+  File /r ${ROOT}\doc\*.*
   WriteUninstaller "$INSTDIR\uninstall.exe"
 
   ;Write language to the registry (for the uninstaller)
@@ -142,11 +205,12 @@ Section $(TITLE_Section1) Section1
   ReadRegStr $1 HKCR "" ".m"
   StrCmp $1 "matfile" Matlab NoMatlab
   NoMatlab:
+  DetailPrint ";File associations for .m files"
   WriteRegStr HKCR ".m" "" "octfile"
-  Matlab:
   WriteRegStr HKCR "octfile" "" "Octave Script File"
   WriteRegStr HKCR "octfile\DefaultIcon" "" "$INSTDIR\bin\octave.ico"
   WriteRegStr HKCR "octfile\Shell\open\command" "" '"$WINDIR\notepad.exe" "%1"'
+  Matlab:
 
   DetailPrint ";Cygwin's registry entries"
   WriteRegStr HKLM \
@@ -154,13 +218,13 @@ Section $(TITLE_Section1) Section1
   WriteRegDWORD HKLM \
 	"SOFTWARE\${MOUNTKEY}\/" "flags" "a"
   WriteRegStr HKLM \
-	"SOFTWARE\${MOUNTKEY}\/usr/bin" "native" "$INSTDIR/bin"
+	"SOFTWARE\${MOUNTKEY}\/bin" "native" "$INSTDIR/cygwin"
   WriteRegDWORD HKLM \
-	"SOFTWARE\${MOUNTKEY}\/usr/bin" "flags" "a"
+	"SOFTWARE\${MOUNTKEY}\/bin" "flags" "rx"
   WriteRegStr HKLM \
-	"SOFTWARE\${MOUNTKEY}\/usr/lib" "native" "$INSTDIR/lib"
+	"SOFTWARE\${MOUNTKEY}\/opt/octave-${VERSION}" "native" "$INSTDIR"
   WriteRegDWORD HKLM \
-	"SOFTWARE\${MOUNTKEY}\/usr/lib" "flags" "a"
+	"SOFTWARE\${MOUNTKEY}\/opt/octave-${VERSION}" "flags" "a"
   WriteRegStr HKLM \
 	"SOFTWARE\${CYGKEY}\Program Options" "temp" "temp"
   DeleteRegValue HKLM \
@@ -171,15 +235,14 @@ Section $(TITLE_Section1) Section1
   WriteRegDWORD HKU \
 	".DEFAULT\Software\${MOUNTKEY}\/" "flags" "a"
   WriteRegStr HKU \
-	".DEFAULT\Software\${MOUNTKEY}\/usr/bin" \
-	"native" "$INSTDIR/bin"
+	".DEFAULT\Software\${MOUNTKEY}\/bin" "native" "$INSTDIR/cygwin"
   WriteRegDWORD HKU \
-	".DEFAULT\Software\${MOUNTKEY}\/usr/bin" "flags" "a"
+	".DEFAULT\Software\${MOUNTKEY}\/bin" "flags" "rx"
   WriteRegStr HKU \
-	".DEFAULT\Software\${MOUNTKEY}\/usr/lib" \
-	"native" "$INSTDIR/lib"
+	".DEFAULT\Software\${MOUNTKEY}\/opt/octave-${VERSION}" \
+	"native" "$INSTDIR"
   WriteRegDWORD HKU \
-	".DEFAULT\Software\${MOUNTKEY}\/usr/lib" "flags" "a"
+	".DEFAULT\Software\${MOUNTKEY}\/opt/octave-${VERSION}" "flags" "a"
   WriteRegStr HKU \
 	".DEFAULT\Software\${CYGKEY}\Program Options" "temp" "temp"
   DeleteRegValue HKU \
@@ -207,7 +270,7 @@ Section $(TITLE_Section1) Section1
 SectionEnd
 
 ; Start menu shortcuts
-Section "$(TITLE_Section2)" Section2
+Section !$(TITLE_Section2) Section2
   CreateDirectory "$SMPROGRAMS\${MUI_PRODUCT}"
   CreateShortCut $(UninstallLink) \
 	"$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
@@ -224,11 +287,12 @@ Section "$(TITLE_Section2)" Section2
 SectionEnd
 
 ; Desktop shortcuts
-Section "$(TITLE_Section3)" Section3
+Section !$(TITLE_Section3) Section3
   CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" \
 	"$INSTDIR\bin\run.exe" "${OctaveStart}" "$INSTDIR\bin\octave.ico" 0
 SectionEnd
 
+!ifdef SKIP
 ; Make links to drives
 !include "DetectDrives.nsi"
 Function MakeDriveLink
@@ -236,7 +300,7 @@ Function MakeDriveLink
    DetailPrint "ln -sf /cygdrive/$R2 /$R2"
    # Need PATH=/bin here because the default path is the windows path.
    # We could try running $INSTDIR\bin\ln.exe directly.
-   Exec `$INSTDIR\bin\sh.exe -c "PATH=/bin ln -sf /cygdrive/$R2 /$R2"`
+   Exec `$INSTDIR\bin\sh.exe -c "PATH=/bin /bin/ln.exe -sf /cygdrive/$R2 /$R2"`
 FunctionEnd
 Section "-Make drive links"
    Push "All Local Drives"
@@ -245,36 +309,23 @@ Section "-Make drive links"
    Exch $0
    Call DetectDrives
 SectionEnd
+!endif
 
 ; Post-installation configuration
 Section "-Local Config"
-  Exec "$INSTDIR\bin\sh.exe -e /bin/install_octave.sh"
+  Exec "$INSTDIR\bin\run.exe rxvt -e /opt/octave-${VERSION}/bin/install_octave.sh"
 SectionEnd
 
-!insertmacro MUI_SECTIONS_FINISHHEADER
-
-Function .onInit
-  Push Tahoma
-  Push 8
-
-  ; Ask for language before doing anything else
-  !insertmacro MUI_LANGDLL_DISPLAY
-  Push 2F
-  LangDLL::LangDialog "Installer Language" "Please select a language."
-  Pop $LANGUAGE
-  StrCmp $LANGUAGE "cancel" 0 +2
-    Abort
-
+; Tests which are done before the first page, but can't
+; be done in .onInit since LangStrings do not work in
+; the .onInit function.
+Function BeforeFirstPage
   ; We may be Intel-specific, especially if compiled against ATLAS.
   ClearErrors
   ReadRegStr $1 HKLM "HARDWARE\DESCRIPTION\System\CentralProcessor\0\" "VendorIdentifier"
   StrCmp $1 "GenuineIntel" Continue0 Error0
   Error0:
-    ; Language specific strings don't work in .onInit, so simulate the effect.
-    StrCpy $0 "${GenuineIntelEnglish}"
-    StrCmp $LANGUAGE ${LANG_SPANISH} 0 +2
-	StrCpy $0 "${GenuineIntelSpanish}"
-    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $0 IDOK Continue0
+    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(GenuineIntel) IDOK Continue0
     Abort
   Continue0:
 
@@ -283,34 +334,19 @@ Function .onInit
   ReadRegDWORD $1 HKLM "SOFTWARE\${MOUNTKEY}\/" flags
   IfErrors Continue1 Error1
   Error1:
-    ; Language specific strings don't work in .onInit, so simulate the effect.
-    StrCpy $0 "${PreviousOctaveEnglish}"
-    StrCmp $LANGUAGE ${LANG_SPANISH} 0 +2
-	StrCpy $0 "${PreviousOctaveSpanish}"
-    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $0 IDOK Continue1
+    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(PreviousOctave) IDOK Continue1
     Abort
   Continue1:
 
   ; Detect an existing Cygwin installation
   ClearErrors
-  ReadRegDWORD $1 HKLM "SOFTWARE\Cygnus Solutions\Cygwin\mounts v2\/" flags
+  ReadRegDWORD $1 HKLM "SOFTWARE\Cygnus Solutions" flags
   IfErrors Continue2 Error2
   Error2:
-    ; Language specific strings don't work in .onInit, so simulate the effect.
-    StrCpy $0 "${PreviousCygwinEnglish}"
-    StrCmp $LANGUAGE ${LANG_SPANISH} 0 +2
-	StrCpy $0 "${PreviousCygwinSpanish}"
-    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $0 IDOK Continue2
+    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(PreviousCygwin) IDOK Continue2
     Abort
   Continue2:
-
 FunctionEnd
-
-!insertmacro MUI_FUNCTIONS_DESCRIPTION_BEGIN
-!insertmacro MUI_DESCRIPTION_TEXT ${Section1} $(DESC_Section1)
-!insertmacro MUI_DESCRIPTION_TEXT ${Section2} $(DESC_Section2)
-!insertmacro MUI_DESCRIPTION_TEXT ${Section3} $(DESC_Section3)
-!insertmacro MUI_FUNCTIONS_DESCRIPTION_END
 
 Section "Uninstall"
   ClearErrors
@@ -342,8 +378,7 @@ Section "Uninstall"
   ; Clean up files
   RMDir /r "$INSTDIR"
 
-  ;Display the Finish header
-  !insertmacro MUI_UNFINISHHEADER
+  ;Display the Finish header 
 SectionEnd
 
 Function un.onInit

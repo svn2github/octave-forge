@@ -66,6 +66,8 @@
 ## 2001-04-10 Paul Kienzle <pkienzle@users.sf.net>
 ## * Initial revision
 
+## PKG_ADD mark_as_command edit
+
 function edit(file)
   ## pick up globals or default them
   global FUNCTION_EDITOR = [ EDITOR, " %s" ];

@@ -335,7 +335,7 @@ USE_INLINE uint64_t randi53(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32()&0x1FFFFF;
-#if defined(HAVE_X86)
+#if HAVE_X86
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -350,7 +350,7 @@ USE_INLINE uint64_t randi54(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32()&0x3FFFFF;
-#if defined(HAVE_X86)
+#if HAVE_X86
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -365,7 +365,7 @@ USE_INLINE uint64_t randi64(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32();
-#if defined(HAVE_X86)
+#if HAVE_X86
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -552,7 +552,7 @@ USE_INLINE double randn (void)
        * have something to do with this.
        */
 #if defined(ALLBITS)
-# if defined(HAVE_X86)
+# if HAVE_X86
       /* 53-bit mantissa, 1-bit sign, x86 32-bit architecture */
       double x;
       int si,idx;

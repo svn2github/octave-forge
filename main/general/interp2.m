@@ -117,13 +117,13 @@ function ZI = interp2 (X, Y, Z, XI, YI, method)
   xtable(xtlen) > XI(1, :);
   [m, n] = sort ([xtable(:); XI(1, :)']);
   o = cumsum (n <= xtlen);
-  xidx = o([find (n > xtlen)])';
+  xidx = o([find(n > xtlen)])';
 
   ## get y index of values in YI
   ytable(ytlen) *= (1 + eps);
   [m, n]=sort ([ytable(:); YI(:, 1)]);
   o = cumsum (n <= ytlen);
-  yidx = o([find (n > ytlen)]);
+  yidx = o([find(n > ytlen)]);
 
   [zr, zc] = size (Z);
 

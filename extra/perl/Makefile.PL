@@ -14,7 +14,7 @@ foreach (@ARGV) {
    if (/^OCTAVE=(.+)/) {
       $octave= $1;
       $octave_validated= 1;
-      undef $_;
+      $_= "";
    }
 }   
 
@@ -57,5 +57,5 @@ WriteMakefile(
     'NAME'         => 'Inline::Octave',
     'VERSION_FROM' => 'Octave.pm',
     'PREREQ_PM'    => { Inline => 0.4 },
-    'clean'        => {FILES => '_Inline_test/'},  
+    'clean'        => {FILES => '_Inline/'},  
 );

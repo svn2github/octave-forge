@@ -7,12 +7,12 @@
 package Inline::Octave;
 
 
-$VERSION = '0.11';
+$VERSION = '0.12';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
 use IPC::Open2;
-use vars qw( $inline_object );
+use vars qw( $octave_object );
 
 
 sub register {
@@ -53,7 +53,6 @@ sub load {
 #  print "LOADING\n";
    my $o = shift;
    $o->_validate();
-   $inline_object = $o;
    
    my $obj = $o->{API}{location};
    open OCTAVE_OBJ, "< $obj" or croak "Can't open $obj for output\n$!";
@@ -86,16 +85,16 @@ sub load {
    close OCTAVE_OBJ;
 #  use Data::Dumper; print Dumper(\%nargouts);
    
-   {
-       $o->start_interpreter();
-       print $o->interpret($code);
-       my @def_funcs= $o->get_defined_functions();
-       foreach my $funname (@def_funcs) {
-          $o->bind_octave_function( $funname, $funname, $nargouts{$funname} );
-       }
-       @EXPORT= @def_funcs;
+   $o->start_interpreter();
+
+   print $o->interpret($code);
+   my @def_funcs= $o->get_defined_functions();
+   foreach my $funname (@def_funcs) {
+      next if defined $octave_object->{FUNCS}->{$funname};
+      $o->bind_octave_function( $funname, $funname, $nargouts{$funname} );
    }
-   croak "Unable to load Octave module $obj:\n$@" if $@;
+
+   return;
 }
 
 
@@ -103,23 +102,33 @@ sub validate
 {
 # print "VALIDATING\n";
   my $o = shift;
-  $o->_validate();
+  $o->_validate( @_ );
 }
 
 sub _validate
 {
   my $o = shift;
-  $o->{ILSM}->{INTERP} = "octave -qf "
-     unless exists $o->{ILSM}->{INTERP};
-  $o->{ILSM}->{MARKER} = "-9Ahv87uhBa8l_8Onq,zU9-"
-     unless exists $o->{ILSM}->{MARKER};
+
+  my $switches= "-qfH";
+  while (@_) {
+     my ($key, $value) = (shift, shift) ;
+     if ($key eq 'OCTAVE_BIN'){
+         $octave_object->{INTERP} = "$value $switches ";
+     } 
+#    print "$key--->$value\n";
+  }
+  $octave_object->{INTERP} = "$ENV{PERL_INLINE_OCTAVE_BIN} $switches "
+     if $ENV{PERL_INLINE_OCTAVE_BIN};
+  $octave_object->{INTERP} = "octave $switches "
+     unless exists $octave_object->{INTERP};
+  $octave_object->{MARKER} = "-9Ahv87uhBa8l_8Onq,zU9-"
+     unless exists $octave_object->{MARKER};
 }   
 
 sub info
 {
-  print "INFO\n";
-  my $o = shift;
-  # Place holder
+#  print "INFO\n";
+   my $o = shift;
 }
 
 
@@ -168,7 +177,7 @@ sub $perl_funname {
 
    my \$call= "\$outargs $oct_funname(\$inargs);";
 #  print "--\$call--\\n";
-   my \$retval= \$Inline::Octave::inline_object->interpret( \$call );
+   my \$retval= Inline::Octave::interpret(0, \$call );
 #  print "--\$retval--\\n";
 
    # Get the correct size for each new variable
@@ -181,41 +190,83 @@ CODE
 #  print "--$code--\n";
    eval $code;
    croak "Problem binding $oct_funname to $perl_funname: $@" if $@;
+
+   $octave_object->{FUNCS}->{$oct_funname}= $perl_funname;
+   return;
 }   
 
 sub start_interpreter
 {
    my $o = shift;
 
+   # check if interpreter already alive
+   return if $octave_object->{OCTIN} and $octave_object->{OCTOUT};
+
    my $Oout; my $Oin;
+   my $pid;
    eval {
 # This works in perl 5.6
-#     open2( $Oout, $Oin , $o->{ILSM}->{INTERP} ); 
+#     open2( $Oout, $Oin , $octave_object->{INTERP} ); 
 # But we need to do this in 5.005     
-      open2( \*OOUT, \*OIN , $o->{ILSM}->{INTERP} );
+      $pid= open2( \*OOUT, \*OIN , $octave_object->{INTERP} );
       $Oout= \*OOUT; $Oin= \*OIN;
    };
    croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open2/i;
 
-   $o->{ILSM}->{OCTIN} = $Oin;
-   $o->{ILSM}->{OCTOUT} = $Oout;
-}       
+#  $SIG{CHLD}= \&reap_interpreter;
+#  $SIG{PIPE}= \&reap_interpreter;
+
+   $octave_object->{octave_pid} = $pid;
+   $octave_object->{OCTIN} = $Oin;
+   $octave_object->{OCTOUT} = $Oout;
+
+   # some of this is necessary, some are the defaults
+   # but it never hurts to be cautious
+   my $startup_code= <<STARTUP_CODE;
+crash_dumps_octave_core=0;
+page_screen_output=0;
+silent_functions=1;
+do_fortran_indexing=1; 
+page_screen_output=0;
+page_output_immediately=1;
+STARTUP_CODE
+
+   $o->interpret( $startup_code ); # check return value?
+
+   return;
+}
+
+sub reap_interpreter
+{
+#  print "REAP_INTERPRETER\n";
+   my $o= $octave_object;
+   my $pid= $octave_object->{octave_pid};
+   return unless $pid;
+
+   waitpid $pid,0;
+   $octave_object->{OCTIN} = "";
+   $octave_object->{OCTOUT} = "";
+   $octave_object->{octave_pid} = "";
+   return;
+}   
 
 sub stop_interpreter
 {
    my $o = shift;
 
-   my $Oin= $o->{ILSM}->{OCTIN};
-   my $Oout= $o->{ILSM}->{OCTOUT};
+   my $Oin= $octave_object->{OCTIN};
+   my $Oout= $octave_object->{OCTOUT};
 
    return unless $Oin and $Oout;
 
-   print $Oin "exit\n";
+   print $Oin "\nexit\n";
    #<$Oin>; #clean up input - is this required?
    close $Oin;
    close $Oout;
-   $o->{ILSM}->{OCTIN} = "";
-   $o->{ILSM}->{OCTOUT} = "";
+   $octave_object->{OCTIN} = "";
+   $octave_object->{OCTOUT} = "";
+   $octave_object->{octave_pid} = "";
+   return;
 }   
 
 # send a string to octave and get the result
@@ -223,14 +274,16 @@ sub interpret
 {
    my $o = shift;
    my $cmd= shift;
-   my $marker= $o->{ILSM}->{MARKER};
+   my $marker= $octave_object->{MARKER};
 
-   my $Oin= $o->{ILSM}->{OCTIN};
-   my $Oout= $o->{ILSM}->{OCTOUT};
+   my $Oin= $octave_object->{OCTIN};
+   my $Oout= $octave_object->{OCTOUT};
 
    croak "octave interpreter not alive"  unless $Oin and $Oout;
 
-   print $Oin "$cmd\ndisp('$marker');fflush(stdout);\n";
+#  print "INTERP: $cmd\n";
+
+   print $Oin "\n$cmd\ndisp('$marker');fflush(stdout);\n";
 
    my $input;
    my $marker_len= length( $marker )+1;
@@ -239,6 +292,10 @@ sub interpret
       $input.= $line;
       last if substr( $input, -$marker_len, -1) eq $marker;
    }   
+
+   # we need to leave octave blocked doing something,
+   # otherwise it can't handle a CTRL-C
+   print $Oin "fread(stdin,1);\n";
    return substr($input,0,-$marker_len);
 }   
 
@@ -256,7 +313,8 @@ sub get_defined_functions
 }       
 
 END {
-   $inline_object->stop_interpreter() if $inline_object;
+#  print "ENDING\n";
+   Inline::Octave::stop_interpreter() if $octave_object;
 }
 
 package Inline::Octave::Matrix;
@@ -325,7 +383,7 @@ sub new
              pack( "d".($rows*$cols) , @vals );
    }
 
-   $Inline::Octave::inline_object->interpret( $code );
+   Inline::Octave::interpret(0, $code );
    $self->store_size();
 
    return $self;
@@ -336,8 +394,8 @@ sub store_size
    my $self = shift;
    my $varname= $self->name;
    my $code = "disp([size($varname), is_complex($varname)] )";
-   my $size=  $Inline::Octave::inline_object->interpret( $code );
-   croak "Problem constructing Matrix" unless $size =~ /^ *(\d+) *(\d+) *[01]/;
+   my $size=  Inline::Octave::interpret(0, $code );
+   croak "Problem constructing Matrix" unless $size =~ /^ +(\d+) +(\d+) +[01]/;
    $self->{rows}= $1;
    $self->{cols}= $2;
    $self->{complex}= $3;
@@ -349,7 +407,7 @@ sub as_list
    my $varname= $self->name;
    croak "Can't handle complex" if $self->{complex};
    my $code = "fwrite(stdout, $varname,'double');";
-   my $retval= $Inline::Octave::inline_object->interpret( $code );
+   my $retval= Inline::Octave::interpret(0, $code );
    my $size= $self->{cols} * $self->{rows};
    my @list= unpack "d$size", $retval;
    return @list;
@@ -361,7 +419,7 @@ sub as_matrix
    my $varname= $self->name;
    croak "Can't handle complex" if $self->{complex};
    my $code = "fwrite(stdout, $varname','double');"; # use transpose
-   my $retval= $Inline::Octave::inline_object->interpret( $code );
+   my $retval= Inline::Octave::interpret(0, $code );
    my $size= $self->{cols} * $self->{rows};
    my @list= unpack "d$size", $retval;
    my @m;
@@ -382,7 +440,7 @@ sub as_scalar
            $self->{cols}."x".$self->{rows}
            unless $self->{cols} == 1 && $self->{rows} == 1;
    my $code = "fwrite(stdout, $varname,'double');";
-   my $retval= $Inline::Octave::inline_object->interpret( $code );
+   my $retval= Inline::Octave::interpret(0, $code );
    my @list= unpack "d1", $retval;
    return $list[0];
 }   
@@ -393,7 +451,7 @@ sub DESTROY
    my $self = shift;
    my $varname= $self->name;
    my $code = "clear $varname;";
-   $Inline::Octave::inline_object->interpret( $code );
+   Inline::Octave::interpret(0, $code );
 }   
 
 sub disp
@@ -401,7 +459,7 @@ sub disp
    my $self = shift;
    my $varname= $self->name;
    my $code = "disp( $varname );";
-   return $Inline::Octave::inline_object->interpret( $code );
+   return Inline::Octave::interpret(0, $code );
 }   
 
 sub name
@@ -416,6 +474,10 @@ sub name
 __END__
 
 $Log$
+Revision 1.7  2001/11/18 03:22:42  aadler
+multisections now ok, cleaned up singleton object,
+octave no longer freaks out on ctrl-c
+
 Revision 1.6  2001/11/17 02:15:21  aadler
 changed docs, new options for Makefile.PL
 
@@ -464,6 +526,11 @@ Inline::Octave - Inline octave code into your perl
    ## Inline::Octave::oct_sum (nargout=1)  => sum
    ## Inline::Octave::oct_plot (nargout=0)  => plot
 
+=head1   WARNING
+
+THIS IS ALPHA SOFTWARE. It is incomplete and possibly unreliable.  It is
+also possible that some elements of the interface (API) will change in
+future releases. 
 
 =head1 DESCRIPTION
 
@@ -503,6 +570,14 @@ If you don't want this interactivity, then specify
       or
    perl Makefile.PL OCTAVE='/path/to/octave -my -special -switches'
 
+The path to the octave interpreter can be set in the following
+ways:
+
+   - set OCTAVE_BIN option in the use line
+
+      use Inline Octave => DATA => OCTAVE_BIN => /path/to/octave
+
+   - set the PERL_INLINE_OCTAVE_BIN environment variable
  
 =head1 Why would I use Inline::Octave
 
@@ -660,5 +735,7 @@ redistributed and/or modified under the same terms as Perl itself.
    5. support for complex variables
    6. octave gets wierd when you CTRL-C out of a 
        running program
-
-
+       - seems ok
+   7. Use parse-recdecent to parse octave code
+   8. Come up with an OO way to avoid
+       Inline::Octave::interpret(0, $code );

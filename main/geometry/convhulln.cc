@@ -67,7 +67,7 @@ The input matrix of size [dim, n] contains n points of dimension dim.\n\
 	boolT ismalloc = False;
 
 	// hmm  lot's of options for qhull here
-	sprintf(flags,"qhull s Tcv");
+	sprintf(flags,"qhull s Qt Tcv");
 	
 	if (!qh_new_qhull (dim,n,pt_array,ismalloc,flags,NULL,stderr)) {
 	

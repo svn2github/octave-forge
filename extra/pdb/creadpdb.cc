@@ -4,6 +4,8 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
+#define BUFLEN 80
+
 inline double strntod(const char* startptr, int n)
 {
     char tmp_buf[70]; // this fails completely, if n > 70
@@ -18,6 +20,17 @@ inline double strntod(const char* startptr, int n)
 //    printf("dtemp: %g\n", dtemp);
         
     return dtemp;
+}
+
+inline void bufcpy(const char *source, char *dest)
+{
+    int i;
+    for(i = 0; (i < BUFLEN) && (source[i] != '\n') && (source[i] != '\r'); i++)
+	dest[i] = source[i];
+    
+    for( ; i < BUFLEN; i++)
+	dest[i] = ' ';
+    
 }
 
 DEFUN_DLD(creadpdb, args, ,
@@ -99,112 +112,104 @@ DEFUN_DLD(creadpdb, args, ,
     Matrix scalem(3, 3);
     ColumnVector scalev(3);
     bool havescale = false;
-    
+
+    for(i = 0; i < 11; i++)
+       sgroup(0,i) = ' ';
+   
     int natom = 0;
     int nhet = 0;
-    char tmp_buf[70]; // this fails completely, if n > 70
-    double dtemp = 0.0;
+    char *tmp_buf = (char *) malloc(80);
+    char *buf;
     while((fp - fp_beg) < fsize) {
 //	printf("char : %c\n", *fp);
     	switch(*fp) {
 	    case 'A':
-		if(strncmp(fp, "ATOM", 4) == 0) {
+		bufcpy(fp, tmp_buf);
+		if(strncmp(tmp_buf, "ATOM", 4) == 0) {
 		    
 //		    printf("ATOM\n");
 
-		    fp--; // just to make the offsets match the spec
-		    atomname(natom, 0) = *(fp+13);
-		    atomname(natom, 1) = *(fp+14);
-		    atomname(natom, 2) = *(fp+15);
-		    atomname(natom, 3) = *(fp+16);
+		    buf = tmp_buf-1; // just to make the offsets match the spec
+		    atomname(natom, 0) = *(buf+13);
+		    atomname(natom, 1) = *(buf+14);
+		    atomname(natom, 2) = *(buf+15);
+		    atomname(natom, 3) = *(buf+16);
 
-		    aresname(natom, 0) = *(fp+18);
-		    aresname(natom, 1) = *(fp+19);
-		    aresname(natom, 2) = *(fp+20);		    
+		    aresname(natom, 0) = *(buf+18);
+		    aresname(natom, 1) = *(buf+19);
+		    aresname(natom, 2) = *(buf+20);		    
 
-		    aresseq(natom, 0) = strntod(fp+23, 4);
+		    aresseq(natom, 0) = strntod(buf+23, 4);
 		    
-		    acoord(natom, 0) = strntod(fp+31, 8);
-		    acoord(natom, 1) = strntod(fp+39, 8);
-		    acoord(natom, 2) = strntod(fp+47, 8);
+		    acoord(natom, 0) = strntod(buf+31, 8);
+		    acoord(natom, 1) = strntod(buf+39, 8);
+		    acoord(natom, 2) = strntod(buf+47, 8);
 
-		    aoccupancy(natom, 0) = strntod(fp+55, 6);
+		    aoccupancy(natom, 0) = strntod(buf+55, 6);
 
-		    atempfactor(natom, 0) = strntod(fp+61, 6);		    
+		    atempfactor(natom, 0) = strntod(buf+61, 6);		    
 
-		    fp += 55;
-		    
 		    natom++;
 		}
 		break;
 	    case 'H':
-		if(strncmp(fp, "HETATM", 6) == 0) {
-		    fp--; // just to make the offsets match the spec
-		    hetname(nhet, 0) = *(fp+13);
-		    hetname(nhet, 1) = *(fp+14);
-		    hetname(nhet, 2) = *(fp+15);
-		    hetname(nhet, 3) = *(fp+16);
+		bufcpy(fp, tmp_buf);
+		if(strncmp(tmp_buf, "HETATM", 6) == 0) {
+		    buf = tmp_buf-1; // just to make the offsets match the spec
 
-		    hetresname(nhet, 0) = *(fp+18);
-		    hetresname(nhet, 1) = *(fp+19);
-		    hetresname(nhet, 2) = *(fp+20);		    
+		    hetname(nhet, 0) = *(buf+13);
+		    hetname(nhet, 1) = *(buf+14);
+		    hetname(nhet, 2) = *(buf+15);
+		    hetname(nhet, 3) = *(buf+16);
 
-		    hetname(nhet, 0) = *(fp+13);
-		    hetname(nhet, 1) = *(fp+14);
-		    hetname(nhet, 2) = *(fp+15);
-		    hetname(nhet, 3) = *(fp+16);
+		    hetresname(nhet, 0) = *(buf+18);
+		    hetresname(nhet, 1) = *(buf+19);
+		    hetresname(nhet, 2) = *(buf+20);		    
 
-		    hetresname(nhet, 0) = *(fp+18);
-		    hetresname(nhet, 1) = *(fp+19);
-		    hetresname(nhet, 2) = *(fp+20);		    
-
-		    hetresseq(nhet, 0) = strntod(fp+23, 4);
+		    hetresseq(nhet, 0) = strntod(buf+23, 4);
 		    
-		    hetcoord(nhet, 0) = strntod(fp+31, 8);
-		    hetcoord(nhet, 1) = strntod(fp+39, 8);
-		    hetcoord(nhet, 2) = strntod(fp+47, 8);
+		    hetcoord(nhet, 0) = strntod(buf+31, 8);
+		    hetcoord(nhet, 1) = strntod(buf+39, 8);
+		    hetcoord(nhet, 2) = strntod(buf+47, 8);
 
-		    hetoccupancy(nhet, 0) = strntod(fp+55, 6);
+		    hetoccupancy(nhet, 0) = strntod(buf+55, 6);
 
-		    hettempfactor(nhet, 0) = strntod(fp+61, 6);
-
-		    fp += 55;
+		    hettempfactor(nhet, 0) = strntod(buf+61, 6);
 
 		    nhet++;
 		}
 		break;
 	    case 'C':
-		if(strncmp(fp, "CRYST1", 6) == 0) {
-		    fp--; // just to make the offsets match the spec
-		    cellsize(0) = strntod(fp+7, 9);
-		    cellsize(1) = strntod(fp+16, 9);
-		    cellsize(2) = strntod(fp+25, 9);
-		    cellangl(0) = strntod(fp+34, 7);	
-		    cellangl(1) = strntod(fp+41, 7);
-		    cellangl(2) = strntod(fp+48, 7);
+		bufcpy(fp, tmp_buf);
+//		printf("%s\n", tmp_buf);		
+		if(strncmp(tmp_buf, "CRYST1", 6) == 0) {
+		    buf = tmp_buf-1; // just to make the offsets match the spec
+		    cellsize(0) = strntod(buf+7, 9);
+		    cellsize(1) = strntod(buf+16, 9);
+		    cellsize(2) = strntod(buf+25, 9);
+		    cellangl(0) = strntod(buf+34, 7);	
+		    cellangl(1) = strntod(buf+41, 7);
+		    cellangl(2) = strntod(buf+48, 7);
 		    for(i = 0; i < 11; i++)
-			sgroup(0, i) = fp[i+56];
-		    z = strntod(fp+67, 4);
+			sgroup(0, i) = buf[i+56];
+		    z = strntod(buf+67, 4);
 		    havecryst = true;
-		    
-		    fp += 70;		    
 		    
 		}
 		break;
 	    case 'S':
-		if(strncmp(fp, "SCALE", 5) == 0) {
-		    fp--; // just to make the offsets match the spec
-		    int n = (static_cast<int>(strntod(fp+6, 1)) - 1);
+		bufcpy(fp, tmp_buf);
+		if(strncmp(tmp_buf, "SCALE", 5) == 0) {
+		    buf = tmp_buf-1; // just to make the offsets match the spec
+		    int n = (static_cast<int>(strntod(buf+6, 1)) - 1);
 //		    printf("n = %d\n", n);
 		    if ((n <= 2) && (n >= 0)) {
 			havescale = true;
-			scalem(n, 0) = strntod(fp+11, 10);
-			scalem(n, 1) = strntod(fp+21, 10);
-			scalem(n, 2) = strntod(fp+31, 10);
-			scalev(n) = strntod(fp+46, 10);
-			fp += 54;
+			scalem(n, 0) = strntod(buf+11, 10);
+			scalem(n, 1) = strntod(buf+21, 10);
+			scalem(n, 2) = strntod(buf+31, 10);
+			scalev(n) = strntod(buf+46, 10);
 		    }
-		    fp++; // move at least to the first char of the line
 		}
 		break;	    
 	    default:
@@ -216,6 +221,7 @@ DEFUN_DLD(creadpdb, args, ,
 	    fp++;
     }
 
+    free(tmp_buf);
     munmap((void *) fp_beg, fsize);
     close(fd);
     

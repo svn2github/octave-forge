@@ -16,4 +16,11 @@
 
 ## Draw a surface plot.  Presently only draws mesh surfaces.
 function surf(varargin)
+   try
+      gset pm3d at s ftriangles hidden3d 100;
+      gset line style 100 lt 5 lw 0.5;
+      gset nohidden3d;
+      gset nosurf;
+   catch
+   end
    mesh(varargin{:});

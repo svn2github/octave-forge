@@ -20,8 +20,18 @@
 ## described by the indices to the data point x and y vector.
 ## The triangulation satisfies the Delaunay circumcircle criterion.
 ## No other data point is in the circumcircle of the defining triangle.
+##
+## @example
+## x = rand(1,10);
+## y = rand(size(x));
+## T = delaunay(x,y);
+## X = [ x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1)) ];
+## Y = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];
+## axis([0,1,0,1]);
+## plot(X,Y,'b;;',x,y,'r*;;');
+## @end example
 ## @end deftypefn
-## @seealso{delaunay3, delaunayn}
+## @seealso{voronoi, delaunay3, delaunayn}
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 

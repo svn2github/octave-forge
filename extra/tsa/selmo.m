@@ -40,9 +40,9 @@ function [FPE,AIC,BIC,SBC,MDL,CATcrit,PHI,optFPE,optAIC,optBIC,optSBC,optMDL,opt
 %
 % (1) engl. translation of the titel by A. Schloegl
 
-%	Version 2.70
-%	last revision 28.02.2001
-%	Copyright (c) 1997-2001 by Alois Schloegl
+%	Version 2.99b
+%	last revision 01.10.2002
+%	Copyright (c) 1997-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or
@@ -79,6 +79,8 @@ end;
 
 M=lc-1;
 m=0:M;
+
+e = e./e(:,ones(1,lc));
 
 for k=0:lr,
         if k>0, % 
@@ -143,4 +145,4 @@ JEW = E.*(N-m)./(N-2*m-1);	% Jenkins-Watt
 p(k+1,:) = [optFPE(1), optAIC(1), optBIC(1), optSBC(1), optCAT(1), optMDL(1), optPHI(1), optJEW(1), optHAR(1)];
 
 end;
-C=([FPE;AIC;BIC;SBC;MDL;CATcrit;PHI;JEW;HAR])';
+C=[FPE;AIC;BIC;SBC;MDL;CATcrit;PHI;JEW;HAR(:)']';

@@ -807,10 +807,16 @@ n = 510; sparse(kron((1:n)', ones(n,1)), kron(ones(n,1), (1:n)'), ones(n));
 
 % segfault test from Fabian@isas-berlin.de
 % expected behaviour is to emit error
-eval("spinv( sparse( [1,1;1,1]   ) )");
-eval("spinv( sparse( [1,1;1,1+i] ) )");
-eval("spinv( sparse( [0,0;0,1]   ) )");
-eval("spinv( sparse( [0,0;0,1+i] ) )");
+eval("spinv( sparse( [1,1;1,1]   ) );");
+eval("spinv( sparse( [1,1;1,1+i] ) );");
+eval("spinv( sparse( [0,0;0,1]   ) );");
+eval("spinv( sparse( [0,0;0,1+i] ) );");
+eval("spinv( sparse( [0,0;0,0]   ) );");
+eval( "splu( sparse( [1,1;1,1]   ) );");
+eval( "splu( sparse( [1,1;1,1+i] ) );");
+eval( "splu( sparse( [0,0;0,1]   ) );");
+eval( "splu( sparse( [0,0;0,1+i] ) );");
+eval( "splu( sparse( [0,0;0,0]   ) );");
 
 % clear up variables - so dmalloc works
 #clear L* U* a* b* c* d* e* P*
@@ -818,6 +824,9 @@ eval("spinv( sparse( [0,0;0,1+i] ) )");
 
 %
 % $Log$
+% Revision 1.14  2003/08/30 03:03:05  aadler
+% mods to prevent segfaults for sparse
+%
 % Revision 1.13  2003/08/29 21:21:16  aadler
 % mods to fix bugs for empty sparse
 %

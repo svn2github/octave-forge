@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.15  2003/08/30 03:03:05  aadler
+# mods to prevent segfaults for sparse
+#
 # Revision 1.14  2003/08/29 21:21:15  aadler
 # mods to fix bugs for empty sparse
 #
@@ -79,48 +82,6 @@
 #
 # Revision 1.2  2000/05/02 00:10:34  andy
 # mods to work with 2.1.30
-#
-#
-# INSTRUCTIONS
-#
-# 0. Check that you have the following files:
-#   a Makefile
-#   b make_sparse.cc
-#   c make_sparse.h
-#   d sp_test.m
-#   e fem_test.m
-#   f superlu2.0patch.diff
-#   
-# 0a. This is tested to work with octave-2.1.32
-#     It works with >2.1.30 if you apply the mkoctfile patch
-#     at
-# 
-# 0b. If you already have a SuperLU subdirectory with
-#     SuperLU/SRC and SuperLU/CBLAS then ignore 
-#     steps 1-3
-# 
-# 1. Download SuperLU from one of the following sites
-#                          http://www.netlib.org/scalapack/prototype
-#                          ftp://ftp.cs.berkeley/pub/src/lapack/SuperLU
-#                          http://www.nersc.gov/~xiaoye/SuperLU/
-#
-# 2. Unpack SuperLU into the directory you'll be building the
-#     octave sparse functions from
-#
-# 3. Apply the patch
-#           patch -p0 < superlu2.0patch.diff
-#
-# 4. Build the octave sparse functions
-#           make    in the octave sparse functions directory
-#           NOTE: do not run the SuperLU makefiles - 
-#                it doesn't build the right objects into the library
-#
-# This makefile assumes that the SuperLU package has been unpacked
-#  in this directory. It compiles files directly from their locations
-#  in the SuperLU source. You do not need to use SuperLU makefiles.
-#
-# SuperLU is available from http://www.netlib.org/scalapack/prototype
-#                           ftp://ftp.cs.berkeley/pub/src/lapack/SuperLU
 #
 # 
 # AUTHOR:  Andy Adler <adler@ncf.ca>

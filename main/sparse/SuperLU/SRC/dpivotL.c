@@ -117,8 +117,16 @@ if ( jcol == MIN_COL ) {
     }
 
     /* Test for singularity */
+    /* sometimes pivptr seems to have weird values, along with fsupc,
+     * we try to detect that and exit gracefully  -AA
+     *
+     * if nsupc > nsupr then the loop was never executed
+     */
     if ( pivmax == 0.0 ) {
-	*pivrow = lsub_ptr[pivptr];
+        if (nsupc > nsupr) 
+            *pivrow = lsub_ptr[pivptr];
+        else 
+            *pivrow = 0;
 	perm_r[*pivrow] = jcol;
 	*usepr = 0;
 	return (jcol+1);

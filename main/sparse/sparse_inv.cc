@@ -123,14 +123,22 @@ to be applied to the columns of A for sparsity. \n\
       if (args(0).type_name () == "sparse" ) {
          SuperMatrix A = ((const octave_sparse&) rep) . super_matrix ();
          SuperMatrix L, U;
-         sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+         if ( 0<
+         sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
+         ) {
+            SP_FATAL_ERR ("sparse matrix is singlar to machine precision");
+         }
          LS= new octave_sparse( L );
          US= new octave_sparse( U );
       }
       else {
          SuperMatrix A = ((const octave_complex_sparse&) rep) . super_matrix ();
          SuperMatrix L, U;
-         complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+         if ( 0<
+         complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
+         ) {
+            SP_FATAL_ERR ("sparse matrix is singlar to machine precision");
+         }
          LS= new octave_complex_sparse( L );
          US= new octave_complex_sparse( U );
       }
@@ -424,6 +432,9 @@ SPABS : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.12  2003/08/30 03:03:05  aadler
+ * mods to prevent segfaults for sparse
+ *
  * Revision 1.11  2003/08/29 19:40:56  aadler
  * throw error rather than segfault for singular matrices
  *

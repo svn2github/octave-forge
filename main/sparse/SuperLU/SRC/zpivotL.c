@@ -119,7 +119,10 @@ if ( jcol == MIN_COL ) {
 
     /* Test for singularity */
     if ( pivmax == 0.0 ) {
-	*pivrow = lsub_ptr[pivptr];
+        if (nsupc > nsupr) 
+            *pivrow = lsub_ptr[pivptr];
+        else 
+            *pivrow = 0;
 	perm_r[*pivrow] = jcol;
 	*usepr = 0;
 	return (jcol+1);

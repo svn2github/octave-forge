@@ -52,6 +52,8 @@ if length(stopit) == 1, stopit(2) = inf; end  % Max no. of f-evaluations.
 if length(stopit) == 2, stopit(3) = inf; end  % Default target for f-values.
 if length(stopit) <  5, stopit(5) = 1; end    % Default: show progress.
 trace  = stopit(5);
+if length(stopit) == 5, stopit(6) = 1; end    % Default: maximize
+dirn= stopit(6);
 if nargin < 4, savit = []; end                   % File name for snapshots.
 
 if nargin < 5 | isempty(P)
@@ -62,7 +64,7 @@ else
    end
 end
 
-fmax = feval(f,x,varargin{:}); nf = 1;
+fmax = dirn*feval(f,x,varargin{:}); nf = 1;
 if trace, fprintf('f(x0) = %9.4e\n', fmax), end
 
 steps = zeros(n,1);
@@ -81,7 +83,7 @@ for i=1:n  % Loop over search directions.
     h = sign(pi'*yi)*norm(pi.*yi)*mu;   % Initial step size.
     if h == 0, h = max(norm(yi,inf),1)*mu; end
     y = yi + h*pi;
-    x(:) = y; fnew = feval(f,x,varargin{:}); nf = nf + 1;
+    x(:) = y; fnew = dirn*feval(f,x,varargin{:}); nf = nf + 1;
     if fnew > fmax
        fmax = fnew;
        if fmax >= stopit(3)
@@ -98,7 +100,7 @@ for i=1:n  % Loop over search directions.
 
     for j=1:lim
         y = yi + h*pi;
-        x(:) = y; fnew = feval(f,x,varargin{:}); nf = nf + 1;
+        x(:) = y; fnew = dirn*feval(f,x,varargin{:}); nf = nf + 1;
         if fnew <= fmax, break, end
         fmax = fnew; k = k + 1;
         if fmax >= stopit(3)

@@ -61,11 +61,13 @@ if length(stopit) == 2, stopit(3) = inf; end  % Default target for f-values.
 if length(stopit) == 3, stopit(4) = 0; end    % Default initial simplex.
 if length(stopit) == 4, stopit(5) = 1; end    % Default: show progress.
 trace  = stopit(5);
+if length(stopit) == 5, stopit(6) = 1; end    % Default: maximize
+dirn= stopit(6);
 if nargin < 4, savit = []; end                   % File name for snapshots.
 
 V = [zeros(n,1) eye(n)]; T = V;
 f = zeros(n+1,1); ft = f;
-V(:,1) = x0; f(1) = feval(fun,x,varargin{:});
+V(:,1) = x0; f(1) = dirn*feval(fun,x,varargin{:});
 fmax_old = f(1);
 
 if trace, fprintf('f(x0) = %9.4e\n', f(1)), end
@@ -81,14 +83,14 @@ if stopit(4) == 0
    V(:,2:n+1) = (x0 + alpha(2)*ones(n,1)) * ones(1,n);
    for j=2:n+1
        V(j-1,j) = x0(j-1) + alpha(1);
-       x(:) = V(:,j); f(j) = feval(fun,x,varargin{:});
+       x(:) = V(:,j); f(j) = dirn*feval(fun,x,varargin{:});
    end
 else
    % Right-angled simplex based on co-ordinate axes.
    alpha = scale*ones(n+1,1);
    for j=2:n+1
        V(:,j) = x0 + alpha(j)*V(:,j);
-       x(:) = V(:,j); f(j) = feval(fun,x,varargin{:});
+       x(:) = V(:,j); f(j) = dirn*feval(fun,x,varargin{:});
    end
 end
 nf = n+1;
@@ -136,7 +138,7 @@ while 1   %%% Inner repeat loop.
 
     for j=2:n+1      % ---Rotation (reflection) step.
         T(:,j) = 2*v1 - V(:,j);
-        x(:) = T(:,j); ft(j) = feval(fun,x,varargin{:});
+        x(:) = T(:,j); ft(j) = dirn*feval(fun,x,varargin{:});
     end
     nf = nf + n;
 
@@ -145,7 +147,7 @@ while 1   %%% Inner repeat loop.
     if replaced
        for j=2:n+1   % ---Expansion step.
            V(:,j) = (1-mu)*v1 + mu*T(:,j);
-           x(:) = V(:,j); f(j) = feval(fun,x,varargin{:});
+           x(:) = V(:,j); f(j) = dirn*feval(fun,x,varargin{:});
        end
        nf = nf + n;
        % Accept expansion or rotation?
@@ -157,7 +159,7 @@ while 1   %%% Inner repeat loop.
     else
        for j=2:n+1   % ---Contraction step.
            V(:,j) = (1+theta)*v1 - theta*T(:,j);
-           x(:) = V(:,j); f(j) = feval(fun,x,varargin{:});
+           x(:) = V(:,j); f(j) = dirn*feval(fun,x,varargin{:});
        end
        nf = nf + n;
        replaced = ( max(f(2:n+1)) > fmax );

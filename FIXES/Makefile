@@ -8,23 +8,40 @@ SORTDEFINES=$(HAVE_IEEE754_COMPLIANCE) $(HAVE_ND_ARRAYS)
 t2.1.58=sort.oct
 SORT_BUILD=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58)))
 
+# RANDFLAGS controls whether all 53 bits of mantissa are used. For 32 bits
+# (~50% faster) use the following:
+# 	make RANDFLAGS=
+# for 53 bits use:
+#	make RANDFLAGS=-DALLBITS
+# The default is 53 bits.
+# There are special optimizations for X86 architecture.  These are turned
+# on automatically for -Di386, which is the default for gcc and icc on x86
+# architectures.  You can override this by adding -DHAVE_X86=1 to enable or
+# -DHAVE_X86=1 to suppress onto the RANDFLAGS. Enabling it will give incorrect 
+# results for BIG_ENDIAN architectures!  Also, it is important to choose the
+# correct optimization level and CPU type for X86 to get maximum performance. 
+# The following works well for me:
+#	CFLAGS="-O2 -march=i686" make
+# Note that -O3 is much slower than -O2 for me.
+RANDFLAGS = -DALLBITS
+
 RAND_LINKS = randn.oct rande.oct
 PROGS = $(SORT_BUILD) rand.oct $(RAND_LINKS) 
 #fsolve.oct
 
 all: $(PROGS)
 
-$(PROGS): Makefile
+#$(PROGS): Makefile
 
 randtest: randmtzig.c
-	$(CC) $(CFLAGS) $(ALLBITS) -DTEST randmtzig.c -o randtest -lm
+	$(CC) $(CFLAGS) $(RANDFLAGS) -DTEST randmtzig.c -o randtest -lm
 
 $(RAND_LINKS):
 	-$(RM) $@
 	$(LN_S) rand.oct $@
 
 rand.oct : randmtzig.c rand.cc
-	$(MKOCTFILE) $(HAVE_ND_ARRAYS) $(ALLBITS) rand.cc
+	$(MKOCTFILE) $(RANDFLAGS) $(HAVE_ND_ARRAYS) rand.cc
 
 sort.oct : sort.cc oct-sort.cc oct-sort.h
 	$(MKOCTFILE) $(SORTDEFINES) $<

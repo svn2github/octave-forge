@@ -92,10 +92,10 @@
 # include <cmath>
 # include <cstdio>
 # include <ctime>
+# include <inttypes.h>
 #else
 # include <math.h>
 # include <stdio.h>
-# include <stdlib.h>
 # include <time.h>
 # include <inttypes.h>
 #endif
@@ -295,7 +295,7 @@ inline uint32_t randi32(void)
     return (y ^ (y >> 18));
 }
 
-inline uint64_t quad(uint32_t hi, uint32_t lo)
+inline uint64_t makequad(uint32_t hi, uint32_t lo)
 {
   return ((((uint64_t)hi)<<32)|lo);
 }
@@ -304,21 +304,21 @@ inline uint64_t randi53(void)
 {
   const uint32_t lo = randi32();
   const uint32_t hi = randi32()&0x1FFFFF;
-  return quad(hi,lo);
+  return makequad(hi,lo);
 }
 
 inline uint64_t randi54(void)
 {
   const uint32_t lo = randi32();
   const uint32_t hi = randi32()&0x3FFFFF;
-  return quad(hi,lo);
+  return makequad(hi,lo);
 }
 
 inline uint64_t randi64(void)
 {
   const uint32_t lo = randi32();
   const uint32_t hi = randi32();
-  return quad(hi,lo);
+  return makequad(hi,lo);
 }
 
 /* generates a random number on (0,1)-real-interval */
@@ -528,6 +528,13 @@ inline double rande (void)
 }
 
 #ifdef TEST
+
+#ifdef __cplusplus
+# include <cstdlib>
+#else
+# include <stdlib.h>
+#endif
+
 int main(int argc, char *argv[])
 {
   uint32_t state[]={5,6,7};

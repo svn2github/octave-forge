@@ -25,6 +25,8 @@
 # The argument w.r.t. which we minimize must be the FIRST argument
 # in the cell array that is the argument to BFGSMin.
 
+1;
+
 # Function value and gradient vector of the rosenbrock function
 # The minimizer is at the vector (1,1,..,1),
 # and the minimized value is 0.

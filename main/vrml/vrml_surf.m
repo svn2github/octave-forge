@@ -27,7 +27,7 @@
 ##                       : Reflectivity of facets.
 ##
 ##        RGB and reflectivity values should be in the [0,1] interval.
-## 
+##
 ## "checker", c : 1x2 : Color as a checker. If c(1) is positive, checker has
 ##            c(1) rows. If it is negative, each checker row is c(1) facets
 ##            high c(2) likewise determines width of checker columns.
@@ -41,7 +41,7 @@
 ##
 ## "tran", tran : 1x1    : Transparency,                        default = 0
 ##
-## "creaseAngle", a 
+## "creaseAngle", a
 ##              : 1      : vrml creaseAngle The browser may smoothe the fold
 ##                         between facets forming an angle less than a.
 ##                                                              default = 0
@@ -57,15 +57,13 @@ function s = vrml_surf (x, y, z,varargin)
 if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   zz = x ;
   [R,C] = size (zz);
-  [xx,yy] = meshgrid (linspace (-1,1,C), linspace (-1,1,R)); 
+  [xx,yy] = meshgrid (linspace (-1,1,C), linspace (-1,1,R));
   ## ones(R,1)*[1:C] ;
   ## yy = ## [1:R]'*ones(1,C) ;
   if     nargin >=3,
-
     s = vrml_surf ( xx, yy, zz, y, z, varargin{:} );
     return
   elseif nargin >=2,
-
     s = vrml_surf ( xx, yy, zz, y, varargin{:} );
     return
   end
@@ -74,14 +72,16 @@ end
 
 				# Read options
 				# Default values
-tran = 0 ;
-col = [0.3, 0.4, 0.9] ;
-checker = 0;
-colorPerVertex = 1;
+
+upper = 1;			# Do "upper" triangulation of square grid
+tran = 0 ;			# Transparency
+col = [0.3, 0.4, 0.9] ;		# Color
+checker = 0;			# Checkered coloring
+colorPerVertex = 1;		# Color vertices or faces
+zrb = zgrey = zcol = 0;		# Color by elevation
+emit = 0;			# emissiveColor or diffuse only
 smooth = creaseAngle = nan ;
-emit = 0;
-DEFcoord = DEFcol = "";
-zrb = zgrey = zcol = 0;
+DEFcoord = DEFcol = "";		# Give a name to VRML objects
 
 if nargin > 3,
 
@@ -92,6 +92,7 @@ if nargin > 3,
 		 DEFcoord, DEFcol, zcol, smooth, checker, zgrey, zrb);
 
   s = read_options (varargin,"op0",op0,"op1",op1,"default",default);
+  
   [tran, col, creaseAngle, emit, colorPerVertex\
    DEFcoord, DEFcol, zcol, smooth, checker, zgrey, zrb] = getfield \
       (s, "tran", "col", "creaseAngle", "emit", "colorPerVertex",\
@@ -110,10 +111,9 @@ if any (size (y) == 1), y = y(:)*ones(1,C)  ; end
 pts = [x(:)';y(:)';z(:)'];
 
 keepp = all (!isnan(pts) & finite(pts)) ;
+keepip = find (keepp);
 
 trgs = zeros(3,2*(R-1)*(C-1)) ;
-
-tmp = 1:(R-1)*(C-1);
 
 ## Points are numbered as
 ##
@@ -123,43 +123,73 @@ tmp = 1:(R-1)*(C-1);
 ## R  2*R ..     C*R
 ##
 
-## Triangles are numbered as :
-## 
-## X = (R-1)*(C-1)
-## _______________________________
-## |    /|    /|    /|    /|-R+1/|
-## | 1 / | R / |   / |   / |R*C/ |
-## |  /  |  /  |  /  |  /  |  /  |
-## | /X+1| /X+R| /   | /   | /   |
-## |/    |/    |/    |/    |/    |
-## -------------------------------
-## |    /|    /|    /|    /|    /|
-## | 2 / |R+2/ |   / |   / |   / |
-## |  /  |  /  |  /  |  /  |  /  |
-## | /   | /   | /   | /   | /   |
-## |/    |/    |/    |/    |/    |
-## -------------------------------
-##    :           :           :
-##    :           :           :
-## -------------------------------
-## |    /|    /|    /|    /|    /|
-## |R-1/ |2*R/ |   / |   / |C*R/ |
-## |  /  |-1/  |  /  |  /  |  /  |
-## | /X+R| /   | /   | /   | /C*R|
-## |/    |/    |/    |/    |/ X+ |
-## -------------------------------
 
 ## (x,y), (x,y+1), (x+1,y)  i.e. n, n+1, n+R
 
-trgs(1,tmp) = ([1:R-1]'*ones(1,C-1) + R*ones(R-1,1)*[0:C-2])(:)';
-trgs(2,tmp) = ([ 2:R ]'*ones(1,C-1) + R*ones(R-1,1)*[0:C-2])(:)';
-trgs(3,tmp) = ([1:R-1]'*ones(1,C-1) + R*ones(R-1,1)*[1:C-1])(:)';
+if !upper			# Do regular triangulation
+  ## Triangles are numbered as :
+  ##
+  ## X = (R-1)*(C-1)
+  ## +-----+-----+-----+-----+-----+
+  ## |    /|    /|    /|    /|-R+1/|
+  ## | 1 / | R / |   / |   / |R*C/ |
+  ## |  /  |  /  |  /  |  /  |  /  |
+  ## | /X+1| /X+R| /   | /   | /   |
+  ## |/    |/    |/    |/    |/    |
+  ## +-----+-----+-----+-----+-----+
+  ## |    /|    /|    /|    /|    /|
+  ## | 2 / |R+2/ |   / |   / |   / |
+  ## |  /  |  /  |  /  |  /  |  /  |
+  ## | /   | /   | /   | /   | /   |
+  ## |/    |/    |/    |/    |/    |
+  ## +-----+-----+-----+-----+-----+
+  ##    :           :           :
+  ##    :           :           :
+  ## +-----+-----+-----+-----+-----+
+  ## |    /|    /|    /|    /|    /|
+  ## |R-1/ |2*R/ |   / |   / |C*R/ |
+  ## |  /  |-1/  |  /  |  /  |  /  |
+  ## | /X+R| /   | /   | /   | /C*R|
+  ## |/    |/    |/    |/    |/ X+ |
+  ## +-----+-----+-----+-----+-----+
+  
+  tmp = 1:(R-1)*(C-1);
 
-tmp += (R-1)*(C-1);
+  trgs(1,tmp) = ([1:R-1]'*ones(1,C-1) + R*ones(R-1,1)*[0:C-2])(:)';
+  trgs(2,tmp) = ([ 2:R ]'*ones(1,C-1) + R*ones(R-1,1)*[0:C-2])(:)';
+  trgs(3,tmp) = ([1:R-1]'*ones(1,C-1) + R*ones(R-1,1)*[1:C-1])(:)';
+  
+  tmp += (R-1)*(C-1);
+  
+  trgs(1,tmp) = ([1:R-1]'*ones(1,C-1) + R*ones(R-1,1)*[1:C-1])(:)';
+  trgs(2,tmp) = ([ 2:R ]'*ones(1,C-1) + R*ones(R-1,1)*[0:C-2])(:)';
+  trgs(3,tmp) = ([ 2:R ]'*ones(1,C-1) + R*ones(R-1,1)*[1:C-1])(:)';
 
-trgs(1,tmp) = ([1:R-1]'*ones(1,C-1) + R*ones(R-1,1)*[1:C-1])(:)';
-trgs(2,tmp) = ([ 2:R ]'*ones(1,C-1) + R*ones(R-1,1)*[0:C-2])(:)';
-trgs(3,tmp) = ([ 2:R ]'*ones(1,C-1) + R*ones(R-1,1)*[1:C-1])(:)';
+else				# Do "upper" triangulation
+  
+  ##  Each triangle is      +-----+     +-----+
+  ##  the highest of either |    /| or  |\    |
+  ##                  	    |   / |     | \   |
+  ##                  	    |  /  |     |  \  |
+  ##                  	    | /   |     |   \ |
+  ##                  	    |/    |     |    \|
+  ##                        +-----+     +-----+
+
+
+  tmp = 1:(R-1)*(C-1);
+  tmp2 = reshape(1:R*C,R,C);
+  foo1 = z(1:R-1,1:C-1) + z(2:R,2:C);
+  foo2 = z(2:R,1:C-1) + z(1:R-1,2:C);
+  tmp3 = (!isnan(foo1) & (isnan (foo2) | foo1 > foo2))(:)';
+
+  trgs(1,tmp) = tmp2(1:R-1,1:C-1)(:)';
+  trgs(2,tmp) = tmp2(2:R,1:C-1)(:)';
+  trgs(3,tmp) = trgs(1,tmp) + R + tmp3 ;
+  tmp += (R-1)*(C-1);
+  trgs(1,tmp) = tmp2(1:R-1,2:C)(:)';
+  trgs(2,tmp) = tmp2(2:R,2:C)(:)';
+  trgs(3,tmp) = trgs(1,tmp) - R + 1 - tmp3 ;
+end				# EOF "upper" triangulation
 
 if length (col) == 1		# Convert graylevel to RGB
   col = [1 1 1]*col;
@@ -169,15 +199,20 @@ elseif any (prod (size (col)) == [R*C,(R-1)*(C-1)])
 end
 
 if zgrey || zrb || any (zcol(:)) # Treat zgrey zrb and zcol options
-  zx = max (z(:));
-  zn = min (z(:));
+  zx = max (z(keepip));
+  zn = min (z(keepip));
   if     zgrey, zcol = [0 0 0; 1 1 1]';
-  elseif zrb  , zcol = [0 0 0.7; 0.7 0 1; 1 0.2 0.2]'; 
+  elseif zrb  , zcol = [0 0 0.7; 0.5 0 0.8; 1 0 0]';
   end
-  ci = 1 + floor (cw = (columns (zcol)-1) * (z(:)' - zn)/(zx - zn));
-  cw =  rem (cw, 1);
-  ci(find (ci >= columns (zcol))) = columns (zcol) - 1;
-  col = zcol(:,ci) .* ([1;1;1]*(1-cw)) + zcol(:,ci+1) .* ([1;1;1]*cw);
+
+  ci = 1 + floor (cw = (columns (zcol)-1) * (z(keepip) - zn)/(zx - zn));
+  cw =  cw - ci + 1;
+  ii = find (ci >= columns (zcol));
+  if ! isempty (ii), ci(ii) = columns (zcol) - 1; cw(ii) = 1; end
+  col = zeros (3,R*C);
+  col(:,keepip) = \
+      zcol(:,ci) .* ([1;1;1]*(1-cw)) + zcol(:,ci+1) .* ([1;1;1]*cw);
+
 end				# EOF zgrey zrb and zcol options
 
 
@@ -201,7 +236,7 @@ if checker
     else                   col = [col [1;1;1]];	# X and White
     end
   end
-  col = reshape (col(:),3,2); 
+  col = reshape (col(:),3,2);
   col = col(:,icol);
 end				# EOF if checker
 
@@ -226,28 +261,46 @@ if ! all(keepp),
 
 				# Try to toggle some triangles to fill in
 				# holes
-  nt = (R-1)*(C-1) ;
-  tmp = ! reshape(keepp(trgs),3,2*nt);
-  tmp = all( tmp == kron([0,0;0,1;1,0],ones(1,nt)) );
-  trgs(3,     find (    tmp(1:nt)   & rem (trgs(3,1:nt),R)) )++ ;
-  trgs(2, nt+ find ( tmp(nt+1:2*nt) & (rem (trgs(3,nt+1:2*nt),R)!=1)) )-- ;
-
+  if ! upper
+    nt = (R-1)*(C-1) ;
+    tmp = ! reshape(keepp(trgs),3,2*nt);
+    tmp = all( tmp == kron([0,0;0,1;1,0],ones(1,nt)) );
+    trgs(3,     find (    tmp(1:nt)   & rem (trgs(3,1:nt),R)) )++ ;
+    trgs(2, nt+ find ( tmp(nt+1:2*nt) & (rem (trgs(3,nt+1:2*nt),R)!=1)) )-- ;
+    
 				# Remove whatever can't be kept
-  keept = all (reshape(keepp(trgs),3,2*(R-1)*(C-1)));
-  ## keept = all (keepp(trgs)) ;
-  keepip = find (keepp);
+    keept = all (reshape(keepp(trgs),3,2*(R-1)*(C-1)));
+  else
+    tmp = reshape (keepp,R,C);
+    keept = \
+	all (reshape (tmp(trgs(1:2,:)),2,2*(R-1)*(C-1))) & \
+	[(tmp(1:R-1,2:C) | tmp(2:R,2:C))(:)', \
+	 (tmp(1:R-1,1:C-1) | tmp(2:R,1:C-1))(:)'] ;
+  end
+
   keepit = find (keept);
+
   renum = cumsum (keepp);
 
-  pts = pts (:,keepip) ;
+  pts = pts (:,keepip);
   trgs = reshape(renum (trgs (:,keepit)), 3, columns(keepit));
 
-  if prod (size (col)) == 6*(R-1)*(C-1)
+  if prod (size (col)) == 6*(R-1)*(C-1)	
     col = col(:,keepit);
-  elseif prod (size (col)) == 6*R*C
+				# Coherence check : colorPerVertex == 0
+    if colorPerVertex
+      error ("Col has size 3*(R-1)*(C-1), but colorPerVertex == 1");
+    end
+
+  elseif prod (size (col)) == 3*R*C 
     col = col(:,keepip);
+
+				# Coherence check : colorPerVertex == 1
+    if ! colorPerVertex
+      error ("Col has size 3*R*C, but colorPerVertex == 0");
+    end
   end
-  
+
 end
 ## printf ("Calling vrml_faces\n");
 s = vrml_faces (pts, trgs, "col", col,\

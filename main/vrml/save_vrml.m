@@ -94,8 +94,6 @@ if fid == -1 , error(sprintf("save_vrml : unable to open %s",fname)); end
 fprintf(fid,"#VRML V2.0 utf8 \n# %s , created by save_vrml.m on %s \n%s",
 	fname,datestr(now),bg_node);
 
-
-
 while i <= length (varargin) ,
 
   if verbose, printf ("save_vrml : %i'th string\n",i); end

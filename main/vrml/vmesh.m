@@ -34,7 +34,7 @@
 ##
 ## "level", l   : 1xN : Display one or more horizontal translucent plane(s)
 ##
-##                        z = l(i)   (1 <= i <= length(l))
+##                        z == l(i)   (1 <= i <= length(l))
 ## 
 ## "lcol", lc   : Color of the plane(s).                        <[.7 .7 .7]>
 ## "ltran",lt   : Transparency of the level plane(s).                  <0.3>
@@ -87,7 +87,7 @@ if nargin > 3,
     if struct_contains (opts, optname)
       surf_args = append (surf_args, list (optname));
       if index (op1,[" ",optname," "])
-	surf_args = append (surf_args, list(opts.(optname))); 
+	surf_args = append (surf_args, list(opts.(optname)));
       end
     end
   end

@@ -114,9 +114,8 @@ if !balls && !cubes && !nums,
   
   s = sprintf("%s%s]\n  }\n  }\n  }\n",s,s0); # [
   
-  if hide ,
-    s = sprintf(["Switch {\nchoice\n[\n",s,"\n]\n}"]);
-  end
+  if hide, s = ["Switch {\nchoice\n[\n",s,"\n]\n}"]; end
+
 				# Use numbers
 elseif nums,
   printf ("Foo\n");

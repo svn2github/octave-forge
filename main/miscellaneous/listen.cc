@@ -1,4 +1,8 @@
-#ifndef DEBUG
+#ifdef EBUG
+#define STATUS(x) do { std::cout << x << std::endl << std::flush; } while (0)
+#define DEBUG 1
+#else
+#define STATUS(x) do {} while (0)
 #define DEBUG 0
 #endif
 
@@ -21,28 +25,58 @@
 #include <octave/variables.h>
 #include <octave/unwind-prot.h>
 
+// XXX FIXME XXX autoconf stuff
+#if defined(__sgi)
+typedef int socklen_t;
+#endif
 
-static RETSIGTYPE
+static void
 sigchld_handler(int /* sig */)
 {
   int status;
   /* Reap all childrens */
-#if DEBUG
-  std::cout << "reaping all children" << std::endl;
-#endif
+  STATUS("reaping all children");
   while (waitpid(-1, &status, WNOHANG) > 0)
     ;
-#if DEBUG
-  std::cout << "done reaping children" << std::endl;
-#endif
-  //  signal(SIGCHLD, sigchld_handler);
+  STATUS("done reaping children");
 }
+
+/* Posix signal handling, based on the example from the
+ * Unix Programming FAQ 
+ * Copyright (C) 2000 Andrew Gierth
+ */
+static void sigchld_setup(void)
+{
+  struct sigaction act;
+
+  /* Assign sig_chld as our SIGCHLD handler */
+  act.sa_handler = sigchld_handler;
+
+  /* We don't want to block any other signals in this example */
+  sigemptyset(&act.sa_mask);
+  
+  /*
+   * We're only interested in children that have terminated, not ones
+   * which have been stopped (eg user pressing control-Z at terminal)
+   */
+  act.sa_flags = SA_NOCLDSTOP;
+
+  /*
+   * Make these values effective. If we were writing a real 
+   * application, we would probably save the old value instead of 
+   * passing NULL.
+   */
+  if (sigaction(SIGCHLD, &act, NULL) < 0) 
+     error("listen could not set SIGCHLD");
+}
+
 
 static RETSIGTYPE
 sigterm_handler(int /* sig */)
 {
   exit(0);
 }
+
 
 static void
 daemonize(void)
@@ -72,9 +106,8 @@ static octave_value get_octave_value(char *name)
 
 static void channel_error (const int channel, const char *str)
 {
-#if DEBUG
-  std::cout << "sending error !!!e (" << strlen(str) << ") " << str << std::endl;
-#endif
+  STATUS("sending error !!!e (" << strlen(str) << ") " << str);
+
   unsigned long int len = strlen(str);
   write(channel,"!!!e",4);
   unsigned long int t = htonl(len); write(channel,&t,4);
@@ -83,20 +116,16 @@ static void channel_error (const int channel, const char *str)
 
 static bool reads (const int channel, void * buf, int n)
 {
-#if DEBUG
-  // std::cout << "entering reads loop with size " << n << std::endl;
-#endif
+  // STATUS("entering reads loop with size " << n);
   while (1) {
     int chunk = read(channel, buf, n);
 #if DEBUG
-    if (chunk == 0) std::cout << "read socket returned 0" << std::endl;
-    if (chunk < 0) std::cout << "read socket: " << strerror(errno) << std::endl;
+    if (chunk == 0) STATUS("read socket returned 0");
+    if (chunk < 0) STATUS("read socket: " << strerror(errno));
 #endif
     if (chunk <= 0) return false;
     n -= chunk;
-#if DEBUG
-    // if (n == 0) std::cout << "done reads loop" << std::endl;
-#endif
+    // if (n == 0) STATUS("done reads loop");
     if (n == 0) return true;
     (char *)buf += chunk;
   }
@@ -104,20 +133,16 @@ static bool reads (const int channel, void * buf, int n)
 
 static bool writes (const int channel, const void * buf, int n)
 {
-#if DEBUG
-  // std::cout << "entering writes loop" << std::endl;
-#endif
+  // STATUS("entering writes loop");
   while (1) {
     int chunk = write(channel, buf, n);
 #if DEBUG
-    if (chunk == 0) std::cout << "write socket returned 0" << std::endl;
-    if (chunk < 0) std::cout << "write socket: " << strerror(errno) << std::endl;
+    if (chunk == 0) STATUS("write socket returned 0");
+    if (chunk < 0) STATUS("write socket: " << strerror(errno));
 #endif
     if (chunk <= 0) return false;
     n -= chunk;
-#if DEBUG
-    // if (n == 0) std::cout << "done writes loop" << std::endl;
-#endif
+    // if (n == 0) STATUS("done writes loop");
     if (n == 0) return true;
     (char *)buf += chunk;
   }
@@ -132,9 +157,7 @@ process_commands(int channel)
   char def_buffer[16536];
   bool ok;
   char *buffer;
-#if DEBUG
-  std::cout << "waiting for command" << std::endl;
-#endif
+  STATUS("waiting for command");
 
   // XXX FIXME XXX do we need to specify the buffer size?
   //  int bufsize=sizeof(def_buffer);
@@ -151,13 +174,11 @@ process_commands(int channel)
     // XXX FIXME XXX do whatever is require to check if function files
     // have changed; do we really want to do this for _every_ command?
     // Maybe we need a 'reload' command.
-#if DEBUG
-    std::cout << "received command " << command << std::endl;
-#endif
+    STATUS("received command " << command);
     
     // Check for magic command code
     if (command[0] != '!' || command[1] != '!' || command[2] != '!') {
-      std::cout << "communication error: closing connection" << std::endl;
+      STATUS("communication error: closing connection");
       break;
     }
 
@@ -177,16 +198,12 @@ process_commands(int channel)
 	// XXX FIXME XXX maybe we want to kill the connection instead?
 	channel_error(channel,"out of memory");
 	ok = true;
-#if DEBUG
-	std::cout << "skip big command loop" << std::endl;
-#endif
+	STATUS("skip big command loop");
 	while (ok && len > (signed)sizeof(def_buffer)) {
 	  ok = reads(channel, def_buffer, sizeof(def_buffer));
 	  len -= sizeof(def_buffer);
 	}
-#if DEBUG
-	std::cout << "done skip big command loop" << std::endl;
-#endif
+	STATUS("done skip big command loop");
 	if (!ok) break;
 	ok = reads(channel, def_buffer, sizeof(def_buffer));
 	if (!ok) break;
@@ -203,9 +220,7 @@ process_commands(int channel)
     case 'm': // send the named matrix 
       {
 	// XXX FIXME XXX this can be removed: app can do send(name,value)
-#if DEBUG
-	std::cout << "sending " << buffer << std::endl;
-#endif
+	STATUS("sending " << buffer);
 	unsigned long t;
 	
 	// read the matrix contents
@@ -231,9 +246,9 @@ process_commands(int channel)
 	if (ok) ok = writes(channel,v,sizeof(double)*m.rows()*m.columns());
 #if DEBUG
 	if (ok)
-	  std::cout << "sent " << m.rows()*m.columns() << std::endl;
+	  STATUS("sent " << m.rows()*m.columns());
 	else
-	  std::cout << "failed " << m.rows()*m.columns() << std::endl;
+	  STATUS("failed " << m.rows()*m.columns());
 #endif
       }
       break;
@@ -247,32 +262,29 @@ process_commands(int channel)
 	    // string?  The setprecision() io manipulator doesn't do it.
 	    // In the meantime, a hack ...
 	    char t = buffer[400]; buffer[400] = '\0';
-	    std::cout << "evaluating (" << len << ") " 
+	    STATUS("evaluating (" << len << ") " 
 		 << buffer << std::endl 
 		 << "..." << std::endl 
-		 << buffer+len-100 << std::endl;
+		 << buffer+len-100);
 	    buffer[400] = t;
 	  }
 	else
 	  {
-	    std::cout << "evaluating (" << len << ") " << buffer << std::endl;
+	    STATUS("evaluating (" << len << ") " << buffer);
 	  }
 #endif
 	int parse_status = 0;
 	error_state = 0;
 	eval_string(buffer, true, parse_status, 0);
-#if DEBUG
-	std::cout << "parse_status = " << parse_status << ", error_state = " << error_state << std::endl << std::flush;
-#endif
+	STATUS("parse_status = " << parse_status << ", error_state = " 
+	       << error_state);
 	if (parse_status != 0 || error_state)
 	  {
 	    error_state = 0;
 	    bind_global_error_variable();
 	    octave_value def = get_global_value("__error_text__");
 	    std::string str = def.string_value();
-#if DEBUG
-	    std::cout << "error is " << str << std::endl;
-#endif
+	    STATUS("error is " << str);
 	    channel_error(channel,str.c_str());
 	    clear_global_error_variable(NULL);
 	  }
@@ -280,18 +292,16 @@ process_commands(int channel)
       break;
       
     case 'c': // execute the command and capture stdin/stdout
-      std::cout << "capture command not yet implemented" << std::endl;
+      STATUS("capture command not yet implemented");
       break;
       
     default:
-      std::cout << "ignoring command " << command << std::endl;
+      STATUS("ignoring command " << command);
       break;
     }
 
     if (buffer != def_buffer) delete[] buffer;
-#if DEBUG
-    std::cout << "done!" << std::endl;
-#endif
+    STATUS("done!");
     if (!ok) break;
   }
 }
@@ -327,9 +337,7 @@ send(name,value)\n\
 
   // XXX FIXME XXX perhaps process the panalopy of types?
   if (nargin > 1) {
-#if DEBUG
-    std::cout << "sending !!!x(" << cmd.length() << ") " << cmd.c_str() << std::endl;
-#endif
+    STATUS("sending !!!x(" << cmd.length() << ") " << cmd.c_str());
     
     octave_value def = args(1);
     if (args(1).is_string()) {
@@ -348,9 +356,7 @@ send(name,value)\n\
 	ok = writes(channel, cmd.c_str(), cmd.length());    // name
       if (s.length() && ok) 
 	ok = writes(channel, s.c_str(), s.length());        // string
-#if DEBUG
-      std::cout << "sent string(" << s.length() << ")" << std::endl;
-#endif
+      STATUS("sent string(" << s.length() << ")");
     } else if (args(1).is_real_type()) {
       Matrix m(args(1).matrix_value());
       
@@ -370,9 +376,7 @@ send(name,value)\n\
       const double *v = m.data();                  // data
       if (m.rows()*m.columns() && ok) 
 	ok = writes(channel,v,sizeof(double)*m.rows()*m.columns());
-#if DEBUG
-      std::cout << "sent matrix(" << m.rows() << "x" << m.columns() << ")" << std::endl;
-#endif
+      STATUS("sent matrix(" << m.rows() << "x" << m.columns() << ")");
     } else {
       ok = false;
       error("send expected name and matrix or string value");
@@ -407,13 +411,17 @@ listen(port,host)\n\
   int port = args(0).int_value();
   if (error_state) return ret;
 
-  std::string host;
-  if (nargin >= 2) host = args(1).string_value();
-  else host = "127.0.0.1";
+  struct in_addr localhost;
   struct in_addr hostid;
-  inet_aton(host.c_str(),&hostid);
-
-  if (error_state) return ret;
+  inet_aton("127.0.0.1",&localhost);
+  if (nargin >= 2) {
+    std::string host(args(1).string_value());
+    if (error_state) return ret;
+    if (!inet_aton(host.c_str(),&hostid)) {
+      error("listen: could not find host id for %s",host.c_str());
+      return ret;
+    }
+  }
 
   int sockfd;                    // listen on sockfd, new connection channel
   struct sockaddr_in my_addr;    // my address information
@@ -453,7 +461,7 @@ listen(port,host)\n\
   unwind_protect_bool (buffer_error_messages);
   buffer_error_messages = true;
 
-  signal(SIGCHLD, sigchld_handler);
+  sigchld_setup();
 
 #if !DEBUG && !defined(__CYGWIN__)
   daemonize();
@@ -462,32 +470,27 @@ listen(port,host)\n\
   // XXX FIXME XXX want a 'sandbox' option which disables fopen, cd, pwd,
   // system, popen ...  Or maybe just an initial script to run for each
   // connection, plus a separate command to disable specific functions.
-#if DEBUG
-  std::cout << "listening on port " << port << std::endl;
-#endif
+  STATUS("listening on port " << port);
   while(1) {  // main accept() loop
     sin_size = sizeof(struct sockaddr_in);
-#if DEBUG
-    std::cout << "trying to accept" << std::endl;
-#endif
+    STATUS("trying to accept");
     if ((channel = accept(sockfd, (struct sockaddr *)&their_addr,
 			 &sin_size)) == -1) {
-      std::cout << "failed to accept" << std::endl << std::flush;
+      STATUS("failed to accept");
       perror("accept");
-#if defined(__CYGWIN__)
+#if defined(__CYGWIN__) || defined(__sgi)
       break;
 #else
       continue;
 #endif
     }
-#if DEBUG
-    std::cout << "connected" << std::endl;
-#endif
+    STATUS("connected");
 
 
-    std::cout << "server: got connection from " << inet_ntoa(their_addr.sin_addr) << std::endl;
+    STATUS("server: got connection from " << inet_ntoa(their_addr.sin_addr));
 
-    if (their_addr.sin_addr.s_addr == hostid.s_addr) {
+    if (their_addr.sin_addr.s_addr == hostid.s_addr ||
+	their_addr.sin_addr.s_addr == localhost.s_addr) {
 
       int pid = fork();
 
@@ -498,22 +501,18 @@ listen(port,host)\n\
         close(sockfd);            // child doesn't need listener
         signal(SIGCHLD,SIG_DFL);  // child doesn't need SIGCHLD signal
         process_commands(channel);
-#if DEBUG
-        std::cout << "child is exitting" << std::endl;
-#endif
+        STATUS("child is exitting");
         exit(0);
       }
     } else {
-      std::cout << "server: connection refused." << std::endl;
+      STATUS("server: connection refused.");
     }
 
     close(channel);
     channel = -1;
   }
 
-#if DEBUG
-  std::cout << "could not read commands; returning " << std::endl;
-#endif
+  STATUS("could not read commands; returning");
   unwind_protect::run_frame("Flisten");
   return ret;
 }

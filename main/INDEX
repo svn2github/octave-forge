@@ -436,6 +436,7 @@ Rearranging matrices
  transpose ctranspose
  prepad postpad shift vec vech
  permute ipermute squeeze numel
+ circshift shiftdim
 Special matrices
  compan 
  commutation_matrix

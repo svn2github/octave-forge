@@ -55,8 +55,8 @@ function nb = xmlwrite (filename, value, name)
 
     ## XML header
     fprintf (fd, "<?xml version=\"1.0\"?>\n");
-    fprintf (fd, "<!DOCTYPE data SYSTEM \"octave.dtd\">\n");
-    fprintf (fd, "<data>\n");
+    fprintf (fd, "<!DOCTYPE octave SYSTEM \"octave.dtd\">\n");
+    fprintf (fd, "<octave>\n");
     indent = "  ";
   else
     isopen = true;
@@ -124,7 +124,7 @@ function nb = xmlwrite (filename, value, name)
     elseif isnan(value)
       ## Not-A-Number type
       
-      fprintf (fd, "%s<scalar% value=\"nan\"/>%s", indent, opt, separator);
+      fprintf (fd, "%s<scalar%s value=\"nan\"/>%s", indent, opt, separator);
       
     elseif isna(value)
       ## Not-Avaliable
@@ -199,7 +199,7 @@ function nb = xmlwrite (filename, value, name)
   nb++;
   
   if !isopen
-    fprintf (fd, "</data>\n");
+    fprintf (fd, "</octave>\n");
     fclose(fd);
   endif
   

@@ -1,4 +1,4 @@
-<!ELEMENT data (scalar | complex | string | array | structure | list | cell)*>
+<!ELEMENT octave (scalar | complex | string | array | structure | list | cell)>
 
 <!ELEMENT scalar (#PCDATA)>
 <!ATTLIST scalar
@@ -15,7 +15,6 @@
 
 <!ELEMENT array (string, string+)>
 <!ATTLIST array
-	length CDATA #REQUIRED
 	rows CDATA #REQUIRED
 	name CDATA #IMPLIED>
 

@@ -69,13 +69,13 @@ control = {50,2,1,2};  # maxiters, verbosity, conv. reg., arg_to_min
 printf("\nEXAMPLE 5: Limited memory BFGS, Numeric gradient\n");
 x0 = ones(2,1);
 y0 = 2*ones(2,1);
-control = {10,2,1,1, 3};  # maxiters, verbosity, conv. reg., arg_to_min
+control = {10,2,1,1,3};  # maxiters, verbosity, conv. reg., arg_to_min, memory
 [theta, obj_value, convergence] = bfgsmin("objective1", {x0, y0}, control);
 printf("\n");
 
 
 printf("\nEXAMPLE 6: Limited memory BFGS, Analytic gradient\n");
-control = {50,2,1,1,3};  # maxiters, verbosity, conv. reg., arg_to_min
+control = {50,2,1,1,3};  # maxiters, verbosity, conv. reg., arg_to_min, memory
 [theta, obj_value, convergence] = bfgsmin("objective2", {x0, y0}, control);
 printf("\n");
 

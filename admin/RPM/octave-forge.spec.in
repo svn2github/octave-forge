@@ -1,19 +1,26 @@
-%define __libtoolize /bin/true
+###%define __libtoolize /bin/true    # From the octave file--do I need this?
+%define octave_version @OCTAVE_VERSION@
+%define octave_epoch 6
+%define host_type @canonical_host_type@
+%define ofalt octave-forge-alternatives
 
 Summary: Additional functions for octave
 Name: octave-forge
 Version: @OCTAVE_FORGE_VERSION@
 Release: 1
-Epoch: 1
+###Epoch: 1
 License: GPL
 Group: Applications/Engineering
 Source: http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge-%{version}.tar.gz
 URL: http://octave.sourceforge.net
-Requires: octave = @OCTAVE_VERSION@ libjpeg libpng ImageMagick
+Requires: octave = %{octave_epoch}:%{octave_version}
+Requires: libjpeg libpng ImageMagick GiNaC
 ###Prereq: info
-BuildPrereq: octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg libjpeg-devel
-BuildPrereq: libpng libpng-devel zlib-devel libtermcap-devel libstdc++-devel
+BuildPrereq: octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg-devel
+BuildPrereq: libpng-devel zlib-devel libtermcap-devel libstdc++-devel
+BuildPrereq: GiNaC-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
+ExcludeArch: ppc64 s390x
 
 ### Description taken from http://wiki.octave.org/wiki.pl?OctaveForge
 %description
@@ -30,7 +37,15 @@ octave-forge is the place to do it.
 LC_ALL=POSIX
 export LC_ALL
 export CXXFLAGS="%optflags -fno-use-cxa-atexit"
-%configure --prefix=%{?buildroot:%{buildroot}}%{_prefix} --exec-prefix=%{?buildroot:%{buildroot}}%{_prefix} --with-mpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/@OCTAVE_VERSION@/site/m/octave-forge --with-opath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/@OCTAVE_VERSION@/site/oct/@canonical_host_type@/octave-forge --with-xpath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/@OCTAVE_VERSION@/site/exec/@canonical_host_type@
+%configure --prefix=%{?buildroot:%{buildroot}}%{_prefix} \
+	--exec-prefix=%{?buildroot:%{buildroot}}%{_prefix} \
+	--with-mpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/%{octave_version}/site/m/%{name} \
+	--with-opath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/%{octave_version}/site/oct/%{host_type}/%{name} \
+	--with-xpath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/%{octave_version}/site/exec/%{host_type} \
+	--with-altpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/%{octave_version}/site/%{ofalt}/m \
+	--with-altmpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/%{octave_version}/site/%{ofalt}/m/%{name} \
+	--with-altopath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/%{octave_version}/site/%{ofalt}/oct/%{host_type} \
+	--with-x
 
 make
 
@@ -68,15 +83,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/mex*
 
 %changelog
-* Fri Jun 13 2003 Quentin Spencer <qspencer@ieee.org>
+* Tue Feb 24 2004 Quentin Spencer <qspencer [AT] ieee [dot] org>
+- Added GiNaC as a dependency. Fixed install directories for
+  octave-forge alternatives.
+
+* Fri Jun 13 2003 Quentin Spencer <qspencer [AT] ieee [dot] org>
 - Added new package description, revised so that configure
   automatically generates the correct octave version and
-  octav-forge version, added dependencies.
+  octave-forge version, added dependencies.
 
-* Wed May 14 2003 Quentin Spencer <qspencer@ieee.org> 2.1.48-2
+* Wed May 14 2003 Quentin Spencer <qspencer [AT] ieee [dot] org> 2.1.48-2
 - Commented out code for ls-R files because of recent changes in
   Octave's use of kpathsea. Didn't delete it yet because it may
   yet be needed in the future.
 
-* Tue Feb  4 2003 Quentin Spencer <qspencer@ieee.org> 2.1.44-1
+* Tue Feb  4 2003 Quentin Spencer <qspencer [AT] ieee [dot] org> 2.1.44-1
 - First Version, loosely based on Red Hat's spec file for octave.

@@ -60,10 +60,6 @@ function assert(cond, expected, tol)
       error ("assert %s failed", in); # say which elements failed?
     endif
   
-  elseif !strcmp(typeinfo(cond),typeinfo(expected))
-    iserror = 1;
-    coda = ["Type ",typeinfo(cond)," != ",typeinfo(expected)];
-
   elseif (is_list(cond))
     if (!is_list(expected) || length(cond) != length(expected))
       iserror = 1;
@@ -118,6 +114,11 @@ function assert(cond, expected, tol)
   elseif (any (size (cond) != size (expected)))
     iserror = 1;
     coda = "Dimensions don't match";
+
+  elseif tol==0 && !strcmp(typeinfo(cond),typeinfo(expected))
+    iserror = 1;
+    coda = ["Type ",typeinfo(cond)," != ",typeinfo(expected)];
+
   else # numeric
     A=cond(:); B=expected(:);
     ## Check exceptional values

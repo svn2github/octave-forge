@@ -44,9 +44,9 @@ function [IR, CC, D] = adim(U, UC, IR, CC, arg5);
 [ur,p] = size(U);
 
 Mode_E = 1;
-if nargin < 4,
-        m  = zeros(size(U)+[0,Mode_E]);
-end;
+%if nargin < 4,
+%        m  = zeros(size(U)+[0,Mode_E]);
+%end;
 
 if nargin<2,
         fprintf(2,'Error ADIM: missing update coefficient\n');
@@ -68,7 +68,7 @@ if nargin<4,
         CC = [];
 end;
 if nargin<5,
-        arg5 = 1;
+        arg5 = 6;
 end;
 if isempty(IR),
         IR = eye(p+Mode_E);
@@ -79,8 +79,8 @@ end;
 
 D = zeros(ur,(p+Mode_E)^2);
 %D = zeros(ur,1);
-W = eye(p+Mode_E)*UC/(p+Mode_E);
-W2= eye(p+Mode_E)*UC*UC/(p+Mode_E);
+W  = eye(p+Mode_E)*UC/(p+Mode_E);
+W2 = eye(p+Mode_E)*UC*UC/(p+Mode_E);
 
 for k = 1:ur,
         if ~Mode_E,
@@ -98,13 +98,16 @@ for k = 1:ur,
                 v  = IR*d';
                 %K = v/(1-UC+d*v);
                 
-                if arg5==0;  		% original version accoring to [1], can become unstable 
+                if arg5==0;  		% original version according to [1], can become unstable 
                         IR = (1+UC)*IR - (1+UC)/(1-UC+d*v)*v*v';
                         
-                elseif arg5==1;  	% DEFAULT: this provides IR*CC == I, this seems to be stable 
+                elseif arg5==1;  	% this provides IR*CC == I, this seems to be stable 
                         IR = IR - (1+UC)/(1-UC+d*v)*v*v' + sum(diag(IR))*W;
                         
-                        		% more variants just for testing, do not use them. 
+                elseif arg5==6;  	% DEFAULT: 
+                        IR = ((1+UC)/2)*(IR+IR') - ((1+UC)/(1-UC+d*v))*v*v';
+                        
+                        % more variants just for testing, do not use them. 
                 elseif arg5==2;
                         IR = IR - (1+UC)/(1-UC+d*v)*v*v' + sum(diag(IR))*W2;
                         
@@ -124,7 +127,9 @@ for k = 1:ur,
         D(k,:) = IR(:)';
 end;
 
-% IR = IR / UC;
-% IR * CC == UC * I;
+IR = IR / UC;
+if Mode_E,
+        IR(1,1) = IR(1,1) - 1;
+end;
 
 

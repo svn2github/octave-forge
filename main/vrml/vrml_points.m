@@ -4,12 +4,8 @@
 ##
 ## Makes a vrml2 "point [ ... ]" node from a 3xP matrix x.
 ## 
-## Options :
-##
-## "name", name : The Coordinate node will be called name
-##                (default="allpoints").
-## "hide"       : The points will be defined, but not showed.
-##
+## OPTIONS (name and size/type, if applicable):
+## ---------------------------------------
 ## "balls"      : Displays spheres rather than points. Overrides the
 ##                "hide" options and no Coordinate node is defined;makes
 ##                "name" ineffective.
@@ -19,7 +15,7 @@
 ##                options and no Coordinate node is defined;makes "name"
 ##                ineffective. 
 ##
-## "rad",  rad  : radius of balls/size of cubes                default = 0.1
+## "rad", 1 or P: Radius of balls/size of cubes.              default = 0.1
 ##
 ## "nums"       : Displays numbers rather than points. Overrides the
 ##                "hide" options and no Coordinate node is defined;
@@ -33,6 +29,11 @@
 ##      or 3xP  : The color of each point.
 ##  "tran", 1x1 : Transparency                                   default = 0
 ##  "emit", e   : Use or not emissiveColor                       default = 1
+##
+## "name", str  : The Coordinate node will be called name
+##                (default="allpoints").
+## "hide"       : The points will be defined, but not showed.
+##
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
@@ -51,9 +52,9 @@ tran = 0;
 i = 1; nargin--;		# pos 2.1.39
 
 ## pre 2.1.39 while --nargin,
-while i < nargin ## pos 2.1.39
+while i <= nargin ## pos 2.1.39
   ## pre 2.1.39   tmp = va_arg(); 
-  tmp = nth (varargin,i++);  ## pos 2.1.39
+  tmp = nth (varargin,i++)  ## pos 2.1.39
   if strcmp(tmp,"hide") ,
     hide = 1;
   elseif strcmp(tmp,"balls") ,
@@ -116,7 +117,9 @@ if !balls && !cubes && !nums,
   if hide ,
     s = sprintf(["Switch {\nchoice\n[\n",s,"\n]\n}"]);
   end
+				# Use numbers
 elseif nums,
+  printf ("Foo\n");
   s = "";
   if prod (size (col)) == 3, col = col(:) * ones (1,P); end
   for i = 1:P,
@@ -147,25 +150,54 @@ elseif nums,
     s = sprintf("%s%s",s,s0);
   end
 else
-  if balls, shape = sprintf("Sphere { radius %8.3f}",rad) ; 
-  else      shape = sprintf("Box { size %8.3f %8.3f %8.3f}",rad,rad,rad) ;
+				# If all radiuses are the same, do a single
+				# geometry node for all points
+  if all (size (rad) == 1) || ! any (abs (diff (rad))>eps)
+    all_same_rad = 1;
+    if balls, shapestr = sprintf("Sphere { radius %8.3f}",rad) ; 
+    else      shapestr = sprintf("Box { size %8.3f %8.3f %8.3f}",rad,rad,rad) ;
+    end
+  else
+    all_same_rad = 0;
   end
-  if prod (size (col)) == 3, col = col(:) * ones (1,P); end
+
+				# If all colors are the same, do a single
+				# geometry node for all points
+  if prod (size (col)) == 3 || ! any (abs (diff (col'))>eps)
+    all_same_col = 1;  
+    colorstr = vrml_material (col(1:3), emit);
+  else
+    all_same_col = 0;
+  end
+
   s = "";
-  for i = 1:P,
+  for i = 1:P
+				# If some radiuses differ, I must do
+				# geometry nodes individually
+    if ! all_same_rad
+      if balls
+	shapestr = sprintf("Sphere { radius %8.3f}",rad(:,i));
+      else
+	shapestr = sprintf("Box { size %8.3f %8.3f %8.3f}",rad(:,[i,i,i]));
+      end
+    end
+				# If some colors differ, I must do material
+				# nodes individually
+    if ! all_same_col, colorstr = vrml_material (col(:,i), emit); end
+
     s0 = sprintf([\
 		  "Transform {\n",\
 		  "  translation %10.6g %10.6g %10.6g\n",\
 		  "  children [\n",\ # ]
 		  "    Shape {\n",\
 		  "      appearance Appearance {\n",\
-		  vrml_material (col(:,i), emit),"\n",\
+		  colorstr,"\n",\
 		  "      }\n",\
-		  "      geometry %s\n",\
+		  "      geometry ",shapestr,"\n",\
 		  "    }\n",\
 		  "  ]\n",\
 		  "}\n"],\
-		 x(:,i), shape);
+		 x(:,i));
     ## "          emissiveColor %8.3f %8.3f %8.3f\n",\
     ##		 x(:,i),col,col,shape);
     s = sprintf("%s%s",s,s0);

@@ -23,11 +23,10 @@ INSTALLATION
 */
 
 #include <sys/types.h>
-#include <strstream>
 #include <climits>
 #include <octave/oct.h>
 #include <octave/lo-ieee.h>
-using namespace std;
+//using namespace std;
 
 typedef unsigned long bitop_int;
 const unsigned int ULONG_SIZE=CHAR_BIT*sizeof(bitop_int);

@@ -10,7 +10,11 @@ LIBS=-lgsl
 # all compiled functions
 PROGS=legendre_sphPlm_array.oct gsl_sf.oct $(SF_LINKS)
 
+ifdef HAVE_LIBGSL
 all: gsl_sf.cc $(PROGS)
+else
+all:
+endif
 
 $(PROGS): Makefile
 

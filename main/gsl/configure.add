@@ -3,7 +3,17 @@ if test ! -e main/gsl/NOINSTALL ; then
 
 	dnl Checking if the GSL library exists. 
 	dnl The results of the check are held in HAVE_LIBGSL.
-	AC_CHECK_LIB(gslcblas,main)
-	AC_CHECK_LIB(gsl,main)
+	AC_SUBST(DEFHAVE_LIBGSL)
+	AC_CHECK_LIB(gslcblas, gsl_blas_sgemv, [AC_CHECK_LIB(gsl, gsl_message, have_libgsl=yes, have_libgsl=no, -lgslcblas)], have_libgsl=no, -lgsl)
+	if test "$have_libgsl" = "yes" ; then
+		DEFHAVE_LIBGSL="HAVE_LIBGSL=1"
+		STATUS=yes
+        else
+		DEFHAVE_LIBGSL=
+		STATUS=no
+	fi
+
+    STATUS_MSG="$STATUS_MSG
+   GSL toolbox: $STATUS"
 
 fi

@@ -116,7 +116,7 @@ EOF
 
    dnl set the appropriate variables if they are not already set
    ver=`echo $INFOV | sed -e "s/\.//" -e "s/\..*$//"`
-   subver=`echo $INFOV | sed -e "s/^[^.]*[.][^.]*[.]//"`
+   subver=`echo $INFOV | sed -e "[s/^[^.]*[.][^.]*[.]//]"`
    test -z "$mpath" && mpath=$INFOM/octave-forge
    test -z "$opath" && opath=$INFOO/octave-forge
    test -z "$xpath" && xpath=$INFOX

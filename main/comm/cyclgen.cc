@@ -142,13 +142,14 @@ DEFUN_DLD (cyclgen, args, nargout,
   m = 1;
   while (n > (1<<(m+1)))
     m++;
+  pp.resize(n+1, 0);
 
   if (args(1).is_scalar_type ()) {
     p = (unsigned long long)(args(1).int_value());
     mm = 1;
     while (p > ((unsigned long long)1<<(mm+1)))
       mm++;
-    for (int i=0; i < mm; i++)
+    for (int i=0; i < mm+1; i++)
       pp(i) = (p & (1<<i) ? 1 : 0);
   } else {
     Matrix tmp = args(1).matrix_value ();
@@ -159,7 +160,6 @@ DEFUN_DLD (cyclgen, args, nargout,
 
     if (tmp.rows() == 1) {
       mm = tmp.columns();
-      pp.resize(n+1, 0);
       for (int j=0; j<mm; j++) {
 	if (tmp(0,j) == 1) {
 	  p |= ((unsigned long long)1 << j);
@@ -172,7 +172,6 @@ DEFUN_DLD (cyclgen, args, nargout,
       }
     } else {
       mm = tmp.rows();
-      pp.resize(n+1, 0);
       for (int i=0; i<mm; i++) {
 	if (tmp(i,0) == 1) {
 	  p |= ((unsigned long long)1 << i);

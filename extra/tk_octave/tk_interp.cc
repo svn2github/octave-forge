@@ -17,7 +17,9 @@ without modification, or license it as you see fit.
 #include <octave/help.h>
 
 #include <tk.h>
-
+#ifndef CONST84
+#define CONST84
+#endif
 
 // I have attempted to block all access to octave variables from the tcl
 // thread while octave is running, but I didn't do it correctly and it

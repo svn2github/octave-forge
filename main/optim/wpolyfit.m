@@ -23,7 +23,7 @@
 ## the fitted line and polynomials defining the standard error range.
 ##
 ## If 'origin' is specified, then the fitted polynomial will go through
-## the origin.
+## the origin.  This is generally ill-advised.  Use with caution.
 ##
 ## To compute the predicted values of y with uncertainty use
 ## @example
@@ -56,7 +56,7 @@
 ## This program is in the public domain.
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function [p_out, dp_out] = wpolyfit (varargin)
+function [p_out, s] = wpolyfit (varargin)
 
   ## strip 'origin' of the end
   args = length(varargin);
@@ -126,11 +126,10 @@ function [p_out, dp_out] = wpolyfit (varargin)
     A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
   endif
 
-  [p,dp] = wsolve(A,y(:),dy(:));
+  [p,s] = wsolve(A,y(:),dy(:));
 
   if through_origin
     p(n+1) = 0;
-    dp(n+1) = 0;
   endif
 
   if nargout == 0
@@ -154,31 +153,42 @@ function [p_out, dp_out] = wpolyfit (varargin)
     title('Least-squares Polynomial Fit with Error Bounds');
 
     ## draw fit with estimated error bounds
-    xf = linspace(min(x),max(x),150);
-    yf = polyval(p,xf);
-    dyf = sqrt(polyval(dp.^2,xf.^2));
+    xf = linspace(min(x),max(x),150)';
+    [yf,dyf] = polyconf(p,xf,s,'ci');
     plot(xf,yf+dyf,"g.;;", xf,yf-dyf,"g.;;", xf,yf,"g-;fit;");
 
-    hold on;
-
     ## plot the data
+    hold on;
     if (isempty(dy))
       plot(x,y,"x;data;");
     else
+      if isscalar(dy), dy = ones(size(y))*dy; end
       errorbar (x, y, dy, "~;data;");
     endif
-
     hold off;
 
-    ## display p,dp as a two column vector
-    printf("%15s %15s\n", "Coefficient", "Uncertainty");
-    printf("%15g %15g\n", [p(:), dp(:)]');
+    ## display p as a two column vector
+    printf("Polynomial: %s\n", polyout(p,'x'));
+
+    if strcmp(deblank(input('See residuals? [y,n] ','s')),'y')
+      clf;
+      if (isempty(dy))
+	plot(x,y-polyval(p,x),"x;data;");
+      else
+        errorbar(x,y-polyval(p,x),dy, '~;data;');
+      endif
+      hold on;
+      grid on;
+      ylabel('Residuals');
+      xlabel('abscissa X'); 
+      plot(xf,dyf,'g.;;',xf,-dyf,'g.;;');
+      hold off;
+    endif
 
   else
 
-    ## return values as row vectors instead of printing
-    p_out = p.';
-    dp_out = dp.';
+    ## return values as column vector like polyfit
+    p_out = p;
 
   endif
 

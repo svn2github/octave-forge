@@ -1,7 +1,9 @@
 1;
 
 function do_test(n,x,y,p,dp,varargin)
-  [myp,mydp] = wpolyfit(x,y,n,varargin{:});
+  [myp,s] = wpolyfit(x,y,n,varargin{:});
+  mydp = sqrt(sumsq(inv(s.R'))'/s.df)*s.normr;
+  if length(varargin)>0, mydp = [mydp;0]; end %origin
   %[svdp,j,svddp] = svdfit(x,y,n);
   %myp = polyfit(x,y,10);
   disp('parameter  certified value  rel. error');
@@ -28,11 +30,12 @@ printf("%15s %15s\n", "Coefficient", "Error");
 printf("%15g %15g\n", [mean(p'); std(p')]);
 input('Press <Enter> to see some sample regression lines: ');
 t = [x(1), x(length(x))];
-[p,dp] = wpolyfit(x,y,dy,1);
-hold on; 
-for i=1:15, plot(t,polyval(p+randn(size(dp)).*dp,t),'-;;'); end
-errorbar(x,y,dy,"~r;;");
-errorbar(x,polyval(p,x),sqrt(polyval(dp.^2,x.^2)),"~b;;");
+[p,s] = wpolyfit(x,y,dy,1); dp=sqrt(sumsq(inv(s.R'))'/s.df)*s.normr;
+hold off; 
+for i=1:15, plot(t,polyval(p+randn(size(dp)).*dp,t),'-g;;'); hold on; end
+errorbar(x,y,dy,"~b;;");
+[yf,dyf]=polyconf(p,x,s,0.05,'ci');
+plot(x,yf-dyf,"-r;;",x,yf+dyf,'-r;95% confidence interval;')
 hold off;
 input('Press <Enter> to continue with the tests: ');
 

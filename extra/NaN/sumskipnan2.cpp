@@ -79,8 +79,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	mexErrMsgTxt("First argument must be NUMERIC.");
     if(!mxIsDouble(PInputs[0]))
 	mexErrMsgTxt("First argument must be DOUBLE.");
-    if(mxIsComplex(PInputs[0]) & (POutputCount > 2))
-	mexErrMsgTxt("More than 2 output arguments only supported for REAL data ");
+    if(mxIsComplex(PInputs[0]) & (POutputCount > 3))
+	mexErrMsgTxt("More than 3 output arguments only supported for REAL data ");
     LInput  = mxGetPr(PInputs[0]);
 
     	// get 2nd argument
@@ -190,18 +190,22 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			{
 				LSum = 0.0;	
 	    			LCountI = 0;
+				LSum2  = 0.0;
 				for (j=0; j<D2; j++) 	
 				{
 					x = LInputI[ix1 + j*D1];
         	        		if (!mxIsNaN(x))
 					{
 						LCountI++; 
-						LSum += x; 
+						LSum  += x; 
+						LSum2 += x*x; 
 					}
 				}
 				LOutputSumI[ix2] = LSum;
 				if (LCount != LCountI)
 			            	mexErrMsgTxt("Number of NaNs is different for REAL and IMAG part");
+	            		if (POutputCount >= 3)
+        	        		LOutputSum2[ix2] += LSum2;
 			}	
 		}
 	}

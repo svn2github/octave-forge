@@ -51,7 +51,7 @@ function __errplot__ (caller, varargin)
     else
       fstr = a;
     endif
-  endwhile
+  endfor
 
   fmt = __pltopt__ (caller, fstr);
 

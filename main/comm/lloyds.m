@@ -77,7 +77,7 @@ function [table, code, dist, reldist] = lloyds(sig, init, tol, type)
 
   if (length(init) == 1)
     len = init;
-    init = [1:len]' * (sigmax - sigmin) - sigmin;
+    init = [0:len-1]'/(len-1) * (sigmax - sigmin)  + sigmin;
   elseif (min(size(init))) 
     len = length(init);
   else

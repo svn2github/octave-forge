@@ -197,6 +197,7 @@ function z = demodmap (y, fd, fs, varargin)
 	phs = varargin{4};
       endif
       c = apkconst(nsig,amp,phs);
+      M = length(c);
     elseif (findstr(method,"/arb"))
       if (nargin == 4)
 	c = qaskenco(2);
@@ -209,6 +210,7 @@ function z = demodmap (y, fd, fs, varargin)
       elseif (nargin > 6)
 	error ("demodmap: too many arguments");
       endif
+      M = length(c);
     else
       ## Could do "c = qaskenco(M)", but qaskdeco's speed is not dependent
       ## on M, while speed of code below is O(M).

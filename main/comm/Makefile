@@ -20,13 +20,16 @@ OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
 OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
 OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
 OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))
-DOCS = comms.info comms.ps
+INFODOC = comms.info
+PSDOC = comms.ps
+DOCSTRINGS = DOCSTRINGS
 
+DOCS = $(INFODOC) $(PSDOC)
 TARGETS = $(GALOISTARGET) $(GALOISLINKTARGETS) $(OTHERTARGETS)
 OBJECTS = $(GALOISOBJECTS) $(OTHEROBJECTS)
 DEPENDS = $(GALOISDEPENDS) $(OTHERDEPENDS)
 
-DELETES = $(OBJECTS) $(DEPENDS) *~ *.log *.dvi *.ps *.info $(TARGETS) $(DOCS) DOCSTRINGS comms.texi core octave-core
+DELETES = $(OBJECTS) $(DEPENDS) *~ *.log *.dvi *.ps *.info $(TARGETS) $(DOCS) $(DOCSTRINGS) comms.texi core octave-core
 
 DEFINES = -DGALOIS_DISP_PRIVATES
 MOFLAGS =
@@ -37,6 +40,10 @@ MOFLAGS =
 .SUFFIXES:
 
 all : $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(DOCS)
+
+install : $(INFODOC)
+	$(INSTALL) -d $(MPATH)
+	$(INSTALL_DATA) $(INFODOC) $(MPATH)/comm 
 
 $(GALOISTARGET) : $(GALOISDEPENDS) $(GALOISOBJECTS) 
 	@echo "Linking $@"; \
@@ -82,8 +89,8 @@ endif
 %.texi : %.txi
 	@echo "Making texinfo $@"; \
 	$(RM) -f $@; \
-	./mkdoc > DOCSTRINGS; \
-	./mktexi $< DOCSTRINGS INDEX > $@ 
+	./mkdoc > $(DOCSTRINGS); \
+	./mktexi $< $(DOCSTRINGS) INDEX > $@ 
 
 clean:
 	@echo "Cleaning..."; \

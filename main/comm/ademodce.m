@@ -133,9 +133,13 @@ function y = ademodce (x, Fs, typ, varargin)
     if (exist("offset","var"))
       y = y - offset;
     else
-      for i=1:size(y,2)
-	y(:,i) = y(:,i) - mean(y(:,i));
-      end
+      if (min(size(y)) == 1)
+	y = y - mean(y);
+      else
+	for i=1:size(y,2)
+	  y(:,i) = y(:,i) - mean(y(:,i));
+	end
+      endif
     endif
   elseif (strcmp(typ,"amdsb-sc"))
     y = real(x * exp(-1i * iphs));
@@ -171,9 +175,13 @@ function y = ademodce (x, Fs, typ, varargin)
 
   if (!isempty(num) && !isempty(dem))
     ## Low-pass filter the output
-    for i=1:size(y,2)
-      y(:,i) = filter(num, den, y(:,i));
-    end
+    if (min(size(y)) == 1)
+      y = filter(num,den, y);
+    else    
+      for i=1:size(y,2)
+	y(:,i) = filter(num, den, y(:,i));
+      end
+    endif
   endif
 
 endfunction

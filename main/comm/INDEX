@@ -68,7 +68,6 @@ Galois Fields
  all = True if all elements of Galois array are non-zero.
  any = True if any element of Galois array are non-zero.
  cosets
- galois
  gconv
  gconvmtx
  gdeconv
@@ -121,6 +120,7 @@ Galois Fields of Odd Characteristic
  gftrunc
  gftuple
 Utility Functions
+ comms
  bi2de
  de2bi
  istrellis

@@ -19,6 +19,8 @@
 ## @deftypefnx {Function File} {[@var{qidx}, @var{q}] = } quantiz (@var{x}, @var{table}, @var{codes})
 ## @deftypefnx {Function File} {[ @var{qidx}, @var{q}, @var{d}] = } quantiz (@var{...})
 ##
+## Quantization of an arbitrary signal relative to a paritioning.
+##
 ## @table @code
 ## @item qidx = quantiz(x, table)
 ##   Determine position of x in strictly monotonic table.  The first

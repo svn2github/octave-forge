@@ -230,7 +230,7 @@ can however be modified, for example
 octave:1> nse_30dBm_50Ohm = wgn(10000,1,30,50,"dBm");
 octave:2> nse_0dBW_50Ohm = wgn(10000,1,0,50,"dBW");
 octave:3> nse_1W_50Ohm = wgn(10000,1,1,50,"linear");
-octave:4> [std(nse_30dBm_50Ohm), std(nse_3dBW_50Ohm), std(nse_1W_50Ohm)]
+octave:4> [std(nse_30dBm_50Ohm), std(nse_0dBW_50Ohm), std(nse_1W_50Ohm)]
 ans =
 
   7.0805  7.1061  7.0730
@@ -457,9 +457,90 @@ which produces a scatterplot of a noisy signal as seen in Figure 3.
 @node Source Coding, Block Coding, Random Signals, Top
 @chapter Source Coding
 
-To be written
+An important aspect of converting an analog signal to the digital domain
+is quantization. This is the process of mapping a continuous signal to a
+set of defined values. Octave contains two functions to perform quantization,
+@dfn{lloyds} creates an optimal mapping of the continous signal to a fixed
+number of levels and @dfn{quantiz} performs the actual quantization.
 
-Currently have functions quantiz, lloyds and compand.
+The set of quantization points to use is represented by a partitioning
+table (@var{table}) of the data and the signal levels (@var{codes} to
+which they are mapped. The partitioning @var{table} is monotonicly
+increasing and if x falls within the range given by two points of this
+table then it is mapped to the corresponding code as seen in Table 1.
+
+@center Table 1: Table quantization partitioning and coding
+
+@multitable @columnfractions 0.1 0.4 0.4 0.1
+@item @tab x < table(1)               @tab codes(1)   @tab
+@item @tab table(1) <= x < table(2)   @tab codes(2)   @tab
+@item @tab ...                        @tab ...       @tab
+@item @tab table(i-1) <= x < table(i) @tab codes(i)   @tab
+@item @tab ...                        @tab ...       @tab
+@item @tab table(n-1) <= x < table(n) @tab codes(n)   @tab
+@item @tab table(n-1) <= x            @tab codes(n+1) @tab
+@end multitable
+
+These partition and coding tables can either be created by the user of
+using the function @dfn{lloyds}. For instance the use of a linear
+mapping can be seen in the following example.
+
+@example
+octave:1> m = 8;
+octave:2> n = 1024;
+octave:3> table = 2*[0:m-1]/m - 1 + 1/m;
+octave:4> codes = 2*[0:m]/m - 1;
+octave:5> x = 4*pi*[0:(n-1)]/(n-1);
+octave:6> y = cos(x);
+octave:7> [i,z] = quantiz(y, table, codes);
+@end example
+
+If a training signal is known that well represents the expected signals, 
+the quantization levels can be optimized using the @dfn{lloyds} function.
+For example the above example can be continued
+
+@example
+octave:8> [table2, codes2] = lloyds(y, table, codes);
+octave:9> [i,z2 = quantiz(y, table2, codes2);
+@end example
+
+Which the mapping suggested by the function @dfn{lloyds}. It should be
+noted that the mapping given by @dfn{lloyds} is highly dependent on the
+training signal used. So if this signal does not represent a realistic
+signal to be quantized, then the parititioning suggested by @dfn{lloyds}
+will be sub-optimal.
+
+The DPCM function @dfn{dpcmenco}, @dfn{dpcmdeco} and @dfn{dpcmopt}
+implement a form of preditive quantization, where the predictability
+of the signal is used to further compress it. These functions are
+not yet implemented.
+
+The final source coding function is @dfn{compand} which is used to
+compress and expand the dynamic range of a signal. For instance 
+consider a logarithm quantized by a linear partitioning. Such a
+partitioning is very poor for this large dynamic range. @dfn{compand}
+can then be used to compress the signal prior to quantization, with
+the signal being expanded afterwards. For example
+
+@example
+octave:1> mu = 1.95;
+octave:2> x = [0.01:0.01:2];
+octave:3> y = log(x);
+octave:4> V = max(abs(y));
+octave:5> [i,z,d] = quantiz(y,[-4.875:0.25:0.875],[-5:0.25:1]);
+octave:6> c = compand(y,minmu,V,'mu/compressor');
+octave:7> [i2,c2] = quantiz(c,[-4.875:0.25:0.875],[-5:0.25:1]);
+octave:8> z2 = compand(c2,minmu,max(abs(c2)),'mu/expander');
+octave:9> d2 = sumsq(y-z2) / length(y);
+octave:10> [d, d2]
+ans =
+
+  0.0053885  0.0029935
+@end example
+
+which demonstrates that the use of @dfn{compand} can significantly
+reduce the distortion due to the quantization of signals with a large
+dynamic range.
 
 @node Block Coding, Convolutional Coding, Source Coding, Top
 @chapter Block Coding
@@ -722,7 +803,7 @@ octave:5> cdec = encode(bi2de(msg), n, k, "hamming/decimal");
 which codes a binary matrix and a non-binary vector representation of a
 message, returning the coded message in the same format. The functions
 @dfn{encode} and @dfn{decode} by default accept binary coded
-messages. Therefore 'hamming' is equivalent to 'hamming/decimal'.
+messages. Therefore 'hamming' is equivalent to 'hamming/binary'.
 
 Except for the BCH codes, the function @dfn{encode} and @dfn{decode}
 internally create the generator, parity check and syndrome table
@@ -733,7 +814,7 @@ and pass them as an argument. For example
 @example
 n = 15;
 k = 11;
-[par gen] = hammgen(4);
+[par, gen] = hammgen(4);
 code1 = code2 = zeros(100,15)
 for i=1:100
   msg = get_msg(i);        
@@ -759,7 +840,7 @@ Called without arguments, @dfn{bchpoly} returns a table of valid BCH
 error correcting codes and their error-correction capability
 as seen in Table 1.
 
-@center Table 1: Table of valid BCH codes with codeword length less than 511.
+@center Table 2: Table of valid BCH codes with codeword length less than 511.
 
 @multitable @columnfractions .083 .083 .083 | .083 .083 .083 | .083 .083 .083 | .083 .083 .083 
 @item  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T

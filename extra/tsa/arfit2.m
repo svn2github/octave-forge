@@ -15,27 +15,12 @@ function [w, MAR, C, sbc, fpe, th]=arfit(Y, pmin, pmax, selector, no_const)
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
 %  
 
-%	Version 2.86
-%	last revision 21.03.2002
+%	Version 2.90
+%	last revision 12.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
-%
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
-%
-% You should have received a copy of the GNU Library General Public
-% License along with this library; if not, write to the
-% Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
-
-
+%%%%% checking of the input arguments was done the same way as ARFIT
 if (pmin ~= round(pmin) | pmax ~= round(pmax))
         error('Order must be integer.');
 end
@@ -62,20 +47,24 @@ elseif (nargin == 5)		% two optional arguments
         end
 end
 
-[N,M]=size(Y);
 
+
+%%%%% Implementation of the MVAR estimation 
+[N,M]=size(Y);
+    
 if mcor,
-        m = mean(Y);
-        Y = Y - repmat(m,size(Y)./size(m));        
+        [m,N] = sumskipnan(Y,2);                    % calculate mean 
+        m = m./N;
+	Y = Y - repmat(S./N,size(Y)./size(m));    % remove mean    
 end;
 
-[MAR,RCF,PE] = mvar(Y, pmax, 2);
+[MAR,RCF,PE] = mvar(Y, pmax, 2);   % estimate MVAR(pmax) model
 
 %if 1;nargout>3;
 ne = N-mcor-(pmin:pmax);
 for p=pmin:pmax, 
         % Get downdated logarithm of determinant
-        logdp(p-pmin+1) = log(det(PE{p+1}*(N-p-mcor))); 
+        logdp(p-pmin+1) = log(det(PE(:,p+(1:M))*(N-p-mcor))); 
 end;
 
 % Schwarz's Bayesian Criterion
@@ -100,14 +89,14 @@ if popt<pmax,
 end;
 %end
 
-C = PE{end};
+C = PE(:,size(PE,2)+(1-M:0));
 
 if mcor,
         I = eye(M);        
         for k = 1:pmax,
                 I = I - MAR(:,k*M+(1-M:0));
         end;
-        w = I*m';
+        w = I*m;
 else
         w = zeros(M,1);
 end;

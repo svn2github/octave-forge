@@ -211,7 +211,7 @@ while niter++ <= maxout && nev(1) < maxev
 
   if length (code), abest = args; end # Eventually stash all args
 
-  if verbose || report && (rem(niter,max(report,1)) == 1)
+  if verbose || (report && rem(niter,max(report,1)) == 1)
     printf ("d2_min : niter=%d, v=%8.3g\n",niter,v );
   end
 

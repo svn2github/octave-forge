@@ -146,9 +146,9 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
     p = min*d;
     x += reshape (p,sz);
 
-    if ! isnan (ftol) && (abs (fmin - flast)/max(1,abs (flast))) < ftol || \
-	  ! isnan (utol) && (norm (p) / max (1,norm (x(:)))) < utol || \
-	  nev(1) > maxev;
+    if (!isnan(ftol) && (abs (fmin - flast)/max(1,abs (flast)) < ftol)) \
+	  || (!isnan(utol) && (norm (p) / max (1,norm (x(:)))) < utol) \
+	  || nev(1) > maxev,
       break;
     end
 

@@ -10,7 +10,7 @@ FEATURES of the NaN-tb:
  - less but more powerful functions (no nan-FUN needed)
  - fixes known bugs 
  - compatible to Matlab and Octave
- - easy to use, compatible to existing software
+ - easy to use
  - supports DIM argument 
  - supports unbiased estimation; 
  - The toolbox was tested with
@@ -117,9 +117,14 @@ Therefore, the application program might be more readable.
 DIM-argument and skipping of NaN's implemented. None of these features is
 implemented in the Matlab versions.
 
-10) NANSUM, NANMEAN, NANVAR, NANSTD, NANMEDIAN
+10a) NANMEAN, NANVAR, NANMEDIAN
 These are not necessary anymore. They are implemented in SUMSKIPNAN, MEAN, 
 VAR, STD and MEDIAN, respectively. 
+
+10b) NANSUM, NANSTD
+These functions are obsolete, too. However, previous implementations 
+do not always provide the expected result. Therefore, a correct
+version is included for backward compatibility. 
 
 11) GPL license
 Permits to implement useful modifications. 
@@ -186,12 +191,14 @@ Installing the NaN-tb for Matlab:
 Ensure that the NaN-directory is first in your path. This should override any 
 alternative function definition (except built-in's) with the same name. 
 
-(re-)start Matlab or clear functions and run NANTEST. 
+(re-)start Matlab or clear functions and run NANINSTTEST. 
 This checks whether all previous functions have been replaced
 
 
-	Version 1.50 	Date: 14 Sep 2003
-	Copyright (C) 2000-2003 by  Alois Schloeg <a.schloegl@ieee.org>	
+	$Revision$
+	$Id$
+	Version 1.53 	Date: 31 Oct 2003
+	Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 

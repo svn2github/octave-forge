@@ -192,7 +192,11 @@ static ColumnVector extract_solution(Matrix A,Matrix basis,ColumnVector upper_bo
   x = ColumnVector(nc,0.0);
   for(i=0;i<nr;i++)
     {
-      if(basis(i,1) <= nc)
+      // XXX FIXME XXX the condition used to be <= nc which is clearly
+      // wrong since the column vector x only has nc elements, and
+      // x(nc) is out of range.  Is this restricting the test to <nc
+      // the proper fix?  [PAK]
+      if(basis(i,1) < nc)
 	{
 	  x((int)rint(basis(i,1))) = A(i,nc);
 	}

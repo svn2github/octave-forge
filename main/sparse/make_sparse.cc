@@ -17,6 +17,10 @@ along with Octave; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
+In addition to the terms of the GPL, you are permitted to link
+this program with any Open Source program, as defined by the
+Open Source Initiative (www.opensource.org)
+
 $Id$
 
 */
@@ -252,8 +256,14 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
- * Revision 1.1  2001/10/10 19:54:49  pkienzle
- * Initial revision
+ * Revision 1.2  2001/10/12 02:24:28  aadler
+ * Mods to fix bugs
+ * add support for all zero sparse matrices
+ * add support fom complex sparse inverse
+ *
+ * Revision 1.7  2001/09/23 17:46:12  aadler
+ * updated README
+ * modified licence to GPL plus link to opensource programmes
  *
  * Revision 1.6  2001/04/04 02:13:46  aadler
  * complete complex_sparse, templates, fix memory leaks

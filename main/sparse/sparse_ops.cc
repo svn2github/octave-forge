@@ -19,6 +19,10 @@ along with Octave; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
+In addition to the terms of the GPL, you are permitted to link
+this program with any Open Source program, as defined by the
+Open Source Initiative (www.opensource.org)
+
 $Id$
 
 */
@@ -294,6 +298,13 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
    sort_with_idx (ixp, ix, ixl);
 
    ColumnVector O( ixl );
+   // special case if X is all zeros
+   if (NCFX->nnz == 0 ) {
+      for (long k=0; k< ixl; k++)
+         O( k )= 0.0;
+      return O;
+   }
+
    long ip= -Xnr; // previous column position
    long jj=0,jl=0;
    for (long k=0; k< ixl; k++) {
@@ -366,10 +377,10 @@ sparse_index_twoidx ( SuperMatrix X,
          if ( ii<0 || ii>=Xnr) 
             SP_FATAL_ERR("invalid matrix index (x index)");
 
-         while ( ridxX[jl] < ii && jl < jj ) jl++;
+         while ( jl < jj && ridxX[jl] < ii ) jl++;
 
 
-         if ( ridxX[jl] == ii && jl<jj ) 
+         if ( jl<jj && ridxX[jl] == ii ) 
             tcol[ kout ] = coefX[jl] ;
          else
             tcol[ kout ] = 0 ;
@@ -792,20 +803,20 @@ DEFBINOP( f_s_ldiv, matrix, sparse) {
 DEFBINOP( s_s_ldiv, sparse, sparse) {
    DEBUGMSG("sparse - s_s_ldiv");
    CAST_BINOP_ARGS ( const octave_sparse&, const octave_sparse&);
-   SuperMatrix   S= v1.super_matrix();
+// SuperMatrix   S= v1.super_matrix();
    SuperMatrix   B= v2.super_matrix(); DEFINE_SP_POINTERS_REAL( B )
 // octave_value  B= new octave_sparse( v2.super_matrix() );
-   int n = S.ncol;
+   int n = v1.columns();
    int perm_c[n];
    int permc_spec=3;
-   octave_value_list Si= oct_sparse_inverse( S, perm_c, permc_spec );
+   octave_value_list Si= oct_sparse_inverse( v1, perm_c, permc_spec );
    octave_value inv= Si(0)*Si(1)*Si(2)*Si(3);
    const octave_value& rep = inv.get_rep ();
    SuperMatrix A = ((const octave_sparse&) rep) . super_matrix ();
    DEFINE_SP_POINTERS_REAL( A )
    SPARSE_SPARSE_MUL( double )
    return new octave_sparse ( X );
-} // f_s_ldiv 
+} // s_s_ldiv 
 
 
 // This is a wrapper around the SuperLU get_perm_c function
@@ -982,10 +993,174 @@ void install_sparse_ops() {
    INSTALL_BINOP (op_mul,      octave_sparse, octave_sparse, s_s_mul);
 }
 
+// functions for splu and inverse
+
+//
+// This routine converts from the SuperNodal Matrices
+// L,U to the Comp Col format.
+//
+// It is modified from SuperLU/MATLAB/mexsuperlu.c
+//
+// It seems to produce badly formatted U. ie the
+//   row indeces are unsorted.
+// Need to call function to fix this.
+//
+
+void
+LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
+          int *Lcol, double *Uval, int *Urow, int *Ucol, int *snnzL,
+          int *snnzU)
+{
+   DEBUGMSG("LUextract");
+   int         i, j, k;
+   int         upper;
+   int         fsupc, istart, nsupr;
+   int         lastl = 0, lastu = 0;
+   double      *SNptr;
+
+   SCformat * Lstore = (SCformat *) L->Store;
+   NCformat * Ustore = (NCformat *) U->Store;
+   Lcol[0] = 0;
+   Ucol[0] = 0;
+   
+   /* for each supernode */
+   for (k = 0; k <= Lstore->nsuper; ++k) {
+       
+       fsupc = L_FST_SUPC(k);
+       istart = L_SUB_START(fsupc);
+       nsupr = L_SUB_START(fsupc+1) - istart;
+       upper = 1;
+       
+       /* for each column in the supernode */
+       for (j = fsupc; j < L_FST_SUPC(k+1); ++j) {
+           SNptr = &((double*)Lstore->nzval)[L_NZ_START(j)];
+
+           /* Extract U */
+           for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
+               Uval[lastu] = ((double*)Ustore->nzval)[i];
+               if (Uval[lastu] != 0.0) Urow[lastu++] = U_SUB(i);
+           }
+           /* upper triangle in the supernode */
+           for (i = 0; i < upper; ++i) {
+               Uval[lastu] = SNptr[i];
+               if (Uval[lastu] != 0.0) Urow[lastu++] = L_SUB(istart+i);
+           }
+           Ucol[j+1] = lastu;
+
+           /* Extract L */
+           Lval[lastl] = 1.0; /* unit diagonal */
+           Lrow[lastl++] = L_SUB(istart + upper - 1);
+           for (i = upper; i < nsupr; ++i) {
+               Lval[lastl] = SNptr[i];
+               if (Lval[lastl] != 0.0) Lrow[lastl++] = L_SUB(istart+i);
+           }
+           Lcol[j+1] = lastl;
+
+           ++upper;
+           
+       } /* for j ... */
+       
+   } /* for k ... */
+
+   *snnzL = lastl;
+   *snnzU = lastu;
+}
+
+void
+sparse_LU_fact(SuperMatrix A,
+               SuperMatrix *LC,
+               SuperMatrix *UC,
+               int * perm_c,
+               int * perm_r, 
+               int permc_spec ) 
+{
+   DEBUGMSG("sparse_LU_fact");
+   int m = A.nrow;
+   int n = A.ncol;
+   char   refact[1] = {'N'};
+   double thresh    = 1.0;     // diagonal pivoting threshold 
+   double drop_tol  = 0.0;     // drop tolerance parameter 
+   int    info;
+   int    panel_size = sp_ienv(1);
+   int    relax      = sp_ienv(2);
+   int    etree[n];
+   SuperMatrix Ac;
+   SuperMatrix L,U;
+
+   StatInit(panel_size, relax);
+
+   oct_sparse_do_permc( permc_spec, perm_c, A);
+   // Apply column perm to A and compute etree.
+   sp_preorder(refact, &A, perm_c, etree, &Ac);
+
+   dgstrf(refact, &Ac, thresh, drop_tol, relax, panel_size, etree,
+           NULL, 0, perm_r, perm_c, &L, &U, &info);
+   if ( info < 0 )
+      SP_FATAL_ERR ("LU factorization error");
+
+   int      snnzL, snnzU;
+
+   int      nnzL = ((SCformat*)L.Store)->nnz;
+   double * Lval = (double *) malloc( nnzL * sizeof(double) );
+   int    * Lrow = (   int *) malloc( nnzL * sizeof(   int) );
+   int    * Lcol = (   int *) malloc( (n+1)* sizeof(   int) );
+
+   int      nnzU = ((NCformat*)U.Store)->nnz;
+   double * Uval = (double *) malloc( nnzU * sizeof(double) );
+   int    * Urow = (   int *) malloc( nnzU * sizeof(   int) );
+   int    * Ucol = (   int *) malloc( (n+1)* sizeof(   int) );
+
+   LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
+   // we need to use the snnz values (squeezed vs. unsqueezed)
+   dCreate_CompCol_Matrix(LC, m, n, snnzL, Lval, Lrow, Lcol, NC, _D, GE);
+   dCreate_CompCol_Matrix(UC, m, n, snnzU, Uval, Urow, Ucol, NC, _D, GE);
+
+   fix_row_order( *LC );
+   fix_row_order( *UC );
+   
+   oct_sparse_Destroy_SuperMatrix( L ) ;
+   oct_sparse_Destroy_SuperMatrix( U ) ;
+   oct_sparse_Destroy_SuperMatrix( Ac ) ;
+   StatFree();
+
+#if 0
+   printf("verify A\n");  oct_sparse_verify_supermatrix( A );
+   printf("verify LC\n"); oct_sparse_verify_supermatrix( *LC );
+   printf("verify UC\n"); oct_sparse_verify_supermatrix( *UC );
+#endif   
+
+} // sparse_LU_fact(
+
+FIX_ROW_ORDER_SORT_FUNCTIONS( double )
+
+void
+fix_row_order( SuperMatrix X )
+{
+   DEBUGMSG("fix_row_order");
+   DEFINE_SP_POINTERS_REAL( X )
+   FIX_ROW_ORDER_FUNCTIONS
+}   
+
+SuperMatrix
+sparse_inv_uppertriang( SuperMatrix U)
+{
+   DEBUGMSG("sparse_inv_uppertriang");
+   DEFINE_SP_POINTERS_REAL( U )
+   int    nnzU= NCFU->nnz;
+   SPARSE_INV_UPPERTRIANG( double )
+   return create_SuperMatrix( Unr,Unc,cx, coefX, ridxX, cidxX );
+}                   
+
 /*
  * $Log$
- * Revision 1.1  2001/10/10 19:54:49  pkienzle
- * Initial revision
+ * Revision 1.2  2001/10/12 02:24:28  aadler
+ * Mods to fix bugs
+ * add support for all zero sparse matrices
+ * add support fom complex sparse inverse
+ *
+ * Revision 1.8  2001/09/23 17:46:12  aadler
+ * updated README
+ * modified licence to GPL plus link to opensource programmes
  *
  * Revision 1.7  2001/04/04 02:13:46  aadler
  * complete complex_sparse, templates, fix memory leaks

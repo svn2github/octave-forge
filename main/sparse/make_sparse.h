@@ -19,8 +19,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
-Revision 1.1  2001/10/10 19:54:49  pkienzle
-Initial revision
+Revision 1.2  2001/10/12 02:24:28  aadler
+Mods to fix bugs
+add support for all zero sparse matrices
+add support fom complex sparse inverse
 
 Revision 1.9  2001/04/04 02:13:46  aadler
 complete complex_sparse, templates, fix memory leaks
@@ -256,6 +258,8 @@ oct_sparse_to_full ( SuperMatrix X ) ;
 
 SuperMatrix
 oct_sparse_transpose ( SuperMatrix X ) ;
+SuperMatrix
+oct_complex_sparse_transpose ( SuperMatrix X ) ;
 
 SuperMatrix
 oct_matrix_to_sparse(const Matrix & A) ;
@@ -289,7 +293,16 @@ SuperMatrix assemble_sparse( int n, int m,
                              ColumnVector& cidxA ) ;
 
 octave_value_list
-oct_sparse_inverse( SuperMatrix A,
+oct_sparse_inverse( const octave_sparse& A,
+                    int* perm_c,
+                    int permc_spec) ;
+octave_value_list
+oct_sparse_inverse( const octave_complex_sparse& Asp,
+                    int* perm_c,
+                    int permc_spec );
+
+octave_value_list
+oct_sparse_inverse( const octave_complex_sparse& A,
                     int* perm_c,
                     int permc_spec) ;
 
@@ -347,8 +360,32 @@ create_SuperMatrix( int nr, int nc, int nnz,
                     int * ridx,
                     int * cidx );
 
+void
+LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
+          int *Lcol, double *Uval, int *Urow, int *Ucol, int *snnzL,
+          int *snnzU);
+void
+LUextract(SuperMatrix *L, SuperMatrix *U, Complex *Lval, int *Lrow,
+          int *Lcol, Complex *Uval, int *Urow, int *Ucol, int *snnzL,
+          int *snnzU);
+void
+sparse_LU_fact(SuperMatrix A, SuperMatrix *LC, SuperMatrix *UC,
+               int * perm_c, int * perm_r, int permc_spec );
+void
+complex_sparse_LU_fact(SuperMatrix A, SuperMatrix *LC, SuperMatrix *UC,
+                       int * perm_c, int * perm_r, int permc_spec );
+void
+fix_row_order( SuperMatrix X );
+void
+fix_row_order_complex( SuperMatrix X );
+
 int
 complex_sparse_verify_doublecomplex_type(void);
+
+SuperMatrix
+sparse_inv_uppertriang( SuperMatrix U);
+SuperMatrix
+complex_sparse_inv_uppertriang( SuperMatrix U);
 
 
 // comparison function for sort in make_sparse
@@ -389,3 +426,12 @@ sidxl_comp(const void *i,const void*j )
 #include <dmalloc.h>
 #endif 
 
+// Build the permutation matrix
+//  remember to add 1 because assemble_sparse is 1 based
+#define BUILD_PERM_VECTORS( ridx, cidx, coef, perm, n ) \
+      ColumnVector ridx(n), cidx(n), coef(n); \
+      for (int i=0; i<n; i++) { \
+         ridx(i)= 1.0 + i; \
+         cidx(i)= 1.0 + perm[i];  \
+         coef(i)= 1.0; \
+      }

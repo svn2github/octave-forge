@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
+   
+In addition to the terms of the GPL, you are permitted to link
+this program with any Open Source program, as defined by the
+Open Source Initiative (www.opensource.org)
 
 $Id$
 
@@ -100,6 +104,12 @@ DEFUN_DLD (nnz, args, ,
         for( int j=0; j< M.cols(); j++)
            if (M(i,j)!=0) nnz++;
      retval(0)= (double) nnz;
+  } else
+  if (args(0).type_name () == "scalar") {
+     retval(0)= args(0).scalar_value() != 0.0;
+  } else
+  if (args(0).type_name () == "complex scalar") {
+     retval(0)= args(0).complex_value() != 0.0;
   } else
      gripe_wrong_type_arg ("nnz", args(0));
 
@@ -204,8 +214,14 @@ SPFIND: a sparse version of the find operator\n\
 
 /*
  * $Log$
- * Revision 1.1  2001/10/10 19:54:49  pkienzle
- * Initial revision
+ * Revision 1.2  2001/10/12 02:24:28  aadler
+ * Mods to fix bugs
+ * add support for all zero sparse matrices
+ * add support fom complex sparse inverse
+ *
+ * Revision 1.4  2001/09/23 17:46:12  aadler
+ * updated README
+ * modified licence to GPL plus link to opensource programmes
  *
  * Revision 1.3  2001/04/08 20:18:19  aadler
  * complex sparse support

@@ -2,8 +2,13 @@
 # $Id$
 #
 # $Log$
-# Revision 1.1  2001/10/10 19:54:49  pkienzle
-# Initial revision
+# Revision 1.2  2001/10/12 02:24:28  aadler
+# Mods to fix bugs
+# add support for all zero sparse matrices
+# add support fom complex sparse inverse
+#
+# Revision 1.1.1.1  2001/10/10 19:54:49  pkienzle
+# revised heirarchy
 #
 # Revision 1.7  2001/04/04 02:13:46  aadler
 # complete complex_sparse, templates, fix memory leaks
@@ -96,7 +101,7 @@ sinclude ../../Makeconf
 NAME     =   make_sparse
 OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct spinv.oct
 SUPERLU  =   SuperLU
-OCTVER   =   -2.1.32
+OCTVER   =  # -2.1.32
 OCTAVE   =   octave$(OCTVER)
 ifndef MKOCTFILE
 MKOCTFILE=   mkoctfile$(OCTVER)

@@ -14,14 +14,20 @@ INSTRUCTIONS
   d sp_test.m
   e fem_test.m
   f superlu2.0patch.diff
+
+0a. Make sure that your version of octave is compiled
+    with:
+    ./configure --enable-dl --enable-shared
   
-0a. This is tested to work with octave-2.1.32
+0b. This is tested to work with octave-2.1.34
     It works with >2.1.30 if you apply the mkoctfile patch
     at www.octave.org/mailing-lists/octave-maintainers/2000/175
 
-0b. If you already have a SuperLU subdirectory with
+0c. If you already have a SuperLU subdirectory with
     SuperLU/SRC and SuperLU/CBLAS then ignore 
     steps 1-3
+    (You will have SuperLU if you downloaded this from
+     sourceforge.net)
 
 1. Download SuperLU from one of the following sites
                          http://www.netlib.org/scalapack/prototype
@@ -39,6 +45,17 @@ INSTRUCTIONS
           NOTE: do not run the SuperLU makefiles - 
                it doesn't build the right objects into the library
 
+5. Installation:
+   Copy 1) make_sparse.oct and 2) the links to make_sparse.oct
+   into any directory in your LOADPATH
+         full.oct -> make_sparse.oct
+         nnz.oct -> make_sparse.oct
+         sparse.oct -> make_sparse.oct
+         spfind.oct -> make_sparse.oct
+         spinv.oct -> make_sparse.oct
+         splu.oct -> make_sparse.oct
+
+
 This makefile assumes that the SuperLU package has been unpacked
  in this directory. It compiles files directly from their locations
  in the SuperLU source. You do not need to use SuperLU makefiles.
@@ -49,7 +66,7 @@ SuperLU is available from http://www.netlib.org/scalapack/prototype
 
 AUTHOR:  Andy Adler <en254@ncf.ca>
 
-COPYRIGHT:
+COPYRIGHT: GPL + opensource linking
 Copyright (C) 1998-00 Andy Adler
 
    This program is free software; you can redistribute it and/or
@@ -63,6 +80,10 @@ GNU General Public License for more details.
    You should have received a copy of the GNU General Public
 License along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+   In addition to the terms of the GPL, you are permitted to link
+this program with any Open Source program, as defined by the
+Open Source Initiative (www.opensource.org)
 
 
 SUPERLU COPYRIGHT:
@@ -130,13 +151,7 @@ MISSING FEATURES (TODO FILE)
 
 KNOWN AND PREDICTED BUGS AND FEATURES:
 
-1.  It probably leaks memory. I'll try to test this more carefully
-    after I stop adding features.
-
-2.  It does not support empty matrices properly.
-    It does not support completely sparse (all zero) matricies either.
-
-3.  The attempt here is to provide compatability to the main MATLAB
+1.  The attempt here is to provide compatability to the main MATLAB
     sparse matrix entry points. The SuperLU provides slightly different
     fuctionality to MATLAB, and, therefore this toolkit provides
     different features.
@@ -147,51 +162,54 @@ KNOWN AND PREDICTED BUGS AND FEATURES:
     Additionally, I don't intend to provide replacements for the
     MATLAB sparse functions I consider frills. eg sprand.m, treeplot.m
 
-4.  SuperLU uses the int data type as indices. Since ints are normally
+2.  SuperLU uses the int data type as indices. Since ints are normally
     4 bytes (at least on i386 machines), this is not a great problem.
     There may be still a few places where an int is used to refer
     to i+j*m, which means that sparse operations on matrices where
     m*n > maxint/2 may be buggy. I've tried to fix this, but there
     may be some left.  Email me if you find any.
 
-5.  Sparse solve is a little faster than the MATLAB equivalent, except
+3.  Sparse solve is a little faster than the MATLAB equivalent, except
     it seems not to choose the factoring as well. Using a perm_c spec of
     2 for symetric matrices will get speed improvements of ~ 1.5.
     (For the FEM problems I use it for)
 
 TODO:
 
-add complex test cases 
+add complex test cases - done
 
-add tests for failures (matrix size mismatch)
+add tests for failures (matrix size mismatch) - done
 
-go though sparse_ops.h and support all zero matrices
+go though sparse_ops.h and support all zero matrices - done
 
-test code for all zero and empty matrices
+test code for all zero and empty matrices - all zero done
+
+complex sparse select operations
 
 more efficient code for sparse \ sparse
   - fix casting spagetti
 
-support sparse \ sparse for complex
+support sparse \ sparse for complex - done
 
 move code to c++ operators - so we can use sparse from liboctave
 
-fix error for sparse(1)\1
-   DEBUG:sparse - matrix_to_sparse
-   DEBUG:sparse( SuperMatrix A)
-   DEBUG:sparse - numeric_conversion_function
-   DEBUG:sparse - default_numeric_conversion_function
-   DEBUG:sparse - matrix_value
-   DEBUG:sparse - sparse_to_full
-   error: operator \: nonconformant arguments (op1 is 1x1, op2 is 1x1)
-
-   #include <octave/oct.h>
-   defun_dld (jnk, args, , "jnk" ) {
-     matrix x(1,1); x(0,0)= 1; octave_value o1(x);
-     octave_value o2(2.0);
-     octave_value_list retval; retval(0)= o1/(o2);
-     return retval;
-   }
+>fix error for sparse(1)\1
+>   DEBUG:sparse - matrix_to_sparse
+>   DEBUG:sparse( SuperMatrix A)
+>   DEBUG:sparse - numeric_conversion_function
+>   DEBUG:sparse - default_numeric_conversion_function
+>   DEBUG:sparse - matrix_value
+>   DEBUG:sparse - sparse_to_full
+>   error: operator \: nonconformant arguments (op1 is 1x1, op2 is 1x1)
+>
+>   #include <octave/oct.h>
+>   defun_dld (jnk, args, , "jnk" ) {
+>     matrix x(1,1); x(0,0)= 1; octave_value o1(x);
+>     octave_value o2(2.0);
+>     octave_value_list retval; retval(0)= o1/(o2);
+>     return retval;
+>   }
+--> fixed in octave-2.1.34
 
 complex sparse constructor will create real sparse if matrix
 is actually real
@@ -199,4 +217,6 @@ is actually real
 make debug constructor which sanity checks matrices
  - option which checks if no nonzero elems isist
 
-complex sparse functions for splu - spinv 
+complex sparse functions for splu - spinv  - done
+
+sp_inverse_uppertriang segfaults for spinv(sparse(ones(3))). It should warn

@@ -19,6 +19,11 @@ along with Octave; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
+In addition to the terms of the GPL, you are permitted to link
+this program with any Open Source program, as defined by the
+Open Source Initiative (www.opensource.org)
+
+
 $Id$
 
 */
@@ -939,44 +944,81 @@ DEFBINOP( cs_s_mul, complex_sparse, sparse)
    return new octave_complex_sparse ( X );
 }
 
-#if 0
-
-// TODO: This isn't an efficient solution
-//  to take the inverse and multiply,
-//  on the other hand, I can rarely see this being
-//  a useful thing to do anyway
-DEFBINOP( f_s_ldiv, matrix, sparse) {
-   DEBUGMSG("complex_sparse - f_s_ldiv");
+DEFBINOP( f_cs_ldiv, matrix, complex_sparse) {
+   DEBUGMSG("complex_sparse - f_cs_ldiv");
    CAST_BINOP_ARGS ( const octave_matrix&, const octave_complex_sparse&);
-   const Matrix  A= v1.matrix_value();
-   SuperMatrix   B= v2.super_matrix();
-   return f_s_multiply(A.inverse() , B);
-} // f_s_ldiv 
+   const Matrix A= v1.matrix_value().inverse(); int Anr= A.rows(); int Anc= A.cols();
+   SuperMatrix  B= v2.super_matrix(); DEFINE_SP_POINTERS_CPLX( B )
+   MATRIX_SPARSE_MUL( ComplexMatrix, Complex )
+   return X;
+} // f_cs_ldiv 
 
-// sparse \ sparse solve
-//
-// Note: there are more efficient implemetations,
-//       but this works 
-//
-// There is a wierd problem here,
-// it should be possible to multiply s=r*v2;
-// but that doesn't work
-//
-DEFBINOP( s_s_ldiv, sparse, sparse) {
-   DEBUGMSG("complex_sparse - s_s_ldiv");
-   CAST_BINOP_ARGS ( const octave_complex_sparse&, const octave_complex_sparse&);
-   SuperMatrix   A= v1.super_matrix();
-   octave_value  B= new octave_complex_sparse( v2.super_matrix() );
-   int n = A.ncol;
+DEFBINOP( cf_cs_ldiv, complex_matrix, complex_sparse) {
+   DEBUGMSG("complex_sparse - cf_cs_ldiv");
+   CAST_BINOP_ARGS ( const octave_complex_matrix&, const octave_complex_sparse&);
+   const ComplexMatrix A= v1.complex_matrix_value().inverse(); int Anr= A.rows(); int Anc= A.cols();
+   SuperMatrix  B= v2.super_matrix(); DEFINE_SP_POINTERS_CPLX( B )
+   MATRIX_SPARSE_MUL( ComplexMatrix, Complex )
+   return X;
+} // cf_cs_ldiv 
+
+DEFBINOP( cf_s_ldiv, complex_matrix, sparse) {
+   DEBUGMSG("complex_sparse - cf_s_ldiv");
+   CAST_BINOP_ARGS ( const octave_complex_matrix&, const octave_sparse&);
+   const ComplexMatrix A= v1.complex_matrix_value().inverse(); int Anr= A.rows(); int Anc= A.cols();
+   SuperMatrix  B= v2.super_matrix(); DEFINE_SP_POINTERS_REAL( B )
+   MATRIX_SPARSE_MUL( ComplexMatrix, double )
+   return X;
+} // cf_s_ldiv 
+
+
+DEFBINOP( s_cs_ldiv, sparse, complex_sparse) {
+   DEBUGMSG("sparse - s_cs_ldiv");
+   CAST_BINOP_ARGS ( const octave_sparse&, const octave_complex_sparse&);
+   int n = v1.columns();
    int perm_c[n];
    int permc_spec=3;
-   octave_value_list Ai= oct_sparse_inverse( A, perm_c, permc_spec );
-   octave_value retval= Ai(0)*Ai(1)*Ai(2)*Ai(3) * B;
-   
-   return retval;
-} // f_s_ldiv 
+   octave_value_list Si= oct_sparse_inverse( v1, perm_c, permc_spec );
+   octave_value inv= Si(0)*Si(1)*Si(2)*Si(3);
+   const octave_value& rep = inv.get_rep ();
+   SuperMatrix A = ((const octave_sparse&) rep) . super_matrix ();
+   DEFINE_SP_POINTERS_REAL( A )
+   SuperMatrix B = v2.super_matrix(); DEFINE_SP_POINTERS_CPLX( B )
+   SPARSE_SPARSE_MUL( Complex )
+   return new octave_complex_sparse ( X );
+} // s_cs_ldiv 
 
-#endif
+DEFBINOP( cs_s_ldiv, complex_sparse, sparse) {
+   DEBUGMSG("sparse - cs_s_ldiv");
+   CAST_BINOP_ARGS ( const octave_complex_sparse&, const octave_sparse&);
+   SuperMatrix   B= v2.super_matrix(); DEFINE_SP_POINTERS_REAL( B )
+   int n = v1.columns();
+   int perm_c[n];
+   int permc_spec=3;
+   octave_value_list Si= oct_sparse_inverse( v1, perm_c, permc_spec );
+   octave_value inv= Si(0)*Si(1)*Si(2)*Si(3);
+   const octave_value& rep = inv.get_rep ();
+   SuperMatrix A = ((const octave_complex_sparse&) rep) . super_matrix ();
+   DEFINE_SP_POINTERS_CPLX( A )
+   SPARSE_SPARSE_MUL( Complex )
+   return new octave_complex_sparse ( X );
+} // s_s_ldiv 
+
+DEFBINOP( cs_cs_ldiv, complex_sparse, complex_sparse) {
+   DEBUGMSG("sparse - cs_cs_ldiv");
+   CAST_BINOP_ARGS ( const octave_complex_sparse&, const octave_complex_sparse&);
+   SuperMatrix   B= v2.super_matrix(); DEFINE_SP_POINTERS_CPLX( B )
+   int n = v1.columns();
+   int perm_c[n];
+   int permc_spec=3;
+   octave_value_list Si= oct_sparse_inverse( v1, perm_c, permc_spec );
+   octave_value inv= Si(0)*Si(1)*Si(2)*Si(3);
+   const octave_value& rep = inv.get_rep ();
+   SuperMatrix A = ((const octave_complex_sparse&) rep) . super_matrix ();
+   DEFINE_SP_POINTERS_CPLX( A )
+   SPARSE_SPARSE_MUL( Complex )
+   return new octave_complex_sparse ( X );
+} // cs_cs_ldiv 
 
 // 
 // Sparse \ Full solve
@@ -1087,10 +1129,15 @@ void install_complex_sparse_ops() {
    //
    INSTALL_BINOP (op_ldiv,     octave_complex_sparse, octave_complex_matrix, cs_cf_ldiv);
    INSTALL_BINOP (op_ldiv,     octave_complex_sparse, octave_matrix,         cs_f_ldiv);
-#if 0   
-   INSTALL_BINOP (op_ldiv,     octave_matrix, octave_complex_sparse, f_s_ldiv);
-   INSTALL_BINOP (op_ldiv,     octave_complex_sparse, octave_complex_sparse, s_s_ldiv);
-#endif   
+
+   INSTALL_BINOP (op_ldiv,     octave_matrix,         octave_complex_sparse, f_cs_ldiv);
+   INSTALL_BINOP (op_ldiv,     octave_complex_matrix, octave_complex_sparse, cf_cs_ldiv);
+   INSTALL_BINOP (op_ldiv,     octave_complex_matrix, octave_sparse        , cf_s_ldiv);
+
+   INSTALL_BINOP (op_ldiv,     octave_complex_sparse, octave_complex_sparse, cs_cs_ldiv);
+   INSTALL_BINOP (op_ldiv,     octave_sparse,         octave_complex_sparse, s_cs_ldiv);
+   INSTALL_BINOP (op_ldiv,     octave_complex_sparse, octave_sparse,         cs_s_ldiv);
+
    INSTALL_BINOP (op_ne,       octave_complex_sparse, octave_complex_sparse, cs_cs_ne);
    INSTALL_BINOP (op_ne,       octave_complex_sparse, octave_sparse,         cs_s_ne);
    INSTALL_BINOP (op_ne,       octave_sparse,         octave_complex_sparse, s_cs_ne);
@@ -1128,10 +1175,175 @@ void install_complex_sparse_ops() {
    INSTALL_BINOP (op_mul,      octave_sparse,         octave_complex_sparse, s_cs_mul);
 }
 
+// functions for splu and inverse
+
+//
+// This routine converts from the SuperNodal Matrices
+// L,U to the Comp Col format.
+//
+// It is modified from SuperLU/MATLAB/mexsuperlu.c
+//
+// It seems to produce badly formatted U. ie the
+//   row indeces are unsorted.
+// Need to call function to fix this.
+//
+
+void
+LUextract(SuperMatrix *L, SuperMatrix *U, Complex *Lval, int *Lrow,
+          int *Lcol, Complex *Uval, int *Urow, int *Ucol, int *snnzL,
+          int *snnzU)
+{
+   DEBUGMSG("LUextract-complex");
+   int         i, j, k;
+   int         upper;
+   int         fsupc, istart, nsupr;
+   int         lastl = 0, lastu = 0;
+   Complex     *SNptr;
+
+   SCformat * Lstore = (SCformat *) L->Store;
+   NCformat * Ustore = (NCformat *) U->Store;
+   Lcol[0] = 0;
+   Ucol[0] = 0;
+   
+   /* for each supernode */
+   for (k = 0; k <= Lstore->nsuper; ++k) {
+       
+       fsupc = L_FST_SUPC(k);
+       istart = L_SUB_START(fsupc);
+       nsupr = L_SUB_START(fsupc+1) - istart;
+       upper = 1;
+       
+       /* for each column in the supernode */
+       for (j = fsupc; j < L_FST_SUPC(k+1); ++j) {
+           SNptr = &((Complex*)Lstore->nzval)[L_NZ_START(j)];
+
+           /* Extract U */
+           for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
+               Uval[lastu] = ((Complex*)Ustore->nzval)[i];
+               if (Uval[lastu] != 0.0) Urow[lastu++] = U_SUB(i);
+           }
+           /* upper triangle in the supernode */
+           for (i = 0; i < upper; ++i) {
+               Uval[lastu] = SNptr[i];
+               if (Uval[lastu] != 0.0) Urow[lastu++] = L_SUB(istart+i);
+           }
+           Ucol[j+1] = lastu;
+
+           /* Extract L */
+           Lval[lastl] = 1.0; /* unit diagonal */
+           Lrow[lastl++] = L_SUB(istart + upper - 1);
+           for (i = upper; i < nsupr; ++i) {
+               Lval[lastl] = SNptr[i];
+                /* Matlab doesn't like explicit zero. */
+               if (Lval[lastl] != 0.0) Lrow[lastl++] = L_SUB(istart+i);
+           }
+           Lcol[j+1] = lastl;
+
+           ++upper;
+           
+       } /* for j ... */
+       
+   } /* for k ... */
+
+   *snnzL = lastl;
+   *snnzU = lastu;
+}
+
+void
+complex_sparse_LU_fact(SuperMatrix A,
+                       SuperMatrix *LC,
+                       SuperMatrix *UC,
+                       int * perm_c,
+                       int * perm_r, 
+                       int permc_spec ) 
+{
+   DEBUGMSG("complex_sparse_LU_fact");
+   int m = A.nrow;
+   int n = A.ncol;
+   char   refact[1] = {'N'};
+   double thresh    = 1.0;     // diagonal pivoting threshold 
+   double drop_tol  = 0.0;     // drop tolerance parameter 
+   int    info;
+   int    panel_size = sp_ienv(1);
+   int    relax      = sp_ienv(2);
+   int    etree[n];
+   SuperMatrix Ac;
+   SuperMatrix L,U;
+
+   StatInit(panel_size, relax);
+
+   oct_sparse_do_permc( permc_spec, perm_c, A);
+   // Apply column perm to A and compute etree.
+   sp_preorder(refact, &A, perm_c, etree, &Ac);
+
+   zgstrf(refact, &Ac, thresh, drop_tol, relax, panel_size, etree,
+           NULL, 0, perm_r, perm_c, &L, &U, &info);
+   if ( info < 0 )
+      SP_FATAL_ERR ("LU factorization error");
+
+   int      snnzL, snnzU;
+
+   int       nnzL = ((SCformat*)L.Store)->nnz;
+   Complex * Lval = (Complex *) malloc( nnzL * sizeof(Complex) );
+   int     * Lrow = (    int *) malloc( nnzL * sizeof(    int) );
+   int     * Lcol = (    int *) malloc( (n+1)* sizeof(    int) );
+
+   int       nnzU = ((NCformat*)U.Store)->nnz;
+   Complex * Uval = (Complex *) malloc( nnzU * sizeof(Complex) );
+   int     * Urow = (    int *) malloc( nnzU * sizeof(    int) );
+   int     * Ucol = (    int *) malloc( (n+1)* sizeof(    int) );
+
+   LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
+   // we need to use the snnz values (squeezed vs. unsqueezed)
+   zCreate_CompCol_Matrix(LC, m, n, snnzL, (doublecomplex*) Lval, Lrow, Lcol, NC, _Z, GE);
+   zCreate_CompCol_Matrix(UC, m, n, snnzU, (doublecomplex*) Uval, Urow, Ucol, NC, _Z, GE);
+
+   fix_row_order_complex( *LC );
+   fix_row_order_complex( *UC );
+   
+   oct_sparse_Destroy_SuperMatrix( L ) ;
+   oct_sparse_Destroy_SuperMatrix( U ) ;
+   oct_sparse_Destroy_SuperMatrix( Ac ) ;
+   StatFree();
+
+#if 0
+   printf("verify A\n");  oct_sparse_verify_supermatrix( A );
+   printf("verify LC\n"); oct_sparse_verify_supermatrix( *LC );
+   printf("verify UC\n"); oct_sparse_verify_supermatrix( *UC );
+#endif   
+
+} // complex_sparse_LU_fact(
+
+FIX_ROW_ORDER_SORT_FUNCTIONS( Complex )
+
+void
+fix_row_order_complex( SuperMatrix X )
+{
+   DEBUGMSG("fix_row_order_complex");
+   DEFINE_SP_POINTERS_CPLX( X )
+   FIX_ROW_ORDER_FUNCTIONS
+}   
+
+SuperMatrix
+complex_sparse_inv_uppertriang( SuperMatrix U)
+{
+   DEBUGMSG("sparse_inv_uppertriang");
+   DEFINE_SP_POINTERS_CPLX( U )
+   int    nnzU= NCFU->nnz;
+   SPARSE_INV_UPPERTRIANG( Complex )
+   return create_SuperMatrix( Unr,Unc,cx, coefX, ridxX, cidxX );
+}                   
+
 /*
  * $Log$
- * Revision 1.1  2001/10/10 19:54:49  pkienzle
- * Initial revision
+ * Revision 1.2  2001/10/12 02:24:28  aadler
+ * Mods to fix bugs
+ * add support for all zero sparse matrices
+ * add support fom complex sparse inverse
+ *
+ * Revision 1.7  2001/09/23 17:46:12  aadler
+ * updated README
+ * modified licence to GPL plus link to opensource programmes
  *
  * Revision 1.6  2001/04/04 02:13:46  aadler
  * complete complex_sparse, templates, fix memory leaks

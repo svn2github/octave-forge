@@ -20,9 +20,14 @@ SUBDIRS = doc
 
 TARGETS = $(GALOISTARGET) $(GALOISLINKTARGETS) $(OTHERTARGETS)
 OBJECTS = $(GALOISOBJECTS) $(OTHEROBJECTS)
+ifeq ($(MAKECMDGOALS),all)
 DEPENDS = $(GALOISDEPENDS) $(OTHERDEPENDS)
+endif
+ifeq ($(MAKECMDGOALS)),)
+DEPENDS = $(GALOISDEPENDS) $(OTHERDEPENDS)
+endif
 
-DELETES = $(OBJECTS) $(DEPENDS) *~ $(TARGETS) core octave-core
+DELETES = $(OBJECTS) $(GALOISDEPENDS) $(OTHERDPENDS) *~ $(TARGETS) core octave-core
 
 DEFINES = -DGALOIS_DISP_PRIVATES $(HAVE_DO_FORTRAN_INDEXING) $(HAVE_PROPAGATE_EMPTY_MATRICES) $(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) $(CLASS_HAS_LOAD_SAVE)
 MOFLAGS =
@@ -30,12 +35,12 @@ MOFLAGS =
 .PHONY: all clean count $(SUBDIRS)
 .SUFFIXES:
 
-all : $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(SUBDIRS)
+all : $(DEPENDS) $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(SUBDIRS)
 
 install : $(SUBDIRS)
 	@$(INSTALL) -d $(MPATH)/comm
 
-$(GALOISTARGET) : $(GALOISDEPENDS) $(GALOISOBJECTS) 
+$(GALOISTARGET) : $(DEPENDS) $(GALOISOBJECTS) 
 	@echo "Linking $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(GALOISOBJECTS) -o $@
 
@@ -43,10 +48,8 @@ $(GALOISLINKTARGETS) :
 	@echo "Symbolic linking $@"; $(RM) $@ ; \
 	$(LN_S) $(GALOISTARGET) $@
 
-ifneq (clean,$(MAKECMDGOALS))
-  ifneq (,$(wildcard *.d))
-    include $(wildcard *.d)
-  endif
+ifneq (,$(wildcard *.d))
+  include $(wildcard *.d)
 endif
 
 $(SUBDIRS) :
@@ -68,10 +71,10 @@ $(SUBDIRS) :
 	echo "Compiling $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 
-clean:
+clean: $(SUBDIRS)
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
-count:
+count: $(SUBDIRS)
 	wc *{.cc,.h,.m,.txi}
 

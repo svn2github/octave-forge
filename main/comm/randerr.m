@@ -28,7 +28,7 @@
 ## default the return matrix @var{b} has exactly one bit error per row.
 ## If @var{err} is a scalar, there each row of @var{b} has exactly this
 ## number of errors per row. If @var{err} is a vector then each row has
-## a number of errors that is in this vector. Each number of erros has    
+## a number of errors that is in this vector. Each number of errors has    
 ## an equal probability. If @var{err} is a matrix with two rows, then 
 ## the first row determines the number of errors and the second their
 ## probabilities.
@@ -85,13 +85,31 @@ function b = randerr (n, m, err, seed)
   for i=1:n
     if (nerrs(i) > 0)
       if (nerrs(i) == 1)
-        indx = sort(randint(1,nerrs(i),m));
+        indx = sort(randint(1,nerrs(i),m,seed));
       else
         do
-          indx = sort(randint(1,nerrs(i),m));
+          indx = sort(randint(1,nerrs(i),m,seed));
         until (! any(indx(1:nerrs(i)-1) == indx(2:nerrs(i))))
       endif
       b(i,indx+1) = ones(1,nerrs(i)); 
     endif
   end
 endfunction
+
+
+%!shared n, err1, err2, seed, a1, a2, a3, a4, a5, a6
+%!    n = 10; err1 = 2; err2 = [1,2;0.7,0.3] ; seed = 1; 
+%!    a1 = randerr(n); a2 = randerr(n,n);
+%!    a3 = randerr(n,n,err1); a4 = randerr(n,n,err2); 
+%!    a5 = randerr(n,n,err1,seed); a6 = randerr(n,n,err1,seed);
+
+%!error randerr (n,n,n,n,n);
+%!assert (size(a1) == [n, n] && size(a2) == [n, n]);
+%!assert (all (sum (a1.') == 1) && all (sum (a2.') == 1))
+%!assert (all((a1(:) == 1 | a1(:) == 0)) &&all((a2(:) == 1 | a2(:) == 0)))
+%!assert (size(a3) == [n, n] && size(a4) == [n, n]);
+%!assert (all (sum (a3.') == err1))
+%!assert (all((a3(:) == 1 | a3(:) == 0)))
+%!assert (all ((sum (a4.') == err2(1,1)) | (sum (a4.') == err2(1,2))))
+%!assert (all((a4(:) == 1 | a4(:) == 0)))
+%!assert (a5(:) == a6(:));

@@ -75,3 +75,17 @@ function b = randint (n, m, range, seed)
   endif
 
 endfunction
+
+%!shared n, m, seed, a1, a2, a3, a4, a5, a6
+%!    n = 10; m = 32; seed = 1; a1 = randint(n); a2 = randint(n,n); 
+%!    a3 = randint(n,n,m); a4 = randint(n,n,[-m,m]); 
+%!    a5 = randint(n,n,m, seed); a6 = randint(n,n,m, seed);
+
+%!error randint ();
+%!error randint (n,n,n,n,n);
+%!assert (size(a1) == [n, n] && size(a2) == [n, n]);
+%!assert (max ([a1(:); a2(:)]) <= 1 && min([a1(:); a2(:)]) >= 0);
+%!assert (size(a3) == [n, n] && size(a4) == [n, n]);
+%!assert (max (a3(:)) <= m && min(a3(:)) >= 0);
+%!assert (max (a4(:)) <= m && min(a4(:)) >= -m);
+%!assert (a5(:) == a6(:));

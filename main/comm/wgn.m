@@ -131,3 +131,14 @@ function y = wgn (m, n, p, varargin)
   endif
   
 endfunction
+
+## Allow 30% error in standard deviation, due to randomness
+%!error wgn ();
+%!error wgn (1);
+%!error wgn (1,1);
+%!error wgn (1,1,1,1,1,1);
+%!assert (isreal(wgn(10,10,30,1,"dBm","real")));
+%!assert (iscomplex(wgn(10,10,30,1,"dBm","complex")));
+%!assert (abs(std(wgn(10000,1,30,1,"dBm")) - 1) < 0.3);
+%!assert (abs(std(wgn(10000,1,0,1,"dBW")) - 1) < 0.3);
+%!assert (abs(std(wgn(10000,1,1,1,"linear")) - 1) < 0.3);

@@ -104,3 +104,18 @@ function b = randsrc (n, m, alphabet, seed)
   endif
 
 endfunction
+
+%!shared n, alph1, alph2, seed, a1, a2, a3, a4, a5, a6
+%!    n = 10; alph1 = [0,1;0.3,0.7]; alph2 = ['a','b']; seed = 1; 
+%!    a1 = randsrc(n); a2 = randsrc(n,n);
+%!    a3 = randsrc(n,n,alph1); a4 = randsrc(n,n,alph2); 
+%!    a5 = randsrc(n,n,alph1,seed); a6 = randsrc(n,n,alph1,seed);
+
+%!error randsrc (n,n,n,n,n);
+%!assert (size(a1) == [n, n] && size(a2) == [n, n]);
+%!assert (max ([a1(:); a2(:)]) <= 1 && min([a1(:); a2(:)]) >= -1);
+%!assert (size(a3) == [n, n] && size(a4) == [n, n]);
+%!assert (max (a3(:)) <= 1 && min(a3(:)) >= 0);
+%!assert (max(toascii(a4(:))) <= toascii('b'))
+%!assert (max(toascii(a4(:))) >= toascii('a'))
+%!assert (a5(:) == a6(:));

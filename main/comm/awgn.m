@@ -133,3 +133,16 @@ function y = awgn (x, snr, varargin)
   y = x + wgn (m, n, np, 1, seed, type, out);
   
 endfunction
+
+%!shared x, y, noisy
+%!       x = [0:0.01:2*pi]; y = sin (x);
+%!       noisy = awgn (y, 20, "dB", "measured");
+
+## Test of noisy is pretty arbitrary, but should pickup most errors
+%!error awgn ();
+%!error awgn (1);
+%!error awgn (1,1,1,1,1);
+%!assert (isreal(noisy));
+%!assert (iscomplex(awgn(y+1i,20,"dB","measured")));
+%!assert (size(y) == size(noisy))
+%!assert (abs(10*log10(mean(y.^2)/mean((y-noisy).^ 2)) - 20) < 1);

@@ -315,7 +315,7 @@ Constants
 Symbol table
  exist
  exist(x,"var")=requires exist patch from $EG
- global 
+ global = keyword: declare global variables in the current scope.
  isglobal
  persistent = use <code>static</code> 
  mfilename 

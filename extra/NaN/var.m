@@ -35,8 +35,8 @@ function y=var(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.15
-%	12 Mar 2002
+%	Version 1.16
+%	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -47,15 +47,6 @@ if nargin==1,
 elseif nargin==2,
         if ~isnumeric(DIM),
                 DIM=[];
-        else
-                if ~exist('OCTAVE_VERSION'), 
-                if ver(1)>='5', 
-                        fprintf(2,'Warning NaN/VAR: VAR(...,arg2) is ambiguous.\n');
-                        fprintf(2,'If you want to normalize by N, use MEANSQ\n');
-                        fprintf(2,'If you want to weight you data, use VAR(w.*X/sum(w))\n');
-                        fprintf(2,'See HELP VAR for more information.\n');
-        	end;
-		end;
         end
 else
         fprintf(2,'Error VAR: invalid number of arguments\n usage: v=var(x [,DIM] [,opt])\n');

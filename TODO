@@ -17,16 +17,12 @@ piece-wise construct a manual describing the available functions and
 the relationships between them.  Alternatively, each package could have
 an index.html which is installed in /usr/share/doc/octave-forge/package.html
 
-* Include interfaces for symbolic and geometry toolboxes in
-the tree, but don't include the supporting libraries.  Have make check
-for the required libraries prior to trying to build each interface.
-Consider using autoconf/automake.
-
 * Use ../../Makeconf for engine functions.  Engine functions are not
 installed; figure out how and where to install them (presumably as
 a shared library in /usr/local/lib).
 
-* extra/ver20 is not presently installed.
+* extra/ver20 is not presently installed, but it could be if we detected
+an octave version of 2.0.x rather than 2.1.x
 
 * nonfree/gpc uses its own configure script and build process
 

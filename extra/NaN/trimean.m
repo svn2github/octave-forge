@@ -25,7 +25,7 @@ if nargin==1,
         if isempty(DIM), DIM=1; end;
 end;
 
-N = sum(~isnan(Y),DIM);
+N = sumskipnan(~isnan(Y),DIM);
 
 sz = size(Y);
 sz(DIM) = 1;

@@ -228,7 +228,7 @@ SUCH DAMAGE.\
 	      revs ];
     otherwise
       head = "";
-      tail = [ copyright, "\n\n", FUNCTION_COPYRIGHT, "\n", ...
+      tail = [ copyright, "\n\n", FUNCTION_LICENSE, "\n", ...
 	      author, "\n\n", revs ];
   endswitch
     

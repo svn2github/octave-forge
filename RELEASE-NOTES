@@ -8,7 +8,52 @@ http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/ma
 
 xxxx-xx-xx for Octave 2.1.36 and up ==========================================
 
-* Regain support for octave 2.1.36 and up.
+* Support for octave 2.1.36-2.1.48.
+
+* Communications: 
+  - sqrt over Galois field
+  - BCH code, modulator
+  - bug fixes and documentation improvements
+
+* Image:
+  - add rotate_scale() 
+
+* Optimization:
+  - add Nick Higham's adsmax, mdsmax nmsmax for fmins
+  - lp() fix range error
+
+* Plotting:
+  - surf()/surfc() support gnuplot 3.8i shaded surfaces
+  - add peaks()
+  - legend() inside/ouside/boxon/boxoff/right/left
+
+* Signal Processing 
+  - return statespace and laplacian IIR filters (butter, cheby1, cheby2, ellip)
+  - fix aryule
+
+* Statistics: 
+  - add normplot()
+  - scatter() optimization
+
+* Symbolic: 
+  - added poly2sym, sym2poly, numden, findsymbols, findsym, symlsolve, 
+    symfsolve, syminfo
+  - subs() accepts cell arrays
+
+* TSA/NaN:
+  - many bug fixes and documentation improvements
+  - quantiles -> Quantile
+
+* Miscellaneous:
+  - add cellstr()
+  - fieldnames() now returns cell array
+  - listen() bugfixes
+  - ellipke() supports m < 0
+  - extend deal() to handle [a,b] = deal(b,a)
+  - dlmread() converted to C++ for speed and more flexible input
+
+* administration: 
+  - target specific build instructions (MacOSX, windows, Irix)
 
 2003-02-22 for Octave 2.1.45 =================================================
 

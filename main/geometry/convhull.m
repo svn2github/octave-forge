@@ -16,20 +16,35 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Loadable Function} {@var{H} =} convhull (@var{x}, @var{y})
-## returns the index vector to the points of the enclosing convex hull
+## @deftypefnx {Loadable Function} {@var{H} =} convhull (@var{x}, @var{y}, @var{opt})
+## Returns the index vector to the points of the enclosing convex hull.  The
+## data points are defined by the x and y vectors.
+##
+## A third optional argument, which must be a string, contains extra options
+## passed to the underlying qhull command.  See the documentation for the 
+## Qhull library for details.
+##
 ## @end deftypefn
 ## @seealso{delaunay, convhulln}
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
-function H = convhull (x,y)
+function H = convhull (x,y,opt)
 
-  if (nargin != 2)
-    usage ("convhull(x,y)");
+  if ((nargin != 2) && (nargin != 3))
+    usage ("convhull(x,y[,opt])");
   endif
 
   if (is_vector(x) && is_vector(y) && (length(x) == length(y)) )
-    i = convhulln([x(:), y(:)]);
+    if (nargin == 2)
+      i = convhulln([x(:), y(:)]);
+    elseif isstr(opt)
+      i = convhulln([x(:), y(:)], opt);
+    else
+      error("third argument must be a string");
+    endif
+  else
+    error("first two input arguments must be vectors of same size");
   endif
 
   n = rows(i);

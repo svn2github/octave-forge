@@ -31,22 +31,36 @@ extern "C" {
 
 char qh_version[] = "convhulln.oct 08. August 2000";
 char flags[250];
+const char *options;
 
 DEFUN_DLD (convhulln, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{H} =} convhulln (@var{p})\n\
+@deftypefn {Loadable Function} {@var{H} =} convhulln (@var{p}[, @var{opt}])\n\
 Returns an index vector to the points of the enclosing convex hull.\n\
-The input matrix of size [dim, n] contains n points of dimension dim.\n\
+The input matrix of size [n, dim] contains n points of dimension dim.\n\n\
+If a second optional argument is given, it must be a string containing\n\
+extra options for the underlying qhull command.  (See the Qhull\n\
+documentation for the available options.)\n\n\
 @seealso{convhull, delaunayn}\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   int nargin = args.length();
-  if (nargin != 1) {
-    print_usage ("convhulln(p)");
+  if (nargin < 1 || nargin > 2) {
+    print_usage ("convhulln(p,[opt])");
     return retval;
   }
+  
+  if (nargin == 2) {
+    if ( ! args (1).is_string () ) {
+      error ("convhulln: second argument must be a string");
+      return retval;
+    }
+    options = args (1).string_value().c_str();
+  }
+  else
+    options = "";
   
   Matrix p(args(0).matrix_value());
   
@@ -59,8 +73,8 @@ The input matrix of size [dim, n] contains n points of dimension dim.\n\
   boolT ismalloc = False;
 
   // hmm  lot's of options for qhull here
-  sprintf(flags,"qhull s Qt Tcv");
-  
+  sprintf(flags,"qhull s Qt Tcv %s",options);
+
   if (!qh_new_qhull (dim,n,pt_array,ismalloc,flags,NULL,stderr)) {
     
     // If you want some debugging information replace the NULL

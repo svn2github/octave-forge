@@ -1,4 +1,1334 @@
 # Automatically generated file --- DO NOT EDIT
+2002-11-30 09:00  pkienzle
+
+	* release.sh: updated instructions 
+
+2002-11-30 08:51  pkienzle
+
+	* main/: strings/base64encode.m, special-matrix/lauchli.m: Add
+	author line 
+
+2002-11-30 08:51  pkienzle
+
+	* main/statistics/boxplot.m: Make sure s is initialized to NaN for
+	empty columns 
+
+2002-11-30 03:55  kahacjde
+
+	* main/general/bitset.m: 
+	
+	fixing a bug found by Pawel <gutentag at wp.pl> bitset(32,4,1) 
+	works now correctly 
+
+2002-11-29 01:32  pkienzle
+
+	* main/statistics/boxplot.m: Handle missing data.  Accept cell
+	array of datasets.  Box width relative to the number of elements in
+	the dataset.  
+
+2002-11-28 10:26  pkienzle
+
+	* main/image/imshear.m: Add copyright notice 
+
+2002-11-27 22:11  pkienzle
+
+	* main/image/: imrotate.m, imtranslate.m: (for Jeff Orchard) add
+	GPL copyright notice 
+
+2002-11-27 22:05  pkienzle
+
+	* main/image/brighten.m: (for Simon Cross) brighten documentation
+	didn't agree with code (for Paul Kienzle) Don't use varargout 
+
+2002-11-27 12:49  pkienzle
+
+	* doc/coda/Makefile: iEnough to almost build for me 
+
+2002-11-27 12:47  pkienzle
+
+	* doc/coda/coda.sgml: Use redhat's current path to xdocbook.dtd 
+
+2002-11-27 12:28  pkienzle
+
+	* doc/compatibility.html: Update notes to reflect newer
+	octave/octave-forge 
+
+2002-11-27 12:27  pkienzle
+
+	* admin/template.ndev: cvs import instructions 
+
+2002-11-27 12:25  pkienzle
+
+	* release.sh: update the release notes 
+
+2002-11-27 12:12  pkienzle
+
+	* TODO: minor updates.  Still need to add the entry: rename TODO to
+	IGNORE 
+
+2002-11-27 12:08  pkienzle
+
+	* COPYING, COPYING.BSD: Default to BSD style license so we don't
+	have to worry about missing licenses.  
+
+2002-11-27 11:36  pkienzle
+
+	* main/general/command.cc: Now in octave as mark_as_text_function 
+
+2002-11-27 08:20  schloegl
+
+	* extra/tsa/INDEX: update of index file: HISTO2,3,4, ARCEXT,
+	SBISPEC included 
+
+2002-11-27 08:18  schloegl
+
+	* extra/NaN/INDEX: include TRIMEAN 
+
+2002-11-27 04:30  pkienzle
+
+	* RELEASE-NOTES, release.sh: use integer for octave forge version
+	number 
+
+2002-11-27 04:28  pkienzle
+
+	* RELEASE-NOTES: update to 2002-11-27 
+
+2002-11-27 03:43  pkienzle
+
+	* main/signal/fir1.m: Fix type error on filter type default 
+
+2002-11-27 03:40  pkienzle
+
+	* main/: image/bmpwrite.m, image/colfilt.m, image/colorgradient.m,
+	image/imread.m, image/imtranslate.m, image/imwrite.m,
+	miscellaneous/nze.m, optim/expfit.m, plot/contourf.m, plot/fplot.m,
+	plot/tics.m, sparse/sprand.m, splines/trisolve.m,
+	statistics/scatter.m, strings/mat2str.m: author/license updates 
+
+2002-11-27 03:39  pkienzle
+
+	* INDEX, admin/make_index, main/image/INDEX, main/optim/INDEX,
+	main/sparse/INDEX: Make sure all new functions are indexed 
+
+2002-11-27 02:52  pkienzle
+
+	* main/specfun/lambertw.m: new function 
+
+2002-11-27 02:39  pkienzle
+
+	* main/: general/ndims.m, specfun/betaln.m: Compatibility functions 
+
+2002-11-27 02:27  pkienzle
+
+	* main/statistics/: INDEX, boxplot.m, scatter.m: New statistics
+	plots 
+
+2002-11-27 00:54  pkienzle
+
+	* main/: general/lasterr.m, general/repmat.m, general/unwrap.m,
+	specfun/mod.m, struct/isstruct.m: Now available in octave 
+
+2002-11-27 00:26  pkienzle
+
+	* main/optim/lp_test.m: Use assert rather than error messages for
+	tests 
+
+2002-11-27 00:24  pkienzle
+
+	* main/miscellaneous/Makefile: add clean target 
+
+2002-11-27 00:23  pkienzle
+
+	* batch_test.m: More precise tests of chol.  The tolerances may be
+	too tight on some systems.  
+
+2002-11-26 23:46  pkienzle
+
+	* main/sparse/: complex_sparse_ops.cc, make_sparse.h,
+	sparse_full.cc, sparse_inv.cc, sparse_ops.cc, sparse_ops.h: Use new
+	exception handling infrastructure.  
+
+2002-11-26 15:10  pkienzle
+
+	* main/sparse/spdiags.m: support row and column as diagonal index 
+	ignore non-zero entries which are not part of the constructed sparse
+	matrix 
+
+2002-11-26 14:32  pkienzle
+
+	* main/sparse/issparse.m: test if a value is a sparse matrix 
+
+2002-11-26 14:26  pkienzle
+
+	* main/sparse/spdiags.m: work with sparse diagonals 
+
+2002-11-25 15:10  bensapp
+
+	* main/symbolic/ov-relational.h: Fixed a gcc 3.2 issue.  
+
+2002-11-22 12:13  pkienzle
+
+	* extra/mex/: Makefile, mex.in: myfeval works again 
+
+2002-11-21 09:49  persquare
+
+	* extra/MacOSX/: README, figure.m, image.m, doc/ofosx.tex: Adding
+	extra support for Mac OS X to let users run octave without an X11
+	installation.  
+
+2002-11-21 09:43  persquare
+
+	* INSTALL.MacOSX: Adding installation information for Mac OS X
+	10.2.x 
+
+2002-11-21 03:01  pkienzle
+
+	* FIXES/README: Remove references to files updated in octave 
+
+2002-11-21 02:59  pkienzle
+
+	* FIXES/: index.m, rindex.m: Oops! didn't mean to delete these 
+
+2002-11-21 02:34  pkienzle
+
+	* FIXES/: contour.m, cross.m, deblank.m, fftfilt.m, findstr.m,
+	freqz.m, freqz_plot.m, imagesc.m, index.m, invhilb.m, rindex.m: 
+	fixes applied to the latest octave source 
+
+2002-11-21 01:57  pkienzle
+
+	* main/audio/: Makeconf.add, Makefile, configure.add: Don't build
+	aucapture on non-linux systems 
+
+2002-11-21 00:46  pkienzle
+
+	* main/image/configure.add: Oops!  Perhaps we don't need HAVE_JPEG? 
+
+2002-11-20 10:34  pkienzle
+
+	* doc/coda/: Makefile, bibliography.sgml, coda.sgml,
+	appendices/examples.sgml, appendices/gnufdl.sgml,
+	appendices/gnugpl.sgml, oct/advanced.sgml, oct/oct.sgml,
+	oct/quickref.sgml, oct/tut-basic.sgml, oct/tut-interm.sgml,
+	oct/tut-intro.sgml, oct/tutorial.sgml, standalone/standalone.sgml: 
+	Initial revision 
+
+2002-11-20 10:34  pkienzle
+
+	* doc/coda/: Makefile, bibliography.sgml, coda.sgml,
+	appendices/examples.sgml, appendices/gnufdl.sgml,
+	appendices/gnugpl.sgml, oct/advanced.sgml, oct/oct.sgml,
+	oct/quickref.sgml, oct/tut-basic.sgml, oct/tut-interm.sgml,
+	oct/tut-intro.sgml, oct/tutorial.sgml, standalone/standalone.sgml: 
+	Da Coda Al Fine 
+
+2002-11-20 10:15  pkienzle
+
+	* doc/octave-forge-home.html: Include html link 
+
+2002-11-20 09:43  pkienzle
+
+	* doc/octave-forge-home.html: move da coda link to a local link 
+
+2002-11-16 16:12  pkienzle
+
+	* main/optim/lp.cc: Use c++ replacements for standard C headers.  
+
+2002-11-16 16:10  pkienzle
+
+	* main/image/bwlabel.cc: Not doing output, so don't need stdio.h 
+
+2002-11-16 15:57  pkienzle
+
+	* FIXES/Makefile: remove fsolve from build 
+
+2002-11-16 15:41  pkienzle
+
+	* main/linear-algebra/GramSchmidt.cc: gcc 3.2 changes 
+
+2002-11-16 15:40  pkienzle
+
+	* main/signal/: medfilt1.cc, remez.cc: gcc 3.2 fixes 
+
+2002-11-16 15:38  pkienzle
+
+	* main/optim/lp.cc, main/sparse/complex_sparse_ops.cc,
+	main/specfun/ellipj.cc, FIXES/MersenneTwister.h, FIXES/sqrtm.cc,
+	main/general/bitand.cc: Windows dll and gcc 3.2 problems 
+
+2002-11-16 12:08  pkienzle
+
+	* main/image/conv2.cc: Keep gcc 3.2 happy.  
+
+2002-11-15 17:38  schloegl
+
+	* extra/tsa/histo3.m: minor modification 
+
+2002-11-14 18:17  aadler
+
+	* main/geometry/README: new file locations 
+
+2002-11-14 16:38  aadler
+
+	* INSTALL.WINDOWS: mods for ATLAS 
+
+2002-11-13 10:35  pkienzle
+
+	* RELEASE-NOTES: little by little 
+
+2002-11-13 10:28  pkienzle
+
+	* main/sparse/sparse_inv.cc: Keep gcc 3.2 happy.  
+
+2002-11-13 10:03  pkienzle
+
+	* main/splines/trisolve.cc: Keep gcc 3.2 happy.  
+
+2002-11-13 10:01  pkienzle
+
+	* main/general/bitand.cc: Keep gcc 3.2 happy 
+
+2002-11-13 09:36  pkienzle
+
+	* main/miscellaneous/: Makeconf.add, Makefile, configure.add,
+	waitbar.cc: Use termcap if necessary.  
+
+2002-11-13 09:26  pkienzle
+
+	* extra/tk_octave/tk_matrix.tcl: Tk 8.4 does not allow -column to
+	be abbreviated to -col.  
+
+2002-11-13 09:24  pkienzle
+
+	* extra/: linear-algebra/ov-re-tri.cc, symband/SymBand.cc: Keep gcc
+	3.2 happy 
+
+2002-11-13 09:23  pkienzle
+
+	* extra/mex/: mex.cc, mex.h: Keep gcc 3.2 happy.  Initial work on
+	struct support, not yet complete.  
+
+2002-11-12 10:29  etienne
+
+	* main/miscellaneous/: Makeconf.add, Makefile, configure.add,
+	waitbar.cc: Quentin Spencer's waitbar() function 
+
+2002-11-10 16:07  schloegl
+
+	* extra/tsa/INDEX: multiple modes for multi-column hisogram 
+
+2002-11-10 15:57  schloegl
+
+	* extra/tsa/: content.m, contents.m, histo.m, histo2.m, histo3.m,
+	histo4.m: multiple modes for multi-column histograms
+	histogram-modes for 
+
+2002-11-07 13:26  pkienzle
+
+	* RELEASE-NOTES: Added Alois' release notes for tsa/nan 
+
+2002-11-07 12:57  pkienzle
+
+	* extra/tk_octave/tk_interp.cc: support 8.3 and 8.4 tcl 
+
+2002-11-07 09:45  pkienzle
+
+	* main/struct/setfield.cc: Use 2.1.37 indexing scheme.  
+
+2002-11-07 09:34  etienne
+
+	* main/struct/getfield.cc: jwe's patch for 2.1.39 
+
+2002-11-07 09:10  pkienzle
+
+	* main/plot/text.m: handle varargin references directly rather than
+	simulating va_arg() 
+
+2002-11-07 08:59  pkienzle
+
+	* FIXES/: Makefile, kron.cc, kron.m: kron.cc is now part of Octave 
+
+2002-11-05 14:21  aadler
+
+	* main/sparse/: complex_sparse_ops.cc, make_sparse.h, sp_test.m: 
+	added indexing for complex_sparse. added tests 
+
+2002-11-05 10:07  aadler
+
+	* extra/Windows/grab.cc, main/sparse/complex_sparse_ops.cc,
+	main/sparse/make_sparse.h, main/sparse/sparse_ops.cc: fixed for
+	2.1.39 - TODO: fix complex index ops 
+
+2002-11-05 08:44  etienne
+
+	* extra/: tk_octave/tk_dialog.m, tk_octave/tk_entry.m,
+	tk_octave/tk_menu.m, tk_octave/tk_scale.m, ver20/nanmax.m,
+	ver20/nanmean.m, ver20/nanmin.m, ver20/nansum.m: va_arg patch 
+
+2002-11-05 01:03  pkienzle
+
+	* main/sparse/: complex_sparse_ops.cc, sparse_ops.cc: remove inline
+	and parameter initialization from external function implementation 
+
+2002-11-04 15:13  etienne
+
+	* admin/OctRe.pm: Lots of regexes for octave code 
+
+2002-11-04 15:12  etienne
+
+	* admin/no_vr_val.pm: vr_val o varargout-style variable length
+	return list 
+
+2002-11-04 15:09  etienne
+
+	* extra/tk_octave/tk_entry.m, extra/tk_octave/tk_scale.m,
+	main/general/gradient.m, main/general/ind2sub.m,
+	main/geometry/griddata.m, main/geometry/voronoi.m,
+	main/image/brighten.m, main/image/imhist.m, main/io/textread.m,
+	main/optim/minimize.m, main/optim/nelder_mead_min.m: varargout
+	changes 
+
+2002-11-04 09:03  etienne
+
+	* admin/find_changes: small fix 
+
+2002-11-04 05:42  etienne
+
+	* admin/find_changes: use patch by default 
+
+2002-11-04 05:37  etienne
+
+	* admin/: find_changes, change_va_arg.pm: code transformation tools 
+
+2002-11-04 05:28  etienne
+
+	* main/: path/addpath.m, path/fullfile.m, path/rmpath.m,
+	plot/legend.m, plot/pcolor.m, plot/plot3.m, plot/print.m,
+	plot/surf.m, plot/surfc.m, plot/text.m, strings/strvcat.m,
+	struct/rmfield.m, struct/tar.m: varargin changes 
+
+2002-11-04 04:34  etienne
+
+	* main/vrml/: save_vrml.m, select_3D_points.m, test_vmesh.m,
+	vmesh.m, vrml_Background.m, vrml_PointLight.m, vrml_cyl.m,
+	vrml_faces.m, vrml_frame.m, vrml_group.m, vrml_lines.m,
+	vrml_material.m, vrml_points.m, vrml_surf.m, vrml_text.m,
+	vrml_thick_surf.m, vrml_transfo.m: varargin changes 
+
+2002-11-04 04:32  etienne
+
+	* main/miscellaneous/: inline.m, test_inline_1.m: varargin changes
+	and test_inline_1 script 
+
+2002-11-04 04:22  etienne
+
+	* main/optim/: bfgs.m, bs_gradient.m, bs_gradient2.m, cdiff.m,
+	deriv.m, fmin.m, fminbnd.m, fminunc.m, line_min.m, minimize.m,
+	nelder_mead_min.m, nrm.m, optimset.m, test_fminunc_1.m,
+	test_min_1.m, test_minimize_1.m, doc/optim-mini-howto.2.html: 
+	varargin changes 
+
+2002-11-03 12:18  pkienzle
+
+	* main/optim/expfit.m: (for Rolf Fabian) correct handling of
+	complex exponentials 
+
+2002-11-02 06:05  pkienzle
+
+	* main/: general/SHA1.cc, linear-algebra/GramSchmidt.cc,
+	splines/pchip_deriv.cc, symbolic/symbols.cc: Seperate lines of
+	multiline strings with \n\ to keep gcc 3.2 happy.  
+
+2002-11-02 05:43  pkienzle
+
+	* main/image/: MakeShears.m, imrotate.m, imshear.m, imtranslate.m: 
+	(for Jeff Orchard) image transforms 
+
+2002-11-02 05:40  pkienzle
+
+	* main/image/Makefile: bwfill was not being built.  
+
+2002-11-02 05:40  pkienzle
+
+	* main/image/: jpgread.cc, jpgwrite.cc: Keep gcc 3.2 happy by using
+	includes without the .h 
+
+2002-11-02 05:39  pkienzle
+
+	* main/image/: bwfill.cc, conv2.cc, cordflt2.cc: gcc 3.2 wants \n\
+	for multi-line strings.  
+
+2002-11-02 05:36  pkienzle
+
+	* main/image/: colfilt.m, impad.m, medfilt2.m, ordfilt2.m: Use
+	varargin 
+
+2002-11-01 13:15  pkienzle
+
+	* main/general/: blkdiag.m, isequal.m, sub2ind.m: Use varargin
+	rather than ...; isequal now supports cell arrays and structure
+	arrays.  
+
+2002-10-30 04:40  pkienzle
+
+	* main/statistics/: nanmax.m, nanmin.m: Use correct max/min api. 
+	No longer assume second arg is dimension.  
+
+2002-10-30 04:38  pkienzle
+
+	* main/statistics/: nanmean.m, nansum.m: Use varargin/varargout 
+
+2002-10-30 04:10  pkienzle
+
+	* main/signal/: __power.m, cohere.m, csd.m, pburg.m, pulstran.m,
+	pwelch.m, pyulear.m, tfe.m: Use varargin/varargout 
+
+2002-10-28 22:59  aadler
+
+	* extra/perl/: Octave.pm, t/1_simple.t, t/8_operators.t,
+	t/9_types.t: improved complex code 
+
+2002-10-25 16:26  pkienzle
+
+	* main/struct/: struct.m, setfield.m: Use varargin rather than ...  
+
+2002-10-25 08:24  schloegl
+
+	* extra/NaN/median.m: bug fix 
+
+2002-10-24 17:28  schloegl
+
+	* extra/NaN/median.m: bug fix: identification of  SORT without
+	DIM-arg and SORT with incorrect NaN-handling corrected 
+
+2002-10-24 09:56  schloegl
+
+	* extra/tsa/invest0.m: SUM replaced by SUMSKIPNAN because it
+	implements the DIM argument in all versions (including 2.0.17) 
+
+2002-10-24 09:53  schloegl
+
+	* extra/tsa/selmo.m: normalized MSE 
+
+2002-10-24 09:51  schloegl
+
+	* extra/tsa/: INDEX, content.m, contents.m, pacf.m, parcor.m: add
+	PACF 
+
+2002-10-24 09:48  schloegl
+
+	* extra/tsa/arcext.m: fix syntax error 
+
+2002-10-22 11:00  pkienzle
+
+	* main/plot/contourf.m: Use single colours between contours, not
+	gradients.  
+
+2002-10-18 23:42  pkienzle
+
+	* extra/tk_octave/tk_interp.cc: Allow it to compile for Tcl 8.4
+	(even though BLT doesn't yet).  
+
+2002-10-10 15:32  schloegl
+
+	* extra/NaN/corrcoef.m: fix for 2.0.17 
+
+2002-10-10 15:01  schloegl
+
+	* extra/NaN/: skewness.m, kurtosis.m: fix for 2.0.17 
+
+2002-10-10 14:37  schloegl
+
+	* extra/NaN/: ranks.m, median.m: fix for 2.0.17 
+
+2002-10-10 11:30  schloegl
+
+	* extra/NaN/covm.m: for compatibility to 6.5.0.180913a (R13) 
+
+2002-10-09 10:13  schloegl
+
+	* extra/NaN/corrcoef.m: for compatibility to 6.5.0.180913a (R13) 
+
+2002-10-04 10:37  etienne
+
+	* main/vrml/INDEX: initial index file 
+
+2002-10-04 10:27  etienne
+
+	* RELEASE-NOTES: updates for release 
+
+2002-10-04 10:12  etienne
+
+	* main/optim/doc/: optim-mini-howto.2.lyx, optim-mini-howto.2.tex,
+	figures/2D_slice-3.eps2, figures/optim_tutorial_slice.eps2: Updates
+	to tutorial 
+
+2002-10-04 05:18  etienne
+
+	* main/vrml/doc/: vrml-mini-howto-1.lyx, vrml-mini-howto-1.tex,
+	figures/cyl-balls-snap-2.eps2, figures/frame-sky-snap.eps2,
+	figures/freewrl-checker-snap-3.eps2,
+	figures/freewrl-octave-snap-2.eps2,
+	figures/freewrl-select-points-2.eps2: Use better compressed figures 
+
+2002-09-30 17:04  etienne
+
+	* main/vrml/doc/vrml-mini-howto-1.ps: this file should not be in
+	cvs tree 
+
+2002-09-30 17:03  etienne
+
+	* main/vrml/: vrml_demo_tutorial_1.m, vrml_demo_tutorial_2.m,
+	vrml_demo_tutorial_3.m, vrml_demo_tutorial_4.m,
+	doc/vrml-mini-howto-1.lyx: demo files for the tutorial 
+
+2002-09-30 16:55  etienne
+
+	* main/: miscellaneous/slurp_file.m, vrml/defSpeakBox.wrl,
+	vrml/defSpeakSphere.wrl, vrml/select_3D_points.m,
+	vrml/vrml_select_points.m: add select_3D_points() and support files 
+
+2002-09-29 16:31  etienne
+
+	* main/: vrml/vrml_ellipsoid.m, vrml/vrml_faces.m,
+	vrml/vrml_frame.m, struct/tar.m: s/inz/nze/ 
+
+2002-09-29 16:28  etienne
+
+	* main/miscellaneous/nze.m: n = nze (x) : Non Zero Elements of x 
+
+2002-09-29 15:10  etienne
+
+	* main/vrml/: vrml_ellipsoid.m, vrml_faces.m, vrml_frame.m: 
+	s/grep/inz/ 
+
+2002-09-29 15:07  etienne
+
+	* main/miscellaneous/inz.m: inz (matrix) : Indices of Non Zero
+	elements 
+
+2002-09-29 15:02  etienne
+
+	* main/vrml/: best_dir.m, best_dir_cov.m, bound_convex.m,
+	proplan.m, save_vrml.m, test_vmesh.m, test_vrml_faces.m, vmesh.m,
+	vrml_Background.m, vrml_PointLight.m, vrml_arrow.m, vrml_browse.m,
+	vrml_cyl.m, vrml_ellipsoid.m, vrml_faces.m, vrml_flatten.m,
+	vrml_frame.m, vrml_group.m, vrml_kill.m, vrml_lines.m,
+	vrml_material.m, vrml_points.m, vrml_surf.m, vrml_text.m,
+	vrml_thick_surf.m, vrml_transfo.m, doc/Makefile,
+	doc/vrml-mini-howto-1.lyx, doc/vrml-mini-howto-1.ps,
+	doc/vrml-mini-howto-1.tex, doc/figures/cyl-balls-snap-2-c.eps,
+	doc/figures/frame-sky-snap-c.eps,
+	doc/figures/freewrl-checker-snap-3-c.eps,
+	doc/figures/freewrl-octave-snap-2-c.eps,
+	doc/figures/freewrl-select-points-2-c.eps: main/vrml : tools for 3D
+	visualization using FreeWRL 
+
+2002-09-29 13:31  etienne
+
+	* main/image/imginfo.m: imginfo : return size of an image file
+	using 'convert' 
+
+2002-09-29 13:30  etienne
+
+	* main/struct/tar.m: tar : copy arguments to a struct 
+
+2002-09-29 13:29  etienne
+
+	* main/miscellaneous/rotparams.m: [axis,angle] = rotparams (rotmat)
+	parameters of a rotation matrix 
+
+2002-09-29 13:28  etienne
+
+	* main/miscellaneous/rotv.m: rotv (axis,angle) : 3D rotation matrix 
+
+2002-09-29 13:26  etienne
+
+	* main/miscellaneous/grep.m: grep : return nonzero elements of a
+	matrix 
+
+2002-09-26 23:07  aadler
+
+	* main/general/mark_for_deletion.cc: mark_for_deletion - add files
+	to delete queue at end 
+
+2002-09-26 23:06  aadler
+
+	* extra/Windows/image.m: delete temp files at end 
+
+2002-09-26 17:54  aadler
+
+	* extra/Windows/image.m: mods to work with --traditional 
+
+2002-09-26 12:30  schloegl
+
+	* extra/NaN/sumskipnan.m: fix compatibility to Octave 2.0.x: SUM
+	does not support the DIM argument 
+
+2002-09-26 12:03  schloegl
+
+	* extra/NaN/trimean.m: fix compatibility to Octave 2.0.17: SUM does
+	not support the DIM argument 
+
+2002-09-26 12:02  schloegl
+
+	* extra/NaN/normpdf.m: fix compatibility to Octave 2.0.17: isinf(.)
+	returns real(-1) not logical(-1) 
+
+2002-09-26 07:06  rlaboiss
+
+	* main/geometry/: AUTHORS, delaunay.m, delaunay3.m: Make delaunay
+	and delaunay3 functions accept an extra argument containing options
+	to the qhull command.  This completes the changes for the delaunay* 
+	functions.  The same has to be done with voronoi and convhull.  
+
+2002-09-25 14:25  rlaboiss
+
+	* main/geometry/delaunayn.cc: The delaunayn functions always call
+	qhull with option Qbb now.  This avoid problems with inputs which
+	are not normalized.  Also, added second argument to pass extra
+	options to the qhull command.  This changes were approved by Kai
+	Habel as per our email discussion on 2002-05-11.  
+
+2002-09-24 15:44  schloegl
+
+	* extra/NaN/: README.TXT, moment.m, norminv.m, normpdf.m: some
+	cosmetics 
+
+2002-09-23 15:21  schloegl
+
+	* extra/NaN/nantest.m: further tests for normFUN included 
+
+2002-09-23 12:48  schloegl
+
+	* extra/NaN/normcdf.m: remove test for z==+-inf; it's  not needed 
+
+2002-09-23 12:38  schloegl
+
+	* extra/NaN/normcdf.m: temporary variable increases performance. It
+	reduces the number of tests 
+
+2002-09-23 12:30  schloegl
+
+	* extra/NaN/norminv.m: temporary variable increases performance. It
+	reduces the number of tests 
+
+2002-09-23 09:36  pkienzle
+
+	* extra/NaN/norminv.m: handle norminv(1,NaN,0) and
+	norminv(1,[1,2,3],0) 
+
+2002-09-23 09:26  schloegl
+
+	* extra/NaN/nantest.m: check of NORMPDF, NORMCDF and NORMINV for
+	sigma=0 included 
+
+2002-09-23 09:02  schloegl
+
+	* extra/NaN/: normcdf.m, norminv.m, normpdf.m: comments and help
+	improved. Note on valid input arguments improved 
+
+2002-09-23 08:57  schloegl
+
+	* extra/NaN/: normpdf.m, normcdf.m: priority of special cases
+	changed: important for s<0 and isinf(z) 
+
+2002-09-23 08:55  schloegl
+
+	* extra/NaN/README.TXT: description for normFUN improved 
+
+2002-09-23 08:54  schloegl
+
+	* extra/NaN/INDEX: insert missing space 
+
+2002-09-22 19:04  schloegl
+
+	* extra/NaN/covm.m: warning and error are used instead of fprintf 
+
+2002-09-22 19:00  schloegl
+
+	* extra/NaN/: INDEX, INSTALL, README.TXT, covm.m, normcdf.m,
+	norminv.m, normpdf.m: add norm*, this functions handle s=0
+	correctly, also the argument check is easier and more readable 
+
+2002-09-22 18:56  schloegl
+
+	* extra/NaN/corrcoef.m: cosmetics, makes code more readable. The
+	results are now calculated in place, no reformating of r needed 
+
+2002-09-20 12:09  etienne
+
+	* main/optim/INDEX: Remove removed files, add added files.  
+
+2002-09-20 10:36  schloegl
+
+	* extra/NaN/: skewness.m, kurtosis.m: considers changes in Octave
+	syntax - makes sure that output is a numerical array, not a cell 
+
+2002-09-19 22:02  pkienzle
+
+	* RELEASE-NOTES: compressed and sorted change log for PAK changes 
+
+2002-09-19 20:37  pkienzle
+
+	* RELEASE-NOTES: Start building release notes for a November
+	release 
+
+2002-09-19 14:42  pkienzle
+
+	* main/image/bwlabel.m: Modified by David Fletcher
+	<david@megapico.co.uk> to avoid artificially separate regions which
+	actually touch (as indicated when "prudent" is set) through addition
+	of lrow update within loop over touching regions. Also removed
+	"sayif" function references, and call to read_options. Enabled 
+	options, setting of output verbosity. "Prudent" is left in place,
+	but should no longer find any errors.  
+
+2002-09-18 14:19  pkienzle
+
+	* main/plot/legend.m: Pause for twenty 0.1 second intervales.  Make
+	sure the file exists before continuing after pause.  
+
+2002-09-18 13:57  pkienzle
+
+	* main/signal/buttord.m: unexpected line break in expression caused
+	a parse error 
+
+2002-09-16 09:04  pkienzle
+
+	* main/audio/: auload.m, ausave.m: Support for floating point wave
+	formats.  
+
+2002-09-15 19:15  prnienhuis
+
+	* doc/Octave_Windows.htm: [no log message] 
+
+2002-09-12 18:32  schloegl
+
+	* extra/NaN/spearman.m: missing ; included 
+
+2002-09-12 18:18  schloegl
+
+	* extra/NaN/: rankcorr.m, spearman.m, statistic.m, sumskipnan.m: 
+	remove warnings 
+
+2002-09-12 18:04  schloegl
+
+	* extra/NaN/: sumskipnan.m, statistic.m: Use different version
+	check, some bugs are fixed now in the latest CVS version of Octave 
+
+2002-09-12 16:12  schloegl
+
+	* extra/NaN/nantest.m: some more tests included 
+
+2002-09-12 16:06  schloegl
+
+	* extra/NaN/trimean.m: fix incompatible DIM argument in SORT 
+
+2002-09-12 15:23  schloegl
+
+	* extra/NaN/corrcoef.m: fix incompatible DIM argument in ANY 
+
+2002-09-12 09:19  pkienzle
+
+	* main/plot/Makefile: Compile .cc files with $(C_XFLAGS) 
+
+2002-09-11 16:15  stahel
+
+	* extra/symband/: SymBand.cc, SymBandDoc.ps, SymBandDoc.tex: 
+	Copyright added and bug in eigenvectors removed 
+
+2002-09-09 04:38  etienne
+
+	* main/miscellaneous/read_options.m: fix case of options w/ common
+	prefix 
+
+2002-09-08 06:13  etienne
+
+	* main/miscellaneous/read_options.m: fix typo 
+
+2002-09-06 17:20  schloegl
+
+	* extra/NaN/trimean.m: DIM argument fixed 
+
+2002-09-06 16:58  schloegl
+
+	* extra/tsa/y2res.m: add trimean 
+
+2002-09-06 16:54  schloegl
+
+	* extra/NaN/: trimean.m, README.TXT: add trimean 
+
+2002-09-06 16:21  schloegl
+
+	* extra/NaN/ranks.m: improve docu, some cosmetics 
+
+2002-09-06 15:32  pkienzle
+
+	* batch_test.m, main/image/Makefile, main/image/bwlabel.cc: for
+	Jeff Boyd <boyd@cpsc.ucalgary.ca>: C++ version of bwlabel 
+
+2002-09-04 09:07  pkienzle
+
+	* FIXES/kron.cc: remove ^M from the ends of lines --- I wonder how
+	they got there? 
+
+2002-08-30 14:24  schloegl
+
+	* extra/NaN/corrcoef.m: typo corrected 
+
+2002-08-30 12:15  schloegl
+
+	* extra/NaN/corrcoef.m: BUG in Mode SPEARMAN in case of any msising
+	value (NaN). FIX: count Number N for each pair separately 
+
+2002-08-30 12:12  pkienzle
+
+	* main/plot/contourf.m: filled contours 
+
+2002-08-30 11:44  schloegl
+
+	* extra/NaN/corrcoef.m: BUG if any two columns have no common
+	elements. FIX: use DIM argument in SUMSKIPNAN 
+
+2002-08-28 11:55  pkienzle
+
+	* main/signal/chebwin.m: (for André Carezia) support even numbered
+	window lengths.  
+
+2002-08-27 12:39  schloegl
+
+	* extra/NaN/: flag_implicit_significance.m, corrcoef.m: 
+	significance test modified, alpha-level can be set by
+	flag_implicit_significance 
+
+2002-08-22 23:01  pkienzle
+
+	* main/geometry/delaunay.m: Add example to the doc string.  
+
+2002-08-22 11:15  kahacjde
+
+	* main/splines/: Makefile, pchip.m: New pchip function uses
+	SLATEC/PCHIP routines dpchim.f and dpchst.f 
+
+2002-08-22 11:06  kahacjde
+
+	* main/splines/: dpchim.f, dpchst.f, pchip_deriv.cc: add files for
+	new pchip function 
+
+2002-08-21 12:06  pkienzle
+
+	* main/plot/: graphics.cc, grab.cc, graphics.h, gtext.cc, gzoom.cc: 
+	Don't use cout or cerr 
+
+2002-08-21 10:37  pkienzle
+
+	* main/signal/medfilt1.cc: Use octave_stdout instead of cout 
+
+2002-08-21 10:33  pkienzle
+
+	* extra/symband/SymBand.cc: Stop using cout/octave_stdout 
+
+2002-08-20 13:50  schloegl
+
+	* extra/NaN/rankcorr.m: 
+	 remove warnings 
+
+2002-08-20 12:13  schloegl
+
+	* extra/NaN/corrcoef.m: fixed conf. intervals for abs(r)==1 
+
+2002-08-20 11:38  schloegl
+
+	* extra/NaN/ranks.m: docu improved 
+
+2002-08-20 11:34  schloegl
+
+	* extra/NaN/corrcoef.m: fixed assigning intermediate r values to
+	correct index postion 
+
+2002-08-20 10:26  schloegl
+
+	* extra/NaN/corrcoef.m: avoid calculate diagonal element, get rid
+	of division by zero warnings for diagonal elementes 
+
+2002-08-20 09:59  schloegl
+
+	* extra/NaN/corrcoef.m: in case of missing values (NaN), pairwise
+	calculation of r. User has not to worry about rank shifts - warnings
+	are removed 
+
+2002-08-20 09:57  schloegl
+
+	* extra/NaN/ranks.m: implemented traditional method with less
+	memory effort 
+
+2002-08-19 17:16  schloegl
+
+	* extra/NaN/: corrcoef.m, nantest.m, rankcorr.m: warning messages
+	for rankcorrelation of data with missing values inlcuded 
+
+2002-08-19 16:50  schloegl
+
+	* extra/NaN/: corrcoef.m, rankcorr.m, spearman.m: CORRCOEF uses
+	fast RANKS.M, deterministic results, 2 different nonparametric
+	(rank) crorelations implemented 
+
+2002-08-19 15:49  schloegl
+
+	* extra/NaN/ranks.m: fix incompatibilities 
+
+2002-08-19 15:34  schloegl
+
+	* extra/NaN/: INDEX, README.TXT, ranks.m: implements advanced RANKS
+	algorithm with O(n*log(n)) on average 
+
+2002-08-19 12:33  schloegl
+
+	* extra/NaN/corrcoef.m: avoids calculating r(xi,xj) and r(yi,yj)
+	for corrcoef(x,y,'rank'); corrects rank for missing values 
+
+2002-08-16 19:01  schloegl
+
+	* extra/NaN/: INDEX, README.TXT, nantest.m, rankcorr.m, spearman.m,
+	statistic.m, sumskipnan.m, var.m: includeSPEARMAN and RANKCORR 
+
+2002-08-16 18:54  schloegl
+
+	* extra/NaN/corrcoef.m: sort does not support DIM argument 
+
+2002-08-16 17:19  schloegl
+
+	* extra/NaN/nantest.m: test for corrcoef included 
+
+2002-08-16 16:59  schloegl
+
+	* extra/NaN/: corrcoef.m, README.TXT, INSTALL: spearman' rank
+	correlation, significance test and confidence interval included 
+
+2002-08-16 15:59  pkienzle
+
+	* main/image/colorgradient.m: Accept weight of 0 on a transition
+	(for instantaneous color changes).  Accept colormap length without
+	n.  
+
+2002-08-15 11:52  pkienzle
+
+	* extra/tsa/Makefile: flags removed from NaN, so no need to install
+	them from tsa 
+
+2002-08-13 12:19  schloegl
+
+	* extra/tsa/acovf.m: replace exist('xcorr','file') by
+	exist('xcorr')==2 - reason: higher compatibility 
+
+2002-08-13 12:17  schloegl
+
+	* extra/tsa/acorf.m: chi2pdf replaced by gammainc - reason: higher
+	compatibility 
+
+2002-08-13 03:48  etienne
+
+	* main/miscellaneous/inline.m: fix typo in help text 
+
+2002-08-12 10:02  etienne
+
+	* main/miscellaneous/inline.m: Add main/miscellaneous/inline.m w/
+	m*tlab-like syntax 
+
+2002-08-09 19:17  pkienzle
+
+	* main/specfun/nchoosek.m: note to compare implementation of
+	nchoosek to bincoeff 
+
+2002-08-09 16:47  pkienzle
+
+	* main/general/rat.m: Use 1/0 for infinity 
+
+2002-08-06 06:51  prnienhuis
+
+	* doc/Octave_Windows.htm: [no log message] 
+
+2002-08-04 22:43  pkienzle
+
+	* extra/ode/: ode23.m, ode45.m, ode78.m, penddot.m, pendulum.m,
+	readme.txt, rk2fixed.m, rk4fixed.m, rk8fixed.m: Update from v1.06
+	to v1.14 
+
+2002-08-02 13:35  pkienzle
+
+	* main/sparse/spy.m: Make xy range a little bit bigger so that
+	points don't fall right on the boundary (thanks to Victor Eijkhout
+	<eijkhout@cs.utk.edu> for the patch) 
+
+2002-08-01 13:10  pkienzle
+
+	* main/sparse/spy.m: handle dense matrices as well 
+
+2002-07-31 10:52  pkienzle
+
+	* main/statistics/nanmin.m: Update comment to reflect function
+	behaviour.  
+
+2002-07-31 10:51  pkienzle
+
+	* main/statistics/nanmax.m: Update docs so that they correspond to
+	function behaviour.  
+
+2002-07-31 10:48  pkienzle
+
+	* main/optim/wpolyfit.m: return values as row vectors for
+	compatibility, and cosmetic changes to graph.  
+
+2002-07-30 04:22  prnienhuis
+
+	* doc/Octave_Windows.htm: [no log message] 
+
+2002-07-25 17:05  schloegl
+
+	* extra/tsa/y2res.m: docu corrected, more statistics included 
+
+2002-07-25 16:19  schloegl
+
+	* extra/tsa/: y2res.m, y2res.m: S4P removed 
+
+2002-07-10 13:19  pkienzle
+
+	* main/specfun/mod.m: test all branches 
+
+2002-07-10 13:05  pkienzle
+
+	* main/specfun/mod.m: don't need do_fortran_indexing anymore 
+
+2002-07-10 09:18  pkienzle
+
+	* main/io/dlmread.m: Forgot to transpose input matrix 
+
+2002-06-27 14:47  aadler
+
+	* extra/Windows/win32api_win32part.cc: added MB_SETFOREGROUND 
+
+2002-06-27 09:55  aadler
+
+	* extra/Windows/: win32api.cc, win32api_win32part.cc: win32api
+	interface stuff 
+
+2002-06-23 05:40  etienne
+
+	* main/optim/bfgs.m: Accept gradient of any shape 
+
+2002-06-20 14:45  pkienzle
+
+	* main/sparse/sprand.m: Generate a random sparse matrix 
+
+2002-06-20 14:09  pkienzle
+
+	* main/time/datestr.m: more format codes; handle vectors of dates 
+
+2002-06-11 10:21  schloegl
+
+	* extra/NaN/: INDEX, README.TXT, coefficient_of_variation.m,
+	flag_implicit_dimension.m, flag_implicit_skip_nan.m,
+	flag_implicit_unbiased_estim.m, geomean.m, kurtosis.m, mad.m,
+	meandev.m, meansq.m, moment.m, skewness.m, statistic.m, std.m,
+	sumskipnan.m, var.m: all FLAGS removed 
+
+2002-06-11 09:57  schloegl
+
+	* extra/NaN/: center.m, coefficient_of_variation.m, geomean.m,
+	harmmean.m, kurtosis.m, mad.m, mean.m, meandev.m, meansq.m,
+	median.m, moment.m, rms.m, sem.m, skewness.m, statistic.m,
+	sumskipnan.m, var.m, zscore.m: prepared to remove
+	FLAG_IMPLICIT_DIMENSION 
+
+2002-06-07 16:56  schloegl
+
+	* extra/NaN/: coefficient_of_variation.m, cor.m, covm.m,
+	flag_implicit_skip_nan.m, geomean.m, harmmean.m, mad.m, mean.m,
+	meandev.m, meansq.m, median.m, moment.m, rms.m, skewness.m,
+	statistic.m, std.m, sumskipnan.m, var.m: preparing the removal of
+	FLAG_IMPLICIT_SKIP_NAN 
+
+2002-06-07 10:02  pkienzle
+
+	* main/strings/mat2str.m: (Rolf Fabian) accept complex arguments 
+	(Paul Kienzle) handle [] 
+
+2002-06-07 03:36  schloegl
+
+	* extra/NaN/corrcoef.m: remove checks of input arguments which are
+	not needed or incorrect 
+
+2002-06-02 11:38  pkienzle
+
+	* main/optim/: test_wpolyfit.m, wpolyfit.m: Oops --- removed the
+	need for flipud(p) but didn't remove flipud(p) This didn't
+	completely fix the problem with my dataset, so I added the dataset
+	to test_wpolyfit.  
+
+2002-05-30 13:27  pkienzle
+
+	* main/optim/: wpolyfit.m, wpolyfitdemo.m: Option to force
+	polynomial through the origin.  Only return p,dp (yf is easy enough
+	to calculate).  Tidy output when no polynomial is returned.  
+	Parameterize demo to take polynomial coefficients.  
+
+2002-05-28 19:07  pkienzle
+
+	* main/signal/: cheb.m, chebwin.m: Dolph­Chebyshev Window for even
+	order 
+
+2002-05-23 21:20  aadler
+
+	* INSTALL.WINDOWS: Added ATLAS license as required by ATLAS 
+
+2002-05-23 12:02  schloegl
+
+	* extra/tsa/: acovf.m, durlev.m, flag_implicit_samplerate.m,
+	flix.m, invest0.m, invest1.m, tsademo.m: cleanup; for compatibility
+	reasons to previous octave versions, some workarounds were necessary
+	e.g. DIM-arg was not available in 2.0.14. Since this is implemented
+	now, these workarounds are not neccessary anymore.  
+
+2002-05-23 11:56  schloegl
+
+	* extra/tsa/aar.m: normalization of REV=MSE/MSY corrected 
+
+2002-05-21 09:23  etienne
+
+	* main/plot/Makefile: remove goals related to deleted file
+	ginput.cc 
+
+2002-05-21 02:38  aadler
+
+	* INSTALL.WINDOWS: mods for 2.1.36 
+
+2002-05-21 02:28  aadler
+
+	* extra/Windows/grab_win32part.cc: fix warnings 
+
+2002-05-20 17:29  bensapp
+
+	* main/symbolic/: op-ex.cc, op-vpa.cc, ov-relational.cc, sym-ops.h: 
+	Added functions to handle the relational operators for the
+	non-matrix types.  I am not sure it makes sense to allow the use of
+	the relational operators for symbolic matrices or symbolic
+	variables/regular matrices.  
+
+2002-05-20 09:53  pkienzle
+
+	* main/signal/ncauer.m: (for Paulo Neis) Call __ellip_ws to find
+	the correct stop band edge to match the design requirements.  
+
+2002-05-20 09:51  pkienzle
+
+	* main/signal/: __ellip_ws.m, __ellip_ws_min.m, ellip.m,
+	ellipdemo.m, ellipord.m, nellip.m, nellipdemo.m: (for Paulo Neis)
+	find the stop band edge which yields the precise stop band 
+	attenuation given in the design specification for the filter. 
+	Rename to ellip/ellipord and reorder parameters for compatibility.  
+
+2002-05-20 01:49  aadler
+
+	* extra/Windows/: grab.cc, grab_win32part.cc: mods to use kbhit()
+	from sysdep to get raw kb input 
+
+2002-05-17 15:00  etienne
+
+	* main/optim/: test_min_1.m, test_cg_min_1.m, test_cg_min_2.m,
+	test_cg_min_3.m, test_cg_min_4.m, test_min_2.m, test_min_3.m,
+	test_min_4.m: give more generic name to test_cg_min_N.m 
+
+2002-05-17 14:32  etienne
+
+	* main/optim/: __quasi_func__.m, bracket_min.m, brent_line_min.m,
+	bs_gradient.m, cg_min.m, dfp.m, semi_bracket.m: remove obsolete
+	files and replaced bs_gradient.m 
+
+2002-05-17 14:27  etienne
+
+	* main/optim/: bfgs.m, d2_min.m, nelder_mead_min.m: misc changes 
+
+2002-05-17 11:44  bensapp
+
+	* main/symbolic/: Makefile, differentiate.cc, op-ex-mat.cc,
+	op-ex.cc, op-sym.cc, op-vpa.cc, ov-ex-mat.cc, ov-ex.cc, ov-ex.h,
+	ov-sym.cc, ov-sym.h, sym-bool.cc, sym-create.cc, sym-ops.h,
+	symbols.cc, symbols.h: I have removed the octave_sym class. Now,
+	the octave_ex class feels in for sym variables.   All the same
+	routines exist and it looks and operates the same.  This should also
+	fix a problem with subs that would cause octave to crash.  
+
+2002-05-13 16:40  schloegl
+
+	* extra/NaN/statistic.m: minor changes 
+
+2002-05-13 03:08  schloegl
+
+	* extra/tsa/y2res.m: upper/lower case problem fixed 
+
+2002-05-13 02:41  aadler
+
+	* extra/Windows/: grab.cc, grab_win32part.cc: ginput like
+	functionality under windoze - note that we need two functions
+	because you can't include oct.h and windows.h together 
+
+2002-05-12 18:01  aadler
+
+	* main/plot/: ginput.cc, ginput.m: removed ginput.cc - replaced by
+	ginput.m which calls grab.cc 
+
+2002-05-12 17:59  aadler
+
+	* extra/symband/SymBand.cc: mods to allow static compile with
+	windows build 
+
+2002-05-12 17:58  aadler
+
+	* INSTALL.WINDOWS: build script updated for 2.1.36 
+
+2002-05-12 17:50  rlaboiss
+
+	* nonfree/gpc/: configure.in, debian/changelog, debian/control: 
+	Debian release 0.1.2-5.  Small fix in perl on-line script in
+	configure.in.  This does not deserve a 0.1.3 release, yet.  
+
+2002-05-12 15:09  schloegl
+
+	* extra/tsa/y2res.m: using 2nd, 3rd and 4th output argument of
+	sumskipnan for efficancy reasons 
+
+2002-05-10 17:20  schloegl
+
+	* extra/tsa/sinvest1.m: compatibility to matlab restored 
+
+2002-05-10 17:19  schloegl
+
+	* extra/tsa/invest1.m: histo replaced by histo3 
+
+2002-05-10 17:18  schloegl
+
+	* extra/tsa/flag_implicit_samplerate.m: bug fixed (if
+	FLAG_implicit_samplerate is empty, set to default value [1] 
+
+2002-05-10 14:12  pkienzle
+
+	* main/image/colfilt.m: image block processing function 
+
+2002-05-10 08:28  schloegl
+
+	* extra/tsa/invest1.m: replaced non-standard function rms 
+
+2002-05-09 10:50  pkienzle
+
+	* doc/Octave_Windows.htm: (for Philip Nienhuis) considerably
+	expanded 
+
+2002-05-09 09:56  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: $TAG
+	release 
+
 2002-05-09 09:20  pkienzle
 
 	* extra/tsa/flix.m: remove do_fortran_indexing dependency 

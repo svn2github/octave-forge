@@ -1,22 +1,7 @@
 //-------------------------------------------------------------------
 #pragma hdrstop
 //-------------------------------------------------------------------
-// sumskipnan2: sums all non-NaN values
-//
-// Input:
-// - array to sum
-// - dimension to sum (1=columns; 2=rows; doesn't work for dim>2!!)
-//
-// Output:
-// - sums
-// - count of valid elements (optional)
-// - sums of squares (optional)
-// - sums of squares of squares (optional)
-//
-// Author:  Patrick Houweling (phouweling@yahoo.com)
-// Version: 1.0
-// Date:    17 september 2003
-//
+//   C-MEX implementation of SUMSKIPNAN - this function is part of the NaN-toolbox. 
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -33,126 +18,148 @@
 //   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 //
+// sumskipnan2: sums all non-NaN values
+//
+// Input:
+// - array to sum
+// - dimension to sum (1=columns; 2=rows; doesn't work for dim>2!!)
+//
+// Output:
+// - sums
+// - count of valid elements (optional)
+// - sums of squares (optional)
+// - sums of squares of squares (optional)
+//
+// Author:  Patrick Houweling (phouweling@yahoo.com)
+// Version: 1.0
+// Date:    17 september 2003
+//
+// modified:
+//   Alois Schloegl <a.schloegl@ieee.org>    
+// 	$Revision$
+// 	$Id$
+//
 //-------------------------------------------------------------------
-#include <stdlib>
+//#include <stdlib>
 #include "mex.h"
 //-------------------------------------------------------------------
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[])
 {
-    int     M, N, m, n;
-    int     i, j;
-    int     LDimension;
+    const int	*SZ;	    
     double* LInput;
     double* LOutputSum;
     double* LOutputCount;
     double* LOutputSum2;
     double* LOutputSum4;
     double  x, x2;
-    int     LCount;
+    unsigned long   LCount;
     double  LSum, LSum2, LSum4;
+
+    unsigned		DIM = 1; 
+    unsigned long	D1, D2, D3, NN; 	//  	
+    unsigned    	ND, ND2;	// number of dimensions: input, output
+    unsigned long	ix1, ix2;	// index to input and output
+
+    unsigned    	i, j, k, l;	// running indices 
+    int 		*SZ2;		// size of output 	    
+
+     	
 
     // check for proper number of input and output arguments
     if ((PInputCount <= 0) || (PInputCount > 2))
         mexErrMsgTxt("SumSkipNan2 requires 1 or 2 arguments.");
-    if (POutputCount > 5)
+    if (POutputCount > 4)
         mexErrMsgTxt("SumSkipNan2 has 1 to 4 output arguments.");
 
     // get 1st argument
     if(!mxIsNumeric(PInputs[0]))
-        mexErrMsgTxt("First argument must be numeric.");
-    M = mxGetM(PInputs[0]);
-    N = mxGetN(PInputs[0]);
+	mexErrMsgTxt("First argument must be NUMERIC.");
+    if(!mxIsDouble(PInputs[0]))
+	mexErrMsgTxt("First argument must be DOUBLE.");
+    if(mxIsComplex(PInputs[0]))
+	mexErrMsgTxt("First argument must not be complex but REAL.");
     LInput = mxGetPr(PInputs[0]);
 
     // get 2nd argument
     if  (PInputCount == 2){
         if ((!mxIsNumeric(PInputs[1])) || (mxGetM(PInputs[1]) != 1) || (mxGetN(PInputs[1]) != 1))
             mexErrMsgTxt("Second argument must be scalar.");
-        LDimension = mxGetScalar(PInputs[1]);
-        if ((LDimension < 0) || (LDimension > 2))
-            mexErrMsgTxt("Only dimensions 1 and 2 are supported.");
-    }
-    else
-        LDimension = 1;
-
-    // create outputs
-    if (LDimension == 1){
-        m = 1;
-        n = N;
-    }
-    if (LDimension == 2){
-        m = M;
-        n = 1;
-    }
-    POutput[0]   = mxCreateDoubleMatrix(m, n, mxREAL);
-    LOutputSum   = mxGetPr(POutput[0]);
-    if (POutputCount >= 2){
-        POutput[1]   = mxCreateDoubleMatrix(m, n, mxREAL);
-        LOutputCount = mxGetPr(POutput[1]);
-    }
-    if (POutputCount >= 3){
-        POutput[2]   = mxCreateDoubleMatrix(m, n, mxREAL);
-        LOutputSum2  = mxGetPr(POutput[2]);
-    }
-    if (POutputCount >= 4){
-        POutput[3]   = mxCreateDoubleMatrix(m, n, mxREAL);
-        LOutputSum4  = mxGetPr(POutput[3]);
+        DIM = (unsigned long)(mxGetScalar(PInputs[1]));
     }
 
-    if (LDimension == 1){
-        // sum all non-NaN elements of each column
-        for (j=0; j<N; j++){
-            // init
-            LCount = 0;
-            LSum   = 0;
-            LSum2  = 0;
-            LSum4  = 0;
+    	ND = mxGetNumberOfDimensions(PInputs[0]);	
+    	NN = mxGetNumberOfElements(PInputs[0]);
+    	SZ = mxGetDimensions(PInputs[0]);		
 
-            for (i=0; i<M; i++){
-                x = LInput[i + j*M];
-                if (!mxIsNaN(x)){
-                    LCount++;
-                    LSum += x;
-                    x2 = x*x;
-                    LSum2 += x2;
-                    LSum4 += x2*x2;
-                }
-            }
-            LOutputSum[j] = LSum;
-            if (POutputCount >= 2)
-                LOutputCount[j] = LCount;
-            if (POutputCount >= 3)
-                LOutputSum2[j] = LSum2;
-            if (POutputCount >= 4)
-                LOutputSum4[j] = LSum4;
-        }
-    }
-    if (LDimension == 2){
-        // sum all non-NaN elements of each row
-        for (i=0; i<M; i++){
-            // init
-            LCount = 0;
-            LSum   = 0;
-            LSum2  = 0;
-            LSum4  = 0;
+	ND2 = (ND>DIM ? ND : DIM);	// number of dimensions of output 
+	SZ2 = (int*)mxCalloc(ND2, sizeof(int)); // allocate memory for output size
 
-            for (j=0; j<N; j++){
-                x = LInput[i + j*M];
-                if (!mxIsNaN(x)){
-                    LCount++;
-                    LSum += x;
-                    x2 = x*x;
-                    LSum2 += x2;
-                    LSum4 += x2*x2;
-                }
-            }
-            LOutputSum[i] = LSum;
-            if (POutputCount >= 2)
-                LOutputCount[i] = LCount;
-            if (POutputCount >= 3)
-                LOutputSum2[i] = LSum2;
-            if (POutputCount >= 4)
-                LOutputSum4[i] = LSum4;
-        }
-    }
+	for (j=0; j<ND; j++)		// copy size of input;  
+		SZ2[j] = SZ[j]; 	
+	for (j=ND; j<ND2; j++)		// in case DIM > ND, add extra elements 1 
+		SZ2[j] = 1; 	
+
+    	for (j=0, D1=1; j<DIM-1; D1=D1*SZ2[j++]); 	// D1 is the number of elements between two elements along dimension  DIM  
+	D2 = SZ2[DIM-1];		// D2 contains the size along dimension DIM 	
+    	for (j=DIM, D3=1;  j<ND; D3=D3*SZ2[j++]); 	// D3 is the number of blocks containing D1*D2 elements 
+
+	SZ2[DIM-1] = 1;		// size of output is same as size of input but SZ(DIM)=1;
+
+	    // create outputs
+	#define TYP mxDOUBLE_CLASS
+
+	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
+    	LOutputSum = mxGetPr(POutput[0]);
+    	if (POutputCount >= 2){
+		POutput[1] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
+        	LOutputCount = mxGetPr(POutput[1]);
+    	}
+    	if (POutputCount >= 3){
+		POutput[2] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
+        	LOutputSum2  = mxGetPr(POutput[2]);
+    	}
+    	if (POutputCount >= 4){
+		POutput[3] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
+        	LOutputSum4  = mxGetPr(POutput[3]);
+    	}
+
+	// OUTER LOOP: along dimensions > DIM
+	for (l = 0; l<D3; l++) 	
+    	{
+		ix2 =   l*D1;	// index for output 
+		ix1 = ix2*D2;	// index for input 
+
+		// Inner LOOP: along dimensions < DIM
+		for (k = 0; k<D1; k++, ix1++, ix2++) 	
+		{
+		        LCount = 0;
+			LSum   = 0.0;
+			LSum2  = 0.0;
+			LSum4  = 0.0;
+	        	    		
+			// LOOP  along dimension DIM
+	    		for (i=0; i<D2; i++) 	
+			{
+				x = LInput[ix1 + i*D1];
+        	        	if (!mxIsNaN(x))
+				{
+					LCount++; 
+					LSum += x; 
+					x2 = x*x;
+					LSum2 += x2; 
+					LSum4 += x2*x2; 
+				}
+			}
+			LOutputSum[ix2] = LSum;
+            		if (POutputCount >= 2)
+                		LOutputCount[ix2] = (double)LCount;
+            		if (POutputCount >= 3)
+                		LOutputSum2[ix2] = LSum2;
+            		if (POutputCount >= 4)
+                		LOutputSum4[ix2] = LSum4;
+		}
+	}
+	mxFree(SZ2);    	
 }
+
+

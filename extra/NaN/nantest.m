@@ -81,6 +81,20 @@ if exist('tinv')==2,
         end;
 end;
 
+%%%%% NANSUM(NAN) - this test addresses a problem in Matlab 5.3, 6.1 & 6.5
+if exist('nansum')==2,
+        if isnan(nansum(nan)),
+                fprintf(1,'NANSUM should be replaced\n');
+                % fprintf(1,'Warning: NANSUM(NaN) returns NaN instead of 0\n');
+        end;
+end;
+%%%%% NANSUM(NAN) - this test addresses a problem in Matlab 5.3, 6.1 & 6.5
+if exist('nanstd')==2,
+        if ~isnan(nanstd(0)),
+                fprintf(1,'NANSTD should be replaced\n');
+                % fprintf(1,'Warning: NANSTD(x) with isscalar(x) returns 0 instead of NaN\n');
+        end;
+end;
 
 %%%%% sorting of NaN's %%%%
 if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),  %~exist('OCTAVE_VERSION'),
@@ -97,7 +111,7 @@ if ~all(all(isnan(y*B)==isnan(B'*y')')),
 end;
 
 
-%%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3 & 6.1 
+%%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 p    = 4;
 tmp1 = repmat(nan,p)/repmat(nan,p);
 tmp2 = repmat(nan,p)\repmat(nan,p);

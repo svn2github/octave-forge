@@ -32,7 +32,7 @@ x = [5,NaN,0,1,nan];
 FLAG_WARNING = warning;
 warning('off');
 
-funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','','','','','','','','','','','','','',''};
+funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','nansum','nanstd','','','','','','','','','','','',''};
 for k=1:2,
         if k==2, x(isnan(x))=[]; end; 
         r(1,k) =sumskipnan(x(1));
@@ -127,7 +127,12 @@ for k=1:2,
                 fun='normal_inv';
         end;
         r(31,k) = k*any(isnan(feval(fun,[0,1],4,0)));	        
-        
+        if exist('nansum')==2,
+        	r(32,k)=k*isnan(nansum(nan));
+        end;
+        if exist('nanstd')==2,
+        	r(33,k)=k*(~isnan(nanstd(0)));
+        end;
 end;
 
 % check if result is correct

@@ -416,6 +416,14 @@ displays (Figure\SpecialChar ~
 
 , left) a checkered surface with 5 squares along the X direction squares
  that are two facets wide along the Y direction.
+ This listing can be run with the command 
+\family typewriter 
+\series bold 
+vrml_demo_tutorial_1
+\family default 
+\series default 
+.
+ Subsequent in this document listings can be called in a similar fashion.
 \layout Subsection
 
 Basic 3D visualization with FreeWRL

@@ -67,8 +67,8 @@ Conversion
  strptime
  base64encode
 Flags
- implicit_num_to_str_ok
- implicit_str_to_num_ok
+ warn_num_to_str
+ warn_str_to_num
  warn_single_quote_string
  string_fill_char
 

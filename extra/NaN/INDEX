@@ -3,6 +3,6 @@ Missing data statistics (not installed by default)
  covm cor cov corrcoef harmmean median statistic
  detrend kurtosis moment std mad naninsttest nantest 
  nansum nanstd normpdf normcdf norminv meandev mod rem
- percentile quantiles rankcorr ranks rms sumskipnan 
+ percentile quantile rankcorr ranks rms sumskipnan 
  var mean sem spearman trimean tpdf tcdf tinv zscore 
 

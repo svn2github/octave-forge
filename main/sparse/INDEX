@@ -11,6 +11,7 @@ Manipulate sparse matrices
  sparse issparse 
  full
  is_sparse is_real_sparse is_complex_sparse
+ spimag spreal
  spy 
  nnz 
  spfind spdump

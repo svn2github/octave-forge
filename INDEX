@@ -71,10 +71,13 @@ Variables
  pack 
  load 
  save 
+ append_save
  quit
  document
  temp_name
+ class
 Functions
+ alias
  what 
  type 
  dispatch
@@ -86,13 +89,14 @@ Functions
  inmem = use <f>who</f> with -functions
  mex= install octave-forge mex package and use <f>system</f><code>(["mex ", name])</code>
  source
- 
+ mark_as_command unmark_command
+
 Load path
  path 
  addpath 
  rmpath 
  pathtool 
- file_in_path file_in_loadpath
+ file_in_path file_in_loadpath find_first_of_in_loadpath
  rehash
 Output
  echo 
@@ -113,11 +117,12 @@ Environment
  unix
  web 
  computer 
- listen
  isieee
- isunix
+ isunix ispc
  system
  ! = use <f>system</f><code>("command")</code>
+ dump_prefs
+ bug_report warranty
 Debugging
  dbclear
  dbstatus
@@ -127,11 +132,12 @@ Debugging
  debug_on_error
  debug_on_interrupt
  debug_on_warning
+ debug_symtab_lookups
 Profiling
  profile 
  flops 
 Demos and Tests.
- example  demo  test  assert  speed 
+ example  demo  test  assert  fail speed 
 
 variables >> System Configuration Variables
 Command input
@@ -147,7 +153,6 @@ Display
  struct_levels_to_print
  split_long_rows silent_functions
  suppress_verbose_help_message
- default_eval_print_flag
  output_max_field_width output_precision
  PS1 PS2 PS4 fixed_point_format
 Error Handling
@@ -166,43 +171,39 @@ Error Handling
  warn_single_quote_string
  warn_precedence_change
  warn_matlab_incompatible
+ warn_fortran_indexing
+ warn_imag_to_real
+ warn_undefined_return_values 
+ warn_empty_list_elements
+ warn_num_to_str
+ warn_str_to_num
+ warn_neg_dim_as_zero
+ warn_resize_on_range_error
 Processing
- do_fortran_indexing
- ok_to_lose_imaginary_part
- whitespace_in_literal_matrix
  variables_can_hide_functions
- treat_neg_dim_as_zero
- initialize_global_variables
- default_global_variable_value
- define_all_return_values default_return_value
- empty_list_elements_ok
- implicit_num_to_str_ok
- implicit_str_to_num_ok
  max_recursion_depth
- return_last_computed_value
  string_fill_char
- prefer_column_vectors
- resize_on_range_error
- propagate_empty_matrices
  casesen
+ sighup_dumps_octave_core
+ sigterm_dumps_octave_core
 File output
  default_save_format
  save_precision
  save_header_format_string
-
 Support programs
  EDITOR INFO_FILE INFO_PROGRAM MAKEINFO_PROGRAM PAGER gnuplot_binary
+ toggle_grace_use
 Constants
  F_DUPFD F_GETFD F_GETFL F_SETFD F_SETFL
  O_APPEND O_ASYNC O_CREAT O_EXCL O_NONBLOCK O_RDONLY
  O_RDWR O_SYNC O_TRUNC O_WRONLY
  SEEK_CUR SEEK_END SEEK_SET
- OCTAVE_HOME OCTAVE_VERSION
- DEFAULT_LOADPATH
+ OCTAVE_HOME OCTAVE_VERSION OCTAVE_FORGE_VERSION
+ DEFAULT_LOADPATH DEFAULT_EXEC_PATH
  octave_config_info
  program_name argv
  program_invocation_name
- ERRNO error_text
+ ERRNO 
 Variables
  LOADPATH EXEC_PATH IMAGEPATH
 
@@ -231,7 +232,7 @@ Date conversion
 Controlling subprocesses
  system
  popen popen2 pclose
- fork exec pipe waitpid
+ fork exec pipe waitpid kill
  EXEC_PATH sleep usleep
 Process information
  getrusage
@@ -251,7 +252,6 @@ Password Database
  endpwent
 Group Database
  getgrent
- getgrid
  getgrnam
  setgrent
  endgrent
@@ -295,6 +295,7 @@ Sets
 # catch 
 # return 
 Interpreter interface
+ iskeyword isvarname
  eval 
  evalc 
  feval
@@ -304,6 +305,7 @@ Interpreter interface
  assignin 
  ans 
  input_event_hook atexit 
+ func2str str2func functions
 Constants
  eps 
  realmax 
@@ -350,7 +352,7 @@ User I/O
  input 
  keyboard kbhit
  pause menu
- waitbar
+ waitbar beep
 Inline functions
  inline
  argnames 
@@ -385,13 +387,16 @@ Lists
  reverse
  splice
  leval
+ map
+Operations
+ comma horzcat semicolon vertcat not paren
 
 matrix >> Linear Algehra
 Generating matrices
  zeros 
  ones 
  eye 
- rand 
+ rand texas_lotto
  randn 
  linspace 
  logspace 
@@ -403,7 +408,7 @@ Matrix properties
  isempty 
  isequal 
  isnumeric iscomplex
- islogical 
+ islogical isdefinite
  logical 
  isscalar isvector ismatrix issquare 
  issymmetric is_duplicate_entry
@@ -424,6 +429,7 @@ Rearranging matrices
  ind2sub 
  transpose ctranspose
  prepad postpad shift vec vech
+ permute ipermute squeeze numel
 Special matrices
  compan 
  commutation_matrix
@@ -571,7 +577,7 @@ Special functions
  lambertw
  legendre 
 Number theory
- mod 
+ mod fmod
  rem 
  factor 
  isprime 
@@ -741,6 +747,7 @@ Surface plots
  waterfall 
  fill3 
  sombrero
+ peaks
 
 plotcontrol >> Plot controls
 Figure controls
@@ -778,6 +785,7 @@ Printing
  print 
  printopt 
  orient 
+ dxfwrite
 
 Colour controls
  colormap 
@@ -812,7 +820,7 @@ View control
  viewmtx 
  rotate3d 
 User input
- ginput gget grab gzoom
+ ginput gget grab gzoom gpick
  dragrect 
  rbbox 
 Gnuplot Interface
@@ -827,7 +835,7 @@ Basic handle operations
  fclose 
  fread 
  fwrite 
- ferror 
+ ferror perror strerror
  feof 
  fseek 
  ftell 
@@ -837,7 +845,7 @@ Basic handle operations
  dup2
  fcntl
  stdin stdout stderr
- isstream
+ isstream isstreamoff streamoff
 Formatted I/O
  fgetl 
  fgets 
@@ -848,6 +856,8 @@ Formatted I/O
  scanf
 File operations
  tempdir 
+ mkstemp
+ tmpfile
  tmpnam
  tempname = use <f>tmpnam</f>
  prefdir 
@@ -870,6 +880,8 @@ Import/Export
  textread
  dlmread 
  dlmwrite 
+ xmlread
+ xmlwrite
  wk1read 
  wk1write 
  auload
@@ -882,5 +894,6 @@ Import/Export
 extra >> Extra packages
 Finance
  fv fvl irr nper npv pmt pv pvl rate vol
-
+Server
+ listen send send_error
 

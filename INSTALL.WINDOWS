@@ -330,7 +330,7 @@ mkdir -p  $OCTAVEM/symband
 mkdir -p  $OCTAVEM/time
 mkdir -p  $OCTAVEM/tsa
 
-cp -r $OCTAVEFORGE/extra/Windows/*.m  $OCTAVEM/image
+cp -r $OCTAVEFORGE/extra/Windows/*.m  $OCTAVEM/general
 cp -r $OCTAVEFORGE/extra/integration/*.m  $OCTAVEM/integration
 cp -r $OCTAVEFORGE/extra/ode/*.m  $OCTAVEM/ode
 cp -r $OCTAVEFORGE/extra/testfun/*.m  $OCTAVEM/testfun

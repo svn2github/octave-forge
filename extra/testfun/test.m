@@ -14,12 +14,12 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## test('name')
+## test name
 ##   Perform tests interactively, stopping at the first error.
 ##   Tests are from the first file matching 'name', 'name.m' 
 ##   in your loadpath.
 ##
-## test('name', ['quiet'|'normal'|'verbose'])
+## test name quiet|normal|verbose
 ##   Perform tests interactively, stopping at the first error.
 ##   'quiet': Don't report all the tests as they happen, just the errors.
 ##   'normal': Report all tests as they happen, but don't do tests
@@ -42,6 +42,9 @@
 ##   Extract the contents of the demo blocks, but do not execute them.
 ##   code is the concatenation of all the code blocks and
 ##   idx is a vector of positions of the ends of the demo blocks.
+##
+## test('', 'explain', fid)
+##   Write an explanation of the line markers to the file fid.
 ##
 ## This function process the named script file looking for lines which
 ## start with "%! ".  The prefix is stripped off and the rest of the
@@ -159,11 +162,11 @@
 ## any extension and it will be picked up by the test procedure.  You
 ## can even embed tests directly in your C++ code:
 ##    #if 0
-##    %! disp('this is a test')
+##    %!test disp('this is a test')
 ##    #endif
 ## or
 ##    /*
-##    %! disp('this is a test')
+##    %!test disp('this is a test')
 ##    */
 ## but then the code will have to be on the load path and the user 
 ## will have to remember to type test('name.cc').  Conversely, you
@@ -179,18 +182,12 @@
 ## TODO: to make a functional form of error blocks, which means we
 ## TODO: can include them in test sections which means that we can use
 ## TODO: octave flow control for both kinds of tests.
-## TODO: * Show pretty shared variable definitions if failure, which
-## TODO: will help determine why things are failing when you abstract
-## TODO: details of the test into shared variables; alternatively, use
-## TODO: some sort of line number, but that sounds complicated to
-## TODO: recover and won't help if we have multiple tests in the same
-## TODO: block.
 
 ## PKG_ADD: mark_as_command test
 
 function [__ret1, __ret2] = test (__name, __flag, __fid)
   if (nargin < 2 || isempty(__flag))
-    __flag = 'normal';
+    __flag = 'quiet';
   endif
   if (nargin < 3) 
     __fid = []; 
@@ -199,6 +196,13 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     usage("success = test('name', ['quiet'|'normal'|'verbose'], fid)");
   endif
   __batch = (!isempty(__fid));
+
+  ## information from test will be introduced by "key" 
+  persistent __signal_fail =  "!!!!! ";
+  persistent __signal_empty = "????? ";
+  persistent __signal_error = "  ##### ";
+  persistent __signal_block = "  ***** ";
+  persistent __signal_file =  ">>>>> ";
 
   if (strcmp(__flag, "normal"))
     __grabdemo = 0;
@@ -222,16 +226,21 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     __verbose = 0;
     __demo_code = "";
     __demo_idx = 1;
+  elseif (strcmp(__flag, "explain"))
+    fputs (__fid, ["# ", __signal_file,  " new test file\n"]);
+    fputs (__fid, ["# ", __signal_empty, " no tests in file\n"]);
+    fputs (__fid, ["# ", __signal_fail,  " test had an unexpected result\n"]);
+    fputs (__fid, ["# ", __signal_block, " code for the test\n"]);
+    fputs (__fid, ["# ", __signal_error, " error message from the test\n"]);
+    fputs (__fid, "# Search for the unexpected results in the file\n");
+    fputs (__fid, "# then page back to find the file name which caused it.\n");
+    fputs (__fid, "# The result may be an unexpected failure (in which\n");
+    fputs (__fid, "# case an error will be reported) or an unexpected\n");
+    fputs (__fid, "# success (in which case no error will be reported).\n");
+    return;
   else
     error(["test unknown flag '", __flag, "'"]);
   endif
-
-  ## information from test will be introduced by "key" 
-  __signal_fail =  "!!!!! ";
-  __signal_empty = "????? ";
-  __signal_error = "  ##### ";
-  __signal_block = "  ***** ";
-  __signal_file =  ">>>>> ";
 
   ## decide if error messages should be collected
   if (__batch)
@@ -261,6 +270,13 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
 
   ## grab the test code from the file
   __body = system([ "sed -n 's/^%!//p' '", __file, "'"]);
+  ## XXX FIXME XXX quick hack --- try sed a few times
+  __attempt = 0;
+  while isempty(__body) && __attempt < 6
+    __body = system([ "sed -n 's/^%!//p' '", __file, "'"]);
+    __attempt++;
+  endwhile
+
   if (isempty (__body))
     if (__grabdemo)
       __ret1 = "";
@@ -271,11 +287,11 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     endif
     return;
   else
-    ## assume it starts and ends with test blocks
+    ## add a dummy comment block to the end for ease of indexing
     if (__body (length(__body)) == "\n")
-      __body = [ "\ntest\n", __body, "test" ]; 
+      __body = [ "\n", __body, "#" ]; 
     else
-      __body = [ "\ntest\n", __body, "\ntest" ]; 
+      __body = [ "\n", __body, "\n#" ]; 
     endif
   endif
 
@@ -318,7 +334,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     ## assume the block will succeed;
     __success = 1;
     __msg = [];
-    
+
     ## DEMO
     ## If in __grabdemo mode, then don't process any other block type.
     ## So that the other block types don't have to worry about
@@ -326,6 +342,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     ## types and skips those which aren't demo blocks.
     __isdemo = strcmp (__type, "demo");
     if (__grabdemo || __isdemo)
+      __istest = 0;
 
       if (__grabdemo && __isdemo)
 	if (isempty(__demo_code))
@@ -353,6 +370,8 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       
     ## SHARED
     elseif strcmp (__type, "shared")
+      __istest = 0;
+
       ## separate initialization code from variables
       __idx = find(__code == "\n");
       if (isempty(__idx))
@@ -390,11 +409,13 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     
     ## ASSERT
     elseif strcmp (__type, "assert")
+      __istest = 1;
       __code = __block; # put the assert keyword back on the code
       ## assert code will be evaluated below 
       
     ## ERROR
     elseif strcmp (__type, "error")
+      __istest = 1;
       try
       	eval(["function ", __shared_r, "__test__(", __shared, ")\n", ...
 	      __code, "\nendfunction"]);
@@ -424,14 +445,17 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       
     ## TEST
     elseif strcmp(__type, "test")
+      __istest = 1;
       ## code will be evaluated below
       
     ## comment block
     elseif strcmp (__block(1:1), "#")
+      __istest = 0;
       __code = ""; # skip the code
 
     else
     ## unknown block
+      __istest = 1;
       __success = 0;
       __msg = [ __signal_fail, "unknown test type!\n"];
       __code = ""; # skip the code
@@ -474,8 +498,8 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       	return;
       endif
     endif
-    __tests++;
-    __successes+=__success;
+    __tests += __istest;
+    __successes += __success*__istest;
   endfor
 
   if (nargout == 0)
@@ -584,22 +608,24 @@ endfunction
 %! and it  stays as a comment even through continuation lines
 %! which means that it works well with commenting out whole tests
 
-%!## failure tests.  All the following should fail
-%!test   error("---------Failure tests.  Use test('test','verbose',1)");
-%!test   assert([a,b,c],[1,3,6]);   # variables have wrong values
-%!bogus                     # unknown block type
-%!error  toeplitz([1,2,3]); # correct usage
-%!test   syntax errors)     # syntax errors fail properly
-%!shared garbage in         # variables must be comma separated
-%!error  syntax++error      # error test fails on syntax errors
-%!error  "succeeds.";       # error test fails if code succeeds
-%!demo   with syntax error  # syntax errors in demo fail properly
-%!shared a,b,c              
-%!demo                      # shared variables not available in demo
-%! assert(exist("a"))
-%!error  
-%! test('/etc/passwd');
-%! test("nonexistent file");
-%! ## These don't signal an error, so the test for an error fails. Note 
-%! ## that the call doesn't reference the current fid (it is unavailable),
-%! ## so of course the informational message is not printed in the log.
+% !# failure tests.  All the following should fail. These tests should
+% !# be disabled unless you are developing test() since users don't
+% !# like to be presented with expected failures.  I use % ! to disable.
+% !test   error("---------Failure tests.  Use test('test','verbose',1)");
+% !test   assert([a,b,c],[1,3,6]);   # variables have wrong values
+% !bogus                     # unknown block type
+% !error  toeplitz([1,2,3]); # correct usage
+% !test   syntax errors)     # syntax errors fail properly
+% !shared garbage in         # variables must be comma separated
+% !error  syntax++error      # error test fails on syntax errors
+% !error  "succeeds.";       # error test fails if code succeeds
+% !demo   with syntax error  # syntax errors in demo fail properly
+% !shared a,b,c              
+% !demo                      # shared variables not available in demo
+% ! assert(exist("a"))
+% !error  
+% ! test('/etc/passwd');
+% ! test("nonexistent file");
+% ! ## These don't signal an error, so the test for an error fails. Note 
+% ! ## that the call doesn't reference the current fid (it is unavailable),
+% ! ## so of course the informational message is not printed in the log.

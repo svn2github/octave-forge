@@ -1,6 +1,11 @@
 #include "ov-re-tri.h"
 
 
+octave_tri::octave_tri(void):
+  octave_matrix(Matrix(0,0)), tri(Upper)
+{
+}
+
 octave_tri::octave_tri(const Matrix &m, tri_type t):
   octave_matrix(m), tri(t)
 {

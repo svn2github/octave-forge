@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.20  2003/11/23 14:21:39  adb014
+Octave CVS now requires void constructors for register_type
+
 Revision 1.19  2003/11/21 05:10:17  pkienzle
 Slightly improved formatting of warning message
 
@@ -215,6 +218,7 @@ octave_complex_sparse : public octave_base_value
 {
 public:
 
+   octave_complex_sparse (void);
    octave_complex_sparse (SuperMatrix A );
   ~octave_complex_sparse (void);
    octave_complex_sparse (const octave_complex_sparse& S);
@@ -276,6 +280,7 @@ octave_sparse : public octave_base_value
 {
 public:
 
+   octave_sparse (void);
    octave_sparse (SuperMatrix A );
   ~octave_sparse (void);
    octave_sparse (const octave_sparse& S);

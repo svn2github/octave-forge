@@ -85,6 +85,11 @@ octave_complex_sparse::octave_complex_sparse (SuperMatrix A )
    X= A;
 }
 
+octave_complex_sparse::octave_complex_sparse (void )
+{
+   DEBUGMSG("complex_sparse( void)");
+}
+
 octave_complex_sparse::~octave_complex_sparse (void)
 {
    DEBUGMSG("complex_sparse destructor");
@@ -1545,6 +1550,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.20  2003/11/23 14:21:38  adb014
+ * Octave CVS now requires void constructors for register_type
+ *
  * Revision 1.19  2003/10/18 04:55:47  aadler
  * spreal spimag and new tests
  *

@@ -33,6 +33,7 @@ public:
     Lower=1
   };
 
+   octave_tri(void);
    octave_tri(const Matrix &m, tri_type t);
    ~octave_tri(void);
    octave_tri (const octave_tri& D);

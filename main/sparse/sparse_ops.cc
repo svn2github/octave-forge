@@ -66,6 +66,11 @@ SuperMatrix assemble_sparse( int n, int m,
 // Octave sparse methods
 //
 
+octave_sparse::octave_sparse (void )
+{
+      DEBUGMSG("sparse( void)");
+}
+
 octave_sparse::octave_sparse (SuperMatrix A )
 {
       DEBUGMSG("sparse( SuperMatrix A)");
@@ -1247,6 +1252,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.16  2003/11/23 14:21:39  adb014
+ * Octave CVS now requires void constructors for register_type
+ *
  * Revision 1.15  2003/08/29 20:46:53  aadler
  * fixed bug in indexing
  *

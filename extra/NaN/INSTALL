@@ -1,0 +1,34 @@
+
+Installing the NaN-tb with Octave:
+----------------------------------
+a) You need repmat.m (e.g. from P.Kienzle's MATCOMPAT) 
+    If you havenot installed it yet, you should do it now. 
+
+b) extract files from NaNnnn.tar.gz and move them into 
+.../octave/.../m/statistics/base/ 
+
+c) Alternatively, the files can be moved into any other directory; but you 
+must remove from .../octave/.../m/statistics/base/ 
+mean.m, meansq.m, median.m, moment.m, skewness.m, kurtosis.m, std.m, var.m
+and from .../source_forge/.../statistics/*
+zscore.m, mad.m, geomean.m, harmmean.m 
+
+d) (re-)start Octave and run NANTEST. 
+This checks whether all previous functions have been replaced
+
+
+Installing the NaN-tb for Matlab:
+----------------------------------
+Ensure that the NaN-directory is first in your path. This should override any 
+alternative function definition (except built-in's) with the same name. 
+
+(re-)start Matlab or clear functions and run NANTEST. 
+This checks whether all previous functions have been replaced
+
+
+
+	Version 1.15
+	12 Mar 2002
+	Copyright (c) 2000-2002 by  Alois Schloegl
+	a.schloegl@ieee.org	
+	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

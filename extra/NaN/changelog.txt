@@ -1,0 +1,87 @@
+.changelog NaN-toolbox
+
+Known bugs: 
+- argument opt in MEAN must be third argument when using Octave 2.0.x (tested with 2.0.14)
+    reason: incorrect isnumeric() (no way to evaluate type (string or numeric) of input argument 
+
+
+      14.03.02	FLAG_IMPLICIT_UNBIASED_ESTIM and FLAG_IMPLICIT_SKIP_NAN: 
+		Warning included that FLAG* might become obsolete.
+      13.03.02	SUMSKIPNAN: nargout check included
+      12.03.02	SUMSQ removed (because Octave has a built-in SUMSQ which cannot be replaced by SUMSQ.M)
+		COEFFICIENT_OF_VARIATION, SEM, KURTOSIS and STATISTIC minor bug fixed
+		NANTEST included
+      12.03.02	remove doc about IMPLICIT_SKIP_NAN and IMPLICIT_UNBIASED_ESTIM from all functions 
+      11.03.02  IMPLICIT_SKIP_NAN help modified 
+      11.03.02  IMPLICIT__UNBIASED_ESTIM help modified 
+      11.03.02  coefficient_of_variation NEW
+      08.03.02  ZSCORE: check for empty input 
+      07.03.02  STATISTIC: multiple output parameters possible  
+      04.03.02  SUMSKIPNAN bug fixed
+		IMPLICIT_SKIP_NAN changed to FLAG_IMPLICIT_SKIP_NAN
+		IMPLICIT_UNBIASED_ESTIMATION changed to FLAG_IMPLICIT_UNBIASED_ESTIM 
+		(FLAG_IMPLICIT_UNBIASED_ESTIMATION would be too long)
+		all other functions modified
+		README.TXT modified
+      04.03.02  License change, everything is GPL now.  	
+      03.03.02  GEOMEAN, HARMMEAN, MAD and ZSCORE included
+      03.03.02  STATISTIC: MAD included
+      03.03.02	VAR 	modified (if arg2, warning is given only for Matlab users, 
+			because only matlab users are affected)
+      03.03.02  FLAG_implicit_skip_nan implemented
+		IMPLICIT_SKIP_NAN.M new
+		SUMSKIPNAN uses FLAG_implicit_skip_nan
+      02.03.02	V1.12 global FLAG "FLAG_implicit_unbiased_estimation" implemented in
+		VAR, STD, STATISTIC, SKEWNESS, KURTOSIS, MOMENT
+		IMPLICIT_UNBIASED_ESTIMATION.M new
+      01.03.02	KURTOSIS, SKEWNESS, MOMENT included
+                the tools are now compatible to OCTAVE
+      27.02.02	STATISTIC  V1.11	minor bug fixed	
+18:39 25.02.02	SUMSKIPNAN V1.10	and workaround for bug in Octave 2.1.x implemented. 
+				(sum is buggy when DIM=1 and X=row vector)
+18:39 25.02.02	STATISTIC  V1.10	skewness and kurtosis included, minor bug fixed	
+19:56 22.02.02	SUMSKIPNAN V1.09 	Check of OCTAVE_VERSION modified to >=5 instead ==5
+
+22:17 16.02.02	STATISTIC	minor bug fixed, Sum of 3rd,4th and 5th power included
+      08.02.02	STATISTIC	extended by central moments CM#
+      08.02.02	STE changed to SEM
+      08.02.02	sumskipnan	comments modified
+16:46 27.01.02	COVM		minor modifications
+19:02 20.01.02	MDURLEV	NaN-version included
+00:09 19.01.02	SUMSKIPNAN	count of valid elements as second output
+			MEAN		modified, utilizes 2nd output argument of sumskipnan
+			COVM		!! NEW !!
+11:50 26.04.01	DETREND 	moved to TSA-toolbox
+
+15:59 13.04.01  all functions: license clarified, original author mentioned, if there was any	
+		VAR		change: biased estimation removed, recommend to use MEANSQ
+		STD		modified
+		MEDIAN	included (for 2 dimensions)
+
+15:52 12.04.01	SUMSQ		new
+		MEANSQ	new
+
+15:33 11.04.01	RMS		bug fixed
+14:59 3/26/01	VAR		Warning messages corrected
+14:40 3/26/01	RMS		root mean square included
+
+16:39 18/03/01	SUMSKIPNAN 	was NANSUM, but SUMSKIPNAN results 0 in case of NaN's only.  
+
+12:50 3/17/01	MEAN		options 'G' and 'H' included, bug in geometric mean fixed
+		all		docu improved
+		VAR		Warning message improved for case with ambigous argument
+
+00:46 17.03.01  VAR		modified, 
+				biased and unbiased estimate implemented
+		README	remarks on MIN, MAX, ALL and ANY included
+
+23:30 3/14/01	MEAN, NANSUM	made compatible to Octave 
+
+16:12 3/4/01	MEAN		warning off - no more division-by=zero warnings
+
+16:33 2/28/01	MEAN		Documentation improved
+
+15:40 2/28/01	NANSUM	Matlab version improved.
+
+15:40 2/24/01	NANSUM	compatibility to Octave included
+

@@ -39,7 +39,9 @@ extern "C" {
 #endif
 #include <octave/oct.h>
 
-char *qh_version = "delaunayn.oct 2003-12-14";
+#ifdef NEED_QHULL_VERSION
+char qh_version[] = "delaunayn.oct 2003-12-14";
+#endif
 FILE *outfile = stdout;
 FILE *errfile = stderr;
 char flags[250];

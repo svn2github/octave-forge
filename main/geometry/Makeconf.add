@@ -1,1 +1,2 @@
-@DEFHAVE_LIBQHULL@
+HAVE_QHULL=@have_qhull@
+NEED_QHULL_VERSION=@need_qhull_version@

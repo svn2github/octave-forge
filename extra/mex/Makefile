@@ -15,26 +15,28 @@ man1dir = $(mandir)/man1
 
 .PHONY: install
 
-all: mex.o mex
+MEXLIB=libmex.$(SHLEXT)
 
-mex.o: mex.cc mex.h matrix.h
-	$(MKOCTFILE) -c mex.cc
+all: $(MEXLIB) mex
+
+$(MEXLIB): mex.cc mex.h matrix.h
+	$(MKOCTFILE) $(HAVE_OCTAVE_MAP_INDEX) -o $(MEXLIB) mex.cc
 
 mex: mex.in
-	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):" -e "s:@OPATH@:$(OPATH):g" > mex
+	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):;s:@OPATH@:$(OPATH):g;s:@MEXLIB@:$(MEXLIB):g" > mex
 	chmod a+x mex
 
 install:
 ifdef LEAVEHERE
-	@echo "Leaving mex.o, mex.h and matrix.h in place --- do not remove!"
+	@echo "Leaving $(MEXLIB), mex.h and matrix.h in place --- do not remove!"
 else
 	 if ! test -e $(OPATH) ; then \
 	  echo creating $(OPATH) ; \
 	  $(INSTALL) -d $(OPATH) ; \
 	fi
 	 if test -d $(OPATH) ; then \
-	  echo installing mex/mex.o mex/mex.h mex/matrix.h in $(OPATH) ; \
-	  $(INSTALL_DATA) mex.o $(OPATH)/mex.o ; \
+	  echo installing $(MEXLIB) mex/mex.h mex/matrix.h in $(OPATH) ; \
+	  $(INSTALL_DATA) $(MEXLIB) $(OPATH)/$(MEXLIB) ; \
 	  $(INSTALL_DATA) mex.h $(OPATH)/mex.h ; \
 	  $(INSTALL_DATA) matrix.h $(OPATH)/matrix.h ; \
 	fi
@@ -58,4 +60,4 @@ endif
 	  $(INSTALL_PROGRAM) mex $(bindir)/mex ; \
 	fi
 
-clean: ; $(RM) mex mex_* *.o *.oct core octave-core *~
+clean: ; $(RM) mex mex_* $(MEXLIB) *.o *.oct core octave-core *~

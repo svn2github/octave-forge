@@ -112,6 +112,18 @@ x   mexPutArray
 *   mxGetName 
 *   mxSetName 
 
+Struct support
+*   mxIsStruct 
+?   mxCreateStructMatrix 
+*   mxGetNumberOfFields 
+*   mxGetField 
+*   mxGetFieldByNumber 
+*   mxGetFieldNameByNumber 
+*   mxGetFieldNumber 
+?   mxSetField 
+?   mxSetFieldByNumber 
+
+
 The following functions are not implemented:
 
 Types
@@ -180,17 +192,6 @@ x   mxIsCell
 x   mxCreateCellMatrix 
 x   mxSetCell 
 x   mxGetCell 
-
-Struct support
-x   mxIsStruct 
-x   mxCreateStructMatrix 
-x   mxGetNumberOfFields 
-x   mxGetField 
-x   mxGetFieldByNumber 
-x   mxGetFieldNameByNumber 
-x   mxGetFieldNumber 
-x   mxSetField 
-x   mxSetFieldByNumber 
 
 Sparse support
 x   mxCreateSparse 

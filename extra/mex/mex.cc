@@ -374,13 +374,24 @@ public:
   // Get field given field name
   mxArray* field(const std::string& key, const int index) const {
     if (pmap && pmap->contains(key))
+#ifdef HAVE_OCTAVE_MAP_INDEX
       return __mex->make_value((*pmap)[key](index));
+#else
+      return __mex->make_value(pmap->contents(key)(index));
+#endif
     else
       return NULL;
   }
   // Set field given field name
   void field(const std::string& key, const int index, mxArray* value) {
+#ifdef HAVE_OCTAVE_MAP_INDEX
     if (pmap) (*pmap)[key](index) = value->as_octave_value();
+#else
+    if (pmap) 
+      pmap->assign(octave_value(index), 
+		      key, Cell(value->as_octave_value()));
+#endif
+    if (error_state) __mex->abort();
   }
   // Return number of fields in structure
   int num_keys(void) const { return pmap ? pmap->length() : 0; } 
@@ -477,6 +488,8 @@ mxArray* mex::make_value(const octave_value &ov)
   if (ov.is_map())
     {
       pmap = new Octave_map(ov.map_value());
+      nr = ov.rows();
+      nc = ov.columns();
     }
   else if (nr > 0 && nc > 0)
     {
@@ -546,9 +559,17 @@ mxArray *mex::make_value(int nr, int nc, const string_vector& keys)
 {
   if (keys.length() == 0) return NULL;
 
+#ifdef HAVE_OCTAVE_MAP_INDEX
   octave_value_list empty(nr*nc,octave_value());
   Octave_map *pmap = new Octave_map(keys[0],empty);
-  for (int i=1; i < keys.length(); i++) pmap->assign(keys[i],empty);
+  for (int i=1; i < keys.length(); i++) 
+    pmap->assign(keys[i],empty);
+#else
+  Cell empty(nr,nc);
+  Octave_map *pmap = new Octave_map(keys[0],empty);
+  for (int i=1; i < keys.length(); i++)
+    pmap->assign(keys[i],empty);
+#endif
 
   mxArray *value = (mxArray*)malloc(sizeof(mxArray));
   value->rows(nr);
@@ -935,7 +956,7 @@ extern "C" {
   mxArray *mxCreateStructMatrix(int nr, int nc, int num_keys, 
 				const char **keys)
   {
-    mexPrintf("octave mex corrupts memory for returned structures\n");
+    mexWarnMsgTxt("octave mex can't yet create structures\n");
     const string_vector ordered_keys(keys,num_keys);
     mxArray *m = __mex->make_value(nr, nc, ordered_keys);
     return m;

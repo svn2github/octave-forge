@@ -1,22 +1,32 @@
-function [R,X]=histo3(Y)
-% Calculates histogram using optimal overall binwidth. 
-% HIS=HISTO3(Y)
-% 	HIS is a struct with th fields 
-%       HIS.X  are the bin-values 
-%       HIS.H  is the frequency of occurence of value X 
-%  	HIS.N  are the number of valid (not NaN) samples 
+function [R,tix]=histo3(Y)
+% HISTO3 calculates histogram and performs data compression
+% 
+% R = HISTO3(Y)
+% 	R is a struct with th fields 
+%       R.X  are the bin-values 
+%       R.H  is the frequency of occurence of value X 
+%  	R.N  are the number of valid (not NaN) samples 
 %
-% HISTO(Y) 
-%	plots the histogram bar(X,H)
+% Data compression can be performed in this way
+%   	[R,tix] = histo3(Y) 
+%      		is the compression step
 %
-% more histogram-based results can be obtained by HIST2RES2  
+%	R.tix provides a compressed data representation. 
+%	R.compressionratio estimates the compression ratio
 %
-% see also: HIST2RES2, HISTO
+% 	R.X(tix) and R.X(R.tix) 
+%		reconstruct the orginal signal (decompression) 
+%
+% The effort (in memory and speed) for compression is O(n*log(n)).
+% The effort (in memory and speed) for decompression is O(n) only. 
+%
+% see also: HISTO, HISTO2, HISTO3, HISTO4
 %
 % REFERENCE(S):
 %  C.E. Shannon and W. Weaver "The mathematical theory of communication" University of Illinois Press, Urbana 1949 (reprint 1963).
 
-%          05.04.2002   docu modified
+%  V 3.00   9.11.2002   compression included
+%           5.04.2002   docu modified
 %  	   21.02.2002	major changes, single X for all channels
 %  V 2.84  16.02.2002	minor bug fixed	
 %  V 2.83  06.02.2002	
@@ -33,10 +43,8 @@ function [R,X]=histo3(Y)
 %  V 2.63  18.10.1999   multiple rows implemented
 %          26.11.1999   bug fixed (size of H corrected);
 
-%	Version 2.84
-%	last revision 21 Feb 2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Version 3.00  Date: 09 Nov 2002
+%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -53,45 +61,73 @@ function [R,X]=histo3(Y)
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 % Boston, MA  02111-1307, USA.
 
+
 [yr,yc]=size(Y);
 if yr==1,
-        %make sure there is a second row
-        % Due to a bug in SUM with DIM=1 for row vectors, 
+        % Makes sure there is a second row
+        % Sort does not support the DIM-argument, therefore,
         % this function would not work correctly with Octave
-        % Once the bug is fixed, this part can be removed. 
-        Y=[Y; NaN+ones(size(Y))];  
+        % Once this is fixed, this part can be removed. 
+        Y = [Y; NaN+ones(size(Y))];  
 end;
 
 % identify all possible X's and overall Histogram
-sY  = sort(Y(:));
-[ix,iy] = find(diff(sY,1)>0);
-tmp = [ix; sum(~isnan(sY))];
+[sY ,idx] = sort(Y(:));
+[tmp,idx] = sort(idx);        % generate inverse index
+
+ix  = diff(sY,1)>0;
+tmp = [find(ix); sum(~isnan(sY))];
 H   = diff([0; tmp]);
-X   = sY(tmp);
-N   = sum(~isnan(Y),1);
+R.X = sY(tmp);
+R.N = sum(~isnan(Y),1);
+
+
+% generate inverse index
+if nargout>1,
+        tix = cumsum([1;ix]);	% rank 
+        tix = reshape(tix(idx),yr,yc);		% inverse sort rank
+        cc  = 1;
+        tmp = sum(ix)+1;
+	if exist('OCTAVE_VERSION')>=5,
+		; % NOP; no support for integer datatyp 
+        elseif tmp <= 2^8;
+                tix = uint8(tix);
+                cc = 8/1;
+        elseif tmp <= 2^16;
+                tix = uint16(tix);
+                cc = 8/2;
+        elseif tmp <= 2^32;
+                tix = uint32(tix);
+                cc = 8/4;
+        end;
+        R.datatype = 'HISTOGRAM';
+        R.compressionratio = (prod(size(R.X)) + (yr*yc)/cc) / (yr*yc);
+	R.tix = tix;        
+end;
+
 
 % if yc==1, we are all set; else 
 if yc>1,	% a few more steps are necessary
         H0 = H; %overall histogram	
         % allocate memory
-        H = zeros(size(X,1),yc);
+        H = zeros(size(R.X,1),yc);
         
         % scan each channel
-        for k=1:yc,
+        for k = 1:yc,
 		sY = sort(Y(:,k));
 		ix = find(diff(sY,1)>0);
                 if size(ix,1)>0,
-                        tmp = [ix; N(k)];
+                        tmp = [ix; R.N(k)];
                 else
-                        tmp = N(k);
+                        tmp = R.N(k);
                 end;
                 
                 t = 0;
                 j = 1;
                 for x = tmp',
                         acc = sY(x);
-                        while X(j)~=acc, j=j+1; end;
-                        %j = find(sY(x)==X);   % identify position on X 
+                        while R.X(j)~=acc, j=j+1; end;
+                        %j = find(sY(x)==R.X);   % identify position on X 
                         H(j,k) = H(j,k) + (x-t);  % add diff(tmp)
                         t = x;
                 end;
@@ -102,20 +138,7 @@ if yc>1,	% a few more steps are necessary
         end;	
 end;
 
-if nargout == 0,
-        if exist('OCTAVE_VERSION')<5
-                bar(X,H,'stacked');
-        else
-                bar(X,H0);   % multidim H is not possible in OCTAVE 2.1.35
-        end
-        
-elseif nargout==1,
-        R.datatype = 'HISTOGRAM';
-        R.H = H;
-        R.X = X;
-        R.N = N; %sumskipnan(H,1);
-else
-        R   = H;
-end;
+R.H = H;
+
 
  

@@ -1,8 +1,8 @@
 % Time Series Analysis (Ver 3.00)
 % Schloegl A. (1996-2002) Time Series Analysis - A Toolbox for the use with Matlab. 
-% WWW: http://www.dpmi.tu-graz.ac.at:~schloegl/matlab/tsa
+% WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
 %
-%	Version 3.00    Date: 24.09.2002
+%	Version 3.00    Date: 10.11.2002
 %	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>
 %
 %  Time Series Analysis - a toolbox for the use with Matlab
@@ -19,7 +19,7 @@
 %   invest0	(*) a prior investigation (used by invest1)
 %   invest1	(*) investigates signal (useful for 1st evaluation of the data)
 %   selmo	(*) Select Order of Autoregressive model using different criteria
-%   histo3	(*) histogram
+%   histo	(*) histogram
 %   hup     	(*) test Hurwitz polynomials
 %   ucp     	(*) test Unit Circle Polynomials   
 %   y2res	(*) computes mean, variance, skewness, kurtosis, entropy, etc. from data series 

@@ -6,7 +6,8 @@ PSDOC = fixed.ps
 DOCS = $(INFODOC) $(PSDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
-DELETES = *.log *.dvi *.ps *.pdf *.info $(DOCS) $(DOCSTRINGS) $(FIXEDVERTARGET) fixed.texi *.html *~
+TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) fixed.texi *~
+DELETES = *.ps *.pdf *.info $(DOCS) *.html
 
 all : $(INFODOC) $(PSDOC)
 
@@ -70,7 +71,10 @@ $(FIXEDVERTARGET) :
 
 clean:
 	@echo "Cleaning..."; \
-	$(RM) -f $(DELETES)
+	$(RM) -f $(TMPDELETES)
+
+realclean: clean
+	@$(RM) -f $(DELETES)
 
 count:
 	wc *.txi

@@ -6,8 +6,8 @@ TEXIDOC = $(patsubst %.info,%.texi,$(INFODOC))
 DOCS = $(INFODOC) $(PSDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
-DELETES = *.log *.dvi *.ps *.pdf *.info $(DOCS) $(DOCSTRINGS) $(TEXIDOC) \
-	 *.html *~
+TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(TEXIDOC) *~
+DELETES = *.ps *.pdf *.info $(DOCS) *.html
 
 all : $(INFODOC) $(PSDOC)
 
@@ -62,7 +62,10 @@ install :
 
 clean:
 	@echo "Cleaning..."; \
-	$(RM) -f $(DELETES)
+	$(RM) -f $(TMPDELETES)
+
+realclean: clean
+	@$(RM) -f $(DELETES)
 
 count:
 	wc *.txi

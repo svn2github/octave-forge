@@ -109,10 +109,10 @@ else
 	-Wl,--out-implib=$(FIXEDLIBTARGET).a
 endif
 
-ifeq ($(MAKECMDGOALS)),all)
+ifeq ($(MAKECMDGOALS),all)
   DEPENDS = $(FIXEDDEPENDS)
 endif
-ifeq ($(MAKECMDGOALS)),)
+ifeq ($(MAKECMDGOALS),)
   DEPENDS = $(FIXEDDEPENDS)
 endif
 
@@ -208,6 +208,8 @@ fixed-int.o : int/fixed.cc
 clean: $(SUBDIRS)
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
+
+realclean: clean $(SUBDIRS)
 
 count: $(SUBDIRS)
 	wc *{.cc,.h,.m} int/*.{cc,h}

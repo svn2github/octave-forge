@@ -75,6 +75,8 @@ clean: $(SUBDIRS)
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
+realclean: clean $(SUBDIRS)
+
 count: $(SUBDIRS)
 	wc *{.cc,.h,.m,.txi}
 

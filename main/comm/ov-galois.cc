@@ -38,6 +38,13 @@ Open Source Initiative (www.opensource.org)
 #define lo_ieee_nan_value() octave_NaN
 #endif
 
+#include <memory>
+#ifndef OCTAVE_LOCAL_BUFFER
+#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
+  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
+  T *buf = buf ## _auto_ptr.get ()
+#endif
+
 DEFINE_OCTAVE_ALLOCATOR(octave_galois);
 
 #ifdef TYPEID_HAS_CLASS

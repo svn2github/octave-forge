@@ -12,8 +12,12 @@
 ##	5. Change your current directory to /incoming ("cd /incoming") 
 ##	6. Upload the desired files for the release ("put filename") 
 ##
-## Finally, log in to your source forge account and go to 
+## Finally, log in to your source forge account and use the following
+## page to announce the new release of the package:
 ## https://sourceforge.net/project/admin/qrs.php?package_id=2841&group_id=2888
+##
+## You may also want to send an announcement to 
+## octave-sources@bevo.che.wisc.edu
 
 # base name of the project
 PROJECT=octave-forge
@@ -26,14 +30,10 @@ ROOT=$PROJECT-`date +%Y.%m.%d`
 cvs rtag $TAG $PROJECT
 
 # extract the tree into a tagged directory
-# prune empty directories.  Note that empty build
-# directories (e.g., main/audio/bin) will have
-# an empty file (e.g., main/audio/bin/.keepme) so
-# that they don't get pruned.
-cvs export -r $TAG -d $ROOT -P $PROJECT
+cvs export -r $TAG -d $ROOT $PROJECT
 
 # generate configure script
-( cd $ROOT ; ./autogen.h )
+( cd $ROOT ; ./autogen.sh )
 
 # build the tar ball
 tar czf $ROOT.tar.gz $ROOT

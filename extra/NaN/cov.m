@@ -23,7 +23,7 @@ function CC = cov(X,Y,Mode);
 % http://mathworld.wolfram.com/Covariance.html
 
 
-%	$REevision$
+%	$Revision$
 %	$Id$
 %	Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
 
@@ -47,9 +47,14 @@ if nargin==1
         Mode = 0;
         Y = [];
 elseif nargin==2,
-	if all(size(Y)==1) & any(Y==[0,1])
-                Mode = Y;
-                Y =[];
+	% if all(size(Y)==1) & any(Y==[0,1]); 	% This is not compatible with octave 
+	% short-circuit evaluation is required  
+	% but for compatibility to matlab, && is avoided  
+	SW = all(size(Y)==1);
+	if SW, SW = any(Y==[0,1]); end;
+	if SW,
+		Mode = Y;
+                Y = [];
         else
                 Mode = 0;        
                 if ~exist('OCTAVE_VERSION'), 	% if Matlab,

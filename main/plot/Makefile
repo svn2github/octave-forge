@@ -1,6 +1,6 @@
 sinclude ../../Makeconf
 
-PROGS = ginput.oct grab.oct gtext.oct gzoom.oct
+PROGS = grab.oct gtext.oct gzoom.oct
 
 ifndef OCTAVE_FORGE
 	MKOCTFILE = mkoctfile
@@ -18,9 +18,6 @@ all:
 endif
 
 $(PROGS:.oct=.o): graphics.h
-
-ginput.oct: ginput.o graphics.o
-	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@
 
 grab.oct: grab.o graphics.o
 	$(MKOCTFILE) $< graphics.o $(X_CFLAGS) $(X_LIBS) -o $@

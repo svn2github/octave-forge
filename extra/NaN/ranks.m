@@ -40,7 +40,7 @@ function r = ranks(X,Mode);
 % + compatible with Octave and Matlab
 
 
-if nargin<2, Mode=''; end;
+if nargin<2, Mode='  '; end;
 
 [N,M]=size(X);
 if (N==1) & (M>0)
@@ -70,15 +70,16 @@ elseif strcmp(Mode(1:min(11,length(Mode))),'advanced   '), % advanced
         % we sort each column separately:
         
         r = zeros(size(X));
+        n = N;
         for k = 1:M,
                 [sX,ix] = sort(X(:,k)); 
                 [tmp,r(:,k)] = sort(ix);	    % iy yields the rank of each element 	
                 
                 % identify multiple occurences (not sure if this important, but implemented to be compatible with traditional version)
                 if isnumeric(X)
-                        N=sum(~isnan(X(:,k)));
+                        n=sum(~isnan(X(:,k)));
                 end;
-                x = [0;find(sX~=[sX(2:end);N])];    % for this reason, cells are not implemented yet.   
+                x = [0;find(sX~=[sX(2:N);n])];    % for this reason, cells are not implemented yet.   
                 d = find(diff(x)>1);
                 
                 % correct rank of multiple occurring elements

@@ -70,7 +70,7 @@
 ##
 ## tol, t  ctl(2) : Threshold in termination test chosen by 'crit'  <10*eps>
 ##
-## argn, n ctl(3) : Position of the minimized argument in args           <1>
+## narg, n ctl(3) : Position of the minimized argument in args           <1>
 ## maxev,m ctl(4) : Maximum number of function evaluations             <inf>
 ## id2f, i ctl(5) : 0 if d2f returns the 2nd derivatives, 1 if           <0>
 ##                  it returns its pseudo-inverse.

@@ -58,7 +58,7 @@
 ##
 ## tol, t ctl(2)  : Threshold in termination test chosen by 'crit'  <10*eps>
 ##
-## argn  ctl(3)  : Position of the minimized argument in args            <1>
+## narg  ctl(3)  : Position of the minimized argument in args            <1>
 ## maxev ctl(4)  : Maximum number of function evaluations. This number <inf>
 ##                 may be slightly exceeded.
 ## isz   ctl(5)  : Size of initial simplex, which is :                   <1>

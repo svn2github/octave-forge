@@ -70,7 +70,7 @@
 ##                  utol=tol (c=2) or dtol=tol (c=3)                     <1>
 ## tol,  t ctl(2) : Threshold of termination test chosen by 'crit'  <10*eps>
 ##
-## argn, n ctl(3) : Position of the minimized argument in args           <1>
+## narg, n ctl(3) : Position of the minimized argument in args           <1>
 ## maxev,m ctl(4) : Maximum number of function evaluations             <inf>
 ## 
 ## df   ,s        : Use dfx = s(args) to compute derivative of f().

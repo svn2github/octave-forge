@@ -156,7 +156,7 @@ The lowest index value is zero.\n\
   ifstream::pos_type flen = file.tellg();
   file.seekg(0, ios::beg);
 
-  char line[(long int)flen];
+  OCTAVE_LOCAL_BUFFER(char,line,(long int)flen);
   
   unsigned long nr = 0, nc = 0, curr_len = 0,colIdx;
   queue<Complex> lineq;

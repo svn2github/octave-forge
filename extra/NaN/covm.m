@@ -17,17 +17,20 @@ function [CC,NN] = covm(X,Y,Mode);
 % 	C is additive, i.e. it can be applied to subsequent blocks and summed up afterwards
 % 	the mean (or sum) is stored on the 1st row and column of C
 %
-% Mode = 'D' detrended mode
+% Mode = 'D' or 'D0' detrended mode
 %	the mean of X (and Y) is removed. If combined with extended mode (Mode='DE'), 
 % 	the mean (or sum) is stored in the 1st row and column of C. 
+% 	The default scaling is factor (N-1). 
+% Mode = 'D1' is the same as 'D' but uses N for scaling. 
 %
 % C = covm(...); 
 % 	C is the scaled by N in Mode M and by (N-1) in mode D.
 % [C,N] = covm(...);
-%	C is not scaled, provides the scaling factor   
+%	C is not scaled, provides the scaling factor N  
 %	C./N gives the scaled version. 
 
-%	Version 1.28   Date: 10.Oct.2002
+%	$Revision$
+%	$Id$
 %	CopyLeft (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -55,6 +58,8 @@ if nargin<3,
 		if tmp,
 		        Mode=Y;
                         Y=[];
+                elseif isscalar(Y) & any(Y==[0,1])
+                        Mode=int2str(Y);
                 else
                         Mode='M';
                 end;
@@ -102,8 +107,12 @@ if ~isempty(Y),
         
 	        if any(Mode=='D'), % detrending mode
         		X  = X - ones(r1,1)*(S1./N1);
-                	Y  = Y - ones(r1,1)*(S2./N2);
-                        NN = max(NN-1,0);
+                        Y  = Y - ones(r1,1)*(S2./N2);
+                        if any(Mode=='1'),  %  'D1'
+                                NN = NN;
+                        else   %  'D0'       
+                                NN = max(NN-1,0);
+                        end;
                 end;
                 
                 X(isnan(X)) = 0; % skip NaN's
@@ -115,7 +124,7 @@ if ~isempty(Y),
                         CC = [r1, S1; S2', CC ];
                 end;
 	end;
-	
+        
 else        
         if ~any(Mode=='ED')        
         	NN = real(~isnan(X)')*real(~isnan(X));
@@ -126,7 +135,11 @@ else
                 NN = real(~isnan(X)')*real(~isnan(X));
         	if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);
-                        NN = max(NN-1,0);
+                        if any(Mode=='1'),  %  'D1'
+                                NN = NN;
+                        else  %  'D0'      
+                                NN = max(NN-1,0);
+                        end;
                 end;
                 
                 X(isnan(X)) = 0; % skip NaN's

@@ -1,15 +1,21 @@
-function CC = cov(X,Y);
+function CC = cov(X,Y,Mode);
 % COV covariance matrix
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
 % The output gives NaN only if there are insufficient input data
+% The mean is removed from the data. 
 %
-% C = COV(X);
+% C = COV(X [,Mode]);
 %      calculates the (auto-)correlation matrix of X
-% C = COV(X,Y);
-%      calculates the crosscorrelation between X and Y
+% C = COV(X,Y [,Mode]);
+%      calculates the crosscorrelation between X and Y. 
+%      C(i,j) is the correlation between the i-th and jth 
+%      column of X and Y, respectively. 
+%   NOTE: this is different than the Mathworks convention. 
+%      Use COV([X(:),Y(:)]) to get the traditional behaviour of Matlab. 
 %
-% 	C is the scaled by (N-1). Hence, C is the best unbiased estimator. 
+% Mode = 0 [default] scales C by (N-1)
+% Mode = 1 scales C by N. 
 %
 % see also: COVM, SUMSKIPNAN
 %
@@ -17,7 +23,9 @@ function CC = cov(X,Y);
 % http://mathworld.wolfram.com/Covariance.html
 
 
-%	Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	$REevision$
+%	$Id$
+%	Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 
 %    This program is free software; you can redistribute it and/or modify
@@ -35,10 +43,23 @@ function CC = cov(X,Y);
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-if nargin>1,
-	CC = covm(X,Y,'D');	
-elseif nargin==1,        
-	CC = covm(X,'D');	
+if nargin==1
+        Mode = 0;
+        Y = [];
+elseif nargin==2,
+	if isscalar(Y) & any(Y==[0,1])
+                Mode = Y;
+                Y =[];
+        end;
+elseif nargin==3, 
+        
 else
 	fprintf(2,'Error COV: invalid number of arguments\n');
 end;
+
+if isempty(Y)
+	CC = covm(X,['D',int2str(Mode)]);	
+else        
+        CC = covm(X,Y,['D',int2str(Mode)]);	
+end;
+

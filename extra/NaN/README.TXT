@@ -41,6 +41,7 @@ Currently are implemented:
 	SKEWNESS	skewness
 	KURTOSIS	excess 
 	MAD		mean absolute deviation
+	CENTER		removes mean  
 	ZSCORE		normalizes x with z=(x-mean)/std 
 	HARMMEAN	harmonic mean
 	GEOMEAN		geometric mean

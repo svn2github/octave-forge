@@ -16,18 +16,17 @@
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.16
-%	15 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org
+%	Version 1.25 	Date: 15 Aug 2002
+%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>
 
 
-r=zeros(17,2);
+r=zeros(18,2);
 
 x = [5,NaN,0,1,nan];
 
 % run test, k=1: with NaNs, k=2: all NaN's are removed
 % the result of both should be the same. 
+
 
 for k=1:2,
         if k==2, x(isnan(x))=[]; end; 
@@ -49,6 +48,8 @@ for k=1:2,
         r(15,k)=moment(x,6);
         r(16,k)=rms(x);
         r(17,k)=sem(x);
+        tmp=corrcoef([x',(1:length(x))']);
+        r(18,k)=any(isnan(tmp(:)));
 end;
 
 % check if result is correct

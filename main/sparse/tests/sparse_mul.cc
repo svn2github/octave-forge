@@ -76,7 +76,7 @@ octave_value mul2(const octave_sparse& v1,
             }
       }
    }
-   fprintf(stderr,"nnz (estimate)=%d\n",nnz);
+// fprintf(stderr,"nnz (estimate)=%d\n",nnz);
 
    TYPX* coefX= (TYPX*)oct_sparse_malloc( nnz  * sizeof(TYPX));
    int * ridxX= (int *)oct_sparse_malloc( nnz  * sizeof(int) );
@@ -102,7 +102,7 @@ octave_value mul2(const octave_sparse& v1,
    }
    free( Xcol );
    maybe_shrink( cx, nnz, ridxX, coefX );
-   fprintf(stderr,"nnz (calculated)=%d\n",cx);
+// fprintf(stderr,"nnz (calculated)=%d\n",cx);
    X= create_SuperMatrix( Anr, Bnc, cx, coefX, ridxX, cidxX );
    return new octave_sparse ( X );
 }
@@ -198,12 +198,15 @@ DEFUN_DLD (sparse_mul, args, nargout ,
    const octave_sparse& B = (const octave_sparse&) args(1).get_rep();
    const int alg_number   = (int) args(2).double_value();
 
-   cerr << "Sparse Multiply with alg_number #" << alg_number << "\n";
+// cerr << "Sparse Multiply with alg_number #" << alg_number << "\n";
    if (alg_number == 1) {
        retval(0) = mul1(A,B);
    } else
    if (alg_number == 2) {
        retval(0) = mul2(A,B);
+   } else
+   if (alg_number == 3) {
+       retval(0) = mul3(A,B);
    } else {
        error("alg_number not understood");
    }
@@ -251,6 +254,9 @@ DEFUN_DLD (spabsv, args, nargout , "spabsv text")
 
 /*
  * $Log$
+ * Revision 1.2  2005/03/26 19:26:34  aadler
+ * test suite
+ *
  * Revision 1.1  2005/03/26 18:02:39  aadler
  * sparse multiplication test code
  *

@@ -9,8 +9,7 @@ if test ! -z "$files" ; then
   cat $files >> configure.in
 fi
 echo "AC_OUTPUT(Makeconf octinst.sh)" >> configure.in
-autoconf
-rm -f configure.in
+autoconf && rm -f configure.in
 
 ## Generate ./Makeconf.in
 rm -f Makeconf.in

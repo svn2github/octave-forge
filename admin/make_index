@@ -203,6 +203,7 @@ sub first_sentence { # {{{1
 	    return "" if ($#lines < 0);
 	    $line = shift @lines;
 	    next if $line =~ /^\s*-/;
+	    next if $line =~ /^\s*$/;
 	    last;
 	}
     } else {

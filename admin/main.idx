@@ -1,9 +1,6 @@
 $COMPAT= http://octave.sf.net/compatibility.html
 $EG= Etienne Grossman's <a href="http://www.isr.ist.utl.pt/~etienne/octave/">Octave code</a>
 
-finance >> Finance
-Interest
- fv fvl irr nper npv pmt pv pvl rate vol
 interpreter >> Interpreter
 Help
  help 
@@ -45,7 +42,8 @@ Output
  format 
 Environment
  cd pwd
- dir ls
+ dir=alias for <code>ls</code>
+ ls
  mkdir 
  copyfile= use <code>system("[cp ", source, " ", dest])</code>
  delete = use <code>unlink</code> 
@@ -479,6 +477,13 @@ Interpolation
  mkpp 
  unmkpp 
  lookup
+Spline functions
+ interp1
+ csapi
+ csape
+ csaps
+ fnplt fnder
+ gcvspl
 Geometry
  delaunay 
  delaunay3
@@ -911,15 +916,6 @@ Representation
  mat2gray 
  rgb2gray 
  rgb2ind 
-spline >> Splines
-Spline functions
- interp1
- csapi
- csape
- csaps
- fnplt fnder
- gcvspl
-
 signal >> Signal processing
 $SPCTOOLS= in spline directory of Dennis Brown's <a href="ftp://svr-ftp.eng.cam.ac.uk/pub/comp.speech/tools/spctools">SPCtools</a>
 $TFTB= try <a href="http://www-isis.enst.fr/Applications/tftb/iutsn.univ-nantes.fr/auger/tftb.html">Time-Frequency Tool box</a>
@@ -1157,11 +1153,11 @@ Internal
  __syscont_disc__ __sysdefioname__ __sysdefstname__ __sysgroupn__
  __tf2sysl__ __zp2ssg2__ __outlist__ __zgpbal__
 Compatibility
- filt= <code>tf2sys</code>
- ss= <code>ss2sys</code>
- tf= <code>tf2sys</code>
- zpk= <code>zp2sys</code>
- ssdata= <code>sys2ss</code>
+ filt= use <code>tf2sys</code>
+ ss= use <code>ss2sys</code>
+ tf= use <code>tf2sys</code>
+ zpk= use <code>zp2sys</code>
+ ssdata= use <code>sys2ss</code>
  tfdata=use <code>sys2tf</code>
  zpkdata=use <code>sys2zp</code>
  isct=use <code>!is_digital</code>
@@ -1333,6 +1329,8 @@ Compatibility
  ztest= use <code>z_test</code>
 
 extra >> Extra packages
+Finance
+ fv fvl irr nper npv pmt pv pvl rate vol
 NaN
  coefficient_of_variation geomean meansq skewness
  covm harmmean median statistic

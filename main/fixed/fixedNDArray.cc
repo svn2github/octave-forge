@@ -563,7 +563,12 @@ FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
 int
 FixedNDArray::cat (const FixedNDArray& ra_arg, int dim, int iidx, int move)
 {
+#ifdef HAVE_6ARG_MX_ND_RED
   return ::cat_ra (*this, ra_arg, dim, iidx, move);
+#else
+  error("fixed cat not implemented");
+  return 0;
+#endif
 }
 
 FixedNDArray

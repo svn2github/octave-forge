@@ -71,7 +71,7 @@ tk_cmd( "tkwait window .master" );
 	
 vr_val_cnt = 1;
 for i=1:nopt
-    varargout{vr_val_cnt++} = eval([tk_cmd (sprintf("set val_%d",i)), ";"]);
+    varargout{vr_val_cnt++} = eval([tk_cmd(sprintf("set val_%d",i)), ";"]);
 endfor
 
 endfunction

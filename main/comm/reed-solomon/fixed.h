@@ -5,7 +5,12 @@
  * Copyright 2002 Phil Karn, KA9Q
  * May be used under the terms of the GNU General Public License (GPL)
  */
+
 #define DTYPE unsigned char
+
+#ifdef __sgi
+#define inline __inline
+#endif
 
 static inline int mod255(int x){
   while (x >= 255) {

@@ -19,6 +19,10 @@ struct rs {
   unsigned char iprim;      /* prim-th root of 1, index form */
 };
 
+#ifdef __sgi
+#define inline __inline
+#endif
+
 static inline int modnn(struct rs *rs,int x){
   while (x >= rs->nn) {
     x -= rs->nn;
@@ -49,8 +53,3 @@ int DECODE_RS(void *p,DTYPE *data,int *eras_pos,int no_eras);
 void *INIT_RS(unsigned int symsize,unsigned int gfpoly,unsigned int fcr,
 		   unsigned int prim,unsigned int nroots);
 void FREE_RS(void *p);
-
-
-
-
-

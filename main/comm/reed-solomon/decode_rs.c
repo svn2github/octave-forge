@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#undef NULL
 #define NULL ((void *)0)
 #define	min(a,b)	((a) < (b) ? (a) : (b))
 

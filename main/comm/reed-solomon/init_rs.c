@@ -13,6 +13,7 @@
 #include "char.h"
 #endif
 
+#undef NULL
 #define NULL ((void *)0)
 
 void FREE_RS(void *p){

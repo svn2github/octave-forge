@@ -3,6 +3,7 @@
  * Copyright 2002, Phil Karn, KA9Q
  * May be used under the terms of the GNU General Public License (GPL)
  */
+
 #define DTYPE int
 
 /* Reed-Solomon codec control block */
@@ -17,6 +18,10 @@ struct rs {
   unsigned int prim;       /* Primitive element, index form */
   unsigned int iprim;      /* prim-th root of 1, index form */
 };
+
+#ifdef __sgi
+#define inline __inline
+#endif
 
 static inline int modnn(struct rs *rs,int x){
   while (x >= (int)(rs->nn)) {
@@ -48,7 +53,3 @@ int DECODE_RS(void *p,DTYPE *data,int *eras_pos,int no_eras);
 void *INIT_RS(unsigned int symsize,unsigned int gfpoly,unsigned int fcr,
 		   unsigned int prim,unsigned int nroots);
 void FREE_RS(void *p);
-
-
-
-

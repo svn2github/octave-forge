@@ -1482,28 +1482,27 @@ complex_sparse_LU_fact(SuperMatrix A,
 
    zgstrf(refact, &Ac, thresh, drop_tol, relax, panel_size, etree,
            NULL, 0, perm_r, perm_c, &L, &U, &info);
-   if ( info < 0 )
-      SP_FATAL_ERR ("LU factorization error");
-
-   int      snnzL, snnzU;
-
-   int       nnzL = ((SCformat*)L.Store)->nnz;
-   Complex * Lval = (Complex *) oct_sparse_malloc( nnzL * sizeof(Complex) );
-   int     * Lrow = (    int *) oct_sparse_malloc( nnzL * sizeof(    int) );
-   int     * Lcol = (    int *) oct_sparse_malloc( (n+1)* sizeof(    int) );
-
-   int       nnzU = ((NCformat*)U.Store)->nnz;
-   Complex * Uval = (Complex *) oct_sparse_malloc( nnzU * sizeof(Complex) );
-   int     * Urow = (    int *) oct_sparse_malloc( nnzU * sizeof(    int) );
-   int     * Ucol = (    int *) oct_sparse_malloc( (n+1)* sizeof(    int) );
-
-   LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
-   // we need to use the snnz values (squeezed vs. unsqueezed)
-   zCreate_CompCol_Matrix(LC, m, n, snnzL, (doublecomplex*) Lval, Lrow, Lcol, NC, _Z, GE);
-   zCreate_CompCol_Matrix(UC, m, n, snnzU, (doublecomplex*) Uval, Urow, Ucol, NC, _Z, GE);
-
-   fix_row_order_complex( *LC );
-   fix_row_order_complex( *UC );
+   if (info == 0) {
+      int      snnzL, snnzU;
+ 
+      int       nnzL = ((SCformat*)L.Store)->nnz;
+      Complex * Lval = (Complex *) oct_sparse_malloc( nnzL * sizeof(Complex) );
+      int     * Lrow = (    int *) oct_sparse_malloc( nnzL * sizeof(    int) );
+      int     * Lcol = (    int *) oct_sparse_malloc( (n+1)* sizeof(    int) );
+ 
+      int       nnzU = ((NCformat*)U.Store)->nnz;
+      Complex * Uval = (Complex *) oct_sparse_malloc( nnzU * sizeof(Complex) );
+      int     * Urow = (    int *) oct_sparse_malloc( nnzU * sizeof(    int) );
+      int     * Ucol = (    int *) oct_sparse_malloc( (n+1)* sizeof(    int) );
+ 
+      LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
+      // we need to use the snnz values (squeezed vs. unsqueezed)
+      zCreate_CompCol_Matrix(LC, m, n, snnzL, (doublecomplex*) Lval, Lrow, Lcol, NC, _Z, GE);
+      zCreate_CompCol_Matrix(UC, m, n, snnzU, (doublecomplex*) Uval, Urow, Ucol, NC, _Z, GE);
+ 
+      fix_row_order_complex( *LC );
+      fix_row_order_complex( *UC );
+   }
    
    oct_sparse_Destroy_SuperMatrix( L ) ;
    oct_sparse_Destroy_SuperMatrix( U ) ;
@@ -1515,6 +1514,10 @@ complex_sparse_LU_fact(SuperMatrix A,
    printf("verify LC\n"); oct_sparse_verify_supermatrix( *LC );
    printf("verify UC\n"); oct_sparse_verify_supermatrix( *UC );
 #endif   
+
+   if ( info < 0 ) {
+      SP_FATAL_ERR ("LU factorization error");
+   }
 
    return info;
 } // complex_sparse_LU_fact(
@@ -1541,6 +1544,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.18  2003/08/29 21:21:15  aadler
+ * mods to fix bugs for empty sparse
+ *
  * Revision 1.17  2003/08/29 20:46:53  aadler
  * fixed bug in indexing
  *

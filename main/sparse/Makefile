@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.14  2003/08/29 21:21:15  aadler
+# mods to fix bugs for empty sparse
+#
 # Revision 1.13  2003/07/25 19:01:51  pkienzle
 # Use $(LN_S) instead of ln -s
 #
@@ -152,9 +155,10 @@
 # CCDEFS = -DVERBOSE 
 # CCDEFS = -DVERBOSE -DUSE_DMALLOC -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE
 # DLIBS = -ldmallocxx -ldmalloc
+# DLIBS = -lefence
 # CCDEFS = -DVERBOSE -v
 # CCDEFS = -v
-# CCDEFS = -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE
+# CCDEFS = -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE -DDEBUG
   CCDEFS = -DNDEBUG
 
 sinclude ../../Makeconf
@@ -162,16 +166,15 @@ sinclude ../../Makeconf
 ifndef OCTAVE_FORGE
 
 	OCTAVE   =   octave$(OCTVER)
-#	MKOCTFILE= mkoctfile-gcc3-2.1.35 -v
-	MKOCTFILE= mkoctfile$(OCTVER) -s
+	MKOCTFILE= mkoctfile$(OCTVER) 
 	AR= ar
 	RANLIB=ranlib
-	LN_S = ln -s
+	LN_S = ln -sf
 endif
 
 # Use same C compiler and options as mkoctfile
 CC       =  $(shell $(MKOCTFILE) -p CC)
-CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
+CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS) 
 CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
 
 NAME     =   make_sparse

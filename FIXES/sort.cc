@@ -26,6 +26,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/quit.h>
 #include <octave/lo-ieee.h>
 #include <octave/data-conv.h>
+#include <octave/ov-cx-mat.h>
 #include "oct-sort.cc"
 
 // ======= Cruft to support ancient versions of Octave =========
@@ -128,7 +129,7 @@ template octave_sort<complex_vec_index *>;
 
 #ifdef HAVE_ND_ARRAYS
 static octave_value_list
-mx_sort (NDArray &m, bool return_idx)
+mx_sort (NDArray &m, bool return_idx, int dim)
 {
   octave_value_list retval;
 
@@ -136,18 +137,11 @@ mx_sort (NDArray &m, bool return_idx)
     return retval;
 
   dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  // Find first non singleton dimension
-  int ns = 0;
-  for (int i = 0; i < dv.length (); i++)
-    if (dv(i) > 1)
-      {
-	ns = i;
-	break;
-      }
-  ns = dv(ns);
-  int iter = nel / ns;
+  int ns = dv (dim);
+  int iter = dv.numel () / ns;
+  int stride = 1;
+  for (int i = 0; i < dim; i++)
+    stride *= dv(i);
 
 #if defined(HAVE_IEEE754_COMPLIANCE) && defined(EIGHT_BYTE_INT)
   double *v = m.fortran_vec ();
@@ -168,13 +162,21 @@ mx_sort (NDArray &m, bool return_idx)
       
       for (int j = 0; j < iter; j++)
 	{
+	  int offset = j;
+	  int offset2 = 0;
+	  while (offset >= stride)
+	    {
+	      offset -= stride;
+	      offset2++;
+	    }
+	  offset += offset2 * stride * ns;
 
 	  /* Flip the data in the vector so that int compares on 
 	   * IEEE754 give the correct ordering
 	   */
 	  for (int i = 0; i < ns; i++)
 	    {
-	      vi[i]->vec = FloatFlip (p[i]);
+	      vi[i]->vec = FloatFlip (p[i*stride + offset]);
 	      vi[i]->indx = i + 1;
 	    }
 
@@ -183,11 +185,10 @@ mx_sort (NDArray &m, bool return_idx)
 	  /* Flip the data out of the vector so that int compares on
 	   *  IEEE754 give the correct ordering
 	   */
-	  int offset = j * ns;
 	  for (int i = 0; i < ns; i++)
 	    {
-	      p[i] = IFloatFlip (vi[i]->vec);
-	      idx(i+offset) = vi[i]->indx;
+	      p[i*stride + offset] = IFloatFlip (vi[i]->vec);
+	      idx(i*stride + offset) = vi[i]->indx;
 	    }
 
 	  /* There are two representations of NaN. One will be sorted to
@@ -197,24 +198,21 @@ mx_sort (NDArray &m, bool return_idx)
 	  if (lo_ieee_signbit (octave_NaN))
 	    {
 	      unsigned int i = 0;
-	      double *vtmp = (double *)p;
-	      while (xisnan(vtmp[i++]));
+	      while (xisnan(v[i++*stride+offset]) && i < ns);
 	      OCTAVE_LOCAL_BUFFER (double, itmp, i - 1);
 	      for (unsigned int l = 0; l < i -1; l++)
-		itmp[l] = idx(l,j);
+		itmp[l] = idx(l*stride + offset);
 	      for (unsigned int l = 0; l < ns - i + 1; l++)
 		{
-		  vtmp[l] = vtmp[l+i-1];
-		  idx(l,j) = idx(l+i-1,j);
+		  v[l*stride + offset] = v[(l+i-1)*stride + offset];
+		  idx(l*stride + offset) = idx((l+i-1)*stride + offset);
 		}
 	      for (unsigned int k = 0, l = ns - i + 1; l < ns; l++, k++)
 		{
-		  vtmp[l] = octave_NaN;
-		  idx(l+offset) = itmp[k];
+		  v[l*stride + offset] = octave_NaN;
+		  idx(l*stride + offset) = itmp[k];
 		}
 	    }
-
-	  p += ns;
 	}
 
       retval (1) = idx;
@@ -222,39 +220,86 @@ mx_sort (NDArray &m, bool return_idx)
   else
     {
       octave_sort<unsigned EIGHT_BYTE_INT> ieee754_sort;
+      OCTAVE_LOCAL_BUFFER (unsigned EIGHT_BYTE_INT, vi, ns);
  
-      for (int j = 0; j < iter; j++)
+      if (stride == 1)
 	{
-	  /* Flip the data in the vector so that int compares on 
-	   * IEEE754 give the correct ordering
-	   */
-	  for (int i = 0; i < ns; i++)
-	    p[i] = FloatFlip (p[i]);
-
-	  ieee754_sort.sort (p, ns);
-
-	  /* Flip the data out of the vector so that int compares on
-	   *  IEEE754 give the correct ordering
-	   */
-	  for (int i = 0; i < ns; i++)
-	    p[i] = IFloatFlip (p[i]);
-	  
-	  /* There are two representations of NaN. One will be sorted to
-	   * the beginning of the vector and the other to the end. If it
-	   * will be sorted to the beginning, fix things up.
-	   */
-	  if (lo_ieee_signbit (octave_NaN))
+	  for (int j = 0; j < iter; j++)
 	    {
-	      unsigned int i = 0;
-	      double *vtmp = (double *)p;
-	      while (xisnan(vtmp[i++]));
-	      for (unsigned int l = 0; l < ns - i + 1; l++)
-		vtmp[l] = vtmp[l+i-1];
-	      for (unsigned int l = ns - i + 1; l < ns; l++)
-		vtmp[l] = octave_NaN;
+	      /* Flip the data in the vector so that int compares on 
+	       * IEEE754 give the correct ordering
+	       */
+	      for (int i = 0; i < ns; i++)
+		p[i] = FloatFlip (p[i]);
+	      
+	      ieee754_sort.sort (p, ns);
+
+	      /* Flip the data out of the vector so that int compares on
+	       *  IEEE754 give the correct ordering
+	       */
+	      for (int i = 0; i < ns; i++)
+		p[i] = IFloatFlip (p[i]);
+
+	      /* There are two representations of NaN. One will be sorted to
+	       * the beginning of the vector and the other to the end. If it
+	       * will be sorted to the beginning, fix things up.
+	       */
+	      if (lo_ieee_signbit (octave_NaN))
+		{
+		  unsigned int i = 0;
+		  double *vtmp = (double *)p;
+		  while (xisnan(vtmp[i++]) && i < ns);
+		  for (unsigned int l = 0; l < ns - i + 1; l++)
+		    vtmp[l] = vtmp[l+i-1];
+		  for (unsigned int l = ns - i + 1; l < ns; l++)
+		    vtmp[l] = octave_NaN;
+		}
+
+	      p += ns;
 	    }
 
-	  p += ns;
+	}
+      else
+	{
+	  for (int j = 0; j < iter; j++)
+	    {
+	      int offset = j;
+	      int offset2 = 0;
+	      while (offset >= stride)
+		{
+		  offset -= stride;
+		  offset2++;
+		}
+	      offset += offset2 * stride * ns;
+
+	      /* Flip the data in the vector so that int compares on 
+	       * IEEE754 give the correct ordering
+	       */
+	      for (int i = 0; i < ns; i++)
+		vi[i] = FloatFlip (p[i*stride + offset]);
+
+	      ieee754_sort.sort (vi, ns);
+
+	      /* Flip the data out of the vector so that int compares on
+	       *  IEEE754 give the correct ordering
+	       */
+	      for (int i = 0; i < ns; i++)
+		p[i*stride + offset] = IFloatFlip (vi[i]);
+	      
+	      /* There are two representations of NaN. One will be sorted to
+	       * the beginning of the vector and the other to the end. If it
+	       * will be sorted to the beginning, fix things up.
+	       */
+	      if (lo_ieee_signbit (octave_NaN))
+		{
+		  unsigned int i = 0;
+		  while (xisnan(v[i++*stride + offset]) && i < ns);
+		  for (unsigned int l = 0; l < ns - i + 1; l++)
+		    v[l*stride + offset] = v[(l+i-1)*stride + offset];
+		  for (unsigned int l = ns - i + 1; l < ns; l++)
+		    v[l*stride + offset] = octave_NaN;
+		}
+	    }
 	}
     }
 #else
@@ -270,23 +315,56 @@ mx_sort (NDArray &m, bool return_idx)
 	vi[i] = &vix[i];
 
       NDArray idx (dv);
-
-      for (int j = 0; j < iter; j++)
+      
+      if (stride == 1)
 	{
-	  for (int i = 0; i < ns; i++)
+	  for (int j = 0; j < iter; j++)
 	    {
-	      vi[i]->vec = v[i];
-	      vi[i]->indx = i + 1;
-	    }
+	      int offset = j * ns;
 
-	  indexed_double_sort.sort (vi, ns);
+	      for (int i = 0; i < ns; i++)
+		{
+		  vi[i]->vec = v[i];
+		  vi[i]->indx = i + 1;
+		}
+
+	      indexed_double_sort.sort (vi, ns);
 	  
-	  for (int i = 0; i < ns; i++)
-	    {
-	      v[i] = vi[i]->vec;
-	      idx(i,j) = vi[i]->indx;
+	      for (int i = 0; i < ns; i++)
+		{
+		  v[i] = vi[i]->vec;
+		  idx(i + offset) = vi[i]->indx;
+		}
+	      v += ns;
 	    }
-	  v += ns;
+	}
+      else
+	{
+	  for (int j = 0; j < iter; j++)
+	    {
+	      int offset = j;
+	      int offset2 = 0;
+	      while (offset >= stride)
+		{
+		  offset -= stride;
+		  offset2++;
+		}
+	      offset += offset2 * stride * ns;
+	      
+	      for (int i = 0; i < ns; i++)
+		{
+		  vi[i]->vec = v[i*stride + offset];
+		  vi[i]->indx = i + 1;
+		}
+
+	      indexed_double_sort.sort (vi, ns);
+	      
+	      for (int i = 0; i < ns; i++)
+		{
+		  v[i*stride+offset] = vi[i]->vec;
+		  idx(i*stride+offset) = vi[i]->indx;
+		}
+	    }
 	}
       retval (1) = idx;
     }
@@ -294,10 +372,35 @@ mx_sort (NDArray &m, bool return_idx)
     {
       double *v = m.fortran_vec ();
       octave_sort<double> double_sort (double_compare);
-      for (int j = 0; j < iter; j++) 
+
+      if (stride == 1)
+	for (int j = 0; j < iter; j++)
+	  {
+	    double_sort.sort (v, ns);
+	    v += ns;
+	  }
+      else
 	{
-	  double_sort.sort (v, ns);
-	  v += nr2;
+	  OCTAVE_LOCAL_BUFFER (double, vi, ns);
+	  for (int j = 0; j < iter; j++) 
+	    {
+	      int offset = j;
+	      int offset2 = 0;
+	      while (offset >= stride)
+		{
+		  offset -= stride;
+		  offset2++;
+		}
+	      offset += offset2 * stride * ns;
+
+	      for (int i = 0; i < ns; i++)
+		vi[i] = v[i*stride + offset];
+
+	      double_sort.sort (vi, ns);
+	      
+	      for (int i = 0; i < ns; i++)
+		v[i*stride + offset] = vi[i];
+	    }
 	}
     }
 #endif
@@ -306,7 +409,7 @@ mx_sort (NDArray &m, bool return_idx)
 }
 
 static octave_value_list
-mx_sort (ComplexNDArray &m, bool return_idx)
+mx_sort (ComplexNDArray &m, bool return_idx, int dim)
 {
   octave_value_list retval;
 
@@ -314,18 +417,11 @@ mx_sort (ComplexNDArray &m, bool return_idx)
     return retval;
 
   dim_vector dv = m.dims ();
-  int nel = dv.numel ();
-
-  // Find first non singleton dimension
-  int ns = 0;
-  for (int i = 0; i < dv.length (); i++)
-    if (dv(i) > 1)
-      {
-	ns = i;
-	break;
-      }
-  ns = dv(ns);
-  int iter = nel / ns;
+  int ns = dv (dim);
+  int iter = dv.numel () / ns;
+  int stride = 1;
+  for (int i = 0; i < dim; i++)
+    stride *= dv(i);
 
   octave_sort<complex_vec_index *> indexed_double_sort (complex_compare);
 
@@ -339,30 +435,71 @@ mx_sort (ComplexNDArray &m, bool return_idx)
 
   NDArray idx (dv);
 
-  for (int j = 0; j < iter; j++)
+  if (stride == 1)
     {
-      for (int i = 0; i < ns; i++)
+      for (int j = 0; j < iter; j++)
 	{
-	  vi[i]->vec = v[i];
-	  vi[i]->indx = i + 1;
-	}
-      
-      indexed_double_sort.sort (vi, ns);
-      
-      if (return_idx)
-	{
+	  int offset = j * ns;
+
 	  for (int i = 0; i < ns; i++)
 	    {
-	      v[i] = vi[i]->vec;
-	      idx(i,j) = vi[i]->indx;
+	      vi[i]->vec = v[i];
+	      vi[i]->indx = i + 1;
+	    }
+      
+	  indexed_double_sort.sort (vi, ns);
+      
+	  if (return_idx)
+	    {
+	      for (int i = 0; i < ns; i++)
+		{
+		  v[i] = vi[i]->vec;
+		  idx(i + offset) = vi[i]->indx;
+		}
+	    }
+	  else
+	    {
+	      for (int i = 0; i < ns; i++)
+		v[i] = vi[i]->vec;
+	    }
+	  v += ns;
+	}
+    }
+  else
+    {
+      for (int j = 0; j < iter; j++)
+	{
+	  int offset = j;
+	  int offset2 = 0;
+	  while (offset >= stride)
+	    {
+	      offset -= stride;
+	      offset2++;
+	    }
+	  offset += offset2 * stride * ns;
+
+	  for (int i = 0; i < ns; i++)
+	    {
+	      vi[i]->vec = v[i*stride + offset];
+	      vi[i]->indx = i + 1;
+	    }
+      
+	  indexed_double_sort.sort (vi, ns);
+      
+	  if (return_idx)
+	    {
+	      for (int i = 0; i < ns; i++)
+		{
+		  v[i*stride + offset] = vi[i]->vec;
+		  idx(i*stride + offset) = vi[i]->indx;
+		}
+	    }
+	  else
+	    {
+	      for (int i = 0; i < ns; i++)
+		v[i*stride + offset] = vi[i]->vec;
 	    }
 	}
-      else
-	{
-	  for (int i = 0; i < ns; i++)
-	    v[i] = vi[i]->vec;
-	}
-      v += ns;
     }
 
   if (return_idx)
@@ -376,8 +513,10 @@ mx_sort (ComplexNDArray &m, bool return_idx)
 #else
 
 static octave_value_list
-mx_sort (Matrix &m, bool return_idx)
+mx_sort (Matrix &m, bool return_idx, int dim)
 {
+  // dim ignored !!!!
+
   octave_value_list retval;
 
   int nr = m.rows ();
@@ -564,8 +703,10 @@ mx_sort (Matrix &m, bool return_idx)
 // compares. As the operation is fundamentally without sense, I don't
 // care that its not optimized....
 static octave_value_list
-mx_sort (ComplexMatrix &m, bool return_idx)
+mx_sort (ComplexMatrix &m, bool return_idx, int dim)
 {
+  // dim ignored !!!!
+
   octave_value_list retval;
   int nr = m.rows ();
   int nc = m.columns ();
@@ -638,6 +779,7 @@ mx_sort (ComplexMatrix &m, bool return_idx)
 DEFUN_DLD (sort, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
+@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
 Return a copy of @var{x} with the elements elements arranged in\n\
 increasing order.  For matrices, @code{sort} orders the elements in each\n\
 column.\n\
@@ -680,7 +822,7 @@ ordered lists.\n\
 
   int nargin = args.length ();
 
-  if (nargin != 1)
+  if (nargin != 1 && nargin != 2)
     {
       print_usage ("sort");
       return retval;
@@ -690,6 +832,55 @@ ordered lists.\n\
 
   octave_value arg = args(0);
 
+  int dim = 0;
+  if (nargin == 2)
+    dim = args(1).nint_value () - 1;
+
+#ifdef HAVE_ND_ARRAYS
+  dim_vector dv = ((const octave_complex_matrix&) arg) .dims ();
+  if (error_state)
+    {
+      gripe_wrong_type_arg ("sort", arg);
+      return retval;
+    }
+  if (nargin != 2)
+    {
+      // Find first non singleton dimension
+      for (int i = 0; i < dv.length (); i++)
+	if (dv(i) > 1)
+	  {
+	    dim = i;
+	    break;
+	  }
+    }
+  else
+    {
+      if (dim < 0 || dim > dv.length () - 1)
+	{
+	  error ("sort: dim must be a valid dimension");
+	  return retval;
+	}
+    }
+#else
+  int nr = ((const octave_complex_matrix&) arg) .rows ();
+  if (error_state)
+    {
+      gripe_wrong_type_arg ("sort", arg);
+      return retval;
+    }
+  if (nargin != 2)
+    dim = (nr == 1 ? 1 : 0);
+  else
+    {
+      warning ("sort: dim argument ignored");
+      if (dim < 0 || dim > 1)
+	{
+	  error ("sort: dim must be a valid dimension");
+	  return retval;
+	}
+    }
+#endif
+
   if (arg.is_real_type ())
     {
 #ifdef HAVE_ND_ARRAYS
@@ -697,8 +888,9 @@ ordered lists.\n\
 #else
       Matrix m = arg.matrix_value ();
 #endif
+
       if (! error_state)
-	retval = mx_sort (m, return_idx);
+	retval = mx_sort (m, return_idx, dim);
     }
   else if (arg.is_complex_type ())
     {
@@ -708,7 +900,7 @@ ordered lists.\n\
       ComplexMatrix cm = arg.complex_matrix_value ();
 #endif
       if (! error_state)
-	retval = mx_sort (cm, return_idx);
+	retval = mx_sort (cm, return_idx, dim);
     }
   else
     gripe_wrong_type_arg ("sort", arg);

@@ -175,15 +175,6 @@ elseif prod (size (col))==3,	# One color has been specified for the whole
 
   col_str_2 = "";
 else
-  ##  col_str_1 = sprintf(["  appearance Appearance {\n",...
-  ##  		       "    material Material {\n",...
-  ##  		       "      diffuseColor  0.3 0.4 0.9\n",...
-  ##  		       "      emissiveColor  0.9 0.4 0.1\n",...
-  ##  		       "    }\n",...
-  ##  		       "  }\n"]);
-  # col_str_1 = ["  appearance Appearance {\n",...
-# 	       vrml_material (col, emit, tran),\
-# 	       "  }\n"];
   if (emit)			# Color is emissive by default
     col_str_1 = "";
     
@@ -235,51 +226,21 @@ ptsface = zeros (1,nfaces);
 if is_list (f)			
 
   npts = 0;
-  for i = 1:length (f), npts += ptsface(i) = length (nth (f,i)); end
+  for i = 1:length (f), npts += ptsface(i) = 1+length (nth (f,i)); end
   ii = [0, cumsum (ptsface)]';
-  all_indexes = zeros (1,npts);
-  for i = 1:length (f), all_indexes(ii(i)+1:ii(i+1)) = nth (f,i) - 1; end
+  all_indexes = -ones (1,npts);
+  for i = 1:length (f), all_indexes(ii(i)+1:ii(i+1)-1) = nth (f,i) - 1; end
 else
-
+  f = [f;-ones(1,columns(f))];
   npts = sum (ptsface = (sum (!! f)));
-  all_indexes = nze (f) - 1;
+  all_indexes = nze (f) - 1; 
+  all_indexes(find (all_indexes<0)) = -1;
 end
+## printf ("  Indexes  : %f\n",mytic()); ## Just for measuring time
 
-if 1
-				# Big string with template
-tpl = setstr ((ones (npts+nfaces,1)*toascii (tpl0))'(:)');
-				# Replace some of the %Xd's with "-1\n"
+coord_str = sprintf (tpl0, all_indexes);
+## That's too slow coord_str = strrep (coord_str, "-1, ","-1,\n");
 
-				# Positions of -1's 
-jj = ltpl0 * cumsum (ptsface+1) - 4;
-jj = [jj; jj+1; jj+2; jj+3; jj+4](:);
-## size (jj)
-## size (setstr (ones (nfaces,1)*toascii ("-1\n"))'(:)')
-tpl(jj) = setstr (ones (nfaces,1)*toascii ("  -1\n"))'(:)';
-
-coord_str = sprintf (tpl, all_indexes);
-
-else
-				# Determine length of faces's string
-coord_str = blanks (ltpl0 * npts + (4+16) * nfaces);
-
-## coord_str = "";
-
-if isnan (convex), convex = 1; end
-curpos = 1;
-for i = 1:nfaces
-  if is_list (f), fpts = nth (f, i)-1; else fpts = nze (f(:,i))-1; end
-  fpts = fpts(:)';
-  if convex && length (fpts) > 3, convex = 0; end
-  template = setstr ((ones(length(fpts),1)*toascii (tpl0))'(:)');
-  template = sprintf ("                %s -1\n",template);
-
-  tmplen = length (tmp = sprintf (template, fpts));
-
-  coord_str(curpos:curpos+tmplen-1) = tmp;
-  curpos += tmplen;
-end
-end
 ## printf ("  Faces  : %f\n",mytic()); ## Just for measuring time
 
 if ! convex, etc_str = [etc_str,"    convex FALSE\n"]; end

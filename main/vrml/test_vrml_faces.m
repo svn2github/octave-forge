@@ -13,6 +13,7 @@ trg = [1 2 3 1;
        2 3 1 2;
        4 4 4 3];
 
+trgl = list ([1 2 4],[2 3 4],[3 1 4],[1 2 3]);
 
 slight = vrml_PointLight ("location", [0,5,0]);
 
@@ -20,6 +21,17 @@ if 1
   s1 = vrml_faces (x, trg);
 
   printf ("Going to show a tetrahedron\n");
+
+  printf (["\n     If nothing appears, it may be due to problems",\
+	   "\n     with your FreeWRL installation\n"]);
+  vrml_browse ([slight, s1]);
+  printf ("Press a key in this terminal when done\n");pause;
+end
+
+if 1
+  s1 = vrml_faces (x, trgl,"col",[1,0.5,0.5]);
+
+  printf ("Going to show almost the same tetrahedron\n");
 
   printf (["\n     If nothing appears, it may be due to problems",\
 	   "\n     with your FreeWRL installation\n"]);

@@ -4,10 +4,14 @@
 # files.  Put author information in the file 'AUTHORS'.
 # Understands variations of these entries:
 #
-#   ## Copyright (C)  year(s)  name1, name2 and name3   <email>
-#   ## Author:  name  <email>
+#   ## Copyright (C)  year(s)  name1   <email>
+#   ## Copyright (C)  year(s)  name2   <email>
+#   ## Author:  name3  <email>
+#   ## Author:  name4  <email>
 #
 # Albert Danial Dec 15 2001
+use strict;
+use File::Find;
 
 my $location = `pwd`;
 my $PATH     = "";
@@ -15,9 +19,6 @@ if ($location =~ m{^(.*)/admin$}) {
     chdir "..";
     $PATH = "$1/";
 }
-
-use strict;
-use File::Find;
 
 my @files = ();       # to contain relative path names of each .m file
 find(\&wanted, ".");  # start here & descend recursively; populate @files
@@ -50,7 +51,7 @@ foreach my $f (sort @files) {
             $email{ $author_data{$f}{name}[$i] } = $author_data{$f}{mail}[$i];
         }
         $copyrighted = 1 if $author_data{$f}{cpyr}[$i] eq "C";
-        push @{$files{ $author_data{$f}{name}[$i] }}, $f;
+        $files{ $author_data{$f}{name}[$i] }{$f} = 1;
     }
     push @uncopyrighted_files, $f unless $copyrighted;
 }
@@ -69,14 +70,15 @@ my $Auth_file = "AUTHORS";
 open(OUT, ">$Auth_file") or die "Cannot write $Auth_file:  $!\n";
 printf "%3d authors:\n", scalar keys %files;
 foreach my $n (sort by_last_name keys %files) {
-    printf     "      %-20s", $n;
-    printf OUT       "%-20s", $n;
+    printf     "      %-28s", $n;
+    printf OUT       "%-28s", $n;
     print     $email{$n} if defined $email{$n};
     print OUT $email{$n} if defined $email{$n};
     print     "\n";
     print OUT "\n";
-    for (my $i = 0; $i < scalar @{$files{$n}}; $i++) {
-        printf "       %3d. %s\n", $i+1, $files{$n}[$i];
+    my $i = 0;
+    foreach my $f (sort keys %{$files{$n}}) {
+        printf "       %3d. %s\n", ++$i, $f;
     }
 }
 close OUT;
@@ -84,15 +86,15 @@ warn "Wrote ${PATH}${Auth_file}\n";
 
 # # # # # # # 
 
-sub by_last_name {  # for sorting on names
+sub by_last_name { # {{{1 for sorting on names
     (my $A = $a) =~ s/.*?(\w+)$/$1/;
     (my $B = $b) =~ s/.*?(\w+)$/$1/;
     return lc($A) cmp lc($B);
-}
+} # 1}}}
 
 # # # # # # # 
 
-sub extract_authors {
+sub extract_authors { # {{{1
     my ($ra_files,  # in, list of files
         $rhha_data, # out,  data{file}{ name | year | cpyr } = [entries]
        ) = @_;
@@ -104,34 +106,27 @@ sub extract_authors {
             # find the copyright line and extract author info from it
             s/all\s+rights\s+reserved\.?//i;
             s/\bby\s+//i;
-            s/and sundry contributors//i;
-            if (/^\s*[#%]+                #  one or more leading comment markers
-                    \s*copyright          #  Copyright
-                    \s+(\(c\))?           #  (c)    - optional           $1
-                    \s*(\d+([,-]\s*\d+)*) #  Year (or years)             $2, $3
-                    \s+(.*?)              #  name                        $4
-                    \s*(<.*>)?            #  email  - optional           $5
-                    \s*$/ix) {
+            if (/^[#%]+                 #  one or more leading comment markers
+                  \s*copyright          #  Copyright
+                  \s+(\(c\))?           #  (c)    - optional           $1
+                  \s*(\d+([,-]\s*\d+)*) #  Year (or years)             $2, $3
+                  \s+(.*?)              #  name                        $4
+                  \s*(<.*>)?            #  email  - optional           $5
+                  \s*$/ix) {
                 $found_copyright = 1;
                 my $year  = $2;
                    $year .= $3 if defined $3;
                 my $name  = $4;
                    $name  =~ s/\.\s*$//; # strip trailing period
                 my $email = "" || $5;
-                my @namelist = ();
-                $name     =~ s/\s+and\s+/,/g;  # separate authors by commas
-                @namelist = split(',', $name);
-                foreach my $N (@namelist) {
-                    $N   =~ s/^\s+//;  # strip leading  whitespace
-                    $N   =~ s/\s+$//;  # strip trailing whitespace
-                    push @{$rhha_data->{$f}{name}}, $N;
-                    push @{$rhha_data->{$f}{year}}, $year;
-                    push @{$rhha_data->{$f}{mail}}, $email;
-                    push @{$rhha_data->{$f}{cpyr}}, 'C';
-                }
+                $name =~ s/^\s+//;  # strip leading  whitespace
+                $name =~ s/\s+$//;  # strip trailing whitespace
+                push @{$rhha_data->{$f}{name}}, $name;
+                push @{$rhha_data->{$f}{year}}, $year;
+                push @{$rhha_data->{$f}{mail}}, $email;
+                push @{$rhha_data->{$f}{cpyr}}, 'C';
                 # don't exit w/last because there could be multiple copyrights
-            } elsif
-               (!$found_copyright and
+            } elsif (
                 /^\s*[#%]+                #  one or more leading comment markers
                     \s*author:?           #  Copyright
                     \s+(.*?)              #  name                        $1
@@ -152,11 +147,11 @@ sub extract_authors {
         }
         close IN;
     }
-}
+} # 1}}}
 
 # # # # # # # 
 
-sub wanted { # populates global array @files
+sub wanted { # {{{1 populates global array @files
     return unless -f and /\.m$/;  # only want .m files (for now)
     push @files, "$File::Find::dir/$_";
-}
+} # 1}}}

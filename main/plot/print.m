@@ -1,4 +1,4 @@
-## Copyright (C) 1999 Daniel Heiserer; (C) 2001 Laurent Mazet
+## Copyright (C) 1999 Daniel Heiserer 2001 Laurent Mazet
 ##
 ## This program is free software; it is distributed in the hope that it
 ## will be useful, but WITHOUT ANY WARRANTY; without even the implied
@@ -10,56 +10,76 @@
 ## Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: print (filename, options)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} print (@var{filename}, @var{options})
 ##
 ## Print a graph, or save it to a file
 ##
-## filename: 
-##   File to receive output.  If no filename is specified, output is
-##   sent to the printer.
+## @var{filename} defines the file name of the output file. If no
+## filename is specified, output is sent to the printer.
 ##
-## options:
-##   -Pprinter
-##      Printer to which the graph is sent if no filename is specified.
+## @var{options}:
+## @table @code
+## @item -P@var{printer}
+##   Set the @var{printer} name to which the graph is sent if no
+##   @var{filename} is specified.
+## @item -color
+## @itemx -mono
+##   Monochrome or colour lines.
+## @item -solid
+## @itemx -dashed
+##   Solid or dashed lines.
+## @item -portrait
+## @itemx -landscape
+##   Plot orientation, as returned by "orient".
+## @item -d@var{device}
+##   Output device, where @var{device} is one of:
+##   @table @code
+##   @item ps
+##   @itemx ps2
+##   @itemx psc
+##   @itemx psc2
+##     Postscript (level 1 and 2, mono and color)
+##   @item eps
+##   @itemx eps2
+##   @itemx epsc
+##   @itemx epsc2
+##     Encapsulated postscript (level 1 and 2, mono and color)
+##   @item ill
+##   @itemx aifm
+##     Adobe Illustrator
+##   @item cdr
+##   @itemx corel
+##     CorelDraw
+##   @item hpgl
+##     HP plotter language
+##   @item fig
+##     XFig
+##   @item dxf
+##     AutoCAD
+##   @item mf
+##     Metafont
+##   @item png
+##     Portable network graphics
+##   @item pbm
+##     PBMplus
+##   @end table
 ##
-##   -color | -mono
-##      Monochrome or colour lines.
+##   Other devices are supported by "convert" from ImageMagick.  Type
+##   system("convert") to see what formats are available.
 ##
-##   -solid | -dashed
-##      Solid or dashed lines.
+##   If the device is omitted, it is inferred from the file extension,
+##   or if there is no filename it is sent to the printer as postscript.
 ##
-##   -portrait | -landscape
-##      Plot orientation, as returned by "orient".
-##
-##   -dDEVICE
-##      Output device, where DEVICE is one of:
-##
-##        ps,ps2,psc,psc2      
-##             Postscript (level 1 and 2, mono and color)
-##        eps,eps2,epsc,epsc2  
-##             Encapsulated postscript (level 1 and 2, mono and color)
-##        ill,aifm 
-##             Adobe Illustrator
-##        cdr,corel
-##             CorelDraw
-##        hpgl HP plotter language
-##        fig  XFig
-##        dxf  AutoCAD
-##        mf   Metafont
-##        png  Portable network graphics
-##        pbm  PBMplus
-##
-##      Other devices are supported by "convert" from ImageMagick.  Type
-##      system("convert") to see what formats are available.
-##
-##      If the device is omitted, it is inferred from the file extension,
-##      or if there is no filename it is sent to the printer as postscript.
-##
-##   -Ffontname, -Ffontname:size, -F:size
-##      Postscript font (for use with postscript, aifm, corel and fig)
-##      "Helvetica" by default for PS/Aifm, "SwitzerlandLight" for Corel
-##      Can also be "Times-Roman".  The font size is given in points.
-##      The fontname is ignored for the fig device.
+## @item -F@var{fontname}
+## @itemx -F@var{fontname}:@var{size}
+## @itemx -F:@var{size}
+##   @var{fontname} set the postscript font (for use with postscript,
+##   aifm, corel and fig). By default, 'Helvetica' is set for PS/Aifm,
+##   and 'SwitzerlandLight' for Corel. It can also be 'Times-Roman'.
+##   @var{size} is given in points. @var{fontname} is ignored for the
+##   fig device.
+## @end table
 ##
 ## The filename and options can be given in any order.
 ##
@@ -70,6 +90,7 @@
 ##    print -FTimes-Roman:14 -dashed -depsc out.ps
 ##
 ## See also: orient, command
+## @end deftypefn
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 ## 2001-03-23  Laurent Mazet <mazet@crm.mot.com>
@@ -98,6 +119,8 @@
 ##     * use -Ffontname:size instead of -F"fontname size"
 ##     * add font size support to fig option
 ##     * update documentation
+## 2003-10-01  Laurent Mazet <mazet@crm.mot.com>
+##     * clean documentation
 
 function print(varargin)
 

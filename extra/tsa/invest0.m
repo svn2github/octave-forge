@@ -22,10 +22,8 @@ function [AutoCov,AutoCorr,MX,E,NC]=invest0(Y,Pmax,Mode);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%       Version 2.83
-%       03.02.2002
-%	Copyright (c) 1998-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%       Version 2.99        23.05.2002
+%	Copyright (c) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -49,15 +47,7 @@ else
 end;	
 
 [nr,nc]=size(Y);
-if exist('OCTAVE_VERSION') ~= 5
-	NC = sum(~isnan(Y),2);             % number of valid components (data points)
-else                       % OCTAVE variante 
-	if nc>1
-		NC = sum(~isnan(Y)')';
-	else
-		NC = ~isnan(Y);	
-	end;
-end;  
+NC = sum(~isnan(Y),2);             % number of valid components (data points)
 
 if Mode==0
 	if nargin<2, Pmax = min([100 nc/3]); end;
@@ -82,7 +72,7 @@ if 1,Pmax<100; % this needs change of sinvest1
 else %if nargout > 2
 	[ARP,RC,E]=lattice(Y,Pmax);
         %[ARP,PartACF,E]=durlev(AutoCov);
-	MX=[ARP,RC];        
+	%MX=[ARP,RC];        
 end;
 
 

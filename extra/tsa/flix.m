@@ -27,5 +27,6 @@ ix = ~k & k1; 	        % find integer indices
 Y(ix) = D(x(ix)); 	% put integer indices
 
 ix = k & k1;     	% find non-integer indices
+
 Y(ix) = D(floor(x(ix))).*(1-k(ix)) + D(ceil(x(ix))).*k(ix);  
 

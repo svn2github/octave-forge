@@ -21,10 +21,8 @@ function [ACF,WACF] = acovf(Z,KMAX,Mode,Mode2);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 %  J.S. Bendat and A.G.Persol "Random Data: Analysis and Measurement procedures", Wiley, 1986.
 
-%	Version 2.80
-%	last revision 03.01.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%       Version 2.99        23.05.2002
+%	Copyright (c) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>		
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -61,11 +59,11 @@ ACF=zeros(lr,KMAX+1);
 
 if nargin>3,		% for testing, use arg4 for comparing the methods,
 elseif 	(KMAX*KMAX > lc*log(lc)) & isempty(MISSES);	Mode2=1;
-elseif 	exist('xcorr','file')    & isempty(MISSES);	Mode2=2;
+elseif 	exist('xcorr')==2        & isempty(MISSES);	Mode2=2;
 elseif 	(10*KMAX > lc);		Mode2=3;
 else	Mode2=4;
 end;
-        
+
 % the following algorithms gve equivalent results, however, the computational effort is different,
 % depending on lr,lc and KMAX, a different algorithm is most efficient.
 if Mode2==1;%,KMAX*KMAX > lc*log(lc);        % O(n.logn)+O(K²)
@@ -106,8 +104,8 @@ elseif strcmp(Mode,'unbiased')
 	end;
 end;
 
-
 if nargout>2
         WACF = ACF ./ ACF(:,ones(1,KMAX+1)) .* ((lc(ones(lr,1))-MISSES)*ones(1,KMAX+1));
 end;
+
 

@@ -28,10 +28,8 @@ function [MX,res,arg3] = durlev(AutoCov);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	Version 2.71
-%	last revision 16.02.2001
-%	Copyright (c) 1996-2001 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%       Version 2.99        23.05.2002
+%	Copyright (c) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>		
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -52,26 +50,27 @@ function [MX,res,arg3] = durlev(AutoCov);
 % Inititialization
 [lr,lc]=size(AutoCov);
 
-res=[AutoCov(:,1) zeros(lr,lc-1)];
+res=[AutoCov(:,1), zeros(lr,lc-1)];
 d=zeros(lr,1);
 
 if nargout<3         % needs O(p^2) memory 
         MX=zeros(lr,lc*(lc-1)/2);   
         idx=0;
-        
+        idx1=0;
         % Durbin-Levinson Algorithm
         for K=1:lc-1,
                 %idx=K*(K-1)/2;  %see below
                 % for L=1:lr, d(L)=arp(L,1:K-1)*transpose(AutoCov(L,K:-1:2));end;  % Matlab 4.x, Octave
-                % d=sum(arp(:,1:K-1).*AutoCov(:,K:-1:2),2);              % Matlab 5.x
-                MX(:,idx+K)=(AutoCov(:,K+1)-d)./res(:,K);
+                % d=sum(MX(:,idx+(1:K-1)).*AutoCov(:,K:-1:2),2);              % Matlab 5.x
+                MX(:,idx+K)=(AutoCov(:,K+1)-sum(MX(:,idx1+(1:K-1)).*AutoCov(:,K:-1:2),2))./res(:,K);
                 %rc(:,K)=arp(:,K);
-                if K>1   %for compatibility with OCTAVE 2.0.13
-                        MX(:,idx+(1:K-1))=MX(:,(K-2)*(K-1)/2+(1:K-1))-MX(:,(idx+K)*ones(K-1,1)).*MX(:,(K-2)*(K-1)/2+(K-1:-1:1));
-                end;   
-                for L=1:lr, d(L)=MX(L,idx+(1:K))*(AutoCov(L,K+1:-1:2).');end; % Matlab 4.x, Octave
+                %if K>1   %for compatibility with OCTAVE 2.0.13
+                        MX(:,idx+(1:K-1))=MX(:,idx1+(1:K-1))-MX(:,(idx+K)*ones(K-1,1)).*MX(:,idx1+(K-1:-1:1));
+                %end;   
+                % for L=1:lr, d(L)=MX(L,idx+(1:K))*(AutoCov(L,K+1:-1:2).');end; % Matlab 4.x, Octave
                 % d=sum(MX(:,idx+(1:K)).*AutoCov(:,K+1:-1:2),2);              % Matlab 5.x
                 res(:,K+1) = res(:,K).*(1-abs(MX(:,idx+K)).^2);
+                idx1=idx;
                 idx=idx+K;
         end;
         %arp=MX(:,K*(K-1)/2+(1:K));
@@ -86,12 +85,12 @@ else            % needs O(p) memory
         for K=1:lc-1,
                 % for L=1:lr, d(L)=arp(L,1:K-1)*transpose(AutoCov(L,K:-1:2));end;  % Matlab 4.x, Octave
                 % d=sum(arp(:,1:K-1).*AutoCov(:,K:-1:2),2);              % Matlab 5.x
-                rc (:,K) = (AutoCov(:,K+1)-d)./res(:,K); % Yule-Walker
-                arp(:,K) = rc(:,K);
-                if K>1   %for compatibility with OCTAVE 2.0.13
+                arp(:,K) = (AutoCov(:,K+1)-sum(arp(:,1:K-1).*AutoCov(:,K:-1:2),2))./res(:,K); % Yule-Walker
+                rc(:,K)  = arp(:,K);
+                %if K>1   %for compatibility with OCTAVE 2.0.13
                         arp(:,1:K-1)=arp(:,1:K-1)-arp(:,K*ones(K-1,1)).*arp(:,K-1:-1:1);
-                end;
-                for L=1:lr, d(L)=arp(L,1:K)*(AutoCov(L,K+1:-1:2).');end; % Matlab 4.x, Octave
+                %end;
+                %for L=1:lr, d(L)=arp(L,1:K)*(AutoCov(L,K+1:-1:2).');end; % Matlab 4.x, Octave
                 % d=sum(arp(:,1:K).*AutoCov(:,K+1:-1:2),2);              % Matlab 5.x
                 res(:,K+1) = res(:,K).*(1-abs(arp(:,K)).^2);
         end;

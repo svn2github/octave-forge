@@ -32,11 +32,13 @@ xmltree.o: xmltree.c xmltree.h
 	$(MKOCTFILE) $(MISCDEFS) -c $<
 
 ifdef FLEXML
+# flexml is a dead project.  It requires flex 2.5.4a-6  (flex-old on Debian).
+# Further, we have modified the resulting xmltree_read.c by hand, changing
+# all occurrences of yy to xml_ and YY to XML_. Some other changes have be
+# mode so the ouput of flexml won't be as correct as the actual committed C
+# file
 xmltree_read.l: xmltree_read.act octave.dtd
 	 $(FLEXML) -A -a $^
-endif
-
-ifdef FLEX
 xmltree_read.c: xmltree_read.l
 	$(FLEX) -B -Pxml_ -o$@ $<
 endif

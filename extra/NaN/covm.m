@@ -1,5 +1,5 @@
 function [CC,NN] = covm(X,Y,Mode);
-% Generates correlation coefficient
+% Generates covariance matrix
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
 % The output gives NaN only if there are insufficient input data

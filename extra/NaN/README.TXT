@@ -48,6 +48,9 @@ Currently are implemented:
 	NANTEST		checks whether all functions have been replaced
 	DETREND		detrending of data with missing values and non-equidistant sampled data
 	COVM		covariance estimation (several modes)
+	COR		correlation matrix
+	CORRCOEF	correlation coefficient 
+	COV		covariance matrix
 	
 	FLAG_IMPLICIT_SKIP_NAN	
 			gets and sets default handling of NaN's
@@ -205,9 +208,9 @@ This checks whether all previous functions have been replaced
 
 
 
-	Version 1.20
-	30 Apr 2002
-	Copyright (c) 2000-2002 by  Alois Schloegl
+	Version 1.21 
+	2 May 2002
+	Copyright (C) 2000-2002 by  Alois Schloegl
 	a.schloegl@ieee.org	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

@@ -1,6 +1,6 @@
 Missing data statistics (not installed by default)
  coefficient_of_variation geomean meansq skewness
- covm harmmean median statistic
+ covm cor cov corrcoef harmmean median statistic
  detrend kurtosis moment std
  flag_implicit_dimension mad nantest sumskipnan
  flag_implicit_skip_nan meandev rms var

@@ -31,8 +31,10 @@ Open Source Initiative (www.opensource.org)
 #include "galois.h"
 #include "ov-galois.h"
 
+#ifdef CLASS_HAS_LOAD_SAVE
 #include <octave/byte-swap.h>
 #include <octave/ls-oct-ascii.h>
+#endif
 
 #ifdef USE_OCTAVE_NAN
 #define lo_ieee_nan_value() octave_NaN

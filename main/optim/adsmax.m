@@ -46,7 +46,11 @@ mu = 1e-4;  % Initial percentage change in components.
 nstep = 25; % Max number of times to double or decrease h.
 
 % Set up convergence parameters.
-if nargin < 3 | isempty(stopit), stopit(1) = 1e-3; end
+if nargin < 3
+	stopit(1) = 1e-3;
+elseif isempty(stopit)
+	stopit(1) = 1e-3;
+endif
 tol = stopit(1); % Required rel. increase in function value over one iteration.
 if length(stopit) == 1, stopit(2) = inf; end  % Max no. of f-evaluations.
 if length(stopit) == 2, stopit(3) = inf; end  % Default target for f-values.
@@ -56,8 +60,11 @@ if length(stopit) == 5, stopit(6) = 1; end    % Default: maximize
 dirn= stopit(6);
 if nargin < 4, savit = []; end                   % File name for snapshots.
 
-if nargin < 5 | isempty(P)
-   P = eye(n);             % Matrix of search directions.
+% Matrix of search directions.
+if nargin < 5
+   P = eye(n);
+elseif isempty(P)   
+   P = eye(n);
 else
    if ~isequal(size(P),[n n])  % Check for common error.
       error('P must be of dimension the number of elements in x0.')

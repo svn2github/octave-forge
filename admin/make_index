@@ -117,7 +117,7 @@ foreach my $f ( @C_files ) {
 	    # plus a bit more.  You need the "plus a bit more" because
 	    # C compilers allow implicitly concatenated string constants
 	    # "A" "B" ==> "AB".
-	    while ($desc !~ /[^\\]\"\s*\S/ && $desc !~ /^\"/) {
+	    while ($desc !~ /[^\\]\"\s*[\,\)]/ && $desc !~ /^\"/) {
 		# if line ends in '\', chop it and the following '\n'
 		$desc =~ s/\\\s*\n//;
 		# join with the next line
@@ -127,6 +127,40 @@ foreach my $f ( @C_files ) {
 		$desc =~ s/([^\\])\"\s*\"/$1/;
 	    }
 	    $desc = "" if $desc =~ /^\"/; # chop everything if it was ""
+
+	    # Now check for text included in help messages as macros
+	    # XXX FIXME XXX These macros are often compile dependent, so
+	    # how to we get the correct version of the macro in this case
+	    # without actually compiling the code???
+	    while ($desc =~ /[^\\]\"\s*\S+\s*[^\\]\"/) {
+	      my $macro = $desc;
+	      $macro =~ s/^.*[^\\]\"\s*(\S+?)\s*[^\\]\".*$/$1/;
+	      $macro =~ s/\n//;
+	      my $macro_defn;
+	      my $line;
+	      if ( open(IN2, $f) ) {
+		while ($line = <IN2>) {
+		  next unless $line =~ /^\#\s*define\s+$macro\s+\"/;
+		  $macro_defn = $line;
+		  $macro_defn =~ s/^\#\s*define\s+$macro\s+\"(.*)\n$/$1/;
+		  while ($macro_defn !~ /[^\\]\"/ && $macro_defn !~ /^\"/) {
+		    $macro_defn =~ s/\\\s*\n//;
+		    # join with the next line
+		    $macro_defn .= <IN2>;
+		  }
+		  $macro_defn = "" if $macro_defn =~ /^\"/; # chop everything if it was ""
+		  $macro_defn =~ s/\\n/\n/g;          # insert fake line ends
+		  $macro_defn =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
+		  $macro_defn =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
+		  last;
+		}
+		close (IN2);
+	      } else {
+		print STDERR "Could not open file ($f): $!\n";
+	      }
+	      $desc =~ s/\"\s*$macro\s*\"/$macro_defn/;
+	    }
+
 	    $desc =~ s/\\n/\n/g;          # insert fake line ends
 	    $desc =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
 	    $desc =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"

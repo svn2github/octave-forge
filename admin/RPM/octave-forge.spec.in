@@ -9,10 +9,10 @@ License: GPL
 Group: Applications/Engineering
 Source: http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge-%{version}.tar.gz
 URL: http://octave.sourceforge.net
-Requires: octave = @OCTAVE_VERSION@ libjpeg ImageMagick
+Requires: octave = @OCTAVE_VERSION@ libjpeg libpng ImageMagick
 ###Prereq: info
-BuildPrereq: octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg
-BuildPrereq: zlib-devel libtermcap-devel libstdc++-devel
+BuildPrereq: octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg libjpeg-devel
+BuildPrereq: libpng libpng-devel zlib-devel libtermcap-devel libstdc++-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 ### Description taken from http://wiki.octave.org/wiki.pl?OctaveForge

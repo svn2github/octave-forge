@@ -83,6 +83,7 @@ Functions
  pcode 
  inmem = use <code>who -functions</code>
  mex= install octave-forge mex package and use <code>system(["mex ", name])</code>
+ source
  
 Load path
  path 
@@ -90,6 +91,7 @@ Load path
  rmpath 
  pathtool 
  file_in_path file_in_loadpath
+ rehash
 Output
  echo 
  more 
@@ -126,6 +128,77 @@ Profiling
 Demos and Tests.
  example  demo  test  assert  speed 
 
+variables >> System Configuration Variables
+Command input
+ history history_file history_size edit_history
+ saving_history run_history read_readline_init_file
+ completion_append_char completion_matches
+Function
+ ignore_function_time_stamp
+Display
+ echo_executing_commands
+ page_screen_output page_output_immediately
+ print_answer_id_name print_empty_dimensions print_rhs_assign_val
+ struct_levels_to_print
+ split_long_rows silent_functions
+ suppress_verbose_help_message
+ default_eval_print_flag
+ output_max_field_width output_precision
+ PS1 PS2 PS4 fixed_point_format
+Error Handling
+ crash_dumps_octave_core
+ beep_on_error
+ debug_on_error
+ debug_on_warning
+ warn_divide_by_zero
+ warn_function_name_clash
+ warn_future_time_stamp
+ warn_missing_semicolon
+ warn_separator_insert
+ warn_variable_switch_label
+ warn_assign_as_truth_value
+ warn_reload_forces_clear
+ warn_single_quote_string
+Processing
+ do_fortran_indexing
+ ok_to_lose_imaginary_part
+ whitespace_in_literal_matrix
+ variables_can_hide_functions
+ treat_neg_dim_as_zero
+ initialize_global_variables
+ default_global_variable_value
+ define_all_return_values default_return_value
+ empty_list_elements_ok
+ implicit_num_to_str_ok
+ implicit_str_to_num_ok
+ max_recursion_depth
+ return_last_computed_value
+ string_fill_char
+ prefer_column_vectors
+ resize_on_range_error
+ propagate_empty_matrices
+ casesen
+File output
+ default_save_format
+ save_precision
+ save_header_format_string
+
+Support programs
+ EDITOR INFO_FILE INFO_PROGRAM MAKEINFO_PROGRAM PAGER gnuplot_binary
+Constants
+ F_DUPFD F_GETFD F_GETFL F_SETFD F_SETFL
+ O_APPEND O_ASYNC O_CREAT O_EXCL O_NONBLOCK O_RDONLY
+ O_RDWR O_SYNC O_TRUNC O_WRONLY
+ SEEK_CUR SEEK_END SEEK_SET
+ OCTAVE_HOME OCTAVE_VERSION
+ DEFAULT_LOADPATH
+ octave_config_info
+ program_name argv
+ program_invocation_name
+ ERRNO error_text
+Variables
+ LOADPATH EXEC_PATH IMAGEPATH
+
 system >> System Utilities
 Clock functions
  now 
@@ -147,6 +220,7 @@ Date conversion
  calendar 
  datetick=use <code>gset xdata time; gset timefmt "%d/%m"; gset format x "%b %d"</code>
  strftime 
+ strptime
 Controlling subprocesses
  system
  popen popen2 pclose
@@ -180,6 +254,9 @@ Logical functions
  xor 
  any 
  all 
+ true
+ false
+ is_bool
 Bit operations
  bitand 
  bitcmp 
@@ -219,6 +296,7 @@ Interpreter interface
  builtin 
  assignin 
  ans 
+ input_event_hook atexit 
 Constants
  eps 
  realmax 
@@ -234,13 +312,14 @@ Symbol table
  exist
  exist(x,"var")=requires exist patch from $EG
  global 
- isglobal 
+ isglobal is_global
  persistent = use <code>static</code> 
  mfilename 
  mlock 
  munlock 
  mislocked
- command
+ command typeinfo
+ initialize_global_variables
 Function arguments
  nargchk 
  nargin 
@@ -251,6 +330,8 @@ Function arguments
  fcnchk 
  read_options
  va_start va_arg vr_val
+ usage
+ argn = string names of the input parameters
 User I/O
  disp printf puts
  error 
@@ -261,7 +342,7 @@ User I/O
  home 
  input 
  keyboard kbhit
- pause 
+ pause menu
 Inline functions
  inline= see <a href="$COMPAT#inline">compatibility FAQ</a>
  argnames 
@@ -318,7 +399,8 @@ Matrix properties
  isnumeric is_complex
  islogical 
  logical 
- is_scalar is_vector is_square is_symmetric is_duplicate_entry
+ is_scalar is_vector is_matrix is_square 
+ is_symmetric is_duplicate_entry
 Rearranging matrices
  reshape 
  tril 
@@ -366,7 +448,6 @@ Linear algebra
  orth 
  rref 
  subspace=use Andrew Knyazev's <a href="ftp://ftp.mathworks.com/pub/contrib/v5/linalg/subspace.m"><code>subspace</code></a>
-
  cond 
  inv inverse 
  pinv 
@@ -480,7 +561,7 @@ Special functions
  gamma
  gamma(complex)= use Tim Reluga's <a href="http://www.octave.org/mailing-lists/octave-sources/2002/9">Gamma.m</a> or Eyal Doron's <a href="http://www.octave.org/mailing-lists/octave-sources/1996/3">cgamma.m</a>
  gammainc gammai
- gammaln 
+ gammaln lgamma 
  legendre 
 Number theory
  mod 
@@ -598,6 +679,7 @@ Ordinary differential equations
  rk2fixed rk4fixed rk8fixed
  lsode lsode_options
  dassl dassl_options
+ colloc
 
 
 plot >> Plotting
@@ -647,6 +729,7 @@ Surface plots
  trimesh 
  waterfall 
  fill3 
+ sombrero
 
 plotcontrol >> Plot controls
 Figure controls
@@ -657,6 +740,7 @@ Figure controls
  close 	 
  refresh= try <code>replot</code>
  drawnow
+ automatic_replot clearplot closeplot
 Axis controls
  axis 
  zoom= use <code>gzoom</code> from octave-forge
@@ -665,6 +749,7 @@ Axis controls
  ishold 
  subplot 
  multiplot subwindow oneplot plot_border
+ datetick
 Labels
  title bottom_title top_title
  xlabel 
@@ -719,11 +804,13 @@ User input
  dragrect 
  rbbox 
 Gnuplot Interface
- gset graw gnuplot_binary gnuplot_has_frames gnuplot_has_multiplot
-
+ gset gshow graw gnuplot_binary gnuplot_has_frames gnuplot_has_multiplot
+ gnuplot_command_axes gnuplot_command_end gnuplot_command_plot
+ gnuplot_command_replot gnuplot_command_splot gnuplot_command_title
+ gnuplot_command_using gnuplot_command_with set show purge_tmp_files
 
 file >> File I/O
-Basic file operations
+Basic handle operations
  fopen 
  fclose 
  fread 
@@ -733,32 +820,39 @@ Basic file operations
  fseek 
  ftell 
  frewind 
- fscanf 
+ fflush
+ freport
+ dup2
+ fcntl
+ stdin stdout stderr
+ is_stream
+Formatted I/O
  fgetl 
  fgets 
  fputs
  fprintf
  fdisp
- fflush
- freport
- dup2
- fcntl
-File system operations
+ fscanf 
+ scanf
+File operations
+ tempdir 
+ tmpnam
+ tempname = use <code>tmpnam</code>
+ prefdir 
+ rename link unlink symlink readlink 
+ mkfifo umask stat lstat
+Directory operations
  cd pwd ls dir
  filesep 
  pathsep 
  fullfile 
  fileparts 
  partialpath 
- tempdir 
- tmpnam
- tempname = use <code>tmpnam</code>
- prefdir 
+ readdir mkdir rmdir
  glob
  tilde_expand
  file_in_path
  file_in_loadpath
- rename link unlink symlink readdir mkdir rmdir mkfifo umask stat lstat
 Import/Export
  textread
  dlmread 

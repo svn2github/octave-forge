@@ -71,6 +71,7 @@ sub cc_and_m_files { # {{{1 populates global array @files
 my %function_description  = ();
 my %octave_forge_function = ();
 my @uncategorized = ();
+my @skipped = ();
 my %n_appearances = ();
 my $n_functions = 0;
 
@@ -184,6 +185,12 @@ else {
 }
 
 
+if (@skipped) {
+    print "skipped ", scalar(@skipped), " functions ";
+    my $rs = $,; $, = "\n  ";
+    print "  ", sort(@skipped); $, = $rs;
+    print "\n";
+}
 
 if (@uncategorized) {
     print scalar(@uncategorized), " uncategorized functions ";
@@ -319,11 +326,13 @@ sub register_function { # {{{1
     }
     $octave_forge_function{$function} = 1 unless $file =~ /^$OCTAVE/;
     if (!defined $index_by_function{$function}) {
-	if ($file =~ /.m$/) {
-	    push @uncategorized, "$file";
-	}
-	else {
-	    push @uncategorized, "$file: $function"
+	my $entry = $file;
+	$entry = "$file: $function" if $file !~ /[.]m$/;
+	if ($function =~ /__/ || $file =~ /test/ 
+	    || $function =~ /^[Cc]ontents?$/) {
+	    push @skipped, $entry;
+	} else {
+	    push @uncategorized, $entry;
 	}
     }
 

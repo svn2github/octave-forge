@@ -24,6 +24,6 @@ Tests
   lp_test test_cg_min_1 test_cg_min_2 test_cg_min_3
   test_d2_min_1 test_d2_min_2 test_d2_min_3
   test_nelder_mead_min_1 test_nelder_mead_min_2
-  poly_2_ex
+  poly_2_ex test_minimize_1
 
 

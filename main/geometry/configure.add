@@ -1,6 +1,6 @@
 dnl The following check fails because qhull wants qh_version to be
 dnl defined by the user!?!
-dnl    AC_CHECK_LIB(qhull,qh_qhull,HAVE_LIBQHULL)
+dnl    OF_CHECK_LIB(qhull,qh_qhull,HAVE_LIBQHULL)
 dnl Instead we use the following mess cribbed from acgeneral.m4:
 
 AC_DEFUN(AC_CHECK_QHULL_VERSION,
@@ -49,7 +49,7 @@ else
     AC_SUBST(need_qhull_version)
     AC_CHECK_HEADER(qhull/qhull_a.h, have_qhull=yes, have_qhull=no)
     if test $have_qhull = yes ; then
-        AC_CHECK_LIB(qhull, qh_qhull, have_qhull=yes, have_qhull=no)
+        OF_CHECK_LIB(qhull, qh_qhull, have_qhull=yes, have_qhull=no)
 	if test $have_qhull = yes ; then
 	    need_qhull_version=no
 	else

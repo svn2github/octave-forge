@@ -47,12 +47,12 @@ else
     esac
     if test $have_termcap = yes; then
        MISCDEFS="$MISCDEFS -DUSE_TERM -DHAVE_TERMCAP_H"
-       AC_CHECK_LIB(termcap, tgetnum, HAVE_LIB_TERMCAP=yes)
+       OF_CHECK_LIB(termcap, tgetnum, HAVE_LIB_TERMCAP=yes)
        STATUS=yes 
     elif test $have_term = yes; then
        MISCDEFS="$MISCDEFS -DUSE_TERM -DHAVE_TERM_H"
        STATUS=yes
-       AC_CHECK_LIB(termcap, tgetnum, HAVE_LIB_TERMCAP=yes)
+       OF_CHECK_LIB(termcap, tgetnum, HAVE_LIB_TERMCAP=yes)
     else
        STATUS=no
     fi

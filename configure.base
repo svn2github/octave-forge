@@ -195,6 +195,15 @@ dnl action if the tests are not performed is to do whatever
 dnl is appropriate for the most recent version of Octave.
 
 dnl Define the following macro:
+dnl    OF_CHECK_LIB(lib,fn,true,false,helpers)
+dnl This is just like AC_CHECK_LIB, but it doesn't update LIBS
+AC_DEFUN(OF_CHECK_LIB,
+[save_LIBS="$LIBS"
+AC_CHECK_LIB($1,$2,$3,$4,$5)
+LIBS="$save_LIBS"
+])
+
+dnl Define the following macro:
 dnl    TRY_MKOCTFILE(msg,program,action_if_true,action_if_false)
 dnl
 AC_DEFUN(TRY_MKOCTFILE,

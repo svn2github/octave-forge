@@ -6,8 +6,8 @@ else
 
     AC_SUBST(HAVE_PCRE)
     AC_CHECK_HEADER(pcre.h, HAVE_PCRE=yes, HAVE_PCRE=no)
-    if test $have_pcre = yes ; then
-	AC_CHECK_LIB(pcre, , HAVE_PCRE=yes, HAVE_PCRE=no)
+    if test $HAVE_PCRE = yes ; then
+	OF_CHECK_LIB(pcre, pcre_compile, HAVE_PCRE=yes, HAVE_PCRE=no)
 	if test $HAVE_PCRE = no ; then
 	    STATUS="libpcre not found"
 	else

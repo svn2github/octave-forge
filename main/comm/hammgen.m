@@ -66,7 +66,7 @@ function [h, g, n, k] = hammgen(m, p)
   n = 2^m -1;
   k = n - m;
   if (nargout > 1)
-    [h g] = cyclgen(n, p);
+    [h, g] = cyclgen(n, p);
   else
     h = cyclgen(n,p);
   endif

@@ -50,6 +50,12 @@
 ##     y = polyval(p,x);
 ##     dy = sqrt(polyval(dp.^2, x.^2));
 ##
+## Example
+##     x = linspace(0,4,20);
+##     dy = (1+rand(size(x)))/2;
+##     y = polyval([2,3,1],x) + dy.*randn(size(x));
+##     wpolyfit(x,y,dy,2);
+##
 ## Farebrother, RW (1988). Linear least squares computations.
 ## New York: Marcel Dekker, Inc.
 ##
@@ -66,8 +72,13 @@
 ## * remove the need for flipud(p)
 ## 2002-06-02 Paul Kienzle
 ## * oops --- removed the need for flipud(p) but didn't remove flipud(p)
+## 2002-07-31 Paul Kienzle
+## * prettier graph
+## * add example
+## * always return values as row vectors
+## * don't return if values unless requested
 
-function [p, dp] = wpolyfit (x, y, dy, n, origin)
+function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
 
 
   if (nargin < 3 || nargin > 5)
@@ -106,8 +117,6 @@ function [p, dp] = wpolyfit (x, y, dy, n, origin)
     error ("wpolyfit: n must be a nonnegative integer");
   endif
 
-  y_is_row_vector = (rows (y) == 1);
-
   k = length (x);
 
   ## observation matrix
@@ -133,7 +142,7 @@ function [p, dp] = wpolyfit (x, y, dy, n, origin)
   p = R\(Q'*b); 
   p(P) = p;
 
-  compute_dp = nargout == 0 || nargout >= 2;
+  compute_dp = nargout == 0 || nargout > 1;
   if (compute_dp)
     ## Calculate chisq from the weighted data and use that to
     ## estimate error on the parameters.  We shouldn't need the
@@ -147,29 +156,41 @@ function [p, dp] = wpolyfit (x, y, dy, n, origin)
     p(n+1) = 0;
     if (compute_dp) dp(n+1) = 0; endif
   endif
-  if (!y_is_row_vector && rows (x) == 1)
-    p = p';
-    if (compute_dp) dp = dp'; endif
-  endif
 
   if nargout == 0
+
+    ## decorate the graph
+    grid('on');
+    xlabel('abscissa X'), ylabel('data Y'), 
+    title('Least-squares Polynomial Fit with Error Bounds');
+
+    ## draw fit with estimated error bounds
+    xf = linspace(min(x),max(x),150);
+    yf = polyval(p,xf);
+    dyf = sqrt(polyval(dp.^2,xf.^2));
+    plot(xf,yf+dyf,"g.;;", xf,yf-dyf,"g.;;", xf,yf,"g-;fit;");
+
+    hold on;
+
+    ## plot the data
     if (isempty(dy))
-      plot(x,y,";data;");
+      plot(x,y,"x;data;");
     else
       errorbar (x, y, dy, "~;data;");
     endif
-    hold on;
-    grid('on');
-    xlabel('abscissa X'), ylabel('data Y'), 
-    title('Least-squares Polynomial Fit (with Error Bounds)');
-#    plot(x,polyval(p,x),"g-;p(x);",...
-#         x,polyval(p-sign(p).*dp,x),"c-;p+dp;",...
-#         x,polyval(p+sign(p).*dp,x),"c-;p-dp;")
-    errorbar (x, polyval(p,x), sqrt(polyval(dp.^2,x.^2)), "~b;fit;");
+
     hold off;
+
     ## display p,dp as a two column vector
     printf("%15s %15s\n", "Coefficient", "Error");
     printf("%15f %15f\n", [p(:), dp(:)]');
+
+  else
+
+    ## return values as row vectors instead of printing
+    p_out = p';
+    if (compute_dp) dp_out = dp'; endif
+
   endif
 
 endfunction

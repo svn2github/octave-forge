@@ -411,16 +411,244 @@ sub load_index { # {{{1
     close(IN);
 } # 1}}}
 sub write_html { # {{{1
-    my $max_TB_across_top = 7;
-    my $all_toolboxes = "<center>\n";
-    my $n = 0;
-
     # make empty html directories
     unlink <index/*.html>;
     unlink <index/f/*.html>;
     mkdir "index";
     mkdir "index/f";
 
+    write_main();
+    write_forgebar();
+    write_intro();
+    write_alphabetic_navbar();
+    write_TBnavbar();
+    foreach ( toolbox_list() ) {
+	write_TBnavbar($_);
+	write_TBdetails($_);
+    }
+
+    # Write one file for each letter.
+    #
+
+    my $Letter = chr(0);
+    foreach my $func ( indexed_funcs() ) {
+	# Check if need to go to the next letter
+	# This is particularly complicated because we
+	# want to include all punctuation in the 
+	my $next = uc(substr($func, 0, 1));
+	if ($next ne $Letter) {
+	    if ($Letter =~ /[A-Y]/) {
+		print OUT "</dl></body></html>\n";
+		close OUT;
+	    } else {
+		print OUT "</dl>\n";
+	    }
+	    if ($Letter =~ /[\0A-Y]/) {
+		my $head = "";
+		if ( $next =~ /[A-Z]/ ) {
+		    $head = $next;
+		} elsif ( $next lt "A" ) {
+		    $head = "A";
+		} else {
+		    $head = "Z";
+		}
+		my $file .= ">index/$head.html";
+		open(OUT, $file) or die "Cannot write $file";
+		print OUT "<html><head>\n";
+		print OUT "<title>Octave Functions: $head</title>\n";
+		print OUT "<meta name=\"keywords\" content=\"\"></head>\n";
+		print OUT "<body>\n";
+	    }
+	    $Letter = $next;
+	    print OUT "<h1><a name=\"$Letter\">$Letter</a></h1>";
+	    print OUT "<dl>\n";
+	}
+
+	# Function reference
+	print OUT "<dt><b>",func_ref($func,$func),"</b>\n";
+
+	if (defined $octave_forge_function{$func}) {
+	    print OUT "    ", 
+	}
+
+	# The toolboxes to which it belongs (x-ref to the <toolbox>.html file)
+	foreach my $pair ( @{$index_by_function{$func}} ) {
+	    my ( $TB, $cat ) = @{$pair};
+	    print OUT "    ", cat_ref($TB, $cat, "[$TB\::$cat]"), "\n";
+	}
+
+
+	# column 3:  the function description
+	# XXX FIXME XXX multiple functions???
+	print OUT "    <dd>",html_desc($func),"\n";
+    }
+
+    print OUT "</dl>\n</body></html>\n";
+    close(OUT);
+} # 1}}}
+sub writenav { # 1{{{
+    my ($cat) = @_;
+
+} # 1}}}
+sub write_main { # {{{1
+    open(OUT,">index/index.html") or die "Could not open index/index.html";
+    print OUT <<EOF;
+<HTML><HEAD>
+<TITLE>Octave-forge combined index</TITLE>
+</HEAD>
+<FRAMESET rows="25, *">
+  <FRAME src="forgebar.html" noresize frameborder="0">
+  <FRAMESET cols="20%, 80%">
+    <FRAME name=navbar src="categorical.html">
+    <FRAMESET rows="25, *">
+      <FRAME src="alphabetic.html">
+      <FRAME name=content src="intro.html">
+    </FRAMESET>
+  </FRAMESET>
+  <NOFRAMES>
+      <H1>Octave-Forge Combined Index</H1>
+      <ul>
+      <li><A HREF="categorical.html">Categorical index</a>
+      <li><A HREF="alphabetic.html">Alphabetic index</a>
+      </ul>
+  </NOFRAMES>
+</FRAMESET>
+</HTML>
+EOF
+    close OUT;
+} # 1}}}
+sub write_forgebar {
+    open(OUT,">index/forgebar.html") or die "Could not open index/forgebar.html";
+    print OUT <<EOF;
+<html><title>Octave Forge site navigator</title>
+<base target=_top>
+<body>
+<A href="http://octave.sourceforge.net">Home</A> |
+<A href="http://sourceforge.net/projects/octave/">Summary</A> |
+<A href="http://sourceforge.net/forum/?group_id=2888">Forums</A> |
+<A href="http://sourceforge.net/bugs/?group_id=2888">Bugs</A> |
+<A href="http://sourceforge.net/support/?group_id=2888">Support</A> |
+<A href="http://sourceforge.net/patch/?group_id=2888">Patches</A> |
+<A href="http://sourceforge.net/mail/?group_id=2888">Lists</A> |
+<A href="http://sourceforge.net/pm/?group_id=2888">Tasks</A> |
+<A href="http://sourceforge.net/docman/?group_id=2888">Docs</A> |
+<A href="http://sourceforge.net/survey/?group_id=2888">Surveys</A> |
+<A href="http://sourceforge.net/news/?group_id=2888">News</A> |
+<A href="http://sourceforge.net/cvs/?group_id=2888">CVS</A> | 
+<A href="http://sourceforge.net/project/filelist.php?group_id=2888">Files</A>
+</body></html>
+EOF
+}
+# returns the URL to download a file
+sub cvs_download_link {
+	my ($_dir, $_file) = @_;
+
+	$_dir =~ s/^[.\/]*//;  # get rid of the leading garbage
+
+	return 'http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/' .
+		$_dir . '/' . $_file . '?rev=HEAD&content-type=text/plain';
+}
+sub write_intro { # 1{{{
+    open(OUT,">index/intro.html") or die "Could not open index/intro.html";
+    print OUT <<EOF;
+<HTML><HEAD><TITLE>Octave-forge index intro</TITLE></HEAD>
+<BODY>
+<H1>Welcome to Octave-forge</H1>
+</BODY></HTML>
+EOF
+    close OUT;
+} # 1}}}
+sub write_TBnavbar { # 1{{{
+    my $openTB = shift;
+    my $file = "categorical";
+    $file = "nav$openTB" if $openTB ne "";
+    open(OUT,">index/$file.html") or die "Could not open index/$file.html";
+    print OUT <<EOF;
+<html><head><title>Octave-forge categorical index</title></head>
+<body>
+What\'s available:
+<ol>
+EOF
+    foreach my $TB (toolbox_list()) {
+#	print OUT "<li><a href=\"$TB.html\" target=content><a href=\"nav$TB.html#$TB\" target=navbar>$TB_description{$TB}</a></a>";
+	print OUT "<li>";
+	if ($openTB eq $TB) {
+	    print OUT "<a name=\"$TB\"><a href=\"categorical.html#$TB\" target=navbar>
+$TB_description{$TB}</a></a>";
+	    print OUT "<ul>\n";
+	    foreach my $cat ( cat_list($TB) ) {
+		my $anchor = cat_anchor($cat);
+		print OUT "    <li><a href=\"$TB.html#$anchor\" target=content>$cat</a></li>\n";
+	    }
+	    print OUT "</ul>\n";
+	} else {
+	    print OUT "<a name=\"$TB\"><a href=\"nav$TB.html#$TB\" target=navbar>$TB_description{$TB}</a></a>";
+	}
+    }
+    print OUT "</ol></body></html>";
+    close OUT;
+} # 1}}}
+sub write_TBdetails { # 1{{{
+    my $TB = shift;
+    my $file   = "index/$TB.html";
+    
+    open(OUT, ">$file") or die "Cannot write $file:  $!\n";
+    print OUT <<EOF;
+<html><head>
+<title>$TB</title>
+<meta name=\"keywords\" content=\"\">
+</head>
+<body>
+<h1>$TB_description{$TB}</h1>
+EOF
+
+    # summary list of categories
+    print OUT "<ul>\n";
+    foreach my $cat ( cat_list($TB) ) {
+	my $anchor = cat_anchor($cat);
+	print OUT "    <li><a href=\"#$anchor\">$cat</a></li>\n";
+    }
+    print OUT "</ul>\n";
+    
+    # Each category has a table of its functions and their descriptions.
+    foreach my $cat ( cat_list($TB) ) {
+	my $anchor = cat_anchor($cat);
+	print OUT "<h2><a name=\"$anchor\">$cat</a></h2>\n";
+	print OUT "<dl>\n";
+	foreach my $func ( cat_funcs($TB,$cat) ) {
+	    
+	    # column 1:  the function (x-ref to full description in
+	    #                          cvs-tree's html file)
+	    print OUT "<dt><b>",func_ref($func,$func),"</b>\n";
+	    
+	    # column 2: the description, if it exists
+	    #
+	    print OUT "<dd>",html_desc($func),"\n";
+	}
+	print OUT "</dl>\n";
+    }
+    print OUT "</body></html>\n";
+    close(OUT);
+} # 1}}}
+sub write_alphabetic_navbar { # 1{{{
+    open(OUT,">index/alphabetic.html") or die "Could not open index/alphabetic.html";
+    print OUT <<EOF;
+<html><head><title>Octave-Forge alphabetic list</title></head>
+<base target=content>
+<body>
+EOF
+    my $A_to_Z     = "";
+    foreach (first_letters (indexed_funcs())) {
+        $A_to_Z .= letter_ref($_) . "|";
+    }
+    $A_to_Z         =~ s/\s+\|\s*$//;  # strip last pipe separator
+    print OUT "<center>$A_to_Z</center>\n</body></html>\n";
+    close OUT;
+} # 1}}}
+sub oldnavbar { # 1{{{
+    my $max_TB_across_top = 7;
+    my $all_toolboxes = "<center>\n";
+    my $n = 0;
 
     foreach my $TB (toolbox_list()) {
         ++$n;
@@ -434,110 +662,17 @@ sub write_html { # {{{1
     $all_toolboxes =~ s/\s+\|\s*$//;  # strip last pipe separator
     $all_toolboxes .= "<br><br>";
     my $A_to_Z     = "";
-    foreach ('A'..'Z') {
-        $A_to_Z .= "<a href=\"all_functions.html#$_\">$_</a> | ";
+    foreach (first_letters (indexed_funcs())) {
+        $A_to_Z .= letter_ref($_);
+	$A_to_Z .= " | ";
     }
     $A_to_Z         =~ s/\s+\|\s*$//;  # strip last pipe separator
     my $all_toolboxes_A_Z = $all_toolboxes . "$A_to_Z </center>\n";
     $all_toolboxes .= "</center>\n";
 
-    # Write a file for each toolbox.
-    #
-    $Text::Wrap::columns = 50;
-    foreach my $TB ( toolbox_list() ) {
-        my $file   = "index/$TB.html";
-
-        open(OUT, ">$file") or die "Cannot write $file:  $!\n";
-        print OUT "<html><head>
-        <title>$TB</title>
-           <meta name=\"keywords\" content=\"\"> </head><body>\n";
-
-        print OUT $all_toolboxes_A_Z;
-        # Heading 1:  The categories for this toolbox.
-        print OUT "<p><h1>$TB_description{$TB}</h1>\n";
-        print OUT "<ul>\n";
-        foreach my $cat ( cat_list($TB) ) {
-            my $anchor = cat_anchor($cat);
-            print OUT "    <li><a href=\"#$anchor\">$cat</a></li>\n";
-        }
-        print OUT "</ul>\n";
-
-        # Heading 2:  Each category has a table of its functions and
-        #             their descriptions.
-        foreach my $cat ( cat_list($TB) ) {
-	    my $anchor = cat_anchor($cat);
-            print OUT "<h2><a name=\"$anchor\">$cat</a></h2>\n";
-            print OUT "<table>\n";
-            foreach my $func ( cat_funcs($TB,$cat) ) {
-
-                # column 1:  the function (x-ref to full description in
-                #                          cvs-tree's html file)
-                print OUT "<tr><td width=120>";
-		print OUT func_ref($func,split_long_name($func));
-		print OUT "</td>\n";
-
-                # column 2: the description, if it exists
-                #
-		print OUT "    <td>",html_desc($func),"</td>\n";
-
-                print OUT "</tr>\n";
-            }
-            print OUT "</table>\n";
-        }
-        print OUT "</body></html>\n";
-        close(OUT);
-    }
-
-
-    # Write the file containing all functions alphabetically.
-    #
-    my $file   = "index/all_functions.html";
-    open(OUT, ">$file") or die "Cannot write $file:  $!\n";
-    print OUT "<html><head>
-    <title>Octave-Forge Functions Alphabetically</title>
-       <meta name=\"keywords\" content=\"\"> </head><body>\n";
-    print OUT $all_toolboxes;
-
-    my $Letter = chr(0);
-    foreach my $func ( indexed_funcs() ) {
-	if (uc(substr($func, 0, 1)) ne $Letter) {
-	    $Letter = uc(substr($func, 0, 1));
-	    print OUT "</table>\n" if $Letter ne chr(0);
-	    print OUT "<p><p><center><b><a name=\"$Letter\">$Letter</a></b> ";
-	    print OUT '&nbsp; &nbsp; &nbsp; || &nbsp; &nbsp; &nbsp; ',
-		"$A_to_Z </center>\n";
-	    print OUT "<table>\n";
-	}
-
-	# column 1:  the function (x-ref to full description in
-	#                          cvs-tree's html file)
-	print OUT "<tr valign=top><td width=120>";
-	print OUT func_ref($func,split_long_name($func));
-	print OUT "</td>\n";
-
-	# column 2:  the toolbox (x-ref to the <toolbox>.html file)
-	print OUT "    <td>\n";
-	foreach my $pair ( @{$index_by_function{$func}} ) {
-	    my ( $TB, $cat ) = @{$pair};
-	    print OUT cat_ref($TB, $cat, $TB), "\n";
-	}
-	print OUT "    </td>\n";
-
-
-	# column 3:  the function description
-	# XXX FIXME XXX multiple functions???
-	print OUT "    <td>",html_desc($func),"</td>\n";
-    }
-
-    print OUT "</table>\n</body></html>\n";
-    close(OUT);
 } # 1}}}
-sub writenav { # 1{{{
-    my ($cat) = @_;
-
-} # 1}}}
-
 sub write_ascii { # 1{{{
+    # output all toolboxes as a contents.m file
     my ($prefix) = @_;
     my $indent = 16 - 3 - length($prefix);
 
@@ -582,9 +717,33 @@ sub func_ref { # 1{{{
 } # 1}}}
 sub split_long_name { # 1{{{
     # html magic to break long variable/function names
+    # XXX FIXME XXX this function is probably not used
     my ( $nicefunc ) = @_;
     # $nicefunc =~ s/([^_])_([^_])/$1_ $2/g;
     return $nicefunc;
+} # 1}}}
+sub first_letters { # 1{{{
+    # return a list of all first letters in the arguments
+    # The argument list must come sorted with a case-insensitive sort.
+    my $Letter = chr(0);
+    my @ret = ();
+    foreach my $name ( @_ ) {
+	# Check if need to go to the next letter
+	if (uc(substr($name, 0, 1)) ne $Letter) {
+	    $Letter = uc(substr($name, 0, 1));
+	    push @ret, $Letter;
+	}
+    } 
+    return @ret;
+} # 1}}}
+sub letter_file { # 1{{{
+    return "$_.html" if /[A-Z]/;
+    return "A.html" if $_ lt "A";
+    return "Z.html";
+} # 1}}}
+sub letter_ref { # 1{{{
+    # letter_ref($letter) returns a link to the letter
+    return "<a href=\"" . letter_file($_) . "#$_\">$_</a>";
 } # 1}}}
 sub ascii_desc { # 1{{{
     # ascii_desc($func) returns a decription of $func using ascii markup
@@ -610,11 +769,11 @@ sub html_desc { # 1{{{
 	my $notes = $index_notes{$func};
 	$notes = "not implemented" if $notes eq "";
 	# shut of the bold italics during "code" formatting
-	$notes =~ s|<code>|</b></i><code>|g;
-	$notes =~ s|</code>|</code><i><b>|g;
-	return "<i><b>$notes</b></i>";
+	$notes =~ s|<code>|</i><code>|g;
+	$notes =~ s|</code>|</code><i>|g;
+	return "<i>$notes</i>";
     } elsif ($function_description{$func} eq "") {
-	return "<i><b>no description</b></i>";
+	return "<i>no description</i>";
     } else {
 	return $function_description{$func};
     }

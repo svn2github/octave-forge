@@ -22,8 +22,8 @@
 ## Return the Hankel matrix constructed given the first column @var{c}, and
 ## (optionally) the last row @var{r}.  If the last element of @var{c} is
 ## not the same as the first element of @var{r}, the last element of
-## @var{c} is used.  If the second argument is omitted, the last row is
-## taken to be the same as the first column.
+## @var{c} is used.  If the second argument is omitted, @var{r} is
+## taken to be zeros.
 ##
 ## A Hankel matrix formed from an m-vector @var{c}, and an n-vector
 ## @var{r}, has the elements
@@ -91,3 +91,9 @@ function retval = hankel (c, r)
   retval = reshape (retval, nr, nc);
 
 endfunction
+
+%!assert(hankel(1:3),[1,2,3;2,3,0;3,0,0])
+%!assert(hankel(1),[1]);
+%!assert(hankel(1:3,3:6),[1,2,3,4;2,3,4,5;3,4,5,6]);
+%!assert(hankel(1:3,3:4),[1,2;2,3;3,4]);
+%!assert(hankel(1:3,4:6),[1,2,3;2,3,5;3,5,6]);

@@ -15,6 +15,11 @@
 ##             or 3xQ : Color of facets   (use "colorPerVertex" below to
 ##                                         disambiguate the case P==Q).
 ## 
+## "emit", em   : 3   : Emissive color of the surface
+##              : 3XP : (same as color)
+##              : 3xQ :
+##              : 1   : Use color as emissive color too         default = 0
+##
 ## "tran", tran : 1x1 : Transparency,                           default = 0
 ##
 ## "creaseAngle", a 
@@ -39,12 +44,13 @@
 ## "convex"
 ## "colorPerVertex", c: If 1, col specifies color of vertices. If 0,
 ##                       col specifies color of facets.         Default = 1
-
+##
+## "DEFcoord",n : string : DEF the coord VRML node with name n. Default = ''
+## "DEFcol",  n : string : DEF the color VRML node with name n. Default = ''
+##
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: Setembro 2002
 
-## pre 2.1.39 function s = vrml_faces (x,f,...)
-function s = vrml_faces (x,f,varargin) ## pos 2.1.39
+function s = vrml_faces (x,f,varargin)
 
   ## mytic; starttime = cputime();
 
@@ -53,19 +59,18 @@ col = [0.3, 0.4, 0.9] ;
 emit = 0;
 convex = tcoord = imsz = tex = smooth = creaseAngle = nan ;
 colorPerVertex = nan;
+DEFcol = DEFcoord = "";
 
 ## Read options ######################################################
-opt1 = " tex imsz tcoord tran col creaseAngle colorPerVertex emit " ;
+opt1 = " tex DEFcoord DEFcol imsz tcoord tran col creaseAngle colorPerVertex emit " ;
 opt0 = " smooth convex " ;
 
 verbose = 0 ;
 
 nargin -= 2 ;
-i = 1;				# pos 2.1.39
-## pre 2.1.39 while nargin>0 ,
-while nargin>=i			# pos 2.1.39
-  ## pre 2.1.39   tmp = va_arg() ; nargin-- ;
-  tmp = nth (varargin, i++) ;  ## pos 2.1.39
+i = 1;
+while nargin>=i	
+  tmp = nth (varargin, i++);
   if ! isstr(tmp) ,
     error ("vrml_faces : Non-string option : \n") ;
     ## keyboard
@@ -73,8 +78,7 @@ while nargin>=i			# pos 2.1.39
 
   if index(opt1,[" ",tmp," "]) ,
     
-    ## pre 2.1.39     tmp2 = va_arg() ; nargin-- ;
-    tmp2 = nth (varargin, i++) ; ## pos 2.1.39
+    tmp2 = nth (varargin, i++) ;
 
     eval([tmp,"=tmp2;"]) ;
 
@@ -92,6 +96,11 @@ while nargin>=i			# pos 2.1.39
 endwhile
 ## printf ("  Options : %f\n",mytic()); ## Just for measuring time
 ## End of reading options ############################################
+
+if !isempty (DEFcol), col_def_str = ["DEF ",DEFcol]; 
+else                  col_def_str = ""; 
+end
+
 
 
 if ! isnan (smooth), creaseAngle = pi ; end
@@ -161,7 +170,7 @@ elseif prod (size (col))==3,	# One color has been specified for the whole
 				# surface
 
   col_str_1 = ["  appearance Appearance {\n",...
-	       vrml_material (col, emit, tran),\
+	       vrml_material (col, emit, tran,DEFcol),\
 	       "  }\n"];
 
   col_str_2 = "";
@@ -172,10 +181,17 @@ else
   ##  		       "      emissiveColor  0.9 0.4 0.1\n",...
   ##  		       "    }\n",...
   ##  		       "  }\n"]);
-  col_str_1 = ["  appearance Appearance {\n",...
-	       vrml_material (col, emit, tran),\
-	       "  }\n"];
+  # col_str_1 = ["  appearance Appearance {\n",...
+# 	       vrml_material (col, emit, tran),\
+# 	       "  }\n"];
+  if (emit)			# Color is emissive by default
+    col_str_1 = "";
 
+  else				# If there's a material node, it is not
+				# emissive.
+    col_str_1 = ["appearance Appearance {\n",\
+		 "    material Material {}\n}\n"];
+  end
   if isnan (colorPerVertex)
     if     prod (size (col)) == 3*columns (x), colorPerVertex = 1;
     elseif prod (size (col)) == 3*columns (f), colorPerVertex = 0;
@@ -184,12 +200,13 @@ else
   if colorPerVertex, cPVs = "TRUE"; else cPVs = "FALSE"; end
 
   col_str_2 = sprintf (["     colorPerVertex %s\n",\
-			"     color Color {\n",\
+			"     color %s Color {\n",\
 			"       color [\n%s\n",\
 			"       ]\n",\
 			"     }"],\
 		       cPVs,\
-                       sprintf("         %8.3f %8.3f %8.3f,\n",col)) ;
+		       col_def_str,\
+                       sprintf("         %8.3f %8.3f %8.3f,\n",col));
 end
 
 ## printf ("  Colors  : %f\n",mytic()); ## Just for measuring time
@@ -263,6 +280,9 @@ end
 
 if ! convex, etc_str = [etc_str,"    convex FALSE\n"]; end
 
+if !isempty (DEFcoord), coord_def_str = ["DEF ",DEFcoord]; 
+else                    coord_def_str = ""; 
+end
 
 s = sprintf([... 			# string of indexed face set
 	     "Shape {\n",...
@@ -272,13 +292,14 @@ s = sprintf([... 			# string of indexed face set
 	     col_str_2,...
 	     etc_str,...
 	     "    coordIndex [\n%s]\n",...
-	     "    coord Coordinate {\n",...
+	     "    coord %s Coordinate {\n",...
 	     "      point [\n%s]\n",...
 	     "    }\n",...
 	     "  }\n",...
 	     "}\n",...
 	     ],...
 	    coord_str,...
+	    coord_def_str,...
 	    sprintf("                 %8.3f %8.3f %8.3f,\n",x)) ;
 ## printf ("  Assembly :  %f\n",mytic()); ## Just for measuring time
 ## printf ("Total Time : %f\n",cputime() - starttime);

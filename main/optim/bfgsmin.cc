@@ -86,7 +86,7 @@ any_bad_argument(const octave_value_list& args)
 				error("bfgsmin: 3rd argument must be a cell array of 4 or 5 integers");
 				return true;
 			}
-			if (i = 3) // minarg must point to one of args(1)
+			if (i == 3) // minarg must point to one of args(1)
 			{
 				if ((tmp > args(1).length())||(tmp < 1))  
 				{

@@ -174,6 +174,14 @@ any_bad_argument(const octave_value_list& args)
 		position of argument to minimize wrt");
 		return true;
   }
+	
+	// make sure that minarg points to an existing element
+	if ((tmp > args(1).length())||(tmp < 1))  
+	{
+		error("bfgsmin: 4th argument must be a positive integer that indicates \n\
+which of the elements of the second argument is the one minimization is over");
+		return true;
+	}
   return false;
 }
 

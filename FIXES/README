@@ -1,6 +1,6 @@
-Status as of Octave version 2.0.16/2.1.31
+Status as of Octave version 2.1.35
 
-To skip all files, add the file NOINSTALL to the directory.
+To skip all files, add the file NOINSTALL to this directory.
 
 To skip a particular m-file, rename it to *.m-skip.
 
@@ -8,8 +8,8 @@ To skip a particular oct-file, rename it to *.oct-skip.  Note that
 the oct-file will reappear the next time you do a make.  To keep
 file from being built, remove it from the PROGS line of the Makefile.
 
-Note that you cannot override an octave supplied oct-file unless you 
-have configured octave with --enable-shared --enable-lite-kernel. 
+The oct-files included herein cannot be loaded unless octave has been
+configured with --enable-shared --enable-lite-kernel. 
 
 Interface changes
 =================

@@ -25,6 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <octave/oct.h>
+#include <octave/lo-mappers.h>
+#include <octave/lo-specfun.h>
+#include <octave/lo-ieee.h>
 
 #include "randmtzig.c"
 
@@ -490,6 +493,68 @@ variables', J. Statistical Software, vol 5, 2000\n\
 #endif
     }
 
+  return retval;
+}
+
+#define NAN octave_NaN
+#define RUNI randu()
+#define RNOR randn()
+#define LGAMMA xlgamma
+#include "randpoisson.c"
+
+DEFUN_DLD (randp, args, nargout, 
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} randp (@var{l})\n\
+@deftypefnx {Loadable Function} {} randp (@var{l}, [@var{n}, @var{m}])\n\
+@deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
+Return a matrix with Poisson distributed random elements.  The\n\
+arguments are handled the same as the arguments for @code{rand}.\n\
+\n\
+@end deftypefn\n\
+@seealso{rand, randn, rande}\n")
+{
+  octave_value_list retval;	// list of return values
+
+  int nargin = args.length ();	// number of arguments supplied
+  if (nargin > 3 || nargin < 1) 
+    {
+      print_usage("randp");
+      return retval;
+    }
+
+  Matrix lambda(args(0).matrix_value());
+  if (error_state) return retval;
+
+  int nr=0, nc=0;
+  switch (nargin) {
+  case 1: nr = lambda.rows(); nc = lambda.columns(); break;
+  case 2: get_dimensions(args(1), "randp", nr, nc); break;
+  case 3: get_dimensions(args(1), args(2), "randp", nr, nc); break;
+  }
+
+  if (error_state) return retval;
+
+  if ( (nr != lambda.rows() && lambda.rows() != 1)
+       || (nc != lambda.columns() && lambda.columns() != 1) )
+    {
+      error("randp: dimensions of lambda must match requested matrix size");
+      return retval;
+    }
+
+  Matrix X(nr, nc);
+  double *pX = X.fortran_vec();
+
+  if (nr*nc > 1 && lambda.length()==1)
+    {
+      fill_randp(lambda(0,0), nr*nc, pX);
+    }
+  else
+    {
+      const double *pL = lambda.data();
+      for (int i=nr*nc-1; i >= 0; i--) pX[i] = randp(pL[i]);
+    }
+
+  retval(0) = X;
   return retval;
 }
 

@@ -112,7 +112,14 @@
 ## shared block is declared.
 ##
 ## In addition to testing if something works, you also want to test that
-## it fails cleanly.  Error blocks help with this.  They are like test
+## it fails cleanly.  The fail function performs this task. The general 
+## form is 
+##    %!test fail('code','pattern')
+## where code is expected to fail and pattern is a regular expression
+## which should match the resulting error message.  Like assert,
+##    %!fail ('code','pattern') is shorthand for the above statement.
+##
+## Error blocks are cruft left over from before fail.  They are like test
 ## blocks, but they only succeed if the code generates an error.  You
 ## will see the error generated if verbose is set. For example,
 ##    %!error error('this test passes!');
@@ -178,7 +185,7 @@
 ## is actually octave code, using something like:
 ##    ## -*-octave-*-
 ##
-## See Also: error, assert, demo, example
+## See Also: error, assert, fail, demo, example
 
 ## TODO: * Consider using keyword fail rather then error?  This allows us
 ## TODO: to make a functional form of error blocks, which means we
@@ -419,11 +426,11 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       
       ## initialization code will be evaluated below
     
-    ## ASSERT
-    elseif strcmp (__type, "assert")
+    ## ASSERT/FAIL
+    elseif strcmp (__type, "assert") || strcmp (__type, "fail")
       __istest = 1;
-      __code = __block; # put the assert keyword back on the code
-      ## assert code will be evaluated below 
+      __code = __block; # put the keyword back on the code
+      ## the code will be evaluated below as a test block
       
     ## ERROR
     elseif strcmp (__type, "error")
@@ -529,13 +536,15 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
 endfunction
 
 ### example from toeplitz
-%!error toeplitz ([])
-%!error toeplitz ([1,2],[])
-%!error toeplitz ([1,2;3,4])
-%!error toeplitz ([1,2],[1,2;3,4])
-%!error toeplitz ([1,2;3,4],[1,2])
-%!error toeplitz
-%!error toeplitz (1, 2, 3)
+%!shared msg
+%! msg="expecting vector arguments";
+%!fail ('toeplitz([])', msg);
+%!fail ('toeplitz([1,2],[])', msg);
+%!fail ('toeplitz([1,2;3,4])', msg);
+%!fail ('toeplitz([1,2],[1,2;3,4])', msg);
+%!fail ('toeplitz ([1,2;3,4],[1,2])', msg);
+% !fail ('toeplitz','usage: toeplitz'); # usage doesn't generate an error
+% !fail ('toeplitz(1, 2, 3)', 'usage: toeplitz');
 %!test  assert (toeplitz ([1,2,3], [1,4]), [1,4; 2,1; 3,2]);
 %!demo  toeplitz ([1,2,3,4],[1,5,6])
 
@@ -582,6 +591,11 @@ endfunction
 ### now test test itself
 
 %!## usage and error testing
+% !fail ('test','usage.*test')           # no args, generates usage()
+% !fail ('test(1,2,3,4)','usage.*test')  # too many args, generates usage()
+%!fail ('test("test", "bogus")','unknown flag')      # incorrect args
+%!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
+
 %!error  test                    # no args, generates usage()
 %!error  test(1,2,3,4)           # too many args, generates usage()
 %!error  test("test", 'bogus');  # incorrect args, generates error()

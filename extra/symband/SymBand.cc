@@ -1,3 +1,19 @@
+// Copyright (C) 2002 Andreas Stahel
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 #include <iostream.h>
 #include <math.h>
 
@@ -90,9 +106,9 @@ void BandMatrixTimesVector(Matrix &A, ColumnVector &B, ColumnVector &C, int leng
     }
   }
 };
-  
-  
-static
+
+
+static  
 void CholeskyFactorization(Matrix &A,int nr, int nc){
   int jMax;
   double tmp;
@@ -203,7 +219,6 @@ void CholeskyFactorization3(Matrix &A,int nr, int nc){
 };
 
 
-
 static
 void CholeskyBacksub(Matrix &R,Matrix &B,int nr, int nc, int bc){
 #ifdef NEW
@@ -262,7 +277,6 @@ void CholeskyBacksub2(Matrix &R,Matrix &B,int nr, int nc, int bc){
 	B.xelem(i-k,j)-= B.xelem(i,j)*R.xelem(i-k,k);
     }; //for j
 };
-
 
 static
 void GramSchmidt(Matrix &V, ColumnVector &norms,int Vr, int Vc){
@@ -555,7 +569,7 @@ DEFUN_DLD (SBProd, args, , "[...] = SBProd (...)\n\
 DEFUN_DLD (SBEig, args, nargout , "[...] = SBEig (...)\n\
   find a few eigenvalues of the symmetric, banded matrix 
   inverse power iteration is used for the standard and generalized
-  eigenvalue plroblem
+  eigenvalue problem
 
   [Lambda,{Ev,err}] = SBEig(A,V,tol)     solve A*Ev = Ev*diag(Lambda)
                     standard eigenvalue problem
@@ -570,8 +584,8 @@ DEFUN_DLD (SBEig, args, nargout , "[...] = SBEig (...)\n\
    tol is the relative error, used as the stopping criterion
 
    X   is a column vector with the eigenvalues
-   EVv  is a matrix whose columns represent normalized eigenvectors
-   err is a vector with the aposteriori error estimes for the eigenvalues
+   EV  is a matrix whose columns represent normalized eigenvectors
+   err is a vector with the aposteriori error estimates for the eigenvalues
 ")
 {
   octave_value_list retval;
@@ -674,6 +688,7 @@ DEFUN_DLD (SBEig, args, nargout , "[...] = SBEig (...)\n\
       for(int i=0;i<length;i++) tmp += V(i,j)*W(i,j);
       eigen(j)=1.0/tmp;
     }
+    V=C;
   }
   else {
     W = V;

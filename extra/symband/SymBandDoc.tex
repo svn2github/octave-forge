@@ -131,16 +131,20 @@ positive definite if and only if the diagonal matrix $D$ is positive.
 
 For a given matrix some of its smallest eigenvalues can be computed with an
 algorithm based on inverse power iteration. Precise information on the
-numerical errors is provided.
+numerical errors is provided. The code is capable of finding eigenvalues of
+medium size matrices, where the standard command \texttt{eig()} is either very
+slow of will fail.
 
-This author prefers the notation of a $R^TDR$ factorization, the
-difference is in notation only, i.e. $R^T=L$. 
+%This author prefers the notation of a $R^TDR$ factorization, the
+%difference is in notation only, i.e. $R^T=L$. 
+%The presented code can be obtained form authors home
+%page\footnote{\texttt{http://www.hta-bi.bfh.ch/\~{}sha}}.
 
 \begin{table}[htbp]
   \begin{center}
 \begin{tabular}{|l|l|}\hline
 \multicolumn{2}{|l|}{Operations for symmetric, banded matrices}\\\hline
-\texttt{SBSolve()} & solve a system of linear equation \\
+\texttt{SBSolve()} & solve a system of linear equations \\
 \texttt{SBFactor()} & find the $R^TDR$ factorization \\
 \texttt{SBBacksub()} & use back-substitution to solve system of equations\\
 \texttt{SBEig()} & find a few of the smallest eigenvalues and eigenvectors\\
@@ -155,10 +159,6 @@ difference is in notation only, i.e. $R^T=L$.
 \end{table}
 \begin{center}
 \end{center}
-
-
-The presented code can be obtained form authors home
-page\footnote{\texttt{http://www.hta-bi.bfh.ch/\~{}sha}}.
 
 
 \section{Description of the commands}
@@ -297,7 +297,7 @@ consult~\cite{GoluVanLoan96}.
 [...] = SBEig(...)
   find a few eigenvalues of the symmetric, banded matrix
   inverse power iteration is used for the standard and generalized
-  eigenvalue plroblem
+  eigenvalue problem
 
   [Lambda,{Ev,err}] = SBEig(A,V,tol)     solve A*Ev = Ev*diag(Lambda)
                     standard eigenvalue problem
@@ -313,13 +313,13 @@ consult~\cite{GoluVanLoan96}.
 
    X   is a column vector with the eigenvalues
    Ev  is a matrix whose columns represent normalized eigenvectors
-   err is a vector with the a posteriori error estimes for the eigenvalues
+   err is a vector with the a posteriori error estimates for the eigenvalues
 \end{verbatim}
 
 The algorithm is based on inverse power iteration 
 \ID{iteration, inverse power}  with $n$ independent vectors.
 The iteration will proceed until the relative change of all eigenvalues is
-smaller than the given value of \texttt{tol}. This doe not guarantee that the
+smaller than the given value of \texttt{tol}. This does not guarantee that the
 relative error is smaller than \texttt{tol}.  The initial guesses \textbf{V}
 for the eigenvectors have to be linearly independent. The closer the initial
 guess is to the actual eigenvector,the faster the algorithm will converge. 
@@ -360,7 +360,7 @@ It is very easy to implement this test in \Octave{}. If the estimate is
 based on approximate values of the eigenvalues, then the result is not as
 reliable as the previous one. Since the value of \texttt{gap} will carry an
 approximation error. The situation is particularly bad if some eigenvalues are
-clustered.
+clustered. A code  sample is provided.
 
 \bigskip
 
@@ -397,7 +397,7 @@ matrix.
 
   B is full matrix Ax=B
 \end{verbatim}
-\subsection{\texttt{BandToFull}, \texttt{FullToBand} and \texttt{FullToSparse}}
+\subsection{\texttt{BandToFull}, \texttt{FullToBand} and \texttt{BandToSparse}}
 With these commands conversion between full, symmetric matrices and banded
 symmetric matrices is possible. A conversion to a sparse format is also
 included.

@@ -442,6 +442,9 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       catch
 	__success = 0;
 	__msg = [ __signal_fail, "test failed\n", __error_text__];
+	if isempty(__error_text__), 
+	  error("empty error text, probably Ctrl-C --- aborting"); 
+	endif
       end_try_catch
       clear __test__;
     endif
@@ -453,7 +456,10 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       	fputs (__fid, [__signal_block, __block, "\n"]);
       endif
       fputs (__fid, __msg);
-      if !strcmp(__type, "error"), eval (__shared); endif
+      ## show the variable context
+      if !strcmp(__type, "error") && !all(__shared==" ")
+	eval (["fdisp(__fid,tar(",__shared,"));"]); 
+      endif
     endif
     if (__success == 0)
       __all_success = 0;

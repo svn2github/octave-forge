@@ -6,6 +6,7 @@ Univariate (stationary) analysis
    bispec
    durlev
    lattice
+   rmle
    pacf
    parcor
    invest0
@@ -32,6 +33,7 @@ Adaptive (time-varying) analysis
    aar   
    aarmam
    adim
+   mvaar
    	
 Conversions between forms
    ac2poly

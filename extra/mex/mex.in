@@ -2,8 +2,11 @@
 
 # This program is granted to the public domain
 
+# 2003-01-03 Paul Kienzle <pkienzle@users.sf.net>
+# * eliminate sed --- use direct string interpolation for variables
+# * define both the C and fortran names for mexFunction in the oct-file.
 # 2001-06-20 Paul Kienzle <pkienzle@users.sf.net>
-# * eliminate $(arg:0:1) since it is not available in all bash versions
+# * eliminate $(arg:0:1) since it is not available in all sh versions
 # 2001-09-20 Paul Kienzle <pkienzle@users.sf.net>
 # * use config-like syntax to set the name of mkoctfile and the path to mex
 
@@ -32,31 +35,35 @@ name=${first%%.*}
 ext=${first#*.}
 #echo $name . $ext
 
-sedopt="-es/NAME/$name/"
-otherfn="F77_FUNC(mexfunction,MEXFUNCTION)"
 case "$ext" in
   f*|F*)
-    sedopt="$sedopt -es/C_mex/Fortran_mex/"
+    invoke=Fortran_mex
     otherfn=mexFunction
   ;;
+  *)
+    invoke=C_mex
+    otherfn="F77_FUNC(mexfunction,MEXFUNCTION)"
+  ;;
 esac
-#echo "$sedopt"
 
-cat <<EOF | sed $sedopt > mex_$name.cc
+cat <<EOF > mex_$name.cc
 #include <octave/oct.h>
 
 extern "C" {
+  // mex.cc names both mexFunction (c) and MEXFUNCTION (Fortran)
+  // but the mex file only defines one of them, so define the other
+  // here just to keep the linker happy, but don't ever call it.
   void $otherfn() {}
-  const char *mexFunctionName = "NAME";
+  const char *mexFunctionName = "$name";
 } ;
 
-DEFUN_DLD(NAME, args, nargout, "\
-NAME not directly documented. Try the following:\n\
-   type(file_in_loadpath('NAME.m'))\n\
+DEFUN_DLD($name, args, nargout, "\
+$name not directly documented. Try the following:\n\
+   type(file_in_loadpath('$name.m'))\n\
 ")
 {
-  octave_value_list C_mex(const octave_value_list &, const int);
-  return C_mex(args, nargout);
+  octave_value_list $invoke(const octave_value_list &, const int);
+  return $invoke(args, nargout);
 }
 EOF
 

@@ -11,22 +11,25 @@ function CC = cov(X,Y,Mode);
 %      calculates the crosscorrelation between X and Y. 
 %      C(i,j) is the correlation between the i-th and jth 
 %      column of X and Y, respectively. 
-%   NOTE: this is different than the behaviour of DATAFUN\COV. 
-%      Use COV([X(:),Y(:)]) to get the traditional behaviour of Matlab. 
+%   NOTE: Octave and Matlab have (in some special cases) incompatible implemenations. 
+%       This implementation follows Octave. If the result could be ambigous or  
+%       incompatible, a warning will be presented in Matlab. To avoid this warning use: 
+%       a) use COV([X(:),Y(:)]) if you want the traditional Matlab result. 
+%       b) use C = COV([X,Y]), C = C(1:size(X,2),size(X,2)+1:size(C,2)); if you want to be compatible with Octave.  
 %
 % Mode = 0 [default] scales C by (N-1)
 % Mode = 1 scales C by N. 
 %
-% see also: COVM, SUMSKIPNAN
+% see also: COVM, COR, CORRCOEF, SUMSKIPNAN
 %
 % REFERENCES:
 % http://mathworld.wolfram.com/Covariance.html
 
-
 %	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
-
+%	Copyright (C) 2000-2003,2005 by  Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox 
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -57,9 +60,6 @@ elseif nargin==2,
                 Y = [];
         else
                 Mode = 0;        
-                if ~exist('OCTAVE_VERSION'), 	% if Matlab,
-                	fprintf(2,'Warning NaN/COV: Behaviour of COV(X,Y) is unlike in datafun/COV. \nSee HELP COV for more information.\n');         
-                end;
         end;
 elseif nargin==3, 
 		        
@@ -67,10 +67,23 @@ else
 	fprintf(2,'Error COV: invalid number of arguments\n');
 end;
 
+if ~exist('OCTAVE_VERSION','builtin') & ~isempty(Y) & (size(X,2)+size(Y,2)~=2), 	
+        % COV in Matlab is differently defined than COV in Octave. 
+        % For compatibility reasons, this branch reflects the difference. 
+        fprintf(2,'Warning NaN/COV: This kind of use of COV is discouraged because it produces different results for Matlab and Octave. \n');
+        fprintf(2,'  (a) the traditional Matlab result can be obtained with:  C = COV([X(:),Y(:)]).\n');
+        fprintf(2,'  (b) the traditional Octave result can be obtained with:  C = COV([X,Y]); C = C(1:size(X,2),size(X,2)+1:size(C,2)).\n');
+
+        if prod(size(Y))~=prod(size(X)),
+                error('The lengths of X and Y must match.');
+        end;
+        X = [X(:),Y(:)];
+        Y = [];
+end;
 
 if isempty(Y)
-	CC = covm(X,['D',int2str(Mode)]);	
+	CC = covm(X,['D',int2str(Mode>0)]);	
 else        
-        CC = covm(X,Y,['D',int2str(Mode)]);	
+        CC = covm(X,Y,['D',int2str(Mode>0)]);	
 end;
 

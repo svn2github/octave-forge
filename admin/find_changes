@@ -3,13 +3,12 @@
 =head1 NAME find_changes.pl - Find patterns in text files and propose changes.
 
 This script passes lines of text through a perl function with the aim of
-reporting the occurence of patterns and proposing changes to be done. It can
-be used in conjunction with L<patch> or L<do_changes.pl> to modify the
-original files.
+reporting the occurence of patterns and proposing changes to be
+done. L<patch> should be used to actually modify the original files.
 
 =head1 SYNOPSIS
 
-find_changes.pl [options] changes_def file(s).txt ... E<gt> changes_list
+find_changes.pl [options] changes_def file(s).txt ... E<gt> changes_patch
 
 Reads and executes the perl F<changes_def> file, which must contain the
 definition of a function called C<change_line()>, and then reads the
@@ -18,26 +17,19 @@ F<file(s).txt> line by line.
 For each line of each file, the function F<change_line()> is called with the
 line as single argument, which can be modified inplace.
 
-If any change is done to the line, it is reported, either (default) by
-printing on stdout a line of the form :
-
-              "$file:$.:$_"
-
-where C<$_> is the current line, or -if the "-p" option is used- by printing
-to stdout a universal diff patch.
+If any change is done to the line, it is reported by printing to stdout a
+universal diff patch.
 
 =head2 Modifying files
 
-It is then recommended to inspect and edit the file F<changes_list>,
+It is then recommended to inspect and edit the file F<changes_patch>,
 removing lines that should not be changed. Once this is done, the changes
-can be done in the original files by using L<do_changes.pl> or L<patch>.
+can be done in the original files by using C<patch -p0 < changes_patch>.
 
 =head2 Commenting on lines
 
 If a function C<comment_line()> is present, each line will be passed to it
-and its output will be shown on the output, prefixed by the comment-starting
-character "#". If the "-p" option is used, then comments will be output to
-stderr.
+and its output will be shown on standard error.
 
 =head1 OPTIONS
 
@@ -45,8 +37,11 @@ stderr.
 
 =item -p, --patch
 
-Output a patch rather than the format used by F<do_changes.pl>. Comments
-will be output to stderr, prefixed with "#".
+Output a patch (default).
+
+=item -d
+
+Use another output format, adapted to some F<do_changes.pl> script.
 
 =item -v, --verbose
 
@@ -67,7 +62,7 @@ This file is distributed under the terms of the GNU General Public Licence.
 ###
 sub help {system ("perldoc $0|cat")}
 
-$patch = 0;
+$patch = 1;
 $verbose = 0;
 				# Read options
 
@@ -76,6 +71,8 @@ while (@ARGV && ($ARGV[0] =~ /^\-/)) {
     elsif ($ARGV[0] =~ /^\-(v|\-verbose)$/){ $verbose = 1;}
     elsif ($ARGV[0] =~ /^\-(p|\-patch)$/) { 
 	$patch = 1;
+    elsif ($ARGV[0] =~ /^\-(d)$/) { 
+	$patch = 0;
     } else {
 	die "Unknown option '$ARGV[0]'. Try '$0 --help'";
     }

@@ -55,7 +55,12 @@ function [h, g, n, k] = hammgen(m, p)
       error ("hammgen: p must be a primitive polynomial of GF(2^m)");
     endif
   else
-    p = primpoly(3,"nodisplay");
+    ## Get the primitive polynomial of GF(2^M). Note that the default
+    ## primitive polynomial is not necessarily primpoly(m,"min"), so
+    ## have to create a Galois variable to extract the default primitive.
+    ## The problem is, this limits m to be less than or equal to 16,
+    ## as the Galois type itself is limited to this value
+    p = gf(0,m).prim_poly;
   endif
 
   n = 2^m -1;

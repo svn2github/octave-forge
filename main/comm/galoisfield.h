@@ -40,6 +40,9 @@ Open Source Initiative (www.opensource.org)
 // Maximum value of m
 #define __OCTAVE_GALOIS_MAX_M  16
 
+// Maximum value of m. If you change the above, change here also
+#define __OCTAVE_GALOIS_MAX_M_AS_STRING  "16"
+
 // A0 flag -inf value
 #define __OCTAVE_GALOIS_A0  (n)
 

@@ -55,6 +55,12 @@ DEFUN_DLD (isgalois, args, ,
    return octave_value();
 }
 
+// XXX FIXME XXX
+// I want to replace the "16" below with __OCTAVE_GALOIS_MAX_M_AS_STRING,
+// but as I don't run the preprocessor when getting the help from the
+// functions, this can't be done at the point. So if more default primitive
+// polynomials are added to galoisfield.cc, need to update the "16" here
+// as well!!
 DEFUN_DLD (gf, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{y} =} gf (@var{x})\n"
@@ -1075,7 +1081,7 @@ DEFUN_DLD (rsenc, args, nargout,
     return retval;
   }
 
-  if ((n < 3) || (n < k) || (m > 16)) {
+  if ((n < 3) || (n < k) || (m > __OCTAVE_GALOIS_MAX_M)) {
     error ("rsenc: invalid values of message and codeword length");
     return retval;
   }
@@ -1544,7 +1550,7 @@ DEFUN_DLD (rsdec, args, nargout,
     return retval;
   }
 
-  if ((n < 3) || (n < k) || (m > 16)) {
+  if ((n < 3) || (n < k) || (m > __OCTAVE_GALOIS_MAX_M)) {
     error ("rsdec: invalid values of message and codeword length");
     return retval;
   }

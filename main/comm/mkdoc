@@ -28,6 +28,8 @@ sub cc_and_m_files { # {{{1 populates global array @files
 
 # grab help from C++ files
 foreach my $f ( @C_files ) {
+  # XXX FIXME XXX. Should run the preprocessor over the file first, since 
+  # the help might include defines that are compile dependent.
     if ( open(IN,$f) ) {
 	while (<IN>) {
 	    # skip to the next function

@@ -18,7 +18,7 @@
 //   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 //
-// sumskipnan2: sums all non-NaN values
+// sumskipnan: sums all non-NaN values
 //
 // Input:
 // - array to sum
@@ -70,9 +70,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
     // check for proper number of input and output arguments
     if ((PInputCount <= 0) || (PInputCount > 2))
-        mexErrMsgTxt("SumSkipNan2 requires 1 or 2 arguments.");
+        mexErrMsgTxt("SumSkipNan.MEX requires 1 or 2 arguments.");
     if (POutputCount > 4)
-        mexErrMsgTxt("SumSkipNan2 has 1 to 4 output arguments.");
+        mexErrMsgTxt("SumSkipNan.MEX has 1 to 4 output arguments.");
 
     // get 1st argument
     if(!mxIsNumeric(PInputs[0]))
@@ -93,7 +93,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		default:x = -1.0;		// invalid 
 		}
 		if ((x < 0) || (x > 65535) || (x != floor(x))) 
-			mexErrMsgTxt("Error SUMSKIPNAN2: DIM-argument must be a positive integer scalar");
+			mexErrMsgTxt("Error SUMSKIPNAN.MEX: DIM-argument must be a positive integer scalar");
 
 		DIM = (unsigned)floor(x);	
 	}

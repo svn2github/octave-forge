@@ -33,23 +33,36 @@ end
 [ya_x, ya_y, ya_n, y_islog]= get_ax_points( yaxis, 'y axis');
 
 % Based on entered points, we want to see if the axis is
-% rotated (like in a scanned image, for example
-X=[xa_x,xa_y,0*xa_y+1;ya_x,ya_y,0*ya_y+1];
+% rotated (like in a scanned image, for example)
+x0= 0*xa_x; x1= x0+1;
+y0= 0*ya_x; y1= y0+1;
+X=[xa_x,xa_y,x1,x0; ya_x,ya_y,y0,y1];
 Y=[xa_n,0*xa_n;0*ya_n,ya_n];
 rot_ax= X\Y;
+% rot_x = [a,b;c,d; e,f;g,h] where
+% x intercept of y axis is f-h 
+% y intercept of x axis is g-e 
 
 irot= inv( rot_ax(1:2,:) );
 ang1= [1 0]*irot;
-printf('X axis is at %5.2f degrees\n',  ...
-       180/pi*atan2( ang1(2), ang1(1) ) );
+angx=  180/pi*atan2( ang1(2), ang1(1) );
+yint= rot_ax(3,1) - rot_ax(4,1);
+printf('X axis is at %5.2f degrees and intercepts Y axis at %f\n',  ...
+       angx, yint );
+
 ang1= [0 1]*irot;
-printf('Y axis is at %5.2f degrees\n',  ...
-       180/pi*atan2( ang1(2), ang1(1) ) );
+angy=  180/pi*atan2( ang1(2), ang1(1) );
+xint= rot_ax(4,2) - rot_ax(3,2);
+printf('Y axis is at %5.2f degrees and intercepts X axis at %f\n',  ...
+       angy, xint );
 
 printf('Select points to convert. Press Mouse #2 or #3 to quit\n');
 fflush(stdout);
 [x,y]= grab();
-dconv= [x,y,x*0+1]*rot_ax;
+
+% remove intercept locations
+rot_ax1= rot_ax(1:3,:); rot_ax1(3,2)=rot_ax(4,2);
+dconv= [x,y,x*0+1]*rot_ax1;
 
 x= dconv(:,1);
 if x_islog; x= 10.^x; end

@@ -8,7 +8,7 @@ function O=trimean(Y,DIM)
 % REFERENCES:
 % [1] http://mathworld.wolfram.com/Trimean.html
 
-%	Version 1.27
+%    	Version 1.27  Date: 12 Sep 2002
 %	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
@@ -24,15 +24,17 @@ if nargin==1,
         DIM=min(find(size(Y)>1));
         if isempty(DIM), DIM=1; end;
 end;
+
 N = sum(~isnan(Y),DIM);
-Y = sort(Y,DIM);
 
 sz = size(Y);
 sz(DIM) = 1;
-
 O = repmat(nan,sz);
 
 if DIM==2, Y=Y'; end;
+Y = [Y; repmat(nan,1,size(Y,2))];
+Y = sort(Y);
+    
 %%% assumes that NaN is at the end of the sorted list
 for k=1:size(Y,2),
         Q0250 = flix(Y(:,k),N(k)/4   + 0.75);

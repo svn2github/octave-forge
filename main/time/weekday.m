@@ -51,7 +51,7 @@ function [d,s] = weekday(date,P)
   endif
   d = rem(floor(date)+5,7)+1;
   if nargout == 2,
-    global __day_names = ["Sun";"Mon";"Tue";"Wed";"Thu";"Fri";"Sat"];
-    s = __day_names(d,:);
+    persistent day_names = ["Sun";"Mon";"Tue";"Wed";"Thu";"Fri";"Sat"];
+    s = day_names(d,:);
   endif
 endfunction

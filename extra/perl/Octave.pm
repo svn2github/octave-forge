@@ -7,7 +7,7 @@
 package Inline::Octave;
 
 
-$VERSION = '0.01';
+$VERSION = '0.10';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
@@ -64,12 +64,18 @@ sub load {
       if(/\bfunction\s+(.*?=\s*\w*|\w*)\b/) {
          my $pat =$1;
          my $fnam= $1 if $pat =~ /(\w*)$/;
+         #TODO make this better - ie loop
          my $nargout=0;
             $nargout= 1 if $pat =~ /^\w+\s*=/;
             $nargout= 1 if $pat =~ /^\[\s*\w+\s*\]\s*=/;
             $nargout= 2 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*]\s*=/;
             $nargout= 3 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
             $nargout= 4 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
+            $nargout= 5 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
+            $nargout= 6 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
+            $nargout= 7 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
+            $nargout= 8 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
+            $nargout= 9 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
          $nargouts{$fnam}=$nargout;
       }
       if (/^\s*##\s*Inline::Octave::(\w+)\s*\(nargout=(\d+)\)\s*=>\s*(\w*)/) {
@@ -152,13 +158,13 @@ sub $perl_funname {
    #output variables
    my \$outargs;
    my \@vout;
-   for (my \$i=0; \$i < \$nargout; \$i++) {
+   for (my \$i=0; \$i < $nargout; \$i++) {
       \$vout[\$i]= new Inline::Octave::Matrix( -101101.101101 ); #code
       \$outargs.= \$vout[\$i]->name.",";
    }
    chop(\$outargs); #remove last ,
    \$outargs= "[".\$outargs."]=";
-   \$outargs= "" if \$nargout==0;
+   \$outargs= "" if $nargout==0;
 
    my \$call= "\$outargs $oct_funname(\$inargs);";
 #  print "--\$call--\\n";
@@ -205,8 +211,9 @@ sub stop_interpreter
    return unless $Oin and $Oout;
 
    print $Oin "exit\n";
-   <$Oin>; #clean up input
-   close $Oin, $Oout;
+   #<$Oin>; #clean up input - is this required?
+   close $Oin;
+   close $Oout;
    $o->{ILSM}->{OCTIN} = "";
    $o->{ILSM}->{OCTOUT} = "";
 }   
@@ -306,7 +313,9 @@ sub new
    } else {
       croak "Can't construct Matrix from Perl var of type:".ref($m);
    }
-   croak "Matrix is not size ${cols}x${rows}" unless @vals== $rows*$cols;
+   croak "Matrix is not size ${cols}x${rows}" unless
+                (ref $m eq "Inline::Octave::Matrix")
+                || (@vals == $rows*$cols) ;
 
    # pack data into doubles and use fread to grab it from octave
    # since octave is column major and nested lists in perl are
@@ -364,6 +373,20 @@ sub as_matrix
    return \@m;
 }
 
+sub as_scalar
+{
+   my $self = shift;
+   my $varname= $self->name;
+   croak "Can't handle complex" if $self->{complex};
+   croak "requested as_scalar for non scalar value:".
+           $self->{cols}."x".$self->{rows}
+           unless $self->{cols} == 1 && $self->{rows} == 1;
+   my $code = "fwrite(stdout, $varname,'double');";
+   my $retval= $Inline::Octave::inline_object->interpret( $code );
+   my @list= unpack "d1", $retval;
+   return $list[0];
+}   
+
 sub DESTROY
 {
 #  print "DESTROYing $varname\n";
@@ -391,6 +414,12 @@ sub name
 
 
 __END__
+
+$Log$
+Revision 1.4  2001/11/11 03:00:54  aadler
+added makefile and tests
+added as_scalar method
+
 
 =head1 NAME
 
@@ -554,6 +583,10 @@ form
    $var= [ [1,2,3],[4,5,6],[7,8,9] ];
 
 
+4. $oct_var->as_scalar()
+
+Returns a perl scalar if $oct_var
+is a 1x1 matrix, dies with an error otherwise
 
 =head1 Using Inline::Octave::Matrix
 

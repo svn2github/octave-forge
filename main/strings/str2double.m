@@ -1,6 +1,6 @@
 function [num,status] = str2double(s,cdelim,rdelim)
 ## STR2DOUBLE converts strings into numeric values
-##    [NUM, STATUS] = STR2DOUBLE(STR) 
+##  [NUM, STATUS] = STR2DOUBLE(STR) 
 ##  
 ##    STR can be the form '[+-]d[.]dd[[eE][+-]ddd]' 
 ##	d can be any of digit from 0 to 9, [] indicate optional elements
@@ -9,15 +9,23 @@ function [num,status] = str2double(s,cdelim,rdelim)
 ##    STATUS = 0: conversion was successful
 ##    STATUS = -1: couldnot convert string into numeric value
 ##
-##    STR can also contain multiple elements.
-##    Row-delimiters are: 
-##        NEWLINE, CARRIAGE RETURN and SEMICOLON i.e. ASCII 10, 13 and 59. 
-##    Column-delimiters are: 
-##        TAB, SPACE and COMMA i.e. ASCII 9, 32, and 44.
 ##    Elements which are not defined or not valid return NaN and 
 ##        the STATUS becomes -1 
 ##    STR can be also a character array or a cell array of strings.   
 ##        Then, NUM and STATUS return matrices of appropriate size. 
+##
+##    STR can also contain multiple elements.
+##    default row-delimiters are: 
+##        NEWLINE, CARRIAGE RETURN and SEMICOLON i.e. ASCII 10, 13 and 59. 
+##    default column-delimiters are: 
+##        TAB, SPACE and COMMA i.e. ASCII 9, 32, and 44.
+##
+##  [NUM, STATUS] = STR2DOUBLE(STR,CDELIM,RDELIM) 
+##       CDELIM .. user-specified column delimiter
+##       RDELIM .. user-specified row delimiter
+##       CDELIM and RDELIM must contain only 
+##       NULL, NEWLINE, CARRIAGE RETURN, SEMICOLON, TAB, SPACE, COMMA, or ()[]{}  
+##       i.e. ASCII 0,9,10,11,12,13,14,32,33,34,40,41,44,59,91,93,123,124,125 
 ##
 ##    Examples: 
 ##	str2double('-.1e-5')
@@ -28,13 +36,16 @@ function [num,status] = str2double(s,cdelim,rdelim)
 ##	    3.1400    4.4440    0.7000
 ##	  -10.0000       NaN       NaN
 ##
-##	line ='200,300,400,cd,yes,no,999,maybe,NaN';
+##	line ='200,300,400,NaN,-inf,cd,yes,no,999,maybe,NaN';
 ##	[x,status]=str2double(line)
 ##	x =
-##	   200   300   400   NaN   NaN   NaN   999   NaN   NaN
+##	   200   300   400   NaN  -Inf   NaN   NaN   NaN   999   NaN   NaN
 ##	status =
-##	   0   0   0  -1  -1  -1   0  -1   0
+##	    0     0     0     0     0    -1    -1    -1     0    -1     0
 
+## References: 
+## [1] David A. Wheeler, Secure Programming for Linux and Unix HOWTO.
+##    http://en.tldp.org/HOWTO/Secure-Programs-HOWTO/
 
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -50,16 +61,62 @@ function [num,status] = str2double(s,cdelim,rdelim)
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-##      $Revision$
-##      $Id$
-##  	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
+##	$Revision$
+##	$Id$
+##	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
+% valid_char = '0123456789eE+-.nNaAiIfF';	% digits, sign, exponent,NaN,Inf
+valid_delim = char(sort([0,9:14,32:34,abs('()[]{},;"|')]));	% valid delimiter
+if nargin < 1,
+        error('missing input argument.')
+end;
+if nargin < 2,
+        cdelim = char([9,32,abs(',')]);		% column delimiter
+else
+        % make unique cdelim
+        cdelim = sort(cdelim(:)');
+        tmp = [1,1+find(diff(cdelim)>0)];
+        cdelim = cdelim(tmp);
+end;
+if nargin < 3,
+        rdelim = char([0,10,13,abs(';')]);	% row delimiter
+else
+        % make unique rdelim
+        rdelim = sort(rdelim(:)');
+        tmp = [1,1+find(diff(rdelim)>0)];
+        rdelim = rdelim(tmp);
+end;
 
-%%valid_char='0123456789eE+-.nNaAiIfF';	% digits, sign, exponent,NaN,Inf
-cdelim = char([9,32,abs(',')]);		% column delimiter
-rdelim = char([0,10,13,abs(';')]);	% row delimiter
+% check if RDELIM and CDELIM are distinct
+delim = sort(abs([cdelim,rdelim]));
+tmp   = [1, 1 + find(diff(delim)>0)];
+delim = delim(tmp);
+%[length(delim),length(cdelim),length(rdelim)]
+if length(delim) < (length(cdelim)+length(rdelim)),
+        error('row and column delimiter are not distinct.');
+end;
 
+% check if delimiters are valid
+tmp  = sort(abs([cdelim,rdelim]));
+flag = zeros(size(tmp));
+k1 = 1;
+k2 = 1;
+while (k1 <= length(tmp)) & (k2 <= length(valid_delim)),
+        if tmp(k1) == valid_delim(k2),            
+                flag(k1) = 1; 
+                k1 = k1 + 1;
+        elseif tmp(k1) < valid_delim(k2),            
+                k1 = k1 + 1;
+        elseif tmp(k1) > valid_delim(k2),            
+                k2 = k2 + 1;
+        end;
+end;
+if ~all(flag),
+        error('Invalid delimiters!');
+end;
+
+%%%%% various input parameters 
 if iscell(s),
         strarray = s;
 elseif ischar(s) & all(size(s)>1),	%% char array transformed into a string. 
@@ -70,36 +127,40 @@ elseif ischar(s),
         strarray = {};
         
         k1 = 1; % current row
-        k2 = 0; % current row
-        k3 = 0; % current cell
-        nc = 0;	% number of columns 
+        k2 = 0; % current column
+        k3 = 0; % current element
         
-        s(length(s)+1)=rdelim(1);
         sl = length(s);
         ix = 1;
         while any(s(ix)==[rdelim,cdelim]) & (ix < sl),
                 ix = ix + 1;
         end;
-        ta = ix;
+        ta = ix; te = [];
         while ix <= sl;
+                if (ix == sl),
+                        te = sl;
+                end;
                 if any(s(ix)==[cdelim,rdelim]),
                         te = ix - 1;
+                end;
+                if ~isempty(te),
                         k2 = k2 + 1;
                         k3 = k3 + 1;
                         strarray{k1,k2} = s(ta:te);
                         %strarray{k1,k2} = [ta,te];
                         
-                        sw = 0;
+                        flag = 0;
                         while any(s(ix)==[cdelim,rdelim]) & (ix < sl),
-                                sw = sw | any(s(ix)==rdelim);
+                                flag = flag | any(s(ix)==rdelim);
                                 ix = ix + 1;
                         end;
                         
-                        if sw, 
+                        if flag, 
                                 k2 = 0;
                                 k1 = k1 + 1;
                         end;
                         ta = ix;
+                        te = [];
 	        end;
                 ix = ix + 1;
         end;

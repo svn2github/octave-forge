@@ -154,19 +154,20 @@ sparse can be called in the following ways:\n\
         m,n   are the scalar dimentions of S\n\
         nzmax is ignored (here for compatability with Matlab)\n\
 \n\
-        if more than two values are specified for the same i,j\n\
-        position, then the last specified value will be kept\n\
+        if multiple values are specified with the same i,j\n\
+        position, the corresponding values will be added\n\
 \n\
 3: S = sparse(i,j,s,m,n)            same as (2) above\n\
   or\n\
-   S = sparse(i,j,s,m,n,'unique')   same as (2) above\n\
-\n\
-4: S = sparse(i,j,s,m,n,'summation')\n\
+   S = sparse(i,j,s,m,n,'summation')\n\
   or\n\
    S = sparse(i,j,s,m,n,'sum')\n\
-        same as (2) above, except that rather than keeping\n\
-        the last specified value (for values specified with\n\
-        the same i,j), the specified values are added.\n\
+\n\
+4: S = sparse(i,j,s,m,n,'unique')\n\
+\n\
+        same as (2) above, except that rather than adding,\n\
+        if more than two values are specified for the same i,j\n\
+        position, then the last specified value will be kept\n\
 \n\
 5: S=  sparse(i,j,s)          uses m=max(i), n=max(j)\n\
 \n\
@@ -242,7 +243,7 @@ signal( SIGSEGV, SIG_DFL );
       int m=0,n=0;
       ColumnVector coefA, ridxA, cidxA;
       ComplexColumnVector coefAC;
-      int assemble_do_sum=0;
+      int assemble_do_sum=1; // this is now the default in matlab6
 
       if (nargin == 2) {
          m= (int) args(0).double_value();
@@ -328,6 +329,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.9  2003/02/14 03:50:34  aadler
+ * mods to make 'sum' the default
+ *
  * Revision 1.8  2003/01/02 18:19:03  pkienzle
  * more robust input handling
  *

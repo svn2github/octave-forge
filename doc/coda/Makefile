@@ -15,6 +15,8 @@ src_base=coda bibliography
 src=$(src_appendices:%=appendices/%.sgml) $(src_oct:%=oct/%.sgml) \
 	$(src_standalone:%=standalone/%.sgml) $(src_base:%=%.sgml)
 
+htmlimages=oct/matpow.png
+pdfimages=oct/matpow.eps
 
 .phony: all
 all: html pdf targz
@@ -50,18 +52,18 @@ ps: $(outputdir)/coda.ps.gz
 pdf: $(outputdir)/coda.pdf
 
 .phony: targz
-targz: $(outputdir)/coda-sgml.tar.gz $(outputdir)/coda.ps.gz
+targz: $(outputdir)/coda-sgml.tar.gz
 
-$(outputdir)/coda-sgml.tar.gz: $(src)
+$(outputdir)/coda-sgml.tar.gz: $(src) $(htmlimages) Makefile
 	tar czf $@ $^
 
 index.sgml: $(src)
-	-db2html $(dbflags) -V html-index coda.sgml
+	-docbook2html $(dbflags) -V html-index coda.sgml
 	test \! -f $(autoidx) && touch $(autoidx); true
 	$(coidx) $(coidxflags) $(autoidx) > index.sgml
 	
 $(outputdir)/index.html: $(src) index.sgml
-	-db2html $(dbflags) coda.sgml
+	-docbook2html $(dbflags) coda.sgml
 	cd $(outputdir) && tidy -modify $(tidyflags) *.html 2>/dev/null; true
 	cd $(outputdir) && \
         for f in *.html; do \
@@ -72,15 +74,17 @@ $(outputdir)/index.html: $(src) index.sgml
         done
 
 $(outputdir)/coda.ps: $(src) index.sgml
-	db2tex coda.sgml
+	docbook2tex coda.sgml
 	cd $(outputdir) && \
-	    cp ../coda.tex . ; jadetex coda.tex ; jadetex coda.tex ; \
+	    $(RM) coda.tex ; mv ../coda.tex . ; \
+	    jadetex coda.tex ; jadetex coda.tex ; jadetex coda.tex ; \
 	    dvips -D 600 -Z -o coda.ps coda.dvi
 
 $(outputdir)/coda.ps.gz: $(outputdir)/coda.ps
 
 $(outputdir)/coda.pdf: $(src) index.sgml
-	db2pdf -o $(outputdir) coda.sgml
+	-docbook2pdf -o $(outputdir) coda.sgml >/dev/null 2>&1
+	docbook2pdf -o $(outputdir) coda.sgml
 
 $(outputdir)/matpow.png: oct/matpow.png
 	cp $< $@

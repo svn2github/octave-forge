@@ -259,7 +259,7 @@ Connect hosts and return sockets.")
       }
 
       if (fork())
-        exit(0);
+        clean_up_and_exit(0);
       
       /* Touch lock file. */
       ppid=getpid();

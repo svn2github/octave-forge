@@ -106,7 +106,7 @@ function [varargout] = gradient (M, dx, dy)
 
     if (mr > 2)
       ## interior points
-      Y(2:mr-1, :) = (M(3:mc, :) .- M(1:mc - 2, :))\
+      Y(2:mr-1, :) = (M(3:mr, :) .- M(1:mr - 2, :))\
         ./kron (dy(1:mr - 2) .+ dy(2:mr - 1), ones(1, mc));
     endif
     varargout{vr_val_cnt++} = Y;

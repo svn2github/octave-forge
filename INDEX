@@ -106,9 +106,9 @@ Environment
  delete = use <code>unlink</code> 
  getenv 
  putenv
- dos= use <code>system</code>
+ dos
  vms= use <code>system</code>
- unix= use <code>system</code>
+ unix
  web 
  computer 
  isieee

@@ -21,13 +21,25 @@
 ## plots voronoi diagram of points @var{X},@var{Y}. 
 ## The voronoi facets with points at infinity are not drawn.
 ## [@var{vx}, @var{vy}] = voronoi(...) returns the vertices instead plotting the
-## diagramm. plot (@var{vx}, @var{vy}) shows the voronoi diagram.
+## diagram. plot (@var{vx}, @var{vy}) shows the voronoi diagram.
+##
+## @example
+##   x = rand(10,1); y = rand(size(x));
+##   h = convhull(x,y);
+##   [vx,vy] = voronoi(x,y);
+##   plot(vx,vy,"-b;;",x,y,"o;points;",x(h),y(h),"-g;hull;")
+## @end example
 ## 
 ## @end deftypefn
 ## @seealso{voronoin, delaunay, convhull} 
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## First Release: 20/08/2000
+
+## 2002-01-04 Paul Kienzle <pkienzle@users.sf.net>
+## * limit the default graph to the input points rather than the whole diagram
+## * provide example
+## * use unique(x,"rows") rather than __unique_rows__
 
 function [...] = voronoi (x, y, plt)
 
@@ -71,18 +83,13 @@ function [...] = voronoi (x, y, plt)
 		r += lf;
 	endfor
 
-	## this should be replaced with
-	## vx = unique(vx,"rows");
-	## vy = unique(vy,"rows");
-	## when available
-	del_idx = __unique_rows__ (vx);
-	vx(del_idx,:) = [];
-	vy(del_idx,:) = [];
-	##
-	##
+	[vx,idx] = unique(vx,"rows");
+	vy = vy(idx,:);
 
 	if (nargout == 0)
-		plot (vx, vy, plt);
+		lim = [min(x(:)), max(x(:)), min(y(:)), max(y(:))];
+	        axis(lim+0.01*[[-1,1]*(lim(2)-lim(1)),[-1,1]*(lim(4)-lim(3))]);
+		plot (vx, vy, plt, x, y, 'o;;');
 	elseif (nargout == 2)
 		vr_val(vx);
 		vr_val(vy);

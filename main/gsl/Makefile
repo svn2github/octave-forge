@@ -8,7 +8,7 @@ LN_S=ln -s
 LIBS=-lgsl
 
 # all compiled functions
-PROGS=legendre_sphPlm_array.oct gsl_sf.oct $(SF_LINKS)
+PROGS=coupling_3j.oct coupling_6j.oct coupling_9j.oct legendre_sphPlm_array.oct gsl_sf.oct $(SF_LINKS)
 
 ifdef HAVE_LIBGSL
 all: gsl_sf.cc $(PROGS)

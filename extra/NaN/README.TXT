@@ -8,13 +8,13 @@ FEATURES of the NaN-tb:
  - implements statistical tools
  - NaN's are treated as missing values 
  - less but more powerful functions (no nan-FUN needed)
- - fixes known bugs
+ - fixes known bugs 
  - compatible to Matlab and Octave
  - easy to use, compatible to existing software
  - supports DIM argument 
  - supports unbiased estimation; 
  - The toolbox was tested with
-   Matlab 5.2, 5.3, 6.1, 6.5 and Octave 2.0.14, 2.0.16.92, 2.1.35-40, 
+   Matlab 5.2, 5.3, 6.1, 6.5 and Octave 2.0.14, 2.0.16.92, 2.1.35-40, 2.1.50
  
  
 Currently are implemented:
@@ -52,7 +52,9 @@ Currently are implemented:
 	NORMPDF		normal probability distribution
 	NORMCDF		normal comulative distribution 
 	NORMINV		inverse of the normal cumulative distribution
-
+	QUANTILE	q-th quantile 
+	PERCENTILE	p-th percentile
+	
 	
 REFERENCE(S):
 ----------------------------------
@@ -164,7 +166,7 @@ mean.m, meansq.m, median.m, moment.m, skewness.m, kurtosis.m, std.m, var.m
 and from .../source_forge/.../statistics/*
 zscore.m, mad.m, geomean.m, harmmean.m 
 
-d) (re-)start Octave and run NANTEST. 
+d) (re-)start Octave and run NANINSTTEST. 
 This checks whether all previous functions have been replaced
 
 
@@ -177,7 +179,7 @@ alternative function definition (except built-in's) with the same name.
 This checks whether all previous functions have been replaced
 
 
-	Version 1.32 	Date: 13 Mar 2003
+	Version 1.33 	Date: 10 Sep 2003
 	Copyright (C) 2000-2003 by  Alois Schloeg <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

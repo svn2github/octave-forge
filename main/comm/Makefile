@@ -37,12 +37,10 @@ MOFLAGS =
 
 all : $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(DOCS)
 
-install : install_doc
-	$(INSTALL) -d $(MPATH)/comm
-
-install_doc :
-	@if test "x$(MAKEINFO)" != "x"; then \
-	  $(INSTALL_DATA) $(INFODOC) $(MPATH)/comm/$(INFODOC) ; \
+install : 
+	@$(INSTALL) -d $(MPATH)/comm; \
+	if test "x$(MAKEINFO)" != "x"; then \
+	  $(INSTALL_DATA) $(INFODOC) $(MPATH)/comm ; \
 	fi
 
 $(GALOISTARGET) : $(GALOISDEPENDS) $(GALOISOBJECTS) 

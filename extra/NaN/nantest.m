@@ -134,31 +134,33 @@ if ~all(all(isnan(y*B)==isnan(B'*y')')),
 end;
 
 
-%%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3 
+%%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3 & 6.1 
 p   = 2;
 tmp1 = repmat(nan,p)/repmat(nan,p);
+tmp2 = repmat(nan,p)\repmat(nan,p);
+tmp3 = repmat(0,p)/repmat(0,p);
+tmp4 = repmat(0,p)\repmat(0,p);
+tmp5 = repmat(0,p)*repmat(inf,p);
+tmp6 = repmat(inf,p)*repmat(0,p);
+
 if ~all(isnan(tmp1(:))),
         fprintf(2,'WARNING: matrix division NaN/NaN does not result in NaN\n');
 end;
-tmp2 = repmat(nan,p)\repmat(nan,p);
 if ~all(isnan(tmp2(:))),
         fprintf(2,'WARNING: matrix division NaN\\NaN does not result in NaN\n');
 end;
-tmp3 = repmat(0,p)/repmat(0,p);
 if ~all(isnan(tmp3(:))),
         fprintf(2,'WARNING: matrix division 0/0 does not result in NaN\n');
 end;
-tmp4 = repmat(0,p)\repmat(0,p);
 if ~all(isnan(tmp4(:))),
         fprintf(2,'WARNING: matrix division 0\\0 does not result in NaN\n');
 end;
-tmp5 = repmat(0,p)*repmat(inf,p);
 if ~all(isnan(tmp5(:))),
         fprintf(2,'WARNING: matrix multiplication 0*inf does not result in NaN\n');
 end;
-tmp6 = repmat(inf,p)*repmat(0,p);
 if ~all(isnan(tmp6(:))),
         fprintf(2,'WARNING: matrix multiplication inf*0 does not result in NaN\n');
 end;
-tmp=[tmp1;tmp2;tmp3;tmp4;tmp5;tmp6];
+
+tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6];
 

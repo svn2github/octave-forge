@@ -33,10 +33,6 @@ function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 %
 % see also: SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
 %      SSQ, MOMENT, SKEWNESS, KURTOSIS, SEM
-%
-% REFERENCES: 
-% http://mathworld.wolfram.com/RawMoment.html
-
 
 
 %    This program is free software; you can redistribute it and/or modify
@@ -61,45 +57,41 @@ if nargin<2,
         if isempty(DIM), DIM=1; end;
 end;
 
-tmp = version;
-ver = str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6));
+ver = version;
+ver = str2num(ver(1))*1000+str2num(ver(3))*100+str2num(ver(5:6));
 if ver < 2136,
-
-	%%% This part is neccessary for the following reasons: 
+        
+        %%% This part is neccessary for the following reasons: 
         %%% 1) its workaround for a bug in Octave version <= 2.1.35
         %%%    sum(1:4,1) has not resulted in 1:4
-	%%% 2) DIM argument is not implemented in SUM of Octave 2.0.x 
-	%%% Once these points are fixed, this part can be removed  
-
-	if (ver > 2100) & (exist('nansum') == 2),
-                count = sum(~isnan(i),DIM); 
-	        o     = nansum(i,DIM);
-	else 
-		[nr,nc]=size(i);
-    		if DIM==1,
-            		o     = zeros(1,nc);
-	                count = o;
-    		        for k = 1:nc,
-       	    		        count(1,k) = sum(~isnan(i(:,k)));
-                    		o(1,k)     = sum(i(find(~isnan(i(:,k))),k));
-        	        end;		
-	        elseif DIM==2,
-            		o     = zeros(nr,1);
-	                count = o;
-	                for k = 1:nr,
-       		                count(k,1) = sum(~isnan(i(k,:)));
-            		        o(k,1)     = sum(i(k,find(~isnan(i(k,:)))));
-	                end;		
-		else
-			fprintf('Error SUMSKIPNAN: DIM argument must be 1 or 2\n');	
-		end;
-	end;
-	%if ~flag_implicit_skip_nan,
-		% the following command implements NaN-In -> NaN-Out
-	%	o(count<size(i,DIM)) = NaN;         
-	%end;	
+        %%% 2) DIM argument is not implemented in SUM of Octave 2.0.x 
+        %%% Once these points are fixed, this part can be removed  
+        
+        [nr,nc] = size(i);
+        if DIM==1,
+                o     = zeros(1,nc);
+                count = o;
+                for k = 1:nc,
+                        count(1,k) = sum(~isnan(i(:,k)));
+                        o(1,k)     = sum(i(find(~isnan(i(:,k))),k));
+                end;		
+        elseif DIM==2,
+                o     = zeros(nr,1);
+                count = o;
+                for k = 1:nr,
+                        count(k,1) = sum(~isnan(i(k,:)));
+                        o(k,1)     = sum(i(k,find(~isnan(i(k,:)))));
+                end;		
+        else
+                fprintf('Error SUMSKIPNAN: DIM argument must be 1 or 2\n');	
+        end;
+        
+        %if ~flag_implicit_skip_nan,
+        % the following command implements NaN-In -> NaN-Out
+        %	o(count<size(i,DIM)) = NaN;         
+        %end;	
         if nargout>2,
-                i=i.^2;
+                i = i.^2;
                 SSQ = sumskipnan(i,DIM);
                 if nargout>3,
                         S4M = sum(i.^2,DIM);
@@ -129,7 +121,7 @@ else
         %end;
         o = sum(i,DIM);
         if nargout>2,
-                i=i.^2;
+                i = i.^2;
 	        SSQ = sum(i,DIM);
                 if nargout>3,
                         S4M = sum(i.^2,DIM);

@@ -36,7 +36,9 @@ and some flexibility.\n\
     for (int i = 1; i<nargin; i++) {
 
       if (args(i).is_string ()) {
-	octave_value tmp = args(0).subsref (".", args(i)); 
+	std::list<octave_value_list> idx;
+	idx.push_back ( octave_value_list(args(i)) );
+	octave_value tmp = args(0).subsref (".", idx);
 
 	if (tmp.is_defined ())	  retval(i-1) = tmp;
 
@@ -46,10 +48,10 @@ and some flexibility.\n\
         }
 
 
-      } else 
+      } else
 	error ("argument number %i is not a string",i+1);
     }
-    
+
   } else
     print_usage ("getfield");
 

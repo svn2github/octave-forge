@@ -55,7 +55,8 @@ if isempty(FLAG_implicit_dimension),
 end;
 
 if nargin>0,
-        fprintf(2,'Warning: FLAG_IMPLICIT_DIMENSION is in experimental state\nDo not use it !!!\n');
+        fprintf(2,'Warning: FLAG_IMPLICIT_DIMENSION is in an experimental state\n');
+        fprintf(2,'It might become obsolete.\n');
         FLAG_implicit_dimension = i; 
 end;    
 

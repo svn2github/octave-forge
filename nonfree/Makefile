@@ -33,6 +33,7 @@ clean: $(SUBMAKEDIRS)
 # Propogate make to the subdirectory if the goal is a valid target
 # in the subdirectory Makefile.
 $(SUBMAKEDIRS):
+	@echo Processing nonfree/$@
 	@if test -z "$(MAKECMDGOALS)" ; then \
 	    cd $@ && $(MAKE) ; \
 	elif grep -q "^$(MAKECMDGOALS) *[:]" $@Makefile ; then \

@@ -15,9 +15,13 @@ ifdef OCTAVE_FORGE
 
 .PHONY: all install check icheck clean distclean dist $(SUBMAKEDIRS)
 
-all: $(SUBMAKEDIRS)
-	@echo "Build complete."
+all: setup $(SUBMAKEDIRS)
+	@echo "Build finished."
 	@echo "Please read FIXES/README before you install."
+	@if test -f build.fail ; then cat build.fail; false; fi
+
+setup:
+	@-$(RM) build.log build.fail
 
 install: $(SUBMAKEDIRS)
 	@echo " "
@@ -65,7 +69,10 @@ dist: distclean
 	@echo Follow the instructions in octave-forge/release.sh
 
 $(SUBMAKEDIRS):
-	cd $@ && $(MAKE) $(MAKECMDGOALS)
+	@echo Processing $@
+	@if cd $@ && ! $(MAKE) -k $(MAKECMDGOALS) 2>&1; then \
+	   echo "$@ not complete. See $@log for details" >>../build.fail ; \
+	fi | tee -a $@log
 
 else
 

@@ -78,8 +78,8 @@ tar czf $ROOT.tar.gz $ROOT
 # remove the tagged directory
 rm -rf $ROOT
 
-# optimistic: upload the file
-ftp upload.sf.net
+# # optimistic: upload the file
+# ftp upload.sf.net
 
 # display the ChangeLog so that you can generate a release description
 more ChangeLog

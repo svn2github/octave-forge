@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.13  2003/07/25 19:01:51  pkienzle
+# Use $(LN_S) instead of ln -s
+#
 # Revision 1.12  2003/01/04 16:42:51  aadler
 # mods for SGI compiler (from pkienzle)
 #
@@ -163,6 +166,7 @@ ifndef OCTAVE_FORGE
 	MKOCTFILE= mkoctfile$(OCTVER) -s
 	AR= ar
 	RANLIB=ranlib
+	LN_S = ln -s
 endif
 
 # Use same C compiler and options as mkoctfile
@@ -252,7 +256,7 @@ $(LIBSUPERLU): $(S_DOUBLE)
 
 $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 	$(MKOCTFILE)  $(OCTOBJ) -o $(NAME).oct  -lsuperlu -L. $(DLIBS)
-	for i in $(OBJLINKS); do ln -sf $(NAME).oct $$i ; done
+	for i in $(OBJLINKS); do $(LN_S) $(NAME).oct $$i ; done
 
 test: $(NAME).oct
 	#export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile

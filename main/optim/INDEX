@@ -19,7 +19,7 @@ Compatibility
  fminunc
  optimset
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
- linprog= try <code>lp</code> from octave-forge
+ linprog= try <f>lp</f>
 Numerical derivatives
  dfdp bs_gradient cdiff deriv leval
 Tests

@@ -5,7 +5,7 @@ Creation
  cellstr 
  blanks 
 Tests
- ischar= use <code>isstr</code> 
+ ischar= use <f>isstr</f> 
  iscellstr 
  isletter 
  isspace 

@@ -40,9 +40,10 @@
 # to use <code> even in references:
 #  fn = use <a href="someothersite.html"><code>fn</code></a>
 # Sometimes functions are only partially compatible, in which
-# case you can list the non-compatible cases separately.
+# case you can list the non-compatible cases separately. To
+# refer to another function in the package, use <f>fn</f>.
 # E.g.,
-#  eig(A,B) = use <code>qz</code>
+#  eig(A,B) = use <f>qz</f>
 
 # Since sites may have many missing functions, you can define
 # a macro rather than typing the same link over and again.
@@ -60,7 +61,7 @@ interpreter >> Interpreter
 Help
  help 
  demo 
- ver = use <code>version</code>
+ ver = use <f>version</f>
  version 
 Variables
  who 
@@ -82,8 +83,8 @@ Functions
  lookfor 
  which 
  pcode 
- inmem = use <code>who -functions</code>
- mex= install octave-forge mex package and use <code>system(["mex ", name])</code>
+ inmem = use <f>who</f> with -functions
+ mex= install octave-forge mex package and use <f>system</f><code>(["mex ", name])</code>
  source
  
 Load path
@@ -100,15 +101,15 @@ Output
  format 
 Environment
  cd pwd
- dir=alias for <code>ls</code>
+ dir=alias for <f>ls</f>
  ls
  mkdir 
- copyfile= use <code>system("[cp ", source, " ", dest])</code>
- delete = use <code>unlink</code> 
+ copyfile= use <f>system</f><code>("[cp ", source, " ", dest])</code>
+ delete = use <f>unlink</f> 
  getenv 
  putenv
  dos
- vms= use <code>system</code>
+ vms= use <f>system</f>
  unix
  web 
  computer 
@@ -116,7 +117,7 @@ Environment
  isieee
  isunix
  system
- ! = use <code>system("command")</code>
+ ! = use <f>system</f><code>("command")</code>
 Debugging
  dbclear
  dbstatus
@@ -319,7 +320,7 @@ Symbol table
  exist(x,"var")=requires exist patch from $EG
  global = keyword: declare global variables in the current scope.
  isglobal
- persistent = use <code>static</code> 
+ persistent = use <f>static</f> 
  mfilename 
  mlock 
  munlock 
@@ -332,7 +333,7 @@ Function arguments
  nargout 
  varargin
  varargout
- inputname= use <code>deblank(argn(i,:))</code>
+ inputname= use <f>deblank</f><code>(argn(i,:))</code>
  fcnchk 
  read_options
  va_start va_arg vr_val
@@ -412,7 +413,7 @@ Rearranging matrices
  triu 
  fliplr 
  flipud 
- flipdim= for <code>flipdim(A,1)</code> use <code>flipud(A)</code> and for <code>flipdim(A,2)</code> use <code>fliplr(A)</code> 
+ flipdim= for <code>flipdim(A,1)</code> use <f>flipud</f><code>(A)</code> and for <code>flipdim(A,2)</code> use <f>fliplr</f><code>(A)</code> 
  rot90 
  repmat 
  diag 
@@ -458,7 +459,7 @@ Linear algebra
  pinv 
  lscov 
  eig 
- eig(A,B)= use <code>qz</code>
+ eig(A,B)= use <f>qz</f>
  polyeig 
  condeig 
  trisolve
@@ -700,7 +701,7 @@ Line plots
  semilogx 
  semilogy 
  polar 
- plotyy= use <code>gplot ... axes x1y2</code>
+ plotyy= use <f>gplot</f> with <code> ... axes x1y2</code>
  errorbar semilogxerr semilogyerr loglogerr
  scatter 
  plotmatrix 
@@ -748,12 +749,12 @@ Figure controls
  clf 	 
  shg 	 
  close 	 
- refresh= try <code>replot</code>
+ refresh= try <f>replot</f>
  drawnow
  automatic_replot clearplot closeplot
 Axis controls
  axis 
- zoom= use <code>gzoom</code> from octave-forge
+ zoom= use <f>gzoom</f>
  grid 
  hold 
  ishold 
@@ -848,7 +849,7 @@ Formatted I/O
 File operations
  tempdir 
  tmpnam
- tempname = use <code>tmpnam</code>
+ tempname = use <f>tmpnam</f>
  prefdir 
  rename link unlink symlink readlink 
  mkfifo umask stat lstat
@@ -875,7 +876,7 @@ Import/Export
  ausave
  imread
  imwrite
- hdf = use <code>load/save</code> with <code>-hdf5</code>
+ hdf = use <f>load</f>/<f>save</f> with <code>-hdf5</code>
  aload/asave= flat ascii file read/write, available from <a href="ftp://ftp.ci.tuwien.ac.at/pub/octave/octave-ci.tar.gz">Octave-ci</a>
 
 extra >> Extra packages

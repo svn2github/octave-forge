@@ -17,6 +17,8 @@ my $script  = basename($0);
 my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
 			    # beside octave-forge if they are somewhere else
 			    # or modify this script
+my $OCTAVECVS = "http://www.octave.org/cgi-bin/cvsweb.cgi/~checkout~/octave";
+my $FORGECVS = "http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/";
 my $tmpdir = "/tmp";
 
 my $forgebar = qq~<center>
@@ -69,9 +71,10 @@ my @m_files = ();
 my @C_files = ();
 find(\&cc_and_m_files, ".");
 find(\&cc_and_m_files, "$OCTAVE/scripts") if $include_octave; 
-                                 # or just use $OCTAVE/scripts/DOCSTRINGS ....
+find(\&cc_and_m_files, "$OCTAVE/src") if $include_octave; 
+                                 # or just use $OCTAVE/{src,scripts}/DOCSTRINGS ....
 sub cc_and_m_files { # {{{1 populates global array @files
-    return unless -f and /\.(m|cc)$/;  # .m and .cc files
+    return unless -f and /\.(m|cc|l|y)$/;  # .m and .cc files (lex & yacc too!)
     my $path = "$File::Find::dir/$_";
     $path =~ s|^[.]/||;
     if (/\.m$/) {
@@ -95,12 +98,14 @@ foreach my $f ( @C_files ) {
     if ( open(IN,$f) ) {
 	while (<IN>) {
 	    # skip to the next function
-	    next unless /^DEFUN_DLD/;
+	    next unless /^\s*DEF(UN[ (]|UN_MAPPER|UN_DLD|CMD|VAR)/;
 
+	    # print "looking at $_";
 	    # extract function name to pattern space
 	    /\((\w*)\s*,/;
 	    # remember function name
 	    my $function = $1;
+	    # print "  found function $function\n";
 	    # skip to next line if comment doesn't start on this line
 	    # XXX FIXME XXX maybe we want a loop here?
 	    $_ = <IN> unless /\"/;
@@ -125,6 +130,7 @@ foreach my $f ( @C_files ) {
 	    $desc =~ s/\\n/\n/g;          # insert fake line ends
 	    $desc =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
 	    $desc =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
+#	    print " description: $desc";
 
 	    # register the function with a brief description
 	    register_function($function,$desc,$f);
@@ -144,7 +150,10 @@ foreach my $f ( @m_files ) {
 }
 
 # grab help from octave's DOCSTRINGS
-if ( !$include_octave ) {
+if ( 1 ) {
+  # Don't use DOCSTRINGS so that we can point directly to the source
+}
+elsif ( !$include_octave ) {
   # skip DOCSTRINGS if just summary
 }
 elsif (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
@@ -320,7 +329,8 @@ sub shadow_path { # {{{1
     my @matches = grep(/^$file$/,@shadow_paths);
 #    print "looking for $file in @shadow_paths\n";
 #    print "returns ",@matches,"\n";
-    return scalar(@matches) > 0;
+    return scalar(@matches) > 0 || $file =~ /alternatives$/;
+    
 } # 1}}}
 sub register_function { # {{{1
 # register the function and its one-line description
@@ -416,7 +426,7 @@ sub load_index { # {{{1
         } elsif (/^(\w.*?)\s*$/) {
 	    # category lines start in the left most column
             $category    = $1;
-        } elsif (/^\s+(\S.*)=\s*(\S.*\S)\s*$/) {
+        } elsif (/^\s+(\S[^=]*)=\s*(\S.*\S)\s*$/) {
 	    # Process "function = notes" explicit descriptions
 	    $function = $1;
 	    $description = $2;
@@ -594,7 +604,10 @@ sub download_ref {
 
     my $path = $function_description{$func}[0];
     if ($path ne "" && $path !~ /^$OCTAVE/) {
-	return "<a href=\"http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/\~checkout\~/octave/octave-forge/$path\?rev=HEAD\&content-type=text/plain\">[$function_description{$func}[0]]</a>";
+	return "[<a href=\"$FORGECVS$path\?rev=HEAD\&content-type=text/plain\">octave-forge/$path</a>]";
+    } elsif ($path =~ /^$OCTAVE/) {
+	$path =~ s/^$OCTAVE//;
+	return "[<a href=\"$OCTAVECVS$path\?rev=HEAD\&content-type=text/plain\">octave$path</a>]";
     } else {
 	return "";
     }
@@ -854,6 +867,7 @@ sub html_desc { # 1{{{
 	# shut of the bold italics during "code" formatting
 	$notes =~ s|<code>|</i><code>|g;
 	$notes =~ s|</code>|</code><i>|g;
+	$notes =~ s|<f>(\w+)</f>|</i><code><a href="f/$1.html">$1</a></code><i>|g;
 	return "<i>$notes</i>";
     } else {
 	print "ignoring $func = $notes\n" if $notes ne "";

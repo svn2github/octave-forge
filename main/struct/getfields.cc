@@ -18,14 +18,14 @@
 // Get values out of struct by specifying the struct (1st arg) and the
 // fields (following args).
 
-DEFUN_DLD (getfield, args, nargout,
+DEFUN_DLD (getfields, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} [@var{v1},...] = \
-getfield (@var{s}, 'k1',...) = [@var{s}.k1,...]\n\n\
+getfields (@var{s}, 'k1',...) = [@var{s}.k1,...]\n\n\
 Return selected values from a struct. Provides some compatibility \n\
 and some flexibility.\n\
 @end deftypefn\n\
-@seealso{setfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}")
+@seealso{setfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}")
 {
   octave_value_list retval;
 
@@ -57,7 +57,7 @@ and some flexibility.\n\
     }
 
   } else
-    print_usage ("getfield");
+    print_usage ("getfields");
 
   return retval;
 }

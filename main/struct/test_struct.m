@@ -51,8 +51,8 @@ endfunction			# EOF my test function ###############
 s.hello = 1 ;
 s.world = 2 ;
 mytest( isstruct(s)                   , "isstruct" ) ;
-mytest( s.hello == getfield(s,"hello"), "getfield 1" ) ;
-mytest( s.world == getfield(s,"world"), "getfield 2" ) ; 
+mytest( s.hello == getfields(s,"hello"), "getfields 1" ) ;
+mytest( s.world == getfields(s,"world"), "getfields 2" ) ; 
 
 t = struct ("hello",1,"world",2) ;
 mytest( t.hello == s.hello            , "struct 1" ) ;
@@ -60,9 +60,9 @@ mytest( t.world == s.world            , "struct 2" ) ;
 
 s.foo = "bar" ;
 s.bye = "ciao" ;
-t = setfield (t,"foo","bar","bye","ciao") ;
-mytest( t.foo == s.foo                , "setfield 1" ) ;
-mytest( t.bye == s.bye                , "setfield 2" ) ;
+t = setfields (t,"foo","bar","bye","ciao") ;
+mytest( t.foo == s.foo                , "setfields 1" ) ;
+mytest( t.bye == s.bye                , "setfields 2" ) ;
 
 % s = struct() ;
 t = rmfield (t,"foo","bye","hello") ;
@@ -81,24 +81,24 @@ mytest( y == s.y                          , "tar 2" );
 mytest( z == s.z                          , "tar 3" );
 
 a = "x" ; b = "y" ; 
-[xx,yy,zz] = getfield (s,a,b,"z") ;
+[xx,yy,zz] = getfields (s,a,b,"z") ;
 
-mytest( x == xx                           , "getfield 1" );
-mytest( y == yy                           , "getfield 2" );
-mytest( z == zz                           , "getfield 3" );
+mytest( x == xx                           , "getfields 1" );
+mytest( y == yy                           , "getfields 2" );
+mytest( z == zz                           , "getfields 3" );
 
-[x3,z3,z4] = getfield (s,"x","z","z") ;
-mytest( x == x3                           , "getfield 4" );
-mytest( z == z3                           , "getfield 5" );
-mytest( z == z4                           , "getfield 6" );
+[x3,z3,z4] = getfields (s,"x","z","z") ;
+mytest( x == x3                           , "getfields 4" );
+mytest( z == z3                           , "getfields 5" );
+mytest( z == z4                           , "getfields 6" );
 
 try				# Should not return inexistent fields
-  [nothing] = getfield (s,"foo");
+  [nothing] = getfields (s,"foo");
   found_nothing = 0;
 catch
   found_nothing = 1;
 end
-mytest( found_nothing                     , "getfield 4" );
+mytest( found_nothing                     , "getfields 4" );
 
 
 ok = test_struct_errors == 0;

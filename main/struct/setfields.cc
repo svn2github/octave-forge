@@ -22,17 +22,17 @@
 #include "variables.h"
 
 
-DEFUN_DLD (setfield, args, nargout,
+DEFUN_DLD (setfields, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} \
-@var{s2} = setfield (@var{s1}, 'k1',@var{v1},...) or \
+@var{s2} = setfields (@var{s1}, 'k1',@var{v1},...) or \
 @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ \
-@var{s2} = setfield ('k1',@var{v1},...) \n\n\
+@var{s2} = setfields ('k1',@var{v1},...) \n\n\
 This function call is equivalent to @code{@var{s1} = @var{s2}; \
 @var{s2}.k1 = @var{v1};...}. The first argument @var{s1} may be ommited. \
 Provides some compatibility and some flexibility.\n\
 @end deftypefn\n\
-@seealso{getfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}")
+@seealso{getfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}")
 {
   octave_value retval;
 

@@ -144,6 +144,7 @@ if strcmp(lower(Mode(1:7)),'pearson');
                         v  = (SSQ./N- M.*M); %max(N-1,0);
                         R  = cc./sqrt(v'*v);
                 end;
+                r = []; % mark that R is calculated
         else
                 if ~isempty(Y),
                         X = [X,Y];
@@ -154,7 +155,7 @@ if strcmp(lower(Mode(1:7)),'pearson');
                         v  = (s2-s.*s./n)./n;
                         cc = X(ik,jx(k))'*X(ik,jy(k));
                         cc = cc/n(1) - prod(s./n);
-                        R(jx(k),jy(k)) = cc./sqrt(prod(v));
+                        r(k) = cc./sqrt(prod(v));
                 end;
         end
         
@@ -165,7 +166,8 @@ elseif strcmp(lower(Mode(1:4)),'rank');
 	                R = corrcoef(ranks(X));
                 else
                         R = corrcoef(ranks(X),ranks(Y));
-                end;        
+                end;
+                r = []; % mark that R is calculated
         else
                 if ~isempty(Y),
                         X = [X,Y];
@@ -173,7 +175,7 @@ elseif strcmp(lower(Mode(1:4)),'rank');
                 for k = 1:length(jx),
                         ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
                         il = ranks(X(ik,[jx(k),jy(k)]));
-                        R(jx(k),jy(k)) = corrcoef(il(:,1),il(:,2));
+                        r(k) = corrcoef(il(:,1),il(:,2));
                 end;
         end;
         
@@ -185,27 +187,30 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
         if ~YESNAN,
                 iy = ranks(X);	%  calculates ranks;
                 
-                [r,N] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
-                r     = 1-6*r./(N.*(N.*N-1));
-                %R     = reshape(r,c1,c2);
-                for k = 1:length(jx),
-                        R(jx(k),jy(k)) = r(k);
-                end;
+                [r,n] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
         else
                 for k = 1:length(jx),
                         ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         % NN is the number of non-missing values
-                        R(jx(k),jy(k)) = sumskipnan((il(:,1) - il(:,2)).^2);
+                        [r(k),n] = sumskipnan((il(:,1) - il(:,2)).^2);
                 end;
-                R = 1-6*R./(NN.*(NN.*NN-1));
         end;
-        
+        r = 1-6*r./(n.*(n.*n-1));
 else
         fprintf(2,'Error CORRCOEF: unknown mode ''%s''\n',Mode);
 end;
 
-if isempty(Y),
+if ~isempty(r), % bring r(k) into position
+        if ~isempty(Y),
+                R     = reshape(r,c1,c2);
+        else
+                for k = 1:length(jx),
+                        R(jx(k),jy(k)) = r(k);
+                end;
+        end;
+end;
+if isempty(Y),   % in this case, diagonal must be 1
         R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
 end;
 if nargout<2, 
@@ -217,12 +222,17 @@ end;
 % SIGNIFICANCE TEST
 
 %warning off; 	% prevent division-by-zero warnings in Matlab.
-if isempty(Y),
-        R(logical(eye(size(R)))) = NaN;	% prevent rounding errors 
-end;
 
 tmp = 1 - R.*R;
+ix1 =(tmp==0);
+tmp(ix1)=nan;		% avoid division-by-zero warning	
 t   = R.*sqrt(max(NN-2,0)./tmp);
+
+ix2 = (t<=0)|(t>1);	% mark abs(r)==1
+if any(ix2(:))
+        warning('CORRCOEF: t-value out of range - probably due to some rounding error') 
+        t(ix2)=nan;
+end;
 
 if exist('t_cdf')>1;
         sig = t_cdf(t,NN-2);
@@ -234,28 +244,20 @@ else
 end;
 sig  = 2 * min(sig,1 - sig);
 
-sig(logical(eye(size(sig)))) = 0;	% prevent rounding errors 
 if nargout<3, 
-        if isempty(Y),
-                R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
-        end;
         return, 
 end;
 
 
 
 % CONFIDENCE INTERVAL
-
-z   = log((1+R)./(1-R))/2; 	% Fisher's z-transform; 
+tmp = R;
+tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
+z   = log((1+tmp)./(1-tmp))/2; 	% Fisher's z-transform; 
 %sz  = 1./sqrt(NN-3);		% standard error of z
 sz  = 1.96./sqrt(NN-3);		% 0.95 confidence interval (i.e. 1.96*standard error) of z
 
 ci1 = tanh(z-sz);
 ci2 = tanh(z+sz);
 
-if isempty(Y),
-        R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
-        ci1(logical(eye(size(R)))) = 1;	% prevent rounding errors 
-        ci2(logical(eye(size(R)))) = 1;	% prevent rounding errors 
-end;
 return;

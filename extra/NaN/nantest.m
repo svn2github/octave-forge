@@ -56,7 +56,7 @@ tmp = abs(r(:,1)-r(:,2))<eps;
 
 % output
 if all(tmp)
-        fprintf(1,'NANTEST successful - your NaN-tools are installed correctely\n');
+        fprintf(1,'NANTEST successful - your NaN-tools are correctely installed\n');
 else
         fprintf(1,'NANTEST %i not successful \n', find(~tmp));
 	fprintf(1,'Some functions must still be replaced\n');

@@ -122,7 +122,7 @@ else				# No stacking ########################
   ## "func(var1,reshape(dvar(1:NV,NP),SZ1,SZ2),...,varN)"
   ## sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
 end
-
+argstr = strrep (argstr, "...", "varargin");
 calstr = strrep (calstr, "...", "varargin{:}");
 
 c = sprintf(strcat("function df = %s (%s)\n",\

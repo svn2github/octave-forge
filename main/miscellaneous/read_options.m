@@ -26,7 +26,7 @@
 ## 'quiet'  , int    : Behavior when a non-string or unknown opt is met  <0>
 ##              0    - Produce an error
 ##              1    - Return quietly (can be diagnosed by checking 'nread')
-##      
+## 'skipnan', int    : Ignore NaNs if there is a default value.
 ##     Note : At least one of 'op0' or 'op1' should be specified.
 ## 
 ## OUTPUT ------------
@@ -46,28 +46,48 @@
 ##                              # Create variables w/ same name as options
 ##
 ## [is_man, is_plane, flies] = getfield (s,"is_man", "is_plane", "flies")
-function [op,nread] = read_options (args, ...)
+## pre 2.1.39 function [op,nread] = read_options (args, ...)
+function [op,nread] = read_options (args, varargin) ## pos 2.1.39
 
 op = setfield ();		# Empty struct
 op0 = op1 = " ";
-prefix = quiet = nocase = quiet = 0;
+skipnan = prefix = quiet = nocase = quiet = 0;
 
 nargin--;
 if rem (nargin, 2), error ("odd number of optional args"); end
 
-while nargin
-  nargin -= 2;
-  if ! isstr (tmp = va_arg ()), error ("non-string option"); end
-  if     strcmp (tmp, "op0")    , op0     = va_arg ();
-  elseif strcmp (tmp, "op1")    , op1     = va_arg ();
-  elseif strcmp (tmp, "default"), op      = va_arg ();
-  elseif strcmp (tmp, "prefix") , prefix  = va_arg ();
-  elseif strcmp (tmp, "nocase") , nocase  = va_arg ();
-  elseif strcmp (tmp, "quiet")  , quiet   = va_arg ();
+
+## beginpos 2.1.39
+i=1;
+while i<nargin
+  if ! isstr (tmp = nth (varargin,i++)), error ("non-string option"); end
+  if     strcmp (tmp, "op0")    , op0     = nth (varargin, i++);
+  elseif strcmp (tmp, "op1")    , op1     = nth (varargin, i++);
+  elseif strcmp (tmp, "default"), op      = nth (varargin, i++);
+  elseif strcmp (tmp, "prefix") , prefix  = nth (varargin, i++);
+  elseif strcmp (tmp, "nocase") , nocase  = nth (varargin, i++);
+  elseif strcmp (tmp, "quiet")  , quiet   = nth (varargin, i++);
+  elseif strcmp (tmp, "skipnan"), skipnan = nth (varargin, i++);
   else 
     error ("unknown option '%s' for option-reading function!",tmp);
   end
 end
+## endpos 2.1.39
+## beginpre 2.1.39
+# while nargin
+#   nargin -= 2;
+#   if ! isstr (tmp = va_arg ()), error ("non-string option"); end
+#   if     strcmp (tmp, "op0")    , op0     = va_arg ();
+#   elseif strcmp (tmp, "op1")    , op1     = va_arg ();
+#   elseif strcmp (tmp, "default"), op      = va_arg ();
+#   elseif strcmp (tmp, "prefix") , prefix  = va_arg ();
+#   elseif strcmp (tmp, "nocase") , nocase  = va_arg ();
+#   elseif strcmp (tmp, "quiet")  , quiet   = va_arg ();
+#   else 
+#     error ("unknown option '%s' for option-reading function!",tmp);
+#   end
+# end
+## endpre 2.1.39
 
 if length (op0) + length (op1) < 3
   error ("Either 'op0' or 'op1' should be specified");
@@ -128,7 +148,7 @@ while nread < length (args)
     tmp = tmp(5:length(tmp));
 
     if sum (fullen == min (fullen)) > 1 || \
-	  (min (fullen) != length(name)) && ! prefix ,
+	  ((min (fullen) != length(name)) && ! prefix) ,
       error ("ambiguous option '%s'. Could be '%s'",oname,tmp);
     end
     j = find (fullen == min (fullen))(1);
@@ -142,7 +162,10 @@ while nread < length (args)
     op = setfield (op, fullname, 1);
   else
     if nread < length (args)
-      op = setfield (op, fullname, nth (args,++nread));
+      tmp = nth (args,++nread);
+      if !isnumeric (tmp) || !isnan (tmp) || !struct_contains (op, fullname)
+	op = setfield (op, fullname, tmp);
+      end
     else
       error ("options end before I can read value of option '%s'",oname);
     end

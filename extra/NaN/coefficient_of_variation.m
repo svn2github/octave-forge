@@ -1,5 +1,5 @@
 function cv=coefficient_of_variation(i,DIM)
-% coefficient of variation
+% COEFFICIENT_OF_VARIATION returns STD(X)/MEAN(X)
 % 
 % cv=coefficient_of_variation(x [,DIM])
 %  cv=std(x)/mean(x) 
@@ -9,8 +9,10 @@ function cv=coefficient_of_variation(i,DIM)
 %   REFERENCE(S):
 %   http://mathworld.wolfram.com/VariationCoefficient.html
 
-
-%	Copyright (c) 1997-2002 by  Alois Schloegl  <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+%	Version 1.28   Date: 13 Mar 2003
+%	Copyright (c) 1997-2003 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 NaN-Tb: A statistics toolbox 
 ------------------------------------------------------------
-Copyright (C) 2000-2002 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2000-2003 Alois Schloegl <a.schloegl@ieee.org>
 
 
 FEATURES of the NaN-tb:
@@ -14,7 +14,7 @@ FEATURES of the NaN-tb:
  - supports DIM argument 
  - supports unbiased estimation; 
  - The toolbox was tested with
-   Matlab 5.2, 5.3, 6.1 and Octave 2.0.14, 2.0.16.92, 2.1.35-36, 
+   Matlab 5.2, 5.3, 6.1, 6.5 and Octave 2.0.14, 2.0.16.92, 2.1.35-40, 
  
  
 Currently are implemented:
@@ -177,8 +177,8 @@ alternative function definition (except built-in's) with the same name.
 This checks whether all previous functions have been replaced
 
 
-	Version 1.28 	Date: 23 Sep 2002
-	Copyright (C) 2000-2002 by  Alois Schloeg <a.schloegl@ieee.org>	
+	Version 1.32 	Date: 13 Mar 2003
+	Copyright (C) 2000-2003 by  Alois Schloeg <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 

@@ -1,5 +1,5 @@
 function p = normpdf(x,m,s);
-% Normal probability density function
+% NORMPDF returns normal probability density 
 %
 % pdf = normpdf(x,m,s);
 %
@@ -12,8 +12,10 @@ function p = normpdf(x,m,s);
 
 % Reference(s):
 
-%	Version 1.28   Date: 23.Sep.2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+%	Version 1.28   Date: 13 Mar 2003
+%	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

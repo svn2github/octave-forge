@@ -7,7 +7,7 @@ build-stamp
 config.log
 config.status
 configure
-gpc_create.oct
+*.oct
 install-sh
 missing
 mkinstalldirs

@@ -16,10 +16,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Loadable Function} {@var{tri}=} delaunay (@var{x}, @var{y})
+## @deftypefnx {Loadable Function} {@var{tri}=} delaunay (@var{x}, @var{y}, @var{opt})
 ## The return matrix of size [n, 3] contains a set triangles which are
 ## described by the indices to the data point x and y vector.
 ## The triangulation satisfies the Delaunay circumcircle criterion.
 ## No other data point is in the circumcircle of the defining triangle.
+##
+## A third optional argument, which must be a string, contains extra options
+## passed to the underlying qhull command.  See the documentation for the 
+## Qhull library for details.
 ##
 ## @example
 ## x = rand(1,10);
@@ -35,16 +40,22 @@
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
-function tri = delaunay (x,y)
+function tri = delaunay (x,y,opt)
 
-  if (nargin != 2)
-    usage ("delaunay(x,y)");
+  if ((nargin != 2) && (nargin != 3))
+    usage ("delaunay(x,y[,opt])");
   endif
 
   if (is_vector(x) && is_vector(y) && (length(x) == length(y)) )
-    tri = delaunayn([x(:), y(:)]);
+    if (nargin == 2)
+      tri = delaunayn([x(:), y(:)]);
+    elseif isstr(opt)
+      tri = delaunayn([x(:), y(:)], opt);
+    else
+      error("third argument must be a string");
+    endif
   else
-    error("input arguments must be vectors of same size");
+    error("first two input arguments must be vectors of same size");
   endif
 
 endfunction

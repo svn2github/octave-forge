@@ -16,23 +16,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Loadable Function} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Loadable Function} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{opt})
 ## A matrix of size [n, 4] is returned. Each row contains a 
 ## set of tetrahedron which are
 ## described by the indices to the data point vectors (x,y,z).
+##
+## A fourth optional argument, which must be a string, contains extra options
+## passed to the underlying qhull command.  See the documentation for the 
+## Qhull library for details.
 ## @end deftypefn
 ## @seealso{delaunay,delaunayn}
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
-function tetr = delaunay3 (x,y,z)
+function tetr = delaunay3 (x,y,z,opt)
 
-  if (nargin != 3)
-    usage ("delaunay(x,y,z)");
+  if ((nargin != 3) && (nargin != 4))
+    usage ("delaunay3(x,y,z[,opt])");
   endif
 
   if (is_vector(x) && is_vector(y) &&is_vector(z) && \
-      (length(x) == length(y)) && (length(x) == length(z))) 
-    tetr = delaunayn([x(:),y(:),z(:)]);
+      (length(x) == length(y)) && (length(x) == length(z)))
+    if (nargin == 3)
+      tetr = delaunayn([x(:),y(:),z(:)]);
+    elseif isstr(opt)
+      tetr = delaunayn([x(:),y(:),z(:)], opt);
+    else
+      error("fourth argument must be a string");
+    endif
+  else
+    error("first three input arguments must be vectors of same size");
   endif
 
 endfunction

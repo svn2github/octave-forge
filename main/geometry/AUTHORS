@@ -6,3 +6,6 @@ Etienne Grossmann (etienne@isr.ist.utl.pt)
 
 Paul Kienzle
  - Integrate with the octaveSF tree
+
+Rafael Laboissiere <rafael@laboissiere.net>
+ - Better handling of options to the underlying qhull command.  

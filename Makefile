@@ -15,7 +15,7 @@ ifdef OCTAVE_FORGE
 
 .PHONY: all install check icheck
 
-all: subdirs
+all: clearlog subdirs
 	@echo "Build finished."
 	@echo "Please read FIXES/README before you install."
 	@if test -f build.fail ; then cat build.fail; false; fi
@@ -66,7 +66,7 @@ endif
 
 .PHONY: clean distclean dist checkindist changelog
 
-clean: subdirs
+clean: clearlog subdirs
 	-$(RM) core octave-core octave configure.in
 
 distclean: clean
@@ -83,7 +83,7 @@ checkindist:
 	    echo Follow the instructions in octave-forge/release.sh && false; \
 	else true; fi
 
-subdirs: clearlog $(SUBMAKEDIRS)
+subdirs: $(SUBMAKEDIRS)
 clearlog: ; @-$(RM) build.log build.fail
 $(SUBMAKEDIRS):
 	@echo Processing $@

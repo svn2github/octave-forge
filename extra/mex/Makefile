@@ -32,11 +32,11 @@ install:
 ifdef LEAVEHERE
 	@echo "Leaving $(MEXLIB), mex.h and matrix.h in place --- do not remove!"
 else
-	 if ! test -e $(LIBPATH) ; then \
+	@if ! test -e $(LIBPATH) ; then \
 	  echo creating $(LIBPATH) ; \
 	  $(INSTALL) -d $(LIBPATH) ; \
 	fi
-	 if test -d $(LIBPATH) ; then \
+	@if test -d $(LIBPATH) ; then \
 	  echo installing $(MEXLIB) mex/mex.h mex/matrix.h in $(LIBPATH) ; \
 	  $(INSTALL_DATA) $(MEXLIB) $(LIBPATH)/$(MEXLIB) ; \
 	  $(INSTALL_DATA) mex.h $(LIBPATH)/mex.h ; \

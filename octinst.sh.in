@@ -58,40 +58,35 @@ if test -d "$source/alternatives" ; then
     fi
 fi
 
-# create PKG_ADD
-$MKPKGADD $source > $source/PKG_ADD.t
-if test -n "`cat $source/PKG_ADD.t`" ; then
-  mv $source/PKG_ADD.t $mpath/PKG_ADD
-else
-  rm -f $source/PKG_ADD.t
+# Create PKG_ADD, and destroy it immediately if it is empty
+# XXX FIXME XXX no PKG_ADD created if only oct-files and no m-files.
+if test -d "$mpath" ; then
+    $MKPKGADD $source > $mpath/PKG_ADD
+    if test -z "`cat $mpath/PKG_ADD`" ; then rm -f $mpath/PKG_ADD;  fi
 fi
 # PKG_ADD for alternatives
-if test -d "$source/alternatives" ; then
-    $MKPKGADD $source/alternatives > $source/alternatives/PKG_ADD.t
-    if test -n "`cat $source/alternatives/PKG_ADD.t`" ; then
-        mv $source/alternatives/PKG_ADD.t $altmpath/PKG_ADD
-    else
-        rm -f $source/alternatives/PKG_ADD.t
-    fi
+if test -d "$source/alternatives" -a -d "$altmpath" ; then
+    $MKPKGADD $source/alternatives > $altmpath/PKG_ADD
+    if test -z "`cat $altmpath/PKG_ADD`" ; then rm $altmpath/PKG_ADD; fi
 fi
 
 # grab the data files, skipping the CVS directory
 files=`echo $source/data/* | sed -e "s/[^ ]*CVS//"`
-if test "$files" != "$source/data/*" ; then
+if test -n "$files" -a "$files" != "$source/data/*" ; then
     $INSTALL -d $mpath
     $INSTALL_DATA $files $mpath
 fi
 
 # grab the executable files, skipping the CVS directory
 files=`echo $source/bin/* | sed -e "s/[^ ]*CVS//"`
-if test "$files" != "$source/bin/*" ; then
+if test -n "$files" -a "$files" != "$source/bin/*" ; then
     $INSTALL -d $xpath
     $INSTALL_PROGRAM $files $xpath
 fi
 
 # grab the script files, skipping the CVS directory
 files=`echo $source/scripts/* | sed -e "s/[^ ]*CVS//"`
-if test "$files" != "$source/scripts/*" ; then
+if test -n "$files" -a "$files" != "$source/scripts/*" ; then
     $INSTALL -d $xpath
     $INSTALL_SCRIPT $files $xpath
 fi

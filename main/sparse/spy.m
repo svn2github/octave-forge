@@ -9,7 +9,12 @@
 # $Id$
 function spy(S) 
 
-[i,j,s,m,n]= spfind(S);
+if is_matrix(S)
+   [i,j,s] = find(S);
+   [m,n] = size(S);
+else
+   [i,j,s,m,n]= spfind(S);
+endif
 
 eval(sprintf('gset nokey'))
 eval(sprintf('gset yrange [1:%d] reverse',m))
@@ -27,6 +32,9 @@ axis;
 
 #
 # $Log$
+# Revision 1.2  2002/08/01 17:10:24  pkienzle
+# handle dense matrices as well
+#
 # Revision 1.1  2001/10/14 03:06:31  aadler
 # fixed memory leak in complex sparse solve
 # fixed malloc bugs for zero size allocs

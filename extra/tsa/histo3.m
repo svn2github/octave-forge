@@ -78,6 +78,8 @@ end;
 ix  = diff(sY,1)>0;
 tmp = [find(ix); sum(~isnan(sY))];
 H   = diff([0; tmp]);
+
+R.datatype = 'HISTOGRAM';
 R.X = sY(tmp);
 R.N = sum(~isnan(Y),1);
 
@@ -100,7 +102,6 @@ if nargout>1,
                 tix = uint32(tix);
                 cc = 8/4;
         end;
-        R.datatype = 'HISTOGRAM';
         R.compressionratio = (prod(size(R.X)) + (yr*yc)/cc) / (yr*yc);
 	R.tix = tix;        
 end;

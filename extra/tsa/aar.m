@@ -96,9 +96,9 @@ if nargin<4 UC=0; else UC= arg4; end;
 a0=zeros(1,MOP); 
 A0=eye(MOP);
 if nargin>4, 
-	if all(size(a0)==([1,1]*(MOP+1))); 	% extended covariance matrix of AAR parameters 
-		a0 = arg5(1,2:size(a0,2));
-		A0 = arg5(2:size(a0,1),2:size(a0,2)) - a0'*a0;
+	if all(size(arg5)==([1,1]*(MOP+1))); 	% extended covariance matrix of AAR parameters 
+		a0 = arg5(1,2:size(arg5,2));
+		A0 = arg5(2:size(arg5,1),2:size(arg5,2)) - a0'*a0;
 	else
 		a0 = arg5;  
 		if nargin>5 
@@ -128,7 +128,6 @@ lambda=(1-UC); % Schloegl 1996
 arc=poly((1-UC*2)*[1;1]);b0=sum(arc); % Whale forgettting factor for Mode=258,(Bianci et al. 1997)
 
 dW=UC/MOP*eye(MOP);                % Schloegl
-
 
 
 %------------------------------------------------

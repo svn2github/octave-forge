@@ -20,6 +20,10 @@ VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_LEVEL
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 
+dnl need to find admin files, so keep track of the top dir.
+TOPDIR=`pwd`
+AC_SUBST(TOPDIR)
+
 dnl if mkoctfile doesn't work, then we need the following:
 dnl AC_PROG_CXX
 dnl AC_PROG_F77
@@ -27,6 +31,7 @@ dnl AC_PROG_F77
 dnl Need C compiler regardless so define it in a way that
 dnl makes autoconf happy and we can override whatever we
 dnl need with mkoctfile -p.
+dnl XXX FIXME XXX should use mkoctfile to get CC and CFLAGS
 AC_PROG_CC
 
 dnl XXX FIXME XXX need tests for -p -c -s in mkoctfile.

@@ -20,6 +20,7 @@ xpath=$1; shift
 INSTALL="@INSTALL@"
 INSTALL_DATA="@INSTALL_DATA@"
 INSTALL_PROGRAM="@INSTALL_PROGRAM@"
+MKPKGADD="@TOPDIR@/admin/mkpkgadd"
 
 # grab the m-files
 files=`echo $source/*.m`
@@ -34,6 +35,14 @@ if test "$files" != "$source/*.oct" ; then
     $INSTALL -d $opath
 ## Grrr... install doesn't preserve links.  Hope this works.
     cp -fdp $files $opath
+fi
+
+# create PKG_ADD
+$MKPKGADD $source > $source/PKG_ADD.t
+if [ -n "`cat $source/PKG_ADD.t`" ]' then
+  mv $source/PKG_ADD.t $mpath/PKG_ADD
+else
+  rm -f $source/PKG_ADD.t
 fi
 
 # grab the data files, skipping the CVS directory

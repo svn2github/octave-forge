@@ -160,8 +160,8 @@ function pp = csape (x, y, cond, valc)
     g(1,:) = 3 / (h(1) + h(2)) * (a(3,:) - a(2,:)\
           - h(2) / h(1) * (a(2,:) - a(1,:)));
     if (n > 4)
-      g(2:n - 3,:) = 3 * diff (a(3:n - 1,:)) ./ h(2:n - 3,idx)\
-        - 3 * diff (a(2:n - 2,:)) ./ h(1:n - 4,idx);
+      g(2:n - 3,:) = 3 * diff (a(3:n - 1,:)) ./ h(3:n - 2,idx)\
+        - 3 * diff (a(2:n - 2,:)) ./ h(2:n - 3,idx);
     endif
     g(n - 2,:) = 3 / (h(n - 1) + h(n - 2)) *\
  	(h(n - 2) / h(n - 1) * (a(n,:) - a(n - 1,:)) -\

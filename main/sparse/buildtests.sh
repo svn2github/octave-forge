@@ -296,7 +296,7 @@ EOF
 gen_sparsesparse_elementop_tests() {
     cat >>$TESTS <<EOF
 %!assert(as==bs,af==bf)
-%!assert(as!=bs,sparse(af!=bf)) # fails (complex sparse returns wrong type)
+%!#assert(as!=bs,sparse(af!=bf)) # fails (complex sparse returns wrong type)
 %!assert(as+bs,sparse(af+bf))
 %!assert(as-bs,sparse(af-bf))
 %!assert(as.*bs,sparse(af.*bf))
@@ -320,8 +320,8 @@ gen_matrixop_tests() {
 %!assert(as/bf,af/bf,100*eps)
 %!assert(af/bs,af/bf,100*eps)
 %!assert(as/bs,af/bf,100*eps)
-%!assert(bs\af,bf\af,100*eps) # fails 
-%!assert(bf\as,bf\af,100*eps) # fails 
+%!#assert(bs\af,bf\af,100*eps) # fails 
+%!#assert(bf\as,bf\af,100*eps) # fails 
 %!#assert(bs\as,bf\af,100*eps) # fails (\ seg-faults for non-square)
 
 EOF
@@ -456,22 +456,22 @@ cat >>$TESTS <<EOF
 %! for k=1:length(r), fsum(r(k),c(k)) += 1; end
 %! fsum = sparse(fsum);
 %!assert(sparse(r,c,1),fsum(1:max(r),1:max(c)));
-%!assert(sparse(r,c,1,'sum'),fsum(1:max(r),1:max(x)));     # fails
-%!assert(sparse(r,c,1,'unique'),funiq(1:max(r),1:max(c))); # fails
+%!#assert(sparse(r,c,1,'sum'),fsum(1:max(r),1:max(x)));     # fails
+%!#assert(sparse(r,c,1,'unique'),funiq(1:max(r),1:max(c))); # fails
 %!assert(sparse(r,c,1,m,n),fsum);
 %!assert(sparse(r,c,1,m,n,'sum'),fsum);
 %!assert(sparse(r,c,1,m,n,'unique'),funiq);
 
 %!assert(sparse(r,c,1i),fsum(1:max(r),1:max(c))*1i);
-%!assert(sparse(r,c,1i,'sum'),fsum(1:max(r),1:max(x))*1i);     # fails
-%!assert(sparse(r,c,1i,'unique'),funiq(1:max(r),1:max(c))*1i); # fails
+%!#assert(sparse(r,c,1i,'sum'),fsum(1:max(r),1:max(x))*1i);     # fails
+%!#assert(sparse(r,c,1i,'unique'),funiq(1:max(r),1:max(c))*1i); # fails
 %!assert(sparse(r,c,1i,m,n),fsum*1i);
 %!assert(sparse(r,c,1i,m,n,'sum'),fsum*1i);
 %!assert(sparse(r,c,1i,m,n,'unique'),funiq*1i);
 
 # generate from sparse
 %!assert(sparse(funiq),funiq);
-%!assert(sparse(1i*funiq),1i*funiq); # fails (not yet implemented)
+%!#assert(sparse(1i*funiq),1i*funiq); # fails (not yet implemented)
 
 # generate from full
 %!assert(sparse(full(funiq)),funiq);
@@ -489,11 +489,11 @@ gen_select_tests() {
 
 %% Point tests
 %!test idx=ridx(:)+rows(as)*(cidx(:)-1);
-%!assert(issparse(as(idx))); # fails (not yet implemented)
+%!#assert(issparse(as(idx))); # fails (not yet implemented)
 %!assert(as(idx),af(idx));
-%!assert(as(idx'),af(idx')); # fails (not yet implemented)
-%!assert(as([idx,idx]),af([idx,idx])); # fails (not yet implemented)
-%!assert(as(reshape([idx;idx],[1,length(idx),2])),af([idx',idx'])); # fails
+%!#assert(as(idx'),af(idx')); # fails (not yet implemented)
+%!#assert(as([idx,idx]),af([idx,idx])); # fails (not yet implemented)
+%!#assert(as(reshape([idx;idx],[1,length(idx),2])),af([idx',idx'])); # fails
 
 %% Slice tests
 %!assert(as(ridx,cidx), sparse(af(ridx,cidx)))

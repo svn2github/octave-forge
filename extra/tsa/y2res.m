@@ -18,7 +18,7 @@ function [R,MU,SD2,EM3,EM4,Max,Min,I,th1prm]=y2res(Y)
 % [1] http://www.itl.nist.gov/
 % [2] http://mathworld.wolfram.com/
 
-%	Version 2.90	last revision 10.04.2002
+%	Version 2.90	last revision 10.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
@@ -38,7 +38,7 @@ R.MSQ   = R.SSQ./R.N;
 R.RMS	= sqrt(R.MSQ);
 R.SSQ0  = R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
 
-if FLAG_implicit_unbiased_estimation,
+if FLAG_implicit_unbiased_estim,
     n1 	= max(R.N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
 else
     n1	= R.N;
@@ -55,9 +55,9 @@ R.Max = max(Y,[],1);
 R.Min = min(Y,[],1);
 
 Y       = Y - repmat(R.MEAN,size(Y)./size(R.MEAN));
-R.CM3 	= sumskipnan(Y.^3,DIM)./n1;
-R.CM4 	= sumskipnan(Y.^4,DIM)./n1;
-%R.CM5 	= sumskipnan(Y.^5,DIM)./n1;
+R.CM3 	= sumskipnan(Y.^3,1)./n1;
+R.CM4 	= sumskipnan(Y.^4,1)./n1;
+%R.CM5 	= sumskipnan(Y.^5,1)./n1;
 
 R.skewness = R.CM3./(R.STD.^3);
 R.kurtosis = R.CM4./(R.VAR.^2)-3;

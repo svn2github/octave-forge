@@ -1,3 +1,15 @@
+## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+##
+## This program is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## This is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+
 ## [x,v,nev,...] = minimize (f,args,...) - Minimize f
 ##
 ## ARGUMENTS
@@ -12,9 +24,14 @@
 ##     or 1 x 2  : Number of function and derivative evaluations (if
 ##                 derivatives are used)
 ## 
-## OPTIONS : DERIVATIVES   You may provide one of the following options.
-## ---------------------   Otherwise, the Nelder-Mean (see nelder_mead_min)
-##                         method is used.
+##
+## Extra arguments are either a succession of option-value pairs or a single
+## list or struct of option-value pairs (for unary options, the value in the
+## struct is ignored).
+## 
+## OPTIONS : DERIVATIVES   Derivatives may be used if one of these options
+## ---------------------   uesd. Otherwise, the Nelder-Mean (see
+##                         nelder_mead_min) method is used.
 ## 
 ## 'df' , df      : Name of a function that returns the derivatives of f
 ##                  in x : dfx = feval (df, x) where dfx is 1x(M*N). A
@@ -84,14 +101,10 @@
 ##                  [backend, control], the name and control argument of the
 ##                  backend used by minimize(). Minimimzation can then be
 ##                  obtained without the overhead of minimize by calling, if
-##                  a 0-order method is used :
+##                  a 0 or 1st order method is used :
 ##
 ##              [x,v,nev] = feval (backend, args, control)
 ##                   
-##                  or, if a 1st order method is used :
-##
-##              [x,v,nev] = feval (backend, control.df, args, control)
-##
 ##                  or, if a 2nd order method is used :
 ##
 ##              [x,v,nev] = feval (backend, control.d2f, args, control)
@@ -119,7 +132,28 @@ default = setfield ("backend",0,"verbose",0,\
 		    "order",nan, "narg",nan, "maxev",nan,\
 		    "isz",  nan);
 
-ops = read_options (list (all_va_args),\
+if nargin == 3			# Accomodation to struct and list optional
+				# args
+  tmp = va_arg ();
+
+  if is_struct (tmp)
+    opls = list ();
+    for [v,k] = tmp		# Treat separately unary and binary opts
+      if findstr ([" ",k," "],op0)
+	opls = append (opls, k);
+      else
+	opls = append (opls, k, v);
+      end
+    end
+  elseif is_list (tmp)
+    opls = tmp;
+  else
+    opls = list (tmp);
+  end
+else
+  opls = list (all_va_args);
+end
+ops = read_options (opls,\
 		    "op0",op0, "op1",op1, "default",default);
 
 [backend,verbose,   \
@@ -205,26 +239,12 @@ end
 				# ##########################################
 				# Choose method by specifying order ########
 
-## must_clear_ndiff = 0;		# Flag telling to clear ndiff function
-
 if ! isnan (order)
 
   if     order == 0, method = "nelder_mead_min";
   elseif order == 1
     method = "bfgs";
-    ## if jac, ctls.jac = 1; op = 1; end      
-    ## 2002 / 04 / 28 : Use num. deriv w/ bs_gradient2, by default.
-    ## if ! length (df)		# If necessary, define numerical diff
-    ##
-    ##  df = temp_name (["d",f]);	# Choose a name
-    ##		        		# Define the function
-    ## eval (cdiff (f, narg, length (args), df));
-    ##   must_clear_ndiff = 1;
-    ##
-    ## if verbose
-    ##   printf ("minimize(): Defining numerical diff. function\n");
-    ## end
-    
+
   elseif order == 2
     if ! (length (d2f) || length (d2i))
       error ("minimize(): 'order' is 2, but 2nd differential is missing\n");
@@ -261,21 +281,8 @@ if ! backend			# Call the backend ###################
 else				# Don't call backend, just return its name
 				# and arguments. 
 
-				# If I just defined a numerical
-				# differentiation function and I want user
-				# to use it later, I should not clear it.
-  ## if must_clear_ndiff
-  ##   if verbose
-  ##     printf ("minimize(): Keeping num diff function '%s' for future use",\
-  ##      df);
-  ##   end
-  ##   must_clear_ndiff = 0;
-  ##   ctls.df = df; op = 1;
-  ## end
-
   x = method;
   if op, v = ctls; else v = []; end
 end
 
-				# Eventually clear num diff function
-## if must_clear_ndiff, clear(df); end
+

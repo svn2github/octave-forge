@@ -16,7 +16,7 @@
 ok = 1;				# Remains set if all ok. Set to 0 otherwise
 cnt = 0;			# Test counter
 page_screen_output = 0;
-page_output_immediately = 1
+page_output_immediately = 1;
 
 if ! exist ("verbose"), verbose = 0; end
 
@@ -92,9 +92,14 @@ end
 [method,ctl] = minimize ("ff",list (x0,y0,1),"order",0,"backend");
 
 cnt++;
-if ! strcmp (method,"nelder_mead_min")
+if ! isstr (method) || ! strcmp (method,"nelder_mead_min")
   if verbose
-    prn ("Wrong method '%s' != 'nelder_mead_min' was chosen\n", method);
+    if isstr (method)
+      prn ("Wrong method '%s' != 'nelder_mead_min' was chosen\n", method);
+    else
+      prn ("minimize pretends to use a method that isn't a string\n");
+    end
+    return
   end
   ok = 0;
 elseif verbose,  prn ("ok %i\n",cnt);

@@ -1,5 +1,5 @@
 include ../../../Makeconf
 
-all: bfgsmin.cc bisectionstep.cc celleval.cc finitedifference.cc newtonmin.cc newtonstep.cc numgradient.cc numhessian.cc samin.cc
+all: bfgsmin.oct bisectionstep.oct celleval.oct finitedifference.oct newtonmin.oct newtonstep.oct numgradient.oct numhessian.oct samin.oct
 
 clean: ; -$(RM) *.o core octave-core *.oct *~

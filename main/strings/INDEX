@@ -29,7 +29,7 @@ Search and replace
  strncmp 
  strcmpi 
  strncmpi 
- findstr
+ findstr strfind
  index rindex
  strrep
  substr

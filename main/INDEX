@@ -110,7 +110,7 @@ Environment
  cd pwd
  dir=alias for <f>ls</f>
  ls
- mkdir 
+ mkdir isdir
  copyfile= use <f>system</f><code>("[cp ", source, " ", dest])</code>
  delete = use <f>unlink</f> 
  getenv 
@@ -411,7 +411,7 @@ Generating matrices
  ones 
  eye 
  rand texas_lotto
- randn rande
+ randn rande randp
  linspace 
  logspace 
  randperm
@@ -554,6 +554,7 @@ Exponentials
  pow2 
  sqrt 
  nextpow2 
+ nthroot
 Complex numbers
  abs 
  angle arg
@@ -896,18 +897,15 @@ Directory operations
  file_in_path
  file_in_loadpath
 Import/Export
- textread
- dlmread 
- dlmwrite 
- xmlread
- xmlwrite
- wk1read 
- wk1write 
  csv2cell cell2csv
- auload
- ausave
- imread
- imwrite
+ textread
+ dlmread dlmwrite 
+ csvread csvwrite
+ xmlread xmlwrite xlsread
+ wk1read wk1write 
+ wavread wavwrite
+ auload ausave
+ imread imwrite
  hdf = use <f>load</f>/<f>save</f> with <code>-hdf5</code>
  aload/asave= flat ascii file read/write, available from <a href="ftp://ftp.ci.tuwien.ac.at/pub/octave/octave-ci.tar.gz">Octave-ci</a>
 

@@ -4,6 +4,16 @@ function DIM=flag_implicit_dimension(i)
 % Do not use it. 
 
 % FLAG_IMPLICIT_DIMENSION sets and gets default mode for handling NaNs
+% The default DIM argument is stored in the global variable FLAG_implicit_dimension
+% The idea is that the DIM-argument is not necessary. This might enable 
+% more readable code. 
+% 
+%   flag_implicit_dimension(0) 
+%	calculation along first non-singleton dimension
+%   flag_implicit_dimension(1) 
+%	calculation along columns
+%   flag_implicit_dimension(2) 
+%	calculation along rows
 % 
 % DIM = flag_implicit_dimension()
 % 	gets default mode
@@ -14,10 +24,6 @@ function DIM=flag_implicit_dimension(i)
 % DIM = flag_implicit_dimension(DIM)
 %	gets and sets DIM 
 %
-% The mode is stored in the global variable FLAG_implicit_dimension
-% It is recommended to use flag_implicit_dimension(1) as default and 
-% flag_implicit_dimension(0) should be used for exceptional cases only. 
-% 
 % features:
 % - compatible to Matlab and Octave
 %

@@ -32,7 +32,10 @@ function y=var(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Copyright (C) 2000-2002 by  Alois Schloegl  <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+%	Version 1.30;	26 Feb 2003
+%	Copyright (C) 2000-2003 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
 ver = version;
 if nargin == 1,

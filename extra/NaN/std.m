@@ -1,6 +1,8 @@
 function o=std(i,DIM)
 % STD calculates the standard deviation.
 % 
+% y = std(x,DIM)
+% 
 % DIM	dimension
 %	1 STD of columns
 %	2 STD of rows
@@ -29,8 +31,10 @@ function o=std(i,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.23;	07 Jun 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+%	Version 1.30;	26 Feb 2003
+%	Copyright (c) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 if nargin<2,
         o=sqrt(var(i));

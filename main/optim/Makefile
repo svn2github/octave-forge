@@ -4,4 +4,3 @@ all: lp.oct leval.oct bfgsmin.oct lbfgsmin.oct bisectionstep.oct celleval.oct fi
 
 clean:
 	-$(RM) *.o core octave-core *.oct *~
-	cd mintoolkit && $(MAKE) clean

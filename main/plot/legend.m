@@ -22,7 +22,7 @@
 ## a matrix of strings (@var{matstr} to specify legends. Legend works on line
 ## graphs, bar graphs, etc... Be sure to call plot before calling legend. 
 ##
-## @var{pos} optionnaly  places the legend in the specified location:
+## @var{pos} optionally  places the legend in the specified location:
 ##
 ## @multitable @columnfractions 0.1 0.1 0.8
 ## @item @tab 0 @tab
@@ -77,6 +77,7 @@
 ##   * add new functions (boxon, boxoff...)
 ##   * rebuild help message
 
+## PKG_ADD mark_as_command legend
 function legend (varargin)
 
   ## Data type
@@ -127,7 +128,7 @@ function legend (varargin)
     nargin--;
   endif;
 
-  pos_leg = 0;
+  pos_leg = 1;
   
   ## Get the original plotting command
   
@@ -278,7 +279,7 @@ function legend (varargin)
       case -3
         gset key below;
       otherwise
-        warning ("inconnect pos");
+        warning ("incorrect pos");
     endswitch;
   elseif (isvector (pos_leg)) && (length (pos_leg) == 2) && \
         (all(isreal(pos_leg)))

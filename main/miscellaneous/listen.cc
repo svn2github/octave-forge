@@ -1,18 +1,12 @@
-#ifdef EBUG
-#define STATUS(x) do { std::cout << x << std::endl << std::flush; } while (0)
-#define DEBUG 1
-#else
-#define STATUS(x) do {} while (0)
-#define DEBUG 0
-#endif
+#define STATUS(x) do { if (debug) std::cout << x << std::endl << std::flush; } while (0)
 
 #include <iomanip>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
-#include <errno.h>
-#include <string.h>
+#include <cerrno>
+// #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -24,6 +18,16 @@
 #include <octave/parse.h>
 #include <octave/variables.h>
 #include <octave/unwind-prot.h>
+#include <octave/oct-syscalls.h>
+
+static bool debug = false;
+
+// XXX FIXME XXX --- surely this is part of the standard library?
+void
+lowercase (std::string& s)
+{
+  for (std::string::iterator i=s.begin(); i != s.end(); i++) *i = tolower(*i);
+}
 
 octave_value
 get_builtin_value (const std::string& nm)
@@ -94,7 +98,13 @@ static void sigchld_setup(void)
 }
 
 
-#if !DEBUG && !defined(__CYGWIN__)
+#if defined(__CYGWIN__)
+
+// Don't daemonize on cygwin just yet.
+inline void daemonize(void) {}
+
+#else
+
 static RETSIGTYPE
 sigterm_handler(int /* sig */)
 {
@@ -105,7 +115,9 @@ sigterm_handler(int /* sig */)
 static void
 daemonize(void)
 {
+  if (debug) return; /* Don't daemonize if debugging */
   if (fork()) exit(0);
+  std::cout << "Octave pid: " << octave_syscalls::getpid() << std::endl;
   signal(SIGTERM,sigterm_handler);
   signal(SIGQUIT,sigterm_handler);
 
@@ -113,8 +125,7 @@ daemonize(void)
   freopen("/dev/null", "w", stdout);
   freopen("/dev/null", "w", stderr);
 }
-#else
-inline void daemonize(void) {}
+
 #endif
 
 
@@ -146,10 +157,8 @@ static bool reads (const int channel, void * buf, int n)
   // STATUS("entering reads loop with size " << n);
   while (1) {
     int chunk = read(channel, buf, n);
-#if DEBUG
     if (chunk == 0) STATUS("read socket returned 0");
     if (chunk < 0) STATUS("read socket: " << strerror(errno));
-#endif
     if (chunk <= 0) return false;
     n -= chunk;
     // if (n == 0) STATUS("done reads loop");
@@ -163,10 +172,8 @@ static bool writes (const int channel, const void * buf, int n)
   // STATUS("entering writes loop");
   while (1) {
     int chunk = write(channel, buf, n);
-#if DEBUG
     if (chunk == 0) STATUS("write socket returned 0");
     if (chunk < 0) STATUS("write socket: " << strerror(errno));
-#endif
     if (chunk <= 0) return false;
     n -= chunk;
     // if (n == 0) STATUS("done writes loop");
@@ -271,35 +278,35 @@ process_commands(int channel)
 	// write the matrix contents
 	const double *v = m.data();                   // data
 	if (ok) ok = writes(channel,v,sizeof(double)*m.rows()*m.columns());
-#if DEBUG
 	if (ok)
 	  STATUS("sent " << m.rows()*m.columns());
 	else
 	  STATUS("failed " << m.rows()*m.columns());
-#endif
       }
       break;
       
     case 'x': // silently execute the command
       {
-#if DEBUG
-	if (len > 500) 
+	if (debug) 
 	  {
-	    // XXX FIXME XXX can we limit the maximum output width for a
-	    // string?  The setprecision() io manipulator doesn't do it.
-	    // In the meantime, a hack ...
-	    char t = buffer[400]; buffer[400] = '\0';
-	    STATUS("evaluating (" << len << ") " 
-		 << buffer << std::endl 
-		 << "..." << std::endl 
-		 << buffer+len-100);
-	    buffer[400] = t;
+	    if (len > 500) 
+	      {
+		// XXX FIXME XXX can we limit the maximum output width for a
+		// string?  The setprecision() io manipulator doesn't do it.
+		// In the meantime, a hack ...
+		char t = buffer[400]; buffer[400] = '\0';
+		STATUS("evaluating (" << len << ") " 
+		       << buffer << std::endl 
+		       << "..." << std::endl 
+		       << buffer+len-100);
+		buffer[400] = t;
+	      }
+	    else
+	      {
+		STATUS("evaluating (" << len << ") " << buffer);
+	      }
 	  }
-	else
-	  {
-	    STATUS("evaluating (" << len << ") " << buffer);
-	  }
-#endif
+
 	int parse_status = 0;
 	error_state = 0;
 	eval_string(buffer, true, parse_status, 0);
@@ -450,6 +457,10 @@ listen(port,host)\n\
    Listen for connections on the given port.  Normally only accepts\n\
    connections from localhost (127.0.0.1), but you can specify any\n\
    dot-separated host name.\n\
+listen(...,debug|nodebug)\n\
+   If debug, echo all commands sent across the connection.  If nodebug,\n\
+   detach the process and don't echo anything.  You will need to use\n\
+   kill directly to end the process. Nodebug is the default.\n\
 ")
 {
   install_builtin_function (Fsend, "send", "builtin send doc", false);
@@ -460,10 +471,9 @@ listen(port,host)\n\
   bool canfork = true;
 #endif
 
-
   octave_value_list ret;
   int nargin = args.length();
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1)
     {
       print_usage("listen");
       return ret;
@@ -471,6 +481,21 @@ listen(port,host)\n\
 
   int port = args(0).int_value();
   if (error_state) return ret;
+
+  if (nargin >= 2) {
+    std::string lastarg(args(nargin-1).string_value());
+    if (error_state) return ret;
+    lowercase(lastarg);
+    if (lastarg == "debug") {
+      debug = true;
+      nargin--;
+    } else if (lastarg == "nodebug") {
+      debug = false;
+      nargin--;
+    } else {
+      debug = false;
+    }
+  }
 
   struct in_addr localhost;
   struct in_addr hostid;
@@ -536,7 +561,14 @@ listen(port,host)\n\
     STATUS("trying to accept");
     if ((channel = accept(sockfd, (struct sockaddr *)&their_addr,
 			 &sin_size)) == -1) {
-      STATUS("failed to accept");
+      // XXX FIXME XXX
+      // Linux is returning "Interrupted system call" when the
+      // child terminates.  Until I figure out why, I can't use
+      // accept errors as a basis for breaking out of the listen
+      // loop, so instead print the octave PID so that I can kill
+      // it from another terminal.
+      STATUS("failed to accept"  << std::endl 
+	     << "Octave pid: " << octave_syscalls::getpid() );
       perror("accept");
 #if defined(__CYGWIN__) || defined(_sgi)
       break;
@@ -582,6 +614,7 @@ listen(port,host)\n\
   }
 
   STATUS("could not read commands; returning");
+  close(sockfd);
   unwind_protect::run_frame("Flisten");
   return ret;
 }

@@ -19,7 +19,7 @@ function i = zscore(i,DIM)
 % see also: SUMSKIPNAN, MEAN, STD, DETREND
 %
 % REFERENCE(S):
-% http://mathworld.wolfram.com/z-Score.html
+% [1] http://mathworld.wolfram.com/z-Score.html
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -41,15 +41,16 @@ function i = zscore(i,DIM)
 %	$Id$
 
 
-if nargin==1,
-        DIM=min(find(size(i)>1));
-        if isempty(DIM), DIM=1; end;
-end;
-
 if any(size(i)==0); return; end;
 
-[S,N,SSQ] = sumskipnan(i,DIM);		% sum
+if nargin < 2,
+	[S,N,SSQ] = sumskipnan(i);		% sum
+else
+	[S,N,SSQ] = sumskipnan(i,DIM);		% sum
+end;
+
 M = S./N;
 i = i - repmat(M,size(i)./size(S));		% remove mean
-i = i./repmat(sqrt((SSQ-real(S).*real(M)-imag(S).*imag(M))./max(N-1,0)),size(i)./size(S));	 % normalize by STD
+i = i.*repmat(sqrt((SSQ-real(S).*real(M)-imag(S).*imag(M)).\max(N-1,0)),size(i)./size(S));	 % normalize by STD
+
 

@@ -40,8 +40,10 @@ Open Source Initiative (www.opensource.org)
 #include <octave/cmd-edit.h>
 #include <octave/utils.h>
 #include <octave/variables.h>
+#ifdef CLASS_HAS_LOAD_SAVE
 #include <octave/ls-oct-ascii.h>
 #include <octave/byte-swap.h>
+#endif
 
 #ifdef NEED_OCTAVE_QUIT
 #define OCTAVE_QUIT do {} while (0)

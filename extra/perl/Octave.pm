@@ -10,8 +10,7 @@ $VERSION = '0.21';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
-use IO::File;
-use IPC::Open3;
+use IPC::Run qw(start);
 use IO::Select;
 use POSIX 'WNOHANG';
 use vars qw( $octave_object );
@@ -129,7 +128,7 @@ sub _validate
   my $switches= "-qfH";
   my $octave_interpreter_bin;
 
-  $octave_interpreter_bin= '/bin/octave-2.1.42-p4atlas.exe' # _EDITLINE_MARKER_
+  $octave_interpreter_bin= 'octave' # _EDITLINE_MARKER_
      unless $octave_object->{INTERP};
 
   $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
@@ -223,6 +222,23 @@ CODE
    return;
 }   
 
+# Old code in start_interpreter:  Using IO::File and IPC::Open3.
+# The issues were select doesn't work on Win32, and its quite
+# unreliable on *nix
+#
+#  my $Oin = new IO::File;
+#  my $Oout= new IO::File;
+#  my $Oerr= new IO::File;
+#  my $pid;
+#  eval {
+#     $pid= open3( $Oin , $Oout, $Oerr, $octave_object->{INTERP} );
+#     # set our priority lower than the kid, so that we don't read each
+#     # character. Experimentally, I've found 3 to be optimum on Linux 2.4.21
+#     setpriority 0,0, (getpriority 0,0)+3;
+#  };
+#  # ignore errors from setpriority if it's not available
+#  croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open3/i;
+
 sub start_interpreter
 {
    my $o = shift;
@@ -230,20 +246,14 @@ sub start_interpreter
    # check if interpreter already alive
    return if $octave_object->{OCTIN} and $octave_object->{OCTOUT};
 
-   my $Oin = new IO::File;
-   my $Oout= new IO::File;
-   my $Oerr= new IO::File;
+   my ($Oin, $Oout, $Oerr);
    my $pid;
    eval {
-      $pid= open3( $Oin , $Oout, $Oerr, $octave_object->{INTERP} );
-      # set our priority lower than the kid, so that we don't read each
-      # character. Experimentally, I've found 3 to be optimum on Linux 2.4.21
-      setpriority 0,0, (getpriority 0,0)+3;
+     $pid= start $octave_object->{INTERP}, \$Oin, \$Oout, \$Oerr
    };
-   # ignore errors from setpriority if it's not available
-   croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open3/i;
+   croak "Error starting octave interpreter: $@\n" if $@;
 
-   my $select= IO::Select->new($Oout, $Oerr);
+#  my $select= IO::Select->new($Oout, $Oerr);
 
    $octave_object->{octave_pid} = $pid;
    $octave_object->{OCTIN} = $Oin;
@@ -325,6 +335,7 @@ sub interpret
    my $Oin=    $octave_object->{OCTIN};
    my $Oerr=   $octave_object->{OCTERR};
    my $select= $octave_object->{SELECT};
+   my $pid   = $octave_object->{octave_pid};
 
    croak "octave interpreter not alive"  unless $Oin and $Oerr;
 
@@ -334,22 +345,29 @@ sub interpret
    local $SIG{PIPE}= \&reap_interpreter;
 
 #  print STDERR "INTERP: $cmd\n";
-   print $Oin "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
+   $Oin = "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
+#  $pid->pump() while length $Oin;
 
    my $input= '';
    my $marker_len= length( $marker )+1;
    while ( 1 ) {
-      for my $fh ( $select->can_read() ) {
-          if ($fh eq $Oerr) {
-              process_errors();
-          } else {
-              sysread $fh, (my $line), 16386;
-              $input.= $line;
-              # delay if we're reading nothing, not sure why select doesn't block
-              select undef, undef, undef, 0.5 unless $line;
-          }
-      }
-      last if $input && substr( $input, -$marker_len, -1) eq $marker;
+#     for my $fh ( $select->can_read() ) {
+#         if ($fh eq $Oerr) {
+#             process_errors();
+#         } else {
+#             sysread $fh, (my $line), 16386;
+#             $input.= $line;
+#             # delay if we're reading nothing, not sure why select doesn't block
+#             select undef, undef, undef, 0.5 unless $line;
+#         }
+#     }
+#     last if $input && substr( $input, -$marker_len, -1) eq $marker;
+
+      $pid->pump();
+
+      process_errors() if $Oerr;
+#     select undef, undef, undef, 0.5 unless $line;
+      last if substr( $Oout, -$marker_len, -1) eq $marker;
    }   
 
    # we need to leave octave blocked doing something,
@@ -1092,6 +1110,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.28  2005/03/07 20:20:45  aadler
+version accepts \d.\d\.cvs
+
 Revision 1.27  2004/10/11 13:15:48  aadler
 warning in $input testing
 

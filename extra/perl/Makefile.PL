@@ -22,7 +22,7 @@ foreach (@ARGV) {
 }   
 
 while (not $octave_validated) {
-   $octave_validated= 1 if `$octave -v` =~ /Octave, version ([2-9]\.\d+\.\d+)/;
+   $octave_validated= 1 if `$octave -v` =~ /Octave, version ([2-9]\.\d+\.(\d+|cvs))/;
    my $octave_version= $1;
 
    if ($octave_validated) {
@@ -62,6 +62,7 @@ while (not $octave_validated) {
 WriteMakefile(
     'NAME'         => 'Inline::Octave',
     'VERSION_FROM' => 'Octave.pm',
-    'PREREQ_PM'    => { Inline => 0.43 },
+    'PREREQ_PM'    => { 'Inline'   => 0.43,
+                        'IPC::Run' => 0.78 },
     'clean'        => {FILES => '_Inline/'},  
 );

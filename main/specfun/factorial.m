@@ -21,7 +21,7 @@ function x = factorial(n)
     error ("factorial: n be be a scalar or matrix of positive integers");
   endif
   if (isscalar (n))
-    x = prod(2:n)
+    x = prod(2:n);
   else
     n (find (n < 1)) = 1;
     m = max(n(:));

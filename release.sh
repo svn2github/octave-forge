@@ -23,10 +23,14 @@ TAG=R`date +%Y-%m-%d`
 ROOT=$PROJECT-`date +%Y.%m.%d`
 
 # tag the CVS tree with the revision number
-cvs rtag $TAG
+cvs rtag $TAG $PROJECT
 
 # extract the tree into a tagged directory
-cvs export -r $TAG $ROOT
+# prune empty directories.  Note that empty build
+# directories (e.g., main/audio/bin) will have
+# an empty file (e.g., main/audio/bin/.keepme) so
+# that they don't get pruned.
+cvs export -r $TAG -d $ROOT -P $PROJECT
 
 # generate configure script
 ( cd $ROOT ; ./autogen.h )

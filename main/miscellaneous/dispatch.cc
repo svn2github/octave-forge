@@ -89,14 +89,7 @@ public:
 
   void add (const std::string t, const std::string n) { tab[t] = n; }
   void clear (const std::string t) { tab.erase(t); }
-  void print (void) {
-    octave_stdout << "overloaded " << base.name() << std::endl;
-    for (Table::iterator it = tab.begin(); it != tab.end(); it++)
-      {
-	octave_stdout << base.name() << "(" << it->first << ",...)->" 
-	     << it->second << "(" << it->first << ",...)" << std::endl;
-      }
-  }
+  void print (std::ostream& os, bool pr_as_read=false) const;
 
 private:
 
@@ -121,10 +114,10 @@ octave_dispatch::octave_dispatch (symbol_record* sr)
   : octave_function (sr->name(), sr->help()), tab (), base() 
 {
   // Save the old definition
+  base.rename(sr->name());
   if (sr->is_defined()) {
     base.define(sr->def(),sr->type());
     base.document(sr->help());
-    // sr->push_context();
   }
 }
 
@@ -215,6 +208,17 @@ octave_dispatch::do_multi_index_op (int nargout, const octave_value_list& args)
   return fcn->do_multi_index_op (nargout, args);
 }
 
+void 
+octave_dispatch::print (std::ostream& os, bool pr_as_read) const
+{
+  octave_stdout << "Overloaded function " << base.name() << std::endl;
+  for (Table::const_iterator it = tab.begin(); it != tab.end(); it++)
+    {
+      octave_stdout << base.name() << "(" << it->first << ",...)->" 
+	     << it->second << "(" << it->first << ",...)" << std::endl;
+    }
+}
+
 DEFUN_DLD(dispatch, args, , "\
 dispatch('f','name','type')\n\
 \n\
@@ -259,6 +263,7 @@ List dispatch functions\n\
     {
       octave_dispatch::register_type ();
       type_loaded = true;
+      fbi_sym_tab->lookup("dispatch")->mark_as_static();
     }
 
   // find the base function in the symbol table, loading it if it
@@ -288,15 +293,16 @@ List dispatch functions\n\
       // Replace the definition in the symbol record with the dispatch object
       sr->unprotect();
       sr->define(octave_value(dispatch),symbol_record::BUILTIN_FUNCTION);
-      sr->document(sr->help()+"\nOverloaded function");
+      sr->document(sr->help()+"\n\nOverloaded function\n");
       sr->make_eternal(); // XXX FIXME XXX why??
+      sr->mark_as_static();
       sr->protect();
     }
   
   // clear/replace/extend the map with the new type-function pair
   const octave_dispatch& rep = (octave_dispatch&)(sr->def().get_rep());
   if (nargin == 1)
-    ((octave_dispatch&) rep) . print ();
+    ((octave_dispatch&) rep) . print (octave_stdout);
   else if (nargin == 2)
     // XXX FIXME XXX should we eliminate the dispatch function if
     // there are no more elements?
@@ -304,7 +310,7 @@ List dispatch functions\n\
     ((octave_dispatch&) rep) . clear (t);
   else {
     ((octave_dispatch&) rep) . add (t,n);
-    sr->document(sr->help()+" "+t+":"+n);
+    sr->document(sr->help()+"\n   "+n+"("+t+",...)");
   }
 
   return retval;

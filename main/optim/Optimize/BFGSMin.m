@@ -43,7 +43,7 @@
 # Input arguments:  
 #	func - (string) the function to minimize
 #	args - arguments, in a cell array.
-#	control - OPTIONAL 4x1 vector OR a string, e.g., "default"
+#	control - OPTIONAL 3x1 vector OR a string, e.g., "default"
 #		* 1st elem. controls maximum iterations
 #			scalar > 0 - max. iters
 #			or -1 for infinity (default)
@@ -56,8 +56,12 @@
 #				are all tested (default)
 #			0 = only function conv tested
 #
-#	OR, if you want defaults for control but want to set gradient,
-#	set control to a string, e.g., "defaults"
+#	OR
+#
+#	If you want defaults for control but want to set gradient
+#	(the following argument), set control to a string,
+#	e.g., "defaults". This is just for convenience, so that
+#	you don't have to remember the defaults.
 # 
 #	gradient - OPTIONAL: controls for analytic or numeric gradient
 #		* not provided, or not a string: use numeric gradient (default),
@@ -102,7 +106,7 @@ function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, g
 	if nargin > 2 
 		if !ischar(control);
 			if (rows(control) != 3)
-				error("\nBFGSMin: 3rd argument must be a 4x1 vector\n");
+				error("\nBFGSMin: 3rd argument (control) must be a 3x1 vector\n");
 			else;
 				max_iters = control(1,:);
 				if max_iters == -1, max_iters = inf; endif

@@ -33,6 +33,7 @@ extern "C" {
   extern const char *mexFunctionName;
 } ;
 
+#include <octave/config.h>
 #include <octave/oct.h>
 #include <octave/pager.h>
 #include <octave/f77-fcn.h>
@@ -97,8 +98,11 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 
 #endif /* defined(HAVE_OCTAVE_20) */
 
+#include <memory>
 #ifndef OCTAVE_LOCAL_BUFFER
-#define OCTAVE_LOCAL_BUFFER(T,v,n) T v[n]
+#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
+  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
+  T *buf = buf ## _auto_ptr.get ()
 #endif
 
 #if 0

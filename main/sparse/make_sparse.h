@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.15  2003/05/15 21:25:40  pkienzle
+OCTAVE_LOCAL_BUFFER now requires #include <memory>
+
 Revision 1.14  2003/03/05 15:31:53  pkienzle
 Backport to octave-2.1.36
 
@@ -127,8 +130,11 @@ DLD functions for sparse support in octave
 #include <octave/config.h>
 
 // ***** Support for older octave versions
+#include <memory>
 #ifndef OCTAVE_LOCAL_BUFFER
-#define OCTAVE_LOCAL_BUFFER(T,v,n) T v[n]
+#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
+  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
+  T *buf = buf ## _auto_ptr.get ()
 #endif
 
 #ifdef HAVE_SLLIST_H

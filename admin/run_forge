@@ -34,6 +34,7 @@ for f in FIXES main/* extra/* nonfree/*; do
 
 	# make sure we can find supporting binaries
 	if test -d "$f/bin"; then EXECPATH="$ROOT/$f/bin:$EXECPATH"; fi
+	if test -d "$f/scripts"; then EXECPATH="$ROOT/$f/scripts:$EXECPATH"; fi
 
 	# supporting libraries need to be available as well
 	check=`echo $f/*.dll`

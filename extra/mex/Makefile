@@ -58,7 +58,7 @@ endif
 	@if test -d $(bindir) ; then \
 	  echo installing mex/mex in $(bindir) ; \
 	  $(RM) $(bindir)/mex ; \
-	  $(INSTALL_PROGRAM) mex $(bindir)/mex ; \
+	  $(INSTALL_SCRIPT) mex $(bindir)/mex ; \
 	fi
 
 clean: ; $(RM) mex mex_* $(MEXLIB) *.o *.oct core octave-core *~

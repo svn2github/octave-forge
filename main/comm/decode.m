@@ -170,7 +170,7 @@ function [msg, err, ccode, cerr] = decode(code, n, k, typ, opt1, opt2)
       vecttyp = 1;
       ncodewords = len / n;
       code = reshape(code,n,ncodewords);
-      code = code'
+      code = code';
     elseif (n2 != n)
       error ("decode: coded message matrix must be n columns wide");
     endif

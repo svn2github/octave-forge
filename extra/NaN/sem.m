@@ -1,9 +1,10 @@
-function y=sem(x,DIM)
+function [y,M]=sem(x,DIM)
 % SEM calculates the standard error of the mean
 % 
-% y = SEM(x,DIM)
-%   calculates the variance in dimension DIM
+% [SE,M] = SEM(x [, DIM])
+%   calculates the standard error (SE) in dimension DIM
 %   the default DIM is the first non-single dimension
+%   M returns the mean. 
 %
 % DIM	dimension
 %	1: SEM of columns
@@ -32,9 +33,7 @@ function y=sem(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.17;	17 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 
 % check input arguments 
@@ -55,16 +54,8 @@ if ~DIM;
         if isempty(DIM), DIM=1; end;
 end;
 
-% actual calculation 
-[m,n] = sumskipnan(x,DIM);
-m = m./n;	% mean
-x = x-repmat(m,size(x)./size(m)); % remove mean
-y = sumskipnan(x.*conj(x),DIM); % summed square
-
-if 1; %flag_implicit_unbiased_estimation; 	% allways for SEM
-    n1 	= max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
-else
-    n1	= n;
+[Y,N,SSQ] = sumskipnan(x,DIM);
+y = sqrt((SSQ-Y.*Y./N)./(N.*max(N-1,0))); 
+if nargout>1,
+        M = Y./N;
 end;
-y = sqrt(y./(n.*n1));	% normalize
-

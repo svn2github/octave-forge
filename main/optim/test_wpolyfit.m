@@ -1,14 +1,52 @@
 1;
 
 function do_test(n,x,y,p,dp)
-  [myp,j,mydp] = wpolyfit(x,y,n);
-  [svdp,j,svddp] = svdfit(x,y,n);
+  [myp,mydp] = wpolyfit(x,y,n);
+  %[svdp,j,svddp] = svdfit(x,y,n);
   %myp = polyfit(x,y,10);
   disp('parameter  certified value  rel. error');
-  [p, myp, abs((myp-p)./p), svdp, abs((svdp-p)./p) ]
+  [myp, p, abs((myp-p)./p)] %, svdp, abs((svdp-p)./p) ]
   disp('p-error    certified value  rel. error');
-  [dp, mydp, abs((mydp - dp)./dp), svdp, abs((svddp - dp)./dp)]
+  [mydp, dp, abs((mydp - dp)./dp)] %, svdp, abs((svddp - dp)./dp)]
+  input('Press <Enter> to proceed to the next test');
 endfunction
+
+##          x         y          dy
+data = [0.0013852  0.2144023  0.0020470
+	0.0018469  0.2516856  0.0022868
+	0.0023087  0.3070443  0.0026362
+	0.0027704  0.3603186  0.0029670
+	0.0032322  0.4260864  0.0033705
+	0.0036939  0.4799956  0.0036983 ];
+x=data(:,1); y=data(:,2); dy=data(:,3);
+wpolyfit(x,y,dy,1);
+echo('on');
+% The uncertainties in these parameter estimates are much too large
+% given the uncertainty in the data.
+%
+% The fit error bars are estimated from sqrt(polyval(dp.^2,x.^2)),
+% which is just the result of propogating uncertainties using gaussian
+% statistics.  You can see that they more or less reflect the uncertainty
+% in p by generating a bunch of random lines using the p+randn(size(dp)).*dp.
+% About 68% of the lines should be passing through each blue error bar.
+echo('off');
+input('Press <Enter> to see some sample regression lines: ');
+t = [x(1), x(length(x))];
+[p,dp] = wpolyfit(x,y,dy,1);
+hold on; 
+for i=1:15, plot(t,polyval(p+randn(size(dp)).*dp,t),'-;;'); end
+errorbar(x,y,dy,"~r;;");
+errorbar(x,polyval(p,x),sqrt(polyval(dp.^2,x.^2)),"~b;;");
+hold off;
+echo('on');
+% So the problem is the estimate of the uncertainties in p. Looking at the
+% lines generated, it seems that the uncertainty in the slope is reasonable, 
+% but the uncertainty in the intercept is not.  The covariance matrix from
+% which the parameters are estimated has a condition number of 1e6, so perhaps
+% that explains the problem.
+echo('off');
+input('Press <Enter> to continue with the tests: ');
+
 
 ##Procedure:     Linear Least Squares Regression
 ##Reference:     Filippelli, A., NIST.
@@ -182,7 +220,7 @@ target = [ \
               0.732059160401003E-06    0.157817399981659E-09
              -0.316081871345029E-14    0.486652849992036E-16 ];                
 
-if 0
+if 1
   disp("Pontius, P., NIST");
   do_test(2, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
 endif
@@ -220,8 +258,8 @@ target = [ \
 ];
 
 
-if 0
-  "Oops, not a polynomial system; modify fitpoly to use linear expression"
+if 1
+  "Oops, not a polynomial system; need to use 'origin' parameter to wpolyfit"
   disp("Eberhardt, K., NIST");
   do_test(0, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
 endif
@@ -273,7 +311,7 @@ data = [\
            2613660    19
            3368421    20 ];
 
-if 0
+if 1
   disp("Wampler1");
   do_test(5, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
 endif
@@ -323,7 +361,7 @@ data = [ \
            51.16209   19
            63.00000   20 ];
 
-if 0
+if 1
   disp("Wampler2");
   do_test(5, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
 endif
@@ -376,7 +414,7 @@ data = [ \
           2002767.    18
           2611612.    19
           3369180.    20 ];
-if 0
+if 1
   disp("Wampler3");
   do_test(5, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
 endif
@@ -422,7 +460,7 @@ data = [\
             2408860   19
             3444321   20 ];
 
-if 0
+if 1
   disp("Wampler4");
   do_test(5, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
 endif
@@ -469,7 +507,7 @@ data = [ \
             22480719    18
            -17866340    19
             10958421    20 ];
-if 0
+if 1
   disp("Wampler5");
   do_test(5, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
 endif

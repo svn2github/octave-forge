@@ -63,6 +63,9 @@
 ## * go through the origin if requested
 ## * only return p,dp
 ## * tidy the output
+## * remove the need for flipud(p)
+## 2002-06-02 Paul Kienzle
+## * oops --- removed the need for flipud(p) but didn't remove flipud(p)
 
 function [p, dp] = wpolyfit (x, y, dy, n, origin)
 
@@ -92,11 +95,10 @@ function [p, dp] = wpolyfit (x, y, dy, n, origin)
     error ("wpolyfit: expected 'origin' but found %s", origin)
   endif
 
-  if (! (is_vector (x) && is_vector (y) && is_vector (dy) && \
-        all(size (x) == size (y)) && all(size (x) == size (dy))))
+  if ! ( is_vector (x) && is_vector (y) && all(size (x) == size (y)) )
     error ("wpolyfit: x and y must be vectors of the same size");
   endif
-  if ( !isempty(dy) && !(is_vector(dy) && all(size(y) == size(dy))) )
+  if !isempty(dy) && !(is_vector(dy) && all(size(y) == size(dy)))
     error ("wpolyfit: dy must be a vector the same length as y");
   endif
 
@@ -133,12 +135,12 @@ function [p, dp] = wpolyfit (x, y, dy, n, origin)
 
   compute_dp = nargout == 0 || nargout >= 2;
   if (compute_dp)
-    ## estimate sigma from the weighted data
-    sigmasq = sumsq(b - X*p)/(length(b)-length(p));
-    ## compute error estimate --- note that we shouldn't need the
-    ## abs() in here, but the if the matrix is very ill-conditioned
+    ## Calculate chisq from the weighted data and use that to
+    ## estimate error on the parameters.  We shouldn't need the
+    ## abs(diag), but the if the matrix is very ill-conditioned
     ## some of the diag entries come out negative. :-(
-    dp = flipud(sqrt(sigmasq*abs(diag(inv(X'*X)))));
+    chisq = sumsq(b - X*p)/(length(b)-length(p));
+    dp = sqrt(chisq*abs(diag(inv(X'*X))));
   endif
 
   if through_origin

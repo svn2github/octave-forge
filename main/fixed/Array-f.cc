@@ -71,11 +71,8 @@ template class Array2<FixedPointComplex>;
 template class MArray2<FixedPointComplex>;
 
 #ifndef HAVE_ND_ARRAYS
-template int cat_ra (Array<FixedPoint>& ra, const Array<FixedPoint>& ra_arg, 
-		     int dim, int idx, int move);
-template int cat_ra (Array<FixedPointComplex>& ra, 
-		     const Array<FixedPointComplex>& ra_arg,
-		     int dim, int idx, int move);
+INSTANTIATE_ARRAY_CAT (FixedPoint);
+INSTANTIATE_ARRAY_CAT (FixedPointComplex);
 
 template int assign (Array2<FixedPoint>&, const Array2<FixedPoint>&);
 template int assign (Array2<FixedPointComplex>&, const Array2<FixedPoint>&);

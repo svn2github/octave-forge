@@ -31,6 +31,9 @@ function [x_out,dx_out]=wsolve(A,y,dy)
   if nargin < 2, usage("[x dx] = wsolve(A,y[,dy])"); end
   if nargin < 3, dy = []; end
 
+  [nr,nc] = size(A);
+  if nc > nr, error("underdetermined system"); end
+
   ## apply weighting term, if it was given
   if prod(size(dy))==1
     A = A ./ dy;
@@ -58,40 +61,32 @@ function [x_out,dx_out]=wsolve(A,y,dy)
   ##
   ##    AP = QR, with P'P = Q'Q = I, and R upper triangular
   ##
-  ## Remembering that inv(XY) = inv(Y)inv(X) and (XY)' = Y'X', we
-  ## can compute inv(A) and inv(A'):
+  ## so 
   ##
-  ##    inv(A) = inv(QRP') = inv(P')inv(R)inv(Q) = P inv(R)inv(Q)
-  ##    inv(A') = inv(PR'Q') = inv(Q')inv(R')inv(P) = inv(Q')inv(R')P'
+  ##    A'A = PR'Q'QRP' = PR'RP'
   ##
-  ## Combining and simplifying:
+  ## and
   ##
-  ##    inv(A'A) = P inv(R) inv(Q) inv(Q') inv(R') P'
-  ##             = P inv(R) inv(Q'Q) inv(R') P'
-  ##             = P inv(R) inv(I) inv(R') P'
-  ##             = P inv(R) inv(R') P'
+  ##    inv(A'A) = inv(PR'RP') = inv(P')inv(R'R)inv(P) = P inv(R'R) P'
   ##
   ## For a permutation matrix P,
   ##
-  ##    diag(PAP') = P diag(A)
-  ##
-  ## and for R upper triangular,
-  ##
-  ##    inv(R') = inv(R)'
-  ##
-  ## so:
-  ##
-  ##    diag(inv(A'A)) = P diag(inv(R) inv(R)')
-  ##
-  ## Conveniently, for T upper triangular
-  ##
-  ##    diag(TT') = sumsq(T')'
+  ##    diag(PXP') = P diag(X)
   ##
   ## so
+  ##    diag(inv(A'A)) = diag(P inv(R'R) P') = P diag(inv(R'R))
   ##
-  ##    diag(inv(X'X)) = P sumsq(inv(R)')'
+  ## For R upper triangular, inv(R') = inv(R)' so inv(R'R) = inv(R)inv(R)'.
+  ## Conveniently, for X upper triangular, diag(XX') = sumsq(X')', so
+  ##
+  ##    diag(inv(A'A)) = P sumsq(inv(R)')'
   ## 
   ## This is both faster and more accurate than computing inv(A'A)
+  ## directly.
+  ##
+  ## One small problem:  if R is not square then inv(R) does not exist.
+  ## This happens when the system is underdetermined, but in that case
+  ## you shouldn't be using wsolve.
   if nargout > 1 || nargout == 0
     dx = sqrt(sumsq(inv(R),2));
     dx(P) = dx;

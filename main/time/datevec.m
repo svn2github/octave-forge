@@ -1,6 +1,6 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {V} datevec(date)
-## @deftypefnx {Function File} {[Y,M,D,h,m,s] =} datevec(date)
+## @deftypefn {Function File} {V =} datevec(date)
+## @deftypefnx {Function File} {[Y,M,D,h,m,s] =} datevec(date, P)
 ## Breaks the number of days since Jan 1, 0000 into a year-month-day
 ## hour-minute-second format. By this reckoning, Jan 1, 1970 is day
 ## number 719529.  The fractional portion of @code{date} corresponds to the
@@ -18,16 +18,17 @@
 ## For birthdates, you would want @code{P} to be current year - 99.  For
 ## appointments, you would want @code{P} to be current year.
 ##
-## Dates must be represented as mm/dd/yy or dd-mmm-yyyy.  Times must
-## be hh:mm:ss or hh:mm:ss PM, with seconds optional.  These correspond 
-## to datestr format codes 0, 1, 2, 3, 13, 14, 15, 16.
+## Dates must be represented as an integer date code or in a format
+## recognisable by datesplit as either a string, string array, cell, or
+## cell string array.
 ##
-## @seealso{date,clock,now,datestr,datenum,calendar,weekday} 
+## @seealso{date,clock,now,datestr,datenum,calendar,weekday,datesplit} 
 ## @end deftypefn
 
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
 ## Author: Paul Kienzle
 ## This program is granted to the public domain.
+## Modified-by: Bill Denney <bill@givebillmoney.com>
 
 function [Y,M,D,h,m,s] = datevec(date,P)
 
@@ -36,7 +37,8 @@ function [Y,M,D,h,m,s] = datevec(date,P)
   endif
   if nargin < 2, P = []; endif
 
-  if isstr(date)
+  if (isstr(date) || iscellstr(date))
+    ## handle strings
     if isempty(P)
       tm = localtime(time);
       P = tm.year+1900-50;
@@ -48,32 +50,43 @@ function [Y,M,D,h,m,s] = datevec(date,P)
 
     Y = h = m = s = zeros(rows(date),1);
     M = D = ones(size(Y));
-    error("datevec: doesn't handle strings yet");
+
+    for i = 1:size(date,1)
+      if (iscellstr(date))
+	thisdate = date{i};
+      else
+	thisdate = date(i,:);
+      endif
+      [Y(i) M(i) D(i) h(i) m(i) s(i)] = datesplit(date(i,:), P);
+    endfor
+  else
+    ## handle date numbers
+
+    ## Move day 0 from midnight -0001-12-31 to midnight 0001-3-1
+    z = floor(date) - 60; 
+    ## Calculate number of centuries; K1=0.25 is to avoid rounding problems.
+    a = floor((z-0.25)/36524.25);
+    ## Days within century;  K2=0.25 is to avoid rounding problems.
+    b = z - 0.25 + a - floor(a/4);
+    ## Calculate the year (year starts on March 1).
+    Y = floor(b/365.25);
+    ## Calculate day in year.
+    c = fix(b-floor(365.25*Y)) + 1;
+    ## Calculate month in year.
+    M = fix((5*c + 456)/153);
+    D = c - fix((153*M-457)/5);
+    ## Move to Jan 1 as start of year.
+    Y(M>12)++;
+    M(M>12)-=12;
+
+    ## Convert hour-minute-seconds
+    s = 86400*(date-floor(date));
+    h = floor(s/3600);
+    s = s - 3600*h;
+    m = floor(s/60);
+    s = s - 60*m;
   endif
 
-  ## Move day 0 from midnight -0001-12-31 to midnight 0001-3-1
-  z = floor(date) - 60; 
-  ## Calculate number of centuries; K1=0.25 is to avoid rounding problems.
-  a = floor((z-0.25)/36524.25);
-  ## Days within century;  K2=0.25 is to avoid rounding problems.
-  b = z - 0.25 + a - floor(a/4);
-  ## Calculate the year (year starts on March 1).
-  Y = floor(b/365.25);
-  ## Calculate day in year.
-  c = fix(b-floor(365.25*Y)) + 1;
-  ## Calculate month in year.
-  M = fix((5*c + 456)/153);
-  D = c - fix((153*M-457)/5);
-  ## Move to Jan 1 as start of year.
-  Y(M>12)++;
-  M(M>12)-=12;
-
-  ## Convert hour-minute-seconds
-  s = 86400*(date-floor(date));
-  h = floor(s/3600);
-  s = s - 3600*h;
-  m = floor(s/60);
-  s = s - 60*m;
   if nargout <= 1
     Y = [ Y(:), M(:), D(:), h(:), m(:), s(:) ];
   endif

@@ -2,7 +2,7 @@
 # dependencies between tsa and NaN by hand.
 include ../../Makeconf
 
-DEPENDS=flag_implicit_skip_nan.m flag_implicit_dimension.m sumskipnan.m covm.m
+DEPENDS=sumskipnan.m covm.m
 
 all:
 

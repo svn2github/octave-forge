@@ -119,9 +119,12 @@ VAR, STD and MEDIAN, respectively.
 Permits to implement useful modifications. 
 
 12) NORMPDF, NORMCDF, NORMINV
-fixes a bug when s=0.
-Matlab does not handle it correctly. 
-Moreover, the argument check was difficult. 
+In the Matlab statistics toolbox V 3.0, NORMPDF, NORMCDF and NORMINV give 
+incorrect results for SIGMA=0; A Similar problem was observed in Octave 
+with NORMAL_INV, NORMAL_PDF, and NORMALCDF. 
+
+The problem is fixed with this version. Furthermore, the check of the input 
+arguments is implemented simpler and easier in this versions. 
 
 
 

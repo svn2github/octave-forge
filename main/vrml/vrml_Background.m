@@ -31,7 +31,7 @@ function s = vrml_Background (varargin)
 hash.dummy = 0;
 
 
-if nargin, hash = leval ("setfield", varargin); end
+if nargin, hash = leval ("setfields", varargin); end
 ## hash = rmfield (hash, "dummy");
 
 tpl1 = struct (\

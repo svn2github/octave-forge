@@ -33,13 +33,6 @@
 ## ---------------------   uesd. Otherwise, the Nelder-Mean (see
 ##                         nelder_mead_min) method is used.
 ## 
-## 'df' , df      : Name of a function that returns the derivatives of f
-##                  in x : dfx = feval (df, x) where dfx is 1x(M*N). A
-##                  variable metric method (see bfgs) will be used.
-##
-## 'jac'          : Use [fx, dfx] = leval(f, args) to compute derivatives
-##                  and use a variable metric method (bfgs).
-##
 ## 'd2f', d2f     : Name of a function that returns the value of f, of its
 ##                  1st and 2nd derivatives : [fx,dfx,d2fx] = feval (d2f, x)
 ##                  where fx is a real number, dfx is 1x(M*N) and d2fx is
@@ -114,6 +107,16 @@
 ##
 function [x,v,nev,varargout] = minimize (f,args,varargin)
 
+## Oldies
+##
+## 'df' , df      : Name of a function that returns the derivatives of f
+##                  in x : dfx = feval (df, x) where dfx is 1x(M*N). A
+##                  variable metric method (see bfgs) will be used.
+##
+## 'jac'          : Use [fx, dfx] = leval(f, args) to compute derivatives
+##                  and use a variable metric method (bfgs).
+##
+
 
 # ####################################################################
 # Read the options ###################################################
@@ -124,7 +127,7 @@ op1 = "ftol utol dtol df d2f d2i order narg maxev isz";
 op0 = "verbose backend jac hess ihess ndiff" ;
 
 default = struct ("backend",0,"verbose",0,\
-		    "df","", "df","","d2f","","d2i","",  \
+		    "df","",  "df", "","d2f","","d2i","",  \
 		    "hess", 0,  "ihess", 0,  "jac", 0,"ndiff", 0,  \
 		    "ftol" ,nan, "utol",nan, "dtol", nan,\
 		    "order",nan, "narg",nan, "maxev",nan,\
@@ -166,6 +169,8 @@ ops = read_options (opls,\
 			 "order", "narg", "maxev",\
 			 "isz", "ndiff");
 
+if length (df), error ("Option 'df' doesn't exist any more. Sorry.\n");end
+if jac, error ("Option 'jac' doesn't exist any more. Sorry.\n");end
 
 				# Basic coherence checks #############
 
@@ -228,19 +233,19 @@ end
 
 if     length (d2i), method = "d2_min"; ctls.id2f = 1; op = 1; d2f = d2i;
 elseif length (d2f), method = "d2_min";
-elseif length (df) , method = "bfgs"  ; ctls.df  = df; op = 1;
-elseif jac         , method = "bfgs"  ; ctls.jac = 1 ; op = 1;
+### elseif length (df) , method = "bfgsmin"; ctls.df  = df; op = 1;
+### elseif jac         , method = "bfgsmin"; ctls.jac = 1 ; op = 1;
   ## else                 method = "nelder_mead_min";
   ## end
 				# Choose method because ndiff is passed ####
-elseif ndiff       , method = "bfgs"  ;
+elseif ndiff       , method = "bfgsmin";
 
 				# Choose method by specifying order ########
 elseif ! isnan (order)
 
   if     order == 0, method = "nelder_mead_min";
   elseif order == 1
-    method = "bfgs";
+    method = "bfgsmin";
 
   elseif order == 2
     if ! (length (d2f) || length (d2i))
@@ -266,7 +271,7 @@ if length (ws), warn (ws); end
 				# EOF More checks ##########################
 
 if     strcmp (method, "d2_min"), all_args = list (f, d2f, args);
-elseif strcmp (method, "bfgs"),   all_args = list (f, args);
+elseif strcmp (method, "bfgsmin"),all_args = list (f, args);
 else                              all_args = list (f, args);
 end
 				# Eventually add ctls to argument list
@@ -277,6 +282,15 @@ if ! backend			# Call the backend ###################
     [x,v,nev,h] = leval (method, all_args);
 				# Eventually return inverse of Hessian
     if nargout > 3, vr_val_cnt = 1; varargout{vr_val_cnt++} = h; end 
+  elseif strcmp (method, "bfgsmin")
+    nev = nan;
+    if is_list (args),tmp={};for i=1:length(args),tmp{i}=nth(args,i);end;args=tmp;end
+    if !iscell(args), args = {args}; end
+    if isnan (ftol), ftol = 1e-12; end # Use bfgsmin's defaults
+    if isnan (utol), utol = 1e-6; end
+    if isnan (dtol), dtol = 1e-5; end
+    if isnan (maxev), maxev = inf; end
+    [x, v, okcv] = bfgsmin (f, args, {maxev,verbose,1,narg},{ftol,utol,dtol});
   else
     [x,v,nev] = leval (method, all_args);
   end

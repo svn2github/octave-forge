@@ -120,29 +120,30 @@ end
 
 ## Run, w/ differential, just to make sure ###########################
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"df","dff");
 
-cnt++;
-if max (abs (xlev-y0)) > 100*sqrt (eps)
-  if verbose
-    prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
-  end
-  ok = 0;
-elseif verbose,  prn ("ok %i\n",cnt);
-end
+# [xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"df","dff");
+
+# cnt++;
+# if max (abs (xlev-y0)) > 100*sqrt (eps)
+#   if verbose
+#     prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
+#   end
+#   ok = 0;
+# elseif verbose,  prn ("ok %i\n",cnt);
+# en
 
 ## Run, w/ differential returned by function ('jac' option) ##########
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("d2ff",list (x0,y0,1),"jac");
+# [xlev,vlev,nlev] = minimize ("d2ff",list (x0,y0,1),"jac");
 
-cnt++;
-if max (abs (xlev-y0)) > 100*sqrt (eps)
-  if verbose
-    prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
-  end
-  ok = 0;
-elseif verbose,  prn ("ok %i\n",cnt);
-end
+# cnt++;
+# if max (abs (xlev-y0)) > 100*sqrt (eps)
+#   if verbose
+#     prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
+#   end
+#   ok = 0;
+# elseif verbose,  prn ("ok %i\n",cnt);
+# end
 
 ## Run, w/ 2nd differential, just to make sure #######################
 ## Minimum wrt 'x' is y0
@@ -222,19 +223,20 @@ if max (abs (xlev-y0)) > 100*sqrt (eps)
 elseif verbose,  prn ("ok %i\n",cnt);
 end
 
-## See what 'backend' gives in that last case ########################
-[method,ctl] = minimize ("ff",list (x0,y0,1),"order",1,"backend");
+# ## See what 'backend' gives in that last case ########################
+# [method,ctl] = minimize ("ff",list (x0,y0,1),"order",1,"backend");
 
-cnt++;
-if ! strcmp (method,"bfgs")
-  if verbose
-    prn ("Wrong method '%s' != 'bfgs' was chosen\n", method);
-  end
-  ok = 0;
-elseif verbose,  prn ("ok %i\n",cnt);
-end
+# cnt++;
+# if ! strcmp (method,"bfgsmin")
+#   if verbose
+#     prn ("Wrong method '%s' != 'bfgsmin' was chosen\n", method);
+#   end
+#   ok = 0;
+# elseif verbose,  prn ("ok %i\n",cnt);
+# end
 
-[xle2,vle2,nle2] = feval (method, "ff",list (x0,y0,1), ctl);
+## [xle2,vle2,nle2] = feval (method, "ff",list (x0,y0,1), ctl);
+[xle2,vle2,nle2] = minimize ("ff",list (x0,y0,1),"order",1);
 cnt++;
 if max (abs (xlev-xle2)) > 100*eps
   if verbose

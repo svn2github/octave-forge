@@ -30,7 +30,7 @@
 ##
 ## You should also do:
 ## 	./cvs-tree > afunclist.html
-## 	scp afunclist.html octave.sf.net:/home/groups/o/oc/octave/htdocs
+## 	scp afunclist.html $OFHOME
 ##
 ##      admin/make_index
 ##      tar czf index.tar.gz index
@@ -39,7 +39,7 @@
 ##      cd /home/groups/o/oc/octave/htdocs
 ##      rm -rf index
 ##      tar xzf index.tar.gz
-##      rm index.tar.gz
+##	chmod -R g+w index
 
 # base name of the project
 PROJECT=octave-forge

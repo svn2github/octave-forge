@@ -450,9 +450,37 @@ sparse_index_twoidx ( SuperMatrix X,
    return B;                          
 } // sparse_index_twoidx (
 
-// indexing operations
+
 octave_value_list
-octave_complex_sparse::do_multi_index_op (int, const octave_value_list& idx) 
+octave_complex_sparse::subsref( const std::string type,
+                        const SLList<octave_value_list>& idx,
+                        int nargout)
+{
+// octave_value retval;
+   octave_value_list retval;
+   switch (type[0]) {
+     case '(':
+       retval = do_index_op (idx.front ());
+       break;
+
+     case '{':
+     case '.':
+     {
+       std::string nm = type_name ();
+       error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+     }
+     break;
+
+     default:
+       panic_impossible ();
+   }
+
+// return retval.next_subsref (type, idx, nargout);
+   return retval;
+}
+
+octave_value
+octave_complex_sparse::do_index_op ( const octave_value_list& idx) 
 {
    DEBUGMSG("complex_sparse - index op");
    octave_value retval;
@@ -1339,6 +1367,10 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.7  2002/11/05 15:07:33  aadler
+ * fixed for 2.1.39 -
+ * TODO: fix complex index ops
+ *
  * Revision 1.6  2002/11/05 06:03:25  pkienzle
  * remove inline and parameter initialization from external function implementation
  *

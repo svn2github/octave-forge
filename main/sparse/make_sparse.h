@@ -19,6 +19,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.8  2002/11/05 15:07:34  aadler
+fixed for 2.1.39 -
+TODO: fix complex index ops
+
 Revision 1.7  2002/03/01 01:49:25  aadler
 added namespace std to work with gcc3
 
@@ -175,12 +179,14 @@ public:
    octave_value hermitian (void) const ;
    octave_value transpose (void) const ;
 
-#if 0
    octave_value extract (int r1, int c1, int r2, int c2) const ;
-   octave_value_list do_multi_index_op (int, const octave_value_list& idx);
-
-   
+#if 0
+   octave_value_list subsref (const std::string type,
+                              const SLList<octave_value_list>& idx,
+                              int nargout);
 #endif
+   octave_value do_index_op ( const octave_value_list& idx);
+   
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 
    type_conv_fcn numeric_conversion_function (void) const;
@@ -235,7 +241,14 @@ public:
    octave_value transpose (void) const ;
 
    octave_value extract (int r1, int c1, int r2, int c2) const ;
-   octave_value_list do_multi_index_op (int, const octave_value_list& idx);
+   octave_value_list subsref (const std::string type,
+                              const SLList<octave_value_list>& idx,
+                              int nargout);
+#if 0
+   octave_value subsref( const std::string type,
+                         const SLList<octave_value_list>& idx);
+#endif
+   octave_value do_index_op ( const octave_value_list& idx);
 
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 

@@ -64,6 +64,15 @@ if test -n "`cat $source/PKG_ADD.t`" ; then
 else
   rm -f $source/PKG_ADD.t
 fi
+# PKG_ADD for alternatives
+if test -d "$source/alternatives" ; then
+    $MKPKGADD $source/alternatives > $source/alternatives/PKG_ADD.t
+    if test -n "`cat $source/alternatives/PKG_ADD.t`" ; then
+        mv $source/alternatives/PKG_ADD.t $altmpath/PKG_ADD
+    else
+        rm -f $source/alternatives/PKG_ADD.t
+    fi
+fi
 
 # grab the data files, skipping the CVS directory
 files=`echo $source/data/* | sed -e "s/[^ ]*CVS//"`

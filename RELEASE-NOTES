@@ -1,10 +1,11 @@
-CVS as of 2002-09-19
+CVS as of 2002-11-26
 
 Now requires octave-2.1.38 to work correctly.  Some functions may work
 with older versions of octave.
 
 New functions
 
+	* general/ndims: compatibility function
         * image/imginfo: determines size of image using 'convert'
 	* image/colfilt: image block filtering function
 	* image/im{rotate,translate,shear}: image transformations
@@ -12,8 +13,11 @@ New functions
         * miscellaneous/slurp_file: loads a file into a string
         * miscellaneous/{rotv,rotparams}: parameterize 3D rotation matrices
 	* plot/contour.f: filled contours
-	* sparse/sprand: random sparse matrix
+	* sparse/{sprand,spdiags,issparse}: sparse functions
+	* specfun/lambertw: Lambert's W function: x=w(x)*exp(w(x))
+	* specfun/betaln: log beta
 	* splines/pchip: Piecewise Cubic Hermitian Interpolating Polynomial
+	* statistics/{boxplot,scatter}: statistical plots
 	* symbolic/{cheb,chebwin}: Dolph-Chebyshev windows
         * vrml/vmesh: 3D visualization of a surface
         * vrml/*: represent and show 3D objects as VRML code (needs FreeWRL)
@@ -57,15 +61,14 @@ Internal changes
 
 	* extra/symband: eigenvector bug removed
 	* io/dlmread: returned matrix was transposed
-	* general/rat: use 1/0 for infinity
+	* general/rat: display 1/0 for infinity
 	* plot/ginput: m-file version based on grab.cc
 	* plot/legend: give gnuplot time to respond to parameter request
-	* signal/buttord: parser error
+	* signal/{buttord,fir1}: bug fixes
 	* sparse/spy: prettier graph
-	* symbolic/*: incorporate octave_sym functionality in octave_ex class
-	* *: don't use cout/cerr from *.cc functions
-	* *: use varargin rather than ...
-	* *: use \n\ for multiline comments
+	* gcc 3.2 updates
+	* octave 2.1.40 updates
+	* remove functions and fixes that are now in octave
 
 Administration
 

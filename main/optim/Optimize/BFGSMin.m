@@ -19,15 +19,22 @@
 #============================ BFGSMin.m =====================================
 # Minimize a function of the form 
 #
-#	value = f(args)
+#	Value = f(args)
 #
 # or
 #
-#	[value, gradient] = f(args)
+#	ValueGradient = f(args)
 #
-# where args is a cell array.
+# where 
 #
-# Minimization is with respect to the FIRST element of args.
+#	"args" is a cell array, minimization is w.r.t. FIRST element
+#	"Value" is the scalar value of f
+#	"ValueGradient" = {value, gradient} is a cell array
+#		containing the value and the gradient of f.
+#
+# That is, your function can either return a scalar value,
+# or it can return the value and the gradient vector together
+# in a cell array.
 #
 # Brief summary of syntax follows, for a more extensive example,
 # that shows how to write objective functions, see the file ExampleBFGSMin.m
@@ -35,15 +42,15 @@
 #
 # Calling syntax:
 #
-#	[theta, obj_value, iters, convergence] = BFGSMin(func, args, control, gradient)
+#	[theta, obj_value, iters, convergence] = BFGSMin(func, args, control)
 #
-# 	NOTE: the last two arguments are optional
+# 	NOTE: the last argument is optional
 #
 #
 # Input arguments:  
 #	func - (string) the function to minimize
 #	args - arguments, in a cell array.
-#	control - OPTIONAL 3x1 vector OR a string, e.g., "default"
+#	control - OPTIONAL 3x1 vector
 #		* 1st elem. controls maximum iterations
 #			scalar > 0 - max. iters
 #			or -1 for infinity (default)
@@ -56,23 +63,6 @@
 #				are all tested (default)
 #			0 = only function conv tested
 #
-#	OR
-#
-#	If you want defaults for control but want to set gradient
-#	(the following argument), set control to a string,
-#	e.g., "defaults". This is just for convenience, so that
-#	you don't have to remember the defaults.
-# 
-#	gradient - OPTIONAL: controls for analytic or numeric gradient
-#		* not provided, or not a string: use numeric gradient (default),
-#			function can be of form
-#				value = f(args)
-# 			OR
-#				[value, gradient] = f(args)
-#			but numeric gradient will be used
-#		* any string - e.g., "yes" - function provides gradient, e.g.,
-#			[value, gradient] = f(args)
-#
 # Outputs:
 #	theta - the minimizer
 # 	obj_value - the minimized funtion value
@@ -82,7 +72,7 @@
 function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, gradient_type)
 	
 	# Check number of args
-	if (nargin > 4) error("\nBFGSMin: you have provided more than 4 arguments\n"); endif
+	if (nargin > 3) error("\nBFGSMin: you have provided more than 3 arguments\n"); endif
 	
 	# Check types of required arguments
 	if !ischar(func) error("\nBFGSMin: first argument must be a string that gives name of objective function\n"); endif
@@ -99,28 +89,21 @@ function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, g
 		max_iters = inf;
 		convergence = -1; # if this doesn't change, it means that maxiters were exceeded
 		verbosity = 0; 
-		numeric_gradient = 1;
 
 	# Now use options that are user-provided
 	# Control verbosity, max iterations, and arg wrt which we minimize (optional)
 	if nargin > 2 
-		if !ischar(control);
-			if (rows(control) != 3)
-				error("\nBFGSMin: 3rd argument (control) must be a 3x1 vector\n");
-			else;
-				max_iters = control(1,:);
-				if max_iters == -1, max_iters = inf; endif
-				verbosity = control(2,:);
-				criterion = control(3,:);
-			endif	
-		endif
+		if !isvector(control) error("\nBFGSMin: 3rd argument must be a vector\n"); endif	
+		control = control(:);		
+		if (rows(control) != 3)
+			error("\nBFGSMin: 3rd argument must be a 3x1 vector\n");
+		else
+			max_iters = control(1,:);
+			if max_iters == -1, max_iters = inf; endif
+			verbosity = control(2,:);
+			criterion = control(3,:);
+		endif	
 	endif	
-
-	# Check if analytic gradient is provided (optional - default is to use numeric)	
-	if nargin > 3
-		numeric_gradient = !ischar(gradient_type);
-	numeric_gradient
-	endif
 
 	# initialize things
 	theta = args{1};
@@ -128,11 +111,15 @@ function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, g
   	H = eye (prod (sz = size (theta)));
 
 	# Initial gradient and obj_value
-	if numeric_gradient
-		last_obj_value = feval(func, args); 
+	temp = feval(func, args);
+	if isscalar(temp)
+		numeric_gradient = 1; # remember for future iterations
+		last_obj_value = temp; 
 		g = NumGradient(func, args);
 	else
-		[last_obj_value, g] = feval(func, args);
+		numeric_gradient = 0;
+		last_obj_value = temp{1};
+		g = temp{2};
 	endif		
 	
 	g = g(:); # make sure it's a column vector
@@ -208,7 +195,8 @@ function [theta, obj_value, iters, convergence] = BFGSMin(func, args, control, g
 		if numeric_gradient
 			g_new = NumGradient(func, args);
 		else
-			[dummy, g_new] = feval(func, args);
+			temp = feval(func, args);
+			g_new = temp{2};
 		endif		
 
  		g_new = g_new(:);

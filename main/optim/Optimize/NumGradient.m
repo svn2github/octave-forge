@@ -24,6 +24,8 @@
 #
 # * Allows diff. of vector-valued function
 # * Uses systematic finite difference
+#
+# See ExampleNumGradient.m
 
 function derivative = NumGradient(f, args)
 
@@ -33,7 +35,8 @@ function derivative = NumGradient(f, args)
     k = rows(parameter);
 
 	obj_value = feval(f, args);
-
+	if iscell(obj_value) obj_value = obj_value{1}; endif
+	
 	n = rows(obj_value);
     derivative = zeros(n, k);
 
@@ -46,12 +49,14 @@ function derivative = NumGradient(f, args)
 		delta_right = d - p;
 		args{1} = parameter;
    	  	obj_right = feval(f, args);
-	 
-  	  	# left size
+		if iscell(obj_right) obj_right = obj_right{1}; endif
+	
+	  	# left size
 		parameter(i) = d = p - delta;
 		delta_left = p - d;
 		args{1} = parameter;
 	  	obj_left = feval(f, args);
+		if iscell(obj_left) obj_left = obj_left{1}; endif
 	
 		parameter(i) = p;  # restore original parameter 
 

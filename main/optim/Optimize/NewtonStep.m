@@ -42,8 +42,10 @@ function [a, obj] = NewtonStep(f, dx, args)
 	
 	gradient = 1;
 	evaluations = 0;
-	obj_0 = obj = feval(f, args);
-		
+	obj = feval(f, args);
+	if iscell(obj) obj = obj{1}; endif
+	obj_0 = obj;
+	
 	delta = 0.001; # experimentation show that this is a good choice
 	
 	x_right = x + delta*dx;
@@ -51,8 +53,10 @@ function [a, obj] = NewtonStep(f, dx, args)
 	
 	args{1} = x_right;
 	obj_right = feval(f, args);
+	if iscell(obj_right) obj_right = obj_right{1}; endif
 	args{1} = x_left;
 	obj_left = feval(f, args);
+	if iscell(obj_left) obj_left = obj_left{1}; endif
 
   	gradient = (obj_right - obj_left) / (2*delta);  # take central difference
   	hessian = (obj_right - 2*obj + obj_left) / (delta^2);	
@@ -60,10 +64,13 @@ function [a, obj] = NewtonStep(f, dx, args)
 	if hessian <= eps, hessian = 1; endif # avoid div by zero
 
 	a = - gradient/hessian;  # hessian inverse gradient: the Newton step
-
+	test = a < 5;
+	a = a*test + 5*(1-test); # Let's avoid extreme steps that might cause crashes
 	# check that this is improvement
 	args{1} = x+a*dx;
 	obj = feval(f, args);
+	if iscell(obj) obj = obj{1}; endif
+
 	# if not, fall back to bisection
 	if ((obj > obj_0) || isnan(obj))
 		[a, obj] = BisectionStep(f, dx, args_in);

@@ -18,7 +18,7 @@
  
 #============================ BisectionStep =====================================
 #
-# this is for use by BFGSMin
+# this is used by BFGSMin
 #
 # Uses bisection to find a stepsize that leads to a decrease, then
 # continues until no further improvement
@@ -26,15 +26,16 @@
 # 13/01/2004
 #
 # usage:
-# 		[a, obj_value] = BisectionStep(f, dx, args)
+#
+# 	[a, obj_value] = BisectionStep(f, dx, args)
+#
 # inputs: 
-#		f: the objective function
-# 		dx: the direction
-# 		args: the arguments of the function, in a cell array.
-#			The first argument is the one w.r.t.
-#			which we are minimizing.
-
-
+#
+#	f: the objective function
+# 	dx: the direction
+# 	args: the arguments of the function, in a cell array.
+#		The first argument is the one w.r.t.
+#		which we are minimizing.
 
 function [a, obj] = BisectionStep(f, dx, args)
 
@@ -43,12 +44,16 @@ function [a, obj] = BisectionStep(f, dx, args)
 	args_in = args;
 
 	obj_0 = feval(f, args);
+	if iscell(obj_0) obj_0 = obj_0{1}; endif
+
 	a = 1;
 
 	# this first loop goes until an improvement is found
   	while a > 2*eps # limit iterations
 		args{1} = x + a*dx;
 		obj = feval(f, args);
+		if iscell(obj) obj = obj{1}; endif
+
 		if (obj > obj_0) || isnan(obj)  # reduce stepsize if worse, or if function can't be evaluated
 			a = 0.5 * a;
 		else
@@ -63,6 +68,7 @@ function [a, obj] = BisectionStep(f, dx, args)
 	   	a = 0.5*a; 
 		args{1} = x + a*dx;
 		obj = feval(f, args);
+		if iscell(obj) obj = obj{1}; endif
 	
 		# if improved, record new best and try another step
 		if ((obj < obj_0) & !isnan(obj))

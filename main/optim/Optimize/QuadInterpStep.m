@@ -42,17 +42,20 @@ function [a, obj] = QuadInterpStep(f, dx, args)
 
 	evaluations = 0;
 	obj_0 = feval(f, args);
-	
+	if iscell(obj_0) obj_0 = obj_0{1}; endif
  	left = 0.1;
 	right = 3;
 	center = 1;
 
 	args{1} = x + left*dx;
 	obj_left = feval(f, args);
+	if iscell(obj_left) obj_left = obj_left{1}; endif
 	args{1} = x + center*dx;
 	obj_center = feval(f, args);
+	if iscell(obj_center) obj_center = obj_center{1}; endif
 	args{1} = x + right*dx;
 	obj_right = feval(f, args);
+	if iscell(obj_right) obj_right = obj_right{1}; endif
 
 	# Best is on L extreme
 	if (obj_left < obj_center) & (obj_left < obj_right)
@@ -69,6 +72,8 @@ function [a, obj] = QuadInterpStep(f, dx, args)
 		a = 0.5 * a / (obj_left*(center - right) + obj_center*(right - left) + obj_right*(left - center));	
 		args{1} = x + a*dx;
 		obj = feval(f, args);
+		if iscell(obj) obj = obj{1}; endif
+
 	endif
 
 	# fall back to bisection if this is not improvement or there is some sort of crash

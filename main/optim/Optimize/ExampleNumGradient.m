@@ -21,6 +21,7 @@
 # The Rosenbrock function - used to define objective functions
 # Function value and gradient vector of the rosenbrock function
 # The minimizer is x = [1; 1;...;1], and the minimized value is 0.
+1;
 function [obj_value, gradient] = rosenbrock(x);
 	dimension = length(x);
 	obj_value = sum(100*(x(2:dimension)-x(1:dimension-1).^2).^2 + (1-x(1:dimension-1)).^2);
@@ -34,16 +35,16 @@ endfunction
 # The example objective functions
 
 # example obj. fn. - this shows how to use analytic gradient
-function [obj_value, grad] = objective(args)
+function output = objective(args)
 	theta = args{1};
 	[obj_value, grad] = rosenbrock(theta);	
+	output = {obj_value, grad};
 endfunction 
 
 # example obj. fn. - this shows how to use numerical grafient
-function [obj_value, grad] = objective2(args)
+function obj_value = objective2(args)
 	theta = args{1};
 	obj_value = rosenbrock(theta);	
-	grad = "na";
 endfunction 
 
 # Here's how to get the numeric gradient
@@ -51,7 +52,8 @@ args = {randn(10,1)};
 ngradient = NumGradient("objective", args);
 
 # Analytic gradient, to verify
-[o, agradient] = objective(args);
+output = objective(args);
+agradient = output{2};
 ngradient = ngradient';
 printf("\nCheck NumGradient\n");
 printf("\nDerivatives of the Rosenbrock function, random start values\n\n");

@@ -25,11 +25,11 @@
 # The argument w.r.t. which we minimize must be the FIRST argument
 # in the cell array that is the argument to BFGSMin.
 
-1;
-
 # Function value and gradient vector of the rosenbrock function
 # The minimizer is at the vector (1,1,..,1),
 # and the minimized value is 0.
+1;
+
 function [obj_value, gradient] = rosenbrock(x);
 	dimension = length(x);
 	obj_value = sum(100*(x(2:dimension)-x(1:dimension-1).^2).^2 + (1-x(1:dimension-1)).^2);
@@ -43,11 +43,12 @@ endfunction
 # The example objective functions
 
 # example obj. fn. - this shows how to use analytic gradient
-function [obj_value, grad] = objective(args)
+function output = objective(args)
 	theta = args{1};
 	location = args{2};
 	x = theta - location + ones(rows(theta),1); # move minimizer to "location"
 	[obj_value, grad] = rosenbrock(x);	
+	output = {obj_value, grad};
 endfunction 
 
 # example obj. fn. - this shows how to use numerical grafient
@@ -76,7 +77,7 @@ printf("If this was successful, the minimizer should be\n");
 printf("a vector of even steps from 0 to 5\n\n");
 
 printf("ANALYTIC GRADIENT\n");
-[theta, obj_value, iterations, convergence] = BFGSMin("objective", args, control, "analytic");
+[theta, obj_value, iterations, convergence] = BFGSMin("objective", args, control);
 t = cputime() - t;
 printf("Elapsed time = %f\n",t);
 

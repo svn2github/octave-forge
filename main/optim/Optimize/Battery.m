@@ -28,7 +28,7 @@ function theta = Battery(func, args, startvals, maxiters)
 [k,trials] = size(startvals);
 bestobj = inf;
 besttheta = zeros(k,1);
-bfgscontrol = [maxiters;0;1];
+bfgscontrol = [maxiters;0;0];
 # now try the supplied start values, and optionally the random start values
 for i = 1:trials
 	args{1} = startvals(:,i);

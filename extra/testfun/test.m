@@ -254,7 +254,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __ret2 = [];
     else
       fputs(__fid, [__signal_empty, __name, " does not exist in path\n" ]);
-      if (nargout > 0) __ret1 = 0; endif
+      if (nargout > 0) __ret1 = __ret2 = 0; endif
     endif
     return;
   endif
@@ -267,7 +267,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __ret2 = [];
     else
       fputs(__fid, [ __signal_empty, __file, " has no tests available\n" ]);
-      if (nargout > 0) __ret1 = 0; endif
+      if (nargout > 0) __ret1 = __ret2 = 0; endif
     endif
     return;
   else
@@ -470,7 +470,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __all_success = 0;
       	## stop after one error if not in batch mode
       if (!__batch)
-    	if (nargout > 0) __ret1 = 0; endif
+    	if (nargout > 0) __ret1 = __ret2 = 0; endif
       	return;
       endif
     endif
@@ -503,8 +503,8 @@ endfunction
 %!demo  toeplitz ([1,2,3,4],[1,5,6])
 
 ### example from kron
-%!error kron
-%!error kron(1,2,3)
+%!#error kron  # XXX FIXME XXX suppress these until we can handle output
+%!#error kron(1,2,3)
 %!test assert (isempty (kron ([], rand(3, 4))))
 %!test assert (isempty (kron (rand (3, 4), [])))
 %!test assert (isempty (kron ([], [])))

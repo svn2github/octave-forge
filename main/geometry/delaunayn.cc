@@ -57,7 +57,7 @@ The return matrix @var{T} has the size [m, dim+1]. It contains for\n\
 each row a set of indices to the points, which describes a simplex of\n\
 dimension dim.  The 3d simplex is a tetrahedron.\n\n\
 If a second optional argument is given, it must be a string containing\n\
-extra options for the underlying qhull command.  In particular, \"QJ\"\n\
+extra options for the underlying qhull command.  In particular, \"Qt\"\n\
 may be useful for joggling the input to cope with non-simplicial cases.\n\
 (See the Qhull documentation for the available options.) @end deftypefn")
 

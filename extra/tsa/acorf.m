@@ -29,10 +29,8 @@ function [AUTOCOV,stderr,lpq,qpval] = acorf(Z,N);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 %  J.S. Bendat and A.G.Persol "Random Data: Analysis and Measurement procedures", Wiley, 1986.
 
-%       Version 2.75
-%       31 Oct 2001
-%	Copyright (c) 1998-2001 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%       Version 2.99a       Date: 13 Jul 2002
+%	Copyright (c) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>		
 
 % calculating lpq, stderr, qpval from 
 % suggested by Philip Gray, University of New South Wales, 
@@ -67,6 +65,7 @@ if nargout > 1
         for k=1:N,
                 cum = cum+AUTOCOV(:,k).*conj(AUTOCOV(:,k))./(NC-k);
                 lpq(:,k) = NC.*(NC+2).*cum;                 % Ljung box Q for k lags
-                qpval(:,k) = 1 - chi2cdf(lpq(:,k),k);	% p-value of Q stat
+                %qpval(:,k) = 1 - chi2cdf(lpq(:,k),k);	% p-value of Q stat
+                qpval(:,k) = 1 - gammainc(lpq(:,k)/2,k/2);	% replace chi2cdf by gammainc
         end;
 end;

@@ -53,9 +53,9 @@ cvs2cl.pl --fsf --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
 cat <<EOF > main/miscellaneous/OCTAVE_FORGE_VERSION.m
-## OCTAVE_FORGE_VERSION The release date of octave-forge, as YYYY.MM.DD
+## OCTAVE_FORGE_VERSION The release date of octave-forge, as integer YYYYMMDD
 function v=OCTAVE_FORGE_VERSION
-  v="`date +%Y.%m.%d`";
+  v=`date +%Y%m%d`;
 endfunction
 EOF
 cvs commit -m '$TAG release' ChangeLog main/miscellaneous/OCTAVE_FORGE_VERSION.m

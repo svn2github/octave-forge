@@ -1,4 +1,4 @@
-CVS as of 2002-11-26
+CVS as of 2002-11-27
 
 Now requires octave-2.1.38 to work correctly.  Some functions may work
 with older versions of octave.
@@ -41,6 +41,7 @@ Changed interfaces
 	* optim/wpolyfit: don't return yf
 	* optim/wpolyfit: return row vectors for compatibility with polyfit
 	* signal/nellip: replaced by ellip, ellipord
+	* OCTAVE_FORGE_VERSION is now an ordered integer: yyyymmdd
 
 extra/tsa
 

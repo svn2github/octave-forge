@@ -60,7 +60,7 @@ end;
 if (M~=ra),
 	if (N==ra),
 	        fprintf(2,'Warning MVFILTER: dimensions fits only to transposed data\n');
-		[x,z] = mvfilter(A,B,x.',z);
+		[x,z] = mvfilter(B,A,x.',z);
 		x = x.';
 		return;
 	else

@@ -32,11 +32,21 @@ Open Source Initiative (www.opensource.org)
 #endif
 
 #include <iostream>
+
+#if !defined(OCTAVE_FORGE)
 #include <cmath>
+
 #if defined(__APPLE__) && defined(__MACH__) 
 extern "C" int isnan (double); 
 extern "C" int isinf (double); 
 #endif 
+
+#define lo_ieee_isnan(x) isnan(x)
+#define lo_ieee_isinf(x) isinf(x)
+
+#else
+#include <octave/lo-ieee.h>
+#endif
 
 #include "fixed.h"
 
@@ -339,17 +349,17 @@ FixedPoint::FixedPoint (unsigned int is, unsigned int ds, double x) {
   double posclip = double(one<<is) - 1./(one<<ds);
 
   /* Check for erreur */
-  if (isnan(x)) {
+  if (lo_ieee_isnan(x)) {
     /* Not a number */
 
     x = 0;
     if (Fixed::FP_Overflow)
       fixed_warning(Fixed::NAN_CONST);
     
-  } else if (isinf(x)) {
+  } else if (lo_ieee_isinf(x)) {
     /* Infinity */
     
-    x = (isinf(x) > 0) ? posclip : negclip;
+    x = (lo_ieee_isinf(x) > 0) ? posclip : negclip;
     if (Fixed::FP_Overflow)
       fixed_warning(Fixed::INF_CONST);
 

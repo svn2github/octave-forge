@@ -1,19 +1,18 @@
-function [tout,xout] = ode78(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
-
 % Copyright (C) 2001, 2000 Marc Compere
-% This file is intended for use with Octave.
-% ode78.m is free software; you can redistribute it and/or modify it
+%
+% This program is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
 % the Free Software Foundation; either version 2, or (at your option)
 % any later version.
 %
-% ode78.m is distributed in the hope that it will be useful, but
+% This program is distributed in the hope that it will be useful, but
 % WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 % General Public License for more details at www.gnu.org/copyleft/gpl.html.
 %
+% This file is intended for use with Octave.
 % --------------------------------------------------------------------
-%
+
 % ode78 (v1.14) Integrates a system of ordinary differential equations using
 % 7th order formulas.
 %
@@ -93,6 +92,8 @@ function [tout,xout] = ode78(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 % created : 06 October 1999
 % modified: 19 May 2001
 
+
+function [tout,xout] = ode78(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 
 % The Fehlberg coefficients:
 alpha_ = [ 2./27., 1/9, 1/6, 5/12, 0.5, 5/6, 1/6, 2/3, 1/3, 1, 0, 1 ]';

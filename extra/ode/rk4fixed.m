@@ -1,19 +1,18 @@
-function [tout,xout] = rk4fixed(FUN,tspan,x0,Nsteps,ode_fcn_format,trace,count)
-
 % Copyright (C) 2001, 2000 Marc Compere
-% This file is intended for use with Octave.
-% rk4fixed.m is free software; you can redistribute it and/or modify it
+%
+% This program is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
 % the Free Software Foundation; either version 2, or (at your option)
 % any later version.
 %
-% rk4fixed.m is distributed in the hope that it will be useful, but
+% This program is distributed in the hope that it will be useful, but
 % WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 % General Public License for more details at www.gnu.org/copyleft/gpl.html.
 %
+% This file is intended for use with Octave.
 % --------------------------------------------------------------------
-%
+
 % rk4fixed (v1.14) is a 4th order Runge-Kutta numerical integration routine.
 % It requires 4 function evaluations per step.
 %
@@ -53,6 +52,8 @@ function [tout,xout] = rk4fixed(FUN,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 % CompereM@asme.org
 % created : 06 October 1999
 % modified: 19 May 2001
+
+function [tout,xout] = rk4fixed(FUN,tspan,x0,Nsteps,ode_fcn_format,trace,count)
 
 if nargin < 7, count = 0; end
 if nargin < 6, trace = 0; end

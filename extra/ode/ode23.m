@@ -1,18 +1,18 @@
-function [tout,xout] = ode23(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
-
 % Copyright (C) 2001, 2000 Marc Compere
-% This file is intended for use with Octave.
-% ode23.m is free software; you can redistribute it and/or modify it
+%
+% This program is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by
 % the Free Software Foundation; either version 2, or (at your option)
 % any later version.
 %
-% ode23.m is distributed in the hope that it will be useful, but
+% This program is distributed in the hope that it will be useful, but
 % WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 % General Public License for more details at www.gnu.org/copyleft/gpl.html.
 %
+% This file is intended for use with Octave.
 % --------------------------------------------------------------------
+
 %
 % ode23 (v1.14) Integrates a system of ordinary differential equations using
 % 2nd & 3rd order Runge-Kutta formulas.  This particular 3rd-order method reduces
@@ -83,6 +83,8 @@ function [tout,xout] = ode23(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 % CompereM@asme.org
 % created : 06 October 1999
 % modified: 27 June 2001
+
+function [tout,xout] = ode23(FUN,tspan,x0,ode_fcn_format,tol,trace,count,hmax)
 
 if nargin < 8, hmax = (tspan(2) - tspan(1))/2.5; end
 if nargin < 7, count = 0; end

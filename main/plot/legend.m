@@ -10,25 +10,61 @@
 ## Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: legend (string1, string2, string3, ..., [pos])
-##        legend ([string1; string2; string3; ...], [pos])
-##        legend ("off")
+## -*- texinfo -*-
+## @deftypefn {Function File} {} legend (@var{st1}, @var{st2}, @var{st3}, @var{...})
+## @deftypefnx {Function File} {} legend (@var{st1}, @var{st2}, @var{st3}, @var{...}, @var{pos})
+## @deftypefnx {Function File} {} legend (@var{matstr})
+## @deftypefnx {Function File} {} legend (@var{matstr}, @var{pos})
+## @deftypefnx {Function File} {} legend ('@var{func}')
 ##
 ## Legend puts a legend on the current plot using the specified strings
-## as labels. Legend works on line graphs, bar graphs, etc...
-## Be sure to call plot before calling legend.
+## as labels. Use independant strings (@var{st1}, @var{st2}, @var{st3}...) or
+## a matrix of strings (@var{matstr} to specify legends. Legend works on line
+## graphs, bar graphs, etc... Be sure to call plot before calling legend. 
 ##
-## pos: places the legend in the specified location:
-##      0 = Don't move the legend box (default)
-##      1 = Upper right-hand corner
-##      2 = Upper left-hand corner
-##      3 = Lower left-hand corner
-##      4 = Lower right-hand corner
-##      -1 = To the right of the plot
+## @var{pos} optionnaly  places the legend in the specified location:
 ##
-## off will switch off legends from the plot
+## @multitable @columnfractions 0.1 0.1 0.8
+## @item @tab 0 @tab
+##   Don't move the legend box (default)
+## @item @tab 1 @tab
+##   Upper right-hand corner
+## @item @tab 2 @tab
+##   Upper left-hand corner
+## @item @tab 3 @tab
+##   Lower left-hand corner
+## @item @tab 4 @tab
+##   Lower right-hand corner
+## @item @tab -1 @tab
+##   To the top right of the plot
+## @item @tab -2 @tab
+##   To the bottom right of the plot
+## @item @tab -3 @tab
+##   To the bottom of the plot
+## @item @tab [@var{x}, @var{y}] @tab
+##   To the arbitrary postion in plot [@var{x}, @var{y}]
+## @end multitable
+##
+## Some specific functions are directely avaliable using @var{func}:
+##
+## @table @code
+## @item show
+##   Show legends from the plot
+## @item hide
+## @itemx off
+##   Hide legends from the plot
+## @item boxon
+##   Draw a box around legends
+## @item boxoff
+##   Withdraw the box around legends
+## @item left
+##   Text is to the left of the keys
+## @item right
+##   Text is to the right of the keys
+## @end table
 ##
 ## REQUIRES: unix piping functionality, grep, sed and awk
+## @end deftypefn
 
 ## 2001-03-31 Paul Kienzle
 ##   * use tmpnam for temporary file name; unlink to remove
@@ -37,11 +73,12 @@
 ##   * add comment to call plot before legend.
 ## 2002-09-18 Paul Kienzle
 ##   * make the pause check every .1 seconds
+## 2003-04-1 Laurent Mazet
+##   * add new functions (boxon, boxoff...)
+##   * rebuild help message
 
 function legend (varargin)
 
-  gset key;
-  
   ## Data type
 
   data_type = 0;
@@ -52,17 +89,36 @@ function legend (varargin)
     str = nth (varargin, va_arg_cnt++);
   endif;
       
-  ## Test for off
+  ## Test for strings
 
-  if ((isstr(str)) && (strcmp(tolower(deblank(str)),"off")) && (nargin == 1))
-    gset nokey;
-    replot;
-    return;
-  endif;
+  if (isstr(str)) && (nargin == 1)
+    _str = tolower(deblank(str));
+    _replot = 1;
+    switch _str
+      case {"off", "hide"}
+        gset nokey;
+      case "show"
+	gset key;
+      case "boxon"
+	gset key box;
+      case "boxoff"
+	gset key nobox;
+      case "left"
+        gset key Right noreverse;
+      case "right"
+        gset key Left reverse;
+      otherwise
+	_replot = 0;
+    endswitch
+    if _replot
+      replot
+      return;
+    endif
+  endif
 
   ## Test for data type (0 -> list of string, 1 -> array of string)
   
-  if (length(str) != 0) && (isstr(str(1,:))) && (rows(str) != 1)
+  if (length(str) != 0) && (isstr(str(1,:))) && (rows(str) != 1) 
     data_type = 1;
     va_arg_cnt = 1;
 
@@ -105,7 +161,7 @@ function legend (varargin)
         } \
        }";
             
-  shell_cmd=["grep \"^pl \" " tmpfilename " | " \
+  shell_cmd=["grep \"^" gnuplot_command_plot " \" " tmpfilename " | " \
              "sed -e 's/,/ , /g' -e 's/\"/ \" /g'" " | " \
              "awk '" awk_prog "'"];
 
@@ -116,6 +172,7 @@ function legend (varargin)
     usleep(1e5); 
   end
   plot_cmd = split(system(shell_cmd),"\n");
+
   if (~length(deblank(plot_cmd(rows(plot_cmd), :))))
     plot_cmd = plot_cmd ([1:rows(plot_cmd)-1],:);
   endif;
@@ -127,7 +184,7 @@ function legend (varargin)
   i = 0;
   while (i++ < rows(plot_cmd))
     line = deblank(plot_cmd(i,:));
-    if ((strcmp(line, "pl")) || (strcmp(line, ",")))
+    if ((strcmp(line, gnuplot_command_plot)) || (strcmp(line, ",")))
       nb_graph++;
     endif;
   endwhile;
@@ -150,7 +207,7 @@ function legend (varargin)
       leg = "\"\"";
     else
       if (data_type == 0)
-        leg = nth (varargin, va_arg_cnt++) ;
+        leg = nth (varargin, va_arg_cnt++);
         nargin--;
       else
         leg = data(fig+1,:);
@@ -167,10 +224,11 @@ function legend (varargin)
 
     ## look for the end of the graph command i.e. ","
 
-    new_line = [deblank(plot_cmd(i++,:)) " \"" deblank(plot_cmd(i++,:)) "\""];
+    new_line = [deblank(plot_cmd(i++,:)) " \"" \
+                strrep(deblank(plot_cmd(i++,:)), "'", "") "\""];
     while ((i <= rows(plot_cmd)) && (!strcmp(deblank(plot_cmd(i,:)), ",")))
-      if (strcmp(deblank(plot_cmd(i,:)), "t"))
-        new_line = [new_line " t " leg];
+      if (strcmp(deblank(plot_cmd(i,:)), gnuplot_command_title))
+        new_line = [new_line " " gnuplot_command_title " " leg];
         i++;
       else
         new_line = [new_line " " deblank(plot_cmd(i,:))];
@@ -203,7 +261,7 @@ function legend (varargin)
   
   ## Change the legend position
 
-  if ((is_scalar (pos_leg)) && (isreal(pos_leg)))
+  if ((isscalar (pos_leg)) && (isreal(pos_leg)))
     switch (pos_leg)
       case 1
         gset key right top;
@@ -215,7 +273,16 @@ function legend (varargin)
         gset key right bottom;
       case -1
         gset key right top outside;
+      case -2
+        gset key right bottom outside;
+      case -3
+        gset key below;
+      otherwise
+        warning ("inconnect pos");
     endswitch;
+  elseif (isvector (pos_leg)) && (length (pos_leg) == 2) && \
+        (all(isreal(pos_leg)))
+    eval (sprintf ("gset key %e, %e", pos_leg(1), pos_leg(2)));
   else
     warning ("pos must be a scalar");
   endif;

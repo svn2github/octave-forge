@@ -36,12 +36,12 @@
 ## 2001-09-24 Andreas Helms <helms@astro.physik.uni-potsdam.de>
 ## * modified for use with functions of more than one parameter
 
-function min = fminbnd(_func,lb,ub, options, ...)
+function min = fminbnd(_func,lb,ub, options, varargin)
 
   delta = 1e-17;
   gr = (sqrt(5)-1)/2;
   width = (ub-lb);
-  out = lb:(width/3):ub;
+  out = [ lb:(width/3):ub ];
   out(2) = out(4)-gr*width;
   out(3) = out(1)+gr*width;
   upper = feval(_func,out(3), varargin{:});

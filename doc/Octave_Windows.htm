@@ -8,7 +8,7 @@
 <B><FONT FACE="Arial" SIZE=4><P ALIGN="CENTER">Octave under Windows</P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <P ALIGN="CENTER">A collection of hints and facts for Octave running under Windows</P>
-</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="CENTER">Copyright (C) 2001-2002 by Philip Nienhuis<br>Last version 6 May 2002</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="CENTER">Copyright (C) 2001-2002 by Philip Nienhuis<br>Last version 30 July 2002</P>
 </FONT><FONT FACE="Arial" SIZE=3>
 <P>&nbsp;</P>
 
@@ -53,7 +53,8 @@
 <P><U><B>Stuff missing yet. Contributions are needed and very welcome!</B></U></P>
 <P><OL>
 <LI>Linking Win32 versions of other graphical back ends to Octave (plplot; grace; .....)</LI>
-<LI</LI>
+<LI>Running Octave & Emacs</LI>
+<LI></LI>
 </OL></P>
 <P>&nbsp;</P>
 
@@ -123,9 +124,11 @@ Currently, I've installed Octave using cf. Method #1 on a (Dutch) Windows&nbsp;2
 The Octave version numbering scheme complies to Linux conventions, where the second number refers to a stable release if it is even, and a development release if it is odd. Thus, the latest stable release (at the time that this document was updated, May 2002) is 2.<B>0</B>.17, the latest development release 2.<B>1</B>.36.<br>
 <FONT FACE="Arial" SIZE=2>(That said, Octave development releases are not "dangerous" in the sense that they are able to lock up or crash your Windows (like badly written programs can do, even on NT systems). It is more that minor features, e.g. mathematical-linguistic interpretations or documentation is still not up-to-date and some new and/or probably seldomly used mathematical procedures may not have been tested fully.)</FONT></P>
 
+<P><B><U><A HREF="http://matlinks.sourceforge.net/">Matlinks</A></U></B> ("Toolbox Development for GNU Octave and Matlab/Simulink") is -as its name suggests- a collection of various toolboxes ("add-ins") for Octave and Matlab.</P>
+
 <P><B><U>Distributions</U></B> (or "distros") are usually "monolithic (i.e., one big file) packages from which you can install Octave or some other program in one or another way. At first sight this does not differ much from ZIP-files or self-installing archives for MS-Windows programs you download from CNET or so. But read on, things are a bit different.<br>
 Below, several types of distributions are treated. I included this info just to show you programs are generally installed in Unix/Linux and thus Cygwin systems, and to avoid confusion further down in this web page.
-<LI><B>"Tarballs"</B>are .tar.gz or tar.bz2 archives, usually in one file, which are made by the archiving program <I>tar</I> followed by compressing the so obtained .tar archive using <I>gzip</I> or the more efficient <I>bzip2</I> compression program.</LI>
+<LI><B>"Tarballs"</B>are .tar, .tar.gz or tar.bz2 archives, usually in one file, which are made by the archiving program <I>tar</I>, optionally followed by compressing the so obtained .tar archive using <I>gzip</I> or the more efficient <I>bzip2</I> compression program.</LI>
 <LI><B>"Source tarballs"</B> are usually tarballs which contain just the source code, header files and general build instructions and which should be unpacked at the place one normally keeps source files. Although they contain just source code, they usually <I><U>are</U></I> intended for installation of real programs!<br>
 </FONT><FONT FACE="Arial" SIZE=2>To compile a program from source and put it in the right place, many Unix/Linux programs use the following commands after unpacking:<br>
 <B>./configure</B><br>
@@ -188,16 +191,20 @@ Download the available (basic Cygwin+)Octave-windows binaries from the Matlinks 
 A mixture of both; that is, once a basic Cygwin and Octave 2.1.31 or so are installed from a complete binary, expand Cygwin by downloading and installing additional Cygwin components (gcc, make, etc.) so that you can compile Octave yourself. </LI>
 <P>In a way, this is the best of both worlds, but to be able to use this method you first must have successfully installed Octave using method 2…..</P><B>
 
-<LI>Installing Cygwin yourself, but installing Octave from (compiled) binaries</B><br>
+<LI>Installing Cygwin yourself, then installing Octave from (compiled) binaries</B><br>
 A fourth way is to download and install Cygwin, and then download a binary Octave-distribution for Win32/Cygwin.<br>
 Currently (May 2002) you have two options:
 <P><B>(A)</B> The ones from from Paul Soderlinds page.<br>
-<UL>These binaries (there is a binary 2.1.35 and an PII ATLAS-optimized binary 2.1.35) can be installed much like the way native Octave distributions for Linux are installed. For details, please see <A HREF="#METHOD4_A">below</A> or refer to <A HREF="http://www.hhs.se/personal/psoderlind/Software/Software.htm#OctaveInstallation">Paul Söderlinds web site</A>.</UL></P>
+<UL>These binaries (there is a binary 2.1.36 and an PII ATLAS-optimized binary 2.1.36) can be installed much like the way native Octave distributions for Linux are installed. For details, please see <A HREF="#Method4_A">below</A> or refer to <A HREF="http://www.hhs.se/personal/psoderlind/Software/Software.htm#OctaveInstallation">Paul Söderlinds web site</A>.</UL></P>
 
-<P><B>(B)</B> A complete 2.1.35 + Octave-forge + gnuplot distro from Andy Adler.
+<P><B>(B)</B> <A NAME="A_Adler">A complete 2.1.36 + Octave-forge + gnuplot distro from Andy Adler.</A>
 <UL>
-This variant B is to use Andy Adler's <A href="http://prdownloads.sf.net/octave/octave-2.1.35-gnuplot-3.7.1-octaveforge.tar.bz2">octave-2.1.35-gnuplot-3.7.1-octaveforge.tar.bz2 distro</A>. This one contains as an added bonus the complete octave-forge package (previously called matcompat).<br>&nbsp;</FONT><br>
-<FONT FACE="Arial" SIZE=2>As Andy reports to be busy making similar packages for 2.1.36 and ATLAS optimized Octave versions for various CPU hardware environments, you are advised to keep an eye open to his section on the OctaveForge site. (ATLAS is a numerical engine which makes a.o. Octave significantly faster when working with large matrices.)</UL></FONT></P><FONT FACE="Arial" SIZE=3></LI>
+This variant B is to use Andy Adler's <A HREF="http://prdownloads.sf.net/octave/octave-2.1.36-gnuplot-octaveforge.tar.bz2">octave-2.1.36-gnuplot-octaveforge.tar.bz2 distro</A>. This one contains as an added bonus the complete octave-forge package (previously called matcompat).<br>&nbsp;<br>
+Alternatively, you can download the <A HREF="http://prdownloads.sf.net/octave/octave-2.1.36-ATLAS-P3SSE1-gnuplot-octaveforge.tar.bz2">octave-2.1.36-ATLAS-P3SSE1-gnuplot-octaveforge.tar.bz2 distro</A>; this is a special; version compiled with the numerical ATLAS library, which significantly can speed up computations involving large matrices (in some cases up to a factor of 5 or more).<br>
+See <A HREF="#Method4_B">below</A> for details.</FONT><br>
+<FONT FACE="Arial" SIZE=2>
+N.B. 1: The ATLAS optimized version was optimized for Pentium III systems. However, Andy found that even on a Pentium IV system, the Pentium III optimized version ran faster than the one with Pentium IV optimizations; I got analogous results on my AMD AthlonXP system, i.e. the Pentium III optimized versions ran faster than an AthlonXP optimized version. Intruiging stuff; might be due to the ATLAS libraries themselves.<br>
+N.B. 2: As Andy reports to be busy making similar packages for other Octave versions meant for various CPU hardware environments, you are advised to keep an eye open to his section on the OctaveForge site.</UL></FONT></P><FONT FACE="Arial" SIZE=3></LI>
 <P><I>Given the quite complete package by Andy Adler and its painless installation using Cygwin package management, I think <B>Method 4B</B> is the <B>preferred</B> way to install Octave under Windows.</I></P><B>
 
 </OL></B>
@@ -224,7 +231,7 @@ This variant B is to use Andy Adler's <A href="http://prdownloads.sf.net/octave/
 <LI>Hard disk free space. On my former desktop PC, where I got Windows ME running a Cygwin system with gcc, make .... etc. plus Octave 2.1.31 & Octave 2.0.16, the entire Octave & Cygwin fandango occupies some 300 Mb disk space on a FAT32 partition and comprises over 15,000 files, many of which are 1 or 2KB include files. Should you have an old Windows 95 without FAT32 support, much more disk space may be needed as FAT16 is not so efficient regarding disk space usage. So, back up or clean up unneeded files.</LI>
 <LI>Hard disk fragmentation (if needed, run DEFRAG.EXE)</LI>
 </UL></P>
-<P>In addition, in a later stage (when compiling Octave) it can be handy to disable virus scanners, proxy's, firewalls, and all kinds of other gadgets (notably MS-Office stuff like FastFind) which occupy memory and system tray slots and only help to slow down the system. Just press Ctrl-Alt-Del ONLY ONCE to see which programs have been loaded; you can disable unneeded ones one by one then in order to unload your CPU for more urgent tasks like running gcc. For a bare minimum Windows, only Systray and Explorer are needed.</P>
+<P>In addition, in a later stage (when compiling Octave) it can be handy to disable virus scanners, proxy's, firewalls, and all kinds of other gadgets (notably MS-Office stuff like FastFind) which occupy memory and system tray slots and only help to slow down the system. Just press Ctrl-Alt-Del ONLY ONCE to see which programs have been loaded; you can disable unneeded ones one by one then in order to unload them and free the CPU for more urgent tasks like running gcc. For a bare minimum Windows, only Systray and Explorer are needed.</P>
 
 <B><I><P><A NAME="Step2A">Step 2A. Download Cygwin</A></P></I></B>
 <P>Point your Internet browser to <A HREF="http://cygwin.com/">http://cygwin.com/</A>, and start with reading a few things about Cygwin, notably what is mentioned in the left column under "Documentation".</P>
@@ -384,6 +391,8 @@ ncurses: vital for various messages<br>
 perl: a very handy, much used scripting tool<br>
 rxvt: a terminal program, needed for better GUI under Win9x & Win-ME<br>
 texinfo: needed for Octave's interactive help system<br>
+<br>
+People having much development experience in Linux may want to install cvs, openssh and openssl too, as these allow to download the most recent snapshot of octave sources from cvs (I never tried, I just mention).
 </FONT></P><FONT FACE="Arial" SIZE=3>
 
 <P>If your Internet connection consists of a slow dial-up connection, you can (like I did) divide these downloads over a number of cheap phone rate periods (weekends, nights) - or get a high speed Internet connection like ADSL (like I did too, in a later stage but for other reasons).</P>
@@ -394,7 +403,7 @@ texinfo: needed for Octave's interactive help system<br>
 
 <P>This time, select "Install from local directory".</P>
 
-<P>Cygwin then installs all the packages you downloaded. It installs a convincingly Unix/Linux-like directory structure there, including /usr, /tmp, etc. The install process ends with a number of alternating flashes of DOS-boxes (actually Cygwin terminals) and Cygwin setup screens. Don't worry, just let it go on.</P>
+<P>Cygwin then installs all the packages you downloaded, be sure to install them in the default suggested directory (probably C:\Cygwin\). It installs a convincingly Unix/Linux-like directory structure there, including /usr, /tmp, etc (where / stands for the root of the Cygwin file system, i.e. C:\Cygwin in Windows parlance). The install process ends with a number of alternating flashes of DOS-boxes (actually Cygwin terminals) and Cygwin setup screens. Don't worry, just let it go on.</P>
 
 <P>There is a file named Cygwin.bat installed somewhere in the Cygwin directory. Make a copy of this batch file in e.g. your \Windows directory. Make a Windows-shortcut for it, in your Start menu and/or on your desktop, if the setup program did not already do that for you.</P>
 
@@ -424,7 +433,7 @@ texinfo: needed for Octave's interactive help system<br>
 <P>make install</P>
 
 </FONT><P><FONT FACE="Arial" SIZE=2>(Mind the period before the slash in ./configure!)</FONT></P><FONT FACE="Arial" SIZE=3>
-<P>The first command (./configure) took about 15 (233 Mhz Pentium MMX with 64 Mb memory) or 2 minutes (AMD AthlonXP 1600+ w. 512 MB) to prepare Octave for compilation. You can safely neglect the last messages about gperf, runtest/dejagnu and/or gnuplot not being found.</P>
+<P>The first command (./configure) took about 15 (233 Mhz Pentium MMX with 64 MB memory) or 2 minutes (AMD AthlonXP 1600+ w. 512 MB) to prepare Octave for compilation. You can safely neglect the last messages about gperf, runtest/dejagnu and/or gnuplot not being found.</P>
 
 <P>The second step (make) took two hours (233 P-MMX) or 13 minutes (AMD 1600+), respectively.</P>
 
@@ -494,9 +503,11 @@ followed by &lt;Ctrl&gt;-D to quit Octave.</P>
 
 <P><A HREF="http://www.hhs.se/personal/psoderlind/Software/pipe-gnuplot.exe">http://www.hhs.se/personal/psoderlind/Software/pipe-gnuplot.exe</A></P>
 
-<P>or the source code at:</P>
+<P>or (a version of) the source code at:</P>
 
-<P><A HREF="http://tech-research.buffalostate.edu/~tom/">http://tech-research.buffalostate.edu/~tom/</A></P>
+<P><A HREF="http://luna2.informatik.uni-osnabrueck.de/marc/lectures/www_ts/u21100/slv/pg_noexit_c.html">http://luna2.informatik.uni-osnabrueck.de/marc/lectures/www_ts/u21100/slv/pg_noexit_c.html</A></P>
+<P></FONT><FONT FACE="ARIAL" SIZE=2>(Beware, URLs featuring this source code seem to vanish on a more or less regular basis. I found the above link within 4 seconds using a simple Google search (hint!), so you'll know what to do if the link doesn't work.....).<br>
+(BTW, I copied that file into this web page <A HREF="#Q_14">here</A>.)</FONT><FONT FACE="ARIAL" SIZE=3></P>
 
 <P>OK, in the file /usr/local/share/octave/site/m/startup there should be a file called octaverc. This file contains some important startup settings for Octave.
 </P>
@@ -516,8 +527,12 @@ putenv('TMPDIR','C:/Cygwin/tmp');<br>
 # gnuplot_has_multiplot = 1<br>
 ##############################################################<br></P>
 
-<P>(Make any necessary changes if your directory structure is different - take care of upper- and lower case characters.)<br>
-(Also note that the last line is commented out. This line indicates that the gnuplot graph window must not be erased before redrawing, but that next plots must simply be added to it. However, you can also set this from the Octave terminal. I would prefer to have it commented out.)</P>
+<P>(Make any necessary changes if your directory structure is different - take care of upper- and lower case characters. If wgnuplot is not (yet) in your Cygwin path but somewhere else in the Windows subdir hierarchy, enclose the path to wgnuplot.exe in quotes or just add the necessary subdir to your PATH. E.g., here's my PATH:
+</FONT></P><FONT FACE="ARIAL" SIZE=2>$ echo $PATH<br>
+/usr/local/bin:/usr/bin:/bin:/cygdrive/c/Program Files/gnuplot/gp371cyg:/cygdrive/c/WINNT/SY<br>
+STEM32:/cygdrive/c/WINNT:/cygdrive/c/WINNT/SYSTEM32/WBEM:<br><br>
+N.B. As you can see I used the implicit Cygwin mounts /cygdrive/c to refer to Windows drive/partition C:\</FONT></P><FONT FACE="ARIAL" SIZE=3>
+<P>(Also note that the last line is commented out. This line indicates that the gnuplot graph window must not be erased before redrawing, but that next plots must simply be added to it. However, you can also set this from the Octave terminal. I would prefer to have it commented out.)</P>
 
 <P>In the directory /etc there should be a file called profile. This file should contain at least the following lines, or lines meaning the same as these lines:<br>
 <br>
@@ -557,7 +572,7 @@ So, below is just a description for epsTk.</P>
 <P><A HREF="http://www.epstk.de/">epsTk</A> is a visualization program which outputs Postscript files. IMO, epsTk also features better contour plots than gnuplot.<br>
 Apart from the epsTk package you also need Ghostscript (a free Postscript interpreter) and GSview (a Postscript viewer).<br>
 Point your browser to <A HREF="http://www.epstk.de/">epsTk's home</A>, read a bit about epsTk and then download the "<B>m & doc</B>" package (because then you'll also have some documentation).<br>
-Next, go to the <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript and Ghostview home site</A> (the <A HREF="http://sourceforge.net/projects/ghostscript/">Ghostview site on SourceForge</A> is geared more towards Linux) and download a Ghostscript package and a GSview package, both for Windows. Now there is some issue about the versions. Current GSview versions pop up a window asking for a registration fee for the GSview programmer. While there is certainly some justification to ask a price for such a wonderful piece of software, you may be distracted by these pop-ups; in that case you might like to know that earlier GSview versions do not feature pop-ups. However, the downside is that these earlier versions cannot be used with Ghostscript 7.04 (the latest version as of May, 2002). So it's your pick: pop-ups OK? get the latest versions; not OK? find older GSview & Ghostscript versions. Don't worry, Octave / epsTK will work fine with such older versions.</P>
+Next, go to the <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript and Ghostview home site</A> (the <A HREF="http://sourceforge.net/projects/ghostscript/">Ghostview site on SourceForge</A> is geared more towards Linux) and download a Ghostscript package and a GSview package, both for Windows. Now there is some issue about the versions. Current GSview versions pop up a window asking for a registration fee for the GSview programmer. There certainly is some justification to ask money for such a wonderful piece of software, nevertheless you may be distracted by these pop-ups or you may find 40 Australian $ simply too much for your wallet; in that case you might like to know that earlier GSview versions do not feature pop-ups. The downside is that these earlier versions cannot be used with Ghostscript 7.04 (the latest version as of May, 2002). So it's your pick: pop-ups OK or prepared to pay for shareware? get the latest versions; not OK? find older GSview & Ghostscript versions. Don't worry, Octave / epsTK will work fine with such older versions.</P>
 <P>First install Ghostscript and GSview. As they are Windows programs (errr... windows versions of programs), put them somewhere in the C:\Program Files directory. After you've installed Ghostscript and GSview, simply unzip (using WinZip or PowerArchiver etc.) the contents of epsTk&lt;version_number&gt;.zip to /usr/local/share/octave/site/m/ and make sure the contents are in the subdirectory epstk&lt;version_number&gt;/m/ (e.g., /usr/local/share/octave/site/m/epstk191/m/). Then, move the contents of the .../doc subdirectory to /usr/doc/epstk and remove the .../epstk&lt;version_number&gt;/doc subdirectory.<br>
 In the epstk m-file directory, you'll find a file called einit.m. In the upper 10 lines or so, adapt the contents of the variables %ePath, %eGhostview and %eGhostscript to your specific setup.<br>
 For example, my einit.m reads:</P>
@@ -579,7 +594,7 @@ You can now start up Octave and run edemo1.m. If all went well, you will see a n
 
 <P>Once epsTk is installed, you will have to find out yourself how to use epsTk in practice (using the documentation in /usr/doc/epstk). This web page is just devoted to get Octave working under Windows :-)</P>
 
-&nbsp;<br>
+&nbsp;
 
 <U><P><A NAME="rxvt">2. Revamping the bash terminal</A></P></U>
 Instead of the classic white-letters-on-black-background, you'll want black letters on a white background, and probably some neater fonts. To do this, you'll need the rxvt program included in Cygwin.<br>
@@ -636,9 +651,10 @@ Do not forget to disable Fast Paste (right click on the shortcut, select Propert
 <P>Some little glitches in these binaries are easily fixed:<br>
 <UL>
 <LI>In case of octave-windows.exe, the install program assumes the location of the program icon at the wrong place. It is in "C:\Program&nbsp;Files\Octave&nbsp;2.1.31\bin\" and is called octave.ico.</LI>
-<LI>Under NT-systems, installation may break. A possible solution is given in <A HREF="ftp://ftp.che.wisc.edu/pub/octave/MAILING-LISTS/help-octave/2000/1247">message # 1247</A> in the help-octave mailinglist of 2000 and on <A HREF="http://members.localnet.com/~tomcw/">Tom Weichmann's Octave page</A>.</LI>
+<LI>Under NT-systems, installation may break. A possible solution is given in <A HREF="ftp://ftp.che.wisc.edu/pub/octave/MAILING-LISTS/help-octave/2000/1247">message # 1247</A> in the help-octave mailinglist of 2000 and on <A HREF="http://members.localnet.com/~tomcw/">Tom Weichmann's Octave page</A><br>
+(That is, if the latter page wil ever reappear.)</LI>
 </UL></P>
-<P>Tom Weichmann has recently made another Windows binary available (v. 2.1.33), check out his Octave for Windows page. Some mailing list messages indicate that also this binary suffers from installation problems, caused by various Windows peculiarities.</P>
+<P>Tom Weichmann has recently made another Windows binary available (v. 2.1.33), (try to) check out his Octave for Windows page. Some mailing list messages indicate that also this binary suffers from installation problems, caused by various Windows peculiarities.</P>
 
 <P>&nbsp;</P>
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Method3">7. Method 3: Installation of additional Octave versions, based on method 2</A></P>
@@ -658,22 +674,27 @@ Do not forget to disable Fast Paste (right click on the shortcut, select Propert
 
 <B><P><A NAME="Method4_A">Method 4A. Installation of Octave from Paul Söderlind's binary</A></P></B>
 
-<P>The next step would be downloading a <A HREF="http://www.hhs.se/personal/psoderlind/Software/PsOctave2135.tar.gz">binary Octave distribution</A> (much like native Linux distributions) from Paul Söderlind.<br>
+<P>The next step would be downloading a <A HREF="http://www.hhs.se/personal/psoderlind/Software/PsOctave2136.tar.gz">binary Octave distribution</A> (much like native Linux distributions) from Paul Söderlind.<br>
 Next, unzip and untar the distribution in the right place. Please look at <A HREF="http://www.hhs.se/personal/psoderlind/Software/Software.htm#OctaveInstallation">Paul Soderlinds software page / Octave section</A> for more details. Note that Paul also got an ATLAS version of Octave for Pentium II (ATLAS makes large matrix-intensive operations much faster but is very hardware dependent).<br>&nbsp;<br></P>
 
 <B><P><A NAME="Method4_B">Method 4B. Installation of Andy Adler's Octave distro including gnuplot and Octave-Forge</A></P></B>
 <P>Andy Adler made a distro of Octave 2.1.35, which includes gnuplot and the scripts in Octave-Forge. A strong point is that this package makes use of the Cygwin installer. As such, IMO this distro seems ideal for a reliable and complete Octave installation.<br>
-Download <A HREF="http://prdownloads.sf.net/octave/octave-2.1.35-gnuplot-3.7.1-octaveforge.tar.bz2">octave-2.1.35-gnuplot-3.7.1-octaveforge.tar.bz2</A> or go to <A HREF="http://octave.sf.net">Octave-Forge</A>, click on "Files" at the top right of the page and look for the package.<br>
-Download it to some place in your Cygwin download directory, start up Cygwin setup, browse to the place you've downloaded the package and select to install it (you may have to expand the list of packages to see it). Click on Install, and Cygwin does (most of) the rest.<br>
+Download either:<br>
+<A HREF="http://prdownloads.sf.net/octave/octave-2.1.35-gnuplot-3.7.1-octaveforge.tar.bz2">octave-2.1.35-gnuplot-3.7.1-octaveforge.tar.bz2</A>, or<br>
+<A HREF="http://prdownloads.sf.net/octave/octave-2.1.36-gnuplot-octaveforge.tar.bz2">octave-2.1.36-gnuplot-octaveforge.tar.bz2</A>, or<br>
+<A HREF="http://prdownloads.sf.net/octave/octave-2.1.36-ATLAS-P3SSE1-gnuplot-octaveforge.tar.bz2">octave-2.1.36-ATLAS-P3SSE1-gnuplot-octaveforge.tar.bz2</A>,<br>
+or go to <A HREF="http://octave.sf.net">Octave-Forge</A>, click on "Files" at the top right of the page and look for these packages.<br>
+</FONT><FONT FACE="ARIAL" SIZE=2>(See <A HREF="#A_Adler">above</A> for some explanation about these packages.)</FONT><FONT FACE="ARIAL" SIZE=3><br>
+Download it to some place in your Cygwin download directory, start up Cygwin setup, browse to the place you've downloaded the package and select to install it (you may have to expand the list of packages to see it). Click on Install, and Cygwin does (most of) the rest.</P>
 The octave files (octave-2.1.35.exe etc.) and wgnuplot are put in the /bin directory rather than in /usr/local/bin - this is because of some other (RedHat) Linux standards.<br>
-</FONT><P><FONT FACE="Arial" SIZE=2>In case you as a Windows user would want to know: The reason is typical for Linux. The FHS (File system Hierarchy Standard) dictates that in /bin belong only general system programs. Other programs which should be safe from a system upgrade should go in /usr/local. However, RedHat Linux and Cygwin both use (each a different) package management for upgrades, so there's no need for /usr/local as far as binary packages are concerned (software installed from tarballs are a different matter). As in this case Octave is installed/upgraded/uninstalled by Cygwin package management rather than from .tar.gz + compiling, according to this philosophy it should go into /bin, too.</FONT></P><FONT FACE="Arial" SIZE=3>
+</FONT><FONT FACE="Arial" SIZE=2>In case you as a Windows user would want to know: The reason is typical for Linux. The FHS (File system Hierarchy Standard) dictates that in /bin belong only general system programs. Other programs which should be safe from a system upgrade should go in /usr/local. However, RedHat Linux and Cygwin both use (each a different) package management for upgrades, so there's no need for /usr/local as far as binary packages are concerned (software installed from tarballs are a different matter). As in this case Octave is installed/upgraded/uninstalled by Cygwin package management rather than from .tar.gz + compiling, according to this philosophy it should go into /bin, too.</FONT></P><FONT FACE="Arial" SIZE=3>
 You can:
 <LI>move the relevant files to /usr/local/bin yourself (which will render automatic uninstalling & upgrading difficult)</LI>
 <LI>leave them in place but make symbolic links to them from /usr/local/bin</LI>
 <LI>or just leave them in place and simply accept it (why not).</LI></P>
 
 <P>Octave including gnuplot works "out of the box" in this distribution (that is, from the Cygwin terminal). Nevertheless you might want to make a Windows shortcut and a rxvt black-on-white terminal for a nicer appearance. Just follow Method 1, Step 6, <A HREF="#rxvt">points 2</A> and 3 to accomplish this.</P>
-</FONT><P><FONT FACE="Arial" SIZE=2>BTW It is worthwile to have a regular inspection at the above URL, because Andy seems to be busy building other Octave packages too (2.0.17; 2.1.36, ATLAS-optimized packages, possibly all with Octave-Forge installed).</FONT><P><FONT FACE="Arial" SIZE=3>
+</FONT><P><FONT FACE="Arial" SIZE=2>BTW It is worthwile to have a regular inspection at the above URL, because Andy seems to be busy building other Octave packages too (2.0.17; 2.1.37?, other ATLAS-optimized packages, possibly all with Octave-Forge installed).</FONT><P><FONT FACE="Arial" SIZE=3>
 
 <P>&nbsp;</P>
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="octaveforge">9. Installation of the octave-forge package</A></P></B></FONT>
@@ -717,9 +738,11 @@ Ofcourse, <I>these</I> problems can simply be tackled by just creating the relev
 <P><A HREF="http://www.hhs.se/personal/psoderlind/Software/Software.htm#OctaveInstallation">Paul S&ouml;derlind's Software pages</A></P>
 
 <P><A HREF="ftp://ftp.uni-erlangen.de/pub/pc/gnuwin32/cygwin/porters/Weichmann_Tom/1.1/">Tom Weichman's download site</A><br>
-<A HREF="http://members.localnet.com/~tomcw/">Tom Weichmann's Octave page</A></P>
+<A HREF="http://members.localnet.com/~tomcw/">Tom Weichmann's Octave page</A> (Couldn't find it as of July 2002)</P>
 
 <P><A HREF="http://matlinks.sourceforge.net/">Matlinks on SourceForge</A></P>
+
+&nbsp;<br>
 
 <U><P>Specific problems when using or trying to install or run Octave</P></U>
 <P>It seems it cannot be stressed often enough that before you submit a request for help in the help-octave mailinglist, you should:</P>
@@ -733,7 +756,7 @@ Ofcourse, <I>these</I> problems can simply be tackled by just creating the relev
 <P>&nbsp;</P>
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="response">12. How to give feedback</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
-<P>If you have additional information, hints, criticism, or other stuff that you think is useful to enter here, please sent me an <A HREF="mailto:pr.nienhuis@hccnet.nl">e-mail</A>.</P>
+<P>If you have additional information, hints, criticism, or other stuff that you think is useful to enter here, please sent me an <A HREF="mailto:prnienhuis@users.sf.net">e-mail</A>.</P>
 
 <P>&nbsp;</P>
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="faq">13. FAQ section</A></P>
@@ -752,6 +775,8 @@ Ofcourse, <I>these</I> problems can simply be tackled by just creating the relev
 <A HREF="#Q11">Q 11: How can I make .oct-files (dynamically linked libraries)?</A><br>
 <A HREF="#Q12">Q 12: How can I uninstall Octave & Cygwin?</A><br>
 <A HREF="#Q13">Q 13: How can I acces all my hard disk partitions from Cygwin & Octave?</A><br>
+<A HREF="#Q_14">Q 14: Where can I find pipe-gnuplot.c?</A><br>
+<A HREF="#Q_15">Q 15: How about network installations for Octave?</A><br>
 <A HREF="#Q_A">Q #?: E-mail me your Q&A suggestion!</A><br>
 <A HREF="#Q_B">...(to be filled in)...</A><br>
 <br></P>
@@ -817,7 +842,7 @@ In turn, Cygwin is the program (-suite) which actually gets installed in a Windo
 <B>A 11: </B>You can't. Unfortunately it is (currently?) simply not possible to have dynamically linked libraries associated with Octave in a Windows environment. From what I understand, the problem lies with some incompatibilities between Cygwin libraries and Windows style .dll libraries. Still curious? OK, some info is <A href="http://www.octave.org/mailing-lists/help-octave/2002/75">here</A> and something you can use as a suggestion (look under "Build instructions") is <A href="http://www.octave.org/mailing-lists/help-octave/2002/194">here</A>. You can statically link procedures, however.</P>
 
 <P><A NAME="Q12"><B>Q 12: How can I uninstall Octave & Cygwin?</B></A><br>
-<B>A 12: </B>Described here is a way to completely remove all traces of any Cygwin or Octave installation (copied from the <A HREF="http://cygwin.com/faq/faq.html#SEC20">Cygwin FAQ</A>):
+<B>A 12: </B>Described here is a way to completely remove all traces of any Cygwin or Octave installation (copied from the <A HREF="http://cygwin.com/faq/faq.html#SEC19">Cygwin FAQ</A>):
 <UL>
 <LI>1. Delete the entire Cygwin directory. You can do that simply from Windows Explorer. Click once on the base directory (e.g., c:\cygwin) and then press SHIFT-DEL (= delete w/o putting it in the Recycle bin).</LI>
 <LI>2. In the Registry Editor (Start -> Run -> regedit.exe), remove the Cygwin keys in:<br>
@@ -829,7 +854,7 @@ Check in HKEY_CURRENT_USER\Software for similar keys and -if found- remove them.
 <B>A 13:</B> From a Cygwin prompt, simply type:<br>&nbsp;<br>
 &nbsp; &nbsp; mount<br>&nbsp;<br>
 and then you'll see something which looks like:</P>
-</FONT><P><FONT FACE="Arial" SIZE=2>Philip@LIBRETTO ~<br>
+</FONT><P><FONT FACE="Arial" SIZE=2>
 $ mount<br>
 C:\cygwin\bin on /usr/bin type system (textmode)<br>
 C:\cygwin\lib on /usr/lib type system (textmode)<br>
@@ -839,7 +864,6 @@ d: on /cygdrive/d type user (textmode,noumount)<br>
 e: on /cygdrive/e type user (textmode,noumount)<br>
 o: on /cygdrive/o type user (textmode,noumount)<br>
 <br>
-Philip@LIBRETTO ~<br>
 $</FONT></P><FONT FACE="Arial" SIZE=3>
 <P>from which you can learn the following:
 <UL>
@@ -852,7 +876,77 @@ Indeed, after you have started up Cygwin, you can map additional network drives 
 </UL></P>
 <P>Knowing this, it cannot be difficult to navigate through your entire Windows network using Cygwin.</P>
 
-</P>
+<P><A NAME="Q_14"><B>Q 14: Where can I find pipe-gnuplot.c?</B></A><br>
+<B>A 14:</B> Here's a version I found on Internet (I hope it's the right one). BTW the indentation may be somewhat affected, but you'll get the idea:</P>
+<br>
+<P></FONT><FONT FACE="ARIAL" SIZE=2>/* pg_noexit.c<br>
+<br>
+&nbsp; &nbsp;    cygwin-compile: gcc -O3 -o pg_noexit pg_noexit.c<br>
+<br>
+&nbsp; &nbsp;    This program was originally pipe-gnuplot.c written by jl Hamel<br>
+&nbsp; &nbsp;    <hamel@picpus.saclay.cea.fr> and posted to the Usenet newsgroup<br>
+&nbsp; &nbsp;    comp.graphics.apps.gnuplot.  I modified it to accept the name of<br>
+&nbsp; &nbsp;    the real gnuplot binary on the command line, and to exit when EOF<br>
+&nbsp; &nbsp;    is encountered.  If you have any suggestions for improvements,<br>
+&nbsp; &nbsp;    please send them to me at the address below.<br>
+<br>
+&nbsp; &nbsp;    Thanks,<br>
+<br>
+&nbsp; &nbsp;    John W. Eaton<br>
+&nbsp; &nbsp;    jwe@bevo.che.wisc.edu<br>
+&nbsp; &nbsp;    University of Wisconsin-Madison<br>
+&nbsp; &nbsp;    Department of Chemical Engineering<br>
+<br>
+&nbsp; &nbsp;    Tue May 19 22:52:47 1998 */<br>
+<br>
+#include &lt;stdio.h&gt;<br>
+#include &lt;windows.h&gt;<br>
+<br>
+int<br>
+main (int argc, char **argv)<br>
+{<br>
+&nbsp; &nbsp;  HWND hwnd_parent;<br>
+&nbsp; &nbsp;  char *real_gnuplot = "C:\\Programme\\gp37mgw\\wgnuplot.exe";<br>
+<br>
+&nbsp; &nbsp;   /* XXX FIXME XXX */<br>
+&nbsp; &nbsp;   if (argc &gt; 1)<br>
+&nbsp; &nbsp; &nbsp; &nbsp;     real_gnuplot = argv[1];<br>
+<br>
+<br>
+&nbsp; &nbsp;   hwnd_parent = FindWindow ((LPSTR) NULL, (LPCTSTR) "gnuplot");<br>
+<br>
+&nbsp; &nbsp;   if (! hwnd_parent)<br>
+&nbsp; &nbsp; &nbsp; &nbsp;     fprintf (stderr, "can't find the gnuplot window");<br>
+&nbsp; &nbsp;   else<br>
+&nbsp; &nbsp; &nbsp; &nbsp;   {<br>
+&nbsp; &nbsp; &nbsp; &nbsp;     /* find the child text window */<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;     HWND hwnd_text = FindWindowEx (hwnd_parent, (HWND) NULL,<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                      (LPCTSTR)"wgnuplot_text",<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                      (LPCTSTR) NULL);<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;     if (! hwnd_text)<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;       fprintf (stderr, "can't find wgnuplot_text");<br>
+&nbsp; &nbsp; &nbsp; &nbsp;     else<br>
+&nbsp; &nbsp; &nbsp; &nbsp;     {<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;       /* wait for commands on stdin, and send them to the gnuplot text window */<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;       int c;<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;       while ((c = getchar ()) != EOF)<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;         PostMessage (hwnd_text, WM_CHAR, c, 1L);<br>
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;       return 0;<br>
+&nbsp; &nbsp; &nbsp; &nbsp;    }<br>
+&nbsp; &nbsp;  }<br>
+<br>
+&nbsp; &nbsp;   return 1;<br>
+}</FONT><FONT FACE="ARIAL" SIZE=3><P>
+
+<P><A NAME="Q_15"><B>Q 15: How about network installations for Octave?</B></A><br>
+<B>A 15:</B> In principle, for network gurus this should be easy. But then again, in the Windows world you got MS-Windows/NT networks, Netware, Banyan Vines, etc etc etc. To explain how to set this up for even just the widely used network software brands would constitute a HOWTO in its own right.<br>
+In addition, network setup in general comprises a universe in its own right and specific network setup problems may well interfere with specific Octave-Windows setup problems, and more specific, with Cygwin setup problems.<br>
+Therefore, as long as nobody comes up with short description for an easy solution, IMO this subject is not amenable for inclusion here, sorry.</P>
 
 <P><A NAME="Q_A"><B>Q #?: <FONT FACE="Arial" SIZE=2>E-mail me your Q&A suggestion!</FONT></B></A><br>
 <B>A :</B> </P>
@@ -861,6 +955,7 @@ Indeed, after you have started up Cygwin, you can map additional network drives 
 <B>A :</B> </P>
 
 <P>&nbsp;</P>
+
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="acknowledgements">14. Acknowledgements</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <P>The information on this page is collected from web pages, e-mails and mailing list contributions by the following people and parties:</P>
@@ -884,6 +979,13 @@ Indeed, after you have started up Cygwin, you can map additional network drives 
 <P>&nbsp;</P>
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="history">15. This document's history</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
+
+<P><U>29 July 2002</U><br>
+29 July Refreshed some URLs, info on Andy Adlers distros and added pipe-gnuplot.c<br>
+
+<P><U>16 May 2002</U><br>
+16 May 2002 Added Emacs & Octave question.<br>
+7 May 2002 Updated link to Paul Söderlind's distro (now 2.1.36).<br>
 
 <P><U>6 May 2002</U><br>
 (A long-awaited update.)<br>

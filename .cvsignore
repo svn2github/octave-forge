@@ -1,5 +1,5 @@
 configure
-config.log
+*.log
 config.cache
 config.status
 Makeconf.in
@@ -9,3 +9,5 @@ AUTHORS
 afunclist.html
 index
 octinst.sh
+fntests.m
+autom4te.cache

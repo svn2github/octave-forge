@@ -270,9 +270,6 @@ dnl should check that $(OCTAVE) --version matches $(MKOCTFILE) --version
 AC_CHECK_PROG(OCTAVE,octave,octave)
 OCTAVE_EVAL(OCTAVE_VERSION,OCTAVE_VERSION)
 
-dnl get the location of the octave lib directories
-OCTAVE_EVAL(octave_config_info('octlibdir'),octlibdir)
-
 dnl grab canonical host type so we can write system specific install stuff
 canonical_host_type=`echo "disp(octave_config_info('canonical_host_type'))" | $OCTAVE -qf`
 AC_SUBST(canonical_host_type)

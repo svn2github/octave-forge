@@ -73,10 +73,10 @@ $name not directly documented. Try the following:\n\
 EOF
 
 if test -f "@MEXLIB@" ; then
-  MEXPATH=`pwd`
+  MEXPATH=.
 else
   MEXPATH="@LIBPATH@"
 fi
 
 set -x
-@MKOCTFILE@ -o $name.oct mex_$name.cc -L$MEXPATH -lmex -I$MEXPATH $*
+@MKOCTFILE@ -o $name.oct mex_$name.cc $MEXPATH/mex.o -I$MEXPATH $*

@@ -2,7 +2,7 @@ sinclude ../../Makeconf
 
 ifndef OCTAVE_FORGE
 	MKOCTFILE = mkoctfile
-	opath = $(shell pwd)
+	OPATH = $(shell pwd)
 	bindir = /usr/local/bin
 	mandir = /usr/local/man
 	INSTALL = /usr/bin/install -c
@@ -15,12 +15,13 @@ man1dir = $(mandir)/man1
 
 .PHONY: install
 
-MEXLIB=libmex.$(SHLEXT)
+LIBPATH=$(OPATH)
+MEXLIB=mex.o
 
 all: $(MEXLIB) mex
 
 $(MEXLIB): mex.cc mex.h matrix.h
-	$(MKOCTFILE) $(HAVE_OCTAVE_MAP_INDEX) -o $(MEXLIB) mex.cc
+	$(MKOCTFILE) -c $(HAVE_OCTAVE_MAP_INDEX) -o $(MEXLIB) mex.cc
 
 mex: mex.in
 	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):;s:@LIBPATH@:$(LIBPATH):g;s:@MEXLIB@:$(MEXLIB):g" > mex

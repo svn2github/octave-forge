@@ -23,6 +23,10 @@
 
 #include <cfloat>
 #include <iomanip>
+#include <set>
+typedef void * Pix;
+typedef std::set<Pix> MemSet;
+
 extern "C" {
 #include <cstdlib>
 #include <csetjmp>
@@ -31,9 +35,6 @@ extern "C" {
 
 #include <octave/oct.h>
 #include <octave/pager.h>
-#include <octave/SLList.h>
-// XXX FIXME XXX --- this belongs in SLList.h, not SLList.cc
-template <class T> SLList<T>::~SLList (void) { clear(); }
 #include <octave/f77-fcn.h>
 #include <octave/unwind-prot.h>
 #include <octave/lo-mappers.h>
@@ -48,8 +49,8 @@ template <class T> SLList<T>::~SLList (void) { clear(); }
 class unwind_protect
 {
 public:
-  static void add(cleanup_func fptr, void *ptr) 
-  { 
+  static void add(cleanup_func fptr, void *ptr)
+  {
     add_unwind_protect (fptr, ptr);
   }
   static void run(void)
@@ -59,7 +60,7 @@ public:
 } ;
 
 static octave_value_list
-eval_string (const string& s, int print, int& parse_status, int nargout) 
+eval_string (const string& s, int print, int& parse_status, int nargout)
 {
   return eval_string(s,print,parse_status);
 }
@@ -136,9 +137,9 @@ public:
   void is_string(bool set) { isstr = set; }
 
   const char* name() const { return aname; }
-  void name(const char *nm) { 
-    strncpy(aname,nm,mxMAXNAM); 
-    aname[mxMAXNAM]='\0'; 
+  void name(const char *nm) {
+    strncpy(aname,nm,mxMAXNAM);
+    aname[mxMAXNAM]='\0';
   }
 
   octave_value as_octave_value() const;
@@ -160,7 +161,7 @@ octave_value mxArray::as_octave_value() const
     {
       charMatrix chm(nr,nc);
       char *pchm = chm.fortran_vec();
-      for (int i=0; i < nr*nc; i++) 
+      for (int i=0; i < nr*nc; i++)
 	pchm[i] = NINT(pr[i]);
       ret = octave_value(chm, true);
     }
@@ -234,18 +235,18 @@ public:
   void persistent(mxArray* ptr);
 
   // 1 if error should be returned to MEX file, 0 if abort
-  int trap_feval_error; 
+  int trap_feval_error;
 
   // longjmp return point if mexErrMsgTxt or error
-  jmp_buf jump;  
-  
+  jmp_buf jump;
+
   // trigger a long jump back to the mex calling function
   void abort() { longjmp(jump, 1); }
 
 private:
 
   // list of memory resources that need to be freed upon exit
-  SLList<Pix> memlist;
+  MemSet memlist;
 
   // mark a pointer to be freed on exit
   void mark(Pix p);
@@ -258,50 +259,36 @@ private:
 
 
 
-template class SLList<Pix>;
 
 // free all unmarked pointers obtained from malloc and calloc
 void mex::cleanup(Pix ptr)
 {
   mex* context = (mex*)ptr;
-  for (Pix p = context->memlist.first(); p; context->memlist.next(p))
-    ::free(context->memlist(p));
+  for (MemSet::iterator p = context->memlist.begin();
+	p != context->memlist.end(); p++)
+    ::free(*p);
   context->memlist.clear();
 }
 
-// XXX FIXME XXX --- could this be added to class SLList<T>?
-void del(SLList<Pix>& l, const Pix& v)
-{
-  if (l.front() == v)
-    l.del_front();
-  else
-    {
-      Pix before = l.first();
-      Pix p = before;
-      l.next(p);
-      while (p && l(p) != v) 
-	{
-	  before = p; l.next(p);
-	}
-      if (p) l.del_after(before);
-    }
-}
-
-
 // mark a pointer to be freed on exit
-void mex::mark(Pix p) 
-{ 
-  if (memlist.owns(p))
+void mex::mark(Pix p)
+{
+#ifdef DEBUG
+  if (memlist.find(p) != memlist.end())
     warning("%s: double registration ignored", mexFunctionName);
-  else
-    memlist.prepend(p);
+#endif
+  memlist.insert(p);
 }
 
 // unmark a pointer to be freed on exit, either because it was
 // made persistent, or because it was already freed
-void mex::unmark(Pix p) 
-{ 
-  del(memlist, p);
+void mex::unmark(Pix p)
+{
+#ifdef DEBUG
+  if (memlist.find(p) != memlist.end())
+    warning("%s: value not marked", mexFunctionName);
+#endif
+  memlist.erase(p);
 }
 
 // allocate a pointer, and mark it to be freed on exit
@@ -322,7 +309,7 @@ Pix mex::malloc(int n)
       abort();
     }
 #endif
-  
+
   mark(ptr);
   return ptr;
 }
@@ -344,20 +331,21 @@ Pix mex::realloc(Pix ptr, int n)
   abort();
 #else
   Pix v = NULL;
-  if (n == 0) 
+  if (n == 0)
     free(ptr);
-  else if (ptr == NULL) 
+  else if (ptr == NULL)
     v = malloc(n);
   else
     {
       v = ::realloc(ptr, n);
-      if (v && memlist.owns(ptr))
+      MemSet::iterator p = memlist.find(ptr);
+      if (v && p != memlist.end())
 	{
-	  del(memlist, ptr);
-	  memlist.prepend(v);
+	  memlist.erase(p);
+	  memlist.insert(v);
 	}
     }
-#endif    
+#endif
   return v;
 }
 
@@ -409,7 +397,7 @@ mxArray* mex::make_value(const octave_value &ov)
 	  const Complex * pz = cm.data();
 	  pr = (double *)malloc(nr*nc*sizeof(double));
 	  pi = (double *)malloc(nr*nc*sizeof(double));
-	  for (int i=0; i < nr*nc; i++) 
+	  for (int i=0; i < nr*nc; i++)
 	    {
 	      pr[i] = real(pz[i]);
 	      pi[i] = imag(pz[i]);
@@ -422,7 +410,7 @@ mxArray* mex::make_value(const octave_value &ov)
 	  memcpy(pr, m.data(), nr*nc*sizeof(double));
 	}
     }
-  
+
   mxArray *value = (mxArray*)malloc(sizeof(mxArray));
   value->is_string(ov.is_string());
   value->real(pr);
@@ -462,7 +450,7 @@ void mex::free_value(mxArray* ptr)
 
 // mark an array and its contents so it will not be freed on exit
 void mex::persistent(mxArray* ptr)
-{ 
+{
   persistent(Pix(ptr->real()));
   persistent(Pix(ptr->imag()));
   persistent(Pix(ptr));
@@ -475,7 +463,7 @@ mex* __mex = NULL;
 
 extern "C" {
   void F77_FUNC(mexfunction,MEXFUNCTION)
-    (const int& nargout, mxArray *plhs[], 
+    (const int& nargout, mxArray *plhs[],
      const int& nargin,  mxArray *prhs[]);
   void mexFunction(const int nargout, mxArray *plhs[],
 		   const int nargin,  mxArray *prhs[]);
@@ -494,12 +482,12 @@ static void mex_exit()
 
 enum callstyle { use_fortran, use_C };
 
-octave_value_list 
+octave_value_list
 call_mex(callstyle cs, const octave_value_list& args, const int nargout)
 {
 #if 0 /* Don't bother trapping stop/exit */
   // XXX FIXME XXX ---- should really push "mex_exit" onto the octave
-  // atexit stack before we start and pop it when we are through, but 
+  // atexit stack before we start and pop it when we are through, but
   // the stack handle isn't exported from toplev.cc, so we can't.  mex_exit
   // would have to be declared as DEFUN(mex_exit,,,"") of course.
   static bool unregistered = true;
@@ -516,10 +504,10 @@ call_mex(callstyle cs, const octave_value_list& args, const int nargout)
   mxArray * argin[nargin], * argout[nargout+1];
   for (int i=0; i < nargin; i++) argin[i] = NULL;
   for (int i=0; i < nargout+1; i++) argout[i] = NULL;
-  
+
   mex context;
   unwind_protect::add(mex::cleanup, Pix(&context));
-		      
+
   for (int i=0; i < nargin; i++) argin[i] = context.make_value(args(i));
 
   unwind_protect_ptr(__mex); // save old mex pointer
@@ -546,13 +534,13 @@ call_mex(callstyle cs, const octave_value_list& args, const int nargout)
   return retval;
 }
 
-octave_value_list 
+octave_value_list
 Fortran_mex(const octave_value_list& args, const int nargout)
 {
   return call_mex(use_fortran, args, nargout);
 }
 
-octave_value_list 
+octave_value_list
 C_mex(const octave_value_list& args, const int nargout)
 {
   return call_mex(use_C, args, nargout);
@@ -601,7 +589,7 @@ extern "C" {
       else
 	return 0;
     }
-  int mexCallMATLAB(const int nargout, mxArray* argout[], 
+  int mexCallMATLAB(const int nargout, mxArray* argout[],
 		    const int nargin, const mxArray* argin[],
 		    const char* fname)
     {
@@ -688,7 +676,7 @@ extern "C" {
     {
       double *pr =  ptr->real();
       if (pr == NULL) mexErrMsgTxt("calling mxGetScalar on an empty matrix");
-      return pr[0];	
+      return pr[0];
     }
 
   int mxGetString (const mxArray* ptr, char *buf, int buflen)
@@ -772,7 +760,7 @@ extern "C" {
 	mexErrMsgTxt("mexPutArray: 'base' symbol table not implemented");
       else
 	mexErrMsgTxt("mexPutArray: symbol table does not exist");
-      return 0;	
+      return 0;
     }
 
   mxArray *mexGetArray(const char *name, const char *space)
@@ -835,7 +823,7 @@ extern "C" {
   void F77_FUNC(mexerrmsgtxt, MEXERRMSGTXT)
     (const char *s, const int slen)
     {
-      if (slen > 1 || (slen == 1 && s[0] != ' ') ) 
+      if (slen > 1 || (slen == 1 && s[0] != ' ') )
 	error("%s: %.*s", mexFunctionName, slen, s);
       else error(""); // just set the error state; don't print msg
       __mex->abort();
@@ -877,55 +865,55 @@ extern "C" {
     {
       mxFree(ptr);
     }
-  
+
   int F77_FUNC(mxgetm,MXGETM)
-    (const mxArray* &ptr) 
-    { 
-      return mxGetM(ptr); 
+    (const mxArray* &ptr)
+    {
+      return mxGetM(ptr);
     }
 
   int F77_FUNC(mxgetn,MXGETN)
-    (const mxArray* &ptr) 
-    { 
-      return mxGetN(ptr); 
+    (const mxArray* &ptr)
+    {
+      return mxGetN(ptr);
     }
 
   Pix F77_FUNC(mxgetpi,MXGETPI)
-    (const mxArray* &ptr) 
+    (const mxArray* &ptr)
     {
       return mxGetPi(ptr);
     }
 
   Pix F77_FUNC(mxgetpr,MXGETPR)
-    (const mxArray* &ptr) 
+    (const mxArray* &ptr)
     {
       return mxGetPr(ptr);
     }
 
   void F77_FUNC(mxsetm,MXSETM)
-    (mxArray* &ptr, const int& m) 
-    { 
-      mxSetM(ptr, m); 
+    (mxArray* &ptr, const int& m)
+    {
+      mxSetM(ptr, m);
     }
 
   void F77_FUNC(mxsetn,MXSETN)
-    (mxArray* &ptr, const int& n) 
-    { 
+    (mxArray* &ptr, const int& n)
+    {
       mxSetN(ptr, n);
     }
 
   void F77_FUNC(mxsetpi,MXSETPI)
-    (mxArray* &ptr, Pix &pi) 
+    (mxArray* &ptr, Pix &pi)
     {
       mxSetPi(ptr, pi);
     }
 
   void F77_FUNC(mxsetpr,MXSETPR)
-    (mxArray* &ptr, Pix &pr) 
+    (mxArray* &ptr, Pix &pr)
     {
       mxSetPr(ptr, pr);
     }
-  
+
   int F77_FUNC(mxiscomplex,MXISCOMPLEX)
     (const mxArray* &ptr)
     {
@@ -937,25 +925,25 @@ extern "C" {
     {
       return mxIsDouble(ptr);
     }
-  
+
   int F77_FUNC(mxisnumeric,MXISNUMERIC)
     (const mxArray* &ptr)
     {
       return mxIsNumeric(ptr);
     }
-  
+
   int F77_FUNC(mxisfull,MXISFULL)
     (const mxArray* &ptr)
     {
       return 1 - mxIsSparse(ptr);
     }
-  
+
   int F77_FUNC(mxissparse,MXISSPARSE)
     (const mxArray* &ptr)
     {
       return mxIsSparse(ptr);
     }
-  
+
   int F77_FUNC(mxisstring,MXISSTRING)
     (const mxArray* &ptr)
     {
@@ -969,7 +957,7 @@ extern "C" {
     }
 
   int F77_FUNC(mexcallmatlab,MEXCALLMATLAB)
-    (const int& nargout, mxArray** argout, 
+    (const int& nargout, mxArray** argout,
      const int& nargin, const mxArray** argin,
      const char* fname,
      const int fnamelen)
@@ -988,7 +976,7 @@ extern "C" {
       double *pr = (double *)prref;
       for (int i=0; i < len; i++) pr[i] = d[i];
     }
-  
+
   void F77_FUNC(mxcopyptrtoreal8,MXCOPYPTRTOREAL8)
     (const int& prref, double *d, const int& len)
     {
@@ -996,7 +984,7 @@ extern "C" {
       double *pr = (double *)prref;
       for (int i=0; i < len; i++) d[i] = pr[i];
     }
-  
+
   void F77_FUNC(mxcopycomplex16toptr,MXCOPYCOMPLEX16TOPTR)
     (const double *d, int& prref, int& piref, const int& len)
     {
@@ -1005,7 +993,7 @@ extern "C" {
       double *pi = (double *)piref;
       for (int i=0; i < len; i++) pr[i] = d[2*i], pi[i] = d[2*i+1];
     }
-  
+
   void F77_FUNC(mxcopyptrtocomplex16,MXCOPYPTRTOCOMPLEX16)
     (const int& prref, const int& piref, double *d, const int& len)
     {
@@ -1014,5 +1002,5 @@ extern "C" {
       double *pi = (double *)piref;
       for (int i=0; i < len; i++) d[2*i]=pr[i], d[2*i+1] = pi[i];
     }
-  
+
 } ;

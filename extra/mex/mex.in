@@ -33,15 +33,20 @@ ext=${first#*.}
 #echo $name . $ext
 
 sedopt="-es/NAME/$name/"
-if test ${ext:0:1} = "f" || test ${ext:0:1} = 'F' ; then
-  sedopt="$sedopt -es/C_mex/Fortran_mex/"
-fi
+otherfn="F77_FUNC(mexfunction,MEXFUNCTION)"
+case "$ext" in
+  f*|F*)
+    sedopt="$sedopt -es/C_mex/Fortran_mex/"
+    otherfn=mexFunction
+  ;;
+esac
 #echo "$sedopt"
 
 cat <<EOF | sed $sedopt > mex_$name.cc
 #include <octave/oct.h>
 
 extern "C" {
+  void $otherfn() {}
   const char *mexFunctionName = "NAME";
 } ;
 

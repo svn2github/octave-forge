@@ -13,6 +13,8 @@ endif
 
 man1dir = $(mandir)/man1
 
+.PHONY: install
+
 all: mex.o mex
 
 mex.o: mex.cc mex.h matrix.h

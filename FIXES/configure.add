@@ -1,0 +1,47 @@
+if test -e main/fixed/NOINSTALL ; then
+
+        dnl Not installing, do nothing
+        STATUS=noinstall
+
+else
+	AC_ARG_WITH(ieee754,
+	  [  --with-ieee754          force IEEE754 compliance],
+	  with_ieee754=$withval, with_ieee754=no)
+
+
+	AC_MSG_CHECKING([IEEE 754 compliance])
+	if test "$with_ieee754" = yes; then
+		AC_MSG_RESULT(forced)
+		HAVE_IEEE754_COMPLIANCE="-DHAVE_IEEE754_COMPLIANCE"
+	else
+		dnl Test for conformance to IEEE 754 or IEEE 854 standards
+		dnl Need to temporarily change the quote to print "[]"
+		changequote(<-, ->)dnl
+		cat > conftest.c << EOF
+		int main (void) 
+		  {
+		     /* Test for IEEE754 floating point representation. */
+		     union { unsigned char c[8]; double d; }
+		     l = {{0x1c, 0xbc, 0x6e, 0xf2, 0x54, 0x8b, 0x11, 0x43}},
+		     b = {{0x43, 0x11, 0x8b, 0x54, 0xf2, 0x6e, 0xbc, 0x1c}};
+		     return l.d!=1234567891234567.0 && b.d!=1234567891234567.0;
+		  }
+EOF
+		changequote([, ])dnl
+
+		ac_try="$CC -o conftest conftest.c"
+		if AC_TRY_EVAL(ac_try) ; then
+			ac_try="./conftest"
+			if AC_TRY_EVAL(ac_try) ; then
+				AC_MSG_RESULT(yes)
+				HAVE_IEEE754_COMPLIANCE="-DHAVE_IEEE754_COMPLIANCE"
+			else
+				AC_MSG_RESULT(no)
+			fi
+		else	
+			AC_MSG_RESULT(no)
+		fi
+		rm -f conftest*
+	fi
+	AC_SUBST(HAVE_IEEE754_COMPLIANCE)
+fi

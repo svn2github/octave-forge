@@ -1,9 +1,12 @@
 include ../Makeconf
 
+# Needed for soct.oct
+SORTDEFINES=$(HAVE_IEEE754_COMPLIANCE)
+
 RAND_LINKS = randn.oct
-PROGS = rand.oct $(RAND_LINKS) 
+PROGS = sort.oct rand.oct $(RAND_LINKS) 
 #fsolve.oct
- 
+
 all: $(PROGS)
 
 $(PROGS): Makefile
@@ -11,6 +14,11 @@ $(PROGS): Makefile
 $(RAND_LINKS):
 	-$(RM) $@
 	$(LN_S) rand.oct $@
+
+rand.oct : rand.cc ziggurat.h MersenneTwister.h
+
+sort.oct : sort.cc oct-sort.cc oct-sort.h
+	$(MKOCTFILE) $(SORTDEFINES) $<
 
 # FIXES needs an install target because it isn't under main/ or extra/
 install:
@@ -23,3 +31,4 @@ install:
 
 clean: 
 	-$(RM) *.o core octave-core core *.oct *~
+

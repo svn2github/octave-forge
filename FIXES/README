@@ -51,3 +51,5 @@ toeplitz	 by 5x rather than requiring a 5x bigger memory footprint)
 triu		 
 tril
 chol.oct	(use triangle matrix type; in extra/linear-algebra/chol.cc)
+sort.oct	(use Python's mergesort algorithm for 5 times speed up on
+		random data and even better on partially sorted lists)

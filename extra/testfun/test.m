@@ -255,7 +255,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   endif
 
   ## grab the test code from the file
-  __body = system([ "sed -n 's/^%!//p' ", __file]);
+  __body = system([ "sed -n 's/^%!//p' '", __file, "'"]);
   if (isempty (__body))
     if (__grabdemo)
       __ret1 = "";

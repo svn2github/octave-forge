@@ -110,10 +110,10 @@ function retval = comms(typ, tests)
       len = length(infopath);
       if (len)
         if (len > 1 && strcmp(infopath([len-1, len]),"//"))
-          showfile = system(["find ", infopath(1:len-1), " -name ", ...
+          showfile = system(["find '", infopath(1:len-1), "' -name ", ...
                              infofile]);
         else
-          showfile = system(["find ", infopath, " -name ", infofile, ...
+          showfile = system(["find '", infopath, "' -name ", infofile, ...
                              " -maxdepth 1"]);
         endif
         if (length(showfile))
@@ -129,11 +129,11 @@ function retval = comms(typ, tests)
     endif
     
     if (exist("INFO_PROGAM")) 
-      [testout, testret] = system([INFO_PROGRAM, " --version"]);
+      [testout, testret] = system(["'", INFO_PROGRAM, "' --version"]);
       if (testret)
         error("comms: info command not found");
       else
-        system([INFO_PROGRAM, " --file ", showfile, " --node '", ...
+        system(["'", INFO_PROGRAM, "' --file '", showfile, "' --node '", ...
                 nodename, "'"]); 
       endif
     else
@@ -141,7 +141,7 @@ function retval = comms(typ, tests)
       if (testret)
         error("comms: info command not found");
       else
-        system(["info --file ", showfile, " --node '", nodename, "'"]); 
+        system(["info --file '", showfile, "' --node '", nodename, "'"]); 
       endif
     endif
   elseif (strcmp(typ,"test"))

@@ -44,7 +44,7 @@ function gout = gget(option)
   ## for the option we are interested in, then delete it.
   optfile = tmpnam;
   graw (["save set \"", optfile, "\"\n"]);  
-  rmcmd = sprintf("rm -f %s", optfile);
+  rmcmd = sprintf("rm -f '%s'", optfile);
 
   # FIXME:
   # this (tries) to prevent a race condition where the file exists,

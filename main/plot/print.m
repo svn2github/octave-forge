@@ -308,7 +308,7 @@ function print(varargin)
   end_unwind_protect
 
   if !isempty(convertname)
-    command = [ "convert ", name, " ", convertname ];
+    command = [ "convert '", name, "' '", convertname, "'" ];
     [output, errcode] = system (command);
     unlink (name);
     if (errcode)
@@ -316,7 +316,7 @@ function print(varargin)
     endif
   endif
   if doprint
-    system(sprintf ("lpr %s %s", printer, printname));
+    system(sprintf ("lpr %s '%s'", printer, printname));
     unlink(printname);
   endif
   

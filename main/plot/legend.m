@@ -171,9 +171,9 @@ function legend (varargin)
         } \
        }";
             
-  shell_cmd=["grep \"^" gnuplot_command_plot " \" " tmpfilename " | " \
-             "sed -e 's/,/ , /g' -e 's/\"/ \" /g'" " | " \
-             "awk '" awk_prog "'"];
+  shell_cmd=["grep \"^", gnuplot_command_plot, " \" '", tmpfilename, "' | ", \
+             "sed -e 's/,/ , /g' -e 's/\"/ \" /g'", " | ", \
+             "awk '", awk_prog, "'"];
 
   # wait for the file to appear
   attempt=0;
@@ -234,20 +234,20 @@ function legend (varargin)
 
     ## look for the end of the graph command i.e. ","
 
-    new_line = [deblank(plot_cmd(i++,:)) " \"" \
+    new_line = [deblank(plot_cmd(i++,:)), " \"", \
                 strrep(deblank(plot_cmd(i++,:)), "'", "") "\""];
     while ((i <= rows(plot_cmd)) && (!strcmp(deblank(plot_cmd(i,:)), ",")))
       if (strcmp(deblank(plot_cmd(i,:)), gnuplot_command_title))
-        new_line = [new_line " " gnuplot_command_title " " leg];
+        new_line = [new_line, " ", gnuplot_command_title, " ", leg];
         i++;
       else
-        new_line = [new_line " " deblank(plot_cmd(i,:))];
+        new_line = [new_line, " ", deblank(plot_cmd(i,:))];
       endif;
       i++;
     endwhile;
 
     if (length(new_plot))
-      new_plot = [ new_plot new_line];
+      new_plot = [ new_plot, new_line];
     else
       new_plot = new_line;
     endif;
@@ -257,7 +257,7 @@ function legend (varargin)
 
   ## Create a new ploting command
 
-  new_plot = [new_plot "\n"];  
+  new_plot = [new_plot, "\n"];  
   graw(new_plot);
 
   ## Check for the last argument if we don't already get it

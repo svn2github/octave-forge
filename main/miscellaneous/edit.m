@@ -96,7 +96,7 @@ function edit(file,state)
 
   ## start the editor without a file if no file is given
   if nargin < 1
-    system(['cd "',FUNCTION_HOME,'" ; ',sprintf(FUNCTION_EDITOR,"")]);
+    system(['cd "',FUNCTION_HOME,'" ; "',sprintf(FUNCTION_EDITOR,""), '"']);
     return
   endif
 
@@ -123,9 +123,9 @@ function edit(file,state)
     else
       from = path;
       path = [ FUNCTION_HOME, from(rindex(from,"/"):length(from)) ] ;
-      system (sprintf("cp %s %s", from, path));
+      system (sprintf("cp '%s' '%s'", from, path));
     endif
-    system(sprintf(FUNCTION_EDITOR, path));
+    system(sprintf(FUNCTION_EDITOR, ["'", path, "'"]));
     return
   endif
 
@@ -138,7 +138,7 @@ function edit(file,state)
   switch (ext)
     case { "cc", "m" } 0;
     otherwise
-      system(sprintf(FUNCTION_EDITOR, path));
+      system(sprintf(FUNCTION_EDITOR, ["'", path, "'"]));
       return;
   endswitch
       
@@ -276,6 +276,6 @@ SUCH DAMAGE.\
   fclose(fid);
 
   ## Finally we are ready to edit it!
-  system(sprintf(FUNCTION_EDITOR, path));
+  system(sprintf(FUNCTION_EDITOR, ["'", path, "'"]));
 
 endfunction

@@ -21,7 +21,7 @@
 ##
 ##    dx = sqrt(N*sumsq(inv(s.R'))')
 ##
-## where N = chi^2 = normr^2/df, or N = 1 if df = 0.
+## where N = normr^2/df, or N = 1 if df = 0.
 ##
 ## Example 1: weighted system
 ##
@@ -83,7 +83,7 @@ function [x_out,s]=wsolve(A,y,dy)
 
   if nargout == 0,
     cov = s.R'*s.R
-    if s.df, chisq = s.normr^2/s.df, end
+    if s.df, normalized_chisq = s.normr^2/s.df, end
     x = x'
   else
     x_out = x;

@@ -140,7 +140,7 @@ function [p_out, s] = wpolyfit (varargin)
   endif
 
   if nargout == 0
-    printf("Polynomial: %s (chi^2=%g)\n", polyout(p,'x'), s.normr/s.df);
+    printf("Polynomial: %s (chi^2/df=%g)\n", polyout(p,'x'), s.normr^2/s.df);
     plt(x,y,dy,p,s,'ci');
   else
     p_out = p;

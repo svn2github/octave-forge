@@ -46,7 +46,6 @@ function n = datenum(Y,M,D,h,m,s)
 
   n = zeros(size(Y));
   lt = localtime(0);
-  t0 = mktime(lt);
   h = h+lt.hour-24;
   for i=1:prod(size(Y))
     tm.usec = 1e6*rem(s(i),1);
@@ -67,7 +66,7 @@ function n = datenum(Y,M,D,h,m,s)
       if (t==-1 && Y(i) != 1969)
 	n(i) = -1;
       else
-      	n(i) = (t-t0) / 86400 + 719529;
+      	n(i) = t / 86400 + 719529;
       endif
     endif
   endfor

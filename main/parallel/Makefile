@@ -1,7 +1,7 @@
 
 include ../../Makeconf
 
-OCTS = close.oct  connect.oct pserver.oct  \
+OCTS = sclose.oct  connect.oct pserver.oct  \
 	recv.oct  reval.oct  send.oct
 
 

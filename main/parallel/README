@@ -82,12 +82,12 @@ reval (commands, sockets)
 
         reval ([ "a=[ 1:3 ]"; "a=a'*a" ],socket(2,:));
 
-close (sockets)
+sclose (sockets)
  Close the connections specified by the matrix "sockets".
  Returns zero on success, or nonzero if an error occurred.
  For example,
 
-        close (sockets);
+        sclose (sockets);
 
 
 
@@ -111,8 +111,7 @@ reval( "send(sum([51:100]),sockets(1,:))", sockets(3,:));
 psum(1) = recv(sockets(2,:));
 psum(2) = recv(sockets(3,:));
 sum(psum)
-reval("close(sockets)",sockets);
-close(sockets);
+scloseall(sockets);
 
 
  In the following script, the variable s="Hello, again!" 
@@ -130,8 +129,7 @@ reval( "send(s,sockets(4,:));",sockets(3,:));
 reval( "s=recv(sockets(3,:));",sockets(4,:));
 reval( "send(s,sockets(1,:));",sockets(4,:));
 s2=recv(sockets(4,:))
-reval("close(sockets)",sockets);
-close(sockets);
+scloseall(sockets);
 
 
 

@@ -44,8 +44,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 // COMM
 
-DEFUN_DLD (close, args, ,
-  "close (sockets)\n\
+DEFUN_DLD (sclose, args, ,
+  "sclose (sockets)\n\
 \n\
 Close sockets")
 {
@@ -104,11 +104,11 @@ Close sockets")
 	}
       }
       if(err)
-	error("close error %d",err);
+	error("sclose error %d",err);
       retval=(double)err;
     }
   else
-    print_usage ("close");
+    print_usage ("sclose");
 
   return retval;
 

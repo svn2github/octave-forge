@@ -1,4 +1,4 @@
-function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, phase]=mvfreqz(B,A,C,N,Fs)
+function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, coh]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
 % [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2] = mvfreqz(B,A,C,N,Fs)
 %
@@ -48,7 +48,12 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, phase]=mvfreqz(B,A,C,N,Fs)
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This is part of the TSA-toolbox. See also 
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%       http://octave.sourceforge.net/
+%       http://biosig.sourceforge.net/
+
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -72,13 +77,13 @@ p = K2/K1-1;
 q = K2/K1-1;
 %b=ones(1,q+1);
 if nargin<3
-        C = ones(K1,K1);
+        C = eye(K1,K1);
 end;
 if nargin<4,
         N = 512;
 end;
 if nargin<5,
-	Fs= 1;        
+        Fs= 1;        
 end;
 if all(size(N)==1),	
         f = (0:N-1)/N;
@@ -91,7 +96,8 @@ z = i*2*pi/Fs;
 
 h=zeros(K1,K1,N);
 g=zeros(K1,K1,N);
-SP=zeros(K1,K1,N);
+S=zeros(K1,K1,N);
+S1=zeros(K1,K1,N);
 DTF=zeros(K1,K1,N);
 COH=zeros(K1,K1,N);
 %COH2=zeros(K1,K1,N);
@@ -116,6 +122,7 @@ for n=1:N,
         end;        
         h(:,:,n) = atmp\btmp;        
         S(:,:,n) = h(:,:,n)*C*h(:,:,n)';        
+        S1(:,:,n) = h(:,:,n)*h(:,:,n)';        
         
         for k1 = 1:K1,
                 tmp = squeeze(atmp(:,k1));
@@ -134,31 +141,28 @@ for n=1:N,
         
 end;
 
-%size(detG)
-%size(squeeze(M(2,1,:)))
-%size(G(2,1,:))
-
 if nargout<4, return; end;
-        
+
 %%%%% directed transfer function
 for k1=1:K1;
         DEN=sum(abs(h(k1,:,:)).^2,2);	        
-for k2=1:K2;
-        %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
-        COH(k1,k2,:) = abs(S(k1,k2,:))./sqrt(abs(S(k1,k1,:).*S(k2,k2,:)));
-	%DTF(k1,k2,:) = sqrt(abs(h(k1,k2,:).^2))./DEN;	        
-	DTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(DEN);
-        ffDTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(sum(DEN,3));
-        pCOH2(k1,k2,:) = abs(G(k1,k2,:).^2)./(G(k1,k1,:).*G(k2,k2,:));
-        
-        M(k2,k1,:) = ((-1)^(k1+k2))*squeeze(G(k1,k2,:))./detG; % oder ist M = G?
-end;
+        for k2=1:K2;
+                %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
+                COH(k1,k2,:) = abs(S(k1,k2,:))./sqrt(abs(S(k1,k1,:).*S(k2,k2,:)));
+                coh(k1,k2,:) = abs(S1(k1,k2,:))./sqrt(abs(S1(k1,k1,:).*S1(k2,k2,:)));
+                %DTF(k1,k2,:) = sqrt(abs(h(k1,k2,:).^2))./DEN;	        
+                DTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(DEN);
+                ffDTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(sum(DEN,3));
+                pCOH2(k1,k2,:) = abs(G(k1,k2,:).^2)./(G(k1,k1,:).*G(k2,k2,:));
+                
+                M(k2,k1,:) = ((-1)^(k1+k2))*squeeze(G(k1,k2,:))./detG; % oder ist M = G?
+        end;
 end;
 
 for k1=1:K1;
-for k2=1:K2;
-        pCOH(k1,k2,:) = abs(M(k1,k2,:).^2)./(M(k1,k1,:).*M(k2,k2,:));
-end;
+        for k2=1:K2;
+                pCOH(k1,k2,:) = abs(M(k1,k2,:).^2)./(M(k1,k1,:).*M(k2,k2,:));
+        end;
 end;
 
 dDTF = pCOH2.*ffDTF; 
@@ -166,7 +170,7 @@ dDTF = pCOH2.*ffDTF;
 
 
 if nargout<6, return; end;
-        
+
 DC = zeros(K1);
 for k = 1:p,
         DC = DC + A(:,k*K1+(1:K1)).^2;
@@ -181,22 +185,20 @@ if nargout<7, return; end;
 for n=1:N,
         %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
         M(k1,k2,n) = det(squeeze(S([1:k1-1,k1+1:K1],[1:k2-1,k2+1:K2],n)));
-        
 end;
 
 for k1=1:K1;
-for k2=1:K2;
-for n=1:N,
-        %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
-         M(k1,k2,n) = det(squeeze(S([1:k1-1,k1+1:K1],[1:k2-1,k2+1:K2],n)));
-        
-end;
-end;
+        for k2=1:K2;
+                for n=1:N,
+                        %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
+                        M(k1,k2,n) = det(squeeze(S([1:k1-1,k1+1:K1],[1:k2-1,k2+1:K2],n)));
+                end;
+        end;
 end;
 
 for k1=1:K1;
-for k2=1:K2;
-        pCOH(k1,k2,:) = abs(M(k1,k2,:).^2)./(M(k1,k1,:).*M(k2,k2,:));
-end;
+        for k2=1:K2;
+                pCOH(k1,k2,:) = abs(M(k1,k2,:).^2)./(M(k1,k1,:).*M(k2,k2,:));
+        end;
 end;
 

@@ -18,6 +18,8 @@
 ## Author:        Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ## Based on fields.m by Etienne Grossmann  <etienne@isr.ist.utl.pt>
 
+## This program is in the public domain.
+
 function f = fieldnames(s)
   f = list() ;
   i = 1 ;

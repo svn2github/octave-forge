@@ -63,6 +63,7 @@ WriteMakefile(
     'NAME'         => 'Inline::Octave',
     'VERSION_FROM' => 'Octave.pm',
     'PREREQ_PM'    => { 'Inline'   => 0.43,
-                        'IPC::Run' => 0.78 },
+#                       'IPC::Run' => 0.78
+                      },
     'clean'        => {FILES => '_Inline/'},  
 );

@@ -17,24 +17,23 @@
 ## ind = sub2ind (dims, s1, s2, ...)
 ## ind = sub2ind (dims, S)
 ##
-## Convert SUBscripts into a linear INDex.  If S is a matrix, use
+## Convert SUBscripts into a linear INDex.  If only 2 arguments and more
+## than 1 dimension, the second argument S should be a matrix with
 ## one column per subscript.
 ##
 ## See also: ind2sub
 
 ## Author:        Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function ind = sub2ind (dims, s, ...)
+function ind = sub2ind (dims, s, varargin)
 
   if nargin-1 == length (dims)
 
     ind = s(:);
-    n = length ( ind );
     scale = cumprod(dims(:));
-    va_start();
-    for i=1:nargin-2
-      v = va_arg();
-      if (length(v) != n)
+    for i=1:length(varargin)
+      v = varargin{i};
+      if (any(size(v) != size(s)))
 	error("sub2ind: each index must have the same length");
       endif
       ind = ind + (v(:)-1)*scale(i);

@@ -17,22 +17,18 @@
 ## Build a block-diagonal matrix from all the arguments
 
 ## Author: Daniel Calvelo
-function y = blkdiag(...),
-  nin = 0;
-  va_start();
-  sizes = zeros( nargin, 2 );
-  while( ++nin <= nargin ),
-    m = va_arg();
-    if ~isnumeric( m ),
-      error("Non-numeric argument found.");
+function y = blkdiag(varargin)
+  sizes = zeros (nargin, 2);
+  for i=1:nargin
+    m = varargin{i};
+    if ~isnumeric (m),
+      error ("Non-numeric argument found.");
     endif
-    sizes(nin,:) = size( m );
-  endwhile
+    sizes (i, :) = size (m);
+  endfor
   csz = [ 0, 0 ; cumsum(sizes) ];
-  y = zeros( max(csz) );
-  va_start();
-  nin = 0;
-  while(++nin <= nargin),
-    y(csz(nin,1)+1:csz(nin+1,1) , csz(nin,2)+1:csz(nin+1,2)) = va_arg();
-  endwhile
+  y = zeros (csz (rows (csz), :));
+  for i=1:nargin
+    y (csz(i,1)+1:csz(i+1,1) , csz(i,2)+1:csz(i+1,2)) = varargin{i};
+  endfor
 endfunction

@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.28  2004/08/25 16:13:57  adb014
+Working, but inefficient, concatentaion code
+
 Revision 1.27  2004/08/02 18:46:57  aadler
 some code for concat operators
 
@@ -294,16 +297,7 @@ public:
    octave_value_list find( void ) const;
 
 #ifdef HAVE_OCTAVE_CONCAT
-#if 0
-   octave_sparse concat (const octave_sparse& ra, const octave_sparse& rb, 
-                         const Array<int>& ra_idx);
-   octave_sparse concat (const octave_sparse& ra, const Matrix& rb, 
-                         const Array<int>& ra_idx);
-   octave_sparse concat (const Matrix& ra, const octave_sparse& rb, 
-                         const Array<int>& ra_idx);
-#endif
-
-   octave_complex_sparse& insert (const octave_complex_sparse& a, int r, int c);
+   octave_value resize (const dim_vector& dv) const;
 #endif
 
 #ifdef CLASS_HAS_LOAD_SAVE
@@ -392,20 +386,7 @@ public:
    octave_value_list find( void ) const;
 
 #ifdef HAVE_OCTAVE_CONCAT
-   octave_value 
-   octave_sparse::resize (const dim_vector& dv) const;
-   
-   friend octave_sparse concat (const octave_sparse& ra,
-                                const octave_sparse& rb, 
-                                const Array<int>& ra_idx);
-#if 0
-   octave_sparse concat (const octave_sparse& ra, const Matrix& rb, 
-                         const Array<int>& ra_idx);
-   octave_sparse concat (const Matrix& ra, const octave_sparse& rb, 
-                         const Array<int>& ra_idx);
-#endif
-
-   octave_sparse& insert (const octave_sparse& a, int r, int c);
+   octave_value resize (const dim_vector& dv) const;
 #endif
 
 #ifdef CLASS_HAS_LOAD_SAVE
@@ -574,6 +555,12 @@ create_SuperMatrix( int nr, int nc, int nnz,
                     Complex * coef,
                     int * ridx,
                     int * cidx );
+
+#if HAVE_OCTAVE_CONCAT
+SuperMatrix 
+concat (const SuperMatrix& ra, const SuperMatrix& rb,
+	const Array<int>& ra_idx);
+#endif
 
 void
 LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,

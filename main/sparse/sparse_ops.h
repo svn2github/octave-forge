@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.13  2004/08/25 16:13:57  adb014
+Working, but inefficient, concatentaion code
+
 Revision 1.12  2004/08/03 14:45:31  aadler
 clean up ASSEMBLE_SPARSE macro
 
@@ -299,10 +302,11 @@ Revision 1.1  2001/03/30 04:34:23  aadler
          } \
       } \
       else { \
-         if( REJECT_OUT_OF_RANGE ) \
-            error("sparse (row,col) index (%d,%d) out of range", rowidx,colidx); \
-         actual_nnz=0; \
-	 break; \
+	if( REJECT_OUT_OF_RANGE ) { \
+	  error("sparse (row,col) index (%d,%d) out of range", rowidx,colidx);\
+          actual_nnz=0; \
+	  break; \
+	} \
       } \
    } \
  \
@@ -340,6 +344,32 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    SuperMatrix X= create_SuperMatrix( m, n, ii+1, coefX, ridxX, cidxX ); \
    oct_sparse_free( sidx );
 
+// destructively resize a sparse matrix
+#define SPARSE_RESIZE( TYPX, VECTYP) \
+  /* Special case the redimensioning to an empty matrix */ \
+  if (dv.numel() == 0) \
+    return new octave_sparse (create_SuperMatrix (0, 0, 0, (TYPX *)0, \
+						  0, 0)); \
+\
+  /* Special case the redimensioning of an empty matrix */ \
+  NCformat * Xstore  = (NCformat * ) X.Store; \
+  if (Xstore->nnz == 0) \
+    { \
+      int * colptr = (int *) oct_sparse_malloc ((dv(1) + 1) * sizeof(int)); \
+      for (int i = 0; i <= dv(1); i++) \
+	colptr [i] = 0; \
+      return new octave_sparse (create_SuperMatrix (dv(0), dv(1), 0, \
+						    (TYPX *)0, 0, colptr)); \
+    } \
+\
+  octave_value_list find_val= find(); \
+  int n= (int) dv(1); \
+  int m= (int) dv(0); \
+  ColumnVector ridxA= find_val(0).column_vector_value(); \
+  ColumnVector cidxA= find_val(1).column_vector_value(); \
+  VECTYP ## ColumnVector coefA= find_val(2).column_vector_value(); \
+  int assemble_do_sum = 0; \
+  ASSEMBLE_SPARSE( TYPX, false);
 
 // assemble a sparse matrix from full
 //   called by one arg for sparse
@@ -568,3 +598,23 @@ fixrow_comp( const void *i, const void *j)  \
    } /* for n */ \
    cidxX[Unr]= cx; \
    maybe_shrink( cx, nnz, ridxX, coefX );
+
+#ifdef HAVE_OCTAVE_CONCAT
+#define DEFCATOP_SPARSE_FN(name, ret, t1, t2, e1, e2, f)	\
+  CATOPDECL (name, a1, a2)	     \
+  { \
+    DEBUGMSG("CATOP ## name ## t1 ## t2 ## f"); \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    SuperMatrix B = f (v1.e1 (), v2.e2 (), ra_idx); \
+    if (error_state) \
+      return new octave_ ## ret (); \
+    else \
+      return new octave_ ## ret (B); \
+  }
+
+#define INSTALL_SPARSE_CATOP(t1, t2, f) INSTALL_CATOP(t1, t2, f) 
+#else
+#define DEFCATOP_SPARSE_FN(name, ret, t1, t2, e1, e2, f) 
+#define INSTALL_SPARSE_CATOP(t1, t2, f)
+#endif
+

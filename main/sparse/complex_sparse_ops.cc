@@ -87,7 +87,8 @@ octave_complex_sparse::octave_complex_sparse (SuperMatrix A )
 
 octave_complex_sparse::octave_complex_sparse (void )
 {
-   DEBUGMSG("complex_sparse( void)");
+  DEBUGMSG("complex_sparse( void)");
+  X = create_SuperMatrix (0, 0, 0, (Complex *)0, 0, 0);
 }
 
 octave_complex_sparse::~octave_complex_sparse (void)
@@ -511,11 +512,19 @@ octave_complex_sparse::subsref( const std::string SUBSREF_STRREF type,
 }
 
 #if HAVE_OCTAVE_CONCAT
-octave_complex_sparse&
-octave_complex_sparse::insert( const octave_complex_sparse& b, int r, int c)
+octave_value 
+octave_complex_sparse::resize (const dim_vector& dv) const
 {
-  printf("doing sp_cat with r=%d c=%d", r, c);
-  return *this;
+  DEBUGMSG("complex_sparse_resize");
+  if (dv.length() > 2) {
+    error ("Can not resize complex sparse matrix to NDArray");
+    return octave_value ();
+  }
+
+  SPARSE_RESIZE (Complex, Complex)
+
+  //dPrint_CompCol_Matrix("octave sparse", (SuperMatrix *) &X);
+  return new octave_complex_sparse (X);
 }
 #endif
 
@@ -1473,6 +1482,13 @@ SuperMatrix oct_matrix_to_sparse(const ComplexMatrix & A) {
    return X;
 }
 
+DEFCATOP_SPARSE_FN (sm_csm, complex_sparse, sparse, complex_sparse, 
+		    super_matrix, super_matrix, concat)
+DEFCATOP_SPARSE_FN (csm_sm, complex_sparse, complex_sparse, sparse, 
+		    super_matrix, super_matrix, concat)
+DEFCATOP_SPARSE_FN (csm_csm, complex_sparse, complex_sparse, complex_sparse, 
+		    super_matrix, super_matrix, concat)
+
 void install_complex_sparse_ops() {
    //
    // unitary operations
@@ -1559,6 +1575,10 @@ void install_complex_sparse_ops() {
    INSTALL_BINOP (op_mul,      octave_complex_sparse, octave_complex_sparse, cs_cs_mul);
    INSTALL_BINOP (op_mul,      octave_complex_sparse, octave_sparse,         cs_s_mul);
    INSTALL_BINOP (op_mul,      octave_sparse,         octave_complex_sparse, s_cs_mul);
+
+   INSTALL_SPARSE_CATOP (octave_sparse, octave_complex_sparse, sm_csm);
+   INSTALL_SPARSE_CATOP (octave_complex_sparse, octave_sparse, csm_sm);
+   INSTALL_SPARSE_CATOP (octave_complex_sparse, octave_complex_sparse, csm_csm);
 }
 
 // functions for splu and inverse
@@ -1734,6 +1754,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.31  2004/08/25 16:13:57  adb014
+ * Working, but inefficient, concatentaion code
+ *
  * Revision 1.30  2004/08/03 14:45:30  aadler
  * clean up ASSEMBLE_SPARSE macro
  *

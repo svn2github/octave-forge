@@ -223,7 +223,6 @@ DEFUN_DLD (cyclgen, args, nargout,
     mask <<= 1;
     if (mask & ((unsigned long long)1<<mm))
       mask ^= p;
-    mask &= n;
   }
 
   Matrix parity(mm,n,0);

@@ -80,7 +80,7 @@ do_is_cyclic_polynomial (const unsigned long long& a1, const int& n, const int& 
   y(0) = 1;
   y(n) = 1;
   x(0) = 1;
-  for (int i=0; i < n+1; i++)
+  for (int i=0; i < m+1; i++)
     a(i) = (a1 & (1UL <<  i) ? 1 : 0);
 
   Array<int> b = filter_gf2 (y, a, x, n);
@@ -188,7 +188,7 @@ DEFUN_DLD (cyclpoly, args, nargout,
   switch (type) {
   case CYCLIC_POLY_MIN:
     cyclic_polys.resize(1);
-    for (unsigned long long i = ((unsigned long long)1<<m)+1; i < ((unsigned long long)1<<(1+m)); i+=2)
+    for (unsigned long long i = (1UL<<m)+1; i < (1UL<<(1+m)); i+=2)
       if (do_is_cyclic_polynomial(i, n, m)) {
 	cyclic_polys(0) = (double)i;
 	break;
@@ -196,14 +196,14 @@ DEFUN_DLD (cyclpoly, args, nargout,
     break;
   case CYCLIC_POLY_MAX:
     cyclic_polys.resize(1);
-    for (unsigned long long i = ((unsigned long long)1<<(m+1))-1; i > ((unsigned long long)1<<m); i-=2)
+    for (unsigned long long i = (1UL<<(m+1))-1; i > (1UL<<m); i-=2)
       if (do_is_cyclic_polynomial(i, n, m)) {
 	cyclic_polys(0) = (double)i;
 	break;
       }
     break;
   case CYCLIC_POLY_ALL:
-    for (unsigned long long i = ((unsigned long long)1<<m)+1; i < ((unsigned long long)1<<(1+m)); i+=2)
+    for (unsigned long long i = (1UL<<m)+1; i < (1UL<<(1+m)); i+=2)
       if (do_is_cyclic_polynomial(i, n, m)) {
 	cyclic_polys.resize(cyclic_polys.length()+1);
 	cyclic_polys(cyclic_polys.length()-1) = (double)i;

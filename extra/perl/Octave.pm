@@ -6,8 +6,7 @@
 
 package Inline::Octave;
 
-
-$VERSION = '0.15';
+$VERSION = '0.17';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
@@ -125,7 +124,7 @@ sub _validate
   my $switches= "-qfH";
   my $octave_interpreter_bin;
 
-  $octave_interpreter_bin= 'octave' # _EDITLINE_MARKER_
+  $octave_interpreter_bin= 'C:/cygwin/bin/octave-2.1.36.exe' # _EDITLINE_MARKER_
      unless $octave_object->{INTERP};
 
   $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
@@ -341,6 +340,46 @@ END {
    Inline::Octave::stop_interpreter() if $octave_object;
 }
 
+# define a generic Inline::Octave->new
+# which will figure out which class best suits the
+# new object
+# This is not OO. It directly calls the other packages,
+# but the idea is to put all the non OO stuff here.
+
+sub fix_octave_type
+{
+    my $m = shift;
+    if    ($m->{"complex"}) {
+        return Inline::Octave::ComplexMatrix->new($m);
+    }
+    elsif ($m->{"string"}) {
+        return Inline::Octave::String->new($m);
+    }
+    else {
+        return Inline::Octave::Matrix->new($m);
+    }
+}
+sub new
+{
+   my $class = shift; #this is Inline::Octave, but we don't care
+   my ($m, $rows, $cols) = @_;
+
+   if ( (ref($m) eq "Inline::Octave::Matrix"       ) or
+        (ref($m) eq "Inline::Octave::String"       ) or 
+        (ref($m) eq "Inline::Octave::ComplexMatrix") ) {
+      return fix_octave_type($m);
+   }
+   elsif ((ref $m eq "ARRAY") ||
+          (ref $m eq "Math::Complex" ) ||
+          (ref $m eq "" ) ) {
+          # here we have data or numbers, we write it
+          # to a complex matrix just in case
+      return fix_octave_type( Inline::Octave::ComplexMatrix->new($m) );
+   } else {
+      croak "Can't construct Inline::Octave from Perl var of type:".ref($m);
+   }
+} #new - no return required at end
+
 #
 # Inline::Octave::String contains the code
 # to handle octave String objects
@@ -456,11 +495,9 @@ sub new
    my $do_transpose= '';
    my $code;
 
-   if    (ref $m      eq "Inline::Octave::Matrix") {
-      my $prev_varname= $m->{varname};
-      $code= "$varname= $prev_varname;";
-   }
-   elsif (ref $m      eq "Inline::Octave::String") {
+   if  ( (ref $m      eq "Inline::Octave::Matrix") ||
+         (ref $m      eq "Inline::Octave::String") ||
+         (ref $m      eq "Inline::Octave::ComplexMatrix") ) {
       my $prev_varname= $m->{varname};
       $code= "$varname= $prev_varname;";
    }
@@ -484,7 +521,10 @@ sub new
       $cols= 1 unless defined $cols;
       @vals= @{$m};
    }
-   elsif (ref $m eq "" ) {
+   elsif ((ref $m eq "Math::Complex") ||
+          (ref $m eq "" )) {
+          # here we have data or numbers, we write it
+          # to a complex matrix just in case
       $rows= 1 unless defined $rows;
       $cols= 1 unless defined $cols;
       @vals = ($m);
@@ -684,16 +724,16 @@ use overload
 
 sub oct_matrix_arithmetic
 {
-   my $a= new Inline::Octave::Matrix( shift );
-   my $b= new Inline::Octave::Matrix( shift );
+   my $a= Inline::Octave->new( shift );
+   my $b= Inline::Octave->new( shift );
    ($b,$a)= ($a,$b) if shift;
    my $op= shift;
 
-   my $v= new Inline::Octave::Matrix( $retcode_value );
+   my $v= Inline::Octave::Matrix->new( $retcode_value );
 
    my $code= $v->name."=". $a->name ." $op ". $b->name .';';
    run_math_code( $code, $v);
-   return $v;
+   return Inline::Octave->new($v);
 }   
 
 # usage
@@ -792,7 +832,11 @@ unless ($Inline::Octave::methods_defined) {
 
    for my $meth ( sort keys %methods ) {
       no strict 'refs';
+#     my $nargout= "Inline::Octave::$methods{$meth};
       my $nargout= $methods{$meth};
+#     we are inserting these methods into the current package
+#     however Test::Harness gives lots of warnings - I don't know
+#     why.
       *$meth = sub {
          my $code= "[";
 
@@ -874,8 +918,14 @@ TODO LIST:
        Inline::Octave::interpret(0, $code );
    9. Add support for passing Strings to Octave
   10. Errors in Octave should die in perl
+       - this involves a tricky Open3 read of stderr.
+  11. Refactor out the common code in Inline::Octave::Matrix
+       into an Inline::Octave::Variable class
 
 $Log$
+Revision 1.16  2002/10/29 03:59:29  aadler
+improved complex code
+
 Revision 1.15  2002/05/01 02:19:40  aadler
 Initial work to add Inline::Octave::ComplexMatrix
 

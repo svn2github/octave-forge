@@ -4,7 +4,7 @@ BEGIN {
            plan(tests => 73) ;
 }
 
-         
+
 
 use Inline Octave => q{
    function t=alleq(a,b); t= all(all(a==b)); endfunction
@@ -54,7 +54,7 @@ my %methods = (
     'atanh' => 1.05924571848258,
     'ceil' => 1,
     'conj' => 0.785375,
-    'cos' => 0.70712315999226,
+    'cos' => 0.707123159992261,
     'cosh' => 1.32458896823663,
     'cumprod' => 0.785375,
     'cumsum' => 0.785375,

@@ -2,7 +2,7 @@ use strict;
 use Test;
  
 BEGIN {
-           plan(tests => 3) ;
+           plan(tests => 5) ;
 }
          
 use Inline Octave => q{ };
@@ -12,9 +12,14 @@ use Math::Complex;
 {
    my $v= [1,1,2,3 + 6*i,4];
    my $c= Inline::Octave::ComplexMatrix->new($v);
-   my @l= $c->as_list();
+   my @l1= $c->as_list();
+   ok(alleq ($v, \@l1));
 
-   ok(alleq ($v, \@l));
+   my @l2= (5*$c)->as_list();
+   ok(alleq ([5,5,10,15+30*i,20], \@l2));
+
+   my @l3= ([5-1*i]*$c)->as_list();
+   ok(alleq ([5-1*i,5-1*i,10-2*i,21+27*i,20-4*i], \@l3));
 }
 
 {

@@ -420,7 +420,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
 
 endfunction
 
-%!shared today
+%!shared nowvec
 %! nowvec=datevec(now); % Some tests could fail around midnight!
 %!assert (datevec("07-Sep-2000 15:38:09"),[2000,9,7,15,38,9]);
 %!assert (datevec("07-Sep-2000"),[2000,9,7,0,0,0]);
@@ -435,7 +435,7 @@ endfunction
 %!assert (datevec("3:38 PM"),[nowvec(1:3),15,38,0]);
 %!assert (datevec("Q3-00"),[2000,7,1,0,0,0]);
 %!assert (datevec("Mar.03.1962 13:53:06"),[1962,3,3,13,53,6]);
-%!assert (datavec("03/13/1962"),[1962,3,13,0,0,0]);
+%!assert (datevec("03/13/1962"),[1962,3,13,0,0,0]);
 %!assert (datevec("1995/03/13"),[1995,3,13,0,0,0]);
 %!assert (datevec("Q4-2132"),[2132,10,1,0,0,0]);
 %!assert (datevec("Mar2047"),[2047,3,1,0,0,0]);

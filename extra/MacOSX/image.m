@@ -22,20 +22,22 @@
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{A}, @var{zoom})
 ## Display a matrix as a color image.  The elements of @var{x} are indices
 ## into the current colormap and should have values between 1 and the
-## length of the colormap.  If @var{zoom} is omitted, the image will be
-## scaled to fit within 600x350 (to a max of 4).
-##
-## It first tries to use @code{convert} to make a TIFF representation which is then sent to the application set to handle images (default is Preview.app), if that fails it subsequently tries @code{display} from @code{ImageMagick} then
-## @code{xv} and then @code{xloadimage}.
-##
+## length of the colormap.  
+## 
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}. At present they are ignored.
+##
+## The @var{zoom} option is ignored on Mac OS X.
+##
+## The image is displayed by the application set as the default for
+## opening .bmp files (defaults to Preview.app).  
 ## @end deftypefn
 ## @seealso{imshow, imagesc, and colormap}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
 ## Adapted-By: jwe
+## Mac OS X adaptation by J. Koski 6/24/04
 
 function image (x, y, A, zoom)
 
@@ -60,6 +62,7 @@ function image (x, y, A, zoom)
   if isempty(zoom)
     ## Find an integer scale factor which sets the image to
     ## approximately the size of the screen.
+    ## N.B. This parameter is discarded on OS X. 
     zoom = min ([350/rows(A), 600/columns(A), 4]);
     if (zoom >= 1)
       zoom = floor (zoom);
@@ -67,28 +70,13 @@ function image (x, y, A, zoom)
       zoom = 1 / ceil (1/zoom);
     endif
   endif
-  ppm_name = tmpnam ();
 
-  saveimage (ppm_name, A, "ppm");
-
-  ## Start the viewer.  Try xv, then xloadimage.
-
-  xv = sprintf ("xv -expand %f '%s'", zoom, ppm_name);
-
-  xloadimage = sprintf ("xloadimage -zoom %f '%s'", zoom*100, ppm_name);
-
-  ## ImageMagick:
-  im_display = sprintf ("display -geometry %f%% '%s'", zoom*100, ppm_name);
- 
-  ## MacOSX:
-  mac = sprintf("convert -geometry %f%% '%s' '%s.tiff';open '%s.tiff'", zoom*100, ppm_name,ppm_name,ppm_name);
-
-  rm = sprintf ("rm -f '%s'", ppm_name);
-
-  ## Need to let the shell clean up the tmp file because we are putting
-  ## the viewer in the background.
-
-  system (sprintf ("( %s || %s || %s || %s && %s ) > /dev/null 2>&1 &", mac, im_display, xv, xloadimage, rm));
-
+  ## Mac OS X - write .bmp file to Preview.app 
+  temp_name = tmpnam();
+  bmp_name = [temp_name, '.bmp'];
+  colors = colormap();
+  bmpwrite(A, colors, bmp_name); 
+  mark_for_deletion(bmp_name);
+  system(['open ', bmp_name]);
 
 endfunction

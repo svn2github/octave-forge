@@ -72,5 +72,11 @@ $name not directly documented. Try the following:\n\
 }
 EOF
 
+if test -f mex.o ; then
+  MEXPATH=.
+else
+  MEXPATH="@OPATH@"
+fi
+
 set -x
-@MKOCTFILE@ -o $name.oct mex_$name.cc @OPATH@/mex.o -I@OPATH@ $*
+@MKOCTFILE@ -o $name.oct mex_$name.cc $MEXPATH/mex.o -I$MEXPATH $*

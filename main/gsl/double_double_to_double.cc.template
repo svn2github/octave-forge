@@ -13,12 +13,12 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
     
     if(args.length() != 2) {
 	print_usage ("GSL_OCTAVE_NAME");
-	return octave_value_list();
+	return octave_value();
     }
     if(!args(0).is_real_type() || !args(1).is_real_type()) {
         error("The arguments must be real.");
 	print_usage ("GSL_OCTAVE_NAME");	    
-	return octave_value_list();
+	return octave_value();
     }
 
     // Nice combinatorial explosion here
@@ -33,7 +33,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 		y.xelem(i) = GSL_FUNC_NAME (n.xelem(i),
 					    x.xelem(i));
 	    }
-	    return octave_value_list(y);	    
+	    return octave_value(y);	    
 	} else {
 	    NDArray err(dv);
 	    gsl_sf_result result;
@@ -44,7 +44,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 		y.xelem(i) = result.val;
 		err.xelem(i) = result.err;
 	    }
-	    retval = octave_value_list(y);
+	    retval(0) = octave_value(y);
 	    retval.append(err);
 	    return retval;
 	}
@@ -58,7 +58,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 		y.xelem(i) = GSL_FUNC_NAME (ndouble,
 					    x.xelem(i));
 	    }
-	    return octave_value_list(y);	    
+	    return octave_value(y);	    
 	} else {
 	    NDArray err(dv);
 	    gsl_sf_result result;
@@ -68,7 +68,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 		y.xelem(i) = result.val;
 		err.xelem(i) = result.err;
 	    }
-	    retval = octave_value_list(y);
+	    retval(0) = octave_value(y);
 	    retval.append(err);
 	    return retval;
 	}
@@ -82,7 +82,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 		y.xelem(i) = GSL_FUNC_NAME (n.xelem(i),
 					    xdouble);
 	    }
-	    return octave_value_list(y);	    
+	    return octave_value(y);	    
 	} else {
 	    NDArray err(dv);
 	    gsl_sf_result result;
@@ -93,7 +93,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 		y.xelem(i) = result.val;
 		err.xelem(i) = result.err;
 	    }
-	    retval = octave_value_list(y);
+	    retval(0) = octave_value(y);
 	    retval.append(err);
 	    return retval;
 	}
@@ -102,6 +102,6 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 	print_usage ("GSL_OCTAVE_NAME");	
     }
 
-    return octave_value_list();
+    return octave_value();
 
 }

@@ -12,12 +12,12 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
     
     if(args.length() != 1) {
 	print_usage ("GSL_OCTAVE_NAME");
-	return octave_value_list();
+	return octave_value();
     }
     if(!args(0).is_real_type()) {
         error("The argument must be real.");
 	print_usage ("GSL_OCTAVE_NAME");	    
-	return octave_value_list();
+	return octave_value();
     }
 
     NDArray x = args(0).array_value();
@@ -29,7 +29,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 	for(i = 0; i < lx; i++) {
 	    y.xelem(i) = GSL_FUNC_NAME (x.xelem(i));
 	}
-	return octave_value_list(y);	    
+	return octave_value(y);	    
     } else {
 	NDArray err(x.dims());
 	gsl_sf_result result;
@@ -39,12 +39,12 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 	    y.xelem(i) = result.val;
 	    err.xelem(i) = result.err;
 	}
-	retval = octave_value_list(y);
+	retval(0) = octave_value(y);
 	retval.append(err);
 	return retval;
     }
 
-    return octave_value_list();
+    return octave_value();
 
 }
 

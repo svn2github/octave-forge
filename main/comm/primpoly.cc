@@ -102,12 +102,18 @@ DEFUN_DLD (primpoly, args, nargout,
 {
   octave_value retval;
   int nargin = args.length ();
-  int m = args(0).int_value();
+  int m;
   int k=0;
   bool disp = true;
   enum primpoly_type type = PRIMPOLY_MIN;
   RowVector primpolys;
 
+  if (nargin < 1 || nargin > 3) {
+    error ("primpoly: wrong number of arguments");
+    return retval;
+  }
+
+  m = args(0).int_value();
 
   // The upper limit is an artifical limit caused by memory requirements
   // in do_is_primitive. m=22 uses an array of 32MBytes!!
@@ -176,11 +182,6 @@ DEFUN_DLD (primpoly, args, nargout,
       error ("primpoly: incorrect argument type");
       return retval;
     }
-  }
-
-  if (nargin < 1 || nargin > 3) {
-    error ("primpoly: wrong number of arguments");
-    return retval;
   }
 
   switch (type) {

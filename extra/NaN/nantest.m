@@ -18,42 +18,45 @@
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.15
-%	12 Mar 2002
+%	Version 1.16
+%	15 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org
 
 
-flag_implicit_skip_nan(1);
-flag_implicit_unbiased_estim(1);
-r=zeros(17,1);
+r=zeros(17,2);
 
+x = [5,NaN,0,1,nan];
 
-x = [NaN,0,1,nan];
-
-r(1) =sumskipnan(x(1));
-r(2) =mean(x);
-r(3) =std(x);
-r(4) =var(x);
-r(5) =skewness(x);
-r(6) =kurtosis(x);
-r(7) =sem(x);
-r(8) =median(x);
-r(9) =mad(x);
-tmp  =zscore(x); r(10)=tmp(2);
-r(11)=coefficient_of_variation(x);
-r(12)=geomean(x);
-r(13)=harmmean(x);
-r(14)=meansq(x);
-r(15)=moment(x,6);
-r(16)=rms(x);
-r(17)=sem(x);
-
-tmp=[0,.5,sqrt(.5),.5,0,-2.5,.5,.5,1,-sqrt(.5),sqrt(2),0,0,.5,1,sqrt(.5),.5]';
-if all(abs(r-tmp)<eps)
-        fprintf(1,'NANTEST successful\n');
-else
-        fprintf(1,'NANTEST %i not successful\n', find(abs(r-tmp)>eps | isnan(r)));
+% run test, k=1: with NaNs, k=2: all NaN's are removed
+for k=1:2,
+        if k==2, x(isnan(x))=[]; end; 
+        r(1,k) =sumskipnan(x(1));
+        r(2,k) =mean(x);
+        r(3,k) =std(x);
+        r(4,k) =var(x);
+        r(5,k) =skewness(x);
+        r(6,k) =kurtosis(x);
+        r(7,k) =sem(x);
+        r(8,k) =median(x);
+        r(9,k) =mad(x);
+        tmp  =  zscore(x); r(10,k)=tmp(1);
+        r(11,k)=coefficient_of_variation(x);
+        r(12,k)=geomean(x);
+        r(13,k)=harmmean(x);
+        r(14,k)=meansq(x);
+        r(15,k)=moment(x,6);
+        r(16,k)=rms(x);
+        r(17,k)=sem(x);
 end;
 
-        
+% check if result is correct
+tmp = abs(r(:,1)-r(:,2))<eps;
+
+% output
+if all(tmp)
+        fprintf(1,'NANTEST successful - your NaN-tools are installed correctely\n');
+else
+        fprintf(1,'NANTEST %i not successful\n', find(~tmp));
+end;
+

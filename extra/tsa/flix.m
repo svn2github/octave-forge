@@ -12,22 +12,30 @@ function Y=flix(D,x)
 %
 % see also: HIST2RES, Y2RES, PLOTCDF
 
-%	Version 2.75
-%	21.Sep.2001
-%	Copyright (c) by 2001 Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 2.99  	9 May 2002
+%	Copyright (C) by 2001-2002 Alois Schloegl    <a.schloegl@ieee.org>	
+
+
+% In case you need to restore the flag, de-comment the following and the last line, 
+% if exist('OCTAVE_VERSION')>2, FLAG_DFI = do_fortran_indexing; end;
+
+do_fortran_indexing = 1; 
 
 
 [dr,dc] = size(D);
-Y = zeros(size(x));
+D  = reshape(D,dr*dc,1);
+Y  = zeros(size(x));
 
-k1 = ((x>=1) & (x<=dr*dc));
+k1 = ((x >= 1) & (x <= dr*dc));
 Y(~k1) = NaN;
 
-k = rem(x,1); 		% distance to next sample	 
+k  = rem(x,1); 		% distance to next sample	 
 
 ix = find(~k & k1); 	% find integer indices
 Y(ix) = D(x(ix)); 	% put integer indices
 
 ix = find(~~k & k1); 	% find non-integer indices
 Y(ix) = D(floor(x(ix))).*(1-k(ix)) + D(ceil(x(ix))).*k(ix);  
+
+
+% if exist('OCTAVE_VERSION')>2, do_fortran_indexing = FLAG_DFI; end;

@@ -22,8 +22,10 @@ function r = ranks(X,Mode);
 % --
 
 
-%    Version 1.26  Date: 06 Sep 2002
-%    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%    $Id$
+%    Copyright (C) 2000-2002,2005 by  Alois Schloegl <a.schloegl@ieee.org>	
+%    This script is part of the NaN-toolbox
+%    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -108,7 +110,7 @@ elseif strcmp(Mode(1:min(11,length(Mode))),'advanced   '), % advanced
                 end;
         end;
         tmp = version;
-	if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6))<=2018,
+	if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5))*10<2020,
                 for k1=1:size(X,1),
                         for k2=1:size(X,2),	% needed for 2.0.17 
                                 if isnan(X(k1,k2)), 

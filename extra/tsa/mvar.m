@@ -19,7 +19,7 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %	e = mvfilter([eye(size(AR,1)),-AR],eye(size(AR(1))),Y);
 %
 % see also: MVFILTER, COVM, SUMSKIPNAN, ARFIT2
-%
+
 % REFERENCES:
 %  [1] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 
 %  [2] S.L. Marple "Digital Spectral Analysis with Applications" Prentice Hall, 1987.
@@ -33,6 +33,7 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %	Validation of MVAR estimators or Remark on Algorithm 808: ARFIT, 
 %	ACM-Transactions on Mathematical Software. submitted.
 
+%	Version 3.01 	Date: 30 Dec 2002
 %	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
@@ -57,6 +58,7 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 if nargin<2, 
         Pmax=max([N,M])-1;
 end;
+
 
 if iscell(Y)
         Pmax = min(max(N ,M ),Pmax);
@@ -353,13 +355,24 @@ elseif Mode==4,  %%%%% nach Kay, not fixed yet.
         end;
 end;
 
-MAR    = zeros(M,M*Pmax);
-DC     = zeros(M);
 
+% Test for matrix division bug. 
+% This bug was observed in LNX86-ML53, but not in SGI-ML6.5, LNX86-ML6.5, Octave 2.1.35-40; Other platforms unknown.
+FLAG_MATRIX_DIVISION_ERROR = ~all(all(isnan([0,0;0,0]/[0,0;0,0]))) | ~all(all(isnan([nan,nan;nan,nan]/[nan,nan;nan,nan])));
+
+if FLAG_MATRIX_DIVISION_ERROR, 
+	%fprintf(2,'### Warning MVAR: Bug in Matrix-Division 0/0 and NaN/NaN yields INF instead of NAN.  Workaround is applied.\n');
+	warning('MVAR: bug in Matrix-Division 0/0 and NaN/NaN yields INF instead of NAN.  Workaround is applied.');
+
+	%%%%% Workaround 
+	ARF(ARF==inf)=NaN;
+	RCF(RCF==inf)=NaN;
+end;
+	
+
+%MAR   = zeros(M,M*Pmax);
+DC     = zeros(M);
 for K  = 1:Pmax,
 %       VAR{K+1} = -ARF(:,K*M+(1-M:0))';
-        DC = DC + ARF(:,K*M+(1-M:0))'.^2; %DC meausure [3]
+        DC  = DC + ARF(:,K*M+(1-M:0))'.^2; %DC meausure [3]
 end;
-
-
-

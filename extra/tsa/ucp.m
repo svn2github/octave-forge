@@ -1,5 +1,5 @@
 function b=ucp(c)
-%UCP(C)	tests if the polynomial C is a Unit-Circle-Polynomial.
+% UCP(C) tests if the polynomial C is a Unit-Circle-Polynomial.
 %	It tests if all roots lie inside the unit circle like
 %       B=ucp(C) does the same as
 %	B=all(abs(roots(C))<1) but much faster.

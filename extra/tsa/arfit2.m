@@ -1,11 +1,11 @@
 function [w, MAR, C, sbc, fpe, th]=arfit(Y, pmin, pmax, selector, no_const)
 % ARFIT2 estimates multivariate autoregressive parameters
-%   using MDURLEV wiht the Nuttall-Strand method [1,2]. 
+%   using MDURLEV with the Nuttall-Strand method [1,2]. 
 % ARFIT2 is included for combatibility reasons to ARFIT [3]
 %  
 %  [w, A, C, sbc, fpe] = arfit2(v, pmin, pmax, selector, no_const)
 %
-% see also: ARFIT, MDURLEV
+% see also: ARFIT, MVAR
 %
 % REFERENCES:
 %  [1] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 

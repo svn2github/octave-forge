@@ -1,8 +1,7 @@
  function [MX,PE,arg3] = lattice(Y,lc,Mode);
-% Estimates AR(p) model parameter with lattice algorithm 
-% by Burg (1968) for multiple channels. 
-% LATTICE.M can handle missing values (NaN), if you have the 
-% NaN-tools http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+% Estimates AR(p) model parameter with lattice algorithm (Burg 1968) 
+% for multiple channels. 
+% If you have the NaN-tools, LATTICE.M can handle missing values (NaN), 
 %
 % [...] = lattice(y [,Pmax [,Mode]]);
 %

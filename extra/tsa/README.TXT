@@ -9,7 +9,7 @@ to Matlab as well as Octave.
 It includes
 - Stochastic Signal processing 
 - Autoregressive Model Identification 
-- adaptive autoregressive modelling 
+- adaptive autoregressive modelling using Kalman filtering
 - multivariate autoregressive modelling 
 - maximum entropy spectral estimation 
 - matched (inverse) filter design
@@ -46,6 +46,6 @@ other useful staff. Demo programs can be started with "demo" or "demotsa".
 
 Copyright (c) 1996-2002 by Alois Schloegl 
 E-Mail:   a.schloegl@ieee.org
-WWW:      http://www-dpmi.tu-graz.ac.at/~schloegl/matlab/tsa
+WWW:      http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa
 
 

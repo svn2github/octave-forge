@@ -1,7 +1,6 @@
 function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
+% estimates a multivariate AR(p) model parameter
 % function  [MAR,RC,PE] = mvar(Y [,Pmax]);
-% estimates a multivariate AR(p) model parameter by solving the
-% multivariate Yule-Walker with various methods [2]
 %
 %  INPUT:
 % ACF	Autocorrelation function from lag=[0:p]

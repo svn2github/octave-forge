@@ -2,9 +2,6 @@ function [a,efinal] = rc2poly(RC,E);
 % converts reflection coefficients into an AR-polynomial
 % [a,efinal] = rc2poly(K)
 %
-%
-% requires TSA-tb >Ver 2.70
-%
 % see also ACOVF ACORF AR2RC RC2AR DURLEV AC2POLY, POLY2RC, RC2POLY, RC2AC, AC2RC, POLY2AC
 % 
 

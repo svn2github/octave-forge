@@ -1,5 +1,5 @@
 function [R,MU,SD2,EM3,EM4,Max,Min,I,th1prm]=y2res(Y)
-% Evaluates data series
+% Evaluates basic statistics of a data series
 % [N,MU,SD2,EM3,EM4,Max,Min,I]=y2res(y)
 % 
 % OUTPUT:
@@ -18,8 +18,7 @@ function [R,MU,SD2,EM3,EM4,Max,Min,I,th1prm]=y2res(Y)
 % [1] http://www.itl.nist.gov/
 % [2] http://mathworld.wolfram.com/
 
-%	Version 2.90
-%	last revision 05.04.2002
+%	Version 2.90	last revision 10.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 

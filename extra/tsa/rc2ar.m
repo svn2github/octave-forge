@@ -1,6 +1,6 @@
 function [MX,res,arg3,acf] = rc2ar(rc);
 % converts reflection coefficients into autoregressive parameters
-% with the Durbin-Levinson recursion for multiple channels
+% uses the Durbin-Levinson recursion for multiple channels
 % function  [AR,RC,PE,ACF] = rc2ar(RC);
 % function  [MX,PE] = rc2ar(RC);
 %
@@ -18,7 +18,7 @@ function [MX,res,arg3,acf] = rc2ar(rc);
 % All input and output parameters are organized in rows, one row 
 % corresponds to the parameters of one channel
 %
-% see also ACOVF ACORF DURLEV IDURLEV PARCOR YUWA 
+% see also ACOVF ACORF DURLEV AR2RC 
 % 
 % REFERENCES:
 %  P.J. Brockwell and R. A. Davis "Time Series: Theory and Methods", 2nd ed. Springer, 1991.

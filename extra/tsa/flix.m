@@ -1,5 +1,5 @@
 function Y=flix(D,x)
-% FLIX floating point index
+% floating point index - interpolates data in case of non-integer indices
 %
 % Y=flix(D,x)
 %   FLIX returns Y=D(x) if x is an integer 

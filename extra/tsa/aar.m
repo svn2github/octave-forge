@@ -1,7 +1,7 @@
 function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, arg8, arg9); 
-% [a,e,REV] = aar(y, mode, MOP, UC, a0, A); 
 % Calculates adaptive autoregressive (AAR) and adaptive autoregressive moving average estimates (AARMA)
-% of real-valued data series with Kalman filter algorithm.
+% of real-valued data series using Kalman filter algorithm.
+% [a,e,REV] = aar(y, mode, MOP, UC, a0, A); 
 %
 % The AAR process is described as following  
 %       y(k) - a(k,1)*y(t-1) -...- a(k,p)*y(t-p) = e(k);

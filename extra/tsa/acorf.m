@@ -1,5 +1,4 @@
 function [AUTOCOV,stderr,lpq,qpval] = acorf(Z,N);
-%  Normalized Autocorrelation function  
 %  Calculates autocorrelations for multiple data series.
 %  Missing values in Z (NaN) are considered. 
 %  Also calculates Ljung-Box Q stats and p-values.

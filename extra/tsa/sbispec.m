@@ -1,5 +1,5 @@
 function sbispec(BISPEC)
-% SBISPEC Show BISPECTRUM 
+% SBISPEC show BISPECTRUM 
 
 %	Version 0.23
 %	last revision 21.03.1998

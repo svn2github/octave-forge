@@ -1,5 +1,5 @@
 function [AutoCov,AutoCorr,MX,E,NC]=invest0(Y,Pmax,Mode);
-% First Investigation of a signal (time series)
+% First Investigation of a signal (time series) - automated part
 % [AutoCov,AutoCorr,ARPMX,E,ACFsd,NC]=invest0(Y,Pmax);
 %
 % [AutoCov,AutoCorr,ARPMX,E,ACFsd,NC]=invest0(AutoCov,Pmax,Mode);

@@ -89,9 +89,9 @@ confighack.octave:
 	touch confighack.octave
 
 config: setup ranlibhack confighack config.octave
-config.octave: $(ADMIN)/octave-config
+config.octave: $(ADMIN)/config_octave.sh
 	@echo "Configuring octave $(OCTVER): results in config.octave"
-	cd $(BUILD) && $(ADMIN)/octave-config > $(ADMIN)/config.octave 2>&1
+	cd $(BUILD) && $(ADMIN)/config_octave.sh > $(ADMIN)/config.octave 2>&1
 
 # ==== build octave
 build: config build.octave

@@ -6,6 +6,7 @@ Analysis functions
    bispec
    durlev
    lattice
+   pacf
    parcor
    invest0
    invest1

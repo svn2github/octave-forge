@@ -1,16 +1,15 @@
-% Time Series Analysis (Ver 2.90)
+% Time Series Analysis (Ver 3.00)
 % Schloegl A. (1996-2002) Time Series Analysis - A Toolbox for the use with Matlab. 
 % WWW: http://www.dpmi.tu-graz.ac.at:~schloegl/matlab/tsa
 %
-%	Version 2.90
-%	last revision 10.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Version 3.00    Date: 24.09.2002
+%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>
 %
 %  Time Series Analysis - a toolbox for the use with Matlab
 %   aar		adaptive autoregressive estimator 
 %   acovf       (*) Autocovariance function
 %   acorf (acf)	(*) autocorrelation function	
+%   pacf	(*) partial autocorrelation function, includes signifcance test and confidence interval
 %   parcor	(*) partial autocorrelation function
 %   biacovf	biautocovariance function (3rd order cumulant)
 %   bispec	Bi-spectrum 

@@ -371,6 +371,7 @@ DEFUN_DLD (SBSolve, args, , "[...] = SBSolve (...)\n\
 
     Matrix A= A_arg.matrix_value();
     Matrix B= B_arg.matrix_value();
+    B.fortran_vec(); // Force a copy of the array
     
     CholeskyFactorization2(A,nr,nc);
     CholeskyBacksub2(A,B,nr,nc,bc);

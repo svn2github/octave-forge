@@ -9,7 +9,7 @@ the oct-file will reappear the next time you do a make.  To keep
 file from being built, remove it from the PROGS line of the Makefile.
 
 The oct-files included herein cannot be loaded unless octave has been
-configured with --enable-shared --enable-lite-kernel. 
+configured with --enable-shared
 
 Interface changes
 =================
@@ -25,9 +25,6 @@ mu2lin
 
 rand/randn
    Returns a different sequence for the same seed.
-
-union
-   Preserves orientation of the input vectors.
 
 Interface extensions
 ====================
@@ -46,7 +43,6 @@ Bug fixes
 =========
 tf2zp		(search site:www.octave.org for test case)
 zp2tf		(search site:www.octave.org for test case)
-sqrtm           (handles ill-conditioned matrices)
 
 Speedups
 ========
@@ -54,6 +50,4 @@ hankel		(for midsized files---better to speed up the interpreter
 toeplitz	 by 5x rather than requiring a 5x bigger memory footprint)
 triu		 
 tril
-index
-rindex
 chol.oct	(use triangle matrix type; in extra/linear-algebra/chol.cc)

@@ -42,21 +42,9 @@ function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, 
 %     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
 
 %
-%       Version 2.03
-%       13 Mar 2002
-%       Copyright (c) 1998-2002 by  Alois Schloegl
-%       a.schloegl@ieee.org     
+%       Version 2.99     23 May 2002
+%       Copyright (c) 1998-2002 by  Alois Schloegl <a.schloegl@ieee.org>
 %
-% revisions:
-% V2.00 17.08.2000 major revision 
-%               - Mode enumeration according to [1]
-% V2.01 19.10.2000 
-%               - aMode 13 & 14 included
-% V2.02 04.05.2001 
-%               - bug fixed
-% V2.03 13.03.2002
-%		- NaN's enabled and considered, if there is no NaN in the data
-%			everything is the same. 
 
 %
 % This library is free software; you can redistribute it and/or
@@ -264,6 +252,4 @@ TOC = toc;
 CPUTIME = cputime - CPUTIME;
 %REV = (e'*e)/(y'*y);
 
-ne = sum(~isnan(e));
-ny = sum(~isnan(e));
-REV = ny*sum(e(~isnan(e)).^2)/(ne*sum(y(~isnan(y)).^2));
+REV = mean(e.*e)./mean(y.*y);

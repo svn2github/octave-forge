@@ -107,13 +107,13 @@ s = leval ("vrml_surf", surf_args);
 
 pts = [x(:)';y(:)';z(:)'];
 ii = find (all (isfinite (pts)));
-pt2 = pts(:,ii); x2 = x(ii); y2 = y(ii); z2 = z(ii);
+pt2 = pts(:,ii); x2 = x(:)(ii); y2 = y(:)(ii); z2 = z(:)(ii);
 ## Addd a point light
 scl = nanstd ((pt2-mean (pt2')'*ones(1,columns (pt2)))(:));
 
-lpos = [min (x2(:)) - 1.1*scl* max (max(x2(:))-min(x2(:)), 1),
-	mean (y2(:)),
-	max (z2(:))];
+lpos = [min (x2) - 1.1*scl* max (max(x2)-min(x2), 1),
+	mean (y2),
+	max (z2)];
 
 pl = vrml_PointLight ("location", lpos, "intensity", 0.7);
 

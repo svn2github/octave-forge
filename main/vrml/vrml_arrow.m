@@ -27,7 +27,7 @@ if nargin<2  || isempty (col),    col = [0.3 0.4 0.9;0.3 0.4 0.9];
 elseif prod (size (col)) == 3,    col = [1;1]*col(:)';
 elseif all (size (col) == [3,2]), col = col';
 elseif any (size (col) != [2,3]),
-  error("vrml_arrow : col has size %dx%d (should be 3 or 3x3)\n",size(col));
+  error("vrml_arrow : col has size %dx%d (should be 3 or 3x2)\n",size(col));
   ## keyboard
 end
 col = col' ;
@@ -48,8 +48,8 @@ if any (tmp = isnan(sz)), sz(find (tmp)) = s0(find (tmp)) ; end
 sz .*= [1, sz([1 1 1])]; 
 
 				# Do material nodes
-smat1 = vrml_material (col(1:3), emit);
-smat2 = vrml_material (col(4:6), emit);
+smat1 = vrml_material (col(:,1), emit);
+smat2 = vrml_material (col(:,2), emit);
 
 v = sprintf (["Group {\n",\
               "  children [\n",\

@@ -1,12 +1,18 @@
+octave-gpc (0.1.2-2) unstable; urgency=low
+
+  * debian/control: Fixed maintainer e-mail address.
+
+ -- Rafael Laboissiere <rafael@debian.org>  Wed, 27 Feb 2002 12:43:32 +0100
+
 octave-gpc (0.1.2-1) unstable; urgency=low
 
   * New upstream release.
-  
+
   * debian/control: Recommends octave-forge.  Upgraded Standards-Version to
     3.5.6.  Updated maintainer's e-mail address.  Make versioned dependence to
     octave2.1 (this is necessary because the .oct are installed in
     /usr/lib/octave/2.1.xx).
- 
+
  -- Rafael Laboissiere <rafael@debian.org>  Thu, 13 Dec 2001 20:01:28 +0100
 
 octave-gpc (0.1.1-1) unstable; urgency=low

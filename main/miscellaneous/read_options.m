@@ -19,8 +19,9 @@
 ## 'op0'    , string : Space-separated names of opt taking no argument  <''>
 ## 'op1'    , string : Space-separated names of opt taking one argument <''>
 ## 'default', struct : Struct holding default option values           <none>
-## 'prefix' , int    : If set, recognize opt from first chars. Else,     <0>
-##                     only accept whole opt names                       
+## 'prefix' , int    : If false, only accept whole opt names. Otherwise, <0>
+##                     recognize opt from first chars, and choose 
+##                     shortest if many opts start alike.
 ## 'nocase' , int    : If set, ignore case in option names               <0>
 ## 'quiet'  , int    : Behavior when a non-string or unknown opt is met  <0>
 ##              0    - Produce an error
@@ -49,7 +50,7 @@ function [op,nread] = read_options (args, ...)
 
 op = setfield ();		# Empty struct
 op0 = op1 = " ";
-guess = quiet = nocase = quiet = 0;
+prefix = quiet = nocase = quiet = 0;
 
 nargin--;
 if rem (nargin, 2), error ("odd number of optional args"); end
@@ -94,6 +95,7 @@ opts_orig = opts;
 
 if nocase, opts = tolower (opts); end
 
+
 nread = 0;
 while nread < length (args)
 
@@ -104,7 +106,7 @@ while nread < length (args)
     end
   end
   if nocase, name = tolower (name); end
-  
+
   ii = findstr ([" ",name], opts);
   
   if isempty (ii)		# Whoa! Unknown option name
@@ -115,12 +117,22 @@ while nread < length (args)
   ii++;
 
   if length (ii) > 1		# Ambiguous option name
-    tmp = "";
+
+    fullen = zeros (1,length (ii)); # Full length of each optio
+    tmp = correct = "";
+    j = 0;
     for i = ii
-      tmp = [tmp,"', '",opts(i:spi(find (spi > i)(1))-1)];
+      fullen(++j) = spi(find (spi > i)(1))-i ;
+      tmp = [tmp,"', '",opts(i:i+fullen(j)-1)];
     end
-    tmp = tmp(1:length(tmp)-3);
-    error ("ambiguous option '%s'. Could be '%s'",oname,tmp);
+    tmp = tmp(5:length(tmp));
+
+    if sum (fullen == min (fullen)) > 1 || \
+	  (min (fullen) != length(name)) && ! prefix ,
+      error ("ambiguous option '%s'. Could be '%s'",oname,tmp);
+    end
+    j = find (fullen == min (fullen))(1);
+    ii = ii(j);
   end
 
 				# Full name of option (w/ correct case)

@@ -57,12 +57,12 @@ function retval = vander (c)
     usage ("vander (c)");
   endif
 
-  if (is_vector(c))
+  if (is_vector (c))
     n = length (c);
     retval = zeros (n, n);
     j = 1:n;
     for i = 1:n
-      retval (i, j) = c(i) .^ (n - j);
+      retval(i,:) = c(i) .^ (n - j);
     endfor
   else
     error ("vander: argument must be a vector");

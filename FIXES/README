@@ -23,26 +23,20 @@ mu2lin
    in place even though it is a silly default.  Change the default to 0 for
    compatibility with matlab.
 
-deblank
-   Trims \0 as well as " ".
-
 rand/randn
    Returns a different sequence for the same seed.
 
+union
+   Preserves orientation of the input vectors.
+
 Interface extensions
 ====================
-cross		(warn if receiving mixed row/column vectors)
-contour		(default number of contours)
-fftfilt		(accepts matrices)
-freqz		(accepts frequency vector; plots filter response; depends
-		 on freqz_plot.m which requires unwrap.m)
-imagesc		(only display if not returning scaled image)
+freqz           (plots filter response)
 polyder		(accepts a*b, a/b; auto-reduction of common terms)
 polyderiv	(accepts a*b, a/b; auto-reduction of common terms)
 polygcd		(new function for auto-reduction on polyder)
 mu2lin		(accepts -1:1 audio range; accepts matrix; 3x faster)
 lin2mu		(accepts -1:1 audio range; accepts matrix)
-cross		(accepts matrices)
 grid		(control x/y grids and grid density independently)
 fsolve.oct	(allow parameters through fsolve to user function)
 rand.oct	(accepts "state" argument; use the Mersenne twister,
@@ -57,16 +51,23 @@ sqrtm           (handles ill-conditioned matrices)
 
 Speedups
 ========
-findstr
 hankel
-hilb
 index
-invhilb         (extends valid range; faster)
 kron            (Etienne Grossman has an even faster compiled version)
 rindex
 toeplitz
-vander
 triu
 tril
-qr.oct        (qr(A,0) uses economy QR decomposition)
-chol.oct      (use triangle matrix type; see extra/linear-algebra/chol.cc)
+chol.oct      (use triangle matrix type; in extra/linear-algebra/chol.cc)
+
+In Octave 2.1.36
+================
+cross		(warn if receiving mixed row/column vectors)
+cross		(accepts matrices)
+contour		(default number of contours; note: usage (...) is wrong)
+fftfilt		(accepts matrices)
+findstr         (speedup)
+freqz		(accepts frequency vector)
+imagesc		(only display if not returning scaled image)
+invhilb         (extends valid range; faster)
+vander          (speedup)

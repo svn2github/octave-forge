@@ -56,7 +56,7 @@
 ## The validity of this formula can easily be checked by expanding 
 ## the binomial coefficients in both formulas as factorials.  It can 
 ## be derived more directly via the theory of Cauchy matrices: 
-## see J W Demmel, Applied Numerical Linear Algebra, page 92)
+## see J. W. Demmel, Applied Numerical Linear Algebra, page 92.
 ##
 ## Compare this with the numerical calculation of @code{inverse (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the
@@ -65,17 +65,17 @@
 ## @end deftypefn
 ## @seealso{hankel, vander, sylvester_matrix, hilb, and toeplitz}
 
-## Author: Dirk Laurie
+## Author: Dirk Laurie <dirk@siegfried.wisk.sun.ac.za>
 
 function retval = invhilb (n)
 
   if (nargin != 1)
     usage ("invhilb (n)");
   endif
-  
+
   nmax = length (n);
   if (nmax == 1)
-    
+
     ## The point about the second formula above is that when vectorized,
     ## p(k) is evaluated for k=1:n which involves O(n) calls to bincoeff 
     ## instead of O(n^2).
@@ -91,20 +91,20 @@ function retval = invhilb (n)
     ## justifies the claim about exactness made above.
 
     retval = zeros (n); 
-    k = [ 1:n ]; 
+    k = [1:n]; 
     p = k .* bincoeff (k+n-1, k-1) .* bincoeff (n, k);
-    p (2:2:n) = -p (2:2:n);
-    if ( n < 203 )
+    p(2:2:n) = -p(2:2:n);
+    if (n < 203)
       for l = 1:n
-        retval (l, :) = ( p (l) * p ) ./ [ l:l+n-1 ]; 
+        retval(l,:) = (p(l) * p) ./ [l:l+n-1];
       endfor
     else
       for l = 1:n
-        retval (l, :) = p (l) * ( p ./ [ l:l+n-1 ] );
+        retval(l,:) = p(l) * (p ./ [l:l+n-1]);
       endfor
     endif
   else
     error ("invhilb: expecting scalar argument, found something else");
   endif
-  
+
 endfunction

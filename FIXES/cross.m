@@ -29,20 +29,12 @@
 ## If @var{x} and @var{y} are two - dimensional matrices the
 ## cross product is applied along the first dimension with 3 elements.
 ##
-## If cross is given a row vector and a column vector, then it will
-## issue a warning and return a column vector.
-##
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 15 October 1994
 ## Adapted-By: jwe
 
-## 2001-10-22 Paul Kienzle
-## * handle matrix inputs
-## * output row vector if either input is a row vector
-## 2001-10-22 Paul Kienzle
-## * restore octave orientation for mismatched vectors, but issue a warning
 function z = cross (x, y)
 	
   if (nargin != 2)
@@ -62,13 +54,13 @@ function z = cross (x, y)
 
   if (size(x) == size(y))
     if (rows(x) == 3)
-      z = [x(2,:).*y(3,:) - x(3,:).*y(2,:)
-           x(3,:).*y(1,:) - x(1,:).*y(3,:)
-           x(1,:).*y(2,:) - x(2,:).*y(1,:)];
+      z = [ ( x (2,:) .* y (3,:) - x (3,:) .* y (2,:) ) ;
+            ( x (3,:) .* y (1,:) - x (1,:) .* y (3,:) ) ;
+            ( x (1,:) .* y (2,:) - x (2,:) .* y (1,:) ) ];
     elseif (columns(x) == 3)
-      z = [x(:,2).*y(:,3) - x(:,3).*y(:,2)\
-           x(:,3).*y(:,1) - x(:,1).*y(:,3)\
-           x(:,1).*y(:,2) - x(:,2).*y(:,1)];
+      z = [ ( x (:,2) .* y (:,3) - x (:,3) .* y (:,2) ) , \
+            ( x (:,3) .* y (:,1) - x (:,1) .* y (:,3) ) , \
+            ( x (:,1) .* y (:,2) - x (:,2) .* y (:,1) ) ];
     else
       error ("cross: x,y must have dimension nx3 or 3xn");
     endif

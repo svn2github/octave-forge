@@ -750,6 +750,7 @@ Axis controls
  subplot 
  multiplot subwindow oneplot plot_border
  datetick
+ tics
 Labels
  title bottom_title top_title
  xlabel 
@@ -795,6 +796,7 @@ Colour maps
  colorcube 
  vga 
  contrast 
+ colorgradient
 View control
  view 
  viewmtx 

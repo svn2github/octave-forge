@@ -40,7 +40,7 @@
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
-function tri = delaunay (x,y,opt)
+function ret = delaunay (x,y,opt)
 
   if ((nargin != 2) && (nargin != 3))
     usage ("delaunay(x,y[,opt])");
@@ -57,5 +57,15 @@ function tri = delaunay (x,y,opt)
   else
     error("first two input arguments must be vectors of same size");
   endif
+
+  if nargout == 0
+    x = x(:).'; y = y(:).';
+    X = [ x(tri(:,1)); x(tri(:,2)); x(tri(:,3)); x(tri(:,1)) ];
+    Y = [ y(tri(:,1)); y(tri(:,2)); y(tri(:,3)); y(tri(:,1)) ];
+    plot(X,Y,'b;;',x,y,'r*;;');
+  else
+    ret = tri;
+  endif
+
 
 endfunction

@@ -91,7 +91,9 @@ private:
   Table tab;
   symbol_record base;
 
-  // octave_dispatch (void);
+#ifndef OCTAVE_FUNCTION_VOID_FAILS
+  octave_dispatch (void);
+#endif
 
   octave_dispatch (const octave_dispatch& m);
 
@@ -108,7 +110,12 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dispatch, "overloaded function","fun
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dispatch, "overloaded function");
 #endif
 
-// octave_dispatch::octave_dispatch (void) : octave_function (), tab (), base() { }
+
+#ifndef OCTAVE_FUNCTION_VOID_FAILS
+octave_dispatch::octave_dispatch (void) 
+  : octave_function (), tab (), base() 
+{ }
+#endif
 
 octave_dispatch::octave_dispatch (symbol_record* sr)
   : octave_function (sr->name(), sr->help()), tab (), base() 

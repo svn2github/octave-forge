@@ -11,7 +11,7 @@ waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)
 
 dispatch.oct: dispatch.cc
-	$(MKOCTFILE) $(TYPEID_HAS_CLASS) dispatch.cc
+	$(MKOCTFILE) $(MISCDEFS) $(TYPEID_HAS_CLASS) dispatch.cc
 
 listen.oct: listen.o listencanfork.o
 	$(MKOCTFILE) listen.o listencanfork.o

@@ -39,7 +39,7 @@ fi
 
 # create PKG_ADD
 $MKPKGADD $source > $source/PKG_ADD.t
-if [ -n "`cat $source/PKG_ADD.t`" ]' then
+if test -n "`cat $source/PKG_ADD.t`" ; then
   mv $source/PKG_ADD.t $mpath/PKG_ADD
 else
   rm -f $source/PKG_ADD.t

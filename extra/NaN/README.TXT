@@ -5,19 +5,23 @@ NaN-Tb: A statistics toolbox for handling NaN's and missing values.
 
 FEATURES of the NaN-tb:
 -----------------------
- - contains several basic statistical functions.
- - can deal with NaN's (skips NaNs or propagates them depending on a 
-   global flag FLAG_IMPLICIT_SKIP_NAN)
- - only one function instead of two (e.g. mean and nanmean are replaced by mean, etc)
+ - can deal with NaN's (be default NaNs are skipped) 
+ - handles missing values (encoded as NaN's)
  - easy to use, does not need special nan-functions like nansum, etc. 
+ - only one function instead of two (e.g. mean and nanmean are replaced by mean, etc)
+ - contains basic statistical functions.
+ - supports DIM argument 
+ - supports unbiased estimation; 
+ - flags for switching between propagating NaNs and skipping NaN's 
+         for switching between biased and  unbiased estimates 
+         are implemented. 
+	 However, these might become obsolete in future - Do not use them.
+ - realizes an experimental concept for the future developement of Matrix-languages. 
+   (give it a try) 	   
  - compatible to Matlab and Octave
-   The toolbox was tested with Matlab 5.2, 5.3, 6.1 
-   and Octave 2.0.14, 2.0.16.92, 2.1.35, 
- - supports DIM argument
- - supports biased and unbiased estimation 
-   (determined by a global flag "flag_implicit_unbiased_estim")
- - GPL licensed 
-
+   The toolbox was tasted and can be used with 
+   Matlab 5.2, 5.3, 6.1 and Octave 2.0.14, 2.0.16.92, 2.1.35, 
+ 
  
 Currently are implemented:
 -------------------------- 

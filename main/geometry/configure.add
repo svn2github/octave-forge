@@ -68,7 +68,7 @@ else
 		STATUS=yes
 	else
 		DEFHAVE_LIBQHULL=
-		STATUS="Qhull not found"
+		STATUS="Qhull not found --- see main/geometry/README"
 	fi
 fi
 

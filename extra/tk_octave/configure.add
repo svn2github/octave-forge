@@ -4,7 +4,9 @@ if test -e extra/tk_octave/NOINSTALL ; then
 	DEFHAVE_TCLTK=
 	DEFHAVE_BLT=
 	DEFHAVE_VTK=
-	STATUS=noinstall
+	dnl Given the experimental status of tk_octave, don't tempt the user
+	dnl into installing it by telling them it is not installed
+	dnl STATUS=noinstall
 else
 	dnl Do we have tcl/tk?
 	AC_SUBST(DEFHAVE_TCLTK)
@@ -45,7 +47,9 @@ else
 		STATUS="$STATUS and without VTK (no 3-D support)"
 	fi
 
+	dnl Let the user know what we found
+	STATUS_MSG="$STATUS_MSG
+   tk_octave: $STATUS"
+
 fi
 
-STATUS_MSG="$STATUS_MSG
-   tk_octave: $STATUS"

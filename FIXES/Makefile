@@ -16,11 +16,14 @@ all: $(PROGS)
 
 $(PROGS): Makefile
 
+randtest: randmtzig.c
+	$(CC) $(CFLAGS) $(ALLBITS) -DTEST randmtzig.c -o randtest -lm
+
 $(RAND_LINKS):
 	-$(RM) $@
 	$(LN_S) rand.oct $@
 
-rand.oct : randmtzig.c rand.cc MersenneTwister.h
+rand.oct : randmtzig.c rand.cc
 	$(MKOCTFILE) $(HAVE_ND_ARRAYS) $(ALLBITS) rand.cc
 
 sort.oct : sort.cc oct-sort.cc oct-sort.h

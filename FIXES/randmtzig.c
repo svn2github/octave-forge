@@ -283,7 +283,7 @@ static void next_state(void)
 /* generates a random number on [0,0xffffffff]-interval */
 inline uint32_t randi32(void)
 {
-    uint32_t y;
+    register uint32_t y;
 
     if (--left == 0) next_state();
     y = *next++;
@@ -292,9 +292,7 @@ inline uint32_t randi32(void)
     y ^= (y >> 11);
     y ^= (y << 7) & 0x9d2c5680UL;
     y ^= (y << 15) & 0xefc60000UL;
-    y ^= (y >> 18);
-
-    return y;
+    return (y ^ (y >> 18));
 }
 
 inline uint64_t quad(uint32_t hi, uint32_t lo)

@@ -412,10 +412,11 @@ DEFUN_DLD (fixed, args, nargout,
 }
 
 // This macro must start with DEFUN_DLD so that the automatic collection
-// of the function helps can take place!!
-#define DEFUN_DLD_FIXED_SNGL_ARG(NAME, HELP, FUNC, REAL_CAN_RET_CMPLX_UPPER, \
-                                 UPPER, REAL_CAN_RET_CMPLX_LOWER, LOWER) \
-  DEFUN_DLD ( NAME, args, nargout, HELP) \
+// of the function helps can take place!! The second DEFUN_DLD must NOT
+// appear on a new-line, otherwise the idnexing script will be confused!!
+#define DEFUN_DLD_FIXED_SNGL_ARG(NAME, HELP, FUNC, \ 
+   REAL_CAN_RET_CMPLX_UPPER,UPPER, REAL_CAN_RET_CMPLX_LOWER, \
+   LOWER) DEFUN_DLD ( NAME, args, nargout, HELP) \
   { \
     int nargin = args.length(); \
     octave_value retval; \

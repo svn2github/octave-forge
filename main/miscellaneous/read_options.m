@@ -10,7 +10,7 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## [ops,nread] = read_opts (args,...) - Read options
+## [ops,nread] = read_options (args,...) - Read options
 ##
 ## INPUT -------------
 ## args     : list   : Options and values
@@ -45,7 +45,7 @@
 ##                              # Create variables w/ same name as options
 ##
 ## [is_man, is_plane, flies] = getfield (s,"is_man", "is_plane", "flies")
-function [op,nread] = read_opts (args, ...)
+function [op,nread] = read_options (args, ...)
 
 op = setfield ();		# Empty struct
 op0 = op1 = " ";

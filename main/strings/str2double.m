@@ -143,6 +143,7 @@ elseif ischar(s),
         k2 = 0; % current column
         k3 = 0; % current element
         
+        s(end+1) = rdelim(1);     % add stop sign; makes sure last digit is not skipped
         sl = length(s);
         ix = 1;
         while (ix < sl) & any(s(ix)==[rdelim,cdelim]),

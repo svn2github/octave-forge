@@ -36,10 +36,10 @@ function t = isprime(n)
     endfor
   elseif (n != fix(n) || n < 2)
     t = 0;
-  elseif n < 4
-    t = 1;
+  elseif n < 9
+    t = all(n!=[4,6,8]);
   else
-    q = n./[2:sqrt(n)];
+    q = n./[2,3:2:sqrt(n)];
     t = all (q != fix(q));
   endif
 endfunction

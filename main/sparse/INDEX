@@ -7,8 +7,8 @@ Generate sparse matrix
  spdiags 
  spconvert 
 Manipulate sparse matrices
- sparse 
- full 
+ sparse issparse 
+ full
  is_sparse is_real_sparse is_complex_sparse
  spy 
  nnz 

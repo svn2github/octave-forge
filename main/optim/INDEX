@@ -13,6 +13,7 @@ Data fitting
  leasqr leasqrdemo
 Root finding
  fzero 
+ fsolve fsolve_options
 Compatibility
  fminunc
  optimset

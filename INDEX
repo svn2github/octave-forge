@@ -116,11 +116,13 @@ Environment
  system
  ! = use <code>system("command")</code>
 Debugging
- dbg_delete
- dbg_list
- dbg_set
- dbg_where
+ dbclear
+ dbstatus
+ dbstop
+ dbtype
+ dbwhere
  debug_on_error
+ debug_on_interrupt
  debug_on_warning
 Profiling
  profile 
@@ -159,6 +161,8 @@ Error Handling
  warn_assign_as_truth_value
  warn_reload_forces_clear
  warn_single_quote_string
+ warn_precedence_change
+ warn_matlab_incompatible
 Processing
  do_fortran_indexing
  ok_to_lose_imaginary_part
@@ -256,7 +260,7 @@ Logical functions
  all 
  true
  false
- is_bool
+ isbool
 Bit operations
  bitand 
  bitcmp 
@@ -303,16 +307,16 @@ Constants
  realmin 
  pi e
  i j I J
- Inf inf
- NaN nan
- isnan 
- isinf 
+ Inf inf isinf
  isfinite finite
+ NaN nan isnan 
+ NA isna
+ is_nan_or_na
 Symbol table
  exist
  exist(x,"var")=requires exist patch from $EG
  global 
- isglobal is_global
+ isglobal
  persistent = use <code>static</code> 
  mfilename 
  mlock 
@@ -324,8 +328,8 @@ Function arguments
  nargchk 
  nargin 
  nargout 
- varargin= see <a href="$COMPAT#vararg">compatibility FAQ</a>
- varargout= see <a href="$COMPAT#vararg">compatibility FAQ</a>
+ varargin
+ varargout
  inputname= use <code>deblank(argn(i,:))</code>
  fcnchk 
  read_options
@@ -343,8 +347,9 @@ User I/O
  input 
  keyboard kbhit
  pause menu
+ waitbar
 Inline functions
- inline= see <a href="$COMPAT#inline">compatibility FAQ</a>
+ inline
  argnames 
  formula 
  char 
@@ -368,12 +373,10 @@ Structures
  rmfield 
  isfield 
  isstruct
- is_struct
  struct_contains
  struct_elements
 Lists
- list
- is_list
+ list islist
  nth
  append
  reverse
@@ -392,15 +395,15 @@ Generating matrices
  randperm
  meshgrid meshdom
 Matrix properties
- size rows columns common_size
+ size rows columns common_size ndims
  length 
  isempty 
  isequal 
- isnumeric is_complex
+ isnumeric iscomplex
  islogical 
  logical 
- is_scalar is_vector is_matrix is_square 
- is_symmetric is_duplicate_entry
+ isscalar isvector ismatrix issquare 
+ issymmetric is_duplicate_entry
 Rearranging matrices
  reshape 
  tril 
@@ -562,6 +565,7 @@ Special functions
  gamma(complex)= use Tim Reluga's <a href="http://www.octave.org/mailing-lists/octave-sources/2002/9">Gamma.m</a> or Eyal Doron's <a href="http://www.octave.org/mailing-lists/octave-sources/1996/3">cgamma.m</a>
  gammainc gammai
  gammaln lgamma 
+ lambertw
  legendre 
 Number theory
  mod 
@@ -643,6 +647,7 @@ Geometry
  polyarea 
  __voronoi__
 Polynomials
+ cheb
  roots 
  poly 
  polyval 
@@ -679,6 +684,9 @@ Ordinary differential equations
  rk2fixed rk4fixed rk8fixed
  lsode lsode_options
  dassl dassl_options
+ odessa odessa_options
+ daspk daspk_options
+ dasrt dasrt_options
  colloc
 
 
@@ -691,7 +699,7 @@ Line plots
  semilogy 
  polar 
  plotyy= use <code>gplot ... axes x1y2</code>
- errorbar 
+ errorbar semilogxerr semilogyerr loglogerr
  scatter 
  plotmatrix 
  stem 
@@ -767,7 +775,6 @@ Printing
  print 
  printopt 
  orient 
- vrml= see $EG
 
 Colour controls
  colormap 
@@ -827,7 +834,7 @@ Basic handle operations
  dup2
  fcntl
  stdin stdout stderr
- is_stream
+ isstream
 Formatted I/O
  fgetl 
  fgets 

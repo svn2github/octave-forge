@@ -30,7 +30,7 @@ LN_S = @LN_S@
 # cannot use mkoctfile directly can request the flags that mkoctfile 
 # would use as follows:
 #    FLAG = $(shell $(MKOCTFILE) -p FLAG)
-# The following flags are for compiling programs that are independent i
+# The following flags are for compiling programs that are independent
 # of Octave.  How confusing.
 CC = @CC@
 CFLAGS = @CFLAGS@
@@ -44,7 +44,7 @@ FFLAGS = @FFLAGS@
 FPICFLAG = @FPICFLAG@
 
 OCTAVE = @OCTAVE@
-MKOCTFILE = @MKOCTFILE@ -DHAVE_OCTAVE_$(ver) -s -v
+MKOCTFILE = @MKOCTFILE@ -DHAVE_OCTAVE_$(ver) -v
 
 @DEFHAVE_X@
 X_CFLAGS = @X_CFLAGS@

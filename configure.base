@@ -191,6 +191,18 @@ dnl Don't need this for .oct files since mkoctfile handles them directly
 STRIP=${STRIP-strip}
 AC_CHECK_PROG(STRIP,$STRIP,$STRIP,:)
 
+dnl Strip on windows, don't strip on Mac OS/X or IRIX
+dnl For the rest, you can force strip using MKOCTFILE="mkoctfile -s"
+dnl or avoid strip using STRIP=: before ./configure
+case "$canonical_host_type" in
+    powerpc-apple-darwin*|*-sgi-*)
+	STRIP=:
+    ;;
+    *-cygwin-*|*-mingw-*) 
+	MKOCTFILE="$MKOCTFILE -s" 
+    ;;
+esac
+
 dnl Things needed to link to X11 programs
 dnl defines X_CFLAGS, X_LIBS
 AC_SUBST(DEFHAVE_X)

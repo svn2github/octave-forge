@@ -1,8 +1,8 @@
 Octave-GPC README
 $Id$
 
-Copyright (C) 2001  Rafael Laboissiere
-See the end for copying conditions.
+Copyright (C) 2001, 2004  Rafael Laboissiere
+See the end of this file for copying conditions.
 
 
 =======================================================
@@ -26,7 +26,7 @@ Requirements
 The code for the Octave DLD functions depends on features specific to the
 2.1.x series of Octave (development branch).  Although the 2.1 branch is
 designated "unstable", the author does not have found major problems in
-using octave-gpc with Octave 2.1.32.  Although, incompatible changes
+using octave-gpc with Octave 2.1.52.  Although, incompatible changes
 may happen across minor versions of the development branch.  If octave-gpc
 does not work with later versions of Octave, please notify the author.
 
@@ -158,7 +158,7 @@ available in the octave-forge package; see http://octave.sf.net).
 ----------------------------------------------------------------------
 Copyright information:
 
-Copyright (C) 2001  Rafael Laboissiere <rafael@laboissiere.net>
+Copyright (C) 2001, 2004  Rafael Laboissiere <rafael@laboissiere.net>
 
    Permission is granted to anyone to make or distribute verbatim copies
    of this document as received, in any medium, provided that the

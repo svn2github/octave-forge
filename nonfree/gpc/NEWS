@@ -1,7 +1,7 @@
 Octave-GPC NEWS -- history of user-visible changes.  
 $Id$
 
-Copyright (C) 2001  Rafael Laboissiere
+Copyright (C) 2001, 2004  Rafael Laboissiere
 See the end for copying conditions.
 
 
@@ -16,7 +16,7 @@ See the end for copying conditions.
 ----------------------------------------------------------------------
 Copyright information:
 
-Copyright (C) 2001  Rafael Laboissiere <rafael@laboissiere.net>
+Copyright (C) 2001, 2004  Rafael Laboissiere <rafael@laboissiere.net>
 
    Permission is granted to anyone to make or distribute verbatim copies
    of this document as received, in any medium, provided that the

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001 Rafael Laboissiere
+Copyright (C) 2001, 2004  Rafael Laboissiere
 
 This file is part of octave-gpc.
 

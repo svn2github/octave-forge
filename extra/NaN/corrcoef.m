@@ -15,6 +15,8 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 %	also known as the "product-moment coefficient of correlation" or "Pearson's correlation" [1]
 % Mode='Spearman' or 'Rank'
 %	gives "Spearman's Rank Correlation Coefficient"
+%	This replaces RANKCORR.M or SPEARMAN.M
+%	If the ranking is not unique, the correlation coefficient will depend on the sort order.  
 %
 % [R,p,ci1,ci2] = CORRCOEF(...);
 % 	R is the correlation matrix
@@ -31,6 +33,8 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % Further recommandation related to the correlation coefficient 
 % + Correlation is not causation. The observed correlation between two variables 
 %	might be due to the action of a third, unobserved variable.
+% + Ensure that NaN's are unrelated; otherwise encode NaN's in an 
+%		appropriate way e.g. with X(isnan(X))=max(X(:))+eps;
 % + LOOK AT THE SCATTERPLOTS! [20]
 %
 % see also: SUMSKIPNAN, COVM, COV, COR
@@ -47,7 +51,7 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
-%    Version 1.25  Date: 15 Aug 2002
+%    Version 1.25  Date: 16 Aug 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -63,6 +67,19 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 %    You should have received a copy of the GNU General Public License
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+% .changelog
+% V1.25	16082002	handling missing values (NaN) in Spearman's rank correlation	
+
+% Features:
+% - interprets NaN's as missing value
+% - Pearson's correlation
+% - Spearman's rank correlation
+% - is fast, using an efficient algorithm O(n.log(n)) for the rank correlation
+% - significance test included for null-hypthesis: r=0 
+% - confidence interval (0.95) included
+% - rank correlation works for cell arrays, too (no check for missing values).
+% - compatible with Octave and Matlab
 
 
 if nargin==1
@@ -103,8 +120,7 @@ if strcmp(lower(Mode),'pearson');
                 M1 = S1./N1;
                 M2 = S2./N2;
                 cc = CC./NN - M1'*M2;
-                R = cc./sqrt((SSQ1./N1-M1.*M1)'*(SSQ2./N2-M2.*M2));
-                
+                R  = cc./sqrt((SSQ1./N1-M1.*M1)'*(SSQ2./N2-M2.*M2));
         else        
                 [S,N,SSQ] = sumskipnan(X,1);
                 
@@ -115,62 +131,106 @@ if strcmp(lower(Mode),'pearson');
                 M  = S./N;
                 cc = CC./NN - M'*M;
                 v  = (SSQ./N- M.*M);  %max(N-1,0);
-                R = cc./sqrt(v'*v);
-		R(logical(eye(size(R))))=1;  % prevent rounding errors 
+                R  = cc./sqrt(v'*v);
+                R(logical(eye(size(R))))=1;  % prevent rounding errors 
         end;
         
 elseif strcmp(lower(Mode),'spearman') | strcmp(lower(Mode),'rank');
-        X=[X,Y]; 
-        if any(isnan(X(:)));
-                fprintf('Warning CORRCOEF: does not interpret NaN'' as missing values. SORRY\n');
-        end;
-        [N,M]=size(X);
-        NN = ones(M)*N;
-        [tmp,ix] = sort(-X);  % sorts the data, ix indicates the position in the sorted list
-        [tmp,iy] = sort(ix);	    % iy gives the rank of each element 	
-        %[X,ix,iy],
-        [jx,jy]  = find(ones(M));
+        %%%%% generate combinations using indices
+        M1 = size(X,2);
+        if isempty(Y),
+                M2 = M1;	        
+                IX = ones(M1);
+        else
+                M2 = size(Y,2);
+                IX = zeros(M1+M2);
+                IX(1:M1,M1+(1:M2)) = 1;
+        end;  
+        [jx,jy] = find(IX);
         
-        R = reshape(1-6*sum((iy(:,jx)-iy(:,jy)).^2)./(N*(N*N-1)),M,M);
-	R(logical(eye(size(R))))=1;  % prevent rounding errors 
-        % SS=sum(X.*X,1);
-        % R.Pearson = (X'*X)./sqrt(SS'*SS);	       
-        if ~isempty(Y),
-		NN = NN(1:M-size(Y,2),M-size(Y,2)+1:M);                
-		R  = R(1:M-size(Y,2),M-size(Y,2)+1:M);                
+        %[tmp,ix] = sort([X,Y]);     % sorts the data, ix indicates the position in the sorted list
+        % but because sort does not work accordingly for cell arrays, 
+        % and DIM argument not supported by Octave 
+        % and DIM argument does not work for cell-arrays in Matlab
+        % we sort each column separately:
+        
+        iy = zeros(size(X)+[0,size(Y,2)]);
+        SW = 0;
+        for k = 1:size(iy,2),
+                if k>M1,
+                        [sX,ix] = sort(Y(:,k-M1)); 
+                else
+                        [sX,ix] = sort(X(:,k)); 
+                end;
+                d = find(diff([find(diff(sX));sum(~isnan(sX))])>1)+1; % identify multiple occurences 
+        	SW = SW | ~isempty(d);        
+                [tmp,iy(:,k)] = sort(ix);	    % iy yields the rank of each element 	
+        end;
+        % Now, iy(:,jx)-iy(:,jy) are the rank differences (without correction for missing values)
+        
+        if SW,
+	        fprintf(2,'Warning: multiple occurences of an element is non-deterministic!\n');
+        end;
+        
+        tmp=zeros(size(iy));
+        if isnumeric(X),
+        	tmp(:,1:M1)=isnan(X);         
+        end;
+        if size(Y,2) & isnumeric(Y),
+        	tmp(:,M1+(1:size(Y,2)))=isnan(Y);         
+        end;
+        iy(logical(tmp))=NaN;
+        
+        if isnumeric(X) & isnumeric(Y),
+                % Here, we correct the rank for the missing values and calculate the rank differences
+                ic = cumsum(isnan(iy(:,jx))-isnan(iy(:,jy))); 	% count missing values (NaN's)          
+                iy = (iy(:,jx) - iy(:,jy)) + ic;		% correct rank difference 
+        else 
+                iy = (iy(:,jx) - iy(:,jy));		% calc rank difference 
+        end;
+        
+        
+        [R,NN] = sumskipnan(iy.^2,1);		% NN is the number of non-missing values
+        R      = reshape(R,M1,M2);
+        NN     = reshape(NN,M1,M2);
+        R      = 1-6*R./(NN.*(NN.*NN-1));
+        
+        if isempty(Y),
+                R(logical(eye(size(R))))=1;	% prevent rounding errors 
         end;
 end;
 
-
 if nargout<2, return, end;
+
+
 
 % SIGNIFICANCE TEST
 
+warning off; 	% prevent division-by-zero warnings in Matlab.
 tmp = 1 - R.*R;
 t   = R.*sqrt(max(NN-2,0)./tmp);
 
 if exist('t_cdf')>1;
-	sig = t_cdf(t,NN-2);
+        sig = t_cdf(t,NN-2);
 elseif exist('tcdf')>1;
-	sig = tcdf(t,NN-2);
+        sig = tcdf(t,NN-2);
 else
         fprintf('Warning CORRCOEF: significance test not completed because of missing TCDF-function\n')
-        sig = repmat(nan,size(t));
+        sig = repmat(nan,size(R));
 end;
-%sig = tcdf(t,NN);
-sig = 2 * min(sig,1 - sig);
-
-
+sig  = 2 * min(sig,1 - sig);
 
 if nargout<3, return, end;
+
+
 
 % CONFIDENCE INTERVAL
 
 z   = log((1+R)./(1-R))/2; 	% Fisher's z-transform; 
-sz  = 1./sqrt(NN-3);		% standard error of z
+%sz  = 1./sqrt(NN-3);		% standard error of z
+sz  = 1.96./sqrt(NN-3);		% 0.95 confidence interval (i.e. 1.96*standard error) of z
 
-ci1 = tanh(z-1.96*sz);		% lower 0.95 confidence interval 
-ci2 = tanh(z+1.96*sz);		% upper 0.95 confidence interval
-
+ci1 = tanh(z-sz);
+ci2 = tanh(z+sz);
 
 return;

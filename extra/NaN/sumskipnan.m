@@ -1,6 +1,5 @@
-function [o,count,o2,o3] = sumskipnan(i,DIM)
-% Sum of elements. This function overcomes the default behavior of 
-% SUM that NaN's in the input result in missing output values. 
+function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
+% SUMSKIPNAN adds all non-NaN values. 
 %
 % All NaN's are skipped; NaN's are considered as missing values. 
 % SUMSKIPNAN of NaN's only  gives O; and the number of valid elements is return. 
@@ -28,6 +27,11 @@ function [o,count,o2,o3] = sumskipnan(i,DIM)
 % SSQ	sum of squares
 % S4M	sum of fourth raw moment
 %
+% The mean ± standard error of the mean is 
+%	Y./N ± sqrt((SSQ-Y.*Y./N)./(N.*max(N-1,0))); 
+% the mean square ± the standard error of the mean square is 
+% 	SSQ./N ± sqrt((S4M-SSQ.^2./N)./(N.*max(N-1,0)))
+%
 % features:
 % - can deal with NaN's (missing values)
 % - implements dimension argument. 
@@ -35,7 +39,7 @@ function [o,count,o2,o3] = sumskipnan(i,DIM)
 % - global FLAG_implicit_skip_nan
 %
 % see also: FLAG_IMPLICIT_SKIP_NAN, SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
-%      SSQ, MOMENT, SKEWNESS, KURTOSIS
+%      SSQ, MOMENT, SKEWNESS, KURTOSIS, SEM
 %
 % REFERENCES: 
 % http://mathworld.wolfram.com/RawMoment.html
@@ -56,10 +60,7 @@ function [o,count,o2,o3] = sumskipnan(i,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.16
-%	17 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 
 if nargin<2
@@ -109,9 +110,9 @@ if exist('OCTAVE_VERSION') >= 5,
 	end;	
         if nargout>2,
                 i=i.^2;
-                o2 = sumskipnan(i,DIM);
+                SSQ = sumskipnan(i,DIM);
                 if nargout>3,
-                        o3 = sumskipnan(i.^2,DIM);
+                        S4M = sumskipnan(i.^2,DIM);
                 end;        
         end
 else 
@@ -138,9 +139,9 @@ else
         o = sum(i,DIM);
         if nargout>2,
                 i=i.^2;
-	        o2 = sum(i,DIM);
+	        SSQ = sum(i,DIM);
 	        if nargout>3
-		        o3 = sum(i.^2,DIM);
+		        S4M = sum(i.^2,DIM);
                 end;
         end;
 end;

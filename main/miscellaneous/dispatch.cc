@@ -216,7 +216,7 @@ octave_dispatch::do_multi_index_op (int nargout, const octave_value_list& args)
 }
 
 DEFUN_DLD(dispatch, args, , "\
-dispatch('f','type','name')\n\
+dispatch('f','name','type')\n\
 \n\
 Replaces the symbol for the name f with a dispatch\n\
 function so that if f is called with the first argument\n\
@@ -243,8 +243,13 @@ List dispatch functions\n\
 
   std::string f,t,n;
   if (nargin > 0) f = args(0).string_value();
-  if (nargin > 1) t = args(1).string_value();
-  if (nargin > 2) n = args(2).string_value();
+  if (nargin == 2)
+    t = args(1).string_value();
+  else if (nargin > 2) {
+    n = args(1).string_value();
+    t = args(2).string_value();
+  }
+
   if (error_state) return retval;
   
   static bool type_loaded = false;

@@ -8,7 +8,7 @@ http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/ma
 
 xxxx-xx-xx for Octave 2.1.36 and up ==========================================
 
-* Extended support backward to octave 2.1.36 and forward to octave 2.1.48
+* Extended support backward to octave 2.1.36 and forward to octave 2.1.49
   for all oct-files.  Some scripts make use of features only available in
   more recent versions of Octave.
 
@@ -37,6 +37,9 @@ xxxx-xx-xx for Octave 2.1.36 and up ==========================================
 * Statistics: 
   - added normplot()
   - scatter() optimization
+
+* Sparse:
+  - added concatenation functions spvcat() and sphcat()
 
 * Symbolic: 
   - added poly2sym, sym2poly, numden, findsymbols, findsym, symlsolve, 

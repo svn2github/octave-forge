@@ -123,7 +123,7 @@ else				# No stacking ########################
   ## sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
 end
 
-calstr = strrep (calstr, "...", "all_va_args");
+calstr = strrep (calstr, "...", "varargin{:}");
 
 c = sprintf(strcat("function df = %s (%s)\n",\
 		   "  ## Numerical differentiation of '%s' wrt to it's %d'th argument\n",\

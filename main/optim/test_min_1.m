@@ -15,7 +15,6 @@
 ## Test an optimization function with the same synopsis as bfgs.m 
 ##
 
-
 if ! exist ("optim_func"), optim_func = "bfgs"; end
 
 ok = 1;

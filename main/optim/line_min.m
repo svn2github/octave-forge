@@ -31,7 +31,7 @@
 ## Changelog : -----------
 ## 2002-01-28 Paul Kienzle
 ## * save two function evaluations by inlining the derivatives
-## * pass through all_va_args to the function
+## * pass through varargin{:} to the function
 ## 2002-03-13 Paul Kienzle
 ## * simplify update expression
 ## 2002-04-17 Etienne Grossmann <etienne@isr.ist.utl.pt>

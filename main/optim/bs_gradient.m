@@ -16,8 +16,8 @@
 ##    - Remove everything except 1st derivative calculation
 ##    - Do modifs to take args, narg as arguments
 
-## [dx, nev] = bs_gradient2 (f, args, narg)
-function [dx,nev] = bs_gradient2(f, args, narg)
+## [dx, nev] = bs_gradient (f, args, narg)
+function [dx,nev] = bs_gradient (f, args, narg)
 
   nev = 2*prod (sz = size (x0 = x1 = nth (args,narg)));
 

@@ -137,7 +137,7 @@ default = setfield ("backend",0,"verbose",0,\
 
 if nargin == 3			# Accomodation to struct and list optional
 				# args
-  tmp = va_arg ();
+  tmp = nth (varargin, va_arg_cnt++);
 
   if is_struct (tmp)
     opls = list ();
@@ -154,7 +154,7 @@ if nargin == 3			# Accomodation to struct and list optional
     opls = list (tmp);
   end
 else
-  opls = list (all_va_args);
+  opls = varargin;
 end
 ops = read_options (opls,\
 		    "op0",op0, "op1",op1, "default",default);

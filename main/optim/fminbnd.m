@@ -44,8 +44,8 @@ function min = fminbnd(_func,lb,ub, options, ...)
   out = lb:(width/3):ub;
   out(2) = out(4)-gr*width;
   out(3) = out(1)+gr*width;
-  upper = feval(_func,out(3), all_va_args);
-  lower = feval(_func,out(2), all_va_args);
+  upper = feval(_func,out(3), varargin{:});
+  lower = feval(_func,out(2), varargin{:});
   while((out(3)-out(2)) > delta) #this will not work for symmetric funcs
     if(upper > lower)
       out(4) = out(3);
@@ -53,14 +53,14 @@ function min = fminbnd(_func,lb,ub, options, ...)
       width = out(4)-out(1);
       out(2) = out(4)-gr*width;
       upper = lower;
-      lower = feval(_func,out(2), all_va_args);
+      lower = feval(_func,out(2), varargin{:});
     else
       out(1) = out(2);
       out(2) = out(3);
       width = out(4)-out(1);
       out(3) = out(1)+width*gr;
       lower = upper;
-      upper = feval(_func,out(3), all_va_args);
+      upper = feval(_func,out(3), varargin{:});
     endif
   endwhile
   min = out(2);

@@ -2,19 +2,22 @@
             "http://www.w3.org/TR/REC-html40/loose.dtd">
 <HTML>
 <HEAD><TITLE></TITLE>
+
 <META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<META name="GENERATOR" content="hevea 1.05">
+<META name="GENERATOR" content="hevea 1.06">
 </HEAD>
 <BODY >
-<!--HEVEA command line is: hevea optim-mini-howto.2.tex -->
+<!--HEVEA command line is: /usr/bin/hevea optim-mini-howto.2.tex -->
 <!--HTMLHEAD-->
 <!--ENDHTML-->
+<!--PREFIX <ARG ></ARG>-->
 <!--CUT DEF section 1 -->
 
 <BR>
 <BR>
- <BR>
+cmss<BR>
 <BR>
+ 
 
 <H1 ALIGN=center>Mini-HOWTO on using Octave for Unconstrained Nonlinear Optimization<A NAME="text1" HREF="#note1"><SUP><FONT SIZE=2>1</FONT></SUP></A></H1>
 
@@ -28,93 +31,160 @@ the details of the algorithm. In the following examples, we consider
 multivariable problems, but the single variable case is solved in
 exactly the same way.<BR>
 <BR>
-<!--TOC section Simple example-->
-
-<H2>Simple example</H2><!--SEC END -->
-We will use a call of the type<BR>
+All the algorithms used below return numerical approximations of <EM>local
+minima</EM> of the optimized function. In the following examples, we minimize
+a function with a single minimum (Figure&nbsp;<A HREF="#fig:function">1</A>), which
+is relatively easily found. In practice, success of optimization algorithms
+greatly depend on the optimized function and on the starting point.<BR>
 <BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
-</TT><TT>[</TT><TT>x_best,&nbsp;best_value,&nbsp;niter</TT><TT>]</TT><TT>&nbsp;=&nbsp;minimize&nbsp;(func,&nbsp;x_init)
+<!--TOC section cmss A simple example-->
+
+<H2>cmss A simple example</H2><!--SEC END -->
+
+<BLOCKQUOTE><DIV ALIGN=center><HR WIDTH="80%" SIZE=2></DIV>
+<DIV ALIGN=center>6mm<IMG SRC="optim-mini-howto.2001.png"> &nbsp;<IMG SRC="optim-mini-howto.2002.png"> </DIV><BR>
+<DIV ALIGN=center>Figure 1: <A NAME="fig:function"></A> 2D and 1D slices of the function that is minimized
+throughout this tutorial. Although not obvious at first sight, it
+has a unique minimum.</DIV><BR>
+
+<DIV ALIGN=center><HR WIDTH="80%" SIZE=2></DIV></BLOCKQUOTE>
+We will use a call of the type
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
+[x_best,&nbsp;best_value,&nbsp;niter]&nbsp;=&nbsp;minimize&nbsp;(func,&nbsp;x_init)
 </TT></DL></DIV>
-to find the minimum of <DIV ALIGN=center><TABLE CELLSPACING=0 CELLPADDING=0>
+to find the minimum of <DIV ALIGN=center><TABLE>
 <TR VALIGN=middle><TD NOWRAP>
-<I>f</I>&nbsp; :&nbsp; </TD>
-<TD NOWRAP>(</TD>
-<TD NOWRAP> <I>x</I><SUB><FONT SIZE=2>1</FONT></SUB>,.<I>x</I><SUB><FONT SIZE=2>2</FONT></SUB>,<I>x</I><SUB><FONT SIZE=2>3</FONT></SUB></TD>
+</TD>
+<TD NOWRAP><TABLE CELLSPACING=2 CELLPADDING=0>
+<TR><TD ALIGN=center NOWRAP><I>f</I>&nbsp; :</TD>
+<TD ALIGN=center NOWRAP><TABLE>
+<TR VALIGN=middle><TD NOWRAP>(</TD>
+<TD NOWRAP><I>x</I><SUB><FONT SIZE=2>1</FONT></SUB>,.<I>x</I><SUB><FONT SIZE=2>2</FONT></SUB>,<I>x</I><SUB><FONT SIZE=2>3</FONT></SUB></TD>
 <TD NOWRAP>)</TD>
-<TD NOWRAP><FONT FACE=symbol>Î</FONT> <I>R</I> <SUP><FONT SIZE=2>3</FONT></SUP>&nbsp; <FONT FACE=symbol>¾®</FONT> &nbsp; -cos </TD>
-<TD NOWRAP>(</TD>
-<TD NOWRAP> <I>x</I><SUB><FONT SIZE=2>1</FONT></SUB>-1</TD>
+<TD NOWRAP><FONT FACE=symbol>Î</FONT> <I>R</I> <SUP><FONT SIZE=2>3</FONT></SUP></TD>
+</TR></TABLE></TD>
+<TD ALIGN=center NOWRAP><FONT FACE=symbol>¾®</FONT></TD>
+<TD ALIGN=center NOWRAP><TABLE>
+<TR VALIGN=middle><TD NOWRAP>(</TD>
+<TD NOWRAP><I>x</I><SUB><FONT SIZE=2>1</FONT></SUB>-1</TD>
 <TD NOWRAP>)</TD>
-<TD NOWRAP>-cos </TD>
+<TD NOWRAP><TABLE CELLSPACING=0 CELLPADDING=0>
+<TR><TD ALIGN=left NOWRAP><FONT SIZE=2>2</FONT></TD>
+</TR>
+<TR><TD ALIGN=left>&nbsp;</TD>
+</TR>
+<TR><TD ALIGN=left NOWRAP>&nbsp;</TD>
+</TR></TABLE></TD>
+<TD NOWRAP>/9+</TD>
 <TD NOWRAP>(</TD>
-<TD NOWRAP> <I>x</I><SUB><FONT SIZE=2>2</FONT></SUB>-1</TD>
+<TD NOWRAP><I>x</I><SUB><FONT SIZE=2>3</FONT></SUB>-1</TD>
 <TD NOWRAP>)</TD>
-<TD NOWRAP>-cos </TD>
+<TD NOWRAP><TABLE CELLSPACING=0 CELLPADDING=0>
+<TR><TD ALIGN=left NOWRAP><FONT SIZE=2>2</FONT></TD>
+</TR>
+<TR><TD ALIGN=left>&nbsp;</TD>
+</TR>
+<TR><TD ALIGN=left NOWRAP>&nbsp;</TD>
+</TR></TABLE></TD>
+<TD NOWRAP>/9+</TD>
 <TD NOWRAP>(</TD>
-<TD NOWRAP> <I>x</I><SUB><FONT SIZE=2>3</FONT></SUB>-1</TD>
+<TD NOWRAP><I>x</I><SUB><FONT SIZE=2>3</FONT></SUB>-1</TD>
+<TD NOWRAP>)</TD>
+<TD NOWRAP><TABLE CELLSPACING=0 CELLPADDING=0>
+<TR><TD ALIGN=left NOWRAP><FONT SIZE=2>2</FONT></TD>
+</TR>
+<TR><TD ALIGN=left>&nbsp;</TD>
+</TR>
+<TR><TD ALIGN=left NOWRAP>&nbsp;</TD>
+</TR></TABLE></TD>
+<TD NOWRAP>/9</TD>
+</TR></TABLE></TD>
+</TR>
+<TR><TD ALIGN=center NOWRAP>&nbsp;</TD>
+<TD ALIGN=center NOWRAP>&nbsp;</TD>
+<TD ALIGN=center NOWRAP>&nbsp;</TD>
+<TD ALIGN=center NOWRAP><TABLE>
+<TR VALIGN=middle><TD NOWRAP>-cos</TD>
+<TD NOWRAP>(</TD>
+<TD NOWRAP><I>x</I><SUB><FONT SIZE=2>1</FONT></SUB>-1</TD>
+<TD NOWRAP>)</TD>
+<TD NOWRAP>-cos</TD>
+<TD NOWRAP>(</TD>
+<TD NOWRAP><I>x</I><SUB><FONT SIZE=2>2</FONT></SUB>-1</TD>
+<TD NOWRAP>)</TD>
+<TD NOWRAP>-cos</TD>
+<TD NOWRAP>(</TD>
+<TD NOWRAP><I>x</I><SUB><FONT SIZE=2>3</FONT></SUB>-1</TD>
 <TD NOWRAP>)</TD>
 <TD NOWRAP>.</TD>
+</TR></TABLE></TD>
+</TR></TABLE></TD>
 </TR></TABLE></DIV><BR>
 The following commands should find a local minimum of  <I>f</I>() ,
 using the Nelder-Mead (aka ``downhill simplex'') algorithm and
-starting from a randomly chosen point <TT>x0</TT>&nbsp;:<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
+starting from a randomly chosen point <TT>x0</TT>&nbsp;:
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
 function&nbsp;cost&nbsp;=&nbsp;foo&nbsp;(xx)<BR>
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;cost&nbsp;=&nbsp;sum&nbsp;(-cos(xx-1));<BR>
+&nbsp;&nbsp;xx--;&nbsp;&nbsp;<BR>
+<BR>
+&nbsp;&nbsp;cost&nbsp;=&nbsp;sum&nbsp;(-cos(xx)+xx.2/9);<BR>
 <BR>
 endfunction<BR>
 <BR>
-x0&nbsp;=&nbsp;rand&nbsp;(1,3);<BR>
+x0&nbsp;=&nbsp;[-1,&nbsp;3,&nbsp;-2];<BR>
 <BR>
-</TT><TT>[</TT><TT>x,v,n</TT><TT>]</TT><TT>&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0)
+[x,v,n]&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0)
 </TT></DL></DIV>
-The output should look like&nbsp;:<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
+The output should look like&nbsp;:
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
 x&nbsp;=<BR>
 <BR>
 &nbsp;&nbsp;1.00000&nbsp;1.00000&nbsp;1.00000<BR>
 <BR>
 v&nbsp;=&nbsp;-3.0000<BR>
 <BR>
-n&nbsp;=&nbsp;241
+n&nbsp;=&nbsp;248
 </TT></DL></DIV>
-This means that a minimum has been found in  ( 1,1,1) 
+This means that a minimum has been found in  <TABLE>
+<TR VALIGN=middle><TD NOWRAP>(</TD>
+<TD NOWRAP>1,1,1</TD>
+<TD NOWRAP>)</TD>
+</TR></TABLE>
 and that the value at that point is  -3 . This is correct, since
 all the points of the form  <I>x</I><SUB><FONT SIZE=2>1</FONT></SUB>=1+2<I>i</I><FONT FACE=symbol>p</FONT> ,&nbsp; <I>x</I><SUB><FONT SIZE=2>2</FONT></SUB>=1+2<I>j</I><FONT FACE=symbol>p</FONT> ,&nbsp; <I>x</I><SUB><FONT SIZE=2>3</FONT></SUB>=1+2<I>k</I><FONT FACE=symbol>p</FONT> ,
 for some  <I>i</I>,<I>j</I>,<I>k</I><FONT FACE=symbol>Î</FONT> <I>N</I> , minimize  <I>f</I>() . The number of function
-evaluations, 241 (this number may vary), is also returned.<BR>
+evaluations, 248, is also returned. Note that this number depends
+on the starting point. You will most likely obtain different numbers
+if you change <TT>x0</TT>.<BR>
 <BR>
-<!--TOC section Using the first differential-->
+The Nelder-Mead algorithm is quite robust, but unfortunately it is
+not very efficient. For high-dimensional problems, its execution time
+may become prohibitive.<BR>
+<BR>
+<!--TOC section cmss Using the first differential-->
 
-<H2>Using the first differential</H2><!--SEC END -->
-When a function, like  <I>f</I>()  above, is differentiable, it is more
-efficient optimization algorithms can be used. If <TT>minimize()</TT>
+<H2>cmss Using the first differential</H2><!--SEC END -->
+
+Fortunately, when a function, like  <I>f</I>()  above, is differentiable,
+more efficient optimization algorithms can be used. If <TT>minimize()</TT>
 is given the differential of the optimized function, using the <TT>"df"</TT>
-option, it will use a conjugate gradient method.<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
+option, it will use a conjugate gradient method.
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
 ##&nbsp;Function&nbsp;returning&nbsp;partial&nbsp;derivatives<BR>
 <BR>
 function&nbsp;dc&nbsp;=&nbsp;diffoo&nbsp;(x)<BR>
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;dc&nbsp;=&nbsp;sin&nbsp;(x&nbsp;(:)'&nbsp;-&nbsp;1);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;x(:)'&nbsp;-&nbsp;1;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;dc&nbsp;=&nbsp;sin&nbsp;(x)&nbsp;+&nbsp;2*x/9;<BR>
 <BR>
 endfunction<BR>
 <BR>
-</TT><TT>[</TT><TT>x,&nbsp;v,&nbsp;n</TT><TT>]</TT><TT>&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0,&nbsp;"df",&nbsp;"diffoo")
+[x,&nbsp;v,&nbsp;n]&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0,&nbsp;"df",&nbsp;"diffoo")
 </TT></DL></DIV>
-This produces the output&nbsp;:<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
+This produces the output&nbsp;:
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
 x&nbsp;=<BR>
 <BR>
 &nbsp;&nbsp;1.00000&nbsp;1.00000&nbsp;1.00000<BR>
@@ -123,10 +193,10 @@ v&nbsp;=&nbsp;-3&nbsp;<BR>
 <BR>
 n&nbsp;=<BR>
 <BR>
-&nbsp;&nbsp;93&nbsp;7
+&nbsp;&nbsp;108&nbsp;6
 </TT></DL></DIV>
-The same minimum has been found, but only 93 function evaluations
-were needed, together with 7 evaluations of the differential. Here,
+The same minimum has been found, but only 108 function evaluations
+were needed, together with 6 evaluations of the differential. Here,
 <TT>diffoo()</TT> takes the same argument as <TT>foo()</TT> and returns
 the partial derivatives of  <I>f</I>()  with respect to the corresponding
 variables. It doesn't matter if it returns a row or column vector
@@ -134,46 +204,25 @@ or a matrix, as long as the  <I>i</I><SUP><FONT SIZE=2>th</FONT></SUP>  element 
 is the partial derivative of  <I>f</I>()  with respect to  <I>x</I><SUB><FONT SIZE=2><I>i</I></FONT></SUB> 
 .<BR>
 <BR>
-<!--TOC section Using numerical approximations of the first differential-->
+<!--TOC section cmss Using numerical approximations of
+the first differential-->
 
-<H2>Using numerical approximations of the first differential</H2><!--SEC END -->
+<H2>cmss Using numerical approximations of
+the first differential</H2><!--SEC END -->
+
 Sometimes, the minimized function is differentiable, but actually
 writing down its differential is more work than one would like. Numerical
 differentiation offers a solution which is less efficient in terms
-of computation cost, but easy to program&nbsp;:<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
-eval&nbsp;(cdiff&nbsp;("foo"));
+of computation cost, but easy to implement. The <TT>"ndiff"</TT>
+option of <TT>minimize()</TT> uses numerical differentiation to execute
+exactly the same algorithm as in the previous example. However, because
+numerical approximation of the differentia is used, the outpud may
+differ slightly&nbsp;:
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
+[x,&nbsp;v,&nbsp;n]&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0,&nbsp;"ndiff")
 </TT></DL></DIV>
-The command <TT>cdiff("foo")</TT> returns some octave
-code that describes a function callled <TT>dfoo()</TT> that computes
-numerically the partial derivatives of <TT>foo</TT>. This code looks
-like&nbsp;:<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
-function&nbsp;df&nbsp;=&nbsp;dfoo&nbsp;(dvar)&nbsp;<BR>
-<BR>
-&nbsp;&nbsp;##&nbsp;Numerical&nbsp;differentiation&nbsp;of&nbsp;'foo'&nbsp;wrt&nbsp;to&nbsp;it's&nbsp;1'th&nbsp;argument&nbsp;<BR>
-<BR>
-&nbsp;&nbsp;##&nbsp;This&nbsp;function&nbsp;has&nbsp;been&nbsp;written&nbsp;by&nbsp;'cdiff()'<BR>
-<BR>
-&nbsp;&nbsp;</TT>...&nbsp;numerical&nbsp;differentiation&nbsp;code&nbsp;...<BR>
-<BR>
-<TT>endfunction
-</TT></DL></DIV>
-The function <TT>dfoo()</TT> is defined during the call to <TT>eval()</TT>
-and can then be used with <TT>minimize</TT>()&nbsp;:<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
-</TT><TT>[</TT><TT>x,&nbsp;v,&nbsp;n</TT><TT>]</TT><TT>&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0,&nbsp;"df",&nbsp;"dfoo")
-</TT></DL></DIV>
-wich yields the same result as above.<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
+wich yields&nbsp;:
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
 x&nbsp;=<BR>
 <BR>
 &nbsp;&nbsp;1.00000&nbsp;1.00000&nbsp;1.00000<BR>
@@ -182,35 +231,38 @@ v&nbsp;=&nbsp;-3&nbsp;<BR>
 <BR>
 n&nbsp;=<BR>
 <BR>
-&nbsp;&nbsp;93&nbsp;7
-</TT></DL></DIV><!--TOC section Using the first and second differentials-->
+&nbsp;&nbsp;78&nbsp;6
+</TT></DL></DIV>
+Note that each time the differential is numerically approximated,
+<TT>foo()</TT> is called 6 times (twice per input element), so that
+<TT>foo()</TT> is evaluated a total of (78+6*6=) 114 times in this
+example.<BR>
+<BR>
+<!--TOC section cmss Using the first and second differentials-->
 
-<H2>Using the first and second differentials</H2><!--SEC END -->
+<H2>cmss Using the first and second differentials</H2><!--SEC END -->
+
 When the function is twice differentiable and one knows how to compute
 its first and second differentials, still more efficient algorithms
 can be used (in our case, a variant of Levenberg-Marquardt). The option
 <TT>"d2f"</TT> allows to specify a function that
 returns the value of the function, the first and second differentials
-of the minimized function. Entering the commands&nbsp;: <BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
-function&nbsp;</TT><TT>[</TT><TT>c,&nbsp;dc,&nbsp;d2c</TT><TT>]</TT><TT>&nbsp;=&nbsp;d2foo&nbsp;(x)<BR>
+of the minimized function. Entering the commands&nbsp;: 
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
+function&nbsp;[c,&nbsp;dc,&nbsp;d2c]&nbsp;=&nbsp;d2foo&nbsp;(x)<BR>
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;c&nbsp;=&nbsp;foo(x);<BR>
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;dc&nbsp;=&nbsp;diffoo(x);<BR>
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;d2c&nbsp;=&nbsp;diag&nbsp;(cos&nbsp;(x(:)-1));<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;d2c&nbsp;=&nbsp;diag&nbsp;(cos&nbsp;(x(:)-1)&nbsp;+&nbsp;2/9);<BR>
 <BR>
 end<BR>
 <BR>
-</TT><TT>[</TT><TT>x,v,n</TT><TT>]</TT><TT>&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0,&nbsp;"d2f",&nbsp;"d2foo")&nbsp;
+[x,v,n]&nbsp;=&nbsp;minimize&nbsp;("foo",&nbsp;x0,&nbsp;"d2f",&nbsp;"d2foo")&nbsp;
 </TT></DL></DIV>
-produces the output&nbsp;:<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
+produces the output&nbsp;:
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
 x&nbsp;=<BR>
 <BR>
 &nbsp;&nbsp;1.0000&nbsp;1.0000&nbsp;1.0000<BR>
@@ -219,27 +271,30 @@ v&nbsp;=&nbsp;-3<BR>
 <BR>
 n&nbsp;=<BR>
 <BR>
-&nbsp;&nbsp;48&nbsp;4
+&nbsp;&nbsp;34&nbsp;5
 </TT></DL></DIV>
-This time, just 48 function evaluations, and 4 evaluations of <TT>d2foo()</TT>
+This time, 34 function evaluations, and 5 evaluations of <TT>d2foo()</TT>
 were needed.<BR>
 <BR>
+<!--TOC section cmss Summary-->
+
+<H2>cmss Summary</H2><!--SEC END -->
+
 We have just seen the most basic ways of solving nonlinear unconstrained
 optimization problems. The online help system of Octave (try e.g.
 ``<TT>help minimize</TT>'') will yield information on other issues,
-such as passing extra arguments to the minimized function, controling
-the termination of the optimization process, choosing the algorithm
-etc.<BR>
-<BR>
-<DIV ALIGN=left><DL COMPACT=compact>
-<DT><DD><TT>
-</TT></DL></DIV><!--BEGIN NOTES document-->
-<HR WIDTH="50%" SIZE=1><DL>
-<DT><A NAME="note1" HREF="#text1"><FONT SIZE=5>1</FONT></A><DD> Author : Etienne Grossmann <TT>&lt;etienne@isr.ist.utl.pt&gt;</TT> (soon
+such as <EM>passing extra arguments</EM> to the minimized function,
+<EM>controling the termination</EM> of the optimization process, choosing
+the algorithm etc.
+<DIV ALIGN=left><DL COMPACT=compact><DT><DD><TT>
+</TT></DL></DIV>
+<!--BEGIN NOTES document-->
+<HR WIDTH="50%" SIZE=1><DL><DT><A NAME="note1" HREF="#text1"><FONT SIZE=5>1</FONT></A><DD>Author : Etienne Grossmann <TT>&lt;etienne@isr.ist.utl.pt&gt;</TT> (soon
 replaced by ``Octave-Forge developers''?). This document is free
 documentation; you can redistribute it and/or modify it under the
 terms of the GNU Free Documentation License as published by the Free
-Software Foundation.<BR>.&nbsp;&nbsp;&nbsp;This is distributed in the hope that it will be useful, but
+Software Foundation.<BR>
+.&nbsp;&nbsp;&nbsp;This is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 or FITNESS FOR A PARTICULAR PURPOSE.
 
@@ -247,11 +302,10 @@ or FITNESS FOR A PARTICULAR PURPOSE.
 <!--END NOTES-->
 <!--HTMLFOOT-->
 <!--ENDHTML-->
-
 <!--FOOTER-->
 <HR SIZE=2>
 <BLOCKQUOTE><EM>This document was translated from L<sup>A</sup>T<sub>E</sub>X by
-</EM><A HREF="http://pauillac.inria.fr/~maranget/hevea/index.html"><EM>H</EM><EM><FONT SIZE=2><sup>E</sup></FONT></EM><EM>V</EM><EM><FONT SIZE=2><sup>E</sup></FONT></EM><EM>A</EM></A><EM>.
-</EM></BLOCKQUOTE></BODY>
+</EM><A HREF="http://pauillac.inria.fr/~maranget/hevea/index.html"><EM>H<FONT SIZE=2><sup>E</sup></FONT>V<FONT SIZE=2><sup>E</sup></FONT>A</EM></A><EM>.
+</EM></BLOCKQUOTE>
+</BODY>
 </HTML>
-

@@ -123,6 +123,7 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
 
   H = eye (prod (sz = size (x)));
   nev = [0,1];
+
   if diff == 0
     g = bs_gradient (func, args, narg)';
     if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end

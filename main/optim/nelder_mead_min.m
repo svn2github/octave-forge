@@ -105,7 +105,7 @@ rst = 0;			# Max # of restarts
 
 
 if nargin >= 3,			# Read control arguments
-  if nargin > 3, ctl = struct (all_va_args); else ctl = va_arg (); end
+  if nargin > 3, ctl = struct (varargin{:}); else ctl = nth (varargin, va_arg_cnt++); end
   if isnumeric (ctl)
     if length (ctl)>=1 && !isnan (ctl(1)), crit = ctl(1); end
     if length (ctl)>=2 && !isnan (ctl(2)), tol = ctl(2); end

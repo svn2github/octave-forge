@@ -16,6 +16,6 @@
 
 function ret=fmin(...)
 
-	ret = fminbnd(all_va_args);
+	ret = fminbnd(varargin{:});
 
 endfunction

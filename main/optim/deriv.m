@@ -18,27 +18,27 @@
 function dx = deriv(f,x0, ...)
 
   if(nargin < 2)
-    error("not enough arguements\n");
+    error("not enough arguments\n");
   endif
   if(!isstr(f))
-    error("The first arguement must be a string\n");
+    error("The first argument must be a string\n");
   endif
   if(!is_scalar(x0))
-    error("The second arguement must be a scalar.\n");
+    error("The second argument must be a scalar.\n");
   endif
   if(nargin >= 3)
-    va_start();
-    h = va_arg();
+    va_arg_cnt = 1;
+    h = nth (varargin, va_arg_cnt++);
     if(!is_scalar(h))
       error("h must be a scalar.");
     endif
     if(nargin >= 4)
-      O = va_arg();
+      O = nth (varargin, va_arg_cnt++);
       if((O != 2) && (O != 4))
 	error("Only order 2 or 4 is supported.\n");
       endif
       if(nargin >= 5)
-	N = va_arg();
+	N = nth (varargin, va_arg_cnt++);
 	if((N > 4)||(N < 1))
 	  error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.\n");
 	endif

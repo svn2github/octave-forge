@@ -39,7 +39,7 @@ function opt = optimset (...)
 ## Display      , ["off","iter","notify","final"] 
 ##                               : N/A
 
-args = list (all_va_args);
+args = varargin;
 
 opt = setfield ();
 

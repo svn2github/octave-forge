@@ -21,7 +21,7 @@
 
 ## 2002-01-28 Paul Kienzle
 ## * save two function evaluations by inlining the derivatives
-## * pass through all_va_args to the function
+## * pass through varargin{:} to the function
 ## 2002-03-13 Paul Kienzle
 ## * simplify update expression
 
@@ -31,9 +31,9 @@ function x = nrm(f,x,...)
   
   h = 0.01;
   while(abs(velocity) > 0.0001)
-    fx = feval(f,x,all_va_args);
-    fxph = feval(f,x+h,all_va_args);
-    fxmh = feval(f,x-h,all_va_args);
+    fx = feval(f,x,varargin{:});
+    fxph = feval(f,x+h,varargin{:});
+    fxmh = feval(f,x-h,varargin{:});
     velocity = (fxph - fxmh)/(2*h);
     acceleration = (fxph - 2*fx + fxmh)/(h^2);
     x = x - velocity/abs(acceleration);

@@ -44,7 +44,7 @@ function [x,fval,flag,out,df,d2f] = fminunc (fun,x0,opt,...)
 
 if nargin < 3, opt = setfield (); end
 if nargin > 3, 
-  args = list (x0, all_va_args);
+  args = list (x0, varargin{:});
 else 
   args = list (x0);
 end

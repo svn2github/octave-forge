@@ -66,7 +66,7 @@ function [v,dv,d2v] = d2iff(x,y,t)
 endfunction
 
 ## PRint Now
-function prn (...), printf (all_va_args); fflush (stdout); end
+function prn (varargin), printf (varargin{:}); fflush (stdout); end
 
 
 if verbose

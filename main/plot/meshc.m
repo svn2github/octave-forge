@@ -42,6 +42,7 @@ function meshc (x, y, z)
   if (nargin == 1)
     z = x;
     if (is_matrix (z))
+      gset nokey;
       gset hidden3d;
       gset data style lines;
       gset surface;
@@ -69,6 +70,7 @@ function meshc (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
+	gset nokey;
         gset hidden3d;
         gset data style lines;
         gset surface;
@@ -96,6 +98,7 @@ function meshc (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
+	gset nokey;
         gset hidden3d;
         gset data style lines;
         gset surface;

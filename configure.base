@@ -295,98 +295,43 @@ else
 fi
 
 dnl Test for the Vdo_fortran_indexing variable
-cat > conftest.cc <<EOF
-#include <octave/config.h>
-#include <octave/ov.h>
-bool x = Vdo_fortran_indexing;
-EOF
-AC_MSG_CHECKING([for Vdo_fortran_indexing])
-ac_try="$MKOCTFILE conftest.cc"
-if AC_TRY_EVAL(ac_try) ; then
-	AC_MSG_RESULT(yes)
-	HAVE_DO_FORTRAN_INDEXING="-DHAVE_DO_FORTRAN_INDEXING"
-	DO_FORTRAN_MSG="Vdo_fortran_indexing: yes"
-else
-	AC_MSG_RESULT(no)
-	DO_FORTRAN_MSG="Vdo_fortran_indexing: no"
-fi
+TRY_MKOCTFILE([for Vdo_fortran_indexing],
+[#include <octave/ov.h>
+bool x = Vdo_fortran_indexing;],
+[HAVE_DO_FORTRAN_INDEXING="-DHAVE_DO_FORTRAN_INDEXING"],)
 AC_SUBST(HAVE_DO_FORTRAN_INDEXING)
-rm -f conftest.*
 
 dnl Test for the Vpropagate_empty_matrices variable
-cat > conftest.cc <<EOF
-#include <octave/config.h>
-#include <octave/ov.h>
-bool x = Vpropagate_empty_matrices;
-EOF
-AC_MSG_CHECKING([for Vpropagate_empty_matrices])
-ac_try="$MKOCTFILE conftest.cc"
-if AC_TRY_EVAL(ac_try) ; then
-	AC_MSG_RESULT(yes)
-	HAVE_PROPAGATE_EMPTY_MATRICES="-DHAVE_PROPAGATE_EMPTY_MATRICES"
-	PROPAGATE_MSG="Vpropagate_empty_matrices: yes"
-else
-	AC_MSG_RESULT(no)
-	PROPAGATE_MSG="Vpropagate_empty_matrices: no"
-fi
+TRY_MKOCTFILE([for Vpropagate_empty_matrices],
+[#include <octave/ov.h>
+bool x = Vpropagate_empty_matrices;],
+[HAVE_PROPAGATE_EMPTY_MATRICES="-DHAVE_PROPAGATE_EMPTY_MATRICES"],)
 AC_SUBST(HAVE_PROPAGATE_EMPTY_MATRICES)
-rm -f conftest.*
 
 dnl Test for the Vok_to_lose_imaginary_part variable
-cat > conftest.cc <<EOF
-#include <octave/config.h>
-#include <octave/ov.h>
-bool x = Vok_to_lose_imaginary_part;
-EOF
-AC_MSG_CHECKING([for Vok_to_lose_imaginary_part])
-ac_try="$MKOCTFILE -c conftest.cc"
-if AC_TRY_EVAL(ac_try) ; then
-	AC_MSG_RESULT(yes)
-	HAVE_OK_TO_LOSE_IMAGINARY_PART="-DHAVE_OK_TO_LOSE_IMAGINARY_PART"
-	LOSE_IMAGINARY_MSG="Vok_to_lose_imaginary_part: yes"
-else
-	AC_MSG_RESULT(no)
-	LOSE_IMAGINARY_MSG="Vok_to_lose_imaginary_part: no"
-fi
+TRY_MKOCTFILE([for Vok_to_lose_imaginary_part],
+[#include <octave/ov.h>
+bool x = Vok_to_lose_imaginary_part;],
+[HAVE_="-DOK_TO_LOSE_IMAGINARY_PART"],)
 AC_SUBST(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-rm -f conftest.*
 
 dnl Test for N-dimensional Arrays
-AC_MSG_CHECKING([for N-dim arrays])
-cat > conftest.cc << EOF
-#include <octave/config.h>
-#include <octave/dim-vector.h>
-EOF
-ac_try="$MKOCTFILE conftest.cc"
-if AC_TRY_EVAL(ac_try); then
-	AC_MSG_RESULT(yes)
-	HAVE_ND_ARRAYS="-DHAVE_ND_ARRAYS";
-	ND_ARRAYS="has N-dimensional Arrays"
-else
-	AC_MSG_RESULT(no)
-	ND_ARRYS="does not have N-dimensional Arrays"
-fi
+TRY_MKOCTFILE([for N-dim arrays],
+[#include <octave/dim-vector.h>],
+[HAVE_ND_ARRAYS="-DHAVE_ND_ARRAYS";
+ND_ARRAYS="has N-dimensional Arrays"],
+[ND_ARRYS="does not have N-dimensional Arrays"])
 AC_SUBST(HAVE_ND_ARRAYS)
-rm -rf conftest*
 
 dnl Test if OV_TYPEID has class arg
-AC_MSG_CHECKING([for class argument in OV_TYPEID])
-cat > conftest.cc << EOF
-#include <octave/oct.h>
+TRY_MKOCTFILE([for class argument in OV_TYPEID],
+[#include <octave/oct.h>
 class usertype : public octave_value {
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA;
 };
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(usertype,"name","class");
-EOF
-ac_try="$MKOCTFILE -c conftest.cc"
-if AC_TRY_EVAL(ac_try); then
-	AC_MSG_RESULT(yes)
-	TYPEID_HAS_CLASS="-DTYPEID_HAS_CLASS";
-else
-	AC_MSG_RESULT(no)
-fi
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(usertype,"name","class");],
+[TYPEID_HAS_CLASS="-DTYPEID_HAS_CLASS"],)
 AC_SUBST(TYPEID_HAS_CLASS)
-rm -rf conftest*
 
 dnl Test for the makeinfo program
 AC_CHECK_PROG(MAKEINFO,makeinfo,makeinfo)
@@ -471,15 +416,8 @@ shell commands will install into the following directories:
    libraries: $libdir
    headers:   $includedir
 
-octave (version $OCTAVE_VERSION) has the in-built variables
-   $DO_FORTRAN_MSG
-   $PROPAGATE_MSG
-   $LOSE_IMAGINARY_MSG
-
-octave (version $OCTAVE_VERSION) $ND_ARRAYS
-
 octave-forge is configured with
-   octave:      $OCTAVE (version $OCTAVE_VERSION)
+   octave:      $OCTAVE (version $OCTAVE_VERSION) $ND_ARRAYS
    mkoctfile:	$MKOCTFILE for Octave $subver
    X11 support:	$XSTATUS
    makeinfo:    $MAKEINFO

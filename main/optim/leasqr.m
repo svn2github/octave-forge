@@ -284,13 +284,13 @@ jac = jac(:, msk);	% use only fitted parameters
 %% diag(1/wt.^2).  
 %% cov matrix of data est. from Bard Eq. 7-5-13, and Row 1 Table 5.1 
 
-if vernum(1) >= 4,
-  Q=sparse(1:m,1:m,(0*wt+1)./(wt.^2));  % save memory
-  Qinv=inv(Q);
+if exist('sparse')  % save memory
+  Q=sparse(1:m,1:m,1./wt.^2);
+  Qinv=sparse(1:m,1:m,wt.^2);
 else
   Q=diag((0*wt+1)./(wt.^2));
   Qinv=diag(wt.*wt);
-end;
+end
 resid=y-f;                                    %un-weighted residuals
 covr=resid'*Qinv*resid*Q/(m-n);                 %covariance of residuals
 Vy=1/(1-n/m)*covr;  % Eq. 7-13-22, Bard         %covariance of the data 
@@ -300,8 +300,13 @@ covp=jtgjinv*jac'*Qinv*Vy*Qinv*jac*jtgjinv; % Eq. 7-5-13, Bard %cov of parm est
 d=sqrt(abs(diag(covp)));
 corp=covp./(d*d');
 
-covr=diag(covr);                 % convert returned values to compact storage
-stdresid=resid./sqrt(diag(Vy));  % compute then convert for compact storage
+if exist('sparse')
+  covr=spdiags(covr,0);
+  stdresid=resid./sqrt(spdiags(Vy,0));
+else
+  covr=diag(covr);                 % convert returned values to compact storage
+  stdresid=resid./sqrt(diag(Vy));  % compute then convert for compact storage
+end
 Z=((m-n)*jac'*Qinv*jac)/(n*resid'*Qinv*resid);
 
 %%% alt. est. of cov. mat. of parm.:(Delforge, Circulation, 82:1494-1504, 1990
@@ -310,12 +315,8 @@ Z=((m-n)*jac'*Qinv*jac)/(n*resid'*Qinv*resid);
 
 %Calculate R^2 (Ref Draper & Smith p.46)
 %
-r=corrcoef(y,f);
-if (exist('OCTAVE_VERSION'))
-  r2=r^2;
-else
-  r2=r(1,2).^2;
-end
+r=corrcoef([y(:),f(:)]);
+r2=r(1,2).^2;
 
 % if someone has asked for it, let them have it
 %

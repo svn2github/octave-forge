@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.14  2004/08/31 15:23:45  adb014
+Small build fix for the macro SPARSE_RESIZE
+
 Revision 1.13  2004/08/25 16:13:57  adb014
 Working, but inefficient, concatentaion code
 
@@ -345,7 +348,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    oct_sparse_free( sidx );
 
 // destructively resize a sparse matrix
-#define SPARSE_RESIZE( TYPX, VECTYP) \
+#define SPARSE_RESIZE( TYPX, VECTYP1, VECTYP2)			   \
   /* Special case the redimensioning to an empty matrix */ \
   if (dv.numel() == 0) \
     return new octave_sparse (create_SuperMatrix (0, 0, 0, (TYPX *)0, \
@@ -367,7 +370,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
   int m= (int) dv(0); \
   ColumnVector ridxA= find_val(0).column_vector_value(); \
   ColumnVector cidxA= find_val(1).column_vector_value(); \
-  VECTYP ## ColumnVector coefA= find_val(2).column_vector_value(); \
+  VECTYP1 ## ColumnVector coefA= find_val(2). VECTYP2 ## column_vector_value(); \
   int assemble_do_sum = 0; \
   ASSEMBLE_SPARSE( TYPX, false);
 

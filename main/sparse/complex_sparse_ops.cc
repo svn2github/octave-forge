@@ -521,7 +521,7 @@ octave_complex_sparse::resize (const dim_vector& dv) const
     return octave_value ();
   }
 
-  SPARSE_RESIZE (Complex, Complex)
+  SPARSE_RESIZE (Complex, Complex, complex_)
 
   //dPrint_CompCol_Matrix("octave sparse", (SuperMatrix *) &X);
   return new octave_complex_sparse (X);
@@ -1754,6 +1754,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.32  2004/08/31 15:23:37  adb014
+ * Small build fix for the macro SPARSE_RESIZE
+ *
  * Revision 1.31  2004/08/25 16:13:57  adb014
  * Working, but inefficient, concatentaion code
  *

@@ -24,5 +24,6 @@ Linear algebra
  svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
 Statistics
  spsum
+ spstats
 Test
  fem_test sp_test

@@ -472,29 +472,15 @@ sub write_html { # {{{1
 
                 # column 1:  the function (x-ref to full description in
                 #                          cvs-tree's html file)
-                print OUT "<tr><td>";
-                if (defined $octave_forge_function{$func}) {
-                    print OUT '<a href="',"../$CVSTREE#$func",'">',$func,"</a>";
-                } else {
-                    print OUT $func;
-                }
-                print OUT "</td>\n";
+                print OUT "<tr><td width=120>";
+		print OUT func_ref($func,split_long_name($func));
+		print OUT "</td>\n";
 
                 # column 2: the description, if it exists
                 #
-		if (! defined $function_description{$func} ) {
-		    my $notes = $index_notes{$func};
-		    $notes = "not implemented" if $notes eq "";
-		    $notes =~ s|<code>|</b></i><code>|g;
-		    $notes =~ s|</code>|</code><i><b>|g;
-                    print OUT "    <td><i><b>$notes</b></i>";
-		} elsif ($function_description{$func} eq "") {
-                    print OUT "    <td><i><b>no description</b></i>";
-		} else {
-		    print OUT "    <td>", $function_description{$func};
-#		        wrap("", "<br>",$function_description{$func});
-                }
-                print OUT "</td></tr>\n";
+		print OUT "    <td>",html_desc($func),"</td>\n";
+
+                print OUT "</tr>\n";
             }
             print OUT "</table>\n";
         }
@@ -525,13 +511,9 @@ sub write_html { # {{{1
 
 	# column 1:  the function (x-ref to full description in
 	#                          cvs-tree's html file)
-	print OUT "<tr valign=top><td>";
-	if (defined $octave_forge_function{$func}) {
-	    print OUT '<a href="',"../$CVSTREE#$func",'">',$func,"</a>";
-	} else {
-	    print OUT $func;
-	}
-	print OUT "    </td>\n";
+	print OUT "<tr valign=top><td width=120>";
+	print OUT func_ref($func,split_long_name($func));
+	print OUT "</td>\n";
 
 	# column 2:  the toolbox (x-ref to the <toolbox>.html file)
 	print OUT "    <td>\n";
@@ -544,7 +526,7 @@ sub write_html { # {{{1
 
 	# column 3:  the function description
 	# XXX FIXME XXX multiple functions???
-	print OUT "    <td>$function_description{$func}</td>\n";
+	print OUT "    <td>",html_desc($func),"</td>\n";
     }
 
     print OUT "</table>\n</body></html>\n";
@@ -567,14 +549,7 @@ sub write_ascii { # 1{{{
 	foreach my $cat ( cat_list($TB) ) {
 	    print wrap($prefix,$prefix,$cat), "\n";
 	    foreach my $func ( cat_funcs($TB,$cat) ) {
-		my $desc;
-		if ( ! defined $function_description{$func} ) {
-		   $desc = "<missing>";
-		}
-		else {
-		   $desc = $function_description{$func}
-		}
-		my $entry = sprintf("%-*s %s",$indent,$func,$desc);
+		my $entry = sprintf("%-*s %s",$indent,$func,ascii_desc($func));
 		print wrap("$prefix","$prefix\t\t","  $entry"), "\n";
 	    }
 	    print "$prefix\n";
@@ -582,34 +557,93 @@ sub write_ascii { # 1{{{
     } 
 } # 1}}}
 sub cat_ref { # 1{{{
+    # cat_ref($TB,$cat,$ref) returns an html link to $cat described by $ref
     my ($TB,$cat,$ref) = @_;
     my $anchor = cat_anchor($cat);
     return "<a href=\"$TB.html#$anchor\">$ref</a>";
 } # 1}}}
 sub cat_anchor { # 1{{{
+    # cat_anchor($cat) returns the anchor word generated for category $cat
     my ($cat) = @_;
     $cat =~ s/\W+//g;
     return $cat;
 } # 1}}}
+sub func_ref { # 1{{{
+    # func_ref($func) returns an html link to $func described by $ref
+    my ($func,$ref) = @_;
+    if (defined $octave_forge_function{$func}) {
+	return "<a href=\"../$CVSTREE#$func\">$ref</a>";
+    } elsif ( $ref ne $func ) {
+	# XXX FIXME XXX do we want "$ref ($func)"? Check how it is called.
+	return "$ref";
+    } else {
+	return $ref;
+    }
+} # 1}}}
+sub split_long_name { # 1{{{
+    # html magic to break long variable/function names
+    my ( $nicefunc ) = @_;
+    # $nicefunc =~ s/([^_])_([^_])/$1_ $2/g;
+    return $nicefunc;
+} # 1}}}
+sub ascii_desc { # 1{{{
+    # ascii_desc($func) returns a decription of $func using ascii markup
+    my ( $func ) = @_;
+    if (! defined $function_description{$func} ) {
+	my $notes = $index_notes{$func};
+	$notes = "<missing>" if $notes eq "";
+	# convert "<a link>desc</a>" to "desc (link)"
+	$notes =~ s|<a href=\"?([^>]*)\"?>([^<]*)</a>|$2 ($1)|g;
+	# strip all remaining html formatting
+	$notes =~ s|<[^>]*>||g;
+	return $notes;	    
+    } elsif ($function_description{$func} eq "") {
+	return "<no description>";
+    } else {
+	return $function_description{$func};
+    }
+} #}}}
+sub html_desc { # 1{{{
+    # html_desc($func) returns a description of $func using html markup
+    my ( $func ) = @_;
+    if (! defined $function_description{$func} ) {
+	my $notes = $index_notes{$func};
+	$notes = "not implemented" if $notes eq "";
+	# shut of the bold italics during "code" formatting
+	$notes =~ s|<code>|</b></i><code>|g;
+	$notes =~ s|</code>|</code><i><b>|g;
+	return "<i><b>$notes</b></i>";
+    } elsif ($function_description{$func} eq "") {
+	return "<i><b>no description</b></i>";
+    } else {
+	return $function_description{$func};
+    }
+} #}}}
 sub toolbox_list { # 1{{{
-    return sort { lc($a) cmp lc($b) } keys %index_by_TB_cat;
+    # toolbox_list() returns an ordered list of toolboxes.
+    return sort { uc($a) cmp uc($b) } keys %index_by_TB_cat;
 } # 1}}}
 sub cat_list { # 1{{{
+    # cat_list($TB) returns an ordered list of categories in a toolbox $TB.
     my ($TB) = @_;
     return sort keys %{$index_by_TB_cat{$TB}};
 } # 1}}}
 sub cat_funcs { # 1{{{
+    # cat_funcs($TB,$cat) returns an ordered list of functions in $TB,$cat
     my ($TB,$cat) = @_;
-    return sort { lc($a) cmp lc($b) } @{$index_by_TB_cat{$TB}{$cat}}
+    return sort { uc($a) cmp uc($b) } @{$index_by_TB_cat{$TB}{$cat}}
 } # 1}}}
 sub indexed_funcs { # 1{{{
-    return sort { lc($a) cmp lc($b) } keys %index_by_function;
+    # indexed_funcs() returns an ordered list of all functions in the index
+    return sort { uc($a) cmp uc($b) } keys %index_by_function;
 } # 1}}}
 sub forge_funcs { # 1{{{
-    return sort { lc($a) cmp lc($b) } keys %octave_forge_function;
+    # forge_funcs() returns an ordered list of functions only found in octave forge
+    return sort { uc($a) cmp uc($b) } keys %octave_forge_function;
 } # 1}}}
-sub all_funcs { # 1{{{
-    return sort { lc($a) cmp lc($b) } %function_description;
+sub scanned_funcs { # 1{{{
+    # scanned_funcs() returns an ordered list of all functions found in m-files and oct-files
+    return sort { uc($a) cmp uc($b) } %function_description;
 } # 1}}}
 __END__
 This program is free software; you can redistribute it and/or modify

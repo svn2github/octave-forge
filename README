@@ -172,6 +172,16 @@ cvsdir.sh
 	   $ cvsdir.sh restore
 
 ==========================================================================
+Compatibility Issues
+
+Issue the following command:
+	$ grep -d skip "XXX COMPATIBILITY XXX" */* */*/*
+for a list of compatibility issues in various functions.  As of this
+writing, mu2lin is a likely cause of problems when porting audio
+packages.
+
+
+==========================================================================
 Paul Kienzle
 pkienzle@users.sf.net
 October 22, 2001

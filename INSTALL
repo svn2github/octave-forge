@@ -14,7 +14,8 @@ $ make
 $ make install
 
 Remove anything from ~/octave-forge/FIXES that are superceded by recent 
-versions of Octave.
+versions of Octave.  Read ~/octave-forge/FIXES/README for notes on how 
+the new behaviour differs from the pre-existing Octave behaviour.
 
 Add the following to ~/.octaverc:
 

@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hsv (@var{n})
+## @deftypefn {Function File} {} rainbow (@var{n})
 ## Create color colormap. 
 ## (red through yellow, green, cyan,blue,magenta to red)
 ## The argument @var{n} should be a scalar.  If it
@@ -35,10 +35,10 @@ function map = rainbow (number)
     number = length(colormap);
   elseif (nargin == 1)
     if (! is_scalar (number))
-      error ("hsv: argument must be a scalar");
+      error ("rainbow: argument must be a scalar");
     endif
   else
-    usage ("hsv (number)");
+    usage ("rainbow (number)");
   endif
 
   if (number == 1)

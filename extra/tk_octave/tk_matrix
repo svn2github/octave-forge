@@ -1,4 +1,4 @@
-#!/usr/lib/octave -q
+#!/usr/bin/octave -q
 
 colorbar = [1:100]';
 load sample.dat

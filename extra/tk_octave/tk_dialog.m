@@ -70,7 +70,7 @@ for argnum=1:length(varargin)
 		return
 	endif
 	cmd = [cmd, " ", '"', arg, '"'];
-endwhile
+endfor
 
 value = str2num(tk_cmd( cmd ));
 

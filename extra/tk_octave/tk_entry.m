@@ -52,7 +52,11 @@ for i=1:nopt
 	desc = nth (varargin, va_arg_cnt++);
 	val = nth (varargin, va_arg_cnt++);
 
-	tk_cmd( sprintf( "unset val_%d val_%d_\n", i, i) );	# unset previous invocation values
+	# unset previous invocation values
+	tk_cmd( sprintf( "if {[info exists \"val_%d\"]} {unset val_%d}\n",
+			i, i));
+	tk_cmd( sprintf( "if {[info exists \"val_%d_\"]} {unset val_%d_}\n",
+			i, i));
 
 	if (isstr(val))									# string
 		tk_cmd( sprintf( "set val_%d \"%s\"", i, val) );	# work value
@@ -97,8 +101,6 @@ tk_cmd( sprintf("pack .master -fill both -expand 1") );
 tk_cmd( "tkwait window .master" );
 eval(tk_cmd(sprintf("set result \"%s\" ", cmd_ok )));
 
-@@ -98,6 +98,7 @@
- 
 vr_val_cnt = 1;
  for i=1:nopt
         varargout{vr_val_cnt++} = eval(sprintf("val_%d;",i));

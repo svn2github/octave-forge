@@ -53,8 +53,8 @@ endif
 
 if (tk_cmd( "winfo exists .top_tk_busy" ) == "1")
      if (nargin == 1)
-	tk_cmd( sprintf("set tk_busy_message \"%s\"", text ), 0);
-	tk_cmd( sprintf( "wm title .top_tk_busy {%s}", text ), 0);
+	tk_cmd( sprintf("set tk_busy_message \"%s\"", text ));
+	tk_cmd( sprintf( "wm title .top_tk_busy {%s}", text ));
      endif
      st = tk_cmd("set stop" ) == "1";
      return

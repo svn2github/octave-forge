@@ -5,7 +5,8 @@ ifdef HAVE_LIB_TERMCAP
 endif
 
 
-all:	dispatch.oct waitbar.oct listen.oct xmlread.oct
+all:	dispatch.oct waitbar.oct listen.oct xmlread.oct \
+	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct
 
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)
@@ -43,5 +44,17 @@ xmlread.o: xmlread.cc xmltree_read.h xmltree.h
 
 xmlread.oct: xmlread.o xmltree_read.o xmltree.o
 	$(MKOCTFILE) $^
+
+csvexplode.oct: csvexplode.cc
+	$(MKOCTFILE) $(MISCDEFS) $<
+
+csv2cell.oct: csv2cell.cc
+	$(MKOCTFILE) $(MISCDEFS) $<
+
+csvconcat.oct: csvconcat.cc
+	$(MKOCTFILE) $(MISCDEFS) $<
+
+cell2csv.oct: cell2csv.cc
+	$(MKOCTFILE) $(MISCDEFS) $<
 
 clean: ; -$(RM) *.o octave-core core *.oct *~

@@ -1,5 +1,6 @@
+
 ## Copyright (C) 2000 Ben Sapp.  All rights reserved.
-##
+## Modification by Andreas Helms
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 2, or (at your option) any
@@ -11,7 +12,8 @@
 ## for more details.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}] =} fminbnd(@var{f},@var{lb},@var{ub},[@var{tol}])
+## @deftypefn {Function File} {[@var{x}] =}  
+## fminbnd(@var{f},@var{lb},@var{ub},@var{[options]},@var{P1},@var{P2}, ...)
 ## 
 ## Find the minimum of a scalar function with the Golden Search method.
 ## 
@@ -23,36 +25,43 @@
 ## Value to use as an initial lower bound on @var{x}.
 ## @item ub 
 ## Value to use as an initial upper bound on @var{x}.
-## @item tol
-## Tolerence you would like to have.  The default value is @var{tol} =
-## 10e-6 
+## @item options
+## Vector with control parameters (For compatibily with MATLAB, not used 
+## here) 
+## @item P1,P2, ...
+## Optional parameter for function @var{f} 
+##
 ## @end table
 ## @end deftypefn
 
-function min = fminbnd(_func,lb,ub)
+## 2001-09-24 Andreas Helms <helms@astro.physik.uni-potsdam.de>
+## * modified for use with functions of more than one parameter
+
+function min = fminbnd(_func,lb,ub, options, ...)
+
   delta = 1e-17;
   gr = (sqrt(5)-1)/2;
   width = (ub-lb);
   out = lb:(width/3):ub;
   out(2) = out(4)-gr*width;
   out(3) = out(1)+gr*width;
-  upper = feval(_func,out(3));
-  lower = feval(_func,out(2));
-  while((out(3)-out(2)) > delta) #this will not work for symetric funcs
+  upper = feval(_func,out(3), all_va_args);
+  lower = feval(_func,out(2), all_va_args);
+  while((out(3)-out(2)) > delta) #this will not work for symmetric funcs
     if(upper > lower)
       out(4) = out(3);
       out(3) = out(2);
       width = out(4)-out(1);
       out(2) = out(4)-gr*width;
       upper = lower;
-      lower = feval(_func,out(2));
+      lower = feval(_func,out(2), all_va_args);
     else
       out(1) = out(2);
       out(2) = out(3);
       width = out(4)-out(1);
       out(3) = out(1)+width*gr;
       lower = upper;
-      upper = feval(_func,out(3));
+      upper = feval(_func,out(3), all_va_args);
     endif
   endwhile
   min = out(2);

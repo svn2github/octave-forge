@@ -14,58 +14,71 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+## ASSERT produces an error if the condition is not met.
+##
 ## assert(cond)
-##   Produce an error if any element of cond is zero
+##   Produce an error if any element of cond is zero.
 ##
 ## assert(v, expected_v)
 ##   Produce an error if v is not the same as expected_v.  Note
 ##   that v and expected_v can be strings, matrices or structures.
 ##
 ## assert(v, expected_v, tol)
-##   Produce an error if abs(v-expected_v)>tol for any v
+##   Produce an error if abs(v-expected_v)>tol for any v.
+##   If tol < 0, use abs(v-expected_v)>abs(tol*expected_v).
 ##
-## assert(v, expected_v, tol, 'rel')
-##   Produce an error if abs((v-expected_v)./expected_v)>tol for any v
-##
-## see also: test, pretty
-function assert(cond, expected, tol, rel)
+## see also: test
 
-  if (nargin < 1 || nargin > 4)
-    usage("assert (cond) or assert (v, expected_v [,tol [,'rel']])");
+## TODO: Output throttling: don't print out the entire 100x100 matrix,
+## TODO: but instead give a summary; don't print out the whole list, just
+## TODO: say what the first different element is, etc.  To do this, make
+## TODO: the message generation type specific.
+function assert(cond, expected, tol)
+
+  if (nargin < 1 || nargin > 3)
+    usage("assert (cond) or assert (v, expected_v [,tol])");
   endif
 
   if (nargin < 3)
     tol = 0;
   endif
-  if (nargin < 4)
-    rel = [];
-  endif
 
   coda = "";
   iserror = 0;
   if (nargin == 1)
-    if (!all (all (cond)))
-      error ("assert failed");
+    if (!isnumeric(cond) || !all(cond(:)))
+      error ("assert failed"); # say which elements failed?
+    endif
+
+  elseif (is_list(cond))
+    if (!is_list(expected) || length(cond) != length(expected))
+      iserror = 1;
+    else
+      try
+	for i=1:length(cond)
+	  assert(nth(cond,i),nth(expected,i));
+	endfor
+      catch
+	iserror = 1;
+      end
     endif
 
   elseif (isstr (expected))
     iserror = (!isstr (cond) || !strcmp (cond, expected));
 
   elseif (is_struct (expected))
-    if (!is_struct (cond))
+    if (!is_struct (cond) || ...
+	rows(struct_elements(cond)) != rows(struct_elements(expected)))
       iserror = 1;
     else
-      z = struct_elements (cond);
-      y = struct_elements (expected);
-      if (any (any (z != y)))
-	iserror = 1;
-      else
-	iserror = 0;
-	for i=1:length (z)
-      	  eval (["assert(cond.", z(i), ", expected.", z(i), ", tol, rel);"],
-		"iserror = 1;");
-	endfor
-      endif
+      for [v,k] = cond
+	if struct_contains(expected,k)
+	  eval(["assert(v,expected.",k,", tol);"], "iserror=1;");
+	else
+	  iserror = 1;
+	  break;
+	endif
+      endfor
     endif
 
   elseif (isempty (expected))
@@ -74,13 +87,14 @@ function assert(cond, expected, tol, rel)
   else ## numeric
     if (any (size (cond) != size (expected)))
       iserror = 1;
-    elseif (isempty(rel))
+    elseif (tol >= 0)
       iserror = (any (any (abs (cond-expected) > tol )));
       if (iserror)
 	coda = sprintf("|| v - v_expected || = %g", norm(cond-expected));
       endif
     else
-      iserror = (any (any (abs ( (cond-expected)./expected ) > tol )));
+      comp = abs(cond-expected) > abs(tol*expected);
+      iserror = any (comp(:));
       if (iserror)
 	coda = sprintf("|| (v - v_expected)./v || = %g", \
 		       norm((cond-expected)./expected));
@@ -92,15 +106,15 @@ function assert(cond, expected, tol, rel)
     return;
   endif
 
-  ## pretty print the "expected but got" info
-  msg = "assert expected";
-  str = pretty (expected);
-  idx = find(toascii(str) != toascii("\n"));
+  ## pretty print the "expected but got" info,
+  ## trimming leading and trailing "\n"
+  str = disp (expected);
+  idx = find(str!="\n");
   if (!isempty(idx))
     str = str(idx(1):idx(length(idx)));
   endif
-  str2 = pretty (cond);
-  idx = find(toascii(str2) != toascii("\n"));
+  str2 = disp (cond);
+  idx = find(str2!="\n");
   if (!isempty(idx))
     str2 = str2(idx(1):idx(length(idx)));
   endif
@@ -148,10 +162,10 @@ endfunction
 %!error assert(3+2*eps, 3, eps);
 %!error assert(3, 3+2*eps, eps);
 %## must give a little space for floating point errors on relative
-%!assert(100+100*eps, 100, 2*eps, 'rel'); 
-%!assert(100, 100+100*eps, 2*eps, 'rel');
-%!error assert(100+300*eps, 100, 2*eps, 'rel'); 
-%!error assert(100, 100+300*eps, 2*eps, 'rel');
+%!assert(100+100*eps, 100, -2*eps); 
+%!assert(100, 100+100*eps, -2*eps);
+%!error assert(100+300*eps, 100, -2*eps); 
+%!error assert(100, 100+300*eps, -2*eps);
 %!error assert(3, [3,3]);
 %!error assert(3,4);
 

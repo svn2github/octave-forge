@@ -75,8 +75,8 @@
 ##    %! assert (kron (B, A), [ A; 2*A ]);
 ## Assert can accept a tolerance so that you can compare results
 ## absolutely or relatively. For example, the following all succeed:
-##    %!test assert (1+eps, 1, 2*eps)
-##    %!test assert (100+100*eps, 100, 2*eps, 'rel')
+##    %!test assert (1+eps, 1, 2*eps)          # absolute error
+##    %!test assert (100+100*eps, 100, -2*eps) # relative error
 ## You can also do the comparison yourself, but still have assert
 ## generate the error:
 ##    %!test assert (isempty([]))
@@ -170,7 +170,7 @@
 ## is actually octave code, using something like:
 ##    ## -*-octave-*-
 ##
-## See Also: error, assert, demo, example, pretty
+## See Also: error, assert, demo, example
 
 ## TODO: * Consider using keyword fail rather then error?  This allows us
 ## TODO: to make a functional form of error blocks, which means we

@@ -14,9 +14,10 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## x = dlmread (filename, sep)
+## x = dlmread (filename, sep, row)
 ##    Read the matrix x from a file, with columns separated by the
 ##    character sep (default is ",").  NaN values are written as nan.
+##    The number of rows to skip before reading data is row (default is 0).
 ##
 ## WARNING: for compatibility, must treat empty fields as zero, but doesn't.
 
@@ -24,12 +25,13 @@
 ## 2001-02-16
 ##    * first revision
 
-function x = dlmread (filename, sep)
+function x = dlmread (filename, sep, row)
 
-  if (nargin < 1 || nargin > 2)
-    usage ("x = dlmread (filename, sep)");
+  if (nargin < 1 || nargin > 3)
+    usage ("x = dlmread (filename, sep, row)");
   endif
-  if nargin < 3, sep = ","; endif
+  if nargin < 2, sep = ","; endif
+  if nargin < 3, row = 0; endif
 
   fid = fopen(filename, "r");
   if (fid >= 0)
@@ -45,18 +47,28 @@ function x = dlmread (filename, sep)
     if (nr > 0)
 	in(idx) = " ";
 	nr += (idx(length(idx)) < length(in));
+        idxl = idx;
     endif
     idx = find (in == "\r");
     if (nr == 0)
 	nr = length(idx);
 	if (nr > 0) nr += (idx(length(idx)) < length(in)); endif
+	idxl = idx;
     endif
     if (length (idx) > 0) in(idx) = " "; endif
+    nr = nr-row;
 
+    ## find where to start reading data
+    if (row > 0)
+	istr = idxl(row)+1;
+    else
+       istr = 1;
+    endif
+ 
     ## convert separators to spaces
     idx = find (in == sep);
     if (length(idx) > 0) in(idx) = " "; endif
-    [x, n, err] = sscanf(in, "%g");
+    [x, n, err] = sscanf(in(istr:length(in)), "%g");
     if (!isempty(err))
       error(["dlmread: ", err]);
     elseif (rem(n, nr) != 0)

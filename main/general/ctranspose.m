@@ -24,9 +24,11 @@
 
 ## 2001 FEB 07
 ##   initial release
+## 2001-12-03 Rolf Fabian
+## * Don't use x.' !!!
 
 function y = ctranspose (x)  
 
-  y = x.';
+  y = x';
   
 endfunction;

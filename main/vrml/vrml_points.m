@@ -49,13 +49,7 @@ col = [0.3 0.4 0.9];
 emit = 1;
 tran = 0;
 
-<<<<<<< vrml_points.m
-nargin = nargin();
-i = 1; nargin--;
-=======
 i = 1; 			# pos 2.1.39
->>>>>>> 1.8
-
 
 while i <= nargin-1
 

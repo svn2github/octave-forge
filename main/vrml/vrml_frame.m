@@ -33,14 +33,8 @@ hcol = [];
 ######################################################################
 ## Read options
 numeric_args = 0;
-<<<<<<< vrml_frame.m
-nargin = nargin();
-
-while nargin && numeric_args<2,
-=======
 args = nargin; # nargin is now a function
 while args && numeric_args<2,
->>>>>>> 1.8
 
 
   tmp = nth (varargin, numeric_args + 1);

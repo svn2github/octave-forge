@@ -27,12 +27,7 @@ opt0 = " " ;
 
 verbose = 0 ;
 
-<<<<<<< vrml_lines.m
-nargin = nargin();
-nargin -= 2 ;
-=======
 args -= 2 ;
->>>>>>> 1.4
 i=1;
 
 while args>=i ,

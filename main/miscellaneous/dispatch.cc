@@ -123,7 +123,8 @@ octave_dispatch::octave_dispatch (void)
 #endif
 
 octave_dispatch::octave_dispatch (const std::string &name)
-  : octave_function (name, "Overloaded function"), tab (), base(name) 
+  : octave_function (name, "Overloaded function"), tab (), base(name),
+    has_alias (false)
 { }
 
 void 

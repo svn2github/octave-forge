@@ -13,13 +13,21 @@ function [r2] = cor(X,Y);
 % c = COR(...);
 % 	c is the correlation matrix
 %
+% NOTE: Under certain circumstances (Missing values and small number of samples) 
+%   abs(COR) can be larger than 1.  
+%   If you need abs(COR)<=1, use CORRCOEF. CORRCOEF garantees abs(COR)<=1. 
+%
 % see also: SUMSKIPNAN, COVM, COV, CORRCOEF
 %
 % REFERENCES:
 % http://mathworld.wolfram.com/CorrelationCoefficient.html
 
 
-%	Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%       $Revision$
+%       $Id$
+%	Copyright (C) 2000-2004 by  Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
 %    This program is free software; you can redistribute it and/or modify

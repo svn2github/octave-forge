@@ -1,12 +1,13 @@
 function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % CORRCOEF calculates the correlation coefficient.
-% X and Y can contain missing values encoded with NaN.
-% NaN's are skipped, NaN do not result in a NaN output. 
-% A significance test to check the independence of NaN's
-% is included. 
-%   CORRCOEF(X [,Mode]);
+%   X and Y can contain missing values encoded with NaN.
+%   NaN's are skipped, NaN do not result in a NaN output. 
+%   It is garanteed that abs(R) is not larger than 1. 
+%   A significance test to check the independence of NaN's
+%   is included. 
+%   R = CORRCOEF(X [,Mode]);
 %      calculates the (auto-)correlation matrix of X
-%   CORRCOEF(X,Y [,Mode]);
+%   R = CORRCOEF(X,Y [,Mode]);
 %      calculates the crosscorrelation between X and Y
 %
 % Mode='Pearson' or 'parametric' [default]
@@ -60,9 +61,11 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
-%    $Revision$
-%    $Id$
-%    Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
+%       $Revision$
+%       $Id$
+%       Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

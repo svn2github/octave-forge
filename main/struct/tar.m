@@ -10,10 +10,6 @@
 
 function s = tar(varargin)
 
-## keyboard
-## form and eval a string like
-## "s.argn(1,:)=va_arg();s.argn(2,:)=va_arg(); ...."
-
-eval(setstr(nze([ones(nargin,1)*toascii("s."),\
-		 toascii(argn),\
-		 ones(nargin,1)*toascii("=nth (varargin, va_arg_cnt++);")]')')) ;
+for i=1:nargin
+   s.(deblank(argn(i,:))) = varargin{i};
+end

@@ -612,7 +612,7 @@ Send a native command to grace.\n")
         out(0) = -1.0;
     }
 
-    return octave_value_list(out);
+    return octave_value(out);
 }
 
 

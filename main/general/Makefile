@@ -1,20 +1,13 @@
 include ../../Makeconf
 
-PROGS=bitand.oct bitor.oct bitxor.oct bitmax.oct command.oct
+BITAND_LINKS=bitor.oct bitxor.oct bitmax.oct
+PROGS=bitand.oct $(BITAND_LINKS) command.oct deref.oct
 
 all: $(PROGS)
 
-bitor.oct: bitand.oct
+$(BITAND_LINKS): Makefile
 	-$(RM) $@
-	$(LN_S) $< $@
-
-bitxor.oct: bitand.oct
-	-$(RM) $@
-	$(LN_S) $< $@
-
-bitmax.oct: bitand.oct
-	-$(RM) $@
-	$(LN_S) $< $@
+	$(LN_S) bitand.oct $@
 
 
 clean:

@@ -142,14 +142,23 @@ if strcmp(lower(Mode(1:7)),'pearson');
         end;
         
 elseif strcmp(lower(Mode(1:4)),'rank');
+        if isnumeric(X) & any(isnan(X(:))),
+                warning('Missing values (NaN) might give different ranks')
+        end;
   	if isempty(Y),      
 	        R = corrcoef(ranks(X));
         else
+                if isnumeric(Y) & any(isnan(Y(:))),
+                        warning('Missing values (NaN) might give different ranks')
+                end;
                 R = corrcoef(ranks(X),ranks(Y));
         end;
         
 elseif strcmp(lower(Mode(1:8)),'spearman');
-        %%%%% generate combinations using indices
+        if isnumeric(X) & any(isnan(X(:))),
+                warning('Missing values (NaN) might give different ranks')
+        end;
+  	%%%%% generate combinations using indices
         [N,M1] = size(X);
         if isempty(Y),
                 M2 = M1;	        
@@ -160,6 +169,9 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
                 IX = zeros(M1+M2);
                 IX(1:M1,M1+(1:M2)) = 1;
 	        iy = ranks([X,Y]);	%  calculates ranks;
+                if isnumeric(Y) & any(isnan(Y(:))),
+                        warning('Missing values (NaN) might give different ranks')
+                end;
         end;  
         [jx,jy] = find(IX);
         

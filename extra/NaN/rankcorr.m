@@ -1,4 +1,4 @@
-function r = rankcorr(x,y)
+function r = rankcorr(X,Y)
 % RNAKCORR calculated the rank correlation coefficient.
 % This function is replaced by CORRCOEF. 
 % Significance test and confidence intervals can be obtained from CORRCOEF, too. 
@@ -37,8 +37,15 @@ function r = rankcorr(x,y)
 
 fprintf(2,'RANKCORR might become obsolete; use CORRCOEF(ranks(x)) or CORRCOEF(...,''Rank'') instead\n');
 
+if isnumeric(X) & any(isnan(X(:))),
+        warning('Missing values (NaN) might give different ranks')
+end;
+
 if nargin < 2
-   r = corrcoef(ranks(x));
+        r = corrcoef(ranks(X));
 else
-   r = corrcoef(ranks(x),ranks(y));
+        if isnumeric(Y) & any(isnan(Y(:))),
+                warning('Missing values (NaN) might give different ranks')
+        end;
+        r = corrcoef(ranks(X),ranks(Y));
 end

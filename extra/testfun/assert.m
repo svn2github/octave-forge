@@ -43,11 +43,18 @@ function assert(cond, expected, tol)
     tol = 0;
   endif
 
+  if exist("argn") == 0, argn=" "; endif
+  in = deblank(argn(1,:));
+  for i=2:rows(argn)
+    in = [in, ",", deblank(argn(i,:))];
+  end
+  in = ["(",in,")"];
+
   coda = "";
   iserror = 0;
   if (nargin == 1)
     if (!isnumeric(cond) || !all(cond(:)))
-      error ("assert failed"); # say which elements failed?
+      error ("assert %s failed", in); # say which elements failed?
     endif
 
   elseif (is_list(cond))
@@ -118,7 +125,7 @@ function assert(cond, expected, tol)
   if (!isempty(idx))
     str2 = str2(idx(1):idx(length(idx)));
   endif
-  msg = ["assert expected\n", str, "\nbut got\n", str2];
+  msg = ["assert ",in," expected\n", str, "\nbut got\n", str2];
   if (!isempty(coda))
     msg = [ msg, "\n", coda ];
   endif

@@ -18,25 +18,17 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lin2mu (@var{x}, @var{bps})
-## If the matrix @var{x} represents audio data in linear encoding, 
-## @code{lin2mu} converts it to mu-law encoding.  The optional argument
-## @var{bps} specifies whether the output data uses 8 bit samples (range
-## -128 to 127), 16 bit samples (range -32768 to 32767) or default 0 for
-## real values (range -1 to 1).
+## @deftypefn {Function File} {} lin2mu (@var{x}, @var{n})
+## Converts audio data from linear encoding to mu-law encoding.  Linear
+## encoding uses @var{n}-bit signed integers or if @var{n} is 0, it uses
+## real values in the range -1<=@var{x}<=1.  If @var{n} is not specified, 
+## it defaults to 0, 8 or 16 depending on the range values in @var{x}.
 ## @end deftypefn
 ## @seealso{mu2lin, loadaudio, saveaudio, playaudio, setaudio, and record}
 
 ## Author: Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994
 ## Adapted-By: jwe
-
-## Paul Kienzle <pkienzle@users.sf.net>
-##    handle [-1,1] input range
-## 2001-10-22 Paul Kienzle <pkienzle@users.sf.net>
-## * restore Octave's guessing behaviour for precision, but issue warning
-## 2001-12-11 Paul Kienzle <pkienzle@users.sf.net>
-## * convert 
 
 function y = lin2mu (x, bit)
 
@@ -59,12 +51,12 @@ function y = lin2mu (x, bit)
   endif
 
 
-  ## transform real and 8-bit format to 16-bit
+  ## transform real and n-bit format to 16-bit
   if (bit == 0)
-    [-1,1] -> [-32768, 32767]
-    x = round(32767.5 * x - 0.5);
-  elseif (bit == 8)
-    x = 256 .* x;
+    ## [-1,1] -> [-32768, 32768]
+    x = 32768 * x;
+  elseif (bit != 16)
+    x = 2^(16-bit) .* x;
   endif
 
   ## determine sign of x, set sign(0) = 1.
@@ -72,7 +64,7 @@ function y = lin2mu (x, bit)
 
   ## take absolute value of x, but force it to be smaller than 32636;
   ## add bias
-  x = min (abs (x), 32635 * ones (size (x))) + 132;
+  x = min (abs (x), 32635) + 132;
 
   ## find exponent and fraction of bineary representation
   [f, e] = log2 (x);

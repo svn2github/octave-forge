@@ -5,6 +5,7 @@ TEXI2DVI = texi2dvi --clean
 TEXI2HTML = texi2html -split_chapter -number
 MV = /bin/mv
 DVIPDF = dvipdf
+DVIPS = dvips
 
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
@@ -44,8 +45,8 @@ MOFLAGS =
 all : $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(DOCS)
 
 install : $(INFODOC)
-	$(INSTALL) -d $(MPATH)
-	$(INSTALL_DATA) $(INFODOC) $(MPATH)/comm 
+	$(INSTALL) -d $(MPATH)/comm
+	$(INSTALL_DATA) $(INFODOC) $(MPATH)/comm/$(INFODOC)
 
 $(GALOISTARGET) : $(GALOISDEPENDS) $(GALOISOBJECTS) 
 	@echo "Linking $@"; \

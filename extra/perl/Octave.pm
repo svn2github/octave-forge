@@ -7,13 +7,17 @@
 package Inline::Octave;
 
 
-$VERSION = '0.12';
+$VERSION = '0.14';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
 use IPC::Open2;
 use vars qw( $octave_object );
 
+# set values which should change to this,
+# if it doesn't change, we have an error.
+my $retcode_string= "[-101101.101101,-918273.6455,-178.9245867]";
+my $retcode_value=   [-101101.101101,-918273.6455,-178.9245867];
 
 sub register {
 #  print "REGISTERING\n";
@@ -27,11 +31,21 @@ sub register {
 
 
 sub build {
+   my $o = shift;
+   $o->_build (@_ );
+}
+
+sub _build {
 #  print "BUILDING\n";
    my $o = shift;
    my $code = $o->{API}{code};
 
-   {
+   # we don't really need to validate the code here
+   # since that gets done in load anyway
+   #
+   # Also, stopping the interpreter will make any
+   # functions defined in a previous section disappear
+   if (0) {
       $o->start_interpreter();
       print $o->interpret($code);
       my @def_funcs= $o->get_defined_functions();
@@ -66,15 +80,14 @@ sub load {
          #TODO make this better - ie loop
          my $nargout=0;
             $nargout= 1 if $pat =~ /^\w+\s*=/;
-            $nargout= 1 if $pat =~ /^\[\s*\w+\s*\]\s*=/;
-            $nargout= 2 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*]\s*=/;
-            $nargout= 3 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
-            $nargout= 4 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
-            $nargout= 5 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
-            $nargout= 6 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
-            $nargout= 7 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
-            $nargout= 8 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
-            $nargout= 9 if $pat =~ /^\[\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*]\s*=/;
+
+         if ($pat =~ /^\[([\s\w,]+)\]\s*=/ ) {
+            my @fnpat = split /,/, $1;
+            foreach (@fnpat) {
+               $nargout++ if /^\s*\w+\s*$/;
+            }
+         }
+
          $nargouts{$fnam}=$nargout;
       }
       if (/^\s*##\s*Inline::Octave::(\w+)\s*\(nargout=(\d+)\)\s*=>\s*(\w*)/) {
@@ -156,7 +169,7 @@ sub $perl_funname {
    # in the loop, but rather at the end of the function
    
    #input variables
-   my \$inargs;
+   my \$inargs=" ";
    my \@vin;
    for (my \$i=0; \$i < \@_; \$i++) {
       \$vin[\$i]= new Inline::Octave::Matrix( \$_[\$i] );
@@ -165,10 +178,10 @@ sub $perl_funname {
    chop(\$inargs); #remove last ,
 
    #output variables
-   my \$outargs;
+   my \$outargs=" ";
    my \@vout;
    for (my \$i=0; \$i < $nargout; \$i++) {
-      \$vout[\$i]= new Inline::Octave::Matrix( -101101.101101 ); #code
+      \$vout[\$i]= new Inline::Octave::Matrix( $retcode_string );
       \$outargs.= \$vout[\$i]->name.",";
    }
    chop(\$outargs); #remove last ,
@@ -259,7 +272,7 @@ sub stop_interpreter
 
    return unless $Oin and $Oout;
 
-   print $Oin "\nexit\n";
+   print $Oin "\n\nexit\n";
    #<$Oin>; #clean up input - is this required?
    close $Oin;
    close $Oout;
@@ -283,7 +296,7 @@ sub interpret
 
 #  print "INTERP: $cmd\n";
 
-   print $Oin "\n$cmd\ndisp('$marker');fflush(stdout);\n";
+   print $Oin "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
 
    my $input;
    my $marker_len= length( $marker )+1;
@@ -295,7 +308,7 @@ sub interpret
 
    # we need to leave octave blocked doing something,
    # otherwise it can't handle a CTRL-C
-   print $Oin "\nfread(stdin,1);\n";
+   print $Oin "\n\nfread(stdin,1);\n";
    return substr($input,0,-$marker_len);
 }   
 
@@ -320,7 +333,7 @@ END {
 package Inline::Octave::Matrix;
 use Carp;
 
-$varcounter= 100001;
+$varcounter= 10000001;
 # called as
 # new IOM( [1,2,3] ) -> ColumnVector
 # new IOM( [[1,2],[2,3],[3,4]] ) -> Matrix
@@ -468,12 +481,84 @@ sub name
    return $self->{varname};
 }   
 
+
+#
+# Define arithmetic on IOMs 
+#
+use overload 
+    '+' => sub { oct_matrix_arithmetic( @_, '+',  ) },
+    '-' => sub { oct_matrix_arithmetic( @_, '-',  ) },
+    '*' => sub { oct_matrix_arithmetic( @_, '.*', ) },
+    '/' => sub { oct_matrix_arithmetic( @_, './', ) },
+    'x' => sub { oct_matrix_arithmetic( @_, '*',  ) };
+
+sub oct_matrix_arithmetic
+{
+   my $a= new Inline::Octave::Matrix( shift );
+   my $b= new Inline::Octave::Matrix( shift );
+   ($b,$a)= ($a,$b) if shift;
+   my $op= shift;
+
+   my $v= new Inline::Octave::Matrix( $retcode_value );
+
+   my $code= $v->name."=". $a->name ." $op ". $b->name .';';
+   run_math_code( $code, $v);
+   return $v;
+}   
+
+sub transpose
+{
+   my $a= new Inline::Octave::Matrix( shift );
+   my $v= new Inline::Octave::Matrix( $retcode_value );
+   my $code= $v->name."=". $a->name.".';";
+   run_math_code( $code, $v);
+   return $v;
+}  
+
+# run_math_code ( $code, $val )
+# dies on error, no return
+sub run_math_code
+{
+   my $code= shift;
+   my $v   = shift;
+   my $vname= $v->name;
+
+   $runcode= "$code  disp (size($vname)==[3,1] && ".
+             " all($vname==$retcode_string') );\n";
+   my $retval= Inline::Octave::interpret(0, $runcode );
+
+   if ($retval == 0) {
+      $v->store_size();
+   } else {
+      croak "Error performing operation $code";
+   }
+}      
+
 1;
 
 
 __END__
 
+TODO LIST:
+
+   1. Add import for functions
+   2. control matrix size inputs
+   3. add destructor for Octave::Matrix
+       - done
+   4. control waiting in the interpret loop
+       - seems ok, except sysread reads small buffers
+   5. support for complex variables
+   6. octave gets wierd when you CTRL-C out of a 
+       running program
+       - seems ok
+   7. Use parse-recdecent to parse octave code
+   8. Come up with an OO way to avoid
+       Inline::Octave::interpret(0, $code );
+
 $Log$
+Revision 1.9  2001/11/19 03:13:37  aadler
+fixes for multifiles, nargin/nargout tests, operator overloading
+
 Revision 1.8  2001/11/18 03:29:06  aadler
 bug in fread fix - add \n
 
@@ -514,6 +599,9 @@ Inline::Octave - Inline octave code into your perl
 
    oct_plot( [0..4], [3,2,1,2,3] );
    sleep(2);
+
+   my $d= (2*$c) x $c->transpose;
+   print $d->disp;
    
    
    __DATA__
@@ -699,6 +787,23 @@ Values can be created explicitly, using the syntax:
 or values will be automatically created by 
 calling octave functions.
 
+=head1 Operations on Inline::Octave::Matrix -es
+
+Many math operations have been overloaded to
+work directly on Inline::Octave::Matrix values;
+
+For example, given $var above, we can calculate:
+
+   $v1= ( $var x $var->transpose );
+   $v2=  2*$var + 1
+   $v3=  $var x [ [1],[2] ];
+
+The relation between Perl and Octave operators is:   
+      '+' => '+',
+      '-' => '-',
+      '*' => '.*',
+      '/' => './',
+      'x' => '*',
 
 =head1 PERFORMANCE
 
@@ -727,18 +832,3 @@ redistributed and/or modified under the same terms as Perl itself.
 
 
 
-=head1 TODO List
-
-   1. Add import for functions
-   2. control matrix size inputs
-   3. add destructor for Octave::Matrix
-       - done
-   4. control waiting in the interpret loop
-       - seems ok, except sysread reads small buffers
-   5. support for complex variables
-   6. octave gets wierd when you CTRL-C out of a 
-       running program
-       - seems ok
-   7. Use parse-recdecent to parse octave code
-   8. Come up with an OO way to avoid
-       Inline::Octave::interpret(0, $code );

@@ -571,14 +571,71 @@ octave_complex_sparse::load_ascii (std::istream& is)
 bool 
 octave_complex_sparse::save_binary (std::ostream& os, bool& save_as_floats)
 {
-  return false;
+  DEFINE_SP_POINTERS_CPLX( X )
+
+  FOUR_BYTE_INT itmp;
+  // Use negative value for ndims to be consistent with other formats
+  itmp= -2;        os.write (X_CAST (char *, &itmp), 4);
+  itmp= Xnr;       os.write (X_CAST (char *, &itmp), 4);
+  itmp= Xnc;       os.write (X_CAST (char *, &itmp), 4);
+  itmp= NCFX->nnz; os.write (X_CAST (char *, &itmp), 4);
+
+  // add one to the printed indices to go from
+  //  zero-based to one-based arrays
+   for (int j=0; j< Xnc; j++)  {
+      OCTAVE_QUIT;
+      for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
+         itmp= ridxX[i]+1; os.write (X_CAST (char *, &itmp), 4);
+         itmp= j+1;        os.write (X_CAST (char *, &itmp), 4);
+
+	 // TODO: how to manage save_as_floats?
+         os.write (X_CAST (char *, &coefX[i]), 16);
+      }
+   }
+  return true;
 }
 
 bool 
 octave_complex_sparse::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format fmt)
 {
-  return false;
+  FOUR_BYTE_INT nnz, cols, rows, tmp;
+  if (! is.read (X_CAST (char *, &tmp), 4))
+    return false;
+
+  if (tmp != -2) {
+    error("load: only 2D sparse matrices are supported");
+    return false;
+  }
+
+  if (! is.read (X_CAST (char *, &rows), 4))
+    return false;
+  if (! is.read (X_CAST (char *, &cols), 4))
+    return false;
+  if (! is.read (X_CAST (char *, &nnz), 4))
+    return false;
+
+  ColumnVector        ridxA( nnz ), cidxA( nnz );
+  ComplexColumnVector coefA( nnz );
+  for( int i=0; i<nnz; i++) {
+     FOUR_BYTE_INT cidx, ridx;
+     if (! is.read (X_CAST (char *, &ridx), 4))
+       return false;
+     ridxA(i)= ridx;
+
+     if (! is.read (X_CAST (char *, &cidx), 4))
+       return false;
+     cidxA(i)= cidx;
+
+     Complex coef;
+     if (! is.read (X_CAST (char *, &coef), 16))
+       return false;
+     coefA(i)= coef;
+  }
+
+  X= assemble_sparse( cols, rows, coefA, ridxA, cidxA, 0);
+
+  return true;
 }
 #endif
 
@@ -1677,6 +1734,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.29  2004/08/02 16:35:40  aadler
+ * saving to the octave -binary format
+ *
  * Revision 1.28  2004/08/02 15:46:33  aadler
  * tests for sparse saving
  *

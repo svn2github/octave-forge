@@ -455,13 +455,20 @@ EOF
 
 function gen_save_tests {
     cat >>$TESTS <<EOF
-%!test
+%!test # save ascii
 %! savefile= tmpnam();
 %! mark_for_deletion( savefile );
-%! save(savefile,'bf','as','af');
-%! clear as;
-%! load(savefile,'as');
-%!assert(as,af);
+%! as_save=as; save(savefile,'bf','as_save','af');
+%! clear as_save;
+%! load(savefile,'as_save');
+%! assert(as_save,af);
+%!test # save binary
+%! savefile= tmpnam();
+%! mark_for_deletion( savefile );
+%! as_save=as; save('-binary',savefile,'bf','as_save','af');
+%! clear as_save;
+%! load(savefile,'as_save');
+%! assert(as_save,af);
 EOF
 }
 

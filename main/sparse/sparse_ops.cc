@@ -533,97 +533,70 @@ octave_sparse::load_ascii (std::istream& is)
 bool 
 octave_sparse::save_binary (std::ostream& os, bool& save_as_floats)
 {
-  return true;
-#if 0
-  char tmp = m ();
-  os.write (X_CAST (char *, &tmp), 1);
-  FOUR_BYTE_INT itmp = primpoly ();
-  os.write (X_CAST (char *, &itmp), 4);
+  DEFINE_SP_POINTERS_REAL( X )
 
-  dim_vector d = dims ();
-
-  // Don't handle N-D arrays yet
-  if (d.length() != 2)
-    return false;
-
+  FOUR_BYTE_INT itmp;
   // Use negative value for ndims to be consistent with other formats
-  itmp = - d.length();
-  os.write (X_CAST (char *, &itmp), 4);
-  for (int i=0; i < d.length (); i++)
-    {
-      itmp = d(i);
-      os.write (X_CAST (char *, &itmp), 4);
-    }
+  itmp= -2;        os.write (X_CAST (char *, &itmp), 4);
+  itmp= Xnr;       os.write (X_CAST (char *, &itmp), 4);
+  itmp= Xnc;       os.write (X_CAST (char *, &itmp), 4);
+  itmp= NCFX->nnz; os.write (X_CAST (char *, &itmp), 4);
 
-  Matrix m = matrix_value ();
-  save_type st;
-  if (tmp < 8)
-    st = LS_U_CHAR;
-  else if (tmp < 16)
-    st = LS_U_SHORT;
-  else
-    st = LS_U_INT;
-  const double *mtmp = m.data ();
-  write_doubles (os, mtmp, st, d.numel ());
+  // add one to the printed indices to go from
+  //  zero-based to one-based arrays
+   for (int j=0; j< Xnc; j++)  {
+      OCTAVE_QUIT;
+      for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
+         itmp= ridxX[i]+1; os.write (X_CAST (char *, &itmp), 4);
+         itmp= j+1;        os.write (X_CAST (char *, &itmp), 4);
 
+	 // TODO: how to manage save_as_floats?
+         os.write (X_CAST (char *, &coefX[i]), 8);
+      }
+   }
   return true;
-#endif
 }
 
 bool 
 octave_sparse::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format fmt)
 {
-  return true;
-#if 0
-  char mord;
-  FOUR_BYTE_INT prim, mdims;
-
-  if (! is.read (X_CAST (char *, &mord), 1))
+  FOUR_BYTE_INT nnz, cols, rows, tmp;
+  if (! is.read (X_CAST (char *, &tmp), 4))
     return false;
 
-  if (! is.read (X_CAST (char *, &prim), 4))
+  if (tmp != -2) {
+    error("load: only 2D sparse matrices are supported");
     return false;
-  if (swap)
-    swap_4_bytes (X_CAST (char *, &prim));
+  }
 
-  if (! is.read (X_CAST (char *, &mdims), 4))
+  if (! is.read (X_CAST (char *, &rows), 4))
     return false;
-  if (swap)
-    swap_4_bytes (X_CAST (char *, &mdims));
+  if (! is.read (X_CAST (char *, &cols), 4))
+    return false;
+  if (! is.read (X_CAST (char *, &nnz), 4))
+    return false;
 
-  // Don't treat N-D arrays yet
-  if (mdims == -2)
-    {
-      mdims = - mdims;
-      FOUR_BYTE_INT di;
-      dim_vector dv;
-      dv.resize (mdims);
+  ColumnVector ridxA( nnz ), cidxA( nnz ), coefA( nnz );
+  for( int i=0; i<nnz; i++) {
+     FOUR_BYTE_INT cidx, ridx;
+     if (! is.read (X_CAST (char *, &ridx), 4))
+       return false;
+     ridxA(i)= ridx;
 
-      for (int i = 0; i < mdims; i++)
-	{
-	  if (! is.read (X_CAST (char *, &di), 4))
-	    return false;
-	  if (swap)
-	    swap_4_bytes (X_CAST (char *, &di));
-	  dv(i) = di;
-	}
+     if (! is.read (X_CAST (char *, &cidx), 4))
+       return false;
+     cidxA(i)= cidx;
 
-      char tmp;
-      if (! is.read (X_CAST (char *, &tmp), 1))
-	return false;
+     double coef;
+     if (! is.read (X_CAST (char *, &coef), 8))
+       return false;
+     coefA(i)= coef;
+  }
 
-      Matrix m (dv(0), dv(1));
-      double *re = m.fortran_vec ();
-      read_doubles (is, re, X_CAST (save_type, tmp), dv.numel (), swap, fmt);
-      if (error_state || ! is)
-	return false;
-
-      gval = galois (m, mord, prim);
-    }
+  X= assemble_sparse( cols, rows, coefA, ridxA, cidxA, 0);
 
   return true;
-#endif
 }
 #endif
 
@@ -1482,6 +1455,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.22  2004/08/02 16:35:41  aadler
+ * saving to the octave -binary format
+ *
  * Revision 1.21  2004/08/02 15:46:33  aadler
  * tests for sparse saving
  *

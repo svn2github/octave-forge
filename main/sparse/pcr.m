@@ -374,7 +374,7 @@ end
 %!	N = 10; 
 %!	A = diag([1:N].*(-ones(1,N).^2)); A(N,1)=1; b = rand(N,1); X = A\b; #X is the true solution
 %!  	[x, flag] = pcr(A,b,[],N+1);
-%!	assert(norm(x-X)/norm(X)>2e-3, 1);
+%!	assert(norm(x-X)/norm(X)>2e-3);
 %!	assert(flag,3);
 %!
 %!test
@@ -389,7 +389,7 @@ end
 %!	b = ones(N,1); X = A\b; #X is the true solution
 %!  	[x, flag, relres, iter, resvec] = pcr(A,b,1e-12);
 %!	assert(flag,1);
-%!	assert(relres>0.6,1);
+%!	assert(relres>0.6);
 %!	assert(iter,20); #should perform max allowable default number of iterations
 %!
 %!test

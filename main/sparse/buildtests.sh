@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Some tests are commented out because they are known to be broken!
+# Search for "# fails"   
+
 # ./buildtest.sh preset
 #    creates sptest.m with preset tests.
 #    Use sptest() from octave to run the tests.
@@ -43,8 +46,13 @@
 #        specific and eat zeros tests 
 #    helper gen_ordering_tests
 #        ordered comparison operators for real valued tests
+#    helper gen_sparsesparse_ordering_tests
+#        ordered comparison operators for real valued sparse-sparse tests
 #    helper gen_elementop_tests
 #        element-wise matrix binary operators, including scalar-matrix ops.
+#        horizontal/vertical concatenation are here as well.
+#    helper gen_sparsesparse_elementop_tests
+#        element-wise matrix binary operators, for sparse-sparse ops.
 #        horizontal/vertical concatenation are here as well.
 #    helper gen_matrixop_tests
 #        rectangular matrix binary operators: * and / --- \ fails for now
@@ -134,7 +142,7 @@ cat >>$TESTS <<EOF
 %! sparse(kron((1:n)', ones(n,1)), kron(ones(n,1), (1:n)'), ones(n)); 
 
 %% segfault tests from Fabian@isas-berlin.de
-%!assert(spinv(sparse([1,1;1,1+i])),[1-1i,1i;1i,-1i],10*eps);
+%!assert(spinv(sparse([1,1;1,1+i])),sparse([1-1i,1i;1i,-1i]),10*eps);
 %!error spinv( sparse( [1,1;1,1]   ) );
 %!error spinv( sparse( [0,0;0,1]   ) );
 %!error spinv( sparse( [0,0;0,1+i] ) );
@@ -226,40 +234,58 @@ EOF
 # =======================================================
 # matrix ops
 
-# test ordered comparisons: uses as,af,bx,bf
+# test ordered comparisons: uses as,af,bs,bf
 gen_ordering_tests() {
     cat >>$TESTS <<EOF
 %% real values can be ordered (uses as,af)
-%!assert(as<=bx,af<=bf)
-%!assert(bx<=as,bf<=af)
-%!assert(as>=bx,af>=bf)
-%!assert(bx>=as,bf>=af)
-%!assert(as<bx,af<bf)
-%!assert(bx<as,bf<af)
-%!assert(as>bx,af>bf)
-%!assert(bx>as,bf>af)
+%!assert(as<=bf,af<=bf)
+%!assert(bf<=as,bf<=af)
+
+%!assert(as>=bf,af>=bf)
+%!assert(bf>=as,bf>=af)
+
+%!assert(as<bf,af<bf)
+%!assert(bf<as,bf<af)
+
+%!assert(as>bf,af>bf)
+%!assert(bf>as,bf>af)
 
 EOF
 }
 
-# test element-wise binary operations: uses as,af,bx,bf
+gen_sparsesparse_ordering_tests() {
+    cat >>$TESTS <<EOF
+%!assert(as<=bs,af<=bf)
+%!assert(as>=bs,af>=bf)
+%!assert(as<bs,af<bf)
+%!assert(as>bs,af>bf)
+EOF
+}
+
+# test element-wise binary operations: uses as,af,bs,bf,scalar
 gen_elementop_tests() {
     cat >>$TESTS <<EOF
-%% Elementwise binary tests (uses as,af,bx,bf)
-%!assert(as==bx,af==bf)
-%!assert(bx==as,bf==af)
-%!assert(as!=bx,af!=bf)
-%!assert(bx!=as,bf!=af)
-%!assert(as+bx,af+bf)
-%!assert(bx+as,bf+af)
-%!assert(as-bx,af-bf)
-%!assert(bx-as,bf-af)
-%!assert(as.*bx,af.*bf)
-%!assert(bx.*as,bf.*af)
-%!assert(as./bx,af./bf,100*eps)
-%!assert(bx.\as,bf.\af,100*eps)
+%% Elementwise binary tests (uses as,af,bs,bf,scalar)
+%!assert(as==bs,af==bf)
+%!assert(bf==as,bf==af)
+
+%!assert(as!=bf,af!=bf)
+%!assert(bf!=as,bf!=af)
+
+%!assert(as+bf,af+bf)
+%!assert(bf+as,bf+af)
+
+%!assert(as-bf,af-bf)
+%!assert(bf-as,bf-af)
+
+%!assert(as.*bf,sparse(af.*bf))
+%!assert(bf.*as,sparse(bf.*af))
+
+%!assert(as./bf,af./bf,100*eps)
+%!assert(bf.\as,bf.\af,100*eps)
+
 %!test
-%! sv = as.^bx;
+%! sv = as.^bf;
 %! fv = af.^bf;
 %! idx = find(af~=0);
 %! assert(sv(:)(idx),fv(:)(idx),100*eps)
@@ -267,14 +293,36 @@ gen_elementop_tests() {
 EOF
 }
 
-# test matrix-matrix operations: uses as,af,bx,bf
+gen_sparsesparse_elementop_tests() {
+    cat >>$TESTS <<EOF
+%!assert(as==bs,af==bf)
+%!assert(as!=bs,sparse(af!=bf))
+%!assert(as+bs,sparse(af+bf))
+%!assert(as-bs,sparse(af-bf))
+%!assert(as.*bs,sparse(as.*bs))
+%!assert(as./bs,af./bf,100*eps);
+%!test
+%! sv = as.^bs;
+%! fv = af.^bf;
+%! idx = find(af~=0);
+%! assert(sv(:)(idx),fv(:)(idx),100*eps)
+
+EOF
+}
+
+# test matrix-matrix operations: uses as,af,bs,bf
 gen_matrixop_tests() {
     cat >>$TESTS <<EOF
-%% Matrix-matrix operators (uses af,as,bx,bf)
-%!assert(as*bx',af*bf')
-%!assert(bx'*as,bf'*af)
-%!assert(as/bx,af/bf,100*eps)
-%!#assert(bx\as,bf\af,100*eps) # fails (\ seg-faults for non-square)
+%% Matrix-matrix operators (uses af,as,bs,bf)
+%!assert(as*bf',af*bf')
+%!assert(af*bs',af*bf')
+%!assert(as*bs',sparse(af*bf'))
+%!assert(as/bf,af/bf,100*eps)
+%!assert(af/bs,af/bf,100*eps)
+%!assert(as/bs,af/bf,100*eps)
+%!#assert(bs\af,bf\af,100*eps) # fails (\ seg-faults for non-square)
+%!#assert(bf\as,bf\af,100*eps) # fails (\ seg-faults for non-square)
+%!#assert(bs\as,bf\af,100*eps) # fails (\ seg-faults for non-square)
 
 EOF
 }
@@ -305,12 +353,12 @@ gen_unaryop_tests() {
 %!assert(is_sparse(as'))
 %!assert(is_sparse(-as))
 %!assert(!is_sparse(~as))
-%!assert(spabs(as),abs(af))
-%!assert(spreal(as),real(af))
-%!assert(spimag(as),imag(af))
-%!assert(as.', af.');
-%!assert(as',  af');
-%!assert(-as, -af);
+%!assert(spabs(as),sparse(abs(af)))
+%!assert(spreal(as),sparse(real(af)))
+%!assert(spimag(as),sparse(imag(af)))
+%!assert(as.', sparse(af.'));
+%!assert(as',  sparse(af'));
+%!assert(-as, sparse(-af));
 %!assert(~as, ~af); # fails on 2.1.52
 %!error [i,j]=size(af);as(i-1,j+1);
 %!error [i,j]=size(af);as(i+1,j-1);
@@ -334,10 +382,10 @@ gen_unaryop_tests() {
 %! assert(x,as);
 %!assert(issparse(sphcat(as,as)));
 %!assert(issparse(spvcat(as,as)));
-%!assert(sphcat(as,as), [af,af]);
-%!assert(spvcat(as,as), [af;af]);
-%!assert(sphcat(as,as,as), [af,af,af]);
-%!assert(spvcat(as,as,as), [af;af;af]);
+%!assert(sphcat(as,as), sparse([af,af]));
+%!assert(spvcat(as,as), sparse([af;af]));
+%!assert(sphcat(as,as,as), sparse([af,af,af]));
+%!assert(spvcat(as,as,as), sparse([af;af;af]));
 
 EOF
 }
@@ -346,12 +394,12 @@ EOF
 gen_square_tests() {
     cat >>$TESTS <<EOF
 %!test ;# permuted LU
-%! [L,U] = splu(bx);
-%! assert(L*U,bx,1e-10);
+%! [L,U] = splu(bs);
+%! assert(L*U,bs,1e-10);
 
 %!test ;# simple LU + permutations
-%! [L,U,pr,pc] = splu(bx);
-%! assert(pr'*L*U*pc,bx,1e-10);
+%! [L,U,pr,pc] = splu(bs);
+%! assert(pr'*L*U*pc,bs,1e-10);
 %! # triangularity
 %! [i,j,v]=spfind(L);
 %! assert(i-j>=0);
@@ -359,33 +407,33 @@ gen_square_tests() {
 %! assert(j-i>=0);
 
 %!test ;# inverse
-%! assert(spinv(bx)*bx,eye(rows(bx)),1e-10);
+%! assert(spinv(bs)*bs,eye(rows(bs)),1e-10);
 
-%!#assert(bx\as,bf\af,100*eps); # fails
-%!#assert(bf\as,bf\af,100*eps); # fails
-%!#assert(bx\af,bf\af,100*eps); # fails
+%!assert(bf\as,bf\af,100*eps);
+%!#assert(bs\as,bf\af,100*eps); # fails
+%!assert(bs\af,bf\af,100*eps);
 
 EOF
 }
 
-# test scalar operations: uses af and real scalar bf; modifies as,bx
+# test scalar operations: uses af and real scalar bf; modifies as,bf,bs
 gen_scalar_tests() {
     echo '%!test as=sparse(af);' >> $TESTS
-    echo '%!test bx=bf;' >> $TESTS
+    echo '%!test bs=bf;' >> $TESTS
     gen_elementop_tests
-    echo '%!test bx=bf=bf+1i;' >>$TESTS
+    gen_ordering_tests
+    echo '%!test bf=bf+1i;' >>$TESTS
+    echo '%!test bs=bf;' >> $TESTS
     gen_elementop_tests
 }
 
-# test matrix operations: uses af and bf; modifies as,bx
+# test matrix operations: uses af and bf; modifies as,bs
 gen_rectangular_tests() {
     echo '%!test as=sparse(af);' >> $TESTS
-    echo '%!test bx=bf;' >>$TESTS
+    echo '%!test bs=sparse(bf);' >>$TESTS
     gen_unaryop_tests
     gen_elementop_tests
-    gen_matrixop_tests
-    echo '%!test bx=sparse(bf);' >>$TESTS
-    gen_elementop_tests
+    gen_sparsesparse_elementop_tests
     gen_matrixop_tests
 }
 
@@ -428,11 +476,11 @@ gen_select_tests() {
 
 %% Point tests
 %!test idx=ridx(:)+rows(as)*(cidx(:)-1);
-%!#assert(issparse(as(idx))); # fails (not yet implemented)
+%!assert(issparse(as(idx))); # fails (not yet implemented)
 %!assert(as(idx),af(idx));
-%!#assert(as(idx'),af(idx')); # fails (not yet implemented)
-%!#assert(as([idx,idx]),af([idx,idx])); # fails (not yet implemented)
-%!#assert(as(reshape([idx;idx],[1,length(idx),2])),af([idx',idx'])); # fails
+%!assert(as(idx'),af(idx')); # fails (not yet implemented)
+%!assert(as([idx,idx]),af([idx,idx])); # fails (not yet implemented)
+%!assert(as(reshape([idx;idx],[1,length(idx),2])),af([idx',idx'])); # fails
 
 %% Slice tests
 %!assert(as(ridx,cidx),af(ridx,cidx))
@@ -441,12 +489,12 @@ gen_select_tests() {
 %!assert(as(:,:), af(:,:))
 
 %% Test 'end' keyword
-%!#assert(as(end),af(end)) # fails (not yet implemented)
-%!#assert(as(1,end), af(1,end)) # fails (not yet implemented)
-%!#assert(as(end,1), af(end,1)) # fails (not yet implemented)
-%!#assert(as(end,end), af(end,end))
-%!#assert(as(2:end,2:end), af(2:end,2:end))
-%!#assert(as(1:end-1,1:end-1), af(1:end-1,1:end-1))
+%!assert(as(end),af(end)) # fails (not yet implemented)
+%!assert(as(1,end), af(1,end)) # fails (not yet implemented)
+%!assert(as(end,1), af(end,1)) # fails (not yet implemented)
+%!assert(as(end,end), af(end,end))
+%!assert(as(2:end,2:end), af(2:end,2:end))
+%!assert(as(1:end-1,1:end-1), af(1:end-1,1:end-1))
 EOF
 }
 
@@ -461,14 +509,14 @@ function gen_save_tests {
 %! as_save=as; save(savefile,'bf','as_save','af');
 %! clear as_save;
 %! load(savefile,'as_save');
-%! assert(as_save,af);
+%! assert(as_save,sparse(af));
 %!test # save binary
 %! savefile= tmpnam();
 %! mark_for_deletion( savefile );
 %! as_save=as; save('-binary',savefile,'bf','as_save','af');
 %! clear as_save;
 %! load(savefile,'as_save');
-%! assert(as_save,af);
+%! assert(as_save,sparse(af));
 EOF
 }
 
@@ -487,7 +535,7 @@ if $preset; then
 fi
 
 # scalar operations
-echo '%!shared as,af,bx,bf' >> $TESTS
+echo '%!shared as,af,bs,bf' >> $TESTS
 if $preset; then
     echo '%!test af=[1+1i,2-1i,0,0;0,0,0,3+2i;0,0,0,4];' >> $TESTS
     echo '%!test bf=3;' >>$TESTS
@@ -522,6 +570,7 @@ gen_section
 gen_save_tests
 echo '%!test bf=real(bf);' >> $TESTS
 gen_rectangular_tests
+gen_sparsesparse_ordering_tests
 gen_section
 echo '%!test af=real(af);' >> $TESTS
 gen_rectangular_tests
@@ -546,7 +595,7 @@ fi
 cat >>$TESTS <<EOF
 %!test ;# invertible matrix
 %! bf=af'*bf+max(abs([af(:);bf(:)]))*sparse(eye(columns(as)));
-%! bx=sparse(bf);
+%! bs=sparse(bf);
 
 EOF
 

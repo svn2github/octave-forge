@@ -416,8 +416,8 @@ end
 %!	endfor
 %!	b = ones(N,1); X = A\b; #X is the true solution
 %!  	[x, flag, relres, iter, resvec, eigest] = pcg(A,b,1e-12);
-%!	assert(flag,1);
-%!	assert(relres>1.0,1);
+%!	assert(flag);
+%!	assert(relres>1.0);
 %!	assert(iter,20); #should perform max allowable default number of iterations
 %!
 %!test
@@ -436,5 +436,5 @@ end
 %!	assert(norm(x-X)/norm(X),0,1e-6);
 %!	assert(flag,0);
 %!	assert(iter,1); #should converge in one iteration
-%!	assert(isnan(eigest),[1 1]);
+%!	assert(isnan(eigest),isnan([NaN NaN]));
 %!

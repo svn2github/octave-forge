@@ -60,6 +60,10 @@ function assert(cond, expected, tol)
       error ("assert %s failed", in); # say which elements failed?
     endif
   
+  elseif !strcmp(typeinfo(cond),typeinfo(expected))
+    iserror = 1;
+    coda = ["Type ",typeinfo(cond)," != ",typeinfo(expected)];
+
   elseif (is_list(cond))
     if (!is_list(expected) || length(cond) != length(expected))
       iserror = 1;
@@ -129,7 +133,10 @@ function assert(cond, expected, tol)
     else
       ## Check normal values
       A = A(finite(A)); B=B(finite(B));
-      if tol >= 0,
+      if tol == 0,
+        err = A != B;
+	errtype = "values do not match";
+      elseif tol >= 0,
 	err = max(abs(A-B));
 	errtype = "maximum absolute error %g exceeds tolerance %g";
       else 

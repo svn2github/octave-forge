@@ -1,0 +1,33 @@
+
+This is a bug fix release.  Many thanks to the good folks at Debian for
+finding the portability problems.
+
+New functions
+
+	* miscellaneous/OCTAVE_FORGE_VERSION
+	* extra/tsa/durlev
+	* strings/base64encode
+	* signal/guasswin
+	* image/colfilt
+
+Changes
+
+	* audio/sound: uses ssh rather than rsh for remote audio
+	* testfun/assert: use tol>0 for relative error, tol<0 for absolute err
+	* optim/bfgs: new interface
+	* optim/minimize: ndiff, jac, hess and ihess options
+	* NaN/sumskipnan: additional outputs
+	* NaN/*: bug fixes
+
+Bug fixes
+
+	* signal/triang: for n=2, peak=1 at the virtual center of the window
+	* signal/gaussian: now returns a symmetric window
+	* now compiles on most Debian systems which support Octave.
+	* updated doc strings, tests
+
+Administration
+
+	* make check and make icheck added.  Only supports the compiled
+	  functions at the moment, but it is a start.
+

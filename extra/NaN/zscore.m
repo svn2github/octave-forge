@@ -1,8 +1,10 @@
 function i = zscore(i,DIM)
-% ZSCORE estimates the Mean Absolute deviation
+% ZSCORE removes the mean and normalizes the data 
+% to a variance of 1. 
 %
 % z = zscore(x,DIM)
 %   calculates the z-score of x along dimension DIM
+%   it removes the 
 %
 % DIM	dimension
 %	1: STATS of columns
@@ -13,9 +15,8 @@ function i = zscore(i,DIM)
 % - can deal with NaN's (missing values)
 % - dimension argument 
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_skip_nan
 %
-% see also: SUMSKIPNAN, MEAN, STD
+% see also: SUMSKIPNAN, MEAN, STD, DETREND
 %
 % REFERENCE(S):
 % http://mathworld.wolfram.com/z-Score.html

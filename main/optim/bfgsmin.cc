@@ -1,4 +1,4 @@
-// Copyright (C) 2004   Michael Creel   <michael.creel@uab.es>
+// Copyright (C) 2004,2005  Michael Creel   <michael.creel@uab.es>
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -95,12 +95,12 @@ which of the elements of the second argument is the one minimization is over");
 					return true;
 				}
 			}		
-			if (i == 4) // memory must be zero or one
+			if (i == 4) // memory must be zero (bfgs) or positive integer (lbfgs)
 			{
-				if ((tmp > 1) ||(tmp < 0))  
+				if (tmp < 0)
 				{
 					error("bfgsmin: 5th argument of controls, if provided\n\
-must be 0 (bfgs) or 1 (lbfgs)");
+must be 0 (bfgs) or positive integer (memory for lbfgs)");
 					return true;
 				}
 			}		
@@ -346,7 +346,7 @@ ans =\n\
 	ColumnVector theta  = f_args(minarg - 1).column_vector_value();
   k = theta.rows();
 	
-		// containers for items in limited memory version
+	// containers for items in limited memory version
   Matrix sigmas(k,memory);
  	Matrix gammas(k,memory);
 		
@@ -359,6 +359,12 @@ ans =\n\
   // Initial obj_value
   f_return = feval("celleval", c_args);
  	obj_in = f_return(0).double_value();
+	if (error_state) // check that objective function returns a double
+	{
+		error("bfgsmin: objective function did not return a scalar numeric value");
+		return octave_value_list();
+	}	
+
   last_obj_value = obj_in;
 	
   // maybe we have analytic gradient?

@@ -9,7 +9,7 @@ function plotpdb(pdb)
 # FIXME: redirecting input for rasmol works by opening a free pseudo-tty
 # which isn't (hopefully) attached to anything. Is there a better way?
 
-RASMOL = "rasmol.sh";
+RASMOL = "/home/tpikonen/pub-octave/pdb/bin/rasmol.sh";
 
 ptybase = "/dev/ptyz";
 startno = toascii("0");
@@ -33,10 +33,6 @@ fclose(ptyfid);
 #ptyname = sprintf("%s%c", ptybase, plotpdb_static_ptynum)
 
 if(isstr(pdb))
-    [s, err] = stat(pdb);
-    if(err < 0)
-      error("Could not find file: %s", pdb);
-    endif
     fname = pdb;
     [forkstat, fmsg] = fork();
     if(forkstat == 0),

@@ -19,65 +19,50 @@ function [Z,w] = strtoz(s)
 # Orig. by Veijo Honkimaki
 # Modified to work with GNU Octave by Teemu Ikonen 7.4.2000
 # Modified to work with string matrices 6.8.2001 - Teemu
+# Add support for > 9 stoichiometries, 
+# speedup with data in a structure 21.4.2004 - Teemu
 
-global elements;
 
-if isstr(s) == 1,
-    if (exist("elements") != 1),
-        tabfile = file_in_loadpath("elements.mat");
-        load(tabfile);
-    end;
-    N = size(s, 1);
-    #    Z = []; w = [];
-    Z = 1;
-    w = 1;
-    try eleo = empty_list_elements_ok;
-    catch eleo = 0;
-    end
-    try wele = warn_empty_list_elements;
-    catch wele = 0;
-    end
-    unwind_protect
-      empty_list_elements_ok = 1;
-      warn_empty_list_elements = 0;
-      for p = 1:N,
-        r = strrep(s(p,:),'Air','N3O'); 
-        r = deblank(r);
-        while(r(1) == " ")
-            r = r(2:length(r));
+if(isstr(s))
+  tabfile = file_in_loadpath("elements_struct.mat");
+  load("-force", tabfile);
+  
+  N = size(s, 1);
+  #    m = size(s, 2);
+  Z = zeros(N, 1); 
+  w = zeros(N, 1);
+  for p = 1:N,
+    r = deblank(s(p,:));
+    L = length(r);
+    k = 1;
+    component = 1;
+    while(k <= L)
+      while(r(k) == " ")
+        k++;
+      endwhile
+      f = "";
+      f(1) = r(k++); 
+      if (k <= L) && islower(r(k)),
+        f(2) = r(k++); 
+      end;
+      if (k <= L) && isdigit(r(k)),
+        [m,i] = sscanf(r(k:end), "%d", 1);
+        while((k <= L) && isdigit(r(k)))
+          k++;
         endwhile
-        component = 1;
-        while length(r),
-            f(1) = r(1); 
-            f(2) = ' '; 
-            r = r(2:length(r));
-            if length(r) && islower(r(1)),
-                f(2) = r(1); 
-                r = r(2:length(r)); 
-            end;
-            if length(r) && isalnum(r(1)) && !isalpha(r(1)),
-                [m,c,e,i] = sscanf(r,'%g',1); 
-                r = r(i:length(r));
-            else 
-                m = 1; 
-            end;
-            i = find(elements(:,1) == f(1)); 
-            j = find(elements(i,2) == f(2));
-            if isempty(j), 
-                error('Not a valid stoichiometry'); 
-            end;
-            Z(p,component) = i(j);
-            w(p,component) = m;
-            component++;
-        endwhile
-    endfor
-  unwind_protect_cleanup
-      empty_list_elements_ok = eleo;
-      warn_empty_list_elements = wele;
-  end_unwind_protect
-else 
-    Z = s; 
-    w = ones(size(Z));
-end;
+      else 
+        m = 1; 
+      end;
+      Z(p,component) = elements_struct.(f);
+      w(p,component) = m;
+      component++;
+    endwhile
+  endfor
+elseif(isreal(s))
+  Z = s; 
+  w = ones(size(Z));
+else
+  error("s must be either string or real");
+endif
 
 endfunction        

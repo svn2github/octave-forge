@@ -22,7 +22,8 @@ buf = blanks(80);
 if(struct_contains(p, "acoord"))
   natoms = size(p.acoord, 1);
   if(struct_contains(p, "atomname"))
-    atomname = toupper(p.atomname);
+    #    atomname = toupper(p.atomname);
+    atomname = p.atomname;
   else
     for i = 1:natoms,
       atomname(i, :) = "    ";
@@ -53,18 +54,28 @@ if(struct_contains(p, "acoord"))
   
   j = 1;
   while(j <= natoms)
-    buf = blanks(80);
-    buf(1:6)   = "ATOM  ";
-    buf(7:11)  = sprintf("%5d", j);
-    buf(13:16) = sprintf("%4s", atomname(j,:));
-    buf(18:20) = aresname(j,:);
-    buf(23:26) = sprintf("%4d", aresseq(j));
-    buf(31:54) = sprintf(" %7.3f %7.3f %7.3f", p.acoord(j,:));
-    buf(55:60) = sprintf(" %5.2f", aoccupancy(j,:));
-    buf(61:66) = sprintf("%6.2f", atempfactor(j,:));
-    buf(77:78) = sprintf("%s", atomname(j,1:2));
-    buf(80) = "\n";
-    fprintf(f, "%s", buf);
+#     buf = blanks(80);
+#     buf(1:6)   = "ATOM  ";
+#     buf(7:11)  = sprintf("%5d", j);
+#     buf(13:16) = sprintf("%4s", atomname(j,:));
+#     buf(18:20) = aresname(j,:);
+#     buf(23:26) = sprintf("%4d", aresseq(j));
+#     buf(31:54) = sprintf(" %7.2f %7.2f %7.2f", p.acoord(j,:));
+#     buf(55:60) = sprintf(" %5.2f", aoccupancy(j,:));
+#     buf(61:66) = sprintf("%6.2f", atempfactor(j,:));
+#     buf(77:78) = sprintf("%s", atomname(j,1:2));
+#     buf(80) = "\n";
+#     fprintf(f, "%s", buf);
+
+     fprintf(f, "ATOM  ");
+     fprintf(f, "%5d", j);
+     fprintf(f, " %-4s", atomname(j,:));
+     fprintf(f, "  %3s", aresname(j,:));
+     fprintf(f, " %4d", aresseq(j));
+     fprintf(f, "     %7.3f %7.3f %7.3f", p.acoord(j,:));
+     fprintf(f, " %5.2f", aoccupancy(j));
+     fprintf(f, "%6.2f", atempfactor(j));
+     fprintf(f, "\n");
     j++;
   endwhile
 
@@ -88,24 +99,24 @@ if(struct_contains(p,"hetcoord"))
     endfor
   endif
   if(struct_contains(p, "hetresname"))
-    hetresname = toupper(p.hetresname);
+    hetresname = p.hetresname;
   else
     for i = 1:nhet,
       hetresname(i, :) = "   ";
     endfor
   endif
   if(struct_contains(p, "hetresseq"))
-    hetresseq = p.hetresseq;
+    hetresseq = p.hetresseq(:);
   else
     hetresseq = ones(nhet, 1);
   endif
   if(struct_contains(p, "hetoccupancy"))
-    hetoccupancy = p.hetoccupancy;
+    hetoccupancy = p.hetoccupancy(:);
   else
     hetoccupancy = ones(nhet, 1);
   endif
   if(struct_contains(p, "hettempfactor"))
-    hettempfactor = p.hettempfactor;
+    hettempfactor = p.hettempfactor(:);
   else
     hettempfactor = zeros(nhet, 1);
   endif
@@ -114,7 +125,8 @@ if(struct_contains(p,"hetcoord"))
   while(i <= nhet)
     buf = blanks(80);
     buf(1:6)   = "HETATM";
-    buf(7:11)  = sprintf("%5d", j);
+    #    buf(7:11)  = sprintf("%5d", j);
+    buf(7:11)  = sprintf("%5d", i);
     buf(13:16) = sprintf("%s", hetname(i,:));
     buf(18:20) = hetresname(i, :);
     buf(23:26) = sprintf("%4d", hetresseq(i));
@@ -124,7 +136,7 @@ if(struct_contains(p,"hetcoord"))
     buf(80) = "\n";
     fprintf(f, "%s", buf);
     i++;
-    j++;
+#    j++;
   endwhile
 endif
 

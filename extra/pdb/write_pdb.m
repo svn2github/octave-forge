@@ -188,19 +188,33 @@ if(struct_contains(p, "acoord"))
   endif
   
   j = 1;
-  while(j <= natoms)
+  segid = toascii("C")-1;
+  first = 1;
+  while(j <= natoms)      
+    if (aresseq(j) == 1)
+      if(first)
+         segid = segid + 1;
+         first = 0;
+      endif
+    else
+      first = 1;
+    endif
     buf = blanks(80);
     buf(1:6)   = "ATOM  ";
     buf(7:11)  = sprintf("%5d", j);
     buf(13:16) = sprintf("%4s", atomname(j,:));
     buf(18:20) = aresname(j,:);
+#    buf(18:22) = [aresname(j,:), sprintf(" %c", segid)];
     buf(23:26) = sprintf("%4d", aresseq(j));
-    buf(31:54) = sprintf(" %7.3f %7.3f %7.3f", p.acoord(j,:));
+    buf(31:54) = sprintf("%8.3f%8.3f%8.3f", p.acoord(j,:));
     buf(55:60) = sprintf(" %5.2f", aoccupancy(j,:));
     buf(61:66) = sprintf("%6.2f", atempfactor(j,:));
-    buf(77:78) = sprintf("%s", atomname(j,1:2));
-    buf(80) = "\n";
-    fprintf(f, "%s", buf);
+    buf(73:76) = sprintf("%c   ", segid);
+#    buf(77:78) = sprintf("%s", atomname(j,1:2));
+#    buf(80) = "\n";
+    buf(74) = "\n";
+#    fprintf(f, "%s", buf);
+    fprintf(f, "%s", buf(1:74));
     j++;
   endwhile
 

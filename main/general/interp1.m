@@ -224,7 +224,7 @@ endfunction
 %! xi = sort([-1, max(xp)*rand(1,6), max(xp)+1]);
 
 %!test style = 'nearest';
-%!assert (interp1(xp, yp, [-1, max(xp)]), [NaN, NaN]);
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1]), [NaN, NaN]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
 %!assert (interp1(xp,yp,xp',style), yp', 100*eps);
 %!assert (interp1(xp',yp',xp',style), yp', 100*eps);

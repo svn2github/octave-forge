@@ -57,7 +57,7 @@ SuperMatrix assemble_sparse( int n, int m,
                              int assemble_do_sum)
 {
    DEBUGMSG("sparse - assemble_sparse");
-   ASSEMBLE_SPARSE( double )
+   ASSEMBLE_SPARSE( double, true )
 // oct_sparse_verify_supermatrix( X );
    return X;
 }      
@@ -1510,6 +1510,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.24  2004/08/03 14:45:31  aadler
+ * clean up ASSEMBLE_SPARSE macro
+ *
  * Revision 1.23  2004/08/02 18:46:57  aadler
  * some code for concat operators
  *

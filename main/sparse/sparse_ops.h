@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.12  2004/08/03 14:45:31  aadler
+clean up ASSEMBLE_SPARSE macro
+
 Revision 1.11  2003/12/22 15:13:23  pkienzle
 Use error/return rather than SP_FATAL_ERROR where possible.
 
@@ -271,7 +274,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
 // The OCTAVE_LOCAL_BUFFER can't be used for the sort index
 //  when the requested size is too big. we need to put it on the
 //  heap.
-#define ASSEMBLE_SPARSE( TYPX ) \
+#define ASSEMBLE_SPARSE( TYPX , REJECT_OUT_OF_RANGE )  \
    int  nnz= MAX( ridxA.length(), cidxA.length() ); \
    TYPX* coefX= (TYPX*)oct_sparse_malloc( nnz  * sizeof(TYPX)); \
    int * ridxX= (int *)oct_sparse_malloc( nnz  * sizeof(int) ); \
@@ -287,15 +290,19 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    for (int i=0; i<nnz; i++) { \
       double rowidx=  ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1; \
       double colidx=  ( ci_scalar ? cidxA(0) : cidxA(i) ) - 1;  \
-      if (rowidx >= m || rowidx < 0) \
-         error("sparse row index out of range"); \
-      else if (colidx >= n || colidx < 0) \
-         error("sparse column index out of range"); \
-      if (error_state) { actual_nnz=0; break; } \
-      if ( coefA(cf_scalar?0:i) != 0. ) { \
-         sidx[actual_nnz].val = (long) ( rowidx + m*colidx ); \
-         sidx[actual_nnz].idx = i; \
-         actual_nnz++; \
+      if (rowidx < m && rowidx >= 0 && \
+          colidx < n && colidx >= 0 ) { \
+         if ( coefA( cf_scalar ? 0 : i ) != 0. ) { \
+            sidx[actual_nnz].val = (long) ( rowidx + m * colidx ); \
+            sidx[actual_nnz].idx = i; \
+            actual_nnz++; \
+         } \
+      } \
+      else { \
+         if( REJECT_OUT_OF_RANGE ) \
+            error("sparse (row,col) index (%d,%d) out of range", rowidx,colidx); \
+         actual_nnz=0; \
+	 break; \
       } \
    } \
  \
@@ -312,16 +319,16 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       long  val= (long) sidx[i].val; \
       if (prev_val < val) { \
          ii++; \
-         coefX[ii]=     ( cf_scalar ? coefA(0) : coefA(idx) ); \
-         double ri  =   ( ri_scalar ? ridxA(0) : ridxA(idx) ) - 1 ; \
+         coefX[ii]=     coefA( cf_scalar ? 0 : idx ); \
+         double ri  =   ridxA( ri_scalar ? 0 : idx ) - 1 ; \
          ridxX[ii]= (long) (ri - ((long) (ri/m))*m ) ; \
-         long ci  = (long)( ci_scalar ? cidxA(0) : cidxA(idx) ) - 1 ; \
+         long ci  = (long) cidxA( ci_scalar ? 0 : idx ) - 1 ; \
          while( cx < ci ) cidxX[++cx]= ii; \
       } else { \
          if (assemble_do_sum) \
-            coefX[ii]+=      ( cf_scalar ? coefA(0) : coefA(idx) ); \
+            coefX[ii]+= coefA( cf_scalar ? 0 : idx ); \
          else \
-            coefX[ii] =      ( cf_scalar ? coefA(0) : coefA(idx) ); \
+            coefX[ii] = coefA( cf_scalar ? 0 : idx ); \
       } \
       prev_val= val;\
    } \

@@ -1460,7 +1460,7 @@ SuperMatrix assemble_sparse( int n, int m,
                              int assemble_do_sum)
 {
    DEBUGMSG("complex_sparse - assemble_sparse");
-   ASSEMBLE_SPARSE( Complex )
+   ASSEMBLE_SPARSE( Complex, true )
 // oct_sparse_verify_supermatrix( X );
    return X;
 }      
@@ -1734,6 +1734,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.30  2004/08/03 14:45:30  aadler
+ * clean up ASSEMBLE_SPARSE macro
+ *
  * Revision 1.29  2004/08/02 16:35:40  aadler
  * saving to the octave -binary format
  *

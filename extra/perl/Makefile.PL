@@ -20,7 +20,7 @@ while (not $octave_validated) {
 
    }
    
-   chomp( $inp= <> );
+   chomp( $inp= <STDIN> );
    if ($inp) {
       $octave_validated= 0;
       $octave= $inp;

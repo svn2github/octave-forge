@@ -1,4 +1,4 @@
-## edit(name)
+## edit name
 ##   Edit the named function.  
 ##
 ##   If the function is available in a file on your path and that file 
@@ -26,9 +26,9 @@
 ##   to mkoctfile name.cc before the definition will be available.
 ##
 ## The following state variables are referenced.  You may want to override 
-## these in your .octaverc using "edit('xxx','...')".
+## these in your .octaverc using "edit FIELD VALUE".
 ##
-## EDITOR
+## editor
 ##   This is the editor to use to modify the functions.  By default it uses
 ##   Octave's EDITOR state variable, which comes from getenv("EDITOR") and
 ##   defaults to vi.  Use %s in place of the function name.  E.g.,
@@ -39,25 +39,28 @@
 ##     "gnudoit -q \"(find-file \\\"%s\\\")\""   
 ##       send it to current emacs; must have (gnuserv-start) in .emacs
 ##
-## HOME
+## home
 ##   This is the location of user local m-files. Be be sure it is on LOADPATH.
 ##   The default is ~/octave.
 ##
-## AUTHOR
+## author
 ##   This is the name to put after the "## Author:" field of new functions.
 ##   By default it guesses from the `gecos' field of password database.
 ## 
-## EMAIL
+## email
 ##   This is the e-mail address to list after the name in the author field.
 ##   By default it guesses <$LOGNAME@$HOSTNAME>, and if $HOSTNAME is not
 ##   defined it uses "uname -n".  You probably want to override this.  Be
 ##   sure to use "<user@host>" as your format.
 ##
-## LICENSE
-##   Use "GPL" for the GPL, "BSD" for BSD-style without advertising clause,
-##   or "PD" for public domain.  Use [] for the default (GPL), or insert
-##   your own copyright message.  Unless you specify "PD", it will prepend
-##   the copyright statement with "Copyright (C) yyyy Function Author"
+## license
+##   gpl     GNU General Public License (default)
+##   bsd     BSD-style license without advertising clause
+##   pd      public domain
+##   "text"  your own default copyright and license
+## 
+##   Unless you specify PD, edit will prepend the copyright statement 
+##   with "Copyright (C) yyyy Function Author"
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
@@ -66,7 +69,7 @@
 ## 2001-04-10 Paul Kienzle <pkienzle@users.sf.net>
 ## * Initial revision
 
-## PKG_ADD mark_as_command edit
+## PKG_ADD: mark_as_command edit
 
 function edit(file,state)
   ## pick up globals or default them
@@ -77,7 +80,7 @@ function edit(file,state)
   persistent FUNCTION_LICENSE = "GPL";
 
   if (nargin == 2)
-    switch file
+    switch toupper(file)
     case 'EDITOR'
     	FUNCTION_EDITOR=state;
     case 'HOME'
@@ -172,7 +175,8 @@ function edit(file,state)
   author = [ "Author: ", FUNCTION_AUTHOR, " ", FUNCTION_EMAIL ];
   
   ## fill in the header
-  switch (FUNCTION_LICENSE)
+  uclicense=toupper(FUNCTION_LICENSE);
+  switch uclicense
     case "GPL"
       head = [ copyright, "\n\n", "\
 This program is free software; you can redistribute it and/or modify\n\
@@ -230,7 +234,7 @@ SUCH DAMAGE.\
   ## generate the function template
   exists = exist(name);
   switch (ext)
-    case "cc"
+    case {"cc","C","cpp"}
       if isempty(head)
 	comment = ["/*\n", tail, "\n\n*/\n\n"];
       else

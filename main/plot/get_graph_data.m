@@ -59,7 +59,7 @@ function [a_x, a_y, a_n, islog]= get_ax_points( ax_pts, ax_text);
     [a_x,a_y]= grab();
     if length(a_x) ~= length(ax_pts)
        error(sprintf('You specified %d %s points, but entered %d', ...
-             ax_text, length(ax_pts), length(a_x) ));
+             length(ax_pts), ax_text, length(a_x) ));
     end
     islog= test_log( a_x, a_y, ax_pts, ax_text);
     if islog
@@ -67,16 +67,23 @@ function [a_x, a_y, a_n, islog]= get_ax_points( ax_pts, ax_text);
     else 
        a_n= ax_pts(:);
     end
+    fflush(stdout);
 endfunction
  
 
 % Guess at whether axes are linear or logarithmic
 function ll=test_log( dx, dy, dfit, ax_text )
+   if any(dfit==0)
+       printf(sprintf('GUESSING axis %s is LINEAR\n', ax_text));
+       ll=0;
+       return
+   end
+
    if length(dx)<3
       printf(sprintf('Warning: Can t test fit using %d points', ...
             length(dx)))
 % try a heuristic test for linear
-      if any(dfit)==0 || (max(dfit)/min(dfit) < 10)
+      if max(dfit)/min(dfit) < 10
           printf(sprintf('GUESSING axis %s is LINEAR\n', ax_text));
           ll=0;
       else
@@ -106,5 +113,7 @@ function ll=test_log( dx, dy, dfit, ax_text )
       printf(sprintf('axis %s is LOGARITHMIC\n', ax_text));
       ll=1;
    end
+
+   fflush(stdout);
 endfunction
 

@@ -69,7 +69,7 @@ function [Y,M,D,h,m,s] = datevec(date,P)
   M(M>12)-=12;
 
   ## Convert hour-minute-seconds
-  s = date-floor(date);
+  s = 86400*(date-floor(date));
   h = floor(s/3600);
   s = s - 3600*h;
   m = floor(s/60);
@@ -78,3 +78,8 @@ function [Y,M,D,h,m,s] = datevec(date,P)
     Y = [ Y(:), M(:), D(:), h(:), m(:), s(:) ];
   endif
 endfunction
+
+%!assert(all(datenum(datevec([-1e4:1e4]))==[-1e4:1e4]'))
+%!test
+%! t=linspace(-2e5,2e5,10993);
+%! assert(all(datenum(datevec(t))==t'));

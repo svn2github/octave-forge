@@ -20,14 +20,19 @@ Univariate (stationary) analysis
    ar_spa
    detrend
    flix
+
 Multivariate stationary analysis
    mvar
    mvfilter
    mvfreqz
    arfit2    
    histo4
+
 Adaptive (time-varying) analysis
    aar   
+   aarmam
+   adim
+   	
 Conversions between forms
    ac2poly
    ac2rc

@@ -1,4 +1,412 @@
 # Automatically generated file --- DO NOT EDIT
+2004-11-16 19:59  pkienzle
+
+	* main/sparse/buildtests.sh: Fix some tests; note those that are
+	still failing.  
+
+2004-11-16 19:39  pkienzle
+
+	* configure.base: Correct the sense of the test for op_uplus 
+
+2004-11-16 07:47  schloegl
+
+	* extra/tsa/INDEX: add categories of MVAAR and rmle 
+
+2004-11-16 05:31  adb014
+
+	* Makeconf.base, configure.base, main/comm/Makefile,
+	main/comm/op-gm-gm.cc, main/fixed/Makefile,
+	main/fixed/op-fcm-fcm.cc, main/fixed/op-fcs-fcs.cc,
+	main/fixed/op-fm-fm.cc, main/fixed/op-fs-fs.cc,
+	main/sparse/Makefile, main/sparse/complex_sparse_ops.cc,
+	main/sparse/sparse_ops.cc: HAVE_OCTAVE_UPLUS config option for
+	backwards compatiability 
+
+2004-11-16 04:20  pkienzle
+
+	* RELEASE-NOTES: ready for release? 
+
+2004-11-16 04:18  pkienzle
+
+	* extra/NaN/INDEX, main/INDEX, extra/pdb/INDEX,
+	main/econometrics/INDEX, main/image/INDEX, main/signal/INDEX,
+	main/strings/INDEX: Add new functions 
+
+2004-11-16 02:19  pkienzle
+
+	* main/signal/hann.m: Compatibility function 
+
+2004-11-16 02:05  pkienzle
+
+	* main/sparse/Makefile: Use sh rather than bash for portability.  
+
+2004-11-16 01:56  pkienzle
+
+	* Makeconf.base, extra/mex/Makefile, extra/mex/mex.in,
+	extra/mex/myfeval.m: [with Dan McMahill] Use doc string from .m
+	file if available 
+
+2004-11-16 01:12  pkienzle
+
+	* main/sparse/buildtests.sh: [for Dan McMahill] remove bashisms 
+
+2004-11-16 01:03  pkienzle
+
+	* main/audio/: wavread.m, wavwrite.m: [For Julius Smith] read/write
+	parts of .wav files (unlike auload/ausave) 
+
+2004-11-16 00:17  pkienzle
+
+	* main/signal/czt.m: [with Danial Gunyan] Replace with correct
+	implementation and add tests.  
+
+2004-11-15 11:04  pkienzle
+
+	* main/image/: blkproc.m, nlfilter.m: Fix tests for functions which
+	return boolean matrices 
+
+2004-11-15 05:26  adb014
+
+	* main/: comm/op-gm-gm.cc, fixed/op-fcm-fcm.cc,
+	fixed/op-fcs-fcs.cc, fixed/op-fm-fm.cc, fixed/op-fs-fs.cc,
+	sparse/complex_sparse_ops.cc, sparse/sparse_ops.cc: Add unary plus
+	operators as no-op, due to recent change in octave 
+
+2004-11-10 10:26  adb014
+
+	* main/symbolic/: findsymbols.cc, ov-ex.cc: Must explicitly use the
+	"GiNaC::operator ==" as there is an ambiguity between this and the
+	newly introduced int-type operators in the octave core..  
+
+2004-11-09 18:34  adb014
+
+	* configure.base, main/comm/galois-ops.h, main/comm/galois.cc,
+	main/comm/galois.h, main/comm/op-gm-gm.cc, main/comm/op-gm-m.cc,
+	main/comm/op-gm-s.cc, main/comm/op-s-gm.cc, main/comm/ov-galois.cc,
+	main/comm/ov-galois.h, main/fixed/fixed-def.h,
+	main/fixed/fixedCMatrix.cc, main/fixed/fixedCMatrix.h,
+	main/fixed/fixedCNDArray.cc, main/fixed/fixedCNDArray.h,
+	main/fixed/fixedMatrix.cc, main/fixed/fixedMatrix.h,
+	main/fixed/fixedNDArray.cc, main/fixed/fixedNDArray.h,
+	main/fixed/ov-base-fixed.h, main/fixed/ov-fixed-complex.cc,
+	main/fixed/ov-fixed-complex.h, main/fixed/ov-fixed-cx-mat.cc,
+	main/fixed/ov-fixed-cx-mat.h, main/fixed/ov-fixed-mat.cc,
+	main/fixed/ov-fixed-mat.h, main/fixed/ov-fixed.cc,
+	main/fixed/ov-fixed.h, main/sparse/complex_sparse_ops.cc,
+	main/sparse/make_sparse.h, main/sparse/sparse_ops.cc,
+	main/sparse/sparse_ops.h: Fix concatenation for recent octave core
+	CVS changes 
+
+2004-11-08 06:41  adb014
+
+	* FIXES/randmtzig.c: Small bug fix for tail of rande 
+
+2004-11-01 13:37  schloegl
+
+	* main/strings/strfind.m: added 
+
+2004-10-27 22:58  pkienzle
+
+	* admin/Windows/Makefile: Remove old links before creating new ones
+	in the mklinks target 
+
+2004-10-27 08:06  etienne
+
+	* main/image/imrotate.m: Justus Piater's imrotate 
+
+2004-10-27 03:16  schloegl
+
+	* extra/NaN/cor.m: fix for ML7 
+
+2004-10-26 08:24  mcreel
+
+	* main/optim/bfgsmin.cc: add iters as output 
+
+2004-10-21 10:54  mcreel
+
+	* main/econometrics/mle_estimate.m: little bugfix 
+
+2004-10-20 06:31  mcreel
+
+	* main/econometrics/: average_moments.m, gmm_estimate.m,
+	gmm_example.m, gmm_obj.m, gmm_results.m, gmm_variance.m,
+	gmm_variance_inefficient.m: initial commit of gmm functions 
+
+2004-10-20 05:14  mcreel
+
+	* main/econometrics/mle_example.m: indicate it's a script, with a
+	"1;" 
+
+2004-10-20 05:12  mcreel
+
+	* main/econometrics/: delta_method.m, mle_estimate.m,
+	mle_example.m, mle_obj.m, mle_results.m, mle_variance.m,
+	parameterize.m, prettyprint.m, prettyprint_c.m, scale_data.m,
+	unscale_parameters.m: initial commit of econometrics functions 
+
+2004-10-20 05:06  adb014
+
+	* main/miscellaneous/dispatch.cc: Constructor should set has_alias
+	to false (For Gernot Hueber) 
+
+2004-10-15 10:24  tpikonen
+
+	* extra/pdb/read_pdb.m: Fixed atomname to Z conversion.  
+
+2004-10-15 09:34  tpikonen
+
+	* extra/pdb/: README, plotpdb.m, plotpdb.m.in, write_pdb_quick.m: 
+	Made plotpdb.m use the rasmol script installed at XPATH.  
+
+2004-10-15 06:05  adb014
+
+	* FIXES/rand.cc: Allow state to be probed even if rand never used 
+
+2004-10-15 05:59  adb014
+
+	* main/irsa/irsa_resample.m: Fix to allow optional argument to be
+	acceptted 
+
+2004-10-13 01:04  pkienzle
+
+	* admin/Windows/: Makefile, install_octave.sh: First cut at an
+	automated link generator; untested.  
+
+2004-10-11 20:42  pkienzle
+
+	* admin/make_index: Allow preinstalled octave to fill in missing
+	function definitions.  Put forge link on each page of main panel.  
+
+2004-10-11 09:15  aadler
+
+	* extra/perl/Octave.pm: warning in $input testing 
+
+2004-10-08 00:34  pkienzle
+
+	* FIXES/rand.cc: Document Poisson generator methods and references 
+
+2004-10-07 12:22  tpikonen
+
+	* extra/pdb/creadpdb.cc: Fix reading of non-conforming files.  
+
+2004-10-07 10:30  tpikonen
+
+	* extra/pdb/: INDEX, plotpdb.m, write_pdb.m: Ditched
+	write_pdb_quick.m, made write_pdb.m slightly faster.  
+
+2004-10-06 23:27  pkienzle
+
+	* FIXES/: Makefile, rand.cc, randpoisson.c: Initial posting of
+	Poisson RNG randp(); this function needs vetting.  
+
+2004-10-02 23:34  pkienzle
+
+	* admin/make_index, admin/template.ndev,
+	doc/octave-forge-home.html: Use new source-forge logo and group
+	id=2888.  
+
+2004-09-30 20:43  pkienzle
+
+	* admin/Windows/octave.nsi: This will be the new NSIS script; still
+	not ready to build with it.  
+
+2004-09-30 20:41  pkienzle
+
+	* admin/Windows/: Makefile, README: More refinements; still can't
+	build octinst.exe directly (need links).  
+
+2004-09-30 15:17  pkienzle
+
+	* main/: miscellaneous/read_options.m, optim/fminunc.m,
+	optim/minimize.m, optim/optimset.m, vrml/select_3D_points.m,
+	vrml/vrml_frame.m, vrml/vrml_parallelogram.m: Change to use
+	getfields/setfields 
+
+2004-09-30 12:36  adb014
+
+	* main/fixed/Makefile: Fix for cygwin build due to change of
+	SH_LDFLAGS to DL_LDFLAGS in mkoctfile 
+
+2004-09-30 05:56  tpikonen
+
+	* main/struct/: Makefile, getfields.cc, setfields.cc: Removed
+	oct-versions of getfields and setfields.  
+
+2004-09-29 14:06  pkienzle
+
+	* FIXES/randmtzig.c: Use stdint.h instead of inttypes.h. Suggest
+	what to do if it is missing.  
+
+2004-09-29 11:29  pkienzle
+
+	* admin/Windows/: Makefile, README: Improved build procedure but
+	still not complete 
+
+2004-09-28 06:23  mcreel
+
+	* main/optim/: bfgsmin.cc, numgradient.cc, numhessian.cc: more arg
+	checking 
+
+2004-09-27 11:26  przykry2004
+
+	* main/sparse/sprand.m: Used Paul's hint to allow larger random
+	matrices, at the price of sometimes lower density than desired 
+
+2004-09-27 05:56  adb014
+
+	* extra/ode/: ode23.m, ode45.m, ode78.m, penddot.m, pendulum.m,
+	rk2fixed.m, rk4fixed.m, rk8fixed.m: Fix copyright notices so that
+	help is correctly displayed 
+
+2004-09-27 05:56  adb014
+
+	* admin/make_index: Don't replace help text for existing functions.
+	That is help of *.cc versions preferred to *.m versions (cf
+	dispatch) 
+
+2004-09-24 17:12  adb014
+
+	* main/INDEX: Update INDEX since make_index can find operators and
+	keywords 
+
+2004-09-24 17:10  adb014
+
+	* main/vrml/INDEX: specify vrml_demo_tutorial_{1,2,3,4} seperately
+	so make_index can find them 
+
+2004-09-24 17:09  adb014
+
+	* admin/make_index: Update make_index to check for DEFCONST, also
+	use DOCSTRINGS for text of help even if function is found elsewhere
+	to allow for help string defined as macros, and call help in octave
+	to find operators and keywords 
+
+2004-09-24 11:38  adb014
+
+	* admin/make_index: Allow '== = <text>' syntax in INDEX 
+
+2004-09-24 11:00  etienne
+
+	* main/specfun/factorial.m: add missing ; 
+
+2004-09-24 09:48  adb014
+
+	* main/image/: graycomatrix.cc, houghtf.cc: can't have space after
+	DEFUN_DLD( or indexing script misses the function name 
+
+2004-09-24 09:37  adb014
+
+	* main/struct/: getfield.m, setfield.m: Its @{ and not { in texinfo 
+
+2004-09-24 09:37  adb014
+
+	* main/INDEX: Add some new functions, delet some old work arounds 
+
+2004-09-24 09:15  schloegl
+
+	* main/general/isdir.m: check if directory  - initial revision 
+
+2004-09-23 20:11  pkienzle
+
+	* main/miscellaneous/dispatch.m: Reasonable default if dispatch.oct
+	is unavailable.  
+
+2004-09-22 23:43  pkienzle
+
+	* main/miscellaneous/listen.cc: portability fix: use ceil rather
+	than round for debug time stamps 
+
+2004-09-22 04:45  sjvdw
+
+	* main/image/houghtf.cc: Correct indexing of image 
+
+2004-09-21 11:19  adb014
+
+	* main/INDEX: index shiftdim/circshift 
+
+2004-09-21 10:30  adb014
+
+	* main/INDEX: fftw_wisdom not fft_wisdom 
+
+2004-09-19 18:35  schloegl
+
+	* extra/NaN/: median.m, trimean.m: fix: sort does not necessarily
+	put NaNs at the upper end 
+
+2004-09-17 05:55  mcreel
+
+	* main/optim/: bfgsmin.cc, samin.cc: fix a recently-introduced bug
+	(severely C-challenged) 
+
+2004-09-15 22:17  pkienzle
+
+	* main/sparse/buildtests.sh: Correct a few more tests.  
+
+2004-09-15 22:14  pkienzle
+
+	* main/image/bwmorph.m: Use frivolous uint8() call to block tests
+	for version 2.1.57 and earlier 
+
+2004-09-15 22:13  pkienzle
+
+	* extra/testfun/assert.m: Don't check type if tolerance is not
+	zero; this is required to handle functions with a negligible complex
+	portion.  An unfortunate side effect is that the return types of
+	functions will not be tested if they are inexact.  
+
+2004-09-15 16:36  jmones
+
+	* main/image/bwmorph.m: logical(1) => true 
+
+2004-09-15 16:00  jmones
+
+	* main/image/bwmorph.m: Updated tests to match Gonzalez&Woods
+	example 
+
+2004-09-15 15:04  pkienzle
+
+	* main/sparse/buildtests.sh: Clean up a couple of more tests 
+
+2004-09-15 14:38  pkienzle
+
+	* main/time/calendar.m: correct expected type of test result 
+
+2004-09-15 13:54  pkienzle
+
+	* extra/testfun/assert.m, main/image/roicolor.m,
+	main/sparse/buildtests.sh, main/sparse/pcg.m, main/sparse/pcr.m: 
+	test that data type matches during assert 
+
+2004-09-15 09:51  pkienzle
+
+	* main/image/bwmorph.m: Use logical in tests; reduce number of
+	shared variables in tests.  
+
+2004-09-14 08:16  mcreel
+
+	* main/optim/: bfgsmin.cc, bisectionstep.cc, newtonstep.cc: final
+	round arg checking for these functions (famous last words!) 
+
+2004-09-13 15:19  pkienzle
+
+	* admin/Windows/: Makefile, README, TODO, bsubst.c, mkdll.sh: Steps
+	to automate the building of new packages.  
+
+2004-09-11 10:40  przykry2004
+
+	* main/optim/fzero.m: Minor changes; octave-2.1.58's fsolve makes
+	the 8th demo break down...  
+
+2004-09-09 15:36  jmones
+
+	* main/image/qtdecomp.m: all_va_args -> varargin{:}. Now works on
+	2.1.58 
+
+2004-09-09 12:02  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: R2004-09-09
+	release 
+
 2004-09-09 11:58  pkienzle
 
 	* main/statistics/pareto.m: small spelling correction; faster and

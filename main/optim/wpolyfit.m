@@ -46,15 +46,28 @@
 ## If 'origin' is specified, then the fitted polynomial will go through
 ## the origin.
 ##
-## To compute the predicted values of y, including an error estimate use
+## To compute the predicted values of y with uncertainty use
+## @example
 ##     y = polyval(p,x);
 ##     dy = sqrt(polyval(dp.^2, x.^2));
+## @end example
 ##
 ## Example
+## @example
 ##     x = linspace(0,4,20);
 ##     dy = (1+rand(size(x)))/2;
 ##     y = polyval([2,3,1],x) + dy.*randn(size(x));
 ##     wpolyfit(x,y,dy,2);
+## @end example
+##
+## Note that the polynomial coefficients and uncertainties don't 
+## exactly match those computed from a monte carlo simulation of 
+## fits to the data.  You can see this for yourself:
+## @example
+##     n=1000; p=zeros(3,n);
+##     for i=1:n, p(:,i)=polyfit(x,y+randn(size(y)).*dy,2); end
+##     printf("%15g %15g\n", [mean(p'); std(p')]);
+## @end example
 ##
 ## Farebrother, RW (1988). Linear least squares computations.
 ## New York: Marcel Dekker, Inc.
@@ -148,7 +161,7 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
   p = R\(b'*Q)'; 
   p(P) = p;
 
-  compute_dp = nargout == 0 || nargout > 1;
+  compute_dp = (nargout == 0 || nargout > 1);
   if (compute_dp)
     ## Get uncertainty from the covariance matrix: dp = sqrt(diag(inv(X'X))).
     ##
@@ -223,7 +236,7 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
 
     ## decorate the graph
     grid('on');
-    xlabel('abscissa X'), ylabel('data Y'), 
+    xlabel('abscissa X'); ylabel('data Y');
     title('Least-squares Polynomial Fit with Error Bounds');
 
     ## draw fit with estimated error bounds

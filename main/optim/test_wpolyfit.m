@@ -1,13 +1,13 @@
 1;
 
-function do_test(n,x,y,p,dp)
-  [myp,mydp] = wpolyfit(x,y,n);
+function do_test(n,x,y,p,dp,varargin)
+  [myp,mydp] = wpolyfit(x,y,n,varargin{:});
   %[svdp,j,svddp] = svdfit(x,y,n);
   %myp = polyfit(x,y,10);
   disp('parameter  certified value  rel. error');
-  [myp, p, abs((myp-p)./p)] %, svdp, abs((svdp-p)./p) ]
+  [myp(:), p, abs((myp(:)-p)./p)] %, svdp, abs((svdp-p)./p) ]
   disp('p-error    certified value  rel. error');
-  [mydp, dp, abs((mydp - dp)./dp)] %, svdp, abs((svddp - dp)./dp)]
+  [mydp(:), dp, abs((mydp(:) - dp)./dp)] %, svdp, abs((svddp - dp)./dp)]
   input('Press <Enter> to proceed to the next test');
 endfunction
 
@@ -20,16 +20,12 @@ data = [0.0013852  0.2144023  0.0020470
 	0.0036939  0.4799956  0.0036983 ];
 x=data(:,1); y=data(:,2); dy=data(:,3);
 wpolyfit(x,y,dy,1);
-echo('on');
-% The uncertainties in these parameter estimates are much too large
-% given the uncertainty in the data.
-%
-% The fit error bars are estimated from sqrt(polyval(dp.^2,x.^2)),
-% which is just the result of propogating uncertainties using gaussian
-% statistics.  You can see that they more or less reflect the uncertainty
-% in p by generating a bunch of random lines using the p+randn(size(dp)).*dp.
-% About 68% of the lines should be passing through each blue error bar.
-echo('off');
+disp('computing parameter uncertainty from monte carlo simulation...');
+fflush(stdout);
+n=100; p=zeros(2,n);
+for i=1:n, p(:,i)=polyfit(x,y+randn(size(y)).*dy,1); end
+printf("%15s %15s\n", "Coefficient", "Error");
+printf("%15g %15g\n", [mean(p'); std(p')]);
 input('Press <Enter> to see some sample regression lines: ');
 t = [x(1), x(length(x))];
 [p,dp] = wpolyfit(x,y,dy,1);
@@ -38,13 +34,6 @@ for i=1:15, plot(t,polyval(p+randn(size(dp)).*dp,t),'-;;'); end
 errorbar(x,y,dy,"~r;;");
 errorbar(x,polyval(p,x),sqrt(polyval(dp.^2,x.^2)),"~b;;");
 hold off;
-echo('on');
-% So the problem is the estimate of the uncertainties in p. Looking at the
-% lines generated, it seems that the uncertainty in the slope is reasonable, 
-% but the uncertainty in the intercept is not.  The covariance matrix from
-% which the parameters are estimated has a condition number of 1e6, so perhaps
-% that explains the problem.
-echo('off');
 input('Press <Enter> to continue with the tests: ');
 
 
@@ -251,17 +240,16 @@ data =[\
 
 #               Certified Regression Statistics
 #
-#                                          Standard Deviation
-#     Parameter          Estimate             of Estimate
+#                                 Standard Deviation
+#               Estimate             of Estimate
 target = [ \
-                   2.07438016528926     0.165289256198347E-01
-];
+	  0                    0
+          2.07438016528926     0.165289256198347E-01 ];
 
 
 if 1
-  "Oops, not a polynomial system; need to use 'origin' parameter to wpolyfit"
   disp("Eberhardt, K., NIST");
-  do_test(0, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)));
+  do_test(1, data(:,2),data(:,1),flipud(target(:,1)),flipud(target(:,2)),'origin');
 endif
 
 

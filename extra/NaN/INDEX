@@ -1,0 +1,7 @@
+Missing data statistics (not installed by default)
+ coefficient_of_variation geomean meansq skewness
+ covm harmmean median statistic
+ detrend kurtosis moment std
+ flag_implicit_dimension mad nantest sumskipnan
+ flag_implicit_skip_nan meandev rms var
+ flag_implicit_unbiased_estim mean sem zscore

@@ -23,17 +23,27 @@ my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
 my $CVSTREE = "cvs-tree.html";
 die "Cannot read $CVSTREE  -- edit $script and define the\n",
     ".html file which was produced by the cvs-tree script\n" unless -r $CVSTREE;
-die "$script  <index>\n" unless scalar @ARGV == 1;
 
+# initialize the indexing variables
 my %index_by_TB_cat   = (); # i_TB_cat{toolbox}{category} = list of functions
 my %index_by_function = (); # i_function{function} =[ [toolbox_1,category_1],
 #                         [toolbox_2,category_2],..]
 my %TB_description    = ();
 my %index_notes = (); # index_notes{function} = comment
-load_index($ARGV[0],
-           \%index_by_TB_cat,
-           \%TB_description,
-           \%index_by_function);
+
+# find and load all indices
+my @index_files = ();
+find(\&index_files, ".");
+sub index_files { # {{{1 populates global array @files
+    return unless -f and /INDEX$/;  # INDEX files
+    push @index_files, "$File::Find::dir/$_";
+} # 1}}}
+foreach my $f ( @index_files ) {
+    load_index($f,
+	       \%index_by_TB_cat,
+	       \%TB_description,
+	       \%index_by_function);
+}
 
 my $location = `pwd`;
 my $PATH     = "";
@@ -226,7 +236,7 @@ sub register_function { # {{{1
        )      = @_;
     ++$n_appearances{$function};
     if ($n_appearances{$function} > 1) {
-        print "$file:$function appeared previously\n";
+#        print "$file:$function appeared previously\n";
     } else {
         ++$n_functions;
     }
@@ -296,7 +306,7 @@ sub load_index { # {{{1
         $rhaa_func,        # out   $func{function} = [[toolbox_1,category_1],
                            #                          [toolbox_2,category_2],..]
        )      = @_;
-    my $toolbox     = "";
+    my $toolbox     = "extra";
     my $category    = "";
     my $description = "";
     my $function    = "";
@@ -331,7 +341,6 @@ sub load_index { # {{{1
 	    $desc = join("",@parts);
 
 	    $index_notes{$func} = $desc;
-	    die "Function $function (line $.) has no toolbox"  unless $toolbox;
 	    die "Function $function (line $.) has no category" unless $category;
 	    push @{$rhha_TB_cat->{$toolbox}{$category}}, $func;
 	    push @{$rhaa_func->{$func}}, [$toolbox, $category];
@@ -340,7 +349,6 @@ sub load_index { # {{{1
             my @list = split /\s+/;
             while ($#list >= 0) {
                 $function    = shift @list;
-                die "Function $function (line $.) has no toolbox"  unless $toolbox;
                 die "Function $function (line $.) has no category" unless $category;
                 push @{$rhha_TB_cat->{$toolbox}{$category}}, $function;
                 push @{$rhaa_func->{$function}}, [$toolbox, $category];
@@ -361,6 +369,14 @@ sub write_html { # {{{1
     my $max_TB_across_top = 7;
     my $all_toolboxes = "<center>\n";
     my $n = 0;
+
+    # make empty html directories
+    unlink <index/*.html>;
+    unlink <index/f/*.html>;
+    mkdir "index";
+    mkdir "index/f";
+
+
     foreach my $TB (sort keys %{$rhha_TB_cat}) {
         ++$n;
         if ($n > $max_TB_across_top) {
@@ -384,7 +400,7 @@ sub write_html { # {{{1
     #
     $Text::Wrap::columns = 50;
     foreach my $TB (sort keys %{$rhha_TB_cat}) {
-        my $file   = "$TB.html";
+        my $file   = "index/$TB.html";
         my %anchor = ();
 
         open(OUT, ">$file") or die "Cannot write $file:  $!\n";
@@ -414,7 +430,7 @@ sub write_html { # {{{1
                 #                          cvs-tree's html file)
                 print OUT "<tr><td>";
                 if (defined $rh_oct_forge_f->{$func}) {
-                    print OUT '<a href="',"$CVSTREE#$func",'">',$func,"</a>";
+                    print OUT '<a href="',"../$CVSTREE#$func",'">',$func,"</a>";
                 } else {
                     print OUT $func;
                 }
@@ -444,7 +460,7 @@ sub write_html { # {{{1
 
     # Write the file containing all functions alphabetically.
     #
-    my $file   = "all_functions.html";
+    my $file   = "index/all_functions.html";
     open(OUT, ">$file") or die "Cannot write $file:  $!\n";
     print OUT "<html><head>
     <title>Octave-Forge Functions Alphabetically</title>
@@ -466,7 +482,7 @@ sub write_html { # {{{1
                 #                          cvs-tree's html file)
                 print OUT "<tr><td>";
                 if (defined $rh_oct_forge_f->{$func}) {
-                    print OUT '<a href="',"$CVSTREE#$func",'">',$func,"</a>";
+                    print OUT '<a href="',"../$CVSTREE#$func",'">',$func,"</a>";
                 } else {
                     print OUT $func;
                 }

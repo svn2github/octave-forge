@@ -1,0 +1,28 @@
+sparse >> Sparse matrix support
+Generate sparse matrix
+ speye 
+ sprand 
+ sprandn 
+ sprandsym 
+ spdiags 
+ spconvert 
+Manipulate sparse matrices
+ sparse 
+ full 
+ is_sparse is_real_sparse is_complex_sparse
+ spy 
+ nnz 
+ spfind spdump
+ nonzeros 
+ nzmax 
+ spones 
+ spfun 
+ spalloc 
+ spparms 
+Linear algebra
+ spinv splu
+ svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
+Statistics
+ spsum
+Test
+ fem_test sp_test

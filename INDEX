@@ -1,0 +1,779 @@
+# This is the main index of functions in octave/octave-forge.
+# It organizes functions by toolbox and by category within
+# each toolbox.  Individual directories may have their own
+# INDEX file specifying their own toolboxes, or their own
+# categories within the "extra" toolbox.  In general if you
+# are adding a function to a directory and it does not already
+# have an INDEX file, then you should add it here.  If you
+# are adding a new directory, you should probably add a new
+# INDEX file.
+
+# An index file has the following format:
+#
+#  toolbox >> Toolbox name
+#  Category Name
+#   fn fn fn
+#   fn fn fn
+#  Category Name
+#   fn
+
+# Toolbox and category definitions are on the left, function
+# lists are indented.
+
+# If no toolbox is specified, then the categories will go into
+# extra.  Only use this if you are contributing a small number
+# of specialized functions.
+
+# Lines starting with # are comment lines.
+
+# Some functions may be unavailable in octave or octave-forge.
+# If they are not implemented they can be listed as usual
+# and they will show up with a description of "not implemented".
+# If there is a work around or if the function is available
+# elsewhere, you can instead use:
+#  fn = workaround description
+# This workaround description can use any html markup, but
+# keep in mind that it is in a bold-italic environment.  For
+# the special case of:
+#  fn = use <code>alternate expression</code>
+# the bold-italic is automatically suppressed.  You will need
+# to use <code> even in references:
+#  fn = use <a href="someothersite.html"><code>fn</code></a>
+# Sometimes functions are only partially compatible, in which
+# case you can list the non-compatible cases separately.
+# E.g.,
+#  eig(A,B) = use <code>qz</code>
+
+# Since sites may have many missing functions, you can define
+# a macro rather than typing the same link over and again.
+#  $id = expansion
+# defines the macro id.  You can use $id anywhere in the
+# description and it will be expanded.  E.g.,
+#  $TSA = see <a href="link_to_spctools">SPC Tools</a>
+#  arcov = $TSA <code>armcv</code>
+# id is any string of letters, numbers and _.
+
+$COMPAT= http://octave.sf.net/compatibility.html
+$EG= Etienne Grossman's <a href="http://www.isr.ist.utl.pt/~etienne/octave/">Octave code</a>
+
+interpreter >> Interpreter
+Help
+ help 
+ demo 
+ ver = use <code>version</code>
+ version 
+Variables
+ who 
+ whos 
+ workspace 
+ clear 
+ pack 
+ load 
+ save 
+ quit
+ document
+ temp_name
+Functions
+ what 
+ type 
+ edit 
+ open 
+ lookfor 
+ which 
+ pcode 
+ inmem = use <code>who -functions</code>
+ mex= install octave-forge mex package and use <code>system(["mex ", name])</code>
+ 
+Load path
+ path 
+ addpath 
+ rmpath 
+ pathtool 
+ file_in_path file_in_loadpath
+Output
+ echo 
+ more 
+ diary 
+ format 
+Environment
+ cd pwd
+ dir=alias for <code>ls</code>
+ ls
+ mkdir 
+ copyfile= use <code>system("[cp ", source, " ", dest])</code>
+ delete = use <code>unlink</code> 
+ getenv 
+ putenv
+ dos= use <code>system</code>
+ vms= use <code>system</code>
+ unix= use <code>system</code>
+ web 
+ computer 
+ isieee
+ isunix
+ system
+ ! = use <code>system("command")</code>
+Debugging
+ dbg_delete
+ dbg_list
+ dbg_set
+ dbg_where
+ debug_on_error
+ debug_on_warning
+Profiling
+ profile 
+ flops 
+Demos and Tests.
+ example  demo  test  assert  speed 
+
+system >> System Utilities
+Clock functions
+ now 
+ date 
+ clock 
+ cputime 
+ tic 
+ toc 
+ etime gmtime
+ ctime time localtime mktime
+Date conversion
+ is_leap_year
+ asctime
+ datenum 
+ datestr 
+ datevec 
+ weekday 
+ eomday 
+ calendar 
+ datetick=use <code>gset xdata time; gset timefmt "%d/%m"; gset format x "%b %d"</code>
+ strftime 
+Controlling subprocesses
+ system
+ popen popen2 pclose
+ fork exec pipe waitpid
+ EXEC_PATH sleep usleep
+Process information
+ getrusage
+ getpgrp
+ getpid
+ getppid
+ geteuid
+ getuid
+ getegid
+ getgid
+ getgrgid
+Password Database
+ getpwent
+ getpwuid
+ getpwnam
+ setpwent
+ endpwent
+Group Database
+ getgrent
+ getgrid
+ getgrnam
+ setgrent
+ endgrent
+
+language >> Programming
+Logical functions
+ xor 
+ any 
+ all 
+Bit operations
+ bitand 
+ bitcmp 
+ bitor 
+ bitmax 
+ bitxor 
+ bitset 
+ bitget 
+ bitshift 
+Sets
+ union 
+ unique create_set
+ intersect intersection
+ setdiff  complement
+ setxor 
+ ismember 
+#Control structures
+# if 
+# else 
+# elseif 
+# end 
+# for 
+# while 
+# break 
+# switch 
+# case 
+# otherwise 
+# try 
+# catch 
+# return 
+Interpreter interface
+ eval 
+ evalc 
+ feval
+ leval temp_name
+ evalin 
+ builtin 
+ assignin 
+ ans 
+Constants
+ eps 
+ realmax 
+ realmin 
+ pi e
+ i j I J
+ Inf inf
+ NaN nan
+ isnan 
+ isinf 
+ isfinite finite
+Symbol table
+ exist
+ exist(x,"var")=requires exist patch from $EG
+ global 
+ isglobal 
+ persistent = use <code>static</code> 
+ mfilename 
+ mlock 
+ munlock 
+ mislocked
+ command
+Function arguments
+ nargchk 
+ nargin 
+ nargout 
+ varargin= see <a href="$COMPAT#vararg">compatibility FAQ</a>
+ varargout= see <a href="$COMPAT#vararg">compatibility FAQ</a>
+ inputname= use <code>deblank(argn(i,:))</code>
+ fcnchk 
+ read_options
+ va_start va_arg vr_val
+User I/O
+ disp printf puts
+ error 
+ warning 
+ lasterr 
+ lastwarn 
+ clc 
+ home 
+ input 
+ keyboard kbhit
+ pause 
+Inline functions
+ inline= see <a href="$COMPAT#inline">compatibility FAQ</a>
+ argnames 
+ formula 
+ char 
+ vectorize 
+Cell arrays
+ cell 
+ iscell 
+ deref
+ cellfun 
+ celldisp 
+ cellplot 
+ num2cell 
+ deal 
+ cell2struct 
+ struct2cell 
+Structures
+ struct 
+ fieldnames 
+ getfield 
+ setfield 
+ rmfield 
+ isfield 
+ isstruct
+ is_struct
+ struct_contains
+ struct_elements
+Lists
+ list
+ is_list
+ nth
+ append
+ reverse
+ splice
+ leval
+
+matrix >> Linear Algehra
+Generating matrices
+ zeros 
+ ones 
+ eye 
+ rand 
+ randn 
+ linspace 
+ logspace 
+ randperm
+ meshgrid meshdom
+Matrix properties
+ size rows columns common_size
+ length 
+ isempty 
+ isequal 
+ isnumeric is_complex
+ islogical 
+ logical 
+ is_scalar is_vector is_square is_symmetric is_duplicate_entry
+Rearranging matrices
+ reshape 
+ tril 
+ triu 
+ fliplr 
+ flipud 
+ flipdim= for <code>flipdim(A,1)</code> use <code>flipud(A)</code> and for <code>flipdim(A,2)</code> use <code>fliplr(A)</code> 
+ rot90 
+ repmat 
+ diag 
+ blkdiag 
+ kron 
+ find 
+ sub2ind 
+ ind2sub 
+ transpose ctranspose
+ prepad postpad shift vec vech
+Special matrices
+ compan 
+ commutation_matrix
+ duplication_matrix
+ sylvester_matrix
+ hankel 
+ hilb 
+ invhilb 
+ lauchli
+ magic 
+ pascal 
+ rosser 
+ toeplitz 
+ vander 
+ wilkinson 
+ $TESTMAT= available in Nick Higham's <a href="http://www.ma.man.ac.uk/~higham/testmat.html">Test Matrix Toolbox</a>
+ gallery= $TESTMAT
+ hadamard= $TESTMAT
+Linear algebra
+ dmult
+ cross 
+ dot
+ norm 
+ rank 
+ det 
+ trace 
+ null 
+ orth 
+ rref 
+ subspace=use Andrew Knyazev's <a href="ftp://ftp.mathworks.com/pub/contrib/v5/linalg/subspace.m"><code>subspace</code></a>
+
+ cond 
+ inv inverse 
+ pinv 
+ lscov 
+ eig 
+ eig(A,B)= use <code>qz</code>
+ polyeig 
+ condeig 
+ trisolve
+ syl
+Matrix factorization
+ chol 
+ lu 
+ qr 
+ svd 
+ gsvd 
+ hess 
+ qz 
+ schur 
+ rsf2csf 
+ cdf2rdf 
+ balance 
+ qrdelete 
+ qrinsert 
+ planerot 
+ cholupdate 
+ qrupdate 
+ housh
+ krylov
+ krylovb
+ qzhess
+ givens
+Matrix functions
+ expm 
+ logm 
+ sqrtm 
+ funm thfm
+Banded matrices
+  BandToFull BandToSparse FullToBand
+  SBBacksub SBEig SBFactor SBFactor2 SBProd SBSolve
+  ExampleEigenValues ExampleGenEigenValues gapTest
+
+math >> Mathematics
+Trigonometry
+ sin 
+ sinh 
+ asin 
+ asinh 
+ cos 
+ cosh 
+ acos 
+ acosh 
+ tan 
+ tanh 
+ atan 
+ atan2 
+ atanh 
+ sec 
+ sech 
+ asec 
+ asech 
+ csc 
+ csch 
+ acsc 
+ acsch 
+ cot 
+ coth 
+ acot 
+ acoth 
+Exponentials
+ exp 
+ log 
+ log10 
+ log2 
+ pow2 
+ sqrt 
+ nextpow2 
+Complex numbers
+ abs 
+ angle arg
+ complex 
+ conj 
+ imag 
+ real 
+ unwrap 
+ isreal 
+ cplxpair 
+Floating point operations
+ fix 
+ floor 
+ ceil 
+ round 
+ sign 
+Special functions
+ airy 
+ besselj 
+ bessely 
+ besselh 
+ besseli 
+ besselk  bessel 
+ beta 
+ betainc  betai
+ betaln 
+ ellipj 
+ ellipke 
+ erf 
+ erfc 
+ erfcx 
+ erfinv 
+ expint 
+ gamma
+ gamma(complex)= use Tim Reluga's <a href="http://www.octave.org/mailing-lists/octave-sources/2002/9">Gamma.m</a> or Eyal Doron's <a href="http://www.octave.org/mailing-lists/octave-sources/1996/3">cgamma.m</a>
+ gammainc gammai
+ gammaln 
+ legendre 
+Number theory
+ mod 
+ rem 
+ factor 
+ isprime 
+ primes list_primes
+ gcd 
+ lcm 
+ rat 
+ rats 
+ perms 
+ nchoosek bincoeff 
+ factorial 
+ SHA1
+Coordinate transformations
+ cart2sph 
+ cart2pol 
+ pol2cart 
+ sph2cart 
+
+analysis >> Data analysis
+Sorting
+ sort 
+ sortrows 
+Filtering
+ filter 
+ filter2 
+ conv fftconv
+ conv2 
+ convn 
+ deconv 
+ detrend center clip
+Fourier analysis
+ fft 
+ fft2 
+ fftn 
+ ifft 
+ ifft2 
+ ifftn 
+ fftshift 
+ ifftshift 
+Interpolation
+ interp1 
+ interpft 
+ interp2 
+ interp3 
+ interpn 
+ spline 
+ pchip 
+ ppval 
+ mkpp 
+ unmkpp 
+ lookup
+Spline functions
+ interp1
+ csapi
+ csape
+ csaps
+ fnplt fnder
+ gcvspl
+Geometry
+ delaunay 
+ delaunay3
+ delaunayn
+ dsearch 
+ dsearchn
+ tsearch 
+ convhull 
+ convhulln
+ voronoi 
+ voronoin
+ griddata 
+ griddata3
+ griddatan
+ inpolygon=  use David Doolin's <a href="http://www.che.wisc.edu/octave/mailing-lists/octave-sources/1999/12">inpoly.m</a>, but with <a href="http://www.che.wisc.edu/octave/mailing-lists/octave-sources/1999/13">caveats</a>
+
+ rectint 
+ polyarea 
+ __voronoi__
+Polynomials
+ roots 
+ poly 
+ polyval 
+ polyvalm 
+ residue
+ residue(r,p,k)=use Bradley T. Burchett's <code><a href="ftp://ftp.mathworks.com/pub/contrib/v5/control/resid2wp.m">resid2wp</a></code>
+ polyfit 
+ polyder polyderiv
+ polyinteg polyreduce polyout polygcd
+Quaternions
+ quaternion
+ demoquat qconj qcoordinate_plot qderiv qderivmat qinv qmult
+ qtrans qtransv qtransvmat
+
+calculus >> Calculus
+Integration
+ quad 
+ quadl
+ quad8 
+ dblquad 
+ quad_options
+ count cquadnd crule crule2d crule2dgen
+ gquad gquad2d gquad2d6 gquad2dgen gquad6 gquadnd
+ grule grule2d grule2dgen innerfun ncrule quad2dc
+ quad2dcgen quad2dg quad2dggen quadc quadg quadndg
+Differentiation
+ diff 
+ gradient 
+ del2 
+Ordinary differential equations
+ ode23 ode45 ode78
+ penddot
+ pendulum
+ rk2fixed rk4fixed rk8fixed
+ lsode lsode_options
+ dassl dassl_options
+
+
+plot >> Plotting
+Line plots
+ plot mplot fplot
+ plot3 
+ loglog 
+ semilogx 
+ semilogy 
+ polar 
+ plotyy= use <code>gplot ... axes x1y2</code>
+ errorbar 
+ scatter 
+ plotmatrix 
+ stem 
+ stem3 
+ stairs 
+ comet 
+ feather 
+Business graphs
+ pie 
+ pie3 
+ area 
+ bar dhbar
+ barh 
+ bar3 
+ bar3h 
+ ribbon 
+ pareto 
+ fill 
+Contour plots
+ contour 
+ contourf 
+ contour3 
+ clabel 
+ pcolor 
+Surface plots
+ mesh 
+ surf 
+ comet3 
+ quiver 
+ meshc 
+ meshz 
+ scatter3 
+ surfc 
+ trisurf 
+ trimesh 
+ waterfall 
+ fill3 
+
+plotcontrol >> Plot controls
+Figure controls
+ newplot 	 
+ figure 	 
+ clf 	 
+ shg 	 
+ close 	 
+ refresh= try <code>replot</code>
+ drawnow
+Axis controls
+ axis 
+ zoom= use <code>gzoom</code> from octave-forge
+ grid 
+ hold 
+ ishold 
+ subplot 
+ multiplot subwindow oneplot plot_border
+Labels
+ title bottom_title top_title
+ xlabel 
+ ylabel 
+ zlabel 
+ legend 
+ colorbar 
+ texlabel 
+ gtext 
+Primitives
+ text 
+ patch 
+Printing
+ print 
+ printopt 
+ orient 
+ vrml= see $EG
+
+Colour controls
+ colormap 
+ spinmap 
+ rgbplot 
+ caxis 
+ brighten 
+Colour maps
+ gray 
+ ocean
+ hsv rainbow
+ hot 
+ bone 
+ copper 
+ pink 
+ white 
+ flag 
+ jet 
+ prism 
+ cool 
+ autumn 
+ spring 
+ winter 
+ summer 
+ lines 
+ colorcube 
+ vga 
+ contrast 
+View control
+ view 
+ viewmtx 
+ rotate3d 
+User input
+ ginput gget grab gzoom
+ dragrect 
+ rbbox 
+Gnuplot Interface
+ gset graw gnuplot_binary gnuplot_has_frames gnuplot_has_multiplot
+
+
+file >> File I/O
+Basic file operations
+ fopen 
+ fclose 
+ fread 
+ fwrite 
+ ferror 
+ feof 
+ fseek 
+ ftell 
+ frewind 
+ fscanf 
+ fgetl 
+ fgets 
+ fputs
+ fprintf
+ fdisp
+ fflush
+ freport
+ dup2
+ fcntl
+File system operations
+ cd pwd ls dir
+ filesep 
+ pathsep 
+ fullfile 
+ fileparts 
+ partialpath 
+ tempdir 
+ tmpnam
+ tempname = use <code>tmpnam</code>
+ prefdir 
+ glob
+ tilde_expand
+ file_in_path
+ file_in_loadpath
+ rename link unlink symlink readdir mkdir rmdir mkfifo umask stat lstat
+Import/Export
+ textread
+ dlmread 
+ dlmwrite 
+ wk1read 
+ wk1write 
+ auload
+ ausave
+ imread
+ imwrite
+ hdf = use <code>load/save</code> with <code>-hdf5</code>
+ aload/asave= flat ascii file read/write, available from <a href="ftp://ftp.ci.tuwien.ac.at/pub/octave/octave-ci.tar.gz">Octave-ci</a>
+
+extra >> Extra packages
+Finance
+ fv fvl irr nper npv pmt pv pvl rate vol
+
+

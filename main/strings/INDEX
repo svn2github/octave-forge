@@ -1,0 +1,71 @@
+strings >> Strings
+Creation
+ char 
+ double 
+ cellstr 
+ blanks 
+Tests
+ ischar= use <code>isstr</code> 
+ iscellstr 
+ isletter 
+ isspace 
+ isalnum
+ isalpha
+ isascii
+ iscntrl
+ isdigit
+ isgraph
+ islower
+ isprint
+ ispunct
+ isstr
+ isupper
+ isxdigit
+Search and replace
+ strmatch 
+ fnmatch
+ regexp
+ strcmp
+ strncmp 
+ strcmpi 
+ strncmpi 
+ findstr
+ index rindex
+ strrep
+ substr
+Operations
+ deblank split 
+ strcat 
+ strvcat 
+ strcmp 
+ strjust 
+ strtok 
+ upper 
+ lower 
+ tolower
+ toupper
+ do_string_escapes
+ undo_string_escapes
+ strappend
+Conversion
+ toascii
+ num2str com2str str2mat
+ str2num strftime
+ mat2str 
+ int2str 
+ str2double 
+ sprintf 
+ sscanf 
+ hex2num 
+ hex2dec 
+ bin2dec 
+ base2dec 
+ dec2hex 
+ dec2bin 
+ dec2base 
+Flags
+ implicit_num_to_str_ok
+ implicit_str_to_num_ok
+ warn_single_quote_string
+ string_fill_character
+

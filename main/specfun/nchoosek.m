@@ -1,4 +1,4 @@
-## Copyright (c) 1998 Mike Brookes
+## Copyright (C) 2001 Rolf Fabian, Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,56 +14,41 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## c = nchoosek(n, k)
-##    return c = n!/(k! (n-k)!)
-## A = nchoosek(v, k)
-##    generate all combinations of the elements of vector v taken k at a
-##    time, one row per combination. The resulting A has size
-##    nchoosek(n,k) x k, where n is the length of v.
-
-## Author: Mike Brookes <mike.brookes@ic.ac.uk>
-## From VOICEBOX <http://www.ee.ic.ac.uk/hp/staff/dmb/voicebox/voicebox.html>
-## 2001-02-28 Paul Kienzle
-##    * converted for use in Octave
-##    * renamed from choosenk to nchoosek for compatibility
-##    * choose from vector rather than generating choice indices
+##USAGE c = nchoosek ( n,k )
+##      return binominal coefficient  c = n! / (k! * (n-k)!)
+##
+##      A = nchoosek ( v,k )
+##      generate all combinations of the elements of vector v
+##      taken k at a time, one row per combination. The resulting
+##      A has size [nchoosek(n,k), k], where n is the length of v
+##
+##AUTHORS Rolf Fabian  <fabian@tu-cottbus.de>
+##        Paul Kienzle <pkienzle@users.sf.net>
 
 function A = nchoosek(v,k)
 
-  if (nargin != 2)
-    usage("A = nchoosek(v,k)");
-  endif
-
   n = length(v);
+
   if n == 1
-    A = prod(k+1:v)/prod(1:v-k);
+     A = round(exp( sum(log(k+1:v)) - sum(log(2:v-k)) ));
+
   elseif k == 0
     A = [];
+
   elseif k == 1
     A = v(:);
-  elseif k == n-1
-    A = v(:).';
-    A = reshape (A(ones(n-1,1),:), n, n-1);
+
   elseif k == n
-    A = v(:)';
+     A = v(:).';
+
   else
-    v = v(:);
-    kk = min(k,n-k);
-    n1 = n+1;
-    m = prod(n1-kk:n) / prod(1:kk);
-    x = zeros (m,k);
-    f = n1-k;
-    A(1:f,k) = v(k:n);
-    for a = k-1:-1:1
-      d = h = f;
-      A(1:f,a) = v(a);
-      for b = a+1 : a+n-k
-        d = d*(n1+a-b-k)/(n1-b);
-        e = f+1;
-        f = e+d-1;
-        A(e:f,a) = v(b);
-        A(e:f,a+1:k) = A(h-d+1:h,a+1:k);
-      end
-    end
+
+    m =  round(exp( sum(log(k:n-1)) - sum(log(2:n-k)) ));
+    A = [ v(1)*ones( m,1 ), nchoosek(v(2:n), k-1) ; \
+          nchoosek(v(2:n), k) ];
   endif
+
 endfunction
+
+
+

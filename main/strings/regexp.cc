@@ -12,12 +12,15 @@ This program is granted to the public domain
 #include <regex.h>
 
 DEFUN_DLD(regexp,args,nargout,"\
+Regular expression string matching.\n\
 match = regexp(pattern,string)\n\
    Returns the start and end indices of the matching substring, or the\n\
    or the empty matrix if there is none.  There is one additional row\n\
    for each set of parentheses in the pattern indicating the start and\n\
-   end index for the first match for that subexpression.\n\
-   Note that parentheses within ( exp1 | exp2 | ...  ) are not counted.\n\
+   end index for the first match for that subexpression.  So the\n\
+   expression string(match(2,1):match(2,2)) will return the string\n\
+   matched by the first set of parentheses.  Note that parentheses\n\
+   within ( exp1 | exp2 | ...  ) are not counted.\n\
 [match s1 s2 ...] = regexp(pattern,string)\n\
    Returns the matching substrings in s1, s2, etc.\n\
    If there is no match then empty strings are returned.\n\
@@ -97,7 +100,7 @@ for details.\n\
       // Copy the match indices to retval(0)
       Matrix indices(matches,2);
       for (int i=0 ; i < subexpr && match[i].rm_so >= 0; i++)
-	indices(i,0) = match[i].rm_so+1, indices(i,1) = match[i].rm_eo+1;
+	indices(i,0) = match[i].rm_so+1, indices(i,1) = match[i].rm_eo;
       retval(0) = indices;
 
       // Copy the substrings to the output arguments

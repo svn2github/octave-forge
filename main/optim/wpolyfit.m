@@ -37,6 +37,15 @@
 ## @end example
 ## Use @var{dy}=[] if uncertainty is unknown.
 ##
+## You can use a chi^2 test to asses how well the polynomial fits
+## the data:
+## @example
+## p_good = 1-chisquare_cdf(s.normr^2,s.df);
+## @end example
+## p_good is the probability of seeing a chi^2 value higher than
+## that which was observed assuming the data are normally distributed
+## around the fit.
+##
 ## You can estimate the uncertainty in the polynomial coefficients 
 ## themselves using
 ## @example
@@ -140,7 +149,8 @@ function [p_out, s] = wpolyfit (varargin)
   endif
 
   if nargout == 0
-    printf("Polynomial: %s (chi^2/df=%g)\n", polyout(p,'x'), s.normr^2/s.df);
+    good_fit = 1-chisquare_cdf(s.normr^2,s.df);
+    printf("Polynomial: %s  [ p(good)=%.2f%% ]\n", polyout(p,'x'), good_fit*100);
     plt(x,y,dy,p,s,'ci');
   else
     p_out = p;

@@ -36,6 +36,10 @@ See the website http://www.ka9q.net/code/fec for more details.
 #include "ov-galois.h"
 #include <octave/utils.h>
 
+#ifndef OCTAVE_LOCAL_BUFFER
+#define OCTAVE_LOCAL_BUFFER(T,v,n) T v[n]
+#endif
+
 static bool galois_type_loaded = false;
 
 DEFUN_DLD (isgalois, args, ,
@@ -48,7 +52,7 @@ DEFUN_DLD (isgalois, args, ,
      print_usage("isgalois");
    else if (!galois_type_loaded)
      // Can be of Galois type if the type isn't load :-/
-     return octave_value(0);
+     return octave_value(0.);
    else 
      return octave_value(args(0).type_id () ==
 			    octave_galois::static_type_id ());

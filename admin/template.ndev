@@ -249,7 +249,69 @@ Even more complicated makefiles are sometimes necessary, particularly when
 the package depends on external libraries.  See main/symbolic/Makefile
 for an example.  The external libraries must be found during configure
 so main/symbolic/configure.add provides detection rules.  The results 
-are posted in main/symbolic/Makeconf.add, and will be available during make.
+are posted in main/symbolic/Makeconf.add, and will be available during make.<p>
+
+Please try to keep compatibility with older versions of Octave.  The main
+configure script tests for features that have changed since octave-2.1.36.
+The tests are done in such a way that conditions are only defined if you
+are using an older version of octave.  That way if the tests are not performed
+and the conditions are not defined, support defaults to the newer version
+of octave.  The following conditions are defined in configure.base:
+<dl>
+<dt>HAVE_SLLIST_H
+<dd>subsref changed from using SLList to using std::list.
+To support older versions of octave, use:<pre><code>
+#ifdef HAVE_SLLIST_H
+#define LIST SLList
+#define LISTSIZE length
+#define SUBSREF_STRREF
+#else
+#include &lt;list&gt;
+#define LIST std::list
+#define LISTSIZE size
+#define SUBSREF_STRREF &amp;
+#endif
+...
+  octave_value subsref (const std::string SUBSREF_STRREF type,
+                        const LIST&lt;octave_value_list&gt;&amp; idx) {
+	...
+  }
+  octave_value_list subsref (const std::string SUBSREF_STRREF type,
+                             const LIST&lt;octave_value_list&gt;&amp; idx,
+                             int nargout) {
+        ...
+
+     if (idx.LISTSIZE () > 1)
+        ...
+  }
+</code></pre>
+<dt>NEED_OCTAVE_QUIT
+<dd>signal handling changed from longjump to C++ exceptions. To support 
+older versions of octave, use:<pre><code>
+#ifdef NEED_OCTAVE_QUIT
+#define OCTAVE_QUIT do {} while (0)
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
+#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
+#define octave_throw_bad_alloc() \
+   do { jump_to_top_level(); panic_impossible(); } while (0)
+#else
+#include <octave/quit.h>
+#endif
+</code></pre>
+<dt>USE_OCTAVE_NAN
+<dd>octave_NaN and octave_Inf constants were converted to functions.  
+To support older versions of octave, use:<pre><code>
+#ifdef USE_OCTAVE_NAN
+#define lo_ieee_nan_value() octave_NaN
+#define lo_ieee_inf_value() octave_Inf
+#endif
+</code></pre>
+</dl>
+<p>m-file support across multiple versions
+is tricky.  Sometimes try/catch will help, but for syntax
+changes you will need some sort of preprocessor, such as
+awk or sed.
+</p>
 
 <h3>Submit your code!</h3>
 You are now ready to upload your code to the Gnu Octave Repository.

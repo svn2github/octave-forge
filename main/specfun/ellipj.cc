@@ -39,7 +39,9 @@
 
 #include "oct.h"
 #include "lo-ieee.h"  /* for octave_NaN */
-
+#ifdef USE_OCTAVE_NAN
+#define lo_ieee_nan_value() octave_NaN
+#endif
 
 static void
 gripe_ellipj_arg ( const char *arg)

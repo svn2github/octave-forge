@@ -35,13 +35,15 @@ Open Source Initiative (www.opensource.org)
 #include <string>
 #include "galois.h"
 
-#ifdef OCTAVE2140
+#ifdef HAVE_SLLIST_H
 #define LIST SLList
 #define LISTSIZE length
+#define SUBSREF_STRREF
 #else
 #include <list>
 #define LIST std::list
 #define LISTSIZE size
+#define SUBSREF_STRREF &
 #endif
 
 // The keys of the values in the octave map
@@ -78,7 +80,7 @@ public:
   octave_value *clone (void) const { return new octave_galois (*this); }
   octave_value *empty_clone (void) const { return new octave_galois (); }
 
-  octave_value subsref (const std::string& type,
+  octave_value subsref (const std::string SUBSREF_STRREF type,
 			const LIST<octave_value_list>& idx);
 
   octave_value do_index_op (const octave_value_list& idx,

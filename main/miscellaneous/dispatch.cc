@@ -28,13 +28,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <octave/pager.h>
 #include <string>
 #include <map>
-#ifdef OCTAVE2140
+#ifdef HAVE_SLLIST_H
 #define LIST SLList
 #define LISTSIZE length
+#define SUBSREF_STRREF
 #else
 #include <list>
 #define LIST std::list
 #define LISTSIZE size
+#define SUBSREF_STRREF &
 #endif
 
 using std::cin;
@@ -67,11 +69,7 @@ public:
     error("dispatch: do_index_op");
     return octave_value ();
   }
-  octave_value subsref (const std::string 
-#ifndef OCTAVE2140
-&
-#endif
-			type,
+  octave_value subsref (const std::string SUBSREF_STRREF type,
 			const LIST<octave_value_list>& idx)
   {
     error("dispatch: subsref(str,list)");
@@ -79,11 +77,8 @@ public:
     return octave_value ();
   }
 
-  octave_value_list subsref (const std::string
-#ifndef OCTAVE2140
-&
-#endif
-			     type, const LIST<octave_value_list>& idx,
+  octave_value_list subsref (const std::string SUBSREF_STRREF type,
+			     const LIST<octave_value_list>& idx,
 			     int nargout);
   octave_value_list do_multi_index_op (int, const octave_value_list&);
 
@@ -131,11 +126,7 @@ octave_dispatch::add (const std::string t, const std::string n)
 }
 
 octave_value_list
-octave_dispatch::subsref (const std::string
-#ifndef OCTAVE2140
-&
-#endif
-			  type,
+octave_dispatch::subsref (const std::string SUBSREF_STRREF type,
 			const LIST<octave_value_list>& idx,
 			int nargout)
 {

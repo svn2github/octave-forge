@@ -469,8 +469,8 @@ sparse_index_twoidx ( SuperMatrix X,
 
 
 octave_value_list
-octave_complex_sparse::subsref( const std::string& type,
-                        const std::list<octave_value_list>& idx,
+octave_complex_sparse::subsref( const std::string SUBSREF_STRREF type,
+                        const LIST<octave_value_list>& idx,
                         int nargout)
 {
    octave_value_list retval;
@@ -491,7 +491,7 @@ octave_complex_sparse::subsref( const std::string& type,
        panic_impossible ();
    }
 
-   if (idx.size () > 1)
+   if (idx.LISTSIZE () > 1)
        retval = retval(0).next_subsref (type, idx);
 
    return retval;
@@ -1540,6 +1540,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.15  2003/03/05 15:31:53  pkienzle
+ * Backport to octave-2.1.36
+ *
  * Revision 1.14  2003/02/20 23:03:58  pkienzle
  * Use of "T x[n]" where n is not constant is a g++ extension so replace it with
  * OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC

@@ -7,26 +7,17 @@
 ##
 ## Don't forget 'cvs update' to make sure you haven't forgotten anything!
 ##
-## Check the output of admin/get_authors
+## Run admin/get_authors
 ## Run admin/get_contents
 ##
-## Define the following in ~/.netrc:
-##      machine upload.sf.net
-##      login anonymous
-##      password username@users.sf.net
-##      macdef init
-##         bin
-##         cd incoming
-##         mput octave-forge-*
-##         bye
-##      <leave this line empty!!>
-##
-## Finally, log in to your source forge account and use the following
+## Log in to your source forge account and use the following
 ## page to announce the new release of the package:
-## https://sourceforge.net/project/admin/qrs.php?package_id=2841&group_id=2888
+##    https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
+## Use the Upload button to add the new tarball
+##    octave-forge-yyyy.mm.dd.tar.gz
 ##
 ## You may also want to send an announcement to 
-## octave-sources@bevo.che.wisc.edu
+##    octave-sources@bevo.che.wisc.edu
 ##
 ## You should also do:
 ## 	./cvs-tree > afunclist.html
@@ -77,9 +68,6 @@ tar czf $ROOT.tar.gz $ROOT
 
 # remove the tagged directory
 rm -rf $ROOT
-
-# # optimistic: upload the file
-# ftp upload.sf.net
 
 # display the ChangeLog so that you can generate a release description
 more ChangeLog

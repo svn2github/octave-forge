@@ -31,6 +31,10 @@ Open Source Initiative (www.opensource.org)
 #include "galois.h"
 #include "ov-galois.h"
 
+#ifdef USE_OCTAVE_NAN
+#define lo_ieee_nan_value() octave_NaN
+#endif
+
 DEFINE_OCTAVE_ALLOCATOR(octave_galois);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois");
@@ -121,7 +125,7 @@ octave_galois::do_index_op (const octave_value_list& idx,
 }
 
 octave_value
-octave_galois::subsref (const std::string& type,
+octave_galois::subsref (const std::string SUBSREF_STRREF type,
 			const LIST<octave_value_list>& idx)
 {
   octave_value retval;

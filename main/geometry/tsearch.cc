@@ -24,6 +24,12 @@
 #include <octave/oct.h>
 #include <octave/parse.h>
 #include <octave/lo-ieee.h>
+#ifndef OCTAVE_QUIT
+# define OCTAVE_QUIT do {} while (0)
+#endif
+#ifdef USE_OCTAVE_NAN
+#define lo_ieee_nan_value() octave_NaN
+#endif
 
 inline double max(double a, double b, double c)
 {
@@ -45,12 +51,6 @@ For t=delaunay(x,y), finds the index in t containing the points (xi,yi).\n\
 For points outside the convex hull, idx is NaN.")
 {
   const double eps=1.0e-12;
-#ifdef OCTAVE2140
-  const double nan=lo_ieee_nan_value();
-#else
-  const double nan=octave_NaN;
-# define OCTAVE_QUIT do {} while (0)
-#endif
 
   octave_value_list retval;
   const int nargin = args.length ();
@@ -128,7 +128,7 @@ For points outside the convex hull, idx is NaN.")
       } //endif # examine this element closely
     } //endfor # each element
 
-    if (k == nelem) values(kp) = nan;
+    if (k == nelem) values(kp) = lo_ieee_nan_value ();
     
   } //endfor # kp
   

@@ -2,6 +2,11 @@
 #include <octave/pager.h>
 #include <lo-ieee.h>
 #include <cfloat>
+#ifdef USE_OCTAVE_NAN
+#define lo_ieee_nan_value() octave_NaN
+#define lo_ieee_inf_value() octave_Inf
+#endif
+
 using namespace std;
 
 // Copyright (C) 2000 Ben Sapp.  All rights reserved.

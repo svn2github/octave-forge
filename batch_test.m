@@ -33,8 +33,9 @@ assert(typeinfo(c+1),"matrix");
 
 disp("[main/comm]");
 disp(">galois");
-galois("test");
-
+try galois("test"); 
+catch disp([__error_text__,"\nNote: failure expected for octave 2.1.36"]); end
+ 
 disp("[main/signal]");
 disp(">medfilt"); assert(medfilt1([1, 2, 3, 4, 5], 3), [1.5, 2, 3, 4, 4.5]);
 b = [
@@ -86,7 +87,8 @@ if exist("jpgwrite")
   Gw(:)=fix(255*map(z,2));
   Bw(:)=fix(255*map(z,3));
   jpgwrite('test.jpg',Rw,Gw,Bw);
-  assert(stat("test.jpg").size,6423);
+  stats=stat("test.jpg");
+  assert(stats.size,6423);
   disp(">jpgread");
   [Rr,Gr,Br] = jpgread('test.jpg');
   assert([max(Rw(:)-Rr(:))<30,max(Gw(:)-Gr(:))<30,max(Bw(:)-Br(:))<30]);
@@ -125,12 +127,17 @@ disp(">[m,b]=regexp");
 [m,b]=regexp("f(.*)uck"," firetruck "); assert(b,"iretr");
 
 disp("[main/struct]");
+try
 x.a = "hello";
 disp(">getfield"); assert(getfield(x,"a"),"hello");
 disp(">setfield"); x = setfield(x,"b","world");
 y.a = "hello";
 y.b = "world";
 assert(x,y);
+catch
+disp(__error_text__);
+disp("Note: failure expected for 2.1.36");
+end
 
 disp("[main/specfun]");
 disp(">ellipj");

@@ -9,6 +9,10 @@ This program is granted to the public domain
 */
 
 #include <octave/oct.h>
+#ifndef OCTAVE_LOCAL_BUFFER
+#define OCTAVE_LOCAL_BUFFER(T,v,n) T v[n]
+#endif
+
 #include <regex.h>
 
 DEFUN_DLD(regexp,args,nargout,"\

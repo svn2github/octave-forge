@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.14  2003/03/05 15:31:53  pkienzle
+Backport to octave-2.1.36
+
 Revision 1.13  2003/02/20 23:03:59  pkienzle
 Use of "T x[n]" where n is not constant is a g++ extension so replace it with
 OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC
@@ -123,6 +126,23 @@ DLD functions for sparse support in octave
 
 #include <octave/config.h>
 
+// ***** Support for older octave versions
+#ifndef OCTAVE_LOCAL_BUFFER
+#define OCTAVE_LOCAL_BUFFER(T,v,n) T v[n]
+#endif
+
+#ifdef HAVE_SLLIST_H
+#define LIST SLList
+#define LISTSIZE length
+#define SUBSREF_STRREF
+#else
+#include <list>
+#define LIST std::list
+#define LISTSIZE size
+#define SUBSREF_STRREF &
+#endif
+// *****
+
 #include <cstdlib>
 
 #include <string>
@@ -131,7 +151,14 @@ using namespace std;
 
 class ostream;
 
+#ifdef NEED_OCTAVE_QUIT
+#define OCTAVE_QUIT do {} while (0)
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
+#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
+#define octave_throw_bad_alloc() do { jump_to_top_level(); panic_impossible(); } while (0)
+#else
 #include <octave/quit.h>
+#endif
 #include <octave/lo-utils.h>
 #include <octave/mx-base.h>
 #include <octave/str-vec.h>
@@ -201,8 +228,8 @@ public:
    octave_value transpose (void) const ;
 
    octave_value extract (int r1, int c1, int r2, int c2) const ;
-   octave_value_list subsref (const std::string& type,
-                              const std::list<octave_value_list>& idx,
+   octave_value_list subsref (const std::string SUBSREF_STRREF type,
+                              const LIST<octave_value_list>& idx,
                               int nargout);
    octave_value do_index_op ( const octave_value_list& idx, int resize_ok);
    
@@ -261,8 +288,8 @@ public:
    octave_value transpose (void) const ;
 
    octave_value extract (int r1, int c1, int r2, int c2) const ;
-   octave_value_list subsref (const std::string& type,
-                              const std::list<octave_value_list>& idx,
+   octave_value_list subsref (const std::string SUBSREF_STRREF type,
+                              const LIST<octave_value_list>& idx,
                               int nargout);
    octave_value do_index_op ( const octave_value_list& idx, int resize_ok);
 

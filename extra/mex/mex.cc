@@ -95,6 +95,10 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
   return retval;
 }
 
+#endif /* defined(HAVE_OCTAVE_20) */
+
+#ifndef OCTAVE_LOCAL_BUFFER
+#define OCTAVE_LOCAL_BUFFER(T,v,n) T v[n]
 #endif
 
 #if 0

@@ -32,7 +32,6 @@ Open Source Initiative (www.opensource.org)
 #include <string>
 
 #include <octave/config.h>
-#include <octave/quit.h>
 #include <octave/lo-utils.h>
 #include <octave/lo-specfun.h>
 #include <octave/lo-ieee.h>
@@ -55,6 +54,12 @@ Open Source Initiative (www.opensource.org)
 
 #include <octave/mx-defs.h>
 #include <octave/mx-op-defs.h>
+
+#ifdef NEED_OCTAVE_QUIT
+#define OCTAVE_QUIT do {} while (0)
+#else
+#include <octave/quit.h>
+#endif
 
 #include "galoisfield.h"
 

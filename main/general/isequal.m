@@ -27,7 +27,7 @@ function t = isequal(x,varargin)
     if isstruct(x)
       t = isstruct (y);
       for [v, k] = x
-        t = t && struct_contains (y, k) && isequal (x.(k), y.(k));
+        t = t && struct_contains (y, k) && isequal (getfield(x,k), getfield(y,k));
       endfor
       for [v,k] = y
         t = t && struct_contains (x, k);

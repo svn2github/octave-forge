@@ -1,4 +1,4 @@
-Now requires octave-2.1.43 to work correctly.  
+Tested against octave-2.1.45.  Probably requires octave-2.1.43. 
 Some functions may work with older versions of Octave.  
 Use make -k to build whatever can be built ignoring the rest.
 
@@ -6,9 +6,13 @@ Latest release notes available at:
 
 http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/main/RELEASE-NOTES?rev=HEAD&content-type=text/plain
 
-2003-02-?? for Octave 2.1.45 =================================================
+xxxx-xx-xx for Octave 2.1.36 and up ==========================================
 
-* Updates for octave 2.1.43
+* Regain support for octave 2.1.36 and up.
+
+2003-02-22 for Octave 2.1.45 =================================================
+
+* Updates for octave 2.1.45
 
 * Parallel: Light weight parallel programming added but flagged NOINSTALL.
 

@@ -36,9 +36,13 @@ and some flexibility.\n\
     for (int i = 1; i<nargin; i++) {
 
       if (args(i).is_string ()) {
+#if defined(HAVE_SLLIST_H)
+        octave_value tmp = args(0).subsref (".", args(i));
+#else
 	std::list<octave_value_list> idx;
 	idx.push_back ( octave_value_list(args(i)) );
 	octave_value tmp = args(0).subsref (".", idx);
+#endif
 
 	if (tmp.is_defined ())	  retval(i-1) = tmp;
 

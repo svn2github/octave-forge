@@ -26,6 +26,10 @@ INSTALLATION
 #include <climits>
 #include <octave/oct.h>
 #include <octave/lo-ieee.h>
+#ifdef USE_OCTAVE_NAN
+#define lo_ieee_nan_value() octave_NaN
+#endif
+
 //using namespace std;
 
 typedef unsigned long bitop_int;

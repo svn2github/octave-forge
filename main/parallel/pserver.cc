@@ -42,8 +42,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "oct-stream.h"
 #include "oct-strstrm.h"
 #include "oct-iostrm.h"
-#include "quit.h"
 #include "unwind-prot.h"
+
+#ifdef NEED_OCTAVE_QUIT
+#define OCTAVE_QUIT do {} while (0)
+#else
+#include "quit.h"
+#endif
 
 #include <stdio.h>
 #include <sys/types.h>

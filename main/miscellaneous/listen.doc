@@ -1,4 +1,4 @@
-You could talk to octave directly from other environments over the tcp/ip.
+You can talk to octave directly from other environments over the tcp/ip.
 The protocol is not sophisticated.
 
 Here is what you can send to octave: 
@@ -90,8 +90,8 @@ Composite values can be decomposed into their constituent parts.  E.g.,
 	[nr,nc]=size(x);
 	for r=1:nr, for c=1:nc, send([name,sprintf('.%d.%d',r,c)],x{r,c}); end
 
-Note that the communication is completely asynchronous.  My tcl client
-processes server responses via fileevent.  That means that responses from
+Note that the communication is completely asynchronous.  I have a tcl client
+that processes server responses via fileevent.  That means that responses from
 octave are not processed until tcl enters its event loop.
 
 To be sure that octave has processed a command I follow that command with a
@@ -115,4 +115,4 @@ That is why I'm working on a way to embed octave into tcl.  Hopefully
 it will be easy to embed in other environments as well.
 
 Paul Kienzle
-2002-10-23
+2003

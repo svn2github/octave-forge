@@ -159,22 +159,56 @@ AC_SUBST(CXXPICFLAG)
 
 dnl *******************************************************************
 
-dnl Check if F77_FUNC works with MKOCTFILE
-AC_MSG_CHECKING([for F77_FUNC])
+dnl Check for features of your version of mkoctfile.
+dnl All checks should be designed so that the default
+dnl action if the tests are not performed is to do whatever
+dnl is appropriate for the most recent version of Octave.
+
+dnl Define the following macro:
+dnl    TRY_MKOCTFILE(msg,program,action_if_true,action_if_false)
+dnl
+AC_DEFUN(TRY_MKOCTFILE,
+[AC_MSG_CHECKING($1)
 cat > conftest.cc << EOF
 #include <octave/config.h>
-
-int F77_FUNC (hello, HELLO) (const int &n);
-
+$2
 EOF
 ac_try="$MKOCTFILE -c conftest.cc"
 if AC_TRY_EVAL(ac_try) ; then
    AC_MSG_RESULT(yes)
+   $3
 else
-   dnl "-DHAVE_OCTAVE_2x -s -v" is in Makeconf.base
    AC_MSG_RESULT(no)
-   MKOCTFILE="$MKOCTFILE -DF77_FUNC=F77_FCN"
+   $4
 fi
+])
+
+dnl
+dnl Check if F77_FUNC works with MKOCTFILE
+dnl
+TRY_MKOCTFILE([for F77_FUNC],
+[int F77_FUNC (hello, HELLO) (const int &n);],,
+[MKOCTFILE="$MKOCTFILE -DF77_FUNC=F77_FCN"])
+
+dnl
+dnl Check if octave still uses SLList.h
+dnl
+TRY_MKOCTFILE([for SLList.h],[#include <octave/SLList.h>],
+[MKOCTFILE="$MKOCTFILE -DHAVE_SLLIST_H"],)
+
+dnl
+dnl Check if octave has lo_ieee_nan_value
+dnl
+TRY_MKOCTFILE([for lo_ieee_nan_value],
+[ #include <octave/lo-ieee.h>
+int test(void) { lo_ieee_nan_value(); }],,
+[MKOCTFILE="$MKOCTFILE -DUSE_OCTAVE_NAN"])
+
+dnl
+dnl Check if octave uses quit.h
+dnl
+TRY_MKOCTFILE([for quit.h],[#include <octave/quit.h>],,
+[MKOCTFILE="$MKOCTFILE -DNEED_OCTAVE_QUIT"])
 
 dnl **********************************************************
 

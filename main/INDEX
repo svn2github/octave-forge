@@ -617,7 +617,7 @@ Filtering
  deconv 
  detrend center clip
 Fourier analysis
- fft fft_wisdom
+ fft fftw_wisdom
  fft2 
  fftn 
  ifft 

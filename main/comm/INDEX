@@ -1,7 +1,15 @@
-Communications
+comm >> Communications
+Conversion
  bi2de	
  de2bi	
  vec2mat	
  randint	
  compand	
  quantiz 
+Galois Field
+ gfprimdf
+ gftuple
+Reed-Solomon Coding
+ rspoly
+ rsenco rsdeco
+ rsenco_ccsds rsdeco_ccsds

@@ -47,6 +47,9 @@ function pp = csape (x, y, cond, valc)
 
   x = x(:);
   n = length(x);
+  if n < 3
+    error("splines need at least three points"); 
+  endif
 
   transpose = (columns(y) == n);
   if (transpose) y = y'; endif
@@ -149,11 +152,15 @@ function pp = csape (x, y, cond, valc)
       udg(1) = udg(1) - h(1);
       ldg(n - 3) = ldg(n-3) - h(n - 1);
  
-    elseif (n == 4)
+    elseif (n==4)
 
       dg = [h(1) + 2 * h(2), 2 * h(2) + h(3)];
       ldg = h(2) - h(3);
       udg = h(2) - h(1);
+
+    else
+      ## XXX FIXME XXX this case falls through the cracks
+      error("what to do for not-a-knot and n==4?");
 
     endif
     g = zeros(n - 2,columns(y));

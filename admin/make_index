@@ -416,11 +416,18 @@ sub load_index { # {{{1
         } elsif (/^(\w.*?)\s*$/) {
 	    # category lines start in the left most column
             $category    = $1;
-        } elsif (/^\s+(\S.*\S)\s*=\s*(\S.*\S)\s*$/) {
+        } elsif (/^\s+(\S.*)=\s*(\S.*\S)\s*$/) {
+	    # Process "function = notes" explicit descriptions
 	    $function = $1;
 	    $description = $2;
 
-	    # expand all $id in the description
+	    # We used ...(\S.*)=... rather than (\S.*\S)\s*= to allow for
+	    # single character function names, but that means we may have
+	    # to trim some extra spaces of the function name.  Single
+	    # character descriptions get the treatment they deserve.
+	    $function =~ s/\s+$//;
+
+	    # expand all $var in the description
 	    my @parts = split('\$', $description);
 	    foreach my $i ( 1 .. $#parts ) {
 		$parts[$i] =~ /^(\w+)(\W.*)$/ or $parts[$i] =~ /^(\w+)()$/;
@@ -428,6 +435,7 @@ sub load_index { # {{{1
 	    }
 	    $description = join("",@parts);
 
+	    # record the function->description mapping
 	    $index_notes{$function} = $description;
 	    die "Function $function (line $.) has no category" unless $category;
 	    push @{$index_by_TB_cat{$toolbox}{$category}}, $function;

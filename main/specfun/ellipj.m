@@ -14,15 +14,12 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## Compute the Jacobi elliptic functions sn(u|m), cn(u|m) and dn(u|m)
-## for argument u and parameter m.
-##
 ## usage: [sn,cn,dn] = ellipj(u,m[,tol])
 ##
-## u and m must be real arrays of same size.  Either or both can be
-## scalars. m is restricted to 0 <= m <= 1.
+## Compute the Jacobi elliptic functions sn(u|m), cn(u|m) and dn(u|m)
+## for complex argument u and parameter 0 <= m <= 1.
 ##
-## WARNING: the approximation blows up for abs(U)>20 near m=1.
+## WARNING: the approximation blows up for abs(u)>20 near m=1.
 ##
 ## tol is accepted for compatibility, but ignored
 ##
@@ -32,104 +29,126 @@
 ##
 ## Example
 ##    m = linspace(0,1,200); u=linspace(-10,10,200);
-##    M = ones(length(u),1) * m; U = u' * ones(1,length(m));
+##    [U,M] = meshgrid(u,m);
 ##    [sn, cn, dn] = ellipj(U,M);
 ##    imagesc(sn);
 ##
 ## See also: ellipke
 
 ## Author: David Billinghurst <David.Billinghurst@riotinto.com>
-## Created: 31 January 2001
-## 2001-02-01 Paul Kienzle
+## 2001-01-31 David Billinghurst <David.Billinghusrt@riotinto.com>
+##   * initial revision
+## 2001-02-01 Paul Kienzle <pkienzle@users.sf.net>
 ##   * vectorized
 ##   * added demos
 ##   * included function name in error messages
+## 2001-12-15 Leopoldo Cerbaro <redbliss@libero.it>
+##   * support for complex u
 
 function [sn, cn, dn] = ellipj (u, m)
 
   if nargin < 2 || nargin > 3 
     usage("[sn, cn, dn] = ellipj (u, m)"); 
   endif
-  if size(u,1) != size(m,1) || size(u,2) != size(m,2), 
-    error("ellipj must have same shape for u and m");
+  [err, u, m] = common_size(u,m);
+  if any(size(m) != size(u))
+    error("ellipj m and u must have the same shape");
   endif
-
-  sn=cn=dn=phi=zeros(size(u));
-  m = m(:); u=u(:);
-
-  if !all(isreal(m) & isreal(u))
-    error("ellipj must have real u and m");
-  endif
-  if any(m < 0.0 | m > 1.0), 
+  if is_complex(m) || any(m(:) < 0.0 | m(:) > 1.0)
     error("ellipj must have m in the range [0,1]");
+  endif
+
+  sn=cn=dn=zeros(size(u));
+  if (is_complex(u))
+    m1 = 1.0-m;
+
+    ## u is pure imaginary: Jacoby imag. transf.
+    idx = (real(u) == 0. & imag(u) != 0.);
+    [ss1,cc1,dd1] = ellipj( imag(u(idx)), m1(idx));
+    sn(idx) = 1i * ss1./cc1; 
+    cn(idx) = 1./cc1;
+    dn(idx) = dd1./cc1;
+    
+    ## u is pure real
+    idx = (imag(u) == 0.);
+    [ss,cc,dd] = ellipj( real(u(idx)), m(idx));
+    sn(idx) = ss;
+    cn(idx) = cc;
+    dn(idx) = dd;
+
+    ## u is generic complex
+    idx = (real(u) != 0. & imag(u) != 0.);
+    [ss1,cc1,dd1] = ellipj( imag(u(idx)), m1(idx));
+    [ss,cc,dd] = ellipj( real(u(idx)), m(idx));
+    ddd = cc1.^2 + m(idx).*(ss.^2).*(ss1.^2);
+    sn(idx) = (ss.*dd1 + 1i*cc.*dd.*ss1.*cc1)./ddd; 
+    cn(idx) = (cc.*cc1 - 1i*ss.*dd.*ss1.*dd1)./ddd;
+    dn(idx) = (dd.*cc1.*dd1 - 1i*m(idx).*ss.*cc.*ss1)./ddd;
+    return
   endif
 
   lo = sqrt(eps);
   hi = 1-sqrt(eps);
 
-  dfi = do_fortran_indexing;
-  unwind_protect
-    do_fortran_indexing = 1;
-  
-    ## For small m, ( Abramowitz and Stegun, Section 16.13 )
-    idx = find(m < lo);
-    if !isempty(idx)
-      uidx = u(idx);
-      midx = m(idx);
-      sin_u = sin(uidx);
-      cos_u = cos(uidx);
-      t = 0.25 * midx .* (uidx - sin_u.*cos_u);
-      sn(idx) = sin_u - t.*cos_u;
-      cn(idx) = cos_u + t.*sin_u;
-      dn(idx) = 1.0 - 0.5*midx.*sin_u.*sin_u;
-    endif
+  ## For small m, ( Abramowitz and Stegun, Section 16.13 )
+  idx = ( m < lo );
+  if any(idx(:))
+    uidx = u(idx)(:);
+    midx = m(idx)(:);
+    sin_u = sin(uidx);
+    cos_u = cos(uidx);
+    t = 0.25 * midx .* (uidx - sin_u.*cos_u);
+    sn(idx) = sin_u - t.*cos_u;
+    cn(idx) = cos_u + t.*sin_u;
+    dn(idx) = 1.0 - 0.5*midx.*sin_u.*sin_u;
+  endif
     
-    ## For m1 = (1-m) small ( Abramowitz and Stegun, Section 16.15 )
-    idx = find( m >= hi );
-    if !isempty(idx)
-      uidx = u(idx);
-      sinh_u = sinh(uidx);
-      cosh_u = cosh(uidx);
-      tanh_u = tanh(uidx);
-      sech_u = 1.0./cosh_u;
-      sechm1over4 = 0.25 * (1.0 - m(idx)) ./ cosh_u;
-      sinhcosh = sinh_u.*cosh_u;
-      sn(idx) = tanh_u + sechm1over4 .* (sinhcosh-uidx) .* sech_u;
-      cn(idx) = sech_u - sechm1over4 .* (sinhcosh-uidx) .* tanh_u;
-      dn(idx) = sech_u + sechm1over4 .* (sinhcosh+uidx) .* tanh_u;
-    endif
+  ## For m1 = (1-m) small ( Abramowitz and Stegun, Section 16.15 )
+  idx = ( m > hi );
+  if any(idx(:))
+    uidx = u(idx)(:);
+    midx = m(idx)(:);
+    sinh_u = sinh(uidx);
+    cosh_u = cosh(uidx);
+    tanh_u = tanh(uidx);
+    sech_u = 1.0./cosh_u;
+    sechm1over4 = 0.25 * (1.0 - midx) ./ cosh_u;
+    sinhcosh = sinh_u.*cosh_u;
+    sn(idx) = tanh_u + sechm1over4 .* (sinhcosh-uidx) .* sech_u;
+    cn(idx) = sech_u - sechm1over4 .* (sinhcosh-uidx) .* tanh_u;
+    dn(idx) = sech_u + sechm1over4 .* (sinhcosh+uidx) .* tanh_u;
+  endif
     
-    ## Arithmetic-Geometric Mean (AGM) algorithm
-    ## ( Abramowitz and Stegun, Section 16.4 )
-    idx = find ( lo <= m & m < hi );
-    if !isempty(idx)
-      Nmax = 16;
-      c = a = zeros(length(idx),Nmax);
-      a(:,1) = ones(length(idx),1);
-      b = sqrt(1.0 - m(idx));
-      c(:,1) = sqrt(m(idx));
-      for n = 2:Nmax
-      	a(:,n) = (a(:,n-1) + b) / 2.0;
-      	c(:,n) = (a(:,n-1) - b) / 2.0;
-      	b = sqrt ( a(:,n-1) .* b);
-      	if all (c(:,n)./a(:,n) < eps), break; endif
-      endfor
-      if n >= Nmax
-      	error("ellipj: Not enough workspace"); 
-      endif
-      phi = 2.^(n-1) * a(:,n) .* u(idx);
-      for j=n:-1:2
-      	t = phi;
-      	phi = ( asin ( (c(:,j)./a(:,j)) .* sin(phi)) + phi ) / 2;
-      endfor
+  ## Arithmetic-Geometric Mean (AGM) algorithm
+  ## ( Abramowitz and Stegun, Section 16.4 )
+  idx = ( lo <= m & m <= hi );
+  if any(idx(:))
+    uidx = u(idx)(:);
+    midx = m(idx)(:);
+    Nmax = 16;
+    c = a = zeros(sum(idx(:)),Nmax);
+    a(:,1) = ones(sum(idx(:)),1);
+    b = sqrt(1.0 - midx);
+    c(:,1) = sqrt(midx);
+    for n = 2:Nmax
+      a(:,n) = (a(:,n-1) + b) / 2.0;
+      c(:,n) = (a(:,n-1) - b) / 2.0;
+      b = sqrt ( a(:,n-1) .* b);
+      if all (c(:,n)./a(:,n) < eps), break; endif
+    endfor
+    if n >= Nmax
+      error("ellipj: Not enough workspace"); 
+    endif
+    phi = 2.^(n-1) * a(:,n) .* uidx;
+    for j=n:-1:2
+      t = phi;
+      phi = ( asin ( (c(:,j)./a(:,j)) .* sin(phi)) + phi ) / 2;
+    endfor
       
-      sn(idx) = sin(phi);
-      cn(idx) = cos(phi);
-      dn(idx) = cos(phi)./cos(t-phi);
-    endif
-  unwind_protect_cleanup
-    do_fortran_indexing = dfi;
-  end_unwind_protect
+    sn(idx) = sin(phi);
+    cn(idx) = cos(phi);
+    dn(idx) = cos(phi)./cos(t-phi);
+  endif
 endfunction
 
 %!demo

@@ -98,6 +98,7 @@ extern "C" {
   int mxIsChar (const mxArray* ptr);
 #define mxIsString mxIsChar
   int mxIsSparse (const mxArray* ptr);
+  int mxIsStruct (const mxArray* ptr);
   int mxIsFull (const mxArray* ptr);
   int mxIsDouble (const mxArray* ptr);
   int mxIsNumeric (const mxArray* ptr);
@@ -106,31 +107,34 @@ extern "C" {
   int mxGetM (const mxArray* ptr);
   int mxGetN (const mxArray* ptr);
   int mxGetNumberOfDimensions (const mxArray* ptr);
+  int mxGetNumberOfElements (const mxArray* ptr);
   double* mxGetPr (const mxArray* ptr);
 
-  /* structure support (prototypes only at this point?) */
+  /* structure support */
   int mxIsStruct (const mxArray* ptr);
-  mxArray* mxCreateStructArray (int num_dims, const int * dims, 
-				int numkeys, const char **keys);
-  mxArray* mxCreateStructMatrix (int rows, int cols,
-				 int num_keys, const char **keys);
   mxArray* mxGetField(const mxArray* ptr, int index, const char *key);
-  mxArray* mxGetFieldByNumber(const mxArray* ptr, int index, int key_num);
+  void mxSetField(mxArray* ptr, int index, const char *key, mxArray* val);
+  int mxGetNumberOfFields(const mxArray* ptr);
   const char* mxGetFieldNameByNumber(const mxArray* ptr, int key_num);
   int mxGetFieldNumber(const mxArray* ptr, const char *key);
-  int mxGetNumberOfFields(const mxArray* ptr);
-  void mxSetField(mxArray* ptr, int index, const char *key, mxArray* val);
+  mxArray* mxGetFieldByNumber(const mxArray* ptr, int index, int key_num);
   void mxSetFieldByNumber(mxArray* ptr, int index, int key_num, mxArray* val);
+  mxArray* mxCreateStructMatrix (int rows, int cols,
+				 int num_keys, const char **keys);
+#if 0
+  mxArray* mxCreateStructArray (int num_dims, const int * dims, 
+				int numkeys, const char **keys);
+#endif
 
+#if 0
   /* The following cannot be supported in Octave without incurring
-   * the large runtime penalty of copying arrays to/from matlab format
-   
+   * the large runtime penalty of copying arrays to/from matlab format */
    double* mxGetPi (const mxArray* ptr);
    void mxSetM (mxArray* ptr, const int M);
    void mxSetN (mxArray* ptr, const int N);
    void mxSetPr (mxArray* ptr, double* pr);
    void mxSetPi (mxArray* ptr, double* pi);
-  */
+#endif
   
   
   

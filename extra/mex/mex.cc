@@ -24,6 +24,7 @@
 #include <cfloat>
 #include <iomanip>
 #include <set>
+#include <string>
 typedef void * Pix;
 typedef std::set<Pix> MemSet;
 
@@ -43,6 +44,8 @@ extern "C" {
 #include <octave/parse.h>
 #include <octave/toplev.h>
 #include <octave/variables.h>
+#include <octave/oct-map.h>
+#include <octave/str-vec.h>
 
 // ================ Octave 2.0 support ==================
 #if defined(HAVE_OCTAVE_20)
@@ -111,99 +114,13 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 #define TRACEFN do { } while(0)
 #endif
 
-/* ============== mxArray data type ============= */
-// Class mxArray is not much more than a struct for keeping together
-// dimensions and data.  It doesn't even ensure consistency between
-// the dimensions and the data.  Unfortunately you can't do better
-// than this without restricting the operations available in Matlab
-// for directly manipulating its mxArray type.
-
-typedef unsigned short mxChar;
-const int mxMAXNAM=64;
-
-class mxArray {
-public:
-  ~mxArray () { }
-
-  int rows() const { return nr; }
-  int columns() const { return nc; }
-  void rows(int r) { nr = r; }
-  void columns(int c) { nc = c; }
-  int dims() const { return 2; }
-
-  double *imag() const { return pi; }
-  double *real() const { return pr; }
-  void imag(double *p) { pi = p; }
-  void real(double *p) { pr = p; }
-
-  bool is_empty() const { return nr==0 || nc==0; }
-  bool is_numeric() const { return !isstr && (pr != NULL || nr==0 || nc==0); }
-  bool is_complex() const { return pi != NULL; }
-  bool is_sparse() const { return false; }
-  bool is_struct() const { return pmap != NULL; }
-
-  bool is_string() const { return isstr; }
-  void is_string(bool set) { isstr = set; }
-
-  const char* name() const { return aname; }
-  void name(const char *nm) {
-    strncpy(aname,nm,mxMAXNAM);
-    aname[mxMAXNAM]='\0';
-  }
-
-  octave_value as_octave_value() const;
-
-private:
-  int nr, nc;
-  double *pr, *pi;
-  /* XXX FIXME XXX need to have a typeid here instead of complex logic on
-   * isstr, pmap, pr, pi, etc. */
-  Octave_map *pmap;
-  bool isstr;
-  char aname[mxMAXNAM+1];
-} ;
-
-octave_value mxArray::as_octave_value() const
-{
-  octave_value ret;
-  if (isstr)
-    {
-      charMatrix chm(nr,nc);
-      char *pchm = chm.fortran_vec();
-      for (int i=0; i < nr*nc; i++)
-	pchm[i] = NINT(pr[i]);
-      ret = octave_value(chm, true);
-    }
-//  else if (pmap)
-//    {
-//      ret = octave_value(*pmap);
-//    }
-  else if (pi)
-    {
-      ComplexMatrix cm(nr, nc);
-      Complex *pcm = cm.fortran_vec();
-      for (int i=0; i < nr*nc; i++) pcm[i] = Complex(pr[i], pi[i]);
-      ret = cm;
-    }
-  else if (pr)
-    {
-      Matrix m(nr,nc);
-      double *pm = m.fortran_vec();
-      memcpy(pm, pr, nr*nc*sizeof(double));
-      ret = m;
-    }
-  else
-    ret = Matrix(0,0);
-
-  return ret;
-}
-
 /* ========== mex file context ============= */
 // Class mex keeps track of all memory allocated and frees anything
 // not explicitly marked persistent when the it is destroyed.  It also
 // maintains the setjump/longjump buffer required for non-local exit
 // from the mex file, and any other state local to this instance of
 // the mex function invocation.
+class mxArray;
 
 class mex {
 
@@ -237,6 +154,10 @@ public:
   // freed on exit unless marked as persistent
   mxArray *make_value(const octave_value&);
 
+  // make a new structure value and initialize with empty matrices
+  // XXX FIXME XXX does this leak memory?  Is it persistent?
+  mxArray *make_value(int nr, int nc, const string_vector& keys);
+
   // free an array and its contents
   void free_value(mxArray* ptr);
 
@@ -266,7 +187,8 @@ private:
 
 } ;
 
-
+// Current context
+mex* __mex = NULL;
 
 
 // free all unmarked pointers obtained from malloc and calloc
@@ -370,19 +292,193 @@ void mex::free(Pix ptr)
 }
 
 
+/* ============== mxArray data type ============= */
+// Class mxArray is not much more than a struct for keeping together
+// dimensions and data.  It doesn't even ensure consistency between
+// the dimensions and the data.  Unfortunately you can't do better
+// than this without restricting the operations available in Matlab
+// for directly manipulating its mxArray type.
+
+typedef unsigned short mxChar;
+const int mxMAXNAM=64;
+
+class mxArray {
+public:
+  mxArray() {
+    nr = nc = -1;
+    pr = pi = NULL;
+    keys = NULL;
+    pmap = NULL;
+    isstr = false;
+    aname[0] = '\0';
+  }
+  ~mxArray () { 
+    if (pmap) {
+      // XXX FIXME XXX why don't string_vectors work?
+      for (int i=0; i<pmap->length(); i++) delete [] keys[i];
+      delete [] keys;
+    }
+  }
+
+  octave_value as_octave_value() const;
+
+  int rows() const { return nr; }
+  int columns() const { return nc; }
+  void rows(int r) { nr = r; }
+  void columns(int c) { nc = c; }
+  int dims() const { return 2; }
+
+  double *imag() const { return pi; }
+  double *real() const { return pr; }
+  void imag(double *p) { pi = p; }
+  void real(double *p) { pr = p; }
+
+  bool is_empty() const { return nr==0 || nc==0; }
+  bool is_numeric() const { return !isstr && (pr != NULL || nr==0 || nc==0); }
+  bool is_complex() const { return pi != NULL; }
+  bool is_sparse() const { return false; }
+  bool is_struct() const { return pmap != NULL; }
+
+  bool is_string() const { return isstr; }
+  void is_string(bool set) { isstr = set; }
+
+  const char* name() const { return aname; }
+  void name(const char *nm) {
+    strncpy(aname,nm,mxMAXNAM);
+    aname[mxMAXNAM]='\0';
+  }
+
+  // Structure support functions.
+  /* Matlab uses a fixed field order (the order in which the fields
+     were added?), but Octave uses an unordered hash for structs.  We
+     can emulate a fixed field order using pmap->keys(), which returns
+     a string_vector of key names, but these keys will not be in the
+     same order as the keys given in mxCreateStruct*.  Within the
+     creating function, we can populate the key name vector in the
+     order given, so the only problem will be those functions which
+     assume the key order is maintained between calls from Matlab.
+     Unfortunately, these might exist and I can't detect them :-(
+  */
+  // Return the map value
+  Octave_map *map(void) const { return pmap; }
+  // New structure with the given presumed field order (CreateStruct call)
+  void map(Octave_map *p, const string_vector& mapkeys) {
+    pmap = p;
+    keys = mapkeys.c_str_vec();
+  }
+  // New structure with unknown field order (passed in from Octave)
+  void map(Octave_map *p) { 
+    pmap = p;
+    if (p) keys = p->keys().c_str_vec();
+  }
+  // Get field given field name
+  mxArray* field(const std::string& key, const int index) const {
+    if (pmap && pmap->contains(key))
+      return __mex->make_value((*pmap)[key](index));
+    else
+      return NULL;
+  }
+  // Set field given field name
+  void field(const std::string& key, const int index, mxArray* value) {
+    if (pmap) (*pmap)[key](index) = value->as_octave_value();
+  }
+  // Return number of fields in structure
+  int num_keys(void) const { return pmap ? pmap->length() : 0; } 
+  // Return field name from field number
+  const std::string key(const int key_num) const {
+    if (key_num >= 0 && key_num < pmap->length())
+      return keys[key_num];
+    else
+      return NULL;
+  }
+  // Return field number from field name
+  int key(const std::string &key_name) const {
+    for (int i=0; i<pmap->length(); i++) {
+      if (key_name == std::string(keys[i])) return i;
+    }
+    return -1;
+  }
+  // Get field using field number
+  mxArray* field(const int key_num, const int index) const {
+    if (key_num >= 0 && key_num < pmap->length())
+      return field(keys[key_num], index);
+    else
+      return NULL;
+  }
+  // Set field using field number
+  void field(const int key_num, const int index , mxArray* value) {
+    if (key_num >= 0 && key_num < pmap->length())
+      field(keys[key_num], index, value);
+  }
+
+private:
+  int nr, nc;
+  double *pr, *pi;
+  /* XXX FIXME XXX need to have a typeid here instead of complex logic on
+   * isstr, pmap, pr, pi, etc. */
+  Octave_map *pmap;
+  // string_vector keys;
+  char **keys;
+  bool isstr;
+  char aname[mxMAXNAM+1];
+} ;
+
+octave_value mxArray::as_octave_value() const
+{
+  octave_value ret;
+  if (isstr)
+    {
+      charMatrix chm(nr,nc);
+      char *pchm = chm.fortran_vec();
+      for (int i=0; i < nr*nc; i++)
+	pchm[i] = NINT(pr[i]);
+      ret = octave_value(chm, true);
+    }
+  else if (pmap)
+    {
+      ret = octave_value(*pmap);
+    }
+  else if (pi)
+    {
+      ComplexMatrix cm(nr, nc);
+      Complex *pcm = cm.fortran_vec();
+      for (int i=0; i < nr*nc; i++) pcm[i] = Complex(pr[i], pi[i]);
+      ret = cm;
+    }
+  else if (pr)
+    {
+      Matrix m(nr,nc);
+      double *pm = m.fortran_vec();
+      memcpy(pm, pr, nr*nc*sizeof(double));
+      ret = m;
+    }
+  else
+    ret = Matrix(0,0);
+
+  return ret;
+}
+
+
+// ====================== mex/mxArray interface ==================
+
 // make a new array value and initialize from an octave value; it will be
 // freed on exit unless marked as persistent
 mxArray* mex::make_value(const octave_value &ov)
 {
   int nr=-1, nc=-1;
   double *pr = NULL, *pi = NULL;
+  Octave_map *pmap = NULL;
 
   if (ov.is_numeric_type() || ov.is_string())
     {
       nr = ov.rows();
       nc = ov.columns();
     }
-  if (nr > 0 && nc > 0)
+  if (ov.is_map())
+    {
+      pmap = new Octave_map(ov.map_value());
+    }
+  else if (nr > 0 && nc > 0)
     {
       if (ov.is_string())
 	{
@@ -390,12 +486,6 @@ mxArray* mex::make_value(const octave_value &ov)
 	  const Matrix m(ov.matrix_value(1));
 	  pr = (double *)malloc(nr*nc*sizeof(double));
 	  memcpy(pr, m.data(), nr*nc*sizeof(double));
-	}
-      else if (ov.is_map())
-	{
-	  // XXX FIXME XXX - okay, lets not do a full mex implementation
-	  // just yet.
-	  assert(0==1);
 	}
       else if (ov.is_complex_type())
 	{
@@ -424,6 +514,7 @@ mxArray* mex::make_value(const octave_value &ov)
   value->is_string(ov.is_string());
   value->real(pr);
   value->imag(pi);
+  value->map(pmap);
   value->rows(nr);
   value->columns(nc);
   value->name("");
@@ -449,6 +540,24 @@ mxArray *mex::make_value(int nr, int nc, int cmplx)
   return value;
 }
 
+// make a new structure value and initialize with empty matrices
+// XXX FIXME XXX does this leak memory?  Is it persistent?
+mxArray *mex::make_value(int nr, int nc, const string_vector& keys)
+{
+  if (keys.length() == 0) return NULL;
+
+  octave_value_list empty(nr*nc,octave_value());
+  Octave_map *pmap = new Octave_map(keys[0],empty);
+  for (int i=1; i < keys.length(); i++) pmap->assign(keys[i],empty);
+
+  mxArray *value = (mxArray*)malloc(sizeof(mxArray));
+  value->rows(nr);
+  value->columns(nc);
+  value->map(pmap,keys);
+
+  return value;
+}
+
 // free an array and its contents
 void mex::free_value(mxArray* ptr)
 {
@@ -467,8 +576,6 @@ void mex::persistent(mxArray* ptr)
 
 
 /* ========== Octave interface to mex files ============ */
-
-mex* __mex = NULL;
 
 extern "C" {
   void F77_FUNC(mexfunction,MEXFUNCTION)
@@ -679,6 +786,7 @@ extern "C" {
   int mxGetM (const mxArray* ptr) { return ptr->rows(); }
   int mxGetN (const mxArray* ptr) { return ptr->columns(); }
   int mxGetNumberOfDimensions (const mxArray* ptr) { return ptr->dims(); }
+  int mxGetNumberOfElements (const mxArray* ptr) { return ptr->rows()*ptr->columns(); }
   void mxSetM (mxArray* ptr, const int M) { ptr->rows(M); }
   void mxSetN (mxArray* ptr, const int N) { ptr->columns(N); }
   void mxSetPr (mxArray* ptr, Pix pr) { ptr->real((double *)pr); }
@@ -824,6 +932,40 @@ extern "C" {
       ptr->name(nm);
     }
 
+  mxArray *mxCreateStructMatrix(int nr, int nc, int num_keys, 
+				const char **keys)
+  {
+    const string_vector ordered_keys(keys,num_keys);
+    mxArray *m = __mex->make_value(nr, nc, ordered_keys);
+    return m;
+  }
+  mxArray *mxGetField(const mxArray *ptr, int index, const char *key)
+  {
+    return ptr->field(key, index);
+  }
+  void mxSetField(mxArray *ptr, int index, const char *key, mxArray *val)
+  {
+    ptr->field(key,index,val);
+  }
+  int mxGetNumberOfFields(const mxArray* ptr) { return ptr->num_keys(); }
+  int mxIsStruct(const mxArray* ptr) { return ptr->is_struct(); }
+  const char* mxGetFieldNameByNumber(const mxArray* ptr, int key_num) 
+  {
+    return ptr->key(key_num).c_str();
+  }
+  int mxGetFieldNumber(const mxArray* ptr, const char *key)
+  {
+    return ptr->key(key);
+  }
+  mxArray* mxGetFieldByNumber(const mxArray* ptr, int index, int key_num)
+  {
+    return ptr->field(key_num,index);
+  }
+  void mxSetFieldByNumber(mxArray* ptr, int index, int key_num, mxArray* val)
+  {
+    return ptr->field(key_num,index,val);
+  }
+  
 } ;
 
 /* ============ Fortran interface to mex functions ============== */

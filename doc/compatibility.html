@@ -29,9 +29,8 @@ Be sure you have a recent development version of octave and install
 <ul>
 
 <li>Q. Do load and save work for structures?
-<br>A. Yes for some file formats.  Use patch in octave-forge for structure
-   support in more file formats. (Don't know the status of this anymore
-   as of 2004-02-11.)
+<br>A. Versions of octave after 2.1.53 support loading and saving of
+   structures in all of its file formats.
    
 <li>Q. Does octave support 'end' indexing?
 <br>A. Yes, for sufficiently new versions of octave.  For older versions,
@@ -69,7 +68,12 @@ Be sure you have a recent development version of octave and install
 <br>A. Get a recent version of octave.
 
 </ul>
-<h2>Types</h2>
+<>Q. [a{:}] = ...
+<br>A. Octave can not yet use this construct to define multiple output
+   arguments. Use "[a{1},a{2}] =" instead. It is expected that this will be
+   fixed in a future release.
+
+h2>Types</h2>
 <ul>
 
 <li>Q. Does Octave support sparse matrices?

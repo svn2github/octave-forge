@@ -31,9 +31,8 @@ else
     dnl Check if octave_function(void) fails
     TRY_MKOCTFILE([for octave_function(void)],
                   [#include <octave/ov-fcn.h>
-		  class myfun:octave_function { myfun():octave_function(){} };] 
-		  [],
-                  [MISCDEFS="$MISCDEFS -DOCTAVE_FUNCTION_VOID_FAILS"])
+		  class myfun:octave_function {myfun():octave_function(){}};], 
+                  [],[MISCDEFS="$MISCDEFS -DOCTAVE_FUNCTION_VOID_FAILS"])
 
     dnl Check for term.h
     case "$canonical_host_type" in

@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.12  2003/01/04 16:42:51  aadler
+# mods for SGI compiler (from pkienzle)
+#
 # Revision 1.11  2003/01/03 05:49:20  aadler
 # mods to support 2.1.42
 #
@@ -180,9 +183,9 @@ S_INC=   -I$(SUPERLU)/SRC/ -I$(SUPERLU)/CBLAS
 # 2. we need to override USER_ABORT(msg), USER_MALLOC(size)
 #         and USER_FREE(addr) to provide our own implemetations
 SUPERLU_DEFS = -DAdd_  \
-               -D"USER_MALLOC(size)=oct_sparse_malloc(size)" \
-               -D"USER_ABORT(msg)=oct_sparse_fatalerr(msg)" \
-               -D"USER_FREE(addr)=oct_sparse_free(addr)"
+               -D"USER_MALLOC=oct_sparse_malloc" \
+               -D"USER_ABORT=oct_sparse_fatalerr" \
+               -D"USER_FREE=oct_sparse_free"
 
 OCTOBJ= sparse_ops.o make_sparse.o sparse_full.o sparse_inv.o \
         complex_sparse_ops.o

@@ -19,6 +19,8 @@
 ## - Add option treatment stuff
 ## - Allow non-vector optimized argument
 ## - Add help text from cg_min.
+## - 2003/01 Reset H when q~0 (suggested by Michael Creel
+##           <michael.creel@uab.es>)
 
 ## [x0,v,nev] = bfgs (f,args,ctl) - Variable metric minimization
 ##
@@ -53,7 +55,7 @@
 ##                   f > Deltaf/max(|f(x)|,1)
 ##
 ##                  where Deltaf is the decrease in f 
-##                  observed in the last iteration.           <10*sqrt(eps)>
+##                  observed in the last iteration.                 <10*eps>
 ##
 ## utol, u N/A    : Stop search when updates are small, as tested by
 ##
@@ -64,7 +66,7 @@
 ##
 ## dtol, d N/A    : Stop search when derivative is small, as tested by
 ## 
-##                   d > norm (dv)                                     <1e7>
+##                   d > norm (dv)                                    <1e-6>
 ##
 ## crit, c ctl(1) : Set one of the stopping criterion ftol=tol (c=1),
 ##                  utol=tol (c=2) or dtol=tol (c=3)                     <1>
@@ -79,13 +81,14 @@
 function [x,fmin,nev] = bfgs (func, args, ctl)
 
   crit = 0;			# Default control variables
-  ftol  = 10*sqrt (eps);
+  ftol = 10*eps;
   utol = tol = nan;
   dtol = 1e-6;
   narg = 1;
   maxev = inf;
   step = nan;
   diff = 0;			# 0 : numerical. 1 : separate func. 2 : same
+  log = 0;
 				# func
 
   if nargin >= 3,			# Read arguments
@@ -102,7 +105,8 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
       if struct_contains (ctl, "maxev")  , maxev   = ctl.maxev  ; end
       if struct_contains (ctl, "isz")    , step    = ctl.isz    ; end
       if struct_contains (ctl, "df")     , dfunc   = ctl.df     ; diff = 1;
-      elseif struct_contains (ctl, "jac"), diff    = 2          ;  end
+      elseif struct_contains (ctl, "jac"), diff    = 2          ; end
+      if struct_contains (ctl, "log")    , log     = 1          ; end
     else 
       error ("The 'ctl' argument should be either a vector or a struct");
     end
@@ -126,13 +130,13 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
 
   if diff == 0
     g = bs_gradient (func, args, narg)';
-    if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
+    if g'*g <= dtol^2, nev(1)=1; fmin = leval (func, args); break; end
   elseif diff == 1
     g = leval (dfunc, args)(:);
-    if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
+    if g'*g <= dtol^2, nev(1)=1; fmin = leval (func, args); break; end
   elseif diff == 2
     [fmin, g] = leval (func, args); g = g(:);
-    if norm(g) <= dtol, break; end
+    if g'*g <= dtol^2, break; end
   end
 
 
@@ -141,13 +145,13 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
   while 1			# Termination is tested when needed inside
 				# the loop
     d = -H*g;
-    [min,fmin,nev2] = line_min (func, reshape (d,sz), args, narg);
+    [amin,fmin,nev2] = line_min (func, reshape (d,sz), args, narg);
     nev(1) += nev2;
-    p = min*d;
+    p = amin*d;
     x += reshape (p,sz);
 
     if (!isnan(ftol) && (abs (fmin - flast)/max(1,abs (flast)) < ftol)) \
-	  || (!isnan(utol) && (norm (p) / max (1,norm (x(:)))) < utol) \
+	  || (!isnan(utol) && ((p'*p) / max (1,x(:)'*x(:))) < utol^2) \
 	  || nev(1) > maxev,
       break;
     end
@@ -167,8 +171,16 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
     q = g_new-g;
     g = g_new;
 
-    if (norm(g) <= dtol) || abs (q'*p) < 1e-7, break; end
+    ## Suggestion by Michael Creel <michael.creel@uab.es>
+    ## If the gradient doesn't change in the last iteration, then q==0, but
+    ## we don't want to stop, since convergence isn't reached yet.
 
-    H += (1+(q'*H*q)/(q'*p))*((p*p')/(q'*p))-((p*q'*H+H*q*p')/(q'*p));
+    if q'*q < eps		# reset Hessian if necessary
+      H = eye(rows(x));
+    else
+      if (g'*g <= dtol^2) || abs (q'*p) < 1e-7, break; end
+
+      H += (1+(q'*H*q)/(q'*p))*((p*p')/(q'*p))-((p*q'*H+H*q*p')/(q'*p));
+    end
   endwhile
 endfunction

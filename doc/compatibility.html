@@ -90,8 +90,36 @@ compatible way.  See the "porting" section of the octave FAQ:
 <tr><td>   dbstep    <td>-> <td>dbg_next
 <tr><td>   dbstatus  <td>-> <td>dbg_list
 </table>
-</ul>
 
+<li>Q. assignin
+<br>A.  It should be possible to write assignin('base',n,V) as a .cc file
+by adding or modifying the variable in top_level_sym_tab.  The alternative
+is to work with global variables:
+<code><pre>
+	eval(['global ', n, '; ', n, '=V;']);
+</pre></code>
+Be sure that in the top level context you do:
+<code><pre>
+	eval(['global ', n, ';']);
+</pre></code>
+<p>
+
+There is no way to write assignin('caller',...) without modifying the octave
+interpreter.  To get the effect of assignin('caller',...), you could write
+your function so that it returns a structure and expand the structure using:
+<code><pre>
+        for [key,val] = my_fun(...)
+            eval([key "=val;"]);
+        end
+</pre></code>
+Or you could write my_fun as a script (not a function!!)  which expects its
+"parameters" to be in particular variables before it is invoked.  You have
+to be a lot more careful with your variables in the my_fun script, though,
+since they might collide with those in the "caller".<p>
+And again, you could use global variables much like you would for the
+global context.
+
+</ul>
 <h2>Types</h2>
 <ul>
 <li>Q. Does Octave support sparse matrices?
@@ -174,6 +202,11 @@ compatible way.  See the "porting" section of the octave FAQ:
 <h2>Toolboxes</h2>
 
 <ul>
+<li>Q. simulink
+<br>A. Doesn't exist.  Search for simulink in the 
+<a href=http://www.octave.org/octave-lists/archive/index.html">octave archives</a>
+for suggested alternatives.
+
 <li>Q. Is there an optimization tool box?
 <br>A. Use octave-forge.  This is incomplete.  If you need more see
    Joao's summary of the octave lists.
@@ -237,15 +270,15 @@ compatible way.  See the "porting" section of the octave FAQ:
 <br>A. Ask pkienzle@users.sf.net to post the work he and Ross Lippert did
    on this.
 
-<li>Q. Does eig solve the generalized eigenvalue problem?
-<br>A. Use eiggen.m on octave-forge
+<li>Q. eig(A,B)
+<br>A. qz(A,B)
 
 <li>Q. Can parameters be passed through the call to fsolve() to the
     user-supplied function?
 <br>A. use FIXES/fsolve.cc on octave-forge.
 
 <li>Q. economy QR factorization is slow
-<br>A. ask pkienzle to post his patch
+<br>A. search bug-octave for a patch
 
 <li>Q. exist(a,'var') fails.
 <br>A. octave-forge exist-type patch.
@@ -275,7 +308,7 @@ compatible way.  See the "porting" section of the octave FAQ:
 <br>A. http://www.mathworks.com/support/ftp/linalgv5.shtml
 
 <li>Q. gammaln
-<br>A. lgamma.
+<br>A. lgamma
 
 <li>Q. inline
 <br>A. The usual case, e.g., feval(inline('x^2'), 3) == 9, can be faked 

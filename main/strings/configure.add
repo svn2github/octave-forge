@@ -1,0 +1,23 @@
+if test -e main/strings/NOINSTALL ; then
+
+    STATUS=noinstall
+
+else
+
+    AC_SUBST(HAVE_PCRE)
+    AC_CHECK_HEADER(pcre.h, HAVE_PCRE=yes, HAVE_PCRE=no)
+    if test $have_pcre = yes ; then
+	AC_CHECK_LIB(pcre, , HAVE_PCRE=yes, HAVE_PCRE=no)
+	if test $HAVE_PCRE = no ; then
+	    STATUS="libpcre not found"
+	else
+	    STATUS="pcre"
+	fi
+    else
+	STATUS="pcre.h not found"
+    fi
+
+fi
+
+STATUS_MSG="$STATUS_MSG
+   Perl compatible regular expresions: $STATUS"

@@ -888,7 +888,7 @@ sub info2html { # 1{{{
 # run body through makeinfo to produce html
     my ( $func, $body ) = @_;
     $body =~ s/^\s*-[*]- texinfo -[*]-//;
-    my $cmd = "makeinfo --fill-column 80 --no-warn --no-validate --force --html --ifinfo";
+    my $cmd = "makeinfo --fill-column 80 --no-warn --no-validate --force --html --ifinfo -o -";
     open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
     print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
     # I have no idea why but makeinfo is introducing some weirdness with <p>

@@ -53,7 +53,7 @@
  
 # call the minimizing routine
 function [theta, obj_value, convergence] = mle_estimate(theta, data, model, modelargs, control)
-  if nargin == 3
+  if nargin == 4
     [theta, obj_value, convergence] = bfgsmin("mle_obj", {theta, data, model, modelargs});
   else
     [theta, obj_value, convergence] = bfgsmin("mle_obj", {theta, data, model, modelargs}, control);

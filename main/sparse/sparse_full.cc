@@ -58,10 +58,10 @@ DEFUN_DLD (full, args, ,
      ComplexMatrix M = ((const octave_sparse&) rep) . complex_matrix_value ();
      retval(0)= M;
   } else
-  if (args(0).type_name () == "matrix") {
+  if (args(0).is_real_type()) {
      retval(0)= args(0).matrix_value();
   } else
-  if (args(0).type_name () == "complex matrix") {
+  if (args(0).is_complex_type()) {
      retval(0)= args(0).complex_matrix_value();
   } else
     gripe_wrong_type_arg ("full", args(0));
@@ -225,7 +225,7 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
    int nargin = args.length ();
 
    if (nargin != 1) {
-      print_usage ("spfull");
+      print_usage ("spfind");
       return retval;
    }
       
@@ -312,6 +312,12 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
 
 /*
  * $Log$
+ * Revision 1.9  2003/12/22 15:09:25  pkienzle
+ * Use properties tests (real/complex) rather than type tests
+ * (matrix/complex matrix) so that full automatically generalizes
+ * to other types which can be converted via matrix_value() to
+ * full matrices;  use correct function name in usage.
+ *
  * Revision 1.8  2003/10/18 01:13:00  aadler
  * texinfo for documentation strings
  *

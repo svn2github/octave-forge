@@ -45,6 +45,7 @@ Open Source Initiative (www.opensource.org)
 
 FIXED_DEFUNOP_OP (not, fixed_complex_matrix, !)
 FIXED_DEFUNOP_OP (uminus, fixed_complex_matrix, -)
+FIXED_DEFUNOP_OP (uplus, fixed_complex_matrix, /* no-op */)
 
 DEFUNOP (transpose, fixed_complex_matrix)
 {
@@ -129,6 +130,7 @@ install_fcm_fcm_ops (void)
 {
   INSTALL_UNOP (op_not, octave_fixed_complex_matrix, not);
   INSTALL_UNOP (op_uminus, octave_fixed_complex_matrix, uminus);
+  INSTALL_UNOP (op_uplus, octave_fixed_complex_matrix, uplus);
   INSTALL_UNOP (op_transpose, octave_fixed_complex_matrix, transpose);
   INSTALL_UNOP (op_hermitian, octave_fixed_complex_matrix, hermitian);
 

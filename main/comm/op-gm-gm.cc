@@ -43,6 +43,13 @@ DEFUNOP (uminus, galois)
   return new octave_galois (v.galois_value());
 }
 
+DEFUNOP (uplus, galois)
+{
+  CAST_UNOP_ARG (const octave_galois&);
+
+  return new octave_galois (v.galois_value());
+}
+
 DEFUNOP (transpose, galois)
 {
   CAST_UNOP_ARG (const octave_galois&);
@@ -89,6 +96,7 @@ install_gm_gm_ops (void)
 {
   INSTALL_UNOP (op_not, octave_galois, not);
   INSTALL_UNOP (op_uminus, octave_galois, uminus);
+  INSTALL_UNOP (op_uplus, octave_galois, uplus);
   INSTALL_UNOP (op_transpose, octave_galois, transpose);
   INSTALL_UNOP (op_hermitian, octave_galois, transpose);
 

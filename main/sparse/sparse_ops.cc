@@ -229,6 +229,13 @@ UNOPDECL (uminus, a )
    return v.uminus();
 }   
 
+UNOPDECL (uplus, a ) 
+{ 
+   DEBUGMSG("sparse - uplus");
+   CAST_UNOP_ARG (const octave_sparse&); 
+   return new octave_sparse (v);
+}   
+
 SuperMatrix
 oct_sparse_transpose ( SuperMatrix X ) {
    DEFINE_SP_POINTERS_REAL( X )
@@ -1363,6 +1370,7 @@ void install_sparse_ops() {
    INSTALL_UNOP  (op_transpose, octave_sparse, transpose);
    INSTALL_UNOP  (op_hermitian, octave_sparse, hermitian);
    INSTALL_UNOP  (op_uminus,    octave_sparse, uminus);
+   INSTALL_UNOP  (op_uplus,     octave_sparse, uplus);
 
    //
    // binary operations: sparse with scalar
@@ -1574,6 +1582,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.28  2004/11/15 10:26:55  adb014
+ * Add unary plus operators as no-op, due to recent change in octave
+ *
  * Revision 1.27  2004/11/09 23:34:49  adb014
  * Fix concatenation for recent octave core CVS changes
  *

@@ -46,6 +46,7 @@ Open Source Initiative (www.opensource.org)
 
 FIXED_DEFUNOP_OP (not, fixed_complex, !)
 FIXED_DEFUNOP_OP (uminus, fixed_complex, -)
+FIXED_DEFUNOP_OP (uplus, fixed_complex, /* no-op */)
 FIXED_DEFUNOP_OP (transpose, fixed_complex, /* no-op */)
 DEFUNOP (hermitian, fixed_complex)
 {
@@ -198,6 +199,7 @@ install_fcs_fcs_ops (void)
 {
   INSTALL_UNOP (op_not, octave_fixed_complex, not);
   INSTALL_UNOP (op_uminus, octave_fixed_complex, uminus);
+  INSTALL_UNOP (op_uplus, octave_fixed_complex, uplus);
   INSTALL_UNOP (op_transpose, octave_fixed_complex, transpose);
   INSTALL_UNOP (op_hermitian, octave_fixed_complex, hermitian);
 

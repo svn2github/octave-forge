@@ -767,7 +767,7 @@ end
 
 
    % test normal assembly
-   res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M) == tf1 ));
+   res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M) == tf2 ));
    i=i+1;      % i=206
 
    % test 'unique' assembly
@@ -798,6 +798,9 @@ end
 
 %
 % $Log$
+% Revision 1.10  2003/02/20 22:51:45  pkienzle
+% Default to 'sum' rather than 'unique' assembly
+%
 % Revision 1.9  2003/01/02 18:19:36  pkienzle
 % make sure rand(n,m) receives integer input
 %

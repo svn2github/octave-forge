@@ -14,7 +14,8 @@
 ##
 ## Test cg_min
 ##
-optim_func = "cg_min";
+## optim_func = "cg_min";
+optim_func = "bfgs";
 
 ok = 1;
 
@@ -32,7 +33,7 @@ global truemin ;
 truemin = randn(N,1) ;
 
 global offset ;
-offset  = 100*randn(1) ;
+offset  = 10*randn(1) ;
 
 global metric ;
 metric = randn(2*N,N) ; 

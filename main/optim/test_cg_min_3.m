@@ -21,7 +21,7 @@
 ## Sets 'ok' to 1 if success, 0 otherwise
 
 ## The name of the optimizing function
-optim_func = "cg_min";
+optim_func =  "bfgs"; # "cg_min";
 
 ok = 1;
 
@@ -41,7 +41,7 @@ obsmat = randn(R,P) ;
 truep = randn(P,1) ;
 xinit = randn(P,1) ;
 
-global obses ;
+## global obses ;
 obses = obsmat*truep ;
 if noise, obses = adnois(obses,noise); end
 

@@ -17,8 +17,8 @@
 ##                         method is used.
 ## 
 ## 'df' , df      : Name of a function that returns the derivatives of f
-##                  in x : [dfx] = feval (df, x) where dfx is 1x(M*N). The
-##                  conjugate gradient method (see cg_min) will be used.
+##                  in x : dfx = feval (df, x) where dfx is 1x(M*N). A
+##                  variable metric method (see bfgs) will be used.
 ##
 ## 'd2f', d2f     : Name of a function that returns the value of f, of its
 ##                  1st and 2nd derivatives : [fx,dfx,d2fx] = feval (d2f, x)
@@ -66,8 +66,9 @@
 ## -------------
 ## 'maxev', m     : Maximum number of function evaluations             <inf>
 ##
-## 'narg',  narg  : Position of the minimized argument in args           <1>
-##
+## 'narg' , narg  : Position of the minimized argument in args           <1>
+## 'isz'  , step  : Initial step size (only for 0 and 1st order method)  <1>
+##                  Should correspond to expected distance to minimum
 ## 'verbose'      : Display messages during execution
 ##
 ## 'backend'      : Instead of performing the minimization itself, return
@@ -98,14 +99,15 @@ minimize_warn = 0;
 # Read the options ###################################################
 # ####################################################################
 # Options with a value
-op1 = " ftol utol dtol df d2f d2i order narg maxev " ;
+op1 = " ftol utol dtol df d2f d2i order narg maxev isz ";
 # Boolean options 
 op0 = " verbose backend " ;
 
 default = setfield ("backend",0,"verbose",0,\
-		    "df","", "df","","d2f","", "d2i","",\
+		    "df","", "df","","d2f","", "d2i","", \
 		    "ftol" ,nan, "utol",nan, "dtol", nan,\
-		    "order",nan, "narg",nan, "maxev",nan);
+		    "order",nan, "narg",nan, "maxev",nan,\
+		    "isz",  nan);
 
 ops = read_options (list (all_va_args),\
 		    "op0",op0, "op1",op1, "default",default);
@@ -113,12 +115,14 @@ ops = read_options (list (all_va_args),\
 [backend,verbose, \
  df, df,d2f, d2i, \
  ftol, utol, dtol,\
- order, narg, maxev] = getfield (ops, "backend","verbose",\
-				 "df", "df","d2f", "d2i", \
-				 "ftol" , "utol", "dtol", \
-				 "order", "narg", "maxev");;
+ order, narg, maxev,\
+ isz] = getfield (ops, "backend","verbose",\
+		  "df", "df","d2f", "d2i", \
+		  "ftol" , "utol", "dtol", \
+		  "order", "narg", "maxev",\
+		  "isz");
 
-				# Basic coherence checks
+				# Basic coherence checks #############
 
 ws = "";			# Warning string
 es = "";			# Error string
@@ -147,7 +151,7 @@ if ! isnan (narg) && ! backend
 end
 
 if length (ws), warn (ws); end
-if length (es), error (es); end
+if length (es), error (es); end	# EOF Basic coherence checks #########
 
 
 op = 0;				# Set if any option is passed and should be
@@ -158,6 +162,7 @@ if ! isnan (utol)   , ctls.utol    = utol;  op = 1; end
 if ! isnan (dtol)   , ctls.dtol    = dtol;  op = 1; end
 if ! isnan (maxev)  , ctls.maxev   = maxev; op = 1; end
 if ! isnan (narg)   , ctls.narg    = narg;  op = 1; end
+if ! isnan (isz)    , ctls.isz     = isz;   op = 1; end
 if         verbose  , ctls.verbose = 1;     op = 1; end
 
 				# defaults That are used in this function :
@@ -168,7 +173,7 @@ if isnan (narg), narg = 1; end
 				# derivatives (overriden below)
 if     length (d2i), method = "d2_min"; ctls.id2f = 1; op = 1;
 elseif length (d2f), method = "d2_min";
-elseif length (df),  method = "cg_min";
+elseif length (df),  method = "bfgs";
 else                 method = "nelder_mead_min";
 end
 
@@ -184,7 +189,7 @@ if ! isnan (order)
 
   if     order == 0, method = "nelder_mead_min";
   elseif order == 1
-    method = "cg_min";
+    method = "bfgs";
     if ! length (df)		# If necessary, define numerical diff
 
       df = temp_name (["d",f]);	# Choose a name
@@ -205,11 +210,17 @@ if ! isnan (order)
   end
 end				# EOF choose method by specifying order ####
 
+				# More checks ##############################
+ws = "";
+if !isnan (isz) && strcmp (method,"d2_min")
+  ws = [ws,"option 'isz' is passed to method that doesn't use it"];
+end
+if length (ws), warn (ws); end
+				# EOF More checks ##########################
 
-
-if strcmp (method, "d2_min"),    all_args = list (f, d2f, args);
-elseif strcmp (method, "cg_min") all_args = list (f, df, args);
-else                             all_args = list (f, args);
+if     strcmp (method, "d2_min"), all_args = list (f, d2f, args);
+elseif strcmp (method, "bfgs"),   all_args = list (f, df, args);
+else                              all_args = list (f, args);
 end
 				# Eventually add ctls to argument list
 if op, all_args = append (all_args, list (ctls)); end
@@ -217,6 +228,8 @@ if op, all_args = append (all_args, list (ctls)); end
 if ! backend			# Call the backend ###################
   if strcmp (method, "d2_min"),
     [x,v,nev,h] = leval (method, all_args);
+				# Eventually return inverse of Hessian
+    if nargout > 3, vr_val (h); end 
   else
     [x,v,nev] = leval (method, all_args);
   end
@@ -233,13 +246,11 @@ else				# Don't call backend, just return its name
 	      df);
     end
     must_clear_ndiff = 0;
-    ctls.ndiff = df; op = 1;
+    ctls.df = df; op = 1;
   end
 
   x = method;
   if op, v = ctls; else v = []; end
-
-
 end
 
 				# Eventually clear num diff function

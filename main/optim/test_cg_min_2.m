@@ -19,7 +19,7 @@
 ## Sets 'ok' to 1 if success, 0 otherwise
 
 ## The name of the optimizing function
-optim_func = "cg_min";
+optim_func = "bfgs"; # "cg_min";
 
 ok = 1;
 

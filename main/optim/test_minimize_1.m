@@ -167,15 +167,15 @@ end
 [method,ctl] = minimize ("ff",list (x0,y0,1),"order",1,"backend");
 
 cnt++;
-if ! strcmp (method,"cg_min")
+if ! strcmp (method,"bfgs")
   if verbose
-    prn ("Wrong method '%s' != 'cg_min' was chosen\n", method);
+    prn ("Wrong method '%s' != 'bfgs' was chosen\n", method);
   end
   ok = 0;
 elseif verbose,  prn ("ok %i\n",cnt);
 end
 
-[xle2,vle2,nle2] = feval (method, "ff",ctl.ndiff,list (x0,y0,1), ctl);
+[xle2,vle2,nle2] = feval (method, "ff",ctl.df,list (x0,y0,1), ctl);
 cnt++;
 if max (abs (xlev-xle2)) > 100*eps
   if verbose

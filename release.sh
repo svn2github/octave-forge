@@ -49,7 +49,7 @@ function v=OCTAVE_FORGE_VERSION
   v=`date +%Y%m%d`;
 endfunction
 EOF
-cvs commit -m '$TAG release' ChangeLog main/miscellaneous/OCTAVE_FORGE_VERSION.m
+cvs commit -m "$TAG release" ChangeLog main/miscellaneous/OCTAVE_FORGE_VERSION.m
 
 # tag the CVS tree with the revision number
 cvs rtag $TAG $PROJECT

@@ -74,7 +74,6 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
 static bool
 do_is_cyclic_polynomial (const unsigned long long& a1, const int& n, const int& m)
 {
-<<<<<<< cyclpoly.cc
   Array<int> a (n+1,0);
   Array<int> y (n+1, 0);
   Array<int> x (n-m+2, 0);
@@ -93,24 +92,6 @@ do_is_cyclic_polynomial (const unsigned long long& a1, const int& n, const int& 
   for (int i=0; i < n+1; i++)
     if (y(i) ^ q(i))
       return false;
-=======
-  // Fast return since polynomial can't be even
-  if (!(a & 1))
-    return false;
-
-  unsigned long long mask = 1;
-
-  for (int i=0; i<n; i++) {
-    mask <<= 1;
-    if (mask & ((unsigned long long)1<<m))
-      mask ^= a;
-    mask &= n;
-  }
-
-  if (mask != 1) {
-    return false;
-  }
->>>>>>> 1.3
 
   return true;
 }

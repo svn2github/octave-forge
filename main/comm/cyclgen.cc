@@ -29,17 +29,6 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct.h>
 #include <octave/pager.h>
 
-<<<<<<< cyclgen.cc
-=======
-static bool
-do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m)
-{
-
-  // Fast return since polynomial can't be even
-  if (!(a & 1))
-    return false;
->>>>>>> 1.3
-
 // A simplified version of the filter function for specific lengths of a and b
 // in the Galois field GF(2)
 Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a, 
@@ -68,17 +57,8 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
       si(n-1) ^= 1;
   }
 
-<<<<<<< cyclgen.cc
   return y;
 }
-=======
-  for (int i=0; i<n; i++) {
-    mask <<= 1;
-    if (mask & ((unsigned long long)1<<m))
-      mask ^= a;
-    mask &= n;
-  }
->>>>>>> 1.3
 
 // Cyclic polynomial is irreducible. I.E. it divides into x^n-1 without remainder
 // There must surely be an easier way of doing this as the polynomials are over
@@ -148,10 +128,6 @@ DEFUN_DLD (cyclgen, args, nargout,
 {
   octave_value_list retval;
   int nargin = args.length ();
-<<<<<<< cyclgen.cc
-=======
-  int n;
->>>>>>> 1.3
   unsigned long long p = 0;
   int n, m, k, mm;
   bool system = true;

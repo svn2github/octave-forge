@@ -9,6 +9,9 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
+##
+## Changelog: 
+## 2002 / 05 / 09 : Default is no restart next to solution
 
 ## [x0,v,nev] = nelder_mead_min (f,args,ctl) - Nelder-Mead minimization
 ##
@@ -74,7 +77,7 @@
 ##                  it until the minimum does not improve anymore. ctl(6) is
 ##                  the maximum number of restarts. Set ctl(6) to zero if
 ##                  you know the function is well-behaved or if you don't
-##                  mind not getting a true minimum.                   <inf>
+##                  mind not getting a true minimum.                     <0>
 ##
 ## verbose, v     Be more or less verbose (quiet=0)                      <0>
 function [x,v,nev] = nelder_mead_min (f, args, ...)
@@ -98,7 +101,7 @@ tol = 10*eps;			# Stopping test's threshold     ctl(2)
 narg = 1;			# Position of minimized arg     ctl(3)
 maxev = inf;			# Max num of func evaluations   ctl(4)
 isz = 1;			# Initial size                  ctl(5)
-rst = inf;			# Max # of restarts
+rst = 0;			# Max # of restarts
 
 
 if nargin >= 3,			# Read control arguments
@@ -303,7 +306,12 @@ while nev <= maxev,
       ## u0 = u;
       u = (u + ones(N+1,1)*u(imin,:)) / 2;
       ## keyboard
-      for i = [1:imin-1,imin+1:N+1],
+
+      ## Code that doesn't care about value of empty_list_elements_ok
+      if     imin == 1  , ii = 2:N+1; 
+      elseif imin == N+1, ii = 1:N;
+      else                ii = [1:imin-1,imin+1:N+1]; end
+      for i = ii
 	y(i) = \
 	    leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
       end

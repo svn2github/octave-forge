@@ -9,6 +9,9 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
+##
+## Changelog: 
+## 2002 / 05 / 09 : Heuristic for negative hessian
 
 ## [x,v,nev,h,args] = d2_min(f,d2f,args,ctl,code) - Newton-like minimization
 ##
@@ -223,6 +226,8 @@ while niter++ <= maxouter
   end
 
   dnewton = -h*d ;		# Newton step
+				# Heuristic for negative hessian
+  if dnewton'*d > 0, dnewton = -100*d; end
   wn = 1 ;			# Weight of Newton step
   wt = 1 ;			# Total weight
   

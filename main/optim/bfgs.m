@@ -28,7 +28,7 @@
 ## arguments (see the 'jac' option). f() may take many arguments and
 ## minimization can be done wrt to any argument (see 'narg' option).
 ##
-## See also : minimize(), d2_min(), nelder_mead_min(), bs_gradient2().
+## See also : minimize(), d2_min(), nelder_mead_min(), bs_gradient().
 ##
 ## INPUT ------------
 ## f     : string   : Name of minimized function.
@@ -124,7 +124,7 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
   H = eye (prod (sz = size (x)));
   nev = [0,1];
   if diff == 0
-    g = bs_gradient2 (func, args, narg)';
+    g = bs_gradient (func, args, narg)';
     if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
   elseif diff == 1
     g = leval (dfunc, args)';
@@ -155,7 +155,7 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
 
     args = splice (args, narg, 1, list (x));
     if ! diff
-      g_new = bs_gradient2 (func, args, narg)';
+      g_new = bs_gradient (func, args, narg)';
     elseif diff == 1
       g_new = leval (dfunc, args)';
     elseif diff == 2

@@ -127,10 +127,10 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
     g = bs_gradient (func, args, narg)';
     if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
   elseif diff == 1
-    g = leval (dfunc, args)';
+    g = leval (dfunc, args)(:);
     if norm(g) <= dtol, nev(1)=1; fmin = leval (func, args); break; end
   elseif diff == 2
-    [fmin, g] = leval (func, args); g = g';
+    [fmin, g] = leval (func, args); g = g(:);
     if norm(g) <= dtol, break; end
   end
 
@@ -157,9 +157,9 @@ function [x,fmin,nev] = bfgs (func, args, ctl)
     if ! diff
       g_new = bs_gradient (func, args, narg)';
     elseif diff == 1
-      g_new = leval (dfunc, args)';
+      g_new = leval (dfunc, args)(:);
     elseif diff == 2
-      [dummy, g_new] = leval (func, args); g_new = g_new';
+      [dummy, g_new] = leval (func, args); g_new = g_new(:);
     end
     nev(2)++;
 

@@ -10,6 +10,8 @@ DIRS=`find . -type d ! -name CVS`
 
 # Find the tests in that directory
 for dir in $DIRS; do
+    dir=${dir#./}
+
     # skip the NOINSTALL directories
     if test -f "$dir/NOINSTALL"; then continue; fi
 
@@ -36,14 +38,14 @@ for dir in $DIRS; do
 
     # if no files have tests in them, skip
     if test -z "$TESTS" ; then
-	echo "printf('$dir\\t --- no tests\n');" >>fntests.m
+	echo "printf('%-40s --- no tests\n','$dir');" >>fntests.m
     else 
 	echo "dp=dn=0;" >>fntests.m
 	for file in $TESTS ; do
             echo "[p,n] = test('$file','quiet',fid);" >>fntests.m
             echo "dp += p; dn += n;" >>fntests.m
 	done
-	echo "printf('$dir\\t --- ');" >>fntests.m
+	echo "printf('%-40s --- ','$dir');" >>fntests.m
 	echo "if dp==dn, printf('success\n'); else" >>fntests.m
         echo "printf('passes %d out of %d tests\n',dp,dn); end" >>fntests.m
         echo "passes += dp; tests += dn;" >>fntests.m
@@ -52,4 +54,5 @@ for dir in $DIRS; do
 done
 
 echo "printf('passes %d out of %d tests\n',passes,tests);" >> fntests.m
+echo "printf('see fntests.log for details\n');" >> fntests.m
 echo "fclose(fid);" >> fntests.m

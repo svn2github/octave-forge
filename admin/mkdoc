@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 #
 # David Bateman Feb 02 2003
-#
+# 
 # Extracts the help in texinfo format from *.cc and *.m files for use
 # in documentation. Based on make_index script from octave_forge.
 

@@ -517,9 +517,10 @@ galois pow (const galois& a, int b)
     {
       galois atmp;
 
-      if (b < 0 ) 
+      if (b < 0 ) {
 	atmp = a.inverse();
-      else
+	b = abs(b);
+      } else
 	atmp = a;
 
       retval = atmp;

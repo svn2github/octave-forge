@@ -183,7 +183,8 @@ function a = qaskdeco(varargin)
       ix(find((ang <= -pi/2) & (ang > -3*pi/4))) = OFF+1;
       qx(find(ang <= -3*pi/4)) = OFF+1;
 
-      a(indx) = layout(size(layout,1)*(round(qx)-1) + round(ix));
+      a(indx) = layout(size(layout,1)*(max(min(round(qx), ...
+		size(layout,2)),1)-1) + max(min(round(ix),size(layout,1)),1));
     endif
   unwind_protect_cleanup
     do_fortran_indexing = pfi;

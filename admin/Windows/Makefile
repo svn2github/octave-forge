@@ -34,7 +34,7 @@ cygkey=Cygnus Solutions
 octkey=GNUoctave $(OCTVER)
 
 .PHONY: all setup stdc++ ranlibhack confighack config build check \
-	install strip docs forge epstk cygwin dist
+	install strip docs forge epstk cygwin dist mklinks
 
 all: build check install forge epstk strip docs
 	@echo "Done octave build: test using $(DEST)/bin/octave"
@@ -180,9 +180,16 @@ $(CYGDIR):
 	-mkdir $(DEST)/cygwin
 
 # ==== build octave-forge
-dist: forge cygwin
+dist: forge cygwin mklinks
 	$(NSIS) $(NSISPARS)
 
+mklinks:
+	cd $(DEST)/site/oct/octave-forge && ls -l | grep ^l \
+		| sed -e "s,^.* \([^ ]*\) -> *\(.*\)$,ln -s \\2 \\1," \
+		> mklinks.sh
+	cd $(BUILD)/src && $(SOURCE)/src/mk-oct-links -p \
+		`cd $(SOURCE)/src/DLD-FUNCTIONS&&ls *.cc|sed -e"s/cc$/df/g"` \
+		| sed -e "s,^,ln -s ," > $(DEST)/base/oct/mklinks.sh
 
 # ==== build octave-forge
 forge: install config.forge build.forge check.forge install.forge

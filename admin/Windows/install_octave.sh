@@ -66,19 +66,9 @@ echo
 echo 'Setting links to your oct-files'
 echo
 
-dir=`pwd`
-
-ARCH=i686-pc-cygwin
-cd /opt/octave/libexec/octave/2.*/oct/$ARCH
-for file in *.link ; do . $file ; done
-
-cd /opt/octave/libexec/octave/2.*/site/oct/$ARCH/octave-forge
-for file in *.link ; do . $file ; done
-
-cd /bin
-for file in *.link ; do . $file ; done
-
-cd $dir
+(cd /opt/octave*/bin && ./mklinks.sh)
+(cd /opt/octave*/base/oct && ./mklinks.sh)
+(cd /opt/octave*/site/oct/octave-forge && ./mklinks.sh)
 
 echo
 echo 'STEP 3'

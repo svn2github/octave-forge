@@ -1,0 +1,88 @@
+#VRML V2.0 utf8
+
+# Sphere whose color changes when it is touched
+#
+# Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
+
+
+# A sphere with a touch sensor
+PROTO ClickSphere [
+  eventIn  SFColor  the_color   # This event accepted (from script)
+  eventOut SFTime   touched	# This event emitted when touched
+  field    SFVec3f  the_pos     0     0     0
+  field    SFVec3f  the_scale   1     1     1
+] {
+  Transform {
+    translation IS the_pos
+    scale       IS the_scale
+    children [
+      TouchSensor { touchTime IS touched }
+      
+      Shape {	
+	appearance Appearance {material Material {diffuseColor IS the_color}}
+	## geometry Sphere { }
+	geometry Box { }
+      }
+    ]
+  }
+}
+
+# A SpeakSphere is a sphere that changes color and prints out its tag
+# and current state when clicked upon.
+#
+# Output format is  :  TAG:<tag> STATE:<state>
+
+PROTO SpeakSphere [
+  field SFColor  col1   0.4   0.4   0.9
+  field SFColor  col2   0.4   0.9   0.4
+  field SFVec3f  pos    0     0     0
+  field SFVec3f  scale  1     1     1
+  field SFInt32  state  0
+  field SFString tag    "No Tag"
+] {
+  Group {
+    children [				
+				# The sphere itself is here
+      DEF TS ClickSphere { 
+	the_pos   IS pos 
+	the_scale IS scale
+      }
+
+				# The script that receives pointer
+				# events from the ClickSphere, updates
+				# the state of the SpeakSphere
+      DEF PS Script {
+	eventIn  SFTime   touch_function
+	eventOut SFColor  col
+	field    SFInt32  sstate IS state
+	field    SFColor  scol1  IS col1 
+	field    SFColor  scol2  IS col2 
+	field    SFString stag   IS tag 
+	url [
+	  "perl:
+				# $t is the (tied) hash that
+				# represents the Script node : the
+				# eventIn/eventOut/field are keys.
+	  touch_function => sub {
+
+            $t->{sstate} ^= 1 ;	
+
+            print qq{TAG:$t->{stag} STATE:$t->{sstate}}.chr(10);
+
+				# Set the eventOut 'col'
+            $t->{col} = $t->{ $t->{sstate} ? 'scol2' : 'scol1' };
+	  },
+	  initialize => sub {
+				# Set initial col
+	    $t->{col} = $t->{ $t->{sstate} ? 'scol2' : 'scol1' };
+	  }
+	  "
+	]
+      }
+    ]
+  }				
+				# Send touch event into script and
+				# updated color into ClickSphere
+  ROUTE TS.touched TO PS.touch_function
+  ROUTE PS.col     TO TS.the_color
+}

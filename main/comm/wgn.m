@@ -44,7 +44,7 @@
 ## 2003-01-28
 ##   initial release
 
-function y = wgn (m, n, p, arg1, arg2, arg3, arg4)
+function y = wgn (m, n, p, varargin)
 
   if ((nargin < 3) || (nargin > 7))
     error ("usage: wgn(m, n, p, imp, seed, type, output)");
@@ -59,31 +59,38 @@ function y = wgn (m, n, p, arg1, arg2, arg3, arg4)
   out = 'real';
   imp = 1;
   seed = [];
-  args = zeros(4,1);
-  if (nargin > 3)
-    if (isstr(arg1))
-      args(1) = 1;
+  narg = 0;
+
+  for i=1:length(varargin)
+    arg = varargin{i};
+    if (isstr(arg))
+      if (strcmp(arg,"real"))
+        out = "real";  
+      elseif (strcmp(arg,"complex"))
+        out = "complex";  
+      elseif (strcmp(arg,"dB"))
+        type = "dBW";  
+      elseif (strcmp(arg,"dBW"))
+        type = "dBW";  
+      elseif (strcmp(arg,"dBm"))
+        type = "dBm";  
+      elseif (strcmp(arg,"linear"))
+        type = "linear";  
+      else
+        error ("wgn: invalid argument");
+      endif
     else
-      imp = arg1;
+      narg++;
+      switch (narg)
+	case 1,
+	  imp = arg;
+	case 2,
+	  seed = arg;
+	otherwise
+	  error ("wgn: too many arguments");
+      endswitch
     endif
-  endif
-  if (nargin > 4)
-    if (isstr(arg2))
-      args(2) = 1;
-    else
-      seed = arg2;
-    endif
-  endif
-  if (nargin > 5)
-    if (isstr(arg3))
-      args(3) = 1;
-    endif
-  endif
-  if (nargin > 6)
-    if (isstr(arg4))
-      args(4) = 1;
-    endif
-  endif
+  end
 
   if (isempty(imp))
     imp = 1;
@@ -97,27 +104,6 @@ function y = wgn (m, n, p, arg1, arg2, arg3, arg4)
       error ("wgn: random seed must be integer");
     endif
   endif
-    
-  for i=1:length(args)
-    if (args(i) == 1)
-      eval(['arg = arg', num2str(i), ';']);
-      if (strcmp(arg,'real'))
-        out = 'real';  
-      elseif (strcmp(arg,'complex'))
-        out = 'complex';  
-      elseif (strcmp(arg,'dB'))
-        type = 'dBW';  
-      elseif (strcmp(arg,'dBW'))
-        type = 'dBW';  
-      elseif (strcmp(arg,'dBm'))
-        type = 'dBm';  
-      elseif (strcmp(arg,'linear'))
-        type = 'linear';  
-      else
-        error ("wgn: invalid argument");
-      endif
-    endif
-  end
     
   if (!isscalar(p) || !isreal(p))
     error("wgn: invalid power");

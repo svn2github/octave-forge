@@ -45,7 +45,7 @@
 ## 2003-01-28
 ##   initial release
 
-function y = awgn (x, snr, arg1, arg2, arg3)
+function y = awgn (x, snr, varargin)
 
   if ((nargin < 2) || (nargin > 5))
     error ("usage: awgn(x, snr, p, seed, type");
@@ -61,29 +61,34 @@ function y = awgn (x, snr, arg1, arg2, arg3)
   p = 0;
   seed = [];
   type = 'dB';
-  args = zeros(3,1);
   meas = 0;
+  narg = 0;
   
-  if (nargin > 2)
-    if (isstr(arg1))
-      args(1) = 1;
+  for i=1:length(varargin)
+    arg = varargin{i};
+    if (isstr(arg))
+      if (strcmp(arg,'measured'))
+        meas = 1;  
+      elseif (strcmp(arg,'dB'))
+        type = 'dB';  
+      elseif (strcmp(arg,'linear'))
+        type = 'linear';  
+      else
+        error ("awgn: invalid argument");
+      endif
     else
-      p = arg1;
+      narg++;
+      switch (narg)
+	case 1,
+	  p = arg;
+	case 2,
+	  seed = arg;
+	otherwise
+	  error ("wgn: too many arguments");
+      endswitch
     endif
-  endif
-  if (nargin > 3)
-    if (isstr(arg2))
-      args(2) = 1;
-    else
-      seed = arg2;
-    endif
-  endif
-  if (nargin > 4)
-    if (isstr(arg3))
-      args(3) = 1;
-    endif
-  endif
-  
+  end
+
   if (isempty(p))
     p = 0;
   endif
@@ -95,21 +100,6 @@ function y = awgn (x, snr, arg1, arg2, arg3)
     endif
   endif
 
-  for i=1:length(args)
-    if (args(i) == 1)
-      eval(['arg = arg',num2str(i),';']);
-      if (strcmp(arg,'measured'))
-        meas = 1;  
-      elseif (strcmp(arg,'dB'))
-        type = 'dB';  
-      elseif (strcmp(arg,'linear'))
-        type = 'linear';  
-      else
-        error ("awgn: invalid argument");
-      endif
-    endif
-  end
-    
   if (!isscalar(p) || !isreal(p))
     error("awgn: invalid power");
   endif

@@ -56,7 +56,7 @@
 ## 2003 FEB 13
 ##   initial release
 
-function [num, rate, ind] = biterr (a, b, arg1, arg2)
+function [num, rate, ind] = biterr (a, b, varargin)
 
   if ((nargin < 2) || (nargin > 4))
     usage ("[num rate ind] = biterr (a, b [,k [,flag]])");
@@ -108,33 +108,31 @@ function [num, rate, ind] = biterr (a, b, arg1, arg2)
   endif
 
   k = 0;
-  if (nargin > 2)
-    for i =1:nargin-2
-      eval(['arg = arg',num2str(i),';']);
-      if (isstr(arg))
-	if (strcmp(arg,"row-wise"))
-	  if (strcmp(type,"column"))
-	    error ("biterr: row-wise comparison not possible with column inputs");
-	  endif
-	  flag = "row";
-	elseif (strcmp(arg,"column-wise"))
-	  if (strcmp(type,"row"))
-	    error ("biterr: column-wise comparison not possible with row inputs");
-	  endif
-	  flag = "column";
-	elseif (strcmp(arg,"overall"))
-	  flag = "overall";
-	else
-	  error ("biterr: unrecognized string argument");
+  for i =1:length(varargin)
+    arg = varargin{i};
+    if (isstr(arg))
+      if (strcmp(arg,"row-wise"))
+	if (strcmp(type,"column"))
+	  error ("biterr: row-wise comparison not possible with column inputs");
 	endif
+	flag = "row";
+      elseif (strcmp(arg,"column-wise"))
+	if (strcmp(type,"row"))
+	  error ("biterr: column-wise comparison not possible with row inputs");
+	endif
+	flag = "column";
+      elseif (strcmp(arg,"overall"))
+	flag = "overall";
       else
-	k = arg;
-	if (k < m)
-	  error ("biterr: the symbol size is too small for largest element");
-	endif
+	error ("biterr: unrecognized string argument");
       endif
-    end
-  endif
+    else
+      k = arg;
+      if (k < m)
+	error ("biterr: the symbol size is too small for largest element");
+      endif
+    endif
+  end
   
   if (k == 0)
     k = m;

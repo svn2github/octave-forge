@@ -52,12 +52,17 @@ function z = atomnames_to_z(n)
   N = size(n, 1);
   z = zeros(N, 1);
   for i = 1:N,
+    # Heuristics to decipher the element from atomname
     tmpnam = n(i,isalpha(n(i,:)));
-    if(length(tmpnam) > 1)
+    if (isfield(elements_struct, tmpnam(1)))
+      z(i) = elements_struct.(tmpnam(1));
+    elseif (length(tmpnam) > 1)
       tmpnam(2) = tolower(tmpnam(2));
+      z(i) = elements_struct.(tmpnam(1:2));
+    else
+      error("Element %s not found", tmpnam);
     endif
-    z(i) = elements_struct.(tmpnam);
-   endfor
+  endfor
 endfunction
  
 endfunction

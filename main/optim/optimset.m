@@ -41,7 +41,7 @@ function opt = optimset (varargin)
 
 args = varargin;
 
-opt = setfield ();
+opt = setfields ();
 
 				# Integrate all leading structs
 

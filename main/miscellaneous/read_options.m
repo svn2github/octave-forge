@@ -46,14 +46,14 @@
 ##
 ##                              # Create variables w/ same name as options
 ##
-## [is_man, is_plane, flies] = getfield (s,"is_man", "is_plane", "flies")
+## [is_man, is_plane, flies] = getfields (s,"is_man", "is_plane", "flies")
 ## pre 2.1.39 function [op,nread] = read_options (args, ...)
 function [op,nread] = read_options (args, varargin) ## pos 2.1.39
 
 
 verbose = 0;
 
-op = setfield ();		# Empty struct
+op = setfields ();		# Empty struct
 op0 = op1 = " ";
 skipnan = prefix = quiet = nocase = quiet = 0;
 extra = ""; 

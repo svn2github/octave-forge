@@ -32,7 +32,7 @@ if nargin > 1
   df = tar (col,emit,tran,balls,border,bcol,btran,bemit,brad,borad,bocol,boemit);
   s = read_options (varargin, "op1",op1, "default",df);
   [col,emit,tran,balls,border,bcol,btran,bemit,brad,borad,bocol,boemit] = \
-      getfield (s,\
+      getfields (s,\
 		"col","emit","tran","balls","border","bcol","btran","bemit",\
 		"brad","borad","bocol","boemit");
 end

@@ -162,7 +162,7 @@ ops = read_options (opls,\
  hess, ihess, jac,  \
  ftol, utol, dtol,  \
  order, narg, maxev,\
- isz, ndiff] = getfield (ops, "backend","verbose",\
+ isz, ndiff] = getfields (ops, "backend","verbose",\
 			 "df", "df","d2f", "d2i", \
 			 "hess", "ihess", "jac",  \
 			 "ftol" , "utol", "dtol", \

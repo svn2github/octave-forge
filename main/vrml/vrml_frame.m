@@ -63,7 +63,7 @@ if args
   op0 = " verbose ";
   s = read_options (leftover_args, "op1",op1,"op0",op0,"default",df,"skipnan",1);
   [col, hcol, diam, scale, verbose] = \
-      getfield (s, "col","hcol","diam","scale","verbose");
+      getfields (s, "col","hcol","diam","scale","verbose");
 end
 
 ######################################################################

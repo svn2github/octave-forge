@@ -29,7 +29,7 @@ if nargin == 1			#  Single argument called "x"
   argstr = "x";
 else				# "x", "P1", ... 
   if isnumeric(n)
-    argstr = ["x,",sprintf ("P%i,",1:n)];
+    argstr = ["x,", sprintf("P%i,",1:n)];
 
   else				# Arguments are given names.
 

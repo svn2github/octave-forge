@@ -60,9 +60,8 @@ if nargin<2,
 end;
 
 
-
-
-if (DIM<=2) & (length(size(i))<3) & flag_implicit_skip_nan & (exist('sumskipnan2')==3) & isreal(i);
+DONE = 0; 
+if flag_implicit_skip_nan & (exist('sumskipnan2')==3);
                 
 	% an efficient implementation in C of the following lines 
         % could significantly increase performance 
@@ -78,22 +77,27 @@ if (DIM<=2) & (length(size(i))<3) & flag_implicit_skip_nan & (exist('sumskipnan2
         %		o3    += tmp.*tmp;
         %       }; 
         
-	% explicit type conversion
-	if islogical(i) | ischar(i),
-		i = real(i);
-	end;	
 
         % use MEX-file SUMSKIPNAN2 from Patrick Houweling <phouweling@yahoo.com>
-        switch nargout,
-        case {0,1,2}
-                [o, count] = sumskipnan2(i, DIM);
-        case 3
-                [o, count, SSQ] = sumskipnan2(i, DIM);
-        case 4
-                [o, count, SSQ, S4M] = sumskipnan2(i, DIM);
-        end              
-                
-else  
+	try,
+	        switch nargout,
+	        case {0,1}
+    			[o] = sumskipnan2(i, DIM);
+	        case 2
+    		        [o, count] = sumskipnan2(i, DIM);
+	        case 3
+    	                [o, count, SSQ] = sumskipnan2(i, DIM);
+	        case 4
+        	        [o, count, SSQ, S4M] = sumskipnan2(i, DIM);
+	        end              
+    		DONE = 1; 
+	catch;
+		DONE = 0;  
+	end
+end;	     
+
+   
+if ~DONE, % else  
         if nargout>1
                 count = sum(~isnan(i),DIM); 
         end;

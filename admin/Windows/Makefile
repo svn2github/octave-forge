@@ -43,9 +43,9 @@ all: build check install forge epstk strip docs
 
 # ==== create install directory, unpack dependencies, and generate stdc++ dll
 setup: $(SOURCE) $(DEST) $(BUILD) stdc++ $(PACKAGE_TARGETS)
-$(SOURCE): $(ROOT)/octave-$(OCTVER).tar.gz
+$(SOURCE): $(ROOT)/octave-$(OCTVER).tar.bz2
 	@echo "Preparing source directory $(SOURCE)"
-	tar xzf $(ROOT)/octave-$(OCTVER).tar.gz -C $(ROOT)
+	tar xjf $(ROOT)/octave-$(OCTVER).tar.bz2 -C $(ROOT)
 $(DEST): 
 	@echo "Preparing install directory $(DEST)"
 	-mkdir $(DEST)

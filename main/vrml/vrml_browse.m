@@ -168,7 +168,7 @@ if vrml_b_pid <= 0
 end				# End of starting new browser ########
 				# ####################################
 
-if ! new_browser
+if (!new_browser) && (vrml_b_pid > 1)
 				# ####################################
 				# Send USR1 signal to browser to tell it to
 				# raise itself.

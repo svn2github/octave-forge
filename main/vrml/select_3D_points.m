@@ -100,7 +100,7 @@ printf ("\n");
 
 				# Retrieve history of clicks #########
 perlcmd = "print qq{$1,$2;} if /^TAG:\\s*(\\d+)\\s*STATE:\\s*(\\d+)/";
-cmd = sprintf ("perl -ne '%s' %s",perlcmd,data_out);
+cmd = sprintf ("perl -ne '%s' %s", perlcmd, data_out);
 
 res = system (cmd, 1);
 res = res(1:length(res)-1);	# Remove last ";"
@@ -118,10 +118,13 @@ if ! isempty (stl), sel2(stl(1,:)) = stl(2,:); end
 				# list of selected points.
 if want_list, sel2 = find (sel2); end
 
-[err, msg] = unlink (data_out);
-if err,
-  printf (["select_3D_points :\n",\
-	   "    error '%s'\n",\
-	   "    while removing temp file %s\n"],\
-	  msg,err);
+[st,err,msg] = stat (data_out);
+if !err,
+  [err, msg] = unlink (data_out);
+  if err,
+    printf (["select_3D_points :\n",\
+  	     "    error '%s'\n",\
+	     "    while removing temp file %s\n"],\
+	     msg,err);
+  end
 end

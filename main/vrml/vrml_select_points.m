@@ -35,9 +35,9 @@ diam = 0.1 * mean (sqrt (sum ((x-mean(x')'*ones(1,P)).^2))) ;
 ## Depends: defSpeakSphere.wrl defSpeakBox.wrl
 
 if sphere
-  proto = "defSpeakSphere.wrl" ;
+  proto = "data/defSpeakSphere.wrl" ;
 else
-  proto = "defSpeakBox.wrl" ;
+  proto = "data/defSpeakBox.wrl" ;
 end
 
 s0 = slurp_file (proto);

@@ -97,7 +97,7 @@ if !balls && !cubes && !nums,
 		    sprintf ("      %8.3f %8.3f %8.3f\n", col));
   else				# One color
     smat = ["  appearance Appearance {\n",\
-	    vrml_material (col, emit),"\n",\
+	    vrml_material(col, emit),"\n",\
 	    "  }\n"];
     scol = "";
   end
@@ -129,7 +129,7 @@ elseif nums,
 		  "      children [\n",\ # ]
 		  "        Shape {\n",\
 		  "          appearance Appearance {\n",\
-		  vrml_material (col(:,i), emit, tran),"\n",\
+		  vrml_material(col(:,i), emit, tran),"\n",\
 		  "          }\n",\
 		  "          geometry Text {\n",\
 		  "            string \"%s\"\n",\

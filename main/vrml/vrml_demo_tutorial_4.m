@@ -20,7 +20,7 @@ x = linspace (0,4*pi,50);
 
                            # Points on a helix
 
-xx1 = [x/6; sin (x); cos (x)];
+xx1 = [x/6; sin(x); cos(x)];
 
 
 

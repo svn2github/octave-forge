@@ -107,8 +107,8 @@ for i = 2:N
       if isnan (hcol), hcol = col(:,i); end
       arrowcol = [col(:,i) hcol(1:3)(:)];
       s = [s,\
-	   vrml_transfo (vrml_arrow ([n,nan,2*rad/n,rad/n],arrowcol,emit),\
-			 t, ax*an)];
+	   vrml_transfo(vrml_arrow ([n,nan,2*rad/n,rad/n],arrowcol,emit),\
+		        t, ax*an)];
     end
   end
 end

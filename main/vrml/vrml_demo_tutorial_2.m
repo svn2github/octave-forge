@@ -20,7 +20,7 @@ printf (["    Reminder of FreeWRL keystrokes and mouse actions :\n"\
 
 N = 30;
 
-x = [randn (3,N) .* ([1,3,6]'*ones(1,N)), [5 5;-1 1;0 0]];
+x = [randn(3,N) .* ([1,3,6]'*ones(1,N)), [5 5;-1 1;0 0]];
 
 s = select_3D_points (x);
 

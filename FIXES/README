@@ -31,6 +31,7 @@ mu2lin		(accepts -1:1 audio range; accepts matrix; 3x faster)
 lin2mu		(accepts -1:1 audio range; accepts matrix)
 cross		(accepts matrices)
 grid		(control x/y grids and grid density independently)
+fsolve		(allow parameters through fsolve to user function)
 
 Bug fixes
 =========

@@ -1,6 +1,6 @@
 include ../Makeconf
 
-PROGS = rand.oct randn.oct
+PROGS = rand.oct randn.oct fsolve.oct
 
 all: $(PROGS)
 

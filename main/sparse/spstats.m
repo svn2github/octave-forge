@@ -12,6 +12,10 @@
 # zero, whereas with spstats(S) the zeros may disappear.  [They don't
 # disappear in the current version of sparse, but that may be a bug.]
 
+# This program is public domain.
+
+# Author: Paul Kienzle <pkienzle@users.sf.net>
+
 function [count,mean,var] = spstats(S,j)
   if nargin < 1 || nargin > 2
     usage("[count, mean, var] = spstats(S)  OR  spstats(x,j)");

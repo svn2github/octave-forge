@@ -34,13 +34,18 @@ function [z,e] = rem(x,y)
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
-s = warning('off');
+s = warning;
+warning('off');
 
-if isscalar(x)
+if all(size(x)==1)
         x = repmat(x,size(y));
 end;
-if isscalar(y)
+if all(size(y)==1)
         y = repmat(y,size(x));
+end;
+if any(size(x)~=size(y)),
+        fprintf(2,'Error REM: size if input arguments do not fit.\n');
+	return;
 end;
 
 t = fix(x./y);

@@ -57,6 +57,7 @@ Currently are implemented:
 	TPDF		student probability distribution
 	TCDF		student cumulative distribution 
 	TINV		inverse of the student cumulative distribution
+	NANSUM, NANSTD	fixes for buggy versions included
 	
 	
 REFERENCE(S):
@@ -189,7 +190,7 @@ alternative function definition (except built-in's) with the same name.
 This checks whether all previous functions have been replaced
 
 
-	Version 1.33 	Date: 10 Sep 2003
+	Version 1.50 	Date: 14 Sep 2003
 	Copyright (C) 2000-2003 by  Alois Schloeg <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

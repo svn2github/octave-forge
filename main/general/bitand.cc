@@ -25,7 +25,6 @@ INSTALLATION
 #include <sys/types.h>
 #include <strstream>
 #include <climits>
-#include <algorithm>
 #include <octave/oct.h>
 #include <octave/lo-ieee.h>
 using namespace std;
@@ -35,6 +34,11 @@ const unsigned int ULONG_SIZE=CHAR_BIT*sizeof(bitop_int);
 const unsigned int BIT_AND = 1;
 const unsigned int BIT_OR = 2;
 const unsigned int BIT_XOR = 3;
+
+inline unsigned int 
+max(unsigned int x, unsigned int y) { 
+	return x > y ? x : y; 
+} 
 
 double
 scalar_bitop(double x,double y,unsigned int op) {

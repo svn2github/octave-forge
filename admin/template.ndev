@@ -1,0 +1,215 @@
+->  Note:  this file is a template used by the Perl script 'get_contents'.
+->         get_contents reads this file and the CONTENTS files in each 
+->         subdirectory then creates the new_developer.html file by
+->         populating the "Where does your code belong" section.
+->         Albert Danial Jan 2 2002
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!-- 
+      The file new_developer.html is generated dynamically by the Perl 
+      program 'get_contents'.  Edit admin/template.ndev to make permanent 
+      changes to new_developer.html.
+      Albert Danial Jan 2 2002
+  -->
+<html>
+<head>
+<title>Octave-Forge Developer's Notes</title>
+   <meta name="keywords" content="instruction,octave,developer,contribute">
+</head>
+<body bgcolor="#FFFFFF">
+
+<!-- top table {{{1 -->
+<table align="center" BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="95%" BGCOLOR="#444444" >
+<tr>
+<td>
+<table BORDER=0 cellspacing=1 CELLPADDING=3 WIDTH="100%" >
+<tr>
+<td ALIGN=CENTER VALIGN=CENTER BGCOLOR="#FFFFFF">
+	<font face="Arial, Helvetica, Sans Serif" size=+2 color="#0000CC">
+		GNU Octave Repository	
+	</font>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p align="center">
+<font size="-1">
+<A href="http://octave.sourceforge.net">Home</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/projects/octave/">Summary</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/forum/?group_id=2888">Forums</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/bugs/?group_id=2888">Bugs</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/support/?group_id=2888">Support</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/patch/?group_id=2888">Patches</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/mail/?group_id=2888">Lists</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/pm/?group_id=2888">Tasks</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/docman/?group_id=2888">Docs</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/survey/?group_id=2888">Surveys</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/news/?group_id=2888">News</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/cvs/?group_id=2888">CVS</A>&nbsp;|&nbsp;
+<A href="http://sourceforge.net/project/showfiles.php?group_id=2888">Files</A>
+</font>
+</p>
+
+
+<!-- 1}}} end top table -->
+
+<p>
+<center>
+<h2>Contributing Code to the Gnu Octave Repository</h2>
+</center>
+
+
+<h3>Requirements</h3>
+To contribute your .m files, C++, C, or Fortran code to the Octave
+Repository you need to
+<ul>
+    <li> have an account on SourceForge,
+    <li> be registered as an octave-forge developer,
+    <li> have <a href="http://www.cvshome.org/">CVS</a>
+        installed on the computer from which you
+        will submit contributions, and
+    <li> have the secure shell,
+         <a href="http://www.openssh.com/"><tt>ssh</tt></a>, installed
+         on your computer.
+</ul>
+The first two requirements are easy but may take a few days.  
+If you don't already have one, request a SourceForge (SF) account
+<a href="http://sourceforge.net/account/register.php"> here</a>.
+To become a developer on octave-forge (octave-forge is the 
+CVS project name of the Gnu
+Octave Repository) simply email a request to one of the octave-forge
+administrators:
+<a href="mailto:cgijobs@users.sf.net">cgijobs@users.sf.net</a>,
+<a href="mailto:joolean@users.sf.net">joolean@users.sf.net</a>, or
+<a href="mailto:pkienzle@users.sf.net">pkienzle@users.sf.net</a>.
+Include a bit of information about the code
+you plan to submit. 
+Finally, if your computer runs linux or
+FreeBSD, chances are good that both <tt>ssh</tt> and CVS are already 
+installed on your system. 
+If they aren't, 
+you will need to find prebuilt packages for them or download their
+source codes and build them.
+
+<h3>Create a SF home directory</h3>
+<p>
+If you've never submitted code to a SourceForge project before,
+create your home directory by
+logging onto the octave-forge account with <tt>ssh</tt>:
+<pre>
+   $ ssh -l <FONT COLOR="#800000"><i>sflogin</i></FONT>  cvs.octave.sourceforge.net
+   Password:  <FONT COLOR="#800000"><i>your SF password</i></FONT>
+</pre>
+Although SF will only show you a message-of-the-day screen then log
+you out, this process has the useful side effect of creating a home
+directory for you if one doesn't already exist.  Some CVS commands will fail
+if you do not have a home directory on SF.
+
+<h3>Download the latest octave-forge distribution</h3>
+CVS expects the 
+code you plan to submit to reside in a directory within the existing
+octave-forge directory structure.
+You will therefore need to download a copy of the latest octave-forge
+distribution to work in.  Change directories to a place you want
+to put the code, then issue the CVS <i>checkout</i>
+(abreviated as 'co') command:
+<pre>
+   $ cd <FONT COLOR="#800000"><i>working_directory</i></FONT>
+   $ export CVS_RSH=ssh
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave co octave-forge
+</pre>
+
+<h3>Where does your code belong?</h3>
+
+Put your file(s) in a subdirectory under the <tt>octave-forge/</tt>
+directory.  Here are some guidelines to help you decide where your
+code belongs:
+<ul>
+>>>INSERT CONTENTS HERE<<<
+</ul>
+
+<h3>Add a copyright notice</h3>
+<p>
+Each file in octave-forge must contain a copyright notice.  
+If you wish to release your
+code under the 
+GNU <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>
+, insert the following text at the top of your file:
+<pre>
+## Copyright (C) <FONT COLOR="#800000"><i>year</i></FONT>   <FONT COLOR="#800000"><i>Your Name</i></FONT>   &lt;<FONT COLOR="#800000"><i>your@preferred.email</i></FONT>&gt;
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+</pre>
+
+Here are other popular open source licenses:
+<ul>
+    <li> <a href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser GPL</a>
+    <li> <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation License</a>
+    <li> <a href="http://www.opensource.org/licenses/artistic-license.html">Artistic License</a>
+    <li> <a href="http://www.opensource.org/licenses/bsd-license.html">BSD License</a>
+</ul>
+Consult 
+<a href="http://www.opensource.org/licenses/index.html">opensource.org</a>.
+for a comprehensive list of Open Source licenses.
+
+<h3>Submit your code!</h3>
+You are now ready to upload your code to the Gnu Octave Repository.  
+Do this with two CVS commands--one to add a new
+entry for your file in the octave-forge catalog, and a second command
+to actually upload the file:
+<pre>
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave add <FONT COLOR="#800000"><i>file.m</i></FONT>
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave commit <FONT COLOR="#800000"><i>file.m</i></FONT>
+</pre>
+
+After hitting the carriage return at the end of the commit command,
+CVS will open your default editor so that you can enter comments about
+the commit. The first time you commit a file the comment might be
+something as simple as `Initial commit into CVS.' However, for all
+subsequent commits please add meaningful comments that explain why
+changes were made to the file since all comments will appear in the
+changelog.
+<p>
+Aside:  the default editor can be defined like so:
+<pre>
+   $ export EDITOR=<FONT COLOR="#800000">vim</FONT>
+</pre>
+
+<h3>Learn more about CVS</h3>
+The few CVS commands shown here just scratch the surface of this
+powerful versioning package.  If you become an active contributor
+you will benefit from learning more CVS commands and understanding 
+how CVS works.
+The
+<a href="http://cvsbook.red-bean.com/cvsbook.html">
+CVS Book</a> is a great place to begin your exploration.
+
+<h3>Join the developers' mailing list</h3>
+Finally, consider joining the octave-forge developer's 
+<a href="http://lists.sourceforge.net/lists/listinfo/octave-dev">
+mailing list</a>.
+
+
+<hr noshade size=1>
+
+<center>
+<p>
+<small>Hosted by</small>
+<br><a href="http://www.sourceforge.net"><img src="/img/sflogo2-steel.png" border=0></a>
+
+</body>
+</html>

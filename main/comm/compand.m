@@ -14,27 +14,65 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-## y = compand(x, mu, V, 'mu/compressor')
-## y = compand(x, mu, V, 'mu/expander')
-##   mu-law compressor/expander for reducing the dynamic range of your
-##   signal. Uses:
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'mu/compressor)
+## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'mu/expander)
+## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'A/compressor)
+## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'A/expander)
+##
+## Compresses and expanding the dynamic range of a signal using a mu-law or
+## or A-law algorithm.
+##
+## The mu-law compressor/expander for reducing the dynamic range, is usesd
+## if the fourth argument of @dfn{compand} starts with 'mu/'. Whereas the
+## A-law compressor/expander is used if @dfn{compand} starts with 'A/'.
+## The mu-law algorithm uses the formulation
+##
+## @iftex
+## @tex
+## $$
+## y = {V log (1 + \\mu / V \\|x\\|) \\over log (1 + \\mu)} sgn(x)
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ##
 ##         V log (1 + \mu/V |x|)
 ##     y = -------------------- sgn(x)
 ##             log (1 + \mu)
 ##
-##   Does not convert from/to audio file ulaw format.  Use mu2lin/lin2mu
-##   instead.
+## @end example
+## @end ifinfo
 ##
-## y = compand(x, A, V, 'A/compressor')
-## y = compand(x, A, V, 'A/expander')
-##   A-law compressor/expander. Uses:
+## while the A-law algorithm used the formulation
+##
+## @iftex
+## @tex
+## $$
+## y = { \\left\{  \\matrix{ {A / (1 + log A) x}, & 0 <= \\|x\\| <= V/A \\cr
+##                  & \\cr  
+##                  {V log (1 + log(A/V \\|x\\|) ) \\over 1 + logA}, &
+##                  V/A < \\|x\\| <= V} \\right. }
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ##
 ##         /    A / (1 + log A) x,               0 <= |x| <= V/A  
 ##         | 
 ##     y = <    V ( 1 + log (A/V |x|) )
 ##         |    ----------------------- sgn(x),  V/A < |x| <= V
 ##         \        1 + log A
+## @end example
+## @end ifinfo
+##
+## Neither converts from or to audio file ulaw format. Use mu2lin or lin2mu
+## instead.
+##
+## @end deftypefn
+## @seealso{m2ulin, lin2mu}
 
 function y = compand(x, mu, V, stype)
 

@@ -1,15 +1,38 @@
-comm >> Communications
-Conversion
- bi2de	
- de2bi	
- vec2mat	
- randint	
- compand	
- quantiz 
-Galois Field
- gfprimdf
- gftuple
-Reed-Solomon Coding
- rspoly
- rsenco rsdeco
- rsenco_ccsds rsdeco_ccsds
+Communications
+ awgn
+ bi2de
+ compand
+ cosets
+ de2bi
+ gconv
+ gdiag
+ gdeconv
+ gdet
+ gdftmtx
+ gexp
+ gf
+ gfilter
+ gfft
+ gftable
+ gifft
+ ginv
+ ginverse
+ glog
+ glu
+ gprod
+ grank
+ greshape
+ groots
+ gsum
+ gsumsq
+ isgalois
+ isprimitive
+ minpol
+ primpoly
+ quantiz
+ randint
+ rsgenpoly
+ rsdec
+ rsenc
+ vec2mat
+ wgn

@@ -14,20 +14,29 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-## qidx = quantiz(x, table)
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{qidx} = } quantiz (@var{x}, @var{table})
+## @deftypefnx {Function File} {[@var{qidx}, @var{q}] = } quantiz (@var{x}, @var{table}, @var{codes})
+## @deftypefnx {Function File} {[ @var{qidx}, @var{q}, @var{d}] = } quantiz (@var{...})
+##
+## @table @code
+## @item qidx = quantiz(x, table)
 ##   Determine position of x in strictly monotonic table.  The first
 ##   interval, using index 0, corresponds to x <= table(1).
 ##   Subsequent intervals are table(i-1) < x <= table(i).
 ##
-## [qidx, q] = quantiz(x, table, codes)
+## @item [qidx, q] = quantiz(x, table, codes)
 ##   Associate each interval of the table with a code.  Use codes(1) 
 ##   for x <= table(1) and codes(n+1) for table(n) < x <= table(n+1).
 ##
-## [qidx, q, d] = quantiz(...)
+## @item [qidx, q, d] = quantiz(...)
 ##   Compute distortion as mean squared distance of x from the
 ##   corresponding table positions.  Note that an equally valid
 ##   definition of distortion is the distance from the codebook
 ##   values.
+## @end table
+## @end deftypefn
+
 function [qidx, q, d] = quantiz (x, table, codes)
   if (nargin < 2 || nargin > 3)
     usage("[qidx, q, d] = quantiz(x, table, codes)");

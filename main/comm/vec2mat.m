@@ -14,17 +14,14 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## usage: M = vec2mat (V, c [, d])
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{m} = } vec2mat (@var{v}, @var{c})
+## @deftypefnx {Function File} {@var{m} = } vec2mat (@var{v}, @var{c}, @var{d})
 ##
-## Converts the vector V into a c column matrix with row priority
-## arrangement and with the final column padded with the value d
-## to the correct length.
-##
-## V: vector
-## c: number of colunms
-## d: value of padded elements (default 0)
-##
-## M: matrix.
+## Converts the vector @var{v} into a @var{c} column matrix with row priority
+## arrangement and with the final column padded with the value @var{d} to the
+## correct length. By default @var{d} is 0.
+## @end deftypefn
 
 ## 2001-02-02
 ##   initial release

@@ -1,0 +1,1650 @@
+\input texinfo
+@setfilename comms.info
+
+@settitle
+
+@titlepage
+@title  Communications Toolbox for Octave
+@subtitle The start of a communications toolbox 
+@subtitle January 2003
+@author David Bateman
+@author Laurent Mazet
+@author Paul Kienzle
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2003 
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the same conditions as for modified versions.
+@end titlepage
+
+@contents
+
+@ifinfo
+@node Top, Introduction
+@top
+@end ifinfo
+
+@menu
+* Introduction::
+* Random Signals::
+* Source Coding::
+* Block Coding::
+* Convolutional Coding::
+* Modulations::
+* Special Filters::
+* Galois Fields::
+* Function Reference::
+@end menu
+
+@node Introduction, Random Signals, Top, Top
+@chapter Introduction
+
+This is the start of documentation for a Communications Toolbox for
+Octave. At the moment only Galois Fields and a few ancillary functions
+have been written, and so this document currently contains little else
+but the analysis of Galois fields and Reed-Solomon codes.
+
+As functions are written they should be documented here. In addition
+many of the existing functions of Octave and Octave-Forge are important
+in this Toolbox and their documentation should also be repeated here.
+
+@node Random Signals, Source Coding, Introduction, Top
+@chapter Random Signals
+
+To be written.
+
+Currently have functions awgn randint, and wgn.
+
+@node Source Coding, Block Coding, Random Signals, Top
+@chapter Source Coding
+
+To be written
+
+Currently have functions quantiz and compand.
+
+@node Block Coding, Convolutional Coding, Source Coding, Top
+@chapter Block Coding
+
+To be written.
+
+@menu
+* Binary Block Codes::
+* Reed-Solomon Codes::
+@end menu
+
+@node Binary Block Codes, Reed-Solomon Codes, , Block Coding
+@section Binary Block Codes
+
+To be written.
+
+@node Reed-Solomon Codes, ,Binary Block Codes, Block Coding
+@section Reed-Solomon Codes
+
+@menu
+* Representation of Reed-Solomon Messages::
+* Creating and Decoding Messages::
+* Shortened Reed-Solomon Codes::
+@end menu
+
+@node Representation of Reed-Solomon Messages, Creating and Decoding Messages, , Reed-Solomon Codes
+@subsection Representation of Reed-Solomon Messages
+
+Reed-Solomon codes are based on Galois Fields of even characteristics
+GF(2^M). Many of the properties of Galois Fields are therefore important
+when considering Reed-Solomon coders. 
+
+The representation of the symbols of the Reed-Solomon code differs from
+the other block codes, in that the other block codes use a binary 
+representation, while the Reed-Solomon code represents each m-bit symbol
+by an integer. The elements of the message and codeword must be elements
+of the Galois Field corresponding to the Reed-Solomon code. Thus to
+code a message with a [7 5] Reed-Solomon code an example is
+
+@example
+octave:1> m = 3;
+octave:2> n = 7;
+octave:3> k = 5;
+octave:4> msg = gf(floor(2^m*rand(2,k)),m)
+msg =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  5  0  6  3  2
+  4  1  3  1  2
+
+octave:5> code = rsenc(msg,n,k)
+code =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  5  0  6  3  2  3  5
+  4  1  3  1  2  6  3
+@end example
+
+The variable @var{n} is the codeword length of the Reed-Solomon coder,
+while @var{k} is the message length. It should be noted that @var{k}
+should be less than @var{n} and that @code{@var{n} - @var{k}} should be
+even. The error correcting capability of the Reed-Solomon code is then
+@code{(@var{n}-@var{k})/2} symbols. @var{m} is the number of bits per
+symbol, and is related to @var{n} by @code{@var{n} = 2^@var{m} - 1}.
+For a valid Reed-Solomon coder, @var{m} should be between 3 and 16.
+
+@node Creating and Decoding Messages, Shortened Reed-Solomon Codes, Representation of Reed-Solomon Messages, Reed-Solomon Codes
+@subsection Creating and Decoding Messages
+
+The Reed-Solomon encoding function requires at least three arguments. The
+first @var{msg} is the message in encodes, the second is @var{n} the codeword
+length and @var{k} is the message length. Therefore @var{msg} must have
+@var{k} columns and the output will have @var{n} columns of symbols.
+
+The message itself is many up of elements of a Galois Field
+GF(2^M). Normally, The order of the Galois Field (M), is related to the
+codeword length by @code{@var{n} = 2^@var{m} - 1}. Another important
+parameter when determining the behaviour of the Reed-Solomon coder is
+the primitive polynomial of the Galois Field (see @dfn{gf}). Thus
+the messages
+
+@example
+octave:1> msg0 = gf([0 1 2 3],3);
+octave:2> msg1 = gf([0 1 2 3],3,13);
+@end example
+
+will not result in the same Reed-Solomon coding. Finally, the parity of
+the Reed-Solomon code are generated with the use of a generator
+polyomial. The parity symbols are then generated by treating the message
+to encode as a polynomial and finding the remainder of the division of
+this polynomial by the generator polynomial. Therefore the generator
+polynomial must have as many roots as @code{@var{n} - @var{k}}. Whether
+the parity symbols are placed before or afterwards the message will then
+determine which end of the message is the most-significant term of the
+polynomial representing the message. The parity symbols are therefore
+different in these two cases. The position of the parity symbols can be
+chosen by specifying 'beginning' or 'end' to @dfn{rsenc} and @dfn{rsdec}.
+By default the parity symbols are placed after the message.
+
+Valid generator polynomials can be constructed with the @dfn{rsgenpoly}
+function. The roots of the generator polynomial are then defined by
+
+@iftex
+@tex
+$$
+g = (x - A^{bs}) (x - A^{(b+1)s})  \cdots (x - A ^{(b+2t-1)s}).
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@var{g} = (@var{x} - A^(@var{b}*@var{s})) * (@var{x} - A^((@var{b}+1)*@var{s})) * ... * (@var{x} - A^((@var{b}+2*@var{t}-1)*@var{s})).
+@end example
+@end ifinfo
+
+where @var{t} is @code{(@var{n}-@var{k})/2}, A is the primitive element 
+of the Galois Field, @var{b} is the first consecutive root, and @var{s}
+is the step between roots. Generator polynomial of this form are constructed
+by @dfn{rsgenpoly} and can be passed to both @dfn{rsenc} and @dfn{rsdec}.
+It is also possible to pass the @var{b} and @var{s} values directly to
+@dfn{rsenc} and @dfn{rsdec}. In the case of @dfn{rsdec} passing @var{b}
+and @var{s} can make the decoding faster.
+
+Consider the example below.
+
+@example
+octave:1> m = 8;
+octave:2> n = 2^m - 1;
+octave:3> k = 223;
+octave:4> prim = 391;
+octave:5> b = 112;
+octave:6> s = 11;
+octave:7> gg = rsgenpoly(n, k, prim, b, s);
+octave:8> msg = gf(floor(2^m*rand(17,k)), m, prim);
+octave:9> code = rsenc(msg, n, k, gg);
+octave:10> noisy = code + [toeplitz([ones(1,17)], zeros(1,17)) zeros(17,238)];
+octave:11> [dec nerr] = rsdec(msg, n, k, b, s);
+octave:13> nerr'
+ans =
+
+   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  -1
+
+octave:12> any(msg' != dec')
+ans =
+
+  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1
+@end example
+
+This is an interesting example in that it demonstrates many of the 
+additional arguments of the Reed-Solomon functions. In particular
+this example approximates the CCSDS standard Reed-Solomon coder,
+lacking only the dual-basis lookup tables used in this standard.
+The CCSDS uses non-default values to all of the basic functions
+involved in the Reed-Solomon encoding, since it has a non-default
+primitive polynomial, generator polynomial, etc.
+
+The example creates 17 message blocks and adds between 1 and 17 error
+symbols to these block. As can be seen @var{nerr} gives the number of
+errors corrected. In the case of 17 introduced errors @var{nerr}
+equals -1, indicating a decoding failure. This is normal as the 
+correction ability of this code is upto 16 error symbols. Comparing
+the input message and the decoding it can be seen that as expected,
+only the case of 17 errors has not been correctly decoded.
+
+@node Shortened Reed-Solomon Codes, , Creating and Decoding Messages, Reed-Solomon Codes
+@subsection Shortened Reed-Solomon Codes
+
+In general the codeword length of the Reed-Solomon coder is chosen so
+that it is related directly to the order of teh Galois Field by the
+formula @code{@var{n} = 2^@var{m} = 1}. Although, the underlying 
+Reed-Solomon coding must operate over valid codeword length, there
+are sometimes reasons to assume the the codeword length will be shorter.
+In this case the message is padded with zeros before coding, and the 
+zeros are stripped from the returned block. For example consider the
+shortened [6,4] Reed-Solomon below
+
+@example
+octave:1> m = 3;
+octave:2> n = 6;
+octave:3> k = 4;
+octave:4> msg = gf(floor(2^m*rand(2,k)),m)
+msg =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  7  0  2  5
+  1  5  7  1
+
+octave:5> code = rsenc(msg,n,k)
+code =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  7  0  2  5  2  3
+  1  5  7  1  0  2
+@end example
+
+
+@node Convolutional Coding, Modulations, Block Coding, Top
+@chapter Convolutional Coding
+
+To be written.
+
+@node Modulations, Special Filters, Convolutional Coding, Top
+@chapter Modulations
+
+To be written.
+
+@node Special Filters, Galois Fields, Modulations, Top
+@chapter Special Filters
+
+To be written.
+
+@node Galois Fields, Function Reference, Special Filters, Top
+@chapter Galois Fields
+
+@menu
+* Galois Field Basics::
+* Manipulating Galois Fields::
+* Index of operations of Galois Fields::
+@end menu
+
+@node Galois Field Basics, Manipulating Galois Fields, , Galois Fields
+@section Galois Field Basics
+
+A Galois Field is a finite algebraic field. This package implements a
+Galois Field type in Octave having 2^M members where M is an integer
+between 1 and 16. Such fields are denoted as GF(2^M) and are used in
+error correcting codes in communications systems. Galois Fields having
+odd numbers of elements are not implemented.
+
+The @emph{primitive element} of a Galois Field has the property that all
+elements of the Galois Field can be represented as a power of this element.
+The @emph{primitive polynomial} is the minimum polynomial of some primitive
+element in GF(2^M) and is irreducible and of order M. This means that the
+primitive element is a root of the primitive polynomial.
+
+The elements of the Galois Field GF(2^M) are represented as the values
+0 to 2^M -1 by Octave. The first two elements represent the zero and unity
+values of the Galois Field and are unique in all fields. The element 
+represented by 2 is the primitive element of the field and all elements can
+be represented as combinations of the primitive element and unity as follows
+
+@multitable @columnfractions .33 .33 .33
+@item Integer    @tab Binary     @tab Element of GF(2^M)
+@item  0         @tab  000       @tab @code{0}
+@item  1         @tab  001       @tab @code{1}
+@item  2         @tab  010       @tab @code{A}
+@item  3         @tab  011       @tab @code{A + 1}
+@item  4         @tab  100       @tab @code{A^2}
+@item  5         @tab  101       @tab @code{A^2 + 1}
+@item  6         @tab  110       @tab @code{A^2 + A}
+@item  7         @tab  111       @tab @code{A^2 + A + 1}
+@end multitable
+
+It should be noted that there is often more than a single primitive
+polynomial of GF(2^M). Each Galois Field over a different primitive
+polynomial represents a different realization of the Field. The
+representations above however rest valid.
+
+This code was written as a challenge by Paul Kienzle (octave forge) to
+convert a Reed-Solomon coder I had in octave to be compatible with
+Matlab communications toolbox R13. This forced the need to have a complete
+library of functions over the even Galois Fields. Although this code 
+was written to be compatible with the equivalent Matlab code, I did not
+have access to a version of Matlab with R13 installed, and thus this code
+is based on Matlab documentation only. No compatibility testing has been
+performed and so I am most interested in comments about compatibility
+at the e-mail address dbateman@@free.fr.
+
+Although the Galois Field supporting code was written from scratch,
+extensive use of code by Phil Karn (http://www.ka9q.net/code/fec) was
+used in the Reed-Solomon coder.
+
+@menu
+* Creating Galois Fields::
+* Primitive Polynomials::
+* Accessing Internal Fields::
+* Function Overloading::
+* Known Problems::
+@end menu
+
+@node Creating Galois Fields, Primitive Polynomials, , Galois Field Basics
+@subsection Creating Galois Fields
+
+To work with a Galois Field GF(2^M) in Octave, you must first create a variable
+that Octave recognizes as a Galois Field. This is done with the function
+@code{gf(@var{a},@var{m})} as follows.
+
+@example
+octave:1> a = [0:7];
+octave:2> b = gf(a,4)
+b =
+GF(2^4) array. Primitive Polynomial = D^4+D+1 (decimal 19)
+
+Array elements = 
+
+  0  1  2  3  4  5  6  7
+@end example
+
+This creates an array @var{b} with 8 elements that Octave recognizes as a 
+Galois Field. The field is created with the default primitive polynomial for 
+the field GF(2^4). It can be verified that a variable is in fact a Galois
+Field with the functions @code{isgalois} or @code{whos}.
+
+@example
+octave:3> isgalois(a)
+ans = 0
+octave:4> isgalois(b)
+ans = 1
+octave:5> whos
+
+*** local user variables:
+
+prot  type                       rows   cols  name
+====  ====                       ====   ====  ====
+ rwd  matrix                        1      8  a
+ rwd  galois                        1      8  b
+@end example
+
+It is also possible to create a Galois Field with an arbitrary primitive 
+polynomial. However, if the polynomial is not a primitive polynomial of
+the field, and error message is returned. For instance.
+
+@example
+octave:1> a = [0:7];
+octave:2> b = gf(a,4,25)
+b =
+GF(2^4) array. Primitive Polynomial = D^4+D^3+1 (decimal 25)
+
+Array elements = 
+
+  0  1  2  3  4  5  6  7
+
+octave:3> c = gf(a,4,21)
+error: primitive polynomial (21) of Galois Field must be irreducible
+error: unable to initialize Galois Field
+error: evaluating assignment expression near line 3, column 3
+@end example
+
+The function @dfn{gftable} is included for compatibility with Matlab. In
+Matlab this function is used to create the lookup tables used to accelerate
+the computations over the Galois Field and store them to a file. However
+octave stores these parameters for all of the fields currently in use and
+so this function is not required, although it is silently accepted.
+
+@node Primitive Polynomials, Accessing Internal Fields, Creating Galois Fields, Galois Field Basics
+@subsection Primitive Polynomials
+
+The function @code{gf(@var{a},@var{m})} creates a Galois Field using the default primitive
+polynomial. However there exists many possible primitive polynomials for most
+Galois Fields. Two functions exist for identifying primitive polynomials,
+@dfn{isprimitive} and @dfn{primpoly}. @code{primpoly(@var{m},@var{opt})} is 
+used to identify the primitive polynomials of the fields GF(2^M). For example
+
+@example
+octave:1> primpoly(4)
+
+Primitive polynomial(s) =
+
+D^4+D+1
+
+ans = 19
+@end example
+
+identifies the default primitive polynomials of the field GF(2^M), which
+is the same as @code{primpoly(4,'min')}. All of the primitive polynomials 
+of a field can be identified with the function @code{primpoly(@var{m},'all')}.
+For example
+
+@example
+octave:1> primpoly(4, 'all')
+
+Primitive polynomial(s) =
+
+D^4+D+1
+D^4+D^3+1
+
+ans =
+
+  19  25
+@end example
+
+while @code{primpoly(@var{m},'max')} returns the maximum primitive polynomial 
+of the field, which for the case above is 25. The function @dfn{primpoly}
+can also be used to identify the primitive polynomials having only a 
+certain number of non-zero terms. For instance
+
+@example
+octave:1> primpoly(5, 3)
+
+Primitive polynomial(s) =
+
+D^5+D^2+1
+D^5+D^3+1
+
+ans =
+
+  37  41
+@end example
+
+identifies the polynomials with only three terms that can be used as
+primitive polynomials of GF(2^5). If no primitive polynomials existing
+having the requested number of terms then @dfn{primpoly} returns an
+empty vector. That is
+
+@example
+octave:1> primpoly(5,2)
+primpoly: No primitive polynomial satisfies the given constraints
+
+ans = [](1x0)
+@end example
+
+As can be seen above, @dfn{primpoly} displays the polynomial forms the
+the polynomials that it finds. This output can be suppressed with the
+'nodisplay' option, while the returned value is left unchanged.
+
+@example
+octave:1> primpoly(4,'all','nodisplay')
+ans =
+
+  19  25
+@end example
+
+@code{isprimitive(@var{a})} identifies whether the elements of @var{a} can
+be used as primitive polynomials of the Galois Fields GF(2^M). Consider 
+as an example the fields GF(2^4). The primitive polynomials of these fields 
+must have an order m and so their integer representation must be between 
+16 and 31. Therefore @dfn{isprimitive} can be used in a similar manner to
+@dfn{primpoly} as follows
+
+@example
+octave:1> find(isprimitive(16:31)) + 15
+ans =
+
+  19  25
+@end example
+
+which finds all of the primitive polynomials of GF(2^4).
+
+@node Accessing Internal Fields, Function Overloading, Primitive Polynomials, Galois Field Basics
+@subsection Accessing Internal Fields
+
+Once a variable has been defined as a Galois Field, the parameters of the
+field of this structure can be obtained by adding a suffix to the variable.
+Valid suffixes are '.m', '.prim_poly' and '.x', which return the order of the
+Galois Field, its primitive polynomial and the data the variable contains 
+respectively. For instance
+
+@example
+octave:1> a = [0:7];
+octave:2> b = gf(a,4);
+octave:3> b.m
+ans = 4
+octave:4> b.prim_poly
+ans = 19
+octave:5> c = b.x;
+octave:6> whos
+ 
+*** local user variables:
+
+prot  type                       rows   cols  name
+====  ====                       ====   ====  ====
+ rwd  matrix                        1      8  a
+ rwd  galois                        1      8  b
+ rwd  matrix                        1      8  c
+@end example
+
+@c Note that if code compiled with GALOIS_DISP_PRIVATES then '.n', '.alpha_to'
+@c and '.index_of' are also available. These give 2^m-1, the lookup table
+@c and its inverse respectively.
+
+Please note that it is explicitly forbidden to modify the galois field by
+accessing these variables. For instance
+
+@example
+octave:1> a = gf([0:7],3);
+octave:2> a.prim_poly = 13;
+@end example
+
+is explicitly forbidden. The result of this will be to replace the
+Galois array @var{a} with a structure @var{a} with a single element
+called '.prim_poly'. To modify the order or primitive polynomial of a
+field, a new field must be created and the data copied. That is
+
+@example
+octave:1> a = gf([0:7],3);
+octave:2> a = gf(a.x,a.m,13);
+@end example
+
+@node Function Overloading, Known Problems, Accessing Internal Fields, Galois Field Basics
+@subsection Function Overloading
+
+An important consideration in the use of the Galois Field package is
+that many of the internal functions of Octave, such as @dfn{roots}, can
+not accept Galois Fields as an input. This package therefore uses the
+@dfn{dispatch} function of Octave-Forge to @emph{overload} the internal
+Octave functions with equivalent functions that work with Galois Fields,
+so that the standard function names can be used. However, at any time the
+Galois field specific version of the function can be used by explicitly
+calling its function name. The correspondence between the internal
+function names and the Galois Field versions is as follows
+
+@multitable @columnfractions .11 .037 .18 .131 .037 .18 .11 .037 .18
+@item @code{conv} @tab - @tab @code{gconv}, 
+@tab @code{convmtx} @tab - @tab @code{gconvmtx}, 
+@tab @code{diag} @tab - @tab @code{gdiag}, 
+@item @code{deconv} @tab - @tab @code{gdeconv}, 
+@tab @code{det} @tab - @tab @code{gdet},
+@tab @code{exp} @tab - @tab @code{gexp},
+@item @code{filter} @tab - @tab @code{gfilter},
+@tab @code{inv}  @tab - @tab @code{ginv},
+@tab @code{log} @tab - @tab @code{glog},
+@item @code{lu}  @tab - @tab @code{glu},
+@tab @code{prod} @tab - @tab @code{gprod},
+@tab @code{reshape} @tab - @tab @code{greshape},
+@item @code{rank}  @tab - @tab @code{grank},
+@tab @code{roots} @tab - @tab @code{groots},
+@tab @code{sum} @tab - @tab @code{gsum},
+@item @code{sumsq} @tab - @tab @code{gsumsq}.
+@end multitable
+
+The version of the function that is chosen is determined by the first 
+argument of the function. So, considering the @dfn{filter} function,
+if the first argument is a @emph{Matrix}, then the normal version of
+the function is called regardless of whether the other arguments of the
+function are Galois vectors or not.
+
+Other Octave function work correctly with Galois Fields and so overloaded
+versions are not necessary. This include such functions as @dfn{size} and
+@dfn{polyval}.
+
+It is also useful to use the '.x' option discussed in the previous section,
+to extract the raw data of the Galois field for use with some functions. An
+example is
+
+@example
+octave:1> a = minpol(gf(14,5));
+octave:2> b = de2bi(a.x,'left-msb');
+@end example
+
+converts the polynomial form of the minimum polynomial of 14 in GF(2^5) into
+an integer.
+
+@node Known Problems, , Function Overloading, Galois Field Basics
+@subsection Known Problems
+
+Before reporting a bug compare it to this list of known problems
+
+@table @asis
+@item Concatenation
+The concatenation of Galois arrays returns a Matrix type. That is 
+@code{[gf([1 0],m) gf(1, m)]} returns a matrix went it should return
+another Galois array. The workaround is to explicitly convert the 
+returned value back to the correct Galois field using 
+@code{gf([gf([1 0],m) gf(1,m)])}.
+
+@item Saving Galois variables
+This is not implemented yet. You can not save a Galois variable. You 
+can however save the information it contains and reconstruct the data
+afterwards by doing something like
+
+@example
+octave:2> x = a.x; m = a.m; p = a.prim_poly;
+octave:3> save a.mat x m p;
+@end example  
+
+where @var{a} is a Galois variable.
+
+@item Fourier transforms
+They are not implemented over Galois Fields yet.
+
+@item Speed
+The code was written piece-meal with no attention to optimum code. Now
+that I have something working I should probably go back and tidy the 
+code up, optimizing it at the same time.
+
+@end table
+
+@node Manipulating Galois Fields, Index of operations of Galois Fields, Galois Field Basics, Galois Fields
+@section Manipulating Galois Fields
+
+@menu
+* Expressions manipulation and assignment::
+* Unary operations::
+* Arithmetic operations::
+* Comparison operations::
+* Polynomial manipulations::
+* Linear Algebra::
+* Signal Processing::
+@end menu
+
+@node Expressions manipulation and assignment, Unary operations, , Manipulating Galois Fields
+@subsection Expressions, manipulation and assignment
+
+Galois variables can be treated in similar manner to other variables within
+Octave. For instance Galois fields can be accessed using index expressions
+in a similar manner to all other Octave matrices. For example
+
+@example
+octave:1> a = gf([[0:7];[7:-1:0]],3)
+a =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  0  1  2  3  4  5  6  7
+  7  6  5  4  3  2  1  0
+
+octave:2> b = a(1,:)
+b =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  0  1  2  3  4  5  6  7
+@end example
+
+Galois arrays can equally use indexed assignments. That is, the data
+in the array can be partially replaced, on the condition that the two
+fields are identical. An example is
+
+@example
+octave:1> a = gf(ones(2,8),3);
+octave:2> b = gf(zeros(1,8),3);
+octave:3> a(1,:) = b
+a =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  0  0  0  0  0  0  0  0
+  1  1  1  1  1  1  1  1
+@end example
+
+Implicit conversions between normal matrices and Galois arrays are possible.
+For instance data can be directly copied from a Galois array to a real matrix
+as follows.
+
+@example
+octave:1> a = gf(ones(2,8),3);
+octave:2> b = zeros(2,8);
+octave:3> b(2,:) = a(2,:)
+b =
+
+  0  0  0  0  0  0  0  0
+  1  1  1  1  1  1  1  1
+@end example
+
+The inverse is equally possible, with the proviso that the data in the matrix
+is valid in the Galois field. For instance
+
+@example
+octave:1> a = gf([0:7],3);
+octave:2> a(1) = 1;
+@end example
+
+is valid, while
+
+@example
+octave:1> a = gf([0:7],3);
+octave:2> a(1) = 8;
+@end example
+
+is not, since 8 is not an element of GF(2^3). This is a basic rule of
+manipulating Galois arrays. That is matrices and scalars can be used in
+conjunction with a Galois array as long as they contain valid data
+within the Galois field. In this case they will be assumed to be of the
+same field.
+
+As Octave does not yet support concatenation of typed matrices, matrix
+concatenation will force the Galois array back to a normal matrix. For
+instance.
+
+@example
+octave:1> a = [gf([0:7],3); gf([7:-1:0],3)];
+octave:2> b = [a, a];
+octave:3> whos
+
+*** local user variables:
+
+prot  type                       rows   cols  name
+====  ====                       ====   ====  ====
+ rwd  matrix                        2      8  a
+ rwd  matrix                        2     16  b
+@end example
+
+This has the implication that many of the scripts included with Octave
+that should work with Galois fields, won't work correctly at this point.
+Therefore, work is underway to include the capability of typed concatenation.
+For now if you wish to concatenate Galois arrays, use the syntax
+
+@example
+octave:1> a = gf([0:7],3);
+octave:2> b = gf([a, a], a.m, a.prim_poly);
+@end example
+
+which explicitly reconverts @var{b} to the corerct Galois Field. Other
+basic manipulations of Galois arrays are
+
+@table @code
+@item isempty
+Returns true if the Galois array is empty.
+
+@item size
+Returns the number of rows and columns in the Galois array.
+
+@item length
+Returns the length of a Galois vector, or the maximum of rows or columns
+of Galois arrays.
+
+@item find
+Find the indexes of the non-zero elements of a Galois array.
+
+@item diag
+Create a diagonal Galois array from a Galois vector, or extract a diagonal
+from a Galois array.
+
+@item reshape
+Change the shape of the Galois array.
+
+@end table
+
+@node Unary operations, Arithmetic operations, Expressions manipulation and assignment, Manipulating Galois Fields
+@subsection Unary operations
+
+The same unary operators that are available for normal Octave matrices are
+also available for Galois arrays. These operations are
+
+@table @code
+@item +@var{x}
+Unary plus. This operator has no effect on the operand.
+
+@item -@var{x}
+Unary minus. Note that in a Galois Field this operator also has no effect 
+on the operand.
+
+@item !@var{x}
+Returns true for zero elements of Galois Array.
+
+@item @var{x}'
+Complex conjugate transpose. As the Galois Field only contains integer
+values, this is equivalent to the transpose operator.
+
+@item @var{x}.'
+Transpose of the Galois array.
+@end table
+
+@node Arithmetic operations, Comparison operations, Unary operations, Manipulating Galois Fields
+@subsection Arithmetic operations
+
+The available arithmetic operations on Galois arrays are the same as on
+other Octave matrices. It should be noted that both operands must be in
+the same Galois Field. If one operand is a Galois array and the second is
+a matrix or scalar, then the second operand is silently converted to the
+same Galois Field. The element(s) of these matrix or scalar must however
+be valid members of the Galois field. Thus
+
+@example
+octave:1> a = gf([0:7],3);
+octave:2> b = a + [0:7];
+@end example
+
+is valid, while
+ 
+@example
+octave:1> a = gf([0:7],3);
+octave:2> b = a + [1:8];
+@end example
+
+is not, since 8 is not a valid element of GF(2^3). The available arithmetic
+operators are
+
+@table @code
+@item @var{x} + @var{y}
+Addition. If both operands are Galois arrays or matrices, the number of rows
+and columns must both agree.  If one operand is a is a Galois array with a
+single element or a scalar, its value is added to all the elements of the 
+other operand. The @code{+} operator on a Galois Field is equivalent to an
+exclusive-or on normal integers.
+
+@item @var{x} .+ @var{y}
+Element by element addition. This operator is equivalent to @code{+}.
+
+@item @var{x} - @var{y}
+As both @code{+} and @code{-} in a Galois Field are equivalent to an
+exclusive-or for normal integers, @code{-} is equivalent to the @code{+}
+operator
+
+@item @var{x} .- @var{y}
+Element by element subtraction. This operator is equivalent to @code{-}.
+
+@item @var{x} * @var{y}
+Matrix multiplication.  The number of columns of @var{x} must agree
+with the number of rows of @var{y}.
+
+@item @var{x} .* @var{y}
+Element by element multiplication.  If both operands are matrices, the
+number of rows and columns must both agree.
+
+@item @var{x} / @var{y}
+Right division.  This is conceptually equivalent to the expression
+
+@example
+(inverse (y') * x')'
+@end example
+
+@noindent
+but it is computed without forming the inverse of @var{y'}.
+
+If the matrix is singular then an error occurs. If the matrix is 
+under-determined, then a particular solution is found (but not minimum
+norm). If the solution is over-determined, then an attempt is made
+to find a solution, but this is not guaranteed to work.
+
+@item @var{x} ./ @var{y}
+Element by element right division.
+
+@item @var{x} \ @var{y}
+Left division.  This is conceptually equivalent to the expression
+
+@example
+inverse (x) * y
+@end example
+
+@noindent
+but it is computed without forming the inverse of @var{x}.
+
+If the matrix is singular then an error occurs. If the matrix is 
+under-determined, then a particular solution is found (but not minimum
+norm). If the solution is over-determined, then an attempt is made
+to find a solution, but this is not guaranteed to work.
+
+@item @var{x} .\ @var{y}
+Element by element left division.  Each element of @var{y} is divided
+by each corresponding element of @var{x}.
+
+@item @var{x} ^ @var{y}
+@itemx @var{x} ** @var{y}
+Power operator.  If @var{x} and @var{y} are both scalars, this operator
+returns @var{x} raised to the power @var{y}.  Otherwise @var{x} must
+be a square matrix raised to an integer power.
+
+@item @var{x} .^ @var{y}
+@item @var{x} .** @var{y}
+Element by element power operator.  If both operands are matrices, the
+number of rows and columns must both agree.
+
+@end table
+
+@node Comparison operations, Polynomial manipulations, Arithmetic operations, Manipulating Galois Fields
+@subsection Comparison operations
+
+Galois variables can be tested for equality in the usual manner. That is
+
+@example
+octave:1> a = gf([0:7],3);
+octave:2> a == ones(1,8)
+ans =
+
+  0  1  0  0  0  0  0  0
+
+octave:3> a ~= zeros(1,8)
+ans =
+
+  0  1  1  1  1  1  1  1
+@end example
+
+Likewise, Galois vectors can be tested against scalar values (whether they are
+Galois or not). For instance
+
+@example
+octave:4> a == 1
+ans =
+
+  0  1  0  0  0  0  0  0
+@end example
+
+To test is any or all of the values in a Galois array are non-zero, the 
+functions @dfn{any} and @dfn{all} can be used as normally.
+
+In addition the comparison operators @code{>}, @code{>=}, @code{<} and
+@code{<=} are available. As elements of the Galois Field are modulus
+2^@var{m}, all elements of the field are both greater than and less than
+all others at the same time.Thus these comparison operators don't make 
+that much sense and are only included for completeness. The comparison is
+done relative to the integer value of the Galois Field elements.
+
+@node Polynomial manipulations, Linear Algebra, Comparison operations, Manipulating Galois Fields
+@subsection Polynomial manipulations
+
+A polynomial in GF(2^M) can be expressed as a vector in GF(2^M). For instance
+if @var{a} is the @emph{primitive element}, then the example
+
+@example
+octave:1> poly = gf([2 4 5 1],3);
+@end example
+
+represents the polynomial
+
+@iftex
+@tex
+$$
+poly = a x^3 + a^2 x^2 + (a^2 + 1) x + 1
+$$
+@end tex
+@end iftex
+@ifinfo
+@example
+poly = @var{a} * x^3 + @var{a}^2 * x^2 + (@var{a}^2 + 1) * x + 1
+@end example
+@end ifinfo
+
+Arithmetic can then be performed on these vectors. For instance to add
+to polynomials an example is
+
+@example
+octave:1> poly1 = gf([2 4 5 1],3);
+octave:2> poly2 = gf([1 2],3);
+octave:3> sumpoly = poly1 + [0 0 poly2]
+sumpoly =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  2  4  4  3
+@end example
+
+Note that @var{poly2} must be zero padded to the same length as poly1 to
+allow the addition to take place.
+
+Multiplication and division of polynomials is equivalent to convolution
+and de-convolution of vectors of Galois elements. Thus to multiply two
+polynomials in GF(2^3).
+
+@example
+octave:4> mulpoly = conv(poly1, poly2)
+mulpoly =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  2  0  6  0  2
+@end example
+
+Likewise the division of two polynomials uses the de-convolution function
+as follows
+
+@example
+octave:5> [poly, remd] = deconv(mulpoly,poly2)
+poly =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  2  4  5  1
+
+remd =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  0  0  0  0  0
+@end example
+
+Note that the remainder of this division is zero, as we performed the inverse
+operation to the multiplication.
+
+To evaluate a polynomial for a certain value in GF(2^M), use the Octave
+function @dfn{polyval}.
+
+@example
+octave:1> poly1 = gf([2 4 5 1],3);  ## a*x^3 + a^2*x^2 + (a^2 + 1)*x + 1
+octave:2> x0 = gf([0 1 2],3);
+octave:3> y0 = polyval(poly1, x0);
+y0 =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  1  2  0
+
+octave:4> a = gf(2,3);               ## The primitive element
+octave:5> y1 = a .* x0.^3 + a.^2 .* x0.^2 + (a.^2 + 1) .* x0 + 1
+y1 =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  1  2  0
+@end example
+
+It is equally possible to find the roots of Galois polynomials with the
+@dfn{roots} function. Using the polynomial above over GF(2^3), we can
+find its roots in the following manner
+
+@example
+octave:1> poly1 = gf([2 4 5 1], 3);
+octave:2> root1 = roots(poly1)
+root1 =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  2
+  5
+  5
+@end example
+
+Thus the example polynomial has 3 roots in GF(2^3) with one root of
+multiplicity 2. We can check this answer with the @dfn{polyval} function
+as follows
+
+@example
+octave:3> check1 = polyval(poly1, root1)
+check1 =
+GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+Array elements = 
+
+  0
+  0
+  0
+@end example
+
+which as expected gives a zero vector. It should be noted that both the
+number of roots and their value, will depend on the chosen field. Thus
+for instance
+
+@example
+octave:1> poly3 = gf([2 4 5 1],3, 13);
+octave:2> root3 = roots(poly3)
+root3 =
+GF(2^3) array. Primitive Polynomial = D^3+D^2+1 (decimal 13)
+
+Array elements = 
+
+  5
+@end example
+
+shows that in the field GF(2^3) with a different primitive polynomial,
+has only one root exists.
+
+The minimum polynomial of an element of GF(2^M) is the minimum degree
+polynomial in GF(2), excluding the trivial zero polynomial, that has
+that element as a root. The fact that the minimum polynomial is in GF(2)
+means that its coefficients are one or zero only. The @dfn{minpol}
+function can be used to find the minimum polynomial as follows
+
+@example
+octave:1> a = gf(2,3);               ## The primitive element
+octave:2> b = minpol(a)
+b =
+GF(2) array.
+
+Array elements = 
+
+  1  0  1  1
+@end example
+
+Note that the minimum polynomial of the primitive element is the primitive
+polynomial. Elements of GF(2^M) sharing the same minimum polynomial form a
+partitioning of the field. This partitioning can be found with the 
+@dfn{cosets} function as follows
+
+@example
+octave:1> c = cosets(3)
+c =
+@{
+  [1,1] =
+  GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+  Array elements = 
+
+    1
+
+  [2,1] =
+  GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+  Array elements = 
+
+    2  4  6
+
+  [3,1] =
+  GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
+
+  Array elements = 
+
+    3  5  7
+
+@}
+@end example
+
+which returns a cell array containing all of the the elements of the GF(2^3), 
+partitioned into groups sharing the same minimum polynomial. The function
+@dfn{cosets} can equally accept a second argument defining the primitive
+polynomial to use in its calculations (i.e. @code{cosets(@var{a},@var{p})}).
+
+@node Linear Algebra, Signal Processing, Polynomial manipulations, Manipulating Galois Fields
+@subsection Linear Algebra
+
+The basic linear algebra operation of this package is the LU factorization
+of a the Galois array. That is the Galois array @var{a} is factorized in the
+following way
+
+@example
+octave:2> [l u p] = lu(a)
+@end example
+
+such that @code{@var{p} * @var{a} = @var{l} * @var{u}}. The matrix @var{p}
+contains row permutations of @var{a}, such that @var{l} and @var{u} are
+strictly upper and low triangular. The Galois array @var{a} can be 
+rectangular.
+
+All other linear algebra operations within this package are based on this
+LU factorization of a Galois array. An important consequence of this is that
+no solution can be found for singular matrices, only a particular solution
+will be found for under-determined systems of equation and the solution found
+for over-determined systems is not always correct. This is identical to the
+way Matlab R13 treats this.
+
+For instance consider the under-determined linear equation
+
+@example
+octave:1> A = gf([2  0  3  3; 3  1  3  1; 3  1  1  0], 2);
+octave:2> b = [0:2]';
+octave:3> x = A \ b;
+@end example
+
+gives the solution @code{@var{x} = [2 0 3 2]}. There are in fact 4
+possible solutions to this linear system; @code{@var{x} = [3 2 2 0]},
+@code{@var{x} = [0 3 1 1]}, @code{@var{x} = [2 0 3 2]} and
+@code{@var{x} = [1 1 0 3]}. No particular selection criteria are
+applied to the chosen solution.
+
+In addition the fact that singular matrices are not treated, unless you
+know the matrix is not singular, you should test the determinant of the
+matrix prior to solving the linear system. For instance
+
+@example
+octave:1> A = gf(floor(2^m * rand(3)), 2);
+octave:2> b = [0:2]';
+octave:3> if (det(A) ~= 0); x = A \ b; y = b' / A; end;
+octave:4> r = rank(A);
+@end example
+
+solves the linear systems @code{@var{A} * @var{x} = @var{b}} and
+@code{@var{y} * @var{A} = @var{b}}. Note that you do not need to take
+into account rounding errors in the determinant, as the determinant can
+only take values within the Galois Field. So if the determinant equals
+zero, the array is singular.
+
+@node Signal Processing, , Linear Algebra, Manipulating Galois Fields
+@subsection Signal Processing with Galois Fields
+
+Signal processing functions such as filtering, convolution, de-convolution
+and Fourier transforms can be performed over Galois Fields. For instance
+the @dfn{filter} function can be used with Galois vectors in the same 
+manner as usual. For instance
+
+@example
+octave:1> b = gf([2 0 0 1 0 2 0 1],2);
+octave:2> a = gf([2 0 1 1],2);
+octave:3> x = gf([1 zeros(1,20)],2);
+octave:4> y = filter(b, a, x)
+y =
+GF(2^2) array. Primitive Polynomial = D^2+D+1 (decimal 7)
+
+Array elements = 
+
+  1  0  3  0  2  3  1  0  1  3  3  1  0  1  3  3  1  0  1  3  3
+@end example
+
+gives the impulse response of the filter defined by @var{a} and @var{b}.
+
+Two equivalent ways are given to perform the convolution of two Galois
+vectors. Firstly the function @dfn{conv} can be used, or alternatively 
+the function @dfn{convmtx} can be used. The first of these function is
+identical to the convolution function over real vectors, and has been
+described in the section about multiplying two Galois polynomials.
+
+In the case where many Galois vectors will be convolved with the same
+vector, the second function @dfn{convmtx} offers an alternative method
+to calculate the convolution. If @var{a} is a column vector and @var{x}
+is a column vector of length @var{n}, then
+
+@example
+octave:1> m = 3;
+octave:2> a = gf(floor(2^m*rand(4,1)),m);
+octave:3> b = gf(floor(2^m*rand(4,1)),m);
+octave:4> c0 = conv(a,b)';
+octave:5> c1 = convmtx(a,length(b)) * b;
+octave:6> check = all(c0 == c1)
+check = 1
+@end example
+
+shows the equivalence of the two functions. The de-convolution function has
+been previously described above.
+
+The final signal processing function available in this package are the
+functions to perform Fourier transforms over a Galois field. Three
+functions are available, @dfn{fft}, @dfn{ifft} and @dfn{dftmtx}. The
+first two functions use the third to perform their work. Give an element
+@var{a} of the Galois field GF(2^M), @dfn{dftmtx} returns the @code{2^M - 1} 
+square matrix used in the Fourier transforms with respect to @var{a}. The 
+minimum polynomial of @var{a} must be primitive in GF(2^M). In the case of 
+the @dfn{fft} function @dfn{dftmtx} is called with the the primitive
+element of the Galois Field as an argument. As an example
+
+@example
+octave:1> m = 4;
+octave:2> n = 2^m -1;
+octave:2> alph = gf(2, m);
+octave:3> x = gf(floor(2^m*rand(n,1)), m);
+octave:4> y0 = fft(x);
+octave:5> y1 = dftmtx(alph) * x;
+octave:6> z0 = ifft(y0);
+octave:7> z1 = dftmtx(1/alph) * y1;
+octave:8> check = all(y0 == y1) & all(z0 == x) & all(z1 == x)
+check = 1
+@end example
+
+In all cases, the length of the vector to be transformed must be
+@code{2^M -1}. As the @dfn{dftmtx} creates a matrix representing the
+Fourier transform, to limit the computational task only Fourier
+transform in GF(2^M), where M is less than or equal to 8.
+
+@node Index of operations of Galois Fields, , Manipulating Galois Fields, Galois Fields
+@section Index of operations of Galois Fields
+
+@table @code
+@item + -
+Addition and subtraction in a Galois Field.
+
+@item * / \
+Matrix multiplication and division of Galois Arrays.
+
+@item .* ./ .\
+Element by element multiplication and division of Galois Arrays.
+
+@item ^
+Matrix exponentiation of Galois arrays. 
+
+@item .^
+Element by element matrix exponentiation of Galois arrays.
+
+@item ' .'
+Matrix transpose of Galois arrays.
+
+@item == ~= != > >= < <=
+Logical operators on Galois arrays.
+
+@item all
+True if all elements of a Galois array are non-zero.
+
+@item any
+True if any of the the elements of a Galois array are non-zero.
+
+@item conv 
+Convolution of Galois vectors.
+
+@item convmtx 
+Convolution matrix of Galois vectors.
+
+@item cosets 
+Create sub-sets of the Galois field having common minimum polynomials
+
+@item deconv
+De-convolution of Galois array.
+
+@item det
+Matrix determinant of a Galois array.
+
+@item dftmtx
+Discrete Fourier transform matrix in a Galois Field.
+
+@item diag
+Creates diagonal matrices or recovers diagonals of matrices.
+
+@item fft
+Discrete Fourier Transform.
+
+@item filter
+Digital filter over a Galois Field.
+
+@item gf
+Create a Galois Field array.
+
+@item gftable
+Nop for Matlab compatibility.
+
+@item ifft
+Inverse Discrete Fourier Transform.
+
+@item inv 
+Matrix inverse of Galois array.
+
+@item isempty 
+True if Galois array is empty.
+
+@item isprimitive
+True if value can be used as a primitive polynomial of a Galois Field.
+
+@item length
+Length of a Galois vector.
+
+@item log 
+Logarithm in a Galois Field.
+
+@item lu 
+LU decomposition of a Galois array.
+
+@item minpoly
+Minimum polynomial of a element of a Galois Field.
+
+@item polyval
+Evaluate polynomial in a Galois Field.
+
+@item primpoly
+Identify the primitive polynomials of a Galois Field.
+
+@item rank 
+Rank of a Galois array.
+
+@item reshape
+Reshape a Galois array.
+
+@item roots
+Find the polynomial roots of a Galois Field.
+
+@item size
+The size of a Galois array.
+
+@end table
+
+@node Function Reference, , Galois Fields, Top
+@chapter Function Reference
+
+@menu
+* awgn:: Apply additive white Gaussian noise to a signal 
+* bi2de:: Conversion of bit matrix to vector of integers
+* compand:: mu-law compressor
+* conv:: Vector convolution of Galois Fields
+* convmtx:: Matrix representation of convolution in Galois Fields
+* cosets:: Sets of Galois field with common minimum polynomial
+* de2bi:: Conversion of vector of integers to bit matrix
+* diag:: Creation of diagonal matrices in a Galois Field
+* deconv:: Vector de-convolution in Galois Fields
+* det:: Matrix determinant in Galois Fields
+* dftmtx:: Matrix representation of Fourier transform in Galois Fields
+* exp:: Anti-log in Galois Fields
+* gf:: Creation of a variable in a Galois Field
+* filter:: Apply filter to Galois Field
+* fft:: Apply Fourier transform to Galois Field
+* galois:: Test software for Galois Field
+* gftable:: Null operation for Matlab compatibility
+* ifft:: Apply inverse Fourier transform to Galois field
+* inv:: Inverse of square Galois matrix
+* isgalois:: Identify Galois variables
+* isprimitive:: Identify whether polynomial is primitive in GF(2^M)
+* log:: Logarithm in Galois Field
+* lu:: LU decomposition of Galois matrix
+* minpol:: Minimum polynomial of elements of Galois Field
+* primpoly:: List primitive polynomials in GF(2^M)
+* prod:: Product of Galois elements
+* quantiz:: Quantization of signal
+* randint:: Matrix of random integers
+* rank:: Rank of Galois matrix
+* reshape:: Change form of Galois matrix
+* roots:: Find roots of polynomial in Galois Field
+* rsdec:: Decode Reed-Solomon encoded message
+* rsenc:: Encode message using Reed-Solomon coder
+* rsgenpoly:: Create generator polynomial for Reed-Solomon coding
+* sum:: Sum of elements in Galois Field
+* sumsq:: Sum of the squares of elements in Galois Field
+* vec2mat:: Convert vector to a matrix
+* wgn:: Generate white Gaussian noise
+@end menu
+
+@node awgn, bi2de, , Function Reference
+@section awgn
+
+@DOCSTRING(awgn)
+
+@node bi2de, compand, awgn, Function Reference
+@section bi2de
+
+@DOCSTRING(bi2de)
+
+@node compand, conv, bi2de, Function Reference
+@section compand
+
+@DOCSTRING(compand)
+
+@node conv, convmtx, compand, Function Reference
+@section conv
+
+@DOCSTRING(gconv,conv)
+
+@node convmtx, cosets, conv, Function Reference
+@section convmtx
+
+@DOCSTRING(gconvmtx,convmtx)
+
+@node cosets, de2bi, convmtx, Function Reference
+@section cosets
+
+@DOCSTRING(cosets)
+
+@node de2bi, diag, cosets, Function Reference
+@section de2bi
+
+@DOCSTRING(de2bi)
+
+@node diag, deconv, de2bi, Function Reference
+@section diag
+
+@DOCSTRING(gdiag,diag)
+
+@node deconv, det, diag, Function Reference
+@section deconv
+
+@DOCSTRING(gdeconv,deconv)
+
+@node det, dftmtx, deconv, Function Reference
+@section det
+
+@DOCSTRING(gdet,det)
+
+@node dftmtx, exp, det, Function Reference
+@section dftmtx
+
+@DOCSTRING(gdftmtx,dftmtx)
+
+@node exp, gf, dftmtx, Function Reference
+@section exp
+
+@DOCSTRING(gexp,exp)
+
+@node gf, filter, exp, Function Reference
+@section gf
+
+@DOCSTRING(gf)
+
+@node filter, fft, gf, Function Reference
+@section filter
+
+@DOCSTRING(gfilter,filter)
+
+@node fft, gftable, filter, Function Reference
+@section fft
+
+@DOCSTRING(gfft,fft)
+
+@node gftable, ifft, fft, Function Reference
+@section gftable
+
+@DOCSTRING(gftable)
+
+@node ifft, galois, gftable, Function Reference
+@section ifft
+
+@DOCSTRING(gifft,ifft)
+
+@node galois, inv, ifft, Function Reference
+@section galois
+
+@DOCSTRING(galois)
+
+@node inv, isgalois, galois, Function Reference
+@section inv
+
+@DOCSTRING(ginv,inv)
+
+@node isgalois, isprimitive, inv, Function Reference
+@section isgalois
+
+@DOCSTRING(isgalois)
+
+@node isprimitive, log, isgalois, Function Reference
+@section isprimitive
+
+@DOCSTRING(isprimitive)
+
+@node log, lu, isprimitive, Function Reference
+@section log
+
+@DOCSTRING(glog,log)
+
+@node lu, minpol, log, Function Reference
+@section lu
+
+@DOCSTRING(glu,lu)
+
+@node minpol, primpoly, lu, Function Reference
+@section minpol
+
+@DOCSTRING(minpol)
+
+@node primpoly, prod, minpol, Function Reference
+@section primpoly
+
+@DOCSTRING(primpoly)
+
+@node prod, quantiz, primpoly, Function Reference
+@section prod
+
+@DOCSTRING(gprod,prod)
+
+@node quantiz, randint, prod, Function Reference
+@section quantiz
+
+@DOCSTRING(quantiz)
+
+@node randint, rank, quantiz, Function Reference
+@section randint
+
+@DOCSTRING(randint)
+
+@node rank, reshape, randint, Function Reference
+@section rank
+
+@DOCSTRING(grank,rank)
+
+@node reshape, roots, rank, Function Reference
+@section reshape
+
+@DOCSTRING(greshape,reshape)
+
+@node roots, rsdec, reshape, Function Reference
+@section roots
+
+@DOCSTRING(groots,roots)
+
+@node rsdec, rsenc, roots, Function Reference
+@section rsdec
+
+@DOCSTRING(rsdec)
+
+@node rsenc, rsgenpoly, rsdec, Function Reference
+@section rsdec
+
+@DOCSTRING(rsenc)
+
+@node rsgenpoly, sum, rsenc, Function Reference
+@section rsgenpoly
+
+@DOCSTRING(rsgenpoly)
+
+@node sum, sumsq, rsgenpoly, Function Reference
+@section sum
+
+@DOCSTRING(gsum,sum)
+
+@node sumsq, vec2mat, sum, Function Reference
+@section sumsq
+
+@DOCSTRING(gsumsq,sumsq)
+
+@node vec2mat, wgn, sumsq, Function Reference
+@section vec2mat
+
+@DOCSTRING(vec2mat)
+
+@node wgn, , vec2mat, Function Reference
+@section wgn
+
+@DOCSTRING(wgn)
+
+@bye

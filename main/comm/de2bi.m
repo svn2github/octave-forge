@@ -14,27 +14,74 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## usage: b = de2bi(d, [n, [p]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{b} = } de2bi (@var{d})
+## @deftypefnx {Function File} {@var{b} = } de2bi (@var{d},@var{n})
+## @deftypefnx {Function File} {@var{b} = } de2bi (@var{d},@var{n},@var{p})
+## @deftypefnx {Function File} {@var{b} = } de2bi (@var{d},@var{n},@var{p},@var{f})
 ##
 ## Convert a non-negative integer to bit vector.
 ##
-## d: positive integer
-## n: number of rows of the ouput bit vector (default is max. size).
-## p: base of decomposition (default is 2).
+## The variable @var{d} must be a vector of non-negative integers. @dfn{de2bi}
+## then returns a matrix where each row represents the binary representation
+## of elements of @var{d}. If @var{n} is defined then the returned matrix
+## will have @var{n} columns. This number of columns can be either larger
+## than the minimum needed and zeros will be added to the msb of the
+## binary representation or smaller than the minimum in which case the  
+## least-significant part of the element is returned.
 ##
-## b : bit vector.
+## If @var{p} is defined then it is used as the base for the decomposition
+## of the returned values. That is the elements of the returned value are
+## between '0' and 'p-1'.
+##
+## The variable @var{f} defines whether the first or last element of @var{b}
+## is considered to be the most-significant. Valid values of @var{f} are
+## 'right-msb' or 'left-msb'. By default @var{f} is 'right-msb'.
+## @end deftypefn
+## @seealso{bi2de}
 
 ## 2001-02-02
 ##   initial release
+## 2003-02-02
+##   add orientation of b and help in texinfo
 
-function b = de2bi(d, n, p)
+function b = de2bi(d, n, p, f)
 
   if (nargin == 1)
     p = 2;
     n = floor ( log (max (max (d), 1)) ./ log (p) ) + 1;
+    f = 'right-msb';
   elseif (nargin == 2)
     p = 2;
-  elseif (nargin != 3)
+    if (isstr(n))
+      f = n;
+      n = floor ( log (max (max (d), 1)) ./ log (p) ) + 1;
+    else
+      f = 'right-msb';
+    endif     
+  elseif (nargin == 3)
+    if (isstr(n))
+      f = n;
+      n = p
+      p = 2;
+    elseif (isstr(p))
+      f = p;
+      p = 2;
+    else
+      f = 'right-msb';
+    endif     
+  elseif (nargin == 3)
+    if (isstr(n))
+      tmp = f
+      f = n;
+      n = p
+      p = tmp;
+    elseif (isstr(p))
+      tmp = f;
+      f = p;
+      p = tmp;
+    endif     
+  else
     error ("usage: b = de2bi (d [, n [, p]])");
   endif
 
@@ -47,4 +94,10 @@ function b = de2bi(d, n, p)
   d = d * ones (1, n);
   b = floor (rem (d, p*power) ./ power);
 
+  if (strcmp(f,'left-msb'))
+    b = b(:,length(b):-1:1);
+  elseif (!strcmp(f,'right-msb'))
+    error("de2bi: unrecognized flag");
+  endif
+  
 endfunction

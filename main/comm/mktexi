@@ -1,0 +1,85 @@
+#!/usr/bin/env perl
+#
+# David Bateman Feb 02 2003
+#
+# Extracts the help in texinfo format for particular function for use
+# in documentation. Based on make_index script from octave_forge.
+
+use strict;
+use File::Find;
+use File::Basename;
+use FileHandle;
+
+my $file = shift @ARGV;
+my $docfile = shift @ARGV;
+my $line;
+
+if ( open(IN,$file) ) {
+  $line = <IN>;
+  my $tex = 0;
+  while ($line) {
+    if ($line =~ /^\@DOCSTRING/) {
+      my $found = 0;
+      my $func = $line;
+      $func =~ s/\@DOCSTRING\(//;
+      $func =~ s/\)\n//;
+      my $func0 = $func;
+      my $func1 = $func;
+      $func0 =~ s/,.*$//;
+      $func1 =~ s/^.*,//;
+      if ( open(DOC,$docfile) ) {
+	while (<DOC>) {
+	  next unless /\037/;
+	  my $function = $_;
+	  $function =~ s/\037//;
+	  $function =~ s/\n//;
+	  if ($function =~ /^$func0$/) {
+	    my $desc = "";
+	    my $docline;
+	    my $doctex = 0;
+	    while (($docline = <DOC>) && ($docline !~ /^\037/)) {
+	      $docline =~ s/^\s*-[*]- texinfo -[*]-\s*//;
+	      if ($docline =~ /\@tex/) {
+		$doctex = 1;
+	      }
+	      if ($doctex) {
+		$docline =~ s/\\\\/\\/g;
+	      }
+	      if ($docline =~ /\@end tex/) {
+		$doctex = 0;
+	      }
+	      $desc .= $docline;
+	    }
+	    $desc =~ s/$func0/$func1/g;
+	    $desc =~ s/\@seealso\{(.*[^}])\}/See also: \1/g;
+	    print "$desc", "\n";
+	    $found = 1;
+	    last;
+	  }
+	}
+	close (DOC);
+	if (! $found) {
+	  print STDERR "Did not find function $func\n";
+	}
+      } else {
+	print STDERR "Could not open file $docfile\n";
+	exit 1;
+      }
+    } else {
+      if ($line =~ /\@tex/) {
+	$tex = 1;
+      }
+      if ($tex) {
+	$line =~ s/\\\\/\\/g;
+      }
+      print "$line";
+      if ($line =~ /\@end tex/) {
+	$tex = 0;
+      }
+    }
+    $line = <IN>;
+  }
+} else {
+    print STDERR "Could not open file $file\n";
+    exit 1;
+}

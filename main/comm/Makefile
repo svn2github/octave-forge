@@ -1,74 +1,48 @@
-sinclude ../../Makeconf
+include ../../Makeconf
 
-ifndef OCTAVE_FORGE
-	MKOCTFILE = mkoctfile -v
-endif
-	HAVE_RS = 0
+MAKEINFO = makeinfo --no-split
+TEXI2DVI = texi2dvi --clean
+DVIPS = dvips
 
-SOURCES = gfprimdf.cc gftuple.cc rspoly.cc \
-	rsdeco.cc rsdeco_ccsds.cc rsenco.cc rsenco_ccsds.cc
-TARGETS = $(patsubst %.cc,%.oct,$(SOURCES))
-OBJECTS = $(patsubst %.cc,%.o,$(SOURCES))
-DEPENDS = $(patsubst %.cc,%.d,$(SOURCES))
+GALOISTARGET = gf.oct
+GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
+	      op-gm-gm.cc op-gm-m.cc op-gm-s.cc op-m-gm.cc op-s-gm.cc \
+	      ov-galois.cc 
+GALOISOBJECTS = $(patsubst %.cc,%.o,$(GALOISSOURCES))
+GALOISLINKTARGETS = isgalois.oct gdiag.oct greshape.oct gprod.oct gsum.oct \
+                    gsumsq.oct glog.oct gexp.oct gfilter.oct glu.oct ginv.oct \
+                    ginverse.oct gdet.oct grank.oct rsenc.oct rsdec.oct
 
+GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
+OTHERSOURCES = primpoly.cc isprimitive.cc
+OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
+OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
+OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))
+DOCS = comms.info comms.ps
+
+TARGETS = $(GALOISTARGET) $(GALOISLINKTARGETS) $(OTHERTARGETS)
+OBJECTS = $(GALOISOBJECTS) $(OTHEROBJECTS)
+DEPENDS = $(GALOISDEPENDS) $(OTHERDEPENDS)
+
+DELETES = $(OBJECTS) $(DEPENDS) *~ *.log *.dvi *.ps *.info $(TARGETS) $(DOCS) DOCSTRINGS comms.texi core octave-core
+
+DEFINES = -DGALOIS_DISP_PRIVATES
+MOFLAGS =
+
+# Cancel this rule because I want to use my own to create depend files
+%.oct : %.cc
 
 .SUFFIXES:
 
-#.PHONY: clean cleanobj cleandep purge
+all : $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(DOCS)
 
-# --------------------------------------------------------------------
-ifeq ($(HAVE_RS),1)
-# If we already have a system shared object copy of the reed-solomon
-# library librs, then we don't need to build our own.  Additionally,
-# there is nothing to be gained by putting all the files together into
-# one big file and symlinking to that, so do a simple build.  
+$(GALOISTARGET) : $(GALOISDEPENDS) $(GALOISOBJECTS) 
+	@echo "Linking $@"; \
+	$(MKOCTFILE) $(MOFLAGS) $(GALOISOBJECTS) -o $@
 
-# If we happen to pick up a static system version of the reed-solomon 
-# library that's a bit of a problem.  Hopefully it's just an extra 40k 
-# of binary, but if librs contains global or static variables, different 
-# functions will have different copies and it may be a problem.
-
-all: $(TARGETS)
-
-INCLUDES =
-LIBS = -lrs
-
-# --------------------------------------------------------------------
-else
-# If we don't have the reed-solomon library, build our own local copy.
-# We use the standard trick of putting all the DEFUNs in one big file
-# and symlinking to that so that only one copy of the library is used.
-
-all: __rs.oct $(TARGETS)
-
-$(TARGETS): ; $(LN_S) __rs.oct $@
-
-INCLUDES = -I./reed-solomon
-LIBS = -L./reed-solomon -lrs
-
-# We should be linking $(OBJECTS) together to produce __rs.oct, but we
-# can't because for some reason liboctave/str-vec.h includes a static
-# qsort comparison function?! so for now lets join them together into
-# one big file.
-__rs.oct: __rs.o reed-solomon/librs.a
-	$(MKOCTFILE) -o __rs.oct __rs.o $(LIBS)
-
-__rs.o: __rs.cc rsoct.h reed-solomon/*.h
-	$(MKOCTFILE) -c __rs.o __rs.cc $(INCLUDES)
-
-__rs.cc: $(SOURCES)
-	-$(RM) __rs.cc
-	cat $(SOURCES) > __rs.cc
-
-reed-solomon/librs.a: $(wildcard reed-solomon/*.[ch]) reed-solomon/makefile
-	cd reed-solomon && $(MAKE) librs.a
-
-reed-solomon/makefile: reed-solomon/makefile.in
-	-$(RM) reed-solomon/makefile
-	sed -e "s/@CC@/$(CC)/g" -e "s/@CFLAGS@/$(CFLAGS)/g" -e "s/@ARCH[^@]*@//g" < reed-solomon/makefile.in > reed-solomon/makefile
-
-endif
-# --------------------------------------------------------------------
+$(GALOISLINKTARGETS) :
+	@echo "Symbolic linking $@"; $(RM) $@ ; \
+	$(LN_S) $(GALOISTARGET) $@
 
 SUFFIXES:
 SUFFIXES: .cc .oct .o .h
@@ -77,25 +51,40 @@ ifneq (,$(wildcard *.d))
 include $(wildcard *.d)
 endif
 
-%.oct : %.cc ;
+%.oct : %.d %.o
+	@echo "Linking $@"; \
+	$(MKOCTFILE) $(MOFLAGS) $(@:.oct=.o) -o $@
 
-%.oct : %.o
-	echo "Linking $@"; \
-	$(MKOCTFILE) $< $(LIBS) -o $@
+%.d: %.cc
+	@echo "Depending $<"; \
+	$(MKOCTFILE) $(MOFLAGS) -M $<
 
 %.o:%.cc
 	@echo "Compiling $@"; \
-	$(MKOCTFILE) $(INCLUDES) -c $< 
+	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 
+%.dvi : %.texi
+	@echo "Making dvi $@"; \
+	$(TEXI2DVI) $< ; \
+
+%.ps : %.dvi
+	@echo "Making postscript $@"; \
+	$(DVIPS) -o $@ $< ; \
+
+%.info : %.texi
+	@echo "Making info $@"; \
+	$(MAKEINFO) $< 
+
+%.texi : %.txi
+	@echo "Making texinfo $@"; \
+	$(RM) -f $@; \
+	./mkdoc > DOCSTRINGS; \
+	./mktexi $< DOCSTRINGS > $@ 
 
 clean:
-	@echo "Cleaning..."
-	-cd reed-solomon && $(MAKE) clean
-	-$(RM) *.d *.o *~ core octave-core *.oct __rs.cc reed-solomon/makefile
-
-purge:
-	@echo "Purging..."; \
-	-$(RM) *.d *.o *.oct *~ core octave-core
+	@echo "Cleaning..."; \
+	 $(RM) -f $(DELETES)
 
 count:
-	wc *{.cc,.h}
+	wc *{.cc,.h,.m}
+

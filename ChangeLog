@@ -1,4 +1,21 @@
 # Automatically generated file --- DO NOT EDIT
+2003-06-01 22:33  pkienzle
+
+	* release.sh: better organized release instructions 
+
+2003-06-01 22:26  pkienzle
+
+	* RELEASE-NOTES: Update with final release notes 
+
+2003-06-01 22:23  pkienzle
+
+	* main/plot/gget.m: Another attempt to fix the race condition 
+
+2003-06-01 21:36  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: R2003-06-01
+	release 
+
 2003-06-01 18:03  pkienzle
 
 	* main/comm/.cvsignore: ignore more texinfo junk 

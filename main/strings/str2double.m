@@ -50,8 +50,10 @@ function [num,status] = str2double(s,cdelim,rdelim)
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-##	Copyright (C) 2004 by Alois Schloegl
-##	a.schloegl@ieee.org	
+##      $Revision$
+##      $Id$
+##  	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
+
 
 
 %%valid_char='0123456789eE+-.nNaAiIfF';	% digits, sign, exponent,NaN,Inf
@@ -67,26 +69,40 @@ elseif ischar(s),
         status = 0;
         strarray = {};
         
-        k1 = 0; % current row
+        k1 = 1; % current row
+        k2 = 0; % current row
+        k3 = 0; % current cell
         nc = 0;	% number of columns 
-        while ~isempty(s),
-                [u,s] = strtok(s,rdelim);	%% get next row 
-                if ~isempty(u),
-	                k1 = k1 + 1;
-		end;
-                k2 = 0;
-                while ~isempty(u),
-                        [t,u] = strtok(u,cdelim);	%% get next token
-                        if ~isempty(t),
-                                k2 = k2 + 1;
-                                if k2 > nc,			%% add column if neccessary
-                                        nc = k2;
-                                end;
-                                strarray{k1,k2} = t;
-                        end;
-                end; 
+        
+        s(length(s)+1)=rdelim(1);
+        sl = length(s);
+        ix = 1;
+        while any(s(ix)==[rdelim,cdelim]) & (ix < sl),
+                ix = ix + 1;
         end;
-
+        ta = ix;
+        while ix <= sl;
+                if any(s(ix)==[cdelim,rdelim]),
+                        te = ix - 1;
+                        k2 = k2 + 1;
+                        k3 = k3 + 1;
+                        strarray{k1,k2} = s(ta:te);
+                        %strarray{k1,k2} = [ta,te];
+                        
+                        sw = 0;
+                        while any(s(ix)==[cdelim,rdelim]) & (ix < sl),
+                                sw = sw | any(s(ix)==rdelim);
+                                ix = ix + 1;
+                        end;
+                        
+                        if sw, 
+                                k2 = 0;
+                                k1 = k1 + 1;
+                        end;
+                        ta = ix;
+	        end;
+                ix = ix + 1;
+        end;
 else
         error('invalid input argument');
 end;
@@ -95,12 +111,16 @@ end;
 status = zeros(nr,nc);
 num    = repmat(NaN,nr,nc);
 
-for k1=1:nr,
-for k2=1:nc,
+for k1 = 1:nr,
+for k2 = 1:nc,
         t = strarray{k1,k2};
-        epos=find((t=='e') | (t=='E'));		%% positon of E 
-        if (length(epos)>1), 			%% if more than one E is found 
+        epos = find((t=='e') | (t=='E'));	%% positon of E 
+        if (length(t)==0), 			%% if more than one E is found 
 		status(k1,k2) = -1;		%% return error code
+                num(k1,k2) = NaN;
+        elseif (length(epos)>1), 			%% if more than one E is found 
+		status(k1,k2) = -1;		%% return error code
+                num(k1,k2) = NaN;
         else				
                 if length(epos)==0, 		%% no E found 
                         e = 0;

@@ -1,6 +1,6 @@
 NaN-Tb: A statistics toolbox 
 ------------------------------------------------------------
-Copyright (C) 2000-2003 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2000-2004 Alois Schloegl <a.schloegl@ieee.org>
 
 
 FEATURES of the NaN-tb:
@@ -58,7 +58,9 @@ Currently are implemented:
 	TCDF		student cumulative distribution 
 	TINV		inverse of the student cumulative distribution
 	NANSUM, NANSTD	fixes for buggy versions included
-	
+	MOD		modulus 
+	REM		remainder
+		
 	
 REFERENCE(S):
 ----------------------------------
@@ -198,7 +200,7 @@ This checks whether all previous functions have been replaced
 	$Revision$
 	$Id$
 	Version 1.53 	Date: 31 Oct 2003
-	Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
+	Copyright (C) 2000-2004 by  Alois Schloegl <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 

@@ -19,6 +19,7 @@
 ##    The resulting A has size n! x n, where n is the length of v
 ##    so keep v small!
 function A = perms(v)
+  v = v(:);
   n = length(v);
   if (n == 1)
     A = v;

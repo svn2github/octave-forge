@@ -52,5 +52,6 @@ end;
 if any(size(i)==0); return; end;
 
 [S,N,SSQ] = sumskipnan(i,DIM);		% sum
-i     = i - repmat(S./N,size(i)./size(S));		% remove mean
-i     = i./repmat(sqrt((SSQ-S.*M)./max(N-1,0)),size(i)./size(S));	 % normalize by STD
+M = S./N;
+i = i - repmat(M,size(i)./size(S));		% remove mean
+i = i./repmat(sqrt((SSQ-S.*M)./max(N-1,0)),size(i)./size(S));	 % normalize by STD

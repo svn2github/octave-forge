@@ -60,7 +60,7 @@ end;
 % actual calculation 
 [s,n,y] = sumskipnan(x, DIM);
 m = s./n;	% mean
-y = (y-s.*m);   % n * (summed squares with removed mean)
+y = (y-s.*m);   % n * (summed squares with removed mean)
 
 if flag_implicit_unbiased_estim,
     n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF

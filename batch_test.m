@@ -3,7 +3,7 @@
 ## individual directories or even individual function files.  But we have
 ## to start somewhere...
 LOADPATH = "main//:extra//:nonfree//:";
-
+page_screen_output = 0;
 disp("[main/optim]");
 disp(">leval"); assert(leval("acos", list(-1)), pi, 100*eps);
 
@@ -65,13 +65,17 @@ b = [
    7,  22,  25,  18 ];
 disp(">conv2"); assert(conv2([0,1;1,2],[1,2,3;4,5,6;7,8,9]),b);
 disp(">cordflt2"); assert(medfilt2(b),[0,1,2,0;1,4,12,3;4,12,20,12;0,7,20,0]);
-if exists("jpgwrite")
+if exist("jpgwrite")
   disp(">jpgwrite"); 
   x=linspace(-8,8,200);
   [xx,yy]=meshgrid(x,x);
   r=sqrt(xx.^2+yy.^2) + eps;
   map=colormap(hsv);
-  Rw=Gw=Bw=z=imagesc(sin(r)./r);
+  A=sin(r)./r;
+  minval = min(A(:));
+  maxval = max(A(:));
+  z = round ((A-minval)/(maxval - minval) * (rows(colormap) - 1)) + 1;
+  Rw=Gw=Bw=z;
   Rw(:)=fix(255*map(z,1));
   Gw(:)=fix(255*map(z,2));
   Bw(:)=fix(255*map(z,3));

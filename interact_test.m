@@ -16,8 +16,10 @@ plot(t,cos(2*pi*t*1.4),'b',t,sin(2*pi*t*1.4),'g');
 legend('cos','sin');
 input('confirm that the legend says "cos" and "sin":');
 
-disp('click on the graph to place "hello"');
+disp('click on the graph to place "hello"'); fflush(stdout);
 gtext('hello');
 
 disp('use left mouse to zoom the graph, right to unzoom, middle to exit');
-gzoom
+fflush(stdout);
+axis([0 1 0 1]);
+gzoom;

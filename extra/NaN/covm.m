@@ -115,13 +115,15 @@ if ~isempty(Y),
         
 else        
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	NN = real(~isnan(X)')*real(~isnan(X));
-	        X(isnan(X)) = 0; % skip NaN's
+        	tmp = real(~isnan(X));
+                NN  = tmp'*tmp; 
+                X(isnan(X)) = 0; % skip NaN's
 	        CC = X'*X;
         else  % if any(Mode=='D') | any(Mode=='E'), 
 	        [S,N] = sumskipnan(X,1);
-                NN = real(~isnan(X)')*real(~isnan(X));
-        	if any(Mode=='D'), % detrending mode
+        	tmp = real(~isnan(X));
+                NN  = tmp'*tmp; 
+                if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);
                         if any(Mode=='1'),  %  'D1'
                                 NN = NN;

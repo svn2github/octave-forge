@@ -1,5 +1,5 @@
 DEFUN_DLD(GSL_OCTAVE_NAME, args, nargout, "\
-function y = GSL_OCTAVE_NAME (x, MODE)\n\n\
+y = GSL_OCTAVE_NAME (x, MODE)\n\n\
 GSL_FUNC_DOCSTRING
 \n\
 The second argument MODE must be an integer corresponding to\n\
@@ -11,6 +11,8 @@ The second argument MODE must be an integer corresponding to\n\
 2 = GSL_PREC_APPROX\n\
     Approximate values, a relative accuracy of approximately 5 * 10^-4.\n\
 \n\
+[y, err] = GSL_OCTAVE_NAME (...)\n\n\
+err contains an estimate of the absolute error in the value y.\n\n\
 This function is from the GNU Scientific Library,\n\
 see http://www.gnu.org/software/gsl/ for documentation.\n\
 ")
@@ -56,8 +58,8 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 	    y.xelem(i) = result.val;
 	    err.xelem(i) = result.err;
 	}
+	retval(1) = octave_value(err);
 	retval(0) = octave_value(y);
-	retval.append(err);
 	return retval;
     }
 
@@ -65,3 +67,8 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 
 }
 
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

@@ -2,6 +2,8 @@ DEFUN_DLD(GSL_OCTAVE_NAME, args, nargout, "\
 function y = GSL_OCTAVE_NAME (x)\n\n\
 GSL_FUNC_DOCSTRING
 \n\
+[y, err] = GSL_OCTAVE_NAME (...)\n\n\
+err contains an estimate of the absolute error in the value y.\n\n\
 This function is from the GNU Scientific Library,\n\
 see http://www.gnu.org/software/gsl/ for documentation.\n\
 ")
@@ -39,12 +41,18 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 	    y.xelem(i) = result.val;
 	    err.xelem(i) = result.err;
 	}
+	retval(1) = octave_value(err);
 	retval(0) = octave_value(y);
-	retval.append(err);
 	return retval;
     }
 
     return octave_value();
 
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/
 

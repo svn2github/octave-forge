@@ -26,3 +26,9 @@ void octave_gsl_errorhandler (const char * reason, const char * file,
 {
     error("GSL error %d at %s, line %d: %s\n", gsl_errno, file, line, reason);
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

@@ -22,8 +22,8 @@
 # note - this is different than sum(x,1) (which is identical to sum(x))
 #        but I think this is the right way.
 
-## PKG_ADD dispatch ("sum", "spsum", "sparse");
-## PKG_ADD dispatch ("sum", "spsum", "complex_sparse");
+## PKG_ADD: dispatch ("sum", "spsum", "sparse");
+## PKG_ADD: dispatch ("sum", "spsum", "complex_sparse");
 function y=spsum( x, dim)
 
 if     nargin==1

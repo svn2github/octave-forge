@@ -32,8 +32,8 @@ assert(c+1,[1+rt2,1+1/rt2;1,1+1/rt2],10*eps);
 assert(typeinfo(c+1),"matrix");
 
 disp("[main/comm]");
-disp(">galois");
-try galois("test"); 
+disp(">comms");
+try comms("test"); 
 catch disp([__error_text__,"\nNote: failure expected for octave 2.1.36"]); end
  
 disp("[main/signal]");

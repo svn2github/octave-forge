@@ -10,6 +10,11 @@
 #   ## Author:  name4  <email>
 #
 # Albert Danial Dec 15 2001
+#               Nov 30 2002 - Attribute to 'Anonymous' any file which has 
+#                             licensing terms (ie, granted to public domain)
+#                             but no author.  Show code and comment line
+#                             counts.
+#                             
 use strict;
 use File::Find;
 
@@ -23,62 +28,71 @@ if ($location =~ m{^(.*)/admin$}) {
 my @files = ();       # to contain relative path names of each .m file
 find(\&wanted, ".");  # start here & descend recursively; populate @files
 
-my %author_data = ();
-extract_authors(\@files,         # in
-                \%author_data);  # out, a_data{file}{'name'} = [ names ]
-                                 #                  {'year'} = [ years ]
-                                 #                  {'mail'} = [ email addrs ]
-                                 #                  {'cpyr'} = [ 'C' or ' '  ]
+my %file_data = ();
+classify_files(\@files,       # in
+               \%file_data);  # out, a_data{file}{'name'} = [ names ]
+                              #                  {'year'} = [ years ]
+                              #                  {'mail'} = [ email addrs ]
+                              #                  {'cpyr'} = [ 'C' or ' '  ]
+                              #                  {'n_code'}    = # lines code
+                              #                  {'n_comment'} = # lines of
+                              #                                  comments
 
-# traverse author_data and extract
+# traverse file_data and extract
 #   - files without copyrights
 #   - files without authors
 #   - files grouped by author
 #   - author to email map
+#   - number of lines of code, number of lines of comments
 my @unattributed_files  = ();
 my @uncopyrighted_files = ();
 my %email               = ();   # email{ author name } = email address
 my %files               = ();   # files{ author name } = [ list of files ]
 foreach my $f (sort @files) {
     # each file can have multiple authors, loop over each author
-    if (!defined @{$author_data{$f}{name}}) {
+    if (!defined @{$file_data{$f}{name}}) {
         push @unattributed_files, $f;
         next;
     }
     my $copyrighted = 0;
-    for (my $i = 0; $i < scalar @{$author_data{$f}{name}}; $i++) {
-        if (defined $author_data{$f}{mail}[$i]) {
-            $email{ $author_data{$f}{name}[$i] } = $author_data{$f}{mail}[$i];
+    for (my $i = 0; $i < scalar @{$file_data{$f}{name}}; $i++) {
+        if (defined $file_data{$f}{mail}[$i]) {
+            $email{ $file_data{$f}{name}[$i] } = $file_data{$f}{mail}[$i];
         }
-        $copyrighted = 1 if $author_data{$f}{cpyr}[$i] eq "C";
-        $files{ $author_data{$f}{name}[$i] }{$f} = 1;
+        $copyrighted = 1 if $file_data{$f}{cpyr}[$i] eq "C";
+        $files{ $file_data{$f}{name}[$i] }{$f} = 1;
     }
     push @uncopyrighted_files, $f unless $copyrighted;
 }
 
-printf "%3d uncopyrighted files:\n", scalar @uncopyrighted_files;
+printf "%3d uncopyrighted files:%s lines of code/lines of comments\n", 
+       scalar @uncopyrighted_files, ' ' x 22;
 foreach my $f (sort @uncopyrighted_files) {
-    printf "      %s\n", $f;
+    printf "      %-50s %3d/%3d\n", 
+           $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
 }
 
-printf "%3d unattributed files:\n", scalar @unattributed_files;
+printf "\n%3d unattributed files:%s lines of code/lines of comments\n", 
+       scalar @unattributed_files, ' ' x 23;
 foreach my $f (sort @unattributed_files) {
-    printf "      %s\n", $f;
+    printf "      %-50s %3d/%3d\n",
+           $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
 }
 
 my $Auth_file = "AUTHORS";
 open(OUT, ">$Auth_file") or die "Cannot write $Auth_file:  $!\n";
 printf "%3d authors:\n", scalar keys %files;
 foreach my $n (sort by_last_name keys %files) {
-    printf     "      %-28s", $n;
-    printf OUT       "%-28s", $n;
+    printf     "%-28s", $n;
+    printf OUT "%-28s", $n;
     print     $email{$n} if defined $email{$n};
     print OUT $email{$n} if defined $email{$n};
     print     "\n";
     print OUT "\n";
     my $i = 0;
     foreach my $f (sort keys %{$files{$n}}) {
-        printf "       %3d. %s\n", ++$i, $f;
+        printf "%3d. %-50s  %3d/%3d\n",
+               ++$i, $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
     }
 }
 close OUT;
@@ -94,7 +108,7 @@ sub by_last_name { # {{{1 for sorting on names
 
 # # # # # # # 
 
-sub extract_authors { # {{{1
+sub classify_files { # {{{1
     my ($ra_files,  # in, list of files
         $rhha_data, # out,  data{file}{ name | year | cpyr } = [entries]
        ) = @_;
@@ -102,8 +116,16 @@ sub extract_authors { # {{{1
     foreach my $f (@{$ra_files}) {
         open(IN, $f) or die "Cannot read $f: $!\n";
         my $found_copyright = 0;
+        my $found_author    = 0;
+        $rhha_data->{$f}{n_code}    = 0;
+        $rhha_data->{$f}{n_comment} = 0;
         while (<IN>) {
             # find the copyright line and extract author info from it
+            if (/^[#%]+/) {      # a comment
+                ++$rhha_data->{$f}{n_comment};
+            } elsif (!/^\s*$/) { # not a blank line
+                ++$rhha_data->{$f}{n_code};
+            }
             s/all\s+rights\s+reserved\.?//i;
             s/\bby\s+//i;
             if (/^[#%]+                 #  one or more leading comment markers
@@ -114,9 +136,11 @@ sub extract_authors { # {{{1
                   \s*(<.*>)?            #  email  - optional           $5
                   \s*$/ix) {
                 $found_copyright = 1;
+                $found_author    = 1;
                 my $year  = $2;
                    $year .= $3 if defined $3;
                 my $name  = $4;
+                   $name  = "John W. Eaton" if $name eq "jwe";
                    $name  =~ s/\.\s*$//; # strip trailing period
                 my $email = "" || $5;
                 $name =~ s/^\s+//;  # strip leading  whitespace
@@ -134,6 +158,7 @@ sub extract_authors { # {{{1
                     \s*$/ix) {
                 my $name  = $1;
                    $name  =~ s/\.\s*$//; # strip trailing period
+                   $name  = "John W. Eaton" if $name eq "jwe";
                 my $email = "" || $2;
                 push @{$rhha_data->{$f}{name}}, $name;
                 push @{$rhha_data->{$f}{year}}, "";
@@ -143,7 +168,22 @@ sub extract_authors { # {{{1
                 } else {
                     push @{$rhha_data->{$f}{cpyr}}, "";
                 }
+                $found_author = 1;
+            } elsif (
+                !$found_author and
+                /^\s*[#%]+                #  one or more leading comment markers
+                  .*?                     #  some leading text
+                  (granted|placed|given|is)\s+(in|to)
+                  (\s+the)?\s+public\s+domain
+                /ix) {
+                $found_copyright = 1;
             }
+        }
+        if ($found_copyright and !$found_author) {
+            push @{$rhha_data->{$f}{name}}, "Anonymous";
+            push @{$rhha_data->{$f}{year}}, "";
+            push @{$rhha_data->{$f}{mail}}, "";
+            push @{$rhha_data->{$f}{cpyr}}, 'C';
         }
         close IN;
     }
@@ -152,6 +192,6 @@ sub extract_authors { # {{{1
 # # # # # # # 
 
 sub wanted { # {{{1 populates global array @files
-    return unless -f and /\.m$/;  # only want .m files (for now)
-    push @files, "$File::Find::dir/$_";
+    return unless -f and /\.(m)$/;  # only want .m files (for now)
+    push @files, "$File::Find::name";
 } # 1}}}

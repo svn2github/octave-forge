@@ -206,7 +206,7 @@ do_size(octave_value_list args, int& nr, int& nc)
 
 void fill_randu(int n, double *p)
 {
-  for (int i=0; i < n; i++) p[i] = randu();
+  for (int i=0; i < n; i++) p[i] = rand53();
 }
 
 /*

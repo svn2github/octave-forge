@@ -1,11 +1,21 @@
 function [RC,r0] = poly2rc(a,efinal);
 % converts AR-polynomial into reflection coefficients
-% [k,r0] = poly2rc(a [,efinal])
+% [RC,R0] = poly2rc(A [,Efinal])
+%
+%  INPUT:
+% A     AR polynomial, each row represents one polynomial
+% Efinal    is the final prediction error variance (default value 1)
+%
+%  OUTPUT
+% RC    reflection coefficients
+% R0    is the variance (autocovariance at lag=0) based on the 
+%	prediction error
+%
 %
 % see also ACOVF ACORF AR2RC RC2AR DURLEV AC2POLY, POLY2RC, RC2POLY, RC2AC, AC2RC, POLY2AC
 % 
 
-%	Version 2.90,	last revision 17.12.2001
+%	Version 2.91
 %	Copyright (c) 1996-2001 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
@@ -39,4 +49,6 @@ end;
 if nargin<2, efinal=1; end;
 
 [AR,RC,PE] = ar2rc(poly2ar(a));
-r0=efinal*PE(1)/PE(length(PE));
+if nargout>1,
+	r0=efinal.*PE(:,1)./PE(:,size(PE,2));
+end;

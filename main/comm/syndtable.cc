@@ -36,14 +36,14 @@ Array<int> get_errs (const int& nmin, const int& nmax, const int &nerrs)
   if (nerrs == 1) {
     pos.resize(nmax-nmin);
     for (int i = nmin; i < nmax; i++)
-      pos.checkelem(i-nmin) = (1<<i);
+      pos(i-nmin) = (1<<i);
   } else {
     for (int i = nmin; i < nmax - nerrs + 1; i++) {
       Array<int> new_pos = get_errs(i+1, nmax, nerrs-1);
       int l = pos.length();
       pos.resize(l+new_pos.length());
       for (int j=0; j<new_pos.length(); j++)
-	pos.checkelem(l+j) = (1<<i) + new_pos(j);
+	pos(l+j) = (1<<i) + new_pos(j);
     }
   }
   return pos;

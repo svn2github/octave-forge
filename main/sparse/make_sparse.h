@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.17  2003/10/21 14:35:12  aadler
+minor test and error mods
+
 Revision 1.16  2003/08/29 19:40:56  aadler
 throw error rather than segfault for singular matrices
 
@@ -113,9 +116,10 @@ DLD functions for sparse support in octave
 #  define DEBUGMSG(x) 
 #endif
 
-// Thanks to To: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-// for help with error handling 
-#define SP_FATAL_ERR(str) { error("sparse: %s", str); octave_throw_bad_alloc (); }
+// This is not the right error to thow
+#define SP_FATAL_ERR(str) do { error("sparse: %s" \
+    "(NOTE: you may ignore following memory error)", str); \
+    octave_throw_bad_alloc(); } while (0)
 
 // The SuperLU includes need to be first,
 // otherwise the cygwin build breaks!

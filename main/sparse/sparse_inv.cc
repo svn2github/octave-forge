@@ -95,9 +95,9 @@ splu with 2 outputs functions similarly to lu\n\
 Note: 2nd input funcionality has not been verified\n\
 With a second input, the columns of A are permuted before factoring:\n\
 \n\
-[L,U,P] = superlu(A,psparse) returns triangular L and U and permutation\n\
+[L,U,P] = splu(A,psparse) returns triangular L and U and permutation\n\
           prow with P*A(:,psparse) = L*U.\n\
-[L,U] = superlu(A,psparse) returns permuted triangular L and triangular U\n\
+[L,U] = splu(A,psparse) returns permuted triangular L and triangular U\n\
           with A(:,psparse) = L*U.\n\
 Here psparse will normally be a user-supplied permutation matrix or vector\n\
 to be applied to the columns of A for sparsity. \n\
@@ -126,7 +126,7 @@ to be applied to the columns of A for sparsity. \n\
       int permc_spec=3;
       if (nargin ==2) {
 
-         ColumnVector permcidx = args(1).column_vector_value();
+         ColumnVector permcidx ( args(1).vector_value() );
          for( int i= 0; i< n ; i++ ) 
             perm_c[i]= (int) permcidx(i) - 1;
          permc_spec= -1; //permc is preselected
@@ -467,6 +467,9 @@ SPABS : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.14  2003/10/21 14:35:12  aadler
+ * minor test and error mods
+ *
  * Revision 1.13  2003/10/18 01:13:00  aadler
  * texinfo for documentation strings
  *

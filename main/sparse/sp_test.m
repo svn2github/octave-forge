@@ -23,7 +23,7 @@ warn_fortran_indexing= 0;
 prefer_zero_one_indexing= 0;
 page_screen_output=1;
 SZ=10;
-NTRIES=100;
+NTRIES=1  ;
 
 errortol= 1e-10;
 res=zeros(1,300); % should be enough space
@@ -675,7 +675,10 @@ end
                   all(all(abs( PsR'*Ls4*Us4*PsC  - drf )< mag)) ;
                   all(all( Ls4 .* LL == Ls4 )) ;
                   all(all( Us4 .* UU == Us4 )) ] );
-   elseif 0
+   end 
+   i=i+1;      % i=200
+       
+   if 0 % OCTAVE
       [Ls4,Us4,Ps4] = lu( drs );
       res(i)= res(i) + ...
             all([ all(all(abs( Ps4'*Ls4*Us4 - Pf4'*Lf4*Uf4 )<mag)) ;
@@ -683,7 +686,6 @@ end
                   all(all( Ls4 .* LL == Ls4 )) ;
                   all(all( Us4 .* UU == Us4 )) ] );
    end
-
    i=i+1;      % i=201
 
    dsi = spinv( drs );
@@ -834,6 +836,9 @@ eval( "splu( sparse( [0,0;0,0]   ) );");
 
 %
 % $Log$
+% Revision 1.17  2003/10/21 14:35:12  aadler
+% minor test and error mods
+%
 % Revision 1.16  2003/10/18 04:55:47  aadler
 % spreal spimag and new tests
 %

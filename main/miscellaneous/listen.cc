@@ -129,7 +129,6 @@ sigterm_handler(int /* sig */)
 static void
 daemonize(void)
 {
-  if (debug) return; /* Don't daemonize if debugging */
   if (fork()) exit(0);
   std::cout << "Octave pid: " << octave_syscalls::getpid() << std::endl;
   signal(SIGTERM,sigterm_handler);
@@ -519,6 +518,9 @@ listen(...,debug|nodebug)\n\
    If debug, echo all commands sent across the connection.  If nodebug,\n\
    detach the process and don't echo anything.  You will need to use\n\
    kill directly to end the process. Nodebug is the default.\n\
+listen(...,fork|nofork)\n\
+   If fork, start new server for each connection.  If nofork, only allow\n\
+   one connection at a time. Fork is the default (depending on system).\n\
 ")
 {
   install_builtin_function (Fsend, "send", "builtin send doc", false);
@@ -541,8 +543,11 @@ listen(...,debug|nodebug)\n\
   if (error_state) return ret;
 
   debug = false;
-  if (nargin >= 2) {
-    std::string lastarg(args(nargin-1).string_value());
+  int options = 1;
+  
+  int hostarg = -1;
+  for (int k = 1; k < nargin; k++) {
+    std::string lastarg(args(k).string_value());
     if (error_state) return ret;
     lowercase(lastarg);
     if (lastarg == "debug") {
@@ -550,6 +555,12 @@ listen(...,debug|nodebug)\n\
       nargin--;
     } else if (lastarg == "nodebug") {
       nargin--;
+    } else if (lastarg == "fork") {
+      canfork = true;
+    } else if (lastarg == "nofork") {
+      canfork = false;
+    } else if (hostarg == -1) {
+      hostarg = k;
     } else {
       print_usage("listen");
     }
@@ -558,8 +569,8 @@ listen(...,debug|nodebug)\n\
   struct in_addr localhost;
   struct in_addr hostid;
   inet_aton("127.0.0.1",&localhost);
-  if (nargin >= 2) {
-    std::string host(args(1).string_value());
+  if (hostarg > 0) {
+    std::string host(args(hostarg).string_value());
     if (error_state) return ret;
     if (!inet_aton(host.c_str(),&hostid)) {
       error("listen: could not find host id for %s",host.c_str());
@@ -610,7 +621,7 @@ listen(...,debug|nodebug)\n\
 
   sigchld_setup();
 
-  daemonize();
+  if (!debug && canfork) daemonize();
       
   // XXX FIXME XXX want a 'sandbox' option which disables fopen, cd, pwd,
   // system, popen ...  Or maybe just an initial script to run for each

@@ -19,7 +19,7 @@
 ##    character sep (default is ",").  NaN values are written as nan.
 ##
 ## WARNING: for compatibility, must treat empty fields as zero, but doesn't.
- 
+
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ## 2001-02-16
 ##    * first revision
@@ -30,35 +30,32 @@ function x = dlmread (filename, sep)
     usage ("x = dlmread (filename, sep)");
   endif
   if nargin < 3, sep = ","; endif
-  
+
   fid = fopen(filename, "r");
   if (fid >= 0)
     in = setstr(fread (fid)');
     fclose (fid);
 
-    ## zap extra spaces
-    if (sep != " ")
-      idx = find (in == " ");
-      if (length (idx) > 0) in(idx) = []; endif
-    endif
-
-    ## zap carriage returns
-    if (sep != "\r")
-      idx = find (in == "\r");
-      if (length (idx) > 0) in(idx) = []; endif
-    endif
-
-    ## convert new lines to spaces
+    ## Count the number of line feeds, or if there are none
+    ## the number of carriage returns.  This is the number
+    ## of rows.  Note that we have to also check for a missing
+    ## line terminator on the last line of the file.
     idx = find (in == "\n");
-    if (length(idx) > 0) in(idx) = " "; endif
-
-    ## number of rows is number of newlines
     nr = length(idx);
+    if (nr > 0)
+	in(idx) = " ";
+	nr += (idx(length(idx)) < length(in));
+    endif
+    idx = find (in == "\r");
+    if (nr == 0)
+	nr = length(idx);
+	if (nr > 0) nr += (idx(length(idx)) < length(in)); endif
+    endif
+    if (length (idx) > 0) in(idx) = " "; endif
 
     ## convert separators to spaces
     idx = find (in == sep);
     if (length(idx) > 0) in(idx) = " "; endif
-
     [x, n, err] = sscanf(in, "%g");
     if (!isempty(err))
       error(["dlmread: ", err]);

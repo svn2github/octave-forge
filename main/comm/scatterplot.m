@@ -64,7 +64,7 @@ function hout = scatterplot (x, n, _off, str, h)
     elseif (size(x,2) == 2)
       signal = "complex";
       xr = x(:,1);
-      xr = x(:,2);
+      xi = x(:,2);
     else
       error ("scatterplot: real signal input must be a vector");
     endif

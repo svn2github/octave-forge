@@ -10,10 +10,15 @@ use File::Find;
 use File::Basename;
 use FileHandle;
 
+my $docdir = ".";
+if (@ARGV) {
+  $docdir = @ARGV[0];
+}
+
 # locate all C++ and m-files in current directory
 my @m_files = ();
 my @C_files = ();
-find(\&cc_and_m_files, ".");
+find(\&cc_and_m_files, $docdir);
 
 sub cc_and_m_files { # {{{1 populates global array @files
     return unless -f and /\.(m|cc)$/;  # .m and .cc files

@@ -351,6 +351,27 @@ fi
 AC_SUBST(HAVE_OK_TO_LOSE_IMAGINARY_PART)
 rm -f conftest.*
 
+dnl Test for N-dimensional Arrays
+AC_MSG_CHECKING([for N-dim arrays])
+cat > conftest.cc << EOF
+#include <octave/config.h>
+#include <octave/ArrayN.h>
+#include <octave/ArrayN.cc>
+#include <octave/MArrayN.h>
+#include <octave/MArrayN.cc>
+EOF
+ac_try="$MKOCTFILE conftest.cc"
+if AC_TRY_EVAL(ac_try); then
+	AC_MSG_RESULT(yes)
+	HAVE_ND_ARRAYS="-DHAVE_ND_ARRAYS";
+	ND_ARRAYS="has N-dimensional Arrays"
+else
+	AC_MSG_RESULT(no)
+	ND_ARRYS="does not have N-dimensional Arrays"
+fi
+AC_SUBST(HAVE_ND_ARRAYS)
+rm -rf conftest*
+
 STATUS_MSG="
 octave commands will install into the following directories:
    m-files:   $mpath
@@ -370,6 +391,8 @@ octave (version $OCTAVE_VERSION) has the in-built variables
    $DO_FORTRAN_MSG
    $PROPAGATE_MSG
    $LOSE_IMAGINARY_MSG
+
+octave (version $OCTAVE_VERSION) $ND_ARRAYS
 
 octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)

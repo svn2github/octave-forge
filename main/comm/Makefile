@@ -1,5 +1,8 @@
 include ../../Makeconf
 
+MKDOC = ../../admin/mkdoc
+MKTEXI = ../../admin/mktexi
+
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
 	      op-gm-gm.cc op-gm-m.cc op-gm-s.cc op-m-gm.cc op-s-gm.cc \
@@ -105,8 +108,8 @@ endif
 
 %.texi : %.txi
 	@echo "Making texinfo $@"; \
-	./mkdoc > $(DOCSTRINGS); \
-	./mktexi $< $(DOCSTRINGS) INDEX > $@ ;
+	$(MKDOC) > $(DOCSTRINGS); \
+	$(MKTEXI) $< $(DOCSTRINGS) INDEX > $@ ;
 
 clean:
 	@echo "Cleaning..."; \

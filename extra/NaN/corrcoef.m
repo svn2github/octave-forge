@@ -2,8 +2,11 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % CORRCOEF calculates the correlation coefficient.
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
-% (Its assumed that the occurence of NaN's is uncorrelated) 
-% The output gives NaN, only if there are insufficient input data.
+% A significance test to check the independence of NaN's
+% is included. 
+% The result is only valid if the occurence of NaN's is uncorrelated, 
+%
+% The output gives NaN in case of insufficient input data.
 %
 % CORRCOEF(X [,Mode]);
 %      calculates the (auto-)correlation matrix of X
@@ -53,8 +56,9 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
-%    Version 1.28  Date: 15 Dec 2002
-%    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%    $Revision$
+%    $Id$
+%    Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -70,10 +74,6 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-% .changelog
-% V1.25	16082002	handling missing values (NaN) in Spearman's rank correlation	
-%       20082002	all glitches fixed.
-
 % Features:
 % + interprets NaN's as missing value
 % + Pearson's correlation
@@ -84,6 +84,7 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % + confidence interval included
 % - rank correlation works for cell arrays, too (no check for missing values).
 % + compatible with Octave and Matlab
+% + checks independence of missing values (NaNs) 
 
 
 if nargin==1
@@ -183,6 +184,7 @@ elseif strcmp(lower(Mode(1:4)),'rank');
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         R(jxo(k),jyo(k)) = corrcoef(il(:,1),il(:,2));
                 end;
+		X = ranks(X);
         end;
         
 elseif strcmp(lower(Mode(1:8)),'spearman');
@@ -207,6 +209,7 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
                         % NN is the number of non-missing values
                         [R(jxo(k),jyo(k)),n(jxo(k),jyo(k))] = sumskipnan((il(:,1) - il(:,2)).^2);
                 end;
+		X = ranks(X);
         end;
         R = 1 - 6 * R ./ (n.*(n.*n-1));
         
@@ -223,22 +226,57 @@ else
         fprintf(2,'Error CORRCOEF: unknown mode ''%s''\n',Mode);
 end;
 
+
+% CONFIDENCE INTERVAL
+if exist('flag_implicit_significance')==2,
+        alpha = flag_implicit_significance;
+else
+	alpha = 0.01;        
+end;
+% fprintf(1,'CORRCOEF: confidence interval is based on alpha=%f\n',alpha);
+
+
+%%%%% ----- check independence of NaNs (missing values) -----
+if YESNAN,
+	tmp = isnan(X);
+	X(tmp) = 0;
+	% [nan_R,nan_sig,nan_ci1,nan_ci2] = corrcoef(X,tmp);
+
+	[nan_R, nan_sig] = corrcoef(X,tmp);
+
+	% remove diagonal elements, because these have not any meaning %
+	tmp = logical(eye(size(nan_sig)));
+	% nan_R(tmp)   = nan;
+	nan_sig(tmp)   = nan;
+	% nan_ci1(tmp) = nan;
+	% nan_ci2(tmp) = nan;
+	
+	if any(nan_sig(:) < alpha),
+		fprintf(1,'Warning CORRCOFF: Missing Values (i.e. NaNs) are not independent of data (p-value=%f)\n', min(nan_sig(:)));
+		fprintf(1,'Its recommended to remove all samples with any missing value (NaN).\n');
+		fprintf(1,'The following combinations show a significant correlation of NaNs\n');
+		[ix,iy] = find(nan_sig < alpha);
+		disp([ix,iy])
+	end;
+end;	
+%%%%% ----- end of independence check ------
+
+
 if nargout<2, 
         return;
 end;
 
 
-
 % SIGNIFICANCE TEST
 
-%warning off; 	% prevent division-by-zero warnings in Matlab.
+% warning off; 	% prevent division-by-zero warnings in Matlab.
 
 tmp = 1 - R.*R;
-%ix1 =(tmp==0);
-%tmp(ix1)=nan;		% avoid division-by-zero warning	
+ix1 = (tmp==0);
+tmp(ix1) = nan;		% avoid division-by-zero warning
 t   = R.*sqrt(max(NN-2,0)./tmp);
 
-%ix2 = (t<0)|(t>1);	% mark abs(r)==1
+ix2 = (t<0)|(t>1);	% mark abs(r)==1
 if 0,any(ix2(:));
         warning('CORRCOEF: t-value out of range - probably due to some rounding error') 
         t(ix2)=nan;
@@ -259,19 +297,10 @@ if nargout<3,
 end;
 
 
-% CONFIDENCE INTERVAL
-if exist('flag_implicit_significance')==2,
-        alpha = flag_implicit_significance;
-else
-	alpha = 0.01;        
-end;
-
-fprintf(1,'CORRCOEF: confidence interval is based on alpha=%f\n',alpha);
-
 tmp = R;
-%tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
+tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
 z   = log((1+tmp)./(1-tmp))/2; 	% Fisher's z-transform; 
-%sz  = 1./sqrt(NN-3);		% standard error of z
+%sz = 1./sqrt(NN-3);		% standard error of z
 sz  = sqrt(2)*erfinv(1-2*alpha)./sqrt(NN-3);		% confidence interval for alpha of z
 
 ci1 = tanh(z-sz);
@@ -279,4 +308,5 @@ ci2 = tanh(z+sz);
 
 %ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
 %ci2(isnan(ci2))=R(isnan(ci2));
+
 return;

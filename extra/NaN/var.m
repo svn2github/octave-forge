@@ -1,14 +1,15 @@
-function y=var(x,DIM)
+function y=var(x,opt,DIM)
 % VAR calculates the variance.
 % 
-% y = var(x,DIM)
+% y = std(x [, opt[, DIM]])
 %   calculates the variance in dimension DIM
 %   the default DIM is the first non-single dimension
 %
+% opt   option (not supported)
 % DIM	dimension
-%	1: STD of columns
-%	2: STD of rows
-% 	N: STD of  N-th dimension 
+%	1: VAR of columns
+%	2: VAR of rows
+% 	N: VAR of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
 %
 % features:
@@ -34,13 +35,17 @@ function y=var(x,DIM)
 
 %	$Revision$
 %	$Id$
-%	Version 1.30;	26 Feb 2003
 %	Copyright (C) 2000-2003 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
 ver = version;
-if nargin == 1,
+if nargin < 3,
         DIM = [];
-elseif nargin == 2,
+        if nargin==2,
+                if ~isempty(opt) & opt~=0, 
+                        fprintf(2,'Warning STD: OPTION not supported.\n');
+                end;
+        end;
+elseif nargin == 3,
         if ~isnumeric(DIM),
                 DIM = [];
         end

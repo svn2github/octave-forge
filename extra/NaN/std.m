@@ -1,8 +1,9 @@
-function o=std(i,DIM)
+function o=std(i,opt,DIM)
 % STD calculates the standard deviation.
 % 
-% y = std(x,DIM)
+% y = std(x [, opt[, DIM]])
 % 
+% opt   option (not supported)
 % DIM	dimension
 %	1 STD of columns
 %	2 STD of rows
@@ -33,14 +34,16 @@ function o=std(i,DIM)
 
 %	$Revision$
 %	$Id$
-%	Version 1.30;	26 Feb 2003
 %	Copyright (c) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
-if nargin<2,
+
+if nargin<3,
         o=sqrt(var(i));
+        if nargin==2,
+                if ~isempty(opt) & opt~=0, 
+                        fprintf(2,'Warning STD: OPTION not supported.\n');
+                end;
+        end;
 else
-        o=sqrt(var(i,DIM));
+        o=sqrt(var(i,opt,DIM));
 end;   
-   
-   
-   

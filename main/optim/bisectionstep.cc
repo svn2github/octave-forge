@@ -35,90 +35,91 @@
 
 DEFUN_DLD(bisectionstep, args, , "bisectionstep.cc")
 {
-   	std::string f (args(0).string_value());
-	Cell f_args (args(1).cell_value());
-	ColumnVector dx (args(2).column_vector_value());
+  std::string f (args(0).string_value());
+  Cell f_args (args(1).cell_value());
+  ColumnVector dx (args(2).column_vector_value());
 
-	double obj_0, obj, a;
-	octave_value_list f_return;
-	octave_value_list c_args(2,1); // for cellevall {f, f_args}  
+  double obj_0, obj, a;
+  octave_value_list f_return;
+  octave_value_list c_args(2,1); // for cellevall {f, f_args}  
 
-	octave_value_list stepobj(2,1);
-	int minarg, found_improvement;
+  octave_value_list stepobj(2,1);
+  int minarg, found_improvement;
 
-	// Default values for controls
-	minarg = 1; // by default, first arg is one over which we minimize
+  // Default values for controls
+  minarg = 1; // by default, first arg is one over which we minimize
 
- 	// possibly minimization not over 1st arg
-	if (args.length() == 4)
+  // possibly minimization not over 1st arg
+  if (args.length() == 4)
+    {
+      minarg = args(3).int_value();
+    }	
+ 
+  ColumnVector x (f_args(minarg - 1).column_vector_value());
+  ColumnVector x_in = x;
+	
+
+  // possibly function returns a cell array
+  // obj. value will be in first position
+  c_args(0) = f;
+  c_args(1) = f_args;
+  f_return = feval("celleval", c_args); 
+  obj_0 = f_return(0).double_value();
+
+  a = 1.0;
+  found_improvement = 0;
+
+  // this first loop goes until an improvement is found
+  while (a > 2*DBL_EPSILON) // limit iterations
+    {
+      f_args(minarg - 1) = x + a*dx;
+      c_args(1) = f_args;
+      f_return = feval("celleval", c_args); 
+      obj = f_return(0).double_value();
+ 
+      // reduce stepsize if worse, or if function can't be evaluated
+      if ((obj >= obj_0) || lo_ieee_isnan(obj))
 	{
-		minarg = args(3).int_value();
+	  a = 0.5 * a;
 	}	
- 
-	ColumnVector x (f_args(minarg - 1).column_vector_value());
-	ColumnVector x_in = x;
-	
-
-	// possibly function returns a cell array
-	// obj. value will be in first position
-	c_args(0) = f;
-	c_args(1) = f_args;
-	f_return = feval("celleval", c_args); 
-	obj_0 = f_return(0).double_value();
-
-	a = 1.0;
-	found_improvement = 0;
-	// this first loop goes until an improvement is found
-  	while (a > 2*DBL_EPSILON) // limit iterations
+      else
 	{
-		f_args(minarg - 1) = x + a*dx;
-		c_args(1) = f_args;
-		f_return = feval("celleval", c_args); 
-		obj = f_return(0).double_value();
- 
- 		// reduce stepsize if worse, or if function can't be evaluated
-		if ((obj >= obj_0) || lo_ieee_isnan(obj))
-		{
-			a = 0.5 * a;
-		}	
-		else
-		{
-			obj_0 = obj;
-			found_improvement = 1;
-			break;
-		}
+	  obj_0 = obj;
+	  found_improvement = 1;
+	  break;
 	}
+    }
 	
-	// If unable to find any improvement break out with stepsize zero
-	if (!found_improvement)
+  // If unable to find any improvement break out with stepsize zero
+  if (!found_improvement)
+    {
+      stepobj(0) = 0.0;
+      stepobj(1) = obj_0;
+      return octave_value_list(stepobj);
+    }	
+	
+  // now keep going until we no longer improve, or reach max trials
+  while (a > 2*DBL_EPSILON)
+    {
+      a = 0.5*a; 
+      f_args(minarg - 1) = x + a*dx;
+      c_args(1) = f_args;
+      f_return = feval("celleval", c_args); 
+      obj = f_return(0).double_value();
+ 
+      // if improved, record new best and try another step
+      if ((obj < obj_0) & !lo_ieee_isnan(obj))
 	{
-		stepobj(0) = 0.0;
-		stepobj(1) = obj_0;
-		return octave_value_list(stepobj);
+	  obj_0 = obj;
 	}	
-	
-	// now keep going until we no longer improve, or reach max trials
-	while (a > 2*DBL_EPSILON)
+      else
 	{
-	   	a = 0.5*a; 
-		f_args(minarg - 1) = x + a*dx;
-		c_args(1) = f_args;
-		f_return = feval("celleval", c_args); 
-		obj = f_return(0).double_value();
- 
-		// if improved, record new best and try another step
-		if ((obj < obj_0) & !lo_ieee_isnan(obj))
-		{
-			obj_0 = obj;
-		}	
-		else
-		{
-			a = a / 0.5; // put it back to best found
-			break;
-		}				
-	}
+	  a = a / 0.5; // put it back to best found
+	  break;
+	}				
+    }
 
-	stepobj(0) = a;
-	stepobj(1) = obj_0;
-	return octave_value_list(stepobj);
+  stepobj(0) = a;
+  stepobj(1) = obj_0;
+  return octave_value_list(stepobj);
 }

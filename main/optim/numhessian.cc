@@ -25,31 +25,31 @@
 static bool
 any_bad_argument(const octave_value_list& args)
 {
-	if (!args(0).is_string())
+  if (!args(0).is_string())
     {
-        error("numhessian: first argument must be string holding objective function name");
-        return true;
+      error("numhessian: first argument must be string holding objective function name");
+      return true;
     }
-	if (!args(1).is_cell())
+  if (!args(1).is_cell())
     {
-        error("numhessian: second argument must cell array of arguments of objective function");
-        return true;
+      error("numhessian: second argument must cell array of arguments of objective function");
+      return true;
     }
- 	if (args.length() == 3)
-	{
-		if (!args(2).is_scalar_type())
+  if (args.length() == 3)
+    {
+      if (!args(2).is_scalar_type())
     	{
-        	error("numhessian: 3rd argument, if supplied,  must an integer\n\
+	  error("numhessian: 3rd argument, if supplied,  must an integer\n\
 			that specifies the argument wrt which differentiation is done");
-	        return true;
+	  return true;
     	}
-	}	
-    return false;
+    }	
+  return false;
 }
 
 
 DEFUN_DLD(numhessian, args, ,
-  "numhessian(f, {args}, minarg)\n\
+	  "numhessian(f, {args}, minarg)\n\
 \n\
 Numeric second derivative of f with respect\n\
 to argument \"minarg\".\n\
@@ -76,127 +76,127 @@ numhessian(\"f\", {ones(2,1), 1}, 2)\n\
 ans = -1.0000\n\
 ")
 {
-	int nargin = args.length();
+  int nargin = args.length();
 
-	if (!((nargin == 2)|| (nargin == 3)))
+  if (!((nargin == 2)|| (nargin == 3)))
     {
-      	error("numhessian: you must supply 2 or 3 arguments");
-	    return octave_value_list();
+      error("numhessian: you must supply 2 or 3 arguments");
+      return octave_value_list();
     }
 
-	// check the arguments
- 	if (any_bad_argument(args)) return octave_value_list();
+  // check the arguments
+  if (any_bad_argument(args)) return octave_value_list();
 
-  	std::string f (args(0).string_value());
-    Cell f_args (args(1).cell_value());
+  std::string f (args(0).string_value());
+  Cell f_args (args(1).cell_value());
 
-	octave_value_list c_args(2,1); // for cellevall {f, f_args}
-	c_args(0) = f;
-	c_args(1) = f_args;  
- 	octave_value_list fdiff_args(2,1);
-	octave_value_list f_return;
+  octave_value_list c_args(2,1); // for cellevall {f, f_args}
+  c_args(0) = f;
+  c_args(1) = f_args;  
+  octave_value_list fdiff_args(2,1);
+  octave_value_list f_return;
 
-	int i, j, minarg;
-	double di, hi, pi, dj, hj, pj, hia;
-	double hja, fpp, fmm, fmp, fpm, obj_value;
+  int i, j, minarg;
+  double di, hi, pi, dj, hj, pj, hia;
+  double hja, fpp, fmm, fmp, fpm, obj_value;
 
 
-	// Default values for controls
-	minarg = 1; // by default, first arg is one over which we minimize
+  // Default values for controls
+  minarg = 1; // by default, first arg is one over which we minimize
  
- 	// possibly minimization not over 1st arg
-	if (args.length() == 3)
-	{
-		minarg = args(2).int_value();
-	}	
+  // possibly minimization not over 1st arg
+  if (args.length() == 3)
+    {
+      minarg = args(2).int_value();
+    }	
 
-	Matrix parameter = f_args(minarg - 1).matrix_value();
+  Matrix parameter = f_args(minarg - 1).matrix_value();
 
-	const int k = parameter.rows();
-    Matrix derivative(k, k);
+  const int k = parameter.rows();
+  Matrix derivative(k, k);
  	
-	f_return = feval("celleval", c_args); 
-	obj_value = f_return(0).double_value();
+  f_return = feval("celleval", c_args); 
+  obj_value = f_return(0).double_value();
  
-    for (i = 0; i<k;i++)	// approximate 2nd deriv. by central difference 
+  for (i = 0; i<k;i++)	// approximate 2nd deriv. by central difference 
     {
-	    pi = parameter(i);
-		fdiff_args(minarg - 1) = pi;
-		fdiff_args(1) = 2;
-		f_return = feval("finitedifference", fdiff_args);
-		hi = f_return(0).double_value();
-        for (j = 0; j < i; j++) // off-diagonal elements
-		{
-		    pj = parameter(j);
-			fdiff_args(minarg - 1) = pj;
-			fdiff_args(1) = 2;
-			f_return = feval("finitedifference", fdiff_args);
-			hj = f_return(0).double_value();
+      pi = parameter(i);
+      fdiff_args(minarg - 1) = pi;
+      fdiff_args(1) = 2;
+      f_return = feval("finitedifference", fdiff_args);
+      hi = f_return(0).double_value();
+      for (j = 0; j < i; j++) // off-diagonal elements
+	{
+	  pj = parameter(j);
+	  fdiff_args(minarg - 1) = pj;
+	  fdiff_args(1) = 2;
+	  f_return = feval("finitedifference", fdiff_args);
+	  hj = f_return(0).double_value();
 	
-            // +1 +1
-			parameter(i) = di = pi + hi;
-			parameter(j) = dj = pj + hj; 
-			hia = di - pi;
-			hja = dj - pj;
-			f_args(minarg - 1) = parameter;
-			c_args(1) = f_args;
-	   	  	f_return = feval("celleval", c_args);
-			fpp = f_return(0).double_value();
+	  // +1 +1
+	  parameter(i) = di = pi + hi;
+	  parameter(j) = dj = pj + hj; 
+	  hia = di - pi;
+	  hja = dj - pj;
+	  f_args(minarg - 1) = parameter;
+	  c_args(1) = f_args;
+	  f_return = feval("celleval", c_args);
+	  fpp = f_return(0).double_value();
 
-			// -1 -1
-			parameter(i) = di = pi - hi;
-			parameter(j) = dj = pj - hj; 
-			hia = hia + pi - di;
-			hja = hja + pj - dj;
-			f_args(minarg - 1) = parameter;
-			c_args(1) = f_args;
-	   	  	f_return = feval("celleval", c_args);
-			fmm = f_return(0).double_value();
+	  // -1 -1
+	  parameter(i) = di = pi - hi;
+	  parameter(j) = dj = pj - hj; 
+	  hia = hia + pi - di;
+	  hja = hja + pj - dj;
+	  f_args(minarg - 1) = parameter;
+	  c_args(1) = f_args;
+	  f_return = feval("celleval", c_args);
+	  fmm = f_return(0).double_value();
 			
-            // +1 -1
-			parameter(i) = pi + hi;
-			parameter(j) = pj - hj;
-			f_args(minarg - 1) = parameter;
-			c_args(1) = f_args;
-   	  		f_return = feval("celleval", c_args);
-			fpm = f_return(0).double_value();
+	  // +1 -1
+	  parameter(i) = pi + hi;
+	  parameter(j) = pj - hj;
+	  f_args(minarg - 1) = parameter;
+	  c_args(1) = f_args;
+	  f_return = feval("celleval", c_args);
+	  fpm = f_return(0).double_value();
 
-            // -1 +1 
-			parameter(i) = pi - hi;
-			parameter(j) = pj + hj;
-			f_args(minarg - 1) = parameter;
-			c_args(1) = f_args;
-   		  	f_return = feval("celleval", c_args);
-			fmp = f_return(0).double_value();
+	  // -1 +1 
+	  parameter(i) = pi - hi;
+	  parameter(j) = pj + hj;
+	  f_args(minarg - 1) = parameter;
+	  c_args(1) = f_args;
+	  f_return = feval("celleval", c_args);
+	  fmp = f_return(0).double_value();
 
-            derivative(j,i) = ((fpp - fpm) + (fmm - fmp)) / (hia * hja);
-			derivative(i,j) = derivative(j,i);
+	  derivative(j,i) = ((fpp - fpm) + (fmm - fmp)) / (hia * hja);
+	  derivative(i,j) = derivative(j,i);
 
-            parameter(j) = pj;
-		}
+	  parameter(j) = pj;
+	}
 
-		// diagonal elements
-		// +1 +1  
-        parameter(i) = di = pi + 2 * hi;
-		f_args(minarg - 1) = parameter;
-		c_args(1) = f_args;
-   	  	f_return = feval("celleval", c_args);
-		fpp = f_return(0).double_value();
+      // diagonal elements
+      // +1 +1  
+      parameter(i) = di = pi + 2 * hi;
+      f_args(minarg - 1) = parameter;
+      c_args(1) = f_args;
+      f_return = feval("celleval", c_args);
+      fpp = f_return(0).double_value();
 
-		hia = (di - pi) / 2;
+      hia = (di - pi) / 2;
 
-		// -1 -1 
-        parameter(i) = di = pi - 2 * hi;
-		f_args(minarg - 1) = parameter;
-		c_args(1) = f_args;
-   	  	f_return = feval("celleval", c_args);
-		fmm = f_return(0).double_value();
-		hia = hia + (pi - di) / 2;
+      // -1 -1 
+      parameter(i) = di = pi - 2 * hi;
+      f_args(minarg - 1) = parameter;
+      c_args(1) = f_args;
+      f_return = feval("celleval", c_args);
+      fmm = f_return(0).double_value();
+      hia = hia + (pi - di) / 2;
 
-        derivative(i,i) = ((fpp - obj_value) + (fmm - obj_value)) / (hia * hia);
+      derivative(i,i) = ((fpp - obj_value) + (fmm - obj_value)) / (hia * hia);
 
-        parameter(i) = pi;
+      parameter(i) = pi;
     }
 
-	return octave_value(derivative);
+  return octave_value(derivative);
 }

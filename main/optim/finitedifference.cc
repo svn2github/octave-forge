@@ -21,30 +21,30 @@
 DEFUN_DLD(finitedifference, args, ,"finitedifference, C++ version\n\
 differences for numgradient and numhessian")
 {
-    double x = args(0).double_value();
-    int order = args(1).int_value();
-	int test;
-	double eps, SQRT_EPS, DIFF_EPS, DIFF_EPS1, DIFF_EPS2, diff, d;
+  double x = args(0).double_value();
+  int order = args(1).int_value();
+  int test;
+  double eps, SQRT_EPS, DIFF_EPS, DIFF_EPS1, DIFF_EPS2, diff, d;
 
-	eps = DBL_EPSILON; // machine precision
-	SQRT_EPS = sqrt(eps); 
-	DIFF_EPS = exp(log(eps)/2);
-	DIFF_EPS1 = exp(log(eps)/3);
-	DIFF_EPS2 = exp(log(eps)/4);
-	if (order == 0) diff = DIFF_EPS;
-	else if (order == 1) diff = DIFF_EPS1;
-	else diff = DIFF_EPS2;
+  eps = DBL_EPSILON; // machine precision
+  SQRT_EPS = sqrt(eps); 
+  DIFF_EPS = exp(log(eps)/2);
+  DIFF_EPS1 = exp(log(eps)/3);
+  DIFF_EPS2 = exp(log(eps)/4);
+  if (order == 0) diff = DIFF_EPS;
+  else if (order == 1) diff = DIFF_EPS1;
+  else diff = DIFF_EPS2;
 
-	test = (fabs(x) + SQRT_EPS) * SQRT_EPS > diff;
+  test = (fabs(x) + SQRT_EPS) * SQRT_EPS > diff;
 	
-	if (test)
-	{
-		d = (fabs(x) + SQRT_EPS) * SQRT_EPS;
-	}
-	else
-	{
-		d = diff;
-	}		
+  if (test)
+    {
+      d = (fabs(x) + SQRT_EPS) * SQRT_EPS;
+    }
+  else
+    {
+      d = diff;
+    }		
 
-	return octave_value(d);
+  return octave_value(d);
 }

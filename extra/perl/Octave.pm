@@ -10,7 +10,9 @@ $VERSION = '0.19';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
-use IPC::Open2;
+use IO::File;
+use IPC::Open3;
+use IO::Select;
 use vars qw( $octave_object );
 
 # set values which should change to this,
@@ -144,7 +146,9 @@ sub _validate
   }
 
 
-  $octave_object->{MARKER} = "-9Ahv87uhBa8l_8Onq,zU9-"
+# choose a random value that's unlikely to appear normally
+# This is 50 characters long: 8^50 = 1.43e45 
+  $octave_object->{MARKER} = '-9w#wastaal!|j"Ahv8~;/+ua;78<<hs+[uhBa8l_8Onq,zU9-'
      unless exists $octave_object->{MARKER};
 }   
 
@@ -225,23 +229,29 @@ sub start_interpreter
    # check if interpreter already alive
    return if $octave_object->{OCTIN} and $octave_object->{OCTOUT};
 
-   my $Oout; my $Oin;
+   my $Oin = new IO::File;
+   my $Oout= new IO::File;
+   my $Oerr= new IO::File;
    my $pid;
    eval {
-# This works in perl 5.6
-#     open2( $Oout, $Oin , $octave_object->{INTERP} ); 
-# But we need to do this in 5.005     
-      $pid= open2( \*OOUT, \*OIN , $octave_object->{INTERP} );
-      $Oout= \*OOUT; $Oin= \*OIN;
+      $pid= open3( $Oin , $Oout, $Oerr, $octave_object->{INTERP} );
+      # set our priority lower than the kid, so that we don't read each
+      # character. Experimentally, I've found 3 to be optimum on Linux 2.4.21
+      setpriority 0,0, (getpriority 0,0)+3;
    };
-   croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open2/i;
+   # ignore errors from setpriority if it's not available
+   croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open3/i;
 
-#  $SIG{CHLD}= \&reap_interpreter;
-#  $SIG{PIPE}= \&reap_interpreter;
+   $SIG{CHLD}= \&reap_interpreter;
+   $SIG{PIPE}= \&reap_interpreter;
+
+   my $select= IO::Select->new($Oout, $Oerr);
 
    $octave_object->{octave_pid} = $pid;
    $octave_object->{OCTIN} = $Oin;
    $octave_object->{OCTOUT} = $Oout;
+   $octave_object->{OCTERR} = $Oerr;
+   $octave_object->{SELECT} = $select;
 
    # some of this is necessary, some are the defaults
    # but it never hurts to be cautious
@@ -300,10 +310,11 @@ sub interpret
    my $cmd= shift;
    my $marker= $octave_object->{MARKER};
 
-   my $Oin= $octave_object->{OCTIN};
-   my $Oout= $octave_object->{OCTOUT};
+   my $Oin=    $octave_object->{OCTIN};
+   my $Oerr=   $octave_object->{OCTERR};
+   my $select= $octave_object->{SELECT};
 
-   croak "octave interpreter not alive"  unless $Oin and $Oout;
+   croak "octave interpreter not alive"  unless $Oin and $Oerr;
 
 #  DEBUG octave commands here
 #  print "INTERP: $cmd\n";
@@ -312,9 +323,17 @@ sub interpret
 
    my $input;
    my $marker_len= length( $marker )+1;
-   while (1) {
-      my $line; sysread $Oout, $line, 1024;
-      $input.= $line;
+   while ( 1 ) {
+      for my $fh ( $select->can_read() ) {
+          if ($fh eq $Oerr) {
+              process_errors();
+          } else {
+              sysread $fh, (my $line), 16384;
+              $input.= $line;
+              # delay if we're reading nothing, not sure why select doesn't block
+              select undef, undef, undef, 0.5 unless $line;
+          }
+      }
       last if substr( $input, -$marker_len, -1) eq $marker;
    }   
 
@@ -322,7 +341,39 @@ sub interpret
    # otherwise it can't handle a CTRL-C
    print $Oin "\n\nfread(stdin,1);\n";
    return substr($input,0,-$marker_len);
-}   
+}
+
+# process any input of stderr
+# we assume that we will get a line with
+# error: or warning:
+sub process_errors
+{
+   my $Oerr=   $octave_object->{OCTERR};
+   my $select= IO::Select->new( $Oerr );
+
+   my $input= "\n";
+   # to get full error buffer, wait until we have 100ms with
+   # not stderr input
+   while ( my @fh = $select->can_read(0.1) ) {
+      sysread $fh[0], (my $line), 1024;
+      $input.= $line;
+   }
+
+   #parse input, looking for warning and error patterns
+   my $error;
+   while ($input =~ /\n (warning:|error:)  \s+
+                     (.*?)
+                   (?=
+                     ( \nwarning: \s+ | \nerror: \s+ | $) ) /gsx) {
+       my $type=    $1;
+       my $message= "(from Inline::Octave) $2";
+          $message=~ s/[\012\015]+/ /g; # turn newlines into spaces
+       $error.= $message.";" if $type eq "error:" && $message;
+       carp $message;
+   }
+   croak $error if $error;
+}
+
 
 # usage:
 # with return values:
@@ -1020,6 +1071,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.22  2003/12/04 18:20:07  aadler
+does warnings right
+
 Revision 1.21  2003/12/03 16:46:31  aadler
 move to IO::Variable class
 

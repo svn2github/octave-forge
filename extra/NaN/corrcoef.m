@@ -1,4 +1,4 @@
-function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
+(k)function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % CORRCOEF calculates the correlation coefficient.
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
@@ -194,7 +194,7 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
                         ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         % NN is the number of non-missing values
-                        [r(k),n] = sumskipnan((il(:,1) - il(:,2)).^2);
+                        [r(k),n(k)] = sumskipnan((il(:,1) - il(:,2)).^2);
                 end;
         end;
         r = 1-6*r./(n.*(n.*n-1));

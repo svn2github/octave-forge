@@ -93,10 +93,7 @@ bitop(NDArray xmat,NDArray ymat,unsigned int op) {
 	  retval(0)=a;
 	}
 	else 
-	  {
-	    std::cerr << "nel: " << nelx << " " << nely << std::endl;
-	    error("size of x and y must match, or one operand must be a scalar");
-	  }
+	  error("size of x and y must match, or one operand must be a scalar");
 	return(retval);
 }
 #else

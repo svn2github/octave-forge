@@ -4,7 +4,7 @@ function  [AR,RC] = arcext(MX,K);
 %
 %  INPUT:
 % MX 	AR and RC matrix calculated by durlev 
-% P 	model order (default maximum possible)
+% P 	model order (default maximum possible)
 %
 %  OUTPUT
 % AR    autoregressive model parameter	

@@ -1,5 +1,5 @@
 function [FPE,AIC,BIC,SBC,MDL,CATcrit,PHI,optFPE,optAIC,optBIC,optSBC,optMDL,optCAT,optPHI,p,C]=selmo(e,NC);
-% SELECTION OF THE MODEL ORDER OF A TIME SERIES
+% Model order selection of an autoregrssive model
 % [FPE,AIC,BIC,SBC,MDL,CAT,PHI,optFPE,optAIC,optBIC,optSBC,optMDL,optCAT,optPHI]=selmo(E,N);
 %
 % E	Error function E(p)

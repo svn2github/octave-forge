@@ -26,6 +26,9 @@ mu2lin
 deblank
    Trims \0 as well as " ".
 
+rand/randn
+   Returns a different sequence for the same seed.
+
 Interface extensions
 ====================
 cross		(warn if receiving mixed row/column vectors)
@@ -43,8 +46,7 @@ cross		(accepts matrices)
 grid		(control x/y grids and grid density independently)
 fsolve.oct	(allow parameters through fsolve to user function)
 rand.oct	(accepts "state" argument; use the Mersenne twister,
-		 a long period random number generator; faster, but
-		 returns a different sequence from the old generator)
+		 a long period random number generator)
 randn.oct	(same changes as rand.oct)
 
 Bug fixes
@@ -59,8 +61,8 @@ findstr
 hankel
 hilb
 index
-invhilb
-kron
+invhilb         (extends valid range; faster)
+kron            (Etienne Grossman has an even faster compiled version)
 rindex
 toeplitz
 vander

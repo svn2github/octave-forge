@@ -87,6 +87,7 @@ tmp = abs(r(:,1)-r(:,2))<eps;
 
 q=zeros(1,5);
 
+
 % check NORMPDF, NORMCDF, NORMINV
 x = [-inf,-2,-1,-.5,0,.5,1,2,3,inf,nan]';
 if exist('normpdf')==2,
@@ -113,6 +114,7 @@ if exist('norminv')==2,
         q(5) = any(norminv(0.5,[1 2 3 ],0)~=[1:3]);
 end;
 
+
 % output
 if all(tmp) & all(~q),
         fprintf(1,'NANTEST successful - your NaN-tools are correctly installed\n');
@@ -121,7 +123,9 @@ else
 	fprintf(1,'Some functions must still be replaced\n');
 end;
 
-% commutativity of 0*NaN
+
+%%%%% commutativity of 0*NaN	%%% This test adresses a problem in Octave
+
 x=[-2:2;4:8]';
 y=x;y(2,1)=nan;y(4,2)=nan;
 B=[1,0,2;0,3,1];
@@ -129,4 +133,32 @@ if ~all(all(isnan(y*B)==isnan(B'*y')')),
         fprintf(2,'Warning: 0*NaN is not commutative\n');
 end;
 
+
+%%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3 
+p   = 2;
+tmp1 = repmat(nan,p)/repmat(nan,p);
+if ~all(isnan(tmp1(:))),
+        fprintf(2,'WARNING: matrix division NaN/NaN does not result in NaN\n');
+end;
+tmp2 = repmat(nan,p)\repmat(nan,p);
+if ~all(isnan(tmp2(:))),
+        fprintf(2,'WARNING: matrix division NaN\\NaN does not result in NaN\n');
+end;
+tmp3 = repmat(0,p)/repmat(0,p);
+if ~all(isnan(tmp3(:))),
+        fprintf(2,'WARNING: matrix division 0/0 does not result in NaN\n');
+end;
+tmp4 = repmat(0,p)\repmat(0,p);
+if ~all(isnan(tmp4(:))),
+        fprintf(2,'WARNING: matrix division 0\\0 does not result in NaN\n');
+end;
+tmp5 = repmat(0,p)*repmat(inf,p);
+if ~all(isnan(tmp5(:))),
+        fprintf(2,'WARNING: matrix multiplication 0*inf does not result in NaN\n');
+end;
+tmp6 = repmat(inf,p)*repmat(0,p);
+if ~all(isnan(tmp6(:))),
+        fprintf(2,'WARNING: matrix multiplication inf*0 does not result in NaN\n');
+end;
+tmp=[tmp1;tmp2;tmp3;tmp4;tmp5;tmp6];
 

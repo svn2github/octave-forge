@@ -73,8 +73,8 @@
    uint64_t randi64(void)          returns 64-bit unsigned int
 
    double randu32(void)       returns 32-bit uniform in (0,1)
-   double randu53(void)       returns 53-bit uniform in [0,1)
-   double randu (void)        returns M-bit uniform in [0,1)
+   double randu53(void)       returns 53-bit uniform in (0,1)
+   double randu (void)        returns M-bit uniform in (0,1)
    double randn (void)        returns M-bit standard normal
    double rande (void)        returns N-bit standard exponential
 

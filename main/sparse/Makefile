@@ -2,6 +2,10 @@
 # $Id$
 #
 # $Log$
+# Revision 1.8  2002/04/29 13:57:56  pkienzle
+# Restore CPICFLAG definition
+# Get OCTAVE from OCTAVE_FORGE if compiling within octave-forge
+#
 # Revision 1.7  2002/04/12 20:27:30  pkienzle
 # Use mkoctfile -s to strip oct-files
 #
@@ -132,23 +136,23 @@
 # CCDEFS = -v
 # CCDEFS = -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE
 
-#OCTVER   =  -2.1.32
-OCTAVE   =   octave$(OCTVER)
 
 sinclude ../../Makeconf
 
 ifndef OCTAVE_FORGE
 
+#	OCTVER   =  -2.1.32
+	OCTAVE   =   octave$(OCTVER)
 #	MKOCTFILE= mkoctfile-gcc3-2.1.35 -v
 	MKOCTFILE= mkoctfile$(OCTVER) -s
 	AR= ar
 	RANLIB=ranlib
-
-	# Use same C compiler and options as mkoctfile
-	CC       =  $(shell $(MKOCTFILE) -p CC)
-	CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
-	CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
 endif
+
+# Use same C compiler and options as mkoctfile
+CC       =  $(shell $(MKOCTFILE) -p CC)
+CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
+CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
 
 NAME     =   make_sparse
 OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct spinv.oct

@@ -755,8 +755,7 @@ Dirichlet(a1,...,ak)\n\
   else
     {
       const double *pA = alpha.data();
-      for (int i=nr*nc-1; i >= 0; i--) // pX[i] = randg(pA[i]);
-	fill_randg(pA[i],1,pX+i);
+      for (int i=nr*nc-1; i >= 0; i--) pX[i] = randg(pA[i]);
     }
 
   retval(0) = X;

@@ -16,16 +16,19 @@
 ## 02111-1307, USA.
 
 ## usage: mat2str (x)
-##
-## Format x as a string suitable for use in eval.
+##        mat2str (x,n)
+## mat2str (x) format x as a string suitable for use in eval.
+## mat2str(A,n) converts matrix x using n digits of precision.
+## 
 ##
 ## See also: sprintf, int2str
 
-## Author: John W. Eaton
+## Author: jwe
 ## Modified by: Ariel Tankus, 15.6.98 .
-## Modified by: Paul Kienzle, 15.7.00, to handle matrices. 
+## Modified by: Paul Kienzle, 15.7.00, to handle matrices.
+## Modified by: Andreas Helms, 21.3.02, to handle arbitrary precision. 
 
-function retval = mat2str (x)
+function retval = mat2str (x,n)
 
   if (nargin == 1)
     [nr, nc] = size(x);
@@ -38,8 +41,21 @@ function retval = mat2str (x)
       idx = find (retval == ",");
       retval(idx(nc:nc:length(idx))) = ";";
     endif
-  else
-    usage ("mat2str (x)");
+  elseif (nargin == 2)
+    [nr, nc] = size(x);
+    format = ['%.' int2str(n) 'g'];
+    if (nr*nc == 1)
+      retval = sprintf (format, x);
+    else
+      retval = sprintf ([" " ,format , ","] , x.');
+      retval(1) = "[";
+      retval(length(retval)) = "]";
+      idx = find (retval == ",");
+      retval(idx(nc:nc:length(idx))) = ";";
+    endif	
+			
+    else
+    usage ("mat2str (x,n)");
   endif
 
 endfunction

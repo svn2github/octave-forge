@@ -78,7 +78,7 @@ rdiam = nan*ones(1,3) ; ## ones (1,3)/24 ;
 
 sz = [scale; nan*ones(1,3); diam; rdiam] ;
 
-## roddiam = min (grep (scale))/12 ;
+## roddiam = min (inz (scale))/12 ;
 ## if roddiam, d = roddiam.*scale ; else d = [nan,nan,nan] ; end
 
 ## diam = diam.*scale ;

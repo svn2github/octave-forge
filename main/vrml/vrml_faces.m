@@ -216,7 +216,7 @@ if is_list (f)
 else
 
   npts = sum (ptsface = (sum (!! f)));
-  all_indexes = grep (f) - 1;
+  all_indexes = inz (f) - 1;
 end
 
 if 1
@@ -242,7 +242,7 @@ coord_str = blanks (ltpl0 * npts + (4+16) * nfaces);
 if isnan (convex), convex = 1; end
 curpos = 1;
 for i = 1:nfaces
-  if is_list (f), fpts = nth (f, i)-1; else fpts = grep (f(:,i))-1; end
+  if is_list (f), fpts = nth (f, i)-1; else fpts = inz (f(:,i))-1; end
   fpts = fpts(:)';
   if convex && length (fpts) > 3, convex = 0; end
   template = setstr ((ones(length(fpts),1)*toascii (tpl0))'(:)');

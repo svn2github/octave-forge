@@ -7,13 +7,13 @@ function r = ranks(X,Mode);
 %   if X is a vector, return the vector of ranks of X adjusted for ties.
 %   if X is matrix, the rank is calculated for each column. 
 % r = ranks(X,'traditional')
-%   implements the traditional algorithm with O(m*n^2) computational 
+%   implements the traditional algorithm with O(n^2) computational 
 %   and O(n^2) memory effort
 % r = ranks(X,'mtraditional')
-%   implements the traditional algorithm with O(m*n^2) computational 
+%   implements the traditional algorithm with O(n^2) computational 
 %   and O(n) memory effort
 % r = ranks(X,'advanced   ')
-%   implements an advanced algorithm with O(m*n*log(n)) computational 
+%   implements an advanced algorithm with O(n*log(n)) computational 
 %   and O(n.log(n)) memory effort
 %
 % see also: CORRCOEF, SPEARMAN, RANKCORR
@@ -22,7 +22,7 @@ function r = ranks(X,Mode);
 % --
 
 
-%    Version 1.26  Date: 20 Aug 2002
+%    Version 1.26  Date: 06 Sep 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -40,11 +40,13 @@ function r = ranks(X,Mode);
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 % Features:
-% + interprets NaN's as missing value 
-% + is fast, using an efficient algorithm O(n.log(n)) for the rank correlation
-% - rank correlation works for cell arrays, too (no check for missing values).
+% + is fast, uses an efficient algorithm for the rank correlation
+% + computational effort is O(n.log(n)) instead of O(n^2)
+% + memory effort is O(n.log(n)), instead of O(n^2). 
+%     Now, the ranks of 8000 elements can be easily calculated
+% + NaN's in the input yield NaN in the output 
 % + compatible with Octave and Matlab
-
+% + traditional method is also implemented for comparison. 
 
 if nargin<2, Mode='advanced   '; end;
 
@@ -90,7 +92,7 @@ elseif strcmp(Mode(1:min(11,length(Mode))),'advanced   '), % advanced
         n = N;
         for k = 1:M,
                 [sX,ix] = sort(X(:,k)); 
-                [tmp,r(:,k)] = sort(ix);	    % iy yields the rank of each element 	
+                [tmp,r(:,k)] = sort(ix);	    % r yields the rank of each element 	
                 
                 % identify multiple occurences (not sure if this important, but implemented to be compatible with traditional version)
                 if isnumeric(X)

@@ -28,5 +28,7 @@
 ##     return error rather than trapping to keyboard
 ## March    2002: Etienne
 ##     use setfield(), which is now an octfile, to do the work
+## Jan      2003: Andy Adler <aadler@uottawa.ca>
+##     mods to use of setfield()
 function s = struct(varargin)
 s = setfield ([], varargin{:});

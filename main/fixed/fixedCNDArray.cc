@@ -632,8 +632,7 @@ FixedComplexNDArray
 FixedComplexNDArray::sumsq (int dim) const
 {
   FixedPointComplex zero;
-  MX_ND_REDUCTION (acc += (imag (elem (iter_idx)) > 0) ? elem (iter_idx) *
-		   conj (elem (iter_idx)) : pow (elem (iter_idx), 2), 
+  MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
 		   retval.elem (iter_idx) = acc, zero, 
 		   FixedPointComplex acc = zero, FixedComplexNDArray);
 }

@@ -507,9 +507,27 @@ DEFUN_DLD (randp, args, nargout,
 @deftypefn {Loadable Function} {} randp (@var{l})\n\
 @deftypefnx {Loadable Function} {} randp (@var{l}, [@var{n}, @var{m}])\n\
 @deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
-Return a matrix with Poisson distributed random elements.  The\n\
-arguments are handled the same as the arguments for @code{rand}.\n\
+Return a matrix with Poisson distributed random elements.\n\
 \n\
+Five different algorithms are used depending on the range of @var{l}\n\
+and whether or not @var{l} is a scalar or a matrix.\n\
+\n\
+For scalar @var{l} <= 12, use direct method.[1]\n\n\
+For scalar @var{l} > 12, use rejection method.[1]\n\n\
+For matrix @var{l} <= 10, use inversion method.[2]\n\n\
+For matrix @var{l} > 10, use patchwork rejection method.[2,3]\n\n\
+For @var{l} > 1e8, use normal approximation.[4]\n\
+\n\
+[1] Press, et al., 'Numerical Recipes in C', Cambridge University Press, 1992.\n\
+\n\
+[2] Stadlober E., et al., WinRand source code, available via FTP.\n\
+\n\
+[3] H. Zechner, 'Efficient sampling from continuous and discrete\n\
+unimodal distributions', Doctoral Dissertaion, 156pp., Technical\n\
+University Graz, Austria, 1994.\n\
+\n\
+[4] L. Montanet, et al., 'Review of Particle Properties', Physical Review\n\
+D 50 p1284, 1994\n\
 @end deftypefn\n\
 @seealso{rand, randn, rande}\n")
 {

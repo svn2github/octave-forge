@@ -3,7 +3,7 @@
 dir="`pwd`"
 ver=${dir##*/}
 
-test "${dir#*/src/cygwin/octave-}" = "$dir" && echo "Expected to be in /c/src/cygwin/octave-2.1.xx instead of $dir" && exit
+test "${dir#*/src/cygwin/octave-}" = "$dir" && echo "Expected to be in src/cygwin/octave-2.1.xx instead of $dir" && exit
 
 # May need to hack configure replacing sgemm with dgemm and
 # cheev with zheev, so that only need double precision lapack.
@@ -38,7 +38,7 @@ export LDFLAGS=-L/opt/$ver/lib
 export CPPFLAGS=-I/opt/$ver/include
 export CFLAGS=-O2 
 export CXXFLAGS=-O2
-/c/src/$ver/configure --enable-shared --disable-static \
+$1/configure --enable-shared --disable-static \
     --prefix=/opt/$ver --with-blas=lapack
 
 # correct misconfigurations:

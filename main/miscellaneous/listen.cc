@@ -309,12 +309,23 @@ process_commands(int channel)
 
 int channel = -1;
 
+#if defined(__CYGWIN__)
+// temporary hack (I hope)
+
+DEFUN_INTERNAL(send,args,,false,"\
+send(str)\n\
+  Send a command on the current connection\n\
+send(name,value)\n\
+  Send a binary value with the given name on the current connection\n\
+")
+#else
 DEFUN_DLD(send,args,,"\
 send(str)\n\
   Send a command on the current connection\n\
 send(name,value)\n\
   Send a binary value with the given name on the current connection\n\
 ")
+#endif
 {
   bool ok;
   unsigned long t;
@@ -400,6 +411,12 @@ listen(port,host)\n\
    dot-separated host name.\n\
 ")
 {
+
+#if defined(__CYGWIN__)
+  install_builtin_function (Fsend, "send", "builtin send doc", false);
+#endif
+
+
   octave_value_list ret;
   int nargin = args.length();
   if (nargin < 1 || nargin > 2)
@@ -478,7 +495,7 @@ listen(port,host)\n\
 			 &sin_size)) == -1) {
       STATUS("failed to accept");
       perror("accept");
-#if defined(__CYGWIN__) || defined(__sgi)
+#if defined(__CYGWIN__) || defined(_sgi)
       break;
 #else
       continue;

@@ -16,6 +16,7 @@
 %   bispec	Bi-spectrum 
 %   durlev      (*) solves Yule-Walker equation - converts ACOVF into AR parameters
 %   lattice     (*) calcultes AR parameters with lattice method
+%   lpc		(*) calculates the prediction coefficients form a given time series
 %   invest0	(*) a prior investigation (used by invest1)
 %   invest1	(*) investigates signal (useful for 1st evaluation of the data)
 %   selmo	(*) Select Order of Autoregressive model using different criteria
@@ -45,7 +46,6 @@
 %   rc2ac 	(*) 
 %   rc2poly 	(*) 
 %   ar2poly 	(*) 
-%   
 %   
 % Utility functions 
 %   sinvest1	shows the parameter calculated by INVEST1

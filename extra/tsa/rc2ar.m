@@ -74,7 +74,7 @@ else            % needs O(p) memory
         
         % Durbin-Levinson Algorithm
         for K=1:lc,
-        	acf(:,K+1) = -sum(acf(:,K:-1:1).*ar(:,1:K),2);        
+        	acf(:,K) = -sum(acf(:,K:-1:1).*ar(:,1:K),2);        
                 ar(:,K) = rc(:,K);
                 if K>1, %for compatibility with OCTAVE 2.0.13
                         ar(:,1:K-1) = ar(:,1:K-1) - ar(:,K*ones(K-1,1)) .* ar(:,K-1:-1:1);
@@ -82,7 +82,7 @@ else            % needs O(p) memory
                 res(:,K+1) = res(:,K) .* (1-abs(ar(:,K)).^2);
         end;
         
-	ACF=cumprod(ones(lr,lr)-rc.^2,2);
+	ACF=cumprod(ones(lr,lc)-rc.^2,2);
 
         % assign output arguments
         arg3=res;

@@ -14,8 +14,9 @@
 ##
 ## Test an optimization function with the same synopsis as bfgs.m 
 ##
+## modified 2004-05-20 by Michael Creel to adapt to bfgsmin
 
-if ! exist ("optim_func"), optim_func = "bfgs"; end
+if ! exist ("optim_func"), optim_func = "bfgsmin"; end
 
 ok = 1;
 
@@ -72,14 +73,19 @@ end
 
 ## [x,v,niter] = feval (optim_func, "testfunc","dtestf", xinit);
 ctl.df = "dtestf";
-[x,v,niter] = feval (optim_func, "testfunc", xinit, ctl);
+if strcmp(optim_func,"bfgsmin")
+	ctl = {-1,2,1,1};
+	xinit2 = {xinit};
+else xinit2 = xinit;	
+endif
+[x,v,niter] = feval (optim_func, "testfunc", xinit2, ctl);
 
 if verbose 
   printf ("nev=%d  N=%d  errx=%8.3g   errv=%8.3g\n",\
 	  niter(1),N,max(abs( x-truemin )),v-offset);
 end
 
-if any (abs (x-truemin) > 100*sqrt (eps))
+if any (abs (x-truemin) > 1e-4)
   ok = 0;
   if verbose, printf ("not ok 1 (best argument is wrong)\n"); end
 elseif verbose, printf ("ok 1\n");

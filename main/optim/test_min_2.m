@@ -19,7 +19,8 @@
 ## Sets 'ok' to 1 if success, 0 otherwise
 
 ## The name of the optimizing function
-if ! exist ("optim_func"), optim_func = "bfgs"; end
+## modified 2004-05-20 by Michael Creel to adapt to bfgsmin
+if ! exist ("optim_func"), optim_func = "bfgsmin"; end
 
 ok = 1;
 
@@ -89,12 +90,17 @@ ctl.df = "dff";
 ctl.ftol = eps;
 ctl.dtol = 1e-7;
 mytic() ;
+if strcmp(optim_func,"bfgsmin")
+	ctl = {-1,2,1,1};
+	xinit2 = {xinit};
+else xinit2 = xinit;	
+endif
 ## [xlev,vlev,nlev] = feval(optim_func, "ff", "dff", xinit) ;
-[xlev,vlev,nlev] = feval(optim_func, "ff", xinit, ctl) ;
+[xlev,vlev,nlev] = feval(optim_func, "ff", xinit2, ctl) ;
 tlev = mytic() ;
 
 
-if max (abs(xlev-truep)) > 100*sqrt (eps),
+if max (abs(xlev-truep)) > 1e-4,
   if verbose
     printf ("Error is too big : %8.3g\n", max (abs (xlev-truep)));
   end

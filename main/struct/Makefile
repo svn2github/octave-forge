@@ -8,6 +8,6 @@ ifeq ($(HAVE_BUILTIN_STRUCT),1)
 STRUCT=
 endif
 
-all: getfields.oct setfields.oct $(STRUCT)
+all: $(STRUCT)
 
 clean: ; -$(RM) *.o core octave-core *.oct *~

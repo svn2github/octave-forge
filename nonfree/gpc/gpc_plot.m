@@ -1,20 +1,20 @@
-## Copyright (C) 2001 Rafael Laboissiere
+## Copyright (C) 2001, 2004  Rafael Laboissiere
 ##
-## This program is free software.
+## This program is part of Octave-GPC
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave-gpc is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
 ##
-## Octave is distributed in the hope that it will be useful, but
+## Octave-gpc is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## along with Octave-GPC; see the file COPYING.  If not, write to the
+## Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
 ## usage: gpc_plot (polygon [, format [, type]])
@@ -50,7 +50,7 @@ function gpc_plot (p, f, t)
         if nargin < 2
 	  f = "";
         endif
-      endif	
+      endif
 
       ## Test for existence of fill.m function (in octave-forge package)
       ## for plotting tristrips
@@ -69,7 +69,7 @@ function gpc_plot (p, f, t)
 	if t == 0
 
           ## Normal polygon plot
-	  j = [ idx (i, 1) : idx (i, 2), idx (i, 1) ];
+	  j = [ idx(i, 1) : idx(i, 2), idx(i, 1) ];
 	  if strcmp (f, "")
 	    plot (vtx (j, 1), vtx (j, 2))
 	  else
@@ -88,8 +88,8 @@ function gpc_plot (p, f, t)
 	      feval (plot_fcn, vtx (k, 1), vtx (k, 2), f);
 	    endif
 	    hold on
-	  endfor	
-	  
+	  endfor
+
 	endif
 
       endfor

@@ -17,7 +17,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strvcat (@var{s_1}, @dots{}, @var{s_n})
-## Return a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
+## Return a matrix containing the strings (and cell-strings) 
+## @var{s_1}, @dots{}, @var{s_n} as
 ## its rows.  Each string is padded with blanks in order to form a valid
 ## matrix.  Unlike @var{str2mat}, empty strings are ignored.
 ##
@@ -28,6 +29,9 @@
 ## Modified: Paul Kienzle <pkienzle@kienzle.powernet.co.uk> converted
 ##           str2mat to strvcat.  Same function except that strvcat
 ##           ignores empty strings.
+## Modified by Alois Schloegl <a.schloegl@ieee.org> Mar 2005
+##	     added support for cell-strings 
+
 
 function retval = strvcat (varargin)
 
@@ -40,9 +44,18 @@ function retval = strvcat (varargin)
 
   nr = zeros (nargin, 1);
   nc = zeros (nargin, 1);
+  K = 0; 
   for k = 1 : nargin
     s = nth (varargin, va_arg_cnt++);
-    [nr(k), nc(k)] = size (s);
+    if iscell(s),
+	for k1 = 1:length(s)
+	    K = K+1;
+	    [nr(K), nc(K)] = size (s{k1});
+	end;
+    else
+        K = K+1;
+        [nr(K), nc(K)] = size (s);
+    end;	
   endfor
 
   retval_nr = sum (nr);
@@ -56,13 +69,17 @@ function retval = strvcat (varargin)
   row_offset = 0;
   for k = 1 : nargin
     s = nth (varargin, va_arg_cnt++);
-    if (! isstr (s))
-      s = setstr (s);
-    endif
-    if (nc(k) > 0)
-      retval ((row_offset + 1) : (row_offset + nr(k)), 1:nc(k)) = s;
-    endif
-    row_offset = row_offset + nr(k);
+    if iscell(s),
+	for k1 = 1:length(s)
+	    retval(row_offset+k1,1:length(s{k1})) = char(s{k1});
+	end;
+        row_offset = row_offset + length(s);
+    else
+	if (nc(k) > 0)
+    	    retval ((row_offset + 1) : (row_offset + nr(k)), 1:nc(k)) = char(s);
+	endif
+        row_offset = row_offset + size(s,1);
+    end;
   endfor
 
 endfunction

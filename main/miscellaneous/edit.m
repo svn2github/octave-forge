@@ -135,7 +135,7 @@ function edit(file)
     if isempty(host)
       FUNCTION_EMAIL = " ";
     else
-      FUNCTION_EMAIL = [ "<", getpwuid(getuid).name, "@", host, ">" ]
+      FUNCTION_EMAIL = [ "<", getpwuid(getuid).name, "@", host, ">" ];
     endif
   endif
     

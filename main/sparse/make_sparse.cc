@@ -343,6 +343,100 @@ signal( SIGSEGV, SIG_DFL );
    return retval;
 }
 
+DEFUN_DLD (spreal, args, nargout ,
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{abs_a} =} spreal( @var{a} );\n\
+SPREAL : real part of a complex sparse matrix\n\
+@seealso{sparse, spabs, spimag}\n\
+@end deftypefn")
+{
+   octave_value_list retval;
+
+   if (args.length() < 1) {
+      print_usage ("spreal");
+      return retval;
+   }
+
+   if (args(0).type_name () == "sparse" ) {
+       retval(0)= args(0);
+   } else
+   if ( args(0).type_name () == "complex_sparse" ) {
+      const octave_sparse& A =
+           (const octave_sparse&) args(0).get_rep();
+      SuperMatrix X= A.super_matrix();
+
+      DEFINE_SP_POINTERS_CPLX( X )
+      int nnz= NCFX->nnz;
+
+      double *coefB = doubleMalloc(nnz);
+      int *   ridxB = intMalloc(nnz);
+      int *   cidxB = intMalloc(X.ncol+1);
+
+      for ( int i=0; i<=Xnc; i++)
+         cidxB[i]=  cidxX[i];
+
+      for ( int i=0; i< nnz; i++) {
+         doublecomplex * dc= (doublecomplex *) &coefX[i];
+         coefB[i]=  dc->r;
+         ridxB[i]=  ridxX[i];
+      }
+
+      SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+      retval(0)= new octave_sparse(B);
+   } else
+     gripe_wrong_type_arg ("spreal", args(0));
+
+   return retval;
+}
+
+DEFUN_DLD (spimag, args, nargout ,
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{abs_a} =} spimag( @var{a} );\n\
+SPIMAG : imaginary part of a complex sparse matrix\n\
+@seealso{sparse, spabs, spreal}\n\
+@end deftypefn")
+{
+   octave_value_list retval;
+
+   if (args.length() < 1) {
+      print_usage ("spimag");
+      return retval;
+   }
+
+   if (args(0).type_name () == "sparse" ) {
+      ColumnVector empty;
+      retval(0)= new octave_sparse( assemble_sparse(
+                   args(0).columns(), args(0).rows(), empty, empty, empty, 0));
+   } else
+   if ( args(0).type_name () == "complex_sparse" ) {
+      const octave_sparse& A =
+           (const octave_sparse&) args(0).get_rep();
+      SuperMatrix X= A.super_matrix();
+
+      DEFINE_SP_POINTERS_CPLX( X )
+      int nnz= NCFX->nnz;
+
+      double *coefB = doubleMalloc(nnz);
+      int *   ridxB = intMalloc(nnz);
+      int *   cidxB = intMalloc(X.ncol+1);
+
+      for ( int i=0; i<=Xnc; i++)
+         cidxB[i]=  cidxX[i];
+
+      for ( int i=0; i< nnz; i++) {
+         doublecomplex * dc= (doublecomplex *) &coefX[i];
+         coefB[i]=  dc->i;
+         ridxB[i]=  ridxX[i];
+      }
+
+      SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+      retval(0)= new octave_sparse(B);
+   } else
+     gripe_wrong_type_arg ("spimag", args(0));
+
+   return retval;
+}
+
 
 DEFINE_OCTAVE_ALLOCATOR (octave_sparse);
 
@@ -353,6 +447,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.12  2003/10/18 04:55:47  aadler
+ * spreal spimag and new tests
+ *
  * Revision 1.11  2003/10/18 01:13:00  aadler
  * texinfo for documentation strings
  *

@@ -1542,8 +1542,12 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
    return create_SuperMatrix( Unr,Unc,cx, coefX, ridxX, cidxX );
 }                   
 
+
 /*
  * $Log$
+ * Revision 1.19  2003/10/18 04:55:47  aadler
+ * spreal spimag and new tests
+ *
  * Revision 1.18  2003/08/29 21:21:15  aadler
  * mods to fix bugs for empty sparse
  *

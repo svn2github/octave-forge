@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.16  2003/10/18 04:55:47  aadler
+# spreal spimag and new tests
+#
 # Revision 1.15  2003/08/30 03:03:05  aadler
 # mods to prevent segfaults for sparse
 #
@@ -141,7 +144,8 @@ CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
 NAME     =   make_sparse
 OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct \
              spinv.oct is_sparse.oct spabs.oct \
-             is_real_sparse.oct is_complex_sparse.oct
+             is_real_sparse.oct is_complex_sparse.oct \
+	     spimag.oct spreal.oct
 SUPERLU  =   SuperLU
 S_INC=   -I$(SUPERLU)/SRC/ -I$(SUPERLU)/CBLAS
 

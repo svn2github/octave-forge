@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.7  2002/03/01 01:49:25  aadler
+added namespace std to work with gcc3
+
 Revision 1.6  2002/02/19 21:21:48  aadler
 Modifications to _dtrsv stub to compile.
 Modifications to makefile to define AR and RANLIB
@@ -100,6 +103,8 @@ DLD functions for sparse support in octave
 #include <cstdlib>
 
 #include <string>
+
+using namespace std;
 
 class ostream;
 

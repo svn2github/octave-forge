@@ -2,8 +2,6 @@ CVS as of 2002-09-19
 
 New functions
 
-        * vrml/vmesh: 3D visualization of a surface
-        * vrml/*: represent and show 3D objects as VRML code (needs FreeWRL)
         * image/imginfo: determines size of image using 'convert'
 	* image/colfilt: image block filtering function
 	* miscellaneous/inline: generate a function from an expression
@@ -13,6 +11,8 @@ New functions
 	* sparse/sprand: random sparse matrix
 	* splines/pchip: Piecewise Cubic Hermitian Interpolating Polynomial
 	* symbolic/{cheb,chebwin}: Dolph-Chebyshev windows
+        * vrml/vmesh: 3D visualization of a surface
+        * vrml/*: represent and show 3D objects as VRML code (needs FreeWRL)
 
 Extended interfaces
 
@@ -33,6 +33,20 @@ Changed interfaces
 	* optim/wpolyfit: don't return yf
 	* optim/wpolyfit: return row vectors for compatibility with polyfit
 	* signal/nellip: replaced by ellip, ellipord
+
+extra/tsa
+
+	* significance test and confidence intervals for PACF
+	* support for new releases of octave and matlab
+	* bug fixes
+
+extra/NaN
+
+	* added TRIMEAN, NORMPDF, NORMCDF and NORMRND
+	* extended NANTEST
+	* significance test and confidence intervals for CORRCOEF
+	* faster RANKS
+	* support for new releases of octave and matlab
 
 Internal changes
 

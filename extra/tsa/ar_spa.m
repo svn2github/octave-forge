@@ -48,12 +48,8 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 % Boston, MA  02111-1307, USA.
 
-if nargout >5  
-%        fprintf(2,'Warning %s: Amplitude might be errornous\n',mfilename); 
-end;
 
 [NTR,pp]=size(ARP);
-%B=1;
 
 R=zeros(size(ARP));
 P=zeros(size(ARP));
@@ -82,20 +78,23 @@ for k = 1:NTR, %if ~mod(k,100),k, end;
         elseif 1;
 	        a3 = polyval([-ARP(k,pp-1:-1:1).*(1:pp-1), pp],1./p(idx).');
 	        a  = polyval([-ARP(k,pp:-1:1) 1],p(idx).');
-		F(k,:) = (1+(imag(P)~=0))./(a.*a3); 
+		F(k,:) = (1+(imag(P(k,:))~=0))./(a.*a3); 
         end;	
 end;
 
 A = A.*sqrt(E(:,ones(1,pp)));
-if nargin>1
-        w=w*nhz/2/pi;
-        B=B*nhz/2/pi;
+if nargin>1,
+        if size(nhz,1)==1, 
+                nhz = nhz(ones(NTR,1),:);
+        end;
+        w = w.*nhz(:,ones(1,pp))/(2*pi);
+        B = B.*nhz(:,ones(1,pp))/(2*pi);
 end;
 if nargin>2,
-        F=F.*E(:,ones(1,pp));
+        F = F.*E(:,ones(1,pp));
 end;
 
-ip = sum(imag(P)~=0)/2; 
+ip = sum(imag(P)~=0,2)/2; 
 return;
 
 np(:,1) = sum(imag(P')==0)';	% number of real poles

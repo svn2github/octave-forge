@@ -5,6 +5,7 @@
 ## See: http://www.ietf.org/rfc/rfc2045.txt
 
 ## This program is in the public domain
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function Y = base64encode(X)
 

@@ -10,6 +10,7 @@
 ##       norm(Q'*Q - eye(rows(Q)))
 
 ## This program is in the public domain
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function A = lauchli(n,mu)
   if (nargin < 1 || nargin > 2)

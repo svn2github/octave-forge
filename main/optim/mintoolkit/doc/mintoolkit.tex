@@ -1,0 +1,700 @@
+%% LyX 1.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[11pt,english]{article}
+\usepackage{palatino}
+\usepackage[T1]{fontenc}
+\usepackage{a4}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{amssymb}
+\IfFileExists{url.sty}{\usepackage{url}}
+                      {\newcommand{\url}{\texttt}}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{html}
+\usepackage{dcolumn}
+\usepackage{mathpazo}
+\usepackage[ps2pdf,pdftitle={Econometrics},urlcolor=blue,linktocpage,a4paper,colorlinks=true]{hyperref}
+
+\usepackage{babel}
+\makeatother
+\begin{document}
+
+\title{Unconstrained Optimization with MINTOOLKIT for GNU Octave}
+
+
+\author{Michael Creel%
+\footnote{Dept. of Economics and Economic History, Universitat Autònoma de Barcelona.
+michael.creel@uab.es%
+}}
+
+
+\date{March 2004}
+
+\maketitle
+\begin{abstract}
+The paper documents MINTOOLKIT for GNU Octave. MINTOOLKIT provides
+functions for minimization and numeric differentiation. The main algorithms
+are BFGS, LBFGS, and simulated annealing. Examples are given.
+\end{abstract}
+
+\section{Introduction}
+
+Unconstrained optimization is a basic tool in many disciplines, and
+there is no need to discuss its importance. This paper discusses how
+unconstrained optimization may be done using GNU Octave (Eaton, \htmladdnormallink{www.octave.org}{http://www.octave.org})
+using the package MINTOOLKIT (Creel, \htmladdnormallink{http://pareto.uab.es/mcreel/MINTOOLKIT}{http://pareto.uab.es/mcreel/MINTOOLKIT}).
+If you would just like to see some examples of how to use the algorithms,
+skip to section \ref{sec:Examples}. Otherwise, here's some introductory
+information that explains how algorithms we selected for inclusion
+into MINTOOLKIT.
+
+
+\subsection{Types of problems}
+
+We first briefly discuss types of optimization problems, in order
+to identify the cases where GNU Octave will be a good platform for
+analysis, and which of the algorithms in MINTOOLKIT will likely work
+well for given cases.
+
+
+\subsubsection{Large/small}
+
+What is the number of parameters to be minimized? Let $k$ be the
+number of parameters. Memory usage of an algorithm will be some function
+$f(k).$ If this function is growing rapidly for a certain algorithm,
+that algorithm will cease to be useful for ''large'' problems, since
+memory will be exhausted. Of course, ''large'' is a relative term
+that increases over time as memory becomes cheaper. For ''small''
+problems, the speed of convergence of the algorithm will be of primary
+importance, since memory resources will not be a bottleneck.
+
+
+\subsubsection{Continuous/discontinuous}
+
+Gradient-based methods such as Newton's algorithm or quasi-Newton
+methods rely on the function being differentiable. This will not hold
+if the function is not continuous. Search-type algorithms will be
+appropriate here.
+
+
+\subsubsection{Convex/nonconvex}
+
+A convex objective function will have a single global minimizer, whereas
+nonconvex functions may have additional local minima. Quasi-Newton
+methods only use local information in their updates, so they may well
+converge to a non-global minimum, depending upon starting values.
+A possible solution is to try a number of starting values. This is
+likely to work well if the nonconvexity problem is not too severe.
+When there are \emph{many} local minima, a search-type algorithm may
+become more efficient, since the problem of local minima is dealt
+with automatically and doesn't require the analysts' intervention.
+After all, who's time is more important, yours, or your computer's?
+
+
+\subsubsection{Costly/cheap}
+
+Can the objective function be evaluated quickly, or is it time-consuming?
+Octave is an interpreted language, and is in general slower than FORTRAN,
+C, or similar. So expensive objective functions are best not implemented
+in pure Octave. One might go to a different environment for analysis,
+but in fact it is relatively easy to convert objective functions written
+in Octave to C++, and call them dynamically from Octave scripts. In
+this way, the expensive calculations are done using a fast language,
+while the user deals with the convenient, friendly Octave environment.
+In fact, C++ functions may make use of the Octave classes, so converting
+an Octave function to C++ is not very difficult. The algorithms in
+MINTOOLKIT serve as examples of how this may be done.
+
+
+\section{Algorithms}
+
+The algorithms in MINTOOLKIT were chosen based upon many sources of
+information, two of which are \htmladdnormallink{Nocedal (1992)}{http://www.ece.northwestern.edu/~nocedal/PDFfiles/acta.pdf},
+for continuous, convex problems, and \htmladdnormallink{Mittelmann}{http://plato.la.asu.edu/topics/problems/global.html}
+for global minimization. The goal of MINTOOLKIT is to be able to solve
+well-posed problems quickly and robustly, using the smallest set of
+algorithms possible. ''Well-posed'' is an important adjective here
+- MINTOOLKIT is not meant to be able to solve poorly conditioned problems
+or problems that can easily fall into numeric precision traps. Please
+pay attention to how your data is scaled, try to ''bullet-proof''
+your objective function to avoid divisions by zero, etc. Nevertheless,
+if you find bugs, or have suggestions or comments, please contact
+the author. 
+
+
+\subsection{BFGSMIN}
+
+The BFGS algorithm is probably the most widely-used quasi-Newton method
+for moderately-sized continuous problems that are not extremely nonconvex.
+It is more robust than other quasi-Newton methods such as DFP (Nocedal,
+1992), and it is faster than Newton's method, since the Hessian matrix
+need not be calculated. One could easily create a Newton algorithm
+using the source code for \texttt{bfgsmin}.
+
+
+\subsection{LBFGSMIN}
+
+For large problems, the BFGS algorithm may not be feasible, since
+it requires storing a $k\times k$ matrix. The LBFGS (''L'' is for
+''limited memory'') method is able to store all information for
+updates in vectors, which substantially reduced memory requirements.
+It may also be faster than the BFGS algorithm in some circumstances,
+since it may use fewer floating point operations per iteration, depending
+upon the size of the problem. While it will usually require more iterations
+that BFGS, it may be faster if each iteration is faster. \htmladdnormallink{Liu and Nocecal \(1989\)}{http://www.ece.northwestern.edu/~nocedal/PDFfiles/limited-memory.pdf}
+is a reference.
+
+
+\subsection{SAMIN}
+
+When problems are mildly nonconvex, the quasi-Newton methods above,
+combined with a number of trial start values, may be the fastest way
+to find the global minimum. This solution is implemented in \texttt{battery.m.}
+But when the problem becomes less smooth, with many local minima,
+this solution may fail. Simulated annealing is one of the algorithms
+that works well in this case. The implementation by \htmladdnormallink{Goffe}{http://www.netlib.no/netlib/opt/simann.f}
+has been used widely, and is the basis for the version included in
+MINTOOLKIT. An additional reference is Goffe (1996).
+
+\texttt{samin} differs from the Goffe code in two important ways:
+
+\begin{enumerate}
+\item The ''temperature'' is determined automatically. In a first stage,
+the temperature is increased until the active search region covers
+the entire parameter space defined as the $k$-dimensional rectangle
+$\times_{j=1}^{k}(lb_{j},ub_{j})$ where $lb_{j}$ and $ub_{j}$ are
+the $j$th elements of the LB and UB vectors that are the lower and
+upper bounds for the parameters (these are user-specified arguments
+to samin. Once this is achieved, the temperature decreases as usual.
+\item Convergence is defined as \emph{two} conditions holding simultaneously.
+
+\begin{enumerate}
+\item The last NEPS best function values cannot differ by more than FUNCTOL.
+This is as in Goffe's code.
+\item The width of the search interval must be less than PARAMTOL for each
+parameter. This allows to avoid accepting points on a flat plateau.
+\end{enumerate}
+\end{enumerate}
+
+\section{Obtaining the code}
+
+\begin{itemize}
+\item MINTOOLKIT is available directly from the author, at \htmladdnormallink{http://pareto.uab.es/mcreel/MINTOOLKIT}{http://pareto.uab.es/mcreel/MINTOOLKIT}.
+If you get it this way, uncompress the file where you like, change
+to the MINTOOLKIT directory, and compile by typing ''make all''
+(this supposes that you have Octave installed already). Make sure
+that Octave knows where the MINTOOLKIT directory is. This option guarantees
+that you have the most recent version.
+\item Otherwise, you can obtain MINTOOLKIT as part of the \htmladdnormallink{octave-forge}{http://sourceforge.net/project/showfiles.php?group_id=2888}
+package.
+\item If you happen to be running \htmladdnormallink{Debian}{http://www.debian.org}
+\htmladdnormallink{Linux}{http://www.linux.org}, you can install
+a pre-compiled version of octave-forge and all required files by typing
+''apt-get install octave-forge''. This is the easiest (and recommended)
+option.
+\end{itemize}
+
+\section{\label{sec:Examples}Examples}
+
+MINTOOLKIT contains some functions for use by users, and some other
+functions that users can ignore. The functions for users are
+\medskip{}
+
+\begin{tabular}{|c|c|}
+\hline 
+Function&
+Purpose\tabularnewline
+\hline
+\hline 
+bfgsmin&
+Ordinary BFGS algorithm\tabularnewline
+\hline 
+battery&
+Calls bfgsmin with a set of starting values\tabularnewline
+\hline 
+lbfgsmin&
+Limited-memory BFGS, for large problems\tabularnewline
+\hline 
+samin&
+Simulated annealing, for global minimization\tabularnewline
+\hline 
+numgradient&
+numeric first derivative of vector-valued function\tabularnewline
+\hline 
+numhessian&
+numeric second derivative matrix\tabularnewline
+\hline
+\end{tabular}
+\medskip{}
+
+This section gives some very simple examples of the use of the algorithms
+and functions in MINTOOLKIT. The first examples are intended to clearly
+illustrate how to use the algorithms. Realism is not important. Then
+some more difficult problems are considered.
+
+The functions in MINTOOLKIT allow minimization or differentiation
+with respect to any of the arguments of a function, holding the other
+arguments fixed. The other arguments can include data or fixed parameters
+of the function, for example. The argument with respect to which minimization
+or differentiation is done is denoted by $minarg$, which by default
+is equal to 1. Any function to be minimized or differentiated by algorithms
+in MINTOOLKIT must follow one of the forms
+
+\begin{eqnarray*}
+value & = & \, f(arg_{1},\, arg_{2},\,...,\, arg_{p})\\
+{}[value,\, return_{2},\,...,\, return_{n}] & = & \, f(arg_{1},\, arg_{2},\,...,\, arg_{p})\end{eqnarray*}
+\emph{Special case}: If the second form is used \emph{and} $return_{2}$
+is a $k\times1$ vector, where $k$ is the dimension of $minarg$,
+then is assumed to be the gradient of $f$ with respect to $minarg$,
+if the algorithm called uses the gradient. Otherwise, it (and any
+other returns from $f$) are ignored by MINTOOLKIT.
+
+
+\subsection{Minimization}
+
+
+\subsubsection{\texttt{bfgsmin}}
+
+\texttt{bfgsmin} is called as \[
+[theta,\, value,\, convergence]=bfgsmin("f",\,\{ args\},\,\{ control\})\]
+The first argument $"f"$ is a string variable that holds the name
+of the function to be minimized. The second argument, $args$, is
+a cell array that hold the arguments of $f$. The third argument $control$
+is an optional cell array of $4$ elements. The elements of $control$
+are described in Table \ref{cap:Controls-for-bfgsmin}. %
+\begin{table}
+
+\caption{\label{cap:Controls-for-bfgsmin}Controls for \texttt{bfgsmin}}
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+{\footnotesize Element}&
+{\footnotesize Purpose}&
+{\footnotesize Default Value}&
+{\footnotesize Other possible values}\tabularnewline
+\hline
+\hline 
+{\footnotesize 1}&
+{\footnotesize maxiters}&
+{\footnotesize -1 (infinity)}&
+{\footnotesize any positive integer}\tabularnewline
+\hline 
+{\footnotesize 2}&
+{\footnotesize verbosity}&
+{\footnotesize 0}&
+{\footnotesize 1: summary every iteration; 2: only final summary}\tabularnewline
+\hline 
+{\footnotesize 3}&
+{\footnotesize criterion}&
+{\footnotesize 1: strict convergence (f, g, $\Delta p$)}&
+{\footnotesize 2: weak convergence (only f)}\tabularnewline
+\hline 
+{\footnotesize 4}&
+{\footnotesize minarg}&
+{\footnotesize 1: first argument}&
+{\footnotesize int: $1\le minarg\le k$, $k=\# args$}\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+The outputs of \texttt{bfgsmin} are obvious, except the code values
+that $convergence$ can take on. These are -1 for no convergence,
+maxiters exceeded; 1: convergence according to the specified strong
+or weak criterion; 2: no convergence due to failure of the algorithm
+(\emph{e.g.,} the gradient calculation fails, or a stepsize cannot
+be found).
+
+Consider a simple example - minimizing a quadratic function. The program
+\htmladdnormallink{bfgsmin-example.m}{http://pareto.uab.es/mcreel/MINTOOLKIT/bfgsmin-example.m}
+follows:\verbatiminput{bfgsmin-example.m}
+
+\begin{itemize}
+\item The first example uses numeric derivatives, and minimizes with respect
+to $x,$ the first argument of the objective function. The second
+argument, $y,$ is treated as fixed.
+\item The second example uses analytic derivatives, since it calls objective2,
+and minimizes with respect to $x,$ the first argument of the objective
+function. The second argument, $y,$ is treated as fixed.
+\item The third example uses numeric derivatives, and minimizes with respect
+to $y,$ the second argument of the objective function, since the
+4th element of \texttt{control}, \texttt{minarg}, is 2 . The first
+argument, $x,$ is treated as fixed.
+\end{itemize}
+The output of running this example is
+
+\verbatiminput{bfsg-example.out}Notice that analytic gradients lead
+to faster convergence that do numeric gradients. Also note in the
+third example, where \texttt{minarg=2}, that minimization can be with
+respect to any of the arguments of the objective function.
+
+
+\subsubsection{\texttt{lbfgsmin}}
+
+When the problem is very large, a limited-memory bfgs algorithm may
+be needed, if \texttt{bfgsmin} is not feasible due to memory limitations.
+\texttt{lbfgsmin} is called as \[
+[theta,\, value,\, convergence]=lbfgsmin("f",\,\{ args\},\,\{ control\})\]
+The first argument $"f"$ is a string variable that holds the name
+of the function to be minimized. The second argument, $args$, is
+a cell array that hold the arguments of $f$. The third argument $control$
+is an optional cell array of $5$ elements. The elements of $control$
+are the same as for \texttt{bfgsmin,} except that there is one more
+element that controls how many iterations are used to form the quasi-Hessian
+matrix (this is the \emph{memory} of the method). The control vector
+is fully described in Table \ref{cap:Controls-for-lbfgsmin}. You
+can easily modify the above example to use the \texttt{lbfgsmin} method.
+%
+\begin{table}
+
+\caption{\label{cap:Controls-for-lbfgsmin}Controls for \texttt{lbfgsmin}}
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+{\footnotesize Element}&
+{\footnotesize Purpose}&
+{\footnotesize Default Value}&
+{\footnotesize Other possible values}\tabularnewline
+\hline
+\hline 
+{\footnotesize 1}&
+{\footnotesize maxiters}&
+{\footnotesize -1 (infinity)}&
+{\footnotesize any positive integer}\tabularnewline
+\hline 
+{\footnotesize 2}&
+{\footnotesize verbosity}&
+{\footnotesize 0}&
+{\footnotesize 1: summary every iteration; 2: only final summary}\tabularnewline
+\hline 
+{\footnotesize 3}&
+{\footnotesize criterion}&
+{\footnotesize 1: strict convergence (f, g, $\Delta p$)}&
+{\footnotesize 2: weak convergence (only f)}\tabularnewline
+\hline 
+{\footnotesize 4}&
+{\footnotesize minarg}&
+{\footnotesize 1: first argument}&
+{\footnotesize int: $1\le minarg\le k$, $k=\# args$}\tabularnewline
+\hline 
+{\footnotesize 5}&
+{\footnotesize memory}&
+{\footnotesize 5}&
+{\footnotesize any positive integer}\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+
+It is possible that \texttt{lbfgsmin} can outperform \texttt{bfgsmin}
+even when memory is not an issue. Remember that both of these algorithms
+are \emph{approximating} the Hessian matrix using previous gradient
+evaluations. If the true Hessian is changing rapidly, then a limited
+memory approximation may be better than a long memory approximation.
+The Rosenbrock function is such a case. The program \htmladdnormallink{lbfgsmin-example.m}{http://pareto.uab.es/mcreel/MINTOOLKIT/lbfgsmin-example.m}
+minimizes a 200-dimensional Rosenbrock function using both algorithms.
+The output\verbatiminput{lbfgsmin-example.out}shows that the limited
+memory algorithm uses significantly more iterations that the ordinary
+BFGS algorithm, but it is almost 4 times as fast. In general, though,
+the ordinary BFGS algorithm is recommended when memory limitations
+are not a problem.
+
+
+\subsubsection{\texttt{samin}}
+
+For discontinuous and/or seriously nonconvex problems, the quasi-Newton
+methods are not likely to work well. \texttt{samin} is called as\[
+[theta,value,convergence]=samin("f",args,control)\]
+
+
+The controls for \texttt{samin} are summarized in Table%
+\begin{table}
+
+\caption{\label{cap:Controls-for-lbfgsmin}Controls for \texttt{samin}}
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Element&
+Name&
+Purpose&
+Description\tabularnewline
+\hline
+\hline 
+{\footnotesize 1}&
+{\footnotesize lb}&
+{\footnotesize lower bounds}&
+{\footnotesize vector of lower bounds for parameters}\tabularnewline
+\hline 
+{\footnotesize 2}&
+{\footnotesize ub}&
+{\footnotesize upper bounds}&
+{\footnotesize vector of upper bounds for parameters}\tabularnewline
+\hline 
+{\footnotesize 3}&
+{\footnotesize nt}&
+{\footnotesize control looping}&
+{\footnotesize loops per temp. reduction, e.g., nt=20}\tabularnewline
+\hline 
+{\footnotesize 4}&
+{\footnotesize ns}&
+{\footnotesize control looping}&
+{\footnotesize loops per stepsize adjustment, e.g., ns=5}\tabularnewline
+\hline 
+{\footnotesize 5}&
+{\footnotesize rt}&
+{\footnotesize reduce temp.}&
+{\footnotesize 0 < rt < 1, e.g., rt=0.75}\tabularnewline
+\hline
+{\footnotesize 6}&
+{\footnotesize maxevals}&
+{\footnotesize limit evaluations}&
+{\footnotesize usually, a large number, unless just exploratory, e.g.,
+1e10}\tabularnewline
+\hline
+{\footnotesize 7}&
+{\footnotesize neps}&
+{\footnotesize convergence}&
+{\footnotesize positive integer. Higher is stricter criterion, e.g.,
+neps=5}\tabularnewline
+\hline
+{\footnotesize 8}&
+{\footnotesize functol}&
+{\footnotesize convergence}&
+{\footnotesize last neps function values must be this close to eachother}\tabularnewline
+\hline
+{\footnotesize 9}&
+{\footnotesize paramtol}&
+{\footnotesize convergence}&
+{\footnotesize width of search interval must be less than this value}\tabularnewline
+\hline
+{\footnotesize 10}&
+{\footnotesize verbosity}&
+{\footnotesize output}&
+{\footnotesize 0: no outout; 1: intermediate; 2: only final}\tabularnewline
+\hline
+{\footnotesize 11}&
+{\footnotesize minarg}&
+{\footnotesize arg. for min.}&
+{\footnotesize which arg to min. w.r.t., usually = 1}\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+
+The example program \htmladdnormallink{sa-example.m}{http://pareto.uab.es/mcreel/MINTOOLKIT/sa-example.m}
+is listed here:\verbatiminput{sa-example.m}The objective function
+is the sum of $k$ exponentiated cosine waves, each shifted down so
+the minimum is zero, with some curvature added in to create a global
+minimum of $f(x)=0$ at $x=(0,0,...,0).$ The (edited to shorten)
+output of the example is here:\verbatiminput{sa-example.out}
+
+You can see that the minimum was found correctly.
+
+
+\subsubsection{\label{sub:A-more-difficult}A more difficult problem}
+
+The Moré-Garbow-Hillstrom test suite contains some relatively difficult
+minimization problems. \texttt{bfgsmin} by itself can solve some of
+these problems, but not all of them, since some have multiple local
+minima, or completely flat regions where a gradient-based method will
+not be able to find a decreasing direction of search. The ''\htmladdnormallink{Biggs EXP6}{http://www.uni-graz.at/imawww/kuntsevich/solvopt/results/moreset.html}''
+problem \#18 is one for which \texttt{bfgsmin} fails to find the global
+minimum. \htmladdnormallink{This program}{http://pareto.uab.es/mcreel/MINTOOLKIT/solvebiggs.m}
+shows how the global minimum may be found by combining an initial
+search that uses \texttt{samin} to find good starting values with
+refinement using \texttt{bfgsmin} to sharpen up the final results.
+The \texttt{samin} results from running this program, which use a
+fast temperature reduction and a fairly low limit on function evaluations
+are:
+
+\begin{singlespace}
+\texttt{NO CONVERGENCE: MAXEVALS exceeded}
+
+\texttt{Stage 2, decreasing temperature}
+
+\texttt{Obj. fn. value 0.000006}
+
+\texttt{parameter search width}
+
+\texttt{9.844228 0.000000}
+
+\texttt{4.294696 0.000000}
+
+\texttt{-5.231675 0.000000}
+
+\texttt{-3.114330 0.000000}
+
+\texttt{1.076916 0.000000}
+
+\texttt{1.118343 0.000000}
+\end{singlespace}
+
+Then come the BFGS iterations to sharpen up the results. The final
+BFGS results are:
+
+\begin{singlespace}
+\texttt{BFGSMIN intermediate results: Iteration 33}
+
+\texttt{Stepsize 0.0000000}
+
+\texttt{Using analytic gradient}
+
+\texttt{Objective function value 0.0000000000}
+
+\texttt{Function conv 1 Param conv 1 Gradient conv 1}
+
+\texttt{params gradient change}
+
+\texttt{10.0000 0.0000 0.0000}
+
+\texttt{4.0000 -0.0000 -0.0000}
+
+\texttt{-5.0000 0.0000 0.0000}
+
+\texttt{-3.0000 -0.0000 0.0000}
+
+\texttt{1.0000 -0.0000 0.0000}
+
+\texttt{1.0000 0.0000 0.0000}
+\end{singlespace}
+
+\begin{itemize}
+\item The minimum is found, but note that the solution values are in a different
+order than those given on the SolvOpt web page, with some negative
+signs. This problem suffers from a lack of identification - there
+are multiple values that give exactly the same value of zero.
+\end{itemize}
+An alternative which will often be faster, but is less sure to find
+the global minimum, is to call \texttt{bfgsmin} with many random starting
+values and a limited number of iterations. This is implemented in
+\texttt{battery.m}. You can see an example in \htmladdnormallink{This program}{http://pareto.uab.es/mcreel/MINTOOLKIT/solvebiggs2.m}.
+This leads to the results
+
+\begin{singlespace}
+\texttt{BFGSMIN intermediate results: Iteration 130}
+
+\texttt{Stepsize 0.0000000}
+
+\texttt{Using analytic gradient}
+
+\texttt{Objective function value 0.0000000000}
+
+\texttt{Function conv 1 Param conv 1 Gradient conv 1}
+
+\texttt{params gradient change}
+
+\texttt{4.0000 -0.0000 0.0000}
+
+\texttt{10.0000 0.0000 -0.0000}
+
+\texttt{3.0000 0.0000 0.0000}
+
+\texttt{5.0000 -0.0000 0.0000}
+
+\texttt{1.0000 -0.0000 0.0000}
+
+\texttt{1.0000 0.0000 0.0000}
+\end{singlespace}
+
+The minimum is found correctly, and you can see that the problem is
+not identified.
+
+
+\subsubsection{Tips for successful minimization}
+
+
+\paragraph{Scaling}
+
+Scaling the data and other constant parameters of the objective function
+so that the elements of the gradient are of approximately the same
+order of magnitude will help improve accuracy of the Hessian approximation.
+This can help a lot in obtaining convergence, and the results will
+have higher accuracy. \htmladdnormallink{This program}{http://pareto.uab.es/mcreel/MINTOOLKIT/tips.m}
+illustrates. The output is \verbatiminput{tip1.out}You can see that
+the scaled data gives a more accurate solution, using less than half
+the iterations.
+
+
+\paragraph{Bullet-proofing}
+
+Writing your objective function so that it cannot return NaN or otherwise
+crash can save a lot of grief. Insert something like \texttt{if (((abs(obj\_value)
+== Inf)) || (isnan(obj\_value))) }
+
+\texttt{obj\_value = realmax;}
+
+\noindent \texttt{endif}
+
+\noindent at the end of the objective function, and then return \texttt{obj\_value}.
+This way, parameter values that lead to crashes are penalized, and
+will be avoided automatically.
+
+
+\subsection{Numeric differentiation}
+
+\texttt{numgradient} and \texttt{numhessian} can be used for numeric
+differentiation. \texttt{numgradient} returns the derivative of an
+$n\times1$ vector-valued function with respect to a $k\times1$ vector
+in a $n\times k$ matrix. \texttt{numhessian} returns the derivative
+of a real-valued function with respect to a $k\times1$ vector in
+a $k\times k$ matrix. Both functions are quite accurate. \htmladdnormallink{numderivatives.m}{http://pareto.uab.es/mcreel/MINTOOLKIT/numderivatives.m},
+which follows, shows how it can be done.\verbatiminput{numderivatives.m}
+
+The results are:\verbatiminput{numderivative.out}
+
+
+\section{Testing the code}
+
+The program \htmladdnormallink{mgh-test.m}{http://pareto.uab.es/mcreel/MINTOOLKIT/mgh-test.m}
+allows testing the algorithms using the Moré-Garbow-Hillstrom test
+suite, obtained from the \htmladdnormallink{SolvOpt}{http://www.uni-graz.at/imawww/kuntsevich/solvopt/}
+source code. You can compare the output with \htmladdnormallink{these results}{http://www.uni-graz.at/imawww/kuntsevich/solvopt/results/table1.html},
+if you like. Note that simply applying BFGS with a single start value
+will sometimes lead to a failure of convergence, or convergence to
+a non-global minimum. This is expected, considering the nature of
+the problems. See section \ref{sub:A-more-difficult} for an appropriate
+means of proceeding with these problems.
+
+If you find any bugs in the code, please contact me.
+
+\begin{thebibliography}{5}
+\bibitem{key-5}Eaton, J.W., \url{http://www.octave.org/}
+\bibitem{key-7}Liu and Nocedal, \url{http://www.ece.northwestern.edu/~nocedal/PDFfiles/limited-memory.pdf}
+\bibitem{key-4}Mittelmann, \url{http://plato.asu.edu/topics/problems/global.html}
+\bibitem{key-3}Nocedal (1992), \url{http://www.ece.northwestern.edu/~nocedal/PDFfiles/acta.pdf}
+\bibitem{key-2}Goffe, \url{http://www.netlib.no/netlib/opt/simann.f}
+\bibitem{key-6}Goffe, \char`\"{}SIMANN: A Global Optimization Algorithm using Simulated
+Annealing \char`\"{} Studies in Nonlinear Dynamics \& Econometrics,
+Oct96, Vol. 1 Issue 3. \end{thebibliography}
+
+\end{document}

@@ -21,8 +21,20 @@
 
 1;
 
-if ! exist ("use_grace_state")
-  global use_grace_state
+#if ! exist ("use_grace_state")
+#  global use_grace_state
+#  use_grace_state = "on";
+#else
+#  if strcmp (use_grace_state, "on")
+#    use_grace_state = "off";
+#  else
+#    use_grace_state = "on";
+#  endif
+#endif
+
+global use_grace_state
+
+if(isempty(use_grace_state))
   use_grace_state = "on";
 else
   if strcmp (use_grace_state, "on")
@@ -49,10 +61,6 @@ endif
 
 use_grace_lcd = pwd;
 cd (use_grace_path);
-# for use_grace_i = glob ("*.m"),
-#  clear (strrep (strrep (deblank(use_grace_i'), ".m", ""), "support/",  ""));
-# strrep (deblank(use_grace_i'), ".m", "")
-# end
 
 grace_cmds = glob ("*.m");
 for gr_ind = 1:size(grace_cmds,1), 

@@ -1,4 +1,13 @@
 # Automatically generated file --- DO NOT EDIT
+2004-07-07 13:46  pkienzle
+
+	* Makefile: Make 'dist' target work 
+
+2004-07-07 13:36  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: R2004-07-07
+	release 
+
 2004-07-07 13:32  pkienzle
 
 	* Makefile, release.sh, admin/get_contents: Streamline release

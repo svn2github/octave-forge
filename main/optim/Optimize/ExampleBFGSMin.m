@@ -65,7 +65,7 @@ t = cputime;
 # control options and initial value
 control = [1000;2;1];  # max 1000 iterations; only report results of last iteration; strong convergence required
 dim = 10; # dimension of Rosenbrock function
-theta = randn(dim+1,1);  # starting values
+theta = zeros(dim+1,1);  # starting values
 location = 5*(0:dim)/dim;
 location = location';
 

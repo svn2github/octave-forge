@@ -19,7 +19,7 @@
 ## 2001-09-14 Paul Kienzle <pkienzle@users.sf.net>
 ## * convert for pthreads-based tk_octave
 
-function [...] = tk_entry (t, ...)
+function [varargout] = tk_entry (t, ...)
 
 tk_init
 
@@ -96,9 +96,12 @@ tk_cmd( sprintf("pack .master -fill both -expand 1") );
 tk_cmd( "tkwait window .master" );
 eval(tk_cmd(sprintf("set result \"%s\" ", cmd_ok )));
 
-for i=1:nopt
-	vr_val(eval(sprintf("val_%d;",i)));
-	tk_cmd( sprintf( "trace vdelete val_%d w varcheck", i) );
-endfor
-	
+@@ -98,6 +98,7 @@
+ 
+vr_val_cnt = 1;
+ for i=1:nopt
+        varargout{vr_val_cnt++} = eval(sprintf("val_%d;",i));
+        tk_cmd( sprintf( "trace vdelete val_%d w varcheck", i) );
+ endfor
+ 	
 endfunction

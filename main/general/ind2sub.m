@@ -24,7 +24,7 @@
 
 ## Author:        Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function [ ... ] = ind2sub (dims, ind)
+function [ varargout ] = ind2sub (dims, ind)
 
   if ( nargin != 2 || all (nargout != [0, 1, length(dims)]) )
     usage ("[s1 s2 ...] = ind2sub (dims, ind) or S = ind2sub (dims, ind)");
@@ -37,10 +37,11 @@ function [ ... ] = ind2sub (dims, ind)
   S = floor ( rem (S, dims(1)*power) ./ power ) + 1;
 
   if nargout <= 1
-    vr_val(S);
+    vr_val_cnt = 1; varargout{vr_val_cnt++} = S;
   else
+    vr_val_cnt = 1; 
     for i=1:nargout
-      vr_val(S(:,i));
+      varargout{vr_val_cnt++} = S(:,i);
     endfor
   endif
 

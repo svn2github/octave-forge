@@ -40,7 +40,7 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-function [...] = gradient (M, dx, dy)
+function [varargout] = gradient (M, dx, dy)
   
   if ((nargin < 1) || (nargin > 3))
     usage ("gradient(M,dx,dy)");
@@ -94,7 +94,7 @@ function [...] = gradient (M, dx, dy)
       ./ kron (dx(1:mc - 2) .+ dx(2:mc - 1), ones (mr, 1));
     #  ./ (ones (mr, 1) * (dx(1:mc - 2) .+ dx(2:mc - 1)));
   endif
-  vr_val (X);
+  vr_val_cnt = 1; varargout{vr_val_cnt++} = X;
 
   if (nargout == 2)
     Y = zeros (size (M));
@@ -109,7 +109,7 @@ function [...] = gradient (M, dx, dy)
       Y(2:mr-1, :) = (M(3:mc, :) .- M(1:mc - 2, :))\
         ./kron (dy(1:mr - 2) .+ dy(2:mr - 1), ones(1, mc));
     endif
-    vr_val (Y);
+    varargout{vr_val_cnt++} = Y;
   
   endif
 endfunction

@@ -112,7 +112,7 @@
 ##
 ##              [x,v,nev] = feval (backend, control.d2f, args, control)
 ##
-function [x,v,nev,...] = minimize (f,args,...)
+function [x,v,nev,varargout] = minimize (f,args,...)
 
 static minimize_warn = 1;
 if minimize_warn
@@ -136,7 +136,7 @@ default = setfield ("backend",0,"verbose",0,\
 		    "isz",  nan);
 
 if nargin == 3			# Accomodation to struct and list optional
-				# args
+  va_arg_cnt = 1;				# args
   tmp = nth (varargin, va_arg_cnt++);
 
   if is_struct (tmp)
@@ -281,7 +281,7 @@ if ! backend			# Call the backend ###################
   if strcmp (method, "d2_min"),
     [x,v,nev,h] = leval (method, all_args);
 				# Eventually return inverse of Hessian
-    if nargout > 3, vr_val (h); end 
+    if nargout > 3, vr_val_cnt = 1; varargout{vr_val_cnt++} = h; end 
   else
     [x,v,nev] = leval (method, all_args);
   end

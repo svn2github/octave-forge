@@ -41,7 +41,7 @@
 ## * provide example
 ## * use unique(x,"rows") rather than __unique_rows__
 
-function [...] = voronoi (x, y, plt)
+function [varargout] = voronoi (x, y, plt)
 
 	if (nargin < 2 || nargin > 3)
 		usage ("voronoi (x, y)")
@@ -91,8 +91,8 @@ function [...] = voronoi (x, y, plt)
 	        axis(lim+0.01*[[-1,1]*(lim(2)-lim(1)),[-1,1]*(lim(4)-lim(3))]);
 		plot (vx, vy, plt, x, y, 'o;;');
 	elseif (nargout == 2)
-		vr_val(vx);
-		vr_val(vy);
+		vr_val_cnt = 1; varargout{vr_val_cnt++} = vx;
+		varargout{vr_val_cnt++} = vy;
 	else
 		error ("only two or zero output arguments supported")
 	endif

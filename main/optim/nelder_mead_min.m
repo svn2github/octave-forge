@@ -80,7 +80,7 @@
 ##                  mind not getting a true minimum.                     <0>
 ##
 ## verbose, v     Be more or less verbose (quiet=0)                      <0>
-function [x,v,nev] = nelder_mead_min (f, args, ...)
+function [x,v,nev] = nelder_mead_min (f, args, varargin)
 
 ## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## This software is distributed under the terms of the GPL
@@ -105,6 +105,7 @@ rst = 0;			# Max # of restarts
 
 
 if nargin >= 3,			# Read control arguments
+  va_arg_cnt = 1;
   if nargin > 3, ctl = struct (varargin{:}); else ctl = nth (varargin, va_arg_cnt++); end
   if isnumeric (ctl)
     if length (ctl)>=1 && !isnan (ctl(1)), crit = ctl(1); end

@@ -26,7 +26,7 @@
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
-function [...] = griddata (x,y,z,xi,yi)
+function [varargout] = griddata (x,y,z,xi,yi)
 	
 	if nargin==5
 		method='linear';
@@ -44,8 +44,8 @@ function [...] = griddata (x,y,z,xi,yi)
 	if (is_vector(xi))
 		#xi and yi are vectors
 		[xi,yi]=meshgrid(xi,yi);
-		vr_val(xi);
-		vr_val(yi);
+		vr_val_cnt = 1; varargout{vr_val_cnt++} = xi;
+		varargout{vr_val_cnt++} = yi;
 	endif
 	[nr,nc]=size(xi);
 
@@ -98,7 +98,7 @@ function [...] = griddata (x,y,z,xi,yi)
 
 		# restore original shape
 		zi=reshape(zi,nr,nc);
-		vr_val(zi)
+               varargout{vr_val_cnt++} = zi;
 	else
 		error('unknown interpolation method');
 	endif

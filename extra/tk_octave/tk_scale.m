@@ -26,7 +26,7 @@
 ## 2001-09-14 Paul Kienzle <pkienzle@users.sf.net>
 ## * converted to work with pthreads-based tk_octave
 
-function [...] = tk_scale (title, ...)
+function [varargout] = tk_scale (title, ...)
 
 tk_init
 
@@ -68,8 +68,9 @@ endfor
 
 tk_cmd( "tkwait window .master" );
 	
+vr_val_cnt = 1;
 for i=1:nopt
-    vr_val(eval([tk_cmd (sprintf("set val_%d",i)), ";"]));
+    varargout{vr_val_cnt++} = eval([tk_cmd (sprintf("set val_%d",i)), ";"]);
 endfor
 
 endfunction

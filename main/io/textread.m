@@ -73,7 +73,7 @@
 ## * %[ produces a string
 ## * additional documentation
 
-function [...] = textread(file, format, n);
+function [varargout] = textread(file, format, n);
 
   if (nargin < 2 || nargin > 3)
     error("[a1, a2, ...] = textread(file, format [, n])");
@@ -185,10 +185,11 @@ function [...] = textread(file, format, n);
      for i = 1:nFields
 	eval( sprintf("ret(i) = a%d;",i) );
      endfor
-     vr_val(ret);
+     vr_val_cnt = 1; varargout{vr_val_cnt++} = ret;
   else
+    vr_val_cnt = 1;
     for i = 1:nargout
-      eval( sprintf ("vr_val(a%d);",i) );
+      eval( sprintf ("varargout{vr_val_cnt++} = a%d;",i) );
     endfor
   endif
 

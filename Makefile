@@ -11,6 +11,7 @@ all:
 	@cd main && $(MAKE)
 	@cd extra && $(MAKE)
 	@cd nonfree && $(MAKE)
+	@cd FIXES && $(MAKE)
 
 install:
 	@chmod a+x $(INSTALLOCT)

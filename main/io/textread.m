@@ -23,7 +23,7 @@
 ## If n is omitted or negative, the entire file will be read.
 ##
 ## %#c formats return a character array of width #
-## %s and %[ formats return a list of strings
+## %s and %[ formats return a cell array of strings
 ## All other formats (see fscanf) return a column vector of doubles
 ##
 ## Example:  say the file 'info.txt' contains the following lines:
@@ -33,8 +33,8 @@
 ## Columns from this file could be read with the line:
 ##   [Lname, Fname, x, a] = textread('info.txt', '%s %s %e age=%d');
 ## then,
-##   nth(Lname,3)  is 'Penguin'
-##   nth(Fname,3)  is 'Tux'
+##   Lname{3}      is 'Penguin'
+##   Fname{3}      is 'Tux'
 ##   x(3)          is  6
 ##   a(3)          is 10
 ##
@@ -72,6 +72,8 @@
 ## 2002-03-15 Paul Kienzle
 ## * %[ produces a string
 ## * additional documentation
+## 2005-03-09 Quentin Spencer
+## * Changed list formatted outputs to cell array
 
 function [varargout] = textread(file, format, n);
 
@@ -122,16 +124,13 @@ function [varargout] = textread(file, format, n);
   cat = setstr(cat);
   for i=1:length(cat)
     if cat(i) == "s"
-      eval(sprintf("a%d=list();",i));
-    elseif cat(i) == "c"
-      eval(sprintf("a%d="";", i));
+      varargout{i} = {};
     else
-      eval(sprintf("a%d=[];", i));
+      varargout{i} = [];
     endif
   endfor
 
-  
-  
+
   ## Step 3:  Read the contents of the file one term at a time.
   ##          Place the terms into temporary octave matrices
   ##          called 'a1', 'a2', et cetera.  Each pass through
@@ -142,19 +141,13 @@ function [varargout] = textread(file, format, n);
   if (fid == -1)
     error("textread('%s',...):  %s\n", file, message);
   endif
-  
-  try elok = empty_list_elements_ok;
-  catch elok = 0;
-  end
-  try wel = warn_empty_list_elements;
-  catch wel = 0;
-  end
+
+  ## Note that the "pcv" code below is only for backward compatibility,
+  ## as prefer_column_vectors is not in recent versions of octave.
   try pcv = prefer_column_vectors; # so that scalars come out as [ v; v; ... ]
   catch pcv = 0;
   end
   unwind_protect
-    empty_list_elements_ok = 1;
-    warn_empty_list_elements = 0;
     prefer_column_vectors = 1;
     
     row = 1;
@@ -166,12 +159,12 @@ function [varargout] = textread(file, format, n);
 	   error("unable to interpret '%s' for record %d, field %d",...
 		    format(idx(i):idx(i+1)-1),row,i);
 	endif
-        if (cat(i) == "s") # list of strings
-	  eval(sprintf("a%d = append(a%d, data);", i, i));
-	elseif (cat(i) == "c" )  # matrix of characters
-          eval(sprintf("a%d = [ a%d ; data ];", i, i));
-        else                       # matrix of scalars
-          eval(sprintf("a%d(%d) = data;", i, row));
+        if (cat(i) == "s")      # list of strings
+          varargout{i} = {varargout{i}{:}, data};
+	elseif (cat(i) == "c" ) # matrix of characters
+          varargout{i} = [varargout{i}; data];
+        else                    # matrix of scalars
+          varargout{i}(row) = data;
         endif
       endfor
       ++row;
@@ -182,24 +175,12 @@ function [varargout] = textread(file, format, n);
       
     endwhile
   unwind_protect_cleanup
-    empty_list_elements_ok = elok;
-    warn_empty_list_elements = wel;
     prefer_column_vectors = pcv;
     fclose(fid);
   end_unwind_protect
-  
-  ## Step 4:  populate the return values with the contents of a1, a2, etc.
+
   if nargout == 0
-     ret = list();
-     for i = 1:nFields
-	eval( sprintf("ret(i) = a%d;",i) );
-     endfor
-     vr_val_cnt = 1; varargout{vr_val_cnt++} = ret;
-  else
-    vr_val_cnt = 1;
-    for i = 1:nargout
-      eval( sprintf ("varargout{vr_val_cnt++} = a%d;",i) );
-    endfor
+    varargout = {varargout};
   endif
 
 endfunction

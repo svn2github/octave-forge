@@ -5,9 +5,8 @@ function [A,E] = ac2poly(acf);
 % see also ACOVF ACORF AR2RC RC2AR DURLEV AC2POLY, POLY2RC, RC2POLY, RC2AC, AC2RC, POLY2AC
 % 
 
-
-%	Version 2.90	last revision 10.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
+%	Version 2.91
+%	Copyright (C) 1996-2002 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or
@@ -38,7 +37,7 @@ if ~exist('durlev','file')
         return;
 end;
 
-[AR,RC,PE] = durlev(acf.');
+[AR,RC,PE] = durlev(acf);
 
-A = [1,-AR];
-E = PE(length(PE));
+A = [ones(size(AR,1),1),-AR];
+E = PE(:,size(PE,2));

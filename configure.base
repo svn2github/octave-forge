@@ -224,6 +224,15 @@ AC_PROG_LN_S
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
+dnl Use $(COPY_FLAGS) to set options for cp when installing .oct files.
+COPY_FLAGS="-fdp"
+case "$canonical_host_type" in
+    powerpc-apple-darwin*)
+        COPY_FLAGS="-Rfp"
+    ;;
+esac
+AC_SUBST(COPY_FLAGS)
+
 dnl Use $(STRIP) in the makefile to strip executables.  If not found, 
 dnl STRIP expands to ':', which in the makefile does nothing.
 dnl Don't need this for .oct files since mkoctfile handles them directly

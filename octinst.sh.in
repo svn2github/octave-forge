@@ -21,6 +21,7 @@ INSTALL="@INSTALL@"
 INSTALL_DATA="@INSTALL_DATA@"
 INSTALL_PROGRAM="@INSTALL_PROGRAM@"
 MKPKGADD="@TOPDIR@/admin/mkpkgadd"
+COPY_FLAGS="@COPY_FLAGS@"
 
 # grab the m-files
 files=`echo $source/*.m`
@@ -34,7 +35,7 @@ files=`echo $source/*.oct`
 if test "$files" != "$source/*.oct" ; then
     $INSTALL -d $opath
 ## Grrr... install doesn't preserve links.  Hope this works.
-    cp -fdp $files $opath
+    cp $COPY_FLAGS $files $opath
 fi
 
 # create PKG_ADD

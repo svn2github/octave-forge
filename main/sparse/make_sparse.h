@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.25  2004/07/27 20:56:44  aadler
+first steps to concatenation working
+
 Revision 1.24  2004/07/27 18:24:10  aadler
 save_ascii
 
@@ -219,6 +222,12 @@ class ostream;
 
 #include <octave/utils.h>
 
+#ifdef CLASS_HAS_LOAD_SAVE
+#include <octave/byte-swap.h>
+#include <octave/ls-oct-ascii.h>
+#endif
+
+
 class Octave_map;
 class octave_value_list;
 
@@ -324,6 +333,7 @@ private:
 // sparse class definition
 //
 class
+//octave_sparse : public octave_base_value
 octave_sparse : public octave_base_value
 {
 public:
@@ -378,9 +388,10 @@ public:
    octave_value_list find( void ) const;
 
 #ifdef HAVE_OCTAVE_CONCAT
+   friend octave_sparse concat (const octave_sparse& ra,
+                                const octave_sparse& rb, 
+                                const Array<int>& ra_idx);
 #if 0
-   octave_sparse concat (const octave_sparse& ra, const octave_sparse& rb, 
-                         const Array<int>& ra_idx);
    octave_sparse concat (const octave_sparse& ra, const Matrix& rb, 
                          const Array<int>& ra_idx);
    octave_sparse concat (const Matrix& ra, const octave_sparse& rb, 

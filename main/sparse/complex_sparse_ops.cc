@@ -538,8 +538,9 @@ octave_complex_sparse::save_ascii (std::ostream& os, bool& infnan_warned,
    for (int j=0; j< Xnc; j++)  {
       OCTAVE_QUIT;
       for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
-         os << ridxX[i]+1 << " "  << j+1 << " "
-	    << coefX[i]   << "\n";
+         doublecomplex * dc= (doublecomplex *) &coefX[i];
+         os << ridxX[i]+1 << " "  << j+1   << " "
+	    << dc->r      << " "  << dc->i << "\n";
       }
    }
   
@@ -1650,6 +1651,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.26  2004/07/27 20:56:44  aadler
+ * first steps to concatenation working
+ *
  * Revision 1.25  2004/07/27 18:24:10  aadler
  * save_ascii
  *

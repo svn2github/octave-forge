@@ -51,6 +51,7 @@ ifndef OCTAVE_FORGE
     HAVE_ND_ARRAYS = -DHAVE_ND_ARRAYS
     TYPEID_HAS_CLASS = -DTYPEID_HAS_CLASS
     CLASS_HAS_LOAD_SAVE = -DCLASS_HAS_LOAD_SAVE
+    HAVE_OCTAVE_CONCAT = -DHAVE_OCTAVE_CONCAT
 
 endif
 
@@ -76,6 +77,10 @@ SUPERLU_DEFS = -DAdd_  \
                -D"USER_MALLOC=oct_sparse_malloc" \
                -D"USER_ABORT=oct_sparse_fatalerr" \
                -D"USER_FREE=oct_sparse_free"
+
+OCT_DEFS= $(CCDEFS) $(HAVE_ND_ARRAYS) \
+          $(TYPEID_HAS_CLASS) $(CLASS_HAS_LOAD_SAVE) \
+	  $(HAVE_OCTAVE_CONCAT)
 
 OCTOBJ= sparse_ops.o make_sparse.o sparse_full.o sparse_inv.o \
         complex_sparse_ops.o
@@ -140,7 +145,7 @@ $(OCTOBJ): make_sparse.h
 sparse_ops.o complex_sparse_ops.o: sparse_ops.h
 
 $(OCTOBJ): %.o: %.cc
-	$(MKOCTFILE) -c $< $(S_INC) $(CCDEFS) $(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) $(CLASS_HAS_LOAD_SAVE) -o $@
+	$(MKOCTFILE) -c $< $(S_INC) $(OCT_DEFS) -o $@
 
 $(LIBSUPERLU): $(S_DOUBLE)
 	$(AR) $(ARFLAGS) $(LIBSUPERLU) $(S_DOUBLE)

@@ -49,6 +49,7 @@ create_SuperMatrix( int nr, int nc, int nnz,
 // assemble a sparse matrix from elements
 //   called by > 1 args for sparse
 // NOTE: index vectors are 1 based!
+//  m= rows, n=cols
 SuperMatrix assemble_sparse( int n, int m,
                              ColumnVector& coefA,
                              ColumnVector& ridxA,
@@ -459,10 +460,22 @@ octave_sparse::subsref( const std::string SUBSREF_STRREF type,
 }
 
 #if HAVE_OCTAVE_CONCAT
+octave_sparse concat (const octave_sparse& ra,
+                      const octave_sparse& rb,
+		      const Array<int>& ra_idx)
+{
+  octave_sparse retval (ra);
+  if (ra.numel() > 0)
+    retval.insert (rb, ra_idx(0), ra_idx(1));
+  return retval;
+}
+
 octave_sparse&
 octave_sparse::insert( const octave_sparse& b, int r, int c)
 {
-  printf("doing sp_cat with r=%d c=%d", r, c);
+   DEBUGMSG("sparse - insert");
+  fprintf(stderr,"doing sp_cat with r=%d c=%d\n", r, c);
+  error("can't do this");
   return *this;
 }
 #endif
@@ -480,7 +493,6 @@ octave_sparse::save_ascii (std::ostream& os, bool& infnan_warned,
   os << "# rows: "     << Xnr << "\n";
   os << "# columns: "  << Xnc << "\n";
 
-  os << "\n# sparse: vert-idx, horz-idx, value\n";
   // add one to the printed indices to go from
   //  zero-based to one-based arrays
    for (int j=0; j< Xnc; j++)  {
@@ -497,8 +509,23 @@ octave_sparse::save_ascii (std::ostream& os, bool& infnan_warned,
 bool
 octave_sparse::load_ascii (std::istream& is)
 {
-  int mord, prim, mdims;
   bool success = true;
+  int nnz, cols, rows;
+  if ( extract_keyword (is, "nnz",     nnz)  &&
+       extract_keyword (is, "rows",    rows)  &&
+       extract_keyword (is, "columns", cols) ) {
+     Matrix tmp( nnz, 3);
+     is >> tmp;
+     ColumnVector ridxA= tmp.column(0);
+     ColumnVector cidxA= tmp.column(1);
+     ColumnVector coefA= tmp.column(2);
+     X= assemble_sparse( cols, rows, coefA, ridxA, cidxA, 0);
+  }
+  else {
+     error("load: failed to load sparse value");
+     success= false;
+  }
+
   return success;
 }
 #endif
@@ -1358,6 +1385,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.20  2004/07/27 20:56:44  aadler
+ * first steps to concatenation working
+ *
  * Revision 1.19  2004/07/27 18:24:10  aadler
  * save_ascii
  *

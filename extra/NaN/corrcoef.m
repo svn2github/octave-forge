@@ -34,7 +34,8 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 %  p < alpha: The alternative hypothesis "R2 is larger than zero" is true with probability (1-alpha).
 %  ci1	lower 0.95 confidence interval 
 %  ci2	upper 0.95 confidence interval 
-%  nan_sig 	p-value whether H0: "NaN's are not correlated" must be rejected
+%  nan_sig 	p-value whether H0: "NaN's are not correlated" could be correct
+%       if nan_sig < alpha, H1 ("NaNs are correlated") is very likely. 
 % 
 % Further recommandation related to the correlation coefficient 
 % + LOOK AT THE SCATTERPLOTS!
@@ -153,7 +154,7 @@ if strcmp(lower(Mode(1:7)),'pearson');
                         CC = X'*X;
                         M  = S./N;
                         cc = CC./NN - M'*M;
-                        v  = (SSQ./N- M.*M); %max(N-1,0);
+                        v  = SSQ./N - M.*M; %max(N-1,0);
                         R  = cc./sqrt(v'*v);
                 end;
         else
@@ -281,7 +282,8 @@ ci2 = tanh(z+sz);
 %ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
 %ci2(isnan(ci2))=R(isnan(ci2));
 
-if nargout<5, 
+if (nargout<5) | ~YESNAN, 
+        sig_nan = [];
 	warning(FLAG_WARNING); 	% restore warning status
         return;
 end;
@@ -296,7 +298,7 @@ nan_sig(isnan(nan_R)) = nan;
 
 if any(nan_sig(:) < alpha),
         tmp = nan_sig(:);			% Hack to skip NaN's in MIN(X)
-        min_sig = min(tmp(tmp(~isnan(tmp)))); 	% Necessary, because Octave returns NaN rather than X for min(NaN,X) 
+        min_sig = min(tmp(~isnan(tmp))); 	% Necessary, because Octave returns NaN rather than min(X) for min(NaN,X) 
         fprintf(1,'CORRCOFF Warning: Missing Values (i.e. NaNs) are not independent of data (p-value=%f)\n', min_sig);
         fprintf(1,'   Its recommended to remove all samples with any missing value (NaN).\n');
         fprintf(1,'   In the following combinations the null-hypotheses (NaNs are uncorrelated) must be rejected.\n');

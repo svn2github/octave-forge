@@ -51,15 +51,15 @@ end;
 t = fix(x./y);
 z = x - y.*t;
 
-e = (abs(t)*eps);	% error interval 
-%z(e > abs(y)) = NaN;	% uncertainty of rounding error to large
-
 z(~t) = x(~t);		% remainder is x if y = inf
 z(~y) = 0;		% remainder must be 0 if y==0
 
-
-z = abs(z).*sign(x);	% correct sign
-
 warning(s);		% reset warning status
+
+if nargout > 1,
+        e = (abs(t)*eps);	% error interval 
+        %z(e > abs(y)) = NaN;	% uncertainty of rounding error to large
+end;
+
 
 

@@ -33,9 +33,8 @@ function o=meansq(i,DIM)
 
 
 % original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-%	Version 1.17; 	17 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%
+%	Copyright (C) 2000-2002 by  Alois Schloegl   <a.schloegl@ieee.org>	
 
 
 if nargin<2,
@@ -49,7 +48,7 @@ if ~DIM,
         if isempty(DIM), DIM=1; end;
 end;
 
-o = sumskipnan(i.*conj(i),DIM)./sumskipnan(~isnan(i),DIM);
-   
-   
+[tmp,N,o] = sumskipnan(i,DIM);
+o = o./N;
+
    

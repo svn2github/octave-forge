@@ -28,22 +28,9 @@ function [CC,NN,DD] = covm(X,Y,Mode);
 %	C./N gives the scaled version. 
 %
 
-%	Version 1.19
-%	7.04.2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 1.20 26.04.2002
+%	Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
-% .changelog 
-% V0.10	20.10.1998
-% V0.11	10.11.1999    Made Octave compatible
-% V0.12	26.04.2000    ecovm.m included
-% V0.13	02.05.2000    correlation coefficient R2 included
-% V0.20 27.03.2001    missing values (i.e. NaN) considered
-% V0.21 12.04.2001    extended to Y 
-% V0.22 08.06.2001    Y is used as class information 
-% V0.23 06.01.2002    bug fixed	
-% V0.24 18.01.2002    major change, mode 'E','D'&'M implemented, name changed to COVM.M, 
-%       17.02.2002    minor changes 
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -109,10 +96,8 @@ if ~isempty(Y),
 	        Y(isnan(Y)) = 0; % skip NaN's
         	CC = X'*Y;
         else
-        	N1 = sum(~isnan(X),1);
-        	N2 = sum(~isnan(Y),1);
-	        S1 = sumskipnan(X,1);
-                S2 = sumskipnan(Y,1);
+	        [S1,N1] = sumskipnan(X,1);
+                [S2,N2] = sumskipnan(Y,1);
                 
                 NN = (~isnan(X)')*(~isnan(Y));
         
@@ -137,8 +122,7 @@ else
 	        X(isnan(X)) = 0; % skip NaN's
 	        CC = X'*X;
         else
-        	N  = sum(~isnan(X),1);
-	        S  = sumskipnan(X,1);
+	        [S,N] = sumskipnan(X,1);
                 NN = (~isnan(X)')*(~isnan(X));
         	if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);

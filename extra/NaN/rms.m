@@ -32,8 +32,7 @@ function o=rms(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-% Copyright (c) 2001 by Alois Schloegl <a.schloegl@ieee.org>	
-% last revision 04 Mar 2002, Ver 1.13
+% Copyright (c) 2001-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
 if nargin<2,
@@ -47,7 +46,7 @@ if ~DIM,
         if isempty(DIM), DIM=1; end;
 end;
 
-o = sqrt(sumskipnan(i.*conj(i),DIM)./sumskipnan(~isnan(i),DIM));
-   
+[tmp,N,o] = sumskipnan(i,DIM);
+o = sqrt(o./N);
    
    

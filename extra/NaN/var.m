@@ -35,12 +35,9 @@ function y=var(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.17; 	17 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Copyright (C) 2000-2002 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
-
-ver=version;
+ver=version;
 if nargin==1,
         DIM=[];
 elseif nargin==2,
@@ -61,10 +58,9 @@ if ~DIM
 end;
 
 % actual calculation 
-[m,n] = sumskipnan(x, DIM);
-m = m./n;	% mean
-x = x-repmat(m,size(x)./size(m)); % remove mean
-y = sumskipnan(x.^2, DIM); % summed square
+[s,n,y] = sumskipnan(x, DIM);
+m = s./n;	% mean
+y = (y-s.*m);   % n * (summed squares with removed mean)
 
 if flag_implicit_unbiased_estim,
     n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF

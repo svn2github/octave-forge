@@ -54,7 +54,7 @@ static MTRand randu;
 static Ziggurat randn;
 
 static octave_value 
-do_seed (octave_value_list args, MTRand rng)
+do_seed (octave_value_list args, MTRand &rng)
 {
   octave_value retval;
 
@@ -96,7 +96,8 @@ do_seed (octave_value_list args, MTRand rng)
 	rng.seed(n);
     }
   else if (tmp.is_matrix_type () 
-	   && tmp.rows() == rng.SAVE && tmp.columns() == 1)
+	   && ((tmp.rows() == rng.SAVE && tmp.columns() == 1) ||
+	       (tmp.columns() == rng.SAVE && tmp.rows() == 1)))
     {
       Array<double> a(tmp.vector_value ());
       if (! error_state)
@@ -277,7 +278,7 @@ DEFUN_DLD (randn, args, nargout,
 Return a matrix with normally distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
-@code{randn} uses a Marsaglia and Tsang[1] Ziggurat technique to
+@code{randn} uses a Marsaglia and Tsang[1] Ziggurat technique to\n\
 transform from U to N(0,1). The technique uses a 256 level Ziggurat\n\
 with the Mersenne Twister from @code{rand} used to generate U.\n\
 \n\

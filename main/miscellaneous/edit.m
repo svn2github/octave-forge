@@ -122,7 +122,7 @@ function edit(file,state)
   ## otherwise copy it and then edit it.
   if !isempty(path)
     fid = fopen(path,"r+");
-    if (fid > 0)
+    if (fid >- 0)
       fclose(fid);
     else
       from = path;
@@ -274,7 +274,7 @@ SUCH DAMAGE.\
 
   ## Write the initial file (if there is anything to write)
   fid = fopen(path, "w");
-  if (!fid)
+  if (fid<=0)
     error("edit: could not create %s", path);
   endif
   fputs(fid, text);

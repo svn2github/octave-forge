@@ -10,7 +10,13 @@ all:	dispatch.oct waitbar.oct listen.oct
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)
 
-listen.oct: listen.cc
-	$(MKOCTFILE) $(MISCDEFS) listen.cc
+listen.oct: listen.o listencanfork.o
+	$(MKOCTFILE) listen.o listencanfork.o
+
+listen.o: listen.cc
+	$(MKOCTFILE) -c $(MISCDEFS) listen.cc
+
+listencanfork.o: listencanfork.c
+	$(MKOCTFILE) -c listencanfork.c
 
 clean: ; -$(RM) *.o octave-core core *.oct *~

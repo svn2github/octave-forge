@@ -71,6 +71,7 @@ static void sigchld_setup(void)
 }
 
 
+#if !DEBUG && !defined(__CYGWIN__)
 static RETSIGTYPE
 sigterm_handler(int /* sig */)
 {
@@ -89,6 +90,9 @@ daemonize(void)
   freopen("/dev/null", "w", stdout);
   freopen("/dev/null", "w", stderr);
 }
+#else
+inline void daemonize(void) {}
+#endif
 
 
 
@@ -309,8 +313,10 @@ process_commands(int channel)
 
 int channel = -1;
 
-#if defined(__CYGWIN__)
-// temporary hack (I hope)
+#if 1
+// Temporary hack (I hope).  For some reason 
+// the DEFUN_DLD isn't being found from
+// within listen, so I install it by hand.
 
 DEFUN_INTERNAL(send,args,,false,"\
 send(str)\n\
@@ -403,6 +409,7 @@ send(name,value)\n\
   return ret;
 }
 
+extern "C" int listencanfork(void);
 
 DEFUN_DLD(listen,args,,"\
 listen(port,host)\n\
@@ -411,9 +418,12 @@ listen(port,host)\n\
    dot-separated host name.\n\
 ")
 {
+  install_builtin_function (Fsend, "send", "builtin send doc", false);
 
 #if defined(__CYGWIN__)
-  install_builtin_function (Fsend, "send", "builtin send doc", false);
+  bool canfork = listencanfork();
+#else
+  bool canfork = false;
 #endif
 
 
@@ -468,7 +478,8 @@ listen(port,host)\n\
     return ret;
   }
   
-  if (listen(sockfd, 1) == -1) { /* only listen for one connection */
+  /* listen for connections (allowing one pending connection) */
+  if (listen(sockfd, canfork?1:0) == -1) { 
     perror("listen");
     close(sockfd);
     return ret;
@@ -480,10 +491,8 @@ listen(port,host)\n\
 
   sigchld_setup();
 
-#if !DEBUG && !defined(__CYGWIN__)
   daemonize();
-#endif
-
+      
   // XXX FIXME XXX want a 'sandbox' option which disables fopen, cd, pwd,
   // system, popen ...  Or maybe just an initial script to run for each
   // connection, plus a separate command to disable specific functions.
@@ -503,23 +512,32 @@ listen(port,host)\n\
     }
     STATUS("connected");
 
-
+#if !defined(__GNUC__) || !defined(_sgi)
+    // Known bug: functions which pass or return structures use a
+    // different ABI for gcc and native compilers on some architectures.
+    // Whether this is a bug depends on the structure length.  SGI's 64-bit
+    // architecture makes this a problem for inet_ntoa.
     STATUS("server: got connection from " << inet_ntoa(their_addr.sin_addr));
+#endif
 
     if (their_addr.sin_addr.s_addr == hostid.s_addr ||
 	their_addr.sin_addr.s_addr == localhost.s_addr) {
+      if (canfork) {
+        int pid = fork();
 
-      int pid = fork();
-
-      if (pid == -1) {
-        perror("fork ");
-        break;
-      } else if (pid == 0) {
-        close(sockfd);            // child doesn't need listener
-        signal(SIGCHLD,SIG_DFL);  // child doesn't need SIGCHLD signal
-        process_commands(channel);
-        STATUS("child is exitting");
-        exit(0);
+        if (pid == -1) {
+          perror("fork ");
+          break;
+        } else if (pid == 0) {
+          close(sockfd);            // child doesn't need listener
+          signal(SIGCHLD,SIG_DFL);  // child doesn't need SIGCHLD signal
+          process_commands(channel);
+          STATUS("child is exitting");
+          exit(0);
+        }
+      } else {
+	process_commands(channel);
+        STATUS("server: connection closed");
       }
     } else {
       STATUS("server: connection refused.");

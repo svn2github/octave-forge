@@ -51,7 +51,7 @@ function y = awgn (x, snr, arg1, arg2, arg3)
     error ("usage: awgn(x, snr, p, seed, type");
   endif
 
-  [m n] = size(x);
+  [m,n] = size(x);
   if (isreal(x))
     out = 'real';
   else
@@ -97,7 +97,7 @@ function y = awgn (x, snr, arg1, arg2, arg3)
 
   for i=1:length(args)
     if (args(i) == 1)
-      eval(['arg = arg' num2str(i) ';']);
+      eval(['arg = arg',num2str(i),';']);
       if (strcmp(arg,'measured'))
         meas = 1;  
       elseif (strcmp(arg,'dB'))

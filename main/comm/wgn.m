@@ -100,7 +100,7 @@ function y = wgn (m, n, p, arg1, arg2, arg3, arg4)
     
   for i=1:length(args)
     if (args(i) == 1)
-      eval(['arg = arg' num2str(i) ';']);
+      eval(['arg = arg', num2str(i), ';']);
       if (strcmp(arg,'real'))
         out = 'real';  
       elseif (strcmp(arg,'complex'))

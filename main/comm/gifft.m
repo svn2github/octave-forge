@@ -35,12 +35,12 @@ function y = gifft(x)
 
   n = 2^x.m - 1;
   if (n > 255)
-    error ([ "gifft: argument must be in Galois Field GF(2^m), where" ...
+    error ([ "gifft: argument must be in Galois Field GF(2^m), where", ...
            " m is not greater than 8"]); 
   endif
   
   alph = gf(2, x.m, x.prim_poly);
-  [nr nc] = size(x);
+  [nr,nc] = size(x);
   if ((nc == 1) & (nr == n))
     y = gdftmtx(1/alph) * x;
   elseif ((nc == n) & (nr == 1))

@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} {@var{b} = } randint (@var{n})
 ## @deftypefnx {Function File} {@var{b} = } randint (@var{n},@var{m})
 ## @deftypefnx {Function File} {@var{b} = } randint (@var{n},@var{m},@var{range})
-## @deftypefnx {Function File} {@var{b} = } randint (@var{n}@var{m},@var{range},@var{seed})
+## @deftypefnx {Function File} {@var{b} = } randint (@var{n},@var{m},@var{range},@var{seed})
 ##
 ## Generate a matrix of random binary numbers. The size of the matrix is
 ## @var{n} rows by @var{m} columns. By default @var{m} is equal to @var{n}.
@@ -41,13 +41,14 @@ function b = randint (n, m, range, seed)
   switch (nargin)
     case 1,
       m = n;
-      range = [0 1];
+      range = [0,1];
       seed = Inf;
     case 2,
-      range = [0 1];
+      range = [0,1];
       seed = Inf;
     case 3,
       seed = Inf;      
+    case 4,
     otherwise
       usage ("b = randint (n, [m, [range, [seed]]])");
   endswitch

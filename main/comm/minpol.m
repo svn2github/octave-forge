@@ -58,9 +58,9 @@ function r = minpol (v)
       rv = cyclomat(rc,:);
 
       ## Create the minimum polynomial from its roots 
-      ptmp = gf([1 rv(1)], m, prim_poly);
+      ptmp = gf([1,rv(1)], m, prim_poly);
       for i=2:length(rv)
-        ptmp = gconv(ptmp, [1 rv(i)]);
+        ptmp = gconv(ptmp, [1,rv(i)]);
       end
 
       ## Need to left-shift polynomial to divide by x while can
@@ -68,7 +68,7 @@ function r = minpol (v)
       while (!ptmp(m+1-i))
         i = i + 1;
       end
-      ptmp = [zeros(1,i) ptmp(1:m+1-i)];
+      ptmp = [zeros(1,i), ptmp(1:m+1-i)];
       r(j,:) = ptmp;
     endif
   end

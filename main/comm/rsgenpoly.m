@@ -76,7 +76,7 @@
 ## @end deftypefn
 ## @seealso{gf,rsenc,rsdec}
 
-function [g t] = rsgenpoly(n, k, _prim, _b, _s)
+function [g, t] = rsgenpoly(n, k, _prim, _b, _s)
 
   if ((nargin < 2) || (nargin > 5))
     error ("usage: [g, t] = rsgenpoly(n, k, p, b, s)");
@@ -146,7 +146,7 @@ function [g t] = rsgenpoly(n, k, _prim, _b, _s)
   
   g = gf(1, m, prim);
   for i= 1:2*t
-    g = gconv(g, gf([1 alph^((b+i-1)*s)], m, prim));
+    g = gconv(g, gf([1,alph^((b+i-1)*s)], m, prim));
   end
   
 endfunction

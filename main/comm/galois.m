@@ -60,11 +60,11 @@ function retval = galois(a)
         infopath = deblank(infopaths(i,:));
         len = length(infopath);
         if (len)
-          if (len > 1 && strcmp(infopath([len-1 len]),'//'))
-            showfile = system(['find ' infopath(1:len-1) ' -name ' ...
+          if (len > 1 && strcmp(infopath([len-1, len]),'//'))
+            showfile = system(['find ', infopath(1:len-1), ' -name ', ...
                                infofile]);
           else
-            showfile = system(['find ' infopath ' -name ' infofile ...
+            showfile = system(['find ', infopath, ' -name ', infofile, ...
                                ' -maxdepth 1']);
           end
           if (length(showfile))
@@ -77,19 +77,19 @@ function retval = galois(a)
       end
       
       if (exist('INFO_PROGAM')) 
-        [testout testret] = system([INFO_PROGRAM ' --version']);
+        [testout, testret] = system([INFO_PROGRAM, ' --version']);
         if (testret)
           error('galois: info command not found');
         else
-          system([INFO_PROGRAM ' --file ' infofile ' --node "' ...
-                  nodename '"']); 
+          system([INFO_PROGRAM, ' --file ', infofile, ' --node "', ...
+                  nodename, '"']); 
         end
       else
-        [testout testret] = system('info --version');
+        [testout, testret] = system('info --version');
         if (testret)
           error('galois: info command not found');
         else
-          system(['info --file ' infofile ' --node "' nodename '"']); 
+          system(['info --file ', infofile, ' --node "', nodename, '"']); 
         end
       end
     elseif (strcmp(a,'test'))
@@ -125,7 +125,7 @@ function retval = galois(a)
       end
       fprintf('PASSED\n');
       fprintf('Miscellaneous functions:                  ')
-      if (size(gmat) != [matlen matlen])
+      if (size(gmat) != [matlen, matlen])
         error('FAILED');
       end
       if (length(grow) != 2^m)
@@ -217,18 +217,18 @@ function retval = galois(a)
       fprintf('PASSED\n');
 
       fprintf('Polynomial manipulation:                  ')
-      poly1 = gf([2 4 5 1],3);
-      poly2 = gf([1 2],3);
-      sumpoly = poly1 + [0 0 poly2];   ## Already test '+'
+      poly1 = gf([2,4,5,1],3);
+      poly2 = gf([1,2],3);
+      sumpoly = poly1 + [0,0,poly2];   ## Already test '+'
       mulpoly = conv(poly1, poly2);    ## multiplication
-      poly3 = [poly remd] = deconv(mulpoly, poly2);
+      poly3 = [poly,remd] = deconv(mulpoly, poly2);
       if (!isequal(poly1,poly3))
         error('FAILED');
       end
       if (any(remd))
         error('FAILED');
       end         
-      x0 = gf([0 1 2 3],3);
+      x0 = gf([0,1,2,3],3);
       y0 = polyval(poly1, x0);
       alph = gf(2,3);
       y1 = alph * x0.^3 + alph.^2 * x0.^2 + (alph.^2+1) *x0 + 1;
@@ -256,7 +256,7 @@ function retval = galois(a)
       fprintf('PASSED\n');
 
       fprintf('Linear Algebra:                           ')
-      [l u p] = glu(gmat);
+      [l,u,p] = glu(gmat);
       if (any(l*u-p*gmat))       
         error('FAILED');
       end
@@ -285,16 +285,16 @@ function retval = galois(a)
       end
       fprintf('PASSED\n');
       fprintf('Signal Processing functions:              ')
-      b = gf([1 0 0 1 0 1 0 1],m);
-      a = gf([1 0 1 1],m);
-      x = gf([1 zeros(1,99)],m);
+      b = gf([1,0,0,1,0,1,0,1],m);
+      a = gf([1,0,1,1],m);
+      x = gf([1,zeros(1,99)],m);
       y0 = filter(b, a, x);
       y1 = gconv(grow+1, grow);
       y2 = grow * gconvmtx(grow+1, length(grow));
       if (any(y1 != y2))
         error('FAILED');
       end
-      [y3 remd] = gdeconv(y2, grow+1);
+      [y3,remd] = gdeconv(y2, grow+1);
       if (any(y3 != grow))
         error('FAILED');
       end
@@ -337,7 +337,7 @@ function retval = galois(a)
       cde = rsenc(msg,nrs,krs,ggrs);
       
       ## Introduce errors
-      noisy = cde + [ 255 0 255 0 255 zeros(1,250); 0 255 0 255 zeros(1,251)];
+      noisy = cde + [ 255,0,255,0,255,zeros(1,250); 0,255,0,255,zeros(1,251)];
       
       # Decode (better to pass fcr and step rather than gg for speed)
       dec = rsdec(noisy,nrs,krs,fcr,step);

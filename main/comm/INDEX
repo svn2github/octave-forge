@@ -1,14 +1,19 @@
 Communications
  awgn
  bi2de
+ biterr
  compand
  cosets
  de2bi
+ eyediagram
+ galois
  gconv
+ gconvmtx
  gdiag
  gdeconv
  gdet
  gdftmtx
+ gen2par
  gexp
  gf
  gfilter
@@ -30,9 +35,13 @@ Communications
  minpol
  primpoly
  quantiz
+ randerr
  randint
+ randsrc
  rsgenpoly
  rsdec
  rsenc
+ scatterplot
+ symerr
  vec2mat
  wgn

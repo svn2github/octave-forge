@@ -62,7 +62,7 @@ function r = groots (v)
   r = [];        
 
   while ((t <= n)  && (length(poly) > 1))
-    [npoly nrem] = gdeconv(poly,gf([1 t],m,prim_poly));
+    [npoly, nrem] = gdeconv(poly,gf([1,t],m,prim_poly));
     if (any(nrem))
       t = t + 1;
     else

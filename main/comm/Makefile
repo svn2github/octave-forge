@@ -14,7 +14,7 @@ GALOISLINKTARGETS = isgalois.oct gdiag.oct greshape.oct gprod.oct gsum.oct \
                     ginverse.oct gdet.oct grank.oct rsenc.oct rsdec.oct
 
 GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
-OTHERSOURCES = primpoly.cc isprimitive.cc
+OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc
 OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
 OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
 OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))
@@ -78,13 +78,13 @@ endif
 %.texi : %.txi
 	@echo "Making texinfo $@"; \
 	$(RM) -f $@; \
-	./mkdoc > DOCSTRINGS; \
-	./mktexi $< DOCSTRINGS > $@ 
+	mkdoc > DOCSTRINGS; \
+	mktexi $< DOCSTRINGS > $@ 
 
 clean:
 	@echo "Cleaning..."; \
 	 $(RM) -f $(DELETES)
 
 count:
-	wc *{.cc,.h,.m}
+	wc *{.cc,.h,.m,.txi}
 

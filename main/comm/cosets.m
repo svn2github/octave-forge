@@ -44,7 +44,7 @@ function c = cosets(m, prim)
     fflush(stdout);
     r = rem(idx*2,n);
     while (r > idx)
-      set =[set r];
+      set =[set,r];
       r = rem(r*2,n);
     end
     c{nc} = gf(sort(gexp(gf(set,m,prim)).x),m,prim);

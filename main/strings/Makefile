@@ -2,7 +2,7 @@ sinclude ../../Makeconf
 
 PROGS=regexp.oct
 ifeq ($(HAVE_PCRE),yes)
-  PROGS:=$PROGS pcregexp.oct
+  PROGS:=$(PROGS) pcregexp.oct
 endif
 
 all: $(PROGS)

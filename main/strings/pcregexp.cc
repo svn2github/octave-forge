@@ -66,10 +66,8 @@ See also \"help regexp\" and the manpage for 'pcre'.\n\
     int matches = pcre_exec(re, NULL, input.c_str(), input.length(), 0, 0, ovector, (subpatterns+1)*3);
 
     if (matches == PCRE_ERROR_NOMATCH) {
-    	retval = octave_value_list(Matrix());
-	for (int i = 1; i < nargout; i++) {
-	    retval(i) = "";
-	}
+	for (int i=nargout-1; i>=0; i--) retval(i) = "";
+	retval(0) = Matrix();
 	pcre_free(re);
     	return retval;
     } else if (matches < -1) {

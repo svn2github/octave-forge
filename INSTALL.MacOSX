@@ -35,7 +35,7 @@ Packages can be disabled by adding a file named NOINSTALL to the particular dire
 Add NOINSTALL to extra/linear-algebra ('touch extra/linear-algebra/NOINSTALL')
 Add NOINSTALL to main/sparse ('touch main/sparse/NOINSTALL')
 
-Set PROGS to an empty string in FIXES/Makefile (Can't override builtins on OSX, yet)
+Set PROGS to an empty string (i.e. 'PROGS =') in FIXES/Makefile (Can't override builtins on OSX, yet)
 
 2) Installation
 ---------------

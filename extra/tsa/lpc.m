@@ -1,4 +1,4 @@
- function [A] = lpc(Y,P,'mode');
+function [A] = lpc(Y,P,mode);
 % LPC Linear prediction coefficients 
 % The Burg-method is used to estimate the prediction coefficients
 %
@@ -52,8 +52,8 @@
 
 
 [yr,yc] = size(Y);
-if yr > yc,
-	fprintf(2,'Warning LCP: data vector Y must be a row not a column vector\n');
+if yr < yc,
+	fprintf(2,'Warning LCP: data vector Y must be a column not a row vector\n');
 end;
 
 if nargin < 2,
@@ -63,9 +63,9 @@ end;
 % you can use any of the following routines. 
 % I've selected the Burg method, because it provides the most accurate estimates
 
-[AR,RC,PE] = lattice(Y.',P);		% Burg method
-% [AR,RC,PE] = lattice(Y.',P,'GEOL');	% geomatric lattice
-% [AR,RC,PE] = durlev(acovf(Y.',P));  	% Yule-Walker
+[AR,RC,PE] = lattice(Y.',P);		% Burg method
+% [AR,RC,PE] = lattice(Y.',P,'GEOL');	% geomatric lattice
+% [AR,RC,PE] = durlev(acovf(Y.',P));  	% Yule-Walker
 
 A = ar2poly(AR);
 

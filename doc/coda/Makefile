@@ -1,6 +1,6 @@
 # Makefile for coda
 
-outputdir:=./out
+outputdir:=out
 dbflags:=-o $(outputdir) 
 #-V %root-filename%=coda
 autoidx:=$(outputdir)/HTML.index # Defined in "dbparam.dsl"
@@ -15,11 +15,11 @@ src_base=coda bibliography
 src=$(src_appendices:%=appendices/%.sgml) $(src_oct:%=oct/%.sgml) \
 	$(src_standalone:%=standalone/%.sgml) $(src_base:%=%.sgml)
 
-htmlimages=oct/matpow.png
-pdfimages=oct/matpow.eps
+htmlimages=$(outputdir)/matpow.png
+pdfimages=$(outputdir)/matpow.eps
 
 .phony: all
-all: html pdf targz
+all: pdf html
 
 .phony: check
 check: $(src)
@@ -29,18 +29,23 @@ check: $(src)
 .phony: clean
 clean:
 	$(RM) index.sgml
-	cd $(outputdir) && $(RM) *.html *.ps HTML.index matpow.png
+	cd $(outputdir) && $(RM) *.html *.ps HTML.index
 	cd $(outputdir) && $(RM) coda.{out,tex,dvi,log,aux,ps.gz,pdf}
 	cd $(outputdir) && $(RM) *.tar.gz
-	rmdir $(outputdir) coda coda.junk
+	rmdir coda coda.junk
 
 .phony: distclean
 distclean: clean
-	rm -f *~ *.bak core
+	$(RM) *~ *.bak core
 
-.phony: www-install
-www-install: all
-	cd $(outputdir) && install -m 644 -p *.html coda.ps.gz coda.pdf coda-sgml.tar.gz /site/wwwroot/octave/coda
+.phony: www-dist
+www-dist: html pdf dist
+	$(RM) $(outputdir)/coda/*
+	install -d $(outputdir)/coda
+	cd $(outputdir) && install -m 644 -p *.html *.png coda.pdf coda-sgml.tar.gz coda/
+	cd $(outputdir) && tar czf coda-www.tar.gz coda
+	rm -rf $(outputdir)/coda
+	
 
 .phony: html
 html: $(outputdir)/index.html $(outputdir)/matpow.png
@@ -51,10 +56,10 @@ ps: $(outputdir)/coda.ps.gz
 .phony: pdf
 pdf: $(outputdir)/coda.pdf
 
-.phony: targz
-targz: $(outputdir)/coda-sgml.tar.gz
+.phony: dist
+dist: $(outputdir)/coda-sgml.tar.gz
 
-$(outputdir)/coda-sgml.tar.gz: $(src) $(htmlimages) Makefile
+$(outputdir)/coda-sgml.tar.gz: $(src) $(htmlimages) $(pdfimages) Makefile
 	tar czf $@ $^
 
 index.sgml: $(src)
@@ -70,10 +75,10 @@ $(outputdir)/index.html: $(src) index.sgml
             mv $$f $$f.bak; \
             sed -e 's!FIXME:!<b class="fixme">FIXME:</b>!i' \
                 -e 's/&#13; *//g' < $${f}.bak > $$f; \
-            rm $$f.bak; \
+            $(RM) $$f.bak; \
         done
 
-$(outputdir)/coda.ps: $(src) index.sgml
+$(outputdir)/coda.ps: $(src) index.sgml $(pdfimages)
 	docbook2tex coda.sgml
 	cd $(outputdir) && \
 	    $(RM) coda.tex ; mv ../coda.tex . ; \
@@ -82,12 +87,9 @@ $(outputdir)/coda.ps: $(src) index.sgml
 
 $(outputdir)/coda.ps.gz: $(outputdir)/coda.ps
 
-$(outputdir)/coda.pdf: $(src) index.sgml
+$(outputdir)/coda.pdf: $(src) index.sgml $(pdfimages)
 	-docbook2pdf -o $(outputdir) coda.sgml >/dev/null 2>&1
 	docbook2pdf -o $(outputdir) coda.sgml
-
-$(outputdir)/matpow.png: oct/matpow.png
-	cp $< $@
 
 #	cd $(outputdir) && \
 #	    gs -q -r600 -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \

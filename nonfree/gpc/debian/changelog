@@ -6,7 +6,7 @@ octave-gpc (0.1.4-1) unstable; urgency=low
     - Soften the dependency on Octave.  octave-gpc dependency is now bound
       only to a minimal Octave version, which happens to be the version
       present when the package is built (closes: #226137).
-    - Removed optiond --with-mkoctfile --with-libexec from call to
+    - Removed options --with-mkoctfile --with-libexec from call to
       configure.
     - Use DESTDIR when calling make install.
   * debian/control:

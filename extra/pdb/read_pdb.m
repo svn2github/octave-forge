@@ -36,39 +36,28 @@ function p = read_pdb(fname)
 
 p = creadpdb(fname);
 
-tabfile = file_in_loadpath("elements_struct.mat");
-load("-force", tabfile);
+global elements_struct;
+load("-force", file_in_loadpath("elements_struct.mat"));
 
 if(struct_contains(p, "atomname"))
-   n = p.atomname;
-   N = size(n, 1);
-   z = zeros(N, 1);
-   simpind = find(n(:,1) == " ");
-   twoind = find(n(:,1) != " ");
-   n(twoind,2) = tolower(n(twoind,2));
-   for i = 1:length(simpind),
-     z(simpind(i)) = elements_struct.(n(simpind(i),2));
-   endfor
-   for i = 1:length(twoind),
-     z(twoind(i)) = elements_struct.(n(twoind(i),1:2));
-   endfor
-   p.az = z;
+   p.az = atomnames_to_z(p.atomname);
 endif
 
 if(struct_contains(p, "hetname"))
-   n = p.hetname;
-   N = size(n, 1);
-   z = zeros(N, 1);
-   simpind = find(n(:,1) == " ");
-   twoind = find(n(:,1) != " ");
-   n(twoind,2) = tolower(n(twoind,2));
-   for i = 1:length(simpind),
-     z(simpind(i)) = elements_struct.(n(simpind(i),2));
-   endfor
-   for i = 1:length(twoind),
-     z(twoind(i)) = elements_struct.(n(twoind(i),1:2));
-   endfor
-   p.hetz = z;   
+   p.hetz = atomnames_to_z(p.hetname);
 endif
 
+function z = atomnames_to_z(n)
+  global elements_struct;
+  N = size(n, 1);
+  z = zeros(N, 1);
+  for i = 1:N,
+    tmpnam = n(i,isalpha(n(i,:)));
+    if(length(tmpnam) > 1)
+      tmpnam(2) = tolower(tmpnam(2));
+    endif
+    z(i) = elements_struct.(tmpnam);
+   endfor
+endfunction
+ 
 endfunction

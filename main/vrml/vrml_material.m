@@ -14,7 +14,6 @@ emit = 1;
 
 if nargin < 2, ec = 0; end
 if nargin < 3, tran = 0; end
-
 if prod (size (ec)) == 1, emit = ec && !isnan (ec) ; ec = dc ; end
 
 

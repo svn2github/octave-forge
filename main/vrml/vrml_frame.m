@@ -13,7 +13,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function v = vrml_frame(...)
+## pre 2.1.39 function v = vrml_frame(...)
+function v = vrml_frame (varargin)
 
 ### Test with : frame with R,G,B vectors of len 3,2,1 and cone's diam are .2,
 ### .4, .6.
@@ -33,7 +34,8 @@ hcol = [];
 numeric_args = 0;
 while nargin && numeric_args<2,
 
-  tmp = va_arg ();
+  ## pre 2.1.39 tmp = va_arg ();
+  tmp = nth (varargin, numeric_args + 1);   ## pos 2.1.39
   if isstr (tmp), break; end
   --nargin;
   numeric_args++;
@@ -43,12 +45,18 @@ while nargin && numeric_args<2,
 end
 
 if nargin
-  leftover_args = list (all_va_args);
+  ## pre 2.1.39 leftover_args = list (all_va_args);
+  leftover_args = varargin;	# pos 2.1.39
   leftover_args = leftover_args (numeric_args+1:length(leftover_args));
 
   verbose = 0;
 
-  df = tar (col, hcol, diam, scale, verbose);
+  ## df = tar (col, hcol, diam, scale, verbose);
+  df = struct ("col",    col,   \
+	       "hcol",   hcol,  \
+	       "diam",   diam,  \
+	       "scale",  scale, \
+	       "verbose",verbose);
   op1 = " col hcol diam scale ";
   op0 = " verbose ";
   s = read_options (leftover_args, "op1",op1,"op0",op0,"default",df);
@@ -82,13 +90,13 @@ sz = [scale; nan*ones(1,3); diam; rdiam] ;
 ## if roddiam, d = roddiam.*scale ; else d = [nan,nan,nan] ; end
 
 ## diam = diam.*scale ;
-## d = diam = nan*scale; 
+## d = diam = nan*scale;
 a1 = vrml_transfo (vrml_arrow(sz(:,1),[col(1,:);hcol(1,:)],0),\
 		   [0,0,0],[0,-1,0;1,0,0;0,0,1]);
+## keyboard
 a2 = vrml_arrow(sz(:,2),[col(2,:);hcol(2,:)],0);
 a3 = vrml_transfo (vrml_arrow(sz(:,3),[col(3,:);hcol(3,:)],0),\
 		   [0,0,0],[1,0,0;0,0,1;0,-1,0]);
-
 f0 = vrml_group (a1, a2, a3);
-
+keyboard
 v = vrml_transfo (f0, t, r);

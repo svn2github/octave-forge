@@ -30,7 +30,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vmesh (x, y, z, ...)
+## pre 2.1.39 function s = vmesh (x, y, z, ...)
+function s = vmesh (x, y, z, varargin) ## pos 2.1.39
 
 
 if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
@@ -40,10 +41,12 @@ if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   ## ones(R,1)*[1:C] ;
   ## yy = ## [1:R]'*ones(1,C) ;
   if     nargin >=3,
-    s = vmesh ( xx, yy, zz, y, z, all_va_args );
+    ## pre 2.1.39     s = vmesh ( xx, yy, zz, y, z, all_va_args );
+    s = vmesh ( xx, yy, zz, y, z, varargin{:} ); ## pos 2.1.39
     if ! nargout,  clear s; end;  return
   elseif nargin >=2,
-    s = vmesh ( xx, yy, zz, y, all_va_args );
+    ## pre 2.1.39     s = vmesh ( xx, yy, zz, y, all_va_args );
+    s = vmesh ( xx, yy, zz, y, varargin{:} ); ## pos 2.1.39
     if ! nargout,  clear s; end;  return
   end
   x = xx ; y = yy ; z = zz ;
@@ -58,7 +61,8 @@ if nargin > 3,
   op1 = " tran col checker creaseAngle emit colorPerVertex tex ";
   op0 = " smooth " ;
 
-  s = read_options (list(all_va_args),"op0",op0,"op1",op1);
+  ## pre 2.1.39   s = read_options (list(all_va_args),"op0",op0,"op1",op1);
+  s = read_options (varargin,"op0",op0,"op1",op1); ## pos 2.1.39
 
 				# Identify options for vrml_surf()
   all_surf_opts  = list ("tran", "col", "checker", "creaseAngle", "emit", \
@@ -72,16 +76,17 @@ if nargin > 3,
   end
 end
 
-
 s = leval ("vrml_surf", surf_args);
 
 pts = [x(:)';y(:)';z(:)'];
+ii = find (all (isfinite (pts)));
+pt2 = pts(:,ii); x2 = x(ii); y2 = y(ii); z2 = z(ii);
 ## Addd a point light
-scl = nanstd ((pts-mean (pts')'*ones(1,columns (pts)))(:));
+scl = nanstd ((pt2-mean (pt2')'*ones(1,columns (pt2)))(:));
 
-lpos = [min (x(:)) - 1.1*scl* max (max(x(:))-min(x(:)), 1),
-	mean(y(:)),
-	max(z(:))];
+lpos = [min (x2(:)) - 1.1*scl* max (max(x2(:))-min(x2(:)), 1),
+	mean (y2(:)),
+	max (z2(:))];
 pl = vrml_PointLight ("location", lpos, "intensity", 0.7);
 
 #  distance = max ([max (x(:)) - min (x(:)),\
@@ -90,8 +95,8 @@ pl = vrml_PointLight ("location", lpos, "intensity", 0.7);
 #  vp = vrml_Viewpoint  ("orientation", [1 0 0 -pi/6],\
 #  		      "position",    distance*[0 0 5]);
 
-minpts = nanmin (pts');
-maxpts = nanmax (pts');
+minpts = min (pt2');
+maxpts = max (pt2');
 medpts = (minpts + maxpts)/2;
 ptssz  = (maxpts - minpts);
 
@@ -105,6 +110,7 @@ sbg = vrml_Background ("skyColor", [0.5 0.5 0.6]);
 s = [pl, sbg, s , fr];
 
 vrml_browse (s);
+## keyboard
 
 if ! nargout,  clear s; end
 

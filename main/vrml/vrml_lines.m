@@ -16,7 +16,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_lines(x,f,...)
+## pre 2.1.39 function s = vrml_lines(x,f,...)
+function s = vrml_lines(x,f,varargin) ## pos 2.1.39
 
 col = [1, 0, 0] ;
 
@@ -26,8 +27,11 @@ opt0 = " " ;
 verbose = 0 ;
 
 nargin -= 2 ;
-while nargin>0 ,
-  tmp = va_arg() ; nargin-- ;
+i=1;
+## pre 2.1.39 while nargin>0 ,
+while nargin>=i , ## pos 2.1.39
+  ## pre 2.1.39   tmp = va_arg() ; nargin-- ;
+  tmp = nth (varagin, i++) ;	# pos 2.1.39
   if ! isstr(tmp) ,
     error ("vrml_lines : Non-string option : \n") ;
     ## keyboard
@@ -35,8 +39,9 @@ while nargin>0 ,
   end
   if index(opt1,[" ",tmp," "]) ,
     
-    tmp2 = va_arg() ; nargin-- ;
-    nargin-- ;
+    ## pre 2.1.39     tmp2 = va_arg() ; nargin-- ;
+    tmp2 = nth (varargin, i++); # pos 2.1.39
+    ## nargin-- ;
     eval([tmp,"=tmp2;"]) ;
 
     if verbose , printf ("vrml_lines : Read option : %s.\n",tmp); end

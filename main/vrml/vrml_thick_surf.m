@@ -32,7 +32,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_thick_surf (x, y, z, ...)
+## pre 2.1.39 function s = vrml_thick_surf (x, y, z, ...)
+function s = vrml_thick_surf (x, y, z, varargin) ## pos 2.1.39
 
 				# Default values
 tran = 0 ;
@@ -45,10 +46,12 @@ if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   xx = ones(R,1)*[1:C] ;
   yy = [1:R]'*ones(1,C) ;
   if     nargin >=3,
-    s = vrml_surf ( xx, yy, zz, y, z, all_va_args );
+    ## pre 2.1.39     s = vrml_surf ( xx, yy, zz, y, z, all_va_args );
+    s = vrml_surf ( xx, yy, zz, y, z, varargin{:} ); ## pos 2.1.39
     return
   elseif nargin >=2,
-    s = vrml_surf ( xx, yy, zz, y, all_va_args );
+    ## pre 2.1.39     s = vrml_surf ( xx, yy, zz, y, all_va_args );
+    s = vrml_surf ( xx, yy, zz, y, varargin{:} ); ## pos 2.1.39
     return
   end
   x = xx ; y = yy ; z = zz ;

@@ -43,7 +43,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_faces (x,f,...)
+## pre 2.1.39 function s = vrml_faces (x,f,...)
+function s = vrml_faces (x,f,varargin) ## pos 2.1.39
 
   ## mytic; starttime = cputime();
 
@@ -60,17 +61,21 @@ opt0 = " smooth convex " ;
 verbose = 0 ;
 
 nargin -= 2 ;
-while nargin>0 ,
-  tmp = va_arg() ; nargin-- ;
+i = 1;				# pos 2.1.39
+## pre 2.1.39 while nargin>0 ,
+while nargin>=i			# pos 2.1.39
+  ## pre 2.1.39   tmp = va_arg() ; nargin-- ;
+  tmp = nth (varargin, i++) ;  ## pos 2.1.39
   if ! isstr(tmp) ,
     error ("vrml_faces : Non-string option : \n") ;
     ## keyboard
-
   end
+
   if index(opt1,[" ",tmp," "]) ,
     
-    tmp2 = va_arg() ; nargin-- ;
-    ## nargin-- ;
+    ## pre 2.1.39     tmp2 = va_arg() ; nargin-- ;
+    tmp2 = nth (varargin, i++) ; ## pos 2.1.39
+
     eval([tmp,"=tmp2;"]) ;
 
     if verbose , printf ("vrml_faces : Read option : %s.\n",tmp); end

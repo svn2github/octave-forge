@@ -23,11 +23,14 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_PointLight (...)
+## pre 2.1.39 function s = vrml_PointLight (...)
+function s = vrml_PointLight (varargin) # pos 2.1.39
 
-hash.dummy = 0;
+  ## pre 2.1.39 hash.dummy = 0;
+  hash = struct ();		# pos 2.1.39
 
-if nargin, hash = setfield (hash, all_va_args); end
+  ## pre 2.1.39 if nargin, hash = setfield (hash, all_va_args); end
+  if nargin, hash = leval ("setfield", varargin); end ## pos 2.1.39
 ## hash = rmfield (hash, "dummy");
 
 tpl = struct ("ambientIntensity", "%8.3f",\
@@ -40,7 +43,8 @@ tpl = struct ("ambientIntensity", "%8.3f",\
 
 body = "";
 for [val,key] = hash,
-  if !strcmp (key, "dummy") && !isnan (val),
+  ## pre 2.1.39   if !strcmp (key, "dummy") && !isnan (val),
+  if !(isnumeric(val) && isnan (val)), ## pos 2.1.39
 
 				# Check validity of field
     if ! struct_contains (tpl, key)

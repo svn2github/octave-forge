@@ -36,7 +36,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_points(x,...)
+## pre 2.1.39 function s = vrml_points(x,...)
+function s = vrml_points(x,varargin) ## pos 2.1.39
 ## varargin
 hide = 0;
 cubes = balls = nums = 0;
@@ -45,8 +46,12 @@ name = "allpoints" ;
 col = [0.3 0.4 0.9];
 emit = 1;
 
-while --nargin,
-  tmp = va_arg(); 
+i = 1; nargin--;		# pos 2.1.39
+
+## pre 2.1.39 while --nargin,
+while i < nargin ## pos 2.1.39
+  ## pre 2.1.39   tmp = va_arg(); 
+  tmp = nth (varargin,i++));  ## pos 2.1.39
   if strcmp(tmp,"hide") ,
     hide = 1;
   elseif strcmp(tmp,"balls") ,
@@ -54,15 +59,19 @@ while --nargin,
   elseif strcmp(tmp,"cubes") || strcmp(tmp,"boxes") ,
     cubes = 1;
   elseif strcmp(tmp,"rad") ,
-    rad = va_arg() ; nargin-- ;
+    ## pre 2.1.39     rad = va_arg() ; nargin-- ;
+    rad = nth (varargin,i++); ## pos 2.1.39
   elseif strcmp(tmp,"nums") ,
     nums = 1;
   elseif strcmp(tmp,"emit") ,
-    emit = va_arg() ; nargin-- ;
+    ## pre 2.1.39     emit = va_arg() ; nargin-- ;
+    emit = nth (varargin,i++); ## pos 2.1.39
   elseif strcmp(tmp,"col") ,
-    col = va_arg() ; nargin-- ;
+    ## pre 2.1.39     col = va_arg() ; nargin-- ;
+    col = nth (varargin,i++); ## pos 2.1.39
   elseif strcmp(tmp,"name") ,
-    name = va_arg() ; nargin-- ;
+    ## pre 2.1.39     name = va_arg() ; nargin-- ;
+    name = nth (varargin,i++); ## pos 2.1.39
   end
 end
 

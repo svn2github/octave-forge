@@ -39,7 +39,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_surf (x, y, z, ...)
+## pre 2.1.39 function s = vrml_surf (x, y, z, ...)
+function s = vrml_surf (x, y, z,varargin) ## pos 2.1.39
 
 
 if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
@@ -49,10 +50,12 @@ if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   ## ones(R,1)*[1:C] ;
   ## yy = ## [1:R]'*ones(1,C) ;
   if     nargin >=3,
-    s = vrml_surf ( xx, yy, zz, y, z, all_va_args );
+    ## pre 2.1.39     s = vrml_surf ( xx, yy, zz, y, z, all_va_args );
+    s = vrml_surf ( xx, yy, zz, y, z, varargin{:} ); ## pos 2.1.39
     return
   elseif nargin >=2,
-    s = vrml_surf ( xx, yy, zz, y, all_va_args );
+    ## pre 2.1.39     s = vrml_surf ( xx, yy, zz, y, all_va_args );
+    s = vrml_surf ( xx, yy, zz, y, varargin{:} ); ## pos 2.1.39
     return
   end
   x = xx ; y = yy ; z = zz ;
@@ -74,14 +77,15 @@ if nargin > 3,
   op0 = " smooth " ;
 
   default = tar (tran, col, creaseAngle, emit, colorPerVertex, smooth, checker);
-  s = read_options (list(all_va_args),"op0",op0,"op1",op1,"default",default);
+  ## pre 2.1.39   s = read_options (list(all_va_args),"op0",op0,"op1",op1,"default",default);
+  s = read_options (varargin,"op0",op0,"op1",op1,"default",default); ## pos 2.1.39
   [tran, col, creaseAngle, emit, colorPerVertex, smooth, checker] = getfield \
       (s, "tran", "col", "creaseAngle", "emit", "colorPerVertex", "smooth","checker");
 
   ## nargin -= 3 ;
   ## read_options_old ;
 end
-
+## keyboard
 if ! isnan (smooth), creaseAngle = pi ; end
 
 

@@ -17,7 +17,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_cyl (x,...) 
+## pre 2.1.39 function s = vrml_cyl (x,...) 
+function s = vrml_cyl (x,varargin) 	#  pos 2.1.39 
 
 rad = 0.05 ;
 tran = 0 ;
@@ -27,7 +28,7 @@ brad = nan;
 
 verbose = 0 ;
 balls = 0 ;
-emit = 1;
+emit = 0;
 noemit = nan;
 arrow = 0; 
 
@@ -38,7 +39,8 @@ if nargin > 1
   df = tar (rad, tran, col, hcol, verbose, balls, noemit, arrow, brad, \
 	    emit);
 
-  s = read_options (list (all_va_args), "op1",op1,"op0",op0, "default",df);
+  ## pre 2.1.39 s = read_options (list (all_va_args), "op1",op1,"op0",op0, "default",df);
+  s = read_options (varargin, "op1",op1,"op0",op0, "default",df); # pos 2.1.39
 
   [rad, tran, col, hcol, emit, verbose, balls, noemit, arrow, brad] = \
       getfield (s, "rad", "tran", "col", "hcol", "emit", "verbose", \
@@ -56,7 +58,7 @@ s = "" ;
 N = columns (x);
 
 				# Make col 3xN
-if prod (size (col)) == 3, col = col(:, ones(1,N)); end
+if prod (size (col)) == 3, col = col(:); col = col(:, ones(1,N)); end
 if emit, emitcol = col; else emitcol = nan(ones(1,N)); end
 if prod (size (tran)) == 1, tran = tran(ones(1,N)); end
 tran(find (tran==0)) = nan ;
@@ -75,7 +77,6 @@ for i = 2:N
     t = mean (x(:,[i,i-1])')' ;
 
     if ! arrow || i != N
-      
       smat = vrml_material (col(:,i), emitcol(:,i), tran(i));
 				# Do a cylinder
       s = [s,sprintf(["Transform {\n",\

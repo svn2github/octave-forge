@@ -18,7 +18,7 @@ function v = vrml_transfo(s,t,r,c)
 ## Hint : if s is "%s", you may later do v2 = sprintf (v,s2) which should be
 ##        equal to  vrml_transfo (s2,etc)
 
-verbose = 0 ;
+verbose = 0;
 ## 
 
 if nargin<2 || isnan (t), t = [0,0,0] ; end # Default translation
@@ -42,30 +42,30 @@ else
   error ("vrml_transfo : rotation should have size 3x3 or 3\n");
 end
 if verbose,
-  printf (["vrml_transfo : %8.3f %8.3f %8.3f %8.3f\n",...
-	   "               %8.3f %8.3f %8.3f\n"],...
+  printf (["vrml_transfo : %8.3f %8.3f %8.3f %8.3f\n",\
+	   "               %8.3f %8.3f %8.3f\n"],\
 	  axis,ang,t);
   printf ("length of string is %i\n",prod(size(s)));
 end
 
 				# Indent s by 4
 if strcmp(s(prod(size(s))),"\n"), s = s(1:prod(size(s))-1) ; end
-## strrep is slow, as if it copied everything by hand ...
+## strrep is slow, as if it copied everything by hand \
 #  mytic() ;
 #  s = ["    ",strrep(s,"\n","\n    ")] ;
 #  mytic()
 if verbose, printf ("   done indenting s\n"); end
 
-v = sprintf(["Transform {\n",...
-	     "  rotation    %8.3f %8.3f %8.3f %8.3f\n",...
-	     "  translation %8.3f %8.3f %8.3f\n",...
-	     "  scale       %8.3f %8.3f %8.3f\n",...
-	     "  children [\n%s\n",...
-	     "           ]\n",...
-	     "}\n",...
-	     ],...
-	    axis,ang,...
-	    t,...
-	    c,...
+v = sprintf(["Transform {\n",\
+	     "  rotation    %8.3f %8.3f %8.3f %8.3f\n",\
+	     "  translation %8.3f %8.3f %8.3f\n",\
+	     "  scale       %8.3f %8.3f %8.3f\n",\
+	     "  children [\n%s\n",\
+	     "           ]\n",\
+	     "}\n",\
+	     ],\
+	    axis,ang,\
+	    t,\
+	    c,\
 	    s) ;
-
+keyboard

@@ -2,7 +2,7 @@
 ##
 ## Test vmesh.m
 
-printf ("test_vmesh : display a surface with holes in it");
+printf ("test_vmesh : display a surface with holes in it\n");
 
 R = 21;
 C = 13;

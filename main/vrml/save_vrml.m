@@ -17,7 +17,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function save_vrml(outname,...)
+## pre 2.1.39 function save_vrml(outname,...)
+function save_vrml(outname, varargin) ## pos 2.1.39
 
 verbose = 0;
 append = 0;
@@ -46,7 +47,7 @@ bg_node = sprintf (["Background {\n",...
 		   bg_col);
 bg_node = "";
 
-lightstr = sprintf (["DirectionalLight {\n",\
+lightstr = sprintf (["PointLight {\n",\
 		     "  intensity         %8.3g\n",\
 		     "  ambientIntensity  %8.3g\n",\
 		     "  direction         %8.3g %8.3g %8.3g\n",\
@@ -56,18 +57,24 @@ lightstr = "";
 
 				# Read eventual options
 ninit = nargin;
-va_start ();
+## pre 2.1.39 va_start ();
+## pos 2.1.39
+i = 1;
 while --nargin,
-  tmp = va_arg ();
+  ## pre 2.1.39   tmp = va_arg ();
+  tmp = nth (varargin, i++); ## pos 2.1.39
   if     strcmp (tmp, "nobg"),
     bg_node = "";
   elseif strcmp (tmp, "nolight"),
     lightstr = "";
-  else
-    va_start ();
-    n = ++nargin ;
-    while n++ < ninit, va_arg (); end
+  else				# Reached non-options
+    ## beginpre 2.1.39
+    # va_start ();
+    # n = ++nargin ;
+    # while n++ < ninit, va_arg (); end
     ## nargin, ninit
+    ## endpre 2.1.39
+    i--; 			# pos 2.1.39
     break
   end
 end
@@ -88,11 +95,13 @@ if fid == -1 , error(sprintf("save_vrml : unable to open %s",fname)); end
 fprintf(fid,"#VRML V2.0 utf8 \n# %s , created by save_vrml.m on %s \n%s",
 	fname,datestr(now),bg_node);
 
-i = 1 ;
-while --nargin ,
-  ## tmp = va_arg();
+## pre 2.1.39 i = 1 ;
+## pre 2.1.39 while --nargin ,
+while i <= length (varargin) , ## pos 2.1.39
+  ## pre 2.1.39 tmp = va_arg();
   if verbose, printf ("save_vrml : %i'th string\n",i); end
-  fprintf(fid,"%s",va_arg()) ;
+  ## pre 2.1.39   fprintf(fid,"%s",va_arg()) ;
+  fprintf (fid,"%s", nth (varargin, i)) ; ## pos 2.1.39
   i++ ;
 end
 

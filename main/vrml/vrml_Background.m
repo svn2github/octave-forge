@@ -25,11 +25,13 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_Background (...)
+## pre 2.1.39 function s = vrml_Background (...)
+function s = vrml_Background (varargin) ## pos 2.1.39
 
 hash.dummy = 0;
 
-if nargin, hash = setfield (hash, all_va_args); end
+## pre 2.1.39 if nargin, hash = setfield (hash, all_va_args); end
+if nargin, hash = leval ("setfield", varargin); end ## pos 2.1.39
 ## hash = rmfield (hash, "dummy");
 
 tpl1 = struct (\

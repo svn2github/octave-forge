@@ -262,7 +262,7 @@ function gen_elementop_tests {
 %! sv = as.^bx;
 %! fv = af.^bf;
 %! idx = find(af~=0);
-%! assert(sv(idx),fv(idx),100*eps)
+%! assert(sv(:)(idx),fv(:)(idx),100*eps)
 
 EOF
 }

@@ -32,7 +32,7 @@ verbose = 0;
 best_option = " ";
 				# Allow scripting and specify where
 				# browser's output goes 
-out_option = "-ps -psout /tmp/octave_browser_out.txt " ;
+out_option = "--ps --psout /tmp/octave_browser_out.txt " ;
 global vrml_b_pid = 0;
 global vrml_b_name = [];
 
@@ -58,8 +58,8 @@ end
 
 
 vrml_b_name = "freewrl" ;
-## b_opt = "-best -server" ;
-b_opt = [out_option," ",bop," ",best_option," -server -snapb octave.snap "] ;
+
+b_opt = [out_option," ",bop," ",best_option," --server --snapb octave.snap "] ;
 
 b_temp = "/tmp/octave_vrml_output.wrl" ;
 b_log  = " &> /tmp/octave_vrml_browser.log";
@@ -185,3 +185,5 @@ end				# End of signaling  browser ##########
 				# ####################################
 
 p = vrml_b_pid ;
+endfunction
+

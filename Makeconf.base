@@ -36,7 +36,7 @@ CFLAGS = @CFLAGS@
 CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
 F77 = @F77@
-F77FLAGS = @F77FLAGS@
+FFLAGS = @FFLAGS@
 
 MKOCTFILE = @MKOCTFILE@ -DHAVE_OCTAVE_$(ver) -v
 
@@ -50,5 +50,7 @@ OPATH = @opath@
 XPATH = @xpath@
 
 
-%.oct: %.cc ; $(MKOCTFILE) $<
+%.o: %.c ; $(MKOCTFILE) -c $<
+%.o: %.f ; $(MKOCTFILE) -c $<
 %.o: %.cc ; $(MKOCTFILE) -c $<
+%.oct: %.cc ; $(MKOCTFILE) $<

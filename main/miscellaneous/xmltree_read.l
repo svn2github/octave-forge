@@ -1,5 +1,5 @@
 /* Validating XML processor for octave.dtd.
- * Generated 2004/01/31 22:27:54.
+ * Generated 2004/02/13 14:47:24.
  *
  * This program was generated with the FleXML XML processor generator,
  * (Id: flexml.pl,v 1.28 2003/02/12 02:55:41 krisrose Exp).
@@ -1228,12 +1228,12 @@ element *read_xmltree (const char *file) {
   root = NULL;
   lastlist = NULL;
 
-  yyin = fopen(file, "r");
-  if (!yyin)
+  xml_in = fopen(file, "r");
+  if (!xml_in)
     perror("can't open file\n");
 
-  yylex();
-  fclose(yyin);
+  xml_lex();
+  fclose(xml_in);
   
   return root;
 }

@@ -23,7 +23,7 @@ listencanfork.o: listencanfork.c
 	$(MKOCTFILE) -c listencanfork.c
 
 xmltree.o: xmltree.c xmltree.h
-	$(CC) -c $< -o $@
+	$(MKOCTFILE) $(MISCDEFS) -c $<
 
 ifdef FLEXML
 xmltree_read.l: xmltree_read.act octave.dtd
@@ -32,16 +32,16 @@ endif
 
 ifdef FLEX
 xmltree_read.c: xmltree_read.l
-	$(FLEX) -B  -o$@ $<
+	$(FLEX) -B -Pxml_ -o$@ $<
 endif
 
 xmltree_read.o: xmltree_read.c xmltree_read.h
-	$(CC) -c $< -o $@
+	$(MKOCTFILE) $(MISCDEFS) -c $<
 
 xmlread.o: xmlread.cc xmltree_read.h xmltree.h
-	$(MKOCTFILE) -c $< -o $@
+	$(MKOCTFILE) $(MISCDEFS) -c $<
 
 xmlread.oct: xmlread.o xmltree_read.o xmltree.o
-	$(MKOCTFILE) $^ -o $@
+	$(MKOCTFILE) $^
 
 clean: ; -$(RM) *.o octave-core core *.oct *~

@@ -8,7 +8,14 @@ files=`find . -name configure.add -print`
 if test ! -z "$files" ; then
   cat $files >> configure.in
 fi
-echo "AC_OUTPUT(Makeconf octinst.sh)" >> configure.in
+cat <<EOF >> configure.in
+  AC_OUTPUT(Makeconf octinst.sh)
+  AC_MSG_RESULT([\$STATUS_MSG
+
+find . -name NOINSTALL -print    # shows which toolboxes won't be installed
+])
+EOF
+
 autoconf && rm -f configure.in
 
 ## Generate ./Makeconf.in

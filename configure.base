@@ -117,7 +117,26 @@ AC_SUBST(X_CFLAGS)
 AC_PATH_XTRA
 if test "$no_x" = yes ; then
 	DEFHAVE_X=
+	XSTATUS="no (ginput and gtext will not work)"
 else
 	DEFHAVE_X="HAVE_X=1"
 	X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
+	XSTATUS="yes"
 fi
+
+STATUS_MSG="
+
+octave commands will install into the following directories:
+   m-files:     $mpath
+   oct-files:   $opath
+   executables: $xpath
+
+shell commands will install into the following directories:
+   shell commands: $bindir
+   man pages:      $mandir
+   libraries:      $libdir
+   include files:  $includedir
+
+octave-forge is configured with
+   mkoctfile: $MKOCTFILE
+   X11 support: $XSTATUS"

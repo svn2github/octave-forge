@@ -1,34 +1,51 @@
 
-dnl Do we have tcl/tk?
-AC_SUBST(DEFHAVE_TCLTK)
-HAVE_TCLTK=1
-AC_CHECK_HEADERS(tcl.h tk.h,, HAVE_TCLTK=0)
-AC_CHECK_LIB(tcl, Tcl_Init,, HAVE_TCLTK=0)
-AC_CHECK_LIB(tk, Tk_Init,, HAVE_TCLTK=0)
-if test $HAVE_TCLTK = 1 ; then
-	DEFHAVE_TCLTK="HAVE_TCLTK=1"
-else
-	DEFHAVE_TCKTK=
-fi
-
-dnl Do we have BLT?
-AC_SUBST(DEFHAVE_BLT)
-HAVE_BLT=1
-AC_CHECK_HEADERS(blt.h,, HAVE_BLT=0)
-AC_CHECK_LIB(BLT, Blt_Init,, HAVE_BLT=0,-ltcl -ltk)
-if test $HAVE_BLT = 1 ; then
-	DEFHAVE_BLT="HAVE_BLT=1"
-else
+if test -e extra/tk_octave/NOINSTALL ; then
+	dnl Not installing so don't test for it.
+	DEFHAVE_TCLTK=
 	DEFHAVE_BLT=
-fi
-
-dnl Do we have VTK?
-AC_SUBST(DEFHAVE_VTK)
-HAVE_VTK=1
-AC_CHECK_HEADERS(vtk/vtk.h,, HAVE_VTK=0)
-if test $HAVE_VTK = 1 ; then
-	DEFHAVE_VTK="HAVE_VTK=1"
-else
 	DEFHAVE_VTK=
+	STATUS=noinstall
+else
+	dnl Do we have tcl/tk?
+	AC_SUBST(DEFHAVE_TCLTK)
+	HAVE_TCLTK=1
+	AC_CHECK_HEADERS(tcl.h tk.h,, HAVE_TCLTK=0)
+	AC_CHECK_LIB(tcl, Tcl_Init,, HAVE_TCLTK=0)
+	AC_CHECK_LIB(tk, Tk_Init,, HAVE_TCLTK=0)
+	if test $HAVE_TCLTK = 1 ; then
+		DEFHAVE_TCLTK="HAVE_TCLTK=1"
+		STATUS=yes
+	else
+		DEFHAVE_TCKTK=
+		STATUS="TCL/TK missing"
+	fi
+
+	dnl Do we have BLT?
+	AC_SUBST(DEFHAVE_BLT)
+	HAVE_BLT=1
+	AC_CHECK_HEADERS(blt.h,, HAVE_BLT=0)
+	AC_CHECK_LIB(BLT, Blt_Init,, HAVE_BLT=0,-ltcl -ltk)
+	if test $HAVE_BLT = 1 ; then
+		DEFHAVE_BLT="HAVE_BLT=1"
+		STATUS="$STATUS, with BLT"
+	else
+		DEFHAVE_BLT=
+		STATUS="$STATUS, BLT missing"
+	fi
+	
+	dnl Do we have VTK?
+	AC_SUBST(DEFHAVE_VTK)
+	HAVE_VTK=1
+	AC_CHECK_HEADERS(vtk/vtk.h,, HAVE_VTK=0)
+	if test $HAVE_VTK = 1 ; then
+		DEFHAVE_VTK="HAVE_VTK=1"
+		STATUS="$STATUS and with VTK"
+	else
+		DEFHAVE_VTK=
+		STATUS="$STATUS and without VTK (no 3-D support)"
+	fi
+
 fi
 
+STATUS_MSG="$STATUS_MSG
+   tk_octave: $STATUS"

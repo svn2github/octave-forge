@@ -1,12 +1,8 @@
-dnl Do we have libqhull?
-AC_SUBST(DEFHAVE_LIBQHULL)
-HAVE_LIBQHULL=1
-AC_CHECK_HEADERS(qhull/qhull_a.h,, HAVE_LIBQHULL=0)
-
 dnl The following check fails because qhull wants qh_version to be
 dnl defined by the user!?!
 dnl    AC_CHECK_LIB(qhull,qh_qhull,, HAVE_LIBQHULL=0)
 dnl Instead we use the following mess cribbed from acgeneral.m4:
+
 dnl
 dnl AC_CHECK_QHULL(LIBRARY, FUNCTION [, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND
 dnl              [, OTHER-LIBRARIES]]])
@@ -56,12 +52,25 @@ fi
 ])
 
 
-AC_CHECK_QHULL(qhull,qh_qhull,, HAVE_LIBQHULL=0)
-
-if test $HAVE_LIBQHULL = 1 ; then
-	DEFHAVE_LIBQHULL="HAVE_LIBQHULL=1"
-else
+if test -e main/geometry/NOINSTALL ; then
+	dnl Not installing so don't test for it.
 	DEFHAVE_LIBQHULL=
-	AC_MSG_WARN([Qhull not found; geometry toolbox not built])
+	STATUS=noinstall
+else
+	dnl Do we have libqhull?
+	AC_SUBST(DEFHAVE_LIBQHULL)
+	HAVE_LIBQHULL=1
+	AC_CHECK_HEADERS(qhull/qhull_a.h,, HAVE_LIBQHULL=0)
+	AC_CHECK_QHULL(qhull,qh_qhull,, HAVE_LIBQHULL=0)
+
+	if test $HAVE_LIBQHULL = 1 ; then
+		DEFHAVE_LIBQHULL="HAVE_LIBQHULL=1"
+		STATUS=yes
+	else
+		DEFHAVE_LIBQHULL=
+		STATUS="Qhull not found"
+	fi
 fi
 
+STATUS_MSG="$STATUS_MSG
+   geometry toolbox: $STATUS"

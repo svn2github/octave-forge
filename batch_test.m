@@ -42,7 +42,7 @@ disp("Note: failure expected for 2.1.36");
 end
 
 disp("[main/sparse]");
-sp_test
+# sp_test  # now using generated sptest
 fem_test
 
 disp("=====================");

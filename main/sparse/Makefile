@@ -123,7 +123,13 @@ ZLUSRC = $(S_SRC)/zgssv.o           $(S_SRC)/zgssvx.o \
 
 S_DOUBLE= $(DLUSRC) $(ALLAUX) $(DZLAUX) $(ZLUSRC)
 
-all: $(NAME).oct $(OBJLINKS) # test
+all: $(NAME).oct $(OBJLINKS) sptest.m 
+
+sptest.m: buildtests.sh
+	./buildtests.sh preset
+
+sprandomtest.m: buildtests.sh
+	./buildtests.sh random
 
 $(S_DOUBLE):%.o:%.c
 	$(CC) $(CFLAGS) $(CPICFLAG) $(S_INC) $(SUPERLU_DEFS) -c $< -o $@
@@ -144,20 +150,20 @@ $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 $(OBJLINKS):
 	$(LN_S) $(NAME).oct $@
 
-test: $(NAME).oct
+test: $(NAME).oct sptest.m
 	#export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile
 	@echo 
 	@echo "Testing sparse functions ..."
 	@echo 
-	$(OCTAVE) -qf sp_test.m 2>/dev/null
+	echo sptest | $(OCTAVE) -qf
 	@echo 
 	@echo "Testing sparse solution for a Finite Element Model ..." 
 	@echo 
 	$(OCTAVE) -qf fem_test.m
 
 mostlyclean:
-	-$(RM) $(NAME).oct $(OBJLINKS) $(OCTOBJ)
+	-$(RM) $(NAME).oct $(OBJLINKS) $(OCTOBJ) sptest.log
 
 clean:
-	-$(RM) $(NAME).oct $(OBJLINKS) $(OCTOBJ) $(S_DOUBLE) $(LIBSUPERLU) octave-core core *~
+	-$(RM) $(NAME).oct $(OBJLINKS) $(OCTOBJ) $(S_DOUBLE) $(LIBSUPERLU) octave-core core *~ sptest.log sptest.m
 

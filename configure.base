@@ -364,12 +364,12 @@ int main(void) { NDArray a(dim_vector(1,1)); Array<int> idx(2,0); a=concat(a,a,i
 [HAVE_OCTAVE_CONCAT="-DHAVE_OCTAVE_CONCAT"],)
 AC_SUBST(HAVE_OCTAVE_CONCAT)
 
-TRY_MKOCTFILE([for swap_bytes],
+TRY_MKOCTFILE([for swap_8_bytes],
 [#include <sys/types.h>
 #include <octave/config.h>
 #include <octave/byte-swap.h>
-int main(void) {long long a = 1; swap_bytes <8> (&a);}],
-[HAVE_SWAP_BYTES="-DHAVE_SWAP_BYTES"],)
+int main(void) {long long a = 1; swap_8_bytes (&a,1);}],,
+[HAVE_SWAP_BYTES="-DHAVE_SWAP_BYTES"])
 AC_SUBST(HAVE_SWAP_BYTES)
 
 dnl Test for the makeinfo program

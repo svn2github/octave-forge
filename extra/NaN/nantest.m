@@ -172,7 +172,21 @@ if exist('bitshift')==2,
                 fprintf(1,'BITSHIFT can return NaN.\n');
         end;
 end;
-
+%%%%% ANY - this test addresses a problem in Octave
+if any(NaN)==1,
+	fprintf(1,'WARNING: ANY(NaN) returns 1 instead of zero\n');
+end;
+if any([])==1,
+	fprintf(1,'WARNING: ANY([]) returns 1 instead of zero\n');
+end;
+%%%%% ALL - this test addresses a problem in Octave
+if all(NaN)==0,
+	fprintf(1,'WARNING: ALL(NaN) returns 0 instead of zero\n');
+end;
+if all([])==0,
+	fprintf(1,'WARNING: ALL([]) returns 0 instead of zero\n');
+end;
+	
 %%%%% SORT - this was once a problem in Octave Version < 2.1.36 %%%%
 if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]), 
         warning('Warning: SORT does not handle NaN.');
@@ -196,7 +210,6 @@ end;
 %(roots([2,-10,12])-[3;2])
 %(roots([2e-37,-2,2])-[1e37;1])
 
-
 %%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 p    = 4;
 tmp1 = repmat(nan,p)/repmat(nan,p);
@@ -205,7 +218,7 @@ tmp3 = repmat(0,p)/repmat(0,p);
 tmp4 = repmat(0,p)\repmat(0,p);
 tmp5 = repmat(0,p)*repmat(inf,p);
 tmp6 = repmat(inf,p)*repmat(0,p);
-x = randn(100,1)*ones(1,p); y=x'*x; 
+x    = randn(100,1)*ones(1,p); y=x'*x; 
 tmp7 = y/y;
 tmp8 = y\y;
 

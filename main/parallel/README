@@ -84,6 +84,7 @@ reval (commands, sockets)
 
 close (sockets)
  Close the connections specified by the matrix "sockets".
+ Returns zero on success, or nonzero if an error occurred.
  For example,
 
         close (sockets);

@@ -54,7 +54,7 @@ Close sockets")
 
   if(args.length () == 1)
     {
-      int i,nsock=0,sock,k,error_code;
+      int i,nsock=0,sock,k,error_code,err=0;
 
       nsock=args(0).matrix_value().rows()*2;
       
@@ -96,14 +96,16 @@ Close sockets")
 	}
       }
 
-      for(i=nsock-1;i>0;i--){
+      for(i=nsock-1;i>=0;i--){
 	sock=(int)args(0).matrix_value().data()[i];
 	if(sock!=0){
 	  if(close(sock)!=0)
-	    error("close error");
-	  read(sock,&k,sizeof(int));
+	    err++;
 	}
       }
+      if(err)
+	error("close error %d",err);
+      retval=(double)err;
     }
   else
     print_usage ("close");

@@ -31,6 +31,9 @@ Open Source Initiative (www.opensource.org)
 #include "galois.h"
 #include "ov-galois.h"
 
+#include <octave/byte-swap.h>
+#include <octave/ls-oct-ascii.h>
+
 #ifdef USE_OCTAVE_NAN
 #define lo_ieee_nan_value() octave_NaN
 #endif
@@ -397,6 +400,360 @@ octave_galois::assign (const octave_value_list& idx,
       break;
     }
 }
+
+#ifdef CLASS_HAS_LOAD_SAVE
+bool 
+octave_galois::save_ascii (std::ostream& os, bool& infnan_warned, 
+			       bool strip_nan_and_inf)
+{
+  dim_vector d = dims ();
+  Matrix tmp = matrix_value ();
+
+  // Note use N-D way of writing matrix for eventual conversion
+  // of octave_galois to handle N-D arrays
+  os << "# m: " << m () << "\n";
+  os << "# prim: " << primpoly () << "\n";
+  os << "# ndims: " << d.length () << "\n";
+
+  for (int i=0; i < d.length (); i++)
+    os << " " << d (i);
+
+  os << "\n" << tmp;
+  return true;
+}
+
+bool 
+octave_galois::load_ascii (std::istream& is)
+{
+  int mord, prim, mdims;
+  bool success = true;
+
+  if (extract_keyword (is, "m", mord) && extract_keyword (is, "prim", prim) &&
+      extract_keyword (is, "ndims", mdims))
+    {
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+	is >> dv(i);
+
+      if (dv.length() != 2)
+	{
+	  error ("load: N-D galois matrix not supported");
+	  success = false;
+	}
+      else
+	{
+
+	  Matrix tmp (dv(0), dv(1));
+	  is >> tmp;
+
+	  if (!is) 
+	    {
+	      error ("load: failed to load matrix constant");
+	      success = false;
+	    }
+	  gval = galois (tmp, mord, prim);
+	}
+    }
+  else 
+    {
+      error ("load: failed to extract galois field order, primitive and/or imension");
+      success = false;
+    }
+
+  return success;;
+}
+
+bool 
+octave_galois::save_binary (std::ostream& os, bool& save_as_floats)
+{
+  char tmp = m ();
+  os.write (X_CAST (char *, &tmp), 1);
+  FOUR_BYTE_INT itmp = primpoly ();
+  os.write (X_CAST (char *, &itmp), 4);
+
+  dim_vector d = dims ();
+
+  // Don't handle N-D arrays yet
+  if (d.length() != 2)
+    return false;
+
+  // Use negative value for ndims to be consistent with other formats
+  itmp = - d.length();
+  os.write (X_CAST (char *, &itmp), 4);
+  for (int i=0; i < d.length (); i++)
+    {
+      itmp = d(i);
+      os.write (X_CAST (char *, &itmp), 4);
+    }
+
+  Matrix m = matrix_value ();
+  save_type st;
+  if (tmp < 8)
+    st = LS_U_CHAR;
+  else if (tmp < 16)
+    st = LS_U_SHORT;
+  else
+    st = LS_U_INT;
+  const double *mtmp = m.data ();
+  write_doubles (os, mtmp, st, d.numel ());
+
+  return true;
+}
+
+bool 
+octave_galois::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  char mord;
+  FOUR_BYTE_INT prim, mdims;
+
+  if (! is.read (X_CAST (char *, &mord), 1))
+    return false;
+
+  if (! is.read (X_CAST (char *, &prim), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &prim));
+
+  if (! is.read (X_CAST (char *, &mdims), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &mdims));
+
+  // Don't treat N-D arrays yet
+  if (mdims == -2)
+    {
+      mdims = - mdims;
+      FOUR_BYTE_INT di;
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+	{
+	  if (! is.read (X_CAST (char *, &di), 4))
+	    return false;
+	  if (swap)
+	    swap_4_bytes (X_CAST (char *, &di));
+	  dv(i) = di;
+	}
+
+      char tmp;
+      if (! is.read (X_CAST (char *, &tmp), 1))
+	return false;
+
+      Matrix m (dv(0), dv(1));
+      double *re = m.fortran_vec ();
+      read_doubles (is, re, X_CAST (save_type, tmp), dv.numel (), swap, fmt);
+      if (error_state || ! is)
+	return false;
+
+      gval = galois (m, mord, prim);
+    }
+
+  return true;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+{
+  Matrix mval = matrix_value ();
+  hid_t group_hid = -1;
+  group_hid = H5Gcreate (loc_id, name, 0);
+  if (group_hid < 0 ) return false;
+
+  dim_vector d = dims ();
+  hsize_t hdims[d.length () > 2 ? d.length () : 3];
+  hid_t space_hid = -1, data_hid = -1;
+  bool retval = true;
+  char tmp;
+  FOUR_BYTE_INT itmp;
+
+  space_hid = H5Screate_simple (0, hdims, (hsize_t*) 0);
+  if (space_hid < 0) 
+    {
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  data_hid = H5Dcreate (group_hid, "m", H5T_NATIVE_UCHAR, space_hid, 
+			H5P_DEFAULT);
+  if (data_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+  
+  tmp = m ();
+  retval = H5Dwrite (data_hid, H5T_NATIVE_UCHAR, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		     (void*) &tmp) >= 0;
+  H5Dclose (data_hid);
+  if (!retval)
+    {
+      H5Sclose (space_hid);
+      H5Gclose (group_hid);
+      return false;
+    }    
+
+  data_hid = H5Dcreate (group_hid, "prim", H5T_NATIVE_UINT, space_hid, 
+			H5P_DEFAULT);
+  if (data_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+  
+  itmp = primpoly ();
+  retval = H5Dwrite (data_hid, H5T_NATIVE_UINT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		     (void*) &itmp) >= 0;
+  H5Dclose (data_hid);
+  if (!retval)
+    {
+      H5Sclose (space_hid);
+      H5Gclose (group_hid);
+      return false;
+    }    
+  H5Sclose (space_hid);
+
+  // Octave uses column-major, while HDF5 uses row-major ordering
+  for (int i = 0, j = d.length() - 1; i < d.length (); i++, j--)
+    hdims[i] = d (j);
+
+  space_hid = H5Screate_simple (d.length(), hdims, (hsize_t*) 0);
+  if (space_hid < 0) return false;
+
+  double *mtmp = mval.fortran_vec ();
+  OCTAVE_LOCAL_BUFFER (unsigned FOUR_BYTE_INT, vtmp, d.numel ());
+
+  hid_t save_type_hid = H5T_NATIVE_UINT;
+  if (tmp <= 8)
+    {
+      save_type_hid = H5T_NATIVE_UCHAR;
+      char *wtmp = (char *)vtmp;
+      for (int i = 0; i < d.numel (); i++)
+	wtmp[i] = (char) mtmp[i];
+    }
+  else if (tmp <= 16)
+    {
+      save_type_hid = H5T_NATIVE_USHORT;
+      unsigned TWO_BYTE_INT *wtmp = (unsigned TWO_BYTE_INT *)vtmp;
+      for (int i = 0; i < d.numel (); i++)
+	wtmp[i] = (unsigned TWO_BYTE_INT) mtmp[i];
+    }
+  else
+    {
+      for (int i = 0; i < d.numel (); i++)
+	vtmp[i] = (unsigned FOUR_BYTE_INT) mtmp[i];
+    }
+
+  data_hid = H5Dcreate (group_hid, "val", save_type_hid, space_hid, 
+			H5P_DEFAULT);
+  if (data_hid < 0)
+    {
+      H5Sclose (space_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  retval = H5Dwrite (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
+		     H5P_DEFAULT, (void*) vtmp) >= 0;
+
+  H5Dclose (data_hid);
+  H5Sclose (space_hid);
+  H5Gclose (group_hid);
+  return retval;
+}
+
+bool
+octave_galois::load_hdf5 (hid_t loc_id, const char *name,
+			  bool have_h5giterate_bug)
+{
+  bool retval = false;
+  char mord;
+  unsigned int prim;
+  hid_t group_hid, data_hid, space_id;
+  hsize_t rank;
+
+  group_hid = H5Gopen (loc_id, name);
+  if (group_hid < 0 ) return false;
+
+  data_hid = H5Dopen (group_hid, "m");
+  space_id = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_id);
+
+  if (rank != 0)
+    { 
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  if (H5Dread (data_hid, H5T_NATIVE_UCHAR, H5S_ALL, H5S_ALL, 
+	       H5P_DEFAULT, (void *) &mord) < 0)
+    { 
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  H5Dclose (data_hid);
+  data_hid = H5Dopen (group_hid, "prim");
+  space_id = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_id);
+
+  if (rank != 0)
+    { 
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  if (H5Dread (data_hid, H5T_NATIVE_UINT, H5S_ALL, H5S_ALL, 
+	       H5P_DEFAULT, (void *) &prim) < 0)
+    { 
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  H5Dclose (data_hid);
+  data_hid = H5Dopen (group_hid, "val");
+  space_id = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_id);
+
+  // Only handle matrices for now
+  if (rank != 2)
+    {
+      H5Sclose (space_id);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
+  OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
+
+  H5Sget_simple_extent_dims (space_id, hdims, maxdims);
+  MArray2<int> m (hdims[1], hdims[0]);
+
+  int *re = m.fortran_vec ();
+  if (H5Dread (data_hid, H5T_NATIVE_UINT, H5S_ALL, H5S_ALL, 
+	       H5P_DEFAULT, (void *) re) >= 0) 
+    {
+      retval = true;
+      gval = galois (m, mord, prim);
+    }
+
+  H5Sclose (space_id);
+  H5Dclose (data_hid);
+  return retval;
+}
+#endif
+#endif
 
 /*
 ;;; Local Variables: ***

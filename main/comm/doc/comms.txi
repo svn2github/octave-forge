@@ -1535,17 +1535,36 @@ another Galois array. The workaround is to explicitly convert the
 returned value back to the correct Galois field using 
 @code{gf([gf([1, 0],m) gf(1,m)],m)}.
 
-@item Saving Galois variables
-This is not implemented yet. You can not save a Galois variable. You 
-can however save the information it contains and reconstruct the data
-afterwards by doing something like
+@item Saving and loading Galois variables
+
+Saving of Galois variables is only implemented in versions of octave
+later than 2.1.53. If you are using a recent version of octave then
+saving a Galois variable is as simple as
+
+@example
+octave:2> save a.mat a
+@end example
+
+where @var{a} is a Galois variable. To reload the variable within
+octave, the Galois type must be installed prior to a call to
+@dfn{load}. That is
+
+@example
+octave:1> dummy = gf(1);
+octave:2> load a.mat
+@end example
+
+With versions of octave later than 2.1.53, Galois variables can be
+saved in the octave binary and ascii formats, as well as the HDF5
+format. If you are using an earlier version of octave, you can not
+directly save a Galois variable. You can however save the information
+it contains and reconstruct the data afterwards by doing something
+like
 
 @example
 octave:2> x = a.x; m = a.m; p = a.prim_poly;
 octave:3> save a.mat x m p;
 @end example  
-
-where @var{a} is a Galois variable.
 
 @item Logarithm of zero does not return NaN
 The logarithm of zero in a Galois field is not defined. However, to avoid

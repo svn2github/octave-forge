@@ -320,7 +320,7 @@ TRY_MKOCTFILE([for N-dim arrays],
 [#include <octave/dim-vector.h>],
 [HAVE_ND_ARRAYS="-DHAVE_ND_ARRAYS";
 ND_ARRAYS="has N-dimensional Arrays"],
-[ND_ARRYS="does not have N-dimensional Arrays"])
+[ND_ARRAYS="does not have N-dimensional Arrays"])
 AC_SUBST(HAVE_ND_ARRAYS)
 
 dnl Test if OV_TYPEID has class arg
@@ -332,6 +332,16 @@ class usertype : public octave_value {
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(usertype,"name","class");],
 [TYPEID_HAS_CLASS="-DTYPEID_HAS_CLASS"],)
 AC_SUBST(TYPEID_HAS_CLASS)
+
+dnl Test for load/save functions in class
+TRY_MKOCTFILE([for load/save functions in class],
+[#include <octave/config.h>
+#include <octave/ov-scalar.h>
+int main (void) { octave_scalar a; a.load_ascii(std::cin); }],
+[CLASS_HAS_LOAD_SAVE="-DCLASS_HAS_LOAD_SAVE";
+LOAD_SAVE="has load/save functions in class"],
+[LOAD_SAVE="does not load/save functions in class"])
+AC_SUBST(CLASS_HAS_LOAD_SAVE)
 
 dnl Test for the makeinfo program
 AC_CHECK_PROG(MAKEINFO,makeinfo,makeinfo)
@@ -426,6 +436,7 @@ shell commands will install into the following directories:
 
 octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION) $ND_ARRAYS
+                and $LOAD_SAVE
    mkoctfile:	$MKOCTFILE for Octave $subver
    X11 support:	$XSTATUS
    makeinfo:    $MAKEINFO

@@ -147,10 +147,10 @@ galois & galois::operator = (const galois& t)
 
   if (have_field()) {
     if ((m() != t.m()) || (primpoly() != t.primpoly())) {
-      gripe_differ_galois ();
-      return *this;
+      stored_galois_fields.delete_galois_field (field);
+      field = stored_galois_fields.create_galois_field(t.m(), t.primpoly());
     }
-  } else 
+  } else
     field = stored_galois_fields.create_galois_field(t.m(), t.primpoly());
 
   // Copy the data

@@ -1,4 +1,26 @@
-octdir = $(prefix)/$(OCTDIR)/gpc
+## Makefile.am for OCtave-GPC
+##
+## Copyright (C) 2001, 2004  Rafael Laboissiere
+##
+## This file is part of Octave-GPC
+##
+## Octave-GPC is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## Octave-GPC is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave-GPC; see the file COPYING.  If not, write to the
+## Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## 02111-1307, USA.
+
+
+octdir = $(OCTDIR)/gpc
 
 linked_oct_files = \
   gpc_clip.oct \
@@ -12,7 +34,7 @@ oct_SCRIPTS = \
   $(linked_oct_files) \
   gpc_create.oct
 
-m_scriptdir = $(prefix)/$(MDIR)/gpc
+m_scriptdir = $(MDIR)/gpc
 
 m_script_DATA = gpc_plot.m
 
@@ -37,11 +59,6 @@ gpc_create.oct: $(OBJFILES)
 
 %.oct: gpc_create.oct
 	ln -sf $< $@
-
-install-data-hook:
-	for i in $(linked_oct_files) ; \
-	  do ln -sf gpc_create.oct $(octdir)/$$i ; \
-	done
 
 clean:
 	rm -f *.oct *.o *core

@@ -393,6 +393,10 @@ EOF
 # operations which require square matrices.
 gen_square_tests() {
     cat >>$TESTS <<EOF
+%!test
+%! bs = sparse(bf);
+%! as = sparse(af);
+
 %!test ;# permuted LU
 %! [L,U] = splu(bs);
 %! assert(L*U,bs,1e-10);
@@ -604,8 +608,6 @@ fi
 cat >>$TESTS <<EOF
 %!test ;# invertible matrix
 %! bf=af'*bf+max(abs([af(:);bf(:)]))*sparse(eye(columns(as)));
-%! bs=sparse(bf);
-
 EOF
 
 gen_square_tests

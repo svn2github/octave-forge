@@ -49,7 +49,16 @@ any_bad_argument(const octave_value_list& args)
         	error("bfgsmin: 3rd argument, if supplied,  must a 4-element cell array of control options");
 	        return true;
     	}
+	}
+ 	if (args.length() == 4)
+	{
+		if (!args(3).is_cell() || (!(args(3).length() == 3)))
+    	{
+        	error("bfgsmin: 4th argument, if supplied, must a 3-element cell array of tolerances");
+	        return true;
+    	}
 	}	
+
     return false;
 }
 
@@ -57,7 +66,7 @@ any_bad_argument(const octave_value_list& args)
 DEFUN_DLD(bfgsmin, args, ,
 "bfgsmin: bfgs minimization of a function.\n\
 \n\
-[x, obj, convergence] = bfgsmin(\"f\", {args}, {control})\n\
+[x, obj, convergence] = bfgsmin(\"f\", {args}, {control}, {tols})\n\
 \n\
 Arguments:\n\
 * \"f\": function name (string)\n\
@@ -73,6 +82,10 @@ Arguments:\n\
 		 - 2 = weak - only function convergence required\n\
 	* elem 4: arg with respect to which minimization is done\n\
 		(default = first)\n\
+* {tols}: an optional cell array of 3 elements\n\
+	* elem 1: function change tolerance, default 1e-12\n\
+	* elem 2: parameter change tolerance, default 1e-6\n\
+	* elem 3: gradient tolerance, default 1e-5\n\
 \n\
 Returns:\n\
 * x: the minimizer\n\
@@ -104,9 +117,9 @@ ans =\n\
 ")
 {
 	int nargin = args.length();
-	if ((nargin < 2) || (nargin > 3))
+	if ((nargin < 2) || (nargin > 4))
     {
-      	error("bfgsmin: you must supply 2 or 3 arguments");
+      	error("bfgsmin: you must supply 2, 3 or 4 arguments");
 	    return octave_value_list();
     }
 
@@ -128,16 +141,12 @@ ans =\n\
 	int gradient_failed, i, j, k, conv_fun, conv_param, conv_grad;
 	int have_gradient = 0;
 	double func_tol, param_tol, gradient_tol, stepsize, obj_value;
-	double last_obj_value, denominator, test;
+	double obj_in, last_obj_value, denominator, test;
 	Matrix H, tempmatrix, H1, H2;
 	ColumnVector thetain, d, g, g_new, p, q;
-	// tolerances
-	func_tol  = 1e-12;
-	param_tol = 1e-6;
-	gradient_tol = 1e-5;  
 
  	// use provided controls, if applicable
-	if (args.length() == 3)
+	if (args.length() >= 3)
 	{
 		Cell control (args(2).cell_value());
 		max_iters = control(0).int_value();
@@ -155,6 +164,23 @@ ans =\n\
 		minarg = 1; // by default, first arg is one over which we minimize
  	}
 	
+	
+	 // use provided tolerances, if applicable
+	if (args.length() == 4)
+	{
+		Cell tols (args(3).cell_value());
+		func_tol = tols(0).double_value();
+		param_tol = tols(1).double_value();
+		gradient_tol = tols(2).double_value();
+	}	
+	else
+	{
+		// Default values for tolerances
+		func_tol  = 1e-12;
+		param_tol = 1e-6;
+		gradient_tol = 1e-5;  
+
+ 	}
 	
 	step_args(0) = f; 
 	step_args(1) = f_args;
@@ -178,7 +204,8 @@ ans =\n\
 
 	// Initial obj_value
 	f_return = feval("celleval", c_args); 
-	last_obj_value = f_return(0).double_value();
+	obj_in = f_return(0).double_value();
+	last_obj_value = obj_in;
 	
 	// maybe we have analytic gradient?
 	// if the function returns more than one item, and the second
@@ -225,42 +252,21 @@ ans =\n\
 
 		d = -H*g;
 
-		// if direction not zero, get stepsize
-		if (!((fabs(d.max()) < param_tol) \
-				& ((fabs(d.min()) < param_tol))))
+		// stepsize: try bfgs direction, then steepest descent if it fails
+		step_args(2) = d;
+		f_args(minarg - 1) = theta;
+		step_args(1) = f_args;
+		f_return = feval("newtonstep", step_args);
+		stepsize = f_return(0).double_value();
+		obj_value = f_return(1).double_value();
+		if (stepsize == 0.0) // fall back to steepest descent
 		{
- 			// stepsize: try bfgs direction, then steepest descent if it fails
+			d = -g; // try steepest descent
 			step_args(2) = d;
-			f_args(minarg - 1) = theta;
-			step_args(1) = f_args;
 			f_return = feval("newtonstep", step_args);
 			stepsize = f_return(0).double_value();
 			obj_value = f_return(1).double_value();
-			if (stepsize == 0.0) // fall back to steepest descent
-			{
-				warning("bfgsmin: Stepsize failure in BFGS direction, trying steepest descent");
-				d = -g; // try steepest descent
-				step_args(2) = d;
-				f_return = feval("newtonstep", step_args);
-				stepsize = f_return(0).double_value();
-				obj_value = f_return(1).double_value();
-				if (stepsize == 0.0) // out of luck on stepsize
-				{
-					warning("bfgsmin: unable to find direction of improvement: exiting");
-					theta = thetain;
-					convergence = 2;
-					break;
-				}
-			}
 		}
-		else // if gradient zero, then check function conv.
-		{
-			f_args(minarg - 1) = theta;
-			c_args(1) = f_args;
-			f_return = feval("celleval", c_args); 
-			obj_value = f_return(0).double_value();
-			stepsize = 1;	
-		}	
 
 		p = stepsize*d;
 
@@ -383,7 +389,7 @@ ans =\n\
 		if (convergence == 2) printf("NO CONVERGENCE: algorithm failed\n");
 		if (have_gradient) printf("Used analytic gradient\n");
 		else printf("Used numeric gradient\n");
-		printf("\nObj. fn. value %f     Iteration %d\n", last_obj_value, iter);
+		printf("\nObj. fn. value %f     Iteration %d\n", obj_value, iter);
 		printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv_fun, conv_param, conv_grad);	
 		printf("\n  param  gradient  change\n");
 		for (j = 0; j<k; j++)

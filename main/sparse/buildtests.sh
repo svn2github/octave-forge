@@ -296,7 +296,7 @@ EOF
 gen_sparsesparse_elementop_tests() {
     cat >>$TESTS <<EOF
 %!assert(as==bs,af==bf)
-%!assert(as!=bs,sparse(af!=bf))
+%!assert(as!=bs,sparse(af!=bf)) # fails (complex sparse returns wrong type)
 %!assert(as+bs,sparse(af+bf))
 %!assert(as-bs,sparse(af-bf))
 %!assert(as.*bs,sparse(af.*bf))
@@ -409,9 +409,8 @@ gen_square_tests() {
 %!test ;# inverse
 %! assert(spinv(bs)*bs,sparse(eye(rows(bs))),1e-10);
 
-%!assert(bf\as,bf\af,100*eps);
-%!#assert(bs\as,bf\af,100*eps); # fails
-%!assert(bs\af,bf\af,100*eps);
+%!assert(bf\as',bf\af',100*eps);
+%!assert(bs\af',bf\af',100*eps);
 
 EOF
 }
@@ -453,21 +452,26 @@ cat >>$TESTS <<EOF
 %! for k=1:length(r), fsum(r(k),c(k)) += 1; end
 %! fsum = sparse(fsum);
 %!assert(sparse(r,c,1),fsum(1:max(r),1:max(c)));
-%!assert(sparse(r,c,1,'sum'),fsum(1:max(r),1:max(x)));
-%!assert(sparse(r,c,1,'unique'),funiq(1:max(r),1:max(c)));
+%!assert(sparse(r,c,1,'sum'),fsum(1:max(r),1:max(x)));     # fails
+%!assert(sparse(r,c,1,'unique'),funiq(1:max(r),1:max(c))); # fails
 %!assert(sparse(r,c,1,m,n),fsum);
 %!assert(sparse(r,c,1,m,n,'sum'),fsum);
 %!assert(sparse(r,c,1,m,n,'unique'),funiq);
 
 %!assert(sparse(r,c,1i),fsum(1:max(r),1:max(c))*1i);
-%!assert(sparse(r,c,1i,'sum'),fsum(1:max(r),1:max(x))*1i);
-%!assert(sparse(r,c,1i,'unique'),funiq(1:max(r),1:max(c))*1i);
+%!assert(sparse(r,c,1i,'sum'),fsum(1:max(r),1:max(x))*1i);     # fails
+%!assert(sparse(r,c,1i,'unique'),funiq(1:max(r),1:max(c))*1i); # fails
 %!assert(sparse(r,c,1i,m,n),fsum*1i);
 %!assert(sparse(r,c,1i,m,n,'sum'),fsum*1i);
 %!assert(sparse(r,c,1i,m,n,'unique'),funiq*1i);
 
+# generate from sparse
 %!assert(sparse(funiq),funiq);
-%!assert(sparse(1i*funiq),1i*funiq);
+%!assert(sparse(1i*funiq),1i*funiq); # fails (not yet implemented)
+
+# generate from full
+%!assert(sparse(full(funiq)),funiq);
+%!assert(sparse(full(1i*funiq)),1i*funiq);
 
 EOF
 }

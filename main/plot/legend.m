@@ -15,12 +15,15 @@
 ## @deftypefnx {Function File} {} legend (@var{st1}, @var{st2}, @var{st3}, @var{...}, @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{matstr})
 ## @deftypefnx {Function File} {} legend (@var{matstr}, @var{pos})
+## @deftypefnx {Function File} {} legend (@var{cell})
+## @deftypefnx {Function File} {} legend (@var{cell}, @var{pos})
 ## @deftypefnx {Function File} {} legend ('@var{func}')
 ##
 ## Legend puts a legend on the current plot using the specified strings
-## as labels. Use independant strings (@var{st1}, @var{st2}, @var{st3}...) or
-## a matrix of strings (@var{matstr} to specify legends. Legend works on line
-## graphs, bar graphs, etc... Be sure to call plot before calling legend. 
+## as labels. Use independant strings (@var{st1}, @var{st2}, @var{st3}...), a
+## matrix of strings (@var{matstr}), or a cell array of strings (@var{cell}) to
+## specify legends. Legend works on line graphs, bar graphs, etc...
+## Be sure to call plot before calling legend.
 ##
 ## @var{pos} optionally  places the legend in the specified location:
 ##
@@ -76,6 +79,8 @@
 ## 2003-04-1 Laurent Mazet
 ##   * add new functions (boxon, boxoff...)
 ##   * rebuild help message
+## 2003-06-12 Quentin Spencer
+##   * add support for input in cell array format
 
 ## PKG_ADD mark_as_command legend
 function legend (varargin)
@@ -118,13 +123,17 @@ function legend (varargin)
   endif
 
   ## Test for data type (0 -> list of string, 1 -> array of string)
-  
-  if (length(str) != 0) && (isstr(str(1,:))) && (rows(str) != 1) 
+
+  if (length(str) != 0) && (isstr(str(1,:))) && (rows(str) != 1) || iscell(str)
     data_type = 1;
     va_arg_cnt = 1;
 
-    data = nth (varargin, va_arg_cnt++);
-    nb_data = rows(data);
+    if (iscell(str))
+      data = nth (varargin, va_arg_cnt++);
+    else
+      data = cellstr( nth (varargin, va_arg_cnt++));
+    endif
+    nb_data = length(data);
     nargin--;
   endif;
 
@@ -211,7 +220,7 @@ function legend (varargin)
         leg = nth (varargin, va_arg_cnt++);
         nargin--;
       else
-        leg = data(fig+1,:);
+        leg = data{fig+1};
       endif;
       if (!isstr(leg))
         pos_leg = leg;

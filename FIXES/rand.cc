@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "randmtzig.c"
 
 // Octave interface starts here
+static bool init_generator = false;
 
 static octave_value 
 do_seed (octave_value_list args)
@@ -47,9 +48,16 @@ do_seed (octave_value_list args)
       uint32_t a = randi32();
       init_by_int(a);
       retval = (double)a;
+      init_generator = true;
     }
   else if (s_arg == "state")
     {
+      if (!init_generator)
+	{
+	  init_generator = true;
+	  init_by_entropy ();
+	}
+
       uint32_t state[MT_N+1];
       get_state(state);
       RowVector a(MT_N+1);
@@ -296,6 +304,7 @@ http://www.math.keio.ac.jp/~matumoto/emt.html\n\
 
   else
     {
+      init_generator = true;
 #ifdef HAVE_ND_ARRAYS
       dim_vector dims;
       do_size ("rand", args, dims);
@@ -371,6 +380,7 @@ variables', J. Statistical Software, vol 5, 2000\n\
 
   else
     {
+      init_generator = true;
 #ifdef HAVE_ND_ARRAYS
       dim_vector dims;
       do_size ("randn", args, dims);
@@ -449,6 +459,7 @@ variables', J. Statistical Software, vol 5, 2000\n\
 
   else
     {
+      init_generator = true;
 #ifdef HAVE_ND_ARRAYS
       dim_vector dims;
       do_size ("rande", args, dims);
@@ -496,6 +507,7 @@ variables', J. Statistical Software, vol 5, 2000\n\
   return retval;
 }
 
+#undef NAN
 #define NAN octave_NaN
 #define RUNI randu()
 #define RNOR randn()

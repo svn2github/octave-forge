@@ -53,16 +53,20 @@ for k = 0:D1-1,
 for l = 0:D3-1,
         xi = k + l * D1*sz(DIM) + 1 ;
         xo = k + l * D1 + 1;
-        t = sort(x(xi+(0:sz(DIM)-1)*D1))';
-        n = sum(~isnan(t));
+        t = x(xi+(0:sz(DIM)-1)*D1);
+        t = sort(t(~isnan(t)));
+        t = t(:);
+	n = length(t); 
+	
         
         % q = flix(t,x); 	% The following find the quartiles and median.
         			% INTERP1 is not an alternative since it fails for n<2;
-        x = [n/4 + 0.75; n/2+0.5; n*3/4 + 0.25]; 
+        x  = n*[0.25;0.50;0.75] + [0.75;0.50;0.25]; 
 	k  = x - floor(x);	% distance to next sample	 
 
+        t  = t(:);
 	ix = ~logical(k);     	% find integer indices
-	q(~k) = t(x(~k)); 	% put integer indices
+	q(ix) = t(x(ix)); 	% put integer indices
 	ix = ~ix;	     	% find non-integer indices
 	q(ix) = t(floor(x(ix))).*(1-k(ix)) + t(ceil(x(ix))).*k(ix);  
         

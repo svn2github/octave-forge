@@ -55,8 +55,9 @@ for k = 0:D1-1,
 for l = 0:D3-1,
         xi = k + l * D1*sz(DIM) + 1 ;
         xo = k + l * D1 + 1;
-        t = sort(x(xi+(0:sz(DIM)-1)*D1));
-        n = sum(~isnan(t));
+        t = x(xi+(0:sz(DIM)-1)*D1);
+        t = sort(t(~isnan(t)));
+        n = length(t); 
         
         if n==0,
                 y(xo) = nan;

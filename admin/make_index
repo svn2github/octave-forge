@@ -27,6 +27,7 @@ my %index_by_TB_cat   = (); # i_TB_cat{toolbox}{category} = list of functions
 my %index_by_function = (); # i_function{function} =[ [toolbox_1,category_1],
 #                         [toolbox_2,category_2],..]
 my %TB_description    = ();
+my %index_notes = (); # index_notes{function} = comment
 load_index($ARGV[0], 
            \%index_by_TB_cat, 
            \%TB_description,
@@ -129,8 +130,6 @@ if (@uncategorized) {
 #    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
 }
 
-my %index_notes = (); # index_notes{function} = comment
-load_notes();
 
 write_html(\%index_by_TB_cat, 
            \%TB_description, 
@@ -325,18 +324,41 @@ sub load_index { # {{{1
     my $description = "";
     my $function    = "";
     open(IN, $file) or die "Cannot read $file:  $!\n";
+    my %map;
     while (<IN>) { 
         next if /^\s*$/; # skip blank lines
 	next if /^\s*\#/; # skip comment lines
         chomp;
         if      (/^(.*?)\s*>>\s*(.*?)$/) {
+	    # toolbox lines contain "word >> description"
             $toolbox     = $1;
             $description = $2;
             $category    = "";
             $rh_toolbox_desc->{$toolbox} = $description;
+	} elsif (/^\s*\$(\w+)\s*=\s*(\S.*\S)\s*$/) {
+	    # define a variable as "$var = expansion"
+	    $map{$1} = $2;
         } elsif (/^(\w.*?)\s*$/) {
+	    # category lines start in the left most column
             $category    = $1;
-        } else {
+        } elsif (/^\s+(\S+)\s*=\s*(\S.*\S)\s*$/) {
+	    my $func = $1;
+	    my $desc = $2;
+
+	    # expand all $id in the description
+	    my @parts = split('\$', "$desc");
+	    foreach my $i ( 1 .. $#parts ) {
+		$parts[$i] =~ /^(\w+)(\W.*)$/ or $parts[$i] =~ /^(\w+)()$/;
+		$parts[$i] = "$map{$1}$2";
+	    }
+	    $desc = join("",@parts);
+	    
+	    $index_notes{$func} = $desc;
+	    die "Function $function (line $.) has no toolbox"  unless $toolbox;
+	    die "Function $function (line $.) has no category" unless $category;
+	    push @{$rhha_TB_cat->{$toolbox}{$category}}, $func;
+	    push @{$rhaa_func->{$func}}, [$toolbox, $category];
+	} else {
             s/^\s+//;
             my @list = split /\s+/;
             while ($#list >= 0) {
@@ -344,11 +366,6 @@ sub load_index { # {{{1
                 die "Function $function (line $.) has no toolbox"  unless $toolbox;
                 die "Function $function (line $.) has no category" unless $category;
                 push @{$rhha_TB_cat->{$toolbox}{$category}}, $function;
-                #warn "Function name collision line $. for $function:\n" .
-                #    "  $function in $rha_func->{$function}[0], " .
-                #        "$rha_func->{$function}[1]\n" .
-                #            "  $function in $toolbox, $category\n" 
-                #                if defined $rha_func->{$function}[0];
                 push @{$rhaa_func->{$function}}, [$toolbox, $category];
  
             }

@@ -1,11 +1,14 @@
+$COMPAT= http://octave.sf.net/compatibility.html
+$EG= Etienne Grossman's <a href="http://www.isr.ist.utl.pt/~etienne/octave/">Octave code</a>
+
 finance >> Finance
 Interest
  fv fvl irr nper npv pmt pv pvl rate vol
-general >> Interpreter
+interpreter >> Interpreter
 Help
  help 
  demo 
- ver 
+ ver = use <code>version</code>
  version 
 Variables
  who 
@@ -15,7 +18,9 @@ Variables
  pack 
  load 
  save 
- quit 
+ quit
+ document
+ temp_name
 Functions
  what 
  type 
@@ -24,36 +29,37 @@ Functions
  lookfor 
  which 
  pcode 
- inmem 
- mex 
+ inmem = use <code>who -functions</code>
+ mex= install octave-forge mex package and use <code>system(["mex ", name])</code>
+ 
 Load path
  path 
  addpath 
  rmpath 
  pathtool 
  file_in_path file_in_loadpath
-User output
+Output
  echo 
  more 
  diary 
  format 
 Environment
- cd 
- copyfile 
- pwd 
- dir 
- delete 
- getenv 
+ cd pwd
+ dir ls
  mkdir 
- dos 
- unix 
- vms 
+ copyfile= use <code>system("[cp ", source, " ", dest])</code>
+ delete = use <code>unlink</code> 
+ getenv 
+ putenv
+ dos= use <code>system</code>
+ vms= use <code>system</code>
+ unix= use <code>system</code>
  web 
  computer 
+ isieee
  isunix
- temp_name
  system
- !
+ ! = use <code>system("command")</code>
 Debugging
  dbg_delete
  dbg_list
@@ -66,6 +72,56 @@ Profiling
  flops 
 Demos and Tests.
  example  demo  test  assert  speed 
+
+system >> System Utilities
+Clock functions
+ now 
+ date 
+ clock 
+ cputime 
+ tic 
+ toc 
+ etime gmtime
+ ctime time localtime mktime
+Date conversion
+ is_leap_year
+ asctime
+ datenum 
+ datestr 
+ datevec 
+ weekday 
+ eomday 
+ calendar 
+ datetick=use <code>gset xdata time; gset timefmt "%d/%m"; gset format x "%b %d"</code>
+ strftime 
+Controlling subprocesses
+ system
+ popen popen2 pclose
+ fork exec pipe waitpid
+ EXEC_PATH sleep usleep
+Process information
+ getrusage
+ getpgrp
+ getpid
+ getppid
+ geteuid
+ getuid
+ getegid
+ getgid
+ getgrgid
+Password Database
+ getpwent
+ getpwuid
+ getpwnam
+ setpwent
+ endpwent
+Group Database
+ getgrent
+ getgrid
+ getgrnam
+ setgrent
+ endgrent
+
 language >> Programming
 Logical functions
  xor 
@@ -114,19 +170,19 @@ Constants
  eps 
  realmax 
  realmin 
- pi 
- i j 
- inf 
- NaN 
+ pi e
+ i j I J
+ Inf inf
+ NaN nan
  isnan 
  isinf 
- isfinite 
+ isfinite finite
 Symbol table
  exist
- exist(x,"var")
+ exist(x,"var")=requires exist patch from $EG
  global 
  isglobal 
- persistent 
+ persistent = use <code>static</code> 
  mfilename 
  mlock 
  munlock 
@@ -136,10 +192,12 @@ Function arguments
  nargchk 
  nargin 
  nargout 
- varargin 
- varargout 
- inputname
+ varargin= see <a href="$COMPAT#vararg">compatibility FAQ</a>
+ varargout= see <a href="$COMPAT#vararg">compatibility FAQ</a>
+ inputname= use <code>deblank(argn(i,:))</code>
  fcnchk 
+ read_options
+ va_start va_arg vr_val
 User I/O
  disp printf puts
  error 
@@ -149,14 +207,44 @@ User I/O
  clc 
  home 
  input 
- keyboard 
+ keyboard kbhit
  pause 
 Inline functions
- inline 
+ inline= see <a href="$COMPAT#inline">compatibility FAQ</a>
  argnames 
  formula 
  char 
  vectorize 
+Cell arrays
+ cell 
+ iscell 
+ deref
+ cellfun 
+ celldisp 
+ cellplot 
+ num2cell 
+ deal 
+ cell2struct 
+ struct2cell 
+Structures
+ struct 
+ fieldnames 
+ getfield 
+ setfield 
+ rmfield 
+ isfield 
+ isstruct
+ is_struct
+ struct_contains
+ struct_elements
+Lists
+ list
+ is_list
+ nth
+ append
+ reverse
+ splice
+ leval
 matrix >> Linear Algehra
 Generating matrices
  zeros 
@@ -183,7 +271,7 @@ Rearranging matrices
  triu 
  fliplr 
  flipud 
- flipdim 
+ flipdim= for <code>flipdim(A,1)</code> use <code>flipud(A)</code> and for <code>flipdim(A,2)</code> use <code>fliplr(A)</code> 
  rot90 
  repmat 
  diag 
@@ -198,7 +286,7 @@ Special matrices
  compan 
  commutation_matrix
  duplication_matrix
- hadamard sylvester_matrix
+ sylvester_matrix
  hankel 
  hilb 
  invhilb 
@@ -209,7 +297,9 @@ Special matrices
  toeplitz 
  vander 
  wilkinson 
- gallery 
+ $TESTMAT= available in Nick Higham's <a href="http://www.ma.man.ac.uk/~higham/testmat.html">Test Matrix Toolbox</a>
+ gallery= $TESTMAT
+ hadamard= $TESTMAT
 Linear algebra
  dmult
  cross 
@@ -221,16 +311,18 @@ Linear algebra
  null 
  orth 
  rref 
- subspace 
+ subspace=use Andrew Knyazev's <a href="ftp://ftp.mathworks.com/pub/contrib/v5/linalg/subspace.m"><code>subspace</code></a>
+
  cond 
- inv 
+ inv inverse 
  pinv 
  lscov 
  eig 
- eig(A,B)
+ eig(A,B)= use <code>qz</code>
  polyeig 
  condeig 
  trisolve
+ syl
 Matrix factorization
  chol 
  lu 
@@ -252,6 +344,7 @@ Matrix factorization
  krylov
  krylovb
  qzhess
+ givens
 Matrix functions
  expm 
  logm 
@@ -298,7 +391,7 @@ Exponentials
  nextpow2 
 Complex numbers
  abs 
- angle 
+ angle arg
  complex 
  conj 
  imag 
@@ -330,7 +423,7 @@ Special functions
  erfinv 
  expint 
  gamma
- gamma(complex)
+ gamma(complex)= use Tim Reluga's <a href="http://www.octave.org/mailing-lists/octave-sources/2002/9">Gamma.m</a> or Eyal Doron's <a href="http://www.octave.org/mailing-lists/octave-sources/1996/3">cgamma.m</a>
  gammainc gammai
  gammaln 
  legendre 
@@ -400,18 +493,18 @@ Geometry
  griddata 
  griddata3
  griddatan
- inpolygon 
+ inpolygon=  use David Doolin's <a href="http://www.che.wisc.edu/octave/mailing-lists/octave-sources/1999/12">inpoly.m</a>, but with <a href="http://www.che.wisc.edu/octave/mailing-lists/octave-sources/1999/13">caveats</a>
+
  rectint 
  polyarea 
  __voronoi__
- gpc_clip gpc_create gpc_get gpc_is_polygon gpc_plot gpc_read gpc_tristrip gpc_write gpc_test
 Polynomials
  roots 
  poly 
  polyval 
  polyvalm 
  residue
- residue(r,p,k)
+ residue(r,p,k)=use Bradley T. Burchett's <code><a href="ftp://ftp.mathworks.com/pub/contrib/v5/control/resid2wp.m">resid2wp</a></code>
  polyfit 
  polyder polyderiv
  polyinteg polyreduce polyout polygcd
@@ -435,32 +528,41 @@ Root finding
  fzero 
  fsolve 
  fsolve_options perror strerror
+Compatibility
+ fminunc=use <code>minimize</code>
+ quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
+ linprog= try <code>lp</code> from octave-forge
 Numerical derivatives
  dfdp bs_gradient cdiff deriv __quasi_func__
 Tests
   lp_test test_cg_min_1 test_cg_min_2 test_cg_min_3
   test_d2_min_1 test_d2_min_2 test_d2_min_3
-  test_nelder_mead_min_1
+  test_nelder_mead_min_1 test_nelder_mead_min_2
   poly_2_ex
-Compatibility
- linprog
- quadprog
- fminunc
-ode >> Calculus
+
+
+calculus >> Calculus
 Integration
  quad 
  quadl
  quad8 
  dblquad 
+ quad_options
+ count cquadnd crule crule2d crule2dgen
+ gquad gquad2d gquad2d6 gquad2dgen gquad6 gquadnd
+ grule grule2d grule2dgen innerfun ncrule quad2dc
+ quad2dcgen quad2dg quad2dggen quadc quadg quadndg
 Differentiation
  diff 
  gradient 
  del2 
 Ordinary differential equations
- ode45 
- ode23 
- lsode
- dassl
+ ode23 ode45 ode78
+ penddot
+ pendulum
+ rk2fixed rk4fixed rk8fixed
+ lsode lsode_options
+ dassl dassl_options
 sparse >> Sparse matrix support
 Generate sparse matrix
  speye 
@@ -484,6 +586,7 @@ Manipulate sparse matrices
  spparms 
 Linear algebra
  spinv splu
+ svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
 Statistics
  spsum
 Test
@@ -496,7 +599,7 @@ Line plots
  semilogx 
  semilogy 
  polar 
- plotyy 
+ plotyy= use <code>gplot ... axes x1y2</code>
  errorbar 
  scatter 
  plotmatrix 
@@ -542,11 +645,11 @@ Figure controls
  clf 	 
  shg 	 
  close 	 
- refresh
+ refresh= try <code>replot</code>
  drawnow
 Axis controls
  axis 
- zoom 
+ zoom= use <code>gzoom</code> from octave-forge
  grid 
  hold 
  ishold 
@@ -568,7 +671,8 @@ Printing
  print 
  printopt 
  orient 
- vrml 
+ vrml= see $EG
+
 Colour controls
  colormap 
  spinmap 
@@ -604,6 +708,8 @@ User input
  ginput gget grab gzoom
  dragrect 
  rbbox 
+Gnuplot Interface
+ gset graw gnuplot_binary gnuplot_has_frames gnuplot_has_multiplot
 strings >> Strings
 Creation
  char 
@@ -611,29 +717,52 @@ Creation
  cellstr 
  blanks 
 Tests
- ischar 
+ ischar= use <code>isstr</code> 
  iscellstr 
  isletter 
  isspace 
-Operations
- deblank regexp split 
- strcat 
- strvcat 
- strcmp 
+ isalnum
+ isalpha
+ isascii
+ iscntrl
+ isdigit
+ isgraph
+ islower
+ isprint
+ ispunct
+ isstr
+ isupper
+ isxdigit
+Search and replace
+ strmatch 
+ fnmatch
+ regexp
+ strcmp
  strncmp 
  strcmpi 
  strncmpi 
- findstr  index rindex
- strjust 
- strmatch 
- strrep 
- strtok 
+ findstr
+ index rindex
+ strrep
  substr
+Operations
+ deblank split 
+ strcat 
+ strvcat 
+ strcmp 
+ strjust 
+ strtok 
  upper 
  lower 
+ tolower
+ toupper
+ do_string_escapes
+ undo_string_escapes
+ strappend
 Conversion
+ toascii
  num2str com2str str2mat
- str2num 
+ str2num strftime
  mat2str 
  int2str 
  str2double 
@@ -646,6 +775,11 @@ Conversion
  dec2hex 
  dec2bin 
  dec2base 
+Flags
+ implicit_num_to_str_ok
+ implicit_str_to_num_ok
+ warn_single_quote_string
+ string_fill_character
 audio >> Audio
 Record and play
  sound 
@@ -681,10 +815,15 @@ Basic file operations
  fscanf 
  fgetl 
  fgets 
+ fputs
  fprintf
-Pipe operations
- popen popen2 pclose
-Path operations
+ fdisp
+ fflush
+ freport
+ dup2
+ fcntl
+File system operations
+ cd pwd ls dir
  filesep 
  pathsep 
  fullfile 
@@ -692,8 +831,13 @@ Path operations
  partialpath 
  tempdir 
  tmpnam
- tempname use <code>tmpnam</code>
+ tempname = use <code>tmpnam</code>
  prefdir 
+ glob
+ tilde_expand
+ file_in_path
+ file_in_loadpath
+ rename link unlink symlink readdir mkdir rmdir mkfifo umask stat lstat
 Import/Export
  textread
  dlmread 
@@ -704,48 +848,8 @@ Import/Export
  ausave
  imread
  imwrite
- hdf
- aload/asave
-time >> Date and time
-Clock functions
- now 
- date 
- clock 
- cputime 
- tic 
- toc 
- etime
- ctime time localtime
-Date conversion
- is_leap_year
- asctime
- datenum 
- datestr 
- datevec 
- weekday 
- eomday 
- calendar 
- datetick 
-types >> Types
-Cell arrays
- cell 
- iscell 
- deref
- cellfun 
- celldisp 
- cellplot 
- num2cell 
- deal 
- cell2struct 
- struct2cell 
-Structures
- struct 
- fieldnames 
- getfield 
- setfield 
- rmfield 
- isfield 
- isstruct 
+ hdf = use <code>load/save</code> with <code>-hdf5</code>
+ aload/asave= flat ascii file read/write, available from <a href="ftp://ftp.ci.tuwien.ac.at/pub/octave/octave-ci.tar.gz">Octave-ci</a>
 image >> Image processing
 Display
  image 
@@ -815,22 +919,10 @@ Spline functions
  csaps
  fnplt fnder
  gcvspl
-areas >> Specialized fields
-Civil Engineering
- __nlnewmark_fcn__
- newmark nlnewmark
-Protein Database
- read_pdb plotpdb 
- write_pdb_quick write_pdb
- strtoz
-Communications
- bi2de	
- de2bi	
- vec2mat	
- randint	
- compand	
- quantiz 
+
 signal >> Signal processing
+$SPCTOOLS= in spline directory of Dennis Brown's <a href="ftp://svr-ftp.eng.cam.ac.uk/pub/comp.speech/tools/spctools">SPCtools</a>
+$TFTB= try <a href="http://www-isis.enst.fr/Applications/tftb/iutsn.univ-nantes.fr/auger/tftb.html">Time-Frequency Tool box</a>
 Signals
  diric 
  gauspuls 
@@ -842,9 +934,9 @@ Signals
  square 
  sinetone sinewave
  chirp 
- vco
- modulate
- demod
+ vco= $TFTB
+ modulate= $TFTB
+ demod= $TFTB
  strips 
  specgram 
  periodogram stft synthesis hurst
@@ -940,7 +1032,7 @@ Power spectrum analysis
  pcov 
  pmcov 
  pmtm 
- pmusic 
+ pmusic= $SPCTOOLS
  pyulear 
  xcorr
  xcorr2 
@@ -959,16 +1051,17 @@ Window functions
  gaussian
 System identification
  arburg 
- arcov 
- armcov 
+ arcov= use <code>ar_covar</code> $SPCTOOLS
+ armcov= use <code>ar_mdcov</code> $SPCTOOLS
+ prony= use <code>ar_prony</code> $SPCTOOLS
  aryule 
  invfreqs 
  invfreqz 
  levinson  durbinlevinson
  lpc 
- prony 
  rlevinson 
  stmcb 
+ diffpara
  arch_rnd arch_fit arch_test
  arma_rnd autoreg_matrix autocor autocov
 Sample rate change
@@ -977,16 +1070,17 @@ Sample rate change
  resample 
  upfirdn 
 Compatibility
- yulewalk 
- ellip
- buttap 
- cheb1ap 
- cheb2ap 
- ellipap 
- lp2bp
- lp2bs 
- lp2hp 
- lp2lp 
+ buttap= see internals of <code>butter</code>
+ cheb1ap= see internals of <code>cheby1</code>
+ cheb2ap= see internals of <code>cheby2</code>
+ ellipap= see internals of <code>nellip</code>
+ lp2bp= use <code>sftrans</code>
+ lp2bs= use <code>sftrans</code>
+ lp2hp= use <code>sftrans</code>
+ lp2lp= use <code>sftrans</code>
+ ellip= use <code>nellip</code>, but not that it underdesigns the filter
+ yulewalk=use <code>yulewalker</code>
+
 ident >> System Identification
 Minimalist model simulation functions
  mktheta 
@@ -1000,7 +1094,7 @@ OCST demos
  sysrepdemo
  bddemo jet707 analdemo
  frdemo
- dgkfdemo hinfdemo moddemo rldemo
+ dgkfdemo hinfdemo dhinfdemo moddemo rldemo
 System interface functions
  sysrepdemo
  fir2sys sys2fir
@@ -1011,7 +1105,6 @@ System interface functions
  zp2tf tf2zp
  zp2ss ss2zp
 Data structure access
- syschnames
  syschtsam
  sysdimensions
  sysgetsignals
@@ -1019,20 +1112,20 @@ Data structure access
  sysgettype
  syssetsignals
  sysupdate
+ minfo
 System display functions
  sysout polyout tfout zpout
 Block diagram manipulations
  bddemo jet707
- buildssic ord2 parallel series sysadd
+ buildssic ord2 parallel sysadd sysmin
  sysappend sysconnect
  syscont sysdisc
  sysdup sysgroup sysmult sysprune
  sysreorder sysscale syssub ugain wgt1o
  feedback
- strappend	
  starp
 Numerical functions
- are dare dgram dlyap gram lyap pinv qzval
+ are dare dgram dlyap gram lyap pinv dre
  zgfmul zgfslv zginit zgreduce zgrownorm zgscal zgsgiv
  zgshsr
 System properties
@@ -1045,34 +1138,42 @@ Time domain analysis
  c2d d2c dmr2d damp dcgain impulse step
 Frequency domain analysis
  frdemo
- bode bode_bounds
+ bode bode_bounds nichols
  freqchkw ltifr nyquist tzero tzero2
  rlocus
 Controller design
- dgkfdemo hinfdemo
+ dgkfdemo hinfdemo dhinfdemo
  dlqe dlqr lqe lqg lqr 
  hinf_ctr hinfsyn hinfsyn_ric hinfsyn_chk
- lsim place
+ lsim place dkalman h2syn
 Miscellaneous
- axis2dlim prompt sortcom swap swapcols
+ axis2dlim prompt sortcom swap run_cmd
+ strappend listidx packedform sysidx
+Obsolete
+ dezero dlqg minfo packsys unpacksys swaprows swapcols rotg qzval
+ syschnames series
+Internal
+ __bodquist__ __freqresp__ __stepimp__ __abcddims__ __syschnamesl__ 
+ __syscont_disc__ __sysdefioname__ __sysdefstname__ __sysgroupn__
+ __tf2sysl__ __zp2ssg2__ __outlist__ __zgpbal__
 Compatibility
- filt
- ss
- tf
- zpk
- ssdata
- tfdata
- zpkdata
- isct
- isdt
- issiso
- append(sys)
- connect
- lft
- norm(sys)
- zero
- kalman
- kalmd
+ filt= <code>tf2sys</code>
+ ss= <code>ss2sys</code>
+ tf= <code>tf2sys</code>
+ zpk= <code>zp2sys</code>
+ ssdata= <code>sys2ss</code>
+ tfdata=use <code>sys2tf</code>
+ zpkdata=use <code>sys2zp</code>
+ isct=use <code>!is_digital</code>
+ isdt=use <code>is_digital</code>
+ issiso=use <code>is_siso</code>
+ append(sys)=use <code>sysappend</code>
+ connect=use <code>sysconnect</code>
+ lft=use <code>starp</code>
+ norm(sys)=use <code>h2norm</code>, <code>hinfnorm</code> or <code>zgrownorm</code>
+ zero=use <code>tzero</code> or <code>tzero2</code>
+ kalman=use <code>lqe</code>
+ kalmd=use <code>dlqe</code> or <code>dkalman</code>
 
 
 symbolic >> Symbolic algebra
@@ -1134,7 +1235,7 @@ Descriptive statistics
  histc 
  corrcoef 
  cov cor
- sum 
+ sum sumsq 
  prod 
  trapz 
  cumsum 
@@ -1159,6 +1260,13 @@ Descriptive statistics
  trimmean	
  zscore	
  spearman
+ run_count
+ statistics
+ studentize
+ table
+ values mahalanobis
+ ranks
+ probit logit kendall cloglog
 Linear regression
  anova	
  polyfit	
@@ -1197,29 +1305,63 @@ Hypothesis testing
  var_test
  welch_test
 Compatibility
- beta*
- bino*
- chi2*
- exp*
- f*
- gam*
- geo*
- hyge*
- logn*
- nbin*
- norm*
- poiss*
- t*
- unid*
- unif*
- weib*
- anova1
- regress
- nlinfit
- barttest
- ranksum
- signrank
- signtest
- ttest
- ttest2
- ztest
+ beta*=use <code>beta_*</code>
+ bino*=use <code>binomial_*</code>
+ chi2*=use <code>chisquare_*</code>
+ exp*= use <code>exponential_*</code>
+ f*= use <code>f_*</code>
+ gam*= use <code>gamma_*</code>
+ geo*= use <code>geometric_*</code>
+ hyge*= use <code>hypergeometric_*</code>
+ logn*= use <code>lognormal_*</code>
+ nbin*= use <code>pascal_*</code>
+ norm*= use <code>normal_*</code>
+ poiss*= use <code>poisson_*</code>
+ t*= use <code>t_*</code>
+ unid*= use <code>discrete_*</code>
+ unif*= use <code>uniform_*</code>
+ weib*= use <code>weibull_*</code>
+ anova1= use <code>anova</code>
+ regress= use <code>gls</code>
+ nlinfit= use <code>leasqr</code>
+ barttest= use <code>bartlett_test</code>
+ ranksum= use <code>u_test</code>
+ signrank= use <code>wilcoxon_test</code>
+ signtest= use <code>sign_test</code>
+ ttest= use <code>t_test</code>
+ ttest2= use <code>t_test_2</code>
+ ztest= use <code>z_test</code>
+
+extra >> Extra packages
+NaN
+ coefficient_of_variation geomean meansq skewness
+ covm harmmean median statistic
+ detrend kurtosis moment std
+ flag_implicit_dimension mad nantest sumskipnan
+ flag_implicit_skip_nan meandev rms var
+ flag_implicit_unbiased_estim mean sem zscore
+
+tk_octave
+ tk_busy tk_busy_cancel
+ tk_dialog tk_entry tk_error
+ tk_init tk_input tk_cmd tk_end tk_interp
+ tk_loop tk_menu tk_message tk_progress tk_progress_cancel
+ tk_scale tk_yesno tk_yesnocancel
+
+General polygon clipper
+ gpc_clip gpc_create gpc_get gpc_is_polygon gpc_plot gpc_read
+ gpc_tristrip gpc_write gpc_test
+Civil Engineering
+ __nlnewmark_fcn__
+ newmark nlnewmark
+Protein Database
+ read_pdb plotpdb 
+ write_pdb_quick write_pdb
+ strtoz
+Communications
+ bi2de	
+ de2bi	
+ vec2mat	
+ randint	
+ compand	
+ quantiz 

@@ -41,10 +41,6 @@ z = (x-m)./s;	  % if this line causes an error, input arguments do not fit.
 
 p = (1 + erf(z/sqrt(2)))/2;
 
-p(z==+inf) = 1;
-
-p(z==-inf) = 0;
-
 z = (s==0);
 p((x<m) & z) = 0;
 

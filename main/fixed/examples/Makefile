@@ -1,0 +1,52 @@
+sinclude ../../../Makeconf
+
+LINKTARGETS = fifft.oct
+LINKSOURCE = ffft.oct
+SOURCES = $(wildcard *.cc)
+TARGETS = $(patsubst %.cc,%.oct,$(SOURCES)) $(LINKTARGETS)
+OBJECTS = $(patsubst %.cc,%.o,$(SOURCES))
+DEPENDS = $(patsubst %.cc,%.d,$(SOURCES))
+INCLUDES = -I../
+DEFINES = $(HAVE_RESIZE_AND_FILL)
+
+ifeq (,$(findstring cygwin,$(canonical_host_type)))
+  MOFLAGS = -s $(INCLUDES)
+else
+  MOFLAGS = -s $(INCLUDES) -L../ -loctave_fixed
+endif
+
+.PHONY: all clean count
+%.oct : %.cc 
+.SUFFIXES:
+.SUFFIXES: .cc .oct .o .h
+
+all: $(DEPENDS) $(OBJECTS) $(TARGETS)
+
+ifneq (,$(wildcard *.d))
+include $(wildcard *.d)
+endif
+
+$(LINKTARGETS) :
+	@echo "Symbolic linking $@ to $(LINKSOURCE)"; \
+	$(RM) $@; \
+	$(LN_S) $(LINKSOURCE) $@
+
+%.oct: %.d %.o
+	@echo "Linking $@"; \
+	$(MKOCTFILE) $(MOFLAGS) $(@:.oct=.o) -o $@
+
+%.d: %.cc
+	@echo "Depending $<"; \
+	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M $<
+
+%.o: %.cc
+	@echo "Compiling $@"; \
+	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
+
+clean:
+	@echo "Cleaning..."; \
+	$(RM) $(OBJECTS) $(DEPENDS) $(TARGETS) *~ octave-core *.ps
+
+count:
+	wc *{.cc,.h}
+

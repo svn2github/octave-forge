@@ -1,0 +1,17 @@
+DOCSTRINGS
+fixedversion.txi
+*.info*
+*.ps
+*.pdf
+*.html
+*.log
+*.aux
+*.cp
+*.fn
+*.vr
+*.tp
+*.ky
+*.pg
+*.toc
+*.cps
+*.fns

@@ -1,0 +1,30 @@
+
+if test -e main/fixed/NOINSTALL ; then
+
+	dnl Not installing, do nothing
+	STATUS=noinstall
+
+else
+
+	dnl Test for resize_and_fill function
+	cat > conftest.cc << EOF
+#include <octave/Array.h>
+int test(void) {
+ Array<int> t;
+ t.resize_and_fill(1, 0);
+ return 0;
+}
+EOF
+	ac_try="$MKOCTFILE conftest.cc"
+	if AC_TRY_EVAL(ac_try) ; then
+		AC_MSG_RESULT(yes)
+		HAVE_RESIZE_AND_FILL="-DHAVE_RESIZE_AND_FILL"
+	fi
+	AC_SUBST(HAVE_RESIZE_AND_FILL)
+	rm -f conftest.*
+
+	dnl version of the fixed point code
+	OCTAVEFIXEDVERSION="0.7.0"
+ 	AC_SUBST(OCTAVEFIXEDVERSION)
+fi
+

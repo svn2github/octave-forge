@@ -1,0 +1,1 @@
+#define FIXEDVERSION "1.0.0"

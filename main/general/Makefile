@@ -11,5 +11,7 @@ $(BITAND_LINKS):
 	-$(RM) $@
 	$(LN_S) bitand.oct $@
 
+bitand.oct : bitand.cc
+	$(MKOCTFILE) $(HAVE_ND_ARRAYS) $<
 
 clean: ; -$(RM) *.o core octave-core *.oct *~

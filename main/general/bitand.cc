@@ -59,6 +59,47 @@ scalar_bitop(double x,double y,unsigned int op) {
 	return(a);
 }
 
+#if HAVE_ND_ARRAYS
+octave_value_list
+bitop(NDArray xmat,NDArray ymat,unsigned int op) {
+
+	octave_value_list retval;
+
+	bool is_scalar_op=false,is_array_op=false;
+	dim_vector dvx = xmat.dims ();
+	dim_vector dvy = ymat.dims ();
+	unsigned int nelx = dvx.numel ();
+	unsigned int nely = dvy.numel ();
+
+	if ( (nelx==1) || (nely==1)) 
+		is_scalar_op=true;
+	if ( dvx == dvy )
+		is_array_op=true;
+	if (is_array_op || is_scalar_op) {
+	  unsigned int i,j,k,l;
+	  NDArray a;
+	  if (nelx != 1)
+	    a.resize (dvx);
+	  else
+	    a.resize (dvy);
+
+	  for (i=0;i<nelx;i++)
+	    if (is_scalar_op)
+	      for(k=0;k<nely;k++)
+		a(i+k) = scalar_bitop (xmat(i), ymat(k), op);
+	    else
+	      a(i) = scalar_bitop (xmat(i), ymat(i), op);
+	  
+	  retval(0)=a;
+	}
+	else 
+	  {
+	    std::cerr << "nel: " << nelx << " " << nely << std::endl;
+	    error("size of x and y must match, or one operand must be a scalar");
+	  }
+	return(retval);
+}
+#else
 octave_value_list
 bitop(Matrix xmat,Matrix ymat,unsigned int op) {
 
@@ -100,6 +141,7 @@ bitop(Matrix xmat,Matrix ymat,unsigned int op) {
 		error("size of x and y must match, or one operand must be a scalar");
 	return(retval);
 }
+#endif
 
 /*
 %!assert(bitand(7,14),6);
@@ -121,8 +163,13 @@ calculates the bitwise AND of nonnegative integers.\n\
 	}
 
 	if (args(0).is_real_type()&&args(1).is_real_type()) {
+#if HAVE_ND_ARRAYS
+		NDArray x = args(0).array_value();
+		NDArray y = args(1).array_value();
+#else
 		Matrix x = args(0).matrix_value();
 		Matrix y = args(1).matrix_value();
+#endif
 		retval=bitop(x,y,BIT_AND);
 	}
 	else 
@@ -150,8 +197,13 @@ calculates the bitwise OR of nonnegative integers.\n\
 	}
 
 	if (args(0).is_real_type()&&args(1).is_real_type()) {
+#if HAVE_ND_ARRAYS
+		NDArray x = args(0).array_value();
+		NDArray y = args(1).array_value();
+#else
 		Matrix x = args(0).matrix_value();
 		Matrix y = args(1).matrix_value();
+#endif
 		retval=bitop(x,y,BIT_OR);
 	}
 	else 
@@ -179,8 +231,13 @@ calculates the bitwise XOR of nonnegative integers.\n\
 	}
 
 	if (args(0).is_real_type()&&args(1).is_real_type()) {
+#if HAVE_ND_ARRAYS
+		NDArray x = args(0).array_value();
+		NDArray y = args(1).array_value();
+#else
 		Matrix x = args(0).matrix_value();
 		Matrix y = args(1).matrix_value();
+#endif
 		retval=bitop(x,y,BIT_XOR);
 	}
 	else 

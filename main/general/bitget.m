@@ -34,7 +34,8 @@ function X = bitget (A,n)
     usage ("bitget(A,n)");
   endif
 
-  if (n < 1 || n > (log2(bitmax) + 1) )
+  m = n(:);
+  if (any(m < 1) || any(m > (log2(bitmax) + 1)) )
     msg = sprintf ("n must be in range [1,%d]",round(log2(bitmax)+1));
     error (msg);
   endif

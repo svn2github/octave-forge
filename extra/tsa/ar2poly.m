@@ -1,14 +1,16 @@
 function [A] = ar2poly(A);
 % converts autoregressive parameters into AR polymials 
+% Multiple polynomials can be converted. 
 % function  [A] = ar2poly(AR);
 %
 %  INPUT:
-% AR    autoregressive model parameter	
+% AR     AR parameters, each row represents one set of AR parameters
 %
 %  OUTPUT
-% A     AR polynomial, i.e. denominator polynom in z-plane
+% A     denominator polynom
 %
-% see also ACOVF ACORF DURLEV RC2AR 
+%
+% see also ACOVF ACORF DURLEV RC2AR FILTER FREQZ ZPLANE
 % 
 % REFERENCES:
 %  P.J. Brockwell and R. A. Davis "Time Series: Theory and Methods", 2nd ed. Springer, 1991.

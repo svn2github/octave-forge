@@ -1,4 +1,4 @@
-function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2]=mvfreqz(B,A,C,N,Fs)
+function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, phase]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
 % [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2] = mvfreqz(B,A,C,N,Fs)
 %
@@ -134,9 +134,9 @@ for n=1:N,
         
 end;
 
-size(detG)
-size(squeeze(M(2,1,:)))
-size(G(2,1,:))
+%size(detG)
+%size(squeeze(M(2,1,:)))
+%size(G(2,1,:))
 
 if nargout<4, return; end;
         

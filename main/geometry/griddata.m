@@ -81,7 +81,7 @@ function [...] = griddata (x,y,z,xi,yi)
 		x3=x(tri([tri_list],3));y3=y(tri([tri_list],3));z3=z(tri([tri_list],3));
 
 		#calculate norm vector
-		N(:,1:3)=cross([x2-x1 y2-y1 z2-z1],[x3-x1 y3-y1 z3-z1]);
+		N(:,1:3)=cross([x2-x1, y2-y1, z2-z1],[x3-x1, y3-y1, z3-z1]);
 		N_norm=sqrt(N(:,1).^2+N(:,2).^2+N(:,3).^2);
 		N(:,1:3)=N(:,1:3)./kron(N_norm,[1 1 1]);
 

@@ -1,20 +1,3 @@
-## Copyright (C) 1996, 1997 John W. Eaton
-##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
-##
-## Octave is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-## 02111-1307, USA.
-
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{p}, @var{dp}] =} wpolyfit (@var{x}, @var{y}, @var{dy}, @var{n}, 'origin')
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
@@ -30,18 +13,14 @@
 ## @code{sumsq (p(x(i)) - y(i))},
 ## @end ifinfo
 ## to best fit the data in the least squares sense.  The standard error
-## on the observations @var{y} are given in @var{dy}.
+## on the observations @var{y} if present are given in @var{dy}.
 ##
-## The polynomial coefficients are returned in a row vector if @var{x}
-## and @var{y} are both row vectors; otherwise, they are returned in a
-## column vector.
+## The returned value @var{p} contains the polynomial coefficients 
+## suitable for use in the function polyval.  The uncertainty in
+## the coefficients is returned in @var{dp}.
 ##
-## If more than one output is requested, the second constains the
-## predicted value of @var{y} for each @var{x} and the third contains 
-## the standard error of the polynomial coefficients @var{p}.
-##
-## If no output arguments are requested, then it plots the data, the
-## fitted line and polynomials defining the standard error range.
+## If no output arguments are requested, then wpolyfit plots the data,
+## the fitted line and polynomials defining the standard error range.
 ##
 ## If 'origin' is specified, then the fitted polynomial will go through
 ## the origin.
@@ -74,59 +53,65 @@
 ##
 ## @end deftypefn
 
+## This program is in the public domain.
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-## 2002-03-25 Paul Kienzle
-## * accept weight term and return error estimate.
-## * use more accurate economy QR decomposition.
-## 2002-05-30 Paul Kienzle
-## * go through the origin if requested
-## * only return p,dp
-## * tidy the output
-## * remove the need for flipud(p)
-## 2002-06-02 Paul Kienzle
-## * oops --- removed the need for flipud(p) but didn't remove flipud(p)
-## 2002-07-31 Paul Kienzle
-## * prettier graph
-## * add example
-## * always return values as row vectors
-## * don't return if values unless requested
+function [p_out, dp_out] = wpolyfit (varargin)
 
-function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
-
-
-  if (nargin < 3 || nargin > 5)
-    usage ("wpolyfit (x, y [, dy], n [, 'origin'])");
-  endif
-  if (nargin ==3) 
-    n = dy; 
-    dy = [];
+  ## strip 'origin' of the end
+  args = length(varargin);
+  if args>0 && isstr(varargin{args})
+    origin = varargin{args};
+    args--;
+  else
     origin='';
-  elseif (nargin == 4)
-    if isstr(n)
-      origin = n;
-      n = dy;
-      dy = [];
-    else
-      origin='';
-    endif
   endif
+  ## strip polynomial order off the end
+  if args>0
+    n = varargin{args};
+    args--;
+  else
+    n = [];
+  end
+  ## interpret the remainder as x,y or x,y,dy or [x,y] or [x,y,dy]
+  if args == 3
+    x = varargin{1};
+    y = varargin{2};
+    dy = varargin{3};
+  elseif args == 2
+    x = varargin{1};
+    y = varargin{2};
+    dy = [];
+  elseif args == 1
+    A = varargin{1};
+    [nr,nc]=size(A);
+    if all(nc!=[2,3])
+      error("wpolyfit expects vectors x,y,dy or matrix [x,y,dy]");
+    endif
+    dy = [];
+    if nc == 3, dy = A(:,3); endif
+    y = A(:,2);
+    x = A(:,1);
+  else
+    usage ("wpolyfit (x, y [, dy], n [, 'origin'])");
+  end
 
   if (length(origin) == 0)
     through_origin = 0;
   elseif strcmp(origin,'origin')
     through_origin = 1;
   else
-    error ("wpolyfit: expected 'origin' but found %s", origin)
+    error ("wpolyfit: expected 'origin' but found '%s'", origin)
   endif
 
-  if ! ( is_vector (x) && is_vector (y) && all(size (x) == size (y)) )
+  if any(size (x) != size (y))
     error ("wpolyfit: x and y must be vectors of the same size");
   endif
-  if !isempty(dy) && !(is_vector(dy) && all(size(y) == size(dy)))
+  if length(dy)>1 && length(y) != length(dy)
     error ("wpolyfit: dy must be a vector the same length as y");
   endif
 
-  if (! (is_scalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
+  if (! (isscalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
     error ("wpolyfit: n must be a nonnegative integer");
   endif
 
@@ -151,7 +136,7 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
   if nargout == 0
 
     if iscomplex(p)
-      printf("%32s %15s\n", "Coefficient", "Error");
+      printf("%32s %15s\n", "Coefficient", "Uncertainty");
       printf("%15g %+15gi %15g\n",[real(p(:)),imag(p(:)),dp(:)]');
       # XXX FIXME XXX how to plot complex valued functions?
       # Maybe using hue for phase and saturation for magnitude
@@ -186,7 +171,7 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
     hold off;
 
     ## display p,dp as a two column vector
-    printf("%15s %15s\n", "Coefficient", "Error");
+    printf("%15s %15s\n", "Coefficient", "Uncertainty");
     printf("%15g %15g\n", [p(:), dp(:)]');
 
   else

@@ -9,19 +9,22 @@ function [x,z]=mvfilter(B,A,x,z)
 %    data Y.  The filter is a "Direct Form II Transposed"
 %    implementation of the standard difference equation:
 % 
-%    a0*Y(n) = b0*X(n) + b1*X(n-1) + ... + bq*X(n-q)
-%                          - a1*Y(n-1) - ... - ap*Y(:,n-p)
+%    a0*Y(n) = b0*X(:,n) + b1*X(:,n-1) + ... + bq*X(:,n-q)
+%                        - a1*Y(:,n-1) - ... - ap*Y(:,n-p)
 %
 %  A=[a0,a1,a2,...,ap] and B=[b0,b1,b2,...,bq] must be matrices of
 %  size  Mx((p+1)*M) and Mx((q+1)*M), respectively. 
-%
-%  X must be of size N*M
 %  a0,a1,...,ap, b0,b1,...,bq are matrices of size MxM
 %  a0 is usually the identity matrix I or must be invertible 
+%  X should be of size MxN, if X has size NxM a warning 
+%  is raised, and the output Y is also transposed. 
+%
+% A simulated MV-AR process can be generiated with 
+%	Y = mvfilter(eye(M), [eye(M),-AR],randn(M,N));
 %
 % A multivariate inverse filter can be realized with 
-%       [AR,RC,PE] = mvar(Y',P);
-%	e = mvfilter([eye(M),-AR],eye(M),Y);
+%       [AR,RC,PE] = mvar(Y,P);
+%	E = mvfilter([eye(M),-AR],eye(M),Y);
 %
 % see also: MVAR, FILTER
 
@@ -59,10 +62,9 @@ end;
 
 if (M~=ra),
 	if (N==ra),
-	        fprintf(2,'Warning MVFILTER: dimensions fits only to transposed data\n');
-		[x,z] = mvfilter(B,A,x.',z);
+	        fprintf(2,'Warning MVFILTER: dimensions fit only to transposed data. X has been transposed.\n');
 		x = x.';
-		return;
+		%[x,z] = mvfilter(B,A,x,z); x = x.'; return;
 	else
 	        fprintf(2,'ERROR MVFILTER: dimensions do not fit\n');
 		return;

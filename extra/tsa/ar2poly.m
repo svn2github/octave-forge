@@ -38,4 +38,4 @@ function [A] = ar2poly(ar);
 % Inititialization
 [lr,lc]=size(ar);
 
-A = [ones(size(ar,1),-ar];
+A = [ones(size(ar,1)),-ar];

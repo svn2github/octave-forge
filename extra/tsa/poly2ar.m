@@ -8,7 +8,7 @@ function [A] = poly2ar(A);
 %  OUTPUT
 % A    autoregressive model parameter	
 %
-% see also ACOVF ACORF DURLEV RC2AR AR2POLY
+% see also ACOVF ACORF DURLEV RC2AR AR2POLY
 
 %	Version 2.90	last revision 10.04.2002
 %	Copyright (c) 1996-2002 by Alois Schloegl
@@ -30,10 +30,10 @@ function [A] = poly2ar(A);
 % Boston, MA  02111-1307, USA.
 
 % Inititialization
-[lr,lc]=size(ar);
+[lr,lc]=size(A);
 
 if ~all(A(:,1)==1)
 	fprintf(2,'Warning POLY2AR: input argument might not be an AR-polynom');
 end;	
 
-A = -ar(:,2:size(ar,2))./ar(:,ones(size(ar,2)-1));
+A = -A(:,2:size(A,2))./A(:,ones(1,size(A,2)-1));

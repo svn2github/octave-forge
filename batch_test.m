@@ -24,10 +24,11 @@ endif
 
 disp("[extra/linear-algebra]");
 rt2 = sqrt(2);
-disp(">chol"); assert(c=chol([2,1;1,1]),[rt2,1/rt2;0,1/rt2],sqrt(eps));
-assert(c\(c'\[1;1]),[0;1]); 
+disp(">chol"); 
+assert(c=chol([2,1;1,1]),[rt2,1/rt2;0,1/rt2],10*eps);
+assert(c\(c'\[1;1]),[0;1],10*eps); 
 assert(typeinfo(c),"tri");
-assert(c+1,[1+rt2,1+1/rt2;1,1+1/rt2],sqrt(eps));
+assert(c+1,[1+rt2,1+1/rt2;1,1+1/rt2],10*eps);
 assert(typeinfo(c+1),"matrix");
 
 disp("[main/signal]");

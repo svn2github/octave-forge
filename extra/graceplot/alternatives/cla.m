@@ -17,6 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cla ()
+## Clear the current graph from all sets.
+## @end deftypefn
+
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Created: 25.7.2003
 

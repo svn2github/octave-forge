@@ -17,6 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} clf ()
+## Clear the current figure from all graphs.
+## @end deftypefn
+
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Created: 25.7.2003
 

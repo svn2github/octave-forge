@@ -17,6 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} figure (@var{n})
+## Set the current plot window to plot window @var{n}.
+## @end deftypefn
+
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Created: 25.7.2003
 

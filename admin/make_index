@@ -6,7 +6,7 @@
 # octave-forge.  Needs:
 #  - a master index list mapping functions to toolboxes (trim.idx)
 #  - an .html file created by cvs-tree
-#  - a directory pointing to the source of the latest release of octave 
+#  - a directory pointing to the source of the latest release of octave
 #
 use strict;
 use File::Find;
@@ -17,7 +17,9 @@ use IPC::Open2;
 use POSIX ":sys_wait_h";
 
 my $script  = basename($0);
-my $OCTAVE  = "../octave";
+my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
+			    # beside octave-forge if they are somewhere else
+			    # or modify this script
 my $CVSTREE = "cvs-tree.html";
 die "Cannot read $CVSTREE  -- edit $script and define the\n",
     ".html file which was produced by the cvs-tree script\n" unless -r $CVSTREE;
@@ -28,8 +30,8 @@ my %index_by_function = (); # i_function{function} =[ [toolbox_1,category_1],
 #                         [toolbox_2,category_2],..]
 my %TB_description    = ();
 my %index_notes = (); # index_notes{function} = comment
-load_index($ARGV[0], 
-           \%index_by_TB_cat, 
+load_index($ARGV[0],
+           \%index_by_TB_cat,
            \%TB_description,
            \%index_by_function);
 
@@ -40,17 +42,28 @@ if ($location =~ m\^(.*)/admin$\) {
     $PATH = "$1/";
 }
 
-my %CR      = load_copyright();
+# locate all C++ and m-files in octave-forge, and all m-files in octave
+# don't need C++ files from octave because we have DOCSTRINGS
 my @m_files = ();
 my @C_files = ();
-my %function_description  = ();
-my %octave_forge_function = ();
 find(\&cc_and_m_files, ".");
 find(\&cc_and_m_files, "$OCTAVE/scripts");
+sub cc_and_m_files { # {{{1 populates global array @files
+    return unless -f and /\.(m|cc)$/;  # .m and .cc files
+    if (/\.m$/) {
+        push @m_files, "$File::Find::dir/$_";
+    } else {
+        push @C_files, "$File::Find::dir/$_";
+    }
+} # 1}}}
 
+my %function_description  = ();
+my %octave_forge_function = ();
 my @uncategorized = ();
 my %n_appearances = ();
 my $n_functions = 0;
+
+# grab help from C++ files
 foreach my $f ( @C_files ) {
     if ( open(IN,$f) ) {
 	while (<IN>) {
@@ -95,6 +108,7 @@ foreach my $f ( @C_files ) {
     }
 }
 
+# grab help from m-files (octave-forge and octave)
 foreach my $f ( @m_files ) {
     my $desc     = extract_description($f);
     my $function = basename($f, ('.m'));
@@ -102,6 +116,7 @@ foreach my $f ( @m_files ) {
     register_function($function,$desc,$f);
 }
 
+# grab help from octave's DOCSTRINGS
 if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
     $_ = <IN>;
     while (/^\c_/) {
@@ -131,51 +146,11 @@ if (@uncategorized) {
 }
 
 
-write_html(\%index_by_TB_cat, 
-           \%TB_description, 
+write_html(\%index_by_TB_cat,
+           \%TB_description,
            \%function_description,
            \%octave_forge_function,
            \%index_by_function);
-
-sub load_notes { #1 {{{
-# load the index notes file
-    open(IN,"admin/index_notes") or print STDERR "admin/index_notes not found --- ignoring\n" and return;
-    my %map;
-    while (<IN>) {
-	next if /^\s*$/;
-	next if /^\s*\#/;
-
-	# split line into identifier description
-	/^(\S+)\s+(\S.*)\s*$/ or die "index_notes invalid format:\n$_";
-	my $func = $1;
-	my $desc = $2;
-
-	# expand all $id in the description
-	my @parts = split('\$', "$desc");
-	foreach my $i ( 1 .. $#parts ) {
-	    $parts[$i] =~ /^(\w+)(\W.*)$/ or $parts[$i] =~ /^(\w+)()$/;
-	    $parts[$i] = "$map{$1}$2";
-	}
-	$desc = join("",@parts);
-
-	# process the identifier
-	if ($func =~ /^\$/) {
-	    # new identifier so define it
-	    $func = substr($func,1);
-	    $map{$func} = $desc;
-	} else {
-	    # new function so describe it
-	    if (defined $function_description{$func}) {
-		print "index_notes: $func is shadowed\n\t$desc\n";
-	    } elsif (defined $index_by_function{$func}) {
-		$index_notes{$func} = $desc;
-	    } else {
-		print "index_notes: $func has not been categorized\n\t$desc\n";
-	    }
-	}
-    }
-    close(IN);
-}
 
 
 sub first_sentence { # {{{1
@@ -219,7 +194,7 @@ sub first_sentence { # {{{1
 	    $line =~ s/^\s*[Uu]sage\s+//;        # ignore "usage "
 	    $line =~ s/^\s*[Ff]unction\s+//;     # ignore "function "
 	    next if $line =~ /^\s*\[/;           # skip  [a,b] = f(x)
-	    next if $line =~ /^\s*\w+\s*(=|\()/; # skip a = f(x) OR f(x) 
+	    next if $line =~ /^\s*\w+\s*(=|\()/; # skip a = f(x) OR f(x)
 	    next if $line =~ /^\s*or\s*/;        # skip proto \n or \n proto
 	    next if $line =~ /^\s*$/;            # skip blank line
 	    # XXX FIXME XXX should be testing for unmatched () in proto
@@ -228,7 +203,7 @@ sub first_sentence { # {{{1
 	}
     }
 
-    if ( "$line " !~ /[.]\s/ && $#lines >= 0) { 
+    if ( "$line " !~ /[.]\s/ && $#lines >= 0) {
 	# not the end of a sentence, and another line is available
 	my $next = $lines[0];
 	$line =~ s/\s*$//;  # trim trailing blanks on last
@@ -256,22 +231,23 @@ sub register_function { # {{{1
         ++$n_functions;
     }
     $octave_forge_function{$function} = 1 unless $file =~ /^$OCTAVE/;
-    if (defined $index_by_function{$function}) {
-	my $oneline = first_sentence($desc);
-	# printf "%-12s %s\n", $function, $oneline;
-        $function_description{$function} = $oneline;
-	#printf "%-12s %-20s %s\n", $function, 
-	#                           $index_by_function{$function}[0],
-	#                           $index_by_function{$function}[1];
-    } else {
-        push @uncategorized, "$file\t$function";
+    if (!defined $index_by_function{$function}) {
+        push @uncategorized, "$function";
     }
+
+    my $oneline = first_sentence($desc);
+    # printf "%-12s %s\n", $function, $oneline;
+    $function_description{$function} = $oneline;
+#    push @function_description{$function} = [$file,$oneline,$desc];
+    #printf "%-12s %-20s %s\n", $function,
+    #                           $index_by_function{$function}[0],
+    #                           $index_by_function{$function}[1];
 } # 1}}}
 sub extract_description { # {{{1
 # grab the entire documentation comment from an m-file
     my ($file) = @_;
     my $retval = '';
-    
+
     if( open( IN, "$file")) {
 	# skip leading blank lines
 	while (<IN>) {
@@ -325,8 +301,8 @@ sub load_index { # {{{1
     my $description = "";
     my $function    = "";
     open(IN, $file) or die "Cannot read $file:  $!\n";
-    my %map;
-    while (<IN>) { 
+    my %map;   # simple macros for use in notes
+    while (<IN>) {
         next if /^\s*$/; # skip blank lines
 	next if /^\s*\#/; # skip comment lines
         chomp;
@@ -353,7 +329,7 @@ sub load_index { # {{{1
 		$parts[$i] = "$map{$1}$2";
 	    }
 	    $desc = join("",@parts);
-	    
+
 	    $index_notes{$func} = $desc;
 	    die "Function $function (line $.) has no toolbox"  unless $toolbox;
 	    die "Function $function (line $.) has no category" unless $category;
@@ -368,7 +344,7 @@ sub load_index { # {{{1
                 die "Function $function (line $.) has no category" unless $category;
                 push @{$rhha_TB_cat->{$toolbox}{$category}}, $function;
                 push @{$rhaa_func->{$function}}, [$toolbox, $category];
- 
+
             }
         }
     }
@@ -403,7 +379,7 @@ sub write_html { # {{{1
     $A_to_Z         =~ s/\s+\|\s*$//;  # strip last pipe separator
     my $all_toolboxes_A_Z = $all_toolboxes . "$A_to_Z </center>\n";
     $all_toolboxes .= "</center>\n";
-     
+
     # Write a file for each toolbox.
     #
     $Text::Wrap::columns = 50;
@@ -477,7 +453,7 @@ sub write_html { # {{{1
 
     foreach my $Letter ('A'..'Z') {
         print OUT "<p><p><center><b><a name=\"$Letter\">$Letter</a></b> ";
-        print OUT '&nbsp; &nbsp; &nbsp; || &nbsp; &nbsp; &nbsp; ', 
+        print OUT '&nbsp; &nbsp; &nbsp; || &nbsp; &nbsp; &nbsp; ',
                   "$A_to_Z </center>\n";
         print OUT "<table>\n";
         foreach my $func (sort keys %{$rhaa_func_TB_cat}) {
@@ -503,7 +479,7 @@ sub write_html { # {{{1
 #                # column 3:  the category within the toolbox
 #                $Text::Wrap::columns = 40;
 #                print OUT "    <td>",
-#                      wrap("", "<br>", 
+#                      wrap("", "<br>",
 #                           $rhaa_func_TB_cat->{$func}[$i][1]), "</td>\n";
 
                 # column 4:  the function's description
@@ -518,30 +494,6 @@ sub write_html { # {{{1
     }
     print OUT "</body></html>\n";
     close(OUT);
-} # 1}}}
-sub load_copyright { # {{{1
-    my %CR = ();
-    while (<DATA>) { $CR{$_} = 1; }
-    return %CR;
-} # 1}}}
-sub part_of_copyright { # {{{1
-    my ($line) = @_;
-    foreach (keys %CR) {
-        my $L = 20;
-           $L = length($line) if length($line) > $L;
-        my $leading_chars = substr($_, 0, $L);
-        $line =~ s/^\W+//g;
-        return 1 if lc substr($line, 0, $L) eq lc $leading_chars;
-    }
-    return 0;
-} # 1}}}
-sub cc_and_m_files { # {{{1 populates global array @files
-    return unless -f and /\.(m|cc)$/;  # .m and .cc files
-    if (/\.m$/) {
-        push @m_files, "$File::Find::dir/$_";
-    } else {
-        push @C_files, "$File::Find::dir/$_";
-    }
 } # 1}}}
 __END__
 This program is free software; you can redistribute it and/or modify

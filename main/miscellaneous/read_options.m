@@ -40,7 +40,7 @@
 ##
 ##                              # Read the options
 ##
-## s = read_opts (list (all_va_arg), "op0",op0,"default",default)
+## s = read_options (list (all_va_args), "op0",op0,"default",default)
 ##
 ##                              # Create variables w/ same name as options
 ##
@@ -96,7 +96,7 @@ if nocase, opts = tolower (opts); end
 
 nread = 0;
 while nread < length (args)
-  
+
   oname = name = nth (args, ++nread);
   if ! isstr (name)		# Whoa! Option name is not a string
     if quiet, nread--; return;

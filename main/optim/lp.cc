@@ -361,17 +361,17 @@ Subject to: @var{a}*x <= @var{b}\n\
   int freeVarNum = 0;
   for (i=0; i<nc; i++)
     {
-      if (!isinf(-vlb(i)))
+      if (!lo_ieee_isinf(-vlb(i)))
 	{
 	  // std::cout << i << " translate variable up\n";
 	  // Make the {x_min < x < x_max} constraint now equal to {0 < x_new < x_max - x_min}
 	  b = b-A.column(i)*vlb(i);
 	  // If the upper bound is Infinity we do not change it.  
-	  if(!isinf(vub(i))){
+	  if(!lo_ieee_isinf(vub(i))){
 	    vub(i) = vub(i)-vlb(i);
 	  }
 	}
-      else if (!isinf(vub(i)))
+      else if (!lo_ieee_isinf(vub(i)))
 	{
 	  // std::cout << i << " translate variable down\n";
 	  // Now we have the following constraint ==> {-Inf < x < x_max}
@@ -558,12 +558,12 @@ Subject to: @var{a}*x <= @var{b}\n\
   idx_vector cRange;
   for(j=0,i=0;i<nc;i++)
     {
-      if(!isinf(-vlb(i)))
+      if(!lo_ieee_isinf(-vlb(i)))
 	{
 	  // Make the {x_min < x < x_max} constraint now equal to {0 < x_new < x_max - x_min}
 	  x(i) = x(i)-vlb(i);
 	}
-      else if(!isinf(orig_vub(i)))
+      else if(!lo_ieee_isinf(orig_vub(i)))
 	{
 	  // Translate negative variable up;
 	  x(i) = -x(i)+orig_vub(i);

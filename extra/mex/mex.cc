@@ -686,12 +686,12 @@ extern "C" {
     }
 
   // floating point representation
-  int mxIsNaN(const double v) { return xisnan(v) != 0; }
-  int mxIsFinite(const double v) { return xfinite(v) != 0; }
-  int mxIsInf(const double v) { return xisinf(v) != 0; }
+  int mxIsNaN(const double v) { return lo_ieee_is_NaN_or_NA(v) != 0; }
+  int mxIsFinite(const double v) { return lo_ieee_finite(v) != 0; }
+  int mxIsInf(const double v) { return lo_ieee_isinf(v) != 0; }
   double mxGetEps() { return DBL_EPSILON; }
-  double mxGetInf() { return octave_Inf; }
-  double mxGetNaN() { return octave_NaN; }
+  double mxGetInf() { return lo_ieee_inf_value(); }
+  double mxGetNaN() { return lo_ieee_nan_value(); }
 
   int mexEvalString(const char* s)
     {

@@ -129,8 +129,8 @@ The lowest index value is zero.\n\
       c0 = static_cast<unsigned long> (range(1));
       r1 = static_cast<unsigned long> (range(2));
       c1 = static_cast<unsigned long> (range(3));
-      if (xisinf(range(2))) r1 = ULONG_MAX-1;
-      if (xisinf(range(3))) c1 = ULONG_MAX-1;
+      if (lo_ieee_isinf(range(2))) r1 = ULONG_MAX-1;
+      if (lo_ieee_isinf(range(3))) c1 = ULONG_MAX-1;
       
     } else {
       error("range must include [R1 C1 R2 C2]");

@@ -1,21 +1,21 @@
 /*
 
-Copyright (C) 2001 Rafael Laboissiere
+Copyright (C) 2001, 2004  Rafael Laboissiere
 
-This file is part of octave-gpc.
+This file is part of Octave-GPC.
 
-octave-gpc is free software; you can redistribute it and/or modify it
+Octave-GPC is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2, or (at your option) any
 later version.
 
-octave-gpc is distributed in the hope that it will be useful, but WITHOUT
+Octave-GPC is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with octave-gpc; see the file COPYING.  If not, write to the Free
+along with Octave-GPC; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -44,22 +44,26 @@ octave_gpc_polygon : public octave_base_value
 {
 public:
 
-  octave_gpc_polygon (Octave_map m) 
+  octave_gpc_polygon (void)
+    : octave_base_value (), polygon (new gpc_polygon)
+  { }
+
+  octave_gpc_polygon (Octave_map m)
     : octave_base_value (), polygon (new gpc_polygon)
   { map_to_gpc (m, polygon); }
 
   octave_gpc_polygon (const octave_gpc_polygon& p)
-    : octave_base_value (), polygon (new gpc_polygon) 
+    : octave_base_value (), polygon (new gpc_polygon)
   {
     Octave_map m;
     gpc_to_map (p.polygon_value (), &m);
     map_to_gpc (m, polygon);
-  } 
+  }
 
   ~octave_gpc_polygon (void) { octave_gpc_free_polygon (polygon); }
-  
+
   octave_value* clone (void) { return new octave_gpc_polygon (*this); }
-  
+
   bool is_defined (void) const { return true; }
 
   void print (std::ostream&, bool) const;

@@ -1,4 +1,4 @@
-function [A] = ar2poly(ar);
+function [A] = ar2poly(A);
 % converts autoregressive parameters into AR polymials 
 % function  [A] = ar2poly(AR);
 %
@@ -36,6 +36,6 @@ function [A] = ar2poly(ar);
 % Boston, MA  02111-1307, USA.
 
 % Inititialization
-[lr,lc]=size(ar);
+[lr,lc]=size(A);
 
-A = [ones(size(ar,1)),-ar];
+A = [ones(size(A,1),1),-A];

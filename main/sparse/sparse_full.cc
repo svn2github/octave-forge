@@ -222,9 +222,11 @@ SPFIND: a sparse version of the find operator\n\
 
       if (nargout<=1) {
          ColumnVector I (nnz);
-         for (int i=0, cx=0; i< Anc; i++)
+         for (int i=0, cx=0; i< Anc; i++) {
+	    OCTAVE_QUIT;
             for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) 
                I( cx++ ) = (double) ( (ridxA[j]+1) + i*Anr );
+	 }
 
          // orientation rules - 
          //   I is column unless matrix is a rowvector
@@ -237,12 +239,14 @@ SPFIND: a sparse version of the find operator\n\
       {
          ColumnVector I (nnz), J (nnz);
 
-         for (int i=0,cx=0; i< Anc; i++)
+         for (int i=0,cx=0; i< Anc; i++) {
+	    OCTAVE_QUIT;
             for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) {
                I( cx ) = (double) ridxA[j]+1;
                J( cx ) = (double) i+1;
                cx++;
             }
+	 }
 
          retval(0)= I;
          retval(1)= J;
@@ -253,18 +257,22 @@ SPFIND: a sparse version of the find operator\n\
             assert( A.Dtype == _D );
             ColumnVector S (nnz);
             double * coefA = (double *) NCFA->nzval;
-            for (int i=0,cx=0; i< Anc; i++)
+            for (int i=0,cx=0; i< Anc; i++) {
+	       OCTAVE_QUIT;
                for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) 
                   S( cx++ ) =          coefA[j];
+	    }
             retval(2)= S;
          } else
          {
             assert( A.Dtype == _Z );
             ComplexColumnVector S (nnz);
             Complex * coefA = (Complex *) NCFA->nzval;
-            for (int i=0,cx=0; i< Anc; i++)
+            for (int i=0,cx=0; i< Anc; i++) {
+	       OCTAVE_QUIT;
                for (int j= cidxA[i]; j< cidxA[i+1]; j++ ) 
                   S( cx++ ) =          coefA[j];
+	    }
             retval(2)= S;
          }
 
@@ -279,6 +287,9 @@ SPFIND: a sparse version of the find operator\n\
 
 /*
  * $Log$
+ * Revision 1.5  2002/11/27 04:46:42  pkienzle
+ * Use new exception handling infrastructure.
+ *
  * Revision 1.4  2002/01/04 15:53:57  pkienzle
  * Changes required to compile for gcc-3.0 in debian hppa/unstable
  *

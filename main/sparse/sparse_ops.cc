@@ -123,6 +123,7 @@ oct_sparse_to_full ( SuperMatrix X ) {
    
    Matrix M( Xnr, Xnc );
    for (int j=0; j< Xnc; j++) {
+      OCTAVE_QUIT;
       for (int i=0; i< Xnr; i++) M(i,j)= 0;
    
       for (int i= cidxX[j]; i< cidxX[j+1]; i++) 
@@ -223,9 +224,10 @@ oct_sparse_transpose ( SuperMatrix X ) {
 
    DECLARE_SP_POINTERS_REAL( B )
 
+   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    dCompRow_to_CompCol( Xnc, Xnr, nnz, coefX, ridxX, cidxX,
                              &coefB, &ridxB, &cidxB);
-   
+   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    SuperMatrix B= create_SuperMatrix( Xnc, Xnr, nnz, coefB, ridxB, cidxB );
    return B;
 }   
@@ -263,6 +265,7 @@ ixp_comp(const void *i,const void*j )
 static inline void
 sort_with_idx (sort_idx * sidx, const idx_vector& idxv, long ixl) 
 {
+   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    if (idxv.is_colon() ) {
       for (int i=0; i< ixl; i++) {
          sidx[i].val= i;
@@ -277,6 +280,7 @@ sort_with_idx (sort_idx * sidx, const idx_vector& idxv, long ixl)
 
       qsort( sidx, ixl, sizeof(sort_idx), ixp_comp );
    }
+   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 }   
 
 // Return a full vector output
@@ -306,6 +310,7 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
    long ip= -Xnr; // previous column position
    long jj=0,jl=0;
    for (long k=0; k< ixl; k++) {
+      OCTAVE_QUIT;
       long ii  = ixp[k].val;
       long kout= ixp[k].idx;
 
@@ -360,6 +365,7 @@ sparse_index_twoidx ( SuperMatrix X,
    int cx= 0, ll=0;
    int ip= -Xnc; // previous column position
    for (int l=0; l< jxl; l++) {
+      OCTAVE_QUIT;
       if (jx.is_colon() )    ll= l;
       else                   ll= jx(l);
 
@@ -369,6 +375,7 @@ sparse_index_twoidx ( SuperMatrix X,
       int jl= cidxX[ll];
       int jj= cidxX[ll+1];
       for (long k=0; k< ixl; k++) {
+	 OCTAVE_QUIT;
          long ii  = ixp[k].val;
          long kout= ixp[k].idx;
    
@@ -484,6 +491,7 @@ octave_sparse::extract (int r1, int c1, int r2, int c2) const {
 
    int cx= 0;
    for (int i=0, ii= c1; i < n ; i++, ii++) {
+      OCTAVE_QUIT;
       for ( int j= cidxX[ii]; j< cidxX[ii+1]; j++) {
          int row = ridxX[ j ];
          if ( row>= r1 && row<=r2 && coefX[j] !=0 ) {
@@ -520,9 +528,11 @@ octave_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
    // add one to the printed indices to go from
    //  zero-based to one-based arrays
    for (int j=0; j< Xnc; j++) 
-      for (int i= cidxX[j]; i< cidxX[j+1]; i++) 
+      for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
+	 OCTAVE_QUIT;
          os << "  (" << ridxX[i]+1 <<
                " , "  << j+1 << ") -> " << coefX[i] << "\n";
+      }
 #endif                  
 } // print
 
@@ -745,6 +755,7 @@ DEFBINOP( s_s_mul, sparse, sparse)
    int jx= 0;
    for (int j= 0 ; j < Bnc ; j++ ) {
       for (int i= 0 ; i < Anc ; i++ ) {
+	 OCTAVE_QUIT;
          int  ja= cidxA[ i ];
          int  ja_max= cidxA[ i+1 ];
          bool ja_lt_max= ja < ja_max;
@@ -758,6 +769,7 @@ DEFBINOP( s_s_mul, sparse, sparse)
          double tmpval= 0.0;
          while( ja_lt_max && jb_lt_max ) {
        
+	    OCTAVE_QUIT;
             if( ridxA_ja < ridxB_jb )
             {
                ja++; ridxA_ja= ridxA[ ja ]; ja_lt_max= ja < ja_max;
@@ -888,7 +900,10 @@ void oct_sparse_do_permc( int permc_spec, int perm_c[],
          for (int i=0 ; i< Anc ; i++)
             perm_c[i]= i;
       } else {
+	 // wrap this in the s_f_ldiv function
+	 // BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
          get_perm_c(permc_spec, &A, perm_c);
+         // END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       }
    }
 } // static int do_permc( int permc_spec, int permc[], 
@@ -918,12 +933,13 @@ DEFBINOP( s_f_ldiv, sparse, matrix)
       assert (Anc == Bnr);
       SuperMatrix L,U,B;
       double * coef= M.fortran_vec();
-   
-      dCreate_Dense_Matrix(&B, Bnr, Bnc, coef, Bnr, DN, _D, GE);
-   
       int permc_spec = 3;
       int perm_c[ Anc ];
       int perm_r[ Anr ];
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      dCreate_Dense_Matrix(&B, Bnr, Bnc, coef, Bnr, DN, _D, GE);
+   
       oct_sparse_do_permc( permc_spec, perm_c, A );
    
       int info;
@@ -935,6 +951,7 @@ DEFBINOP( s_f_ldiv, sparse, matrix)
       Destroy_SuperMatrix_Store( &B );
       oct_sparse_Destroy_SuperMatrix( L ) ;
       oct_sparse_Destroy_SuperMatrix( U ) ;
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    }
 
    return M;
@@ -1031,11 +1048,13 @@ LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
            SNptr = &((double*)Lstore->nzval)[L_NZ_START(j)];
 
            /* Extract U */
+	   OCTAVE_QUIT;
            for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
                Uval[lastu] = ((double*)Ustore->nzval)[i];
                if (Uval[lastu] != 0.0) Urow[lastu++] = U_SUB(i);
            }
            /* upper triangle in the supernode */
+	   OCTAVE_QUIT;
            for (i = 0; i < upper; ++i) {
                Uval[lastu] = SNptr[i];
                if (Uval[lastu] != 0.0) Urow[lastu++] = L_SUB(istart+i);
@@ -1043,6 +1062,7 @@ LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
            Ucol[j+1] = lastu;
 
            /* Extract L */
+	   OCTAVE_QUIT;
            Lval[lastl] = 1.0; /* unit diagonal */
            Lrow[lastl++] = L_SUB(istart + upper - 1);
            for (i = upper; i < nsupr; ++i) {
@@ -1082,6 +1102,7 @@ sparse_LU_fact(SuperMatrix A,
    SuperMatrix Ac;
    SuperMatrix L,U;
 
+   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    StatInit(panel_size, relax);
 
    oct_sparse_do_permc( permc_spec, perm_c, A);
@@ -1117,7 +1138,7 @@ sparse_LU_fact(SuperMatrix A,
    oct_sparse_Destroy_SuperMatrix( U ) ;
    oct_sparse_Destroy_SuperMatrix( Ac ) ;
    StatFree();
-
+   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 #if 0
    printf("verify A\n");  oct_sparse_verify_supermatrix( A );
    printf("verify LC\n"); oct_sparse_verify_supermatrix( *LC );
@@ -1148,6 +1169,9 @@ sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.8  2002/11/27 04:46:42  pkienzle
+ * Use new exception handling infrastructure.
+ *
  * Revision 1.7  2002/11/05 15:07:34  aadler
  * fixed for 2.1.39 -
  * TODO: fix complex index ops

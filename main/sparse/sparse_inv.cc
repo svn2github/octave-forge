@@ -41,6 +41,7 @@ oct_sparse_verify_supermatrix( SuperMatrix X)
    int    nnz= NCFX->nnz;
    int    cx=0;
    for ( int i=0; i < Xnr ; i++) {
+      OCTAVE_QUIT;
       assert( cidxX[i] >= 0);
       assert( cidxX[i] <  nnz);
       assert( cidxX[i] <=  cidxX[i+1]);
@@ -349,6 +350,9 @@ rather than\n\
 
 /*
  * $Log$
+ * Revision 1.6  2002/11/27 04:46:42  pkienzle
+ * Use new exception handling infrastructure.
+ *
  * Revision 1.5  2002/11/13 15:28:09  pkienzle
  * Keep gcc 3.2 happy.
  *

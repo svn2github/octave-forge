@@ -153,7 +153,8 @@ oct_complex_sparse_to_full ( SuperMatrix X ) {
    
    ComplexMatrix M( Xnr, Xnc );
    for (int j=0; j< Xnc; j++) {
-   // I think new Matrices are initialized to zero, however just in case
+      OCTAVE_QUIT;
+      // I think new Matrices are initialized to zero, however just in case
       for (int i=0; i< Xnr; i++) M(i,j)= 0;
    
       for (int i= cidxX[j]; i< cidxX[j+1]; i++) 
@@ -257,9 +258,11 @@ oct_complex_sparse_transpose ( SuperMatrix X ) {
 
    DECLARE_SP_POINTERS_CPLX( B )
 
+   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    zCompRow_to_CompCol( Xnc, Xnr, nnz,
                   (doublecomplex *) coefX, ridxX, cidxX,
                   (doublecomplex **) &coefB, &ridxB, &cidxB);
+   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    
    SuperMatrix B= create_SuperMatrix( Xnc, Xnr, nnz, coefB, ridxB, cidxB );
    return B;
@@ -313,6 +316,7 @@ ixp_comp(const void *i,const void*j )
 static inline void
 sort_with_idx (sort_idx * sidx, const idx_vector& idxv, long ixl) 
 {
+   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    if (idxv.is_colon() ) {
       for (int i=0; i< ixl; i++) {
          sidx[i].val= i;
@@ -327,6 +331,7 @@ sort_with_idx (sort_idx * sidx, const idx_vector& idxv, long ixl)
 
       qsort( sidx, ixl, sizeof(sort_idx), ixp_comp );
    }
+   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 }   
 
 // Return a full vector output
@@ -349,6 +354,7 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
    long ip= -Xnr; // previous column position
    long jj=0,jl=0;
    for (long k=0; k< ixl; k++) {
+      OCTAVE_QUIT;
       long ii  = ixp[k].val;
       long kout= ixp[k].idx;
 
@@ -412,6 +418,7 @@ sparse_index_twoidx ( SuperMatrix X,
       int jl= cidxX[ll];
       int jj= cidxX[ll+1];
       for (long k=0; k< ixl; k++) {
+	 OCTAVE_QUIT;
          long ii  = ixp[k].val;
          long kout= ixp[k].idx;
    
@@ -532,6 +539,7 @@ octave_complex_sparse::extract (int r1, int c1, int r2, int c2) const {
 
    int cx= 0;
    for (int i=0, ii= c1; i < n ; i++, ii++) {
+      OCTAVE_QUIT;
       for ( int j= cidxX[ii]; j< cidxX[ii+1]; j++) {
          int row = ridxX[ j ];
          if ( row>= r1 && row<=r2 && coefX[j] != Complex(0) ) {
@@ -572,9 +580,11 @@ octave_complex_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
    // add one to the printed indices to go from
    //  zero-based to one-based arrays
    for (int j=0; j< Xnc; j++) 
-      for (int i= cidxX[j]; i< cidxX[j+1]; i++) 
+     for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
+         OCTAVE_QUIT;
          os << "  (" << ridxX[i]+1 <<
                " , "  << j+1 << ") -> " << coefX[i] << "\n";
+     }
 #endif                  
 } // print
 
@@ -1061,15 +1071,16 @@ do_cs_cf_ldiv( SuperMatrix A, ComplexMatrix& M )
    if (Anc != Bnr) {
       gripe_nonconformant ("operator \\", Anr, Anc, Bnr, Bnc);
    } else {
+      int permc_spec = 3;
+      int perm_c[ Anc ];
+      int perm_r[ Anr ];
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       assert (Anc == Bnr);
       SuperMatrix L,U,B;
       doublecomplex * coef= (doublecomplex *) M.fortran_vec();
    
       zCreate_Dense_Matrix(&B, Bnr, Bnc, coef, Bnr, DN, _Z, GE);
       
-      int permc_spec = 3;
-      int perm_c[ Anc ];
-      int perm_r[ Anr ];
       oct_sparse_do_permc( permc_spec, perm_c, A );
    
       int info;
@@ -1081,6 +1092,7 @@ do_cs_cf_ldiv( SuperMatrix A, ComplexMatrix& M )
       Destroy_SuperMatrix_Store( &B );
       oct_sparse_Destroy_SuperMatrix( L ) ;
       oct_sparse_Destroy_SuperMatrix( U ) ;
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    }
 
 //   return M;
@@ -1248,11 +1260,13 @@ LUextract(SuperMatrix *L, SuperMatrix *U, Complex *Lval, int *Lrow,
            SNptr = &((Complex*)Lstore->nzval)[L_NZ_START(j)];
 
            /* Extract U */
+	   OCTAVE_QUIT;
            for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
                Uval[lastu] = ((Complex*)Ustore->nzval)[i];
                if (Uval[lastu] != 0.0) Urow[lastu++] = U_SUB(i);
            }
            /* upper triangle in the supernode */
+	   OCTAVE_QUIT;
            for (i = 0; i < upper; ++i) {
                Uval[lastu] = SNptr[i];
                if (Uval[lastu] != 0.0) Urow[lastu++] = L_SUB(istart+i);
@@ -1260,6 +1274,7 @@ LUextract(SuperMatrix *L, SuperMatrix *U, Complex *Lval, int *Lrow,
            Ucol[j+1] = lastu;
 
            /* Extract L */
+	   OCTAVE_QUIT;
            Lval[lastl] = 1.0; /* unit diagonal */
            Lrow[lastl++] = L_SUB(istart + upper - 1);
            for (i = upper; i < nsupr; ++i) {
@@ -1297,6 +1312,8 @@ complex_sparse_LU_fact(SuperMatrix A,
    int    panel_size = sp_ienv(1);
    int    relax      = sp_ienv(2);
    int    etree[n];
+
+   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    SuperMatrix Ac;
    SuperMatrix L,U;
 
@@ -1335,7 +1352,7 @@ complex_sparse_LU_fact(SuperMatrix A,
    oct_sparse_Destroy_SuperMatrix( U ) ;
    oct_sparse_Destroy_SuperMatrix( Ac ) ;
    StatFree();
-
+   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 #if 0
    printf("verify A\n");  oct_sparse_verify_supermatrix( A );
    printf("verify LC\n"); oct_sparse_verify_supermatrix( *LC );
@@ -1366,6 +1383,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.10  2002/11/27 04:46:42  pkienzle
+ * Use new exception handling infrastructure.
+ *
  * Revision 1.9  2002/11/16 20:38:20  pkienzle
  * Windows dll and gcc 3.2 problems
  *

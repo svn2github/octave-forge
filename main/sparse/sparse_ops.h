@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.6  2002/11/27 04:46:42  pkienzle
+Use new exception handling infrastructure.
+
 Revision 1.5  2002/01/04 15:53:57  pkienzle
 Changes required to compile for gcc-3.0 in debian hppa/unstable
 
@@ -43,7 +46,6 @@ Revision 1.1  2001/03/30 04:34:23  aadler
 
 
 */
-
 
 // I would like to do this with templates,
 // but I don't think you can specify operators
@@ -75,6 +77,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
          bool jb_lt_max= jb < jb_max; \
  \
          while( ja_lt_max || jb_lt_max ) { \
+            OCTAVE_QUIT; \
             if( ( !jb_lt_max ) || \
                 ( ja_lt_max && (ridxA[ja] < ridxB[jb]) ) ) \
             { \
@@ -128,6 +131,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       for (int i=0; i < Anc ; i++) { \
          for (int j= cidxA[i]  ; \
                   j< cidxA[i+1]; j++) { \
+            OCTAVE_QUIT; \
             int  rowidx = ridxA[j]; \
             TYPX tmpval = B(rowidx,i); \
             if (tmpval != 0.0) { \
@@ -156,6 +160,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
             X.elem(i,j)=0.; \
       for ( int i=0; i < Anc ; i++) { \
          for ( int j= cidxA[i]; j< cidxA[i+1]; j++) { \
+            OCTAVE_QUIT; \
             int  col = ridxA[j]; \
             TYPX tmpval = coefA[j]; \
             for ( int k=0 ; k< Bnc; k++) { \
@@ -176,6 +181,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
             X.elem(i,j)=0.; \
       for ( int i=0; i < Bnc ; i++) { \
          for ( int j= cidxB[i]; j< cidxB[i+1]; j++) { \
+            OCTAVE_QUIT; \
             int  col = ridxB[j]; \
             TYPX tmpval = coefB[j]; \
             for ( int k=0 ; k< Anr; k++) { \
@@ -211,6 +217,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       TYPX * Xcol= (TYPX*)oct_sparse_malloc( Anr  * sizeof(TYPX)); \
       int cx= 0; \
       for ( int i=0; i < Bnc ; i++) { \
+         OCTAVE_QUIT; \
          for (int k=0; k<Anr; k++) Xcol[k]= 0.; \
          for (int j= cidxB[i]; j< cidxB[i+1]; j++) { \
             int  col= ridxB[j]; \
@@ -218,13 +225,14 @@ Revision 1.1  2001/03/30 04:34:23  aadler
             for (int k= cidxA[col] ; k< cidxA[col+1]; k++)  \
                Xcol[ ridxA[k] ]+= tmpval * coefA[k]; \
          } \
-         for (int k=0; k<Anr; k++)  \
+         for (int k=0; k<Anr; k++) { \
             if ( Xcol[k] !=0. ) { \
                check_bounds( cx, nnz, ridxX, coefX ); \
                ridxX[ cx ]= k; \
                coefX[ cx ]= Xcol[k]; \
                cx++; \
             } \
+         } \
          cidxX[i+1] = cx; \
       } \
       free( Xcol ); \
@@ -249,6 +257,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    bool cf_scalar = (coefA.length() == 1); \
  \
    sort_idxl sidx[ nnz ]; \
+   OCTAVE_QUIT; \
    for (int i=0; i<nnz; i++) { \
       sidx[i].val = (long) ( \
                 ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1 + \
@@ -256,12 +265,15 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       sidx[i].idx = i; \
    } \
  \
+   OCTAVE_QUIT; \
    qsort( sidx, nnz, sizeof(sort_idxl), sidxl_comp ); \
     \
+   OCTAVE_QUIT; \
    int cx= 0; \
    long prev_val=-1;  \
    int ii= -1; \
    for (int i=0; i<nnz; i++) { \
+      OCTAVE_QUIT; \
       long  idx= (long) sidx[i].idx; \
       long  val= (long) sidx[i].val; \
       if (prev_val < val) { \
@@ -280,8 +292,10 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       prev_val= val;\
    } \
    while( cx < n ) cidxX[++cx]= ii+1; \
+   OCTAVE_QUIT; \
    maybe_shrink( ii+1, nnz, ridxX, coefX ); \
  \
+   OCTAVE_QUIT; \
    SuperMatrix X= create_SuperMatrix( m, n, ii+1, coefX, ridxX, cidxX );
 
 // assemble a sparse matrix from full
@@ -296,6 +310,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    int jx=0; \
    for (int j= 0; j<Anc ; j++ ) { \
       for (int i= 0; i<Anr ; i++ ) { \
+         OCTAVE_QUIT; \
          TYPX tmpval= A(i,j); \
          if (tmpval != 0.) { \
             check_bounds( jx, nnz, ridx, coef ); \
@@ -347,6 +362,7 @@ fixrow_comp( const void *i, const void *j)  \
 #define FIX_ROW_ORDER_FUNCTIONS \
    int    nnz= NCFX->nnz; \
    for ( int i=0; i < Xnr ; i++) { \
+      OCTAVE_QUIT; \
       assert( cidxX[i] >= 0.); \
       assert( cidxX[i] <  nnz); \
       assert( cidxX[i] <=  cidxX[i+1]); \
@@ -373,7 +389,9 @@ fixrow_comp( const void *i, const void *j)  \
             arry[k].val= coefX[j]; \
             k++; \
          } \
+         OCTAVE_QUIT; \
          qsort( arry, snum, sizeof(fixrow_sort), fixrow_comp ); \
+         OCTAVE_QUIT; \
          /* copy back to the position */ \
          for( int k=0, \
                   j= cidxX[i]; \
@@ -442,6 +460,7 @@ fixrow_comp( const void *i, const void *j)  \
  \
    /* iterate accross columns of output matrix */ \
    for ( int n=0; n < Unr ; n++) { \
+      OCTAVE_QUIT; \
       /* place the 1 in the identity position */ \
       int cx_colstart= cx; \
  \
@@ -460,6 +479,7 @@ fixrow_comp( const void *i, const void *j)  \
  \
          int rpX, rpU; \
          do { \
+            OCTAVE_QUIT; \
             rpX= ridxX [ colXp ]; \
             rpU= ridxU [ colUp ]; \
  \

@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.10  2002/11/27 04:46:42  pkienzle
+Use new exception handling infrastructure.
+
 Revision 1.9  2002/11/05 19:21:07  aadler
 added indexing for complex_sparse. added tests
 
@@ -88,9 +91,7 @@ DLD functions for sparse support in octave
 
 // Thanks to To: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 // for help with error handling 
-#define SP_FATAL_ERR(str) { error("sparse: %s", str);  \
-                            jump_to_top_level ();  \
-                            panic_impossible (); }
+#define SP_FATAL_ERR(str) { error("sparse: %s", str); octave_throw_bad_alloc (); }
 
 // The SuperLU includes need to be first,
 // otherwise the cygwin build breaks!
@@ -115,6 +116,7 @@ using namespace std;
 
 class ostream;
 
+#include <octave/quit.h>
 #include <octave/lo-utils.h>
 #include <octave/mx-base.h>
 #include <octave/str-vec.h>

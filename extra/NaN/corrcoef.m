@@ -94,6 +94,8 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % + checks independence of missing values (NaNs) 
 
 
+NARG = nargout;	% needed because nargout is not reentrant in Octave
+
 if nargin==1
         Y = [];
         Mode='Pearson';
@@ -236,8 +238,7 @@ else
         fprintf(2,'Error CORRCOEF: unknown mode ''%s''\n',Mode);
 end;
 
-
-if nargout<2, 
+if (NARG<2), 
 	warning(FLAG_WARNING); 	% restore warning status
         return;
 end;
@@ -267,7 +268,7 @@ else
 end;
 sig  = 2 * min(sig,1 - sig);
 
-if nargout<3, 
+if NARG<3, 
 	warning(FLAG_WARNING); 	% restore warning status
         return;
 end;
@@ -285,7 +286,7 @@ ci2 = tanh(z+sz);
 %ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
 %ci2(isnan(ci2))=R(isnan(ci2));
 
-if (nargout<5) | ~YESNAN, 
+if (NARG<5) | ~YESNAN, 
         sig_nan = [];
 	warning(FLAG_WARNING); 	% restore warning status
         return;

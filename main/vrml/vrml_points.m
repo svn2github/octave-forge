@@ -54,7 +54,7 @@ i = 1; nargin--;		# pos 2.1.39
 ## pre 2.1.39 while --nargin,
 while i <= nargin ## pos 2.1.39
   ## pre 2.1.39   tmp = va_arg(); 
-  tmp = nth (varargin,i++)  ## pos 2.1.39
+  tmp = nth (varargin,i++);  ## pos 2.1.39
   if strcmp(tmp,"hide") ,
     hide = 1;
   elseif strcmp(tmp,"balls") ,
@@ -175,6 +175,9 @@ else
 				# If some radiuses differ, I must do
 				# geometry nodes individually
     if ! all_same_rad
+				# Skip zero-sized objects
+      if ! rad(:,i), continue; end
+
       if balls
 	shapestr = sprintf("Sphere { radius %8.3f}",rad(:,i));
       else

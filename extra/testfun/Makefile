@@ -1,8 +1,5 @@
 include ../../Makeconf
 
-PROGS = pretty.oct
+all: pretty.oct
 
-all: $(PROGS)
-
-clean: 
-	-$(RM) *.o $(PROGS) core octave-core *~
+clean: ; -$(RM) *.o core octave-core *.oct *~

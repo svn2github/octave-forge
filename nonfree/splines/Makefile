@@ -1,12 +1,9 @@
 include ../../Makeconf
 
-PROGS = gcvspl.oct
-
-all: $(PROGS)
+all: gcvspl.oct
 
 gcvspl.oct: gcvspl.cc gcvsplf.f
 	$(MKOCTFILE) -v gcvspl.cc gcvsplf.f
 
-clean: 
-	-$(RM) *.o $(PROGS) octave-core core *~
-   
+clean: ; -$(RM) *.o octave-core core *.oct *~
+

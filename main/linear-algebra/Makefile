@@ -1,8 +1,5 @@
 include ../../Makeconf
 
-PROGS=rsf2csf.oct GramSchmidt.oct
+all: rsf2csf.oct
 
-all: $(PROGS)
-
-clean:
-	-$(RM) *.o $(PROGS) octave-core core *~
+clean: ; -$(RM) *.o octave-core core *.oct *~

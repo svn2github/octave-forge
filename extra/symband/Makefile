@@ -1,18 +1,14 @@
 include ../../Makeconf
 
-PROGS=SymBand.oct SBSolve.oct
+SYMBAND_LINKS = SBSolve.oct SBFactor.oct SBBacksub.oct SBProd.oct SBEig.oct
+PROGS = SymBand.oct $(SYMBAND_LINKS)
 
 all: $(PROGS)
 
-SBSolve.oct	:SymBand.oct
-	ln -sf SymBand.oct SBSolve.oct 
-	ln -sf SymBand.oct SBFactor.oct 
-	ln -sf SymBand.oct SBBacksub.oct
-	ln -sf SymBand.oct SBProd.oct 
-	ln -sf SymBand.oct SBEig.oct 
+$(PROGS): Makefile
 
-clean	:
-	rm -f *.o octave-core
+$(SYMBAND_LINKS):
+	-$(RM) $@
+	$(LN_S) SymBand.oct $@
 
-cleanall	:
-	rm -f *.o octave-core *.oct *~
+clean: ; -$(RM) *.o core octave-core *.oct *~

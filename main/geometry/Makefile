@@ -1,10 +1,10 @@
 
 sinclude ../../Makeconf
 
-ifndef MKOCTFILE
 # assumptions to make if not using ./configure script
-MKOCTFILE=mkoctfile
-HAVE_LIBQHULL=1
+ifndef OCTAVE_FORGE
+	MKOCTFILE=mkoctfile
+	HAVE_LIBQHULL=1
 endif
 
 %.oct: %.cc ; $(MKOCTFILE) -v -lqhull $<
@@ -15,5 +15,4 @@ else
 all:
 endif
 
-clean:
-	$(RM) *.o *.oct core octave-core *~
+clean: ; -$(RM) *.o core octave-core *.oct *~

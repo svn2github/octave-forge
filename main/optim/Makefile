@@ -1,8 +1,5 @@
 include ../../Makeconf
 
-PROGS=lp.oct leval.oct
+all: lp.oct leval.oct
 
-all:$(PROGS)
-
-clean:
-	-$(RM) *.o $(PROGS) core octave-core *~
+clean: ; -$(RM) *.o core octave-core *.oct *~

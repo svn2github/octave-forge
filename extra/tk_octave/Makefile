@@ -2,9 +2,12 @@ sinclude ../../Makeconf
 
 ## Change this to the location of mkoctfile for your version of
 ## octave linked against pthreads (see README).
-ifndef MKOCTFILE
-MKOCTFILE=mkoctfile-pthreads
-HAVE_TCLTK=1
+MKOCTFILE ?= mkoctfile-pthreads
+
+ifndef OCTAVE_FORGE
+	HAVE_TCLTK ?= 1
+	HAVE_BLT ?= 1
+	HAVE_VTK ?= 0
 endif
 
 VTK_OPTS = -DHAVE_VTK -lVTKCommon -lVTKGraphics -lVTKImaging -lGL
@@ -31,6 +34,5 @@ endif
 tk_interp.oct: tk_interp.cc
 	$(MKOCTFILE) -v $^ -o $@ $(OPTS) $(LIBS)
 
-clean:
-	-$(RM) core octave-core *.o *.oct *~
+clean: ; -$(RM) core octave-core *.o *.oct *~
 

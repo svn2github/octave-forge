@@ -1,12 +1,10 @@
-sinclude ../../Makeconf
-ifndef MKOCTFILE
-MKOCTFILE=mkoctfile
-endif
+include ../../Makeconf
+
+OBJ = chol.o ov-re-tri.o
 
 all: chol.oct
 
-chol.oct: chol.cc ov-re-tri.cc
-	$(MKOCTFILE) -v chol.cc ov-re-tri.cc -o chol.oct
+chol.oct: $(OBJ)
+	$(MKOCTFILE) -o $@ $(OBJ)
 
-clean:
-	$(RM) *.oct *.o *~ octave-core core
+clean: ; $(RM) *.o core octave-core *.oct *~

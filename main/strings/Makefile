@@ -1,8 +1,5 @@
 include ../../Makeconf
 
-PROGS=regexp.oct
+all: regexp.oct
 
-all: $(PROGS)
-
-clean:
-	-$(RM) *.o *.oct core octave-core *~
+clean: ; -$(RM) *.o core octave-core *.oct *~

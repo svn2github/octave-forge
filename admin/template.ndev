@@ -166,14 +166,99 @@ Consult
 <a href="http://www.opensource.org/licenses/index.html">opensource.org</a>.
 for a comprehensive list of Open Source licenses.
 
+<h3>Package structure</h3>
+<dl>
+<dt>package/NOINSTALL
+<dd>	don't install this package; the user can rename or delete this
+	file if they want the package installed anyway.
+<dt>package/*.m 
+<dd>	m-files for the package; these will be installed in
+	site/mfiles/octave-forge/package
+<dt>package/data/*
+<dd>	datafiles to be installed with the mfiles.  You can accesses
+	them from your m-files with x = file_in_load_path("a").
+<dt>package/Makefile 
+<dd>	Makefile with a default target to build anything that needs
+	building, an optional "install" target in case you need to
+	install something other than m-files, oct-files, data files or
+	octave binaries, and a "clean" target to remove everything that
+	has been built.  See below for details.
+<dt>package/configure.add, package/Makeconf.add
+<dd>	Additional configuration-time commands to run in order to 
+	find all the components that your package requires.  You 
+	can look for anything you want in configure.add and note 
+	what you need in Makeconf.add.  The definitions in 
+	Makeconf.add will be available when you include ../../Makeconf 
+	in your Makefile.  See main/symbolic for an example.
+<dt>package/*.oct
+<dd>	oct-files built by Makefile. These will be installed all 
+	together in site-oct-files/octave-forge.  You may assume that
+	HAVE_OCTAVE_20 is defined for 2.0.x series mkoctfile, and
+	HAVE_OCTAVE_21 is defined for 2.1.x series mkoctfile.
+<dt>package/bin/*
+<dd>	executable files built by Makefile.  These will be 
+	installed in Octave's EXEC_PATH, so they will be available 
+	from Octave but not from the shell. You have two options
+	regarding this directory.  The better one would be to make
+	sure that the directory exists before you try building the
+	binary.  The other option is to have a hidden bin/.keepdir
+	so that CVS won't delete it for you automatically.
+</dl>
+
+<h3>Adding a Makefile</h3>
+
+If your package has something other than m-files you will need a 
+Makefile in your directory.  This could be as short as three lines:
+<pre>
+include ../../Makeconf
+all: f1.oct
+clean: ; -$(RM) *.o core octave-core *.oct *~
+</pre><p>
+
+If you define multiple DEFUN_DLD's in a file, you may need to
+use symbolic links in order for Octave to find them:
+<pre>
+include ../../Makeconf
+
+# extra functions defined in fn.oct
+fn_LINKS=fn2.oct fn3.oct
+
+# all compiled functions
+PROGS=fn.oct $(fn_LINKS) gn.oct
+
+all: $(PROGS)
+
+$(PROGS): Makefile
+
+$(fn_LINKS):
+	-$(RM) $@
+	$(LN_S) fn.oct $@
+
+clean: ; -$(RM) *.o core octave-core *.oct *~
+</pre><p>
+
+The "include ../../Makeconf" line above includes all of the definitions 
+that were created during configuration.  This includes things like MKOCTFILE,
+as well as implicit rules for compiling oct-files.  See Makeconf.base 
+for a list of predefined variables and rules.  Sometimes you will see
+"sinclude ../../Makeconf".  This is for packages which can be compiled
+independently of Octave-forge.  If Octave-forge is configured, then the
+variable OCTAVE_FORGE will be defined.<p>
+
+Even more complicated makefiles are sometimes necessary, particularly when
+the package depends on external libraries.  See main/symbolic/Makefile
+for an example.  The external libraries must be found during configure
+so main/symbolic/configure.add provides detection rules.  The results 
+are posted in main/symbolic/Makeconf.add, and will be available during make.
+
 <h3>Submit your code!</h3>
-You are now ready to upload your code to the Gnu Octave Repository.  
+You are now ready to upload your code to the Gnu Octave Repository.
 Do this with two CVS commands--one to add a new
 entry for your file in the octave-forge catalog, and a second command
 to actually upload the file:
 <pre>
-   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave add <FONT COLOR="#800000"><i>file.m</i></FONT>
-   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave commit <FONT COLOR="#800000"><i>file.m</i></FONT>
+   $ cvs add <FONT COLOR="#800000"><i>files</i></FONT>
+   $ cvs commit <FONT COLOR="#800000"><i>files</i></FONT>
 </pre>
 
 After hitting the carriage return at the end of the commit command,
@@ -182,12 +267,37 @@ the commit. The first time you commit a file the comment might be
 something as simple as `Initial commit into CVS.' However, for all
 subsequent commits please add meaningful comments that explain why
 changes were made to the file since all comments will appear in the
-changelog.
+changelog.  Try to gather related changes into one commit command.
 <p>
 Aside:  the default editor can be defined like so:
 <pre>
    $ export EDITOR=<FONT COLOR="#800000">vim</FONT>
 </pre>
+<p>
+
+If you are uploading an entire package, then you must first define
+the subdirectory, then upload all the files:
+<pre>
+   $ cd octave-forge/main
+   $ cvs add mypackage
+   $ cvs commit mypackage
+   $ cd mypackage
+   $ cvs add *
+   $ cvs commit *
+</pre>
+This may be easier using the cvs import command, but I don't know the details.
+<p>
+From time to time, you will need to synchronize with CVS:
+<pre>
+   $ cd octave-forge
+   $ cvs -q update -d
+</pre>
+Code `?' means that you created file but didn't add and commit.
+Code `U' means that your copy of file has been updated.
+Code `M' means that you have modified file without committing it.
+Code `C' means that your modifications to file conflict.  Look inside
+the file to find the lines which could not be resolved.  They will be
+wrapped in ========> if I recall correctly.
 
 <h3>Learn more about CVS</h3>
 The few CVS commands shown here just scratch the surface of this
@@ -201,8 +311,10 @@ CVS Book</a> is a great place to begin your exploration.
 <h3>Join the developers' mailing list</h3>
 Finally, consider joining the octave-forge developer's 
 <a href="http://lists.sourceforge.net/lists/listinfo/octave-dev">
-mailing list</a>.
-
+mailing list</a>.  It is very low traffic.  It is used to announce
+pending releases of octave-forge and discuss issues related to
+working with octave-forge.  Discussion of the functions in
+octave-forge mostly occurs on the primary octave mailing lists.
 
 <hr noshade size=1>
 

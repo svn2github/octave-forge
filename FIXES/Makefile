@@ -1,12 +1,34 @@
-include ../Makeconf
+sinclude ../Makeconf
 
-PROGS = rand.oct randn.oct fsolve.oct
+RAND_LINKS = randn.oct
+PROGS = rand.oct fsolve.oct qr.oct sqrtm.oct $(RAND_LINKS)
+QRSRC = qr.cc CmplxQR.cc  CmplxQRP.cc  dbleQR.cc  dbleQRP.cc
+QROBJ = $(QRSRC:.cc=.o)
+
+%.o : %.cc ; $(MKOCTFILE) -DHAVE_CONFIG_H -c -o $@ $<
 
 all: $(PROGS)
 
-randn.oct: rand.oct
-	-$(RM) randn.oct
-	$(LN_S) rand.oct randn.oct
+$(PROGS): Makefile
+
+qr.oct: $(QROBJ)
+	$(MKOCTFILE) -o $@ $(QROBJ)
+
+$(RAND_LINKS):
+	-$(RM) $@
+	$(LN_S) rand.oct $@
+
+# FIXES needs an install target because it isn't under main/ or extra/
+install:
+	@if test -f FIXES/NOINSTALL ; then \
+	    echo skipping FIXES ; \
+	else \
+	    echo installing FIXES to $(MPATH)/FIXES ; \
+	    ../$(INSTALLOCT) . $(MPATH)/FIXES $(OPATH) $(XPATH) ; \
+	fi
 
 clean: 
-	$(RM) *.o $(PROGS) octave-core core *~OA
+	-$(RM) *.o core octave-core core
+
+distclean: clean
+	-$(RM) *.oct *~

@@ -4,6 +4,8 @@
 ## create a new ./Makeconf.in, then use ./configure to generate a new
 ## Makeconf.
 
+OCTAVE_FORGE = 1
+
 SHELL = /bin/sh
 
 prefix = @prefix@
@@ -20,13 +22,21 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALLOCT=octinst.sh
 
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 LN_S = @LN_S@
 
+# Most octave programs will be compiled with $(MKOCTFILE).  Those which
+# cannot use mkoctfile directly can request the flags that mkoctfile 
+# would use as follows:
+#    FLAG = $(shell $(MKOCTFILE) -p FLAG)
+# The following flags are for compiling programs that are independent i
+# of Octave.  How confusing.
 CC = @CC@
 CFLAGS = @CFLAGS@
-
 CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
+F77 = @F77@
+F77FLAGS = @F77FLAGS@
 
 MKOCTFILE = @MKOCTFILE@ -DHAVE_OCTAVE_$(ver) -v
 
@@ -41,3 +51,4 @@ XPATH = @xpath@
 
 
 %.oct: %.cc ; $(MKOCTFILE) $<
+%.o: %.cc ; $(MKOCTFILE) -c $<

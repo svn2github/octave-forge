@@ -1,12 +1,10 @@
 include ../../Makeconf
 
-PROGS = trisolve.oct
+TRISOLVE_OBJ = trisolve.o dgtsv.o dptsv.o dpttrf.o dpttrs.o dptts2.o
 
-all: $(PROGS)
+all: trisolve.oct
 
-trisolve.oct:
-	$(MKOCTFILE) -v trisolve.cc \
-	dgtsv.f  dptsv.f  dpttrf.f  dpttrs.f  dptts2.f
+trisolve.oct: $(TRISOLVE_OBJ)
+	$(MKOCTFILE) -v -o $@ $(TRISOLVE_OBJ)
 
-clean: 
-	$(RM) *.o $(PROGS) octave-core core *~
+clean: ; -$(RM) *.o octave-core core *.oct *~

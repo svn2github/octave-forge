@@ -1,28 +1,36 @@
-
 include ../Makeconf
 
-SUBMAKES = $(wildcard */Makefile)
-MAKE_SUBDIRS = $(dir $(SUBMAKES))
-INSTALL_SUBDIRS = $(filter-out Makefile CVS CONTENTS, $(wildcard *))
+# Determine which subdirectories are to be installed.  Of those, determine
+# which have their own Makefile.
+SUBMAKEDIRS = $(dir $(wildcard */Makefile))
+NOINSTALLDIRS = $(dir $(wildcard */NOINSTALL))
+BUILDDIRS = $(filter-out $(NOINSTALLDIRS), $(SUBMAKEDIRS))
+INSTALLDIRS = $(filter-out CVS/ $(NOINSTALLDIRS), $(dir $(wildcard */.)))
 
-.PHONY: all install clean $(MAKE_SUBDIRS) $(INSTALL_SUBDIRS)
+.PHONY: all install clean distclean $(SUBMAKEDIRS)
 
-all: $(MAKE_SUBDIRS)
+ifdef OCTAVE_FORGE
+all: $(BUILDDIRS)
 
-$(MAKE_SUBDIRS):
-	@if test ! -f $@/NOINSTALL || test x$(MAKECMDGOALS) = xclean ; then \
+install: $(BUILDDIRS)
+	@test -z "$(NOINSTALLDIRS)" || echo skipping $(NOINSTALLDIRS)
+	@for f in $(INSTALLDIRS) ; do \
+	    echo installing $$f... ; \
+	    ../$(INSTALLOCT) $$f $(MPATH)/$$f $(OPATH) $(XPATH) ; \
+	done
+else
+all:
+	@echo not yet configured
+endif
+
+clean: $(SUBMAKEDIRS)
+
+# Propogate make to the subdirectory if the goal is a valid target
+# in the subdirectory Makefile.
+$(SUBMAKEDIRS):
+	@if test -z $(MAKECMDGOALS) ; then \
+	    cd $@ && $(MAKE) ; \
+	elif grep -q "^$(MAKECMDGOALS) *[:]" $@Makefile ; then \
 	    cd $@ && $(MAKE) $(MAKECMDGOALS) ; \
 	fi
-
-install: $(INSTALL_SUBDIRS)
-
-$(INSTALL_SUBDIRS):
-	@if test -f $@/NOINSTALL ; then \
-	    echo skipping $@ ; \
-	else \
-	    echo installing $@ to $(MPATH)/$@ ; \
-	    ../$(INSTALLOCT) $@ $(MPATH)/$@ $(OPATH) $(XPATH) ; \
-	fi
-
-clean: $(MAKE_SUBDIRS)
 

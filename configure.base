@@ -14,17 +14,11 @@ define([AC_CACHE_LOAD], )dnl
 define([AC_CACHE_SAVE], )dnl
 
 dnl uncomment to put support files in another directory
-dnl AC_CONFIG_AUX_DIR(config)
+dnl AC_CONFIG_AUX_DIR(admin)
 
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_LEVEL
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
-
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_LN_S
-AC_PROG_RANLIB
-AC_PROG_INSTALL
 
 dnl *******************************************************************
 dnl Sort out mkoctfile version number and install paths
@@ -108,6 +102,45 @@ fi
 
 dnl *******************************************************************
 
+dnl C compiler and flags
+CC=`$MKOCTFILE -p CC`
+CFLAGS=`$MKOCTFILE -p CFLAGS`
+CPPFLAGS=`$MKOCTFILE -p CPPFLAGS`
+CPICFLAGS=`$MKOCTFILE -p CPICFLAGS`
+AC_SUBST(CC)
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(CPICFLAGS)
+
+dnl Fortran compiler and flags
+F77=`$MKOCTFILE -p F77`
+FFLAGS=`$MKOCTFILE -p FFLAGS`
+FPICFLAGS=`$MKOCTFILE -p FPICFLAGS`
+AC_SUBST(F77)
+AC_SUBST(FFLAGS)
+AC_SUBST(FPICFLAGS)
+
+dnl C++ compiler and flags
+CXX=`$MKOCTFILE -p CXX`
+CXXFLAGS=`$MKOCTFILE -p CXXFLAGS`
+CXXPICFLAGS=`$MKOCTFLIE -p CXXPICFLAGS`
+AC_SUBST(CXX)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(CXXPICFLAGS)
+
+dnl if mkoctfile -p doesn't work, then use the following:
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_F77
+
+AC_PROG_LN_S
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+dnl Use $(STRIP) in the makefile to strip executables.  If not found, 
+dnl STRIP expands to ':', which in the makefile does nothing.
+if test -z "$STRIP"; then STRIP=strip; fi
+AC_CHECK_PROG(STRIP,$STRIP,$STRIP,:)
 
 dnl Things needed to link to X11 programs
 dnl defines X_CFLAGS, X_LIBS

@@ -137,19 +137,68 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
     b = y(:) ./ dy(:);
   endif
 
-  ## system solution
+  ## system solution: X p = b => p = inv(X) b
+  ## QR decomposition has good numerical properties:
+  ##   XP = QR, with P'P = Q'Q = I, and R upper triangular
+  ## so
+  ##   inv(X) b = P inv(R) inv(Q) b = P inv(R) Q' b = P (R \ (Q' b))
+  ## Note that b is usually a vector and Q is matrix, so it will
+  ## be faster to compute (b' Q)' than (Q' b).
   [Q,R,P] = qr(X,0);
-  p = R\(Q'*b); 
+  p = R\(b'*Q)'; 
   p(P) = p;
 
   compute_dp = nargout == 0 || nargout > 1;
   if (compute_dp)
-    ## Calculate chisq from the weighted data and use that to
-    ## estimate error on the parameters.  We shouldn't need the
-    ## abs(diag), but the if the matrix is very ill-conditioned
-    ## some of the diag entries come out negative. :-(
-    chisq = sumsq(b - X*p)/(length(b)-length(p));
-    dp = sqrt(chisq*abs(diag(inv(X'*X))));
+    ## Get uncertainty from the covariance matrix: dp = sqrt(diag(inv(X'X))).
+    ##
+    ## Rather than calculate this directly, we are going to use the QR
+    ## decomposition we have already computed:
+    ##
+    ##    XP = QR, with P'P = Q'Q = I, and R upper triangular
+    ##
+    ## Remembering that inv(AB) = inv(B)inv(A) and (AB)' = B'A', we
+    ## can compute inv(X) and inv(X'):
+    ##
+    ##    inv(X) = inv(QRP') = inv(P')inv(R)inv(Q) = P inv(R)inv(Q)
+    ##    inv(X') = inv(PR'Q') = inv(Q')inv(R')inv(P) = inv(Q')inv(R')P'
+    ##
+    ## Combining and simplifying:
+    ##
+    ##    inv(X'X) = P inv(R) inv(Q) inv(Q') inv(R') P'
+    ##             = P inv(R) inv(Q'Q) inv(R') P'
+    ##             = P inv(R) inv(I) inv(R') P'
+    ##             = P inv(R) inv(R') P'
+    ##
+    ## For a permutation matrix P,
+    ##
+    ##    diag(PAP') = P diag(A)
+    ##
+    ## and for R upper triangular,
+    ##
+    ##    inv(R') = inv(R)'
+    ##
+    ## so:
+    ##
+    ##    diag(inv(X'X)) = P diag(inv(R) inv(R)')
+    ##
+    ## Conveniently, for T upper triangular
+    ##
+    ##    diag(TT') = sumsq(T')'
+    ##
+    ## so
+    ##
+    ##    diag(inv(X'X)) = P sumsq(inv(R)')'
+    ## 
+    ## This is both faster and more accurate than computing inv(X'X)
+    dp = sqrt(sumsq(inv(R),2));
+    dp(P) = dp;
+    if isempty(dy)
+      ## If we don't have an uncertainty estimate coming in, estimate it
+      ## from the chisq of the fit.
+      chisq = sumsq(b - X*p)/(length(y)-length(p));
+      dp *= sqrt(chisq);
+    endif
   endif
 
   if through_origin

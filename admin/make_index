@@ -416,7 +416,7 @@ sub load_index { # {{{1
         } elsif (/^(\w.*?)\s*$/) {
 	    # category lines start in the left most column
             $category    = $1;
-        } elsif (/^\s+(\S+)\s*=\s*(\S.*\S)\s*$/) {
+        } elsif (/^\s+(\S.*\S)\s*=\s*(\S.*\S)\s*$/) {
 	    $function = $1;
 	    $description = $2;
 

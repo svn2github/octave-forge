@@ -17,6 +17,8 @@
 
 /*
 29. July 2000 - Kai Habel: first release
+2002-04-22 Paul Kienzle
+* Use warning(...) function rather than writing to cerr
 */
 
 extern "C" { 
@@ -98,9 +100,7 @@ The input matrix of size [dim, n] contains n points of dimension dim.\n\
 		//free short memory and memory allocator
 
 	if (curlong || totlong) {
-    	cerr << "qhull internal warning (delaunay): did not free ";
-		cerr << totlong << " bytes of long memory (";
-		cerr << curlong << " pieces)" << endl;
+	    warning("convhulln: did not free %d bytes of long memory (%d pieces)", totlong, curlong);
 	}
 	return retval;
 }

@@ -1,23 +1,18 @@
 # !/bin/sh
 
-## Run this command from the project root directory to build a new 
-## release tarball. This assumes that the CVSROOT environment variable 
-## has been set appropriately, and that autogen is available on your path.
-## You will also need cvs2cl.pl from http://www.red-bean.com/cvs2cl/
-##
-## Don't forget 'cvs update' to make sure you haven't forgotten anything!
-##
-## Run admin/get_authors
-## Run admin/get_contents
-##
-## Log in to your source forge account and use the following
-## page to announce the new release of the package:
-##    https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
-## Use the Upload button to add the new tarball
-##    octave-forge-yyyy.mm.dd.tar.gz
-##
-## You may also want to send an announcement to 
-##    octave-sources@bevo.che.wisc.edu
+## 1) Update RELEASE_NOTES with the latest date and changes
+## 2) Run 'cvs update' to make sure you haven't forgetten anything!
+## 3) Run 'admin/get_authors' to verify copyrights.
+## 4) Run './release.sh' from the project root directory to build a new 
+##    release tarball. This assumes that the CVSROOT environment variable 
+##    has been set appropriately, and that autogen is available on your path.
+##    You will also need cvs2cl.pl from http://www.red-bean.com/cvs2cl/
+## 5) Log in to your source forge account and use the following
+##    page to announce the new release of the package:
+##        https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
+##    Use the Upload button to add the new tarball
+##        octave-forge-yyyy.mm.dd.tar.gz
+## 6) Send an announcement to octave-sources@bevo.che.wisc.edu
 ##
 ## You should also do:
 ## 	./cvs-tree > afunclist.html
@@ -31,6 +26,10 @@
 ##      rm -rf index
 ##      tar xzf index.tar.gz
 ##	chmod -R g+w index
+##
+##      admin/get_contents
+##      cvs diff README
+##      # if any changes, update the web page
 
 # base name of the project
 PROJECT=octave-forge

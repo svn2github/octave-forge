@@ -63,6 +63,47 @@ Hack the links
 	# the required link command:  ln -sf base name
 	# This process needs to be automated, but I don't know how.
 
+Build /opt/octave-support
+	# Octave requires a hacked version of the cygwin dll so
+	# that it doesn't conflict with an existing cygwin installation.
+	# It also requires a number of supporting binaries, such as
+	# shell tools and gnuplot.  These are installed directly from
+	# /opt/octave-support into the bin directory of the installation.
+	# You can build this directory by taking an existing octave for
+	# for windows installation, and copying files from .../bin
+	# into /opt/octave-support.  In future, it would be nice to
+	# grab the current versions of these functions from your cygwin
+	# installation, but I don't know the magic involved in hacking
+	# the cygwin1 dll. It might be as simple as changing the RegistryKey
+	# resource in the distributed cygwin1.dll, but I think they've
+	# hardcoded the name in several places and it won't be that easy
+	# without recompiling.
+	mkdir /opt/octave-support
+	cd /c/Program\ Files/GNU\ Octave/bin
+
+	# Runtime support (libW11 is used by rxvt)
+	cp cyg{win1,pcre,ncurses6,readline5,jpeg6b}.dll /opt/octave-suppport
+	cp run.exe rxvt.exe libW11.dll /opt/octave-support
+
+	# Utility functions --- we need a lot more these; see for
+	# example the list of commands in the Linux Standard Base
+	# specification at http://www.linuxbase.org
+	cp {mount,umount,mkdir,rmdir,mkfifo,mknod}.exe /opt/octave-support
+	cp {basename,expr,mv,rm,ln,ls,ps,sed,sh,touch}.exe /opt/octave-support
+
+	# Cygwin specific utility functions
+	cp {cygpath,regtool}.exe /opt/octave-support
+
+	# help and pager
+	cp {info,infokey,makeinfo,less,lessecho,lesskey}.exe /opt/octave-support
+
+	# gnuplot
+	cp WGNUPLOT.HLP {w,p}gnuplot.exe wgnuplot.GID
+
+	# These don't seem to be used:
+	cp {cygz,cygncurses++6,libW11}.dll /opt/octave-support
+	cp {mkpasswd,cygserver}.exe /opt/octave-support
+
 Grab nsis 2.0 from http://www.nullsoft.com/free/nsis/#download
 	cd <octave-forge>/admin/Windows
 	# Modify install_octave.sh to use the appropriate ARCH=dir

@@ -61,6 +61,9 @@
 ##   delimiter.  If there is a delimiter, then %s treats whitespace as
 ##   part of the string.  The format %[ will eat through delimiters.
 
+## Author: Albert Danial <alnd@users.sf.net>
+## Author: Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
 ## 2002-03-15 Paul Kienzle
 ## * remove dependency on str_incr
 ## * return list of strings for %s rather than character matrix

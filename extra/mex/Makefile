@@ -23,22 +23,22 @@ $(MEXLIB): mex.cc mex.h matrix.h
 	$(MKOCTFILE) $(HAVE_OCTAVE_MAP_INDEX) -o $(MEXLIB) mex.cc
 
 mex: mex.in
-	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):;s:@OPATH@:$(OPATH):g;s:@MEXLIB@:$(MEXLIB):g" > mex
+	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):;s:@LIBPATH@:$(LIBPATH):g;s:@MEXLIB@:$(MEXLIB):g" > mex
 	chmod a+x mex
 
 install:
 ifdef LEAVEHERE
 	@echo "Leaving $(MEXLIB), mex.h and matrix.h in place --- do not remove!"
 else
-	 if ! test -e $(OPATH) ; then \
-	  echo creating $(OPATH) ; \
-	  $(INSTALL) -d $(OPATH) ; \
+	 if ! test -e $(LIBPATH) ; then \
+	  echo creating $(LIBPATH) ; \
+	  $(INSTALL) -d $(LIBPATH) ; \
 	fi
-	 if test -d $(OPATH) ; then \
-	  echo installing $(MEXLIB) mex/mex.h mex/matrix.h in $(OPATH) ; \
-	  $(INSTALL_DATA) $(MEXLIB) $(OPATH)/$(MEXLIB) ; \
-	  $(INSTALL_DATA) mex.h $(OPATH)/mex.h ; \
-	  $(INSTALL_DATA) matrix.h $(OPATH)/matrix.h ; \
+	 if test -d $(LIBPATH) ; then \
+	  echo installing $(MEXLIB) mex/mex.h mex/matrix.h in $(LIBPATH) ; \
+	  $(INSTALL_DATA) $(MEXLIB) $(LIBPATH)/$(MEXLIB) ; \
+	  $(INSTALL_DATA) mex.h $(LIBPATH)/mex.h ; \
+	  $(INSTALL_DATA) matrix.h $(LIBPATH)/matrix.h ; \
 	fi
 endif
 	@if ! test -e $(man1dir) ; then \

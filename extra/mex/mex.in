@@ -26,7 +26,7 @@ fi
 
 if test -n "$compileonly" ; then
    set -x
-   @MKOCTFILE@ -I@OPATH@ $*
+   @MKOCTFILE@ -I@LIBPATH@ $*
    exit
 elif grep -iq mexfunction $first ; then
    echo building $first
@@ -75,7 +75,7 @@ EOF
 if test -f "@MEXLIB@" ; then
   MEXPATH=`pwd`
 else
-  MEXPATH="@OPATH@"
+  MEXPATH="@LIBPATH@"
 fi
 
 set -x

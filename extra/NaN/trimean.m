@@ -21,25 +21,24 @@ end;
 
 % find the dimension
 if nargin==1,
-        DIM=min(find(size(i)>1));
+        DIM=min(find(size(Y)>1));
         if isempty(DIM), DIM=1; end;
 end;
-
 N = sum(~isnan(Y),DIM);
 Y = sort(Y,DIM);
 
 sz = size(Y);
 sz(DIM) = 1;
 
-Q0500 = repmat(nan,sz);
-Q0250 = Q0500;
-Q0750 = Q0500;
+O = repmat(nan,sz);
 
 if DIM==2, Y=Y'; end;
+%%% assumes that NaN is at the end of the sorted list
 for k=1:size(Y,2),
-        Q0250(k) = flix(Y(:,k),N(k)/4   + 0.75);
-        Q0500(k) = flix(Y(:,k),N(k)/2   + 0.50);
-        Q0750(k) = flix(Y(:,k),N(k)*3/4 + 0.25);
+        Q0250 = flix(Y(:,k),N(k)/4   + 0.75);
+        Q0500 = flix(Y(:,k),N(k)/2   + 0.50);
+        Q0750 = flix(Y(:,k),N(k)*3/4 + 0.25);
+        
+        O(k)  = [Q0250 + 2*Q0500 + Q0750]/4;
 end;
-O = [Q0250 + 2*Q0500 + Q0750]/4;
 

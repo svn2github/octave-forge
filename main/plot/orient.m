@@ -29,7 +29,7 @@ function ret = orient(orientation)
 
   elseif (nargin == 1)
 
-    if strcmp(orientation,"landscape") || strcmp(orienation,"portrait")
+    if strcmp(orientation,"landscape") || strcmp(orientation,"portrait")
       __print_orientation = orientation;
     else
       error ("orient: unknown orientation");
@@ -42,3 +42,11 @@ function ret = orient(orientation)
   endif
 
 endfunction
+
+%!assert(orient,"landscape") # default
+%!test orient('portrait')
+%!assert(orient,"portrait")  # change to portrait
+%!test orient('landscape')
+%!assert(orient,"landscape") # change to landscape
+%!fail("orient('nobody')","unknown orientation")
+%!assert(orient,"landscape") # errors don't change the state

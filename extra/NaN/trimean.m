@@ -1,10 +1,12 @@
-function O=trimean(Y,DIM)
-% TRIMEAN evaluates basic statistics of a data series (column)
-% TR=TRIMEAN(y)
+function y=trimean(x,DIM)
+% TRIMEAN evaluates basic statistics of a data series
+%    m = TRIMEAN(y).
+%
+% The trimean is  m = (Q1+2*MED+Q3)/4
+%    with quartile Q1 and Q3 and median MED   
+%
+% N-dimensional data is supported
 % 
-% The trimean is 
-%   TR=(Q1+2*M+Q3)/4
-%  
 % REFERENCES:
 % [1] http://mathworld.wolfram.com/Trimean.html
 
@@ -14,7 +16,7 @@ function O=trimean(Y,DIM)
 
 
 % check dimension
-sz=size(Y);
+sz=size(x);
 if length(sz)>2,
         fprintf('Error TRIMEAN: data must have no more than 2 dimensions\n');	
 	return;        
@@ -26,26 +28,24 @@ if nargin==1,
         if isempty(DIM), DIM=1; end;
 end;
 
-if flag_implicit_skip_nan,
-	N = sumskipnan(~isnan(Y),DIM);
-else
-	N = sumskipnan(ones(size(Y)),DIM);
+if DIM>length(sz),
+        sz = [sz,ones(1,DIM-length(sz))];
 end;
 
-sz = size(Y);
-sz(DIM) = 1;
-O = repmat(nan,sz);
-
-if DIM==2, Y=Y'; end;
-Y = [Y; repmat(nan,1,size(Y,2))];
-Y = sort(Y);
-    
-%%% assumes that NaN is at the end of the sorted list
-for k=1:size(Y,2),
-        Q0250 = flix(Y(:,k),N(k)/4   + 0.75);
-        Q0500 = flix(Y(:,k),N(k)/2   + 0.50);
-        Q0750 = flix(Y(:,k),N(k)*3/4 + 0.25);
+D1 = prod(sz(1:DIM-1));
+%D2 = sz(DIM);
+D3 = prod(sz(DIM+1:length(sz)));
+D0 = [sz(1:DIM-1),1,sz(DIM+1:length(sz))];
+y  = repmat(nan,D0);
+for k = 0:D1-1,
+for l = 0:D3-1,
+        xi = k + l * D1*sz(DIM) + 1 ;
+        xo = k + l * D1 + 1;
+        t = sort(x(xi+(0:sz(DIM)-1)*D1));
+        n = sum(~isnan(t));
         
-        O(k)  = [Q0250 + 2*Q0500 + Q0750]/4;
+        q = flix(t,[n/4 + 0.75; n/2+0.5; n*3/4 + 0.25]);
+        y(xo) = (q(1) + 2*q(2) + q(3))/4;
+end;
 end;
 

@@ -65,15 +65,15 @@ function [rx, ry, rz] = griddata (x,y,z,xi,yi)
     ## search for every point the enclosing triangle
     tri_list=tsearch(x,y,tri,xi(:),yi(:));
 
-    ## keep non zero values before overwriting zeros with 1
+    ## only keep the points within triangles.
     valid=!isnan(reshape(tri_list,size(xi)));
-    tri_list = tri_list(valid);
+    tri_list = tri_list(!isnan(tri_list));
     nr_t=rows(tri_list);
 
     ## assign x,y,z for each point of triangle
-    x1=x(tri([tri_list],1));y1=y(tri([tri_list],1));z1=z(tri([tri_list],1));
-    x2=x(tri([tri_list],2));y2=y(tri([tri_list],2));z2=z(tri([tri_list],2));
-    x3=x(tri([tri_list],3));y3=y(tri([tri_list],3));z3=z(tri([tri_list],3));
+    x1=x(tri(tri_list,1));y1=y(tri(tri_list,1));z1=z(tri(tri_list,1));
+    x2=x(tri(tri_list,2));y2=y(tri(tri_list,2));z2=z(tri(tri_list,2));
+    x3=x(tri(tri_list,3));y3=y(tri(tri_list,3));z3=z(tri(tri_list,3));
 
     ## calculate norm vector
     N=cross([x2-x1, y2-y1, z2-z1],[x3-x1, y3-y1, z3-z1]);

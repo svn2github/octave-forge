@@ -1,13 +1,12 @@
 sinclude ../Makeconf
 
-# Needed for soct.oct
+# Needed for sort.oct
 SORTDEFINES=$(HAVE_IEEE754_COMPLIANCE) $(HAVE_ND_ARRAYS)
 
 # This bit of logic decides whether to build sort.oct or not, as it
 # is include in octave versions 2.1.58 and greater
 t2.1.58=sort.oct
-tver=t$(OCTAVE_VERSION)
-SORT_BUILD=$($(word 2, $(sort $(tver) t2.1.58)))
+SORT_BUILD=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58)))
 
 RAND_LINKS = randn.oct rande.oct
 PROGS = $(SORT_BUILD) rand.oct $(RAND_LINKS) 
@@ -21,8 +20,8 @@ $(RAND_LINKS):
 	-$(RM) $@
 	$(LN_S) rand.oct $@
 
-rand.oct : rand.cc MersenneTwister.h
-	$(MKOCTFILE) $(HAVE_ND_ARRAYS) $<
+rand.oct : randmtzig.c rand.cc MersenneTwister.h
+	$(MKOCTFILE) $(HAVE_ND_ARRAYS) rand.cc
 
 sort.oct : sort.cc oct-sort.cc oct-sort.h
 	$(MKOCTFILE) $(SORTDEFINES) $<

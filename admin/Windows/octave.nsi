@@ -98,7 +98,8 @@ LangString EpstkLink ${LANG_SPANISH} "$SMPROGRAMS\${MUI_PRODUCT}\Manual de Epstk
 LangString RefcardLink ${LANG_ENGLISH} "$SMPROGRAMS\${MUI_PRODUCT}\${MUI_PRODUCT} Quick Reference (PDF).lnk"
 LangString RefcardLink ${LANG_SPANISH} "$SMPROGRAMS\${MUI_PRODUCT}\Refencia Rápida de ${MUI_PRODUCT} (PDF).lnk"
 
-LangString PreviousCygwin ${LANG_ENGLISH} "A previous installation of cygwin was detected. This package is not to be used from within a cygwin enviroment. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
+;ESP
+LangString PreviousCygwin ${LANG_ENGLISH} "A previous installation of cygwin was detected. To use this package from the cygwin system, mount the install directory as /opt/octave-${VERSION}."
 LangString PreviousCygwin ${LANG_SPANISH} "Se detectó una versión de cygwin instalada. Este paquete no fue diseñado para funcionar dentro de un ambiente de cygwin. Presione Aceptar si desea continuar o Cancelar si desea detener el preceso de instalación."
 
 LangString PreviousOctave ${LANG_ENGLISH} "A previous version of Octave ${VERSION} for Windows was detected. Please uninstall any previous version before running this installer. Click OK if you want to continue anyway or CANCEL if you want to abort the installation process."
@@ -317,34 +318,31 @@ Section "-Local Config"
 SectionEnd
 
 ; Tests which are done before the first page, but can't
-; be done in .onInit since LangStrings do not work in
-; the .onInit function.
+; be done in .onInit since LangString variables do not 
+; work in the .onInit function.
 Function BeforeFirstPage
   ; We may be Intel-specific, especially if compiled against ATLAS.
   ClearErrors
   ReadRegStr $1 HKLM "HARDWARE\DESCRIPTION\System\CentralProcessor\0\" "VendorIdentifier"
-  StrCmp $1 "GenuineIntel" Continue0 Error0
-  Error0:
-    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(GenuineIntel) IDOK Continue0
-    Abort
+  StrCmp $1 "GenuineIntel" Continue0
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(GenuineIntel) /SD IDOK IDOK Continue0
+  Quit
   Continue0:
 
   ; Detect an existing Octave installation
   ClearErrors
-  ReadRegDWORD $1 HKLM "SOFTWARE\${MOUNTKEY}\/" flags
-  IfErrors Continue1 Error1
-  Error1:
-    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(PreviousOctave) IDOK Continue1
-    Abort
+  EnumRegKey $1 HKLM "SOFTWARE\${MOUNTKEY}\\" 0
+  StrCmp $1 "" Continue1
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(PreviousOctave) /SD IDOK IDOK Continue1
+  Quit
   Continue1:
 
   ; Detect an existing Cygwin installation
   ClearErrors
-  ReadRegDWORD $1 HKLM "SOFTWARE\Cygnus Solutions" flags
-  IfErrors Continue2 Error2
-  Error2:
-    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(PreviousCygwin) IDOK Continue2
-    Abort
+  EnumRegKey $1 HKLM "SOFTWARE\Cygnus Solutions\Cygwin" 0
+  StrCmp $1 "" Continue2
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION $(PreviousCygwin) /SD IDOK IDOK Continue2
+  Quit
   Continue2:
 FunctionEnd
 

@@ -100,7 +100,7 @@ function edit(file,state)
 
   ## start the editor without a file if no file is given
   if nargin < 1
-    system(['cd "',FUNCTION_HOME,'" ; "',sprintf(FUNCTION_EDITOR,""), '"']);
+    system(['cd "',FUNCTION_HOME,'" ; ',sprintf(FUNCTION_EDITOR,"")]);
     return
   endif
 

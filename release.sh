@@ -7,6 +7,9 @@
 ##
 ## Don't forget 'cvs update' to make sure you haven't forgotten anything!
 ##
+## Check the output of admin/get_authors
+## Run admin/get_contents
+##
 ## Define the following in ~/.netrc:
 ##      machine upload.sf.net
 ##      login anonymous
@@ -28,6 +31,15 @@
 ## You should also do:
 ## 	./cvs-tree > afunclist.html
 ## 	scp afunclist.html octave.sf.net:/home/groups/o/oc/octave/htdocs
+##
+##      admin/make_index
+##      tar czf index.tar.gz index
+##      scp index.tar.gz $OFHOME
+##      ssh octave.sf.net
+##      cd /home/groups/o/oc/octave/htdocs
+##      rm -rf index
+##      tar xzf index.tar.gz
+##      rm index.tar.gz
 
 # base name of the project
 PROJECT=octave-forge
@@ -47,6 +59,9 @@ cvs rtag $TAG $PROJECT
 
 # extract the tree into a tagged directory
 cvs export -r $TAG -d $ROOT $PROJECT
+
+# generate the AUTHORS file
+( cd $ROOT ; admin/get_authors )
 
 # generate configure script
 ( cd $ROOT ; ./autogen.sh )

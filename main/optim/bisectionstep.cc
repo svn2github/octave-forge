@@ -46,20 +46,34 @@ any_bad_argument(const octave_value_list& args)
       error("bisectionstep: second argument must cell array of function arguments");
       return true;
     }
-  if (!args(2).is_real_type())
-    {
-      error("bisectionstep: third argument must be column vector of directions");
-      return true;
-    }
+
+	if (!(args(2).is_real_matrix() || args(2).is_real_scalar()))
+	{
+		error("bisectionstep: third argument must be column vector of directions");
+		return true;
+	}
+	if ((args(2).is_real_matrix()) && (args(2).columns() != 1))
+	{
+		error("bisectionstep: third argument must be column vector of directions");
+		return true;
+	}	
 
   if (args.length() == 4)
-    {
-      if (!args(3).is_real_scalar())
-    	{
-	  error("bisectionstep: 4th argument, if supplied, must be a scalar specifying which is the minimand");
-	  return true;
-    	}
-    }	
+  {
+  	int tmp = args(3).int_value();
+		if (error_state)
+		{
+			error("bisectionstep: 4th argument, if supplied, must be an integer scalar");
+			return true;
+		}	
+		if ((tmp > args(1).length()|| tmp < 1))  
+		{
+			error("bisectionstep: 4th argument must be a positive integer that indicates \n\
+which of the elements of the second argument is the one minimization is over");
+			return true;
+		}	
+
+	}
 
   return false;
 }

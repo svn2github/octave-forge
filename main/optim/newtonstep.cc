@@ -28,36 +28,50 @@
 #include <octave/lo-ieee.h>
 #include <float.h>
 
-// static bool
-// any_bad_argument(const octave_value_list& args)
-// {
-//   if (!args(0).is_string())
-//     {
-//       error("newtonstep: first argument must be string holding objective function name");
-//       return true;
-//     }
-//   if (!args(1).is_cell())
-//     {
-//       error("newtonstep: second argument must cell array of function arguments");
-//       return true;
-//     }
-//   if (!args(2).is_real_type())
-//     {
-//       error("newtonstep: third argument must be column vector of directions");
-//       return true;
-//     }
-// 
-//   if (args.length() == 4)
-//     {
-//       if (!args(3).is_real_scalar())
-//     	{
-// 	  error("newtonstep: 4th argument, if supplied, must be a scalar specifying which is the minimand");
-// 	  return true;
-//     	}
-//     }	
-// 
-//   return false;
-// }
+static bool
+any_bad_argument(const octave_value_list& args)
+{
+  if (!args(0).is_string())
+    {
+      error("newtonstep: first argument must be string holding objective function name");
+      return true;
+    }
+  if (!args(1).is_cell())
+    {
+      error("newtonstep: second argument must cell array of function arguments");
+      return true;
+    }
+
+	if (!(args(2).is_real_matrix() || args(2).is_real_scalar()))
+	{
+		error("newtonstep: third argument must be column vector of directions");
+		return true;
+	}
+	if ((args(2).is_real_matrix()) && (args(2).columns() != 1))
+	{
+		error("newtonstep: third argument must be column vector of directions");
+		return true;
+	}	
+
+  if (args.length() == 4)
+  {
+  	int tmp = args(3).int_value();
+		if (error_state)
+		{
+			error("newtonstep: 4th argument, if supplied, must be an integer scalar");
+			return true;
+		}	
+		if ((tmp > args(1).length()|| tmp < 1))  
+		{
+			error("newtonstep: 4th argument must be a positive integer that indicates \n\
+which of the elements of the second argument is the one minimization is over");
+			return true;
+		}	
+
+	}
+
+  return false;
+}
 
 
 
@@ -65,15 +79,15 @@ DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
 {
   
 	
-//   int nargin = args.length ();
-//   if ((nargin < 3) || (nargin > 4))
-//     {
-//       error("newtonstep: you must supply 3 or 4 arguments");
-//       return octave_value_list();
-//     }
-// 
-//   // check the arguments
-//   if (any_bad_argument(args)) return octave_value_list();
+  int nargin = args.length ();
+  if ((nargin < 3) || (nargin > 4))
+    {
+      error("newtonstep: you must supply 3 or 4 arguments");
+      return octave_value_list();
+    }
+
+  // check the arguments
+  if (any_bad_argument(args)) return octave_value_list();
 
 	
 	

@@ -25,9 +25,6 @@ Currently are implemented:
 			For this reason, a different name (than SUM) had to be chosen. 
 			SUMSKIPNAN is central, it implements skipping NaN's, the 
 			DIM-argument and returns the number of valid elements, too.
-	FLAG_IMPLICIT_SKIP_NAN	
-			gets and sets default handling of NaN's
-
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)
 	VAR 		variance
 	STD 		standard deviation
@@ -39,14 +36,21 @@ Currently are implemented:
 	MOMENT		moment 	
 	SKEWNESS	skewness
 	KURTOSIS	excess 
-	FLAG_IMPLICIT_UNBIASED_ESTIM	
-			gets and sets default estimation mode
 	MAD		mean absolute deviation
 	ZSCORE		normalizes x with z=(x-mean)/std 
 	HARMMEAN	harmonic mean
 	GEOMEAN		geometric mean
 	NANTEST		checks whether all functions have been replaced
-
+	DETREND		detrending of data with missing values and non-equidistant sampled data
+	COVM		covariance estimation (several modes)
+	
+	FLAG_IMPLICIT_SKIP_NAN	
+			gets and sets default handling of NaN's
+			might become obsolete in future
+	FLAG_IMPLICIT_UNBIASED_ESTIM	
+			gets and sets default estimation mode
+			might become obsolete in future
+			
 	
 REFERENCE(S):
 ----------------------------------
@@ -194,8 +198,8 @@ This checks whether all previous functions have been replaced
 
 
 
-	Version 1.15
-	12 Mar 2002
+	Version 1.16
+	15 Mar 2002
 	Copyright (c) 2000-2002 by  Alois Schloegl
 	a.schloegl@ieee.org	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

@@ -540,5 +540,5 @@ See also: builtin")
 
 
 #if defined(__GNUG__)
-template std::map<std::string,std::string>;
+template class std::map<std::string,std::string>;
 #endif

@@ -24,6 +24,7 @@ page_screen_output=1;
 SZ=10;
 NTRIES=100;
 
+errortol= 1e-10;
 res=zeros(1,200); # should be enough space
 
 for tries = 1:NTRIES;
@@ -144,11 +145,11 @@ end
    i=i+1;      % i=10
 
    if ~isempty(ars)
-      res(i)= res(i)     + all( abs(spsum(ars) - sum(arf)) < 1e-12 );
+      res(i)= res(i)     + all( abs(spsum(ars) - sum(arf)) < errortol );
       i=i+1;      % i=11
-      res(i)= res(i)     + all( abs(spsum(ars,2) - sum(arf,2)) < 1e-12 );
+      res(i)= res(i)     + all( abs(spsum(ars,2) - sum(arf,2)) < errortol );
       i=i+1;      % i=12
-      res(i)= res(i)     + all( abs(spsum(acs,1) - sum(acf,1)) < 1e-12 );
+      res(i)= res(i)     + all( abs(spsum(acs,1) - sum(acf,1)) < errortol );
       i=i+1;      % i=13
    else      
       res(i)= res(i)+1;
@@ -211,9 +212,9 @@ end
    i=i+1;      % i=34
    res(i)= res(i)     +all(all( (ars.*frn) == (arf.*frn) ));
    i=i+1;      % i=35
-   res(i)= res(i)     +all(all( abs( (frn\ars) - (frn\arf) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (frn\ars) - (frn\arf) )<errortol ));
    i=i+1;      % i=36
-   res(i)= res(i)     +all(all( abs( (ars/frn) - (arf/frn) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (ars/frn) - (arf/frn) )<errortol ));
    i=i+1;      % i=37
 %    
 % test sparse op complex scalar operations
@@ -238,9 +239,9 @@ end
    i=i+1;      % i=46
    res(i)= res(i)     +all(all( (ars.*fcn) == (arf.*fcn) ));
    i=i+1;      % i=47
-   res(i)= res(i)     +all(all( abs( (fcn\ars) - (fcn\arf) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (fcn\ars) - (fcn\arf) )<errortol ));
    i=i+1;      % i=48
-   res(i)= res(i)     +all(all( abs( (ars/fcn) - (arf/fcn) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (ars/fcn) - (arf/fcn) )<errortol ));
    i=i+1;      % i=49
 %    
 % test complex sparse op scalar operations
@@ -265,9 +266,9 @@ end
    i=i+1;      % i=58
    res(i)= res(i)     +all(all( (acs.*frn) == (acf.*frn) ));
    i=i+1;      % i=59
-   res(i)= res(i)     +all(all( abs( (frn\acs) - (frn\acf) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (frn\acs) - (frn\acf) )<errortol ));
    i=i+1;      % i=60
-   res(i)= res(i)     +all(all( abs( (acs/frn) - (acf/frn) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (acs/frn) - (acf/frn) )<errortol ));
    i=i+1;      % i=61
 %    
 % test complex sparse op complex scalar operations
@@ -292,9 +293,9 @@ end
    i=i+1;      % i=70
    res(i)= res(i)     +all(all( (acs.*fcn) == (acf.*fcn) ));
    i=i+1;      % i=71
-   res(i)= res(i)     +all(all( abs( (fcn\acs) - (fcn\acf) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (fcn\acs) - (fcn\acf) )<errortol ));
    i=i+1;      % i=72
-   res(i)= res(i)     +all(all( abs( (acs/fcn) - (acf/fcn) )<1e-13 ));
+   res(i)= res(i)     +all(all( abs( (acs/fcn) - (acf/fcn) )<errortol ));
    i=i+1;      % i=73
 
 %
@@ -325,7 +326,7 @@ end
 %
 
    df_ef= drf\erf;
-   mag =  1e-12*mean( df_ef(:))*sqrt(prod(size(df_ef)));
+   mag =  errortol*mean( df_ef(:))*sqrt(prod(size(df_ef)));
    # FIXME: this breaks if drs is 1x1
    rdif= abs(drs\erf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
@@ -381,7 +382,7 @@ end
 %
 
    df_ef= drf\ecf;
-   mag =  1e-12*mean( df_ef(:))*sqrt(prod(size(df_ef)));
+   mag =  errortol*mean( df_ef(:))*sqrt(prod(size(df_ef)));
    # FIXME: this breaks if drs is 1x1
    rdif= abs(drs\ecf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
@@ -438,7 +439,7 @@ end
 %
 
    df_ef= dcf\erf;
-   mag =  1e-12*mean( df_ef(:))*sqrt(prod(size(df_ef)));
+   mag =  errortol*mean( df_ef(:))*sqrt(prod(size(df_ef)));
    # FIXME: this breaks if drs is 1x1
    rdif= abs(dcs\erf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
@@ -500,7 +501,7 @@ end
 %
 
    df_ef= dcf\ecf;
-   mag =  1e-12*mean( df_ef(:))*sqrt(prod(size(df_ef)));
+   mag =  errortol*mean( df_ef(:))*sqrt(prod(size(df_ef)));
    # FIXME: this breaks if drs is 1x1
    rdif= abs(dcs\ecf - df_ef) < abs(mag*df_ef);
    res(i)= res(i)     +all(all( rdif ));
@@ -544,11 +545,11 @@ end
    i=i+1;      % i=162
    res(i)= res(i)     +all(all( acs.*bcf == acf.*bcf ));  
    i=i+1;      % i=163
-   res(i)= res(i)     +all(all( abs( acs*ccs - acf*ccf ) < 1e-16 ));  
+   res(i)= res(i)     +all(all( abs( acs*ccs - acf*ccf ) < errortol ));  
    i=i+1;      % i=164
-   res(i)= res(i)     +all(all( abs( acf*ccs - acf*ccf ) < 1e-16 ));  
+   res(i)= res(i)     +all(all( abs( acf*ccs - acf*ccf ) < errortol ));  
    i=i+1;      % i=165
-   res(i)= res(i)     +all(all( abs( acs*ccf - acf*ccf ) < 1e-16 ));  
+   res(i)= res(i)     +all(all( abs( acs*ccf - acf*ccf ) < errortol ));  
    i=i+1;      % i=166
 
 %
@@ -578,7 +579,7 @@ end
 %
 % sparse LU and inverse
 %
-   mag = 1e-12;
+   mag = errortol;
    [Lf2,Uf2]     =   lu( drf );
    [Lf4,Uf4,Pf4] =   lu( drf );
 
@@ -613,7 +614,7 @@ end
    i=i+1;      % i=174
 
    dsi = spinv( drs );
-   mag= 1e-10;
+   mag= errortol;
    res(i)= res(i) + all(all( ...
            abs( inv(drf) - dsi ) <= mag*(1+abs(inv(drf))) ));
    i=i+1;      % i=175
@@ -635,7 +636,7 @@ end
 %
 % complex sparse LU and inverse
 %
-   mag = 1e-12;
+   mag = errortol;
    [Lf2,Uf2]     =   lu( dcf );
    [Lf4,Uf4,Pf4] =   lu( dcf );
 
@@ -669,7 +670,7 @@ end
    i=i+1;      % i=179
 
    dci = spinv( dcs );
-   mag= 1e-10;
+   mag= errortol;
    res(i)= res(i) + all(all( ...
            abs( inv(dcf) - dci ) <= mag*(1+abs(inv(dcf))) ));
    i=i+1;      % i=180
@@ -732,6 +733,9 @@ end
 
 %
 % $Log$
+% Revision 1.5  2002/02/28 04:57:18  aadler
+% global error threshold
+%
 % Revision 1.4  2001/11/16 03:09:42  aadler
 % added spsum.m, is_sparse, is_real_sparse, is_complex_sparse
 %

@@ -17,6 +17,7 @@ my $script  = basename($0);
 my $OCTAVE  = "../octave";  # location of the octave sources; symlink them
 			    # beside octave-forge if they are somewhere else
 			    # or modify this script
+my $tmpdir = "/tmp";
 
 my $forgebar = qq~<center>
 <A href="http://octave.sourceforge.net">Home</A> |
@@ -86,6 +87,8 @@ my @uncategorized = ();
 my @skipped = ();
 my %n_appearances = ();
 my $n_functions = 0;
+my @shadow_paths = ('FIXES', 'extra/NaN', 'extra/Windows', 'extra/ver20'); 
+my @shadowed = ();
 
 # grab help from C++ files
 foreach my $f ( @C_files ) {
@@ -189,6 +192,14 @@ if (@uncategorized) {
 #    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
 }
 
+if (@shadowed) {
+    print "unexpected shadowing of ", scalar(@shadowed), " Octave functions";
+    my $rs = $,; $, = "\n  ";
+    print "  ", sort(@shadowed); $, = $rs;
+    print "\n";
+#    print wrap("\t", "\t", join(" ", sort @shadowed)), "\n";
+}
+
 sub first_sentence { # {{{1
 # grab the first real sentence from the function documentation
     my ($desc) = @_;
@@ -205,7 +216,7 @@ sub first_sentence { # {{{1
 	# help text contains texinfo.  Strip the indicator and run it
 	# through makeinfo. (XXX FIXME XXX this needs to be a function)
 	$desc =~ s/^\s*-[*]- texinfo -[*]-\s*//;
-	my $cmd = "makeinfo --fill-column 1600 --no-warn --no-validate --no-headers --force";
+	my $cmd = "makeinfo --fill-column 1600 --no-warn --no-validate --no-headers --force --ifinfo";
 	open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
 	print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
 	print Writer "$desc"; close(Writer);
@@ -300,6 +311,15 @@ sub first_sentence { # {{{1
     return $line;
 
 } # 1}}}
+sub shadow_path { # {{{1
+# shadow_path($f) returns true if $f is on a known Octave shadow path
+    my ($file) = @_;
+    $file =~ s|/[^/]*$||;
+    my @matches = grep(/^$file$/,@shadow_paths);
+#    print "looking for $file in @shadow_paths\n";
+#    print "returns ",@matches,"\n";
+    return scalar(@matches) > 0;
+} # 1}}}
 sub register_function { # {{{1
 # register the function and its one-line description
     my ($function,      # in   $index{toolbox}{category} = [functions]
@@ -308,6 +328,8 @@ sub register_function { # {{{1
        )      = @_;
     ++$n_appearances{$function};
     if ($n_appearances{$function} > 1) {
+	push @shadowed, $function_description{$function}[0] if $file =~ /^$OCTAVE/ 
+	    and !shadow_path($function_description{$function}[0]);
 #        print "$file:$function appeared previously\n";
     } else {
         ++$n_functions;
@@ -815,24 +837,51 @@ sub long_desc {
     my ( $func ) = @_;
     my $body = $function_description{$func}[2];
     if ($body =~ /^\s*-[*]- texinfo -[*]-/) {
-	# run body through texinfo
-	$body =~ s/^\s*-[*]- texinfo -[*]-\s*//;
-	my $cmd = "makeinfo --fill-column 80 --no-warn --no-validate --no-headers --force --html";
-	open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
-	print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
-	print Writer "$body"; close(Writer);
-	my @lines = <Reader>; close(Reader);
-	my @err = <Errer>; close(Errer);
-	waitpid(-1,&WNOHANG);
-	# strip everything before <body> and after </body>
-	$body = join("",@lines);
-	my $start = index($body,"<<p>p>") + 6;
-	my $stop = index($body,"</body>") - 1;
-	$body = substr($body,$start,$stop-$start+1);
+	$body = info2html($func, $body);
     } elsif ($body ne "") {
 	$body = "<pre>$body</pre>";
     }
     return $body
+} # 1}}}
+sub info2html_texi2html { # 1{{{
+# run body through texi2html to produce html
+    my ( $func, $body ) = @_;
+    $body =~ s/^\s*-[*]- texinfo -[*]-//;
+    open(SRC, ">$func.texi");
+    print SRC "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
+    print SRC "BEGINCUT $body ENDCUT";
+    close SRC;
+    system ("texi2html -expand info $tmpdir/$func.texi");
+    open(SRC, "<$func.html");
+    my @lines = <SRC>;
+    close SRC;
+    $body = join("",@lines);
+    my $start = index($body,"BEGINCUT") + 8;
+    my $stop = index($body,"ENDCUT");
+    $body = substr($body,$start,$stop-$start);
+    unlink "$func.texi", "$func.html";
+} # 1}}}
+sub info2html { # 1{{{
+# run body through makeinfo to produce html
+    my ( $func, $body ) = @_;
+    $body =~ s/^\s*-[*]- texinfo -[*]-//;
+    my $cmd = "makeinfo --fill-column 80 --no-warn --no-validate --no-headers --force --html --ifinfo";
+    open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
+    print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
+    # I have no idea why but makeinfo is introducing some weirdness with <p>
+    # at the front of the document.  The following works for my particular
+    # version but I have little hope for it working in general
+    print Writer "-CUT HERE $body"; close(Writer);
+    my @lines = <Reader>; close(Reader);
+    my @err = <Errer>; close(Errer);
+    waitpid(-1,&WNOHANG);
+    # strip everything before <body> and after </body>
+    $body = join("",@lines);
+    my $start = index($body,"CUT HERE") + 8;
+    my $stop = index($body,"</body");
+    $body = substr($body,$start,$stop-$start);
+    $body =~ s|\@var\{([^\}]*)\}|<var>$1</var>|g;
+    return $body;
 } # 1}}}
 sub toolbox_list { # 1{{{
 # toolbox_list() returns an ordered list of toolboxes.

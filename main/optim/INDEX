@@ -2,26 +2,26 @@ optimization >> Optimization
 Minimization
  minimize 
  nelder_mead_min
- bracket_min brent_line_min cg_min d2_min
- bfgs dfp nrm
+ bracket_min d2_min
+ bfgs nrm
  lp
- fmin fminbnd semi_bracket
+ fmin fminbnd
+ line_min
 Data fitting
  expfit expdemo
- polyfit wpolyfit wpolyfitdemo 
+ wpolyfit wpolyfitdemo 
  leasqr leasqrdemo
 Root finding
  fzero 
- fsolve 
- fsolve_options perror strerror
 Compatibility
- fminunc=use <code>minimize</code>
+ fminunc
+ optimset
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
  linprog= try <code>lp</code> from octave-forge
 Numerical derivatives
- dfdp bs_gradient cdiff deriv __quasi_func__
+ dfdp bs_gradient cdiff deriv leval
 Tests
-  lp_test test_cg_min_1 test_cg_min_2 test_cg_min_3
+  lp_test test_min_1 test_min_2 test_min_3 test_min_4
   test_d2_min_1 test_d2_min_2 test_d2_min_3
   test_nelder_mead_min_1 test_nelder_mead_min_2
   poly_2_ex test_minimize_1

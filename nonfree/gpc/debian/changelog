@@ -1,3 +1,10 @@
+octave-gpc (0.1.2-5) unstable; urgency=low
+
+  * Recompiled for the new Octave packages (2.1.36). Closes: #145762.
+    Changed dependencies in debian/control accordingly.
+
+ -- Rafael Laboissiere <rafael@debian.org>  Sun, 12 May 2002 22:14:55 +0200
+
 octave-gpc (0.1.2-4) unstable; urgency=low
 
   * debian/control: Including hppa in the list of supported architectures.

@@ -12,7 +12,7 @@ AC_PATH_PROG(PERL, perl)
 AC_ARG_WITH(octdir,
   [
   --with-octdir           Specify the path for installation of .oct
-                          files.  If not given, try to determine it by 
+                          files.  If not given, try to determine it by
                           running octave --version.],
   [OCTDIR=$withval])
 
@@ -32,7 +32,7 @@ AC_SUBST(LIBEXEC)
 
 AC_ARG_WITH(octave,
   [
-  --with-octave           Specify the octave path (version 2.1.* or 
+  --with-octave           Specify the octave path (version 2.1.* or
                           later)],
   [OCTAVE=$withval])
 
@@ -43,7 +43,7 @@ AC_PATH_PROG(OCTAVE, octave)
 octave_version_msg=`$OCTAVE --version`
 
 [OCTAVE_VERSION=`echo "$octave_version_msg" | \
-  $PERL -ne '/version ([0-9.]+)/; print $1;'`]
+  $PERL -ne '/version ([0-9.]+)/; print $1; exit'`]
 
 AC_MSG_CHECKING(for version 2.1 of octave)
 [if echo "$OCTAVE_VERSION" | \
@@ -67,7 +67,7 @@ AC_SUBST(MDIR)
 
 AC_ARG_WITH(mkoctfile,
   [
-  --with-mkoctfile        Specify the mkoctfile path (version 2.1.* 
+  --with-mkoctfile        Specify the mkoctfile path (version 2.1.*
                           or later).],
   [MKOCTFILE=$withval])
 

@@ -19,18 +19,19 @@
 ## Computes the vector cross product of the two 3-dimensional vectors
 ## @var{x} and @var{y}.
 ##
-## A row vector is returned if @var{x} and @var{y} are both row vectors;
-## otherwise, a column vector is returned.
-##
-## If @var{x} and @var{y} are two - dimensional matrices the
-## cross product is applied along the first dimension with 3 elements.
-##
 ## @example
 ## @group
 ## cross ([1,1,0], [0,1,1])
 ##      @result{} [ 1; -1; 1 ]
 ## @end group
 ## @end example
+##
+## If @var{x} and @var{y} are two - dimensional matrices the
+## cross product is applied along the first dimension with 3 elements.
+##
+## If cross is given a row vector and a column vector, then it will
+## issue a warning and return a column vector.
+##
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -40,16 +41,23 @@
 ## 2001-10-22 Paul Kienzle
 ## * handle matrix inputs
 ## * output row vector if either input is a row vector
+## 2001-10-22 Paul Kienzle
+## * restore octave orientation for mismatched vectors, but issue a warning
 function z = cross (x, y)
 	
   if (nargin != 2)
     usage ("cross (x, y)");
   endif
 
+  ## XXX COMPATIBILITY XXX opposite behaviour for cross(row,col)
+  ## Swap x and y in the assignments below to get the matlab behaviour.
+  ## Better yet, fix the calling code so that it uses conformant vectors.
   if (columns(x) == 1 && rows(y) == 1)
-    x = x.';
-  elseif (rows(x) == 1 && columns(y) == 1)
+    warning ("cross: taking cross product of column by row");
     y = y.';
+  elseif (rows(x) == 1 && columns(y) == 1)
+    warning ("cross: taking cross product of row by column");
+    x = x.';
   endif
 
   if (size(x) == size(y))

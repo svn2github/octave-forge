@@ -26,7 +26,8 @@
 #include <string>
 
 DEFUN_DLD (cellfun, args, nargout," -*- texinfo -*- \n\
-@deftypefn{Lodable Function} {} cellfun(name, cell_array,[name])\n\
+@deftypefn{Lodable Function} {} cellfun(name, cell_array, [name])\n\
+@deftypefnx{Lodable Function} {} cellfun(name, cell_array, [k])\n\
 Evaluate the function named name. Elements in cell_array\n\
 are passed on to the named function individually.\n\
 Not all functions are supported:\n\
@@ -44,6 +45,9 @@ returns a vector of the lengths of cell elements\n\
 returns the number of dims of each element\n\
 @item prodofsize\n\
 returns the product of dims of each element\n\
+@item size\n\
+Requires a third parameter @var{k}, and returns the size along the\n\
+@var{k}-th dimension\n\
 @item isclass\n\
 Requires a third parameter class_name and returns 1 for elements\n\
 of class class_name.\n\
@@ -121,6 +125,32 @@ which is the string class name\n\
         _retval(count)=double((f_args.elem(count).dims()).numel());
       retval=_retval;
     }
+  else if (name == "size")
+    {
+      if (nargin == 3)
+        {
+          int d = args(2).nint_value() - 1;
+
+          if (d < 0)
+	    error ("cellfun: third argument must be a postive integer");
+
+	  if (!error_state)
+            {
+              NDArray _retval(f_args.dims());
+              for(int  count=0; count<k ; count++)
+                {
+                  dim_vector dv = f_args.elem(count).dims();
+                  if (d < dv.length())
+	            _retval(count)=double(dv(d));
+                  else
+	            _retval(count)=1.0;
+                }
+              retval=_retval;
+            }
+        }
+      else
+        error("Not enough argument for size");
+    }
   else if (name == "isclass")
     {
       if (nargin == 3)
@@ -136,7 +166,7 @@ which is the string class name\n\
         error("Not enough argument for isclass");
     }
   else 
-    error("unknow function");
+    error("unknown function");
   
   return retval;
 }

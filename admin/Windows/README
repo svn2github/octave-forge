@@ -1,54 +1,109 @@
-Octave+octave-forge windows build instructions
-====================================
+Most of the work of building a new release is
+encoded in admin/Windows/Makefile.
 
-This build doesn't support atlas.  Eventually we will have
-prebuilt liblapack.dll.a and a set of interchangeable 
-lapack.dll-<arch> DLL's for plain lapack, plus atlas builds
-for various architectures.  These will be made available
-in the same way as the gnuplot binaries.
+First you will need a cygwin environment.
+Search the net for details.
 
-Clean out old versions of octave
-	rm -rf /opt/octave
+You will need to download octave-forge (which
+presumably you have already done, otherwise you
+wouldn't be reading this) and octave sources.
+I put them in /c/src/octave-forge-YYYY.MM.DD
+and /c/src/octave-2.1.xx, and I build octave
+in /c/src/cygwin/octave-2.1.xx which you will
+have to create.  If for some reason this is not 
+acceptable, modify the top few lines of the 
+Makefile to reflect your environment.
 
-Build a shared version of libstdc++.a
-	cd <octave-forge>/admin/Windows
-	./mkstdc++dll.sh
-	cp libstdc++.dll.a <octave>/libcruft
-	
-Build and install octave
-	cd <octave>
-	./configure --enable-shared --disable-static --prefix=/opt/octave
-	make
-	# don't use install-strip for now since it strips the libs
-	make omit_deps=1 install
-	cd <octave-forge>/admin/Windows
-	cp stdc++.dll /opt/octave/bin
-	cp libstdc++.dll.a /op/octave/lib/octave-<version>
+You will need a directory /opt which has a
+number of supplementary packages.  These
+will be distributed from the octave-forge
+download site.
 
-Install octave docs
-	cd <octave>/doc/refcard
-	dvipdf refcard-letter.dvi
-	mkdir /opt/octave/doc
-	mkdir /opt/octave/doc/octave
-	cp refcard-letter.pdf /opt/octave/doc/octave
-	cp ../interpreter/*.html /opt/octave/doc/octave
+The configuration options are hardcoded in 
+config-octave.
 
-Test that octave works
-	export PATH=/opt/octave/bin:$PATH
-	octave
+Now you are ready to build.  You should be
+able to do:
 
-Build octave-forge
-	cd <octave-forge>
-	./autogen.sh  # if using CVS
-	./configure --prefix=/opt/octave
-	make
-	make install
+  (cd /c/src/octave-forge; cvs -q update -dP)
+  make clean.forge
+  make 
 
-Strip the binaries
-	strip /opt/octave/bin/*.{dll,exe}
-	strip /opt/octave/libexec/octave/<ver>/oct/<arch>/*.oct
-	strip /opt/octave/libexec/octave/<ver>/site/oct/<arch>/octave-forge/*.oct
+The results of the build will be in:
 
+  config.octave
+  build.octave
+  check.octave
+  install.octave
+  config.forge
+  build.forge
+  check.forge
+  install.forge
+
+You should be able to run the new octave with
+
+  /opt/octave-2.1.xx/bin/octave
+
+The following make targets are available:
+
+  setup
+    * create /opt/octave-2.1.xx
+    * unpack packages in /opt/PACKAGE.tar.gz
+    * build stdc++.dll
+
+  config -> config.octave
+    * remove single-precision lapack requirements
+    * call ./configure with the appropriate options 
+
+  build -> build.octave
+    * call make in the octave directory
+
+  check -> check.octave
+    * calls make check in the octave directory
+
+  install -> install.octave
+    * calls make install in the octave directory
+
+  docs
+    * copies octave docs to the install directory
+
+  cygwin
+    * sets up a cygwin environment for octave, taken
+      from the current environment.  The list of
+      cygwin files is hard-coded.  You may need a
+      different list for your version of cygwin.
+
+  clean.forge
+    * call make clean in the octave-forge directory
+  config.forge -> config.forge
+    * call ./autogen.sh and ./configure in octave-forge
+  build.forge -> build.forge
+    * call make in octave-forge
+  check.forge -> check.forge
+    * call make check in octave-forge
+  install.forge -> install.forge
+    * call make install in octave-forge
+
+  dist (not implemented)
+    * use nsis to build a new octave distribution.
+
+Check the results files *.octave and *.forge for
+questionable output.  If you need to repeat your 
+build for some reason, you will need to remove 
+the output targets:
+
+	rm *.octave *.forge
+
+
+2004-07-14
+
+Octave+octave-forge windows old build instructions
+
+Build /opt/octave-2.1.xx
+    rm -rf /opt/octave-2.1.xx
+    mkdir /opt/octave-2.1.xx
+    cd /opt/octave-2.1.xx
+        
 Install epstk
 	cd /opt/octave/share/octave/site/m
 	# Grab the latest epstk from http://epstk.sf.net/down
@@ -63,46 +118,8 @@ Hack the links
 	# the required link command:  ln -sf base name
 	# This process needs to be automated, but I don't know how.
 
-Build /opt/octave-support
-	# Octave requires a hacked version of the cygwin dll so
-	# that it doesn't conflict with an existing cygwin installation.
-	# It also requires a number of supporting binaries, such as
-	# shell tools and gnuplot.  These are installed directly from
-	# /opt/octave-support into the bin directory of the installation.
-	# You can build this directory by taking an existing octave for
-	# for windows installation, and copying files from .../bin
-	# into /opt/octave-support.  In future, it would be nice to
-	# grab the current versions of these functions from your cygwin
-	# installation, but I don't know the magic involved in hacking
-	# the cygwin1 dll. It might be as simple as changing the RegistryKey
-	# resource in the distributed cygwin1.dll, but I think they've
-	# hardcoded the name in several places and it won't be that easy
-	# without recompiling.
-	mkdir /opt/octave-support
-	cd /c/Program\ Files/GNU\ Octave/bin
-
-	# Runtime support (libW11 is used by rxvt)
-	cp cyg{win1,pcre,ncurses6,readline5,jpeg6b}.dll /opt/octave-suppport
-	cp run.exe rxvt.exe libW11.dll /opt/octave-support
-
-	# Utility functions --- we need a lot more these; see for
-	# example the list of commands in the Linux Standard Base
-	# specification at http://www.linuxbase.org
-	cp {mount,umount,mkdir,rmdir,mkfifo,mknod}.exe /opt/octave-support
-	cp {basename,expr,mv,rm,ln,ls,ps,sed,sh,touch}.exe /opt/octave-support
-
-	# Cygwin specific utility functions
-	cp {cygpath,regtool}.exe /opt/octave-support
-
-	# help and pager
-	cp {info,infokey,makeinfo,less,lessecho,lesskey}.exe /opt/octave-support
-
-	# gnuplot
-	cp WGNUPLOT.HLP {w,p}gnuplot.exe wgnuplot.GID
-
-	# These don't seem to be used:
-	cp {cygz,cygncurses++6,libW11}.dll /opt/octave-support
-	cp {mkpasswd,cygserver}.exe /opt/octave-support
+	# find all links
+	find /opt/octave-2.1.57 -type l
 
 Grab nsis 2.0 from http://www.nullsoft.com/free/nsis/#download
 	cd <octave-forge>/admin/Windows

@@ -1,0 +1,28 @@
+* Compile libmath.dll with various optimizations
+
+* Use chm so users can search the entire help system
+
+* Include epstk/category index in package so that documentation is consistent
+
+* Use DetectDrives.nsi to detect available drives in NSIS:
+
+	!include "DetectDrives.nsi"
+
+	Function MakeDriveLink
+	   StrCpy $R2 $R0 1
+	   # FileOpen $R1 "$INSTDIR/drive.link" "a"
+	   # FileSeek $R1 0 END
+	   # FileWrite $R1 "ln -sf /cygdrive/$R2 /$R2"
+	   # FileClose $R1
+	   Exec "$INSTDIR\bin\sh.exe -c 'ln -sf /cygdrive/$R2 /$R2'"
+	FunctionEnd
+
+	Section "-Make drive links"
+	   # Delete "$INSTDIR/drive.link"
+	   Push "All Local Drives"
+	   Push $0
+	   GetFunctionAddress $0 "MakeDriveLink"
+	   Exch $0
+	   Call DetectDrives
+	   # Add commands to install_octave.sh to detect and evaluate drive.link
+	SectionEnd

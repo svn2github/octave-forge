@@ -1,5 +1,6 @@
-function [x,z]=mvfilter(B,A,x,z,Mode)
-% multivariate (vector) filter function
+function [x,z]=mvfilter(B,A,x,z)
+% Multi-Variate filter function
+%
 % Y = MVFILTER(B,A,X)
 % [Y,Z] = MVFILTER(B,A,X,Z)
 %
@@ -18,14 +19,13 @@ function [x,z]=mvfilter(B,A,x,z,Mode)
 %  a0,a1,...,ap, b0,b1,...,bq are matrices of size MxM
 %  a0 is usually the identity matrix I or must be invertible 
 %
-% see also: MVAR 
-
-%	Version 2.90
-%	last revision 09.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+% A multivariate inverse filter can be realized with 
+%       [AR,RC,PE] = mvar(Y',P);
+%	e = mvfilter([eye(M),-AR],eye(M),Y);
 %
-% .changelog TSA-toolbox
+% see also: MVAR, FILTER
+
+%	Copyright (C) 1996-2002 by Alois Schloegl  <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

@@ -1,20 +1,24 @@
 function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
-% estimates a multivariate AR(p) model parameter
-% function  [MAR,RC,PE] = mvar(Y [,Pmax]);
+% Estimates Multi-Variate AutoRegressive model parameters 
+% function  [AR,RC,PE] = mvar(Y, Pmax);
 %
 %  INPUT:
-% ACF	Autocorrelation function from lag=[0:p]
+% Y	Multivariate data series 
 % Pmax 	Model order
 %
 %  OUTPUT
-% MAR   multivariate autoregressive model parameter (same format as in [4]	
+% AR    multivariate autoregressive model parameter (same format as in [4]	
 % RC    reflection coefficients (= -PARCOR coefficients)
 % PE    remaining error variance
 %
-% All input and output parameters are organized in rows, one row 
+% All input and output parameters are organized in columns, one column 
 % corresponds to the parameters of one channel.
 %
-% see also: MVFILTER, COVM, SUMSKIPNAN
+% A multivariate inverse filter can be realized with 
+%       [AR,RC,PE] = mvar(Y,P);
+%	e = mvfilter([eye(size(AR,1)),-AR],eye(size(AR(1))),Y);
+%
+% see also: MVFILTER, COVM, SUMSKIPNAN, ARFIT2
 %
 % REFERENCES:
 %  [1] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 
@@ -29,11 +33,7 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %	Validation of MVAR estimators or Remark on Algorithm 808: ARFIT, 
 %	ACM-Transactions on Mathematical Software. submitted.
 
-
-%	Version 2.90
-%	last revision 09.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -66,7 +66,7 @@ else
         if 0, 
                 [tmp,LAG]=xcorr(Y,Pmax,'biased');
                 for K=0:Pmax,
-                        C{K+1}=reshape(tmp(find(LAG==K)),M ,M );	
+                        %C{K+1}=reshape(tmp(find(LAG==K)),M ,M );	
                         C(:,K*M+(1:M))=reshape(tmp(find(LAG==K)),M ,M );	
                 end;
         else

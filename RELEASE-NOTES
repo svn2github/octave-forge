@@ -19,7 +19,8 @@ http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/~checkout~/octave/octave-forge/ma
 
 * Geometry: add (poor) griddata/tsearch support --- please improve!!
 
-* VRML: 
+* VRML: new options 'z(grey|rb|col)' for vmesh() and
+  vrml_surf(). Fixes and improvements to many functions.
 
 * NaN:
 

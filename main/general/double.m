@@ -23,8 +23,12 @@
 ## Created: 15.6.98
 ## Version: 1.0
 
-function d = double(str)
+function d = double(in)
 
-  d = toascii(str);
+  if isstr(in)
+      d = toascii(str);
+  else
+      d = in;
+  end
 
 endfunction

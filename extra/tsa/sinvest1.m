@@ -83,7 +83,9 @@ while 1,
                 xlabel('Model order p');
         elseif K==5
                 plot(0:M,E,'r');
-                v=axis; v(3)=min([v(3); 0]); axis(v);
+                if exist('OCTAVE_VERSION')<5
+                	v=axis; v(3)=min([v(3); 0]); axis(v);
+		endif
                 title('Mean Square (prediction) Error decrease with increasing model order');
                 xlabel('Model order p');
         elseif K==6 
@@ -104,36 +106,36 @@ while 1,
                                 tmp=min(2*optFPE+2,M);                           
                                 oo=optFPE;
                                 plot(0:tmp-1,FPE(1:tmp),'r',optFPE,FPE(optFPE+1),'ro');
-                                v=axis; v(3)=min([v(3); 0]); axis(v);
                                 if exist('OCTAVE_VERSION')<5
                                         text(optFPE,FPE(optFPE+1),sprintf('%i',optFPE));
+                                	v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Final Prediction Error FPE criterion');
                         elseif K==2 
                                 tmp=min(2*optAIC+2,M);
                                 oo=optAIC;
                                 plot(0:tmp-1,AIC(1:tmp),'r',optAIC,AIC(optAIC+1),'ro');
-                                v=axis; v(3)=min([v(3); 0]); axis(v);
                                 if exist('OCTAVE_VERSION')<5
                                         text(optAIC,AIC(optAIC+1),sprintf('%i',optAIC));
+					v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Akaike''s Information Criterion AIC');
                         elseif K==3
                                 tmp=min(2*optBIC+2,M);
                                 oo=optBIC;
                                 plot(0:tmp-1,BIC(1:tmp),'r',optBIC,BIC(optBIC+1),'ro');
-                                v=axis; v(3)=min([v(3); 0]); axis(v);
                                 if exist('OCTAVE_VERSION')<5
                                         text(optBIC,BIC(optBIC+1),sprintf('%i',optBIC));
+                                	v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Bayesian Akaike Information Criterion BIC');
                         elseif K==4
                                 tmp=min(2*optSBC+2,M);
                                 oo=optSBC;
                                 plot(0:tmp-1,SBC(1:tmp),'r',optSBC,SBC(optSBC+1),'ro');
-                                v=axis; v(3)=min([v(3); 0]); axis(v);
                                 if exist('OCTAVE_VERSION')<5
                                         text(optSBC,SBC(optSBC+1),sprintf('%i',optSBC));
+                                	v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Schwartz''s Bayesian Criterion SBC');
                                 %elseif K==5
@@ -147,18 +149,18 @@ while 1,
                                 tmp=min(2*optCAT+2,M);
                                 oo=optCAT;
                                 plot(0:tmp-1,CATcrit(1:tmp),'r',optCAT,CATcrit(optCAT+1),'ro');
-                                v=axis; v(3)=min([v(3); 0]); axis(v);
                                 if exist('OCTAVE_VERSION')<5
                                         text(optCAT,CATcrit(optCAT+1),sprintf('%i',optCAT));
+                                	v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Parzen''s CAT Criterion ');
                         elseif K==6
                                 tmp=min(2*optPHI+2,M);
                                 oo=optPHI;
                                 plot(0:tmp-1,PHI(1:tmp),'r',optPHI,PHI(optPHI+1),'ro');
-                                v=axis; v(3)=min([v(3); 0]); axis(v);
                                 if exist('OCTAVE_VERSION')<5
                                         text(optPHI,PHI(optPHI+1),sprintf('%i',optPHI));
+                                	v=axis; v(3)=min([v(3); 0]); axis(v);
                                 end;
                                 title('Phi criterion ');   
                         elseif K==7
@@ -209,13 +211,14 @@ while 1,
                 title('Pole Diagram');
                 xlabel('real(z)');
                 ylabel('imag(z)');
-                ax = gca;
                 
                 MATLAB_VERSION = version;
                 if MATLAB_VERSION(1)=='4'
+                	ax = gca;
                         tmp = get(ax,'Aspect');
                         set(ax,'Aspect',[tmp(1),1]);
                 elseif MATLAB_VERSION(1)=='5'
+                	ax = gca;
                         tmp = get(ax,'DataAspectRatio');
                         set(ax,'PlotBoxAspectRatio',tmp);
                 end;

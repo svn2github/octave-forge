@@ -23,21 +23,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "EIG.h"
-#include "mx-cm-cdm.h"
-
-#include "defun-dld.h"
-#include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
-#include "utils.h"
-
-// XXX FIXME XXX -- the next two functions should really be just
-// one...
+#include <octave/oct.h>
+#include <octave/EIG.h>
+#include <octave/mx-cm-cdm.h>
 
 DEFUN_DLD (logm, args, ,
   "-*- texinfo -*-\n\

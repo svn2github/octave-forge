@@ -23,11 +23,7 @@ TODO:
 */
 
 #include "config.h"
-
-#include <string>
 #include <fstream>
-#include <iostream>
-#include <iomanip>
 #include <algorithm>
 #include <queue>
 #include <climits>
@@ -58,11 +54,9 @@ queue<Complex> read_textline(istringstream *linestrm, string sep) {
   Complex cv = 0.0;
   unsigned long nchr = 0;
 
-  while (1) {
-
-    if ( linestrm->eof() ) break;
-    nchr++;
-    
+  while (!linestrm->eof() ) {
+  
+    nchr++;    
     if (sep_is_next(linestrm,sep)) {
     
       if (nchr == 1) line.push(0);
@@ -80,7 +74,8 @@ queue<Complex> read_textline(istringstream *linestrm, string sep) {
       if (linestrm->fail()) {
         // invalid charcter(s), try to find next separator
         linestrm->clear();
-        while ( !sep_is_next(linestrm, sep) ) linestrm->get(); 
+        while ( !(sep_is_next(linestrm, sep) || linestrm->eof()) )
+	  linestrm->get(); 
 	line.push(0);
       } else {
         line.push(cv);
@@ -93,10 +88,14 @@ queue<Complex> read_textline(istringstream *linestrm, string sep) {
 
 DEFUN_DLD (dlmread, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep})\n\
-@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file})\n\
-@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep},@var{R},@var{C})\n\
+@deftypefn {Loadable Function} {@var{data} =} dlmread (@var{file})\n\
+@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep})\n\
+@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep},@var{R0},@var{C0})\n\
+@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep},@{range})\n\
 Read the matrix @var{data} from a text file\n\
+The @var{range} parameter must be a 4 element vector containing  the upper left and lower right corner\n\
+[@var{R0},@var{C0},@var{R1},@var{C1}]\n\
+The lowest index value is zero.\n\
 @end deftypefn")
 
 {

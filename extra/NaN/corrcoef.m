@@ -223,11 +223,6 @@ else
         fprintf(2,'Error CORRCOEF: unknown mode ''%s''\n',Mode);
 end;
 
-
-if isempty(Y),   % in this case, diagonal must be 1
-        R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
-end;
-
 if nargout<2, 
         return, 
 end;

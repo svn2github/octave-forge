@@ -48,9 +48,7 @@ end;
 % number of valid elements
 n = sumskipnan(~isnan(x),DIM);   % make it compatible to 2.0.17
         
-%if all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),  %~exist('OCTAVE_VERSION'),
-
-if ~exist('OCTAVE_VERSION'),
+if 0; %~exist('OCTAVE_VERSION'),
         [x,ix] = sort(x,DIM); % this relays on the sort order of IEEE754 inf < nan
 else        
 	if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),  %~exist('OCTAVE_VERSION'),
@@ -65,15 +63,15 @@ else
         end;
 	
 	if DIM==1,
-                [x,ix] = sort([x;inf*ones(1,sz(2))]);
+                [x,ix] = sort([x ; NaN*ones(1,sz(2))]);
         elseif DIM==2,
-                [x,ix] = sort([x';inf*ones(1,sz(1))]);
+                [x,ix] = sort([x'; NaN*ones(1,sz(1))]);
         else
-                fprintf('Warning MEDIAN: DIM argument should be 1 or 2\n');	
+                fprintf('Error MEDIAN: DIM argument should be 1 or 2\n');	
                 return;        
         end;
 end;
-        
+
 y = zeros(size(n));
 for k = 1:prod(size(y)),
         if n(k)==0,

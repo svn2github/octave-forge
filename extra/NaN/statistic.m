@@ -81,8 +81,7 @@ if ~DIM,
 end;
 
 %R.N   	= sumskipnan(~isnan(i),DIM); 	% number of elements
-[R.SUM,R.N] = sumskipnan(i,DIM);	% sum
-R.SSQ  	= sumskipnan(i.*i,DIM);		% sum squared
+[R.SUM,R.N,R.SSQ] = sumskipnan(i,DIM);	% sum
 %R.S3P  = sumskipnan(i.^3,DIM);		% sum of 3rd power
 %R.S4P  = sumskipnan(i.^4,DIM);		% sum of 4th power
 %R.S5P  = sumskipnan(i.^5,DIM);		% sum of 5th power

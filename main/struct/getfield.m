@@ -50,3 +50,14 @@ function str= field_access( varargin )
       end
    end
 
+# if we know if dynamic field names are supported, then
+#   function s=mygetfield(s,varargin)
+#   for idx= 1:nargin-1
+#      i=varargin{idx};
+#      if iscell(i)
+#         s= s( i{:} );
+#      else
+#         s= s.( i );
+#      end
+#   end
+

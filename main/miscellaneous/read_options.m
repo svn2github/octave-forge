@@ -53,7 +53,7 @@ function [op,nread] = read_options (args, varargin) ## pos 2.1.39
 
 verbose = 0;
 
-op = setfields ();		# Empty struct
+op = struct ();		# Empty struct
 op0 = op1 = " ";
 skipnan = prefix = quiet = nocase = quiet = 0;
 extra = ""; 

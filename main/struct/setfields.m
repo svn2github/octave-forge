@@ -31,7 +31,7 @@
 
 function s = setfields(s,varargin)
 if rem(nargin,2) != 1,
-      error('setfields: called with odd number of arguments\n') ; 
+      error('setfields: expected struct, key1, val1, key2, val2, ...\n') ; 
 endif
 	
 for i=1:2:nargin-1

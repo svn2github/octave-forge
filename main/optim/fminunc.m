@@ -88,7 +88,7 @@ end
 
 ## Transform fminunc options into minimize() options
 
-opm = setfields();		# minimize() options
+opm = struct();		# minimize() options
 
 equiv = struct ("TolX"       , "utol"   , "TolFun"     , "ftol",\
 		"MaxFunEvals", "maxev"  , "MaxIter"    , "maxit",\

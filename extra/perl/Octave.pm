@@ -183,7 +183,11 @@ sub start_interpreter
 
    my $Oout; my $Oin;
    eval {
-      open2( $Oout, $Oin , $o->{ILSM}->{INTERP} );
+# This works in perl 5.6
+#     open2( $Oout, $Oin , $o->{ILSM}->{INTERP} ); 
+# But we need to do this in 5.005     
+      open2( \*OOUT, \*OIN , $o->{ILSM}->{INTERP} );
+      $Oout= \*OOUT; $Oin= \*OIN;
    };
    croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open2/i;
 

@@ -10,7 +10,7 @@ function [A] = ar2poly(A);
 % A     denominator polynom
 %
 %
-% see also ACOVF ACORF DURLEV RC2AR FILTER FREQZ ZPLANE
+% see also ACOVF ACORF DURLEV RC2AR FILTER FREQZ ZPLANE
 % 
 % REFERENCES:
 %  P.J. Brockwell and R. A. Davis "Time Series: Theory and Methods", 2nd ed. Springer, 1991.

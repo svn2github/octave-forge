@@ -6,9 +6,6 @@
    David Bateman added normal and exponential distributions following
    Marsaglia and Tang's Ziggurat algorithm.
 
-   Before using, initialize the state by using init_by_int(seed) 
-   or init_by_array(init_key, key_length).
-
    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
    Copyright (C) 2004, David Bateman
    All rights reserved.
@@ -60,32 +57,73 @@
    * 2004-07-28 Paul Kienzle & David Bateman
    * * add -DALLBITS flag for 32 vs. 53 bits of randomness in mantissa
    * * make the naming scheme more uniform
-   * * add -DCPU_X86_32 for faster support of 53 bit mantissa on x86 arch.
+   * * add -DHAVE_X86 for faster support of 53 bit mantissa on x86 arch.
    */
 
-/* Provides:
+/*
+   === Build instructions ===
+
+   Simple instructions:  
+
+       cc randmtzig.c -DTEST -lm -o rand
+       ./rand
+
+   You should be able to #include <randmtzig.c> in C or C++ code, or
+   you can compile it as a library or as a standalone program.
+
+   Compile with -DEXPORT if you wish to build a library.  You may also
+   need this if your compiler does not accept the inline keyword.  Note
+   that this may make the array generators slower, so if you only need
+   the array generators you don't need the -DEXPORT flag.
+
+   Compile with -DTEST to generate a standalone program. E.g.,
+
+   Compile with -DHAVE_GETTIMEOFDAY if the gettimeofday function is 
+   available.  This is not necessary if your architecture has
+   /dev/urandom defined.
+
+   Compile with -DALLBITS for 53-bit random numbers. This is about
+   50% slower than using 32-bit random numbers.
+
+   Uses implicit -Di386 to determine if CPU=x86.  You can force X86
+   behaviour with -DHAVE_X86=1, or suppress it with -DHAVE_X86=0. You
+   should also consider -march=i686 or similar for extra performance.
+
+   If you want to replace the Mersenne Twister with another
+   generator then redefine randi32 appropriately.
+
+   === Usage instructions ===
+   Before using any of the generators, initialize the state with one of
+   init_by_int, init_by_array or init_by_entropy.
+
+   All generators share the same state vector.
+
+   === Mersenne Twister ===
    void init_by_int(uint32_t s)           32-bit initial state
    void init_by_array(uint32_t k[],int m) m*32-bit initial state
    void init_by_entropy(void)             random initial state
    void get_state(uint32_t save[MT_N+1])  saves state in array
    void set_state(uint32_t save[MT_N+1])  restores state from array
-   uint32_t randi32(void)          returns 32-bit unsigned int
-   uint64_t randi64(void)          returns 64-bit unsigned int
+   uint32_t randmt(void)                  returns 32-bit unsigned int
 
-   double randu32(void)       returns 32-bit uniform in (0,1)
-   double randu53(void)       returns 53-bit uniform in (0,1)
-   double randu (void)        returns M-bit uniform in (0,1)
-   double randn (void)        returns M-bit standard normal
-   double rande (void)        returns N-bit standard exponential
+   === inline generators ===
+   uint32_t randi32(void)   returns 32-bit unsigned int
+   uint64_t randi53(void)   returns 53-bit unsigned int
+   uint64_t randi54(void)   returns 54-bit unsigned int
+   uint64_t randi64(void)   returns 64-bit unsigned int
+   double randu32(void)     returns 32-bit uniform in (0,1)
+   double randu53(void)     returns 53-bit uniform in (0,1)
+   double randu(void)       returns M-bit uniform in (0,1)
+   double randn(void)       returns M-bit standard normal
+   double rande(void)       returns N-bit standard exponential
 
-   You should be able to #include <randmtzig.c> in C or C++ code.
-   Compile with -Dinline= if you wish to export all symbols.
-   Compile with -DHAVE_GETTIMEOFDAY if the gettimeofday function is available.
-   Compile with -DALLBITS for M=53 bit random numbers
-   Compile with -DCPU_X86_32 for faster 53-bit support on x86 arch
-   Compile with -DTEST to generate a small main() test program
+   === Array generators ===
+   void fill_randi32(size_t, uint32_t [])
+   void fill_randi64(size_t, uint64_t [])
+   void fill_randu(size_t, double [])
+   void fill_randn(size_t, double [])
+   void fill_rande(size_t, double [])
 
-   cc randmtzig.c -DTEST -lm
 */
 
 #ifdef __cplusplus
@@ -103,14 +141,25 @@
 # include <sys/time.h>
 #endif
 
-/* Determine default mantissa for uniform double */
-#ifdef ALLBITS
-#define randu randu53
-#else
-#define randu randu32
+/* XXX FIXME XXX may want to suppress X86 if sizeof(long)>4 */
+#if !defined(HAVE_X86)
+# if defined(i386)
+#  define HAVE_X86 1
+# else
+#  define HAVE_X86 0
+# endif
 #endif
 
-/* Mersenne Twister parameters */  
+#if defined(EXPORT)
+# define USE_INLINE
+#else
+# define USE_INLINE inline
+#endif
+
+
+
+/* ===== Mersenne Twister 32-bit generator ===== */  
+
 #define MT_N 624
 #define MT_M 397
 #define MATRIX_A 0x9908b0dfUL   /* constant vector a */
@@ -124,43 +173,6 @@ static uint32_t state[MT_N]; /* the array for the state vector  */
 static int left = 1;
 static int initf = 0;
 static int initt = 1;
-
-/* Ziggurat parameters */
-#ifdef ALLBITS
-# define ZIGINT uint64_t
-# define EMANTISSA 9007199254740992.0  /* 53 bit mantissa */
-# define ERANDI randi53() /* 53 bits for mantissa */
-#if 1
-# define NMANTISSA EMANTISSA  
-# define NRANDI randi54() /* 53 bits for mantissa + 1 bit sign */
-#else
-# define NMANTISSA 4503599627370496.0
-# define NRANDI randi53()
-#endif
-# define RANDU randu53()
-#else
-# define ZIGINT uint32_t
-# define EMANTISSA 4294967296.0 /* 32 bit mantissa */
-# define ERANDI randi32() /* 32 bits for mantissa */
-# define NMANTISSA 2147483648.0 /* 31 bit mantissa */
-# define NRANDI randi32() /* 31 bits for mantissa + 1 bit sign */
-# define RANDU randu32()
-#endif
-
-#define ZIGGURAT_TABLE_SIZE 256
-
-#define ZIGGURAT_NOR_R 3.6541528853610088
-#define ZIGGURAT_NOR_INV_R 0.27366123732975828
-#define NOR_SECTION_AREA 0.00492867323399
-
-#define ZIGGURAT_EXP_R 7.69711747013104972
-#define ZIGGURAT_EXP_INV_R 0.129918765548341586
-#define EXP_SECTION_AREA 0.0039496598225815571993
-
-static ZIGINT ki[ZIGGURAT_TABLE_SIZE];
-static double wi[ZIGGURAT_TABLE_SIZE], fi[ZIGGURAT_TABLE_SIZE];
-static ZIGINT ke[ZIGGURAT_TABLE_SIZE];
-static double we[ZIGGURAT_TABLE_SIZE], fe[ZIGGURAT_TABLE_SIZE];
 
 /* initializes state[MT_N] with a seed */
 void init_by_int(uint32_t s)
@@ -246,8 +258,9 @@ void init_by_entropy(void)
 void set_state(uint32_t save[])
 {
     int i;
-    for (i=0; i < MT_N; i++) save[i] = state[i];
-    save[MT_N] = left;
+    for (i=0; i < MT_N; i++) state[i] = save[i];
+    left = save[MT_N];
+    next = state + (MT_N-left+1);
 }
 
 void get_state(uint32_t save[])
@@ -281,7 +294,7 @@ static void next_state(void)
 }
 
 /* generates a random number on [0,0xffffffff]-interval */
-inline uint32_t randi32(void)
+USE_INLINE uint32_t randmt(void)
 {
     register uint32_t y;
 
@@ -295,11 +308,25 @@ inline uint32_t randi32(void)
     return (y ^ (y >> 18));
 }
 
-inline uint64_t randi53(void)
+
+
+/* ===== Uniform generators ===== */
+
+/* Determine mantissa for uniform doubles */
+#ifdef ALLBITS
+#define randu randu53
+#else
+#define randu randu32
+#endif
+
+/* Select which 32 bit generator to use */
+#define randi32 randmt
+
+USE_INLINE uint64_t randi53(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32()&0x1FFFFF;
-#if defined(CPU_X86_32)
+#if defined(HAVE_X86)
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -310,11 +337,11 @@ inline uint64_t randi53(void)
 #endif
 }
 
-inline uint64_t randi54(void)
+USE_INLINE uint64_t randi54(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32()&0x3FFFFF;
-#if defined(CPU_X86_32)
+#if defined(HAVE_X86)
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -325,11 +352,11 @@ inline uint64_t randi54(void)
 #endif
 }
 
-inline uint64_t randi64(void)
+USE_INLINE uint64_t randi64(void)
 {
     const uint32_t lo = randi32();
     const uint32_t hi = randi32();
-#if defined(CPU_X86_32)
+#if defined(HAVE_X86)
     uint64_t u;
     uint32_t *p = (uint32_t *)&u;
     p[0] = lo;
@@ -341,20 +368,52 @@ inline uint64_t randi64(void)
 }
 
 /* generates a random number on (0,1)-real-interval */
-inline double randu32(void)
+USE_INLINE double randu32(void)
 {
     return ((double)randi32() + 0.5) * (1.0/4294967296.0); 
     /* divided by 2^32 */
 }
 
 /* generates a random number on (0,1) with 53-bit resolution */
-inline double randu53(void) 
+USE_INLINE double randu53(void) 
 { 
     const uint32_t a=randi32()>>5;
     const uint32_t b=randi32()>>6; 
     return(a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
 } 
 
+
+/* ===== Ziggurat normal and exponential generators ===== */
+#ifdef ALLBITS
+# define ZIGINT uint64_t
+# define EMANTISSA 9007199254740992.0  /* 53 bit mantissa */
+# define ERANDI randi53() /* 53 bits for mantissa */
+# define NMANTISSA EMANTISSA  
+# define NRANDI randi54() /* 53 bits for mantissa + 1 bit sign */
+# define RANDU randu53()
+#else
+# define ZIGINT uint32_t
+# define EMANTISSA 4294967296.0 /* 32 bit mantissa */
+# define ERANDI randi32() /* 32 bits for mantissa */
+# define NMANTISSA 2147483648.0 /* 31 bit mantissa */
+# define NRANDI randi32() /* 31 bits for mantissa + 1 bit sign */
+# define RANDU randu32()
+#endif
+
+#define ZIGGURAT_TABLE_SIZE 256
+
+#define ZIGGURAT_NOR_R 3.6541528853610088
+#define ZIGGURAT_NOR_INV_R 0.27366123732975828
+#define NOR_SECTION_AREA 0.00492867323399
+
+#define ZIGGURAT_EXP_R 7.69711747013104972
+#define ZIGGURAT_EXP_INV_R 0.129918765548341586
+#define EXP_SECTION_AREA 0.0039496598225815571993
+
+static ZIGINT ki[ZIGGURAT_TABLE_SIZE];
+static double wi[ZIGGURAT_TABLE_SIZE], fi[ZIGGURAT_TABLE_SIZE];
+static ZIGINT ke[ZIGGURAT_TABLE_SIZE];
+static double we[ZIGGURAT_TABLE_SIZE], fe[ZIGGURAT_TABLE_SIZE];
 
 /*
 This code is based on the paper Marsaglia and Tsang, "The ziggurat method
@@ -470,7 +529,7 @@ void create_ziggurat_tables (void)
  * Where f is the functional form of the distribution, which for a normal
  * distribution is exp(-0.5*x*x)
  */
-inline double randn (void)
+USE_INLINE double randn (void)
 {
   if (initt) create_ziggurat_tables();
   while (1)
@@ -484,7 +543,7 @@ inline double randn (void)
        * have something to do with this.
        */
 #if defined(ALLBITS)
-# ifdef CPU_X86_32
+# if defined(HAVE_X86)
       /* 53-bit mantissa, 1-bit sign, x86 32-bit architecture */
       double x;
       int si,idx;
@@ -498,13 +557,13 @@ inline double randn (void)
       p[0] = lo;
       p[1] = hi&0x1FFFFF;
       x = ( si ? -rabs : rabs ) * wi[idx];
-# else /* !CPU_X86_32 */
+# else /* !HAVE_X86 */
       /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
       const uint64_t r = NRANDI;
       const int64_t rabs=r>>1;
       const int idx = (int)(rabs&0xFF);
       const double x = ( r&1 ? -rabs : rabs) * wi[idx];
-# endif /* !CPU_X86_32 */
+# endif /* !HAVE_X86 */
 #else /* !ALLBITS */
       /* 32-bit mantissa */
       const uint32_t r = randi32();
@@ -540,7 +599,7 @@ inline double randn (void)
     }
 }
 
-inline double rande (void)
+USE_INLINE double rande (void)
 {
   if (initt) create_ziggurat_tables();
   while (1)
@@ -562,6 +621,37 @@ inline double rande (void)
       else if ((fe[idx-1] - fe[idx]) * RANDU + fe[idx] < exp(-x))
 	return x;
     }
+}
+
+/* Array generators */
+void fill_randi32(size_t n, uint32_t *p)
+{
+  size_t i;
+  for (i=0; i < n; i++) p[i] = randi32();
+}
+
+void fill_randi64(size_t n, uint64_t *p)
+{
+  size_t i;
+  for (i=0; i < n; i++) p[i] = randi64();
+}
+
+void fill_randu(size_t n, double *p)
+{
+  size_t i;
+  for (i=0; i < n; i++) p[i] = randu();
+}
+
+void fill_randn(size_t n, double *p)
+{
+  size_t i;
+  for (i=0; i < n; i++) p[i] = randn();
+}
+
+void fill_rande(size_t n, double *p)
+{
+  size_t i;
+  for (i=0; i < n; i++) p[i] = rande();
 }
 
 #ifdef TEST

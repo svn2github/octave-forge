@@ -82,7 +82,7 @@ function [y, n] = cplxpair(z, tol)
 endfunction
 
 %!demo
-%! [ cplxpair (exp(2i*pi*[0:4]'/5)), exp (2i*pi*[3; 2; 4; 1; 0]/5) ]
+%! [ cplxpair(exp(2i*pi*[0:4]'/5)), exp(2i*pi*[3; 2; 4; 1; 0]/5) ]
 
 %!assert (isempty(cplxpair([])));
 %!assert (cplxpair(1), 1)

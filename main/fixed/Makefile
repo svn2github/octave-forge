@@ -187,6 +187,7 @@ fixed-int.d : int/fixed.cc
 fixed-int.o : int/fixed.cc
 	@echo "Compiling $@ from $<"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $<; \
+	$(RM) -f $@ ; \
 	$(LN_S) $(patsubst %.cc,%.o,$<) $@
 
 %.d: %.cc

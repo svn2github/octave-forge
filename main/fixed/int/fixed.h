@@ -1,6 +1,8 @@
 /*
 
+Copyright (C) 2001-2003 Motorola Inc
 Copyright (C) 2001-2003 Laurent Mazet
+Copyright (C) 2003 Motorola Inc
 Copyright (C) 2003 David Bateman
 
 This program is free software; you can redistribute it and/or modify it

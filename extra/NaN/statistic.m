@@ -112,26 +112,34 @@ R.CM4 	= sumskipnan(i.^4,DIM)./n1;
 
 R.SKEWNESS = R.CM3./(R.STD.^3);
 R.KURTOSIS = R.CM4./(R.VAR.^2)-3;
-[R.mad,N] = sumskipnan(abs(i),DIM);	% mean absolute deviation
-R.mad = R.mad./n1;
+[R.MAD,N] = sumskipnan(abs(i),DIM);	% mean absolute deviation
+R.MAD = R.MAD./n1;
 
-if ~isempty(fun),
-        if exist('OCTAVE_VERSION')>4
-                if strncmp(fun,'CM',2) 
-                        oo = str2num(fun(3:length(fun)));
-                        varargout  = sumskipnan(i.^oo,DIM)./n1;
-                else	            
-                        varargout  = getfield(R,upper(fun));
-                end;
-        else
-                if ~iscell(fun), fun={fun}; end;
-                for k=1:length(fun),
-                        if strncmp(fun{k},'CM',2) 
-                                oo = str2num(fun{k}(3:length(fun{k})));
-                                varargout(k)  = {sumskipnan(i.^oo,DIM)./n1};
-                        else	            
-                                varargout(k)  = {getfield(R,upper(fun{k}))};
-                        end;
-                end;
+if exist('OCTAVE_VERSION')>4,
+        if strncmp(fun,'CM',2) 
+                oo = str2num(fun(3:length(fun)));
+                varargout  = sumskipnan(i.^oo,DIM)./n1;
+        else	            
+                varargout  = getfield(R,upper(fun));
         end;
+else
+        if iscell(fun),  
+        	for k=1:length(fun),
+	                if strncmp(fun{k},'CM',2) 
+            	                oo = str2num(fun{k}(3:length(fun{k})));
+                    	        varargout{k}  = sumskipnan(i.^oo,DIM)./n1;
+                    	else	            
+                    		varargout{k}  = getfield(R,upper(fun{k}));
+	                end;
+    	        end;
+	elseif ischar(fun),
+            	if strncmp(fun,'CM',2) 
+                    	oo = str2num(fun(3:length(fun)));
+                	varargout{1}  = sumskipnan(i.^oo,DIM)./n1;
+        	else	            
+    		        varargout{1}  = getfield(R,upper(fun));
+            	end;
+	else
+		varargout{1} = R;
+	end;
 end;

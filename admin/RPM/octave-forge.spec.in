@@ -59,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc COPYING* INDEX README RELEASE-NOTES TODO
+%doc COPYING* README RELEASE-NOTES TODO
 %doc doc/*.html doc/coda/*.sgml doc/coda/appendices/*.sgml
 %doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
 %{_prefix}/bin/mex

@@ -33,7 +33,7 @@ static char* context = NULL;
 
 static double timestamp = 0.0;
 inline void tic(void) { timestamp = octave_time(); }
-inline double toc(void) {return round(-1e6*(timestamp-double(octave_time())));}
+inline double toc(void) {return ceil(-1e6*(timestamp-double(octave_time())));}
 
 // XXX FIXME XXX --- surely this is part of the standard library?
 void

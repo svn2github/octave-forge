@@ -44,7 +44,8 @@ Provides some compatibility and some flexibility.\n\
 
   int i = 1;			// Beginning, in args, of key-value pairs
 
-  if      (args (0).is_map ())   tmp = args (0).map_value();
+  if 	  (args (0).is_empty ()) {} // empty initial struct
+  else if (args (0).is_map ())   tmp = args (0).map_value();
   else if (args (0).is_string()) i-- ;
   else { error ("first argument is neither struct nor string"); return retval = tmp;}
 

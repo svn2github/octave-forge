@@ -81,12 +81,14 @@ DEFBINOP (el_ldiv, scalar, galois)
 DEFBINOP_FN_B_S1 (el_and, scalar, galois, mx_el_and)
 DEFBINOP_FN_B_S1 (el_or, scalar, galois, mx_el_or)
 
+#ifdef DEFCATOP
 DEFCATOP (s_gm, scalar, galois)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_galois&);
   return new octave_galois (concat (v1.matrix_value (), v2.galois_value (), 
 				    ra_idx));
 }
+#endif
 
 void
 install_s_gm_ops (void)
@@ -110,7 +112,9 @@ install_s_gm_ops (void)
   INSTALL_BINOP (op_el_and, octave_scalar, octave_galois, el_and);
   INSTALL_BINOP (op_el_or, octave_scalar, octave_galois, el_or);
 
+#ifdef DEFCATOP
   INSTALL_G_CATOP (octave_scalar, octave_galois, s_gm);
+#endif
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_galois, octave_galois);
 }

@@ -64,7 +64,10 @@
 
 ## Author: jwe
 
-function x = triu (x, k)
+## 2002-03-01 Paul Kienzle <pkienzle@users.sf.net>
+## * index vectors: faster but requires more memory
+
+function x = tril (x, k)
 
   if (nargin < 1 || nargin > 2)
     usage ("triu (x, k)");

@@ -24,6 +24,9 @@
 
 ## Author: jwe
 
+## 2002-03-01 Paul Kienzle
+## * index vectors: faster but requires more memory
+
 function x = triu (x, k)
 
   if (nargin < 1 || nargin > 2)

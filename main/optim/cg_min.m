@@ -55,6 +55,12 @@ function [x,v,nev] = cg_min (f, dfn, args, ctl)
 ## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## This software is distributed under the terms of the GPL
 
+static cg_min_warn = 1;
+if cg_min_warn
+  warning ("cg_min interface subject to change.");
+endif
+cg_min_warn = 0;
+
 verbose = 0;
 
 crit = 1;			# Default control variables
@@ -105,7 +111,7 @@ if crit == 2, ctlb(1) = tol; end
 x0 = x;
 v0 = v;
 
-nline = 0;
+nline = 0;			# Number of line minimizations
 
 while nev(1) <= maxev ,
   ## xprev = x ;
@@ -116,7 +122,7 @@ while nev(1) <= maxev ,
 
   x = x + w*xi' ;
 
-  if nline >= N,
+  if nline >= N,		# See effect of N last line minimizations
     if crit == 1,
       done = tol > (v0 - vnew) / max (1, abs (v0));
     else
@@ -147,6 +153,8 @@ while nev(1) <= maxev ,
 
   xi = leval (dfn, args)(:)';
   nev(2)++;
+
+  if crit == 3 && norm (xi) < tol,  x = reshape (x, R,C); return  end
 
   gg = df*df' ;
   if gg == 0,

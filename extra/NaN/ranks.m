@@ -1,14 +1,20 @@
 function r = ranks(X,Mode);
 % RANKS gives the rank of each element in a vector.
 % This program uses an advanced algorithm with averge effort O(m.n.log(n)) 
+% NaN in the input yields NaN in the output.
 % 
 % r = ranks(X)
 %   if X is a vector, return the vector of ranks of X adjusted for ties.
 %   if X is matrix, the rank is calculated for each column. 
 % r = ranks(X,'traditional')
-%   implements the traditional algorithm with O(m*n^2) effort
+%   implements the traditional algorithm with O(m*n^2) computational 
+%   and O(n^2) memory effort
+% r = ranks(X,'mtraditional')
+%   implements the traditional algorithm with O(m*n^2) computational 
+%   and O(n) memory effort
 % r = ranks(X,'advanced   ')
-%   implements an advanced algorithm with O(m*n*log(n)) effort
+%   implements an advanced algorithm with O(m*n*log(n)) computational 
+%   and O(n.log(n)) memory effort
 %
 % see also: CORRCOEF, SPEARMAN, RANKCORR
 %
@@ -16,7 +22,7 @@ function r = ranks(X,Mode);
 % --
 
 
-%    Version 1.26  Date: 19 Aug 2002
+%    Version 1.26  Date: 20 Aug 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify

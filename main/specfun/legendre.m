@@ -79,7 +79,7 @@ function L = legendre (n,x)
     if (n == 0)
       L = ones (size (x));
     elseif (n == 1)
-      L = [x; -x .* sqrt(1 - x .^ 2)];
+      L = [x; -sqrt(1 - x .^ 2)];
     else
       i = 0:n;
       a = (-1) .^ i .* bincoeff (n, i);

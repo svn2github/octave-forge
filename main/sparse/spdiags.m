@@ -26,7 +26,7 @@
 ##     2  6 10
 ##     3  7 11
 ##     4  8 12
-## spdiags(v, [-1 0 1], 5, 4)
+## spdiags(reshape(1:12,4,3), [-1 0 1], 5, 4)
 ## ->  5 10  0  0
 ##     1  6 11  0
 ##     0  2  7 12
@@ -61,10 +61,11 @@ function [A, c] = spdiags(v,c,m,n)
     else
       ## Create new matrix of size mxn using v,c
       [j,i,v] = find(v);
-      offset = max(min(c,n-m),0);
+      offset = max(min(c(:),n-m),0);
       j+=offset(i);
-      i=j-c(i);
-      A = sparse(i,j,v,m,n);
+      i=j-c(:)(i);
+      idx = i>0 & i<=m & j>0 & j<=n;
+      A = sparse(i(idx),j(idx),v(idx),m,n);
       
     endif
     

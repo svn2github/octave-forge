@@ -454,6 +454,14 @@ EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
 
+export octave_name=sinc_gsl
+export    funcname=gsl_sf_sinc
+cat << \EOF > docstring.txt
+These routines compute \sinc(x) = \sin(\pi x) / (\pi x) for any value of x.
+EOF
+./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
+
+
 export octave_name=lnsinh
 export    funcname=gsl_sf_lnsinh
 cat << \EOF > docstring.txt

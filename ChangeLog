@@ -1,4 +1,12 @@
 # Automatically generated file --- DO NOT EDIT
+2004-07-07 13:54  pkienzle
+
+	* release.sh: Add -F option to tag so that tags can be moved.  
+
+2004-07-07 13:48  pkienzle
+
+	* ChangeLog: R2004-07-07 release 
+
 2004-07-07 13:46  pkienzle
 
 	* Makefile: Make 'dist' target work 

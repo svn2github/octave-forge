@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.9  2003/04/03 22:06:41  aadler
+sparse create bug - need to use heap for large temp vars
+
 Revision 1.8  2003/02/20 23:03:59  pkienzle
 Use of "T x[n]" where n is not constant is a g++ extension so replace it with
 OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC
@@ -255,6 +258,10 @@ Revision 1.1  2001/03/30 04:34:23  aadler
 //
 // NOTE2: be careful about when we convert ri to int,
 // otherwise the maximum matrix size will be m*n < maxint/2
+// 
+// The OCTAVE_LOCAL_BUFFER can't be used for the sort index
+//  when the requested size is too big. we need to put it on the
+//  heap.
 #define ASSEMBLE_SPARSE( TYPX ) \
    int  nnz= MAX( ridxA.length(), cidxA.length() ); \
    TYPX* coefX= (TYPX*)oct_sparse_malloc( nnz  * sizeof(TYPX)); \
@@ -265,7 +272,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    bool ci_scalar = (cidxA.length() == 1); \
    bool cf_scalar = (coefA.length() == 1); \
  \
-   OCTAVE_LOCAL_BUFFER (sort_idxl, sidx, nnz ); \
+   sort_idxl* sidx = (sort_idxl *)oct_sparse_malloc( nnz* sizeof(sort_idxl) );\
    int actual_nnz=0; \
    OCTAVE_QUIT; \
    for (int i=0; i<nnz; i++) { \
@@ -309,7 +316,8 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    maybe_shrink( ii+1, actual_nnz, ridxX, coefX ); \
  \
    OCTAVE_QUIT; \
-   SuperMatrix X= create_SuperMatrix( m, n, ii+1, coefX, ridxX, cidxX );
+   SuperMatrix X= create_SuperMatrix( m, n, ii+1, coefX, ridxX, cidxX ); \
+   oct_sparse_free( sidx );
 
 // assemble a sparse matrix from full
 //   called by one arg for sparse

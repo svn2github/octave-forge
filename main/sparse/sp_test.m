@@ -792,12 +792,18 @@ for i=find( res~= NTRIES)
     i, 100*(1 - res(i)/NTRIES) );
 end           
 
+% segfault test from edd@debian.org
+n = 510; sparse(kron((1:n)', ones(n,1)), kron(ones(n,1), (1:n)'), ones(n));
+
 % clear up variables - so dmalloc works
 #clear L* U* a* b* c* d* e* P*
 
 
 %
 % $Log$
+% Revision 1.11  2003/04/03 22:06:40  aadler
+% sparse create bug - need to use heap for large temp vars
+%
 % Revision 1.10  2003/02/20 22:51:45  pkienzle
 % Default to 'sum' rather than 'unique' assembly
 %

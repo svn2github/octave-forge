@@ -257,12 +257,24 @@ signal( SIGSEGV, SIG_DFL );
 // 
 //  I use this clumsy construction so that we can use
 //  any orientation of args
-         { ColumnVector x( args(0).vector_value(false,true) ); if (error_state) return retval; ridxA= x; }
-         { ColumnVector x( args(1).vector_value(false,true) ); if (error_state) return retval; cidxA= x; }
-         if (use_complex) 
-            { ComplexColumnVector x( args(2).complex_vector_value(false,true) ); coefAC= x; }
-         else
-            { ColumnVector x( args(2).vector_value(false,true) ); coefA= x; }
+         {
+             ColumnVector x( args(0).vector_value(false,true) );
+             if (error_state) return retval;
+             ridxA= x;
+         }
+         { 
+             ColumnVector x( args(1).vector_value(false,true) );
+             if (error_state) return retval;
+             cidxA= x;
+         }
+         if (use_complex) {
+             ComplexColumnVector x( args(2).complex_vector_value(false,true) );
+             coefAC= x;
+         }
+         else {
+             ColumnVector x( args(2).vector_value(false,true) );
+             coefA= x;
+         }
 	 if (error_state) return retval;
 
 	 // Confirm that i,j,s all have the same number of elements
@@ -275,8 +287,9 @@ signal( SIGSEGV, SIG_DFL );
 	 int ni = ridxA.length();
 	 int nj = cidxA.length();
 	 int nnz = MAX(ni,nj);
-	 if ( ( ns != 1 && ns != nnz ) || ( ni != 1 && ni != nnz )
-	      || ( nj != 1 && nj != nnz ) )
+	 if ( ( ns != 1 && ns != nnz ) ||
+              ( ni != 1 && ni != nnz ) ||
+              ( nj != 1 && nj != nnz ) )
 	    SP_FATAL_ERR ("i, j and s must have the same length");
 
          if (nargin == 3) {
@@ -329,6 +342,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.10  2003/04/03 22:06:39  aadler
+ * sparse create bug - need to use heap for large temp vars
+ *
  * Revision 1.9  2003/02/14 03:50:34  aadler
  * mods to make 'sum' the default
  *

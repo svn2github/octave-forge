@@ -129,7 +129,7 @@ sub _validate
   my $switches= "-qfH";
   my $octave_interpreter_bin;
 
-  $octave_interpreter_bin= 'octave' # _EDITLINE_MARKER_
+  $octave_interpreter_bin= '/bin/octave-2.1.42-p4atlas.exe' # _EDITLINE_MARKER_
      unless $octave_object->{INTERP};
 
   $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
@@ -336,7 +336,7 @@ sub interpret
 #  print STDERR "INTERP: $cmd\n";
    print $Oin "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
 
-   my $input;
+   my $input= '';
    my $marker_len= length( $marker )+1;
    while ( 1 ) {
       for my $fh ( $select->can_read() ) {
@@ -349,7 +349,7 @@ sub interpret
               select undef, undef, undef, 0.5 unless $line;
           }
       }
-      last if substr( $input, -$marker_len, -1) eq $marker;
+      last if $input && substr( $input, -$marker_len, -1) eq $marker;
    }   
 
    # we need to leave octave blocked doing something,
@@ -1092,6 +1092,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.27  2004/10/11 13:15:48  aadler
+warning in $input testing
+
 Revision 1.26  2004/04/15 22:06:27  aadler
 *** empty log message ***
 

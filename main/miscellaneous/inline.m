@@ -52,8 +52,8 @@ while 1
   if ! exist (fname), break; end
 end
 
-fcode = sprintf (["function r = %s (%s)\n",\
-		  "  r = ",str,";\n",\
+fcode = sprintf (["function inline_return = %s (%s)\n",\
+		  "  inline_return = ",str,";\n",\
 		  "endfunction;"],\
 		 fname, argstr);
 eval (fcode);

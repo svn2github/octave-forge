@@ -8,7 +8,7 @@
 <B><FONT FACE="Arial" SIZE=4><P ALIGN="CENTER">Octave under Windows</P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <P ALIGN="CENTER">A collection of hints and facts for Octave running under Windows</P>
-</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="CENTER">Copyright (C) 2001 by Philip Nienhuis<br>Last version 04 November 2001</P>
+</FONT><FONT FACE="Arial" SIZE=2><P ALIGN="CENTER">Copyright (C) 2001 by Philip Nienhuis<br>Last version 10 December 2001</P>
 </FONT><FONT FACE="Arial" SIZE=3>
 <P>&nbsp;</P>
 
@@ -29,7 +29,8 @@
 </UL>
 <LI><A HREF="#Method2">Method 2: Installation of available binaries on Matlinks / SourceForge</A></LI>
 <LI><A HREF="#Method3">Method 3: Installation of additional Octave versions, based on method 2</A></LI>
-<LI><A HREF="#Matcompat">Installation of the matcompat package</A></LI>
+<LI><A HREF="#Method4">Method 4: Installation of Cygwin, then installing a binary Octave distribution</A></LI>
+<LI><A HREF="#octaveforge">Installation of the octave-forge package</A></LI>
 <LI><A HREF="#Problems&Fixes">Some known problems and fixes</A></LI>
 <LI><A HREF="#More_info">Where to get more information</A></LI>
 <LI><A HREF="#response">How to give feedback</A></LI>
@@ -38,6 +39,21 @@
 <LI><FONT FACE "Arial" SIZE=2><A HREF="#history">history of this document</A></FONT></LI>
 </OL></P>
 <P>&nbsp;</P>
+
+<P><U><B>Stuff missing yet. Contributions are needed and very welcome!</B></U></P>
+<P><OL>
+<LI>Using user-supplied C-functions & mkoctfiles</LI>
+<LI>....</LI>
+</OL></P>
+<P>&nbsp;</P>
+
+<FONT SIZE=2><P><U>Legal stuff</U><br>
+Permission is granted to make and distribute verbatim copies of this document provided the copyright notice and this permission notice are preserved on all copies.<br>
+Permission is granted to copy and distribute modified versions of this document under the conditions for verbatim copying, provided that the entire resulting derived work is distributed under the terms of a permission notice identical to this one.<br>
+Permission is granted to copy and distribute translations of this document into another language, under the above conditions for modified versions, except that this permission notice may be included in translations approved by the Free Software Foundation instead of in the original English.</P>
+<P>&nbsp;</P></FONT>
+
+
 
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Why_and_whom">1. Why this document and for who is it intended?</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
@@ -91,14 +107,14 @@ I have installed Octave more or less along the lines outlined in method #3 (see 
 
 <B><P><A HREF="http://www.octave.org">Octave</A></B> is a mathematical toolbox / program / system developed under the GPL license.</P>
 
-<B><P><A HREF="http://users.powernet.co.uk/kienzle/octave/matcompat">Matcompat</A></B> is a collection of scripts and other stuff that make Octave more compatible with that other program, <A HREF="http://www.mathworks.com">Matlab</A>.</P>
+<B><P><A HREF="http://octave.sourceforge.net">octave-forge</A></B> is a collection of scripts and other stuff that make Octave more compatible with that other program, <A HREF="http://www.mathworks.com">Matlab</A>.</P>
 
-<B><P><A HREF="http://www.microsoft.com">Windows</A></B> is understood to be that family of operating systems developed by Microsoft that is supposedly 32-bit – i.e., Windows 95, Windows 98, Windows 98 SE (Second Edition), Windows ME (Millenium Edition), Windows NT (any version), Windows 2000 and at some time in the future, Windows XP. But not Windows 3.1 or 3.11, not even with win32s installed.</P>
-<P>I wrote "supposedly", because not all parts of these operating systems are fully 32 bit. For example, Windows 9x versions boot using 16-bit DOS operating kernels, and furthermore, parts of their GDI's (Graphical Device Interface) actually still comprise 16 bit-routines. Windows NT also still contains some 16-bit function calls and API function arguments – although these seem to be there for backward compatibility only, they are translated internally to 32-bit versions.</P>
+<B><P><A HREF="http://www.microsoft.com">Windows</A></B> is understood to be that family of operating systems developed by Microsoft that is supposedly 32-bit - i.e., Windows 95, Windows 98, Windows 98 SE (Second Edition), Windows ME (Millenium Edition), Windows NT (any version), Windows 2000 and at some time in the future, Windows XP. But not Windows 3.1 or 3.11, not even with win32s installed.</P>
+<P>I wrote "supposedly", because not all parts of these operating systems are fully 32 bit. For example, Windows 9x versions boot using 16-bit DOS operating kernels, and furthermore, parts of their GDI's (Graphical Device Interface) actually still comprise 16 bit-routines. Windows NT also still contains some 16-bit function calls and API function arguments - although these seem to be there for backward compatibility only, they are translated internally to 32-bit versions.</P>
 <P>Although all these Windows versions seem to function quite similar to the average user, under the hood they do differ considerably. A consequence is that many programs which run happily on one version are not guaranteed to run without problems on another. Octave shares this fate. Moreover, as Windows has been translated to many languages, many install programs which rely on certain (English) directory names will fail if they are started under non-English Windows versions.</P>
 <P>Where I write "Windows" below, I mean all versions of the OS. Where applicable I'll mention the Windows version specifically.</P>
 
-<B><P><A HREF="http://www.gnuplot.org">gnuplot</A></B> is a stand-alone visualization program which – in contrast to what it's name suggests- has nothing to do with GNU. Currently it is the most widely used graphical back-end for Octave.<br>
+<B><P><A HREF="http://www.gnuplot.org">gnuplot</A></B> is a stand-alone visualization program which - in contrast to what it's name suggests- has nothing to do with GNU. Currently it is the most widely used graphical back-end for Octave.<br>
 <FONT FACE="Arial" SIZE=2>BTW It seems that gnuplot is the preferred name rather than GNUplot or Gnuplot.</FONT></P>
 
 <P>&nbsp;</P>
@@ -111,7 +127,7 @@ I have installed Octave more or less along the lines outlined in method #3 (see 
 <P>In this respect a notable Linux heritage is the (to the average Windows user) quite complex directory lay-out of the usual Octave installation. E.g., script files are to be found seemingly scattered around subdirectories in e.g., /usr/local/share/octave/2.0.16/m (that is of course, for octave version 2.0.16); all the intermediate directories are just empty save for just one child directory.<br>
 In case you wonder, this is a consequence of the <A HREF="http://www.pathname.com/fhs/">Filesystem Hierarchy Standard</A>, a standard which suggests (rather than dictates) a very specific directory structure for UNIX and Linux systems.<br>
 Unlike Windows systems, where many carelessly written installers simply dump your programs in the root directory of C: and where the average program dumps all your texts/models/spreadsheets in C:\My Documents, in Linux considerable attention is given to where specific files and programs have to go. It can help a lot if you read the FHS documents on the link above, or read an introductory Linux textbook.</P>
-<P>Just like on Linux systems, Octave for Windows is merely a "terminal program", i.e. it looks like it runs in a DOS-box or DOS-terminal. Under Cygwin this terminal is actually a Linux program called "bash" – a shell program (Bourne Again Shell), which is in many ways similar (but superior) to the DOS-command interpreter COMMAND.COM.</P>
+<P>Just like on Linux systems, Octave for Windows is merely a "terminal program", i.e. it looks like it runs in a DOS-box or DOS-terminal. Under Cygwin this terminal is actually a Linux program called "bash" - a shell program (Bourne Again Shell), which is in many ways similar (but superior) to the DOS-command interpreter COMMAND.COM.</P>
 
 <P>&nbsp;</P>
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Overview">4. Overview of installation methods and other stuff</A></P>
@@ -121,15 +137,21 @@ Unlike Windows systems, where many carelessly written installers simply dump you
 <LI>Build Octave yourself, after having installed Cygwin. As most Octave users running Linux&nbsp;/ AIX&nbsp;/ etc. install Octave by simply compiling the sources, this is not such a ridiculous suggestion at all, although the average (in this respect somewhat spoiled, sorry) Windows user may frown a bit here.</LI>
 <P>Although this methods implies some more work, it does have some advantages: </P>
 <P>-You can install any Octave version you like, stable, development or bleeding edge;</P>
-<P>-Maintenance of Octave and installation of matcompat is much easier;</P>
+<P>-Maintenance of Octave and installation of octave-forge is much easier;</P>
 <P>-You can easily adapt Octave to your own wishes at your own discretion.</P>
+
 <LI>Download the available Octave-windows binaries from the Matlinks site and cross your fingers. </LI>
-<P>Be warned that the currently (November 2001) available binaries do not always install properly and that the way Cygwin and Octave are installed has some side effects. Moreover, currently only (development-) versions 2.1.31 and 2.1.33 can be installed this way. The matcompat stuff can only be partly installed as this requires a more complete Cygwin installation.</P>
+<P>Be warned that the currently (November 2001) available binaries do not always install properly and that the way Cygwin and Octave are installed has some side effects. Moreover, currently only (development-) versions 2.1.31 and 2.1.33 can be installed this way. The octave-forge stuff can only be partly installed as this requires a more complete Cygwin installation.</P>
+
 <LI>A mixture of both; that is, once Octave 2.1.31 is installed from binary, expand Cygwin by downloading and installing additional Cygwin components (gcc, etc.) so that you can compile Octave yourself. </LI>
 <P>In a way, this is the best of both worlds, but to be able to use this method you first must have successfully installed Octave using method 2…..</P>
+
+<LI>A fourth way is to download and install Cygwin, and then download a <A HREF="http://www.hhs.se/personal/psoderlind/Software/Software.htm#OctaveInstallation">binary win32 Octave-distribution</A> from Paul Soderlinds page.</LI>
+<P>Note that this distro does not contain the basic Cygwin stuff, but just the Octave program. This looks much like the way native Linux distributions are installed. For details, please refer to his site. I'll try to expand this section later when I got more time.</P>
+
 </OL>
 <P>The "other stuff" department currently comprises:</P>
-<UL><LI>Installation of Matlab compatible scripts from the matcompat library.</LI></UL>
+<UL><LI>Installation of Matlab compatible scripts from the octave-forge library.</LI></UL>
 
 <P>&nbsp;</P>
 </FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Method1">5. Method 1: Building Octave yourself</A></P>
@@ -194,7 +216,7 @@ Unlike Windows systems, where many carelessly written installers simply dump you
 <LI>zip</LI>
 <LI>zlib</LI></UL>
 <P>(I may have added one or two packages too much here just to be safe, but that should not matter much.)</P>
-<P>If your Internet connection consists of a slow dial-up connection, you can (like I did) divide these downloads over a number of cheap phone rate periods (weekends, nights) – or get a high speed Internet connection like ADSL (like I did too, in a later stage but for other reasons).</P>
+<P>If your Internet connection consists of a slow dial-up connection, you can (like I did) divide these downloads over a number of cheap phone rate periods (weekends, nights) - or get a high speed Internet connection like ADSL (like I did too, in a later stage but for other reasons).</P>
 <P>Once you have downloaded all these packages, disconnect from the Internet and again start up setup.exe.</P>
 <P>This time, select "Install from local directory". After some more clicks, you are asked where to install the Cygwin system.<br>
  NOTE: please install Cygwin in a directory directly in the root of your C:-drive (e.g., C:\cygwin) or in the root of any other hard disk partition. DO NOT USE SPACES in this directory name, as a number of Cygwin utilities (notably mount) cannot cope with names with embedded spaces!</P>
@@ -212,7 +234,7 @@ Unlike Windows systems, where many carelessly written installers simply dump you
 <P>=&gt; Also remember that unlike Windows, programs have to be in a directory in your (Linux-) PATH in order to be able to start them. If you are sure you are in the same directory as where your program file resides but you still cannot start it, the directory is simply not in the PATH. You can start that program anyway then by prepending "./" (without the quotes) to the program file name.</P>
 <P>O.K., Unpack the downloaded Octave source-code distribution:</P><br>
 <P>cd /src/octave</P>
-<P>tar –xvzf octave-&lt;version-number&gt;.tar.gz</P>
+<P>tar -xvzf octave-&lt;version-number&gt;.tar.gz</P>
 <P>cd octave-&lt;version-number&gt;</P><br>
 <P>(where &lt;version-number&gt; can be e.g. 2.0.16, 2.1.34 etc.)</P>
 <P>All the next steps are described in detail in the files INSTALL and INSTALL.OCTAVE which are in the directory octave-&lt;version number&gt;. You can give it a try by typing (literally):</P><br>
@@ -286,7 +308,7 @@ gnuplot_binary = 'pipe-gnuplot wgnuplot.exe';<br>
 putenv('TMPDIR','C:/Program Files/Octave 2.1.31/tmp');<br>
 ##############################################################<br></P>
 
-<P>(Make any necessary changes if your directory structure is different – take care of upper- and lower case characters).</P>
+<P>(Make any necessary changes if your directory structure is different - take care of upper- and lower case characters).</P>
 
 <P>In the directory /etc there should be a file called profile. This file should contain at least the following lines:<br>
 <br>
@@ -295,7 +317,7 @@ export HOME=/home/octave<br>
 <br>
 (again, change paths and/or file names if appropriate. If the path to gnuplot contains spaces, enclose it in quotes). This file merely appends some directories to your implicit Cygwin-PATH (which is different than your Windows/DOS search PATH). The important item here is obviously the gnuplot subdirectory.</P>
 
-<P>That should do – if you now (re-) start Octave, you should be able to use gnuplot. Try the following command from an Octave window:</P>
+<P>That should do - if you now (re-) start Octave, you should be able to use gnuplot. Try the following command from an Octave window:</P>
 <P>gplot rand (100,1) with linespoints </P>
 <P>After a while the title bar of your bash shell should show "pipe-gnuplot", and after some time a graphics window containing a 2D-plot should appear.</P>
 
@@ -305,7 +327,7 @@ Just make a file e.g. called start_octave-&lt;version-number&gt; in /bin and mak
 
 <P>
 #!/bin/sh<br>
-rxvt --keysym.0xFF50 '^a' --keysym.0xFF57 '^e' --keysym.0xFFFF '^f^h' -fn "Lucida Console-14" -tn linux -title Octave -sr -sl 10000 -e octave-&lt;version-number&gt;</P>
+rxvt --keysym.0xFF50 '^a' --keysym.0xFF57 '^e' --keysym.0xFFFF '^f^h' -fn "Lucida Console-14" -tn linux -title Octave -sr -sl 100000 -e octave-&lt;version-number&gt;</P>
 
 <P>(All stuff starting from "rxvt" on one line!)<br>
 Next, make it executable (from a Cygwin terminal). Go to the /bin directory and type:</P>
@@ -367,17 +389,24 @@ bash --login start_octave-&lt;version-number&gt;
 <LI>Revamping the Octave terminal using rxvt (see under method 1 <A HREF="#rxvt">above</A>, too).</LI></OL>
 
 <P>&nbsp;</P>
-</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Matcompat">8. Installation of the matcompat package</A></P>
-</B></FONT><FONT FACE="Arial" SIZE=3>
-<P>Matlab compatibility (to Matlab version 4.2) can be increased by installation of the <A HREF="http://users.powernet.co.uk/kienzle/octave/matcompat/index.html">matcompat package</A>, assembled and maintained by Paul Kienzle.</P>
-<P>If you have installed Octave using methods 1 or 3, then <I>in principle</I> you can simply follow the steps outlined in the INSTALL file in the matcompat package. <br>
-<B>BUT</B>.... I recently received e-mails that matcompat install script is broken under Windows. To be honest: I have never tried myself to install matcompat package using the script (I simply did what is described in the paragraphs immediately below).<br>
-<FONT SIZE=2>I'll give it a try later this winter when I have to re-install Octave anyway because of a hard-disk upgrade; until then I'll be quite happy with the Octave version currently running on my HD :-)</FONT></P>
-<P>If you have installed Octave using just method 2, you lack the gcc compiler, the make program and other utilities. Then you can either add these and give it a try (see method 3, <A HREF="#Method3">above</A>) or be satisfied with an incomplete installation of the matcompat package.</P>
-<P>In the latter case, you can use WinZip or PowerArchiver to extract all the files under 'scripts" except for those in the directory "fixes" into the /usr/local/share/octave/&lt;<I>version-number</I>&gt;/m directory (be sure to check the "Use folder names" check box to keep the directory structure in the archive). In the "fixes" directory in the matcompat archive, various enhancements to standard Octave functions are supplied, but these are not sorted into the various directories under /usr/local/share/octave/&lt;<I>version-number</I>&gt;/m.</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Method4">8. Installation of cygwin, and installing Octave from binary</A></P></B></FONT>
+<FONT FACE="Arial" SIZE=3>
+<P>Just a short intro, I lack time to finish this in more detail :-( </P>
+<P>One can also download and install Cygwin without the gcc-compilers etc. The next step would be downloading a <A HREF="http://www.hhs.se/personal/psoderlind/Software/PsOctave2135.tar.gz">binary Octave distribution</A> (much like native Linux distributions) from Paul Soderlind.<br>
+Next, unzip and untar the distribution in the right place. Please look at <A HREF="http://www.hhs.se/personal/psoderlind/Software/Software.htm#OctaveInstallation">Paul Soderlinds software page / Octave section</A> for more details.</P>
 
 <P>&nbsp;</P>
-</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Problems&Fixes">9. Some known problems and fixes</A></P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="octaveforge">9. Installation of the octave-forge package</A></P></B></FONT>
+<FONT FACE="Arial" SIZE=3>
+<P>Matlab compatibility (to Matlab version 4.2) can be increased by installation of the <A HREF="http://octave.sf.net/">octave-forge package</A>, assembled and maintained by the octave community.</P>
+<P>If you have installed Octave using methods 1 or 3, then <I>in principle</I> you can simply follow the steps outlined in the INSTALL file in the octave-forge package. <br>
+<B>BUT</B>.... I recently received e-mails that octave-forge install script is broken under Windows. To be honest: I have never tried myself to install octave-forge package using the script (I simply did what is described in the paragraphs immediately below).<br>
+<FONT SIZE=2>I'll give it a try later this winter when I have to re-install Octave anyway because of a hard-disk upgrade; until then I'll be quite happy with the Octave version currently running on my HD :-)</FONT></P>
+<P>If you have installed Octave using just method 2, you lack the gcc compiler, the make program and other utilities. Then you can either add these and give it a try (see method 3, <A HREF="#Method3">above</A>) or be satisfied with an incomplete installation of the octave-forge package.</P>
+<P>In the latter case, you can use WinZip or PowerArchiver to extract all the files under 'main" except for those in the directory into the /usr/local/share/octave/&lt;<I>version-number</I>&gt;/m directory (be sure to check the "Use folder names" check box to keep the directory structure in the archive). In the "FIXES" directory in the octave-forge archive, various enhancements to standard Octave functions are supplied, but these are not sorted into the various directories under /usr/local/share/octave/&lt;<I>version-number</I>&gt;/m.</P>
+
+<P>&nbsp;</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="Problems&Fixes">10. Some known problems and fixes</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 
 <P><U>1. Octave installed from binary, but it doesn't work</U></P>
@@ -402,7 +431,7 @@ Ofcourse, <I>these</I> problems can simply be tackled by just creating the relev
 <P>If you encounter problems running Cygwin or Octave, changing this setting may help.</P>
 
 <P>&nbsp;</P>
-</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="More_info">10. Where to get more information</A></P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="More_info">11. Where to get more information</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <U><P>Other Internet sites with info on how to get Octave running under Windows:</P>
 </U>
@@ -420,12 +449,12 @@ Ofcourse, <I>these</I> problems can simply be tackled by just creating the relev
 <P>You can e.g. simply load the annual index file (for example, ftp://ftp.che.wisc.edu/pub/octave/MAILING-LISTS/help-octave/2001/index.html) and then in your browser do a text search for "Windows".</P>
 
 <P>&nbsp;</P>
-</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="response">11. How to give feedback</A></P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="response">12. How to give feedback</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <P>If you have additional information, hints, criticism, or other stuff that you think is useful to enter here, please sent me an <A HREF="mailto:pr.nienhuis@hccnet.nl">e-mail</A>.</P>
 
 <P>&nbsp;</P>
-</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="faq">12. FAQ section</A></P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="faq">13. FAQ section</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <P><br>
 <A HREF="#Q1">Q 1: How can I get Octave for Windows?</A><br>
@@ -436,8 +465,9 @@ Ofcourse, <I>these</I> problems can simply be tackled by just creating the relev
 <A HREF="#Q6">Q 6: How fast is Octave, e.g. compared to Matlab?</A><br>
 <A HREF="#Q7">Q 7: Why do I get a message "...broken pipe" when I attempt to make another graph?</A><br>
 <A HREF="#Q8">Q 8: Why do contour plots fail? The same script ran perfectly in Matlab....</A><br>
-<A HREF="#Q9">Q 9: E-mail me your Q&A suggestion!</A><br>
-<A HREF="#Q10">...(to be filled in)...</A><br>
+<A HREF="#Q9">Q 9: How can I cut-and-paste to / from the Octave-window?</A><br>
+<A HREF="#Q10">Q 10: E-mail me your Q&A suggestion!</A><br>
+<A HREF="#Q11">...(to be filled in)...</A><br>
 <br></P>
 
 <P><B><A NAME="Q1">Q 1: How can I get Octave for Windows?</B></A><br>
@@ -447,7 +477,7 @@ Ofcourse, <I>these</I> problems can simply be tackled by just creating the relev
 <B>A 2: </B>Because Octave is not completely compatible with Matlab. A number of simple things to know:<br>
 <LI>Comments in Octave begin with # rather than %</LI>
 <LI>Octave is compatible with Matlab (maybe) version 4.2. FYI, the current (Oct. 2001) Matlab version is 6.0.</LI>
-<LI>Compatibility is better after installation of the <A HREF="http://users.powernet.co.uk/kienzle/octave/matcompat">matcompat</A> package (see <A HREF="#Matcompat">above</A> for more info on how to get it installed)</LI>
+<LI>Compatibility is better after installation of the <A HREF="http://octave.sf.net">octave-forge</A> package (see <A HREF="#octaveforge">above</A> for more info on how to get it installed)</LI>
 <LI>Look <A HREF="http://www.octave.org/FAQ.html#SEC24">here</A> at what the Octave maintainers say about Matlab compatibility and porting Matlab scripts.</LI>
  </P>
 
@@ -475,18 +505,23 @@ Under Windows, a very notable delay occurs when gnuplot is invoked. Because of t
 <B>A 7: </B>You probably manually closed not only the gnuplot <I>graph</I> window but also gnuplot's <I>main</I> window. Octave-for-Windows launches ("spawns") gnuplot automatically during its starting up sequence and does so only once. To be able to make a second graph, simply stay away from gnuplot's command window once you have (re-)started Octave.</P>
 
 <P><A NAME="Q8"><B>Q 8: Why do contour plots fail? The same script ran perfectly in Matlab....</B></A><br>
-<B>A 8: </B>The order of parameters for the contour() call in the original Octave script files are different than those of Matlab. AFAIK in the matcompat package this has been fixed.<br>
+<B>A 8: </B>The order of parameters for the contour() call in the original Octave script files are different than those of Matlab. This is fixed in the octave-forge package, as well as more recent versions of Octave.<br>
 However, I have the impression that gnuplot expects seperate full 2-D matrices with X and Y coordinates in addition to the Z-values, while Matlab uses 1-D X and Y coordinate vectors (or the situation is <I>vice versa</I>, I'm not sure).<br>
 A volunteer will have to sort this out.... you?</P>
 
-<P><A NAME="Q9"><B>Q : <FONT FACE="Arial" SIZE=2>E-mail me your Q&A suggestion!</FONT></B></A><br>
+<P><A NAME="Q9"><B>Q 9: How can I cut-and-paste to / from the Octave-window?</B></A> <br>
+<B>A 9: </B>From Octave to any other Windows program works with Ctrl-X/Ctlr-C (cut/copy), paste with Ctrl-V.<br>
+>From Windows to Octave: Use Ctrl-Ins rather than Ctrl-V.<br>
+(In my case this still doesn't work, probably because I use a rxvt terminal. Any better suggestions out there?) Look <A HREF="http://cygwin.com/faq/faq_4.html#SEC54">here</A> for more info on cut-and-paste in Cygwin terminals.</P>
+
+<P><A NAME="Q10"><B>Q : <FONT FACE="Arial" SIZE=2>E-mail me your Q&A suggestion!</FONT></B></A><br>
 <B>A :</B> </P>
 
-<P><A NAME="Q10"><B>Q : </B></A><br>
+<P><A NAME="Q11"><B>Q : </B></A><br>
 <B>A :</B> </P>
 
 <P>&nbsp;</P>
-</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="acknowledgements">13. Acknowledgements</A></P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="acknowledgements">14. Acknowledgements</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
 <P>The information on this page is collected from web pages, e-mails and mailing list contributions by the following people and parties:</P>
 <UL>
@@ -505,8 +540,14 @@ A volunteer will have to sort this out.... you?</P>
 </UL></P>
 
 <P>&nbsp;</P>
-</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="history">14. This document's history</A></P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="history">15. This document's history</A></P>
 </B></FONT><FONT FACE="Arial" SIZE=3>
+
+<P><U>10 December 2001</U><br>
+Added cut-and-paste to FAQ & preliminary install method # 4.<br>
+
+<P><U>07 December 2001</U><br>
+Replaced references to matcompat with octave-forge. (PAK)<br>
 
 <P><U>04 November 2001</U><br>
 Made some corrections to the text as sugggested by J.W. Eaton.<br>

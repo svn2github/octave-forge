@@ -65,6 +65,7 @@ if nargout<3         % needs O(p^2) memory
         end;
         %arp=MX(:,K*(K-1)/2+(1:K));
         %rc =MX(:,(1:K).*(2:K+1)/2);
+	ACF=cumprod(ones(lr,lr)-rc.^2,2);
 
 else            % needs O(p) memory 
         ar=zeros(lr,lc);
@@ -81,8 +82,11 @@ else            % needs O(p) memory
                 res(:,K+1) = res(:,K) .* (1-abs(ar(:,K)).^2);
         end;
         
+	ACF=cumprod(ones(lr,lr)-rc.^2,2);
+
         % assign output arguments
         arg3=res;
         res=rc;
         MX=ar;
 end; %if
+

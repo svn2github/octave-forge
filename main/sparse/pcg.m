@@ -140,6 +140,9 @@ function [x, flag, relres, iter, resvec, eigest] = ...
 %% 
 %% REVISION HISTORY
 %%
+%% 2004-05-18, Piotr Krzyzanowski:
+%%	Warnings use warning() function now
+%%
 %% 2004-04-29, Piotr Krzyzanowski:
 %%	Added more warning messages when FLAG is not required
 %%
@@ -239,10 +242,10 @@ if (nargout > 5)
 			T = T(2:iter-2,2:iter-2);
 			l = eig(T);
 			eigest = [min(l) max(l)];
-			fprintf(stderr, 'PCG condest: %g\n',eigest(2)/eigest(1));
+			% fprintf(stderr, 'PCG condest: %g\n',eigest(2)/eigest(1));
 		else
 			eigest = [NaN NaN];
-			fprintf(stderr, 'PCG condest: iteration converged too fast\n');
+			warning('PCG: eigenvalue estimate failed: iteration converged too fast.');
 		end
 	else
 		eigest = [NaN NaN];
@@ -270,15 +273,14 @@ iter = iter - 2;
 if ( iter >= (maxit-2) )
 	flag = 1;
 	if (nargout < 2)
-		fprintf(stderr, 'PCG warning: ');
-		fprintf(stderr, 'maximum number (%d) of iterations reached\n',...
+		warning('PCG: maximum number of iterations (%d) reached\n',...
 			iter);
-		fprintf(stderr, 'The initial residual norm was reduced %g times.\n',...
+		warning('The initial residual norm was reduced %g times.\n',...
 			1.0/relres);
 	end
 else
 	if (nargout < 2)
-		fprintf(stderr, 'PCG converged in %d iterations. ', iter);
+		fprintf(stderr, 'PCG: converged in %d iterations. ', iter);
 		fprintf(stderr, 'The initial residual norm was reduced %g times.\n',...
 			1.0/relres);
 	end	
@@ -286,7 +288,7 @@ end
 if (~matrix_positive_definite)
 	flag = 3;
 	if (nargout < 2)
-		fprintf(stderr, 'PCG warning: matrix not positive definite?\n');
+		warning('PCG: matrix not positive definite?\n');
 	end
 end
 

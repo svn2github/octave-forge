@@ -5,7 +5,7 @@
 ## Last modified: Setembro 2002
 
 function v = vrml_group ( varargin )
-## pre 2.1.39 function v = vrml_group ( ... )
+
 
 if nargin == 0, return end
 

@@ -11,8 +11,8 @@
 ##      or Q2       List of selected points
 
 ## Author  : Etienne Grossmann <etienne@isr.ist.utl.pt>
-## pre 2.1.39 function sel2 = select_3D_points (x, sel1, ...)
-function sel2 = select_3D_points (x, sel1, varargin) ## pos 2.1.39
+
+function sel2 = select_3D_points (x, sel1, varargin)
 
 P = columns (x);
 global vrml_b_pid = 0;
@@ -23,8 +23,8 @@ opts = struct ("frame", 1,\
 
 if nargin > 2
   op1 = " frame deco balls ";
-  ## pre 2.1.39   opts = read_options (list (all_va_args), "op1", op1,"default",opts);
-  opts = read_options (varargin, "op1", op1,"default",opts); ## pos 2.1.39
+
+  opts = read_options (varargin, "op1", op1,"default",opts);
 end
 [frame, deco, balls] = getfield (opts, "frame", "deco", "balls");
 

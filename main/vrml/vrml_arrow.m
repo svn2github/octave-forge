@@ -1,30 +1,23 @@
 ## s = vrml_arrow (sz, col)     - Arrow pointing in "y" direction
 ##
-## s is vrml code representing an arrow consisting of a rod and a cone. 
-##
-## INPUT ----------- 
+## INPUT :
+## -------
 ## Arguments are optional. NaN's are replaced by default values.
-##
-## sz = [len, rad, crlen crrad].
-##   len    : Total length of arrow                           default=1
-##   rad    : Radius of rod                                   default=len/24
-##   crlen  : Length of cone relative to total length.        default=1/4
-##   crrad  : Radius of cone relative to radius of rod.       default=1/12
-## 
-##
+##                                                         <default>
 ## sz = [len, alen, dc, dr] has size 1, 2, 3 or 4, where
-##   len  : total length                         default : 1
-##   alen : length of arrow/total length         default : 1/4
-##   dc   : Diameter of cone base/total length   default : 1/12
-##   dr   : Diameter of rod/total length         default : min(dc, sz(1)/24)
 ##
-##   NaN's in sz will be replaced by default value.
+##   len  : total length                                   <1>
+##   alen : length of arrow/total length                   <len/4>
+##   dc   : Diameter of cone base/total length             <len/16>
+##   dr   : Diameter of rod/total length                   <min(dc, len/32)>
 ##
-## col    : 3 or 3x2 : Color of body and cone    default : [0.3 0.4 0.9]
+## col    : 3 or 3x2 : Color of body and cone              <[0.3 0.4 0.9]>
 ##
+## OUTPUT :
+## --------
+## s      : string   : vrml representation of an arrow (a rod and a cone)
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: Setembro 2002
 
 function v = vrml_arrow (sz, col, emit)
 
@@ -34,7 +27,7 @@ if nargin<2  || isempty (col),    col = [0.3 0.4 0.9;0.3 0.4 0.9];
 elseif prod (size (col)) == 3,    col = [1;1]*col(:)';
 elseif all (size (col) == [3,2]), col = col';
 elseif any (size (col) != [2,3]),
-  error ("vrml_arrow : col has size %d x %d. This won't do\n",size(col));
+  error("vrml_arrow : col has size %dx%d (should be 3 or 3x3)\n",size(col));
   ## keyboard
 end
 col = col' ;
@@ -48,7 +41,7 @@ elseif length (sz) == 3,      sz = [sz(1),sz(2),sz(3),s0(4)];
 elseif length (sz) == 2,      sz = [sz(1),sz(2),s0(3),s0(4)];
 elseif length (sz) == 1,      sz = [sz(1),s0(2),s0(3),s0(4)];
 else 
-  error ("vrml_arrow : sz has size %d x %d. This won't do\n",size(sz));
+  error ("vrml_arrow : sz has size %dx%d. (should be in 1-4)\n", size(sz));
   ## keyboard
 end
 if any (tmp = isnan(sz)), sz(find (tmp)) = s0(find (tmp)) ; end

@@ -39,8 +39,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-## pre 2.1.39 function s = vrml_surf (x, y, z, ...)
-function s = vrml_surf (x, y, z,varargin) ## pos 2.1.39
+
+function s = vrml_surf (x, y, z,varargin)
 
 
 if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
@@ -50,12 +50,12 @@ if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   ## ones(R,1)*[1:C] ;
   ## yy = ## [1:R]'*ones(1,C) ;
   if     nargin >=3,
-    ## pre 2.1.39     s = vrml_surf ( xx, yy, zz, y, z, all_va_args );
-    s = vrml_surf ( xx, yy, zz, y, z, varargin{:} ); ## pos 2.1.39
+
+    s = vrml_surf ( xx, yy, zz, y, z, varargin{:} );
     return
   elseif nargin >=2,
-    ## pre 2.1.39     s = vrml_surf ( xx, yy, zz, y, all_va_args );
-    s = vrml_surf ( xx, yy, zz, y, varargin{:} ); ## pos 2.1.39
+
+    s = vrml_surf ( xx, yy, zz, y, varargin{:} );
     return
   end
   x = xx ; y = yy ; z = zz ;
@@ -69,19 +69,21 @@ checker = 0;
 colorPerVertex = 1;
 smooth = creaseAngle = nan ;
 emit = 0;
-
+DEFcoord = DEFcol = "";
 
 if nargin > 3,
 
-  op1 = " tran col creaseAngle emit colorPerVertex checker ";
+  op1 = " tran col creaseAngle emit colorPerVertex checker DEFcoord DEFcol ";
   op0 = " smooth " ;
 
-  default = tar (tran, col, creaseAngle, emit, colorPerVertex, smooth, checker);
-  ## pre 2.1.39   s = read_options (list(all_va_args),"op0",op0,"op1",op1,"default",default);
-  s = read_options (varargin,"op0",op0,"op1",op1,"default",default); ## pos 2.1.39
-  [tran, col, creaseAngle, emit, colorPerVertex, smooth, checker] = getfield \
-      (s, "tran", "col", "creaseAngle", "emit", "colorPerVertex", "smooth","checker");
+  default = tar (tran, col, creaseAngle, emit, colorPerVertex, \
+		 DEFcoord, DEFcol, smooth, checker);
 
+  s = read_options (varargin,"op0",op0,"op1",op1,"default",default);
+  [tran, col, creaseAngle, emit, colorPerVertex\
+   DEFcoord, DEFcol, smooth, checker] = getfield \
+      (s, "tran", "col", "creaseAngle", "emit", "colorPerVertex",\
+       "DEFcoord", "DEFcol", "smooth", "checker");
   ## nargin -= 3 ;
   ## read_options_old ;
 end
@@ -217,10 +219,12 @@ if ! all(keepp),
   trgs = reshape(renum (trgs (:,keepit)), 3, columns(keepit));
 
 end
+
 s = vrml_faces (pts, trgs, "col", col,\
 		"colorPerVertex",colorPerVertex,\
 		"creaseAngle", creaseAngle,\
-		"tran", tran, "emit", emit);
+		"tran", tran, "emit", emit,\
+		"DEFcoord",DEFcoord,"DEFcol",DEFcol);
 
 ## R=5; C=11;
 ## x = ones(R,1)*[1:C]; y = [1:R]'*ones(1,C);

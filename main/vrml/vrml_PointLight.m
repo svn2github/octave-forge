@@ -21,17 +21,12 @@
 ## See also : vrml_DirectionalLight
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: Setembro 2002
 
-## pre 2.1.39 function s = vrml_PointLight (...)
-function s = vrml_PointLight (varargin) # pos 2.1.39
+function s = vrml_PointLight (varargin)
 
-  ## pre 2.1.39 hash.dummy = 0;
-  hash = struct ();		# pos 2.1.39
+  h = struct ();
 
-  ## pre 2.1.39 if nargin, hash = setfield (hash, all_va_args); end
-  if nargin, hash = leval ("setfield", varargin); end ## pos 2.1.39
-## hash = rmfield (hash, "dummy");
+  if nargin, h = leval ("setfield", varargin); end
 
 tpl = struct ("ambientIntensity", "%8.3f",\
 	      "intensity",        "%8.3f",\
@@ -42,9 +37,11 @@ tpl = struct ("ambientIntensity", "%8.3f",\
 	      "location",         "%8.3f %8.3f %8.3f");
 
 body = "";
-for [val,key] = hash,
-  ## pre 2.1.39   if !strcmp (key, "dummy") && !isnan (val),
-  if !(isnumeric(val) && isnan (val)), ## pos 2.1.39
+for [val,key] = h,
+
+    if strcmp (key, "DEF")
+      continue;
+    elseif !(isnumeric(val) && isnan (val))
 
 				# Check validity of field
     if ! struct_contains (tpl, key)
@@ -57,4 +54,7 @@ for [val,key] = hash,
 		     sprintf (getfield (tpl,key), val))];
   end
 end
-s = sprintf ("PointLight { \n%s}\n", body);
+s = sprintf ("PointLight {\n%s}\n", body);
+if struct_contains (h,"DEF") && !isempty (h.DEF)
+  s = ["DEF ",h.DEF," ",s];
+end 

@@ -28,10 +28,9 @@
 ##        RGB and reflectivity values should be in the [0,1] interval.
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: Setembro 2002
 
-## pre 2.1.39 function s = vmesh (x, y, z, ...)
-function s = vmesh (x, y, z, varargin) ## pos 2.1.39
+function s = vmesh (x, y, z, varargin)
+
 
 
 if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
@@ -41,16 +40,15 @@ if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   ## ones(R,1)*[1:C] ;
   ## yy = ## [1:R]'*ones(1,C) ;
   if     nargin >=3,
-    ## pre 2.1.39     s = vmesh ( xx, yy, zz, y, z, all_va_args );
-    s = vmesh ( xx, yy, zz, y, z, varargin{:} ); ## pos 2.1.39
+    s = vmesh ( xx, yy, zz, y, z, varargin{:} );
     if ! nargout,  clear s; end;  return
   elseif nargin >=2,
-    ## pre 2.1.39     s = vmesh ( xx, yy, zz, y, all_va_args );
-    s = vmesh ( xx, yy, zz, y, varargin{:} ); ## pos 2.1.39
+    s = vmesh ( xx, yy, zz, y, varargin{:} );
     if ! nargout,  clear s; end;  return
   end
   x = xx ; y = yy ; z = zz ;
 end
+
 
 frame = 1;
 
@@ -61,8 +59,7 @@ if nargin > 3,
   op1 = " tran col checker creaseAngle emit colorPerVertex tex ";
   op0 = " smooth " ;
 
-  ## pre 2.1.39   s = read_options (list(all_va_args),"op0",op0,"op1",op1);
-  s = read_options (varargin,"op0",op0,"op1",op1); ## pos 2.1.39
+  s = read_options (varargin,"op0",op0,"op1",op1);
 
 				# Identify options for vrml_surf()
   all_surf_opts  = list ("tran", "col", "checker", "creaseAngle", "emit", \
@@ -87,6 +84,7 @@ scl = nanstd ((pt2-mean (pt2')'*ones(1,columns (pt2)))(:));
 lpos = [min (x2(:)) - 1.1*scl* max (max(x2(:))-min(x2(:)), 1),
 	mean (y2(:)),
 	max (z2(:))];
+
 pl = vrml_PointLight ("location", lpos, "intensity", 0.7);
 
 #  distance = max ([max (x(:)) - min (x(:)),\

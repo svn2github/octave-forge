@@ -16,8 +16,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-## pre 2.1.39 function s = vrml_lines(x,f,...)
-function s = vrml_lines(x,f,varargin) ## pos 2.1.39
+
+function s = vrml_lines(x,f,varargin)
 
 col = [1, 0, 0] ;
 
@@ -28,9 +28,9 @@ verbose = 0 ;
 
 nargin -= 2 ;
 i=1;
-## pre 2.1.39 while nargin>0 ,
-while nargin>=i , ## pos 2.1.39
-  ## pre 2.1.39   tmp = va_arg() ; nargin-- ;
+
+while nargin>=i ,
+
   tmp = nth (varagin, i++) ;	# pos 2.1.39
   if ! isstr(tmp) ,
     error ("vrml_lines : Non-string option : \n") ;
@@ -39,7 +39,7 @@ while nargin>=i , ## pos 2.1.39
   end
   if index(opt1,[" ",tmp," "]) ,
     
-    ## pre 2.1.39     tmp2 = va_arg() ; nargin-- ;
+
     tmp2 = nth (varargin, i++); # pos 2.1.39
     ## nargin-- ;
     eval([tmp,"=tmp2;"]) ;

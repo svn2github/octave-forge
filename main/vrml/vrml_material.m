@@ -8,7 +8,7 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function s = vrml_material (dc, ec, tran)
+function s = vrml_material (dc, ec, tran,DEF)
 
 if nargin < 1, dc = [0.3 0.4 0.9] ; # Default color
 elseif prod (size (dc)) != 3,
@@ -19,6 +19,8 @@ emit = 1;
 
 if nargin < 2, ec = 0; end
 if nargin < 3, tran = 0; end
+if nargin < 4, DEF = ""; end
+
 if prod (size (ec)) == 1 && !isnan (ec) , emit = ec ; ec = dc ; end
 
 
@@ -32,9 +34,12 @@ if tran && ! isnan (tran)
 else
   st = "";
 end
-  
 
-s = sprintf (["            material Material {\n",\
+if isempty (DEF), sd = "";
+else              sd = ["DEF ",DEF];
+end
+
+s = sprintf (["            material ",sd," Material {\n",\
 	      se,st,\
 	      "              diffuseColor  %8.3g %8.3g %8.3g \n",\
 	      "          }\n"],\

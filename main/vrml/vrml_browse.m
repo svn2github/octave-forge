@@ -25,10 +25,10 @@
 ##           "-kill".
 ##
 ## Author  : Etienne Grossmann   <etienne@isr.ist.utl.pt>
-function p = vrml_browse (s)
+function p = vrml_browse (varargin)
 
-verbose = 0 ;
-## best_option = "-best ";		# "-best" or fast rendering
+verbose = 0;
+
 best_option = " ";
 				# Allow scripting and specify where
 				# browser's output goes 
@@ -37,32 +37,47 @@ global vrml_b_pid = 0;
 global vrml_b_name = [];
 
 p = vrml_b_pid ;
+bop = "";
 
-if nargin<1, s = ""; end
+if nargin<1
+  s = "";s = "";
+else
+  i = 1;
+  while i <= length (varargin)
+    o = varargin{i++};
+    if strcmp (o, "-kill")
+      vrml_kill(); return;
+    elseif strcmp (o, "-bop")
+      bop = [bop," ",varargin{i++}," "];
+    end
+  end
+  s = varargin{length (varargin)};
+end
 
-if strcmp (s, "-kill"), vrml_kill(); return; end
+
+
 
 vrml_b_name = "freewrl" ;
 ## b_opt = "-best -server" ;
-b_opt = [out_option," ",best_option," -server -snapb octave.snap "] ;
+b_opt = [out_option," ",bop," ",best_option," -server -snapb octave.snap "] ;
 
 b_temp = "/tmp/octave_vrml_output.wrl" ;
 b_log  = " &> /tmp/octave_vrml_browser.log";
 
 new_browser = 0 ;
 				# ####################################
-if vrml_b_pid > 0,		# There's already a browser ##########
+if vrml_b_pid > 0		# There's already a browser ##########
 
 				# Check that browser is really alive
 
   [dum,status]=system (sprintf ("kill -CONT %d &> /dev/null",vrml_b_pid));
   
-  if ! status,
-    if verbose,
+  if ! status
+    if verbose
       printf ( "vrml_browse : browser pid=%d is still alive\n",vrml_b_pid);
     end
   else 
-    if verbose,
+    if verbose
       printf ( ["vrml_browse : ",\
 		"browser pid=%d died. I'll spawn another\n"], vrml_b_pid);
     end
@@ -74,9 +89,9 @@ end				# End of check if old browser's alive
 				# ####################################
 				# Check that temp file exists ########
 [dum,status] = system (["test -e ",b_temp]);
-if !length (s),
+if !length (s)
 
-  if verbose, 
+  if verbose
     printf( "vrml_browse : Trying to create temp file\n");
   end
 				# Do a sombrero
@@ -116,7 +131,7 @@ save_vrml (b_temp, s); # "nobg", s) ;
 
 				# ####################################
 				# Eventually start browser ###########
-if vrml_b_pid <= 0,
+if vrml_b_pid <= 0
   new_browser = 1 ;
   if verbose, 
     printf( "vrml_browse : spawning browser ...\n");
@@ -158,7 +173,7 @@ if vrml_b_pid <= 0,
 end				# End of starting new browser ########
 				# ####################################
 
-if ! new_browser,
+if ! new_browser
 				# ####################################
 				# Send USR1 signal to browser to tell it to
 				# raise itself.

@@ -8,6 +8,7 @@
 ## "col" , col             : Color           default = [ 0.3 0.4 0.9 ]
 ## "rad" , radius          : Radius of segments         default = 0.05
 ## "balls"                 : Add balls to extremities
+## "brad"                  : Radius of balls             default = rad
 ## "emit", bool            : Use or not emissiveColor
 ## "noemit"                : Same as emit,0
 ## "arrow"                 : Last segment is an arrow 
@@ -17,12 +18,12 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-## pre 2.1.39 function s = vrml_cyl (x,...) 
+
 function s = vrml_cyl (x,varargin) 	#  pos 2.1.39 
 
 rad = 0.05 ;
 tran = 0 ;
-col = [0.3,0.4,0.9] ;
+col = [0.3;0.4;0.9] ;
 hcol = nan;
 brad = nan;
 
@@ -39,7 +40,7 @@ if nargin > 1
   df = tar (rad, tran, col, hcol, verbose, balls, noemit, arrow, brad, \
 	    emit);
 
-  ## pre 2.1.39 s = read_options (list (all_va_args), "op1",op1,"op0",op0, "default",df);
+
   s = read_options (varargin, "op1",op1,"op0",op0, "default",df); # pos 2.1.39
 
   [rad, tran, col, hcol, emit, verbose, balls, noemit, arrow, brad] = \

@@ -17,8 +17,8 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-## pre 2.1.39 function save_vrml(outname,...)
-function save_vrml(outname, varargin) ## pos 2.1.39
+
+function save_vrml(outname, varargin)
 
 verbose = 0;
 append = 0;
@@ -28,7 +28,7 @@ if ! isstr(outname) ,
 end
 
 if strcmp(outname(1:2),">>"),
-  append = 1
+  append = 1;
 end
 outname = strrep(outname,">","");
 
@@ -57,12 +57,12 @@ lightstr = "";
 
 				# Read eventual options
 ninit = nargin;
-## pre 2.1.39 va_start ();
-## pos 2.1.39
+
+
 i = 1;
 while --nargin,
-  ## pre 2.1.39   tmp = va_arg ();
-  tmp = nth (varargin, i++); ## pos 2.1.39
+
+  tmp = nth (varargin, i++);
   if     strcmp (tmp, "nobg"),
     bg_node = "";
   elseif strcmp (tmp, "nolight"),
@@ -75,11 +75,10 @@ while --nargin,
     ## nargin, ninit
     ## endpre 2.1.39
     i--; 			# pos 2.1.39
-    break
+    break;
   end
 end
 bg_node = [bg_node, lightstr];
-
 ## No path.
 if findstr(outname,"/"),
   outname = outname(max(findstr(outname,"/"))+1:size(outname,2)) ;
@@ -95,13 +94,13 @@ if fid == -1 , error(sprintf("save_vrml : unable to open %s",fname)); end
 fprintf(fid,"#VRML V2.0 utf8 \n# %s , created by save_vrml.m on %s \n%s",
 	fname,datestr(now),bg_node);
 
-## pre 2.1.39 i = 1 ;
-## pre 2.1.39 while --nargin ,
-while i <= length (varargin) , ## pos 2.1.39
-  ## pre 2.1.39 tmp = va_arg();
+
+
+while i <= length (varargin) ,
+
   if verbose, printf ("save_vrml : %i'th string\n",i); end
-  ## pre 2.1.39   fprintf(fid,"%s",va_arg()) ;
-  fprintf (fid,"%s", nth (varargin, i)) ; ## pos 2.1.39
+
+  fprintf (fid,"%s", nth (varargin, i)) ;
   i++ ;
 end
 

@@ -1,10 +1,11 @@
-##       v = vrml_transfo(s,t,r,c)
+##       v = vrml_transfo(s,t,r,c,d)
 ##  
 ## s : string of vrml code.
 ## t : 3      Translation                          default : [0,0,0]
 ## r : 3x3    Rotation matrix, or                  default : eye(3)
 ##     3      Scaled rotation axis.
 ## c : 3 or 1 Scale                                default : 1
+## d : string DEF name                             default : ''
 ##
 ## v : string v is s, enclosed in a Transform {} vrml node with
 ##     rotation, translation and scale params given by r, t and c.
@@ -13,7 +14,7 @@
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
-function v = vrml_transfo(s,t,r,c)
+function v = vrml_transfo(s,t,r,c,DEF)
 
 ## Hint : if s is "%s", you may later do v2 = sprintf (v,s2) which should be
 ##        equal to  vrml_transfo (s2,etc)
@@ -24,16 +25,17 @@ verbose = 0;
 if nargin<2 || isnan (t), t = [0,0,0] ; end # Default translation
 if nargin<3 || isnan (r), r = [1,0,0,0] ; end #  Default rotation
 if nargin<4 || isnan (c), c = [1,1,1] ; end # Default scale
+if nargin<5, DEF = ""; end
 ## if nargin<4, s = "%s" ; end
 
 if prod(size(c))==1, c = [c,c,c]; end
 
-if all(size(r)==3)
+if all(size(r) == 3)
   [axis,ang] = rotparams(r) ;
-elseif prod(size(r))==4
+elseif prod(size(r)) == 4
   ang = r(4);
   axis = r(1:3);
-elseif prod(size(r))==3
+elseif prod(size(r)) == 3
   ang = norm(r);
   if abs(ang)>eps, 
     axis = r/ang;
@@ -51,8 +53,10 @@ if verbose,
 end
 
 				# Indent s by 4
-if strcmp(s(prod(size(s))),"\n"), s = s(1:prod(size(s))-1) ; end
-## strrep is slow, as if it copied everything by hand \
+if length (s) && strcmp(s(prod(size(s))),"\n")
+  s = s(1:prod(size(s))-1) ;
+end
+## strrep is slow, as if it copied everything by hand 
 #  mytic() ;
 #  s = ["    ",strrep(s,"\n","\n    ")] ;
 #  mytic()
@@ -71,3 +75,4 @@ v = sprintf(["Transform {\n",\
 	    c,\
 	    s) ;
 ## keyboard
+if !isempty (DEF), v = ["DEF ",DEF," ",v]; end 

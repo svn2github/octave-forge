@@ -100,7 +100,7 @@ EOF
 cvs commit -m "$TAG release" ChangeLog main/miscellaneous/OCTAVE_FORGE_VERSION.m
 
 # tag the CVS tree with the revision number
-cvs rtag $TAG $PROJECT
+cvs rtag -F $TAG $PROJECT
 
 # extract the tree into a tagged directory
 cvs export -r $TAG -d $ROOT $PROJECT

@@ -1,5 +1,8 @@
+% NANTEST checks a few statistical functions for their correctness
+% e.g. it checks norminv, normcdf, normpdf.
+%
 % NANTEST checks whether the functions from NaN-toolbox have been
-% installed correctly. 
+% correctly installed . 
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -16,7 +19,7 @@
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%    	Version 1.27  Date: 12 Sep 2002
+%    	Version 1.28  Date: 24 Sep 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>
 
 
@@ -36,53 +39,79 @@ for k=1:2,
         r(4,k) =var(x);
         r(5,k) =skewness(x);
         r(6,k) =kurtosis(x);
-        r(7,k) =sem(x);
+        if exist('sem')==2,
+                r(7,k) =sem(x);
+        end;
         r(8,k) =median(x);
         r(9,k) =mad(x);
     		tmp = zscore(x); 
 	r(10,k)=tmp(1);
-        r(11,k)=coefficient_of_variation(x);
+        if exist('coefficient_of_variation')==2,
+                r(11,k)=coefficient_of_variation(x);
+        end;
         r(12,k)=geomean(x);
         r(13,k)=harmmean(x);
-        r(14,k)=meansq(x);
+        if exist('meansq')==2,
+        	r(14,k)=meansq(x);
+        end;
         r(15,k)=moment(x,6);
-        r(16,k)=rms(x);
-        r(17,k)=sem(x);
+        if exist('rms')==2,
+                r(16,k)=rms(x);
+        end;
+        % r(17,k) is currently empty. 
         	tmp=corrcoef(x',(1:length(x))');
         r(18,k)=any(isnan(tmp(:)));
-        	tmp=rankcorr(x',(1:length(x))');
-        r(19,k)=any(isnan(tmp(:)));
-        	tmp=spearman(x',(1:length(x))');
-        r(20,k)=any(isnan(tmp(:)));
-        r(21,k)=any(isnan(ranks(x')))+k;
-		tmp=center(x);
-        r(22,k)=tmp(1);
-        r(23,k)=trimean(x);
+        if exist('rankcorr')==2,
+        		tmp=rankcorr(x',(1:length(x))');
+                r(19,k)=any(isnan(tmp(:)));
+        end;
+        if exist('spearman')==2,
+        		tmp=spearman(x',(1:length(x))');
+	        r(20,k)=any(isnan(tmp(:)));
+        end;
+        if exist('rankcorr')==2,
+                r(21,k)=any(isnan(ranks(x')))+k;
+        end;
+        if exist('center')==2,
+        	        tmp=center(x);
+	        r(22,k)=tmp(1);
+        end;
+        if exist('center')==2,
+        	r(23,k)=trimean(x);
+        end;
 end;
 
 % check if result is correct
 tmp = abs(r(:,1)-r(:,2))<eps;
 
 
+q=zeros(1,5);
 
 % check NORMPDF, NORMCDF, NORMINV
 x = [-inf,-2,-1,-.5,0,.5,1,2,3,inf,nan]';
-q(1) = sum(isnan(normpdf(x,2,0)))>sum(isnan(x));
-if q(1),
-        fprintf(1,'NORMPDF should be replaced\n.');
+if exist('normpdf')==2,
+        q(1) = sum(isnan(normpdf(x,2,0)))>sum(isnan(x));
+        if q(1),
+                fprintf(1,'NORMPDF should be replaced\n');
+        end;
 end;
 
-q(2) = sum(isnan(normcdf(x,2,0)))>sum(isnan(x));
-if q(2),
-        fprintf(1,'NORMCDF should be replaced\n.');
+if exist('normcdf')==2,
+        q(2) = sum(isnan(normcdf(x,2,0)))>sum(isnan(x));
+        if q(2),
+                fprintf(1,'NORMCDF should be replaced\n');
+        end;
 end;
 
-p = [-inf,-.2,0,.2,.5,1,2,inf,nan];
-q(3) = sum(~isnan(norminv(p,2,0)))<4;
-if q(3),
-        fprintf(1,'NORMINV should be replaced\n.');
+if exist('norminv')==2,
+        p = [-inf,-.2,0,.2,.5,1,2,inf,nan];
+        q(3) = sum(~isnan(norminv(p,2,0)))<4;
+        if q(3),
+                fprintf(1,'NORMINV should be replaced\n');
+        end;
+        q(4) = ~isnan(norminv(0,NaN,0)); 
+        q(5) = any(norminv(0.5,[1 2 3 ],0)~=[1:3]);
 end;
-
 
 % output
 if all(tmp) & all(~q),
@@ -91,7 +120,6 @@ else
         fprintf(1,'NANTEST %i not successful \n', find(~tmp));
 	fprintf(1,'Some functions must still be replaced\n');
 end;
-
 
 
 

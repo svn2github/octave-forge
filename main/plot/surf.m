@@ -14,13 +14,24 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## Draw a surface plot.  Presently only draws mesh surfaces.
+## Surface plot.  
+##
+## E.g.,
+##
+##    surf(peaks);
+##
+## Note that subsequent calls to mesh/meshc will also display a surface plot
+## unless you do clf to clear the figure between plots.
+##
+## If you are getting warnings from gnuplot either install gnuplot 3.8i or set
+##     global gnuplot_has_pm3d=0
+## in your ~/.octaverc file.
 function surf(varargin)
-   try
-      gset pm3d at s ftriangles hidden3d 100;
+   global gnuplot_has_pm3d;
+   if !exist("gnuplot_has_pm3d") || gnuplot_has_pm3d!=0,
+      graw("set pm3d at s ftriangles hidden3d 100; # see: help surf\n");
       gset line style 100 lt 5 lw 0.5;
       gset nohidden3d;
       gset nosurf;
-   catch
    end
    mesh(varargin{:});

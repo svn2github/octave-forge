@@ -1,5 +1,25 @@
 =======================================================================
-Simple end user installation
+Prerequisites
+
+Octave must be installed before building octave-forge.
+
+Some functions in octave-forge depend on external libraries:
+
+   * convhull, voronoi and delaunay need Qhull.  If you need these functions,
+     then see main/geometry/README for instructions on downloading,
+     building and installing libqhull.so and <qhull/*.h>.
+
+   * symbolic expressions and variable precision arithmetic need GiNaC, 
+     which in turn depends on cln and gmp.  If you need these functions,
+     then see http://www.ginac.de for instructions for installing
+     GiNaC, cln and gmp.
+
+   * sparse matrices need SuperLU.  A modified version of SuperLU is 
+     included in octave-forge/main/sparse.  This will be built 
+     automatically when you build octave-forge.
+
+=======================================================================
+Simple user installation
 
 $ tar xzf octave-forge-<ver>.tar.gz
 $ cd octave-forge-<ver>

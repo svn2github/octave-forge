@@ -66,6 +66,12 @@ nonfree/
 	license should not be included anywhere, since no license implies
 	default license implies no rights to redistribute.
 
+doc/
+	Documentation for octave in general.  Documentation for specific
+	packages goes into the doc subdirectory of the individual package 
+	directories.  There are no standards for documentation at this
+	time.
+
 ======================================================================
 Package organization
 

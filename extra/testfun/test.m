@@ -217,7 +217,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   __close_fid = 0;
   if (__batch)
     if (isstr(__fid))
-      __fid = fopen(__fid, "w");
+      __fid = fopen(__fid, "wt");
       if __fid < 0, error("could not open log file"); endif
       __close_fid = 1;
     endif
@@ -292,7 +292,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   __tmp = tmpnam();
   unwind_protect
     system(["sed -n 's/^%!//p' '", __file, "' > '", __tmp, "'"]);
-    fid = fopen(__tmp,"r");
+    fid = fopen(__tmp,"rt");
     __body = setstr(fread(fid,Inf,'char')');
   unwind_protect_cleanup
     unlink(__tmp);

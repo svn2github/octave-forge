@@ -30,13 +30,24 @@
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994
 ## Adapted-By: jwe
+
 ## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    handle [-1,1] input range
+## 2001-10-22 Paul Kienzle
+## * restore Octave's guessing behaviour for precision, but issue warning
 
 function y = lin2mu (x, bit)
 
   if (nargin == 1)
-    bit = 0;
+    range = max(abs(x(:)));
+    if (range <= 1) 
+      bit = 0;
+    elseif (range <= 128) 
+      bit = 8;
+      warning ("lin2mu: no precision specified, so using %d", bit);
+    else
+      bit = 16;
+    endif
   elseif (nargin == 2)
     if (bit != 0 && bit != 8 && bit != 16)
       error ("lin2mu: bit must be either 0, 8 or 16");

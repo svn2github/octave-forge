@@ -22,21 +22,25 @@
 ## If the matrix @var{x} represents audio data in mu-law encoding,
 ## @code{mu2lin} converts it to linear encoding.  The optional argument
 ## @var{bps} specifies whether the output data uses 8 bit samples (range
-## -128 to 127), 16 bit samples (range -32768 to 32767) or default 0 for
-## real values (range -1 to 1).
+## -128 to 128), 16 bit samples (range -32768 to 32768) or 0 for
+## real values (range -1 to 1).  The default is 8.
 ## @end deftypefn
 ## @seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, and record}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 18 October 1994
 ## Adapted-By: jwe
+
 ## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    handle [-1,1] input range
+## 2001-10-23 Paul Kienzle <pkienzle@users.sf.net>
+## * default to 8-bit as in octave
 
 function y = mu2lin (x, bit)
 
   if (nargin == 1)
-    bit = 0;
+    ## XXX COMPATIBILITY XXX: bps defaults to 8 for octave, 0 for Matlab
+    bit = 8;
   elseif (nargin == 2)
     if (bit != 0 && bit != 8 && bit != 16)
       error ("mu2lin: bit must be either 0, 8 or 16");

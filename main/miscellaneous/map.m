@@ -18,14 +18,14 @@ function return_type = map (fun_str,data_struct,varargin)
   ## write to the Free Software Foundation, 59 Temple Place -
   ## Suite 330, Boston, MA 02111-1307, USA.
 
-  ## usage: [ result ] = map ( FUN_STR, ARG1, ... )
+  ## usage: result = map ( FUN_STR, ARG1, ... )
   ##
   ## map, like LISP's ( & numerous other language's ) function for
   ## iterating the result of a function applied to each of the data
   ## structure's elements in turn. The results are stored in the
   ## corresponding input's place. For now, just will work with cells and
   ## matrices, but support for structs are intended for future versions.
-  ## Also, only "postfix" functions ( like "min(a,b,c,..)" ) are
+  ## Also, only "prefix" functions ( like "min(a,b,c,...)" ) are
   ## supported.
   ##
   ## Example:

@@ -11,7 +11,7 @@ See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/
 
 See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/ChangeLog?rev=HEAD&content-type=text/plain">ChangeLog</a> for details of every change.
 
-2004-01-28 ===================================================================
+2004-02-11 ===================================================================
 
 Extends support forward to octave 2.1.53 for all oct-files.  Improved 
 build environment and better testing.  We still need more tests!  If 
@@ -30,6 +30,7 @@ New functions
   - BFGSMin: alternative to bfgs minimizer
   - conv2nan: 2-D convolution which ignores missing data
   - convhull/convhulln: now allows direct control of qhull parameters
+  - csape: support n=3 case --- need to verify it is correct
   - dxfwrite: output plot to DXF format (AutoCAD)
   - fail: checks if code fails with a given error message
   - galois: load/save support
@@ -39,6 +40,7 @@ New functions
   - map: apply a function across all elements of a cell array
   - mex: initial support for structures
   - pngread/pngwrite: direct access to libpng
+  - quadl: improved adaptive quadrature routine
   - rand/randn: faster and now supports for nD arrays
   - sort: fast sort based on python's timsort
   - sprandn: random sparse matrix filled with normally distributed values

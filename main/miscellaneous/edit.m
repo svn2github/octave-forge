@@ -61,6 +61,8 @@
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
+## This program is granted to the public domain.
+
 ## 2001-04-10 Paul Kienzle <pkienzle@users.sf.net>
 ## * Initial revision
 

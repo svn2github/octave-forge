@@ -26,10 +26,9 @@ function [CC,NN] = covm(X,Y,Mode);
 % [C,N] = covm(...);
 %	C is not scaled, provides the scaling factor   
 %	C./N gives the scaled version. 
-%
 
+%	Version 1.28   Date: 23.Sep.2002
 %	Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
-
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

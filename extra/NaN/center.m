@@ -1,4 +1,4 @@
-function i = zscore(i,DIM)
+function i = center(i,DIM)
 % CENTER removes the mean 
 %
 % z = center(x,DIM)

@@ -1,1 +1,42 @@
-Installing the NaN-tb with Octave:----------------------------------a) You need repmat.m;    If you havenot installed it yet, you should do it now. Download e.g. P. Kienzle's version from  http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/main/general/repmat.m?rev=HEAD&content-type=text/plain b) extract files from NaNnnn.tar.gz and move them into .../octave/.../m/statistics/base/ c) Alternatively, the files can be moved into any other directory; but you must remove from .../octave/.../m/statistics/base/ mean.m, meansq.m, median.m, moment.m, skewness.m, kurtosis.m, std.m, var.mand from .../source_forge/.../statistics/*zscore.m, mad.m, geomean.m, harmmean.m (Optional) You can remove nansum, nanmean, nanmedian, etc. because you do not need them anymore. d) (Re-)start Octave and run NANTEST. This checks whether the installation was successful. Installing the NaN-tb for Matlab:----------------------------------a) Extract files and save them in /your/directory/structure/to/NaN/b) Include the following command. 	path('/your/directory/structure/to/NaN/',path)at the end of your startup.m. c) (Re-)start Matlab and run NANTEST. This checks whether the installation was successful. 	Version 1.21	06 May 2002	Copyright (c) 2000-2002 by  Alois Schloegl	a.schloegl@ieee.org		WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+
+Installing the NaN-tb with Octave:
+----------------------------------
+a) You need repmat.m;
+    If you havenot installed it yet, you should do it now. 
+Download e.g. P. Kienzle's version from  
+http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/main/general/repmat.m?rev=HEAD&content-type=text/plain 
+
+b) extract files from NaNnnn.tar.gz and move them into 
+.../octave/.../m/statistics/base/ 
+
+c) Alternatively, the files can be moved into any other directory; but you 
+must remove from .../octave/.../m/statistics/base/ 
+mean.m, meansq.m, median.m, moment.m, skewness.m, kurtosis.m, std.m, var.m
+and from .../source_forge/.../statistics/*
+zscore.m, mad.m, geomean.m, harmmean.m 
+
+(Optional) You can remove nansum, nanmean, nanmedian, etc. because you do not need 
+them anymore. 
+
+d) (Re-)start Octave and run NANTEST. 
+This checks whether the installation was successful. 
+
+
+Installing the NaN-tb for Matlab:
+----------------------------------
+a) Extract files and save them in /your/directory/structure/to/NaN/
+
+b) Include the following command. 
+	path('/your/directory/structure/to/NaN/',path)
+at the end of your startup.m. 
+
+c) (Re-)start Matlab and run NANTEST. 
+This checks whether the installation was successful. 
+
+
+
+	Version 1.17
+	17 Mar 2002
+	Copyright (c) 2000-2002 by  Alois Schloegl
+	a.schloegl@ieee.org	
+	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

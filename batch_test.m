@@ -31,6 +31,10 @@ assert(typeinfo(c),"tri");
 assert(c+1,[1+rt2,1+1/rt2;1,1+1/rt2],10*eps);
 assert(typeinfo(c+1),"matrix");
 
+disp("[main/comm]");
+disp(">galois");
+galois("test");
+
 disp("[main/signal]");
 disp(">medfilt"); assert(medfilt1([1, 2, 3, 4, 5], 3), [1.5, 2, 3, 4, 4.5]);
 b = [

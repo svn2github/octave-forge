@@ -1,5 +1,5 @@
 function [AutoCov,AutoCorr,ARPMX,E,C,s]=invest1(Y,Pmax,D);
-% First Investigation of a signal (time series) - interactive
+% First Investigation of a signal (time series) - interactive
 % [AutoCov,AutoCorr,ARPMX,E,CRITERIA,MOPS]=invest1(Y,Pmax,show);
 %
 % Y	time series

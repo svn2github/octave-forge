@@ -1,5 +1,5 @@
 function [A,E] = ac2poly(acf);
-% converts the autocorrelation sequence into an AR polyimomial 
+% converts the autocorrelation sequence into an AR polynomial
 % [A,Efinal] = ac2poly(r)
 %
 % see also ACOVF ACORF AR2RC RC2AR DURLEV AC2POLY, POLY2RC, RC2POLY, RC2AC, AC2RC, POLY2AC

@@ -10,9 +10,9 @@ INCLUDES = -I../
 DEFINES = $(HAVE_RESIZE_AND_FILL)
 
 ifeq (,$(findstring cygwin,$(canonical_host_type)))
-  MOFLAGS = -s $(INCLUDES)
+  MOFLAGS = $(INCLUDES)
 else
-  MOFLAGS = -s $(INCLUDES) -L../ -loctave_fixed
+  MOFLAGS = $(INCLUDES) -L../ -loctave_fixed
 endif
 
 .PHONY: all clean count

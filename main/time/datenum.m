@@ -45,8 +45,7 @@ function n = datenum(Y,M,D,h,m,s)
   endif
 
   n = zeros(size(Y));
-  lt = localtime(0);
-  h = h+lt.hour-24;
+
   for i=1:prod(size(Y))
     tm.usec = 1e6*rem(s(i),1);
     tm.sec = floor(s(i));
@@ -55,7 +54,7 @@ function n = datenum(Y,M,D,h,m,s)
     tm.mday = D(i);
     tm.mon = M(i)-1;
     tm.year = Y(i)-1900;
-    tm.zone = "GMT";
+    tm.zone = "CUT";
     tm.wday = 0;
     tm.yday = 0;
     tm.isdst = 0;
@@ -70,5 +69,8 @@ function n = datenum(Y,M,D,h,m,s)
       endif
     endif
   endfor
+
+  ## Correct for time zone
+  n -= mktime(gmtime(0))/86400;
 endfunction
       

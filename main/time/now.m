@@ -25,6 +25,7 @@
 ## @end deftypefn
 
 function t = now
-  ## seconds since 1970-1-1 divided by 86400 sec/day plus day num for 1970-1-1
-  t = mktime(localtime(time))/86400 + 719529;
+  ## seconds since 1970-1-1 corrected by seconds from GMT to local time
+  ## divided by 86400 sec/day plus day num for 1970-1-1
+  t = (time - mktime(gmtime(0)))/86400 + 719529;
 endfunction

@@ -243,12 +243,13 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
       const octave_complex_sparse& v = ((const octave_complex_sparse&) rep);
       retval= v.find();
 
-   } else
+   } else {
      gripe_wrong_type_arg ("spfind", args(0));
+   }
 
-   if (nargout == 1) { // only return the v value
+   if (nargout == 1 || nargout ==0) { // only find location as fortran index
       octave_value_list tmp;
-      tmp(0) = retval(2);
+      tmp(0) = retval(0) + (retval(1)-1)*retval(3);
       retval= tmp;
    }
 
@@ -257,6 +258,9 @@ returns column vectors @var{i},@var{j},@var{v} such that@*\n\
 
 /*
  * $Log$
+ * Revision 1.12  2004/08/02 16:00:07  aadler
+ * fixed bug in spfind -> will now return fortran_vector index for nargout ==1
+ *
  * Revision 1.11  2004/07/27 16:05:55  aadler
  * simplify find
  *

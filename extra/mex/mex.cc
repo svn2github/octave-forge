@@ -397,7 +397,7 @@ public:
 #else
     // 2.1.53
     if (pmap) 
-      pmap->assign(octave_value(index), 
+      pmap->assign(octave_value(index+1), 
 		      key, Cell(value->as_octave_value()));
 #endif
     if (error_state) __mex->abort();
@@ -557,6 +557,7 @@ mxArray *mex::make_value(int nr, int nc, int cmplx)
   value->rows(nr);
   value->columns(nc);
   value->is_string(false);
+  value->map(NULL);
   value->name("");
 
   return value;
@@ -674,8 +675,9 @@ call_mex(callstyle cs, const octave_value_list& args, const int nargout)
   octave_value_list retval;
   if (! error_state)
     {
-      for (int i=0; i < nargout+1; i++)
+      for (int i=nargout; i >= 0; i--) {
 	if (argout[i]) retval(i) = argout[i]->as_octave_value();
+      }
       //retval(i) = argout[i] ? argout[i]->as_octave_value() : octave_value();
     }
 
@@ -967,7 +969,6 @@ extern "C" {
   mxArray *mxCreateStructMatrix(int nr, int nc, int num_keys, 
 				const char **keys)
   {
-    mexWarnMsgTxt("octave mex can't yet create structures\n");
     const string_vector ordered_keys(keys,num_keys);
     mxArray *m = __mex->make_value(nr, nc, ordered_keys);
     return m;

@@ -867,7 +867,7 @@ as seen in Table 1.
 
 @center Table 2: Table of valid BCH codes with codeword length less than 511.
 
-@multitable @columnfractions .083 .083 .083 | .083 .083 .083 | .083 .083 .083 | .083 .083 .083 
+@multitable @columnfractions .083 .083 .083 .083 .083 .083 .083 .083 .083 .083 .083 .083 
 @item  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T
 @item   7 @tab   4 @tab   1 @tab 127 @tab  36 @tab  15 @tab 255 @tab  45 @tab  43 @tab 511 @tab 268 @tab  29
 @item  15 @tab  11 @tab   1 @tab 127 @tab  29 @tab  21 @tab 255 @tab  37 @tab  45 @tab 511 @tab 259 @tab  30

@@ -33,8 +33,14 @@ hcol = [];
 ######################################################################
 ## Read options
 numeric_args = 0;
+<<<<<<< vrml_frame.m
+nargin = nargin();
+
+while nargin && numeric_args<2,
+=======
 args = nargin; # nargin is now a function
 while args && numeric_args<2,
+>>>>>>> 1.8
 
 
   tmp = nth (varargin, numeric_args + 1);
@@ -97,41 +103,29 @@ sz = [scale; nan*ones(1,3); diam; rdiam] ;
 
 ## diam = diam.*scale ;
 ## d = diam = nan*scale;
-if 1
-  r2 = r;
-  n = sqrt (sum (r2.^2));
-  r2./= [1;1;1] * n;
-  sz(1,:) .*= n;
-  sz(3,:) ./= n;
-  sz(4,:) ./= n;
+r2 = r;
+n = sqrt (sum (r2.^2));
+r2./= [1;1;1] * n;
+sz(1,:) .*= n;
+sz(3,:) ./= n;
+sz(4,:) ./= n;
 
-  tmp = [r2(:,1), null (r2(:,1)')](:,[2,1,3])';
-  if det (tmp) < 0, tmp(3,:) *= -1; end
-  a1 = vrml_transfo (vrml_arrow(sz(:,1),[col(1,:);hcol(1,:)],0),\
-		     [0,0,0],tmp);
-  ## keyboard
-  tmp = [r2(:,2), null (r2(:,2)')](:,[2,1,3])';
-  if det (tmp) < 0, tmp(3,:) *= -1; end
-  a2 = vrml_transfo (vrml_arrow(sz(:,2),[col(2,:);hcol(2,:)],0),\
-		     [0,0,0],tmp);
+tmp = [r2(:,1), null(r2(:,1)')](:,[2,1,3])';
+if det (tmp) < 0, tmp(3,:) *= -1; end
+a1 = vrml_transfo (vrml_arrow(sz(:,1),[col(1,:);hcol(1,:)],0),\
+		   [0,0,0],tmp);
+## keyboard
+tmp = [r2(:,2), null(r2(:,2)')](:,[2,1,3])';
+if det (tmp) < 0, tmp(3,:) *= -1; end
+a2 = vrml_transfo (vrml_arrow(sz(:,2),[col(2,:);hcol(2,:)],0),\
+		   [0,0,0],tmp);
 
-  tmp = [r2(:,3), null (r2(:,3)')](:,[2,1,3])';
-  if det (tmp) < 0, tmp(3,:) *= -1; end
-  a3 = vrml_transfo (vrml_arrow(sz(:,3),[col(3,:);hcol(3,:)],0),\
-		     [0,0,0],tmp);
+tmp = [r2(:,3), null(r2(:,3)')](:,[2,1,3])';
+if det (tmp) < 0, tmp(3,:) *= -1; end
+a3 = vrml_transfo (vrml_arrow(sz(:,3),[col(3,:);hcol(3,:)],0),\
+		   [0,0,0],tmp);
 
-  f0 = vrml_group (a1, a2, a3);
-  v = vrml_transfo (f0, t, nan);
+f0 = vrml_group (a1, a2, a3);
+v = vrml_transfo (f0, t, nan);
 
-else
-  a1 = vrml_transfo (vrml_arrow(sz(:,1),[col(1,:);hcol(1,:)],0),\
-		   [0,0,0],[0,-1,0;1,0,0;0,0,1]);
-  ## keyboard
-  a2 = vrml_arrow(sz(:,2),[col(2,:);hcol(2,:)],0);
-  a3 = vrml_transfo (vrml_arrow(sz(:,3),[col(3,:);hcol(3,:)],0),\
-		     [0,0,0],[1,0,0;0,0,1;0,-1,0]);
-  f0 = vrml_group (a1, a2, a3);
-
-  v = vrml_transfo (f0, t, r);
-end
 

@@ -36,43 +36,44 @@
 ##                 "code" include "x", the best parameter found, "v" the
 ##                 best value and "args", the list of all arguments. All can
 ##                 be modified. This option can be used to change the 
-##                 parameterization of argument space while optimizing.
+##                 parameterization of the argument space while optimizing.
 ##
-## CONTROL VARIABLE ctl :
-## ctl(1)    : 1 or 2 : Select stopping criterion amongst :
+## CONTROL VARIABLE ctl : (optional). May be a struct or a vector of length
+## ---------------------- 5 or less where NaNs are ignored. Default values
+##                        are written <value>.
+## FIELD  VECTOR
+## NAME    POS
 ##
-## ctl(1)==1 : Stop search when value doesn't improve, as tested by
+## ftol, f N/A    : Stop search when value doesn't improve, as tested by
 ##
-##              ctl(2) > Deltaf/max(|f(x)|,1)
+##                   f > Deltaf/max(|f(x)|,1)
 ##
 ##             where Deltaf is the decrease in f observed in the last
-##             iteration (each iteration consists R*C line searches).
+##             iteration.                                     <10*sqrt(eps)>
 ##
-## ctl(1)==2 : Stop search when updates are small, as tested by
+## utol, u N/A    : Stop search when updates are small, as tested by
 ##
-##              ctl(2) > max { dx(i)/max(|x(i)|,1) | i in 1..N }
+##                   u > max { dx(i)/max(|x(i)|,1) | i in 1..N }
 ##
 ##             where  dx is the change in the x that occured in the last
-##             iteration.
+##             iteration.                                              <NaN>
 ##
-## ctl(1)==3 : Stop search when derivative is small, as tested by
+## dtol, d N/A    : Stop search when derivative is small, as tested by
+## 
+##                   d > norm (dv)                                     <eps>
 ##
-##              ctl(2) > norm (dv)
+## crit, c ctl(1) : Set one stopping criterion, 'ftol' (c=1), 'utol' (c=2)
+##                  or 'dtol' (c=3) to the value of by the 'tol' option. <1>
 ##
-##                                                            Default=1
+## tol, t  ctl(2) : Threshold in termination test chosen by 'crit'  <10*eps>
 ##
-##    NOTE : For whatever value of ctl(1), if the derivative's norm is
-##           smaller than eps, the algorithm exits.
+## argn, n ctl(3) : Position of the minimized argument in args           <1>
+## maxev,m ctl(4) : Maximum number of function evaluations             <inf>
+## id2f, i ctl(5) : 0 if d2f returns the 2nd derivatives, 1 if           <0>
+##                  it returns its pseudo-inverse.
 ##
-## ctl(2)    : Threshold used in stopping tests.          Default=10*eps^1/2
-## ctl(3)    : Position of the minimized argument in args Default=1 
-## ctl(4)    : Maximum number of function evaluations     Default=inf
-## ctl(5)    : 0 if d2f returns the 2nd derivatives, 1 if Default=0
-##             it returns its pseudo-inverse.
-##
-## ctl may have length smaller than 5. Default values will be used if ctl is
-## not passed or if nan values are given.
-##
+## verbose, v N/A : Be more or less verbose (quiet=0)                    <0>
+
 function [xbest,vbest,nev,hbest,args] = d2_min (f,d2f,args,ctl,code)
 
 ## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
@@ -85,7 +86,6 @@ d2_min_warn = 0;
 
 maxouter = inf;
 maxinner = 30 ;
-gtol = eps ;
 
 tcoeff = 0.5 ;			# Discount on total weight
 ncoeff = 0.5 ;			# Discount on weight of newton
@@ -97,19 +97,39 @@ prudent = 1 ;			# Check coherence of d2f and f?
 
 niter = 0 ;
 
-crit = 1;			# Default control variables
-tol = 10*sqrt (eps);
+crit = 0;			# Default control variables
+ftol = 10 * sqrt (eps);
+dtol = eps;
+utol = tol = nan;
 narg = 1;
 maxev = inf;
 id2f = 0;
 
 if nargin >= 4			# Read arguments
-  if length (ctl)>=1 && !isnan (ctl(1)), crit  = ctl(1); end
-  if length (ctl)>=2 && !isnan (ctl(2)), tol   = ctl(2); end
-  if length (ctl)>=3 && !isnan (ctl(3)), narg  = ctl(3); end
-  if length (ctl)>=4 && !isnan (ctl(4)), maxev = ctl(4); end
-  if length (ctl)>=5 && !isnan (ctl(5)), id2f  = ctl(5); end
+  if isnumeric (ctl)
+    if length (ctl)>=1 && !isnan (ctl(1)), crit  = ctl(1); end
+    if length (ctl)>=2 && !isnan (ctl(2)), tol   = ctl(2); end
+    if length (ctl)>=3 && !isnan (ctl(3)), narg  = ctl(3); end
+    if length (ctl)>=4 && !isnan (ctl(4)), maxev = ctl(4); end
+    if length (ctl)>=5 && !isnan (ctl(5)), id2f  = ctl(5); end
+  elseif is_struct (ctl)
+    if struct_contains (ctl, "crit")   , crit    = ctl.crit   ; end
+    if struct_contains (ctl, "tol")    , tol     = ctl.tol    ; end
+    if struct_contains (ctl, "narg")   , narg    = ctl.narg   ; end
+    if struct_contains (ctl, "maxev")  , maxev   = ctl.maxev  ; end
+    if struct_contains (ctl, "id2f")   , id2f    = ctl.id2f   ; end
+    if struct_contains (ctl, "verbose"), verbose = ctl.verbose; end
+  else 
+    error ("The 'ctl' argument should be either a vector or a struct");
+  end
 end
+
+if     crit == 1, ftol = tol;
+elseif crit == 2, utol = tol;
+elseif crit == 3, dtol = tol;
+elseif crit, error ("crit is %i. Should be 1,2 or 3.\n");
+end
+
 
 if nargin < 5, code = "" ; end
 
@@ -136,14 +156,14 @@ if !isstr (d2f) || !isstr (f)
   keyboard
 end
 
-if crit == 3, gtol = max (tol, gtol); end
-
 sz = size (x); N = prod (sz);
 
 v = leval (f, args);
 nev = [1,0];
 
-## keyboard
+if prudent && (! isnumeric (v) || isnan (v) || any (size (v)>1))
+  error ("Function '%s' returns inadequate output", f);
+end
 
 xbest = x = x(:);
 vold = vbest = nan ;		# Values of f
@@ -157,6 +177,14 @@ while niter++ <= maxouter
 
   [v,d,h] = leval (d2f, splice (args, narg, 1, list (reshape (x,sz))));
   nev(2)++;
+
+  if prudent && niter <= 1 && \
+	(! isnumeric (v) || isnan (v) || any (size (v)>1) || \
+	 ! isnumeric (d) || length (d(:)) != N || \
+	 ! isnumeric (h) || any (size (h) != N))
+    error ("Function '%s' returns inadequate output", d2f);
+  end
+
   if ! id2f, h = pinv (h); end
   d = d(:);
 
@@ -186,7 +214,7 @@ while niter++ <= maxouter
     printf ("d2_min : niter=%d, v=%8.3g\n",niter,v );
   end
 
-  if norm (d) < gtol		# Check for small derivative
+  if norm (d) < dtol		# Check for small derivative
     if verbose || report 
       printf ("d2_min : exiting 'cause low gradient\n");
     end
@@ -324,8 +352,8 @@ while niter++ <= maxouter
     end
   end
 
-  if crit == 1 && tol > (vold-vbest)/max(vold,1), 
-    if verbose || report ,
+  if ! isnan (ftol) && ftol > (vold-vbest)/max(vold,1), 
+    if verbose || report
       printf ("d2_min : quitting, niter=%-3d v=%8.3g, ",niter,v);
       if vold, printf ("v/vold=%8.3g \n",v/vold);
       else     printf ("vold  =0     \n",v);
@@ -333,9 +361,9 @@ while niter++ <= maxouter
     end
     ## keyboard
     break ;    			# out of outer loop
-
-  elseif crit == 2 && tol > max (abs (wbest*dbest))/max(abs (xbest),1),
-    if verbose || report ,
+  end
+  if ! isnan (utol) && utol > max (abs (wbest*dbest)) / max(abs (xbest),1)
+    if verbose || report
       printf ("d2_min : quitting, niter=%-3d v=%8.3g, ",niter,v);
       if vold, printf ("v/vold=%8.3g \n",v/vold);
       else     printf ("vold  =0     \n",v);

@@ -137,7 +137,7 @@ function nb = xmlwrite (filename, value, name)
 	       separator);
     endif
     
-  elseif ismatrix(value) && isnumeric(value)
+  elseif ismatrix(value) && isnumeric(value) && (length(size(value)) <= 2)
     ## Matrix type
     
     fprintf (fd, "%s<matrix%s rows=\"%d\" columns=\"%d\">\n",

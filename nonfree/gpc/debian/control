@@ -6,7 +6,7 @@ Standards-Version: 3.5.6
 Build-Depends: debhelper, libgpcl-dev, octave2.1-headers
 
 Package: octave-gpc
-Architecture: any
+Architecture: i386 alpha arm hppa m68k mips mipsel powerpc s390 sparc
 Depends: octave2.1 (>> 2.1.35), octave2.1 (<< 2.1.36), ${shlibs:Depends}
 Recommends: octave-forge
 Description: Octave bindings for the General Polygon Clipper Library

@@ -1,3 +1,17 @@
+octave-gpc (0.1.2-4) unstable; urgency=low
+
+  * debian/control: Including hppa in the list of supported architectures.
+
+ -- Rafael Laboissiere <rafael@debian.org>  Wed, 24 Apr 2002 22:29:16 +0200
+
+octave-gpc (0.1.2-3) unstable; urgency=low
+
+  * debian/control: Added Architecture list to avoid automatic build for
+    architectures hppa and ia64 (for which octave2.1 is broken, even if it
+    gets built; closes: #142643).
+
+ -- Rafael Laboissiere <rafael@debian.org>  Wed, 24 Apr 2002 17:37:41 +0200
+
 octave-gpc (0.1.2-2) unstable; urgency=low
 
   * debian/control: Fixed maintainer e-mail address.

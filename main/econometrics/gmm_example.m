@@ -38,7 +38,7 @@ k = 5;
 
 x = [ones(n,1) rand(n,k-1)];
 w = [x, rand(n,1)];
-theta = ones(k,1);
+theta = [-k+1; ones(k-1,1)];
 lambda = exp(x*theta);
 y = randp(lambda);
 [xs, scalecoef] = scale_data(x);
@@ -54,11 +54,11 @@ momentargs = {k}; # needed to know where x ends and w starts
 # additional args for gmm_results
 names = str2mat("theta1", "theta2", "theta3", "theta4", "theta5");
 title = "Poisson GMM trial";
-control = {100,0,1,1};
+control = {100,1,1,1};
 
 
 # initial consistent estimate: only used to get efficient weight matrix, no screen output
-[theta, obj_value, convergence] = gmm_estimate(theta, data, weight, moments, momentargs);
+[theta, obj_value, convergence] = gmm_estimate(theta, data, weight, moments, momentargs, control);
 
 # efficient weight matrix
 # this method is valid when moments are not autocorrelated

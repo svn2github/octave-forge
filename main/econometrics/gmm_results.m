@@ -42,7 +42,7 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 		endif
 	endif
 
-	[theta, V] = delta_method("Parameterize", theta, {data, moments, momentargs}, V);			
+	[theta, V] = delta_method("parameterize", theta, {data, moments, momentargs}, V);			
 
 	n = rows(data);
 	k = rows(theta);

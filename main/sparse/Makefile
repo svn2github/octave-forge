@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.11  2003/01/03 05:49:20  aadler
+# mods to support 2.1.42
+#
 # Revision 1.10  2002/12/25 01:32:59  aadler
 # fixed bug which allowed zero values to be stored in sparse matrices.
 # improved print output
@@ -166,7 +169,8 @@ CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
 
 NAME     =   make_sparse
 OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct \
-             spinv.oct is_sparse.oct spabs.oct
+             spinv.oct is_sparse.oct spabs.oct \
+             is_real_sparse.oct is_complex_sparse.oct
 SUPERLU  =   SuperLU
 S_INC=   -I$(SUPERLU)/SRC/ -I$(SUPERLU)/CBLAS
 

@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.12  2003/01/03 05:49:20  aadler
+mods to support 2.1.42
+
 Revision 1.11  2002/12/11 17:19:31  aadler
 sparse .^ scalar operations added
 improved test suite
@@ -193,8 +196,8 @@ public:
    octave_value transpose (void) const ;
 
    octave_value extract (int r1, int c1, int r2, int c2) const ;
-   octave_value_list subsref (const std::string type,
-                              const SLList<octave_value_list>& idx,
+   octave_value_list subsref (const std::string& type,
+                              const std::list<octave_value_list>& idx,
                               int nargout);
    octave_value do_index_op ( const octave_value_list& idx);
    
@@ -253,13 +256,9 @@ public:
    octave_value transpose (void) const ;
 
    octave_value extract (int r1, int c1, int r2, int c2) const ;
-   octave_value_list subsref (const std::string type,
-                              const SLList<octave_value_list>& idx,
+   octave_value_list subsref (const std::string& type,
+                              const std::list<octave_value_list>& idx,
                               int nargout);
-#if 0
-   octave_value subsref( const std::string type,
-                         const SLList<octave_value_list>& idx);
-#endif
    octave_value do_index_op ( const octave_value_list& idx);
 
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;

@@ -469,11 +469,10 @@ sparse_index_twoidx ( SuperMatrix X,
 
 
 octave_value_list
-octave_complex_sparse::subsref( const std::string type,
-                        const SLList<octave_value_list>& idx,
+octave_complex_sparse::subsref( const std::string& type,
+                        const std::list<octave_value_list>& idx,
                         int nargout)
 {
-// octave_value retval;
    octave_value_list retval;
    switch (type[0]) {
      case '(':
@@ -492,7 +491,9 @@ octave_complex_sparse::subsref( const std::string type,
        panic_impossible ();
    }
 
-// return retval.next_subsref (type, idx, nargout);
+   if (idx.size () > 1)
+       retval = retval(0).next_subsref (type, idx);
+
    return retval;
 }
 
@@ -1539,6 +1540,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.13  2003/01/03 05:49:20  aadler
+ * mods to support 2.1.42
+ *
  * Revision 1.12  2002/12/25 01:33:00  aadler
  * fixed bug which allowed zero values to be stored in sparse matrices.
  * improved print output

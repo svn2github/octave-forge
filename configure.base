@@ -354,7 +354,7 @@ AC_SUBST(CLASS_HAS_LOAD_SAVE)
 
 TRY_MKOCTFILE([for Octave_map indexing],
 [#include <octave/oct-map.h>
-int main(void) { Octave_map a; a["key"]; }],
+int main(void) { Octave_map a; a[["key"]]; }],
 [HAVE_OCTAVE_MAP_INDEX="-DHAVE_OCTAVE_MAP_INDEX"],)
 AC_SUBST(HAVE_OCTAVE_MAP_INDEX)
 

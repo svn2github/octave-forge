@@ -1,4 +1,12 @@
 # Automatically generated file --- DO NOT EDIT
+2003-06-02 08:54  pkienzle
+
+	* RELEASE-NOTES: june 2 release 
+
+2003-06-01 22:36  pkienzle
+
+	* ChangeLog: R2003-06-01 release 
+
 2003-06-01 22:33  pkienzle
 
 	* release.sh: better organized release instructions 

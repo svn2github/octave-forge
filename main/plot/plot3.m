@@ -90,7 +90,7 @@ function plot3(varargin)
 ###     
 ###   usleep (1e5);
       
-    endwhile
+    endfor
     
     ## Handle last plot.
     

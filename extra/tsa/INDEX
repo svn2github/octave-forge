@@ -1,4 +1,4 @@
-tsa >> Time Series Analysis (Ver 2.90)
+tsa >> Time Series Analysis (Ver 3.00)
 Analysis functions
    acovf
    acorf
@@ -11,7 +11,7 @@ Analysis functions
    invest0
    invest1
    selmo
-   histo3
+   histo
    hup
    ucp
    y2res

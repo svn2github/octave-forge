@@ -12,6 +12,9 @@ Analysis functions
    invest1
    selmo
    histo
+   histo2
+   histo3
+   histo4
    hup
    ucp
    y2res
@@ -41,9 +44,12 @@ Conversions between forms
    ar2poly
    
 Utility functions
+   arcext
    sinvest1
+   sbispec
 
 Test suites
    tsademo
    bisdemo
    invfdemo
+

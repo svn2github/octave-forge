@@ -1,11 +1,11 @@
 # Makefile for coda
 
 outputdir:=./out
-dbflags:=-V use-output-dir -V %output-dir%=$(outputdir) \
--V %root-filename%=coda
+dbflags:=-o $(outputdir) 
+#-V %root-filename%=coda
 autoidx:=$(outputdir)/HTML.index # Defined in "dbparam.dsl"
 coidxflags:=-g -s 'Symbols'
-coidx:=perl /usr/share/sgml/docbkdsl/bin/collateindex.pl
+coidx:=perl /usr/bin/collateindex.pl
 tidyflags:=--wrap 79 --tidy-mark false
 
 srcdirs:=appendices oct standalone
@@ -36,22 +36,16 @@ www-install: all
 all: html pdf targz
 
 .phony: html
-html: subdirs $(outputdir)/coda.html
+html: $(outputdir)/coda.html
 
 .phony: ps
-ps: subdirs $(outputdir)/coda.ps.gz
+ps: $(outputdir)/coda.ps.gz
 
 .phony: pdf
-pdf: subdirs $(outputdir)/coda.pdf
+pdf: $(outputdir)/coda.pdf
 
 .phony: targz
 targz: $(outputdir)/coda-sgml.tar.gz $(outputdir)/coda.ps.gz
-
-.phony: subdirs
-subdirs:
-	for dir in $(srcdirs); do \
-	    make --directory=$$dir; \
-	done
 
 $(outputdir)/coda-sgml.tar.gz: $(src) Makefile
 	tar czf $@ $^
@@ -59,11 +53,11 @@ $(outputdir)/coda-sgml.tar.gz: $(src) Makefile
 $(outputdir)/coda.html: $(src)
 	@echo '===  Pass 1  ==='
 	touch index.sgml; true
-	db2html $(dbflags) -V html-index coda.sgml
+	-db2html $(dbflags) -V html-index coda.sgml
 	test \! -f $(autoidx) && touch $(autoidx); true
 	$(coidx) $(coidxflags) $(autoidx) > index.sgml
 	@echo '===  Pass 2  ==='
-	db2html $(dbflags) coda.sgml
+	-db2html $(dbflags) coda.sgml
 	cd $(outputdir) && tidy -modify $(tidyflags) *.html 2>/dev/null; true
 	cd $(outputdir) && \
         for f in *.html; do \
@@ -81,10 +75,12 @@ $(outputdir)/coda.ps: $(src)
 
 $(outputdir)/coda.ps.gz: $(outputdir)/coda.ps
 
-$(outputdir)/coda.pdf: $(outputdir)/coda.ps
-	cd $(outputdir) && \
-	    gs -q -r600 -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \
-                -sOutputFile=coda.pdf coda.ps
+$(outputdir)/coda.pdf: coda.sgml
+	db2pdf -o $(outputdir) coda.sgml
+
+#	cd $(outputdir) && \
+#	    gs -q -r600 -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \
+#                -sOutputFile=coda.pdf coda.ps
 
 %.gz: %
 	gzip --best --stdout $< > $@

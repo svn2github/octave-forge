@@ -23,7 +23,7 @@
 ## Compresses and expanding the dynamic range of a signal using a mu-law or
 ## or A-law algorithm.
 ##
-## The mu-law compressor/expander for reducing the dynamic range, is usesd
+## The mu-law compressor/expander for reducing the dynamic range, is used
 ## if the fourth argument of @dfn{compand} starts with 'mu/'. Whereas the
 ## A-law compressor/expander is used if @dfn{compand} starts with 'A/'.
 ## The mu-law algorithm uses the formulation

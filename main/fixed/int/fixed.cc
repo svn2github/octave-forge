@@ -32,9 +32,9 @@ Open Source Initiative (www.opensource.org)
 #endif
 
 #include <iostream>
+#include <cmath>
 
 #if !defined(OCTAVE_FORGE)
-#include <cmath>
 
 #if defined(__APPLE__) && defined(__MACH__) 
 extern "C" int isnan (double); 
@@ -215,7 +215,10 @@ FixedPoint::FixedPoint (unsigned int is, unsigned int ds, const fp_uint n) {
 
   /* Check sizes */
   if (ds+is > maxfixedsize)
-    fixed_error (Fixed::WRONGFIXSIZE);
+    {
+      fixed_error (Fixed::WRONGFIXSIZE);
+      return;
+    }
   
   /* Get sizes */
   decsize = ds;
@@ -245,7 +248,10 @@ FixedPoint::FixedPoint (unsigned int is, unsigned int ds,
 
   /* Check sizes */
   if (ds+is > maxfixedsize)
-    fixed_error (Fixed::WRONGFIXSIZE);
+    {
+      fixed_error (Fixed::WRONGFIXSIZE);
+      return;
+    }
   
   /* Get sizes */
   decsize = ds;
@@ -281,7 +287,10 @@ FixedPoint::FixedPoint (unsigned int is, unsigned int ds,
 
   /* Check sizes */
   if (ds+is> maxfixedsize)
-    fixed_error (Fixed::WRONGFIXSIZE);
+    {
+      fixed_error (Fixed::WRONGFIXSIZE);
+      return;
+    }
       
   /* Get sizes */
   decsize = ds;
@@ -995,7 +1004,7 @@ FixedPoint rshift(const FixedPoint &x, int s) {
   }
   
   if (t.decsize+t.intsize > maxfixedsize) 
-    fixed_error (Fixed::WRONGFIXSIZE, t);
+      fixed_error (Fixed::WRONGFIXSIZE);
   
   return t;
 }
@@ -1010,7 +1019,7 @@ FixedPoint lshift(const FixedPoint &x, int s) {
   }
 
   if (t.decsize+t.intsize > maxfixedsize)
-    fixed_error (Fixed::WRONGFIXSIZE, t);
+    fixed_error (Fixed::WRONGFIXSIZE);
   
   return t;
 }
@@ -1060,7 +1069,7 @@ FixedPoint abs  (const FixedPoint &x) {
   { \
     double value = x.fixedpoint(); \
     if (value < lower) \
-      fixed_error (Fixed::BADMATH, FixedPoint()); \
+      { fixed_error (Fixed::BADMATH); return FixedPoint(); } \
     if (Fixed::FP_CountOperations) \
       Fixed::FP_Operations.nb_##FUNC++; \
     return FixedPoint(x.intsize, x.decsize, FUNC(value)); \
@@ -1071,7 +1080,7 @@ FixedPoint abs  (const FixedPoint &x) {
   { \
     double value = x.fixedpoint(); \
     if (value > upper) \
-      fixed_error (Fixed::BADMATH, FixedPoint()); \
+      { fixed_error (Fixed::BADMATH); return FixedPoint(); } \
     if (Fixed::FP_CountOperations) \
       Fixed::FP_Operations.nb_##FUNC++; \
     return FixedPoint(x.intsize, x.decsize, FUNC(value)); \
@@ -1082,7 +1091,7 @@ FixedPoint abs  (const FixedPoint &x) {
   { \
     double value = x.fixedpoint(); \
     if ((value < lower) || (value > upper)) \
-      fixed_error (Fixed::BADMATH, FixedPoint()); \
+      { fixed_error (Fixed::BADMATH); return FixedPoint(); } \
     if (Fixed::FP_CountOperations) \
       Fixed::FP_Operations.nb_##FUNC++; \
     return FixedPoint(x.intsize, x.decsize, FUNC(value)); \

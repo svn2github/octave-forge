@@ -42,19 +42,14 @@ Open Source Initiative (www.opensource.org)
 #    pragma interface
 #  endif
 
-#  define fixed_error(code, ...) { \
-	    error ("%s", Fixed::message[code]); \
-	    return __VA_ARGS__ ; \
-	}
-#  define fixed_warning(code) { \
-	    warning ("%s", Fixed::message[code]); \
-	}
+#  define fixed_error(code) { error ("%s", Fixed::message[code]); }
+#  define fixed_warning(code) { warning ("%s", Fixed::message[code]); }
 
 #else
 
 #  include "config.h"
 
-#  define fixed_error(code, ...) Fixed::_error (__FILE__, __LINE__, code)
+#  define fixed_error(code) Fixed::_error (__FILE__, __LINE__, code)
 #  define fixed_warning(code) Fixed::_warning (__FILE__, __LINE__, code)
 
 #endif

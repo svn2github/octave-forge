@@ -28,6 +28,33 @@ Open Source Initiative (www.opensource.org)
 #include <octave/data-conv.h>
 #include "oct-sort.cc"
 
+// ======= Cruft to support ancient versions of Octave =========
+#ifndef OCTAVE_LOCAL_BUFFER
+#include <vector>
+#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
+  std::vector<T> buf ## _vector (size); \
+  T *buf = &(buf ## _vector[0])
+#endif
+
+#ifndef lo_ieee_signbit
+#if defined (signbit)
+#define lo_ieee_signbit(x) signbit (x)
+#elif defined (HAVE_SIGNBIT)
+#if defined (__MINGW32__)
+extern int signbit (double);
+#endif
+#define lo_ieee_signbit(x) (x < 0 || signbit (x))
+#elif defined (copysign)
+#define lo_ieee_signbit(x) (copysign (1.0, x) < 0)
+#elif defined (HAVE_COPYSIGN)
+#define lo_ieee_signbit(x) (x < 0 || copysign (1.0, x) < 0)
+#else
+#define lo_ieee_signbit(x) 0
+#endif
+#endif
+
+// ========= End Cruft ===================================
+
 /* If we are IEEE 754 or IEEE 854 compliant, then we can use the trick of
  * casting doubles as unsigned eight byte integers, and with a little
  * bit of magic we can automatically sort the NaN's correctly.

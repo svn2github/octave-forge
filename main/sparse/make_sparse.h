@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.22  2004/01/29 21:13:20  pkienzle
+Use std::vector rather than std::auto_ptr for temporary memory
+
 Revision 1.21  2003/12/22 15:13:23  pkienzle
 Use error/return rather than SP_FATAL_ERROR where possible.
 
@@ -151,11 +154,11 @@ DLD functions for sparse support in octave
 #include <octave/config.h>
 
 // ***** Support for older octave versions
-#include <memory>
 #ifndef OCTAVE_LOCAL_BUFFER
+#include <vector>
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
-  T *buf = buf ## _auto_ptr.get ()
+  std::vector<T> buf ## _vector (size); \
+  T *buf = &(buf ## _vector[0])
 #endif
 
 #ifdef HAVE_SLLIST_H

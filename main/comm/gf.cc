@@ -51,11 +51,11 @@ website http://www.eccpage.com for more details.
 #include <octave/utils.h>
 #include <octave/variables.h>
 
-#include <memory>
 #ifndef OCTAVE_LOCAL_BUFFER
+#include <vector>
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
-  T *buf = buf ## _auto_ptr.get ()
+  std::vector<T> buf ## _vector (size); \
+  T *buf = &(buf ## _vector[0])
 #endif
 
 static bool galois_type_loaded = false;

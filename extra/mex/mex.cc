@@ -47,7 +47,7 @@ extern "C" {
 #include <octave/oct-map.h>
 #include <octave/str-vec.h>
 
-// ================ Octave 2.0 support ==================
+// ===== Cruft to support ancient versions of octave ========
 #if defined(HAVE_OCTAVE_20)
 #include <octave/symtab.h>
 class unwind_protect
@@ -101,12 +101,14 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 
 #endif /* defined(HAVE_OCTAVE_20) */
 
-#include <memory>
 #ifndef OCTAVE_LOCAL_BUFFER
+#include <vector>
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
-  T *buf = buf ## _auto_ptr.get ()
+  std::vector<T> buf ## _vector (size); \
+  T *buf = &(buf ## _vector[0])
 #endif
+
+// ============== End cruft support =======================
 
 #if 0
 #define TRACEFN cout << __FUNCTION__ << endl << flush
@@ -374,9 +376,14 @@ public:
   // Get field given field name
   mxArray* field(const std::string& key, const int index) const {
     if (pmap && pmap->contains(key))
-#ifdef HAVE_OCTAVE_MAP_INDEX
+#if defined(_Pix_h)
+      // 2.1.40
+      return __mex->make_value(pmap->contents(pmap->seek(key)));
+#elif defined(HAVE_OCTAVE_MAP_INDEX)
+      // 2.1.50
       return __mex->make_value((*pmap)[key](index));
 #else
+      // 2.1.53
       return __mex->make_value(pmap->contents(key)(index));
 #endif
     else
@@ -384,9 +391,11 @@ public:
   }
   // Set field given field name
   void field(const std::string& key, const int index, mxArray* value) {
-#ifdef HAVE_OCTAVE_MAP_INDEX
+#if defined(HAVE_OCTAVE_MAP_INDEX) || defined(_Pix_h)
+    // 2.1.50 || 2.1.40
     if (pmap) (*pmap)[key](index) = value->as_octave_value();
 #else
+    // 2.1.53
     if (pmap) 
       pmap->assign(octave_value(index), 
 		      key, Cell(value->as_octave_value()));
@@ -559,12 +568,14 @@ mxArray *mex::make_value(int nr, int nc, const string_vector& keys)
 {
   if (keys.length() == 0) return NULL;
 
-#ifdef HAVE_OCTAVE_MAP_INDEX
+#if defined(HAVE_OCTAVE_MAP_INDEX) || defined(_Pix_h)
+  // 2.1.50 || 2.1.40
   octave_value_list empty(nr*nc,octave_value());
   Octave_map *pmap = new Octave_map(keys[0],empty);
   for (int i=1; i < keys.length(); i++) 
     pmap->assign(keys[i],empty);
 #else
+  // 2.1.53
   Cell empty(nr,nc);
   Octave_map *pmap = new Octave_map(keys[0],empty);
   for (int i=1; i < keys.length(); i++)

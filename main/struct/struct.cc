@@ -1,5 +1,6 @@
 #include <octave/oct.h>
 #include <octave/oct-map.h>
+#if !defined(HAVE_OCTAVE_MAP_INDEX) && !defined(_Pix_h)
 
 static bool 
 scalar (const dim_vector& dims) 
@@ -119,3 +120,4 @@ struct('field',{},'field',{},...)\n\n\
   
   return octave_value (map);
 }
+#endif

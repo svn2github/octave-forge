@@ -47,7 +47,7 @@ else
 end;	
 
 [nr,nc]=size(Y);
-NC = sum(~isnan(Y),2);             % number of valid components (data points)
+NC = sumskipnan(~isnan(Y),2);             % number of valid components (data points)
 
 if Mode==0
 	if nargin<2, Pmax = min([100 nc/3]); end;

@@ -18,6 +18,7 @@ without modification, or license it as you see fit.
 
 #include <tk.h>
 
+
 // I have attempted to block all access to octave variables from the tcl
 // thread while octave is running, but I didn't do it correctly and it
 // leads to deadlocks.  Since the window on the race condition is very
@@ -31,9 +32,15 @@ without modification, or license it as you see fit.
 #endif
 
 #if HAVE_BLT
+
 #include <blt.h>
 #include <bltVector.h>
-#endif /* HAVE_BLT */
+
+#endif /* !HAVE_BLT */
+
+#define _VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
+#define TCL_VERSION_NUMBER _VERSION(TCL_MAJOR_VERSION, TCL_MINOR_VERSION, TCL_RELEASE_SERIAL)
+#define TK_VERSION_NUMBER _VERSION(TK_MAJOR_VERSION, TK_MINOR_VERSION, TK_RELEASE_SERIAL)
 
 #ifndef HAVE_VTK
 #define HAVE_VTK 0
@@ -74,7 +81,7 @@ without modification, or license it as you see fit.
 static Tcl_Interp *interp = NULL;
 
 static char *command_to_do  = NULL;
-static char *command_result = NULL;
+static const char *command_result = NULL;
 
 static pthread_t       tk_thread = 0;
 static pthread_cond_t  tk_cond   = PTHREAD_COND_INITIALIZER;
@@ -140,7 +147,7 @@ public:
 
 
 ************************************************************/
-static octave_value get_octave_value(char *name)
+static octave_value get_octave_value(const char *name)
 {
   octave_value def;
 
@@ -225,7 +232,7 @@ unsigned char *make_custom_colormap(Matrix m)
 
 static int
 myStringMatchOctaveMatrix 
-(int argc, char **argv, int *widthP, int *heightP, Tcl_Interp *interp)
+(int argc, CONST84 char **argv, int *widthP, int *heightP, Tcl_Interp *interp)
 {
   if (argc < 1) return FALSE;
 
@@ -246,8 +253,8 @@ StringMatchOctaveMatrix
 (Tcl_Obj *str, Tcl_Obj *format, int *widthP, int *heightP, Tcl_Interp *interp)
 {
    int argc;
-   char **argv;
-   if (Tcl_SplitList(interp, (char *) str, &argc, &argv) != TCL_OK)
+   CONST84 char **argv;
+   if (Tcl_SplitList(interp, (char *)str, &argc, &argv) != TCL_OK)
      return FALSE;
 
    int ret = myStringMatchOctaveMatrix(argc, argv, widthP, heightP, interp);
@@ -257,7 +264,7 @@ StringMatchOctaveMatrix
 
 static int
 myStringReadOctaveMatrix
-(Tcl_Interp *interp, int argc, char **argv, Tk_PhotoHandle imageHandle,
+(Tcl_Interp *interp, int argc, CONST84 char **argv, Tk_PhotoHandle imageHandle,
 int destX, int destY, int width, int height, int srcX, int srcY)
 {
   // find matrix containing octave image
@@ -272,7 +279,7 @@ int destX, int destY, int width, int height, int srcX, int srcY)
 
   // interpret image format info
   int indexed = FALSE;
-  char *colormap = "global::__current_color_map__";
+  const char *colormap = "global::__current_color_map__";
   while(--argc)
     {
       argv++;
@@ -375,7 +382,12 @@ int destX, int destY, int width, int height, int srcX, int srcY)
 	  block.pixelPtr[pixel_index+2] = colormap_data[3*color_index+2];
 	}
     }
+#if TK_VERSION_NUMBER >= _VERSION(8,4,0)
+  Tk_PhotoPutBlock(imageHandle, &block, destX, destY, width, height, 
+	TK_PHOTO_COMPOSITE_SET);
+#else
   Tk_PhotoPutBlock(imageHandle, &block, destX, destY, width, height);
+#endif
   free((void *) block.pixelPtr);
   free((void *) colormap_data);
   
@@ -388,7 +400,7 @@ StringReadOctaveMatrix
 int destX, int destY, int width, int height, int srcX, int srcY)
 {
    int argc;
-   char **argv;
+   CONST84 char **argv;
 
    if (Tcl_SplitList(interp, (char *) str, &argc, &argv) != TCL_OK)
      return FALSE;
@@ -408,7 +420,7 @@ int destX, int destY, int width, int height, int srcX, int srcY)
 
 ************************************************************/
 
-int oct_string(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int oct_string(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char **argv)
 {
   if (argc < 2)
     {
@@ -444,7 +456,7 @@ stringName options\"", NULL);
 
 ************************************************************/
 
-int oct_matrix(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int oct_matrix(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char **argv)
 {
    if(argc < 3) 
    {
@@ -541,7 +553,7 @@ matrixName element row column\"", NULL);
 
 ************************************************************/
 
-int oct_mtov(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int oct_mtov(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char **argv)
 {
    if(argc != 7)
    {
@@ -584,9 +596,9 @@ matrixName vectorName startX startY sizeX sizeY\"", NULL);
       return TCL_ERROR;
    }
    Blt_Vector *v;
-   if(Blt_VectorExists(interp, argv[2]))
+   if(Blt_VectorExists(interp, (char *)argv[2]))
    {
-      if(Blt_GetVector(interp, argv[2], &v) != TCL_OK)
+      if(Blt_GetVector(interp, (char *)argv[2], &v) != TCL_OK)
       {
          Tcl_AppendResult(interp, "Unable to get pointer to BLT vector \"",
             argv[2], "\".", NULL);
@@ -601,7 +613,7 @@ matrixName vectorName startX startY sizeX sizeY\"", NULL);
    }
    else
    {
-      if(Blt_CreateVector(interp, argv[2], (sizeX * sizeY), &v) != TCL_OK)
+      if(Blt_CreateVector(interp, (char *)argv[2], (sizeX * sizeY), &v) != TCL_OK)
       {
          Tcl_AppendResult(interp, "Unable to create BLT vector \"",
             argv[2], "\".", NULL);
@@ -630,7 +642,7 @@ matrixName vectorName startX startY sizeX sizeY\"", NULL);
 
 ************************************************************/
 
-int oct_mtovtk(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int oct_mtovtk(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char **argv)
 {
    if(argc != 3)
    {
@@ -737,7 +749,7 @@ Tcl_Interp *get_tk_thread_interp(void)
 #endif
 
 static
-int oct_cmd(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int oct_cmd(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char **argv)
 {
    if(argc < 2)
    {
@@ -765,7 +777,7 @@ int oct_cmd(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
 }
 
 static
-int oct_quit(ClientData clientData, Tcl_Interp *interp, int argc, char **argv)
+int oct_quit(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char **argv)
 {
    if(argc != 1)
    {
@@ -821,7 +833,7 @@ static void tk_thread_process_start(void)
 
 
    Tk_Window mainw = Tk_MainWindow(interp);
-   char *name = Tk_SetAppName(mainw, "tk_octave");
+   const char *name = Tk_SetAppName(mainw, "tk_octave");
    char buf[40];
    sprintf(buf, "wm title . {%s}", name);
    Tcl_Eval(interp, buf);

@@ -40,7 +40,7 @@ function [r2] = cor(X,Y);
 if nargin==1
         Y = [];
 elseif nargin==0
-        fprintf(2,'Error COr: Missing argument(s)\n');
+        fprintf(2,'Error COR: Missing argument(s)\n');
 end;        
 
 [r1,c1]=size(X);

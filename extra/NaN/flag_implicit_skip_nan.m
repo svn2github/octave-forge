@@ -1,7 +1,8 @@
 function FLAG=flag_implicit_skip_nan(i)
-% In future FLAG_IMPLICIT__SKIP_NAN might become obsolete. 
-% Do not use it. 
-
+% FLAG_IMPLICIT_SKIP_NAN might become obsolete in future. 
+% It was developed to check whether skipping NaN or propagating NaN's is better. 
+% It is not recommended to use this function. 
+% 
 % FLAG_IMPLICIT_SKIP_NAN sets and gets default mode for handling NaNs
 %	1 skips NaN's (the default mode if no mode is set)
 % 	0 NaNs are propagated; input NaN's give NaN's at the output
@@ -23,8 +24,8 @@ function FLAG=flag_implicit_skip_nan(i)
 % - compatible to Matlab and Octave
 % - global FLAG_implicit_skip_nan
 %
-% see also: SUMSKIPNAN, MEAN, STD, VAR, SKEWNESS, KURTOSIS, MOMENT, STATISTIC
-%	MEDIAN, GEOMEAN, HARMMEAN, MAD, ZSCORE, MEANSQ, RMS, SUMSQ, SEM, 
+% see also: SUMSKIPNAN, MEDIAN, MEAN, STD, VAR, SKEWNESS, KURTOSIS, MOMENT, 
+%	STATISTIC, GEOMEAN, HARMMEAN, MAD, ZSCORE, MEANSQ, RMS, SUMSQ, SEM, 
 % 	COEFFICIENT_OF_VARIATION
 
 %    This program is free software; you can redistribute it and/or modify
@@ -41,10 +42,8 @@ function FLAG=flag_implicit_skip_nan(i)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.15
-%	12 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 1.23;	07 Jun 2002
+%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 global FLAG_implicit_skip_nan; 
 

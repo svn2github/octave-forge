@@ -17,10 +17,9 @@ function M=moment(i,p,opt,DIM)
 % - dimension argument 
 % - compatible to Matlab and Octave
 % - global FLAG_implicit_unbiased_estimation
-% - global FLAG_implicit_skip_nan
 %
 % see also: STD, VAR, SKEWNESS, KURTOSIS, STATISTIC, 
-%     FLAG_IMPLICIT_SKIP_NAN, FLAG_IMPLICIT_UNBIASED_ESTIMATION
+%     FLAG_IMPLICIT_UNBIASED_ESTIMATION
 %
 % REFERENCE(S):
 % http://mathworld.wolfram.com/Moment.html
@@ -39,10 +38,8 @@ function M=moment(i,p,opt,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.15
-%	12 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 1.23;	07 Jun 2002
+%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 if nargin==2,
         DIM=[];

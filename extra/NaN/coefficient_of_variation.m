@@ -2,7 +2,6 @@ function cv=coefficient_of_variation(i,DIM)
 % coefficient of variation
 % FLAG_IMPLICIT_UNBIASED_ESTIM determines whether biased or unbiased
 % estimates are returned;
-% FLAG_IMPLICIT_SKIP_NAN determines whether NaNs are skipped or propagated.
 % 
 % cv=coefficient_of_variation(x [,DIM])
 %  cv=std(x)/mean(x) 

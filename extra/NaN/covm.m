@@ -143,5 +143,3 @@ if nargout<2
         CC = CC./NN; % unbiased
 end;
 return; 
-
-

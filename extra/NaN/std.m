@@ -12,10 +12,9 @@ function o=std(i,DIM)
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 % - global FLAG_implicit_unbiased_estimation
-% - global FLAG_implicit_skip_nan
 %
 % see also: RMS, SUMSKIPNAN, MEAN, VAR, MEANSQ,
-%	FLAG_IMPLICIT_UNBIASED_ESTIMATION, FLAG_IMPLICIT_SKIP_NAN
+%	FLAG_IMPLICIT_UNBIASED_ESTIMATION
 
 
 %    This program is free software; you can redistribute it and/or modify
@@ -32,10 +31,8 @@ function o=std(i,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.15
-%	12 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 1.23;	07 Jun 2002
+%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 if nargin<2,
         o=sqrt(var(i));

@@ -27,16 +27,15 @@ function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 % SSQ	sum of squares
 % S4M	sum of fourth raw moment
 %
-% The mean ± standard error of the mean is 
-%	Y./N ± sqrt((SSQ-Y.*Y./N)./(N.*max(N-1,0))); 
-% the mean square ± the standard error of the mean square is 
-% 	SSQ./N ± sqrt((S4M-SSQ.^2./N)./(N.*max(N-1,0)))
+% The mean & standard error of the mean and 
+%	Y./N & sqrt((SSQ-Y.*Y./N)./(N.*max(N-1,0))); 
+% the mean square & the standard error of the mean square and
+% 	SSQ./N & sqrt((S4M-SSQ.^2./N)./(N.*max(N-1,0)))
 %
 % features:
 % - can deal with NaN's (missing values)
 % - implements dimension argument. 
 % - compatible with Matlab and Octave
-% - global FLAG_implicit_skip_nan
 %
 % see also: FLAG_IMPLICIT_SKIP_NAN, SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
 %      SSQ, MOMENT, SKEWNESS, KURTOSIS, SEM

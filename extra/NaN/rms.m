@@ -12,9 +12,8 @@ function o=rms(i,DIM)
 % - can deal with NaN's (missing values)
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_skip_nan
 %
-% see also: SUMSKIPNAN, MEAN, FLAG_IMPLICIT_SKIP_NAN
+% see also: SUMSKIPNAN, MEAN
 
 
 %    This program is free software; you can redistribute it and/or modify

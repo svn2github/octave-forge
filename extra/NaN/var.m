@@ -16,10 +16,9 @@ function y=var(x,DIM)
 % - dimension argument 
 % - compatible to Matlab and Octave
 % - global FLAG_implicit_unbiased_estimation
-% - global FLAG_implicit_skip_nan
 %
 % see also: MEANSQ, SUMSQ, SUMSKIPNAN, MEAN, RMS, STD,
-%	FLAG_IMPLICIT_UNBIASED_ESTIMATION, FLAG_IMPLICIT_SKIP_NAN
+%	FLAG_IMPLICIT_UNBIASED_ESTIMATION
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -37,12 +36,12 @@ function y=var(x,DIM)
 
 %	Copyright (C) 2000-2002 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
-ver=version;
-if nargin==1,
-        DIM=[];
-elseif nargin==2,
+ver = version;
+if nargin == 1,
+        DIM = [];
+elseif nargin == 2,
         if ~isnumeric(DIM),
-                DIM=[];
+                DIM = [];
         end
 else
         fprintf(2,'Error VAR: invalid number of arguments\n usage: v=var(x [,DIM])\n');
@@ -50,10 +49,10 @@ end
 
 % obtain which DIMENSION should be used
 if isempty(DIM), 
-        DIM=flag_implicit_dimension;
+        DIM = flag_implicit_dimension;
 end;	
-if ~DIM
-        DIM=min(find(size(x)>1));
+if ~DIM,
+        DIM = min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
 end;
 

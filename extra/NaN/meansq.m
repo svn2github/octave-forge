@@ -15,7 +15,7 @@ function o=meansq(i,DIM)
 % - compatible to Matlab and Octave
 % - global FLAG_implicit_unbiased_estimation
 %
-% see also: SUMSQ, SUMSKIPNAN, MEAN, VAR, STD, RMS, FLAG_IMPLICIT_SKIP_NAN
+% see also: SUMSQ, SUMSKIPNAN, MEAN, VAR, STD, RMS
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

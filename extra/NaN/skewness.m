@@ -14,7 +14,6 @@ function R = skewness(i,DIM)
 % - dimension argument 
 % - compatible to Matlab and Octave
 % - global FLAG_implicit_unbiased_estimation
-% - global FLAG_implicit_skip_nan
 %
 % see also: SUMSKIPNAN, STATISTIC
 %
@@ -36,9 +35,8 @@ function R = skewness(i,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.17;	17 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 1.23;	07 Jun 2002
+%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 % check input arguments 
 

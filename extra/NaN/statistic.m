@@ -33,7 +33,6 @@ function [varargout]=statistic(i,DIM,fun)
 % - dimension argument 
 % - compatible to Matlab and Octave
 % - global FLAG_implicit_unbiased_estimation
-% - global FLAG_implicit_skip_nan
 %
 % see also: SUMSKIPNAN
 %

@@ -12,9 +12,8 @@ function [y]=median(x,DIM)
 % - can deal with NaN's (missing values)
 % - accepts dimension argument like in Matlab in Octave, too. 
 % - compatible to Matlab and Octave 
-% - global FLAG_implicit_skip_nan
 %
-% see also: SUMSKIPNAN, FLAG_IMPLICIT_SKIP_NAN
+% see also: SUMSKIPNAN
  
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -30,9 +29,8 @@ function [y]=median(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.17; 	17 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 1.23;	07 Jun 2002
+%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 % check dimension of x
 sz=size(x);
@@ -54,11 +52,7 @@ if ~DIM,
 end;
 
 % number of valid elements
-if flag_implicit_skip_nan,
-        n = sumskipnan(~isnan(x),DIM);
-else
-        n = size(x,DIM);
-end;
+n = sum(~isnan(x),DIM);
         
 if all(sort([3,4,NaN,3,4,NaN])==[3,3,4,4,NaN,NaN]),  %~exist('OCTAVE_VERSION'),
         [x,ix] = sort(x,DIM); % this relays on the sort order of IEEE754 inf < nan

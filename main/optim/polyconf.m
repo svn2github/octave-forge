@@ -29,6 +29,9 @@
 ##  [yf,dyf] = polyconf(p,xf,s,'ci');
 ##  plot(xf,yf,'g-;fit;',xf,yf+dyf,'g.;;',xf,yf-dyf,'g.;;',x,y,'xr;data;');
 ##  plot(x,y-polyval(p,x),';residuals;',xf,dyf,'g-;;',xf,-dyf,'g-;;');
+
+## Author: Paul Kienzle
+## This program is granted to the public domain.
 function [y,dy] = polyconf(p,x,varargin)
   alpha = s = [];
   typestr = 'pi';

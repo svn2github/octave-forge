@@ -1,4 +1,6 @@
+#ifndef DEBUG
 #define DEBUG 0
+#endif
 
 #include <iomanip>
 
@@ -453,7 +455,7 @@ listen(port,host)\n\
 
   signal(SIGCHLD, sigchld_handler);
 
-#if !DEBUG
+#if !DEBUG && !defined(__CYGWIN__)
   daemonize();
 #endif
 
@@ -472,7 +474,11 @@ listen(port,host)\n\
 			 &sin_size)) == -1) {
       std::cout << "failed to accept" << std::endl << std::flush;
       perror("accept");
+#if defined(__CYGWIN__)
+      break;
+#else
       continue;
+#endif
     }
 #if DEBUG
     std::cout << "connected" << std::endl;

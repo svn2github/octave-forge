@@ -1,15 +1,10 @@
 
 Installing the NaN-tb with Octave:
 ----------------------------------
-a) You need repmat.m;
-    If you have not installed it yet, you should do it now. 
-Download e.g. P. Kienzle's version from  
-http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/main/general/repmat.m?rev=HEAD&content-type=text/plain 
-
-b) extract files from NaNnnn.tar.gz and move them into 
+a) extract files from NaNnnn.tar.gz and move them into 
 .../octave/.../m/statistics/base/ 
 
-c) Alternatively, the files can be moved into any other directory; but you 
+b) Alternatively, the files can be moved into any other directory; but you 
 must remove from .../octave/.../m/statistics/base/ 
 mean.m, meansq.m, median.m, moment.m, skewness.m, kurtosis.m, std.m, var.m
 and from .../source_forge/.../statistics/*
@@ -18,7 +13,7 @@ zscore.m, mad.m, geomean.m, harmmean.m
 (Optional) You can remove nansum, nanmean, nanmedian, etc. because you do not need 
 them anymore. 
 
-d) (Re-)start Octave and run NANINSTTEST. 
+c) (Re-)start Octave and run NANINSTTEST. 
 This checks whether the installation was successful. 
 
 
@@ -32,6 +27,14 @@ at the end of your startup.m.
 
 c) (Re-)start Matlab and run NANINSTTEST. 
 This checks whether the installation was successful. 
+
+d) [OPTIONAL]: 
+  To improve speed, you should compile the cmex-function SUMSKIPNAN.CPP
+    mex sumskipnan.cpp
+  Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
+
+e) HINT: if the MEX-file SUMSKIPNAN crashes, remove it. Then the (slower) M-file is used. 
+     
 
 
 	$Id$

@@ -59,61 +59,38 @@ if nargin<2,
         DIM = [];
 end;
 
-DONE = 0; 
-if flag_implicit_skip_nan & (exist('sumskipnan2')==3);
-                
-	% an efficient implementation in C of the following lines 
-        % could significantly increase performance 
-        % only one loop and only one check for isnan is needed
-        %
-        % Outline of the algorithm: 
-        % for { k=1,o=0,count=0; k++; k<N} 
-        % 	if ~isnan(i(k)) 
-        % 	{ 	o     += i(k);
-        %               count += 1;
-        %		tmp    = i(k)*i(k)
-        %		o2    += tmp;
-        %		o3    += tmp.*tmp;
-        %       }; 
-        
+% an efficient implementation in C of the following lines 
+% could significantly increase performance 
+% only one loop and only one check for isnan is needed
+% An MEX-Implementation is available in sumskipnan.cpp
+%
+% Outline of the algorithm: 
+% for { k=1,o=0,count=0; k++; k<N} 
+% 	if ~isnan(i(k)) 
+% 	{ 	o     += i(k);
+%               count += 1;
+%		tmp    = i(k)*i(k)
+%		o2    += tmp;
+%		o3    += tmp.*tmp;
+%       }; 
 
-        % use MEX-file SUMSKIPNAN2 from Patrick Houweling <phouweling@yahoo.com>
-	try,
-	        switch nargout,
-	        case {0,1}
-    			[o] = sumskipnan2(i, DIM);
-	        case 2
-    		        [o, count] = sumskipnan2(i, DIM);
-	        case 3
-    	                [o, count, SSQ] = sumskipnan2(i, DIM);
-	        case 4
-        	        [o, count, SSQ, S4M] = sumskipnan2(i, DIM);
-	        end              
-    		DONE = 1; 
-	catch;
-		DONE = 0;  
-	end
-end;	     
 
-   
-if ~DONE, % else  
-        if isempty(DIM),
-                DIM=min(find(size(i)>1));
-                if isempty(DIM), DIM = 1; end;
-        end;
-        if nargout>1
-                count = sum(~isnan(i),DIM); 
-        end;
-        if flag_implicit_skip_nan, %%% skip always NaN's
-                i(isnan(i)) = 0;
-        end;
-        o = sum(i,DIM);
-        if nargout>2,
-                i = real(i).^2 + imag(i).^2;
-                SSQ = sum(i,DIM);
-                if nargout>3,
-                        S4M = sum(i.^2,DIM);
-                end;
-        end;
+if isempty(DIM),
+        DIM=min(find(size(i)>1));
+        if isempty(DIM), DIM = 1; end;
+end;
+if nargout>1,
+        count = sum(~isnan(i),DIM); 
 end;
 
+%if flag_implicit_skip_nan, %%% skip always NaN's
+i(isnan(i)) = 0;
+%end;
+o = sum(i,DIM);
+if nargout>2,
+        i = real(i).^2 + imag(i).^2;
+        SSQ = sum(i,DIM);
+        if nargout>3,
+                S4M = sum(i.^2,DIM);
+        end;
+end;

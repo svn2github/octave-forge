@@ -1,0 +1,92 @@
+
+if test -e main/comm/NOINSTALL ; then
+
+	dnl Not installing, do nothing
+	STATUS=noinstall
+
+else
+
+	dnl Test for the makeinfo program
+	AC_CHECK_PROG(MAKEINFO,makeinfo,makeinfo)
+	if [ test -z "$MAKEINFO" ]; then
+		STATUS_MSG="$STATUS_MSG
+   Makeinfo: no"
+	else
+		dnl Check whether the makeinfo command accepts the 
+		dnl "--no-split" option
+		touch conftest.texi
+		AC_MSG_CHECKING([for makeinfo --no-split])
+		ac_try="$MAKEINFO --no-split conftest.texi"
+		if AC_TRY_EVAL(ac_try) ; then
+			MAKEINFO="$MAKEINFO --no-split"
+			AC_MSG_RESULT(yes)
+		else
+			AC_MSG_RESULT(no)
+		fi
+		rm -f conftest.*
+		STATUS_MSG="$STATUS_MSG
+   Makeinfo: $MAKEINFO"
+	fi
+
+	dnl Test for the texi2dvi program
+	AC_CHECK_PROG(TEXI2DVI,texi2dvi,texi2dvi)
+	if [ test -z "$TEXI2DVI" ]; then
+		STATUS="no"
+		STATUS_MSG="$STATUS_MSG
+   Texi2dvi: no"
+	else
+		STATUS="yes"
+		dnl Check whether the texi2dvi command accepts the 
+		dnl "--clean" option
+		cat > conftest.texi <<EOF
+\input texinfo
+@bye
+EOF
+		AC_MSG_CHECKING([for texi2dvi --clean])
+		ac_try="$TEXI2DVI --clean conftest.texi > /dev/null"
+		if AC_TRY_EVAL(ac_try) ; then
+			TEXI2DVI="$TEXI2DVI --clean"
+			AC_MSG_RESULT(yes)
+		else
+			AC_MSG_RESULT(no)
+		fi
+		rm -f conftest.*
+		STATUS_MSG="$STATUS_MSG
+   Texi2dvi: $TEXI2DVI"
+	fi
+
+	dnl Test for the texi2html program
+	AC_CHECK_PROG(TEXI2HTML,texi2html,texi2html)
+	if [ test -z "$TEXI2HTML" ]; then
+		STATUS="no"
+		STATUS_MSG="$STATUS_MSG
+   Texi2html: no"
+	else
+		STATUS="yes"
+		dnl Check whether the texi2html command accepts the 
+		dnl "-split_chapter -number" option
+		touch conftest.texi
+		AC_MSG_CHECKING([for texi2html --clean])
+		ac_try="$TEXI2HTML -split_chapter -number conftest.texi"
+		if AC_TRY_EVAL(ac_try) ; then
+			TEXI2HTML="$TEXI2HTML -split_chapter -number"
+			AC_MSG_RESULT(yes)
+		else
+			AC_MSG_RESULT(no)
+		fi
+		rm -f conftest.*
+		STATUS_MSG="$STATUS_MSG
+   Texi2html: $TEXI2HTML"
+	fi
+
+	dnl Test for the dvipdf program
+	AC_CHECK_PROG(DVIPDF,dvipdf,dvipdf)
+
+	dnl Test for the dvips program
+	AC_CHECK_PROG(DVIPS,dvips,dvips)
+
+	dnl Test for the mv program
+	AC_CHECK_PROG(MV,mv,mv)
+
+fi
+

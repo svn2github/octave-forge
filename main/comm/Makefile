@@ -1,12 +1,5 @@
 include ../../Makeconf
 
-MAKEINFO = makeinfo --no-split
-TEXI2DVI = texi2dvi --clean
-TEXI2HTML = texi2html -split_chapter -number
-MV = /bin/mv
-DVIPDF = dvipdf
-DVIPS = dvips
-
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
 	      op-gm-gm.cc op-gm-m.cc op-gm-s.cc op-m-gm.cc op-s-gm.cc \
@@ -44,9 +37,13 @@ MOFLAGS =
 
 all : $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(DOCS)
 
-install : $(INFODOC)
+install : install_doc
 	$(INSTALL) -d $(MPATH)/comm
-	$(INSTALL_DATA) $(INFODOC) $(MPATH)/comm/$(INFODOC)
+
+install_doc :
+	@if test "x$(MAKEINFO)" != "x"; then \
+	  $(INSTALL_DATA) $(INFODOC) $(MPATH)/comm/$(INFODOC) ; \
+	fi
 
 $(GALOISTARGET) : $(GALOISDEPENDS) $(GALOISOBJECTS) 
 	@echo "Linking $@"; \
@@ -78,35 +75,44 @@ endif
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 
 %.dvi : %.texi
-	@echo "Making dvi $@"; \
-	$(TEXI2DVI) $< ;
+	@if test "x$(TEXI2DVI)" != "x"; then \
+	  echo "Making dvi $@"; \
+	  $(TEXI2DVI) $< ; \
+	fi
 
 %.ps : %.dvi
-	@echo "Making postscript $@"; \
-	$(DVIPS) -o $@ $< ;
+	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPS)" != "x"; then \
+	  echo "Making postscript $@"; \
+	  $(DVIPS) -o $@ $< ; \
+	fi
 
 %.pdf : %.dvi
-	@echo "Making pdf $@"; \
-	$(DVIPDF) -o $@ $< ;
+	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPDF)" != "x"; then \
+	  echo "Making pdf $@"; \
+	  $(DVIPDF) $< $@ ; \
+	fi
 
 %.info : %.texi
-	@echo "Making info $@"; \
-	$(MAKEINFO) $< 
+	@if test "x$(MAKEINFO)" != "x"; then \
+	  echo "Making info $@"; \
+	  $(MAKEINFO) $< ; \
+	fi
 
 %.html : %.texi
-	@echo "Making html $@"; \
-	$(TEXI2HTML) $< ; \
-	$(MV) -f $(@:.html=_toc.html) $@
+	@if test "x$(TEXI2HTML)" != "x"; then \
+	  echo "Making html $@"; \
+	  $(TEXI2HTML) $< ; \
+	  $(MV) -f $(@:.html=_toc.html) $@ ; \
+	fi
 
 %.texi : %.txi
 	@echo "Making texinfo $@"; \
-	$(RM) -f $@; \
 	./mkdoc > $(DOCSTRINGS); \
-	./mktexi $< $(DOCSTRINGS) INDEX > $@ 
+	./mktexi $< $(DOCSTRINGS) INDEX > $@ ;
 
 clean:
 	@echo "Cleaning..."; \
-	 $(RM) -f $(DELETES)
+	-$(RM) -f $(DELETES)
 
 count:
 	wc *{.cc,.h,.m,.txi}

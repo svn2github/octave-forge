@@ -37,7 +37,8 @@
 
 % No date please
 \date{}
-
+\fontfamily{cmss}
+\selectfont
 \makeatother
 \begin{document}
 % This is for \LyX
@@ -82,6 +83,8 @@
 
 \renewcommand{\bfrac}[2]{\frac{{\textstyle #1 }}{{\textstyle #2 }}}
 
+\fontfamily{cmss} \selectfont 
+
 
 \title{Mini-HOWTO : visualizing 3D data using Octave, VRML and FreeWRL%
 \thanks{Author : Etienne Grossmann \texttt{<etienne@isr.ist.utl.pt>} (soon
@@ -107,7 +110,7 @@ be obtained from the online help system.
 \end{abstract}
 ~
 \begin{figure}
-{\centering \resizebox*{0.38\textwidth}{!}{\includegraphics{figures/freewrl-octave-snap-2-c.eps}} ~\raisebox{5mm}{\resizebox*{0.55\textwidth}{!}{\includegraphics{figures/freewrl-select-points-2-c.eps}} }\par}
+{\centering \resizebox*{0.38\textwidth}{!}{\includegraphics{figures/freewrl-octave-snap-2.eps2}} ~\raisebox{5mm}{\resizebox*{0.55\textwidth}{!}{\includegraphics{figures/freewrl-select-points-2.eps2}} }\par}
 
 
 \caption{\label{fig:freewrloctave}FreeWRL window and octave running in a
@@ -119,7 +122,7 @@ a subset.}
 ~
 
 
-\paragraph{Prerequisites:}
+\paragraph{\fontfamily{cmss} \selectfont Prerequisites:}
 
 It is assumed that you have installed Octave 2.1.35 (\url{http://www.octave.org})
 or more, FreeWRL (\url{http://www.crc.ca/FreeWRL}) 0.34 or more (versions
@@ -128,7 +131,7 @@ package. Each one is available from the indicated URL. Rudimentary
 knowledge of Octave is also assumed.
 
 
-\section{Basics\label{sec:basics}}
+\section{\fontfamily{cmss} \selectfont Basics\label{sec:basics}}
 
 This document describes some 3D visualization functions from the Octave-Forge
 package. First, examples are given on how to visualize a surface with
@@ -142,12 +145,13 @@ presents other functions and shows how to assemble various 3D objects.
 Finally, a brief summary and plans for the future are given in Section~\ref{sec:conclusions}.
 
 
-\subsection{Viewing a surface from the Octave prompt}
+\subsection{\fontfamily{cmss} \selectfont Viewing a surface from the Octave
+prompt}
 
 Consider the following Octave commands~:
 
 
-\subparagraph{Listing 1}
+\subparagraph{\fontfamily{cmss} \selectfont Listing 1}
 
 \begin{lyxcode}
 x~=~linspace~(-1,1,31);
@@ -177,10 +181,11 @@ vmesh~(zz,\char`\"{}checker\char`\"{},{[}5,-2{]},\char`\"{}col\char`\"{},{[}1~0~
 \end{lyxcode}
 displays (Figure~\ref{fig:misc}, left) a checkered surface with
 5 squares along the X direction squares that are two facets wide along
-the Y direction.
+the Y direction. This listing can be run with the command \texttt{\textbf{vrml\_demo\_tutorial\_1}}.
+Subsequent in this document listings can be called in a similar fashion.
 
 
-\subsection{Basic 3D visualization with FreeWRL}
+\subsection{\fontfamily{cmss} \selectfont Basic 3D visualization with FreeWRL}
 
 What happened when this last command was executed is that the program
 FreeWRL was launched and asked to visualize some data that represents
@@ -206,12 +211,12 @@ that previous snapshots may be overwritten.
 Last but important, the \texttt{'q'} key will \textbf{exit} FreeWRL.
 
 
-\subsection{Viewing a set of 3D points}
+\subsection{\fontfamily{cmss} \selectfont Viewing a set of 3D points}
 
 Going back to Octave, let's create a set of 3D points~:
 
 
-\subparagraph{Listing 2}
+\subparagraph{\fontfamily{cmss} \selectfont Listing 2}
 
 \begin{lyxcode}
 N~=~30;
@@ -245,7 +250,7 @@ the form of a 0-1 matrix~:
 {\centering {\footnotesize ans~=~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~0~1~1.}\footnotesize \par}
 \end{lyxcode}
 
-\section{More in detail\label{sec:details}}
+\section{\fontfamily{cmss} \selectfont More in detail\label{sec:details}}
 
 VRML is a language that allows to describe a 3D setup by specifying
 shapes, colors, positions etc. Given a VRML document, a VRML browser
@@ -254,7 +259,7 @@ in it. Examining 3D objects is just one of the possibilities of VRML,
 the only one we use in this document.
 
 
-\paragraph{Communication between Octave and FreeWRL}
+\paragraph{\fontfamily{cmss} \selectfont Communication between Octave and FreeWRL}
 
 Octave communicates with FreeWRL by writing VRML code to a temporary
 file 
@@ -278,7 +283,8 @@ This kills the current browser. Unfortunately, the browser sometimes
 hangs and it is on that occasion that this function is useful.
 
 
-\paragraph{Functions for building objects from scratch}
+\paragraph{\fontfamily{cmss} \selectfont Functions for building objects from
+scratch}
 
 We now describe some functions that create VRML objects, starting
 by those used in the first example, Figure~\ref{fig:freewrloctave}
@@ -378,7 +384,7 @@ Default is \( 1 \).
 \end{lyxlist}
 \item [\texttt{\textmd{s~=~vrml\_PointLight~(...)}}]and
 \item [\texttt{\textmd{s~=~vrml\_Background~(...)}}]are low level functions
-the return simple VRML objects ({}``nodes'', in VRML lingo). All
+that return simple VRML objects ({}``nodes'', in VRML lingo). All
 the VRML characteristics ({}``fields'') can be set by using key-value
 pairs. We describe some of the options that can be passed to \texttt{vrml\_Background()};
 the others are displayed by doing \texttt{help vrml\_Background()}.
@@ -392,7 +398,7 @@ specify the RGB color of the sky and ground, respectively.
 \end{description}
 
 \begin{figure}
-{\centering \resizebox*{0.3\textwidth}{!}{\includegraphics{figures/freewrl-checker-snap-3-c.eps}} ~\resizebox*{0.3\textwidth}{!}{\includegraphics{figures/frame-sky-snap-c.eps}} ~\resizebox*{0.3\textwidth}{!}{\includegraphics{figures/cyl-balls-snap-2-c.eps}} \par}
+{\centering \resizebox*{0.3\textwidth}{!}{\includegraphics{figures/freewrl-checker-snap-3.eps2}} ~\resizebox*{0.3\textwidth}{!}{\includegraphics{figures/frame-sky-snap.eps2}} ~\resizebox*{0.3\textwidth}{!}{\includegraphics{figures/cyl-balls-snap-2.eps2}} \par}
 
 
 \caption{\textbf{\label{fig:misc}Left:} A checkered surface obtained by the
@@ -408,7 +414,7 @@ example of the usage of \texttt{vrml\_frame()}, \texttt{vrml\_Background()},
 and \texttt{vrml\_browse()}.
 
 
-\subparagraph{Listing 3}
+\subparagraph{\fontfamily{cmss} \selectfont Listing 3}
 
 \begin{lyxcode}
 s1~=~vrml\_frame~(\char`\"{}scale\char`\"{},{[}1~2~3{]},\char`\"{}col\char`\"{},eye~(3),~\char`\"{}hcol\char`\"{},0.5{*}{[}1~1~1{]});~\\
@@ -441,7 +447,8 @@ as an arrow.
 \end{description}
 \end{description}
 
-\paragraph{Positioning, orienting and scaling objects}
+\paragraph{\fontfamily{cmss} \selectfont Positioning, orienting and scaling
+objects}
 
 Finally, we present a function that allows to translate, rotate and
 scale an arbitrary VRML object and is useful for composing 3D setups
@@ -460,7 +467,7 @@ Listing~4 below and Figure~\ref{fig:misc} (right) illustrate how
 the two functions introduced above can be used.
 
 
-\subparagraph{Listing 4}
+\subparagraph{\fontfamily{cmss} \selectfont Listing 4}
 
 \begin{lyxcode}
 x~=~linspace~(0,4{*}pi,50);
@@ -488,7 +495,7 @@ s3~=~vrml\_Background~(\char`\"{}skyColor\char`\"{},{[}0~0~1{]});
 vrml\_browse~({[}s1,~s2,~s3{]});
 \end{lyxcode}
 
-\section{Summary and future plans\label{sec:conclusions}}
+\section{\fontfamily{cmss} \selectfont Summary and future plans\label{sec:conclusions}}
 
 We have just passed in review the most important aspects of the VRML
 toolbox. Its main utility is to examine surfaces and moderately sized

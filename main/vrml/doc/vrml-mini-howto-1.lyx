@@ -6,6 +6,8 @@
 
 % No date please
 \date{}
+\fontfamily{cmss}
+\selectfont
 \end_preamble
 \language english
 \inputencoding auto
@@ -164,6 +166,24 @@ frac{{
 textstyle #1 }}{{
 \backslash 
 textstyle #2 }}}
+\layout Standard
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
+
+
 \layout Title
 
 Mini-HOWTO : visualizing 3D data using Octave, VRML and FreeWRL
@@ -213,7 +233,7 @@ This document shows how to visualize sets of 3D points, 3D curves, surfaces
 \align center 
 
 \begin_inset Figure size 226 229
-file figures/freewrl-octave-snap-2-c.eps
+file figures/freewrl-octave-snap-2.eps2
 width 3 38
 flags 11
 
@@ -225,8 +245,8 @@ flags 11
 
 \backslash 
 raisebox{5mm}{
-\begin_inset Figure size 327 182
-file figures/freewrl-select-points-2-c.eps
+\begin_inset Figure size 327 181
+file figures/freewrl-select-points-2.eps2
 width 3 55
 flags 11
 
@@ -273,6 +293,21 @@ Right:
 
 \layout Paragraph
 
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
+
 Prerequisites:
 \layout Standard
 
@@ -296,6 +331,21 @@ It is assumed that you have installed Octave 2.1.35 (
  Each one is available from the indicated URL.
  Rudimentary knowledge of Octave is also assumed.
 \layout Section
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Basics
 \begin_inset LatexCommand \label{sec:basics}
@@ -328,12 +378,42 @@ The second section explains more in detail how the VRML package works, presents
 .
 \layout Subsection
 
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
+
 Viewing a surface from the Octave prompt
 \layout Standard
 
 Consider the following Octave commands\SpecialChar ~
 :
 \layout Subparagraph
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Listing 1
 \layout LyX-Code
@@ -425,6 +505,21 @@ vrml_demo_tutorial_1
 .
  Subsequent in this document listings can be called in a similar fashion.
 \layout Subsection
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Basic 3D visualization with FreeWRL
 \layout Standard
@@ -519,12 +614,42 @@ exit
  FreeWRL.
 \layout Subsection
 
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
+
 Viewing a set of 3D points
 \layout Standard
 
 Going back to Octave, let's create a set of 3D points\SpecialChar ~
 :
 \layout Subparagraph
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Listing 2
 \layout LyX-Code
@@ -606,6 +731,21 @@ select_3D_points()
 ans = 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1.
 \layout Section
 
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
+
 More in detail
 \begin_inset LatexCommand \label{sec:details}
 
@@ -621,6 +761,21 @@ VRML is a language that allows to describe a 3D setup by specifying shapes,
  Examining 3D objects is just one of the possibilities of VRML, the only
  one we use in this document.
 \layout Paragraph
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Communication between Octave and FreeWRL
 \layout Standard
@@ -655,6 +810,21 @@ This kills the current browser.
  Unfortunately, the browser sometimes hangs and it is on that occasion that
  this function is useful.
 \layout Paragraph
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Functions for building objects from scratch
 \layout Standard
@@ -1155,7 +1325,7 @@ vrml_Background\SpecialChar ~
 (...) 
 \family default 
 \series default 
-are low level functions the return simple VRML objects (
+are low level functions that return simple VRML objects (
 \begin_inset Quotes eld
 \end_inset 
 
@@ -1219,7 +1389,7 @@ RGB
 \align center 
 
 \begin_inset Figure size 178 185
-file figures/freewrl-checker-snap-3-c.eps
+file figures/freewrl-checker-snap-3.eps2
 width 3 30
 flags 11
 
@@ -1228,7 +1398,7 @@ flags 11
 \SpecialChar ~
 
 \begin_inset Figure size 178 185
-file figures/frame-sky-snap-c.eps
+file figures/frame-sky-snap.eps2
 width 3 30
 flags 11
 
@@ -1237,7 +1407,7 @@ flags 11
 \SpecialChar ~
 
 \begin_inset Figure size 178 185
-file figures/cyl-balls-snap-2-c.eps
+file figures/cyl-balls-snap-2.eps2
 width 3 30
 flags 11
 
@@ -1294,6 +1464,21 @@ vrml_browse()
 \family default 
 .
 \layout Subparagraph
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Listing 3
 \layout LyX-Code
@@ -1414,6 +1599,21 @@ Represent the last segment as an arrow.
 \end_deeper 
 \layout Paragraph
 
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
+
 Positioning, orienting and scaling objects
 \layout Standard
 
@@ -1478,6 +1678,21 @@ Listing\SpecialChar ~
  (right) illustrate how the two functions introduced above can be used.
 \layout Subparagraph
 
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
+
 Listing 4
 \layout LyX-Code
 
@@ -1514,6 +1729,21 @@ s3 = vrml_Background ("skyColor",[0 0 1]);
 
 vrml_browse ([s1, s2, s3]);
 \layout Section
+
+
+\begin_inset ERT
+collapsed true
+
+\layout Standard
+
+
+\latex latex 
+
+\backslash 
+fontfamily{cmss} 
+\backslash 
+selectfont 
+\end_inset 
 
 Summary and future plans
 \begin_inset LatexCommand \label{sec:conclusions}

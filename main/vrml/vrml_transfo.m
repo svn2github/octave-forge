@@ -22,16 +22,18 @@ verbose = 0;
 ## 
 
 if nargin<2 || isnan (t), t = [0,0,0] ; end # Default translation
-if nargin<3 || isnan (r), r = eye(3) ; end #  Default rotation
+if nargin<3 || isnan (r), r = [1,0,0,0] ; end #  Default rotation
 if nargin<4 || isnan (c), c = [1,1,1] ; end # Default scale
 ## if nargin<4, s = "%s" ; end
 
 if prod(size(c))==1, c = [c,c,c]; end
 
-
-if all(size(r)==3),
+if all(size(r)==3)
   [axis,ang] = rotparams(r) ;
-elseif prod(size(r))==3,
+elseif prod(size(r))==4
+  ang = r(4);
+  axis = r(1:3);
+elseif prod(size(r))==3
   ang = norm(r);
   if abs(ang)>eps, 
     axis = r/ang;
@@ -39,7 +41,7 @@ elseif prod(size(r))==3,
     axis = [0,1,0]; ang = 0;
   end
 else
-  error ("vrml_transfo : rotation should have size 3x3 or 3\n");
+  error ("vrml_transfo : rotation should have size 3x3, 3 or 4\n");
 end
 if verbose,
   printf (["vrml_transfo : %8.3f %8.3f %8.3f %8.3f\n",\
@@ -68,4 +70,4 @@ v = sprintf(["Transform {\n",\
 	    t,\
 	    c,\
 	    s) ;
-keyboard
+## keyboard

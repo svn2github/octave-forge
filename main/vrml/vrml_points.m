@@ -31,6 +31,7 @@
 ##
 ##  "col", 3x1  : Points will have RGB col.          default = [0.3,0.4,0.9]
 ##      or 3xP  : The color of each point.
+##  "tran", 1x1 : Transparency                                   default = 0
 ##  "emit", e   : Use or not emissiveColor                       default = 1
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
@@ -45,13 +46,14 @@ rad = 0.1 ;
 name = "allpoints" ;
 col = [0.3 0.4 0.9];
 emit = 1;
+tran = 0;
 
 i = 1; nargin--;		# pos 2.1.39
 
 ## pre 2.1.39 while --nargin,
 while i < nargin ## pos 2.1.39
   ## pre 2.1.39   tmp = va_arg(); 
-  tmp = nth (varargin,i++));  ## pos 2.1.39
+  tmp = nth (varargin,i++);  ## pos 2.1.39
   if strcmp(tmp,"hide") ,
     hide = 1;
   elseif strcmp(tmp,"balls") ,
@@ -72,6 +74,8 @@ while i < nargin ## pos 2.1.39
   elseif strcmp(tmp,"name") ,
     ## pre 2.1.39     name = va_arg() ; nargin-- ;
     name = nth (varargin,i++); ## pos 2.1.39
+  elseif strcmp(tmp,"tran") ,
+    tran = nth (varargin,i++);
   end
 end
 
@@ -124,7 +128,7 @@ elseif nums,
 		  "      children [\n",\ # ]
 		  "        Shape {\n",\
 		  "          appearance Appearance {\n",\
-		  vrml_material (col(:,i), emit),"\n",\
+		  vrml_material (col(:,i), emit, tran),"\n",\
 		  "          }\n",\
 		  "          geometry Text {\n",\
 		  "            string \"%s\"\n",\

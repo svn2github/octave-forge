@@ -98,5 +98,5 @@ a2 = vrml_arrow(sz(:,2),[col(2,:);hcol(2,:)],0);
 a3 = vrml_transfo (vrml_arrow(sz(:,3),[col(3,:);hcol(3,:)],0),\
 		   [0,0,0],[1,0,0;0,0,1;0,-1,0]);
 f0 = vrml_group (a1, a2, a3);
-keyboard
+
 v = vrml_transfo (f0, t, r);

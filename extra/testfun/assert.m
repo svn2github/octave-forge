@@ -19,13 +19,16 @@
 ## assert(cond)
 ##   Produce an error if any element of cond is zero.
 ##
-## assert(v, expected_v)
-##   Produce an error if v is not the same as expected_v.  Note
-##   that v and expected_v can be strings, matrices or structures.
+## assert(observed, expected)
+##   Produce an error if observed is not the same as expected.  Note
+##   that observed and expected can be strings, scalars, vectors, 
+##   matrices, lists or structures.
 ##
-## assert(v, expected_v, tol)
-##   Produce an error if abs(v-expected_v)>tol for any v.
-##   If tol < 0, use abs(v-expected_v)>abs(tol*expected_v).
+## assert(observed, expected, tol)
+##   Produce an error if relative error is less than tolerance.
+##   That is, abs(observed-expected) > tol*expected.  Absolute
+##   error abs(observed-expected) > abs(tol) will be used when tolerance 
+##   is negative or when the expected value is zero.
 ##
 ## see also: test
 
@@ -94,17 +97,21 @@ function assert(cond, expected, tol)
   else ## numeric
     if (any (size (cond) != size (expected)))
       iserror = 1;
-    elseif (tol >= 0)
-      iserror = (any (any (abs (cond-expected) > tol )));
+    elseif ( tol <= 0 || all(expected(:) == 0) )
+      iserror = (any (any (abs (cond-expected) > abs(tol) )));
       if (iserror)
-	coda = sprintf("|| v - v_expected || = %g", norm(cond-expected));
+	coda = sprintf("|| observed - expected || = %g", norm(cond-expected));
       endif
     else
-      comp = abs(cond-expected) > abs(tol*expected);
+      comp = zeros(size(expected));
+      idx = (expected != 0);
+      comp(idx) = (abs(cond(idx)-expected(idx)) > abs(tol*expected(idx)));
+      idx = !idx;
+      comp(idx) = (abs(cond(idx)-expected(idx)) > abs(tol));
       iserror = any (comp(:));
       if (iserror)
-	coda = sprintf("|| (v - v_expected)./v || = %g", \
-		       norm((cond-expected)./expected));
+	coda = sprintf("|| (observed - expected) || / || expected || = %g", \
+		       norm(cond-expected)/norm(expected));
       endif
     endif
   endif
@@ -129,7 +136,9 @@ function assert(cond, expected, tol)
   if (!isempty(coda))
     msg = [ msg, "\n", coda ];
   endif
-  error(msg);
+  disp(msg);
+  ## XXX FIXME XXX why can't I do error(msg) ??
+  error("assertion failed");
 endfunction
 
 ## empty
@@ -164,15 +173,15 @@ endfunction
 %!error assert(3, [3,3; 3,3])
 %!error assert([3,3; 3,3], 3)
 %!assert(3, 3);
-%!assert(3+eps, 3, eps);
-%!assert(3, 3+eps, eps);
-%!error assert(3+2*eps, 3, eps);
-%!error assert(3, 3+2*eps, eps);
+%!assert(3+eps, 3, -eps);
+%!assert(3, 3+eps, -eps);
+%!error assert(3+2*eps, 3, -eps);
+%!error assert(3, 3+2*eps, -eps);
 %## must give a little space for floating point errors on relative
-%!assert(100+100*eps, 100, -2*eps); 
-%!assert(100, 100+100*eps, -2*eps);
-%!error assert(100+300*eps, 100, -2*eps); 
-%!error assert(100, 100+300*eps, -2*eps);
+%!assert(100+100*eps, 100, 2*eps); 
+%!assert(100, 100+100*eps, 2*eps);
+%!error assert(100+300*eps, 100, 2*eps); 
+%!error assert(100, 100+300*eps, 2*eps);
 %!error assert(3, [3,3]);
 %!error assert(3,4);
 

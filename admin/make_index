@@ -183,6 +183,8 @@ if (@skipped) {
     print "\n";
 }
 
+print_missing();
+
 if (@uncategorized) {
     print scalar(@uncategorized), " uncategorized functions ";
     print "(out of ", $n_functions, " total)";
@@ -713,6 +715,27 @@ sub oldnavbar { # 1{{{
     $all_toolboxes .= "</center>\n";
 
 } # 1}}}
+sub print_missing {
+    my $printmissing = 1;
+    foreach my $TB ( toolbox_list() ) {
+	my $printTB = 1;
+	foreach my $cat ( cat_list($TB) ) {
+            my $printcat = 1;
+            foreach my $func ( cat_funcs($TB,$cat) ) {
+                if (! defined $function_description{$func}[1] && ! defined $index_notes{$func} ) {
+		     print "missing functions:" if $printmissing;
+		     print "\n  [$TB]" if $printTB;
+		     print "\n  $cat\n  >" if $printcat;
+	             print " $func";
+	             $printTB = 0;
+		     $printcat = 0;
+		     $printmissing = 0;
+                }
+            }
+        }
+    }
+    print "\n" unless $printmissing;
+}
 sub write_ascii { # 1{{{
 # output all toolboxes as a contents.m file
     my ($prefix) = @_;

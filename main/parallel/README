@@ -94,7 +94,6 @@ sclose (sockets)
 Notes for the current version:
 * The slave computer must have the directory whose name and path are 
   identical with the current directory of the master computer.
-* Same endian only.
 
 
 Sample program:

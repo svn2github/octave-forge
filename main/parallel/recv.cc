@@ -40,6 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <netdb.h>
 #include <unistd.h>
 
+#include "swab.h"
+
 #define BUFF_SIZE SSIZE_MAX
 
 // COMM
@@ -50,16 +52,17 @@ DEFUN_DLD (recv, args, ,
 Receive a variable from the computer specified by the row vector 'socket'.")
 {
   octave_value retval;
-  int type_id,sock;
+  int type_id=0,sock;
   
   if(args.length () == 1)
     {
       Matrix m=args(0).matrix_value();
       struct pollfd *pollfd,*pollfd_d;
-      int num,error_code,sock_c,num_d;
+      int num,error_code,sock_c,num_d,nl,endian;
       
       sock=(int) m.data()[0];
       sock_c=(int) m.data()[1];
+      endian=(int) m.data()[2];
 
       pollfd=(struct pollfd *)malloc(sizeof(struct pollfd));
       pollfd_d=(struct pollfd *)malloc(sizeof(struct pollfd));
@@ -85,8 +88,9 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	      hehe=gethostbyaddr((char *)&r_addr.sin_addr.s_addr,sizeof(r_addr.sin_addr), AF_INET);
 	      if(pollfd[0].revents&POLLIN){
 		pid=getpid();
-		read(pollfd[0].fd,&error_code,sizeof(int));
-		write(pollfd[0].fd,&error_code,sizeof(int));
+		read(pollfd[0].fd,&nl,sizeof(int));
+		error_code=ntohl(nl);
+		write(pollfd[0].fd,&nl,sizeof(int));
 		error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
 	      }
 	      if(pollfd[0].revents&POLLERR){
@@ -102,7 +106,8 @@ Receive a variable from the computer specified by the row vector 'socket'.")
       }
       if(pollfd_d[0].revents && (pollfd_d[0].fd !=0)){
 	if(pollfd_d[0].revents&POLLIN){
-	  read(sock,&type_id,sizeof(type_id));
+	  read(sock,&nl,sizeof(int));
+	  type_id=ntohl(nl);
 	}
 	if(pollfd_d[0].revents&POLLERR){
 	  error("Error condition ");
@@ -115,43 +120,66 @@ Receive a variable from the computer specified by the row vector 'socket'.")
       if(type_id==3)
 	{
 	  int col=0,row=0,length=0,count=0,r_len=0;
-	  read(sock,&row,sizeof(row));
-	  read(sock,&col,sizeof(col));
+	  unsigned long long int *conv;
+	  double *p;
+	  read(sock,&nl,sizeof(int));
+	  row=ntohl(nl);
+	  read(sock,&nl,sizeof(int));
+	  col=ntohl(nl);
 	  length=sizeof(double)*row*col;
 	  Matrix m(row,col);
 	  double* tmp = m.fortran_vec();
 	  errno=0;
 	  r_len=BUFF_SIZE;
 	  while(count <length){
+	    p=(double *)((int)tmp+count);
 	    if((length-count) < BUFF_SIZE)
 	      r_len=length-count;
-	    count +=read(sock,(double *)((int)tmp+count),r_len);
+	    count +=read(sock,p,r_len);
+	    if(endian != __BYTE_ORDER){
+	      conv=(unsigned long long int *)((u_int32_t)p&0xfffffff8);
+	      for(int i=0;i<count/8;i++)
+		*conv++=swab64(conv);
+	    }
 	  }
 	  retval= octave_value(m);
 	}
       else if(type_id==1)
 	{
 	  double d;
-	  
+	  unsigned long long int *conv;
 	  read(sock,&d,sizeof(d));
+	  if(endian != __BYTE_ORDER){
+	    conv=(unsigned long long int *)&d;
+	    *conv=swab64(conv);
+	  }
 	  retval= octave_value(d);
-	  
 	}
       else if(type_id==4)
 	{
 	  int col=0,row=0,length=0,count=0,r_len=0;
-	  
-	  read(sock,&row,sizeof(row));
-	  read(sock,&col,sizeof(col));
+	  Complex *p;
+	  unsigned long long int *conv;
+	  read(sock,&nl,sizeof(int));
+	  row=ntohl(nl);
+	  read(sock,&nl,sizeof(int));
+	  col=ntohl(nl);
 	  length=sizeof(Complex)*row*col;
 	  ComplexMatrix cm(row,col);
 	  Complex* tmp = cm.fortran_vec();
 	  errno=0;
 	  r_len=BUFF_SIZE;
 	  while(count <length){
+	    p=(Complex  *)((int)tmp+count);
 	    if((length-count) < BUFF_SIZE)
 	      r_len=length-count;
-	    count +=read(sock,(Complex *)((int)tmp+count),r_len);
+	    count +=read(sock,p,r_len);
+	    if(endian != __BYTE_ORDER){
+	      conv=(unsigned long long int *)((u_int32_t)p&0xfffffff8);
+	      for(int i=0;i<count/8;i++){
+		*conv++=swab64(conv);
+	      }
+	    }
 	  }
 	  retval= octave_value(cm);
 	  
@@ -161,6 +189,12 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	  Complex cx;
 	  
 	  read(sock,&cx,sizeof(cx));
+	  if(endian != __BYTE_ORDER){
+	    long long int *conv;
+	    conv=(long long int *)&cx;
+	    *conv++=swab64(conv);
+	    *conv=swab64(conv);
+	  }
 	  retval= octave_value(cx);
 	  
 	}
@@ -168,8 +202,10 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	{
 	  int col=0,row=0,length=0,count=0,r_len=0;
 	  
-	  read(sock,&row,sizeof(row));
-	  read(sock,&col,sizeof(col));
+	  read(sock,&nl,sizeof(int));
+	  row=ntohl(nl);
+	  read(sock,&nl,sizeof(int));
+	  col=ntohl(nl);
 	  length=sizeof(char)*row*col;
 	  charMatrix cmx(row,col);
 	  char* str = cmx.fortran_vec();
@@ -190,9 +226,11 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	  octave_value_list ov_list;
 	  char *key;
 	  
-	  read(sock,&length,sizeof(length));
+	  read(sock,&nl,sizeof(nl));
+	  length=ntohl(nl);
 	  for(i=0;i<length;i++){
-	    read(sock,&key_len,sizeof(key_len));
+	    read(sock,&nl,sizeof(int));
+	    key_len=ntohl(nl);
 	    key = (char *)calloc(sizeof(char),key_len+1);
 	    read(sock,key,key_len);
 	    ov_list=Frecv(args(0),0);

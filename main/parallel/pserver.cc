@@ -62,6 +62,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <netdb.h>
 #include <unistd.h>
 #include <setjmp.h>
+#include <netinet/in.h>
 
 #define BUFF_SIZE SSIZE_MAX
 
@@ -75,7 +76,7 @@ sigterm_handler (int /* sig */)
   int len=118;
   char hostname[120],pidname[128];
   gethostname(hostname,len);
-  sprintf(pidname,".octave-%s.pid",hostname);
+  sprintf(pidname,"/tmp/.octave-%s.pid",hostname);
   remove (pidname);
   close_files ();
 
@@ -149,7 +150,7 @@ int
 reval_loop (int sock)
 {
   // Allow the user to interrupt us without exiting.
-  int len;
+  int len=0;
   char *ev_str;
   std::string s;
 
@@ -175,9 +176,9 @@ reval_loop (int sock)
 
   // The big loop.
 
-  char nl;
-  read(sock,&nl,1);
-  int retval,count,r_len,num,fin;
+  char dummy;
+  read(sock,&dummy,sizeof(char));
+  int retval,count,r_len,num,fin,nl;
   struct pollfd *pollfd;
       
   pollfd=(struct pollfd *)malloc(sizeof(struct pollfd));
@@ -192,7 +193,8 @@ reval_loop (int sock)
       if(num){
 	if(pollfd[0].revents && (pollfd[0].fd !=0)){
 	  if(pollfd[0].revents&POLLIN){
-	    fin=read(sock,&len,sizeof(int));
+	    fin=read(sock,&nl,sizeof(int));
+	    len=ntohl(nl);
 	    if(!fin)
 	      clean_up_and_exit_server (0);
 	  }
@@ -222,8 +224,9 @@ reval_loop (int sock)
       delete(ev_str);
       if (error_state)
         {
-	  write(sock,&error_state,sizeof(int));
-	  read(sock,&error_state,sizeof(int));
+	  nl=htonl(error_state);
+	  write(sock,&nl,sizeof(int));
+	  read(sock,&nl,sizeof(int));
      	  clean_up_and_exit_server (retval);
         }
       else
@@ -252,7 +255,7 @@ Connect hosts and return sockets.")
       struct stat fstat;
       
       gethostname(hostname,len);
-      sprintf(pidname,".octave-%s.pid",hostname);
+      sprintf(pidname,"/tmp/.octave-%s.pid",hostname);
       if(stat(pidname,&fstat)==0){
 	std::cerr << "octave : "<<hostname<<": server already running"<<std::endl;
 	clean_up_and_exit (1);
@@ -351,7 +354,7 @@ Connect hosts and return sockets.")
       setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&param,ol);
       setsockopt(dsock,SOL_SOCKET,SO_REUSEADDR,&param,ol);
 
-      int val=1,num_nodes,me,i,j=0,pppid=0,rpppid=0,result=0;
+      int val=1,num_nodes,me,i,j=0,pppid=0,rpppid=0,result=0,nl;
       int *sock_v;
       char **host_list,rem_name[128];
       struct hostent *he;      
@@ -384,20 +387,24 @@ Connect hosts and return sockets.")
 	      ol=sizeof(val);
 	      setsockopt(asock,SOL_SOCKET,SO_REUSEADDR,&val,ol);
 	      
-	      read(asock,&num_nodes,sizeof(int));
-	      read(asock,&me,sizeof(int));
-	      read(asock,&pppid,sizeof(int));
-	      sock_v=(int *)calloc((num_nodes+1)*2,sizeof(int));
+	      read(asock,&nl,sizeof(int));
+	      num_nodes=ntohl(nl);
+	      read(asock,&nl,sizeof(int));
+	      me=ntohl(nl);
+	      read(asock,&nl,sizeof(int));
+	      pppid=ntohl(nl);
+	      sock_v=(int *)calloc((num_nodes+1)*3,sizeof(int));
 	      host_list=(char **)calloc(num_nodes,sizeof(char *));
 	      for(i=0;i<=num_nodes;i++){
-		read(asock,&len,sizeof(int));
+		read(asock,&nl,sizeof(int));
+		len=ntohl(nl);
 		host_list[i]=(char *)calloc(len,sizeof(char *));
 		read(asock,host_list[i],len);
 	      }
 
-	      sprintf(errname,"/tmp/octave_error-%s_%5d.log",hostname,pppid);
+	      sprintf(errname,"/tmp/octave_error-%s_%05d.log",hostname,pppid);
 	      if(stat(errname,&fstat)==0){
-		sprintf(bakname,"/tmp/octave_error-%s_%5d.bak",hostname,pppid);
+		sprintf(bakname,"/tmp/octave_error-%s_%05d.bak",hostname,pppid);
 		rename(errname,bakname);
 	      }
 	      freopen(errname, "w", stderr);
@@ -423,9 +430,11 @@ Connect hosts and return sockets.")
 		  setsockopt(dasock,SOL_SOCKET,SO_REUSEADDR,&bufsize,ol);
 		  
 		  //recv pppid
-		  read(dasock,&rpppid,sizeof(int));
+		  read(dasock,&nl,sizeof(int));
+		  rpppid=ntohl(nl);
 		  //recv name size
-		  read(dasock,&len,sizeof(int));
+		  read(dasock,&nl,sizeof(int));
+		  len=ntohl(nl);
 		  //recv name
 		  read(dasock,rem_name,len+1);
 		  rem_name[len]='\0';
@@ -443,12 +452,20 @@ Connect hosts and return sockets.")
 		  if(result==0){
 		    if(pppid==rpppid){
 		      result=0;
-		      write(dasock,&result,sizeof(int));
+		      nl=htonl(result);
+		      write(dasock,&nl,sizeof(int));
+		      //send endian
+		      nl=htonl(__BYTE_ORDER);
+		      write(dasock,&nl,sizeof(int));
+		      //recv endian
+		      read(sock,&nl,sizeof(int));
+		      sock_v[j+2*(num_nodes+1)]=ntohl(nl);
 		      break;
 		    }
 		  }else{
 		    result=-1;
-		    write(dasock,&result,sizeof(int));
+		    nl=htonl(result);
+		    write(dasock,&nl,sizeof(int));
 		    close(dasock);
 		    sleep(1);
 		  }
@@ -496,17 +513,26 @@ Connect hosts and return sockets.")
 		  setsockopt(dsock,SOL_SOCKET,SO_REUSEADDR,&bufsize,ol);
 		  
 		  //send pppid
-		  write(dsock,&pppid,sizeof(int));
+		  write(dsock,&nl,sizeof(int));
+		  pppid=ntohl(nl);
 		  //send name size
 		  len=strlen(host_list[me]);
-		  write(dsock,&len,sizeof(int));
+		  nl=htonl(len);
+		  write(dsock,&nl,sizeof(int));
 		  //send name
 		  write(dsock,host_list[me],len+1);
 		  //recv result code
-		  read(dsock,&result,sizeof(int));
+		  read(dsock,&nl,sizeof(int));
+		  result=ntohl(nl);
 
 		  if(result==0){
 		    sock_v[i]=dsock;
+		    //recv endian
+		    read(sock,&nl,sizeof(int));
+		    sock_v[i+2*(num_nodes+1)]=ntohl(nl);
+		    //send endian
+		    nl=htonl(__BYTE_ORDER);
+		    write(sock,&nl,sizeof(int));
 		    break;
 		  }else{
 		    close(dsock);
@@ -531,10 +557,10 @@ Connect hosts and return sockets.")
 	      int stat;
 
 	      s=(char *)calloc(32,sizeof(char));
-	      sprintf(s,"sockets=[%d,0]",sock_v[0]);
+	      sprintf(s,"sockets=[%d,0,%d]",sock_v[0],sock_v[2*(num_nodes+1)]);
 	      eval_string(std::string(s),true,stat);
 	      for(i=1;i<=num_nodes;i++){
-		sprintf(s,"sockets=[sockets;%d,0]",sock_v[i]);
+		sprintf(s,"sockets=[sockets;%d,0,%d]",sock_v[i+2*(num_nodes+1)]);
 		eval_string(std::string(s),true,stat);
 	      }
 		
@@ -568,11 +594,12 @@ Connect hosts and return sockets.")
 
 	      char *newdir;
 	      int newdir_len;
-	      read(asock,&newdir_len,sizeof(int));
+	      read(asock,&nl,sizeof(int));
+	      newdir_len=ntohl(nl);
 	      newdir=(char *)calloc(sizeof(char),newdir_len+1);
 	      read(asock,newdir,newdir_len);
 	      int cd_ok=octave_env::chdir (newdir);
-	      if(cd_ok !=0){
+	      if(cd_ok != true){
 		octave_env::chdir ("/tmp");
 	      }
 	      int retval = reval_loop(asock);

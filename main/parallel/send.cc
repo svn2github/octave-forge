@@ -59,7 +59,7 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
     {
       octave_value val=args(0);
       Matrix sock_m=args(1).matrix_value();
-      int sock,i,k,error_code;
+      int sock,i,k,error_code,nl;
       int nsock=sock_m.rows();
       int type_id=0; //=val.type_id();
 
@@ -86,8 +86,9 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	      
 	      if(pollfd[k].revents&POLLIN){
 		pid=getpid();
-		read(pollfd[k].fd,&error_code,sizeof(int));
-		write(pollfd[k].fd,&error_code,sizeof(int));
+		read(pollfd[k].fd,&nl,sizeof(int));
+		error_code=ntohl(nl);
+		write(pollfd[k].fd,&nl,sizeof(int));
 		error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
 	      }
 	      if(pollfd[k].revents&POLLERR){
@@ -113,9 +114,12 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	  for (i=0;i<nsock;i++){
 	    sock=(int)sock_m.data()[i];
 	    if(sock!=0){
-	      write(sock,&type_id,sizeof(type_id));
-	      write(sock,&row,sizeof(row));
-	      write(sock,&col,sizeof(col));
+	      nl=htonl(type_id);
+	      write(sock,&nl,sizeof(int));
+	      nl=htonl(row);
+	      write(sock,&nl,sizeof(int));
+	      nl=htonl(col);
+	      write(sock,&nl,sizeof(int));
 	      length=sizeof(double)*col*row;
 	      errno=0;
 	      count=0;
@@ -140,7 +144,8 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	  for (i=0;i<nsock;i++){
 	    sock=(int)sock_m.data()[i];
 	    if(sock!=0){
-	      write(sock,&type_id,sizeof(type_id));
+	      nl=htonl(type_id);
+	      write(sock,&nl,sizeof(int));
 	      write(sock,&d,length);
 	    }
 	  }
@@ -157,9 +162,12 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	  for (i=0;i<nsock;i++){
 	    sock=(int)sock_m.data()[i];
 	    if(sock!=0){
-	      write(sock,&type_id,sizeof(type_id));
-	      write(sock,&row,sizeof(row));
-	      write(sock,&col,sizeof(col));
+	      nl=htonl(type_id);
+	      write(sock,&nl,sizeof(int));
+	      nl=htonl(row);
+	      write(sock,&nl,sizeof(int));
+	      nl=htonl(col);
+	      write(sock,&nl,sizeof(int));
 	      length=sizeof(Complex)*col*row;
 	      count=0;
 	      r_len=BUFF_SIZE;
@@ -181,7 +189,8 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	  for (i=0;i<nsock;i++){
 	    sock=(int)sock_m.data()[i];
 	    if(sock!=0){
-	      write(sock,&type_id,sizeof(type_id));
+	      nl=htonl(type_id);
+	      write(sock,&nl,sizeof(int));
 	      write(sock,&cx,length);
 	    }
 	  }
@@ -198,9 +207,12 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	  for (i=0;i<nsock;i++){
 	    sock=(int)sock_m.data()[i];
 	    if(sock!=0){
-	      write(sock,&type_id,sizeof(type_id));
-	      write(sock,&row,sizeof(row));
-	      write(sock,&col,sizeof(col));
+	      nl=htonl(type_id);
+	      write(sock,&nl,sizeof(int));
+	      nl=htonl(row);
+	      write(sock,&nl,sizeof(int));
+	      nl=htonl(col);
+	      write(sock,&nl,sizeof(int));
 	      count=0;
 	      r_len=BUFF_SIZE;
 	      while(count <length){
@@ -226,11 +238,14 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	    ov_list(1)=octave_value(sock_m.row(i));
 	    type_id=7;
 	    if(sock!=0){
-	      write(sock,&type_id,sizeof(type_id));
-	      write(sock,&length,sizeof(length));
+	      nl=htonl(type_id);
+	      write(sock,&nl,sizeof(int));
+	      nl=htonl(length);
+	      write(sock,&nl,sizeof(int));
 	      for(i=0;i<length;i++){
 		key_len=key.length();
-		write(sock,&key_len,sizeof(key_len));
+		nl=htonl(key_len);
+		write(sock,&nl,sizeof(int));
 		ov_list(0)=map[key](0);
 		write(sock,key.c_str(), key_len);
 		Fsend(ov_list,0);

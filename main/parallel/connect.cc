@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <errno.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <netinet/in.h>
 
 #define BUFF_SIZE SSIZE_MAX
 
@@ -53,7 +54,7 @@ Connect hosts and return sockets.")
   double *sock_v=0;
   if (args.length () == 1)
     {
-      int pid=0;
+      int pid=0,nl;
       struct sockaddr_in *addr;
       struct hostent *he;
       octave_value hosts=args(0);
@@ -66,7 +67,7 @@ Connect hosts and return sockets.")
       col= cm.columns();
       cm= cm.transpose(); 
       
-      sock_v=(double *)calloc(2,row*sizeof(double));
+      sock_v=(double *)calloc(3,row*sizeof(double));
        
 
       for(i=1;i<row;i++){
@@ -113,9 +114,13 @@ Connect hosts and return sockets.")
 	int num_nodes=row-1;
 
 	pid=getpid();
-	write(sock,&num_nodes,sizeof(int));
-	write(sock,&i,sizeof(int));
-	write(sock,&pid,sizeof(int));
+	nl=htonl(num_nodes);
+	write(sock,&nl,sizeof(int));
+	nl=htonl(i);
+	write(sock,&nl,sizeof(int));
+	nl=htonl(pid);
+	write(sock,&nl,sizeof(int));
+
 	host=(char *)calloc(128,sizeof(char));
 	for(j=0;j<row;j++){
 	  strncpy(host,&cm.data()[col*j],col);
@@ -125,14 +130,16 @@ Connect hosts and return sockets.")
 	  else
 	    *pt='\0';
 	  len=strlen(host)+1;
-	  write(sock,&len,sizeof(int));
+	  nl=htonl(len);
+	  write(sock,&nl,sizeof(int));
 	  write(sock,host,len);
 	}
 	free(host);
 	int comm_len;
        	std::string directory = octave_env::getcwd ();
 	comm_len=directory.length();
-	write(sock,&comm_len,sizeof(int));
+	nl=htonl(comm_len);
+	write(sock,&nl,sizeof(int));
 	write(sock,directory.c_str(),comm_len);
       }      
       usleep(100);
@@ -189,7 +196,8 @@ Connect hosts and return sockets.")
 
 	  int len=0,result=0;;
 	  //send pppid
-	  write(sock,&pid,sizeof(int));
+	  nl=htonl(pid);
+	  write(sock,&nl,sizeof(int));
 	  //send name size
 	  strncpy(myname,cm.data(),col);
 	  pt=strchr(myname,' ');
@@ -198,13 +206,21 @@ Connect hosts and return sockets.")
 	  else
 	    *pt='\0';
 	  len=strlen(myname);
-	  write(sock,&len,sizeof(int));
+	  nl=htonl(len);
+	  write(sock,&nl,sizeof(int));
 	  //send name
 	  write(sock,myname,len+1);
 	  //recv result code
-	  read(sock,&result,sizeof(int));
+	  read(sock,&nl,sizeof(int));
+	  result=ntohl(nl);
 	  if(result==0){
 	    sock_v[i]=sock;
+	    //recv endian
+	    read(sock,&nl,sizeof(int));
+	    sock_v[i+2*row]=ntohl(nl);
+	    //send endian
+	    nl=htonl(__BYTE_ORDER);
+	    write(sock,&nl,sizeof(int));
 	    break;
 	  }else{
 	    close(sock);
@@ -229,9 +245,9 @@ Connect hosts and return sockets.")
     }
       
 
-  Matrix mx(row,2);
+  Matrix mx(row,3);
   double *tmp =mx.fortran_vec();
-  for (i=0;i<2*row;i++)
+  for (i=0;i<3*row;i++)
     tmp[i]=sock_v[i];
   octave_value retval(mx);
 

@@ -54,7 +54,7 @@ Close sockets")
 
   if(args.length () == 1)
     {
-      int i,nsock=0,sock,k,error_code,err=0;
+      int i,nsock=0,sock,k,error_code,err=0,nl;
 
       nsock=args(0).matrix_value().rows()*2;
       
@@ -81,8 +81,9 @@ Close sockets")
 	      
 	      if(pollfd[k].revents&POLLIN){
 		pid=getpid();
-		read(pollfd[k].fd,&error_code,sizeof(int));
-		write(pollfd[k].fd,&error_code,sizeof(int));
+		read(pollfd[k].fd,&nl,sizeof(int));
+		error_code=ntohl(nl);
+		write(pollfd[k].fd,&nl,sizeof(int));
 		error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
 	      }
 	      if(pollfd[k].revents&POLLERR){

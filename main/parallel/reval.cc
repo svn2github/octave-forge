@@ -55,7 +55,7 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
   if(args.length () ==2)
     {
       int sock,row=0,col=0,nsock=0,i,j,k;
-      int error_code,count=0,r_len=0;
+      int error_code,count=0,r_len=0,nl;
       octave_value val=args(0);
       Matrix sock_m=args(1).matrix_value();
       charMatrix cm=val.char_matrix_value();
@@ -89,8 +89,9 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 	      
 	      if(pollfd[k].revents&POLLIN){
 		pid=getpid();
-		read(pollfd[k].fd,&error_code,sizeof(int));
-		write(pollfd[k].fd,&error_code,sizeof(int));
+		read(pollfd[k].fd,&nl,sizeof(int));
+		error_code=ntohl(nl);
+		write(pollfd[k].fd,&nl,sizeof(int));
 		error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
 	      }
 	      if(pollfd[k].revents&POLLERR){
@@ -111,8 +112,8 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 	    strncpy(comm,(cm.extract(j,0,j,col-1).data()),col);
 	    comm[col]='\n';
 	    comm[col+1]='\0';
-	    write(sock,&col,sizeof(col));
-	    //	    write(sock,comm,col);
+	    nl=htonl(col);
+	    write(sock,&nl,sizeof(int));
 	    count=0;
 	    r_len=BUFF_SIZE;
 	    while(count <col){

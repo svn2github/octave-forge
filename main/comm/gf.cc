@@ -552,7 +552,7 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
 		b.index_of(x(i,0)),b.m(),b.n()));
 	}
 	si(si.length()-1,0) = 0;
-	if ((a(si.length(),0) != 0) && (retval(si.length(),0) != 0))
+	if ((a(si.length(),0) != 0) && (retval(i,0) != 0))
 	  si(si.length()-1,0) ^= a.alpha_to(modn(a.index_of(
 		a(si.length(),0))+a.index_of(retval(i,0)),
 		a.m(),a.n()));

@@ -29,6 +29,8 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct.h>
 #include <octave/pager.h>
 
+<<<<<<< cyclgen.cc
+=======
 static bool
 do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m)
 {
@@ -36,19 +38,69 @@ do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m
   // Fast return since polynomial can't be even
   if (!(a & 1))
     return false;
+>>>>>>> 1.3
 
-  unsigned long long mask = 1;
+// A simplified version of the filter function for specific lengths of a and b
+// in the Galois field GF(2)
+Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a, 
+			const Array<int>& x, const int& n) {
 
+  int x_len = x.length ();
+  Array<int> si (n, 0);
+  Array<int> y (x_len, 0);
+
+  for (int i=0; i < x_len; i++) {
+    y(i) = si(0);
+    if (b(0) && x(i))
+      y(i) ^= 1;
+   
+    for (int j = 0; j < n - 1; j++) {
+      si(j) = si(j+1);
+      if (a(j+1) && y(i))
+	si(j) ^= 1;
+      if (b(j+1) && x(i))
+	si(j) ^= 1;
+    }
+    si(n-1) = 0;
+    if (a(n) && y(i))
+      si(n-1) ^= 1;
+    if (b(n) && x(i))
+      si(n-1) ^= 1;
+  }
+
+<<<<<<< cyclgen.cc
+  return y;
+}
+=======
   for (int i=0; i<n; i++) {
     mask <<= 1;
     if (mask & ((unsigned long long)1<<m))
       mask ^= a;
     mask &= n;
   }
+>>>>>>> 1.3
 
-  if (mask != 1) {
-    return false;
-  }
+// Cyclic polynomial is irreducible. I.E. it divides into x^n-1 without remainder
+// There must surely be an easier way of doing this as the polynomials are over
+// GF(2).
+static bool
+do_is_cyclic_polynomial (const Array<int>& a, const int& n, const int& m)
+{
+  Array<int> y (n+1, 0);
+  Array<int> x (n-m+2, 0);
+  y(0) = 1;
+  y(n) = 1;
+  x(0) = 1;
+
+  Array<int> b = filter_gf2 (y, a, x, n);
+  b.resize(n+1,0);
+  Array<int> p (m+1,0);
+  p(0) = 1;
+  Array<int> q = filter_gf2 (a, p, b, m);
+
+  for (int i=0; i < n+1; i++)
+    if (y(i) ^ q(i))
+      return false;
 
   return true;
 }
@@ -96,10 +148,14 @@ DEFUN_DLD (cyclgen, args, nargout,
 {
   octave_value_list retval;
   int nargin = args.length ();
+<<<<<<< cyclgen.cc
+=======
   int n;
+>>>>>>> 1.3
   unsigned long long p = 0;
-  int m, k, mm;
+  int n, m, k, mm;
   bool system = true;
+  Array<int> pp;
 
   if ((nargin < 2) || (nargin > 3)) {
     error ("cyclgen: incorrect number of arguments");
@@ -116,22 +172,43 @@ DEFUN_DLD (cyclgen, args, nargout,
     mm = 1;
     while (p > ((unsigned long long)1<<(mm+1)))
       mm++;
+    for (int i=0; i < mm; i++)
+      pp(i) = (p & (1<<i) ? 1 : 0);
   } else {
     Matrix tmp = args(1).matrix_value ();
     if ((tmp.rows() != 1) && (tmp.columns() != 1)) {
       error ("cyclgen: generator polynomial must be a vector");
       return retval;
     }
-    for (int i=0; i < tmp.rows(); i++)
-      for (int j=0; j < tmp.columns(); j++) {
-	if (tmp(i,j) == 1)
-	  p |= ((unsigned long long)1 << (i+j));
-	else if (tmp(i,j) != 0) {
+
+    if (tmp.rows() == 1) {
+      mm = tmp.columns();
+      pp.resize(n+1, 0);
+      for (int j=0; j<mm; j++) {
+	if (tmp(0,j) == 1) {
+	  p |= ((unsigned long long)1 << j);
+	  pp(j) = 1;
+	}
+	else if (tmp(0,j) != 0) {
 	  error ("cyclgen: illegal generator polynomial");
 	  return retval;
 	}
       }
-    mm = (tmp.rows() > tmp.columns() ? tmp.rows() : tmp.columns()) - 1;
+    } else {
+      mm = tmp.rows();
+      pp.resize(n+1, 0);
+      for (int i=0; i<mm; i++) {
+	if (tmp(i,0) == 1) {
+	  p |= ((unsigned long long)1 << i);
+	  pp(i) = 1;
+	}
+	else if (tmp(i,0) != 0) {
+	  error ("cyclgen: illegal generator polynomial");
+	  return retval;
+	}
+      }
+    }
+    mm = mm - 1;
   }
   k = n - mm;
 
@@ -158,7 +235,7 @@ DEFUN_DLD (cyclgen, args, nargout,
     return retval;
   }
 
-  if (!do_is_cyclic_polynomial(p, n, mm)) {
+  if (!do_is_cyclic_polynomial(pp, n, mm)) {
     error ("cyclgen: generator polynomial does not produce cyclic code");
     return retval;
   }

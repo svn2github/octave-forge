@@ -37,9 +37,63 @@ enum cyclic_poly_type
   CYCLIC_POLY_L
 };
 
+// A simplified version of the filter function for specific lengths of a and b
+// in the Galois field GF(2)
+Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a, 
+			const Array<int>& x, const int& n) {
+
+  int x_len = x.length ();
+  Array<int> si (n, 0);
+  Array<int> y (x_len, 0);
+
+  for (int i=0; i < x_len; i++) {
+    y(i) = si(0);
+    if (b(0) && x(i))
+      y(i) ^= 1;
+   
+    for (int j = 0; j < n - 1; j++) {
+      si(j) = si(j+1);
+      if (a(j+1) && y(i))
+	si(j) ^= 1;
+      if (b(j+1) && x(i))
+	si(j) ^= 1;
+    }
+    si(n-1) = 0;
+    if (a(n) && y(i))
+      si(n-1) ^= 1;
+    if (b(n) && x(i))
+      si(n-1) ^= 1;
+  }
+
+  return y;
+}
+
+// Cyclic polynomial is irreducible. I.E. it divides into x^n-1 without remainder
+// There must surely be an easier way of doing this as the polynomials are over
+// GF(2).
 static bool
-do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m)
+do_is_cyclic_polynomial (const unsigned long long& a1, const int& n, const int& m)
 {
+<<<<<<< cyclpoly.cc
+  Array<int> a (n+1,0);
+  Array<int> y (n+1, 0);
+  Array<int> x (n-m+2, 0);
+  y(0) = 1;
+  y(n) = 1;
+  x(0) = 1;
+  for (int i=0; i < n+1; i++)
+    a(i) = (a1 & (1UL <<  i) ? 1 : 0);
+
+  Array<int> b = filter_gf2 (y, a, x, n);
+  b.resize(n+1,0);
+  Array<int> p (m+1,0);
+  p(0) = 1;
+  Array<int> q = filter_gf2 (a, p, b, m);
+
+  for (int i=0; i < n+1; i++)
+    if (y(i) ^ q(i))
+      return false;
+=======
   // Fast return since polynomial can't be even
   if (!(a & 1))
     return false;
@@ -56,10 +110,10 @@ do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m
   if (mask != 1) {
     return false;
   }
+>>>>>>> 1.3
 
   return true;
 }
-
 
 DEFUN_DLD (cyclpoly, args, nargout,
   "-*- texinfo -*-\n"

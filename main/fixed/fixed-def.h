@@ -71,7 +71,7 @@ Open Source Initiative (www.opensource.org)
 
 #define FIXED_INSTALL_CATOP(t1, t2, f) INSTALL_CATOP(t1, t2, f) 
 #else
-#define FIXED_DEFCATOP_FN(name, t1, t2, ret, f) 
+#define FIXED_DEFCATOP_FN(name, t1, t2, e1, e2, ret, f) 
 #define FIXED_INSTALL_CATOP(t1, t2, f)
 #endif
 #endif

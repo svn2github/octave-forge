@@ -10,7 +10,7 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 ##
-## Changelog : (changes by etienne@isr.ist.utl.pt, 2002 / 04)
+## CHANGELOG : (changes by etienne@isr.ist.utl.pt, 2002 / 04)
 ## - Require user-provided diff rather than using bs_gradient
 ## - Use tmp = p*q'*H
 ## - Accept list of args, and narg=position of minimized arg. No more global
@@ -22,16 +22,16 @@
 
 ## [x0,v,nev] = bfgs (f,df,args,ctl) - Variable metric minimization
 ##
-## ARGUMENTS --------
+## INPUT ------------
 ## f     : string   : Name of function. Takes a RxC matrix as input and
 ##                    returns a real value.
 ## df    : string   : Name of f's derivative. Returns a (R*C) x 1 vector
 ## args  : list     : Arguments passed to f.
 ##      or matrix   : f's only argument
-## ctl   : 5-vec    : (Optional) Control variables, described below
+## ctl   : vector   : (Optional) Control variable, described below
 ##      or struct   :
 ##
-## RETURNED VALUES --
+## OUTPUT -----------
 ## x0    : matrix   : Local minimum of f
 ## v     : real     : Value of f in x0
 ## nev   : 1 x 2    : Number of evaluations of f and of df
@@ -46,24 +46,24 @@
 ##
 ##                   f > Deltaf/max(|f(x)|,1)
 ##
-##             where Deltaf is the decrease in f observed in the last
-##             iteration.                                     <10*sqrt(eps)>
+##                  where Deltaf is the decrease in f 
+##                  observed in the last iteration.           <10*sqrt(eps)>
 ##
 ## utol, u N/A    : Stop search when updates are small, as tested by
 ##
 ##                   u > max { dx(i)/max(|x(i)|,1) | i in 1..N }
 ##
-##             where  dx is the change in the x that occured in the last
-##             iteration.                                              <NaN>
+##                  where  dx is the change in the x that 
+##                  occured in the last iteration.                     <NaN>
 ##
 ## dtol, d N/A    : Stop search when derivative is small, as tested by
 ## 
 ##                   d > norm (dv)                                     <1e7>
 ##
-## crit, c ctl(1) : Set one stopping criterion, 'ftol' (c=1), 'utol' (c=2)
-##                  or 'dtol' (c=3) to the value of by the 'tol' option. <1>
+## crit, c ctl(1) : Set one of the stopping criterion ftol=tol (c=1),
+##                  utol=tol (c=2) or dtol=tol (c=3)                     <1>
 ##
-## tol, t  ctl(2) : Threshold in termination test chosen by 'crit'  <10*eps>
+## tol,  t ctl(2) : Threshold of termination test chosen by 'crit'  <10*eps>
 ##
 ## argn, n ctl(3) : Position of the minimized argument in args           <1>
 ## maxev,m ctl(4) : Maximum number of function evaluations             <inf>

@@ -220,7 +220,9 @@ static void next_state(void)
 
     /* if init_genrand() has not been called, */
     /* a default initial seed is used         */
-    if (initf==0) init_genrand(5489UL);
+    /* if (initf==0) init_genrand(5489UL); */
+    /* Or better yet, a random seed! */
+    if (initf==0) init_by_entropy();
 
     left = N;
     next = state;

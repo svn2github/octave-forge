@@ -616,13 +616,15 @@ FixedComplexNDArray
 FixedComplexNDArray::prod (int dim) const
 {
   FixedPointComplex one(1, 0, 1, 0);
+#if HAVE_6ARG_MX_ND_RED
   MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
 		   one, FixedPointComplex acc = one, 
-		   FixedComplexNDArray
-#if HAVE_6ARG_MX_ND_RED
-		   ,FixedPointComplex
+		   FixedComplexNDArray, FixedPointComplex);
+#else
+  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
+		   one, FixedPointComplex acc = one, 
+		   FixedComplexNDArray);
 #endif
-		   );
 
 }
 
@@ -630,27 +632,32 @@ FixedComplexNDArray
 FixedComplexNDArray::sum (int dim) const
 {
   FixedPointComplex zero;
+#if HAVE_6ARG_MX_ND_RED
   MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
 		   zero, FixedPointComplex acc = zero, 
-		   FixedComplexNDArray
-#if HAVE_6ARG_MX_ND_RED
-		   ,FixedPointComplex
+		   FixedComplexNDArray, FixedPointComplex);
+#else
+  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
+		   zero, FixedPointComplex acc = zero, 
+		   FixedComplexNDArray);
 #endif
-		   );
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::sumsq (int dim) const
 {
   FixedPointComplex zero;
+#if HAVE_6ARG_MX_ND_RED
   MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
 		   retval.elem (iter_idx) = acc, zero, 
 		   FixedPointComplex acc = zero, 
-		   FixedComplexNDArray
-#if HAVE_6ARG_MX_ND_RED
-		   ,FixedPointComplex
+		   FixedComplexNDArray, FixedPointComplex);
+#else
+  MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
+		   retval.elem (iter_idx) = acc, zero, 
+		   FixedPointComplex acc = zero, 
+		   FixedComplexNDArray);
 #endif
-		   );
 }
 
 FixedNDArray
@@ -758,12 +765,7 @@ int
 FixedComplexNDArray::cat (const FixedComplexNDArray& ra_arg, int dim, 
 			  int iidx, int move)
 {
-#ifdef HAVE_6ARG_MX_ND_RED
   return ::cat_ra(*this, ra_arg, dim, iidx, move);
-#else
-  error("fixed cat not implemented");
-  return 0;
-#endif
 }
 
 FixedComplexNDArray

@@ -398,12 +398,13 @@ FixedNDArray
 FixedNDArray::prod (int dim) const
 {
   FixedPoint one(1,0,1,0);
-  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
-                   one, FixedPoint acc = one, FixedNDArray
 #if HAVE_6ARG_MX_ND_RED
-		   ,FixedPoint
+  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
+                   one, FixedPoint acc = one, FixedNDArray, FixedPoint);
+#else
+  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
+                   one, FixedPoint acc = one, FixedNDArray);
 #endif
-		   );
 
 }
 
@@ -411,25 +412,28 @@ FixedNDArray
 FixedNDArray::sum (int dim) const
 {
   FixedPoint zero;
-  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray
 #if HAVE_6ARG_MX_ND_RED
-		   ,FixedPoint
+  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
+                   zero, FixedPoint acc = zero, FixedNDArray, FixedPoint);
+#else
+  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
+                   zero, FixedPoint acc = zero, FixedNDArray);
 #endif
-		   );
 }
 
 FixedNDArray
 FixedNDArray::sumsq (int dim) const
 {
   FixedPoint zero;
+#if HAVE_6ARG_MX_ND_RED
   MX_ND_REDUCTION (acc += pow (elem (iter_idx), 2), 
 		   retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray
-#if HAVE_6ARG_MX_ND_RED
-		   ,FixedPoint
+                   zero, FixedPoint acc = zero, FixedNDArray, FixedPoint);
+#else
+  MX_ND_REDUCTION (acc += pow (elem (iter_idx), 2), 
+		   retval.elem (iter_idx) = acc,
+                   zero, FixedPoint acc = zero, FixedNDArray);
 #endif
-		   );
 }
 
 FixedNDArray
@@ -563,12 +567,7 @@ FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
 int
 FixedNDArray::cat (const FixedNDArray& ra_arg, int dim, int iidx, int move)
 {
-#ifdef HAVE_6ARG_MX_ND_RED
   return ::cat_ra (*this, ra_arg, dim, iidx, move);
-#else
-  error("fixed cat not implemented");
-  return 0;
-#endif
 }
 
 FixedNDArray

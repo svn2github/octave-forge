@@ -266,7 +266,7 @@ function print(...)
       if !isempty(fontsize)
 	options = [ options, " fontsize ", fontsize ];
       endif
-      eval (sprintf ("gset term fig %s;", option));
+      eval (sprintf ("gset term fig %s;", options));
 
     elseif strcmp(dev, "png") || strcmp(dev, "pbm")
       ## Portable network graphics, PBMplus

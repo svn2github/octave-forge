@@ -108,10 +108,10 @@ if ~isempty(Y)
                 fprintf(2,'Error CORRCOEF: X and Y must have the same number of observations (rows).\n');
                 return;
         end;
-        NN = (~isnan(X)')*(~isnan(Y));
+        NN = real(~isnan(X)')*real(~isnan(Y));
 else
         [r2,c2]=size(X);
-        NN = (~isnan(X)')*(~isnan(X));  
+        NN = real(~isnan(X)')*real(~isnan(X));  
 end;
 
 %%%%% generate combinations using indices for pairwise calculation of the correlation

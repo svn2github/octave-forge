@@ -1,10 +1,10 @@
-This document describes how to install octave-forge on Mac OS X 10.2 running octave 2.1.40 with a working mkoctfile.
+This document describes how to install octave-forge on Mac OS X 10.2 running octave 2.1.40 and 2.1.45 through 2.1.46 with a working mkoctfile.
 
 If you don't have a working install of octave a short how-to install octave follows next. A more detailed text can be found in extras/MacOSX/doc/.
 
 Install OCTAVE on Mac OS X 10.2.x
 =================================
-1)  Get octave-2.1.40.tar.gz from http://www.octave.org/download.html
+1)  Get octave-2.1.46.tar.gz from http://www.octave.org/download.html
 
 2)  Unpack it and run './configure' _without_ arguments unless you know exactly what you are doing
 
@@ -18,42 +18,22 @@ instead reads:
 
 4) run 'make' followed by 'sudo make install'
 
-5) edit /usr/local/mkoctfile (you need to do e.g. 'sudo emacs /usr/local/mkoctfile' to have write access):
-
-Change the following parameters (lines 35, 39, 40 and 42) to read:
-
-: ${SH_LDFLAGS="-bundle -bundle_loader /usr/local/bin/octave"}
-: ${LIBOCTAVE="-loctave"}
-: ${LIBOCTINTERP="-loctinterp"}
-: ${LIBCRUFT="-lcruft"}
-
-Comment out line 210:
-
-##      strip=true
-
-6) Test the setup by running 'mkoctfile hello.cc' in octave's examples directory.
+5) Test the setup by running 'mkoctfile hello.cc' in octave's examples directory.
 You should get a file hello.oct that can be run in octave
 
 
 Install OCTAVE-FORGE on Mac OS X 10.2.x
 =======================================
-0) The following instructions refer to octave-forge-2002.11.30
+0) The following instructions refer to octave-forge from CVS as of 2003-03-18
 
 1) Preparations
 ---------------
-Read the file extra/MacOSX/README and decide if you want to remove the file NOINSTALL in extra/MacOSX
+Packages can be disabled by adding a file named NOINSTALL to the particular directory.
 
 Add NOINSTALL to extra/linear-algebra ('touch extra/linear-algebra/NOINSTALL')
-Add NOINSTALL to main/audio ('touch main/audio/NOINSTALL')
 Add NOINSTALL to main/sparse ('touch main/sparse/NOINSTALL')
-Add NOINSTALL to main/struct ('touch main/struct/NOINSTALL')
 
 Set PROGS to an empty string in FIXES/Makefile (Can't override builtins on OSX, yet)
-
-Remove strip command in extra/mex/Makefile (line 17):
-    $(STRIP) mex.o # mkoctfile doesn't strip .o files
-
-    NB. that command has been removed in later revisions of the makefile 			
 
 Change the options to cp in octinst.sh to read:
 
@@ -72,7 +52,7 @@ Run 'make' and 'sudo make install'
 ---------------
 Add the paths specified in the install output to your ~/.octaverc file
 
-4) Feedback etc.
+4) Feedback, improvements etc.
 ----------------
 Provide feedback. Just because something compiles and installs it isn't guaranteed to be sane...
 

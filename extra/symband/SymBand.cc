@@ -22,8 +22,10 @@
 #include <octave/parse.h>
 #include <octave/pager.h>
 
-#define max(a,b) (((a)<(b)) ? (b) : (a))
-#define min(a,b) (((a)<(b)) ? (a) : (b))
+inline int max(int a, int b) { return a<b ? b : a; }
+inline int min(int a, int b) { return a<b ? a : b; }
+inline int max(double a, double b) { return a<b ? b : a; }
+inline int min(double a, double b) { return a<b ? a : b; }
 
 //////////////////////////////////////////////////
 

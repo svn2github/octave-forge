@@ -33,7 +33,7 @@ endfunction
 printf("EXAMPLE 1: Numeric gradient");
 x0 = ones(2,1);
 y0 = 2*ones(2,1);
-control = {50,2,1,1};  # maxiters, verbosity, conv. reg., arg_to_min
+control = {-1,2,1,1};  # maxiters, verbosity, conv. reg., arg_to_min
 [theta, obj_value, convergence] = bfgsmin("objective1", {x0, y0}, control);
 printf("\n");
 

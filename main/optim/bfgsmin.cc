@@ -64,7 +64,7 @@ any_bad_argument(const octave_value_list& args)
 
 
 DEFUN_DLD(bfgsmin, args, ,
-	  "bfgsmin: bfgs minimization of a function.\n\
+	  "bfgsmin: bfgs minimization of a function. See bfgsmin-example.m\n\
 \n\
 [x, obj, convergence] = bfgsmin(\"f\", {args}, {control}, {tols})\n\
 \n\
@@ -100,7 +100,7 @@ endfunction\n\
 In this example, x is optimized since it's the first\n\
 element of the cell array, y is a fixed constant = 1\n\
 \n\
-bfgsmin(\"f\", {ones(2,1), 1}, [10,2,1,1])\n\
+bfgsmin(\"f\", {ones(2,1), 1}, {10,2,1,1})\n\
 \n\
 bfgsmin final results: Iteration 1\n\
 Stepsize 0.0000000\n\

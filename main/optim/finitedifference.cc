@@ -18,9 +18,18 @@
 //  finite differences for numeric differentiation
 #include <oct.h>
 #include <float.h>
-DEFUN_DLD(finitedifference, args, ,"finitedifference, C++ version\n\
-differences for numgradient and numhessian")
+DEFUN_DLD(finitedifference, args, ,"finitedifference,\n\
+for internal use by numgradient and numhessian")
 {
+  
+	
+  int nargin = args.length ();
+  if (!(nargin == 2))
+    {
+      error("finitedifference: you must supply exactly 2 arguments");
+      return octave_value_list();
+    }
+	
   double x = args(0).double_value();
   int order = args(1).int_value();
   int test;

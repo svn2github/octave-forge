@@ -96,7 +96,7 @@ ColumnVector lbfgs_recursion(int memory, Matrix& sigmas, Matrix& gammas, ColumnV
 	
 
 DEFUN_DLD(lbfgsmin, args, ,
-	  "lbfgsmin: limited memory bfgs minimization of a function.\n\
+	  "lbfgsmin: limited memory bfgs minimization of a function. See lbfgsmin-example.m\n\
 \n\
 [x, obj, convergence] = lbfgsmin(\"f\", {args}, {control}, {tols}]\n\
 \n\
@@ -132,7 +132,7 @@ endfunction\n\
 In this example, x is optimized since it's the first\n\
 element of the cell array, y is a fixed constant = 1\n\
 \n\
-lbfgsmin(\"f\", {ones(2,1), 1}, [10,2,1,1])\n\
+lbfgsmin(\"f\", {ones(2,1), 1}, {10,2,1,1})\n\
 \n\
 bfgsmin final results: Iteration 1\n\
 Stepsize 0.0000000\n\

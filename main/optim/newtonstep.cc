@@ -28,8 +28,24 @@
 #include <octave/lo-ieee.h>
 #include <float.h>
 
-DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
+DEFUN_DLD(newtonstep, args, , "newtonstep.cc - for internal use by bfgsmin and related functions")
 {
+  
+	
+  int nargin = args.length ();
+  if (nargin < 3)
+    {
+      error("newtonstep: you must supply at least 3 arguments");
+      return octave_value_list();
+    }
+	
+  if (nargin > 4)
+    {
+      error("bisectionstep: you must supply at most 4 arguments");
+      return octave_value_list();
+    }
+
+	
   std::string f (args(0).string_value());
   Cell f_args (args(1).cell_value());
   Matrix dx (args(2).matrix_value());

@@ -177,6 +177,10 @@ dnl should check that $(OCTAVE) --version matches $(MKOCTFILE) --version
 AC_CHECK_PROG(OCTAVE,octave,octave)
 OCTAVE_VERSION=`echo "disp(OCTAVE_VERSION)" | $OCTAVE -q`
 
+dnl grab canonical host type so we can write system specific install stuff
+canonical_host_type=`echo "disp(octave_config_info('canonical_host_type'))" | $OCTAVE -q`
+AC_SUBST(canonical_host_type)
+
 AC_PROG_LN_S
 AC_PROG_INSTALL
 AC_PROG_RANLIB

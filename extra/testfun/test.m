@@ -512,10 +512,10 @@ endfunction
 %!test
 %! A = [1, 2, 3; 4, 5, 6]; 
 %! B = [1, -1; 2, -2];
-%!assert (size (kron (zeros (3, 0), A)), [ 3*rows (A), 0 ])
-%!assert (size (kron (zeros (0, 3), A)), [ 0, 3*columns (A) ])
-%!assert (size (kron (A, zeros (3, 0))), [ 3*rows (A), 0 ])
-%!assert (size (kron (A, zeros (0, 3))), [ 0, 3*columns (A) ])
+%!assert (size (kron (zeros (3, 0), A)), [ 3*rows(A), 0 ])
+%!assert (size (kron (zeros (0, 3), A)), [ 0, 3*columns(A) ])
+%!assert (size (kron (A, zeros (3, 0))), [ 3*rows(A), 0 ])
+%!assert (size (kron (A, zeros (0, 3))), [ 0, 3*columns(A) ])
 %!assert (kron (pi, e), pi*e)
 %!assert (kron (pi, A), pi*A) 
 %!assert (kron (A, e), e*A)

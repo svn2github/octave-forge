@@ -14,9 +14,8 @@ Some functions in octave-forge depend on external libraries:
      then see http://www.ginac.de for instructions for installing
      GiNaC, cln and gmp.
 
-   * sparse matrices need SuperLU.  A modified version of SuperLU is 
-     included in octave-forge/main/sparse.  This will be built 
-     automatically when you build octave-forge.
+   * GNU Scientific Library functions need GSL.  Download and install
+     as per the instructions in the GSL library.
 
 =======================================================================
 Simple user installation
@@ -30,7 +29,7 @@ explanations, see the end of this file.  Remove NOINSTALL for each
 one that you do indeed want to install.
 
 $ ./configure --with-path=$HOME/octave-forge --prefix=$HOME
-$ make
+$ make -k
 $ make check
 $ make icheck
 $ make install
@@ -65,7 +64,7 @@ explanations, see the end of this file.  Remove NOINSTALL for each
 one that you do indeed want to install.
 
 $ ./configure
-$ make
+$ make -k
 $ make check
 $ make icheck
 $ su
@@ -114,10 +113,10 @@ Environment variables:
     or if you are not using the borne shell
 	$ env var1=val1 var2=val2 ... ./configure
 
-
+    OCTAVE=...
     MKOCTFILE=...
 	Override the default mkoctfile used to build oct-files.  Normally
-	you will not need to specify it, but if you are maintaining
+	you will not need to specify them, but if you are maintaining
 	separate versions of Octave on your system (e.g., a patched
 	version in addition to the normal version, or version 2.0 in
 	addition to version 2.1), you will need to specify which version
@@ -193,10 +192,14 @@ Configure options:
 
 Make targets:
 
-    make 
-	Build the supporting executables and the oct-files
+    make -k
+	Build the supporting executables and the oct-files.  The
+	option -k ignores functions which will not build.  Obviously
+	these functions won't be available, but most of the rest of
+	the package will work.  Make check will indicate problems.
     make check
-	Check that the functions in the repository work as expected
+	Check that the functions in the repository work as expected.
+	Some functions don't.  Please send patches.
     make icheck
 	Demonstrate that the interactive functions work
     make clean

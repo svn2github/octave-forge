@@ -1,4 +1,4 @@
-function [o,count] = sumskipnan(i,DIM)
+function [o,count,o2,o3] = sumskipnan(i,DIM)
 % Sum of elements. This function overcomes the default behavior of 
 % SUM that NaN's in the input result in missing output values. 
 %
@@ -16,7 +16,7 @@ function [o,count] = sumskipnan(i,DIM)
 % it might not be supported in future. FLAG_IMPLICIT_SKIP_NAN(1) sets the mode back. 
 %
 % Y = sumskipnan(x [,DIM])
-% [Y,N] = sumskipnan(x [,DIM])
+% [Y,N,SSQ,S4M] = sumskipnan(x [,DIM])
 % 
 % DIM	dimension
 %	1 sum of columns
@@ -25,7 +25,9 @@ function [o,count] = sumskipnan(i,DIM)
 %
 % Y	resulting sum
 % N	number of valid (not missing) elements
-% 
+% SSQ	sum of squares
+% S4M	sum of fourth raw moment
+%
 % features:
 % - can deal with NaN's (missing values)
 % - implements dimension argument. 
@@ -34,6 +36,10 @@ function [o,count] = sumskipnan(i,DIM)
 %
 % see also: FLAG_IMPLICIT_SKIP_NAN, SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
 %      SSQ, MOMENT, SKEWNESS, KURTOSIS
+%
+% REFERENCES: 
+% http://mathworld.wolfram.com/RawMoment.html
+
 
 
 %    This program is free software; you can redistribute it and/or modify
@@ -101,6 +107,13 @@ if exist('OCTAVE_VERSION') >= 5,
 		% the following command implements NaN-In -> NaN-Out
 		o(count<size(i,DIM)) = NaN;         
 	end;	
+        if nargout>2,
+                i=i.^2;
+                o2 = sumskipnan(i,DIM);
+                if nargout>3,
+                        o3 = sumskipnan(i.^2,DIM);
+                end;        
+        end
 else 
 	% an efficient implementation in C of the following lines 
         % could significantly increase performance 
@@ -111,6 +124,9 @@ else
         % 	if ~isnan(i(k)) 
         % 	{ 	o     += i(k);
         %               count += 1;
+        %		tmp    = i(k)*i(k)
+        %		o2    += tmp;
+        %		o3    += tmp.*tmp;
         %       }; 
 
 	if nargout>1
@@ -120,5 +136,12 @@ else
                 i(isnan(i)) = 0;
         end;
         o = sum(i,DIM);
+        if nargout>2,
+                i=i.^2;
+	        o2 = sum(i,DIM);
+	        if nargout>3
+		        o3 = sum(i.^2,DIM);
+                end;
+        end;
 end;
 

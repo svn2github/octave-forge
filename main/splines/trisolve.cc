@@ -41,7 +41,7 @@ Solves the symmetric positive definite tridiagonal system:\n\
   |  0 e2 d3  . . .  0    0 | x = | b31 b22 . . . b3k |\n\
   |           . . .         |     |         . . .     |\n\
   \\  0  0  0  . . . en-1 dn /     \\ bn1 bn2 . . . bnk /\n\n\
-If the system is not positive definite, then use the following form.\n\n
+If the system is not positive definite, then use the following form.\n\n\
 x = trisolve(l,d,u,b)\n\n\
 Solves the tridiagonal system:\n\
   / d1 u1  0  . . .  0    0 \\     / b11 b12 . . . b1k \\\n\
@@ -56,7 +56,7 @@ Solves the cyclic system with symmetric positive definite tridiagonal:\n\
   |  0 e2 d3  . . .  0    0 | x = | b31 b22 . . . b3k |\n\
   |           . . .         |     |         . . .     |\n\
   \\ cl  0  0  . . . en-1 dn /     \\ bn1 bn2 . . . bnk /\n\n\
-If the system is not positive definite, then use the following form.\n\n
+If the system is not positive definite, then use the following form.\n\n\
 x = trisolve(l,d,u,b,cl,cu)\n\n\
 Solves the cyclic tridiagonal system:\n\
   / d1 u1  0  . . .  0   cu \\     / b11 b12 . . . b1k \\\n\

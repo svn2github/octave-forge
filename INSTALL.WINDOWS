@@ -1,11 +1,18 @@
-BUILDING octave-2.1.39 for cygwin
+BUILDING octave-2.1.42 for cygwin
 
 This is a description of how I got 
-octave-2.1.39 and gnuplot-3.7.1
+octave-2.1.42 and gnuplot-3.7.1
 and octave-forge to build under win2000.
 
-I have made a cygwin tar.bz2 package
-to download of this.
+This description is for a static build. As
+of version 2.1.42, octave
+can now be built dynamically under cygwin,
+so these instructions are of less value.
+
+However, the static build still takes up significantly
+less space, as cygwin octave *oct files are still
+very big, so this technique is still appropriate to 
+obtain a minimal footprint octave.
 
 Andy Adler <adler@ncf.ca>
 
@@ -66,10 +73,10 @@ PREREQUISITES:
 
 BUILDING
 
-   Download octave-2.1.39.tar.bz2 from www.octave.org
-   tar xvfj octave-2.1.39.tar.bz2
-   cd  octave-2.1.39
-   ./configure --prefix=/usr --enable-static=no --enable-shared --enable-dl
+   Download octave-2.1.42.tar.bz2 from www.octave.org
+   tar xvfj octave-2.1.42.tar.bz2
+   cd  octave-2.1.42
+   ./configure --prefix=/usr --enable-static=yes
 
 OBTAIN GNUPLOT COMPONENTS
 
@@ -96,11 +103,7 @@ $ cat /usr/share/octave/site/m/startup/octaverc
    ## time Octave starts for every user at this site.
    
    # find where cygwin is mounted
-   mount_path= system('echo -n `cygpath -ws /tmp`');
-   mount_path( findstr(mount_path,"\\") ) = "/";
-   putenv('TMPDIR',  mount_path );
-   
-   clear mount_path;
+   putenv('TMPDIR', system('echo -n `cygpath -wsm /tmp`') );
    
    gnuplot_binary ="pgnuplot.exe";
    gnuplot_has_multiplot = 1;
@@ -129,7 +132,7 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 
 THESE LINES
 
-all: octave
+all: octave$(EXEEXT)
 
 OCTAVEFORGE= /usr/src/octave-forge/
 SPARSE  = $(OCTAVEFORGE)/main/sparse/
@@ -149,34 +152,33 @@ $(SPLINES_OBJ): %.o: %.f
 
 C. REPLACE
 
-octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
-        octave.o builtins.o ops.o $(DLD_STATIC_OBJ)
-        $(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
-        $(ALL_LDFLAGS) -o octave \
-        octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
-        $(OCTAVE_LFLAGS) \
-        $(OCTAVE_LIBS) \
-        $(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
+	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+	$(ALL_LDFLAGS) -o $@ \
+	main.o $(XERBLA) $(DLD_STATIC_OBJ) \
+	$(OCTAVE_LFLAGS) \
+	$(OCTAVE_LIBS) \
+	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 WITH
 
-octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
-	octave.o builtins.o ops.o $(DLD_STATIC_OBJ) \
+octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ) \
         $(SPARSE)/libsuperlu.a $(SPLINES_OBJ)   
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
-	$(ALL_LDFLAGS) -o octave \
-	octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
+	$(ALL_LDFLAGS) -o $@ \
+	main.o $(XERBLA) $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
 	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS) \
         -L$(SPARSE) -lsuperlu -ljpeg $(SPLINES_OBJ) 
+
 
 2. CREATE LINKS
 
 cd /usr/src
 cvs -d :pserver:anonymous@cvs.octave.sf.net:/cvsroot/octave checkout
 OCTAVEFORGE=/usr/src/octave-forge
-cd /usr/src/octave-2.1.36/src
+cd /usr/src/octave-2.1.42/src
 mkdir octave
 cd octave
 ln -s ../../config.h
@@ -189,6 +191,7 @@ ln -s ../../liboctave/lo-ieee.h
 ln -s ../../liboctave/lo-mappers.h
 ln -s ../../liboctave/lo-utils.h
 ln -s ../../liboctave/mx-base.h
+ln -s ../../liboctave/Matrix.h 
 ln -s ../oct-obj.h
 ln -s ../oct.h
 ln -s ../ops.h
@@ -203,6 +206,8 @@ ln -s ../ov.h
 ln -s ../pager.h
 ln -s ../parse.h
 ln -s ../pr-output.h
+ln -s ../pt-plot.h
+ln -s ../../libcruft/misc/quit.h
 ln -s ../../liboctave/str-vec.h
 ln -s ../symtab.h
 ln -s ../toplev.h
@@ -214,23 +219,36 @@ ln -s ../oct-strstrm.h
 ln -s ../../liboctave/CmplxSCHUR.h
 ln -s ../../liboctave/dbleSCHUR.h
 cd ../DLD-FUNCTIONS
-ln -s $OCTAVEFORGE/main/linear-algebra/GramSchmidt.cc
 ln -s $OCTAVEFORGE/main/general/bitand.cc
-ln -s $OCTAVEFORGE/main/general/command.cc
+ln -s $OCTAVEFORGE/main/general/mark_for_deletion.cc
 ln -s $OCTAVEFORGE/main/general/SHA1.cc
 ln -s $OCTAVEFORGE/main/general/deref.cc
-ln -s $OCTAVEFORGE/main/sparse/complex_sparse_ops.cc
+ln -s $OCTAVEFORGE/main/linear-algebra/GramSchmidt.cc
+ln -s $OCTAVEFORGE/main/linear-algebra/rsf2csf.cc
+ln -s $OCTAVEFORGE/main/Miscellaneous/waitbar.cc
 ln -s $OCTAVEFORGE/main/image/conv2.cc
 ln -s $OCTAVEFORGE/main/image/cordflt2.cc
 ln -s $OCTAVEFORGE/main/image/bwfill.cc
+ln -s $OCTAVEFORGE/main/image/bwlabel.cc
 ln -s $OCTAVEFORGE/main/image/jpgread.cc
 ln -s $OCTAVEFORGE/main/image/jpgwrite.cc
-ln -s $OCTAVEFORGE/main/specfun/ellipj.cc
 ln -s $OCTAVEFORGE/main/optim/leval.cc
 ln -s $OCTAVEFORGE/main/optim/lp.cc
+ln -s $OCTAVEFORGE/main/specfun/ellipj.cc
+ln -s $OCTAVEFORGE/main/sparse/complex_sparse_ops.cc
 ln -s $OCTAVEFORGE/main/sparse/make_sparse.cc
 ln -s $OCTAVEFORGE/main/sparse/make_sparse.h
+ln -s $OCTAVEFORGE/main/sparse/sparse_full.cc
+ln -s $OCTAVEFORGE/main/sparse/sparse_inv.cc
+ln -s $OCTAVEFORGE/main/sparse/sparse_ops.cc
+ln -s $OCTAVEFORGE/main/sparse/sparse_ops.h
 ln -s $OCTAVEFORGE/main/signal/medfilt1.cc
+ln -s $OCTAVEFORGE/main/signal/remez.cc
+ln -s $OCTAVEFORGE/main/splines/pchip_deriv.cc
+ln -s $OCTAVEFORGE/main/splines/trisolve.cc
+ln -s $OCTAVEFORGE/main/strings/regexp.cc
+ln -s $OCTAVEFORGE/main/struct/getfield.cc
+ln -s $OCTAVEFORGE/main/struct/setfield.cc
 ln -s $OCTAVEFORGE/extra/linear-algebra/ov-re-tri.cc
 ln -s $OCTAVEFORGE/extra/linear-algebra/ov-re-tri.h
 ln -s $OCTAVEFORGE/extra/testfun/pretty.cc
@@ -238,23 +256,17 @@ ln -s $OCTAVEFORGE/extra/symband/SymBand.cc
 rm rand.cc
 ln -s $OCTAVEFORGE/FIXES/rand.cc
 ln -s $OCTAVEFORGE/FIXES/MersenneTwister.h
-rm fsolve.cc
-ln -s $OCTAVEFORGE/FIXES/fsolve.cc
+# rm fsolve.cc # fsolve hasn't been fixed for 2.1.42
+# ln -s $OCTAVEFORGE/FIXES/fsolve.cc
 rm log.cc
 ln -s $OCTAVEFORGE/FIXES/logm.cc
 ln -s $OCTAVEFORGE/FIXES/sqrtm.cc
-ln -s $OCTAVEFORGE/main/signal/remez.cc
-ln -s $OCTAVEFORGE/main/strings/regexp.cc
-ln -s $OCTAVEFORGE/main/struct/getfield.cc
-ln -s $OCTAVEFORGE/main/struct/setfield.cc
-ln -s $OCTAVEFORGE/main/linear-algebra/rsf2csf.cc
-ln -s $OCTAVEFORGE/main/sparse/sparse_full.cc
-ln -s $OCTAVEFORGE/main/sparse/sparse_inv.cc
-ln -s $OCTAVEFORGE/main/sparse/sparse_ops.cc
-ln -s $OCTAVEFORGE/main/sparse/sparse_ops.h
-ln -s $OCTAVEFORGE/main/splines/trisolve.cc
+#ln -s $OCTAVEFORGE/extra/mex/mex.cc
 ln -s $OCTAVEFORGE/extra/Windows/grab.cc
 ln -s $OCTAVEFORGE/extra/Windows/grab_win32part.cc
+ln -s $OCTAVEFORGE/extra/Windows/win32api.cc
+ln -s $OCTAVEFORGE/extra/Windows/win32api_win32part.cc
+
 
 3. BUID ATLAS INTO OCTAVE
 
@@ -266,7 +278,7 @@ ln -s $OCTAVEFORGE/extra/Windows/grab_win32part.cc
     #### ANSWER LOTS OF QUESTIONS
     make install arch=WinNT_P4SSE1
 
-    cd /usr/src/octave-2.1.39
+    cd /usr/src/octave-2.1.42
     cd libcruft/
     mkdir tmp
     cd tmp
@@ -281,7 +293,7 @@ ln -s $OCTAVEFORGE/extra/Windows/grab_win32part.cc
 
 4. BUILD / INSTALL OCTAVE
 
-cd /usr/src/octave-2.1.39
+cd /usr/src/octave-2.1.42
 make install
 #make install-strip - doesn't work for some octave subdirectories
 strip /usr/bin/octave*
@@ -290,7 +302,7 @@ find /usr/share/octave -type f | xargs strip
 
 4. COPY *.M FILES INTO PLACE
 
-OCTAVEM=/usr/share/octave/2.1.36/m/
+OCTAVEM=/usr/share/octave/2.1.42/m/
 mkdir -p  $OCTAVEM/image
 mkdir -p  $OCTAVEM/integration
 mkdir -p  $OCTAVEM/ode
@@ -345,9 +357,16 @@ cp -r $OCTAVEFORGE/main/strings/*.m  $OCTAVEM/strings
 cp -r $OCTAVEFORGE/main/struct/*.m  $OCTAVEM/struct
 cp -r $OCTAVEFORGE/main/time/*.m  $OCTAVEM/time
 
+ADD EPSTK
+
+Download epstk files from www.epstk.de.
+Unpack files to /usr/share/octave/site/m/epstk
+
+Modify einit.m to take current binary for gswin
+
 GENERATE CYGWIN PACKAGE
 
-VER=2.1.39
+VER=2.1.42
 tar cvfj octave-$VER-gnuplot-octaveforge.tar.bz2 \
          /usr/bin/octave \
          /usr/bin/octave-$VER* \

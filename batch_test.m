@@ -24,6 +24,11 @@ disp("[main/comm]");
 disp(">comms");
 try comms("test"); 
 catch disp([__error_text__,"\nNote: failure expected for octave 2.1.36"]); end
+
+disp("[main/fixed]");
+disp(">fixed");
+try fixedpoint("test"); 
+catch disp([__error_text__,"\nNote: failure expected for octave 2.1.36"]); end
  
 disp("[main/image]");
 testimio

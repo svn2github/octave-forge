@@ -39,8 +39,8 @@ function [AutoCov,AutoCorr,ARPMX,E,C,s]=invest1(Y,Pmax,D);
 % optPHI 	order where PHI is minimal
 % optRC2        max reflection coefficient larger than std-error
 
-%       Version 2.90
-%       15.04.2002
+%       Version 2.99
+%       10.05.2002
 %	Copyright (c) 1998-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -70,10 +70,10 @@ if exist('OCTAVE_VERSION'),
         %%% missing DIM-argument in DIFF.M    
 else
         %tmp=Y-mean(Y,2)*ones(1,nc);
-        RMS(:,1) = rms(Y,2);
+        RMS(:,1) = mean(Y.^2,2);
         Dmax = min(Pmax,5);
         for k = 1:Dmax,
-                RMS(:,k+1) = rms(diff(Y,k,2),2);
+                RMS(:,k+1) = mean(diff(Y,k,2).^2,2);
         end;
         [tmp, orderDIFF] = min(RMS,[],2);
         

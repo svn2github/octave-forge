@@ -1,7 +1,4 @@
 ## Copyright (C) 2003  Rafael Laboissiere
-## Modified: Joao Cardoso
-## Modified to work with Grace: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
-## Created on: Sun Oct 18 22:03:10 CEST 1998
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -12,6 +9,10 @@
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
+##
+## Modified: Joao Cardoso
+## Modified to work with Grace: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+## Created on: Sun Oct 18 22:03:10 CEST 1998
 
 ## usage: toggle_grace_use
 ##

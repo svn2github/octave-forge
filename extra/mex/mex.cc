@@ -1,5 +1,6 @@
-// Author: Paul Kienzle, 2001-03-22
+// Author: Paul Kienzle
 // I grant this code to the public domain.
+// 2001-03-22
 //
 // THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE

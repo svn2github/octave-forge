@@ -27,7 +27,7 @@
 ## mode.
 ## @end deftypefn
 
-## Author: Vinayak Dutt, Dutt.Vinayak@mayo.EDU
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95
 ## Adapted-By: jwe
 ## Modified to work with Grace by Teemu Ikonen <tpikonen@pcu.helsinki.fi> 

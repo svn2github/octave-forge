@@ -1,4 +1,4 @@
-## Copyright (C) 2001 Rolf Fabian, Paul Kienzle
+## Copyright (C) 2001 Rolf Fabian and Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

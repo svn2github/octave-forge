@@ -65,6 +65,8 @@
 ## TODO: use the current figure window but pause if not plotting in the
 ## TODO: first subplot.
 
+## PKG_ADD: mark_as_command demo
+
 function demo(name, n)
 
   if (nargin < 1 || nargin > 2)

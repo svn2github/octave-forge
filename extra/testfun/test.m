@@ -183,6 +183,8 @@
 ## TODO: recover and won't help if we have multiple tests in the same
 ## TODO: block.
 
+## PKG_ADD: mark_as_command test
+
 function [__ret1, __ret2] = test (__name, __flag, __fid)
   if (nargin < 2 || isempty(__flag))
     __flag = 'normal';

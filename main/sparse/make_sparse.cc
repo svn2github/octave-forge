@@ -37,14 +37,19 @@ $Id$
 
 void *
 oct_sparse_malloc(int size) {
+   void *ret;
+
    // avoid zero byte alloc requests, request a minimum of
    // 1 byte - this is ok becuause free should handle it
    size= MAX(size,1);
 #ifdef USE_DMALLOC   
-   return _malloc_leap(__FILE__, __LINE__, size);
+   ret = _malloc_leap(__FILE__, __LINE__, size);
 #else   
-   return malloc( MAX(size,1) );
+   ret = malloc( MAX(size,1) );
 #endif   
+   // XXX FIXME XXX should be returning null so that the caller can
+   // free temporaries allocated on the heap!
+   if (ret == NULL) octave_throw_bad_alloc ();
 #if 0   
    void * vp= malloc( size );
    printf ("allocated %04X : %d\n", (int) vp, size);
@@ -96,8 +101,8 @@ oct_sparse_expand_bounds( int lim, int& bound,
    bound*= mem_expand;
    int *   t_idx = (int  *) oct_sparse_malloc((bound) * sizeof(int)); 
    void * t_coef = (void *) oct_sparse_malloc((bound) * varsize    ); 
-   if ((t_idx==NULL) || (t_coef == NULL) ) 
-      SP_FATAL_ERR("memory error in check_bounds");
+   // XXX FIXME XXX currently oct_sparse_malloc throws an error, but
+   // eventually we are going to need to test for NULL and act appropriately.
  
    memcpy( t_idx , idx , lim*sizeof(int) );
    memcpy( t_coef, coef, lim*varsize     );
@@ -299,8 +304,10 @@ signal( SIGSEGV, SIG_DFL );
 	 int nnz = MAX(ni,nj);
 	 if ( ( ns != 1 && ns != nnz ) ||
               ( ni != 1 && ni != nnz ) ||
-              ( nj != 1 && nj != nnz ) )
-	    SP_FATAL_ERR ("i, j and s must have the same length");
+              ( nj != 1 && nj != nnz ) ) {
+	   error ("sparse i, j and s must have the same length");
+	   return retval;
+	 }
 
          if (nargin == 3) {
             m= (int) ridxA.max();
@@ -323,8 +330,10 @@ signal( SIGSEGV, SIG_DFL );
                   else
                   if ( vv== "unique" )
                      assemble_do_sum=0;
-                  else
-                     SP_FATAL_ERR("must specify sum or unique");
+                  else {
+                     error("sparse repeat flag must be 'sum' or 'unique'");
+		     return retval;
+		  }
                }
 
             }
@@ -456,6 +465,12 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 
 /*
  * $Log$
+ * Revision 1.16  2003/12/22 15:13:23  pkienzle
+ * Use error/return rather than SP_FATAL_ERROR where possible.
+ *
+ * Test for zero elements from scalar multiply/power and shrink sparse
+ * accordingly; accomodate libstdc++ bugs with mixed real/complex power.
+ *
  * Revision 1.15  2003/12/12 14:35:25  pkienzle
  * Lock functions in that shouldn't be cleared
  *

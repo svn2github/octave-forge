@@ -19,6 +19,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.11  2003/12/22 15:13:23  pkienzle
+Use error/return rather than SP_FATAL_ERROR where possible.
+
+Test for zero elements from scalar multiply/power and shrink sparse
+accordingly; accomodate libstdc++ bugs with mixed real/complex power.
+
 Revision 1.10  2003/10/13 03:44:26  aadler
 check for out of bounds in allocation
 
@@ -279,11 +285,14 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    int actual_nnz=0; \
    OCTAVE_QUIT; \
    for (int i=0; i<nnz; i++) { \
-      if ( coefA(i) != 0. || cf_scalar ) { \
-         double rowidx=  ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1; \
-         if (rowidx >= m) SP_FATAL_ERR("sparse: row index out of range"); \
-         double colidx=  ( ci_scalar ? cidxA(0) : cidxA(i) ) - 1;  \
-         if (colidx >= n) SP_FATAL_ERR("sparse: col index out of range"); \
+      double rowidx=  ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1; \
+      double colidx=  ( ci_scalar ? cidxA(0) : cidxA(i) ) - 1;  \
+      if (rowidx >= m || rowidx < 0) \
+         error("sparse row index out of range"); \
+      else if (colidx >= n || colidx < 0) \
+         error("sparse column index out of range"); \
+      if (error_state) { actual_nnz=0; break; } \
+      if ( coefA(cf_scalar?0:i) != 0. ) { \
          sidx[actual_nnz].val = (long) ( rowidx + m*colidx ); \
          sidx[actual_nnz].idx = i; \
          actual_nnz++; \
@@ -323,6 +332,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    OCTAVE_QUIT; \
    SuperMatrix X= create_SuperMatrix( m, n, ii+1, coefX, ridxX, cidxX ); \
    oct_sparse_free( sidx );
+
 
 // assemble a sparse matrix from full
 //   called by one arg for sparse

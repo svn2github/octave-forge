@@ -19,6 +19,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.21  2003/12/22 15:13:23  pkienzle
+Use error/return rather than SP_FATAL_ERROR where possible.
+
+Test for zero elements from scalar multiply/power and shrink sparse
+accordingly; accomodate libstdc++ bugs with mixed real/complex power.
+
 Revision 1.20  2003/11/23 14:21:39  adb014
 Octave CVS now requires void constructors for register_type
 
@@ -126,9 +132,8 @@ DLD functions for sparse support in octave
 #endif
 
 // This is not the right error to thow
-#define SP_FATAL_ERR(str) do { error("sparse: %s\n" \
-    "(NOTE: you may ignore following memory error)", str); \
-    octave_throw_bad_alloc(); } while (0)
+#define SP_FATAL_ERR(str) do { error("sparse: %s",str); \
+	octave_throw_interrupt_exception(); } while (0)
 
 // The SuperLU includes need to be first,
 // otherwise the cygwin build breaks!

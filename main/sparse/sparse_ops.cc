@@ -324,8 +324,10 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
       long ii  = ixp[k].val;
       long kout= ixp[k].idx;
 
-      if ( ii<0 || ii>=Xnr*Xnc) 
-         SP_FATAL_ERR("invalid matrix index");
+      if ( ii<0 || ii>=Xnr*Xnc) {
+         error("sparse index out of range");
+	 return O;
+      }
  
       int rown= ii/Xnr;
       if ( rown > ip/Xnr ) { // we've moved to a new column
@@ -346,7 +348,7 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
 } // sparse_index_oneidx (
 
 
-static SuperMatrix
+static octave_value
 sparse_index_twoidx ( SuperMatrix X,
                       const idx_vector ix,
                       const idx_vector jx) {
@@ -380,8 +382,11 @@ sparse_index_twoidx ( SuperMatrix X,
       if (jx.is_colon() )    ll= l;
       else                   ll= jx(l);
 
-      if ( ll<0 || ll>=Xnc) 
-            SP_FATAL_ERR("invalid matrix index (x index)");
+      if ( ll<0 || ll>=Xnc) {
+	 // XXX FIXME XXX memory leak coefB,cidxB,ridxB
+	 error("sparse column index out of range");
+	 return octave_value();
+      }
 
       int jl= cidxX[ll];
       int jj= cidxX[ll+1];
@@ -390,8 +395,11 @@ sparse_index_twoidx ( SuperMatrix X,
          long ii  = ixp[k].val;
          long kout= ixp[k].idx;
    
-         if ( ii<0 || ii>=Xnr) 
-            SP_FATAL_ERR("invalid matrix index (x index)");
+         if ( ii<0 || ii>=Xnr) {
+	    // XXX FIXME XXX memory leak coefB,cidxB,ridxB
+            error("sparse row index out of range");
+	    return octave_value();
+	 }
 
          while ( jl < jj && ridxX[jl] < ii ) jl++;
 
@@ -418,7 +426,7 @@ sparse_index_twoidx ( SuperMatrix X,
    maybe_shrink( cx, nnz, ridxB, coefB );
 
    SuperMatrix B= create_SuperMatrix( ixl, jxl, cx, coefB, ridxB, cidxB );
-   return B;                          
+   return octave_value(new octave_sparse (B));
 } // sparse_index_twoidx (
 
 octave_value_list
@@ -473,10 +481,9 @@ octave_sparse::do_index_op ( const octave_value_list& idx, int)
       const idx_vector ix = idx (0).index_vector ();
       const idx_vector jx = idx (1).index_vector ();
 
-      retval= new octave_sparse ( 
-                  sparse_index_twoidx ( X, ix, jx ));
+      retval= sparse_index_twoidx ( X, ix, jx );
    } else
-      SP_FATAL_ERR("need 1 or 2 indices for sparse indexing operations");
+      error("need 1 or 2 indices for sparse indexing operations");
 
    return retval;
 } // octave_sparse::do_index_op
@@ -563,20 +570,26 @@ sparse_scalar_multiply (const octave_sparse& spar,
 
   SuperMatrix X= spar.super_matrix();
   DEFINE_SP_POINTERS_REAL( X )
-  int nnz= NCFX->nnz;
+  int source_nnz= NCFX->nnz;
 
-  double *coefB = doubleMalloc(nnz);
-  int *   ridxB = intMalloc(nnz);
+  double *coefB = doubleMalloc(source_nnz);
+  int *   ridxB = intMalloc(source_nnz);
   int *   cidxB = intMalloc(X.ncol+1);
 
-  for ( int i=0; i<=Xnc; i++)
-     cidxB[i]=  cidxX[i];
-
-  for ( int i=0; i< nnz; i++) {
-     coefB[i]=  coefX[i] * s;
-     ridxB[i]=  ridxX[i];
+  int nnz=0;
+  int col=0;
+  for ( int i=0; i< source_nnz; i++) {
+     // Use volatile comparison to force zero
+     volatile double v= coefX[i] * s;
+     if (v==0.) continue;
+     coefB[nnz]= v;
+     ridxB[nnz]= ridxX[i];
+     while(i>=cidxX[col]) cidxB[col++] = nnz;
+     nnz++;
   }
 
+  while(col <= Xnc) cidxB[col++] = nnz;
+  maybe_shrink( source_nnz, nnz, ridxX, coefX );
   SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
   return new octave_sparse ( B );
 }
@@ -615,49 +628,65 @@ DEFBINOP (s_n_pow, sparse, scalar) {
 
   SuperMatrix X= v1.super_matrix();
   DEFINE_SP_POINTERS_REAL( X )
-  int nnz= NCFX->nnz;
+  int source_nnz= NCFX->nnz;
 
-  double *coefB = doubleMalloc(nnz);
-  int *   ridxB = intMalloc(nnz);
+  double *coefB = doubleMalloc(source_nnz);
+  int *   ridxB = intMalloc(source_nnz);
   int *   cidxB = intMalloc(X.ncol+1);
-  int found_a_negative_value= 0;
-  int scalar_isnot_integer= ( s != (int) s );
+  bool power_isnot_integer= ( s != (int) s );
 
-  for ( int i=0; i<=Xnc; i++)
-     cidxB[i]=  cidxX[i];
-
-  int idx;
-  for ( idx=0; idx< nnz; idx++) {
-     double val= coefX[idx];
-     if (scalar_isnot_integer && val<0) {
-         found_a_negative_value=1;
-         break;
-     }
-     coefB[idx]=  std::pow( val , s);
-     ridxB[idx]=  ridxX[idx];
+  int nnz=0;
+  int col=0;
+  int idx=0;
+  for ( idx=0; idx< source_nnz; idx++) {
+     if (power_isnot_integer && coefX[idx]<0) break;
+     // Use volatile comparison to force zero
+     volatile double v = std::pow( coefX[idx] , s);
+     if (v==0.) continue;
+     coefB[nnz]= v;
+     ridxB[nnz]= ridxX[idx];
+     while(idx>=cidxX[col]) cidxB[col++] = nnz;
+     nnz++;
   }
 
-  if (!found_a_negative_value) {
-      SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
-      return new octave_sparse ( B );
+  if (idx == source_nnz) { // successful processed all indices without breaking
+     while(col <= Xnc) cidxB[col++] = nnz;
+     maybe_shrink( source_nnz, nnz, ridxX, coefX );
+     SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefB, ridxB, cidxB );
+     return new octave_sparse ( B );
   }
   
   // since the matrix has negative values, the output is
   // complex. Copy what's been done to a complex, and
   // then continue with complex output
 
-  Complex *coefBc = new_SuperLU_Complex(nnz);
-  for (int i=0; i< idx; i++) {
+  Complex *coefBc = new_SuperLU_Complex(source_nnz);
+  for (int i=0; i< nnz; i++) {
      coefBc[i]=  coefB[i];
   }
   oct_sparse_free( coefB);
 
-  for (int i=idx; i< nnz; i++) {
-     Complex val= coefX[i];
-     coefBc[i]=  std::pow( val , s);
-     ridxB[i]=  ridxX[i];
+  for (int i=idx; i< source_nnz; i++) {
+     // Use volatile comparison to force zero
+     if (coefX[i] < 0) {
+        // Note: force both args to Complex to avoid broken libstdc++
+        coefBc[nnz] = std::pow( Complex(coefX[i],0) , Complex(s,0));
+        volatile double re = coefBc[nnz].real();
+        volatile double im = coefBc[nnz].imag();
+        if (re==0. && im==0.) continue;
+     }
+     else {
+        volatile double v = std::pow( coefX[i], s);
+	if (v==0.) continue;
+        coefBc[nnz] = v;
+     }
+     ridxB[nnz] = ridxX[i];
+     while(i>=cidxX[col]) cidxB[col++] = nnz;
+     nnz++;
   }
 
+  while(col <= Xnc) cidxB[col++] = nnz;
+  maybe_shrink( source_nnz, nnz, ridxX, coefX );
   SuperMatrix B= create_SuperMatrix( Xnr, Xnc, nnz, coefBc, ridxB, cidxB );
   return new octave_complex_sparse ( B );
 }  
@@ -951,10 +980,10 @@ void oct_sparse_do_permc( int permc_spec, int perm_c[],
    int Anc= A.ncol;
 
    if ( permc_spec < 0 ) {
-      SP_FATAL_ERR("sparse solve: haven't implemented user specified permc");
-//    perm_c = perm_c_in;
+      warning("sparse solve: haven't implemented user specified permc");
+      permc_spec = 0;
    } 
-   else {
+
 //
 // KLUDGE: get_perm_c breaks (ie segfaults) if the Matrix is not
 // sufficiently sparse. It seems that this is when nnz > 0.4*(m*n)
@@ -969,15 +998,14 @@ void oct_sparse_do_permc( int permc_spec, int perm_c[],
   (double) ((NCformat *) A.Store)->nnz / (Anc*Anr) );
 #endif // VERBOSE   
 
-      if ( ((NCformat *) A.Store)->nnz >= 0.40*(Anc*Anr) )  {
-         for (int i=0 ; i< Anc ; i++)
-            perm_c[i]= i;
-      } else {
-	 // wrap this in the s_f_ldiv function
-	 // BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-         get_perm_c(permc_spec, &A, perm_c);
-         // END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      }
+   if ( ((NCformat *) A.Store)->nnz >= 0.40*(Anc*Anr) )  {
+      for (int i=0 ; i< Anc ; i++)
+         perm_c[i]= i;
+   } else {
+      // wrap this in the s_f_ldiv function
+      // BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      get_perm_c(permc_spec, &A, perm_c);
+      // END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    }
 } // static int do_permc( int permc_spec, int permc[], 
 
@@ -1019,7 +1047,7 @@ DEFBINOP( s_f_ldiv, sparse, matrix)
       dgssv(&A, perm_c, perm_r, &L, &U, &B, &info);
    
       if (info !=0 )
-         SP_FATAL_ERR("Factorization problem: dgssv");
+	 error("sparse factorization problem: dgssv");
    
       Destroy_SuperMatrix_Store( &B );
       oct_sparse_Destroy_SuperMatrix( L ) ;
@@ -1225,7 +1253,9 @@ sparse_LU_fact(SuperMatrix A,
 #endif   
 
    if ( info < 0 ) {
-      SP_FATAL_ERR ("LU factorization error");
+     error ("LU factorization error");
+   } else if (info > 0) {
+     error ("sparse matrix is singlar to machine precision");
    }
 
    return info;
@@ -1252,6 +1282,12 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.17  2003/12/22 15:13:23  pkienzle
+ * Use error/return rather than SP_FATAL_ERROR where possible.
+ *
+ * Test for zero elements from scalar multiply/power and shrink sparse
+ * accordingly; accomodate libstdc++ bugs with mixed real/complex power.
+ *
  * Revision 1.16  2003/11/23 14:21:39  adb014
  * Octave CVS now requires void constructors for register_type
  *

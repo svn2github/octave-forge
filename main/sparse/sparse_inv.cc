@@ -118,8 +118,10 @@ to be applied to the columns of A for sparsity. \n\
       const octave_value& rep = args(0).get_rep ();
       int m = args(0).rows(); //A.nrow;
       int n = args(0).columns(); //A.ncol;
-      if (m != n)
-         SP_FATAL_ERR("splu: input matrix must be square");
+      if (m != n) {
+         error("splu: input matrix must be square");
+	 return retval;
+      }
  
       OCTAVE_LOCAL_BUFFER (int, perm_c, n);
       OCTAVE_LOCAL_BUFFER (int, perm_r, m);
@@ -137,22 +139,16 @@ to be applied to the columns of A for sparsity. \n\
       if (args(0).type_name () == "sparse" ) {
          SuperMatrix A = ((const octave_sparse&) rep) . super_matrix ();
          SuperMatrix L, U;
-         if ( 0<
-         sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
-         ) {
-            SP_FATAL_ERR ("sparse matrix is singlar to machine precision");
-         }
+         sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+	 if (error_state) return retval;
          LS= new octave_sparse( L );
          US= new octave_sparse( U );
       }
       else {
          SuperMatrix A = ((const octave_complex_sparse&) rep) . super_matrix ();
          SuperMatrix L, U;
-         if ( 0<
-         complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
-         ) {
-            SP_FATAL_ERR ("sparse matrix is singlar to machine precision");
-         }
+	 complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+	 if (error_state) return retval;
          LS= new octave_complex_sparse( L );
          US= new octave_complex_sparse( U );
       }
@@ -237,11 +233,8 @@ oct_sparse_inverse( const octave_sparse& Asp,
    assert(n == m);
 
    OCTAVE_LOCAL_BUFFER (int, perm_r, m );
-   if ( 0<
-   sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
-      ) {
-      SP_FATAL_ERR ("sparse matrix is singlar to machine precision");
-   }
+   sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+   if (error_state) return retval;
 
    BUILD_PERM_VECTORS( ridxPr, cidxPr, coefPr, perm_r, m )
    BUILD_PERM_VECTORS( ridxPc, cidxPc, coefPc, perm_c, n )
@@ -288,12 +281,9 @@ oct_sparse_inverse( const octave_complex_sparse& Asp,
    assert(n == m);
 
    OCTAVE_LOCAL_BUFFER (int, perm_r, m );
-   if ( 0<
-   complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec) 
-      ) {
-      SP_FATAL_ERR ("complex sparse matrix is singlar to machine precision");
-   }
-
+   complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
+   if (error_state) return retval;
+   
    BUILD_PERM_VECTORS( ridxPr, cidxPr, coefPr, perm_r, m )
    BUILD_PERM_VECTORS( ridxPc, cidxPc, coefPc, perm_c, n )
    
@@ -371,7 +361,10 @@ With a second input, the columns of A are permuted before factoring:\n\
    }
 
    int n = args(0).columns();
-   if (n != args(0).rows()) SP_FATAL_ERR("spinv: Input matrix must be square");
+   if (n != args(0).rows()) {
+     error("spinv: Input matrix must be square");
+     return retval;
+   }
 
    OCTAVE_LOCAL_BUFFER (int, perm_c, n );
    int permc_spec=3;
@@ -387,13 +380,15 @@ With a second input, the columns of A are permuted before factoring:\n\
       const octave_sparse& A =
            (const octave_sparse&) args(0).get_rep();
       octave_value_list Ai = oct_sparse_inverse( A, perm_c, permc_spec );
-      retval(0)= Ai(0) * Ai(1) * Ai(2) * Ai(3);
+      if (!error_state)
+	retval(0)= Ai(0) * Ai(1) * Ai(2) * Ai(3);
    } else
    if ( args(0).type_name () == "complex_sparse" ) {
       const octave_complex_sparse& A =
            (const octave_complex_sparse&) args(0).get_rep();
       octave_value_list Ai = oct_sparse_inverse( A, perm_c, permc_spec );
-      retval(0)= Ai(0) * Ai(1) * Ai(2) * Ai(3);
+      if (!error_state)
+	retval(0)= Ai(0) * Ai(1) * Ai(2) * Ai(3);
    } else
      gripe_wrong_type_arg ("spinv", args(0));
 
@@ -467,6 +462,12 @@ SPABS : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.15  2003/12/22 15:13:23  pkienzle
+ * Use error/return rather than SP_FATAL_ERROR where possible.
+ *
+ * Test for zero elements from scalar multiply/power and shrink sparse
+ * accordingly; accomodate libstdc++ bugs with mixed real/complex power.
+ *
  * Revision 1.14  2003/10/21 14:35:12  aadler
  * minor test and error mods
  *

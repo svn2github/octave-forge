@@ -32,8 +32,8 @@ function y=sem(x,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.15
-%	12 Mar 2002
+%	Version 1.16
+%	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
@@ -46,7 +46,7 @@ elseif nargin==2,
                 DIM=[];
         end
 else
-        fprintf(2,'Error NaN/VAR: invalid number of arguments\n usage: v=var(x [,DIM] [,opt])\n');
+        fprintf(2,'Error SEM: invalid number of arguments\n usage: v=var(x [,DIM])\n');
 end
 
 % obtain which DIMENSION should be used

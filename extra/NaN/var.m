@@ -49,7 +49,7 @@ elseif nargin==2,
                 DIM=[];
         end
 else
-        fprintf(2,'Error VAR: invalid number of arguments\n usage: v=var(x [,DIM] [,opt])\n');
+        fprintf(2,'Error VAR: invalid number of arguments\n usage: v=var(x [,DIM])\n');
 end
 
 % obtain which DIMENSION should be used

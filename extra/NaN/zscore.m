@@ -36,22 +36,14 @@ function i = zscore(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.15
-%	12 Mar 2002
+%	Version 1.16
+%	17 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 	
 
 if nargin==1,
         DIM=[];
-	fun=[];        
-elseif nargin==2,
-        if ~isnumeric(DIM),
-	        fun=DIM;
-                DIM=[];
-        else
-                fun=[];
-        end
 end
 
 % obtain which DIMENSION should be used

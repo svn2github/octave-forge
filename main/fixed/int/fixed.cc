@@ -34,6 +34,8 @@ Open Source Initiative (www.opensource.org)
 #include <iostream>
 #include <cmath>
 
+#include "fixed.h"
+
 #if !defined(OCTAVE_FORGE)
 
 #if defined(__APPLE__) && defined(__MACH__) 
@@ -45,11 +47,8 @@ extern "C" int isinf (double);
 #define lo_ieee_isinf(x) isinf(x)
 
 #else
-#include <octave/config.h>
 #include <octave/lo-ieee.h>
 #endif
-
-#include "fixed.h"
 
 // Various tables of power 5.
 #if (SIZEOF_FIXED == 2)

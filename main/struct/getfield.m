@@ -16,17 +16,37 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Built-in Function} {} [@var{v1},...] =
-## getfield (@var{s}, 'k1',...) = [@var{s}.k1,...]
-## Return selected values from a struct. Provides some compatibility
-## and some flexibility.
+## getfield (@var{s}, 'k1',...)
+## extract fields from a structure
+## example: given  ss(1,2).fd(3).b=5;
+##          getfield(ss,{1,2},'fd',{3},'b') => 5
+##
+## Note that this function is deprecated in favour of 'dynamic
+## fields'. So the previous could be written
+##          i1= {1,2}; i2= 'fd'; i3= {3}; i4= 'b';
+##          ss( i1{:} ).( i2 )( i3{:} ).( i4 )
 ## @end deftypefn
-## @seealso{setfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}
+## @seealso{setfield,getfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: January 2003
+## $Id$
 
-function [varargout] = getfield(s,varargin)
-    for i=length(varargin):-1:1
-	varargout{i} = s.(varargin{i});
-    end
+function v= getfield( obj, varargin )
+   field= field_access( varargin{1:nargin-1} );
+   v= eval(field);
+
+function str= field_access( varargin )
+   str= 'obj';
+   for i=1:nargin
+      v= varargin{i};
+      if iscell( v )
+          sep= '(';
+          for j=1:length(v)
+              str= [str, sep, num2str(v{j}) ];
+              sep= ',';
+          end
+          str= [str, ')'];
+      else
+          str= [str, '.', v];
+      end
+   end
 

@@ -14,31 +14,41 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##        s = setfield(s,'key1',value1,...)
-## 
-## Sets s.key1 = value1,  s.key2 = value2, ... and returns s.
-## 
-## For some compatibility and flexibility.
-## 
-## See also cmpstruct, fields, rmfield, isstruct, getfield, isfield,
-## struct. 
-## 
+## -*- texinfo -*-
+## @deftypefn {Built-in Function} {} [@var{k1},..., @var{v1}] =
+## setfield (@var{s}, 'k1',..., 'v1')
+## set field members in a structure
+## example: oo(1,1).f0= 1;
+##          oo= setfield(oo,{1,2},'fd',{3},'b', 6);
+##   gives  oo(1,2).fd(3).b == 6
+##
+## Note that this function is deprecated in favour of 'dynamic
+## fields'. So the previous could be written
+##          i1= {1,2}; i2= 'fd'; i3= {3}; i4= 'b';
+##          oo( i1{:} ).( i2 )( i3{:} ).( i4 ) == 6;
+## @end deftypefn
+## @seealso{getfield,setfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: January 2000
-## November 2000: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-##     return error rather than trapping to keyboard
+## $Id$
 
-function s = setfield(s,varargin)
-if rem(nargin,2) != 1,
-      error('setfield: called with odd number of arguments\n') ; 
-endif
-	
-for i=1:2:nargin-1
-  if ! isstr(varargin{i}) ,
-    error('setfield: called with non-string key') ; 
-  else
-    eval( ['s.',varargin{i},'=varargin{i+1};'] ) ;
-    end
-  end
-end
+function obj= setfield( obj, varargin )
+   field= field_access( varargin{1:nargin-2} );
+   val= varargin{ nargin-1 };
+   eval([field ,'=val;']);
+
+function str= field_access( varargin )
+   str= 'obj';
+   for i=1:nargin
+      v= varargin{i};
+      if iscell( v )
+          sep= '(';
+          for j=1:length(v)
+              str= [str, sep, num2str(v{j}) ];
+              sep= ',';
+          end
+          str= [str, ')'];
+      else
+          str= [str, '.', v];
+      end
+   end
+

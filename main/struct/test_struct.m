@@ -12,6 +12,7 @@
 ##
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## $Id$
 
 1 ;
 global test_struct_errors  ;
@@ -65,7 +66,10 @@ mytest( t.foo == s.foo                , "setfields 1" ) ;
 mytest( t.bye == s.bye                , "setfields 2" ) ;
 
 % s = struct() ;
-t = rmfield (t,"foo","bye","hello") ;
+% t = rmfield (t,"foo","bye","hello") ; % no longer works with octave func
+t = rmfield( t, "foo");
+t = rmfield( t, "bye");
+t = rmfield( t, "hello");
 mytest( ! struct_contains(t,"foo")    , "rmfield 1" ) ;
 mytest( ! struct_contains(t,"bye")    , "rmfield 2" ) ;
 mytest( ! struct_contains(t,"hello")  , "rmfield 3" ) ;
@@ -91,6 +95,10 @@ mytest( z == zz                           , "getfields 3" );
 mytest( x == x3                           , "getfields 4" );
 mytest( z == z3                           , "getfields 5" );
 mytest( z == z4                           , "getfields 6" );
+
+oo(1,1).f0= 1;
+oo= setfield(oo,{1,2},'fd',{3},'b', 6);
+mytest( getfield(oo,{1,2},'fd',{3},'b') == 6, "getfield 6" );
 
 try				# Should not return inexistent fields
   [nothing] = getfields (s,"foo");

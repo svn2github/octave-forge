@@ -46,42 +46,63 @@
 //-------------------------------------------------------------------
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[])
 {
-    const int	*SZ;	    
-    double* LInput;
-    double* LInputI;
-    double* LOutputSum;
-    double* LOutputSumI;
-    double* LOutputCount;
-    double* LOutputSum2;
-    double* LOutputSum4;
-    double  x, x2;
-    unsigned long   LCount, LCountI;
-    double  LSum, LSum2, LSum4;
+    	const int	*SZ;	    
+    	double* 	LInput;
+    	double* 	LInputI;
+    	double* 	LOutputSum;
+    	double* 	LOutputSumI;
+    	double* 	LOutputCount;
+    	double* 	LOutputSum2;
+    	double* 	LOutputSum4;
+    	double  	x, x2;
+    	unsigned long   LCount, LCountI;
+    	double  	LSum, LSum2, LSum4;
 
-    unsigned		DIM = 0; 
-    unsigned long	D1, D2, D3; 	// NN; 	//  	
-    unsigned    	ND, ND2;	// number of dimensions: input, output
-    unsigned long	ix1, ix2;	// index to input and output
+    	unsigned	DIM = 0; 
+    	unsigned long	D1, D2, D3; 	// NN; 	//  	
+    	unsigned    	ND, ND2;	// number of dimensions: input, output
+    	unsigned long	ix1, ix2;	// index to input and output
+    	unsigned    	j, k, l;	// running indices 
+    	int 		*SZ2;		// size of output 	    
 
-    unsigned    	j, k, l;	// running indices 
-    int 		*SZ2;		// size of output 	    
 
-     	
+	// check for proper number of input and output arguments
+	if ((PInputCount <= 0) || (PInputCount > 2))
+	        mexErrMsgTxt("SumSkipNan.MEX requires 1 or 2 arguments.");
+	if (POutputCount > 4)
+	        mexErrMsgTxt("SumSkipNan.MEX has 1 to 4 output arguments.");
 
-    // check for proper number of input and output arguments
-    if ((PInputCount <= 0) || (PInputCount > 2))
-        mexErrMsgTxt("SumSkipNan.MEX requires 1 or 2 arguments.");
-    if (POutputCount > 4)
-        mexErrMsgTxt("SumSkipNan.MEX has 1 to 4 output arguments.");
+	// get 1st argument
+	if(mxIsDouble(PInputs[0]))
+		LInput  = mxGetPr(PInputs[0]);
+	else 	
+		mexErrMsgTxt("First argument must be DOUBLE.");
 
-    // get 1st argument
-    if(!mxIsNumeric(PInputs[0]))
-	mexErrMsgTxt("First argument must be NUMERIC.");
-    if(!mxIsDouble(PInputs[0]))
-	mexErrMsgTxt("First argument must be DOUBLE.");
-    if(mxIsComplex(PInputs[0]) & (POutputCount > 3))
-	mexErrMsgTxt("More than 3 output arguments only supported for REAL data ");
-    LInput  = mxGetPr(PInputs[0]);
+	if(mxIsLogical(PInputs[0]))
+		LInput  = (double*)mxGetLogicals(PInputs[0]);
+	else if(mxIsNumeric(PInputs[0]))
+		LInput  = mxGetPr(PInputs[0]);
+	else if(mxIsSparse(PInputs[0]))
+		LInput  = mxGetPr(PInputs[0]);
+	else if(mxIsInt8(PInputs[0]))
+		LInput  = (double *)mxGetData(PInputs[0]);
+	else if(mxIsUint8(PInputs[0]))
+		LInput  = (double *)mxGetData(PInputs[0]);
+	else if(mxIsInt16(PInputs[0]))
+		LInput  = (double *)mxGetData(PInputs[0]);
+	else if(mxIsUint16(PInputs[0]))
+		LInput  = (double *)mxGetData(PInputs[0]);
+	else if(mxIsInt32(PInputs[0]))
+		LInput  = (double *)mxGetData(PInputs[0]);
+	else if(mxIsUint32(PInputs[0]))
+		LInput  = (double *)mxGetData(PInputs[0]);
+	else
+		mexErrMsgTxt("First argument must be NUMERIC.");
+
+	if(mxIsComplex(PInputs[0]))
+		LInputI = mxGetPi(PInputs[0]);
+	if(mxIsComplex(PInputs[0]) & (POutputCount > 3))
+	        mexErrMsgTxt("More than 3 output arguments only supported for REAL data ");
 
     	// get 2nd argument
     	if  (PInputCount == 2){
@@ -131,12 +152,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	{	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxCOMPLEX);
 		LOutputSum = mxGetPr(POutput[0]);
 		LOutputSumI= mxGetPi(POutput[0]);
-		LInputI = mxGetPi(PInputs[0]);
     	}
-	else
+	else 
 	{	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
 		LOutputSum = mxGetPr(POutput[0]);
     	}
+
     	if (POutputCount >= 2){
 		POutput[1] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
         	LOutputCount = mxGetPr(POutput[1]);

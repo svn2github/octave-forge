@@ -39,6 +39,9 @@
 
 function plot3(varargin)
 
+  ## use the following for 2.1.38 and below
+  # varargin = list(varargin, all_va_args);
+
   hold_state = ishold ();
   
   unwind_protect
@@ -48,11 +51,8 @@ function plot3(varargin)
     z_set = 0;
     
     ## Gather arguments, decode format, and plot lines.
-    
-    va_arg_cnt = 1;
-    while (nargin-- > 0)
-      
-      new = nth (varargin, va_arg_cnt++);
+    for arg = 1:length(varargin)
+      new = nth (varargin, arg);
       
       if (isstr (new))
 	if (! z_set)

@@ -85,19 +85,23 @@
 ## PKG_ADD mark_as_command legend
 function legend (varargin)
 
+  ## Use the following for 2.1.39 and below
+  # varargin = list(varargin, all_va_args);
+  args = nargin; # silliness: nargin is now a function 
+
   ## Data type
 
   data_type = 0;
   va_arg_cnt = 1;
 
   str = "";
-  if (nargin > 0)
+  if (args > 0)
     str = nth (varargin, va_arg_cnt++);
   endif;
       
   ## Test for strings
 
-  if (isstr(str)) && (nargin == 1)
+  if (isstr(str)) && (args == 1)
     _str = tolower(deblank(str));
     _replot = 1;
     switch _str
@@ -134,7 +138,7 @@ function legend (varargin)
       data = cellstr( nth (varargin, va_arg_cnt++));
     endif
     nb_data = length(data);
-    nargin--;
+    args--;
   endif;
 
   pos_leg = 1;
@@ -212,13 +216,13 @@ function legend (varargin)
 
     ## Get the legend string
 
-    if (((data_type == 0) && (nargin <= 0)) || \
+    if (((data_type == 0) && (args <= 0)) || \
         ((data_type == 1) && (fig >= nb_data)))
       leg = "\"\"";
     else
       if (data_type == 0)
         leg = nth (varargin, va_arg_cnt++);
-        nargin--;
+        args--;
       else
         leg = data{fig+1};
       endif;
@@ -262,7 +266,7 @@ function legend (varargin)
 
   ## Check for the last argument if we don't already get it
   
-  while (nargin-- > 0)
+  while (args-- > 0)
     pos_leg = nth (varargin, va_arg_cnt++) ;
     if (isstr(pos_leg))
       pos_leg = 0;

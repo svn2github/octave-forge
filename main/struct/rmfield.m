@@ -19,8 +19,6 @@
 ## Removes key1, key2, ...  from structure s. 
 ## Return s if s is not a struct. Any better behavior?
 ## 
-## For m****b compatibility and flexibility. 
-##
 ## Basically, does a 'filtering' copy of s.
 ##
 ## See also cmpstruct, fields, setfield, isstruct, getfield, isfield,
@@ -37,12 +35,10 @@ if ! is_struct(s) ,
   t = s ;
   return
 end
-va_arg_cnt = 1 ; 
 
-rmf = ' ' ;
-nargin-- ;
-while nargin-- ,
-  tmp = nth (varargin, va_arg_cnt++) ;
+rmf = ' ';
+for arg=1:length(varargin)
+  tmp = nth (varargin, arg) ;
   if ! isstr(tmp) ,
     error('rmfield: called with non-string key');
   else

@@ -46,8 +46,6 @@ if nargin > 1
   [rad, tran, col, hcol, emit, verbose, balls, noemit, arrow, brad] = \
       getfield (s, "rad", "tran", "col", "hcol", "emit", "verbose", \
 		"balls", "noemit", "arrow", "brad");
-  ## nargin-- ;
-  ## read_options_old 
 end
 
 if isnan (brad), brad = rad; end

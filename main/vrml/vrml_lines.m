@@ -19,6 +19,7 @@
 
 function s = vrml_lines(x,f,varargin)
 
+args = nargin; # nargin is now a function
 col = [1, 0, 0] ;
 
 opt1 = " col " ;
@@ -26,10 +27,10 @@ opt0 = " " ;
 
 verbose = 0 ;
 
-nargin -= 2 ;
+args -= 2 ;
 i=1;
 
-while nargin>=i ,
+while args>=i ,
 
   tmp = nth (varagin, i++) ;	# pos 2.1.39
   if ! isstr(tmp) ,
@@ -41,7 +42,7 @@ while nargin>=i ,
     
 
     tmp2 = nth (varargin, i++); # pos 2.1.39
-    ## nargin-- ;
+    ## args-- ;
     eval([tmp,"=tmp2;"]) ;
 
     if verbose , printf ("vrml_lines : Read option : %s.\n",tmp); end

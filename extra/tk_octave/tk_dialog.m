@@ -60,14 +60,16 @@ endif
 
 cmd = sprintf("tk_dialog .top_tk_dialog \"%s\" \"%s\" \"%s\" %d", title, text, bitmap, default);
 
-va_arg_cnt = 1;
-while(--nargin != 3)
-	arg = nth (varargin, va_arg_cnt++);
+## use the following for 2.1.38 and below
+#varargin = list(varargin, all_va_args);
+
+for argnum=1:length(varargin)
+	arg = nth (varargin, argnum);
 	if (! isstr(arg))
 		error("The arguments must be strings.\n");
 		return
 	endif
-	cmd = [cmd " " '"' arg '"'];
+	cmd = [cmd, " ", '"', arg, '"'];
 endwhile
 
 value = str2num(tk_cmd( cmd ));

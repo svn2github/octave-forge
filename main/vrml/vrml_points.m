@@ -49,10 +49,10 @@ col = [0.3 0.4 0.9];
 emit = 1;
 tran = 0;
 
-i = 1; nargin--;		# pos 2.1.39
+i = 1; 			# pos 2.1.39
 
 
-while i <= nargin
+while i <= nargin-1
 
   tmp = nth (varargin,i++);
   if strcmp(tmp,"hide") ,

@@ -33,19 +33,20 @@ hcol = [];
 ######################################################################
 ## Read options
 numeric_args = 0;
-while nargin && numeric_args<2,
+args = nargin; # nargin is now a function
+while args && numeric_args<2,
 
 
   tmp = nth (varargin, numeric_args + 1);
   if isstr (tmp), break; end
-  --nargin;
+  --args;
   numeric_args++;
   if numeric_args == 1, t = tmp ; 
   else                  r = tmp ;  break;
   end
 end
 
-if nargin
+if args
 
   leftover_args = varargin;	# pos 2.1.39
   leftover_args = leftover_args (numeric_args+1:length(leftover_args));

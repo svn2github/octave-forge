@@ -36,7 +36,7 @@ function __errcomm__ (caller, varargin)
     usage ("%s (...)", caller);
   endif
 
-  nargin--;
+  args = nargin - 1; # nargin is now a function
   hold_state = __grishold__();
   unwind_protect
     if (!hold_state)
@@ -44,9 +44,9 @@ function __errcomm__ (caller, varargin)
     endif
     __grhold__("on");
     k = 1;
-    while (nargin)
+    while (args)
       a = varargin{k++};
-      nargin--;
+      args--;
       if (isvector (a))
         a = a(:);
       elseif (ismatrix (a))
@@ -57,8 +57,8 @@ function __errcomm__ (caller, varargin)
       sz = size (a);
       ndata = 1;
       arg1 = a;
-      while (nargin)
-	nargin--;
+      while (args)
+	args--;
 	a = varargin{k++};
 	if (isstr (a))
 	  fmt = a;

@@ -60,7 +60,8 @@ ninit = nargin;
 
 
 i = 1;
-while --nargin,
+args = nargin; # nargin is now a function
+while --args,
 
   tmp = nth (varargin, i++);
   if     strcmp (tmp, "nobg"),
@@ -70,9 +71,9 @@ while --nargin,
   else				# Reached non-options
     ## beginpre 2.1.39
     # va_start ();
-    # n = ++nargin ;
+    # n = ++args ;
     # while n++ < ninit, va_arg (); end
-    ## nargin, ninit
+    ## args, ninit
     ## endpre 2.1.39
     i--; 			# pos 2.1.39
     break;

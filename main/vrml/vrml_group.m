@@ -11,20 +11,15 @@ if nargin == 0, return end
 
 s = "";
 
-				# beginpost 2.1.39
+				# beginpre 2.1.38
+# if (nargin > 0) 
+#   varargin = list(varargin, all_va_args); 
+# end
+				# endpre 2.1.38
 if nargin > 0, s = nth (varargin, 1); end
 if nargin > 1
   for i = 2:nargin, s = [s,",\n", nth (varargin, i)]; end
 end
-
-				# beginpre 2.1.38
-# if nargin--,
-#   s = va_arg (); 
-#   while nargin--,
-#     s = [s,",\n",va_arg ()];
-#   end
-# end
-				# endpre 2.1.38
 ## indent s
 ni = 4;
 s = [blanks (ni), strrep (s,"\n",["\n",blanks(ni)])(:)'];

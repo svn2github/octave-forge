@@ -18,17 +18,14 @@
 ##
 ## Removes dir1,... from the current LOADPATH.
 ## 
-## For m****b compat.
-## 
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: January 2000
 
 function rmpath(varargin)
 
-  va_arg_cnt = 1;
-  while nargin--,
-    p = nth (varargin, va_arg_cnt++) ;
+  for arg=1:length(varargin)
+    p = nth (varargin, arg) ;
     lp = length(p) 
     printf("removing %s\n",p);
 				# Nothing like perl for strings!

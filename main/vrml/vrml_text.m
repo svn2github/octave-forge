@@ -36,8 +36,6 @@ if nargin > 1
   s = read_options (varargin{:}, "op1",op1,"op0",op0, "default",df);
   [col,size,family,justify,style,verbose] = \
       getfield (s, "col","size","family","justify","style","verbose");
-  ## nargin-- ;
-  ## read_options_old 
 end
 s = sprintf (["Shape {\n",\
 	      "  appearance Appearance {\n",\

@@ -42,10 +42,8 @@ function __errplot__ (caller, varargin)
 
   fstr = " ";
   ndata = 0;
-  k = 1;
 
-  nargin--;
-  while (nargin--)
+  for k=1:length(varargin)
     a = varargin{k++};
     if (! isstr (a))
       ndata++;

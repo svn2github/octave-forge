@@ -21,11 +21,11 @@
  *
  *************************************************************************/
 
-#include "octave/oct.h"
+#include <octave/oct.h>
 #if defined (HAVE_TERM_H)
-#  include "term.h"
+#  include <term.h>
 #elif defined (HAVE_TERMCAP_H)
-#  include "termcap.h"
+#  include <termcap.h>
 #endif
 
 #define BUF_SIZE	256

@@ -1,4 +1,5 @@
 AC_SUBST(MISCDEFS)
+AC_SUBST(HAVE_LIB_TERMCAP)
 
 dnl In modern autoconf, we should be able to replace this with something
 dnl the CHECK_TYPE macro
@@ -28,12 +29,24 @@ else
     TYPE_SOCKLEN_T
 
     dnl Check for term.h
-    AC_CHECK_HEADER(term.h, have_term=yes, have_term=no)
-    AC_CHECK_HEADER(termcap.h, have_termcap=yes, have_termcap=no)
-    if test $have_term = yes || test $have_termcap = yes; then
-       MISCDEFS="$MISCDEFS -DUSE_TERM"
-       AC_CHECK_LIB(termcap, tgetnum)
+    case "$canonical_host_type" in
+	*-sgi-*)
+	    have_term=no
+	    have_termcap=no
+	;;
+	*)
+    	    AC_CHECK_HEADER(term.h, have_term=yes, have_term=no)
+	    AC_CHECK_HEADER(termcap.h, have_termcap=yes, have_termcap=no)
+	;;
+    esac
+    if test $have_term = yes; then
+       MISCDEFS="$MISCDEFS -DUSE_TERM -DHAVE_TERM_H"
        STATUS=yes
+       AC_CHECK_LIB(termcap, tgetnum, HAVE_LIB_TERMCAP=yes)
+    elif test $have_termcap = yes; then
+       MISCDEFS="$MISCDEFS -DUSE_TERM -DHAVE_TERMCAP_H"
+       AC_CHECK_LIB(termcap, tgetnum, HAVE_LIB_TERMCAP=yes)
+       STATUS=yes 
     else
        STATUS=no
     fi

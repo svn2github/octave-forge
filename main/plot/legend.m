@@ -121,7 +121,9 @@ function legend (varargin)
 	_replot = 0;
     endswitch
     if _replot
-      replot
+      if automatic_replot
+        replot
+      endif
       return;
     endif
   endif

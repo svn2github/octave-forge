@@ -51,7 +51,7 @@ end
 if nargin<5, stack = "" ; end
 if nargin<6, dx = 10*sqrt(eps)  ; end
 
-verbose = 0 ;
+## verbose = 0 ;
 ## build argstr = "var1,..,dvar,...var_nargs"
 if isfinite (nargs)
   argstr = sprintf("var%i,",1:nargs);
@@ -89,7 +89,7 @@ elseif strcmp("rstack",stack),	# Vertical stacking ##################
 			  "  scramble = reshape (1:pr,sr(2),sr(1))';\n",\
 			  "  df = reshape (df',pr,ps)(scramble(:),:);\n"),\
 		   calstr) ;
-  sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
+  ## sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
 else				# No stacking ########################
   calstr = sprintf("%s (%s)",func,argstr) ;
   ## "func(var1,dvar%sdv(:,%d:%d),...,varN),"
@@ -120,7 +120,7 @@ else				# No stacking ########################
   ## "func(var1,reshape(dvar(1:NV,1),SZ1,SZ2),...,varN)," , 
   ## "func(var1,reshape(dvar(1:NV,2),SZ1,SZ2),...,varN)," , ...
   ## "func(var1,reshape(dvar(1:NV,NP),SZ1,SZ2),...,varN)"
-  sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
+  ## sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
 end
 
 calstr = strrep (calstr, "...", "all_va_args");

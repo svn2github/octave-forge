@@ -208,8 +208,8 @@ This checks whether all previous functions have been replaced
 
 
 
-	Version 1.21 
-	2 May 2002
+	Version 1.22
+	06 May 2002
 	Copyright (C) 2000-2002 by  Alois Schloegl
 	a.schloegl@ieee.org	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

@@ -37,7 +37,7 @@ function y=var(x,DIM)
 
 %	Copyright (C) 2000-2002 by  Alois Schloegl  <a.schloegl@ieee.org>	
 
-ver=version;
+ver=version;
 if nargin==1,
         DIM=[];
 elseif nargin==2,

@@ -18,6 +18,9 @@
 
 /* mex.h is for use in C-programs only; do NOT include it in mex.cc */
 
+#ifndef MEX_H
+#define MEX_H
+
 #define HAVE_OCTAVE
 typedef void mxArray;
 typedef unsigned short mxChar;
@@ -140,3 +143,4 @@ extern "C" {
 }
 #endif
 
+#endif /* !defined(MEX_H) */

@@ -39,7 +39,7 @@ install:
 	fi
 
 clean: 
-	-$(RM) *.o core octave-core core *.oct *~
+	-$(RM) *.o core octave-core core *.oct *~ randtest
 
 # Do nothing for dist target
 dist:

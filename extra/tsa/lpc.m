@@ -1,4 +1,4 @@
- function [A] = lattice(Y,P,'mode');
+ function [A] = lpc(Y,P,'mode');
 % LPC Linear prediction coefficients 
 % The Burg-method is used to estimate the prediction coefficients
 %

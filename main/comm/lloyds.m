@@ -85,7 +85,7 @@ function [table, code, dist, reldist] = lloyds(sig, init, tol, type)
   endif
   lcode = length(init);
 
-  if (init != sort(init))
+  if (any(init != sort(init)))
     ## Must be monotonically increasing
     error ("lloyds: Initial codebook must be monotonically increasing");
   endif

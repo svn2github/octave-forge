@@ -17,10 +17,10 @@
 ## -*- texinfo -*-
 ## deftypefn {Built-in Function} {} [@var{v1},...] =
 ## getfield (@var{s}, 'k1',...) = [@var{s}.k1,...]
-## Return selected values from a struct. Provides m*tlab compatibility
+## Return selected values from a struct. Provides some compatibility
 ## and some flexibility.
-## @seealso{setfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 ## @end deftypefn
+## @seealso{setfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 ## Last modified: January 2003

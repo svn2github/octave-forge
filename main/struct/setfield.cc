@@ -30,9 +30,9 @@ DEFUN_DLD (setfield, args, nargout,
 @var{s2} = setfield ('k1',@var{v1},...) \n\n\
 This function call is equivalent to @code{@var{s1} = @var{s2}; \
 @var{s2}.k1 = @var{v1};...}. The first argument @var{s1} may be ommited. \
-Provides m*tlab compatibility and some flexibility.\n\
-@seealso{getfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}\
-@end deftypefn")
+Provides some compatibility and some flexibility.\n\
+@end deftypefn\n\
+@seealso{getfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}")
 {
   octave_value retval;
 

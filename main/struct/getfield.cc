@@ -22,10 +22,10 @@ DEFUN_DLD (getfield, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} [@var{v1},...] = \
 getfield (@var{s}, 'k1',...) = [@var{s}.k1,...]\n\n\
-Return selected values from a struct. Provides m*tlab compatibility \
+Return selected values from a struct. Provides some compatibility \n\
 and some flexibility.\n\
-@seealso{setfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{setfield,rmfield,isfield,isstruct,fields,cmpstruct,struct}")
 {
   octave_value_list retval;
 

@@ -18,7 +18,7 @@
 ## 
 ## Sets s.key1 = value1,  s.key2 = value2, ... and returns s.
 ## 
-## For m****b compatibility and flexibility.
+## For some compatibility and flexibility.
 ## 
 ## See also cmpstruct, fields, rmfield, isstruct, getfield, isfield,
 ## struct. 

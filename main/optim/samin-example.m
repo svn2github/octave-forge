@@ -26,9 +26,10 @@
 # the closer is "curvature" to zero the more alike are
 # the local mins
 function f = obj(theta, curvature);
+	dim = rows(theta);
 	a = sum(exp(-cos(theta)));
-	b =  - exp(-1);
-	c = sum(curvature*theta.^2);
+	b =  - dim*exp(-1);
+	c = sum(curvature*theta .^ 2);
 	f = a + b + c;
 endfunction
 
@@ -46,7 +47,7 @@ ub = 10*ones(rows(theta),1);
 lb = -ub;
 nt = 20;
 ns = 5;
-rt = 0.25; # careful - this is too low for many problems
+rt = 0.5; # careful - this is too low for many problems
 maxevals = 1e10;
 neps = 5;
 functol = 1e-10;

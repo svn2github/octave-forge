@@ -45,14 +45,14 @@ function idx = strmatch(s,A,exact)
 
     [nr, nc] = size (A);
     if iscell(A)
-            match = zeros(size(A));
+            match = zeros(prod(size(A)),1);
             if nargin>2,
-                    for k = 1:nc*nr,
-                            match(k) = strmatch(s,A{k},exact);    
+                    for k = 1:prod(size(A)),
+                            match(k) = strcmp(s,A{k});    
                     end;        
             else
-                    for k = 1:nc*nr,
-                            match(k) = strmatch(s,A{k});    
+                    for k = 1:prod(size(A)),
+                            match(k) = strncmp(s,A{k},length(s));    
                     end;        
             end;        
             idx = find(match);

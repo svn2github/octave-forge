@@ -94,27 +94,29 @@ if minimize_warn
 endif
 minimize_warn = 0;
 
-backend = 0;
-verbose = 0;
-
-df = d2f = d2i = "";
-ftol = utol = dtol = nan;
-
-order = narg = maxev = nan;
-
 # ####################################################################
 # Read the options ###################################################
 # ####################################################################
 # Options with a value
-opt1 = " ftol utol dtol df d2f d2i maxev narg order " ;
+op1 = " ftol utol dtol df d2f d2i order narg maxev " ;
 # Boolean options 
-opt0 = " verbose backend " ;
-filename = "minimize";
+op0 = " verbose backend " ;
 
-va_start() ;
-nargin = nargin - 2 ;
+default = setfield ("backend",0,"verbose",0,\
+		    "df","", "df","","d2f","", "d2i","",\
+		    "ftol" ,nan, "utol",nan, "dtol", nan,\
+		    "order",nan, "narg",nan, "maxev",nan);
 
-read_options
+ops = read_options (list (all_va_args),\
+		    "op0",op0, "op1",op1, "default",default);
+
+[backend,verbose, \
+ df, df,d2f, d2i, \
+ ftol, utol, dtol,\
+ order, narg, maxev] = getfield (ops, "backend","verbose",\
+				 "df", "df","d2f", "d2i", \
+				 "ftol" , "utol", "dtol", \
+				 "order", "narg", "maxev");;
 
 				# Basic coherence checks
 

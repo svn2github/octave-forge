@@ -18,27 +18,25 @@ function ret_c = calendar(y,m)
    
   c = zeros(7,6);
   dayone = datenum(y,m,1);
-  dayone_column = weekday(dayone);
   days = eomday(y,m);
-  c(dayone_column + [0:days-1]) = 1:days;
+  c(weekday(dayone) + [0:days-1]) = 1:days;
 
-  today_column = weekday(today);
-  today_row = floor( ((today-dayone) + dayone_column - 1) / 7 ) + 1;
-  
   if nargout > 0
     ret_c = c';
   else
+    ## Layout the calendar days, 4 columns per day, 7 days per row.
+    str = sprintf(" %2d  %2d  %2d  %2d  %2d  %2d  %2d\n",c);
+
+    ## Find today in the calendar and put an asterisk before it
+    offset = 4*(floor(today)-dayone+weekday(dayone)-1) + 1;
+    if (offset >= 1 && offset <= 4*42)
+      if str(offset+1) == ' ', offset++; endif
+      str(offset) = '*';
+    endif
+
+    ## Display the calendar.
     printf("          %s\n",datestr(dayone,28));
-    printf("  S   M  Tu   W  Th   F   S\n");
-    for i=1:6
-      str = sprintf(" %2d  %2d  %2d  %2d  %2d  %2d  %2d",c(:,i));
-      if i == today_row, 
-        offset = 4*(today_column-1)+1;
-	if str(offset+1) == ' ', offset++; endif
-        str(offset) = '*';
-      endif
-      printf("%s\n",str);
-    endfor
+    printf("  S   M  Tu   W  Th   F   S\n%s", str);
   endif
 
 %!test

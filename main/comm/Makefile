@@ -110,7 +110,7 @@ endif
 
 clean:
 	@echo "Cleaning..."; \
-	-$(RM) -f $(DELETES)
+	$(RM) -f $(DELETES)
 
 count:
 	wc *{.cc,.h,.m,.txi}

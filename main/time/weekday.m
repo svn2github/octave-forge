@@ -15,17 +15,10 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {V =} datevec(date)
-## @deftypefnx {Function File} {[Y,M,D,h,m,s] =} datevec(date)
-## Breaks the number of days since Jan 1, 0000 into a year-month-day
-## hour-minute-second format. By this reckoning, Jan 1, 1970 is day
-## number 719529.  The fractional portion of @code{date} corresponds to the
-## portion of the given day. If a single return value is requested,
-## then the components of the date are columns of the matrix @code{V}.
-##
-## Note: 32-bit architectures only handle times between Dec 14, 1901 
-## and Jan 19, 2038, with special handling for 0000-01-01.  datenum
-## returns -1 in case of a range error.
+## @deftypefn {Function File} {[d,s] =} weekday(date, [P])
+## Takes a date (in either datenum format or a string that datenum can
+## parse) and returns the number for the day of the week (0 = "Sun", 
+## 1 = "Mon", ... , "Sat")
 ##
 ## The parameter @code{P} is needed to convert date strings with 2 digit
 ## years into dates with 4 digit years.  2 digit years are assumed to be
@@ -34,11 +27,7 @@
 ## For birthdates, you would want @code{P} to be current year - 99.  For
 ## appointments, you would want @code{P} to be current year.
 ##
-## Dates must be represented as mm/dd/yy or dd-mmm-yyyy.  Times must
-## be hh:mm:ss or hh:mm:ss PM, with seconds optional.  These correspond 
-## to datestr format codes 0, 1, 2, 3, 13, 14, 15, 16.
-##
-## @seealso{date,clock,now,datestr,datenum,calendar,weekday} 
+## @seealso{date,clock,now,datestr,datenum,datevec,calendar} 
 ## @end deftypefn
 
 function [d,s] = weekday(date,P)

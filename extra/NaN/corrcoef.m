@@ -1,4 +1,4 @@
-(k)function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
+function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 % CORRCOEF calculates the correlation coefficient.
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 

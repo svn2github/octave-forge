@@ -1,7 +1,7 @@
 include ../Makeconf
 
 RAND_LINKS = randn.oct
-PROGS = rand.oct logm.oct sqrtm.oct $(RAND_LINKS) 
+PROGS = rand.oct $(RAND_LINKS) 
 #fsolve.oct
  
 all: $(PROGS)

@@ -236,7 +236,7 @@ end
    i=i+1;      % i=43
    [jnk1,jnk2, sp_values] = spfind( ars.^frn );
    full_vals=                       arf.^frn;
-   full_vals= full_vals(~isnan(full_vals) & ~isinf(full_vals) & (full_vals~=0));
+   full_vals= full_vals(full_vals~=0);
    res(i)= res(i)     +all(all( (sp_values(:) - full_vals(:)) <errortol ));
    i=i+1;      % i=44
 %    
@@ -771,7 +771,7 @@ end
    nn= mean([N,M]);
    rr= floor(rand(5,nn)*N)+1;
    cc= floor(rand(5,nn)*M)+1;
-   tf1( rr(:)+N*(cc(:)-1) ) =ones(5,nn);
+   tf1( rr(:)+N*(cc(:)-1) ) = 1;
    for k=1:length(rr(:))
       tf2( rr(k),cc(k) )+=1;
    end
@@ -836,6 +836,9 @@ eval( "splu( sparse( [0,0;0,0]   ) );");
 
 %
 % $Log$
+% Revision 1.18  2003/11/21 05:12:16  pkienzle
+% Fix broken tests
+%
 % Revision 1.17  2003/10/21 14:35:12  aadler
 % minor test and error mods
 %

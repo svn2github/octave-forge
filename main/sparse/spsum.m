@@ -1,15 +1,6 @@
-function y=spsum( x, dim)
-# spsum (X, DIM)
-#    Sum of elements along dimension DIM.  If DIM is omitted, it
-#    defaults to 1 (column-wise sum), except for row-vectors,
-#    where the row sum is taken.
-#
-# note - this is different than sum(x,1) (which is identical to sum(x))
-#        but I think this is the right way.
-
 # Copyright (C) 1998,1999 Andy Adler
 # 
-#    This program is free software; you can redistribute it and/or
+# This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of
 # the License, or (at your option) any later version.
@@ -23,6 +14,18 @@ function y=spsum( x, dim)
 #
 # $Id$
 
+# spsum (X, DIM)
+#    Sum of elements along dimension DIM.  If DIM is omitted, it
+#    defaults to 1 (column-wise sum), except for row-vectors,
+#    where the row sum is taken.
+#
+# note - this is different than sum(x,1) (which is identical to sum(x))
+#        but I think this is the right way.
+
+## PKG_ADD dispatch ("sum", "spsum", "sparse");
+## PKG_ADD dispatch ("sum", "spsum", "complex_sparse");
+function y=spsum( x, dim)
+
 if     nargin==1
    dim=1;
    if size(x,1)==1;
@@ -31,7 +34,7 @@ if     nargin==1
 elseif nargin==2
    #ok -> no change required
 else
-   print_usage("sp_sum");
+   error("y = spsum (x [, dim])");
    return;
 endif   
 
@@ -40,7 +43,6 @@ if dim==1
 elseif dim==2
    y= x*ones(size(x,2),1);
 else
-   print_usage("sp_sum");
-   return;
+   error("spsum(x,dim) only allows dimension 1 or 2");
 endif   
 

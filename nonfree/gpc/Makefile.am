@@ -39,7 +39,7 @@ gpc_create.oct: $(OBJFILES)
 
 install-data-hook:
 	for i in $(linked_oct_files) ; \
-	  do ln -sf $(octdir)/gpc_create.oct $(octdir)/$$i ; \
+	  do ln -sf gpc_create.oct $(octdir)/$$i ; \
 	done
 
 clean:

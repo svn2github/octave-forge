@@ -489,13 +489,14 @@ do_seed (octave_value_list args)
       Array<double> a(tmp.vector_value ());
       if (! error_state)
 	{
-          const int n = a.length();
+          const int input_len = a.length();
+	  const int n = input_len < N+1 ? input_len : N+1;
 	  unsigned long state[N+1];
-	  for (int i = 0; i < N+1 && i < n; i++)
+	  for (int i = 0; i < n; i++)
             {
 	      state[i] = (unsigned long)a(i);
             }
-          if (n == N+1 && state[N] <= N && state[N] > 0)
+          if (input_len == N+1 && state[N] <= N && state[N] > 0)
             set_state (state);
           else
             init_by_array (state, n);
@@ -665,7 +666,7 @@ form\n\
 v = rand (\"state\")\n\
 @end example\n\
 \n\
-This returns a column vector @var{v} of length 635. Later, you can\n\
+This returns a column vector @var{v} of length 625. Later, you can\n\
 restore the random number generator to the state @var{v}\n\
 using the form\n\
 \n\
@@ -674,8 +675,9 @@ rand (\"state\", v)\n\
 @end example\n\
 \n\
 @noindent\n\
-You may also choose your own state by using a scalar or an arbitrary\n\
-vector of length < 625 for @var{v}.\n\
+You may also initialize the state vector from an arbitrary vector of\n\
+length <= 624 for @var{v}.  This new state will be a hash based on the\n\
+the value of @var{v}, not @var{v} itself.  The old state is returned.\n\
 \n\
 By default, the generator is initialized from /dev/urandom if it is\n\
 available,otherwise from cpu time, wall clock time and the current\n\
@@ -683,7 +685,10 @@ fraction of a second.\n\
 \n\
 If instead of \"state\" you use \"seed\" to query the random\n\
 number generator, then the state will be collapsed from roughly\n\
-20000 bits down to 32 bits.\n\
+20000 bits down to 32 bits.  Unlike rand(\"state\") a call to rand(\"seed\")\n\
+changes the state, so if you are trying to reproduce a simulation\n\
+from a particular seed, be sure to include the same calls to\n\
+rand(\"seed\") at the same point in the simulation.\n\
 \n\
 @code{rand} uses the Mersenne Twister, with a period of 2^19937-1.\n\
 Do NOT use for CRYPTOGRAPHY without securely hashing several returned\n\

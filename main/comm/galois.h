@@ -99,6 +99,7 @@ public:
   galois prod (int dim) const;
   galois sum (int dim) const;
   galois sumsq (int dim) const;
+  galois sqrt (void) const;
   galois log (void) const;
   galois exp (void) const;
   galois inverse (void) const;

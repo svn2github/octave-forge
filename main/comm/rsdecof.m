@@ -15,8 +15,8 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} rsdecof (@var{in},@var{out})
-## @deftypefnx {Function File} rsdecof (@var{in},@var{out},@var{t})
+## @deftypefn {Function File} {} rsdecof (@var{in},@var{out})
+## @deftypefnx {Function File} {} rsdecof (@var{in},@var{out},@var{t})
 ##
 ## Decodes an ascii file using a Reed-Solomon coder. The input file is
 ## defined by @var{in} and the result is written to the output file @var{out}.

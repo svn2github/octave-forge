@@ -15,11 +15,11 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} scatterplot (@var{x})
-## @deftypefnx {Function File} scatterplot (@var{x},@var{n})
-## @deftypefnx {Function File} scatterplot (@var{x},@var{n},@var{off})
-## @deftypefnx {Function File} scatterplot (@var{x},@var{n},@var{off},@var{str})
-## @deftypefnx {Function File} scatterplot (@var{x},@var{n},@var{off},@var{str},@var{h})
+## @deftypefn {Function File} {} scatterplot (@var{x})
+## @deftypefnx {Function File} {} scatterplot (@var{x},@var{n})
+## @deftypefnx {Function File} {} scatterplot (@var{x},@var{n},@var{off})
+## @deftypefnx {Function File} {} scatterplot (@var{x},@var{n},@var{off},@var{str})
+## @deftypefnx {Function File} {} scatterplot (@var{x},@var{n},@var{off},@var{str},@var{h})
 ## @deftypefnx {Function File} {@var{h} =} scatterplot (@var{...})
 ##
 ## Display the scatter plot of a signal. The signal @var{x} can be either in

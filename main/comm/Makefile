@@ -2,6 +2,7 @@ include ../../Makeconf
 
 MAKEINFO = makeinfo --no-split
 TEXI2DVI = texi2dvi --clean
+TEXI2HTML = texi2html -split_chapter
 DVIPS = dvips
 
 GALOISTARGET = gf.oct
@@ -10,9 +11,9 @@ GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
 	      ov-galois.cc 
 GALOISOBJECTS = $(patsubst %.cc,%.o,$(GALOISSOURCES))
 GALOISLINKTARGETS = isgalois.oct gdiag.oct greshape.oct gprod.oct gsum.oct \
-                    gsumsq.oct glog.oct gexp.oct gfilter.oct glu.oct ginv.oct \
-                    ginverse.oct gdet.oct grank.oct rsenc.oct rsdec.oct \
-                    bchenco.oct bchdeco.oct
+                    gsumsq.oct gsqrt.oct glog.oct gexp.oct gfilter.oct \
+                    glu.oct ginv.oct ginverse.oct gdet.oct grank.oct \
+                    rsenc.oct rsdec.oct bchenco.oct bchdeco.oct
 
 GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
 OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
@@ -85,6 +86,10 @@ endif
 %.info : %.texi
 	@echo "Making info $@"; \
 	$(MAKEINFO) $< 
+
+%.html : %.texi
+	@echo "Making html $@"; \
+	$(TEXI2HTML) $< ; \
 
 %.texi : %.txi
 	@echo "Making texinfo $@"; \

@@ -443,7 +443,7 @@ function retval = comms(typ, tests)
 	gmat = gf(reshape(mod([0:matlen*matlen-1],2^m),matlen,matlen),m);
 	fprintf("PASSED\n");
 	fprintf("  Access Galois structures:                 ");
-	if (gcol.m ~= m || gcol.prim_poly ~= primpoly(m,"min", ...
+	if (gcol.m != m || gcol.prim_poly != primpoly(m,"min", ...
                                                       "nodisplay"))
           error("FAILED");
 	endif
@@ -462,39 +462,47 @@ function retval = comms(typ, tests)
           error("FAILED");
 	endif
 	tmp = gdiag(grow);
-	if (size(tmp,1) ~= 2^m || size(tmp,2) ~= 2^m)
+	if (size(tmp,1) != 2^m || size(tmp,2) != 2^m)
           error("FAILED");
 	endif
 	for i=1:2^m
           for j=1:2^m
             if ((i == j) && (tmp(i,j) != grow(i)))
               error("FAILED");
-            elseif ((i ~= j) && (tmp(i,j) ~= 0))
+            elseif ((i != j) && (tmp(i,j) != 0))
               error("FAILED");
             endif
           end
 	end
 	tmp = gdiag(gmat);
-	if (length(tmp) ~= matlen)
+	if (length(tmp) != matlen)
           error("FAILED");
 	endif
 	for i=1:matlen
-          if (gmat(i,i) ~= tmp(i))
+          if (gmat(i,i) != tmp(i))
             error("FAILED");
           endif
 	end          
 	tmp = greshape(gmat,prod(size(gmat)),1);
-	if (length(tmp) ~= prod(size(gmat)))
+	if (length(tmp) != prod(size(gmat)))
           error("FAILED");
 	endif
+	if (gexp(glog(gf([1:n],m))) != [1:n])
+          error("FAILED");
+	endif
+	tmp = gsqrt(gmat);
+	if (tmp .* tmp != gmat)
+          error("FAILED");
+	endif
+
 	fprintf("PASSED\n");
 	fprintf("  Unary operators:                          ");
 	tmp = - grow;
-	if (tmp ~= grow)
+	if (tmp != grow)
           error("FAILED");
 	endif
 	tmp = !grow;
-	if (tmp(1) ~= 1)
+	if (tmp(1) != 1)
           error("FAILED");
 	endif
 	if (any(tmp(2:length(tmp))))
@@ -503,7 +511,7 @@ function retval = comms(typ, tests)
 	tmp = gmat';
 	for i=1:size(gmat,1)
           for j=1:size(gmat,2)
-            if (gmat(i,j) ~= tmp(j,i))
+            if (gmat(i,j) != tmp(j,i))
               error("FAILED");
             endif
           end
@@ -517,25 +525,25 @@ function retval = comms(typ, tests)
 	elsqr = gcol .* gcol;
 	elsqr2 = gcol .^ gf(2,m);
 	for i=1:length(elsqr)
-          if (elsqr(i) ~= multbl(i,i))
+          if (elsqr(i) != multbl(i,i))
             error("FAILED");
           endif
 	end
 	for i=1:length(elsqr)
-          if (elsqr(i) ~= elsqr2(i))
+          if (elsqr(i) != elsqr2(i))
             error("FAILED");
           endif
 	end
 	tmp = grow(2:length(grow)) ./ gcol(2:length(gcol))';
-	if (length(tmp) ~= n || any(tmp ~= ones(1,length(grow)-1)))
+	if (length(tmp) != n || any(tmp != ones(1,length(grow)-1)))
           error("FAILED");
 	endif
 	fprintf("PASSED\n");
 	fprintf("  Logical operators:                        ");
-	if (grow(1) ~= gzero || grow(2) ~= gone || grow(2^m) ~= n)
+	if (grow(1) != gzero || grow(2) != gone || grow(2^m) != n)
           error("FAILED");
 	endif
-	if (!(grow(1) == gzero) || any(grow ~= gcol'))
+	if (!(grow(1) == gzero) || any(grow != gcol'))
           error("FAILED");
 	endif
 	fprintf("PASSED\n");

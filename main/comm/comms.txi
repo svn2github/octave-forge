@@ -298,7 +298,8 @@ octave:3> noisy = awgn(y, 10, "measured")
 @iftex
 which produces a sine-wave with noise added as seen in Figure 1.
 
-@center @image{awgn}
+@center @image{awgn, , }
+
 @center Figure 1: Sine-wave with 10dB signal-to-noise ratio
 @end iftex
 
@@ -426,7 +427,8 @@ octave:8> eyediagram(noisy,ovsp);
 which produces a eye-diagram of a noisy signal as seen in Figure 2. Similarly
 an example of the use of the function @dfn{scatterplot} is
 
-@center @image{eyediagram}
+@center @image{eyediagram, , }
+
 @center Figure 2: Eye-diagram of a QPSK like signal with 15dB signal-to-noise ratio
 @end iftex
 @ifinfo
@@ -450,12 +452,23 @@ octave:11> scatterplot(noisy,ovsp,0,"r+");
 @iftex
 which produces a scatterplot of a noisy signal as seen in Figure 3.
 
-@center @image{scatterplot}
+@center @image{scatterplot, , }
+
 @center Figure 3: Scatterplot of a QPSK like signal with 15dB signal-to-noise ratio
 @end iftex
 
 @node Source Coding, Block Coding, Random Signals, Top
 @chapter Source Coding
+
+@menu
+* Quantization::
+* PCM Coding::
+* Arithmetic Coding::
+* Dynamic Range Compression::
+@end menu
+
+@node Quantization, PCM Coding, , Source Coding
+@section Quantization
 
 An important aspect of converting an analog signal to the digital domain
 is quantization. This is the process of mapping a continuous signal to a
@@ -510,10 +523,22 @@ training signal used. So if this signal does not represent a realistic
 signal to be quantized, then the parititioning suggested by @dfn{lloyds}
 will be sub-optimal.
 
+@node PCM Coding, Arithmetic Coding, Quantization, Source Coding
+@section PCM Coding
+
 The DPCM function @dfn{dpcmenco}, @dfn{dpcmdeco} and @dfn{dpcmopt}
 implement a form of preditive quantization, where the predictability
 of the signal is used to further compress it. These functions are
 not yet implemented.
+
+@node Arithmetic Coding, Dynamic Range Compression, PCM Coding, Source Coding
+@section Arithmetic Coding
+
+The arithmetic coding functions @dfn{arithenco} and @dfn{arithdeco} are
+not yet implemented.
+
+@node Dynamic Range Compression, , Arithmetic Coding, Source Coding
+@section Dynamic Range Compression
 
 The final source coding function is @dfn{compand} which is used to
 compress and expand the dynamic range of a signal. For instance 

@@ -166,13 +166,13 @@ make_gdiag (const octave_value& a, const octave_value& b)
 	    int n = nc + k;
 	    galois r (n, n, 0, m.m(), m.primpoly());
 	    for (int i = 0; i < nc; i++)
-	      r.elem (i+roff, i+coff) = m.elem (0, i);
+	      r (i+roff, i+coff) = m (0, i);
 	    retval = new octave_galois (r);
 	  } else {
 	    int n = nr + k;
 	    galois r (n, n, 0, m.m(), m.primpoly());
 	    for (int i = 0; i < nr; i++)
-	      r.elem (i+roff, i+coff) = m.elem (i, 0);
+	      r (i+roff, i+coff) = m (i, 0);
 	    retval = new octave_galois (r);
 	  }
 	} else {
@@ -297,11 +297,11 @@ DEFUN_DLD (greshape, args, ,
       RowVector tmp1(mr*mc);
       for (int i=0;i<nr;i++)
 	for (int j=0;j<nc;j++)
-	  tmp1(i+j*nr) = (double)a.elem(i,j);
+	  tmp1(i+j*nr) = (double)a(i,j);
       galois tmp2(mr,mc,0,a.m(),a.primpoly());
       for (int i=0;i<mr;i++)
 	for (int j=0;j<mc;j++)
-	  tmp2.elem(i,j) = (int)tmp1(i+j*mr);
+	  tmp2(i,j) = (int)tmp1(i+j*mr);
       retval = new octave_galois(tmp2);
     }
   }
@@ -389,6 +389,35 @@ DEFUN_DLD (gsumsq, args, ,
   DATA_REDUCTION (sumsq);
 }
 
+// PKG_ADD: dispatch ("sqrt", "gsqrt", "galois");
+DEFUN_DLD (gsqrt, args, ,
+    "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} gsqrt (@var{x})\n"
+"Compute the square root of @var{x}, element by element, in a Galois Field.\n"
+"@end deftypefn\n"
+"@seealso{exp}")
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  if (!galois_type_loaded || (args(0).type_id () != 
+			      octave_galois::static_type_id ())) {
+    gripe_wrong_type_arg ("gsqrt", args(0));
+    return retval;
+  }
+
+  if (nargin != 1) {
+    print_usage("gsqrt");
+    return retval;
+  }
+
+  galois a = ((const octave_galois&) args(0).get_rep()).galois_value ();
+
+  retval = new octave_galois(a.sqrt());
+
+  return retval;
+}
+
 // PKG_ADD: dispatch ("log", "glog", "galois");
 DEFUN_DLD (glog, args, ,
     "-*- texinfo -*-\n"
@@ -419,6 +448,7 @@ DEFUN_DLD (glog, args, ,
   return retval;
 }
 
+
 // PKG_ADD: dispatch ("exp", "gexp", "galois");
 DEFUN_DLD (gexp, args, ,
     "-*- texinfo -*-\n"
@@ -438,7 +468,7 @@ DEFUN_DLD (gexp, args, ,
   }
 
   if (nargin != 1) {
-    print_usage("exp");
+    print_usage("gexp");
     return retval;
   }
 
@@ -462,7 +492,7 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
   int ab_len = (a.length() > b.length() ? a.length() : b.length());
   b.resize(ab_len, 1, 0);
   galois retval(x.length(), 1, 0, b.m(), b.primpoly());
-  int norm = a.elem(0,0);
+  int norm = a(0,0);
 
   if (norm == 0) {
     error("gfilter: the first element of a must be non-zero");
@@ -475,8 +505,8 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
   if (norm != 1) {
     int idx_norm = b.index_of(norm);
     for (int i=0; i < b.length(); i++) {
-      if (b.elem(i,0) != 0)
-	b.elem(i,0) = b.alpha_to(modn(b.index_of(b.elem(i,0))-idx_norm+b.n(),
+      if (b(i,0) != 0)
+	b(i,0) = b.alpha_to(modn(b.index_of(b(i,0))-idx_norm+b.n(),
 		b.m(),b.n()));
     }
   }
@@ -486,74 +516,74 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
     if (norm != 1) {
       int idx_norm = a.index_of(norm);
       for (int i=0; i < a.length(); i++)
-	if (a.elem(i,0) != 0)
-	  a.elem(i,0) = a.alpha_to(modn(a.index_of(a.elem(i,0))-idx_norm+a.n(),
+	if (a(i,0) != 0)
+	  a(i,0) = a.alpha_to(modn(a.index_of(a(i,0))-idx_norm+a.n(),
 				 a.m(),a.n()));
     }
 
     for (int i=0; i < x.length(); i++) {
-      retval.elem(i,0) = si.elem(0,0);
-      if ((b.elem(0,0) != 0) && (x.elem(i,0) != 0))
-	retval.elem(i,0) ^= b.alpha_to(modn(b.index_of(b.elem(0,0)) + 
-		b.index_of(x.elem(i,0)),b.m(),b.n()));
+      retval(i,0) = si(0,0);
+      if ((b(0,0) != 0) && (x(i,0) != 0))
+	retval(i,0) ^= b.alpha_to(modn(b.index_of(b(0,0)) + 
+		b.index_of(x(i,0)),b.m(),b.n()));
       if (si.length() > 1) {
 	for (int j = 0; j < si.length() - 1; j++) {
-	  si.elem(j,0) = si.elem(j+1,0);
-	  if ((a.elem(j+1,0) != 0) && (retval.elem(i,0) != 0))
-	    si.elem(j,0) ^= a.alpha_to(modn(a.index_of(a.elem(j+1,0)) + 
-		a.index_of(retval.elem(i,0)),a.m(),a.n()));
-	  if ((b.elem(j+1,0) != 0) && (x.elem(i,0) != 0))
-	    si.elem(j,0) ^= b.alpha_to(modn(b.index_of(b.elem(j+1,0)) + 
-		b.index_of(x.elem(i,0)),b.m(),b.n()));
+	  si(j,0) = si(j+1,0);
+	  if ((a(j+1,0) != 0) && (retval(i,0) != 0))
+	    si(j,0) ^= a.alpha_to(modn(a.index_of(a(j+1,0)) + 
+		a.index_of(retval(i,0)),a.m(),a.n()));
+	  if ((b(j+1,0) != 0) && (x(i,0) != 0))
+	    si(j,0) ^= b.alpha_to(modn(b.index_of(b(j+1,0)) + 
+		b.index_of(x(i,0)),b.m(),b.n()));
 	}
-	si.elem(si.length()-1,0) = 0;
-	if ((a.elem(si.length(),0) != 0) && (retval.elem(si.length(),0) != 0))
-	  si.elem(si.length()-1,0) ^= a.alpha_to(modn(a.index_of(
-		a.elem(si.length(),0))+a.index_of(retval.elem(i,0)),
+	si(si.length()-1,0) = 0;
+	if ((a(si.length(),0) != 0) && (retval(si.length(),0) != 0))
+	  si(si.length()-1,0) ^= a.alpha_to(modn(a.index_of(
+		a(si.length(),0))+a.index_of(retval(i,0)),
 		a.m(),a.n()));
-	if ((b.elem(si.length(),0) != 0) && (x.elem(i,0) != 0))
-	  si.elem(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
-		b.elem(si.length(),0))+ b.index_of(x.elem(i,0)),
+	if ((b(si.length(),0) != 0) && (x(i,0) != 0))
+	  si(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
+		b(si.length(),0))+ b.index_of(x(i,0)),
 		b.m(),b.n()));
       } else {
-	si.elem(0,0) = 0;
-	if ((a.elem(1,0) != 0) && (retval.elem(i,0) != 0))
-	  si.elem(0,0) ^=  a.alpha_to(modn(a.index_of(a.elem(1,0))+ 
-		a.index_of(retval.elem(i,0)),a.m(),a.n()));
-	if ((b.elem(1,0) != 0) && (x.elem(i,0) != 0))
-	  si.elem(0,0) ^= b.alpha_to(modn(b.index_of(b.elem(1,0))+
-		b.index_of(x.elem(i,0)),b.m(),b.n()));
+	si(0,0) = 0;
+	if ((a(1,0) != 0) && (retval(i,0) != 0))
+	  si(0,0) ^=  a.alpha_to(modn(a.index_of(a(1,0))+ 
+		a.index_of(retval(i,0)),a.m(),a.n()));
+	if ((b(1,0) != 0) && (x(i,0) != 0))
+	  si(0,0) ^= b.alpha_to(modn(b.index_of(b(1,0))+
+		b.index_of(x(i,0)),b.m(),b.n()));
       }
     }
   } else if (si.length() > 0) {
     for (int i = 0; i < x.length(); i++) {
-      retval.elem(i,0) = si.elem(0,0);
-      if ((b.elem(0,0) != 0) && (x.elem(i,0) != 0))
-	retval.elem(i,0) ^= b.alpha_to(modn(b.index_of(b.elem(0,0)) + 
-		b.index_of(x.elem(i,0)),b.m(),b.n()));
+      retval(i,0) = si(0,0);
+      if ((b(0,0) != 0) && (x(i,0) != 0))
+	retval(i,0) ^= b.alpha_to(modn(b.index_of(b(0,0)) + 
+		b.index_of(x(i,0)),b.m(),b.n()));
       if (si.length() > 1) {
 	for (int j = 0; j < si.length() - 1; j++) {
-	  si.elem(j,0) = si.elem(j+1,0);
-	  if ((b.elem(j+1,0) != 0) && (x.elem(i,0) != 0))
-	    si.elem(j,0) ^= b.alpha_to(modn(b.index_of(b.elem(j+1,0)) + 
-		b.index_of(x.elem(i,0)),b.m(),b.n()));
+	  si(j,0) = si(j+1,0);
+	  if ((b(j+1,0) != 0) && (x(i,0) != 0))
+	    si(j,0) ^= b.alpha_to(modn(b.index_of(b(j+1,0)) + 
+		b.index_of(x(i,0)),b.m(),b.n()));
 	}
-	si.elem(si.length()-1,0) = 0;
-	if ((b.elem(si.length(),0) != 0) && (x.elem(i,0) != 0))
-	  si.elem(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
-		b.elem(si.length(),0)) + b.index_of(x.elem(i,0)),b.m(),b.n()));
+	si(si.length()-1,0) = 0;
+	if ((b(si.length(),0) != 0) && (x(i,0) != 0))
+	  si(si.length()-1,0) ^= b.alpha_to(modn(b.index_of(
+		b(si.length(),0)) + b.index_of(x(i,0)),b.m(),b.n()));
       } else {
-	si.elem(0,0) = 0;
-	if ((b.elem(1,0) != 0) && (x.elem(i,0) != 0))
-	  si.elem(0,0) ^= b.alpha_to(modn(b.index_of(b.elem(1,0)) + 
-		b.index_of(x.elem(i,0)), b.m(), b.n()));
+	si(0,0) = 0;
+	if ((b(1,0) != 0) && (x(i,0) != 0))
+	  si(0,0) ^= b.alpha_to(modn(b.index_of(b(1,0)) + 
+		b.index_of(x(i,0)), b.m(), b.n()));
       }
     }
   } else
     for (int i=0; i<x.length(); i++)
-      if ((b.elem(0,0) != 0) && (x.elem(i,0) != 0))
-	retval.elem(i,0) = b.alpha_to(modn(b.index_of(b.elem(0,0)) + 
-		b.index_of(x.elem(i,0)), b.m(),b.n()));
+      if ((b(0,0) != 0) && (x(i,0) != 0))
+	retval(i,0) = b.alpha_to(modn(b.index_of(b(0,0)) + 
+		b.index_of(x(i,0)), b.m(),b.n()));
 
   return retval;
 }
@@ -1175,23 +1205,23 @@ DEFUN_DLD (rsenc, args, nargout,
     // Create polynomial of right length.
     genpoly = galois(nroots+1,1,0,m,primpoly);
 
-    genpoly.elem(nroots,0) = 1;
+    genpoly(nroots,0) = 1;
     int i,root;
     for (i = 0,root=fcr*prim; i < nroots; i++,root += prim) {
-      genpoly.elem(nroots-i-1,0) = 1;
+      genpoly(nroots-i-1,0) = 1;
 
       // Multiply genpoly by  @**(root + x)
       for (int j = i; j > 0; j--){
 	int k = nroots - j;
-	if (genpoly.elem(k,0) != 0)
-	  genpoly.elem(k,0) = genpoly.elem(k+1,0) ^ genpoly.alpha_to(
-		modn(genpoly.index_of(genpoly.elem(k,0)) + root, m, n));
+	if (genpoly(k,0) != 0)
+	  genpoly(k,0) = genpoly(k+1,0) ^ genpoly.alpha_to(
+		modn(genpoly.index_of(genpoly(k,0)) + root, m, n));
 	else
-	  genpoly.elem(k,0) = genpoly.elem(k+1,0);
+	  genpoly(k,0) = genpoly(k+1,0);
       }
       // genpoly(nroots,0) can never be zero
-      genpoly.elem(nroots,0) = genpoly.alpha_to(modn(genpoly.index_of(
-			genpoly.elem(nroots,0)) + root, m, n));
+      genpoly(nroots,0) = genpoly.alpha_to(modn(genpoly.index_of(
+			genpoly(nroots,0)) + root, m, n));
     }
 
   } else {
@@ -1211,11 +1241,11 @@ DEFUN_DLD (rsenc, args, nargout,
     }
   }
 
-  int norm = genpoly.elem(0,0);
+  int norm = genpoly(0,0);
 
   // Take logarithm of generator polynomial, for faster coding
   for (int i = 0; i < nroots+1; i++)
-    genpoly.elem(i,0) = genpoly.index_of(genpoly.elem(i,0));
+    genpoly(i,0) = genpoly.index_of(genpoly(i,0));
 
   // Add space for parity block
   msg.resize(nsym,n,0);
@@ -1234,24 +1264,24 @@ DEFUN_DLD (rsenc, args, nargout,
     for (int l = 0; l < nsym; l++) {
       galois par(nroots,1,0,m,primpoly);
       for (int i = 0; i < k; i++) { 
-	int feedback = par.index_of(par.elem(0,0) ^ msg.elem(l,i));
+	int feedback = par.index_of(par(0,0) ^ msg(l,i));
 	if (feedback != nn) {
 	  if (norm != 1)
-	    feedback = modn(nn-genpoly.elem(0,0)+feedback, m, nn);
+	    feedback = modn(nn-genpoly(0,0)+feedback, m, nn);
 	  for (int j = 1; j < nroots; j++)
-	    par.elem(j,0) ^= par.alpha_to(modn(feedback +
-					       genpoly.elem(j,0), m, nn)); 
+	    par(j,0) ^= par.alpha_to(modn(feedback +
+					       genpoly(j,0), m, nn)); 
 	}
 	for (int j = 1; j < nroots; j++)
-	  par.elem(j-1,0) = par.elem(j,0);
+	  par(j-1,0) = par(j,0);
 	if (feedback != nn)
-	  par.elem(nroots-1,0) = par.alpha_to(modn(feedback+
-					genpoly.elem(nroots,0), m, nn));
+	  par(nroots-1,0) = par.alpha_to(modn(feedback+
+					genpoly(nroots,0), m, nn));
 	else
-	  par.elem(nroots-1,0) = 0;
+	  par(nroots-1,0) = 0;
       }
       for (int j = 0; j < nroots; j++)
-	msg.elem(l,k+j) = par.elem(j,0);
+	msg(l,k+j) = par(j,0);
     }
   } else {
     for (int l = 0; l < nsym; l++) {
@@ -1263,24 +1293,24 @@ DEFUN_DLD (rsenc, args, nargout,
     for (int l = 0; l < nsym; l++) {
       galois par(nroots,1,0,m,primpoly);
       for (int i = n; i > nroots; i--) { 
-	int feedback = par.index_of(par.elem(0,0) ^ msg.elem(l,i-1));
+	int feedback = par.index_of(par(0,0) ^ msg(l,i-1));
 	if (feedback != nn) {
 	  if (norm != 1)
-	    feedback = modn(nn-genpoly.elem(0,0)+feedback, m, nn);
+	    feedback = modn(nn-genpoly(0,0)+feedback, m, nn);
 	  for (int j = 1; j < nroots; j++)
-	    par.elem(j,0) ^= par.alpha_to(modn(feedback +
-					       genpoly.elem(j,0), m, nn)); 
+	    par(j,0) ^= par.alpha_to(modn(feedback +
+					       genpoly(j,0), m, nn)); 
 	}
 	for (int j = 1; j < nroots; j++)
-	  par.elem(j-1,0) = par.elem(j,0);
+	  par(j-1,0) = par(j,0);
 	if (feedback != nn)
-	  par.elem(nroots-1,0) = par.alpha_to(modn(feedback+
-					genpoly.elem(nroots,0), m, nn));
+	  par(nroots-1,0) = par.alpha_to(modn(feedback+
+					genpoly(nroots,0), m, nn));
 	else
-	  par.elem(nroots-1,0) = 0;
+	  par(nroots-1,0) = 0;
       }
       for (int j = 0; j < nroots; j++)
-	msg.elem(l,j) = par.elem(nroots-j-1,0);
+	msg(l,j) = par(nroots-j-1,0);
     }
   }
 
@@ -1323,25 +1353,25 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
   /* form the syndromes; i.e., evaluate data(x) at roots of g(x) */
   if (msb_first) {
     for(i=0;i<nroots;i++)
-      s[i] = data.elem(drow,0);
+      s[i] = data(drow,0);
 
     for(j=1;j<n;j++)
       for(i=0;i<nroots;i++)
 	if(s[i] == 0)
-	  s[i] = data.elem(drow,j);
+	  s[i] = data(drow,j);
 	else
-	  s[i] = data.elem(drow,j) ^ data.alpha_to(modn(data.index_of(s[i]) + 
+	  s[i] = data(drow,j) ^ data.alpha_to(modn(data.index_of(s[i]) + 
 					(fcr+i)*prim, m, n));
   } else {
     for(i=0;i<nroots;i++)
-      s[i] = data.elem(drow,n-1);
+      s[i] = data(drow,n-1);
 
     for(j=n-1;j>0;j--)
       for(i=0;i<nroots;i++)
 	if(s[i] == 0)
-	  s[i] = data.elem(drow,j-1);
+	  s[i] = data(drow,j-1);
 	else 
-	  s[i] = data.elem(drow,j-1) ^ data.alpha_to(modn(data.index_of(s[i]) +
+	  s[i] = data(drow,j-1) ^ data.alpha_to(modn(data.index_of(s[i]) +
 					(fcr+i)*prim, m, n));
   }
 
@@ -1667,13 +1697,13 @@ DEFUN_DLD (rsdec, args, nargout,
       OCTAVE_LOCAL_BUFFER(int, roots, nroots);
       for (int j=0; j <=nn; j++) {
 	// Evaluate generator polynomial at j
-	int val = genpoly.elem(0,0);
+	int val = genpoly(0,0);
 	int indx = genpoly.index_of(j);
 	for (int i=0; i<nroots; i++) {
 	  if (val == 0)
-	    val = genpoly.elem(i+1,0);
+	    val = genpoly(i+1,0);
 	  else
-	    val = genpoly.elem(i+1,0) ^ genpoly.alpha_to(modn(indx +
+	    val = genpoly(i+1,0) ^ genpoly.alpha_to(modn(indx +
 				genpoly.index_of(val), m, nn));
 	}
 	if (val == 0) {
@@ -1737,7 +1767,7 @@ DEFUN_DLD (rsdec, args, nargout,
     if (parity_at_end) 
       for (int l = 0; l < nsym; l++)
 	for (int i=n; i > 0; i--)
-	  code.elem(l,i+nn-n-1) = code.elem(l,i-1);
+	  code(l,i+nn-n-1) = code(l,i-1);
   }
 
   for (int l = 0; l < nsym; l++)
@@ -1747,18 +1777,18 @@ DEFUN_DLD (rsdec, args, nargout,
     if (parity_at_end) 
       for (int l = 0; l < nsym; l++)
 	for (int i=0; i > n; i--)
-	  code.elem(l,i) = code.elem(l,i+nn-n);
+	  code(l,i) = code(l,i+nn-n);
     code.resize(nsym,n,0);
   }
 
   if (parity_at_end) {
     for (int l = 0; l < nsym; l++)
       for (int i=0; i < k; i++)
-	msg.elem(l,i) = code.elem(l,i);
+	msg(l,i) = code(l,i);
   } else {
     for (int l = 0; l < nsym; l++)
       for (int i=0; i < k; i++)
-	msg.elem(l,i) = code.elem(l,nroots+i);
+	msg(l,i) = code(l,nroots+i);
   }
 
   retval(0) = new octave_galois (msg);
@@ -1892,12 +1922,12 @@ DEFUN_DLD (bchenco, args, ,
 
       c.resize(nc+1,m);
       cs.resize(nc+1);
-      c.elem(nc,0) = idx; 
+      c(nc,0) = idx; 
       found(c.alpha_to(idx)-1) = 1;
       cs(nc) = 1;
       int r = idx;
       while ((r = modn(r<<1,m,n)) > idx) {
-	c.elem(nc,cs(nc)) = r;
+	c(nc,cs(nc)) = r;
 	found(c.alpha_to(r)-1) = 1;
 	cs(nc) += 1;
       }
@@ -1917,10 +1947,10 @@ DEFUN_DLD (bchenco, args, ,
 	  for (int j = 2*(t-1); j<2*t; j++) {
 	    int flag = 0;
 	    for (int l=0; l<cs(i); l++) {
-	      if (c.elem(i,l) == j+1) {
+	      if (c(i,l) == j+1) {
 		f.resize(1,nf+cs(i));
 		for (int ll=0; ll<cs(i); ll++)
-		  f.elem(0,nf+ll) = c.elem(i,ll);
+		  f(0,nf+ll) = c(i,ll);
 		found(i) = 0;
 		nf += cs(i);
 		flag = 1;
@@ -1941,21 +1971,21 @@ DEFUN_DLD (bchenco, args, ,
     // Create polynomial of right length.
     genpoly = galois(nf+1,1,0,m);
 
-    genpoly.elem(0,0) = 1;
+    genpoly(0,0) = 1;
     for (int i = 0; i < nf; i++) {
-      genpoly.elem(i+1,0) = 1;
+      genpoly(i+1,0) = 1;
 
       // Multiply genpoly by  @**(root + x)
       for (int l = i; l > 0; l--){
-	if (genpoly.elem(l,0) != 0)
-	  genpoly.elem(l,0) = genpoly.elem(l-1,0) ^ genpoly.alpha_to(
-		modn(genpoly.index_of(genpoly.elem(l,0)) + f.elem(0,i), m, n));
+	if (genpoly(l,0) != 0)
+	  genpoly(l,0) = genpoly(l-1,0) ^ genpoly.alpha_to(
+		modn(genpoly.index_of(genpoly(l,0)) + f(0,i), m, n));
 	else
-	  genpoly.elem(l,0) = genpoly.elem(l-1,0);
+	  genpoly(l,0) = genpoly(l-1,0);
       }
       // genpoly(0,0) can never be zero
-      genpoly.elem(0,0) = genpoly.alpha_to(modn(genpoly.index_of(
-			genpoly.elem(0,0)) + f.elem(0,i), m, n));
+      genpoly(0,0) = genpoly.alpha_to(modn(genpoly.index_of(
+			genpoly(0,0)) + f(0,i), m, n));
     }
   }
 
@@ -1973,18 +2003,18 @@ DEFUN_DLD (bchenco, args, ,
   if (parity_at_end) {
     for (int l = 0; l < nsym; l++) {
       for (int i = 0; i < k; i++) { 
-	int feedback = (int)msg.elem(l,i) ^ (int)msg.elem(l,k);
+	int feedback = (int)msg(l,i) ^ (int)msg(l,k);
 	if (feedback != 0) {
 	  for (int j = 0; j < nn-k-1; j++)
-	    if (genpoly.elem(nn-k-j-1,0) != 0)
-	      msg.elem(l,k+j) = (int)msg.elem(l,k+j+1) ^ feedback;
+	    if (genpoly(nn-k-j-1,0) != 0)
+	      msg(l,k+j) = (int)msg(l,k+j+1) ^ feedback;
 	    else
-	      msg.elem(l,k+j) = msg.elem(l,k+j+1);
-	  msg.elem(l,nn-1) = genpoly.elem(0,0) & feedback;
+	      msg(l,k+j) = msg(l,k+j+1);
+	  msg(l,nn-1) = genpoly(0,0) & feedback;
 	} else {
 	  for (int j = k; j < nn-1; j++)
-	    msg.elem(l,j) = msg.elem(l,j+1);
-	  msg.elem(l,nn-1) = 0;
+	    msg(l,j) = msg(l,j+1);
+	  msg(l,nn-1) = 0;
 	}
       }
     }
@@ -1998,18 +2028,18 @@ DEFUN_DLD (bchenco, args, ,
 
     for (int l = 0; l < nsym; l++) {
       for (int i = k-1; i >= 0; i--) { 
-	int feedback = (int)msg.elem(l,nn-k+i) ^ (int)msg.elem(l,nn-k-1);
+	int feedback = (int)msg(l,nn-k+i) ^ (int)msg(l,nn-k-1);
 	if (feedback != 0) {
 	  for (int j = nn - k -1; j > 0; j--)
-	    if (genpoly.elem(j,0) != 0)
-	      msg.elem(l,j) = (int)msg.elem(l,j-1) ^ feedback;
+	    if (genpoly(j,0) != 0)
+	      msg(l,j) = (int)msg(l,j-1) ^ feedback;
 	    else
-	      msg.elem(l,j) = msg.elem(l,j-1);
-	  msg.elem(l,0) = genpoly.elem(0,0) & feedback;
+	      msg(l,j) = msg(l,j-1);
+	  msg(l,0) = genpoly(0,0) & feedback;
 	} else {
 	  for (int j = nn - k - 1; j > 0; j--)
-	    msg.elem(l,j) = msg.elem(l,j-1);
-	  msg.elem(l,0) = 0;
+	    msg(l,j) = msg(l,j-1);
+	  msg(l,0) = 0;
 	}
       }
     }
@@ -2151,10 +2181,10 @@ DEFUN_DLD (bchdeco, args, ,
     for (int i = 1; i <= t2; i++) {
       for (int j = 0; j < nn; j++) {
 	if (parity_at_end) {
-	  if (code.elem(lsym,nn-j-1) != 0)
+	  if (code(lsym,nn-j-1) != 0)
 	    s(i) ^= tables.alpha_to(modn(i*j,m,n));
 	} else {
-	  if (code.elem(lsym,j) != 0)
+	  if (code(lsym,j) != 0)
 	    s(i) ^= tables.alpha_to(modn(i*j,m,n));
 	}
       }
@@ -2295,10 +2325,10 @@ DEFUN_DLD (bchdeco, args, ,
 	  nerr(lsym) = l(u);
 	  for (int i = 0; i < l(u); i++)
 	    if (parity_at_end)
-	      code.elem(lsym,nn-loc(i)-1) = 
-		(int)code.elem(lsym,nn-loc(i)-1) ^ 1;
+	      code(lsym,nn-loc(i)-1) = 
+		(int)code(lsym,nn-loc(i)-1) ^ 1;
 	    else
-	      code.elem(lsym,loc(i)) = (int)code.elem(lsym,loc(i)) ^ 1;
+	      code(lsym,loc(i)) = (int)code(lsym,loc(i)) ^ 1;
 	} else	/* elp has degree >t hence cannot solve */
 	  nerr(lsym) = -1;
       } else
@@ -2310,11 +2340,11 @@ DEFUN_DLD (bchdeco, args, ,
   if (parity_at_end) {
     for (int l = 0; l < nsym; l++)
       for (int i = 0; i < k; i++)
-	msg.elem(l,i) = code.elem(l,i);
+	msg(l,i) = code(l,i);
   } else {
     for (int l = 0; l < nsym; l++)
       for (int i=0; i < k; i++)
-	msg.elem(l,i) = code.elem(l,nn-k+i);
+	msg(l,i) = code(l,nn-k+i);
   }
   
   retval(0) = octave_value(msg);

@@ -58,7 +58,7 @@ octave_galois::dotref (const octave_value_list& idx)
     Matrix data(r,c);
     for (int i=0; i< r; i++)
       for (int j=0; j< c; j++)
-	data(i,j) = (double)gval.elem(i,j);
+	data(i,j) = (double)gval(i,j);
     retval(0) = octave_value (data);
   } 
 #ifdef GALOIS_DISP_PRIVATES
@@ -249,7 +249,7 @@ octave_galois::print_raw (std::ostream& os, bool) const
 
   for (int i = 0; i < gval.rows(); i++)
     for (int j = 0; j < gval.columns(); j++)
-      data(i,j) = (double)gval.elem(i,j);
+      data(i,j) = (double)gval(i,j);
 
   octave_print_internal (os, data, false, current_print_indent_level ());
   newline (os);
@@ -321,7 +321,7 @@ octave_galois::matrix_value (bool) const
   retval.resize(rows(),columns());
   for (int i=0; i<rows(); i++)
     for (int j=0; j<columns(); j++)
-      retval(i,j) = gval.elem(i,j);
+      retval(i,j) = gval(i,j);
 
   return retval;
 }

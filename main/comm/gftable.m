@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} gftable (@var{m}, @var{primpoly})
+## @deftypefn {Function File} {} gftable (@var{m}, @var{primpoly})
 ##
 ## This function exists for compatiability with matlab. As the octave galois
 ## fields store a copy of the lookup tables for every field in use internally,

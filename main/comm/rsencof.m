@@ -15,9 +15,9 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} rsencof (@var{in},@var{out})
-## @deftypefnx {Function File} rsencof (@var{in},@var{out},@var{t})
-## @deftypefnx {Function File} rsencof (@var{...},@var{pad})
+## @deftypefn {Function File} {} rsencof (@var{in},@var{out})
+## @deftypefnx {Function File} {} rsencof (@var{in},@var{out},@var{t})
+## @deftypefnx {Function File} {} rsencof (@var{...},@var{pad})
 ##
 ## Encodes an ascii file using a Reed-Solomon coder. The input file is
 ## defined by @var{in} and the result is written to the output file @var{out}.

@@ -79,12 +79,12 @@ void gripe_init_galois (void);
     for (int i=0; i<nr; i++) \
       for (int j=0; j<nc; j++) \
         { \
-	  if ((M1.elem(i,j) < 0) || (M1. elem(i,j) > NN)) \
+	  if ((M1(i,j) < 0) || (M1(i,j) > NN)) \
 	    { \
 	      gripe_nonconformant_galois (OP, M1.m()); \
 	      return RET (); \
 	    } \
-	  if (((double)M1.elem(i,j) - (double)((int)M1.elem(i,j))) != 0.) \
+	  if (((double)M1(i,j) - (double)((int)M1(i,j))) != 0.) \
 	    { \
 	       gripe_nonconformant_galois (OP, M1.m()); \
 	       return RET (); \
@@ -100,7 +100,7 @@ void gripe_init_galois (void);
     for (int i=0; i<nr; i++) \
       for (int j=0; j<nc; j++) \
         { \
-	  if (M.elem(i,j) == 0) \
+	  if (M(i,j) == 0) \
 	    { \
 	      gripe_divzero_galois(OP); \
 	      return RET (); \
@@ -183,6 +183,7 @@ void gripe_init_galois (void);
 	      } \
 	    else \
 	      { \
+                int indxm1 = r.index_of((int)m1(0,0)); \
 		for (int i=0; i<m2_nr; i++) \
 		  for (int j=0; j<m2_nc; j++) \
 		    { \
@@ -190,7 +191,7 @@ void gripe_init_galois (void);
 			r(i,j) = 0; \
 		      else \
 			{ \
-		          r(i,j) = r.index_of((int)m1(0,0)) OP r.index_of((int)m2(i,j)) + NN; \
+		          r(i,j) = indxm1 OP r.index_of((int)m2(i,j)) + NN; \
 		          MODN(r(i,j), r.m(), r.n()); \
 		          r(i,j) = r.alpha_to(r(i,j)); \
 			} \
@@ -208,6 +209,7 @@ void gripe_init_galois (void);
 	      } \
 	    else \
 	      { \
+                int indxm2 = r.index_of((int)m2(0,0)); \
 		for (int i=0; i<m1_nr; i++) \
 		  for (int j=0; j<m1_nc; j++) \
 		    { \
@@ -215,7 +217,7 @@ void gripe_init_galois (void);
 			r(i,j) = 0; \
 		      else \
 			{ \
-			  r(i,j) = r.index_of((int)m1(i,j)) OP r.index_of((int)m2(0,0)) + NN; \
+			  r(i,j) = r.index_of((int)m1(i,j)) OP  indxm2 + NN; \
 			  MODN(r(i,j), r.m(), r.n()); \
 			  r(i,j) = r.alpha_to(r(i,j)); \
 			} \
@@ -276,7 +278,7 @@ void gripe_init_galois (void);
  \
 	    for (int j = 0; j < m1_nc; j++) \
 	      for (int i = 0; i < m1_nr; i++) \
-		r.elem(i, j) = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
+		r(i, j) = C1 (m1(i, j)) OP C2 (m2(i, j)); \
 	  } \
       } \
     else \
@@ -288,14 +290,14 @@ void gripe_init_galois (void);
 	    r.resize(m2_nr,m2_nc); \
 	    for (int i=0; i<m2_nr; i++) \
 	      for (int j=0; j<m2_nc; j++) \
-		r.elem(i, j) = C1 (m1.elem(0, 0)) OP C2 (m2.elem(i, j)); \
+		r(i, j) = C1 (m1(0, 0)) OP C2 (m2(i, j)); \
 	  } \
 	else if ((m2_nr == 1 && m2_nc == 1) && (m1_nr > 0 && m1_nc > 0)) \
 	  { \
 	    r.resize(m1_nr,m1_nc); \
 	    for (int i=0; i<m1_nr; i++) \
 	      for (int j=0; j<m1_nc; j++) \
-		r.elem(i, j) = C1 (m1.elem(i, j)) OP C2 (m2.elem(0, 0)); \
+		r(i, j) = C1 (m1(i, j)) OP C2 (m2(0, 0)); \
 	  } \
 	else \
 	  gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -335,8 +337,8 @@ void gripe_init_galois (void);
 	    for (int j = 0; j < m1_nc; j++) \
 	      for (int i = 0; i < m1_nr; i++) \
                 { \
-		  r.elem(i, j) = (m1.elem(i, j) != ZERO) \
-                                OP (m2.elem(i, j) != ZERO); \
+		  r(i, j) = (m1(i, j) != ZERO) \
+                                OP (m2(i, j) != ZERO); \
                 } \
 	  } \
       } \
@@ -347,16 +349,16 @@ void gripe_init_galois (void);
 	    r.resize(m2_nr,m2_nc); \
 	    for (int i=0; i<m2_nr; i++) \
 	      for (int j=0; j<m2_nc; j++) \
-		r.elem(i, j) = (m1.elem(0, 0) != ZERO) \
-                                OP (m2.elem(i, j) != ZERO); \
+		r(i, j) = (m1(0, 0) != ZERO) \
+                                OP (m2(i, j) != ZERO); \
 	  } \
 	else if ((m2_nr == 1 && m2_nc == 1) && (m1_nr > 0 && m1_nc > 0)) \
 	  { \
 	    r.resize(m1_nr,m1_nc); \
 	    for (int i=0; i<m1_nr; i++) \
 	      for (int j=0; j<m1_nc; j++) \
-		r.elem(i, j) = (m1.elem(i, j) != ZERO) \
-                                OP (m2.elem(0, 0) != ZERO); \
+		r(i, j) = (m1(i, j) != ZERO) \
+                                OP (m2(0, 0) != ZERO); \
 	  } \
 	else if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
 	  gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
@@ -382,7 +384,7 @@ void gripe_init_galois (void);
 	  RET.resize (nr, 1); \
 	  for (int i = 0; i < nr; i++) \
 	    { \
-	      RET.elem (i, 0) = INIT_VAL; \
+	      RET (i, 0) = INIT_VAL; \
 	      for (int j = 0; j < nc; j++) \
 		{ \
 		  ROW_EXPR; \
@@ -394,7 +396,7 @@ void gripe_init_galois (void);
 	  RET.resize (1, nc); \
 	  for (int j = 0; j < nc; j++) \
 	    { \
-	      RET.elem (0, j) = INIT_VAL; \
+	      RET (0, j) = INIT_VAL; \
 	      for (int i = 0; i < nr; i++) \
 		{ \
 		  COL_EXPR; \

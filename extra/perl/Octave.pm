@@ -124,7 +124,7 @@ sub _validate
   my $switches= "-qfH";
   my $octave_interpreter_bin;
 
-  $octave_interpreter_bin= 'C:/cygwin/bin/octave-2.1.36.exe' # _EDITLINE_MARKER_
+  $octave_interpreter_bin= 'octave' # _EDITLINE_MARKER_
      unless $octave_object->{INTERP};
 
   $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
@@ -832,11 +832,8 @@ unless ($Inline::Octave::methods_defined) {
 
    for my $meth ( sort keys %methods ) {
       no strict 'refs';
-#     my $nargout= "Inline::Octave::$methods{$meth};
+      no warnings 'redefine';
       my $nargout= $methods{$meth};
-#     we are inserting these methods into the current package
-#     however Test::Harness gives lots of warnings - I don't know
-#     why.
       *$meth = sub {
          my $code= "[";
 
@@ -923,6 +920,9 @@ TODO LIST:
        into an Inline::Octave::Variable class
 
 $Log$
+Revision 1.17  2003/01/07 02:47:49  aadler
+mods to remove warnings from tests
+
 Revision 1.16  2002/10/29 03:59:29  aadler
 improved complex code
 

@@ -228,8 +228,8 @@ oct_sparse_inverse( const octave_sparse& Asp,
 
    oct_sparse_Destroy_SuperMatrix( L);
    oct_sparse_Destroy_SuperMatrix( Lt);
-   oct_sparse_Destroy_SuperMatrix( U);
    oct_sparse_Destroy_SuperMatrix( iUt);
+   oct_sparse_Destroy_SuperMatrix( U);
 
    octave_value iLS =  new octave_sparse( iL );
    octave_value iUS =  new octave_sparse( iU );
@@ -349,6 +349,10 @@ rather than
 
 /*
  * $Log$
+ * Revision 1.3  2001/10/14 03:06:31  aadler
+ * fixed memory leak in complex sparse solve
+ * fixed malloc bugs for zero size allocs
+ *
  * Revision 1.2  2001/10/12 02:24:28  aadler
  * Mods to fix bugs
  * add support for all zero sparse matrices

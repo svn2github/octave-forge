@@ -19,6 +19,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.3  2001/10/14 03:06:31  aadler
+fixed memory leak in complex sparse solve
+fixed malloc bugs for zero size allocs
+
 Revision 1.2  2001/10/12 02:24:28  aadler
 Mods to fix bugs
 add support for all zero sparse matrices
@@ -49,9 +53,9 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       gripe_nonconformant ("operator " #_OP_, Anr, Anc, Bnr, Bnc); \
    } else { \
       assert(Anr == Bnr); assert(Anc == Bnc); \
-      TYPX* coefX= (TYPX*)malloc( nnz  * sizeof(TYPX)); \
-      int * ridxX= (int *)malloc( nnz  * sizeof(int) ); \
-      int * cidxX= (int *)malloc((Anc+1)*sizeof(int)); cidxX[0]= 0; \
+      TYPX* coefX= (TYPX*)oct_sparse_malloc( nnz  * sizeof(TYPX)); \
+      int * ridxX= (int *)oct_sparse_malloc( nnz  * sizeof(int) ); \
+      int * cidxX= (int *)oct_sparse_malloc((Anc+1)*sizeof(int)); cidxX[0]= 0; \
  \
       int jx= 0; \
       for (int i= 0 ; i < Anc ; i++ ) { \
@@ -109,9 +113,9 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       gripe_nonconformant ("operator .*", Anr, Anc, Bnr, Bnc); \
    } else { \
       assert(Anr == Bnr); assert(Anc == Bnc); \
-      TYPX* coefX= (TYPX*)malloc( nnz  * sizeof(TYPX)); \
-      int * ridxX= (int *)malloc( nnz  * sizeof(int) ); \
-      int * cidxX= (int *)malloc((Anc+1)*sizeof(int)); cidxX[0]= 0; \
+      TYPX* coefX= (TYPX*)oct_sparse_malloc( nnz  * sizeof(TYPX)); \
+      int * ridxX= (int *)oct_sparse_malloc( nnz  * sizeof(int) ); \
+      int * cidxX= (int *)oct_sparse_malloc((Anc+1)*sizeof(int)); cidxX[0]= 0; \
  \
       int cx= 0; \
       for (int i=0; i < Anc ; i++) { \
@@ -193,11 +197,11 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    } else { \
       assert (Anc == Bnr ); \
       int nnz =  NCFA->nnz + NCFB->nnz ; \
-      TYPX* coefX= (TYPX*)malloc( nnz  * sizeof(TYPX)); \
-      int * ridxX= (int *)malloc( nnz  * sizeof(int) ); \
-      int * cidxX= (int *)malloc((Bnc+1)*sizeof(int)); cidxX[0]= 0; \
+      TYPX* coefX= (TYPX*)oct_sparse_malloc( nnz  * sizeof(TYPX)); \
+      int * ridxX= (int *)oct_sparse_malloc( nnz  * sizeof(int) ); \
+      int * cidxX= (int *)oct_sparse_malloc((Bnc+1)*sizeof(int)); cidxX[0]= 0; \
  \
-      TYPX * Xcol= (TYPX*)malloc( Anr  * sizeof(TYPX)); \
+      TYPX * Xcol= (TYPX*)oct_sparse_malloc( Anr  * sizeof(TYPX)); \
       int cx= 0; \
       for ( int i=0; i < Bnc ; i++) { \
          for (int k=0; k<Anr; k++) Xcol[k]= 0; \
@@ -229,9 +233,9 @@ Revision 1.1  2001/03/30 04:34:23  aadler
 // otherwise the maximum matrix size will be m*n < maxint/2
 #define ASSEMBLE_SPARSE( TYPX ) \
    int  nnz= MAX( ridxA.length(), cidxA.length() ); \
-   TYPX* coefX= (TYPX*)malloc( nnz  * sizeof(TYPX)); \
-   int * ridxX= (int *)malloc( nnz  * sizeof(int) ); \
-   int * cidxX= (int *)malloc( (n+1)* sizeof(int)); cidxX[0]= 0; \
+   TYPX* coefX= (TYPX*)oct_sparse_malloc( nnz  * sizeof(TYPX)); \
+   int * ridxX= (int *)oct_sparse_malloc( nnz  * sizeof(int) ); \
+   int * cidxX= (int *)oct_sparse_malloc( (n+1)* sizeof(int)); cidxX[0]= 0; \
  \
    bool ri_scalar = (ridxA.length() == 1); \
    bool ci_scalar = (cidxA.length() == 1); \
@@ -266,9 +270,9 @@ Revision 1.1  2001/03/30 04:34:23  aadler
 // work with it.
 #define MATRIX_TO_SPARSE( TYPX ) \
    int nnz= 100; \
-   TYPX * coef = (TYPX *) malloc ( nnz   * sizeof(TYPX) ); \
-   int  * ridx = (int  *) malloc ( nnz   * sizeof(int) ); \
-   int  * cidx = (int  *) malloc ((Anc+1)* sizeof(int) );  cidx[0]= 0; \
+   TYPX * coef = (TYPX *) oct_sparse_malloc ( nnz   * sizeof(TYPX) ); \
+   int  * ridx = (int  *) oct_sparse_malloc ( nnz   * sizeof(int) ); \
+   int  * cidx = (int  *) oct_sparse_malloc ((Anc+1)* sizeof(int) );  cidx[0]= 0; \
    int jx=0; \
    for (int j= 0; j<Anc ; j++ ) { \
       for (int i= 0; i<Anr ; i++ ) { \
@@ -397,14 +401,22 @@ fixrow_comp( const void *i, const void *j)  \
 //          printf("n=%d, m=%d, X[%d]=%7.4f U[%d]=%7.4f cXp=%d cUp=%d v=%7.4f\n", 
 //                n,m, rpX, coefX[ scolXp ], rpU, coefU[ scolUp ], 
 //             scolXp,scolUp, v); 
+#if 0   
+// this is a pain - we can't use c++ constructors because
+// dmalloc complains when they're free'd
+   int * ridxX = new int  [nnz]; \
+   TYPE* coefX = new TYPE [nnz]; \
+   int * cidxX = new int  [Unc+1]; \
+
+#endif   
 
 #define SPARSE_INV_UPPERTRIANG( TYPE ) \
    assert ( Unc == Unr ); \
    /* estimate inverse nnz= input nnz */ \
    int     nnz = NCFU->nnz; \
-   int * ridxX = new int  [nnz]; \
-   TYPE* coefX = new TYPE [nnz]; \
-   int * cidxX = new int  [Unc+1]; \
+   int * ridxX = (int * ) oct_sparse_malloc ( sizeof(int) *nnz); \
+   TYPE* coefX = (TYPE* ) oct_sparse_malloc ( sizeof(TYPE)*nnz); \
+   int * cidxX = (int * ) oct_sparse_malloc ( sizeof(int )*(Unc+1)); \
  \
    int cx= 0; \
  \

@@ -33,9 +33,15 @@ $Id$
 
 void *
 oct_sparse_malloc(int size) {
-#if 1   
-   return malloc(size);
-#else
+   // avoid zero byte alloc requests, request a minimum of
+   // 1 byte - this is ok becuause free should handle it
+   size= MAX(size,1);
+#ifdef USE_DMALLOC   
+   return _malloc_leap(__FILE__, __LINE__, size);
+#else   
+   return malloc( MAX(size,1) );
+#endif   
+#if 0   
    void * vp= malloc( size );
    printf ("allocated %04X : %d\n", (int) vp, size);
    return vp;
@@ -49,9 +55,12 @@ oct_sparse_fatalerr(char *msg) {
 
 void
 oct_sparse_free(void * addr) {
-#if 1
-   if (addr) free( addr );
+#ifdef USE_DMALLOC   
+   if(addr) _free_leap(__FILE__, __LINE__, addr);
 #else   
+   if (addr) free( addr );
+#endif   
+#if 0
    DEBUGMSG("sparse - oct_sparse_free");
    printf ("freeing %04X\n", (int) addr );
    free( addr );
@@ -72,8 +81,8 @@ oct_sparse_expand_bounds( int lim, int& bound,
 
    DEBUGMSG("growing bounds"); 
    bound*= mem_expand;
-   int *   t_idx = (int  *) malloc((bound) * sizeof(int)); 
-   void * t_coef = (void *) malloc((bound) * varsize    ); 
+   int *   t_idx = (int  *) oct_sparse_malloc((bound) * sizeof(int)); 
+   void * t_coef = (void *) oct_sparse_malloc((bound) * varsize    ); 
    if ((t_idx==NULL) || (t_coef == NULL) ) 
       SP_FATAL_ERR("memory error in check_bounds");
  
@@ -256,6 +265,10 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.3  2001/10/14 03:06:31  aadler
+ * fixed memory leak in complex sparse solve
+ * fixed malloc bugs for zero size allocs
+ *
  * Revision 1.2  2001/10/12 02:24:28  aadler
  * Mods to fix bugs
  * add support for all zero sparse matrices

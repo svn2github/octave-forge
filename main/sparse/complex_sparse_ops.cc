@@ -1025,8 +1025,10 @@ DEFBINOP( cs_cs_ldiv, complex_sparse, complex_sparse) {
 // TODO: SuperMatrix provides more functionality into a solvex
 //       routine, but how to we implement this in octave?
 //
-static ComplexMatrix
-do_cs_cf_ldiv( SuperMatrix A, ComplexMatrix M )
+//static ComplexMatrix
+// note Matrix M is modified in this routine
+void
+do_cs_cf_ldiv( SuperMatrix A, ComplexMatrix& M )
 {
    int Anr= A.nrow;
    int Anc= A.ncol;
@@ -1050,13 +1052,14 @@ do_cs_cf_ldiv( SuperMatrix A, ComplexMatrix M )
       zgssv(&A, perm_c, perm_r, &L, &U, &B, &info);
    
       if (info !=0 )
-         SP_FATAL_ERR("Factorization problem: dgssv");
+         SP_FATAL_ERR("Factorization problem: zgssv");
    
-      Destroy_SuperMatrix_Store( &L );
-      Destroy_SuperMatrix_Store( &U );
+      Destroy_SuperMatrix_Store( &B );
+      oct_sparse_Destroy_SuperMatrix( L ) ;
+      oct_sparse_Destroy_SuperMatrix( U ) ;
    }
 
-   return M;
+//   return M;
 }
 
 DEFBINOP( cs_cf_ldiv, complex_sparse, complex_matrix)
@@ -1066,7 +1069,8 @@ DEFBINOP( cs_cf_ldiv, complex_sparse, complex_matrix)
    CAST_BINOP_ARGS ( const octave_complex_sparse&, const octave_complex_matrix&);
    SuperMatrix   A= v1.super_matrix();
    ComplexMatrix M= v2.complex_matrix_value();
-   return do_cs_cf_ldiv( A, M );
+   do_cs_cf_ldiv( A, M );
+   return M;
 }   
 
 DEFBINOP( cs_f_ldiv, complex_sparse, matrix)
@@ -1076,7 +1080,8 @@ DEFBINOP( cs_f_ldiv, complex_sparse, matrix)
    CAST_BINOP_ARGS ( const octave_complex_sparse&, const octave_matrix&);
    SuperMatrix   A= v1.super_matrix();
    ComplexMatrix M= v2.complex_matrix_value();
-   return do_cs_cf_ldiv( A, M );
+   do_cs_cf_ldiv( A, M );
+   return M;
 }   
 
 SuperMatrix assemble_sparse( int n, int m,
@@ -1284,14 +1289,14 @@ complex_sparse_LU_fact(SuperMatrix A,
    int      snnzL, snnzU;
 
    int       nnzL = ((SCformat*)L.Store)->nnz;
-   Complex * Lval = (Complex *) malloc( nnzL * sizeof(Complex) );
-   int     * Lrow = (    int *) malloc( nnzL * sizeof(    int) );
-   int     * Lcol = (    int *) malloc( (n+1)* sizeof(    int) );
+   Complex * Lval = (Complex *) oct_sparse_malloc( nnzL * sizeof(Complex) );
+   int     * Lrow = (    int *) oct_sparse_malloc( nnzL * sizeof(    int) );
+   int     * Lcol = (    int *) oct_sparse_malloc( (n+1)* sizeof(    int) );
 
    int       nnzU = ((NCformat*)U.Store)->nnz;
-   Complex * Uval = (Complex *) malloc( nnzU * sizeof(Complex) );
-   int     * Urow = (    int *) malloc( nnzU * sizeof(    int) );
-   int     * Ucol = (    int *) malloc( (n+1)* sizeof(    int) );
+   Complex * Uval = (Complex *) oct_sparse_malloc( nnzU * sizeof(Complex) );
+   int     * Urow = (    int *) oct_sparse_malloc( nnzU * sizeof(    int) );
+   int     * Ucol = (    int *) oct_sparse_malloc( (n+1)* sizeof(    int) );
 
    LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
    // we need to use the snnz values (squeezed vs. unsqueezed)
@@ -1336,6 +1341,10 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.3  2001/10/14 03:06:31  aadler
+ * fixed memory leak in complex sparse solve
+ * fixed malloc bugs for zero size allocs
+ *
  * Revision 1.2  2001/10/12 02:24:28  aadler
  * Mods to fix bugs
  * add support for all zero sparse matrices

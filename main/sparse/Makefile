@@ -2,6 +2,10 @@
 # $Id$
 #
 # $Log$
+# Revision 1.3  2001/10/14 03:06:31  aadler
+# fixed memory leak in complex sparse solve
+# fixed malloc bugs for zero size allocs
+#
 # Revision 1.2  2001/10/12 02:24:28  aadler
 # Mods to fix bugs
 # add support for all zero sparse matrices
@@ -96,6 +100,18 @@
 # License along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+# Special Build Instructions:
+#
+# BUILD WITH DMALLOC CHECKING
+# 0. Install dmalloc from dmalloc.org
+# 1.  CCDEFS = -DVERBOSE -DUSE_DMALLOC -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE
+# 2.  DLIBS = -ldmallocxx -ldmalloc
+# 
+# running test
+#export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile
+# rm logfile;  run octave code ; clear variables ; exit
+# look at logfile
+
 sinclude ../../Makeconf
 
 NAME     =   make_sparse
@@ -133,12 +149,6 @@ SUPERLU_DEFS = -DAdd_ -O3  \
                -D"USER_MALLOC(size)=oct_sparse_malloc(size)" \
                -D"USER_ABORT(msg)=oct_sparse_fatalerr(msg)" \
                -D"USER_FREE(addr)=oct_sparse_free(addr)"
-
-#use these defs when testing with dmalloc
-#SUPERLU_DEFS = -DAdd_ -O3  \
-#               -D"USER_MALLOC(size)=_malloc_leap(__FILE__, __LINE__, size)" \
-#               -D"USER_ABORT(msg)=oct_sparse_fatalerr(msg)" \
-#               -D"USER_FREE(addr)=if(addr) _free_leap(__FILE__, __LINE__, addr)"
 
 OCTOBJ= sparse_ops.o make_sparse.o sparse_full.o sparse_inv.o \
         complex_sparse_ops.o
@@ -208,7 +218,7 @@ $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 	for i in $(OBJLINKS); do ln -sf $(NAME).oct $$i ; done
 
 test: $(NAME).oct
-	export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile
+	#export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile
 	@echo 
 	@echo "Testing sparse functions ..."
 	@echo 

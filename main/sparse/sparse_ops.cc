@@ -923,36 +923,6 @@ SuperMatrix oct_matrix_to_sparse(const Matrix & A) {
    return X;
 }
 
-#if 0
-// Calculate nnz
-   int nnz=0;
-   for (int j= 0; j<n ; j++ ) 
-      for (int i= 0; i<m ; i++ ) 
-         if (A(i,j) !=0) nnz++;
-       
-// if (nnz==0) SP_FATAL_ERR("sparse: can't handle empty sparse (yet)");
-
-   double * coef = (double *) malloc ( nnz * sizeof(double) );
-   int    * ridx = (int    *) malloc ( nnz * sizeof(int) );
-   int    * cidx = (int    *) malloc ((n+1)* sizeof(int) );  cidx[0]= 0;
-
-   int cx=0;
-   for (int j= 0; j<n ; j++ ) {
-      for (int i= 0; i<m ; i++ ) {
-         double tmpval= A(i,j);
-         if (tmpval != 0) {
-            ridx[ cx ]= i;
-            coef[ cx ]= tmpval;
-            cx++;
-         } // if tmpval
-      } // for i
-      cidx[j+1]= cx;
-   } // for i
-
-   SuperMatrix S= create_SuperMatrix( m, n, cx, coef, ridx, cidx );
-   return S;
-#endif   
-
 void install_sparse_ops() {
    //
    // unitary operations
@@ -1101,14 +1071,14 @@ sparse_LU_fact(SuperMatrix A,
    int      snnzL, snnzU;
 
    int      nnzL = ((SCformat*)L.Store)->nnz;
-   double * Lval = (double *) malloc( nnzL * sizeof(double) );
-   int    * Lrow = (   int *) malloc( nnzL * sizeof(   int) );
-   int    * Lcol = (   int *) malloc( (n+1)* sizeof(   int) );
+   double * Lval = (double *) oct_sparse_malloc( nnzL * sizeof(double) );
+   int    * Lrow = (   int *) oct_sparse_malloc( nnzL * sizeof(   int) );
+   int    * Lcol = (   int *) oct_sparse_malloc( (n+1)* sizeof(   int) );
 
    int      nnzU = ((NCformat*)U.Store)->nnz;
-   double * Uval = (double *) malloc( nnzU * sizeof(double) );
-   int    * Urow = (   int *) malloc( nnzU * sizeof(   int) );
-   int    * Ucol = (   int *) malloc( (n+1)* sizeof(   int) );
+   double * Uval = (double *) oct_sparse_malloc( nnzU * sizeof(double) );
+   int    * Urow = (   int *) oct_sparse_malloc( nnzU * sizeof(   int) );
+   int    * Ucol = (   int *) oct_sparse_malloc( (n+1)* sizeof(   int) );
 
    LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
    // we need to use the snnz values (squeezed vs. unsqueezed)
@@ -1153,6 +1123,10 @@ sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.3  2001/10/14 03:06:31  aadler
+ * fixed memory leak in complex sparse solve
+ * fixed malloc bugs for zero size allocs
+ *
  * Revision 1.2  2001/10/12 02:24:28  aadler
  * Mods to fix bugs
  * add support for all zero sparse matrices

@@ -19,8 +19,13 @@
 #include <octave/variables.h>
 #include <octave/unwind-prot.h>
 #include <octave/oct-syscalls.h>
+#include <octave/oct-time.h>
 
 static bool debug = false;
+
+static double timestamp = 0.0;
+inline double tic(void) { timestamp = octave_time(); }
+inline double toc(void) {return round(-1e6*(timestamp-double(octave_time())));}
 
 // XXX FIXME XXX --- surely this is part of the standard library?
 void
@@ -154,15 +159,16 @@ static void channel_error (const int channel, const char *str)
 
 static bool reads (const int channel, void * buf, int n)
 {
-  // STATUS("entering reads loop with size " << n);
+  // STATUS("entering reads loop with size " << n); tic();
   while (1) {
     int chunk = read(channel, buf, n);
     if (chunk == 0) STATUS("read socket returned 0");
     if (chunk < 0) STATUS("read socket: " << strerror(errno));
     if (chunk <= 0) return false;
     n -= chunk;
-    // if (n == 0) STATUS("done reads loop");
+    // if (n == 0) STATUS("done reads loop after " << toc() << "us");
     if (n == 0) return true;
+    // STATUS("reading remaining " << n << " characters");
     buf = (void *)((char *)buf + chunk);
   }
 }
@@ -204,11 +210,12 @@ process_commands(int channel)
   // we dont, then errors in octave might escape to the prompt
 
   command[4] = '\0';
+  if (debug) tic();
   while (reads(channel, &command, 4)) {
     // XXX FIXME XXX do whatever is require to check if function files
     // have changed; do we really want to do this for _every_ command?
     // Maybe we need a 'reload' command.
-    STATUS("received command " << command);
+    STATUS("received command " << command << " after " << toc() << "us");
     
     // Check for magic command code
     if (command[0] != '!' || command[1] != '!' || command[2] != '!') {
@@ -217,9 +224,11 @@ process_commands(int channel)
     }
 
     // Get command length
+    if (debug) tic(); // time the read
     int len;
     if (!reads(channel, &len, 4)) break;
     len = ntohl(len);
+    // STATUS("read 4 byte command length in " << toc() << "us"); 
 
     // Read the command buffer, allocating a new one if the default
     // is too small.
@@ -246,8 +255,10 @@ process_commands(int channel)
     } else {
       buffer = def_buffer;
     }
+    // if (debug) tic();
     ok = reads(channel, buffer, len);
     buffer[len] = '\0';
+    STATUS("read " << len << " byte command in " << toc() << "us");
 
     // Process the command
     if (ok) switch (command[3]) {
@@ -307,11 +318,12 @@ process_commands(int channel)
 	      }
 	  }
 
+	if (debug) tic();
 	int parse_status = 0;
 	error_state = 0;
 	eval_string(buffer, true, parse_status, 0);
-	STATUS("parse_status = " << parse_status << ", error_state = " 
-	       << error_state);
+	STATUS("parse status = " << parse_status << ", error state = " 
+	       << error_state << ", processing time = " << toc() << "us");
 	if (parse_status != 0 || error_state)
 	  {
 	    error_state = 0;
@@ -346,8 +358,9 @@ process_commands(int channel)
     }
 
     if (buffer != def_buffer) delete[] buffer;
-    STATUS("done!");
+    // STATUS("done " << command);
     if (!ok) break;
+    if (debug) tic();
   }
 }
 
@@ -441,10 +454,12 @@ send(name,value)\n\
     }
     if (!ok) error("send could not write to channel");
   } else {
+    // STATUS("start writing at "<<toc()<<"us");
     ok = writes(channel, "!!!x", 4);
-    t = htonl(cmd.length()); write(channel, &t, 4);
+    t = htonl(cmd.length()); writes(channel, &t, 4);
     if (ok) ok = writes(channel, cmd.c_str(), cmd.length());
     if (!ok) error("send could not write to channel");
+    // STATUS("stop writing at "<<toc()<<"us");
   }
 
   return ret;

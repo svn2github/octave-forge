@@ -1,10 +1,11 @@
+Bugs
+====
+* ausave -> auload changes the data
+
 Admin
 =====
 
-* Use major.minor version number, and tag source directory with version
-number when building the distribution.
-
-* Include support for test in the makefile.
+* Include support for more tests in the makefile.
 
 * Maintain global TODO document by automatically extracting ## TODO:
 comments from all of the scripts.  Update all functions to include
@@ -55,6 +56,8 @@ This will be faster when using version >2.1.31
 
 Specific functions
 ==================
+
+* Use newer version of QHull.
 
 * Define idx=lookup(table, y, k) which guarantees that the window of width
 k will lie fully within the table.  Maybe this is equivalent to

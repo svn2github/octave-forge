@@ -58,8 +58,6 @@ if nargin<3,
 		if tmp,
 		        Mode=Y;
                         Y=[];
-                elseif isscalar(Y) & any(Y==[0,1])
-                        Mode=int2str(Y);
                 else
                         Mode='M';
                 end;

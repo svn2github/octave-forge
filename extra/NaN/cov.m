@@ -11,7 +11,7 @@ function CC = cov(X,Y,Mode);
 %      calculates the crosscorrelation between X and Y. 
 %      C(i,j) is the correlation between the i-th and jth 
 %      column of X and Y, respectively. 
-%   NOTE: this is different than the Mathworks convention. 
+%   NOTE: this is different than the behaviour of DATAFUN\COV. 
 %      Use COV([X(:),Y(:)]) to get the traditional behaviour of Matlab. 
 %
 % Mode = 0 [default] scales C by (N-1)
@@ -47,15 +47,21 @@ if nargin==1
         Mode = 0;
         Y = [];
 elseif nargin==2,
-	if isscalar(Y) & any(Y==[0,1])
+	if all(size(Y)==1) & any(Y==[0,1])
                 Mode = Y;
                 Y =[];
+        else
+                Mode = 0;        
+                if ~exist('OCTAVE_VERSION'), 	% if Matlab,
+                	fprintf(2,'Warning NaN/COV: Behaviour of COV(X,Y) is unlike in datafun/COV. \nSee HELP COV for more information.\n');         
+                end;
         end;
 elseif nargin==3, 
-        
+		        
 else
 	fprintf(2,'Error COV: invalid number of arguments\n');
 end;
+
 
 if isempty(Y)
 	CC = covm(X,['D',int2str(Mode)]);	

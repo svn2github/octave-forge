@@ -125,7 +125,7 @@ sub _validate
   my $switches= "-qfH";
   my $octave_interpreter_bin;
 
-  $octave_interpreter_bin= '/usr/local/bin/octave ' # _EDITLINE_MARKER_
+  $octave_interpreter_bin= 'octave' # _EDITLINE_MARKER_
      unless $octave_object->{INTERP};
 
   $octave_interpreter_bin = $ENV{PERL_INLINE_OCTAVE_BIN}
@@ -479,7 +479,34 @@ sub new
    $self->store_size();
 
    return $self;
-}   
+}
+
+sub rows
+{
+   my $self= shift;
+   return $self->{rows};
+}
+
+sub cols
+{
+   my $self= shift;
+   return $self->{cols};
+}
+
+sub max_dim
+{
+   my $self= shift;
+   my $rows= $self->{rows};
+   my $cols= $self->{cols};
+
+   return ( $rows > $cols ) ? $rows : $cols ;
+}
+
+sub elements
+{
+   my $self= shift;
+   return $self->{cols} * $self->{rows};
+}
 
 sub store_size
 {
@@ -502,7 +529,7 @@ sub as_list
    croak "Can't handle complex" if $self->{complex};
    my $code = "fwrite(stdout, $varname,'double');";
    my $retval= Inline::Octave::interpret(0, $code );
-   my $size= $self->{cols} * $self->{rows};
+   my $size= $self->elements();
    my @list= unpack "d$size", $retval;
    return @list;
 }
@@ -514,16 +541,42 @@ sub as_matrix
    croak "Can't handle complex" if $self->{complex};
    my $code = "fwrite(stdout, $varname','double');"; # use transpose
    my $retval= Inline::Octave::interpret(0, $code );
-   my $size= $self->{cols} * $self->{rows};
+   my $size= $self->elements();
    my @list= unpack "d$size", $retval;
    my @m;
-   my $cols= $self->{cols};
-   my $rows= $self->{rows};
+   my $cols= $self->cols();
+   my $rows= $self->rows();
    for (0..$rows-1) {
       push @m, [ (@list)[$_*$cols .. ($_+1)*$cols-1] ];
    }
    return \@m;
 }
+
+# $oct_var->sub_matrix( $row_spec, $col_spec )
+sub sub_matrix
+{
+   my $self = shift;
+
+   my $row_specv = new Inline::Octave::Matrix( shift );
+   my $row_specn = $row_specv->name;
+   my $col_specv = new Inline::Octave::Matrix( shift );
+   my $col_specn = $col_specv->name;
+
+   my $varname= $self->name;
+   croak "Can't handle complex" if $self->{complex};
+   my $code = "fwrite(stdout, $varname($row_specn,$col_specn)','double');";
+   my $retval= Inline::Octave::interpret(0, $code );
+   my $size= $self->elements();
+   my @list= unpack "d$size", $retval;
+   my @m;
+   my $cols= $col_specv->max_dim();
+   my $rows= $row_specv->max_dim();
+   for (0..$rows-1) {
+      push @m, [ (@list)[$_*$cols .. ($_+1)*$cols-1] ];
+   }
+   return \@m;
+}
+
 
 sub as_scalar
 {
@@ -531,8 +584,8 @@ sub as_scalar
    my $varname= $self->name;
    croak "Can't handle complex" if $self->{complex};
    croak "requested as_scalar for non scalar value:".
-           $self->{cols}."x".$self->{rows}
-           unless $self->{cols} == 1 && $self->{rows} == 1;
+           $self->cols()."x".$self->rows()
+           unless $self->cols() == 1 && $self->rows() == 1;
    my $code = "fwrite(stdout, $varname,'double');";
    my $retval= Inline::Octave::interpret(0, $code );
    my @list= unpack "d1", $retval;
@@ -762,6 +815,9 @@ TODO LIST:
   10. Errors in Octave should die in perl
 
 $Log$
+Revision 1.14  2002/03/08 21:15:34  aadler
+Mods to add sub_matrix, and OO type cleanups
+
 Revision 1.13  2002/01/19 01:08:35  aadler
 new docs and new matrix methods
 
@@ -866,8 +922,13 @@ I'm planning to get back to that eventually ...
 =head2 Platforms
 
   I've succeded in getting this to work on win2k (activeperl), 
-  and linux (Mandrake 8.0, Redhat 6.2, Debian 2.0). Please
-  send me tales of success or failure on other platforms
+  win2k cygwin (but Inline-0.43 can't install Inline::C)
+  and linux (Mandrake 8.0, Redhat 6.2, Debian 2.0).
+
+  Note that Inline-0.43 can't handle spaces in your path -
+  this is a big pain for windows users.
+  
+  Please send me tales of success or failure on other platforms
 
 =head2 Install Proceedure  
 
@@ -1003,6 +1064,17 @@ form
 
 Returns a perl scalar if $oct_var
 is a 1x1 matrix, dies with an error otherwise
+
+5. $oct_var->sub_matrix( $row_spec, $col_spec )
+
+Returns the sub
+$x= Inline::Octave::Matrix->new([1,2,3,4]);
+$y=$x x $x->transpose();
+$y->sub_matrix( [2,4], [2,3] )'
+
+gives:  [ [4,6],[8,9] ]
+
+Returns the sub matrix of
 
 =head1 Using Inline::Octave::Matrix
 
@@ -1151,7 +1223,7 @@ Andy Adler andy@analyti.ca
 
 =head1 COPYRIGHT
 
-© MMI, Andy Adler
+© MMII, Andy Adler
 
 All Rights Reserved. This module is free software. It may be used,
 redistributed and/or modified under the same terms as Perl itself.

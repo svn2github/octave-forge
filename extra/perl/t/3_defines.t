@@ -1,7 +1,7 @@
 use strict;
 use Test;
 BEGIN {
-           plan(tests => 2) ;
+           plan(tests => 4) ;
 }
 
 use Data::Dumper;
@@ -23,6 +23,17 @@ ok ( structeq( [$t->as_list()], ["6"] ) );
 ok ( structeq( $b->as_matrix(),
               [['46.5','47','48'],['49.5','46','44']]
              ));
+
+ok ( structeq( $c->sub_matrix([2,1],[2,3]) ,
+              [['1','-1'],['2','3']]
+             ));
+
+my $idx= new Inline::Octave::Matrix( [ 1 .. 3 ] );
+
+ok ( structeq( $c->sub_matrix([2,1], $idx->transpose() ),
+              [['4.5','1','-1'],['1.5','2','3']]
+             ));
+
 
 
 

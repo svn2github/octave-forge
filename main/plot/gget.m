@@ -19,6 +19,9 @@
 ##          but show/gshow deliver a human readable format, which cannot
 ##          be read by a machine clearly
 ##
+## Does not properly handle options which are repeated.
+## Does not properly handle options which are set to "nooption"
+## Actual option settings depend on the installed version of gnuplot
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 
@@ -27,6 +30,8 @@
 ##     * use proper temporary files
 ## 2001-04-04 Laurent Mazet <mazet@crm.mot.com>
 ##     * check if gnuplot very create a file
+## 2001-12-07 Paul Kienzle <pkienzle@users.sf.net>
+##     * silently return "" if option is not found
 
 function gout = gget(option)
 
@@ -45,7 +50,8 @@ function gout = gget(option)
 		option, optfile, option, optfile);
   gout = system(cmd);
   if (length(gout) == 0) 
-    error("gget: option %s not found", option);
+    ## warning("gget: option %s not found", option);
+    return
   endif
 
   ## grab the first output line only, without newline

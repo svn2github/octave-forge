@@ -32,22 +32,20 @@ void GramSchmidt(Matrix &V, ColumnVector &norms,int Vr, int Vc){
 
 
 DEFUN_DLD (GramSchmidt, args, , "[...] = GramSchmidt(...)\n\
-  apply the Gram Schmidt reduction to the columns of a matrix V
-
-  Vout = GramSchmidt(V)
-  [Vout, ColLength] = GramSchmidt(V)
-
-   V    is is a matrix of size mxn
-   Vout is is a matrix of size mxn, 
-        the columns of Vout are orthonormalized and we have
-        span(V(:,1:k)) = span(Vout(:,1:k)) for k=1...n
-   ColLength is a vector containing the lengths of the column vectors of V
-        during the Gram Schmidt algorithm
-
-   The implementation is based of the modified Gram Schmidt algorithm as 
-   described in \"Matrix Computations\" by G. Golub and C. van Loan 
-   
-")
+  apply the Gram Schmidt reduction to the columns of a matrix V\n\
+\n\
+  Vout = GramSchmidt(V)\n\
+  [Vout, ColLength] = GramSchmidt(V)\n\
+\n\
+   V    is is a matrix of size mxn\n\
+   Vout is is a matrix of size mxn,\n\
+        the columns of Vout are orthonormalized and we have\n\
+        span(V(:,1:k)) = span(Vout(:,1:k)) for k=1...n\n\
+   ColLength is a vector containing the lengths of the column vectors of V\n\
+        during the Gram Schmidt algorithm\n\
+\n\
+   The implementation is based of the modified Gram Schmidt algorithm as\n\
+   described in \"Matrix Computations\" by G. Golub and C. van Loan")
 
 {
   octave_value_list retval;

@@ -27,9 +27,9 @@ extern "C" {
 }
 
 DEFUN_DLD(pchip_deriv, args, ,"\
-pchip_deriv(x,y):
-wrapper for SLATEC/PCHIP function DPCHIM to calculate derivates for piecewise polynomials.\n\
-You shouldn't use pchip_deriv, use pchip instead.\n\
+pchip_deriv(x,y):\n\
+wrapper for SLATEC/PCHIP function DPCHIM to calculate derivates for\n\
+piecewise polynomials. You shouldn't use pchip_deriv, use pchip instead.\n\
 ")
 {
   octave_value_list retval;

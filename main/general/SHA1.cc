@@ -9,6 +9,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2002/11/02 11:05:07  pkienzle
+ * Seperate lines of multiline strings with \n\ to keep gcc 3.2 happy.
+ *
  * Revision 1.2  2002/03/17 18:23:57  aadler
  * bug with function prototypes
  *
@@ -40,19 +43,19 @@ static void
 hash_final( hash_context * c, unsigned long[HW] );
 
 DEFUN_DLD (SHA1, args, ,
-  "hash = SHA1 (...)
-SHA1 implements the Secure Hash Algorithm Cryptographic
-Hashing (One-Way) function.  (FIPS PUB 180-1)
-
-hash= SHA1( byte_stream, hash_initial )
-hash = Row Vector of  20 byte values;
-
-hash_initial default is 67452301 EFCDAB89 98BADCFE 10325476 C3D2E1F0
-
-Note: while it is possible to create a \"poor-man's\" MAC (message
-authenticity code) by setting hash_initial to a private value,
-it is better to use an algorithm like HMAC.
-
+  "hash = SHA1 (...)\n\
+SHA1 implements the Secure Hash Algorithm Cryptographic\n\
+Hashing (One-Way) function.  (FIPS PUB 180-1)\n\
+\n\
+hash= SHA1( byte_stream, hash_initial )\n\
+hash = Row Vector of  20 byte values;\n\
+\n\
+hash_initial default is 67452301 EFCDAB89 98BADCFE 10325476 C3D2E1F0\n\
+\n\
+Note: while it is possible to create a \"poor-man's\" MAC (message\n\
+authenticity code) by setting hash_initial to a private value,\n\
+it is better to use an algorithm like HMAC.\n\
+\n\
 HMAC= SHA1( [ passcode, SHA1( [passcode, data ] ) ); ")
 {
    octave_value_list retval;

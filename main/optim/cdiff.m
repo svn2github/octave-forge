@@ -1,17 +1,5 @@
-## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
-##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by the
-## Free Software Foundation; either version 2, or (at your option) any
-## later version.
-##
-## This is distributed in the hope that it will be useful, but WITHOUT
-## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-## for more details.
-
 ## c = cdiff (func,wrt,N,dfunc,stack,dx) - Code for num. differentiation
-##   = "function df = dfunc (var1,..,dvar,..,varN) .. endfunction"
+##   = "function df = dfunc (var1,..,dvar,..,varN) .. endfunction
 ## 
 ## Returns a string of octave code that defines a function 'dfunc' that
 ## returns the derivative of 'func' with respect to it's 'wrt'th
@@ -101,42 +89,38 @@ elseif strcmp("rstack",stack),	# Vertical stacking ##################
 			  "  scramble = reshape (1:pr,sr(2),sr(1))';\n",\
 			  "  df = reshape (df',pr,ps)(scramble(:),:);\n"),\
 		   calstr) ;
-  if verbose
-      printf ("cdiff : calstr='%s'\n",calstr);
-  end
+  sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
 else				# No stacking ########################
   calstr = sprintf("%s (%s)",func,argstr) ;
   ## "func(var1,dvar%sdv(:,%d:%d),...,varN),"
-  calstr = strrep(calstr,"dvar","dvar%sdv(:,(i-1)*sz(2)+1:i*sz(2))")(:)';
+  ## calstr = strrep(calstr,"dvar","dvar%sdv(:,(i-1)*sz(2)+1:i*sz(2))")(:)';
+
+  calstr = strrep(calstr,"dvar","dvar%sdv")(:)';
+
   ## func(..,dvar+dv(:,1:sz(2)),..) - func(..)
   calstr = strcat(calstr,"-",calstr) ; ## strcat(calstr,"-",calstr) ;
   calstr = sprintf(calstr,"+","-") ;
   tmp = calstr ;
-  ## if verbose
-  ##     printf ("cdiff : calstr='%s'\n",calstr);
-  ## end
-  calstr = sprintf(strcat("  dv = reshape (dx*eye(ps), sz.*[1,ps]);\n",\
-			  "  i = 1;\n",\
-			  "  df = %s;\n",\
-			  "  sr = size (df);\n",\
-			  "  pr = prod (sr);\n",
-			  "  df = [df(:), zeros(pr,ps-1)];\n",\
-			  "  for i = 2:ps,\n    df(:,i) = [%s](:);\n  end;\n",\
-			  "  df = df/(2*dx);\n"
+  ## sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
+  calstr = sprintf(strcat("  dv = zeros (sz); dv(1) = dx;\n",\
+			  "  df0 = %s;\n",\
+			  "  sr = size (df0);\n",\
+			  "  df = zeros(prod (sr),ps); df(:,1) = df0(:);\n",\
+			  "  for i = 2:ps,\n",\
+			  "     dv(i) = dx; dv(i-1) = 0;\n",\
+			  "     df(:,i) = (%s)(:);\n",\ 
+			  "  end;\n",\
+			  "  df ./= 2*dx;\n"
 			  ),
 		   calstr, tmp) ;
 		   
 
-  ## if verbose
-  ##     printf ("cdiff : calstr='%s'\n",calstr);
-  ## end
+  ## sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
 
   ## "func(var1,reshape(dvar(1:NV,1),SZ1,SZ2),...,varN)," , 
   ## "func(var1,reshape(dvar(1:NV,2),SZ1,SZ2),...,varN)," , ...
   ## "func(var1,reshape(dvar(1:NV,NP),SZ1,SZ2),...,varN)"
-  if verbose
-      printf ("cdiff : calstr='%s'\n",calstr);
-  end
+  sayif(verbose,"cdiff : calstr='%s'\n",calstr) ;
 end
 
 calstr = strrep (calstr, "...", "all_va_args");

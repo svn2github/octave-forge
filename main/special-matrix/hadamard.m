@@ -31,7 +31,7 @@ function h = hadamard(n)
   case 1, h = 1;
   case 3, h = h12;
   case 5, h = h20;
-  case 7, h = Hnormalize(h28);
+  case 7, h = hnormalize(h28);
   otherwise, error('n must be 2^k*p, for p = 1, 12, 20 or 28');
   end
 
@@ -58,10 +58,10 @@ function h = h20
   h = ones(20);
   h(2:end,2:end) = fliplr(toeplitz(tu,tl));
 
-function h = Hnormalize(h)
-  % Make sure each row starts with +1
-  for i=find(h(:,1)==-1), h(i,:) *= -1; end
-  for i=find(h(1,:)==-1), h(:,i) *= -1; end
+function h = hnormalize(h)
+  % Make sure each row and column starts with +1
+  h(h(:,1)==-1,:) *= -1;
+  h(:,h(1,:)==-1) *= -1;
 
 function h = h28
   % Williamson matrix construction from

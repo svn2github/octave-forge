@@ -23,7 +23,7 @@ function path = grace_octave_path(path)
   global __pl_grace_octave_path
 
   if (!exist("__pl_grace_octave_path"))
-    __pl_grace_octave_path = "@ALTMPATH@";
+    __pl_grace_octave_path = "@ALTMPATH@graceplot";
   endif
 
   if (nargin == 0)

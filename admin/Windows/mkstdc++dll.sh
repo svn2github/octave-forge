@@ -30,3 +30,4 @@ gcc -shared -o../stdc++.dll \
 	-Wl,--enable-auto-image-base,--out-implib,../libstdc++.dll.a *.o
 cd ..
 rm -rf buildc++
+strip stdc++.dll

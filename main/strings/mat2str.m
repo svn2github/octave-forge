@@ -1,61 +1,88 @@
-## Copyright (C) 1996 John W. Eaton
+##USAGE	s = mat2str( x, n, PLUS )
+##	format real/complex numerical matrix x as string s
+##	suitable for usage by 'eval' -function
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
-##
-## This program is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-## 02111-1307, USA.
+##n	digits of precision     (default n=17)
+##	n(1) : precision of  real parts format
+##	n(2) : precision of  imag parts format
+##PLUS	  1  : print '+' for pos. real parts (0 by def.)
+##NOTE	* scalar n sets  n(2) = n(1) = n
+##	* for real x any n(2) is ignored
+##	* may fail for Octave V2.0.X and complex input
+##EXA	mat2str( [ -1/3 + i/7; 1/3 - i/7 ], [4 2] )
+##	|-       [-0.3333+0.14i;0.3333-0.14i]
+##	mat2str( [ -1/3 +i/7; 1/3 -i/7 ], [4 2] )
+##	|-       [-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]
+##	mat2str( [1-i -1+i],[],1 )   |-    [+1-1i,-1+1i]
+##HINT	better use commas to seperate row-elements of x
+##ASSOC	sprintf, int2str
+##AUTHOR  (C) 2002 Rolf Fabian <fabian@tu-cottbus.de> 020531
+##	published under current GNU GENERAL PUBLIC LICENSE
 
-## usage: mat2str (x)
-##        mat2str (x,n)
-## mat2str (x) format x as a string suitable for use in eval.
-## mat2str(A,n) converts matrix x using n digits of precision.
-## 
-##
-## See also: sprintf, int2str
+function s=mat2str(x,n,PLUS)
 
-## Author: jwe
-## Modified by: Ariel Tankus, 15.6.98 .
-## Modified by: Paul Kienzle, 15.7.00, to handle matrices.
-## Modified by: Andreas Helms, 21.3.02, to handle arbitrary precision. 
+if ( nargin<2||isempty(n) )
+   n=17;		   # default precision
+endif
 
-function retval = mat2str (x,n)
+if ( nargin<3||isempty(PLUS) )
+   PLUS=0;		   # def. PLUS : DO NOT print leading '+'
+			   #		 for positive real elements
+endif
 
-  if (nargin == 1)
-    [nr, nc] = size(x);
-    if (nr*nc == 1)
-      retval = sprintf ("%.100g", x);
-    else
-      retval = sprintf (" %.100g,", x.');
-      retval(1) = "[";
-      retval(length(retval)) = "]";
-      idx = find (retval == ",");
-      retval(idx(nc:nc:length(idx))) = ";";
-    endif
-  elseif (nargin == 2)
-    [nr, nc] = size(x);
-    format = ['%.' int2str(n) 'g'];
-    if (nr*nc == 1)
-      retval = sprintf (format, x);
-    else
-      retval = sprintf ([" " ,format , ","] , x.');
-      retval(1) = "[";
-      retval(length(retval)) = "]";
-      idx = find (retval == ",");
-      retval(idx(nc:nc:length(idx))) = ";";
-    endif	
-			
-    else
-    usage ("mat2str (x,n)");
-  endif
+if ( nargin<1||nargin>3||isstr(x)||is_struct(x)||\
+     isstr(n)||is_struct(n)||isstr(PLUS)||is_struct(PLUS) )
+   usage ("mat2str( NUMERIC x, NUMERIC n, PLUS 0|1  )");
+endif
+
+if ( !(COMPLEX=is_complex(x)) )
+   if ( !PLUS )
+      FMT=sprintf("%%.%dg", n(1));
+   else
+      FMT=sprintf("%%+.%dg",n(1));
+   endif
+else
+   if ( length(n)==1 )
+      n=[n,n];
+   endif
+   if ( !PLUS )
+      FMT=sprintf("%%.%dg%%+.%dgi", n(1),n(2));
+   else
+      FMT=sprintf("%%+.%dg%%+.%dgi",n(1),n(2));
+   endif
+endif
+
+[nr,nc] = size(x);
+
+if ( nr*nc==0 )         # empty .. only print brackets
+   s = "[]";
+
+elseif ( nr*nc==1 )	# scalar x .. don't print brackets
+   if ( !COMPLEX )
+      s = sprintf( FMT, x );
+   else
+      s = sprintf( FMT, real(x), imag(x) );
+   endif
+
+else			# non-scalar x .. print brackets
+   FMT=[FMT,','];
+
+   if ( !COMPLEX )
+
+      s = sprintf( FMT, x.' );
+
+   else
+
+      x = x.';
+      s = sprintf( FMT, [ real(x(:))'; imag(x(:))' ] );
+
+   endif
+
+   s=["[", s];
+   s(length(s))= "]";
+   IND= find(s == ",");
+   s( IND(nc:nc:length(IND)) )= ";";
+
+endif
 
 endfunction

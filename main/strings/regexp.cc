@@ -97,7 +97,7 @@ for details.\n\
       // Copy the match indices to retval(0)
       Matrix indices(matches,2);
       for (int i=0 ; i < subexpr && match[i].rm_so >= 0; i++)
-	indices(i,0) = match[i].rm_so, indices(i,1) = match[i].rm_eo;
+	indices(i,0) = match[i].rm_so+1, indices(i,1) = match[i].rm_eo+1;
       retval(0) = indices;
 
       // Copy the substrings to the output arguments

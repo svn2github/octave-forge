@@ -141,82 +141,11 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
     A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
   endif
 
-  ## apply weighting term, if it was given
-  if (isempty(dy))
-    X = A;
-    b = y(:);
-  else
-    X = A ./ (dy(:) * ones (1, columns(A)));
-    b = y(:) ./ dy(:);
-  endif
-
-  ## system solution: X p = b => p = inv(X) b
-  ## QR decomposition has good numerical properties:
-  ##   XP = QR, with P'P = Q'Q = I, and R upper triangular
-  ## so
-  ##   inv(X) b = P inv(R) inv(Q) b = P inv(R) Q' b = P (R \ (Q' b))
-  ## Note that b is usually a vector and Q is matrix, so it will
-  ## be faster to compute (b' Q)' than (Q' b).
-  [Q,R,P] = qr(X,0);
-  p = R\(b'*Q)'; 
-  p(P) = p;
-
-  compute_dp = (nargout == 0 || nargout > 1);
-  if (compute_dp)
-    ## Get uncertainty from the covariance matrix: dp = sqrt(diag(inv(X'X))).
-    ##
-    ## Rather than calculate this directly, we are going to use the QR
-    ## decomposition we have already computed:
-    ##
-    ##    XP = QR, with P'P = Q'Q = I, and R upper triangular
-    ##
-    ## Remembering that inv(AB) = inv(B)inv(A) and (AB)' = B'A', we
-    ## can compute inv(X) and inv(X'):
-    ##
-    ##    inv(X) = inv(QRP') = inv(P')inv(R)inv(Q) = P inv(R)inv(Q)
-    ##    inv(X') = inv(PR'Q') = inv(Q')inv(R')inv(P) = inv(Q')inv(R')P'
-    ##
-    ## Combining and simplifying:
-    ##
-    ##    inv(X'X) = P inv(R) inv(Q) inv(Q') inv(R') P'
-    ##             = P inv(R) inv(Q'Q) inv(R') P'
-    ##             = P inv(R) inv(I) inv(R') P'
-    ##             = P inv(R) inv(R') P'
-    ##
-    ## For a permutation matrix P,
-    ##
-    ##    diag(PAP') = P diag(A)
-    ##
-    ## and for R upper triangular,
-    ##
-    ##    inv(R') = inv(R)'
-    ##
-    ## so:
-    ##
-    ##    diag(inv(X'X)) = P diag(inv(R) inv(R)')
-    ##
-    ## Conveniently, for T upper triangular
-    ##
-    ##    diag(TT') = sumsq(T')'
-    ##
-    ## so
-    ##
-    ##    diag(inv(X'X)) = P sumsq(inv(R)')'
-    ## 
-    ## This is both faster and more accurate than computing inv(X'X)
-    dp = sqrt(sumsq(inv(R),2));
-    dp(P) = dp;
-    if isempty(dy)
-      ## If we don't have an uncertainty estimate coming in, estimate it
-      ## from the chisq of the fit.
-      chisq = sumsq(b - X*p)/(length(y)-length(p));
-      dp *= sqrt(chisq);
-    endif
-  endif
+  [p,dp] = wsolve(A,y(:),dy(:));
 
   if through_origin
     p(n+1) = 0;
-    if (compute_dp) dp(n+1) = 0; endif
+    dp(n+1) = 0;
   endif
 
   if nargout == 0
@@ -264,7 +193,7 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
 
     ## return values as row vectors instead of printing
     p_out = p.';
-    if (compute_dp) dp_out = dp.'; endif
+    dp_out = dp.';
 
   endif
 

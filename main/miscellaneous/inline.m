@@ -23,7 +23,7 @@
 ## feval (fn, 6)        
 ##   ans = 37
 ##
-function [fname,fcode] = inline (str, n, varargin)
+function [fn,fcode] = inline (str, n, varargin)
 
 if nargin == 1			#  Single argument called "x"
   argstr = "x";
@@ -57,4 +57,5 @@ fcode = sprintf (["function inline_return = %s (%s)\n",\
 		  "endfunction;"],\
 		 fname, argstr);
 eval (fcode);
+fn = eval (["@", fname, ";"],"fname");
 endfunction		  

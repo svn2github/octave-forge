@@ -5,9 +5,19 @@ function r = spearman(x,y)
 %
 % [R,p,ci1,ci2] = CORRCOEF(x, [y, ] 'Rank');
 %
-% see also: CORRCOEF
+% For some (unknown) reason, in previous versions Spearman's rank correlation  
+%   r = corrcoef(ranks(x)). 
+% But according to [1], Spearman's correlation is defined as 
+%   r = 1-6*sum((ranks(x)-ranks(y)).^2)/(N*(N*N-1))
+% The results are different. Here, the later version is implemented. 
+%
+% see also: CORRCOEF, RANKCORR
+%
+% REFERENCES:
+% [1] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
+% [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
-%    Version 1.25  Date: 15 Aug 2002
+%    Version 1.26  Date: 19 Aug 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -24,10 +34,11 @@ function r = spearman(x,y)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-fprintf(2,'SPEARMAN might become obsolete; use CORRCOEF(...,''rank'') instead\n');
+
+fprintf(2,'SPEARMAN might become obsolete; use CORRCOEF(...,''Spearman'') instead\n');
 
 if nargin < 2
-   r = corrcoef(x,'Rank');
+   r = corrcoef(x,'Spearman')
 else
-   r = corrcoef(x,y,'Rank');
+   r = corrcoef(x,y,'Spearman')
 end

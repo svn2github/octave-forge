@@ -1,13 +1,23 @@
 function r = rankcorr(x,y)
-% SPEARMAN Spearman's rank correlation coefficient.
+% RNAKCORR calculated the rank correlation coefficient.
 % This function is replaced by CORRCOEF. 
 % Significance test and confidence intervals can be obtained from CORRCOEF, too. 
 %
-% [R,p,ci1,ci2] = CORRCOEF(x, [y, ] 'Rank');
+% R = CORRCOEF(X, [Y, ] 'Rank');
 %
-% see also: CORRCOEF
+% The rank correlation   r = corrcoef(ranks(x)). 
+% is often confused with Spearman's rank correlation.  
+% Spearman's correlation is defined as 
+%   r(x,y) = 1-6*sum((ranks(x)-ranks(y)).^2)/(N*(N*N-1))
+% The results are different. Here, the former version is implemented. 
+%
+% see also: CORRCOEF, SPEARMAN, RANKS
+%
+% REFERENCES:
+% [1] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
+% [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
-%    Version 1.25  Date: 15 Aug 2002
+%    Version 1.26  Date: 19 Aug 2002
 %    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
@@ -25,10 +35,10 @@ function r = rankcorr(x,y)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-fprintf(2,'RANKCORR might become obsolete; use CORRCOEF(...,''Rank'') instead\n');
+fprintf(2,'RANKCORR might become obsolete; use CORRCOEF(ranks(x)) or CORRCOEF(...,''Rank'') instead\n');
 
 if nargin < 2
-   r = corrcoef(x,'Rank');
+   r = corrcoef(ranks(x));
 else
-   r = corrcoef(x,y,'Rank');
+   r = corrcoef(ranks(x),ranks(y));
 end

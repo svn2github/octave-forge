@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.5  2002/02/16 22:16:04  aadler
+added dtrsv stub to compile statically
+
 Revision 1.4  2002/01/04 15:53:57  pkienzle
 Changes required to compile for gcc-3.0 in debian hppa/unstable
 
@@ -75,6 +78,19 @@ DLD functions for sparse support in octave
                             jump_to_top_level ();  \
                             panic_impossible (); }
 
+// The SuperLU includes need to be first,
+// otherwise the cygwin build breaks!
+
+// this is a pain, but the
+// complex and double definitions don't work together
+#if    defined( SPARSE_DOUBLE_CODE )
+#  include "dsp_defs.h"
+#elif  defined( SPARSE_COMPLEX_CODE )
+#  include "zsp_defs.h"
+#else
+#  include "supermatrix.h"
+#endif                            
+
 #include <octave/config.h>
 
 #include <cstdlib>
@@ -106,16 +122,6 @@ class ostream;
 #include <octave/variables.h>
 
 #include <octave/utils.h>
-
-// this is a pain, but the
-// complex and double definitions don't work together
-#if    defined( SPARSE_DOUBLE_CODE )
-#  include "dsp_defs.h"
-#elif  defined( SPARSE_COMPLEX_CODE )
-#  include "zsp_defs.h"
-#else
-#  include "supermatrix.h"
-#endif                            
 
 class Octave_map;
 class octave_value_list;
@@ -253,6 +259,10 @@ oct_sparse_fatalerr(char *msg);
 
 void
 oct_sparse_free(void * addr);
+
+int dtrsv_(char *uplo, char *trans, char *diag, integer *n,
+        doublereal *a, integer *lda, doublereal *x, integer *incx);
+
 #ifdef __cplusplus
 } 
 #endif   

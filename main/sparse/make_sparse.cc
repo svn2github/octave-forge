@@ -34,6 +34,7 @@ $Id$
 //   These functions override those in SuperLU/SRC/util.c
 //
 
+
 void *
 oct_sparse_malloc(int size) {
    // avoid zero byte alloc requests, request a minimum of
@@ -56,6 +57,7 @@ oct_sparse_fatalerr(char *msg) {
    SP_FATAL_ERR( msg );
 }  
 
+
 void
 oct_sparse_free(void * addr) {
 #ifdef USE_DMALLOC   
@@ -70,6 +72,14 @@ oct_sparse_free(void * addr) {
 #endif   
 }  
 
+// This is required to link properly,
+// but isn't necessary for the code
+int dtrsv_(char *uplo, char *trans, char *diag, integer *n,
+        doublereal *a, integer *lda, doublereal *x, integer *incx)
+{
+   oct_sparse_fatalerr("DTRSV_ isn't defined: shouldn't get here");
+   return 0;
+}   
 
 //
 // Utility methods for sparse ops
@@ -312,6 +322,9 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.6  2002/02/16 22:16:04  aadler
+ * added dtrsv stub to compile statically
+ *
  * Revision 1.5  2001/12/04 19:13:42  pkienzle
  * sparse(i,j,s,...) now check that lengths of i,j,s match
  *

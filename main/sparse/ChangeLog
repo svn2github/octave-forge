@@ -16,3 +16,9 @@
     * expanded test cases
     * added dmalloc support - fixed many memory leaks
        mostly in inv and lu code - not using the right destructor
+
+31 jan 2002   Andy Adler <adler@ncf.ca>
+
+    * moved includes in make_sparse.h to compile
+       under cygwin
+    * added [dz]glsv.c so that it compiles statically

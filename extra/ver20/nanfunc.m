@@ -1,6 +1,6 @@
-## Usage: R = nanfunc( which_func, a_matrix, default_for_func ) applies
-## 'which_func' to non-NaN values of 'a_matrix' columnwise, returning
-## 'default_for_func' if all values are NaN.
+## Usage: R = nanfunc( which_func, a_matrix, default_for_func ) 
+## applies 'which_func' to non-NaN values of 'a_matrix' columnwise, 
+## returning 'default_for_func' if all values are NaN.
 
 ## Copyright (C) 2000 Daniel Calvelo Aros 
 ## 

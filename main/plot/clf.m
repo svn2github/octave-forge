@@ -14,6 +14,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+## Clear the current figure.
 ## TODO: should send gnuplot the 'reset;' command, so that any strange
 ## TODO: things that have been done to the state (such as removing tic
 ## TODO: marks) are fully restored to the default configuration.

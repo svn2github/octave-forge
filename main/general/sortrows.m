@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## B = sortrows (A)
-##     returns matrix with rows sorted "lexicographically" (i.e., 
+##     returns matrix with rows sorted "lexicographically" 
 ##
 ## B = sortrows(A, c)
 ##     returns matrix with rows sorted according to the order of the

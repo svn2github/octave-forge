@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## usage: idplot(z, idx, dT, outputs, shape)
-##
+## Plot inputs and ouputs defined by the system z.
 
 function idplot(z, idx, dT, outputs, shape)
 

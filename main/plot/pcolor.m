@@ -14,6 +14,17 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## pcolor([x, y,] z)
+## pcolor([x, y,] c)
+## Displays an array of color patches with color defined by c and
+## coordinates defined by x,y.  The polygon: 
+##   [x(i,j),y(i,j) x(i+1,j),y(i+1,j) x(i+1,j+1),y(i+1,j+1) x(i,j+1),y(i,j+1)]
+## uses color c(i,j), or uses a bilinear interpolation of colors at the
+## four corners.
+##
+## If x,y are not given, assume they would define a uniform grid.
+## This is all that is presently implemented.
 function pcolor(...)
+  if nargin > 1
+    warning("pcolor: x,y ignored.");
+  endif
   imagesc(all_va_args);

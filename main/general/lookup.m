@@ -16,6 +16,9 @@
 
 ## usage: idx = lookup(table, y)
 ##
+## Lookup values in a sorted table.  Usually used as a prelude to
+## interpolation.
+##
 ## If table is strictly increasing and idx=lookup(table, y), then
 ##    table(idx(i)) <= y(i) < table(idx(i+1))
 ## for all y(i) within the table.  If y(i) is before the table, then 

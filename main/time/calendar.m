@@ -41,4 +41,4 @@ function ret_c = calendar(y,m)
 
 %!test
 %! c = calendar(2000,2);
-%! assert(c'(2:31),0:29);
+%! assert(c'(2:31),[0:29]);

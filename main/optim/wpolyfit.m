@@ -159,6 +159,19 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
 
   if nargout == 0
 
+    if iscomplex(p)
+      printf("%32s %15s\n", "Coefficient", "Error");
+      printf("%15g %+15gi %15g\n",[real(p(:)),imag(p(:)),dp(:)]');
+      # XXX FIXME XXX how to plot complex valued functions?
+      # Maybe using hue for phase and saturation for magnitude
+      # e.g., Frank Farris (Santa Cruz University) has this:
+      # http://www.maa.org/pubs/amm_complements/complex.html
+      # Could also look at the book
+      #   Visual Complex Analysis by Tristan Needham, Oxford Univ. Press
+      # but for now we punt
+      return
+    endif
+
     ## decorate the graph
     grid('on');
     xlabel('abscissa X'), ylabel('data Y'), 
@@ -183,15 +196,28 @@ function [p_out, dp_out] = wpolyfit (x, y, dy, n, origin)
 
     ## display p,dp as a two column vector
     printf("%15s %15s\n", "Coefficient", "Error");
-    printf("%15f %15f\n", [p(:), dp(:)]');
+    printf("%15g %15g\n", [p(:), dp(:)]');
 
   else
 
     ## return values as row vectors instead of printing
-    p_out = p';
-    if (compute_dp) dp_out = dp'; endif
+    p_out = p.';
+    if (compute_dp) dp_out = dp.'; endif
 
   endif
 
 endfunction
+
+%!demo % #1  
+%!     x = linspace(0,4,20);
+%!     dy = (1+rand(size(x)))/2;
+%!     y = polyval([2,3,1],x) + dy.*randn(size(x));
+%!     wpolyfit(x,y,dy,2);
+  
+%!demo % #2
+%!     x = linspace(-i,+2i,20);
+%!     noise = ( randn(size(x)) + i*randn(size(x)) )/10;
+%!     P = [2-i,3,1+i];
+%!     y = polyval(P,x) + noise;
+%!     [PEST,DELTA]=wpolyfit(x,y,2)
 

@@ -19,87 +19,104 @@
 ## @deftypefnx {Function File} {[@var{XI},@var{YI},@var{ZI}] =}
 ## griddata (@var{x},@var{y},@var{z},@var{xi},@var{yi},method)
 ## 
-## 
-## If method is omitted it defaults to 'linear'
+## Generate a regular mesh from irregular data using interpolation.
+## The function is defined by z=f(x,y).  The interpolation points are
+## all (xi,yi).  If xi,yi are vectors then they are made into a 2D mesh.
+##
+## The interpolation method can be 'nearest', 'cubic' or 'linear'.
+## If method is omitted it defaults to 'linear'.
 ## @seealso{delaunay}
 ## @end deftypefn
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
-function [varargout] = griddata (x,y,z,xi,yi)
+function [rx, ry, rz] = griddata (x,y,z,xi,yi)
 	
-	if nargin==5
-		method='linear';
-	endif
-	if (nargin <5|nargin>7 )
-		usage('griddata(x,y,z,xi,yi)');
-	endif
-	if isstr(method), method=tolower(method); endif
-	if !( (size(x)==size(y))&(size(x)==size(z)) )
-		error('x,y,z must be vectors of same length');
-	endif
-	if (size(xi)!=size(yi))
-		error('xi and yi must be vectors or matrices of same size');
-	endif
-	if (is_vector(xi))
-		#xi and yi are vectors
-		[xi,yi]=meshgrid(xi,yi);
-		vr_val_cnt = 1; varargout{vr_val_cnt++} = xi;
-		varargout{vr_val_cnt++} = yi;
-	endif
-	[nr,nc]=size(xi);
+  if nargin==5
+    method='linear';
+  endif
+  if (nargin <5|nargin>7 )
+    usage('griddata(x,y,z,xi,yi)');
+  endif
+  if isstr(method), method=tolower(method); endif
+  if !all( (size(x)==size(y)) & (size(x)==size(z)) )
+    error('x,y,z must be vectors of same length');
+  endif
+  if is_vector(xi) && is_vector(yi), [xi,yi]=meshgrid(xi,yi); endif
+  if any(size(xi)!=size(yi))
+    error('xi and yi must be vectors or matrices of same size');
+  endif
+  [nr,nc]=size(xi);
+  
+  ## triangulate data
+  tri=delaunay(x,y);
+  zi=zeros(size(xi));
+  
+  if strcmp(method,'cubic')
+    error('griddata(...,\'cubic\') cubic interpolation not yet implemented\n')
 
-	# triangulate data
-	tri=delaunay(x,y);
+  elseif strcmp(method,'nearest')
+    ## search index of nearest point
+    idx=dsearch(x,y,tri,xi,yi);
+    valid = !isnan(idx);
+    zi(valid)=z(idx(valid));
 
-	# 
-	xi=reshape(xi,nr*nc,1);
-	yi=reshape(yi,nr*nc,1);
-	zi=zeros(size(xi));
+  elseif strcmp(method,'linear')
+    ## search for every point the enclosing triangle
+    tri_list=tsearch(x,y,tri,xi(:),yi(:));
 
-	if strcmp(method,'cubic')
-		error('griddata(...,\'cubic\') cubic interpolation not yet implemented\n')
-	elseif strcmp(method,'nearest')
-		error('griddata(...,\'nearest\') nearest neighbor interpolation not yet implemented\n')
+    ## keep non zero values before overwriting zeros with 1
+    valid=!isnan(reshape(tri_list,size(xi)));
+    tri_list = tri_list(valid);
+    nr_t=rows(tri_list);
 
-		#search index of nearest point
-		#dsearch not yet implemented
-		idx=dsearch(x,y,tri,xi,yi);
-		zi=z(idx);
-	elseif strcmp(method,'linear')
-		#search for every point the enclosing triangle
-		tri_list=tsearch(x,y,tri,xi,yi);
+    ## assign x,y,z for each point of triangle
+    x1=x(tri([tri_list],1));y1=y(tri([tri_list],1));z1=z(tri([tri_list],1));
+    x2=x(tri([tri_list],2));y2=y(tri([tri_list],2));z2=z(tri([tri_list],2));
+    x3=x(tri([tri_list],3));y3=y(tri([tri_list],3));z3=z(tri([tri_list],3));
 
-		#keep non zero values before overwriting zeros with 1
-		t_nzero=tri_list>0;
-		tri_list=tri_list+(tri_list==0);
-		nr_t=rows(tri_list);
+    ## calculate norm vector
+    N=cross([x2-x1, y2-y1, z2-z1],[x3-x1, y3-y1, z3-z1]);
+    N_norm=sqrt(sumsq(N,2));
+    N=N./N_norm(:,[1,1,1]);
+    
+    ## calculate D of plane equation
+    ## Ax+By+Cz+D=0;
+    D=-(N(:,1).*x1+N(:,2).*y1+N(:,3).*z1);
+    
+    ## calculate zi by solving plane equation for xi,yi
+    zi(valid) = -( N(:,1).*xi(valid) + N(:,2).*yi(valid) + D ) ./ N(:,3);
+    
+  else
+    error('unknown interpolation method');
+  endif
 
-		N=zeros(nr_t,4);
-		#assign x,y,z for each point of triangle
-		x1=x(tri([tri_list],1));y1=y(tri([tri_list],1));z1=z(tri([tri_list],1));
-		x2=x(tri([tri_list],2));y2=y(tri([tri_list],2));z2=z(tri([tri_list],2));
-		x3=x(tri([tri_list],3));y3=y(tri([tri_list],3));z3=z(tri([tri_list],3));
-
-		#calculate norm vector
-		N(:,1:3)=cross([x2-x1, y2-y1, z2-z1],[x3-x1, y3-y1, z3-z1]);
-		N_norm=sqrt(N(:,1).^2+N(:,2).^2+N(:,3).^2);
-		N(:,1:3)=N(:,1:3)./kron(N_norm,[1 1 1]);
-
-		#calculate D of plane equation
-		#Ax+By+Cz+D=0;
-		N(:,4)=-(N(:,1).*x1+N(:,2).*y1+N(:,3).*z1);
-
-		#calculate zi by solving plane equation for xi,yi
-		zi=-1./N(:,3).*( N(:,1).*xi+N(:,2).*yi+N(:,4) );
-	
-		#reset zi values for points not in convex hull		
-		zi=t_nzero.*zi;
-
-		# restore original shape
-		zi=reshape(zi,nr,nc);
-               varargout{vr_val_cnt++} = zi;
-	else
-		error('unknown interpolation method');
-	endif
+  if nargout == 3
+    rx = xi;
+    ry = yi;
+    rz = zi;
+  elseif nargout == 1
+    rx = zi;
+  elseif nargout == 0
+    mesh(xi,yi,zi);
+%    hold on
+%    plot3(x,y,z,'bo'); 
+%    hold off
+  endif
 endfunction
+
+%!demo
+%! x=2*rand(100,1)-1;
+%! y=2*rand(size(x))-1;
+%! z=sin(2*(x.^2+y.^2));
+%! [xx,yy]=meshgrid(linspace(-1,1,32));
+%! title('nonuniform grid sampled at 100 points');
+%! griddata(x,y,z,xx,yy);
+
+%!demo
+%! x=2*rand(1000,1)-1;
+%! y=2*rand(size(x))-1;
+%! z=sin(2*(x.^2+y.^2));
+%! [xx,yy]=meshgrid(linspace(-1,1,32));
+%! title('nonuniform grid sampled at 1000 points');
+%! griddata(x,y,z,xx,yy);

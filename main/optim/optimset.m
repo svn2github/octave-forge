@@ -49,7 +49,7 @@ while length (args) && is_struct (o = nth (args, 1))
 
   args = args(2:length(args)); 	# Remove 1st element of args
 				# Add key/value pairs
-  for [v,k] = o, opt = set_field (opt,k,v); end    
+  for [v,k] = o, opt = setfield (opt,k,v); end    
 end
 
 ## All the option

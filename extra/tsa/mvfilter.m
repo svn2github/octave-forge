@@ -1,5 +1,5 @@
 function [x,z]=mvfilter(B,A,x,z)
-% Multi-Variate filter function
+% Multi-variate filter function
 %
 % Y = MVFILTER(B,A,X)
 % [Y,Z] = MVFILTER(B,A,X,Z)
@@ -25,7 +25,9 @@ function [x,z]=mvfilter(B,A,x,z)
 %
 % see also: MVAR, FILTER
 
-%	Copyright (C) 1996-2002 by Alois Schloegl  <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+%	Copyright (C) 1996-2003 by Alois Schloegl  <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -45,24 +47,33 @@ function [x,z]=mvfilter(B,A,x,z)
 
 [ra, ca] = size(A);
 [rb, cb] = size(B);
-[M,  N]  = size(x);
+[M,  N ] = size(x);
 
-if (M~=ra) | (M~=rb)
-        fprintf('Warning MFILTER: dimensions do not fit\n');
+if (ra~=rb),
+        fprintf(2,'ERROR MVFILTER: number of rows of A and B do not fit\n');
+	return;
+end;
+if nargin<4,
+        z = []; %zeros(M,oo);
+end;
+
+if (M~=ra),
+	if (N==ra),
+	        fprintf(2,'Warning MVFILTER: dimensions fits only to transposed data\n');
+		[x,z] = mvfilter(A,B,x.',z);
+		x = x.';
+		return;
+	else
+	        fprintf(2,'ERROR MVFILTER: dimensions do not fit\n');
+		return;
+	end;
 end;        
-
-%if ~isfinite(cond(A{1}))
-%        fprintf('Warning VFILTER: A0 must be invertible\n');
-%end;        
-%warning off; 
 
 p  = ca/M-1;
 q  = cb/M-1;
 oo = max(p,q);
 
-if nargin<4,
-        z = zeros(M,oo);
-elseif isempty(z)
+if isempty(z)
         z = zeros(M,oo);
 else
         if  any(size(z)~=[M,oo])
@@ -78,15 +89,15 @@ if p<=q,
                 %A{k}=A{k}/A{1};
                 A(:,k*M+(1:M)) = A(:,k*M+(1:M)) / A(:,1:M);
         end;
+	A(:,1:M) = eye(M);
 else
         for k=0:q,
                 %B{k}=B{k}/A{1};
                 B(:,k*M+(1:M)) = B(:,k*M+(1:M)) / A(:,1:M);
         end;
 end; 
-A(:,1:M) = eye(M);
 
-for k=1:N,
+for k = 1:N,
         acc = B(:,1:M) * (x(:,k) + z(:,1));  % / A{1};
 	z   = [z(:,2:oo), zeros(M,1)];
         for l = 1:q,
@@ -97,4 +108,3 @@ for k=1:N,
         end;
         x(:,k) = acc;
 end;
-

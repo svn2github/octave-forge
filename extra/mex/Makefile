@@ -16,7 +16,8 @@ man1dir = $(mandir)/man1
 all: mex.o mex
 
 mex.o: mex.cc mex.h matrix.h
-	$(MKOCTFILE) -v -c mex.cc
+	$(MKOCTFILE) -c mex.cc
+	$(STRIP) mex.o # mkoctfile doesn't strip .o files
 
 mex: mex.in
 	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):" -e "s:@OPATH@:$(OPATH):g" > mex

@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.7  2002/04/12 20:27:30  pkienzle
+# Use mkoctfile -s to strip oct-files
+#
 # Revision 1.6  2002/03/17 18:23:57  aadler
 # bug with function prototypes
 #
@@ -122,34 +125,6 @@
 # rm logfile;  run octave code ; clear variables ; exit
 # look at logfile
 
-sinclude ../../Makeconf
-
-NAME     =   make_sparse
-OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct spinv.oct
-SUPERLU  =   SuperLU
-OCTVER   =  # -2.1.32
-OCTAVE   =   octave$(OCTVER)
-ifndef MKOCTFILE
-#MKOCTFILE= mkoctfile-gcc3-2.1.35 -v
- MKOCTFILE=   mkoctfile$(OCTVER)
-endif
-ifndef AR
-AR= ar
-endif
-ifndef RANLIB
-RANLIB=ranlib
-endif
-
-# Use same C compiler and options as mkoctfile
-CC       =  $(shell $(MKOCTFILE) -p CC)
-CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
-CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
-
-STRIP    =  strip
-
-S_INC=   -I$(SUPERLU)/SRC/ \
-         -I$(SUPERLU)/CBLAS
-
 # CCDEFS = -DVERBOSE 
 # CCDEFS = -DVERBOSE -DUSE_DMALLOC -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE
 # DLIBS = -ldmallocxx -ldmalloc
@@ -157,7 +132,28 @@ S_INC=   -I$(SUPERLU)/SRC/ \
 # CCDEFS = -v
 # CCDEFS = -DANDYS_SEGFAULT_OVERRIDE -DVERBOSE
 
+#OCTVER   =  -2.1.32
+OCTAVE   =   octave$(OCTVER)
 
+sinclude ../../Makeconf
+
+ifndef OCTAVE_FORGE
+
+#	MKOCTFILE= mkoctfile-gcc3-2.1.35 -v
+	MKOCTFILE= mkoctfile$(OCTVER) -s
+	AR= ar
+	RANLIB=ranlib
+
+	# Use same C compiler and options as mkoctfile
+	CC       =  $(shell $(MKOCTFILE) -p CC)
+	CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
+	CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
+endif
+
+NAME     =   make_sparse
+OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct spinv.oct
+SUPERLU  =   SuperLU
+S_INC=   -I$(SUPERLU)/SRC/ -I$(SUPERLU)/CBLAS
 
 # Special defines for SuperLU
 # 1. we need to define Add_ so that blas links up with the
@@ -234,7 +230,6 @@ $(LIBSUPERLU): $(S_DOUBLE)
 
 $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 	$(MKOCTFILE)  $(OCTOBJ) -o $(NAME).oct  -lsuperlu -L. $(DLIBS)
-	$(STRIP) $(NAME).oct
 	for i in $(OBJLINKS); do ln -sf $(NAME).oct $$i ; done
 
 test: $(NAME).oct

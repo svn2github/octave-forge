@@ -71,9 +71,6 @@ template class Array2<FixedPointComplex>;
 template class MArray2<FixedPointComplex>;
 
 #ifndef HAVE_ND_ARRAYS
-INSTANTIATE_ARRAY_CAT (FixedPoint);
-INSTANTIATE_ARRAY_CAT (FixedPointComplex);
-
 template int assign (Array2<FixedPoint>&, const Array2<FixedPoint>&);
 template int assign (Array2<FixedPointComplex>&, const Array2<FixedPoint>&);
 template int assign (Array2<FixedPointComplex>&, 
@@ -85,6 +82,9 @@ template int assign (Array2<FixedPointComplex>&, const Array2<FixedPoint>&,
 		const FixedPointComplex&);
 template int assign (Array2<FixedPointComplex>&, 
 		const Array2<FixedPointComplex>&, const FixedPointComplex&);
+#else
+INSTANTIATE_ARRAY_CAT (FixedPoint);
+INSTANTIATE_ARRAY_CAT (FixedPointComplex);
 #endif
 
 INSTANTIATE_MARRAY2_FRIENDS (FixedPoint)

@@ -1,6 +1,6 @@
-Now requires octave-2.1.40 to work correctly.  Some functions may work
-with older versions of Octave.  Use make -k to build whatever can be
-built ignoring the rest.
+Now requires octave-2.1.40 to work correctly.  
+Some functions may work with older versions of Octave.  
+Use make -k to build whatever can be built ignoring the rest.
 
 Latest release notes available at:
 

@@ -39,7 +39,7 @@ Open Source Initiative (www.opensource.org)
 #include "fixedCRowVector.h"
 #include "fixedCColVector.h"
 #include "fixedCMatrix.h"
-#include "fixedCNDArary.h"
+#include "fixedCNDArray.h"
 
 #include "ov-fixed.h"
 #include "ov-fixed-mat.h"

@@ -376,7 +376,8 @@ Cell arrays
  celldisp 
  cellplot 
  num2cell 
- deal 
+ deal
+ cell2mat 
  cell2struct 
  struct2cell 
 Structures

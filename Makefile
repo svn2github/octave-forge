@@ -6,8 +6,7 @@ ifeq ($(MPATH),$(OPATH))
 else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
-TEST_PATH=$(shell admin/runpath.sh)
-RUN_OCTAVE=$(OCTAVE) --norc -p "$(TEST_PATH)"
+RUN_OCTAVE=admin/run_forge $(OCTAVE) --norc
 
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 .PHONY: subdirs clearlog $(SUBMAKEDIRS)

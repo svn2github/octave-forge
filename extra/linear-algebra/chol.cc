@@ -124,6 +124,16 @@ r' * r = a.\n\
 }
 
 /*
+%!shared c
+%! c=chol([2,1;1,1]);
+%!assert(c,sqrt([2,1/2;0,1/2]),10*eps);
+%!assert(c\(c'\[1;1]),[0;1],10*eps); 
+%!assert(typeinfo(c),"triangular matrix");
+%!assert(c+1,sqrt([2,1/2;0,1/2])+1,10*eps);
+%!assert(typeinfo(c+1),"matrix");
+*/
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

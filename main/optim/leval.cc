@@ -57,3 +57,7 @@ code. @seealso{feval and eval}\n\
 
   return retval;
 }
+
+/*
+%!assert(leval("acos", list(-1)), pi, 100*eps);
+ */

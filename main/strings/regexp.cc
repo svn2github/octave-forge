@@ -126,3 +126,13 @@ for details.\n\
   
   return retval;
 }
+
+/*
+
+%!assert(regexp("f(.*)uck"," firetruck "),[2,10;3,7]);
+%!test
+%! [m,b]=regexp("f(.*)uck"," firetruck ");
+%! assert(m,[2,10;3,7]);
+%! assert(b, "iretr");
+
+ */

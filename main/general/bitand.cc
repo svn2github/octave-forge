@@ -101,6 +101,9 @@ bitop(Matrix xmat,Matrix ymat,unsigned int op) {
 	return(retval);
 }
 
+/*
+%!assert(bitand(7,14),6);
+*/
 DEFUN_DLD (bitand, args, ,
 	"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{A} =} bitand (@var{x}, @var{y})\n\
@@ -127,6 +130,9 @@ calculates the bitwise AND of nonnegative integers.\n\
 	return retval;
 }
 
+/*
+%!assert(bitor(7,14),15);
+*/
 DEFUN_DLD (bitor, args, ,
 	"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{A} =} bitor (@var{x}, @var{y})\n\
@@ -153,6 +159,9 @@ calculates the bitwise OR of nonnegative integers.\n\
 	return retval;
 }
 
+/*
+%!assert(bitxor(7,14),9);
+*/
 DEFUN_DLD (bitxor, args, ,
 	"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{A} =} bitxor (@var{x}, @var{y})\n\
@@ -179,6 +188,10 @@ calculates the bitwise XOR of nonnegative integers.\n\
 	return retval;
 }
 
+
+/*
+%!assert(bitmax != 0);
+*/
 DEFUN_DLD (bitmax, args, ,
 	"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{A} =} bitmax\n\

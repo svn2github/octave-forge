@@ -254,3 +254,33 @@ to the cyclic system. See Numerical Recipes, pp 73-75\n\
   return retval;
 
 }
+
+/*
+
+%!shared n,l,d,u,b,cl,cu
+%! n=6; 
+%! l=[ 0.16, 0.05, 0.56, 0.94, 0.87 ]';
+%! d=[ 0.21, 0.51, 0.18, 0.56, 0.80, 0.69 ]';
+%! u=[ 0.35, 0.46, 0.23, 0.55, 0.77 ]';
+%! b=[ 0.63, 0.88, 0.13, 0.55, 0.01, 0.96;
+%!    0.96, 0.83, 0.85, 0.04, 0.09, 0.01 ]';
+%! cl=0.71;
+%! cu=0.91;
+
+%!test # disp(">trisolve(d,u,b)");
+%! A=diag(u,-1)+diag(d+2)+diag(u,1);
+%! assert(A*trisolve(d+2,u,b),b,10000*eps);
+
+%!test # disp(">trisolve(l,d,u,b)");
+%! A=diag(l,-1)+diag(d)+diag(u,1);
+%! assert(A*trisolve(l,d,u,b),b,10000*eps);
+
+%!test # disp(">trisolve(d,e,b,cl,cu)");
+%! A=diag(cl,-n+1)+diag(u,-1)+diag(d+2)+diag(u,1)+diag(cu,n-1);
+%! assert(A*trisolve(d+2,u,b,cl,cu),b,10000*eps);
+
+%!test # disp(">trisolve(l,d,u,b,cl,cu)");
+%! A=diag(cl,-n+1)+diag(l,-1)+diag(d)+diag(u,1)+diag(cu,n-1);
+%! assert(A*trisolve(l,d,u,b,cl,cu),b,10000*eps);
+
+ */

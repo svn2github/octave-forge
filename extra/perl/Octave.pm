@@ -6,13 +6,14 @@
 
 package Inline::Octave;
 
-$VERSION = '0.20';
+$VERSION = '0.21';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
 use IO::File;
 use IPC::Open3;
 use IO::Select;
+use POSIX 'WNOHANG';
 use vars qw( $octave_object );
 
 # set values which should change to this,
@@ -267,6 +268,14 @@ STARTUP_CODE
    return;
 }
 
+# we get here from a SIG{CHLD} or a SIG{PIPE}.
+# if it's the octave process, then we want to deal
+# with it, if it isn't, then we want to pass it to
+# the calling processes handler. But how can we
+# do that reliably?
+#
+# instead we just reap any dead processes
+
 sub reap_interpreter
 {
 #  print "REAP_INTERPRETER\n";
@@ -274,10 +283,16 @@ sub reap_interpreter
    my $pid= $octave_object->{octave_pid};
    return unless $pid;
 
-   waitpid $pid,0;
-   $octave_object->{OCTIN} = "";
-   $octave_object->{OCTOUT} = "";
-   $octave_object->{octave_pid} = "";
+   if ( waitpid($pid, WNOHANG) > 0 ) {
+       $octave_object->{OCTIN} = "";
+       $octave_object->{OCTOUT} = "";
+       $octave_object->{octave_pid} = "";
+   }
+
+   while (
+      ( my $reaped = waitpid (-1, WNOHANG) ) > 0
+         ) { };
+
    return;
 }   
 
@@ -1077,6 +1092,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.25  2004/04/12 17:11:17  aadler
+added wnohang signalling
+
 Revision 1.24  2004/04/12 16:12:07  aadler
 set SIGnals only when doing a read
 

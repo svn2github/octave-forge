@@ -39,12 +39,7 @@ install: $(SUBMAKEDIRS)
 	@echo "against those in your version of Octave."
 
 check:
-	@echo "fid=fopen('fntests.log','w');" > fntests.m
-	@echo "if fid<0,error('could not open fntests.log for writing');end" \
-		>>fntests.m
-	@for file in `grep -l '^%!\(assert\|test\)' */*/*.{cc,m}` ; do \
-		echo "test('$$file','quiet',fid);" >>fntests.m ; done
-	@echo "fclose(fid);" >> fntests.m
+	admin/mktests.sh
 	$(RUN_OCTAVE) -q fntests.m
 	$(RUN_OCTAVE) -q batch_test.m
 

@@ -35,6 +35,9 @@
 ## success = test(...)
 ##   return true if all the tests succeeded.
 ##
+## [n, max] = test(...)
+##   return number of success and number of tests
+##
 ## [code, idx] = test('name', 'grabdemo')
 ##   Extract the contents of the demo blocks, but do not execute them.
 ##   code is the concatenation of all the code blocks and
@@ -124,11 +127,11 @@
 ## called with 'demo' or 'verbose'.  The code is displayed before
 ## it is executed. For example,
 ##    %!demo
-##    %! t=0:0.01:2*pi; x=sin(t);
+##    %! t=[0:0.01:2*pi]; x=sin(t);
 ##    %! plot(t,x);
 ##    %! ## you should now see a sine wave in your figure window
 ## produces
-##    > t=0:0.01:2*pi; x=sin(t);
+##    > t=[0:0.01:2*pi]; x=sin(t);
 ##    > plot(t,x);
 ##    > ## you should now see a sine wave in your figure window
 ##    Press <enter> to continue: 
@@ -139,7 +142,7 @@
 ## of the block type.  This creates a comment block which is echoed
 ## in the log file, but is not executed.  For example:
 ##    %!#demo
-##    %! t=0:0.01:2*pi; x=sin(t);
+##    %! t=[0:0.01:2*pi]; x=sin(t);
 ##    %! plot(t,x);
 ##    %! ## you should now see a sine wave in your figure window
 ##
@@ -289,6 +292,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   __all_success = 1;
 
   ## process each block separately, initially with no shared variables
+  __tests = __successes = 0;
   __shared = " ";
   __shared_r = " ";
   for __i=1:length(__blockidx)-1
@@ -458,6 +462,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       fputs (__fid, __msg);
       ## show the variable context
       if !strcmp(__type, "error") && !all(__shared==" ")
+	fputs(__fid, "shared variables ");
 	eval (["fdisp(__fid,tar(",__shared,"));"]); 
       endif
     endif
@@ -469,14 +474,20 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       	return;
       endif
     endif
+    __tests++;
+    __successes+=__success;
   endfor
-  if (nargout > 0)
-    if (__grabdemo)
-      __ret1 = __demo_code;
-      __ret2 = __demo_idx;
-    else
-      __ret1 = __all_success; 
-    endif
+
+  if (nargout == 0)
+    printf("PASSES %d out of %d tests\n",__successes,__tests);
+  elseif (__grabdemo)
+    __ret1 = __demo_code;
+    __ret2 = __demo_idx;
+  elseif nargout == 1
+    __ret1 = __all_success; 
+  else
+    __ret1 = __successes;
+    __ret2 = __tests;
   endif
 endfunction
 
@@ -562,7 +573,7 @@ endfunction
 
 %!## demo blocks
 %!demo                   # multiline demo block
-%! t=0:0.01:2*pi; x=sin(t);
+%! t=[0:0.01:2*pi]; x=sin(t);
 %! plot(t,x);
 %! % you should now see a sine wave in your figure window
 %!demo a=3               # single line demo blocks work too

@@ -14,7 +14,7 @@ function [R,sig,ci1,ci2] = corrcoef(X,Y,Mode);
 %	gives the correlation coefficient  
 %	also known as the "product-moment coefficient of correlation" or "Pearson's correlation" [1]
 % Mode='Spearman' or 'Rank'
-%	gives the "Spearman Rank Correlation Coefficient"
+%	gives "Spearman's Rank Correlation Coefficient"
 %
 % [R,p,ci1,ci2] = CORRCOEF(...);
 % 	R is the correlation matrix
@@ -126,7 +126,7 @@ elseif strcmp(lower(Mode),'spearman') | strcmp(lower(Mode),'rank');
         end;
         [N,M]=size(X);
         NN = ones(M)*N;
-        [tmp,ix] = sort(-X,1);  % sorts the data, ix indicates the position in the sorted list
+        [tmp,ix] = sort(-X);  % sorts the data, ix indicates the position in the sorted list
         [tmp,iy] = sort(ix);	    % iy gives the rank of each element 	
         %[X,ix,iy],
         [jx,jy]  = find(ones(M));

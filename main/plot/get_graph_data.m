@@ -37,10 +37,14 @@ end
 X=[xa_x,xa_y,0*xa_y+1;ya_x,ya_y,0*ya_y+1];
 Y=[xa_n,0*xa_n;0*ya_n,ya_n];
 rot_ax= X\Y;
+
+irot= inv( rot_ax(1:2,:) );
+ang1= [1 0]*irot;
 printf('X axis is at %5.2f degrees\n',  ...
-       180/pi*atan2( rot_ax(1,2), rot_ax(1,1))  );
+       180/pi*atan2( ang1(2), ang1(1) ) );
+ang1= [0 1]*irot;
 printf('Y axis is at %5.2f degrees\n',  ...
-       180/pi*atan2( rot_ax(2,2), rot_ax(2,1)) );
+       180/pi*atan2( ang1(2), ang1(1) ) );
 
 printf('Select points to convert. Press Mouse #2 or #3 to quit\n');
 fflush(stdout);

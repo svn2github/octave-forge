@@ -51,17 +51,22 @@ function [o,count] = sumskipnan(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 %	Version 1.16
-%	13 Mar 2002
+%	15 Mar 2002
 %	Copyright (c) 2000-2002 by  Alois Schloegl
 %	a.schloegl@ieee.org	
 
 
-if nargin<2
-        DIM=[];
-end;	
-if isempty(DIM), 
-        DIM=min(find(size(i)>1));
-        if isempty(DIM), DIM=1; end;
+tmp = flag_implicit_dimension;
+if tmp,
+        DIM=tmp;
+else
+        if nargin<2
+                DIM = [];
+        end;	
+        if isempty(DIM), 
+                DIM=min(find(size(i)>1));
+                if isempty(DIM), DIM=1; end;
+        end;
 end;
 
 if exist('OCTAVE_VERSION') >= 5, 

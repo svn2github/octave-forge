@@ -119,16 +119,7 @@ ans =\n\
 
 	octave_value_list step_args(4,1);  // for stepsize: {f, f_args, direction, minarg}
 	octave_value_list g_args(3,1); // for numgradient {f, f_args, minarg}
-	octave_value_list c_args(2,1); // for cellevall {f, f_args}  
-	
-	step_args(0) = f; 
-	step_args(1) = f_args;
-
-	g_args(0) = f;
-	g_args(1) = f_args;
-	
-	c_args(0) = f;
-	c_args(1) = f_args;
+	octave_value_list c_args(2,1); // for celleval {f, f_args}  
 	
 	octave_value_list f_return; // holder for feval returns
 
@@ -141,7 +132,7 @@ ans =\n\
 	Matrix H, tempmatrix, H1, H2;
 	ColumnVector thetain, d, g, g_new, p, q;
 	// tolerances
-	func_tol  = 2*DBL_EPSILON;
+	func_tol  = 1e-12;
 	param_tol = 1e-6;
 	gradient_tol = 1e-6;  
 
@@ -164,9 +155,18 @@ ans =\n\
 		minarg = 1; // by default, first arg is one over which we minimize
  	}
 	
+	
+	step_args(0) = f; 
+	step_args(1) = f_args;
 	step_args(3) = minarg;
+
+	g_args(0) = f;
+	g_args(1) = f_args;
 	g_args(2) = minarg;
 	
+	c_args(0) = f;
+	c_args(1) = f_args;
+
  	ColumnVector theta  = f_args(minarg - 1).column_vector_value();
 
 	k = theta.rows();
@@ -274,12 +274,12 @@ ans =\n\
 		test = sqrt(theta.transpose() * theta);
 		if (test > 1)
 		{
-			conv2 = p.transpose() * p / test < param_tol ;
+			conv2 = sqrt(p.transpose() * p) / test < param_tol ;
 			
 		}
 		else
 		{
-			conv2 = p.transpose() * p < param_tol;
+			conv2 = sqrt(p.transpose() * p) < param_tol;
 		}		
 		// gradient convergence
 		conv3 = sqrt(g.transpose() * g) < gradient_tol;

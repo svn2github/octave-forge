@@ -174,7 +174,7 @@ ans =\n\
 	ColumnVector d, thetain, thetanew, g, g_new, p, sig, gam;
 	
 	// tolerances
-	func_tol  = 2*DBL_EPSILON;
+	func_tol  = 1e-12;
 	param_tol = 1e-6;
 	gradient_tol = 1e-6;  
 
@@ -315,12 +315,12 @@ ans =\n\
 		test = sqrt(theta.transpose() * theta);
 		if (test > 1)
 		{
-			conv2 = p.transpose() * p / test < param_tol ;
+			conv2 = sqrt(p.transpose() * p) / test < param_tol ;
 			
 		}
 		else
 		{
-			conv2 = p.transpose() * p < param_tol;
+			conv2 = sqrt(p.transpose() * p) < param_tol;
 		}		
 		// gradient convergence
 		conv3 = sqrt(g.transpose() * g) < gradient_tol;

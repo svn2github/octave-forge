@@ -35,11 +35,11 @@ function theta = battery(func, args, minarg, startvals, maxiters)
 [k,trials] = size(startvals);
 bestobj = inf;
 besttheta = zeros(k,1);
-bfgscontrol = [maxiters;0;0;1];
+bfgscontrol = {maxiters,0,0,1};
 # now try the supplied start values, and optionally the random start values
 for i = 1:trials
 	args{minarg} = startvals(:,i);
-	[theta, obj_value, iters, convergence] = bfgsmin (func, args, bfgscontrol);
+	[theta, obj_value, convergence] = bfgsmin (func, args, bfgscontrol);
 	
 	if obj_value < bestobj
 		besttheta = theta;

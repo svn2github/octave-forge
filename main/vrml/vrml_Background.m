@@ -3,16 +3,16 @@
 ##  s is a string of the form :
 ##  ------------------------------------------------------------------
 ##  Background { 
-##    exposedField MFColor  skyColor          0 0 0
-##    exposedField MFFloat  skyAngle          []   
-##    exposedField MFColor  groundColor       []   
-##    exposedField MFFloat  groundangle       []   
-##    exposedField MFString backUrl           []
-##    exposedField MFString bottomUrl         []
-##    exposedField MFString frontUrl          []
-##    exposedField MFString leftUrl           []
-##    exposedField MFString rightUrl          []
-##    exposedField MFString topUrl            []
+##    skyColor          [0 0 0]
+##    skyAngle          [0]   
+##    groundColor       [0 0 0]   
+##    groundangle       [0]   
+##    backUrl           ""
+##    bottomUrl         ""
+##    frontUrl          ""
+##    leftUrl           ""
+##    rightUrl          ""
+##    topUrl            ""
 ##  }
 ##  ------------------------------------------------------------------
 ##
@@ -28,52 +28,44 @@
 
 function s = vrml_Background (varargin)
 
-hash.dummy = 0;
+hash = struct(varargin{:});
 
-
-if nargin, hash = leval ("setfields", varargin); end
-## hash = rmfield (hash, "dummy");
-
-tpl1 = struct (\
-	       "skyColor",         "%8.3f %8.3f %8.3f",\
-	       "skyAngle",         "%8.3f",\
-	       "groundColor",      "%8.3f %8.3f %8.3f",\
-	       "groundAngle",      "%8.3f");
-
-tpl2 = struct (\
-	       "backUrl",          "%s",\
-	       "bottomUrl",        "%s",\
-	       "frontUrl",         "%s",\
-	       "leftUrl",          "%s",\
-	       "rightUrl",         "%s",\
-	       "topUrl",           "%s");
+opts = struct ("skyColor",         3,
+	       "groundColor",      3,
+               "skyAngle",         1,
+	       "groundAngle",      1,
+	       "backUrl",          0,
+	       "bottomUrl",        0,
+	       "frontUrl",         0,
+	       "leftUrl",          0,
+	       "rightUrl",         0,
+	       "topUrl",           0);
 
 body = "";
 for [val,key] = hash,
-				# Ignore dummy field
-  if !strcmp (key, "dummy") && (!isnumeric (val) || !isnan (val)),
-
-				# Check validity of field
-
-
-				# Add numeric field
-    if struct_contains (tpl1, key)
-
-      body = [body,\
-	      sprintf("   %-20s   [ %s ]\n",key,\
-		      sprintf (getfield (tpl1,key), val))];
-
-
-				# Add string field
-    elseif struct_contains (tpl2, key)
-
-      body = [body,\
-	      sprintf("   %-20s   \"%s\"\n",key,\
-		      sprintf (getfield (tpl2,key), val))];
+  if struct_contains (opts, key)
+    n = opts.(key);
+    if (n == 0)
+      if (ischar(val))
+        body = [ body, sprintf('   %-20s   "%s"\n', key, val) ];
+      else
+        error ("vrml_Background: field '%s' expects string", key);
+      endif
+    elseif (n == 1)
+      if (isscalar(val))
+        body = [ body, sprintf('   %-20s   [ %8.3f ]\n', key, val) ];
+      else
+        error ("vrml_Background: field '%s' expects scalar", key);
+      endif
     else
-      error (sprintf ("vrml_Background : unknown field '%s'",key));
-    end
-				# Add field
+      if (isvector(val) && length(val) == 3)
+        body = [body, sprintf('   %-20s   [ %8.3f %8.3f %8.3f ]\n', key, val)];
+      else
+        error ("vrml_Background: field '%s' expects [r g b]", key);
+      endif
+    endif
+  else
+    error ("vrml_Background : unknown field '%s'",key);
   end
 end
 s = sprintf ("Background { \n%s}\n", body);

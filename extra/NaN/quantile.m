@@ -75,14 +75,11 @@ else
                 [yr,yc] = size(Y);
                 Q = repmat(nan,length(q),yc);
 		
-		if flag_implicit_skip_nan,    % default 
-	                N = sum(~isnan(Y),1);
-	    	        Y(isnan(Y)) = inf;   % making sure NaN's are at the end;
-		else   				% not supported
-			N = size(Y,1)*ones(1,yc);
-		end;
-    		Y = sort(Y,1);
-		
+                N = sum(~isnan(Y),1);
+                Y(isnan(Y)) = inf;   % making sure NaN's are at the end;
+                
+                Y = sort(Y,1);
+                
 		for k1 = 1:yc,
 	                for k2 = 1:length(q),
 				Q(k2,k1) = flix(Y(:,k1),N(k1)*q(k2) + 0.5);                	        

@@ -234,7 +234,7 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	    key = (char *)calloc(sizeof(char),key_len+1);
 	    read(sock,key,key_len);
 	    ov_list=Frecv(args(0),0);
-	    m [key]=ov_list(0); 
+	    m.assign(key,ov_list(0)); 
 	  }
 	  retval=octave_value(m);
 	}

@@ -31,7 +31,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "utils.h"
 #include "oct-env.h"
 #include "file-io.h"
+#ifndef HAVE_OCTAVE_29
 #include "pt-plot.h"
+#endif
 #include "sighandlers.h"
 #include "parse.h"
 #include "cmd-edit.h"
@@ -43,6 +45,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "oct-strstrm.h"
 #include "oct-iostrm.h"
 #include "unwind-prot.h"
+#include "input.h"
 
 #ifdef NEED_OCTAVE_QUIT
 #define OCTAVE_QUIT do {} while (0)
@@ -124,8 +127,6 @@ do_octave_atexit_server (void)
 
       // XXX FIXME XXX -- is this needed?  Can it cause any trouble?
       raw_mode (0);
-
-      close_plot_stream ();
 
       close_files ();
 
@@ -220,14 +221,15 @@ reval_loop (int sock)
       ev_str[len]='\0';
 
       s=(std::string)ev_str;
-      eval_string(s,false,retval,1);
+      eval_string(s,false,retval,0);
+
       delete(ev_str);
       if (error_state)
         {
 	  nl=htonl(error_state);
 	  write(sock,&nl,sizeof(int));
 	  read(sock,&nl,sizeof(int));
-     	  clean_up_and_exit_server (retval);
+	  // clean_up_and_exit_server (retval);
         }
       else
         {
@@ -548,10 +550,7 @@ Connect hosts and return sockets.")
  	      //normal act
 	      install_signal_handlers ();
       
-	      //	      initialize_command_input ();
-	      
-	      //	      if (! inhibit_startup_message)
-	      //std::cout << OCTAVE_STARTUP_MESSAGE "\n" << std::endl;
+	      atexit (do_octave_atexit_server);
 	      
 	      char * s;
 	      int stat;
@@ -564,31 +563,9 @@ Connect hosts and return sockets.")
 		eval_string(std::string(s),true,stat);
 	      }
 		
-	      //	      command_history::read (false);
-	      
-	      // If there is an extra argument, see if it names a file to read.
-	      // Additional arguments are taken as command line options for the
-	      // script.
-	      
 	      interactive = false;
 	      
-//	      switch_to_buffer (create_buffer (get_input_from_net (asock)));
-	      
-	      // Force input to be echoed if not really interactive, but the user
-	      // has forced interactive behavior.
-	      
-	      if (! interactive && forced_interactive)
-		{
-		  command_editor::blink_matching_paren (false);
-		  
-		  // XXX FIXME XXX -- is this the right thing to do?
-		  
-		  bind_builtin_variable ("echo_executing_commands",
-					 static_cast<double> (ECHO_CMD_LINE));
-		}
-      
-	      if (! interactive)
-		line_editing = false;
+	      line_editing = false;
 
 //	      int retval = main_loop ();
 

@@ -228,10 +228,9 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	{
 	  Octave_map map=val.map_value();
 	  octave_value_list ov_list;
-	  const_iterator p = map.begin();
-	  iterator end=map.end();
+	  Cell c;
 	  int i,length=map.length(),key_len=0;
-	  std::string key=p->first;
+	  string_vector key=map.keys();
 	  
   	  for (i=0;i<nsock;i++){
   	    sock=(int)sock_m.data()[i];
@@ -243,16 +242,13 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	      nl=htonl(length);
 	      write(sock,&nl,sizeof(int));
 	      for(i=0;i<length;i++){
-		key_len=key.length();
+		key_len=key[i].length();
 		nl=htonl(key_len);
 		write(sock,&nl,sizeof(int));
-		ov_list(0)=map[key](0);
-		write(sock,key.c_str(), key_len);
+		c=map.contents(key[i]);
+		ov_list(0)=c(0);
+		write(sock,key[i].c_str(), key_len);
 		Fsend(ov_list,0);
-		p++;
-		if(p==end)
-		  break;
-		key=p->first;
 	      }
 	    }
 	  }

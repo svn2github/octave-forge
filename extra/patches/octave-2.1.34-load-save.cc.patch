@@ -1,0 +1,228 @@
+Subject: Octave <-> Matlab Compatibility Database
+    Date: Tue, 11 Sep 2001 02:15:40 +0100
+    From: João Cardoso <jcardoso@inescn.pt>
+      To: pkienzle@kienzle.powernet.co.uk
+
+Hi Paul,
+
+As you might know, I have made available a save-load.cc patch to 
+Octave that supports saving and reading, in ascii or binary, 
+structures and cells.
+
+As I believe that you are currently more involved with Octave, and 
+your mapcompact is certainly the best place to search for patches and 
+new functions, I wonder if you don't want to include the above 
+load-save.cc patch in your package.
+
+In case you want, I enclose it.
+
+Bye,
+Joao
+--- /src/cvs/octave/src/load-save.cc	Fri Apr 20 01:27:51 2001
+***************
+*** 83,88 ****
+--- 83,90 ----
+  // no newline characters.
+  static std::string Vsave_header_format_string;
+  
++ #include "ov-struct.h"
++ 
+  // The number of decimal digits to use when writing ascii data.
+  static int Vsave_precision;
+  
+***************
+*** 693,698 ****
+--- 695,702 ----
+  	      if (! error_state)
+  		tc = octave_value (chm, true);
+  	    }
++ 	  else if ( elements == 0 )
++  	    tc = octave_value ("",true);
+  	  else
+  	    error ("load: failed to extract number of string elements");
+  	}
+***************
+*** 731,736 ****
+--- 735,786 ----
+  	  else
+  	    error ("load: failed to load range constant");
+  	}
++ 	else if (strncmp (ptr, "list", 4) == 0)
++   	{
++   	  int ne = 0;
++   
++   	  if (extract_keyword (is, "elements", ne) && ne-- > 0)
++   	    {
++    	      octave_value_list tmp;
++              //avoid those useless copies when resizing the list
++   	      //another way to do this is to reverse the save order of the
++              //list elements... easy... but looks better in the file this way
++              tmp(ne)=octave_value(true); 
++              for( int elem=0;elem<=ne;elem++ )
++                if(!read_ascii_data(is,filename,global,tmp(elem), count))
++                  {
++   	            error ("load: list element `%s' missing", tag);
++                    break;
++                  }
++                tc=tmp;
++            }
++   	  else
++   	    panic_impossible ();
++   	}
++        else if (strncmp (ptr, "struct", 6) == 0)
++   	{
++   	  int ne = 0;
++   
++   	  if (extract_keyword (is, "elements", ne) && ne > 0)
++   	    {
++              Octave_map om;
++              char* s;
++   
++              for( int elem=0;elem<ne;elem++ )
++                {
++                  octave_value ov;
++                  if(!(s = read_ascii_data(is,filename,global,ov, count)))
++                    {
++   	              error ("load: struct element `%s' missing", tag);
++                      break;
++                    }
++                  om[string(s)] = ov;
++                }
++                tc = octave_value(om);
++            }
++   	  else
++   	    panic_impossible ();
++   	}
+        else
+  	error ("load: unknown constant type `%s'", tag);
+      }
+***************
+*** 1013,1018 ****
+--- 1063,1112 ----
+  	tc = octave_value (chm, true);
+        }
+        break;
++     case 8:
++       {
++  	FOUR_BYTE_INT ne;
++  	if (! is.read (&ne, 4))
++  	  goto data_read_error;
++  	if (swap)
++  	  swap_4_bytes (X_CAST (char *, &ne));
++       octave_value_list tmp;
++       //this one has had indeed it's order reversed
++       //no need to remain the order in the file, no 
++       //one will look at them, no one sane in mind
++       char *ldoc="";
++       for( int elem=ne;elem>=0;elem-- )
++         if(!read_binary_data(is,swap,fmt,filename,global,tmp(elem),ldoc))
++           {
++  	      error ("load: list element `%s' missing", name);
++             break;
++           }
++         tc=tmp;
++       }
++       break;
++     case 9:
++       {
++  	FOUR_BYTE_INT ne;
++  	if (! is.read (&ne, 4))
++  	  goto data_read_error;
++  	if (swap)
++  	  swap_4_bytes (X_CAST (char *, &ne));
++       Octave_map om;
++       char *s;
++       char *ldoc="";
++       for( int elem=0;elem<ne;elem++ )
++         {
++ 	    octave_value ov;
++           if(!(s = read_binary_data(is,swap,fmt,filename,global,ov,ldoc)))
++             {
++  	        error ("load: struct element `%s' missing", name);
++               break;
++             }
++           om[string(s)] = ov;
++         }
++         tc = octave_value(om);
++       }
++       break;
+  
+      default:
+      data_read_error:
+***************
+*** 3524,3529 ****
+--- 3618,3652 ----
+        const Complex *mtmp = m.data ();
+        write_doubles (os, X_CAST (const double *, mtmp), st, 2*len);
+      }
++   else if (tc.is_list ())
++     {
++       tmp = 8;
++       os.write (&tmp, 1);
++       octave_value_list ovl     = tc.list_value();
++       FOUR_BYTE_INT elements    = ovl.length() -1;
++       os.write (&elements, 4);
++       for( int elem=elements;elem>=0;elem-- )
++         {
++           octave_value ov = ovl(elem);
++           save_binary_data ( os, ov, string("_"), string(""),
++           mark_as_global, save_as_floats);
++         }
++     }
++   else if (tc.is_map ())
++     {
++       tmp = 9;
++       os.write (&tmp, 1);
++       Octave_map om     = tc.map_value();
++       FOUR_BYTE_INT elements    = om.length();
++       os.write (&elements, 4);
++       for( Pix elem=om.first();elem!=0;om.next(elem) )
++         {
++           octave_value ov = om.contents(elem);
++           string s = om.key(elem);
++           save_binary_data ( os, ov, s, string(""),
++           mark_as_global, save_as_floats);
++         }
++     }
+    else
+      gripe_wrong_type_arg ("save", tc, false);
+  
+***************
+*** 4489,4494 ****
+--- 4612,4647 ----
+  	 << tmp.base () << " "
+  	 << tmp.limit () << " "
+  	 << tmp.inc () << "\n";
++     }
++   else if (tc.is_list ())
++     {
++       octave_value_list ovl 	= tc.list_value();
++       int elements 		= ovl.length();
++       ascii_save_type (os, "list", mark_as_global);
++       os << "# elements: " << elements << "\n";
++       for( int elem=0;elem<elements;elem++ )
++         {
++           octave_value ov = ovl(elem);
++           char s[10];
++           //valid_identifier doesnt let me use this one, can i change it?
++           //sprintf(s,"%s[%d]", name.c_str(), elem+1);
++           sprintf(s,"%s_%d", name.c_str(), elem+1);
++           save_ascii_data ( os, ov, string(s), infnan_warned, strip_nan_and_inf,
++           mark_as_global, precision);
++         }
++     }
++   else if (tc.is_map ()) //struct type
++     {
++       Octave_map om 	= tc.map_value();
++       ascii_save_type (os, "struct", mark_as_global);
++       os << "# elements: " << om.length() << "\n";
++       for( Pix elem=om.first();elem!=0;om.next(elem) )
++         {
++           octave_value ov = om.contents(elem);
++           string s = om.key(elem);
++           save_ascii_data ( os, ov, s, infnan_warned, strip_nan_and_inf,
++           mark_as_global, precision);
++         }
+      }
+    else if (tc.is_real_scalar ())
+      {

@@ -1,4 +1,726 @@
 # Automatically generated file --- DO NOT EDIT
+2003-02-22 12:42  pkienzle
+
+	* main/struct/: getfield.cc, setfield.cc, getfield.m, setfield.m: 
+	doc updates 
+
+2003-02-22 12:40  pkienzle
+
+	* main/path/fullfile.m: fullfile is now part of octave 
+
+2003-02-22 11:13  pkienzle
+
+	* extra/symband/SymBand.cc: Oops --- max(double,double) should
+	return double 
+
+2003-02-22 10:52  pkienzle
+
+	* main/geometry/Makefile: [no log message] 
+
+2003-02-22 10:23  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Warn if dispatch function changes 
+
+2003-02-22 10:22  pkienzle
+
+	* main/comm/: galoisfield.h, gf.cc, hammgen.m, mkdoc: Fix hammgen
+	incompatibility 
+
+2003-02-22 10:04  kahacjde
+
+	* main/geometry/Makefile: 
+	
+	Target griddata does not (yet?) exist 
+
+2003-02-22 08:48  pkienzle
+
+	* main/symbolic/: op-ex-mat.cc, op-ex.cc, op-vpa.cc: missing
+	includes 
+
+2003-02-22 08:44  pkienzle
+
+	* main/comm/syndtable.cc: Replace x.checkelem(i) with x(i) 
+
+2003-02-21 00:28  pkienzle
+
+	* main/signal/butter.m: correct the temporary name 
+
+2003-02-21 00:28  pkienzle
+
+	* main/signal/butter.m: Return state space form; return continuous
+	or discrete system.  
+
+2003-02-20 22:51  pkienzle
+
+	* main/miscellaneous/listen.cc: Temporary hacks for Win95 support.  
+
+2003-02-20 18:26  pkienzle
+
+	* FIXES/README: Trim the functions which have been moved to octave 
+
+2003-02-20 18:22  pkienzle
+
+	* FIXES/vander.m: changes are already in octave 
+
+2003-02-20 18:18  pkienzle
+
+	* FIXES/union.m: Compatible union is now in octave 
+
+2003-02-20 18:11  pkienzle
+
+	* configure.base: Some compiler specific defines are stored in
+	config.h --- mkoctfile needs to know about them for even the
+	simplest programs.  
+
+2003-02-20 18:09  pkienzle
+
+	* extra/symband/SymBand.cc: max/min macros conflict with max/min
+	methods in the Array class --- use functions instead.  
+
+2003-02-20 18:03  pkienzle
+
+	* extra/linear-algebra/ov-re-tri.cc,
+	extra/linear-algebra/ov-re-tri.h, main/comm/Makefile,
+	main/comm/galois.h, main/comm/gf.cc, main/image/bwfill.cc,
+	main/image/bwlabel.cc, main/image/cordflt2.cc,
+	main/miscellaneous/dispatch.cc, main/miscellaneous/listen.cc,
+	main/signal/remez.cc, main/sparse/complex_sparse_ops.cc,
+	main/sparse/sparse_inv.cc, main/sparse/sparse_ops.cc,
+	main/sparse/make_sparse.h, main/sparse/sparse_ops.h,
+	main/strings/regexp.cc: Use of "T x[n]" where n is not constant is
+	a g++ extension so replace it with OCTAVE_LOCAL_BUFFER(T,x,n), and
+	other things to keep the picky MipsPRO CC compiler happy.  
+
+2003-02-20 17:51  pkienzle
+
+	* main/sparse/sp_test.m: Default to 'sum' rather than 'unique'
+	assembly 
+
+2003-02-20 13:08  pkienzle
+
+	* extra/mex/mex.cc: don't use g++ extensions (now compiles for
+	MipsPRO CC).  
+
+2003-02-20 12:44  pkienzle
+
+	* main/miscellaneous/listen.cc: Proper child exit handling (using
+	pure posix interface); cleaner debug statements.  
+
+2003-02-20 00:59  pkienzle
+
+	* RELEASE-NOTES: TSA/NAN updates 
+
+2003-02-19 22:27  pkienzle
+
+	* doc/octave-forge-home.html: Move links to the Wiki (finally,
+	someone has set up a wiki!) 
+
+2003-02-19 20:19  pkienzle
+
+	* FIXES/sqrtmtest.m: sqrtm no longer part of octave-forge 
+
+2003-02-19 20:18  pkienzle
+
+	* FIXES/: Makefile, logm.cc, sqrtm.cc: sqrtm and logm are now part
+	of Octave 
+
+2003-02-19 20:18  pkienzle
+
+	* main/linear-algebra/: Makefile, rsf2csf.cc, rsf2csf.m: rsf2csf
+	removed because of questions about code origin 
+
+2003-02-19 15:20  pkienzle
+
+	* main/comm/: cyclgen.cc, cyclpoly.cc, hammgen.m, lloyds.m,
+	syndtable.cc: New functions 
+
+2003-02-19 15:18  pkienzle
+
+	* main/comm/: INDEX, Makefile, _errcore.cc, comms.txi, gconv.m,
+	gconvmtx.m, gdeconv.m, gdftmtx.m, gf.cc, gfft.m, gifft.m, groots.m,
+	isprimitive.cc, minpol.m, mktexi, primpoly.cc, quantiz.m,
+	scatterplot.m: doc updates; correct definition of quantization
+	error in quantiz 
+
+2003-02-17 23:34  pkienzle
+
+	* main/comm/: awgn.m, biterr.m, wgn.m: Use varargin.  
+
+2003-02-17 04:48  etienne
+
+	* main/vrml/vmesh.m: add level option 
+
+2003-02-17 04:48  etienne
+
+	* main/vrml/vrml_parallelogram.m: vrml parallelogram 3D shape 
+
+2003-02-16 17:21  schloegl
+
+	* extra/tsa/bispec.m: documentation improved 
+
+2003-02-16 17:02  schloegl
+
+	* extra/NaN/: nantest.m, sumskipnan.m: make some code more readable 
+
+2003-02-16 01:05  pkienzle
+
+	* main/comm/Makefile: Don't assume . is on the path 
+
+2003-02-16 00:54  pkienzle
+
+	* main/comm/: _errcore.cc, biterr.m, eyediagram.m, gen2par.m,
+	randerr.m, randsrc.m, scatterplot.m, symerr.m: New functions 
+
+2003-02-16 00:52  pkienzle
+
+	* main/comm/: INDEX, Makefile, awgn.m, comms.txi, cosets.m,
+	galois.m, gfft.m, gifft.m, groots.m, minpol.m, randint.m,
+	rsgenpoly.m, wgn.m: Put comma separators in concatenation
+	constructs.  
+
+2003-02-14 11:36  pkienzle
+
+	* main/strings/strsort.m: Overload the sort function for use with
+	strings.  
+
+2003-02-13 22:50  aadler
+
+	* main/sparse/make_sparse.cc: mods to make 'sum' the default 
+
+2003-02-12 14:58  pkienzle
+
+	* main/statistics/boxplot.m: Support for notched box plots, extreme
+	outliers, and single point datasets.  
+
+2003-02-12 00:06  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Fix problem with "clear
+	functions" interaction 
+
+2003-02-11 03:31  etienne
+
+	* RELEASE-NOTES: vrml changes 
+
+2003-02-10 18:56  schloegl
+
+	* extra/NaN/covm.m: TOASCII replaced by ISNUMERIC,this solves a
+	problem with Octave; more cosmetics and fix of a minor bug 
+
+2003-02-10 06:33  schloegl
+
+	* extra/NaN/covm.m: bug fixed: case Mode=D1  or D0 
+
+2003-02-10 03:00  h_fujiwara
+
+	* main/parallel/: README, connect.cc, pserver.cc, send.cc: for
+	2.1.44.  
+
+2003-02-09 23:03  pkienzle
+
+	* RELEASE-NOTES: Initial notes for Feb. 2003 release 
+
+2003-02-09 22:35  pkienzle
+
+	* main/geometry/delaunayn.cc: Qt is more accurate than QJ, so
+	suggest using that instead 
+
+2003-02-09 22:28  pkienzle
+
+	* batch_test.m: Add galois test 
+
+2003-02-09 22:27  pkienzle
+
+	* main/geometry/Makefile: Build griddata as well.  
+
+2003-02-09 22:24  pkienzle
+
+	* main/miscellaneous/Makefile: dispatch wasn't being built 
+
+2003-02-09 22:24  pkienzle
+
+	* main/miscellaneous/edit.m: Note that edit should be a command
+	function 
+
+2003-02-09 22:21  pkienzle
+
+	* main/struct/getfield.m: Use the same incompatible semantics as
+	getfield.cc 
+
+2003-02-08 22:37  pkienzle
+
+	* FIXES/: index.m, rindex.m: index and rindex improvements are now
+	in Octave.  
+
+2003-02-08 04:50  kahacjde
+
+	* main/io/dlmread.cc: 
+	
+	rewrite, handles now different line length 
+
+2003-02-06 08:30  pkienzle
+
+	* main/miscellaneous/dispatch.cc: Change arg order to
+	dispatch(from,to,type) so that extensions to multimethods 
+	dispatch(from,to,type,type,...) are more natural.  Haven't
+	implemented the multimethods options yet.  
+
+2003-02-06 00:14  pkienzle
+
+	* main/comm/: INDEX, Makefile, README.rs, awgn.m, bi2de.m,
+	comms.txi, compand.m, cosets.m, de2bi.m, galois-def.cc,
+	galois-def.h, galois-ops.h, galois.cc, galois.h, galois.m,
+	galoisfield.cc, galoisfield.h, gconv.m, gconvmtx.m, gdeconv.m,
+	gdftmtx.m, gf.cc, gfft.m, gfprimdf.cc, gftable.m, gftuple.cc,
+	gifft.m, groots.m, isprimitive.cc, minpol.m, mkdoc, mktexi,
+	op-fil-gm.cc, op-gm-gm.cc, op-gm-m.cc, op-gm-s.cc, op-m-gm.cc,
+	op-s-gm.cc, ov-galois.cc, ov-galois.h, patch.rs-3.1.1, primpoly.cc,
+	quantiz.m, randint.m, rsdeco.cc, rsdeco_ccsds.cc, rsenco.cc,
+	rsenco_ccsds.cc, rsgenpoly.m, rsoct.h, rspoly.cc, rstest.m,
+	vec2mat.m, wgn.m: R13 compatible galois field support 
+
+2003-02-04 21:56  pkienzle
+
+	* main/signal/: dftmtx.m, convmtx.m: (for David Bateman
+	<David.Bateman@motorola.com>) texinfo help for convmtx, new function
+	dftmtx 
+
+2003-02-04 14:37  etienne
+
+	* main/vrml/: vrml_surf.m, vmesh.m: add zcol zgrey and zrb options 
+
+2003-02-04 07:10  etienne
+
+	* main/vrml/: test_vrml_faces.m, vrml_faces.m: speed up and clean
+	up 
+
+2003-02-03 05:00  etienne
+
+	* main/vrml/vrml_faces.m: fix transparency when color is not
+	uniform 
+
+2003-02-02 14:54  etienne
+
+	* main/vrml/vrml_surf.m: fix color for surf with holes 
+
+2003-02-02 14:22  kahacjde
+
+	* main/io/dlmwrite.m: [no log message] 
+
+2003-02-02 14:11  kahacjde
+
+	* main/io/: dlmread.cc, dlmwrite.m: 
+	
+	added new file dlmread.cc 
+
+2003-02-02 08:57  schloegl
+
+	* extra/NaN/: cov.m, covm.m: Warning included, bug fixed, 
+
+2003-02-02 08:39  schloegl
+
+	* extra/NaN/: cov.m, covm.m: Compatibility to Matlab increased,
+	scaling argument included, HELP gives more details in the
+	differences 
+
+2003-02-02 07:56  etienne
+
+	* main/vrml/: save_vrml.m, select_3D_points.m, vmesh.m,
+	vrml_Background.m, vrml_PointLight.m, vrml_arrow.m, vrml_browse.m,
+	vrml_cyl.m, vrml_group.m, vrml_lines.m, vrml_material.m,
+	vrml_points.m, vrml_surf.m, vrml_text.m, vrml_thick_surf.m,
+	vrml_transfo.m: Misc fixes, clean up, DEF capability for some nodes 
+
+2003-02-02 07:35  etienne
+
+	* main/vrml/vrml_faces.m: fix color emission when color is not
+	uniform 
+
+2003-02-02 07:31  etienne
+
+	* main/vrml/vrml_frame.m: equal diameter arrows 
+
+2003-01-30 12:52  pkienzle
+
+	* main/image/: autumn.m, bone.m, brighten.m, cool.m, copper.m,
+	flag.m, hot.m, hsv.m, jet.m, pink.m, prism.m, rainbow.m, spring.m,
+	summer.m, white.m, winter.m: Remove reference to global variable
+	__current_colormap__; we need to do this because the semantics of
+	global have changed so that a new symbol is created as empty if no
+	default has been defined, which in turn means that
+	exist("__some_global__") now returns true even if __some_global__ 
+	wasn't previously defined.  
+
+2003-01-24 14:35  aadler
+
+	* admin/Windows/: install_octave.sh, octave-install-win32.nsi,
+	octave.ico, start_octave.sh: build files for octave install 
+
+2003-01-24 00:40  pkienzle
+
+	* main/miscellaneous/listen.cc: Allow -DDEBUG=1 from mkoctfile; On
+	cygwin, return if there is an error.  
+
+2003-01-23 13:41  pkienzle
+
+	* main/miscellaneous/: Makeconf.add, Makefile, configure.add,
+	listen.cc, listen.doc: Add lame octave compute server (socket based
+	alternative to pipes).  No support yet for capturing command output.
+	Protocol is partly binary, so can't e.g. telnet to it.  No
+	authentication or sandbox so run it as nobody.  Only accepts
+	connections from a single host.  
+
+2003-01-22 23:18  pkienzle
+
+	* main/io/dlmread.m: Support \r, \n, or \r\n line terminators, and
+	possibly missing final line terminator.  
+
+2003-01-21 12:11  etienne
+
+	* main/optim/: bfgs.m, d2_min.m: Soothe operator precedence
+	warnings 
+
+2003-01-21 10:20  aadler
+
+	* main/optim/: cdiff.m, fminunc.m, minimize.m, nelder_mead_min.m,
+	test_d2_min_3.m, test_fminunc_1.m, test_min_4.m, test_minimize_1.m: 
+	minor modifications to work with --traditional 
+
+2003-01-21 10:15  aadler
+
+	* main/struct/struct.m: mods to work with new setfield 
+
+2003-01-20 17:48  pkienzle
+
+	* main/plot/text.m: Support incomplete font specification 
+
+2003-01-20 07:21  pkienzle
+
+	* extra/mex/mex.cc: Didn't initialize pmap in abortive attempt to
+	provide struct support for mex files, so sometimes as_octave_value()
+	thought it was returning a pmap.  
+
+2003-01-15 11:48  aadler
+
+	* main/miscellaneous/edit.m: works with --traditional default
+	doesn't load file%s 
+
+2003-01-12 01:49  pkienzle
+
+	* main/miscellaneous/dispatch.cc: function overloading 
+
+2003-01-11 20:49  aadler
+
+	* main/miscellaneous/inline.m: modification to work with
+	--traditional 
+
+2003-01-10 15:43  aadler
+
+	* extra/Windows/dos.m: does nothing if not cygwin 
+
+2003-01-10 15:42  aadler
+
+	* INSTALL.WINDOWS: comments on windows resources 
+
+2003-01-10 13:54  aadler
+
+	* INSTALL.WINDOWS, extra/Windows/dos.m: do proper "dos" commands,
+	not cygwin 
+
+2003-01-09 10:14  cgijobs
+
+	* doc/octave-forge-home.html: Updated link to Kai Habel's page.  
+	Goctave link seems to be bad.  I've linked to the GNU project page.  
+
+2003-01-06 21:47  aadler
+
+	* extra/perl/: Octave.pm, t/8_operators.t: mods to remove warnings
+	from tests 
+
+2003-01-05 21:59  aadler
+
+	* INSTALL.WINDOWS: mods for 2.1.42 
+
+2003-01-04 18:27  pkienzle
+
+	* main/miscellaneous/temp_name.m: Doesn't work for globals.  Use
+	direct struct indexing rather than getfield setfield.  
+
+2003-01-04 14:51  pkienzle
+
+	* main/struct/getfield.cc: Make it work for octave-2.1.42 --- oops!
+	now it won't build for 2.1.40? Time to turn this into an m-file,
+	perhaps? 
+
+2003-01-04 14:47  schloegl
+
+	* main/general/char.m: for compatibility reason, char is included 
+
+2003-01-04 11:42  aadler
+
+	* main/sparse/Makefile: mods for SGI compiler (from pkienzle) 
+
+2003-01-04 05:48  schloegl
+
+	* main/io/: fileparts.m, filesep.m: filesep added for compatibility
+	reasons 
+
+2003-01-04 02:31  pkienzle
+
+	* extra/mex/mex.in: Eliminate sed call --- use string interpolation
+	instead.  
+
+2003-01-04 02:27  pkienzle
+
+	* extra/mex/myfevalf.f: Fortran doesn't use semicolon statement
+	terminators! 
+
+2003-01-04 02:05  pkienzle
+
+	* extra/mex/: Makefile, mex.cc, mex.in: Now builds under Windows
+	without SLList.h 
+
+2003-01-03 16:46  schloegl
+
+	* main/io/fileparts.m: separates filename 
+
+2003-01-03 00:49  aadler
+
+	* main/sparse/: Makefile, complex_sparse_ops.cc, make_sparse.h,
+	sparse_ops.cc: mods to support 2.1.42 
+
+2003-01-02 13:19  pkienzle
+
+	* main/sparse/sp_test.m: make sure rand(n,m) receives integer input 
+
+2003-01-02 13:19  pkienzle
+
+	* main/sparse/make_sparse.cc: more robust input handling 
+
+2002-12-31 13:49  pkienzle
+
+	* main/comm/INDEX: Reed-Solomon and Galois field functions 
+
+2002-12-31 13:43  pkienzle
+
+	* configure.base, extra/Makefile, main/Makefile, nonfree/Makefile: 
+	Some picky shells require test -z "" 
+
+2002-12-30 07:35  schloegl
+
+	* extra/tsa/mvar.m: workaround for bug in matrix division (0/0 and
+	NaN/NaN in ML53) 
+
+2002-12-30 05:07  schloegl
+
+	* extra/NaN/nantest.m: matrix division test for NaN/NaN included -
+	(identifies a problem in Matlab5.3) 
+
+2002-12-27 14:26  pkienzle
+
+	* main/geometry/tsearchdemo.m: tsearch/dsearch test function 
+
+2002-12-27 14:19  pkienzle
+
+	* main/geometry/griddata.m: Add some demos 
+
+2002-12-27 14:18  pkienzle
+
+	* main/geometry/tsearch.cc: Find the triangle containing the point 
+
+2002-12-27 14:17  pkienzle
+
+	* main/geometry/delaunay.m: Draw diagram if no return values
+	requested 
+
+2002-12-24 20:32  aadler
+
+	* main/sparse/: Makefile, complex_sparse_ops.cc, sp_test.m,
+	sparse_inv.cc, sparse_ops.cc, sparse_ops.h: fixed bug which allowed
+	zero values to be stored in sparse matrices.  improved print output 
+
+2002-12-24 01:33  pkienzle
+
+	* FIXES/logm.cc, FIXES/sqrtm.cc, extra/linear-algebra/chol.cc,
+	main/miscellaneous/waitbar.cc, main/optim/lp.cc: No more implicit
+	conversion from value to octave_value_list.  
+
+2002-12-19 00:53  pkienzle
+
+	* main/signal/convmtx.m: returns convolution matrix 
+
+2002-12-17 23:06  h_fujiwara
+
+	* main/parallel/: Makefile, README, close.cc, closeall.m,
+	sclose.cc, scloseall.m: Change function name: close() -> sclose(),
+	closeall() -> scloseall().  
+
+2002-12-15 15:33  schloegl
+
+	* extra/NaN/corrcoef.m: fix a few glitches 
+
+2002-12-15 14:18  aadler
+
+	* extra/Windows/image.m: mods to work with --traditional 
+
+2002-12-13 17:09  pkienzle
+
+	* admin/make_index: List missing and unnoted functions so that
+	INDEX can be checked for extra entries.  
+
+2002-12-13 16:28  pkienzle
+
+	* main/signal/INDEX: nellip, nelliptest have been renamed, so
+	remove references to them 
+
+2002-12-13 09:38  pkienzle
+
+	* doc/octave-forge-home.html: Add zarus link 
+
+2002-12-13 01:29  h_fujiwara
+
+	* main/parallel/: README, close.cc: Change return value of close().  
+
+2002-12-11 12:19  aadler
+
+	* main/sparse/: Makefile, complex_sparse_ops.cc, issparse.m,
+	make_sparse.h, sp_test.m, sparse_full.cc, sparse_inv.cc,
+	sparse_ops.cc, spsum.m: sparse .^ scalar operations added improved
+	test suite improved documentation new is_sparse new spabs 
+
+2002-12-10 06:01  schloegl
+
+	* extra/NaN/nantest.m: commutativity test for 0*NaN included 
+
+2002-12-10 04:17  etienne
+
+	* main/optim/d2_min.m: Misc small changes 
+
+2002-12-09 18:15  schloegl
+
+	* extra/NaN/moment.m: histogram mode included 
+
+2002-12-09 15:10  pkienzle
+
+	* main/sparse/spstats.m: Author/copying notice 
+
+2002-12-09 15:02  pkienzle
+
+	* main/sparse/: INDEX, spstats.m: Compute stats on the nonzeros of
+	a sparse matrix 
+
+2002-12-08 13:12  etienne
+
+	* main/optim/: bfgs.m, d2_min.m, nelder_mead_min.m: Typo in option
+	name in help text 
+
+2002-12-05 01:16  pkienzle
+
+	* main/comm/: gfprimdf.cc, gftuple.cc, rsdeco.cc, rsdeco_ccsds.cc,
+	rsenco.cc, rsenco_ccsds.cc, rspoly.cc: Make it work for gcc 3.2 
+
+2002-12-05 01:15  pkienzle
+
+	* main/comm/Makefile: Remove install keyword since it confuses
+	octave-forge 
+
+2002-12-05 00:27  pkienzle
+
+	* main/comm/Makefile: Makefile for reed-solomon codec 
+
+2002-12-04 20:48  pkienzle
+
+	* main/comm/: README.rs, gfprimdf.cc, gftuple.cc, patch.rs-3.1.1,
+	rsdeco.cc, rsdeco_ccsds.cc, rsenco.cc, rsenco_ccsds.cc, rsoct.h,
+	rspoly.cc, rstest.m: octave glue code for Phil Karn's reed-solomon
+	codec 
+
+2002-12-04 14:19  etienne
+
+	* main/general/deal.m: vr_val -> varargout 
+
+2002-12-04 14:16  etienne
+
+	* main/: miscellaneous/read_options.m, optim/cdiff.m: ... ->
+	varargin 
+
+2002-12-04 12:54  etienne
+
+	* main/vrml/vrml_points.m: quiet option reading 
+
+2002-12-04 10:21  pkienzle
+
+	* main/optim/: fmin.m, deriv.m, fminunc.m, minimize.m, nrm.m,
+	optimset.m: use varargin rather than ... in the function
+	declarations 
+
+2002-12-04 05:37  etienne
+
+	* main/vrml/vrml_points.m: fix opt read and allow distinct radii of
+	points 
+
+2002-12-03 17:14  pkienzle
+
+	* FIXES/zp2tf.m: Handle zp2tf where tf can be complex 
+
+2002-12-03 17:12  pkienzle
+
+	* main/signal/: butter.m, cheby1.m, cheby2.m, ellip.m: Use poly
+	directly rather than relying on buggy zp2tf 
+
+2002-12-03 17:11  pkienzle
+
+	* main/optim/fminbnd.m: ... -> varargin.  Also, x=1:3; x(2) = 4; no
+	longer works.  
+
+2002-12-03 11:43  etienne
+
+	* main/vrml/vrml_material.m: small fix 
+
+2002-12-03 04:17  etienne
+
+	* main/vrml/: vrml_frame.m, vrml_material.m, vrml_points.m,
+	vrml_transfo.m: misc updates 
+
+2002-12-02 23:19  aadler
+
+	* extra/Windows/: grab.cc, win32api.cc: std::string 
+
+2002-12-02 07:14  h_fujiwara
+
+	* main/parallel/: send.cc, server.m: [no log message] 
+
+2002-12-02 06:49  h_fujiwara
+
+	* main/parallel/: Makefile, NOINSTALL, README, close.cc,
+	closeall.m, connect.cc, getid.m, pserver.cc, recv.cc, reval.cc,
+	send.cc, server.m: Parallel execution package.  
+
+2002-11-30 18:09  alnd
+
+	* admin/get_authors: 
+	
+	Recognize as licensed files placed in public domain; attribute to 
+	'Anonymous' any file which is licensed but has no author; show code
+	and comment line counts.  
+
+2002-11-30 09:33  pkienzle
+
+	* RELEASE-NOTES: mention fsolve status 
+
+2002-11-30 09:29  pkienzle
+
+	* RELEASE-NOTES: Formatted for easy pasting into the source forge
+	file release page.  
+
+2002-11-30 09:23  pkienzle
+
+	* RELEASE-NOTES: notes for tagged release.  Better late than never? 
+
+2002-11-30 09:02  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: $TAG
+	release 
+
 2002-11-30 09:00  pkienzle
 
 	* release.sh: updated instructions 

@@ -41,7 +41,6 @@ function c = cosets(m, prim)
     t = find(!found);
     idx = f(t(find(f(t) == min(f(t).x)))).x;
     set = idx;
-    fflush(stdout);
     r = rem(idx*2,n);
     while (r > idx)
       set =[set,r];

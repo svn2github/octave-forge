@@ -90,6 +90,11 @@ DEFUN_DLD (isprimitive, args, nargout,
   }
 
   if (poly) {
+    if (a.columns() > 24) {
+      error("isprimitive: order of the primitive polynomial must be less than 22");
+      return retval;
+    }
+
     Matrix b(a.rows(),1);
     
     for (int i=0; i<a.rows(); i++) {
@@ -105,6 +110,13 @@ DEFUN_DLD (isprimitive, args, nargout,
     }
     retval = octave_value (b);
   } else {
+    for (int i=0; i<a.rows(); i++)
+      for (int j=0; j<a.columns(); j++)
+	if (a(i,j) > (1<<23)) {
+	  error("isprimitive: order of the primitive polynomial must be less than 22");
+	  return retval;
+	}
+
     Matrix b(a.rows(),a.columns());
 
     for (int i=0; i<a.rows(); i++) {

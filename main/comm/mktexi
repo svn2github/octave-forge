@@ -8,7 +8,11 @@
 use strict;
 use File::Find;
 use File::Basename;
+use Text::Wrap;
 use FileHandle;
+use FileHandle;
+use IPC::Open3;
+use POSIX ":sys_wait_h";
 
 my $file = shift @ARGV;
 my $docfile = shift @ARGV;
@@ -73,21 +77,67 @@ if ( open(IN,$file) ) {
       $sec =~ s/\)[\n\r]+//;
       my @listfunc = ();
       my $nfunc = 0;
+      my $seccat = 0;
 
       if ( open(IND,$indexfile) ) {
 	while (<IND>) {
 	  next unless /^[^ ]/;
 	  my $section = $_;
 	  $section =~ s/[\n\r]+//;
-	  my $diff = $section;
+	  if ($section =~ />>/) {
+	    $section =~ s/.*>>(.*)/\1/;
+	    $seccat = 1;
+	  }
+	  $section =~ s/^ *//;
+	  $section =~ s/ *$//;
 	  if ($section =~ /^$sec$/) {
-	    # Get the list of functions to index
-	    my $indline;
-	    while (($indline = <IND>) && ($indline =~ /^ /)) {
-	      $indline =~ s/^ *//;
-	      $indline =~ s/[\n\r]+//;
-	      push @listfunc, $indline;
-	      $nfunc = $nfunc + 1;
+	    if ($seccat) {
+	      print "\@iftex\n";
+	      print "\@section Functions by Category\n";
+	      # Get the list of categories to index
+	      my $firstcat = 1;
+	      my $category;
+	      while (<IND>) {
+		last if />>/;
+		if (/^[^ ]/) {	
+		  if (! $firstcat) {
+		    print "\@end table\n";
+		  } else {
+		    $firstcat = 0;
+		  }
+		  $category = $_;
+		  $category =~ s/[\n\r]+//;
+		  print "\@subsection $category\n";
+		  print "\@table \@asis\n";
+		} else {
+		  if ($firstcat) {
+		    print STDERR "Error parsing index file\n";
+		    exit 1;
+		  }
+		  my $indline = $_;
+		  $indline =~ s/^ *//;
+		  $indline =~ s/[\n\r]+//;
+		  push @listfunc, $indline;
+		  $nfunc = $nfunc + 1;
+		  print "\@item $indline\n";
+		  print func_summary($indline, $docfile);
+                  print "\n";
+		}
+	      }
+	      if (! $firstcat) {
+	        print "\@end table\n";
+	      }
+	      print "\n\@section Functions Alphabetically\n";
+	      print "\@end iftex\n\n";
+	    } else {
+	      # Get the list of functions to index
+	      my $indline;
+	      while (($indline = <IND>) && ($indline =~ /^ /)) {
+		$indline =~ s/^ *//;
+		$indline =~ s/[\n\r]+//;
+		push @listfunc, $indline;
+		$nfunc = $nfunc + 1;
+	      }
 	    }
 	    $secfound = 1;
 	    last;
@@ -104,15 +154,18 @@ if ( open(IN,$file) ) {
 
       @listfunc = sort(@listfunc);
 
+      my $indent = 16 - 3;
       print "\@menu\n";
       foreach my $func (@listfunc) {
-	print "* ${func}::\n"
+	my $func0 = "${func}::";
+	my $entry = sprintf("* %-*s %s",$indent,$func0,func_summary($func,$docfile));
+	print wrap("","\t\t","$entry"), "\n";
       }
       print "\@end menu\n";
 
+      my $up = "Function Reference";
       my $next;
       my $prev;
-      my $up = "Function Reference";
       my $mfunc = 1;
       foreach my $func (@listfunc) {
 	if ($mfunc == $nfunc) {
@@ -122,7 +175,11 @@ if ( open(IN,$file) ) {
 	  $mfunc = $mfunc + 1;
 	}
 	print "\n\@node $func, $next, $prev, $up\n";
-	print "\@section $func\n\n";
+	if ($seccat) {
+	  print "\@subsection $func\n\n";
+	} else {
+	  print "\@section $func\n\n";
+	}
 	$prev = $func;
 	my $found = 0;
 	if ( open(DOC,$docfile) ) {
@@ -181,3 +238,159 @@ if ( open(IN,$file) ) {
     print STDERR "Could not open file $file\n";
     exit 1;
 }
+
+sub func_summary { # {{{1
+  my ($func,		# in function name
+      $docfile		# in DOCSTRINGS
+      )       = @_;
+
+  my $desc = "";
+  my $found = 0;
+  if ( open(DOC,$docfile) ) {
+    while (<DOC>) {
+      next unless /\037/;
+      my $function = $_;
+      $function =~ s/\037//;
+      $function =~ s/[\n\r]+//;
+      if ($function =~ /^$func$/) {
+	my $docline;
+	my $doctex = 0;
+	while (($docline = <DOC>) && ($docline !~ /^\037/)) {
+	  if ($docline =~ /\@tex/) {
+	    $doctex = 1;
+	  }
+	  if ($doctex) {
+	    $docline =~ s/\\\\/\\/g;
+	  }
+	  if ($docline =~ /\@end tex/) {
+	    $doctex = 0;
+	  }
+	  $desc .= $docline;
+	}
+	$desc =~ s/\@seealso\{(.*[^}])\}/See also: \1/g;
+        $found = 1;
+        last;
+      }
+    }
+    close (DOC);
+    if (! $found) {
+      print STDERR "Did not find function $func\n";
+    }
+  } else {
+    print STDERR "Could not open file $docfile\n";
+    exit 1;
+  }
+  return first_sentence($desc);
+}   # 1}}}
+
+
+sub first_sentence { # {{{1
+# grab the first real sentence from the function documentation
+    my ($desc) = @_;
+    my $retval = '';
+    my $line;
+    my $next;
+    my @lines;
+
+    my $trace = 0;
+    # $trace = 1 if $desc =~ /Levenberg/;
+    return "" unless defined $desc;
+    if ($desc =~ /^\s*-[*]- texinfo -[*]-/) {
+	# help text contains texinfo.  Strip the indicator and run it
+	# through makeinfo. (XXX FIXME XXX this needs to be a function)
+	$desc =~ s/^\s*-[*]- texinfo -[*]-\s*//;
+	my $cmd = "makeinfo --fill-column 1600 --no-warn --no-validate --no-headers --force --ifinfo";
+	open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
+	print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
+	print Writer "$desc"; close(Writer);
+	@lines = <Reader>; close(Reader);
+	my @err = <Errer>; close(Errer);
+	waitpid(-1,&WNOHANG);
+
+	# Display source and errors, if any
+	if (@err) {
+	    my $n = 1;
+	    foreach $line ( split(/\n/,$desc) ) {
+		printf "%2d: %s\n",$n++,$line;
+	    }
+	    print ">>> @err";
+	}
+
+	# Print trace showing formatted output
+#	print "<texinfo--------------------------------\n";
+#	print @lines;
+#	print "--------------------------------texinfo>\n";
+
+	# Skip prototype and blank lines
+	while (1) {
+	    return "" unless @lines;
+	    $line = shift @lines;
+	    next if $line =~ /^\s*-/;
+	    next if $line =~ /^\s*$/;
+	    last;
+	}
+
+    } else {
+
+#	print "<plain--------------------------------\n";
+#	print $desc;
+#	print "--------------------------------plain>\n";
+
+	# Skip prototype and blank lines
+	@lines = split(/\n/,$desc);
+	while (1) {
+	    return "" if ($#lines < 0);
+	    $line = shift @lines;
+	    next if $line =~ /^\s*[Uu][Ss][Aa][Gg][Ee]/; # skip " usage "
+
+	    $line =~ s/^\s*\w+\s*://;             # chop " blah : "
+	    print "strip blah: $line\n" if $trace;
+	    $line =~ s/^\s*[Ff]unction\s+//;      # chop " function "
+	    print "strip function $line\n" if $trace;
+	    $line =~ s/^\s*\[.*\]\s*=\s*//;       # chop " [a,b] = "
+	    print "strip []= $line\n" if $trace;
+	    $line =~ s/^\s*\w+\s*=\s*//;          # chop " a = "
+	    print "strip a= $line\n" if $trace;
+	    $line =~ s/^\s*\w+\s*\([^\)]*\)\s*//; # chop " f(x) "
+	    print "strip f(x) $line\n" if $trace;
+	    $line =~ s/^\s*[;:]\s*//;                # chop " ; "
+	    print "strip ; $line\n" if $trace;
+
+	    $line =~ s/^\s*[[:upper:]][[:upper:]0-9_]+//; # chop " BLAH"
+	    print "strip BLAH $line\n" if $trace;
+	    $line =~ s/^\s*\w*\s*[-]+\s+//;        # chop " blah --- "
+	    print "strip blah --- $line\n" if $trace;
+	    $line =~ s/^\s*\w+ *\t\s*//;          # chop " blah <TAB> "
+	    print "strip blah <TAB> $line\n" if $trace;
+	    $line =~ s/^\s*\w+\s\s+//;            # chop " blah  "
+	    print "strip blah <NL> $line\n" if $trace;
+
+#	    next if $line =~ /^\s*\[/;           # skip  [a,b] = f(x)
+#	    next if $line =~ /^\s*\w+\s*(=|\()/; # skip a = f(x) OR f(x)
+	    next if $line =~ /^\s*or\s*$/;      # skip blah \n or \n blah
+	    next if $line =~ /^\s*$/;            # skip blank line
+	    next if $line =~ /^\s?!\//;          # skip # !/usr/bin/octave
+	    # XXX FIXME XXX should be testing for unmatched () in proto
+	    # before going to the next line!
+	    last;
+	}
+    }
+
+    # Try to make a complete sentence, including the '.'
+    if ( "$line " !~ /[^.][.]\s/ && $#lines >= 0) {
+	my $next = $lines[0];
+	$line =~ s/\s*$//;  # trim trailing blanks on last
+	$next =~ s/^\s*//;    # trim leading blanks on next
+	$line .= " $next" if "$next " =~ /[^.][.]\s/; # ends the sentence
+    }
+
+    # Tidy up the sentence.
+    chomp $line;          # trim trailing newline, if there is one
+    $line =~ s/^\s*//;    # trim leading blanks on line
+    $line =~ s/([^.][.])\s.*$/$1/; # trim everything after the sentence
+    print "Skipping:\n$desc---\n" if $line eq "";
+
+    # And return it.
+    return $line;
+
+} # 1}}}

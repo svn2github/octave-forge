@@ -81,7 +81,8 @@
 ## it is often faster to create a generator matrix externally with the 
 ## functions @dfn{hammgen} or @dfn{cyclgen}, rather than let @dfn{encode}
 ## recalculate this matrix at each iteration. In this case @var{typ} should
-## be 'linear'.
+## be 'linear'. The exception to this case is BCH codes, whose encoder 
+## is implemented directly from the polynomial and is significantly faster.
 ##
 ## @end deftypefn
 ## @seealso{decode,cyclgen,cyclpoly,hammgen,bchenco,bchpoly}
@@ -165,7 +166,11 @@ function [code, added] = encode(msg, n, k, typ, opt)
   endif
 
   if (strcmp(coding,"bch"))
-    error ("encode: BCH code not implemented yet");
+    if (nargin > 4)
+      code = bchenco(msg,n,k,opt);
+    else
+      code = bchenco(msg,n,k);
+    endif
   else
     if (strcmp(coding,"linear"))
       if (nargin > 4)

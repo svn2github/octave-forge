@@ -62,10 +62,9 @@
 ## @item 'bch' or 'bch/binary'
 ## A BCH code is assumed with the message @var{msg} being in a binary
 ## format. The primitive polynomial to use can be defined in @var{opt2}.
-## The default generator polynomial to use will be 
-## @dfn{bchpoly(@var{n},@var{k})}. The error correction capability of the
-## code can also be defined in @var{opt1}. Use the empty matrix [] to let
-## the error correction capability take the default value.
+## The error correction capability of the code can also be defined in 
+## @var{opt1}. Use the empty matrix [] to let the error correction 
+## capability take the default value.
 ## @end table
 ##
 ## In addition the argument 'binary' above can be replaced with 'decimal',
@@ -98,10 +97,12 @@
 ## it is often faster to create a generator matrix externally with the 
 ## functions @dfn{hammgen} or @dfn{cyclgen}, rather than let @dfn{decode}
 ## recalculate this matrix at each iteration. In this case @var{typ} should
-## be 'linear'.
+## be 'linear'. The exception to this case is BCH codes, where the required
+## syndrome table is too large. The BCH decoder, decodes directly from the
+## polynomial never explicitly forming the syndrome table.
 ##
 ## @end deftypefn
-## @seealso{encode,cyclgen,cyclpoly,hammgen,bchenco,bchpoly,syndtable}
+## @seealso{encode,cyclgen,cyclpoly,hammgen,bchdeco,bchpoly,syndtable}
 
 function [msg, err, ccode, cerr] = decode(code, n, k, typ, opt1, opt2)
 
@@ -185,7 +186,19 @@ function [msg, err, ccode, cerr] = decode(code, n, k, typ, opt1, opt2)
   endif
 
   if (strcmp(coding,"bch"))
-    error ("decode: BCH code not implemented yet");
+    if ((nargin < 5) || (isempty(opt1)))
+      tmp = bchpoly(n, k,"probe");
+      t = tmp(3);
+    else
+      t = opt1;
+    endif
+
+    if (nargin > 5)
+      [msg err ccode] = bchdeco(code,k,t,opt2);
+    else
+      [msg err ccode] = bchdeco(code,k,t);
+    endif
+    cerr = err;
   else
     if (strcmp(coding,"linear"))
       if (nargin > 4)

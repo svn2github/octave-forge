@@ -77,7 +77,18 @@ DEFUN_DLD (syndtable, args, nargout,
   Matrix h = args(0).matrix_value();
   int m = h.rows();
   int n = h.columns();
-  int nrows = (1 << m);
+  unsigned int nrows = ((unsigned int)1 << m);
+
+
+  // Could convert this to unsigned long long, but there isn't much point.
+  // the syndrome table can already have 2^32 rows with n columns, which
+  // is already unrealistically large. The result is DON'T use this with
+  // large BCH codes!!!!
+  if (n > (int)(sizeof(unsigned int) << 3)) {
+    error("syndtable: message and codeword length must be less than %d", 
+	  (sizeof(int) << 3));
+    return retval;
+  }
 
   // Check that the data in h is valid in GF(2)
   for (int i = 0; i < m; i++)
@@ -90,7 +101,7 @@ DEFUN_DLD (syndtable, args, nargout,
 
   RowVector filled(nrows,0);
   Matrix table(nrows,n,0);
-  int nfilled = nrows;
+  unsigned int nfilled = nrows;
   int nerrs = 1;
 
   // The first row of the table is for no errors
@@ -106,16 +117,17 @@ DEFUN_DLD (syndtable, args, nargout,
     for (int i = 0; i < m; i++)
       for (int j = 0;  j < errpos.length(); j++)
 	for (int k = 0;  k < n; k++)
-	  syndrome(j) ^= (errpos(j) & ((int)h(i,k) << k)  ? (1<<(m-i-1)) : 0);
+	  syndrome(j) ^= (errpos(j) & ((unsigned int)h(i,k) << k)  ? 
+			  ((unsigned int)1<<(m-i-1)) : 0);
     
     // Now use the syndrome as the rows indices to put the error vectors
     // in place
     for (int j = 0;  j < syndrome.length(); j++)
-      if ((syndrome(j) < nrows) && !filled(syndrome(j))) {
+      if (((unsigned int)syndrome(j) < nrows) && !filled(syndrome(j))) {
 	filled(syndrome(j)) = 1;
 	nfilled--;
 	for (int i = 0; i < n; i++) 
-	  table(syndrome(j),i) = ((errpos(j) & (1 << i)) != 0);
+	  table(syndrome(j),i) = ((errpos(j) & ((unsigned int)1 << i)) != 0);
       }
     nerrs++;
   }

@@ -1,12 +1,12 @@
 \input texinfo
+
 @setfilename comms.info
 
 @settitle
 
 @titlepage
 @title  Communications Toolbox for Octave
-@subtitle The start of a communications toolbox 
-@subtitle January 2003
+@subtitle March 2003
 @author David Bateman
 @author Laurent Mazet
 @author Paul Kienzle
@@ -50,47 +50,835 @@ into another language, under the same conditions as for modified versions.
 @chapter Introduction
 
 This is the start of documentation for a Communications Toolbox for
-Octave. At the moment only Galois Fields and a few ancillary functions
-have been written, and so this document currently contains little else
-but the analysis of Galois fields and Reed-Solomon codes.
-
-As functions are written they should be documented here. In addition
+Octave. As functions are written they should be documented here. In addition
 many of the existing functions of Octave and Octave-Forge are important
-in this Toolbox and their documentation should also be repeated here.
+in this Toolbox and their documentation should perhaps be repeated here.
+
+This is preliminary documentation and you are invited to improve it and
+submit patches.
 
 @node Random Signals, Source Coding, Introduction, Top
 @chapter Random Signals
 
-To be written.
+The purpose of the functions described here is to create and add random
+noise to a signal, to create random data and to analyze the eventually
+errors in a received signal. The functions to perform these tasks can
+be considered as either related to the creation or analysis of signals
+and are treated separately below.
 
-Currently have functions awgn, biterr, eyedigram, randerr, randint, randsrc, 
-scatterplot, symerr and wgn.
+It should be noted that the examples below are based on the output of a
+random number generator, and so the user can not expect to exactly recreate
+the examples below.
+
+@menu
+* Signal Creation::
+* Signal Analysis::
+@end menu
+
+@node Signal Creation, Signal Analysis, , Random Signals
+@section Signal Creation
+
+The signal creation functions here fall into to two classes. Those that
+treat discrete data and those that treat continuous data. The basic
+function to create discrete data is @dfn{randint}, that creates a 
+random matrix of equi-probable integers in a desired range. For example
+
+@example
+octave:1> a = randint(3,3,[-1,1])
+a =
+
+   0   1   0
+  -1  -1   1
+   0   1   1
+@end example
+
+creates a 3-by-3 matrix of random integers in the range -1 to 1. To allow
+for repeated analysis with the same random data, the function @dfn{randint}
+allows the seed-value of the random number generator to be set. For instance
+
+@example
+octave:1> a = randint(3,3,[-1,1],1)
+a =
+
+   0   1   1
+   0  -1   0
+   1  -1  -1
+@end example
+
+will always produce the same set of random data. The range of the integers
+to produce can either be a two element vector or an integer. In the case
+of a two element vector all elements within the defined range can be produced.
+In the case of an integer range @var{M}, @dfn{randint} returns the equi-probable
+integers in the range 
+@iftex
+@tex
+$[0:2^m-1]$.
+@end tex
+@end iftex
+@ifinfo
+[0:2^@var{m}].
+@end ifinfo
+
+The function @dfn{randsrc} differs from @dfn{randint} in that it allows
+a random set of symbols to be created with a given probability. The symbols
+can be real, complex or even characters. However characters and scalars 
+can not be mixed. For example
+
+@example
+octave:1> a = randsrc(2,2,"ab");
+octave:2> b = randsrc(4,4,[1, 1i, -1, -1i,]);
+@end example
+
+are both legal, while
+
+@example
+octave:1> a = randsrc(2,2,[1,"a"]);
+@end example
+
+is not legal. The alphabet from which the symbols are chosen can be either
+a row vector or two row matrix. In the case of a row vector, all of the
+elements of the alphabet are chosen with an equi-probability. In the case
+of a two row matrix, the values in the second row define the probability
+that each of the symbols are chosen. For example
+
+@example
+octave:1> a = randsrc(5,5,[1, 1i, -1, -1i; 0.6 0.2 0.1 0.1])
+a =
+
+   1 + 0i   0 + 1i   0 + 1i   0 + 1i   1 + 0i
+   1 + 0i   1 + 0i   0 + 1i   0 + 1i   1 + 0i
+  -0 - 1i   1 + 0i  -1 + 0i   1 + 0i   0 + 1i
+   1 + 0i   1 + 0i   1 + 0i   1 + 0i   1 + 0i
+  -1 + 0i  -1 + 0i   1 + 0i   1 + 0i   1 + 0i
+@end example
+
+defines that the symbol '1' has a 60% probability, the symbol '1i' has
+a 20% probability and the remaining symbols have 10% probability each.
+The sum of the probabilities must equal one. Like @dfn{randint},
+@dfn{randsrc} accepts a fourth argument as the seed of the random
+number generator allowing the same random set of data to be reproduced.
+
+The function @dfn{randerr} allows a matrix of random bit errors to be
+created, for binary encoded messages. By default, @dfn{randerr} creates
+exactly one errors per row, flagged by a non-zero value in the returned
+matrix. That is
+
+@example
+octave:1> a = randerr(5,10)
+a =
+
+  0  1  0  0  0  0  0  0  0  0
+  0  0  1  0  0  0  0  0  0  0
+  0  0  1  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0  0  0  1
+  0  0  0  0  0  0  0  0  0  1
+@end example
+
+The number of errors per row can be specified as the third argument to
+@dfn{randerr}. This argument can be either a scalar, a row vector or
+a two row matrix. In the case of a scalar value, exactly this number of
+errors will be created per row in the returned matrix. In the case of
+a row vector, each element of the row vector gives a possible number of
+equi-probable bit errors. The second row of a two row matrix defines
+the probability of each number of errors occurring. For example
+
+@example
+octave:1> n = 15; k = 11; nsym = 100;
+octave:2> msg = randint(nsym,k);       ## Binary vector of message 
+octave:3> code = encode(msg,n,k,"bch");
+octave:4> berrs = randerr(nsym,n,[0, 1; 0.7, 0.3]);
+octave:5> noisy = mod(code + berrs, 2) ## Add errors to coded message
+@end example
+
+creates a vector @var{msg}, encodes it with a [15,11] BCH code, and then
+add either none or one error per symbol with the chances of an error being
+30%. As previously, @dfn{randerr} accepts a fourth argument as the seed of
+the random number generator allowing the same random set of data to be 
+reproduced.
+
+All of the above functions work on discrete random signals. The functions
+@dfn{wgn} and @dfn{awgn} create and add white Gaussian noise to continuous
+signals. The function @dfn{wgn} creates a matrix of white Gaussian noise
+of a certain power. A typical call to @dfn{wgn} is then
+
+@example
+octave:1> nse = wgn(10,10,0);
+@end example
+
+Which creates a 10-by-10 matrix of noise with a root mean squared power
+of 0dBW relative to an impedance of 
+@iftex
+@tex
+$1\Omega$.
+@end tex
+@end iftex
+@ifinfo
+1 Ohm.
+@end ifinfo
+
+This effectively means that an equivalent result to the above can be
+obtained with
+
+@example
+octave:1> nse = randn(10,10);
+@end example
+
+The reference impedance and units of power to the function @dfn{wgn}
+can however be modified, for example
+
+@example
+octave:1> nse_30dBm_50Ohm = wgn(10000,1,30,50,"dBm");
+octave:2> nse_0dBW_50Ohm = wgn(10000,1,0,50,"dBW");
+octave:3> nse_1W_50Ohm = wgn(10000,1,1,50,"linear");
+octave:4> [std(nse_30dBm_50Ohm), std(nse_3dBW_50Ohm), std(nse_1W_50Ohm)]
+ans =
+
+  7.0805  7.1061  7.0730
+@end example
+
+All produce a 1W signal referenced to a
+@iftex
+@tex
+$50\Omega$.
+@end tex
+@end iftex
+@ifinfo
+50 Ohm
+@end ifinfo
+impedance. Matlab uses the misnomer "dB" for "dBW", and therefore "dB" is
+an accepted type for @dfn{wgn} and will be treated as for "dBW".
+
+In all cases, the returned matrix @var{v}, will be related to the input
+power @var{p} and the impedance @var{Z} as
+
+@iftex
+@tex
+$$p = {\\sum_i \\sum_j v(i,j)^2 \\over Z} Watts$$
+@end tex
+@end iftex
+@ifinfo
+@var{p} = sum(@var{v}(:) .^ 2 ) / @var{imp} Watts
+@end ifinfo
+
+By default @dfn{wgn} produces real vectors of white noise. However, it can
+produce both real and complex vectors like
+
+@example
+octave:1> rnse = wgn(10000,1,0,"dBm","real");
+octave:2> cnse = wgn(10000,1,0,"dBm","complex");
+octave:3> [std(rnse), std(real(cnse)), std(imag(cnse)), std(cnse)]
+ans =
+
+  0.031615  0.022042  0.022241  0.031313
+@end example
+
+which shows that with a complex return value that the total power is the
+same as a real vector, but that it is equally shared between the real and
+imaginary parts. As previously, @dfn{wgn} accepts a fourth numerical argument 
+as the seed of the random number generator allowing the same random set of 
+data to be reproduced. That is
+
+@example
+octave:1> nse = wgn(10,10,0,0);
+@end example
+
+will always produce the same set of data.
+
+The final function to deal with the creation of random signals is
+@dfn{awgn}, that adds noise at a certain level relative to a desired
+signal. This function adds noise at a certain level to a desired
+signal. An example call to @dfn{awgn} is
+
+@example
+octave:1> x = [0:0.1:2*pi];
+octave:2> y = sin(x);
+octave:3> noisy = awgn(y, 10, "measured")
+@end example
+
+@iftex
+which produces a sine-wave with noise added as seen in Figure 1.
+
+@center @image{awgn}
+@center Figure 1: Sine-wave with 10dB signal-to-noise ratio
+@end iftex
+
+which adds noise with a 10dB signal-to-noise ratio to the measured power
+in the desired signal. By default @dfn{awgn} assumes that the desired
+signal is at 0dBW, and the noise is added relative to this assumed 
+power. This behavior can be modified by the third argument to @dfn{awgn}.
+If the third argument is a numerical value, it is assumed to define the
+power in the input signal, otherwise if the third argument is the string
+'measured', as above, the power in the signal is measured prior to the
+addition of the noise.
+
+The final argument to @dfn{awgn} defines the definition of the power and
+signal-to-noise ratio in a similar manner to @dfn{wgn}. This final
+argument can be either 'dB' or 'linear'. In the first case the numerical
+value of the input power is assumed to be in dBW and the signal-to-noise
+ratio in dB.  In the second case, the power is assumed to be in Watts
+and the signal-to-noise ratio is expressed as a ratio.
+
+The return value of @dfn{awgn} will be in the same form as the input
+signal. In addition if the input signal is real, the additive noise will
+be real. Otherwise the additive noise will also be complex and the noise
+will be equally split between the real and imaginary parts.
+
+As previously the seed to the random number generator can be specified
+as the last argument to @dfn{awgn} to allow repetition of the same
+scenario. That is
+
+@example
+octave:1> x = [0:0.1:2*pi];
+octave:2> y = sin(x);
+octave:3> noisy = awgn(y, 10, "dB", 0, "measured")
+@end example
+
+which uses the seed-value of 0 for the random number generator.
+
+@node Signal Analysis, , Signal Creation, Random Signals
+@section Signal Analysis
+
+It is important to be able to evaluate the performance of a
+communications system in terms of its bit-error and symbol-error
+rates. Two functions @dfn{biterr} and @dfn{symerr} exist within this
+package to calculate these values, both taking as arguments the 
+expected and the actually received data. The data takes the form
+of matrices or vectors, with each element representing a single
+symbol. They are compared in the following manner
+
+@table @asis
+@item Both matrices
+In this case both matrices must be the same size and then by default the
+the return values are the overall number of errors and the overall error
+rate.
+@item One column vector
+In this case the column vector is used for comparison column-wise
+with the matrix. The return values are row vectors containing the number
+of errors and the error rate for each column-wise comparison. The number
+of rows in the matrix  must be the same as the length of the column vector.
+@item One row vector
+In this case the row vector is used for comparison row-wise
+with the matrix. The return values are column vectors containing the number
+of errors and the error rate for each row-wise comparison. The number
+of columns in the matrix  must be the same as the length of the row vector.
+@end table
+
+For the bit-error comparison, the size of the symbol is assumed to be the
+minimum number of bits needed to represent the largest element in the
+two matrices supplied. However, the number of bits per symbol can (and
+in the case of random data should) be specified. As an example of the
+use of @dfn{biterr} and @dfn{symerr}, consider the example
+
+@example
+octave:1> m = 8;
+octave:2> msg = randint(10,10,2^m);
+octave:3> noisy = mod(msg + diag(1:10),2^m);
+octave:4> [berr, brate] = biterr(msg, noisy, m)
+berr = 32
+brate = 0.040000
+octave:5> [serr, srate] = symerr(msg, noisy)
+serr = 10
+srate = 0.10000
+@end example
+
+which creates a 10-by-10 matrix adds 10 symbols errors to the data and then
+finds the bit and symbol error-rates.
+
+Two other means of displaying the integrity of a signal are the
+eye-diagram and the scatterplot. Although the functions
+@dfn{eyediagram} and @dfn{scatterplot} have different appearance, the
+information presented is similar and so are their inputs. The difference
+between @dfn{eyediagram} and @dfn{scatterplot} is that @dfn{eyediagram}
+segments the data into time intervals and plots the in-phase and 
+quadrature components of the signal against this time interval. While
+@dfn{scatterplot} uses a parametric plot of quadrature versus in-phase
+components.
+
+Both functions can accept real or complex signals in the following
+forms.
+
+@table @asis
+@item A real vector
+In this case the signal is assumed to be real and represented by the vector
+@var{x}.
+@item A complex vector
+In this case the in-phase and quadrature components of the signal are 
+assumed to be the real and imaginary parts of the signal.
+@item A matrix with two columns
+In this case the first column represents the in-phase and the second the
+quadrature components of a complex signal.
+@end table
+
+An example of the use of the function @dfn{eyediagram} is
+
+@example
+octave:1> n = 50;
+octave:2> ovsp=50;
+octave:3> x = 1:n;
+octave:4> xi = [1:1/ovsp:n-0.1];
+octave:5> y = randsrc(1,n,[1 + 1i, 1 - 1i, -1 - 1i, -1 + 1i]) ;
+octave:6> yi = interp1(x,y,xi);
+octave:7> noisy = awgn(yi,15,"measured");
+octave:8> eyediagram(noisy,ovsp);
+@end example
+
+@iftex
+which produces a eye-diagram of a noisy signal as seen in Figure 2. Similarly
+an example of the use of the function @dfn{scatterplot} is
+
+@center @image{eyediagram}
+@center Figure 2: Eye-diagram of a QPSK like signal with 15dB signal-to-noise ratio
+@end iftex
+@ifinfo
+Similarly an example of the use of the function @dfn{scatterplot} is
+@end ifinfo
+
+@example
+octave:1> n = 200;
+octave:2> ovsp=5;
+octave:3> x = 1:n;
+octave:4> xi = [1:1/ovsp:n-0.1];
+octave:5> y = randsrc(1,n,[1 + 1i, 1 - 1i, -1 - 1i, -1 + 1i]) ;
+octave:6> yi = interp1(x,y,xi);
+octave:7> noisy = awgn(yi,15,"measured");
+octave:8> hold off;
+octave:9> scatterplot(noisy,1,0,"b");
+octave:10> hold on;
+octave:11> scatterplot(noisy,ovsp,0,"r+");
+@end example
+
+@iftex
+which produces a scatterplot of a noisy signal as seen in Figure 3.
+
+@center @image{scatterplot}
+@center Figure 3: Scatterplot of a QPSK like signal with 15dB signal-to-noise ratio
+@end iftex
 
 @node Source Coding, Block Coding, Random Signals, Top
 @chapter Source Coding
 
 To be written
 
-Currently have functions quantiz and compand.
+Currently have functions quantiz, lloyds and compand.
 
 @node Block Coding, Convolutional Coding, Source Coding, Top
 @chapter Block Coding
 
-To be written.
-
-Currently have gen2par, rsenc, rsdec and rsgenpoly
+The error-correcting codes available in this toolbox are discussed here.
+These codes work with blocks of data, with no relation between one block
+and the next.  These codes create codewords based on the messages to
+transmit that contain redundant information that allow the recovery of
+the original message in the presence of errors.
 
 @menu
+* Data Formats::
 * Binary Block Codes::
+* BCH Codes::
 * Reed-Solomon Codes::
 @end menu
 
-@node Binary Block Codes, Reed-Solomon Codes, , Block Coding
+@node Data Formats, Binary Block Codes, , Block Coding
+@section Data Formats
+
+All of the codes described in this section are binary and share
+similar data formats. The exception is the Reed-Solomon coder which
+has a significantly longer codeword length in general and therefore
+using a different manner to efficiently pass data. The user should
+reference to the section about the Reed-Solomon codes for the data
+format for use with Reed-Solomon codes.
+
+In general @var{k} bits of data are considered to represent a single
+message symbol. These @var{k} bits are coded into @var{n} bits of
+data representing the codeword. The data can therefore be grouped
+in one of three manners, to emphasis this grouping into bits, messages
+and codewords
+
+@table @asis
+@item A binary vector
+Each element of the vector is either one or zero. If the data represents
+an uncoded message the vector length should be an integer number of @var{k}
+in length.
+@item A binary matrix
+In this case the data is ones and zeros grouped into rows, with each
+representing a single message or codeword. The number of columns in the
+matrix should be equal to @var{k} in the case of a uncoded message or
+@var{n} in the case of a coded message.
+@item A non-binary vector
+In this case each element of the vector represents a message or codeword
+in an integer format. The bits of the message or codeword are represented
+by the bits of the vector elements with the least-significant bit 
+representing the first element in the message or codeword.
+@end table
+
+An example demonstrating the relationship between the three data
+formats can be seen below.
+
+@example
+octave:1> k = 4;
+octave:2> bin_vec = randint(k*10,1);        # Binary vector format
+octave:3> bin_mat = reshape(bin_vec,k,10)'; # Binary matrix format
+octave:4> dec_vec = bi2de(bin_mat);         # Decimal vector format
+@end example
+
+The functions within this toolbox will return data in the same format
+to which it is given. It should be noted that internally the binary
+matrix format is used, and thus if the message or codeword length is
+large it is preferable to use the binary format to avoid internal 
+rounding errors.
+
+@node Binary Block Codes, BCH Codes, Data Formats, Block Coding
 @section Binary Block Codes
 
-To be written.
+All of the codes presented here can be characterized by their
 
-@node Reed-Solomon Codes, ,Binary Block Codes, Block Coding
+@table @asis
+@item Generator Matrix
+A @var{k}-by-@var{n} matrix @var{G} to generate the codewords @var{C} from 
+the messages @var{T} by the matrix multiplication
+@iftex
+@tex
+$ {\bf C} = {\bf T} {\bf G}$.
+@end tex
+@end iftex
+@ifinfo
+@var{C} = @var{T} * @var{G}.
+@end ifinfo
+@item Parity Check Matrix
+A '@var{n}-@var{k}'-by-@var{n} matrix @var{H} to check the parity of the
+received symbols. If
+@iftex
+@tex
+$ {\bf H} {\bf R} = {\bf S} \ne 0$,
+@end tex
+@end iftex
+@ifinfo
+@var{H} * @var{R} = @var{S} != 0,
+@end ifinfo
+then an error has been detected. @var{S} can be used with the syndrome
+table to correct this error
+@item Syndrome Table
+A 2^@var{k}-by-@var{n} matrix @var{ST} with the relationship of the error 
+vectors to the non-zero parities of the received symbols. That is, if
+the received symbol is represented as 
+@iftex
+@tex
+$ {\bf R} = ( {\bf T} + {\bf E} )\ mod\ 2$,
+@end tex
+@end iftex
+@ifinfo
+@var{R} = mod(@var{T} + @var{E}, 2), 
+@end ifinfo
+then the error vector @var{E} is 
+@iftex
+@tex
+${\bf ST}({\bf S})$.
+@end tex
+@end iftex
+@ifinfo
+@var{ST}(@var{S}).
+@end ifinfo
+@end table
+
+It is assumed for most of the functions in this toolbox that the generator
+matrix will be in a 'standard' form. That is the generator matrix can be
+represented by
+
+@iftex
+@tex
+$$
+{\bf G} =
+\left[\matrix{g_{11} & g_{12}  & \ldots & g_{1k} & 1     & 0 & \ldots & 0 \cr
+              g_{21} & g_{22}  &        & g_{2k} & 0     & 1 &        & 0\cr
+              \vdots &         &        & \vdots & \vdots&   &        & \vdots \cr
+              g_{k1} & g_{k2}  & \ldots & g_{kk} & 0     & 0 & \ldots & 1}\right]
+$$
+@end tex
+@end iftex
+@ifinfo
+@example
+@group
+ g(1,1)  g(1,2)  ...  g(1,k)  1  0  ...  0
+ g(2,1)  g(2,2)       g(2,k)  0  1  ...  0
+   .                    .     .          .
+   .                    .     .          .
+   .                    .     .          .
+ g(k,1)  g(k,2)  ...  g(k,k)  0  0  ...  1
+@end group
+@end example
+@end ifinfo
+
+or
+
+@iftex
+@tex
+$$
+{\bf G} =
+\left[\matrix{1     & 0 & \ldots & 0 & g_{11} & g_{12}  & \ldots & g_{1k} \cr
+              0     & 1 &        & 0 & g_{21} & g_{22}  &        & g_{2k} \cr
+             \vdots &   &   & \vdots & \vdots &         &        & \vdots \cr
+              0     & 0 & \ldots & 1 & g_{k1} & g_{k2}  & \ldots & g_{kk}}\right]
+$$
+@end tex
+@end iftex
+@ifinfo
+@example
+@group
+  1  0  ...  0  g(1,1)  g(1,2)  ...  g(1,k)
+  0  1  ...  0  g(2,1)  g(2,2)       g(2,k)
+  .          .     .                   .
+  .          .     .                   .
+  .          .     .                   .
+  0  0  ...  1  g(k,1)  g(k,2)  ...  g(k,k)
+@end group
+@end example
+@end ifinfo
+
+and similarly the parity check matrix can be represented by a combination
+of an identity matrix and a square matrix.
+
+Some of the codes can also have their representation in terms of a
+generator polynomial that can be used to create the generator and parity
+check matrices. In the case of BCH codes, this generator polynomial is
+used directly in the encoding and decoding without ever explicitly forming
+the generator or parity check matrix.
+
+The user can create their own generator and parity check matrices, or
+they can rely on the functions @dfn{hammgen}, @dfn{cyclgen} and
+@dfn{cyclpoly}. The function @dfn{hammgen} creates parity check and
+generator matrices for Hamming codes, while @dfn{cyclpoly} and
+@dfn{cyclgen} create generator polynomials and matrices for generic
+cyclic codes. An example of their use is
+
+@example
+octave:1> m = 3;
+octave:2> n = 2^m -1;
+octave:2> k = 4;
+octave:3> [par, gen] = hammgen(m);
+octave:4> [par2, gen2] = cyclgen(n,cyclpoly(n,k));
+@end example
+
+which create identical parity check and generator matrices for the
+[7,4] Hamming code.
+
+The syndrome table of the codes can be created with the function
+@dfn{syndtable}, in the following manner
+
+@example
+octave:1> [par, gen] = hammgen(3);
+octave:2> st = syndtable(par);
+@end example
+
+There exists two auxiliary functions @dfn{gen2par} and @dfn{gfweight},
+that convert between generator and parity check matrices and calculate
+the Hamming distance of the codes. For instance
+
+@example
+octave:1> par = hammgen(3);
+octave:2> gen = gen2par(par);
+octave:3> gfweight(gen)
+ans = 3
+@end example
+
+It should be noted that for large values of @var{n}, the generator,
+parity check and syndrome table matrices are very large. There is 
+therefore an internal limitation on the size of the block codes that
+can be created that limits the codeword length @var{n} to less than 64.
+Which is still excessively large for the syndrome table, so use caution
+with these codes. These limitations do not apply to the Reed-Solomon
+or BCH codes.
+
+The top-level encode and decode functions are @dfn{encode} and
+@dfn{decode}, which can be used with all codes, except the Reed-Solomon
+code. The basic call to both of these functions passes the message
+to code/decode, the codeword length, the message length and the type
+of coding to use. There are four basic types that are available with
+these functions
+
+@table @asis
+@item 'linear'
+Generic linear block codes
+@item 'cyclic'
+Cyclic linear block codes
+@item 'hamming'
+Hamming codes
+@item 'bch'
+Bose Chaudhuri Hocquenghem (BCH) block codes
+@end table
+
+It is not possible to distinguish between a binary vector and a decimal
+vector coding of the messages that just happens to only have ones and
+zeros. Therefore the functions @dfn{encode} and @dfn{decode} must be
+told the format of the messages in the following manner.
+
+@example
+octave:1> m = 3;
+octave:2> n = 7;
+ocatve:3> k = 4;
+octave:4> msg_bin = randint(10,k);
+octave:5> cbin = encode(msg_bin, n, k, "hamming/binary");
+octave:5> cdec = encode(bi2de(msg), n, k, "hamming/decimal");
+@end example
+
+which codes a binary matrix and a non-binary vector representation of a
+message, returning the coded message in the same format. The functions
+@dfn{encode} and @dfn{decode} by default accept binary coded
+messages. Therefore 'hamming' is equivalent to 'hamming/decimal'.
+
+Except for the BCH codes, the function @dfn{encode} and @dfn{decode}
+internally create the generator, parity check and syndrome table
+matrices.  Therefore if repeated calls to @dfn{encode} and @dfn{decode}
+are made it will often be faster to create these matrices externally,
+and pass them as an argument. For example
+
+@example
+n = 15;
+k = 11;
+[par gen] = hammgen(4);
+code1 = code2 = zeros(100,15)
+for i=1:100
+  msg = get_msg(i);        
+  code1(i,:) = encode(msg, n, k, 'linear', gen);  # This is faster
+  code2(i,:) = encode(msg, n, k, 'hamming');      # than this !!!
+end
+@end example
+
+In the case of the BCH codes the low-level functions described in the
+next section are used directly by the @dfn{encode} and @dfn{decode}
+functions.
+
+
+@node BCH Codes, Reed-Solomon Codes, Binary Block Codes, Block Coding
+@section BCH Codes
+
+The BCH coder used here is based on code written by Robert Morelos-Zaragoza
+(r.morelos-zaragoza@@ieee.org). This code was originally written in C
+and has been converted for use as an octave oct-file.
+
+@iftex
+Called without arguments, @dfn{bchpoly} returns a table of valid BCH
+error correcting codes and their error-correction capability
+as seen in Table 1.
+
+@center Table 1: Table of valid BCH codes with codeword length less than 511.
+
+@multitable @columnfractions .083 .083 .083 | .083 .083 .083 | .083 .083 .083 | .083 .083 .083 
+@item  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T  @tab  N  @tab  K  @tab  T
+@item   7 @tab   4 @tab   1 @tab 127 @tab  36 @tab  15 @tab 255 @tab  45 @tab  43 @tab 511 @tab 268 @tab  29
+@item  15 @tab  11 @tab   1 @tab 127 @tab  29 @tab  21 @tab 255 @tab  37 @tab  45 @tab 511 @tab 259 @tab  30
+@item  15 @tab   7 @tab   2 @tab 127 @tab  22 @tab  23 @tab 255 @tab  29 @tab  47 @tab 511 @tab 250 @tab  31
+@item  15 @tab   5 @tab   3 @tab 127 @tab  15 @tab  27 @tab 255 @tab  21 @tab  55 @tab 511 @tab 241 @tab  36
+@item  31 @tab  26 @tab   1 @tab 127 @tab   8 @tab  31 @tab 255 @tab  13 @tab  59 @tab 511 @tab 238 @tab  37
+@item  31 @tab  21 @tab   2 @tab 255 @tab 247 @tab   1 @tab 255 @tab   9 @tab  63 @tab 511 @tab 229 @tab  38
+@item  31 @tab  16 @tab   3 @tab 255 @tab 239 @tab   2 @tab 511 @tab 502 @tab   1 @tab 511 @tab 220 @tab  39
+@item  31 @tab  11 @tab   5 @tab 255 @tab 231 @tab   3 @tab 511 @tab 493 @tab   2 @tab 511 @tab 211 @tab  41
+@item  31 @tab   6 @tab   7 @tab 255 @tab 223 @tab   4 @tab 511 @tab 484 @tab   3 @tab 511 @tab 202 @tab  42
+@item  63 @tab  57 @tab   1 @tab 255 @tab 215 @tab   5 @tab 511 @tab 475 @tab   4 @tab 511 @tab 193 @tab  43
+@item  63 @tab  51 @tab   2 @tab 255 @tab 207 @tab   6 @tab 511 @tab 466 @tab   5 @tab 511 @tab 184 @tab  45
+@item  63 @tab  45 @tab   3 @tab 255 @tab 199 @tab   7 @tab 511 @tab 457 @tab   6 @tab 511 @tab 175 @tab  46
+@item  63 @tab  39 @tab   4 @tab 255 @tab 191 @tab   8 @tab 511 @tab 448 @tab   7 @tab 511 @tab 166 @tab  47
+@item  63 @tab  36 @tab   5 @tab 255 @tab 187 @tab   9 @tab 511 @tab 439 @tab   8 @tab 511 @tab 157 @tab  51
+@item  63 @tab  30 @tab   6 @tab 255 @tab 179 @tab  10 @tab 511 @tab 430 @tab   9 @tab 511 @tab 148 @tab  53
+@item  63 @tab  24 @tab   7 @tab 255 @tab 171 @tab  11 @tab 511 @tab 421 @tab  10 @tab 511 @tab 139 @tab  54
+@item  63 @tab  18 @tab  10 @tab 255 @tab 163 @tab  12 @tab 511 @tab 412 @tab  11 @tab 511 @tab 130 @tab  55
+@item  63 @tab  16 @tab  11 @tab 255 @tab 155 @tab  13 @tab 511 @tab 403 @tab  12 @tab 511 @tab 121 @tab  58
+@item  63 @tab  10 @tab  13 @tab 255 @tab 147 @tab  14 @tab 511 @tab 394 @tab  13 @tab 511 @tab 112 @tab  59
+@item  63 @tab   7 @tab  15 @tab 255 @tab 139 @tab  15 @tab 511 @tab 385 @tab  14 @tab 511 @tab 103 @tab  61
+@item 127 @tab 120 @tab   1 @tab 255 @tab 131 @tab  18 @tab 511 @tab 376 @tab  15 @tab 511 @tab  94 @tab  62
+@item 127 @tab 113 @tab   2 @tab 255 @tab 123 @tab  19 @tab 511 @tab 367 @tab  17 @tab 511 @tab  85 @tab  63
+@item 127 @tab 106 @tab   3 @tab 255 @tab 115 @tab  21 @tab 511 @tab 358 @tab  18 @tab 511 @tab  76 @tab  85
+@item 127 @tab  99 @tab   4 @tab 255 @tab 107 @tab  22 @tab 511 @tab 349 @tab  19 @tab 511 @tab  67 @tab  87
+@item 127 @tab  92 @tab   5 @tab 255 @tab  99 @tab  23 @tab 511 @tab 340 @tab  20 @tab 511 @tab  58 @tab  91
+@item 127 @tab  85 @tab   6 @tab 255 @tab  91 @tab  25 @tab 511 @tab 331 @tab  21 @tab 511 @tab  49 @tab  93
+@item 127 @tab  78 @tab   7 @tab 255 @tab  87 @tab  26 @tab 511 @tab 322 @tab  22 @tab 511 @tab  40 @tab  95
+@item 127 @tab  71 @tab   9 @tab 255 @tab  79 @tab  27 @tab 511 @tab 313 @tab  23 @tab 511 @tab  31 @tab 109
+@item 127 @tab  64 @tab  10 @tab 255 @tab  71 @tab  29 @tab 511 @tab 304 @tab  25 @tab 511 @tab  28 @tab 111
+@item 127 @tab  57 @tab  11 @tab 255 @tab  63 @tab  30 @tab 511 @tab 295 @tab  26 @tab 511 @tab  19 @tab 119
+@item 127 @tab  50 @tab  13 @tab 255 @tab  55 @tab  31 @tab 511 @tab 286 @tab  27 @tab 511 @tab  10 @tab 127
+@item 127 @tab  43 @tab  14 @tab 255 @tab  47 @tab  42 @tab 511 @tab 277 @tab  28 @tab     @tab     @tab 
+@end multitable
+
+@end iftex
+@ifinfo
+Called without arguments, @dfn{bchpoly} returns a table of valid BCH
+error correcting codes and their error-correction capability.
+@end ifinfo
+The first returned column of @dfn{bchpoly} is the codeword length,
+the second the message length and the third the error correction capability
+of the code. Called with one argument, @dfn{bchpoly} returns similar 
+output, but only for the specified codeword length. In this manner codes
+with codeword length greater than 511 can be found.
+
+In general the codeword length is of the form @code{2^@var{m}-1}, where
+@var{m} is an integer. However if [@var{n},@var{k}] is a valid BCH
+code, then it is also possible to use a shortened BCH form of the form
+@code{[@var{n}-@var{x},@var{k}-@var{x}]}.
+
+With two or more arguments, @dfn{bchpoly} is used to find the generator
+polynomial of a valid BCH code. For instance
+
+@example
+octave:1> bchpoly(15,7)
+ans =
+
+  1  0  0  0  1  0  1  1  1
+
+octave:2> bchpoly(14,6)
+ans =
+
+  1  0  0  0  1  0  1  1  1
+@end example
+
+show that the generator polynomial of a [15,7] BCH code with the default
+primitive polynomial is 
+
+@iftex
+@tex
+$$ 1 + x^4 + x^6 + x^7 + x^8 $$
+@end tex
+@end iftex
+@ifinfo
+1 + @var{x} ^ 4 + @var{x} ^ 6 + @var{x} ^ 7 + @var{x} ^ 8
+@end ifinfo
+
+Using a different primitive polynomial to define the Galois Field over
+which the BCH code is defined results in a different generator polynomial
+as can be seen in the example.
+
+@example
+octave:1> bchpoly([1 1 0 0 1], 7)
+ans =
+
+  1  0  0  0  1  0  1  1  1
+
+octave:2> bchpoly([1 0 0 1 1], 7)
+ans =
+
+  1  1  1  0  1  0  0  0  1
+@end example
+
+It is recommend not to convert the generator polynomials created by 
+@dfn{bchpoly} into generator and parity check matrices with the
+BCH codes, as the underlying BCH software is faster than the generic
+coding software and can treat significantly longer codes.
+
+As well as using the @dfn{encode} and @dfn{decode} functions previously
+discussed, the user can directly use the low-level BCH functions
+@dfn{bchenco} and @dfn{bchdeco}. In this case the messages must be
+in the format of a binary matrix with @var{k} columns 
+
+@example
+octave:1> n = 31;
+octave:2> pgs = bchpoly(n);
+octave:3> pg = pgs(floor(rand(1,1)*(size(pgs,1) + 1)),:); # Pick a poly
+octave:4> k = pg(2);
+octave:5> t = pg(3);
+octave:6> msg = randint(10,k);
+octave:7> code = bchenco(msg,n,k);
+octave:8> noisy = code + [ones(10,1), zeros(10,n-1)];
+octave:9> dec = bchdeco(code,k,t);
+@end example
+
+@node Reed-Solomon Codes, , BCH Codes, Block Coding
 @section Reed-Solomon Codes
 
 @menu
@@ -102,6 +890,10 @@ To be written.
 @node Representation of Reed-Solomon Messages, Creating and Decoding Messages, , Reed-Solomon Codes
 @subsection Representation of Reed-Solomon Messages
 
+The Reed-Solomon coder used in this package is based on code written by 
+Phil Karn (http://www.ka9q.net/code/fec). This code was originally written
+in C and has been converted for use as an octave oct-file.
+
 Reed-Solomon codes are based on Galois Fields of even characteristics
 GF(2^M). Many of the properties of Galois Fields are therefore important
 when considering Reed-Solomon coders. 
@@ -111,7 +903,7 @@ the other block codes, in that the other block codes use a binary
 representation, while the Reed-Solomon code represents each m-bit symbol
 by an integer. The elements of the message and codeword must be elements
 of the Galois Field corresponding to the Reed-Solomon code. Thus to
-code a message with a [7 5] Reed-Solomon code an example is
+code a message with a [7,5] Reed-Solomon code an example is
 
 @example
 octave:1> m = 3;
@@ -160,8 +952,8 @@ the primitive polynomial of the Galois Field (see @dfn{gf}). Thus
 the messages
 
 @example
-octave:1> msg0 = gf([0 1 2 3],3);
-octave:2> msg1 = gf([0 1 2 3],3,13);
+octave:1> msg0 = gf([0, 1, 2, 3],3);
+octave:2> msg1 = gf([0, 1, 2, 3],3,13);
 @end example
 
 will not result in the same Reed-Solomon coding. Finally, the parity of
@@ -214,8 +1006,9 @@ octave:6> s = 11;
 octave:7> gg = rsgenpoly(n, k, prim, b, s);
 octave:8> msg = gf(floor(2^m*rand(17,k)), m, prim);
 octave:9> code = rsenc(msg, n, k, gg);
-octave:10> noisy = code + [toeplitz([ones(1,17)], zeros(1,17)) zeros(17,238)];
-octave:11> [dec nerr] = rsdec(msg, n, k, b, s);
+octave:10> noisy = code + [toeplitz([ones(1,17)], ...
+@			zeros(1,17)), zeros(17,238)];
+octave:11> [dec, nerr] = rsdec(msg, n, k, b, s);
 octave:13> nerr'
 ans =
 
@@ -289,6 +1082,8 @@ To be written.
 
 To be written.
 
+Currently have functions amodce, ademodce
+
 @node Special Filters, Galois Fields, Modulations, Top
 @chapter Special Filters
 
@@ -350,10 +1145,6 @@ have access to a version of Matlab with R13 installed, and thus this code
 is based on Matlab documentation only. No compatibility testing has been
 performed and so I am most interested in comments about compatibility
 at the e-mail address dbateman@@free.fr.
-
-Although the Galois Field supporting code was written from scratch,
-extensive use of code by Phil Karn (http://www.ka9q.net/code/fec) was
-used in the Reed-Solomon coder.
 
 @menu
 * Creating Galois Fields::
@@ -447,12 +1238,12 @@ ans = 19
 @end example
 
 identifies the default primitive polynomials of the field GF(2^M), which
-is the same as @code{primpoly(4,'min')}. All of the primitive polynomials 
-of a field can be identified with the function @code{primpoly(@var{m},'all')}.
+is the same as @code{primpoly(4,"min")}. All of the primitive polynomials 
+of a field can be identified with the function @code{primpoly(@var{m},"all")}.
 For example
 
 @example
-octave:1> primpoly(4, 'all')
+octave:1> primpoly(4, "all")
 
 Primitive polynomial(s) =
 
@@ -464,7 +1255,7 @@ ans =
   19  25
 @end example
 
-while @code{primpoly(@var{m},'max')} returns the maximum primitive polynomial 
+while @code{primpoly(@var{m},"max")} returns the maximum primitive polynomial 
 of the field, which for the case above is 25. The function @dfn{primpoly}
 can also be used to identify the primitive polynomials having only a 
 certain number of non-zero terms. For instance
@@ -499,7 +1290,7 @@ the polynomials that it finds. This output can be suppressed with the
 'nodisplay' option, while the returned value is left unchanged.
 
 @example
-octave:1> primpoly(4,'all','nodisplay')
+octave:1> primpoly(4,"all","nodisplay")
 ans =
 
   19  25
@@ -584,7 +1375,7 @@ Galois field specific version of the function can be used by explicitly
 calling its function name. The correspondence between the internal
 function names and the Galois Field versions is as follows
 
-@multitable @columnfractions .11 .037 .18 .131 .037 .18 .11 .037 .18
+@multitable @columnfractions .11 .037 .18 .131 .037 .18 .122 .037 .18
 @item @code{conv} @tab - @tab @code{gconv}, 
 @tab @code{convmtx} @tab - @tab @code{gconvmtx}, 
 @tab @code{diag} @tab - @tab @code{gdiag}, 
@@ -619,7 +1410,7 @@ example is
 
 @example
 octave:1> a = minpol(gf(14,5));
-octave:2> b = de2bi(a.x,'left-msb');
+octave:2> b = de2bi(a.x,"left-msb");
 @end example
 
 converts the polynomial form of the minimum polynomial of 14 in GF(2^5) into
@@ -633,10 +1424,10 @@ Before reporting a bug compare it to this list of known problems
 @table @asis
 @item Concatenation
 The concatenation of Galois arrays returns a Matrix type. That is 
-@code{[gf([1 0],m) gf(1, m)]} returns a matrix went it should return
+@code{[gf([1, 0],m) gf(1, m)]} returns a matrix went it should return
 another Galois array. The workaround is to explicitly convert the 
 returned value back to the correct Galois field using 
-@code{gf([gf([1 0],m) gf(1,m)])}.
+@code{gf([gf([1, 0],m) gf(1,m)])}.
 
 @item Saving Galois variables
 This is not implemented yet. You can not save a Galois variable. You 
@@ -973,7 +1764,7 @@ A polynomial in GF(2^M) can be expressed as a vector in GF(2^M). For instance
 if @var{a} is the @emph{primitive element}, then the example
 
 @example
-octave:1> poly = gf([2 4 5 1],3);
+octave:1> poly = gf([2, 4, 5, 1],3);
 @end example
 
 represents the polynomial
@@ -995,9 +1786,9 @@ Arithmetic can then be performed on these vectors. For instance to add
 to polynomials an example is
 
 @example
-octave:1> poly1 = gf([2 4 5 1],3);
-octave:2> poly2 = gf([1 2],3);
-octave:3> sumpoly = poly1 + [0 0 poly2]
+octave:1> poly1 = gf([2, 4, 5, 1],3);
+octave:2> poly2 = gf([1, 2],3);
+octave:3> sumpoly = poly1 + [0, 0, poly2]
 sumpoly =
 GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
 
@@ -1009,7 +1800,7 @@ Array elements =
 Note that @var{poly2} must be zero padded to the same length as poly1 to
 allow the addition to take place.
 
-Multiplication and division of polynomials is equivalent to convolution
+Multiplication and division of Galois polynomials is equivalent to convolution
 and de-convolution of vectors of Galois elements. Thus to multiply two
 polynomials in GF(2^3).
 
@@ -1050,8 +1841,8 @@ To evaluate a polynomial for a certain value in GF(2^M), use the Octave
 function @dfn{polyval}.
 
 @example
-octave:1> poly1 = gf([2 4 5 1],3);  ## a*x^3 + a^2*x^2 + (a^2 + 1)*x + 1
-octave:2> x0 = gf([0 1 2],3);
+octave:1> poly1 = gf([2, 4, 5, 1],3);  ## a*x^3+a^2*x^2+(a^2+1)*x+1
+octave:2> x0 = gf([0, 1, 2],3);
 octave:3> y0 = polyval(poly1, x0);
 y0 =
 GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
@@ -1075,7 +1866,7 @@ It is equally possible to find the roots of Galois polynomials with the
 find its roots in the following manner
 
 @example
-octave:1> poly1 = gf([2 4 5 1], 3);
+octave:1> poly1 = gf([2, 4, 5, 1], 3);
 octave:2> root1 = roots(poly1)
 root1 =
 GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)
@@ -1108,7 +1899,7 @@ number of roots and their value, will depend on the chosen field. Thus
 for instance
 
 @example
-octave:1> poly3 = gf([2 4 5 1],3, 13);
+octave:1> poly3 = gf([2, 4, 5, 1],3, 13);
 octave:2> root3 = roots(poly3)
 root3 =
 GF(2^3) array. Primitive Polynomial = D^3+D^2+1 (decimal 13)
@@ -1184,7 +1975,7 @@ of a the Galois array. That is the Galois array @var{a} is factorized in the
 following way
 
 @example
-octave:2> [l u p] = lu(a)
+octave:2> [l, u, p] = lu(a)
 @end example
 
 such that @code{@var{p} * @var{a} = @var{l} * @var{u}}. The matrix @var{p}
@@ -1202,15 +1993,15 @@ way Matlab R13 treats this.
 For instance consider the under-determined linear equation
 
 @example
-octave:1> A = gf([2  0  3  3; 3  1  3  1; 3  1  1  0], 2);
+octave:1> A = gf([2, 0, 3, 3; 3, 1, 3, 1; 3, 1, 1, 0], 2);
 octave:2> b = [0:2]';
 octave:3> x = A \ b;
 @end example
 
-gives the solution @code{@var{x} = [2 0 3 2]}. There are in fact 4
-possible solutions to this linear system; @code{@var{x} = [3 2 2 0]},
-@code{@var{x} = [0 3 1 1]}, @code{@var{x} = [2 0 3 2]} and
-@code{@var{x} = [1 1 0 3]}. No particular selection criteria are
+gives the solution @code{@var{x} = [2, 0, 3, 2]}. There are in fact 4
+possible solutions to this linear system; @code{@var{x} = [3, 2, 2, 0]},
+@code{@var{x} = [0, 3, 1, 1]}, @code{@var{x} = [2, 0, 3, 2]} and
+@code{@var{x} = [1, 1, 0, 3]}. No particular selection criteria are
 applied to the chosen solution.
 
 In addition the fact that singular matrices are not treated, unless you
@@ -1239,9 +2030,9 @@ the @dfn{filter} function can be used with Galois vectors in the same
 manner as usual. For instance
 
 @example
-octave:1> b = gf([2 0 0 1 0 2 0 1],2);
-octave:2> a = gf([2 0 1 1],2);
-octave:3> x = gf([1 zeros(1,20)],2);
+octave:1> b = gf([2, 0, 0, 1, 0, 2, 0, 1],2);
+octave:2> a = gf([2, 0, 1, 1],2);
+octave:3> x = gf([1, zeros(1,20)],2);
 octave:4> y = filter(b, a, x)
 y =
 GF(2^2) array. Primitive Polynomial = D^2+D+1 (decimal 7)

@@ -11,11 +11,12 @@ GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
 GALOISOBJECTS = $(patsubst %.cc,%.o,$(GALOISSOURCES))
 GALOISLINKTARGETS = isgalois.oct gdiag.oct greshape.oct gprod.oct gsum.oct \
                     gsumsq.oct glog.oct gexp.oct gfilter.oct glu.oct ginv.oct \
-                    ginverse.oct gdet.oct grank.oct rsenc.oct rsdec.oct
+                    ginverse.oct gdet.oct grank.oct rsenc.oct rsdec.oct \
+                    bchenco.oct bchdeco.oct
 
 GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
 OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
-                    syndtable.cc
+                    syndtable.cc _gfweight.cc
 OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
 OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
 OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))

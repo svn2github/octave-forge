@@ -29,7 +29,7 @@
 ##
 ## If the file is not an integer multiple of the message size (127 or 255)
 ## in length, then the file is padded with the EOT (ascii character 4)
-## before decoding.
+## character before decoding.
 ##
 ## @end deftypefn
 ## @seealso{rsencof}

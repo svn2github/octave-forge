@@ -26,7 +26,7 @@
 ## The range in which the integers are generated will is determined by
 ## the variable @var{range}. If @var{range} is an integer, the value will
 ## lie in the range [0,@var{range}]. If @var{range} contains two elements
-## the integrs will lie betwene these two elements. By default @var{range}
+## the intgers will lie between these two elements. By default @var{range}
 ## is assumed to be [0:1].
 ##
 ## The variable @var{seed} allows the random number generator to be seeded

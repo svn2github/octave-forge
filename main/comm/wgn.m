@@ -55,8 +55,8 @@ function y = wgn (m, n, p, varargin)
     error ("wgn: matrix dimension error");
   endif
   
-  type = 'dBW';
-  out = 'real';
+  type = "dBW";
+  out = "real";
   imp = 1;
   seed = [];
   narg = 0;
@@ -108,23 +108,23 @@ function y = wgn (m, n, p, varargin)
   if (!isscalar(p) || !isreal(p))
     error("wgn: invalid power");
   endif
-  if (strcmp(type,'linear') && (p < 0))
+  if (strcmp(type,"linear") && (p < 0))
     error("wgn: invalid power");
   endif
 
-  if (strcmp(type,'dBW'))
+  if (strcmp(type,"dBW"))
     np = 10 ^ (p/10);
-  elseif (strcmp(type,'dBm'))
+  elseif (strcmp(type,"dBm"))
     np = 10 ^((p - 30)/10);
-  elseif (strcmp(type,'linear'))
+  elseif (strcmp(type,"linear"))
     np = p;
   endif
 
   if(!isempty(seed))
-    randn('state',seed);
+    randn("state",seed);
   endif
 
-  if (strcmp(out,'complex'))
+  if (strcmp(out,"complex"))
     y = (sqrt(imp*np/2))*(randn(m,n)+1i*randn(m,n));
   else
     y = (sqrt(imp*np))*randn(m,n);

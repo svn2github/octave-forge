@@ -27,7 +27,6 @@ Open Source Initiative (www.opensource.org)
 #endif
 
 #include <iostream>
-// #include <octave/base-lu.cc>
 
 #include "galois.h"
 #include "galoisfield.h"
@@ -725,11 +724,17 @@ galois::log (void) const
 
   for (int i=0; i<nr; i++)
     for (int j=0; j<nc; j++) {
-      if (retval.elem(i,j) == 0 && !warned) {
-	warning("log of zero undefined in Galois field");
-	warned = true;
-      }
-      retval.elem(i,j) = retval.index_of(retval.elem(i,j));
+      if (retval.elem(i,j) == 0) { 
+	if (!warned) {
+	  warning("log of zero undefined in Galois field");
+	  warned = true;
+	}
+	// How do I flag a NaN without either
+	// 1) Having to check everytime that the data is valid
+	// 2) Causing overflow in alpha_to or index_of!!
+	retval.elem(i,j) = retval.index_of(retval.elem(i,j));
+      } else
+	retval.elem(i,j) = retval.index_of(retval.elem(i,j));
     }
   return retval;
 }
@@ -749,11 +754,17 @@ galois::exp (void) const
 
   for (int i=0; i<nr; i++)
     for (int j=0; j<nc; j++) {
-      if ((retval.elem(i,j) ==  n()) && !warned) {
-	warning("warning: exp of 2^m-1 undefined in Galois field");
-	warned = true;
-      }
-      retval.elem(i,j) = retval.alpha_to(retval.elem(i,j));
+      if (retval.elem(i,j) ==  n()) {
+	if (!warned) {
+	  warning("warning: exp of 2^m-1 undefined in Galois field");
+	  warned = true;
+	}
+	// How do I flag a NaN without either
+	// 1) Having to check everytime that the data is valid
+	// 2) Causing overflow in alpha_to or index_of!!
+	retval.elem(i,j) = retval.alpha_to(retval.elem(i,j));
+      } else
+	retval.elem(i,j) = retval.alpha_to(retval.elem(i,j));
     }
   return retval;
 }

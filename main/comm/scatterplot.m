@@ -28,13 +28,14 @@
 ## @table @asis
 ## @item A real vector
 ## In this case the signal is assumed to be real and represented by the vector
-## @var{x}. A single eye-diagram representing this signal is plotted.
+## @var{x}. The scatterplot is plotted along the x axis only.
 ## @item A complex vector
 ## In this case the in-phase and quadrature components of the signal are 
-## plotted seperately.
+## plotted seperately on the x and y axes respectively.
 ## @item A matrix with two columns
 ## In this case the first column represents the in-phase and the second the
-## quadrature components of a complex signal.
+## quadrature components of a complex signal and are plotted on the x and
+## y axes respectively.
 ## @end table
 ##
 ## Each point of the scatter plot is assumed to be seperated by @var{n} 

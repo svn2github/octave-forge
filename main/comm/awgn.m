@@ -25,22 +25,21 @@
 ## The input @var{x} is assumed to be a real or complex voltage  signal. The
 ## returned value @var{y} will be the same form and size as @var{x} but with 
 ## Gaussian noise added. Unless the power is specified in @var{pwr}, the 
-## signal power is assumed to be 0dB, and the noise of @var{snr} dB will be
+## signal power is assumed to be 0dBW, and the noise of @var{snr} dB will be
 ## added with respect to this. If @var{pwr} is a numeric value then the signal
-## @var{x} is assumed to be @var{pwr} dB, otherwise if @var{pwr} is 'measured',
-## then the power in the signal will be measured and the noise added 
-## relative to this measured power.
+## @var{x} is assumed to be @var{pwr} dBW, otherwise if @var{pwr} is 
+## 'measured', then the power in the signal will be measured and the noise
+## added relative to this measured power.
 ##
 ## If @var{seed} is specified, then the random number generator seed is 
 ## initialized with this value
 ##
-## By default the @var{snr} and @var{pwr} are assumed to be in dB. Depending
-## on the value of @var{type}, the units of @var{snr} and @var{pwr} can be
-## either 'dB' or 'linear'. Valid values of @var{type} are therefore 'dB' and 
-## 'linear'. Linear power is in Watts.
-##
-## @seealso{randn,wgn}
+## By default the @var{snr} and @var{pwr} are assumed to be in dB and dBW
+## respectively. This default behaviour can be chosen with @var{type} 
+## set to 'dB'. In the case where @var{type} is set to 'linear', @var{pwr}
+## is assumed to be in Watts and @var{snr} is a ratio.
 ## @end deftypefn
+## @seealso{randn,wgn}
 
 ## 2003-01-28
 ##   initial release
@@ -53,26 +52,26 @@ function y = awgn (x, snr, varargin)
 
   [m,n] = size(x);
   if (isreal(x))
-    out = 'real';
+    out = "real";
   else
-    out = 'complex'
+    out = "complex";
   endif
 
   p = 0;
   seed = [];
-  type = 'dB';
+  type = "dB";
   meas = 0;
   narg = 0;
   
   for i=1:length(varargin)
     arg = varargin{i};
     if (isstr(arg))
-      if (strcmp(arg,'measured'))
+      if (strcmp(arg,"measured"))
         meas = 1;  
-      elseif (strcmp(arg,'dB'))
-        type = 'dB';  
-      elseif (strcmp(arg,'linear'))
-        type = 'linear';  
+      elseif (strcmp(arg,"dB"))
+        type = "dB";  
+      elseif (strcmp(arg,"linear"))
+        type = "linear";  
       else
         error ("awgn: invalid argument");
       endif
@@ -103,29 +102,29 @@ function y = awgn (x, snr, varargin)
   if (!isscalar(p) || !isreal(p))
     error("awgn: invalid power");
   endif
-  if (strcmp(type,'linear') && (p < 0))
+  if (strcmp(type,"linear") && (p < 0))
     error("awgn: invalid power");
   endif
 
   if (!isscalar(snr) || !isreal(snr))
     error("awgn: invalid snr");
   endif
-  if (strcmp(type,'linear') && (snr < 0))
+  if (strcmp(type,"linear") && (snr < 0))
     error("awgn: invalid snr");
   endif
 
   if(!isempty(seed))
-    randn('state',seed);
+    randn("state",seed);
   endif
 
   if (meas == 1)
     p = sum( abs( x(:)) .^ 2) / length(x(:));
-    if (strcmp(type,'dB'))
+    if (strcmp(type,"dB"))
       p = 10 * log10(p);
     endif
   endif
 
-  if (strcmp(type,'linear'))
+  if (strcmp(type,"linear"))
     np = p / snr;
   else
     np = p - snr;

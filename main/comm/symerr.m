@@ -16,7 +16,6 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{num}, @var{rate}] = } symerr (@var{a},@var{b})
-## @deftypefnx {Function File} {[@var{num}, @var{rate}] = } symerr (@var{...},@var{k})
 ## @deftypefnx {Function File} {[@var{num}, @var{rate}] = } symerr (@var{...},@var{flag})
 ## @deftypefnx {Function File} {[@var{num}, @var{rate} @var{ind}] = } symerr (@var{...})
 ##

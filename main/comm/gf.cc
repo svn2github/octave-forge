@@ -30,6 +30,20 @@ by Phil Karn and originally bore the copyright
 
 See the website http://www.ka9q.net/code/fec for more details.
 
+Parts of the function bchenco and bchdeco are Copyrighted by Robert 
+Morelos-Zaragoza. The original code bore the copyright
+
+  COPYRIGHT NOTICE: This computer program is free for non-commercial purposes.
+  You may implement this program for any non-commercial application. You may 
+  also implement this program for commercial purposes, provided that you
+  obtain my written permission. Any modification of this program is covered
+  by this copyright.
+ 
+  == Copyright (c) 1994-7,  Robert Morelos-Zaragoza. All rights reserved.  ==
+
+Permission has been granted for a GPL release of this code. See the
+website http://www.eccpage.com for more details.
+
 */
 
 #include "galois.h"
@@ -184,13 +198,16 @@ DEFUN_DLD (gdiag, args, ,
 "vector is placed on the main diagonal.  For example,\n"
 "\n"
 "@example\n"
-"@group\n"
-"diag ([1, 2, 3], 1)\n"
-"     @result{}  0  1  0  0\n"
-"         0  0  2  0\n"
-"         0  0  0  3\n"
-"         0  0  0  0\n"
-"@end group\n"
+"gdiag (gf([1, 2, 3],2), 1)\n"
+"ans =\n"
+"GF(2^2) array. Primitive Polynomial = D^2+D+1 (decimal 7)\n"
+"\n"
+"Array elements = \n"
+"\n"
+"  0  1  0  0\n"
+"  0  0  2  0\n"
+"  0  0  0  3\n"
+"  0  0  0  0\n"
 "@end example\n"
 "@end deftypefn\n"
 "@seealso{diag}")
@@ -221,19 +238,22 @@ DEFUN_DLD (greshape, args, ,
 "For example,\n"
 "\n"
 "@example\n"
-"@group\n"
-"reshape ([1, 2, 3, 4], 2, 2)\n"
-"     @result{}  1  3\n"
-"         2  4\n"
-"@end group\n"
+"greshape (gf([1, 2, 3, 4],3), 2, 2)\n"
+"ans =\n"
+"GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)\n"
+"\n"
+"Array elements = \n"
+"\n"
+"  1  3\n"
+"  2  4\n"
 "@end example\n"
 "\n"
 "If the variable @code{do_fortran_indexing} is nonzero, the\n"
-"@code{reshape} function is equivalent to\n"
+"@code{greshape} function is equivalent to\n"
 "\n"
 "@example\n"
 "@group\n"
-"retval = zeros (m, n);\n"
+"retval = gf(zeros (m, n), a.m, a.prim_poly);\n"
 "retval (:) = a;\n"
 "@end group\n"
 "@end example\n"
@@ -729,7 +749,7 @@ DEFUN_DLD (glu, args, nargout,
 "@code{a = gf([1, 2; 3, 4],3)},\n"
 "\n"
 "@example\n"
-"[l, u, p] = lu (a)\n"
+"[l, u, p] = glu (a)\n"
 "@end example\n"
 "\n"
 "@noindent\n"
@@ -737,11 +757,17 @@ DEFUN_DLD (glu, args, nargout,
 "\n"
 "@example\n"
 "l =\n"
+"GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)\n"
+"\n"
+"Array elements = \n"
 "\n"
 "  1  0\n"
 "  6  1\n"
 "\n"
 "u =\n"
+"GF(2^3) array. Primitive Polynomial = D^3+D+1 (decimal 11)\n"
+"\n"
+"Array elements = \n"
 "\n"
 "  3  4\n"
 "  0  7\n"
@@ -1102,43 +1128,41 @@ DEFUN_DLD (rsenc, args, nargout,
   int fcr = 0;
   int prim = 0;
 
-  for (int i = 3; i < 6; i++) {
-    if (nargin > i) {
-      if (args(i).is_string()) {
-	std::string parstr = args(i).string_value();
-	for (int j=0;j<(int)parstr.length();j++)
-	  parstr[j] = toupper(parstr[j]);
+  for (int i = 3; i < nargin; i++) {
+    if (args(i).is_string()) {
+      std::string parstr = args(i).string_value();
+      for (int j=0;j<(int)parstr.length();j++)
+	parstr[j] = toupper(parstr[j]);
 	
-	if (!parstr.compare("END")) {
-	  parity_at_end = true;
-        } else if (!parstr.compare("BEGINNING")) {
-	  parity_at_end = false;
-	} else {
-	  error ("rsenc: unrecoginized parity position");
+      if (!parstr.compare("END")) {
+	parity_at_end = true;
+      } else if (!parstr.compare("BEGINNING")) {
+	parity_at_end = false;
+      } else {
+	error ("rsenc: unrecoginized parity position");
+	return retval;
+      }
+    } else {
+      if (args(i).type_id () == octave_galois::static_type_id ()) {
+	if (have_genpoly) {
+	  print_usage ("rsenc");
 	  return retval;
 	}
+	genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
+
+	if (genpoly.cols() > genpoly.rows())
+	  genpoly = genpoly.transpose();
       } else {
-	if (args(i).type_id () == octave_galois::static_type_id ()) {
-	  if (have_genpoly) {
+	if (have_genpoly) {
+	  if (prim != 0) {
 	    print_usage ("rsenc");
 	    return retval;
 	  }
-	  genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
-
-	  if (genpoly.cols() > genpoly.rows())
-	    genpoly = genpoly.transpose();
-	} else {
-	  if (have_genpoly) {
-	    if (prim != 0) {
-	      print_usage ("rsenc");
-	      return retval;
-	    }
-	    prim = args(i).nint_value();
-	  } else
-	    fcr = args(i).nint_value();
-	}
-	have_genpoly = true;
+	  prim = args(i).nint_value();
+	} else
+	  fcr = args(i).nint_value();
       }
+      have_genpoly = true;
     }
   }
 
@@ -1661,7 +1685,7 @@ DEFUN_DLD (rsdec, args, nargout,
       }
 
       if (count != nroots) {
-	error ("rsenc: generator polynomial can not have repeated roots");
+	error ("rsdec: generator polynomial can not have repeated roots");
 	return retval;
       }
 
@@ -1741,6 +1765,561 @@ DEFUN_DLD (rsdec, args, nargout,
   retval(1) = octave_value(nerr);
   retval(2) = new octave_galois (code);
 
+  return retval;
+}
+
+DEFUN_DLD (bchenco, args, ,
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{code} = } bchenco (@var{msg},@var{n},@var{k})\n"
+"@deftypefnx {Loadable Function} {@var{code} =} bchenco (@var{msg},@var{n},@var{k},@var{g})\n"
+"@deftypefnx {Loadable Function} {@var{code} =} bchenco (@var{...},@var{parpos})\n"
+"\n"
+"Encodes the message @var{msg} using a [@var{n},@var{k}] BCH coding.\n"
+"The variable @var{msg} is a binary array with @var{k} columns and an\n"
+"arbitrary number of rows. Each row of @var{msg} represents a single symbol\n"
+"to be coded by the BCH coder. The coded message is returned in the binary\n"
+"array @var{code} containing @var{n} columns and the same number of rows as\n"
+"@var{msg}.\n"
+"\n"
+"The use of @dfn{bchenco} can be seen in the following short example.\n"
+"\n"
+"@example\n"
+"m = 3; n = 2^m -1; k = 4;\n"
+"msg = randint(10,k);\n"
+"code = bchenco(msg, n, k);\n"
+"@end example\n"
+"\n"
+"Valid codes can be found using @dfn{bchpoly}. In general the codeword\n"
+"length @var{n} should be of the form @code{2^@var{m}-1}, where m is an\n"
+"integer. However, shortened BCH codes can be used such that if\n"
+"@code{[2^@var{m}-1,@var{k}]} is a valid code\n"
+"@code{[2^@var{m}-1-@var{x},@var{k}-@var{x}]}\n is also a valid code using\n"
+"the same generator polynomial.\n"
+"\n"
+"By default the generator polynomial used in the BCH coding is\n"
+"based on the properties of the Galois Field GF(2^@var{m}). This\n"
+"default generator polynomial can be overridden by a polynomial in @var{g}.\n"
+"Suitable generator polynomials can be constructed with @dfn{bchpoly}.\n"
+"\n"
+"By default the parity symbols are placed at the beginning of the coded\n"
+"message. The variable @var{parpos} controls this positioning and can take\n"
+"the values 'beginning' or 'end'.\n"
+"@end deftypefn\n"
+"@seealso{bchpoly,bchdeco,encode}")
+{
+  octave_value retval;
+  int nargin = args.length ();
+  
+  if ((nargin < 3) || (nargin > 5)) {
+    print_usage ("bchenco");
+    return retval;
+  }
+
+  Matrix msg = args(0).matrix_value ();
+  int nsym = msg.rows();
+  int nn = args(1).nint_value();
+  int k = args(2).nint_value();
+
+  int m = 1;
+  while (nn > (1<<m))
+    m++;
+
+  int n = (1<<m) - 1;
+
+  if (msg.cols() != k) {
+    error ("bchenco: message contains incorrect number of symbols");
+    return retval;
+  }
+
+  if ((n < 3) || (nn < k) || (m > __OCTAVE_GALOIS_MAX_M)) {
+    error ("bchenco: invalid values of message or codeword length");
+    return retval;
+  }
+
+  galois genpoly;
+  bool have_genpoly = false;
+  bool parity_at_end = false;
+
+  for (int i = 3; i < nargin; i++) {
+    if (args(i).is_string()) {
+      std::string parstr = args(i).string_value();
+      for (int j=0;j<(int)parstr.length();j++)
+	parstr[j] = toupper(parstr[j]);
+	
+      if (!parstr.compare("END")) {
+	parity_at_end = true;
+      } else if (!parstr.compare("BEGINNING")) {
+	parity_at_end = false;
+      } else {
+	error ("bchenco: unrecoginized parity position");
+	return retval;
+      }
+    } else {
+      genpoly = galois(args(i).matrix_value (), m);
+      if (genpoly.cols() > genpoly.rows())
+	genpoly = genpoly.transpose();
+
+      if (genpoly.cols() != 1) {
+	error ("bchenco: the generator polynomial must be a vector");
+	return retval;
+      }
+
+      if (genpoly.rows() != nn-k+1) {
+	error ("bchenco: generator polynomial has incorrect order");
+	return retval;
+      }
+    }
+  }
+
+  if (!have_genpoly) {
+    // The code below is basically bchpoly.m in C++, so if there is a need
+    // it can be used to rewrite bchpoly as an oct-file...
+
+    RowVector found(n,0);
+    found(0) = 1;
+    galois c(1,m,0,m);
+    c(0,0) == c.index_of(1);
+    Array<int> cs(1,1);
+
+    int nc = 1;
+
+    // Find the cyclotomic cosets of GF(2^m)
+    while (found.min() == 0) {
+      int idx = n;
+      for (int i=0; i<n; i++)
+	if ((found(i) == 0) && (c.index_of(i+1) < idx))
+	  idx = c.index_of(i+1);
+
+      c.resize(nc+1,m);
+      cs.resize(nc+1);
+      c.elem(nc,0) = idx; 
+      found(c.alpha_to(idx)-1) = 1;
+      cs(nc) = 1;
+      int r = idx;
+      while ((r = modn(r<<1,m,n)) > idx) {
+	c.elem(nc,cs(nc)) = r;
+	found(c.alpha_to(r)-1) = 1;
+	cs(nc) += 1;
+      }
+      nc++;
+    }
+
+    // Re-use the found vector with 1==not-found !!!
+    found.resize(nc);
+
+    galois f(1,0,0,m);
+    int t = 0;
+    int nf = 0;
+    do {
+      t++;
+      for (int i = 0; i < nc; i++) {
+	if (found(i) == 1) {
+	  for (int j = 2*(t-1); j<2*t; j++) {
+	    int flag = 0;
+	    for (int l=0; l<cs(i); l++) {
+	      if (c.elem(i,l) == j+1) {
+		f.resize(1,nf+cs(i));
+		for (int ll=0; ll<cs(i); ll++)
+		  f.elem(0,nf+ll) = c.elem(i,ll);
+		found(i) = 0;
+		nf += cs(i);
+		flag = 1;
+		break;
+	      }
+	    }
+	    if (flag) break;
+	  }
+	}
+      }
+    } while (nf < nn - k);
+
+    if (nf != nn - k) {
+      error("bchenco: can not find valid generator polynomial for parameters");
+      return retval;
+    }
+    
+    // Create polynomial of right length.
+    genpoly = galois(nf+1,1,0,m);
+
+    genpoly.elem(0,0) = 1;
+    for (int i = 0; i < nf; i++) {
+      genpoly.elem(i+1,0) = 1;
+
+      // Multiply genpoly by  @**(root + x)
+      for (int l = i; l > 0; l--){
+	if (genpoly.elem(l,0) != 0)
+	  genpoly.elem(l,0) = genpoly.elem(l-1,0) ^ genpoly.alpha_to(
+		modn(genpoly.index_of(genpoly.elem(l,0)) + f.elem(0,i), m, n));
+	else
+	  genpoly.elem(l,0) = genpoly.elem(l-1,0);
+      }
+      // genpoly(0,0) can never be zero
+      genpoly.elem(0,0) = genpoly.alpha_to(modn(genpoly.index_of(
+			genpoly.elem(0,0)) + f.elem(0,i), m, n));
+    }
+  }
+
+  // Add space for parity block
+  msg.resize(nsym,nn,0);
+
+  // The code below basically finds the parity bits by treating the 
+  // message as a polynomial and dividing it by the generator polynomial.
+  // The parity bits are then the remainder of this division. 
+  //
+  // This code could just as easily be written as 
+  //    [ignore par] = gdeconv(gf(msg), gf(genpoly));
+  // But the code below has the advantage of being 20 times faster :-)
+
+  if (parity_at_end) {
+    for (int l = 0; l < nsym; l++) {
+      for (int i = 0; i < k; i++) { 
+	int feedback = (int)msg.elem(l,i) ^ (int)msg.elem(l,k);
+	if (feedback != 0) {
+	  for (int j = 0; j < nn-k-1; j++)
+	    if (genpoly.elem(nn-k-j-1,0) != 0)
+	      msg.elem(l,k+j) = (int)msg.elem(l,k+j+1) ^ feedback;
+	    else
+	      msg.elem(l,k+j) = msg.elem(l,k+j+1);
+	  msg.elem(l,nn-1) = genpoly.elem(0,0) & feedback;
+	} else {
+	  for (int j = k; j < nn-1; j++)
+	    msg.elem(l,j) = msg.elem(l,j+1);
+	  msg.elem(l,nn-1) = 0;
+	}
+      }
+    }
+  } else {
+    for (int l = 0; l < nsym; l++) {
+      for (int i=k; i > 0; i--)
+	msg(l,i+nn-k-1) = msg(l,i-1);
+      for (int i=0; i<nn-k; i++)
+	msg(l,i) = 0;
+    }
+
+    for (int l = 0; l < nsym; l++) {
+      for (int i = k-1; i >= 0; i--) { 
+	int feedback = (int)msg.elem(l,nn-k+i) ^ (int)msg.elem(l,nn-k-1);
+	if (feedback != 0) {
+	  for (int j = nn - k -1; j > 0; j--)
+	    if (genpoly.elem(j,0) != 0)
+	      msg.elem(l,j) = (int)msg.elem(l,j-1) ^ feedback;
+	    else
+	      msg.elem(l,j) = msg.elem(l,j-1);
+	  msg.elem(l,0) = genpoly.elem(0,0) & feedback;
+	} else {
+	  for (int j = nn - k - 1; j > 0; j--)
+	    msg.elem(l,j) = msg.elem(l,j-1);
+	  msg.elem(l,0) = 0;
+	}
+      }
+    }
+  }
+
+  retval = msg;
+  return retval;
+}
+
+DEFUN_DLD (bchdeco, args, ,
+  "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {@var{msg} = } bchdeco (@var{code},@var{k},@var{t})\n"
+"@deftypefnx {Loadable Function} {@var{msg} =} bchdeco (@var{code},@var{k},@var{t},@var{prim})\n"
+"@deftypefnx {Loadable Function} {@var{msg} =} bchdeco (@var{...},@var{parpos})\n"
+"@deftypefnx {Loadable Function} {[@var{msg}, @var{err}] =} bchdeco (@var{...})\n"
+"@deftypefnx {Loadable Function} {[@var{msg},@var{err},@var{ccode}] =} bchdeco (@var{...})\n"
+"\n"
+"Decodes the coded message @var{code} using a BCH coder. The message length\n"
+"of the coder is defined in variable @var{k}, and the error corerction\n"
+"capability of the code is defined in @var{t}.\n"
+"\n"
+"The variable @var{code} is a binary array with @var{n} columns and an\n"
+"arbitrary number of rows. Each row of @var{code} represents a single symbol\n"
+"to be decoded by the BCH coder. The decoded message is returned in the\n"
+"binary array @var{msg} containing @var{k} columns and the same number of\n"
+"rows as @var{code}.\n"
+"\n"
+"The use of @dfn{bchdeco} can be seen in the following short example.\n"
+"\n"
+"@example\n"
+"m = 3; n = 2^m -1; k = 4; t = 1;\n"
+"msg = randint(10,k);\n"
+"code = bchenco(msg, n, k);\n"
+"noisy = mod(randerr(10,n) + code,2);\n"
+"[dec err] = bchdeco(msg, k, t);\n"
+"@end example\n"
+"\n"
+"Valid codes can be found using @dfn{bchpoly}. In general the codeword\n"
+"length @var{n} should be of the form @code{2^@var{m}-1}, where m is an\n"
+"integer. However, shortened BCH codes can be used such that if\n"
+"@code{[2^@var{m}-1,@var{k}]} is a valid code\n"
+"@code{[2^@var{m}-1-@var{x},@var{k}-@var{x}]}\n is also a valid code using\n"
+"the same generator polynomial.\n"
+"\n"
+"By default the BCH coding is based on the properties of the Galois\n"
+"Field GF(2^@var{m}). The primitive polynomial used in the Galois\n" 
+"can be overridden by a primitive polynomial in @var{prim}. Suitable\n"
+"primitive polynomials can be constructed with @dfn{primpoly}. The form\n"
+"of @var{prim} maybe be either a integer representation of the primitve\n"
+"polynomial as given by @dfn{primpoly}, or a binary representation that\n"
+"might be constructed like\n"
+"\n"
+"@example\n"
+"m = 3;\n"
+"prim = de2bi(primpoly(m));\n"
+"@end example\n"
+"\n"
+"By default the parity symbols are assumed to be placed at the beginning of\n"
+"the coded message. The variable @var{parpos} controls this positioning and\n"
+"can take the values 'beginning' or 'end'.\n"
+"@end deftypefn\n"
+"@seealso{bchpoly,bchenco,decode,primpoly}")
+{
+  octave_value_list retval;
+  int nargin = args.length ();
+  
+  if ((nargin < 3) || (nargin > 5)) {
+    print_usage ("bchdeco");
+    return retval;
+  }
+
+  Matrix code = args(0).matrix_value ();
+  int nsym = code.rows();
+  int nn = code.cols();
+  int k = args(1).nint_value();
+  int t = args(2).nint_value();
+  int t2 = t << 1;
+
+  int m = 1;
+  while (nn > (1<<m))
+    m++;
+
+  int n = (1<<m) - 1;
+
+  if ((n < 3) || (n < k) || (m > __OCTAVE_GALOIS_MAX_M)) {
+    error ("bchdeco: invalid values of message or codeword length");
+    return retval;
+  }
+
+  int prim = 0;		// primitve polynomial of zero flags default
+  bool parity_at_end = false;
+
+  for (int i = 3; i < nargin; i++) {
+    if (args(i).is_string()) {
+      std::string parstr = args(i).string_value();
+      for (int j=0;j<(int)parstr.length();j++)
+	parstr[j] = toupper(parstr[j]);
+      
+      if (!parstr.compare("END")) {
+	parity_at_end = true;
+      } else if (!parstr.compare("BEGINNING")) {
+	parity_at_end = false;
+      } else {
+	error ("bchdeco: unrecoginized parity position");
+	return retval;
+      }
+    } else {
+      if (args(i).is_real_scalar()) 
+	prim = args(i).int_value();
+      else { 
+	Matrix tmp = args(i).matrix_value(); 
+
+	if (tmp.cols() > tmp.rows())
+	  tmp = tmp.transpose();
+
+	if (tmp.cols() != 1) {
+	  error ("bchdeco: the primitve polynomial must be a scalar or a vector");
+	  return retval;
+	}
+
+	prim = 0;
+	for (int i=0; i < tmp.rows(); i++)
+	  if ((int)tmp(i,0) & 1)
+	    prim |= (1<<i);
+      }
+    }
+  }
+
+  // Create a variable in the require Galois Field to have access to the
+  // lookup tables alpha_to and index_of.
+  galois tables(1,1,0,m,prim);
+  ColumnVector nerr(nsym,0);
+
+  for (int lsym = 0; lsym < nsym; lsym++) {
+    /* first form the syndromes */
+    Array<int> s(t2+1,0);
+    bool syn_error = false;
+
+    for (int i = 1; i <= t2; i++) {
+      for (int j = 0; j < nn; j++) {
+	if (parity_at_end) {
+	  if (code.elem(lsym,nn-j-1) != 0)
+	    s(i) ^= tables.alpha_to(modn(i*j,m,n));
+	} else {
+	  if (code.elem(lsym,j) != 0)
+	    s(i) ^= tables.alpha_to(modn(i*j,m,n));
+	}
+      }
+      if (s(i) != 0)
+	syn_error = true; /* set error flag if non-zero syndrome */
+
+    }
+
+    if (syn_error) {	/* if there are errors, try to correct them */
+      int q, u;
+      Array<int> d(t2+2), l(t2+2), u_lu(t2+2), reg(t2+2);
+      Array2<int> elp(t2+2,t2+2);
+
+      /* convert syndrome from polynomial form to index form  */
+      for (int i = 1; i <= t2; i++)
+	s(i) = tables.index_of(s(i));
+
+      /*
+       * Compute the error location polynomial via the Berlekamp
+       * iterative algorithm. Following the terminology of Lin and
+       * Costello's book :   d(u) is the 'mu'th discrepancy, where
+       * u='mu'+1 and 'mu' (the Greek letter!) is the step number
+       * ranging from -1 to 2*t (see L&C),  l(u) is the degree of
+       * the elp at that step, and u_l(u) is the difference between
+       * the step number and the degree of the elp. 
+       */
+      /* initialise table entries */
+      d(0) = 0;			/* index form */
+      d(1) = s(1);		/* index form */
+      elp(0,0) = 0;		/* index form */
+      elp(1,0) = 1;		/* polynomial form */
+      for (int i = 1; i < t2; i++) {
+	elp(0,i) = n;	/* index form */
+	elp(1,i) = 0;	/* polynomial form */
+      }
+      l(0) = 0;
+      l(1) = 0;
+      u_lu(0) = -1;
+      u_lu(1) = 0;
+      u = 0;
+    
+      do {
+	u++;
+	if (d(u) == n) {
+	  l(u + 1) = l(u);
+	  for (int i = 0; i <= l(u); i++) {
+	    elp(u + 1,i) = elp(u,i);
+	    elp(u,i) = tables.index_of(elp(u,i));
+	  }
+	} else
+	  /*
+	   * search for words with greatest u_lu(q) for
+	   * which d(q)!=0 
+	   */
+	  {
+	    q = u - 1;
+	    while ((d(q) == n) && (q > 0))
+	      q--;
+	    /* have found first non-zero d(q)  */
+	    if (q > 0) {
+	      int j = q;
+	      do {
+		j--;
+		if ((d(j) != n) && (u_lu(q) < u_lu(j)))
+		  q = j;
+	      } while (j > 0);
+	    }
+	  
+	    /*
+	     * have now found q such that d(u)!=0 and
+	     * u_lu(q) is maximum 
+	     */
+	    /* store degree of new elp polynomial */
+	    if (l(u) > l(q) + u - q)
+	      l(u + 1) = l(u);
+	    else
+	      l(u + 1) = l(q) + u - q;
+	    
+	    /* form new elp(x) */
+	    for (int i = 0; i < t2; i++)
+	      elp(u + 1,i) = 0;
+	    for (int i = 0; i <= l(q); i++)
+	      if (elp(q,i) != n)
+		elp(u + 1,i + u - q) = 
+		  tables.alpha_to(modn((d(u) + n - d(q) + elp(q,i)),m,n));
+	    for (int i = 0; i <= l(u); i++) {
+	      elp(u + 1,i) ^= elp(u,i);
+	      elp(u,i) = tables.index_of(elp(u,i));
+	    }
+	  }
+	u_lu(u + 1) = u - l(u + 1);
+	
+	/* form (u+1)th discrepancy */
+	if (u < t2) {	
+	  /* no discrepancy computed on last iteration */
+	  d(u + 1) = tables.alpha_to(s(u + 1));
+
+	  for (int i = 1; i <= l(u + 1); i++)
+	    if ((s(u + 1 - i) != n) && (elp(u + 1,i) != 0))
+	      d(u + 1) ^= tables.alpha_to(modn(s(u + 1 - i) 
+				    + tables.index_of(elp(u + 1,i)), m, n));
+	  /* put d(u+1) into index form */
+	  d(u + 1) = tables.index_of(d(u + 1));	
+	}
+      } while ((u < t2) && (l(u + 1) <= t));
+      
+      u++;
+      if (l(u) <= t) {/* Can correct errors */
+	int count;
+	Array<int> loc(t+2);
+
+	/* put elp into index form */
+	for (int i = 0; i <= l(u); i++)
+	  elp(u,i) = tables.index_of(elp(u,i));
+
+	/* Chien search: find roots of the error location polynomial */
+	for (int i = 1; i <= l(u); i++)
+	  reg(i) = elp(u,i);
+	count = 0;
+	for (int i = 1; i <= n; i++) {
+	  q = 1;
+	  for (int j = 1; j <= l(u); j++)
+	    if (reg(j) != n) {
+	      reg(j) = modn((reg(j) + j),m,n);
+	      q ^= tables.alpha_to(reg(j));
+	    }
+	  if (!q) {	/* store root and error
+			 * location number indices */
+	    loc(count) = n - i;
+	    count++;
+	    if (count > l(u))
+	      break;
+	  }
+	}
+
+	if (count == l(u)) {
+	  /* no. roots = degree of elp hence <= t errors */
+	  nerr(lsym) = l(u);
+	  for (int i = 0; i < l(u); i++)
+	    if (parity_at_end)
+	      code.elem(lsym,nn-loc(i)-1) = 
+		(int)code.elem(lsym,nn-loc(i)-1) ^ 1;
+	    else
+	      code.elem(lsym,loc(i)) = (int)code.elem(lsym,loc(i)) ^ 1;
+	} else	/* elp has degree >t hence cannot solve */
+	  nerr(lsym) = -1;
+      } else
+	nerr(lsym) = -1;
+    }
+  }
+
+  Matrix msg(nsym,k);
+  if (parity_at_end) {
+    for (int l = 0; l < nsym; l++)
+      for (int i = 0; i < k; i++)
+	msg.elem(l,i) = code.elem(l,i);
+  } else {
+    for (int l = 0; l < nsym; l++)
+      for (int i=0; i < k; i++)
+	msg.elem(l,i) = code.elem(l,nn-k+i);
+  }
+  
+  retval(0) = octave_value(msg);
+  retval(1) = octave_value(nerr);
+  retval(2) = octave_value(code);
   return retval;
 }
 

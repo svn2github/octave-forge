@@ -75,13 +75,16 @@ function retval = galois(a)
       if (!exist('showfile') || !length(showfile))
         error('galois: info file not found');
       end
+      if (showfile(length(showfile)) == "\n")
+	showfile = showfile(1:length(showfile)-1);
+      endif
       
       if (exist('INFO_PROGAM')) 
         [testout, testret] = system([INFO_PROGRAM, ' --version']);
         if (testret)
           error('galois: info command not found');
         else
-          system([INFO_PROGRAM, ' --file ', infofile, ' --node "', ...
+          system([INFO_PROGRAM, ' --file ', showfile, ' --node "', ...
                   nodename, '"']); 
         end
       else
@@ -89,7 +92,7 @@ function retval = galois(a)
         if (testret)
           error('galois: info command not found');
         else
-          system(['info --file ', infofile, ' --node "', nodename, '"']); 
+          system(['info --file ', showfile, ' --node "', nodename, '"']); 
         end
       end
     elseif (strcmp(a,'test'))

@@ -109,8 +109,10 @@ DEFUN_DLD (primpoly, args, nargout,
   RowVector primpolys;
 
 
-  if (m < 1) {
-    error("primpoly: m must be 1 or greater");
+  // The upper limit is an artifical limit caused by memory requirements
+  // in do_is_primitive. m=22 uses an array of 32MBytes!!
+  if ((m < 1) || (m > 22)) {
+    error("primpoly: m must be greater than 1 and less than 22");
     return retval;
   }
   if (nargin > 1) {

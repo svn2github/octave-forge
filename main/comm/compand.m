@@ -15,10 +15,10 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'mu/compressor)
-## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'mu/expander)
-## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'A/compressor)
-## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'A/expander)
+## @deftypefn {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'mu/compressor')
+## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'mu/expander')
+## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'A/compressor')
+## @deftypefnx {Function File} {@var{y} = } compand (@var{x}, @var{mu}, @var{V}, 'A/expander')
 ##
 ## Compresses and expanding the dynamic range of a signal using a mu-law or
 ## or A-law algorithm.

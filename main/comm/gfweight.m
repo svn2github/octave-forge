@@ -29,7 +29,7 @@
 ##
 ## If the first argument is a vector, it is assumed that it defines the
 ## generator polynomial of the code. In this case a second argument is
-## required that defines the codeword length/.
+## required that defines the codeword length.
 ##
 ## @end deftypefn
 ## @seealso{hammgen,cyclpoly,bchpoly}
@@ -71,6 +71,9 @@ function w = gfweight (arg1, arg2)
   endif
 
   ## We only need to test codewords 1:2^k-1 against the zero code word
-  w = min(sum((mod(de2bi([1:2^k-1]') * gen, 2))'));
-  
+  ## We do the equivalent of 
+  ## w = min(sum((mod(de2bi([1:2^k-1]') * gen, 2))'));
+  ## But in a more memory efficient manner in an oct-file
+  w = _gfweight(gen);
+
 endfunction

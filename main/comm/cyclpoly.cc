@@ -38,22 +38,17 @@ enum cyclic_poly_type
 };
 
 static bool
-do_is_cyclic_polynomial (const int& a, const int &n, const int &nn, const int& m)
+do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m)
 {
   // Fast return since polynomial can't be even
   if (!(a & 1))
     return false;
 
-  RowVector repr(1<<m,0);
-  int mask = 1;
+  unsigned long long mask = 1;
 
   for (int i=0; i<n; i++) {
-    if (repr(mask)) {
-      return false;
-    } else
-      repr(mask) = 1;
     mask <<= 1;
-    if (mask & (1<<m))
+    if (mask & ((unsigned long long)1<<m))
       mask ^= a;
   }
 
@@ -120,6 +115,12 @@ DEFUN_DLD (cyclpoly, args, nargout,
     return retval;
   }
 
+  if (n > (int)(sizeof(unsigned long long) << 3)) {
+    error("cyclpoly: message and codeword length must be less than %d", 
+	  (sizeof(unsigned long long) << 3));
+    return retval;
+  }
+
   for (int i = 2; i < nargin; i++) {
     if (args(i).is_scalar_type ()) {
       l = args(i).int_value();
@@ -148,7 +149,6 @@ DEFUN_DLD (cyclpoly, args, nargout,
   }
 
   int m = n - k;
-  int nn = (1 << m) - 1;
 
   // Matlab code seems to think that 1+x+x^3 is of larger weight than
   // 1+x^2+x^3. So for matlab compatiability the list of polynomials
@@ -158,35 +158,35 @@ DEFUN_DLD (cyclpoly, args, nargout,
   switch (type) {
   case CYCLIC_POLY_MIN:
     cyclic_polys.resize(1);
-    for (int i = (1<<m)+1; i < (1<<(1+m)); i+=2)
-      if (do_is_cyclic_polynomial(i, n, nn, m)) {
+    for (unsigned long long i = ((unsigned long long)1<<m)+1; i < ((unsigned long long)1<<(1+m)); i+=2)
+      if (do_is_cyclic_polynomial(i, n, m)) {
 	cyclic_polys(0) = (double)i;
 	break;
       }
     break;
   case CYCLIC_POLY_MAX:
     cyclic_polys.resize(1);
-    for (int i = (1<<(m+1))-1; i > (1<<m); i-=2)
-      if (do_is_cyclic_polynomial(i, n, nn, m)) {
+    for (unsigned long long i = ((unsigned long long)1<<(m+1))-1; i > ((unsigned long long)1<<m); i-=2)
+      if (do_is_cyclic_polynomial(i, n, m)) {
 	cyclic_polys(0) = (double)i;
 	break;
       }
     break;
   case CYCLIC_POLY_ALL:
-    for (int i = (1<<m)+1; i < (1<<(1+m)); i+=2)
-      if (do_is_cyclic_polynomial(i, n, nn, m)) {
+    for (unsigned long long i = ((unsigned long long)1<<m)+1; i < ((unsigned long long)1<<(1+m)); i+=2)
+      if (do_is_cyclic_polynomial(i, n, m)) {
 	cyclic_polys.resize(cyclic_polys.length()+1);
 	cyclic_polys(cyclic_polys.length()-1) = (double)i;
       }
     break;
   case CYCLIC_POLY_L:
-    for (int i = (1<<m)+1; i < (1<<(1+m)); i+=2) {
+    for (unsigned long long i = ((unsigned long long)1<<m)+1; i < ((unsigned long long)1<<(1+m)); i+=2) {
       int li = 0;
       for (int j=0; j < m+1; j++)
-	if (i & (1 << j))
+	if (i & ((unsigned long long)1 << j))
 	  li++;
       if (li == l) {
-	if (do_is_cyclic_polynomial(i, n, nn, m)) {
+	if (do_is_cyclic_polynomial(i, n, m)) {
 	  cyclic_polys.resize(cyclic_polys.length()+1);
 	  cyclic_polys(cyclic_polys.length()-1) = (double)i;
 	}
@@ -207,7 +207,7 @@ DEFUN_DLD (cyclpoly, args, nargout,
       Matrix polys(cyclic_polys.length(),m+1, 0);
       for (int i = 0 ; i < cyclic_polys.length(); i++)
 	for (int j = 0; j < m+1; j++)
-	  if ((int)cyclic_polys(i) & (1<<j))
+	  if ((unsigned long long)cyclic_polys(i) & (1<<j))
 	    polys(i,j) = 1;
       retval = octave_value (polys);
     } else

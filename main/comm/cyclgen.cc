@@ -30,22 +30,17 @@ Open Source Initiative (www.opensource.org)
 #include <octave/pager.h>
 
 static bool
-do_is_cyclic_polynomial (const int& a, const int &n, const int &nn, const int& m)
+do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m)
 {
   // Fast return since polynomial can't be even
   if (!(a & 1))
     return false;
 
-  RowVector repr(1<<m,0);
-  int mask = 1;
+  unsigned long long mask = 1;
 
   for (int i=0; i<n; i++) {
-    if (repr(mask)) {
-      return false;
-    } else
-      repr(mask) = 1;
     mask <<= 1;
-    if (mask & (1<<m))
+    if (mask & ((unsigned long long)1<<m))
       mask ^= a;
   }
 
@@ -100,7 +95,7 @@ DEFUN_DLD (cyclgen, args, nargout,
   octave_value_list retval;
   int nargin = args.length ();
   int n = args(0).int_value ();
-  int p = 0;
+  unsigned long long p = 0;
   int m, k, mm;
   bool system = true;
 
@@ -112,11 +107,17 @@ DEFUN_DLD (cyclgen, args, nargout,
   m = 1;
   while (n > (1<<(m+1)))
     m++;
+
+  if (n > (int)(sizeof(unsigned long long) << 3)) {
+    error("cyclgen: codeword length must be less than %d", 
+	  (sizeof(unsigned long long) << 3));
+    return retval;
+  }
   
   if (args(1).is_scalar_type ()) {
-    p = args(1).int_value();
+    p = (unsigned long long)(args(1).int_value());
     mm = 1;
-    while (p > (1<<(mm+1)))
+    while (p > ((unsigned long long)1<<(mm+1)))
       mm++;
   } else {
     Matrix tmp = args(1).matrix_value ();
@@ -127,7 +128,7 @@ DEFUN_DLD (cyclgen, args, nargout,
     for (int i=0; i < tmp.rows(); i++)
       for (int j=0; j < tmp.columns(); j++) {
 	if (tmp(i,j) == 1)
-	  p |= (1 << (i+j));
+	  p |= ((unsigned long long)1 << (i+j));
 	else if (tmp(i,j) != 0) {
 	  error ("cyclgen: illegal generator polynomial");
 	  return retval;
@@ -136,7 +137,6 @@ DEFUN_DLD (cyclgen, args, nargout,
     mm = (tmp.rows() > tmp.columns() ? tmp.rows() : tmp.columns()) - 1;
   }
   k = n - mm;
-  int nn = (1 << mm) - 1;
 
   if (nargin > 2)
     if (args(2).is_string ()) {
@@ -161,35 +161,37 @@ DEFUN_DLD (cyclgen, args, nargout,
     return retval;
   }
 
-  if (!do_is_cyclic_polynomial(p, n, nn, mm)) {
+  if (!do_is_cyclic_polynomial(p, n, mm)) {
     error ("cyclgen: generator polynomial does not produce cyclic code");
     return retval;
   }
 
-  int mask = 1;
-  RowVector alpha_to(n);
+  unsigned long long mask = 1;
+  unsigned long long *alpha_to = 
+    (unsigned long long *)malloc(sizeof(unsigned long long) * n);
   for (int i = 0; i < n; i++) {
-    alpha_to(i) = mask;
+    alpha_to[i] = mask;
     mask <<= 1;
-    if (mask & (1<<mm))
+    if (mask & ((unsigned long long)1<<mm))
       mask ^= p;
   }
 
   Matrix parity(mm,n,0);
   for (int i = 0; i < n; i++) 
     for (int j = 0; j < mm; j++) 
-      if ((int)alpha_to(i) & (1<<j))
+      if (alpha_to[i] & ((unsigned long long)1<<j))
 	parity(j,i) = 1;
-  
+
+  free(alpha_to);
   retval(0) = octave_value (parity);
 
   if (nargout > 1) {
     Matrix generator(k,n,0);
 
-    for (int i = 0; i < k; i++) 
-      for (int j = 0; j < mm; j++) 
+    for (int i = 0; i < (int)k; i++) 
+      for (int j = 0; j < (int)mm; j++) 
 	generator(i,j) = parity(j,i+mm);
-    for (int i = 0; i < k; i++) 
+    for (int i = 0; i < (int)k; i++) 
       generator(i,i+mm) = 1;
 
     retval(1) = octave_value(generator);

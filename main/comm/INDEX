@@ -1,27 +1,50 @@
-Communications
+communications >> Communications
+Random Signals
  awgn
- bi2de
  biterr
+ eyediagram
+ randerr
+ randint
+ randsrc
+ scatterplot
+ symerr
+ wgn
+Source Coding
  compand
- cosets
+ lloyds
+ quantiz
+Block Coding
+ bchdeco
+ bchenco
+ bchpoly
  cyclgen
  cyclpoly
- de2bi
  decode
  encode
- eyediagram
+ gen2par
+ hammgen
+ rsgenpoly
+ rsdec
+ rsdecof
+ rsenc
+ rsencof
+ syndtable
+Modulations
+ ademodce
+ amodce
+Galois Fields
+ cosets
  galois
  gconv
  gconvmtx
- gdiag
  gdeconv
  gdet
  gdftmtx
- gen2par
+ gdiag
  gexp
  gf
- gfilter
  gfft
+ gfilter
  gftable
  gfweight
  gifft
@@ -35,23 +58,11 @@ Communications
  groots
  gsum
  gsumsq
- hammgen
  isgalois
  isprimitive
- lloyds
  minpol
  primpoly
- quantiz
- randerr
- randint
- randsrc
- rsgenpoly
- rsdec
- rsdecof
- rsenc
- rsencof
- scatterplot
- symerr
- syndtable
  vec2mat
- wgn
+Utility Functions
+ bi2de
+ de2bi

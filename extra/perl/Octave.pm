@@ -10,7 +10,6 @@ $VERSION = '0.21';
 require Inline;
 @ISA = qw(Inline);
 use Carp;
-use IPC::Run qw(start);
 use IO::Select;
 use POSIX 'WNOHANG';
 use vars qw( $octave_object );
@@ -222,23 +221,6 @@ CODE
    return;
 }   
 
-# Old code in start_interpreter:  Using IO::File and IPC::Open3.
-# The issues were select doesn't work on Win32, and its quite
-# unreliable on *nix
-#
-#  my $Oin = new IO::File;
-#  my $Oout= new IO::File;
-#  my $Oerr= new IO::File;
-#  my $pid;
-#  eval {
-#     $pid= open3( $Oin , $Oout, $Oerr, $octave_object->{INTERP} );
-#     # set our priority lower than the kid, so that we don't read each
-#     # character. Experimentally, I've found 3 to be optimum on Linux 2.4.21
-#     setpriority 0,0, (getpriority 0,0)+3;
-#  };
-#  # ignore errors from setpriority if it's not available
-#  croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open3/i;
-
 sub start_interpreter
 {
    my $o = shift;
@@ -246,14 +228,31 @@ sub start_interpreter
    # check if interpreter already alive
    return if $octave_object->{OCTIN} and $octave_object->{OCTOUT};
 
-   my ($Oin, $Oout, $Oerr);
+   use IPC::Open3;
+   use IO::File;
+   my $Oin = new IO::File;
+   my $Oout= new IO::File;
+   my $Oerr= new IO::File;
    my $pid;
    eval {
-     $pid= start $octave_object->{INTERP}, \$Oin, \$Oout, \$Oerr
+      $pid= open3( $Oin , $Oout, $Oerr, $octave_object->{INTERP} );
+      # set our priority lower than the kid, so that we don't read each
+      # character. Experimentally, I've found 3 to be optimum on Linux 2.4.21
+      setpriority 0,0, (getpriority 0,0)+3;
    };
-   croak "Error starting octave interpreter: $@\n" if $@;
+   # ignore errors from setpriority if it's not available
+   croak "Can't locate octave interpreter: $@\n" if $@ =~ /Open3/i;
 
-#  my $select= IO::Select->new($Oout, $Oerr);
+   my $select= IO::Select->new($Oout, $Oerr);
+
+# New idea - start octave with 
+# use IPC::Run qw(start);
+#  my ($Oin, $Oout, $Oerr);
+#  my $pid;
+#  eval {
+#    $pid= start $octave_object->{INTERP}, \$Oin, \$Oout, \$Oerr
+#  };
+#  croak "Error starting octave interpreter: $@\n" if $@;
 
    $octave_object->{octave_pid} = $pid;
    $octave_object->{OCTIN} = $Oin;
@@ -345,29 +344,30 @@ sub interpret
    local $SIG{PIPE}= \&reap_interpreter;
 
 #  print STDERR "INTERP: $cmd\n";
-   $Oin = "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
+#  $Oin = "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
 #  $pid->pump() while length $Oin;
+   print $Oin "\n\n$cmd\ndisp('$marker');fflush(stdout);\n";
 
    my $input= '';
    my $marker_len= length( $marker )+1;
    while ( 1 ) {
-#     for my $fh ( $select->can_read() ) {
-#         if ($fh eq $Oerr) {
-#             process_errors();
-#         } else {
-#             sysread $fh, (my $line), 16386;
-#             $input.= $line;
-#             # delay if we're reading nothing, not sure why select doesn't block
-#             select undef, undef, undef, 0.5 unless $line;
-#         }
-#     }
-#     last if $input && substr( $input, -$marker_len, -1) eq $marker;
+      for my $fh ( $select->can_read() ) {
+          if ($fh eq $Oerr) {
+              process_errors();
+          } else {
+              sysread $fh, (my $line), 16386;
+              $input.= $line;
+              # delay if we're reading nothing, not sure why select doesn't block
+              select undef, undef, undef, 0.5 unless $line;
+          }
+      }
+      last if $input && substr( $input, -$marker_len, -1) eq $marker;
 
-      $pid->pump();
+#     $pid->pump();
 
       process_errors() if $Oerr;
 #     select undef, undef, undef, 0.5 unless $line;
-      last if substr( $Oout, -$marker_len, -1) eq $marker;
+#     last if substr( $Oout, -$marker_len, -1) eq $marker;
    }   
 
    # we need to leave octave blocked doing something,
@@ -448,11 +448,21 @@ sub run_math_code
 sub get_defined_functions
 {
    my $o = shift;
-   my $data= $o->interpret("whos('-functions')");
+   my $data= $o->interpret("who('-functions')");
    my @funclist;
-   while ( $data =~ /user(-defined|) function +- +- +(\w+)/g )
+   $compiled_fns_marker= 0;
+   while ( $data =~ /(.+)/g )
    {
-      push @funclist, $2;
+      my $line = $1;
+      if(       $line =~ /^\*\*\* .* compiled functions/ ) {
+         $compiled_fns_marker = 1;
+      } elsif ( $line =~ /^\*\*\* / ) {
+         $compiled_fns_marker = 0 ;
+      } elsif ( $line =~ /^[\w\s]+$/ && $compiled_fns_marker ) {
+         while( $line =~ /(\w+)/g ) { 
+             push @funclist, $1;
+         }
+      }
    }
    return @funclist;
 
@@ -1110,6 +1120,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.29  2005/03/07 21:45:15  aadler
+fixes for versions
+
 Revision 1.28  2005/03/07 20:20:45  aadler
 version accepts \d.\d\.cvs
 

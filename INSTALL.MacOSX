@@ -1,61 +1,34 @@
-This document describes how to install octave-forge on Mac OS X 10.2 running octave version 2.1.40 or 2.1.45 through 2.1.48.
+This document describes how to install octave-forge on Mac OS X 10.2/10.3 running octave version 2.1.40 -- 2.1.53.
 
-If you don't have a working install of octave a brief instructions to install octave follows next. A more detailed text can be found in extras/MacOSX/doc/.
+If you don't have a working[1] install  of octave, instructions how to install octave can be found at
+http://wiki.octave.org/wiki.pl?OctaveForMac
 
-Install OCTAVE on Mac OS X 10.2.x
-=================================
-1)  Get octave-2.1.48.tar.gz from http://www.octave.org/download.html
-
-2)  Make sure you have the following installed: Dec2002 (or later) DevTools, a working Fortran compiler, readline, and texinfo or tetex.
-
-3)  Unpack it and run './configure' _without_ arguments unless you know exactly what you are doing
-
-4)  Edit config.h so that the line: 
-
-    /* #undef HAVE_DYLD_API */
-
-instead reads:
-
-    #define HAVE_DYLD_API 1
-
-5) run 'make' followed by 'sudo make install'
-
-6) Test the setup by running 'mkoctfile hello.cc' in octave's examples directory.
-You should get a file hello.oct that can be run in octave
-
-
-Install OCTAVE-FORGE on Mac OS X 10.2.x
+Install OCTAVE-FORGE on Mac OS X 10.2/10.3
 =======================================
-0) The following instructions refer to octave-forge from CVS as of 2003-05-22
+The following instructions refer to octave-forge from CVS as of 2004-02-06
 
-1) Preparations
----------------
-Packages can be disabled by adding a file named NOINSTALL to the particular directory.
-
-Add NOINSTALL to extra/linear-algebra ('touch extra/linear-algebra/NOINSTALL')
-Add NOINSTALL to main/sparse ('touch main/sparse/NOINSTALL')
-
-Set PROGS to an empty string (i.e. 'PROGS =') in FIXES/Makefile (Can't override builtins on OSX, yet)
-
-2) Installation
+1) Installation
 ---------------
 Run './configure' (run './autogen.sh' first if you are working with CVS sources)
 Run 'make' and 'sudo make install'
 
-3) Post-install
+2) Post-install
 ---------------
-Add the paths specified in the install output to your ~/.octaverc file
+Add the paths specified in the install output to your ~/.octaverc file if necessary.
 
-4) Questions, feedback, improvements etc.
+3) Questions, feedback, improvements etc.
 ----------------
 Provide feedback. Just because something compiles and installs it isn't guaranteed to be sane...
-
-Make stuff work. Packages audio and sparse could probably be easily fixed.
-
-Add new stuff. 
+Make stuff work. main/audio/ could probably be easily fixed.
+Add more stuff. 
 
 Check the wiki page: 
-http://www.gnufans.net/octave.pl?ScaryOctave 
+http://wiki.octave.org/ 
 to see if your questions have been answered already, or to share knowledge.
 
+
+---
+[1] Test your setup by running 'mkoctfile hello.cc' in octave's examples directory.
+You should get a file hello.oct that can be run in octave.
+Relying on 'octave_config_info("dld")' is not safe on Mac OS X at present (2.1.53).
 

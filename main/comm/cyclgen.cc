@@ -32,6 +32,7 @@ Open Source Initiative (www.opensource.org)
 static bool
 do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m)
 {
+
   // Fast return since polynomial can't be even
   if (!(a & 1))
     return false;
@@ -42,6 +43,7 @@ do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m
     mask <<= 1;
     if (mask & ((unsigned long long)1<<m))
       mask ^= a;
+    mask &= n;
   }
 
   if (mask != 1) {
@@ -94,7 +96,7 @@ DEFUN_DLD (cyclgen, args, nargout,
 {
   octave_value_list retval;
   int nargin = args.length ();
-  int n = args(0).int_value ();
+  int n;
   unsigned long long p = 0;
   int m, k, mm;
   bool system = true;
@@ -104,16 +106,11 @@ DEFUN_DLD (cyclgen, args, nargout,
     return retval;
   }
 
+  n = args(0).int_value ();
   m = 1;
   while (n > (1<<(m+1)))
     m++;
 
-  if (n > (int)(sizeof(unsigned long long) << 3)) {
-    error("cyclgen: codeword length must be less than %d", 
-	  (sizeof(unsigned long long) << 3));
-    return retval;
-  }
-  
   if (args(1).is_scalar_type ()) {
     p = (unsigned long long)(args(1).int_value());
     mm = 1;
@@ -174,6 +171,7 @@ DEFUN_DLD (cyclgen, args, nargout,
     mask <<= 1;
     if (mask & ((unsigned long long)1<<mm))
       mask ^= p;
+    mask &= n;
   }
 
   Matrix parity(mm,n,0);

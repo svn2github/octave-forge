@@ -50,6 +50,7 @@ do_is_cyclic_polynomial (const unsigned long long& a, const int& n, const int& m
     mask <<= 1;
     if (mask & ((unsigned long long)1<<m))
       mask ^= a;
+    mask &= n;
   }
 
   if (mask != 1) {
@@ -112,12 +113,6 @@ DEFUN_DLD (cyclpoly, args, nargout,
 
   if (n <= k) {
     error("cyclpoly: k must be less than n");
-    return retval;
-  }
-
-  if (n > (int)(sizeof(unsigned long long) << 3)) {
-    error("cyclpoly: message and codeword length must be less than %d", 
-	  (sizeof(unsigned long long) << 3));
     return retval;
   }
 

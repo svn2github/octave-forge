@@ -178,7 +178,7 @@ DEFUN_DLD (primpoly, args, nargout,
     }
   }
 
-  if (nargin > 3) {
+  if (nargin < 1 || nargin > 3) {
     error ("primpoly: wrong number of arguments");
     return retval;
   }

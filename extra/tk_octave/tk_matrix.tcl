@@ -21,9 +21,9 @@ proc undefinedMatrix {} {
 
 # ****************** Create graphs ******************************
 
-grid [graph .matrix -height 350 -width 350] -row 0 -col 0 -sticky news
-grid [graph .yslice -width 150] -row 0 -col 1 -sticky news
-grid [graph .xslice -height 150] -row 1 -col 0 -sticky news
+grid [graph .matrix -height 350 -width 350] -row 0 -column 0 -sticky news
+grid [graph .yslice -width 150] -row 0 -column 1 -sticky news
+grid [graph .xslice -height 150] -row 1 -column 0 -sticky news
 grid rowconfigure    . 0 -weight 1 -minsize 150
 grid columnconfigure . 0 -weight 1 -minsize 150
 grid rowconfigure    . 1 -weight 0
@@ -58,20 +58,20 @@ image create photo matrix
 
 # ************** Define configurion control frame *****************
 
-grid [frame .options] -row 0 -col 2 -rowspan 2 -sticky ns
+grid [frame .options] -row 0 -column 2 -rowspan 2 -sticky ns
 grid columnconfigure . 2 -weight 0
 
 # Add colormap bar
 image create photo colorbar
 grid [graph .options.colorbar -height 150 -width 80] \
-   -row 0 -col 0 -rowspan 10 -sticky ns
+   -row 0 -column 0 -rowspan 10 -sticky ns
 .options.colorbar xaxis configure -hide yes
 
 # Add slice locator
 grid [label .options.slicelabel -text "Slice Coordinates:"] \
-	-col 1 -row 0 -sticky w
-grid [label .options.xvalue -text "X = 0"] -col 1 -row 1 -sticky w
-grid [label .options.yvalue -text "Y = 0"] -col 1 -row 2 -sticky w
+	-column 1 -row 0 -sticky w
+grid [label .options.xvalue -text "X = 0"] -column 1 -row 1 -sticky w
+grid [label .options.yvalue -text "Y = 0"] -column 1 -row 2 -sticky w
 
 # Add colormap chooser
 set colormapChoice {}
@@ -82,10 +82,10 @@ radiobutton .options.rainbow \
 radiobutton .options.custom \
 	-variable colormapChoice -text Default -value {}
 label .options.colormaplabel -text "Colormap Options:"
-grid .options.colormaplabel -col 1 -row 3 -sticky w
-grid .options.ocean   -col 1 -row 4 -sticky w
-grid .options.rainbow -col 1 -row 5 -sticky w
-grid .options.custom  -col 1 -row 6 -sticky w
+grid .options.colormaplabel -column 1 -row 3 -sticky w
+grid .options.ocean   -column 1 -row 4 -sticky w
+grid .options.rainbow -column 1 -row 5 -sticky w
+grid .options.custom  -column 1 -row 6 -sticky w
 bind .options.ocean <ButtonPress-1> {
     oct_cmd "tk_ocean = ocean(64);"
     set colormapChoice "-colormap tk_ocean"
@@ -277,9 +277,9 @@ proc createTable {} {
 	    -command { tableCommand %r %c %i %s } -usecommand true
     scrollbar .table.y -orient v -command [list .table.t yview]
     scrollbar .table.x -orient h -command [list .table.t xview]
-    grid .table.t -row 0 -col 0 -sticky news
-    grid .table.y -row 0 -col 1 -sticky ns
-    grid .table.x -row 1 -col -0 -sticky ew
+    grid .table.t -row 0 -column 0 -sticky news
+    grid .table.y -row 0 -column 1 -sticky ns
+    grid .table.x -row 1 -column 0 -sticky ew
     grid rowconfig    .table 0 -weight 1
     grid columnconfig .table 0 -weight 1
     grid rowconfig    .table 1 -weight 0

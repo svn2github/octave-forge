@@ -133,19 +133,31 @@ SPARSE: create a sparse matrix\n\
 \n\
 sparse can be called in the following ways:\n\
 \n\
-1: S = sparse(A), where 'A' is a full matrix\n\
+1: S = sparse(A)  where 'A' is a full matrix\n\
 \n\
-2: S = sparse(i,j,s,m,n,nzmax), where\n\
+2: S = sparse(i,j,s,m,n,nzmax)  where\n\
         i,j   are integer index vectors (1 x nnz)\n\
         s     is the vector of real or complex entries (1 x nnz)\n\
         m,n   are the scalar dimentions of S\n\
-        nzmax is ignored (for compatability with Matlab)\n\
+        nzmax is ignored (here for compatability with Matlab)\n\
 \n\
-3: S = sparse(i,j,s,m,n),     same as (2) above\n\
+        if more than two values are specified for the same i,j\n\
+        position, then the last specified value will be kept\n\
 \n\
-4: S=  sparse(i,j,s),         uses m=max(i), n=max(j)\n\
+3: S = sparse(i,j,s,m,n)            same as (2) above\n\
+  or\n\
+   S = sparse(i,j,s,m,n,'unique')   same as (2) above\n\
 \n\
-5: S=  sparse(m,n),           does sparse([],[],[],m,n,0)\n\
+4: S = sparse(i,j,s,m,n,'summation')\n\
+  or\n\
+   S = sparse(i,j,s,m,n,'sum')\n\
+        same as (2) above, except that rather than keeping\n\
+        the last specified value (for values specified with\n\
+        the same i,j), the specified values are added.\n\
+\n\
+5: S=  sparse(i,j,s)          uses m=max(i), n=max(j)\n\
+\n\
+6: S=  sparse(m,n)            does sparse([],[],[],m,n,0)\n\
 \n\
 s, and i or j may be scalars, in which case they are expanded\n\
 so they all have the same length ")
@@ -215,6 +227,7 @@ signal( SIGSEGV, SIG_DFL );
       int m=0,n=0;
       ColumnVector coefA, ridxA, cidxA;
       ComplexColumnVector coefAC;
+      int assemble_do_sum=0;
 
       if (nargin == 2) {
          m= (int) args(0).double_value();
@@ -227,7 +240,6 @@ signal( SIGSEGV, SIG_DFL );
 // 
 //  I use this clumsy construction so that we can use
 //  any orientation of args
-//
          { ColumnVector x( args(0).vector_value() ); ridxA= x; }
          { ColumnVector x( args(1).vector_value() ); cidxA= x; }
          if (use_complex) 
@@ -241,15 +253,33 @@ signal( SIGSEGV, SIG_DFL );
          } else {
             m= (int) args(3).double_value();
             n= (int) args(4).double_value();
+
+            if (nargin >= 6) {
+               // if args(5) is not string, then ignore the value
+               // otherwise check for summation or unique
+               if ( args(5).is_string()) {
+                  string vv= args(5).string_value();
+
+                  if ( vv== "summation" ||
+                       vv== "sum" ) 
+                     assemble_do_sum=1;
+                  else
+                  if ( vv== "unique" )
+                     assemble_do_sum=0;
+                  else
+                     SP_FATAL_ERR("sparse:must specify sum or unique");
+               }
+
+            }
          }
       }
 
       if (use_complex) 
          retval = new octave_complex_sparse (
-               assemble_sparse( n, m, coefAC, ridxA, cidxA ) );
+               assemble_sparse( n, m, coefAC, ridxA, cidxA, assemble_do_sum) );
       else
          retval = new octave_sparse (
-               assemble_sparse( n, m, coefA, ridxA, cidxA ) );
+               assemble_sparse( n, m, coefA, ridxA, cidxA, assemble_do_sum) );
    }
 
    return retval;
@@ -265,6 +295,10 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.4  2001/11/04 19:54:49  aadler
+ * fix bug with multiple entries in sparse creation.
+ * Added "summation" mode for matrix creation
+ *
  * Revision 1.3  2001/10/14 03:06:31  aadler
  * fixed memory leak in complex sparse solve
  * fixed malloc bugs for zero size allocs

@@ -652,6 +652,30 @@ end
    res(i)= res(i)    +all( all( asnew == acs ));
    i=i+1;      % i=170
 
+   % test sparse assembly using 'sum' or 'unique'
+   tf1= zeros(N,M);
+   tf2= zeros(N,M);
+   ts= sparse(N,M);
+   nn= mean([N,M]);
+   rr= floor(rand(5,nn)*N)+1;
+   cc= floor(rand(5,nn)*M)+1;
+   tf1( rr(:)+N*(cc(:)-1) ) =ones(5,nn);
+   for k=1:length(rr(:))
+      tf2( rr(k),cc(k) )+=1;
+   end
+
+
+   % test normal assembly
+   res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M) == tf1 ));
+   i=i+1;      % i=171
+
+   % test 'unique' assembly
+   res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M,'unique') == tf1 ));
+   i=i+1;      % i=172
+
+   % test 'sum' assembly
+   res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M,'sum') == tf2 ));
+   i=i+1;      % i=173
 
 end 
 
@@ -668,10 +692,14 @@ for i=find( res~= NTRIES)
 end           
 
 % clear up variables - so dmalloc works
-clear L* U* a* b* c* d* e* P*
+#clear L* U* a* b* c* d* e* P*
 
 %
 % $Log$
+% Revision 1.3  2001/11/04 19:54:49  aadler
+% fix bug with multiple entries in sparse creation.
+% Added "summation" mode for matrix creation
+%
 % Revision 1.2  2001/10/12 02:24:28  aadler
 % Mods to fix bugs
 % add support for all zero sparse matrices

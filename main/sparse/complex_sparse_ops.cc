@@ -1087,7 +1087,8 @@ DEFBINOP( cs_f_ldiv, complex_sparse, matrix)
 SuperMatrix assemble_sparse( int n, int m,
                              ComplexColumnVector& coefA,
                              ColumnVector& ridxA,
-                             ColumnVector& cidxA )
+                             ColumnVector& cidxA,
+                             int assemble_do_sum)
 {
    DEBUGMSG("complex_sparse - assemble_sparse");
    ASSEMBLE_SPARSE( Complex )
@@ -1341,6 +1342,10 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.4  2001/11/04 19:54:49  aadler
+ * fix bug with multiple entries in sparse creation.
+ * Added "summation" mode for matrix creation
+ *
  * Revision 1.3  2001/10/14 03:06:31  aadler
  * fixed memory leak in complex sparse solve
  * fixed malloc bugs for zero size allocs

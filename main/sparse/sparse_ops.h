@@ -19,6 +19,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.4  2001/11/04 19:54:49  aadler
+fix bug with multiple entries in sparse creation.
+Added "summation" mode for matrix creation
+
 Revision 1.3  2001/10/14 03:06:31  aadler
 fixed memory leak in complex sparse solve
 fixed malloc bugs for zero size allocs
@@ -241,28 +245,41 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    bool ci_scalar = (cidxA.length() == 1); \
    bool cf_scalar = (coefA.length() == 1); \
  \
-   sort_idxl idx[ nnz ]; \
+   sort_idxl sidx[ nnz ]; \
    for (int i=0; i<nnz; i++) { \
-      idx[i].val = (unsigned long) ( \
+      sidx[i].val = (long) ( \
                 ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1 + \
            m * (( ci_scalar ? cidxA(0) : cidxA(i) ) - 1) );  \
-      idx[i].idx = i; \
+      sidx[i].idx = i; \
    } \
  \
-   qsort( idx, nnz, sizeof(sort_idxl), sidxl_comp ); \
+   qsort( sidx, nnz, sizeof(sort_idxl), sidxl_comp ); \
     \
    int cx= 0; \
+   long prev_val=-1;  \
+   int ii= -1; \
    for (int i=0; i<nnz; i++) { \
-      unsigned long ii= (int) idx[i].idx; \
-      coefX[i]=      ( cf_scalar ? coefA(0) : coefA(ii) ); \
-      double ri  =   ( ri_scalar ? ridxA(0) : ridxA(ii) ) - 1 ; \
-      ridxX[i]= (int) (ri - ((int) (ri/m))*m ) ; \
-      int ci  = (int)( ci_scalar ? cidxA(0) : cidxA(ii) ) - 1 ; \
-      while( cx < ci ) cidxX[++cx]= i; \
+      long  idx= (long) sidx[i].idx; \
+      long  val= (long) sidx[i].val; \
+      if (prev_val < val) { \
+         ii++; \
+         coefX[ii]=      ( cf_scalar ? coefA(0) : coefA(idx) ); \
+         double ri  =   ( ri_scalar ? ridxA(0) : ridxA(idx) ) - 1 ; \
+         ridxX[ii]= (long) (ri - ((long) (ri/m))*m ) ; \
+         long ci  = (long)( ci_scalar ? cidxA(0) : cidxA(idx) ) - 1 ; \
+         while( cx < ci ) cidxX[++cx]= ii; \
+      } else { \
+         if (assemble_do_sum) \
+            coefX[ii]+=      ( cf_scalar ? coefA(0) : coefA(idx) ); \
+         else \
+            coefX[ii] =      ( cf_scalar ? coefA(0) : coefA(idx) ); \
+      } \
+      prev_val= val;\
    } \
-   while( cx < n ) cidxX[++cx]= nnz; \
+   while( cx < n ) cidxX[++cx]= ii+1; \
+   maybe_shrink( ii+1, nnz, ridxX, coefX ); \
  \
-   SuperMatrix X= create_SuperMatrix( m, n, nnz, coefX, ridxX, cidxX );
+   SuperMatrix X= create_SuperMatrix( m, n, ii+1, coefX, ridxX, cidxX );
 
 // assemble a sparse matrix from full
 //   called by one arg for sparse

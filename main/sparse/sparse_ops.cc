@@ -52,7 +52,8 @@ create_SuperMatrix( int nr, int nc, int nnz,
 SuperMatrix assemble_sparse( int n, int m,
                              ColumnVector& coefA,
                              ColumnVector& ridxA,
-                             ColumnVector& cidxA )
+                             ColumnVector& cidxA,
+                             int assemble_do_sum)
 {
    DEBUGMSG("sparse - assemble_sparse");
    ASSEMBLE_SPARSE( double )
@@ -1123,6 +1124,10 @@ sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.4  2001/11/04 19:54:49  aadler
+ * fix bug with multiple entries in sparse creation.
+ * Added "summation" mode for matrix creation
+ *
  * Revision 1.3  2001/10/14 03:06:31  aadler
  * fixed memory leak in complex sparse solve
  * fixed malloc bugs for zero size allocs

@@ -19,6 +19,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.3  2001/11/04 19:54:49  aadler
+fix bug with multiple entries in sparse creation.
+Added "summation" mode for matrix creation
+
 Revision 1.2  2001/10/12 02:24:28  aadler
 Mods to fix bugs
 add support for all zero sparse matrices
@@ -285,12 +289,14 @@ oct_sparse_verify_supermatrix( SuperMatrix X);
 SuperMatrix assemble_sparse( int n, int m,
                              ColumnVector& coefA,
                              ColumnVector& ridxA,
-                             ColumnVector& cidxA ) ;
+                             ColumnVector& cidxA,
+                             int assemble_do_sum);
 
 SuperMatrix assemble_sparse( int n, int m,
                              ComplexColumnVector& coefA,
                              ColumnVector& ridxA,
-                             ColumnVector& cidxA ) ;
+                             ColumnVector& cidxA,
+                             int assemble_do_sum);
 
 octave_value_list
 oct_sparse_inverse( const octave_sparse& A,

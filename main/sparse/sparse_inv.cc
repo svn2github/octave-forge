@@ -136,18 +136,18 @@ to be applied to the columns of A for sparsity. \n\
       
       if (nargout ==2 ) {
          octave_value PrT= new octave_sparse (
-               assemble_sparse( m, m, coefPr, ridxPr, cidxPr ) );
+               assemble_sparse( m, m, coefPr, ridxPr, cidxPr, 0 ) );
          octave_value Pc = new octave_sparse (
-               assemble_sparse( n, n, coefPc, cidxPc, ridxPc ) );
+               assemble_sparse( n, n, coefPc, cidxPc, ridxPc, 0 ) );
          retval(0)= PrT*LS;
          retval(1)= US*Pc ;
       } else
       if (nargout >2 ) {
          //build PS backwards to get the transpose
          octave_value Pr = new octave_sparse (
-               assemble_sparse( m, m, coefPr, cidxPr, ridxPr ) );
+               assemble_sparse( m, m, coefPr, cidxPr, ridxPr, 0 ) );
          octave_value Pc = new octave_sparse (
-               assemble_sparse( n, n, coefPc, cidxPc, ridxPc ) );
+               assemble_sparse( n, n, coefPc, cidxPc, ridxPc, 0 ) );
          retval(0)= LS;
          retval(1)= US;
          retval(2)= Pr;
@@ -217,9 +217,9 @@ oct_sparse_inverse( const octave_sparse& Asp,
    BUILD_PERM_VECTORS( ridxPc, cidxPc, coefPc, perm_c, n )
    
    octave_value Pr = new octave_sparse (
-         assemble_sparse( m, m, coefPr, cidxPr, ridxPr ) );
+         assemble_sparse( m, m, coefPr, cidxPr, ridxPr, 0 ) );
    octave_value PcT= new octave_sparse (
-         assemble_sparse( n, n, coefPc, ridxPc, cidxPc ) );
+         assemble_sparse( n, n, coefPc, ridxPc, cidxPc, 0 ) );
 
    SuperMatrix Lt= oct_sparse_transpose( L );
    SuperMatrix iL= sparse_inv_uppertriang( Lt );
@@ -264,9 +264,9 @@ oct_sparse_inverse( const octave_complex_sparse& Asp,
    BUILD_PERM_VECTORS( ridxPc, cidxPc, coefPc, perm_c, n )
    
    octave_value Pr = new octave_sparse (
-         assemble_sparse( m, m, coefPr, cidxPr, ridxPr ) );
+         assemble_sparse( m, m, coefPr, cidxPr, ridxPr, 0 ) );
    octave_value PcT= new octave_sparse (
-         assemble_sparse( n, n, coefPc, ridxPc, cidxPc ) );
+         assemble_sparse( n, n, coefPc, ridxPc, cidxPc, 0 ) );
 
    SuperMatrix Lt= oct_complex_sparse_transpose( L );
    SuperMatrix iL= complex_sparse_inv_uppertriang( Lt );
@@ -349,6 +349,10 @@ rather than
 
 /*
  * $Log$
+ * Revision 1.4  2001/11/04 19:54:49  aadler
+ * fix bug with multiple entries in sparse creation.
+ * Added "summation" mode for matrix creation
+ *
  * Revision 1.3  2001/10/14 03:06:31  aadler
  * fixed memory leak in complex sparse solve
  * fixed malloc bugs for zero size allocs

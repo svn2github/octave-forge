@@ -65,7 +65,8 @@ Help
  version 
 Variables
  who 
- whos 
+ whos
+ whos_line_format 
  workspace 
  clear 
  pack 
@@ -79,8 +80,10 @@ Variables
 Functions
  alias
  what 
- type 
+ type
+ isa 
  dispatch
+ dispatch_help
  edit 
  open 
  lookfor 
@@ -158,6 +161,9 @@ Display
  PS1 PS2 PS4 fixed_point_format
 Error Handling
  crash_dumps_octave_core
+ octave_core_file_format
+ octave_core_file_limit
+ octave_core_file_name
  beep_on_error
  debug_on_error
  debug_on_warning
@@ -273,7 +279,9 @@ Bit operations
  bitxor 
  bitset 
  bitget 
- bitshift 
+ bitshift
+ intmax
+ intmin 
 Sets
  union 
  unique create_set
@@ -320,10 +328,10 @@ Constants
  is_nan_or_na
 Symbol table
  exist
- exist(x,"var")=requires exist patch from $EG
  global = keyword: declare global variables in the current scope.
  isglobal
- persistent = use <f>static</f> 
+ static = Declare variables as persistent (depreciated, use persistent).
+ persistent
  mfilename 
  mlock 
  munlock 
@@ -424,8 +432,9 @@ Rearranging matrices
  triu 
  fliplr 
  flipud 
- flipdim= for <code>flipdim(A,1)</code> use <f>flipud</f><code>(A)</code> and for <code>flipdim(A,2)</code> use <f>fliplr</f><code>(A)</code> 
+ flipdim
  rot90 
+ rotdim
  repmat 
  diag 
  blkdiag 
@@ -625,7 +634,8 @@ Fourier analysis
  ifft2 
  ifftn 
  fftshift 
- ifftshift 
+ ifftshift
+ FFTW_WISDOM_PROGRAM
 Interpolation
  interp1 
  interpft 

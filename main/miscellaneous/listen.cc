@@ -26,7 +26,7 @@
 #include <octave/unwind-prot.h>
 
 // XXX FIXME XXX autoconf stuff
-#if defined(__sgi)
+#if 0 && defined(_sgi)
 typedef int socklen_t;
 #endif
 
@@ -127,7 +127,7 @@ static bool reads (const int channel, void * buf, int n)
     n -= chunk;
     // if (n == 0) STATUS("done reads loop");
     if (n == 0) return true;
-    (char *)buf += chunk;
+    buf = (void *)((char *)buf + chunk);
   }
 }
 
@@ -144,7 +144,7 @@ static bool writes (const int channel, const void * buf, int n)
     n -= chunk;
     // if (n == 0) STATUS("done writes loop");
     if (n == 0) return true;
-    (char *)buf += chunk;
+    buf = (void *)((char *)buf + chunk);
   }
 }
 

@@ -100,7 +100,7 @@ octave_complex_sparse::octave_complex_sparse (const octave_complex_sparse& S)
 }   
 
 octave_value *
-octave_complex_sparse::clone (void)
+octave_complex_sparse::clone (void) const
 {
    DEBUGMSG("complex_sparse - clone");
    return new octave_complex_sparse (*this);
@@ -192,16 +192,16 @@ octave_complex_sparse::numeric_conversion_function (void) const
 
 //idx_vector index_vector (void) const { return idx_vector ((double) iv); }
 
-octave_value octave_complex_sparse::any (void) const {
+octave_value octave_complex_sparse::any (int dim) const {
    DEBUGMSG("complex_sparse - any");
    ComplexMatrix M= oct_complex_sparse_to_full( X );
-   return M.any();
+   return M.any(dim);
 }
 
-octave_value octave_complex_sparse::all (void) const {
+octave_value octave_complex_sparse::all (int dim) const {
    DEBUGMSG("complex_sparse - all");
    ComplexMatrix M= oct_complex_sparse_to_full( X );
-   return M.all();
+   return M.all(dim);
 }
 
 bool octave_complex_sparse::is_defined    (void) const  { return true; }
@@ -357,7 +357,7 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
    else  
       ixl= ix.length(-1); 
 
-   sort_idx ixp[ ixl ];
+   OCTAVE_LOCAL_BUFFER (sort_idx, ixp, ixl );
    sort_with_idx (ixp, ix, ixl);
 
    ComplexColumnVector O( ixl );
@@ -404,7 +404,7 @@ sparse_index_twoidx ( SuperMatrix X,
    if (jx.is_colon() )      jxl= Xnc;
    else                     jxl= jx.length(-1); 
 
-   sort_idx ixp[ ixl ];
+   OCTAVE_LOCAL_BUFFER (sort_idx, ixp, ixl );
    sort_with_idx (ixp, ix, ixl);
 
    // extimate the nnz in the output matrix
@@ -414,7 +414,7 @@ sparse_index_twoidx ( SuperMatrix X,
    int    * ridxB = intMalloc   (nnz);
    int    * cidxB = intMalloc   (jxl+1);  cidxB[0]= 0;
 
-   Complex tcol[ixl];  // a column of the extracted matrix
+   OCTAVE_LOCAL_BUFFER (Complex, tcol, ixl );  // a column of the extracted matrix
 
    int cx= 0, ll=0;
    int ip= -Xnc; // previous column position
@@ -476,7 +476,7 @@ octave_complex_sparse::subsref( const std::string& type,
    octave_value_list retval;
    switch (type[0]) {
      case '(':
-       retval = do_index_op (idx.front ());
+       retval = do_index_op (idx.front (), 0);
        break;
 
      case '{':
@@ -498,7 +498,7 @@ octave_complex_sparse::subsref( const std::string& type,
 }
 
 octave_value
-octave_complex_sparse::do_index_op ( const octave_value_list& idx) 
+octave_complex_sparse::do_index_op ( const octave_value_list& idx, int resize_ok) 
 {
    DEBUGMSG("complex_sparse - index op");
    octave_value retval;
@@ -769,7 +769,7 @@ complex_sparse_complex_power (
      cidxB[i]=  cidxX[i];
 
   for ( int i=0; i< nnz; i++) {
-     coefB[i]=  pow (coefX[i] , c);
+     coefB[i]=  std::pow (coefX[i] , c);
      ridxB[i]=  ridxX[i];
   }
 
@@ -809,7 +809,7 @@ sparse_complex_power (
 
   for ( int i=0; i< nnz; i++) {
      Complex cv( coefX[i], 0 );
-     coefB[i]=  pow (cv , c);
+     coefB[i]=  std::pow (cv , c);
      ridxB[i]=  ridxX[i];
   }
 
@@ -1154,7 +1154,7 @@ DEFBINOP( s_cs_ldiv, sparse, complex_sparse) {
    DEBUGMSG("sparse - s_cs_ldiv");
    CAST_BINOP_ARGS ( const octave_sparse&, const octave_complex_sparse&);
    int n = v1.columns();
-   int perm_c[n];
+   OCTAVE_LOCAL_BUFFER (int, perm_c, n );
    int permc_spec=3;
    octave_value_list Si= oct_sparse_inverse( v1, perm_c, permc_spec );
    octave_value inv= Si(0)*Si(1)*Si(2)*Si(3);
@@ -1171,7 +1171,7 @@ DEFBINOP( cs_s_ldiv, complex_sparse, sparse) {
    CAST_BINOP_ARGS ( const octave_complex_sparse&, const octave_sparse&);
    SuperMatrix   B= v2.super_matrix(); DEFINE_SP_POINTERS_REAL( B )
    int n = v1.columns();
-   int perm_c[n];
+   OCTAVE_LOCAL_BUFFER (int, perm_c, n );
    int permc_spec=3;
    octave_value_list Si= oct_sparse_inverse( v1, perm_c, permc_spec );
    octave_value inv= Si(0)*Si(1)*Si(2)*Si(3);
@@ -1187,7 +1187,7 @@ DEFBINOP( cs_cs_ldiv, complex_sparse, complex_sparse) {
    CAST_BINOP_ARGS ( const octave_complex_sparse&, const octave_complex_sparse&);
    SuperMatrix   B= v2.super_matrix(); DEFINE_SP_POINTERS_CPLX( B )
    int n = v1.columns();
-   int perm_c[n];
+   OCTAVE_LOCAL_BUFFER (int, perm_c, n );
    int permc_spec=3;
    octave_value_list Si= oct_sparse_inverse( v1, perm_c, permc_spec );
    octave_value inv= Si(0)*Si(1)*Si(2)*Si(3);
@@ -1216,8 +1216,8 @@ do_cs_cf_ldiv( SuperMatrix A, ComplexMatrix& M )
       gripe_nonconformant ("operator \\", Anr, Anc, Bnr, Bnc);
    } else {
       int permc_spec = 3;
-      int perm_c[ Anc ];
-      int perm_r[ Anr ];
+      OCTAVE_LOCAL_BUFFER (int, perm_c, Anc );
+      OCTAVE_LOCAL_BUFFER (int, perm_r, Anr );
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
       assert (Anc == Bnr);
       SuperMatrix L,U,B;
@@ -1468,7 +1468,7 @@ complex_sparse_LU_fact(SuperMatrix A,
    int    info;
    int    panel_size = sp_ienv(1);
    int    relax      = sp_ienv(2);
-   int    etree[n];
+   OCTAVE_LOCAL_BUFFER (int, etree, n );
 
    BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
    SuperMatrix Ac;
@@ -1540,6 +1540,11 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.14  2003/02/20 23:03:58  pkienzle
+ * Use of "T x[n]" where n is not constant is a g++ extension so replace it with
+ * OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC
+ * compiler happy.
+ *
  * Revision 1.13  2003/01/03 05:49:20  aadler
  * mods to support 2.1.42
  *

@@ -19,6 +19,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.13  2003/02/20 23:03:59  pkienzle
+Use of "T x[n]" where n is not constant is a g++ extension so replace it with
+OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC
+compiler happy.
+
 Revision 1.12  2003/01/03 05:49:20  aadler
 mods to support 2.1.42
 
@@ -168,7 +173,7 @@ public:
   ~octave_complex_sparse (void);
    octave_complex_sparse (const octave_complex_sparse& S);
 
-   octave_value *clone (void) ;
+   octave_value *clone (void) const;
    octave_complex_sparse sparse_value (bool = false) const ;
    SuperMatrix   super_matrix (bool = false) const ;
 
@@ -180,8 +185,8 @@ public:
    bool is_defined (void) const ;
    bool is_real_scalar (void) const ;
 
-   octave_value any (void) const ;
-   octave_value all (void) const ;
+   octave_value any (int = 0) const ;
+   octave_value all (int = 0) const ;
 
    bool is_real_type (void) const;
    bool is_scalar_type (void) const;
@@ -199,7 +204,7 @@ public:
    octave_value_list subsref (const std::string& type,
                               const std::list<octave_value_list>& idx,
                               int nargout);
-   octave_value do_index_op ( const octave_value_list& idx);
+   octave_value do_index_op ( const octave_value_list& idx, int resize_ok);
    
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 
@@ -225,7 +230,7 @@ public:
   ~octave_sparse (void);
    octave_sparse (const octave_sparse& S);
 
-   octave_value *clone (void) ;
+   octave_value *clone (void) const;
    octave_sparse sparse_value (bool = false) const ;
    SuperMatrix   super_matrix (bool = false) const ;
 
@@ -239,8 +244,8 @@ public:
    bool is_defined (void) const ;
    bool is_real_scalar (void) const ;
 
-   octave_value any (void) const ;
-   octave_value all (void) const ;
+   octave_value any (int = 0) const ;
+   octave_value all (int = 0) const ;
 
    bool is_real_type (void) const;
    bool is_scalar_type (void) const;
@@ -259,7 +264,7 @@ public:
    octave_value_list subsref (const std::string& type,
                               const std::list<octave_value_list>& idx,
                               int nargout);
-   octave_value do_index_op ( const octave_value_list& idx);
+   octave_value do_index_op ( const octave_value_list& idx, int resize_ok);
 
    void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 

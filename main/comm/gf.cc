@@ -32,9 +32,9 @@ See the website http://www.ka9q.net/code/fec for more details.
 
 */
 
-#include <octave/utils.h>
 #include "galois.h"
 #include "ov-galois.h"
+#include <octave/utils.h>
 
 static bool galois_type_loaded = false;
 
@@ -1269,13 +1269,22 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
   int deg_lambda, el, deg_omega;
   int i, j, r, k;
   int q,tmp,num1,num2,den,discr_r;
-  int lambda[nroots+1], s[nroots];	/* Err Locator and syndrome poly */
-  int b[nroots+1], t[nroots+1], omega[nroots+1];
-  int root[nroots], reg[nroots+1], loc[nroots];
   int syn_error, count;
   int m = data.m();
   int n = data.n();
   int A0 = n;
+
+  /* Err Locator and syndrome poly */
+  OCTAVE_LOCAL_BUFFER(int,lambda,nroots+1);
+  OCTAVE_LOCAL_BUFFER(int,s,nroots);
+  
+  OCTAVE_LOCAL_BUFFER(int,b,nroots+1);
+  OCTAVE_LOCAL_BUFFER(int,t,nroots+1);
+  OCTAVE_LOCAL_BUFFER(int,omega,nroots+1);
+
+  OCTAVE_LOCAL_BUFFER(int,root,nroots);
+  OCTAVE_LOCAL_BUFFER(int,reg,nroots+1);
+  OCTAVE_LOCAL_BUFFER(int,loc,nroots);
 
   /* form the syndromes; i.e., evaluate data(x) at roots of g(x) */
   if (msb_first) {
@@ -1620,7 +1629,8 @@ DEFUN_DLD (rsdec, args, nargout,
       }
 
       // Find the roots of the generator polynomial
-      int roots[nroots], count = 0;
+      int count = 0;
+      OCTAVE_LOCAL_BUFFER(int, roots, nroots);
       for (int j=0; j <=nn; j++) {
 	// Evaluate generator polynomial at j
 	int val = genpoly.elem(0,0);

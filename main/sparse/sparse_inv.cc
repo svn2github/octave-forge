@@ -104,8 +104,8 @@ to be applied to the columns of A for sparsity. \n\
       if (m != n)
          SP_FATAL_ERR("splu: input matrix must be square");
  
-      int perm_c[n];
-      int perm_r[m];
+      OCTAVE_LOCAL_BUFFER (int, perm_c, n);
+      OCTAVE_LOCAL_BUFFER (int, perm_r, m);
       int permc_spec=3;
       if (nargin ==2) {
 
@@ -211,7 +211,7 @@ oct_sparse_inverse( const octave_sparse& Asp,
    int m= A.nrow;
    assert(n == m);
 
-   int perm_r[m];
+   OCTAVE_LOCAL_BUFFER (int, perm_r, m );
    sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
 
    BUILD_PERM_VECTORS( ridxPr, cidxPr, coefPr, perm_r, m )
@@ -258,7 +258,7 @@ oct_sparse_inverse( const octave_complex_sparse& Asp,
    int m= A.nrow;
    assert(n == m);
 
-   int perm_r[m];
+   OCTAVE_LOCAL_BUFFER (int, perm_r, m );
    complex_sparse_LU_fact( A, &L, &U, perm_c, perm_r, permc_spec);
 
    BUILD_PERM_VECTORS( ridxPr, cidxPr, coefPr, perm_r, m )
@@ -321,7 +321,7 @@ rather than\n\
    int n = args(0).columns();
    if (n != args(0).rows()) SP_FATAL_ERR("spinv: Input matrix must be square");
 
-   int perm_c[n];
+   OCTAVE_LOCAL_BUFFER (int, perm_c, n );
    int permc_spec=3;
 
    if (nargin ==2) {
@@ -413,6 +413,11 @@ SPINV : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.9  2003/02/20 23:03:58  pkienzle
+ * Use of "T x[n]" where n is not constant is a g++ extension so replace it with
+ * OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC
+ * compiler happy.
+ *
  * Revision 1.8  2002/12/25 01:33:00  aadler
  * fixed bug which allowed zero values to be stored in sparse matrices.
  * improved print output

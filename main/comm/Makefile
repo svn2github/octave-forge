@@ -48,8 +48,10 @@ $(GALOISLINKTARGETS) :
 SUFFIXES:
 SUFFIXES: .cc .oct .o .h
 
-ifneq (,$(wildcard *.d))
-include $(wildcard *.d)
+ifneq (clean,$(MAKECMDGOALS))
+  ifneq (,$(wildcard *.d))
+    include $(wildcard *.d)
+  endif
 endif
 
 %.oct : %.d %.o

@@ -19,6 +19,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.8  2003/02/20 23:03:59  pkienzle
+Use of "T x[n]" where n is not constant is a g++ extension so replace it with
+OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC
+compiler happy.
+
 Revision 1.7  2002/12/25 01:33:00  aadler
 fixed bug which allowed zero values to be stored in sparse matrices.
 improved print output
@@ -260,7 +265,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    bool ci_scalar = (cidxA.length() == 1); \
    bool cf_scalar = (coefA.length() == 1); \
  \
-   sort_idxl sidx[ nnz ]; \
+   OCTAVE_LOCAL_BUFFER (sort_idxl, sidx, nnz ); \
    int actual_nnz=0; \
    OCTAVE_QUIT; \
    for (int i=0; i<nnz; i++) { \
@@ -368,11 +373,10 @@ fixrow_comp( const void *i, const void *j)  \
 // }
 
 #define FIX_ROW_ORDER_FUNCTIONS \
-   int    nnz= NCFX->nnz; \
    for ( int i=0; i < Xnr ; i++) { \
       OCTAVE_QUIT; \
       assert( cidxX[i] >= 0.); \
-      assert( cidxX[i] <= nnz); \
+      assert( cidxX[i] <= NCFX->nnz); \
       assert( cidxX[i] <=  cidxX[i+1]); \
       int reorder=0; \
       for( int j= cidxX[i]; \
@@ -387,7 +391,7 @@ fixrow_comp( const void *i, const void *j)  \
       } /* for j */ \
       if(reorder) { \
          int snum= cidxX[i+1] - cidxX[i]; \
-         fixrow_sort arry[snum]; \
+         OCTAVE_LOCAL_BUFFER (fixrow_sort, arry, snum); \
          /* copy to the sort struct */ \
          for( int k=0, \
                   j= cidxX[i]; \

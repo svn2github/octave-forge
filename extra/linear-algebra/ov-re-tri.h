@@ -37,7 +37,7 @@ public:
    ~octave_tri(void);
    octave_tri (const octave_tri& D);
 
-   octave_value *clone (void) ;
+   octave_value *clone (void) const;
 
    type_conv_fcn numeric_conversion_function (void) const;
    octave_value * try_narrowing_conversion(void);

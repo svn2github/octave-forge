@@ -78,7 +78,7 @@ for details.\n\
     {
       subexpr += ( pattern[i] == '(' ? 1 : 0 );
     }
-  regmatch_t match[subexpr];
+  OCTAVE_LOCAL_BUFFER (regmatch_t, match, subexpr );
 
   // do the match
   if (regexec(&compiled, buffer.c_str(), subexpr, match, 0)==0) 

@@ -187,10 +187,10 @@ void install_gm_s_ops (void);
 void install_s_gm_ops (void);
 void install_fil_gm_ops (void);
 
-galois elem_pow (const galois& a, const galois& a);
-galois elem_pow (const galois& a, const Matrix& a);
-galois elem_pow (const galois& a, double a);
-galois elem_pow (const galois& a, int a);
+galois elem_pow (const galois& a, const galois& b);
+galois elem_pow (const galois& a, const Matrix& b);
+galois elem_pow (const galois& a, double b);
+galois elem_pow (const galois& a, int b);
 
 galois pow (const galois& a, const galois& b);
 galois pow (const galois& a, double b);

@@ -15,7 +15,7 @@ octave_tri::~octave_tri(void)
 {
 }
 
-octave_value *octave_tri::clone(void)
+octave_value *octave_tri::clone(void) const
 {
   return new octave_tri(*this);
 }

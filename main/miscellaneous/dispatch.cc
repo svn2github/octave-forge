@@ -317,4 +317,6 @@ List dispatch functions\n\
 }
 
 
+#if defined(__GNUG__)
 template std::map<std::string,std::string>;
+#endif

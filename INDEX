@@ -335,7 +335,7 @@ Function arguments
  nargout 
  varargin
  varargout
- inputname= use <f>deblank</f><code>(argn(i,:))</code>
+ inputname
  fcnchk 
  read_options
  va_start va_arg vr_val

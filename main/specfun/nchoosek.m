@@ -1,5 +1,4 @@
-## Copyright (C) 2001 Rolf Fabian
-## Copyright (C) 2001 Paul Kienzle
+## Copyright (C) 2001 Rolf Fabian, Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,14 +14,14 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##USAGE c = nchoosek ( n,k )
-##      return binominal coefficient  c = n! / (k! * (n-k)!)
+## c = nchoosek ( n,k )
+##    Compute the binominal coefficient C(n,k) = n! / (k! (n-k)!)
 ##
-##      A = nchoosek ( v,k )
-##      generate all combinations of the elements of vector v
-##      taken k at a time, one row per combination. The resulting
-##      A has size [nchoosek(n,k), k], where n is the length of v
-##
+## A = nchoosek ( v,k )
+##    Generate all combinations of the elements of vector v
+##    taken k at a time, one row per combination. The resulting
+##    A has size [nchoosek(n,k), k], where n is the length of v.
+
 ##AUTHORS Rolf Fabian  <fabian@tu-cottbus.de>
 ##        Paul Kienzle <pkienzle@users.sf.net>
 
@@ -52,6 +51,3 @@ function A = nchoosek(v,k)
   endif
 
 endfunction
-
-
-

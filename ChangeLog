@@ -1,7 +1,391 @@
 # Automatically generated file --- DO NOT EDIT
+2002-05-09 09:20  pkienzle
+
+	* extra/tsa/flix.m: remove do_fortran_indexing dependency 
+
+2002-05-09 08:21  schloegl
+
+	* extra/tsa/flix.m: Fortran indexing implemented, otherwise it
+	would not work for matrixces 
+
+2002-05-09 06:36  pkienzle
+
+	* batch_test.m, interact_test.m: more tests, fix tests 
+
+2002-05-09 00:08  pkienzle
+
+	* main/plot/Makefile: make sure graphics.o is getting linked in 
+
+2002-05-08 23:40  pkienzle
+
+	* main/miscellaneous/edit.m: Missing ; on default email causes
+	initialization to print 
+
+2002-05-08 23:38  pkienzle
+
+	* FIXES/: tril.m, triu.m: Add GPL required change notice; fixes
+	tril function name 
+
+2002-05-07 12:14  etienne
+
+	* main/optim/: minimize.m, test_minimize_1.m: add 'ndiff' option 
+
+2002-05-07 11:35  pkienzle
+
+	* Makeconf.base, configure.base: Grab all flags from mkoctfile
+	(correctly this time) 
+
+2002-05-07 11:34  pkienzle
+
+	* autogen.sh: Show values of prefix and exec_prefix in configure
+	summary 
+
+2002-05-07 11:30  pkienzle
+
+	* extra/tsa/Makefile: Install the NaN dependencies by hand in case
+	NaN has NOINSTALL set 
+
+2002-05-06 12:20  schloegl
+
+	* extra/: NaN/INSTALL, NaN/README.TXT, NaN/center.m,
+	NaN/coefficient_of_variation.m, NaN/cor.m, NaN/corrcoef.m,
+	NaN/cov.m, NaN/covm.m, NaN/detrend.m,
+	NaN/flag_implicit_dimension.m, NaN/flag_implicit_skip_nan.m,
+	NaN/flag_implicit_unbiased_estim.m, NaN/geomean.m, NaN/harmmean.m,
+	NaN/kurtosis.m, NaN/mad.m, NaN/mean.m, NaN/meandev.m, NaN/meansq.m,
+	NaN/median.m, NaN/moment.m, NaN/nantest.m, NaN/rms.m, NaN/sem.m,
+	NaN/skewness.m, NaN/statistic.m, NaN/std.m, NaN/sumskipnan.m,
+	NaN/var.m, NaN/zscore.m, tsa/README.TXT, tsa/aar.m, tsa/ac2poly.m,
+	tsa/ac2rc.m, tsa/acorf.m, tsa/acovf.m, tsa/ar2poly.m, tsa/ar2rc.m,
+	tsa/ar_spa.m, tsa/arcext.m, tsa/arfit2.m, tsa/biacovf.m,
+	tsa/bisdemo.m, tsa/bispec.m, tsa/content.m, tsa/contents.m,
+	tsa/detrend.m, tsa/durlev.m, tsa/flag_implicit_samplerate.m,
+	tsa/flix.m, tsa/histo3.m, tsa/hup.m, tsa/invest0.m, tsa/invest1.m,
+	tsa/invfdemo.m, tsa/lattice.m, tsa/lpc.m, tsa/mvar.m,
+	tsa/mvfilter.m, tsa/parcor.m, tsa/poly2ac.m, tsa/poly2ar.m,
+	tsa/poly2rc.m, tsa/quantiles.m, tsa/rc2ac.m, tsa/rc2ar.m,
+	tsa/rc2poly.m, tsa/sbispec.m, tsa/selmo.m, tsa/sinvest1.m,
+	tsa/tsademo.m, tsa/ucp.m, tsa/y2res.m: <CR>/<LF> corrected by
+	DOS2UNIX - finally 
+
+2002-05-06 11:45  schloegl
+
+	* extra/NaN/center.m: function name corrected 
+
+2002-05-06 11:38  schloegl
+
+	* extra/: NaN/center.m, NaN/INDEX, NaN/INSTALL, NaN/README.TXT,
+	NaN/coefficient_of_variation.m, NaN/cor.m, NaN/corrcoef.m,
+	NaN/cov.m, NaN/covm.m, NaN/detrend.m,
+	NaN/flag_implicit_dimension.m, NaN/flag_implicit_skip_nan.m,
+	NaN/flag_implicit_unbiased_estim.m, NaN/geomean.m, NaN/harmmean.m,
+	NaN/kurtosis.m, NaN/mad.m, NaN/mean.m, NaN/meandev.m, NaN/meansq.m,
+	NaN/median.m, NaN/moment.m, NaN/nantest.m, NaN/rms.m, NaN/sem.m,
+	NaN/skewness.m, NaN/statistic.m, NaN/std.m, NaN/sumskipnan.m,
+	NaN/var.m, NaN/zscore.m, tsa/INDEX, tsa/README.TXT, tsa/aar.m,
+	tsa/ac2poly.m, tsa/ac2rc.m, tsa/acorf.m, tsa/acovf.m,
+	tsa/ar2poly.m, tsa/ar2rc.m, tsa/ar_spa.m, tsa/arcext.m,
+	tsa/arfit2.m, tsa/biacovf.m, tsa/bisdemo.m, tsa/bispec.m,
+	tsa/content.m, tsa/contents.m, tsa/detrend.m, tsa/durlev.m,
+	tsa/flag_implicit_samplerate.m, tsa/flix.m, tsa/histo3.m,
+	tsa/hup.m, tsa/invest0.m, tsa/invest1.m, tsa/invfdemo.m,
+	tsa/lattice.m, tsa/lpc.m, tsa/mvar.m, tsa/mvfilter.m, tsa/parcor.m,
+	tsa/poly2ac.m, tsa/poly2ar.m, tsa/poly2rc.m, tsa/quantiles.m,
+	tsa/rc2ac.m, tsa/rc2ar.m, tsa/rc2poly.m, tsa/sbispec.m,
+	tsa/selmo.m, tsa/sinvest1.m, tsa/tsademo.m, tsa/ucp.m, tsa/y2res.m: 
+	<CR>/<LF> corrected by DOS2UNIX; this should really work now 
+
+2002-05-06 11:06  schloegl
+
+	* extra/NaN/center.m: <CR>/<LF> corrected by DOS2UNIX; this should
+	really work now 
+
+2002-05-06 09:48  schloegl
+
+	* extra/: tsa/INDEX, tsa/README.TXT, tsa/aar.m, tsa/ac2poly.m,
+	tsa/ac2rc.m, tsa/acorf.m, tsa/acovf.m, tsa/ar2poly.m, tsa/ar2rc.m,
+	tsa/ar_spa.m, tsa/arcext.m, tsa/arfit2.m, tsa/biacovf.m,
+	tsa/bisdemo.m, tsa/bispec.m, tsa/content.m, tsa/contents.m,
+	tsa/detrend.m, tsa/durlev.m, tsa/flag_implicit_samplerate.m,
+	tsa/flix.m, tsa/histo3.m, tsa/hup.m, tsa/invest0.m, tsa/invest1.m,
+	tsa/invfdemo.m, tsa/lattice.m, tsa/lpc.m, tsa/mvar.m,
+	tsa/mvfilter.m, tsa/parcor.m, tsa/poly2ac.m, tsa/poly2ar.m,
+	tsa/poly2rc.m, tsa/quantiles.m, tsa/rc2ac.m, tsa/rc2ar.m,
+	tsa/rc2poly.m, tsa/sbispec.m, tsa/selmo.m, tsa/sinvest1.m,
+	tsa/tsademo.m, tsa/ucp.m, tsa/y2res.m, NaN/INDEX, NaN/INSTALL,
+	NaN/README.TXT, NaN/center.m, NaN/coefficient_of_variation.m,
+	NaN/cor.m, NaN/corrcoef.m, NaN/cov.m, NaN/covm.m, NaN/detrend.m,
+	NaN/flag_implicit_dimension.m, NaN/flag_implicit_skip_nan.m,
+	NaN/flag_implicit_unbiased_estim.m, NaN/geomean.m, NaN/harmmean.m,
+	NaN/kurtosis.m, NaN/mad.m, NaN/mean.m, NaN/meandev.m, NaN/meansq.m,
+	NaN/median.m, NaN/moment.m, NaN/nantest.m, NaN/rms.m, NaN/sem.m,
+	NaN/skewness.m, NaN/statistic.m, NaN/std.m, NaN/sumskipnan.m,
+	NaN/var.m, NaN/zscore.m: <CR>/<LF> corrected 
+
+2002-05-06 00:38  pkienzle
+
+	* main/signal/decimate.m: Set filter cutoff at a lower frequency in
+	IIR case so that you get less aliasing.  
+
+2002-05-02 14:34  schloegl
+
+	* extra/NaN/: README.TXT, cor.m, corrcoef.m, cov.m, covm.m, INDEX: 
+	COV, COR and CORRCOEF included 
+
+2002-05-02 14:23  schloegl
+
+	* extra/NaN/: README.TXT, covm.m: docu and minor changes 
+
+2002-05-02 14:22  schloegl
+
+	* extra/NaN/coefficient_of_variation.m: using SSQ (3rd argout) from
+	sumskipnan -> this should be faster 
+
+2002-05-02 14:19  schloegl
+
+	* extra/tsa/durlev.m: durlev included 
+
+2002-05-02 12:12  pkienzle
+
+	* main/symbolic/: differentiate.cc, probably_prime.cc,
+	sym-create.cc, sym-ops.h, symbols.cc, symbols.h: use
+	std::exception; make error blocks consistent in spacing, etc.  
+
+2002-05-02 12:10  pkienzle
+
+	* extra/tsa/sinvest1.m: don't do axis twiddling in octave 
+
+2002-05-02 11:09  pkienzle
+
+	* main/symbolic/: ov-ex-mat.cc, ov-ex-mat.h, ov-ex.cc, ov-ex.h,
+	ov-relational.cc, ov-relational.h, ov-sym.cc, ov-sym.h, ov-vpa.cc,
+	ov-vpa.h: Use std::ostream 
+
+2002-05-01 14:19  etienne
+
+	* main/optim/: fminunc.m, optimset.m, test_fminunc_1.m: Add m*tlab
+	compatibility functions 
+
+2002-05-01 14:00  etienne
+
+	* main/optim/: minimize.m, test_minimize_1.m: Accept struct or list
+	of options 
+
+2002-04-30 22:19  aadler
+
+	* extra/perl/: Octave.pm, t/9_types.t: Initial work to add
+	Inline::Octave::ComplexMatrix 
+
+2002-04-30 06:19  schloegl
+
+	* extra/NaN/: var.m, zscore.m: bug fixed 
+
+2002-04-30 02:30  schloegl
+
+	* extra/NaN/: covm.m, meansq.m, rms.m, var.m, zscore.m: use 3rd
+	output argument SSQ of SUMSKIPNAN -> increase computational speed 
+
+2002-04-30 01:57  schloegl
+
+	* extra/NaN/zscore.m: use 3rd output argument of SUMSKIPNAN -> more
+	efficient computation 
+
+2002-04-30 01:21  schloegl
+
+	* extra/NaN/sem.m: cosmetic changes 
+
+2002-04-29 13:48  schloegl
+
+	* extra/NaN/statistic.m: using third output argument of sumskipnan
+	-> slightly faster 
+
+2002-04-29 13:38  schloegl
+
+	* extra/NaN/sumskipnan.m: docu improved and corrected, some
+	cosmetics 
+
+2002-04-29 13:10  pkienzle
+
+	* main/general/repmat.m: Use kron since it is faster than
+	constructing index vectors.  
+
+2002-04-29 13:06  schloegl
+
+	* extra/tsa/: mvar.m, mvfilter.m: docu improved and corrected, some
+	cosmetics 
+
+2002-04-29 12:44  schloegl
+
+	* extra/tsa/arfit2.m: docu modified 
+
+2002-04-29 12:31  schloegl
+
+	* extra/NaN/sem.m: more efficient calculations using SSQ from
+	sumskipnan; 2nd output argument gives MEAN; docu improved 
+
+2002-04-29 12:09  schloegl
+
+	* extra/NaN/sumskipnan.m: additional output arguments included (2nd
+	and 4th moment) 
+
+2002-04-29 10:43  pkienzle
+
+	* release.sh: Update main/miscellaneous/OCTAVE_FORGE_VERSION.m each
+	release.  
+
+2002-04-29 10:19  pkienzle
+
+	* main/geometry/configure.add: Clear conftest* after testing for
+	libqhull 
+
+2002-04-29 09:57  pkienzle
+
+	* main/sparse/Makefile: Restore CPICFLAG definition Get OCTAVE from
+	OCTAVE_FORGE if compiling within octave-forge 
+
+2002-04-29 09:56  pkienzle
+
+	* main/audio/sound.m: Use ssh rather than rsh for remote playback 
+
+2002-04-28 15:57  etienne
+
+	* main/optim/: minimize.m, test_minimize_1.m: new jac, hess and
+	ihess options 
+
+2002-04-28 15:57  etienne
+
+	* main/miscellaneous/read_options.m: fix bug when 1 option is
+	substring of other 
+
+2002-04-27 08:02  etienne
+
+	* main/optim/: bfgs.m, bs_gradient2.m, test_cg_min_1.m,
+	test_cg_min_2.m, test_cg_min_3.m, test_cg_min_4.m: Change API:
+	default=num. deriv, accept other ways of differentiating 
+
+2002-04-26 07:54  pkienzle
+
+	* main/plot/Makefile: fix gtext, etc., build 
+
+2002-04-26 07:54  pkienzle
+
+	* main/image/: Makeconf.add, Makefile, configure.add: Check for
+	libjpeg during configure.  
+
+2002-04-26 06:33  pkienzle
+
+	* batch_test.m, interact_test.m: More tests 
+
+2002-04-25 12:34  schloegl
+
+	* extra/tsa/ar2poly.m: erroneous <CR> corrected 
+
+2002-04-24 17:02  rlaboiss
+
+	* nonfree/gpc/debian/: changelog, control: New Debian release 
+
+2002-04-24 06:37  pkienzle
+
+	* extra/Windows/isunix.m: windows is not unix 
+
+2002-04-24 06:37  pkienzle
+
+	* batch_test.m: add ellipj suppress optimization tests (too many
+	failures) 
+
+2002-04-24 06:35  pkienzle
+
+	* doc/octave-forge-home.html: add cat. index link 
+
+2002-04-24 06:34  pkienzle
+
+	* extra/testfun/assert.m: use tol > 0 for relative tolerance 
+
+2002-04-24 06:33  pkienzle
+
+	* main/miscellaneous/read_options.m: prototype didn't match file
+	name 
+
+2002-04-23 17:36  pkienzle
+
+	* main/strings/: INDEX, base64encode.m: Add base64 encoding routine 
+
+2002-04-23 17:21  pkienzle
+
+	* main/specfun/: test_ellipj.m, test_sncndn.m: new files 
+
+2002-04-23 17:18  pkienzle
+
+	* main/optim/test_wpolyfit.m: new file 
+
+2002-04-22 18:02  pkienzle
+
+	* main/geometry/: __voronoi__.cc, delaunayn.cc: Don't use cerr 
+
+2002-04-22 18:00  pkienzle
+
+	* main/optim/lp.cc: use more conventional octave error handling 
+
+2002-04-22 17:36  pkienzle
+
+	* INSTALL: Add "make check" to the installation instructions 
+
+2002-04-22 17:34  pkienzle
+
+	* Makeconf.base, Makefile, batch_test.m, configure.base: Primitive
+	test suite 
+
+2002-04-22 17:33  pkienzle
+
+	* INDEX: now have dos and unix functions 
+
+2002-04-22 17:32  pkienzle
+
+	* main/geometry/convhulln.cc: don't use cerr for warning messages 
+
+2002-04-22 17:31  pkienzle
+
+	* main/signal/INDEX: added gausswin 
+
+2002-04-22 17:30  pkienzle
+
+	* main/signal/triang.m: Peak value of 1 at virtual 0 for even n 
+
+2002-04-22 17:25  pkienzle
+
+	* extra/testfun/assert.m: use argn to print arguments to assert 
+
+2002-04-22 11:16  pkienzle
+
+	* main/signal/: gaussian.m, gausswin.m: gaussian was returning an
+	asymmetric window gausswin uses a matlab-compatible interface 
+
+2002-04-22 09:29  pkienzle
+
+	* FIXES/: lin2mu.m, mu2lin.m: brown paper bag: put # back in front
+	of the line restore symmetric behaviour 
+
+2002-04-22 09:23  pkienzle
+
+	* main/image/: jpgread.cc, jpgwrite.cc: Use std::string 
+
+2002-04-21 09:35  etienne
+
+	* main/optim/: bfgs.m, line_min.m: small fixes in doc 
+
+2002-04-21 04:43  etienne
+
+	* main/optim/: minimize.m, test_cg_min_1.m, test_cg_min_2.m,
+	test_cg_min_3.m, test_cg_min_4.m, test_minimize_1.m: use bfgs
+	rather than cg_min 
+
+2002-04-21 04:41  etienne
+
+	* main/optim/bfgs.m: new interface 
+
 2002-04-20 18:10  pkienzle
 
-	* ChangeLog: $TAG release 
+	* ChangeLog, ChangeLog: $TAG release 
 
 2002-04-20 18:09  pkienzle
 

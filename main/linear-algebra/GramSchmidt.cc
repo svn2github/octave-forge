@@ -1,5 +1,5 @@
-#include <iostream.h>
-#include <math.h>
+#include <iostream>
+#include <cmath>
 
 #include <octave/oct.h>
 

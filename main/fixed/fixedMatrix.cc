@@ -404,7 +404,7 @@ FixedMatrix concat (const FixedMatrix& ra, const FixedMatrix& rb,
 		    const Array<int>& ra_idx)
 {
   FixedMatrix retval (ra);
-  if (ra.numel() > 0)
+  if (rb.numel() > 0)
     retval.insert (rb, ra_idx(0), ra_idx(1));
   return retval;
 }

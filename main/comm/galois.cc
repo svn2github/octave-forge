@@ -229,7 +229,7 @@ galois  galois::index (idx_vector& i, idx_vector& j, int resize_ok,
 galois concat (const galois& ra, const galois& rb, const Array<int>& ra_idx)
 {
   galois retval (ra);
-  if (ra.numel() > 0)
+  if (rb.numel() > 0)
     retval.insert (rb, ra_idx(0), ra_idx(1));
   return retval;
 }

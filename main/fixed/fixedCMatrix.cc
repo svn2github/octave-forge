@@ -652,7 +652,7 @@ FixedComplexMatrix concat (const FixedComplexMatrix& ra,
 			   const Array<int>& ra_idx)
 {
   FixedComplexMatrix retval (ra);
-  if (ra.numel() > 0)
+  if (rb.numel() > 0)
     retval.insert (rb, ra_idx(0), ra_idx(1));
   return retval;
 }
@@ -663,7 +663,7 @@ FixedComplexMatrix concat (const FixedComplexMatrix& ra,
 {
   FixedComplexMatrix retval (ra);
   FixedComplexMatrix tmp (rb);
-  if (ra.numel() > 0)
+  if (rb.numel() > 0)
     retval.insert (tmp, ra_idx(0), ra_idx(1));
   return retval;
 }
@@ -673,7 +673,7 @@ FixedComplexMatrix concat (const FixedMatrix& ra,
 			   const Array<int>& ra_idx)
 {
   FixedComplexMatrix retval (ra);
-  if (ra.numel() > 0)
+  if (rb.numel() > 0)
     retval.insert (rb, ra_idx(0), ra_idx(1));
   return retval;
 }

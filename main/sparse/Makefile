@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.6  2002/03/17 18:23:57  aadler
+# bug with function prototypes
+#
 # Revision 1.5  2002/02/19 21:21:48  aadler
 # Modifications to _dtrsv stub to compile.
 # Modifications to makefile to define AR and RANLIB
@@ -127,7 +130,8 @@ SUPERLU  =   SuperLU
 OCTVER   =  # -2.1.32
 OCTAVE   =   octave$(OCTVER)
 ifndef MKOCTFILE
-MKOCTFILE=   mkoctfile$(OCTVER)
+#MKOCTFILE= mkoctfile-gcc3-2.1.35 -v
+ MKOCTFILE=   mkoctfile$(OCTVER)
 endif
 ifndef AR
 AR= ar

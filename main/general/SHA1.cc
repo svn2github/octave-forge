@@ -9,6 +9,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2002/03/17 18:23:57  aadler
+ * bug with function prototypes
+ *
  * Revision 1.1  2002/03/17 02:39:44  aadler
  * SHA1 secure hash function
  *
@@ -29,9 +32,12 @@ typedef struct {
     unsigned char buffer[64];
 } hash_context;
 
-void hash_initial( hash_context * c );
-void hash_process( hash_context * c, unsigned char * data, unsigned len );
-void hash_final( hash_context * c, unsigned long[HW] );
+static void
+hash_initial( hash_context * c );
+static void
+hash_process( hash_context * c, unsigned char * data, unsigned len );
+static void
+hash_final( hash_context * c, unsigned long[HW] );
 
 DEFUN_DLD (SHA1, args, ,
   "hash = SHA1 (...)

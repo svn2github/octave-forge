@@ -22,7 +22,8 @@
 ## See also: hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz
 ##           hadamard, rosser, compan, pascal
 
-## Author: peda
+## Author: Peter Ekberg
+##         (peda)
 
 function retval = wilkinson (n)
 

@@ -22,7 +22,7 @@
 ## Set the current plot window to plot window N.  This function
 ## currently requires X11 and a recent version of gnuplot.
 
-## Author: jwe
+## Author: John W. Eaton
 
 ## Modified: http://www.che.wisc.edu/octave/mailing-lists/octave-sources/1999/97
 

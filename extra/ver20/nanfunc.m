@@ -2,11 +2,11 @@
 ## 'which_func' to non-NaN values of 'a_matrix' columnwise, returning
 ## 'default_for_func' if all values are NaN.
 
-## Copyright (C) 2000 Daniel Calvelo Aros
+## Copyright (C) 2000 Daniel Calvelo Aros 
 ## 
 ## Do what you want with this code. No warranty whatsoever.
 ##
-## Author:  DCA (dcalvelo@phare.univ-lille2.fr)
+## Author:  Daniel Calvelo Aros <dcalvelo@phare.univ-lille2.fr>
 ## Description:  Generic function caller for dealing with NaNs as
 ##               missing data
 

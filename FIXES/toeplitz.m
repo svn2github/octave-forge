@@ -55,7 +55,7 @@
 ## @end deftypefn
 ## @seealso{hankel, vander, sylvester_matrix, hilb, and invhib}
 
-## Author: jwe
+## Author: John W. Eaton
 ## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    vectorized for speed
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1999 David M. Doolin 
+## Copyright (C) 1999 David M. Doolin <doolin@ce.berkeley.edu>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 ##        traversing the vertices doesn't make any sides cross 
 ##        (Is simple closed curve the technical definition of this?). 
 
-## Author: doolin $  doolin@ce.berkeley.edu
+## Author: David M. Doolin <doolin@ce.berkeley.edu>
 ## Date: 1999/04/14 15:52:20 $
 ## Modified-by: 
 ##    2000-01-15 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

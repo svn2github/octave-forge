@@ -28,7 +28,8 @@
 ## See also: hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz
 ##           hadamard, wilkinson, rosser, compan
 
-## Author: peda
+## Author: Peter Ekberg
+##         (peda)
 
 function retval = pascal (n, t)
 

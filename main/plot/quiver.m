@@ -31,7 +31,7 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
-## Author: Roberto A. F. Almeida (roberto@calvin.ocfis.furg.br)
+## Author: Roberto A. F. Almeida <roberto@calvin.ocfis.furg.br>
 ## 2001-02-25 Paul Kienzle
 ##     * change parameter order to correspond to matlab
 ##     * allow vector x,y,  defaulting to 1:n, 1:m for mxn u

@@ -33,7 +33,7 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
-## Author: jwe
+## Author: John W. Eaton
 ## 2001-04-02  Laurent Mazet <mazet@crm.mot.com>
 ##     * add support for semilog[xy] and loglog minor grid.
 ##     * add mode feature (suggested by Paul Kienzle).

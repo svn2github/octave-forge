@@ -2,7 +2,7 @@
 ## given a polygon defined by xyz
 ## octave fake surface fill
 
-## Author: Sam Sirlin, 2000
+## Copyright (c) 2000 Sam Sirlin
 ## This program is granted to the public domain.
 ##
 ## THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND

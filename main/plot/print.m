@@ -1,4 +1,5 @@
-## Copyright (C) 1999 Daniel Heiserer, Copyright (C) 2001 Laurent Mazet
+## Copyright (C) 1999 Daniel Heiserer
+## Copyright (C) 2001 Laurent Mazet
 ##
 ## This program is free software; it is distributed in the hope that it
 ## will be useful, but WITHOUT ANY WARRANTY; without even the implied

@@ -68,7 +68,8 @@
 ##
 ## @end deftypefn
 
-## Author: jwe ???
+## Author: John W. Eaton
+##         (authorship uncertain?)
 ## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    matlab compatible interface
 

@@ -34,7 +34,7 @@
 ##
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 15 October 1994
 ## Adapted-By: jwe
 

@@ -27,7 +27,7 @@
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
-## Author: jwe
+## Author: John W. Eaton
 ## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    matlab compatible interface
 

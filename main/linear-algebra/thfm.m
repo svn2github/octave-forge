@@ -19,7 +19,8 @@
 %	EVEN IF input matrix x IS NOT DIAGONALIZABLE
 %
 %ASSOC	expm, sqrtm, logm, funm
-%AUTHOR	(C) 2001 Rolf Fabian <fabian@tu-cottbus.de> 010213
+% Copyright	(C) 2001 Rolf Fabian <fabian@tu-cottbus.de>
+% 010213
 %	published under current GNU GENERAL PUBLIC LICENSE
 
 % 2001-03-15 Paul Kienzle

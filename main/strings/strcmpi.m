@@ -23,7 +23,7 @@
 ## returns 1 if the strings are equal, and 0 otherwise.  This is
 ## just the opposite of the corresponding C library function.
 
-## Author: Bill Lash (lash@tellabs.com)
+## Author: Bill Lash <lash@tellabs.com>
 
 function status = strcmpi(s1, s2)
 

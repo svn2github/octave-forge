@@ -45,7 +45,7 @@
 ## the systems, apply the scalar functions to the eigenvalues,
 ## and then recombine the systems into a network.
 
-## Author: P.R. Nienhuis, 106130.1515@compuserve.com
+## Author: P.R. Nienhuis <106130.1515@compuserve.com>
 ## Additions by P. Kienzle, .........
 ## 2001-03-01 Paul Kienzle
 ##    * generate error for repeated eigenvalues

@@ -21,7 +21,7 @@
 ##
 ## See also: sprintf, int2str
 
-## Author: jwe
+## Author: John W. Eaton
 ## Modified by: Ariel Tankus, 15.6.98 .
 ## Modified by: Paul Kienzle, 15.7.00, to handle matrices. 
 

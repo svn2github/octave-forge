@@ -27,7 +27,7 @@
 ## @end deftypefn
 ## @seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, and record}
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 18 October 1994
 ## Adapted-By: jwe
 

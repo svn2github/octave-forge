@@ -27,7 +27,7 @@
 ## @seealso{plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
 ## contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
-## Author: jwe
+## Author: John W. Eaton
 ## Modified: 2000-11-17 Paul Kienzle <kienzle.powernet.co.uk>
 ##   copied from Octave 2.1.31 mesh.m, with contours turned on
 ##   if added to octave, make __mesh__.m which takes the usual paramters

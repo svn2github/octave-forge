@@ -24,7 +24,7 @@
 ## See polyderiv.
 ## @end deftypefn
 
-## Author: jwe
+## Author: John W. Eaton
 ## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    handle b/a and b*a
 

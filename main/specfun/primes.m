@@ -26,7 +26,9 @@
 ## The algorithm used is called the Sieve of Erastothenes.
 ## @end deftypefn
 
-## Author: Paul Kienzle, Francesco Potortì and Dirk Laurie
+## Author: Paul Kienzle
+## Author: Francesco Potortì
+## Author: Dirk Laurie
 
 function x=primes(p)
   if nargin != 1

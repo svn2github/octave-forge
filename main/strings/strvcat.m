@@ -23,7 +23,7 @@
 ##
 ## @end deftypefn
 
-## Author: Kurt Hornik <A HREF="mailto:Kurt.Hornik@ci.tuwien.ac.at">Kurt.Hornik@ci.tuwien.ac.at</A>
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe
 ## Modified: Paul Kienzle <pkienzle@kienzle.powernet.co.uk> converted
 ##           str2mat to strvcat.  Same function except that strvcat

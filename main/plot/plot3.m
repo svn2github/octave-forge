@@ -34,7 +34,8 @@
 ##    z = [0:0.05:5];
 ##    plot3(cos(2*pi*z), sin(2*pi*z), z, ";helix;");
 
-## Author: Paul Kienzle (modified from __plt__.m)
+## Author: Paul Kienzle
+##         (modified from __plt__.m)
 
 function plot3(...)
 

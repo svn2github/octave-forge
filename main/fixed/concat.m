@@ -73,23 +73,25 @@ function y = concat ( a, b, dim)
   end
 
   ## Protect this with try for the case is the fixed package isn't installed
-  try
-    if (isfixed(a) || isfixed(b))
-      if (!isfixed(a))
-	a = fixed(a);
+  if (! done)
+    try
+      if (isfixed(a) || isfixed(b))
+	if (!isfixed(a))
+	  a = fixed(a);
+	endif
+	if (!isfixed(b))
+	  b = fixed(b);
+	endif
+	if (dim == 1)
+	  y = fixed([a.int, b.int], [a.dec, b.dec], [a.x, b.x]);
+	else
+	  y = fixed([a.int; b.int], [a.dec; b.dec], [a.x; b.x]);
+	endif
+	done = 1;
       endif
-      if (!isfixed(b))
-	b = fixed(b);
-      endif
-      if (dim == 1)
-	y = fixed([a.int, b.int], [a.dec, b.dec], [a.x, b.x]);
-      else
-	y = fixed([a.int; b.int], [a.dec; b.dec], [a.x; b.x]);
-      endif
-      done = 1;
-    endif
-  catch
-  end
+    catch
+    end
+  endif
 
   if (!done)
     fprintf("What are we doing here!!\n");

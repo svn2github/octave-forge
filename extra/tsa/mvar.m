@@ -33,8 +33,9 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %	Validation of MVAR estimators or Remark on Algorithm 808: ARFIT, 
 %	ACM-Transactions on Mathematical Software. submitted.
 
-%	Version 3.02 	Date: 01 Jan 2003
-%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Revision$
+%	$Id$
+%	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -60,9 +61,6 @@ if nargin<2,
 end;
 
 M2 = N+1;
-global AS_FLAG
-AS_FLAG.MVAR.histoN = zeros(M2,1); 
-
 
 if iscell(Y)
         Pmax = min(max(N ,M ),Pmax);
@@ -91,8 +89,6 @@ end;
 
 [C(:,1:M),n] = covm(Y,'M');
 PE(:,1:M)  = C(:,1:M)./n;
-
-AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
 if Mode==0;  % %%%%% multi-channel Levinsion algorithm [2]
         % multivariate Autoregressive parameter estimation
@@ -138,8 +134,7 @@ elseif Mode==1,
         for K=1:Pmax,
                 [C(:,K*M+(1:M)),n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 C(:,K*M+(1:M)) = C(:,K*M+(1:M))/N;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
-
+                
                 D = C(:,K*M+(1:M));
                 for L = 1:K-1,
                         D = D - ARF(:,L*M+(1-M:0))*C(:,(K-L)*M+(1:M));
@@ -177,7 +172,6 @@ elseif Mode==6,
                 [C(:,K*M+(1:M)),n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 C(:,K*M+(1:M)) = C(:,K*M+(1:M))./n;
 		%C{K+1} = C{K+1}/N;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 D = C(:,K*M+(1:M));
                 for L = 1:K-1,
@@ -211,7 +205,6 @@ elseif Mode==2,
         for K=1:Pmax,
                 [D,n]	= covm(F(K+1:N,:),B(1:N-K,:),'M');
                 D = D./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
 		ARF(:,K*M+(1-M:0)) = D / PEB;	
                 ARB(:,K*M+(1-M:0)) = D'/ PEF;	
@@ -231,11 +224,9 @@ elseif Mode==2,
                 
                 [PEF,n] = covm(F(K+1:N,:),F(K+1:N,:),'M');
                 PEF = PEF./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
 		[PEB,n] = covm(B(1:N-K,:),B(1:N-K,:),'M');
                 PEB = PEB./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 PE(:,K*M+(1:M)) = PEF;        
         end;
@@ -253,7 +244,6 @@ elseif Mode==5, %%%%% multi-channel Levinsion algorithm [2] using Nutall-Strand 
         for K=1:Pmax,
                 [D,n]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
                 %D=D/N;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 ARF(:,K*M+(1-M:0)) = D / PEB;	
                 ARB(:,K*M+(1-M:0)) = D'/ PEF;	
@@ -274,10 +264,8 @@ elseif Mode==5, %%%%% multi-channel Levinsion algorithm [2] using Nutall-Strand 
                 [PEB,n] = covm(B(1:N-K,:),B(1:N-K,:),'M');
                 %PEB = D/N;
 
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
                 [PEF,n] = covm(F(K+1:N,:),F(K+1:N,:),'M');
                 %PEF = D/N;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 PE(:,K*M+(1:M)) = PEF;        
         end;
@@ -292,7 +280,6 @@ elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Me
         for K=1:Pmax,
                 [D, n]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
                 D = D./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
 		ARF(:,K*M+(1-M:0)) = (PEF.^-.5)*D*(PEB.^-.5)';	
                 ARB(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0)); 
@@ -312,11 +299,9 @@ elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Me
                 
                 [PEF,n] = covm(F(K+1:N,:),F(K+1:N,:),'M');
                 PEF = PEF./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
 		[PEB,n] = covm(B(1:N-K,:),B(1:N-K,:),'M');
                 PEB = PEB./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 %PE{K+1} = PEF;        
                 PE(:,K*M+(1:M)) = PEF;        
@@ -332,7 +317,6 @@ elseif Mode==7 %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Met
         for K=1:Pmax,
                 [D,n]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
                 D = D./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
 		ARF(:,K*M+(1-M:0)) = (PEF.^-.5)*D*(PEB.^-.5);	
                 ARB(:,K*M+(1-M:0)) = (PEF.^-.5)*D'*(PEB.^-.5);	
@@ -352,11 +336,9 @@ elseif Mode==7 %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Met
                 
                 [PEF,n] = covm(F(K+1:N,:),F(K+1:N,:),'M');
                 PEF = PEF./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 [PEB,n] = covm(B(1:N-K,:),B(1:N-K,:),'M');
                 PEB = PEB./n;
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 %PE{K+1} = PEF;        
                 PE(:,K*M+(1:M)) = PEF;        
@@ -369,7 +351,6 @@ elseif Mode==4,  %%%%% nach Kay, not fixed yet.
         K = 1;
         [C(:,M+(1:M)),n] = covm(Y(2:N,:),Y(1:N-1,:));
         C(:,M+(1:M)) = C(:,M+(1:M))/N;  % biased estimate
-	AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
         D = C(:,M+(1:M));
         ARF(:,1:M) = C(:,1:M)\D;
@@ -382,7 +363,6 @@ elseif Mode==4,  %%%%% nach Kay, not fixed yet.
         for K=2:Pmax,
                 [C(:,K*M+(1:M)),n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 C(:,K*M+(1:M)) = C(:,K*M+(1:M)) / N; % biased estimate
-		AS_FLAG.MVAR.histoN = AS_FLAG.MVAR.histoN + sparse(n+1,1,1,M2,1); %%%%%%% profiling: number of samples for estimates 
 
                 D = C(:,K*M+(1:M));
                 for L = 1:K-1,

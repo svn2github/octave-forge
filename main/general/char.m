@@ -1,4 +1,6 @@
 ## Copyright (C) 2003 Alois Schloegl 
+## $Revision$
+## $Id$
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,10 +20,9 @@
 ##    converts numbers into character-arrays  
 ##  it the inverse function of toascii
 ##
+## see also: TOASCII, SETSTR
 
 function x = char(x),
-	% there should be a more efficient method
-	% but here is a fast hack, 
-	x=sprintf('%c',x);
+	x = setstr(x);
 endfunction
 

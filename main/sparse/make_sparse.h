@@ -19,6 +19,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.6  2002/02/19 21:21:48  aadler
+Modifications to _dtrsv stub to compile.
+Modifications to makefile to define AR and RANLIB
+
 Revision 1.5  2002/02/16 22:16:04  aadler
 added dtrsv stub to compile statically
 
@@ -260,8 +264,8 @@ oct_sparse_fatalerr(char *msg);
 void
 oct_sparse_free(void * addr);
 
-int dtrsv_(char *uplo, char *trans, char *diag, integer *n,
-        doublereal *a, integer *lda, doublereal *x, integer *incx);
+int dtrsv_(char *uplo, char *trans, char *diag, int *n,
+        double *a, int *lda, double *x, int *incx);
 
 #ifdef __cplusplus
 } 

@@ -74,8 +74,8 @@ oct_sparse_free(void * addr) {
 
 // This is required to link properly,
 // but isn't necessary for the code
-int dtrsv_(char *uplo, char *trans, char *diag, integer *n,
-        doublereal *a, integer *lda, doublereal *x, integer *incx)
+int dtrsv_(char *uplo, char *trans, char *diag, int *n,
+        double *a, int *lda, double *x, int *incx)
 {
    oct_sparse_fatalerr("DTRSV_ isn't defined: shouldn't get here");
    return 0;
@@ -322,6 +322,10 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_sparse);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_sparse, "complex_sparse");
 /*
  * $Log$
+ * Revision 1.7  2002/02/19 21:21:48  aadler
+ * Modifications to _dtrsv stub to compile.
+ * Modifications to makefile to define AR and RANLIB
+ *
  * Revision 1.6  2002/02/16 22:16:04  aadler
  * added dtrsv stub to compile statically
  *

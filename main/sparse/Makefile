@@ -2,6 +2,10 @@
 # $Id$
 #
 # $Log$
+# Revision 1.5  2002/02/19 21:21:48  aadler
+# Modifications to _dtrsv stub to compile.
+# Modifications to makefile to define AR and RANLIB
+#
 # Revision 1.4  2002/01/04 15:53:57  pkienzle
 # Changes required to compile for gcc-3.0 in debian hppa/unstable
 #
@@ -124,6 +128,12 @@ OCTVER   =  # -2.1.32
 OCTAVE   =   octave$(OCTVER)
 ifndef MKOCTFILE
 MKOCTFILE=   mkoctfile$(OCTVER)
+endif
+ifndef AR
+AR= ar
+endif
+ifndef RANLIB
+RANLIB=ranlib
 endif
 
 # Use same C compiler and options as mkoctfile

@@ -20,6 +20,7 @@
 #include <octave/unwind-prot.h>
 #include <octave/oct-syscalls.h>
 #include <octave/oct-time.h>
+#include <octave/lo-mappers.h>
 
 static bool debug = false;
 

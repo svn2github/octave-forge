@@ -302,6 +302,8 @@ galois
 galois :: transpose (void) const
 {
   galois a(Matrix(0,0), m(), primpoly());
+  int d1 = rows();
+  int d2 = cols();
 
   a.resize(d2,d1);
   for (int j = 0; j < d2; j++)

@@ -44,11 +44,11 @@ function r = minpol (v)
 
   ## Find cosets of GF(2^m) and convert from cell array to matrix
   cyclocoset = cosets(m, prim_poly);
-  cyclomat = zeros(size(cyclocoset,1),m);
-  for j=1:size(cyclocoset,1)
+  cyclomat = zeros(max(size(cyclocoset)),m);
+  for j=1:max(size(cyclocoset))
     cyclomat(j,1:length(cyclocoset{j})) = cyclocoset{j};
   end
-
+  
   for j =1:n
     if (v(j) == 0)
       ## Special case
@@ -56,6 +56,7 @@ function r = minpol (v)
     else
       ## Find the coset within which the current element falls
       [rc, ignored] = find(cyclomat == v(j));
+
       rv = cyclomat(rc,:);
 
       ## Create the minimum polynomial from its roots 

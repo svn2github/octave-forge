@@ -82,11 +82,6 @@ DEFBINOP_FN (el_or, galois, galois, mx_el_or)
 
 DEFASSIGNOP_FN (assign, galois, galois, assign)
 
-CONVDECLX (galois_conv)
-{
-  return new octave_galois ();
-}
-
 void
 install_gm_gm_ops (void)
 {
@@ -115,7 +110,6 @@ install_gm_gm_ops (void)
   INSTALL_BINOP (op_el_or, octave_galois, octave_galois, el_or);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_galois, octave_galois, assign);
-  INSTALL_WIDENOP (octave_base_value, octave_galois, galois_conv);
 }
 
 /*

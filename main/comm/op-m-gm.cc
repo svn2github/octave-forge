@@ -102,7 +102,7 @@ install_m_gm_ops (void)
   INSTALL_BINOP (op_el_or, octave_matrix, octave_galois, el_or);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_galois, assign);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_matrix, octave_galois);
+  //INSTALL_ASSIGNCONV (octave_base_value, octave_matrix, octave_galois);
 }
 
 /*

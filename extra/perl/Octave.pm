@@ -1092,6 +1092,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.26  2004/04/15 22:06:27  aadler
+*** empty log message ***
+
 Revision 1.25  2004/04/12 17:11:17  aadler
 added wnohang signalling
 
@@ -1448,7 +1451,7 @@ instead of methods
 
 for example:
 
-   $c= Inline::Octave::Matrix::rand(2,3);
+   $c= Inline::Octave::rand(2,3);
    print $c->disp();
 
 gives:
@@ -1496,12 +1499,9 @@ If you would like to do the octave equivalent of
 
 Then these methods will make life more convenient.
 
-   $a = Inline::Octave::Matrix::zeros(4);
-
+   $a = Inline::Octave::zeros(4);
    $a->replace_rows( [1,3], [ [1,2,3,4],[5,6,7,8] ] );
-
    $a->replace_cols( [2,4], [ [2,4],[2,4],[2,4],[2,4] ] );
-
    $a->replace_matrix( [1,4], [1,4], [ [8,7],[6,5] ] );
 
 =head1 Using Inline::Octave::ComplexMatrix

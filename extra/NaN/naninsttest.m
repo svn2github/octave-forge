@@ -32,31 +32,31 @@ x = [5,NaN,0,1,nan];
 FLAG_WARNING = warning;
 warning('off');
 
-funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','','','','','','','','','','','','','',''};
+funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','','','','','','','','','','','','','',''};
 for k=1:2,
         if k==2, x(isnan(x))=[]; end; 
         r(1,k) =sumskipnan(x(1));
         r(2,k) =mean(x);
         r(3,k) =std(x);
         r(4,k) =var(x);
-        r(5,k) =skewness(x);
-        r(6,k) =kurtosis(x);
-        if exist('sem')==2,
+	        r(5,k) = skewness(x);
+	        r(6,k) =kurtosis(x);
                 r(7,k) =sem(x);
-        end;
         r(8,k) =median(x);
-        r(9,k) =mad(x);
+	        r(9,k) =mad(x);
     		tmp = zscore(x); 
-	r(10,k)=tmp(1);
+		r(10,k)=tmp(1);
         if exist('coefficient_of_variation')==2,
                 r(11,k)=coefficient_of_variation(x);
         end;
-        r(12,k)=geomean(x);
-        r(13,k)=harmmean(x);
+                r(12,k)=geomean(x);
+                r(13,k)=harmmean(x);
         if exist('meansq')==2,
         	r(14,k)=meansq(x);
         end;
-        r(15,k)=moment(x,6);
+        if exist('moment')==2,
+                r(15,k)=moment(x,6);
+        end;
         if exist('rms')==2,
                 r(16,k)=rms(x);
         end;
@@ -78,7 +78,7 @@ for k=1:2,
         	tmp=center(x);
 	        r(22,k)=tmp(1);
         end;
-        if exist('center')==2,
+        if exist('trimean')==2,
         	r(23,k)=trimean(x);
         end;
         r(24,k)=min(x);
@@ -97,7 +97,7 @@ for k=1:2,
                 fun='t_cdf';
         end;
         try, 
-                r(27,k) = k+isnan(feval(fun,x(2),4));	        
+                r(27,k) = k*(~isnan(feval(fun,nan,4)));	        
         catch
                 r(27,k) = k;	
         end;
@@ -107,26 +107,26 @@ for k=1:2,
         elseif exist('t_inv')==2,
                 fun='t_inv';
         end;
-        r(28,k) = k+isnan(feval(fun,x(2),4));	        
+        r(28,k) = k*(~isnan(feval(fun,NaN,4)));	        
         
         if exist('normpdf')==2, 
                 fun='normpdf'; 
         elseif exist('normal_pdf')==2,
                 fun='normal_pdf';
         end;
-        r(29,k) = feval(fun,5,4,0);	        
+        r(29,k) = (feval(fun,k,k,0)~=Inf)*k;	        
         if exist('normcdf')==2, 
                 fun='normcdf'; 
         elseif exist('normal_cdf')==2,
                 fun='normal_cdf';
         end;
-        r(30,k) = feval(fun,5,4,0);	        
+        r(30,k) = feval(fun,4,4,0);	        
         if exist('norminv')==2, 
                 fun='norminv'; 
         elseif exist('normal_inv')==2,
                 fun='normal_inv';
         end;
-        r(31,k) = feval(fun,.5,4,0);	        
+        r(31,k) = k*any(isnan(feval(fun,[0,1],4,0)));	        
         
 end;
 
@@ -146,3 +146,5 @@ else
 end;
 
 warning(FLAG_WARNING);
+
+

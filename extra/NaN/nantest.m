@@ -105,8 +105,9 @@ tmp3 = repmat(0,p)/repmat(0,p);
 tmp4 = repmat(0,p)\repmat(0,p);
 tmp5 = repmat(0,p)*repmat(inf,p);
 tmp6 = repmat(inf,p)*repmat(0,p);
-x = randn(100,1)*ones(1,p); y=x'*x; tmp7=y/y;
-x = randn(100,1)*ones(1,p); y=x'*x; tmp8=y\y;
+x = randn(100,1)*ones(1,p); y=x'*x; 
+tmp7 = y/y;
+tmp8 = y\y;
 
 if ~all(isnan(tmp1(:))),
         fprintf(2,'WARNING: matrix division NaN/NaN does not result in NaN\n');

@@ -1,4 +1,3 @@
-
 ## Copyright (C) 2000 Ben Sapp.  All rights reserved.
 ## Modification by Andreas Helms
 ## This program is free software; you can redistribute it and/or modify it

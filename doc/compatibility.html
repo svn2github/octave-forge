@@ -297,8 +297,8 @@ for suggested alternatives.
 <br>A. Try setting automatic_replot = 1
 
 <li>Q. sqrtm, logm don't work well for ill-conditioned matrices.
-<br>A. Ask pkienzle@users.sf.net to post the work he and Ross Lippert did
-   on this.
+<br>A. use FIXES/sqrtm.cc for sqrtm.  logm is still a work in progress.
+   Ask pkienzle@users.sf.net to post the work he and Ross Lippert did on this.
 
 <li>Q. eig(A,B)
 <br>A. qz(A,B)
@@ -308,7 +308,7 @@ for suggested alternatives.
 <br>A. use FIXES/fsolve.cc on octave-forge.
 
 <li>Q. economy QR factorization is slow
-<br>A. search bug-octave for a patch
+<br>A. use FIXES/qr.cc on octave-forge.
 
 <li>Q. exist(a,'var') fails.
 <br>A. octave-forge exist-type patch.

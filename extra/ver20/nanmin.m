@@ -20,7 +20,7 @@
 ## minimum is returned as Inf. [Is this behaviour compatible?]
 ##
 ## See also: nansum, nanmax, nanmean, nanmedian
-function [v, idx] = nanmin (X, ...)
+function [v, idx] = nanmin (X, varargin)
   if nargin < 1
     usage ("[v, idx] = nanmin (X [, dim])");
   else
@@ -31,7 +31,7 @@ function [v, idx] = nanmin (X, ...)
       prefer_zero_one_indexing = 1;
 
       X(isnan(X)) = Inf;
-      [v, idx] = min (X, all_va_args);
+      [v, idx] = min (X, varargin{:});
     unwind_protect_cleanup
       do_fortran_indexing = dfi;
       prefer_zero_one_indexing = pzoi;

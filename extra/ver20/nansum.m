@@ -20,7 +20,7 @@
 ## returned as 0. [Is this behaviour compatible?]
 ##
 ## See also: nanmin, nanmax, nanmean, nanmedian
-function v = nansum (X, ...)
+function v = nansum (X, varargin)
   if nargin < 1
     usage ("v = nansum (X [, dim])");
   else
@@ -31,7 +31,7 @@ function v = nansum (X, ...)
       prefer_zero_one_indexing = 1;
 
       X(isnan(X)) = 0;
-      v = sum (X, all_va_args);
+      v = sum (X, varargin{:});
     unwind_protect_cleanup
       do_fortran_indexing = dfi;
       prefer_zero_one_indexing = pzoi;

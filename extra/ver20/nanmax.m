@@ -20,7 +20,7 @@
 ## maximum is returned as -Inf. [Is this behaviour compatible?]
 ##
 ## See also: nansum, nanmin, nanmean, nanmedian
-function [v, idx] = nanmax (X, ...)
+function [v, idx] = nanmax (X, varargin)
   if nargin < 1
     usage ("[v, idx] = nanmax(X [, dim])");
   else
@@ -31,7 +31,7 @@ function [v, idx] = nanmax (X, ...)
       prefer_zero_one_indexing = 1;
 
       X(isnan(X)) = -Inf;
-      [v,idx] = max (X, all_va_args);
+      [v,idx] = max (X, varargin{:});
     unwind_protect_cleanup
       do_fortran_indexing = dfi;
       prefer_zero_one_indexing = pzoi;

@@ -31,7 +31,7 @@
 ## * modified to work with pthreads version of tk_interp 
 
 
-function value = tk_dialog(title, text, bitmap, default, ...)
+function value = tk_dialog(title, text, bitmap, default, varargin)
 
 eval("tk_interp","");
 
@@ -60,8 +60,9 @@ endif
 
 cmd = sprintf("tk_dialog .top_tk_dialog \"%s\" \"%s\" \"%s\" %d", title, text, bitmap, default);
 
+va_arg_cnt = 1;
 while(--nargin != 3)
-	arg = va_arg;
+	arg = nth (varargin, va_arg_cnt++);
 	if (! isstr(arg))
 		error("The arguments must be strings.\n");
 		return

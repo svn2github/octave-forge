@@ -19,7 +19,7 @@
 ## 2001-09-14 Paul Kienzle <pkienzle@users.sf.net>
 ## * convert for pthreads-based tk_octave
 
-function [varargout] = tk_entry (t, ...)
+function [varargout] = tk_entry (t, varargin)
 
 tk_init
 
@@ -45,11 +45,12 @@ endif
 
     nopt = (nargin - 1)/2;
     cmd_ok = cmd_res = "";
-	va_start();
+	va_arg_cnt = 1;
+
     
 for i=1:nopt
-	desc = va_arg();
-	val = va_arg();
+	desc = nth (varargin, va_arg_cnt++);
+	val = nth (varargin, va_arg_cnt++);
 
 	tk_cmd( sprintf( "unset val_%d val_%d_\n", i, i) );	# unset previous invocation values
 

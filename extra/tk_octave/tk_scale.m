@@ -26,7 +26,7 @@
 ## 2001-09-14 Paul Kienzle <pkienzle@users.sf.net>
 ## * converted to work with pthreads-based tk_octave
 
-function [varargout] = tk_scale (title, ...)
+function [varargout] = tk_scale (title, varargin)
 
 tk_init
 
@@ -49,13 +49,14 @@ tk_cmd( "pack .master.quit -side bottom" );
 nopt = (nargin - 1)/5;
 cmd_ok = cmd_res = "";
 
-va_start();
+va_arg_cnt = 1;
+
 for i=1:nopt
-    desc = va_arg();
-    val = va_arg();
-    min_val = va_arg();
-    max_val = va_arg();
-    inc_val = va_arg();
+    desc = nth (varargin, va_arg_cnt++);
+    val = nth (varargin, va_arg_cnt++);
+    min_val = nth (varargin, va_arg_cnt++);
+    max_val = nth (varargin, va_arg_cnt++);
+    inc_val = nth (varargin, va_arg_cnt++);
 	
     tk_cmd( sprintf("set val_%d %f", i, val) );
     tk_cmd( sprintf("scale .master.s%d -from %f -to %f \

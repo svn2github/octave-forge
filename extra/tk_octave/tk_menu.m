@@ -17,7 +17,7 @@
 ## 2001-09-14 Paul Kienzle <pkienzle@users.sf.net>
 ## * convert for pthreads-based tk_octave
 
-function num = tk_menu (t, ...)
+function num = tk_menu (t, varargin)
 
 tk_init
 
@@ -36,9 +36,10 @@ endif
 
 nopt = nargin - 1;
 
-va_start ();
+va_arg_cnt = 1;
+
 for i = 1:nopt
-	tk_cmd( sprintf ("button .master.b%d -text \"%s\" -command { set menuChoice %d; quit}", i, va_arg(), i) );
+	tk_cmd( sprintf ("button .master.b%d -text \"%s\" -command { set menuChoice %d; quit}", i, nth (varargin, va_arg_cnt++), i) );
 	tk_cmd( sprintf ("pack .master.b%d -fill x", i) );
 endfor
 

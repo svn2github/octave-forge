@@ -20,7 +20,7 @@
 ## [Is this behaviour compatible?]
 ##
 ## See also: nanmin, nanmax, nansum, nanmedian
-function v = nanmean (X, ...)
+function v = nanmean (X, varargin)
   if nargin < 1
     usage ("v = nanmean(X [, dim])");
   else
@@ -30,10 +30,10 @@ function v = nanmean (X, ...)
       do_fortran_indexing = 1;
       prefer_zero_one_indexing = 1;
 
-      n = sum (!isnan(X), all_va_args);
+      n = sum (!isnan(X), varargin{:});
       n(n == 0) = NaN;
       X(isnan(X)) = 0;
-      v = sum (X, all_va_args) ./ n;
+      v = sum (X, varargin{:}) ./ n;
     unwind_protect_cleanup
       do_fortran_indexing = dfi;
       prefer_zero_one_indexing = pzoi;

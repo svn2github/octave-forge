@@ -1,69 +1,69 @@
 function [num,status] = str2double(s,cdelim,rdelim)
-## STR2DOUBLE converts strings into numeric values
-##  [NUM, STATUS] = STR2DOUBLE(STR) 
-##  
-##    STR can be the form '[+-]d[.]dd[[eE][+-]ddd]' 
-##	d can be any of digit from 0 to 9, [] indicate optional elements
-##    NUM is the corresponding numeric value. 
-##       if the conversion fails, status is -1 and NUM is NaN.  
-##    STATUS = 0: conversion was successful
-##    STATUS = -1: couldnot convert string into numeric value
-##
-##    Elements which are not defined or not valid return NaN and 
-##        the STATUS becomes -1 
-##    STR can be also a character array or a cell array of strings.   
-##        Then, NUM and STATUS return matrices of appropriate size. 
-##
-##    STR can also contain multiple elements.
-##    default row-delimiters are: 
-##        NEWLINE, CARRIAGE RETURN and SEMICOLON i.e. ASCII 10, 13 and 59. 
-##    default column-delimiters are: 
-##        TAB, SPACE and COMMA i.e. ASCII 9, 32, and 44.
-##
-##  [NUM, STATUS] = STR2DOUBLE(STR,CDELIM,RDELIM) 
-##       CDELIM .. user-specified column delimiter
-##       RDELIM .. user-specified row delimiter
-##       CDELIM and RDELIM must contain only 
-##       NULL, NEWLINE, CARRIAGE RETURN, SEMICOLON, TAB, SPACE, COMMA, or ()[]{}  
-##       i.e. ASCII 0,9,10,11,12,13,14,32,33,34,40,41,44,59,91,93,123,124,125 
-##
-##    Examples: 
-##	str2double('-.1e-5')
-##	   ans = -1.0000e-006
-##
-## 	str2double('.314e1, 44.44e-1, .7; -1e+1')
-##	ans =
-##	    3.1400    4.4440    0.7000
-##	  -10.0000       NaN       NaN
-##
-##	line ='200,300,400,NaN,-inf,cd,yes,no,999,maybe,NaN';
-##	[x,status]=str2double(line)
-##	x =
-##	   200   300   400   NaN  -Inf   NaN   NaN   NaN   999   NaN   NaN
-##	status =
-##	    0     0     0     0     0    -1    -1    -1     0    -1     0
+%% STR2DOUBLE converts strings into numeric values
+%%  [NUM, STATUS] = STR2DOUBLE(STR) 
+%%  
+%%    STR can be the form '[+-]d[.]dd[[eE][+-]ddd]' 
+%%	d can be any of digit from 0 to 9, [] indicate optional elements
+%%    NUM is the corresponding numeric value. 
+%%       if the conversion fails, status is -1 and NUM is NaN.  
+%%    STATUS = 0: conversion was successful
+%%    STATUS = -1: couldnot convert string into numeric value
+%%
+%%    Elements which are not defined or not valid return NaN and 
+%%        the STATUS becomes -1 
+%%    STR can be also a character array or a cell array of strings.   
+%%        Then, NUM and STATUS return matrices of appropriate size. 
+%%
+%%    STR can also contain multiple elements.
+%%    default row-delimiters are: 
+%%        NEWLINE, CARRIAGE RETURN and SEMICOLON i.e. ASCII 10, 13 and 59. 
+%%    default column-delimiters are: 
+%%        TAB, SPACE and COMMA i.e. ASCII 9, 32, and 44.
+%%
+%%  [NUM, STATUS] = STR2DOUBLE(STR,CDELIM,RDELIM) 
+%%       CDELIM .. user-specified column delimiter
+%%       RDELIM .. user-specified row delimiter
+%%       CDELIM and RDELIM must contain only 
+%%       NULL, NEWLINE, CARRIAGE RETURN, SEMICOLON, TAB, SPACE, COMMA, or ()[]{}  
+%%       i.e. ASCII 0,9,10,11,12,13,14,32,33,34,40,41,44,59,91,93,123,124,125 
+%%
+%%    Examples: 
+%%	str2double('-.1e-5')
+%%	   ans = -1.0000e-006
+%%
+%% 	str2double('.314e1, 44.44e-1, .7; -1e+1')
+%%	ans =
+%%	    3.1400    4.4440    0.7000
+%%	  -10.0000       NaN       NaN
+%%
+%%	line ='200,300,400,NaN,-inf,cd,yes,no,999,maybe,NaN';
+%%	[x,status]=str2double(line)
+%%	x =
+%%	   200   300   400   NaN  -Inf   NaN   NaN   NaN   999   NaN   NaN
+%%	status =
+%%	    0     0     0     0     0    -1    -1    -1     0    -1     0
 
-## References: 
-## [1] David A. Wheeler, Secure Programming for Linux and Unix HOWTO.
-##    http://en.tldp.org/HOWTO/Secure-Programs-HOWTO/
+%% References: 
+%% [1] David A. Wheeler, Secure Programming for Linux and Unix HOWTO.
+%%    http://en.tldp.org/HOWTO/Secure-Programs-HOWTO/
 
-## This program is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public License
-## as published by the Free Software Foundation; either version 2
-## of the License, or (at your option) any later version.
-## 
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-## 
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+%% This program is free software; you can redistribute it and/or
+%% modify it under the terms of the GNU General Public License
+%% as published by the Free Software Foundation; either version 2
+%% of the License, or (at your option) any later version.
+%% 
+%% This program is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%% GNU General Public License for more details.
+%% 
+%% You should have received a copy of the GNU General Public License
+%% along with this program; if not, write to the Free Software
+%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-##	$Revision$
-##	$Id$
-##	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%%	$Revision$
+%%	$Id$
+%%	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
 
 
 % valid_char = '0123456789eE+-.nNaAiIfF';	% digits, sign, exponent,NaN,Inf
@@ -119,13 +119,13 @@ end;
 %%%%% various input parameters 
 if iscell(s),
         strarray = s;
+
 elseif ischar(s) & all(size(s)>1),	%% char array transformed into a string. 
-        strarray = cellstr(s);
-        for k = 1:prod(size(strarray)),
-                txt = strarray{k};
-                tmp = find(~isspace(txt));
-                strarray{k} = txt(min(tmp):max(tmp));
-        end
+	for k = 1:size(s,1), 
+                tmp = find(~isspace(s(k,:)));
+                strarray{k,1} = s(k,min(tmp):max(tmp));
+        end;
+
 elseif ischar(s),
         num = [];
         status = 0;

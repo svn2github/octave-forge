@@ -40,7 +40,7 @@
 
 function newyp = irsa_resample (xp, yp, newxp, lm )
 
-  if( nargin != 3 )
+  if( nargin < 3 || nargin > 4 )
     usage( "newyp = irsa_resample (xp, yp, newxp, [lm] )" );
   endif
 

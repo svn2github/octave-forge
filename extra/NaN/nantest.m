@@ -18,9 +18,9 @@
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-%    	Version 1.28  Date: 30 Sep 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>
+%	$Revision$
+%	$Id$
+%	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>
 
 
 r = zeros(23,2);
@@ -123,6 +123,11 @@ else
 	fprintf(1,'Some functions must still be replaced\n');
 end;
 
+
+%%%%% sorting of NaN's %%%%
+if ~all(isnan(sort([3,4,NaN,3,4,NaN]))==[0,0,0,0,1,1]),  %~exist('OCTAVE_VERSION'),
+    	warning('Warning: SORT does not handle NaN.');
+end;
 
 %%%%% commutativity of 0*NaN	%%% This test adresses a problem in Octave
 

@@ -260,4 +260,6 @@ sz  = 1.96./sqrt(NN-3);		% 0.95 confidence interval (i.e. 1.96*standard error) o
 ci1 = tanh(z-sz);
 ci2 = tanh(z+sz);
 
+ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
+ci2(isnan(ci2))=R(isnan(ci2));
 return;

@@ -1,0 +1,82 @@
+%define __libtoolize /bin/true
+
+Summary: Additional functions for octave
+Name: octave-forge
+Version: @OCTAVE_FORGE_VERSION@
+Release: 1
+Epoch: 1
+License: GPL
+Group: Applications/Engineering
+Source: http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge-%{version}.tar.gz
+URL: http://octave.sourceforge.net
+Requires: octave = @OCTAVE_VERSION@ libjpeg ImageMagick
+###Prereq: info
+BuildPrereq: octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg
+BuildPrereq: zlib-devel libtermcap-devel libstdc++-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+
+### Description taken from http://wiki.octave.org/wiki.pl?OctaveForge
+%description
+octave-forge (http://octave.sf.net) is a community project for
+collaborative development of octave extensions. If you have a large
+package that you want to open up to collaborative development, or a
+couple of m-files that you want to contribute to an existing package,
+octave-forge is the place to do it.
+
+%prep
+%setup -q
+
+%build
+LC_ALL=POSIX
+export LC_ALL
+export CXXFLAGS="%optflags -fno-use-cxa-atexit"
+%configure --prefix=%{?buildroot:%{buildroot}}%{_prefix} --exec-prefix=%{?buildroot:%{buildroot}}%{_prefix} --with-mpath=%{?buildroot:%{buildroot}}%{_prefix}/share/octave/@OCTAVE_VERSION@/site/m/octave-forge --with-opath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/@OCTAVE_VERSION@/site/oct/@canonical_host_type@/octave-forge --with-xpath=%{?buildroot:%{buildroot}}%{_prefix}/libexec/octave/@OCTAVE_VERSION@/site/exec/@canonical_host_type@
+
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+%makeinstall
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+### The following is no longer used by octave
+#ls -LR %{_prefix}/share/octave > %{_prefix}/share/octave/ls-R
+#chmod 644 %{_prefix}/share/octave/ls-R
+#ls -LR %{_prefix}/libexec/octave > %{_prefix}/libexec/octave/ls-R
+#chmod 644 %{_prefix}/libexec/octave/ls-R
+
+%preun
+
+%postun
+### The following is no longer used by octave
+#ls -LR %{_prefix}/share/octave > %{_prefix}/share/octave/ls-R
+#chmod 644 %{_prefix}/share/octave/ls-R
+#ls -LR %{_prefix}/libexec/octave > %{_prefix}/libexec/octave/ls-R
+#chmod 644 %{_prefix}/libexec/octave/ls-R
+
+%files
+%defattr(-,root,root)
+%doc COPYING* INDEX README RELEASE-NOTES TODO
+%doc doc/*.html doc/coda/*.sgml doc/coda/appendices/*.sgml
+%doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
+%{_prefix}/bin/mex
+%{_prefix}/share/octave/*
+%{_prefix}/libexec/octave/*
+%{_mandir}/man1/mex*
+
+%changelog
+* Fri Jun 13 2003 Quentin Spencer <qspencer@ieee.org>
+- Added new package description, revised so that configure
+  automatically generates the correct octave version and
+  octav-forge version, added dependencies.
+
+* Wed May 14 2003 Quentin Spencer <qspencer@ieee.org> 2.1.48-2
+- Commented out code for ls-R files because of recent changes in
+  Octave's use of kpathsea. Didn't delete it yet because it may
+  yet be needed in the future.
+
+* Tue Feb  4 2003 Quentin Spencer <qspencer@ieee.org> 2.1.44-1
+- First Version, loosely based on Red Hat's spec file for octave.

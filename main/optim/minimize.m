@@ -112,7 +112,7 @@
 ##
 ##              [x,v,nev] = feval (backend, control.d2f, args, control)
 ##
-function [x,v,nev,varargout] = minimize (f,args,...)
+function [x,v,nev,varargout] = minimize (f,args,varargin)
 
 static minimize_warn = 1;
 if minimize_warn

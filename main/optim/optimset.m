@@ -31,7 +31,7 @@
 ##                       optional arguments that will be passed to it. See
 ##                       the 'backend' option of minimize().
 ## 
-function opt = optimset (...)
+function opt = optimset (varargin)
 
 ## Diagnostics  , ["on"|{"off"}] : 
 ## DiffMaxChange, [scalar>0]     : N/A (I don't know what it does)

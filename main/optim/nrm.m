@@ -25,7 +25,7 @@
 ## 2002-03-13 Paul Kienzle
 ## * simplify update expression
 
-function x = nrm(f,x,...)
+function x = nrm(f,x,varargin)
   velocity = 1;
   acceleration = 1;
   

@@ -15,7 +15,7 @@
 ## Reference -> Numerical Methods for Mathematics, Science, and
 ## Engineering by John H. Mathews.
 
-function dx = deriv(f,x0, ...)
+function dx = deriv(f,x0,varargin)
 
   if(nargin < 2)
     error("not enough arguments\n");

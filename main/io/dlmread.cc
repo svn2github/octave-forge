@@ -19,21 +19,59 @@
 29. January 2003 - Kai Habel: first release
 
 TODO:
-* add support for NaN
-* handle line separators \r or \n\r
+* handle line terminator \r and \n\r 
+* handle strings within data sane, like: 1.1,test,2,,
+* handle range for reading
 */
-
 #include "config.h"
 
 #include <string>
 #include <fstream>
-#include <iostream>
+//#include <iostream>
+#include <algorithm>
+#include <queue>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 #include <octave/oct.h>
 
 using namespace std;
+
+int insert_zeros(string *line, string sep) {
+  // find double occurance of separator and insert zeros 
+  string::size_type pos = 0;
+  while(1) {
+    pos = line->find(sep+sep,pos);
+    if (pos == string::npos) break;
+    line->erase(pos,1);
+    line->insert(pos,sep+"0");
+    pos += sep.length()+1;
+  }
+
+  // find separator at line begin and end insert zeros
+  pos = line->rfind(sep,sep.length()-1);
+  if (pos != string::npos) line->insert(0,"0");
+  pos = line->find(sep,line->length() - 1);
+  if (pos != string::npos) line->insert(line->length(),"0");
+  return 0;
+}
+
+unsigned long replace_separator(string *line, string sep) {
+
+  // replace separator string with blank
+  string::size_type pos = 0;
+  unsigned long cols = 1;
+  
+  while(1) {
+    pos = line->find(sep,pos);
+    if (pos == string::npos) break;
+    cols++;
+    line->replace(pos++,1," ");
+  }
+  // return number of columns for this line
+  return cols;
+}
+
 
 DEFUN_DLD (dlmread, args, ,
         "-*- texinfo -*-\n\
@@ -44,7 +82,7 @@ Read the matrix @var{data} from a text file\n\
 
 {
   octave_value_list retval;
-    
+  queue<ComplexColumnVector> lines;  
   int nargin = args.length();
   if (nargin < 1 || nargin > 2) {
     print_usage ("dlmread");
@@ -52,7 +90,7 @@ Read the matrix @var{data} from a text file\n\
   }
 
   if ( !args (0).is_string() ) {
-    error ("dlmread: 1st arguments must be a strings");
+    error ("dlmread: 1st argument must be a string");
     return retval;
   }
 
@@ -63,81 +101,54 @@ Read the matrix @var{data} from a text file\n\
 
   string fname(args(0).string_value());
   ifstream file(fname.c_str());
-  if (!file) error("could not open file");
+  if (!file) {
+    error("could not open file");
+    return retval;
+  }
+
   file.seekg(0, ios::end);
-  ifstream::pos_type flen = file.tellg();
+  ifstream::pos_type rem,flen = file.tellg();
   file.seekg(0, ios::beg);
-  
-  char data[(long int)flen];
-  file.read(data,flen);
-  string datastr(data,flen);
-  string::size_type len_sep = sep.length();
-  string::size_type pos = 0;
-  string::size_type end = datastr.length() - 1;
-  unsigned long n = 1, nr = 0, nc = 0;
+  rem = flen;
+  char line[(long int)flen];
 
-    // replace '\n' with separator string
+  string linestr;
+  unsigned long nr = 0, nc = 0, ctmp = 0;
+
   while(1) {
-    pos = datastr.find("\n",pos);
-    if (pos == string::npos) break;
+    file.getline(line,flen,'\n');
+    string linestr(line);
+    rem -= linestr.length() + 1;
+    if (rem<0) break;
+   
+    insert_zeros(&linestr, sep);
+    ctmp = replace_separator(&linestr, sep);
+    
+    ComplexColumnVector col(ctmp);
+    istringstream linestrm(linestr);
+    for (unsigned i=0;i<ctmp;i++) {
+      col(i) = octave_read_complex(linestrm);
+    }
+     
+    lines.push(col);
+    
+    //save maximum number of columns and number of rows
+    nc = max(nc,ctmp);
     nr++;
-    if (pos < end) {
-      if (len_sep == 1)
-        datastr.replace(pos++,1,sep);
-      else {
-        datastr.erase(pos,1);
-        datastr.insert(pos,sep);
-        pos+=len_sep;
-        end = datastr.length() - 1;
-      }
-    } else {
-        // remove '\n' at file end
-      datastr.erase(pos++,1);
-    }
   }
   
-    // fill in zeros between multiple occurance of separators
-  string spat = sep + sep;
-  string rpat = sep + "0";
-  string::size_type len_rpat = rpat.length();
-  pos = 0;
-  while(1) {
-    pos = datastr.find(spat,pos);
-    if (pos == string::npos) break;
-    datastr.erase(pos,1);
-    datastr.insert(pos,rpat);
-    pos += len_rpat;
-  }
+  unsigned long r = 0;
+  long c = 0;
+  ComplexMatrix cm(nr,nc);
+  ComplexColumnVector cv;
 
-    // check for separators at begin and end
-  pos = datastr.find(sep,0);
-  if (pos != string::npos) datastr.insert(0,"0");
-  pos = datastr.find(sep,datastr.length() - 1);
-  if (pos != string::npos) datastr.insert(datastr.length(),"0");
-
-    // replace separators with blanks
-  pos = 0;
-  while(1) {
-    pos = datastr.find(sep,pos);
-    if (pos == string::npos) break;
-    n++;
-    if (len_sep == 1)
-      datastr.replace(pos++,1," ");
-    else {
-      datastr.erase(pos,len_sep);
-      datastr.insert(pos++," ");
+  for (r = 0; r < nr;r++) {
+    cv = lines.front();
+    lines.pop();
+    for (c = 0; c<cv.length(); c++) {
+      cm(r,c) = cv(c);
     }
   }
-    // write data into Matrix via stringstream
-  nc = n/nr;
-  istringstream datastrm(datastr);
-  Matrix m(nr,nc);
-  unsigned long r,c; 
-  for (r=0;r<nr;r++) {
-    for (c=0;c<nc;c++) {
-      datastrm >> m(r,c);
-    }
-  }    
-  retval(0) = m;
+  retval(0) = cm;
   return retval;
 }

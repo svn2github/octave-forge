@@ -86,9 +86,12 @@ DEFINES = -DOCTAVE_FORGE $(HAVE_DO_FORTRAN_INDEXING) \
 MOFLAGS =
 
 .PHONY: all clean count $(SUBDIRS)
+
 .SUFFIXES:
 
-all : $(FIXEDVERTARGET) $(DEPENDS) $(OBJECTS) $(TARGETS) $(SUBDIRS)
+.PRECIOUS: %.d %.o
+
+all : $(TARGETS) $(SUBDIRS)
 
 ifndef OCTAVE_FORGE
 install :
@@ -134,7 +137,7 @@ $(FIXEDLINKTARGETS) :
 	$(LN_S) $(FIXEDTARGET) $@
 
 ifneq (,$(DEPENDS))
-  include $(DEPENDS)
+  sinclude $(DEPENDS)
 endif
 
 $(SUBDIRS) :
@@ -149,7 +152,9 @@ fixed-int.d : int/fixed.cc
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M int/fixed.cc; \
 	$(LN_S) $(patsubst %.cc,%.d,$<) $@
 
-fixed-int.o : int/fixed.cc
+fixed-var.d : $(FIXEDVERTARGET)
+
+fixed-int.o : int/fixed.cc fixed-int.d
 	@echo "Compiling $@ from $<"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $<; \
 	$(RM) -f $@ ; \
@@ -159,7 +164,7 @@ fixed-int.o : int/fixed.cc
 	@echo "Depending $<"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M $<
 
-%.o:%.cc
+%.o:%.cc %.d
 	@echo "Compiling $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 

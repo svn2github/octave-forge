@@ -49,7 +49,7 @@ $(GALOISLINKTARGETS) :
 	$(LN_S) $(GALOISTARGET) $@
 
 ifneq (,$(DEPENDS))
-  include $(DEPENDS)
+  sinclude $(DEPENDS)
 endif
 
 $(SUBDIRS) :

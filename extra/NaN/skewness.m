@@ -34,8 +34,9 @@ function R = skewness(i,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	Version 1.23;	07 Jun 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	Version 1.28;	10 Oct 2002
+%	CopyLeft (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+
 
 % check input arguments 
 
@@ -44,8 +45,23 @@ if nargin==1,
         if isempty(DIM), DIM=1; end;
 end;
 
-R = statistic(i,DIM,'SKEWNESS');
+[R.SUM,R.N,R.SSQ] = sumskipnan(i,DIM);	% sum
 
-if iscell(R),
-        R=R{1};
-end;
+R.MEAN 	= R.SUM./R.N;			% mean 
+R.SSQ0	= R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
+
+%if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
+    n1 	= max(R.N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and SEM are INF
+%else
+%    n1	= R.N;
+%end;
+
+R.VAR	= R.SSQ0./n1;	     		% variance (unbiased) 
+R.STD	= sqrt(R.VAR);		     	% standard deviation
+
+i       = i - repmat(R.MEAN,size(i)./size(R.MEAN));
+R.CM3 	= sumskipnan(i.^3,DIM)./n1;
+%R.CM4 	= sumskipnan(i.^4,DIM)./n1;
+
+R = R.CM3./(R.STD.^3);
+%R = R.CM4./(R.VAR.^2)-3;

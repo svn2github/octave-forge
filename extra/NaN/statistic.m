@@ -56,9 +56,8 @@ function [varargout]=statistic(i,DIM,fun)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	Version 1.18	25 Mar 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Version 1.23	
+%	Copyright (C) 2000-2002 by Alois Schloegl  <a.schloegl@ieee.org>	
 
 
 if nargin==1,
@@ -81,7 +80,7 @@ if ~DIM,
 end;
 
 %R.N   	= sumskipnan(~isnan(i),DIM); 	% number of elements
-[R.SUM,R.N,R.SSQ] = sumskipnan(i,DIM);	% sum
+[R.SUM,R.N,R.SSQ,R.S4P] = sumskipnan(i,DIM);	% sum
 %R.S3P  = sumskipnan(i.^3,DIM);		% sum of 3rd power
 %R.S4P  = sumskipnan(i.^4,DIM);		% sum of 4th power
 %R.S5P  = sumskipnan(i.^5,DIM);		% sum of 5th power
@@ -117,6 +116,8 @@ if exist('OCTAVE_VERSION')>4,
         if strncmp(fun,'CM',2) 
                 oo = str2num(fun(3:length(fun)));
                 varargout  = sumskipnan(i.^oo,DIM)./n1;
+        elseif isempty(fun)
+	        varargout  = R;
         else	            
                 varargout  = getfield(R,upper(fun));
         end;

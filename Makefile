@@ -9,9 +9,10 @@ endif
 
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 
+ifdef OCTAVE_FORGE
+
 .PHONY: all install clean distclean dist $(SUBMAKEDIRS)
 
-ifdef OCTAVE_FORGE
 all: $(SUBMAKEDIRS)
 	@echo "Build complete."
 	@echo "Please read FIXES/README before you install."
@@ -49,6 +50,10 @@ $(SUBMAKEDIRS):
 	cd $@ && $(MAKE) $(MAKECMDGOALS)
 
 else
-install:
+
+.PHONY: all install
+
+all install:
 	@echo "./configure ; make ; make install"
+
 endif

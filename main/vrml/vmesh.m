@@ -31,12 +31,21 @@
 ## "checker", c : 1x1 : Same as [c,c].
 ##
 ##        RGB and reflectivity values should be in the [0,1] interval.
+##
+## "level", l   : 1xN : Display one or more horizontal translucent plane(s)
+##
+##                        z = l(i)   (1 <= i <= length(l))
+## 
+## "lcol", lc   : Color of the plane(s).                        <[.7 .7 .7]>
+## "ltran",lt   : Transparency of the level plane(s).                  <0.3>
 
 ## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
 
 function s = vmesh (x, y, z, varargin)
 
-
+level = [];
+lcol = [7 7 7]/10;
+ltran = 0.3;
 
 if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
   zz = x ;
@@ -60,10 +69,13 @@ surf_args = list (x,y,z);	# Arguments that'll be passed to vrml_surf
 
 if nargin > 3,
 
-  op1 = " tran col checker creaseAngle emit colorPerVertex tex zcol ";
+  op1 = [" tran col checker creaseAngle emit colorPerVertex tex zcol",\
+	 " level lcol ltran "];
   op0 = " smooth zgrey zrb ";
 
-  opts = read_options (varargin,"op0",op0,"op1",op1);
+  df = tar (level, lcol, ltran);
+
+  opts = read_options (varargin,"op0",op0,"op1",op1,"default",df);
 
 				# Identify options for vrml_surf()
   all_surf_opts  = list ("tran", "col", "checker", "creaseAngle", "emit", \
@@ -79,6 +91,7 @@ if nargin > 3,
       end
     end
   end
+  [level,ltran,lcol] = getfield (opts, "level","ltran","lcol");
 end
 
 s = leval ("vrml_surf", surf_args);
@@ -113,7 +126,39 @@ end
 
 sbg = vrml_Background ("skyColor", [0.5 0.5 0.6]);
 
-s = [pl, sbg, s , fr];
+slevel = "";
+if ! isempty (level)
+  level = level(:)';		# Make a row
+  nlev = length (level);
+  
+  xmin = min (x(:)); xmax = max (x(:));
+  ymin = min (y(:)); ymax = max (y(:));
+
+  if any (size (lcol) != [nlev,3])
+    nlc = prod (szlc = size (lcol));
+				# Transpose colors
+    if all (szlc == [3,nlev]), lcol = lcol'; 
+				# Single gray level
+    elseif nlc == 1          , lcol *= ones (nlev,3);
+				# nlev gray levels
+    elseif nlc == nlev       , lcol = lcol(:)*[1 1 1];
+    elseif nlc == 3          , lcol = ones(nlev,1)*lcol(:)';
+    else error ("lcol has size %i x %i",szlc);
+    end
+  end
+  if prod (size (ltran)) == 1    , ltran = ltran*ones(1,nlev); end
+  
+  for i = 1:nlev
+    slevel = [slevel, \
+	      vrml_parallelogram ([xmin     xmin     xmax     xmax;\
+				   ymin     ymax     ymax     ymin;\
+				   level(i) level(i) level(i) level(i)],\
+				  "col",lcol(i,:),"tran",ltran(i))];
+  end
+end
+
+s = [pl, sbg, s , fr, slevel];
+
 
 vrml_browse (s);
 ## keyboard

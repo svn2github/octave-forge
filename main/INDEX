@@ -289,20 +289,20 @@ Sets
  setdiff  complement
  setxor 
  ismember 
-#Control structures
-# if 
-# else 
-# elseif 
-# end 
-# for 
-# while 
-# break 
-# switch 
-# case 
-# otherwise 
-# try 
-# catch 
-# return 
+Control structures
+ if 
+ else 
+ elseif 
+ end 
+ for 
+ while 
+ break 
+ switch 
+ case 
+ otherwise 
+ try 
+ catch 
+ return 
 Interpreter interface
  iskeyword isvarname
  eval 
@@ -328,9 +328,9 @@ Constants
  is_nan_or_na
 Symbol table
  exist
- global = keyword: declare global variables in the current scope.
+ global
  isglobal
- static = Declare variables as persistent (depreciated, use persistent).
+ static
  persistent
  mfilename 
  mlock 

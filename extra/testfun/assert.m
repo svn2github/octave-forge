@@ -136,9 +136,9 @@ function assert(cond, expected, tol)
   if (!isempty(coda))
     msg = [ msg, "\n", coda ];
   endif
-  disp(msg);
-  ## XXX FIXME XXX why can't I do error(msg) ??
-  error("assertion failed");
+  error("%s",msg);
+  ## disp(msg);
+  ## error("assertion failed");
 endfunction
 
 ## empty

@@ -7,7 +7,7 @@ echo "test('','explain',fid);" >> fntests.m
 echo "passes=0; tests=0;" >>fntests.m
 
 # Find all toplevel non-cvs directories
-DIRS="FIXES `find main extra nonfree -mindepth 1 -maxdepth 1 -type d ! -name CVS`"
+DIRS="`find FIXES main/* extra/* nonfree/* -type d ! -name CVS -prune`"
 
 # Find the tests in that directory
 for dir in $DIRS; do
@@ -43,7 +43,7 @@ for dir in $DIRS; do
     prompt="$dir [tests $NUMTESTS of $NUMFILES files]"
 
     # if no files have tests in them, skip
-    echo "printf('%s\n','$prompt');" >>fntests.m
+    echo "printf('%s','$prompt'); disp('');" >>fntests.m
     if test -z "$TESTS" ; then
 	echo "printf('%-40s ---> success','');disp('');" >>fntests.m
     else 

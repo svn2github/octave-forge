@@ -72,6 +72,7 @@ if test -z "$mpath" || test -z "$opath" || test -z "$xpath" || test -z "$ver" ; 
 
    dnl Construct program to get mkoctfile version and local install paths
    cat > conftest.cc <<EOF
+#include <octave/config.h>
 #include <octave/version.h>
 #include <octave/defaults.h>
 

@@ -59,8 +59,7 @@ function __plt2vv__ (x, y, fmt)
   endif
 
   tmp = [x, y];
-#  cmd = sprintf ("gplot tmp %s", fmt);
-#  eval (cmd);
+
   __grpltfmt__(tmp, fmt, "xy");
 
 endfunction

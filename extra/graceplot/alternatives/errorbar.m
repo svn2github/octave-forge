@@ -97,15 +97,6 @@
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
-## @item #
-## Set boxes plot style.
-##
-## @item #~
-## Set boxerrorbars plot style.
-##
-## @item #~>
-## Set boxxyerrorbars plot style.
-##
 
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
@@ -117,12 +108,6 @@ function errorbar (varargin)
   if (nargin < 2)
     usage ("errorbar (...)");
   endif
-
-#  gset nologscale x;
-#  gset nologscale y;
-#  gset nopolar;
-
-  length (varargin)
 
   __errcomm__ ("errorbar", varargin{:});
 

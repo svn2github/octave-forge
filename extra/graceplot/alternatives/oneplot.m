@@ -33,15 +33,6 @@ function oneplot ()
    global __grmultiplot_mode__ = 0;
    global __grmultiplot_xn__;
    global __grmultiplot_yn__;
-#   global __multiplot_mode__ = 0;
-
-#   if (__multiplot_mode__)
-#     gset nomultiplot;
-#     gset size 1, 1;
-#     gset origin 0, 0;
-#     __multiplot_mode__ = 0;
-#     gnuplot_command_replot = "rep";
-#   endif
 
   __grsetgraph__(0);
   __grcmd__("arrange(1,1, 0.1, 0.15, 0.2); redraw;");

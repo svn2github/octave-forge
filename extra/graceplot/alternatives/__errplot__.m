@@ -22,108 +22,63 @@
 ## Really plot errorbar plots. User interface in function errorbar.
 ##
 ## @example
-## __errplot__ (@var{arg1}, @var{arg2}, ..., @var{fmt})
+## __errplot__ (@var{fstr}, @var{arg1}, ..., @var{arg6})
 ## @end example
 ##
 ## @end deftypefn
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, errorbar, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, stairs, errorbar, replot, xlabel, ylabel, and title}
 
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 ## Adapted to work with Grace 4.8.2003
 
-function __errplot__ (caller, varargin)
+function __errplot__ (fstr,a1,a2,a3,a4,a5,a6)
 
-  if (nargin < 4) # at least two data arguments needed
-    usage ("__errplot__ (caller, arg1, ..., fmt)");
+  if (nargin < 3 || nargin > 7) # at least three data arguments needed
+    usage ("__errplot__ (fmt, arg1, ...)");
   endif
 
-  fstr = " ";
-  ndata = 0;
+  fmt = __pltopt__ ("__errplot__", fstr);
 
-  for k=1:length(varargin)
-    a = varargin{k++};
-    if (! isstr (a))
-      ndata++;
-      eval (sprintf ("arg%d = a;", ndata));
-    else
-      fstr = a;
-    endif
-  endfor
-
-  fmt = __pltopt__ (caller, fstr);
-
-  nplots = size (arg1, 2);
-  len = size (arg1, 1);
-
-  if (ndata == 2)
-    for i = 1:nplots,
-      tmp = [(1:len)', arg1(:,i), arg2(:,i)];
-#      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-#      eval (cmd);
-      fmt1 = fmt(min(i, rows(fmt)),:);
-      if (index (fmt1, "xydx"))
-        settype = "xydx";
-      else
-        settype = "xydy";
-      endif
-      __grpltfmt__(tmp, fmt1, settype);
-    endfor
-  elseif (ndata == 3)
-    for i = 1:nplots,
-      tstr = "tmp =[arg1(:,i)";
-      for j = 2:ndata,
-       tstr = [tstr, sprintf(", arg%d(:,i)", j)];
-      endfor
-      tstr = [tstr, "];"];
-      eval (tstr);
-#      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-#      eval (cmd);
-      fmt1 = fmt(min(i, rows(fmt)),:);
-      if (index (fmt1, "xydx"))
-        settype = "xydx";
-      else
-        settype = "xydy";
-      endif
-      __grpltfmt__(tmp, fmt1, settype);
-    endfor
-  elseif (ndata == 4)
-    for i = 1:nplots, # this is getting ugly
-      #      if (index (fmt, "boxxy") || index (fmt, "xyerr"))
-      fmt1 = fmt(min(i, rows(fmt)),:);
-      if (index (fmt1, "xydxdy"))
-        tstr = "tmp = [arg1(:,i), arg2(:,i), arg3(:,i), arg4(:,i)];";
-        settype = "xydxdy";
-      elseif (index (fmt1, "xydx"))
-#        tstr = "tmp = [arg1(:,i), arg2(:,i), arg1(:,i)-arg3(:,i), arg1(:,i)+arg4(:,i)];";
-        tstr = "tmp = [arg1(:,i), arg2(:,i), arg4(:,i), arg3(:,i)];";
-        settype = "xydxdx";
-      else
-#        tstr = "tmp = [arg1(:,i), arg2(:,i), arg2(:,i)-arg3(:,i), arg2(:,i)+arg4(:,i)];";
-        tstr = "tmp = [arg1(:,i), arg2(:,i), arg4(:,i), arg3(:,i)];";
-        settype = "xydydy";
-      endif
-      eval (tstr);
-#      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-#      eval (cmd);
-      __grpltfmt__(tmp, fmt1, settype);
-    endfor
-  elseif (ndata == 6)
-    for i = 1:nplots,
-      #      tstr = "tmp = [arg1(:,i), arg2(:,i), arg1(:,i)-arg3(:,i), arg1(:,i)+arg4(:,i), arg2(:,i)-arg5(:,i), arg2(:,i)+arg6(:,i)];";
-      tstr = "tmp = [arg1(:,i), arg2(:,i), arg4(:,i), arg3(:,i), arg6(:,i), arg5(:,i)];";
-      eval (tstr);
-disp("polk");
-#      cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :));
-#      eval (cmd);
-      fmt1 = fmt(min(i, rows(fmt)),:);
-      settype = "xydxdxdydy";
-      __grpltfmt__(tmp, fmt1, settype);
-    endfor
-  else
-    usage ("__errplot__ (arg1, ..., fmt)");
-  endif
+  nplots = size (a1, 2);
+  len = size (a1, 1);
+  for i = 1:nplots
+    ifmt = fmt(1+mod(i,size(fmt,1)), :);
+    switch (nargin - 1)
+      case 2
+	tmp = [(1:len)', a1(:,i), a2(:,i)];
+	if (index (ifmt, "xydx"))
+          settype = "xydx";
+	else
+          settype = "xydy";
+	endif	
+      case 3
+	tmp = [a1(:,i), a2(:,i), a3(:,i)];
+	if (index (ifmt, "xydx"))
+          settype = "xydx";
+	else
+          settype = "xydy";
+	endif
+      case 4
+	if (index (ifmt, "xydxdy"))
+          tmp = [a1(:,i), a2(:,i), a3(:,i), a4(:,i)];
+          settype = "xydxdy";
+	elseif (index (ifmt, "xydx"))
+          tmp = [a1(:,i), a2(:,i), a4(:,i), a3(:,i)];
+          settype = "xydxdx";
+	else
+          tmp = [a1(:,i), a2(:,i), a4(:,i), a3(:,i)];
+          settype = "xydydy";
+	endif
+      case 5
+	error ("error plot requires 2, 3, 4 or 6 columns");
+      case 6
+	tmp = [a1(:,i), a2(:,i), a4(:,i), a3(:,i), a6(:,i), a5(:,i)];
+	settype = "xydxdxdydy";
+    endswitch
+    __grpltfmt__(tmp, ifmt, settype);
+endfor
 
 endfunction

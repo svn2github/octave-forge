@@ -59,20 +59,6 @@ function __plt2vm__ (x, y, fmt)
   k = 1;
   fmt_nr = rows (fmt);
   if (y_nc > 0)
-#     tmp = [x, y];
-#     cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1,
-#                    deblank (fmt (k, :)));
-#     if (k < fmt_nr)
-#       k++;
-#     endif
-#     for i = 2:y_nc
-#       cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, 1, i, i+1,
-#                      deblank (fmt (k, :)));
-#       if (k < fmt_nr)
-#         k++;
-#       endif
-#     endfor
-#     eval (cmd);
     for i = 1:y_nc
       tmp = [x, y(:,i)];
       __grpltfmt__(tmp, deblank (fmt (k, :)), "xy");

@@ -42,9 +42,7 @@ function __plt2ss__ (x, y, fmt)
   [y_nr, y_nc] = size (y);
 
   if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
-#     tmp = [x, y];
-#     cmd = sprintf ("gplot tmp %s", fmt);
-#     eval (cmd);
+
     __grpltfmt__([x, y], fmt, "xy");
   else
     error ("__plt2ss__: arguments must be scalars");

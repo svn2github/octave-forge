@@ -25,10 +25,6 @@
 ## @seealso{plot, semilogx, semilogy, loglog, polar, 
 ## bar, stairs, ylabel, and title}
 
-## If you already have a plot
-## displayed, use the command @code{replot} to redisplay it with the new
-## labels.
-
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Created: 28.7.2003
 

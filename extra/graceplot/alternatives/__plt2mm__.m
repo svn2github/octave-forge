@@ -43,20 +43,7 @@ function __plt2mm__ (x, y, fmt)
   fmt_nr = rows (fmt);
   if (x_nr == y_nr && x_nc == y_nc)
     if (x_nc > 0)
-#       tmp = [x, y];
-#       cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1,
-#                      deblank (fmt (k, :)));
-#       if (k < fmt_nr)
-#         k++;
-#       endif
-#       for i = 2:x_nc
-#         cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, i, x_nc, x_nc+i,
-#                        deblank (fmt (k, :)));
-#         if (k < fmt_nr)
-#           k++;
-#         endif
-#       endfor
-#       eval (cmd);
+
       for i = 1:x_nc
 	tmp = [x(:,i), y(:,i)];
 	__grpltfmt__(tmp, deblank (fmt (k, :)), "xy");

@@ -26,7 +26,6 @@
 ## <tpikonen@pcu.helsinki.fi> 
 ## Created: 7.8.2003
 
-
 function __plr2__ (theta, rho, fmt)
 
   if (nargin != 3)
@@ -37,8 +36,7 @@ function __plr2__ (theta, rho, fmt)
   if(!hold_state)
     __grcla__();
     [cur_figure, cur_graph, cur_set] = __grgetstat__();
-    __grcmd__(sprintf("focus g%i; g%i type polar; autoscale onread xyaxes", 
-		      cur_graph, cur_graph));
+    __grcmd__(sprintf("focus g%i; g%i type polar; autoscale onread xyaxes", cur_graph, cur_graph));
   endif
 
   if (any (imag (theta)))
@@ -50,18 +48,18 @@ function __plr2__ (theta, rho, fmt)
   endif
 
   unwind_protect
-
-    if (isvector (theta))
-      if (isvector (rho))
-	if (length (theta) != length (rho))
-          error ("polar: vector lengths must match");
-	endif
-	if (rows (rho) == 1)
-          rho = rho';
-	endif
-	if (rows (theta) == 1)
-          theta = theta';
-	endif
+    
+   if (isvector (theta))
+    if (isvector (rho))
+      if (length (theta) != length (rho))
+        error ("polar: vector lengths must match");
+      endif
+      if (rows (rho) == 1)
+        rho = rho';
+      endif
+      if (rows (theta) == 1)
+        theta = theta';
+      endif
 	__grpltfmt__([theta, rho], fmt, "xy");
       elseif (ismatrix (rho))
 	[t_nr, t_nc] = size (theta);
@@ -109,10 +107,6 @@ function __plr2__ (theta, rho, fmt)
 	  fmt1 = fmt(min(i, rows(fmt)),:);
 	  __grpltfmt__([theta(:,i), rho], fmt1, "xy");
 	endfor
-## 	diag_r = diag (rho);
-## 	x = diag_r * cos (theta);
-## 	y = diag_r * sin (theta);
-## 	__plt2mv__ (x, y, fmt);
       elseif (ismatrix (rho))
 	if (size (rho) != size (theta))
           error ("polar: matrix dimensions must match");

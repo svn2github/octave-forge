@@ -38,11 +38,6 @@ function subwindow (xn, yn)
    global __grmultiplot_mode__ = 0;
    global __grmultiplot_xn__;
    global __grmultiplot_yn__;
-#   global __multiplot_mode__ = 0;
-#   global __multiplot_xsize__;
-#   global __multiplot_ysize__;
-#   global __multiplot_xn__;
-#   global __multiplot_yn__;
 
   ## check calling argument count
 
@@ -75,12 +70,5 @@ function subwindow (xn, yn)
 
   index = (yn - 1) * __grmultiplot_xn__ + xn;
   __grsetgraph__(index-1);
-
-#   xo = (xn - 1.0) * __multiplot_xsize__;
-#   yo = (__multiplot_yn__ - yn) * __multiplot_ysize__;
-
-#   eval (sprintf ("gset origin %g, %g", xo, yo));
-
-#   clearplot;
 
 endfunction

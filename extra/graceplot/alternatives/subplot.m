@@ -82,13 +82,6 @@ function subplot (rows, columns, index)
    global __grmultiplot_xn__;
    global __grmultiplot_yn__;
 
-#   global __multiplot_mode__ = 0;
-#   global __multiplot_xsize__;
-#   global __multiplot_ysize__;
-#   global __multiplot_xn__;
-#   global __multiplot_yn__;
-#   global __multiplot_xi__;
-#   global __multiplot_yi__;
 
   if (nargin != 3 && nargin != 1)
     usage ("subplot (rows, columns, index) or subplot (rcn)");
@@ -129,11 +122,6 @@ function subplot (rows, columns, index)
 
     oneplot ();
 
-    ## XXX FIXME XXX -- do we really need to reset these here?
-
-#     __multiplot_xn__ = 1;
-#     __multiplot_yn__ = 1;
-
   else
 
     ## doing multiplot plots
@@ -145,40 +133,8 @@ function subplot (rows, columns, index)
       multiplot(columns, rows);
 
     endif
-    
+
     __grsetgraph__(index-1);
-  
-#     if (! __multiplot_mode__
-#         || __multiplot_xn__ != columns
-#         || __multiplot_yn__ != rows)
-
-#       __multiplot_mode__ = 1;
-#       __multiplot_xn__ = columns;
-#       __multiplot_yn__ = rows;
-#       __multiplot_xsize__ = 1.0 ./ columns;
-#       __multiplot_ysize__ = 1.0 ./ rows;
-
-#       gnuplot_command_replot = "cle;rep";
-
-#       gset multiplot;
-
-#       eval (sprintf ("gset size %g, %g", __multiplot_xsize__,
-#                      __multiplot_ysize__));
-#     endif
-
-#     ## get the sub plot location
-
-#     yp = fix ((index-1)/columns);
-#     xp = index - yp*columns - 1;
-#     __multiplot_xi__ = ++xp;
-#     __multiplot_yi__ = ++yp;
-
-#     ## set the origin
-
-#     xo = (xp - 1.0) * __multiplot_xsize__;
-#     yo = (rows - yp) * __multiplot_ysize__;
-
-#     eval (sprintf ("gset origin %g, %g", xo, yo));
 
   endif
 

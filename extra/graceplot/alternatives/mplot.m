@@ -41,16 +41,6 @@ function mplot (varargin)
    global __grmultiplot_mode__ = 0;
    global __grmultiplot_xn__;
    global __grmultiplot_yn__;
-#   global __multiplot_mode__ = 0;
-#   global __multiplot_xsize__;
-#   global __multiplot_ysize__;
-#   global __multiplot_xn__;
-#   global __multiplot_yn__;
-#   global __multiplot_xi__;
-#   global __multiplot_yi__;
-
-#   gset nologscale;
-#   gset nopolar;
 
   __plt__ ("plot", varargin{:});
 
@@ -65,24 +55,5 @@ function mplot (varargin)
     endif
   endif
 
-#   if (__multiplot_mode__)
-
-#     if (__multiplot_xi__ < __multiplot_xn__)
-#       __multiplot_xi__++;
-#     else
-#       __multiplot_xi__ = 1;
-#       if (__multiplot_yi__ < __multiplot_yn__)
-#         __multiplot_yi__++;
-#       else
-#         __multiplot_yi__ = 1;
-#       endif
-#     endif
-
-#     xo = (__multiplot_xi__ - 1.0) * __multiplot_xsize__;
-#     yo = (__multiplot_yn__ - __multiplot_yi__) * __multiplot_ysize__;
-
-#     eval (sprintf ("gset origin %g, %g", xo, yo));
-
-#   endif
 
 endfunction

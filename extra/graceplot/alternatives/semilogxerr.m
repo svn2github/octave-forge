@@ -48,10 +48,6 @@ function semilogxerr (varargin)
     usage ("semilogxerr (...)");
   endif
 
-#  gset logscale x;
-#  gset nologscale y;
-#  gset nopolar;
-
   __errcomm__ ("semilogxerr", varargin{:});
 
 endfunction

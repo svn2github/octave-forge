@@ -52,7 +52,7 @@
 ## right arguments, otherwise this is the same as the orginal bar.m -TI
 
 function [xb, yb] = bar (x, y)
- 
+
   if (nargin == 1)
     if (isvector (x))
       len = 3 * length (x) + 1;
@@ -143,5 +143,5 @@ function [xb, yb] = bar (x, y)
     xb = tmp_xb;
     yb = tmp_yb;
   endif
- 
+
 endfunction

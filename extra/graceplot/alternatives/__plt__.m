@@ -27,12 +27,13 @@
 
 function __plt__ (caller, varargin)
 
-  args = nargin; # nargin is now a function
-  if (args == 2)
+  nargs = nargin ();
+
+  if (nargs == 2)
 
     __plt1__ (varargin{1}, "");
 
-  elseif (args > 2)
+  elseif (nargs > 2)
 
     first_plot = 1;
     hold_state = __grishold__ ();
@@ -47,15 +48,15 @@ function __plt__ (caller, varargin)
 
       k = 1;
       x = varargin{k++};
-      args = args - 2;
+      nargs -= 2;
       x_set = 1;
       y_set = 0;
 
       ## Gather arguments, decode format, and plot lines.
 
-      while (args-- > 0)
+      while (nargs-- > 0)
 
-#	fmt = "";
+        fmt = "";
         new = varargin{k++};
 
         if (isstr (new))

@@ -41,13 +41,6 @@ function multiplot (xn, yn)
    global __grmultiplot_mode__ = 0;
    global __grmultiplot_xn__;
    global __grmultiplot_yn__;
-#   global __multiplot_mode__ = 0;
-#   global __multiplot_xsize__;
-#   global __multiplot_ysize__;
-#   global __multiplot_xn__;
-#   global __multiplot_yn__;
-#   global __multiplot_xi__;
-#   global __multiplot_yi__;
 
   if (nargin != 2)
     usage ("multiplot (xn, yn)");
@@ -64,15 +57,6 @@ function multiplot (xn, yn)
 
     oneplot ();
 
-    ## XXX FIXME XXX -- do we really need to reset these here?
-
-#     __multiplot_xsize__ = 1;
-#     __multiplot_ysize__ = 1;
-#     __multiplot_xn__ = 1;
-#     __multiplot_yn__ = 1;
-#     __multiplot_xi__ = 1;
-#     __multiplot_yi__ = 1;
-
   else
 
     if (xn < 1 || yn < 1)
@@ -83,30 +67,6 @@ function multiplot (xn, yn)
     __grmultiplot_mode__ = 1;
     __grmultiplot_xn__ = xn;
     __grmultiplot_yn__ = yn;
-
-#    gset multiplot;
-
-#     xsize = 1.0 ./ xn;
-#     ysize = 1.0 ./ yn;
-
-#     eval (sprintf ("gset size %g, %g", xsize, ysize));
-
-#     xo = 0.0;
-#     yo = (yn - 1.0)*ysize;
-
-#     eval (sprintf ("gset origin %g, %g", xo, yo));
-
-#      __multiplot_mode__ = 1;
-#      __multiplot_xsize__ = xsize;
-#      __multiplot_ysize__ = ysize;
-#      __multiplot_xn__ = xn;
-#      __multiplot_yn__ = yn;
-#      __multiplot_xi__ = 1;
-#      __multiplot_yi__ = 1;
-
-#     gnuplot_command_replot = "cle;rep";
-
-#     clearplot;
 
   endif
 

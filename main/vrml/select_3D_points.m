@@ -36,7 +36,7 @@ want_list = 0;			# Return list of selected points or 0-1
 if nargin >=2 && length (sel1(:)) == P && all (sel1==0 || sel1==1),
 				# sel1 has been passed 
   sel1 = sel1(:)';
-  if columns (sel1) != P || !isempty (sel1) && any (sel1!=1 & sel1!=0),
+  if columns (sel1) != P || (!isempty (sel1) && any (sel1!=1 & sel1!=0)),
     want_list = 1;
     tmp = zeros (1,P);
     tmp(state) = 1;

@@ -81,7 +81,7 @@ for k = 1:NTR, %if ~mod(k,100),k, end;
         elseif 1;
 	        a3 = polyval([-ARP(k,pp-1:-1:1).*(1:pp-1), pp],1./p(idx).');
 	        a  = polyval([-ARP(k,pp:-1:1) 1],p(idx).');
-		F(k,:) = (1+(imag(R)~=0))./(a.*a3*2); 
+		F(k,:) = (1+(imag(P)~=0))./(a.*a3); 
         end;	
 end;
 if nargin>1

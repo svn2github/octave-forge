@@ -110,6 +110,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if (DIM < 1) DIM=1;		// in case DIM is still undefined 
 
 	ND2 = (ND>DIM ? ND : DIM);	// number of dimensions of output 
+
 	SZ2 = (int*)mxCalloc(ND2, sizeof(int)); // allocate memory for output size
 
 	for (j=0; j<ND; j++)		// copy size of input;  
@@ -122,7 +123,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	for (j=DIM, D3=1;  j<ND; D3=D3*SZ2[j++]); 	// D3 is the number of blocks containing D1*D2 elements 
 
 	SZ2[DIM-1] = 1;		// size of output is same as size of input but SZ(DIM)=1;
-
 
 	    // create outputs
 	#define TYP mxDOUBLE_CLASS
@@ -150,6 +150,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
         	LOutputSum4  = mxGetPr(POutput[3]);
     	}
 
+	mxFree(SZ2);
 
 	// OUTER LOOP: along dimensions > DIM
 	for (l = 0; l<D3; l++) 	
@@ -206,10 +207,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			            	mexErrMsgTxt("Number of NaNs is different for REAL and IMAG part");
 	            		if (POutputCount >= 3)
         	        		LOutputSum2[ix2] += LSum2;
-			}	
+			}
 		}
 	}
-	mxFree(SZ2);    	
 }
 
 

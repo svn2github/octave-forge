@@ -1,0 +1,11 @@
+configure
+config.log
+config.cache
+config.status
+Makeconf.in
+Makeconf
+AUTHORS
+*.tar.gz
+afunclist.html
+index
+octinst.sh

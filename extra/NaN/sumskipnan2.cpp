@@ -47,20 +47,22 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 {
     const int	*SZ;	    
     double* LInput;
+    double* LInputI;
     double* LOutputSum;
+    double* LOutputSumI;
     double* LOutputCount;
     double* LOutputSum2;
     double* LOutputSum4;
     double  x, x2;
-    unsigned long   LCount;
+    unsigned long   LCount, LCountI;
     double  LSum, LSum2, LSum4;
 
     unsigned		DIM = 1; 
-    unsigned long	D1, D2, D3, NN; 	//  	
+    unsigned long	D1, D2, D3; 	// NN; 	//  	
     unsigned    	ND, ND2;	// number of dimensions: input, output
     unsigned long	ix1, ix2;	// index to input and output
 
-    unsigned    	i, j, k, l;	// running indices 
+    unsigned    	j, k, l;	// running indices 
     int 		*SZ2;		// size of output 	    
 
      	
@@ -76,19 +78,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	mexErrMsgTxt("First argument must be NUMERIC.");
     if(!mxIsDouble(PInputs[0]))
 	mexErrMsgTxt("First argument must be DOUBLE.");
-    if(mxIsComplex(PInputs[0]))
-	mexErrMsgTxt("First argument must not be complex but REAL.");
-    LInput = mxGetPr(PInputs[0]);
+    if(mxIsComplex(PInputs[0]) & (POutputCount > 2))
+	mexErrMsgTxt("More than 2 output arguments only supported for REAL data ");
+    LInput  = mxGetPr(PInputs[0]);
+    LInputI = mxGetPi(PInputs[0]);
 
     // get 2nd argument
     if  (PInputCount == 2){
         if ((!mxIsNumeric(PInputs[1])) || (mxGetM(PInputs[1]) != 1) || (mxGetN(PInputs[1]) != 1))
             mexErrMsgTxt("Second argument must be scalar.");
-        DIM = (unsigned long)(mxGetScalar(PInputs[1]));
+        DIM = (unsigned)(mxGetScalar(PInputs[1]));
     }
 
     	ND = mxGetNumberOfDimensions(PInputs[0]);	
-    	NN = mxGetNumberOfElements(PInputs[0]);
+    	// NN = mxGetNumberOfElements(PInputs[0]);
     	SZ = mxGetDimensions(PInputs[0]);		
 
 	ND2 = (ND>DIM ? ND : DIM);	// number of dimensions of output 
@@ -108,8 +111,15 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    // create outputs
 	#define TYP mxDOUBLE_CLASS
 
-	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
-    	LOutputSum = mxGetPr(POutput[0]);
+	if(mxIsComplex(PInputs[0]))
+	{	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxCOMPLEX);
+		LOutputSum = mxGetPr(POutput[0]);
+		LOutputSumI= mxGetPi(POutput[0]);
+    	}
+	else
+	{	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
+		LOutputSum = mxGetPr(POutput[0]);
+    	}
     	if (POutputCount >= 2){
 		POutput[1] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
         	LOutputCount = mxGetPr(POutput[1]);
@@ -138,9 +148,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			LSum4  = 0.0;
 	        	    		
 			// LOOP  along dimension DIM
-	    		for (i=0; i<D2; i++) 	
+	    		for (j=0; j<D2; j++) 	
 			{
-				x = LInput[ix1 + i*D1];
+				x = LInput[ix1 + j*D1];
         	        	if (!mxIsNaN(x))
 				{
 					LCount++; 
@@ -157,6 +167,24 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
                 		LOutputSum2[ix2] = LSum2;
             		if (POutputCount >= 4)
                 		LOutputSum4[ix2] = LSum4;
+
+			if(mxIsComplex(PInputs[0]))
+			{
+				LSum = 0.0;	
+	    			LCountI = 0;
+				for (j=0; j<D2; j++) 	
+				{
+					x = LInputI[ix1 + j*D1];
+        	        		if (!mxIsNaN(x))
+					{
+						LCountI++; 
+						LSum += x; 
+					}
+				}
+				LOutputSumI[ix2] = LSum;
+				if (LCount != LCountI)
+			            	mexErrMsgTxt("Number of NaNs is different for REAL and IMAG part");
+			}	
 		}
 	}
 	mxFree(SZ2);    	

@@ -11,6 +11,7 @@
 
 //////////////////////////////////////////////////
 
+static
 void BandMatrixTimesMatrix(Matrix &A, Matrix &B, Matrix &C, int length, int band, int bc){
   double tmp;
   int left  = min(band, length-band) ;
@@ -67,6 +68,7 @@ void BandMatrixTimesMatrix(Matrix &A, Matrix &B, Matrix &C, int length, int band
   };
 };
 
+static
 void BandMatrixTimesVector(Matrix &A, ColumnVector &B, ColumnVector &C, int length, int band){
   double tmp;
 
@@ -90,6 +92,7 @@ void BandMatrixTimesVector(Matrix &A, ColumnVector &B, ColumnVector &C, int leng
 };
   
   
+static
 void CholeskyFactorization(Matrix &A,int nr, int nc){
   int jMax;
   double tmp;
@@ -138,6 +141,7 @@ void CholeskyFactorization(Matrix &A,int nr, int nc){
 #endif
 };
 
+static
 void CholeskyFactorization2(Matrix &A,int nr, int nc){
   int jMax;
   double tmp;
@@ -169,6 +173,7 @@ void CholeskyFactorization2(Matrix &A,int nr, int nc){
   return;
 };
 
+static
 void CholeskyFactorization3(Matrix &A,int nr, int nc){
   int jMax;
   double tmp;
@@ -203,6 +208,7 @@ void CholeskyFactorization3(Matrix &A,int nr, int nc){
 
 
 
+static
 void CholeskyBacksub(Matrix &R,Matrix &B,int nr, int nc, int bc){
 #ifdef NEW
 // Do Lower triangular substitution (LD)c=b -> c=D\L\b
@@ -239,6 +245,7 @@ void CholeskyBacksub(Matrix &R,Matrix &B,int nr, int nc, int bc){
 #endif
 };
 
+static
 void CholeskyBacksub2(Matrix &R,Matrix &B,int nr, int nc, int bc){
 
   //double *pB = B.fortran_vec();  // will be modified
@@ -261,6 +268,7 @@ void CholeskyBacksub2(Matrix &R,Matrix &B,int nr, int nc, int bc){
 };
 
 
+static
 void GramSchmidt(Matrix &V, ColumnVector &norms,int Vr, int Vc){
 double tmp=0.0;
  for(int i=0; i<Vc; i++){
@@ -277,6 +285,7 @@ double tmp=0.0;
  };
 };
 
+static
 void GramSchmidtGen(Matrix &V,Matrix &V2,Matrix &B,ColumnVector &norms,int Vr, int Vc){
 //  V will return the orthonormalized column vectors of V
 //  V2 is used for temporary storage only

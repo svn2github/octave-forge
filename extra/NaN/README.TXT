@@ -46,6 +46,7 @@ Currently are implemented:
 				significance test and confidence intervals 
 	SPEARMAN, RANKCORR spearman's rank correlation coefficient. They might be replaced by CORRCOEF. 
 	COV		covariance matrix
+	RANKS		calculates ranks for non-parametric statistics 
 	
 	
 REFERENCE(S):
@@ -164,7 +165,7 @@ alternative function definition (except built-in's) with the same name.
 This checks whether all previous functions have been replaced
 
 
-	Version 1.25 	Date: 15 Aug 2002
+	Version 1.26 	Date: 19 Aug 2002
 	Copyright (C) 2000-2002 by  Alois Schloeg <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

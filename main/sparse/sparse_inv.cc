@@ -67,14 +67,17 @@ SPLU : Sparse Matrix LU factorization\n\
 \n\
 With one input and two or three outputs, SPLU has the same effect as LU,\n\
 Except that row and column permutations are returned\n\
+NOTE: this means that SPLU is _not_ a drop in replacement for LU\n\
+\n\
 \n\
 [L,U,Pr,Pc] = splu(A) \n\
           returns unit lower triangular L, upper triangular U,\n\
           and permutation matrices Pr,Pc with Pr*A*Pc' = L*U.\n\
-[Lp,Up] = superlu(A) returns permuted triangular L and upper triangular U\n\
+[Lp,Up] = splu(A) returns permuted triangular L and upper triangular U\n\
           with A = L*U.\n\
           here Pr*Lp = L  and Up*Pc = U\n\
-\n\
+  ")
+/*
 Note: 2nd input funcionality has not been verified\n\
 With a second input, the columns of A are permuted before factoring:\n\
 \n\
@@ -84,7 +87,7 @@ With a second input, the columns of A are permuted before factoring:\n\
           with A(:,psparse) = L*U.\n\
 Here psparse will normally be a user-supplied permutation matrix or vector\n\
 to be applied to the columns of A for sparsity. \n\
-  ")
+*/
 {
    octave_value_list retval;
    octave_value tmp;
@@ -112,7 +115,7 @@ to be applied to the columns of A for sparsity. \n\
          ColumnVector permcidx = args(1).column_vector_value();
          for( int i= 0; i< n ; i++ ) 
             perm_c[i]= (int) permcidx(i) - 1;
-         permc_spec= -1; //permc is perselected
+         permc_spec= -1; //permc is preselected
       }
 
       octave_value LS, US;
@@ -350,7 +353,7 @@ rather than\n\
 
 DEFUN_DLD (spabs, args, nargout ,
   "real_a = spabs( a );\n\
-SPINV : Absolute value of a sparse matrix\n\
+SPABS : Absolute value of a sparse matrix\n\
   ")
 {
    octave_value_list retval;
@@ -413,6 +416,9 @@ SPINV : Absolute value of a sparse matrix\n\
 
 /*
  * $Log$
+ * Revision 1.10  2003/07/23 17:21:54  aadler
+ * modified help files
+ *
  * Revision 1.9  2003/02/20 23:03:58  pkienzle
  * Use of "T x[n]" where n is not constant is a g++ extension so replace it with
  * OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky MipsPRO CC

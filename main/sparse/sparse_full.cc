@@ -70,8 +70,9 @@ DEFUN_DLD (full, args, ,
 // is_sparse and friends
 //
 DEFUN_DLD (is_sparse, args, ,
-"FM= is_sparse (X)\n"
-"  Return true if X is a sparse storage matrix\n"
+"retval= is_sparse (X)\n"
+"  Returns true (ie. 1) if X is a matrix with sparse storage\n"
+"  Returns false (ie. 0) otherwise\n"
 "  see also is_real_sparse , is_complex_sparse")
 {
   octave_value_list retval;
@@ -91,8 +92,9 @@ DEFUN_DLD (is_sparse, args, ,
 }
 
 DEFUN_DLD (is_real_sparse, args, ,
-"FM= is_real_sparse (X)\n"
-"  Return true if X is a real matrix with sparse storage\n"
+"retval= is_real_sparse (X)\n"
+"  Returns true (ie. 1) if X is a real matrix with sparse storage\n"
+"  Returns false (ie. 0) otherwise\n"
 "  see also is_sparse , is_complex_sparse")
 {
   octave_value_list retval;
@@ -111,8 +113,9 @@ DEFUN_DLD (is_real_sparse, args, ,
 }
 
 DEFUN_DLD (is_complex_sparse, args, ,
-"FM= is_complex_sparse (X)\n"
-"  Return true if X is a real matrix with sparse storage\n"
+"retval= is_complex_sparse (X)\n"
+"  Returns true (ie. 1) if X is a complex matrix with sparse storage\n"
+"  Returns false (ie. 0) otherwise\n"
 "  see also is_sparse , is_real_sparse")
 {
   octave_value_list retval;
@@ -287,6 +290,9 @@ SPFIND: a sparse version of the find operator\n\
 
 /*
  * $Log$
+ * Revision 1.7  2003/07/23 17:21:54  aadler
+ * modified help files
+ *
  * Revision 1.6  2002/12/11 17:19:32  aadler
  * sparse .^ scalar operations added
  * improved test suite

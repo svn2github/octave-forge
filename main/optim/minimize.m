@@ -157,17 +157,12 @@ end
 ops = read_options (opls,\
 		    "op0",op0, "op1",op1, "default",default);
 
-[backend,verbose,   \
- df, df, d2f, d2i,  \
- hess, ihess, jac,  \
- ftol, utol, dtol,  \
- order, narg, maxev,\
- isz, ndiff] = getfields (ops, "backend","verbose",\
-			 "df", "df","d2f", "d2i", \
-			 "hess", "ihess", "jac",  \
-			 "ftol" , "utol", "dtol", \
-			 "order", "narg", "maxev",\
-			 "isz", "ndiff");
+backend=ops.backend; verbose=ops.verbose; 
+df=ops.df; d2f=ops.d2f; d2i=ops.d2i; 
+hess=ops.hess; ihess=ops.ihess; jac=ops.jac; 
+ftol=ops.ftol; utol=ops.utol; dtol=ops.dtol;
+order=ops.order; narg=ops.narg; maxev=ops.maxev; 
+isz=ops.isz; ndiff=ops.ndiff;
 
 if length (df), error ("Option 'df' doesn't exist any more. Sorry.\n");end
 if jac, error ("Option 'jac' doesn't exist any more. Sorry.\n");end

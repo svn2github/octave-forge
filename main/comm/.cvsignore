@@ -1,0 +1,5 @@
+*.d
+*.oct
+DOCSTRINGS
+*.info
+*.ps

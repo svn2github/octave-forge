@@ -19,6 +19,7 @@
 
 function s = vrml_lines(x,f,varargin)
 
+if nargin < 2, f = ones (1,columns(x)); end
 args = nargin; # nargin is now a function
 col = [1, 0, 0] ;
 
@@ -32,7 +33,7 @@ i=1;
 
 while args>=i ,
 
-  tmp = nth (varagin, i++) ;	# pos 2.1.39
+  tmp = nth (varargin, i++) ;	# pos 2.1.39
   if ! isstr(tmp) ,
     error ("vrml_lines : Non-string option : \n") ;
     ## keyboard

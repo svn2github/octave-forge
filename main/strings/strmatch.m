@@ -1,4 +1,5 @@
 ## Copyright (C) 2000 Paul Kienzle
+##           Jun 2003 Alois Schloegl, support for cell arrays.   
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,10 +16,10 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## usage: strmatch(s, A [, 'exact'])
-## Determines which entries of string matrix A match string s.  If
-## 'exact' is not given, then s only needs to match A up to the length
-## of s.  Null characters match blanks. Results are returned as a column
-## vector.
+## Determines which entries of A match string s. A can be a string matrix  
+## or a cell array of strings. If 'exact' is not given, then s only needs 
+## to match A up to the length of s. Null characters match blanks. 
+## Results are returned as a column vector.
 function idx = strmatch(s,A,exact)
   if (nargin < 2 || nargin > 3)
     usage("strmatch(s,A,'exact')");
@@ -31,7 +32,19 @@ function idx = strmatch(s,A,exact)
     do_fortran_indexing = 1;
 
     [nr, nc] = size (A);
-    if (length (s) > nc)
+    if iscell(A)
+            match = zeros(size(A));
+            if nargin>2,
+                    for k = 1:nc*nr,
+                            match(k) = strmatch(s,A{k},exact);    
+                    end;        
+            else
+                    for k = 1:nc*nr,
+                            match(k) = strmatch(s,A{k});    
+                    end;        
+            end;        
+            idx = find(match);
+    elseif (length (s) > nc)
       idx = [];
     else
       if (nargin == 3 && length(s) < nc) s(1,nc) = ' '; endif

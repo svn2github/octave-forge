@@ -138,7 +138,7 @@ function yi = interp1(x, y, xi, method, extrap)
     s = (t - idx)./dx;
     yi(range,:) = s(:,ones(1,nc)).*dy(idx,:) + y(idx,:); 
 
-  elseif strcmp(method, 'pchip')
+  elseif strcmp(method, 'pchip') || strcmp(method, '*pchip')
     if (nx == 2) x = linspace(minx, maxx, ny); endif
     yi(range,:) = pchip(x, y, xi);
 

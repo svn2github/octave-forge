@@ -1,3 +1,5 @@
+*** README is automatically generated from admin/template.readme ***
+
 The octave-forge project contains functions for Octave which are not in
 the main distribution.  While the main Octave distribution is
 conservative about accepting new functions and changes, octave-forge is
@@ -82,6 +84,9 @@ Package organization
 package/NOINSTALL
 	don't install this package; rename or delete this
 	file if you want the package installed anyway.
+package/INDEX
+	a functions in the directory organized into categories.  See
+	octave-forge/INDEX for a description of the format.
 package/*.m 
 	m-files for the package.  These will be installed in
 	site/mfiles/octave-forge/package

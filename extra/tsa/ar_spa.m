@@ -1,11 +1,11 @@
 function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
-% Spectral analysis of AR-polynomial
-% function  [w,A] = ar_spa(ARP,fs,E);
+% AR_SPA Spectral analysis of AR-polynomial
+% function  [w,A,B,R,P,F,ip] = ar_spa(AR,fs,E);
 %
 %  INPUT:
-% ARP   autoregressive parameters
+% AR   autoregressive parameters
 % fs    sampling rate, gives w and B in [Hz], if not given in radians 
-% E     noise level (root mean square),  gives A and F in units of E, if not given as relative amplitude
+% E     noise level (mean square),  gives A and F in units of E, if not given as relative amplitude
 %
 %  OUTPUT
 % w	center frequency (in radians)
@@ -27,9 +27,9 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 % Isaksson A. and Wennberg, A. (1975) Visual evaluation and computer analysis of the EEG - A comparison. Electroenceph. clin. Neurophysiol., 38: 79-86.
 % G. Florian and G. Pfurtscheller (1994) Autoregressive model based spectral analysis with application to EEG. IIG - Report Series, University of Technolgy Graz, Austria.
 
-%	Version 2.70
-%	last revision 14.02.2001
-%	Copyright (c) 1996-2001 by Alois Schloegl
+%	$Revision$
+% 	$Id$
+%	Copyright (c) 1996-2003 by Alois Schloegl
 %	e-mail: a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or
@@ -52,7 +52,7 @@ if nargout >5
 end;
 
 [NTR,pp]=size(ARP);
-%B=NaN;
+%B=1;
 
 R=zeros(size(ARP));
 P=zeros(size(ARP));
@@ -61,34 +61,27 @@ A=zeros(size(ARP));
 B=zeros(size(ARP));
 F=zeros(size(ARP));
 
-for k=1:NTR, %if ~mod(k,100),k, end;
+for k = 1:NTR, %if ~mod(k,100),k, end;
 	[r,p,tmp] = residue(1,[1 -ARP(k,:)]);
 	[tmp,idx] = sort(-abs(r));   
 	R(k,:) = r(idx)';		% Residual, 
    	P(k,:) = p(idx)';		% Poles
    	%r(k,:)=roots([1 -ARP(k,:)])';
    	w(k,:) = angle(p(idx)');	% center frequency (in [radians])
-   	A(k,:) = 1./polyval([1 -ARP(k,:)],exp(i*w(k,:)));	% Amplitude 
+   	A(k,:) = 1./abs(polyval([1 -ARP(k,:)],exp(i*w(k,:))));	% Amplitude 
    	%A(k,:) = freqz(1,[1 -ARP(k,:)],w(k,:));	% Amplitude 
    	%A2(k,:) = abs(r)'./abs(exp(i*w(k,:))-r');   % Amplitude
    	B(k,:) = -log(abs(p(idx)'));  %Bandwidth
            
-        if nargout >5  
-           % Effizienz (Rechengeschwindigkeit) koennte eventuell noch gesteigert werden
-        F(k,:) = (1+sign(imag(r(idx)')))./(polyval([-ARP(k,pp-1:-1:1).*(1:pp-1) pp],1./p(idx).').*polyval([-ARP(k,pp:-1:1) 1],p(idx).'));        
-	end;
+        if nargout < 6,  
 
-        if 0;
-	        x1(k,:) = polyval([-ARP(k,pp-1:-1:1).*(1:pp-1) pp],1./p(idx).');
-	        x2(k,:) = polyval([-ARP(k,pp:-1:1) 1],p(idx).');
-		F(k,:) = (1+(imag(R)~=0))./(x1(k,:).*x2(k,:));        
-        elseif 0 %for l=1:pp,
-                if imag(R(k,l))==0,
-                	F(k,l) = 1/(x1(k,l)*x2(k,l));        
-                else,
-                        %xn = (x1(k,l)*x2(k,l));
-                        F(k,l) = 2/(x1(k,l)*x2(k,l));
-                end;
+	elseif 0,	
+	        F(k,:) = (1+sign(imag(r(idx)')))./(polyval([-ARP(k,pp-1:-1:1).*(1:pp-1) pp],1./p(idx).').*polyval([-ARP(k,pp:-1:1) 1],p(idx).'));        
+
+        elseif 1;
+	        a3 = polyval([-ARP(k,pp-1:-1:1).*(1:pp-1), pp],1./p(idx).');
+	        a  = polyval([-ARP(k,pp:-1:1) 1],p(idx).');
+		F(k,:) = (1+(imag(R)~=0))./(a.*a3);        
         end;	
 end;
 if nargin>1
@@ -100,7 +93,7 @@ if nargin>2
         F=F.*E(:,ones(1,pp));
 end;
 
-ip=imag(R)~=0; return;
+ip = sum(imag(R)~=0)/2; return;
 
 np(:,1) = sum(imag(R')==0)';   % number of real poles
 np(:,2) = pp-np(:,1);		% number of imaginary poles

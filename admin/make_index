@@ -100,7 +100,7 @@ foreach my $f ( @C_files ) {
     if ( open(IN,$f) ) {
 	while (<IN>) {
 	    # skip to the next function
-	    next unless /^\s*DEF(UN[ (]|UN_MAPPER|UN_DLD|CMD|VAR)/;
+	    next unless /^\s*DEF(UN[ (]|UN_MAPPER|UN_DLD|CMD|VAR|CONST)/;
 
 	    # print "looking at $_";
 	    # extract function name to pattern space
@@ -169,7 +169,7 @@ foreach my $f ( @C_files ) {
 #	    print " description: $desc";
 
 	    # register the function with a brief description
-	    register_function($function,$desc,$f);
+	    register_function($function,$desc,$f,1);
 	}
 	close (IN);
     } else {
@@ -182,14 +182,11 @@ foreach my $f ( @m_files ) {
     my $desc     = extract_description($f);
     my $function = basename($f, ('.m'));
     die "Null function?? [$f]\n" unless $function;
-    register_function($function,$desc,$f);
+    register_function($function,$desc,$f,1);
 }
 
 # grab help from octave's DOCSTRINGS
-if ( 1 ) {
-  # Don't use DOCSTRINGS so that we can point directly to the source
-}
-elsif ( !$include_octave ) {
+if ( !$include_octave ) {
   # skip DOCSTRINGS if just summary
 }
 elsif (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
@@ -203,7 +200,7 @@ elsif (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
 	    last if /^\c_/;
 	    $desc .= $_;
 	}
-	register_function($function,$desc,$OCTAVE);
+	register_function($function,$desc,$OCTAVE,0);
     }
     close(IN);
 }
@@ -211,6 +208,41 @@ else {
     print STDERR "could not open $OCTAVE/src/DOCSTRINGS !\n";
 }
 
+# Desperate last measure. Try help <func> within octave. Good for getting
+# keyword and operator descriptions
+# XXX FIXME XXX, we shouldn't respawn a new octave process each time !!!
+my $cmd = "LD_LIBRARY_PATH=$OCTAVE/src/:$OCTAVE/liboctave:$OCTAVE/libcruft $OCTAVE/src/octave -q";
+my $initcmd = "path='.:$OCTAVE/src//:$OCTAVE/scripts//'; suppress_verbose_help_message = 1;";
+foreach my $TB ( toolbox_list()) {
+  foreach my $cat ( cat_list($TB) ) {
+    foreach my $func ( cat_funcs($TB,$cat) ) {
+      if (! defined $function_description{$func}[1] && ! defined $index_notes{$func} ) {
+	open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run octave";
+	print Writer $initcmd;
+        print Writer "help $func; 1"; close(Writer);
+	my @lines = <Reader>; close(Reader);
+	my @err = <Errer>; close(Errer);
+	waitpid(-1,&WNOHANG);
+
+	# Display errors, if any
+	if (@err) {
+	  print ">>> @err";
+	} else {
+	  my $body = join("",@lines);
+	  if ($body =~ /help: sorry,/) {
+	    # do nothing
+	  } else {
+	    # XXX FIXME XXX clipping below is good for ops/keywords only
+	    my $start = index($body,"$func") + 1 + length($func);
+	    my $stop = index($body,"ans =");
+	    $body = substr($body,$start,$stop-$start);
+	    register_function($func,$body,$OCTAVE,0);
+	  }
+	}
+      }
+    }
+  }
+}
 
 # print a summary table rather than generating the html
 if ( $summary ) {
@@ -373,15 +405,19 @@ sub register_function { # {{{1
     my ($function,      # in   $index{toolbox}{category} = [functions]
         $desc,          # in   $toolbox_desc{toolbox} = description
 	$file,
+	$replace_shadow,
        )      = @_;
     ++$n_appearances{$function};
     if ($n_appearances{$function} > 1) {
+      if ($replace_shadow != 0) {
 	push @shadowed, $function_description{$function}[0] if $file =~ /^$OCTAVE/ 
-	    and !shadow_path($function_description{$function}[0]);
-#        print "$file:$function appeared previously\n";
+	  and !shadow_path($function_description{$function}[0]);
+	#        print "$file:$function appeared previously\n";
+      }
     } else {
         ++$n_functions;
     }
+
     $octave_forge_function{$function} = 1 unless $file =~ /^$OCTAVE/;
     if (!defined $index_by_function{$function}) {
 	my $entry = $file;
@@ -396,7 +432,11 @@ sub register_function { # {{{1
 
     my $oneline = first_sentence($desc);
     #printf "%30s %s\n", $function, $oneline;
-    @function_description{$function} = [ $file, $oneline, $desc ];
+    if ($replace_shadow != 0) {
+      @function_description{$function} = [ $file, $oneline, $desc ];
+    } else {
+      @function_description{$function} = [ $function_description{$function}[0], $oneline, $desc ];
+    }
 #    push @function_description{$function}}, "$file\n$oneline\n$desc";
     #printf "%-12s %-20s %s\n", $function,
     #                           $index_by_function{$function}[0],

@@ -1,4 +1,4 @@
-function  [AR,RC] = arcext(MX,K);
+function  [AR,RC] = arcext(MX,P);
 % Extract AR and RC of order P from Matrix MX
 % function  [AR,RC] = arcext(MX,P);
 %
@@ -13,7 +13,7 @@ function  [AR,RC] = arcext(MX,K);
 % All input and output parameters are organized in rows, one row 
 % corresponds to the parameters of one channel
 %
-% see also ACOVF ACORF IDURLEV PARCOR YUWA 
+% see also ACOVF ACORF DURLEV 
 % 
 % REFERENCES:
 %  P.J. Brockwell and R. A. Davis "Time Series: Theory and Methods", 2nd ed. Springer, 1991.
@@ -21,9 +21,8 @@ function  [AR,RC] = arcext(MX,K);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%  Version 2.72
-%  03.04.2001
-%  Copyright (c) 1998-2001 by  Alois Schloegl
+%  Version 2.91
+%  Copyright (C) 1998-2002 by Alois Schloegl
 %  a.schloegl@ieee.org	
 
 % This library is free software; you can redistribute it and/or
@@ -41,11 +40,20 @@ function  [AR,RC] = arcext(MX,K);
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 % Boston, MA  02111-1307, USA.
 
-if nargin<2
-        [lr,lc]=size(MX);
-	K=floor(sqrt(2*lc));
-end;
-    
-AR = MX(:,K*(K-1)/2+(1:K));
-RC = MX(:,(1:K).*(2:K+1)/2);
 
+[lr,lc]=size(MX);
+
+if ~mod(lc,2),   % compressed form of MX
+	K = lc/2;
+elseif ~mod(sqrt(8*lc+1)-1,2)	% full number of elements
+	K = (sqrt(8*lc+1)-1)/2;
+else		% invalid number of elements
+	fprintf(2,'Warning ARCEXT: Number of elements is different than a triangular matrix\n');
+end;
+
+if K~=P & lc~=(K*(K+1)/2
+	[AR,RC,PE]=rc2ar(MX(:,(1:P).*(2:P+1)/2));
+else
+	AR = MX(:,P*(p-1)/2+(1:P));
+	RC = MX(:,(1:P).*(2:P+1)/2);
+end;

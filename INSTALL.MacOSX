@@ -26,7 +26,7 @@ You should get a file hello.oct that can be run in octave
 
 Install OCTAVE-FORGE on Mac OS X 10.2.x
 =======================================
-0) The following instructions refer to octave-forge from CVS as of 2003-03-18
+0) The following instructions refer to octave-forge from CVS as of 2003-05-22
 
 1) Preparations
 ---------------

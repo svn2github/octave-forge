@@ -118,7 +118,7 @@ function retval = datestr(date,code,P)
       case { 1, 'dd-mmm-yyyy' }
 	str = sprintf("%02d-%s-%04d",D,__month_names(M,:),Y);
       case { 2, 'mm/dd/yy' }
-	str = sprintf("%02d-%02d-%02d",D,M,Y2);
+	str = sprintf("%02d-%02d-%02d",M,D,Y2);
       case { 3, 'mmm' } 
 	str = sprintf("%s",__month_names(M,:));
       case { 4, 'm' }

@@ -13,6 +13,7 @@
 ## with x,y from above.
 
 ## This program is in the public domain
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function contourf(z,n,w)
   if nargin < 3, w = 16; end

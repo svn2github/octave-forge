@@ -8,6 +8,7 @@
 ##    fplot('[cos(x),sin(x)]',[0,2*pi])
 
 ## I grant this program to the public domain.
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function fplot(fn,limits,n)
   if (nargin < 3) n = 100; endif

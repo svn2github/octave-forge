@@ -16,7 +16,7 @@
 ##	mat2str( [1-i -1+i],[],1 )   |-    [+1-1i,-1+1i]
 ##HINT	better use commas to seperate row-elements of x
 ##ASSOC	sprintf, int2str
-##AUTHOR  (C) 2002 Rolf Fabian <fabian@tu-cottbus.de> 020531
+##Copyright (C) 2002 Rolf Fabian <fabian@tu-cottbus.de> 020531
 ##	published under current GNU GENERAL PUBLIC LICENSE
 
 function s=mat2str(x,n,PLUS)

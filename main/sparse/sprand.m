@@ -12,6 +12,8 @@
 ## is non-zero.
 
 ## This program is public domain
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+
 function S = sprand(m,n,d)
   if nargin == 1
     [i,j,v,nr,nc] = spfind(m);

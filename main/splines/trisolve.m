@@ -49,6 +49,7 @@
 ## linked routines on your version of Octave.
 
 ## This program is granted to the public domain.
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function x = trisolve(l, d, u, b, cl, cu)
 

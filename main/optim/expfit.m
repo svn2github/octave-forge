@@ -41,7 +41,7 @@
 ## roots of a polynomial. I used 'roots.m', if there is
 ## something better please use that code.
 ##
-## Copyright (C) 2000: Gert Van den Eynde
+## Copyright (C) 2000 Gert Van den Eynde
 ## SCK-CEN (Nuclear Energy Research Centre)
 ## Boeretang 200
 ## 2400 Mol

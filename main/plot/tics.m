@@ -10,6 +10,8 @@
 ## Axis is 'x', 'y' or 'z'.
 
 ## This program is in the public domain
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+
 function tics(axis,pos,lab)
 
   if nargin == 1

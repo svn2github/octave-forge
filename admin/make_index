@@ -25,7 +25,7 @@ die "$script  <index>\n" unless scalar @ARGV == 1;
 
 my %index_by_TB_cat   = (); # i_TB_cat{toolbox}{category} = list of functions
 my %index_by_function = (); # i_function{function} =[ [toolbox_1,category_1],
-                            #                         [toolbox_2,category_2],..]
+#                         [toolbox_2,category_2],..]
 my %TB_description    = ();
 load_index($ARGV[0], 
            \%index_by_TB_cat, 
@@ -34,34 +34,22 @@ load_index($ARGV[0],
 
 my $location = `pwd`;
 my $PATH     = "";
-if ($location =~ m{^(.*)/admin$}) {
+if ($location =~ m\^(.*)/admin$\) {
     chdir "..";
     $PATH = "$1/";
 }
-    
+
 my %CR      = load_copyright();
 my @m_files = ();
 my @C_files = ();
 my %function_description  = ();
 my %octave_forge_function = ();
 find(\&cc_and_m_files, ".");
-foreach (@m_files, @C_files) {
-    my $function = basename($_, qw(.m .cc));
-    $octave_forge_function{$function} = 1;
-}
-
 find(\&cc_and_m_files, "$OCTAVE/scripts");
-#    print "Found @C_files\n";
-my %octave_function = (); # master index file might list unimplemented functions
-foreach (@m_files, @C_files) {
-    my $function = basename($_, qw(.m .cc));
-    $octave_function{      $function } = 1;
-    $function_description{ $function } = 0;
-}
 
 my @uncategorized = ();
 my %n_appearances = ();
-    my $n_functions = 0;
+my $n_functions = 0;
 foreach my $f ( @C_files ) {
     if ( open(IN,$f) ) {
 	while (<IN>) {
@@ -98,10 +86,7 @@ foreach my $f ( @C_files ) {
 	    $desc =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
 
 	    # register the function with a brief description
-	    my $oneline = first_sentence($desc);
-#	    print "::: $function: $oneline\n";
-#	    print $desc;
-	    register_function($function,$oneline,$f);
+	    register_function($function,$desc,$f);
 	}
 	close (IN);
     } else {
@@ -112,10 +97,8 @@ foreach my $f ( @C_files ) {
 foreach my $f ( @m_files ) {
     my $desc     = extract_description($f);
     my $function = basename($f, ('.m'));
-    my $oneline  = first_sentence($desc);
     die "Null function?? [$f]\n" unless $function;
-    $oneline = "(Octave) $oneline" if $f =~ m/^$OCTAVE/;
-    register_function($function,$oneline,$f);
+    register_function($function,$desc,$f);
 }
 
 if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
@@ -129,9 +112,7 @@ if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
 	    last if /^\c_/;
 	    $desc .= $_;
 	}
-	my $oneline = first_sentence($desc);
-	$oneline = "(Octave) $oneline";
-	register_function($function,$oneline,"Octave");
+	register_function($function,$desc,$OCTAVE);
     }
     close(IN);
 }
@@ -144,15 +125,59 @@ if (@uncategorized) {
     print "(out of ", $n_functions, " total)\n";
     my $rs = $,; $, = "\n";
     print sort(@uncategorized); $, = $rs;
+    print "\n";
 #    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
 }
+
+my %index_notes = (); # index_notes{function} = comment
+load_notes();
 
 write_html(\%index_by_TB_cat, 
            \%TB_description, 
            \%function_description,
-           \%octave_function,
            \%octave_forge_function,
            \%index_by_function);
+
+sub load_notes { #1 {{{
+# load the index notes file
+    open(IN,"admin/index_notes") or print STDERR "admin/index_notes not found --- ignoring\n" and return;
+    my %map;
+    while (<IN>) {
+	next if /^\s*$/;
+	next if /^\s*\#/;
+
+	# split line into identifier description
+	/^(\S+)\s+(\S.*)\s*$/ or die "index_notes invalid format:\n$_";
+	my $func = $1;
+	my $desc = $2;
+
+	# expand all $id in the description
+	my @parts = split('\$', "$desc");
+	foreach my $i ( 1 .. $#parts ) {
+	    $parts[$i] =~ /^(\w+)(\W.*)$/ or $parts[$i] =~ /^(\w+)()$/;
+	    $parts[$i] = "$map{$1}$2";
+	}
+	$desc = join("",@parts);
+
+	# process the identifier
+	if ($func =~ /^\$/) {
+	    # new identifier so define it
+	    $func = substr($func,1);
+	    $map{$func} = $desc;
+	} else {
+	    # new function so describe it
+	    if (defined $function_description{$func}) {
+		print "index_notes: $func is shadowed\n\t$desc\n";
+	    } elsif (defined $index_by_function{$func}) {
+		$index_notes{$func} = $desc;
+	    } else {
+		print "index_notes: $func has not been categorized\n\t$desc\n";
+	    }
+	}
+    }
+    close(IN);
+}
+
 
 sub first_sentence { # {{{1
 # grab the first real sentence from the function documentation
@@ -230,14 +255,16 @@ sub register_function { # {{{1
     } else {
         ++$n_functions;
     }
-    # printf "%-12s %s\n", $function, $desc;
+    $octave_forge_function{$function} = 1 unless $file =~ /^$OCTAVE/;
     if (defined $index_by_function{$function}) {
-        $function_description{$function} = $desc;
-       #printf "%-12s %-20s %s\n", $function, 
-       #                           $index_by_function{$function}[0],
-       #                           $index_by_function{$function}[1];
+	my $oneline = first_sentence($desc);
+	# printf "%-12s %s\n", $function, $oneline;
+        $function_description{$function} = $oneline;
+	#printf "%-12s %-20s %s\n", $function, 
+	#                           $index_by_function{$function}[0],
+	#                           $index_by_function{$function}[1];
     } else {
-        push @uncategorized, "$file/$function";
+        push @uncategorized, "$file\t$function";
     }
 } # 1}}}
 sub extract_description { # {{{1
@@ -300,6 +327,7 @@ sub load_index { # {{{1
     open(IN, $file) or die "Cannot read $file:  $!\n";
     while (<IN>) { 
         next if /^\s*$/; # skip blank lines
+	next if /^\s*\#/; # skip comment lines
         chomp;
         if      (/^(.*?)\s*>>\s*(.*?)$/) {
             $toolbox     = $1;
@@ -332,8 +360,6 @@ sub write_html { # {{{1
     my ($rhha_TB_cat,      # in   $index{toolbox}{category} = [functions]
         $rh_toolbox_desc,  # in   $toolbox_desc{toolbox} = description
         $rh_func_desc,     # in   $func_desc{function}   = description
-        $rh_octave_func,   # in   $octave_func{function} = 1 if function is
-                           #           implemented in octave or octave-forge
         $rh_oct_forge_f,   # in   $oct_forge_f{function} = 1 if function is
                            #           implemented in octave-forge
         $rhaa_func_TB_cat, # i_function{function} = [[toolbox, category],...]
@@ -402,15 +428,17 @@ sub write_html { # {{{1
 
                 # column 2: the description, if it exists
                 #
-                if ($rh_octave_func->{$func}) {
-                    if ($rh_func_desc->{$func}) {
-                        print OUT "    <td>", wrap("", "<br>",
-                                                   $rh_func_desc->{$func});
-                    } else {
-                        print OUT "    <td><i>no description</i>";
-                    }
-                } else {
-                    print OUT "    <td><i><b>not implemented</b></i>";
+		if (! defined $rh_func_desc->{$func} ) {
+		    my $notes = $index_notes{$func};
+		    $notes = "not implemented" if $notes eq "";
+		    $notes =~ s|<code>|</b></i><code>|g;
+		    $notes =~ s|</code>|</code><i><b>|g;
+                    print OUT "    <td><i><b>$notes</b></i>";
+		} elsif ($rh_func_desc->{$func} eq "") {
+                    print OUT "    <td><i><b>no description</b></i>";
+		} else {
+		    print OUT "    <td>", $rh_func_desc->{$func};
+#		        wrap("", "<br>",$rh_func_desc->{$func});
                 }
                 print OUT "</td></tr>\n";
             }
@@ -454,11 +482,11 @@ sub write_html { # {{{1
                 my $TB = $rhaa_func_TB_cat->{$func}[$i][0];
                 print OUT '    <td><a href="', $TB, '.html">', $TB, "</a>\n";
 
-                # column 3:  the category within the toolbox
-                $Text::Wrap::columns = 40;
-                print OUT "    <td>",
-                      wrap("", "<br>", 
-                           $rhaa_func_TB_cat->{$func}[$i][1]), "</td>\n";
+#                # column 3:  the category within the toolbox
+#                $Text::Wrap::columns = 40;
+#                print OUT "    <td>",
+#                      wrap("", "<br>", 
+#                           $rhaa_func_TB_cat->{$func}[$i][1]), "</td>\n";
 
                 # column 4:  the function's description
                 $Text::Wrap::columns = 50;

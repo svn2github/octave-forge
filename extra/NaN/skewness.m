@@ -46,3 +46,6 @@ end;
 
 R = statistic(i,DIM,'SKEWNESS');
 
+if iscell(R),
+        R=R{1};
+end;

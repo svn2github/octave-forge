@@ -198,6 +198,19 @@ end
 
 ## Run, w/ numerical differential ####################################
 ## Minimum wrt 'x' is y0
+[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"ndiff");
+
+cnt++;
+if max (abs (xlev-y0)) > 100*sqrt (eps)
+  if verbose
+    prn ("Error is too big : %8.3g\n", max (abs (xlev-y0)));
+  end
+  ok = 0;
+elseif verbose,  prn ("ok %i\n",cnt);
+end
+
+## Run, w/ numerical differential, specified by "order" ##############
+## Minimum wrt 'x' is y0
 [xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"order",1);
 
 cnt++;

@@ -64,6 +64,9 @@
 ##                  is not specified by 'df', 'd2f' or 'd2i', it will be
 ##                  computed numerically. Currently, only order 1 works.
 ## 
+## 'ndiff'        : Use a variable metric method (bfgs) using numerical
+##                  differentiation.
+##
 ## OPTIONS : STOPPING CRITERIA  Default is to use 'tol'
 ## ---------------------------
 ## 'ftol', ftol   : Stop search when value doesn't improve, as tested by
@@ -121,13 +124,13 @@ minimize_warn = 0;
 # Read the options ###################################################
 # ####################################################################
 # Options with a value
-op1 = " ftol utol dtol df d2f d2i order narg maxev isz ";
+op1 = "ftol utol dtol df d2f d2i order narg maxev isz";
 # Boolean options 
-op0 = " verbose backend jac hess ihess" ;
+op0 = "verbose backend jac hess ihess ndiff" ;
 
 default = setfield ("backend",0,"verbose",0,\
 		    "df","", "df","","d2f","","d2i","",  \
-		    "hess", 0,  "ihess", 0,  "jac", 0,   \
+		    "hess", 0,  "ihess", 0,  "jac", 0,"ndiff", 0,  \
 		    "ftol" ,nan, "utol",nan, "dtol", nan,\
 		    "order",nan, "narg",nan, "maxev",nan,\
 		    "isz",  nan);
@@ -161,12 +164,12 @@ ops = read_options (opls,\
  hess, ihess, jac,  \
  ftol, utol, dtol,  \
  order, narg, maxev,\
- isz] = getfield (ops, "backend","verbose",\
-		  "df", "df","d2f", "d2i", \
-		  "hess", "ihess", "jac",  \
-		  "ftol" , "utol", "dtol", \
-		  "order", "narg", "maxev",\
-		  "isz");
+ isz, ndiff] = getfield (ops, "backend","verbose",\
+			 "df", "df","d2f", "d2i", \
+			 "hess", "ihess", "jac",  \
+			 "ftol" , "utol", "dtol", \
+			 "order", "narg", "maxev",\
+			 "isz", "ndiff");
 
 
 				# Basic coherence checks #############
@@ -175,14 +178,16 @@ ws = "";			# Warning string
 es = "";			# Error string
 
 				# Warn if more than 1 differential is given
-if !!length (df) + !!length (d2f) + !!length (d2i) + jac + hess + ihess > 1
+if !!length (df) + !!length (d2f) + !!length (d2i) + jac + hess + ihess + \
+      ndiff > 1
 				# Order of preference of 
   if length (d2i), ws = [ws,"d2i='",d2i,"', "]; end
   if length (d2f), ws = [ws,"d2f='",d2f,"', "]; end
   if length (df),  ws = [ws,"df='",df,"', "]; end
-  if hess       ,  ws = [ws,"hess=1, "]; end
-  if ihess      ,  ws = [ws,"ihess=1, "]; end
-  if jac        ,  ws = [ws,"jac=1, "]; end
+  if hess       ,  ws = [ws,"hess, "]; end
+  if ihess      ,  ws = [ws,"ihess, "]; end
+  if jac        ,  ws = [ws,"jac, "]; end
+  if ndiff      ,  ws = [ws,"ndiff, "]; end
   ws = ws(1:length(ws)-2);
   ws = ["Options ",ws," were passed. Only one will be used\n"]
 end
@@ -219,8 +224,8 @@ if         verbose  , ctls.verbose = 1;     op = 1; end
 if isnan (narg), narg = 1; end
 
 				# ##########################################
-				# Choose method according to available
-				# derivatives (overriden below)
+				# Choose one optimization method ###########
+				# Choose according to available derivatives 
 if     ihess, d2f = f;  ctls.id2f = 1; op = 1;
 elseif hess,  d2f = f;
 end
@@ -230,16 +235,13 @@ if     length (d2i), method = "d2_min"; ctls.id2f = 1; op = 1; d2f = d2i;
 elseif length (d2f), method = "d2_min";
 elseif length (df) , method = "bfgs"  ; ctls.df  = df; op = 1;
 elseif jac         , method = "bfgs"  ; ctls.jac = 1 ; op = 1;
-else                 method = "nelder_mead_min";
-end
+  ## else                 method = "nelder_mead_min";
+  ## end
+				# Choose method because ndiff is passed ####
+elseif ndiff       , method = "bfgs"  ;
 
-if verbose
-  printf ("minimize(): Using '%s' as back-end\n",method);
-end
-				# ##########################################
 				# Choose method by specifying order ########
-
-if ! isnan (order)
+elseif ! isnan (order)
 
   if     order == 0, method = "nelder_mead_min";
   elseif order == 1
@@ -252,7 +254,13 @@ if ! isnan (order)
   else
     error ("minimize(): 'order' option only implemented for order<=2\n");
   end
-end				# EOF choose method by specifying order ####
+else				# Default is nelder_mead_min
+  method = "nelder_mead_min";
+end				# EOF choose method ########################
+
+if verbose
+  printf ("minimize(): Using '%s' as back-end\n",method);
+end
 
 				# More checks ##############################
 ws = "";

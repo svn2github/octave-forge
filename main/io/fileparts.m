@@ -9,7 +9,7 @@ function [p,f,e]=fileparts(fn)
 ##	a.schloegl@ieee.org	
 
 
-ix1=max(find(fn=='/'));
+ix1=max(find(fn==filesep));
 ix2=max(find(fn=='.'));
 
 if isempty(ix1), ix1 = 0; end;

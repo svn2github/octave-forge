@@ -117,13 +117,14 @@ end;
 %%%%% generate combinations using indices for pairwise calculation of the correlation
 YESNAN = any(isnan(X(:))) | any(isnan(Y(:)));
 if isempty(Y),
-        IX = ones(c1);
+        IX = ones(c1)-diag(ones(c1,1));
 else
         IX = zeros(c1+c2);
         IX(1:c1,c1+(1:c2)) = 1;
 %        X = [X,Y];
 end;  
 [jx,jy] = find(IX);
+R = repmat(nan,size(IX));
 
 if strcmp(lower(Mode(1:7)),'pearson');
         % see http://mathworld.wolfram.com/CorrelationCoefficient.html
@@ -184,9 +185,12 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
         if ~YESNAN,
                 iy = ranks(X);	%  calculates ranks;
                 
-                [R,N] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
-                R     = 1-6*R./(N.*(N.*N-1));
-                R     = reshape(R,c1,c2);
+                [r,N] = sumskipnan((iy(:,jx) - iy(:,jy)).^2,1);		% NN is the number of non-missing values
+                r     = 1-6*r./(N.*(N.*N-1));
+                %R     = reshape(r,c1,c2);
+                for k = 1:length(jx),
+                        R(jx(k),jy(k)) = r(k);
+                end;
         else
                 for k = 1:length(jx),
                         ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
@@ -204,14 +208,19 @@ end;
 if isempty(Y),
         R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
 end;
-
-if nargout<2, return, end;
+if nargout<2, 
+        return, 
+end;
 
 
 
 % SIGNIFICANCE TEST
 
-warning off; 	% prevent division-by-zero warnings in Matlab.
+%warning off; 	% prevent division-by-zero warnings in Matlab.
+if isempty(Y),
+        R(logical(eye(size(R)))) = NaN;	% prevent rounding errors 
+end;
+
 tmp = 1 - R.*R;
 t   = R.*sqrt(max(NN-2,0)./tmp);
 
@@ -225,7 +234,13 @@ else
 end;
 sig  = 2 * min(sig,1 - sig);
 
-if nargout<3, return, end;
+sig(logical(eye(size(sig)))) = 0;	% prevent rounding errors 
+if nargout<3, 
+        if isempty(Y),
+                R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
+        end;
+        return, 
+end;
 
 
 
@@ -238,4 +253,9 @@ sz  = 1.96./sqrt(NN-3);		% 0.95 confidence interval (i.e. 1.96*standard error) o
 ci1 = tanh(z-sz);
 ci2 = tanh(z+sz);
 
+if isempty(Y),
+        R(logical(eye(size(R)))) = 1;	% prevent rounding errors 
+        ci1(logical(eye(size(R)))) = 1;	% prevent rounding errors 
+        ci2(logical(eye(size(R)))) = 1;	% prevent rounding errors 
+end;
 return;

@@ -279,12 +279,12 @@ ans =\n\
 
 	// type checking for minimization parameter done here, since we don't know minarg
 	// until now	
-	if (!f_args(minarg - 1).is_real_matrix())
+	if (!(f_args(minarg - 1).is_real_matrix() || (f_args(minarg - 1).is_real_scalar())))
 	{
 		error("bfgsmin: minimization must be with respect to a column vector");
 		return octave_value_list();
 	}
-	if (f_args(minarg - 1).columns() != 1)
+	if ((f_args(minarg - 1).is_real_matrix()) && (f_args(minarg - 1).columns() != 1))
 	{
 		error("bfgsmin: minimization must be with respect to a column vector");
 		return octave_value_list();

@@ -45,95 +45,135 @@
 #include <octave/lo-mappers.h>
 #include <octave/oct-rand.h>
 #include <float.h>
+#include "error.h"
 
 // define argument checks
 static bool
 any_bad_argument(const octave_value_list& args)
 {
+
+	// objective function name is a string?
   if (!args(0).is_string())
     {
       error("samin: first argument must be string holding objective function name");
       return true;
     }
+		
+	// are function arguments contained in a cell?
   if (!args(1).is_cell())
     {
       error("samin: second argument must cell array of function arguments");
       return true;
     }
-  if (!args(2).is_cell())
-    {
-      error("samin: third argument must cell array of algorithm controls");
-      return true;
-    }	
+
+	// is control a cell?
   Cell control (args(2).cell_value());
+	if (error_state)
+	{
+   	error("samin: third argument must cell array of algorithm controls");
+		return true;
+	}	
+
+	// does control have proper number of elements?
   if (!(control.length() == 11))
     {
       error("samin: third argument must be a cell array with 11 elements");
       return true;
     }
-  if (!control(0).is_numeric_type())
-    {
-      error("samin: 1st element of controls must be LB: a vector of lower bounds");
-      return true;
-    }
-  if (!control(1).is_numeric_type())
-    {
-      error("samin: 2nd element of controls must be UB: a vector of upper bounds");
-      return true;
-    }
-  if (!control(2).is_real_scalar())
-    {
+
+	// now check type of each element of control
+
+	if (!(control(0).is_real_matrix()) || (control(0).is_real_scalar()))
+	{
+    error("samin: 1st element of controls must be LB: a vector of lower bounds");
+		return true;
+	}
+	if ((control(0).is_real_matrix()) && (control(0).columns() != 1))
+	{
+    error("samin: 1st element of controls must be LB: a vector of lower bounds");
+		return true;
+	}	
+
+	if (!(control(1).is_real_matrix()) || (control(1).is_real_scalar()))
+	{
+    error("samin: 1st element of controls must be UB: a vector of lower bounds");
+		return true;
+	}
+	if ((control(1).is_real_matrix()) && (control(1).columns() != 1))
+	{
+    error("samin: 2nd element of controls must be UB: a vector of lower bounds");
+		return true;
+	}	
+
+	int tmp = control(2).int_value();
+	if (error_state || tmp < 1)
+		{
       error("samin: 3rd element of controls must be NT: positive integer\n\
 		 	loops per temperature reduction");
-      return true;
-    }
-  if (!control(3).is_real_scalar())
-    {
-      error("samin: 4th element of controls must be NS: positive integer\n\
-		 	loops per stepsize adjustment");
-      return true;
-    }
-  if (!control(4).is_real_scalar())
-    {
-      error("samin: 5th element of controls must be RT:\n\
-		 	temperature reduction factor, between 0 and 1");
-      return true;
-    }
-  if (!control(5).is_real_scalar())
-    {
-      error("samin: 6th element of controls must be integer MAXEVALS ");
-      return true;
-    }
-  if (!control(6).is_real_scalar())
-    {
-      error("samin: 7th element of controls must be NEPS: positive integer\n\
-		 	number of final obj. values that must be within EPS of eachother ");
-      return true;
-    }
-  if (!control(7).is_real_scalar())
-    {
-      error("samin: 8th element of controls must must be FUNCTOL (> 0)\n\
-			used to compare the last NEPS obj values for convergence test");
-      return true;
-    }
-  if (!control(8).is_real_scalar())
-    {
-      error("samin: 9th element of controls must must be PARAMTOL (> 0)\n\
-			used to compare the last NEPS obj values for convergence test");
-      return true;
-    }
+			return true;
+		}	
 
-  if (!control(9).is_real_scalar())
-    {
-      error("samin: 9th element of controls must be VERBOSITY (0, 1, or 2)");
-      return true;
-    }
-  if (!control(10).is_real_scalar())
-    {
-      error("samin: 10th element of controls must be MINARG (integer)\n\
-		 position of argument to minimize wrt");
-      return true;
-    }
+	tmp = control(3).int_value();
+	if (error_state || tmp < 1)
+	{
+    error("samin: 4th element of controls must be NS: positive integer\n\
+		loops per stepsize adjustment");
+	 	return true;
+	}	
+
+	double tmp2 = control(4).double_value();
+	if (error_state || tmp < 0)
+	{
+	  error("samin: 5th element of controls must be RT:\n\
+ 		temperature reduction factor, RT > 0");
+	 	return true;
+	}	
+
+	tmp2 = control(5).double_value();
+	if (error_state || tmp < 0)
+	{
+    error("samin: 6th element of controls must be integer MAXEVALS > 0 ");
+ 	 	return true;
+	}	
+
+	tmp = control(6).int_value();
+	if (error_state || tmp < 0)
+	{
+		error("samin: 7th element of controls must be NEPS: positive integer\n\
+		number of final obj. values that must be within EPS of eachother ");
+ 	 	return true;
+	}	
+
+	tmp2 = control(7).double_value();
+	if (error_state || tmp2 < 0)
+	{
+		error("samin: 8th element of controls must must be FUNCTOL (> 0)\n\
+		used to compare the last NEPS obj values for convergence test");
+	 	return true;
+	}	
+	
+ 	tmp2 = control(8).double_value();
+	if (error_state || tmp2 < 0)
+	{
+		error("samin: 9th element of controls must must be PARAMTOL (> 0)\n\
+		used to compare the last NEPS obj values for convergence test");
+   	return true;
+	}	
+
+	tmp = control(9).int_value();
+	if (error_state || tmp < 0 || tmp > 2)
+	{
+		error("samin: 9th element of controls must be VERBOSITY (0, 1, or 2)");
+ 	 	return true;
+	}	
+
+	tmp = control(10).int_value();
+	if (error_state || tmp < 0)
+	{
+		error("samin: 10th element of controls must be MINARG (integer)\n\
+		position of argument to minimize wrt");
+		return true;
+  }
   return false;
 }
 
@@ -241,7 +281,22 @@ ans = 3.1416\n\
 	
 	
   double f, fp, p, pp, fopt, rand_draw, ratio, t;
+
+	// type checking for minimization parameter done here, since we don't know minarg
+	// until now	
+	if (!(f_args(minarg - 1).is_real_matrix() || (f_args(minarg - 1).is_real_scalar())))
+	{
+		error("samin: minimization must be with respect to a column vector");
+		return octave_value_list();
+	}
+	if ((f_args(minarg - 1).is_real_matrix()) && (f_args(minarg - 1).columns() != 1))
+	{
+		error("samin: minimization must be with respect to a column vector");
+		return octave_value_list();
+	}	
+
   Matrix x  = f_args(minarg - 1).matrix_value();
+
   Matrix bounds = ub - lb;
 
   n = x.rows();

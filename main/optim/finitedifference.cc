@@ -24,15 +24,17 @@ static bool
 any_bad_argument(const octave_value_list& args)
 {
   if (!args(0).is_real_scalar())
-    {
-      error("finitedifference: first argument must be a real double value");
-      return true;
-    }
-  if (!args(1).is_real_scalar())
-    {
-      error("finitedifference: second argument must be a real double value");
-      return true;
-    }
+  {
+    error("finitedifference: first argument must be a real double value");
+    return true;
+  }
+
+	int tmp = args(1).int_value();
+	if (error_state || (!(tmp==1 || tmp==2)))
+	{
+		error("finite difference: 2nd argument must be 1 or 2");
+		return true;
+	}	
 
   return false;
 }

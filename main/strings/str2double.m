@@ -1,6 +1,6 @@
 function [num,status,strarray] = str2double(s,cdelim,rdelim,ddelim)
 %% STR2DOUBLE converts strings into numeric values
-%%  [NUM, STATUS] = STR2DOUBLE(STR) 
+%%  [NUM, STATUS,STRARRAY] = STR2DOUBLE(STR) 
 %%  
 %%  STR2DOUBLE can replace STR2NUM, but avoids the insecure use of EVAL 
 %%  on unknown data [1]. 
@@ -11,6 +11,7 @@ function [num,status,strarray] = str2double(s,cdelim,rdelim,ddelim)
 %%       if the conversion fails, status is -1 and NUM is NaN.  
 %%    STATUS = 0: conversion was successful
 %%    STATUS = -1: couldnot convert string into numeric value
+%%    STRARRAY is a cell array of strings. 
 %%
 %%    Elements which are not defined or not valid return NaN and 
 %%        the STATUS becomes -1 
@@ -73,7 +74,7 @@ function [num,status,strarray] = str2double(s,cdelim,rdelim,ddelim)
 %%	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
 %%      This function is part of Octave-Forge http://octave.sourceforge.net/
 
-FLAG_OCTAVE = exist('OCTAVE_VERSION');
+FLAG_OCTAVE = exist('OCTAVE_VERSION','builtin');
 
 % valid_char = '0123456789eE+-.nNaAiIfF';	% digits, sign, exponent,NaN,Inf
 valid_delim = char(sort([0,9:14,32:34,abs('()[]{},;:"|/')]));	% valid delimiter

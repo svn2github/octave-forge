@@ -23,6 +23,7 @@ extern "C" {
 }
 
 #include "graphics.h"
+using namespace std;
 
 /*
  * Ask gnuplot for current figure

@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.5  2002/01/04 15:53:57  pkienzle
+Changes required to compile for gcc-3.0 in debian hppa/unstable
+
 Revision 1.4  2001/11/04 19:54:49  aadler
 fix bug with multiple entries in sparse creation.
 Added "summation" mode for matrix creation
@@ -150,7 +153,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       assert (Anc == Bnr); \
       for (int i=0; i< Anr; i++ ) \
          for (int j=0; j< Bnc; j++ ) \
-            X.elem(i,j)=0; \
+            X.elem(i,j)=0.; \
       for ( int i=0; i < Anc ; i++) { \
          for ( int j= cidxA[i]; j< cidxA[i+1]; j++) { \
             int  col = ridxA[j]; \
@@ -170,7 +173,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       assert (Anc == Bnr); \
       for (int i=0; i< Anr; i++ ) \
          for (int j=0; j< Bnc; j++ ) \
-            X.elem(i,j)=0; \
+            X.elem(i,j)=0.; \
       for ( int i=0; i < Bnc ; i++) { \
          for ( int j= cidxB[i]; j< cidxB[i+1]; j++) { \
             int  col = ridxB[j]; \
@@ -208,7 +211,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       TYPX * Xcol= (TYPX*)oct_sparse_malloc( Anr  * sizeof(TYPX)); \
       int cx= 0; \
       for ( int i=0; i < Bnc ; i++) { \
-         for (int k=0; k<Anr; k++) Xcol[k]= 0; \
+         for (int k=0; k<Anr; k++) Xcol[k]= 0.; \
          for (int j= cidxB[i]; j< cidxB[i+1]; j++) { \
             int  col= ridxB[j]; \
             TYPX tmpval = coefB[j]; \
@@ -216,7 +219,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
                Xcol[ ridxA[k] ]+= tmpval * coefA[k]; \
          } \
          for (int k=0; k<Anr; k++)  \
-            if ( Xcol[k] !=0 ) { \
+            if ( Xcol[k] !=0. ) { \
                check_bounds( cx, nnz, ridxX, coefX ); \
                ridxX[ cx ]= k; \
                coefX[ cx ]= Xcol[k]; \
@@ -294,7 +297,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
    for (int j= 0; j<Anc ; j++ ) { \
       for (int i= 0; i<Anr ; i++ ) { \
          TYPX tmpval= A(i,j); \
-         if (tmpval != 0) { \
+         if (tmpval != 0.) { \
             check_bounds( jx, nnz, ridx, coef ); \
             ridx[ jx ]= i; \
             coef[ jx ]= tmpval; \
@@ -344,16 +347,16 @@ fixrow_comp( const void *i, const void *j)  \
 #define FIX_ROW_ORDER_FUNCTIONS \
    int    nnz= NCFX->nnz; \
    for ( int i=0; i < Xnr ; i++) { \
-      assert( cidxX[i] >= 0); \
+      assert( cidxX[i] >= 0.); \
       assert( cidxX[i] <  nnz); \
       assert( cidxX[i] <=  cidxX[i+1]); \
       int reorder=0; \
       for( int j= cidxX[i]; \
                j< cidxX[i+1]; \
                j++ ) { \
-         assert( ridxX[j] >= 0); \
+         assert( ridxX[j] >= 0.); \
          assert( ridxX[j] <  Xnc); \
-         assert( coefX[j] !=  0); /* don't keep zero values */ \
+         assert( coefX[j] !=  0.); /* don't keep zero values */ \
          if (j> cidxX[i]) \
             if ( ridxX[j-1] > ridxX[j] ) \
                reorder=1; \
@@ -450,7 +453,7 @@ fixrow_comp( const void *i, const void *j)  \
  \
       /* iterate accross columns of input matrix */ \
       for ( int m= n+1; m< Unr; m++) { \
-         TYPE v=0; \
+         TYPE v=0.; \
          /* iterate to calculate sum */ \
          int colXp= cidxX[n]; \
          int colUp= cidxU[m]; \
@@ -481,9 +484,9 @@ fixrow_comp( const void *i, const void *j)  \
          assert (ridxU[ colUp ] == m ); /* assert  U is upper triangular */ \
  \
          TYPE pivot= coefU[ colUp ]; \
-         if (pivot == 0) gripe_divide_by_zero (); \
+         if (pivot == 0.) gripe_divide_by_zero (); \
  \
-         if (v!=0) { \
+         if (v!=0.) { \
             check_bounds( cx, nnz, ridxX, coefX ); \
             ridxX[cx]= m; \
             coefX[cx]= v / pivot; \
@@ -495,7 +498,7 @@ fixrow_comp( const void *i, const void *j)  \
       int colUp= cidxU[n+1]-1; \
       assert (ridxU[ colUp ] == n ); /* assert U upper triangular */ \
       TYPE pivot= coefU[ colUp ]; \
-      if (pivot == 0) gripe_divide_by_zero (); \
+      if (pivot == 0.) gripe_divide_by_zero (); \
  \
       if (pivot!=1.0) \
          for( int i= cx_colstart; i< cx; i++)  \

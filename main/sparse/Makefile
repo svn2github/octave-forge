@@ -2,6 +2,9 @@
 # $Id$
 #
 # $Log$
+# Revision 1.4  2002/01/04 15:53:57  pkienzle
+# Changes required to compile for gcc-3.0 in debian hppa/unstable
+#
 # Revision 1.3  2001/10/14 03:06:31  aadler
 # fixed memory leak in complex sparse solve
 # fixed malloc bugs for zero size allocs
@@ -123,9 +126,11 @@ ifndef MKOCTFILE
 MKOCTFILE=   mkoctfile$(OCTVER)
 endif
 
-AR       =   ar
-CPP      =   c++
-CC       =   gcc
+# Use same C compiler and options as mkoctfile
+CC       =  $(shell $(MKOCTFILE) -p CC)
+CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
+CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
+
 STRIP    =  strip
 
 S_INC=   -I$(SUPERLU)/SRC/ \
@@ -145,7 +150,7 @@ S_INC=   -I$(SUPERLU)/SRC/ \
 #     octave definitions
 # 2. we need to override USER_ABORT(msg), USER_MALLOC(size)
 #         and USER_FREE(addr) to provide our own implemetations
-SUPERLU_DEFS = -DAdd_ -O3  \
+SUPERLU_DEFS = -DAdd_  \
                -D"USER_MALLOC(size)=oct_sparse_malloc(size)" \
                -D"USER_ABORT(msg)=oct_sparse_fatalerr(msg)" \
                -D"USER_FREE(addr)=oct_sparse_free(addr)"
@@ -201,7 +206,7 @@ S_DOUBLE= $(DLUSRC) $(ALLAUX) $(DZLAUX) $(ZLUSRC)
 all: $(NAME).oct # test
 
 $(S_DOUBLE):%.o:%.c
-	$(CC) $(S_INC) $(CDEFS) $(SUPERLU_DEFS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPICFLAG) $(S_INC) $(SUPERLU_DEFS) -c $< -o $@
 
 $(OCTOBJ): make_sparse.h
 sparse_ops.o complex_sparse_ops.o: sparse_ops.h
@@ -210,7 +215,8 @@ $(OCTOBJ): %.o: %.cc
 	$(MKOCTFILE) -c $< $(S_INC) $(CCDEFS) -o $@
 
 $(LIBSUPERLU): $(S_DOUBLE)
-	$(AR) -r $(LIBSUPERLU) $(S_DOUBLE)
+	$(AR) $(ARFLAGS) $(LIBSUPERLU) $(S_DOUBLE)
+	$(RANLIB) $(LIBSUPERLU)
 
 $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 	$(MKOCTFILE)  $(OCTOBJ) -o $(NAME).oct  -lsuperlu -L. $(DLIBS)

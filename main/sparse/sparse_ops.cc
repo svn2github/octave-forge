@@ -480,7 +480,7 @@ octave_sparse::extract (int r1, int c1, int r2, int c2) const {
 } // octave_sparse::extract (int r1, int c1, int r2, int c2) const {
 
 void
-octave_sparse::print (ostream& os, bool pr_as_read_syntax ) const
+octave_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
 {
    DEBUGMSG("sparse - print");
 #if 0
@@ -1124,6 +1124,9 @@ sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.5  2002/01/04 15:53:57  pkienzle
+ * Changes required to compile for gcc-3.0 in debian hppa/unstable
+ *
  * Revision 1.4  2001/11/04 19:54:49  aadler
  * fix bug with multiple entries in sparse creation.
  * Added "summation" mode for matrix creation

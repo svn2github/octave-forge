@@ -28,6 +28,7 @@ INSTALLATION
 #include <algorithm>
 #include <octave/oct.h>
 #include <octave/lo-ieee.h>
+using namespace std;
 
 typedef unsigned long bitop_int;
 const unsigned int ULONG_SIZE=CHAR_BIT*sizeof(bitop_int);

@@ -81,7 +81,7 @@ octave_value octave_tri::transpose(void) const
   return new octave_tri(this->matrix_value().transpose(), tri_type(! bool(tri)));
 }
 
-void octave_tri::print (ostream& os, bool pr_as_read_syntax = false) const
+void octave_tri::print (std::ostream& os, bool pr_as_read_syntax = false) const
 {
   octave_matrix::print(os, pr_as_read_syntax);
   os << (tri == Upper ? "Upper" : "Lower") << " Triangular";

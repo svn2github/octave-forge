@@ -22,6 +22,7 @@
 #include <octave/parse.h>
 
 #include "graphics.h"
+using namespace std;
 
 DEFUN_DLD (gtext, args, ,
 	   "usage: [res] = gtext (\"text\")\n"

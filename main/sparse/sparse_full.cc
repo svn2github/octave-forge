@@ -26,6 +26,7 @@ $Id$
 */
 
 #include "make_sparse.h"
+using namespace std;
 
 
 //
@@ -158,7 +159,7 @@ DEFUN_DLD (nnz, args, ,
      int nnz= 0;
      for( int i=0; i< M.rows(); i++)
         for( int j=0; j< M.cols(); j++)
-           if (M(i,j)!=0) nnz++;
+           if (M(i,j)!=0.) nnz++;
      retval(0)= (double) nnz;
   } else
   if (args(0).type_name () == "matrix") {
@@ -166,14 +167,14 @@ DEFUN_DLD (nnz, args, ,
      int nnz= 0;
      for( int i=0; i< M.rows(); i++)
         for( int j=0; j< M.cols(); j++)
-           if (M(i,j)!=0) nnz++;
+           if (M(i,j)!=0.) nnz++;
      retval(0)= (double) nnz;
   } else
   if (args(0).type_name () == "scalar") {
-     retval(0)= args(0).scalar_value() != 0.0;
+     retval(0)= args(0).scalar_value() != 0.0 ? 1.0 : 0.0;
   } else
   if (args(0).type_name () == "complex scalar") {
-     retval(0)= args(0).complex_value() != 0.0;
+     retval(0)= args(0).complex_value() != 0.0 ? 1.0 : 0.0;
   } else
      gripe_wrong_type_arg ("nnz", args(0));
 
@@ -278,6 +279,9 @@ SPFIND: a sparse version of the find operator\n\
 
 /*
  * $Log$
+ * Revision 1.4  2002/01/04 15:53:57  pkienzle
+ * Changes required to compile for gcc-3.0 in debian hppa/unstable
+ *
  * Revision 1.3  2001/11/16 03:09:42  aadler
  * added spsum.m, is_sparse, is_real_sparse, is_complex_sparse
  *

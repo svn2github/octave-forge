@@ -20,6 +20,7 @@
 #include <octave/parse.h>
 
 #include "graphics.h"
+using namespace std;
 
 DEFUN_DLD (gzoom, args, ,
 	   "usage: gzoom()\n"

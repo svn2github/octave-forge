@@ -46,7 +46,7 @@ public:
    void assign (const octave_value_list& idx, const Matrix& rhs);
 
    octave_value transpose (void) const ;
-   void print (ostream& os, bool pr_as_read_syntax = false) const ;
+   void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 private:
    tri_type tri;
    DECLARE_OCTAVE_ALLOCATOR

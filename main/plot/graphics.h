@@ -33,11 +33,11 @@ typedef struct {
   double yorigin;
 } gwindow;
 
-string find_gnuplot_window (string func);
+std::string find_gnuplot_window (std::string func);
 
-Window find_x11_window(Display *display, Window top, string name);
+Window find_x11_window(Display *display, Window top, std::string name);
 
-int init_gwindow (gwindow &gw, string wname, string func);
+int init_gwindow (gwindow &gw, std::string wname, std::string func);
 
 void close_gwindow (gwindow &gw);
 
@@ -49,6 +49,6 @@ int get_area_point (gwindow &gw, MArray<int> &x, MArray<int> &y);
 
 ColumnVector guess_border (gwindow &gw);
 
-ColumnVector guess_axis (string func);
+ColumnVector guess_axis (std::string func);
 
 #endif /* __GRAPHICS_H__ */

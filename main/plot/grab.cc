@@ -33,6 +33,7 @@ extern "C" {
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 }
+using namespace std;
 
 #define maxpoints 10
 

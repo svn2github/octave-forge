@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.4  2002/01/04 15:53:57  pkienzle
+Changes required to compile for gcc-3.0 in debian hppa/unstable
+
 Revision 1.3  2001/11/04 19:54:49  aadler
 fix bug with multiple entries in sparse creation.
 Added "summation" mode for matrix creation
@@ -163,7 +166,7 @@ public:
 
    
 #endif
-   void print (ostream& os, bool pr_as_read_syntax = false) const ;
+   void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 
    type_conv_fcn numeric_conversion_function (void) const;
 
@@ -219,7 +222,7 @@ public:
    octave_value extract (int r1, int c1, int r2, int c2) const ;
    octave_value_list do_multi_index_op (int, const octave_value_list& idx);
 
-   void print (ostream& os, bool pr_as_read_syntax = false) const ;
+   void print (std::ostream& os, bool pr_as_read_syntax = false) const ;
 
    type_conv_fcn numeric_conversion_function (void) const;
 

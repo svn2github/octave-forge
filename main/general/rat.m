@@ -28,6 +28,11 @@ function [n,d] = rat(x,tol)
   endif
 
   y = x(:);
+
+  ## replace inf with 0 while calculating ratios
+  y(isinf(y)) = 0;
+
+  ## default norm
   if (nargin < 2)
     tol = 1e-6 * norm(y,1);
   endif
@@ -66,5 +71,9 @@ function [n,d] = rat(x,tol)
   ## return the same shape as you receive
   n = reshape(n, size(x));
   d = reshape(d, size(x));
+
+  ## use 1/0 for Inf
+  n(isinf(x)) = sign(x(isinf(x)));
+  d(isinf(x)) = 0;
 
 endfunction

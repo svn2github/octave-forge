@@ -154,34 +154,10 @@ else {
 
 # print a summary table rather than generating the html
 if ( $summary ) {
-    # XXX FIXME XXX add an option to spit out contents.m
-    # XXX FIXME XXX what if there is no toolbox?
-    # XXX FIXME XXX preserve category order
-    foreach my $TB ( sort keys %index_by_TB_cat ) {
-	print "$TB_description{$TB}\n\n";
-	foreach my $cat ( sort keys %{$index_by_TB_cat{$TB}} ) {
-	    print "$cat\n";
-	    foreach my $func ( sort @{$index_by_TB_cat{$TB}{$cat}} ) {
-		my $desc;
-		if ( ! defined $function_description{$func} ) {
-		   $desc = "<missing>";
-		}
-		else {
-		   $desc = $function_description{$func}
-		}
-		my $entry = sprintf("%-13s %s",$func,$desc);
-		print wrap("","\t\t","  $entry"), "\n";
-	    }
-	    print "\n";
-	}
-    } 
+    write_ascii("% ");
 }
 else {
-    write_html(\%index_by_TB_cat,
-           \%TB_description,
-           \%function_description,
-           \%octave_forge_function,
-           \%index_by_function);
+    write_html();
 }
 
 
@@ -381,12 +357,7 @@ sub extract_description { # {{{1
     }
 } # 1}}}
 sub load_index { # {{{1
-    my ($file,             # in
-        $rhha_TB_cat,      # out   $TB_cat{toolbox}{category} = [functions]
-        $rh_toolbox_desc,  # out   $toolbox_desc{toolbox} = description
-        $rhaa_func,        # out   $func{function} = [[toolbox_1,category_1],
-                           #                          [toolbox_2,category_2],..]
-       )      = @_;
+    my ($file) = @_;             # in
     my $toolbox     = "extra";
     my $category    = "";
     my $description = "";
@@ -402,7 +373,7 @@ sub load_index { # {{{1
             $toolbox     = $1;
             $description = $2;
             $category    = "";
-            $rh_toolbox_desc->{$toolbox} = $description;
+            $TB_description{$toolbox} = $description;
 	} elsif (/^\s*\$(\w+)\s*=\s*(\S.*\S)\s*$/) {
 	    # define a variable as "$var = expansion"
 	    $map{$1} = $2;
@@ -410,29 +381,29 @@ sub load_index { # {{{1
 	    # category lines start in the left most column
             $category    = $1;
         } elsif (/^\s+(\S+)\s*=\s*(\S.*\S)\s*$/) {
-	    my $func = $1;
-	    my $desc = $2;
+	    $function = $1;
+	    $description = $2;
 
 	    # expand all $id in the description
-	    my @parts = split('\$', "$desc");
+	    my @parts = split('\$', $description);
 	    foreach my $i ( 1 .. $#parts ) {
 		$parts[$i] =~ /^(\w+)(\W.*)$/ or $parts[$i] =~ /^(\w+)()$/;
 		$parts[$i] = "$map{$1}$2";
 	    }
-	    $desc = join("",@parts);
+	    $description = join("",@parts);
 
-	    $index_notes{$func} = $desc;
+	    $index_notes{$function} = $description;
 	    die "Function $function (line $.) has no category" unless $category;
-	    push @{$rhha_TB_cat->{$toolbox}{$category}}, $func;
-	    push @{$rhaa_func->{$func}}, [$toolbox, $category];
+	    push @{$index_by_TB_cat{$toolbox}{$category}}, $function;
+	    push @{$index_by_function{$function}}, [$toolbox, $category];
 	} else {
             s/^\s+//;
             my @list = split /\s+/;
             while ($#list >= 0) {
                 $function    = shift @list;
                 die "Function $function (line $.) has no category" unless $category;
-                push @{$rhha_TB_cat->{$toolbox}{$category}}, $function;
-                push @{$rhaa_func->{$function}}, [$toolbox, $category];
+                push @{$index_by_TB_cat{$toolbox}{$category}}, $function;
+                push @{$index_by_function{$function}}, [$toolbox, $category];
 
             }
         }
@@ -440,13 +411,6 @@ sub load_index { # {{{1
     close(IN);
 } # 1}}}
 sub write_html { # {{{1
-    my ($rhha_TB_cat,      # in   $index{toolbox}{category} = [functions]
-        $rh_toolbox_desc,  # in   $toolbox_desc{toolbox} = description
-        $rh_func_desc,     # in   $func_desc{function}   = description
-        $rh_oct_forge_f,   # in   $oct_forge_f{function} = 1 if function is
-                           #           implemented in octave-forge
-        $rhaa_func_TB_cat, # i_function{function} = [[toolbox, category],...]
-       )      = @_;
     my $max_TB_across_top = 7;
     my $all_toolboxes = "<center>\n";
     my $n = 0;
@@ -458,7 +422,7 @@ sub write_html { # {{{1
     mkdir "index/f";
 
 
-    foreach my $TB (sort keys %{$rhha_TB_cat}) {
+    foreach my $TB (toolbox_list()) {
         ++$n;
         if ($n > $max_TB_across_top) {
             $n = 0;
@@ -480,9 +444,8 @@ sub write_html { # {{{1
     # Write a file for each toolbox.
     #
     $Text::Wrap::columns = 50;
-    foreach my $TB (sort keys %{$rhha_TB_cat}) {
+    foreach my $TB ( toolbox_list() ) {
         my $file   = "index/$TB.html";
-        my %anchor = ();
 
         open(OUT, ">$file") or die "Cannot write $file:  $!\n";
         print OUT "<html><head>
@@ -491,26 +454,26 @@ sub write_html { # {{{1
 
         print OUT $all_toolboxes_A_Z;
         # Heading 1:  The categories for this toolbox.
-        print OUT "<p><h1>$rh_toolbox_desc->{$TB}</h1>\n";
+        print OUT "<p><h1>$TB_description{$TB}</h1>\n";
         print OUT "<ul>\n";
-        foreach my $cat (sort keys %{$rhha_TB_cat->{$TB}}) {
-            $anchor{$cat} = $cat;
-            $anchor{$cat} =~ s/\W+//g;
-            print OUT "    <li><a href=\"#$anchor{$cat}\">$cat</a></li>\n";
+        foreach my $cat ( cat_list($TB) ) {
+            my $anchor = cat_anchor($cat);
+            print OUT "    <li><a href=\"#$anchor\">$cat</a></li>\n";
         }
         print OUT "</ul>\n";
 
         # Heading 2:  Each category has a table of its functions and
         #             their descriptions.
-        foreach my $cat (sort keys %{$rhha_TB_cat->{$TB}}) {
-            print OUT '<h2><a name="', $anchor{$cat}, '">', $cat, "</a></h2>\n";
+        foreach my $cat ( cat_list($TB) ) {
+	    my $anchor = cat_anchor($cat);
+            print OUT "<h2><a name=\"$anchor\">$cat</a></h2>\n";
             print OUT "<table>\n";
-            foreach my $func (sort @{$rhha_TB_cat->{$TB}{$cat}}) {
+            foreach my $func ( cat_funcs($TB,$cat) ) {
 
                 # column 1:  the function (x-ref to full description in
                 #                          cvs-tree's html file)
                 print OUT "<tr><td>";
-                if (defined $rh_oct_forge_f->{$func}) {
+                if (defined $octave_forge_function{$func}) {
                     print OUT '<a href="',"../$CVSTREE#$func",'">',$func,"</a>";
                 } else {
                     print OUT $func;
@@ -519,17 +482,17 @@ sub write_html { # {{{1
 
                 # column 2: the description, if it exists
                 #
-		if (! defined $rh_func_desc->{$func} ) {
+		if (! defined $function_description{$func} ) {
 		    my $notes = $index_notes{$func};
 		    $notes = "not implemented" if $notes eq "";
 		    $notes =~ s|<code>|</b></i><code>|g;
 		    $notes =~ s|</code>|</code><i><b>|g;
                     print OUT "    <td><i><b>$notes</b></i>";
-		} elsif ($rh_func_desc->{$func} eq "") {
+		} elsif ($function_description{$func} eq "") {
                     print OUT "    <td><i><b>no description</b></i>";
 		} else {
-		    print OUT "    <td>", $rh_func_desc->{$func};
-#		        wrap("", "<br>",$rh_func_desc->{$func});
+		    print OUT "    <td>", $function_description{$func};
+#		        wrap("", "<br>",$function_description{$func});
                 }
                 print OUT "</td></tr>\n";
             }
@@ -538,6 +501,7 @@ sub write_html { # {{{1
         print OUT "</body></html>\n";
         close(OUT);
     }
+
 
     # Write the file containing all functions alphabetically.
     #
@@ -548,49 +512,104 @@ sub write_html { # {{{1
        <meta name=\"keywords\" content=\"\"> </head><body>\n";
     print OUT $all_toolboxes;
 
-    foreach my $Letter ('A'..'Z') {
-        print OUT "<p><p><center><b><a name=\"$Letter\">$Letter</a></b> ";
-        print OUT '&nbsp; &nbsp; &nbsp; || &nbsp; &nbsp; &nbsp; ',
-                  "$A_to_Z </center>\n";
-        print OUT "<table>\n";
-        foreach my $func (sort keys %{$rhaa_func_TB_cat}) {
-            next unless uc(substr($func, 0, 1)) eq $Letter;
-            # the loop below has more than one iteration only for functions
-            # which appear in multiple toolboxes
-            for (my $i=0; $i < scalar @{$rhaa_func_TB_cat->{$func}}; $i++){
+    my $Letter = chr(0);
+    foreach my $func ( indexed_funcs() ) {
+	if (uc(substr($func, 0, 1)) ne $Letter) {
+	    $Letter = uc(substr($func, 0, 1));
+	    print OUT "</table>\n" if $Letter ne chr(0);
+	    print OUT "<p><p><center><b><a name=\"$Letter\">$Letter</a></b> ";
+	    print OUT '&nbsp; &nbsp; &nbsp; || &nbsp; &nbsp; &nbsp; ',
+		"$A_to_Z </center>\n";
+	    print OUT "<table>\n";
+	}
 
-                # column 1:  the function (x-ref to full description in
-                #                          cvs-tree's html file)
-                print OUT "<tr><td>";
-                if (defined $rh_oct_forge_f->{$func}) {
-                    print OUT '<a href="',"../$CVSTREE#$func",'">',$func,"</a>";
-                } else {
-                    print OUT $func;
-                }
-                print OUT "</td>\n";
+	# column 1:  the function (x-ref to full description in
+	#                          cvs-tree's html file)
+	print OUT "<tr valign=top><td>";
+	if (defined $octave_forge_function{$func}) {
+	    print OUT '<a href="',"../$CVSTREE#$func",'">',$func,"</a>";
+	} else {
+	    print OUT $func;
+	}
+	print OUT "    </td>\n";
 
-                # column 2:  the toolbox (x-ref to the <toolbox>.html file)
-                my $TB = $rhaa_func_TB_cat->{$func}[$i][0];
-                print OUT '    <td><a href="', $TB, '.html">', $TB, "</a>\n";
+	# column 2:  the toolbox (x-ref to the <toolbox>.html file)
+	print OUT "    <td>\n";
+	foreach my $pair ( @{$index_by_function{$func}} ) {
+	    my ( $TB, $cat ) = @{$pair};
+	    print OUT cat_ref($TB, $cat, $TB), "\n";
+	}
+	print OUT "    </td>\n";
 
-#                # column 3:  the category within the toolbox
-#                $Text::Wrap::columns = 40;
-#                print OUT "    <td>",
-#                      wrap("", "<br>",
-#                           $rhaa_func_TB_cat->{$func}[$i][1]), "</td>\n";
 
-                # column 4:  the function's description
-                $Text::Wrap::columns = 50;
-                print OUT "    <td>";
-                print OUT wrap("", "<br>", $rh_func_desc->{$func})
-                    if defined $rh_func_desc->{$func};
-                print  OUT "</td>\n";
-            }
-        }
-        print OUT "</table>\n";
+	# column 3:  the function description
+	# XXX FIXME XXX multiple functions???
+	print OUT "    <td>$function_description{$func}</td>\n";
     }
-    print OUT "</body></html>\n";
+
+    print OUT "</table>\n</body></html>\n";
     close(OUT);
+} # 1}}}
+sub writenav { # 1{{{
+    my ($cat) = @_;
+
+} # 1}}}
+
+sub write_ascii { # 1{{{
+    my ($prefix) = @_;
+    my $indent = 16 - 3 - length($prefix);
+
+    # XXX FIXME XXX add an option to spit out contents.m
+    # XXX FIXME XXX what if there is no toolbox?
+    # XXX FIXME XXX preserve category order
+    foreach my $TB ( toolbox_list() ) {
+	print wrap($prefix,$prefix,$TB_description{$TB}),"\n$prefix\n";
+	foreach my $cat ( cat_list($TB) ) {
+	    print wrap($prefix,$prefix,$cat), "\n";
+	    foreach my $func ( cat_funcs($TB,$cat) ) {
+		my $desc;
+		if ( ! defined $function_description{$func} ) {
+		   $desc = "<missing>";
+		}
+		else {
+		   $desc = $function_description{$func}
+		}
+		my $entry = sprintf("%-*s %s",$indent,$func,$desc);
+		print wrap("$prefix","$prefix\t\t","  $entry"), "\n";
+	    }
+	    print "$prefix\n";
+	}
+    } 
+} # 1}}}
+sub cat_ref { # 1{{{
+    my ($TB,$cat,$ref) = @_;
+    my $anchor = cat_anchor($cat);
+    return "<a href=\"$TB.html#$anchor\">$ref</a>";
+} # 1}}}
+sub cat_anchor { # 1{{{
+    my ($cat) = @_;
+    $cat =~ s/\W+//g;
+    return $cat;
+} # 1}}}
+sub toolbox_list { # 1{{{
+    return sort { lc($a) cmp lc($b) } keys %index_by_TB_cat;
+} # 1}}}
+sub cat_list { # 1{{{
+    my ($TB) = @_;
+    return sort keys %{$index_by_TB_cat{$TB}};
+} # 1}}}
+sub cat_funcs { # 1{{{
+    my ($TB,$cat) = @_;
+    return sort { lc($a) cmp lc($b) } @{$index_by_TB_cat{$TB}{$cat}}
+} # 1}}}
+sub indexed_funcs { # 1{{{
+    return sort { lc($a) cmp lc($b) } keys %index_by_function;
+} # 1}}}
+sub forge_funcs { # 1{{{
+    return sort { lc($a) cmp lc($b) } keys %octave_forge_function;
+} # 1}}}
+sub all_funcs { # 1{{{
+    return sort { lc($a) cmp lc($b) } %function_description;
 } # 1}}}
 __END__
 This program is free software; you can redistribute it and/or modify

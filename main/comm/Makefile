@@ -78,8 +78,8 @@ endif
 %.texi : %.txi
 	@echo "Making texinfo $@"; \
 	$(RM) -f $@; \
-	mkdoc > DOCSTRINGS; \
-	mktexi $< DOCSTRINGS > $@ 
+	./mkdoc > DOCSTRINGS; \
+	./mktexi $< DOCSTRINGS > $@ 
 
 clean:
 	@echo "Cleaning..."; \

@@ -173,7 +173,7 @@ while nev <= maxev,
 
 				# Eventually print some info
   if nev > nextprint
-    if 0 && verbose,
+    if verbose,
       printf("nev=%-5d   imin=%-3d   ymin=%-8.3g  rt=%-8.3g\n",\
 	     nev,imin,ymin,rt) ;
     end

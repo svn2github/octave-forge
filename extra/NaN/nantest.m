@@ -23,14 +23,17 @@
 %	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>
 
 
-r = zeros(23,2);
+r = zeros(25,2);
 
 x = [5,NaN,0,1,nan];
 
 % run test, k=1: with NaNs, k=2: all NaN's are removed
 % the result of both should be the same. 
 
+FLAG_WARNING = warning;
+warning('off');
 
+funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','nanmin','nanmax','','','','','','','','','','','','','','','','','',''};
 for k=1:2,
         if k==2, x(isnan(x))=[]; end; 
         r(1,k) =sumskipnan(x(1));
@@ -69,7 +72,7 @@ for k=1:2,
         		tmp=spearman(x',(1:length(x))');
 	        r(20,k)=any(isnan(tmp(:)));
         end;
-        if exist('rankcorr')==2,
+        if exist('ranks')==2,
                 r(21,k)=any(isnan(ranks(x')))+k;
         end;
         if exist('center')==2,
@@ -79,13 +82,22 @@ for k=1:2,
         if exist('center')==2,
         	r(23,k)=trimean(x);
         end;
+    	r(24,k)=min(x);
+    	r(25,k)=max(x);
 end;
+
 
 % check if result is correct
 tmp = abs(r(:,1)-r(:,2))<eps;
 
 
 q=zeros(1,5);
+
+
+% check CORRCOEF
+% x = randn(100,4)+[1:100]'*[1:4]; [R,p,ci,cu,np]=corrcoef(x);
+% x = randn(100,4)+[1:100]'*[1:4];x=x';x(ceil(100*rand(20,1)))=NaN;x=x'; [R,p,ci,cu,np]=corrcoef(x);
+% x = randn(100,4)+[1:100]'*[1:4];x=x';x(ceil(400*rand(20,1)))=NaN;x=x'; [R,p,ci,cu,np]=corrcoef(x);
 
 
 % check NORMPDF, NORMCDF, NORMINV
@@ -120,7 +132,8 @@ if all(tmp) & all(~q),
         fprintf(1,'NANTEST successful - your NaN-tools are correctly installed\n');
 else
         fprintf(1,'NANTEST %i not successful \n', find(~tmp));
-	fprintf(1,'Some functions must still be replaced\n');
+	fprintf(1,'The following functions do not skip NaNs and should, therefore, be replaced:\n');
+	funlist{find(~tmp)}
 end;
 
 
@@ -169,3 +182,5 @@ end;
 
 tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6];
 
+
+warning(FLAG_WARNING);

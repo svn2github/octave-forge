@@ -21,11 +21,11 @@
 // 2001-11-02 Paul Kienzle <pkienzle@users.sf.net>
 // * fixed mxGetString to put in the zero-terminator
 
-#include <float.h>
-#include <iomanip.h>
+#include <cfloat>
+#include <iomanip>
 extern "C" {
-#include <stdlib.h>
-#include <setjmp.h>
+#include <cstdlib>
+#include <csetjmp>
   extern const char *mexFunctionName;
 } ;
 
@@ -130,6 +130,7 @@ public:
   bool is_numeric() const { return !isstr && (pr != NULL || nr==0 || nc==0); }
   bool is_complex() const { return pi != NULL; }
   bool is_sparse() const { return false; }
+  bool is_struct() const { return pmap != NULL; }
 
   bool is_string() const { return isstr; }
   void is_string(bool set) { isstr = set; }
@@ -145,6 +146,9 @@ public:
 private:
   int nr, nc;
   double *pr, *pi;
+  /* XXX FIXME XXX need to have a typeid here instead of complex logic on
+   * isstr, pmap, pr, pi, etc. */
+  Octave_map *pmap;
   bool isstr;
   char aname[mxMAXNAM+1];
 } ;
@@ -159,6 +163,10 @@ octave_value mxArray::as_octave_value() const
       for (int i=0; i < nr*nc; i++) 
 	pchm[i] = NINT(pr[i]);
       ret = octave_value(chm, true);
+    }
+  else if (pmap)
+    {
+      ret = octave_value(*pmap);
     }
   else if (pi)
     {
@@ -385,6 +393,12 @@ mxArray* mex::make_value(const octave_value &ov)
 	  const Matrix m(ov.matrix_value(1));
 	  pr = (double *)malloc(nr*nc*sizeof(double));
 	  memcpy(pr, m.data(), nr*nc*sizeof(double));
+	}
+      else if (ov.is_map())
+	{
+	  // XXX FIXME XXX - okay, lets not do a full mex implementation
+	  // just yet.
+	  assert(0==1);
 	}
       else if (ov.is_complex_type())
 	{
@@ -673,8 +687,8 @@ extern "C" {
   double mxGetScalar (const mxArray* ptr)
     {
       double *pr =  ptr->real();
-      if (pr) return pr[0];
-      else mexErrMsgTxt("calling mxGetScalar on an empty matrix");
+      if (pr == NULL) mexErrMsgTxt("calling mxGetScalar on an empty matrix");
+      return pr[0];	
     }
 
   int mxGetString (const mxArray* ptr, char *buf, int buflen)
@@ -758,7 +772,7 @@ extern "C" {
 	mexErrMsgTxt("mexPutArray: 'base' symbol table not implemented");
       else
 	mexErrMsgTxt("mexPutArray: symbol table does not exist");
-	
+      return 0;	
     }
 
   mxArray *mexGetArray(const char *name, const char *space)
@@ -766,7 +780,7 @@ extern "C" {
       // XXX FIXME XXX --- this should be in variable.cc, but the correct
       // functionality is not exported.  Particularly, get_global_value()
       // generates an error if the symbol is undefined.
-      symbol_record *sr;
+      symbol_record *sr = NULL;
       if (strcmp(space,"global") == 0)
 	sr = global_sym_tab->lookup (name);
       else if (strcmp(space,"caller") == 0)

@@ -39,89 +39,103 @@ extern "C" {
 #endif
 
 #if defined(V4)
-void mexFunction(int nlhs, mxArray* plhs[], int nrhs, mxArray* prhs[]);
+  void mexFunction(int nlhs, mxArray* plhs[], int nrhs, mxArray* prhs[]);
 #else
-void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]);
+  void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]);
 #endif
-
-/* Floating point representation */
-bool mxIsNaN(double v);
-bool mxIsFinite(double v);
-bool mxIsInf(double v);
-double mxGetEps(void);
-double mxGetInf(void);
-double mxGetNaN(void);
-
-/* V4 floating point routines renamed in V5 */
+  
+  /* Floating point representation */
+  bool mxIsNaN(double v);
+  bool mxIsFinite(double v);
+  bool mxIsInf(double v);
+  double mxGetEps(void);
+  double mxGetInf(void);
+  double mxGetNaN(void);
+  
+  /* V4 floating point routines renamed in V5 */
 #define mexIsNaN mxIsNaN
 #define mexIsFinite mxIsFinite
 #define mexIsInf mxIsInf
 #define mexGetEps mxGetEps
 #define mexGetInf mxGetInf
 #define mexGetNaN mxGetNan
-
-/* Interface to the interpreter */
-extern const char *mexFunctionName;
-int mexCallMATLAB(const int nargout, mxArray* argout[], 
-		  const int nargin, const mxArray* argin[],
-		  const char* fname);
-void mexSetTrapFlag(int flag);
-int mexEvalString (const char *s);
-void mexErrMsgTxt (const char *s);
-void mexWarnMsgTxt (const char *s);
-void mexPrintf (const char *fmt, ...);
-
-mxArray* mexGetArray(const char *name, const char *space);
-mxArray* mexGetArrayPtr(const char *name, const char *space);
+  
+  /* Interface to the interpreter */
+  extern const char *mexFunctionName;
+  int mexCallMATLAB(const int nargout, mxArray* argout[], 
+		    const int nargin, const mxArray* argin[],
+		    const char* fname);
+  void mexSetTrapFlag(int flag);
+  int mexEvalString (const char *s);
+  void mexErrMsgTxt (const char *s);
+  void mexWarnMsgTxt (const char *s);
+  void mexPrintf (const char *fmt, ...);
+  
+  mxArray* mexGetArray(const char *name, const char *space);
+  mxArray* mexGetArrayPtr(const char *name, const char *space);
 #define mexGetGlobal(nm) mexGetArray(nm,"global")
 #define mexGetMatrix(nm) mexGetArray(nm,"caller")
 #define mexGetMatrixPtr(nm) mexGetArrayPtr(nm,"caller")
-int mexPutArray(mxArray* ptr, const char *space);
+  int mexPutArray(mxArray* ptr, const char *space);
 #define mexPutMatrix(nm) mexPutArray(nm,"caller")
-
-
-/* Memory */
-void *mxMalloc(int n);
-void *mxCalloc(int n, int size);
-void mxFree(void *ptr);
-void mexMakeArrayPersistent(mxArray *ptr);
-void mexMakeMemoryPersistent(void *ptr);
-
-/* interpreter values */
-mxArray* mxCreateDoubleMatrix(int nr, int nc, int iscomplex);
+  
+  
+  /* Memory */
+  void *mxMalloc(int n);
+  void *mxCalloc(int n, int size);
+  void mxFree(void *ptr);
+  void mexMakeArrayPersistent(mxArray *ptr);
+  void mexMakeMemoryPersistent(void *ptr);
+  
+  /* interpreter values */
+  mxArray* mxCreateDoubleMatrix(int nr, int nc, int iscomplex);
 #define mxCreateFull mxCreateDoubleMatrix
-void mxDestroyArray(mxArray *v);
+  void mxDestroyArray(mxArray *v);
 #define mxFreeMatrix mxDestroyArray
-int mxIsChar (const mxArray* ptr);
+  int mxIsChar (const mxArray* ptr);
 #define mxIsString mxIsChar
-int mxIsSparse (const mxArray* ptr);
-int mxIsFull (const mxArray* ptr);
-int mxIsDouble (const mxArray* ptr);
-int mxIsNumeric (const mxArray* ptr);
-int mxIsComplex (const mxArray* ptr);
-int mxIsEmpty (const mxArray* ptr);
-int mxGetM (const mxArray* ptr);
-int mxGetN (const mxArray* ptr);
-double* mxGetPr (const mxArray* ptr);
+  int mxIsSparse (const mxArray* ptr);
+  int mxIsFull (const mxArray* ptr);
+  int mxIsDouble (const mxArray* ptr);
+  int mxIsNumeric (const mxArray* ptr);
+  int mxIsComplex (const mxArray* ptr);
+  int mxIsEmpty (const mxArray* ptr);
+  int mxGetM (const mxArray* ptr);
+  int mxGetN (const mxArray* ptr);
+  double* mxGetPr (const mxArray* ptr);
 
-/* The following cannot be supported in Octave without incurring
- * the large runtime penalty of copying arrays to/from matlab format
+  /* structure support (prototypes only at this point?) */
+  int mxIsStruct (const mxArray* ptr);
+  mxArray* mxCreateStructArray (int num_dims, const int * dims, 
+				int numkeys, const char **keys);
+  mxArray* mxCreateStructMatrix (int rows, int cols,
+				 int num_keys, const char **keys);
+  mxArray* mxGetField(const mxArray* ptr, int index, const char *key);
+  mxArray* mxGetFieldByNumber(const mxArray* ptr, int index, int key_num);
+  const char* mxGetFieldNameByNumber(const mxArray* ptr, int key_num);
+  int mxGetFieldNumber(const mxArray* ptr, const char *key);
+  int mxGetNumberOfFields(const mxArray* ptr);
+  void mxSetField(mxArray* ptr, int index, const char *key, mxArray* val);
+  void mxSetFieldByNumber(mxArray* ptr, int index, int key_num, mxArray* val);
 
- double* mxGetPi (const mxArray* ptr);
- void mxSetM (mxArray* ptr, const int M);
- void mxSetN (mxArray* ptr, const int N);
- void mxSetPr (mxArray* ptr, double* pr);
- void mxSetPi (mxArray* ptr, double* pi);
-*/
-
-
-
-int mxGetString (const mxArray* ptr, char *buf, int buflen);
-char *mxArrayToString (const mxArray* ptr);
-mxArray *mxCreateString (const char *str);
-
-double mxGetScalar (const mxArray* ptr);
-
+  /* The following cannot be supported in Octave without incurring
+   * the large runtime penalty of copying arrays to/from matlab format
+   
+   double* mxGetPi (const mxArray* ptr);
+   void mxSetM (mxArray* ptr, const int M);
+   void mxSetN (mxArray* ptr, const int N);
+   void mxSetPr (mxArray* ptr, double* pr);
+   void mxSetPi (mxArray* ptr, double* pi);
+  */
+  
+  
+  
+  int mxGetString (const mxArray* ptr, char *buf, int buflen);
+  char *mxArrayToString (const mxArray* ptr);
+  mxArray *mxCreateString (const char *str);
+  
+  double mxGetScalar (const mxArray* ptr);
+  
 #if defined(__cplusplus)
 }
 #endif

@@ -1,5 +1,6 @@
 <!--
      Copyright (C) 2001 Christoph L. Spiel
+     Copyright (C) 2004 Stefan van der Walt <stefan@sun.ac.za>
      
      This file is part of "Da Coda Al Fine".
      
@@ -26,32 +27,32 @@
 <para>
     The keen reader will have noticed that <function>matpow</function> is
     highly vulnerable to unexpected input.  We take care of this deficiency in
-    <xref linkend = "sect-oct-tutorial-spice-input-check"></xref>.  Next, the
-    documentation too is not ready for prime time, something that changes in
-    <xref linkend = "sect-oct-tutorial-spice-texinfo"></xref>.
+    <xref linkend = "sect-oct-tutorial-spice-input-check"></xref>.
+    Also, the documentation is not ready for prime time, something we
+    attend to in <xref linkend = "sect-oct-tutorial-spice-texinfo"></xref>.
 </para>
 
 <sect3 id = "sect-oct-tutorial-spice-input-check">
 <title>Input parameter checking</title>
 
 <para>
-    Why do we need parameter checking at all?  The rule of thumb recommends to
+    Why do we need parameter checking at all?  A rule of thumb is to
     perform a <emphasis>complete</emphasis> parameter checking on
 </para>
 
 <itemizedlist>
     <listitem>
         <para>
-            every function that is exposed to the user (e.g., at Octave's
-            interpreter level), i.e., for every function created with <symbol
+            every function that is exposed to the user (e.g. at Octave's
+            interpreter level), i.e. for every function created with <symbol
             role = "macro">DEFUN_DLD</symbol>, or
         </para>
     </listitem>
 
     <listitem>
         <para>
-            any function that might be used in a different context that the
-            writer has thought of.  Functions that are used only internally, do
+            any function that might be used in a different context than the
+            writer intended  Functions that are used only internally do
             not require full parameter checking.
         </para>
     </listitem>
@@ -60,8 +61,8 @@
 <para>
     One problem which arises frequently with parameter checking of
     (interfacing) functions is that the checks easily take up more space than
-    the routine itself, thereby distracting the reader of the function's
-    original purpose.  Often, including all the checks into the worker function
+    the routine itself, thereby distracting the reader from the function's
+    original purpose.  Often, including all the checks into the main function
     bloats it beyond the desired maintainability.  Therefore, we have to take
     precautions against these problems by consistently factoring out all
     parameter checks.
@@ -69,9 +70,9 @@
 
 <para> <!-- reference to: Fowler "Refactoring" -->
     The rule of thumb here is to group logically related tests together in
-    seperate functions.  The testing functions get the original functions'
+    separate functions.  The testing functions get the original functions'
     arguments <emphasis>by constant reference</emphasis> and return a boolean
-    value.  The pass-by-<literal>const T&amp;</literal> avoids any constructor
+    value. <emphasis>Constant referencing</emphasis> avoids any constructor
     calls and &ndash; in addition to that &ndash; protects the arguments
     against modification.  In our example a single test function is enough:
 </para>
@@ -85,9 +86,9 @@ static bool any_bad_argument(const octave_value_list&amp; args);
     Octave error, and returns <constant>true</constant> if the arguments fail
     any test; otherwise it returns <constant>false</constant> and we can
     continue processing.  The only thing we have to change in
-    <function>matpow</function> is add a call to
-    <function>any_bad_argument</function> and on failure return an Octave-void
-    value, i.e., an empty <type>octave_value_list</type>.  The first few lines
+    <function>matpow</function> is to add a call to
+    <function>any_bad_argument</function> and on failure to return an Octave-void
+    value, i.e. an empty <type>octave_value_list</type>.  The first few lines
     of <function>matpow</function> then take the following form:
 </para>
 
@@ -164,7 +165,7 @@ DEFUN_DLD(matpow, args, ,
     Octave supplies the user with all necessary type- and size-testing
     functions.  The type-tests (defined in OCT/src/<filename class =
     "headerfile">ov-base.h</filename>) share the common
-    prefix&nbsp;<literal>is_</literal>.
+    prefix&nbsp;<literal>is_</literal>.  Here are the most commonly used:
 </para>
 
 <classsynopsis language = "cpp">
@@ -186,26 +187,6 @@ DEFUN_DLD(matpow, args, ,
     <methodsynopsis>
         <modifier>public</modifier>
 
-        <type>bool</type> <methodname>is_scalar_type</methodname>
-
-        <void></void>
-
-        <modifier>const</modifier>
-    </methodsynopsis>
-
-    <methodsynopsis>
-        <modifier>public</modifier>
-
-        <type>bool</type> <methodname>is_complex_type</methodname>
-
-        <void></void>
-
-        <modifier>const</modifier>
-    </methodsynopsis>
-
-    <methodsynopsis>
-        <modifier>public</modifier>
-
         <type>bool</type> <methodname>is_real_scalar</methodname>
 
         <void></void>
@@ -216,7 +197,17 @@ DEFUN_DLD(matpow, args, ,
     <methodsynopsis>
         <modifier>public</modifier>
 
-        <type>bool</type> <methodname>is_matrix_type</methodname>
+        <type>bool</type> <methodname>is_complex_scalar</methodname>
+
+        <void></void>
+
+        <modifier>const</modifier>
+    </methodsynopsis>
+
+    <methodsynopsis>
+        <modifier>public</modifier>
+
+        <type>bool</type> <methodname>is_real_matrix</methodname>
 
         <void></void>
 
@@ -232,14 +223,12 @@ DEFUN_DLD(matpow, args, ,
 
         <modifier>const</modifier>
     </methodsynopsis>
+
 </classsynopsis>
 
 <para>
-    The size tests, which ought to be called <quote>extension</quote> fro
-    precision, of course depend on the underlying type.  E.g. a list has only a
-    length (OCT/src/<filename class = "headerfile">ov-list.h</filename>),
-    whereas a matrix has a number for rows and a number of columns
-    (OCT/src/<filename class = "headerfile">ov-base-mat.h</filename>).
+    To examine the sizes of different Octave objects, the following
+    methods prove useful:
 </para>
 
 <classsynopsis language = "cpp">
@@ -304,19 +293,15 @@ DEFUN_DLD(matpow, args, ,
     </methodsynopsis>
 </classsynopsis>
 
-<caution>
-    <para>
-        <methodname>octave_base_matrix::length</methodname> has weird
-        semantics!  If either <literal>rows == 0</literal> or <literal>columns
-        == 0</literal>, it returns 0; otherwise it returns <literal>max(rows,
-        columns)</literal>.
-    </para>
-</caution>
-
-
+<para>
+    Remember that the methods available depend on the underlying
+    type.  For example, a ColumnVector only has a length (OCT/src/<filename class = "headerfile">ov-list.h</filename>),
+    whereas a Matrix has a number of rows and columns
+    (OCT/src/<filename class = "headerfile">ov-base-mat.h</filename>).
+</para>
 
 <para>
-    We have all the knowledge we need to write the argument testing fuction to
+    We have all the knowledge we need to write the argument testing function to
     augment <function>matpow</function>.
 </para>
 
@@ -324,9 +309,9 @@ DEFUN_DLD(matpow, args, ,
 static bool
 any_bad_argument(const octave_value_list&amp; args)
 {
-    if (!args(0).is_matrix_type())
+    if (!args(0).is_real_matrix())
     {
-        error("matpow: expecting base A (arg 1) to be a matrix");
+        error("matpow: expecting base A (arg 1) to be a real matrix");
         return true;
     }
 
@@ -364,56 +349,55 @@ any_bad_argument(const octave_value_list&amp; args)
 </para>
 
 <programlisting role = "octave">
-function rv = erreval(try_st, catch_st)
-    ## erreval() extends the built-in funciton eval().  Return 0 if
-    ## try_st does not raise an error, return 1 otherwise.  erreval() is
-    ## well suited to check the error exits of a function.
-
-    switch (nargin)
-        case 1
-            eval([try_st, "; rv = 0;"], "rv = 1;");
-        case 2
-            eval([try_st, "; rv = 0;"], [catch_st, "; rv = 1;"]);
-        otherwise
-            error("expecting 1 or 2 arguments");
-    endswitch
-endfunction
-
 
 ###
 ### The following tests should trigger the error exits.
 ###
 
-
 ## number of arguments
 
-unittest("error exit, too few arguments", 1, erreval("matpow()"));
-unittest("error exit, too few arguments", 1,
-         erreval("matpow([1, 1; 1, 1])"));
-unittest("error exit, too many arguments", 1,
-         erreval("matpow([1, 1; 1, 1], 2, 1)"));
+unit_test_err("error exit, too few arguments",
+              "matpow:", "matpow([1,1; 1,1])");
+                                                                                                                            
+unit_test_err("error exit, too few arguments",
+              "matpow:", "matpow()");
+                                                                                                                            
+unit_test_err("error exit, too many arguments",
+              "matpow:", "matpow([1,1; 1 1], 2, 1)");
 
 ## argument type and size
+                                                                                                                           
+unit_test_err("error exit, A not a matrix",
+              "matpow:", "matpow(1, 1)");
+                                                                                                                            
+unit_test_err("error exit, A not a square matrix",
+              "matpow:", "matpow([1 2 3; 4 5 6], 1)");
+                                                                                                                            
+unit_test_err("error exit, N not a real scalar(here: complex)",
+              "matpow:", "matpow(a, 1+i)");
+                                                                                                                            
+unit_test_err("error exit, N not a real scalar(here: non-scalar)",
+              "matpow:", "matpow(a, ones(2,2))");
+                                                                                                                            
+unit_test_err("error exit, N negative",
+              "matpow:", "matpow(a, -1)");
+                                                                                                                            
+unit_test_err("error exit, N non-integral",
+              "matpow:", "matpow(2.5)");
 
-unittest("error exit, A not a matrix", 1, erreval("matpow(1, 1)"));
-unittest("error exit, A not a square matrix", 1,
-         erreval("matpow([1, 2, 3; 4, 5, 6], 1)"));
-unittest("error exit, N not a real scalar (here: complex)", 1,
-         erreval("matpow(a, 1+i)"));
-unittest("error exit, N not a real scalar (here: real non-scalar)", 1,
-         erreval("matpow(a, ones(2, 2))"));
-unittest("error exit, N negative", 1, erreval("matpow(a, -1)"));
-unittest("error exit, N non-integral", 1, erreval("matpow(a, 2.5)"));
 </programlisting>
 
 <screen>
-<prompt>cspiel@hydra$</prompt> <userinput>octave -q testmp.m</userinput>
+<prompt>$</prompt> <userinput>octave -q test_matpow.m</userinput>
+................
 # of testcases attempted   16
 # of expected passes       16
 # of expected failures     0
 # of unexpected passes     0
 # of unexpected failures   0
 # of unresolved testcases  0
+ 
+Unit testing completed successfully!
 </screen>
 </sect3>
 
@@ -439,7 +423,7 @@ unittest("error exit, N non-integral", 1, erreval("matpow(a, 2.5)"));
 <para>
     The fundamental building block of Texinfo documentation strings is the
     Texinfo-macro&nbsp;<literal>@deftypefn</literal>, which takes two
-    arguments: The class the function is in, and the function's signature.  FOr
+    arguments: The class the function is in, and the function's signature.  For
     functions defined with <literal>DEFUN_DLD</literal>, the class is
     <literal>Loadable Function</literal>.  A skeletal Texinfo docstring
     therefore looks like this:
@@ -469,7 +453,7 @@ unittest("error exit, N non-integral", 1, erreval("matpow(a, 2.5)"));
             <para> 
                 <literal>@deftypefn{<replaceable>class</replaceable>} ... @end
                 deftypefn</literal> encloses the whole doc-string, like a LaTeX
-                environment, or a DocBook element does.
+                environment or a DocBook element does.
             </para> 
         </callout>
 
@@ -489,7 +473,7 @@ unittest("error exit, N non-integral", 1, erreval("matpow(a, 2.5)"));
     <literal>@var{<replaceable>variable_name</replaceable>}</literal>, and
     <literal>@code{<replaceable>code_piece</replaceable>}</literal>.  The
     Texinfo format has been designed to generate output for online viewing with
-    text-terminals as well as generating high-quality printed output.  To this
+    text-terminals as well as generating high-quality printed output.  To these
     ends, Texinfo has commands which control the diversion of parts of the
     document into a particular output processor.  Two formats are of
     importance: info and TeX.  The first is selected with
@@ -531,7 +515,7 @@ unittest("error exit, N non-integral", 1, erreval("matpow(a, 2.5)"));
 @cindex matrix power
 
 Return matrix @var{a} raised to the @var{n}-th power.  Matrix @var{a} is
-a square matrix, and @var{n} a non-negative integer.
+a square matrix and @var{n} a non-negative integer.
 @iftex <co id =  "co-texi-iftex"></co>
 @tex <co id = "co-texi-tex"></co>
 $n = 0$
@@ -540,7 +524,7 @@ $n = 0$
 @ifinfo <co id = "co-texi-ifinfo"></co>
 n = 0
 @end ifinfo
-is explicitely allowed, returning a unit-matrix of the same size as
+is explicitly allowed, returning a unit-matrix of the same size as
 @var{a}.
 
 Note: @code{matpow} <co id = "co-texi-code"></co> duplicates part of the functionality of the built-in
@@ -623,17 +607,17 @@ matrix multiplications to compute the result.
 
 <para>
     For further information about Texinfo consult the Texinfo documentation.
-    For TeX-beginners, we recommend <quote>The Not So Short Introduction to
-    LaTeX</quote> by Tobias Oetiker et al.
+    For TeX-beginners we recommend <quote>The Not So Short Introduction to
+    LaTeX</quote> by Tobias Oetiker et. al.
 </para>
 
 <para>
-    One thing we held back is the <emphasis></emphasis> true apperance of a
+    One thing we held back is the <emphasis></emphasis> true appearance of a
     Texinfo docstring &ndash; mainly because it looks so ugly.  The
     C++-language imposes the constraint that the docstring must be a
     string-constant.  Moreover, because <literal>DEFUN_DLD</literal> is a
     macro, every line-end has to be escaped with a backslash.  The backslash
-    does not insert any whitespace and TeX seperates paragrphas with empty
+    does not insert any whitespace and TeX separates paragraphs with empty
     lines, so that we have to put in new-lines as line-separators.  Thus, the
     Texinfo docstring in source form has each line end decorated with
     <quote><literal>\n\</literal></quote>.
@@ -642,7 +626,7 @@ matrix multiplications to compute the result.
 <programlisting role = "c++">
 DEFUN_DLD(matpow, args, ,
           "-*- texinfo -*-\n\
-@deftypefn{Loadable Function} @var{b} = matpow(@var{a}, @var{n})\n\
+@deftypefn{Loadable Function} {@var{b}} = matpow(@var{a}, @var{n})\n\
 \n\
 @cindex matrix power\n\
 \n\
@@ -685,7 +669,7 @@ result.
 
 <mediaobject>
     <imageobject>
-        <imagedata fileref = "matpow.eps" format = "EPS"></imagedata>
+        <imagedata fileref = "matpow" format = "EPS"></imagedata>
     </imageobject>
 
     <imageobject>

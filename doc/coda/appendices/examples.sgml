@@ -1,5 +1,6 @@
 <!--
      Copyright (C) 2001 Christoph L. Spiel
+     Copyright (C) 2004 Stefan van der Walt <stefan@sun.ac.za>
      
      This file is part of "Da Coda Al Fine".
      
@@ -28,7 +29,7 @@
 
 <para>
     This appendix gathers all examples that are either too long for the main
-    test, or are referenced but not defined in the main text.
+    text or are referenced (but not defined in) the main text.
 </para>
 
 <sect1 id = "sect-ex-unittest">
@@ -39,134 +40,219 @@
     <secondary>unit test</secondary>
 </indexterm>
 
-<sect2 id = "sect-ex-unittest-unittest-m">
-<title><filename>unittest.m</filename></title>
+<sect2 id = "sect-ex-unittest-unit_init-m">
+<title><filename>unit_init.m</filename></title>
 
 <programlisting role = "octave">
-function result = unittest(test_title, expect_pass, actual_result,
-                           verbose)
-    ## Function unittest compares the result ACTUAL_RESULT from running
-    ## a test (either  0 for failure, or 1 for success) with the
-    ## expected outcome of the test EXPECT_PASS (either 0 for expecting
-    ## a failure, or 1 for expecting pass).  TEST_TITLE is the name of
-    ## the test.  All test results will be accompanied by the test's
-    ## title.
-    ##
-    ## The result of unittest is on of the following: UNRESOLVED: The
-    ## test did neither return 0 nor 1.  PASS: expected pass, got pass.
-    ## FAIL: expected pass, got fail.  UPASS: expected fail, got pass.
-    ## XFAIL: expected fail, got fail.
-    ##
-    ## A call to unittest typically looks like this:
-    ##
-    ## unittest("scalar integer addition", 1, eval("1 + 1 == 2;"));
-
-    global unittest_results;
-
-    ## Sanity check input parameters
-    if (nargin &lt; 3 | nargin &gt; 4)
-        error("Function run_rest expects 3 or 4 parameters.");
-    endif
-
-    if (!isstr(test_title))
-        error("Expecting TEST_TITLE (arg 1) to be a string.");
-    endif
-
-    if (expect_pass != 0 &amp; expect_pass != 1)
-        error("Expecting EXPECT_PASS (arg 2) to be 0 or 1.");
-    endif
-
-    ## Default: verbose = false
-    if (nargin = 3)
-        verbose = 0;
-    endif
-
-    unittest_results.total++;
-
-    ## Take actions depending on what test result we expect
-    ## (expect_pass), and what we actually got (actual_result).
-    if (actual_result != 0 &amp; actual_result != 1)
-        result = "UNRESOLVED";
-        unittest_results.unresolved++;
-        return;
-    endif
-
-    if (expect_pass == 1 &amp; actual_result == 1)
-        result = "PASS";
-        if (verbose != 0)
-            printf("PASS: %s\n", test_title);
-        endif
-        unittest_results.pass++;
-    elseif (expect_pass == 1 &amp; actual_result == 0)
-        result = "FAIL";
-        printf("FAIL: %s\n", test_title);
-        unittest_results.fail++;
-    elseif (expect_pass == 0 &amp; actual_result == 0)
-        result = "XFAIL";
-        printf("XFAIL: %s\n", test_title);
-        unittest_results.xfail++;
-    elseif (expect_pass == 0 &amp; actual_result == 1)
-        result = "UPASS";
-        printf("UPASS: %s\n", test_title);
-        unittest_results.upass++;
-    endif
-endfunction
-</programlisting>
-</sect2>
-
-<sect2 id = "sect-ex-unittest-getunittest-m">
-<title><filename>getunittest.m</filename></title>
-
-<programlisting role = "scilab">
-function r = getunittest()
-    ## Return the results of previous unittest commands.
-
-    global unittest_results;
-
-    r = unittest_results;
-endfunction
-</programlisting>
-</sect2>
-
-<sect2 id = "sect-ex-unittest-initunittest-m">
-<title><filename>initunittest.m</filename></title>
-
-<programlisting role = "scilab">
-function initunittest()
+function unit_init(verbosity, global_vars)
     ## Initialize the global structure unittest_results, which is needed
-    ## in all functions of the *unittest module.
-
+    ## in all functions of the *unittest module.  Debugging information
+    ## is printed if verbosity==1.  global_vars is a cell array of the
+    ## names of the global variables used in the tests.
+    ##
+    ## e.g. unit_init(1, {"g", "a", "x"})
+                                                                                                                            
     global unittest_results;
-
+                                                                                                                            
+    unittest_results.verbose = 0;
+    unittest_results.eval_globals = {};
+    if (nargin &gt; 0)
+        if (!isscalar(verbosity) || verbosity &lt; 0 || verbosity &gt; 1)
+            warning("unit_init: verbose must be 0 or 1");
+        else
+            unittest_results.verbose = verbosity;
+        endif
+                                                                                                                            
+        if (nargin == 2 &amp;&amp; iscell(global_vars))
+            for i = 1:length(global_vars)
+                unittest_results.eval_globals{i} = strcat("global ", global_vars{i}, ";");
+            endfor
+        else
+            error("global_vars must be a cell array");
+        endif
+                                                                                                                            
+        if (nargin &gt; 2)
+            usage("expecting 2 arguments only");
+        end
+    endif
+                                                                                                                            
     unittest_results.total = 0; # number of testcases attempted
     unittest_results.pass = 0;  # number of expected passed
     unittest_results.fail = 0;  # number of unexpected failures
     unittest_results.upass = 0; # number of unexpected passes
     unittest_results.xfail = 0; # number of expected failures
     unittest_results.unresolved = 0; # number of unresolved testcases
-
+                                                                                                                            
     default_eval_print_flag = 0;
 endfunction
 </programlisting>
 </sect2>
 
-<sect2 id = "sect-ex-unittest-prunittest-m">
-<title><filename>prunittest.m</filename></title>
+<sect2 id = "sect-ex-unittest-unit_test-m">
+<title><filename>unit_test.m</filename></title>
 
-<programlisting role = "scilab">
-function prunittest()
-    ## Print the results from previous unittest calls in pretty format.
+<programlisting role = "octave">
+function result = unit_test(test_title, expect_pass, actual_result)
+     ## Function unittest compares the ACTUAL_RESULT of running
+     ## a test (either  0 for failure, or 1 for success) with the
+     ## expected outcome of the test EXPECT_PASS (either 0 for expecting
+     ## a failure, or 1 for expecting pass).  TEST_TITLE is the name of
+     ## the test.  All test results will be accompanied by the test's
+     ## title.
+     ##
+     ## The result of unittest is on of the following: UNRESOLVED: The
+     ## test did neither return 0 nor 1.  PASS: expected pass, got pass.
+     ## FAIL: expected pass, got fail.  UPASS: expected fail, got pass.
+     ## XFAIL: expected fail, got fail.
+     ##
+     ## A call to unittest typically looks like this:
+     ##
+     ## unittest("scalar integer addition", 1, eval("1 + 1 == 2;"));
+                                                                                                                            
+     global unittest_results;
+                                                                                                                            
+     ## Sanity check input parameters
+     if ( nargin &lt; 3 | nargin &gt; 4 )
+         error("Function run_rest expects 3 or 4 parameters.");
+     endif
+                                                                                                                            
+     if (!isstr(test_title))
+         error("Expecting TEST_TITLE (arg 1) to be a string.");
+     endif
+                                                                                                                            
+     if (expect_pass != 0 &amp; expect_pass != 1)
+         error("Expecting EXPECT_PASS (arg 2) to be 0 or 1.");
+     endif
+                                                                                                                            
+     unittest_results.total++;
 
-    global unittest_results;
+     ## Take actions depending on what test result we expect
+     ## (expect_pass), and what we actually got (actual_result).
+     if (actual_result != 0 &amp; actual_result != 1)
+         result = "UNRESOLVED";
+         unittest_results.unresolved++;
+         if (actual_result == 2)
+             printf("SYNTAX ERROR: %s\n", test_title);
+         endif
+         return;
+     endif
+                                                                                                                            
+     if (expect_pass == 1 &amp; actual_result == 1)
+         result = "PASS";
+         if (unittest_results.verbose != 0)
+             printf("PASS: %s\n", test_title);
+         else
+             printf('.');
+         endif
+         unittest_results.pass++;
+     elseif (expect_pass == 1 &amp; actual_result == 0)
+         result = "FAIL";
+         printf("FAIL: %s\n\n", test_title);
+         unittest_results.fail++;
+     elseif (expect_pass == 0 &amp; actual_result == 0)
+         result = "XFAIL";
+         printf("XFAIL: %s\n", test_title);
+         unittest_results.xfail++;
+     elseif (expect_pass == 0 &amp; actual_result == 1)
+         result = "UPASS";
+         printf("UPASS: %s\n", test_title);
+         unittest_results.upass++;
+     endif
+ endfunction
+</programlisting>
+</sect2>
 
-    printf("# of testcases attempted   %d\n", unittest_results.total);
-    printf("# of expected passes       %d\n", unittest_results.pass);
-    printf("# of expected failures     %d\n", unittest_results.xfail);
-    printf("# of unexpected passes     %d\n", unittest_results.upass);
-    printf("# of unexpected failures   %d\n", unittest_results.fail);
-    printf("# of unresolved testcases  %d\n", unittest_results.unresolved);
+<sect2 id = "sect-ex-unittest-unit_test_equals-m">
+<title><filename>unit_test_equals.m</filename></title>
+
+<programlisting role = "octave">
+function unit_test_equals(test_title, result_A, result_B)
+                                                                                                                            
+    unit_test(test_title, 1, all(all(result_A == result_B)));
+                                                                                                                            
 endfunction
 </programlisting>
 </sect2>
+
+<sect2 id = "sect-ex-unittest-unit_test_err-m">
+<title><filename>unit_test_err.m</filename></title>
+
+<programlisting role = "octave">
+function unit_test_err(test_title, expected_error_prefix, evaluated_string)
+                                                                                                                            
+    unit_test(test_title, 1, erreval(expected_error_prefix, evaluated_string));
+                                                                                                                            
+endfunction
+</programlisting>
+</sect2>
+
+<sect2 id = "sect-ex-unittest-errcheck-m">
+<title><filename>errcheck.m</filename></title>
+
+<programlisting role = "octave">
+function e = errcheck(error_prefix)
+                                                                                                                            
+    e = 1;
+    if (index(__error_text__, error_prefix) != 1)
+        e = 0;
+        printf("\nUNEXPECTED ERROR: %s", __error_text__);
+    endif
+                                                                                                                            
+end
+</programlisting>
+</sect2>
+
+<sect2 id = "sect-ex-unittest-erreval-m">
+<title><filename>erreval.m</filename></title>
+
+<programlisting role = "octave">
+function rv = erreval(error_prefix, try_str, catch_str)
+    ## erreval() extends the built-in function eval().  Return 0 if
+    ## try_str does not raise the error of type error_prefix, return 1
+    ## otherwise.
+                                                                                                                            
+    global unittest_results;
+    for k = 1:length(unittest_results.eval_globals)
+        eval(unittest_results.eval_globals{k});
+    end
+                                                                                                                            
+    rv = 0;
+    try
+        eval(try_str);
+    catch
+        rv = errcheck(error_prefix);
+    end
+                                                                                                                            
+endfunction
+</programlisting>
+</sect2>
+
+<sect2 id = "sect-ex-unittest-unit_results-m">
+<title><filename>unit_results.m</filename></title>
+
+<programlisting role = "octave">
+ function unit_results()
+     ## Print the results from previous unittest calls in pretty format.
+                                                                                                                            
+     global unittest_results;
+                                                                                                                            
+     printf("\n");
+     printf("# of testcases attempted   %d\n", unittest_results.total);
+     printf("# of expected passes       %d\n", unittest_results.pass);
+     printf("# of expected failures     %d\n", unittest_results.xfail);
+     printf("# of unexpected passes     %d\n", unittest_results.upass);
+     printf("# of unexpected failures   %d\n", unittest_results.fail);
+     printf("# of unresolved testcases  %d\n", unittest_results.unresolved);
+     printf("\n");
+                                                                                                                            
+     if (unittest_results.total == unittest_results.pass + unittest_results.xfail)
+         printf("Unit testing completed successfully!\n");
+     else
+         printf("One or more tests failed!\n");
+     endif
+ endfunction
+</programlisting>
+</sect2>
+
 </sect1>
 </appendix>

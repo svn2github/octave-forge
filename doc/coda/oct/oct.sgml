@@ -1,5 +1,6 @@
 <!--
      Copyright (C) 2001 Christoph L. Spiel
+     Copyright (C) 2004 Stefan van der Walt <stefan@sun.ac.za>
      
      This file is part of "Da Coda Al Fine".
      
@@ -54,22 +55,22 @@
     Why would you ever want to write in C++ again, having the wonderful
     &octave-app; environment at your service?  Well, sometimes the performance
     of native Octave-code is not enough to attack a problem.  Octave-code is
-    interpreted, thus it is inherently slow executed (especially if the problem
-    cannot be vectorized).  In such a case moving from
+    interpreted, thus it is inherently slow when executed (especially if the
+    problem cannot be vectorised).  In such a case moving from
     <filename>m</filename>-code to compiled C++-code speeds up the execution by
     a factor of ten or more.  The second group of problems, where reverting to
-    low-level code is necessary, is interfacing with foreign libraries (think
-    of LAPACK) or routines written in a language other than C++, most notably
-    Fortran-77.
+    low-level code is necessary, is when interfacing with foreign libraries
+    (think of LAPACK) or routines written in languages other than C++, most
+    notably Fortran-77.
 </para>
 
 <para>
-    Having convinced ourselves that we have to bite the bullet, we start with a
-    easy tutorial (<xref linkend = "sect-oct-tutorial"></xref>), which will
-    teach any reader who is sufficiently used to C++, how to write her first
+    Having convinced ourselves that we have to bite the bullet, we start with
+    an easy tutorial (<xref linkend = "sect-oct-tutorial"></xref>).  This will
+    teach any reader who is sufficiently used to C++ how to write her first
     dynamically linked extension for &octave-app;.  Having guided the reader
     with her first steps, <xref linkend = "sect-oct-advanced"></xref> covers
-    more advanded topics of writing extensions.  For later reference, we
+    more advanced topics of writing extensions.  For later reference, we
     provide a quick reference of the most helpful methods of the Octave
     interface classes in <xref linkend = "sect-oct-quick-ref"></xref>.
 </para>

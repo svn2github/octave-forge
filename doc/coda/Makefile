@@ -8,21 +8,29 @@ coidxflags:=-g -s 'Symbols'
 coidx:=perl /usr/bin/collateindex.pl
 tidyflags:=--wrap 79 --tidy-mark false
 
-srcdirs:=appendices oct standalone
-src:=$(wildcard *.sgml) $(foreach dir,$(srcdirs),$(wildcard $(dir)/*.sgml))
+src_appendices=examples gnufdl gnugpl
+src_oct=advanced oct quickref tut-basic tut-interm tut-intro tutorial
+src_standalone=standalone
+src_base=coda bibliography
+src=$(src_appendices:%=appendices/%.sgml) $(src_oct:%=oct/%.sgml) \
+	$(src_standalone:%=standalone/%.sgml) $(src_base:%=%.sgml)
 
+
+.phony: all
+all: html pdf targz
 
 .phony: check
-check:
+check: $(src)
 	grep --line-number $$'\t' $(src) | cat --show-tabs
-	xml-check coda.sgml
+	checkXML coda.sgml
 
 .phony: clean
 clean:
-	rm -f index.sgml
-	cd $(outputdir) && rm -f *.html *.ps HTML.index 
-	cd $(outputdir) && rm -f coda.{tex,dvi,log,aux,ps.gz,pdf}
-	cd $(outputdir) && rm -f *.tar.gz
+	$(RM) index.sgml
+	cd $(outputdir) && $(RM) *.html *.ps HTML.index matpow.png
+	cd $(outputdir) && $(RM) coda.{out,tex,dvi,log,aux,ps.gz,pdf}
+	cd $(outputdir) && $(RM) *.tar.gz
+	rmdir $(outputdir) coda coda.junk
 
 .phony: distclean
 distclean: clean
@@ -32,11 +40,8 @@ distclean: clean
 www-install: all
 	cd $(outputdir) && install -m 644 -p *.html coda.ps.gz coda.pdf coda-sgml.tar.gz /site/wwwroot/octave/coda
 
-.phony: all
-all: html pdf targz
-
 .phony: html
-html: $(outputdir)/coda.html
+html: $(outputdir)/index.html $(outputdir)/matpow.png
 
 .phony: ps
 ps: $(outputdir)/coda.ps.gz
@@ -47,16 +52,15 @@ pdf: $(outputdir)/coda.pdf
 .phony: targz
 targz: $(outputdir)/coda-sgml.tar.gz $(outputdir)/coda.ps.gz
 
-$(outputdir)/coda-sgml.tar.gz: $(src) Makefile
+$(outputdir)/coda-sgml.tar.gz: $(src)
 	tar czf $@ $^
 
-$(outputdir)/coda.html: $(src)
-	@echo '===  Pass 1  ==='
-	touch index.sgml; true
+index.sgml: $(src)
 	-db2html $(dbflags) -V html-index coda.sgml
 	test \! -f $(autoidx) && touch $(autoidx); true
 	$(coidx) $(coidxflags) $(autoidx) > index.sgml
-	@echo '===  Pass 2  ==='
+	
+$(outputdir)/index.html: $(src) index.sgml
 	-db2html $(dbflags) coda.sgml
 	cd $(outputdir) && tidy -modify $(tidyflags) *.html 2>/dev/null; true
 	cd $(outputdir) && \
@@ -67,7 +71,7 @@ $(outputdir)/coda.html: $(src)
             rm $$f.bak; \
         done
 
-$(outputdir)/coda.ps: $(src)
+$(outputdir)/coda.ps: $(src) index.sgml
 	db2tex coda.sgml
 	cd $(outputdir) && \
 	    cp ../coda.tex . ; jadetex coda.tex ; jadetex coda.tex ; \
@@ -75,8 +79,11 @@ $(outputdir)/coda.ps: $(src)
 
 $(outputdir)/coda.ps.gz: $(outputdir)/coda.ps
 
-$(outputdir)/coda.pdf: coda.sgml
+$(outputdir)/coda.pdf: $(src) index.sgml
 	db2pdf -o $(outputdir) coda.sgml
+
+$(outputdir)/matpow.png: oct/matpow.png
+	cp $< $@
 
 #	cd $(outputdir) && \
 #	    gs -q -r600 -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \

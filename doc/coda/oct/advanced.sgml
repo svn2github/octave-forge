@@ -64,14 +64,14 @@
 
 <para>
     The definition of constants and variables in a dynamically linked
-    GNU/Octave extension resembles the header of a dynamically linked function.
-    (See, for example, <xref linkend = "sect-oct-tutorial-oct1"></xref>)
+    GNU/Octave extension resembles the header of a dynamically linked function
+    (see, for example, <xref linkend = "sect-oct-tutorial-oct1"></xref>).
     However, the appropriate macro <function role = "macro">DEFCONST</function>
     is not available when creating a dynamically loadable extension for it is
     defined in <filename class = "headerfile">defun.h</filename> and not in
     <filename class = "headerfile">defun-dld.h</filename>.  The latter is
     necessary to set up an dynamically loadable extension.  The easiest,
-    moderately clean way os to duplicate <function role =
+    moderately clean way is to duplicate <function role =
     "macro">DEFCONST</function>'s definition from <filename class =
     "headerfile">defun.h</filename> into the respective extension.
 </para>
@@ -97,9 +97,9 @@
 
 <para>
     <function role = "macro">DEFCONST</function> introduces a constant named
-    <token>constant_name</token> at the interpreter level, giving it the value
-    of <token>defining_expression</token> and endowing it with the
-    documentation <replaceable>documentation_string</replaceable>.  The newly
+    <constant>constant_name</constant> at the interpreter level, giving it the value
+    of <varname>defining_expression</varname> and endowing it with the
+    documentation <varname>documentation_string</varname>.  The newly
     created constant will be protected against deletion, but
     <emphasis>not</emphasis> against change.
 </para>
@@ -110,14 +110,14 @@
 <type>void</type>
 <function role = "macro">DEFCONST</function>(<token>constant_name</token>,
          <token>defining_expression</token>,
-         <type>const std::string&amp;</type> <replaceable>documentation_string</replaceable>)
+         <type>const std::string&amp;</type> <varname>documentation_string</varname>)
 </literallayout>
 
 <para>
-    The name of the constant&nbsp;<token>constant_name</token> must be a valid
+    The name of the constant&nbsp;<constant>constant_name</constant> must be a valid
     C++ identifier, because it is <emphasis>not</emphasis> quoted.  Octave
     automatically casts the variable's definition,
-    <replaceable>defining_expression</replaceable>, to
+    <varname>defining_expression</varname>, to
     type&nbsp;<type>octave_value</type>.
 </para>
 
@@ -160,7 +160,7 @@ DEFUN_DLD(defconst, args, ,
         DEFCONST(c, 2.99792458e8,
                  "Speed of light in m/s.");
         DEFCONST(hbar, h / (2.0 * M_PI),
-                 "Reduced Planck's constant hbar, this is, h/(2*pi) in J*s.");
+                 "Reduced Planck's constant hbar, that is, h/(2*pi) in J*s.");
         DEFCONST(G, 6.672e-11,
                  "Graviation constant in N*m^2/kg^2.");
         DEFCONST(e, 1.6021892e-19,
@@ -191,6 +191,11 @@ DEFUN_DLD(defconst, args, ,
 
 DEFCONST(hbar, h / (2.0 * M_PI), DOCSTRING_HBAR);
     </programlisting>
+
+    <para>
+        This is also useful for describing the function's
+        documentation string.
+    </para>
 </tip>
 
 <indexterm>
@@ -236,15 +241,15 @@ DEFCONST(hbar, h / (2.0 * M_PI), DOCSTRING_HBAR);
 
 <literallayout class = "monospaced">
 <type>void</type>
-<function role = "macro">DEFVAR</function>(<token>variable_name</token>,
-       <token>defining_expression</token>,
+<function role = "macro">DEFVAR</function>(<varname>variable_name</varname>,
+       <varname>defining_expression</varname>,
        <type>symbol_record::change_function</type> <replaceable>changing_function</replaceable>,
        <type>const std::string&amp;</type> <replaceable>documentation_string</replaceable>)
 </literallayout>
 
 <para>
-    The parameters <token>variable_name</token>,
-    <token>defining_expression</token>, and
+    The parameters <varname>variable_name</varname>,
+    <replaceable>defining_expression</replaceable>, and
     <replaceable>documentation_string</replaceable> are analogous to those of
     <function role = "macro">DEFCONST</function>.  Only
     <replaceable>changing_function</replaceable> calls for further explanation.
@@ -394,7 +399,7 @@ It is not linked to any low-level variable."
 #define DOCSTRING_COUNTER \
 "Variable `counter' is initialized to 1.0.\n\
 It is linked to the C++ variable `counter_var' in file `defvar.cc'.\n\
-Whenever `counter_var' is assigned to the number of assigments\n\
+Whenever `counter' is assigned to the number of assigments\n\
 is printed."
 
 //

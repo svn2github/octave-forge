@@ -1,9 +1,10 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1//EN" 
-		      "/usr/share/sgml/docbook/xml-dtd-4.1/docbookx.dtd" [
+                      "/usr/share/sgml/docbook/dtd/xml/4.2/docbookx.dtd" [
 
 <!--
      Copyright (C) 2001 Christoph L. Spiel
+     Copyright (C) 2004 Stefan van der Walt <stefan@sun.ac.za>
      
      This file is part of "Da Coda Al Fine".
      
@@ -71,6 +72,13 @@
             <authorinitials>cls</authorinitials>
             <revremark>Initial revision</revremark>
         </revision>
+
+        <revision>
+           <revnumber>0.2</revnumber>
+           <date>2004-02-06</date>
+           <authorinitials>sjw</authorinitials>
+           <revremark>Corrections, unit testing improved</revremark>
+        </revision>
     </revhistory>
 
     <authorgroup>
@@ -82,11 +90,17 @@
                 <orgname>Hammersmith Consulting</orgname>
             </affiliation>
         </author>
+
     </authorgroup>
 
     <copyright>
         <year>2000</year>
         <holder>Ch. L. Spiel</holder>
+    </copyright>
+
+    <copyright>
+        <year>2004</year>
+        <holder>Stefan van der Walt</holder>
     </copyright>
 
     <legalnotice>

@@ -26,9 +26,9 @@
 <para>
     The tutorial unfurls slowly; we do not want to scare anybody by the
     complexity of the task ahead.  At any time, if you feel like it, look into
-    the directories OCT<filename class = "directory">/src</filename>, or
+    the directories OCT<filename class = "directory">/src</filename> or
     OCT<filename class = "directory">/src/DLD-FUNCTIONS</filename>, where OCT
-    is the root directory of your Octave source-tree, and consult the
+    is the root directory of your Octave source-tree and consult the
     header-files and already existent dynamic extensions.
 </para>
 

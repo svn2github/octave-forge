@@ -1,5 +1,6 @@
 <!--
      Copyright (C) 2001 Christoph L. Spiel
+     Copyright (C) 2004 Stefan van der Walt <stefan@sun.ac.za>
      
      This file is part of "Da Coda Al Fine".
      
@@ -44,11 +45,27 @@
     modifiers in the class' synopis.
 </para>
 
+<para>
+    To generate an up-to-date class reference using doxygen, issue the
+    command
+        <programlisting> doxygen -g octave-dox </programlisting>
+
+    Edit <filename>octave-dox</filename>, set
+    <varname>EXTRACT_ALL</varname> and
+    <varname>RECURSIVE</varname> to YES and
+    <varname>INPUT</varname> to the location of the Octave include
+    files, e.g. <filename>/usr/include/octave-2.1.50</filename>.
+
+    Now execute
+    <programlisting>doxygen octave-dox</programlisting>
+    to generate the documentation in <filename>./html</filename>.
+</para>
+
 <sect2 id = "sect-qr-types">
 <title>Types</title>
 
 <para>
-    We follow the old tradition from the days of Pascal, and introduce first
+    We follow the old tradition from the days of Pascal and introduce first
     the types the &octave-app; library works on.
 </para>
 
@@ -295,6 +312,20 @@
                     Complex (<type>double</type>) valued diagonal matrix.
                 </entry>
             </row>
+
+            <row>
+                <entry><type>Cell array</type></entry>
+
+                <entry>
+                    <filename class ="headerfile">ov-cell.h</filename>,
+                    <filename class = "headerfile">Cell.h</filename>,
+                </entry>
+
+                <entry>
+                    Cell array.
+                </entry>
+            </row>
+
         </tbody>
     </tgroup>
 </table>

@@ -33,8 +33,9 @@ for dir in $DIRS; do
     # No C++ of m-files, so no testing
     if test -z "$FILES" ; then continue; fi
 
-    # Find all files with tests in them
-    TESTS=`grep -l '^%!\(assert\|test\)' $FILES`
+    # Find all files with %!test or %!assert in them
+    # XXX FIXME XXX is there a system independent way of doing (test|assert)
+    TESTS=`grep -l -E '^%![ta][es]s' $FILES`
 
     # if no files have tests in them, skip
     if test -z "$TESTS" ; then

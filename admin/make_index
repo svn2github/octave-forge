@@ -1,0 +1,513 @@
+#!/usr/bin/env perl
+#
+# Albert Danial Mar 21 2002
+#
+# Creates .html files documenting all the functions in octave and
+# octave-forge.  Needs:
+#  - a master index list mapping functions to toolboxes (trim.idx)
+#  - an .html file created by cvs-tree
+#  - a directory pointing to the source of the latest release of octave 
+#
+use strict;
+use File::Find;
+use File::Basename;
+use Text::Wrap;
+use FileHandle;
+use IPC::Open2;
+
+my $script  = basename($0);
+my $OCTAVE  = "../octave";
+my $CVSTREE = "cvs-tree.html";
+die "Cannot read $CVSTREE  -- edit $script and define the\n",
+    ".html file which was produced by the cvs-tree script\n" unless -r $CVSTREE;
+die "$script  <index>\n" unless scalar @ARGV == 1;
+
+my %index_by_TB_cat   = (); # i_TB_cat{toolbox}{category} = list of functions
+my %index_by_function = (); # i_function{function} =[ [toolbox_1,category_1],
+                            #                         [toolbox_2,category_2],..]
+my %TB_description    = ();
+load_index($ARGV[0], 
+           \%index_by_TB_cat, 
+           \%TB_description,
+           \%index_by_function);
+
+my $location = `pwd`;
+my $PATH     = "";
+if ($location =~ m{^(.*)/admin$}) {
+    chdir "..";
+    $PATH = "$1/";
+}
+    
+my %CR      = load_copyright();
+my @m_files = ();
+my @C_files = ();
+my %function_description  = ();
+my %octave_forge_function = ();
+find(\&cc_and_m_files, ".");
+foreach (@m_files, @C_files) {
+    my $function = basename($_, qw(.m .cc));
+    $octave_forge_function{$function} = 1;
+}
+
+find(\&cc_and_m_files, "$OCTAVE/scripts");
+find(\&cc_and_m_files, "$OCTAVE/src");
+#    print "Found @C_files\n";
+my %octave_function = (); # master index file might list unimplemented functions
+foreach (@m_files, @C_files) {
+    my $function = basename($_, qw(.m .cc));
+    $octave_function{      $function } = 1;
+    $function_description{ $function } = 0;
+}
+
+my @uncategorized = ();
+my %n_appearances = ();
+foreach my $f ( @C_files ) {
+    if ( open(IN,$f) ) {
+	while (<IN>) {
+	    # skip to the next function
+	    next unless /^DEFUN_DLD/;
+
+	    # extract function name to pattern space
+	    /\((\w*)\s*,/;
+	    # remember function name
+	    my $function = $1;
+	    # skip to next line if comment doesn't start on this line
+	    # XXX FIXME XXX maybe we want a loop here?
+	    $_ = <IN> unless /\"/;
+	    # skip to the beginning of the comment string by
+	    # chopping everything up to opening "
+	    my $desc = $_;
+            $desc =~ s/^[^\"]*\"//;
+	    # join lines until you get the end of the comment string
+	    # plus a bit more.  You need the "plus a bit more" because
+	    # C compilers allow implicitly concatenated string constants
+	    # "A" "B" ==> "AB".
+	    while ($desc !~ /[^\\]\"\s*\S/ && $desc !~ /^\"/) {
+		# if line ends in '\', chop it and the following '\n'
+		$desc =~ s/\\\s*\n//;
+		# join with the next line
+		$desc .= <IN>;
+		# eliminate consecutive quotes, being careful to ignore
+		# preceding slashes. XXX FIXME XXX what about \\" ?
+		$desc =~ s/([^\\])\"\s*\"/$1/;
+	    }
+	    $desc = "" if $desc =~ /^\"/; # chop everything if it was ""
+	    $desc =~ s/\\n/\n/g;          # insert fake line ends
+	    $desc =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
+	    $desc =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
+
+	    # register the function with a brief description
+	    my $oneline = first_sentence($desc);
+#	    print "::: $function: $oneline\n";
+#	    print $desc;
+	    register_function($function,$oneline);
+	}
+	close (IN);
+    } else {
+	print STDERR "Could not open file ($f): $!\n";
+    }
+}
+
+foreach my $f ( @m_files ) {
+    my $desc     = extract_description($f);
+    my $function = basename($f, ('.m'));
+    my $oneline  = first_sentence($desc);
+    die "Null function?? [$f]\n" unless $function;
+    $oneline = "(Octave) $oneline" if $f =~ m/^$OCTAVE/;
+    register_function($function,$oneline);
+}
+
+if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
+    $_ = <IN>;
+    while (/^\c_/) {
+	my $function = $_;
+	$function =~ s/^\c_//;
+	$function =~ s/\n$//;
+	my $desc = "";
+	while (<IN>) {
+	    last if /^\c_/;
+	    $desc .= $_;
+	}
+	my $oneline = first_sentence($desc);
+	$oneline = "(Octave) $oneline";
+	register_function($function,$oneline);
+    }
+    close(IN);
+}
+else {
+    print STDERR "could not open $OCTAVE/src/DOCSTRINGS !\n";
+}
+
+if (@uncategorized) {
+    print scalar @uncategorized, " uncategorized functions ";
+    print "(out of ", scalar(@m_files) + scalar (@C_files), " total)\n";
+    print wrap("\t", "\t", join(" ", sort @uncategorized)), "\n";
+}
+
+write_html(\%index_by_TB_cat, 
+           \%TB_description, 
+           \%function_description,
+           \%octave_function,
+           \%octave_forge_function,
+           \%index_by_function);
+
+sub first_sentence { # {{{1
+# grab the first real sentence from the function documentation
+    my ($desc) = @_;
+    my $retval = '';
+    my $line;
+    my $next;
+    my @lines;
+
+    return "" unless defined $desc;
+    if ($desc =~ /^[^\n]*-\*- texinfo -\*-/) {
+	$desc =~ s/-\*- texinfo -\*-//;
+	my $cmd = "makeinfo --fill-column 1600 --no-warn --no-validate --no-headers --force";
+	open2(*Reader, *Writer, $cmd) or die "Could not run info";
+	print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
+	print Writer "$desc"; close(Writer);
+	@lines = <Reader>; close(Reader);
+	return "" unless @lines;
+#	print "<texinfo--------------------------------\n";
+#	print @lines;
+#	print "--------------------------------texinfo>\n";
+	while (1) {
+	    return "" if ($#lines < 0);
+	    $line = shift @lines;
+	    next if $line =~ /^\s*-/;
+	    last;
+	}
+    } else {
+	@lines = split(/\n/,$desc);
+#	print "<plain--------------------------------\n";
+#	print @lines;
+#	print "--------------------------------plain>\n";
+	while (1) {
+	    return "" if ($#lines < 0);
+	    $line = shift @lines;
+	    $line =~ s/^\s*\w+\s*://;            # ignore "blah : "
+	    $line =~ s/^\s*[[:upper:]][[:upper:]]+\s+//; # ignore "BLAH "
+	    $line =~ s/^\s*[Uu]sage\s+//;        # ignore "usage "
+	    $line =~ s/^\s*[Ff]unction\s+//;     # ignore "function "
+	    next if $line =~ /^\s*\[/;           # skip  [a,b] = f(x)
+	    next if $line =~ /^\s*\w+\s*(=|\()/; # skip a = f(x) OR f(x) 
+	    next if $line =~ /^\s*or\s*/;        # skip proto \n or \n proto
+	    next if $line =~ /^\s*$/;            # skip blank line
+	    # XXX FIXME XXX should be testing for unmatched () in proto
+	    # before going to the next line!
+	    last;
+	}
+    }
+
+    if ( "$line " !~ /[.]\s/ && $#lines >= 0) { 
+	# not the end of a sentence, and another line is available
+	my $next = $lines[0];
+	$line =~ s/\s*$//;  # trim trailing blanks on last
+	$next =~ s/^\s*//;    # trim leading blanks on next
+	$line .= " $next" if "$next " =~ /[.]\s/; # ends the sentence
+    }
+    $line =~ s/^\s*//;    # trim leading blanks on line
+    $line =~ s/[.]\s.*$/./; # trim everything after the sentence
+    chomp $line;          # trim trailing newline, if there is one
+#    print ": $line :\n";
+#    my $prompt = <STDIN>;
+    print "Skipping:\n$desc---\n" if $line eq "";
+    return $line;
+} # 1}}}
+sub register_function { # {{{1
+# register the function and its one-line description
+    my ($function,      # in   $index{toolbox}{category} = [functions]
+        $desc,          # in   $toolbox_desc{toolbox} = description
+       )      = @_;
+    ++$n_appearances{$function};
+    if ($n_appearances{$function} > 1) {
+        print "$function appeared previously\n";
+    }
+    printf "%-12s %s\n", $function, $desc;
+    if (defined $index_by_function{$function}) {
+        $function_description{$function} = $desc;
+       #printf "%-12s %-20s %s\n", $function, 
+       #                           $index_by_function{$function}[0],
+       #                           $index_by_function{$function}[1];
+    } else {
+        push @uncategorized, $function;
+    }
+} # 1}}}
+sub extract_description { # {{{1
+# grab the entire documentation comment from an m-file
+    my ($file) = @_;
+    my $retval = '';
+    
+    if( open( IN, "$file")) {
+	# skip leading blank lines
+	while (<IN>) {
+	    last if /\S/;
+	}
+	if( m/\s*[%\#][\s\#%]* Copyright/) {
+	    # next block is copyright statement, skip it
+	    while (<IN>) {
+		last unless /^\s*[%\#]/;
+	    }
+	}
+	# Skip any blank lines here
+	while ( /^\s*$/) {
+	    $_ = <IN>;
+	    last if not defined $_;
+	}
+	# At this point we should either have a function statement or
+        # the start of the description
+        if( m/^\s*[\#%]/) {
+            # Comment is starting, grab the first line
+	    s/^[\s%\#]*//;    # strip leading comment characters
+	    s/[\cM\s]*$//;   # strip trailing spaces.
+	    $retval .= "$_\n";
+	}
+        else {
+	    return unless m/function/i;
+	}
+        # Print out the rest of the documentation block
+        while (<IN>) {
+	    last unless /^\s*[%\#]/;
+	    s/^[\s%\#]*//;    # strip leading comment characters
+            s/[\cM\s]*$//;   # strip trailing spaces.
+	    $retval .= "$_\n";
+	}
+        close(IN);
+	return $retval;
+    }
+    else {
+	print STDERR "Could not open file ($file): $!\n";
+    }
+} # 1}}}
+sub load_index { # {{{1
+    my ($file,             # in
+        $rhha_TB_cat,      # out   $TB_cat{toolbox}{category} = [functions]
+        $rh_toolbox_desc,  # out   $toolbox_desc{toolbox} = description
+        $rhaa_func,        # out   $func{function} = [[toolbox_1,category_1],
+                           #                          [toolbox_2,category_2],..]
+       )      = @_;
+    my $toolbox     = "";
+    my $category    = "";
+    my $description = "";
+    my $function    = "";
+    open(IN, $file) or die "Cannot read $file:  $!\n";
+    while (<IN>) { 
+        next if /^\s*$/; # skip blank lines
+        chomp;
+        if      (/^(.*?)\s*>>\s*(.*?)$/) {
+            $toolbox     = $1;
+            $description = $2;
+            $category    = "";
+            $rh_toolbox_desc->{$toolbox} = $description;
+        } elsif (/^(\w.*?)\s*$/) {
+            $category    = $1;
+        } elsif (/\s(\S+)/) {
+            $function    = $1;
+            die "Function $function (line $.) has no toolbox"  unless $toolbox;
+            die "Function $function (line $.) has no category" unless $category;
+            push @{$rhha_TB_cat->{$toolbox}{$category}}, $function;
+            #warn "Function name collision line $. for $function:\n" .
+            #     "  $function in $rha_func->{$function}[0], " .
+            #                     "$rha_func->{$function}[1]\n" .
+            #     "  $function in $toolbox, $category\n" 
+            #     if defined $rha_func->{$function}[0];
+            push @{$rhaa_func->{$function}}, [$toolbox, $category];
+        } else {
+            die "Don't understand line $. of $file:  [$_]\n";
+        }
+    }
+    close(IN);
+} # 1}}}
+sub write_html { # {{{1
+    my ($rhha_TB_cat,      # in   $index{toolbox}{category} = [functions]
+        $rh_toolbox_desc,  # in   $toolbox_desc{toolbox} = description
+        $rh_func_desc,     # in   $func_desc{function}   = description
+        $rh_octave_func,   # in   $octave_func{function} = 1 if function is
+                           #           implemented in octave or octave-forge
+        $rh_oct_forge_f,   # in   $oct_forge_f{function} = 1 if function is
+                           #           implemented in octave-forge
+        $rhaa_func_TB_cat, # i_function{function} = [[toolbox, category],...]
+       )      = @_;
+    my $max_TB_across_top = 7;
+    my $all_toolboxes = "<center>\n";
+    my $n = 0;
+    foreach my $TB (sort keys %{$rhha_TB_cat}) {
+        ++$n;
+        if ($n > $max_TB_across_top) {
+            $n = 0;
+            $all_toolboxes .= "<a href=\"$TB.html\">$TB</a> <br> ";
+        } else {
+            $all_toolboxes .= "<a href=\"$TB.html\">$TB</a> | ";
+        }
+    }
+    $all_toolboxes =~ s/\s+\|\s*$//;  # strip last pipe separator
+    $all_toolboxes .= "<br><br>";
+    my $A_to_Z     = "";
+    foreach ('A'..'Z') {
+        $A_to_Z .= "<a href=\"all_functions.html#$_\">$_</a> | ";
+    }
+    $A_to_Z         =~ s/\s+\|\s*$//;  # strip last pipe separator
+    my $all_toolboxes_A_Z = $all_toolboxes . "$A_to_Z </center>\n";
+    $all_toolboxes .= "</center>\n";
+     
+    # Write a file for each toolbox.
+    #
+    $Text::Wrap::columns = 50;
+    foreach my $TB (sort keys %{$rhha_TB_cat}) {
+        my $file   = "$TB.html";
+        my %anchor = ();
+
+        open(OUT, ">$file") or die "Cannot write $file:  $!\n";
+        print OUT "<html><head>
+        <title>$TB</title>
+           <meta name=\"keywords\" content=\"\"> </head><body>\n";
+
+        print OUT $all_toolboxes_A_Z;
+        # Heading 1:  The categories for this toolbox.
+        print OUT "<p><h1>$TB Functions</h1>\n";
+        print OUT "<ul>\n";
+        foreach my $cat (sort keys %{$rhha_TB_cat->{$TB}}) {
+            $anchor{$cat} = $cat;
+            $anchor{$cat} =~ s/\W+//g;
+            print OUT "    <li><a href=\"#$anchor{$cat}\">$cat</a></li>\n";
+        }
+        print OUT "</ul>\n";
+
+        # Heading 2:  Each category has a table of its functions and
+        #             their descriptions.
+        foreach my $cat (sort keys %{$rhha_TB_cat->{$TB}}) {
+            print OUT '<h2><a name="', $anchor{$cat}, '">', $cat, "</a></h2>\n";
+            print OUT "<table>\n";
+            foreach my $func (sort @{$rhha_TB_cat->{$TB}{$cat}}) {
+
+                # column 1:  the function (x-ref to full description in
+                #                          cvs-tree's html file)
+                print OUT "<tr><td>";
+                if (defined $rh_oct_forge_f->{$func}) {
+                    print OUT '<a href="',"$CVSTREE#$func",'">',$func,"</a>";
+                } else {
+                    print OUT $func;
+                }
+                print OUT "</td>\n";
+
+                # column 2: the description, if it exists
+                #
+                if ($rh_octave_func->{$func}) {
+                    if ($rh_func_desc->{$func}) {
+                        print OUT "    <td>", wrap("", "<br>",
+                                                   $rh_func_desc->{$func});
+                    } else {
+                        print OUT "    <td><i>no description</i>";
+                    }
+                } else {
+                    print OUT "    <td><i><b>not implemented</b></i>";
+                }
+                print OUT "</td></tr>\n";
+            }
+            print OUT "</table>\n";
+        }
+        print OUT "</body></html>\n";
+        close(OUT);
+    }
+
+    # Write the file containing all functions alphabetically.
+    #
+    my $file   = "all_functions.html";
+    open(OUT, ">$file") or die "Cannot write $file:  $!\n";
+    print OUT "<html><head>
+    <title>Octave-Forge Functions Alphabetically</title>
+       <meta name=\"keywords\" content=\"\"> </head><body>\n";
+    print OUT $all_toolboxes;
+
+    foreach my $Letter ('A'..'Z') {
+        print OUT "<p><p><center><b><a name=\"$Letter\">$Letter</a></b> ";
+        print OUT '&nbsp; &nbsp; &nbsp; || &nbsp; &nbsp; &nbsp; ', 
+                  "$A_to_Z </center>\n";
+        print OUT "<table>\n";
+        foreach my $func (sort keys %{$rhaa_func_TB_cat}) {
+            next unless uc(substr($func, 0, 1)) eq $Letter;
+            # the loop below has more than one iteration only for functions
+            # which appear in multiple toolboxes
+            for (my $i=0; $i < scalar @{$rhaa_func_TB_cat->{$func}}; $i++){
+
+                # column 1:  the function (x-ref to full description in
+                #                          cvs-tree's html file)
+                print OUT "<tr><td>";
+                if (defined $rh_oct_forge_f->{$func}) {
+                    print OUT '<a href="',"$CVSTREE#$func",'">',$func,"</a>";
+                } else {
+                    print OUT $func;
+                }
+                print OUT "</td>\n";
+
+                # column 2:  the toolbox (x-ref to the <toolbox>.html file)
+                my $TB = $rhaa_func_TB_cat->{$func}[$i][0];
+                print OUT '    <td><a href="', $TB, '.html">', $TB, "</a>\n";
+
+                # column 3:  the category within the toolbox
+                $Text::Wrap::columns = 40;
+                print OUT "    <td>",
+                      wrap("", "<br>", 
+                           $rhaa_func_TB_cat->{$func}[$i][1]), "</td>\n";
+
+                # column 4:  the function's description
+                $Text::Wrap::columns = 50;
+                print OUT "    <td>";
+                print OUT wrap("", "<br>", $rh_func_desc->{$func})
+                    if defined $rh_func_desc->{$func};
+                print  OUT "</td>\n";
+            }
+        }
+        print OUT "</table>\n";
+    }
+    print OUT "</body></html>\n";
+    close(OUT);
+} # 1}}}
+sub load_copyright { # {{{1
+    my %CR = ();
+    while (<DATA>) { $CR{$_} = 1; }
+    return %CR;
+} # 1}}}
+sub part_of_copyright { # {{{1
+    my ($line) = @_;
+    foreach (keys %CR) {
+        my $L = 20;
+           $L = length($line) if length($line) > $L;
+        my $leading_chars = substr($_, 0, $L);
+        $line =~ s/^\W+//g;
+        return 1 if lc substr($line, 0, $L) eq lc $leading_chars;
+    }
+    return 0;
+} # 1}}}
+sub cc_and_m_files { # {{{1 populates global array @files
+    return unless -f and /\.(m|cc)$/;  # .m and .cc files
+    if (/\.m$/) {
+        push @m_files, "$File::Find::dir/$_";
+    } else {
+        push @C_files, "$File::Find::dir/$_";
+    }
+} # 1}}}
+__END__
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+This program is granted to the public domain.
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.

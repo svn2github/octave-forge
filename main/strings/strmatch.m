@@ -1,5 +1,4 @@
-## Copyright (C) 2000 Paul Kienzle
-##           Jun 2003 Alois Schloegl, support for cell arrays.   
+## Copyright (C) 2000 Paul Kienzle, 2003 Alois Schloegl
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,9 +15,9 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## usage: strmatch(s, A [, 'exact'])
-## Determines which entries of A match string s. A can be a string matrix  
+## Determines which entries of A match string s. A can be a string matrix
 ## or a cell array of strings. If 'exact' is not given, then s only needs 
-## to match A up to the length of s. Null characters match blanks. 
+## to match A up to the length of s. Null characters match blanks.
 ## Results are returned as a column vector.
 function idx = strmatch(s,A,exact)
   if (nargin < 2 || nargin > 3)
@@ -45,17 +44,17 @@ function idx = strmatch(s,A,exact)
 
     [nr, nc] = size (A);
     if iscell(A)
-            match = zeros(prod(size(A)),1);
-            if nargin>2,
-                    for k = 1:prod(size(A)),
-                            match(k) = strcmp(s,A{k});    
-                    end;        
-            else
-                    for k = 1:prod(size(A)),
-                            match(k) = strncmp(s,A{k},length(s));    
-                    end;        
-            end;        
-            idx = find(match);
+      match = zeros(prod(size(A)),1);
+      if nargin>2,
+        for k = 1:prod(size(A)),
+          match(k) = strcmp(s,A{k}); 
+        end 
+      else
+        for k = 1:prod(size(A)),
+          match(k) = strncmp(s,A{k},length(s));
+        end
+      end
+      idx = find(match);
     elseif (length (s) > nc)
       idx = [];
     else
@@ -69,11 +68,11 @@ function idx = strmatch(s,A,exact)
       	idx = find(all(match')');
       endif
     endif
-
+    
   unwind_protect_cleanup
     implicit_str_to_num_ok = istno;
     warn_str_to_num = wstno;
     do_fortran_indexing = dfi;
     warn_fortran_indexing = wfi;
   end_unwind_protect
-endfunction    
+endfunction 

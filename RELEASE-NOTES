@@ -20,7 +20,7 @@ See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/
 
 * fix rand bug on non-intel architectures
 * more econometrics functions
-* new functions: randg
+* new functions: randg, cellfun, cell2mat
 * bug fixes and improvements (see ChangeLog for details)
 
 2004-11-16 ===========================================================

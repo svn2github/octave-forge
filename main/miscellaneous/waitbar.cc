@@ -32,6 +32,7 @@
 #define MAX_LEN		240
 #define DEFAULT_LEN	50
 #define	BAR_CHAR	'#'
+#define SPACING		3
 
 static bool no_terminal=false;
 
@@ -46,11 +47,14 @@ DEFUN_DLD(waitbar, args, nargout,
      ## computation\n\
      waitbar(i/1000);\n\
  end\n\n\
- WAITBAR(X), where 0 <= X <= 1, sets the position of the\n\
- waitbar to the fractional length X. Values of X exactly equal\n\
- to 0 or 1 clear the waitbar.\n\n\
+ WAITBAR(X,TITLE), where 0 <= X <= 1, sets the position of\n\
+ the waitbar to the fractional length X. Values of X exactly\n\
+ equal to 0 or 1 clear the waitbar. The optional second\n\
+ argument TITLE sets the waitbar caption to TITLE.\n\n\
  If Octave is running in a smart terminal, the width is\n\
- automatically detected. Otherwise, it is initialized to a\n\
+ automatically detected, and the title is displayed in the\n\
+ waitbar (and truncated if it is too long). Otherwise, the\n\
+ title is not displayed and the width is initialized to a\n\
  default of 50 characters, or it can be set to N characters\n\
  with WAITBAR(0,N). If no terminal is detected (such as when\n\
  Octave is run in batch mode and output is redirected), no\n\
@@ -67,18 +71,20 @@ DEFUN_DLD(waitbar, args, nargout,
 #if defined(USE_TERM)
   static char term_buffer[1024];
   static char *begin_rv, *end_rv;
-  static int brvlen, ervlen;
+  static int brvlen, ervlen, pct_pos;
   static bool smart_term;
+  static bool newtitle = false;
+  static charMatrix title;
   int j;
 #endif
   static char *term;
   static bool init;
 
-  Matrix arg;
-  float pct;
+  double pct;
   int i;
 
   octave_value_list retval;
+  retval(0) = Matrix(0,0);
   int nargin = args.length();
   if (nargin < 1) {
     print_usage("waitbar");
@@ -88,9 +94,21 @@ DEFUN_DLD(waitbar, args, nargout,
   if(no_terminal)
     return retval;
 
-  arg	= args(0).matrix_value();
-  pct	= arg(0,0);
+  pct	= args(0).double_value();
   if(pct>1.0)	pct	= 1.0;		// to prevent overflow
+
+#if defined(USE_TERM)
+  if(nargin==2 && args(1).is_string())
+    {
+      newtitle = true;
+      title = args(1).string_value();
+    }
+  if(nargin==3)
+    {
+      newtitle = true;
+      title = args(2).string_value();
+    }
+#endif
 
   if(pct==0.0 || pct==1.0)
     {
@@ -104,20 +122,21 @@ DEFUN_DLD(waitbar, args, nargout,
 #if defined (USE_TERM)
       i = tgetnum("co");
       smart_term = i ? true : false;
-#endif
-      if(nargin==1)
-#if defined (USE_TERM)
+      if(nargin==1 || args(1).is_string())
 	length = smart_term ? i-1 : DEFAULT_LEN;
 #else
+      if(nargin==1)
         length = DEFAULT_LEN;
 #endif
       else
+	if(nargin==2 && !(args(1).is_string()))
 	{
 	  length	= args(1).int_value();
 	  if(length>MAX_LEN)	length	= MAX_LEN;
 	  if(length<=0)		length	= DEFAULT_LEN;
 	}
 #if defined (USE_TERM)
+      pct_pos = length/2-2;
       if(smart_term)
 	{
 	  // get terminal strings ("rv"="reverse video")
@@ -131,23 +150,25 @@ DEFUN_DLD(waitbar, args, nargout,
 	  
 	  // initialize print buffer
 	  for(i=0; i<BUF_SIZE; ++i)
-	    print_buf[i]		= ' ';
+	    print_buf[i]	= ' ';
 	  print_buf[length+brvlen+ervlen+1] = '\r';
 	  print_buf[length+brvlen+ervlen+2] = '\0';
 	  for(i=0; i<brvlen; ++i)
 	    print_buf[i]	= begin_rv[i];
 	  for(i=0; i<ervlen; ++i)
 	    print_buf[i+brvlen]	= end_rv[i];
-	  printf(print_buf);
+	  fputs(print_buf,stdout);
+	  if(title.length())
+	    newtitle	= true;
 	}
       else
 	{
 #endif
 	  for(i=0; i<BUF_SIZE; ++i)
-	    print_buf[i]		= ' ';
+	    print_buf[i]	= ' ';
 	  print_buf[length+8]	= '\r';
 	  print_buf[length+9]	= '\0';
-	  printf(print_buf);
+	  fputs(print_buf,stdout);
 	  print_buf[0]		= '[';
 	  print_buf[length+1]	= ']';
 #if defined (USE_TERM)
@@ -167,39 +188,49 @@ DEFUN_DLD(waitbar, args, nargout,
       if(init==false)
 	{
 	  Fwaitbar(octave_value(0.0),0);
-	  printf(print_buf);
+	  fputs(print_buf,stdout);
 	  fflush(stdout);
 	}
 
       // check to see of output needs to be updated
+#if !defined (USE_TERM)
       if(n_chars!=n_chars_old || pct_int!=pct_int_old)
 	{
-#if defined (USE_TERM)
+#else
+      if(n_chars!=n_chars_old || pct_int!=pct_int_old || newtitle)
+	{
 	  if(smart_term)
 	    {
-	      static char pct_str[6];
-	      int half = length/2-1;
-	      sprintf(pct_str,"%3i%%%%",pct_int);
+	      static char pct_str[5];
+	      sprintf(pct_str,"%3i%%",pct_int);
 
-	      // Clear old percentage string
-	      for(i=half, j=0; j<5; ++i, ++j)
-		if(i>=n_chars_old)
-		  print_buf[i+brvlen+ervlen]	= ' ';
-		else
-		  print_buf[i+brvlen]	= ' ';
-
-	      // Clear old and insert new end of reverse video
-	      for(i=n_chars_old+brvlen; i<n_chars_old+brvlen+ervlen; ++i)
-		print_buf[i]	= ' ';
-	      for(i=n_chars+brvlen, j=0; j<ervlen; ++i, ++j)
-		print_buf[i]	= end_rv[j];
+	      // Insert the title
+	      if(newtitle)
+		{
+		  pct_pos	= length-SPACING*2;
+		  for(i=SPACING+brvlen; i<pct_pos+brvlen-SPACING;  ++i)
+		    print_buf[ i>=n_chars_old+brvlen ? i+ervlen : i ] = ' ';
+		  for(i=SPACING+brvlen, j=0; j<title.length(); ++i, ++j)
+		    if(i<pct_pos+brvlen-SPACING)
+		      print_buf[ i>=n_chars_old ? i+ervlen : i ] = title(0,j);
+		  newtitle	= false;
+		}
 
 	      // Insert the percentage string
-	      for(i=half, j=0; j<5; ++i, ++j)
-		if(i>=n_chars)
-		  print_buf[i+brvlen+ervlen]	= pct_str[j];
-		else
-		  print_buf[i+brvlen]	= pct_str[j];
+	      for(i=pct_pos+brvlen, j=0; j<4; ++i, ++j)
+		print_buf[ i>=n_chars_old+brvlen ? i+ervlen : i ] = pct_str[j];
+
+	      // Move print_buf characters
+	      if(n_chars_old<n_chars)
+		for(i=n_chars_old+brvlen; i<n_chars+brvlen; ++i)
+		  print_buf[i]	= print_buf[i+ervlen];
+	      else
+		for(i=n_chars_old+brvlen-1; i>=n_chars+brvlen; --i)
+		  print_buf[i+ervlen]	= print_buf[i];
+
+	      // Insert end of reverse video
+	      for(i=n_chars+brvlen, j=0; j<ervlen; ++i, ++j)
+		print_buf[i]	= end_rv[j];
 	    }
 	  else
 	    {
@@ -214,7 +245,7 @@ DEFUN_DLD(waitbar, args, nargout,
 #if defined (USE_TERM)
 	    }
 #endif
-	  printf(print_buf);
+	  fputs(print_buf,stdout);
 	  fflush(stdout);
 	  n_chars_old	= n_chars;
 	  pct_int_old	= pct_int;

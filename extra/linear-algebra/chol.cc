@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 extern void  install_tri_ops(void);
+static bool type_loaded = false;
 
 DEFUN_DLD (chol, args, nargout,
   "-*- texinfo -*-\n\
@@ -84,10 +85,10 @@ r' * r = a.\n\
 	  CHOL fact (m, info);
 	  if (nargout == 2 || info == 0)
 	    {
-	      static bool type_loaded = false;
 	      if (! type_loaded) {       
 		octave_tri::register_type ();
 		install_tri_ops();
+		type_loaded = true;
 	      }
 
 	      retval(1) = static_cast<double> (info);
@@ -108,6 +109,12 @@ r' * r = a.\n\
 	  ComplexCHOL fact (m, info);
 	  if (nargout == 2 || info == 0)
 	    {
+	      if (! type_loaded) {       
+		octave_tri::register_type ();
+		install_tri_ops();
+		type_loaded = true;
+	      }
+
 	      retval(1) = static_cast<double> (info);
 	      retval(0) = fact.chol_matrix ();
 	    }

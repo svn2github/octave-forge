@@ -13,7 +13,6 @@ function o=meansq(i,DIM)
 % - can deal with NaN's (missing values)
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_unbiased_estimation
 %
 % see also: SUMSQ, SUMSKIPNAN, MEAN, VAR, STD, RMS
 

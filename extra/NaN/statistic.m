@@ -32,7 +32,6 @@ function [varargout]=statistic(i,DIM,fun)
 % - can deal with NaN's (missing values)
 % - dimension argument 
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_unbiased_estimation
 %
 % see also: SUMSKIPNAN
 %
@@ -86,11 +85,11 @@ R.MSQ  	= R.SSQ./R.N;;			% mean square
 R.RMS  	= sqrt(R.MSQ);			% root mean square
 R.SSQ0	= R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
 
-if flag_implicit_unbiased_estim;
+%if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
     n1 	= max(R.N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and SEM are INF
-else
-    n1	= R.N;
-end;
+%else
+%    n1	= R.N;
+%end;
 
 R.VAR  	= R.SSQ0./n1;	     		% variance (unbiased) 
 R.STD  	= sqrt(R.VAR);		     	% standard deviation

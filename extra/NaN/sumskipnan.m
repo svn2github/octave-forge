@@ -9,11 +9,6 @@ function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 % SUMSKIPNAN implements the DIMENSION-argument for data with missing values.
 % Also the second output argument return the number of valid elements (not NaNs) 
 % 
-% The above described behavior can be modified by FLAG_IMPLICIT_SKIP_NAN(0).
-% Then, NaN's in the input range result in NaN's in the output. 
-% This mode is not recommended, its implemented mainly for testing purposes and
-% it might not be supported in future. FLAG_IMPLICIT_SKIP_NAN(1) sets the mode back. 
-%
 % Y = sumskipnan(x [,DIM])
 % [Y,N,SSQ,S4M] = sumskipnan(x [,DIM])
 % 
@@ -37,7 +32,7 @@ function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 % - implements dimension argument. 
 % - compatible with Matlab and Octave
 %
-% see also: FLAG_IMPLICIT_SKIP_NAN, SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
+% see also: SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
 %      SSQ, MOMENT, SKEWNESS, KURTOSIS, SEM
 %
 % REFERENCES: 
@@ -97,10 +92,10 @@ if exist('OCTAVE_VERSION') >= 5,
 			fprintf('Error SUMSKIPNAN: DIM argument must be 1 or 2\n');	
 		end;
 	end;
-	if ~flag_implicit_skip_nan,
+	%if ~flag_implicit_skip_nan,
 		% the following command implements NaN-In -> NaN-Out
-		o(count<size(i,DIM)) = NaN;         
-	end;	
+	%	o(count<size(i,DIM)) = NaN;         
+	%end;	
         if nargout>2,
                 i=i.^2;
                 SSQ = sumskipnan(i,DIM);
@@ -126,9 +121,9 @@ else
 	if nargout>1
                 count = sum(~isnan(i),DIM); 
         end;
-	if flag_implicit_skip_nan,
+	%if flag_implicit_skip_nan, %%% skip always NaN's
                 i(isnan(i)) = 0;
-        end;
+        %end;
         o = sum(i,DIM);
         if nargout>2,
                 i=i.^2;

@@ -13,7 +13,6 @@ function R=kurtosis(i,DIM)
 % - can deal with NaN's (missing values)
 % - dimension argument 
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_unbiased_estimation
 %
 % see also: SUMSKIPNAN, VAR, STD, VAR, SKEWNESS, MOMENT, STATISTIC, 
 %    IMPLICIT_SKIP_NAN

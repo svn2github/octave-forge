@@ -15,10 +15,8 @@ function y=var(x,DIM)
 % - can deal with NaN's (missing values)
 % - dimension argument 
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_unbiased_estimation
 %
 % see also: MEANSQ, SUMSQ, SUMSKIPNAN, MEAN, RMS, STD,
-%	FLAG_IMPLICIT_UNBIASED_ESTIMATION
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -58,8 +56,8 @@ end;
 m = s./n;	% mean
 y = (y-s.*m);   % n * (summed squares with removed mean)
 
-if flag_implicit_unbiased_estim,
+%if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
     n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
-end;
+%end;
 y = y./n;	% normalize
 

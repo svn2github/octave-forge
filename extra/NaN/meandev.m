@@ -50,11 +50,11 @@ end;
 i     = i - repmat(S./N,size(i)./size(S));		% remove mean
 [S,N] = sumskipnan(abs(i),DIM);		% 
 
-if flag_implicit_unbiased_estim;
+%if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
     	n1 = max(N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
-else
-    	n1 = N;
-end;
+%else
+%    	n1 = N;
+%end;
 
 R     = S./n1;
 

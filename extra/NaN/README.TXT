@@ -12,15 +12,11 @@ FEATURES of the NaN-tb:
  - contains basic statistical functions.
  - supports DIM argument 
  - supports unbiased estimation; 
- - flags for switching between propagating NaNs and skipping NaN's 
-         for switching between biased and  unbiased estimates 
-         are implemented. 
-	 However, these might become obsolete in future - Do not use them.
  - realizes an experimental concept for the future developement of Matrix-languages. 
    (give it a try) 	   
  - compatible to Matlab and Octave
    The toolbox was tasted and can be used with 
-   Matlab 5.2, 5.3, 6.1 and Octave 2.0.14, 2.0.16.92, 2.1.35, 
+   Matlab 5.2, 5.3, 6.1 and Octave 2.0.14, 2.0.16.92, 2.1.35-36, 
  
  
 Currently are implemented:
@@ -52,16 +48,6 @@ Currently are implemented:
 	CORRCOEF	correlation coefficient 
 	COV		covariance matrix
 	
-	FLAG_IMPLICIT_SKIP_NAN	
-			gets and sets default handling of NaN's
-			might become obsolete in future
-	FLAG_IMPLICIT_UNBIASED_ESTIM	
-			gets and sets default estimation mode
-			might become obsolete in future
-	FLAG_IMPLICIT_DIMENSION	
-			gets and sets default DIMENSION argument
-			might become obsolete in future
-			
 	
 REFERENCE(S):
 ----------------------------------
@@ -91,39 +77,10 @@ It implements
 (Note, NANSUM from Matlab does not support the DIM-argument, and NANSUM(NaN)
 gives NaN instead of 0);
 
-Example:
-    x  = randn(10,4); x([5,7],1)=NaN;x(:,4)=NaN,
-    v1 = var(x);  % skips NaNs
-    flag_implicit_skip_nan(0);  % sets mode to NaN-In -> NaN-Out'
-    v2 = var(x);  % NaN-In results in NaN-Out
-    flag_implicit_skip_nan(1);  % sets mode to skip NaN's
-    v3 = var(x);  % skips NaNs again
-
-Usually, there is no reason to change the default setting 
-(FLAG_IMPLICIT_SKIP_NAN==1). Explicit setting of FLAG_IMPLICIT_SKIP_NAN 
-might make your code difficult to understand; I do not recommend using it. 
-
 
 4) Defining the estimation mode (biased or unbiased) 
-... is based on a new strategy. In Matlab an optional flag argument 
-has to be given. In this new implementation, the mode is determined 
-once by a hidden (global) FLAG. This FLAG can be changed with the function call 
-FLAG_IMPLICIT_UNBIASED_ESTIM. (see STD, VAR, MOMENT, STATISTIC, KURTOSIS, 
-SKEWNESS). The application programs will be easier to read.
-
-Examples:
-    x  = randn(10,4),x(1:9,2)=NaN;x(1:8,3)=NaN;
-    v1 = var(x);  % gives unbiased variance of x
-    flag_implicit_unbiased_estim(0);  % sets estimation mode to 'BIASED'
-    v2 = var(x);  % gives biased variance of x
-    flag_implicit_unbiased_estim(1);  % sets estimation mode to 'UNBIASED'
-    v3 = var(x);  % gives again unbiased variance of x
-
-Usually, there is no reason to change the default setting 
-(FLAG_IMPLICIT_UNBIASED_ESTIM==1). Explicit setting of 
-FLAG_IMPLICIT_UNBIASED_ESTIM might make your code difficult to understand; 
-I do not recommend using it. 
-
+This feature is removed. 
+Unbiased estimates are provided.
 
 5) The DIMENSION argument is implemented in most routines. 
 These should work in all Matlab and Octave versions. A workaround for a bug in 
@@ -208,8 +165,8 @@ This checks whether all previous functions have been replaced
 
 
 
-	Version 1.22
-	06 May 2002
+	Version 1.23
+	11 June 2002
 	Copyright (C) 2000-2002 by  Alois Schloegl
 	a.schloegl@ieee.org	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/

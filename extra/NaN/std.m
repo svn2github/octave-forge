@@ -11,10 +11,8 @@ function o=std(i,DIM)
 % - can deal with NaN's (missing values)
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_unbiased_estimation
 %
 % see also: RMS, SUMSKIPNAN, MEAN, VAR, MEANSQ,
-%	FLAG_IMPLICIT_UNBIASED_ESTIMATION
 
 
 %    This program is free software; you can redistribute it and/or modify

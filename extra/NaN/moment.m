@@ -16,10 +16,8 @@ function M=moment(i,p,opt,DIM)
 % - can deal with NaN's (missing values)
 % - dimension argument 
 % - compatible to Matlab and Octave
-% - global FLAG_implicit_unbiased_estimation
 %
 % see also: STD, VAR, SKEWNESS, KURTOSIS, STATISTIC, 
-%     FLAG_IMPLICIT_UNBIASED_ESTIMATION
 %
 % REFERENCE(S):
 % http://mathworld.wolfram.com/Moment.html
@@ -79,7 +77,8 @@ if ~isempty(opt),
 end;
 
 [M,N] = sumskipnan(i.^p,DIM);
-if flag_implicit_unbiased_estim,
+%if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
         N = max(N-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
-end;	
+        
+%end;	
 M = M./N;

@@ -1,7 +1,5 @@
 function cv=coefficient_of_variation(i,DIM)
 % coefficient of variation
-% FLAG_IMPLICIT_UNBIASED_ESTIM determines whether biased or unbiased
-% estimates are returned;
 % 
 % cv=coefficient_of_variation(x [,DIM])
 %  cv=std(x)/mean(x) 
@@ -40,6 +38,6 @@ end;
 
 cv = sqrt(SSQ.*N./(S.*S)-1);
 
-if flag_implicit_unbiased_estim,
+%if flag_implicit_unbiased_estim,
 	cv = cv.*sqrt(N./max(N-1,0));
-end;
+%end;

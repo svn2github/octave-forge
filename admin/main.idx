@@ -52,25 +52,21 @@ Environment
  computer 
  isunix
  temp_name
+ system
+ !
 Debugging
- dbstop 
- dbclear 
- dbcont 
- dbdown 
- dbstack 
- dbstatus 
- dbstep 
- dbtype 
- dbup 
- dbquit 
- dbmex 
- errortrap 
+ dbg_delete
+ dbg_list
+ dbg_set
+ dbg_where
+ debug_on_error
+ debug_on_warning
 Profiling
  profile 
  flops 
 Demos and Tests.
- example  demo  test  assert  speed_test 
-lang >> Programming
+ example  demo  test  assert  speed 
+language >> Programming
 Logical functions
  xor 
  any 
@@ -91,20 +87,20 @@ Sets
  setdiff  complement
  setxor 
  ismember 
-Control structures
- if 
- else 
- elseif 
- end 
- for 
- while 
- break 
- switch 
- case 
- otherwise 
- try 
- catch 
- return 
+#Control structures
+# if 
+# else 
+# elseif 
+# end 
+# for 
+# while 
+# break 
+# switch 
+# case 
+# otherwise 
+# try 
+# catch 
+# return 
 Interpreter interface
  eval 
  evalc 
@@ -126,7 +122,8 @@ Constants
  isinf 
  isfinite 
 Symbol table
- exist 
+ exist
+ exist(x,"var")
  global 
  isglobal 
  persistent 
@@ -169,6 +166,7 @@ Generating matrices
  randn 
  linspace 
  logspace 
+ randperm
  meshgrid meshdom
 Matrix properties
  size rows columns common_size
@@ -194,6 +192,7 @@ Rearranging matrices
  find 
  sub2ind 
  ind2sub 
+ transpose ctranspose
  prepad postpad shift vec vech
 Special matrices
  compan 
@@ -228,6 +227,7 @@ Linear algebra
  pinv 
  lscov 
  eig 
+ eig(A,B)
  polyeig 
  condeig 
  trisolve
@@ -250,12 +250,17 @@ Matrix factorization
  qrupdate 
  housh
  krylov
+ krylovb
  qzhess
 Matrix functions
  expm 
  logm 
  sqrtm 
  funm thfm
+Banded matrices
+  BandToFull BandToSparse FullToBand
+  SBBacksub SBEig SBFactor SBFactor2 SBProd SBSolve
+  ExampleEigenValues ExampleGenEigenValues gapTest
 math >> Mathematics
 Trigonometry
  sin 
@@ -324,7 +329,8 @@ Special functions
  erfcx 
  erfinv 
  expint 
- gamma 
+ gamma
+ gamma(complex)
  gammainc gammai
  gammaln 
  legendre 
@@ -397,24 +403,30 @@ Geometry
  inpolygon 
  rectint 
  polyarea 
+ __voronoi__
+ gpc_clip gpc_create gpc_get gpc_is_polygon gpc_plot gpc_read gpc_tristrip gpc_write gpc_test
 Polynomials
  roots 
  poly 
  polyval 
  polyvalm 
- residue 
+ residue
+ residue(r,p,k)
  polyfit 
  polyder polyderiv
  polyinteg polyreduce polyout polygcd
 Quaternions
  quaternion
- demoquat qconj qcoordinate_polt qderiv qderivmat qinv qmult
+ demoquat qconj qcoordinate_plot qderiv qderivmat qinv qmult
  qtrans qtransv qtransvmat
-optim >> Optimization
+optimization >> Optimization
 Minimization
  minimize 
+ nelder_mead_min
  bracket_min brent_line_min cg_min d2_min
- bfgs dfp
+ bfgs dfp nrm
+ lp
+ fmin fminbnd semi_bracket
 Data fitting
  expfit expdemo
  polyfit wpolyfit wpolyfitdemo 
@@ -424,7 +436,16 @@ Root finding
  fsolve 
  fsolve_options perror strerror
 Numerical derivatives
- dfdp bs_gradient cdiff deriv
+ dfdp bs_gradient cdiff deriv __quasi_func__
+Tests
+  lp_test test_cg_min_1 test_cg_min_2 test_cg_min_3
+  test_d2_min_1 test_d2_min_2 test_d2_min_3
+  test_nelder_mead_min_1
+  poly_2_ex
+Compatibility
+ linprog
+ quadprog
+ fminunc
 ode >> Calculus
 Integration
  quad 
@@ -465,6 +486,8 @@ Linear algebra
  spinv splu
 Statistics
  spsum
+Test
+ fem_test sp_test
 plot >> Plotting
 Line plots
  plot mplot fplot
@@ -631,7 +654,7 @@ Record and play
  recordsound 
  wavrecord 
  soundcap 
- auplay aurecord aucapture
+ aurecord aucapture
  loadaudio saveaudio playaudio record setaudio
 Read and write
  auload ausave 
@@ -642,7 +665,8 @@ Read and write
 Process
  mu2lin 
  lin2mu
- auplot 
+ auplot
+ au 
 file >> File I/O
 Basic file operations
  fopen 
@@ -654,7 +678,6 @@ Basic file operations
  fseek 
  ftell 
  frewind 
- textread 
  fscanf 
  fgetl 
  fgets 
@@ -668,15 +691,21 @@ Path operations
  fileparts 
  partialpath 
  tempdir 
- tempname 
+ tmpnam
+ tempname use <code>tmpnam</code>
  prefdir 
 Import/Export
+ textread
  dlmread 
  dlmwrite 
  wk1read 
  wk1write 
-HDF import/export
- hdf 
+ auload
+ ausave
+ imread
+ imwrite
+ hdf
+ aload/asave
 time >> Date and time
 Clock functions
  now 
@@ -686,8 +715,10 @@ Clock functions
  tic 
  toc 
  etime
- is_leap_year asctime ctime
+ ctime time localtime
 Date conversion
+ is_leap_year
+ asctime
  datenum 
  datestr 
  datevec 
@@ -783,7 +814,15 @@ Spline functions
  csape
  csaps
  fnplt fnder
-comm >> Communications
+ gcvspl
+areas >> Specialized fields
+Civil Engineering
+ __nlnewmark_fcn__
+ newmark nlnewmark
+Protein Database
+ read_pdb plotpdb 
+ write_pdb_quick write_pdb
+ strtoz
 Communications
  bi2de	
  de2bi	
@@ -803,11 +842,12 @@ Signals
  square 
  sinetone sinewave
  chirp 
- vco 
- modulate 
- demod 
+ vco
+ modulate
+ demod
  strips 
- specgram periodogram stft synthesis hurst
+ specgram 
+ periodogram stft synthesis hurst
  buffer
 Filtering
  fftfilt 
@@ -855,23 +895,15 @@ IIR Filter design
  butter 
  cheby1 
  cheby2 
- ellip nellip ncauer nellipdemo
+ nellip ncauer nellipdemo
  maxflat 
- yulewalk 
+ yulewalker
  buttord 
  cheb1ord 
  cheb2ord 
  ellipord 
  besselap 
- buttap 
- cheb1ap 
- cheb2ap 
- ellipap 
  sftrans
- lp2bp
- lp2bs 
- lp2hp 
- lp2lp 
  bilinear 
  impinvar 
 FIR filter design
@@ -914,6 +946,7 @@ Power spectrum analysis
  xcorr2 
  xcov 
  spectral_adf spectral_xdf
+ __power
 Window functions
  bartlett 
  blackman 
@@ -925,7 +958,7 @@ Window functions
  triang 
  gaussian
 System identification
- arburg yulewalker
+ arburg 
  arcov 
  armcov 
  aryule 
@@ -943,6 +976,17 @@ Sample rate change
  interp 
  resample 
  upfirdn 
+Compatibility
+ yulewalk 
+ ellip
+ buttap 
+ cheb1ap 
+ cheb2ap 
+ ellipap 
+ lp2bp
+ lp2bs 
+ lp2hp 
+ lp2lp 
 ident >> System Identification
 Minimalist model simulation functions
  mktheta 
@@ -952,6 +996,7 @@ Minimalist model simulation functions
 control >> Control theory
 OCST demos
  DEMOcontrol
+ controldemo
  sysrepdemo
  bddemo jet707 analdemo
  frdemo
@@ -964,7 +1009,7 @@ System interface functions
  zp2sys sys2zp
  tf2ss ss2tf
  zp2tf tf2zp
- zp2ssg2 zp2ss ss2zp
+ zp2ss ss2zp
 Data structure access
  syschnames
  syschtsam
@@ -974,44 +1019,61 @@ Data structure access
  sysgettype
  syssetsignals
  sysupdate
-Data structure internal functions
- syschnamesl sysdefioname sysdefstname tf2sysl
 System display functions
- sysout polyout tfout zpout outlist
+ sysout polyout tfout zpout
 Block diagram manipulations
  bddemo jet707
  buildssic ord2 parallel series sysadd
  sysappend sysconnect
- syscont syscont_disc sysdisc
- sysdup sysgroup sysgroupn sysmult sysprune
+ syscont sysdisc
+ sysdup sysgroup sysmult sysprune
  sysreorder sysscale syssub ugain wgt1o
  feedback
  strappend	
  starp
 Numerical functions
  are dare dgram dlyap gram lyap pinv qzval
- zgfmul zgfslv zginit zgpbal zgreduce zgrownorm zgscal zgsgiv
+ zgfmul zgfslv zginit zgreduce zgrownorm zgscal zgsgiv
  zgshsr
 System properties
  analdemo
- abcddim abcddims ctrb h2norm hinfnorm obsv pzmap
- sysKnames is_abcd is_controllable is_detectable is_dgkf
+ abcddim ctrb h2norm hinfnorm obsv pzmap
+ is_abcd is_controllable is_detectable is_dgkf
  is_digital is_observable is_sample is_siso is_stabilizable
  is_signal_list is_stable
 Time domain analysis
- c2d d2c dmr2d damp dcgain impulse step stepimp
+ c2d d2c dmr2d damp dcgain impulse step
 Frequency domain analysis
  frdemo
- bode bode_bounds bodquist
- freqchkw freqresp ltifr nyquist tzero tzero2
+ bode bode_bounds
+ freqchkw ltifr nyquist tzero tzero2
  rlocus
 Controller design
  dgkfdemo hinfdemo
- dlqe dlqr lqe lqg lqr gain 
- hinf_ctr hinfsyn hinfsyn_c hinfsyn_chk
+ dlqe dlqr lqe lqg lqr 
+ hinf_ctr hinfsyn hinfsyn_ric hinfsyn_chk
  lsim place
 Miscellaneous
- axis2dlim mb prompt sortcom susball swap swapcols
+ axis2dlim prompt sortcom swap swapcols
+Compatibility
+ filt
+ ss
+ tf
+ zpk
+ ssdata
+ tfdata
+ zpkdata
+ isct
+ isdt
+ issiso
+ append(sys)
+ connect
+ lft
+ norm(sys)
+ zero
+ kalman
+ kalmd
+
 
 symbolic >> Symbolic algebra
 Symbols
@@ -1023,7 +1085,7 @@ Extended precision arithmetic
 Properties
  is_ex is_ex_matrix is_sym is_vpa
 Expression manipulation
-  subs
+  subs collect expand lcoeff
 Special Functions
  Abs Cos Cosh Exp Gcd Log Sin Sinh Tan Tanh aCos aCosh aSin aSinh
  aTan aTanh
@@ -1134,4 +1196,30 @@ Hypothesis testing
  run_test
  var_test
  welch_test
-
+Compatibility
+ beta*
+ bino*
+ chi2*
+ exp*
+ f*
+ gam*
+ geo*
+ hyge*
+ logn*
+ nbin*
+ norm*
+ poiss*
+ t*
+ unid*
+ unif*
+ weib*
+ anova1
+ regress
+ nlinfit
+ barttest
+ ranksum
+ signrank
+ signtest
+ ttest
+ ttest2
+ ztest

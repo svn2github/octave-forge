@@ -289,8 +289,8 @@ References:\n\
   Matrix mider = nargs > 8 ? args(8).matrix_value() : Matrix(1,1,0.0);
 
   // int nc=n;
-  double c[n*k];	// Matrix c(n,k);
-  double wk[6*(n*m+1)+n];// work array, return status
+  OCTAVE_LOCAL_BUFFER(double,c,n*k);	     // Matrix c(n,k);
+  OCTAVE_LOCAL_BUFFER(double,wk,6*(n*m+1)+n);// work array, return status
   int ier;
 
   DEBUG(1, ("B"));
@@ -306,7 +306,7 @@ References:\n\
   ASSERT(val >= 0);
   ASSERT(mider.rows() == 1);
   int nider = mider.columns();
-  int ider[nider];
+  OCTAVE_LOCAL_BUFFER(int,ider,nider);
   for(int i=0; i<nider; i++) {
     ider[i] = (int)rint(mider.xelem(0,i));
     ASSERT(0 <= ider[i] && ider[i] <= 2*m);
@@ -331,7 +331,7 @@ References:\n\
 
   DEBUG(1, ("D"));
   int l=0;	// index in x, just simplifies search
-  double q[2*m];// work array
+  OCTAVE_LOCAL_BUFFER(double,q,2*m);// work array
   int nxt=x_target.rows();
   ASSERT(x_target.columns() == 1);
   Matrix y_target(nxt,k*nider);

@@ -1,162 +1,29 @@
 
-This collection of functions for use with GNU Octave is hereby 
-granted to the public domain.
+This collection of functions for use with GNU Octave is hereby granted to
+the public domain.
 
-THIS COLLECTION IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
-IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS COLLECTION IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The individual functions are copyrighted by their respective authors
-and released under different licenses.  See the corresponding source
-files for the specific copyright and license.  A summary is provided
-below for your convenience, but it is not guaranteed to be complete
-or up to date.
+The individual functions are copyrighted by their respective authors and
+released under different licenses.  See the corresponding source files
+for the specific copyright and license.
 
-GPL (see file GPL for details)
-------------------------------
-Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-	nanstd, nanmean, nanmedian, nanmax, nanmin, nansum
-	mad, trimean, geomean, harmmean, zscore, prctile, perms, nchoosek
-	now, weekday, datevec, datestr, datenum
-	test, example, demo, assert, speed_test, lasterr
-	isequal, fzero, cplxpair, complex, gammaln, factor, factorial, primes
-	strtok, strmatch, strjust, magic, rref, repmat
-	zplane, zp2tf, xcov, xcorr, triang, tfe, tf2zp, specgram, sftrans
-	resample, rceps, pyulear, pwelch, pulstran, __power, pburg,
-	medfilt1, levinson, kaiserord, interp, impz, sgolay, sgolayfilt,
-	gaussian, fir2, fir1, filtfilt, decimate, czt, csd, cohere, chirp,
-	cheby2, cheby1, chebord, cheb1ord, buttord, butter, boxcar, bilinear
-	imnoise, polygcd, unmkpp, ppval, mkpp, interp1, lookup, hilbert
-	dct, idct, dct2, idct2, dctmtx, filter2, interpft, rectpuls, tripuls
-	soundsc, sound, clip, aurecord, auplot, au, aucapture, ausave, auload
-	unique, union, setxor, setdiff, ismember, intersect
-	aryule, arburg, poly2th, mktheta, idsim, idplot
-	text, surf, surfc, stem, pcolor, drawnow
-	full, issparse, spdiags, spy
-	pretty (modified from jwe), 
-	strvcat (modified from Kurt Hornik), 
-	mat2str (modified from jwe thru Ariel Tankus)
-	grpdelay (modified from jwe)
-	plot3, __plt3__ (modified from jwe)
-	meshc (modified from jwe)
-	rand, randn (modified from jwe and Dirk Eddelbuettel)
-Kai Habel <kai.habel@gmx.de>
-	bitand, bitor, bitcmp, bitmax, bitxor, bitset, bitget, bitshift
-	csape,csapi,spline,trisolve,fnplt
-	trapz,cumtrapz,del2,gradient,interp2,legendre
-	cool,copper,flag,hot,hsv,jet,pink,prism,rainbow,white
-	autumn,spring,summer,winter
-	brighten,hsv2rgb,mat2gray,rgb2gray,rgb2hsv
-	cart2pol,cart2sph,pol2car,sph2cart
-	corr2,mean2,std2
-	grayslice,histeq,im2bw,imadjust,imhist,isbw,isgray,isind
-Teemu Ikonen <tpikonen@pcu.helsinki.fi>
-	cordflt2,impad,medfilt2,ordfilt2
-Etienne Grossmann <etienne@isr.ist.utl.pt>
-	struct,setfield,rmfield,isstruct,isfield,getfield
-	rmpath, fullfile, addpath
-	bwlabel, bwborder
-	sub2ind, ind2sub
-Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
-	cceps
-Pascal Fleury <fleury@sslab.sony.co.jp>
-	sparse
-Stephen Eglen <stephen@cogsci.ed.ac.uk>
-	randperm
-Benn Sapp <bsapp@lanl.gov>
-	__quasi_func__, nrm, lp, dfp, deriv, bs_gradient, bfgs, fminbnd
-Marc Compere <compere@mail.utexas.edu>
-	rk8fixed, rk4fixed, rk2fixed, pendulum, pendot, ode78, ode45, ode23
-P.R. Nienhuis <106130.1515@compuserve.com>
-	funm
-David Doolin <doolin@ce.berkeley.edu>
-	polyarea
-Vincent Cautaerts <vincent@comf5.comm.eng.osaka-u.ac.jp>
-	ifftshift
-Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
-	patch,dhbar,fill,pie,print,gget
-Ariel Tankus <arielt@math.tau.ac.il>
-	deal, double, view
-Kurt Hornik <??>
-	kaiser
-Roberto A. F. Almeida <roberto@calvin.ocfis.furg.br>
-	quiver
-Jake Janovetz <??>
-	remez
-Peter Ekberg <??>
-	pascal, rosser, wilkinson
-Andy Adler <en254@freenet.carleton.ca>
-	conv2, ginput
-Laurent Mazet <mazet@crm.mot.com>
-	legend, unix, transpose, ctranspose, bi2de, de2bi, vec2mat, randint
-Daniel Calvelo <dcalvelo@yahoo.com>
-	dec2base, base2dec, hex2dec, dec2hex
-	blkdiag, sortrows
-David Billinghurst <David.Billinghurst@riotinto.com>
-	ellipke, ellipj
-Richard I. Shrager <rs9e@nih.gov>
-Arthur Jutan <jutan@charon.engga.uwo.ca>
-Ray Muzic <rfm2@po.cwru.edu>
-Francesco Potorti <F.Potorti@cnuce.cnr.it>
-	leasqr, dfdp, leasqrdemo
-Dave Cogdell <cogdelld@asme.org>
-	xcorr2
-Bryce Gardner <bgard@autoa.com>
-	(grants permission to modify for and distribute with octave)
-	quadndg, quadg, quadc, quad2dg, quad2dggen, quad2dc, quad2dcgen,
-	ncrule, innerfun, grule, grule2d, grule2dgen, gquadnd, gquad,
-	gquad6, gquad2d, gquad2dgen, gquad2d6, crule, crule2d, crule2dgen,
-	cquadnd, count
+To the best of our knowledge, all files included in this distribution
+are available under an open source license.  The programs can be used,
+modified and/or redistributed without prejudice and without warranty.
 
-public domain
--------------
-Bruce T. Lowerre <??>
-	endpoint.h, endpoint.doc, endpoint.cc
-Sam Sirlin <sirlin@izap.com>
-	fill3  (from http://www.izap.com/~sirlin/matlab/)
-Bill Lash <lash@tellabs.com>
-	unwrap, strncmp, strncmpi, strcmpi
+For the details of how the source can be combined with other source, see
+the individual licenses.  Any files not otherwise covered by a license
+are assumed to be covered by a BSD-style license (see COPYING.BSD) if the
+author is listed or in the public domain if no author is listed.  Files which
+link with octave are implicitly covered by the GPL (see COPYING.GPL).
 
-GPL header
-----------
-## Copyright (C) 2001 "author"
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-Public domain header
---------------------
-## Author: "author"
-##
-## This program is granted to the public domain.
-##
-## THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
-## ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-## ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
-## FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-## DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-## OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-## HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-## LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-## OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-## SUCH DAMAGE.

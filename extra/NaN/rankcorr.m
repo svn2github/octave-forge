@@ -1,5 +1,5 @@
 function r = rankcorr(X,Y)
-% RNAKCORR calculated the rank correlation coefficient.
+% RANKCORR calculated the rank correlation coefficient.
 % This function is replaced by CORRCOEF. 
 % Significance test and confidence intervals can be obtained from CORRCOEF, too. 
 %
@@ -17,8 +17,9 @@ function r = rankcorr(X,Y)
 % [1] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
 % [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
-%    Version 1.27  Date: 12 Aug 2002
-%    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%    $Revision$
+%    $Id$
+%    Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

@@ -24,8 +24,8 @@
 
 inline int max(int a, int b) { return a<b ? b : a; }
 inline int min(int a, int b) { return a<b ? a : b; }
-inline int max(double a, double b) { return a<b ? b : a; }
-inline int min(double a, double b) { return a<b ? a : b; }
+inline double max(double a, double b) { return a<b ? b : a; }
+inline double min(double a, double b) { return a<b ? a : b; }
 
 //////////////////////////////////////////////////
 

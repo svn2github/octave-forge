@@ -15,7 +15,7 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 % R	residual
 % P	poles
 % ip	number of complex conjugate poles
-% real(F)     	power, absolute values are obtained by multiplying with noise variance E(p+1) 
+% real(F)     	total power 
 % imag(F)	assymetry, - " -
 %
 % All input and output parameters are organized in rows, one row 
@@ -78,11 +78,15 @@ for k = 1:NTR, %if ~mod(k,100),k, end;
         elseif 1;
 	        a3 = polyval([-ARP(k,pp-1:-1:1).*(1:pp-1), pp],1./p(idx).');
 	        a  = polyval([-ARP(k,pp:-1:1) 1],p(idx).');
-		F(k,:) = (1+(imag(P(k,:))~=0))./(a.*a3); 
+		%F(k,:) = (1+(imag(P(k,:))~=0))./(a.*a3); 
+		%F((w<0) | (w>pi)) = NaN;
+		
+		F(k,:) = (1+sign(imag(P(k,:))))./(a.*a3); 
+		
+		%F(k,:) = 1./(a.*a3); 
         end;	
 end;
 
-A = A.*sqrt(E(:,ones(1,pp)));
 if nargin>1,
         if size(nhz,1)==1, 
                 nhz = nhz(ones(NTR,1),:);
@@ -91,6 +95,7 @@ if nargin>1,
         B = B.*nhz(:,ones(1,pp))/(2*pi);
 end;
 if nargin>2,
+	A = A.*sqrt(E(:,ones(1,pp)));
         F = F.*E(:,ones(1,pp));
 end;
 

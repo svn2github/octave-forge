@@ -14,12 +14,19 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## [n,d] = rat(x,tol)
-## Find a rational approximation to x within tolerance using a continued
-## fraction expansion. E.g,
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{n}, @var{d}]} = rat (@var{x}, @var{tol})
 ##
+## Find a rational approximation to @var{x} within tolerance defined
+## by @var{tol} using a continued fraction expansion. E.g,
+##
+## @example
 ##    rat(pi) = 3 + 1/(7 + 1/16) = 355/113
 ##    rat(e) = 3 + 1/(-4 + 1/(2 + 1/(5 + 1/(-2 + 1/(-7))))) = 1457/536
+## @end example
+##
+## @end deftypefn
+## @seealso{rats}
 
 function [n,d] = rat(x,tol)
 

@@ -778,6 +778,16 @@ end
    res(i)= res(i)    +all( all( sparse(rr,cc,1,N,M,'sum') == tf2 ));
    i=i+1;      % i=208
 
+   % test 'sphcat' 'spvcat'
+   res(i)= res(i)    +all( all(
+       sphcat( ars,brs,brs,ars ) == [ars,brs,brs,ars] ));
+   i=i+1;      % i=209
+
+   res(i)= res(i)    +all( all(
+       spvcat( ars,brs,brs,ars ) == [ars;brs;brs;ars] ));
+   i=i+1;      % i=210
+
+
 end 
 
 res= res(1:i-1);
@@ -801,6 +811,9 @@ n = 510; sparse(kron((1:n)', ones(n,1)), kron(ones(n,1), (1:n)'), ones(n));
 
 %
 % $Log$
+% Revision 1.12  2003/05/21 18:20:07  aadler
+% concatenate sparse matrices
+%
 % Revision 1.11  2003/04/03 22:06:40  aadler
 % sparse create bug - need to use heap for large temp vars
 %

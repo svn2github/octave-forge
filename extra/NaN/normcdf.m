@@ -6,6 +6,7 @@ function p = normcdf(x,m,s);
 % Computes the CDF of a the normal distribution 
 %    with mean m and standard deviation s
 %    default: m=0; s=1;
+% x,m,s must be matrices of same size, or any one can be a scalar. 
 %
 % see also: NORMPDF, NORMINV 
 
@@ -36,7 +37,7 @@ elseif nargin==2,
 end;        
 
 % allocate output memory and check size of arguments
-z = (x-m)./s;			% check size of arguments
+z = (x-m)./s;	  % if this line causes an error, input arguments do not fit. 
 
 p = (1 + erf(z/sqrt(2)))/2;
 

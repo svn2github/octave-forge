@@ -6,6 +6,7 @@ function p = normpdf(x,m,s);
 % Computes the PDF of a the normal distribution 
 %    with mean m and standard deviation s
 %    default: m=0; s=1;
+% x,m,s must be matrices of same size, or any one can be a scalar. 
 %
 % see also: NORMCDF, NORMINV 
 
@@ -35,7 +36,7 @@ elseif nargin==2,
 end;        
 
 % allocate output memory and check size of arguments
-z = (x-m)./s;			% check size of arguments
+z = (x-m)./s;	  % if this line causes an error, input arguments do not fit. 
 
 p = ((2*pi)^(-1/2))*exp(-z.^2/2)./s;
 

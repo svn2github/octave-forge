@@ -6,6 +6,7 @@ function x = norminv(p,m,s);
 % Computes the quantile (inverse of the CDF) of a the normal 
 %    cumulative distribution with mean m and standard deviation s
 %    default: m=0; s=1;
+% p,m,s must be matrices of same size, or any one can be a scalar. 
 %
 % see also: NORMPDF, NORMCDF 
 
@@ -35,7 +36,7 @@ elseif nargin==2,
 end;        
 
 % allocate output memory and check size of arguments
-x = sqrt(2)*erfinv(2*p - 1).*s + m;
+x = sqrt(2)*erfinv(2*p - 1).*s + m;  % if this line causes an error, input arguments do not fit. 
 
 x((p>1) | (p<0) | isnan(p) | isnan(m) | isnan(s) | (s<0)) = nan;
 

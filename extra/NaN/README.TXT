@@ -49,11 +49,14 @@ Currently are implemented:
 	COV		covariance matrix
 	RANKS		calculates ranks for non-parametric statistics 
 	TRIMEAN		trimean
-	NORMPDF		normal probability distribution
-	NORMCDF		normal comulative distribution 
-	NORMINV		inverse of the normal cumulative distribution
 	QUANTILE	q-th quantile 
 	PERCENTILE	p-th percentile
+	NORMPDF		normal probability distribution
+	NORMCDF		normal cumulative distribution 
+	NORMINV		inverse of the normal cumulative distribution
+	TPDF		student probability distribution
+	TCDF		student cumulative distribution 
+	TINV		inverse of the student cumulative distribution
 	
 	
 REFERENCE(S):
@@ -128,6 +131,13 @@ with NORMAL_INV, NORMAL_PDF, and NORMALCDF.
 The problem is fixed with this version. Furthermore, the check of the input 
 arguments is implemented simpler and easier in this versions. 
 
+13) TPDF, TCDF, TINV
+In the Matlab statistics toolbox V3.0(12.1) and V4.0(13), TCDF and TINV do not handle NaNs 
+correctly. TINV returns 0 instead of NaN, TCDF stops with an error message. 
+In Stats-tb V2.2(R11) TINV has also the same problem.
+
+For these reasons, the NaN-tb is a bug fix. Furthermore, the check of the input 
+arguments is implemented simpler. Overall, the code is cleaner and leaner. 
 
 
 Q: WHY SKIPPING NaN's?:

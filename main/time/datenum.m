@@ -25,7 +25,8 @@
 ## @seealso{date,clock,now,datestr,datevec,calendar,weekday}
 ## @end deftypefn
 
-## Paul Kienzle
+## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
+## Author: Paul Kienzle
 ## This program is granted to the public domain.
 
 function n = datenum(Y,M,D,h,m,s)
@@ -58,7 +59,6 @@ function n = datenum(Y,M,D,h,m,s)
 
   M(M<1) = 1; ## For compatibility.  Otherwise allow negative months.
 
-  ## Based on Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
   ## Set start of year to March by moving Jan. and Feb. to previous year.
   ## Correct for months > 12 by moving to subsequent years.
   z = Y + fix((M-14)/12);

@@ -1,19 +1,3 @@
-## Copyright (C) 2000 Paul Kienzle
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {V} datevec(date)
 ## @deftypefnx {Function File} {[Y,M,D,h,m,s] =} datevec(date)
@@ -41,6 +25,10 @@
 ## @seealso{date,clock,now,datestr,datenum,calendar,weekday} 
 ## @end deftypefn
 
+## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
+## Author: Paul Kienzle
+## This program is granted to the public domain.
+
 function [Y,M,D,h,m,s] = datevec(date,P)
 
   if nargin == 0 || nargin > 2
@@ -63,7 +51,6 @@ function [Y,M,D,h,m,s] = datevec(date,P)
     error("datevec: doesn't handle strings yet");
   endif
 
-  ## From Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
   ## Move day 0 from midnight -0001-12-31 to midnight 0001-3-1
   z = floor(date) - 60; 
   ## Calculate number of centuries; K1=0.25 is to avoid rounding problems.

@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # Create a new fntests.m file
-echo "fid=fopen('fntests.log','w');" > fntests.m
+echo "fid=fopen('fntests.log','wt');" > fntests.m
 echo "if fid<0,error('could not open fntests.log for writing');end" >>fntests.m
 echo "test('','explain',fid);" >> fntests.m
 echo "passes=0; tests=0;" >>fntests.m
@@ -38,18 +38,22 @@ for dir in $DIRS; do
     # XXX FIXME XXX is there a system independent way of doing (test|assert)
     TESTS=`grep -l -E '^%![ta][es]s' $FILES`
 
+    NUMFILES=`echo $FILES | wc -w`
+    NUMTESTS=`echo $TESTS | wc -w`
+    prompt="$dir [tests $NUMTESTS of $NUMFILES files]"
+
     # if no files have tests in them, skip
+    echo "printf('%s\n','$prompt');" >>fntests.m
     if test -z "$TESTS" ; then
-	echo "printf('%-40s --- no tests','$dir');disp('');" >>fntests.m
+	echo "printf('%-40s ---> success','');disp('');" >>fntests.m
     else 
 	echo "dp=dn=0;" >>fntests.m
 	for file in $TESTS ; do
             echo "[p,n] = test('$file','quiet',fid);" >>fntests.m
             echo "dp += p; dn += n;" >>fntests.m
 	done
-	echo "printf('%-40s --- ','$dir');" >>fntests.m
-	echo "if dp==dn, printf('success'); else" >>fntests.m
-        echo "printf('passes %d out of %d tests',dp,dn); end" >>fntests.m
+	echo "if dp==dn, printf('%-40s ---> success',''); else" >>fntests.m
+        echo "printf('%-40s ---> passes %d out of %d tests','',dp,dn); end" >>fntests.m
         echo "disp(''); passes += dp; tests += dn;" >>fntests.m
     fi
 

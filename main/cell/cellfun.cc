@@ -26,12 +26,15 @@
 #include <string>
 
 DEFUN_DLD (cellfun, args, nargout," -*- texinfo -*- \n\
-@deftypefn{Lodable Function} {} cellfun(name, cell_array, [name])\n\
-@deftypefnx{Lodable Function} {} cellfun(name, cell_array, [k])\n\
-Evaluate the function named name. Elements in cell_array\n\
-are passed on to the named function individually.\n\
-Not all functions are supported:\n\
-Possible functions:\n\
+@deftypefn {Lodable Function} {} cellfun (@var{name}, @var{c})\n\
+@deftypefnx {Lodable Function} {} cellfun ('isclass', @var{c}, @var{class})\n\
+@deftypefnx {Lodable Function} {} cellfun ('size', @var{c}, @var{k})\n\
+@deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c})\n\
+\n\
+Evaluate the function named @var{name} on the elements of the cell array\n\
+@var{c}. Elements in cell_array are passed on to the named function\n\
+individually. @var{name} can be one of the functions\n\
+\n\
 @table @asis\n\
 @item isempty\n\
 returns 1 when for non empty elements and 0 for others\n\
@@ -49,14 +52,28 @@ returns the product of dims of each element\n\
 Requires a third parameter @var{k}, and returns the size along the\n\
 @var{k}-th dimension\n\
 @item isclass\n\
-Requires a third parameter class_name and returns 1 for elements\n\
-of class class_name.\n\
+Requires a third parameter @var{class} and returns 1 for elements\n\
+of this class.\n\
 @end table\n\
-When function is isclass, a third parameter is needed\n\
-which is the string class name\n\
+\n\
+Additionally, @dfn{cellfun} accepts an arbitrary function @var{func}\n\
+in the form of an inline function, function handle, or a string. This\n\
+function should take a single argument and return a single argument, and\n\
+in the case of a string argument, the argument must be @var{x}. An example\n\
+is\n\
+\n\
+@example\n\
+@group\n\
+cellfun ('tolower(x)',@{'Foo','Bar','FooBar'@})\n\
+@result{} ans = @{'foo', 'bar', 'foobar'@}\n\
+@end group\n\
+@end example\n\
+\n\
 @end deftypefn")
 {
   octave_value retval;
+  std::string name = "function";
+  octave_function *func = 0;
 
   int nargin = args.length ();
   if (nargin < 2)
@@ -65,23 +82,32 @@ which is the string class name\n\
       print_usage("cellfun");
       return octave_value_list();
     }
-  if (!args(0).is_string())
+
+  if (args(0).is_function_handle () || args(0).is_inline_function ())
+    {
+      func = args(0).function_value ();
+
+      if (error_state)
+	return octave_value ();
+    }
+  else if (args(0).is_string ())
+    name = args(0).string_value ();
+  else
     {
       error ("cellfun: first argument must be a string");
-      return octave_value_list();
+
+      return octave_value();
     }	
   if (!args(1).is_cell())
     {
       error ("cellfun: second argument must be a cell");
-      return octave_value_list();
+
+      return octave_value();
     }
-  
-  std::string name = args(0).string_value ();
   
   Cell f_args = args(1).cell_value ();
   
   int k = f_args.numel();
-  
   
   if (name == "isempty")
     { 
@@ -166,7 +192,48 @@ which is the string class name\n\
         error("Not enough argument for isclass");
     }
   else 
-    error("unknown function");
+    {
+      std::string fcn_name;
+      
+      if (!func)
+	{
+	  fcn_name = unique_symbol_name ("__cellfun_fcn_");
+	  std::string fname = "function y = ";
+	  fname.append (fcn_name);
+	  fname.append ("(x) y = ");
+	  func = extract_function (args(0), "cellfun", fcn_name, fname,
+				       "; endfunction");
+	}
+
+      if (!func)
+	error("unknown function");
+      else
+	{
+	  Cell _retval (f_args.dims());
+
+          for(int count=0; count<k ; count++)
+	    {
+	      octave_value_list tmp = 
+		func->do_multi_index_op (1, f_args.elem(count));
+	      _retval(count) = tmp(0); 
+
+	      if (error_state)
+		break;
+	    }
+
+	  if (!error_state)
+	    retval = _retval;
+
+	  if (fcn_name.length())
+	    clear_function (fcn_name);
+	}
+    }
   
   return retval;
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

@@ -212,7 +212,7 @@ EOF
 function [passes,total] = sprandomtest
   warning("untested --- fix the source in buildtests.sh");
   disp('appending test output to sprandomtest.log');
-  fid = fopen('sprandomtest.log','a');
+  fid = fopen('sprandomtest.log','at');
   [passes, total] = test('sprandomtest','normal',fid);
   fclose(fid);
 endfunction

@@ -510,6 +510,51 @@ octave_complex_sparse::subsref( const std::string SUBSREF_STRREF type,
    return retval;
 }
 
+#if HAVE_OCTAVE_CONCAT
+octave_complex_sparse&
+octave_complex_sparse::insert( const octave_complex_sparse& b, int r, int c)
+{
+  printf("doing sp_cat with r=%d c=%d", r, c);
+  return *this;
+}
+#endif
+
+#ifdef CLASS_HAS_LOAD_SAVE
+bool 
+octave_complex_sparse::save_ascii (std::ostream& os, bool& infnan_warned, 
+			       bool strip_nan_and_inf)
+{
+  DEFINE_SP_POINTERS_CPLX( X )
+  int nnz = NCFX->nnz;
+
+  // use N-D way of writing matrix
+  os << "# nnz: "      << nnz << "\n";
+  os << "# rows: "     << Xnr << "\n";
+  os << "# columns: "  << Xnc << "\n";
+
+  os << "\n# sparse: vert-idx, horz-idx, value\n";
+  // add one to the printed indices to go from
+  //  zero-based to one-based arrays
+   for (int j=0; j< Xnc; j++)  {
+      OCTAVE_QUIT;
+      for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
+         os << ridxX[i]+1 << " "  << j+1 << " "
+	    << coefX[i]   << "\n";
+      }
+   }
+  
+  return true;
+}
+
+bool
+octave_complex_sparse::load_ascii (std::istream& is)
+{
+  int mord, prim, mdims;
+  bool success = true;
+  return success;
+}
+#endif
+
 octave_value
 octave_complex_sparse::do_index_op ( const octave_value_list& idx, int resize_ok) 
 {
@@ -1605,6 +1650,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.25  2004/07/27 18:24:10  aadler
+ * save_ascii
+ *
  * Revision 1.24  2004/07/27 16:05:55  aadler
  * simplify find
  *

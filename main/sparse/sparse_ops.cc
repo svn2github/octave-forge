@@ -472,16 +472,25 @@ bool
 octave_sparse::save_ascii (std::ostream& os, bool& infnan_warned, 
 			       bool strip_nan_and_inf)
 {
-  dim_vector d = dims ();
+  DEFINE_SP_POINTERS_REAL( X )
+  int nnz = NCFX->nnz;
 
-  // Note use N-D way of writing matrix for eventual conversion
-  // of octave_galois to handle N-D arrays
-  os << "# ndims: " << d.length () << "\n";
+  // use N-D way of writing matrix
+  os << "# nnz: "      << nnz << "\n";
+  os << "# rows: "     << Xnr << "\n";
+  os << "# columns: "  << Xnc << "\n";
 
-  for (int i=0; i < d.length (); i++)
-    os << " " << d (i);
-
-  os << "#contents here\n";
+  os << "\n# sparse: vert-idx, horz-idx, value\n";
+  // add one to the printed indices to go from
+  //  zero-based to one-based arrays
+   for (int j=0; j< Xnc; j++)  {
+      OCTAVE_QUIT;
+      for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
+         os << ridxX[i]+1 << " "  << j+1 << " "
+	    << coefX[i]   << "\n";
+      }
+   }
+  
   return true;
 }
 
@@ -583,15 +592,16 @@ octave_sparse::print (std::ostream& os, bool pr_as_read_syntax ) const
                                  ", nnz=" << nnz << ")\n";
    // add one to the printed indices to go from
    //  zero-based to one-based arrays
-   for (int j=0; j< Xnc; j++) 
+   for (int j=0; j< Xnc; j++)  {
+      OCTAVE_QUIT;
       for (int i= cidxX[j]; i< cidxX[j+1]; i++) {
-	 OCTAVE_QUIT;
          os << "  (" << ridxX[i]+1 <<
                " , "  << j+1 << ") -> ";
 	 octave_print_internal( os, coefX[i], false );
 	 os << "\n";
       }
-#endif                  
+   }
+#endif
 } // print
 
 octave_value_list 
@@ -1348,6 +1358,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.19  2004/07/27 18:24:10  aadler
+ * save_ascii
+ *
  * Revision 1.18  2004/07/27 16:05:55  aadler
  * simplify find
  *

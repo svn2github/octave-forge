@@ -47,6 +47,24 @@ hid_t hdf5_make_fixed_complex_type (hid_t num_type, int size);
     } \
   while (0)
 
+#if HAVE_SWAP_BYTES
+#define LS_DO_READ(TYPE, swap, data, size, len, stream) \
+  do \
+    { \
+      if (len > 0) \
+	{ \
+	  TYPE *ptr = new TYPE [len]; \
+	  stream.read (X_CAST (char *, ptr), size * len); \
+	  if (swap) \
+	    swap_bytes <size> (ptr, len); \
+	  for (int i = 0; i < len; i++) \
+	    (data)[i] = ptr[i]; \
+	  delete [] ptr ; \
+	} \
+    } \
+  while (0)
+
+#else
 #define LS_DO_READ(TYPE, swap, data, size, len, stream) \
   do \
     { \
@@ -62,7 +80,7 @@ hid_t hdf5_make_fixed_complex_type (hid_t num_type, int size);
 	} \
     } \
   while (0)
-
+#endif
 
 #define LS_DO_READ_1(data, len, stream) \
   do \

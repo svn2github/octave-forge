@@ -543,6 +543,13 @@ octave_galois::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
+#ifdef HAVE_SWAP_BYTES
+static inline void swap_4_bytes (volatile void *ptr)
+{
+  swap_bytes <4> (ptr);
+}
+#endif
+
 bool 
 octave_galois::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format fmt)

@@ -130,17 +130,26 @@
 # include <cmath>
 # include <cstdio>
 # include <ctime>
-# include <inttypes.h>
 #else
 # include <math.h>
 # include <stdio.h>
 # include <time.h>
-# include <inttypes.h>
 #endif
 #ifdef HAVE_GETTIMEOFDAY
 # include <sys/time.h>
 #endif
 
+/* Your compiler/standard library may not yet have stdint.h available.
+   We need the types uint32_t and uint64_t.  You can try:
+	#include <sys/types.h>
+   or
+	unsigned long uint32_t;
+	unsigned long long uint64_t;
+   instead.
+*/ 
+#include <stdint.h>
+
+   
 /* XXX FIXME XXX may want to suppress X86 if sizeof(long)>4 */
 #if !defined(HAVE_X86)
 # if defined(i386)

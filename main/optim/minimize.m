@@ -198,10 +198,10 @@ end
 if ! isnan (narg) && ! backend
   if is_list (args)
     if narg > length (args)
-      es = [es,sprintf ("narg=%i > length(args)=%i\n",narg, length(args))];
+      es = [es,sprintf("narg=%i > length(args)=%i\n",narg, length(args))];
     end
   elseif narg > 1
-    es = [es,sprintf ("narg=%i, but a single argument was passed\n",narg)];
+    es = [es,sprintf("narg=%i, but a single argument was passed\n",narg)];
   end
 end
 

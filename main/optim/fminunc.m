@@ -64,7 +64,7 @@ opn = [" DerivativeCheck Diagnostics DiffMaxChange DiffMinChange",\
 
 for [v,k] = opt
   if ! findstr ([" ",k," "],opn)
-    es = [es,sprintf ("Unknown option '%s'\n",k)];
+    es = [es,sprintf("Unknown option '%s'\n",k)];
   end
 end
 
@@ -78,7 +78,7 @@ iop = [" DerivativeCheck DiffMaxChange DiffMinChange",\
        " TolPCG TypicalX "];
 for [v,k] = opt
   if ! findstr ([" ",k," "],iop)
-    ws = [ws,sprintf ("Ignoring option '%s'\n",k)];
+    ws = [ws,sprintf("Ignoring option '%s'\n",k)];
   end
 end
 

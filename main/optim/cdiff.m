@@ -56,7 +56,7 @@ if nargin<6, dx = 10*sqrt(eps)  ; end
 if isfinite (nargs)
   argstr = sprintf("var%i,",1:nargs);
 else
-  argstr = [sprintf ("var%i,",1:wrt),"...,"];
+  argstr = [sprintf("var%i,",1:wrt),"...,"];
 end
 
 argstr = strrep(argstr,sprintf("var%i",wrt),"dvar") ;

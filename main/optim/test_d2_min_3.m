@@ -53,7 +53,7 @@ function [w,dv,d2v] = d2ff (x, y)
   dv = [2*u * (1+sin(v*3*pi)^2), u^2 * sin(v*2*3*pi) + 2*v ];
 
   d2v = [2*(1+sin(v*3*pi)^2), 2*u * sin(v*2*3*pi) ;
-	 2*u * sin(v*2*3*pi), u^2 * 2*3*pi* cos (v*2*3*pi) + 2 ];
+	 2*u * sin(v*2*3*pi), u^2 * 2*3*pi* cos(v*2*3*pi) + 2 ];
   d2v = inv (d2v);
 endfunction
 

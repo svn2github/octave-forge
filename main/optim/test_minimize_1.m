@@ -37,7 +37,7 @@ function dv = dff(x,y,t)
   if t == 1, N = length (x); else N = length (y); end
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;
   dv = 2*((x-y)(1:2))'*M;
-  if N>2, dv = [dv, zeros (1,N-2)]; end
+  if N>2, dv = [dv, zeros(1,N-2)]; end
   if t == 2, dv = -dv; end
 endfunction
 
@@ -49,7 +49,7 @@ function [v,dv,d2v] = d2ff(x,y,t)
   v = ((x - y)(1:2))'*M*((x-y)(1:2)) + 1;
   dv = 2*((x-y)(1:2))'*M;
   d2v = zeros (N); d2v(1:2,1:2) = 2*M;
-  if N>2, dv = [dv, zeros (1,N-2)]; end
+  if N>2, dv = [dv, zeros(1,N-2)]; end
   if t == 2, dv = -dv; end
 endfunction
 
@@ -61,7 +61,7 @@ function [v,dv,d2v] = d2iff(x,y,t)
   v = ((x - y)(1:2))'*M*((x-y)(1:2)) + 1;
   dv = 2*((x-y)(1:2))'*M;
   d2v = zeros (N); d2v(1:2,1:2) = inv (2*M);
-  if N>2, dv = [dv, zeros (1,N-2)]; end
+  if N>2, dv = [dv, zeros(1,N-2)]; end
   if t == 2, dv = -dv; end
 endfunction
 

@@ -256,7 +256,7 @@ while nev <= maxev,
     
     tra += 1 ;
     if verbose > 1
-      str = [str,sprintf (" %3i : %10.3e good refl >>",nev,ynew-ymin)];
+      str = [str,sprintf(" %3i : %10.3e good refl >>",nev,ynew-ymin)];
     end
     y(imax) = ynew; u(imax,:) = xnew ;
     ## ymin = ynew;
@@ -275,14 +275,14 @@ while nev <= maxev,
       y(imax) = ynew ; u(imax,:) = xnew ;
       xsum = sum(u) ;
       if verbose > 1
-	str = [str,sprintf (" %3i : %10.3e expd refl",nev,ynew-ymin)];
+	str = [str,sprintf(" %3i : %10.3e expd refl",nev,ynew-ymin)];
       end
     else
       tra += 4 ;
       ##      'plain reflection'
       ## Updating of y and u has already been done
       if verbose > 1
-	str = [str,sprintf (" %3i : %10.3e plain ref",nev,ynew-ymin)];
+	str = [str,sprintf(" %3i : %10.3e plain ref",nev,ynew-ymin)];
       end
     end
 				# Reflexion is really bad
@@ -290,7 +290,7 @@ while nev <= maxev,
     
     tra += 8 ;
     if verbose > 1
-      str = [str,sprintf (" %3i : %10.3e intermedt >>",nev,ynew-ymin)];
+      str = [str,sprintf(" %3i : %10.3e intermedt >>",nev,ynew-ymin)];
     end
     ## look for intermediate point
 				# Bring worst point closer to centroid
@@ -319,7 +319,7 @@ while nev <= maxev,
       ##      'contraction'
       tra += 16 ;
       if verbose > 1
-	str = [str,sprintf (" %3i contractn",nev)];
+	str = [str,sprintf(" %3i contractn",nev)];
       end
     else				# Replace highest point
       y(imax) = ynew ; u(imax,:) = xnew ;
@@ -327,7 +327,7 @@ while nev <= maxev,
       ##      'intermediate'
       tra += 32 ;
       if verbose > 1
-	str = [str,sprintf (" %3i : %10.3e intermedt",nev,ynew-ymin)];
+	str = [str,sprintf(" %3i : %10.3e intermedt",nev,ynew-ymin)];
       end
     end
 
@@ -337,7 +337,7 @@ while nev <= maxev,
     ##      'plain reflection (2)'
     tra += 64 ;
     if verbose > 1
-      str = [str,sprintf (" %3i : %10.3e keep refl",nev,ynew-ymin)];
+      str = [str,sprintf(" %3i : %10.3e keep refl",nev,ynew-ymin)];
     end
   end
   if verbose > 1, printf ("%s\n",str); end

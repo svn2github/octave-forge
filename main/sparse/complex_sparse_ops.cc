@@ -377,9 +377,9 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
          jj= cidxX[rown+1];
       }
 
-      while ( ridxX[jl] < ii%Xnr && jl < jj ) jl++;
+      while ( jl < jj && ridxX[jl] < ii%Xnr ) jl++;
 
-      if ( ridxX[jl] == ii%Xnr && jl<jj ) 
+      if ( jl<jj && ridxX[jl] == ii%Xnr ) 
          O( kout ) = coefX[jl] ;
       else
          O( kout ) = 0 ;
@@ -1541,6 +1541,9 @@ complex_sparse_inv_uppertriang( SuperMatrix U)
 
 /*
  * $Log$
+ * Revision 1.17  2003/08/29 20:46:53  aadler
+ * fixed bug in indexing
+ *
  * Revision 1.16  2003/08/29 19:40:56  aadler
  * throw error rather than segfault for singular matrices
  *

@@ -328,9 +328,9 @@ sparse_index_oneidx ( SuperMatrix X, const idx_vector ix) {
          jj= cidxX[rown+1];
       }
 
-      while ( ridxX[jl] < ii%Xnr && jl < jj ) jl++;
+      while ( jl < jj && ridxX[jl] < ii%Xnr ) jl++;
 
-      if ( ridxX[jl] == ii%Xnr && jl<jj ) 
+      if ( jl<jj && ridxX[jl] == ii%Xnr ) 
          O( kout ) = coefX[jl] ;
       else
          O( kout ) = 0 ;
@@ -1184,39 +1184,45 @@ sparse_LU_fact(SuperMatrix A,
 
    dgstrf(refact, &Ac, thresh, drop_tol, relax, panel_size, etree,
            NULL, 0, perm_r, perm_c, &L, &U, &info);
-   if ( info < 0 )
-      SP_FATAL_ERR ("LU factorization error");
 
-   int      snnzL, snnzU;
+   if (info == 0) {
+       int      snnzL, snnzU;
 
-   int      nnzL = ((SCformat*)L.Store)->nnz;
-   double * Lval = (double *) oct_sparse_malloc( nnzL * sizeof(double) );
-   int    * Lrow = (   int *) oct_sparse_malloc( nnzL * sizeof(   int) );
-   int    * Lcol = (   int *) oct_sparse_malloc( (n+1)* sizeof(   int) );
+       int      nnzL = ((SCformat*)L.Store)->nnz;
+       double * Lval = (double *) oct_sparse_malloc( nnzL * sizeof(double) );
+       int    * Lrow = (   int *) oct_sparse_malloc( nnzL * sizeof(   int) );
+       int    * Lcol = (   int *) oct_sparse_malloc( (n+1)* sizeof(   int) );
 
-   int      nnzU = ((NCformat*)U.Store)->nnz;
-   double * Uval = (double *) oct_sparse_malloc( nnzU * sizeof(double) );
-   int    * Urow = (   int *) oct_sparse_malloc( nnzU * sizeof(   int) );
-   int    * Ucol = (   int *) oct_sparse_malloc( (n+1)* sizeof(   int) );
+       int      nnzU = ((NCformat*)U.Store)->nnz;
+       double * Uval = (double *) oct_sparse_malloc( nnzU * sizeof(double) );
+       int    * Urow = (   int *) oct_sparse_malloc( nnzU * sizeof(   int) );
+       int    * Ucol = (   int *) oct_sparse_malloc( (n+1)* sizeof(   int) );
 
-   LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
-   // we need to use the snnz values (squeezed vs. unsqueezed)
-   dCreate_CompCol_Matrix(LC, m, n, snnzL, Lval, Lrow, Lcol, NC, _D, GE);
-   dCreate_CompCol_Matrix(UC, m, n, snnzU, Uval, Urow, Ucol, NC, _D, GE);
+       LUextract(&L, &U, Lval, Lrow, Lcol, Uval, Urow, Ucol, &snnzL, &snnzU);
+       // we need to use the snnz values (squeezed vs. unsqueezed)
+       dCreate_CompCol_Matrix(LC, m, n, snnzL, Lval, Lrow, Lcol, NC, _D, GE);
+       dCreate_CompCol_Matrix(UC, m, n, snnzU, Uval, Urow, Ucol, NC, _D, GE);
 
-   fix_row_order( *LC );
-   fix_row_order( *UC );
-   
+       fix_row_order( *LC );
+       fix_row_order( *UC );
+   }
+
    oct_sparse_Destroy_SuperMatrix( L ) ;
    oct_sparse_Destroy_SuperMatrix( U ) ;
    oct_sparse_Destroy_SuperMatrix( Ac ) ;
    StatFree();
    END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
 #if 0
    printf("verify A\n");  oct_sparse_verify_supermatrix( A );
    printf("verify LC\n"); oct_sparse_verify_supermatrix( *LC );
    printf("verify UC\n"); oct_sparse_verify_supermatrix( *UC );
 #endif   
+
+   if ( info < 0 ) {
+      SP_FATAL_ERR ("LU factorization error");
+   }
+
    return info;
 } // sparse_LU_fact(
 
@@ -1241,6 +1247,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.15  2003/08/29 20:46:53  aadler
+ * fixed bug in indexing
+ *
  * Revision 1.14  2003/08/29 19:40:56  aadler
  * throw error rather than segfault for singular matrices
  *

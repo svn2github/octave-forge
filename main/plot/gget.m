@@ -49,17 +49,19 @@ function gout = gget(option)
   # FIXME:
   # this (tries) to prevent a race condition where the file exists,
   # but is not yet completely written. This is a stupid hack.
-  [s, err, msg] = stat(optfile);
-  while(isempty(s) || s.size <= 4000)
-    sleep(0.1);
-    s = stat(optfile);
+  # Limit is 10 seconds of waiting.  This may not be enough in windows,
+  # but that's moot since windows gget doesn't seem to work.
+  count=0;
+  while (f = fopen(optfile)) == -1
+    sleep (0.5);
+    if count++>20, error("gnuplot not responding"); endif
   endwhile
-
-  f = fopen(optfile);
-  while f == -1
-    sleep (1);
-    f = fopen(optfile);
+  
+  while fseek(f, -9, SEEK_END) || ~strcmp('#    EOF', fgetl(f))
+    sleep (0.5);
+    if count++>20, break; endif
   endwhile
+  fseek(f, 0);
 
   gout = "";
   s = strcat("set ", option, " ");

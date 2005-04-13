@@ -20,4 +20,4 @@ else
 fi
 
 STATUS_MSG="$STATUS_MSG
-   Perl compatible regular expresions: $STATUS"
+   Perl compatible regular expressions: $STATUS"

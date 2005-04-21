@@ -5,7 +5,9 @@
 
 ## Author: Paul Kienzle
 ## This program is public domain
+
 function clf
  clg;
- graw "reset;\r";
- gset data style lines;
+ __gnuplot_raw__  ("reset; \n");
+ __gnuplot_raw__ ("set data style lines; \n");
+endfunction

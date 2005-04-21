@@ -60,7 +60,7 @@ function quiver (x, y, u, v)
   endif
 
   M = [ x(:), y(:), u(:), v(:) ];
-  gplot M w v t ""
+  __gnuplot_plot__ M w v t ""
 endfunction
 
 %!demo

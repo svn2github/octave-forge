@@ -48,9 +48,17 @@
 ## TODO:   to clear all the labels for the next graph.
 ## TODO: several properties missing
 ## TODO: permit text(blah,'units','screen') before subplot as well as after
+
+## Modified to use new gnuplot interface in octave > 2.9.0
+## Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## April 18, 2005
+
 function text(varargin)
   usage_str = "text(x,y[,z],'text', 'property',value...)";
-  if nargin == 0, gset nolabel; return; endif
+  if nargin == 0, 
+    __gnuplot_raw__ ("set nolabel;\n");
+    return; 
+  endif
 
   position=[0, 0, 0];
   str="";
@@ -106,7 +114,7 @@ function text(varargin)
 	error("text 'HorizontalAlignment' expects 'right','left' or 'center'");
       endif
       align = val;
-    elseif strcmp(prop, "units")
+   elseif strcmp(prop, "units")
       if isstr(val), val=tolower(val); endif
       if !isstr(val)
 	error("text 'Units' expects 'data' or 'normalized'");
@@ -151,10 +159,9 @@ function text(varargin)
   else
     atstr = sprintf("%g,%g", position(1),position(2));
   endif
-  command = sprintf('gset label "%s" at %s %s %s %s%s',
+  command = sprintf('set label "%s" at %s %s %s %s%s;\n',
 		    str, units, atstr, align, rotate, font);
-  eval(command);
-
+  __gnuplot_raw__ (command);
 endfunction
 
 %!demo

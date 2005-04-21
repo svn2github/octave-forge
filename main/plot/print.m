@@ -129,6 +129,8 @@ function print(varargin)
   ## take care of the settings we had before
   origterm = gget("terminal");
   origout = gget("output");
+  ## End of line trmination for __gnuplot_raw__ command strings.
+  endl = ";\n";
   _automatic_replot = automatic_replot;
 
   ## take care of the default terminal settings to restore them.
@@ -227,7 +229,8 @@ function print(varargin)
 	  || strcmp(dev, "epsc") || strcmp(dev, "epsc2") ... 
 	  || strcmp(dev, "eps")  || strcmp(dev, "eps2")
       ## Various postscript options
-      gset term postscript;
+      ## FIXME: Do we need this? DAS
+      ##__gnuplot_set__ term postscript
       terminal_default = gget ("terminal");
       
       if dev(1) == "e"
@@ -258,12 +261,13 @@ function print(varargin)
 	options = [ options, " ", fontsize ];
       endif
 
-      eval (sprintf ("gset term postscript %s;", options));
+      __gnuplot_raw__ (["set term postscript ", options, endl]);
 
 
     elseif strcmp(dev, "aifm") || strcmp(dev, "corel")
       ## Adobe Illustrator, CorelDraw
-      eval(sprintf ("gset term %s;", dev));
+      ## FIXME: Do we need it? DAS
+      ## eval(sprintf ("__gnuplot_set__ term %s", dev));
       terminal_default = gget ("terminal");
       if (use_color >= 0)
 	options = " color";
@@ -277,11 +281,12 @@ function print(varargin)
 	options = [ options, " ", fontsize ];
       endif
 
-      eval (sprintf ("gset term %s %s;", dev, options));
+      __gnuplot_raw__ (["set term ", dev, " ", options, endl]);
 
     elseif strcmp(dev, "fig")
       ## XFig
-      gset term fig;
+      ## FIXME: Do we need it? DAS
+      ## __gnuplot_set__ term fig
       terminal_default = gget ("terminal");
       options = orientation;
       if (use_color >= 0)
@@ -292,40 +297,57 @@ function print(varargin)
       if !isempty(fontsize)
 	options = [ options, " fontsize ", fontsize ];
       endif
-      eval (sprintf ("gset term fig %s;", options));
+      __gnuplot_raw__ (["set term fig ", options, endl]);
 
     elseif strcmp(dev, "png") || strcmp(dev, "pbm")
       ## Portable network graphics, PBMplus
-      eval(sprintf ("gset term %s;", dev));
+      ## FIXME: Do we need it? DAS
+      ## eval(sprintf ("__gnuplot_set__ term %s", dev));
       terminal_default = gget ("terminal");
-      if (use_color >= 0)
-      	eval (sprintf ("gset term %s color medium;", dev));
-      else
-	eval (sprintf ("gset term %s mono medium;", dev));
-      endif
 
+      ## FIXME
+      ## New PNG interface takes color as "xRRGGBB" where x is the literal character
+      ## 'x' and 'RRGGBB' are the red, green and blue components in hex.
+      ## For now we just ignore it and use default. 
+      ## The png terminal now is so rich with options, that one perhaps
+      ## has to write a separate printpng.m function.
+      ## DAS
+
+      ##
+      ## if (use_color >= 0)
+      ##	eval (sprintf ("__gnuplot_set__ term %s color medium", dev));
+      ##else
+      ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
+      ##endif
+      
+      __gnuplot_raw__ ("set term png large;\n")
+ 
     elseif strcmp(dev,"dxf") || strcmp(dev,"mf") || strcmp(dev, "hpgl")
       ## AutoCad DXF, METAFONT, HPGL
-      eval (sprintf ("gset terminal %s;", dev));
+      __gnuplot_raw__ (["set terminal ", dev, endl]);
             
     endif;
     
-    eval (sprintf ("gset output \"%s\";", name));
-    replot;
+    ## Gnuplot expects " around output file name
+
+    __gnuplot_raw__ (["set output \"", name, "\"", endl]);
+    __gnuplot_replot__
     
   unwind_protect_cleanup
 
     ## Restore init state
     if ! isempty (terminal_default)
-      eval (sprintf ("gset terminal %s;", terminal_default));
+      __gnuplot_raw__ (["set terminal ", terminal_default, endl]);
     endif
-    eval (sprintf ("gset terminal %s;", origterm));
+    __gnuplot_raw__ (["set terminal ", origterm, endl]);
     if isempty (origout)
-      gset output;
+      __gnuplot_raw__ ("set output;\n")
     else
-      eval (sprintf ("gset output \"%s\";", origout));
+    ## Gnuplot expects " around output file name
+
+      __gnuplot_raw__ (["set output \"", origout, "\"", endl]);
     end
-    replot;
+    __gnuplot_replot__
     
     automatic_replot = _automatic_replot ;
 
@@ -339,6 +361,8 @@ function print(varargin)
       error ("print: could not convert");
     endif
   endif
+  ## FIXME: This looks like a dirty, Unix-specific hack
+  ## DAS
   if doprint
     system(sprintf ("lpr %s '%s'", printer, printname));
     unlink(printname);

@@ -43,7 +43,7 @@ function gout = gget(option)
   ## tell gnuplot to save all its options to a file, scan that file
   ## for the option we are interested in, then delete it.
   optfile = tmpnam;
-  graw (["save set \"", optfile, "\"\n"]);  
+  __gnuplot_raw__ (["save set \"", optfile, "\"\n"]);
   rmcmd = sprintf("rm -f '%s'", optfile);
 
   # FIXME:

@@ -71,7 +71,7 @@
 
 ## 2001-03-31 Paul Kienzle
 ##   * use tmpnam for temporary file name; unlink to remove
-## 2001-09-28 Paul Söderlind <Paul.Soderlind@hhs.se>
+## 2001-09-28 Paul SÃ¶derlind <Paul.Soderlind@hhs.se>
 ##   * add a pause after save request to give gnuplot time to write the file
 ##   * add comment to call plot before legend.
 ## 2002-09-18 Paul Kienzle
@@ -106,23 +106,23 @@ function legend (varargin)
     _replot = 1;
     switch _str
       case {"off", "hide"}
-        gset nokey;
+        __gnuplot_raw__ ("set nokey;\n")
       case "show"
-	gset key;
+	__gnuplot_raw__ ("set  key;\n")
       case "boxon"
-	gset key box;
+	__gnuplot_raw__ ("set  key box;\n")
       case "boxoff"
-	gset key nobox;
+	__gnuplot_raw__ ("set  key nobox;\n")
       case "left"
-        gset key Right noreverse;
+        __gnuplot_raw__ ("set  key Right noreverse;\n")
       case "right"
-        gset key Left reverse;
+        __gnuplot_raw__ ("set  key Left reverse;\n")
       otherwise
 	_replot = 0;
     endswitch
     if _replot
       if automatic_replot
-        replot
+        __gnuplot_replot__
       endif
       return;
     endif
@@ -148,8 +148,7 @@ function legend (varargin)
   ## Get the original plotting command
   
   tmpfilename=tmpnam;
-  command=["save \"",tmpfilename,"\"\n"];
-  graw(command);
+  __gnuplot_raw__ (["save \"",tmpfilename,"\"\n"]);
 
   awk_prog= \
       "BEGIN { \
@@ -264,7 +263,7 @@ function legend (varargin)
   ## Create a new plotting command
 
   new_plot = [new_plot, "\n"];  
-  graw(new_plot);
+  __gnuplot_raw__ (new_plot)
 
   ## Check for the last argument if we don't already get it
   
@@ -280,32 +279,32 @@ function legend (varargin)
   if ((isscalar (pos_leg)) && (isreal(pos_leg)))
     switch (pos_leg)
       case 1
-        gset key right top;
+        __gnuplot_raw__ ("set  key right top;\n")
       case 2
-        gset key left top;
+        __gnuplot_raw__ ("set  key left top;\n")
       case 3
-        gset key left bottom;
+        __gnuplot_raw__ ("set  key left bottom;\n")
       case 4
-        gset key right bottom;
+        __gnuplot_raw__ ("set  key right bottom;\n")
       case -1
-        gset key right top outside;
+        __gnuplot_raw__ ("set  key right top outside;\n")
       case -2
-        gset key right bottom outside;
+        __gnuplot_raw__ ("set  key right bottom outside;\n")
       case -3
-        gset key below;
+        __gnuplot_raw__ ("set  key below;\n")
       otherwise
         warning ("incorrect pos");
     endswitch;
   elseif (isvector (pos_leg)) && (length (pos_leg) == 2) && \
         (all(isreal(pos_leg)))
-    eval (sprintf ("gset key %e, %e", pos_leg(1), pos_leg(2)));
+    eval (sprintf ("__gnuplot_raw__ (\"set key %e, %e\")", pos_leg(1), pos_leg(2)));
   else
     warning ("pos must be a scalar");
   endif;
 
   ## Regenerate the plot
   
-  replot;
+  __gnuplot_replot__ 
   
 endfunction;
 
@@ -326,4 +325,5 @@ endfunction;
 %! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
 %! legend(labels, -1)
 %! legend("boxon")
+
 

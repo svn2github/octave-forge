@@ -21,6 +21,10 @@
 ## 2001-04-06 Paul Kienzle <kienzle.powernet.co.uk>
 ##     * gset nohidden3d; vector X,Y, matrix Z => meshgrid(X,Y)
 
+## Modified to use new gnuplot interface in octave > 2.9.0
+## Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## April 18, 2005
+
 function __plt3__ (x, y, z, fmt)
 
   if (is_vector(x) && is_vector(y))
@@ -38,13 +42,13 @@ function __plt3__ (x, y, z, fmt)
   endif
 
   unwind_protect
-    gset parametric;
-    gset nohidden3d;
+    __gnuplot_raw__ ("set parametric;\n");
+    __gnuplot_raw__ ("set nohidden3d;\n");
     for i=1:columns(x)
       tmp = [x(:,i), y(:,i), z(:,i)];
-      eval(sprintf("gsplot tmp %s", fmt));
+      __gnuplot_raw__ (["splot tmp ", fmt, ";\n"]);
     endfor
   unwind_protect_cleanup
-    gset noparametric; 
+    __gnuplot_raw__ ("set noparametric;\n"); 
   end_unwind_protect
 endfunction

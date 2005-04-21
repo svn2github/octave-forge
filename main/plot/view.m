@@ -29,6 +29,10 @@
 ## Created: 14.8.98.
 ## Version: 1.0
 
+## Modified to use new gnuplot interface in octave > 2.9.0
+## Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## April 18, 2005
+
 function view(az, el)
 
   ## azimuth is the same as rotation around the z-axis,
@@ -50,8 +54,9 @@ function view(az, el)
     az = rem(az + 180, 360);
     rot_x = 360 - rot_x;
   end
-
-  gset('view', num2str(rot_x), ',', num2str(az));
-  replot;
+  
+  cmd = ["set view ", num2str(rot_x), ", ", num2str(az), ";\n"];
+  __gnuplot_raw__(cmd);
+  __gnuplot_replot__
 
 endfunction

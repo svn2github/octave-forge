@@ -12,20 +12,27 @@
 ## This program is in the public domain
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
+## Modified to use new gnuplot interface in octave > 2.9.0
+## Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## April 18, 2005
+
 function tics(axis,pos,lab)
 
   if nargin == 1
-    eval(["gset ", axis, "tics autofreq"]);
+    cmd = ["set ", axis, "tics autofreq;\n"];
+    __gnuplot_raw__ (cmd);
   elseif nargin == 2
     tics = sprintf(' %g,', pos);
     tics(length(tics)) = ' ';
-    eval(["gset ", axis, "tics (", tics, ")"]);
+    cmd = ["set ", axis, "tics (", tics, ");\n"];
+    __gnuplot_raw__ (cmd);
   elseif nargin == 3
     tics = sprintf('"%s" %g', deblank(lab(1,:)), pos(1));
     for i=2:rows(lab)
       tics = [tics, sprintf(', "%s" %g', deblank(lab(i,:)), pos(i)) ];
     endfor
-    eval([ "gset ", axis, "tics (", tics ,")" ]);
+    cmd = [ "set ", axis, "tics (", tics ,");\n"];
+    __gnuplot_raw__ (cmd);
   else
     usage("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
   endif

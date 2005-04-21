@@ -28,3 +28,4 @@ function pcolor(varargin)
     warning("pcolor: x,y ignored.");
   endif
   imagesc(varargin{:});
+endfunction

@@ -17,6 +17,12 @@
 ## OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ## SUCH DAMAGE.
 
+## Modified to use new gnuplot interface in octave > 2.9.0
+## FIXME: The function appears to be broken. Gnuplot > 4.0
+## has a polygon fill option. Perhaps we can use that.
+## Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## April 18, 2005
+
 function y = fill3(x,y,z,c)
 
   % check current hold state
@@ -39,7 +45,7 @@ function y = fill3(x,y,z,c)
   endif
   
   unwind_protect
-    gset parametric
+    __gnuplot_raw__ ("set parametric;\n");
     
     for i=1:nc
       xyz = [x(:,i), y(:,i), z(:,i)];
@@ -53,14 +59,14 @@ function y = fill3(x,y,z,c)
       	xyz = xyz([1:nr ; 1:nr], :);
       	xyz(2:2:2*nr, :) = xc(ones(1,nr), :);
       end
-      gset linestyle 1
-      gsplot xyz t ""  with lines
+      __gnuplot_raw__ ("set linestyle 1;\n");
+      __gnuplot_splot__ xyz t ""  with lines
       hold on
     endfor
     
   unwind_protect_cleanup
     if !isheld, hold off; endif
-    gset noparametric
+    __gnuplot_set__ noparametric
   end_unwind_protect
   
 endfunction

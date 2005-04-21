@@ -26,12 +26,18 @@
 ## If you are getting warnings from gnuplot either install gnuplot 3.8i or set
 ##     global gnuplot_has_pm3d=0
 ## in your ~/.octaverc file.
+
+## Modified to use new gnuplot interface in octave > 2.9.0
+## Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## April 18, 2005
+
 function surfc(varargin)
    global gnuplot_has_pm3d;
    if !exist("gnuplot_has_pm3d") || gnuplot_has_pm3d!=0,
-      graw("set pm3d at s ftriangles hidden3d 100; # see: help surfc\n");
-      gset line style 100 lt 5 lw 0.5;
-      gset nohidden3d;
-      gset nosurf;
-   end
+      __gnuplot_raw__ ("set pm3d at s ftriangles hidden3d 100;\n")
+      __gnuplot_raw__ ("set line style 100 lt 5 lw 0.5;\n")
+      __gnuplot_raw__ ("set nohidden3d;\n")
+      __gnuplot_raw__ ("set nosurf;\n")
+   endif
    meshc(varargin{:});
+endfunction

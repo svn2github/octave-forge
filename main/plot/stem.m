@@ -31,6 +31,11 @@
 ##    plot(t,x,"r-+;sin(x);"); hold on
 ##    stem(t(idx), x(idx),"bo;struts;"); hold off
 
+## Modified to use new gnuplot interface in octave > 2.9.0
+## Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## April 18, 2005
+
+
 function stem(x, y, linetype)
   if nargin < 1 || nargin > 3
     usage("stem(x [, y] [, linetype])");
@@ -60,16 +65,16 @@ function stem(x, y, linetype)
   endfor
 
   unwind_protect
-    eval(sprintf("gset pointsize %d",2-min(2,fix(length(x)/100))));
-    gset xzeroaxis
+    __gnuplot_raw__ (sprintf("set pointsize %d;\n",2-min(2,fix(length(x)/100))));
+    __gnuplot_raw__ ("set xzeroaxis;\n");
     if isempty(y)
       plot(x, linetype, x, [colour, "^;;"]);
     else
       plot(x, y, linetype, x, y, [colour, "^;;"]);
     endif
   unwind_protect_cleanup
-    gset pointsize 1
-    gset noxzeroaxis
+    __gnuplot_raw__ ("set pointsize 1;\n");
+    __gnuplot_raw__ ("set noxzeroaxis;\n");
   end_unwind_protect
 endfunction
 

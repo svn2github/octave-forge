@@ -29,16 +29,20 @@ c) (Re-)start Matlab and run NANINSTTEST.
 This checks whether the installation was successful. 
 
 d) [OPTIONAL]: 
-  To improve speed, you should compile the cmex-function SUMSKIPNAN.CPP
+  To improve speed, you can used compiled versions of SUMSKIPNAN
+  - MATLAB: compile the C-Mex-function SUMSKIPNAN.CPP
     mex sumskipnan.cpp
+  - OCTAVE: compile the Oct-function SUMSKIPNAN.CC
+    mkoctfile sumskipnan.cc    
   Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
 
-e) HINT: if the MEX-file SUMSKIPNAN crashes, remove it. Then the (slower) M-file is used. 
+e) HINT: if the MEX/OCT-file of SUMSKIPNAN causes problems, you can remove it savely. 
+Then the (slower) M-file is used. 
      
 
 
 	$Id$
 	$Revision$
-	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
+	Copyright (c) 2000-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

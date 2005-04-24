@@ -15,6 +15,7 @@
 
 
 ## Author:        Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## This program is granted to the public domain.
 
 function f = fieldnames(s)
   error("cell arrays unavailable in Octave 2.0; use struct_elements instead");

@@ -49,6 +49,8 @@
 ## you should expect a corresponding increase in the scatter of 
 ## the data, which will increase the variance computed by the fit.
 
+## This program is public domain.
+
 function [x_out,s]=wsolve(A,y,dy)
   if nargin < 2, usage("[x dx] = wsolve(A,y[,dy])"); end
   if nargin < 3, dy = []; end

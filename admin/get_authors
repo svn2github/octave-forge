@@ -14,12 +14,28 @@
 #                             licensing terms (ie, granted to public domain)
 #                             but no author.  Show code and comment line
 #                             counts.
+#               Apr 25 2005 - Added -s option, better logic to identify
+#                             public domain files.
 # Dirk Eddelbuettel 07 Jul 2004  also look at .cc files and // comments
 #                             
+# Usage:  admin/get_authors  [-s <# lines>]                             
+#            Scans .m and .cc files and extracts author and copyright
+#            information.  Creates the AUTHORS file.
+#                       Option:  -s  <n>    Set the size of a "short" program
+#                                           to <n> non-commented lines.  
+#                                           Copyrights aren't needed for short 
+#                                           programs.  Default <n> is 5.
+#                             
+use warnings;
 use strict;
+use vars qw($opt_s );
+use Cwd;
+use Getopt::Std;
 use File::Find;
 
-my $location = `pwd`;
+getopts('s:');
+$opt_s = 5 unless $opt_s;  # set the default value
+my $location = getcwd;
 my $PATH     = "";
 if ($location =~ m{^(.*)/admin$}) {
     chdir "..";
@@ -31,13 +47,13 @@ find(\&wanted, ".");  # start here & descend recursively; populate @files
 
 my %file_data = ();
 classify_files(\@files,       # in
-               \%file_data);  # out, a_data{file}{'name'} = [ names ]
-                              #                  {'year'} = [ years ]
-                              #                  {'mail'} = [ email addrs ]
-                              #                  {'cpyr'} = [ 'C' or ' '  ]
-                              #                  {'n_code'}    = # lines code
-                              #                  {'n_comment'} = # lines of
-                              #                                  comments
+               \%file_data);  # out file_data{file}{'name'} = [ names ]
+                              #                    {'year'} = [ years ]
+                              #                    {'mail'} = [ email addrs ]
+                              #                    {'cpyr'} = [ 'C' or ' '  ]
+                              #                    {'n_code'}    = # lines code
+                              #                    {'n_comment'} = # lines of
+                              #                                    comments
 
 # traverse file_data and extract
 #   - files without copyrights
@@ -47,6 +63,8 @@ classify_files(\@files,       # in
 #   - number of lines of code, number of lines of comments
 my @unattributed_files  = ();
 my @uncopyrighted_files = ();
+my @short_files         = ();
+my @public_domain       = ();
 my %email               = ();   # email{ author name } = email address
 my %files               = ();   # files{ author name } = [ list of files ]
 foreach my $f (sort @files) {
@@ -60,15 +78,37 @@ foreach my $f (sort @files) {
         if (defined $file_data{$f}{mail}[$i]) {
             $email{ $file_data{$f}{name}[$i] } = $file_data{$f}{mail}[$i];
         }
-        $copyrighted = 1 if $file_data{$f}{cpyr}[$i] eq "C";
+        if (defined $file_data{$f}{cpyr}[$i]) {
+            $copyrighted = 1;
+            push @public_domain, $f if $file_data{$f}{cpyr}[$i] eq "P";
+        }
         $files{ $file_data{$f}{name}[$i] }{$f} = 1;
     }
-    push @uncopyrighted_files, $f unless $copyrighted;
+    next if $copyrighted;
+    if ($file_data{$f}{n_code} > $opt_s) { # then it is not a short program
+        push @uncopyrighted_files, $f;
+    } else {
+        push @short_files        , $f;
+    }
 }
 
 printf "%3d uncopyrighted files:%s lines of code/lines of comments\n", 
        scalar @uncopyrighted_files, ' ' x 22;
 foreach my $f (sort @uncopyrighted_files) {
+    printf "      %-50s %3d/%3d\n", 
+           $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
+}
+
+printf "\n%3d public domain files:%s lines of code/lines of comments\n", 
+       scalar @public_domain, ' ' x 22;
+foreach my $f (sort @public_domain) {
+    printf "      %-50s %3d/%3d\n", 
+           $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
+}
+
+printf "\n%3d uncopyrighted short (<= %2d lines) files:%s lines of code/lines of comments\n", 
+       scalar @short_files, $opt_s, ' ' x 2;
+foreach my $f (sort @short_files) {
     printf "      %-50s %3d/%3d\n", 
            $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
 }
@@ -113,7 +153,9 @@ sub classify_files { # {{{1
     my ($ra_files,  # in, list of files
         $rhha_data, # out,  data{file}{ name | year | cpyr } = [entries]
        ) = @_;
-    warn "Found ", scalar @{$ra_files}, " .m files\n";
+    warn "Found ", scalar grep (/\.m$/,  @{$ra_files}), " .m files; ",
+                   scalar grep (/\.cc$/, @{$ra_files}), " .cc files",
+                   "\n";
     foreach my $f (@{$ra_files}) {
         open(IN, $f) or die "Cannot read $f: $!\n";
         my $found_copyright = 0;
@@ -153,7 +195,7 @@ sub classify_files { # {{{1
                 # don't exit w/last because there could be multiple copyrights
             } elsif (
                 /^\s*[#%\/]+              # one or more leading comment markers
-                    \s*author\s*:?        #  Copyright
+                    \s*author\s*:?        #  Author    
                     \s+(.*?)              #  name                        $1
                     \s*(<.*>)?            #  email  - optional           $2
                     \s*$/ix) {
@@ -164,19 +206,16 @@ sub classify_files { # {{{1
                 push @{$rhha_data->{$f}{name}}, $name;
                 push @{$rhha_data->{$f}{year}}, "";
                 push @{$rhha_data->{$f}{mail}}, $email;
-                if ($found_copyright) {
-                    push @{$rhha_data->{$f}{cpyr}}, 'C';
-                } else {
-                    push @{$rhha_data->{$f}{cpyr}}, "";
-                }
                 $found_author = 1;
             } elsif (
-                !$found_author and
                 /^\s*[#%\/]+              # one or more leading comment markers
                   .*?                     #  some leading text
-                  (granted|placed|given|is)\s+(in|to)
-                  (\s+the)?\s+public\s+domain
+                  \b(grant(ed)?|place(d)?|give(n)?|is)(\s+this)?
+                  (\s+(file|program|script|code|algorithm))?(\s+(in|to))?
+                  (\s+the)?
+                  \s+public\s+domain
                 /ix) {
+                push @{$rhha_data->{$f}{cpyr}}, 'P';
                 $found_copyright = 1;
             }
         }

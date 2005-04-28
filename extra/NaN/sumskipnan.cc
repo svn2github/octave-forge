@@ -56,6 +56,8 @@ DEFUN_DLD (sumskipnan, args, ,"OCT-implementation of SUMSKIPNAN\n")
 
   octave_value_list retval; 
 
+  int nargin = args.length ();
+
   if ( args.length() == 2 ) 
   {
 	  Matrix xin2( args(1).matrix_value() );
@@ -70,20 +72,22 @@ DEFUN_DLD (sumskipnan, args, ,"OCT-implementation of SUMSKIPNAN\n")
   warning("SUMSKIPNAN.OCT supports only real double matrices.\n");
   
 	// only real double matrices are supported; arrays, integer or complex matrices are not supported (yet)
-  	NDArray xin1( args(0).matrix_value() );
-	ND = xin1.ndims();    
-	SZ = xin1.dims();
-	
+  	NDArray xin1( args(0).array_value() );
+	ND = xin1.ndims ();    
+	SZ = xin1.dims ();
+
     	for (j = 0; (DIM < 1) && (j < ND); j++) 
 		if (SZ(j)>1) DIM = j+1;
 
   	if (DIM < 1) DIM=1;		// in case DIM is still undefined 
 	
-	if ((DIM != 1) & (DIM !=2))
-		error("SUMSKIPNAN.OCT: DIM must be 1 or 2.\n");
-
 	SZ2 = SZ; 
-
+	for (j=ND; j<DIM; SZ2(j++)=1);
+	if (DIM>ND)
+	{    	error("SUMSKIPNAN.OCT: DIM larger than LENGTH(SIZE(X))");
+		return retval;
+	}	
+			
    	for (j=0, D1=1; j<DIM-1; D1=D1*SZ(j++)); 	// D1 is the number of elements between two elements along dimension  DIM  
 	D2 = SZ(DIM-1);		// D2 contains the size along dimension DIM 	
     	for (j=DIM, D3=1;  j<ND; D3=D3*SZ(j++)); 	// D3 is the number of blocks containing D1*D2 elements 

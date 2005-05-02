@@ -147,7 +147,7 @@ function hout = scatterplot (x, n, _off, str, h)
     title("Scatter plot");
     xlabel("In-phase");
     ylabel("Quadrature");
-    lagend("off");
+    legend("off");
     if (!strcmp(signal,"complex"))
       __gnuplot_raw__ ("set yrange [-1:1];\n")
     endif

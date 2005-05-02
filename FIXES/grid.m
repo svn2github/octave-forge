@@ -37,6 +37,8 @@
 ## 2001-04-02  Laurent Mazet <mazet@crm.mot.com>
 ##     * add support for semilog[xy] and loglog minor grid.
 ##     * add mode feature (suggested by Paul Kienzle).
+## 2005-04-23  Dmitri A. Sergatskov <dasergatskov@gmail.com>
+##     * modified to use new gnuplot interface in octave > 2.9.0
 
 function grid (mode)
 
@@ -62,7 +64,7 @@ function grid (mode)
 
   if isempty(mode)
 
-    gset nogrid;
+    __gnuplot_raw__ ("unset grid;\n")
 
   else
 
@@ -72,23 +74,33 @@ function grid (mode)
       if any(mode(i) == "xyz")
 	[n, has_n, err, next] = sscanf(mode(i+1:len), "%d", 1);
 	if has_n
-	  eval(sprintf("gset m%stics %d;", mode(i), n));
-	  eval(sprintf("gset grid %stics m%stics;", mode(i), mode(i)));
+	  cmd = sprintf("set m%stics %d;", mode(i), n);
+	  __gnuplot_raw__ (cmd)
+	  cmd = sprintf("set grid %stics m%stics;", mode(i), mode(i));
+	  __gnuplot_raw__ (cmd)
 	  i = i + next;
 	elseif i+1<=len && mode(i+1) == '-'
-	  eval(sprintf("gset grid %stics m%stics;", mode(i), mode(i)));
+	  cmd = sprintf("set grid %stics m%stics;", mode(i), mode(i));
+	  __gnuplot_raw__ (cmd)
 	  i = i + 2;
 	else
-	  eval(sprintf("gset grid %stics nom%stics;", mode(i), mode(i)));
+	  cmd = sprintf("set grid %stics nom%stics;", mode(i), mode(i));
+	  __gnuplot_raw__ (cmd)
 	  i = i + 1;
 	endif
       else
 	error("grid: unknown mode %s at character %d", mode, i);
       endif
     endwhile
-    if all(mode != "x"),  gset grid noxtics nomxtics; endif
-    if all(mode != "y"),  gset grid noytics nomytics; endif
-    if all(mode != "z"),  gset grid noztics nomztics; endif
+    if all(mode != "x")
+      __gnuplot_raw__ ("set grid noxtics nomxtics;\n")
+    endif
+    if all(mode != "y")
+      __gnuplot_raw__ ("set grid noytics nomytics;\n")
+    endif
+    if all(mode != "z")
+      __gnuplot_raw__ ("set grid noztics nomztics;\n")
+    endif
   endif
   
 endfunction

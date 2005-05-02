@@ -49,6 +49,12 @@
 ## @end deftypefn
 ## @seealso{dmod,ddemod,modmap,demodmap}
 
+
+## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
+##     * modified for new gnuplot interface (octave > 2.9.0)
+
+
+
 function yout = apkconst(varargin)
 
   if ((nargin < 1) || (nargin > 5))
@@ -130,7 +136,7 @@ function yout = apkconst(varargin)
       xlabel("In-phase");
       ylabel("Quadrature");
       axis([-1.1*max(amp), 1.1*max(amp), -1.1*max(amp), 1.1*max(amp)]);
-      gset nokey;
+      legend("off");
       hold off;
       r = [0:0.02:2]'*pi;
       x0 = cos(r) * amp;
@@ -144,13 +150,13 @@ function yout = apkconst(varargin)
 	  text(real(y(i))+xd,imag(y(i)),num2str(i-1));
 	end
       endif
-      cmd = sprintf("gplot yy %s;", fmt);
+      cmd = sprintf("__gnuplot_plot__ yy %s;", fmt);
       eval(cmd);
     unwind_protect_cleanup
       xlabel("");
       ylabel("");
       title("");
-      gset autoscale;
+      axis();
       hold off;
       if (printnums)
         text();

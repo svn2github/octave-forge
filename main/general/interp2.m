@@ -42,9 +42,11 @@
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 ## 2005-03-02 Thomas Weber <weber@num.uni-sb.de> 
-## * Add test cases
+##     * Add test cases
 ## 2005-03-02 Paul Kienzle <pkienzle@users.sf.net>
-## * Simplify
+##     * Simplify
+## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
+##     * Modified demo and test for new gnuplot interface
 
 function ZI = interp2 (varargin)
   Z = X = Y = xi = yi = [];
@@ -147,7 +149,8 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26);
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
-%! [x,y] = meshgrid(x,y); gset nohidden3d;
+%! [x,y] = meshgrid(x,y); 
+%! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -156,7 +159,8 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26);
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
-%! [x,y] = meshgrid(x,y); gset nohidden3d;
+%! [x,y] = meshgrid(x,y); 
+%! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!#demo
@@ -165,7 +169,8 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26);
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
-%! [x,y] = meshgrid(x,y); gset nohidden3d;
+%! [x,y] = meshgrid(x,y); 
+%! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!test

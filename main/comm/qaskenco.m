@@ -57,6 +57,9 @@
 ## @end deftypefn
 ## @seealso{qaskdeco}
 
+## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
+##     * modified for new gnuplot interface (octave > 2.9.0)
+
 function [a, b] = qaskenco(msg, M)
 
   if (nargin == 1)
@@ -163,10 +166,10 @@ function [a, b] = qaskenco(msg, M)
       xlabel("In-phase");
       ylabel("Quadrature");
       axis([min(inphase)-1, max(inphase)+1, min(quadr)-1, max(quadr)+1]);
-      gset nokey;
+      legend("off");
       hold off;
       yy = [inphase, quadr];
-      eval("gplot yy w p 1;");
+      __gnuplot_plot__ yy w p 1;
       hold on;
       xd = 0.02 * max(inphase);
       if (nargin == 2)
@@ -184,7 +187,7 @@ function [a, b] = qaskenco(msg, M)
       xlabel("");
       ylabel("");
       title("");
-      gset autoscale;
+      axis();
       hold off;
       text();
       automatic_replot = ar;

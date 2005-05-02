@@ -51,6 +51,9 @@
 ## @end deftypefn
 ## @seealso{eyediagram}
 
+## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
+##     * modified for new gnuplot interface (octave > 2.9.0)
+
 function hout = scatterplot (x, n, _off, str, h)
 
   if ((nargin < 1) || (nargin > 5))
@@ -144,19 +147,19 @@ function hout = scatterplot (x, n, _off, str, h)
     title("Scatter plot");
     xlabel("In-phase");
     ylabel("Quadrature");
-    gset nokey;
+    lagend("off");
     if (!strcmp(signal,"complex"))
-      gset yrange [-1:1];
+      __gnuplot_raw__ ("set yrange [-1:1];\n")
     endif
     
-    cmd = sprintf("gplot spts %s", fmt);
+    cmd = sprintf("__gnuplot_plot__ spts %s", fmt);
     eval(cmd);
 
   unwind_protect_cleanup
-    xlabel("");
-    ylabel("");
-    gset autoscale;
-    title("");
+##    xlabel("");
+##    ylabel("");
+##    axis();
+##    title("");
     automatic_replot = ar;
   end_unwind_protect
 

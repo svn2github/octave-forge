@@ -1,3 +1,4 @@
+### Mode:octave
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {V =} datevec(date)
 ## @deftypefnx {Function File} {[Y,M,D,h,m,s] =} datevec(date, P)

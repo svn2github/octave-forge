@@ -54,6 +54,9 @@
 ## @end deftypefn
 ## @seealso{scatterplot}
 
+## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
+##     * modified for new gnuplot interface (octave > 2.9.0)
+
 function hout = eyediagram (x, n, _per, _off, str, h)
 
   if ((nargin < 2) || (nargin > 6))
@@ -240,13 +243,13 @@ function hout = eyediagram (x, n, _per, _off, str, h)
     xlabel("Time");
     ylabel("Amplitude");
     
-    gset nokey
+    legend("off");
     hold off;
-    gplot tmpfile;
+    __gnuplot_plot__  tmpfile ;
     if (strcmp(signal,"complex"))
       subplot(2,1,2);
       title("Eye-diagram for quadrature signal");
-      gplot tmpfile using 1:3;
+      __gnuplot_plot__ tmpfile using 1:3;
     endif
 
   unwind_protect_cleanup

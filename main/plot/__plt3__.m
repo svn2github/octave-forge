@@ -46,7 +46,8 @@ function __plt3__ (x, y, z, fmt)
     __gnuplot_raw__ ("set nohidden3d;\n");
     for i=1:columns(x)
       tmp = [x(:,i), y(:,i), z(:,i)];
-      __gnuplot_raw__ (["splot tmp ", fmt, ";\n"]);
+      cmd =  ["__gnuplot_splot__ tmp ", fmt, ";\n"];
+      eval (cmd);
     endfor
   unwind_protect_cleanup
     __gnuplot_raw__ ("set noparametric;\n"); 

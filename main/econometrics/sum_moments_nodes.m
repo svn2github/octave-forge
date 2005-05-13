@@ -1,4 +1,4 @@
-# Copyright (C) 2003,2004,2005  Michael Creel michael.creel@uab.es
+# Copyright (C) 2005  Michael Creel michael.creel@uab.es
 # under the terms of the GNU General Public License.
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -15,19 +15,25 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+# for internal use by gmm_estimate
 
-# The GMM objective function, for internal use by gmm_estimate
-# This is scaled so that it converges to a finite number.
-# To get the chi-square specification
-# test you need to multiply by n (the sample size)
-function obj_value = gmm_obj(theta, data, weight, moments, momentargs)
+function contrib = sum_moments_nodes(theta, data, moments, momentargs, nn)
 
-	m = average_moments(theta, data, moments, momentargs);
+  global NEWORLD NSLAVES
 	
-	obj_value = m' * weight *m;
-
-	if (((abs(obj_value) == Inf)) || (isnan(obj_value)))
-		obj_value = realmax;
+	# Who am I?
+	[info, rank] = MPI_Comm_rank(NEWORLD); 
+	
+	if rank == 0 # Do this if I'm master
+		startblock = NSLAVES*nn + 1;
+		endblock = rows(data);
+	else	# this is for the slaves
+		startblock = rank*nn-nn+1;
+		endblock = rank*nn;
 	endif	
-
-endfunction	
+  
+	data = data(startblock:endblock,:);
+  contrib = feval(moments, theta, data, momentargs);
+  contrib = sum(contrib);
+	
+endfunction

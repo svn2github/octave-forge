@@ -1,4 +1,4 @@
-# Copyright (C) 2003,2004  Michael Creel michael.creel@uab.es
+# Copyright (C) 2003,2004, 2005  Michael Creel michael.creel@uab.es
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,20 +18,6 @@
 # estimation of efficient weight, and second round
 # efficient estimator 
 
-# This also shows how do use data scaling - WHICH YOU SHOULD DO!
-1;
-
-
-# the form a user-written moment function should take
-function m = mymoments(theta, data, momentargs)
-	k = momentargs{1}; # use this so that data can hold dep, indeps, and instr
-	y = data(:,1);
-	x = data(:,2:k+1);
-	w = data(:, k+2:columns(data));
-	lambda = exp(x*theta);
-	e = y ./ lambda - 1;
-	m = dmult(e, w);
-endfunction	
 
 n = 1000;
 k = 5;
@@ -48,13 +34,13 @@ y = randp(lambda);
 theta = zeros(k,1);
 data = [y xs w];
 weight = eye(columns(w));
-moments = "mymoments";
+moments = "poisson_moments";
 momentargs = {k}; # needed to know where x ends and w starts
 
 # additional args for gmm_results
 names = str2mat("theta1", "theta2", "theta3", "theta4", "theta5");
 title = "Poisson GMM trial";
-control = {100,1,1,1};
+control = {100,2,1,1};
 
 
 # initial consistent estimate: only used to get efficient weight matrix, no screen output
@@ -69,3 +55,20 @@ weight = inverse(cov(m));
 # second round efficient estimator
 gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, control);
 
+
+# Example doing estimation in parallel on a cluster (requires MPITB)
+if exist("MPI_Init")
+
+printf("to do estimation in parallel, you need to have MPITB installed\n...
+and your computer must be lambooted. If this is not the case press...
+		 CRTL-C to abort. Pausing 10 seconds\n");
+	pause(10);	 
+
+	nslaves = 1;
+	theta = zeros(k,1);
+	nslaves = 1;
+	title = "GMM estimation done in parallel";
+	gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, control, nslaves);
+
+else printf("sorry, MPITB is not installed, can't do estimation in parallel\n");
+endif

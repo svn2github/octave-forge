@@ -1,5 +1,4 @@
-# Copyright (C) 2003,2004,2005  Michael Creel michael.creel@uab.es
-# under the terms of the GNU General Public License.
+# Copyright (C) 2005  Michael Creel michael.creel@uab.es
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,20 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+# Example likelihood function (Poisson for count data) with score
 
-
-# The GMM objective function, for internal use by gmm_estimate
-# This is scaled so that it converges to a finite number.
-# To get the chi-square specification
-# test you need to multiply by n (the sample size)
-function obj_value = gmm_obj(theta, data, weight, moments, momentargs)
-
-	m = average_moments(theta, data, moments, momentargs);
-	
-	obj_value = m' * weight *m;
-
-	if (((abs(obj_value) == Inf)) || (isnan(obj_value)))
-		obj_value = realmax;
-	endif	
-
+function [log_density, score] = poisson(theta, data, otherargs)
+	y = data(:,1);
+	x = data(:,2:columns(data));
+	lambda = exp(x*theta);
+	log_density = -lambda + y .* (x*theta) - lgamma(y+1);
+	score = dmult(y - lambda,x);
+	if (otherargs{1} == 1) score = "na"; endif # provide analytic score or not?
 endfunction	

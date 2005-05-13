@@ -16,31 +16,13 @@
 
 ## Example to show how to use MLE functions
 
-1;
-# Example likelihood function, no score
-function [log_density, score] = poisson_no_score(theta, data, otherargs)
-	y = data(:,1);
-	x = data(:,2:columns(data));
-	lambda = exp(x*theta);
-	log_density = -lambda + y .* (x*theta) - lgamma(y+1);
-	score = "na";
-endfunction	
-
-# Example likelihood function, with score
-function [log_density, score] = poisson_with_score(theta, data, otherargs)
-	y = data(:,1);
-	x = data(:,2:columns(data));
-	lambda = exp(x*theta);
-	log_density = -lambda + y .* (x*theta) - lgamma(y+1);
-	score = dmult(y - lambda,x);
-endfunction	
 
 
 # Generate data
 n = 1000; # how many observations?
 
 # the explanatory variables: note that they have unequal scales
-x = [ones(n,1) rand(n,1) randn(n,1)];
+x = [ones(n,1) -rand(n,1) randn(n,1)];
 theta = 1:3; # true coefficients are 1,2,3
 theta = theta';
 
@@ -56,16 +38,14 @@ theta = zeros(3,1);
 # data
 data = [y, x];
 # name of model to estimate
-model = "poisson_with_score"; 
-# placeholder, poisson model has no additional args
-modelargs = {};
+model = "poisson"; 
+modelargs = {0}; # if this is zero the function gives analytic score, otherwise not
 # parameter names
 names = str2mat("beta1", "beta2", "beta3");
 title = "Poisson MLE trial"; # title for the run
 
 # controls for bfgsmin: 30 iterations is not always enough for convergence
-control = {30,0,1,1};
-
+control = {50,0,1,1};
 
 # This displays the results
 printf("\n\nanalytic score, unscaled data\n");
@@ -89,7 +69,19 @@ theta = zeros(3,1);
 # Example using numeric score
 printf("\n\nnumeric score, scaled data\n");
 theta = zeros(3,1);
-model = "poisson_no_score";
+modelargs = {1}; # set the switch for no score
 [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control);
 
+# Example doing estimation in parallel on a cluster (requires MPITB)
+if exist("MPI_Init")
 
+printf("to do estimation in parallel, you need to have MPITB installed\n...
+and your computer must be lambooted. If this is not the case press...
+		 CRTL-C to abort. Pausing 10 seconds\n");
+	pause(10);	 
+	theta = zeros(3,1);
+	nslaves = 1;
+	title = "MLE estimation done in parallel";
+	[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control, nslaves);
+else printf("sorry, MPITB is not installed, can't do estimation in parallel\n");
+endif

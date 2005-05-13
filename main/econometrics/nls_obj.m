@@ -1,4 +1,4 @@
-# Copyright (C) 2003,2004,2005  Michael Creel michael.creel@uab.es
+# Copyright (C) 2005  Michael Creel michael.creel@uab.es
 # under the terms of the GNU General Public License.
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -15,31 +15,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## usage: [obj_value, score] = mle_obj(theta, data, model, modelargs, nslaves)
-##
-## Returns the average log-likelihood for a specified model
-## This is for internal use by mle_estimate
+# usage: [obj_value, score] = nls_obj(theta, data, model, modelargs, nslaves)
+#
+# Returns the average sum of squared errors for a specified model
+# This is for internal use by nls_estimate
 
 
-function [obj_value, score] = mle_obj(theta, data, model, modelargs, nslaves)
+function [obj_value, score] = nls_obj(theta, data, model, modelargs, nslaves)
 
 	n = rows(data);   
-	
-	if nargin < 5 nslaves = 0; endif
-	if nslaves > 0
-	  global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
 
+  if nslaves > 0
+	  global NEWORLD NSLAVES TAG
 		nn = floor(n/(NSLAVES + 1)); # number of obsns per slave
-
+    
 		# The command that the slave nodes will execute
-    cmd=['contrib = mle_obj_nodes(theta, data, model, modelargs, nn); ',...	
+    cmd=['contrib = nls_obj_nodes(theta, data, model, modelargs, nn); ',...	
          'MPI_Send(contrib,0,TAG,NEWORLD);'];	
 
 		# send items to slaves
 		NumCmds_Send({"theta", "nn", "cmd"}, {theta, nn, cmd});
 
 		# evaluate last block on master while slaves are busy
-  	obj_value = mle_obj_nodes(theta, data, model, modelargs, nn);
+  	obj_value = nls_obj_nodes(theta, data, model, modelargs, nn);
 
 		# collect slaves' results
 		contrib = 0.0; # must be initialized to use MPI_Recv
@@ -49,15 +47,14 @@ function [obj_value, score] = mle_obj(theta, data, model, modelargs, nslaves)
 		endfor
 
 		# compute the average
-  	obj_value = - obj_value / n;
+  	obj_value = obj_value / n;
   	score = "na"; # fix this later to allow analytic score in parallel
-		
+
   else # serial version
     [contribs, score] = feval(model, theta, data, modelargs);
-		obj_value = - mean(contribs);
-    if isnumeric(score) score = - mean(score)'; endif # model passes "na" when score not available
+		obj_value = mean(contribs);
+    if isnumeric(score) score = mean(score)'; endif # model passes "na" when score not available
   endif
-
 
 	# let's bullet-proof this in case the model goes nuts
   if (((abs(obj_value) == Inf)) || (isnan(obj_value)))

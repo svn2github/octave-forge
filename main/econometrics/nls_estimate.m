@@ -1,4 +1,4 @@
-## Copyright (C) 2003,2004,2005  Michael Creel michael.creel@uab.es
+## Copyright (C) 2005  Michael Creel michael.creel@uab.es
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 # usage: 
-# [theta, obj_value, conv, iters] = mle_estimate(theta, data, model, modelargs, control, nslaves) 
+# [theta, obj_value, conv, iters] = nls_estimate(theta, data, model, modelargs, control, nslaves) 
 #
 # inputs:
 # theta: column vector of model parameters
@@ -26,17 +26,16 @@
 # nslaves: (optional) number of slaves if executed in parallel (requires MPITB)
 #
 # outputs:
-# theta: ML estimated value of parameters
-# obj_value: the value of the log likelihood function at ML estimate
+# theta: NLS estimated value of parameters
+# obj_value: the value of the sum of squared errors at NLS estimate
 # conv: return code from bfgsmin (1 means success, see bfgsmin for details)
 # iters: number of BFGS iteration used
 #
-# please see mle_example.m for examples of how to use this
-function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, model, modelargs, control, nslaves)
-
+# please see nls_example.m for examples of how to use this
+function [theta, obj_value, convergence, iters] = nls_estimate(theta, data, model, modelargs, control, nslaves)
 
 	if nargin < 3
-		error("mle_estimate: 3 arguments required");
+		error("nls_estimate: 3 arguments required");
 	endif
 
 	if nargin < 4 modelargs = {}; endif # create placeholder if not used
@@ -44,8 +43,9 @@ function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, mode
 	if nargin < 5 control = {Inf,0,1,1}; endif # default controls and method
 	if !iscell(control) control = {Inf,0,1,1}; endif # default controls if receive placeholder
 	if nargin < 6 nslaves = 0; endif
+
 	if nslaves > 0
-		global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
+		global NSLAVES PARALLEL NEWORLD TAG
 		LAM_Init(nslaves);
 		# Send the data to all nodes
 		NumCmds_Send({"data", "model", "modelargs"}, {data, model, modelargs});
@@ -60,15 +60,12 @@ function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, mode
 	else method = "sa";	
 	endif
 	
-
 	if strcmp(method, "bfgs")
-	  [theta, obj_value, convergence, iters] = bfgsmin("mle_obj", {theta, data, model, modelargs, nslaves}, control);
+	  [theta, obj_value, convergence, iters] = bfgsmin("nls_obj", {theta, data, model, modelargs, nslaves}, control);
 	elseif strcmp(method, "sa") 	
-	  [theta, obj_value, convergence] = samin("mle_obj", {theta, data, model, modelargs, nslaves}, control);
+	  [theta, obj_value, convergence] = samin("nls_obj", {theta, data, model, modelargs, nslaves}, control);
 	endif	
-		
-	if nslaves > 0
-		LAM_Finalize;
-	endif # cleanup			
-	obj_value = - obj_value; # recover from minimization rather than maximization
+	
+	# cleanup	
+	if nslaves > 0 LAM_Finalize; endif
 endfunction	

@@ -1,5 +1,4 @@
-# Copyright (C) 2003,2004,2005  Michael Creel michael.creel@uab.es
-# under the terms of the GNU General Public License.
+# Copyright (C) 2005  Michael Creel michael.creel@uab.es
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,20 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+# the form a user-written moment function should take
 
-
-# The GMM objective function, for internal use by gmm_estimate
-# This is scaled so that it converges to a finite number.
-# To get the chi-square specification
-# test you need to multiply by n (the sample size)
-function obj_value = gmm_obj(theta, data, weight, moments, momentargs)
-
-	m = average_moments(theta, data, moments, momentargs);
-	
-	obj_value = m' * weight *m;
-
-	if (((abs(obj_value) == Inf)) || (isnan(obj_value)))
-		obj_value = realmax;
-	endif	
-
+function m = poisson_moments(theta, data, momentargs)
+	k = momentargs{1}; # use this so that data can hold dep, indeps, and instr
+	y = data(:,1);
+	x = data(:,2:k+1);
+	w = data(:, k+2:columns(data));
+	lambda = exp(x*theta);
+	e = y ./ lambda - 1;
+	m = dmult(e, w);
 endfunction	

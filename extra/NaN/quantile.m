@@ -18,10 +18,10 @@ function Q=quantile(Y,q)
 % (1) explicite form
 %	tmp=sort(Y);
 %	N=sum(~isnan(Y));
-%	Q = interp1(tmp,N*q + 0.5);
+%	Q = flix(tmp,N*q + 0.5);
 %
 % (2) in 1 line
-%	Q = interp1(sort(Y),sum(~isnan(Y))*q + 0.5);
+%	Q = flix(sort(Y),sum(~isnan(Y))*q + 0.5);
 %
 % (3) q-quantile Q of histogram H with bins t
 %	tmp=HISTOG>0;
@@ -80,7 +80,7 @@ else
                 Y = sort(Y,1);
                 
 		for k1 = 1:yc,
-                        Q(:,k1) = interp1(Y(:,k1),N(k1)*q + 0.5);                	        
+                        Q(:,k1) = flix(Y(1:N,k1),N(k1)*q + 0.5);                	        
                 end;
                 
         else

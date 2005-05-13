@@ -56,7 +56,7 @@ else
     		Y = sort(Y,1);
 		
 		for k1 = 1:yc,
-                        Q(:,k1) = interp1(Y(:,k1),N(k1)*q/100 + 0.5);                	        
+                        Q(:,k1) = flix(Y(:,k1),N(k1)*q/100 + 0.5);                	        
                 end;
                 
         else

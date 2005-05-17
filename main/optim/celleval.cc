@@ -22,8 +22,7 @@
 #include <octave/Cell.h>
 #include <octave/lo-mappers.h>
 
-DEFUN_DLD (celleval, args, nargout,
-	   "celleval (name, cell_array)\n\
+DEFUN_DLD (celleval, args, nargout, "celleval (name, cell_array)\n\
 Evaluate the function named \"name\".  All the elements in cell_array\n\
 are passed on to the named function.\n\
 Example:\n\
@@ -34,43 +33,37 @@ celleval(\"f\", {1,2,\"this\"})\n\
 ans = 3\n\
 ")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-  if (!(nargin == 2))
-    {
-      error("celleval: you must supply exactly 2 arguments");
-      return octave_value_list();
-    }
-  if (!args(0).is_string())
-    {
-      error ("celleval: first argument must be a string");
-      return octave_value_list();
-    }	
-  if (!args(1).is_cell())
-    {
-      error ("celleval: second argument must be a cell");
-      return octave_value_list();
-    }
-
-  std::string name = args(0).string_value ();
-  Cell f_args_cell = args(1).cell_value ();
-
-  int k = f_args_cell.length();
-  int i;
-
-  // a list to copy the cell contents into, so feval can be used
-  octave_value_list f_args(k,1);
-
-  // copy contents over
-  for (i = 0; i<k; i++)
-    {
-      f_args(i) = f_args_cell(i);
-    }
-		
-  // evaluate the function
-  retval = feval (name, f_args, nargout);
-
-  return retval;
+	octave_value_list retval;
+	int nargin = args.length ();
+	if (!(nargin == 2))
+	{
+		error("celleval: you must supply exactly 2 arguments");
+		return octave_value_list();
+	}
+	if (!args(0).is_string())
+	{
+		error ("celleval: first argument must be a string");
+		return octave_value_list();
+	}
+	if (!args(1).is_cell())
+	{
+		error ("celleval: second argument must be a cell");
+		return octave_value_list();
+	}
+	
+	std::string name = args(0).string_value ();
+	Cell f_args_cell = args(1).cell_value ();
+	int k = f_args_cell.length();
+	int i;
+	// a list to copy the cell contents into, so feval can be used
+	octave_value_list f_args(k,1);
+	
+	// copy contents over
+	for (i = 0; i<k; i++) f_args(i) = f_args_cell(i);
+	
+	// evaluate the function
+	retval = feval (name, f_args, nargout);
+	
+	return retval;
 }
 

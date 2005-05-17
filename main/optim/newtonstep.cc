@@ -31,17 +31,16 @@
 static bool
 any_bad_argument(const octave_value_list& args)
 {
-  if (!args(0).is_string())
-    {
-      error("newtonstep: first argument must be string holding objective function name");
-      return true;
-    }
-  if (!args(1).is_cell())
-    {
-      error("newtonstep: second argument must cell array of function arguments");
-      return true;
-    }
-
+	if (!args(0).is_string())
+	{
+		error("newtonstep: first argument must be string holding objective function name");
+		return true;
+	}
+	if (!args(1).is_cell())
+	{
+		error("newtonstep: second argument must cell array of function arguments");
+		return true;
+	}
 	if (!(args(2).is_real_matrix() || args(2).is_real_scalar()))
 	{
 		error("newtonstep: third argument must be column vector of directions");
@@ -51,17 +50,16 @@ any_bad_argument(const octave_value_list& args)
 	{
 		error("newtonstep: third argument must be column vector of directions");
 		return true;
-	}	
-
-  if (args.length() == 4)
-  {
-  	int tmp = args(3).int_value();
+	}
+	if (args.length() == 4)
+	{
+		int tmp = args(3).int_value();
 		if (error_state)
 		{
 			error("newtonstep: 4th argument, if supplied, must be an integer scalar");
 			return true;
-		}	
-		if ((tmp > args(1).length()|| tmp < 1))  
+		}
+		if ((tmp > args(1).length()|| tmp < 1))
 		{
 			error("newtonstep: 4th argument must be a positive integer that indicates \n\
 which of the elements of the second argument is the one minimization is over");
@@ -69,114 +67,96 @@ which of the elements of the second argument is the one minimization is over");
 		}	
 
 	}
-
-  return false;
+	return false;
 }
 
 
 
 DEFUN_DLD(newtonstep, args, , "newtonstep.cc")
 {
-  
+	int nargin = args.length ();
+	if ((nargin < 3) || (nargin > 4))
+	{
+		error("newtonstep: you must supply 3 or 4 arguments");
+		return octave_value_list();
+	}
 	
-  int nargin = args.length ();
-  if ((nargin < 3) || (nargin > 4))
-    {
-      error("newtonstep: you must supply 3 or 4 arguments");
-      return octave_value_list();
-    }
-
-  // check the arguments
-  if (any_bad_argument(args)) return octave_value_list();
-
+	// check the arguments
+	if (any_bad_argument(args)) return octave_value_list();
 	
+	std::string f (args(0).string_value());
+	Cell f_args (args(1).cell_value());
+	Matrix dx (args(2).matrix_value());
+	double obj, obj_0, obj_left, obj_right, delta, a, gradient, hessian;
+	octave_value_list f_return;
+	octave_value_list c_args(2,1); // for cellevall {f, f_args}
+	octave_value_list stepobj(2,1);
+	int minarg;
 	
-  std::string f (args(0).string_value());
-  Cell f_args (args(1).cell_value());
-  Matrix dx (args(2).matrix_value());
-
-
-  double obj, obj_0, obj_left, obj_right, delta, a, gradient, hessian;
-  octave_value_list f_return;
-  octave_value_list c_args(2,1); // for cellevall {f, f_args}  
-  octave_value_list stepobj(2,1);
-  int minarg;
+	// Default values for controls
+	minarg = 1; // by default, first arg is one over which we minimize
+	// possibly minimization not over 1st arg
+	if (args.length() == 4) minarg = args(3).int_value();
 	
-  // Default values for controls
-  minarg = 1; // by default, first arg is one over which we minimize
- 
-  // possibly minimization not over 1st arg
-  if (args.length() == 4)
-    {
-      minarg = args(3).int_value();
-    }	
-
-  Matrix x (f_args(minarg - 1).matrix_value());
-  Matrix x_in = x;
+	Matrix x (f_args(minarg - 1).matrix_value());
+	Matrix x_in = x;
+	gradient = 1.0;
 	
-  gradient = 1.0;
+	// possibly function return cell array
+	// obj. value will be in first position
+	c_args(0) = f;
+	c_args(1) = f_args;
+	f_return = feval("celleval", c_args);
+	obj = f_return(0).double_value();
+	obj_0 = obj;
+	delta = 0.001; // experimentation show that this is a good choice
+	Matrix x_right = x + delta*dx;
+	Matrix x_left = x  - delta*dx;
 	
-  // possibly function return cell array
-  // obj. value will be in first position
-  c_args(0) = f;
-  c_args(1) = f_args;
-  f_return = feval("celleval", c_args); 
-  obj = f_return(0).double_value();
-
-  obj_0 = obj;
+	// possibly function return cell array
+	// obj. value will be in first position
+	f_args(minarg - 1) = x_right;
+	c_args(1) = f_args;
+	f_return = feval("celleval", c_args);
+	obj_right = f_return(0).double_value();
 	
-  delta = 0.001; // experimentation show that this is a good choice
+	f_args(minarg - 1) = x_left;
+	c_args(1) = f_args;
+	f_return = feval("celleval", c_args);
+	obj_left = f_return(0).double_value();
 	
-  Matrix x_right = x + delta*dx;
-  Matrix x_left = x  - delta*dx;
-
-  // possibly function return cell array
-  // obj. value will be in first position
-  f_args(minarg - 1) = x_right;
-  c_args(1) = f_args;
-  f_return = feval("celleval", c_args); 
-  obj_right = f_return(0).double_value();
+	gradient = (obj_right - obj_left) / (2*delta);  // take central difference
+	hessian =  (obj_right - 2*obj + obj_left) / pow(delta, 2.0);
+	hessian = fabs(hessian); // ensures we're going in a decreasing direction
+	if (hessian <= 2*DBL_EPSILON) hessian = 1.0; // avoid div by zero
+	a = - gradient / hessian;  // hessian inverse gradient: the Newton step
+	if (a < 0) 	// since direction is descending, a must be positive
+	{ 		// if it is not, go to bisection step
+		f_return = feval("bisectionstep", args);
+		a = f_return(0).double_value();
+		obj = f_return(1).double_value();
+		stepobj(0) = a;
+		stepobj(1) = obj;
+		return octave_value_list(stepobj);
+	}
 	
-  f_args(minarg - 1) = x_left;
-  c_args(1) = f_args;
-  f_return = feval("celleval", c_args); 
-  obj_left = f_return(0).double_value();
+	a = (a < 5.0)*a + 5.0*(a>=5.0); // Let's avoid extreme steps that might cause crashes
 	
-
-  gradient = (obj_right - obj_left) / (2*delta);  // take central difference
-  hessian =  (obj_right - 2*obj + obj_left) / pow(delta, 2.0);	
-  hessian = fabs(hessian); // ensures we're going in a decreasing direction
-  if (hessian <= 2*DBL_EPSILON) hessian = 1.0; // avoid div by zero
-
-  a = - gradient / hessian;  // hessian inverse gradient: the Newton step
-
-  if (a < 0) 	// since direction is descending, a must be positive
-    { 			// if it is not, go to bisection step
-      f_return = feval("bisectionstep", args);
-      a = f_return(0).double_value();
-      obj = f_return(1).double_value();
-      stepobj(0) = a;
-      stepobj(1) = obj;
-      return octave_value_list(stepobj);
-    }
-
-  a = (a < 5.0)*a + 5.0*(a>=5.0); // Let's avoid extreme steps that might cause crashes
-
-  // ensure that this is improvement
-  f_args(minarg - 1) = x + a*dx;
-  c_args(1) = f_args;
-  f_return = feval("celleval", c_args); 
-  obj = f_return(0).double_value();
-
-  // if not, fall back to bisection
-  if ((obj > obj_0) || lo_ieee_isnan(obj))
-    {
-      f_return = feval("bisectionstep", args);
-      a = f_return(0).double_value();
-      obj = f_return(1).double_value();
-    }
+	// ensure that this is improvement
+	f_args(minarg - 1) = x + a*dx;
+	c_args(1) = f_args;
+	f_return = feval("celleval", c_args);
+	obj = f_return(0).double_value();
 	
-  stepobj(0) = a;
-  stepobj(1) = obj;
-  return octave_value_list(stepobj);
+	// if not, fall back to bisection
+	if ((obj > obj_0) || lo_ieee_isnan(obj))
+	{
+		f_return = feval("bisectionstep", args);
+		a = f_return(0).double_value();
+		obj = f_return(1).double_value();
+	}
+	
+	stepobj(0) = a;
+	stepobj(1) = obj;
+	return octave_value_list(stepobj);
 }

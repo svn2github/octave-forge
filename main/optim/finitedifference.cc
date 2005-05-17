@@ -23,20 +23,20 @@
 static bool
 any_bad_argument(const octave_value_list& args)
 {
-  if (!args(0).is_real_scalar())
-  {
-    error("finitedifference: first argument must be a real double value");
-    return true;
-  }
-
+	if (!args(0).is_real_scalar())
+	{
+		error("finitedifference: first argument must be a real double value");
+		return true;
+	}
+	
 	int tmp = args(1).int_value();
 	if (error_state || (!(tmp==1 || tmp==2)))
 	{
 		error("finite difference: 2nd argument must be 1 or 2");
 		return true;
-	}	
-
-  return false;
+	}
+	
+	return false;
 }
 
 
@@ -44,43 +44,31 @@ any_bad_argument(const octave_value_list& args)
 DEFUN_DLD(finitedifference, args, ,"finitedifference,\n\
 for internal use by numgradient and numhessian")
 {
-  
+	int nargin = args.length ();
+	if (!(nargin == 2))
+	{
+		error("finitedifference: you must supply exactly 2 arguments");
+		return octave_value_list();
+	}
 	
-  int nargin = args.length ();
-
-  if (!(nargin == 2))
-    {
-      error("finitedifference: you must supply exactly 2 arguments");
-      return octave_value_list();
-    }
-
-  // check the arguments
-  if (any_bad_argument(args)) return octave_value_list();
+	// check the arguments
+	if (any_bad_argument(args)) return octave_value_list();
 	
-  double x = args(0).double_value();
-  int order = args(1).int_value();
-  int test;
-  double eps, SQRT_EPS, DIFF_EPS, DIFF_EPS1, DIFF_EPS2, diff, d;
-
-  eps = DBL_EPSILON; // machine precision
-  SQRT_EPS = sqrt(eps); 
-  DIFF_EPS = exp(log(eps)/2);
-  DIFF_EPS1 = exp(log(eps)/3);
-  DIFF_EPS2 = exp(log(eps)/4);
-  if (order == 0) diff = DIFF_EPS;
-  else if (order == 1) diff = DIFF_EPS1;
-  else diff = DIFF_EPS2;
-
-  test = (fabs(x) + SQRT_EPS) * SQRT_EPS > diff;
+	double x = args(0).double_value();
+	int order = args(1).int_value();
+	int test;
+	double eps, SQRT_EPS, DIFF_EPS, DIFF_EPS1, DIFF_EPS2, diff, d;
 	
-  if (test)
-    {
-      d = (fabs(x) + SQRT_EPS) * SQRT_EPS;
-    }
-  else
-    {
-      d = diff;
-    }		
-
-  return octave_value(d);
+	eps = DBL_EPSILON; // machine precision
+	SQRT_EPS = sqrt(eps);
+	DIFF_EPS = exp(log(eps)/2);
+	DIFF_EPS1 = exp(log(eps)/3);
+	DIFF_EPS2 = exp(log(eps)/4);
+	if (order == 0) diff = DIFF_EPS;
+	else if (order == 1) diff = DIFF_EPS1;
+	else diff = DIFF_EPS2;
+	test = (fabs(x) + SQRT_EPS) * SQRT_EPS > diff;
+	if (test) d = (fabs(x) + SQRT_EPS) * SQRT_EPS;
+	else d = diff;	
+	return octave_value(d);
 }

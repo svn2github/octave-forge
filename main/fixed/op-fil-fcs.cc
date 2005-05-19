@@ -23,6 +23,8 @@ Open Source Initiative (www.opensource.org)
 
 */
 
+#ifndef HAVE_OCTAVE_29
+
 #if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
 #pragma implementation
 #endif
@@ -75,6 +77,8 @@ install_fil_fcs_ops (void)
 {
   INSTALL_BINOP (op_lshift, octave_file, octave_fixed_complex, lshift);
 }
+
+#endif
 
 /*
 ;;; Local Variables: ***

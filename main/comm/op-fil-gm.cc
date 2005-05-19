@@ -65,6 +65,13 @@ install_fil_gm_ops (void)
   INSTALL_BINOP (op_lshift, octave_file, octave_galois, lshift);
 }
 
+#else
+
+void
+install_fil_gm_ops (void)
+{
+}
+
 #endif
 
 /*

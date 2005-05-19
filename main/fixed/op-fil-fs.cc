@@ -78,6 +78,13 @@ install_fil_fs_ops (void)
   INSTALL_BINOP (op_lshift, octave_file, octave_fixed, lshift);
 }
 
+#else
+
+void
+install_fil_fs_ops (void)
+{
+}
+
 #endif
 
 /*

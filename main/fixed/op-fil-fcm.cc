@@ -78,6 +78,13 @@ install_fil_fcm_ops (void)
   INSTALL_BINOP (op_lshift, octave_file, octave_fixed_complex_matrix, lshift);
 }
 
+#else
+
+void
+install_fil_fcm_ops (void)
+{
+}
+
 #endif
 
 /*

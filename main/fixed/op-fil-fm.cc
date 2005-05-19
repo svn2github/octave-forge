@@ -78,6 +78,13 @@ install_fil_fm_ops (void)
   INSTALL_BINOP (op_lshift, octave_file, octave_fixed_matrix, lshift);
 }
 
+#else
+
+void
+install_fil_fm_ops (void)
+{
+}
+
 #endif
 
 /*

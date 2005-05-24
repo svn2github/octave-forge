@@ -275,6 +275,10 @@ endfunction
 %!assert (interp1(xp,[yp',yp'],xi,style),
 %!	  interp1(xp,[yp',yp'],xi,["*",style]),10*eps);
 
+%!# test linear extrapolation
+%!assert (interp1([1:5],[3:2:11],[0,6],'linear','extrap'), [1, 13], eps);
+%!assert (interp1(xp, yp, [-1, max(xp)+1],'linear',5), [5, 5]);
+
 %!error interp1
 %!error interp1(1:2,1:2,1,'bogus')
 

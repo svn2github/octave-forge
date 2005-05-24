@@ -1,3 +1,16 @@
+## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+##
+## This program is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## This is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+
 ## sel2 = select_3D_points (x, sel1, deco) - select 3D points
 ##
 ## x     : 3 x P  : 3D points

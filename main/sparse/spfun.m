@@ -1,5 +1,8 @@
-# t = spfun(f,s)
-#   Compute f(s) for non-zero s, returning the result in sparse t.
+## t = spfun(f,s)
+##   Compute f(s) for non-zero s, returning the result in sparse t.
+
+## Author: Paul Kienzle
+## This program is public domain.
 function t = spfun(f,s)
   if issparse(s)
     [i,j,v,m,n] = spfind(s);

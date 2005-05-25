@@ -1,3 +1,8 @@
+## test function for argument pass through version of fsolve
+
+## Author: Paul Kienzle
+## This program is public domain.
+
 x_opt = [ 0.599054;
           2.395931;
           2.005014 ];

@@ -82,8 +82,7 @@
 ## verbose, v     Be more or less verbose (quiet=0)                      <0>
 function [x,v,nev] = nelder_mead_min (f, args, varargin)
 
-## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
-## This software is distributed under the terms of the GPL
+## Author : Etienne Grossmann <etienne@cs.uky.edu>
 
 
 verbose = 0;

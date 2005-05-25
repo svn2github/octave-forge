@@ -5,6 +5,9 @@
 ##    example of finding points in the voronoi diagram
 ##    *** needs dsearch ***
 
+## Author: Paul Kienzle
+## This program is public domain.
+
 function tsearchdemo(nearest)
 
 if nargin==0, nearest = 0; endif

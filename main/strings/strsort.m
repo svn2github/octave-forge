@@ -1,6 +1,9 @@
 # ... = strsort(...)
 # Overloads the sort function to operate on strings.
 
+# Author: Paul Kienzle
+# This program is public domain
+
 # PKG_ADD dispatch sort strsort string
 function [sorted,idx] = strsort(string,varargin)
   if nargout == 2

@@ -62,7 +62,7 @@
 ##   part of the string.  The format %[ will eat through delimiters.
 
 ## Author: Albert Danial <alnd@users.sf.net>
-## Author: Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+## Author: Paul Kienzle <pkienzle@user.sf.net>
 
 ## 2002-03-15 Paul Kienzle
 ## * remove dependency on str_incr

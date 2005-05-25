@@ -2,6 +2,10 @@
 ## are loading and running.  In future all tests will be distributed to
 ## individual directories or even individual function files.  But we have
 ## to start somewhere...
+
+## Author: Paul Kienzle
+## This program is public domain.
+
 LOADPATH = "main//:extra//:nonfree//:FIXES:";
 
 ## this test could be done without the graph

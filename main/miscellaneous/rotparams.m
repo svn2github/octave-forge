@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ## w = rotparams (r)            - Inverse to rotv()
 ## 
@@ -23,7 +22,7 @@
 ##
 ##  Ignores matrices with zero rows or with NaNs. (returns 0 for them)
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 
 function [vstacked, astacked] = rotparams (rstacked)
 

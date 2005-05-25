@@ -5,7 +5,7 @@
 ##
 ##   foo(find(foo(:,p)),p)  vs.  nze(foo(:,p)) 
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: November 2002
 
 function [y,f] = nze(x)

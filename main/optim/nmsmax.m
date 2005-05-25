@@ -28,7 +28,8 @@ function [x, fmax, nf] = nmsmax(fun, x, stopit, savit, varargin)
 %        NMSMAX(fun, x0, STOPIT, SAVIT, P1, P2,...) allows additional
 %        arguments to be passed to fun, via feval(fun,x,P1,P2,...).
 
-% From Matrix Toolbox (C) 2002 N.J.Higham
+% From Matrix Toolbox 
+% Copyright (C) 2002 N.J.Higham
 % www.maths.man.ac.uk/~higham/mctoolbox
 % distributed under the terms of the GNU General Public License
 %

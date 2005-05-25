@@ -1,3 +1,9 @@
+/*
+
+Copyright (C) Cai Jianming <caijianming@yahoo.co.uk>
+
+*/
+
 #include "ov-re-tri.h"
 
 

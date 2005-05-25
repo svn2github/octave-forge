@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ## s = slurp_file (f) - return a whole text file as a string
 ##
@@ -19,7 +18,7 @@
 ## If f is not an absolute filename, and f is not an immediately accessible
 ## file, slurp_file () will look for f in LOADPATH.
 
-## Author  : Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author  : Etienne Grossmann <etienne@cs.uky.edu>
 function s = slurp_file (f)
 
 if ! isstr (f),  error ("slurp_file :  f  is not a string"); end

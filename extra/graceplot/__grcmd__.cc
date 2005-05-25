@@ -2,8 +2,12 @@
  *
  * Copyright (c) 1997-1998 Henrik Seidel
  * Copyright (c) 1999-2003 Grace Development Team
- * Copyright (C) 2002 Chee Kiang Goh (initial octave interface)
- * Copyright (C) 2003 Teemu Ikonen (improvements on the octave interface)
+ *
+ * Copyright (C) 2002 Chee Kiang Goh
+ *    * initial octave interface
+ *
+ * Copyright (C) 2003 Teemu Ikonen
+ *    * improvements on the octave interface
  * 
  *
  *                           All Rights Reserved

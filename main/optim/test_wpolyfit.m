@@ -1,3 +1,11 @@
+## Tests for wpolyfit.
+##
+## Test cases are taken from the NIST Statistical Reference Datasets
+##    http://www.itl.nist.gov/div898/strd/
+
+## Author: Paul Kienzle
+## This program is public domain
+
 1;
 
 function do_test(n,x,y,p,dp,varargin)

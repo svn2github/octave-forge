@@ -32,7 +32,7 @@
 ##
 ## @end deftypefn
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Modified-By:   Bill Denney <bill@givebillmoney.com>
 ## Last modified: March 2005
 

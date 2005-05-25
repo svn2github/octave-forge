@@ -14,7 +14,7 @@
 ## struct.
 
 
-## Author:        Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## Author:        Paul Kienzle <pkienzle@users.sf.net>
 ## This program is granted to the public domain.
 
 function f = fieldnames(s)

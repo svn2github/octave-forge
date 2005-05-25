@@ -26,7 +26,7 @@
 ## See also : rota, rot
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002
 
 function r = rotv(v ,ang)

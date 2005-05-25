@@ -1,5 +1,8 @@
 ## t = nonzeros(s)
 ##   return vector of nonzeros of s
+
+## Author: Paul Kienzle
+## This program is public domain.
 function t = nonzeros(s)
   if issparse(s)
     [i,j,t] = spfind(s);

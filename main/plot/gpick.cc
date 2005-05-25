@@ -6,7 +6,7 @@
  * appropriate licences. The rest is mine, and
  * you can do what you want with that part.
  * 
- * Andy Adler <adlera@ncf.ca> (C) 1997
+ * Copyright (C) 1997 Andy Adler <adlera@ncf.ca>
  * 
  * Compile like this
  * mkoctfile -L/usr/X11R6/lib -lX11 -I/usr/X11R6/include/ gpick.cc 
@@ -15,7 +15,7 @@
  */
 
 /*
- * Laurent Mazet <mazet@crm.mot.com> (C) 2001
+ * Copyright (C) 2001 Laurent Mazet <mazet@crm.mot.com>
  *
  * - 28/3/01 -
  * Fix error handler to avoid octave core-dump.

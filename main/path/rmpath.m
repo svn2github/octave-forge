@@ -19,7 +19,7 @@
 ## Removes dir1,... from the current LOADPATH.
 ## 
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: January 2000
 
 function rmpath(varargin)

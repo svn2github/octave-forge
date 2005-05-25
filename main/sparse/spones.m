@@ -1,5 +1,8 @@
-# spones(s)
-#   replace non-zero entries of s with 1.
+## spones(s)
+##   replace non-zero entries of s with 1.
+
+## Author: Paul Kienzle
+## This program is public domain
 function s = spones(s)
   if issparse(s)
     [i,j,v,m,n] = spfind(s);

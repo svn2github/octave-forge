@@ -15,6 +15,8 @@
 ## Checks wether the function 'nelder_mead_min' accepts options properly
 ##
 
+## Author: Etienne Grossmann <etienne@cs.uky.edu>
+
 ok = 1;
 cnt = 1;
 

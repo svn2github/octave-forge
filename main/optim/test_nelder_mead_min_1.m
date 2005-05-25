@@ -16,6 +16,8 @@
 ## quadratic function.
 ##
 
+## Author:  Etienne Grossmann <etienne@cs.uky.edu>
+
 ok = 1;
 cnt = 1;
 
@@ -52,8 +54,6 @@ end
 ##
 ## Returns the cputime since last call to 'mytic'.
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: October 2000
 function dt = mytic()
    static last_mytic = 0 ;
    [t,u,s] = cputime() ;

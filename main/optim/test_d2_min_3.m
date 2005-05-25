@@ -18,7 +18,7 @@
 ##
 ## If a variables "verbose" is set, then some comments are output.
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 
 
 1 ;
@@ -61,8 +61,6 @@ endfunction
 ##
 ## Returns the cputime since last call to 'mytic'.
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
-## Last modified: October 2000
 function dt = mytic()
    static last_mytic = 0 ;
    [t,u,s] = cputime() ;

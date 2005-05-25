@@ -1,3 +1,15 @@
+## Copyright (C) 2000 Ben Sapp.  All rights reserved.
+##
+## This is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## This is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+
 page_screen_output = 0;
 A1 = [-1 1 2 1 2 ; -1 2 3 1 1 ; -1 1 1 2 1 ];
 B1 = [7;6;4];

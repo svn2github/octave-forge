@@ -1,4 +1,4 @@
-## Copyright (C) 2004 £ukasz Bodzon, <lllopezzz@o2.pl>
+## Copyright (C) 2004 £ukasz Bodzon <lllopezzz@o2.pl>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

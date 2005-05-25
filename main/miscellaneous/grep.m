@@ -5,7 +5,7 @@
 ##
 ##   foo(find(foo(:,p)),p)  vs.  grep(foo(:,p)) 
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: October 2000
 
 function [y,f] = grep(x)

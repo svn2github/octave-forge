@@ -21,7 +21,7 @@
 ##
 ## WARNING: for compatibility, must treat empty fields as zero, but doesn't.
 
-## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## 2001-02-16
 ##    * first revision
 

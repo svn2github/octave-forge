@@ -81,7 +81,7 @@
 
 function [xbest,vbest,nev,hbest,args] = d2_min (f,d2f,args,ctl,code)
 
-## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author : Etienne Grossmann <etienne@cs.uky.edu>
 ##
 
 maxout = inf;

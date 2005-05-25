@@ -1,5 +1,5 @@
 // mark_for_deletion - mark a file for deletion
-// (C) 2002 Andy Adler
+// Copyright (C) 2002 Andy Adler
 // Licensed under the GNU GPL. 
 #include <octave/oct.h>
 

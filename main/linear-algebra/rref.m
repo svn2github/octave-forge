@@ -21,7 +21,7 @@
 ##      [R, k] = rref (...) returns the vector of "bound variables",
 ##      which are those columns on which elimination has been performed.
 
-## Author: Paul Kienzle 
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 ##         (based on a anonymous source from the public domain)
 
 function [A, k] = rref (A, tolerance)

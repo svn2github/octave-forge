@@ -6,6 +6,9 @@
 ## To force a variety of weights, poisson statistics are used to 
 ## estimate the variance on the individual points, but gaussian 
 ## statistics are used to generate new values within that variance.
+
+## Author: Paul Kienzle
+## This program is public domain.
 function wpolyfitdemo(pin)
   if (nargin == 0) pin = [3 -1 2]'; endif
   x = [-3:0.1:3];

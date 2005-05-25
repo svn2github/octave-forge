@@ -70,7 +70,11 @@ my %files               = ();   # files{ author name } = [ list of files ]
 foreach my $f (sort @files) {
     # each file can have multiple authors, loop over each author
     if (!defined @{$file_data{$f}{name}}) {
-        push @unattributed_files, $f;
+	if ($file_data{$f}{n_code} > $opt_s) { # not a short program
+           push @unattributed_files, $f;
+        } else {
+           push @short_files       , $f;
+        }
         next;
     }
     my $copyrighted = 0;
@@ -99,6 +103,13 @@ foreach my $f (sort @uncopyrighted_files) {
            $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
 }
 
+printf "\n%3d unattributed files:%s lines of code/lines of comments\n", 
+       scalar @unattributed_files, ' ' x 23;
+foreach my $f (sort @unattributed_files) {
+    printf "      %-50s %3d/%3d\n",
+           $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
+}
+
 printf "\n%3d public domain files:%s lines of code/lines of comments\n", 
        scalar @public_domain, ' ' x 22;
 foreach my $f (sort @public_domain) {
@@ -110,13 +121,6 @@ printf "\n%3d uncopyrighted short (<= %2d lines) files:%s lines of code/lines of
        scalar @short_files, $opt_s, ' ' x 2;
 foreach my $f (sort @short_files) {
     printf "      %-50s %3d/%3d\n", 
-           $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
-}
-
-printf "\n%3d unattributed files:%s lines of code/lines of comments\n", 
-       scalar @unattributed_files, ' ' x 23;
-foreach my $f (sort @unattributed_files) {
-    printf "      %-50s %3d/%3d\n",
            $f, $file_data{$f}{n_code}, $file_data{$f}{n_comment};
 }
 
@@ -172,11 +176,11 @@ sub classify_files { # {{{1
             s/all\s+rights\s+reserved\.?//i;
             s/\bby\s+//i;
 
-            if (/^[#%\/]+               #  one or more leading comment markers
+            if (/^\s*[#%\/\*]*          #  one or more leading comment markers
                   \s*copyright          #  Copyright
                   \s*(\(c\))?           #  (c)    - optional           $1
                   \s*(\d[,\- 0-9]+)     #  Year (or years)             $2
-                  \s+(.*?)              #  name                        $3
+                  \s+(.*)?              #  name                        $3
                   \s*(<.*>)?            #  email  - optional           $4
                   \s*$/ix) {
                 $found_copyright = 1;
@@ -194,9 +198,9 @@ sub classify_files { # {{{1
                 push @{$rhha_data->{$f}{cpyr}}, 'C';
                 # don't exit w/last because there could be multiple copyrights
             } elsif (
-                /^\s*[#%\/]+              # one or more leading comment markers
+                /^\s*[#%\/\*]*            # one or more leading comment markers
                     \s*author\s*:?        #  Author    
-                    \s+(.*?)              #  name                        $1
+                    \s+([a-z].*)          #  name                        $1
                     \s*(<.*>)?            #  email  - optional           $2
                     \s*$/ix) {
                 my $name  = $1;
@@ -208,7 +212,7 @@ sub classify_files { # {{{1
                 push @{$rhha_data->{$f}{mail}}, $email;
                 $found_author = 1;
             } elsif (
-                /^\s*[#%\/]+              # one or more leading comment markers
+                /^\s*[#%\/\*]*            # one or more leading comment markers
                   .*?                     #  some leading text
                   \b(grant(ed)?|place(d)?|give(n)?|is)(\s+this)?
                   (\s+(file|program|script|code|algorithm))?(\s+(in|to))?

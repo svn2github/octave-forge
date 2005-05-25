@@ -29,7 +29,8 @@ function [x, fmax, nf] = mdsmax(fun, x, stopit, savit, varargin)
 % is an n-vector.  It is based on the algorithm statement in [2, sec.3],
 % modified so as to halve the storage (with a slight loss in readability).
 
-% From Matrix Toolbox (C) 2002 N.J.Higham
+% From Matrix Toolbox 
+% Copyright (C) 2002 N.J.Higham
 % www.maths.man.ac.uk/~higham/mctoolbox
 % distributed under the terms of the GNU General Public License
 %

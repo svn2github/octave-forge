@@ -1,6 +1,7 @@
 /*
  * Test code for sparse matrix multiplicaton algorthms:
- * Licenced under the GPL (C) Andy Adler (2005)
+ * Licenced under the GPL 
+ * Copyright (C) 2005 Andy Adler
  * $Id$
  */
 
@@ -254,6 +255,9 @@ DEFUN_DLD (spabsv, args, nargout , "spabsv text")
 
 /*
  * $Log$
+ * Revision 1.3  2005/05/25 03:43:42  pkienzle
+ * Author/Copyright consistency
+ *
  * Revision 1.2  2005/03/26 19:26:34  aadler
  * test suite
  *

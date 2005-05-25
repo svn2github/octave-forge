@@ -1,5 +1,9 @@
 ## c = cellstr(s)
 ## Convert a character matrix into a cell array of strings.
+
+## Author: Paul Kienzle
+## This program is public domain.
+
 function c = cellstr(s)
   if nargin != 1 || !isstr(s)
     usage ("c = cellstr(s)");

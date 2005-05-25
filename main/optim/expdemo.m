@@ -1,3 +1,7 @@
+## An example of expfit in action
+
+## Author: Paul Kienzle
+## This program is public domain
 x0 = 1.5; step = 0.05; xend = 5;
 a = [1.3, 2]'
 c = [2, -0.5]'

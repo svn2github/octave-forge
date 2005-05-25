@@ -180,13 +180,15 @@ sub classify_files { # {{{1
                   \s*copyright          #  Copyright
                   \s*(\(c\))?           #  (c)    - optional           $1
                   \s*(\d[,\- 0-9]+)     #  Year (or years)             $2
-                  \s+(.*)?              #  name                        $3
+                  \s+([^<]+)?           #  name                        $3
                   \s*(<.*>)?            #  email  - optional           $4
                   \s*$/ix) {
                 $found_copyright = 1;
                 $found_author    = 1;
                 my $year  = $2;
                 my $name  = $3;
+	           $name  =~ s/^\s+//; # strip spaces
+	           $name  =~ s/\s+$//;
                    $name  = "John W. Eaton" if $name eq "jwe";
                    $name  =~ s/\.\s*$//; # strip trailing period
                 my $email = "" || $4;
@@ -200,10 +202,12 @@ sub classify_files { # {{{1
             } elsif (
                 /^\s*[#%\/\*]*            # one or more leading comment markers
                     \s*author\s*:?        #  Author    
-                    \s+([a-z].*)          #  name                        $1
+                    \s+([a-z][^<]*)     #  name                        $1
                     \s*(<.*>)?            #  email  - optional           $2
                     \s*$/ix) {
                 my $name  = $1;
+	           $name  =~ s/^\s+//; # strip spaces
+	           $name  =~ s/\s+$//;
                    $name  =~ s/\.\s*$//; # strip trailing period
                    $name  = "John W. Eaton" if $name eq "jwe";
                 my $email = "" || $2;

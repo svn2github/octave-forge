@@ -1,5 +1,4 @@
-# Copyright (C) 2005  Michael Creel michael.creel@uab.es
-# under the terms of the GNU General Public License.
+# Copyright (C) 2005  Michael Creel <michael.creel@uab.es>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

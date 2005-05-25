@@ -25,14 +25,11 @@ function [x,e,Kalman,Q2] = mvaar(y,p,UC,mode,Kalman)
 %		x			state vector of dimension s*s*p
 %		Q2			measurement noise covariance matrix of dimension s x s
 %
-%  
-%
 
 % Copyright (C) 2001-2002 Christian Kasess  
 %       $Revision$ 
 %       $Id$
 % Modifications (C) 2003 Alois Schloegl <a.schloegl@ieee.org>
-%
 %	docu improved
 %	check for isnan(ERR) included
 %	code straightened

@@ -15,7 +15,7 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 % R	residual
 % P	poles
 % ip	number of complex conjugate poles
-% real(F)     	total power 
+% real(F)     	power, absolute values are obtained by multiplying with noise variance E(p+1) 
 % imag(F)	assymetry, - " -
 %
 % All input and output parameters are organized in rows, one row 
@@ -31,6 +31,10 @@ function  [w,A,B,R,P,F,ip] = ar_spa(ARP,nhz,E);
 %	$Revision$
 % 	$Id$
 %	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>
+%	This is part of the TSA-toolbox see also: 
+% 	   http://www.dpmi.tu-graz.ac.at/schloegl/matlab/tsa/
+%	   http://octave.sf.net/
+
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -77,24 +81,19 @@ for k = 1:NTR, %if ~mod(k,100),k, end;
         elseif 1;
 	        a3 = polyval([-ARP(k,pp-1:-1:1).*(1:pp-1), pp],1./p(idx).');
 	        a  = polyval([-ARP(k,pp:-1:1) 1],p(idx).');
-		%F(k,:) = (1+(imag(P(k,:))~=0))./(a.*a3); 
-		%F((w<0) | (w>pi)) = NaN;
-		
-		F(k,:) = (1+sign(imag(P(k,:))))./(a.*a3); 
-		
-		%F(k,:) = 1./(a.*a3); 
+		F(k,:) = (1+(imag(P(k,:))~=0))./(a.*a3); 
         end;	
 end;
 
+A = A.*sqrt(E(:,ones(1,pp)));
 if nargin>1,
-        if size(nhz,1)==1, 
+        if size(nhz,1)==1,
                 nhz = nhz(ones(NTR,1),:);
         end;
         w = w.*nhz(:,ones(1,pp))/(2*pi);
         B = B.*nhz(:,ones(1,pp))/(2*pi);
 end;
 if nargin>2,
-	A = A.*sqrt(E(:,ones(1,pp)));
         F = F.*E(:,ones(1,pp));
 end;
 

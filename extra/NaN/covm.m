@@ -28,10 +28,12 @@ function [CC,NN] = covm(X,Y,Mode);
 % [C,N] = covm(...);
 %	C is not scaled, provides the scaling factor N  
 %	C./N gives the scaled version. 
+%
+% see also: DECOVM, XCOVF
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2005 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -78,7 +80,7 @@ else
 end;
 
 if (c1>r1) | (c2>r2),
-        warning('Covariance is ill-defined, because of too less observations (rows)');
+        warning('Covariance is ill-defined, because of too few observations (rows)');
 end;
 
 if ~isempty(Y),
@@ -116,13 +118,13 @@ if ~isempty(Y),
 else        
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
         	tmp = real(~isnan(X));
-                NN  = tmp'*tmp; 
-                X(isnan(X)) = 0; % skip NaN's
+		NN  = tmp'*tmp;
+		X(isnan(X)) = 0; % skip NaN's
 	        CC = X'*X;
         else  % if any(Mode=='D') | any(Mode=='E'), 
 	        [S,N] = sumskipnan(X,1);
         	tmp = real(~isnan(X));
-                NN  = tmp'*tmp; 
+                NN  = tmp'*tmp;
                 if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);
                         if any(Mode=='1'),  %  'D1'

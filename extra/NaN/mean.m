@@ -43,9 +43,10 @@ function [y]=mean(x,DIM,opt)
 
 
 % original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-
-%	Version 1.23;	07 Jun 2002
-%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Id$
+%	Copyright (C) 2000-2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%    	This is part of the NaN-toolbox. For more details see
+%    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
 

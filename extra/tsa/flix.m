@@ -10,15 +10,36 @@ function Y=flix(D,x)
 % (2)  transformation of non-equidistant samples to equidistant samples
 % (3)  [Q]=flix(sort(D),q*(length(D)+1)) calculates the q-quantile of data series D   
 %
-% see also: HIST2RES, Y2RES, PLOTCDF
+% FLIX(D,x) is the same as INTERP1(D,X,'linear'); Therefore, FLIX might
+% become obsolete in future. 
+%
+% see also: HIST2RES, Y2RES, PLOTCDF, INTERP1
 
-%	Version 2.99  	9 May 2002
-%	Copyright (C) by 2001-2002 Alois Schloegl <a.schloegl@ieee.org>	
+
+%    This program is free software; you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation; either version 2 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program; if not, write to the Free Software
+%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+%	$Id$
+%	Copyright (C) by 2001-2005 Alois Schloegl <a.schloegl@ieee.org>	
+%	This is part of the TSA-toolbox see also: 
+% 	   http://www.dpmi.tu-graz.ac.at/schloegl/matlab/tsa/
+%	   http://octave.sf.net/
 
 D  = D(:);
 Y  = x;
 
-k1 = ((x >= 1) & (x <= size(D,1)));
+k1 = ((x >= 1) & (x <= size(D,1)));	
 Y(~k1) = NaN;
 
 k  = x - floor(x);	% distance to next sample	 

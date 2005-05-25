@@ -11,9 +11,10 @@ function [C,N,c] = conv2nan(X,Y,arg3);
 %    This function is part of the NaN-toolbox
 %    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 %
+
 %	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2005 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -34,14 +35,14 @@ if nargin~=2,
         fprintf(2,'Error CONV2NAN: incorrect number of input arguments\n');
 end;
 
-m = ~isnan(X);
-n = ~isnan(Y);
+m = isnan(X);
+n = isnan(Y);
 
-X(~m) = 0;
-Y(~n) = 0;
+X(m) = 0;
+Y(n) = 0;
 
 C = conv2(X,Y);         % 2-dim convolution
-N = conv2(real(m),real(n));     % normalization term
+N = conv2(real(~m),real(~n));     % normalization term
 c = conv2(ones(size(X)),ones(size(Y))); % correction of normalization
 
 if nargout==1,

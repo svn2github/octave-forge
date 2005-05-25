@@ -18,7 +18,7 @@
 ##
 ## See also : vrml_browse.
 ##
-## Author  : Etienne Grossmann   <etienne@isr.ist.utl.pt>
+## Author  : Etienne Grossmann <etienne@cs.uky.edu>
 function p = vrml_kill ()
 
 global vrml_b_pid = 0;

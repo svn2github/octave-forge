@@ -30,7 +30,7 @@
 ## --------
 ## s      : string   : vrml representation of an arrow (a rod and a cone)
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 
 function v = vrml_arrow (sz, col, emit)
 

@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ##       v = vrml_transfo(s,t,r,c,d)
 ##  
@@ -24,7 +23,7 @@
 ##     rotation, translation and scale params given by r, t and c.
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002
 
 function v = vrml_transfo(s,t,r,c,DEF)

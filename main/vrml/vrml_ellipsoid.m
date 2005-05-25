@@ -20,7 +20,7 @@
 ## col    : 3   : Color                        default : [0.3 0.4 0.9]
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002
 
 function v = vrml_ellipsoid(moment, col)

@@ -63,7 +63,7 @@
 ##
 ## See also: vrml_surf(), vmesh()
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 function s = vrml_faces (x,f,varargin)
 
   ## mytic; starttime = cputime();

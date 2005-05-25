@@ -37,6 +37,8 @@
 ## @end deftypefn
 ## @seealso{setfield,getfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 
+## Author: Etienne Grossmann <etienne@cs.uky.edu>
+
 ## $Id$
 
 function v= getfield( obj, varargin )

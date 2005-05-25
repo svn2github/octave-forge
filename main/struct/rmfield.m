@@ -25,7 +25,7 @@
 ## catstruct and struct. 
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: January 2000
 ## November 2000: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##     return error rather than trapping to keyboard

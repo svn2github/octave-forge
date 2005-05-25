@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ##       [cv,wx] = best_dir_cov(x,a,sx,wd)
 ## 
@@ -24,7 +23,7 @@
 ## wx (W+D)x(P*D) : derivatives of ML estimate wrt to observations
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002
 
 function  [cv,wx] = best_dir_cov(x,a,sx,wd)

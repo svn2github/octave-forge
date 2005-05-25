@@ -14,7 +14,7 @@
 ## v = vrml_group (s1, s2 ... ) - Form a group node with children s1,...
 ## 
 ##
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002
 
 function v = vrml_group ( varargin )

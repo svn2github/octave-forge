@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ##       errors = test_struct
 ##
@@ -24,7 +23,7 @@
 ## test counts are displayed at the end of the script (if it is reached).
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## $Id$
 
 1 ;

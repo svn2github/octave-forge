@@ -1,3 +1,6 @@
+// Author: Paul Kienzle
+// This program is public domain
+
 #include <octave/oct.h>
 #include <octave/oct-map.h>
 #if !defined(HAVE_OCTAVE_MAP_INDEX) && !defined(_Pix_h)

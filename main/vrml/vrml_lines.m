@@ -26,7 +26,7 @@
 ## "col" , col  : 3x1 : Color, default = [1,0,0]
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002
 
 

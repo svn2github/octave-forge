@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ##       s = vrml_thick_surf (x, y, z [, options] )
 ##       s = vrml_thick_surf (z [, options] )
@@ -42,7 +41,7 @@
 ##                                                              default = 0
 ## "smooth"           : same as "creaseAngle",pi.
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002
 
 

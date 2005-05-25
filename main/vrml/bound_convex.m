@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ## y = bound_convex(d,h,x,pad=0) 
 ##
@@ -17,7 +16,7 @@
 ##            in the plane d*y == v. The corners are sorted.
 ##
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 
 function y = bound_convex(d,h,x,pad) 
 

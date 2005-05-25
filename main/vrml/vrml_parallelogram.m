@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ## s = vrml_parallelogram (x,...)
 ##
@@ -31,6 +30,9 @@
 ## bcol,  c : 3   :
 ## bemit, e : 1   :
 ## brad,  r : 1   :
+
+## Author: Etienne Grossmann <etienne@cs.uky.edu>
+
 function s = vrml_parallelogram (x, varargin)
 
 col = [0.3,0.4,0.9];

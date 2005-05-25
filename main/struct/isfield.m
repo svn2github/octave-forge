@@ -24,7 +24,7 @@
 ## See also struct_contains, cmpstruct, fields, setfield, rmfield, getfield,
 ## isstruct, struct. 
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: January 2000
 
 function y = isfield(x,k)

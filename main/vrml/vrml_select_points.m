@@ -9,7 +9,6 @@
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-##
 
 ## s = vrml_select_points (x, state) - vrml code for selecting 3D points
 ##
@@ -24,7 +23,7 @@
 ## 
 ## See  select_3D_points()  for complete 3D point selection interface.
 
-## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author : Etienne Grossmann <etienne@cs.uky.edu>
 function s = vrml_select_points (x, state, sphere)
 
 P = columns (x);

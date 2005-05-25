@@ -22,7 +22,7 @@
 ## @end deftypefn
 ## @seealso{setfields,rmfield,isfield,isstruct,fields,cmpstruct,struct}
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: January 2003
 
 function [varargout] = getfields(s,varargin)

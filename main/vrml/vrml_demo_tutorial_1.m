@@ -11,7 +11,7 @@
 ## for more details.
 ##
 
-## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author : Etienne Grossmann <etienne@cs.uky.edu>
 
 printf (["\n",\
 	 "    VRML Mini-HOWTO's first listing\n",\

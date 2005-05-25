@@ -23,7 +23,7 @@
 ## sel2  : P      : 0-1 matrix or list of selected points    (default)
 ##      or Q2       List of selected points
 
-## Author  : Etienne Grossmann <etienne@isr.ist.utl.pt>
+## Author  : Etienne Grossmann <etienne@cs.uky.edu>
 
 function sel2 = select_3D_points (x, sel1, varargin)
 

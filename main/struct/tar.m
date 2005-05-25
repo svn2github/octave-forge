@@ -5,7 +5,7 @@
 ##
 ## See also : untar
 
-## Author:        Etienne Grossmann  <etienne@isr.ist.utl.pt>
+## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: October 2000
 
 function s = tar(varargin)

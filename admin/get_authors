@@ -127,7 +127,7 @@ foreach my $f (sort @short_files) {
 my $Auth_file = "AUTHORS";
 open(OUT, ">$Auth_file") or die "Cannot write $Auth_file:  $!\n";
 printf "%3d authors:\n", scalar keys %files;
-foreach my $n (sort by_last_name keys %files) {
+foreach my $n (sort keys %files) {
     printf     "%-28s", $n;
     printf OUT "%-28s", $n;
     print     $email{$n} if defined $email{$n};
@@ -145,11 +145,11 @@ warn "Wrote ${PATH}${Auth_file}\n";
 
 # # # # # # # 
 
-sub by_last_name { # {{{1 for sorting on names
-    (my $A = $a) =~ s/.*?(\w+)$/$1/;
-    (my $B = $b) =~ s/.*?(\w+)$/$1/;
-    return lc($A) cmp lc($B);
-} # 1}}}
+#sub by_last_name { # {{{1 for sorting on names
+#    (my $A = $a) =~ s/.*?(\w+)$/$1/;
+#    (my $B = $b) =~ s/.*?(\w+)$/$1/;
+#    return lc($A) cmp lc($B);
+#} # 1}}}
 
 # # # # # # # 
 
@@ -180,15 +180,13 @@ sub classify_files { # {{{1
                   \s*copyright          #  Copyright
                   \s*(\(c\))?           #  (c)    - optional           $1
                   \s*(\d[,\- 0-9]+)     #  Year (or years)             $2
-                  \s+([^<]+)?           #  name                        $3
+                  \s+(\w.*?)            #  name                        $3
                   \s*(<.*>)?            #  email  - optional           $4
                   \s*$/ix) {
                 $found_copyright = 1;
                 $found_author    = 1;
                 my $year  = $2;
                 my $name  = $3;
-	           $name  =~ s/^\s+//; # strip spaces
-	           $name  =~ s/\s+$//;
                    $name  = "John W. Eaton" if $name eq "jwe";
                    $name  =~ s/\.\s*$//; # strip trailing period
                 my $email = "" || $4;
@@ -202,12 +200,10 @@ sub classify_files { # {{{1
             } elsif (
                 /^\s*[#%\/\*]*            # one or more leading comment markers
                     \s*author\s*:?        #  Author    
-                    \s+([a-z][^<]*)     #  name                        $1
+                    \s+(\w.*?)            #  name                        $1
                     \s*(<.*>)?            #  email  - optional           $2
                     \s*$/ix) {
                 my $name  = $1;
-	           $name  =~ s/^\s+//; # strip spaces
-	           $name  =~ s/\s+$//;
                    $name  =~ s/\.\s*$//; # strip trailing period
                    $name  = "John W. Eaton" if $name eq "jwe";
                 my $email = "" || $2;

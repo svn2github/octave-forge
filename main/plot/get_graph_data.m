@@ -22,7 +22,7 @@
 
 ## This program is in the public domain
 ## Author: Andy Adler <adler@ncf.ca>
-
+ 
 function [x,y]= get_graph_data( xaxis, yaxis )
 
 if nargin<2

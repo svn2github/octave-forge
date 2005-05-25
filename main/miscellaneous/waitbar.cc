@@ -1,7 +1,7 @@
 /**************************************************************************
  *  Waitbar function -- displays progress of lengthy calculations
  *  -------------------------------------------------------------
- *  Copyright (c) 2002  Quentin Spencer (qspencer@ieee.org)
+ *  Copyright (c) 2002  Quentin Spencer <qspencer@ieee.org>
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public

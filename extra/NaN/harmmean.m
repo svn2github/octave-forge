@@ -34,11 +34,9 @@ function [y] = harmmean(x,DIM)
 
 
 % original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-% Copyright (c) 2001 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %	Version 1.23;	07 Jun 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>
 
 
 

@@ -32,8 +32,7 @@ function [y] = geomean(x,DIM)
 
 
 %	Version 1.23;	07 Jun 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>
 
 
 if nargin<2

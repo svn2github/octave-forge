@@ -44,8 +44,8 @@ function [X,T]=detrend(t,X,p)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-% Copyright (C) 1995, 1996  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-% Copyright (c) 2001 by Alois Schloegl <a.schloegl@ieee.org>	
+% Copyright (C) 1995, 1996 Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+% Copyright (C) 2001 by Alois Schloegl <a.schloegl@ieee.org>	
 % last revision 04 Mar 2002, Ver 1.13
 
 

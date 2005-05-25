@@ -31,7 +31,7 @@ function [y]=median(x,DIM)
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 % check dimension of x
 sz=size(x);

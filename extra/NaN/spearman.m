@@ -18,7 +18,7 @@ function r = spearman(x,y)
 % [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
 %    Version 1.27  Date: 12 Aug 2002
-%    Copyright (C) 2000-2002 by  Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

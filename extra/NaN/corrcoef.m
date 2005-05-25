@@ -75,7 +75,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 
 %       $Revision$
 %       $Id$
-%       Copyright (C) 2000-2004 by  Alois Schloegl <a.schloegl@ieee.org>	
+%       Copyright (C) 2000-2004 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

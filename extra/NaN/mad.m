@@ -40,8 +40,7 @@ function R = mad(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 %	Version 1.23;	07 Jun 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>
 	
 
 if nargin==1,

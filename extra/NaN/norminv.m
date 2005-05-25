@@ -15,7 +15,7 @@ function x = norminv(p,m,s);
 %	$Revision$
 %	$Id$
 %	Version 1.28   Date: 13 Mar 2003
-%	Copyright (c) 2000-2003 by  Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

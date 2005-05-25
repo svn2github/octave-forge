@@ -35,7 +35,7 @@ function y=var(x,opt,DIM)
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by  Alois Schloegl  <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>
 
 if nargin>1,
         if ~isempty(opt) & opt~=0, 

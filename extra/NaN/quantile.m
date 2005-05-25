@@ -37,7 +37,7 @@ function Q=quantile(Y,q)
 %	end;	
 
 %	$Id$
-%	Copyright (c) 1996-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

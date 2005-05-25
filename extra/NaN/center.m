@@ -35,8 +35,7 @@ function [i,S] = center(i,DIM)
 
 %	$Revision$
 %	$Id$
-%	Copyright (c) 2000-2003 by  Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>
 	
 
 if nargin==1,

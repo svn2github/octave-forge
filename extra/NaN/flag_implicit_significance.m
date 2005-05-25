@@ -43,7 +43,7 @@ function DIM=flag_implicit_significance(i)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 %	Version 2.99;	24 Aug 2002
-%	Copyright (c) 2000-2002 by  Alois Schloegl   <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 global FLAG_implicit_significance;
 DEFAULT_ALPHA = 0.01;

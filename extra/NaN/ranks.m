@@ -23,7 +23,7 @@ function r = ranks(X,Mode);
 
 
 %    $Id$
-%    Copyright (C) 2000-2002,2005 by  Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2002,2005 by Alois Schloegl <a.schloegl@ieee.org>	
 %    This script is part of the NaN-toolbox
 %    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

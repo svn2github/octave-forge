@@ -27,7 +27,7 @@
 
 %	$Revision$
 %	$Id$
-%	Copyright (c) 2000-2004 by  Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2004 by Alois Schloegl <a.schloegl@ieee.org>
 %       This script is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

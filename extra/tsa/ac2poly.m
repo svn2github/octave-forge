@@ -6,8 +6,7 @@ function [A,E] = ac2poly(acf);
 % 
 
 %	Version 2.91
-%	Copyright (C) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

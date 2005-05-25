@@ -26,7 +26,7 @@ function [ACF,NN] = acovf(Z,KMAX,Mode,Mode2);
 
 %	$Revision$
 %	$Id$
-%	Copyright (c) 1998-2003 by Alois Schloegl <a.schloegl@ieee.org>		
+%	Copyright (C) 1998-2003 by Alois Schloegl <a.schloegl@ieee.org>		
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

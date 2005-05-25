@@ -40,7 +40,7 @@ function [z,e,REV,ESU,V,Z,SPUR] = aarmam(y, Mode, MOP, UC, z0, Z0, V0, W);
 %     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
 
 %       Version 2.99     07 Aug 2002
-%       Copyright (c) 1998-2002 by  Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>
 %
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

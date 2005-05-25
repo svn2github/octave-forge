@@ -29,8 +29,7 @@ function b=ucp(c)
 
 % Version 2.62
 % 07.04.1999
-% Copyright © 1996-1999 by Alois Schloegl
-% a.schloegl@ieee.org
+% Copyright (C) 1996-1999 by Alois Schloegl <a.schloegl@ieee.org>
 %
 
 [lr,lc] = size(c);

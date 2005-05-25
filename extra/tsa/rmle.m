@@ -17,7 +17,7 @@ function [a,VAR,S,a_aux,b_aux,e_aux,MLE,pos] = rmle(arg1,arg2);
                 
 %	Version 0.1
 %	16 Ago 2004
-%	Copyright (c) 2004 by  Jose Luis Gutierrez (jlg@gmx.at)
+%	Copyright (C) 2004 by  Jose Luis Gutierrez (jlg@gmx.at)
 %	Grupo GENESIS - UTN - Argentina
 
 % This library is free software; you can redistribute it and/or

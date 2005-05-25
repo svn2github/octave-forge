@@ -37,8 +37,7 @@
 
 %	Version 2.90
 %	last revision 06.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>
 %
 % .changelog TSA-toolbox
 %  06.04.02 LATTICE.M	V2.90 

@@ -16,7 +16,7 @@ function [w, MAR, C, sbc, fpe, th]=arfit2(Y, pmin, pmax, selector, no_const)
 
 %       $Revision$
 %       $Id$
-%	Copyright (C) 1996-2004 by Alois Schloegl  <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2004 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %%%%% checking of the input arguments was done the same way as ARFIT
 if (pmin ~= round(pmin) | pmax ~= round(pmax))

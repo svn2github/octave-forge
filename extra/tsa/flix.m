@@ -13,7 +13,7 @@ function Y=flix(D,x)
 % see also: HIST2RES, Y2RES, PLOTCDF
 
 %	Version 2.99  	9 May 2002
-%	Copyright (C) by 2001-2002 Alois Schloegl    <a.schloegl@ieee.org>	
+%	Copyright (C) by 2001-2002 Alois Schloegl <a.schloegl@ieee.org>	
 
 D  = D(:);
 Y  = x;

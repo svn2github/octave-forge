@@ -21,7 +21,7 @@ function [IR, CC, D] = adim(U, UC, IR, CC, arg5);
 
 %       $Revision$ 
 %       $Id$
-%       Copyright (c) 1998-2003 by  Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2003 by Alois Schloegl <a.schloegl@ieee.org>
 %
 
 %

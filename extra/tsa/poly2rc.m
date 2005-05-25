@@ -16,8 +16,7 @@ function [RC,r0] = poly2rc(a,efinal);
 % 
 
 %	Version 2.91
-%	Copyright (c) 1996-2001 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (C) 1996-2001 by Alois Schloegl <a.schloegl@ieee.org>
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

@@ -46,7 +46,7 @@ function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, 
 %
 %	$Revision$
 %	$Id$
-%       Copyright (c) 1998-2003 by  Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2003 by Alois Schloegl <a.schloegl@ieee.org>
 %
 
 %

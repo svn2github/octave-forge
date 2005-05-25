@@ -40,7 +40,7 @@ function [AutoCov,AutoCorr,ARPMX,E,C,s]=invest1(Y,Pmax,D);
 % optRC2        max reflection coefficient larger than std-error
 
 %       Version 2.99        23.05.2002
-%	Copyright (c) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>		
+%	Copyright (C) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>		
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

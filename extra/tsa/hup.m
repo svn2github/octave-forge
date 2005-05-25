@@ -1,4 +1,4 @@
-function b=hup(c)
+function b=hup(C)
 %HUP(C)	tests if the polynomial C is a Hurwitz-Polynomial.
 %	It tests if all roots lie in the left half of the complex
 %	plane 
@@ -32,8 +32,7 @@ function b=hup(c)
 
 %	Version 2.43                               
 %	23.April 1998
-%	Copyright (c) 1995-1998 by Alois Schloegl
-%	a.schloegl@ieee.org	
+%	Copyright (c) 1995-1998 by Alois Schloegl <a.schloegl@ieee.org>
 
 [lr,lc] = size(c);
 

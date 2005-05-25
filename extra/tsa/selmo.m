@@ -42,8 +42,7 @@ function [FPE,AIC,BIC,SBC,MDL,CATcrit,PHI,optFPE,optAIC,optBIC,optSBC,optMDL,opt
 
 %	Version 2.99b
 %	last revision 01.10.2002
-%	Copyright (c) 1997-2002 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (C) 1997-2002 by Alois Schloegl <a.schloegl@ieee.org>
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

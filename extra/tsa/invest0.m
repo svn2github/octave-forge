@@ -22,7 +22,7 @@ function [AutoCov,AutoCorr,MX,E,NC]=invest0(Y,Pmax,Mode);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	Copyright (c) 1998-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1998-2003 by Alois Schloegl <a.schloegl@ieee.org>	
 %	$Revision$
 %	$Id$
 

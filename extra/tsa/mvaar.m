@@ -28,7 +28,7 @@ function [x,e,Kalman,Q2] = mvaar(y,p,UC,mode,Kalman)
 %  
 %
 
-% (C) 2001-2002 Christian Kasess  
+% Copyright (C) 2001-2002 Christian Kasess  
 %       $Revision$ 
 %       $Id$
 % Modifications (C) 2003 Alois Schloegl <a.schloegl@ieee.org>
@@ -77,7 +77,7 @@ end;
 
 
 [M,LEN] = size(y');		%number of channels, total signal length
-L = M*M*p;
+L = M*M*p;
 
 if LEN<(p+1),
         fprintf(2,'Not enough observed data supplied for given model order\n');
@@ -98,7 +98,7 @@ end
 if nargin<5,
         %Kalman Filter initialsiation (Kp (K predicted or a-priori) equals K(n+1,n) )
         Kalman=struct('F',eye(L),'H',zeros(M,L),'G',zeros(L,M),'x',zeros(L,1),'Kp',eye(L),'Q1',eye(L)*UC,'Q2',eye(M),'ye',zeros(M,1));
-        end;
+        end;
 
 upd = eye(L)/L*UC;		%diagonal matrix containing UC
 

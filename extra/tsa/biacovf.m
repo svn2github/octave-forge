@@ -9,8 +9,7 @@ function [BIACF,ACF,M1] = biacovf(Z,N);
 
 %	Version 2.30
 %	last revision 21.03.1998
-%	Copyright (c) 1997, 1998 by Alois Schloegl
-%	e-mail: a.schloegl@ieee.org	
+%	Copyright (C) 1997, 1998 by Alois Schloegl <a.schloegl@ieee.org>
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

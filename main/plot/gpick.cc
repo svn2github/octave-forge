@@ -6,7 +6,7 @@
  * appropriate licences. The rest is mine, and
  * you can do what you want with that part.
  * 
- * Copyright (C) 1997 Andy Adler <adlera@ncf.ca>
+ * Copyright (C) 1997 Andy Adler <adler@ncf.ca>
  * 
  * Compile like this
  * mkoctfile -L/usr/X11R6/lib -lX11 -I/usr/X11R6/include/ gpick.cc 

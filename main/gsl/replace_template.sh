@@ -1,8 +1,5 @@
 #!/bin/sh
 
-csplit -f tmp_gsl $1 /DEFUN/ /GSL_FUNC_DOCSTRING/ /./ > /dev/null
-cat tmp_gsl01 | sed "s/GSL_OCTAVE_NAME/$octave_name/g"
-cat docstring.txt | sed 's/\\/\\\\/g' | sed 's/$/\\n\\/g' 
-cat tmp_gsl03 | sed "s/GSL_OCTAVE_NAME/$octave_name/g" | sed "s/GSL_FUNC_NAME/$funcname/g" 
-
-rm -f tmp_gsl* docstring.txt
+sed -e 's/\\/\\\\/g;s/$/\\n\\/g' < docstring.txt > docstring2.txt
+sed -e "s/GSL_OCTAVE_NAME/$octave_name/g;s/GSL_FUNC_NAME/$funcname/g;/GSL_FUNC_DOCSTRING/r docstring2.txt" -e "/GSL_FUNC_DOCSTRING/d" $1
+rm -f docstring.txt docstring2.txt

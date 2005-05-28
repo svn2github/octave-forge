@@ -25,7 +25,7 @@ endif
 $(PROGS): Makefile
 
 gsl_sf.cc: $(SF_BUILDSCRIPT)
-	/bin/sh $(SF_BUILDSCRIPT) $(GSL_MISSING)
+	${SHELL} $(SF_BUILDSCRIPT) $(GSL_MISSING)
 
 $(SF_LINKS):
 	-$(RM) -f $@

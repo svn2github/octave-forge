@@ -87,6 +87,6 @@ subdirs: $(SUBMAKEDIRS)
 clearlog: ; @-$(RM) build.log build.fail
 $(SUBMAKEDIRS):
 	@echo Processing $@
-	@if cd $@ && ! $(MAKE) -k $(MAKECMDGOALS) 2>&1; then \
-	   echo "$@ not complete. See log for details" >>../build.fail ; \
-	fi | tee -a build.log
+	cd $@ && $(MAKE) -k $(MAKECMDGOALS) 2>&1 || \
+	   echo "$@ not complete. See log for details" >>../build.fail \
+	| tee -a build.log

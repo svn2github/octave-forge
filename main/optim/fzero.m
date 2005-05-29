@@ -117,7 +117,7 @@
 ## @end deftypefn
 ## @seealso{fsolve}
 
-function [Z, FZ, INFO] =fzero(Func,bracket,options)
+function [Z, FZ, INFO] =fzero(Func,bracket,options,varargin)
 
 	if (nargin < 2) 
 	  usage("[x, fx, info] = fzero(@fcn, [lo,hi]|start, options)"); 
@@ -170,8 +170,8 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options)
 
 	if (use_brent)
 
-		fa=feval(Func,a); fcount=fcount+1;
-		fb=feval(Func,b); fcount=fcount+1;
+		fa=feval(Func,a,varargin{:}); fcount=fcount+1;
+		fb=feval(Func,b,varargin{:}); fcount=fcount+1;
 
 		BOO=true;
 		tol=options.reltol*abs(b)+options.abstol;
@@ -304,7 +304,7 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options)
 
 				endif,
 
-				fb=feval(Func,b); fcount=fcount+1;
+				fb=feval(Func,b,varargin{:}); fcount=fcount+1;
 
 		 	 else
 				BOO=false;
@@ -348,13 +348,13 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options)
 			fprintf(stderr,"============================\n");
 		end
 		% check for zeros in APPROX
-		fb=feval(Func,b);
+		fb=feval(Func,b,varargin{:});
 		fcount=fcount+1;
 		tol_save = fsolve_options('tolerance');
 		fsolve_options("tolerance",options.abstol);
 		[Z, INFO, MSG] = fsolve(Func, b);
 		fsolve_options('tolerance',tol_save);
-		FZ = feval(Func,Z);
+		FZ = feval(Func,Z,varargin{:});
 		if options.prl > 0
 			fprintf(stderr,"\nfzero: summary\n");
 			fprintf(stderr,' %s.\n', MSG);
@@ -379,6 +379,11 @@ endfunction;
 %! options.abstol=0;
 %! options.reltol=eps;
 %! assert (abs(fzero(testfun,[0,3],options)), 1, -eps)
+%!test
+%! testfun=inline('(x-1)^3+y+z','x','y','z');
+%! options.abstol=0;
+%! options.reltol=eps;
+%! assert (fzero(testfun,[-3,0],options,22,5), -2, eps)
 %!test
 %! testfun=inline('x.^2-100','x');
 %! options.abstol=1e-4;

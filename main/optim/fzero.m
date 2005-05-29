@@ -370,15 +370,15 @@ endfunction;
 %!test 
 %! options.abstol=0.01;
 %! options.reltol=1e-3;
-%! assert (abs(fzero('tan',[-0.5,1.41],options)), 0, 0.01)
+%! assert (fzero('tan',[-0.5,1.41],options), 0, 0.01)
 %!test 
 %! options.abstol=1e-3;
-%! assert (abs(fzero('atan',[-(10^300),10^290],options)), 0, 1e-3)
+%! assert (fzero('atan',[-(10^300),10^290],options), 0, 1e-3)
 %!test
 %! testfun=inline('(x-1)^3','x');
 %! options.abstol=0;
 %! options.reltol=eps;
-%! assert (abs(fzero(testfun,[0,3],options)), 1, -eps)
+%! assert (fzero(testfun,[0,3],options), 1, -eps)
 %!test
 %! testfun=inline('(x-1)^3+y+z','x','y','z');
 %! options.abstol=0;
@@ -387,11 +387,11 @@ endfunction;
 %!test
 %! testfun=inline('x.^2-100','x');
 %! options.abstol=1e-4;
-%! assert (abs(fzero(testfun,[-9,300],options)),10,1e-4)
+%! assert (fzero(testfun,[-9,300],options),10,1e-4)
 %!##	`fsolve'
 %!test 
 %! options.abstol=0.01;
-%! assert (abs(fzero('tan',-0.5,options)), 0, 0.01)
+%! assert (fzero('tan',-0.5,options), 0, 0.01)
 %!test 
 %! options.abstol=0;
 %! assert (fzero('sin',[0.5,1],options), 0)

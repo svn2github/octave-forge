@@ -36,6 +36,10 @@
 ## `F(X) == 0'. Depending on APPROX, `fzero' uses different algorithms to solve
 ## the problem: either the Brent's method or the Powell's method of `fsolve'.
 ##
+## @deftypefnx {Function File} {} [X, FX, INFO] = fzero (FCN, APPROX, OPTIONS,P1,P2,...)
+##
+## Call FCN with FCN(X,P1,P2,...).
+##
 ## @table @asis
 ## @item INPUT ARGUMENTS
 ## @end table

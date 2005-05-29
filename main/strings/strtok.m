@@ -57,7 +57,7 @@ function [tok, rem] = strtok(str, delim)
       tok = str;
       rem = "";
     else
-      skip = find(idx != 1:length(idx)); # find first non-leading delimiter
+      skip = find(idx(:)' != 1:length(idx)); # find first non-leading delimiter
       if isempty(skip)
       	tok = str(idx(length(idx))+1:length(str));
       	rem = "";
@@ -120,3 +120,7 @@ endfunction
 %!assert(strtok(" this","jkl "), "this");
 %!assert(strtok(" this ","jkl "), "this");
 %!assert(strtok(" ","jkl "), ""(1:0));
+
+%!# test 'bad' string orientations
+%!assert(strtok(" this "'), "this"');   # delimiter at start and end
+%!assert(strtok(" this "',"jkl "), "this"');

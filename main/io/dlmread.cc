@@ -91,7 +91,7 @@ DEFUN_DLD (dlmread, args, ,
 @deftypefn {Loadable Function} {@var{data} =} dlmread (@var{file})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep},@var{R0},@var{C0})\n\
-@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep},@{range})\n\
+@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file},@var{sep},@var{range})\n\
 Read the matrix @var{data} from a text file\n\
 The @var{range} parameter must be a 4 element vector containing  the upper left and lower right corner\n\
 [@var{R0},@var{C0},@var{R1},@var{C1}]\n\

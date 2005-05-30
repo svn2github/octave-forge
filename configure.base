@@ -454,6 +454,8 @@ if [ test -n "$TEXI2HTML" ]; then
 		AC_MSG_RESULT(no)
 	fi
 	rm -f conftest.*
+        dnl TeTex 3.0 on Suse is leaving a conftest directory
+	rm -rf conftest
 fi
 
 dnl Test for the dvipdf program

@@ -161,7 +161,7 @@ Display
  PS1 PS2 PS4 fixed_point_format
 Error Handling
  crash_dumps_octave_core
- octave_core_file_format
+ octave_core_file_options
  octave_core_file_limit
  octave_core_file_name
  beep_on_error
@@ -186,6 +186,8 @@ Error Handling
  warn_str_to_num
  warn_neg_dim_as_zero
  warn_resize_on_range_error
+ warn_associativity_change
+ warn_string_concat
 Processing
  variables_can_hide_functions
  max_recursion_depth
@@ -194,7 +196,7 @@ Processing
  sighup_dumps_octave_core
  sigterm_dumps_octave_core
 File output
- default_save_format
+ default_save_options
  save_precision
  save_header_format_string
 Support programs
@@ -412,7 +414,7 @@ Generating matrices
  ones 
  eye 
  rand texas_lotto
- randn rande randp
+ randn rande randg randp
  linspace 
  logspace 
  randperm
@@ -503,7 +505,9 @@ Matrix factorization
  qrdelete 
  qrinsert 
  planerot 
- cholupdate 
+ cholupdate
+ chol2inv
+ cholinv 
  qrupdate 
  housh
  krylov
@@ -909,6 +913,12 @@ Import/Export
  imread imwrite
  hdf = use <f>load</f>/<f>save</f> with <code>-hdf5</code>
  aload/asave= flat ascii file read/write, available from <a href="ftp://ftp.ci.tuwien.ac.at/pub/octave/octave-ci.tar.gz">Octave-ci</a>
+
+optimization >> Optimization
+Linear programming
+ glpk
+ sqp
+ qp
 
 extra >> Extra packages
 Finance

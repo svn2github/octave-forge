@@ -20,15 +20,57 @@ Manipulate sparse matrices
  spones 
  spfun 
  spalloc 
- spparms 
+Graph Theory
+ etree
+ etreeplot
+ gplot
+ treelayout
+ treeplot
+Sparse matrix reordering
+ colamd
+ colperm
+ dmperm
+ randperm
+ symamd
+ symrcm
 Linear algebra
- spinv splu
+ cholinc
+ condest
+ eigs
+ normest
+ spdet
+ spinv 
+ splu
+ sprank
  svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
+Iterative techniques
+ bicg
+ bicgstab
+ cgs
+ cholinc
+ gmres
+ lsqr
+ luinc
+ minres
  pcg
  pcr
-Statistics
- spsum
+ qmr
+ symmlq
+Miscellaneous
+ spaugment
+ spparms 
+ symbfact
  spstats
- spabs
+ spprod
+ spcumprod
+ spcumsum
+ spsum
+ spsumsq
+ spmin
+ spmax
+ spatan2
+ spdiag
+Linear algebra
+ spinv splu
 Test
  fem_test sp_test

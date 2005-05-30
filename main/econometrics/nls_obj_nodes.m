@@ -18,7 +18,7 @@
 
 
 function contrib = nls_obj_nodes(theta, data, model, modelargs, nn)
-  global NEWORLD NSLAVES
+	global NEWORLD NSLAVES
 	# Who am I?
 	[info, rank] = MPI_Comm_rank(NEWORLD); 
 	
@@ -31,7 +31,7 @@ function contrib = nls_obj_nodes(theta, data, model, modelargs, nn)
 	endif	
 	
 	data = data(startblock:endblock,:);
-  contrib = feval(model, theta, data, modelargs);
+	contrib = feval(model, theta, data, modelargs);
 	contrib = sum(contrib);
 	
 endfunction

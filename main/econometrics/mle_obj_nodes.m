@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 function contrib = mle_obj_nodes(theta, data, model, modelargs, nn)
-  global NEWORLD NSLAVES
+	global NEWORLD NSLAVES
 	
 	# Who am I?
 	[info, rank] = MPI_Comm_rank(NEWORLD); 
@@ -28,7 +28,7 @@ function contrib = mle_obj_nodes(theta, data, model, modelargs, nn)
 	endif	
 
 	data = data(startblock:endblock,:);
-  contrib = feval(model, theta, data, modelargs);
+	contrib = feval(model, theta, data, modelargs);
 	contrib = sum(contrib);
 
 endfunction

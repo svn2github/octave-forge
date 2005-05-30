@@ -18,7 +18,7 @@
 
 function contrib = sum_moments_nodes(theta, data, moments, momentargs, nn)
 
-  global NEWORLD NSLAVES
+	global NEWORLD NSLAVES
 	
 	# Who am I?
 	[info, rank] = MPI_Comm_rank(NEWORLD); 
@@ -32,7 +32,7 @@ function contrib = sum_moments_nodes(theta, data, moments, momentargs, nn)
 	endif	
   
 	data = data(startblock:endblock,:);
-  contrib = feval(moments, theta, data, momentargs);
-  contrib = sum(contrib);
+	contrib = feval(moments, theta, data, momentargs);
+	contrib = sum(contrib);
 	
 endfunction

@@ -73,15 +73,8 @@ modelargs = {1}; # set the switch for no score
 [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control);
 
 # Example doing estimation in parallel on a cluster (requires MPITB)
-if exist("MPI_Init")
-
-printf("to do estimation in parallel, you need to have MPITB installed\n...
-and your computer must be lambooted. If this is not the case press...
-		 CRTL-C to abort. Pausing 10 seconds\n");
-	pause(10);	 
-	theta = zeros(3,1);
-	nslaves = 1;
-	title = "MLE estimation done in parallel";
-	[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control, nslaves);
-else printf("sorry, MPITB is not installed, can't do estimation in parallel\n");
-endif
+# uncomment the following if you have MPITB installed
+# theta = zeros(3,1);
+# nslaves = 1;
+# title = "MLE estimation done in parallel";
+# [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control, nslaves);

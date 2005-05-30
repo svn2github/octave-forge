@@ -20,30 +20,30 @@
 # average moments (separate function so it can be differentiated)
 function m = average_moments(theta, data, moments, momentargs)
 	
-  global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
+	global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
 
 	n = rows(data);
 
-  if PARALLEL
-    nn = floor(n/(NSLAVES + 1)); # save some work for master
+	if PARALLEL
+    		nn = floor(n/(NSLAVES + 1)); # save some work for master
     
 		#  The command that the slave nodes will execute
-    cmd=['contrib = sum_moments_nodes(theta, data, moments, momentargs, nn); ',...	
-         'MPI_Send(contrib,0,TAG,NEWORLD);'];	
+    		cmd=['contrib = sum_moments_nodes(theta, data, moments, momentargs, nn); ',...	
+         		'MPI_Send(contrib,0,TAG,NEWORLD);'];	
 
 		# send items to slaves
 		NumCmds_Send({"theta", "nn", "cmd"},{theta, nn, cmd});
 
 		# evaluate last block on master while slaves are busy
-   	m = feval("sum_moments_nodes", theta, data, moments, momentargs, nn);
+   		m = feval("sum_moments_nodes", theta, data, moments, momentargs, nn);
 
 		# collect slaves' results
 		contrib = zeros(1,columns(m));
-    for i = 1:NSLAVES
-	    MPI_Recv(contrib,i,TAG,NEWORLD);
+    		for i = 1:NSLAVES
+			MPI_Recv(contrib,i,TAG,NEWORLD);
 			m = m + contrib;
-    endfor
-    
+    		endfor
+
 		m = m'; # we want a column vector, please
 		m = m/n; # average please, not sum
 
@@ -51,6 +51,5 @@ function m = average_moments(theta, data, moments, momentargs)
 		m = feval(moments, theta, data, momentargs);
 		m = mean(m)';  # returns Gx1 moment vector
 	endif
-	
 	
 endfunction

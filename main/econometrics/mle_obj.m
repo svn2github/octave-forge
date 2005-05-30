@@ -26,41 +26,40 @@ function [obj_value, score] = mle_obj(theta, data, model, modelargs, nslaves)
 	
 	if nargin < 5 nslaves = 0; endif
 	if nslaves > 0
-	  global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
+		global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
 
 		nn = floor(n/(NSLAVES + 1)); # number of obsns per slave
 
 		# The command that the slave nodes will execute
-    cmd=['contrib = mle_obj_nodes(theta, data, model, modelargs, nn); ',...	
-         'MPI_Send(contrib,0,TAG,NEWORLD);'];	
+    		cmd=['contrib = mle_obj_nodes(theta, data, model, modelargs, nn); ',...	
+        		'MPI_Send(contrib,0,TAG,NEWORLD);'];	
 
 		# send items to slaves
 		NumCmds_Send({"theta", "nn", "cmd"}, {theta, nn, cmd});
 
 		# evaluate last block on master while slaves are busy
-  	obj_value = mle_obj_nodes(theta, data, model, modelargs, nn);
+  		obj_value = mle_obj_nodes(theta, data, model, modelargs, nn);
 
 		# collect slaves' results
 		contrib = 0.0; # must be initialized to use MPI_Recv
-  	for i = 1:NSLAVES
-	    MPI_Recv(contrib,i,TAG,NEWORLD);
+  		for i = 1:NSLAVES
+			MPI_Recv(contrib,i,TAG,NEWORLD);
 			obj_value = obj_value + contrib;
 		endfor
 
 		# compute the average
-  	obj_value = - obj_value / n;
-  	score = "na"; # fix this later to allow analytic score in parallel
+  		obj_value = - obj_value / n;
+  		score = "na"; # fix this later to allow analytic score in parallel
 		
-  else # serial version
-    [contribs, score] = feval(model, theta, data, modelargs);
+	else # serial version
+		[contribs, score] = feval(model, theta, data, modelargs);
 		obj_value = - mean(contribs);
-    if isnumeric(score) score = - mean(score)'; endif # model passes "na" when score not available
-  endif
-
+		if isnumeric(score) score = - mean(score)'; endif # model passes "na" when score not available
+	endif
 
 	# let's bullet-proof this in case the model goes nuts
-  if (((abs(obj_value) == Inf)) || (isnan(obj_value)))
-    obj_value = realmax/10;
-  endif	    
+	if (((abs(obj_value) == Inf)) || (isnan(obj_value)))
+		obj_value = realmax/10;
+	endif	    
 
 endfunction

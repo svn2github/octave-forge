@@ -21,10 +21,10 @@
   
 # sandwich form of var-cov matrix
 function [V,scorecontribs,J_inv] = mle_variance(theta, data, model, modelargs)
-  scorecontribs = numgradient(model, {theta, data, modelargs});
-  n = rows(scorecontribs);
-  I = scorecontribs'*scorecontribs / n;
-  J = numhessian("mle_obj", {theta, data, model, modelargs});
-  J_inv = inverse(J);
-  V = J_inv*I*J_inv/n;
+	scorecontribs = numgradient(model, {theta, data, modelargs});
+	n = rows(scorecontribs);
+	I = scorecontribs'*scorecontribs / n;
+	J = numhessian("mle_obj", {theta, data, model, modelargs});
+	J_inv = inverse(J);
+	V = J_inv*I*J_inv/n;
 endfunction

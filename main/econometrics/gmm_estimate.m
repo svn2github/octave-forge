@@ -18,22 +18,26 @@
 #           gmm_estimate(theta, data, weight, moments, momentargs, control, nslaves)
 #
 # inputs:
-# theta: column vector initial parameters
-# data: data matrix
-# weight: the GMM weight matrix
-# moments: name of function computes the moments (should return nXg matrix of contributions)
-# momentargs: (cell) additional inputs needed to compute moments. May be empty ("")
-# names: vector of parameter names, e.g., use names = str2mat("param1", "param2");
-# title: string, describes model estimated
-# unscale: (optional) cell that holds means and std. dev. of data (see scale_data) 
-# control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty (""). 
-# nslaves: (optional) number of slaves if executed in parallel (requires MPITB)
+#      theta: column vector initial parameters
+#       data: data matrix
+#     weight: the GMM weight matrix
+#    moments: name of function computes the moments
+#	      (should return nXg matrix of contributions)
+# momentargs: (cell) additional inputs needed to compute moments.
+# 	      May be empty ("")
+#    control: (optional) BFGS or SA controls (see bfgsmin and samin).
+#             May be empty (""). 
+#    nslaves: (optional) number of slaves if executed in parallel
+#             (requires MPITB)
 #
 # outputs:
 # theta: GMM estimate of parameters
 # obj_value: the value of the gmm obj. function
-# convergence: return code from bfgsmin (1 means success, see bfgsmin for details)
-# iters: number of BFGS iteration used 
+# convergence: return code from bfgsmin
+#              (1 means success, see bfgsmin for details)
+# iters: number of BFGS iteration used
+#
+# please type "gmm_example" while in octave to see an example
 
 # call the minimizing routine
 function [theta, obj_value, convergence, iters] = gmm_estimate(theta, data, weight, moments, momentargs, control, nslaves)
@@ -62,9 +66,9 @@ function [theta, obj_value, convergence, iters] = gmm_estimate(theta, data, weig
 	
 
 	if strcmp(method, "bfgs")
-	  [theta, obj_value, convergence, iters] = bfgsmin("gmm_obj", {theta, data, weight, moments, momentargs}, control);
+		[theta, obj_value, convergence, iters] = bfgsmin("gmm_obj", {theta, data, weight, moments, momentargs}, control);
 	elseif strcmp(method, "sa") 	
-	  [theta, obj_value, convergence] = samin("gmm_obj", {theta, data, weight, moments, momentargs}, control);
+	  	[theta, obj_value, convergence] = samin("gmm_obj", {theta, data, weight, moments, momentargs}, control);
 	endif	
 
 	if nslaves > 0 LAM_Finalize; endif # clean up		

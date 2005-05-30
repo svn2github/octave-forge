@@ -57,18 +57,9 @@ gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, c
 
 
 # Example doing estimation in parallel on a cluster (requires MPITB)
-if exist("MPI_Init")
-
-printf("to do estimation in parallel, you need to have MPITB installed\n...
-and your computer must be lambooted. If this is not the case press...
-		 CRTL-C to abort. Pausing 10 seconds\n");
-	pause(10);	 
-
-	nslaves = 1;
-	theta = zeros(k,1);
-	nslaves = 1;
-	title = "GMM estimation done in parallel";
-	gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, control, nslaves);
-
-else printf("sorry, MPITB is not installed, can't do estimation in parallel\n");
-endif
+# uncomment the following if you have MPITB installed
+# nslaves = 1;
+# theta = zeros(k,1);
+# nslaves = 1;
+# title = "GMM estimation done in parallel";
+# gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, control, nslaves);

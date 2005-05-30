@@ -18,24 +18,30 @@
 #  gmm_results(theta, data, weight, moments, momentargs, names, title, unscale, control, nslaves)
 #
 # inputs:
-# theta: column vector initial parameters
-# data: data matrix
-# weight: the GMM weight matrix
-# moments: name of function computes the moments (should return nXg matrix of contributions)
-# momentargs: (cell) additional inputs needed to compute moments. May be empty ("")
-# names: vector of parameter names, e.g., use names = str2mat("param1", "param2");
-# title: string, describes model estimated
-# unscale: (optional) cell that holds means and std. dev. of data (see scale_data) 
-# control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty (""). 
-# nslaves: (optional) number of slaves if executed in parallel (requires MPITB)
+#      theta: column vector initial parameters
+#       data: data matrix
+#     weight: the GMM weight matrix
+#    moments: name of function computes the moments
+#             (should return nXg matrix of contributions)
+# momentargs: (cell) additional inputs needed to compute moments.
+#             May be empty ("")
+#      names: vector of parameter names
+#             e.g., names = str2mat("param1", "param2");
+#      title: string, describes model estimated
+#    unscale: (optional) cell that holds means and std. dev. of data
+#             (see scale_data) 
+#    control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty (""). 
+#    nslaves: (optional) number of slaves if executed in parallel
+#             (requires MPITB)
 #
 # outputs:
 # theta: GMM estimated parameters
-# V: estimate of covariance of parameters. Assumes the weight matrix is optimal 
+# V: estimate of covariance of parameters. Assumes the weight matrix
+#    is optimal (inverse of covariance of moments)
 # obj_value: the value of the GMM objective function
 #
-# Please see gmm_example for information on how to use this
- 
+# please type "gmm_example" while in octave to see an example
+
 
 function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momentargs, names, title, unscale, control, nslaves)
 	

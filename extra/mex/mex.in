@@ -85,7 +85,7 @@ $name not directly documented. Try the following:\n\
 ")
 EOF
 else
-	@_AWK_@ 'BEGIN{print "\"\\";printing=0;} 
+	@AWK@ 'BEGIN{print "\"\\";printing=0;} 
 		/^[ \t]*[%#]/ {printing=1;
 		gsub(/^[ \t]*[%#]*/,""); 
 		gsub(/\\/,"\\\\"); 

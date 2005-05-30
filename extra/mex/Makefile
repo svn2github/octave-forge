@@ -25,7 +25,7 @@ $(MEXLIB): mex.cc mex.h matrix.h
 
 mex: mex.in
 	cat mex.in | sed -e "s:@MKOCTFILE@:$(MKOCTFILE):;s:@LIBPATH@:$(LIBPATH):g;s:@MEXLIB@:$(MEXLIB):g" \
-		-e 's;@_AWK_@;${AWK};g' > mex
+		-e 's;@AWK@;${AWK};g' > mex
 	chmod a+x mex
 
 install:

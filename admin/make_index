@@ -154,7 +154,9 @@ foreach my $f ( @C_files ) {
 	    # without actually compiling the code???
 	    while ($desc =~ /[^\\]\"\s*\S+\s*[^\\]\"/) {
 	      my $macro = $desc;
-	      $macro =~ s/^.*[^\\]\"\s*(\S+?)\s*[^\\]\".*$/$1/;
+	      # Deal with issues of multiple macros...
+	      # $macro =~ s/^.*[^\\]\"\s*(\S+?)\s*[^\\]\".*$/$1/;
+	      ($macro) =   ($macro =~ /[^\\]\"\s*(\S+?)\s*\".*$/);
 	      $macro =~ s/\n//;
 	      my $macro_defn;
 	      my $line;

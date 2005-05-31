@@ -27,7 +27,7 @@ function ACF=rc2ac(RC,R0)
 fprintf(2,'ERROR: RC2AC does not work yet. Sorry\n');
 return;
 
-if all(size(RC)>1,
+if all(size(RC)>1),
         fprintf(2,'Error RC2AC: "K" must be a vector\n');
         return;
 end;

@@ -53,7 +53,7 @@ function [rx, ry, rz] = griddata (x,y,z,xi,yi)
   zi=zeros(size(xi));
   
   if strcmp(method,'cubic')
-    error('griddata(...,\'cubic\') cubic interpolation not yet implemented\n')
+    error("griddata(...,'cubic') cubic interpolation not yet implemented\n")
 
   elseif strcmp(method,'nearest')
     ## search index of nearest point

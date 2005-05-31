@@ -11,7 +11,7 @@ function [ACF,NN] = acovf(Z,KMAX,Mode,Mode2);
 %	'unbiased': normalizes with N-lag
 %	'coeff'	  : normalizes such that lag 0 is 1	
 %        others	  : no normalization
-%
+%
 % Output:
 %  ACF autocovariance function
 %  NN  number of valid elements 

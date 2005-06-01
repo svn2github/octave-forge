@@ -126,18 +126,59 @@ foreach my $f ( @C_files ) {
 	    # remember function name
 	    my $function = $1;
 	    # print "  found function $function\n";
-	    # skip to next line if comment doesn't start on this line
-	    # XXX FIXME XXX maybe we want a loop here?
-	    $_ = <IN> unless /\"/;
-	    # skip to the beginning of the comment string by
-	    # chopping everything up to opening "
-	    my $desc = $_;
-            $desc =~ s/^[^\"]*\"//;
-	    # join lines until you get the end of the comment string
-	    # plus a bit more.  You need the "plus a bit more" because
-	    # C compilers allow implicitly concatenated string constants
-	    # "A" "B" ==> "AB".
-	    while ($desc !~ /[^\\]\"\s*[\,\)]/ && $desc !~ /^\"/) {
+
+	    # skip to second , to skip default string options of DEFVAR
+	    # comment if third or higher arg
+	    # XXX FIXME XXX What about if the string arg includes ,
+	    # XXX FIXME XXX What if second , is not on first line!!
+	    s/\(\w*\s*,.*?,//;
+
+	    # If we have nothing but a newline, skip
+	    $_ = <IN> if /\s*\n/;
+
+	    # if line contains \w+_DOC_STRING we have a macro for the
+	    # help text
+	    my $desc;
+	    if (/\w+_DOC_STRING/) {
+	      my $macro = $_;
+	      $macro =~ s/^.*?\s*(\w*_DOC_STRING).*$/$1/;
+	      $macro =~ s/\n//;
+
+	      my $line;
+	      if ( open(IN2, $f) ) {
+		while ($line = <IN2>) {
+		  next unless $line =~ /^\#\s*define\s+$macro\s+\"/;
+		  $desc = $line;
+		  $desc =~ s/^\#\s*define\s+$macro\s+\"(.*\n)$/$1/;
+		  while ($desc !~ /[^\\]\"/ && $desc !~ /^\"/) {
+		    $desc =~ s/\\\s*\n//;
+		    # join with the next line
+		    $desc .= <IN2>;
+		  }
+		  $desc = "" if $desc =~ /^\"/; # chop everything if it was ""
+		  $desc =~ s/\\n/\n/g;          # insert fake line ends
+		  $desc =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
+		  $desc =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
+		  last;
+		}
+		close (IN2);
+	      } else {
+		print STDERR "Could not open file ($f): $!\n";
+	      }
+	    } else {
+	      # skip to next line if comment doesn't start on this line
+	      # XXX FIXME XXX maybe we want a loop here?
+	      $_ = <IN> unless /\"/;
+	      # skip to the beginning of the comment string by
+	      # chopping everything up to opening "
+	      $desc = $_;
+	      $desc =~ s/^[^\"]*\"//;
+
+	      # join lines until you get the end of the comment string
+	      # plus a bit more.  You need the "plus a bit more" because
+	      # C compilers allow implicitly concatenated string constants
+	      # "A" "B" ==> "AB".
+	      while ($desc !~ /[^\\]\"\s*[\,\)]/ && $desc !~ /^\"/) {
 		# if line ends in '\', chop it and the following '\n'
 		$desc =~ s/\\\s*\n//;
 		# join with the next line
@@ -145,42 +186,43 @@ foreach my $f ( @C_files ) {
 		# eliminate consecutive quotes, being careful to ignore
 		# preceding slashes. XXX FIXME XXX what about \\" ?
 		$desc =~ s/([^\\])\"\s*\"/$1/;
-	    }
-	    $desc = "" if $desc =~ /^\"/; # chop everything if it was ""
-
-	    # Now check for text included in help messages as macros
-	    # XXX FIXME XXX These macros are often compile dependent, so
-	    # how to we get the correct version of the macro in this case
-	    # without actually compiling the code???
-	    while ($desc =~ /[^\\]\"\s*\S+\s*[^\\]\"/) {
-	      my $macro = $desc;
-	      # Deal with issues of multiple macros...
-	      # $macro =~ s/^.*[^\\]\"\s*(\S+?)\s*[^\\]\".*$/$1/;
-	      ($macro) =   ($macro =~ /[^\\]\"\s*(\S+?)\s*\".*$/);
-	      $macro =~ s/\n//;
-	      my $macro_defn;
-	      my $line;
-	      if ( open(IN2, $f) ) {
-		while ($line = <IN2>) {
-		  next unless $line =~ /^\#\s*define\s+$macro\s+\"/;
-		  $macro_defn = $line;
-		  $macro_defn =~ s/^\#\s*define\s+$macro\s+\"(.*)\n$/$1/;
-		  while ($macro_defn !~ /[^\\]\"/ && $macro_defn !~ /^\"/) {
-		    $macro_defn =~ s/\\\s*\n//;
-		    # join with the next line
-		    $macro_defn .= <IN2>;
-		  }
-		  $macro_defn = "" if $macro_defn =~ /^\"/; # chop everything if it was ""
-		  $macro_defn =~ s/\\n/\n/g;          # insert fake line ends
-		  $macro_defn =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
-		  $macro_defn =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
-		  last;
-		}
-		close (IN2);
-	      } else {
-		print STDERR "Could not open file ($f): $!\n";
 	      }
-	      $desc =~ s/\"\s*$macro\s*\"/$macro_defn/;
+	      $desc = "" if $desc =~ /^\"/; # chop everything if it was ""
+
+	      # Now check for text included in help messages as macros
+	      # XXX FIXME XXX These macros are often compile dependent, so
+	      # how to we get the correct version of the macro in this case
+	      # without actually compiling the code???
+	      while ($desc =~ /[^\\]\"\s*\S+\s*[^\\]\"/) {
+		my $macro = $desc;
+		# Deal with issues of multiple macros...
+		# $macro =~ s/^.*[^\\]\"\s*(\S+?)\s*[^\\]\".*$/$1/;
+		($macro) =   ($macro =~ /[^\\]\"\s*(\S+?)\s*\".*$/);
+		$macro =~ s/\n//;
+		my $macro_defn;
+		my $line;
+		if ( open(IN2, $f) ) {
+		  while ($line = <IN2>) {
+		    next unless $line =~ /^\#\s*define\s+$macro\s+\"/;
+		    $macro_defn = $line;
+		    $macro_defn =~ s/^\#\s*define\s+$macro\s+\"(.*)\n$/$1/;
+		    while ($macro_defn !~ /[^\\]\"/ && $macro_defn !~ /^\"/) {
+		      $macro_defn =~ s/\\\s*\n//;
+		      # join with the next line
+		      $macro_defn .= <IN2>;
+		    }
+		    $macro_defn = "" if $macro_defn =~ /^\"/; # chop everything if it was ""
+		    $macro_defn =~ s/\\n/\n/g;          # insert fake line ends
+		    $macro_defn =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
+		    $macro_defn =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
+		    last;
+		  }
+		  close (IN2);
+		} else {
+		  print STDERR "Could not open file ($f): $!\n";
+		}
+		$desc =~ s/\"\s*$macro\s*\"/$macro_defn/;
+	      }
 	    }
 
 	    $desc =~ s/\\n/\n/g;          # insert fake line ends
@@ -252,8 +294,16 @@ foreach my $TB ( toolbox_list()) {
 	    # do nothing
 	  } else {
 	    print "help $func\n";
-	    # XXX FIXME XXX clipping below is good for ops/keywords only
-	    my $start = index($body,"$func") + 1 + length($func);
+
+	    my $start;
+	    if ($body =~ /^\n\*\*\*/) {
+	      # clipping assuming ops/keywords only
+	      $start = index($body,"$func") + 1 + length($func);
+	    } else {
+	      # first lines till \n\n will be octave tell us the type
+	      # of variable/funtion and where it is found
+	      $start = index($body,"\n\n") + 2;
+	    }
 	    my $stop = index($body,"ans =");
 	    $body = substr($body,$start,$stop-$start);
 	    register_function($func,$body,$OCTAVE,0);
@@ -358,6 +408,7 @@ sub first_sentence { # {{{1
 	    return "" if ($#lines < 0);
 	    $line = shift @lines;
 	    next if $line =~ /^\s*[Uu][Ss][Aa][Gg][Ee]/; # skip " usage "
+	    next if $line =~ /^\s*-/;           # skip " -- blah"
 
 	    $line =~ s/^\s*\w+\s*://;             # chop " blah : "
 	    print "strip blah: $line\n" if $trace;

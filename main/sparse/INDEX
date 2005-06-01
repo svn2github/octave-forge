@@ -34,7 +34,6 @@ Sparse matrix reordering
  symamd
  symrcm
 Linear algebra
- cholinc
  condest
  eigs
  normest
@@ -70,7 +69,5 @@ Miscellaneous
  spmax
  spatan2
  spdiag
-Linear algebra
- spinv splu
 Test
  fem_test sp_test

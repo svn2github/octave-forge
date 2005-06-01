@@ -14,8 +14,24 @@ function [R]=y2res(Y)
 % [1] http://www.itl.nist.gov/
 % [2] http://mathworld.wolfram.com/
 
-%	Version 2.99b
-%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Id$
+%	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>
+%    	This is part of the TSA-toolbox 
+%	http://www.dpmi.tugraz.at/~schloegl/matlab/tsa/
+
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 2
+% of the  License, or (at your option) any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 [R.SUM, R.N, R.SSQ] = sumskipnan(Y,1);
@@ -51,11 +67,13 @@ Q0500=repmat(nan,1,size(Y,2));
 Q0250=Q0500;
 Q0750=Q0500;
 %MODE=Q0500;
-for k=1:size(Y,2),
+for k = 1:size(Y,2),
         tmp = sort(Y(:,k));
         Q0250(k) = flix(tmp,R.N(k)/4   + 0.75);
         Q0500(k) = flix(tmp,R.N(k)/2   + 0.50);
         Q0750(k) = flix(tmp,R.N(k)*3/4 + 0.25);
+        tmp = diff(tmp);
+        R.QUANT(k) = min(tmp(find(tmp))); 
 end;
 R.MEDIAN 	= Q0500;
 R.Quartiles   	= [Q0250; Q0750];

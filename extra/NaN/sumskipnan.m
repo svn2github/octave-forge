@@ -1,4 +1,4 @@
-function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
+function [o,count,SSQ,S4M] = sumskipnan4(i,DIM)
 % SUMSKIPNAN adds all non-NaN values. 
 %
 % All NaN's are skipped; NaN's are considered as missing values. 
@@ -49,11 +49,10 @@ function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-%	$Revision$
 %	$Id$
-%    Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
-
-
+%    	Copyright (C) 2000-2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 if nargin<2,
         DIM = [];
@@ -79,18 +78,36 @@ if isempty(DIM),
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM = 1; end;
 end;
+
+FLAG = (length(size(i))<3); 
+if FLAG, FLAG = DIM; end; 
+
 if nargout>1,
-        count = sum(~isnan(i),DIM); 
+        if FLAG~=2,
+                count = sum(i==i,DIM); 
+        else
+                count = real(i==i)*ones(size(i,2),1);
+        end;
 end;
 
 %if flag_implicit_skip_nan, %%% skip always NaN's
-i(isnan(i)) = 0;
+i(i~=i) = 0;
 %end;
-o = sum(i,DIM);
+
+if FLAG~=2,
+        o = sum(i,DIM);
+else
+        o = i*ones(size(i,2),1);
+end;
+
 if nargout>2,
         i = real(i).^2 + imag(i).^2;
-        SSQ = sum(i,DIM);
+        if FLAG~=2,
+                SSQ = sum(i,DIM);
+        else
+                SSQ = i*ones(size(i,2),1);
+        end;
         if nargout>3,
-                S4M = sum(i.^2,DIM);
+                S4M = sumskipnan(i.^2,DIM);
         end;
 end;

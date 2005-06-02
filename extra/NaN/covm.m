@@ -31,9 +31,10 @@ function [CC,NN] = covm(X,Y,Mode);
 %
 % see also: DECOVM, XCOVF
 
-%	$Revision$
 %	$Id$
 %	Copyright (C) 2000-2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -85,15 +86,15 @@ end;
 
 if ~isempty(Y),
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	NN = real(~isnan(X)')*real(~isnan(Y));
-	        X(isnan(X)) = 0; % skip NaN's
-	        Y(isnan(Y)) = 0; % skip NaN's
+        	NN = real(X==X)'*real(Y==Y);
+	        X(X~=X) = 0; % skip NaN's
+	        Y(Y~=Y) = 0; % skip NaN's
         	CC = X'*Y;
         else  % if any(Mode=='D') | any(Mode=='E'), 
 	        [S1,N1] = sumskipnan(X,1);
                 [S2,N2] = sumskipnan(Y,1);
                 
-                NN = real(~isnan(X)')*real(~isnan(Y));
+                NN = real(X==X)'*real(Y==Y);
         
 	        if any(Mode=='D'), % detrending mode
         		X  = X - ones(r1,1)*(S1./N1);
@@ -105,8 +106,8 @@ if ~isempty(Y),
                         end;
                 end;
                 
-                X(isnan(X)) = 0; % skip NaN's
-        	Y(isnan(Y)) = 0; % skip NaN's
+                X(X~=X) = 0; % skip NaN's
+        	Y(Y~=Y) = 0; % skip NaN's
                 CC = X'*Y;
                 
                 if any(Mode=='E'), % extended mode
@@ -117,13 +118,13 @@ if ~isempty(Y),
         
 else        
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	tmp = real(~isnan(X));
+        	tmp = real(X==X);
 		NN  = tmp'*tmp;
-		X(isnan(X)) = 0; % skip NaN's
+		X(X~=X) = 0; % skip NaN's
 	        CC = X'*X;
         else  % if any(Mode=='D') | any(Mode=='E'), 
 	        [S,N] = sumskipnan(X,1);
-        	tmp = real(~isnan(X));
+        	tmp = real(X==X);
                 NN  = tmp'*tmp;
                 if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);
@@ -134,7 +135,7 @@ else
                         end;
                 end;
                 
-                X(isnan(X)) = 0; % skip NaN's
+                X(X~=X) = 0; % skip NaN's
                 CC = X'*X;
                 
                 if any(Mode=='E'), % extended mode

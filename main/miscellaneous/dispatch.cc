@@ -315,8 +315,8 @@ some other function for the given type signature.")
 }
 
 // octave_function* builtin_help = NULL;
-DEFUN_DLD(dispatch_help, args, nargout, "\
-Delayed loading of help messages for dispatched functions.")
+DEFUN_DLD(dispatch_help, args, nargout,
+"Delayed loading of help messages for dispatched functions.")
 {
   octave_value_list retval;
   int nargin = args.length();

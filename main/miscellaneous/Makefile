@@ -6,8 +6,10 @@ endif
 
 DISPATCH_LINK=dispatch_help.oct builtin.oct
 t2.1.58=inline.m
-DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58)))
-TARGETS=dispatch.oct $(DISPATCH_LINK) waitbar.oct listen.oct xmlread.oct \
+t2.9.0=dispatch.oct $(DISPATCH_LINK)
+DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58))) \
+	$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.0)))
+TARGETS=waitbar.oct listen.oct xmlread.oct \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct \
 	$(DEPRECIATED_TARGETS)
 

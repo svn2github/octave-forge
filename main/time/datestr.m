@@ -27,7 +27,7 @@
 ## @item  4 @tab m                      @tab S 
 ## @item  5 @tab mm                     @tab 9
 ## @item  6 @tab mm/dd                  @tab 09/07 
-## @item  7 @tab dd                     @tab 7 
+## @item  7 @tab dd                     @tab 07 
 ## @item  8 @tab ddd                    @tab Thu 
 ## @item  9 @tab d                      @tab T 
 ## @item 10 @tab yyyy                   @tab 2000 
@@ -128,7 +128,7 @@ function retval = datestr(date,code,P)
       case { 6, 'mm/dd' } 
 	str = sprintf("%02d/%02d",M,D);
       case { 7, 'dd' } 
-	str = sprintf("%d",D);
+	str = sprintf("%02d",D);
       case { 8, 'ddd' } 
 	[d,str] = weekday(datenum(Y,M,D));
       case { 9, 'd' } 

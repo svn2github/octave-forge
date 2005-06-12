@@ -49,6 +49,7 @@ function ret = addpath(varargin)
     path = LOADPATH;
   end
 
+  dir = '';
   if length(varargin) > 0
     append = 0;
     switch varargin{end}
@@ -63,10 +64,9 @@ function ret = addpath(varargin)
     path = rmpath(path, varargin{:});
 
     ## Check if the directories are valid
-    dir = '';
     for arg = 1:length(varargin)
       p = varargin{arg};
-      if nargout == 0
+      if nargout == 0 && !isempty(p)
         [s,err,m] = stat(p);
         if (err ~= 0)
 	  warning("addpath %s : %s\n",p,m);
@@ -81,16 +81,13 @@ function ret = addpath(varargin)
 	  continue;
         end
       end
-      if isempty(dir) 
-        dir=p;
-      else 
-	dir = [dir, ':', p]; 
-      end
+      dir = [dir, ':', p]; 
     end
       
     ## Add the directories to the current path
     if !isempty(dir)
-      if isempty(path)
+      dir = dir(2:end);
+      if isempty(path) && !isempty(dir)
         path = dir;
       else
         if strcmp(path,':'), path = ''; end
@@ -118,3 +115,10 @@ function ret = addpath(varargin)
 %!assert(addpath('hello','world','-end'),'hello:world')
 %!assert(addpath('hello:','world','-end'),'hello::world')
 %!assert(addpath('hello:','hello','world','-end'),':hello:world')
+
+%!assert(addpath('',''),':')
+%!assert(addpath(':',''),':')
+%!assert(addpath('hello',''),':hello')
+%!assert(addpath('hello:world',''),':hello:world')
+%!assert(addpath('hello:world:',''),':hello:world')
+%!assert(addpath('hello::world',''),':hello:world')

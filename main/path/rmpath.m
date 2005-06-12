@@ -14,52 +14,103 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##       rmpath(dir1,...)
+## rmpath(dir1,...)
 ##
-## Removes dir1,... from the current LOADPATH.
+##   Removes dir1,... from the current LOADPATH.
 ## 
+## newpath = rmpath(path, dir1, ...)
+## 
+##   Removes dir1,... from path.
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
-## Last modified: January 2000
+## Last modified: June 2005
 
-function rmpath(varargin)
+##PKGADD: mark_as_command('rmpath')
 
-  for arg=1:length(varargin)
-    p = nth (varargin, arg) ;
-    lp = length(p) 
-    printf("removing %s\n",p);
-				# Nothing like perl for strings!
-    np = LOADPATH ;
+function ret = rmpath(varargin)
+
+  if nargout == 0,
+    path = LOADPATH ;
+  else
+    path = varargin{1};
+  endif
+
+  ##printf('initial path=<%s>\n',path);
+  strip_system_path = 0;
+  for arg=nargout+1:length(varargin)
+    p = varargin{arg};
+    lp = length(p);
+
+    ## '' is the system path
+    if lp==0, strip_system_path = 1; end
+
+    ## strip '...:p:...' -> '...:...'
     lo = 0 ;
-    while lo != length(np),	# Loop while I can substitute
-      lo = length(np) ;
-      np = strrep(np,[":",p,":"],":") ;
+    while lo != length(path),	# Loop while I can substitute
+      lo = length(path) ;
+      path = strrep(path,[":",p,":"],":") ;
     end
-    if length(np)>=lp,
 
-				# Check at beginning
-      f = index(np,p) ;
-      if f == 1 ,
-	printf("rmpath : removing from beginning\n") ;
-	if length(np) == lp , 
-	      np = "" ;
-	elseif length(np) > lp && strcmp( np(lp+1),":" ) ,	
-	  np = np(lp+2:length(np)) ;
-	end
-      end
-				# Check at end
-      f = rindex(np,p) ;
-      if f == length(np)-lp+1 && length(np)-lp>0 && \
-	    strcmp(np(length(np)-lp),":") ,
-	printf("rmpath : removing from end\n") ;
-	np = np(1:length(np)-lp-1) ;
-      end
+    ## strip 'p:...' and '...:p' -> '...'
+    if length(path) > lp+1 && strcmp(path(1:lp+1),[p,':'])
+      path = path(lp+2:end);
     end
+    if length(path) > lp+1 && strcmp(path(end-lp:end),[':',p])
+      path = path(1:end-lp-1);
+    end
+
+    ## strip 'p:' and ':p' -> ':'
+    if length(path) == lp+1 && (strcmp(path,[p,':']) || strcmp(path,[':',p]))
+      path = ':';
+    end
+
+    ## strip 'p' -> ''
+    if length(path) == lp && strcmp(path,p)
+      path = '';
+    end
+
+    ##printf('strip <%s> path=<%s>\n',p,path);
   end
-  ## LOADPATH
-  ## np
-  ## keyboard
-  if !strcmp(LOADPATH,np),
-    printf("rmpath : loadpath is changed\n") ;
-    LOADPATH = np 
+
+  if strip_system_path && strcmp(path,':'), path = ''; end
+
+  if nargout > 0
+    ret = path;
+  elseif !strcmp(LOADPATH,path),
+    # printf("rmpath : loadpath is changed\n") ;
+    LOADPATH = path;
   end
+
+%!assert(rmpath(':',''),'');
+%!assert(rmpath('hello:',''),'hello');
+%!assert(rmpath('hello:world',''),'hello:world');
+%!assert(rmpath(':hello:world',''),'hello:world');
+%!assert(rmpath(':hello:world:',''),'hello:world');
+%!assert(rmpath(':hello::world:',''),'hello:world');
+
+%!assert(rmpath('hello','hello'),'');
+%!assert(rmpath(':hello','hello'),':');
+%!assert(rmpath('hello:','hello'),':');
+%!assert(rmpath('hello:hello','hello'),'');
+%!assert(rmpath('hello:hello:hello','hello'),'');
+%!assert(rmpath('hello:hello:hello:hello','hello'),'');
+%!assert(rmpath(':hello:hello','hello'),':');
+%!assert(rmpath('hello:hello:','hello'),':');
+%!assert(rmpath('hello','world'),'hello');
+%!assert(rmpath(':hello','','hello'),'');
+%!assert(rmpath(':hello','hello',''),'');
+
+%!assert(rmpath('hello:world','hello','world'),'');
+%!assert(rmpath('hello:world:','hello','world'),':');
+%!assert(rmpath(':hello:world:','hello','world'),':');
+
+%!assert(rmpath('hello:world','','hello','world'),'');
+%!assert(rmpath('hello:world:','','hello','world'),'');
+%!assert(rmpath(':hello:world:','','hello','world'),'');
+
+%!assert(rmpath('hello:world','hello'),'world');
+%!assert(rmpath('hello:world','world'),'hello');
+%!assert(rmpath('hello:world:','hello'),'world:');
+%!assert(rmpath('hello:world:','world'),'hello:');
+%!assert(rmpath(':hello:world:','hello'),':world:');
+%!assert(rmpath(':hello:world:','world'),':hello:');

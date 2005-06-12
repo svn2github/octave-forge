@@ -63,29 +63,33 @@ function ret = addpath(varargin)
     path = rmpath(path, varargin{:});
 
     ## Check if the directories are valid
-    if nargout == 0
-      for arg = 1:length(varargin)
+    dir = '';
+    for arg = 1:length(varargin)
+      p = varargin{arg};
+      if nargout == 0
         [s,err,m] = stat(p);
         if (err ~= 0)
-	  error("addpath %s : %s\n",p,m);
+	  warning("addpath %s : %s\n",p,m);
+	  continue;
         elseif (index(s.modestr,"d") != 1)
-	  error("addpath %s : not a directory (mode=%s)\n",p, s.modestr);
+	  warning("addpath %s : not a directory (mode=%s)\n",p, s.modestr);
+	  continue;
         elseif !((s.modestr(8) == 'r') || ...
 	       ((getgid == s.gid) && (s.modestr(5) == 'r')) || ...
 	       ((getuid == s.uid) && (s.modestr(2) == 'r')))
-	  error("addpath %s : not readable (mode=%s)\n", p,s.modestr);
+	  warning("addpath %s : not readable (mode=%s)\n", p,s.modestr);
+	  continue;
         end
+      end
+      if isempty(dir) 
+        dir=p;
+      else 
+	dir = [dir, ':', p]; 
       end
     end
       
-    ## Join the directories together
-    if length(varargin) > 0
-      dir = varargin{1};
-      for arg = 2:length(varargin)
-        dir = [dir, ':', varargin{arg}];
-      end
-
-      ## Add the directories to the current path
+    ## Add the directories to the current path
+    if !isempty(dir)
       if isempty(path)
         path = dir;
       else

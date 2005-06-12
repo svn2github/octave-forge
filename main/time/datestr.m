@@ -25,7 +25,7 @@
 ## @item  2 @tab mm/dd/yy               @tab 09/07/00 
 ## @item  3 @tab mmm                    @tab Sep 
 ## @item  4 @tab m                      @tab S 
-## @item  5 @tab mm                     @tab 9
+## @item  5 @tab mm                     @tab 09
 ## @item  6 @tab mm/dd                  @tab 09/07 
 ## @item  7 @tab dd                     @tab 07 
 ## @item  8 @tab ddd                    @tab Thu 
@@ -124,7 +124,7 @@ function retval = datestr(date,code,P)
       case { 4, 'm' }
 	str = sprintf("%s",__month_names(M,1));
       case { 5, 'mm' } 
-	str = sprintf("%d",M);
+	str = sprintf("%02d",M);
       case { 6, 'mm/dd' } 
 	str = sprintf("%02d/%02d",M,D);
       case { 7, 'dd' } 

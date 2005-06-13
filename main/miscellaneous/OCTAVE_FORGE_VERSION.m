@@ -1,4 +1,4 @@
 ## OCTAVE_FORGE_VERSION The release date of octave-forge, as integer YYYYMMDD
 function v=OCTAVE_FORGE_VERSION
-  v=20041116;
+  v=20050613;
 endfunction

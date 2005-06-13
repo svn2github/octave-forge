@@ -1,4 +1,1086 @@
 # Automatically generated file --- DO NOT EDIT
+2005-06-13 02:02  pkienzle
+
+	* RELEASE-NOTES: Add missing functions 
+
+2005-06-13 01:46  pkienzle
+
+	* main/signal/sgolay.m: Slightly looser error bars on test 
+
+2005-06-13 01:39  pkienzle
+
+	* extra/NaN/sumskipnan.m: Make internal name consistent with
+	external name.  
+
+2005-06-12 23:08  pkienzle
+
+	* main/plot/dxfwrite.m: [for Larry Doolittle] AutoCAD 2002 support 
+
+2005-06-12 21:00  pkienzle
+
+	* main/image/: bwarea.m, imresize.m: [for Soren Hauberg] new image
+	manipulation functions 
+
+2005-06-12 20:14  pkienzle
+
+	* main/signal/fir2.m: Add support for very narrow bands.  
+
+2005-06-12 19:36  pkienzle
+
+	* main/signal/fir2.m: Improve handling of rapid transitions 
+
+2005-06-12 18:27  pkienzle
+
+	* main/path/addpath.m: Interpret empty string as system path 
+
+2005-06-12 16:29  pkienzle
+
+	* main/path/savepath.m: [for Bill Denney] save the current path to
+	~/.octaverc 
+
+2005-06-12 15:37  pkienzle
+
+	* main/path/addpath.m: Change directory errors to warnings so that
+	partial work is done.  
+
+2005-06-12 15:19  pkienzle
+
+	* main/path/addpath.m: compatibility change (-begin/-end only as
+	last parameter); bug fixes; add tests; move instead of duplicate
+	existing path entries 
+
+2005-06-12 15:17  pkienzle
+
+	* main/path/rmpath.m: Fix bugs and add tests 
+
+2005-06-12 10:35  pkienzle
+
+	* main/time/datestr.m: [for Keith Goodman] compatibility now
+	requires leading zero on format 'mm' 
+
+2005-06-10 04:55  adb014
+
+	* main/miscellaneous/: Makefile, dispatch.m, dispatch.m.in: Only
+	built dispatch for non 2.9.x versions of octave 
+
+2005-06-09 20:09  pkienzle
+
+	* main/time/datestr.m: [for Keith Goodman] use two digits for "dd"
+	format.  
+
+2005-06-05 00:25  adb014
+
+	* main/miscellaneous/dispatch.cc: trivial dispatch change to aid
+	indexing 
+
+2005-06-02 11:07  schloegl
+
+	* extra/NaN/sumskipnan.m: for performance reasons: replace SUM(X)
+	by X*ones, replace ISNAN(X) by X~=X 
+
+2005-06-02 11:06  schloegl
+
+	* extra/NaN/covm.m: for performance reasons replace ISNAN(X) by
+	X~=X 
+
+2005-06-01 16:55  adb014
+
+	* admin/make_index: allow help as only a macro. ignore first lines
+	when calling octave help 
+
+2005-06-01 16:36  adb014
+
+	* main/sparse/INDEX: remove recently added duplicates from INDEX 
+
+2005-06-01 13:21  schloegl
+
+	* extra/tsa/histo4.m: fix conflicts; octave supports now INT-types 
+
+2005-06-01 13:20  schloegl
+
+	* extra/tsa/y2res.m: fix conflicts, add Quantization 
+
+2005-05-31 10:30  qspencer
+
+	* extra/tsa/aarmam.m, extra/tsa/acorf.m, extra/tsa/acovf.m,
+	extra/tsa/bispec.m, extra/tsa/histo4.m, extra/tsa/mvfreqz.m,
+	extra/tsa/rmle.m, extra/tsa/y2res.m, main/image/dilate.m,
+	main/image/erode.m, main/plot/peaks.m, main/signal/butter.m,
+	main/signal/cheby1.m, main/signal/cheby2.m, main/signal/ellip.m,
+	main/strings/str2double.m: Converted several files from DOS
+	end-of-line to UNIX-style (using the dos2unix utility). These files
+	were inconsistent with the line encoding used throughout the rest of
+	octave-forge.  
+
+2005-05-30 23:06  adb014
+
+	* main/statistics/mad.m: Typo 
+
+2005-05-30 23:04  adb014
+
+	* main/geometry/griddata.m: fix for single/double quote issues 
+
+2005-05-30 23:01  adb014
+
+	* extra/tsa/rc2ac.m: Typo 
+
+2005-05-30 22:55  adb014
+
+	* main/audio/wavread.m: fix for single/double quote issues 
+
+2005-05-30 22:53  adb014
+
+	* extra/mex/myfeval.m: better fix for single/double quote issues 
+
+2005-05-30 22:50  adb014
+
+	* extra/mex/myfeval.m: Typo 
+
+2005-05-30 15:33  pkienzle
+
+	* main/signal/grpdelay.m: [for Julius Smith] complete rewrite 
+
+2005-05-30 11:18  mcreel
+
+	* main/optim/bfgsmin.cc: cleanup tabbing 
+
+2005-05-30 11:16  mcreel
+
+	* main/econometrics/: average_moments.m, gmm_estimate.m,
+	gmm_example.m, gmm_results.m, mle_example.m, mle_obj.m,
+	mle_obj_nodes.m, mle_results.m, mle_variance.m, nls_obj.m,
+	nls_obj_nodes.m, sum_moments_nodes.m: cleanups and documentation 
+
+2005-05-30 10:49  adb014
+
+	* main/: INDEX, sparse/INDEX: Add missing functions to INDEX 
+
+2005-05-30 10:49  adb014
+
+	* admin/make_index: fix to allow make_index to work with multiple
+	macos in help 
+
+2005-05-30 09:04  adb014
+
+	* main/statistics/anovan.m: Fix texinfo help of anova function 
+
+2005-05-30 05:17  adb014
+
+	* main/io/dlmread.cc: typo in dlmread.cc help prevented texinfo
+	working 
+
+2005-05-30 01:26  pkienzle
+
+	* main/strings/: Makefile, configure.add: Try pcre-config if pcre.h
+	is not available.  
+
+2005-05-29 20:22  pkienzle
+
+	* extra/mex/: Makefile, mex.in: Use more traditional @AWK@
+	substitution rather than @_AWK_@ 
+
+2005-05-29 20:20  pkienzle
+
+	* configure.base: Attempt to work around Tetex 3.0 problem on Suse.  
+
+2005-05-29 12:48  pkienzle
+
+	* main/strings/strtok.m: bug compatibility: make sure strtok works
+	on column strings as well.  
+
+2005-05-29 12:00  pkienzle
+
+	* main/optim/fzero.m: Document extended arguments 
+
+2005-05-29 11:41  pkienzle
+
+	* main/optim/fzero.m: Remove spurious abs() from asserts 
+
+2005-05-29 11:40  pkienzle
+
+	* main/optim/fzero.m: [for Ben Barrowes] accept extra arguments for
+	objective function 
+
+2005-05-28 16:23  pkienzle
+
+	* main/image/pngread.cc: Reverse order of png.h and octave/oct.h
+	even though it shouldn't matter.  
+
+2005-05-28 15:22  pkienzle
+
+	* Makeconf.base, main/gsl/Makefile: [for Dan McMahill] don't assume
+	/bin/sh 
+
+2005-05-28 12:22  pkienzle
+
+	* Makefile: [for Dan McMahill] remove some non-portable shell
+	constructs 
+
+2005-05-28 12:12  pkienzle
+
+	* main/sparse/Makefile: [for Adam Ciarcinski] don't hard code the
+	name of the shell.  
+
+2005-05-28 12:08  pkienzle
+
+	* FIXES/randmtzig.c: [for Dan McMahill] <sys/types.h> is more
+	portable than <stdint.h> 
+
+2005-05-28 11:39  pkienzle
+
+	* main/gsl/replace_template.sh: Eliminate csplit dependency 
+
+2005-05-27 04:36  adb014
+
+	* FIXES/test/testsort.m: Add copyright to testsort.m 
+
+2005-05-25 23:45  aadler
+
+	* main/: plot/gpick.cc, plot/grab.cc, statistics/anovan.m: correct
+	contact info 
+
+2005-05-25 19:42  pkienzle
+
+	* main/symbolic/probably_prime.cc: Use correct comment character
+	for C++ 
+
+2005-05-25 09:42  pkienzle
+
+	* extra/graceplot/alternatives/print.m, extra/tsa/rmle.m,
+	main/audio/wavread.m, main/audio/wavwrite.m, main/image/imrotate.m,
+	main/linear-algebra/GramSchmidt.cc, main/miscellaneous/waitbar.cc,
+	main/parallel/getid.m, main/parallel/scloseall.m,
+	main/parallel/server.m, main/plot/get_graph_data.m,
+	main/signal/__ellip_ws.m, main/signal/__ellip_ws_min.m,
+	main/signal/ellipord.m, main/signal/ncauer.m, main/signal/remez.cc: 
+	More author/copyright consistency changes 
+
+2005-05-25 09:26  pkienzle
+
+	* admin/get_authors: Use more compact regular expressions 
+
+2005-05-25 09:04  pkienzle
+
+	* main/econometrics/: average_moments.m, delta_method.m,
+	gmm_estimate.m, gmm_example.m, gmm_obj.m, gmm_results.m,
+	gmm_variance.m, gmm_variance_inefficient.m, mle_estimate.m,
+	mle_example.m, mle_obj.m, mle_obj_nodes.m, mle_results.m,
+	mle_variance.m, nls_estimate.m, nls_obj.m, nls_obj_nodes.m,
+	parameterize.m, poisson.m, poisson_moments.m, prettyprint.m,
+	prettyprint_c.m, scale_data.m, sum_moments_nodes.m,
+	unscale_parameters.m: Consistent author/copyright notice 
+
+2005-05-25 09:02  schloegl
+
+	* extra/: NaN/mean.m, tsa/ar_spa.m, tsa/flix.m, tsa/mvaar.m,
+	NaN/conv2nan.m, NaN/covm.m: fix conflicts of repositories 
+
+2005-05-25 05:32  tpikonen
+
+	* extra/pdb/Makefile: Add Makefile to extra/pdb 
+
+2005-05-25 00:43  pkienzle
+
+	* admin/get_authors: Strip blanks before operating on extracted
+	name.  
+
+2005-05-24 23:43  pkienzle
+
+	* batch_test.m, interact_test.m, FIXES/test/fsolve_3.m,
+	admin/get_authors, extra/Windows/grab.cc,
+	extra/Windows/grab_win32part.cc, extra/graceplot/__grcmd__.cc,
+	extra/linear-algebra/ov-re-tri.cc, extra/soctcl/tclphoto.m,
+	extra/soctcl/tclsend.m, extra/ver20/fieldnames.m,
+	main/audio/aurecord.cc, main/audio/endpoint.cc,
+	main/audio/wavread.m, main/audio/wavwrite.m,
+	main/control/feedback.m, main/general/mark_for_deletion.cc,
+	main/general/quadl.m, main/geometry/tsearchdemo.m,
+	main/image/bwborder.m, main/image/bwlabel.m, main/image/imginfo.m,
+	main/image/imread.m, main/image/imwrite.m, main/io/dlmread.m,
+	main/io/textread.m, main/irsa/irsa_plotdft.m,
+	main/linear-algebra/rref.m, main/miscellaneous/grep.m,
+	main/miscellaneous/inz.m, main/miscellaneous/nze.m,
+	main/miscellaneous/rotparams.m, main/miscellaneous/rotv.m,
+	main/miscellaneous/slurp_file.m, main/optim/adsmax.m,
+	main/optim/cdiff.m, main/optim/d2_min.m, main/optim/expdemo.m,
+	main/optim/fzero.m, main/optim/lp_test.m, main/optim/mdsmax.m,
+	main/optim/nelder_mead_min.m, main/optim/nmsmax.m,
+	main/optim/test_d2_min_1.m, main/optim/test_d2_min_2.m,
+	main/optim/test_d2_min_3.m, main/optim/test_nelder_mead_min_1.m,
+	main/optim/test_nelder_mead_min_2.m, main/optim/test_wpolyfit.m,
+	main/optim/wpolyfitdemo.m, main/path/addpath.m, main/path/rmpath.m,
+	main/plot/gpick.cc, main/plot/grab.cc, main/signal/bilinear.m,
+	main/signal/butter.m, main/signal/cheby1.m, main/signal/dctmtx.m,
+	main/signal/ellip.m, main/signal/filter2.m,
+	main/signal/medfilt1.cc, main/signal/sftrans.m,
+	main/signal/sgolay.m, main/signal/sgolayfilt.m,
+	main/sparse/nonzeros.m, main/sparse/spfun.m, main/sparse/spones.m,
+	main/sparse/tests/sparse_mul.cc, main/specfun/ellipj.cc,
+	main/statistics/fullfact.m, main/statistics/princomp.m,
+	main/strings/cellstr.m, main/strings/strsort.m,
+	main/symbolic/splot.m: Author/Copyright consistency 
+
+2005-05-24 23:41  pkienzle
+
+	* main/: vrml/best_dir.m, vrml/best_dir_cov.m, vrml/bound_convex.m,
+	vrml/proplan.m, vrml/save_vrml.m, vrml/select_3D_points.m,
+	vrml/test_vmesh.m, vrml/test_vrml_faces.m, vrml/vmesh.m,
+	vrml/vrml_Background.m, vrml/vrml_PointLight.m, vrml/vrml_arrow.m,
+	vrml/vrml_browse.m, vrml/vrml_cyl.m, vrml/vrml_demo_tutorial_1.m,
+	vrml/vrml_demo_tutorial_2.m, vrml/vrml_demo_tutorial_3.m,
+	vrml/vrml_demo_tutorial_4.m, vrml/vrml_ellipsoid.m,
+	vrml/vrml_faces.m, vrml/vrml_flatten.m, vrml/vrml_frame.m,
+	vrml/vrml_group.m, vrml/vrml_kill.m, vrml/vrml_lines.m,
+	vrml/vrml_material.m, vrml/vrml_parallelogram.m,
+	vrml/vrml_points.m, vrml/vrml_select_points.m, vrml/vrml_surf.m,
+	vrml/vrml_text.m, vrml/vrml_thick_surf.m, vrml/vrml_transfo.m,
+	struct/getfield.m, struct/getfields.m, struct/isfield.m,
+	struct/rmfield.m, struct/setfield.m, struct/setfields.m,
+	struct/struct.cc, struct/struct.m, struct/tar.m,
+	struct/test_struct.m: Copyright and author consistency 
+
+2005-05-24 22:52  pkienzle
+
+	* extra/tsa/: aar.m, aarmam.m, ac2poly.m, ac2rc.m, acorf.m,
+	acovf.m, adim.m, ar2poly.m, ar2rc.m, ar_spa.m, arfit2.m, biacovf.m,
+	bisdemo.m, bispec.m, durlev.m, flag_implicit_samplerate.m, flix.m,
+	hup.m, invest0.m, invest1.m, invfdemo.m, lattice.m, lpc.m, mvaar.m,
+	mvfilter.m, parcor.m, poly2ac.m, poly2ar.m, poly2rc.m, rc2ac.m,
+	rc2ar.m, rc2poly.m, rmle.m, sbispec.m, selmo.m, sinvest1.m,
+	tsademo.m, ucp.m: Make copyright notices consistent 
+
+2005-05-24 22:35  pkienzle
+
+	* extra/NaN/: center.m, coefficient_of_variation.m, conv2nan.m,
+	cor.m, corrcoef.m, cov.m, covm.m, detrend.m,
+	flag_implicit_significance.m, geomean.m, harmmean.m, kurtosis.m,
+	mad.m, mean.m, meandev.m, meansq.m, median.m, mod.m, moment.m,
+	naninsttest.m, nantest.m, normcdf.m, norminv.m, normpdf.m,
+	quantile.m, ranks.m, rem.m, spearman.m, std.m, tcdf.m, tinv.m,
+	tpdf.m, var.m, zscore.m: Fixup copyright notices 
+
+2005-05-24 18:30  pkienzle
+
+	* main/: image/imginfo.m, miscellaneous/rotparams.m,
+	miscellaneous/rotv.m, miscellaneous/slurp_file.m,
+	struct/test_struct.m, vrml/best_dir.m, vrml/best_dir_cov.m,
+	vrml/bound_convex.m, vrml/proplan.m, vrml/save_vrml.m,
+	vrml/select_3D_points.m, vrml/vmesh.m, vrml/vrml_Background.m,
+	vrml/vrml_PointLight.m, vrml/vrml_arrow.m, vrml/vrml_browse.m,
+	vrml/vrml_cyl.m, vrml/vrml_demo_tutorial_1.m,
+	vrml/vrml_demo_tutorial_2.m, vrml/vrml_demo_tutorial_3.m,
+	vrml/vrml_demo_tutorial_4.m, vrml/vrml_ellipsoid.m,
+	vrml/vrml_faces.m, vrml/vrml_flatten.m, vrml/vrml_frame.m,
+	vrml/vrml_group.m, vrml/vrml_kill.m, vrml/vrml_lines.m,
+	vrml/vrml_material.m, vrml/vrml_parallelogram.m,
+	vrml/vrml_points.m, vrml/vrml_select_points.m, vrml/vrml_surf.m,
+	vrml/vrml_text.m, vrml/vrml_thick_surf.m, vrml/vrml_transfo.m: 
+	Copyright notices for Etienne Grossmann files.  
+
+2005-05-24 17:42  pkienzle
+
+	* main/control/feedback.m: Add GPL header 
+
+2005-05-24 17:36  pkienzle
+
+	* extra/pdb/: creadpdb.cc, plotpdb.m.in, read_pdb.m, strtoz.m,
+	write_pdb.m: Add copyright notices to the individual files 
+
+2005-05-24 17:24  pkienzle
+
+	* RELEASE-NOTES: Update release notes for Feb to May.  
+
+2005-05-24 16:52  pkienzle
+
+	* main/general/interp1.m: Add a linear extrapolation test.  
+
+2005-05-24 16:42  pkienzle
+
+	* doc/octave-forge-home.html: Remove link to octave for windows FAQ 
+
+2005-05-19 17:58  adb014
+
+	* main/comm/op-fil-gm.cc: Conditional build of file operator - Take
+	2 
+
+2005-05-19 17:57  adb014
+
+	* main/fixed/: op-fil-fcm.cc, op-fil-fcs.cc, op-fil-fm.cc,
+	op-fil-fs.cc: Conditional build of file operators - Take 2 
+
+2005-05-19 17:51  adb014
+
+	* main/: comm/op-fil-gm.cc, fixed/op-fil-fcm.cc,
+	fixed/op-fil-fcs.cc, fixed/op-fil-fm.cc, fixed/op-fil-fs.cc: 
+	Conditional build of file operator 
+
+2005-05-19 17:50  adb014
+
+	* main/general/deref.cc: Fix format of copyright 
+
+2005-05-17 09:00  mcreel
+
+	* main/optim/: bfgsmin.cc, bisectionstep.cc, celleval.cc,
+	finitedifference.cc, newtonstep.cc, numgradient.cc, numhessian.cc,
+	samin.cc: fix tabs 
+
+2005-05-13 13:49  schloegl
+
+	* extra/NaN/: percentile.m, quantile.m: flix is more powerful than
+	interp1 
+
+2005-05-13 06:31  mcreel
+
+	* main/econometrics/: README, average_moments.m, gmm_estimate.m,
+	gmm_example.m, gmm_obj.m, gmm_results.m, mle_estimate.m,
+	mle_example.m, mle_obj.m, mle_obj_nodes.m, mle_results.m,
+	nls_estimate.m, nls_obj.m, nls_obj_nodes.m, poisson.m,
+	poisson_moments.m, sum_moments_nodes.m: update to allow parallel if
+	available, add nls 
+
+2005-05-11 21:36  aadler
+
+	* main/struct/setfields.m: accepts 0 arguments 
+
+2005-05-09 12:02  aadler
+
+	* main/statistics/anovan.m: added modeltype 
+
+2005-05-09 11:04  aadler
+
+	* main/statistics/anovan.m: test results 
+
+2005-05-02 17:32  qspencer
+
+	* main/plot/__plt3__.m: Applied patch from Dmitri Sergatskov (we
+	have to use __gnuplot_splot__, instead of __gnuplot_raw__ ("splot
+	...") to ensure parsing of the parameters).  
+
+2005-05-02 16:13  adb014
+
+	* main/comm/scatterplot.m: fix tpo in previous patch 
+
+2005-05-02 11:30  qspencer
+
+	* FIXES/grid.m, main/comm/apkconst.m, main/comm/eyediagram.m,
+	main/comm/qaskenco.m, main/comm/scatterplot.m,
+	main/general/interp2.m, main/time/datesplit.m, main/time/datevec.m: 
+	Applied patches written by Dmitri Sergatskov to update gset and
+	gplot to the new gnuplot plotting interface (__gnuplot_set__ etc).  
+
+2005-04-28 17:03  schloegl
+
+	* extra/NaN/sumskipnan.cc: support for NDArrays fixed 
+
+2005-04-26 18:42  schloegl
+
+	* extra/NaN/sumskipnan.cc: improved support for ND-arrays;
+	DIM-related bug fixed 
+
+2005-04-26 00:44  alnd
+
+	* admin/get_authors: 
+	
+	Improve logic to identify public domain files; add -s option to
+	define size of "short" programs.  
+
+2005-04-24 21:05  aadler
+
+	* main/image/: imread.m, imwrite.m: added GPL copyrights 
+
+2005-04-24 12:33  pkienzle
+
+	* extra/ver20/fieldnames.m, main/general/deref.cc,
+	main/image/testimio.m, main/optim/wsolve.m,
+	main/signal/ellipdemo.m, main/signal/flattopwin.m,
+	main/signal/freqs_plot.m, main/symbolic/probably_prime.cc: Fix
+	copyright notices.  
+
+2005-04-24 11:17  pkienzle
+
+	* main/specfun/expint.f: Never used.  
+
+2005-04-22 16:29  schloegl
+
+	* extra/NaN/: INSTALL, sumskipnan.cc: OCT-version is faster by a
+	factor of 4 to 5 
+
+2005-04-22 13:29  aadler
+
+	* main/image/rotate_scale.cc: Change layout to not confuse
+	builtins.cc 
+
+2005-04-21 09:58  qspencer
+
+	* main/plot/: __plt3__.m, clf.m, fill3.m, gget.m, legend.m,
+	meshc.m, pcolor.m, peaks.m, print.m, quiver.m, stem.m, surf.m,
+	surfc.m, text.m, tics.m, view.m: Applied patches written by Dmitri
+	Sergatskov to use the new gnuplot inferface for versions 2.1.69 and
+	later.  
+
+2005-04-19 23:01  pkienzle
+
+	* main/signal/sgolay.m: Fix first derivative and all odd
+	derivative; add test 
+
+2005-04-13 07:27  pkienzle
+
+	* main/strings/configure.add: [for Dmitri Sergatoskov] typo in
+	'expressions' 
+
+2005-04-05 11:04  pkienzle
+
+	* main/optim/leasqrdemo.m: Restore matlab compatibility 
+
+2005-04-05 11:02  pkienzle
+
+	* main/optim/leasqr.m: [with Timothée Lecomte] use sparse matrices
+	to save storage.  
+
+2005-04-05 10:04  pkienzle
+
+	* main/path/addpath.m: [with Bill Denney] use texinfo strings; use
+	error() for errors; 
+
+2005-04-02 10:05  h_fujiwara
+
+	* main/parallel/: pserver.cc, recv.cc, send.cc: update for 2.9.0 
+
+2005-03-31 07:56  schloegl
+
+	* extra/tsa/: mvar.m, mvfreqz.m: docu corrected; cosmetic changes 
+
+2005-03-26 14:26  aadler
+
+	* main/sparse/tests/: Makefile, sparse_mul.cc: test suite 
+
+2005-03-26 13:02  aadler
+
+	* main/sparse/tests/: Makefile, sparse_mul.cc: sparse
+	multiplication test code 
+
+2005-03-23 14:22  pkienzle
+
+	* main/time/datesplit.m: Fix some tests 
+
+2005-03-23 00:59  pkienzle
+
+	* main/symbolic/: INDEX, Makefile, symbols.cc: Add Sqrt.  
+
+2005-03-22 23:51  pkienzle
+
+	* main/optim/minimize.m: Don't use getfields.  
+
+2005-03-22 23:04  pkienzle
+
+	* main/miscellaneous/edit.m: Automatically expand ~; return field
+	values if asked.  
+
+2005-03-22 22:43  pkienzle
+
+	* main/vrml/: select_3D_points.m, vrml_frame.m,
+	vrml_parallelogram.m: Don't use getfields 
+
+2005-03-22 00:38  pkienzle
+
+	* main/vrml/vrml_Background.m: Better error checking; remove
+	references to setfields 
+
+2005-03-21 08:22  pkienzle
+
+	* main/vrml/vrml_PointLight.m: Eliminate setfields 
+
+2005-03-21 07:45  pkienzle
+
+	* main/miscellaneous/edit.m: [for Soren Hauberg] check against fid
+	< 0 for fopen failure 
+
+2005-03-19 13:42  schloegl
+
+	* main/strings/strvcat.m: add support for cell-strings 
+
+2005-03-16 08:54  schloegl
+
+	* extra/NaN/: quantile.m, percentile.m: replace FLIX by INTERP1;
+	remove FLAG_SKIP_NAN 
+
+2005-03-15 17:44  schloegl
+
+	* extra/NaN/ranks.m: conversion of version number fixed for 1-digit
+	number 
+
+2005-03-09 17:07  qspencer
+
+	* main/io/: textread.m, xlsread.m: Changed textread.m so that it
+	returns cell arrays rather than lists. Changed xlsread from DOS to
+	UNIX end of line characters.  
+
+2005-03-07 17:33  aadler
+
+	* extra/perl/Makefile.PL: remove IPC::Run for now 
+
+2005-03-07 16:45  aadler
+
+	* extra/perl/Octave.pm: fixes for versions 
+
+2005-03-07 15:20  aadler
+
+	* extra/perl/: Makefile.PL, Octave.pm: version accepts \d.\d\.cvs 
+
+2005-03-03 03:02  schloegl
+
+	* extra/NaN/sumskipnan.cpp: fix comilation error 
+
+2005-03-02 23:46  pkienzle
+
+	* main/general/interp2.m: [Thomas Weber and Paul Kienzle] simplify
+	and add test cases 
+
+2005-03-02 12:57  schloegl
+
+	* extra/NaN/cov.m: address incompatibility with COV in MATLAB 
+
+2005-03-02 08:52  przykry2004
+
+	* main/sparse/pcr.m: Removed failing test and dependency on random
+	data in other tests 
+
+2005-03-01 11:38  pkienzle
+
+	* main/strings/: Makefile, pcregexp.cc: Make sure pcregexp compiles
+	and passes the tests 
+
+2005-03-01 11:33  pkienzle
+
+	* configure.base, main/geometry/configure.add,
+	main/gsl/configure.add, main/image/configure.add,
+	main/miscellaneous/configure.add, main/strings/configure.add: Don't
+	append to LIBS when checking for a function in a library 
+
+2005-03-01 07:45  pkienzle
+
+	* main/optim/optimset.m: [for Heikki Junes] remove obsolete
+	reference to set_field 
+
+2005-03-01 07:39  pkienzle
+
+	* main/strings/Makefile: [For Heikki Junes] fix makefile
+	conditional syntax 
+
+2005-03-01 01:51  pkienzle
+
+	* main/set/intersect.m: [for Ben Hall] return ia and ib as well 
+
+2005-03-01 00:34  pkienzle
+
+	* main/signal/: cplxreal.m, sos2tf.m, sos2zp.m, tf2sos.m, zp2sos.m: 
+	[for Julius Smith] second order section support 
+
+2005-02-28 23:30  pkienzle
+
+	* main/strings/: Makeconf.add, Makefile, configure.add,
+	pcregexp.cc: [for Stefan van der Walt] added Perl compatible
+	regular expressions 
+
+2005-02-28 23:28  pkienzle
+
+	* octinst.sh.in, Makefile, extra/mex/Makefile, extra/tsa/Makefile,
+	main/Makefile, nonfree/Makefile: Clean up install so that it is
+	quiet unless there is a problem and so that it doesn't write into
+	the source directories during installation.  
+
+2005-02-28 22:27  pkienzle
+
+	* main/: miscellaneous/read_options.m, optim/fminunc.m,
+	optim/optimset.m, struct/setfields.m: Use struct() rather than
+	setfields() for an empty structure 
+
+2005-02-28 16:34  pkienzle
+
+	* main/gsl/: Makeconf.add, Makefile, README, buildgsl_sf.sh,
+	configure.add: Protect against older versions of GSL.  
+
+2005-02-28 16:25  pkienzle
+
+	* main/gsl/: double_double_to_double.cc.template,
+	double_mode_to_double.cc.template, double_to_double.cc.template,
+	int_double_to_double.cc.template,
+	int_int_double_to_double.cc.template, int_to_double.cc.template,
+	precode.cc.template: Add docs for error return; improve retval
+	construction for err; mark files as C++ for emacs 
+
+2005-02-28 07:07  tpikonen
+
+	* extra/graceplot/toggle_grace_use.m: Add detection for Grace
+	version, versions >= 5.99 are not supported.  
+
+2005-02-28 06:07  mcreel
+
+	* main/econometrics/: gmm_example.m, gmm_results.m: clean up
+	example 
+
+2005-02-27 22:09  pkienzle
+
+	* extra/Windows/: image.m, BROWSER.m: Add 'file:///' to htm file
+	for use in FireFox.  Add BROWSER function to override explorer
+	default.  
+
+2005-02-27 20:58  pkienzle
+
+	* main/time/datesplit.m: Use unix line endings 
+
+2005-02-27 20:58  pkienzle
+
+	* main/time/datesplit.m: Fix tests so they pass 
+
+2005-02-27 20:55  pkienzle
+
+	* main/time/datesplit.m: Remove dd/mm forms from tests.  
+
+2005-02-27 20:32  pkienzle
+
+	* main/time/: datesplit.m, datevec.m: Add string support 
+
+2005-02-27 19:56  pkienzle
+
+	* main/time/weekday.m: [for Bill Denney] Fix weekday documentation.  
+
+2005-02-25 11:58  pkienzle
+
+	* main/general/mark_for_deletion.cc: pt-plot.h is disappearing in
+	future octave versions 
+
+2005-02-25 11:19  pkienzle
+
+	* .cvsignore: Ignore fndemos.m 
+
+2005-02-25 11:17  pkienzle
+
+	* main/plot/legend.m: [for Stefan van der Walt] add some legend
+	demos 
+
+2005-02-25 10:54  pkienzle
+
+	* admin/template.readme: Add donation info.  
+
+2005-02-25 10:51  pkienzle
+
+	* main/cell/cell2mat.m: Avoid crashing octave 2.1.64 or lower
+	during make test 
+
+2005-02-25 09:46  pkienzle
+
+	* README, doc/octave-forge-home.html: Move suggestion to donate
+	from octave-forge site to octave-forge README 
+
+2005-02-25 07:33  pkienzle
+
+	* main/image/imrotate.m: [For Justus Piater] add some test cases 
+
+2005-02-25 05:49  adb014
+
+	* FIXES/polyderiv.m: Backport fix from octave to polyderiv 
+
+2005-02-25 05:48  adb014
+
+	* RELEASE-NOTES: Add cellfun cell2mat to RELEASE-NOTES 
+
+2005-02-24 18:09  pkienzle
+
+	* nonfree/splines/gcvspl.cc: Don't use stack for temporary arrays 
+
+2005-02-24 13:51  pkienzle
+
+	* main/signal/sgolay.m: Add comments explaining details of the
+	algorithm.  
+
+2005-02-24 13:27  qspencer
+
+	* admin/RPM/: README, octave-forge.spec.in, update_spec.sh: Updated
+	the octave-forge.spec.in file to automatically determine the octave
+	version when it is built. Removed two files that are now no longer
+	needed.  
+
+2005-02-24 11:38  pkienzle
+
+	* main/sparse/buildtests.sh: Improved support for random stress
+	testing --- still not complete 
+
+2005-02-24 10:42  pkienzle
+
+	* main/sparse/buildtests.sh: octave-forge sparse is dead-end code
+	so suppress failing tests 
+
+2005-02-24 10:33  pkienzle
+
+	* main/sparse/buildtests.sh: Make sure sparse==full in
+	gen_square_tests 
+
+2005-02-24 09:48  pkienzle
+
+	* main/signal/kaiserord.m: Don't use test framework as TODO list 
+
+2005-02-24 07:44  pkienzle
+
+	* extra/testfun/assert.m: fix test for numeric A exactly matches B 
+
+2005-02-23 22:52  pkienzle
+
+	* main/audio/aurecord.cc: Remove X11 header dependencies 
+
+2005-02-23 05:33  pkienzle
+
+	* RELEASE-NOTES: Notes for new release.  
+
+2005-02-23 05:07  pkienzle
+
+	* FIXES/: Makefile, randmtzig.c: Fix confusing HAVE_X86 behaviour;
+	now -DHAVE_X86_32 or -DUSE_X86_32=0|1 
+
+2005-02-21 21:27  pkienzle
+
+	* FIXES/: rand.cc, randpoisson.c: Test extreme values; set
+	randp(inf) to NaN --- is this correct? 
+
+2005-02-21 20:53  pkienzle
+
+	* FIXES/rand.cc: Don't assume info about the internals of
+	randg/fill_randg.  
+
+2005-02-21 20:36  pkienzle
+
+	* FIXES/: Makefile, rand.cc, randgamma.c: Add randg for gamma-based
+	RNGs; add moment tests for all RNGs.  
+
+2005-02-21 13:12  pkienzle
+
+	* FIXES/rand.cc: Fix dimension check for lambda parameter of randp.  
+
+2005-02-18 22:18  pkienzle
+
+	* main/signal/: invfreq.m, invfreqs.m, invfreqz.m: Fix order of
+	parameters in the documentation.  
+
+2005-02-17 23:42  pkienzle
+
+	* main/image/imrotate.m: Add simple test for 'nearest' near 90
+	degrees.  More tests needed.  
+
+2005-02-15 23:07  pkienzle
+
+	* main/image/: imrotate.m, imrotate_Fourier.m: [for Justus Piater]
+	fix half-pixel alignment problem and add optimization for n*90
+	degree rotations.  
+
+2005-02-10 06:44  pkienzle
+
+	* main/signal/filtfilt.m: Support vectors or matrices but not yet
+	nD arrays.  
+
+2005-02-09 11:19  mcreel
+
+	* main/econometrics/: average_moments.m, delta_method.m,
+	gmm_estimate.m, gmm_example.m, gmm_obj.m, gmm_results.m,
+	gmm_variance.m, gmm_variance_inefficient.m, mle_estimate.m,
+	mle_example.m, mle_obj.m, mle_results.m, mle_variance.m,
+	parameterize.m, prettyprint.m, prettyprint_c.m, scale_data.m,
+	unscale_parameters.m: cleaning and beginnings of help messages 
+
+2005-02-08 07:58  pkienzle
+
+	* main/time/datestr.m: Fix mm/dd/yy separator 
+
+2005-02-08 07:57  pkienzle
+
+	* main/time/datestr.m: Fix mm/dd/yy order 
+
+2005-02-06 11:19  pkienzle
+
+	* FIXES/randmtzig.c: Better handling of HAVE_X86?   Fixes bad
+	distribution for non-intel arch.  
+
+2005-02-01 10:29  adb014
+
+	* main/cell/cellfun.cc: Add use of arbitrary function to cellfun 
+
+2005-01-31 19:48  adb014
+
+	* main/set/: ismember.m, unique.m: treat cell arrays 
+
+2005-01-31 19:17  adb014
+
+	* main/cell/cellfun.cc: add size option to cellfun 
+
+2005-01-31 18:04  adb014
+
+	* main/cell/.cvsignore: add .cvsignore 
+
+2005-01-31 18:04  adb014
+
+	* main/INDEX: add cell2mat to INDEX 
+
+2005-01-31 02:03  mazet
+
+	* main/cell/: Makefile, cell2mat.m, cellfun.cc: add cell2mat and
+	cellfun functions 
+
+2005-01-14 22:12  schloegl
+
+	* extra/NaN/nantest.m: test for ALL and ANY added 
+
+2005-01-14 04:18  mcreel
+
+	* main/optim/bfgsmin_example.m: improve explanatory comments 
+
+2005-01-14 04:17  mcreel
+
+	* main/optim/bfgsmin.cc: add check for obj fn value, fix lbfgs
+	memory bug 
+
+2005-01-13 05:45  tpikonen
+
+	* extra/graceplot/alternatives/legend.m: Add Grace support for
+	legend-command.  
+
+2005-01-03 22:59  adb014
+
+	* main/fixed/int/fixed.cc: Rather than include config.h in
+	int/fixed.cc move inclusion of fixed.h (For Orion Poplawski) 
+
+2005-01-03 22:49  adb014
+
+	* main/fixed/int/fixed.cc: Include config.h in int/fixed.cc (For
+	Orion Poplawski) 
+
+2004-12-28 18:33  pkienzle
+
+	* admin/Windows/octave.nsi: Clean up test and cancel code for
+	processor and previous installation.  
+
+2004-12-28 17:32  pkienzle
+
+	* admin/Windows/donation.txt: nag text 
+
+2004-12-28 17:32  pkienzle
+
+	* admin/Windows/octave.nsi: remove cruft; add nag; fix cancel
+	during language selection; remove strings from .oninit; convert all
+	strings to LangStrings; use Octave as name; use XPStyle 
+
+2004-12-23 12:39  schloegl
+
+	* extra/NaN/corrcoef.m: improve docu 
+
+2004-12-23 06:38  pkienzle
+
+	* main/signal/: sgolay.m, sgolayfilt.m: [for Pascal Dupuis] allow
+	derivatives 
+
+2004-12-19 08:19  persquare
+
+	* extra/MacOSX/Makefile: Fixing typo 
+
+2004-12-17 23:13  pkienzle
+
+	* extra/MacOSX/Makefile: [for Corey Halpin] UFS is case sensitive,
+	so use correct filenames.  
+
+2004-12-14 10:01  tpikonen
+
+	* extra/pdb/read_pdb.m: Tweaked element detection heuristics.  
+
+2004-12-13 23:56  pkienzle
+
+	* extra/symband/SymBand.cc: Fix bug in which SBSolve(A,B) was
+	changing the value of B.  
+
+2004-12-13 08:41  adb014
+
+	* main/plot/legend.m: Only call replot is automatic_replot is set
+	(For Daniel Sebald) 
+
+2004-12-09 05:40  schloegl
+
+	* extra/tsa/mvfreqz.m: default value of C is eye(K) - not ones(k) 
+
+2004-12-06 18:55  schloegl
+
+	* extra/NaN/nantest.m: test for (0-3i)/inf included 
+
+2004-12-06 15:46  aadler
+
+	* main/plot/get_graph_data.m: fixed for axes that don't meet at 0 
+
+2004-12-06 13:24  aadler
+
+	* main/plot/get_graph_data.m: fixed bug in graph rotation 
+
+2004-12-06 13:09  aadler
+
+	* main/plot/get_graph_data.m: assume an axis with a zero is linear 
+
+2004-12-06 12:38  aadler
+
+	* main/plot/get_graph_data.m: complete - appears to work 
+
+2004-12-06 11:19  aadler
+
+	* main/plot/get_graph_data.m: get data from graphs 
+
+2004-12-03 12:19  schloegl
+
+	* extra/tsa/mvfilter.m: fix docu; avoiding confusing behavior if
+	data is transposed 
+
+2004-12-03 09:13  adb014
+
+	* main/plot/text.m: Use %g and not %f in text.m so that small arg
+	positions are placed correctly (For Pascale Dupuis) 
+
+2004-12-02 23:20  pkienzle
+
+	* admin/Windows/.cvsignore: Ignore status files when checking for
+	differences 
+
+2004-12-02 22:11  pkienzle
+
+	* admin/Windows/: Makefile, config_octave.sh: Pass source directory
+	as a parameter to configure 
+
+2004-12-01 09:54  pkienzle
+
+	* admin/Windows/: Makefile, config_octave.sh: Put details of octave
+	configuration in a separate file 
+
+2004-12-01 04:53  adb014
+
+	* extra/mex/configure.add: add AC_PROG_AWK to mex configure.add
+	(For Dan McMahill) 
+
+2004-11-30 17:58  pkienzle
+
+	* admin/Windows/start_octave.sh: Remove '--traditional' flag 
+
+2004-11-30 03:35  pkienzle
+
+	* admin/Windows/: Makefile, README: Add "clean" target to force
+	reconfigure/rebuild 
+
+2004-11-30 03:21  pkienzle
+
+	* admin/Windows/Makefile: Unbundle octave-2.1.xx.tar.bz2 as part of
+	the build 
+
+2004-11-30 03:12  pkienzle
+
+	* admin/Windows/: README, Makefile: More refinements --- still a
+	work in progress.  
+
+2004-11-16 20:04  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: R2004-11-16
+	release 
+
 2004-11-16 19:59  pkienzle
 
 	* main/sparse/buildtests.sh: Fix some tests; note those that are
@@ -3060,29 +4142,6 @@
 
 	* nonfree/gpc/ChangeLog: Updated for release 0.1.4 of Octave-GPC 
 
-2004-01-05 16:25  rlaboiss
-
-	* nonfree/gpc/debian/changelog: Fixed typo 
-
-2004-01-05 16:24  rlaboiss
-
-	* nonfree/gpc/debian/: changelog, control, rules: Debian release
-	0.1.4-1.  From the debian/changelog; 
-	
-	  * New upstream release.  Octave-GPC depends now on Octave version 
-	    2.1.52, at least 
-	  * debian/rules: 
-	    - Soften the dependency on Octave.  octave-gpc dependency is now
-	      bound only to a minimal Octave version, which happens to be the
-	      version present when the package is built (closes: #226137).  
-	    - Removed optiond --with-mkoctfile --with-libexec from call to 
-	      configure.  
-	    - Use DESTDIR when calling make install.  
-	  * debian/control: 
-	    - Bumped Standards-Version to 3.6.1 (no changes neeeded).  
-	    - Make versioned Build-Dependency on octave2.1-headers (>=
-	    2.1.52).  
-
 2004-01-05 16:20  rlaboiss
 
 	* nonfree/gpc/octave-gpc.h: 
@@ -3149,11 +4208,6 @@
 
 	* nonfree/gpc/.cvsignore: Ignoring *.oct files 
 
-2004-01-05 15:18  rlaboiss
-
-	* nonfree/gpc/debian/cvsdir.sh: Removed this file, since "debuild
-	-i" does the job cvsdir.sh is intended to do.  
-
 2004-01-05 15:15  rlaboiss
 
 	* nonfree/gpc/: gpc_clip.cc, gpc_create.cc, gpc_get.cc,
@@ -3165,10 +4219,6 @@
 	* nonfree/gpc/: NEWS, README, gpc_clip.cc, gpc_create.cc,
 	gpc_get.cc, gpc_is_polygon.cc, gpc_read.cc, gpc_tristrip.cc,
 	gpc_write.cc: Updated copyright information (added year 2004) 
-
-2004-01-05 14:57  rlaboiss
-
-	* nonfree/gpc/debian/.cvsignore: Added exclusions file 
 
 2004-01-05 14:48  rlaboiss
 
@@ -4252,16 +5302,11 @@
 	* main/statistics/nanmin.m: bug fix:  nanmin([nan,X]) yield -Inf
 	instead of min(X) 
 
-2003-07-04 05:42  rlaboiss
-
-	* nonfree/gpc/debian/changelog: Debian release 0.1.3-1 
-
 2003-07-03 19:25  rlaboiss
 
 	* nonfree/gpc/: ChangeLog, Makefile.am, configure.in, gpc_clip.cc,
-	octave-gpc.cc, octave-gpc.h, debian/changelog, debian/control,
-	debian/rules: Release 0.1.3.  See ChangeLog and debian/changelog
-	for the changes.  
+	octave-gpc.cc, octave-gpc.h: Release 0.1.3.  See ChangeLog and
+	debian/changelog for the changes.  
 
 2003-07-01 11:12  schloegl
 
@@ -7133,9 +8178,9 @@
 
 2002-05-12 17:50  rlaboiss
 
-	* nonfree/gpc/: configure.in, debian/changelog, debian/control: 
-	Debian release 0.1.2-5.  Small fix in perl on-line script in
-	configure.in.  This does not deserve a 0.1.3 release, yet.  
+	* nonfree/gpc/configure.in: Debian release 0.1.2-5.  Small fix in
+	perl on-line script in configure.in.  This does not deserve a 0.1.3
+	release, yet.  
 
 2002-05-12 15:09  schloegl
 
@@ -7453,10 +8498,6 @@
 2002-04-25 12:34  schloegl
 
 	* extra/tsa/ar2poly.m: erroneous <CR> corrected 
-
-2002-04-24 17:02  rlaboiss
-
-	* nonfree/gpc/debian/: changelog, control: New Debian release 
 
 2002-04-24 06:37  pkienzle
 
@@ -8574,11 +9615,6 @@
 	SRC/zsp_defs.h, SRC/zutil.c: modifications to remove warnings and
 	add proper *.h headers for recent gcc versions 
 
-2002-02-27 16:34  rlaboiss
-
-	* nonfree/gpc/debian/: changelog, control: Debian package release
-	0.1.2-2 
-
 2002-02-19 18:42  aadler
 
 	* INSTALL.WINDOWS: Build Install instructions for octave-forge on
@@ -8923,23 +9959,13 @@
 
 2001-12-14 13:33  rlaboiss
 
-	* nonfree/gpc/debian/control: Corrected versioned dependency on
-	octave2.1 package.  
-
-2001-12-14 13:33  rlaboiss
-
 	* nonfree/gpc/Makefile.am: Symlinks point to right location.  
-
-2001-12-14 11:43  rlaboiss
-
-	* nonfree/gpc/debian/: changelog, control: Preparing Debian release
-	0.1.2-1.  
 
 2001-12-13 15:35  rlaboiss
 
 	* nonfree/gpc/: ChangeLog, Makefile.am, NEWS, README, configure.in,
-	gpc_plot.m, debian/changelog, debian/control, debian/cvsdir.sh: New
-	release 0.1.2 (integrates last changes done by P. Kienzle).  
+	gpc_plot.m: New release 0.1.2 (integrates last changes done by P.
+	Kienzle).  
 
 2001-12-12 10:37  pkienzle
 
@@ -9601,14 +10627,10 @@
 	extra/ver20/logical.m, extra/ver20/nanfunc.m, extra/ver20/nanmax.m,
 	extra/ver20/nanmean.m, extra/ver20/nanmedian.m,
 	extra/ver20/nanmin.m, extra/ver20/nanstd.m, extra/ver20/nansum.m,
-	extra/ver20/orient.m, nonfree/gpc/debian/changelog,
-	nonfree/gpc/debian/control, nonfree/gpc/debian/copyright,
-	nonfree/gpc/debian/cvsdir.sh, nonfree/gpc/debian/docs,
-	nonfree/gpc/debian/gpc_test.m, nonfree/gpc/debian/rules,
-	nonfree/splines/LICENSE.gcvsplf, nonfree/splines/Makefile,
-	nonfree/splines/NOINSTALL, nonfree/splines/csaps.m,
-	nonfree/splines/gcvspl.cc, nonfree/splines/gcvsplf.f: revised
-	heirarchy 
+	extra/ver20/orient.m, nonfree/splines/LICENSE.gcvsplf,
+	nonfree/splines/Makefile, nonfree/splines/NOINSTALL,
+	nonfree/splines/csaps.m, nonfree/splines/gcvspl.cc,
+	nonfree/splines/gcvsplf.f: revised heirarchy 
 
 2001-10-10 15:54  pkienzle
 
@@ -9897,12 +10919,8 @@
 	extra/ver20/logical.m, extra/ver20/nanfunc.m, extra/ver20/nanmax.m,
 	extra/ver20/nanmean.m, extra/ver20/nanmedian.m,
 	extra/ver20/nanmin.m, extra/ver20/nanstd.m, extra/ver20/nansum.m,
-	extra/ver20/orient.m, nonfree/gpc/debian/changelog,
-	nonfree/gpc/debian/control, nonfree/gpc/debian/copyright,
-	nonfree/gpc/debian/cvsdir.sh, nonfree/gpc/debian/docs,
-	nonfree/gpc/debian/gpc_test.m, nonfree/gpc/debian/rules,
-	nonfree/splines/LICENSE.gcvsplf, nonfree/splines/Makefile,
-	nonfree/splines/NOINSTALL, nonfree/splines/csaps.m,
-	nonfree/splines/gcvspl.cc, nonfree/splines/gcvsplf.f: Initial
-	revision 
+	extra/ver20/orient.m, nonfree/splines/LICENSE.gcvsplf,
+	nonfree/splines/Makefile, nonfree/splines/NOINSTALL,
+	nonfree/splines/csaps.m, nonfree/splines/gcvspl.cc,
+	nonfree/splines/gcvsplf.f: Initial revision 
 

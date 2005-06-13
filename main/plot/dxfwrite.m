@@ -24,6 +24,12 @@
 
 ## 2004-01-07
 ##   initial release
+## 2005-01-07
+##   Made it work for me (Larry Doolittle, <ldoolitt@recycle.lbl.gov>).
+##   I used Autodesk's DXF reference at
+##   http://www.autodesk.com/techpubs/autocad/acad2000/dxf/
+##   I don't know which of the many changes I made are essential.
+##   Tested on AutoCAD 2002 with only a single closed curve.
 
 function [nb] = dxfwrite (filename, varargin) 
   
@@ -41,7 +47,7 @@ function [nb] = dxfwrite (filename, varargin)
   endif
   
   ## Open file
-  fid = fopen (filename, "w");
+  fid = fopen (filename, "wt");
   if fid <= 0
     error("error opening file \"%s\"\n", filename);
   endif
@@ -52,7 +58,7 @@ function [nb] = dxfwrite (filename, varargin)
   ## Header declarations
   fprintf (fid, ["0\nSECTION\n", "2\nHEADER\n"]);
   ## DXF version
-  fprintf (fid, ["9\n$ACADVER\n", "1\nAC1500\n"]); ## AutoCAD 2000
+  fprintf (fid, ["9\n$ACADVER\n", "1\nAC1009\n"]); ## AutoCAD R11
   ## End of headers
   fprintf (fid, "0\nENDSEC\n");
 
@@ -60,7 +66,7 @@ function [nb] = dxfwrite (filename, varargin)
   fprintf (fid, ["0\nSECTION\n", "2\nTABLES\n"]);
 
   ## Line type declarations
-  fprintf (fid, ["0\nTABLE\n", "2\nLineTypes\n"]);
+  fprintf (fid, ["0\nTABLE\n", "2\nLTYPE\n"]);
   ## Number of line types
   fprintf (fid, "70\n1\n");
   ## New line type
@@ -68,7 +74,7 @@ function [nb] = dxfwrite (filename, varargin)
   ## Line type name
   fprintf (fid, "2\nCONTINUOUS\n");
   ## Standard flags
-  fprintf (fid, "70\n64\n"); ## Optimal for AutoCAD
+  fprintf (fid, "70\n0\n"); ## Optimal for AutoCAD
   ## Descriptive text for linetype
   fprintf (fid, "3\nContinuous line\n");
   ## Alignment code
@@ -83,7 +89,7 @@ function [nb] = dxfwrite (filename, varargin)
   fprintf (fid, "0\nENDTAB\n");
 
   ## Layers declarations
-  fprintf (fid, ["0\nTABLE\n", "2\nLayers\n"]);
+  fprintf (fid, ["0\nTABLE\n", "2\nLAYER\n"]);
   ## Number of layers
   fprintf (fid, "70\n%d\n", nargin-1);
 
@@ -95,7 +101,7 @@ function [nb] = dxfwrite (filename, varargin)
     ## Layer name
     fprintf (fid, "2\nCurve%d\n", nb);
     ## Standard flags
-    fprintf (fid, "70\n64\n"); ## Optimal for AutoCAD
+    fprintf (fid, "70\n0\n"); ## Optimal for AutoCAD
     ## Line type
     fprintf (fid, "6\nCONTINUOUS\n");
     ## Color number
@@ -107,7 +113,7 @@ function [nb] = dxfwrite (filename, varargin)
   ## End of tables
   fprintf (fid, "0\nENDSEC\n");
 
-  ## Entitie declarations
+  ## Entity declarations
   fprintf (fid, ["0\nSECTION\n", "2\nENTITIES\n"]);
   
   nb = 0;
@@ -137,13 +143,16 @@ function [nb] = dxfwrite (filename, varargin)
     fprintf (fid, "8\nCurve%d\n", nb);
     ## Line type name
     fprintf (fid, "6\nCONTINUOUS\n");
-    ## Color number
-    fprintf (fid, "62\n%d\n", nb);
+    ## Color number???
+    fprintf (fid, "66\n%d\n", nb);
     ## Standard flags
     fprintf (fid, "70\n%d\n", closed);
 
+    ## Layer specification
+    layspec = sprintf("8\nCurve%d\n", nb);
+
     ## List of vertex
-    fprintf(fid, ["0\nVERTEX\n", \
+    fprintf(fid, ["0\nVERTEX\n", layspec, \
 		  "10\n",FMT,"\n", "20\n",FMT,"\n", "30\n",FMT,"\n"], pl.');
 
     ## End of polyline

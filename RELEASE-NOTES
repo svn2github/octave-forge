@@ -16,13 +16,13 @@ See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/
 
 See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/ChangeLog?rev=HEAD&content-type=text/plain">ChangeLog</a> for details of every change.
 
-2005-05-24 ===========================================================
+2005-06-13 ===========================================================
 
 * textread now returns cell arrays
 * use new gnuplot interface for functions
 * fix rand bug on non-intel architectures
 * more econometrics functions
-* new functions: randg, cellfun, cell2mat
+* new functions: randg, cellfun, cell2mat, bwarea, imresize, savepath
 * bug fixes and improvements (see ChangeLog for details)
 
 2004-11-16 ===========================================================

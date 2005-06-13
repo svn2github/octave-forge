@@ -1,4 +1,4 @@
-function [o,count,SSQ,S4M] = sumskipnan4(i,DIM)
+function [o,count,SSQ,S4M] = sumskipnan(i,DIM)
 % SUMSKIPNAN adds all non-NaN values. 
 %
 % All NaN's are skipped; NaN's are considered as missing values. 

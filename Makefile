@@ -17,8 +17,12 @@ ifdef OCTAVE_FORGE
 
 all: clearlog subdirs
 	@echo "Build finished."
+	@if test -f build.fail ; then cat build.fail ;\
+	  echo "Some functions failed to compile (search build.log for errors) but many" ;\
+	  echo "other functions will still work correctly.  Run 'make check' to see" ;\
+	  echo "what works.  Run 'make install' to install what has been built." ;\
+          false; fi
 	@echo "Please read FIXES/README before you install."
-	@if test -f build.fail ; then cat build.fail; false; fi
 
 install: subdirs
 	@echo " "
@@ -86,7 +90,6 @@ checkindist:
 subdirs: $(SUBMAKEDIRS)
 clearlog: ; @-$(RM) build.log build.fail
 $(SUBMAKEDIRS):
-	@echo Processing $@
-	cd $@ && $(MAKE) -k $(MAKECMDGOALS) 2>&1 || \
-	   echo "$@ not complete. See log for details" >>../build.fail \
-	| tee -a build.log
+	@echo Processing $@ | tee -a build.log
+	@($(MAKE) -C $@ -k $(MAKECMDGOALS) 2>&1 || \
+	   echo "$@ not complete." >>build.fail ) | tee -a build.log

@@ -186,6 +186,10 @@ function legend (varargin)
     if (++attempt > 20) error("gnuplot is not responding"); endif
     usleep(1e5); 
   end
+  # wait for the file to be non-empty
+  while (~stat(tmpfilename).size)
+    usleep(1e5); 
+  end
   plot_cmd = split(system(shell_cmd),"\n");
 
   if (~length(deblank(plot_cmd(rows(plot_cmd), :))))

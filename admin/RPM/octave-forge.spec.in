@@ -1,75 +1,76 @@
+Name:           octave-forge
+Version:        @OCTAVE_FORGE_RELEASE@
+Release:        1
+Summary:        Contributed functions for octave
+
+Group:          Applications/Engineering
+License:        Public Domain
+URL:            http://octave.sourceforge.net
+Source0:        ftp://download.sourceforge.net/pub/sourceforge/o/oc/octave/%{name}
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+## Octave-forge installs in a directory tree specific to the installed
+## version of octave, so the following version dependency is necessary.
 %define octave_ep  %(rpm -q --qf '%%{epoch}' octave)
 %define octave_ver %(rpm -q --qf '%%{version}' octave)
-
-Summary:	additional functions for octave
-Name:		octave-forge
-Version:	@OCTAVE_FORGE_RELEASE@
-Release:	1
-License:	GPL
-Group:		Applications/Engineering
-URL:		http://octave.sourceforge.net
-Source:		%{url}/cgi-bin/viewcvs.cgi/octave/%{name}-%{version}.tar.gz
-Packager:	Quentin Spencer <qspencer ieee org>
-Requires:	octave = %{octave_ep}:%{octave_ver}
-Requires:	ImageMagick GiNaC
-BuildPrereq:	octave gcc-c++ tetex gcc-g77 ncurses-devel libjpeg-devel
-BuildPrereq:	libpng-devel zlib-devel libtermcap-devel libstdc++-devel
-BuildPrereq:	GiNaC-devel gsl-devel qhull-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+Requires:	octave = %{octave_ep}:%{octave_ver} ImageMagick
+BuildRequires:  octave-devel gcc-c++ tetex gcc-gfortran GiNaC-devel
+BuildRequires:  xorg-x11-devel libjpeg-devel libpng-devel zlib-devel
+BuildRequires:  ncurses-devel libtermcap-devel gsl-devel qhull-devel
+BuildRequires:  pcre-devel libstdc++-devel
 ExcludeArch:	ppc64 s390x
 
+
 %description
-octave-forge is a community project for collaborative development of
+Octave-forge is a community project for collaborative development of
 octave extensions. The extensions in this package include additional
 data types such as sparse matrices, and functions for a variety of
 different applications including signal and image processing,
 communications, control, optimization, statistics, geometry, and
 symbolic math.
- 
+
 %prep
 %setup -q
 
 %build
-LC_ALL=POSIX
-export LC_ALL
-export CXXFLAGS="%optflags -fno-use-cxa-atexit"
-%define host_type %(echo "disp(octave_config_info('canonical_host_type'))" | octave -qf)
-%configure --prefix=$RPM_BUILD_ROOT/%{_prefix} \
-	--exec-prefix=$RPM_BUILD_ROOT/%{_prefix} \
-	--with-mpath=$RPM_BUILD_ROOT/%{_prefix}/share/octave/%{octave_ver}/site/m/octave-forge \
-	--with-opath=$RPM_BUILD_ROOT/%{_prefix}/libexec/octave/%{octave_ver}/site/oct/%{host_type}/octave-forge \
-	--with-xpath=$RPM_BUILD_ROOT/%{_prefix}/libexec/octave/%{octave_ver}/site/exec/%{host_type} \
-	--with-altpath=$RPM_BUILD_ROOT/%{_prefix}/share/octave/%{octave_ver}/site/octave-forge-alternative/m \
-	--with-altmpath=$RPM_BUILD_ROOT/%{_prefix}/share/octave/%{octave_ver}/site/octave-forge-alternative/m/octave-forge \
-	--with-altopath=$RPM_BUILD_ROOT/%{_prefix}/libexec/octave/%{octave_ver}/site/octave-forge-alternative/oct/%{host_type} \
-	--with-x
-make
+%configure
+make %{?_smp_mflags}
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall
+%define host_type %(echo "disp(octave_config_info('canonical_host_type'))" | octave -qf)
+%define site_dir octave/%{octave_ver}/site
+make install prefix=$RPM_BUILD_ROOT%{_prefix} \
+	bindir=$RPM_BUILD_ROOT%{_bindir} \
+	mandir=$RPM_BUILD_ROOT%{_mandir} \
+	MPATH=$RPM_BUILD_ROOT%{_datadir}/%{site_dir}/m/octave-forge \
+	OPATH=$RPM_BUILD_ROOT%{_libexecdir}/%{site_dir}/oct/%{host_type}/octave-forge \
+	XPATH=$RPM_BUILD_ROOT%{_libexecdir}/%{site_dir}/exec/%{host_type} \
+	ALTPATH=$RPM_BUILD_ROOT%{_datadir}/%{site_dir}/octave-forge-alternative/m \
+	ALTMPATH=$RPM_BUILD_ROOT%{_datadir}/%{site_dir}/octave-forge-alternative/m/octave-forge \
+	ALTOPATH=$RPM_BUILD_ROOT%{_libexecdir}/%{site_dir}/octave-forge-alternative/oct/%{host_type}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%post
-
-%preun
-
-%postun
 
 %files
 %defattr(-,root,root)
 %doc COPYING* README RELEASE-NOTES TODO
 %doc doc/*.html doc/coda/*.sgml doc/coda/appendices/*.sgml
 %doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
-%{_prefix}/bin/mex
-%{_prefix}/share/octave/*
-%{_prefix}/libexec/octave/*
+%{_datadir}/octave/*
+%{_libexecdir}/octave/*
+%{_bindir}/mex
 %{_mandir}/man1/mex*
 
+
+
 %changelog
+* Fri Jun 17 2005 Quentin Spencer <qspencer ieee org>
+- Move ugly path hacks to install section.
+- New dependencies.
+
 * Thu Feb 24 2005 Quentin Spencer <qspencer ieee org>
 - Updated spec file to get octave version at build time.
 

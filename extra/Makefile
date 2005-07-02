@@ -38,7 +38,7 @@ $(SUBMAKEDIRS):
 	@echo Processing extra/$@
 	@if test -z "$(MAKECMDGOALS)" ; then \
 	    cd $@ && $(MAKE) ; \
-	elif grep -q "^$(MAKECMDGOALS) *[:]" $@Makefile ; then \
+	elif grep "^$(MAKECMDGOALS) *[:]" $@Makefile >/dev/null; then \
 	    cd $@ && $(MAKE) $(MAKECMDGOALS) ; \
 	fi
 

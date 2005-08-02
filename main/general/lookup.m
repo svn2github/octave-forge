@@ -29,7 +29,7 @@
 ##
 ## To get an index value which lies within an interval of the table
 ## use:
-##      idx = lookup(table(2:length(table)-1), y) - 1
+##      idx = lookup(table(2:length(table)-1), y) + 1
 ## This puts values before the table into the first interval, and values
 ## after the table into the last interval.
 

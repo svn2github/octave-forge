@@ -60,6 +60,8 @@
 ## 
 ## "lcol", lc   : Nx3 : Color of the plane(s).          Default = [.7 .7 .7]
 ## "ltran",lt   : Nx1 : Transparency of the plane(s).   Default =        0.3
+##
+## See also: vrml_surf(), vrml_faces(), demo("vmesh")
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 

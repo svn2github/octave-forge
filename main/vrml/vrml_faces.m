@@ -61,7 +61,9 @@
 ## "DEFcoord",n : string : DEF the coord VRML node with name n. Default = ''
 ## "DEFcol",  n : string : DEF the color VRML node with name n. Default = ''
 ##
-## See also: vrml_surf(), vmesh()
+## See also: vrml_surf(), vmesh(), test_vrml_faces()
+
+
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 function s = vrml_faces (x,f,varargin)

@@ -59,6 +59,8 @@
 ##                         between facets forming an angle less than a.
 ##                                                              default = 0
 ## "smooth"           : same as "creaseAngle",pi.
+##
+## See also: vmesh(), vrml_faces(), test_moving_surf()
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: Setembro 2002

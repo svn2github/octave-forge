@@ -180,3 +180,5 @@ s = vrml_faces (pts, trgs, "col", col, "tran", tran, "creaseAngle", creaseAngle)
 ## c(holes) = nan;
 ##    vrml_browse ("tmp.wrl",vrml_thick_surf (x, y, c))
 ## or save_vrml ("tmp.wrl", vrml_thick_surf (x, y, c)) 
+endfunction
+

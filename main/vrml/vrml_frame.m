@@ -138,3 +138,5 @@ f0 = vrml_group (a1, a2, a3);
 v = vrml_transfo (f0, t, nan);
 
 
+endfunction
+

@@ -70,3 +70,5 @@ s = sprintf ("PointLight {\n%s}\n", body);
 if struct_contains (h,"DEF") && !isempty (h.DEF)
   s = ["DEF ",h.DEF," ",s];
 end 
+endfunction
+

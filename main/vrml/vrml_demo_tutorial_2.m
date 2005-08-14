@@ -13,6 +13,9 @@
 
 ## Author : Etienne Grossmann <etienne@cs.uky.edu>
 
+printf("vrml_select_points does not work any more. Sorry\n");
+return
+
 printf (["\n",\
 	 "     VRML Mini-HOWTO's second listing\n",\
 	 "     Show 3D points and select some with the mouse\n\n"]);
@@ -38,3 +41,5 @@ s = select_3D_points (x);
 
 printf ("The selected points are : \n");
 s
+
+

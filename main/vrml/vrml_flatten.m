@@ -39,4 +39,7 @@ y = bound_convex (d,w,x);
 Q = columns (y);
 faces = [ones(1,Q-2); 2:Q-1; 3:Q];
 
+
 s = vrml_faces (y, faces, "col",col);
+endfunction
+

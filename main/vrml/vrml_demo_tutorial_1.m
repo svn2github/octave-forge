@@ -44,3 +44,6 @@ printf ("    Hit a key to see the variant of listing 1\n\n");
 pause
 
 vmesh (zz,"checker",[5,-2],"col",[1 0 0;0.7 0.7 0.7]');
+
+
+vmesh (zz,"checker",[5,-2],"col",[1 0 0;0.7 0.7 0.7]');

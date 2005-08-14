@@ -114,3 +114,5 @@ cv = ((wx.*kron(ones(WD,D),sx'))*wx') ;
 
 
 
+endfunction
+

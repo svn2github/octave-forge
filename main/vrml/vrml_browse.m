@@ -45,7 +45,8 @@ verbose = 0;
 best_option = " ";
 				# Allow scripting and specify where
 				# browser's output goes 
-out_option = "--ps --psout /tmp/octave_browser_out.txt " ;
+##out_option = "--ps --psout /tmp/octave_browser_out.txt " ;
+out_option = " " ;
 global vrml_b_pid = 0;
 global vrml_b_name = [];
 
@@ -72,7 +73,9 @@ end
 
 vrml_b_name = "freewrl" ;
 
-b_opt = [out_option," ",bop," ",best_option," --server --snapb octave.snap "] ;
+##b_opt = [out_option," ",bop," ",best_option," --server --snapb octave.snap "] ;
+b_opt = [out_option," ",bop," ",best_option] ;
+
 
 b_temp = "/tmp/octave_vrml_output.wrl" ;
 b_log  = " &> /tmp/octave_vrml_browser.log";
@@ -165,16 +168,23 @@ if vrml_b_pid <= 0
 				# and exits. Octave reads the output of the
 				# system call, which is the browser's pid.
 				# Phew!  
-  [out, status] = system ([vrml_b_name," ",b_opt," \"file:",b_temp,"\""], 1);
+##  [out, status] = system (cmd = [vrml_b_name," ",b_opt," \"file:",b_temp,"\""], 1);
+  [out, status] = system (cmd = [vrml_b_name," ",b_opt," ",b_temp], 1);
+##  cmd
   if status,
     
     printf("vrml_browse : Can't start browser '%s'. Is it installed?\n",\
 	   vrml_b_name);
-    p = vrml_b_pid ;
+      p = vrml_b_pid ;
     return ;
   else
 
-    vrml_b_pid = str2num (out);
+    vrml_b_pid = -1;
+    server_works = 0;
+    if server_works
+      vrml_b_pid = str2num (out);
+    end
+
     if verbose, printf( "vrml_browse : OK\n"); end
   end
 

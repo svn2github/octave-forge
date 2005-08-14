@@ -57,3 +57,5 @@ s = sprintf (["            material ",sd," Material {\n",\
 	      "              diffuseColor  %8.3g %8.3g %8.3g \n",\
 	      "          }\n"],\
 	     dc);
+endfunction
+

@@ -104,3 +104,5 @@ y = y(:,iy) ;
 
 ## Shift back y into place 
 y = y+c(:,1:size(y,2)) ;
+endfunction
+

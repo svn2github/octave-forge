@@ -31,3 +31,5 @@ p = (v*d)*ones(1,size(x,2));
 
 x -= d*d'*(x-p) ;
 # x = p + (eye(N)-d*d')*(x-p) ;
+endfunction
+

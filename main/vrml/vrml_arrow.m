@@ -102,3 +102,5 @@ v = sprintf (["Group {\n",\
 	     [0,sz(2)/2+sz(1)-sz(2),0],\
 	     sz(3),\
 	     sz(2));
+endfunction
+

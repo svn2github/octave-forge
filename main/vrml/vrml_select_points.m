@@ -26,6 +26,8 @@
 ## Author : Etienne Grossmann <etienne@cs.uky.edu>
 function s = vrml_select_points (x, state, sphere)
 
+printf("vrml_select_points does not work any more. Sorry\n");
+return
 P = columns (x);
 
 if nargin < 2,
@@ -65,3 +67,5 @@ tp = "SpeakSphere {col1 %8.3f %8.3f %8.3f state %i pos %8.3g %8.3g %8.3g scale %
 s1 = sprintf (tp, [col1; state; x; diam*ones(3,P);1:P]);
 
 s = [s0,s1];
+endfunction
+

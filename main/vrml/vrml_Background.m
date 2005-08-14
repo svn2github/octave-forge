@@ -82,3 +82,5 @@ for [val,key] = hash,
   end
 end
 s = sprintf ("Background { \n%s}\n", body);
+endfunction
+

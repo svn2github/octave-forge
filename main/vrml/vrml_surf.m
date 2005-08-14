@@ -337,3 +337,5 @@ s = vrml_faces (pts, trgs, "col", col,\
 ## save_vrml("tmp.wrl",vrml_surf(x,y,z+1))
 ## save_vrml("tmp.wrl",vrml_surf(z,"col",[0.5,0,0],"tran",0.5),vrml_surf(z+1))
 
+endfunction
+

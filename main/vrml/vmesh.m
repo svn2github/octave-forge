@@ -152,7 +152,7 @@ medpts = (minpts + maxpts)/2;
 ptssz  = (maxpts - minpts);
 ptssz  = max (ptssz, max (ptssz/10));
 
-if frame, fr = vrml_frame (minpts-ptssz/10,
+if frame, fr = vrml_frame (minpts-ptssz/10,\
 			   "scale", ptssz * 1.2, "col",(ones(3)+eye(3))/2);
 else      fr = "";
 end
@@ -224,3 +224,5 @@ if ! nargout,  clear s; end
 
 
 ## %! test_vmesh
+endfunction
+

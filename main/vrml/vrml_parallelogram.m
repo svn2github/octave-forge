@@ -90,4 +90,8 @@ if border
   else				# but only if balls don't cover them
     s = [s,vrml_cyl(x(:,[1:columns(x),1]),"rad",borad,"emit",boemit)];
   end
+
 end
+
+endfunction
+

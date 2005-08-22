@@ -131,7 +131,7 @@ function ret = edit(file,state)
   ## if the file exists and is modifiable in place then edit it,
   ## otherwise copy it and then edit it.
   if !isempty(path)
-    fid = fopen(path,"r+");
+    fid = fopen(path,"r+t");
     if (fid >- 0)
       fclose(fid);
     else
@@ -283,7 +283,7 @@ SUCH DAMAGE.\
   endswitch
 
   ## Write the initial file (if there is anything to write)
-  fid = fopen(path, "w");
+  fid = fopen(path, "wt");
   if (fid<=0)
     error("edit: could not create %s", path);
   endif

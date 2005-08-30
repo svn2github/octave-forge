@@ -29,7 +29,7 @@ if(!is_struct(p)) # || !struct_contains(p, "acoord"))
     error("p must be a pdb struct");
 endif
 
-[f, err] = fopen(fname, "w");
+[f, err] = fopen(fname, "wt");
 if(f < 0)
     error("Could not open output file: %s", err);
 endif

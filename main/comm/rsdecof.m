@@ -52,7 +52,7 @@ function rsdecof(in, out, t)
     endif
   endif
 
-  try fid = fopen(in, "r");
+  try fid = fopen(in, "rt");
   catch
     error ("rsdecof: can not open input file");
   end
@@ -83,7 +83,7 @@ function rsdecof(in, out, t)
   msg = rsdec(gf(code,m), n, k, "beginning")';
   msg = msg(:);
 
-  try fid = fopen(out, "w+");
+  try fid = fopen(out, "w+t");
   catch
     error ("rsdecof; can not open output file");
   end

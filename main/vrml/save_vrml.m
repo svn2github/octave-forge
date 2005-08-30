@@ -98,8 +98,8 @@ if findstr(outname,"/"),
   outname = outname(max(findstr(outname,"/"))+1:size(outname,2)) ;
 end
 
-if append, fid = fopen(fname,"a");		# Saving.
-else       fid = fopen(fname,"w"); 
+if append, fid = fopen(fname,"at");		# Saving.
+else       fid = fopen(fname,"wt"); 
 end ;
 
 if fid == -1 , error(sprintf("save_vrml : unable to open %s",fname)); end

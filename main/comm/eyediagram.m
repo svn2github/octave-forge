@@ -168,7 +168,7 @@ function hout = eyediagram (x, n, _per, _off, str, h)
   catch 
     warning("eyediagram: temporary file %s will not be deleted!\n",tmpfile)
   end
-  fid = fopen(tmpfile,"w+");
+  fid = fopen(tmpfile,"w+t");
   if (fid == -1)
     error ("eyediagram: error opening temporary file");
   endif

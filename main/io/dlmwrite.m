@@ -20,7 +20,7 @@ function [ ret ] = dlmwrite (file, A, delim, r, c)
   if nargin < 4, r = 0; endif
   if nargin < 5, c = 0; endif
 
-  [fid,msg] = fopen(file,"w");
+  [fid,msg] = fopen(file,"wt");
   if (fid < 0)
     error(msg);
   else

@@ -33,7 +33,7 @@ function x = dlmread (filename, sep, row)
   if nargin < 2, sep = ","; endif
   if nargin < 3, row = 0; endif
 
-  fid = fopen(filename, "r");
+  fid = fopen(filename, "rt");
   if (fid >= 0)
     in = setstr(fread (fid)');
     fclose (fid);

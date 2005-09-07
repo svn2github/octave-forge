@@ -28,9 +28,9 @@
 ## to the points described by the matrices @var{XI}, @var{YI}. 
 ##
 ## If the last argument is a string, the interpolation method can
-## be specified. At the moment only 'linear' and 'nearest' methods
-## are provided. If it is omitted 'linear' interpolation  is 
-## assumed.
+## be specified. At the moment only 'linear', 'nearest' and cubic
+## methods are provided. If it is omitted 'linear' interpolation
+## is assumed.
 ##
 ## ZI = interp2 (Z, XI, YI) assumes X = 1:rows(Z) and Y = 1:columns(Z)
 ## 
@@ -47,6 +47,10 @@
 ##     * Simplify
 ## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
 ##     * Modified demo and test for new gnuplot interface
+## Add bicubic interpolation method
+## bug fix: fix the eat line bug when the last element of XI or YI 
+##   is negative or zero.
+## Author:      Hoxide <hoxide_dirac@yahoo.com.cn>
 
 function ZI = interp2 (varargin)
   Z = X = Y = xi = yi = [];
@@ -133,6 +137,9 @@ function ZI = interp2 (varargin)
     i = (XI(1, :) - xtable(xidx) > xtable(xidx + 1) - XI(1, :));
     j = (YI(:, 1) - ytable(yidx) > ytable(yidx + 1) - YI(:, 1));
     ZI = Z(yidx + j(:), xidx + i(:));
+  elseif strcmp (method, "cubic")
+    ## cubic paramer
+    ZI = bicubic(X, Y, Z, XI(1,:), YI(:,1));
   else
     error ("interpolation method not (yet) supported");
   endif

@@ -29,7 +29,7 @@
 
 function y=thfm(x,M)
 				#% minimal arg check only
-  if	nargin~=2||~isstr(M)||isstr(x)	
+  if	nargin~=2||~ischar(M)||ischar(x)	
     usage ("y = thfm (x, MODE)");
   endif
 

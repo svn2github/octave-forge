@@ -110,7 +110,7 @@ function [p, f, c, par, t] = bchpoly(nn, k, varargin)
 
   for i=1:length(varargin)
     arg = varargin{i};
-    if (isstr(arg))
+    if (ischar(arg))
       probe = 1;
       if (nargout > 1)
 	error ("bchpoly: only one output argument allowed when probing valid codes");

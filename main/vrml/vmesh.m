@@ -71,7 +71,7 @@ level = [];
 lcol = [7 7 7]/10;
 ltran = 0.3;
 
-if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
+if (nargin <= 1) || ischar(y),	# Cruft to allow not passing x and y
   zz = x ;
   [R,C] = size (zz);
   [xx,yy] = meshgrid (linspace (-1,1,C), linspace (-1,1,R)); 

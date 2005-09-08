@@ -38,7 +38,7 @@ function H = convhull (x,y,opt)
   if (is_vector(x) && is_vector(y) && (length(x) == length(y)) )
     if (nargin == 2)
       i = convhulln([x(:), y(:)]);
-    elseif isstr(opt)
+    elseif ischar(opt)
       i = convhulln([x(:), y(:)], opt);
     else
       error("third argument must be a string");

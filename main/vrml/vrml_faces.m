@@ -88,7 +88,7 @@ function s = vrml_faces (x,f,varargin)
   i = 1;
   while nargin>=i	
     tmp = nth (varargin, i++);
-    if ! isstr(tmp) ,
+    if ! ischar(tmp) ,
       error ("vrml_faces : Non-string option : \n") ;
       ## keyboard
     end
@@ -149,7 +149,7 @@ function s = vrml_faces (x,f,varargin)
 			 );
     
 				# If texture has been provided
-  elseif isstr (tex),		# Assume triangles
+  elseif ischar (tex),		# Assume triangles
 
     ## printf ("Using texture\n");
     

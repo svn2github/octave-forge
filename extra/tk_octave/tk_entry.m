@@ -58,7 +58,7 @@ for i=1:nopt
 	tk_cmd( sprintf( "if {[info exists \"val_%d_\"]} {unset val_%d_}\n",
 			i, i));
 
-	if (isstr(val))									# string
+	if (ischar(val))									# string
 		tk_cmd( sprintf( "set val_%d \"%s\"", i, val) );	# work value
 		tk_cmd( sprintf( "set val_%d_ \"%s\"", i, val) );	# original value
 		cmd_ok = strcat( cmd_ok, sprintf("val_%d = \\\"$val_%d\\\";", i, i));

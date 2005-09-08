@@ -38,7 +38,7 @@ function [s, i] = sortrows (m, c)
     indices = c (:);
   endif
 
-  if (isstr (m)) 
+  if (ischar (m)) 
     s = toascii (m);
   else
     s = m;
@@ -55,7 +55,7 @@ function [s, i] = sortrows (m, c)
     s = s ( idx, : );
     i = i (idx );
   endfor
-  if (isstr (m))
+  if (ischar (m))
     s = setstr(s);
   endif
 endfunction

@@ -69,7 +69,7 @@ function yout = apkconst(varargin)
 
   for i=1:length(varargin)
     arg = varargin{i};
-    if (isstr(arg))
+    if (ischar(arg))
       if (strcmp(arg,"n"))
 	try
 	  text();

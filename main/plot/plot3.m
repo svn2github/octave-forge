@@ -54,7 +54,7 @@ function plot3(varargin)
     for arg = 1:length(varargin)
       new = nth (varargin, arg);
       
-      if (isstr (new))
+      if (ischar (new))
 	if (! z_set)
 	  error ("plot3: needs x, y, z");
 	endif

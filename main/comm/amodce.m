@@ -100,7 +100,7 @@ function y = amodce (x, Fs, typ, varargin)
   num = [];
   den = [];
   narg = 1;
-  if (!isstr(typ))
+  if (!ischar(typ))
     error ("amodce: modulation type must be a string");
   elseif (strcmp(typ,"am") || strcmp(typ,"amdsb-tc"))
     if (length(varargin) > 0)

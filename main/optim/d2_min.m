@@ -152,7 +152,7 @@ if tol <= 0
   printf ("d2_min : tol=%8.3g <= 0\n",tol) ;
 end
 
-if !isstr (d2f) || !isstr (f)
+if !ischar (d2f) || !ischar (f)
   printf ("d2_min : f and d2f should be strings!\n");
 end
 

@@ -65,7 +65,7 @@ if rem (nargs, 2), error ("odd number of optional args"); end
 
 i=1;
 while i<nargs
-  if ! isstr (tmp = varargin{i++}), error ("non-string option"); end
+  if ! ischar (tmp = varargin{i++}), error ("non-string option"); end
   if     strcmp (tmp, "op0")    , op0     = varargin{i++};
   elseif strcmp (tmp, "op1")    , op1     = varargin{i++};
   elseif strcmp (tmp, "extra")  , extra   = varargin{i++};
@@ -116,7 +116,7 @@ optread = 0;
 while nread < length (args)
 
   oname = name = args{++nread};
-  if ! isstr (name)		# Whoa! Option name is not a string
+  if ! ischar (name)		# Whoa! Option name is not a string
     
     if !optread && length (lextra)
       op.(lextra{1}) = args{nread};

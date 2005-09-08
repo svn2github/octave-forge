@@ -37,7 +37,7 @@ function prettyprint(mat, rlabels, clabels)
 	printf("\n");
 	k = rows(mat);
 	for i = 1:k
-		if isstr(rlabels(i,:))
+		if ischar(rlabels(i,:))
 			printf(rlabels(i,:));
 		else
 			printf("%i", rlabels(i,:));

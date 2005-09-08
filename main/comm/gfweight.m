@@ -47,7 +47,7 @@ function w = gfweight (arg1, arg2)
     [ign, gen] = cyclgen(arg2, arg1);
   elseif (ismatrix(arg1))
     if (nargin == 2)
-      if (isstr(arg2))
+      if (ischar(arg2))
 	if (strcmp(arg2,"gen"))
 	  gen = arg1;
 	elseif (strcmp(arg2,"par"))

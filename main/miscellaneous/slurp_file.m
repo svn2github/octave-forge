@@ -21,7 +21,7 @@
 ## Author  : Etienne Grossmann <etienne@cs.uky.edu>
 function s = slurp_file (f)
 
-if ! isstr (f),  error ("slurp_file :  f  is not a string"); end
+if ! ischar (f),  error ("slurp_file :  f  is not a string"); end
 if isempty (f), error ("slurp_file :  f  is empty"); end
 
 s = "";

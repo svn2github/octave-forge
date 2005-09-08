@@ -110,7 +110,7 @@ function [num, rate, ind] = biterr (a, b, varargin)
   k = 0;
   for i =1:length(varargin)
     arg = varargin{i};
-    if (isstr(arg))
+    if (ischar(arg))
       if (strcmp(arg,"row-wise"))
 	if (strcmp(type,"column"))
 	  error ("biterr: row-wise comparison not possible with column inputs");

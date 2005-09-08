@@ -38,7 +38,7 @@ function [y,dy] = polyconf(p,x,varargin)
   for i=1:length(varargin)
     v = varargin{i};
     if isstruct(v), s = v;
-    elseif isstr(v), typestr = v;
+    elseif ischar(v), typestr = v;
     elseif isscalar(v), alpha = v;
     else s = [];
     end

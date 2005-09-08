@@ -53,7 +53,7 @@ col = [0.3, 0.4, 0.9] ;
 smooth = creaseAngle = nan ;
 nargin = nargin();
 
-if (nargin <= 1) || isstr(y),	# Cruft to allow not passing x and y
+if (nargin <= 1) || ischar(y),	# Cruft to allow not passing x and y
   zz = x ;
   [R,C] = size (zz);
   xx = ones(R,1)*[1:C] ;

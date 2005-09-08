@@ -35,7 +35,7 @@ function save_vrml(outname, varargin)
 verbose = 0;
 append = 0;
 
-if ! isstr(outname) ,
+if ! ischar(outname) ,
   error "save_vrml wants a string as first arg"
 end
 

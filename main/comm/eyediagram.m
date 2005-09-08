@@ -119,7 +119,7 @@ function hout = eyediagram (x, n, _per, _off, str, h)
   if (nargin > 4)
     if (isempty(str))
       fmt = "w l 1";
-    elseif (isstr(str))
+    elseif (ischar(str))
       fmt = __pltopt__ ("eyediagram", str);
     else
       error ("eyediagram: plot format must be a string");

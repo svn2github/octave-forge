@@ -103,7 +103,7 @@ function y = ademodce (x, Fs, typ, varargin)
   num = [];
   den = [];
   narg = 1;
-  if (!isstr(typ))
+  if (!ischar(typ))
     error ("ademodce: modulation type must be a string");
   elseif (strcmp(typ,"am") || strcmp(typ,"amdsb-tc"))
     if (length(varargin) > 0)

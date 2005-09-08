@@ -37,7 +37,7 @@ elseif rem(nargin,2) != 1,
 endif
 	
 for i=1:2:nargin-1
-  if ! isstr(varargin{i}) ,
+  if ! ischar(varargin{i}) ,
     error('setfields: called with non-string key') ; 
   else
     eval( ['s.',varargin{i},'=varargin{i+1};'] ) ;

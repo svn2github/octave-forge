@@ -54,7 +54,7 @@ function [y, i, j] = unique (x, r)
     return
   endif
 
-  if isstr(x), y = toascii(y); endif
+  if ischar(x), y = toascii(y); endif
 
   if nargin == 2
     [y, i] = sortrows(y);
@@ -90,7 +90,7 @@ function [y, i, j] = unique (x, r)
   endif
   i (idx) = [];
 
-  if isstr(x), y = setstr(y); endif
+  if ischar(x), y = setstr(y); endif
 
 endfunction
 

@@ -103,7 +103,7 @@ end
 				# Transform "off" into 0, other strings into
 				# 1.
 for [v,k] = opm
-  if isstr (v)
+  if ischar (v)
     if strcmp (v,"off")
       opm = setfield (opm, k,0);
     else

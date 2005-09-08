@@ -79,9 +79,9 @@ opt = optimset ("backend","on");
 [method,ctl] = fminunc ("ff",x0, opt, y0,1);
 
 cnt++;
-if ! isstr (method) || ! strcmp (method,"nelder_mead_min")
+if ! ischar (method) || ! strcmp (method,"nelder_mead_min")
   if verbose
-    if isstr (method)
+    if ischar (method)
       prn ("Wrong method '%s' != 'nelder_mead_min' was chosen\n", method);
     else
       prn ("fminunc pretends to use a method that isn't a string\n");

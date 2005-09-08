@@ -49,7 +49,7 @@ function ret = delaunay (x,y,opt)
   if (is_vector(x) && is_vector(y) && (length(x) == length(y)) )
     if (nargin == 2)
       tri = delaunayn([x(:), y(:)]);
-    elseif isstr(opt)
+    elseif ischar(opt)
       tri = delaunayn([x(:), y(:)], opt);
     else
       error("third argument must be a string");

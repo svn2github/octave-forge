@@ -20,7 +20,7 @@ function dx = deriv(f,x0,varargin)
   if(nargin < 2)
     error("not enough arguments\n");
   endif
-  if(!isstr(f))
+  if(!ischar(f))
     error("The first argument must be a string\n");
   endif
   if(!is_scalar(x0))

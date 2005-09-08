@@ -39,7 +39,7 @@ function tetr = delaunay3 (x,y,z,opt)
       (length(x) == length(y)) && (length(x) == length(z)))
     if (nargin == 3)
       tetr = delaunayn([x(:),y(:),z(:)]);
-    elseif isstr(opt)
+    elseif ischar(opt)
       tetr = delaunayn([x(:),y(:),z(:)], opt);
     else
       error("fourth argument must be a string");

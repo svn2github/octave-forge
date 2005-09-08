@@ -49,7 +49,7 @@ function grid (mode)
       mode = "";
     endif
   elseif (nargin == 1)
-    if (isstr (mode))
+    if (ischar (mode))
       if (strcmp ("off", mode))
         mode = "";
       elseif (strcmp ("on", mode))

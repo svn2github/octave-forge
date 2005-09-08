@@ -39,7 +39,7 @@ end
 rmf = ' ';
 for arg=1:length(varargin)
   tmp = nth (varargin, arg) ;
-  if ! isstr(tmp) ,
+  if ! ischar(tmp) ,
     error('rmfield: called with non-string key');
   else
     rmf = [rmf,tmp,' '] ;

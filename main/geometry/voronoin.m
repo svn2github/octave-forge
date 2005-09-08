@@ -45,7 +45,7 @@ function [C, F] = voronoin (pts, opt)
 	if (np > dims)
 		if (nargin == 1)
 			[C, F, infi] = __voronoi__ (pts);
-		elseif isstr(opt)
+		elseif ischar(opt)
  			[C, F, infi] = __voronoi__ (pts, opt);
 		else
 			error("second argument must be a string");

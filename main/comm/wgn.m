@@ -63,7 +63,7 @@ function y = wgn (m, n, p, varargin)
 
   for i=1:length(varargin)
     arg = varargin{i};
-    if (isstr(arg))
+    if (ischar(arg))
       if (strcmp(arg,"real"))
         out = "real";  
       elseif (strcmp(arg,"complex"))

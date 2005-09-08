@@ -135,7 +135,7 @@ function curr_axis = axis (ax, varargin)
     warning("Not implemented in Grace");
     curr_axis = __current_axis__;
 
-  elseif (isstr (ax))
+  elseif (ischar (ax))
     ax = tolower (ax);
     len = length (ax);
 

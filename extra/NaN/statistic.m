@@ -156,7 +156,7 @@ else
                     		varargout{k}  = getfield(R,upper(fun{k}));
 	                end;
     	        end;
-	elseif isstr(fun),
+	elseif ischar(fun),
             	if strcmp(fun(1:2),'CM') 
                     	oo = str2num(fun(3:length(fun)));
                 	varargout{1}  = sumskipnan(i.^oo,DIM)./n1;

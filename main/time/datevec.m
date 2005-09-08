@@ -38,7 +38,7 @@ function [Y,M,D,h,m,s] = datevec(date,P)
   endif
   if nargin < 2, P = []; endif
 
-  if (isstr(date) || iscellstr(date))
+  if (ischar(date) || iscellstr(date))
     ## handle strings
     if isempty(P)
       tm = localtime(time);

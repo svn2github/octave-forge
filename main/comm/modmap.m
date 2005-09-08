@@ -132,7 +132,7 @@ function y = modmap(varargin)
     error ("modmap: too many output arguments");
   endif
 
-  if (!isstr(method))
+  if (!ischar(method))
     error ("modmap: mapping method to use must be a string");
   endif
 

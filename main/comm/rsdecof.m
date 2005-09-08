@@ -40,7 +40,7 @@ function rsdecof(in, out, t)
     usage("rsdecof (in, out [, t])");
   endif
 
-  if (!isstr(in) || !isstr(out))
+  if (!ischar(in) || !ischar(out))
     error ("rsdecof: input and output filenames must be strings");
   endif
 

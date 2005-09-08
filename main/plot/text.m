@@ -79,7 +79,7 @@ function text(varargin)
 
     if nargin < 3, usage(usage_str); endif
     arg = varargin{3};
-    if isstr(arg)
+    if ischar(arg)
       str=arg;
       n=4;
     else
@@ -88,7 +88,7 @@ function text(varargin)
       str=varargin{4};
       n=5;
     endif
-    if !isstr(str), usage(usage_str); endif
+    if !ischar(str), usage(usage_str); endif
   else
     n=1;
   endif
@@ -97,10 +97,10 @@ function text(varargin)
   if rem(nargin-(n-1), 2) != 0, error(usage_str); endif
   for i=n:2:nargin
     prop=varargin{i}; val=varargin{i+1};
-    if !isstr(prop), error(usage_str); endif
+    if !ischar(prop), error(usage_str); endif
     prop = tolower(prop);
     if strcmp(prop, "fontname"),
-      if !isstr(val), 
+      if !ischar(val), 
 	error("text 'FontName' expects a string"); endif
       fontname = val;
     elseif strcmp(prop, "fontsize"),
@@ -108,15 +108,15 @@ function text(varargin)
 	error("text 'FontSize' expects a scalar"); endif
       fontsize = val;
     elseif strcmp(prop, "horizontalalignment"),
-      if isstr(val), val=tolower(val); endif
-      if !isstr(val) || ...
+      if ischar(val), val=tolower(val); endif
+      if !ischar(val) || ...
 	    !(strcmp(val,"left")||strcmp(val,"right")||strcmp(val,"center"))
 	error("text 'HorizontalAlignment' expects 'right','left' or 'center'");
       endif
       align = val;
    elseif strcmp(prop, "units")
-      if isstr(val), val=tolower(val); endif
-      if !isstr(val)
+      if ischar(val), val=tolower(val); endif
+      if !ischar(val)
 	error("text 'Units' expects 'data' or 'normalized'");
       elseif strcmp(val,"data")
 	units="first";
@@ -141,7 +141,7 @@ function text(varargin)
 	rotate="rotate";
       endif
     elseif strcmp(prop, "string")
-      if !isstr(val), error("text 'String' expects a string"); endif
+      if !ischar(val), error("text 'String' expects a string"); endif
       str = val;
     else
       warning(["ignoring property ", prop]);

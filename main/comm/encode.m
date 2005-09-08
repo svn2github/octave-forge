@@ -102,7 +102,7 @@ function [code, added] = encode(msg, n, k, typ, opt)
   endif
 
   if (nargin > 3)
-    if (!isstr(typ))
+    if (!ischar(typ))
       error ("encode: type argument must be a string");
     else
       ## Why the hell did matlab decide on such an ugly way of passing 2 args!

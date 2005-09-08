@@ -65,7 +65,7 @@ function return_type = map (fun_str,data_struct,varargin)
 
     error("map: incorrect number of arguments; expecting at least two.");
 
-  elseif ( !isstr(fun_str) )
+  elseif ( !ischar(fun_str) )
 
     error("map: first argument must be a string: ", fun_str);
 

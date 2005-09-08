@@ -42,7 +42,7 @@ function stem(x, y, linetype)
   endif
   if nargin < 2, linetype=y=[]; endif
   if nargin < 3, linetype=[]; endif
-  if isstr(y)
+  if ischar(y)
     linetype = y;
     y = [];
   endif

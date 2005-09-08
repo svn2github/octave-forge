@@ -95,7 +95,7 @@ function [num, rate, ind] = symerr (a, b, _flag)
   endif
 
   if (nargin > 2)
-    if (isstr(_flag))
+    if (ischar(_flag))
       if (strcmp(_flag,"row-wise"))
 	if (strcmp(type,"column"))
 	  error ("symerr: row-wise comparison not possible with column inputs");

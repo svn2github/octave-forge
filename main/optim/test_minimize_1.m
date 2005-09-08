@@ -92,9 +92,9 @@ end
 [method,ctl] = minimize ("ff",list (x0,y0,1),"order",0,"backend");
 
 cnt++;
-if ! isstr (method) || ! strcmp (method,"nelder_mead_min")
+if ! ischar (method) || ! strcmp (method,"nelder_mead_min")
   if verbose
-    if isstr (method)
+    if ischar (method)
       prn ("Wrong method '%s' != 'nelder_mead_min' was chosen\n", method);
     else
       prn ("minimize pretends to use a method that isn't a string\n");

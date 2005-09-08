@@ -12,7 +12,7 @@ function Y = base64encode(X)
   if (nargin != 1)
     usage("Y = base64encode(X)");
   endif
-  if (isstr(X))
+  if (ischar(X))
     X = toascii(X);
   elseif (any(X(:)) != fix(X(:)) || any(X(:) < 0) || any(X(:) > 255))
     error("base64encode is expecting integers in the range 0 .. 255");

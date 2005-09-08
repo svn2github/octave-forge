@@ -32,10 +32,10 @@
 function n = datenum(Y,M,D,h,m,s)
   persistent monthstart = [306,337,0,31,61,92,122,153,184,214,245,275];
 
-  if nargin == 0 || (nargin > 2  && isstr(Y)) || nargin > 6
+  if nargin == 0 || (nargin > 2  && ischar(Y)) || nargin > 6
     usage("n=datenum('date' [, P]) or n=datenum(Y, M, D [, h, m [, s]])");
   endif
-  if isstr(Y)
+  if ischar(Y)
     if nargin < 2, M=[]; endif
     [Y,M,D,h,m,s] = datevec(Y,M);
   else

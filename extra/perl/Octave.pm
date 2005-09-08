@@ -796,7 +796,7 @@ sub store_size
 {
    my $self = shift;
    my $varname= $self->name;
-   my $code = "disp([size($varname), is_complex($varname), isstr($varname)] )";
+   my $code = "disp([size($varname), is_complex($varname), ischar($varname)] )";
    my $size=  Inline::Octave::interpret(0, $code );
    croak "Problem constructing Matrix" unless
        $size =~ /^ +(\d+) +(\d+) +([01]) +([01])/;
@@ -1120,6 +1120,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.30  2005/09/08 02:00:16  pkienzle
+[for Bill Denney] isstr -> ischar
+
 Revision 1.29  2005/03/07 21:45:15  aadler
 fixes for versions
 

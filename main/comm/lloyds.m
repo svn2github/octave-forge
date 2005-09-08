@@ -99,7 +99,7 @@ function [table, code, dist, reldist] = lloyds(sig, init, tol, type)
 
   if (nargin < 4)
     type = "centroid";
-  elseif (!isstr(type))
+  elseif (!ischar(type))
     error ("lloyds: expecting string argument for type");
   endif
 

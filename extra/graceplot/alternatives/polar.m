@@ -34,14 +34,14 @@
 function polar (x1, x2, fmt)
 
   if (nargin == 3)
-    if (isstr (fmt))
+    if (ischar (fmt))
       fmt = __pltopt__ ("polar", fmt);
     else
       error ("polar: third argument must be a string");
     endif
     __plr2__ (x1, x2, fmt);
   elseif (nargin == 2)
-    if (isstr (x2))
+    if (ischar (x2))
       fmt = __pltopt__ ("polar", x2);
       __plr1__ (x1, fmt);
     else

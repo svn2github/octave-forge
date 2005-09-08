@@ -34,7 +34,7 @@ function [d,s] = weekday(date,P)
   if (nargin < 1 || nargin > 2)
     usage("d = weekday(date [, P])");
   endif
-  if isstr(date)
+  if ischar(date)
     if nargin < 2, P = []; endif
     date = datenum(date, P);
   endif

@@ -29,7 +29,7 @@ static nname = struct ("col"        , "Color",
 		       "Scalar"     , "Scalar");
 if struct_contains (nname, typ)
   typs = nname.(typ);
-elseif isstr(typ)
+elseif ischar(typ)
   e2 = leval ("sprintf",\
 	      append (list("    '%s'\n"), fieldnames (nname)));
   error ("vrml_interp : Unknown type '%s'. Should be in:\n%s",typ,e2);

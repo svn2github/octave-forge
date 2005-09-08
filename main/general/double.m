@@ -25,7 +25,7 @@
 
 function d = double(in)
 
-  if isstr(in)
+  if ischar(in)
       d = mod(in+0,256);
   else
       d = in;

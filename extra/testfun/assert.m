@@ -73,8 +73,8 @@ function assert(cond, expected, tol)
       end
     endif
 
-  elseif (isstr (expected))
-    iserror = (!isstr (cond) || !strcmp (cond, expected));
+  elseif (ischar (expected))
+    iserror = (!ischar (cond) || !strcmp (cond, expected));
 
   elseif (iscell(expected))
     if (!iscell (cond) || any(size(cond)!=size(expected)))

@@ -101,7 +101,7 @@ function legend (varargin)
       
   ## Test for strings
 
-  if (isstr(str)) && (args == 1)
+  if (ischar(str)) && (args == 1)
     _str = tolower(deblank(str));
     _replot = 1;
     switch _str
@@ -130,7 +130,7 @@ function legend (varargin)
 
   ## Test for data type (0 -> list of string, 1 -> array of string)
 
-  if (length(str) != 0) && (isstr(str(1,:))) && (rows(str) != 1) || iscell(str)
+  if (length(str) != 0) && (ischar(str(1,:))) && (rows(str) != 1) || iscell(str)
     data_type = 1;
     va_arg_cnt = 1;
 
@@ -231,7 +231,7 @@ function legend (varargin)
       else
         leg = data{fig+1};
       endif;
-      if (!isstr(leg))
+      if (!ischar(leg))
         pos_leg = leg;
         leg = "\"\"";
       elseif (length(deblank(leg)) == 0)
@@ -273,7 +273,7 @@ function legend (varargin)
   
   while (args-- > 0)
     pos_leg = nth (varargin, va_arg_cnt++) ;
-    if (isstr(pos_leg))
+    if (ischar(pos_leg))
       pos_leg = 0;
     endif;
   endwhile;

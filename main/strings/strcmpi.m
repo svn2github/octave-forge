@@ -32,7 +32,7 @@ function status = strcmpi(s1, s2)
   endif
 
   status = 0;		# Assume strings are different
-  if (isstr (s1) && isstr(s2))
+  if (ischar (s1) && ischar(s2))
     status = strcmp(upper(s1),upper(s2));
   endif
 

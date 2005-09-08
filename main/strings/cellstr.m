@@ -5,7 +5,7 @@
 ## This program is public domain.
 
 function c = cellstr(s)
-  if nargin != 1 || !isstr(s)
+  if nargin != 1 || !ischar(s)
     usage ("c = cellstr(s)");
   else
     for i=rows(s):-1:1

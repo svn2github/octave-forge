@@ -45,14 +45,14 @@ function d = bi2de (b, p, f)
       p = 2;
       f = 'right-msb';
      case 2,
-      if (isstr(p))
+      if (ischar(p))
         f = p;
         p = 2;
       else
         f = 'right-msb';
       endif
      case 3,
-      if (isstr(p))
+      if (ischar(p))
         tmp = f;
         f = p;
         p = tmp;

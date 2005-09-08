@@ -52,7 +52,7 @@
 
 function B = funm(A, name)
 
-  if (nargin != 2 || !isstr(name) || isstr(A))
+  if (nargin != 2 || !ischar(name) || ischar(A))
     usage ("B = funm (A, 'f' [, args])");
   endif
 

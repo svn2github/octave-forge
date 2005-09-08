@@ -53,30 +53,30 @@ function b = de2bi(d, n, p, f)
     f = 'right-msb';
   elseif (nargin == 2)
     p = 2;
-    if (isstr(n))
+    if (ischar(n))
       f = n;
       n = floor ( log (max (max (d), 1)) ./ log (p) ) + 1;
     else
       f = 'right-msb';
     endif     
   elseif (nargin == 3)
-    if (isstr(n))
+    if (ischar(n))
       f = n;
       n = p
       p = 2;
-    elseif (isstr(p))
+    elseif (ischar(p))
       f = p;
       p = 2;
     else
       f = 'right-msb';
     endif     
   elseif (nargin == 3)
-    if (isstr(n))
+    if (ischar(n))
       tmp = f
       f = n;
       n = p
       p = tmp;
-    elseif (isstr(p))
+    elseif (ischar(p))
       tmp = f;
       f = p;
       p = tmp;

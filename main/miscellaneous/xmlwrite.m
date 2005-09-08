@@ -39,7 +39,7 @@ function nb = xmlwrite (filename, value, name)
   
   ## Get the file identificator
   isopen = false;
-  if isstr(filename)
+  if ischar(filename)
 
     ## Check file name
     sn = split(filename, ".");
@@ -71,13 +71,13 @@ function nb = xmlwrite (filename, value, name)
   
   ## Process by type
 
-  if isstr(value) && (rows(value) <= 1)
+  if ischar(value) && (rows(value) <= 1)
     ## String type
     
     fprintf (fd, "%s<string%s length=\"%d\">%s</string>%s",
 	     indent, opt, length(value), value, separator);
     
-  elseif isstr(value)
+  elseif ischar(value)
     ## String array type
     
     fprintf (fd, "%s<array%s rows=\"%d\">\n", indent, opt, rows(value));

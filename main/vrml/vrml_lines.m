@@ -47,7 +47,7 @@ i=1;
 while args>=i ,
 
   tmp = nth (varargin, i++) ;	# pos 2.1.39
-  if ! isstr(tmp) ,
+  if ! ischar(tmp) ,
     error ("vrml_lines : Non-string option : \n") ;
     ## keyboard
 

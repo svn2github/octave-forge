@@ -39,7 +39,7 @@
 
 function [Z,w] = strtoz(s)
 
-if(isstr(s))
+if(ischar(s))
   tabfile = file_in_loadpath("elements_struct.mat");
   load("-force", tabfile);
   

@@ -48,9 +48,9 @@ function [ return_value ] = append_save ( filename,
 
   if ( nargin < 3 )
     error("append_save: needs three arguments.");
-  elseif ( !isstr(filename) )
+  elseif ( !ischar(filename) )
     error("append_save: filename must be a string.");
-  elseif ( !isstr(option) )
+  elseif ( !ischar(option) )
     error("append_save: option must be a string." );
   elseif ( !iscell(var_val_cell) )
     error("append_save: variable-value pairs must be cells.")
@@ -62,7 +62,7 @@ function [ return_value ] = append_save ( filename,
       elseif ( ( columns( current_cell ) != 2 ) 
 	        || ( rows( current_cell ) != 1 ) )
 	error("append_save: variable-value pairs must be 1x2 cells.")
-      elseif ( !isstr(current_cell{1} ) )
+      elseif ( !ischar(current_cell{1} ) )
 	error("append_save: variable in pair must be a string." )
       endif
     endfor

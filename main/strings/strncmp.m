@@ -32,7 +32,7 @@ function status = strncmp(s1, s2, n)
   endif
 
   status = 0;		# Assume strings are different
-  if (isstr (s1) && isstr(s2))
+  if (ischar (s1) && ischar(s2))
     c1 = columns (s1);
     c2 = columns (s2);
     if (n < 1)		

@@ -61,13 +61,13 @@ function ZI = interp2 (varargin)
   case 1
     Z = varargin{1};
   case 2
-    if isstr(varargin{2})
+    if ischar(varargin{2})
       [Z,method] = deal(varargin{:});
     else
       [Z,n] = deal(varargin{:});
     endif
   case 3
-    if isstr(varargin{3})
+    if ischar(varargin{3})
       [Z,n,method] = deal(varargin{:});
     else
       [Z,XI,YI] = deal(varargin{:});
@@ -87,7 +87,7 @@ function ZI = interp2 (varargin)
   if !isscalar(n), error("interp2 expected scalar n"); endif
   if !isnumeric(X) || !isnumeric(Y), error("interp2 expected numeric X,Y"); endif
   if !isnumeric(XI) || !isnumeric(YI), error("interp2 expected numeric XI,YI"); endif
-  if !isstr(method), error("interp2 expected string 'method'"); endif
+  if !ischar(method), error("interp2 expected string 'method'"); endif
 
   % Define X,Y,XI,YI if needed
   [zr, zc] = size (Z);

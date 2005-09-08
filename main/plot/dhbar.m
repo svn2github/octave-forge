@@ -33,7 +33,7 @@ function dhbar(X,btype)
   if nargin<2
     btype='stack';
   end
-  if isstr(btype)~=1
+  if ischar(btype)~=1
     error('second argument has to be a string!!!!');
   end
 

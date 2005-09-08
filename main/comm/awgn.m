@@ -65,7 +65,7 @@ function y = awgn (x, snr, varargin)
   
   for i=1:length(varargin)
     arg = varargin{i};
-    if (isstr(arg))
+    if (ischar(arg))
       if (strcmp(arg,"measured"))
         meas = 1;  
       elseif (strcmp(arg,"dB"))

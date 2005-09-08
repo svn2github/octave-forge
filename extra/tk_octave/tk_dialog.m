@@ -40,7 +40,7 @@ if (nargin < 5 )
   return
 endif
 
-if (! (isstr(title) & isstr(text) & isstr(bitmap) & is_scalar(default)))
+if (! (ischar(title) & ischar(text) & ischar(bitmap) & is_scalar(default)))
 	error("'title', 'text' and 'bitmap' must be strings, and 'default' must be scalar.\n");
 	return
 endif
@@ -65,7 +65,7 @@ cmd = sprintf("tk_dialog .top_tk_dialog \"%s\" \"%s\" \"%s\" %d", title, text, b
 
 for argnum=1:length(varargin)
 	arg = nth (varargin, argnum);
-	if (! isstr(arg))
+	if (! ischar(arg))
 		error("The arguments must be strings.\n");
 		return
 	endif

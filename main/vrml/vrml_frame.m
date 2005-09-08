@@ -51,7 +51,7 @@ while args && numeric_args<2,
 
 
   tmp = nth (varargin, numeric_args + 1);
-  if isstr (tmp), break; end
+  if ischar (tmp), break; end
   --args;
   numeric_args++;
   if numeric_args == 1, t = tmp ; 

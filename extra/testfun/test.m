@@ -208,7 +208,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   if (nargin < 3) 
     __fid = []; 
   endif
-  if (nargin < 1 || nargin > 3 || !isstr(__name) || !isstr(__flag))
+  if (nargin < 1 || nargin > 3 || !ischar(__name) || !ischar(__flag))
     usage("success = test('name', ['quiet'|'normal'|'verbose'], fid)");
   endif
   __batch = (!isempty(__fid));
@@ -216,7 +216,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   ## decide if error messages should be collected
   __close_fid = 0;
   if (__batch)
-    if (isstr(__fid))
+    if (ischar(__fid))
       __fid = fopen(__fid, "wt");
       if __fid < 0, error("could not open log file"); endif
       __close_fid = 1;

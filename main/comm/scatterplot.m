@@ -105,7 +105,7 @@ function hout = scatterplot (x, n, _off, str, h)
   if (nargin > 3)
     if (isempty(str))
       fmt = "w p 1";
-    elseif (isstr(str))
+    elseif (ischar(str))
       fmt = __pltopt__ ("scatterplot", str);
     else
       error ("scatterplot: plot format must be a string");

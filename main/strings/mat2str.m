@@ -30,8 +30,8 @@ if ( nargin<3||isempty(PLUS) )
 			   #		 for positive real elements
 endif
 
-if ( nargin<1||nargin>3||isstr(x)||is_struct(x)||\
-     isstr(n)||is_struct(n)||isstr(PLUS)||is_struct(PLUS) )
+if ( nargin<1||nargin>3||ischar(x)||is_struct(x)||\
+     ischar(n)||is_struct(n)||ischar(PLUS)||is_struct(PLUS) )
    usage ("mat2str( NUMERIC x, NUMERIC n, PLUS 0|1  )");
 endif
 

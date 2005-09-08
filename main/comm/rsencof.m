@@ -44,7 +44,7 @@ function rsencof(in, out, varargin)
     usage("rsencof (in, out [, t [, pad]])");
   endif
 
-  if (!isstr(in) || !isstr(out))
+  if (!ischar(in) || !ischar(out))
     error ("rsencof: input and output filenames must be strings");
   endif
 
@@ -52,7 +52,7 @@ function rsencof(in, out, varargin)
   pad = 1;
   for i=1:length(varargin)
     arg = varargin{i};
-    if (isstr(arg))
+    if (ischar(arg))
       if (strcmp(arg,"pad"))
 	pad = 1;
       elseif (strcmp(arg,"nopad"))

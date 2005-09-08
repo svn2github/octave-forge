@@ -43,7 +43,7 @@ dnode = struct ();
 i = j = k = 1;			# i:pos in new varargin, j:pos in headpar,
 				# k:pos is old varargin.
 while i <= length (varargin) && \
-      ! (isstr (nth (varargin,i)) && struct_contains (tpl, nth (varargin,i)))
+      ! (ischar (nth (varargin,i)) && struct_contains (tpl, nth (varargin,i)))
   
   if j <= length (headpar)
 
@@ -71,7 +71,7 @@ while i < length (varargin)
 
   k = nth (varargin, i++);	# Read key
 
-  if ! isstr (k)
+  if ! ischar (k)
     error ("vrml_TimeSensor : Arg n. %i should be a string, not a %s.",\
 	   i-1, typeinfo (k));
   end

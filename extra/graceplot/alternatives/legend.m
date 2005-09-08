@@ -98,7 +98,7 @@ function legend (varargin)
   
   ## Test for strings
 
-  if (isstr(str)) && (args == 1)
+  if (ischar(str)) && (args == 1)
     _str = tolower(deblank(str));
     _replot = 1;
     switch _str
@@ -130,7 +130,7 @@ function legend (varargin)
   endif
 
 
-  if(isstr(str) && size(str,1) > 1)
+  if(ischar(str) && size(str,1) > 1)
     data = cellstr(str);
     args--;
   elseif(iscell(str))
@@ -145,7 +145,7 @@ function legend (varargin)
   pos_leg = NaN;
 
   i = 1;
-  while(i <= nb_data && isstr(data{i}))
+  while(i <= nb_data && ischar(data{i}))
     __grcmd__(sprintf("s%d legend \"%s\"", i-1, data{i}));
     i++;
   endwhile

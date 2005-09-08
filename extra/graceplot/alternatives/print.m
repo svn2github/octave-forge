@@ -126,7 +126,7 @@ function print(varargin)
 
   for i=1:nargin
     arg = nth (varargin, va_arg_cnt++);
-    if isstr(arg)
+    if ischar(arg)
       if strcmp(arg, "-color")
 	use_color = 1;
       elseif strcmp(arg, "-mono")

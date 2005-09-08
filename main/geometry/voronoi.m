@@ -62,7 +62,7 @@ function [varargout] = voronoi (x, y, plt, opt)
 	endif
 
         if (nargin == 4)
-		if (! isstr (opt))
+		if (! ischar (opt))
 			error ("fourth argument must be a string");
 		endif
 	else

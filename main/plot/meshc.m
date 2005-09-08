@@ -59,7 +59,7 @@ function meshc (x, y, z)
       error ("meshc: argument must be a matrix");
     endif
   elseif (nargin == 3)
-    if (is_vector (x) && is_vector (y) && is_matrix (z))
+    if (isvector (x) && isvector (y) && is_matrix (z))
       xlen = length (x);
       ylen = length (y);
       if (xlen == columns (z) && ylen == rows (z))

@@ -27,8 +27,8 @@
 
 function __plt3__ (x, y, z, fmt)
 
-  if (is_vector(x) && is_vector(y))
-    if (is_vector(z))
+  if (isvector(x) && isvector(y))
+    if (isvector(z))
       x = x(:); y=y(:); z=z(:);
     elseif (length(x) == rows(z) && length(y) == columns(z))
       error("plot3: [length(x), length(y)] must match size(z)");

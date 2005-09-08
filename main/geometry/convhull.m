@@ -35,7 +35,7 @@ function H = convhull (x,y,opt)
     usage ("convhull(x,y[,opt])");
   endif
 
-  if (is_vector(x) && is_vector(y) && (length(x) == length(y)) )
+  if (isvector(x) && isvector(y) && (length(x) == length(y)) )
     if (nargin == 2)
       i = convhulln([x(:), y(:)]);
     elseif ischar(opt)

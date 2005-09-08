@@ -46,7 +46,7 @@ function ret = delaunay (x,y,opt)
     usage ("delaunay(x,y[,opt])");
   endif
 
-  if (is_vector(x) && is_vector(y) && (length(x) == length(y)) )
+  if (isvector(x) && isvector(y) && (length(x) == length(y)) )
     if (nargin == 2)
       tri = delaunayn([x(:), y(:)]);
     elseif ischar(opt)

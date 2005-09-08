@@ -50,7 +50,7 @@
 function idx=lookup(table,xi)
   if isempty (table)
     idx = zeros(size(xi));
-  elseif is_vector(table)
+  elseif isvector(table)
     [nr, nc] = size(xi);
     lt=length(table);
     if ( table(1) > table(lt) )

@@ -42,7 +42,7 @@ function [rx, ry, rz] = griddata (x,y,z,xi,yi)
   if !all( (size(x)==size(y)) & (size(x)==size(z)) )
     error('x,y,z must be vectors of same length');
   endif
-  if is_vector(xi) && is_vector(yi), [xi,yi]=meshgrid(xi,yi); endif
+  if isvector(xi) && isvector(yi), [xi,yi]=meshgrid(xi,yi); endif
   if any(size(xi)!=size(yi))
     error('xi and yi must be vectors or matrices of same size');
   endif

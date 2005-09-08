@@ -35,7 +35,7 @@ function tetr = delaunay3 (x,y,z,opt)
     usage ("delaunay3(x,y,z[,opt])");
   endif
 
-  if (is_vector(x) && is_vector(y) &&is_vector(z) && \
+  if (isvector(x) && isvector(y) &&isvector(z) && \
       (length(x) == length(y)) && (length(x) == length(z)))
     if (nargin == 3)
       tetr = delaunayn([x(:),y(:),z(:)]);

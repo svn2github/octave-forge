@@ -41,7 +41,7 @@ function I = trapz (X, Y)
       error ("argument must be vector or matrix");
     endif
     
-    if (is_vector(X))
+    if (isvector(X))
       X=X(:);
     endif
 
@@ -67,7 +67,7 @@ function I = trapz (X, Y)
       error ("X and Y must have same shape");
     endif
 
-    if (is_vector (X))
+    if (isvector (X))
       X = X (:); Y = Y (:);
     endif
 

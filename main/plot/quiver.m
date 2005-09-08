@@ -47,7 +47,7 @@ function quiver (x, y, u, v)
     u = x; v = y; x = 1:columns(u); y= 1:rows(u);
   endif
 
-  if is_vector(x) && is_vector(y) && !is_vector(u)
+  if isvector(x) && isvector(y) && !isvector(u)
     [nr, nc] = size(u);
     if (length(x) != nc || length(y) != nr)
       error ("quiver: x, y vectors must have correct length");

@@ -50,7 +50,7 @@ function [varargout] = gradient (M, dx, dy)
     dy = 1;
   endif
 
-  if (is_vector (M))
+  if (isvector (M))
     ## make a row vector
     M = M(:)';
   endif

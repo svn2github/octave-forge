@@ -53,7 +53,7 @@ function F = bicubic(X, Y, Z, XI, YI)
     s = linspace(1, cz, (cz-1)*pow2(n)+1);
     t = linspace(1, rz, (rz-1)*pow2(n)+1);
   elseif nargin == 3
-    if !is_vector (X) || !is_vector (Y)
+    if !isvector (X) || !isvector (Y)
       error ("XI and YI must be vector");
     endif
     s = Y;
@@ -62,7 +62,7 @@ function F = bicubic(X, Y, Z, XI, YI)
     [rz, cz] = size(Z);
   elseif nargin == 5
     [rz, cz] = size (Z) ; 
-    if is_vector (X) && is_vector (Y)
+    if isvector (X) && isvector (Y)
       if(rz != length (Y) || cz != length (X))
 	error ("length of X and Y must match the size of Z");
       endif

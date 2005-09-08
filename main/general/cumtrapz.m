@@ -44,7 +44,7 @@ function C = cumtrapz (X, Y)
       error ("argument must be vector or matrix");
     endif
     
-    if (is_vector(X) && (rows (X) == 1))
+    if (isvector(X) && (rows (X) == 1))
       ## row vector
       X=X(:);
       transposed = true; 
@@ -75,7 +75,7 @@ function C = cumtrapz (X, Y)
       error ("X and Y must have same shape");
     endif
 
-    if (is_vector (Y) && (rows (Y) == 1))
+    if (isvector (Y) && (rows (Y) == 1))
       ## Y is row vector
       X = X (:); Y = Y (:);
       transposed = true;

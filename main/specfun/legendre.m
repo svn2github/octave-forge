@@ -73,7 +73,7 @@ function L = legendre (n,x)
       error ("n must be a scalar n=[0...255]");
     endif
 
-    if !(is_vector (x) && all (x >= -1 && x <= 1))
+    if !(isvector (x) && all (x >= -1 && x <= 1))
       error ("x must be vector in range -1<=x<=1");
     endif
     if (n == 0)

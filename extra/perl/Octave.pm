@@ -1034,7 +1034,7 @@ unless ($Inline::Octave::methods_defined) {
       floor         => 1, gamma         => 1, gammaln       => 1,
       imag          => 1, is_bool       => 1, is_complex    => 1,
       is_global     => 1, is_list       => 1, is_matrix     => 1,
-      is_stream     => 1, is_struct     => 1, isalnum       => 1,
+      is_stream     => 1, isstruct     => 1, isalnum       => 1,
       isalpha       => 1, isascii       => 1, iscell        => 1,
       iscntrl       => 1, isdigit       => 1, isempty       => 1,
       isfinite      => 1, isieee        => 1, isinf         => 1,
@@ -1120,6 +1120,9 @@ TODO LIST:
        - done
 
 $Log$
+Revision 1.31  2005/09/08 03:07:01  pkienzle
+[for Bill Denney] is_struct -> isstruct
+
 Revision 1.30  2005/09/08 02:00:16  pkienzle
 [for Bill Denney] isstr -> ischar
 
@@ -1514,7 +1517,7 @@ number is the output args available (nargout).
       floor       => 1   gamma       => 1   gammaln     => 1  
       imag        => 1   is_bool     => 1   is_complex  => 1  
       is_global   => 1   is_list     => 1   is_matrix   => 1  
-      is_stream   => 1   is_struct   => 1   isalnum     => 1  
+      is_stream   => 1   isstruct   => 1   isalnum     => 1  
       isalpha     => 1   isascii     => 1   iscell      => 1  
       iscntrl     => 1   isdigit     => 1   isempty     => 1  
       isfinite    => 1   isieee      => 1   isinf       => 1  

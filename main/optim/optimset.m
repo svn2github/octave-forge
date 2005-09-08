@@ -45,7 +45,7 @@ opt = struct ();
 
 				# Integrate all leading structs
 
-while length (args) && is_struct (o = nth (args, 1))
+while length (args) && isstruct (o = nth (args, 1))
 
   args = args(2:length(args)); 	# Remove 1st element of args
 				# Add key/value pairs

@@ -31,7 +31,7 @@
 ##     return error rather than trapping to keyboard
 
 function t = rmfield(s,varargin)
-if ! is_struct(s) ,			
+if ! isstruct(s) ,			
   t = s ;
   return
 end

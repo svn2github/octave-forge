@@ -112,7 +112,7 @@ if nargin >= 4			# Read arguments
     if length (ctl)>=3 && !isnan (ctl(3)), narg  = ctl(3); end
     if length (ctl)>=4 && !isnan (ctl(4)), maxev = ctl(4); end
     if length (ctl)>=5 && !isnan (ctl(5)), id2f  = ctl(5); end
-  elseif is_struct (ctl)
+  elseif isstruct (ctl)
     if struct_contains (ctl, "crit")   , crit    = ctl.crit   ; end
     if struct_contains (ctl, "tol")    , tol     = ctl.tol    ; end
     if struct_contains (ctl, "narg")   , narg    = ctl.narg   ; end

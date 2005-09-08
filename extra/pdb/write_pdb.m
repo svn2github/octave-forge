@@ -25,7 +25,7 @@
 
 function write_pdb(p, fname, varargin)
 
-if(!is_struct(p)) # || !struct_contains(p, "acoord"))
+if(!isstruct(p)) # || !struct_contains(p, "acoord"))
     error("p must be a pdb struct");
 endif
 

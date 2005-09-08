@@ -28,7 +28,7 @@
 ## Last modified: January 2000
 
 function y = isfield(x,k)
-  if is_struct(x)
+  if isstruct(x)
     y = struct_contains (x, k);
     ## eval(sprintf('x.%s;y=1;',k),'y=0;');
   else

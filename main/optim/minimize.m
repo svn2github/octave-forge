@@ -137,7 +137,7 @@ if nargin == 3			# Accomodation to struct and list optional
   va_arg_cnt = 1;				# args
   tmp = nth (varargin, va_arg_cnt++);
 
-  if is_struct (tmp)
+  if isstruct (tmp)
     opls = list ();
     for [v,k] = tmp		# Treat separately unary and binary opts
       if findstr ([" ",k," "],op0)

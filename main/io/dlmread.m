@@ -35,7 +35,7 @@ function x = dlmread (filename, sep, row)
 
   fid = fopen(filename, "rt");
   if (fid >= 0)
-    in = setstr(fread (fid)');
+    in = char(fread (fid)');
     fclose (fid);
 
     ## Count the number of line feeds, or if there are none

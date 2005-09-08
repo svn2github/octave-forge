@@ -56,6 +56,6 @@ function [s, i] = sortrows (m, c)
     i = i (idx );
   endfor
   if (ischar (m))
-    s = setstr(s);
+    s = char(s);
   endif
 endfunction

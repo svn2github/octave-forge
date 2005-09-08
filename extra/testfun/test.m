@@ -293,7 +293,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   unwind_protect
     system(["sed -n 's/^%!//p' '", __file, "' > '", __tmp, "'"]);
     fid = fopen(__tmp,"rt");
-    __body = setstr(fread(fid,Inf,'char')');
+    __body = char(fread(fid,Inf,'char')');
   unwind_protect_cleanup
     unlink(__tmp);
   end_unwind_protect

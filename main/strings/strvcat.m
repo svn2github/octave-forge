@@ -61,7 +61,7 @@ function retval = strvcat (varargin)
   retval_nr = sum (nr);
   retval_nc = max (nc);
 
-  retval = setstr (ones (retval_nr, retval_nc) * toascii (" "));
+  retval = char (ones (retval_nr, retval_nc) * toascii (" "));
 
   va_arg_cnt = 1;
 

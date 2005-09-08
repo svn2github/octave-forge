@@ -11,5 +11,5 @@ function [sorted,idx] = strsort(string,varargin)
   else
     s = sort(toascii(string),varargin{:});
   endif
-  sorted = setstr(s);
+  sorted = char(s);
 endfunction

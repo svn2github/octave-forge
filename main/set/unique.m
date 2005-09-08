@@ -90,7 +90,7 @@ function [y, i, j] = unique (x, r)
   endif
   i (idx) = [];
 
-  if ischar(x), y = setstr(y); endif
+  if ischar(x), y = char(y); endif
 
 endfunction
 

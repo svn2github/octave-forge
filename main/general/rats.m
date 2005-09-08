@@ -56,7 +56,7 @@ function T = rats(x, tol)
     if (index)
       S = toascii(S);
       S([index, index+1]) = [];
-      S = setstr(S);
+      S = char(S);
     endif
     index = find(S == " ");
     shift = [index(1), diff(index)];
@@ -67,7 +67,7 @@ function T = rats(x, tol)
     assign([1,index]) = assign([1,index]) + ceil(shift/2);
     assign(index) = assign(index) + floor(shift(1:len-1)/2);
     assign = cumsum(assign);
-    T = setstr(toascii(" ")*ones(1, len*cellsize+1));
+    T = char(toascii(" ")*ones(1, len*cellsize+1));
     T(assign+1) = S;
     T(nc*cellsize+1:nc*cellsize:len*cellsize) = "\n";
     T(1)="\n";

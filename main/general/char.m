@@ -23,6 +23,6 @@
 ## see also: TOASCII, SETSTR
 
 function x = char(x),
-	x = setstr(x);
+	x = char(x);
 endfunction
 

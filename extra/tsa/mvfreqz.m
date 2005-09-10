@@ -31,7 +31,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, coh]=mvfreqz(B,A,C,N,Fs)
 % S   	power spectrum
 % PDC 	partial directed coherence
 % DC  	directed coupling	
-% COH 	coherence
+% COH 	coherency (complex coherence)
 % DTF 	directed transfer function
 % pCOH 	partial coherence
 % dDTF 	direct Directed Transfer function
@@ -49,6 +49,10 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, coh]=mvfreqz(B,A,C,N,Fs)
 % Piotr J. Franaszczuk, Ph.D. and Gregory K. Bergey, M.D.
 % 	Fast Algorithm for Computation of Partial Coherences From Vector Autoregressive Model Coefficients
 %	World Congress 2000, Chicago. 
+% Nolte G, Bai O, Wheaton L, Mari Z, Vorbach S, Hallett M.
+%	Identifying true brain interaction from EEG data using the imaginary part of coherency.
+%	Clin Neurophysiol. 2004 Oct;115(10):2292-307. 
+
 
 %	$Revision$
 %	$Id$
@@ -152,8 +156,8 @@ for k1=1:K1;
         DEN=sum(abs(h(k1,:,:)).^2,2);	        
         for k2=1:K2;
                 %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
-                COH(k1,k2,:) = abs(S(k1,k2,:))./sqrt(abs(S(k1,k1,:).*S(k2,k2,:)));
-                coh(k1,k2,:) = abs(S1(k1,k2,:))./sqrt(abs(S1(k1,k1,:).*S1(k2,k2,:)));
+                COH(k1,k2,:) = (S(k1,k2,:))./sqrt(abs(S(k1,k1,:).*S(k2,k2,:)));
+                coh(k1,k2,:) = (S1(k1,k2,:))./sqrt(abs(S1(k1,k1,:).*S1(k2,k2,:)));
                 %DTF(k1,k2,:) = sqrt(abs(h(k1,k2,:).^2))./DEN;	        
                 DTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(DEN);
                 ffDTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(sum(DEN,3));

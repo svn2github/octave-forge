@@ -43,150 +43,115 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
     usage ("num2cell");
   else
     {
-      if (args(0).is_complex_type())
+      dim_vector dv = args(0).dims ();
+      Array<int> sings;
+
+      if (nargin == 2)
 	{
-	  ComplexNDArray cm = args(0).complex_array_value();
-	  dim_vector dv = cm.dims ();
-	  Array<int> sings;
-
-	  if (nargin == 2)
-	    {
-	      ColumnVector dsings = ColumnVector (args(1).vector_value 
+	  ColumnVector dsings = ColumnVector (args(1).vector_value 
 						  (false, true));
-	      sings.resize (dsings.length());
+	  sings.resize (dsings.length());
 
-
-	      if (!error_state)
-		for (int i = 0; i < dsings.length(); i++)
-		  if (dsings(i) > dv.length() || dsings(i) < 1 ||
-		      D_NINT(dsings(i)) != dsings(i))
-		    {
-		      error ("invalid dimension specified");
-		      break;
-		    }
-		  else
-		    sings(i) = NINT(dsings(i)) - 1;
-	    }
-
-	  if (! error_state)
-	    {
-	      Array<idx_vector> idx(dv.length());
-	      dim_vector new_dv (dv);
-
-	      // Create new dim_vector placing all singular elements at start
-	      for (int i = 0; i < dv.length(); i++)
+	  if (!error_state)
+	    for (int i = 0; i < dsings.length(); i++)
+	      if (dsings(i) > dv.length() || dsings(i) < 1 ||
+		  D_NINT(dsings(i)) != dsings(i))
 		{
-		  bool found = false;
-		  for (int j = 0; j < sings.length(); j++)
-		    if (sings(j) == i)
-		      {
-			found = true;
-			break;
-		      }
-		  if (found)
-		    {
-		      idx(i) = idx_vector(':');
-		      new_dv(i) = 1;
-		    }
+		  error ("invalid dimension specified");
+		  break;
 		}
-
-	      Cell ret (new_dv);
-	      octave_idx_type nel = new_dv.numel();
-	      octave_idx_type ntot = 1;
-
-	      for (int j = 0; j < new_dv.length()-1; j++)
-		ntot *= new_dv(j);
-
-	      for (octave_idx_type i = 0; i <  nel; i++)
-		{
-		  octave_idx_type n = ntot;
-		  octave_idx_type ii = i;
-		  for (int j = new_dv.length() - 1; j >= 0 ; j--)
-		    {
-		      if (! idx(j).is_colon())
-			idx(j) = idx_vector (ii / n + 1);
-		      ii = ii % n;
-		      if (j != 0)
-			n /= new_dv(j-1);
-		    }
-		  ret(i) = cm.index (idx, 0);
-		}
-	      retval = ret;
-	    }
+	      else
+		sings(i) = NINT(dsings(i)) - 1;
 	}
-      else
+
+      if (! error_state)
 	{
-	  NDArray m = args(0).array_value();
-	  dim_vector dv = m.dims ();
-	  Array<int> sings;
+	  Array<idx_vector> idx(dv.length());
+	  dim_vector new_dv (dv);
 
-	  if (nargin == 2)
+	  // Create new dim_vector placing all singular elements at start
+	  for (int i = 0; i < dv.length(); i++)
 	    {
-	      ColumnVector dsings = ColumnVector (args(1).vector_value 
-						  (false, true));
-	      sings.resize (dsings.length());
-
-
-	      if (!error_state)
-		for (int i = 0; i < dsings.length(); i++)
-		  if (dsings(i) > dv.length() || dsings(i) < 1 ||
-		      D_NINT(dsings(i)) != dsings(i))
-		    {
-		      error ("invalid dimension specified");
-		      break;
-		    }
-		  else
-		    sings(i) = NINT(dsings(i)) - 1;
+	      bool found = false;
+	      for (int j = 0; j < sings.length(); j++)
+		if (sings(j) == i)
+		  {
+		    found = true;
+		    break;
+		  }
+	      if (found)
+		{
+		  idx(i) = idx_vector(':');
+		  new_dv(i) = 1;
+		}
 	    }
 
-	  if (! error_state)
+	  Cell ret (new_dv);
+	  octave_idx_type nel = new_dv.numel();
+	  octave_idx_type ntot = 1;
+
+	  for (int j = 0; j < new_dv.length()-1; j++)
+	    ntot *= new_dv(j);
+
+#define DOIT(TYP1,TYP2) \
+	  { \
+	    TYP1 ## NDArray m = args(0). TYP2 ## array_value(); \
+	    for (octave_idx_type i = 0; i <  nel; i++) \
+	      { \
+		octave_idx_type n = ntot; \
+		octave_idx_type ii = i; \
+		for (int j = new_dv.length() - 1; j >= 0 ; j--) \
+		  { \
+		    if (! idx(j).is_colon()) \
+		      idx(j) = idx_vector (ii / n + 1); \
+		    ii = ii % n; \
+		    if (j != 0) \
+		      n /= new_dv(j-1); \
+		  } \
+		ret(i) = TYP1 ## NDArray (m.index (idx, 0)); \
+	      } \
+	  }
+
+	  std::string cname = args(0).class_name ();
+
+	  if (cname == "double")
 	    {
-	      Array<idx_vector> idx(dv.length());
-	      dim_vector new_dv (dv);
-
-	      // Create new dim_vector placing all singular elements at start
-	      for (int i = 0; i < dv.length(); i++)
-		{
-		  bool found = false;
-		  for (int j = 0; j < sings.length(); j++)
-		    if (sings(j) == i)
-		      {
-			found = true;
-			break;
-		      }
-		  if (found)
-		    {
-		      idx(i) = idx_vector(':');
-		      new_dv(i) = 1;
-		    }
-		}
-
-	      Cell ret (new_dv);
-	      octave_idx_type nel = new_dv.numel();
-	      octave_idx_type ntot = 1;
-
-	      for (int j = 0; j < new_dv.length()-1; j++)
-		ntot *= new_dv(j);
-
-	      for (octave_idx_type i = 0; i <  nel; i++)
-		{
-		  octave_idx_type n = ntot;
-		  octave_idx_type ii = i;
-		  for (int j = new_dv.length() - 1; j >= 0 ; j--)
-		    {
-		      if (! idx(j).is_colon())
-			idx(j) = idx_vector (ii / n + 1);
-		      ii = ii % n;
-		      if (j != 0)
-			n /= new_dv(j-1);
-		    }
-		  ret(i) = m.index (idx, 0);
-		}
-	      retval = ret;
+	      if (args(0).is_complex_type())
+		DOIT (Complex, complex_)
+	      else
+		DOIT ( , )
 	    }
+	  else if (cname == "uint8")
+	    DOIT (uint8, uint8_)
+	  else if (cname == "uint16")
+	    DOIT (uint16, uint16_)
+	  else if (cname == "uint32")
+	    DOIT (uint32, uint32_)
+	  else if (cname == "uint64")
+	    DOIT (uint64, uint64_)
+	  else if (cname == "int8")
+	    {
+	      if (args(0).is_char_matrix())
+		DOIT (char, char_)
+	      else
+		DOIT (int8, int8_)
+	    }
+	  else if (cname == "int16")
+	    DOIT (int16, int16_)
+	  else if (cname == "int32")
+	    DOIT (int32, int32_)
+	  else if (cname == "int64")
+	    DOIT (int64, int64_)
+
+	  retval = ret;
 	}
     }
 
   return retval;
 }
 	  
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

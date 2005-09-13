@@ -26,6 +26,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct.h>
 #include <octave/Cell.h>
 #include <octave/ov-str-mat.h>
+#include <octave/ov-colon.h>
 
 DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
@@ -67,23 +68,22 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
 
       if (! error_state)
 	{
-	  Array<idx_vector> idx(dv.length());
+	  Array<bool> idx_colon (dv.length());
 	  dim_vector new_dv (dv);
+	  octave_value_list lst (new_dv.length(), octave_value());
 
-	  // Create new dim_vector placing all singular elements at start
 	  for (int i = 0; i < dv.length(); i++)
 	    {
-	      bool found = false;
+	      idx_colon(i) = false;
 	      for (int j = 0; j < sings.length(); j++)
-		if (sings(j) == i)
-		  {
-		    found = true;
-		    break;
-		  }
-	      if (found)
 		{
-		  idx(i) = idx_vector(':');
-		  new_dv(i) = 1;
+		  if (sings(j) == i)
+		    {
+		      new_dv(i) = 1;
+		      idx_colon(i) = true;
+		      lst(i) = octave_value (octave_value::magic_colon_t); 
+		      break;
+		    }
 		}
 	    }
 
@@ -94,73 +94,20 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
 	  for (int j = 0; j < new_dv.length()-1; j++)
 	    ntot *= new_dv(j);
 
-#define KERN(TYP) ret(i) = TYP (m.index (idx, 0))
-#define DOIT(TYP,VAL) \
-	  { \
-	    TYP m = args(0). VAL (); \
-	    for (octave_idx_type i = 0; i <  nel; i++) \
-	      { \
-		octave_idx_type n = ntot; \
-		octave_idx_type ii = i; \
-		for (int j = new_dv.length() - 1; j >= 0 ; j--) \
-		  { \
-		    if (! idx(j).is_colon()) \
-		      idx(j) = idx_vector (ii / n + 1); \
-		    ii = ii % n; \
-		    if (j != 0) \
-		      n /= new_dv(j-1); \
-		  } \
-		KERN (TYP); \
-	      } \
-	  }
-
-	  std::string cname = args(0).class_name ();
-
-	  if (cname == "double")
+	  for (octave_idx_type i = 0; i <  nel; i++)
 	    {
-	      if (args(0).is_complex_type())
-		DOIT (ComplexNDArray, complex_array_value)
-	      else
-		DOIT (NDArray , array_value)
+	      octave_idx_type n = ntot;
+	      octave_idx_type ii = i;
+	      for (int j = new_dv.length() - 1; j >= 0 ; j--)
+		{
+		  if (! idx_colon(j))
+		    lst (j) = ii/n + 1;
+		  ii = ii % n;
+		  if (j != 0)
+		    n /= new_dv(j-1);
+		}
+	      ret(i) = args(0).do_index_op(lst, 0);
 	    }
-	  else if (cname == "uint8")
-	    DOIT (uint8NDArray, uint8_array_value)
-	  else if (cname == "uint16")
-	    DOIT (uint16NDArray, uint16_array_value)
-	  else if (cname == "uint32")
-	    DOIT (uint32NDArray, uint32_array_value)
-	  else if (cname == "uint64")
-	    DOIT (uint64NDArray, uint64_array_value)
-	  else if (cname == "int8")
-	    {
-	      if (args(0).is_char_matrix())
-		DOIT (charNDArray, char_array_value)
-	      else
-		DOIT (int8NDArray, int8_array_value)
-	    }
-	  else if (cname == "int16")
-	    DOIT (int16NDArray, int16_array_value)
-	  else if (cname == "int32")
-	    DOIT (int32NDArray, int32_array_value)
-	  else if (cname == "int64")
-	    DOIT (int64NDArray, int64_array_value)
-          else if (cname == "sparse")
-	    {
-	      if (args(0).is_complex_type())
-		DOIT (SparseComplexMatrix, sparse_complex_matrix_value)
-	      else
-		DOIT (SparseMatrix, sparse_matrix_value)
-	    }
-          else if (cname == "char")
-	    {
-#undef KERN
-#define KERN(TYP) ret(i) = octave_value (TYP (m.index (idx, 0)), true, ch)
-	      char ch = (args(0).type_id() == 
-			 octave_char_matrix_str::static_type_id () ? '"' : '\'');
-	      DOIT (charNDArray, char_array_value)
-	    }
-          else
-            ret = Cell (args(0));
 
 	  retval = ret;
 	}

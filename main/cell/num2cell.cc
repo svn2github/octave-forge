@@ -94,9 +94,10 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
 	  for (int j = 0; j < new_dv.length()-1; j++)
 	    ntot *= new_dv(j);
 
-#define DOIT(TYP1,TYP2) \
+#define KERN(TYP) ret(i) = TYP (m.index (idx, 0))
+#define DOIT(TYP,VAL) \
 	  { \
-	    TYP1 ## NDArray m = args(0). TYP2 ## array_value(); \
+	    TYP m = args(0). VAL (); \
 	    for (octave_idx_type i = 0; i <  nel; i++) \
 	      { \
 		octave_idx_type n = ntot; \
@@ -109,7 +110,7 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
 		    if (j != 0) \
 		      n /= new_dv(j-1); \
 		  } \
-		ret(i) = TYP1 ## NDArray (m.index (idx, 0)); \
+		KERN (TYP); \
 	      } \
 	  }
 
@@ -118,50 +119,45 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
 	  if (cname == "double")
 	    {
 	      if (args(0).is_complex_type())
-		DOIT (Complex, complex_)
+		DOIT (ComplexNDArray, complex_array_value)
 	      else
-		DOIT ( , )
+		DOIT (NDArray , array_value)
 	    }
 	  else if (cname == "uint8")
-	    DOIT (uint8, uint8_)
+	    DOIT (uint8NDArray, uint8_array_value)
 	  else if (cname == "uint16")
-	    DOIT (uint16, uint16_)
+	    DOIT (uint16NDArray, uint16_array_value)
 	  else if (cname == "uint32")
-	    DOIT (uint32, uint32_)
+	    DOIT (uint32NDArray, uint32_array_value)
 	  else if (cname == "uint64")
-	    DOIT (uint64, uint64_)
+	    DOIT (uint64NDArray, uint64_array_value)
 	  else if (cname == "int8")
 	    {
 	      if (args(0).is_char_matrix())
-		DOIT (char, char_)
+		DOIT (charNDArray, char_array_value)
 	      else
-		DOIT (int8, int8_)
+		DOIT (int8NDArray, int8_array_value)
 	    }
 	  else if (cname == "int16")
-	    DOIT (int16, int16_)
+	    DOIT (int16NDArray, int16_array_value)
 	  else if (cname == "int32")
-	    DOIT (int32, int32_)
+	    DOIT (int32NDArray, int32_array_value)
 	  else if (cname == "int64")
-	    DOIT (int64, int64_)
+	    DOIT (int64NDArray, int64_array_value)
+          else if (cname == "sparse")
+	    {
+	      if (args(0).is_complex_type())
+		DOIT (SparseComplexMatrix, sparse_complex_matrix_value)
+	      else
+		DOIT (SparseMatrix, sparse_matrix_value)
+	    }
           else if (cname == "char")
 	    {
-	      charNDArray m = args(0). char_array_value();
+#undef KERN
+#define KERN(TYP) ret(i) = octave_value (TYP (m.index (idx, 0)), true, ch)
 	      char ch = (args(0).type_id() == 
 			 octave_char_matrix_str::static_type_id () ? '"' : '\'');
-	      for (octave_idx_type i = 0; i <  nel; i++)
-	      {
-		octave_idx_type n = ntot;
-		octave_idx_type ii = i;
-		for (int j = new_dv.length() - 1; j >= 0 ; j--)
-		  {
-		    if (! idx(j).is_colon())
-		      idx(j) = idx_vector (ii / n + 1);
-		    ii = ii % n;
-		    if (j != 0)
-		      n /= new_dv(j-1);
-		  }
-		ret(i) = octave_value (charNDArray (m.index (idx, 0)), true, ch);
-	      }
+	      DOIT (charNDArray, char_array_value)
 	    }
           else
             ret = Cell (args(0));

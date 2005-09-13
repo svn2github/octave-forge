@@ -25,6 +25,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/config.h>
 #include <octave/oct.h>
 #include <octave/Cell.h>
+#include <octave/ov-str-mat.h>
 
 DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
@@ -142,6 +143,28 @@ value @var{c} is of dimension 1 in this dimension and the elements of\n\
 	    DOIT (int32, int32_)
 	  else if (cname == "int64")
 	    DOIT (int64, int64_)
+          else if (cname == "char")
+	    {
+	      charNDArray m = args(0). char_array_value();
+	      char ch = (args(0).type_id() == 
+			 octave_char_matrix_str::static_type_id () ? '"' : '\'');
+	      for (octave_idx_type i = 0; i <  nel; i++)
+	      {
+		octave_idx_type n = ntot;
+		octave_idx_type ii = i;
+		for (int j = new_dv.length() - 1; j >= 0 ; j--)
+		  {
+		    if (! idx(j).is_colon())
+		      idx(j) = idx_vector (ii / n + 1);
+		    ii = ii % n;
+		    if (j != 0)
+		      n /= new_dv(j-1);
+		  }
+		ret(i) = octave_value (charNDArray (m.index (idx, 0)), true, ch);
+	      }
+	    }
+          else
+            ret = Cell (args(0));
 
 	  retval = ret;
 	}

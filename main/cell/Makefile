@@ -1,5 +1,5 @@
 sinclude ../../Makeconf
 
-all: cellfun.oct num2cell.oct
+all: cellfun.oct
 
 clean: ; -$(RM) *.o core octave-core *.oct *~

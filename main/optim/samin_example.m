@@ -14,17 +14,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-1;
-# This shows how to call samin
+# samin_example: example script that contains examples of how to call
+# samin for minimization using simulated annealing.
+# Edit the script to see how samin may be used.
 #
+# usage: samin_example
+
+1; # this is a script file
+
+# Example objective function
 # remember that cos(0)=1, so 
-# "a" minimizes at 0
+# "a" has a local minimum at 0 (each dimension)
 # "b" makes the function value 0 at min
 # "c" adds some curvature to make the min
 # 	at (0,0,...,0) global.
-#
 # the closer is "curvature" to zero the more alike are
-# the local mins
+# the local mins, so the harder the global min is to find
+
 function f = obj(theta, curvature);
 	dim = rows(theta);
 	a = sum(exp(-cos(theta)));

@@ -50,7 +50,7 @@ function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, model
 
 	# unscale results if argument has been passed
 	# this puts coefficients into scale corresponding to the original modelargs
-	if (nargin > 5)
+	if (nargin > 6)
     		if iscell(unscale) # don't try it if unscale is simply a placeholder
 			[theta, V] = unscale_parameters(theta, V, unscale);
     		endif

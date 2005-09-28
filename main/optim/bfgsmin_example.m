@@ -14,11 +14,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-1;
-# This shows how to call bfgsmin.m
+# bfgsmin_example: example script that contains examples of how to call
+# bfgsmin for minimization using the BFGS or limited memory BFGS algorithms
+# Edit the script to see how bfgsmin may be used.
+#
+# usage: bfgsmin_example
 
-# You can minimize w.r.t. any argument, but the argument minimization is done over
-# must be a column vector.
+1; # this is a script file
+# You can minimize w.r.t. any argument in the cell array of arguments,
+# but the argument minimization is done over must be a column vector.
 
 # It is possible to supply analytic derivatives. If the second return of the objective
 # function is a column vector the same size as the minimization argument, it is assumed

@@ -52,7 +52,7 @@ function gout = gget(option)
   # Limit is 10 seconds of waiting.  This may not be enough in windows,
   # but that's moot since windows gget doesn't seem to work.
   count=0;
-  while (f = fopen(optfile)) == -1
+  while (f = fopen(optfile,"rt")) == -1
     sleep (0.5);
     if count++>20, error("gnuplot not responding"); endif
   endwhile

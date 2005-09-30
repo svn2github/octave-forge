@@ -47,6 +47,8 @@
 ##   @itemx epsc
 ##   @itemx epsc2
 ##     Encapsulated postscript (level 1 and 2, mono and color)
+##   @item pdf
+##     Portable document format
 ##   @item ill
 ##   @itemx aifm
 ##     Adobe Illustrator
@@ -123,6 +125,8 @@
 ##     * update documentation
 ## 2003-10-01  Laurent Mazet <mazet@crm.mot.com>
 ##     * clean documentation
+
+## PKG_ADD mark_as_command('print')
 
 function print(varargin)
 
@@ -209,7 +213,7 @@ function print(varargin)
 
   ## check if we have to use convert
   dev_list = [" aifm corel fig png pbm dxf mf hpgl", ...
-	      " ps ps2 psc psc2 eps eps2 epsc epsc2 " ];
+	      " pdf ps ps2 psc psc2 eps eps2 epsc epsc2 " ];
   convertname = "";
   if isempty(findstr(dev_list , [ " ", dev, " " ]))
     if !isempty(devopt)
@@ -258,11 +262,25 @@ function print(varargin)
 	options = [ options, "\"", font, "\" " ];
       endif
       if !isempty(fontsize)
-	options = [ options, " ", fontsize ];
+	options = [ options, fontsize, " " ];
       endif
 
       __gnuplot_raw__ (["set term postscript ", options, endl]);
 
+    
+    elseif strcmp(dev, "pdf")
+      ## Portable document format
+      terminal_default = gget ("terminal");
+
+      options = "";
+      if !isempty(font)
+	options = [ options, " \"", font, "\"" ];
+      endif
+      if !isempty(fontsize)
+	options = [ options, " ", fontsize ];
+      endif
+
+      __gnuplot_raw__ (["set term pdf", options, endl]);
 
     elseif strcmp(dev, "aifm") || strcmp(dev, "corel")
       ## Adobe Illustrator, CorelDraw

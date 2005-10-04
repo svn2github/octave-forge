@@ -1,4 +1,4 @@
-Tested against octave-2.1.69.  Many functions will also work on 
+Tested against octave-2.1.71.  Many functions will also work on 
 earlier versions of Octave.  The usual build instructions apply:
 
   ./configure; make; make check; make install
@@ -15,6 +15,18 @@ remove the comm/PKG_ADD and sparse/PKG_ADD from the install directory
 See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/RELEASE-NOTES?rev=HEAD&content-type=text/plain">RELEASE-NOTES</a> for a summary of all releases.
 
 See <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/octave/octave-forge/ChangeLog?rev=HEAD&content-type=text/plain">ChangeLog</a> for details of every change.
+
+2005-10-03 ===========================================================
+
+* io/textread: faster
+* plot/legend: fix error on first call
+* plot/print: add PDF option
+* statistics/histfit: allow negative data
+* general/interp2: cubic interpolation
+* NaN/xcovf: missing data xcorr
+* main/image: return MxNx3 matrices of appropriate numeric class
+* audio/waveread: big-endian fix
+* general bug fixes and improvements (see ChangeLog for details)
 
 2005-06-13 ===========================================================
 

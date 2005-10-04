@@ -24,6 +24,10 @@ else
 	STATUS="pcre.h not found"
     fi
 
+    AC_SUBST(REGEX_LIB)
+    AC_CHECK_FUNCS(regexec, REGEX_LIB= , [
+	AC_CHECK_LIB(regex, regexec, REGEX_LIB="-lregex")])
+
 fi
 
 STATUS_MSG="$STATUS_MSG

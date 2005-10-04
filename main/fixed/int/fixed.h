@@ -76,6 +76,11 @@ typedef int fp_int;
 const unsigned int maxfixedsize = SIZEOF_FIXED * 8 - 2;
 const unsigned int halffixedsize = SIZEOF_FIXED * 4;
 
+// Mingw defines a macro ERROR that will cause some pain here.
+#ifdef ERROR
+#undef ERROR
+#endif
+
 class FixedPoint
 {
 private:

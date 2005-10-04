@@ -13,6 +13,13 @@ FIXEDLINKTARGETS = isfixed.oct fabs.oct fcos.oct fcosh.oct fsin.oct fsinh.oct \
 SUBDIRS = examples doc
 
 ifeq (,$(findstring cygwin,$(canonical_host_type)))
+ ifeq (,$(findstring mingw,$(canonical_host_type)))
+   OCT_INCLUDES_LIB = 1
+  endif
+endif
+export OCT_INCLUDES_LIB
+
+ifeq (1,$(OCT_INCLUDES_LIB))
   FIXEDSOURCES = fixedColVector.cc fixedRowVector.cc \
 	fixedMatrix.cc fixedComplex.cc fixedCColVector.cc fixedCRowVector.cc \
 	fixedCMatrix.cc Array-f.cc fixed-conv.cc ov-fixed.cc ov-fixed-mat.cc \
@@ -95,7 +102,7 @@ ifndef OCTAVE_FORGE
 install :
 	@echo "Where exactly do you want me to install to!!!"
 else
-ifeq (,$(findstring cygwin,$(canonical_host_type)))
+ifeq (1,$(OCT_INCLUDES_LIB))
 install : $(SUBDIRS)
 	@$(INSTALL) -d $(MPATH)/fixed
 else

@@ -16,8 +16,9 @@ This program is granted to the public domain
   T *buf = &(buf ## _vector[0])
 #endif
 
-
-
+#ifdef __MINGW32__
+#define __restrict
+#endif
 #include <regex.h>
 
 DEFUN_DLD(regexp,args,nargout,"\

@@ -13,6 +13,9 @@ endif
 
 all: $(PROGS)
 
+regexp.oct: regexp.cc
+	$(MKOCTFILE) $< $(REGEX_LIB)
+
 pcregexp.oct: pcregexp.cc
 	$(MKOCTFILE) $< $(PCRE_OPTIONS)
 

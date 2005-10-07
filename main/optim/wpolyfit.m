@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{p}, @var{s}] =} wpolyfit (@var{x}, @var{y}, @var{dy}, @var{n}, 'origin')
+## @deftypefn {Function File} {[@var{p}, @var{s}] =} wpolyfit (@var{x}, @var{y}, @var{dy}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 ## @var{n} that minimizes
 ## @iftex
@@ -18,12 +18,6 @@
 ## The returned value @var{p} contains the polynomial coefficients 
 ## suitable for use in the function polyval.  The structure @var{s} returns
 ## information necessary to compute uncertainty in the model.
-##
-## If no output arguments are requested, then wpolyfit plots the data,
-## the fitted line and polynomials defining the standard error range.
-##
-## If 'origin' is specified, then the fitted polynomial will go through
-## the origin.  This is generally ill-advised.  Use with caution.
 ##
 ## To compute the predicted values of y with uncertainty use
 ## @example
@@ -65,6 +59,19 @@
 ## but the high degree of covariance amongst them makes this a questionable
 ## operation.
 ##
+## @deftypefnx {Function File} {[@var{p}, @var{s}, @var{mu}] =} wpolyfit (...)
+##
+## If an additional output @code{mu = [mean(x),std(x)]} is requested then 
+## the @var{x} values are centered and normalized prior to computing the fit.
+## This will give more stable numerical results.  To compute a predicted 
+## @var{y} from the returned model use
+## @code{y = polyval(p, (x-mu(1))/mu(2)}
+##
+## @deftypefnx {Function File} wpolyfit (...)
+##
+## If no output arguments are requested, then wpolyfit plots the data,
+## the fitted line and polynomials defining the standard error range.
+##
 ## Example
 ## @example
 ## x = linspace(0,4,20);
@@ -72,6 +79,11 @@
 ## y = polyval([2,3,1],x) + dy.*randn(size(x));
 ## wpolyfit(x,y,dy,2);
 ## @end example
+##
+## @deftypefnx {Function File} wpolyfit (..., 'origin')
+##
+## If 'origin' is specified, then the fitted polynomial will go through
+## the origin.  This is generally ill-advised.  Use with caution.
 ##
 ## Hocking, RR (2003). Methods and Applications of Linear Models.
 ## New Jersey: John Wiley and Sons, Inc.
@@ -83,7 +95,7 @@
 ## This program is in the public domain.
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function [p_out, s] = wpolyfit (varargin)
+function [p_out, s, mu] = wpolyfit (varargin)
 
   ## strip 'origin' of the end
   args = length(varargin);
@@ -140,6 +152,11 @@ function [p_out, s] = wpolyfit (varargin)
 
   if (! (isscalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
     error ("wpolyfit: n must be a nonnegative integer");
+  endif
+
+  if nargout == 3
+    mu = [mean(x), std(x)];
+    x = (x - mu(1))/mu(2);
   endif
 
   k = length (x);

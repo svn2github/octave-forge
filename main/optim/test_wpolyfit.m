@@ -10,10 +10,10 @@
 
 function do_test(n,x,y,p,dp,varargin)
   [myp,s] = wpolyfit(x,y,n,varargin{:});
+  %if length(varargin)==0, [myp,s] = polyfit(x,y,n); else return; end
   mydp = sqrt(sumsq(inv(s.R'))'/s.df)*s.normr;
   if length(varargin)>0, mydp = [mydp;0]; end %origin
   %[svdp,j,svddp] = svdfit(x,y,n);
-  %myp = polyfit(x,y,10);
   disp('parameter  certified value  rel. error');
   [myp(:), p, abs((myp(:)-p)./p)] %, svdp, abs((svdp-p)./p) ]
   disp('p-error    certified value  rel. error');

@@ -17,8 +17,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[d,s] =} weekday(date, [P])
 ## Takes a date (in either datenum format or a string that datenum can
-## parse) and returns the number for the day of the week (0 = "Sun", 
-## 1 = "Mon", ... , "Sat")
+## parse) and returns the number for the day of the week (1 = "Sun", 
+## 2 = "Mon", ... , "Sat")
 ##
 ## The parameter @code{P} is needed to convert date strings with 2 digit
 ## years into dates with 4 digit years.  2 digit years are assumed to be

@@ -181,7 +181,7 @@ function [p_out, s, mu] = wpolyfit (varargin)
     printf("Polynomial: %s  [ p(chi^2>observed)=%.2f%% ]\n", polyout(p,'x'), good_fit*100);
     plt(x,y,dy,p,s,'ci');
   else
-    p_out = p;
+    p_out = p';
   endif
 
 function plt(x,y,dy,p,s,varargin)

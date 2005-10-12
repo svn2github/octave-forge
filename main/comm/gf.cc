@@ -1024,7 +1024,8 @@ DEFUN_DLD (gdet, args, nargout,
 DEFUN_DLD (grank, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{d} = } grank (@var{a})\n"
-"Compute the rank of the Galois array @var{a} using the LU factorization.\n"
+"Compute the rank of the Galois array @var{a} by counting the independent\n"
+"rows and columns.\n"
 "@end deftypefn\n"
 "@seealso{rank}")
 {
@@ -1055,15 +1056,43 @@ DEFUN_DLD (grank, args, nargout,
   if (arg_is_empty > 0)
     retval = 0.0;
   else if (arg_is_empty == 0) {
-    if (m.rows() < m.cols()) {
-      // In under-determined systems use column pivoting in LU
-      // factorization, so that rank is correctly calculated
-      LU fact (m, LU::COL);
-      retval = (double)fact.rank();
-    } else {
-      LU fact (m);
-      retval = (double)fact.rank();
+    int d = 0;
+    int mm = m.m();
+    int mn = m.n();
+    OCTAVE_LOCAL_BUFFER (int, ci, nr);
+
+    for (int i = 0; i < nc; i++) {
+      int idx = -1;
+      int iel = 0;
+      for (int j = 0; j < nr; j++)
+	{
+	  ci[j] = m.elem (j,i);
+	  if (ci[j] != 0 && idx == -1)
+	    {
+	      iel = ci[j];
+	      idx = j;
+	    }
+	}
+
+      if (idx != -1) {
+	d++;
+	int indx = m.index_of(iel);
+	for (int j = 0; j < nr; j++)
+	  if (ci[j] != 0)
+	    ci[j] = m.alpha_to(modn(m.index_of(ci[j]) - indx + mn, mm, mn));
+
+	for (int j = i+1; j < nc; j++) {
+	  if (m.elem(idx,j) != 0) {
+	    indx = m.index_of(m.elem(idx,j));
+	    for (int k = 0; k < nr; k++)
+	      if (ci[k] != 0)
+		m.elem (k, j) ^= m.alpha_to(modn(m.index_of(ci[k]) + indx + 
+						 mn, mm, mn));
+	  }
+	} 
+      }
     }
+    retval = (double)d;
   }
   return retval;
 }

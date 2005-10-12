@@ -188,9 +188,6 @@ public:
 
   bool singular (void) const { return info != 0; }
 
-  int rank (void) const { return ((a_fact.rows() < a_fact.cols() ? 
-				   a_fact.rows() : a_fact.cols()) - info); }
-
   pivot_type type (void) const { return ptype; }
 private:
   void factor (const galois& a, const pivot_type& typ);

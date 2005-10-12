@@ -973,7 +973,7 @@ LU::factor (const galois& a, const pivot_type& typ)
 	}
       }
     } else {
-      info += 1;
+      info = 1;
     }
     
     if (j < mn-1) {

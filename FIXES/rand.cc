@@ -614,7 +614,7 @@ D 50 p1284, 1994\n\
   Matrix lambda(args(0).matrix_value());
   if (error_state) return retval;
 
-  int nr=0, nc=0;
+  octave_idx_type nr=0, nc=0;
   switch (nargin) {
   case 1: nr = lambda.rows(); nc = lambda.columns(); break;
   case 2: get_dimensions(args(1), "randp", nr, nc); break;
@@ -735,7 +735,7 @@ Dirichlet(a1,...,ak)\n\
   Matrix alpha(args(0).matrix_value());
   if (error_state) return retval;
 
-  int nr=0, nc=0;
+  octave_idx_type nr=0, nc=0;
   switch (nargin) {
   case 1: nr = alpha.rows(); nc = alpha.columns(); break;
   case 2: get_dimensions(args(1), "randg", nr, nc); break;

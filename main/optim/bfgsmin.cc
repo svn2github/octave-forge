@@ -388,7 +388,7 @@ ans =\n\
 			return octave_value_list();
 		}
 		tempmatrix = f_return(0).matrix_value();
-		g = tempmatrix.row(0).transpose();
+		g = tempmatrix.row((octave_idx_type)0).transpose();
 	}
 
 	// check that gradient is ok
@@ -507,7 +507,7 @@ ans =\n\
 			g_args(1) = f_args;
 			f_return = feval("numgradient", g_args);
 			tempmatrix = f_return(0).matrix_value();
-			g_new = tempmatrix.row(0).transpose();
+			g_new = tempmatrix.row((octave_idx_type)0).transpose();
 		}
 		
 		// Check that gradient is ok

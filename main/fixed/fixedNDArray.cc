@@ -192,7 +192,7 @@ FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds,
     return;
   }
 
-  for (int i = 0; i < nelem (); i++)
+  for (octave_idx_type i = 0; i < nelem (); i++)
     elem (i) = FixedPoint((unsigned int)is(i), (unsigned int)ds(i), 
 			       (unsigned int)a.elem (i), 
 			       (unsigned int)b.elem (i));
@@ -201,14 +201,14 @@ FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds,
 FixedNDArray::FixedNDArray (const MArrayN<int> &a)
   : MArrayN<FixedPoint> (a.dims())
 {
-  for (int i = 0; i < nelem (); i++)
+  for (octave_idx_type i = 0; i < nelem (); i++)
     elem (i) = FixedPoint(a.elem (i));
 }
 
 FixedNDArray::FixedNDArray (const NDArray &a)
   : MArrayN<FixedPoint> (a.dims())
 {
-  for (int i = 0; i < nelem (); i++)
+  for (octave_idx_type i = 0; i < nelem (); i++)
     elem (i) = FixedPoint(a.elem (i));
 }
 
@@ -366,7 +366,7 @@ FixedNDArray::operator ! (void) const
 // other operations.
 
 boolNDArray
-FixedNDArray::all (int dim) const
+FixedNDArray::all (octave_idx_type dim) const
 {
 #define FMX_ND_ALL_EXPR  elem (iter_idx) .fixedpoint () == 0.0
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (FMX_ND_ALL_EXPR), true);
@@ -374,7 +374,7 @@ FixedNDArray::all (int dim) const
 }
 
 boolNDArray
-FixedNDArray::any (int dim) const
+FixedNDArray::any (octave_idx_type dim) const
 {
 #define FMX_ND_ANY_EXPR  elem (iter_idx) .fixedpoint () != 0.0
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (FMX_ND_ANY_EXPR), false);
@@ -382,21 +382,21 @@ FixedNDArray::any (int dim) const
 }
 
 FixedNDArray
-FixedNDArray::cumprod (int dim) const
+FixedNDArray::cumprod (octave_idx_type dim) const
 {
   FixedPoint one(1,0,1,0);
   MX_ND_CUMULATIVE_OP (FixedNDArray, FixedPoint, one, *);
 }
 
 FixedNDArray
-FixedNDArray::cumsum (int dim) const
+FixedNDArray::cumsum (octave_idx_type dim) const
 {
   FixedPoint zero;
   MX_ND_CUMULATIVE_OP (FixedNDArray, FixedPoint, zero, +);
 }
 
 FixedNDArray
-FixedNDArray::prod (int dim) const
+FixedNDArray::prod (octave_idx_type dim) const
 {
   FixedPoint one(1,0,1,0);
 #if HAVE_6ARG_MX_ND_RED
@@ -410,7 +410,7 @@ FixedNDArray::prod (int dim) const
 }
 
 FixedNDArray
-FixedNDArray::sum (int dim) const
+FixedNDArray::sum (octave_idx_type dim) const
 {
   FixedPoint zero;
 #if HAVE_6ARG_MX_ND_RED
@@ -423,7 +423,7 @@ FixedNDArray::sum (int dim) const
 }
 
 FixedNDArray
-FixedNDArray::sumsq (int dim) const
+FixedNDArray::sumsq (octave_idx_type dim) const
 {
   FixedPoint zero;
 #if HAVE_6ARG_MX_ND_RED
@@ -438,14 +438,14 @@ FixedNDArray::sumsq (int dim) const
 }
 
 FixedNDArray
-FixedNDArray::max (int dim) const
+FixedNDArray::max (octave_idx_type dim) const
 {
-  ArrayN<int> dummy_idx;
+  ArrayN<octave_idx_type> dummy_idx;
   return max (dummy_idx, dim);
 }
 
 FixedNDArray
-FixedNDArray::max (ArrayN<int>& idx_arg, int dim) const
+FixedNDArray::max (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
   dim_vector dv = dims ();
   dim_vector dr = dims ();
@@ -458,19 +458,19 @@ FixedNDArray::max (ArrayN<int>& idx_arg, int dim) const
   FixedNDArray result (dr);
   idx_arg.resize (dr);
 
-  int x_stride = 1;
-  int x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
+  octave_idx_type x_stride = 1;
+  octave_idx_type x_len = dv(dim);
+  for (octave_idx_type i = 0; i < dim; i++)
     x_stride *= dv(i);
 
-  for (int i = 0; i < dr.numel (); i++)
+  for (octave_idx_type i = 0; i < dr.numel (); i++)
     {
-      int x_offset;
+      octave_idx_type x_offset;
       if (x_stride == 1)
 	x_offset = i * x_len;
       else
 	{
-	  int x_offset2 = 0;
+	  octave_idx_type x_offset2 = 0;
 	  x_offset = i;
 	  while (x_offset >= x_stride)
 	    {
@@ -480,10 +480,10 @@ FixedNDArray::max (ArrayN<int>& idx_arg, int dim) const
 	  x_offset += x_offset2 * x_stride * x_len;
 	}
 
-      int idx_j = 0;
+      octave_idx_type idx_j = 0;
       FixedPoint tmp_max = elem (x_offset);;
 
-      for (int j = 1; j < x_len; j++)
+      for (octave_idx_type j = 1; j < x_len; j++)
 	{
 	  FixedPoint tmp = elem (j * x_stride + x_offset);
 
@@ -502,14 +502,14 @@ FixedNDArray::max (ArrayN<int>& idx_arg, int dim) const
 }
 
 FixedNDArray
-FixedNDArray::min (int dim) const
+FixedNDArray::min (octave_idx_type dim) const
 {
-  ArrayN<int> dummy_idx;
+  ArrayN<octave_idx_type> dummy_idx;
   return min (dummy_idx, dim);
 }
 
 FixedNDArray
-FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
+FixedNDArray::min (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
   dim_vector dv = dims ();
   dim_vector dr = dims ();
@@ -522,19 +522,19 @@ FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
   FixedNDArray result (dr);
   idx_arg.resize (dr);
 
-  int x_stride = 1;
-  int x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
+  octave_idx_type x_stride = 1;
+  octave_idx_type x_len = dv(dim);
+  for (octave_idx_type i = 0; i < dim; i++)
     x_stride *= dv(i);
 
-  for (int i = 0; i < dr.numel (); i++)
+  for (octave_idx_type i = 0; i < dr.numel (); i++)
     {
-      int x_offset;
+      octave_idx_type x_offset;
       if (x_stride == 1)
 	x_offset = i * x_len;
       else
 	{
-	  int x_offset2 = 0;
+	  octave_idx_type x_offset2 = 0;
 	  x_offset = i;
 	  while (x_offset >= x_stride)
 	    {
@@ -544,10 +544,10 @@ FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
 	  x_offset += x_offset2 * x_stride * x_len;
 	}
 
-      int idx_j = 0;
+      octave_idx_type idx_j = 0;
       FixedPoint tmp_min = elem (x_offset);
 
-      for (int j = 1; j < x_len; j++)
+      for (octave_idx_type j = 1; j < x_len; j++)
 	{
 	  FixedPoint tmp = elem (j * x_stride + x_offset);
 
@@ -568,11 +568,11 @@ FixedNDArray::min (ArrayN<int>& idx_arg, int dim) const
 FixedNDArray
 FixedNDArray::abs (void) const
 {
-  int nel = nelem ();
+  octave_idx_type nel = nelem ();
 
   FixedNDArray retval (dims());
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     retval (i) = ::abs(elem (i));
 
   return retval;
@@ -583,7 +583,7 @@ FixedNDArray::fixed_matrix_value (void) const
 {
   FixedMatrix retval;
 
-  int nd = ndims ();
+  octave_idx_type nd = ndims ();
 
   switch (nd)
     {
@@ -608,9 +608,9 @@ FixedNDArray::fixed_matrix_value (void) const
 #define DO_FIXED_ND_FUNC(FUNC) \
   FixedNDArray FUNC (const FixedNDArray& x) \
   {  \
-    int nel = x.nelem (); \
+    octave_idx_type nel = x.nelem (); \
     FixedNDArray retval ( x.dims()); \
-    for (int i = 0; i < nel; i++) \
+    for (octave_idx_type i = 0; i < nel; i++) \
       retval(i) = FUNC ( x (i) ); \
     return retval; \
   }
@@ -694,7 +694,7 @@ FixedNDArray atan2 (const FixedNDArray &x, const FixedNDArray &y)
 #ifdef HAVE_OLD_OCTAVE_CONCAT
 FixedNDArray 
 concat (const FixedNDArray& ra, const FixedNDArray& rb, 
-	const Array<int>& ra_idx)
+	const Array<octave_idx_type>& ra_idx)
 {
   FixedNDArray retval (ra);
   if (rb.numel () > 0)
@@ -705,7 +705,7 @@ concat (const FixedNDArray& ra, const FixedNDArray& rb,
 
 #ifdef HAVE_OCTAVE_CONCAT
 FixedNDArray 
-FixedNDArray::concat (const FixedNDArray& rb, const Array<int>& ra_idx)
+FixedNDArray::concat (const FixedNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -714,7 +714,7 @@ FixedNDArray::concat (const FixedNDArray& rb, const Array<int>& ra_idx)
 
 FixedComplexNDArray 
 FixedNDArray::concat (const FixedComplexNDArray& rb, 
-		      const Array<int>& ra_idx)
+		      const Array<octave_idx_type>& ra_idx)
 {
   FixedComplexNDArray retval (*this);
   if (rb.numel () > 0)
@@ -725,7 +725,7 @@ FixedNDArray::concat (const FixedComplexNDArray& rb,
 
 #if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 FixedNDArray&
-FixedNDArray::insert (const FixedNDArray& a, const Array<int>& ra_idx)
+FixedNDArray::insert (const FixedNDArray& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<FixedPoint>::insert (a, ra_idx);
   return *this;
@@ -733,9 +733,9 @@ FixedNDArray::insert (const FixedNDArray& a, const Array<int>& ra_idx)
 #endif
 
 void
-FixedNDArray::increment_index (Array<int>& ra_idx,
+FixedNDArray::increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
-			       int start_dimension)
+			       octave_idx_type start_dimension)
 {
 #ifdef HAVE_OCTAVE_CONCAT
   ::increment_index (ra_idx, dimensions, start_dimension);
@@ -744,8 +744,8 @@ FixedNDArray::increment_index (Array<int>& ra_idx,
 #endif
 }
 
-int
-FixedNDArray::compute_index (Array<int>& ra_idx,
+octave_idx_type
+FixedNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 			     const dim_vector& dimensions)
 {
 #ifdef HAVE_OCTAVE_CONCAT

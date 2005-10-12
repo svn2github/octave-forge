@@ -120,34 +120,34 @@ public:
 
   FixedNDArray operator ! (void) const;
 
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
+  boolNDArray all (octave_idx_type dim = -1) const;
+  boolNDArray any (octave_idx_type dim = -1) const;
 
 #ifdef HAVE_OLD_OCTAVE_CONCAT
   friend FixedNDArray concat (const FixedNDArray& ra, const FixedNDArray& rb, 
-			      const Array<int>& ra_idx);
+			      const Array<octave_idx_type>& ra_idx);
 #endif
 
 #ifdef HAVE_OCTAVE_CONCAT
-  FixedNDArray concat (const FixedNDArray& rb, const Array<int>& ra_idx);
+  FixedNDArray concat (const FixedNDArray& rb, const Array<octave_idx_type>& ra_idx);
   FixedComplexNDArray concat (const FixedComplexNDArray& rb, 
-			      const Array<int>& ra_idx);
+			      const Array<octave_idx_type>& ra_idx);
 #endif
 
 #if defined (HAVE_OCTAVE_CONCAT) || (HAVE_OLD_OCTAVE_CONCAT)
-  FixedNDArray& insert (const FixedNDArray& a, const Array<int>& ra_idx);
+  FixedNDArray& insert (const FixedNDArray& a, const Array<octave_idx_type>& ra_idx);
 #endif
 
-  FixedNDArray cumprod (int dim = -1) const;
-  FixedNDArray cumsum (int dim = -1) const;
-  FixedNDArray prod (int dim = -1) const;
-  FixedNDArray sum (int dim = -1) const;  
-  FixedNDArray sumsq (int dim = -1) const;
+  FixedNDArray cumprod (octave_idx_type dim = -1) const;
+  FixedNDArray cumsum (octave_idx_type dim = -1) const;
+  FixedNDArray prod (octave_idx_type dim = -1) const;
+  FixedNDArray sum (octave_idx_type dim = -1) const;  
+  FixedNDArray sumsq (octave_idx_type dim = -1) const;
 
-  FixedNDArray max (int dim = 0) const;
-  FixedNDArray max (ArrayN<int>& index, int dim = 0) const;
-  FixedNDArray min (int dim = 0) const;
-  FixedNDArray min (ArrayN<int>& index, int dim = 0) const;
+  FixedNDArray max (octave_idx_type dim = 0) const;
+  FixedNDArray max (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+  FixedNDArray min (octave_idx_type dim = 0) const;
+  FixedNDArray min (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
   
   FixedNDArray abs (void) const;
   friend FixedNDArray cos  (const FixedNDArray &x);
@@ -177,11 +177,11 @@ public:
 
   FixedNDArray squeeze (void) const { return ArrayN<FixedPoint>::squeeze (); }
 
-  static void increment_index (Array<int>& ra_idx,
+  static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
-			       int start_dimension = 0);
+			       octave_idx_type start_dimension = 0);
 
-  static int compute_index (Array<int>& ra_idx,
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions);
 
   friend NDArray fixedpoint (const FixedNDArray& x) { return x.fixedpoint(); }

@@ -372,8 +372,8 @@ return @code{NaN}.\n\
                 int uc = u.cols ();
 
               if (mr == 1 && uc == 1)	{  // u column, m row
-                RowVector rm = m.row (0);
-                ColumnVector cu = u.column (0);
+                RowVector rm = m.row ((octave_idx_type)0);
+                ColumnVector cu = u.column ((octave_idx_type)0);
 
                 Matrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
                 Matrix err(ur,mc);
@@ -411,8 +411,8 @@ return @code{NaN}.\n\
                 int uc = u.cols ();
 
               if (mr == 1 && uc == 1)	{
-                RowVector rm = m.row (0);
-                ComplexColumnVector cu = u.column (0);
+                RowVector rm = m.row ((octave_idx_type)0);
+                ComplexColumnVector cu = u.column ((octave_idx_type)0);
 
                 ComplexMatrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
                 Matrix err(ur,mc);

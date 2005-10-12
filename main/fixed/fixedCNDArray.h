@@ -179,41 +179,41 @@ public:
 
   FixedComplexNDArray operator ! (void) const;
 
-  boolNDArray all (int dim = -1) const;
-  boolNDArray any (int dim = -1) const;
+  boolNDArray all (octave_idx_type dim = -1) const;
+  boolNDArray any (octave_idx_type dim = -1) const;
 
 #ifdef HAVE_OLD_OCTAVE_CONCAT
   friend FixedComplexNDArray concat (const FixedComplexNDArray& ra, 
 				     const FixedComplexNDArray& rb, 
-				     const Array<int>& ra_idx);
+				     const Array<octave_idx_type>& ra_idx);
 
   friend FixedComplexNDArray concat (const FixedComplexNDArray& ra, 
 				     const FixedNDArray& rb, 
-				     const Array<int>& ra_idx);
+				     const Array<octave_idx_type>& ra_idx);
 
   friend FixedComplexNDArray concat (const FixedNDArray& ra, 
 				     const FixedComplexNDArray& rb, 
-				     const Array<int>& ra_idx);
+				     const Array<octave_idx_type>& ra_idx);
 #endif
 
 #ifdef HAVE_OCTAVE_CONCAT
   FixedComplexNDArray concat (const FixedComplexNDArray& rb, 
-			      const Array<int>& ra_idx);
+			      const Array<octave_idx_type>& ra_idx);
 
   FixedComplexNDArray concat (const FixedNDArray& rb, 
-			      const Array<int>& ra_idx);
+			      const Array<octave_idx_type>& ra_idx);
 #endif
 
 #if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
   FixedComplexNDArray& insert (const FixedComplexNDArray& a, 
-			       const Array<int>& ra_idx);
+			       const Array<octave_idx_type>& ra_idx);
 #endif
 
-  FixedComplexNDArray cumprod (int dim = -1) const;
-  FixedComplexNDArray cumsum (int dim = -1) const;
-  FixedComplexNDArray prod (int dim = -1) const;
-  FixedComplexNDArray sum (int dim = -1) const;
-  FixedComplexNDArray sumsq (int dim = -1) const;
+  FixedComplexNDArray cumprod (octave_idx_type dim = -1) const;
+  FixedComplexNDArray cumsum (octave_idx_type dim = -1) const;
+  FixedComplexNDArray prod (octave_idx_type dim = -1) const;
+  FixedComplexNDArray sum (octave_idx_type dim = -1) const;
+  FixedComplexNDArray sumsq (octave_idx_type dim = -1) const;
 
   friend FixedNDArray real (const FixedComplexNDArray &x);
   friend FixedNDArray imag (const FixedComplexNDArray &x);
@@ -252,10 +252,10 @@ public:
   friend ComplexNDArray getnumber (const FixedComplexNDArray& x) 
      { return x.getnumber(); }
 
-  FixedComplexNDArray max (int dim = 0) const;
-  FixedComplexNDArray max (ArrayN<int>& index, int dim = 0) const;
-  FixedComplexNDArray min (int dim = 0) const;
-  FixedComplexNDArray min (ArrayN<int>& index, int dim = 0) const;
+  FixedComplexNDArray max (octave_idx_type dim = 0) const;
+  FixedComplexNDArray max (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+  FixedComplexNDArray min (octave_idx_type dim = 0) const;
+  FixedComplexNDArray min (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
 
   FixedNDArray abs (void) const;
 
@@ -264,11 +264,11 @@ public:
   FixedComplexNDArray squeeze (void) const 
     { return ArrayN<FixedPointComplex>::squeeze (); }
 
-  static void increment_index (Array<int>& ra_idx,
+  static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
-			       int start_dimension = 0);
+			       octave_idx_type start_dimension = 0);
 
-  static int compute_index (Array<int>& ra_idx,
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
 			    const dim_vector& dimensions);
 
   // i/o

@@ -583,7 +583,7 @@ FixedComplexNDArray::operator ! (void) const
 }
 
 boolNDArray
-FixedComplexNDArray::all (int dim) const
+FixedComplexNDArray::all (octave_idx_type dim) const
 {
 #define FMX_ND_ALL_EXPR  elem (iter_idx) .fixedpoint () == Complex (0, 0)
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (FMX_ND_ALL_EXPR), true);
@@ -591,7 +591,7 @@ FixedComplexNDArray::all (int dim) const
 }
 
 boolNDArray
-FixedComplexNDArray::any (int dim) const
+FixedComplexNDArray::any (octave_idx_type dim) const
 {
 #define FMX_ND_ANY_EXPR  elem (iter_idx) .fixedpoint () != Complex (0, 0)
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (FMX_ND_ANY_EXPR), false);
@@ -599,21 +599,21 @@ FixedComplexNDArray::any (int dim) const
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::cumprod (int dim) const
+FixedComplexNDArray::cumprod (octave_idx_type dim) const
 {
   FixedPointComplex one (1, 0, 1, 0);
   MX_ND_CUMULATIVE_OP (FixedComplexNDArray, FixedPointComplex, one, *);
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::cumsum (int dim) const
+FixedComplexNDArray::cumsum (octave_idx_type dim) const
 {
   FixedPointComplex zero;
   MX_ND_CUMULATIVE_OP (FixedComplexNDArray, FixedPointComplex, zero, +);
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::prod (int dim) const
+FixedComplexNDArray::prod (octave_idx_type dim) const
 {
   FixedPointComplex one(1, 0, 1, 0);
 #if HAVE_6ARG_MX_ND_RED
@@ -629,7 +629,7 @@ FixedComplexNDArray::prod (int dim) const
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::sum (int dim) const
+FixedComplexNDArray::sum (octave_idx_type dim) const
 {
   FixedPointComplex zero;
 #if HAVE_6ARG_MX_ND_RED
@@ -644,7 +644,7 @@ FixedComplexNDArray::sum (int dim) const
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::sumsq (int dim) const
+FixedComplexNDArray::sumsq (octave_idx_type dim) const
 {
   FixedPointComplex zero;
 #if HAVE_6ARG_MX_ND_RED
@@ -762,14 +762,14 @@ FixedComplexNDArray elem_pow (const FixedPointComplex &a, const FixedComplexNDAr
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::max (int dim) const
+FixedComplexNDArray::max (octave_idx_type dim) const
 {
-  ArrayN<int> dummy_idx;
+  ArrayN<octave_idx_type> dummy_idx;
   return max (dummy_idx, dim);
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::max (ArrayN<int>& idx_arg, int dim) const
+FixedComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
   dim_vector dv = dims ();
   dim_vector dr = dims ();
@@ -782,19 +782,19 @@ FixedComplexNDArray::max (ArrayN<int>& idx_arg, int dim) const
   FixedComplexNDArray result (dr);
   idx_arg.resize (dr);
 
-  int x_stride = 1;
-  int x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
+  octave_idx_type x_stride = 1;
+  octave_idx_type x_len = dv(dim);
+  for (octave_idx_type i = 0; i < dim; i++)
     x_stride *= dv(i);
 
-  for (int i = 0; i < dr.numel (); i++)
+  for (octave_idx_type i = 0; i < dr.numel (); i++)
     {
-      int x_offset;
+      octave_idx_type x_offset;
       if (x_stride == 1)
 	x_offset = i * x_len;
       else
 	{
-	  int x_offset2 = 0;
+	  octave_idx_type x_offset2 = 0;
 	  x_offset = i;
 	  while (x_offset >= x_stride)
 	    {
@@ -804,11 +804,11 @@ FixedComplexNDArray::max (ArrayN<int>& idx_arg, int dim) const
 	  x_offset += x_offset2 * x_stride * x_len;
 	}
 
-      int idx_j = 0;
+      octave_idx_type idx_j = 0;
       FixedPointComplex tmp_max = elem (x_offset);
       FixedPoint abs_max = ::abs (tmp_max);
 
-      for (int j = 1; j < x_len; j++)
+      for (octave_idx_type j = 1; j < x_len; j++)
 	{
 	  FixedPointComplex tmp = elem (j * x_stride + x_offset);
 	  FixedPoint abs_tmp = ::abs (tmp);
@@ -829,14 +829,14 @@ FixedComplexNDArray::max (ArrayN<int>& idx_arg, int dim) const
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::min (int dim) const
+FixedComplexNDArray::min (octave_idx_type dim) const
 {
-  ArrayN<int> dummy_idx;
+  ArrayN<octave_idx_type> dummy_idx;
   return min (dummy_idx, dim);
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::min (ArrayN<int>& idx_arg, int dim) const
+FixedComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
   dim_vector dv = dims ();
   dim_vector dr = dims ();
@@ -849,19 +849,19 @@ FixedComplexNDArray::min (ArrayN<int>& idx_arg, int dim) const
   FixedComplexNDArray result (dr);
   idx_arg.resize (dr);
 
-  int x_stride = 1;
-  int x_len = dv(dim);
-  for (int i = 0; i < dim; i++)
+  octave_idx_type x_stride = 1;
+  octave_idx_type x_len = dv(dim);
+  for (octave_idx_type i = 0; i < dim; i++)
     x_stride *= dv(i);
 
-  for (int i = 0; i < dr.numel (); i++)
+  for (octave_idx_type i = 0; i < dr.numel (); i++)
     {
-      int x_offset;
+      octave_idx_type x_offset;
       if (x_stride == 1)
 	x_offset = i * x_len;
       else
 	{
-	  int x_offset2 = 0;
+	  octave_idx_type x_offset2 = 0;
 	  x_offset = i;
 	  while (x_offset >= x_stride)
 	    {
@@ -871,11 +871,11 @@ FixedComplexNDArray::min (ArrayN<int>& idx_arg, int dim) const
 	  x_offset += x_offset2 * x_stride * x_len;
 	}
 
-      int idx_j = 0;
+      octave_idx_type idx_j = 0;
       FixedPointComplex tmp_min = elem (x_offset);
       FixedPoint abs_min = ::abs (tmp_min);
 
-      for (int j = 1; j < x_len; j++)
+      for (octave_idx_type j = 1; j < x_len; j++)
 	{
 	  FixedPointComplex tmp = elem (j * x_stride + x_offset);
 	  FixedPoint abs_tmp = ::abs (tmp);
@@ -900,7 +900,7 @@ FixedComplexNDArray::fixed_complex_matrix_value (void) const
 {
   FixedComplexMatrix retval;
 
-  int nd = ndims ();
+  octave_idx_type nd = ndims ();
 
   switch (nd)
     {
@@ -926,7 +926,7 @@ FixedComplexNDArray::fixed_complex_matrix_value (void) const
 #ifdef HAVE_OCTAVE_CONCAT
 FixedComplexNDArray 
 concat (const FixedComplexNDArray& ra, const FixedComplexNDArray& rb, 
-	const Array<int>& ra_idx)
+	const Array<octave_idx_type>& ra_idx)
 {
   FixedComplexNDArray retval (ra);
   if (ra.numel () > 0)
@@ -936,7 +936,7 @@ concat (const FixedComplexNDArray& ra, const FixedComplexNDArray& rb,
 
 FixedComplexNDArray 
 concat (const FixedComplexNDArray& ra, const FixedNDArray& rb, 
-	const Array<int>& ra_idx)
+	const Array<octave_idx_type>& ra_idx)
 {
   FixedComplexNDArray retval (ra);
   if (ra.numel () > 0) {
@@ -948,7 +948,7 @@ concat (const FixedComplexNDArray& ra, const FixedNDArray& rb,
 
 FixedComplexNDArray
 concat (const FixedNDArray& ra, const FixedComplexNDArray& rb, 
-	const Array<int>& ra_idx)
+	const Array<octave_idx_type>& ra_idx)
 {
   FixedComplexNDArray retval (ra);
   if (ra.numel () > 0)
@@ -960,7 +960,7 @@ concat (const FixedNDArray& ra, const FixedComplexNDArray& rb,
 #ifdef HAVE_OCTAVE_CONCAT
 FixedComplexNDArray 
 FixedComplexNDArray ::concat (const FixedComplexNDArray& rb, 
-			      const Array<int>& ra_idx)
+			      const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -969,7 +969,7 @@ FixedComplexNDArray ::concat (const FixedComplexNDArray& rb,
 
 FixedComplexNDArray 
 FixedComplexNDArray::concat (const FixedNDArray& rb, 
-			     const Array<int>& ra_idx)
+			     const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (FixedComplexNDArray (rb), ra_idx);
@@ -980,7 +980,7 @@ FixedComplexNDArray::concat (const FixedNDArray& rb,
 #if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 FixedComplexNDArray& 
 FixedComplexNDArray::insert (const FixedComplexNDArray& a, 
-			     const Array<int>& ra_idx)
+			     const Array<octave_idx_type>& ra_idx)
 {
   Array<FixedPointComplex>::insert (a, ra_idx);
   return *this;
@@ -988,9 +988,9 @@ FixedComplexNDArray::insert (const FixedComplexNDArray& a,
 #endif
 
 void
-FixedComplexNDArray::increment_index (Array<int>& ra_idx,
+FixedComplexNDArray::increment_index (Array<octave_idx_type>& ra_idx,
 				 const dim_vector& dimensions,
-				 int start_dimension)
+				 octave_idx_type start_dimension)
 {
 #ifdef HAVE_OCTAVE_CONCAT
   ::increment_index (ra_idx, dimensions, start_dimension);
@@ -999,8 +999,8 @@ FixedComplexNDArray::increment_index (Array<int>& ra_idx,
 #endif
 }
 
-int 
-FixedComplexNDArray::compute_index (Array<int>& ra_idx,
+octave_idx_type 
+FixedComplexNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions)
 {
 #ifdef HAVE_OCTAVE_CONCAT
@@ -1016,9 +1016,9 @@ FixedComplexNDArray::compute_index (Array<int>& ra_idx,
 std::ostream&
 operator << (std::ostream& os, const FixedComplexNDArray& a)
 {
-  int nel = a.nelem ();
+  octave_idx_type nel = a.nelem ();
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       os << " " << a.elem (i);
     }
@@ -1029,14 +1029,14 @@ operator << (std::ostream& os, const FixedComplexNDArray& a)
 std::istream&
 operator >> (std::istream& is, FixedComplexNDArray& a)
 {
-  int nel = a.nelem ();
+  octave_idx_type nel = a.nelem ();
 
   if (nel < 1 )
     is.clear (std::ios::badbit);
   else
     {
       FixedPointComplex tmp;
-      for (int i = 0; i < nel; i++)
+      for (octave_idx_type i = 0; i < nel; i++)
 	  {
 	    is >> tmp;
 	    if (is)
@@ -1059,14 +1059,14 @@ FixedComplexNDArray
 min (const FixedPointComplex& c, const FixedComplexNDArray& m)
 {
   dim_vector dv = m.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   FixedPoint cabs = ::abs(c);
 
   EMPTY_RETURN_CHECK (FixedComplexNDArray);
 
   FixedComplexNDArray result (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       OCTAVE_QUIT;
       result (i) = ::abs(m(i)) < cabs ? m(i) : c;
@@ -1079,14 +1079,14 @@ FixedComplexNDArray
 min (const FixedComplexNDArray& m, const FixedPointComplex& c)
 {
   dim_vector dv = m.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   FixedPoint cabs = ::abs(c);
 
   EMPTY_RETURN_CHECK (FixedComplexNDArray);
 
   FixedComplexNDArray result (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       OCTAVE_QUIT;
       result (i) = ::abs(m(i)) < cabs ? m(i) : c;
@@ -1099,7 +1099,7 @@ FixedComplexNDArray
 min (const FixedComplexNDArray& a, const FixedComplexNDArray& b)
 {
   dim_vector dv = a.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
 
   if (dv != b.dims ())
     {
@@ -1112,7 +1112,7 @@ min (const FixedComplexNDArray& a, const FixedComplexNDArray& b)
 
   FixedComplexNDArray result (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       OCTAVE_QUIT;
       result (i) = ::abs(a(i)) < ::abs(b(i)) ? a(i) : b(i);
@@ -1125,14 +1125,14 @@ FixedComplexNDArray
 max (const FixedPointComplex& c, const FixedComplexNDArray& m)
 {
   dim_vector dv = m.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   FixedPoint cabs = ::abs(c);
 
   EMPTY_RETURN_CHECK (FixedComplexNDArray);
 
   FixedComplexNDArray result (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       OCTAVE_QUIT;
       result (i) = ::abs(m(i)) > cabs ? m(i) : c;
@@ -1145,14 +1145,14 @@ FixedComplexNDArray
 max (const FixedComplexNDArray& m, const FixedPointComplex& c)
 {
   dim_vector dv = m.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
   FixedPoint cabs = ::abs(c);
 
   EMPTY_RETURN_CHECK (FixedComplexNDArray);
 
   FixedComplexNDArray result (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       OCTAVE_QUIT;
       result (i) = ::abs(m(i)) > cabs ? m(i) : c;
@@ -1165,7 +1165,7 @@ FixedComplexNDArray
 max (const FixedComplexNDArray& a, const FixedComplexNDArray& b)
 {
   dim_vector dv = a.dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
 
   if (dv != b.dims ())
     {
@@ -1178,7 +1178,7 @@ max (const FixedComplexNDArray& a, const FixedComplexNDArray& b)
 
   FixedComplexNDArray result (dv);
 
-  for (int i = 0; i < nel; i++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       OCTAVE_QUIT;
       result (i) = ::abs(a(i)) < ::abs(b(i)) ? a(i) : b(i);

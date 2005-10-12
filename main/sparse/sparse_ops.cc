@@ -641,9 +641,9 @@ octave_sparse::load_ascii (std::istream& is)
        extract_keyword (is, "columns", cols) ) {
      Matrix tmp( nnz, 3);
      is >> tmp;
-     ColumnVector ridxA= tmp.column(0);
-     ColumnVector cidxA= tmp.column(1);
-     ColumnVector coefA= tmp.column(2);
+     ColumnVector ridxA= tmp.column((octave_idx_type)0);
+     ColumnVector cidxA= tmp.column((octave_idx_type)1);
+     ColumnVector coefA= tmp.column((octave_idx_type)2);
      X= assemble_sparse( cols, rows, coefA, ridxA, cidxA, 0);
   }
   else {
@@ -1587,6 +1587,9 @@ sparse_inv_uppertriang( SuperMatrix U) {
 
 /*
  * $Log$
+ * Revision 1.30  2005/10/12 15:13:30  pkienzle
+ * [for Orion Poplawski] Support 64-bit indexing.
+ *
  * Revision 1.29  2004/11/16 10:31:58  adb014
  * HAVE_OCTAVE_UPLUS config option for backwards compatiability
  *

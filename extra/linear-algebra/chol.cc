@@ -81,7 +81,7 @@ r' * r = a.\n\
 
       if (! error_state)
 	{
-	  int info;
+	  octave_idx_type info;
 	  CHOL fact (m, info);
 	  if (nargout == 2 || info == 0)
 	    {
@@ -105,7 +105,7 @@ r' * r = a.\n\
 
       if (! error_state)
 	{
-	  int info;
+	  octave_idx_type info;
 	  ComplexCHOL fact (m, info);
 	  if (nargout == 2 || info == 0)
 	    {

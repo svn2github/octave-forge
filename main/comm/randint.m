@@ -25,9 +25,10 @@
 ##
 ## The range in which the integers are generated will is determined by
 ## the variable @var{range}. If @var{range} is an integer, the value will
-## lie in the range [0,@var{range}]. If @var{range} contains two elements
-## the intgers will lie between these two elements. By default @var{range}
-## is assumed to be [0:1].
+## lie in the range [0,@var{range}-1], or [@var{range}+1,0] if @var{range}
+## is negative. If @var{range} contains two elements the intgers will lie 
+## within these two elements, inclusive. By default @var{range} is 
+## assumed to be [0:1].
 ##
 ## The variable @var{seed} allows the random number generator to be seeded
 ## with a fixed value. The initial seed will be restored when returning.
@@ -55,7 +56,11 @@ function b = randint (n, m, range, seed)
 
   ## Check range
   if (length (range) == 1)
-    range = [0, range-1];
+    if (range < 0)
+      range = [range+1, 0];
+    else
+      range = [0, range-1];
+    endif
   elseif ( prod (size (range)) != 2)
     error ("randint: range must be a 2 element vector");
   endif
@@ -86,6 +91,10 @@ endfunction
 %!assert (size(a1) == [n, n] && size(a2) == [n, n]);
 %!assert (max ([a1(:); a2(:)]) <= 1 && min([a1(:); a2(:)]) >= 0);
 %!assert (size(a3) == [n, n] && size(a4) == [n, n]);
-%!assert (max (a3(:)) <= m && min(a3(:)) >= 0);
+%!assert (max (a3(:)) < m && min(a3(:)) >= 0);
 %!assert (max (a4(:)) <= m && min(a4(:)) >= -m);
 %!assert (a5(:) == a6(:));
+
+%!test
+%! a = randint(10,10,-32);
+%! assert (max(a(:)) <= 0 && min(a(:)) > -32);

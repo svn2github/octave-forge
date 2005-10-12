@@ -27,15 +27,16 @@ endif
 disp("[main/comm]");
 disp(">comms");
 try comms("test"); 
-catch disp([__error_text__,"\nNote: failure expected for octave 2.1.36"]); end
+catch disp(__error_text__); end
 
 disp("[main/fixed]");
 disp(">fixed");
 try fixedpoint("test"); 
-catch disp([__error_text__,"\nNote: failure expected for octave 2.1.36"]); end
+catch disp(__error_text__); end
  
 disp("[main/image]");
-testimio
+try testimio
+catch disp(__error_text__); end
 
 disp("[main/struct]");
 try
@@ -45,10 +46,7 @@ disp(">setfield"); x = setfield(x,"b","world");
 y.a = "hello";
 y.b = "world";
 assert(x,y);
-catch
-disp(__error_text__);
-disp("Note: failure expected for 2.1.36");
-end
+catch disp(__error_text__); end
 
 disp("[main/sparse]");
 # sp_test  # now using generated sptest

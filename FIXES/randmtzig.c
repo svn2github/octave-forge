@@ -144,15 +144,16 @@
 # include <sys/time.h>
 #endif
 
-/* Your compiler/standard library may not have sys/types.h available.
+/* Your compiler/standard library may not have inttypes.h available.
    We need the types uint32_t and uint64_t.  You can try:
 	#include <stdint.h>
+	#include <sys/types.h>
    or
 	unsigned long uint32_t;
 	unsigned long long uint64_t;
    instead.
 */ 
-#include <sys/types.h>
+#include <inttypes.h>
 
    
 /* XXX FIXME XXX may want to suppress X86 if sizeof(long)>4 */

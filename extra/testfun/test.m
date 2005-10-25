@@ -333,6 +333,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   __tests = __successes = 0;
   __shared = " ";
   __shared_r = " ";
+  __clear = "";
   for __i=1:length(__blockidx)-1
 
     ## extract the block
@@ -426,6 +427,9 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
 	__success = 0;
 	__msg = [ __signal_fail, "shared variable initialization failed\n"];
       end_try_catch
+
+      ## clear shared function definitions
+      eval(__clear,""); __clear="";
       
       ## initialization code will be evaluated below
     
@@ -445,6 +449,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
         try
           eval(__code); ## Define the function
           eval([__name, '= @', __temp_name, ';']);
+          __clear = [__clear, "clear ",__temp_name,";\n"];
         catch
           __success = 0;
           __msg = [ __signal_fail, "test failed: syntax error\n", __error_text__];
@@ -548,6 +553,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     __tests += __istest;
     __successes += __success*__istest;
   endfor
+  eval(__clear,"");
 
   if (nargout == 0)
     printf("PASSES %d out of %d tests\n",__successes,__tests);

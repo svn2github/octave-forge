@@ -116,26 +116,14 @@
 ## Note that all previous variables and values are lost when a new 
 ## shared block is declared.
 ##
-## In addition to testing if something works, you also want to test that
-## it fails cleanly.  The fail function performs this task. The general 
-## form is 
-##    %!test fail('code','pattern')
-## where code is expected to fail and pattern is a regular expression
-## which should match the resulting error message.  Like assert,
-##    %!fail ('code','pattern') is shorthand for the above statement.
-##
-## Error blocks are cruft left over from before fail.  They are like test
-## blocks, but they only succeed if the code generates an error.  You
-## will see the error generated if verbose is set. For example,
-##    %!error error('this test passes!');
-## produces
-##      ***** error error('this test passes!');
-##      #####
-##    this test passes!
+## Error and warning blocks are like test blocks, but they only succeed 
+## if the code generates an error.  You can check the text of the error
+## is correct using an optional regular expression <pattern>.  For example:
+##    %!error <passes!> error('this test passes!');
 ## If the code doesn't generate an error, the test fails. For example,
 ##    %!error "this is an error because it succeeds.";
 ## produces
-##      ***** error "this is an error because it succeeds.";
+##    ***** error "this is an error because it succeeds.";
 ##    !!!!! test failed: no error
 ##
 ## It is important to automate the tests as much as possible, however
@@ -164,13 +152,14 @@
 ##    %! ## you should now see a sine wave in your figure window
 ##
 ## Block type summary:
-##    %!test   - test block; fails if error is generated within it
-##    %!error  - error block; fails if error is not generated within it
-##    %!demo   - demo block; only executes in interactive mode
-##    %!#      - comment: ignore everything within the block
-##    %!shared x,y,z - declares variables for use in multiple tests
+##    %!test       - check that entire block is correct
+##    %!error      - check for correct error message
+##    %!warning    - check for correct warning message
+##    %!demo       - demo only executes in interactive mode
+##    %!#          - comment: ignore everything within the block
+##    %!shared x,y,z       - declares variables for use in multiple tests
+##    %!function           - defines a function value for a shared variable
 ##    %!assert (x, y, tol) - shorthand for %!test assert (x, y, tol)
-##    %!function - defines a function value for a shared variable
 ##
 ## You can also create test scripts for builtins and your own C++
 ## functions. Just put a file of the function name on your path without
@@ -204,7 +193,6 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   ## information from test will be introduced by "key" 
   persistent __signal_fail =  "!!!!! ";
   persistent __signal_empty = "????? ";
-  persistent __signal_error = "  ##### ";
   persistent __signal_block = "  ***** ";
   persistent __signal_file =  ">>>>> ";
 
@@ -236,22 +224,18 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   if (strcmp(__flag, "normal"))
     __grabdemo = 0;
     __rundemo = 0;
-    __hide_error = 0;
     __verbose = __batch;
   elseif (strcmp(__flag, "quiet"))
     __grabdemo = 0;
     __rundemo = 0;
-    __hide_error = 1;
     __verbose = 0;
   elseif (strcmp(__flag, "verbose"))
     __grabdemo = 0;
     __rundemo = 1;
-    __hide_error = 0;
     __verbose = 1;
   elseif (strcmp(__flag, "grabdemo"))
     __grabdemo = 1;
     __rundemo = 0;
-    __hide_error = 0;
     __verbose = 0;
     __demo_code = "";
     __demo_idx = 1;
@@ -260,7 +244,6 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     fputs (__fid, ["# ", __signal_empty, " no tests in file\n"]);
     fputs (__fid, ["# ", __signal_fail,  " test had an unexpected result\n"]);
     fputs (__fid, ["# ", __signal_block, " code for the test\n"]);
-    fputs (__fid, ["# ", __signal_error, " error message from the test\n"]);
     fputs (__fid, "# Search for the unexpected results in the file\n");
     fputs (__fid, "# then page back to find the file name which caused it.\n");
     fputs (__fid, "# The result may be an unexpected failure (in which\n");
@@ -470,31 +453,46 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __code = __block; # put the keyword back on the code
       ## the code will be evaluated below as a test block
       
-    ## ERROR
-    elseif strcmp (__type, "error")
+    ## ERROR/WARNING
+    elseif strcmp (__type, "error") || strcmp(__type, "warning")
       __istest = 1;
+      __warning = strcmp(__type, "warning");
+      [__pattern, __code] = getpattern(__code);
       try
-      	eval(["function ", __shared_r, "__test__(", __shared, ")\n", ...
-	      __code, "\nendfunction"]);
+      	eval(["function __test__(", __shared, ")\n", __code, "\nendfunction"]);
       catch
       	__success = 0;
       	__msg = [ __signal_fail, "test failed: syntax error\n", __error_text__];
       end_try_catch
       
       if (__success)
-      	__success = 0;
-      	__msg = [ __signal_fail, "test failed: no error\n" ];
+        __success = 0;
+        __warnstate = warning('on');
       	try
-	  eval([ __shared_r, "__test__(", __shared, ");"]);
+          lastwarn("");
+	  eval([ "__test__(", __shared, ");"]);
+          warning(__warnstate);
+	  __err = trimerr(lastwarn,'warning');
+          if !__warning,
+      	    __msg = [ __signal_fail, "expected <",__pattern,"> but got no error\n" ];
+          elseif isempty(__err)
+            __msg = [ __signal_fail, "expected <",__pattern,"> but got no warning\n" ];
+          elseif isempty(regexp(__pattern,__err))
+            __msg = [ __signal_fail, "expected <",__pattern,"> but got ", __err, "\n" ];
+          else
+            __success = 1;
+          endif
+
       	catch
-	  __success = 1;
-	  if (__hide_error)
-	    __msg = "";
-	  else
-	    __msg = [ __signal_error, "\n", __error_text__ ];
-	    __idx = index(__msg, "error:");
-	    if (__idx > 1) __msg = __msg(1:__idx-1); endif
-	  endif
+          warning(__warnstate);
+	  __err = trimerr(lasterr,'error');
+          if __warning,
+            __msg = [ __signal_fail, "expected warning <",__pattern,"> but got error ", __err, "\n" ];
+	  elseif isempty(regexp(__pattern,__err))
+            __msg = [ __signal_fail, "expected <",__pattern,"> but got ", __err, "\n" ];
+          else
+	    __success = 1;
+          endif
       	end_try_catch
       	clear __test__;
       endif
@@ -574,6 +572,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   endif
 endfunction
 
+## find [start,end] of fn in 'function [a,b] = fn'
 function pos = function_name(def)
   pos = [];
   right = min(find(def=='('));
@@ -581,7 +580,37 @@ function pos = function_name(def)
   left = max([find(def(1:right)==' '),find(def(1:right))=='=']);
   if isempty(left), return; endif
   pos = [left+1,right-1];
-endfunction;
+endfunction
+
+## strip <pattern> from '<pattern> code'
+function [pattern,rest] = getpattern(str)
+  pattern = '.';
+  rest = str; 
+  str = trimleft(str);
+  if !isempty(str) && str(1) == '<'
+    close = index(str,'>');
+    if close,
+      pattern = str(2:close-1);
+      rest = str(close+1:end);
+    endif
+  endif
+endfunction
+
+## strip '.*prefix:' from '.*prefix: msg\n' and strip trailing blanks
+function msg = trimerr(msg,prefix)
+  idx = index(msg,[prefix,':']);
+  if (idx > 0), msg(1:idx+length(prefix)) = []; end
+  msg = trimleft(deblank(msg));
+endfunction
+
+## strip leading blanks from string
+function str = trimleft(str)
+  idx = find(isspace(str));
+  leading = find(idx == [1:length(idx)]);
+  if !isempty(leading)
+    str = str(leading(end)+1:end);
+  endif
+endfunction
 
 ### example from toeplitz
 %!shared msg
@@ -644,10 +673,14 @@ endfunction;
 %!fail ('test("test", "bogus")','unknown flag')      # incorrect args
 %!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
 
-%!error  test                    # no args, generates usage()
-%!error  test(1,2,3,4)           # too many args, generates usage()
-%!error  test("test", 'bogus');  # incorrect args, generates error()
-%!error  garbage                 # usage on nonexistent function should be
+%!error <usage.*test> test                     # no args, generates usage()
+%!error <usage.*test> test(1,2,3,4)            # too many args, generates usage()
+%!error <unknown flag> test("test", 'bogus');  # incorrect args, generates error()
+%!error <garbage' undefined> garbage           # usage on nonexistent function should be
+
+%!error test("test", 'bogus');           # test without pattern
+
+%!warning <warning message> warning('warning message')
 
 %!## test of shared variables
 %!shared a                # create a shared variable
@@ -711,6 +744,7 @@ endfunction;
 % !shared garbage in         # variables must be comma separated
 % !error  syntax++error      # error test fails on syntax errors
 % !error  "succeeds.";       # error test fails if code succeeds
+% !error <wrong pattern> error("message")  # error pattern must match
 % !demo   with syntax error  # syntax errors in demo fail properly
 % !shared a,b,c              
 % !demo                      # shared variables not available in demo

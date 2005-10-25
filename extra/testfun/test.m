@@ -429,6 +429,30 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       
       ## initialization code will be evaluated below
     
+    ## FUNCTION
+    elseif strcmp (__type, "function")
+      persistent __fn = 0;
+      __name_position = function_name(__block);
+      if isempty(__name_position)
+        __success = 0;
+        __msg = [__signal_fail, "test failed: missing function name\n"];
+      else
+        __name = __block(__name_position(1):__name_position(2));
+        __temp_name = ["__test_f",num2str(__fn++)];
+        __code = [ __block(1:__name_position(1)-1), ...
+                   __temp_name, ...
+                   __block(__name_position(2)+1:end) ];
+        try
+          eval(__code); ## Define the function
+          eval([__name, '= @', __temp_name, ';']);
+        catch
+          __success = 0;
+          __msg = [ __signal_fail, "test failed: syntax error\n", __error_text__];
+        end_try_catch
+      endif
+      __code = "";
+      
+
     ## ASSERT/FAIL
     elseif strcmp (__type, "assert") || strcmp (__type, "fail")
       __istest = 1;
@@ -538,6 +562,15 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   endif
 endfunction
 
+function pos = function_name(def)
+  pos = [];
+  right = min(find(def=='('));
+  if isempty(right), return; endif
+  left = max([find(def(1:right)==' '),find(def(1:right))=='=']);
+  if isempty(left), return; endif
+  pos = [left,right-1];
+endfunction;
+
 ### example from toeplitz
 %!shared msg
 %! msg="expecting vector arguments";
@@ -621,6 +654,10 @@ endfunction
 %!test assert(!exist("a"))  # show that they are cleared
 %!shared a,b,c              # support for initializer shorthand
 %! a=1; b=2; c=4;
+
+%!function x = a(y)
+%! x = 2*y;
+%!assert(a(2),4);       # Test a test function
 
 %!## test of assert block
 %!assert (isempty([]))      # support for test assert shorthand

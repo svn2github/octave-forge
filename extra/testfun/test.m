@@ -1,4 +1,4 @@
-## Copyright (C) 2000 Paul Kienzle
+## Copyright (C) 2005 Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -108,6 +108,11 @@
 ##    %!assert (kron ([1,2; 3,4], A), [ A,2*A; 3*A,4*A ]);
 ## You can share several variables at the same time:
 ##    %!shared A, B
+## You can also share test functions:
+##    %!shared fn
+##    %!function a = fn(b)
+##    %!  a = 2*b;
+##    %!assert (a(2),4);
 ## Note that all previous variables and values are lost when a new 
 ## shared block is declared.
 ##
@@ -165,6 +170,7 @@
 ##    %!#      - comment: ignore everything within the block
 ##    %!shared x,y,z - declares variables for use in multiple tests
 ##    %!assert (x, y, tol) - shorthand for %!test assert (x, y, tol)
+##    %!function - defines a function value for a shared variable
 ##
 ## You can also create test scripts for builtins and your own C++
 ## functions. Just put a file of the function name on your path without
@@ -574,7 +580,7 @@ function pos = function_name(def)
   if isempty(right), return; endif
   left = max([find(def(1:right)==' '),find(def(1:right))=='=']);
   if isempty(left), return; endif
-  pos = [left,right-1];
+  pos = [left+1,right-1];
 endfunction;
 
 ### example from toeplitz
@@ -664,6 +670,19 @@ endfunction;
 %!function x = a(y)
 %! x = 2*y;
 %!assert(a(2),4);       # Test a test function
+
+%!function a(y)
+%! x = 2*y;
+%!test
+%! a(2);                # Test a test function with no return value
+
+%!function [x,z] = a(y)
+%! x = 2*y;
+%! z = 3*y;
+%!test                   # Test a test function with multiple returns
+%! [x,z] = a(3);
+%! assert(x,6); 
+%! assert(z,9);
 
 %!## test of assert block
 %!assert (isempty([]))      # support for test assert shorthand

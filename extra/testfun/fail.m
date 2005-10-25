@@ -38,7 +38,7 @@ function ret=fail(code,pattern,warning_pattern)
 
   if test_warning
     ## perform the warning test
-  #  lastwarn("");  # clear old warnings
+    lastwarn("");  # clear old warnings
     state = warning('on'); # make sure warnings are turned on
     try
       ## printf("lastwarn before %s: %s\n",code,lastwarn);
@@ -80,12 +80,12 @@ end
 %!fail ('[1,2]*[2,3]','nonconformant')
 %!fail ("fail('[1,2]*[2;3]','nonconformant')","expected error <nonconformant> but got none")
 %!fail ("fail('[1,2]*[2,3]','usage:')","expected error <usage:>\nbut got.*nonconformant")
-%!fail ("warning('hello')",'warning','hello');
+%!fail ("warning('test warning')",'warning','test warning');
 
-%!fail ("warning('world')",'warning','world');  ## only allowed one warning test?!?
+%!# fail ("warning('next test')",'warning','next test');  ## only allowed one warning test?!?
 
 ## Comment out the following tests if you don't want to see what
 ## errors look like
 % !fail ('a*[2;3]', 'nonconformant')
 % !fail ('a*[2,3]', 'usage:')
-% !fail ("warning('world')", 'warning', 'hello')
+% !fail ("warning('warning failure')", 'warning', 'success')

@@ -14,18 +14,21 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## example('name', n)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} example ('@var{name}',@var{n})
+## @deftypefnx {Function File} {[@var{x}, @var{idx}] =} example ('@var{name}',@var{n})
 ##
-##    Display the code for example n associated with the function 'name',
-##    but do not run it.  If n is not given, all examples are displayed.
+##  Display the code for example @var{n} associated with the function 
+## '@var{name}', but do not run it. If @var{n} is not given, all examples 
+## are displayed.
 ##
-## [x, idx] = example(...)
-##    Return the examples as a string, with idx indicating the ending
-##    position of the various examples.
+## Called with output arguments, the examples are returned in the form of
+## a string @var{x}, with @var{idx} indicating the ending position of the 
+## various examples.
 ##
-## See demo for a complete explanation.
-##
-## See also: demo, test
+## See @code{demo} for a complete explanation.
+## @end deftypefn
+## @seealso{demo, test}
 
 ## PKG_ADD: mark_as_command example
 

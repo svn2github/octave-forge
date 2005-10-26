@@ -1,16 +1,29 @@
-## fail (code, pattern)
-##    Return true if code fails with an error message matching pattern,
-##    otherwise produce an error.  If code runs successfully, the error
-##    produced is:
+## -*- texinfo -*-
+## @deftypefn {Function File} {} fail (@var{code},@var{pattern})
+## @deftypefnx {Function File} {} fail (@var{code},'warning',@var{pattern})
+##
+## Return true if @var{code} fails with an error message matching
+## @var{pattern}, otherwise produce an error. Note that @var{code}
+## is a string and if @var{code} runs successfully, the error produced is:
+##
+## @example
 ##           expected error but got none  
-##    If the code fails with a different error, them message produced is:
+## @end example
+##
+## If the code fails with a different error, the message produced is:
+##
+## @example
 ##           expected <pattern>
 ##           but got <text of actual error>
-##    The angle brackets are not part of the output.
+## @end example
 ##
-## fail (code, 'warning', pattern)
-##    Similar to fail(code,pattern), but produces an error if no warning
-##    is given during code execution or if the code fails.
+## The angle brackets are not part of the output.
+##
+## Called with three arguments, the behavior is similar to 
+## @code{fail(@var{code}, @var{pattern})}, but produces an error if no 
+## warning is given during code execution or if the code fails.
+##
+## @end deftypefn
 
 ## This program is public domain
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
@@ -19,7 +32,7 @@
 function ret=fail(code,pattern,warning_pattern)
   if nargin < 1 || nargin > 3
     usage("fail(code [, 'warning'] [, pattern])");
-  end
+  endif
 
   ## sort out arguments
   test_warning =  (nargin > 1 && strcmp(pattern,'warning'));
@@ -27,14 +40,14 @@ function ret=fail(code,pattern,warning_pattern)
     pattern = warning_pattern;
   elseif nargin == 1 || (nargin==2 && test_warning)
     pattern = "";
-  end
-  if isempty(pattern), pattern = "."; end  # match any nonempty message
+  endif
+  if isempty(pattern), pattern = "."; endif  # match any nonempty message
 
   ## allow assert(fail())
-  if nargout, ret=1; end  
+  if nargout, ret=1; endif  
 
   ## don't test failure if evalin doesn't exist
-  if !exist('evalin') || !exist('lastwarn'), return; end
+  if !exist('evalin') || !exist('lastwarn'), return; endif
 
   if test_warning
     ## perform the warning test
@@ -52,7 +65,7 @@ function ret=fail(code,pattern,warning_pattern)
         err([1:9,end]) = [];  # transform "warning: ...\n" to "..."
         if !isempty(regexp(pattern,err)), return; end
         msg = sprintf("expected warning <%s>\nbut got <%s>", pattern,err);
-      end
+      endif
     catch
       warning(state);
       err = lasterr;
@@ -71,11 +84,11 @@ function ret=fail(code,pattern,warning_pattern)
       if !isempty(regexp(pattern,err)), return; end
       msg = sprintf("expected error <%s>\nbut got <%s>",pattern,err);
     end
-  end
+  endif
 
   ## if we get here, then code didn't fail or error didn't match
   error(msg);
-end
+endfunction
 
 %!fail ('[1,2]*[2,3]','nonconformant')
 %!fail ("fail('[1,2]*[2;3]','nonconformant')","expected error <nonconformant> but got none")

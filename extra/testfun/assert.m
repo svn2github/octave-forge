@@ -14,23 +14,33 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## ASSERT produces an error if the condition is not met.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} assert (@var{cond})
+## @deftypefnx {Function File} {} assert (@var{observed},@var{expected})
+## @deftypefnx {Function File} {} assert (@var{observed},@var{expected},@var{tol})
 ##
-## assert(cond)
-##   Produce an error if any element of cond is zero.
+## Produces an error if the condition is not met. @code{assert} can be
+## called in three different ways.
 ##
-## assert(observed, expected)
-##   Produce an error if observed is not the same as expected.  Note
-##   that observed and expected can be strings, scalars, vectors, 
-##   matrices, lists or structures.
+## @table @code
+## @item assert (@var{cond})
+## Called with a single argument @var{cond}, @code{assert} produces an
+## error if @var{cond} is zero.
 ##
-## assert(observed, expected, tol)
-##   Produce an error if relative error is less than tolerance.
-##   That is, abs(observed-expected) > tol*expected.  Absolute
-##   error abs(observed-expected) > abs(tol) will be used when tolerance 
-##   is negative or when the expected value is zero.
+## @item assert (@var{observed}, @var{expected})
+## Produce an error if observed is not the same as expected. Note that 
+## observed and expected can be strings, scalars, vectors, matrices, 
+## lists or structures.
 ##
-## see also: test
+## @item assert(@var{observed}, @var{expected}, @var{tol})
+## Produce an error if relative error is less than tolerance. That is, 
+## @code{abs(@var{observed} - @var{expected}) > @var{tol} * @var{expected}}.  
+## Absolute error @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})} 
+## will be used when tolerance is negative or when the expected value is zero.
+## @end table
+##
+## @end deftypefn
+## @seealso{test}
 
 ## TODO: Output throttling: don't print out the entire 100x100 matrix,
 ## TODO: but instead give a summary; don't print out the whole list, just

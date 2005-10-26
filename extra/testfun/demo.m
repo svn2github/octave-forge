@@ -14,21 +14,24 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## demo('name', n)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} demo ('@var{name}',@var{n})
 ##
-## Runs any examples associated with the function 'name'.  Examples are 
-## stored in the script file, or in a file with the same name but no 
-## extension somewhere on your path.  To keep them separate from the
-## usual script code, all lines are prefixed by %!.  Each example is
-## introduced by the keyword 'demo' flush left to the prefix, with no
-## intervening spaces.  The remainder of the example can contain 
+## Runs any examples associated with the function '@var{name}'.  
+## Examples are stored in the script file, or in a file with the same 
+## name but no extension somewhere on your path.  To keep them separate 
+## from the usual script code, all lines are prefixed by @code{%!}. Each
+## example is introduced by the keyword 'demo' flush left to the prefix,
+## with no intervening spaces.  The remainder of the example can contain 
 ## arbitrary octave code. For example:
 ##
+## @example
 ##    %!demo
 ##    %! t=0:0.01:2*pi; x = sin(t);
 ##    %! plot(t,x)
 ##    %! %-------------------------------------------------
 ##    %! % the figure window shows one cycle of a sine wave
+## @end example
 ##
 ## Note that the code is displayed before it is executed, so a simple
 ## comment at the end suffices.  It is generally not necessary to use
@@ -39,7 +42,9 @@
 ## separate initialization code. Alternatively, you can combine your
 ## demos into one huge demo, with the code:
 ##
+## @example
 ##    %! input("Press <enter> to continue: ","s");
+## @end example
 ##
 ## between the sections, but this is discouraged.  Other techniques
 ## include using multiple plots by saying figure between each, or
@@ -47,19 +52,22 @@
 ##
 ## Also, since demo evaluates inside a function context, you cannot
 ## define new functions inside a demo.  Instead you will have to
-## use eval(example('function',n)) to see them.  Because eval only
+## use @code{eval(example('function',n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
 ## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
 ## with the 'if' on the same line as 'demo'. For example,
 ##
+## @example
 ##   %!demo if 1
 ##   %!  function y=f(x)
 ##   %!    y=x;
 ##   %!  endfunction
 ##   %!  f(3)
 ##   %! endif
+## @end example
 ##
-## See Also: test, example
+## @end deftypefn
+## @seealso{test, example}
 
 ## TODO: modify subplot so that gnuplot_has_multiplot == 0 causes it to
 ## TODO: use the current figure window but pause if not plotting in the

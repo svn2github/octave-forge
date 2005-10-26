@@ -575,11 +575,19 @@ endfunction
 ## find [start,end] of fn in 'function [a,b] = fn'
 function pos = function_name(def)
   pos = [];
+
+  ## Find the end of the name
   right = min(find(def=='('));
   if isempty(right), return; endif
-  left = max([find(def(1:right)==' '),find(def(1:right))=='=']);
+  right = max(find(def(1:right-1) != ' '));
+
+  ## Find the beginning of the name
+  left = max([find(def(1:right)==' '),find(def(1:right)=='=')]);
   if isempty(left), return; endif
-  pos = [left+1,right-1];
+  left++;
+
+  ## Return the end points of the name
+  pos = [left,right];
 endfunction
 
 ## strip <pattern> from '<pattern> code'
@@ -704,12 +712,12 @@ endfunction
 %! x = 2*y;
 %!assert(a(2),4);       # Test a test function
 
-%!function a(y)
+%!function a (y)
 %! x = 2*y;
 %!test
 %! a(2);                # Test a test function with no return value
 
-%!function [x,z] = a(y)
+%!function [x,z] = a (y)
 %! x = 2*y;
 %! z = 3*y;
 %!test                   # Test a test function with multiple returns

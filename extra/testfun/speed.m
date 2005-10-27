@@ -12,75 +12,97 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301  USA
 
-## speed(f, init, max_n, f2, tol, err)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} speed(@var{f}, @var{init}, @var{max_n}, @var{f2}, @var{tol}, @var{err})
+## @deftypefnx {Function File} {@var{r} =} speed(@dots{})
 ##
-##   Determine the execution time of an expression for various n.
-##   The n are log-spaced from 1 to max_n.  For each n, an
-##   initialization expression is computed to create whatever
-##   data are needed for the test.
+## Determine the execution time of an expression for various @var{n}.
+## The @var{n} are log-spaced from 1 to @var{max_n}.  For each @var{n},
+## an initialization expression is computed to create whatever data
+## are needed for the test. Called without output arguments the data
+## is presented graphically. Called with an output argument @var{r},
+## the speedup ratio is returned instead of displaying it graphically.
 ##
-##   f is the expression to evaluate.
-##   max_n = 100 is the maximum test length to run.
-##   init = "x = randn(n, 1);"
-##     Initialization expression for function argument values.  Use 'k' 
-##     for the test number and 'n' for the size of the test.  This should
-##     compute values for all variables listed in args.  Note that init
-##     will be evaluated first for k=0, so things which are constant
-##     throughout the test can be computed then.
-##   f2 = []
-##     is an alternative expression to evaluate, so the speed of the two
-##     can be compared
-##   tol = eps
-##     if tol is inf, then no comparison will be made between the
-##     results of express f and expression f2.  Otherwise, expression
-##     f should produce a value v and expression f2 should produce
-##     a value v2, and these shall be compared using assert(v,v2,tol,err)
+## @table @code
+## @item @var{f}
+## The expression to evaluate.
 ##
-## r = speed (...)
-##   Returns the average speedup ratio instead of displaying and plotting.
+## @item @var{max_n}
+## The maximum test length to run. Default value is 100.
+##
+## @item @var{init}
+## Initialization expression for function argument values.  Use @var{k} 
+## for the test number and @var{n} for the size of the test.  This should
+## compute values for all variables listed in args.  Note that init will
+## be evaluated first for k=0, so things which are constant throughout
+## the test can be computed then. The default value is @code{@var{x} =
+## randn (@var{n}, 1);}.
+##
+## @item @var{f2}
+## An alternative expression to evaluate, so the speed of the two
+## can be compared. Default is @code{[]}.
+##
+## @item @var{tol}
+## If @var{tol} is @code{Inf}, then no comparison will be made between the
+## results of expression @var{f} and expression @var{f2}.  Otherwise,
+## expression @var{f} should produce a value @var{v} and expression @var{f2} 
+## should produce a value @var{v2}, and these shall be compared using 
+## @code{assert(@var{v},@var{v2},@var{tol},@var{err}). The default is
+## @code{eps}.
+## @end table
 ##
 ## Some global variables are also referenced. Choose values suitable to
 ## your machine and your work style.
-##    speed_test_plot = 1
-##       if true, plot a nice speed comparison graph
-##    speed_test_numtests = 25
-##       number of vector lengths to test
+##
+## @table @code
+## @item speed_test_plot
+## If true, plot a nice speed comparison graph. Default is true.
+##
+## @item speed_test_numtests
+## Number of vector lengths to test. The default is 25.
+## @end table
 ##
 ## Some comments on the graphs.  The line on the speedup ratio graph 
 ## should be larger than 1 if your function is faster.  The slope on
 ## the runtime graph shows you the O(f) speed characteristics.  Where it
 ## is flat, execution time is O(1).  Where it is sloping, execution time
-## is O(n^m), with steeper slopes for larger n.  Generally vectorizing
+## is O(n^m), with steeper slopes for larger @var{n}.  Generally vectorizing
 ## a function will not change the slope of the run-time graph, but it
 ## will shift it relative to the original.
 ##
-## Example
-##   % If you had an original version of xcorr using for loops and
-##   % another version using FFT, you could compare the run speed
-##   % for various lags as follows, or for a fixed lag with varying
-##   % vector lengths as follows:
+## A simple example is
 ##
+## @example
+##   speed("strrep(s,x,y)", "s=blanks(n);x=' ';y='b';", 100)
+## @end example
+##
+## A more complex example, if you had an original version of @code{xcorr}
+## using for loops and another version using an FFT, you could compare the
+## run speed for various lags as follows, or for a fixed lag with varying
+## vector lengths as follows:
+##
+## @example
 ##   speed("v=xcorr(x,n)", "x=rand(128,1);", 100, ...
 ##         "v2=xcorr_orig(x,n)", 100*eps,'rel')
 ##   speed("v=xcorr(x,15)", "x=rand(20+n,1);", 100, ...
 ##         "v2=xcorr_orig(x,n)", 100*eps,'rel')
+## @end example
 ##
-##   % Assuming one of the two versions is in xcorr_orig, this would
-##   % would compare their speed and their output values.  Note that the
-##   % FFT version is not exact, so we specify an acceptable tolerance on
-##   % the comparison (100*eps), and the errors should be computed
-##   % relatively, as abs( (x-y)./y ) rather than absolutely as abs(x-y).
+## Assuming one of the two versions is in @var{xcorr_orig}, this would
+## would compare their speed and their output values.  Note that the
+## FFT version is not exact, so we specify an acceptable tolerance on
+## the comparison @code{100*eps}, and the errors should be computed
+## relatively, as @code{abs((@var{x} - @var{y})./@var{y})} rather than 
+## absolutely as @code{abs(@var{x} - @var{y})}.
 ##
-## Example
-##   speed("strrep(s,x,y)", "s=blanks(n);x=' ';y='b';", 100)
-##
-## Type example('speed') to see some real examples.  Note for 
+## Type @code{example('speed')} to see some real examples. Note for 
 ## obscure reasons, you can't run examples 1 and 2 directly using 
-## demo('speed').  Instead use: 
-##    eval(example('speed',1))
-##    eval(example('speed',2))
+## @code{demo('speed')}. Instead use, @code{eval(example('speed',1))}
+## and @code{eval(example('speed',2))}.
+## @end deftypefn
 
 ## TODO: consider two dimensional speedup surfaces for functions like kron.
 function __ratio_r = speed (__f1, __init, __max_n, __f2, __tol, __err)

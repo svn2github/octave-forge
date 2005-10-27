@@ -12,175 +12,307 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301  USA
 
-## test name
-##   Perform tests interactively, stopping at the first error.
-##   Tests are from the first file matching 'name', 'name.m' 
-##   in your loadpath.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} test @var{name}
+## @deftypefnx {Function File} {} test @var{name} quiet|normal|verbose
+## @deftypefnx {Function File} {} test ('@var{name}', 'quiet|normal|verbose', @var{fid})
+## @deftypefnx {Function File} {} test ([], 'explain', @var{fid})
+## @deftypefnx {Function File} {@var{success} =} test (@dots{})
+## @deftypefnx {Function File} {[@var{n}, @var{max}] =} test (@dots{})
+## @deftypefnx {Function File} {[@var{code}, @var{idx}] =} test ('@var{name}','grabdemo')
 ##
-## test name quiet|normal|verbose
-##   Perform tests interactively, stopping at the first error.
-##   'quiet': Don't report all the tests as they happen, just the errors.
-##   'normal': Report all tests as they happen, but don't do tests
-##       which require user interaction.
-##   'verbose': Do tests which require user interaction.
+## Perform tests from the first file in the loadpath matching @var{name}.
+## @code{test} can be called as a command or as a function. Called with 
+## a single argument @var{name}, the tests are run interactively and stop
+## after the first error is encountered.
 ##
-## test('name', ['quiet'|'normal'|'verbose'], fid)
-##   Batch processing.  Write errors to already open file fid (hopefully
-##   then when octave crashes this file will tell you what was happening
-##   when it did).  You can use stdout if you want to see the results as
-##   they happen.  You can also give a file name rather than an fid, in
-##   which case the contents of the file will be replaced with the log
-##   from the current test.
+## With a second argument the tests which are performed and the amount of
+## output is selected.
 ##
-## success = test(...)
-##   return true if all the tests succeeded.
+## @table @asis
+## @item 'quiet'
+##  Don't report all the tests as they happen, just the errors.
 ##
-## [n, max] = test(...)
-##   return number of success and number of tests
+## @item 'normal'
+## Report all tests as they happen, but don't do tests which require 
+## user interaction.
 ##
-## [code, idx] = test('name', 'grabdemo')
-##   Extract the contents of the demo blocks, but do not execute them.
-##   code is the concatenation of all the code blocks and
-##   idx is a vector of positions of the ends of the demo blocks.
+## @item 'verbose'
+## Do tests which require user interaction.
+## @end table
 ##
-## test('', 'explain', fid)
-##   Write an explanation of the line markers to the file fid.
+## The argument @var{fid} can be used to allow batch processing. Errors
+## can be written to the already open file defined by @var{fid}, and 
+## hopefully when octave crashes this file will tell you what was happening
+## when it did. You can use @code{stdout} if you want to see the results as
+## they happen.  You can also give a file name rather than an @var{fid}, in
+## which case the contents of the file will be replaced with the log from 
+## the current test.
 ##
-## This function process the named script file looking for lines which
-## start with "%! ".  The prefix is stripped off and the rest of the
-## line is processed through the octave interpreter.  If the code
+## Called with a single output argument @var{success}, @code{test} returns
+## true is all of the tests were successful. Called with two output arguments
+## @var{n} and @var{max}, the number of sucessful test and the total number
+## of tests in the file @var{name} are returned.
+##
+## If the second argument is the string 'grabdemo', the contents of the demo
+## blocks are extracted but not executed. Code for all code blocks is
+## concatented and returned as @var{code} with @var{idx} being a vector of
+## positions of the ends of the demo blocks.
+##
+## If the second argument is 'explain', then @var{name} is ignored and an
+## explanation of the line markers used is written to the file @var{fid}.
+##
+## @c USE THE TEXT FROM HERE TO CREATE OCTAVE MANUAL ENTRY
+## @code{test} scans the named script file looking for lines which
+## start with @code{%!}. The prefix is stripped off and the rest of the
+## line is processed through the octave interpreter. If the code
 ## generates an error, then the test is said to fail.
 ## 
-## Since eval() will stop at the first error it encounters, you must
+## Since @code{eval()} will stop at the first error it encounters, you must
 ## divide your tests up into blocks, with anything in a separate
 ## block evaluated separately.  Blocks are introduced by the keyword
-## 'test' immediately following the '%!'.  For example,
+## @code{test} immediately following the @code{%!}.  For example,
+##
+## @example
+## @group
 ##    %!test error("this test fails!");
 ##    %!test "this test doesn't fail since it doesn't generate an error";
+## @end group
+## @end example
+##
 ## When a test fails, you will see something like:
+##
+## @example
+## @group
 ##      ***** test error('this test fails!')
 ##    !!!!! test failed
 ##    this test fails!
+## @end group
+## @end example
 ##
 ## Generally, to test if something works, you want to assert that it
 ## produces a correct value.  A real test might look something like
+##
+## @example
+## @group
 ##    %!test
-##    %! A = [1, 2, 3; 4, 5, 6]; B = [1; 2];
-##    %! expect = [ A ; 2*A ];
-##    %! get = kron (B, A);
+##    %! @var{a} = [1, 2, 3; 4, 5, 6]; B = [1; 2];
+##    %! expect = [ @var{a} ; 2*@var{a} ];
+##    %! get = kron (@var{b}, @var{a});
 ##    %! if (any(size(expect) != size(get)))
 ##    %!    error ("wrong size: expected %d,%d but got %d,%d",
 ##    %!           size(expect), size(get));
 ##    %! elseif (any(any(expect!=get)))
 ##    %!    error ("didn't get what was expected.");
 ##    %! endif
-## To make the process easier, use the assert function.  For example,
-## with assert the previous test is reduced to:
+## @end group
+## @end example
+##
+## To make the process easier, use the @code{assert} function.  For example,
+## with @code{assert} the previous test is reduced to:
+##
+## @example
+## @group
 ##    %!test
-##    %! A = [1, 2, 3; 4, 5, 6]; B = [1; 2];
-##    %! assert (kron (B, A), [ A; 2*A ]);
-## Assert can accept a tolerance so that you can compare results
+##    %! @var{a} = [1, 2, 3; 4, 5, 6]; @var{b} = [1; 2];
+##    %! assert (kron (@var{b}, @var{a}), [ @var{a}; 2*@var{a} ]);
+## @end group
+## @end example
+##
+## @code{assert} can accept a tolerance so that you can compare results
 ## absolutely or relatively. For example, the following all succeed:
+##
+## @example
+## @group
 ##    %!test assert (1+eps, 1, 2*eps)          # absolute error
 ##    %!test assert (100+100*eps, 100, -2*eps) # relative error
+## @end group
+## @end example
+##
 ## You can also do the comparison yourself, but still have assert
 ## generate the error:
+##
+## @example
+## @group
 ##    %!test assert (isempty([]))
 ##    %!test assert ([ 1,2; 3,4 ] > 0)
-## Because assert is so frequently used alone in a test block, there
+## @end group
+## @end example
+##
+## Because @code{assert} is so frequently used alone in a test block, there
 ## is a shorthand form:
-##    %!assert (...)
+##
+## @example
+##    %!assert (@dots{})
+## @end example
+##
 ## which is equivalent to:
-##    %!test assert (...)
+##
+## @example
+##    %!test assert (@dots{})
+## @end example
 ##
 ## Each block is evaluated in its own function environment, which means
 ## that variables defined in one block are not automatically shared
 ## with other blocks.  If you do want to share variables, then you
-## must declare them as shared before you use them.  For example, the
-## following declares the variable A, gives it an initial value (default
+## must declare them as @code{shared} before you use them.  For example, the
+## following declares the variable @var{a}, gives it an initial value (default
 ## is empty), then uses it in several subsequent tests.
-##    %!shared A
-##    %! A = [1, 2, 3; 4, 5, 6];
-##    %!assert (kron ([1; 2], A), [ A; 2*A ]);
-##    %!assert (kron ([1, 2], A), [ A, 2*A ]);
-##    %!assert (kron ([1,2; 3,4], A), [ A,2*A; 3*A,4*A ]);
+##
+## @example
+## @group
+##    %!shared @var{a}
+##    %! @var{a} = [1, 2, 3; 4, 5, 6];
+##    %!assert (kron ([1; 2], @var{a}), [ @var{a}; 2*@var{a} ]);
+##    %!assert (kron ([1, 2], @var{a}), [ @var{a}, 2*@var{a} ]);
+##    %!assert (kron ([1,2; 3,4], @var{a}), [ @var{a},2*@var{a}; 3*@var{a},4*@var{a} ]);
+## @end group
+## @end example
+##
 ## You can share several variables at the same time:
-##    %!shared A, B
+##
+## @example
+##    %!shared @var{a}, @var{b}
+## @end example
+##
 ## You can also share test functions:
+##
+## @example
+## @group
 ##    %!shared fn
-##    %!function a = fn(b)
-##    %!  a = 2*b;
-##    %!assert (a(2),4);
+##    %!function @var{a} = fn(@var{b})
+##    %!  @var{a} = 2*@var{b};
+##    %!assert (@var{a}(2),4);
+## @end group
+## @end example
+##
 ## Note that all previous variables and values are lost when a new 
 ## shared block is declared.
 ##
 ## Error and warning blocks are like test blocks, but they only succeed 
 ## if the code generates an error.  You can check the text of the error
-## is correct using an optional regular expression <pattern>.  For example:
+## is correct using an optional regular expression @code{<pattern>}.  
+## For example:
+##
+## @example
 ##    %!error <passes!> error('this test passes!');
+## @end example
+##
 ## If the code doesn't generate an error, the test fails. For example,
+##
+## @example
 ##    %!error "this is an error because it succeeds.";
+## @end example
+##
 ## produces
+##
+## @example
+## @group
 ##    ***** error "this is an error because it succeeds.";
 ##    !!!!! test failed: no error
+## @end group
+## @end example
 ##
 ## It is important to automate the tests as much as possible, however
 ## some tests require user interaction.  These can be isolated into
 ## demo blocks, which if you are in batch mode, are only run when 
-## called with 'demo' or 'verbose'.  The code is displayed before
+## called with @code{demo} or @code{verbose}. The code is displayed before
 ## it is executed. For example,
+##
+## @example
+## @group
 ##    %!demo
-##    %! t=[0:0.01:2*pi]; x=sin(t);
-##    %! plot(t,x);
+##    %! @var{t}=[0:0.01:2*pi]; @var{x}=sin(@var{t});
+##    %! plot(@var{t},@var{x});
 ##    %! ## you should now see a sine wave in your figure window
+## @end group
+## @end example
+##
 ## produces
-##    > t=[0:0.01:2*pi]; x=sin(t);
-##    > plot(t,x);
+##
+## @example
+## @group
+##    > @var{t}=[0:0.01:2*pi]; @var{x}=sin(@var{t});
+##    > plot(@var{t},@var{x});
 ##    > ## you should now see a sine wave in your figure window
 ##    Press <enter> to continue: 
+## @end group
+## @end example
+##
 ## Note that demo blocks cannot use any shared variables.  This is so
 ## that they can be executed by themselves, ignoring all other tests.
 ##
-## If you want to temporarily disable a test block, put '#' in place
+## If you want to temporarily disable a test block, put @code{#} in place
 ## of the block type.  This creates a comment block which is echoed
 ## in the log file, but is not executed.  For example:
+##
+## @example
+## @group
 ##    %!#demo
-##    %! t=[0:0.01:2*pi]; x=sin(t);
-##    %! plot(t,x);
+##    %! @var{t}=[0:0.01:2*pi]; @var{x}=sin(@var{t});
+##    %! plot(@var{t},@var{x});
 ##    %! ## you should now see a sine wave in your figure window
+## @end group
+## @end example
 ##
 ## Block type summary:
-##    %!test       - check that entire block is correct
-##    %!error      - check for correct error message
-##    %!warning    - check for correct warning message
-##    %!demo       - demo only executes in interactive mode
-##    %!#          - comment: ignore everything within the block
-##    %!shared x,y,z       - declares variables for use in multiple tests
-##    %!function           - defines a function value for a shared variable
-##    %!assert (x, y, tol) - shorthand for %!test assert (x, y, tol)
+##
+## @table @code
+## @item %!test
+## check that entire block is correct
+## @item %!error
+## check for correct error message
+## @item %!warning
+## check for correct warning message
+## @item %!demo
+## demo only executes in interactive mode
+## @item %!#
+## comment: ignore everything within the block
+## @item %!shared x,y,z
+## declares variables for use in multiple tests
+## @item %!function
+## defines a function value for a shared variable
+## @item %!assert (x, y, tol)
+## shorthand for %!test assert (x, y, tol)
+## @end table
 ##
 ## You can also create test scripts for builtins and your own C++
 ## functions. Just put a file of the function name on your path without
 ## any extension and it will be picked up by the test procedure.  You
 ## can even embed tests directly in your C++ code:
+##
+## @example
+## @group
 ##    #if 0
 ##    %!test disp('this is a test')
 ##    #endif
+## @end group
+## @end example
+##
 ## or
+##
+## @example
+## @group
 ##    /*
 ##    %!test disp('this is a test')
 ##    */
+## @end group
+## @end example
+##
 ## but then the code will have to be on the load path and the user 
 ## will have to remember to type test('name.cc').  Conversely, you
 ## can separate the tests from normal octave script files by putting
 ## them in plain files with no extension rather than in script files.
-## Don't forget to tell emacs that the plain text file you are using
-## is actually octave code, using something like:
-##    ## -*-octave-*-
+## @c DO I WANT TO INCLUDE THE EDITOR SPECIFIC STATEMENT BELOW???
+## @c Don't forget to tell emacs that the plain text file you are using
+## @c is actually octave code, using something like:
+## @c   ## -*-octave-*-
 ##
-## See Also: error, assert, fail, demo, example
+## @end deftypefn
+## @seealso{error, assert, fail, demo, example}
 
 ## TODO: * Consider using keyword fail rather then error?  This allows us
 ## TODO: to make a functional form of error blocks, which means we
@@ -202,8 +334,11 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   if (nargin < 3) 
     __fid = []; 
   endif
-  if (nargin < 1 || nargin > 3 || !ischar(__name) || !ischar(__flag))
+  if (nargin < 1 || nargin > 3 || (!ischar(__name) && !isempty(__name)) || !ischar(__flag))
     usage("success = test('name', ['quiet'|'normal'|'verbose'], fid)");
+  endif
+  if (isempty(__name) && (nargin != 3 || !strcmp(__flag, "explain")))
+    usage("test([], 'explain', fid)");
   endif
   __batch = (!isempty(__fid));
 

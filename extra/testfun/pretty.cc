@@ -16,17 +16,22 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; see the file COPYING.  If not, write to the Free
-Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301  USA
 */
 
 #include <octave/oct.h>
 #include <octave/oct-strstrm.h>
 
 DEFUN_DLD (pretty, args, ,
-"str = pretty (v)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{str} =} pretty (@var{v})\n\
 \n\
-Equivalent to x=disp(v), but disp doesn't return a value ...")
+Equivalent to @code{disp(@var{v})}, but returns the output as a string\n\
+@var{str}.
+\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

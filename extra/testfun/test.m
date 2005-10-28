@@ -182,7 +182,6 @@
 ##
 ## @example
 ## @group
-##    %!shared fn
 ##    %!function @var{a} = fn(@var{b})
 ##    %!  @var{a} = 2*@var{b};
 ##    %!assert (@var{a}(2),4);
@@ -566,14 +565,10 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
         __msg = [__signal_fail, "test failed: missing function name\n"];
       else
         __name = __block(__name_position(1):__name_position(2));
-        __temp_name = ["__test_f",num2str(__fn++)];
-        __code = [ __block(1:__name_position(1)-1), ...
-                   __temp_name, ...
-                   __block(__name_position(2)+1:end) ];
+        __code = __block;
         try
           eval(__code); ## Define the function
-          eval([__name, '= @', __temp_name, ';']);
-          __clear = [__clear, "clear ",__temp_name,";\n"];
+          __clear = [__clear, "clear ",__name,";\n"];
         catch
           __success = 0;
           __msg = [ __signal_fail, "test failed: syntax error\n", __error_text__];
@@ -843,20 +838,20 @@ endfunction
 %!shared a,b,c              # support for initializer shorthand
 %! a=1; b=2; c=4;
 
-%!function x = a(y)
+%!function x = __test_a(y)
 %! x = 2*y;
-%!assert(a(2),4);       # Test a test function
+%!assert(__test_a(2),4);       # Test a test function
 
-%!function a (y)
+%!function __test_a (y)
 %! x = 2*y;
 %!test
-%! a(2);                # Test a test function with no return value
+%! __test_a(2);                # Test a test function with no return value
 
-%!function [x,z] = a (y)
+%!function [x,z] = __test_a (y)
 %! x = 2*y;
 %! z = 3*y;
 %!test                   # Test a test function with multiple returns
-%! [x,z] = a(3);
+%! [x,z] = __test_a(3);
 %! assert(x,6); 
 %! assert(z,9);
 

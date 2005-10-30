@@ -143,6 +143,9 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options,varargin)
 			options = [];
 		 else 				% nargin > 2
 			if ~isstruct(options)
+				if ~isempty(options)  % empty indicates default chosen
+					warning('Options incorrect. Setting default values.');
+				end
 				warning('Options incorrect. Setting default values.');
 				set_default_options = true;
 			end

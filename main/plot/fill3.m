@@ -45,7 +45,7 @@ function y = fill3(x,y,z,c)
   endif
   
   unwind_protect
-    __gnuplot_raw__ ("set parametric;\n");
+    __gnuplot_set__ parametric;
     
     for i=1:nc
       xyz = [x(:,i), y(:,i), z(:,i)];
@@ -66,7 +66,7 @@ function y = fill3(x,y,z,c)
     
   unwind_protect_cleanup
     if !isheld, hold off; endif
-    __gnuplot_set__ noparametric
+    __gnuplot_set__ noparametric ;
   end_unwind_protect
   
 endfunction

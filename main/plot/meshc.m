@@ -52,7 +52,7 @@ function meshc (x, y, z)
       __gnuplot_raw__ ("set data style lines;\n");
       __gnuplot_raw__ ("set surface;\n");
       __gnuplot_raw__ ("set contour;\n");
-      __gnuplot_raw__ ("set noparametric;\n");
+      __gnuplot_set__ noparametric;
       __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
       __gnuplot_splot__ z'
     else
@@ -80,10 +80,10 @@ function meshc (x, y, z)
 	__gnuplot_raw__ ("set data style lines;\n");
 	__gnuplot_raw__ ("set surface;\n");
 	__gnuplot_raw__ ("set contour;\n");
-	__gnuplot_raw__ ("set parametric;\n");
+	__gnuplot_set__ parametric;
 	__gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
         __gnuplot_splot__ zz
-        __gnuplot_raw__ ("set noparametric;\n");
+        __gnuplot_set__ noparametric ;
       else
         msg = "meshc: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
@@ -108,10 +108,10 @@ function meshc (x, y, z)
 	__gnuplot_raw__ ("set data style lines;\n");
 	__gnuplot_raw__ ("set surface;\n");
 	__gnuplot_raw__ ("set contour;\n");
-	__gnuplot_raw__ ("set parametric;\n");
+	__gnuplot_set__ parametric;
 	__gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
         __gnuplot_splot__ zz
-        __gnuplot_raw__ ("set noparametric;\n");
+        __gnuplot_set__ noparametric;
       else
         error ("meshc: x, y, and z must have same dimensions");
       endif

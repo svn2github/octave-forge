@@ -699,10 +699,10 @@ int oct_mtovtk(ClientData clientData, Tcl_Interp *interp, int argc, CONST84 char
    // colors->SetNumberOfScalars(numPts);
 
    // Convert values from Octave matrix and store in VTK object
-   float p[3];
+   double p[3];
    for(int k = 0; k < numPts; k++)
    {
-      input->GetPoint(k, p);
+      input->vtkPointSet::GetPoint(k, p);
       int row = int((p[0] + 0.5) * (float) (m.rows() - 1));
       int col = int((p[1] + 0.5) * (float) (m.cols() - 1));
       p[2] = ((m.elem(row, col) - min) / (max - min)) - 0.5;

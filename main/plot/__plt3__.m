@@ -42,7 +42,7 @@ function __plt3__ (x, y, z, fmt)
   endif
 
   unwind_protect
-    __gnuplot_raw__ ("set parametric;\n");
+    __gnuplot_set__  parametric;
     __gnuplot_raw__ ("set nohidden3d;\n");
     for i=1:columns(x)
       tmp = [x(:,i), y(:,i), z(:,i)];
@@ -50,6 +50,6 @@ function __plt3__ (x, y, z, fmt)
       eval (cmd);
     endfor
   unwind_protect_cleanup
-    __gnuplot_raw__ ("set noparametric;\n"); 
+    __gnuplot_set__ noparametric; 
   end_unwind_protect
 endfunction

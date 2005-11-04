@@ -38,16 +38,6 @@ disp("[main/image]");
 try testimio
 catch disp(__error_text__); end
 
-disp("[main/struct]");
-try
-x.a = "hello";
-disp(">getfield"); assert(getfield(x,"a"),"hello");
-disp(">setfield"); x = setfield(x,"b","world");
-y.a = "hello";
-y.b = "world";
-assert(x,y);
-catch disp(__error_text__); end
-
 disp("[main/sparse]");
 # sp_test  # now using generated sptest
 fem_test

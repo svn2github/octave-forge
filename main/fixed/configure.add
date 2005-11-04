@@ -39,8 +39,33 @@ int main(void) {
   testclass a ( Matrix (1,1,1)); 
   testclass b = a.testfun(0);
 }
-	],[HAVE_6ARG_MX_ND_RED="-DHAVE_6ARG_MX_ND_RED"],)
-	AC_SUBST(HAVE_6ARG_MX_ND_RED)
+	],[MX_ND_RED_NUM="-DMX_ND_RED_NUM=6"],
+	  [TRY_MKOCTFILE([for 5 argument MX_ND_REDUCTION],[
+#include <octave/oct.h>
+#include <octave/ops.h>
+#include <octave/mx-inlines.cc>
+class testclass : public MArrayN<double>
+{
+ public:
+  testclass (void) : MArrayN<double> () { }
+  testclass (const Matrix& a) :  MArrayN<double> (a) { } 
+  testclass testfun (int dim) {
+    MX_ND_REDUCTION (acc += elem (iter_idx), 
+		     retval.elem(iter_idx) = acc, 0, 
+		     double acc = 0, testclass);
+  }
+  static void increment_index (Array<int>& ra_idx,
+			       const dim_vector& dimensions,
+			       int start_dimension = 0) {
+    ::increment_index (ra_idx, dimensions, start_dimension);
+  }
+};
+int main(void) { 
+  testclass a ( Matrix (1,1,1)); 
+  testclass b = a.testfun(0);
+}
+	  ],[MX_ND_RED_NUM="-DMX_ND_RED_NUM=5"],[MX_ND_RED_NUM="-DMX_ND_RED_NUM=3"])])
+	AC_SUBST(MX_ND_RED_NUM)
 
 	dnl version of the fixed point code
 	OCTAVEFIXEDVERSION="0.7.0"

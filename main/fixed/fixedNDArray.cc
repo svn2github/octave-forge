@@ -399,12 +399,14 @@ FixedNDArray
 FixedNDArray::prod (octave_idx_type dim) const
 {
   FixedPoint one(1,0,1,0);
-#if HAVE_6ARG_MX_ND_RED
+#if (MX_ND_RED_NUM == 6)
   MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
                    one, FixedPoint acc = one, FixedNDArray, FixedPoint);
-#else
+#elif (MX_ND_RED_NUM == 5)
   MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
                    one, FixedPoint acc = one, FixedNDArray);
+#else
+  MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), one, FixedNDArray);
 #endif
 
 }
@@ -413,12 +415,14 @@ FixedNDArray
 FixedNDArray::sum (octave_idx_type dim) const
 {
   FixedPoint zero;
-#if HAVE_6ARG_MX_ND_RED
+#if (MX_ND_RED_NUM == 6)
   MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
                    zero, FixedPoint acc = zero, FixedNDArray, FixedPoint);
-#else
+#elif (MX_ND_RED_NUM == 5)
   MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
                    zero, FixedPoint acc = zero, FixedNDArray);
+#else
+  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), zero, FixedNDArray);
 #endif
 }
 
@@ -426,14 +430,17 @@ FixedNDArray
 FixedNDArray::sumsq (octave_idx_type dim) const
 {
   FixedPoint zero;
-#if HAVE_6ARG_MX_ND_RED
+#if (MX_ND_RED_NUM == 6)
   MX_ND_REDUCTION (acc += pow (elem (iter_idx), 2), 
 		   retval.elem (iter_idx) = acc,
                    zero, FixedPoint acc = zero, FixedNDArray, FixedPoint);
-#else
+#elif (MX_ND_RED_NUM == 5)
   MX_ND_REDUCTION (acc += pow (elem (iter_idx), 2), 
 		   retval.elem (iter_idx) = acc,
                    zero, FixedPoint acc = zero, FixedNDArray);
+#else
+  MX_ND_REDUCTION (retval(result_idx) += pow (elem (iter_idx), 2), zero, 
+		   FixedNDArray);
 #endif
 }
 

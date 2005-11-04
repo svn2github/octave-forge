@@ -616,13 +616,16 @@ FixedComplexNDArray
 FixedComplexNDArray::prod (octave_idx_type dim) const
 {
   FixedPointComplex one(1, 0, 1, 0);
-#if HAVE_6ARG_MX_ND_RED
+#if (MX_ND_RED_NUM == 6)
   MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
 		   one, FixedPointComplex acc = one, 
 		   FixedComplexNDArray, FixedPointComplex);
-#else
+#elif (MX_ND_RED_NUM == 5)
   MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
 		   one, FixedPointComplex acc = one, 
+		   FixedComplexNDArray);
+#else
+  MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), one,
 		   FixedComplexNDArray);
 #endif
 
@@ -632,13 +635,16 @@ FixedComplexNDArray
 FixedComplexNDArray::sum (octave_idx_type dim) const
 {
   FixedPointComplex zero;
-#if HAVE_6ARG_MX_ND_RED
+#if (MX_ND_RED_NUM == 6)
   MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
 		   zero, FixedPointComplex acc = zero, 
 		   FixedComplexNDArray, FixedPointComplex);
-#else
+#elif (MX_ND_RED_NUM == 5)
   MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
 		   zero, FixedPointComplex acc = zero, 
+		   FixedComplexNDArray);
+#else
+  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), zero,
 		   FixedComplexNDArray);
 #endif
 }
@@ -647,16 +653,19 @@ FixedComplexNDArray
 FixedComplexNDArray::sumsq (octave_idx_type dim) const
 {
   FixedPointComplex zero;
-#if HAVE_6ARG_MX_ND_RED
+#if (MX_ND_RED_NUM == 6)
   MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
 		   retval.elem (iter_idx) = acc, zero, 
 		   FixedPointComplex acc = zero, 
 		   FixedComplexNDArray, FixedPointComplex);
-#else
+#elif (MX_ND_RED_NUM == 5)
   MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
 		   retval.elem (iter_idx) = acc, zero, 
 		   FixedPointComplex acc = zero, 
 		   FixedComplexNDArray);
+#else
+  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx) * 
+		   conj (elem (iter_idx)), zero, FixedComplexNDArray);
 #endif
 }
 

@@ -44,7 +44,7 @@
 function obj= setfield( obj, varargin )
    field= field_access( varargin{1:nargin-2} );
    val= varargin{ nargin-1 };
-   eval([field ,'=val;']);
+   eval(sprintf("%s=val;",field));
 
 function str= field_access( varargin )
    str= 'obj';
@@ -53,12 +53,18 @@ function str= field_access( varargin )
       if iscell( v )
           sep= '(';
           for j=1:length(v)
-              str= [str, sep, num2str(v{j}) ];
+              str= sprintf("%s%s%s", str, sep, num2str(v{j}));
               sep= ',';
           end
-          str= [str, ')'];
+          str= sprintf("%s)", str);
       else
-          str= [str, '.', v];
+	  str= sprintf("%s.%s", str, v);
       end
    end
+
+%!test
+%! x.a = "hello";
+%! x = setfield(x,"b","world");
+%! y = struct('a','hello','b','world');
+%! assert(x,y);
 

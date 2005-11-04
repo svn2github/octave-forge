@@ -40,7 +40,6 @@ for i=1:2:nargin-1
   if ! ischar(varargin{i}) ,
     error('setfields: called with non-string key') ; 
   else
-    eval( ['s.',varargin{i},'=varargin{i+1};'] ) ;
-    end
+    s.(varargin{i}) = varargin{i+1};
   end
 end

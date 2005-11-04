@@ -48,19 +48,19 @@ function ret = rmpath(varargin)
     lo = 0 ;
     while lo != length(path),	# Loop while I can substitute
       lo = length(path) ;
-      path = strrep(path,[":",p,":"],":") ;
+      path = strrep(path,sprintf(":%s:",p),":") ;
     end
 
     ## strip 'p:...' and '...:p' -> '...'
-    if length(path) > lp+1 && strcmp(path(1:lp+1),[p,':'])
+    if length(path) > lp+1 && strcmp(path(1:lp+1),sprintf("%s:",p))
       path = path(lp+2:end);
     end
-    if length(path) > lp+1 && strcmp(path(end-lp:end),[':',p])
+    if length(path) > lp+1 && strcmp(path(end-lp:end),sprintf(":%s",p))
       path = path(1:end-lp-1);
     end
 
     ## strip 'p:' and ':p' -> ':'
-    if length(path) == lp+1 && (strcmp(path,[p,':']) || strcmp(path,[':',p]))
+    if length(path) == lp+1 && (strcmp(path,sprintf("%s:",p)) || strcmp(path,sprintf(":%s",p)))
       path = ':';
     end
 

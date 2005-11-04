@@ -55,7 +55,7 @@ function ret=fail(code,pattern,warning_pattern)
     state = warning('on'); # make sure warnings are turned on
     try
       ## printf("lastwarn before %s: %s\n",code,lastwarn);
-      evalin("caller",[code,";"]);
+      evalin("caller",sprintf("%s;",code));
       ## printf("lastwarn after %s: %s\n",code,lastwarn);
       err = lastwarn;  # retrieve new warnings
       warning(state);
@@ -76,7 +76,7 @@ function ret=fail(code,pattern,warning_pattern)
   else
     ## perform the error test
     try
-      evalin("caller",[code,";"]);
+      evalin("caller",sprintf("%s;",code));
       msg = sprintf("expected error <%s> but got none", pattern);
     catch
       err=lasterr;

@@ -52,12 +52,12 @@ function str= field_access( varargin )
       if iscell( v )
           sep= '(';
           for j=1:length(v)
-              str= [str, sep, num2str(v{j}) ];
+	      str= sprintf("%s%s%s", str, sep, num2str(v{j}));
               sep= ',';
           end
-          str= [str, ')'];
+	  str= sprintf("%s)", str);
       else
-          str= [str, '.', v];
+          str= sprintf("%s.%s",str,v);
       end
    end
 
@@ -72,3 +72,6 @@ function str= field_access( varargin )
 #      end
 #   end
 
+%!test
+%! x.a = "hello";
+%! assert(getfield(x,"a"),"hello");

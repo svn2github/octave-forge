@@ -234,7 +234,7 @@ endfunction
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
 %!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]));
+%!	  interp1(xp,[yp',yp'],xi,['*',style]));
 
 %!test style = 'linear';
 %!assert (interp1(xp, yp, [-1, max(xp)+1]), [NaN, NaN]);
@@ -247,7 +247,7 @@ endfunction
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
 %!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!	  interp1(xp,[yp',yp'],xi,['*',style]),100*eps);
 
 %!test style = 'cubic';
 %!assert (interp1(xp, yp, [-1, max(xp)+1]), [NaN, NaN]);
@@ -260,7 +260,7 @@ endfunction
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
 %!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),1000*eps);
+%!	  interp1(xp,[yp',yp'],xi,['*',style]),1000*eps);
 
 %!test style = 'spline';
 %!assert (interp1(xp, yp, [-1, max(xp) + 1]), [NaN, NaN]);
@@ -273,7 +273,7 @@ endfunction
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
 %!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),10*eps);
+%!	  interp1(xp,[yp',yp'],xi,['*',style]),10*eps);
 
 %!# test linear extrapolation
 %!assert (interp1([1:5],[3:2:11],[0,6],'linear','extrap'), [1, 13], eps);

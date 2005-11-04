@@ -81,7 +81,7 @@ function ret = addpath(varargin)
 	  continue;
         end
       end
-      dir = [dir, ':', p]; 
+      dir = sprintf("%s:%s",dir,p);
     end
       
     ## Add the directories to the current path
@@ -92,9 +92,9 @@ function ret = addpath(varargin)
       else
         if strcmp(path,':'), path = ''; end
         if append
-          path = [path, ':', dir];
+          path = sprintf("%s:%s", path, dir);
         else
-          path = [dir, ':', path];
+          path = sprintf("%s:%s", dir, path);
         end
       end
     end

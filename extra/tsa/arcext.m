@@ -43,15 +43,15 @@ function  [AR,RC] = arcext(MX,P);
 
 [lr,lc]=size(MX);
 
-if ~mod(lc,2),   % compressed form of MX
-	K = lc/2;
-elseif ~mod(sqrt(8*lc+1)-1,2)	% full number of elements
+if ~mod(sqrt(8*lc+1)-1,2)	% full number of elements
 	K = (sqrt(8*lc+1)-1)/2;
+elseif ~mod(lc,2),   % compressed form of MX
+	K = lc/2;
 else		% invalid number of elements
 	fprintf(2,'Warning ARCEXT: Number of elements is different than a triangular matrix\n');
 end;
 
-if K~=P & lc~=K*(K+1)/2
+if (K~=P) & (lc~=K*(K+1)/2),
 	[AR,RC,PE]=rc2ar(MX(:,(1:P).*(2:P+1)/2));
 else
 	AR = MX(:,P*(P-1)/2+(1:P));

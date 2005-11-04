@@ -14,7 +14,7 @@
 ##    'mac' uses <CR>
 ## 'delimiter','seq'
 ##    Use 'seq' to separate elements of the matrix.  Default is ','.  Use
-##    the sequence '\t' for tab-delimited values.
+##    the sequence "\t" for tab-delimited values.
 ## 'roffset',r
 ##    The number of delimiter-only lines to add to the start of the output.
 ## 'coffset',c
@@ -40,7 +40,7 @@ function [ ret ] = dlmwrite (file, A, varargin)
   r = 0;
   c = 0;
   mode = 'w';
-  newline = '\n';
+  newline = setstr(10);
   precision = '%.16g';
   
   arg = 1;
@@ -60,7 +60,7 @@ function [ ret ] = dlmwrite (file, A, varargin)
       switch code,
       case 'delimiter',
         if ~ischar(value), error("expects 'delimiter','seq'"); endif
-        delim = value;
+        delim = setstr(double(value(:)));
       case 'precision',
         if ~ischar(value) && ~any(value(:)=='%'), 
           error("expects 'precision','%#.#f'"); 
@@ -68,9 +68,9 @@ function [ ret ] = dlmwrite (file, A, varargin)
         precision = value;
       case 'newline',
         switch value,
-	case 'pc', newline = '\r\n';
-	case 'unix',newline = '\n';
-	case 'mac',newline = '\r';
+	case 'pc', newline = setstr([13,10]);
+	case 'unix',newline = setstr(10);
+	case 'mac',newline = setstr(13);
 	otherwise,  error("expects 'newline','pc'|'unix'|'mac'");
 	end
       case 'roffset',

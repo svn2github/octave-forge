@@ -28,9 +28,7 @@ DEFUN_DLD (pretty, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{str} =} pretty (@var{v})\n\
 \n\
-Equivalent to @code{disp(@var{v})}, but returns the output as a string\n\
-@var{str}.
-\n\
+Equivalent to @code{str=disp(v)}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

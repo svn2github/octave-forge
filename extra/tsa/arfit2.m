@@ -82,8 +82,7 @@ fpe = logdp/M - log(ne.*(ne-M*(pmin:pmax)-mcor)./(ne+M*(pmin:pmax)+mcor));
 popt = pmin + iopt-1; % estimated optimum order 
 
 if popt<pmax, 
-        pmax=popt; 
-        [MAR, RCF, PE] = mvar(Y, pmax, 2);
+        [MAR, RCF, PE] = mvar(Y, popt, 2);
 end;
 %end
 

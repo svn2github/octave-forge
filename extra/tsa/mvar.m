@@ -29,6 +29,16 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %  [4] T. Schneider and A. Neumaier, A. 2001. 
 %	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
+%  [5]	O.N. Strand, 
+%	Multichannel complex maximum entropy (autoregressive) spectral Analysis, 
+%	IEEE Trans. Autom. Control, Vol. 22, Aug. 1977, pp. 634-640.
+%  [6]	A.H. Nuttall, 
+%	FORTRAN Program for multivariate linear predictive spectral analysis, employing forward and backward averaging, 
+%	Naval Underwater Systems Center Technical Report 5419, New London, Conn. 1976a.
+%  [7]	A.H. Nuttall, 
+%	Multivariate linear predictive spectral analysis employing weighted forward and backward averaging: 
+%	a generalization of Burg's algorithm, 
+%	Naval Underwater Systems Center Technical Report 5501, New London, Conn. , 1976b. 
 
 
 %	$Revision$
@@ -182,8 +192,8 @@ elseif Mode==6,
         end;
         
 elseif Mode==2, 
-        %%%%% multi-channel Levinsion algorithm 
-        %%%%% using Nutall-Strand Method [2]
+        %%%%% multi-channel Burg algorithm 
+        %%%%% using Nuttall-Strand Method [2,5,6,7]
         %%%%% Covariance matrix is normalized by N=length(X)-p 
         C(:,1:M) = C(:,1:M)/N;
         F = Y;
@@ -219,9 +229,9 @@ elseif Mode==2,
                 PE(:,K*M+(1:M)) = PEF;        
         end;
         
-elseif Mode==5, %%%%% multi-channel Levinsion algorithm [2] using Nutall-Strand Method
-        %%%%% multi-channel Levinsion algorithm 
-        %%%%% using Nutall-Strand Method [2]
+elseif Mode==5,
+        %%%%% multi-channel Burg algorithm 
+        %%%%% using Nutall-Strand Method [2,5,6,7]
         %%%%% Covariance matrix is normalized by N=length(X) 
         
         %C{1} = C{1}/N;

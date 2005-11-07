@@ -47,7 +47,9 @@ puts "$cmd<$len>"
     }
 }
 
-set fd [socket localhost [lindex $argv 0]]
+set hostport [split [lindex $argv 0] ":"]
+if {[llength $hostport] == 1} { set hostport [list localhost $hostport] }
+set fd [socket [lindex $hostport 0] [lindex $hostport 1]]
 fconfigure $fd -blocking true -buffering none -translation binary
 fileevent $fd readable [list recv $fd]
 

@@ -7,6 +7,7 @@
 #include <iomanip>
 
 #include <cstdio>
+#include <cctype>
 #include <cstdlib>
 #include <unistd.h>
 #include <cerrno>
@@ -326,40 +327,13 @@ process_commands(int channel)
 	  }
 
 	if (debug) tic();
-#if 1
 	octave_value_list evalargs;
 	evalargs(1) = "senderror(lasterr);";
 	evalargs(0) = context;
 	feval("eval",evalargs,0);
-#else
-	int parse_status = 0;
-	error_state = 0;
-	eval_string(context, true, parse_status, 0);
-	STATUS("parse status = " << parse_status << ", error state = " 
-	       << error_state << ", processing time = " << toc() << "us");
-	if (parse_status != 0 || error_state)
-	  {
-	    error_state = 0;
-	    bind_global_error_variable();
-	    octave_value def = get_builtin_value("__error_text__");
-	    std::string str = def.string_value();
-	    // provide a context for the error (but not too much!)
-	    str += "when evaluating:\n";
-	    if (len > 100) 
-	      {	
-		char t=context[100]; 
-	        context[100] = '\0'; 
-	        str+=context; 
-	        context[100]=t;
-	      }
-	    else
-              str += context;
-	    STATUS("error is " << str);
-	    channel_error(channel,str.c_str());
-	    clear_global_error_variable(NULL);
-	  }
-#endif
+	STATUS("done command");
       }
+      STATUS("free evalargs");
       break;
       
     case 'c': // execute the command and capture stdin/stdout
@@ -372,7 +346,7 @@ process_commands(int channel)
     }
 
     if (context != def_context) delete[] context;
-    // STATUS("done " << command);
+    STATUS("done " << command);
     if (!ok) break;
     if (debug) tic();
   }
@@ -444,7 +418,6 @@ send(name,value)\n\
     return ret;
   }
 
-
   std::string cmd(args(0).string_value());
   if (error_state) return ret;
 
@@ -508,12 +481,79 @@ send(name,value)\n\
 }
 
 extern "C" int listencanfork(void);
+extern "C" int StringCaseMatch(const char* s, const char* p, int nocase);
+
+bool ishostglob(const std::string& s)
+{
+  for (unsigned int i=0; i < s.length(); i++) {
+    if (! ( isdigit(s[i]) || s[i]=='*' || s[i]=='-' 
+	   || s[i]=='.' || s[i]=='[' || s[i]==']')) return false;
+  }
+  return true;
+}
+
+bool anyhostglob(const string_vector& hostlist, const char* host)
+{
+  for (int j=0; j < hostlist.length(); j++) {
+    if (StringCaseMatch(host, hostlist[j].c_str(), 0)) return true;
+  }
+  return false;
+}
+
+// Known bug: functions which pass or return structures use a
+// different ABI for gcc and native compilers on some architectures.
+// Whether this is a bug depends on the structure length.  SGI's 64-bit
+// architecture makes this a problem for inet_ntoa.
+#if defined(__GNUC__) && defined(_sgi)
+#define BROKEN_INET_NTOA
+#endif
+
+#ifdef BROKEN_INET_NTOA
+
+/*************************************************
+*         Replacement for broken inet_ntoa()     *
+*************************************************/
+
+
+/* On IRIX systems, gcc uses a different structure passing convention to the
+native libraries. This causes inet_ntoa() to always yield 0.0.0.0 or
+255.255.255.255. To get round this, we provide a private version of the
+function here. It is used only if USE_INET_NTOA_FIX is set, which should
+happen
+only when gcc is in use on an IRIX system. Code send to me by J.T. Breitner,
+with these comments:
+
+
+  code by Stuart Levy
+  as seen in comp.sys.sgi.admin
+
+
+Arguments:  sa  an in_addr structure
+Returns:        pointer to static text string
+*/
+
+
+char *
+inet_ntoa(struct in_addr sa)
+{
+static char addr[20];
+sprintf(addr, "%d.%d.%d.%d",
+        (US &sa.s_addr)[0],
+        (US &sa.s_addr)[1],
+        (US &sa.s_addr)[2],
+        (US &sa.s_addr)[3]);
+  return addr;
+}
+
+#endif /* BROKEN_INET_NTOA */
+
 
 DEFUN_DLD(listen,args,,"\
-listen(port,host)\n\
+listen(port,host,host,...)\n\
    Listen for connections on the given port.  Normally only accepts\n\
    connections from localhost (127.0.0.1), but you can specify any\n\
-   dot-separated host name.\n\
+   dot-separated host name globs.  E.g., '128.2.20.*' or '128.2.2[012].*'\n\
+   Use '?' for '[0123456789]'. Use '*.*.*.*' for any host.\n\
 listen(...,debug|nodebug)\n\
    If debug, echo all commands sent across the connection.  If nodebug,\n\
    detach the process and don't echo anything.  You will need to use\n\
@@ -547,9 +587,9 @@ listen(...,fork|nofork)\n\
   if (error_state) return ret;
 
   debug = false;
-  int options = 1;
-  
-  int hostarg = -1;
+
+  string_vector hostlist;
+  hostlist.append(std::string("127.0.0.1"));
   for (int k = 1; k < nargin; k++) {
     std::string lastarg(args(k).string_value());
     if (error_state) return ret;
@@ -563,22 +603,10 @@ listen(...,fork|nofork)\n\
       canfork = true;
     } else if (lastarg == "nofork") {
       canfork = false;
-    } else if (hostarg == -1) {
-      hostarg = k;
+    } else if (ishostglob(lastarg)) {
+      hostlist.append(lastarg);
     } else {
       print_usage("listen");
-    }
-  }
-
-  struct in_addr localhost;
-  struct in_addr hostid;
-  inet_aton("127.0.0.1",&localhost);
-  if (hostarg > 0) {
-    std::string host(args(hostarg).string_value());
-    if (error_state) return ret;
-    if (!inet_aton(host.c_str(),&hostid)) {
-      error("listen: could not find host id for %s",host.c_str());
-      return ret;
     }
   }
 
@@ -653,18 +681,11 @@ listen(...,fork|nofork)\n\
     }
     STATUS("connected");
 
-#if defined(__GNUC__) && defined(_sgi)
-    // Known bug: functions which pass or return structures use a
-    // different ABI for gcc and native compilers on some architectures.
-    // Whether this is a bug depends on the structure length.  SGI's 64-bit
-    // architecture makes this a problem for inet_ntoa.
-    STATUS("server: got connection from " << their_addr.sin_addr);
-#else
-    STATUS("server: got connection from " << inet_ntoa(their_addr.sin_addr));
-#endif
+    /* Simulate inet_ntoa */
+    const char *them = inet_ntoa(their_addr.sin_addr);
+    STATUS("server: got connection from " << them);
 
-    if (their_addr.sin_addr.s_addr == hostid.s_addr ||
-	their_addr.sin_addr.s_addr == localhost.s_addr) {
+    if (anyhostglob(hostlist,them)) {
       if (canfork) {
         int pid = fork();
 

@@ -25,14 +25,17 @@ waitbar.oct:	waitbar.cc
 dispatch.oct: dispatch.cc
 	$(MKOCTFILE) $(MISCDEFS) $(TYPEID_HAS_CLASS) dispatch.cc
 
-listen.oct: listen.o listencanfork.o
-	$(MKOCTFILE) listen.o listencanfork.o
+listen.oct: listen.o listencanfork.o stringmatch.o
+	$(MKOCTFILE) listen.o listencanfork.o stringmatch.o
 
 listen.o: listen.cc
 	$(MKOCTFILE) -c $(MISCDEFS) listen.cc
 
 listencanfork.o: listencanfork.c
 	$(MKOCTFILE) -c listencanfork.c
+
+stringmatch.o: stringmatch.c
+	$(MKOCTFILE) -c stringmatch.c
 
 xmltree.o: xmltree.c xmltree.h
 	$(MKOCTFILE) $(MISCDEFS) -c $<

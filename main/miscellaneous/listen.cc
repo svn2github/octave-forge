@@ -327,10 +327,14 @@ process_commands(int channel)
 	  }
 
 	if (debug) tic();
+#if 1
 	octave_value_list evalargs;
 	evalargs(1) = "senderror(lasterr);";
 	evalargs(0) = context;
-	feval("eval",evalargs,0);
+	octave_value_list fret = feval("eval",evalargs,0);
+#else
+	evalargs(0) = octave_value(0.);
+#endif
 	STATUS("done command");
       }
       STATUS("free evalargs");
@@ -554,13 +558,15 @@ listen(port,host,host,...)\n\
    connections from localhost (127.0.0.1), but you can specify any\n\
    dot-separated host name globs.  E.g., '128.2.20.*' or '128.2.2[012].*'\n\
    Use '?' for '[0123456789]'. Use '*.*.*.*' for any host.\n\
-listen(...,debug|nodebug)\n\
+listen(...,'debug'|'nodebug')\n\
    If debug, echo all commands sent across the connection.  If nodebug,\n\
    detach the process and don't echo anything.  You will need to use\n\
    kill directly to end the process. Nodebug is the default.\n\
-listen(...,fork|nofork)\n\
+listen(...,'fork'|'nofork')\n\
    If fork, start new server for each connection.  If nofork, only allow\n\
    one connection at a time. Fork is the default (depending on system).\n\
+listen(...,'loopback')\n\
+   Use loopback address 127.0.0.1 rather than 0.0.0.0.\n\
 ")
 {
 #if USE_DEFUN_INTERNAL
@@ -587,6 +593,7 @@ listen(...,fork|nofork)\n\
   if (error_state) return ret;
 
   debug = false;
+  unsigned int inaddr = INADDR_ANY;
 
   string_vector hostlist;
   hostlist.append(std::string("127.0.0.1"));
@@ -596,13 +603,14 @@ listen(...,fork|nofork)\n\
     lowercase(lastarg);
     if (lastarg == "debug") {
       debug = true;
-      nargin--;
     } else if (lastarg == "nodebug") {
-      nargin--;
+      debug = false;
     } else if (lastarg == "fork") {
       canfork = true;
     } else if (lastarg == "nofork") {
       canfork = false;
+    } else if (lastarg == "loopback") {
+      inaddr = INADDR_LOOPBACK;
     } else if (ishostglob(lastarg)) {
       hostlist.append(lastarg);
     } else {
@@ -628,7 +636,7 @@ listen(...,fork|nofork)\n\
 
   my_addr.sin_family = AF_INET;         // host byte order
   my_addr.sin_port = htons(port);       // short, network byte order
-  my_addr.sin_addr.s_addr = INADDR_ANY; // automatically fill with my IP
+  my_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // automatically fill with my IP
   memset(&(my_addr.sin_zero), '\0', 8); // zero the rest of the struct
   
   if (bind(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr))

@@ -1,6 +1,6 @@
-function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, coh]=mvfreqz(B,A,C,N,Fs)
+function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
-% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2] = mvfreqz(B,A,C,N,Fs)
+% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF] = mvfreqz(B,A,C,N,Fs)
 %
 % INPUT: 
 % ======= 
@@ -54,7 +54,6 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, coh]=mvfreqz(B,A,C,N,Fs)
 %	Clin Neurophysiol. 2004 Oct;115(10):2292-307. 
 
 
-%	$Revision$
 %	$Id$
 %	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
@@ -138,8 +137,6 @@ for n=1:N,
                 tmp2(k1) = sqrt(tmp'*invC*tmp);
         end;
         
-        %PDCF(:,:,n,kk) = abs(atmp)./tmp2(ones(1,K1),:);
-        %PDC(:,:,n,kk)  = abs(atmp)./tmp1(ones(1,K1),:);
         PDCF(:,:,n) = abs(atmp)./tmp2(ones(1,K1),:);
         PDC(:,:,n)  = abs(atmp)./tmp1(ones(1,K1),:);
         

@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.30  2005/11/14 18:24:53  aadler
+Define INT64 type to properly handle large matrices
+
 Revision 1.29  2004/11/09 23:34:49  adb014
 Fix concatenation for recent octave core CVS changes
 
@@ -148,6 +151,14 @@ Revision 1.1  2000/11/11 02:47:11  aadler
 DLD functions for sparse support in octave
 
 */
+
+#ifndef octave_idx_type
+#define octave_idx_type int
+#endif
+
+#ifndef INT64
+#define INT64 long long
+#endif
 
 #ifdef VERBOSE
 #  define DEBUGMSG(x) printf("DEBUG:" x "\n")
@@ -594,13 +605,19 @@ complex_sparse_inv_uppertriang( SuperMatrix U);
 
 
 // comparison function for sort in make_sparse
-typedef struct { unsigned long val;
+// The val has to be a 64 bit type, since val = idx_j * idx_k
+typedef struct { INT64         val;
                  unsigned long idx; } sort_idxl;   
 
 inline int
 sidxl_comp(const void *i,const void*j )
 {
-   return (((sort_idxl *) i)->val) - (((sort_idxl *) j)->val) ;
+   INT64    diff=  ((sort_idxl *) i)->val -
+	           ((sort_idxl *) j)->val ;
+
+   if(      diff < 0 ) return -1;
+   else if( diff > 0 ) return 1;
+   else                return 0;
 }
 
 // declare pointers from which we will build a SuperMatrix

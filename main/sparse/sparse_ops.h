@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.16  2005/11/14 18:24:53  aadler
+Define INT64 type to properly handle large matrices
+
 Revision 1.15  2004/11/09 23:34:49  adb014
 Fix concatenation for recent octave core CVS changes
 
@@ -295,6 +298,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
  \
    sort_idxl* sidx = (sort_idxl *)oct_sparse_malloc( nnz* sizeof(sort_idxl) );\
    int actual_nnz=0; \
+   INT64 m64= m; \
    OCTAVE_QUIT; \
    for (int i=0; i<nnz; i++) { \
       double rowidx=  ( ri_scalar ? ridxA(0) : ridxA(i) ) - 1; \
@@ -302,7 +306,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
       if (rowidx < m && rowidx >= 0 && \
           colidx < n && colidx >= 0 ) { \
          if ( coefA( cf_scalar ? 0 : i ) != 0. ) { \
-            sidx[actual_nnz].val = (long) ( rowidx + m * colidx ); \
+            sidx[actual_nnz].val = rowidx + m64 * colidx; \
             sidx[actual_nnz].idx = i; \
             actual_nnz++; \
          } \
@@ -321,18 +325,18 @@ Revision 1.1  2001/03/30 04:34:23  aadler
     \
    OCTAVE_QUIT; \
    int cx= 0; \
-   long prev_val=-1;  \
+   INT64 prev_val= -1;  \
    int ii= -1; \
    for (int i=0; i<actual_nnz; i++) { \
       OCTAVE_QUIT; \
-      long  idx= (long) sidx[i].idx; \
-      long  val= (long) sidx[i].val; \
+      unsigned long idx= sidx[i].idx; \
+      INT64         val= sidx[i].val; \
       if (prev_val < val) { \
          ii++; \
-         coefX[ii]=     coefA( cf_scalar ? 0 : idx ); \
-         double ri  =   ridxA( ri_scalar ? 0 : idx ) - 1 ; \
-         ridxX[ii]= (long) (ri - ((long) (ri/m))*m ) ; \
-         long ci  = (long) cidxA( ci_scalar ? 0 : idx ) - 1 ; \
+         coefX[ii]=   coefA( cf_scalar ? 0 : idx ); \
+         double ri=   ridxA( ri_scalar ? 0 : idx ) - 1 ; \
+         ridxX[ii]=   ri - (ri/m64)*m64 ; \
+         double ci=   cidxA( ci_scalar ? 0 : idx ) - 1 ; \
          while( cx < ci ) cidxX[++cx]= ii; \
       } else { \
          if (assemble_do_sum) \

@@ -37,13 +37,17 @@
 ##    2000-01-15 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    * use matlab compatible interface
 ##    * return absolute value of area so traversal order doesn't matter
+##    2005-10-13 Torsten Finke
+##    * optimization saving half the sums and multiplies
 
 function a = polyarea (x, y)
-  if (nargin != 2)
+  if nargin != 2
     usage ("polyarea (x, y)");
   elseif any (size(x) != size(y))
     error ("polyarea: x and y must have the same shape");
   else
-    a = abs ( sum (x .* shift (y,-1))  - sum (y .* shift (x, -1)) ) / 2;
+    a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
   endif
 endfunction
+
+%!assert (polyarea([1;1;3;3;1],[1;3;3;1;1]), 4, eps)

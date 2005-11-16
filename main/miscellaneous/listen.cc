@@ -636,7 +636,7 @@ listen(...,'loopback')\n\
 
   my_addr.sin_family = AF_INET;         // host byte order
   my_addr.sin_port = htons(port);       // short, network byte order
-  my_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // automatically fill with my IP
+  my_addr.sin_addr.s_addr = htonl(inaddr); // automatically fill with my IP
   memset(&(my_addr.sin_zero), '\0', 8); // zero the rest of the struct
   
   if (bind(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr))

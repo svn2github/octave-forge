@@ -45,7 +45,7 @@ function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, mode
 	if !iscell(control) control = {Inf,0,1,1}; endif # default controls if receive placeholder
 	if nargin < 6 nslaves = 0; endif
 	if nslaves > 0
-		global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
+		global NSLAVES PARALLEL NEWORLD TAG;
 		LAM_Init(nslaves);
 		# Send the data to all nodes
 		NumCmds_Send({"data", "model", "modelargs"}, {data, model, modelargs});

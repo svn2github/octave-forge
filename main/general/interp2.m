@@ -28,9 +28,8 @@
 ## to the points described by the matrices @var{XI}, @var{YI}. 
 ##
 ## If the last argument is a string, the interpolation method can
-## be specified. At the moment only 'linear', 'nearest' and cubic
-## methods are provided. If it is omitted 'linear' interpolation
-## is assumed.
+## be specified. The method can be 'linear', 'nearest' or 'cubic'.
+## If it is omitted 'linear' interpolation  is assumed.
 ##
 ## ZI = interp2 (Z, XI, YI) assumes X = 1:rows(Z) and Y = 1:columns(Z)
 ## 
@@ -47,14 +46,18 @@
 ##     * Simplify
 ## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
 ##     * Modified demo and test for new gnuplot interface
-## Add bicubic interpolation method
-## bug fix: fix the eat line bug when the last element of XI or YI 
-##   is negative or zero.
-## Author:      Hoxide <hoxide_dirac@yahoo.com.cn>
+## 2005-09-07 Hoxide <hoxide_dirac@yahoo.com.cn>
+##     * Add bicubic interpolation method
+##     * Fix the eat line bug when the last element of XI or YI is negative or zero.
+## 2005-11-26 Pierre Baldensperger <balden@libertysurf.fr>
+##     * Rather big modification (XI,YI no longer need to be
+##       "meshgridded") to be consistent with the help message
+##       above and for compatibility.
+
 
 function ZI = interp2 (varargin)
-  Z = X = Y = xi = yi = [];
-  n = 1;
+  Z = X = Y = XI = YI = [];
+  n = [];
   method = "linear";
 
   switch nargin
@@ -84,16 +87,16 @@ function ZI = interp2 (varargin)
 
   % Type checking.
   if !ismatrix(Z), error("interp2 expected matrix Z"); endif
-  if !isscalar(n), error("interp2 expected scalar n"); endif
-  if !isnumeric(X) || !isnumeric(Y), error("interp2 expected numeric X,Y"); endif
-  if !isnumeric(XI) || !isnumeric(YI), error("interp2 expected numeric XI,YI"); endif
+  if !isempty(n) && !isscalar(n), error("interp2 expected scalar n"); endif
   if !ischar(method), error("interp2 expected string 'method'"); endif
 
   % Define X,Y,XI,YI if needed
   [zr, zc] = size (Z);
   if isempty(X),  X=[1:zc]; Y=[1:zr]; endif
-  if isempty(XI), p=2^n; XI=[p:p*zc]/p; YI=[p:p*zr]/p; endif
-  
+  if !isnumeric(X) || !isnumeric(Y), error("interp2 expected numeric X,Y"); endif
+  if !isempty(n), p=2^n; XI=[p:p*zc]/p; YI=[p:p*zr]/p; endif
+  if !isnumeric(XI) || !isnumeric(YI), error("interp2 expected numeric XI,YI"); endif
+
   % Are X and Y vectors? => produce a grid from them
   if isvector (X) && isvector (Y)
     [X, Y] = meshgrid (X, Y);
@@ -103,16 +106,19 @@ function ZI = interp2 (varargin)
   if any(size (X) != size (Z))
     error ("X and Y size must match Z dimensions");
   endif
-  
-  % Are XI and YI vectors? => produce a grid from them
-  if isvector (XI) && isvector (YI)
+
+  if isvector(XI) && isvector(YI)
     [XI, YI] = meshgrid (XI, YI);
-  elseif any(size (XI) != size (YI))
+  elseif any(size(XI) != size(YI))
     error ("XI and YI must be matrices of same size");
   endif
- 
-  xidx = lookup(X(1, 2:end-1), XI(1,:))' + 1;
-  yidx = lookup(Y(2:end-1, 1), YI(:,1)) + 1;
+
+  shape = size(XI);
+  XI = reshape(XI, 1, prod(shape));
+  YI = reshape(YI, 1, prod(shape));
+
+  xidx = lookup(X(1, 2:end-1), XI) + 1;
+  yidx = lookup(Y(2:end-1, 1), YI) + 1;
 
   if strcmp (method, "linear")
     ## each quad satisfies the equation z(x,y)=a+b*x+c*y+d*xy
@@ -125,28 +131,37 @@ function ZI = interp2 (varargin)
     c = Z(2:zr, 1:(zc - 1)) - a;
     d = Z(2:zr, 2:zc) - a - b - c;
 
+    idx = sub2ind(size(a),yidx,xidx);
+
     ## scale XI,YI values to a 1-spaced grid
-    Xsc = (XI - X(yidx, xidx)) ./ (X(yidx, xidx + 1) - X(yidx, xidx));
-    Ysc = (YI - Y(yidx, xidx)) ./ (Y(yidx + 1, xidx) - Y(yidx, xidx));
+    Xsc = (XI - X(1, xidx)) ./ (X(1, xidx + 1) - X(1, xidx));
+    Ysc = (YI - Y(yidx, 1)') ./ (Y(yidx + 1, 1) - Y(yidx, 1))';
+
     ## apply plane equation
-    ZI = a(yidx, xidx) + b(yidx, xidx) .* Xsc \
-      + c(yidx, xidx) .* Ysc + d(yidx, xidx) .* Xsc .* Ysc;
+    ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;
+
   elseif strcmp (method, "nearest")
     xtable = X(1, :);
-    ytable = Y(:, 1);
-    i = (XI(1, :) - xtable(xidx) > xtable(xidx + 1) - XI(1, :));
-    j = (YI(:, 1) - ytable(yidx) > ytable(yidx + 1) - YI(:, 1));
-    ZI = Z(yidx + j(:), xidx + i(:));
+    ytable = Y(:, 1)';
+    ii = (XI - xtable(xidx) > xtable(xidx + 1) - XI);
+    jj = (YI - ytable(yidx) > ytable(yidx + 1) - YI);
+    idx = sub2ind(size(Z),yidx+jj,xidx+ii);
+    ZI = Z(idx);
+
   elseif strcmp (method, "cubic")
-    ## cubic paramer
+    ## FIXME bicubic doesn't handle arbitrary XI, YI
     ZI = bicubic(X, Y, Z, XI(1,:), YI(:,1));
+
   else
     error ("interpolation method not (yet) supported");
   endif
 
   ## set points outside the table to NaN
-  ZI(:, XI(1,:) < X(1,1) | XI(1,:) > X(1,end)) = NaN;
-  ZI(YI(:,1) < Y(1,1) | YI(:,1) > Y(end,1), :) = NaN;
+
+  ZI( XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1) ) = NaN;
+
+  ZI = reshape(ZI,shape);
+
 
 endfunction
 
@@ -189,13 +204,25 @@ endfunction
 %!  xi = [1.2,2, 1.5];
 %!  yi = [6.2, 4.0, 5.0]';
 %!
-%!  Expected = \
+%!  Expected = ...
 %!    [243,   245.4,  243.9;
 %!      65.6,  68,     66.5;
 %!     126.6, 129,    127.5];
 %!  Result = interp2(x,y,Orig, xi, yi);
 %!
 %!  assert(Result, Expected, 1000*eps);
+
+%!test
+%! 	% test 2^n form
+%!  x = [1,2,3];
+%!  y = [4,5,6,7];
+%!  [X, Y] = meshgrid(x,y);
+%!  Orig = X.^2 + Y.^3;
+%!  xi = [1:0.25:3]; yi = [4:0.25:7]';
+%!  Expected = interp2(x,y,Orig, xi, yi);
+%!  Result = interp2(Orig,2);
+%!  
+%!  assert(Result, Expected, 10*eps);
 
 %!test
 %! 	% test for values outside of boundaries

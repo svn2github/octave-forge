@@ -94,10 +94,10 @@ function ZI = interp2 (varargin)
   [zr, zc] = size (Z);
   if isempty(X),  X=[1:zc]; Y=[1:zr]; endif
   if !isnumeric(X) || !isnumeric(Y), error("interp2 expected numeric X,Y"); endif
-  if !isempty(n), p=2^n; XI=[p:p*zc]/p; YI=[p:p*zr]/p; endif
+  if !isempty(n), p=2^n; XI=[p:p*zc]/p; YI=[p:p*zr]'/p; endif
   if !isnumeric(XI) || !isnumeric(YI), error("interp2 expected numeric XI,YI"); endif
 
-  % Are X and Y vectors? => produce a grid from them
+  % If X and Y vectors produce a grid from them
   if isvector (X) && isvector (Y)
     [X, Y] = meshgrid (X, Y);
   elseif ! all(size (X) == size (Y))
@@ -107,7 +107,8 @@ function ZI = interp2 (varargin)
     error ("X and Y size must match Z dimensions");
   endif
 
-  if isvector(XI) && isvector(YI)
+  % If Xi and Yi are vectors of different orientation build a grid
+  if (rows(XI)==1 && columns(YI)==1) || (columns(XI)==1 && rows(YI)==1)
     [XI, YI] = meshgrid (XI, YI);
   elseif any(size(XI) != size(YI))
     error ("XI and YI must be matrices of same size");
@@ -195,8 +196,7 @@ endfunction
 %! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
-%!test
-%!	% simple test
+%!test % simple test
 %!  x = [1,2,3];
 %!  y = [4,5,6,7];
 %!  [X, Y] = meshgrid(x,y);
@@ -212,8 +212,7 @@ endfunction
 %!
 %!  assert(Result, Expected, 1000*eps);
 
-%!test
-%! 	% test 2^n form
+%!test % 2^n form
 %!  x = [1,2,3];
 %!  y = [4,5,6,7];
 %!  [X, Y] = meshgrid(x,y);
@@ -224,31 +223,27 @@ endfunction
 %!  
 %!  assert(Result, Expected, 10*eps);
 
-%!test
-%! 	% test for values outside of boundaries
+%!test % matrix slice
+%!  A = eye(4);
+%!  assert(interp2(A,[1:4],[1:4]),[1,1,1,1]);
+
+%!test % non-gridded XI,YI
+%!  A = eye(4);
+%!  assert(interp2(A,[1,2;3,4],[1,3;2,4]),[1,0;1,0]);
+
+%!test % for values outside of boundaries
 %!  x = [1,2,3];
 %!  y = [4,5,6,7];
 %!  [X, Y] = meshgrid(x,y);
 %!  Orig = X.^2 + Y.^3;
 %!  xi = [0,4];
-%!  yi = [3, 8]';
-%!  Expected = [nan,nan; nan,nan];
-%!  Result = interp2(x,y,Orig, xi, yi);
-%!  
-%!  assert(Result, Expected);
+%!  yi = [3,8]';
+%!  assert(interp2(x,y,Orig, xi, yi),[nan,nan;nan,nan]);
 
-%!test
-%! 	% test for values at boundaries
+%!test % for values at boundaries
 %!  A=[1,2;3,4];
 %!  x=[0,1]; 
-%!  y=[2,3];
-%!  xi=x;
-%!  yi=y;
-%!  Expected = A;
-%!  
-%!  Result = interp2(x,y,A,xi,yi,'linear');
-%!  assert(Result, Expected);
-%! 
-%!  Result = interp2(x,y,A,xi,yi,'nearest');
-%!  assert(Result, Expected);
+%!  y=[2,3]';
+%!  assert(interp2(x,y,A,x,y,'linear'), A);
+%!  assert(interp2(x,y,A,x,y,'nearest'), A);
 

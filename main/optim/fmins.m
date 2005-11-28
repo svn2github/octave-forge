@@ -58,7 +58,7 @@ function ret=fmins(funfun, X0, options, grad, varargin)
     stopit = [1e-3, inf, inf, 1, 0, -1];
     minfun = 'nmsmax'; 
 
-    if nargin<=3; options=[]; end
+    if nargin < 3; options=[]; end
 
     if length(options)>=1; stopit(5)= options(1); end
     if length(options)>=2; stopit(1)= options(2); end

@@ -69,7 +69,7 @@
 ## functionality.
 
 function dlmwrite (file, A, varargin)
-  if (nargin < 2)
+  if (nargin < 2 || !ischar(file))
     usage("dlmwrite(file, A, delim, r, c)");
   endif
 
@@ -153,11 +153,11 @@ endfunction
 %!test
 %! f = tmpnam();
 %! dlmwrite(f,[1,2;3,4],'precision','%5.2f','newline','unix','roffset',1,'coffset',1);
-%! fid = fopen(f,"r");
+%! fid = fopen(f,"rt");
 %! f1 = char(fread(fid,Inf,'char')');
 %! fclose(fid);
 %! dlmwrite(f,[5,6],'precision','%5.2f','newline','unix','coffset',1,'delimiter',',','-append');
-%! fid = fopen(f,"r");
+%! fid = fopen(f,"rt");
 %! f2 = char(fread(fid,Inf,'char')');
 %! fclose(fid);
 %! unlink(f);

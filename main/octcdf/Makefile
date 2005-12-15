@@ -21,20 +21,20 @@ ifndef OCTAVE_FORGE
         NETCDF_INC=/usr/include/netcdf-3
         NETCDF_LIB=/usr/lib64/netcdf-3
 
-        CPPFLAGS := $(CPPFLAGS) -I$(NETCDF_INC)
-        LDFLAGS := $(LDFLAGS) -L$(NETCDF_LIB)
+        OCTCDF_CFLAGS := $(CPPFLAGS) -I$(NETCDF_INC)
+        OCTCDF_LIBS := $(LDFLAGS) -L$(NETCDF_LIB) -lnetcdf
         LN_S=ln -s
         RM = rm -f
 endif
 
-MOFLAGS = $(CPPFLAGS)
+MOFLAGS = $(OCTCDF_CFLAGS)
 
 #
 # comment this line out if your octave installation does not have integer types.
 #
 MOFLAGS := $(MOFLAGS) -DHAVE_OCTAVE_INT
 
-EXTRALIBS = $(LDFLAGS) -lnetcdf
+EXTRALIBS = $(OCTCDF_LIBS) 
 
 # To enable OPeNDAP support you have to use to following libraries (or similar ones)
 #EXTRALIBS =  $(LDFLAGS) -lnc-dods -ldap++ -lnetcdf  -lxml2 -lcurl

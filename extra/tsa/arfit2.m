@@ -1,22 +1,41 @@
 function [w, MAR, C, sbc, fpe, th]=arfit2(Y, pmin, pmax, selector, no_const)
 % ARFIT2 estimates multivariate autoregressive parameters
-%   using MVAR with the Nuttall-Strand method [1,2]. 
-% ARFIT2 is included for combatibility reasons to ARFIT [3]
-%  
-%  [w, A, C, sbc, fpe] = arfit2(v, pmin, pmax, selector, no_const)
+% of the MVAR process Y
+%
+%   Y(t,:)' = w' + A1*Y(t-1,:)' + ... + Ap*Y(t-p,:)' + x(t,:)'
+%
+% ARFIT2 uses the Nutall-Strand method (multivariate Burg algorithm) 
+% which provides better estimates the ARFIT [1], and uses the 
+% same arguments. Moreover, ARFIT2 is faster and can deal with 
+% missing values encoded as NaNs. 
+%
+% [w, A, C, sbc, fpe] = arfit2(v, pmin, pmax, selector, no_const)
+%
+% INPUT: 
+%  v		data - each channel in a column
+%  pmin, pmax 	minimum and maximum model order
+%  selector	'fpe' or 'sbc' [default] 
+%  no_const	'zero' indicates no bias/offset need to be estimated 
+%		in this case is w = [0, 0, ..., 0]'; 
+%
+% OUTPUT: 
+%  w		mean of innovation noise
+%  A		[A1,A2,...,Ap] MVAR estimates	
+%  C		covariance matrix of innovation noise
+%  sbc, fpe	criteria for model order selection 
 %
 % see also: ARFIT, MVAR
 %
 % REFERENCES:
-%  [1] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 
-%  [2] S.L. Marple "Digital Spectral Analysis with Applications" Prentice Hall, 1987.
-%  [3] T. Schneider and A. Neumaier, A. 2001. 
+%  [1] A. Schloegl, Comparison of Multivariate Autoregressive Estimators.
+%       Signal processing, Elsevier B.V. (in press).
+%  [2] T. Schneider and A. Neumaier, A. 2001. 
 %	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
 
 %       $Revision$
 %       $Id$
-%	Copyright (C) 1996-2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %%%%% checking of the input arguments was done the same way as ARFIT
 if (pmin ~= round(pmin) | pmax ~= round(pmax))
@@ -51,12 +70,14 @@ end
 [N,M]=size(Y);
     
 if mcor,
-        [m,N] = sumskipnan(Y,2);                    % calculate mean 
+        [m,N] = sumskipnan(Y,1);                    % calculate mean 
         m = m./N;
 	Y = Y - repmat(m,size(Y)./size(m));    % remove mean    
 end;
 
 [MAR,RCF,PE] = mvar(Y, pmax, 2);   % estimate MVAR(pmax) model
+
+N = min(N);
 
 %if 1;nargout>3;
 ne = N-mcor-(pmin:pmax);
@@ -76,7 +97,11 @@ fpe = logdp/M - log(ne.*(ne-M*(pmin:pmax)-mcor)./(ne+M*(pmin:pmax)+mcor));
 
 % get index iopt of order that minimizes the order selection 
 % criterion specified by the variable selector
-[val, iopt]  = min(eval(selector)); 
+if strcmpi(selector,'fpe'); 
+    [val, iopt]  = min(fpe); 
+else %if strcmpi(selector,'sbc'); 
+    [val, iopt]  = min(sbc); 
+end; 
 
 % select order of model
 popt = pmin + iopt-1; % estimated optimum order 
@@ -90,10 +115,10 @@ C = PE(:,size(PE,2)+(1-M:0));
 
 if mcor,
         I = eye(M);        
-        for k = 1:pmax,
+        for k = 1:popt,
                 I = I - MAR(:,k*M+(1-M:0));
         end;
-        w = I*m;
+        w = -I*m';
 else
         w = zeros(M,1);
 end;

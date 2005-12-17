@@ -1,27 +1,43 @@
 function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
-% MVAR estimates Multi-Variate AutoRegressive model parameters 
-% [AR,RC,PE] = mvar(Y, Pmax);
+% MVAR estimates Multi-Variate AutoRegressive model parameters
+% Several estimation algorithms are implemented, all estimators 
+% can handle data with missing values encoded as NaNs.  
 %
-%  INPUT:
-% Y	Multivariate data series 
-% Pmax 	Model order
+% 	[AR,RC,PE] = mvar(Y, p);
+% 	[AR,RC,PE] = mvar(Y, p, Mode);
 %
-%  OUTPUT
-% AR    multivariate autoregressive model parameter
-% RC    reflection coefficients (= -PARCOR coefficients)
-% PE    remaining error variance
+% INPUT:
+%  Y	 Multivariate data series 
+%  p     Model order
+%  Mode	 determines estimation algorithm 
+%
+% OUTPUT:
+%  AR    multivariate autoregressive model parameter
+%  RC    reflection coefficients (= -PARCOR coefficients)
+%  PE    remaining error variance
 %
 % All input and output parameters are organized in columns, one column 
 % corresponds to the parameters of one channel.
 %
-% A multivariate inverse filter can be realized with 
-%       [AR,RC,PE] = mvar(Y,P);
-%	e = mvfilter([eye(size(AR,1)),-AR],eye(size(AR,1)),Y);
-%
-% see also: MVFILTER, MVFREQZ, COVM, SUMSKIPNAN, ARFIT2
+%  Mode determines estimation algorithm. 
+%    0:		multichannel Levinson-Durbin Recursion 	  
+%    1: 	multi-channel Levinson algorithm with correlation function estimation method 
+%   		also called the "multichannel Yule-Walker" using the biased correlation function
+%    2:  [default] Nuttall-Strand Method [2,5,6,7], 
+%		Covariances are normalized by N=length(X)-p (unbiased estimates)
+%		also called multi-channel Burg algorithm 
+%		Yields best estimates according to [1] 
+%    3,7:       multi-channel Levinsion algorithm [2] using Vieira-Morf Method
+%    4:		algorihtm according to [8] - not functional. 	
+%    5:  	Nuttall-Strand Method [2,5,6,7]
+%		Covariances are normalized by N=length(X) (biased estimates)
+%		Yields similar results than Mode=2;
+%    6: 	multi-channel Levinson algorithm with correlation function estimation method 
+%   		also called the "multichannel Yule-Walker" using an unbiased correlation function
 %
 % REFERENCES:
-%  [1] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 
+%  [1] A. Schloegl, Comparison of Multivariate Autoregressive Estimators.
+%       Signal processing, Elsevier B.V. (in press).
 %  [2] S.L. Marple "Digital Spectral Analysis with Applications" Prentice Hall, 1987.
 %  [3] M. Kaminski, M. Ding, W. Truccolo, S.L. Bressler, Evaluating causal realations in neural systems:
 %	Granger causality, directed transfer functions and statistical assessment of significance.
@@ -39,7 +55,14 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %	Multivariate linear predictive spectral analysis employing weighted forward and backward averaging: 
 %	a generalization of Burg's algorithm, 
 %	Naval Underwater Systems Center Technical Report 5501, New London, Conn. , 1976b. 
-
+%  [8] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 
+%
+%
+% A multivariate inverse filter can be realized with 
+%   [AR,RC,PE] = mvar(Y,P);
+%   e = mvfilter([eye(size(AR,1)),-AR],eye(size(AR,1)),Y);
+%  
+% see also: MVFILTER, MVFREQZ, COVM, SUMSKIPNAN, ARFIT2
 
 %	$Revision$
 %	$Id$
@@ -79,10 +102,8 @@ if iscell(Y)
         C    = Y;
 end;
 if nargin<3,
-        % tested with a bootstrap validation, Mode 2 or 5 are recommended
-        %Mode=5;  % M*P << N
-        %Mode=5;  % 5*6 << 100, test=900, permutations 1000
-        Mode=2;    % M*P ~~ N
+        % according to [1], this is the best algorithm 
+        Mode=2;
 end;
 
 [C(:,1:M),n] = covm(Y,'M');
@@ -132,7 +153,7 @@ elseif Mode==1,
         for K=1:Pmax,
                 [C(:,K*M+(1:M)),n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 C(:,K*M+(1:M)) = C(:,K*M+(1:M))/N;
-                
+
                 D = C(:,K*M+(1:M));
                 for L = 1:K-1,
                         D = D - ARF(:,L*M+(1-M:0))*C(:,(K-L)*M+(1:M));
@@ -342,7 +363,7 @@ elseif Mode==7 %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Met
                 PE(:,K*M+(1:M)) = PEF;        
         end;
         
-elseif Mode==4,  %%%%% nach Kay, not fixed yet. 
+elseif Mode==4,  %%%%% Kay, not fixed yet. 
         fprintf('Warning MDURLEV: It''s not recommended to use this mode\n')        
         
         C(:,1:M) = C(:,1:M)/N;

@@ -20,6 +20,8 @@ Manipulate sparse matrices
  spones 
  spfun 
  spalloc 
+ spkron
+ matrix_type
 Graph Theory
  etree
  etreeplot
@@ -27,8 +29,10 @@ Graph Theory
  treelayout
  treeplot
 Sparse matrix reordering
+ ccolamd
  colamd
  colperm
+ csymamd
  dmperm
  randperm
  symamd
@@ -37,8 +41,12 @@ Linear algebra
  condest
  eigs
  normest
+ spchol
+ spchol2inv
+ spcholinv
  spdet
  spinv 
+ splchol
  splu
  sprank
  svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge

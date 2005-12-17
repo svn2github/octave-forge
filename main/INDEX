@@ -78,6 +78,7 @@ Variables
  temp_name
  class
 Functions
+ autoload
  alias
  what 
  type
@@ -127,6 +128,8 @@ Environment
  dump_prefs
  bug_report warranty
  native_float_format
+ license ver
+ uname
 Debugging
  dbclear
  dbstatus
@@ -732,7 +735,7 @@ Line plots
  semilogx 
  semilogy 
  polar 
- plotyy= use <f>gplot</f> with <code> ... axes x1y2</code>
+ plotyy= use <f>__gnuplot_raw</f> with <code> ... axes x1y2</code>
  errorbar semilogxerr semilogyerr loglogerr
  scatter 
  plotmatrix 
@@ -784,6 +787,8 @@ Figure controls
  refresh= try <f>replot</f>
  drawnow
  automatic_replot clearplot closeplot
+ clg
+ replot
 Axis controls
  axis 
  zoom= use <f>gzoom</f>
@@ -880,6 +885,7 @@ Formatted I/O
  fscanf 
  scanf
 File operations
+ fileattrib
  tempdir 
  mkstemp
  tmpfile
@@ -901,6 +907,7 @@ Directory operations
  tilde_expand
  file_in_path
  file_in_loadpath
+ canonicalize_file_name
 Import/Export
  csv2cell cell2csv
  textread

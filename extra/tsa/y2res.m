@@ -1,22 +1,27 @@
 function [R]=y2res(Y)
-% Y2RES evaluates basic statistics of a data series (column)
-% res=y2res(y)
+% Y2RES evaluates basic statistics of a data series
+% 
+% R = y2res(y)
+%	several statistics are estimated from each column of y
 % 
 % OUTPUT:
-%   res.N     sum (number of samples)
-%   res.MU    mean
-%   res.SD2   variance
-%   res.Max   Maximum
-%   res.Min   Minimum 
-%   ...   and many more 
+%   R.N     number of samples, NaNs are not counted 
+%   R.SUM   sum of samples
+%   R.MEAN  mean
+%   R.STD   standard deviation 
+%   R.VAR   variance
+%   R.Max   Maximum
+%   R.Min   Minimum 
+%   ...   and many more including:  
+%	MEDIAN, Quartiles, Variance, standard error of the mean (SEM), 
+%	Coefficient of Variation, Quantization (QUANT), TRIMEAN, SKEWNESS, 
+%	KURTOSIS, Root-Mean-Square (RMS), ENTROPY 
 % 
-% REFERENCES:
-% [1] http://www.itl.nist.gov/
-% [2] http://mathworld.wolfram.com/
 
 %	$Id$
 %	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>
 %    	This is part of the TSA-toolbox 
+%       http://octave.sourceforge.net/
 %	http://www.dpmi.tugraz.at/~schloegl/matlab/tsa/
 
 % This program is free software; you can redistribute it and/or
@@ -73,8 +78,26 @@ for k = 1:size(Y,2),
         Q0500(k) = flix(tmp,R.N(k)/2   + 0.50);
         Q0750(k) = flix(tmp,R.N(k)*3/4 + 0.25);
         tmp = diff(tmp);
-        R.QUANT(k) = min(tmp(find(tmp))); 
+
+	pdf   = diff([0; find(tmp>0); R.N(k)])/R.N(k); % empirical probability distribution 
+	R.ENTROPY(k) = -sumskipnan(pdf.*log(pdf));
+
+        tmp = tmp(find(tmp));
+        q   = min(tmp);
+	qerror = 0; 
+        if isempty(q),
+                q = NaN;
+        else
+                tmp = tmp/q; 
+		qerror = max(abs(tmp-round(tmp)));
+        end;
+        R.QUANT(k) = q; 
+	R.Qerror(k) = qerror; 
 end;
+if any(R.Qerror*1e6>R.QUANT)
+	warning('(Y2RES) Quantization might not be equidistant')
+end;	
+
 R.MEDIAN 	= Q0500;
 R.Quartiles   	= [Q0250; Q0750];
 % R.IQR = H_spread   	= [Q0750 - Q0250];

@@ -5,8 +5,8 @@ function [i,S] = center(i,DIM)
 %   removes mean x along dimension DIM
 %
 % DIM	dimension
-%	1: STATS of columns
-%	2: STATS of rows
+%	1: column
+%	2: row
 %	default or []: first DIMENSION, with more than 1 element
 %
 % features:
@@ -33,18 +33,24 @@ function [i,S] = center(i,DIM)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>
+%    	This is part of the NaN-toolbox. For more details see
+%    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 	
-
-if nargin==1,
-        DIM=min(find(size(i)>1));
-        if isempty(DIM), DIM=1; end;
-end;
 
 if any(size(i)==0); return; end;
 
-[S,N] = sumskipnan(i,DIM);		% sum
+if nargin>1,
+        [S,N] = sumskipnan(i,DIM);
+else
+        [S,N] = sumskipnan(i);
+end;
+
 S     = S./N;
-i     = i - repmat(S,size(i)./size(S));		% remove mean
+szi = size(i);
+szs = size(S);
+if length(szs)<length(szi);
+        szs(length(szs)+1:length(szi)) = 1;
+end;
+i = i - repmat(S,szi./szs);		% remove mean

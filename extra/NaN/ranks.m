@@ -1,18 +1,19 @@
-function r = ranks(X,Mode);
+function r = ranks(X,DIM,Mode);
 % RANKS gives the rank of each element in a vector.
 % This program uses an advanced algorithm with averge effort O(m.n.log(n)) 
 % NaN in the input yields NaN in the output.
 % 
-% r = ranks(X)
+% r = ranks(X[,DIM])
 %   if X is a vector, return the vector of ranks of X adjusted for ties.
-%   if X is matrix, the rank is calculated for each column. 
-% r = ranks(X,'traditional')
+%   if X is matrix, the rank is calculated along dimension DIM. 
+%   if DIM is zero or empty, the lowest dimension with more then 1 element is used. 
+% r = ranks(X,DIM,'traditional')
 %   implements the traditional algorithm with O(n^2) computational 
 %   and O(n^2) memory effort
-% r = ranks(X,'mtraditional')
+% r = ranks(X,DIM,'mtraditional')
 %   implements the traditional algorithm with O(n^2) computational 
 %   and O(n) memory effort
-% r = ranks(X,'advanced   ')
+% r = ranks(X,DIM,'advanced   ')
 %   implements an advanced algorithm with O(n*log(n)) computational 
 %   and O(n.log(n)) memory effort
 %
@@ -50,10 +51,24 @@ function r = ranks(X,Mode);
 % + compatible with Octave and Matlab
 % + traditional method is also implemented for comparison. 
 
-if nargin<2, Mode='advanced   '; end;
 
-[N,M]=size(X);
-if (N==1) & (M>0)
+if nargin<2, DIM = 0; end;
+if ischar(DIM),
+	Mode= DIM; 
+	DIM = 0; 
+elseif (nargin<3), 
+	Mode = '';
+end; 
+if isempty(Mode),
+	Mode='advanced   '; 
+end;
+
+sz = size(X);
+if (~DIM)
+	 [tmp,DIM] = min(find(sz>1));
+end;	 
+[N,M] = size(X);
+if (DIM==2),
         X = X';
 	[N,M] = size(X);
 end; 
@@ -143,3 +158,7 @@ elseif strcmp(Mode,'=='),
         end;
         r(isnan(X)) = nan;
 end;
+
+if (DIM==2)
+	r=r';
+end;	

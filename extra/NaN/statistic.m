@@ -124,7 +124,8 @@ R.COEFFICIENT_OF_VARIATION = R.STD./R.MEAN;
 %R.Skewness.Bowley = (Q0750+Q0250 - 2*Q0500)./(Q0750-Q0250); % quartile skewness coefficient
 
 R.CM2	= R.SSQ0./n1;
-i       = i - repmat(R.MEAN,size(i)./size(R.MEAN));
+szi = size(i); szm = [size(R.MEAN),1];
+i       = i - repmat(R.MEAN,szi./szm(1:length(szi)));
 R.CM3 	= sumskipnan(i.^3,DIM)./n1;
 R.CM4 	= sumskipnan(i.^4,DIM)./n1;
 %R.CM5 	= sumskipnan(i.^5,DIM)./n1;

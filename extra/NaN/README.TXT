@@ -1,6 +1,6 @@
 NaN-Tb: A statistics toolbox 
 ------------------------------------------------------------
-Copyright (C) 2000-2004 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2000-2005 Alois Schloegl <a.schloegl@ieee.org>
 
 
 FEATURES of the NaN-tb:
@@ -14,15 +14,25 @@ FEATURES of the NaN-tb:
  - supports DIM argument 
  - supports unbiased estimation; 
  - The toolbox was tested with
-   Matlab 5.2, 5.3, 6.1, 6.5 and Octave 2.0.14, 2.0.16.92, 2.1.35-40, 2.1.50
+   Matlab 5.2, 5.3, 6.1, 6.5, 7.0 and Octave 2.1.x, 2.9.x
  
- 
+  
 Currently are implemented:
 -------------------------- 
-	SUMSKIPNAN 	SUM is a built-in function and cannot not be replaced, 
+level 1: basic functions (not derived)
+	SUMSKIPNAN 	SUM is a built-in function and cannot not be replaced,
 			For this reason, a different name (than SUM) had to be chosen. 
 			SUMSKIPNAN is central, it implements skipping NaN's, the 
 			DIM-argument and returns the number of valid elements, too.
+	COVM		covariance estimation (several modes)
+	XCOVF		cross-correlation function
+	NANFILTER	filter function
+	CONVSKIPNAN     convolution
+	CONV2SKIPNAN (CONV2NAN)   2-dimensional convolution
+	MOD		modulus
+	REM		remainder
+	
+level 2: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)
 	SEM		standard error of the mean (does not depend on distribution)
 	VAR 		variance
@@ -41,7 +51,6 @@ Currently are implemented:
 	GEOMEAN		geometric mean
 	NANTEST		checks whether all functions have been replaced
 	DETREND		detrending of data with missing values and non-equidistant sampled data
-	COVM		covariance estimation (several modes)
 	COR		correlation matrix
 	CORRCOEF	correlation coefficient, inluding rank correlation, 
 				significance test and confidence intervals 
@@ -58,9 +67,8 @@ Currently are implemented:
 	TCDF		student cumulative distribution 
 	TINV		inverse of the student cumulative distribution
 	NANSUM, NANSTD	fixes for buggy versions included
-	MOD		modulus 
-	REM		remainder
 		
+	
 	
 REFERENCE(S):
 ----------------------------------
@@ -197,10 +205,8 @@ alternative function definition (except built-in's) with the same name.
 This checks whether all previous functions have been replaced
 
 
-	$Revision$
 	$Id$
-	Version 1.53 	Date: 31 Oct 2003
-	Copyright (C) 2000-2004 by  Alois Schloegl <a.schloegl@ieee.org>	
+	Copyright (C) 2000-2005 by  Alois Schloegl <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 

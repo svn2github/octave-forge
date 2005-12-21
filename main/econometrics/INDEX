@@ -3,3 +3,4 @@ Econometrics
  gmm_estimate gmm_example gmm_obj gmm_results gmm_variance gmm_variance_inefficient
  mle_estimate mle_example mle_obj mle_results mle_variance
  parameterize prettyprint scale_data unscale_parameters
+ nls_estimate nls_obj

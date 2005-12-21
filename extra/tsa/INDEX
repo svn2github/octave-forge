@@ -33,6 +33,7 @@ Adaptive (time-varying) analysis
    aar   
    aarmam
    adim
+   amarma
    mvaar
    	
 Conversions between forms
@@ -50,6 +51,7 @@ Utility functions
    arcext
    sinvest1
    sbispec
+   flag_implicit_samplerate
 Test suites
    tsademo
    bisdemo

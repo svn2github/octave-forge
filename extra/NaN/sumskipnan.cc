@@ -1,5 +1,3 @@
-#include <octave/oct.h>
-DEFUN_DLD (sumskipnan, args, ,"OCT-implementation of SUMSKIPNAN\n") 
 //   OCT implementation of SUMSKIPNAN - this function is part of the NaN-toolbox. 
 //
 //   This program is free software; you can redistribute it and/or modify
@@ -17,36 +15,41 @@ DEFUN_DLD (sumskipnan, args, ,"OCT-implementation of SUMSKIPNAN\n")
 //   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 //
- 	// sumskipnan: adds all non-NaN values
-//
-// Input:
-// - array to sum
-// - dimension to sum (1=columns; 2=rows; doesn't work for dim>2!!)
-//
-// Output:
-// - sums
-// - count of valid elements (optional)
-// - sums of squares (optional)
-// - sums of squares of squares (optional)
-//
-// Y = sumskipnan(x [,DIM])
-// [Y,N,SSQ] = sumskipnan(x [,DIM])
-// 
-// DIM	dimension
-//	1 sum of columns
-//	2 sum of rows
-//	default or []: first DIMENSION with more than 1 element
-//
-// Y	resulting sum
-// N	number of valid (not missing) elements
-// SSQ	sum of squares
-//
+
 //	$Id$
 //    Copyright (C) 2005 by Alois Schloegl <a.schloegl@ieee.org>	
 //    This is part of the NaN-toolbox 
 //    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
+#include <octave/oct.h>
+DEFUN_DLD (sumskipnan, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{y}, @var{n}, @var{ssq}] =} sumskipnan (@var{x}, @var{dim})\n\
+\n\
+Adds all non-NaN values.\n\
+\n\
+Input:\n\
+@table @asis\n\
+@item @var{x}\n\
+Array to sum\n\
+@item @var{dim}\n\
+dimension to sum (1=columns; 2=rows; doesn't work for dim>2!!).\n\
+Default is 1\n\
+@end table\n\
+\n\
+Output:\n\
+@table @asis\n\
+@item @var{y}\n\
+Sums.\n\
+@item @var{n}\n\
+Count of valid elements (optional)\n\
+@item @var{ssq}\n\
+Sums of squares (optional)\n\
+@c @item @var{ssqsq}\n\
+@c Sums of squares of squares (optional)\n\
+@end table\n\
+@end deftypefn\n") 
 { 
   int DIM = 0;  
   int ND;

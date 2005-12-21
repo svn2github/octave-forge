@@ -94,7 +94,8 @@ Functions
  mex= install octave-forge mex package and use <f>system</f><code>(["mex ", name])</code>
  source
  mark_as_command unmark_command
-
+ mark_as_rawcommand unmark_rawcommand
+ iscommand israwcommand
 Load path
  path 
  addpath 
@@ -151,6 +152,7 @@ Command input
  history history_file history_size edit_history
  saving_history run_history read_readline_init_file
  completion_append_char completion_matches
+ history_timestamp_format_string
 Function
  ignore_function_time_stamp
 Display
@@ -170,6 +172,8 @@ Error Handling
  beep_on_error
  debug_on_error
  debug_on_warning
+ errno
+ errno_list
  warn_divide_by_zero
  warn_function_name_clash
  warn_future_time_stamp
@@ -215,7 +219,6 @@ Constants
  octave_config_info
  program_name argv
  program_invocation_name
- ERRNO 
 Variables
  LOADPATH EXEC_PATH IMAGEPATH
 
@@ -330,7 +333,6 @@ Constants
  isfinite finite
  NaN nan isnan 
  NA isna
- is_nan_or_na
 Symbol table
  exist
  global
@@ -646,6 +648,7 @@ Fourier analysis
  ifftshift
  FFTW_WISDOM_PROGRAM
 Interpolation
+ bicubic
  interp1 
  interpft 
  interp2 
@@ -721,11 +724,9 @@ Ordinary differential equations
  rk2fixed rk4fixed rk8fixed
  lsode lsode_options
  dassl dassl_options
- odessa odessa_options
  daspk daspk_options
  dasrt dasrt_options
  colloc
-
 
 plot >> Plotting
 Line plots
@@ -854,10 +855,12 @@ User input
  dragrect 
  rbbox 
 Gnuplot Interface
- gset gshow graw gnuplot_binary gnuplot_has_frames gnuplot_has_multiplot
+ gnuplot_binary
  gnuplot_command_axes gnuplot_command_end gnuplot_command_plot
  gnuplot_command_replot gnuplot_command_splot gnuplot_command_title
- gnuplot_command_using gnuplot_command_with set show purge_tmp_files
+ gnuplot_command_using gnuplot_command_with purge_tmp_files
+ __gnuplot_raw__ __gnuplot_set__ __gnuplot_show__ __gnuplot_plot__
+ __gnuplot_splot__ __gnuplot_replot__
 
 file >> File I/O
 Basic handle operations
@@ -875,7 +878,7 @@ Basic handle operations
  dup2
  fcntl
  stdin stdout stderr
- isstream isstreamoff streamoff
+ isstreamoff streamoff
 Formatted I/O
  fgetl 
  fgets 

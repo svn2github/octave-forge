@@ -9,7 +9,7 @@ t2.1.58=inline.m
 t2.9.0=dispatch.oct $(DISPATCH_LINK)
 DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58))) \
 	$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.0)))
-TARGETS=waitbar.oct listen.oct xmlread.oct \
+TARGETS=mfilename.oct waitbar.oct listen.oct xmlread.oct \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct \
 	$(DEPRECIATED_TARGETS)
 
@@ -18,6 +18,9 @@ all:	$(TARGETS)
 $(DISPATCH_LINK):
 	-$(RM) $@
 	$(LN_S) dispatch.oct $@
+
+mfilename.oct: mfilename.cc
+	$(MKOCTFILE) $(MISCDEFS) mfilename.cc
 
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)

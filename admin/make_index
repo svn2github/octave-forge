@@ -89,10 +89,10 @@ my $include_octave = !$summary;        # only include octave if not summarizing
 # don't need C++ files from octave because we have DOCSTRINGS
 my @m_files = ();
 my @C_files = ();
-find(\&cc_and_m_files, ".");
 find(\&cc_and_m_files, "$OCTAVE/scripts") if $include_octave; 
 find(\&cc_and_m_files, "$OCTAVE/src") if $include_octave; 
                                  # or just use $OCTAVE/{src,scripts}/DOCSTRINGS ....
+find(\&cc_and_m_files, ".");
 sub cc_and_m_files { # {{{1 populates global array @files
     return unless -f and /\.(m|cc|l|y)$/;  # .m and .cc files (lex & yacc too!)
     my $path = "$File::Find::dir/$_";
@@ -131,10 +131,16 @@ foreach my $f ( @C_files ) {
 	    # comment if third or higher arg
 	    # XXX FIXME XXX What about if the string arg includes ,
 	    # XXX FIXME XXX What if second , is not on first line!!
+	    # Special cases
+	    #  * for DEFCONST (I, Complex (0., 1.),
+	    s/\(\w*\s*,\s*Complex\s*\(\s*[0-9.]*\s*,\s*[0-9.]*\s*\),//;
+	    #  * for macro containing DEFUN_DLD
+	    s/\w*\s*\(\w*\s*,\s*"/"/;
+	    # Main case
 	    s/\(\w*\s*,.*?,//;
 
 	    # If we have nothing but a newline, skip
-	    $_ = <IN> if /\s*\n/;
+	    $_ = <IN> if /^\s*DEF(UN[ (]|UN_MAPPER|UN_DLD|CMD|VAR|CONST)\s*,*\s*\n/;
 
 	    # if line contains \w+_DOC_STRING we have a macro for the
 	    # help text
@@ -290,7 +296,7 @@ foreach my $TB ( toolbox_list()) {
 	  print "help $func\n>>> @err";
 	} else {
 	  my $body = join("",@lines);
-	  if ($body =~ /help: sorry,/) {
+	  if ($body =~ /help: `(.*)' not found/ || $body =~ /help: sorry,/) {
 	    # do nothing
 	  } else {
 	    print "help $func\n";

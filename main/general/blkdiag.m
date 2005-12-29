@@ -32,3 +32,6 @@ function y = blkdiag(varargin)
     y (csz(i,1)+1:csz(i+1,1) , csz(i,2)+1:csz(i+1,2)) = varargin{i};
   endfor
 endfunction
+
+%!assert(blkdiag(1,ones(2),1),[1,0,0,0;0,1,1,0;0,1,1,0;0,0,0,1])
+

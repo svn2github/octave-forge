@@ -20,7 +20,7 @@
 ## to drop the "nc" prefix of various octcdf functions and to increase the
 ## compatability with the Matlab NetCDF toolbox.
 
-## Author: Alexander Barth (abarth@marine.usf.edu)
+## Author: Alexander Barth <abarth@marine.usf.edu>
 
 dispatch('close','ncclose','ncfile');
 dispatch('redef','ncredef','ncfile');

@@ -27,7 +27,7 @@
 ## @seealso{interp2}
 
 ## Bicubic interpolation method.
-## Author:      Hoxide <hoxide_dirac@yahoo.com.cn>
+## Author: Hoxide Ma <hoxide_dirac@yahoo.com.cn>
 
 function F = bicubic(X, Y, Z, XI, YI)
   global spline_alpha;

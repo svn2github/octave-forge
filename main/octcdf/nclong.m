@@ -1,4 +1,3 @@
-
 ## Copyright (C) 2005 Alexander Barth
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -34,7 +33,7 @@
 ## @end deftypefn
 ## @seealso{netcdf}
 
-## Author: Alexander Barth (abarth@marine.usf.edu)
+## Author: Alexander Barth <abarth@marine.usf.edu>
 
 function c = nclong(varargin);
 

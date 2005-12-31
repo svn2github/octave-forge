@@ -80,7 +80,7 @@ function [x_out,s]=wsolve(A,y,dy)
 
   s.R = R;
   s.R(:,p) = R;
-  s.df = length(y)-length(x);
+  s.df = nr-nc;
   s.normr = norm(y - A*x);
 
   if nargout == 0,

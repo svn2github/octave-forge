@@ -170,7 +170,7 @@ endfunction
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,4]; y=[10,11,12];
 %! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26);
+%! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
 %! [x,y] = meshgrid(x,y); 
 %! __gnuplot_raw__ ("set nohidden3d;\n")
@@ -180,7 +180,7 @@ endfunction
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,4]; y=[10,11,12];
 %! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26);
+%! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
 %! [x,y] = meshgrid(x,y); 
 %! __gnuplot_raw__ ("set nohidden3d;\n")
@@ -229,7 +229,7 @@ endfunction
 
 %!test % non-gridded XI,YI
 %!  A = eye(4);
-%!  assert(interp2(A,[1,2;3,4],[1,3;2,4]),[1,0;1,0]);
+%!  assert(interp2(A,[1,2;3,4],[1,3;2,4]),[1,0;0,1]);
 
 %!test % for values outside of boundaries
 %!  x = [1,2,3];

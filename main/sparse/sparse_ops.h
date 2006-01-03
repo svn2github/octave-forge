@@ -19,6 +19,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $Id$
 
 $Log$
+Revision 1.17  2006/01/03 02:06:58  pkienzle
+Sparse row was being set to one in the constructor.
+
 Revision 1.16  2005/11/14 18:24:53  aadler
 Define INT64 type to properly handle large matrices
 
@@ -335,7 +338,7 @@ Revision 1.1  2001/03/30 04:34:23  aadler
          ii++; \
          coefX[ii]=   coefA( cf_scalar ? 0 : idx ); \
          double ri=   ridxA( ri_scalar ? 0 : idx ) - 1 ; \
-         ridxX[ii]=   ri - (ri/m64)*m64 ; \
+         ridxX[ii]=   ri - floor(ri/m64)*m64 ; \
          double ci=   cidxA( ci_scalar ? 0 : idx ) - 1 ; \
          while( cx < ci ) cidxX[++cx]= ii; \
       } else { \

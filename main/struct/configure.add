@@ -1,1 +1,0 @@
-OCTAVE_EVAL(exist('struct')==5,HAVE_BUILTIN_STRUCT)

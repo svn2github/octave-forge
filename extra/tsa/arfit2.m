@@ -123,4 +123,8 @@ else
         w = zeros(M,1);
 end;
 
+if nargout>3, 
+	warning('model order criteria SBC and FPE are presumably incorrect and must not be trusted.')
+end;	
+
 if nargout>5,	th=[];	fprintf(2,'Warning ARFIT2: output TH not defined\n'); end;

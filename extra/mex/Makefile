@@ -32,34 +32,34 @@ install:
 ifdef LEAVEHERE
 	@echo "Leaving $(MEXLIB), mex.h and matrix.h in place --- do not remove!"
 else
-	@if ! test -e $(LIBPATH) ; then \
-	  echo creating $(LIBPATH) ; \
-	  $(INSTALL) -d $(LIBPATH) ; \
+	@if ! test -e $(DESTDIR)$(LIBPATH) ; then \
+	  echo creating $(DESTDIR)$(LIBPATH) ; \
+	  $(INSTALL) -d $(DESTDIR)$(LIBPATH) ; \
 	fi
-	@if test -d $(LIBPATH) ; then \
-	  echo installing $(MEXLIB) mex/mex.h mex/matrix.h in $(LIBPATH) ; \
-	  $(INSTALL_DATA) $(MEXLIB) $(LIBPATH)/$(MEXLIB) ; \
-	  $(INSTALL_DATA) mex.h $(LIBPATH)/mex.h ; \
-	  $(INSTALL_DATA) matrix.h $(LIBPATH)/matrix.h ; \
+	@if test -d $(DESTDIR)$(LIBPATH) ; then \
+	  echo installing $(MEXLIB) mex/mex.h mex/matrix.h in $(DESTDIR)$(LIBPATH) ; \
+	  $(INSTALL_DATA) $(MEXLIB) $(DESTDIR)$(LIBPATH)/$(MEXLIB) ; \
+	  $(INSTALL_DATA) mex.h $(DESTDIR)$(LIBPATH)/mex.h ; \
+	  $(INSTALL_DATA) matrix.h $(DESTDIR)$(LIBPATH)/matrix.h ; \
 	fi
 endif
-	@if ! test -e $(man1dir) ; then \
-	  echo creating $(man1dir) ; \
-	  $(INSTALL) -d $(man1dir) ; \
+	@if ! test -e $(DESTDIR)$(man1dir) ; then \
+	  echo creating $(DESTDIR)$(man1dir) ; \
+	  $(INSTALL) -d $(DESTDIR)$(man1dir) ; \
 	fi
-	@if test -d $(man1dir) ; then \
-	  echo installing mex/mex.1 in $(man1dir) ; \
-	  $(RM) $(man1dir)/mex.1; \
-	  $(INSTALL_DATA) mex.1 $(man1dir)/mex.1 ; \
+	@if test -d $(DESTDIR)$(man1dir) ; then \
+	  echo installing mex/mex.1 in $(DESTDIR)$(man1dir) ; \
+	  $(RM) $(DESTDIR)$(man1dir)/mex.1; \
+	  $(INSTALL_DATA) mex.1 $(DESTDIR)$(man1dir)/mex.1 ; \
 	fi
-	@if ! test -e $(bindir) ; then \
-	  echo creating $(bindir) ; \
-	  $(INSTALL) -d $(bindir) ; \
+	@if ! test -e $(DESTDIR)$(bindir) ; then \
+	  echo creating $(DESTDIR)$(bindir) ; \
+	  $(INSTALL) -d $(DESTDIR)$(bindir) ; \
 	fi
-	@if test -d $(bindir) ; then \
-	  echo installing mex/mex in $(bindir) ; \
-	  $(RM) $(bindir)/mex ; \
-	  $(INSTALL_SCRIPT) mex $(bindir)/mex ; \
+	@if test -d $(DESTDIR)$(bindir) ; then \
+	  echo installing mex/mex in $(DESTDIR)$(bindir) ; \
+	  $(RM) $(DESTDIR)$(bindir)/mex ; \
+	  $(INSTALL_SCRIPT) mex $(DESTDIR)$(bindir)/mex ; \
 	fi
 
 clean: ; $(RM) mex mex_* $(MEXLIB) *.o *.oct core octave-core *~

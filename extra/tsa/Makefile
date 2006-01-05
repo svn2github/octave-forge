@@ -7,5 +7,5 @@ DEPENDS=sumskipnan.m covm.m
 all:
 
 install:
-	@$(INSTALL) -d $(MPATH)/NaN
-	@cd ../NaN && $(INSTALL_DATA) $(DEPENDS) $(MPATH)/NaN
+	@$(INSTALL) -d $(DESTDIR)$(MPATH)/NaN
+	@cd ../NaN && $(INSTALL_DATA) $(DEPENDS) $(DESTDIR)$(MPATH)/NaN

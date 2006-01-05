@@ -19,8 +19,9 @@ ifeq ($(INSTALLDIRS),)
 else
 	@for f in $(INSTALLDIRS) ; do \
             echo installing $$f... ; \
-            ../$(INSTALLOCT) $$f $(MPATH)/$$f $(OPATH) $(XPATH) \
-		$(ALTMPATH)/$$f $(ALTOPATH)/$$f ; \
+            ../$(INSTALLOCT) $$f $(DESTDIR)$(MPATH)/$$f \
+		$(DESTDIR)$(OPATH) $(DESTDIR)$(XPATH) \
+		$(DESTDIR)$(ALTMPATH)/$$f $(DESTDIR)$(ALTOPATH)/$$f ; \
         done
 endif
 else

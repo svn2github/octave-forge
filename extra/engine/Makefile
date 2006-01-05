@@ -39,23 +39,23 @@ liboct.a:	$(TARGETS)
 	$(RANLIB) liboct.a
 
 install:
-	@if ! test -e $(libdir) ; then \
-	  echo creating $(libdir) ; \
-	  $(INSTALL) -d $(libdir) ; \
+	@if ! test -e $(DESTDIR)$(libdir) ; then \
+	  echo creating $(DESTDIR)$(libdir) ; \
+	  $(INSTALL) -d $(DESTDIR)$(libdir) ; \
 	fi
-	@if test -d $(libdir) ; then \
-	  echo installing engine/liboct.a in $(libdir) ; \
-	  $(RM) $(libdir)/liboct.a ; \
-	  $(INSTALL_DATA) liboct.a $(libdir)/liboct.a ; \
+	@if test -d $(DESTDIR)$(libdir) ; then \
+	  echo installing engine/liboct.a in $(DESTDIR)$(libdir) ; \
+	  $(RM) $(DESTDIR)$(libdir)/liboct.a ; \
+	  $(INSTALL_DATA) liboct.a $(DESTDIR)$(libdir)/liboct.a ; \
 	fi
-	@if ! test -e $(includedir) ; then \
-	  echo creating $(includedir) ; \
-	  $(INSTALL) -d $(includedir) ; \
+	@if ! test -e $(DESTDIR)$(includedir) ; then \
+	  echo creating $(DESTDIR)$(includedir) ; \
+	  $(INSTALL) -d $(DESTDIR)$(includedir) ; \
 	fi
-	@if test -d $(includedir) ; then \
-	  echo installing engine/engine.h in $(includedir) ; \
-	  $(RM) $(includedir)/engine.h ; \
-	  $(INSTALL_DATA) engine.h $(includedir)/engine.h ; \
+	@if test -d $(DESTDIR)$(includedir) ; then \
+	  echo installing engine/engine.h in $(DESTDIR)$(includedir) ; \
+	  $(RM) $(DESTDIR)$(includedir)/engine.h ; \
+	  $(INSTALL_DATA) engine.h $(DESTDIR)$(includedir)/engine.h ; \
 	fi
 
 

@@ -51,8 +51,9 @@ install:
 	@if test -f FIXES/NOINSTALL ; then \
 	    echo skipping FIXES ; \
 	else \
-	    echo installing FIXES to $(MPATH)/FIXES ; \
-	    ../$(INSTALLOCT) . $(MPATH)/FIXES $(OPATH) $(XPATH) ; \
+	    echo installing FIXES to $(DESTDIR)$(MPATH)/FIXES ; \
+	    ../$(INSTALLOCT) . $(DESTDIR)$(MPATH)/FIXES \
+	    $(DESTDIR)$(OPATH) $(DESTDIR)$(XPATH) ; \
 	fi
 
 clean: 

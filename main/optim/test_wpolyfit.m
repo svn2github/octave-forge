@@ -40,7 +40,7 @@ input('Press <Enter> to see some sample regression lines: ');
 t = [x(1), x(length(x))];
 [p,s] = wpolyfit(x,y,dy,1); dp=sqrt(sumsq(inv(s.R'))'/s.df)*s.normr;
 hold off; 
-for i=1:15, plot(t,polyval(p+randn(size(dp)).*dp,t),'-g;;'); hold on; end
+for i=1:15, plot(t,polyval(p(:)+randn(size(dp)).*dp,t),'-g;;'); hold on; end
 errorbar(x,y,dy,"~b;;");
 [yf,dyf]=polyconf(p,x,s,0.05,'ci');
 plot(x,yf-dyf,"-r;;",x,yf+dyf,'-r;95% confidence interval;')

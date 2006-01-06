@@ -1691,21 +1691,21 @@ function ret = _fixedpoint_test_function(func,is,ds,n,eps,includezero)
   if (includezero)
     t1 = eval([ func "(tczero);"]);
     f1 = eval([ ffunc "(fczero);"]);
-    if ((abs(real(t1) - real(f1).x) > eps) || 
-	(abs(imag(t1) - imag(f1).x) > eps))
+    if ((abs(real(t1) - freal(f1).x) > eps) || 
+	(abs(imag(t1) - fimag(f1).x) > eps))
       ret = 1;
       return;
     endif
   endif
   t1 = eval([ func "(tcone);"]);
   f1 = eval([ ffunc "(fcone);"]);
-  if ((abs(real(t1) - real(f1).x) > eps) || (abs(imag(t1) - imag(f1).x) > eps))
+  if ((abs(real(t1) - freal(f1).x) > eps) || (abs(imag(t1) - fimag(f1).x) > eps))
     ret = 1;
     return;
   endif
   t1 = eval([ func "(tcval);"]);
   f1 = eval([ ffunc "(fcval);"]);
-  if ((abs(real(t1) - real(f1).x) > eps) || (abs(imag(t1) - imag(f1).x) > eps))
+  if ((abs(real(t1) - freal(f1).x) > eps) || (abs(imag(t1) - fimag(f1).x) > eps))
     ret = 1;
     return;
   endif
@@ -1714,23 +1714,23 @@ function ret = _fixedpoint_test_function(func,is,ds,n,eps,includezero)
   if (includezero)
     t1 = eval([ func "(tczeros);"]);
     f1 = eval([ ffunc "(fczeros);"]);
-    if (any(any(abs(real(t1) - real(f1).x) > eps)) || 
-	any(any(abs(imag(t1) - imag(f1).x) > eps)))
+    if (any(any(abs(real(t1) - freal(f1).x) > eps)) || 
+	any(any(abs(imag(t1) - fimag(f1).x) > eps)))
       ret = 1;
       return;
     endif
   endif
   t1 = eval([ func "(tcones);"]);
   f1 = eval([ ffunc "(fcones);"]);
-  if (any(any(abs(real(t1) - real(f1).x) > eps)) || 
-      any(any(abs(imag(t1) - imag(f1).x) > eps)))
+  if (any(any(abs(real(t1) - freal(f1).x) > eps)) || 
+      any(any(abs(imag(t1) - fimag(f1).x) > eps)))
     ret = 1;
     return;
   endif
   t1 = eval([ func "(tcvals);"]);
   f1 = eval([ ffunc "(fcvals);"]);
-  if (any(any(abs(real(t1) - real(f1).x) > eps)) || 
-      any(any(abs(imag(t1) - imag(f1).x) > eps)))
+  if (any(any(abs(real(t1) - freal(f1).x) > eps)) || 
+      any(any(abs(imag(t1) - fimag(f1).x) > eps)))
     ret = 1;
     return;
   endif

@@ -96,7 +96,7 @@ function yi = interp1(x, y, xi, method, extrap)
   else
      maxx = x(nx);
   endif
-  if strcmp(extrap,"extrap")
+  if ischar(extrap) && strcmp(extrap,"extrap")
     range=1:size(xi,1);
     yi = zeros(size(xi,1), size(y,2));
   else
@@ -135,7 +135,7 @@ function yi = interp1(x, y, xi, method, extrap)
 
     ## use the endpoints of the interval to define a line
     dy = [y(2:ny,:) - y(1:ny-1,:); zeros(1,nc)];
-    s = (t - idx)./dx;
+    s = t - idx;
     yi(range,:) = s(:,ones(1,nc)).*dy(idx,:) + y(idx,:); 
 
   elseif strcmp(method, 'pchip') || strcmp(method, '*pchip')
@@ -292,10 +292,10 @@ endfunction
 %!assert (interp1(1:3,1:3,1.4,'spline'),1.4);
 
 %!error interp1(1,1,1, '*nearest');
-%!assert (interp1(1:2,1:2,1.4,'*nearest'),1);
+%!assert (interp1(1:2:4,1:2:4,1.4,'*nearest'),1);
 %!error interp1(1,1,1, '*linear');
-%!assert (interp1(1:2,1:2,1.4,'*linear'),1.4);
+%!assert (interp1(1:2:4,1:2:4,[0,1,1.4,3,4],'*linear'),[NaN,1,1.4,3,NaN]);
 %!error interp1(1:3,1:3,1, '*cubic');
-%!assert (interp1(1:4,1:4,1.4,'*cubic'),1.4);
+%!assert (interp1(1:2:8,1:2:8,1.4,'*cubic'),1.4);
 %!error interp1(1:2,1:2,1, '*spline');
-%!assert (interp1(1:3,1:3,1.4,'*spline'),1.4);
+%!assert (interp1(1:2:6,1:2:6,1.4,'*spline'),1.4);

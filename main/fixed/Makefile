@@ -3,12 +3,13 @@ sinclude ../../Makeconf
 FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
-FIXEDLINKTARGETS = isfixed.oct fabs.oct fcos.oct fcosh.oct fsin.oct fsinh.oct \
-	ftan.oct ftanh.oct fsqrt.oct fexp.oct flog.oct flog10.oct fround.oct \
-	ffloor.oct fceil.oct fprod.oct fsum.oct fsumsq.oct fcumsum.oct \
-	fcumprod.oct display_fixed_operations.oct reset_fixed_operations.oct \
-	freshape.oct fdiag.oct fatan2.oct freal.oct fimag.oct fconj.oct \
-	farg.oct fangle.oct
+FIXEDLINKTARGETS = $(patsubst %,%$(OCTLINK), \
+	isfixed fabs fcos fcosh fsin fsinh \
+	ftan ftanh fsqrt fexp flog flog10 fround \
+	ffloor fceil fprod fsum fsumsq fcumsum \
+	fcumprod display_fixed_operations reset_fixed_operations \
+	freshape fdiag fatan2 freal fimag fconj \
+	farg fangle) 
 
 SUBDIRS = examples doc
 
@@ -139,7 +140,7 @@ $(FIXEDVERTARGET) :
 $(FIXEDLINKTARGETS) :
 	@echo "Symbolic linking $@ to $(FIXEDTARGET)"; \
 	$(RM) -f $@ ; \
-	$(LN_S) $(FIXEDTARGET) $@
+	$(MKOCTLINK) $(FIXEDTARGET) $@
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)

@@ -1,5 +1,7 @@
 *.d
 *.o
+PKG_ADD
+*.octlink
 *.oct
 DOCSTRINGS 
 *.aux

@@ -1,2 +1,4 @@
 *.o
+PKG_ADD
+*.octlink
 *.oct

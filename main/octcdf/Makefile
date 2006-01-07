@@ -7,8 +7,9 @@ NCTARGET = ov-netcdf.oct
 NCSOURCES = ov-netcdf.cc ov-ncfile.cc ov-ncvar.cc ov-ncatt.cc ov-ncdim.cc 
 OBJECTS = $(patsubst %.cc,%.o,$(NCSOURCES))
 
-NCLINKTARGETS = ncclose.oct  \
-   ncredef.oct ncenddef.oct ncsync.oct ncvar.oct ncatt.oct ncdim.oct ncname.oct ncdatatype.oct netcdf.oct
+NCLINKTARGETS = $(patsubst %,%$(OCTLINK), \
+	ncclose ncredef ncenddef ncsync ncvar ncatt \
+	ncdim ncname ncdatatype netcdf) 
 
 MFILES =  ncchar.m ncfloat.m nclong.m ncbyte.m ncdouble.m ncint.m ncshort.m 
 
@@ -17,13 +18,13 @@ TARGETS = $(NCTARGET) $(NCLINKTARGETS)
 # assumptions to make if not using ./configure script
 ifndef OCTAVE_FORGE
 	MKOCTFILE=mkoctfile
+	MKOCTLINK=ln -s
 
         NETCDF_INC=/usr/include/netcdf-3
         NETCDF_LIB=/usr/lib64/netcdf-3
 
         OCTCDF_CFLAGS := $(CPPFLAGS) -I$(NETCDF_INC)
         OCTCDF_LIBS := $(LDFLAGS) -L$(NETCDF_LIB) -lnetcdf
-        LN_S=ln -s
         RM = rm -f
 endif
 
@@ -49,7 +50,7 @@ mfiles: $(MFILES)
 
 $(NCLINKTARGETS) : $(NCTARGET)
 	$(RM) $@ ; \
-	$(LN_S) $(NCTARGET) $@
+	$(MKOCTLINK) $(NCTARGET) $@
 
 ov-netcdf.o ov-ncfile.o ov-ncvar.o  ov-ncatt.o  ov-ncdim.o: ov-netcdf.h ov-ncfile.h ov-ncvar.h  ov-ncatt.h ov-ncdim.h
 

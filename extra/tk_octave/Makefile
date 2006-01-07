@@ -11,7 +11,7 @@ BLT_OPTS = -DHAVE_BLT -lBLT
 
 ## The remainder of this file should not need changing
 OPTS  = $(TCL_OPTS) $(BLT_OPTS) $(VTK_OPTS)
-LINKS = tk_loop.oct tk_end.oct tk_cmd.oct
+LINKS = $(patsubst %,%$(OCTLINK), tk_loop tk_end tk_cmd)
 
 ifdef TCL_OPTS
 all: tk_interp.oct $(LINKS)
@@ -24,7 +24,7 @@ tk_interp.oct: tk_interp.cc
 
 $(LINKS):
 	-$(RM) $@
-	$(LN_S) tk_interp.oct $@
+	$(MKOCTLINK) tk_interp.oct $@
 
 clean: ; -$(RM) core octave-core *.o *.oct *~
 

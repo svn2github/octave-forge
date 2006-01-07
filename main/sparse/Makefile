@@ -47,7 +47,7 @@ ifndef OCTAVE_FORGE
     MKOCTFILE= mkoctfile$(OCTVER) 
     AR= ar
     RANLIB=ranlib
-    LN_S = ln -s
+    MKOCTLINK = ln -s
     HAVE_ND_ARRAYS = -DHAVE_ND_ARRAYS
     TYPEID_HAS_CLASS = -DTYPEID_HAS_CLASS
     CLASS_HAS_LOAD_SAVE = -DCLASS_HAS_LOAD_SAVE
@@ -62,10 +62,9 @@ CFLAGS   =  $(shell $(MKOCTFILE) -p CFLAGS)
 CPICFLAG =  $(shell $(MKOCTFILE) -p CPICFLAG)
 
 NAME     =   make_sparse
-OBJLINKS =   spfind.oct sparse.oct full.oct splu.oct nnz.oct \
-             spinv.oct is_sparse.oct spabs.oct \
-             is_real_sparse.oct is_complex_sparse.oct \
-	     spimag.oct spreal.oct
+OBJLINKS = $(patsubst %,%$(OCTLINK), \
+	spfind sparse full splu nnz spinv is_sparse spabs \
+	is_real_sparse is_complex_sparse spimag spreal)
 SUPERLU  =   SuperLU
 S_INC=   -I$(SUPERLU)/SRC/ -I$(SUPERLU)/CBLAS
 
@@ -156,7 +155,7 @@ $(NAME).oct: $(OCTOBJ) $(LIBSUPERLU)
 	$(MKOCTFILE)  $(OCTOBJ) -o $(NAME).oct  -lsuperlu -L. $(DLIBS)
 
 $(OBJLINKS):
-	$(LN_S) $(NAME).oct $@
+	$(MKOCTLINK) $(NAME).oct $@
 
 test: $(NAME).oct sptest.m
 	#export DMALLOC_OPTIONS=debug=0x4f47d03,inter=100,log=logfile

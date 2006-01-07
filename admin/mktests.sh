@@ -1,5 +1,8 @@
 #! /bin/sh
 
+# Where to find mkpkgadd
+MKPKGADD=$1
+
 # Create a new fntests.m file
 echo "fid=fopen('fntests.log','wt');" > fntests.m
 echo "if fid<0,error('could not open fntests.log for writing');end" >>fntests.m
@@ -16,6 +19,11 @@ for dir in $DIRS; do
     # skip the NOINSTALL directories
     if test -f "$dir/NOINSTALL"; then continue; fi
 
+    # Create local copy of PKG_ADD for in place testing
+    if test -e "$dir/PKG_ADD" ; then rm -f $dir/PKG_ADD; fi
+    $MKPKGADD $dir > $dir/PKG_ADD
+    if test -z "`cat $dir/PKG_ADD`" ; then rm -f $dir/PKG_ADD;  fi
+ 
     # Build a list of possible test files
     FILES=""
 

@@ -1,16 +1,16 @@
 sinclude ../../Makeconf
 
 # extra functions defined in __grcmd__.oct
-gr_LINKS=__grcla__.oct\
- __grclf__.oct\
- __grexit__.oct\
- __grfigure__.oct\
- __grgetstat__.oct\
- __grhold__.oct\
- __grinit__.oct\
- __grishold__.oct\
- __grnewset__.oct\
- __grsetgraph__.oct
+gr_LINKS=$(patsubst %,%$(OCTLINK), __grcla__\
+ __grclf__\
+ __grexit__\
+ __grfigure__\
+ __grgetstat__\
+ __grhold__\
+ __grinit__\
+ __grishold__\
+ __grnewset__\
+ __grsetgraph__)
 
 # all compiled functions
 PROGS=__grcmd__.oct $(gr_LINKS)
@@ -24,6 +24,6 @@ grace_octave_path.m: grace_octave_path.m.in
 
 $(gr_LINKS):
 	-$(RM) $@
-	$(LN_S) __grcmd__.oct $@
+	$(MKOCTLINK) __grcmd__.oct $@
 
 clean: ; -$(RM) *.o core octave-core *.oct *~ grace_octave_path.m 

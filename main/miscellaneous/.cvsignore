@@ -1,2 +1,4 @@
+PKG_ADD
+*.octlink
 *.oct
 inline.m

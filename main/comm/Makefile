@@ -5,10 +5,11 @@ GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
 	      op-gm-gm.cc op-gm-m.cc op-gm-s.cc op-m-gm.cc op-s-gm.cc \
 	      ov-galois.cc 
 GALOISOBJECTS = $(patsubst %.cc,%.o,$(GALOISSOURCES))
-GALOISLINKTARGETS = isgalois.oct gdiag.oct greshape.oct gprod.oct gsum.oct \
-                    gsumsq.oct gsqrt.oct glog.oct gexp.oct gfilter.oct \
-                    glu.oct ginv.oct ginverse.oct gdet.oct grank.oct \
-                    rsenc.oct rsdec.oct bchenco.oct bchdeco.oct
+GALOISLINKTARGETS = $(patsubst %,%$(OCTLINK), \
+		    isgalois gdiag greshape gprod gsum \
+                    gsumsq gsqrt glog gexp gfilter \
+                    glu ginv ginverse gdet grank \
+                    rsenc rsdec bchenco bchdeco)
 
 GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
 OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
@@ -46,7 +47,7 @@ $(GALOISTARGET) : $(DEPENDS) $(GALOISOBJECTS)
 
 $(GALOISLINKTARGETS) :
 	@echo "Symbolic linking $@"; $(RM) $@ ; \
-	$(LN_S) $(GALOISTARGET) $@
+	$(MKOCTLINK) $(GALOISTARGET) $@
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)

@@ -1,1 +1,3 @@
+PKG_ADD
+*.octlink
 *.oct grace_octave_path.m

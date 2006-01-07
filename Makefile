@@ -45,7 +45,7 @@ install: subdirs
 	@echo "against those in your version of Octave."
 
 check:
-	admin/mktests.sh
+	admin/mktests.sh admin/mkpkgadd
 	$(RUN_OCTAVE) -q fntests.m
 	$(RUN_OCTAVE) -q batch_test.m
 

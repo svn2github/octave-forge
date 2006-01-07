@@ -2,14 +2,13 @@ sinclude ../../Makeconf
 
 SF_BUILDSCRIPT=buildgsl_sf.sh
 RM=rm
-LN_S=ln -s
 #LIBGSL=$(shell gsl-config --libs-without-cblas)
 LIBGSL=-lgsl
 
 # all automatically generated functions
 SF_ALL_FNS=$(shell grep octave_name $(SF_BUILDSCRIPT) | sed 's/^.*octave_name=\([[:alnum:]_]*\) *$$/\1/g')
 SF_AVAILABLE=$(filter-out $(GSL_MISSING),$(SF_ALL_FNS))
-SF_LINKS=$(patsubst %,%.oct,$(SF_AVAILABLE))
+SF_LINKS=$(patsubst %,%$(OCTLINK),$(SF_AVAILABLE))
 
 # all separately compiled functions
 PROGS=coupling_3j.oct coupling_6j.oct coupling_9j.oct legendre_sphPlm_array.oct gsl_sf.oct
@@ -29,6 +28,6 @@ gsl_sf.cc: $(SF_BUILDSCRIPT)
 
 $(SF_LINKS):
 	-$(RM) -f $@
-	$(LN_S) gsl_sf.oct $@
+	$(MKOCTLINK) gsl_sf.oct $@
 
 clean: ; -$(RM) gsl_sf.cc *.o core octave-core *.oct *~

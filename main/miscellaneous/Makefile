@@ -4,7 +4,7 @@ ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap
 endif
 
-DISPATCH_LINK=dispatch_help.oct builtin.oct
+DISPATCH_LINK=$(patsubst %,%$(OCTLINK), dispatch_help builtin)
 t2.1.58=inline.m
 t2.9.0=dispatch.oct $(DISPATCH_LINK)
 DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58))) \
@@ -17,7 +17,7 @@ all:	$(TARGETS)
 
 $(DISPATCH_LINK):
 	-$(RM) $@
-	$(LN_S) dispatch.oct $@
+	$(MKOCTLINK) dispatch.oct $@
 
 mfilename.oct: mfilename.cc
 	$(MKOCTFILE) $(MISCDEFS) mfilename.cc

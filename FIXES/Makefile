@@ -25,7 +25,7 @@ SORT_BUILD=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58)))
 # Note that -O3 is much slower than -O2 for me.
 RANDFLAGS = -DALLBITS
 
-RAND_LINKS = randn.oct rande.oct randp.oct randg.oct
+RAND_LINKS = $(patsubst %,%$(OCTLINK),randn rande randp randg)
 PROGS = $(SORT_BUILD) rand.oct $(RAND_LINKS) 
 #fsolve.oct
 
@@ -38,7 +38,7 @@ randtest: randmtzig.c
 
 $(RAND_LINKS):
 	-$(RM) $@
-	$(LN_S) rand.oct $@
+	$(MKOCTLINK) rand.oct $@
 
 rand.oct : randmtzig.c randpoisson.c randgamma.c rand.cc
 	$(MKOCTFILE) $(RANDFLAGS) $(HAVE_ND_ARRAYS) rand.cc

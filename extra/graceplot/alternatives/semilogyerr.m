@@ -35,7 +35,7 @@
 ##
 ## @end deftypefn
 ## @seealso{errorbar, loglogerr semilogxerr, polar, mesh, contour, __pltopt__, 
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, stairs, __gnuplot_plot__, __gnuplot_splot__, replot, xlabel, ylabel, and title}
 
 ## Created: 20.2.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>

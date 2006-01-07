@@ -131,7 +131,7 @@ function curr_axis = axis (ax, varargin)
   ## limits.
 
   if (nargin == 0)
-#    gset autoscale;
+#    __gnuplot_set__ autoscale;
     warning("Not implemented in Grace");
     curr_axis = __current_axis__;
 
@@ -147,102 +147,102 @@ function curr_axis = axis (ax, varargin)
 
       ## aspect ratio
     elseif (strcmp (ax, "image"))
-#      gset size ratio -1; 
-#      gset autoscale; ## XXX FIXME XXX should be the same as "tight"
+#      __gnuplot_set__ size ratio -1; 
+#      __gnuplot_set__ autoscale; ## XXX FIXME XXX should be the same as "tight"
     warning("Not implemented in Grace");
     elseif (strcmp (ax, "equal"))
-#      gset size ratio -1;
+#      __gnuplot_set__ size ratio -1;
     warning("Not implemented in Grace");
     elseif (strcmp (ax, "square"))
-#      gset size ratio 1;
+#      __gnuplot_set__ size ratio 1;
       warning("Not implemented in Grace");
     elseif (strcmp (ax, "normal"))
-#      gset size noratio;
+#      __gnuplot_set__ size noratio;
       warning("Not implemented in Grace");
 
       ## axis limits
     elseif (len >= 4 && strcmp (ax(1:4), "auto"))
       if (len > 4)
-#      	eval (sprintf ("gset autoscale %s;", ax(5:len)));
+#      	eval (sprintf ("__gnuplot_set__ autoscale %s;", ax(5:len)));
 	warning("Not implemented in Grace");
       else
-#	gset autoscale;
+#	__gnuplot_set__ autoscale;
 	warning("Not implemented in Grace");
       endif
     elseif (strcmp (ax, "manual"))
       ## fixes the axis limits, like axis(axis) should;
-#      gset xrange [] writeback;
-#      gset yrange [] writeback;
-#      gset zrange [] writeback;
+#      __gnuplot_set__ xrange [] writeback;
+#      __gnuplot_set__ yrange [] writeback;
+#      __gnuplot_set__ zrange [] writeback;
       ## XXX FIXME XXX if writeback were set in plot, no need to replot here.
 #      replot; 
-#      gset noautoscale x;
-#      gset noautoscale y;
-#      gset noautoscale z;
+#      __gnuplot_set__ noautoscale x;
+#      __gnuplot_set__ noautoscale y;
+#      __gnuplot_set__ noautoscale z;
       warning("Not implemented in Grace");
     elseif (strcmp (ax, "tight"))
       ## XXX FIXME XXX if tight, plot must set ranges to limits of the
       ## all the data on the current plot, even if from a previous call.
       ## Instead, just let gnuplot do as it likes.
-#      gset autoscale;
+#      __gnuplot_set__ autoscale;
       warning("Not implemented in Grace");
 
       ## tic marks
     elseif (strcmp (ax, "on"))
-#      gset xtics;
-#      gset ytics;
-#      gset ztics;
-#      gset format;
+#      __gnuplot_set__ xtics;
+#      __gnuplot_set__ ytics;
+#      __gnuplot_set__ ztics;
+#      __gnuplot_set__ format;
       warning("Not implemented in Grace");
     elseif (strcmp (ax, "off"))
-#      gset noxtics;
-#      gset noytics;
-#      gset noztics;
+#      __gnuplot_set__ noxtics;
+#      __gnuplot_set__ noytics;
+#      __gnuplot_set__ noztics;
       warning("Not implemented in Grace");
     elseif (strcmp (ax, "tic"))
-#      gset xtics;
-#      gset ytics;
-#      gset ztics;
+#      __gnuplot_set__ xtics;
+#      __gnuplot_set__ ytics;
+#      __gnuplot_set__ ztics;
       warning("Not implemented in Grace");
     elseif (len > 3 && strcmp (ax(1:3), "tic"))
 #       if (any (ax == "x"))
-# 	gset xtics;
+# 	__gnuplot_set__ xtics;
 #       else
-# 	gset noxtics;
+# 	__gnuplot_set__ noxtics;
 #       endif
 #       if (any (ax == "y"))
-# 	gset ytics;
+# 	__gnuplot_set__ ytics;
 #       else
-# 	gset noytics;
+# 	__gnuplot_set__ noytics;
 #       endif
 #       if (any (ax == "z"))
-# 	gset ztics;
+# 	__gnuplot_set__ ztics;
 #       else
-# 	gset noztics;
+# 	__gnuplot_set__ noztics;
 #       endif
       warning("Not implemented in Grace");
 
     elseif (strcmp (ax, "label"))
-#      gset format;
+#      __gnuplot_set__ format;
       warning("Not implemented in Grace");
     elseif (strcmp (ax, "nolabel"))
-#      gset format "\\0";
+#      __gnuplot_set__ format "\\0";
       warning("Not implemented in Grace");
     elseif (len > 5 && strcmp (ax(1:5), "label"))
 #       if (any (ax == "x"))
-# 	gset format x;
+# 	__gnuplot_set__ format x;
 #       else
-# 	gset format x "\\0";
+# 	__gnuplot_set__ format x "\\0";
 #       endif
 #       if (any (ax == "y"))
-# 	gset format y;
+# 	__gnuplot_set__ format y;
 #       else
-# 	gset format y "\\0";
+# 	__gnuplot_set__ format y "\\0";
 #       endif
 #       if (any (ax == "z"))
-# 	gset format z;
+# 	__gnuplot_set__ format z;
 #       else
-# 	gset format z "\\0";
+# 	__gnuplot_set__ format z "\\0";
 #       endif
       warning("Not implemented in Grace");
     else
@@ -272,7 +272,7 @@ function curr_axis = axis (ax, varargin)
     endif
 
 #    if (len > 5)
-#      eval (sprintf ("gset zrange [%g:%g];", ax(5), ax(6)));
+#      eval (sprintf ("__gnuplot_set__ zrange [%g:%g];", ax(5), ax(6)));
 #    endif
 
   else

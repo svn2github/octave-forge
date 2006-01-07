@@ -81,7 +81,7 @@ e= size(ELEM,2);        %ELEMents
 
 if dotheplot
 % octave commands, we use eval so it doesn't fail in Matlab
-   eval('gset nokey;','1');
+   eval('__gnuplot_set__ nokey;','1');
    fleche= [1.02 0;1.06 .05;1.06 .02;1.1 .02; ...
 	  1.1 -.02; 1.06 -.02;1.06 -.05;1.02 0];
    jjj= .95;
@@ -191,6 +191,9 @@ fprintf('Your machine is %f faster than a 486dx100!\n',  ...
 %    11 Nov 00: Your machine is 16.501822 faster than a 486dx100!
 %
 % $Log$
+% Revision 1.3  2006/01/07 05:23:28  adb014
+% remove all references to gset, gshow, graw, gsplot and replace with __gnuplot_* versions
+%
 % Revision 1.2  2003/09/12 14:22:42  adb014
 % Changes to allow use with latest CVS of octave (do_fortran_indexing, etc)
 %

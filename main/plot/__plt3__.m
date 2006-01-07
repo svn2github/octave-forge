@@ -19,7 +19,7 @@
 
 ## Author: Paul Kienzle <kienzle.powernet.co.uk>
 ## 2001-04-06 Paul Kienzle <kienzle.powernet.co.uk>
-##     * gset nohidden3d; vector X,Y, matrix Z => meshgrid(X,Y)
+##     * __gnuplot_set__ nohidden3d; vector X,Y, matrix Z => meshgrid(X,Y)
 
 ## Modified to use new gnuplot interface in octave > 2.9.0
 ## Dmitri A. Sergatskov <dasergatskov@gmail.com>

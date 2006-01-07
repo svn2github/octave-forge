@@ -104,22 +104,22 @@ function legend (varargin)
     switch _str
       case {"off", "hide"}
         __grcmd__("legend off");
-#        gset nokey;
+#        __gnuplot_set__ nokey;
       case "show"
         __grcmd__("legend on");        
-#	gset key;
+#	__gnuplot_set__ key;
       case "boxon"
         __grcmd__("legend box on");          
-#	gset key box;
+#	__gnuplot_set__ key box;
       case "boxoff"
         __grcmd__("legend box off");            
-#	gset key nobox;
+#	__gnuplot_set__ key nobox;
       case "left"
         __grcmd__("legend 0.15,0.85");            
-#        gset key Right noreverse;
+#        __gnuplot_set__ key Right noreverse;
       case "right"
         __grcmd__("legend 0.7,0.85");              
-#        gset key Left reverse;
+#        __gnuplot_set__ key Left reverse;
       otherwise
 	_replot = 0;
     endswitch
@@ -164,25 +164,25 @@ function legend (varargin)
     switch (pos_leg)
       case 1
         __grcmd__("legend 0.7,0.85");
-#        gset key right top;
+#        __gnuplot_set__ key right top;
       case 2
         __grcmd__("legend 0.15,0.85");
-#        gset key left top;
+#        __gnuplot_set__ key left top;
       case 3
         __grcmd__("legend 0.15,0.20");              
-#        gset key left bottom;
+#        __gnuplot_set__ key left bottom;
       case 4
         __grcmd__("legend 0.7,0.20");              
-#        gset key right bottom;
+#        __gnuplot_set__ key right bottom;
       case -1
         __grcmd__("legend 0.7,0.95");              	
-#        gset key right top outside;
+#        __gnuplot_set__ key right top outside;
       case -2
         __grcmd__("legend 0.7,0.10");              	
-#        gset key right bottom outside;
+#        __gnuplot_set__ key right bottom outside;
       case -3
         __grcmd__("legend 0.15,0.10");              	
-#        gset key below;
+#        __gnuplot_set__ key below;
       otherwise
         warning ("incorrect pos");
     endswitch;

@@ -28,10 +28,10 @@
 ## tics.  If # is '-', then the current number of minor tics is
 ## preserved and grid lines are turned on between them.
 ##
-## Use "gset mxtics #" to control the number of minor tics directly.
+## Use "__gnuplot_set__ mxtics #" to control the number of minor tics directly.
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
+##           bar, stairs, __gnuplot_plot__, __gnuplot_splot__, replot, xlabel, ylabel, title
 
 ## Author: John W. Eaton
 ## 2001-04-02  Laurent Mazet <mazet@crm.mot.com>

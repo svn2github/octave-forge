@@ -214,7 +214,7 @@ function y = modmap(varargin)
 	xlabel("");
 	ylabel("");
 	title("");
-	gset autoscale;
+	__gnuplot_set__ autoscale;
 	hold off;
         automatic_replot = ar;
       end_unwind_protect
@@ -253,7 +253,7 @@ function y = modmap(varargin)
 	xlabel("");
 	ylabel("");
 	title("");
-	gset autoscale;
+	__gnuplot_set__ autoscale;
 	hold off;
         automatic_replot = ar;
       end_unwind_protect
@@ -325,10 +325,10 @@ function y = modmap(varargin)
 	xlabel("In-phase");
 	ylabel("Quadrature");
 	axis([min(inphase)-1, max(inphase)+1, min(quadr)-1, max(quadr)+1]);
-	gset nokey;
+	__gnuplot_set__ nokey;
 	hold off;
 	yy = [inphase, quadr];
-	eval("gplot yy w p 1;");
+	eval("__gnuplot_plot__ yy w p 1;");
 	hold on;
 	xd = 0.02 * max(inphase);
 	if (nargin == 2)
@@ -346,7 +346,7 @@ function y = modmap(varargin)
 	xlabel("");
 	ylabel("");
 	title("");
-	gset autoscale;
+	__gnuplot_set__ autoscale;
 	hold off;
 	text();
         automatic_replot = ar;

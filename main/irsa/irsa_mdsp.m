@@ -71,11 +71,11 @@ endfunction
 %! mdxp = irsa_mdsp( .2 , .8, N, "randn" );
 %! o = ones(N,1);
 %! ## Plot 
-%! gset nokey
-%! ## gset xrange [-0.5:19.5]
-%! gset yrange [0:1.5]
-%! # gset xtics 2
-%! gset noytics
+%! __gnuplot_set__ nokey
+%! ## __gnuplot_set__ xrange [-0.5:19.5]
+%! __gnuplot_set__ yrange [0:1.5]
+%! # __gnuplot_set__ xtics 2
+%! __gnuplot_set__ noytics
 %! subplot( 211 );
 %! title( "Irregular Minimum Distance Sampling versus regular (equidistant) sampling" );
 %! text( 5,1.25, 'regular sampling with distance = 1' );
@@ -86,10 +86,10 @@ endfunction
 %! plot( mdxp, o, '^1', mdxp, o, '@x1' ); text; 
 %! oneplot();
 %! ## Clean up gnuplot
-%! gset key
-%! gset autoscale
-%! gset xtics autofreq
-%! gset ytics autofreq
+%! __gnuplot_set__ key
+%! __gnuplot_set__ autoscale
+%! __gnuplot_set__ xtics autofreq
+%! __gnuplot_set__ ytics autofreq
 %! xlabel("");
 
 ### Local Variables:

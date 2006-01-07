@@ -36,7 +36,7 @@ function [fxps, fyps] = irsa_plotdft (fxp, fyp)
   if( nargout > 0 )		# Exit function
     return;
   else				# Plot
-    gset nokey;
+    __gnuplot_set__ nokey;
     title( "Spectrum represented in amplitudes and phases" );
     subplot(2,1,1);
     ylabel( "Amplitude" )
@@ -44,12 +44,12 @@ function [fxps, fyps] = irsa_plotdft (fxp, fyp)
     subplot(2,1,2);
     xlabel( "Frequency" );
     ylabel( "Phase [rad/(2*pi)]" );
-    ## gset yrange [-0.5:0.5];
-    gset ytics 0.25
+    ## __gnuplot_set__ yrange [-0.5:0.5];
+    __gnuplot_set__ ytics 0.25
     plot( fxps, arg( fyps )/(2*pi) );
     ## Clean up gnuplot
     oneplot(); title(""); xlabel(""); ylabel("");
-    gset ytics autofreq; gset key; gset autoscale; gset nogrid;
+    __gnuplot_set__ ytics autofreq; __gnuplot_set__ key; __gnuplot_set__ autoscale; __gnuplot_set__ nogrid;
   endif
 
 endfunction

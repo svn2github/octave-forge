@@ -78,7 +78,7 @@ endfunction
 %! eqfyp = irsa_dft( eqxp, yp, eqfxp ); 
 %! [eqfxp,idx] = sort( eqfxp ); eqfyp = eqfyp(idx);
 %! ## Plot 
-%! gset yrange [0:1.2]; gset xrange [-2.5:2.5] gset nokey
+%! __gnuplot_set__ yrange [0:1.2]; __gnuplot_set__ xrange [-2.5:2.5] __gnuplot_set__ nokey
 %! subplot( 211 )
 %! title( "|DFT| of regular timeseries of ones (with spacing 1 and therefore a Nyquist frequency of 0.5)" );
 %! text( -1.5, 1.1, "The usual comb" );
@@ -94,7 +94,7 @@ endfunction
 %! plot( mdfxp, abs(mdfyp)/N, '-1' ); text();
 %! oneplot(); 
 %! ## Clean 
-%! gset autoscale; gset key
+%! __gnuplot_set__ autoscale; __gnuplot_set__ key
 %! xlabel(""); title("");
 
 ### Local Variables:

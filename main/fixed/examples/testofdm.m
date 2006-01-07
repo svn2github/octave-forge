@@ -156,58 +156,58 @@ endfor
 
 figure(1);
 hold off;
-gset xlabel "Backoff (dB)";
-gset ylabel "SNR (dB)";
-gset yrange [0:50];
+__gnuplot_set__ xlabel "Backoff (dB)";
+__gnuplot_set__ ylabel "SNR (dB)";
+__gnuplot_set__ yrange [0:50];
 dat =[0, 10; -10, -10]';
 for i=1:length(Nbits)
   tit = sprintf("Rep: %d+1", Nbits(i));
-  eval(["gplot dat title '" tit "' with linespoints " num2str(i) ";"]);
+  eval(["__gnuplot_plot__ dat title '" tit "' with linespoints " num2str(i) ";"]);
   hold on;
 endfor
 for i=1:length(Nbits)
   dat = [Backoffs', SNR(:,i)];
-  eval(["gplot dat title '' with lines " num2str(i) ";"]);
+  eval(["__gnuplot_plot__ dat title '' with lines " num2str(i) ";"]);
 endfor
 for i=1:length(Nbits)
   dat = [Backoffs'(idxbac), SNR(idxbac,i)];
-  eval(["gplot dat title '' with points " num2str(i) ";"]);
+  eval(["__gnuplot_plot__ dat title '' with points " num2str(i) ";"]);
 endfor
 
-gset term postscript eps mono 'Times-Roman' 18;
-gset output "ofdm_snr.ps"
+__gnuplot_set__ term postscript eps mono 'Times-Roman' 18;
+__gnuplot_set__ output "ofdm_snr.ps"
 replot
-gset term x11
-gset output
+__gnuplot_set__ term x11
+__gnuplot_set__ output
 
 figure(2);
 hold off;
-gset xlabel "Backoff (dB)";
-gset ylabel "BER";
-gset yrange [1e-6:1];
-gset logscale y
-gset key 10.0,0.5
+__gnuplot_set__ xlabel "Backoff (dB)";
+__gnuplot_set__ ylabel "BER";
+__gnuplot_set__ yrange [1e-6:1];
+__gnuplot_set__ logscale y
+__gnuplot_set__ key 10.0,0.5
 dat =[5, 10; 10, 10]';
 for i=1:length(Nbits)
   tit = sprintf("Rep: %d+1", Nbits(i));
-  eval(["gplot dat title '" tit "' with linespoints " num2str(i) ";"]);
+  eval(["__gnuplot_plot__ dat title '" tit "' with linespoints " num2str(i) ";"]);
   hold on;
 endfor
 for i=1:length(Nbits)
   dat = [Backoffs', BER(:,i)];
-  eval(["gplot dat title '' with lines " num2str(i) ";"]);
+  eval(["__gnuplot_plot__ dat title '' with lines " num2str(i) ";"]);
 endfor
 
 for i=1:length(Nbits)
   dat = [Backoffs'(idxbac), BER(idxbac,i)];
-  eval(["gplot dat title '' with points " num2str(i) ";"]);
+  eval(["__gnuplot_plot__ dat title '' with points " num2str(i) ";"]);
 endfor
 
-gset term postscript eps mono 'Times-Roman' 18;
-gset output "ofdm_ber.ps"
+__gnuplot_set__ term postscript eps mono 'Times-Roman' 18;
+__gnuplot_set__ output "ofdm_ber.ps"
 replot
-gset nologscale y
-gset term x11
-gset output
-gset key
+__gnuplot_set__ nologscale y
+__gnuplot_set__ term x11
+__gnuplot_set__ output
+__gnuplot_set__ key
 

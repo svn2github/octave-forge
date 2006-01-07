@@ -220,7 +220,7 @@ function print(varargin)
 	  || strcmp(dev, "psc")  || strcmp(dev, "psc2") )
       ## Various postscript options
 
-#       gset term postscript;
+#       __gnuplot_set__ term postscript;
 #       terminal_default = gget ("terminal");
       
 #       if dev(1) == "e"
@@ -251,7 +251,7 @@ function print(varargin)
 # 	options = [ options, " ", fontsize ];
 #       endif
 
-#       eval (sprintf ("gset term postscript %s;", options));
+#       eval (sprintf ("__gnuplot_set__ term postscript %s;", options));
 
       grdevname = "PostScript";
       __grcmd__(sprintf("hardcopy device \"%s\"", grdevname));
@@ -279,7 +279,7 @@ function print(varargin)
 
 #     elseif strcmp(dev, "aifm") || strcmp(dev, "corel")
 #       ## Adobe Illustrator, CorelDraw
-#       eval(sprintf ("gset term %s;", dev));
+#       eval(sprintf ("__gnuplot_set__ term %s;", dev));
 #       terminal_default = gget ("terminal");
 #       if (use_color >= 0)
 # 	options = " color";
@@ -293,11 +293,11 @@ function print(varargin)
 # 	options = [ options, " ", fontsize ];
 #       endif
 
-#       eval (sprintf ("gset term %s %s;", dev, options));
+#       eval (sprintf ("__gnuplot_set__ term %s %s;", dev, options));
 
 #     elseif strcmp(dev, "fig")
 #       ## XFig
-#       gset term fig;
+#       __gnuplot_set__ term fig;
 #       terminal_default = gget ("terminal");
 #       options = orientation;
 #       if (use_color >= 0)
@@ -308,15 +308,15 @@ function print(varargin)
 #       if !isempty(fontsize)
 # 	options = [ options, " fontsize ", fontsize ];
 #       endif
-#       eval (sprintf ("gset term fig %s;", options));
+#       eval (sprintf ("__gnuplot_set__ term fig %s;", options));
 
     elseif strcmp(dev, "png")
       ## Portable network graphics      
 
 #       if (use_color >= 0)
-#       	eval (sprintf ("gset terminal png medium;"));
+#       	eval (sprintf ("__gnuplot_set__ terminal png medium;"));
 #       else
-#         eval (sprintf ("gset terminal png medium;"));
+#         eval (sprintf ("__gnuplot_set__ terminal png medium;"));
 #       endif      
 
       grdevname = "PNG";
@@ -324,17 +324,17 @@ function print(varargin)
 
 #     elseif strcmp(dev, "pbm")
 #       ## PBMplus
-#       eval(sprintf ("gset term %s;", dev));
+#       eval(sprintf ("__gnuplot_set__ term %s;", dev));
 #       terminal_default = gget ("terminal");
 #       if (use_color >= 0)
-#       	eval (sprintf ("gset term %s color medium;", dev));
+#       	eval (sprintf ("__gnuplot_set__ term %s color medium;", dev));
 #       else
-#         eval (sprintf ("gset term %s mono medium;", dev));
+#         eval (sprintf ("__gnuplot_set__ term %s mono medium;", dev));
 #       endif
 
 #     elseif strcmp(dev,"dxf") || strcmp(dev,"mf") || strcmp(dev, "hpgl")
 #       ## AutoCad DXF, METAFONT, HPGL
-#       eval (sprintf ("gset terminal %s;", dev));
+#       eval (sprintf ("__gnuplot_set__ terminal %s;", dev));
 
     elseif strcmp(dev, "svg")
       grdevname = "SVG";
@@ -375,7 +375,7 @@ function print(varargin)
 
     endif;
     
-#    eval (sprintf ("gset output \"%s\";", name));
+#    eval (sprintf ("__gnuplot_set__ output \"%s\";", name));
 #    replot;
 
     __grcmd__(sprintf("print to \"%s\"; print", name));
@@ -384,15 +384,15 @@ function print(varargin)
 
     ## Restore init state
 #     if ! isempty (terminal_default)
-#       #      eval (sprintf ("gset terminal %s;", terminal_default));
+#       #      eval (sprintf ("__gnuplot_set__ terminal %s;", terminal_default));
 #       duh = sprintf("set terminal %s\n", terminal_default);
-#       graw(duh);
+#       __gnuplot_raw__(duh);
 #     endif
-#     eval (sprintf ("gset terminal %s;", origterm));
+#     eval (sprintf ("__gnuplot_set__ terminal %s;", origterm));
 #     if isempty (origout)
-#       gset output;
+#       __gnuplot_set__ output;
 #     else
-#       eval (sprintf ("gset output \"%s\";", origout));
+#       eval (sprintf ("__gnuplot_set__ output \"%s\";", origout));
 #     end
 #     replot;
     

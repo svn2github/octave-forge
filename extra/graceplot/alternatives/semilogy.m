@@ -24,7 +24,7 @@
 ## that @code{semilogy} will accept.
 ## @end deftypefn
 ## @seealso{plot, semilogx, loglog, polar, mesh, contour, bar, stairs,
-## gplot, gsplot, replot, xlabel, ylabel, and title}
+## __gnuplot_plot__, __gnuplot_splot__, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

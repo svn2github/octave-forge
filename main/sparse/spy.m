@@ -16,9 +16,9 @@ else
    [i,j,s,m,n]= spfind(S);
 endif
 
-eval(sprintf('gset nokey'))
-eval(sprintf('gset yrange [0:%d] reverse',m+1))
-eval(sprintf('gset xrange [0:%d] noreverse',n+1))
+eval(sprintf('__gnuplot_set__ nokey'))
+eval(sprintf('__gnuplot_set__ yrange [0:%d] reverse',m+1))
+eval(sprintf('__gnuplot_set__ xrange [0:%d] noreverse',n+1))
 
 
 if (length(i)<1000)
@@ -28,11 +28,14 @@ else
 endif
 
 #TODO: we should sore the reverse state so we don't undo it
-gset yrange [0:1] noreverse
+__gnuplot_set__ yrange [0:1] noreverse
 axis;
 
 #
 # $Log$
+# Revision 1.4  2006/01/07 05:23:28  adb014
+# remove all references to gset, gshow, graw, gsplot and replace with __gnuplot_* versions
+#
 # Revision 1.3  2002/08/02 17:35:57  pkienzle
 # Make xy range a little bit bigger so that points don't fall right on the
 # boundary (thanks to Victor Eijkhout <eijkhout@cs.utk.edu> for the patch)

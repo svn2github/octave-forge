@@ -29,10 +29,10 @@
 ##
 ## The underlying gnuplot command is much richer than what we provide
 ## through quiver.  With four column data M=[x,y,u,v], you can plot
-## a vector field using 'gplot M with vector ...'. 
+## a vector field using '__gnuplot_plot__ M with vector ...'. 
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
+##           bar, stairs, __gnuplot_plot__, __gnuplot_splot__, replot, xlabel, ylabel, title
 
 ## Author: Roberto A. F. Almeida <roberto@calvin.ocfis.furg.br>
 ## Rewrite: Paul Kienzle <pkienzle@users.sf.net>

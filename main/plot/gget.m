@@ -15,7 +15,7 @@
 ## returns gnuplot's setting of option.
 ##
 ## COMMENT: would be much better to have the result directly from gnuplot,
-##          but show/gshow deliver a human readable format, which cannot
+##          but show/__gnuplot_show__ deliver a human readable format, which cannot
 ##          be read by a machine clearly
 ##
 ## Does not properly handle options which are repeated.

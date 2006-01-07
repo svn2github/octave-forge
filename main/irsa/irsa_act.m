@@ -113,7 +113,7 @@ endfunction
 %! xplong = linspace( 0, N-(1/ofac), N*ofac )'*Tmean + xp1;
 %! yplong = irsa_idft( fxp, fyp, xplong, true )*ofac;
 %! titlestr = sprintf( "Jittered sampling of a band-limited signal (fmax=%g) with mean spacing %g and jitter %g ", fmax, Tmean, jit );
-%! title( titlestr ); xlabel( "time" ); ylabel( "value" ); gset nokey;
+%! title( titlestr ); xlabel( "time" ); ylabel( "value" ); __gnuplot_set__ nokey;
 %! plot( xplong, yplong,'-1', xp, yp, '^3', xp, yp, '@*3' ); title("");
 %! [rxp,ryp] = irsa_act( xp, yp, fmax, N );
 %! input( "Press Enter to see the reconstruction" );

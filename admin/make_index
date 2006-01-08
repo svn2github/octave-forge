@@ -91,7 +91,7 @@ my @m_files = ();
 my @C_files = ();
 find(\&cc_and_m_files, "$OCTAVE/scripts") if $include_octave; 
 find(\&cc_and_m_files, "$OCTAVE/src") if $include_octave; 
-                                 # or just use $OCTAVE/{src,scripts}/DOCSTRINGS ....
+        # or just use $OCTAVE/{src,scripts}/DOCSTRINGS ....
 find(\&cc_and_m_files, ".");
 sub cc_and_m_files { # {{{1 populates global array @files
     return unless -f and /\.(m|cc|l|y)$/;  # .m and .cc files (lex & yacc too!)
@@ -237,7 +237,7 @@ foreach my $f ( @C_files ) {
 #	    print " description: $desc";
 
 	    # register the function with a brief description
-	    register_function($function,$desc,$f,1);
+	    register_function($function,$desc,$f,0);
 	}
 	close (IN);
     } else {
@@ -250,30 +250,25 @@ foreach my $f ( @m_files ) {
     my $desc     = extract_description($f);
     my $function = basename($f, ('.m'));
     die "Null function?? [$f]\n" unless $function;
-    register_function($function,$desc,$f,1);
+    register_function($function,$desc,$f,0);
 }
 
 # grab help from octave's DOCSTRINGS
 if ( !$include_octave ) {
   # skip DOCSTRINGS if just summary
 }
-elsif (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
-    $_ = <IN>;
-    while (/^\c_/) {
-	my $function = $_;
-	$function =~ s/^\c_//;
-	$function =~ s/\n$//;
-	my $desc = "";
-	while (<IN>) {
-	    last if /^\c_/;
-	    $desc .= $_;
-	}
-	register_function($function,$desc,$OCTAVE,0);
-    }
-    close(IN);
-}
 else {
+
+  if (open (IN,"$OCTAVE/src/DOCSTRINGS")) {
+    process_docstrings();
+  } else {
     print STDERR "could not open $OCTAVE/src/DOCSTRINGS !\n";
+  }
+  if (open (IN,"$OCTAVE/scripts/DOCSTRINGS")) {
+    process_docstrings();
+  } else {
+    print STDERR "could not open $OCTAVE/scripts/DOCSTRINGS !\n";
+  }
 }
 
 # Desperate last measure. Try help <func> within octave. Good for getting
@@ -353,6 +348,24 @@ if (@shadowed) {
     print "  ", sort(@shadowed); $, = $rs;
     print "\n";
 #    print wrap("\t", "\t", join(" ", sort @shadowed)), "\n";
+}
+
+sub process_docstrings {
+  my $function = "";
+  my $desc = "";
+  while (<IN>) {
+    if (/^\037/) {
+	register_function($function,$desc,$OCTAVE,1) unless $function eq "";
+	$function = $_;
+	$function =~ s/^\037//;
+	$function =~ s/\n$//;
+        $desc = "";
+    } else {
+      $desc .= $_;
+    }
+  }
+  register_function($function,$desc,$OCTAVE,1) unless $function eq "";
+  close(IN);
 }
 
 sub first_sentence { # {{{1
@@ -487,9 +500,9 @@ sub register_function { # {{{1
     ++$n_appearances{$function};
     if ($n_appearances{$function} > 1) {
       if ($replace_shadow != 0) {
-	push @shadowed, $function_description{$function}[0] if $file =~ /^$OCTAVE/ 
+	push @shadowed, "$file:$function" if $file =~ /^$OCTAVE/ 
 	  and !shadow_path($function_description{$function}[0]);
-	#        print "$file:$function appeared previously\n";
+	        # print "$file:$function appeared previously\n";
       }
     } else {
         ++$n_functions;

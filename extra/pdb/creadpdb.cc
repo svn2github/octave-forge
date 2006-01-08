@@ -18,6 +18,8 @@
 #include <octave/oct-map.h>
 #include <octave/ov-str-mat.h>
 #include <sys/mman.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <fcntl.h>
 
 #define BUFLEN 80

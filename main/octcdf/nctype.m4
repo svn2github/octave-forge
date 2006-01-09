@@ -1,4 +1,4 @@
-changecom(`/*', `*/')
+changecom(`/*', `*/')dnl 
 ## Copyright (C) 2005 Alexander Barth
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -34,7 +34,7 @@ changecom(`/*', `*/')
 ## @end deftypefn
 ## @seealso{netcdf}
 
-## Author: Alexander Barth (abarth@marine.usf.edu)
+## Author: Alexander Barth <abarth@marine.usf.edu>
 
 function c = nc`'TYPE`'(varargin);
 

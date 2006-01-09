@@ -230,6 +230,19 @@ octave_value octave_ncatt::subsref(const std::string SUBSREF_STRREF type,
 #   endif
   }
 
+void octave_ncatt::rename(string new_name) {
+  int status;
+    
+  status = nc_rename_att(get_ncid(),get_varid(),get_name().c_str(), new_name.c_str()); 
+
+  if (status != NC_NOERR) {
+    error("Error while renaming attribute %s: %s", get_name().c_str(),
+	  nc_strerror(status));
+    return;
+  }
+
+  set_name(new_name);
+}
 
 
 DEFINE_OCTAVE_ALLOCATOR(octave_ncatt);

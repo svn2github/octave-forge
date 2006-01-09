@@ -52,6 +52,8 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, std::string varnamep) :octave
 # endif
 
   read_info();
+
+  autoscale() = false;
 }
 
 
@@ -68,6 +70,8 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, int varidp):octave_base_value
 # endif
 
   read_info();
+
+  autoscale() = false;
 }
 
 // load charecteristics of netcdf variable from file
@@ -130,6 +134,7 @@ void octave_ncvar::read_info() {
 octave_value octave_ncvar::subsasgn(const std::string & type,
 			       const LIST < octave_value_list > &idx,
 			       const octave_value & rhs) {
+  octave_value scale_factor, add_offset, scaledrhs;
   octave_value retval;
 
   switch (type[0])
@@ -167,11 +172,32 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 	octave_stdout << "putting var " << std::endl;
 #       endif
 
+        scaledrhs = rhs;
+
+	// autoscale the retrieved variable if necessary
+	// the variables attributes "scale_factor" and "add_offset" are
+	// used for the linear scale if present.
+
+	if (autoscale()) {
+	  add_offset = ov_nc_get_att(get_ncid(),get_varid(),"add_offset");
+
+	  if (!add_offset.is_empty()) {
+	    scaledrhs = scaledrhs - add_offset;
+	  }
+
+	  scale_factor = ov_nc_get_att(get_ncid(),get_varid(),"scale_factor");
+ 
+	  if (!scale_factor.is_empty()) {
+	    scaledrhs = scaledrhs / scale_factor;
+	  }
+	}
+
+
 	get_ncfile()->set_mode(DataMode);
 	octave_value_list key_idx = *idx.begin();
 	std::list<Range> ranges = get_slice(key_idx);
 
-	ov_nc_put_vars(get_ncid(),get_varid(),ranges,get_nctype(),rhs);
+	ov_nc_put_vars(get_ncid(),get_varid(),ranges,get_nctype(),scaledrhs);
 
 	retval = rhs;
 	break;
@@ -200,6 +226,7 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
 			      const LIST < octave_value_list > &idx)
 {
+  octave_value scale_factor, add_offset;
   octave_value retval;
 
 
@@ -226,6 +253,23 @@ octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
 	std::list<Range> ranges = get_slice(key_idx);
 
 	retval = ov_nc_get_vars(get_ncid(),get_varid(),ranges,get_nctype());
+
+	// autoscale the retrieved variable if necessary
+	// the variables attributes "scale_factor" and "add_offset" are
+	// used for the linear scale if present.
+
+	if (autoscale()) {
+	  scale_factor = ov_nc_get_att(get_ncid(),get_varid(),"scale_factor");
+ 
+	  if (!scale_factor.is_empty()) {
+	    retval = retval * scale_factor;
+	  }
+
+	  add_offset = ov_nc_get_att(get_ncid(),get_varid(),"add_offset");
+	  if (!add_offset.is_empty()) {
+	    retval = retval + add_offset;
+	  }
+	}
 
 	break;
       }
@@ -326,6 +370,21 @@ std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
   return ranges;
 }
 
+
+
+void octave_ncvar::rename(string new_name) {
+  int status;
+    
+  status = nc_rename_var(get_ncid(),get_varid(), new_name.c_str()); 
+
+  if (status != NC_NOERR) {
+    error("Error while renaming variable %s: %s", get_varname().c_str(),
+	  nc_strerror(status));
+    return;
+  }
+
+  set_varname(new_name);
+}
 
 DEFINE_OCTAVE_ALLOCATOR(octave_ncvar);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_ncvar, "ncvar", "ncvar");

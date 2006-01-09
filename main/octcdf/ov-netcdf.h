@@ -1,6 +1,6 @@
 /*
   octcdf, a netcdf toolbox for octave 
-  Copyright (C) 2005 Alexander Barth
+  Copyright (C) 2005 Alexander Barth <abarth@marine.usf.edu>
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -69,6 +69,8 @@
 //#define OCTCDF_64BIT_OFFSET 
 
 //#define  OV_NETCDF_VERBOSE
+
+//#define OCTAVE_PERMVEC_ZEROBASED 
 
 using namespace std;
 

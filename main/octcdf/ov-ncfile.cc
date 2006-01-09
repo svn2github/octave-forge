@@ -136,7 +136,7 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
   octave_value retval;
 
 
-  check_args_string("octave_ncfile::subsasgn",idx.front());
+  //  check_args_string("octave_ncfile::subsasgn",idx.front());
 
   if (error_state)
     return octave_value();
@@ -254,6 +254,12 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 	}
 	else {
 	  octave_ncvar *var = new octave_ncvar(this,name);
+
+          if (idx.front().length() == 2) 
+	    if (idx.front()(1).is_scalar_type()) 
+              var->autoscale() = idx.front()(1).scalar_value() == 1;
+
+
             
 	  if (! error_state && idx.size () > 1)
 	    {
@@ -293,7 +299,7 @@ octave_value octave_ncfile::subsref(const std::string SUBSREF_STRREF type,
   size_t length;
   octave_value retval;
 
-  check_args_string("octave_ncfile::subsref",idx.front());
+  //  check_args_string("octave_ncfile::subsref",idx.front());
 
   if (error_state)
     return octave_value();
@@ -337,9 +343,15 @@ octave_value octave_ncfile::subsref(const std::string SUBSREF_STRREF type,
 #         ifdef OV_NETCDF_VERBOSE
 	octave_stdout << "getting variable " << name << std::endl;
 #         endif
-// 	status =
-// 	  nc_inq_varid(get_ncid(), name.c_str(), &varid);
+
 	octave_ncvar *var = new octave_ncvar(this, name);
+
+	// determine if the variable need to be scaled
+
+        if (idx.front().length() == 2) {
+            var->autoscale() = idx.front()(1).scalar_value() == 1;
+	}
+
 	retval = var;
 	break;
       }

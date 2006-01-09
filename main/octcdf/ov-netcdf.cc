@@ -358,26 +358,41 @@ Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes @var{na
 @seealso{ncvar,ncatt,ncdim}\n")
 {
 
-  if (args.length() != 1) {
-      print_usage("ncname");
-      return octave_value();
-    }
+  if (args.length() > 2) {
+    print_usage("ncname");
+    return octave_value();
+  }
 
   if (args(0).class_name() == "ncfile") {
     octave_ncfile& ncfile = (octave_ncfile&)args(0).get_rep();
-    return octave_value(ncfile.get_filename());
   }
+
   else if (args(0).class_name() == "ncvar") {
     octave_ncvar& ncvar = (octave_ncvar&)args(0).get_rep();
-    return octave_value(ncvar.get_varname());
+
+    if (args.length() == 1) 
+      return octave_value(ncvar.get_varname());
+    else
+      ncvar.rename(args(1).string_value());
   }
+
   else if (args(0).class_name() == "ncatt") {
     octave_ncatt& ncatt = (octave_ncatt&)args(0).get_rep();
-    return octave_value(ncatt.get_name());
+
+    if (args.length() == 1) 
+      return octave_value(ncatt.get_name());
+    else
+      ncatt.rename(args(1).string_value());
   }
+
   else if (args(0).class_name() == "ncdim") {
     octave_ncdim& ncdim = (octave_ncdim&)args(0).get_rep();
-    return octave_value(ncdim.get_name());
+
+    if (args.length() == 1) 
+      return octave_value(ncdim.get_name());
+    else
+      ncdim.rename(args(1).string_value());
+
   }
   else {
     error("Error argument should be an ncfile, ncvar, ncatt or ncdim");
@@ -575,7 +590,16 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
       count[i] = (*it).nelem();
       stride[i] = (long int) (*it).inc();
       sliced_dim_vector(i) =  count[i];
+
+      // in Octave 2.9.3 Array<T>::permute expect a zero-
+      // based permuation vector while Octave 2.1.71 seems to 
+      // be happy with a one-based permutation vector
+
+#     ifdef OCTAVE_PERMVEC_ZEROBASED      
+      perm_vector(i) = ndim-i-1;
+#     else
       perm_vector(i) = ndim-i;
+#     endif
 
       i=i+1;
     }
@@ -691,7 +715,16 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   Array<int> perm_vector(rhs.ndims());
 
   for(i=0; i<rhs.ndims(); i++) { 
-   perm_vector(i) = rhs.ndims()-i;
+    
+      // in Octave 2.9.3 Array<T>::permute expect a zero-
+      // based permuation vector while Octave 2.1.71 seems to 
+      // be happy with a one-based permutation vector
+
+#     ifdef OCTAVE_PERMVEC_ZEROBASED      
+      perm_vector(i) = rhs.ndims()-i-1;
+#     else
+      perm_vector(i) = rhs.ndims()-i;
+#     endif
   }
 
   sliced_numel = sliced_dim_vector.numel();

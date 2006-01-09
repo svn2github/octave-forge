@@ -1,6 +1,6 @@
 /*
   octcdf, a netcdf toolbox for octave 
-  Copyright (C) 2005 Alexander Barth
+  Copyright (C) 2005 Alexander Barth <abarth@marine.usf.edu>
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -33,6 +33,8 @@ typedef struct {
   int varid, natts;
   octave_ncfile* ncfile;
   std::string varname;
+  bool autoscale;
+
 }  ncvar_t ;
 
 class octave_ncvar:public octave_base_value {
@@ -88,6 +90,8 @@ public:
     return true;
   }
 
+  bool& autoscale() { return ncv->autoscale; };
+
   /* Query Interface for netcdf related information */
 
   std::list<Range> get_slice(octave_value_list key_idx);
@@ -109,6 +113,8 @@ public:
   void set_varname(const std::string& t) { ncv->varname = t; };
   void set_dimid(int i,int t) const { ncv->dimids[i] = t; };
   void set_dimnames(const std::list<std::string> t) { ncv->dimnames = t; };
+
+  void rename(string new_name);
 
   ncvar_t* ncv;
 

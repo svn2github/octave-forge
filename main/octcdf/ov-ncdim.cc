@@ -122,6 +122,20 @@ octave_value octave_ncdim::subsref(const std::string SUBSREF_STRREF type,
     os << "is_record = " << is_record() << endl;;
   }
 
+void octave_ncdim::rename(string new_name) {
+  int status;
+    
+  status = nc_rename_dim(get_ncid(),get_dimid(), new_name.c_str()); 
+
+  if (status != NC_NOERR) {
+    error("Error while renaming dimension %s: %s", get_name().c_str(),
+	  nc_strerror(status));
+    return;
+  }
+
+  set_name(new_name);
+}
+
 
 DEFINE_OCTAVE_ALLOCATOR(octave_ncdim);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_ncdim, "ncdim", "ncdim");

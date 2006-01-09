@@ -1,6 +1,6 @@
 /*
   octcdf, a netcdf toolbox for octave 
-  Copyright (C) 2005 Alexander Barth
+  Copyright (C) 2005 Alexander Barth <abarth@marine.usf.edu>
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -97,6 +97,7 @@ public:
   void set_length(const size_t& t)  { ncd->length = t; };
   void set_record(bool t){ ncd->is_record = t; };
 
+  void rename(string new_name);
 private:
   ncdim_t* ncd;
 

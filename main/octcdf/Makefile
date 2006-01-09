@@ -1,32 +1,42 @@
 
 sinclude ../../Makeconf
 
+# assumptions to make if not using ./configure script
+ifndef OCTAVE_FORGE
+	MKOCTFILE=mkoctfile
+	MKOCTLINK=ln -s
+
+	NETCDF_INC=/usr/include/netcdf-3
+	NETCDF_LIB=/usr/lib64/netcdf-3
+
+	HAVE_OCTAVE_21 = 1
+	OCTCDF_CFLAGS := $(CPPFLAGS) -I$(NETCDF_INC)
+	OCTCDF_LIBS := $(LDFLAGS) -L$(NETCDF_LIB) -lnetcdf
+	HAVE_NETCDF = yes
+	RM = rm -f
+endif
 
 NCTARGET = ov-netcdf.oct
 
 NCSOURCES = ov-netcdf.cc ov-ncfile.cc ov-ncvar.cc ov-ncatt.cc ov-ncdim.cc 
 OBJECTS = $(patsubst %.cc,%.o,$(NCSOURCES))
 
+ifdef HAVE_OCTAVE_21
+
+NCLINKTARGETS = ncclose.oct  \
+   ncredef.oct ncenddef.oct ncsync.oct ncvar.oct ncatt.oct ncdim.oct ncname.oct ncdatatype.oct netcdf.oct
+
+else
+
 NCLINKTARGETS = $(patsubst %,%$(OCTLINK), \
 	ncclose ncredef ncenddef ncsync ncvar ncatt \
 	ncdim ncname ncdatatype netcdf) 
 
+endif
+
 MFILES =  ncchar.m ncfloat.m nclong.m ncbyte.m ncdouble.m ncint.m ncshort.m 
 
 TARGETS = $(NCTARGET) $(NCLINKTARGETS)
-
-# assumptions to make if not using ./configure script
-ifndef OCTAVE_FORGE
-	MKOCTFILE=mkoctfile
-	MKOCTLINK=ln -s
-
-        NETCDF_INC=/usr/include/netcdf-3
-        NETCDF_LIB=/usr/lib64/netcdf-3
-
-        OCTCDF_CFLAGS := $(CPPFLAGS) -I$(NETCDF_INC)
-        OCTCDF_LIBS := $(LDFLAGS) -L$(NETCDF_LIB) -lnetcdf
-        RM = rm -f
-endif
 
 MOFLAGS = $(OCTCDF_CFLAGS)
 

@@ -1,6 +1,8 @@
 sinclude ../../Makeconf
 
-PROGS=regexp.oct
+t2.9.4=regexp.oct str2double.m strmatch.m strcmpi.m
+DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.4)))
+PROGS=$(DEPRECIATED_TARGETS)
 ifeq ($(HAVE_PCRE),yes)
   PROGS:=$(PROGS) pcregexp.oct
 endif
@@ -19,4 +21,7 @@ regexp.oct: regexp.cc
 pcregexp.oct: pcregexp.cc
 	$(MKOCTFILE) $< $(PCRE_OPTIONS)
 
-clean: ; -$(RM) *.o core octave-core *.oct *~
+clean: ; -$(RM) *.o core octave-core *.oct *~ $(t2.9.4)
+
+%.m : %.m.in
+	-$(INSTALL) $< $@

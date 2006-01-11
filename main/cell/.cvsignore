@@ -2,3 +2,4 @@
 PKG_ADD
 *.octlink
 *.oct
+cell2mat.m

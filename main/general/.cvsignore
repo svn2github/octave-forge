@@ -5,3 +5,6 @@ bitcmp.m
 bitget.m
 bitset.m
 bitshift.m
+isequal.m
+sortrows.m
+blkdiag.m

@@ -137,11 +137,11 @@ octave eval statements
 		octave eval "x=$y"
 
 	* list of numbers in data 
-		octave eval "x=sscanf($data,'%f',Inf)"
+		octave eval "x=sscanf('$data','%f',Inf)"
 	  The obvious alternative "x=\[ $data ]" is very slow.
 
 	* BLT vector data
-		octave eval "x=sscanf($data(:),'%f',Inf)"
+		octave eval "x=sscanf('$data(:)','%f',Inf)"
 
 	* matrix, e.g., as data read from a file
 		# get the first line from data (fails if there is none)
@@ -149,7 +149,7 @@ octave eval statements
 		# count the columns
 		set nc [regexp -all "\\S+" $line]
 		# convert the data
-		octave eval "x=sscanf($data,'%f',\[$nc,Inf])'"
+		octave eval "x=sscanf('$data','%f',\[$nc,Inf])'"
 
 	* string
 		octave eval "x='[string map { ' '' } $s]'"

@@ -80,9 +80,9 @@ can play with it using the following command:
 
    demo/matrix.tcl  ?host:port
 
-Read octave.doc for a description of the commands available.
+Read octave.txt for a description of the commands available.
 
-Read listen.doc from octave-forge/main/miscellaneous for a description
+Read listen.txt from octave-forge/main/miscellaneous for a description
 of the protocol.
 
 Paul Kienzle

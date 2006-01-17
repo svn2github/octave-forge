@@ -174,6 +174,10 @@ proc octave::close { f } {
     # Note that all sync threads are waiting on indices into $f, so
     # unsetting $f will trigger all the sync threads.
     unset $f
+
+    # if f was the active socket, then clear the active socket
+    variable active_socket
+    if { $f == $active_socket } { set active_socket {} }
 }
 
 # $ timeout ?t ?query

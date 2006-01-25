@@ -106,9 +106,9 @@ creates a new file but an existing data sets in the netcdf file cannot be overwr
     return octave_value();
 
 
-  octave_ncfile *b = new octave_ncfile(args(0).string_value(), args(1).string_value());
+  octave_ncfile *nc = new octave_ncfile(args(0).string_value(), args(1).string_value());
 
-  return octave_value(b);
+  return octave_value(nc);
 }
 
 
@@ -328,9 +328,10 @@ Creates a cell array of all dimenstion in a NetCDF file. The length of the NetCD
   else if (args(0).class_name() == "ncvar") {
     octave_ncvar& ncvar = (octave_ncvar&)args(0).get_rep();
 
-    Cell  vars = Cell (dim_vector(1,ncvar.ndims()));
+    //    Cell  vars = Cell (dim_vector(1,ncvar.ndims()));
+    Cell  vars = Cell (dim_vector(1,ncvar.ncdims().length() ));
 
-    for (int i=0; i<ncvar.ndims(); i++) {
+    for (int i=0; i < ncvar.ncdims().length(); i++) {
       octave_ncdim *d = new octave_ncdim(ncvar.get_ncfile(),ncvar.get_dimid(i));
       vars(i) = octave_value(d);
     }

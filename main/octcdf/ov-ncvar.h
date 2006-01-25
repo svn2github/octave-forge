@@ -29,7 +29,13 @@ typedef struct {
   //std::list <std::string> dimnames;
   nc_type nctype;
   int ncid;
+
+  // Octave-like dim_vector. A scale would have a dimension of 1x1
   dim_vector dimvec;
+
+  // NetCDF-like dim_vector. A scale would have a dimension of 0
+  dim_vector ncdimvec;
+
   int varid, natts;
   octave_ncfile* ncfile;
   std::string varname;
@@ -76,7 +82,11 @@ public:
 
   int numel() const  { return dims().numel(); }
 
+  // Get dim_vector following Octave conventions
   dim_vector dims() const {  return ncv->dimvec; }
+
+  // Get dim_vector following NetCDF conventions
+  dim_vector ncdims() const {  return ncv->ncdimvec; }
 
   void print(std::ostream & os, bool pr_as_read_syntax) const;
 

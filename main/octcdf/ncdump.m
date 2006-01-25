@@ -67,11 +67,17 @@ for i=1:length(nv)
   nd = ncdim(nv{i});
   n = length(nd);
   
-  for j=1:n-1
-    fprintf(fid,'''%s'',',ncname(nd{j}));
+  for j=1:n
+    % dimension name in quotes    
+    fprintf(fid,'''%s''',ncname(nd{j}));
+
+    % separator
+    if (j~=n)
+      fprintf(fid,',');
+    end    
   end
   
-  fprintf(fid,'''%s'');  %% %d elements \n',ncname(nd{n}),numel(nv{i}));
+  fprintf(fid,');  %% %d elements \n',numel(nv{i}));
 
   % print all attributes of the variable
   

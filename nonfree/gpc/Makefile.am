@@ -1,6 +1,6 @@
-## Makefile.am for OCtave-GPC
+## Makefile.am for Octave-GPC
 ##
-## Copyright (C) 2001, 2004  Rafael Laboissiere
+## Copyright (C) 2001, 2004, 2006  Rafael Laboissiere
 ##
 ## This file is part of Octave-GPC
 ##
@@ -60,7 +60,6 @@ gpc_create.oct: $(OBJFILES)
 %.oct: gpc_create.oct
 	ln -sf $< $@
 
-clean:
-	rm -f *.oct *.o *core
+CLEANFILES = *.oct *.o *core
 
 .PHONY: clean

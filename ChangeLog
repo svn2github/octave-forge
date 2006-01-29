@@ -1,4 +1,13 @@
 # Automatically generated file --- DO NOT EDIT
+2006-01-28 21:57  pkienzle
+
+	* RELEASE-NOTES: Update release date.
+
+2006-01-28 21:38  pkienzle
+
+	* ChangeLog, main/miscellaneous/OCTAVE_FORGE_VERSION.m: R2006-01-28
+	  release
+
 2006-01-26 10:38  rlaboiss
 
 	* nonfree/gpc/: ChangeLog, Makefile.am, configure.in: Release

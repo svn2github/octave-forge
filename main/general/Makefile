@@ -6,8 +6,8 @@ t2.1.58=bitand.oct $(BITAND_LINKS) $(BITFCNS_DOT_M)
 t2.9.0=isequal.m sortrows.m
 t2.9.4=blkdiag.m
 DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58))) \
-	$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.0)) \
-	$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.4))
+	$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.0))) \
+	$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.4)))
 PROGS=$(DEPRECIATED_TARGETS) command.oct deref.oct mark_for_deletion.oct
 
 all: $(PROGS)

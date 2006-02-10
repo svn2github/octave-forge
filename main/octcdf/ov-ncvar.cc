@@ -267,7 +267,7 @@ octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
 	octave_stdout << "getting var " << std::endl;
 #       endif
 	get_ncfile()->set_mode(DataMode);
-	octave_value_list key_idx = *idx.begin();
+	octave_value_list key_idx = idx.front();
 	std::list<Range> ranges = get_slice(key_idx);
 
 	retval = ov_nc_get_vars(get_ncid(),get_varid(),ranges,get_nctype());
@@ -353,21 +353,21 @@ std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
 
   std::list<Range> ranges;
   dim_vector dv;
-  dv.resize(ndims());
+  dv.resize(ncndims());
   int ip;
 
   // special case: if only one colone, then retrieve all data
 
   if (key_idx.length() == 1 && key_idx(0).is_magic_colon())
     {
-      for (int i = 0; i < ndims(); i++)
+      for (int i = 0; i < ncndims(); i++)
 	{
 	  ranges.push_back(Range(1. , (double)dims()(i), 1.));
 	}
     }
   else
     {
-      for (int i = 0; i < ndims(); i++)
+      for (int i = 0; i < ncndims(); i++)
 	{
 	  if (key_idx(i).is_range())  {
 	      ranges.push_back(key_idx(i).range_value());
@@ -376,10 +376,10 @@ std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
 	      ranges.push_back(Range(1. , (double)dims()(i)));
 	    }
 	  else if (key_idx(i).is_real_scalar())  {
-	      ranges.push_back(Range(key_idx(i).scalar_value(),key_idx(i).scalar_value()));
-	    }
+              ranges.push_back(Range(key_idx(i).scalar_value(),key_idx(i).scalar_value()));
+	  }
           else {
-	    error("unknown index specification");
+ 	    error("octcdf: unknown index specification: type %s",key_idx(i).type_name().c_str());
 	  }
 	}
     }

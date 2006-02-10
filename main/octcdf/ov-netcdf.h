@@ -70,7 +70,9 @@
 
 //#define  OV_NETCDF_VERBOSE
 
-//#define OCTAVE_PERMVEC_ZEROBASED 
+#ifndef HAVE_OCTAVE_21
+#define OCTAVE_PERMVEC_ZEROBASED 
+#endif
 
 using namespace std;
 

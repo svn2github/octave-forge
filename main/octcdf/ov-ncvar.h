@@ -78,15 +78,20 @@ public:
 
   /* Query Interface for octave */
 
+  // Get dim_vector following Octave conventions
+
+  dim_vector dims() const {  return ncv->dimvec; }
+
   int ndims() const  { return dims().length(); }
 
   int numel() const  { return dims().numel(); }
 
-  // Get dim_vector following Octave conventions
-  dim_vector dims() const {  return ncv->dimvec; }
-
   // Get dim_vector following NetCDF conventions
+
   dim_vector ncdims() const {  return ncv->ncdimvec; }
+
+  int ncndims() const  { return ncdims().length(); }
+
 
   void print(std::ostream & os, bool pr_as_read_syntax) const;
 

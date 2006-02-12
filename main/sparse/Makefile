@@ -130,7 +130,11 @@ ZLUSRC = $(S_SRC)/zgssv.o           $(S_SRC)/zgssvx.o \
 
 S_DOUBLE= $(DLUSRC) $(ALLAUX) $(DZLAUX) $(ZLUSRC)
 
-all: $(NAME).oct $(OBJLINKS) sptest.m 
+# Only build sparse if version is less than 2.9.4
+t2.9.4 = $(NAME).oct $(OBJLINKS) sptest.m 
+TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.4)))
+
+all: $(TARGETS)
 
 sptest.m: buildtests.sh
 	${SHELL} buildtests.sh preset

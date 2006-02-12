@@ -150,6 +150,19 @@ public:
   FixedNDArray min (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
   
   FixedNDArray abs (void) const;
+
+  FixedMatrix fixed_matrix_value (void) const;
+
+  FixedNDArray squeeze (void) const { return ArrayN<FixedPoint>::squeeze (); }
+
+  static void increment_index (Array<octave_idx_type>& ra_idx,
+			       const dim_vector& dimensions,
+			       octave_idx_type start_dimension = 0);
+
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
+			    const dim_vector& dimensions);
+
+  // friend FixedNDArray abs  (const FixedNDArray &x);
   friend FixedNDArray cos  (const FixedNDArray &x);
   friend FixedNDArray cosh  (const FixedNDArray &x);
   friend FixedNDArray sin  (const FixedNDArray &x);
@@ -173,23 +186,12 @@ public:
   friend FixedNDArray imag (const FixedNDArray& a);
   friend FixedNDArray conj (const FixedNDArray &x);
 
-    FixedMatrix fixed_matrix_value (void) const;
-
-  FixedNDArray squeeze (void) const { return ArrayN<FixedPoint>::squeeze (); }
-
-  static void increment_index (Array<octave_idx_type>& ra_idx,
-			       const dim_vector& dimensions,
-			       octave_idx_type start_dimension = 0);
-
-  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-			    const dim_vector& dimensions);
-
-  friend NDArray fixedpoint (const FixedNDArray& x) { return x.fixedpoint(); }
-  friend NDArray sign (const FixedNDArray& x) { return x.sign(); }
-  friend NDArray signbit (const FixedNDArray& x) { return x.signbit(); }
-  friend NDArray getdecsize (const FixedNDArray& x) { return x.getdecsize(); }
-  friend NDArray getintsize (const FixedNDArray& x) { return x.getintsize(); }
-  friend NDArray getnumber (const FixedNDArray& x) { return x.getnumber(); }
+  friend NDArray fixedpoint (const FixedNDArray& x);
+  friend NDArray sign (const FixedNDArray& x);
+  friend NDArray signbit (const FixedNDArray& x);
+  friend NDArray getdecsize (const FixedNDArray& x);
+  friend NDArray getintsize (const FixedNDArray& x);
+  friend NDArray getnumber (const FixedNDArray& x);
 
   // i/o
 
@@ -204,13 +206,47 @@ private:
   
 };
 
-extern FixedNDArray min (double d, const FixedNDArray& m);
-extern FixedNDArray min (const FixedNDArray& m, double d);
-extern FixedNDArray min (const FixedNDArray& a, const FixedNDArray& b);
+// FixedNDArray abs  (const FixedNDArray &x);
+FixedNDArray cos  (const FixedNDArray &x);
+FixedNDArray cosh  (const FixedNDArray &x);
+FixedNDArray sin  (const FixedNDArray &x);
+FixedNDArray sinh  (const FixedNDArray &x);
+FixedNDArray tan  (const FixedNDArray &x);
+FixedNDArray tanh  (const FixedNDArray &x);
 
-extern FixedNDArray max (double d, const FixedNDArray& m);
-extern FixedNDArray max (const FixedNDArray& m, double d);
-extern FixedNDArray max (const FixedNDArray& a, const FixedNDArray& b);
+FixedNDArray sqrt  (const FixedNDArray &x);
+FixedNDArray exp  (const FixedNDArray &x);
+FixedNDArray log  (const FixedNDArray &x);
+FixedNDArray log10  (const FixedNDArray &x);
+
+FixedNDArray atan2 (const FixedNDArray &x, const FixedNDArray &y);
+
+FixedNDArray round (const FixedNDArray &x);
+FixedNDArray rint (const FixedNDArray &x);
+FixedNDArray floor (const FixedNDArray &x);
+FixedNDArray ceil (const FixedNDArray &x);
+
+FixedNDArray real (const FixedNDArray& a);
+FixedNDArray imag (const FixedNDArray& a);
+FixedNDArray conj (const FixedNDArray &x);
+
+inline NDArray fixedpoint (const FixedNDArray& x) { return x.fixedpoint(); }
+inline NDArray sign (const FixedNDArray& x) { return x.sign(); }
+inline NDArray signbit (const FixedNDArray& x) { return x.signbit(); }
+inline NDArray getdecsize (const FixedNDArray& x) { return x.getdecsize(); }
+inline NDArray getintsize (const FixedNDArray& x) { return x.getintsize(); }
+inline NDArray getnumber (const FixedNDArray& x) { return x.getnumber(); }
+
+std::ostream& operator << (std::ostream& os, const FixedNDArray& a);
+std::istream& operator >> (std::istream& is, FixedNDArray& a);
+
+FixedNDArray min (double d, const FixedNDArray& m);
+FixedNDArray min (const FixedNDArray& m, double d);
+FixedNDArray min (const FixedNDArray& a, const FixedNDArray& b);
+
+FixedNDArray max (double d, const FixedNDArray& m);
+FixedNDArray max (const FixedNDArray& m, double d);
+FixedNDArray max (const FixedNDArray& a, const FixedNDArray& b);
 
 FixedNDArray elem_pow (const FixedNDArray &a, const FixedNDArray &b);
 FixedNDArray elem_pow (const FixedNDArray &a, const FixedPoint &b);

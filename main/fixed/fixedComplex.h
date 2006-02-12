@@ -138,25 +138,11 @@ public:
   FixedPointComplex incintsize (const Complex n);
   FixedPointComplex incintsize ();
 
-  friend Complex fixedpoint (const FixedPointComplex &x) { 
-    return (x.fixedpoint());
-  }
-
-  friend Complex sign (const FixedPointComplex &x) {
-    return (x.sign());
-  }
-
-  friend Complex getintsize (const FixedPointComplex &x) {
-    return (x.getintsize());
-  }
-
-  friend Complex getdecsize (const FixedPointComplex &x) {
-    return (x.getdecsize());
-  }
-
-  friend Complex getnumber (const FixedPointComplex &x) {
-    return (x.getnumber());
-  }
+  friend Complex fixedpoint (const FixedPointComplex &x); 
+  friend Complex sign (const FixedPointComplex &x);
+  friend Complex getintsize (const FixedPointComplex &x);
+  friend Complex getdecsize (const FixedPointComplex &x);
+  friend Complex getnumber (const FixedPointComplex &x);
 
   // FixedPointComplex operators
 
@@ -195,6 +181,56 @@ public:
   friend FixedPointComplex floor (const FixedPointComplex &x);
   friend FixedPointComplex ceil (const FixedPointComplex &x);
 };
+
+inline Complex fixedpoint (const FixedPointComplex &x) { 
+  return (x.fixedpoint());
+}
+
+inline Complex sign (const FixedPointComplex &x) {
+  return (x.sign());
+}
+
+inline Complex getintsize (const FixedPointComplex &x) {
+  return (x.getintsize());
+}
+
+inline Complex getdecsize (const FixedPointComplex &x) {
+  return (x.getdecsize());
+}
+
+inline Complex getnumber (const FixedPointComplex &x) {
+  return (x.getnumber());
+}
+
+FixedPointComplex operator ! (const FixedPointComplex &x);
+  
+FixedPoint real  (const FixedPointComplex &x);
+FixedPoint imag  (const FixedPointComplex &x);
+FixedPointComplex conj  (const FixedPointComplex &x);
+FixedPoint abs  (const FixedPointComplex &x);
+FixedPoint norm  (const FixedPointComplex &x);
+FixedPoint arg  (const FixedPointComplex &x);
+FixedPointComplex polar  (const FixedPoint &r, const FixedPoint &p);
+FixedPointComplex cos  (const FixedPointComplex &x);
+FixedPointComplex cosh  (const FixedPointComplex &x);
+FixedPointComplex sin  (const FixedPointComplex &x);
+FixedPointComplex sinh  (const FixedPointComplex &x);
+FixedPointComplex tan  (const FixedPointComplex &x);
+FixedPointComplex tanh  (const FixedPointComplex &x);
+
+FixedPointComplex sqrt (const FixedPointComplex &x);
+FixedPointComplex pow (const FixedPointComplex &w, const int y);
+FixedPointComplex pow (const FixedPointComplex &x, const FixedPoint& y);
+FixedPointComplex pow (const FixedPoint &x, const FixedPointComplex& y);
+FixedPointComplex pow (const FixedPointComplex &x, const FixedPointComplex &y);
+FixedPointComplex exp  (const FixedPointComplex &x);
+FixedPointComplex log  (const FixedPointComplex &x);
+FixedPointComplex log10  (const FixedPointComplex &x);
+
+FixedPointComplex round (const FixedPointComplex &x);
+FixedPointComplex rint (const FixedPointComplex &x);
+FixedPointComplex floor (const FixedPointComplex &x);
+FixedPointComplex ceil (const FixedPointComplex &x);
 
 #endif
 

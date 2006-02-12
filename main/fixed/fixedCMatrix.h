@@ -245,13 +245,6 @@ public:
 
   FixedComplexMatrix operator ! (void) const;
 
-  // column vector by row vector -> matrix operations
-
-  friend FixedComplexMatrix operator * (const FixedComplexColumnVector& a, 
-					const FixedComplexRowVector& b);
-  friend FixedComplexMatrix operator * (const FixedComplexMatrix& a, 
-					const FixedComplexMatrix& b);
-
   // other operations
 
   FixedComplexMatrix map (fc_fc_Mapper f) const;
@@ -284,6 +277,11 @@ public:
   FixedComplexRowVector column_min (Array<int>& index) const;
   FixedComplexRowVector column_max (Array<int>& index) const;
 
+  friend FixedComplexMatrix operator * (const FixedComplexColumnVector& a,
+                                        const FixedComplexRowVector& b);
+  friend FixedComplexMatrix operator * (const FixedComplexMatrix& a,
+                                        const FixedComplexMatrix& b);
+
   friend FixedMatrix real (const FixedComplexMatrix &x);
   friend FixedMatrix imag (const FixedComplexMatrix &x);
   friend FixedComplexMatrix conj (const FixedComplexMatrix &x);
@@ -303,10 +301,10 @@ public:
   friend FixedComplexMatrix sqrt  (const FixedComplexMatrix &x);
   friend FixedComplexMatrix pow  (const FixedComplexMatrix &a, const int b);
   friend FixedComplexMatrix pow  (const FixedComplexMatrix &a, const double b);
-  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
-				  const FixedPointComplex &b);
-  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
-				  const FixedComplexMatrix &b);
+  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a,
+                                  const FixedPointComplex &b);
+  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a,
+                                  const FixedComplexMatrix &b);
   friend FixedComplexMatrix exp  (const FixedComplexMatrix &x);
   friend FixedComplexMatrix log  (const FixedComplexMatrix &x);
   friend FixedComplexMatrix log10  (const FixedComplexMatrix &x);
@@ -316,22 +314,18 @@ public:
   friend FixedComplexMatrix floor (const FixedComplexMatrix &x);
   friend FixedComplexMatrix ceil (const FixedComplexMatrix &x);
 
-  friend ComplexMatrix fixedpoint (const FixedComplexMatrix& x) 
-     { return x.fixedpoint(); }
-  friend ComplexMatrix sign (const FixedComplexMatrix& x) 
-     { return x.sign(); }
-  friend ComplexMatrix getintsize (const FixedComplexMatrix& x) 
-     { return x.getintsize(); }
-  friend ComplexMatrix getdecsize (const FixedComplexMatrix& x) 
-     { return x.getdecsize(); }
-  friend ComplexMatrix getnumber (const FixedComplexMatrix& x) 
-     { return x.getnumber(); }
+  friend ComplexMatrix fixedpoint (const FixedComplexMatrix& x);
+  friend ComplexMatrix sign (const FixedComplexMatrix& x);
+  friend ComplexMatrix getintsize (const FixedComplexMatrix& x);
+  friend ComplexMatrix getdecsize (const FixedComplexMatrix& x);
+  friend ComplexMatrix getnumber (const FixedComplexMatrix& x);
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, 
-				    const FixedComplexMatrix& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const FixedComplexMatrix& a);
   friend std::istream& operator >> (std::istream& is, FixedComplexMatrix& a);
+
 
   static FixedPointComplex resize_fill_value (void) 
       { return FixedPointComplex(); }
@@ -342,22 +336,72 @@ private:
     MArray2<FixedPointComplex> (d, r, c) { }
 };
 
-extern FixedComplexMatrix operator * (const FixedComplexMatrix& a, 
-				      const FixedComplexMatrix& b);
+FixedComplexMatrix operator * (const FixedComplexColumnVector& a, 
+				const FixedComplexRowVector& b);
+FixedComplexMatrix operator * (const FixedComplexMatrix& a, 
+				const FixedComplexMatrix& b);
 
-extern FixedComplexMatrix min (FixedPointComplex d, 
-			       const FixedComplexMatrix& m);
-extern FixedComplexMatrix min (const FixedComplexMatrix& m, 
-			       FixedPointComplex d);
-extern FixedComplexMatrix min (const FixedComplexMatrix& a, 
-			       const FixedComplexMatrix& b);
+FixedMatrix real (const FixedComplexMatrix &x);
+FixedMatrix imag (const FixedComplexMatrix &x);
+FixedComplexMatrix conj (const FixedComplexMatrix &x);
 
-extern FixedComplexMatrix max (FixedPointComplex d,
-			       const FixedComplexMatrix& m);
-extern FixedComplexMatrix max (const FixedComplexMatrix& m,
-			       FixedPointComplex d);
-extern FixedComplexMatrix max (const FixedComplexMatrix& a,
-			       const FixedComplexMatrix& b);
+FixedMatrix abs (const FixedComplexMatrix &x);
+FixedMatrix norm (const FixedComplexMatrix &x);
+FixedMatrix arg (const FixedComplexMatrix &x);
+FixedComplexMatrix polar (const FixedMatrix &r, const FixedMatrix &p);
+
+FixedComplexMatrix cos  (const FixedComplexMatrix &x);
+FixedComplexMatrix cosh  (const FixedComplexMatrix &x);
+FixedComplexMatrix sin  (const FixedComplexMatrix &x);
+FixedComplexMatrix sinh  (const FixedComplexMatrix &x);
+FixedComplexMatrix tan  (const FixedComplexMatrix &x);
+FixedComplexMatrix tanh  (const FixedComplexMatrix &x);
+
+FixedComplexMatrix sqrt  (const FixedComplexMatrix &x);
+FixedComplexMatrix pow  (const FixedComplexMatrix &a, const int b);
+FixedComplexMatrix pow  (const FixedComplexMatrix &a, const double b);
+FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
+				  const FixedPointComplex &b);
+FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
+				  const FixedComplexMatrix &b);
+FixedComplexMatrix exp  (const FixedComplexMatrix &x);
+FixedComplexMatrix log  (const FixedComplexMatrix &x);
+FixedComplexMatrix log10  (const FixedComplexMatrix &x);
+
+FixedComplexMatrix round (const FixedComplexMatrix &x);
+FixedComplexMatrix rint (const FixedComplexMatrix &x);
+FixedComplexMatrix floor (const FixedComplexMatrix &x);
+FixedComplexMatrix ceil (const FixedComplexMatrix &x);
+
+inline ComplexMatrix fixedpoint (const FixedComplexMatrix& x) 
+     { return x.fixedpoint(); }
+inline ComplexMatrix sign (const FixedComplexMatrix& x) 
+     { return x.sign(); }
+inline ComplexMatrix getintsize (const FixedComplexMatrix& x) 
+     { return x.getintsize(); }
+inline ComplexMatrix getdecsize (const FixedComplexMatrix& x) 
+     { return x.getdecsize(); }
+inline ComplexMatrix getnumber (const FixedComplexMatrix& x) 
+     { return x.getnumber(); }
+
+std::ostream& operator << (std::ostream& os, 
+			    const FixedComplexMatrix& a);
+std::istream& operator >> (std::istream& is, FixedComplexMatrix& a);
+
+
+FixedComplexMatrix min (FixedPointComplex d, 
+		       const FixedComplexMatrix& m);
+FixedComplexMatrix min (const FixedComplexMatrix& m, 
+		       FixedPointComplex d);
+FixedComplexMatrix min (const FixedComplexMatrix& a, 
+		       const FixedComplexMatrix& b);
+
+FixedComplexMatrix max (FixedPointComplex d,
+		       const FixedComplexMatrix& m);
+FixedComplexMatrix max (const FixedComplexMatrix& m,
+		       FixedPointComplex d);
+FixedComplexMatrix max (const FixedComplexMatrix& a,
+		       const FixedComplexMatrix& b);
 
 FixedComplexMatrix elem_pow (const FixedComplexMatrix &a,
 			     const FixedComplexMatrix &b);

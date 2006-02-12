@@ -197,11 +197,6 @@ public:
 
   FixedComplexColumnVector extract_n (int r1, int n) const;
 
-  // matrix by column vector -> column vector operations
-
-  friend FixedComplexColumnVector operator * (const FixedComplexMatrix& a, 
-				const FixedComplexColumnVector& b);
-
   // other operations
 
   FixedComplexColumnVector map (fc_fc_Mapper f) const;
@@ -210,6 +205,9 @@ public:
 
   FixedPointComplex min (void) const;
   FixedPointComplex max (void) const;
+
+  friend FixedComplexColumnVector operator * (const FixedComplexMatrix& a, 
+				const FixedComplexColumnVector& b);
 
   friend FixedColumnVector real (const FixedComplexColumnVector &x);
   friend FixedColumnVector imag (const FixedComplexColumnVector &x);
@@ -238,16 +236,11 @@ public:
   friend FixedComplexColumnVector floor (const FixedComplexColumnVector &x);
   friend FixedComplexColumnVector ceil (const FixedComplexColumnVector &x);
 
-  friend ComplexColumnVector fixedpoint (const FixedComplexColumnVector& x) 
-     { return x.fixedpoint(); }
-  friend ComplexColumnVector sign (const FixedComplexColumnVector& x) 
-     { return x.sign(); }
-  friend ComplexColumnVector getintsize (const FixedComplexColumnVector& x) 
-     { return x.getintsize(); }
-  friend ComplexColumnVector getdecsize (const FixedComplexColumnVector& x) 
-     { return x.getdecsize(); }
-  friend ComplexColumnVector getnumber (const FixedComplexColumnVector& x) 
-     { return x.getnumber(); }
+  friend ComplexColumnVector fixedpoint (const FixedComplexColumnVector& x);
+  friend ComplexColumnVector sign (const FixedComplexColumnVector& x);
+  friend ComplexColumnVector getintsize (const FixedComplexColumnVector& x);
+  friend ComplexColumnVector getdecsize (const FixedComplexColumnVector& x);
+  friend ComplexColumnVector getnumber (const FixedComplexColumnVector& x);
 
   // i/o
 
@@ -258,6 +251,51 @@ private:
 
   FixedComplexColumnVector (FixedPointComplex *d, int l) : MArray<FixedPointComplex> (d, l) { }
 };
+
+
+FixedComplexColumnVector operator * (const FixedComplexMatrix& a, 
+				const FixedComplexColumnVector& b);
+
+FixedColumnVector real (const FixedComplexColumnVector &x);
+FixedColumnVector imag (const FixedComplexColumnVector &x);
+FixedComplexColumnVector conj (const FixedComplexColumnVector &x);
+
+FixedColumnVector abs (const FixedComplexColumnVector &x);
+FixedColumnVector norm (const FixedComplexColumnVector &x);
+FixedColumnVector arg (const FixedComplexColumnVector &x);
+FixedComplexColumnVector polar (const FixedColumnVector &r, 
+			       const FixedColumnVector &p);
+
+FixedComplexColumnVector cos  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector cosh  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector sin  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector sinh  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector tan  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector tanh  (const FixedComplexColumnVector &x);
+
+FixedComplexColumnVector sqrt  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector exp  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector log  (const FixedComplexColumnVector &x);
+FixedComplexColumnVector log10  (const FixedComplexColumnVector &x);
+
+FixedComplexColumnVector round (const FixedComplexColumnVector &x);
+FixedComplexColumnVector rint (const FixedComplexColumnVector &x);
+FixedComplexColumnVector floor (const FixedComplexColumnVector &x);
+FixedComplexColumnVector ceil (const FixedComplexColumnVector &x);
+
+inline ComplexColumnVector fixedpoint (const FixedComplexColumnVector& x) 
+     { return x.fixedpoint(); }
+inline ComplexColumnVector sign (const FixedComplexColumnVector& x) 
+     { return x.sign(); }
+inline ComplexColumnVector getintsize (const FixedComplexColumnVector& x) 
+     { return x.getintsize(); }
+inline ComplexColumnVector getdecsize (const FixedComplexColumnVector& x) 
+     { return x.getdecsize(); }
+inline ComplexColumnVector getnumber (const FixedComplexColumnVector& x) 
+     { return x.getnumber(); }
+
+std::ostream& operator << (std::ostream& os, const FixedComplexColumnVector& a);
+std::istream& operator >> (std::istream& is, FixedComplexColumnVector& a);
 
 FixedComplexColumnVector elem_pow (const FixedComplexColumnVector &a,
 			     const FixedComplexColumnVector &b);

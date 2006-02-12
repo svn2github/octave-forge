@@ -194,10 +194,6 @@ public:
 
   FixedComplexRowVector extract_n (int c1, int n) const;
 
-  // row vector by matrix -> row vector
-
-  friend FixedComplexRowVector operator * (const FixedComplexRowVector& a, const Matrix& b);
-
   // other operations
 
   FixedComplexRowVector map (fc_fc_Mapper f) const;
@@ -206,6 +202,8 @@ public:
 
   FixedPointComplex min (void) const;
   FixedPointComplex max (void) const;
+
+  friend FixedComplexRowVector operator * (const FixedComplexRowVector& a, const Matrix& b);
 
   friend FixedRowVector real (const FixedComplexRowVector &x);
   friend FixedRowVector imag (const FixedComplexRowVector &x);
@@ -234,16 +232,11 @@ public:
   friend FixedComplexRowVector floor (const FixedComplexRowVector &x);
   friend FixedComplexRowVector ceil (const FixedComplexRowVector &x);
 
-  friend ComplexRowVector fixedpoint (const FixedComplexRowVector& x) 
-     { return x.fixedpoint(); }
-  friend ComplexRowVector sign (const FixedComplexRowVector& x) 
-     { return x.sign(); }
-  friend ComplexRowVector getintsize (const FixedComplexRowVector& x) 
-     { return x.getintsize(); }
-  friend ComplexRowVector getdecsize (const FixedComplexRowVector& x) 
-     { return x.getdecsize(); }
-  friend ComplexRowVector getnumber (const FixedComplexRowVector& x) 
-     { return x.getnumber(); }
+  friend ComplexRowVector fixedpoint (const FixedComplexRowVector& x);
+  friend ComplexRowVector sign (const FixedComplexRowVector& x);
+  friend ComplexRowVector getintsize (const FixedComplexRowVector& x);
+  friend ComplexRowVector getdecsize (const FixedComplexRowVector& x);
+  friend ComplexRowVector getnumber (const FixedComplexRowVector& x);
 
   // i/o
 
@@ -255,9 +248,50 @@ private:
   FixedComplexRowVector (FixedPointComplex *d, int l) : MArray<FixedPointComplex> (d, l) { }
 };
 
-// row vector by column vector -> scalar
 FixedPointComplex operator * (const FixedComplexRowVector& a, 
 			      const FixedComplexColumnVector& b);
+
+FixedRowVector real (const FixedComplexRowVector &x);
+FixedRowVector imag (const FixedComplexRowVector &x);
+FixedComplexRowVector conj (const FixedComplexRowVector &x);
+
+FixedRowVector abs (const FixedComplexRowVector &x);
+FixedRowVector norm (const FixedComplexRowVector &x);
+FixedRowVector arg (const FixedComplexRowVector &x);
+FixedComplexRowVector polar (const FixedRowVector &r, 
+				       const FixedRowVector &p);
+
+FixedComplexRowVector cos  (const FixedComplexRowVector &x);
+FixedComplexRowVector cosh  (const FixedComplexRowVector &x);
+FixedComplexRowVector sin  (const FixedComplexRowVector &x);
+FixedComplexRowVector sinh  (const FixedComplexRowVector &x);
+FixedComplexRowVector tan  (const FixedComplexRowVector &x);
+FixedComplexRowVector tanh  (const FixedComplexRowVector &x);
+
+FixedComplexRowVector sqrt  (const FixedComplexRowVector &x);
+FixedComplexRowVector exp  (const FixedComplexRowVector &x);
+FixedComplexRowVector log  (const FixedComplexRowVector &x);
+FixedComplexRowVector log10  (const FixedComplexRowVector &x);
+
+FixedComplexRowVector round (const FixedComplexRowVector &x);
+FixedComplexRowVector rint (const FixedComplexRowVector &x);
+FixedComplexRowVector floor (const FixedComplexRowVector &x);
+FixedComplexRowVector ceil (const FixedComplexRowVector &x);
+
+inline ComplexRowVector fixedpoint (const FixedComplexRowVector& x) 
+     { return x.fixedpoint(); }
+inline ComplexRowVector sign (const FixedComplexRowVector& x) 
+     { return x.sign(); }
+inline ComplexRowVector getintsize (const FixedComplexRowVector& x) 
+     { return x.getintsize(); }
+inline ComplexRowVector getdecsize (const FixedComplexRowVector& x) 
+     { return x.getdecsize(); }
+inline ComplexRowVector getnumber (const FixedComplexRowVector& x) 
+     { return x.getnumber(); }
+
+std::ostream& operator << (std::ostream& os, const FixedComplexRowVector& a);
+std::istream& operator >> (std::istream& is, FixedComplexRowVector& a);
+
 
 FixedComplexRowVector elem_pow (const FixedComplexRowVector &a,
 			     const FixedComplexRowVector &b);

@@ -215,6 +215,25 @@ public:
   FixedComplexNDArray sum (octave_idx_type dim = -1) const;
   FixedComplexNDArray sumsq (octave_idx_type dim = -1) const;
 
+  FixedComplexNDArray max (octave_idx_type dim = 0) const;
+  FixedComplexNDArray max (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+  FixedComplexNDArray min (octave_idx_type dim = 0) const;
+  FixedComplexNDArray min (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+
+  FixedNDArray abs (void) const;
+
+  FixedComplexMatrix fixed_complex_matrix_value (void) const;
+
+  FixedComplexNDArray squeeze (void) const 
+    { return ArrayN<FixedPointComplex>::squeeze (); }
+
+  static void increment_index (Array<octave_idx_type>& ra_idx,
+			       const dim_vector& dimensions,
+			       octave_idx_type start_dimension = 0);
+
+  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
+			    const dim_vector& dimensions);
+
   friend FixedNDArray real (const FixedComplexNDArray &x);
   friend FixedNDArray imag (const FixedComplexNDArray &x);
   friend FixedComplexNDArray conj (const FixedComplexNDArray &x);
@@ -241,36 +260,11 @@ public:
   friend FixedComplexNDArray floor (const FixedComplexNDArray &x);
   friend FixedComplexNDArray ceil (const FixedComplexNDArray &x);
 
-  friend ComplexNDArray fixedpoint (const FixedComplexNDArray& x) 
-     { return x.fixedpoint(); }
-  friend ComplexNDArray sign (const FixedComplexNDArray& x) 
-     { return x.sign(); }
-  friend ComplexNDArray getintsize (const FixedComplexNDArray& x) 
-     { return x.getintsize(); }
-  friend ComplexNDArray getdecsize (const FixedComplexNDArray& x) 
-     { return x.getdecsize(); }
-  friend ComplexNDArray getnumber (const FixedComplexNDArray& x) 
-     { return x.getnumber(); }
-
-  FixedComplexNDArray max (octave_idx_type dim = 0) const;
-  FixedComplexNDArray max (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
-  FixedComplexNDArray min (octave_idx_type dim = 0) const;
-  FixedComplexNDArray min (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
-
-  FixedNDArray abs (void) const;
-
-  FixedComplexMatrix fixed_complex_matrix_value (void) const;
-
-  FixedComplexNDArray squeeze (void) const 
-    { return ArrayN<FixedPointComplex>::squeeze (); }
-
-  static void increment_index (Array<octave_idx_type>& ra_idx,
-			       const dim_vector& dimensions,
-			       octave_idx_type start_dimension = 0);
-
-  static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-			    const dim_vector& dimensions);
-
+  friend ComplexNDArray fixedpoint (const FixedComplexNDArray& x);
+  friend ComplexNDArray sign (const FixedComplexNDArray& x);
+  friend ComplexNDArray getintsize (const FixedComplexNDArray& x);
+  friend ComplexNDArray getdecsize (const FixedComplexNDArray& x);
+  friend ComplexNDArray getnumber (const FixedComplexNDArray& x);
   // i/o
 
   friend std::ostream& operator << (std::ostream& os, 
@@ -287,18 +281,59 @@ private:
 };
 
 
-extern FixedComplexNDArray min (const FixedPointComplex& c, 
+FixedNDArray real (const FixedComplexNDArray &x);
+FixedNDArray imag (const FixedComplexNDArray &x);
+FixedComplexNDArray conj (const FixedComplexNDArray &x);
+
+FixedNDArray abs (const FixedComplexNDArray &x);
+FixedNDArray norm (const FixedComplexNDArray &x);
+FixedNDArray arg (const FixedComplexNDArray &x);
+FixedComplexNDArray polar (const FixedNDArray &r, const FixedNDArray &p);
+
+FixedComplexNDArray cos  (const FixedComplexNDArray &x);
+FixedComplexNDArray cosh  (const FixedComplexNDArray &x);
+FixedComplexNDArray sin  (const FixedComplexNDArray &x);
+FixedComplexNDArray sinh  (const FixedComplexNDArray &x);
+FixedComplexNDArray tan  (const FixedComplexNDArray &x);
+FixedComplexNDArray tanh  (const FixedComplexNDArray &x);
+
+FixedComplexNDArray sqrt  (const FixedComplexNDArray &x);
+FixedComplexNDArray exp  (const FixedComplexNDArray &x);
+FixedComplexNDArray log  (const FixedComplexNDArray &x);
+FixedComplexNDArray log10  (const FixedComplexNDArray &x);
+
+FixedComplexNDArray round (const FixedComplexNDArray &x);
+FixedComplexNDArray rint (const FixedComplexNDArray &x);
+FixedComplexNDArray floor (const FixedComplexNDArray &x);
+FixedComplexNDArray ceil (const FixedComplexNDArray &x);
+
+inline ComplexNDArray fixedpoint (const FixedComplexNDArray& x) 
+     { return x.fixedpoint(); }
+inline ComplexNDArray sign (const FixedComplexNDArray& x) 
+     { return x.sign(); }
+inline ComplexNDArray getintsize (const FixedComplexNDArray& x) 
+     { return x.getintsize(); }
+inline ComplexNDArray getdecsize (const FixedComplexNDArray& x) 
+     { return x.getdecsize(); }
+inline ComplexNDArray getnumber (const FixedComplexNDArray& x) 
+     { return x.getnumber(); }
+
+std::ostream& operator << (std::ostream& os, 
+				    const FixedComplexNDArray& a);
+std::istream& operator >> (std::istream& is, FixedComplexNDArray& a);
+
+FixedComplexNDArray min (const FixedPointComplex& c, 
 				const FixedComplexNDArray& m);
-extern FixedComplexNDArray min (const FixedComplexNDArray& m, 
+FixedComplexNDArray min (const FixedComplexNDArray& m, 
 				const FixedPointComplex& c);
-extern FixedComplexNDArray min (const FixedComplexNDArray& a, 
+FixedComplexNDArray min (const FixedComplexNDArray& a, 
 				const FixedComplexNDArray& b);
 
-extern FixedComplexNDArray max (const FixedPointComplex& c, 
+FixedComplexNDArray max (const FixedPointComplex& c, 
 				const FixedComplexNDArray& m);
-extern FixedComplexNDArray max (const FixedComplexNDArray& m, 
+FixedComplexNDArray max (const FixedComplexNDArray& m, 
 				const FixedPointComplex& c);
-extern FixedComplexNDArray max (const FixedComplexNDArray& a, 
+FixedComplexNDArray max (const FixedComplexNDArray& a, 
 				const FixedComplexNDArray& b);
 
 FixedComplexNDArray elem_pow (const FixedComplexNDArray &a,

@@ -134,10 +134,6 @@ public:
 
   FixedColumnVector extract_n (int r1, int n) const;
 
-  // matrix by column vector -> column vector operations
-
-  friend FixedColumnVector operator * (const FixedMatrix& a, const FixedColumnVector& b);
-
   // other operations
 
   FixedColumnVector map (f_f_Mapper f) const;
@@ -146,6 +142,8 @@ public:
 
   FixedPoint min (void) const;
   FixedPoint max (void) const;
+
+  friend FixedColumnVector operator * (const FixedMatrix& a, const FixedColumnVector& b);
 
   friend FixedColumnVector real (const FixedColumnVector &x);
   friend FixedColumnVector imag (const FixedColumnVector &x);
@@ -170,17 +168,12 @@ public:
   friend FixedColumnVector floor (const FixedColumnVector &x);
   friend FixedColumnVector ceil (const FixedColumnVector &x);
 
-  friend ColumnVector fixedpoint (const FixedColumnVector& x) 
-	{ return x.fixedpoint(); }
-  friend ColumnVector sign (const FixedColumnVector& x) { return x.sign(); }
-  friend ColumnVector signbit (const FixedColumnVector& x) 
-	{ return x.signbit(); }
-  friend ColumnVector getdecsize (const FixedColumnVector& x) 
-	{ return x.getdecsize(); }
-  friend ColumnVector getintsize (const FixedColumnVector& x) 
-	{ return x.getintsize(); }
-  friend ColumnVector getnumber (const FixedColumnVector& x) 
-	{ return x.getnumber(); }
+  friend ColumnVector fixedpoint (const FixedColumnVector& x);
+  friend ColumnVector sign (const FixedColumnVector& x);
+  friend ColumnVector signbit (const FixedColumnVector& x);
+  friend ColumnVector getdecsize (const FixedColumnVector& x);
+  friend ColumnVector getintsize (const FixedColumnVector& x);
+  friend ColumnVector getnumber (const FixedColumnVector& x);
 
   // i/o
 
@@ -191,6 +184,46 @@ private:
 
   FixedColumnVector (FixedPoint *d, int l) : MArray<FixedPoint> (d, l) { }
 };
+
+FixedColumnVector operator * (const FixedMatrix& a, const FixedColumnVector& b);
+
+FixedColumnVector real (const FixedColumnVector &x);
+FixedColumnVector imag (const FixedColumnVector &x);
+FixedColumnVector conj (const FixedColumnVector &x);
+
+FixedColumnVector abs (const FixedColumnVector &x);
+FixedColumnVector cos  (const FixedColumnVector &x);
+FixedColumnVector cosh  (const FixedColumnVector &x);
+FixedColumnVector sin  (const FixedColumnVector &x);
+FixedColumnVector sinh  (const FixedColumnVector &x);
+FixedColumnVector tan  (const FixedColumnVector &x);
+FixedColumnVector tanh  (const FixedColumnVector &x);
+
+FixedColumnVector sqrt  (const FixedColumnVector &x);
+FixedColumnVector exp  (const FixedColumnVector &x);
+FixedColumnVector log  (const FixedColumnVector &x);
+FixedColumnVector log10  (const FixedColumnVector &x);
+
+FixedColumnVector round (const FixedColumnVector &x);
+FixedColumnVector rint (const FixedColumnVector &x);
+FixedColumnVector floor (const FixedColumnVector &x);
+FixedColumnVector ceil (const FixedColumnVector &x);
+
+inline ColumnVector fixedpoint (const FixedColumnVector& x) 
+	{ return x.fixedpoint(); }
+inline ColumnVector sign (const FixedColumnVector& x) 
+	{ return x.sign(); }
+inline ColumnVector signbit (const FixedColumnVector& x) 
+	{ return x.signbit(); }
+inline ColumnVector getdecsize (const FixedColumnVector& x) 
+	{ return x.getdecsize(); }
+inline ColumnVector getintsize (const FixedColumnVector& x) 
+	{ return x.getintsize(); }
+inline ColumnVector getnumber (const FixedColumnVector& x) 
+	{ return x.getnumber(); }
+
+std::ostream& operator << (std::ostream& os, const FixedColumnVector& a);
+std::istream& operator >> (std::istream& is, FixedColumnVector& a);
 
 FixedColumnVector elem_pow (const FixedColumnVector &a,
 			     const FixedColumnVector &b);

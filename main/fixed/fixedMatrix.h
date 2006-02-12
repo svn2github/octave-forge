@@ -178,11 +178,6 @@ public:
 
   FixedMatrix operator ! (void) const;
 
-  // column vector by row vector -> matrix operations
-
-  friend FixedMatrix operator * (const FixedColumnVector& a, const FixedRowVector& b);
-  friend FixedMatrix operator * (const FixedMatrix& a, const FixedMatrix& b);
-
   // other operations
 
   FixedMatrix map (f_f_Mapper f) const;
@@ -213,6 +208,9 @@ public:
   FixedRowVector column_min (Array<int>& index) const;
   FixedRowVector column_max (Array<int>& index) const;
 
+  friend FixedMatrix operator * (const FixedColumnVector& a, const FixedRowVector& b);
+  friend FixedMatrix operator * (const FixedMatrix& a, const FixedMatrix& b);
+
   friend FixedMatrix real (const FixedMatrix &x);
   friend FixedMatrix imag (const FixedMatrix &x);
   friend FixedMatrix conj (const FixedMatrix &x);
@@ -241,12 +239,12 @@ public:
   friend FixedMatrix floor (const FixedMatrix &x);
   friend FixedMatrix ceil (const FixedMatrix &x);
 
-  friend Matrix fixedpoint (const FixedMatrix& x) { return x.fixedpoint(); }
-  friend Matrix sign (const FixedMatrix& x) { return x.sign(); }
-  friend Matrix signbit (const FixedMatrix& x) { return x.signbit(); }
-  friend Matrix getdecsize (const FixedMatrix& x) { return x.getdecsize(); }
-  friend Matrix getintsize (const FixedMatrix& x) { return x.getintsize(); }
-  friend Matrix getnumber (const FixedMatrix& x) { return x.getnumber(); }
+  friend Matrix fixedpoint (const FixedMatrix& x);
+  friend Matrix sign (const FixedMatrix& x);
+  friend Matrix signbit (const FixedMatrix& x);
+  friend Matrix getdecsize (const FixedMatrix& x);
+  friend Matrix getintsize (const FixedMatrix& x);
+  friend Matrix getnumber (const FixedMatrix& x);
 
   // i/o
 
@@ -260,15 +258,54 @@ private:
   FixedMatrix (FixedPoint *d, int r, int c) : MArray2<FixedPoint> (d, r, c) { }
 };
 
-extern FixedMatrix operator * (const FixedMatrix& a, const FixedMatrix& b);
+FixedMatrix operator * (const FixedColumnVector& a, const FixedRowVector& b);
+FixedMatrix operator * (const FixedMatrix& a, const FixedMatrix& b);
 
-extern FixedMatrix min (FixedPoint d, const FixedMatrix& m);
-extern FixedMatrix min (const FixedMatrix& m, FixedPoint d);
-extern FixedMatrix min (const FixedMatrix& a, const FixedMatrix& b);
+FixedMatrix real (const FixedMatrix &x);
+FixedMatrix imag (const FixedMatrix &x);
+FixedMatrix conj (const FixedMatrix &x);
 
-extern FixedMatrix max (FixedPoint d, const FixedMatrix& m);
-extern FixedMatrix max (const FixedMatrix& m, FixedPoint d);
-extern FixedMatrix max (const FixedMatrix& a, const FixedMatrix& b);
+FixedMatrix abs (const FixedMatrix &x);
+FixedMatrix cos  (const FixedMatrix &x);
+FixedMatrix cosh  (const FixedMatrix &x);
+FixedMatrix sin  (const FixedMatrix &x);
+FixedMatrix sinh  (const FixedMatrix &x);
+FixedMatrix tan  (const FixedMatrix &x);
+FixedMatrix tanh  (const FixedMatrix &x);
+
+FixedMatrix sqrt  (const FixedMatrix &x);
+FixedMatrix pow  (const FixedMatrix &a, const int b);
+FixedMatrix pow  (const FixedMatrix &a, const double b);
+FixedMatrix pow  (const FixedMatrix &a, const FixedPoint &b);
+FixedMatrix pow  (const FixedMatrix &a, const FixedMatrix &b);
+FixedMatrix exp  (const FixedMatrix &x);
+FixedMatrix log  (const FixedMatrix &x);
+FixedMatrix log10  (const FixedMatrix &x);
+
+FixedMatrix atan2 (const FixedMatrix &x, const FixedMatrix &y);
+
+FixedMatrix round (const FixedMatrix &x);
+FixedMatrix rint (const FixedMatrix &x);
+FixedMatrix floor (const FixedMatrix &x);
+FixedMatrix ceil (const FixedMatrix &x);
+
+inline Matrix fixedpoint (const FixedMatrix& x) { return x.fixedpoint(); }
+inline Matrix sign (const FixedMatrix& x) { return x.sign(); }
+inline Matrix signbit (const FixedMatrix& x) { return x.signbit(); }
+inline Matrix getdecsize (const FixedMatrix& x) { return x.getdecsize(); }
+inline Matrix getintsize (const FixedMatrix& x) { return x.getintsize(); }
+inline Matrix getnumber (const FixedMatrix& x) { return x.getnumber(); }
+
+std::ostream& operator << (std::ostream& os, const FixedMatrix& a);
+std::istream& operator >> (std::istream& is, FixedMatrix& a);
+
+FixedMatrix min (FixedPoint d, const FixedMatrix& m);
+FixedMatrix min (const FixedMatrix& m, FixedPoint d);
+FixedMatrix min (const FixedMatrix& a, const FixedMatrix& b);
+
+FixedMatrix max (FixedPoint d, const FixedMatrix& m);
+FixedMatrix max (const FixedMatrix& m, FixedPoint d);
+FixedMatrix max (const FixedMatrix& a, const FixedMatrix& b);
 
 FixedMatrix elem_pow (const FixedMatrix &a, const FixedMatrix &b);
 FixedMatrix elem_pow (const FixedMatrix &a, const FixedPoint &b);

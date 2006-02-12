@@ -112,43 +112,31 @@ public:
     return ((number >> (decsize+intsize)));
   }
   
-  friend int sign (FixedPoint &x) {
-    return (x.sign());
-  }
+  friend int sign (FixedPoint &x);
 
-  friend char signbit (FixedPoint &x) {
-    return (x.signbit());
-  }
+  friend char signbit (FixedPoint &x);
 
   double fixedpoint() const;
 
-  friend double fixedpoint(const FixedPoint &x) {
-    return (x.fixedpoint());
-  }
+  friend double fixedpoint(const FixedPoint &x);
 
   int getdecsize () const {
     return (decsize);
   }
 
-  friend int getdecsize (FixedPoint &x) {
-    return (x.getdecsize());
-  }
+  friend int getdecsize (FixedPoint &x);
 
   int getintsize () const {
     return (intsize);
   }
   
-  friend int getintsize (FixedPoint &x) {
-    return (x.getintsize());
-  }
+  friend int getintsize (FixedPoint &x);
 
   fp_uint getnumber () const {
     return (number);
   }
   
-  friend fp_uint getnumber (FixedPoint &x) {
-    return (x.getnumber());
-  }
+  friend fp_uint getnumber (FixedPoint &x);
 
   // FixedPoint constructor
 
@@ -227,9 +215,7 @@ public:
 
   FixedPoint operator -- (int);
   
-  friend FixedPoint operator + (const FixedPoint &x) {
-    return FixedPoint(x);
-  }
+  friend FixedPoint operator + (const FixedPoint &x);
   
   friend FixedPoint operator - (const FixedPoint &x);
 
@@ -237,37 +223,17 @@ public:
   
   // FixedPoint operators
 
-  friend FixedPoint operator +  (const FixedPoint &x, const FixedPoint &y) {
-    FixedPoint x1(x);
-    return (x1 += y);
-  }
+  friend FixedPoint operator +  (const FixedPoint &x, const FixedPoint &y);
 
-  friend FixedPoint operator -  (const FixedPoint &x, const FixedPoint &y) {
-    FixedPoint x1(x);
-    return (x1 -= y);
-  }
+  friend FixedPoint operator -  (const FixedPoint &x, const FixedPoint &y);
   
-  friend FixedPoint operator *  (const FixedPoint &x, const FixedPoint &y) {
-    FixedPoint x1(x);
-    return (x1 *= y);
-  }
+  friend FixedPoint operator *  (const FixedPoint &x, const FixedPoint &y);
   
-  friend FixedPoint operator /  (const FixedPoint &x, const FixedPoint &y) {
-    FixedPoint x1(x);
-    return (x1 /= y);
-  }
+  friend FixedPoint operator /  (const FixedPoint &x, const FixedPoint &y);
     
-  friend FixedPoint operator <<  (const FixedPoint &x, const int s) {
+  friend FixedPoint operator <<  (const FixedPoint &x, const int s);
 
-    FixedPoint n = x;
-    return (n <<= s);
-  }
-
-  friend FixedPoint operator >>  (const FixedPoint &x, const int s) {
-
-    FixedPoint n = x;
-    return (n >>= s);
-  }
+  friend FixedPoint operator >>  (const FixedPoint &x, const int s);
   
   // FixedPoint comparators
 
@@ -285,9 +251,9 @@ public:
   
   // FixedPoint shifting functions
 
-  friend FixedPoint rshift(const FixedPoint &x, int s = 1);
+  friend FixedPoint rshift(const FixedPoint &x, int s);
   
-  friend FixedPoint lshift(const FixedPoint &x, int s = 1);
+  friend FixedPoint lshift(const FixedPoint &x, int s);
   
   // FixedPoint mathematic functions
 
@@ -495,6 +461,110 @@ namespace Fixed {
   FixedPointOperation FP_Operations;
 #endif
 };
+
+// Declarations of fixed point functions
+inline int sign (FixedPoint &x) {
+ return (x.sign());
+}
+
+inline char signbit (FixedPoint &x) {
+  return (x.signbit());
+}
+
+inline double fixedpoint(const FixedPoint &x) {
+  return (x.fixedpoint());
+}
+
+inline int getdecsize (FixedPoint &x) {
+  return (x.getdecsize());
+}
+
+inline int getintsize (FixedPoint &x) {
+  return (x.getintsize());
+}
+
+inline fp_uint getnumber (FixedPoint &x) {
+  return (x.getnumber());
+}
+
+inline FixedPoint operator + (const FixedPoint &x) {
+  return FixedPoint(x);
+}
+  
+FixedPoint operator - (const FixedPoint &x);
+FixedPoint operator ! (const FixedPoint &x);
+  
+inline FixedPoint operator +  (const FixedPoint &x, const FixedPoint &y) {
+  FixedPoint x1(x);
+  return (x1 += y);
+}
+
+inline FixedPoint operator -  (const FixedPoint &x, const FixedPoint &y) {
+  FixedPoint x1(x);
+  return (x1 -= y);
+}
+  
+inline FixedPoint operator *  (const FixedPoint &x, const FixedPoint &y) {
+  FixedPoint x1(x);
+  return (x1 *= y);
+}
+  
+inline FixedPoint operator /  (const FixedPoint &x, const FixedPoint &y) {
+  FixedPoint x1(x);
+  return (x1 /= y);
+}
+    
+inline FixedPoint operator <<  (const FixedPoint &x, const int s) {
+  FixedPoint n = x;
+  return (n <<= s);
+}
+
+inline FixedPoint operator >>  (const FixedPoint &x, const int s) {
+  FixedPoint n = x;
+  return (n >>= s);
+}
+  
+bool operator ==  (const FixedPoint &x, const FixedPoint &y);
+bool operator !=  (const FixedPoint &x, const FixedPoint &y);
+bool operator >  (const FixedPoint &x, const FixedPoint &y);
+bool operator >=  (const FixedPoint &x, const FixedPoint &y);
+bool operator <  (const FixedPoint &x, const FixedPoint &y);
+bool operator <=  (const FixedPoint &x, const FixedPoint &y);
+  
+FixedPoint rshift(const FixedPoint &x, int s = 1);
+FixedPoint lshift(const FixedPoint &x, int s = 1);
+  
+FixedPoint real  (const FixedPoint &x);
+FixedPoint imag  (const FixedPoint &x);
+FixedPoint conj  (const FixedPoint &x);
+
+FixedPoint abs  (const FixedPoint &x);
+FixedPoint cos  (const FixedPoint &x);
+FixedPoint cosh  (const FixedPoint &x);
+FixedPoint sin  (const FixedPoint &x);
+FixedPoint sinh  (const FixedPoint &x);
+FixedPoint tan  (const FixedPoint &x);
+FixedPoint tanh  (const FixedPoint &x);
+
+FixedPoint sqrt  (const FixedPoint &x);
+FixedPoint pow  (const FixedPoint &w, const int y);
+FixedPoint pow  (const FixedPoint &x, const double y);
+FixedPoint pow  (const FixedPoint &x, const FixedPoint &y);
+FixedPoint exp  (const FixedPoint &x);
+FixedPoint log  (const FixedPoint &x);
+FixedPoint log10  (const FixedPoint &x);
+
+FixedPoint atan2 (const FixedPoint &x, const FixedPoint &y);
+
+FixedPoint round (const FixedPoint &x);
+FixedPoint rint (const FixedPoint &x);
+FixedPoint floor (const FixedPoint &x);
+FixedPoint ceil (const FixedPoint &x);
+
+std::istream &operator >>  (std::istream &is, FixedPoint &x);
+std::ostream &operator <<  (std::ostream &os, const FixedPoint &x);
+
+std::string getbitstring (const FixedPoint &x);
 
 #endif
 

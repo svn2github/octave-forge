@@ -71,11 +71,13 @@ endif
 .PHONY: clean distclean dist checkindist changelog
 
 clean: clearlog subdirs
+	-$(RM) fntests.m fntests.log
 	-$(RM) core octave-core octave configure.in
+	-$(RM) main/*/PKG_ADD extra/*/PKG_ADD
 
 distclean: clean
 	-$(RM) Makeconf octinst.sh config.cache config.status config.log \
-		build.log build.fail *~
+		admin/RPM/octave-forge.spec build.log build.fail *~
 
 dist: checkindist subdirs
 	-$(RM) build.log build.fail

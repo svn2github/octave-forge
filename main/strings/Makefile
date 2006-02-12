@@ -1,7 +1,7 @@
 sinclude ../../Makeconf
 
-t2.9.4=regexp.oct str2double.m strmatch.m strcmpi.m
-DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.4)))
+t2.9.5=regexp.oct str2double.m strmatch.m strcmpi.m
+DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.5)))
 PROGS=$(DEPRECIATED_TARGETS)
 ifeq ($(HAVE_PCRE),yes)
   PROGS:=$(PROGS) pcregexp.oct

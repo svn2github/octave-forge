@@ -75,7 +75,8 @@ clean: clearlog subdirs
 	-$(RM) core octave-core octave configure.in
 	-$(RM) main/*/PKG_ADD extra/*/PKG_ADD
 
-distclean: clean
+distclean: subdirs
+	-$(MAKE) clean
 	-$(RM) Makeconf octinst.sh config.cache config.status config.log \
 		admin/RPM/octave-forge.spec build.log build.fail *~
 

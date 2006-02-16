@@ -268,7 +268,7 @@ form\n\
 v = rand (\"state\")\n\
 @end example\n\
 \n\
-This returns a column vector @var{v} of length 625. Later, you can\n\
+This returns a row vector @var{v} of length 625. Later, you can\n\
 restore the random number generator to the state @var{v}\n\
 using the form\n\
 \n\

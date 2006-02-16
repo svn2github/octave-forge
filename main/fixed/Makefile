@@ -105,10 +105,10 @@ install :
 else
 ifeq (1,$(OCT_INCLUDES_LIB))
 install : $(SUBDIRS)
-	@$(INSTALL) -d $(MPATH)/fixed
+	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed
 else
 install : $(SUBDIRS)
-	@$(INSTALL) -d $(MPATH)/fixed; \
+	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed; \
 	if test ! -e $(bindir)/liboctave.dll ; then \
 	  echo "****** WARNING: $(FIXEDLIBTARGET) not correctly installed."; \
 	  echo "****** To ensure correct operation $(FIXEDLIBTARGET) should"; \

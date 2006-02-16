@@ -25,9 +25,9 @@ install :
 	@echo "Where exactly do you want me to install to!!!"
 else
 install : 
-	@$(INSTALL) -d $(MPATH)/fixed; \
+	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed; \
 	if test "x$(MAKEINFO)" != "x"; then \
-	  $(INSTALL_DATA) $(INFODOC) $(MPATH)/fixed ; \
+	  $(INSTALL_DATA) $(INFODOC) $(DESTDIR)$(MPATH)/fixed ; \
 	fi
 endif
 

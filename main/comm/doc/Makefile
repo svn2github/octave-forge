@@ -21,9 +21,9 @@ DELETES = *.ps *.pdf *.info $(DOCS) *.html
 all : $(INFODOC) $(PSDOC)
 
 install : 
-	@$(INSTALL) -d $(MPATH)/comm; \
+	@$(INSTALL) -d $(DESTDIR)$(MPATH)/comm; \
 	if test "x$(MAKEINFO)" != "x"; then \
-	  $(INSTALL_DATA) $(INFODOC) $(MPATH)/comm ; \
+	  $(INSTALL_DATA) $(INFODOC) $(DESTDIR)$(MPATH)/comm ; \
 	fi
 
 %.dvi : %.texi

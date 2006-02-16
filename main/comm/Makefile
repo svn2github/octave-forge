@@ -39,7 +39,7 @@ MOFLAGS =
 all : $(DEPENDS) $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(SUBDIRS)
 
 install : $(SUBDIRS)
-	@$(INSTALL) -d $(MPATH)/comm
+	@$(INSTALL) -d $(DESTDIR)$(MPATH)/comm
 
 $(GALOISTARGET) : $(DEPENDS) $(GALOISOBJECTS) 
 	@echo "Linking $@"; \

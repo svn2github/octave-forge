@@ -84,7 +84,7 @@ public:
 
   int ndims() const  { return dims().length(); }
 
-  int numel() const  { return dims().numel(); }
+  octave_idx_type numel() const  { return dims().numel(); }
 
   // Get dim_vector following NetCDF conventions
 

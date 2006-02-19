@@ -24,7 +24,7 @@
 %
 % This is a 4th-order accurate integrator therefore the local error normally
 % expected is O(h^5).  However, because this particular implementation
-% uses the 5th-order estimate for xout (i.e. local extrapolation) moving
+% uses the 5th-order estimate for x_out (i.e. local extrapolation) moving
 % forward with the 5th-order estimate should yield local error of O(h^6).
 %
 % The order of the RK method is the order of the local *truncation* error, d,
@@ -56,7 +56,7 @@
 % Numerical Methods for Engineers, 2nd Ed., Chappra & Cannle, McGraw-Hill, 1985
 %
 % Usage:
-%         [tout, xout] = ode45(FUN,tspan,x0,pair,ode_fcn_format,tol,trace,count,hmax)
+%         [t_out, x_out] = ode45(FUN,tspan,x0,pair,ode_fcn_format,tol,trace,count,hmax)
 %
 % INPUTS:
 %    FUN   - String containing name of user-supplied problem description.
@@ -82,15 +82,15 @@
 %            simply make 'rhs_counter' global in the file that calls ode45
 %    hmax  - limit the maximum stepsize to be less than or equal to hmax
 %    N_est_acc_steps - an estimate of how many accepted steps there may be;
-%                      used to preallocate memory for the [tout,xout] solutions
+%                      used to preallocate memory for the [t_out,x_out] solutions
 %
 % OUTPUTS:
-%    tout  - array of discretized times points (an Nsteps_acc by 1 column-vector).
-%    xout  - solution, one solution column-vector per tout-value (an Nsteps_acc by Nstates matrix)
+%    t_out  - array of discretized times points (an Nsteps_acc by 1 column-vector).
+%    x_out  - solution, one solution row-vector per t_out-value (an Nsteps_acc by Nstates matrix)
 %    Nsteps_acc - total number of accepted integration steps + 1
 %    Nsteps_rej - total number of rejected integration steps
 %
-% The result can be displayed by: plot(tout, xout).
+% The result can be displayed by: plot(t_out, x_out).
 %
 % The following relationship should hold after a completed run:
 %    rhs_counter == (Nsteps_acc-1+Nsteps_rej)*6+1

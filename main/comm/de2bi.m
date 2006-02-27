@@ -95,7 +95,7 @@ function b = de2bi(d, n, p, f)
   b = floor (rem (d, p*power) ./ power);
 
   if (strcmp(f,'left-msb'))
-    b = b(:,length(b):-1:1);
+    b = b(:,columns(b):-1:1);
   elseif (!strcmp(f,'right-msb'))
     error("de2bi: unrecognized flag");
   endif

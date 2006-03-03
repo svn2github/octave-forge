@@ -19,43 +19,26 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 % All input and output parameters are organized in columns, one column 
 % corresponds to the parameters of one channel.
 %
-%  Mode determines estimation algorithm. 
-%    0:		multichannel Levinson-Durbin Recursion 	  
-%    1: 	multi-channel Levinson algorithm with correlation function estimation method 
-%   		also called the "multichannel Yule-Walker" using the biased correlation function
-%    2:  [default] Nuttall-Strand Method [2,5,6,7], 
-%		Covariances are normalized by N=length(X)-p (unbiased estimates)
-%		also called multi-channel Burg algorithm 
-%		Yields best estimates according to [1] 
-%    3,7:       multi-channel Levinsion algorithm [2] using Vieira-Morf Method
-%    4:		algorihtm according to [8] - not functional. 	
-%    5:  	Nuttall-Strand Method [2,5,6,7]
-%		Covariances are normalized by N=length(X) (biased estimates)
+% Mode determines estimation algorithm. 
+%  1:  Correlation Function Estimation method using biased correlation function estimation method
+%   		also called the "multichannel Yule-Walker" [1,2] 
+%  6:  Correlation Function Estimation method using unbiased correlation function estimation method
+%
+%  2:  Partial Correlation Estimation: Vieira-Morf [2] using unbiased covariance estimates.
+%               In [1] this mode was used and (incorrectly) denominated as Nutall-Strand. 
+%		Its the DEFAULT mode; according to [1] it provides the most accurate estimates.
+%  5:  Partial Correlation Estimation: Vieira-Morf [2] using biased covariance estimates.
 %		Yields similar results than Mode=2;
-%    6: 	multi-channel Levinson algorithm with correlation function estimation method 
-%   		also called the "multichannel Yule-Walker" using an unbiased correlation function
+%
+%  3:  Partial Correlation Estimation: Nutall-Strand [2] (biased correlation function)
+%  7:  Partial Correlation Estimation: Nutall-Strand [2] (unbiased correlation function)
+%
 %
 % REFERENCES:
-%  [1] A. Schloegl, Comparison of Multivariate Autoregressive Estimators.
-%       Signal processing, Elsevier B.V. (in press).
+%  [1] A. Schl\"ogl, Comparison of Multivariate Autoregressive Estimators.
+%       Signal processing, Elsevier B.V. (in press). 
+%       available at http://dx.doi.org/doi:10.1016/j.sigpro.2005.11.007
 %  [2] S.L. Marple "Digital Spectral Analysis with Applications" Prentice Hall, 1987.
-%  [3] M. Kaminski, M. Ding, W. Truccolo, S.L. Bressler, Evaluating causal realations in neural systems:
-%	Granger causality, directed transfer functions and statistical assessment of significance.
-%	Biol. Cybern., 85,145-157 (2001)
-%  [4] T. Schneider and A. Neumaier, A. 2001. 
-%	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
-%	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
-%  [5]	O.N. Strand, 
-%	Multichannel complex maximum entropy (autoregressive) spectral Analysis, 
-%	IEEE Trans. Autom. Control, Vol. 22, Aug. 1977, pp. 634-640.
-%  [6]	A.H. Nuttall, 
-%	FORTRAN Program for multivariate linear predictive spectral analysis, employing forward and backward averaging, 
-%	Naval Underwater Systems Center Technical Report 5419, New London, Conn. 1976a.
-%  [7]	A.H. Nuttall, 
-%	Multivariate linear predictive spectral analysis employing weighted forward and backward averaging: 
-%	a generalization of Burg's algorithm, 
-%	Naval Underwater Systems Center Technical Report 5501, New London, Conn. , 1976b. 
-%  [8] M.S. Kay "Modern Spectral Estimation" Prentice Hall, 1988. 
 %
 %
 % A multivariate inverse filter can be realized with 
@@ -109,9 +92,8 @@ end;
 [C(:,1:M),n] = covm(Y,'M');
 PE(:,1:M)  = C(:,1:M)./n;
 
-if Mode==0;  % %%%%% multi-channel Levinsion algorithm [2]
-        % multivariate Autoregressive parameter estimation
-        fprintf('Warning MDURLEV: It''s not recommended to use this mode\n')        
+if Mode==0;  % this method is broken
+        fprintf('Warning MVAR: Mode=0 is broken.\n')        
         C(:,1:M) = C(:,1:M)/N;
         F = Y;
         B = Y;
@@ -140,12 +122,10 @@ if Mode==0;  % %%%%% multi-channel Levinsion algorithm [2]
                 PEB = [eye(M) - ARB(:,K*M+(1-M:0))*ARF(:,K*M+(1-M:0))]*PEB;
                 PE(:,K*M+(1:M)) = PEF;        
         end;
+
         
-elseif Mode==1, 
-        %%%%% multi-channel Levinson algorithm 
-        %%%%% with correlation function estimation method 
-        %%%%% also called the "multichannel Yule-Walker"
-        %%%%% using the biased correlation 
+elseif Mode==1, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using biased correlation function
+	% ===== In [1,2] this algorithm is denoted "Multichannel Yule-Walker" ===== %
         C(:,1:M) = C(:,1:M)/N;
         PEF = C(:,1:M);
         PEB = C(:,1:M);
@@ -164,9 +144,6 @@ elseif Mode==1,
                         tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
                         ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
                         ARF(:,L*M+(1-M:0))     = tmp;
-                        %tmp      = ARF{L}   - ARF{K}*ARB{K-L};
-                        %ARB{K-L} = ARB{K-L} - ARB{K}*ARF{L};
-                        %ARF{L}   = tmp;
                 end;
                 
                 RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
@@ -176,18 +153,14 @@ elseif Mode==1,
                 PEB = [eye(M) - ARB(:,K*M+(1-M:0))*ARF(:,K*M+(1-M:0))]*PEB;
                 PE(:,K*M+(1:M)) = PEF;        
         end;
+
         
-elseif Mode==6, 
-        %%%%% multi-channel Levinson algorithm 
-        %%%%% with correlation function estimation method 
-        %%%%% also called the "multichannel Yule-Walker"
-        %%%%% using the unbiased correlation 
-        
+elseif Mode==6, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using unbiased correlation function
         C(:,1:M) = C(:,1:M)/N;
         PEF = C(:,1:M);
         PEB = C(:,1:M);
         
-        for K=1:Pmax,
+        for K = 1:Pmax,
                 [C(:,K*M+(1:M)),n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 C(:,K*M+(1:M)) = C(:,K*M+(1:M))./n;
 		%C{K+1} = C{K+1}/N;
@@ -212,16 +185,15 @@ elseif Mode==6,
                 PE(:,K*M+(1:M)) = PEF;        
         end;
         
-elseif Mode==2, 
-        %%%%% multi-channel Burg algorithm 
-        %%%%% using Nuttall-Strand Method [2,5,6,7]
-        %%%%% Covariance matrix is normalized by N=length(X)-p 
+
+elseif Mode==2 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with unbiased covariance estimation
+	%===== In [1] this algorithm is denoted "Nutall-Strand with unbiased covariance" =====%
         C(:,1:M) = C(:,1:M)/N;
         F = Y;
         B = Y;
         PEF = C(:,1:M);
         PEB = C(:,1:M);
-        for K=1:Pmax,
+        for K = 1:Pmax,
                 [D,n]	= covm(F(K+1:N,:),B(1:N-K,:),'M');
                 D = D./n;
 
@@ -250,11 +222,9 @@ elseif Mode==2,
                 PE(:,K*M+(1:M)) = PEF;        
         end;
         
-elseif Mode==5,
-        %%%%% multi-channel Burg algorithm 
-        %%%%% using Nutall-Strand Method [2,5,6,7]
-        %%%%% Covariance matrix is normalized by N=length(X) 
-        
+
+elseif Mode==5 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with biased covariance estimation
+	%===== In [1] this algorithm is denoted "Nutall-Strand with biased covariance" ===== %
         %C{1} = C{1}/N;
         F = Y;
         B = Y;
@@ -288,9 +258,9 @@ elseif Mode==5,
 
                 PE(:,K*M+(1:M)) = PEF;        
         end;
+
         
-elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Method
-        fprintf('Warning MDURLEV: It''s not recommended to use this mode\n')        
+elseif Mode==3 %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] with biased covariance estimation
         C(:,1:M) = C(:,1:M)/N;
         F = Y;
         B = Y;
@@ -298,10 +268,10 @@ elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Me
         PEB = C(:,1:M);
         for K=1:Pmax,
                 [D, n]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
-                D = D./n;
+                D = D./N;
 
-		ARF(:,K*M+(1-M:0)) = (PEF.^-.5)*D*(PEB.^-.5)';	
-                ARB(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0)); 
+                ARF(:,K*M+(1-M:0)) = 2*D / (PEB+PEF);	
+                ARB(:,K*M+(1-M:0)) = 2*D'/ (PEF+PEB);	
                 
                 tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
                 B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
@@ -317,17 +287,17 @@ elseif Mode==3, %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Me
                 RCF = ARF(:,K*M+(1-M:0));
                 
                 [PEF,n] = covm(F(K+1:N,:),F(K+1:N,:),'M');
-                PEF = PEF./n;
+                PEF = PEF./N;
 
 		[PEB,n] = covm(B(1:N-K,:),B(1:N-K,:),'M');
-                PEB = PEB./n;
+                PEB = PEB./N;
 
                 %PE{K+1} = PEF;        
                 PE(:,K*M+(1:M)) = PEF;        
         end;
+
         
-elseif Mode==7 %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Method
-        fprintf('Warning MDURLEV: It''s not recommended to use this mode\n')        
+elseif Mode==7 %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] with unbiased covariance estimation 
         C(:,1:M) = C(:,1:M)/N;
         F = Y;
         B = Y;
@@ -337,8 +307,8 @@ elseif Mode==7 %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Met
                 [D,n]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
                 D = D./n;
 
-		ARF(:,K*M+(1-M:0)) = (PEF.^-.5)*D*(PEB.^-.5);	
-                ARB(:,K*M+(1-M:0)) = (PEF.^-.5)*D'*(PEB.^-.5);	
+                ARF(:,K*M+(1-M:0)) = 2*D / (PEB+PEF);	
+                ARB(:,K*M+(1-M:0)) = 2*D'/ (PEF+PEB);	
                 
                 tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
                 B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
@@ -362,9 +332,10 @@ elseif Mode==7 %%%%% multi-channel Levinsion algorithm [2] using Vieira-Morf Met
                 %PE{K+1} = PEF;        
                 PE(:,K*M+(1:M)) = PEF;        
         end;
+
         
 elseif Mode==4,  %%%%% Kay, not fixed yet. 
-        fprintf('Warning MDURLEV: It''s not recommended to use this mode\n')        
+        fprintf('Warning MVAR: Mode=4 is broken.\n')        
         
         C(:,1:M) = C(:,1:M)/N;
         K = 1;
@@ -385,15 +356,16 @@ elseif Mode==4,  %%%%% Kay, not fixed yet.
 
                 D = C(:,K*M+(1:M));
                 for L = 1:K-1,
-                        D = D - ARF(:,L*M+(1-M:0))*C(:,(K-L)*M+(1:M));
+                        D = D - C(:,(K-L)*M+(1:M))*ARF(:,L*M+(1-M:0));
                 end;
+                
                 ARF(:,K*M+(1-M:0)) = PEB \ D;	
                 ARB(:,K*M+(1-M:0)) = PEF \ D';	
                 for L = 1:K-1,
-                        ARFtmp(:,L*M+(1-M:0))  = ARF(:,L*M+(1-M:0))  - ARB(:,(K-L)*M+(1-M:0)) *ARF(:,K*M+(1-M:0)) ;
-                        ARB(:,L*M+(1-M:0))  = ARB(:,L*M+(1-M:0))  - ARF(:,(K-L)*M+(1-M:0)) *ARB(:,K*M+(1-M:0)) ;
+                        tmp = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
+                        ARF(:,L*M+(1-M:0)) = tmp;
                 end;
-                ARF(:,1:(K-1)*M) = ARFtmp;
                 RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0)) ;
                 RCB(:,K*M+(1-M:0)) = ARB(:,K*M+(1-M:0)) ;
                 

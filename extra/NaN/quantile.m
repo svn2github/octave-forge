@@ -1,14 +1,15 @@
-function Q=quantile(Y,q)
-% QUANTILE calculates the quantiles of histograms or sample arrays.  
+function Q=quantile(Y,q,DIM)
+% QUANTILE calculates the quantiles of histograms and sample arrays.  
 %
-%  Q = quantile(Y,q)      
-%     returns the q-th quantile of each column of sample array Y
+%  Q = quantile(Y,q)
+%  Q = quantile(Y,q,DIM)
+%     returns the q-th quantile along dimension DIM of sample array Y.
+%     size(Q) is equal size(Y) except for dimension DIM which is size(Q,DIM)=length(Q)
 %
 %  Q = quantile(HIS,q)
 %     returns the q-th quantile from the histogram HIS. 
 %     HIS must be a HISTOGRAM struct as defined in HISTO2 or HISTO3.
-%
-% If q is a vector, the each row of Q returns the q(i)-th quantile 
+%     If q is a vector, the each row of Q returns the q(i)-th quantile 
 %
 % see also: HISTO2, HISTO3, PERCENTILE
 
@@ -17,7 +18,7 @@ function Q=quantile(Y,q)
 % q-quantile Q of data series Y 
 % (1) explicite form
 %	tmp=sort(Y);
-%	N=sum(~isnan(Y));
+%	N = sum(~isnan(Y));
 %	Q = flix(tmp,N*q + 0.5);
 %
 % (2) in 1 line
@@ -37,9 +38,18 @@ function Q=quantile(Y,q)
 %	end;	
 
 %	$Id$
-%	Copyright (C) 1996-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2003,2005,2006 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+
+
+if nargin<3,
+        DIM = [];
+end;
+if isempty(DIM),
+        DIM = min(find(size(Y)>1));
+        if isempty(DIM), DIM = 1; end;
+end;
 
 
 if nargin<2,
@@ -69,20 +79,48 @@ else
                                 end;	        
                         end
                 end;
-                
+
+
         elseif isnumeric(Y),
-                [yr,yc] = size(Y);
-                Q = repmat(nan,length(q),yc);
-		
-                N = sum(~isnan(Y),1);
+		sz = size(Y);
+		if DIM>length(sz),
+		        sz = [sz,ones(1,DIM-length(sz))];
+		end;
+
+		D1 = prod(sz(1:DIM-1));
+		D3 = prod(sz(DIM+1:length(sz)));
+		Q  = repmat(nan,[sz(1:DIM-1),length(q),sz(DIM+1:length(sz))]);
+		for k = 0:D1-1,
+		for l = 0:D3-1,
+		        xi = k + l * D1*sz(DIM) + 1 ;
+			xo = k + l * D1*length(q) + 1;
+		        t  = Y(xi:D1:xi+D1*sz(DIM)-1);
+		        t  = sort(t(~isnan(t)));
+		        n  = length(t); 
+			
+			Q(xo:D1:xo+D1*length(q)-1) = flix(t, n*q' + 0.5);
+		end;
+		end;
+
+
+	elseif 0, 	% alternative implementation 
+		sz = size(Y);
+		sz = sz([DIM,1:DIM-1,DIM+1:length(sz)]);
+		yr = prod(sz(2:end));
+		Y  = reshape(permute(Y,[DIM,1:DIM-1,DIM+1:length(sz)]),sz(1),yr);
+			
+                N  = sum(~isnan(Y),1);
                 Y(isnan(Y)) = inf;   % making sure NaN's are at the end;
-                
-                Y = sort(Y,1);
-                
-		for k1 = 1:yc,
-                        Q(:,k1) = flix(Y(1:N,k1),N(k1)*q + 0.5);                	        
+    		Y  = sort(Y,1);
+		
+                Q  = repmat(nan,length(q),yr);
+		for k1 = 1:yr,
+                        Q(:,k1) = flix(Y(:,k1),N(k1)*q' + 0.5);
                 end;
-                
+                sz(1) = length(q);
+                Q  = ipermute(reshape(Q,sz),[DIM,1:DIM-1,DIM+1:length(sz)]);
+
+
         else
                 fprintf(2,'Error QUANTILES: invalid input argument\n');
                 return;

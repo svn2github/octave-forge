@@ -110,7 +110,7 @@ function L = legendre (n,x)
       Y = zeros(n + 1, length (x));
       [dr, dc] = size (d3);
       for m = 0:dr - 1
-        Y(m + 1, :) = polyval (d3(m + 1, 1:(dc - m)) .* Lp(1:(dc - m))', x);
+        Y(m + 1, :) = polyval (d3(m + 1, 1:(dc - m)) .* Lp(1:(dc - m))', x)(:)';
       endfor
 
       # calculate (-1)^m*(1-x^2)^(m/2)	for m=0..n at x
@@ -125,3 +125,13 @@ function L = legendre (n,x)
     warn_fortran_indexing = wfi;
   end_unwind_protect
 endfunction
+
+%!test
+%! result=legendre(3,[-1.0 -0.9 -0.8]);
+%! expected = [
+%!    -1.00000  -0.47250  -0.08000
+%!     0.00000  -1.99420  -1.98000
+%!     0.00000  -2.56500  -4.32000
+%!     0.00000  -1.24229  -3.24000
+%! ];
+%! assert(result,expected,1e-5);

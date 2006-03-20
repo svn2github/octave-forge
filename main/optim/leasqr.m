@@ -163,7 +163,7 @@ else
     error('options and parameter matrices must have same number of rows'),
   end;
   if (noc ~= 2),
-    options=[options(noc,1), Inf*ones(noc,1)];
+    options=[options(:,1), Inf*ones(nor,1)];
   end;
 end;
 pprec=options(:,1);
@@ -215,11 +215,9 @@ for iter=1:niter,
     chg=((v*gse).*nrm);
 %   check the change constraints and apply as necessary
     ochg=chg;
-    for iii=1:n,
-      if (maxstep(iii)==Inf), break; end;
-      chg(iii)=max(chg(iii),-abs(maxstep(iii)*pprev(iii)));
-      chg(iii)=min(chg(iii),abs(maxstep(iii)*pprev(iii)));
-    end;
+    idx = ~isinf(maxstep);
+    limit = abs(maxstep(idx).*pprev(idx));
+    chg(idx) = min(max(chg(idx),-limit),limit);
     if (verbose & any(ochg ~= chg)),
       disp(['Change in parameter(s): ', ...
          sprintf('%d ',find(ochg ~= chg)), 'were constrained']);

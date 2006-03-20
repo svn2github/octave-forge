@@ -148,7 +148,24 @@ function legend (varargin)
   ## Get the original plotting command
   
   tmpfilename=tmpnam;
+  syncfile = tmpnam;
+
+  # Save the plot state to a temporary file
+
   __gnuplot_raw__ (["save \"",tmpfilename,"\"\n"]);
+
+  # Force gnuplot to write a synchronization file after the plot state is saved
+  # and wait for it to appear
+
+  __gnuplot_raw__ (["set print \"",syncfile,"\"\nprint 1\nset print\n"]);
+  attempt=0;
+  while (isempty(stat(syncfile))) 
+    if (++attempt > 20) error("gnuplot is not responding"); endif
+    usleep(1e5); 
+  end
+
+
+  # Parse the plot state file
 
   awk_prog= \
       "BEGIN { \
@@ -175,27 +192,21 @@ function legend (varargin)
          } \
         } \
        }";
-            
   shell_cmd=["grep \"^", gnuplot_command_plot, " \" '", tmpfilename, "' | ", \
              "sed -e 's/,/ , /g' -e 's/\"/ \" /g'", " | ", \
              "awk '", awk_prog, "'"];
-
-  # wait for the file to appear
-  attempt=0;
-  while (isempty(stat(tmpfilename))) 
-    if (++attempt > 20) error("gnuplot is not responding"); endif
-    usleep(1e5); 
-  end
-  # wait for the file to be non-empty
-  while (~stat(tmpfilename).size)
-    usleep(1e5); 
-  end
   plot_cmd = split(system(shell_cmd),"\n");
+
+  # Remove state file and sync file
+
+  unlink(tmpfilename);
+  unlink(syncfile);
+
+  # Strip final blank line
 
   if (~length(deblank(plot_cmd(rows(plot_cmd), :))))
     plot_cmd = plot_cmd ([1:rows(plot_cmd)-1],:);
   endif;
-  unlink(tmpfilename);
   
   ## Look for the number of graph
 
@@ -207,14 +218,14 @@ function legend (varargin)
       nb_graph++;
     endif;
   endwhile;
-
-  ## Change the legend of each graph
   
+  ## Change the legend of each graph
+
   new_plot = [];
   if (data_type == 0)
     va_arg_cnt = 1;
-
   endif;
+
   fig = 0;
   i = 1;
   while (fig < nb_graph)
@@ -263,7 +274,7 @@ function legend (varargin)
     
     fig++;
   endwhile;
-
+  
   ## Create a new plotting command
 
   new_plot = [new_plot, "\n"];  
@@ -307,8 +318,9 @@ function legend (varargin)
   endif;
 
   ## Regenerate the plot
-  
+
   __gnuplot_replot__ 
+
   
 endfunction;
 
@@ -321,8 +333,8 @@ endfunction;
 %!demo
 %! close all;
 %! labels = {};
-%! for i = 1:10
-%!     plot(1:100, rand(1)*10 + rand(100,1)); hold on;
+%! for i = 1:5
+%!     plot(1:100, i + rand(100,1)); hold on;
 %!     labels = {labels{:}, strcat("Signal ", num2str(i))};
 %! endfor; hold off;
 %! title("Signals with random offset and uniform noise")

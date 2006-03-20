@@ -74,8 +74,12 @@ function image (x, y, A, zoom)
   ## Mac OS X - write .bmp file to Preview.app 
   temp_name = tmpnam();
   bmp_name = [temp_name, '.bmp'];
-  colors = colormap();
-  bmpwrite(A, colors, bmp_name); 
+  if ndims(A) == 3,
+    bmpwrite(A, bmp_name);
+  else
+    colors = colormap();
+    bmpwrite(A, colors, bmp_name); 
+  endif
   mark_for_deletion(bmp_name);
   system(['open ', bmp_name]);
 

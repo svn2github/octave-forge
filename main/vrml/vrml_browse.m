@@ -86,7 +86,7 @@ if vrml_b_pid > 0		# There's already a browser ##########
 
 				# Check that browser is really alive
 
-  [dum,status]=system (sprintf ("kill -CONT %d &> /dev/null",vrml_b_pid));
+  [status, dum] = system (sprintf ("kill -CONT %d &> /dev/null",vrml_b_pid));
   
   if ! status
     if verbose
@@ -104,7 +104,7 @@ end				# End of check if old browser's alive
 
 				# ####################################
 				# Check that temp file exists ########
-[dum,status] = system (["test -e ",b_temp]);
+[status, dum] = system (["test -e ",b_temp]);
 if !length (s)
 
   if verbose
@@ -168,8 +168,8 @@ if vrml_b_pid <= 0
 				# and exits. Octave reads the output of the
 				# system call, which is the browser's pid.
 				# Phew!  
-##  [out, status] = system (cmd = [vrml_b_name," ",b_opt," \"file:",b_temp,"\""], 1);
-  [out, status] = system (cmd = [vrml_b_name," ",b_opt," ",b_temp], 1);
+##  [status, out] = system (cmd = [vrml_b_name," ",b_opt," \"file:",b_temp,"\""], 1);
+  [status, out] = system (cmd = [vrml_b_name," ",b_opt," ",b_temp], 1);
 ##  cmd
   if status,
     
@@ -195,7 +195,7 @@ if (!new_browser) && (vrml_b_pid > 1)
 				# ####################################
 				# Send USR1 signal to browser to tell it to
 				# raise itself.
-  [dum,status]=system (sprintf ("kill -USR1 %d &> /dev/null",vrml_b_pid));
+  [status, dum] = system (sprintf ("kill -USR1 %d &> /dev/null",vrml_b_pid));
 
   if status,  
     printf ("vrml_browse : browser pid=%d can't be signaled\n",vrml_b_pid);

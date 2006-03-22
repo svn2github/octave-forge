@@ -163,7 +163,7 @@ function ret = edit(file,state)
   if (isempty(FUNCTION.EMAIL))
     host=getenv("HOSTNAME");
     if isempty(host), 
-      host = system("uname -n");
+      [status, host] = system("uname -n");
                                 # trim newline from end of hostname
       if !isempty(host) host = host(1:length(host)-1); endif
     endif

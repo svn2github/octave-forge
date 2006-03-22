@@ -117,7 +117,7 @@ printf ("\n");
 perlcmd = "print qq{$1,$2;} if /^TAG:\\s*(\\d+)\\s*STATE:\\s*(\\d+)/";
 cmd = sprintf ("perl -ne '%s' %s", perlcmd, data_out);
 
-res = system (cmd, 1);
+[status, res] = system (cmd, 1);
 res = res(1:length(res)-1);	# Remove last ";"
 stl = eval (["[",res,"];"])';	# List of clicks
 

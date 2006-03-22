@@ -43,7 +43,7 @@ function y = units(fromUnit, toUnit, x)
         usage('units(fromUnit, toUnit [, x])')
     endif
 
-    [rawoutput, status] = system(sprintf('units "%s" "%s"', fromUnit, toUnit), 1);
+    [status, rawoutput] = system(sprintf('units "%s" "%s"', fromUnit, toUnit), 1);
     (0 == status) || error([rawoutput,
         'Verify that GNU units is installed in the current path.']);
     

@@ -405,7 +405,7 @@ function print(varargin)
     unlink(printname);
   elseif(!isempty(convertname))
     command = [ "convert ", name, " ", convertname ];
-    [output, errcode] = system (command);
+    [errcode, output] = system (command);
     unlink (name);
     if (errcode)
       error ("print: could not convert");

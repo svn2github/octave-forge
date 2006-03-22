@@ -412,7 +412,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
 
   ## grab the test code from the file
   ## XXX FIXME XXX why doesn't the following work?
-  ##     __body = system(["sed -n 's/^%!//p' '", __file, "'"]);
+  ##     [status, __body] = system(["sed -n 's/^%!//p' '", __file, "'"]);
   __tmp = tmpnam();
   unwind_protect
     system(sprintf("sed -n 's/^%%!//p' '%s' > '%s'", __file, __tmp));

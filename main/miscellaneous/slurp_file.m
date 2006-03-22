@@ -39,4 +39,4 @@ if err && f(1) != "/",
 end
 
 ## I'll even get decent error messages!
-s = system (sprintf ("cat '%s'",f), 1);
+[status, s] = system (sprintf ("cat '%s'",f), 1);

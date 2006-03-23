@@ -1,91 +1,124 @@
-# Copyright (C) 2004   Michael Creel   <michael.creel@uab.es>
-# 
+# Copyright (C) 2004,2005,2006   Michael Creel   <michael.creel@uab.es>
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# bfgsmin_example: example script that contains examples of how to call
-# bfgsmin for minimization using the BFGS or limited memory BFGS algorithms
-# Edit the script to see how bfgsmin may be used.
-#
-# usage: bfgsmin_example
+# usage: bfgsmin_example (to run) or edit bfgsmin_example (to examine)
+##
+# Shows how to call bfgsmin. There are two objective functions, the first
+# supplies the analytic gradient, and the second does not. The true minimizer
+# is at "location". Note that limited memory bfgs is faster when the dimension
+# is high. Also note that supplying analytic derivatives gives a speedup.
+##
+# Five examples are given:
+# Example 1: regular bfgs, analytic gradient
+# Example 2: limited memory bfgs, analytic gradient
+# Example 3: regular bfgs, numeric gradient
+# Example 4: limited memory bfgs, numeric gradient
+# Example 5: regular bfgs, analytic gradient, minimize wrt second argument
+1;
+# example obj. fn.: supplies analytic gradient
+function [obj_value, gradient] = objective(theta, location)
+	x = theta - location + ones(rows(theta),1); # move minimizer to "location"
+	[obj_value, gradient] = rosenbrock(x);
+endfunction
 
-1; # this is a script file
-# You can minimize w.r.t. any argument in the cell array of arguments,
-# but the argument minimization is done over must be a column vector.
-
-# It is possible to supply analytic derivatives. If the second return of the objective
-# function is a column vector the same size as the minimization argument, it is assumed
-# to be the gradient vector.
-
-page_screen_output = 0;
-
-# example obj. fn
-function obj_value = objective1(x, y)
-	z = y - ones(size(y));
-	obj_value = log(1 + x'*x) + log(1 + z'*z);
-endfunction 
-
-# example obj. fn.: with gradient w.r.t. x
-function [obj_value, gradient] = objective2(x, y)
-	obj_value = (1 + x'*x) + (1 + y'*y);
-	gradient = 2*x; #(1/(1 + x'*x))*2*x;
-endfunction 
-
-# Check bfgsmin, illustrating variations
-
-printf("\nEXAMPLE 1: Numeric gradient\n");
-x0 = ones(2,1);
-y0 = 2*ones(2,1);
-control = {10,2,1,1};  # maxiters, verbosity, conv. reg., arg_to_min
-[theta, obj_value, convergence] = bfgsmin("objective1", {x0, y0}, control);
-printf("\n");
-
-printf("\nEXAMPLE 2: Analytic gradient\n");
-control = {50,2,1,1};  # maxiters, verbosity, conv. reg., arg_to_min
-[theta, obj_value, convergence] = bfgsmin("objective2", {x0, y0}, control);
-printf("\n");
+# example obj. fn.: no gradient
+function obj_value = objective2(theta, location)
+	x = theta - location + ones(rows(theta),1); # move minimizer to "location"
+	obj_value = rosenbrock(x);
+endfunction
 
 
-printf("\nEXAMPLE 3: Numeric gradient, non-default tolerances\n");
-printf("Note how the gradient tolerance can't be achieved with\n");
-printf("numeric differentiation\n");
-control = {100,2,1,1};  # maxiters, verbosity, conv. reg., arg_to_min
-tols = {1e-12, 1e-8, 1e-8};
-[theta, obj_value, convergence] = bfgsmin("objective1", {x0, y0}, control, tols);
-printf("\n");
+# initial values
+dim = 20; # dimension of Rosenbrock function
+theta0 = zeros(dim+1,1);  # starting values
+location = 10*(0:dim)/dim; # true values
+location = location';
 
-printf("\nEXAMPLE 4: Funny case - min wrt 2nd arg.\n");
-control = {50,2,1,2};  # maxiters, verbosity, conv. reg., arg_to_min
-[theta, obj_value, convergence] = bfgsmin("objective1", {x0, y0}, control);
-
-
-printf("\nEXAMPLE 5: Limited memory BFGS, Numeric gradient\n");
-x0 = ones(2,1);
-y0 = 2*ones(2,1);
-control = {10,2,1,1,3};  # maxiters, verbosity, conv. reg., arg_to_min, memory
-[theta, obj_value, convergence] = bfgsmin("objective1", {x0, y0}, control);
-printf("\n");
-
-
-printf("\nEXAMPLE 6: Limited memory BFGS, Analytic gradient\n");
-control = {50,2,1,1,3};  # maxiters, verbosity, conv. reg., arg_to_min, memory
-[theta, obj_value, convergence] = bfgsmin("objective2", {x0, y0}, control);
-printf("\n");
+printf("EXAMPLE 1: Ordinary BFGS, using analytic gradient\n");
+t=cputime();
+control = {-1;2;1;1};  # maxiters, verbosity, conv. reg., arg_to_min
+[theta, obj_value, convergence] = bfgsmin("objective", {theta0, location}, control);
+t = cputime() - t;
+conv = norm(theta-location, 'inf');
+test = conv < 1e-5;
+if test
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t);
 
 
+printf("EXAMPLE 2: Limited memory BFGS, using analytic gradient\n");
+t=cputime();
+control = {-1;2;1;1;2};  # maxiters, verbosity, conv. reg., arg_to_min
+[theta, obj_value, convergence] = bfgsmin("objective", {theta0, location}, control);
+t = cputime() - t;
+conv = norm(theta-location, 'inf');
+est = conv < 1e-5;
+if test
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t);
 
 
+printf("EXAMPLE 3: Ordinary BFGS, using numeric gradient\n");
+t=cputime();
+control = {-1;2;1;1};  # maxiters, verbosity, conv. reg., arg_to_min
+[theta, obj_value, convergence] = bfgsmin("objective2", {theta0, location}, control);
+t = cputime() - t;
+conv = norm(theta-location, 'inf');
+test = conv < 1e-5;
+if test
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t);
 
+
+printf("EXAMPLE 4: Limited memory BFGS, using numeric gradient\n");
+t=cputime();
+control = {-1;2;1;1;2};  # maxiters, verbosity, conv. reg., arg_to_min
+[theta, obj_value, convergence] = bfgsmin("objective2", {theta0, location}, control);
+t = cputime() - t;
+conv = norm(theta-location, 'inf');
+est = conv < 1e-5;
+if test
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t);
+
+
+printf("EXAMPLE 5: Funny case: minimize w.r.t. second argument, Ordinary BFGS, using numeric gradient\n");
+t=cputime();
+control = {-1;2;1;2};  # maxiters, verbosity, conv. reg., arg_to_min
+[theta, obj_value, convergence] = bfgsmin("objective2", {location, theta0}, control);
+t = cputime() - t;
+conv = norm(theta-location, 'inf');
+test = conv < 1e-5;
+if test
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t);
 
 

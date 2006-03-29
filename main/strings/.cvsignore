@@ -1,6 +1,3 @@
 PKG_ADD
 *.octlink
 *.oct
-strmatch.m
-strcmpi.m
-str2double.m

@@ -5,13 +5,8 @@ ifdef HAVE_LIB_TERMCAP
 endif
 
 DISPATCH_LINK=$(patsubst %,%$(OCTLINK), dispatch_help builtin)
-t2.1.58=inline.m
-t2.9.0=dispatch.oct $(DISPATCH_LINK)
-DEPRECIATED_TARGETS=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58))) \
-	$($(word 2, $(sort t$(OCTAVE_VERSION) t2.9.0)))
 TARGETS=mfilename.oct waitbar.oct listen.oct xmlread.oct \
-	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct \
-	$(DEPRECIATED_TARGETS)
+	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct
 
 all:	$(TARGETS)
 
@@ -24,9 +19,6 @@ mfilename.oct: mfilename.cc
 
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)
-
-dispatch.oct: dispatch.cc
-	$(MKOCTFILE) $(MISCDEFS) $(TYPEID_HAS_CLASS) dispatch.cc
 
 listen.oct: listen.o listencanfork.o stringmatch.o
 	$(MKOCTFILE) listen.o listencanfork.o stringmatch.o
@@ -77,6 +69,3 @@ cell2csv.oct: cell2csv.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 
 clean: ; -$(RM) *.o octave-core core *.oct *~ $(t2.1.58)
-
-%.m : %.m.in
-	-$(INSTALL) $< $@

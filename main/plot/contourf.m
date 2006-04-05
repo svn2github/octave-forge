@@ -36,7 +36,7 @@ function contourf(z,n,w)
   z(z!=fix(z)) = 0;
 
   ## plot the image, with the contours drawn in black.
-  colormap([0,0,0; C(linspace(1,rows(C),n+1),:)]);
+  colormap([0,0,0; C(round(linspace(1,rows(C),n+1)),:)]);
   image(flipud(z)+1);
 
   ## restore the colormap

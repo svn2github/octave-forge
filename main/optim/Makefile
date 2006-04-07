@@ -1,6 +1,6 @@
 sinclude ../../Makeconf
 
-all: lp.oct leval.oct bfgsmin.oct bisectionstep.oct celleval.oct finitedifference.oct newtonstep.oct numgradient.oct numhessian.oct samin.oct
+all: lp.oct leval.oct bfgsmin.oct celleval.oct finitedifference.oct numgradient.oct numhessian.oct samin.oct
 
 clean:
 	-$(RM) *.o core octave-core *.oct *~

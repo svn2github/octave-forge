@@ -1,13 +1,5 @@
 sinclude ../Makeconf
 
-# Needed for sort.oct
-SORTDEFINES=$(HAVE_IEEE754_COMPLIANCE) $(HAVE_ND_ARRAYS)
-
-# This bit of logic decides whether to build sort.oct or not, as it
-# is include in octave versions 2.1.58 and greater
-t2.1.58=sort.oct
-SORT_BUILD=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58)))
-
 # RANDFLAGS controls whether all 53 bits of mantissa are used. For 32 bits
 # (~50% faster) use the following:
 # 	make RANDFLAGS=
@@ -26,7 +18,7 @@ SORT_BUILD=$($(word 2, $(sort t$(OCTAVE_VERSION) t2.1.58)))
 RANDFLAGS = -DALLBITS
 
 RAND_LINKS = $(patsubst %,%$(OCTLINK),randn rande randp randg)
-PROGS = $(SORT_BUILD) rand.oct $(RAND_LINKS) 
+PROGS = rand.oct $(RAND_LINKS) 
 #fsolve.oct
 
 all: $(PROGS)
@@ -42,9 +34,6 @@ $(RAND_LINKS):
 
 rand.oct : randmtzig.c randpoisson.c randgamma.c rand.cc
 	$(MKOCTFILE) $(RANDFLAGS) $(HAVE_ND_ARRAYS) rand.cc
-
-sort.oct : sort.cc oct-sort.cc oct-sort.h
-	$(MKOCTFILE) $(SORTDEFINES) $<
 
 # FIXES needs an install target because it isn't under main/ or extra/
 install:

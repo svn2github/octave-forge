@@ -14,7 +14,7 @@ DIRS="`find FIXES main/* extra/* nonfree/* -type d ! -name CVS -prune`"
 
 # Find the tests in that directory
 for dir in $DIRS; do
-    dir=${dir#./}
+    dir=`echo $dir | sed -e "s-^\./--" `
 
     # skip the NOINSTALL directories
     if test -f "$dir/NOINSTALL"; then continue; fi
@@ -31,7 +31,8 @@ for dir in $DIRS; do
     cxx_files=`echo $dir/*.cc`
     if test "$cxx_files" != "$dir/*.cc"; then 
 	for file in $cxx_files; do
-	    if test -f ${file%.cc}.o; then FILES="$FILES $file"; fi
+      	    obj=`echo "$file" | sed -e 's-\.cc$-.o-'`
+	    if test -f "$obj" ; then FILES="$FILES $file"; fi
 	done
     fi
 

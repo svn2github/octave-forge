@@ -26,7 +26,10 @@ OCTPATH="$OCTAVE_PATH"
 EXECPATH="$PATH:"
 for f in FIXES main/* extra/* nonfree/*; do
     # exclude CVS directories, only include directories, skip NOINSTALL
-    if test $f = ${f%/CVS} -a -d $f -a ! -f $f/NOINSTALL; then 
+    case "$f" in
+      */CVS) ;;
+      *)
+    if test -d $f -a ! -f $f/NOINSTALL; then 
 	OCTPATH="$ROOT/$f:$OCTPATH"
 
 	# if there is install data, include in on the path
@@ -44,10 +47,12 @@ for f in FIXES main/* extra/* nonfree/*; do
 	check=`echo $f/*.dylib`
 	if test "$check" != "$f/*.dylib"; then DYLDPATH="$ROOT/$f:$DYLDPATH"; fi
     fi
+    esac
 done
-export LD_LIBRARY_PATH="$LDPATH" 
-export DYLD_LIBRARY_PATH="$DYLDPATH" 
-export PATH="$BINPATH" 
-export OCTAVE_PATH="$OCTPATH"
-export OCTAVE_EXEC_PATH="$EXECPATH"
+LD_LIBRARY_PATH="$LDPATH" 
+DYLD_LIBRARY_PATH="$DYLDPATH" 
+PATH="$BINPATH" 
+OCTAVE_PATH="$OCTPATH"
+OCTAVE_EXEC_PATH="$EXECPATH"
+export LD_LIBRARY_PATH DYLD_LIBRARY_PATH PATH OCTAVE_PATH OCTAVE_EXEC_PATH
 $*

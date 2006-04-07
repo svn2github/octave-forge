@@ -381,7 +381,7 @@ octave_value_list __newtonstep(std::string f, Cell& f_args, ColumnVector dx, int
 
 
 
-DEFUN_DLD(bfgsminnew, args, ,
+DEFUN_DLD(bfgsmin, args, ,
 "bfgsmin: bfgs minimization of a function with respect to a column vector.\n\
 \n\
 By default, numeric derivatives are used, but see bfgsmin_example.m\n\

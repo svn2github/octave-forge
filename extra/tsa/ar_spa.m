@@ -60,7 +60,7 @@ w=zeros(size(ARP));
 A=zeros(size(ARP));
 B=zeros(size(ARP));
 F=zeros(size(ARP));
-
+F1 = F;
 for k = 1:NTR, %if ~mod(k,100),k, end;
 	[r,p,tmp] = residue(1,[1 -ARP(k,:)]);
 	[tmp,idx] = sort(-abs(r));   
@@ -81,11 +81,12 @@ for k = 1:NTR, %if ~mod(k,100),k, end;
         elseif 1;
 	        a3 = polyval([-ARP(k,pp-1:-1:1).*(1:pp-1), pp],1./p(idx).');
 	        a  = polyval([-ARP(k,pp:-1:1) 1],p(idx).');
-		F(k,:) = (1+(imag(P(k,:))~=0))./(a.*a3); 
+		%F(k,:) = (1+(imag(P(k,:))~=0))./(a.*a3); 
+		F(k,:) = (1+sign(imag(P(k,:))))./(a.*a3); 
         end;	
 end;
 
-A = A.*sqrt(E(:,ones(1,pp)));
+A = A.*sqrt(E(:,ones(1,pp))/(2*pi*nhz));
 if nargin>1,
         if size(nhz,1)==1,
                 nhz = nhz(ones(NTR,1),:);
@@ -95,6 +96,7 @@ if nargin>1,
 end;
 if nargin>2,
         F = F.*E(:,ones(1,pp));
+        F1 = F1.*E(:,ones(1,pp));
 end;
 
 ip = sum(imag(P)~=0,2)/2; 

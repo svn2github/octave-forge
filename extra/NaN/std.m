@@ -46,8 +46,9 @@ function [o,v]=std(i,opt,DIM)
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
-
+%	Copyright (C) 2000-2003, 2006 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This is part of the NaN-toolbox for Octave and Matlab 
+%       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
 if nargin>2
         [s,n,y] = sumskipnan(i,DIM);

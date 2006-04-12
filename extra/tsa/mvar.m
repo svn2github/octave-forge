@@ -55,7 +55,7 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %	$Id$
 %	Copyright (C) 1996-2006 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%       http://hci.tugraz.at/schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
 %       http://biosig.sourceforge.net/
 

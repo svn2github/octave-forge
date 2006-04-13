@@ -56,6 +56,10 @@ Open Source Initiative (www.opensource.org)
 #include "fixedComplex.h"
 #include "fixedCMatrix.h"
 
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
 class Octave_map;
 class octave_value_list;
 
@@ -101,8 +105,8 @@ public:
 
   bool is_real_type (void) const { return true; }
 
-  octave_value *clone (void) const { return new octave_fixed (*this); }
-  octave_value *empty_clone (void) const { return new octave_fixed (); }
+  OV_REP_TYPE *clone (void) const { return new octave_fixed (*this); }
+  OV_REP_TYPE *empty_clone (void) const { return new octave_fixed (); }
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok = 0);
   idx_vector index_vector (void) const 

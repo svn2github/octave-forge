@@ -23,6 +23,9 @@
 
 #include "ov-netcdf.h"
 
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
 
 typedef struct {
   int ncid;
@@ -40,7 +43,7 @@ public:
 
   octave_ncfile(string filenamep, string open_mode);
 
-  octave_value *clone(void) const { return new octave_ncfile(*this); }
+  OV_REP_TYPE *clone(void) const { return new octave_ncfile(*this); }
 
 // x.v = y     x(idx).v = y     x{idx}.v = y
 

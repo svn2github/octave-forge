@@ -18,6 +18,13 @@
 #include <octave/symtab.h>
 #include <octave/variables.h>
 
+#ifdef OV_REP_TYPE
+#define TYPE_CONV_FCN OV_REP_TYPE::type_conv_fcn
+#else
+#define OV_REP_TYPE octave_value
+#define TYPE_CONV_FCN type_conv_fcn
+#endif
+
 class Octave_map;
 class octave_value_list;
 
@@ -38,10 +45,10 @@ public:
    ~octave_tri(void);
    octave_tri (const octave_tri& D);
 
-   octave_value *clone (void) const;
+   OV_REP_TYPE *clone (void) const;
 
-   type_conv_fcn numeric_conversion_function (void) const;
-   octave_value * try_narrowing_conversion(void);
+   TYPE_CONV_FCN numeric_conversion_function (void) const;
+   OV_REP_TYPE * try_narrowing_conversion(void);
 
    inline tri_type tri_value(void) const { return tri;};
    void assign (const octave_value_list& idx, const Matrix& rhs);

@@ -22,6 +22,10 @@
 
 #include "ov-netcdf.h"
 
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
 typedef struct {
   nc_type nctype;
   dim_vector dimvec;
@@ -43,7 +47,7 @@ public:
   octave_ncatt(octave_ncfile* ncvarp, int attnump);
   octave_ncatt(octave_ncfile* ncvarp, std::string attnamep);
 
-  octave_value *clone(void) const { return new octave_ncatt(*this); }
+  OV_REP_TYPE *clone(void) const { return new octave_ncatt(*this); }
 
   octave_value subsasgn(const std::string & type,
 			const LIST < octave_value_list > &idx,

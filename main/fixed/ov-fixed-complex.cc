@@ -204,10 +204,10 @@ octave_fixed_complex::subsasgn (const std::string& type,
   return retval;
 }
 
-octave_value *
+OV_REP_TYPE *
 octave_fixed_complex::try_narrowing_conversion (void)
 {
-  octave_value *retval = 0;
+  OV_REP_TYPE *retval = 0;
 
   if (imag (scalar) == FixedPoint())
     retval = new octave_fixed (real (scalar));

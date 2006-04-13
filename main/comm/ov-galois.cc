@@ -27,9 +27,13 @@ Open Source Initiative (www.opensource.org)
 #endif
 
 #include <iostream>
+#include <octave/config.h>
 #include <octave/unwind-prot.h>
+#include <octave/pr-output.h>
 #include "galois.h"
 #include "ov-galois.h"
+
+extern int Vstruct_levels_to_print;
 
 #ifdef CLASS_HAS_LOAD_SAVE
 #include <octave/byte-swap.h>

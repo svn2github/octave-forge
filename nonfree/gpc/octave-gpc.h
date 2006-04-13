@@ -29,6 +29,10 @@ extern "C" {
 #include <gpcl/gpc.h>
 }
 
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
 void octave_gpc_free_polygon (gpc_polygon*);
 
 gpc_polygon* get_gpc_pt (octave_value);
@@ -62,7 +66,7 @@ public:
 
   ~octave_gpc_polygon (void) { octave_gpc_free_polygon (polygon); }
 
-  octave_value* clone (void) { return new octave_gpc_polygon (*this); }
+  OV_REP_TYPE* clone (void) { return new octave_gpc_polygon (*this); }
 
   bool is_defined (void) const { return true; }
 

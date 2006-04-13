@@ -22,6 +22,10 @@
 
 #include "ov-netcdf.h"
 
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
 typedef struct {
   std::list<std::string> dimnames;
   int dimids[NC_MAX_VAR_DIMS];
@@ -55,7 +59,7 @@ public:
 
   octave_ncvar(nc_type nctypep, std::list <std::string> dimnamesp):octave_base_value(), ncv(NULL) { }
 
-  octave_value *clone(void) const { return new octave_ncvar(*this); }
+  OV_REP_TYPE *clone(void) const { return new octave_ncvar(*this); }
 
 // x.v = y     x(idx).v = y     x{idx}.v = y
 

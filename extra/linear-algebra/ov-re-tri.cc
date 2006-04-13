@@ -26,28 +26,28 @@ octave_tri::~octave_tri(void)
 {
 }
 
-octave_value *octave_tri::clone(void) const
+OV_REP_TYPE *octave_tri::clone(void) const
 {
   return new octave_tri(*this);
 }
 
-static octave_value *
-tri_numeric_conversion_function(const octave_value& a)
+static OV_REP_TYPE *
+tri_numeric_conversion_function(const OV_REP_TYPE& a)
 {
   CAST_CONV_ARG (const octave_tri &);
   
   return new octave_matrix (v.matrix_value());
 }
 
-type_conv_fcn
+TYPE_CONV_FCN
 octave_tri::numeric_conversion_function (void) const
 {
   return tri_numeric_conversion_function;
 }
 
-octave_value * octave_tri::try_narrowing_conversion(void)
+OV_REP_TYPE * octave_tri::try_narrowing_conversion(void)
 {
-  octave_value *retval = octave_matrix::try_narrowing_conversion();
+  OV_REP_TYPE *retval = octave_matrix::try_narrowing_conversion();
 
   if ( retval==0){
     int nr = matrix.rows ();

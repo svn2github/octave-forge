@@ -75,7 +75,12 @@ octave_ncdim::octave_ncdim(octave_ncfile* ncfilep, int dimid) {
 // # endif
 
 
+// #ifdef OV_REP_TYPE
+//   //  count++;
+//   //  retval = octave_value(this);
+// #else
 //   //  retval = octave_value(this, count + 1);
+// #endif
 
 //   return retval;
 

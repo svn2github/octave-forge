@@ -318,10 +318,10 @@ octave_fixed_complex_matrix::subsasgn (const std::string& type,
   return retval;
 }
 
-octave_value *
+OV_REP_TYPE *
 octave_fixed_complex_matrix::try_narrowing_conversion (void)
 {
-  octave_value *retval = 0;
+  OV_REP_TYPE *retval = 0;
 
   int nr = matrix.rows ();
   int nc = matrix.cols ();

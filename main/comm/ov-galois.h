@@ -61,6 +61,10 @@ Open Source Initiative (www.opensource.org)
 #define __GALOIS_INDEX_OF_STR "index_of"
 #endif
 
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
 class octave_value_list;
 class tree_walker;
 
@@ -82,8 +86,8 @@ public:
 
   ~octave_galois (void) { };
 
-  octave_value *clone (void) const { return new octave_galois (*this); }
-  octave_value *empty_clone (void) const { return new octave_galois (); }
+  OV_REP_TYPE *clone (void) const { return new octave_galois (*this); }
+  OV_REP_TYPE *empty_clone (void) const { return new octave_galois (); }
 
   octave_value subsref (const std::string SUBSREF_STRREF type,
 			const LIST<octave_value_list>& idx);

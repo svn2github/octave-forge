@@ -48,6 +48,10 @@ Open Source Initiative (www.opensource.org)
 #include "fixedCColVector.h"
 #include "fixedCMatrix.h"
 
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
 class Octave_map;
 class octave_value_list;
 
@@ -83,8 +87,8 @@ public:
 
   ~octave_fixed_complex_matrix (void) { }
 
-  octave_value *clone (void) const { return new octave_fixed_complex_matrix (*this); }
-  octave_value *empty_clone (void) const { return new octave_fixed_complex_matrix (); }
+  OV_REP_TYPE *clone (void) const { return new octave_fixed_complex_matrix (*this); }
+  OV_REP_TYPE *empty_clone (void) const { return new octave_fixed_complex_matrix (); }
 
   octave_value do_index_op (const octave_value_list& idx)
     { return do_index_op (idx, 0); }
@@ -96,7 +100,7 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
-  octave_value *try_narrowing_conversion (void);
+  OV_REP_TYPE *try_narrowing_conversion (void);
 
   bool is_complex_matrix (void) const { return true; }
 

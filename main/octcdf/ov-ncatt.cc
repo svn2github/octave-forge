@@ -172,7 +172,12 @@ octave_value octave_ncatt::subsasgn(const std::string & type,
 
   ov_nc_put_att(get_ncid(),get_varid(),get_name(),get_nctype(),rhs);
 
+#ifdef OV_REP_TYPE
+  count++;
+  retval = octave_value(this);
+#else
   retval = octave_value(this, count + 1);
+#endif
 
   return retval;
 

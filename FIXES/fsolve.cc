@@ -202,7 +202,6 @@ are passed directly to @var{fcn}.\n\
       for (int i = 0;  i < nextra;  i++)
         fsolve_extra_args (i) = args (2 + i);
 
-
       if (nargout > 2)
 	warning ("fsolve: can't compute path output yet");
 

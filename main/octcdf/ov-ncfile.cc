@@ -284,7 +284,13 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 
   read_info();
 
+#ifdef OV_REP_TYPE
+  count++;
+  retval = octave_value(this);
+#else
   retval = octave_value(this, count + 1);
+#endif
+
   return retval;
 
 

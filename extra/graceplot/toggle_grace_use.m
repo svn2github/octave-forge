@@ -27,7 +27,7 @@
 global use_grace_state
 
 if(isempty(use_grace_state))
-  [verstr, status] = system ("xmgrace -version", 1);
+  [status, verstr] = system ("xmgrace -version", 1);
   if(status != 0)
     error("Grace binary not found");
   endif

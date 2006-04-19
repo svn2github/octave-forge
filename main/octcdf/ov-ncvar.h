@@ -44,6 +44,7 @@ typedef struct {
   octave_ncfile* ncfile;
   std::string varname;
   bool autoscale;
+  bool autonan;
 
 }  ncvar_t ;
 
@@ -110,6 +111,10 @@ public:
   }
 
   bool& autoscale() { return ncv->autoscale; };
+  bool autoscale() const { return ncv->autoscale; };
+
+  bool& autonan() { return ncv->autonan; };
+  bool autonan() const { return ncv->autonan; };
 
   /* Query Interface for netcdf related information */
 
@@ -123,6 +128,7 @@ public:
   std::string get_varname() const { return ncv->varname; };
   int get_dimid(int i) const { return ncv->dimids[i]; };
   std::list<std::string> get_dimnames() const { return ncv->dimnames; };
+
 
   void set_nctype(const nc_type t) { ncv->nctype = t; };
   void set_ncfile(octave_ncfile* t) { ncv->ncfile = t; };

@@ -1,4 +1,6 @@
 NetCDF 
+ ncautonan
+ ncautoscale
  ncbyte
  ncchar
  ncdouble

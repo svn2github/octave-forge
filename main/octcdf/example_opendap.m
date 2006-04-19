@@ -22,10 +22,13 @@ y = lat(j);
 ssh = nc{'ssh'}(end,j,i);
 
 fillval = nc{'ssh'}._FillValue;
-
-
 ssh(ssh == fillval) = NaN;
-ssh = reshape(ssh,length(j),length(i));
+
+% With autonan, i.e. every _FillValue is replaced by a NaN
+% nv = ncautonan(nc{'ssh'},1);
+% ssh = nv(end,j,i);
+
+ssh = squeeze(ssh);
 
 ncclose(nc);
 

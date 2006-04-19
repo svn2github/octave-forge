@@ -54,6 +54,7 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, std::string varnamep) :octave
   read_info();
 
   autoscale() = false;
+  autonan() = false;
 }
 
 
@@ -72,6 +73,8 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, int varidp):octave_base_value
   read_info();
 
   autoscale() = false;
+  autonan() = false;
+
 }
 
 // load charecteristics of netcdf variable from file
@@ -153,6 +156,7 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 			       const LIST < octave_value_list > &idx,
 			       const octave_value & rhs) {
   octave_value scale_factor, add_offset, scaledrhs;
+  octave_value fillvalue;
   octave_value retval;
 
   switch (type[0])
@@ -160,6 +164,11 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
     case '.':
       {
 	std::string name = idx.front()(0).string_value();
+
+	// convention of netcdf matlab toolbox
+        if (name == "FillValue_")
+	  name = "_FillValue";
+
 	get_ncfile()->set_mode(DefineMode);
 #       ifdef OV_NETCDF_VERBOSE
 	octave_stdout << "create attribute " << name << std::endl;
@@ -211,6 +220,27 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 	}
 
 
+	//
+	// replace NaN by _FillValue if requested
+	//
+
+	if (autonan()) {
+	  fillvalue = ov_nc_get_att(get_ncid(),get_varid(),"_FillValue");
+
+          if (!fillvalue.is_empty()) {
+            if ( scaledrhs.numel() == 1) {
+              if (isnan(scaledrhs.scalar_value())) 
+		scaledrhs = fillvalue;
+	    }
+            else
+	      for (int i=0; i < scaledrhs.numel(); i++) {
+		if (isnan(scaledrhs.array_value().xelem(i)))
+		  scaledrhs.array_value().xelem(i) = fillvalue.scalar_value();
+	      }
+	  }
+	}
+
+
 	get_ncfile()->set_mode(DataMode);
 	octave_value_list key_idx = *idx.begin();
 	std::list<Range> ranges = get_slice(key_idx);
@@ -250,6 +280,7 @@ octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
 			      const LIST < octave_value_list > &idx)
 {
   octave_value scale_factor, add_offset;
+  octave_value fillvalue;
   octave_value retval;
 
 
@@ -257,12 +288,18 @@ octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
     {
     case '.':
       {
-	std::string attrname = idx.front()(0).string_value();
+	std::string name = idx.front()(0).string_value();
+
+	// convention of netcdf matlab toolbox
+        if (name == "FillValue_")
+	  name = "_FillValue";
+
+
 #       ifdef OV_NETCDF_VERBOSE
-	octave_stdout << "getting attribute " << attrname << std::endl;
+	octave_stdout << "getting attribute " << name << std::endl;
 #       endif
 
-	retval = ov_nc_get_att(get_ncid(),get_varid(),attrname);
+	retval = ov_nc_get_att(get_ncid(),get_varid(),name);
 
 	break;
       }
@@ -276,6 +313,17 @@ octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
 	std::list<Range> ranges = get_slice(key_idx);
 
 	retval = ov_nc_get_vars(get_ncid(),get_varid(),ranges,get_nctype());
+
+	if (autonan()) {
+	  fillvalue = ov_nc_get_att(get_ncid(),get_varid(),"_FillValue");
+
+          if (!fillvalue.is_empty()) {
+            for (int i=0; i<retval.numel(); i++)
+	      if (retval.array_value().xelem(i) == fillvalue.scalar_value()) 
+	        retval.array_value().xelem(i) = octave_NaN;
+	  }
+	}
+
 
 	// autoscale the retrieved variable if necessary
 	// the variables attributes "scale_factor" and "add_offset" are
@@ -323,6 +371,8 @@ void  octave_ncvar::print(std::ostream & os, bool pr_as_read_syntax = false) con
 # endif
   os << "natts = " << get_natts() << std::endl;
 
+  os << "autoscale = " << (int)autoscale() << std::endl;
+  os << "autonan = " << (int)autonan() << std::endl;
 
   os << "size = " << dims().str() << std::endl;
   os << "ncsize = " << ncv->ncdimvec.str() << std::endl;

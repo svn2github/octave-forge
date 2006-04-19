@@ -21,7 +21,7 @@ ifndef OCTAVE_FORGE
 #       For NetCDF with OpenDAP (version 3.5.2 or higher) support use 
 #	the following two lines instead
         OCTCDF_LIBS=$(shell ncdap-config --libs)
-        OCTCDF_CFLAGS=$(shell ncdap-config --cflags)
+        OCTCDF_CFLAGS=$(shell ncdap-config --cflags) 
 
 
 #       If you use a version of octave 2.1.x, uncomment the following
@@ -41,7 +41,7 @@ OBJECTS = $(patsubst %.cc,%.o,$(NCSOURCES))
 
 NCLINKTARGETS = $(patsubst %,%$(OCTLINK), \
 	ncclose ncredef ncenddef ncsync ncvar ncatt \
-	ncdim ncname ncdatatype netcdf) 
+	ncdim ncname ncdatatype netcdf ncautonan ncautoscale) 
 
 
 MFILES =  ncchar.m ncfloat.m nclong.m ncbyte.m ncdouble.m ncint.m ncshort.m 
@@ -84,5 +84,5 @@ $(NCTARGET) : $(OBJECTS)
 $(MFILES): nctype.m4
 	m4 --define=TYPE=$(patsubst nc%.m,%,$@) nctype.m4 > $@
 
-clean: ; -$(RM) *.o core* octave-core *.oct *~ *.nc 
+clean: ; -$(RM) *.o core* octave-core *.oct *.octlink *~ *.nc 
 

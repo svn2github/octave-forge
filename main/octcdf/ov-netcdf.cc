@@ -435,6 +435,78 @@ Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes @var{na
 }
 
 
+
+DEFUN_DLD(ncautonan, args,, 
+"-*- texinfo -*-\n\
+@deftypefn {Loadable Function} @var{status} = ncautonan(@var{nv}) \n\
+@deftypefnx {Loadable Function} @var{nv} = ncautonan(@var{nv},@var{status}) \n\
+If ncautonan is called with one argument, it returns the autonan status of the  \n\
+NetCDF variable @var{nv}. With two arguments, it sets the autonan status to @var{status}.  \n\
+If autonan status is 1, all NaNs in the octave variable to store are replaced by the corresponding  \n\
+value of the _FillValue attribute. This feature is disabled if autonan is 0 (default). \n\
+@end deftypefn\n\
+@seealso{ncautoscale}\n")
+{
+
+  if (args.length() != 1 && args.length() != 2) {
+      print_usage("ncautonan");
+      return octave_value();
+    }
+
+  if (args(0).class_name() != "ncvar" ) {
+      print_usage("ncautonan");
+      return octave_value();
+    }
+
+   octave_ncvar& ncvar = (octave_ncvar&)args(0).get_rep();
+
+  if (args.length() == 1) {
+    return octave_value(ncvar.autonan());
+  }
+  else {
+     ncvar.autonan() = args(1).scalar_value() == 1;
+    return octave_value(ncvar.clone());
+  }
+}
+
+DEFUN_DLD(ncautoscale, args,, 
+"-*- texinfo -*-\n\
+@deftypefn {Loadable Function} @var{status} = ncautoscale(@var{nv}) \n\
+@deftypefnx {Loadable Function} @var{nv} = ncautoscale(@var{nv},@var{status}) \n\
+If ncautoscale is called with one argument, it returns the autoscale status of the  \n\
+NetCDF variable @var{nv}. With two arguments, it sets the autoscale status to @var{status}.  \n\
+If autoscale status is 1, octave variable to store are scaled by the corresponding  \n\
+value of the add_offset and scale_factor attribute:   \n\
+@example \n\
+octave_variable = scale_factor * netcdf_variable + add_offset  \n\
+@end example \n\
+This feature is disabled if autoscale is 0 (default). \n\
+@end deftypefn\n\
+@seealso{ncautoscale}\n")
+{
+
+  if (args.length() != 1 && args.length() != 2) {
+      print_usage("ncautoscale");
+      return octave_value();
+    }
+
+  if (args(0).class_name() != "ncvar" ) {
+      print_usage("ncautoscale");
+      return octave_value();
+    }
+
+   octave_ncvar& ncvar = (octave_ncvar&)args(0).get_rep();
+
+  if (args.length() == 1) {
+    return octave_value(ncvar.autoscale());
+  }
+  else {
+     ncvar.autoscale() = args(1).scalar_value() == 1;
+    return octave_value(ncvar.clone());
+  }
+}
+
+
 //
 // wrapper around the nc_get_att_* functions which provides directly an 
 // octave_value of the appropriate type

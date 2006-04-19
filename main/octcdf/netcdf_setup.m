@@ -42,3 +42,6 @@ dispatch('name','ncname','ncdim');
 
 dispatch('datatype','ncdatatype','ncvar');
 dispatch('datatype','ncdatatype','ncatt');
+
+dispatch('autoscale','ncautoscale','ncvar');
+dispatch('autonan','ncautonan','ncvar');

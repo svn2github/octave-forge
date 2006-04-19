@@ -70,7 +70,9 @@
 
 //#define  OV_NETCDF_VERBOSE
 
-#ifndef HAVE_OCTAVE_21
+#ifdef HAVE_OCTAVE_21
+#define octave_idx_type int
+#else
 #define OCTAVE_PERMVEC_ZEROBASED 
 #endif
 

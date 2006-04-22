@@ -721,7 +721,7 @@ extern "C" {
     }
 
   // floating point representation
-  int mxIsNaN(const double v) { return lo_ieee_is_NaN_or_NA(v) != 0; }
+  int mxIsNaN(const double v) { return (lo_ieee_is_NA(v) || lo_ieee_isnan(v)); }
   int mxIsFinite(const double v) { return lo_ieee_finite(v) != 0; }
   int mxIsInf(const double v) { return lo_ieee_isinf(v) != 0; }
   double mxGetEps() { return DBL_EPSILON; }

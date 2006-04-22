@@ -150,7 +150,7 @@ DEFBINOP(ldiv, tri, matrix)
 
 DEFASSIGNOP (assign, tri, matrix)
 {
-  CAST_BINOP_ARGS (octave_tri &, octave_matrix&);
+  CAST_BINOP_ARGS (octave_tri &, const octave_matrix&);
   v1.assign(idx, v2.matrix_value());
   return octave_value();
 }

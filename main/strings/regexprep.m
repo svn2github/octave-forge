@@ -32,7 +32,7 @@ function t = regexprep(str,pat,rep,varargin)
 	 with=str(subs(j,1):subs(j,2));
          r = strrep(r, replacing, with);
        end
-       t(s(i):e(i)) = r;
+       t = [t(1:s(i)-1),r,t(e(i)+1:end)];
      end
    else
      [s,e] = regexp(str,pat,varargin{:});
@@ -58,6 +58,6 @@ function t = regexprep(str,pat,rep,varargin)
 
 %!test  # Capture replacement
 %! data = "Bob Smith\nDavid Hollerith\nSam Jenkins";
-%! result = "Smith,Bob\nHollerith,David\nJenkins,Sam";
-%! t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2,$1');
+%! result = "Smith, Bob\nHollerith, David\nJenkins, Sam";
+%! t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2, $1');
 %! assert(t,result)

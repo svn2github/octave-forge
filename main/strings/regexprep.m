@@ -1,4 +1,25 @@
+## t = regexprep(string,pattern,replacement)
+##
+## Replace every occurrence of the pattern in the string with the replacement.
+##
+## The replacement can contain $i, which subsubstitutes for the ith set of
+## parentheses in the match string.  E.g.,
+##    regexprep("Bill Dunn",'(\w+) (\w+)','$2, $1')
+## returns "Dunn, Bill"
+
+## FIXME  This needs to be made into an oct-file with a two pass
+## algorithm which first determines the length of the result
+## string to preallocate it, then copies the parts of the original
+## and replacement strings into the appropriate places in the
+## result string.
+##
+## FIXME  This needs to be extended to handle string arrays.
 function t = regexprep(str,pat,rep,varargin)
+   ## Strip 'tokenize' option
+   for i=length(varargin):-1:1
+      if strcmp(varargin{i},"tokenize"), varargin(i) = []; end
+   end
+
    ## FIXME need checking on varargin
    t = str;
    if any(rep=='$')
@@ -20,17 +41,22 @@ function t = regexprep(str,pat,rep,varargin)
      end
    end
 
-%!test
+%!test  # Replace with empty
 %! xml = '<!-- This is some XML --> <tag v="hello">some stuff<!-- sample tag--></tag>';
 %! t = regexprep(xml,'<[!?][^>]*>','');
 %! assert(t,' <tag v="hello">some stuff</tag>')
 
-%!test
+%!test  # Replace with non-empty
 %! xml = '<!-- This is some XML --> <tag v="hello">some stuff<!-- sample tag--></tag>';
 %! t = regexprep(xml,'<[!?][^>]*>','?');
 %! assert(t,'? <tag v="hello">some stuff?</tag>')
 
-%!test
+%!test  # Check that 'tokenize' is ignored
+%! xml = '<!-- This is some XML --> <tag v="hello">some stuff<!-- sample tag--></tag>';
+%! t = regexprep(xml,'<[!?][^>]*>','','tokenize');
+%! assert(t,' <tag v="hello">some stuff</tag>')
+
+%!test  # Capture replacement
 %! data = "Bob Smith\nDavid Hollerith\nSam Jenkins";
 %! result = "Smith,Bob\nHollerith,David\nJenkins,Sam";
 %! t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2,$1');

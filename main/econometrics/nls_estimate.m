@@ -4,25 +4,25 @@
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2 of the License, or
 ## (at your option) any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# usage: 
-# [theta, obj_value, conv, iters] = nls_estimate(theta, data, model, modelargs, control, nslaves) 
+# usage:
+# [theta, obj_value, conv, iters] = nls_estimate(theta, data, model, modelargs, control, nslaves)
 #
 # inputs:
 # theta: column vector of model parameters
 # data: data matrix
-# model: name of function that computes log-likelihood
+# model: name of function that computes the vector of sums of squared errors
 # modelargs: (cell) additional inputs needed by model. May be empty ("")
-# control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty (""). 
+# control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty ("").
 # nslaves: (optional) number of slaves if executed in parallel (requires MPITB)
 #
 # outputs:
@@ -53,19 +53,19 @@ function [theta, obj_value, convergence, iters] = nls_estimate(theta, data, mode
 
 	# bfgs or sa?
 	if (size(control,1)*size(control,2) == 0) # use default bfgs if no control
-		control = {Inf,0,1,1};	
+		control = {Inf,0,1,1};
 	  method = "bfgs";
 	elseif (size(control,1)*size(control,2) < 11)
 		method = "bfgs";
-	else method = "sa";	
+	else method = "sa";
 	endif
-	
+
 	if strcmp(method, "bfgs")
 	  [theta, obj_value, convergence, iters] = bfgsmin("nls_obj", {theta, data, model, modelargs, nslaves}, control);
-	elseif strcmp(method, "sa") 	
+	elseif strcmp(method, "sa")
 	  [theta, obj_value, convergence] = samin("nls_obj", {theta, data, model, modelargs, nslaves}, control);
-	endif	
-	
-	# cleanup	
+	endif
+
+	# cleanup
 	if nslaves > 0 LAM_Finalize; endif
-endfunction	
+endfunction

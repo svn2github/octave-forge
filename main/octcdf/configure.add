@@ -11,34 +11,29 @@ else
     OCTCDF_LIBS="$LDFLAGS"
     OCTCDF_CFLAGS="$CPPFLAGS"
 
-        dnl checking for opendap support
+    dnl first checking for opendap support
 
-        AC_MSG_CHECKING([for nc-dap])
+    AC_MSG_CHECKING([for nc-dap])
 
-        if ncdap-config --version > /dev/null 2>&1; then
+    if ncdap-config --version > /dev/null 2>&1; then
+          AC_MSG_RESULT([yes])
           OCTCDF_LIBS="$OCTCDF_LIBS `ncdap-config --libs`"
           OCTCDF_CFLAGS="$OCTCDF_CFLAGS `ncdap-config --cflags`"
-          HAVE_NCDAP=yes
-          AC_MSG_RESULT([yes])
-        else
-          HAVE_NCDAP=no
+
+          HAVE_NETCDF=yes
+    else
           AC_MSG_RESULT([no])          
-        fi
 
+          dnl if no opendap, checking if the NetCDF library exists. 
 
-    dnl Checking if the NetCDF library exists. 
+          AC_CHECK_LIB(netcdf,nc_open, HAVE_NETCDF=yes, HAVE_NETCDF=no,)
 
-    AC_CHECK_LIB(netcdf,nc_open, HAVE_NETCDF=yes, HAVE_NETCDF=no,)
+          if test $HAVE_NETCDF = yes ; then
+            OCTCDF_LIBS="$OCTCDF_LIBS -lnetcdf"
 
-    if test $HAVE_NETCDF = yes ; then
-       OCTCDF_LIBS="$OCTCDF_LIBS -lnetcdf"
-    fi
-
-    dnl if we don't have nc-dap then we have to check for netcdf.h
-    dnl otherwise it is already given by ncdap-config --cflags
-
-    if test $HAVE_NCDAP = no ; then
-      AC_CHECK_HEADER(netcdf.h, HAVE_NETCDF=yes, HAVE_NETCDF=no)
+            dnl we have the libraries, no we have also the headers?
+            AC_CHECK_HEADER(netcdf.h, HAVE_NETCDF=yes, HAVE_NETCDF=no)
+          fi
     fi
 
     if test $HAVE_NETCDF = yes ; then

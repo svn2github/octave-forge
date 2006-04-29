@@ -62,8 +62,8 @@
 
 
 <h3>Requirements</h3>
-To contribute your .m files, C++, C, or Fortran code to the Octave
-Repository you need to
+To contribute your .m files, C++, C, or Fortran code to the GNU Octave
+Repository (octave-forge) you need to
 <ul>
     <li> have an account on SourceForge,
     <li> be registered as an octave-forge developer,
@@ -77,13 +77,9 @@ Repository you need to
 The first two requirements are easy but may take a few days.  
 If you don't already have one, request a SourceForge (SF) account
 <a href="http://sourceforge.net/account/register.php"> here</a>.
-To become a developer on octave-forge (octave-forge is the 
-CVS project name of the Gnu
-Octave Repository) simply email a request to one of the octave-forge
-administrators:
-<a href="mailto:cgijobs@users.sf.net">cgijobs@users.sf.net</a>,
-<a href="mailto:joolean@users.sf.net">joolean@users.sf.net</a>, or
-<a href="mailto:pkienzle@users.sf.net">pkienzle@users.sf.net</a>.
+To register as a developer send a request 
+to the octave-forge mailing list 
+<a href="mailto:octave-dev@lists.sf.net">octave-dev@lists.sf.net</a>.
 Include a bit of information about the code
 you plan to submit. 
 Finally, if your computer runs linux or

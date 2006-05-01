@@ -77,19 +77,40 @@ complexity. The default value is 0.\n\
 @end defvr\n\
 @seealso{display_fixed_operations}");
 
-  DEFCONST (fixed_point_version, OCTAVEFIXEDVERSION, 
-    "-*- texinfo -*-\n"
-"@defvr {Loadable Constant} {} fixed_point_version\n\
-A constant containing the version number of the fixed point package used.\n\
-@end defvr");
-
-  DEFCONST (fixed_point_library_version, FIXEDVERSION, 
-    "-*- texinfo -*-\n"
-"@defvr {Loadable Constant} {} fixed_point_library_version\n\
-A constant containing the version number of the fixed point library used.\n\
-@end defvr");
-
 }
+
+DEFUN (fixed_point_version, args, ,
+    "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} fixed_point_version ()\n\
+A function returning the version number of the fixed point package used.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  
+  if (args.length () == 0)
+    retval = OCTAVEFIXEDVERSION;
+  else
+    print_usage ("fixed_point_version");
+  	 
+  return retval;
+}
+
+DEFUN (fixed_point_library_version, args, ,
+    "-*- texinfo -*-\n"
+"@deftypefn {Loadable Function} {} fixed_point_library_version ()\n\
+A function returning the version number of the fixed point library used.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  
+  if (args.length () == 0)
+    retval = FIXEDVERSION;
+  else
+    print_usage ("fixed_point_library_version");
+  	 
+  return retval;
+}
+
 
 #endif
 

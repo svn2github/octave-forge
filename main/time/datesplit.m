@@ -120,24 +120,24 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
 
   ## format  0  dd-mmm-yyyy HH:MM:SS    e.g. 07-Sep-2000 15:38:09
   [match, d, m, y, h, mi, s, ap] = \
-      regexp("^(3[01]|[0-2]?[0-9])[-./]([a-z]{3})[-./]([0-9]{4})[, ]+(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
+      of_regexp("^(3[01]|[0-2]?[0-9])[-./]([a-z]{3})[-./]([0-9]{4})[, ]+(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
 
   ## format 21  mmm.dd.yyyy HH:MM:SS    e.g. Mar.03.1962 13:53:06
   if (isempty(match))
     [match, m, d, y, h, mi, s, ap] = \
-	regexp("^([a-z]{3})[-./](3[01]|[0-2]?[0-9])[-./]([0-9]{4})[, ]+(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
+	of_regexp("^([a-z]{3})[-./](3[01]|[0-2]?[0-9])[-./]([0-9]{4})[, ]+(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
   endif
 
   ## format 31  yyyy-mm-dd HH:MM:SS     e.g. 2004-03-13 13:26:03
   if (isempty(match))
     [match, y, m, d, h, mi, s, ap] = \
-	regexp("^([0-9]{4})[-./](1[012]|0?[0-9])[-./](3[01]|[0-2]?[0-9])[, ]+(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
+	of_regexp("^([0-9]{4})[-./](1[012]|0?[0-9])[-./](3[01]|[0-2]?[0-9])[, ]+(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
   endif
 
   ## format 30  yyyymmddTHHMMSS         e.g. 20470313T132603
   if (isempty(match))
     [match, y, m, d, h, mi, s] = \
-	regexp("^([0-9]{4})(1[012]|0[0-9])(3[01]|[012][0-9])t(2[0-3]|[01][0-9])([0-5][0-9])([0-5][0-9])$", ds);
+	of_regexp("^([0-9]{4})(1[012]|0[0-9])(3[01]|[012][0-9])t(2[0-3]|[01][0-9])([0-5][0-9])([0-5][0-9])$", ds);
     ap = "NA";
   endif
 
@@ -147,7 +147,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format 16  HH:MM PM                e.g. 03:38 PM
   if (isempty(match))
     [match, h, mi, s, ap] = \
-	regexp("^(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
+	of_regexp("^(2[0-3]|[01]?[0-9]):([0-5][0-9])(:[0-5][0-9]|)[, ]*([ap]m|)$", ds);
 
     if (! isempty(match))
       %% assume that it is as of today
@@ -160,7 +160,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format  1  dd-mmm-yyyy             e.g. 07-Sep-2000
   if (isempty(match))
     [match, d, m, y] = \
-	regexp("^(3[01]|[012]?[0-9])[-./]([a-z]{3})[-./]([0-9]{4})$", ds);
+	of_regexp("^(3[01]|[012]?[0-9])[-./]([a-z]{3})[-./]([0-9]{4})$", ds);
 
     if (! isempty(match))
       %% assume the beginning of the day
@@ -174,7 +174,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format 22  mmm.dd.yyyy             e.g. Mar.03.1962
   if (isempty(match))
     [match, m, d, y] = \
-	regexp("^([a-z]{3})[-./](3[01]|[012]?[0-9])[-./]([0-9]{4})$", ds);
+	of_regexp("^([a-z]{3})[-./](3[01]|[012]?[0-9])[-./]([0-9]{4})$", ds);
 
     if (! isempty(match))
       %% assume the beginning of the day
@@ -193,7 +193,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format 26  yyyy/mm/dd              e.g. 1995/03/13
   if (isempty(match))
     [match, d, m, y] = \
-	regexp("^([0-9]{1,2}|[0-9]{4})[-./](3[01]|[012]?[0-9])[-./]([0-9]{1,2}|[0-9]{4})$", ds);
+	of_regexp("^([0-9]{1,2}|[0-9]{4})[-./](3[01]|[012]?[0-9])[-./]([0-9]{1,2}|[0-9]{4})$", ds);
 
     if (! isempty(match))
       %% we have to determine if the date is unambiguous
@@ -236,7 +236,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format 29  yyyymmdd                e.g. 20470313
   if (isempty(match))
     [match, y, m, d] = \
-	regexp("^([0-9]{4})(1[012]|0?[0-9])(3[01]|[012][0-9])$", ds);
+	of_regexp("^([0-9]{4})(1[012]|0?[0-9])(3[01]|[012][0-9])$", ds);
     %% I've never seen a date that has the year first that was not
     %% yyyy/mm/dd, so I'm going to assume that it's unambiguous.
 
@@ -253,7 +253,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format 27  QQ-YYYY                 e.g. Q4-2132
   if (isempty(match))
     [match, q, y] = \
-	regexp("^q([1-4])[-./]([0-9]{2}|[0-9]{4})$", ds);
+	of_regexp("^q([1-4])[-./]([0-9]{2}|[0-9]{4})$", ds);
     if (! isempty(match))
       %% Assume that it's the end of the quarter
       q = str2num(q);
@@ -273,7 +273,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format 12  mmmyy                   e.g. Sep00
   if (isempty(match))
     [match, m, y] = \
-	regexp("^([a-z]{3})([0-9]{2}|[0-9]{4})$", ds);
+	of_regexp("^([a-z]{3})([0-9]{2}|[0-9]{4})$", ds);
     if (! isempty(match))
       %% assume the beginning of the month
       d = 1;
@@ -288,7 +288,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   ## format 19  dd/mm                   e.g. 13/03
   if (isempty(match))
     [match, m, d] = \
-	regexp("^(3[01]|[012]?[0-9])[-./](3[01]|[012][0-9])$", ds);
+	of_regexp("^(3[01]|[012]?[0-9])[-./](3[01]|[012][0-9])$", ds);
 
     if (! isempty(match))
       m = str2num(m);
@@ -317,7 +317,7 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
 
   ## format 10  yyyy                    e.g. 2000
   if (isempty(match))
-    [match, y] = regexp("^([0-9]{4})$", ds);
+    [match, y] = of_regexp("^([0-9]{4})$", ds);
 
     if (! isempty(match))
       %% assume the beginning of the year
@@ -435,6 +435,26 @@ function [y, m, d, h, mi, s] = datesplit(ds, P)
   endif
 
 endfunction
+
+# wrapper around Octave's regexp
+# compatible with octave-forge's regexp
+
+function varargout = of_regexp(pattern,string)
+  [S, E, TE, M, T, NM]  = regexp(string,pattern);
+  varargout{1} = S;
+  
+  # return sub-strings if match
+  if (S)
+    for i=2:nargout
+      varargout{i} = T{1}{i-1};  
+    end    
+  else
+    for i=2:nargout
+      varargout{i} = [];
+    end        
+  end
+endfunction
+
 
 %!shared nowvec
 %! nowvec=datevec(now); % Some tests could fail around midnight!

@@ -73,20 +73,12 @@ NDArray
 octave_fixed_complex::array_value (bool force_conversion) const
 {
   NDArray retval;
-  int flag = force_conversion;
 
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex", "matrix");
 
-  if (flag > 0)
-    retval = NDArray (dim_vector (1, 1), real (scalar.fixedpoint ()));
-  else
-    gripe_implicit_conversion ("fixed complex", "matrix");
+  retval = NDArray (dim_vector (1, 1), real (scalar.fixedpoint ()));
 
   return retval;
 }
@@ -247,23 +239,11 @@ octave_fixed_complex::fixed_value (bool force_conversion) const
 {
   FixedPoint retval;
 
-  int flag = force_conversion;
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex", "fixed scalar");
 
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
-
-  if (flag < 0)
-    gripe_implicit_conversion ("fixed complex", "fixed scalar");
-
-  if (flag)
-    retval = FixedPoint(real (scalar));
-  else
-    gripe_invalid_conversion ("fixed complex", "fixed scalar");
+  retval = FixedPoint(real (scalar));
 
   return retval;
 }
@@ -273,20 +253,11 @@ octave_fixed_complex::fixed_matrix_value (bool force_conversion) const
 {
   FixedMatrix retval;
 
-  int flag = force_conversion;
-
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
-
-  if (flag > 0)
-    retval = FixedMatrix(1,1,real (scalar));
-  else
-    gripe_invalid_conversion ("fixed complex", "fixed matrix");
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex", "fixed matrix");
+    
+  retval = FixedMatrix(1,1,real (scalar));
 
   return retval;
 }

@@ -326,20 +326,13 @@ octave_galois::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
-#if defined(HAVE_DO_FORTRAN_INDEXING)
-  if ((rows () == 1 && columns () == 1)
-      || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
-    retval = (double) gval (0, 0);
-#else
   if (rows () > 0 && columns () > 0)
     {
-      if (Vwarn_fortran_indexing)
-        gripe_implicit_conversion ("real matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "real matrix", "real scalar");
 
       retval = (double) gval (0, 0);
     }
-#endif
   else
     gripe_invalid_conversion ("galois", "real scalar");
 
@@ -353,19 +346,13 @@ octave_galois::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-#if defined(HAVE_DO_FORTRAN_INDEXING)
-  if ((rows () == 1 && columns () == 1)
-      || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
-    retval = (double) gval (0, 0);
-#else
   if (rows () > 0 && columns () > 0)
     {
-      if (Vwarn_fortran_indexing)
-        gripe_implicit_conversion ("real matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "real matrix", "real scalar");
 
       retval = (double) gval (0, 0);
     }
-#endif
   else
     gripe_invalid_conversion ("galois", "complex scalar");
 

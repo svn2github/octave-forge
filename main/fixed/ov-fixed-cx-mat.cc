@@ -94,29 +94,19 @@ NDArray
 octave_fixed_complex_matrix::array_value (bool force_conversion) const
 {
   NDArray retval;
-  int flag = force_conversion;
 
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex", "matrix");
 
-  if (flag > 0)
-    {
-      int nr = rows ();
-      int nc = columns ();
-      dim_vector dv(nr,nc);
-      retval.resize (dv);
+  int nr = rows ();
+  int nc = columns ();
+  dim_vector dv(nr,nc);
+  retval.resize (dv);
 
-      for (int i=0; i<nr; i++)
-	for (int j=0; j<nc; j++)
-	  retval(i + j*nr) = real (matrix(i,j).fixedpoint());
-    }
-  else
-    gripe_implicit_conversion ("fixed complex", "matrix");
+  for (int i=0; i<nr; i++)
+    for (int j=0; j<nc; j++)
+      retval(i + j*nr) = real (matrix(i,j).fixedpoint());
 
   return retval;
 }
@@ -349,37 +339,16 @@ octave_fixed_complex_matrix::double_value (bool force_conversion) const
 {
   double retval = lo_ieee_nan_value ();
 
-  int flag = force_conversion;
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex matrix", "real scalar");
 
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
-
-  if (flag < 0)
-    gripe_implicit_conversion ("fixed complex matrix", "real scalar");
-
-  if (flag)
+  if (rows () > 0 && columns () > 0)
     {
-
-#if defined(HAVE_DO_FORTRAN_INDEXING)
-      if ((rows () == 1 && columns () == 1)
-	  || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
-	retval = std::real (matrix (0, 0) .fixedpoint());
-#else
-      if (rows () > 0 && columns () > 0)
-	{
-	  if (Vwarn_fortran_indexing)
-	    gripe_implicit_conversion ("real matrix", "real scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "real matrix", "real scalar");
 	  
-	  retval = std::real (matrix (0, 0) .fixedpoint());
-	}
-#endif
-      else
-	gripe_invalid_conversion ("fixed complex matrix", "real scalar");
+      retval = std::real (matrix (0, 0) .fixedpoint());
     }
   else
     gripe_invalid_conversion ("fixed complex matrix", "real scalar");
@@ -392,36 +361,16 @@ octave_fixed_complex_matrix::fixed_value (bool force_conversion) const
 {
   FixedPoint retval;
 
-  int flag = force_conversion;
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex matrix", "fixed scalar");
 
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
-
-  if (flag < 0)
-    gripe_implicit_conversion ("fixed complex matrix", "fixed scalar");
-
-  if (flag)
+  if (rows () > 0 && columns () > 0)
     {
-#if defined(HAVE_DO_FORTRAN_INDEXING)
-      if ((rows () == 1 && columns () == 1)
-	  || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
-	retval = real( matrix (0, 0));
-#else
-      if (rows () > 0 && columns () > 0)
-	{
-	  if (Vwarn_fortran_indexing)
-	    gripe_implicit_conversion ("real matrix", "real scalar");
-	  
-	  retval = real( matrix (0, 0));
-	}
-#endif
-      else
-	gripe_invalid_conversion ("fixed complex matrix", "fixed scalar");
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "real matrix", "real scalar");
+
+      retval = real( matrix (0, 0));
     }
   else
     gripe_invalid_conversion ("fixed complex matrix", "fixed scalar");
@@ -434,23 +383,12 @@ octave_fixed_complex_matrix::matrix_value (bool force_conversion) const
 {
   Matrix retval;
 
-  int flag = force_conversion;
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex matrix", "real matrix");
 
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
 
-  if (flag < 0)
-    gripe_implicit_conversion ("fixed complex matrix", "real matrix");
-
-  if (flag)
-    retval = ::real (matrix.fixedpoint());
-  else
-    gripe_invalid_conversion ("fixed complex matrix", "real matrix");
+  retval = ::real (matrix.fixedpoint());
 
   return retval;
 }
@@ -460,23 +398,11 @@ octave_fixed_complex_matrix::fixed_matrix_value (bool force_conversion) const
 {
   FixedMatrix retval;
 
-  int flag = force_conversion;
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "fixed complex matrix", "fixed matrix");
 
-#if defined(HAVE_OK_TO_LOSE_IMAGINARY_PART)
-  if (! flag)
-    flag = Vok_to_lose_imaginary_part;
-#else
-  if (! flag)
-    flag = (Vwarn_imag_to_real ? -1 : 1);
-#endif
-
-  if (flag < 0)
-    gripe_implicit_conversion ("fixed complex matrix", "fixed matrix");
-
-  if (flag)
-    retval = real (matrix);
-  else
-    gripe_invalid_conversion ("fixed complex matrix", "fixed matrix");
+  retval = real (matrix);
 
   return retval;
 }
@@ -488,19 +414,13 @@ octave_fixed_complex_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-#if defined(HAVE_DO_FORTRAN_INDEXING)
-      if ((rows () == 1 && columns () == 1)
-	  || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
-	retval = matrix (0, 0) .fixedpoint();
-#else
-      if (rows () > 0 && columns () > 0)
-	{
-	  if (Vwarn_fortran_indexing)
-	    gripe_implicit_conversion ("real matrix", "real scalar");
+  if (rows () > 0 && columns () > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "real matrix", "real scalar");
 	  
-	  retval = matrix (0, 0) .fixedpoint();
-	}
-#endif
+      retval = matrix (0, 0) .fixedpoint();
+    }
   else
     gripe_invalid_conversion ("fixed matrix", "complex scalar");
 

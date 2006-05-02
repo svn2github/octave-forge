@@ -87,8 +87,6 @@ octave_ncdim::octave_ncdim(octave_ncfile* ncfilep, int dimid) {
 octave_value octave_ncdim::subsref(const std::string SUBSREF_STRREF type,
 			       const LIST < octave_value_list > &idx)
 {
-  int dimid, status, varid;
-  size_t length;
   octave_value retval;
 
 # ifdef OV_NETCDF_VERBOSE
@@ -108,9 +106,6 @@ octave_value octave_ncdim::subsref(const std::string SUBSREF_STRREF type,
 
 
   void octave_ncdim::read_info() {
-  size_t length;
-  int status;
-
 
   //dimvec.resize(length);
   }

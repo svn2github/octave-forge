@@ -156,7 +156,6 @@ octave_value octave_ncatt::subsasgn(const std::string & type,
 				    const LIST < octave_value_list > &idx,
 				    const octave_value & rhs)
 {
-  int status;
   octave_value retval;
 
 # ifdef OV_NETCDF_VERBOSE
@@ -188,8 +187,6 @@ octave_value octave_ncatt::subsasgn(const std::string & type,
 octave_value octave_ncatt::subsref(const std::string SUBSREF_STRREF type,
 			       const LIST < octave_value_list > &idx)
 {
-  int dimid, status, varid;
-  size_t length;
   octave_value retval;
 
 # ifdef OV_NETCDF_VERBOSE

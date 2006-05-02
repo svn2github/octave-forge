@@ -408,7 +408,6 @@ std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
   std::list<Range> ranges;
   dim_vector dv;
   dv.resize(ncndims());
-  int ip;
 
   // special case: if only one colone, then retrieve all data
 

@@ -108,9 +108,6 @@ octave_ncfile::octave_ncfile(string filenamep, string open_mode):octave_base_val
 void octave_ncfile::read_info() {
 
   int status;
-  int dimids[NC_MAX_VAR_DIMS];
-  char name[NC_MAX_NAME];
-  size_t length;
 
   if (get_ncid() == -1) return;
 
@@ -303,7 +300,7 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 octave_value octave_ncfile::subsref(const std::string SUBSREF_STRREF type,
 			       const LIST < octave_value_list > &idx)
 {
-  int dimid, status, varid;
+  int dimid, status;
   size_t length;
   octave_value retval;
 

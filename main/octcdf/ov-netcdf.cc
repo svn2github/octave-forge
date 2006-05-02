@@ -370,6 +370,11 @@ Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes @var{na
 
   if (args(0).class_name() == "ncfile") {
     octave_ncfile& ncfile = (octave_ncfile&)args(0).get_rep();
+
+    if (args.length() == 1) 
+      return octave_value(ncfile.get_filename());
+    else
+      error("Error: cannot rename a ncfile");
   }
 
   else if (args(0).class_name() == "ncvar") {

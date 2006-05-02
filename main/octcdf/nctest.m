@@ -183,6 +183,20 @@ endfunction
 %! scaled = nc{'autoscale_var',1}(:);                          
 %! assert(var,scaled,1e-6);
 
+%!# Test autonan
+%!test
+%! nc{'variable_with_gaps'}=ncdouble('time'); 
+%! nv = nc{'variable_with_gaps'}; 
+%! nv = ncautonan(nv,1);
+%! nv.FillValue_ = 99; 
+%! nv(:) = NaN;
+%! 
+%! nv = ncautonan(nv,0);
+%! assert(all(nv(:) == 99))
+%! 
+%! nv = ncautonan(nv,1);
+%! assert(all(isnan(nv(:))))
+
 
 %!# Close file
 %!test

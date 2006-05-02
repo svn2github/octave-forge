@@ -153,8 +153,8 @@ octave_ncatt::octave_ncatt(octave_ncfile* ncfilep, std::string attnamep) {
 // ncatt_var(:) = y
 
 octave_value octave_ncatt::subsasgn(const std::string & type,
-				const LIST < octave_value_list > &idx,
-				const octave_value & rhs)
+				    const LIST < octave_value_list > &idx,
+				    const octave_value & rhs)
 {
   int status;
   octave_value retval;
@@ -172,12 +172,11 @@ octave_value octave_ncatt::subsasgn(const std::string & type,
 
   ov_nc_put_att(get_ncid(),get_varid(),get_name(),get_nctype(),rhs);
 
-#ifdef OV_REP_TYPE
-  count++;
-  retval = octave_value(this);
-#else
+# ifdef OCTAVE_VALUE_COUNT_CONSTRUCTOR
   retval = octave_value(this, count + 1);
-#endif
+# else
+  retval = octave_value(clone());
+# endif
 
   return retval;
 

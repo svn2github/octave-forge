@@ -148,6 +148,10 @@ closes the netcdf file @var{nc} and all changes are written to the disk.\n\
       return octave_value();
     }
 
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "close file "  << std::endl;
+# endif
+
   if (args(0).class_name() == "ncfile") {
     octave_ncfile& ncfile = (octave_ncfile&)args(0).get_rep();
     ncfile.close();

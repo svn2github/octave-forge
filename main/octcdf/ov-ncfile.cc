@@ -284,12 +284,14 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 
   read_info();
 
-#ifdef OV_REP_TYPE
-  count++;
-  retval = octave_value(this);
-#else
+  // result of this assignement is the same 
+  // octave_ncfile object
+
+# ifdef OCTAVE_VALUE_COUNT_CONSTRUCTOR
   retval = octave_value(this, count + 1);
-#endif
+# else
+  retval = octave_value(clone());
+# endif
 
   return retval;
 

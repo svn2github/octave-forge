@@ -74,17 +74,12 @@ octave_ncdim::octave_ncdim(octave_ncfile* ncfilep, int dimid) {
 //   octave_stdout << "setting attribute value " << std::endl;
 // # endif
 
-
-// #ifdef OV_REP_TYPE
-//   //  count++;
-//   //  retval = octave_value(this);
-// #else
-//   //  retval = octave_value(this, count + 1);
-// #endif
-
+// # ifdef OCTAVE_VALUE_COUNT_CONSTRUCTOR
+//   retval = octave_value(this, count + 1);
+// # else
+//   retval = octave_value(clone());
+// # endif
 //   return retval;
-
-
 // };
 
 // ncdim_var(:) 

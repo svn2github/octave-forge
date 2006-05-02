@@ -76,6 +76,13 @@
 #define OCTAVE_PERMVEC_ZEROBASED 
 #endif
 
+
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
+//#define OCTAVE_VALUE_COUNT_CONSTRUCTOR
+
 using namespace std;
 
 

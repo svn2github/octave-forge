@@ -22,10 +22,6 @@
 
 #include "ov-netcdf.h"
 
-#ifndef OV_REP_TYPE
-#define OV_REP_TYPE octave_value
-#endif
-
 typedef struct {
   std::list<std::string> dimnames;
   int dimids[NC_MAX_VAR_DIMS];

@@ -22,10 +22,6 @@
 
 #include "ov-netcdf.h"
 
-#ifndef OV_REP_TYPE
-#define OV_REP_TYPE octave_value
-#endif
-
 typedef struct {
   nc_type nctype;
   dim_vector dimvec;

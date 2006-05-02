@@ -23,10 +23,6 @@
 
 #include "ov-netcdf.h"
 
-#ifndef OV_REP_TYPE
-#define OV_REP_TYPE octave_value
-#endif
-
 typedef struct {
   int ncid;
   std::string filename;

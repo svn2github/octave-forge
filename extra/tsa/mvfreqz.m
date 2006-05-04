@@ -1,4 +1,4 @@
-function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,]=mvfreqz(B,A,C,N,Fs)
+function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
 % [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF] = mvfreqz(B,A,C,N,Fs)
 %
@@ -23,8 +23,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,]=mvfreqz(B,A,C,N
 %       M = size(AR,1); % number of channels       
 %       A = [eye(M),-AR];
 %       B = eye(M); 
-%       C = PE(:,M*P+1:(M+1)*P); 
-%
+%       C = PE(:,M*P+1:M*(P+1)); 
 %
 % OUTPUT: 
 % ======= 
@@ -52,12 +51,17 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,]=mvfreqz(B,A,C,N
 % Nolte G, Bai O, Wheaton L, Mari Z, Vorbach S, Hallett M.
 %	Identifying true brain interaction from EEG data using the imaginary part of coherency.
 %	Clin Neurophysiol. 2004 Oct;115(10):2292-307. 
+% Schlögl A., Supp G.
+%       Analyzing event-related EEG data with multivariate autoregressive parameters.
+%       (Eds.) C. Neuper and W. Klimesch, 
+%       Progress in Brain Research: Event-related Dynamics of Brain Oscillations. 
+%       Analysis of dynamics of brain oscillations: methodological advances. Elsevier. 
 
 
 %	$Id$
 %	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%       http://hci.tugraz.at/schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
 %       http://biosig.sourceforge.net/
 
@@ -171,8 +175,6 @@ for k1=1:K1;
 end;
 
 dDTF = pCOH2.*ffDTF; 
-
-
 
 if nargout<6, return; end;
 

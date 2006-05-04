@@ -98,7 +98,7 @@ are \"s Qci Tcv\".\n\n\
     FORALLfacets {
       j = 0;
       if (!facet->simplicial)
-	error("convhulln: non-simplical facet"); // should never happen with QJ
+	error("convhulln: non-simplicial facet"); // should never happen with QJ
 
       if (dim == 3) {
 	vertices = qh_facet3vertex (facet);

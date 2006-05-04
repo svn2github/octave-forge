@@ -19,6 +19,9 @@
 29. July 2000 - Kai Habel: first release
 2002-04-22 Paul Kienzle
 * Use warning(...) function rather than writing to cerr
+2006-05-01 Tom Holroyd
+* add support for consistent winding in all dimensions; output is
+* guaranteed to be simplicial.
 */
 
 extern "C" {
@@ -30,19 +33,20 @@ extern "C" {
 #include <octave/oct.h>
 
 #ifdef NEED_QHULL_VERSION
-char qh_version[] = "convhulln.oct 2003-12-14";
+char qh_version[] = "convhulln.oct 2006-05-01";
 #endif
 char flags[250];
 const char *options;
 
 DEFUN_DLD (convhulln, args, ,
-        "-*- texinfo -*-\n\
+	"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{H} =} convhulln (@var{p}[, @var{opt}])\n\
 Returns an index vector to the points of the enclosing convex hull.\n\
 The input matrix of size [n, dim] contains n points of dimension dim.\n\n\
 If a second optional argument is given, it must be a string containing\n\
-extra options for the underlying qhull command.  (See the Qhull\n\
-documentation for the available options.)\n\n\
+options for the underlying qhull command.  (See the Qhull\n\
+documentation for the available options.)  The default options\n\
+are \"s Qci Tcv\".\n\n\
 @seealso{convhull, delaunayn}\n\
 @end deftypefn")
 {
@@ -50,7 +54,7 @@ documentation for the available options.)\n\n\
 
   int nargin = args.length();
   if (nargin < 1 || nargin > 2) {
-    print_usage ("convhulln(p,[opt])");
+    print_usage ("convhulln(p[, opt])");
     return retval;
   }
 
@@ -62,7 +66,7 @@ documentation for the available options.)\n\n\
     options = args (1).string_value().c_str();
   }
   else
-    options = "";
+    options = "s Qci Tcv"; // turn on some consistency checks
 
   Matrix p(args(0).matrix_value());
 
@@ -74,8 +78,9 @@ documentation for the available options.)\n\n\
 
   boolT ismalloc = False;
 
-  // hmm  lot's of options for qhull here
-  sprintf(flags,"qhull s Qt Tcv %s",options);
+  // hmm, lots of options for qhull here
+  // QJ guarantees that the output will be triangles
+  snprintf(flags, sizeof(flags), "qhull QJ %s", options);
 
   if (!qh_new_qhull (dim,n,pt_array,ismalloc,flags,NULL,stderr)) {
 
@@ -84,25 +89,33 @@ documentation for the available options.)\n\n\
 
     vertexT *vertex,**vertexp;
     facetT *facet;
-    unsigned int n = qh num_facets;
+    setT *vertices;
+    unsigned int nf = qh num_facets;
 
-    Matrix idx(n,dim);
-    qh_vertexneighbors();
+    Matrix idx(nf, dim);
 
-    int i=0;
+    int j, i = 0, id = 0;
     FORALLfacets {
-      int j=0;
-      //std::cout << "Current index " << i << "," << j << std::endl << std::flush;
-      // qh_printfacet(stdout,facet);
-      FOREACHvertex_ (facet->vertices) {
-	// qh_printvertex(stdout,vertex);
-	if (j >= dim)
-	  warning("extra vertex %d of facet %d = %d",
-		  j++,i,1+qh_pointid(vertex->point));
-	else
-	  idx(i,j++)= 1 + qh_pointid(vertex->point);
+      j = 0;
+      if (!facet->simplicial)
+	error("convhulln: non-simplical facet"); // should never happen with QJ
+
+      if (dim == 3) {
+	vertices = qh_facet3vertex (facet);
+	FOREACHvertex_(vertices)
+	  idx(i, j++) = 1 + qh_pointid(vertex->point);
+	qh_settempfree(&vertices);
+      } else {
+	if (facet->toporient ^ qh_ORIENTclock) {
+	  FOREACHvertex_(facet->vertices)
+	    idx(i, j++) = 1 + qh_pointid(vertex->point);
+	} else {
+	  FOREACHvertexreverse12_(facet->vertices)
+	    idx(i, j++) = 1 + qh_pointid(vertex->point);
+	}
       }
-      if (j < dim) warning("facet %d only has %d vertices",i,j);
+      if (j < dim)
+	warning("facet %d only has %d vertices",i,j); // likewise but less fatal
       i++;
     }
     retval(0)=octave_value(idx);

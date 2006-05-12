@@ -174,7 +174,8 @@ maxstep=options(:,2);
 %
 f=feval(F,x,p); fbest=f; pbest=p;
 r=wt.*(y-f);
-sbest=r'*r;
+ss=r'*r;
+sbest=ss;
 nrm=zeros(n,1);
 chgprev=Inf*ones(n,1);
 kvg=0;

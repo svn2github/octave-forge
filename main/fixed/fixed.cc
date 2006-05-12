@@ -94,8 +94,6 @@ void load_fixed_type (void)
   install_fil_fcs_ops ();
   install_fil_fcm_ops ();
 
-  symbols_of_fixed ();
-
   fixed_type_loaded = true;
 
   // Lock constructor function in place, otherwise 
@@ -117,7 +115,7 @@ DEFUN_DLD (display_fixed_operations, args, ,
   octave_value retval;
   if ((args.length() != 0) || !fixed_type_loaded)
     print_usage("display_fixed_operations");
-  else if (Vfixed_point_count_operations)
+  else if (Fixed::FP_CountOperations)
     octave_stdout << Fixed::FP_Operations;
   else
     error("display_fixed_operations: variable fixed_point_count_operations is zero");

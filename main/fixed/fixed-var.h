@@ -31,15 +31,10 @@ Open Source Initiative (www.opensource.org)
 #endif
 
 #if !defined(fixed_var_cc)
-extern bool &Vfixed_point_warn_overflow;
-extern bool &Vfixed_point_debug;
-extern bool &Vfixed_point_count_operations;
 extern int &Vfixed_point_print_width;
 extern char &fixed_point_version;
 extern char &fixed_point_library_version;
 #endif
-
-void symbols_of_fixed (void);
 
 #endif
 

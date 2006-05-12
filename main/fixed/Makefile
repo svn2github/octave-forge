@@ -9,7 +9,10 @@ FIXEDLINKTARGETS = $(patsubst %,%$(OCTLINK), \
 	ffloor fceil fprod fsum fsumsq fcumsum \
 	fcumprod display_fixed_operations reset_fixed_operations \
 	freshape fdiag fatan2 freal fimag fconj \
-	farg fangle) 
+	farg fangle \
+	fixed_point_warn_overflow fixed_point_debug \
+	fixed_point_count_operations fixed_point_version \
+	fixed_point_library_version) 
 
 SUBDIRS = examples doc
 

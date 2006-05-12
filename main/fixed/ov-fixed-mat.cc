@@ -38,7 +38,9 @@ Open Source Initiative (www.opensource.org)
 #include <octave/gripes.h>
 #include <octave/unwind-prot.h>
 #include <octave/cmd-edit.h>
+#include <octave/parse.h>
 #include <octave/utils.h>
+#include <octave/unwind-prot.h>
 #include <octave/variables.h>
 #ifdef CLASS_HAS_LOAD_SAVE
 #include <octave/ls-oct-ascii.h>
@@ -416,21 +418,29 @@ octave_fixed_matrix::convert_to_str (bool) const
   return retval;
 }
 
+static void
+restore_precision (void *p)
+{
+  bind_internal_variable ("output_precision", *(static_cast<int *> (p)));
+}
+
 void
 octave_fixed_matrix::print_raw (std::ostream& os,
 				   bool pr_as_read_syntax) const
 {
-  int prec = check_preference("output_precision");
   double min_num = matrix.abs().row_min().min().fixedpoint();
   int new_prec = (int)matrix.getdecsize().row_max().max() +
     (min_num >= 1. ? (int)log10(min_num) + 1 : 0);
 
-  bind_builtin_variable ("output_precision", new_prec); 
+  octave_value_list tmp = feval ("output_precision");
+  int prec = tmp(0).int_value ();
+  unwind_protect::add (restore_precision, &prec);
+  bind_internal_variable ("output_precision", new_prec);
 
   octave_print_internal (os, matrix_value(), false, 
 			 current_print_indent_level ());
 
-  bind_builtin_variable ("output_precision", prec);
+  unwind_protect::run ();
 }
 
 #ifdef CLASS_HAS_LOAD_SAVE

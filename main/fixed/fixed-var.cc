@@ -34,52 +34,52 @@ Open Source Initiative (www.opensource.org)
 
 #include <octave/variables.h>
 #include <octave/utils.h>
-#include <octave/defun.h>
+#include <octave/defun-dld.h>
 
-#define FIXED_VAR( TYP, VAR, VAR_INT) \
-TYP &V ## VAR = VAR_INT; \
-static int VAR (void) \
-{ \
-  V ## VAR = check_preference (#VAR); \
-  return 0; \
-}
-
-FIXED_VAR ( bool, fixed_point_warn_overflow, Fixed::FP_Overflow)
-FIXED_VAR ( bool, fixed_point_debug, Fixed::FP_Debug)
-FIXED_VAR ( bool, fixed_point_count_operations, Fixed::FP_CountOperations)
-
-void
-symbols_of_fixed (void)
+DEFUN_DLD (fixed_point_warn_overflow, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{val} =} fixed_point_warn_overflow ()\n\
+@deftypefnx {Loadable Function} {@var{old_val} =} fixed_point_warn_overflow (@var{new_val})\n\
+Query or set the internal variable @code{fixed_point_warn_overflow}.\n\
+If enabled, Octave warns of overflows in fixed point operations.\n\
+By default, these warnings are disabled.\n\
+@end deftyepfn")
 {
-  DEFVAR (fixed_point_warn_overflow, false, fixed_point_warn_overflow,
-    "-*- texinfo -*-\n"
-"@defvr {Loadable Variable} {} fixed_point_warn_overflow\n\
-If the value of @code{fixed_point_warn_overflow} is nonzero, Octave warns\n\
-the user of overflows in fixed point operations. The default is 0.\n\
-@end defvr");
-
-  DEFVAR (fixed_point_debug, false, fixed_point_debug,
-    "-*- texinfo -*-\n"
-"@defvr {Loadable Variable} {} fixed_point_debug\n\
-If the value of @code{fixed_point_debug} is nonzero, Octave keeps\n\
-a copy of the value of fixed point variable internally. This is useful\n\
-for use with a debug to allow easy access to the variables value.\n\
-The default value is 0.\n\
-@end defvr");
-
-  DEFVAR (fixed_point_count_operations, false, fixed_point_count_operations,
-    "-*- texinfo -*-\n"
-"@defvr {Loadable Variable} {} fixed_point_count_operations\n\
-If the value of @code{fixed_point_count_operations} is nonzero, Octave keeps\n\
-track of how many times each type of floating point operation has been used\n\
-internally. This can be used to give an approximation of the algorithms\n\
-complexity. The default value is 0.\n\
-@end defvr\n\
-@seealso{display_fixed_operations}");
-
+  return set_internal_variable (Fixed::FP_Overflow, args, nargout,
+				"fixed_point_warn_overflow");
 }
 
-DEFUN (fixed_point_version, args, ,
+DEFUN_DLD (fixed_point_debug, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{val} =} fixed_point_debug ()\n\
+@deftypefnx {Loadable Function} {@var{old_val} =} fixed_point_debug (@var{new_val})\n\
+Query or set the internal variable @code{fixed_point_debug}.  If\n\
+enabled, Octave keeps a copy of the value of fixed point variable\n\
+internally. This is useful for use with a debug to allow easy access\n\
+to the variables value.  By default this feature is disabled.\n\
+@end deftypefn")
+{
+  return set_internal_variable (Fixed::FP_Debug, args, nargout,
+				"fixed_point_debug");
+}
+
+DEFUN_DLD (fixed_point_count_operations, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{val} =} fixed_point_count_operations ()\n\
+@deftypefnx {Loadable Function} {@var{old_val} =} fixed_point_count_operations (@var{new_val})\n\
+Query or set the internal variable @code{fixed_point_count_operations}.\n\
+If enabled, Octave keeps track of how many times each type of floating\n\
+point operation has been used internally.  This can be used to give an\n\
+approximation of the algorithms complexity.  By default, this feature is\n\
+disabled.\n\
+@seealso{display_fixed_operations}\n\
+@end deftypefn")
+{
+  return set_internal_variable (Fixed::FP_CountOperations, args, nargout,
+				"fixed_point_count_operations");
+}
+
+DEFUN_DLD (fixed_point_version, args, ,
     "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} fixed_point_version ()\n\
 A function returning the version number of the fixed point package used.\n\
@@ -95,7 +95,7 @@ A function returning the version number of the fixed point package used.\n\
   return retval;
 }
 
-DEFUN (fixed_point_library_version, args, ,
+DEFUN_DLD (fixed_point_library_version, args, ,
     "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} fixed_point_library_version ()\n\
 A function returning the version number of the fixed point library used.\n\

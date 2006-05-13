@@ -1,3 +1,7 @@
+NOTE: The code in this directory is superceded by the poly-morphic 
+ldiv operator in 2.9.5+
+
+
 From: "Cai Jianming" <caijianming@yahoo.co.uk>
 To: <octave-sources@bevo.che.wisc.edu>
 Subject: Upper Triangle/Lower Triangle matrix by CHOL

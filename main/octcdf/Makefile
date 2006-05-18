@@ -34,14 +34,14 @@ ifndef OCTAVE_FORGE
 	RM = rm -f
 endif
 
-NCTARGET = ov-netcdf.oct
+NCTARGET = netcdf.oct
 
 NCSOURCES = ov-netcdf.cc ov-ncfile.cc ov-ncvar.cc ov-ncatt.cc ov-ncdim.cc 
 OBJECTS = $(patsubst %.cc,%.o,$(NCSOURCES))
 
 NCLINKTARGETS = $(patsubst %,%$(OCTLINK), \
 	ncclose ncredef ncenddef ncsync ncvar ncatt \
-	ncdim ncname ncdatatype netcdf ncautonan ncautoscale) 
+	ncdim ncname ncdatatype ncautonan ncautoscale) 
 
 
 MFILES =  ncchar.m ncfloat.m nclong.m ncbyte.m ncdouble.m ncint.m ncshort.m 
@@ -56,9 +56,6 @@ MOFLAGS = $(OCTCDF_CFLAGS)
 MOFLAGS := $(MOFLAGS) -DHAVE_OCTAVE_INT
 
 EXTRALIBS = $(OCTCDF_LIBS) 
-
-# To enable OPeNDAP support you have to use to following libraries (or similar ones)
-#EXTRALIBS =  $(LDFLAGS) -lnc-dods -ldap++ -lnetcdf  -lxml2 -lcurl
 
 ifeq ($(HAVE_NETCDF),yes)
 all: $(TARGETS)

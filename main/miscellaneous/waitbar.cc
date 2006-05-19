@@ -87,7 +87,7 @@ DEFUN_DLD(waitbar, args, nargout,
   retval(0) = Matrix(0,0);
   int nargin = args.length();
   if (nargin < 1) {
-    print_usage("waitbar");
+    print_usage ();
     return retval;
   }
 

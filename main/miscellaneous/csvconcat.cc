@@ -38,7 +38,7 @@ DEFUN_DLD (csvconcat, args, nargout,
 
   /* Check argument */
   if ((args.length() < 1) || (args.length() > 3)) {
-    print_usage ("csvconcat");
+    print_usage ();
     return octave_value();
   }
 

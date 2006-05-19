@@ -524,7 +524,7 @@ DEFUN_DLD(__grhold__, args,, \
             holdon = true;
     } else {
         if ((args.length() > 1) || (!args(0).is_string())) {
-            print_usage("grhold");
+            print_usage ();
         }
         std::string s = args(0).string_value();
         if (s == "on")
@@ -532,7 +532,7 @@ DEFUN_DLD(__grhold__, args,, \
         else if (s == "off")
             holdon = false;
         else
-            print_usage("grhold");
+            print_usage ();
     }
     
     return octave_value_list();
@@ -612,7 +612,7 @@ Send a native command to grace.\n")
         cmd_string = args(0).string_value();
         out(0) = (double) gr_sendcmd(cmd_string);
     } else {
-        print_usage("__grcmd__");
+        print_usage ();
         out(0) = -1.0;
     }
 

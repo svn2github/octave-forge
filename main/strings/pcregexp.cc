@@ -35,7 +35,7 @@ See also \"help regexp\" and the manpage for 'pcre'.\n\
     octave_value_list retval = octave_value_list();
 
     if (args.length() != 2) {
-	print_usage("pcregexp");
+	print_usage ();
 	return retval;
     }
 

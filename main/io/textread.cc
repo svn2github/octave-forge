@@ -209,7 +209,7 @@ can be read using\n\
     octave_value_list retval;
 
     if ((args.length() < 2) || (args.length() > 3)) {
-	print_usage("textread");
+	print_usage ();
 	return retval;
     }
 
@@ -221,7 +221,7 @@ can be read using\n\
     }
     if (error_state) {
 	error("Invalid argument specified");
-	print_usage("textread");
+	print_usage ();
 	return retval;
     }
 

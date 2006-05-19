@@ -114,7 +114,7 @@ DEFUN_DLD (display_fixed_operations, args, ,
 {
   octave_value retval;
   if ((args.length() != 0) || !fixed_type_loaded)
-    print_usage("display_fixed_operations");
+    print_usage ();
   else if (Fixed::FP_CountOperations)
     octave_stdout << Fixed::FP_Operations;
   else
@@ -132,7 +132,7 @@ DEFUN_DLD (reset_fixed_operations, args, ,
 {
   octave_value retval;
   if ((args.length() != 0) || !fixed_type_loaded)
-    print_usage("reset_fixed_operations");
+    print_usage ();
   else
     Fixed::FP_Operations.reset();
     
@@ -146,7 +146,7 @@ DEFUN_DLD (isfixed, args, ,
 "@end deftypefn") 
 {
    if (args.length() != 1) 
-     print_usage("isfixed");
+     print_usage ();
    else if (!fixed_type_loaded)
      // Can't be of fixed type if the type isn't load :-/
      return octave_value(false);
@@ -199,7 +199,7 @@ DEFUN_DLD (fixed, args, nargout,
   octave_value retval;
 
   if ( nargin == 0 ) {
-    print_usage ("fixed");
+    print_usage ();
   } else if (nargin == 1 ) {
     if (fixed_type_loaded &&
 	(args(0).type_id () == octave_fixed_matrix::static_type_id ())) {
@@ -397,7 +397,7 @@ DEFUN_DLD (fixed, args, nargout,
       }
     }
   } else
-    print_usage ("fixed");
+    print_usage ();
   
   
   if (error_state) {
@@ -419,7 +419,7 @@ DEFUN_DLD (fixed, args, nargout,
     int nargin = args.length(); \
     octave_value retval; \
     if ( nargin != 1 ) { \
-      print_usage (#NAME); \
+      print_usage (); \
     } else { \
       if (fixed_type_loaded) { \
         if (args(0).type_id () == octave_fixed::static_type_id ()) { \
@@ -455,9 +455,9 @@ DEFUN_DLD (fixed, args, nargout,
                    args(0).get_rep()).fixed_complex_matrix_value (); \
           retval = new octave_fixed_complex_matrix (FUNC (f)); \
         } else \
-	  print_usage (#NAME); \
+	  print_usage (); \
       } else \
-        print_usage (#NAME); \
+        print_usage (); \
     } \
     retval.maybe_mutate(); \
     return retval; \
@@ -668,7 +668,7 @@ Return the smallest integer not less than @var{x}.\n\
     int nargin = args.length(); \
     octave_value retval; \
     if ((nargin != 1 ) && (nargin != 2)) \
-      print_usage (#NAME); \
+      print_usage (); \
     else { \
       int dim = (nargin == 1 ? -1 : args(1).int_value(true) - 1); \
       if (error_state) return retval; \
@@ -697,9 +697,9 @@ Return the smallest integer not less than @var{x}.\n\
 	      args(0).get_rep()).fixed_complex_matrix_value (); \
             retval = new octave_fixed_complex_matrix(f .FUNC (dim)); \
         } else \
-	    print_usage (#NAME); \
+	    print_usage (); \
       } else \
-        print_usage (#NAME); \
+        print_usage (); \
     } \
     retval.maybe_mutate(); \
     return retval; \
@@ -809,7 +809,7 @@ DEFUN_DLD (freshape, args, ,
 
   if (nargin != 2 && nargin !=3) {
     error("freshape (a, m, m) or freshape (a, size(b))");
-    print_usage("freshape");
+    print_usage ();
   } else {
     int mr = 0, mc = 0;
     if (nargin == 2) {
@@ -1078,7 +1078,7 @@ DEFUN_DLD (fdiag, args, ,
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     retval = make_fdiag (args(0), args(1));
   else
-    print_usage ("fdiag");
+    print_usage ();
 
   return retval;
 }
@@ -1110,7 +1110,7 @@ DEFUN_DLD (fatan2, args, ,
       a = ((const octave_fixed_complex_matrix&)args(0).get_rep())
 	.fixed_matrix_value();
     else {
-      print_usage("fatan2");
+      print_usage ();
       return retval;
     }
     if (args(1).type_id () == octave_fixed::static_type_id ())
@@ -1125,13 +1125,13 @@ DEFUN_DLD (fatan2, args, ,
       b = ((const octave_fixed_complex_matrix&)args(1).get_rep())
 	.fixed_matrix_value();
     else {
-      print_usage("fatan2");
+      print_usage ();
       return retval;
     }
     retval = new octave_fixed_matrix(atan2(a, b));
     retval.maybe_mutate();
   } else
-    print_usage("fatan2");
+    print_usage ();
 
   return retval;
 }

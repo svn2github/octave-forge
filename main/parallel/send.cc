@@ -257,7 +257,7 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	error("unsupported type %d",type_id);
     }
   else
-    print_usage ("send");
+    print_usage ();
   
   return retval;
   

@@ -96,7 +96,7 @@ creates a new file but an existing data sets in the netcdf file cannot be overwr
     load_netcdf_type ();
 
   if (args.length() != 2) {
-      print_usage("netcdf");
+      print_usage ();
       return octave_value();
   }
 
@@ -121,7 +121,7 @@ All changes are written to the disk.\n\
 {
 
   if (args.length() != 1) {
-      print_usage("ncsync");
+      print_usage ();
       return octave_value();
     }
 
@@ -144,7 +144,7 @@ closes the netcdf file @var{nc} and all changes are written to the disk.\n\
 {
 
   if (args.length() != 1) {
-      print_usage("ncclose");
+      print_usage ();
       return octave_value();
     }
 
@@ -171,7 +171,7 @@ Place an open NetCDF file in \"define\" mode, so that NetCDF entities can be add
 {
 
   if (args.length() != 1) {
-      print_usage("ncredef");
+      print_usage ();
       return octave_value();
     }
 
@@ -196,7 +196,7 @@ Take an open NetCDF file out of \"define\" mode. The resulting state is called \
 {
 
   if (args.length() != 1) {
-      print_usage("ncenddef");
+      print_usage ();
       return octave_value();
     }
 
@@ -227,7 +227,7 @@ myvar = nv(:);     % copies the content of this NetCDF variable is myvar. \n\
 {
 
   if (args.length() != 1) {
-      print_usage("ncvar");
+      print_usage ();
       return octave_value();
     }
 
@@ -268,7 +268,7 @@ myvar = na(:);     % copies the content of this NetCDF attribute is myvar. \n\
 {
 
   if (args.length() != 1) {
-      print_usage("ncatt");
+      print_usage ();
       return octave_value();
     }
 
@@ -313,7 +313,7 @@ Creates a cell array of all dimenstion in a NetCDF file. The length of the NetCD
 {
 
   if (args.length() != 1) {
-      print_usage("ncdim");
+      print_usage ();
       return octave_value();
     }
 
@@ -364,7 +364,7 @@ Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes @var{na
 {
 
   if (args.length() > 2) {
-    print_usage("ncname");
+    print_usage ();
     return octave_value();
   }
 
@@ -423,7 +423,7 @@ Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes @var{na
   nc_type type;
 
   if (args.length() != 1) {
-      print_usage("ncdatatype");
+      print_usage ();
       return octave_value();
     }
 
@@ -458,12 +458,12 @@ value of the _FillValue attribute. This feature is disabled if autonan is 0 (def
 {
 
   if (args.length() != 1 && args.length() != 2) {
-      print_usage("ncautonan");
+      print_usage ();
       return octave_value();
     }
 
   if (args(0).class_name() != "ncvar" ) {
-      print_usage("ncautonan");
+      print_usage ();
       return octave_value();
     }
 
@@ -495,12 +495,12 @@ This feature is disabled if autoscale is 0 (default). \n\
 {
 
   if (args.length() != 1 && args.length() != 2) {
-      print_usage("ncautoscale");
+      print_usage ();
       return octave_value();
     }
 
   if (args(0).class_name() != "ncvar" ) {
-      print_usage("ncautoscale");
+      print_usage ();
       return octave_value();
     }
 

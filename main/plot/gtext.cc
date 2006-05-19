@@ -43,7 +43,7 @@ DEFUN_DLD (gtext, args, ,
 	   "@end deftypefn") {
   int nargin = args.length ();
   if (nargin != 1) {
-    print_usage ("gtext");
+    print_usage ();
     return octave_value_list();
   }
 

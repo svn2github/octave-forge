@@ -59,7 +59,7 @@ r' * r = a.\n\
 
   if (nargin != 1 || nargout > 2)
     {
-      print_usage ("chol");
+      print_usage ();
       return retval;
     }
 

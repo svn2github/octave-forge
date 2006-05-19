@@ -413,7 +413,7 @@ send(name,value)\n\
   int nargin = args.length();
   if (nargin < 1 || nargin > 2)
     {
-      print_usage("send");
+      print_usage ();
       return ret;
     }
 
@@ -585,7 +585,7 @@ listen(...,'loopback')\n\
   int nargin = args.length();
   if (nargin < 1)
     {
-      print_usage("listen");
+      print_usage ();
       return ret;
     }
 
@@ -614,7 +614,7 @@ listen(...,'loopback')\n\
     } else if (ishostglob(lastarg)) {
       hostlist.append(lastarg);
     } else {
-      print_usage("listen");
+      print_usage ();
     }
   }
 

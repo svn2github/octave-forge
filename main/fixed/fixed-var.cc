@@ -90,7 +90,7 @@ A function returning the version number of the fixed point package used.\n\
   if (args.length () == 0)
     retval = OCTAVEFIXEDVERSION;
   else
-    print_usage ("fixed_point_version");
+    print_usage ();
   	 
   return retval;
 }
@@ -106,7 +106,7 @@ A function returning the version number of the fixed point library used.\n\
   if (args.length () == 0)
     retval = FIXEDVERSION;
   else
-    print_usage ("fixed_point_library_version");
+    print_usage ();
   	 
   return retval;
 }

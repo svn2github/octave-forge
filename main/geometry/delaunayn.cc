@@ -69,7 +69,7 @@ may be useful for joggling the input to cope with non-simplicial cases.\n\
 
   int nargin = args.length();
   if (nargin < 1 || nargin > 2) {
-    print_usage ("delaunayn(p,[opt])");
+    print_usage ()");
     return retval;
   }
 

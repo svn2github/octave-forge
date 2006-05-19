@@ -42,7 +42,7 @@ DEFUN_DLD (gpc_is_polygon, args, ,
   int nargin = args.length ();
   
   if (nargin != 1)
-    print_usage ("gpc_is_polygon");
+    print_usage ();
   else
     retval = octave_value
       (args(0).type_id () == octave_gpc_polygon::static_type_id ());

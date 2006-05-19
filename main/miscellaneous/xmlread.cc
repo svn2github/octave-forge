@@ -141,7 +141,7 @@ DEFUN_DLD (xmlread, args, nargout,
 
   /* Check argument */
   if (args.length() != 1) {
-    print_usage ("xmlread");
+    print_usage ();
     return octave_value_list();
   }
 

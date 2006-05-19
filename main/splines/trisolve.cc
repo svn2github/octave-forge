@@ -247,7 +247,7 @@ to the cyclic system. See Numerical Recipes, pp 73-75\n\
     }
   else
     {
-      print_usage("trisolve");
+      print_usage ();
       return retval;
     }
 

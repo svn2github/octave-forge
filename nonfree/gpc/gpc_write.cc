@@ -47,7 +47,7 @@ DEFUN_DLD (gpc_write, args, ,
   int nargin = args.length ();
   
   if ( nargin < 2 || nargin > 3 )
-    print_usage ("gpc_write");
+    print_usage ();
   else
     {
       if ( nargin == 3 )

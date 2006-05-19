@@ -48,7 +48,7 @@ DEFUN_DLD (gpc_clip, args, ,
   int nargin = args.length ();
   
   if (nargin < 2 || nargin > 3)
-    print_usage ("gpc_clip");
+    print_usage ();
   else
     {
       if ( nargin == 3 )

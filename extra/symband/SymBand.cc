@@ -352,7 +352,7 @@ DEFUN_DLD (SBSolve, args, , "[...] = SBSolve (...)\n\
   octave_value_list retval;
   int nargin = args.length ();
   if (nargin != 2) {
-    print_usage ("SBSolve");
+    print_usage ();
     return retval;
   }
 
@@ -413,7 +413,7 @@ DEFUN_DLD (SBFactor, args, , "[...] = SBFactor (...)\n\
   octave_value_list retval;
   int nargin = args.length ();
   if (nargin != 1) {
-    print_usage ("SBFactor");
+    print_usage ();
     return retval;
   }
 
@@ -454,7 +454,7 @@ DEFUN_DLD (SBFactor2, args, , "[...] = SBFactor (...)\n\
   octave_value_list retval;
   int nargin = args.length ();
   if (nargin != 1) {
-    print_usage ("SBFactor");
+    print_usage ();
     return retval;
   }
 
@@ -488,7 +488,7 @@ DEFUN_DLD (SBBacksub, args, , "[...] = SBBacksub (...)\n\
   octave_value_list retval;
   int nargin = args.length ();
   if (nargin != 2) {
-    print_usage ("SBBacksub");
+    print_usage ();
     return retval;
   }
 
@@ -533,7 +533,7 @@ DEFUN_DLD (SBProd, args, , "[...] = SBProd (...)\n\
   octave_value_list retval;
   int nargin = args.length ();
   if (nargin != 2) {
-    print_usage ("SBProd");
+    print_usage ();
     return retval;
   }
 
@@ -587,7 +587,7 @@ DEFUN_DLD (SBEig, args, nargout , "[...] = SBEig (...)\n\
 
   int nargin = args.length ();
   if ((nargin <2)&&(nargin>4)) {
-    print_usage ("SBEig");
+    print_usage ();
     return retval;
   }
 

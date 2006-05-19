@@ -68,7 +68,7 @@ DEFUN_DLD (GramSchmidt, args, , "[...] = GramSchmidt(...)\n\
   
   int nargin = args.length ();
   if (nargin != 1) {
-    print_usage ("GramSchmidt");
+    print_usage ();
     return retval;
   }
 

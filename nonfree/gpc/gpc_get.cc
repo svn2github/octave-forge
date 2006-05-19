@@ -43,7 +43,7 @@ DEFUN_DLD (gpc_get, args, ,
   int nargin = args.length ();
   
   if ( nargin != 1 )
-    print_usage ("gpc_get");
+    print_usage ();
   else
     {
       if ( args(0).type_id () != octave_gpc_polygon::static_type_id () )

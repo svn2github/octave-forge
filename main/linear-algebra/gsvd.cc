@@ -130,7 +130,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
   if (nargin < 2 || nargin > 2 || (nargout > 1 && (nargout < 5 || nargout > 6)))
     {
-      print_usage ("gsvd");
+      print_usage ();
       return retval;
     }
 
@@ -159,7 +159,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
     {
       if ((nc != np) || (nn != np))
 	{
-	  print_usage ("gsvd");
+	  print_usage ();
 	  return retval;
 	}
 

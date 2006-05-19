@@ -49,7 +49,7 @@ DEFUN_DLD (gpc_read, args, ,
   int nargin = args.length ();
   
   if ( nargin < 1 || nargin > 2 )
-    print_usage ("gpc_read");
+    print_usage ();
   else
     {
       if ( nargin == 2 )

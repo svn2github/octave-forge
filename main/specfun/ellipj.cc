@@ -451,7 +451,7 @@ return @code{NaN}.\n\
           gripe_ellipj_arg ( "second");
      }  // m matrix
    } else  // wrong n. of argin
-       print_usage ("ellipj");
+       print_usage ();
    return retval;
 }
 

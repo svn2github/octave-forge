@@ -109,7 +109,7 @@ Close sockets")
       retval=(double)err;
     }
   else
-    print_usage ("sclose");
+    print_usage ();
 
   return retval;
 

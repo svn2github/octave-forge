@@ -54,7 +54,7 @@ are \"s Qci Tcv\".\n\n\
 
   int nargin = args.length();
   if (nargin < 1 || nargin > 2) {
-    print_usage ("convhulln(p[, opt])");
+    print_usage ()");
     return retval;
   }
 

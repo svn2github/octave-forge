@@ -66,7 +66,7 @@ DEFUN_DLD (gpc_create, args, ,
 
   if (nargin < 1 || nargin > 3)
 
-    print_usage ("gpc_create");
+    print_usage ();
 
   else
     {

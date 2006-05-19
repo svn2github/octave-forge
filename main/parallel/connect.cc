@@ -239,7 +239,7 @@ Connect hosts and return sockets.")
     }
   else
     {
-      print_usage ("connect");
+      print_usage ();
       octave_value retval;
       return retval;
     }

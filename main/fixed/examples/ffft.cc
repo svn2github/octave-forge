@@ -523,7 +523,7 @@ algorithm, and thus is preferred for hardware implementation.\n\
   octave_value retval;
 
   if (args.length() != 1)
-    print_usage("ffft");
+    print_usage ();
   else {
 
     if ((args(0).type_id () == octave_fixed_matrix::static_type_id ()) ||
@@ -626,7 +626,7 @@ algorithm, and thus is preferred for hardware implementation.\n\
   octave_value retval;
 
   if (args.length() != 1)
-    print_usage("fifft");
+    print_usage ();
   else {
 
     if ((args(0).type_id () == octave_fixed_matrix::static_type_id ()) ||

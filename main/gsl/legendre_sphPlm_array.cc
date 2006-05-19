@@ -42,7 +42,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
     gsl_set_error_handler (octave_gsl_errorhandler);
     
     if(args.length() != 3) {
-	print_usage ("legendre_sphPlm_array");
+	print_usage ();
 	return octave_value_list();
     }
     if(!args(0).is_real_type()
@@ -52,7 +52,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
        || !args(1).is_scalar_type()
        || !args(2).is_scalar_type()) {
         error("The arguments must be real scalars.");
-	print_usage ("legendre_sphPlm_array");	    
+	print_usage ();	    
 	return octave_value_list();
     }
 

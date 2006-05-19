@@ -58,7 +58,7 @@ Returns @code{@var{x} + 1}\n\
   FixedPoint one(1,0,1,0);  // Fixed Point value of 1
 
   if (args.length() != 1)
-    print_usage("fixed_inc");
+    print_usage ();
   else
     if (args(0).type_id () == octave_fixed_matrix::static_type_id ()) {
       FixedMatrix f = ((const octave_fixed_matrix&) args(0).get_rep()).

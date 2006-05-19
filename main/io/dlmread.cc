@@ -103,7 +103,7 @@ The lowest index value is zero.\n\
   queue<ComplexColumnVector> lines;  
   int nargin = args.length();
   if (nargin < 1 || nargin > 4) {
-    print_usage ("dlmread");
+    print_usage ();
     return retval;
   }
 

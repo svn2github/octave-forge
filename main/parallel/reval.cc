@@ -133,7 +133,7 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
       }
     }
   else
-    print_usage ("reval");
+    print_usage ();
 
   return retval;
 

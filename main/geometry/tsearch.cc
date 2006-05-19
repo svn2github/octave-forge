@@ -53,7 +53,7 @@ For points outside the convex hull, idx is NaN.")
   octave_value_list retval;
   const int nargin = args.length ();
   if ( nargin != 5 ) {
-    print_usage ("tsearch");
+    print_usage ();
     return retval;
   }
   

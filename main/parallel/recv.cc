@@ -240,7 +240,7 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	}
     }
   else
-    print_usage ("recv");
+    print_usage ();
 
   return retval;
 

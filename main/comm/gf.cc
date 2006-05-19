@@ -67,7 +67,7 @@ DEFUN_DLD (isgalois, args, ,
 "@end deftypefn") 
 {
    if (args.length() != 1) 
-     print_usage("isgalois");
+     print_usage ();
    else if (!galois_type_loaded)
      // Can be of Galois type if the type isn't load :-/
      return octave_value(0.);
@@ -112,7 +112,7 @@ DEFUN_DLD (gf, args, nargout,
   int primpoly = 0;
 
   if ( nargin == 0 ) {
-    print_usage ("gf");
+    print_usage ();
     return retval;
   }
 
@@ -236,7 +236,7 @@ DEFUN_DLD (gdiag, args, ,
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     retval = make_gdiag (args(0), args(1));
   else
-    print_usage ("gdiag");
+    print_usage ();
 
   return retval;
 }
@@ -284,7 +284,7 @@ DEFUN_DLD (greshape, args, ,
 
   if (nargin != 2 && nargin !=3) {
     error("greshape (a, m, m) or greshape (a, size(b))");
-    print_usage("greshape");
+    print_usage ();
   } else {
     int mr = 0, mc = 0;
 
@@ -358,7 +358,7 @@ DEFUN_DLD (greshape, args, ,
 	} \
     } \
   else \
-    print_usage (#FCN); \
+    print_usage (); \
  \
   return retval
 
@@ -416,7 +416,7 @@ DEFUN_DLD (gsqrt, args, ,
   int nargin = args.length ();
 
   if (nargin != 1) {
-    print_usage("gsqrt");
+    print_usage ();
     return retval;
   }
 
@@ -446,7 +446,7 @@ DEFUN_DLD (glog, args, ,
   int nargin = args.length ();
 
   if (nargin != 1) {
-    print_usage("glog");
+    print_usage ();
     return retval;
   }
 
@@ -477,7 +477,7 @@ DEFUN_DLD (gexp, args, ,
   int nargin = args.length ();
 
   if (nargin != 1) {
-    print_usage("gexp");
+    print_usage ();
     return retval;
   }
 
@@ -683,7 +683,7 @@ DEFUN_DLD (gfilter, args, nargout,
   int nargin  = args.length ();
 
   if (nargin < 3 || nargin > 4) {
-    print_usage ("gfilter");
+    print_usage ();
     return retval;
   }
 
@@ -837,7 +837,7 @@ DEFUN_DLD (glu, args, nargout,
 
   if (nargin != 1 || nargout > 3)
     {
-      print_usage ("glu");
+      print_usage ();
       return retval;
     }
 
@@ -908,7 +908,7 @@ DEFUN_DLD (ginv, args, nargout,
 
   if (nargin != 1)
     {
-      print_usage ("ginv");
+      print_usage ();
       return retval;
     }
 
@@ -985,7 +985,7 @@ DEFUN_DLD (gdet, args, nargout,
   int nargin = args.length ();
 
   if (nargin != 1) {
-    print_usage ("gdet");
+    print_usage ();
     return retval;
   }
 
@@ -1034,7 +1034,7 @@ DEFUN_DLD (grank, args, nargout,
   int nargin = args.length ();
 
   if (nargin != 1) {
-    print_usage ("grank");
+    print_usage ();
     return retval;
   }
 
@@ -1154,7 +1154,7 @@ DEFUN_DLD (rsenc, args, nargout,
   int nargin = args.length ();
   
   if ((nargin < 3) || (nargin > 5)) {
-    print_usage ("rsenc");
+    print_usage ();
     return retval;
   }
 
@@ -1219,7 +1219,7 @@ DEFUN_DLD (rsenc, args, nargout,
     } else {
       if (args(i).type_id () == octave_galois::static_type_id ()) {
 	if (have_genpoly) {
-	  print_usage ("rsenc");
+	  print_usage ();
 	  return retval;
 	}
 	genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
@@ -1229,7 +1229,7 @@ DEFUN_DLD (rsenc, args, nargout,
       } else {
 	if (have_genpoly) {
 	  if (prim != 0) {
-	    print_usage ("rsenc");
+	    print_usage ();
 	    return retval;
 	  }
 	  prim = args(i).nint_value();
@@ -1621,7 +1621,7 @@ DEFUN_DLD (rsdec, args, nargout,
   int nargin = args.length ();
   
   if ((nargin < 3) || (nargin > 5)) {
-    print_usage ("rsdec");
+    print_usage ();
     return retval;
   }
 
@@ -1688,14 +1688,14 @@ DEFUN_DLD (rsdec, args, nargout,
       } else {
 	if (args(i).type_id () == octave_galois::static_type_id ()) {
 	  if (have_genpoly) {
-	    print_usage ("rsdec");
+	    print_usage ();
 	    return retval;
 	  }
 	  genpoly = ((const octave_galois&) args(i).get_rep()).galois_value ();
 	} else {
 	  if (have_genpoly) {
 	    if (prim != 0) {
-	      print_usage ("rsdec");
+	      print_usage ();
 	      return retval;
 	    }
 	    prim = args(i).nint_value();
@@ -1885,7 +1885,7 @@ DEFUN_DLD (bchenco, args, ,
   int nargin = args.length ();
   
   if ((nargin < 3) || (nargin > 5)) {
-    print_usage ("bchenco");
+    print_usage ();
     return retval;
   }
 
@@ -2151,7 +2151,7 @@ DEFUN_DLD (bchdeco, args, ,
   int nargin = args.length ();
   
   if ((nargin < 3) || (nargin > 5)) {
-    print_usage ("bchdeco");
+    print_usage ();
     return retval;
   }
 

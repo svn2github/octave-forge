@@ -36,7 +36,7 @@ Return the @var{i,j}-th element of @var{cell}.\n\
       || (args(0).is_list() && args.length() > 2)
       || args.length() > 3)
     {
-      print_usage ("deref");
+      print_usage ();
       return retval;
     }
   

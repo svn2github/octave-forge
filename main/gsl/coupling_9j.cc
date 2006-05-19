@@ -49,7 +49,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
     gsl_set_error_handler (octave_gsl_errorhandler);
     
     if(args.length() != 9) {
-	print_usage ("coupling_9j");
+	print_usage ();
 	return octave_value();
     }
     if(!args(0).is_real_type() ||
@@ -62,7 +62,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
        !args(7).is_real_type() ||
        !args(8).is_real_type()) {       
         error("The arguments must be real.");
-	print_usage ("coupling_9j");	    
+	print_usage ();	    
 	return octave_value();
     }
 
@@ -76,7 +76,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
        len != args(7).length() ||
        len != args(8).length()) {       
         error("The arguments have the same length.");
-	print_usage ("coupling_9j");	    
+	print_usage ();	    
 	return octave_value();
     }	
     

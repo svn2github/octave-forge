@@ -40,7 +40,7 @@ DEFUN_DLD (cell2csv, args, nargout,
 
   /* Check argument */
   if ((args.length() < 2) || (args.length() > 4)) {
-    print_usage ("cell2csv");
+    print_usage ();
     return octave_value();
   }
 

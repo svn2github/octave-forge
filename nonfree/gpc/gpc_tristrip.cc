@@ -44,7 +44,7 @@ DEFUN_DLD (gpc_tristrip, args, ,
   int nargin = args.length ();
   
   if ( nargin != 1 )
-    print_usage ("gpc_tristrip");
+    print_usage ();
   else
     {
       if ( args(0).type_id () != octave_gpc_polygon::static_type_id () )

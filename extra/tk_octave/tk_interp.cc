@@ -946,7 +946,7 @@ See also: tk_start, tk_end, tk_loop")
    int nargin = args.length();
    if (nargin == 0)
      {
-       print_usage("tk_cmd");
+       print_usage ();
        return ret;
      }
 

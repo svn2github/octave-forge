@@ -53,7 +53,7 @@ code. @seealso{feval and eval}\n\
 
     } 
   else
-    print_usage ("leval");
+    print_usage ();
 
   return retval;
 }

@@ -29,8 +29,8 @@ Open Source Initiative (www.opensource.org)
 
 #include <iostream>
 
-#include <octave/gripes.h>
 #include <octave/config.h>
+#include <octave/gripes.h>
 #include <octave/oct-obj.h>
 #include <octave/ov.h>
 #include <octave/ov-re-mat.h>

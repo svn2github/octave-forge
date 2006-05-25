@@ -502,7 +502,7 @@ octave_galois::save_binary (std::ostream& os, bool& save_as_floats)
 {
   char tmp = m ();
   os.write (X_CAST (char *, &tmp), 1);
-  FOUR_BYTE_INT itmp = primpoly ();
+  int32_t itmp = primpoly ();
   os.write (X_CAST (char *, &itmp), 4);
 
   dim_vector d = dims ();
@@ -546,7 +546,7 @@ octave_galois::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format fmt)
 {
   char mord;
-  FOUR_BYTE_INT prim, mdims;
+  int32_t prim, mdims;
 
   if (! is.read (X_CAST (char *, &mord), 1))
     return false;
@@ -565,7 +565,7 @@ octave_galois::load_binary (std::istream& is, bool swap,
   if (mdims == -2)
     {
       mdims = - mdims;
-      FOUR_BYTE_INT di;
+      int32_t di;
       dim_vector dv;
       dv.resize (mdims);
 
@@ -608,7 +608,7 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   hid_t space_hid = -1, data_hid = -1;
   bool retval = true;
   char tmp;
-  FOUR_BYTE_INT itmp;
+  int32_t itmp;
 
   space_hid = H5Screate_simple (0, hdims, (hsize_t*) 0);
   if (space_hid < 0) 
@@ -666,7 +666,7 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   if (space_hid < 0) return false;
 
   double *mtmp = mval.fortran_vec ();
-  OCTAVE_LOCAL_BUFFER (unsigned FOUR_BYTE_INT, vtmp, d.numel ());
+  OCTAVE_LOCAL_BUFFER (uint32_t, vtmp, d.numel ());
 
   hid_t save_type_hid = H5T_NATIVE_UINT;
   if (tmp <= 8)
@@ -679,14 +679,14 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   else if (tmp <= 16)
     {
       save_type_hid = H5T_NATIVE_USHORT;
-      unsigned TWO_BYTE_INT *wtmp = (unsigned TWO_BYTE_INT *)vtmp;
+      uint16_t *wtmp = (uint16_t *)vtmp;
       for (int i = 0; i < d.numel (); i++)
-	wtmp[i] = (unsigned TWO_BYTE_INT) mtmp[i];
+	wtmp[i] = (uint16_t) mtmp[i];
     }
   else
     {
       for (int i = 0; i < d.numel (); i++)
-	vtmp[i] = (unsigned FOUR_BYTE_INT) mtmp[i];
+	vtmp[i] = (uint32_t) mtmp[i];
     }
 
   data_hid = H5Dcreate (group_hid, "val", save_type_hid, space_hid, 

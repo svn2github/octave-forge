@@ -80,7 +80,8 @@ function pp = csape (x, y, cond, valc)
       g(n - 2,:) = 3 / 2 * (3 * (a(n,:) - a(n - 1,:)) / h(n - 1) - valc(2))\
           - 3 * (a(n - 1,:) - a(n - 2,:)) / h(n - 2);
 
-      c(2:n - 1,:) = trisolve(dg,e,g);
+      c(2:n - 1,:) = spdiags([[e(:);0],dg,[0;e(:)]],[-1,0,1],n-2,n-2) \ g;
+
     end
 
     c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * valc(1) 
@@ -114,7 +115,7 @@ function pp = csape (x, y, cond, valc)
     else
       dg = 2 * (h(1:n - 2) .+ h(2:n - 1));
       e = h(2:n - 2);
-      c(2:n - 1,:) = trisolve (dg,e,g);
+      c(2:n - 1,:) = spdiags([[e(:);0],dg,[0;e(:)]],[-1,0,1],n-2,n-2) \ g;
     end
         
     b(1:n - 1,:) = diff (a) ./ h(1:n - 1,idx)\
@@ -136,7 +137,18 @@ function pp = csape (x, y, cond, valc)
     if (n > 3)
       dg = 2 * (h(1:n - 1) .+ h(2:n));
       e = h(2:n - 1);
-      c(2:n,idx) = trisolve(dg,e,g,h(1),h(1));
+
+      ## Use Sherman-Morrison formula to extend the solution
+      ## to the cyclic system. See Numerical Recipes in C, pp 73-75
+      gamma = - dg(1);
+      dg(1) -=  gamma;
+      dg(end) -= h(1) * h(1) / gamma; 
+      z = spdiags([[e(:);0],dg,[0;e(:)]],[-1,0,1],n-1,n-1) \ ...
+	  [[gamma; zeros(n-3,1); h(1)],g];
+      fact = (z(1,2:end) + h(1) * z(end,2:end) / gamma) / ...
+	  (1.0 + z(1,1) + h(1) * z(end,1) / gamma);
+
+      c(2:n,idx) = z(:,2:end) - z(:,1) * fact;
     endif
 
     c(1,:) = c(n,:);
@@ -167,14 +179,14 @@ function pp = csape (x, y, cond, valc)
       ldg = udg = h(2:n - 2);
       udg(1) = udg(1) - h(1);
       ldg(n - 3) = ldg(n-3) - h(n - 1);
-      c(2:n - 1,:) = trisolve(ldg,dg,udg,g);
+      c(2:n - 1,:) = spdiags([[ldg(:);0],dg,[0;udg(:)]],[-1,0,1],n-2,n-2) \ g;
 
     elseif (n == 4)
 
       dg = [h(1) + 2 * h(2), 2 * h(2) + h(3)];
       ldg = h(2) - h(3);
       udg = h(2) - h(1);
-      c(2:n - 1,:) = trisolve(ldg,dg,udg,g);
+      c(2:n - 1,:) = spdiags([[ldg(:);0],dg,[0;udg(:)]],[-1,0,1],n-2,n-2) \ g;
       
     else # n == 3
 	    

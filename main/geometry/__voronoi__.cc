@@ -54,7 +54,7 @@ Internal function for voronoi.\n\
 
 	int nargin = args.length();
 	if (nargin < 1 || nargin > 2) {
-		print_usage ()");
+		print_usage ();
 		return retval;
 	}
 

@@ -1,0 +1,64 @@
+## Copyright (C) 2006 Charalampos C. Tsimenidis
+##
+## This program is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+##
+
+## usage: y = pskmod (x, M, [phi, [type]]);   
+##
+## Modulates an information sequence of intergers x in the range [0..M-1] 
+## onto a complex baseband phase shift keying modulated signal y. phi controls 
+## the initial phase and type controls the constellation mapping. If type is 
+## set to 'Bin' will result in binary encoding, in constrast, if set to 'Gray' 
+## will give Gray encoding.
+##
+##  EXAMPLE: Gray-encoded QPSK
+##
+##	d=randint(1,5e3,4);
+##	y=pskmod(d,4,0,'Gray');
+##	z=awgn(y,30);
+##	plot(z,'rx')
+##
+## See also: pskdemod
+
+function y=pskmod(x,M,phi,type)
+
+m=0:M-1;
+
+if ~isempty(find(ismember(x,m)==0))
+	error("x elements should be integers in the set [0, M-1].");
+endif	
+
+if nargin<3
+    phi=0;
+endif
+
+if nargin<4
+	type="Bin";
+endif	
+
+constellation=exp(1j*2*pi*m/M+1j*phi);
+
+if (strcmp(type,"Bin")||strcmp(type,"bin"))
+    y=constellation(x+1);
+elseif (strcmp(type,"Gray")||strcmp(type,"gray"))
+    [a,b]=sort(bitxor(m,bitshift(m,-1)));
+    y=constellation(b(x+1));
+else
+    usage("y = pskmod (x, M, [phi, [type]])");   
+endif
+
+
+%!assert (round(pskmod([0:3],4,0,'Bin')),[1 j -1 -j])
+%!assert (round(pskmod([0:3],4,0,'Gray')),[1 j -j -1])

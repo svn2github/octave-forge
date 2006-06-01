@@ -133,7 +133,7 @@ t = t0;
 % higher order than ODE45. This choice is somewhat subjective.
 %hmin = (tfinal - t)/10000;
 hmin = (tfinal - t)/1e20;
-h = (tfinal - t)/50;
+h = min(hmax,(tfinal - t)/50);
 x = x0(:);          % the '(:)' ensures x is initialized as a column vector
 f = x*zeros(1,13);  % f needs to be an Nx13 matrix where N=number of rows in x
 tout = t;

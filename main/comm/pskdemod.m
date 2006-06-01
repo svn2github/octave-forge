@@ -47,15 +47,7 @@ if nargin<4
 endif
 
 m=0:M-1;
-constellation=exp(1j*2*pi*m/M+1j*phi);
-[nr,nc]=size(x);
-index=zeros(nr,nc);
-for k=1:nr
-    for l=1:nc
-    	[a,index(k,l)]=min(abs(x(k,l)-constellation)); % Minimum distance decoding
-    endfor
-endfor
-
+index=mod(round((arg(x)-phi)*M/2/pi),M)+1;
 
 if (strcmp(type,"Bin")||strcmp(type,"bin"))
         y=index-1;

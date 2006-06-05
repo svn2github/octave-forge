@@ -38,8 +38,8 @@ endfunction
 %!test
 %! nc('time') = 5;
 %! nc('space') = 3;
-%! assert(nc('time'),5);
-%! assert(nc('space'),3);
+%! assert(length(nc('time')),5);
+%! assert(length(nc('space')),3);
 
 %!# Test reading/writing global attributes
 %!test

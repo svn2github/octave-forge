@@ -22,6 +22,7 @@
 #include "ov-ncfile.h"
 #include "ov-ncvar.h"
 #include "ov-ncatt.h"
+#include "ov-ncdim.h"
 
 
 
@@ -334,14 +335,22 @@ octave_value octave_ncfile::subsref(const std::string SUBSREF_STRREF type,
    	  return  octave_value();
 	}
 
-	status = nc_inq_dimlen(get_ncid(), dimid, &length);
+	// previously a call like nc('dimension name') return the size of the dimension,
+	// now it return the dimension object in order to be compatible with the 
+	// Matlab toolbox.
 
-	if (status != NC_NOERR) {
-	  error("Error while querying dimension %s: %s",name.c_str(), nc_strerror(status));
-   	  return  octave_value();
-	}
+#       if 0
+ 	status = nc_inq_dimlen(get_ncid(), dimid, &length);
 
-	retval = octave_value(length);
+ 	if (status != NC_NOERR) {
+ 	  error("Error while querying dimension %s: %s",name.c_str(), nc_strerror(status));
+    	  return  octave_value();
+ 	}
+ 	retval = octave_value(length);
+#       else
+	retval = octave_value(new octave_ncdim(this,dimid));
+#       endif
+
 	break;
       }
     case '{': {

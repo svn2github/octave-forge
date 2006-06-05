@@ -245,6 +245,8 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 	octave_value_list key_idx = *idx.begin();
 	std::list<Range> ranges = get_slice(key_idx);
 
+        if (error_state)  return retval;
+ 
 	ov_nc_put_vars(get_ncid(),get_varid(),ranges,get_nctype(),scaledrhs);
 
 	retval = rhs;
@@ -310,6 +312,8 @@ octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
 	get_ncfile()->set_mode(DataMode);
 	octave_value_list key_idx = idx.front();
 	std::list<Range> ranges = get_slice(key_idx);
+
+        if (error_state)  return retval;
 
 	retval = ov_nc_get_vars(get_ncid(),get_varid(),ranges,get_nctype());
 
@@ -433,6 +437,7 @@ std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
 	  }
           else {
  	    error("octcdf: unknown index specification: type %s",key_idx(i).type_name().c_str());
+	    return ranges;
 	  }
 	}
     }

@@ -95,7 +95,7 @@ If you've never submitted code to a SourceForge project before,
 create your home directory by
 logging onto the octave-forge account with <tt>ssh</tt>:
 <pre>
-   $ ssh -l <FONT COLOR="#800000"><i>sflogin</i></FONT>  cvs.octave.sourceforge.net
+   $ ssh -l <FONT COLOR="#800000"><i>sflogin</i></FONT>  octave.cvs.sourceforge.net
    Password:  <FONT COLOR="#800000"><i>your SF password</i></FONT>
 </pre>
 Although SF will only show you a message-of-the-day screen then log
@@ -350,7 +350,7 @@ your directory into the octave-forge tree.  Instead, change to the
 root of your package tree and enter the following:
 <pre>
    $ cd <FONT COLOR="#800000"><i>package</i></FONT>
-   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.octave.sourceforge.net:/cvsroot/octave import -m "<FONT COLOR="#800000"><i>package name</i></FONT>" octave-forge/<FONT COLOR="#800000"><i>main/package</i></FONT> <FONT COLOR="#800000"><i>sflogin</i></FONT> start
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@octave.cvs.sourceforge.net:/cvsroot/octave import -m "<FONT COLOR="#800000"><i>package name</i></FONT>" octave-forge/<FONT COLOR="#800000"><i>main/package</i></FONT> <FONT COLOR="#800000"><i>sflogin</i></FONT> start
 </pre>
 
 You can then fetch the new package from octave-forge as follows:

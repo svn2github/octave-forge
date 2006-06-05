@@ -30,12 +30,6 @@ Adjust as appropriate for the percentage of users that you think will donate.
 =====================================================================
 Project organization
 
-FIXES/
-	Alternatives to existing Octave functions.  Some of these are 
-	needed by the functions in main/, some are needed for 
-	compatibility with Matlab, and some are faster than the Octave
-	alternatives.
-
 admin/
 	Contains files and scripts used to administer the octave-forge
 	website and build the release files.  Nothing in here is needed
@@ -64,17 +58,6 @@ extra/patches/
 	number on which the patch was based.  The start of the 
 	patch file should contain a description of what it does.  
 	Patches should be generated with diff -c or diff -cp.
-
-extra/ver20/
-	Backports of functions to the latest Octave 2.0.x interpreter.  
-	Unless you volunteer to keep them up to date, these functions 
-	will likely fall behind their counterparts in the main
-	distribution.  Note that you should try to write your functions 
-	so that they work without change in Octave 2.0.x, but if doing 
-	so makes them less clean or efficient, then drop 2.0.x 
-	compatibility and consider making a 2.0.x specific version and 
-	adding it to the ver20 directory.  By default these are not 
-	installed.
 
 main/
 	Packages which may eventually be included in the main octave 

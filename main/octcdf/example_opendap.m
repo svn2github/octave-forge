@@ -11,8 +11,8 @@ disp(['SSH forecast for part of the North Atlantic for ' datestr(datenum(1900,12
 % Select the SSH for part of the North Atlantic
 % 
 
-i = find(-92 < lon & lon < -51); i=i(1):i(end);
-j = find(23 < lat & lat < 45);   j=j(1):j(end);
+i = find(-92 < lon & lon < -51);
+j = find(23 < lat & lat < 45);   
 
 x = lon(i);
 y = lat(j);

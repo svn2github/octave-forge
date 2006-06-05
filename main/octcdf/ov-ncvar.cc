@@ -435,6 +435,25 @@ std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
 	  else if (key_idx(i).is_real_scalar())  {
               ranges.push_back(Range(key_idx(i).scalar_value(),key_idx(i).scalar_value()));
 	  }
+	  else if (key_idx(i).is_matrix_type())  {
+            Matrix m =  key_idx(i).matrix_value();
+
+            if (m.rows() != 1) m = m.transpose();
+              
+            Range r = Range(m(0),m(m.numel()-1),m(1)-m(0));
+
+            if (r.inc() <= 0) {
+   	      error("octcdf: indexes must be increasing");
+   	      return ranges;
+	    }
+
+            if (r.matrix_value() != m) {
+   	      error("octcdf: indexes must be contiguous");
+   	      return ranges;
+	    }
+
+            ranges.push_back(r);
+	  }
           else {
  	    error("octcdf: unknown index specification: type %s",key_idx(i).type_name().c_str());
 	    return ranges;

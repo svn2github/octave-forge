@@ -150,7 +150,7 @@ t0 = tspan(1);
 tfinal = tspan(2);
 t = t0;
 hmin = (tfinal - t)/1e20;
-h = (tfinal - t)/100; % initial step size guess
+h = min((tfinal - t)/100,hmax); % initial step size guess
 x = x0(:);            % ensure x is a column vector
 
 Nstates = size(x,1);

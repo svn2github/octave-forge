@@ -275,7 +275,7 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 
 
 // References of the type:
-// x.v     x(idx).v     x{idx}.v
+// x.v     x(idx)     x{idx}
 
 octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
 			      const LIST < octave_value_list > &idx)
@@ -307,7 +307,7 @@ octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
     case '(':
       {
 #       ifdef OV_NETCDF_VERBOSE
-	octave_stdout << "getting var " << std::endl;
+	octave_stdout <<  __LINE__ << ":"  << __FUNCTION__ << "getting var " << std::endl;
 #       endif
 	get_ncfile()->set_mode(DataMode);
 	octave_value_list key_idx = idx.front();

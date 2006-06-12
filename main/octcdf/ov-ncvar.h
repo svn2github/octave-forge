@@ -81,7 +81,7 @@ public:
 
   // Get dim_vector following Octave conventions
 
-  dim_vector dims() const {  return ncv->dimvec; }
+  dim_vector dims() const { return ncv->dimvec; }
 
   int ndims() const  { return dims().length(); }
 

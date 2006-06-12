@@ -650,18 +650,19 @@ void ov_nc_put_att(int ncid, int varid,const std::string name,
 
 octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype) {
 
-  int ndim = ranges.size();
+  int ncndim = ranges.size();
   octave_value retval;
-  long *start = new long[ndim];
-  long *count = new long[ndim];
-  long *stride = new long[ndim];
+  long *start = new long[ncndim];
+  long *count = new long[ncndim];
+  long *stride = new long[ncndim];
   long sliced_numel;
   ArrayN<double> arr;
   dim_vector sliced_dim_vector;
   int status;
-  Array<int> perm_vector(ndim);
+  Array<int> perm_vector(ncndim);
 
-  sliced_dim_vector.resize(ndim);
+
+  sliced_dim_vector.resize(ncndim);
 
   int i = 0;
   std::list<Range>::const_iterator it;
@@ -673,14 +674,14 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
       stride[i] = (long int) (*it).inc();
       sliced_dim_vector(i) =  count[i];
 
-      // in Octave 2.9.3 Array<T>::permute expect a zero-
+      // since Octave 2.9.3 Array<T>::permute expect a zero-
       // based permuation vector while Octave 2.1.71 seems to 
       // be happy with a one-based permutation vector
 
 #     ifdef OCTAVE_PERMVEC_ZEROBASED      
-      perm_vector(i) = ndim-i-1;
+      perm_vector(i) = ncndim-i-1;
 #     else
-      perm_vector(i) = ndim-i;
+      perm_vector(i) = ncndim-i;
 #     endif
 
       i=i+1;
@@ -707,7 +708,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 									   \
       delete var;							   \
                                                                            \
-      if (STORAGE_ORDER == FORTRAN_ORDER || ndim == 1)	   		   \
+      if (STORAGE_ORDER == FORTRAN_ORDER || ncndim == 1)	   		   \
         retval = octave_value(CAST_DARRAY(arr));                           \
       else                                                                 \
         retval = octave_value(CAST_DARRAY(arr.permute(perm_vector)));	   \
@@ -741,7 +742,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 
 	delete var;
 
-        if (STORAGE_ORDER == FORTRAN_ORDER || ndim == 1)                                  
+        if (STORAGE_ORDER == FORTRAN_ORDER || ncndim == 1)                                  
           retval = octave_value(CAST_CARRAY(arr),true);                                        
         else                                                                 
           retval = octave_value(CAST_CARRAY(arr.permute(perm_vector)),true);	  	   
@@ -760,6 +761,14 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   delete count;
   delete stride;
 
+  // in Octave, vectors are represented as matrices
+  // if the NetCDF object is a vector of length n
+  // we need to reshape it as a n-by-1 matrix
+
+  if (ncndim == 1) {
+    retval = retval.resize(dim_vector(retval.numel(),1));
+  }
+
   return retval;
 }
 
@@ -767,17 +776,17 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,octave_value rhs) {
 
 
-  int ndim = ranges.size();
+  int ncndim = ranges.size();
   octave_value retval;
-  long *start = new long[ndim];
-  long *count = new long[ndim];
-  long *stride = new long[ndim];
+  long *start = new long[ncndim];
+  long *count = new long[ncndim];
+  long *stride = new long[ncndim];
   long sliced_numel;
   ArrayN<double> arr;
   dim_vector sliced_dim_vector;
   int status;
 
-  sliced_dim_vector.resize(ndim);
+  sliced_dim_vector.resize(ncndim);
 
 #  ifdef OV_NETCDF_VERBOSE
   octave_stdout << " ov_nc_put_vars" << std::endl;
@@ -837,7 +846,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 	else {
 	  ArrayN<char> arr =  rhs.char_array_value();
 									
-          if (STORAGE_ORDER == C_ORDER && ndim > 1 )				
+          if (STORAGE_ORDER == C_ORDER && ncndim > 1 )				
 	      arr = arr.permute(perm_vector);				
 
 	  for (int i = 0; i < sliced_numel; i++) {
@@ -871,7 +880,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 	  else {							\
 	    ArrayN<double> arr = rhs.array_value();                     \
 									\
-	    if (STORAGE_ORDER == C_ORDER && ndim > 1)		       	\
+	    if (STORAGE_ORDER == C_ORDER && ncndim > 1)		       	\
 	      arr = arr.permute(perm_vector);				\
 									\
 	    for (int i = 0; i < sliced_numel; i++) {			\

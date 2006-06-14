@@ -358,7 +358,13 @@ DEFUN_DLD(ncname, args,,
 @deftypefnx {Loadable Function} ncname(@var{nv}) \n\
 @deftypefnx {Loadable Function} ncname(@var{na}) \n\
 @deftypefnx {Loadable Function} ncname(@var{nd}) \n\
-Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes @var{na} or dimension @var{nd}. \n\
+@deftypefnx {Loadable Function} ncname(@var{nv},@var{new_name}) \n\
+@deftypefnx {Loadable Function} ncname(@var{na},@var{new_name}) \n\
+@deftypefnx {Loadable Function} ncname(@var{nd},@var{new_name}) \n\
+Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes \n\
+@var{na} or dimension @var{nd}. If it is called with a second argument, the \n\
+corresponding NetCDF object will be renamed. Only variables, attributes and \n\
+dimensions can be renamed. \n\
 @end deftypefn\n\
 @seealso{ncvar,ncatt,ncdim}\n")
 {
@@ -416,7 +422,7 @@ DEFUN_DLD(ncdatatype, args,,
 "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} ncdatatype(@var{nv}) \n\
 @deftypefnx {Loadable Function} ncdatatype(@var{na}) \n\
-Gets the name of the NetCDF file @var{nc}, variable @var{nv}, attributes @var{na} or dimension @var{nd}. \n\
+Gets the datatype of the NetCDF variable @var{nv} or attributes @var{na}. \n\
 @end deftypefn\n\
 @seealso{ncvar,ncatt,ncdim}\n")
 {

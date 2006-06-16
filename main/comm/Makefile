@@ -13,7 +13,7 @@ GALOISLINKTARGETS = $(patsubst %,%$(OCTLINK), \
 
 GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
 OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
-                    syndtable.cc _gfweight.cc
+                    syndtable.cc _gfweight.cc genqamdemod.cc
 OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
 OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
 OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))

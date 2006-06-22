@@ -12,6 +12,7 @@ page_screen_output = 0;
 if 0 # optim tests are failing far too often!
 disp(">lp");
 lp_test
+A = p'*A*T'*p
 disp(">minimize_1"); test_minimize_1; assert(ok,1);
 disp(">cg_min_1"); test_cg_min_1; assert(ok,1);
 disp(">cg_min_2"); test_cg_min_2; assert(ok,1);
@@ -37,10 +38,6 @@ catch disp(__error_text__); end
 disp("[main/image]");
 try testimio
 catch disp(__error_text__); end
-
-disp("[main/sparse]");
-# sp_test  # now using generated sptest
-fem_test
 
 disp("=====================");
 disp("all tests completed successfully");

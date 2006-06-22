@@ -6,7 +6,9 @@
 ## Author: Paul Kienzle
 ## This program is public domain.
 
-LOADPATH = "main//:extra//:nonfree//:";
+addpath(genpath('main'));
+addpath(genpath('extra'));
+addpath(genpath('nonfree'));
 page_screen_output = 0;
 
 if 0 # optim tests are failing far too often!

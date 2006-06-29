@@ -118,7 +118,7 @@ octave_fixed_matrix::complex_array_value (bool) const
 
 #if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 octave_value
-octave_fixed_matrix::resize (const dim_vector& dv) const
+octave_fixed_matrix::resize (const dim_vector& dv, bool) const
 {
   if (dv.length() > 2)
     {

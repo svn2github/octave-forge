@@ -134,7 +134,7 @@ public:
 #endif
 
 #if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
-  octave_value resize (const dim_vector& dv) const;
+  octave_value resize (const dim_vector& dv, bool) const;
 #endif
 
   void increment (void) { matrix += FixedPoint(1,0,1,0); }

@@ -116,7 +116,7 @@ public:
 #endif
 
 #if defined(HAVE_OCTAVE_CONCAT) || defined(HAVE_OLD_OCTAVE_CONCAT)
-  octave_value resize (const dim_vector& dv) const;
+  octave_value resize (const dim_vector& dv, bool) const;
 
   size_t byte_size (void) const { return gval.byte_size (); }
 #endif

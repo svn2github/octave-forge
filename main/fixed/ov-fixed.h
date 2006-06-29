@@ -137,7 +137,7 @@ public:
     { return ComplexMatrix (1, 1, Complex (::fixedpoint(scalar))); }
 
 #if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
-  octave_value resize (const dim_vector& dv) const;
+  octave_value resize (const dim_vector& dv, bool) const;
 #endif
 
   octave_value convert_to_str (bool pad = false) const;

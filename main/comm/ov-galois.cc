@@ -61,7 +61,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois");
 
 
 #if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
-octave_value octave_galois::resize (const dim_vector& dv) const
+octave_value octave_galois::resize (const dim_vector& dv, bool) const
 { 
   if (dv.length() > 2)
     {

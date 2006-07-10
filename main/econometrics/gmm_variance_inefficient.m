@@ -19,8 +19,7 @@ function V = gmm_variance_inefficient(theta, data, weight, omega, moments, momen
 	D = numgradient("average_moments", {theta, data, moments, momentargs});
 	D = D';
 
-	m = feval(moments, theta, data, momentargs); # find out how many obsns. we have
-	n = rows(m);
+	n = rows(data);
 
 	J = D*weight*D';
 	J = inv(J);

@@ -44,6 +44,11 @@
 ##     "gnudoit -q \"(find-file \\\"%s\\\")\""   
 ##       send it to current emacs; must have (gnuserv-start) in .emacs
 ##
+##   On cygwin, you will need to convert the cygwin path to a windows
+##   path if you are using a native Windows editor.  For example
+##     '"C:/Program Files/Good Editor/Editor.exe" `cygpath -wa %s`'
+##   Pay attention to the "" and ``; they are significant.
+##
 ## home
 ##   This is the location of user local m-files. Be be sure it is on LOADPATH.
 ##   The default is ~/octave.

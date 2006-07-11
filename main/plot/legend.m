@@ -195,7 +195,8 @@ function legend (varargin)
   shell_cmd=["grep \"^", gnuplot_command_plot, " \" '", tmpfilename, "' | ", \
              "sed -e 's/,/ , /g' -e 's/\"/ \" /g'", " | ", \
              "awk '", awk_prog, "'"];
-  [status, plot_cmd] = split(system(shell_cmd),"\n");
+  [status, output] = system(shell_cmd);
+  plot_cmd = split(output,"\n");
 
   # Remove state file and sync file
 

@@ -1,5 +1,0 @@
-Small patches to Octave. Patches should be labelled as
-name-version.patch, with version being the Octave version 
-number on which the patch was based.  The start of the 
-patch file should contain a description of what it does.  
-Patches should be generated with diff -c or diff -cp.

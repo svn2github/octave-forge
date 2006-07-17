@@ -220,7 +220,7 @@ Constants
  program_name argv
  program_invocation_name
 Variables
- LOADPATH EXEC_PATH IMAGEPATH
+ EXEC_PATH IMAGE_PATH
 
 system >> System Utilities
 Clock functions

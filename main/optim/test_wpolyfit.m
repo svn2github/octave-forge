@@ -33,7 +33,7 @@ wpolyfit(x,y,dy,1);
 disp('computing parameter uncertainty from monte carlo simulation...');
 fflush(stdout);
 n=100; p=zeros(2,n);
-for i=1:n, p(:,i)=polyfit(x,y+randn(size(y)).*dy,1); end
+for i=1:n, p(:,i)=(polyfit(x,y+randn(size(y)).*dy,1)).'; end
 printf("%15s %15s\n", "Coefficient", "Error");
 printf("%15g %15g\n", [mean(p'); std(p')]);
 input('Press <Enter> to see some sample regression lines: ');

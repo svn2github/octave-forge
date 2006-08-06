@@ -5,7 +5,8 @@ function y=var(x,opt,DIM)
 %   calculates the variance in dimension DIM
 %   the default DIM is the first non-single dimension
 %
-% opt   option (not supported)
+% opt   0: normalizes with N-1 [default}
+%	1: normalizes with N 
 % DIM	dimension
 %	1: VAR of columns
 %	2: VAR of rows
@@ -35,7 +36,7 @@ function y=var(x,opt,DIM)
 
 %	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2003,2006 by Alois Schloegl <a.schloegl@ieee.org>
 
 if nargin>1,
         if ~isempty(opt) & opt~=0, 
@@ -45,17 +46,18 @@ else
         opt = 0; 
 end;
 
-if nargin > 2,
-        [s,n,y] = sumskipnan(x, DIM);
-else
-	[s,n,y] = sumskipnan(x);
-end
+if nargin<3,
+	DIM = []; 
+end;
+if isempty(DIM), 
+        DIM=min(find(size(x)>1));
+        if isempty(DIM), DIM=1; end;
+end;
 
-% actual calculation 
-y = (y - (real(s).^2+imag(s).^2)./n);   % n * (summed squares with removed mean)
+[y,n] = sumskipnan(center(i,DIM).^2,DIM);
 
-%if flag_implicit_unbiased_estim;    %% ------- unbiased estimates ----------- 
-    n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
-%end;
+if (opt~=1)
+    	n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF
+end;
 y = y./n;	% normalize
 

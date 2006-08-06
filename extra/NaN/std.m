@@ -50,17 +50,19 @@ function [o,v]=std(i,opt,DIM)
 %       This is part of the NaN-toolbox for Octave and Matlab 
 %       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
-if nargin>2
-        [s,n,y] = sumskipnan(i,DIM);
-else
-        [s,n,y] = sumskipnan(i);
-        if nargin<2,
-                opt = 0;
-        end;
+if nargin<3,
+	DIM = []; 
+end;
+if isempty(DIM), 
+        DIM=min(find(size(x)>1));
+        if isempty(DIM), DIM=1; end;
 end;
 
-y = (y - (real(s).^2+imag(s).^2)./n);   % n * (summed squares with removed mean)
-y(y<0) = 0;
+[y,n] = sumskipnan(center(i,DIM).^2,DIM);
+
+if nargin<2,
+        opt = 0;
+end;
 
 if opt==0, 
         % square root if the best unbiased estimator of the variance 
@@ -70,6 +72,7 @@ if opt==0,
 elseif opt==1, 
 	ib = NaN;        
         o  = sqrt(y./n);
+
 else
         % best unbiased estimator of the mean
         if exist('unique')==2, 

@@ -35,13 +35,19 @@ function [y] = nanstd(i,FLAG,DIM)
 %	$Id$
 
 
-if nargin>1
-        [s,n,y] = sumskipnan(i,DIM);
-else
-        [s,n,y] = sumskipnan(i);
+if nargin<2,
+	FLAG = 0; 
+end;
+	
+if nargin<3,
+	DIM = []; 
+end;
+if isempty(DIM), 
+        DIM=min(find(size(i)>1));
+        if isempty(DIM), DIM=1; end;
 end;
 
-y = y.*n - real(s).^2 - imag(s).^2;   % n*n * (summed squares with removed mean)
+[y,n] = sumskipnan(center(i,DIM).^2,DIM);
 
 if (FLAG~=1)
         y = sqrt(y./(n.*max(n-1,0)));	% normalize with N-1

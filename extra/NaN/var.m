@@ -54,7 +54,7 @@ if isempty(DIM),
         if isempty(DIM), DIM=1; end;
 end;
 
-[y,n] = sumskipnan(center(i,DIM).^2,DIM);
+[y,n] = sumskipnan(center(x,DIM).^2,DIM);
 
 if (opt~=1)
     	n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF

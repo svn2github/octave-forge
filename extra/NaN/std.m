@@ -1,4 +1,4 @@
-function [o,v]=std(i,opt,DIM)
+function [o,v]=std(x,opt,DIM)
 % STD calculates the standard deviation.
 % 
 % [y,v] = std(x [, opt[, DIM]])
@@ -58,7 +58,7 @@ if isempty(DIM),
         if isempty(DIM), DIM=1; end;
 end;
 
-[y,n] = sumskipnan(center(i,DIM).^2,DIM);
+[y,n] = sumskipnan(center(x,DIM).^2,DIM);
 
 if nargin<2,
         opt = 0;

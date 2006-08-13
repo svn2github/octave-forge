@@ -1,18 +1,18 @@
-// Copyright (C) 2004   Michael Creel   <michael.creel@uab.es>
+// Copyright (C) 2004, 2006   Michael Creel   <michael.creel@uab.es>
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation; either version 2 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // numgradient: numeric central difference gradient
 
@@ -20,6 +20,7 @@
 #include <octave/parse.h>
 #include <octave/lo-mappers.h>
 #include <octave/Cell.h>
+#include <float.h>
 
 // argument checks
 static bool
@@ -30,13 +31,13 @@ any_bad_argument(const octave_value_list& args)
 		error("numgradient: first argument must be string holding objective function name");
 		return true;
 	}
-	
+
 	if (!args(1).is_cell())
 	{
 		error("numgradient: second argument must cell array of function arguments");
 		return true;
 	}
-	
+
 	// minarg, if provided
 	if (args.length() == 3)
 	{
@@ -93,61 +94,60 @@ ans =\n\
 
 	// check the arguments
 	if (any_bad_argument(args)) return octave_value_list();
-	
+
 	std::string f (args(0).string_value());
 	Cell f_args (args(1).cell_value());
 	octave_value_list c_args(2,1); // for cellevall {f, f_args}
+	octave_value_list f_return;
 	c_args(0) = f;
 	c_args(1) = f_args;
-	octave_value_list fdiff_args(2,1);
-	octave_value_list f_return;
 	Matrix obj_value, obj_left, obj_right;
-	double p, d, delta, delta_right, delta_left;
-	int i, j, minarg;
+	double SQRT_EPS, p, delta, diff;
+	int i, j, minarg, test;
 
 	// Default values for controls
 	minarg = 1; // by default, first arg is one over which we minimize
-	
+
 	// possibly minimization not over 1st arg
 	if (args.length() == 3) minarg = args(2).int_value();
 	Matrix parameter = f_args(minarg - 1).matrix_value();
-	
+
 	// initial function value
 	f_return = feval("celleval", c_args);
 	obj_value = f_return(0).matrix_value();
-	
+
 	const int n = obj_value.rows(); // find out dimension
 	const int k = parameter.rows();
 	Matrix derivative(n, k);
 	Matrix columnj;
-	
+
 	for (j=0; j<k; j++) // get 1st derivative by central difference
 	{
 		p = parameter(j);
-		fdiff_args(0) = p;
-		fdiff_args(1) = 1;
-		f_return = feval("finitedifference", fdiff_args);
-		delta = f_return(0).double_value();
-		
+
+		// determine delta for finite differencing
+		SQRT_EPS = sqrt(DBL_EPSILON);
+		diff = exp(log(DBL_EPSILON)/3);
+		test = (fabs(p) + SQRT_EPS) * SQRT_EPS > diff;
+		if (test) delta = (fabs(p) + SQRT_EPS) * SQRT_EPS;
+		else delta = diff;
+
 		// right side
-		parameter(j) = d = p + delta;
-		delta_right = d - p;
+		parameter(j) = p + delta;
 		f_args(minarg - 1) = parameter;
 		c_args(1) = f_args;
 		f_return = feval("celleval", c_args);
 		obj_right = f_return(0).matrix_value();
-		
+
 		// left size
-		d = p - delta;
-		parameter(j) = d;
-		delta_left = p - d;
+		parameter(j) = p - delta;
 		f_args(minarg - 1) = parameter;
 		c_args(1) = f_args;
 		f_return = feval("celleval", c_args);
 		obj_left = f_return(0).matrix_value();
-		
+
 		parameter(j) = p;  // restore original parameter
-		columnj = (obj_right - obj_left) / (delta_right + delta_left);
+		columnj = (obj_right - obj_left) / (2*delta);
 		for (i=0; i<n; i++) derivative(i, j) = columnj(i);
 	}
 

@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude Makeconf
 
 PROGS = grab.oct gpick.oct gtext.oct gzoom.oct
 

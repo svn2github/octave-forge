@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude Makeconf
 
 ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap

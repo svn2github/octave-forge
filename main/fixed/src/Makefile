@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude Makeconf
 
 FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 

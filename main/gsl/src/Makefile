@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude Makeconf
 
 SF_BUILDSCRIPT=buildgsl_sf.sh
 RM=rm

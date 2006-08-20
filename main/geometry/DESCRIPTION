@@ -1,0 +1,11 @@
+Name: Geometry
+Version: 1.0.0
+Date: 2006-08-06
+Author: Various Authors
+Maintainer: The Octave Community
+Title: Geometry.
+Description: Add a description to this package!
+Categories: Geometry
+Depends: octave (>= 2.9.7)
+License: GPL version 2 or later
+Url: http://octave.sf.net

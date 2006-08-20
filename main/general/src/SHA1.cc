@@ -9,6 +9,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.1  2006/08/20 12:25:20  hauberg
+ * Changed directory structure to match the new package system
+ *
  * Revision 1.3  2002/11/02 11:05:07  pkienzle
  * Seperate lines of multiline strings with \n\ to keep gcc 3.2 happy.
  *

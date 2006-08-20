@@ -1,10 +1,10 @@
-
-sinclude ../../Makeconf
-
 OCTS = sclose.oct  connect.oct pserver.oct  \
 	recv.oct  reval.oct  send.oct
 
 
 all: $(OCTS)
 
-clean: ; -$(RM) *.o core octave-core *.oct *~
+%.oct: %.cc
+	mkoctfile -s $<
+
+clean: ; rm *.o core octave-core *.oct *~

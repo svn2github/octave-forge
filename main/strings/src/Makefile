@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude Makeconf
 
 ifeq ($(HAVE_PCRE),yes)
   PROGS:=pcregexp.oct

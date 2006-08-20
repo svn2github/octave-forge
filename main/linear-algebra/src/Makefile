@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude Makeconf
 
 ifndef OCTAVE_FORGE
 MKOCTFILE = mkoctfile

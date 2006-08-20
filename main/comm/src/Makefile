@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude Makeconf
 
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \

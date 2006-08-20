@@ -18,18 +18,13 @@
 # $Date$
 # $RCSfile$
 
-PART = partition.oct
+OCT = partition.oct
 HDR = partition.h
-OCT = partcnt.oct partint.oct
 SRC := $(OCT:.oct=.cc)
 BASE := $(OCT:.oct=)
 
 .phony: all
 all: $(OCT)
-
-$(OCT): $(PART)
-	$(RM) $@
-	ln -s $< $@
 
 %.oct: %.cc $(HDR)
 	mkoctfile -s $<

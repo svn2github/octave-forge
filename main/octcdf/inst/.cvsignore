@@ -1,0 +1,4 @@
+*.oct
+*.octlink
+core*
+octave-core

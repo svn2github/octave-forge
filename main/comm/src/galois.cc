@@ -22,10 +22,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <iostream>
 
 #include "galois.h"
@@ -225,48 +221,6 @@ galois  galois::index (idx_vector& i, idx_vector& j, int resize_ok,
   return retval;
 }
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-galois concat (const galois& ra, const galois& rb, const Array<int>& ra_idx)
-{
-  galois retval (ra);
-  if (rb.numel() > 0)
-    retval.insert (rb, ra_idx(0), ra_idx(1));
-  return retval;
-}
-
-galois concat (const galois& ra, const Matrix& rb, const Array<int>& ra_idx)
-{
-  galois retval (ra);
-  if (ra.numel() == 1)
-    return retval;
-
-  galois tmp (0, 0, 0, ra.m(), ra.primpoly());
-  int _n = (1<<ra.m()) - 1;
-  int r = rb.rows();
-  int c = rb.columns();
-  tmp.resize (r, c);
-
-  // Check the validity of the data in the matrix
-  for (int i=0; i<r; i++) {
-    for (int j=0; j<c; j++) {
-      if ((rb(i,j) < 0) || (rb(i,j) > _n)) {
-	gripe_range_galois(ra.m());
-	return retval;
-      }
-      if ((rb(i,j) - (double)((int)rb(i,j))) != 0.) {
-	gripe_integer_galois();
-	return retval;
-      }
-      tmp(i,j) = (int)rb(i,j);
-    }
-  }
-
-  retval.insert (tmp, ra_idx(0), ra_idx(1));
-  return retval;
-}
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
 galois 
 galois::concat (const galois& rb, const Array<int>& ra_idx)
 {
@@ -305,9 +259,6 @@ galois::concat (const Matrix& rb, const Array<int>& ra_idx)
   insert (tmp, ra_idx(0), ra_idx(1));
   return *this;
 }
-#endif
-
-#if defined (HAVE_OLD_OCTAVE_CONCAT) || defined (HAVE_OCTAVE_CONCAT)
 
 galois concat (const Matrix& ra, const galois& rb,  const Array<int>& ra_idx)
 {
@@ -359,7 +310,6 @@ galois& galois::insert (const galois& t, int r, int c)
     Array<int>::insert (t, r, c);
   return *this;
 }
-#endif
 
 galois galois::diag (void) const
 {

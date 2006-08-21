@@ -22,10 +22,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <iostream>
 #include <octave/config.h>
 #include <octave/unwind-prot.h>
@@ -35,32 +31,12 @@ Open Source Initiative (www.opensource.org)
 
 extern int Vstruct_levels_to_print;
 
-#ifdef CLASS_HAS_LOAD_SAVE
 #include <octave/byte-swap.h>
 #include <octave/ls-oct-ascii.h>
-#endif
-
-#ifdef USE_OCTAVE_NAN
-#define lo_ieee_nan_value() octave_NaN
-#endif
-
-#ifndef OCTAVE_LOCAL_BUFFER
-#include <vector>
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::vector<T> buf ## _vector (size); \
-  T *buf = &(buf ## _vector[0])
-#endif
 
 DEFINE_OCTAVE_ALLOCATOR(octave_galois);
-
-#ifdef TYPEID_HAS_CLASS
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois", "galois");
-#else
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_galois, "galois");
-#endif
 
-
-#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 octave_value octave_galois::resize (const dim_vector& dv, bool) const
 { 
   if (dv.length() > 2)
@@ -72,7 +48,6 @@ octave_value octave_galois::resize (const dim_vector& dv, bool) const
   retval.resize (dv(0), dv(1)); 
   return new octave_galois (retval);
 }
-#endif
 
 octave_value_list
 octave_galois::dotref (const octave_value_list& idx)
@@ -160,8 +135,8 @@ octave_galois::do_index_op (const octave_value_list& idx,
 }
 
 octave_value
-octave_galois::subsref (const std::string SUBSREF_STRREF type,
-			const LIST<octave_value_list>& idx)
+octave_galois::subsref (const std::string &type,
+			const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -200,20 +175,7 @@ octave_galois::is_true (void) const
 {
   bool retval = false;
 
-#if defined(HAVE_PROPAGATE_EMPTY_MATRICES)
-  if (rows () == 0 || columns () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	warning ("empty matrix used in conditional expression");
-      else if (flag == 0)
-	error ("empty matrix used in conditional expression");
-    }
-  else
-#else
   if (rows () > 0 && columns () > 0)
-#endif
     {
       boolMatrix m = (gval.all () . all ());
 
@@ -324,7 +286,7 @@ octave_galois::print_info (std::ostream& os, const std::string& prefix) const
 double
 octave_galois::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
+  double retval = octave_NaN;
 
   if (rows () > 0 && columns () > 0)
     {
@@ -342,7 +304,7 @@ octave_galois::double_value (bool) const
 Complex
 octave_galois::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
+  double tmp = octave_NaN;
 
   Complex retval (tmp, tmp);
 
@@ -372,7 +334,6 @@ octave_galois::matrix_value (bool) const
   return retval;
 }
 
-#ifdef HAVE_ND_ARRAYS
 NDArray
 octave_galois::array_value (bool) const
 {
@@ -387,7 +348,6 @@ octave_galois::array_value (bool) const
 
   return retval;
 }
-#endif
 
 void
 octave_galois::assign (const octave_value_list& idx,
@@ -433,7 +393,6 @@ octave_galois::assign (const octave_value_list& idx,
     }
 }
 
-#ifdef CLASS_HAS_LOAD_SAVE
 bool 
 octave_galois::save_ascii (std::ostream& os, bool& infnan_warned, 
 			       bool strip_nan_and_inf)
@@ -534,13 +493,6 @@ octave_galois::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
-#ifdef HAVE_SWAP_BYTES
-static inline void swap_4_bytes (volatile void *ptr)
-{
-  swap_bytes <4> (ptr);
-}
-#endif
-
 bool 
 octave_galois::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format fmt)
@@ -554,12 +506,12 @@ octave_galois::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &prim), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &prim));
+    swap_bytes <4> (X_CAST (char *, &prim));
 
   if (! is.read (X_CAST (char *, &mdims), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &mdims));
+    swap_bytes <4> (X_CAST (char *, &mdims));
 
   // Don't treat N-D arrays yet
   if (mdims == -2)
@@ -574,7 +526,7 @@ octave_galois::load_binary (std::istream& is, bool swap,
 	  if (! is.read (X_CAST (char *, &di), 4))
 	    return false;
 	  if (swap)
-	    swap_4_bytes (X_CAST (char *, &di));
+	    swap_bytes <4> (X_CAST (char *, &di));
 	  dv(i) = di;
 	}
 
@@ -791,7 +743,6 @@ octave_galois::load_hdf5 (hid_t loc_id, const char *name,
   H5Dclose (data_hid);
   return retval;
 }
-#endif
 #endif
 
 /*

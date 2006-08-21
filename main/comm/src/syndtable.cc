@@ -29,12 +29,6 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct.h>
 #include <octave/pager.h>
 
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
-#include <octave/quit.h>
-#endif
-
 #define COL_MAJ(N) (N / (SIZEOF_INT << 3))
 #define COL_MIN(N) (N % (SIZEOF_INT << 3))
 

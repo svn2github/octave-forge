@@ -28,12 +28,7 @@ Open Source Initiative (www.opensource.org)
 #include <sstream>
 #include <octave/oct.h>
 #include <octave/pager.h>
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
 #include <octave/quit.h>
-#endif
 
 static int
 get_weight (const Array<char>& codeword, const Matrix& gen, 

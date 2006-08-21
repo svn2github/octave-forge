@@ -25,10 +25,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_galois_int_h)
 #define octave_galois_int_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <string>
 
 #include <octave/config.h>
@@ -54,12 +50,6 @@ Open Source Initiative (www.opensource.org)
 
 #include <octave/mx-defs.h>
 #include <octave/mx-op-defs.h>
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
-#include <octave/quit.h>
-#endif
 
 #include "galoisfield.h"
 
@@ -92,24 +82,12 @@ public:
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-  friend galois concat (const galois& ra, const galois& rb, 
-			 const Array<int>& ra_idx);
-  friend galois concat (const galois& ra, const Matrix& rb, 
-			 const Array<int>& ra_idx);
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
   galois concat (const galois& rb, const Array<int>& ra_idx);
   galois concat (const Matrix& rb, const Array<int>& ra_idx);
-#endif
-
-#if defined(HAVE_OCTAVE_CONCAT) || defined(HAVE_OLD_OCTAVE_CONCAT)
   friend galois concat (const Matrix& ra, const galois& rb, 
 			 const Array<int>& ra_idx);
 
   galois& insert (const galois& a, int r, int c);
-#endif
 
   galois diag (void) const;
   galois diag (int k) const;

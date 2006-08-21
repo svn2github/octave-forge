@@ -22,10 +22,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <iostream>
 #include "galois.h"
 #include "ov-galois.h"
@@ -68,21 +64,12 @@ DEFBINOP (el_ldiv, galois, scalar)
 DEFBINOP_FN_B_S2 (el_and, galois, scalar, mx_el_and)
 DEFBINOP_FN_B_S2 (el_or, galois, scalar, mx_el_or)
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-DEFCATOP (gm_s, galois, scalar)
-{
-  CAST_BINOP_ARGS (const octave_galois&, const octave_scalar&);
-  return new octave_galois (concat (v1.galois_value (), v2.matrix_value (), 
-				    ra_idx));
-}
-#elif defined(HAVE_OCTAVE_CONCAT)
 DEFCATOP (gm_s, galois, scalar)
 {
   CAST_BINOP_ARGS (octave_galois&, const octave_scalar&);
   return new octave_galois (v1.galois_value (). concat (v2.matrix_value (), 
 				    ra_idx));
 }
-#endif
 
 DEFASSIGNOP(assign, galois, scalar)
 {

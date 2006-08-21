@@ -25,31 +25,13 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_galois_h)
 #define octave_galois_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <cstdlib>
 
 #include <iostream>
 #include <string>
-
-#if defined(HAVE_OCTAVE_CONCAT) || defined(HAVE_OLD_OCTAVE_CONCAT)
 #include <octave/dim-vector.h>
-#endif
 
 #include "galois.h"
-
-#ifdef HAVE_SLLIST_H
-#define LIST SLList
-#define LISTSIZE length
-#define SUBSREF_STRREF
-#else
-#include <list>
-#define LIST std::list
-#define LISTSIZE size
-#define SUBSREF_STRREF &
-#endif
 
 // The keys of the values in the octave map
 #define __GALOIS_PRIMPOLY_STR "prim_poly"
@@ -59,10 +41,6 @@ Open Source Initiative (www.opensource.org)
 #define __GALOIS_LENGTH_STR   "n"
 #define __GALOIS_ALPHA_TO_STR "alpha_to"
 #define __GALOIS_INDEX_OF_STR "index_of"
-#endif
-
-#ifndef OV_REP_TYPE
-#define OV_REP_TYPE octave_value
 #endif
 
 class octave_value_list;
@@ -89,8 +67,8 @@ public:
   OV_REP_TYPE *clone (void) const { return new octave_galois (*this); }
   OV_REP_TYPE *empty_clone (void) const { return new octave_galois (); }
 
-  octave_value subsref (const std::string SUBSREF_STRREF type,
-			const LIST<octave_value_list>& idx);
+  octave_value subsref (const std::string &type,
+			const std::list<octave_value_list>& idx);
 
   octave_value do_index_op (const octave_value_list& idx,
 			    int resize_ok);
@@ -100,26 +78,11 @@ public:
 
   void assign (const octave_value_list& idx, const galois& rhs);
 
-#ifdef HAVE_ND_ARRAYS
   dim_vector dims (void) const { return gval.dims (); }
-#else
-  int rows (void) const { return gval.rows(); }
-  int columns (void) const { return gval.columns(); }
 
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
-
-    return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
-  }
-#endif
-
-#if defined(HAVE_OCTAVE_CONCAT) || defined(HAVE_OLD_OCTAVE_CONCAT)
   octave_value resize (const dim_vector& dv, bool) const;
 
   size_t byte_size (void) const { return gval.byte_size (); }
-#endif
 
   octave_value all (int dim = 0) const { return gval.all(dim); }
   octave_value any (int dim = 0) const { return gval.any(dim); }
@@ -160,9 +123,7 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
-#ifdef HAVE_ND_ARRAYS
   NDArray array_value (bool = false) const;
-#endif
 
   Complex complex_value (bool = false) const;
 
@@ -176,7 +137,6 @@ public:
   int m (void) const { return gval.m(); }
   int primpoly (void) const { return gval.primpoly(); }
 
-#ifdef CLASS_HAS_LOAD_SAVE
   bool save_ascii (std::ostream& os, bool& infnan_warned,
 		 bool strip_nan_and_inf);
 
@@ -191,7 +151,6 @@ public:
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
-#endif
 #endif
 
 private:

@@ -33,7 +33,7 @@ double tmp1, tmp2;
 
 if (args.length()<2)
 {
-  print_usage ("genqamdemod");
+  print_usage ();
   return retval;
 }
 
@@ -98,7 +98,7 @@ else if (args(0).is_complex_type() && args(1).is_complex_type())
 }
 else 
 {
-  print_usage ("genqamdemod");
+  print_usage ();
 }
 return retval=y;
 }

@@ -51,13 +51,6 @@ website http://www.eccpage.com for more details.
 #include <octave/utils.h>
 #include <octave/variables.h>
 
-#ifndef OCTAVE_LOCAL_BUFFER
-#include <vector>
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::vector<T> buf ## _vector (size); \
-  T *buf = &(buf ## _vector[0])
-#endif
-
 static bool galois_type_loaded = false;
 
 DEFUN_DLD (isgalois, args, ,
@@ -133,7 +126,6 @@ DEFUN_DLD (gf, args, nargout,
       install_gm_m_ops ();
       install_s_gm_ops ();
       install_gm_s_ops ();
-      install_fil_gm_ops ();
       galois_type_loaded = true;
       // Lock constructor function in place, otherwise 
       // "a=gf(1); clear functions; a" generates a seg-fault!!

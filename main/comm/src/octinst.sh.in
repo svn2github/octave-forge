@@ -24,7 +24,6 @@ INSTALL="@INSTALL@"
 INSTALL_DATA="@INSTALL_DATA@"
 INSTALL_PROGRAM="@INSTALL_PROGRAM@"
 INSTALL_SCRIPT="@INSTALL_SCRIPT@"
-MKPKGADD="@TOPDIR@/admin/mkpkgadd"
 COPY_FLAGS="@COPY_FLAGS@"
 
 # grab the m-files
@@ -56,18 +55,6 @@ if test -d "$source/alternatives" ; then
         $INSTALL -d $altopath
 	$INSTALL_DATA $files $altopath
     fi
-fi
-
-# Create PKG_ADD, and destroy it immediately if it is empty
-# XXX FIXME XXX no PKG_ADD created if only oct-files and no m-files.
-if test -d "$mpath" ; then
-    $MKPKGADD $source > $mpath/PKG_ADD
-    if test -z "`cat $mpath/PKG_ADD`" ; then rm -f $mpath/PKG_ADD;  fi
-fi
-# PKG_ADD for alternatives
-if test -d "$source/alternatives" -a -d "$altmpath" ; then
-    $MKPKGADD $source/alternatives > $altmpath/PKG_ADD
-    if test -z "`cat $altmpath/PKG_ADD`" ; then rm $altmpath/PKG_ADD; fi
 fi
 
 # grab the data files, skipping the CVS directory

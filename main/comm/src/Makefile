@@ -1,15 +1,10 @@
 sinclude Makeconf
 
 GALOISTARGET = gf.oct
-GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc op-fil-gm.cc \
+GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc \
 	      op-gm-gm.cc op-gm-m.cc op-gm-s.cc op-m-gm.cc op-s-gm.cc \
 	      ov-galois.cc 
 GALOISOBJECTS = $(patsubst %.cc,%.o,$(GALOISSOURCES))
-GALOISLINKTARGETS = $(patsubst %,%$(OCTLINK), \
-		    isgalois gdiag greshape gprod gsum \
-                    gsumsq gsqrt glog gexp gfilter \
-                    glu ginv ginverse gdet grank \
-                    rsenc rsdec bchenco bchdeco)
 
 GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
 OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
@@ -17,9 +12,11 @@ OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
 OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
 OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
 OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))
-SUBDIRS = doc
+##SUBDIRS = ../doc
+SUBDIRS = 
 
-TARGETS = $(GALOISTARGET) $(GALOISLINKTARGETS) $(OTHERTARGETS)
+TARGETS = $(GALOISTARGET) $(OTHERTARGETS)
+SOURCES = $(GALOISSOURCES) $(OTHERSOURCES)
 OBJECTS = $(GALOISOBJECTS) $(OTHEROBJECTS)
 ifeq ($(MAKECMDGOALS),all)
 DEPENDS = $(GALOISDEPENDS) $(OTHERDEPENDS)
@@ -30,13 +27,13 @@ endif
 
 DELETES = $(OBJECTS) $(GALOISDEPENDS) $(OTHERDEPENDS) *~ $(TARGETS) core octave-core
 
-DEFINES = -DGALOIS_DISP_PRIVATES $(HAVE_DO_FORTRAN_INDEXING) $(HAVE_PROPAGATE_EMPTY_MATRICES) $(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) $(CLASS_HAS_LOAD_SAVE) $(HAVE_OCTAVE_CONCAT) $(HAVE_SWAP_BYTES) $(HAVE_OCTAVE_UPLUS)
+DEFINES = -DGALOIS_DISP_PRIVATES
 MOFLAGS =
 
 .PHONY: all dist clean realclean count $(SUBDIRS)
 .SUFFIXES:
 
-all : $(DEPENDS) $(OTHERTARGETS) $(GALOISTARGET) $(GALOISLINKTARGETS) $(SUBDIRS)
+all : $(DEPENDS) $(OTHERTARGETS) $(GALOISTARGET) $(SUBDIRS)
 
 install : $(SUBDIRS)
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/comm
@@ -44,10 +41,6 @@ install : $(SUBDIRS)
 $(GALOISTARGET) : $(DEPENDS) $(GALOISOBJECTS) 
 	@echo "Linking $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(GALOISOBJECTS) -o $@
-
-$(GALOISLINKTARGETS) :
-	@echo "Symbolic linking $@"; $(RM) $@ ; \
-	$(MKOCTLINK) $(GALOISTARGET) $@
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)

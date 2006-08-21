@@ -441,11 +441,13 @@ significantly easier using gdb.
 
 Once a variable has been defined as a fixed point object, the parameters of the
 field of this structure can be obtained by adding a suffix to the variable.
-Valid suffixes are '.x', '.sign', '.int' and '.dec', which return
+Valid suffixes are '.x', '.i', '.sign', '.int' and '.dec', which return
 
 @table @asis
 @item .x
 The floating point representation of the fixed point number
+@item .i
+The internal integer representation of the fixed point number
 @item .sign
 The sign of the fixed point number
 @item .int

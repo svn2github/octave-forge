@@ -27,10 +27,6 @@ DESTDIR =
 
 RANLIB = @RANLIB@
 STRIP = @STRIP@
-LN_S = @LN_S@
-MKOCTLINK = @MKOCTLINK@
-OCTLINK= @OCTLINK@
-
 AWK = @AWK@
 
 # Most octave programs will be compiled with $(MKOCTFILE).  Those which

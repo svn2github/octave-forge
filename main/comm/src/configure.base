@@ -298,19 +298,6 @@ case "$canonical_host_type" in
     ;;
 esac
 
-OCTAVE_CHECK_EXIST(autoload,[
-	HAVE_AUTOLOAD="yes"
-	OCTLINK=.octlink
-	MKOCTLINK=$TOPDIR/admin/octlink.sh
-],[
-	HAVE_AUTOLOAD="no"
-	OCTLINK=.oct
-	MKOCTLINK=$LN_S
-])
-AC_SUBST(HAVE_AUTOLOAD)
-AC_SUBST(OCTLINK)
-AC_SUBST(MKOCTLINK)
-
 dnl Test for the makeinfo program
 AC_CHECK_PROG(MAKEINFO,makeinfo,makeinfo)
 if [ test -n "$MAKEINFO" ]; then

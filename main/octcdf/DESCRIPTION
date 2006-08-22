@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Alexander Barth <abarth@marine.usf.edu>
 Maintainer: Alexander Barth <abarth@marine.usf.edu>
 Title: octcdf
-Description: Add a description to this package!
+Description: A NetCDF interface for octave
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

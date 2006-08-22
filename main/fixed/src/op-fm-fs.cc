@@ -23,10 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <iostream>
 
 #include <octave/config.h>

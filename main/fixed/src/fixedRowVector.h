@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_FixedRowVector_h)
 #define octave_FixedRowVector_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <octave/MArray.h>
 #include <octave/dRowVector.h>
 #include <octave/mx-defs.h>

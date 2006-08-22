@@ -23,10 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <iostream>
 
 #include <octave/config.h>
@@ -37,19 +33,9 @@ Open Source Initiative (www.opensource.org)
 #include <octave/utils.h>
 #include <octave/unwind-prot.h>
 #include <octave/variables.h>
-
-#ifdef CLASS_HAS_LOAD_SAVE
 #include <octave/data-conv.h>
 #include <octave/byte-swap.h>
 #include <octave/ls-hdf5.h>
-#endif
-
-#include <memory>
-#ifndef OCTAVE_LOCAL_BUFFER
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
-  T *buf = buf ## _auto_ptr.get ()
-#endif
 
 #include "fixed-def.h"
 #include "ov-base-fixed.h"
@@ -63,14 +49,9 @@ template class octave_base_fixed<FixedPointComplex>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_fixed_complex);
 
-#ifdef TYPEID_HAS_CLASS
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fixed_complex, "fixed complex",
 				     "FixedPoint");
-#else
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fixed_complex, "fixed complex");
-#endif
 
-#ifdef HAVE_ND_ARRAYS
 NDArray
 octave_fixed_complex::array_value (bool force_conversion) const
 {
@@ -90,9 +71,7 @@ octave_fixed_complex::complex_array_value (bool) const
 {
   return ComplexNDArray (dim_vector (1, 1), scalar.fixedpoint ());
 }
-#endif
 
-#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 octave_value 
 octave_fixed_complex::resize (const dim_vector& dv, bool) const
 { 
@@ -106,7 +85,6 @@ octave_fixed_complex::resize (const dim_vector& dv, bool) const
     retval(0) = scalar; 
   return new octave_fixed_complex_matrix (retval); 
 }
-#endif
 
 octave_value
 octave_fixed_complex::subsasgn (const std::string& type,
@@ -291,7 +269,6 @@ octave_fixed_complex::print_raw (std::ostream& os,
   unwind_protect::run ();
 }
 
-#ifdef CLASS_HAS_LOAD_SAVE
 bool 
 octave_fixed_complex::save_ascii (std::ostream& os, bool& infnan_warned, 
 			       bool strip_nan_and_inf)
@@ -620,7 +597,6 @@ octave_fixed_complex::load_hdf5 (hid_t loc_id, const char *name,
 
   return true;
 }
-#endif
 #endif
 
 /*

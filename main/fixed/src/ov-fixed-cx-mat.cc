@@ -23,10 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <climits>
 #include <iostream>
 #include <iomanip>
@@ -42,26 +38,11 @@ Open Source Initiative (www.opensource.org)
 #include <octave/utils.h>
 #include <octave/unwind-prot.h>
 #include <octave/variables.h>
-
-#ifdef CLASS_HAS_LOAD_SAVE
 #include <octave/data-conv.h>
 #include <octave/byte-swap.h>
 #include <octave/ls-oct-ascii.h>
 #include <octave/ls-hdf5.h>
-#endif
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
 #include <octave/quit.h>
-#endif
-
-#include <memory>
-#ifndef OCTAVE_LOCAL_BUFFER
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
-  T *buf = buf ## _auto_ptr.get ()
-#endif
 
 #include "fixed-def.h"
 #include "ov-base-fixed-mat.h"
@@ -82,16 +63,10 @@ template class octave_base_fixed_matrix<FixedComplexMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_fixed_complex_matrix);
 
-#ifdef TYPEID_HAS_CLASS
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fixed_complex_matrix, 
 				     "fixed complex matrix",
 				     "FixedPoint");
-#else
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fixed_complex_matrix, 
-				     "fixed complex matrix");
-#endif
 
-#ifdef HAVE_ND_ARRAYS
 NDArray
 octave_fixed_complex_matrix::array_value (bool force_conversion) const
 {
@@ -127,9 +102,7 @@ octave_fixed_complex_matrix::complex_array_value (bool) const
 
   return retval;
 }
-#endif
 
-#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 octave_value
 octave_fixed_complex_matrix::resize (const dim_vector& dv, bool) const
 {
@@ -142,7 +115,6 @@ octave_fixed_complex_matrix::resize (const dim_vector& dv, bool) const
   retval.resize (dv(0), dv(1)); 
   return new octave_fixed_complex_matrix (retval);
 }
-#endif
 
 FixedComplexMatrix
 octave_fixed_complex_matrix::do_index_intern (const octave_value_list& idx,
@@ -456,7 +428,6 @@ octave_fixed_complex_matrix::print_raw (std::ostream& os,
   unwind_protect::run ();
 }
 
-#ifdef CLASS_HAS_LOAD_SAVE
 bool 
 octave_fixed_complex_matrix::save_ascii (std::ostream& os, 
 					 bool& infnan_warned, 
@@ -562,13 +533,6 @@ octave_fixed_complex_matrix::save_binary (std::ostream& os,
   return true;
 }
 
-#ifdef HAVE_SWAP_BYTES
-static inline void swap_4_bytes (volatile void *ptr)
-{
-  swap_bytes <4> (ptr);
-}
-#endif
-
 bool 
 octave_fixed_complex_matrix::load_binary (std::istream& is, bool swap,
 				 oct_mach_info::float_format fmt)
@@ -577,7 +541,7 @@ octave_fixed_complex_matrix::load_binary (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &mdims), 4))
     return false;
   if (swap)
-    swap_4_bytes (X_CAST (char *, &mdims));
+    swap_bytes <4> (X_CAST (char *, &mdims));
 
   if (mdims != -2)
     return false;
@@ -592,7 +556,7 @@ octave_fixed_complex_matrix::load_binary (std::istream& is, bool swap,
       if (! is.read (X_CAST (char *, &di), 4))
 	return false;
       if (swap)
-	swap_4_bytes (X_CAST (char *, &di));
+	swap_bytes <4> (X_CAST (char *, &di));
       dv(i) = di;
     }
 
@@ -986,7 +950,6 @@ octave_fixed_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   return true;
 }
-#endif
 #endif
 
 /*

@@ -23,10 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <octave/config.h>
 #include "int/fixed.h"
 #include "fixedComplex.h"
@@ -59,9 +55,6 @@ INSTANTIATE_MARRAY_FRIENDS (FixedPoint)
 INSTANTIATE_MARRAY_FRIENDS (FixedPointComplex)
 
 #include <octave/Array2.h>
-#ifndef HAVE_ND_ARRAYS
-#include <octave/Array2.cc>
-#endif
 #include <octave/MArray2.h>
 #include <octave/MArray2.cc>
 
@@ -70,24 +63,9 @@ template class MArray2<FixedPoint>;
 template class Array2<FixedPointComplex>;
 template class MArray2<FixedPointComplex>;
 
-#ifndef HAVE_ND_ARRAYS
-template int assign (Array2<FixedPoint>&, const Array2<FixedPoint>&);
-template int assign (Array2<FixedPointComplex>&, const Array2<FixedPoint>&);
-template int assign (Array2<FixedPointComplex>&, 
-		const Array2<FixedPointComplex>&);
-
-template int assign (Array2<FixedPoint>&, const Array2<FixedPoint>&, 
-		const FixedPoint&);
-template int assign (Array2<FixedPointComplex>&, const Array2<FixedPoint>&,
-		const FixedPointComplex&);
-template int assign (Array2<FixedPointComplex>&, 
-		const Array2<FixedPointComplex>&, const FixedPointComplex&);
-#endif
-
 INSTANTIATE_MARRAY2_FRIENDS (FixedPoint)
 INSTANTIATE_MARRAY2_FRIENDS (FixedPointComplex)
 
-#ifdef HAVE_ND_ARRAYS
 #include <octave/ArrayN.h>
 #include <octave/ArrayN.cc>
 #include <octave/MArrayN.h>
@@ -100,7 +78,6 @@ template class MArrayN<FixedPointComplex>;
 
 INSTANTIATE_MARRAYN_FRIENDS (FixedPoint)
 INSTANTIATE_MARRAYN_FRIENDS (FixedPointComplex)
-#endif
 
 /*
 ;;; Local Variables: ***

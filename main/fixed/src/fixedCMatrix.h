@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_FixedCMatrix_h)
 #define octave_FixedCMatrix_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <octave/MArray2.h>
 
 #include <octave/mx-defs.h>
@@ -185,27 +181,11 @@ public:
   bool is_hermitian (void) const;
   bool is_symmetric (void) const;
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-  friend FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
-				    const FixedComplexMatrix& rb, 
-				    const Array<int>& ra_idx);
-
-  friend FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
-				    const FixedMatrix& rb, 
-				    const Array<int>& ra_idx);
-
-  friend FixedComplexMatrix concat (const FixedMatrix& ra, 
-				    const FixedComplexMatrix& rb, 
-				    const Array<int>& ra_idx);
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
   FixedComplexMatrix concat (const FixedComplexMatrix& rb, 
 			     const Array<int>& ra_idx);
 
   FixedComplexMatrix concat (const FixedMatrix& rb, 
 			     const Array<int>& ra_idx);
-#endif
 
   // destructive insert/delete/reorder operations
 

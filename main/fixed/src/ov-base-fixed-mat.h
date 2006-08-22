@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_base_fixed_mat_h)
 #define octave_base_fixed_mat_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <cstdlib>
 
 #include <iostream>
@@ -79,24 +75,9 @@ public:
 
   void assign (const octave_value_list& idx, const MT& rhs);
 
-#ifdef HAVE_ND_ARRAYS
   dim_vector dims (void) const { return matrix.dims (); }
-#else
-  int rows (void) const { return matrix.rows (); }
-  int columns (void) const { return matrix.columns (); }
 
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
-
-    return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
-  }
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
   size_t byte_size (void) const { return matrix.byte_size (); }
-#endif
 
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }

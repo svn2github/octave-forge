@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_FixedCColumnVector_h)
 #define octave_FixedCColumnVector_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <octave/MArray.h>
 #include <octave/CColVector.h>
 #include <octave/dColVector.h>

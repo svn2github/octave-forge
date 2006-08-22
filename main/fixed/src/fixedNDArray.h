@@ -23,12 +23,8 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if !defined (octave_FixedNDArray_h) && defined (HAVE_ND_ARRAYS)
+#if !defined (octave_FixedNDArray_h)
 #define octave_FixedNDArray_h 1
-
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
 
 #include <octave/MArrayN.h>
 #include <octave/dMatrix.h>
@@ -123,20 +119,11 @@ public:
   boolNDArray all (octave_idx_type dim = -1) const;
   boolNDArray any (octave_idx_type dim = -1) const;
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-  friend FixedNDArray concat (const FixedNDArray& ra, const FixedNDArray& rb, 
-			      const Array<octave_idx_type>& ra_idx);
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
   FixedNDArray concat (const FixedNDArray& rb, const Array<octave_idx_type>& ra_idx);
   FixedComplexNDArray concat (const FixedComplexNDArray& rb, 
 			      const Array<octave_idx_type>& ra_idx);
-#endif
 
-#if defined (HAVE_OCTAVE_CONCAT) || (HAVE_OLD_OCTAVE_CONCAT)
   FixedNDArray& insert (const FixedNDArray& a, const Array<octave_idx_type>& ra_idx);
-#endif
 
   FixedNDArray cumprod (octave_idx_type dim = -1) const;
   FixedNDArray cumsum (octave_idx_type dim = -1) const;

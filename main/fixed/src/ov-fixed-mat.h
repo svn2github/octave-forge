@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_fixed_matrix_h)
 #define octave_fixed_matrix_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <cstdlib>
 
 #include <iostream>
@@ -54,10 +50,6 @@ Open Source Initiative (www.opensource.org)
 #include "fixedColVector.h"
 #include "fixedMatrix.h"
 #include "fixedCMatrix.h"
-
-#ifndef OV_REP_TYPE
-#define OV_REP_TYPE octave_value
-#endif
 
 class Octave_map;
 class octave_value_list;
@@ -126,15 +118,11 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (matrix_value()); }
 
-#ifdef HAVE_ND_ARRAYS
   NDArray array_value (bool = false) const;
 
   ComplexNDArray complex_array_value (bool = false) const;
-#endif
 
-#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
   octave_value resize (const dim_vector& dv, bool) const;
-#endif
 
   void increment (void) { matrix += FixedPoint(1,0,1,0); }
 
@@ -142,7 +130,6 @@ public:
 
   octave_value convert_to_str (bool pad = false) const;
 
-#ifdef CLASS_HAS_LOAD_SAVE
   bool save_ascii (std::ostream& os, bool& infnan_warned,
 		 bool strip_nan_and_inf);
 
@@ -157,7 +144,6 @@ public:
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
-#endif
 #endif
 
 private:

@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (fixed_var_h)
 #define fixed_var_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #if !defined(fixed_var_cc)
 extern int &Vfixed_point_print_width;
 extern char &fixed_point_version;

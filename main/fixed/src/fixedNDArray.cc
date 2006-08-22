@@ -23,12 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#ifdef HAVE_ND_ARRAYS
-
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <iostream>
 
 #include <octave/config.h>
@@ -41,12 +35,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/CNDArray.h>
 #include <octave/gripes.h>
 #include <octave/ops.h>
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
 #include <octave/quit.h>
-#endif
 
 #include "fixedMatrix.h"
 #include "fixedNDArray.h"
@@ -399,49 +388,22 @@ FixedNDArray
 FixedNDArray::prod (octave_idx_type dim) const
 {
   FixedPoint one(1,0,1,0);
-#if (MX_ND_RED_NUM == 6)
-  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
-                   one, FixedPoint acc = one, FixedNDArray, FixedPoint);
-#elif (MX_ND_RED_NUM == 5)
-  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
-                   one, FixedPoint acc = one, FixedNDArray);
-#else
   MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), one, FixedNDArray);
-#endif
-
 }
 
 FixedNDArray
 FixedNDArray::sum (octave_idx_type dim) const
 {
   FixedPoint zero;
-#if (MX_ND_RED_NUM == 6)
-  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray, FixedPoint);
-#elif (MX_ND_RED_NUM == 5)
-  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray);
-#else
   MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), zero, FixedNDArray);
-#endif
 }
 
 FixedNDArray
 FixedNDArray::sumsq (octave_idx_type dim) const
 {
   FixedPoint zero;
-#if (MX_ND_RED_NUM == 6)
-  MX_ND_REDUCTION (acc += pow (elem (iter_idx), 2), 
-		   retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray, FixedPoint);
-#elif (MX_ND_RED_NUM == 5)
-  MX_ND_REDUCTION (acc += pow (elem (iter_idx), 2), 
-		   retval.elem (iter_idx) = acc,
-                   zero, FixedPoint acc = zero, FixedNDArray);
-#else
   MX_ND_REDUCTION (retval(result_idx) += pow (elem (iter_idx), 2), zero, 
 		   FixedNDArray);
-#endif
 }
 
 FixedNDArray
@@ -698,19 +660,6 @@ FixedNDArray atan2 (const FixedNDArray &x, const FixedNDArray &y)
   return retval;
 }
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-FixedNDArray 
-concat (const FixedNDArray& ra, const FixedNDArray& rb, 
-	const Array<octave_idx_type>& ra_idx)
-{
-  FixedNDArray retval (ra);
-  if (rb.numel () > 0)
-    retval.insert (rb, ra_idx);
-  return retval;
-}
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
 FixedNDArray 
 FixedNDArray::concat (const FixedNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {
@@ -728,39 +677,27 @@ FixedNDArray::concat (const FixedComplexNDArray& rb,
     retval.insert (rb, ra_idx);
   return retval;
 }
-#endif
 
-#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 FixedNDArray&
 FixedNDArray::insert (const FixedNDArray& a, const Array<octave_idx_type>& ra_idx)
 {
   Array<FixedPoint>::insert (a, ra_idx);
   return *this;
 }
-#endif
 
 void
 FixedNDArray::increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
 			       octave_idx_type start_dimension)
 {
-#ifdef HAVE_OCTAVE_CONCAT
   ::increment_index (ra_idx, dimensions, start_dimension);
-#else
-  error("fixed increment_index not implemented");
-#endif
 }
 
 octave_idx_type
 FixedNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 			     const dim_vector& dimensions)
 {
-#ifdef HAVE_OCTAVE_CONCAT
   return ::compute_index (ra_idx, dimensions);
-#else
-  error("fixed compute_index not implemented");
-  return 0;
-#endif
 }
 
 std::ostream&
@@ -941,8 +878,6 @@ SND_BOOL_OPS(FixedPoint, FixedNDArray, FixedPoint())
 
 NDND_CMP_OPS(FixedNDArray, , FixedNDArray, )
 NDND_BOOL_OPS(FixedNDArray, FixedNDArray, FixedPoint())
-
-#endif // HAVE_ND_ARRAYS
 
 /*
 ;;; Local Variables: ***

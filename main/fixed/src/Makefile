@@ -33,7 +33,6 @@ ifeq (1,$(OCT_INCLUDES_LIB))
 	op-fs-fcs.cc  op-fs-fcm.cc  op-fm-fcs.cc  op-fm-fcm.cc \
 	op-fcs-fs.cc  op-fcs-fm.cc  op-fcm-fs.cc  op-fcm-fm.cc \
 	op-fcs-fcs.cc op-fcs-fcm.cc op-fcm-fcs.cc op-fcm-fcm.cc \
-	op-fil-fs.cc  op-fil-fm.cc  op-fil-fcs.cc op-fil-fcm.cc \
 	fixed-var.cc fixed.cc
   FIXEDOBJECTS = fixed-int.o $(patsubst %.cc,%.o,$(FIXEDSOURCES))
   FIXEDDEPENDS = fixed-int.d $(patsubst %.cc,%.d,$(FIXEDSOURCES))
@@ -53,7 +52,6 @@ else
 	op-fs-fcs.cc  op-fs-fcm.cc  op-fm-fcs.cc  op-fm-fcm.cc \
 	op-fcs-fs.cc  op-fcs-fm.cc  op-fcm-fs.cc  op-fcm-fm.cc \
 	op-fcs-fcs.cc op-fcs-fcm.cc op-fcm-fcs.cc op-fcm-fcm.cc \
-	op-fil-fs.cc  op-fil-fm.cc  op-fil-fcs.cc op-fil-fcm.cc \
 	fixed-var.cc 
   FIXEDLIBOBJECTS = fixed-int.o $(patsubst %.cc,%.o,$(FIXEDLIBSOURCES))
   FIXEDLIBDEPENDS = fixed-int.d $(patsubst %.cc,%.d,$(FIXEDLIBSOURCES))

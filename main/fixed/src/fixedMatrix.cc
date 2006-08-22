@@ -23,11 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
-
 #include <iostream>
 
 #include <octave/config.h>
@@ -38,12 +33,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/dMatrix.h>
 #include <octave/gripes.h>
 #include <octave/ops.h>
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
 #include <octave/quit.h>
-#endif
 
 #include "fixedColVector.h"
 #include "fixedRowVector.h"
@@ -400,18 +390,6 @@ FixedMatrix::is_symmetric (void) const
   return false;
 }
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-FixedMatrix concat (const FixedMatrix& ra, const FixedMatrix& rb, 
-		    const Array<int>& ra_idx)
-{
-  FixedMatrix retval (ra);
-  if (rb.numel() > 0)
-    retval.insert (rb, ra_idx(0), ra_idx(1));
-  return retval;
-}
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
 FixedMatrix 
 FixedMatrix::concat (const FixedMatrix& rb, const Array<int>& ra_idx)
 {
@@ -428,7 +406,6 @@ FixedMatrix::concat (const FixedComplexMatrix& rb, const Array<int>& ra_idx)
     retval.insert (rb, ra_idx(0), ra_idx(1));
   return retval;
 }
-#endif
 
 FixedMatrix&
 FixedMatrix::insert (const FixedMatrix& a, int r, int c)

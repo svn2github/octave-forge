@@ -23,11 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
-
 #include <iostream>
 
 #include <octave/config.h>
@@ -38,12 +33,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/dMatrix.h>
 #include <octave/gripes.h>
 #include <octave/ops.h>
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
 #include <octave/quit.h>
-#endif
 
 #include "fixedColVector.h"
 #include "fixedRowVector.h"
@@ -646,40 +636,6 @@ FixedComplexMatrix::is_symmetric (void) const
   return false;
 }
 
-#ifdef HAVE_OLD_OCTAVE_CONCAT
-FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
-			   const FixedComplexMatrix& rb, 
-			   const Array<int>& ra_idx)
-{
-  FixedComplexMatrix retval (ra);
-  if (rb.numel() > 0)
-    retval.insert (rb, ra_idx(0), ra_idx(1));
-  return retval;
-}
-
-FixedComplexMatrix concat (const FixedComplexMatrix& ra, 
-			   const FixedMatrix& rb, 
-			   const Array<int>& ra_idx)
-{
-  FixedComplexMatrix retval (ra);
-  FixedComplexMatrix tmp (rb);
-  if (rb.numel() > 0)
-    retval.insert (tmp, ra_idx(0), ra_idx(1));
-  return retval;
-}
-
-FixedComplexMatrix concat (const FixedMatrix& ra, 
-			   const FixedComplexMatrix& rb, 
-			   const Array<int>& ra_idx)
-{
-  FixedComplexMatrix retval (ra);
-  if (rb.numel() > 0)
-    retval.insert (rb, ra_idx(0), ra_idx(1));
-  return retval;
-}
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
 FixedComplexMatrix 
 FixedComplexMatrix::concat (const FixedComplexMatrix& rb, 
 			    const Array<int>& ra_idx)
@@ -697,7 +653,6 @@ FixedComplexMatrix::concat (const FixedMatrix& rb,
     insert (FixedComplexMatrix (rb), ra_idx(0), ra_idx(1));
   return *this;
 }
-#endif
 
 FixedComplexMatrix&
 FixedComplexMatrix::insert (const FixedComplexMatrix& a, int r, int c)

@@ -23,10 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <config.h>
 #include <iostream>
 #include <octave/oct-obj.h>
@@ -118,20 +114,7 @@ octave_base_fixed_matrix<MT>::is_true (void) const
 {
   bool retval = false;
 
-#if defined(HAVE_PROPAGATE_EMPTY_MATRICES)
-  if (rows () == 0 || columns () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	warning ("empty matrix used in conditional expression");
-      else if (flag == 0)
-	error ("empty matrix used in conditional expression");
-    }
-  else
-#else
   if (rows () > 0 && columns () > 0)
-#endif
     {
       boolMatrix m = (matrix.all () . all ());
 

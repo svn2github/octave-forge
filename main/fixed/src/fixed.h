@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (fixed_h)
 #define fixed_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include "int/fixed.h"
 #include "fixedComplex.h"
 #include "fixedRowVector.h"

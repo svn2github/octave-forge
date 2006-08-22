@@ -1,72 +1,8 @@
 
 if test -e main/fixed/NOINSTALL ; then
-
 	dnl Not installing, do nothing
 	STATUS=noinstall
-
 else
-
-	dnl Test for resize_and_fill function
-	TRY_MKOCTFILE([resize and fill function],[
-#include <octave/Array.h>
-int test(void) { Array<int> t; t.resize_and_fill(1, 0);  return 0;}
-	],[HAVE_RESIZE_AND_FILL="-DHAVE_RESIZE_AND_FILL"],)
-	AC_SUBST(HAVE_RESIZE_AND_FILL)
-
-	dnl Check for the number of arguments to MX_ND_REDUCTION
-	dnl this changed between 2.1.57 and 2.158
-	TRY_MKOCTFILE([for 6 argument MX_ND_REDUCTION],[
-#include <octave/oct.h>
-#include <octave/ops.h>
-#include <octave/mx-inlines.cc>
-class testclass : public MArrayN<double>
-{
- public:
-  testclass (void) : MArrayN<double> () { }
-  testclass (const Matrix& a) :  MArrayN<double> (a) { } 
-  testclass testfun (int dim) {
-    MX_ND_REDUCTION (acc += elem (iter_idx), 
-		     retval.elem(iter_idx) = acc, 0, 
-		     double acc = 0, testclass, double);
-  }
-  static void increment_index (Array<int>& ra_idx,
-			       const dim_vector& dimensions,
-			       int start_dimension = 0) {
-    ::increment_index (ra_idx, dimensions, start_dimension);
-  }
-};
-int main(void) { 
-  testclass a ( Matrix (1,1,1)); 
-  testclass b = a.testfun(0);
-}
-	],[MX_ND_RED_NUM="-DMX_ND_RED_NUM=6"],
-	  [TRY_MKOCTFILE([for 5 argument MX_ND_REDUCTION],[
-#include <octave/oct.h>
-#include <octave/ops.h>
-#include <octave/mx-inlines.cc>
-class testclass : public MArrayN<double>
-{
- public:
-  testclass (void) : MArrayN<double> () { }
-  testclass (const Matrix& a) :  MArrayN<double> (a) { } 
-  testclass testfun (int dim) {
-    MX_ND_REDUCTION (acc += elem (iter_idx), 
-		     retval.elem(iter_idx) = acc, 0, 
-		     double acc = 0, testclass);
-  }
-  static void increment_index (Array<int>& ra_idx,
-			       const dim_vector& dimensions,
-			       int start_dimension = 0) {
-    ::increment_index (ra_idx, dimensions, start_dimension);
-  }
-};
-int main(void) { 
-  testclass a ( Matrix (1,1,1)); 
-  testclass b = a.testfun(0);
-}
-	  ],[MX_ND_RED_NUM="-DMX_ND_RED_NUM=5"],[MX_ND_RED_NUM="-DMX_ND_RED_NUM=3"])])
-	AC_SUBST(MX_ND_RED_NUM)
-
 	dnl version of the fixed point code
 	OCTAVEFIXEDVERSION="0.7.0"
  	AC_SUBST(OCTAVEFIXEDVERSION)

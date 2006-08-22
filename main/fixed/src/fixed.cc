@@ -55,11 +55,6 @@ extern void install_fcs_fcm_ops (void);
 extern void install_fcm_fcs_ops (void);
 extern void install_fcm_fcm_ops (void);
 
-extern void install_fil_fs_ops (void);
-extern void install_fil_fm_ops (void);
-extern void install_fil_fcs_ops (void);
-extern void install_fil_fcm_ops (void);
-
 static bool fixed_type_loaded = false;
 
 void load_fixed_type (void)
@@ -88,11 +83,6 @@ void load_fixed_type (void)
   install_fcs_fcm_ops ();
   install_fcm_fcs_ops ();
   install_fcm_fcm_ops ();
-
-  install_fil_fs_ops ();
-  install_fil_fm_ops ();
-  install_fil_fcs_ops ();
-  install_fil_fcm_ops ();
 
   fixed_type_loaded = true;
 

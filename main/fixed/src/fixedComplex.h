@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (__fixed_complex_h)
 #define __fixed_complex_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <complex>
 #include <octave/oct-cmplx.h>
 #include "int/fixed.h"

@@ -23,12 +23,6 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#ifdef HAVE_ND_ARRAYS
-
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #include <iostream>
 
 #include <octave/config.h>
@@ -42,12 +36,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/CNDArray.h>
 #include <octave/gripes.h>
 #include <octave/ops.h>
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
 #include <octave/quit.h>
-#endif
 
 #include "fixedCMatrix.h"
 #include "fixedCNDArray.h"
@@ -616,57 +605,24 @@ FixedComplexNDArray
 FixedComplexNDArray::prod (octave_idx_type dim) const
 {
   FixedPointComplex one(1, 0, 1, 0);
-#if (MX_ND_RED_NUM == 6)
-  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
-		   one, FixedPointComplex acc = one, 
-		   FixedComplexNDArray, FixedPointComplex);
-#elif (MX_ND_RED_NUM == 5)
-  MX_ND_REDUCTION (acc *= elem (iter_idx), retval.elem (iter_idx) = acc,
-		   one, FixedPointComplex acc = one, 
-		   FixedComplexNDArray);
-#else
   MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), one,
 		   FixedComplexNDArray);
-#endif
-
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::sum (octave_idx_type dim) const
 {
   FixedPointComplex zero;
-#if (MX_ND_RED_NUM == 6)
-  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
-		   zero, FixedPointComplex acc = zero, 
-		   FixedComplexNDArray, FixedPointComplex);
-#elif (MX_ND_RED_NUM == 5)
-  MX_ND_REDUCTION (acc += elem (iter_idx), retval.elem (iter_idx) = acc,
-		   zero, FixedPointComplex acc = zero, 
-		   FixedComplexNDArray);
-#else
   MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), zero,
 		   FixedComplexNDArray);
-#endif
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::sumsq (octave_idx_type dim) const
 {
   FixedPointComplex zero;
-#if (MX_ND_RED_NUM == 6)
-  MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
-		   retval.elem (iter_idx) = acc, zero, 
-		   FixedPointComplex acc = zero, 
-		   FixedComplexNDArray, FixedPointComplex);
-#elif (MX_ND_RED_NUM == 5)
-  MX_ND_REDUCTION (acc += elem (iter_idx) * conj (elem (iter_idx)),
-		   retval.elem (iter_idx) = acc, zero, 
-		   FixedPointComplex acc = zero, 
-		   FixedComplexNDArray);
-#else
   MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx) * 
 		   conj (elem (iter_idx)), zero, FixedComplexNDArray);
-#endif
 }
 
 FixedNDArray
@@ -932,41 +888,6 @@ FixedComplexNDArray::fixed_complex_matrix_value (void) const
   return retval;
 }
 
-#ifdef HAVE_OCTAVE_CONCAT
-FixedComplexNDArray 
-concat (const FixedComplexNDArray& ra, const FixedComplexNDArray& rb, 
-	const Array<octave_idx_type>& ra_idx)
-{
-  FixedComplexNDArray retval (ra);
-  if (ra.numel () > 0)
-    retval.insert (rb, ra_idx);
-  return retval;
-}
-
-FixedComplexNDArray 
-concat (const FixedComplexNDArray& ra, const FixedNDArray& rb, 
-	const Array<octave_idx_type>& ra_idx)
-{
-  FixedComplexNDArray retval (ra);
-  if (ra.numel () > 0) {
-    FixedComplexNDArray tmp (rb);
-    retval.insert (tmp, ra_idx);
-  }
-  return retval;
-}
-
-FixedComplexNDArray
-concat (const FixedNDArray& ra, const FixedComplexNDArray& rb, 
-	const Array<octave_idx_type>& ra_idx)
-{
-  FixedComplexNDArray retval (ra);
-  if (ra.numel () > 0)
-    retval.insert (rb, ra_idx);
-  return retval;
-}
-#endif
-
-#ifdef HAVE_OCTAVE_CONCAT
 FixedComplexNDArray 
 FixedComplexNDArray ::concat (const FixedComplexNDArray& rb, 
 			      const Array<octave_idx_type>& ra_idx)
@@ -984,9 +905,7 @@ FixedComplexNDArray::concat (const FixedNDArray& rb,
     insert (FixedComplexNDArray (rb), ra_idx);
   return *this;
 }
-#endif
 
-#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
 FixedComplexNDArray& 
 FixedComplexNDArray::insert (const FixedComplexNDArray& a, 
 			     const Array<octave_idx_type>& ra_idx)
@@ -994,32 +913,21 @@ FixedComplexNDArray::insert (const FixedComplexNDArray& a,
   Array<FixedPointComplex>::insert (a, ra_idx);
   return *this;
 }
-#endif
 
 void
 FixedComplexNDArray::increment_index (Array<octave_idx_type>& ra_idx,
 				 const dim_vector& dimensions,
 				 octave_idx_type start_dimension)
 {
-#ifdef HAVE_OCTAVE_CONCAT
   ::increment_index (ra_idx, dimensions, start_dimension);
-#else
-  error("fixed increment_index not implemented");
-#endif
 }
 
 octave_idx_type 
 FixedComplexNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions)
 {
-#ifdef HAVE_OCTAVE_CONCAT
   return ::compute_index (ra_idx, dimensions);
-#else
-  error("fixed compute_index not implemented");
-  return 0;
-#endif
 }
-
 
 // This contains no information on the array structure !!!
 std::ostream&
@@ -1204,8 +1112,6 @@ SND_BOOL_OPS(FixedPointComplex, FixedComplexNDArray, FixedPointComplex())
 
 NDND_CMP_OPS(FixedComplexNDArray, real, FixedComplexNDArray, real)
 NDND_BOOL_OPS(FixedComplexNDArray, FixedComplexNDArray, FixedPointComplex())
-
-#endif // HAVE_ND_ARRAYS
 
 /*
 ;;; Local Variables: ***

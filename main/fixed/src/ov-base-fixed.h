@@ -26,10 +26,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_base_fixed_h)
 #define octave_base_fixed_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include <cstdlib>
 
 #include <iostream>
@@ -79,19 +75,9 @@ public:
 
   octave_value_list dotref (const octave_value_list& idx);
 
-#if defined (HAVE_OCTAVE_CONCAT) || defined (HAVE_OLD_OCTAVE_CONCAT)
   size_t byte_size (void) const { return sizeof (ST); }
-#endif
 
-#ifdef HAVE_ND_ARRAYS
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
-#else
-  int rows (void) const { return 1; }
-
-  int columns (void) const { return 1; }
-
-  int length (void) const { return 1; }
-#endif
 
   bool is_constant (void) const { return true; }
 

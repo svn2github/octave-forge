@@ -14,12 +14,12 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
     gsl_set_error_handler (octave_gsl_errorhandler);
     
     if(args.length() != 2) {
-	print_usage ("GSL_OCTAVE_NAME");
+	print_usage ();
 	return octave_value();
     }
     if(!args(0).is_real_type() || !args(1).is_real_type()) {
         error("The arguments must be real.");
-	print_usage ("GSL_OCTAVE_NAME");	    
+	print_usage ();	    
 	return octave_value();
     }
 
@@ -101,7 +101,7 @@ see http://www.gnu.org/software/gsl/ for documentation.\n\
 	}
     } else {
 	error("First and second argument must either have the same size, or one of them must be scalar.");
-	print_usage ("GSL_OCTAVE_NAME");	
+	print_usage ();	
     }
 
     return octave_value();

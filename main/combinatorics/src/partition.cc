@@ -25,7 +25,6 @@ $RCSfile$
 #include <octave/oct.h>
 
 #include "partition.h"
-#include "octave20.h"
 
 unsigned long * pcnt(unsigned long n) 
 {

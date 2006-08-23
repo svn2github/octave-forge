@@ -24,7 +24,7 @@ OCTPATH="$OCTAVE_PATH"
 # on the system.  We may also want to pick up the OCTAVE_EXEC_PATH if
 # there is one.
 EXECPATH="$PATH:"
-for f in tmp/* main/* extra/* nonfree/*; do
+for f in install/* main/* extra/* nonfree/*; do
     # exclude CVS directories, only include directories, skip NOINSTALL
     case "$f" in
       */CVS) ;;

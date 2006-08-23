@@ -23,7 +23,7 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#if !defined (octave_FixedCNDArray_h) && defined (HAVE_ND_ARRAYS)
+#if !defined (octave_FixedCNDArray_h)
 #define octave_FixedCNDArray_h 1
 
 #include <octave/MArrayN.h>

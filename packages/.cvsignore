@@ -1,5 +1,7 @@
 *.tar.gz
-octave
+install
 .octave_packages
+.octave_hist
 tmp
+build-stamp
 *~

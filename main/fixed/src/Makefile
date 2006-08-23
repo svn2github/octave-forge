@@ -3,7 +3,7 @@ sinclude Makeconf
 FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
-SUBDIRS = examples doc
+SUBDIRS =
 
 ifeq (,$(findstring cygwin,$(canonical_host_type)))
  ifeq (,$(findstring mingw,$(canonical_host_type)))

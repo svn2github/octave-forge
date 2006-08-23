@@ -1,2 +1,2 @@
 global OCTAVE_PACKAGE_PREFIX;
-OCTAVE_PACKAGE_PREFIX='./tmp';
+OCTAVE_PACKAGE_PREFIX=[pwd() '/install'];

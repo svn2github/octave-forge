@@ -1,20 +1,20 @@
 # These are stub rules for the construction of packages
 
-pkg = $(filter-out %/,$(subst /,/ ,$@))
+opkg = $(filter-out %/,$(subst /,/ ,$@))
 ifeq ($(PKG_FILE),)
 # Use the wildcard on INDEX and PKG_ADD as well to allow for their absence
-PKG_FILES = $(pkg)/COPYING $(pkg)/DESCRIPTION \
-	$(wildcard $(pkg)/INDEX) $(wildcard $(pkg)/PKG_ADD) \
-	$(wildcard $(pkg)/inst/*) $(wildcard $(pkg)/src/*)
+PKG_FILES = $(opkg)/COPYING $(opkg)/DESCRIPTION \
+	$(wildcard $(opkg)/INDEX) $(wildcard $(opkg)/PKG_ADD) \
+	$(wildcard $(opkg)/inst/*) $(wildcard $(opkg)/src/*)
 endif
-REAL_PKG_FILES = $(filter-out $(pkg)/%/CVS $(pkg)/%/.cvsignore %~, $(PKG_FILES))
+REAL_PKG_FILES = $(filter-out $(opkg)/%/CVS $(opkg)/%/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
 
 pkg/%: pre-pkg/%
 	cd ..; \
-	ver=`grep "Version:" $(pkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
-	tar -zcf $(PKGDIR)/$(pkg)-$$ver.tar.gz $(REAL_PKG_FILES); \
-	cd $(pkg); \
-	$(MAKE) post-pkg/$(pkg)
+	ver=`grep "Version:" $(opkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
+	tar -zcf $(PKGDIR)/$(opkg)-$$ver.tar.gz $(REAL_PKG_FILES); \
+	cd $(opkg); \
+	$(MAKE) post-pkg/$(opkg)
 
 pre-pkg/%::
 	if [ -f src/autogen.sh ]; then \
@@ -23,6 +23,7 @@ pre-pkg/%::
           cd ..; \
 	fi
 
-# By default do nothing post packaging. Therefore trailing TAB is important!!!
+# By default do nothing post packaging
 post-pkg/%::
-	
+	@true
+

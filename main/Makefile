@@ -18,12 +18,17 @@ ifdef OCTAVE_FORGE
 all: $(patsubst %,dopkg/%,$(BUILDDIRS)) $(patsubst %,dopkg2/%,$(INSTALLDIRS))
 
 dopkg/%:
-	$(MAKE) PKGDIR=$(PKGDIR) -C $(pkg) pkg/$(pkg)
+	$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg)
 
 dopkg2/%:
-	ver=`grep "Version:" $(pkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
-	tar -zcf $(PKGDIR)/$(pkg)-$$ver.tar.gz $(REAL_PKG_FILES)
-
+	if [ -f $(opkg)/src/autogen.sh ]; then \
+	  p=`pwd`; \
+          cd $(opkg)/src; \
+          sh ./autogen.sh; \
+          cd $$p; \
+	fi
+	ver=`grep "Version:" $(opkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
+	tar -zcf $(PKGDIR)/$(opkg)-$$ver.tar.gz $(REAL_PKG_FILES)
 else
 all:
 	@echo not yet configured

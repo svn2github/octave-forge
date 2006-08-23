@@ -398,7 +398,6 @@ shell commands will install into the following directories:
 octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
-   X11 support:	$XSTATUS
    makeinfo:    $MAKEINFO
    texi2dvi:    $TEXI2DVI
    texi2html:   $TEXI2HTML

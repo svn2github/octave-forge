@@ -58,15 +58,6 @@ XPATH = @xpath@
 ALTMPATH = @altmpath@
 ALTOPATH = @altopath@
 
-MAKEINFO = @MAKEINFO@
-TEXI2DVI = @TEXI2DVI@
-TEXI2HTML = @TEXI2HTML@
-DVIPDF = @DVIPDF@
-DVIPS = @DVIPS@
-
-MKDOC = @MKDOC@
-MKTEXI = @MKTEXI@
-
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<
 %.o: %.cc ; $(MKOCTFILE) -c $<

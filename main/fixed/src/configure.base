@@ -375,6 +375,10 @@ AC_SUBST(MKDOC)
 MKTEXI=$TOPDIR/admin/mktexi
 AC_SUBST(MKTEXI)
 
+dnl version of the fixed point code
+OCTAVEFIXEDVERSION="0.7.0"
+AC_SUBST(OCTAVEFIXEDVERSION)
+
 CONFIGURE_OUTPUTS="Makeconf octinst.sh"
 STATUS_MSG="
 octave commands will install into the following directories:

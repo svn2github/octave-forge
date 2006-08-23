@@ -1,28 +1,28 @@
 sinclude ../Makeconf
+sinclude ../pkg.mk
+
+ifeq ($(PKGDIR),)
+PKGDIR = ../packages
+endif
 
 # Determine which subdirectories are to be installed.  Of those, determine
 # which have their own Makefile.
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 NOINSTALLDIRS = $(dir $(wildcard */NOINSTALL))
 BUILDDIRS = $(filter-out $(NOINSTALLDIRS), $(SUBMAKEDIRS))
-INSTALLDIRS = $(filter-out CVS/ $(NOINSTALLDIRS), $(dir $(wildcard */.)))
+INSTALLDIRS = $(filter-out $BUILDDIRS, $(filter-out CVS/ $(NOINSTALLDIRS), $(dir $(wildcard */.))))
 
 .PHONY: all install clean distclean $(SUBMAKEDIRS)
 
 ifdef OCTAVE_FORGE
-all: $(BUILDDIRS)
+all: $(patsubst %,dopkg/%,$(BUILDDIRS)) $(patsubst %,dopkg2/%,$(INSTALLDIRS))
 
-install: $(BUILDDIRS)
-	@test -z "$(NOINSTALLDIRS)" || echo skipping $(NOINSTALLDIRS)
-ifeq ($(INSTALLDIRS),)
-	@echo installing no packages
-else
-	@for f in $(INSTALLDIRS) ; do \
-            echo installing $$f... ; \
-            ../$(INSTALLOCT) $$f $(DESTDIR)$(MPATH)/$$f \
-	    $(DESTDIR)$(OPATH) $(DESTDIR)$(XPATH) ; \
-        done
-endif
+dopkg/%:
+	$(MAKE) PKGDIR=$(PKGDIR) -C $(pkg) pkg/$(pkg)
+
+dopkg2/%:
+	ver=`grep "Version:" $(pkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
+	tar -zcf $(PKGDIR)/$(pkg)-$$ver.tar.gz $(REAL_PKG_FILES)
 
 else
 all:
@@ -30,8 +30,6 @@ all:
 endif
 
 clean: $(SUBMAKEDIRS)
-
-dist: $(SUBMAKEDIRS)
 
 # Propogate make to the subdirectory if the goal is a valid target
 # in the subdirectory Makefile.

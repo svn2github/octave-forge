@@ -340,11 +340,7 @@ void Fft<S,C,CV>::generatesort () {
 
   // Resize and fill sort with zeros..
   sort.resize (0);
-#if HAVE_RESIZE_AND_FILL
   sort.resize_and_fill (size, 0);
-#else
-  sort.resize (size, 0);
-#endif
 
   for (int i=0; i<size; i++)
     for (int j=1, k=size/4; j<size; j<<=2, k>>=2)

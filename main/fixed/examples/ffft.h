@@ -27,10 +27,6 @@ Open Source Initiative (www.opensource.org)
 #if !defined (ffft_h)
 #define ffft_h 1
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma interface
-#endif
-
 #include "fixed.h"
 
 template <class S, class C, class CV>

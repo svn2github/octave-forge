@@ -1,3 +1,4 @@
+configure
 *.d
 *.o
 PKG_ADD

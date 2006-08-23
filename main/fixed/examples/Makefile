@@ -1,4 +1,4 @@
-sinclude ../../../Makeconf
+sinclude ../src/Makeconf
 
 LINKTARGETS = fifft.oct
 LINKSOURCE = ffft.oct
@@ -7,12 +7,12 @@ TARGETS = $(patsubst %.cc,%.oct,$(SOURCES)) $(LINKTARGETS)
 OBJECTS = $(patsubst %.cc,%.o,$(SOURCES))
 DEPENDS = $(patsubst %.cc,%.d,$(SOURCES))
 INCLUDES = -I..
-DEFINES = $(HAVE_RESIZE_AND_FILL)
+DEFINES = 
 
 ifeq (1,$(OCT_INCLUDES_LIB))
   MOFLAGS = $(INCLUDES)
 else
-  MOFLAGS = $(INCLUDES) -L.. -loctave_fixed
+  MOFLAGS = $(INCLUDES) -L../ -loctave_fixed
 endif
 
 .PHONY: all clean count

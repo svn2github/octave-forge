@@ -1,6 +1,6 @@
 sinclude ../../../Makeconf
 
-# "make dist" clears the MKDOC, etc variables. Fill them in if needed
+# Fill in the variables as it makes testing the package manager easier
 ifeq ($(MKDOC),)
 MKDOC = ../../../admin/mkdoc
 MKTEXI = ../../../admin/mktexi
@@ -11,25 +11,19 @@ endif
 
 FIXEDVERTARGET = fixedversion.txi
 INFODOC = fixed.info
-PSDOC = fixed.ps
-DOCS = $(INFODOC) $(PSDOC)
+PSDOC = $(patsubst %.info,%.ps,$(INFODOC))
+PDFDOC = $(patsubst %.info,%.pdf,$(INFODOC))
+TEXIDOC = $(patsubst %.info,%.texi,$(INFODOC))
+DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
-TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) fixed.texi *~
-DELETES = *.ps *.pdf *.info $(DOCS) *.html
+TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) $(TEXIDOC) *~
+DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html
 
-all : $(INFODOC) $(PSDOC)
+all : $(PDFDOC) ../inst/doc.info
 
-ifndef OCTAVE_FORGE
-install :
-	@echo "Where exactly do you want me to install to!!!"
-else
-install : 
-	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed; \
-	if test "x$(MAKEINFO)" != "x"; then \
-	  $(INSTALL_DATA) $(INFODOC) $(DESTDIR)$(MPATH)/fixed ; \
-	fi
-endif
+../inst/doc.info : $(INFODOC)
+	cp -f $(INFODOC) ../inst/doc.info
 
 $(FIXEDVERTARGET) :
 	@echo "Creating $@"; $(RM) -f $@; \
@@ -80,10 +74,7 @@ $(FIXEDVERTARGET) :
 
 clean:
 	@echo "Cleaning..."; \
-	$(RM) -f $(TMPDELETES)
-
-realclean: clean
-	@$(RM) -f $(DELETES)
+	$(RM) -f $(DELETES)
 
 dist: all
 

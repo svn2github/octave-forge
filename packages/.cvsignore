@@ -1,0 +1,5 @@
+*.tar.gz
+octave
+.octave_packages
+tmp
+*~

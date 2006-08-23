@@ -1,6 +1,6 @@
 sinclude ../../../Makeconf
 
-# "make dist" clears the MKDOC, etc variables. Fill them in if needed
+# Fill in the variables as it makes testing the package manager easier
 ifeq ($(MKDOC),)
 MKDOC = ../../../admin/mkdoc
 MKTEXI = ../../../admin/mktexi
@@ -11,20 +11,18 @@ endif
 
 INFODOC = comms.info
 PSDOC = $(patsubst %.info,%.ps,$(INFODOC))
+PDFDOC = $(patsubst %.info,%.pdf,$(INFODOC))
 TEXIDOC = $(patsubst %.info,%.texi,$(INFODOC))
-DOCS = $(INFODOC) $(PSDOC)
+DOCS = $(INFODOC) $(PDFDOC) 
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(TEXIDOC) *~
-DELETES = *.ps *.pdf *.info $(DOCS) *.html
+DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html
 
-all : $(INFODOC) $(PSDOC)
+all : $(PDFDOC) ../inst/doc.info
 
-install : 
-	@$(INSTALL) -d $(DESTDIR)$(MPATH)/comm; \
-	if test "x$(MAKEINFO)" != "x"; then \
-	  $(INSTALL_DATA) $(INFODOC) $(DESTDIR)$(MPATH)/comm ; \
-	fi
+../inst/doc.info : $(INFODOC)
+	cp -f $(INFODOC) ../inst/doc.info
 
 %.dvi : %.texi
 	@if test "x$(TEXI2DVI)" != "x"; then \
@@ -71,10 +69,7 @@ install :
 
 clean:
 	@echo "Cleaning..."; \
-	$(RM) -f $(TMPDELETES)
-
-realclean: clean
-	@$(RM) -f $(DELETES)
+	$(RM) -f $(DELETES)
 
 dist: all
 

@@ -3,17 +3,6 @@ sinclude Makeconf
 FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
-FIXEDLINKTARGETS = $(patsubst %,%$(OCTLINK), \
-	isfixed fabs fcos fcosh fsin fsinh \
-	ftan ftanh fsqrt fexp flog flog10 fround \
-	ffloor fceil fprod fsum fsumsq fcumsum \
-	fcumprod display_fixed_operations reset_fixed_operations \
-	freshape fdiag fatan2 freal fimag fconj \
-	farg fangle \
-	fixed_point_warn_overflow fixed_point_debug \
-	fixed_point_count_operations fixed_point_version \
-	fixed_point_library_version) 
-
 SUBDIRS = examples doc
 
 ifeq (,$(findstring cygwin,$(canonical_host_type)))
@@ -37,7 +26,7 @@ ifeq (1,$(OCT_INCLUDES_LIB))
   FIXEDOBJECTS = fixed-int.o $(patsubst %.cc,%.o,$(FIXEDSOURCES))
   FIXEDDEPENDS = fixed-int.d $(patsubst %.cc,%.d,$(FIXEDSOURCES))
 
-  TARGETS = $(FIXEDTARGET) $(FIXEDLINKTARGETS)
+  TARGETS = $(FIXEDTARGET)
   OBJECTS = $(FIXEDOBJECTS)
 
   EXTRALIBS =
@@ -60,7 +49,7 @@ else
   FIXEDOBJECTS = $(patsubst %.cc,%.o,$(FIXEDSOURCES))
   FIXEDDEPENDS = $(FIXEDLIBDEPENDS) $(patsubst %.cc,%.d,$(FIXEDSOURCES))
 
-  TARGETS = $(FIXEDLIBTARGET) $(FIXEDTARGET) $(FIXEDLINKTARGETS)
+  TARGETS = $(FIXEDLIBTARGET) $(FIXEDTARGET)
   OBJECTS = $(FIXEDLIBOBJECTS) $(FIXEDOBJECTS)
 
   EXTRALIBS = -L./ -loctave_fixed
@@ -137,11 +126,6 @@ $(FIXEDTARGET) : $(DEPENDS) $(FIXEDOBJECTS)
 $(FIXEDVERTARGET) :
 	@echo "Creating $@"; $(RM) -f $@; \
 	echo "#define OCTAVEFIXEDVERSION \"$(OCTAVEFIXEDVERSION)\"" > $@
-
-$(FIXEDLINKTARGETS) :
-	@echo "Symbolic linking $@ to $(FIXEDTARGET)"; \
-	$(RM) -f $@ ; \
-	$(MKOCTLINK) $(FIXEDTARGET) $@
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)

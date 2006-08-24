@@ -22,12 +22,6 @@
 #include <octave/oct.h>
 #include <octave/parse.h>
 #include <octave/lo-ieee.h>
-#ifndef OCTAVE_QUIT
-# define OCTAVE_QUIT do {} while (0)
-#endif
-#ifdef USE_OCTAVE_NAN
-#define lo_ieee_nan_value() octave_NaN
-#endif
 
 inline double max(double a, double b, double c)
 {

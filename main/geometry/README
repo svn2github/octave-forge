@@ -35,7 +35,7 @@ b.) if you are using this package independently, just type
 	make
 
     and either copy the m-files and oct-files from the current
-    directory onto your octave LOADPATH or update your LOADPATH
-    to include the current directory.
+    directory onto your octave path or update your path to include
+    the current directory.
 
 

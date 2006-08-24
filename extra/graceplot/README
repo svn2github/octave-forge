@@ -42,7 +42,7 @@ $ mkoctfile __grcmd__.cc
 
 3.
 copy all the m-files and the oct-files to a directory which is _not_ in your
-Octave LOADPATH.
+Octave path.
 
 $ cp *.m *.oct $HOME/grace-octave
 
@@ -54,7 +54,7 @@ $ bash install.sh
 
 5. 
 Copy the m-files toggle_grace_use.m and grace_octave_path.m to a directory
-which _is_ in your Octaves LOADPATH.
+which _is_ in your Octave path.
 
 $ cp toggle_grace_use.m grace_octave_path.m $HOME/octave
 

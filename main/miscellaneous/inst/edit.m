@@ -50,8 +50,8 @@
 ##   Pay attention to the "" and ``; they are significant.
 ##
 ## home
-##   This is the location of user local m-files. Be be sure it is on LOADPATH.
-##   The default is ~/octave.
+##   This is the location of user local m-files. Be be sure it is in your
+##   path. The default is ~/octave.
 ##
 ## author
 ##   This is the name to put after the "## Author:" field of new functions.

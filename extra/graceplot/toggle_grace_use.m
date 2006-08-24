@@ -19,8 +19,8 @@
 ## Use this script to activate/deactivate the default library for the
 ## 2D plotting functions (plot, errorbar, etc.), as both the native
 ## gnuplot and the Grace interface use similar names to the
-## functions. toggle_grace_use post-/pre-pends to LOADPATH the path for
-## the Grace functions in successive calls.
+## functions. toggle_grace_use adds or removes the path to the Grace
+## functions to the system path.
 
 1;
 
@@ -45,17 +45,11 @@ else
 endif
 
 use_grace_path = grace_octave_path;
-use_grace_i = findstr (LOADPATH, use_grace_path);
-if (!isempty (use_grace_i))
-  LOADPATH (use_grace_i(1):use_grace_i(1)+length(use_grace_path)-1)= "";
-  LOADPATH = strrep (LOADPATH, "::", ":");
-endif
-
 if (strcmp (use_grace_state, "on"))
-  LOADPATH = [use_grace_path, ":", LOADPATH];
+  addpath(use_grace_path);
   __grinit__();
 elseif (strcmp (use_grace_state, "off"))
-  LOADPATH = [LOADPATH, ":", use_grace_path];
+  rmpath(use_grace_path);
   __grexit__();
 endif
 

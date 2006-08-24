@@ -16,7 +16,7 @@
 ## s : string : contents of the file
 ##
 ## If f is not an absolute filename, and f is not an immediately accessible
-## file, slurp_file () will look for f in LOADPATH.
+## file, slurp_file () will look for f in the path.
 
 ## Author  : Etienne Grossmann <etienne@cs.uky.edu>
 function s = slurp_file (f)
@@ -29,7 +29,7 @@ s = "";
 f0 = f;
 [st,err,msg] = stat (f);
 if err && f(1) != "/", 
-  f = file_in_path (LOADPATH, f);
+  f = file_in_loadpath (f);
 				# Could not find it anywhere. Open will
 				# fail.
   if isempty (f)

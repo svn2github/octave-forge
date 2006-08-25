@@ -5,7 +5,8 @@ ifeq ($(PKG_FILE),)
 # Use the wildcard on INDEX and PKG_ADD as well to allow for their absence
 PKG_FILES = $(opkg)/COPYING $(opkg)/DESCRIPTION \
 	$(wildcard $(opkg)/INDEX) $(wildcard $(opkg)/PKG_ADD) \
-	$(wildcard $(opkg)/inst/*) $(wildcard $(opkg)/src/*)
+	$(wildcard $(opkg)/inst/*) $(wildcard $(opkg)/src/*) \
+	$(wildcard $(opkg)/doc/*)
 endif
 REAL_PKG_FILES = $(filter-out $(opkg)/%/CVS $(opkg)/%/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
 

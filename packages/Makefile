@@ -30,6 +30,6 @@ build-stamp: $(PACKAGES)
 
 # No spaces in eval argumnet please!!
 $(PACKAGES) :
-	@echo "build $@"
-	if [ ! -d install ]; then mkdir install; fi
+	@echo "build $@"; \
+	if [ ! -d install ]; then mkdir install; fi; \
 	$(RUN_OCTAVE) --eval "pkg('install','$@')"

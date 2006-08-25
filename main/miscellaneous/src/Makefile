@@ -4,15 +4,10 @@ ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap
 endif
 
-DISPATCH_LINK=$(patsubst %,%$(OCTLINK), dispatch_help builtin)
 TARGETS=waitbar.oct listen.oct xmlread.oct \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct
 
 all:	$(TARGETS)
-
-$(DISPATCH_LINK):
-	-$(RM) $@
-	$(MKOCTLINK) dispatch.oct $@
 
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)

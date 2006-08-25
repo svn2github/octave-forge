@@ -4,8 +4,6 @@ sinclude Makeconf
 # assumptions to make if not using ./configure script
 ifndef OCTAVE_FORGE
 	MKOCTFILE=mkoctfile
-	MKOCTLINK=ln -s
-	OCTLINK=.oct
 
 #	Adapt the variables NETCDF_INC and NETCDF_LIB
 #       for octcdf with NetCDF support only (and not OPeNDAP).
@@ -39,14 +37,9 @@ NCTARGET = netcdf.oct
 NCSOURCES = ov-netcdf.cc ov-ncfile.cc ov-ncvar.cc ov-ncatt.cc ov-ncdim.cc 
 OBJECTS = $(patsubst %.cc,%.o,$(NCSOURCES))
 
-NCLINKTARGETS = $(patsubst %,%$(OCTLINK), \
-	ncclose ncredef ncenddef ncsync ncvar ncatt \
-	ncdim ncname ncdatatype ncautonan ncautoscale) 
-
-
 MFILES =  ncchar.m ncfloat.m nclong.m ncbyte.m ncdouble.m ncint.m ncshort.m 
 
-TARGETS = $(NCTARGET) $(NCLINKTARGETS)
+TARGETS = $(NCTARGET)
 
 MOFLAGS = $(OCTCDF_CFLAGS)
 
@@ -61,15 +54,10 @@ ifeq ($(HAVE_NETCDF),yes)
 all: $(TARGETS)
 else
 all:
-	@echo "netcdf libraries or headers missing"
-	false
+	@echo "*** netcdf libraries or headers missing"; false
 endif
 
 mfiles: $(MFILES)
-
-$(NCLINKTARGETS) : $(NCTARGET)
-	$(RM) $@ ; \
-	$(MKOCTLINK) $(NCTARGET) $@
 
 ov-netcdf.o ov-ncfile.o ov-ncvar.o  ov-ncatt.o  ov-ncdim.o: ov-netcdf.h ov-ncfile.h ov-ncvar.h  ov-ncatt.h ov-ncdim.h
 
@@ -83,5 +71,5 @@ $(NCTARGET) : $(OBJECTS)
 $(MFILES): nctype.m4
 	m4 --define=TYPE=$(patsubst nc%.m,%,$@) nctype.m4 > $@
 
-clean: ; -$(RM) *.o core* octave-core *.oct *.octlink *~ *.nc 
+clean: ; -$(RM) *.o core* octave-core *.oct *~ *.nc 
 

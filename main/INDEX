@@ -413,7 +413,7 @@ Types
  uint8 uint16 uint32 uint64
  sizeof
 
-matrix >> Linear Algehra
+matrix >> Linear Algebra
 Generating matrices
  zeros 
  ones 
@@ -524,10 +524,6 @@ Matrix functions
  logm 
  sqrtm 
  funm thfm
-Banded matrices
-  BandToFull BandToSparse FullToBand
-  SBBacksub SBEig SBFactor SBFactor2 SBProd SBSolve
-  ExampleEigenValues ExampleGenEigenValues gapTest
 
 math >> Mathematics
 Trigonometry

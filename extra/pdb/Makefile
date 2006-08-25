@@ -1,8 +1,6 @@
-include ../../Makeconf
+sinclude ../../Makeconf
+sinclude ../../pkg.mk
 
-all: creadpdb.oct plotpdb.m
-
-plotpdb.m: plotpdb.m.in
-	sed -e "s:@OFORGEXPATH@:$(XPATH):" plotpdb.m.in > plotpdb.m
-
-clean: ; -$(RM) plotpdb.m *.o core octave-core *.oct *~
+PKG_FILES = $(patsubst %,pdb/%, COPYING DESCRIPTION INDEX \
+	$(wildcard bin/*) $(wildcard doc/*) \
+	$(wildcard inst/*) $(wildcard src/*))

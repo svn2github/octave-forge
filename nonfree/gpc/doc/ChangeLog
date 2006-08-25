@@ -1,0 +1,136 @@
+2006-01-26  David Bateman <dbateman@free.fr>
+
+	* Convert for use with octave 2.9.x package manager
+
+	
+2006-01-26  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* Makefile.am: Use CLEANFILES variable instead of defining the
+  	  clean target
+	* configure.in: Release 0.1.6
+
+2004-01-05 22:20  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* octave-gpc.h: Added constructor
+	  octave_gpc_polygon::octave_gpc_polygon (void). Updated copyright
+	  notice.
+
+2004-01-05 22:18  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* octave-gpc.cc: Call DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA macro
+	  with three argument, as required for the newest Octave version
+	  (2.1.52).  Updated copyright notice
+
+2004-01-05 22:13  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* gpc_plot.m: Removed blank spaces before opening parenthesis in a
+  	  matrix, making the code work when empty_list_elements_ok == 0.
+  	  Updated copyright notice.
+
+2004-01-05 22:10  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* bootstrap.sh: Added function run() for user-friendly echo
+	  during call to the Autotools.  Changed shabang program to
+	  /bin/bash.
+
+2004-01-05 22:08  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* Makefile.am: Removed "$(prefix)/" from the installation
+  	  directories, since this is coped with in configure.in.  Added
+	  copyright notice.  Removed redundant install-hook rule.
+
+2004-01-05 22:07  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* acinclude.m4: Added this file with macros OCTAVE_CONFIG_INFO and
+	  CHEK_PROG, used in configure.in.
+
+2004-01-05 21:25  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* configure.in:
+	  - Release 0.1.4 of Octave-GPC (appears in AC_INIT).
+	  - Restructured and modernized for the latest Autotools: AC_INIT
+	    accepts now	three arguments and AM_INIT_AUTOMAKE none.
+	  - Use AC_HELP_MSG as arguments of AC_ARG_WITH.  Used
+	    AC_CONFIG_FILES instead of an argument of AC_OUTPUT.  Replaced
+	    long repetitive code by macros defined now in acinclude.m4.
+	  - Removed libexec sirectory setting and use.
+	  - Check for Octave version 2.1.52 or later.
+	  - Exit with an error if gpc library is not found.
+
+2004-01-05 21:19  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* .cvsignore: Ignoring *.oct files
+
+2004-01-05 21:18  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* debian/cvsdir.sh: Removed this file, since "debuild -i" does the
+	  job cvsdir.sh is intended to do.
+
+2004-01-05 21:15  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* gpc_clip.cc, gpc_create.cc, gpc_get.cc, gpc_is_polygon.cc,
+	  gpc_read.cc, gpc_tristrip.cc, gpc_write.cc: Changed package name
+	  octave-gpc -> Octave-GPC in copyright notices
+
+2004-01-05 21:08  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* NEWS, README, gpc_clip.cc, gpc_create.cc, gpc_get.cc,
+	  gpc_is_polygon.cc, gpc_read.cc, gpc_tristrip.cc, gpc_write.cc:
+	  Updated copyright information (added year 2004)
+
+2004-01-05 20:57  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* debian/.cvsignore: Added exclusions file
+
+2004-01-05 20:48  Rafael Laboissiere  <rafael@laboissiere.net>
+
+	* .cvsignore: Added exclusions file
+
+2003-07-04  Rafael Laboissiere  <rafael@debian.org>
+
+	* configure.in: Package version 0.1.3.
+
+	* Makefile.am: Added INDEX to EXTRA_DIST.
+
+	* gpc_clip.cc, octave-gpc.cc, octave-gpc.h: Prefixed some types
+	with "std::", such that the package gets compiled with g++ v3.
+
+	* octave_gpc.cc: Cope with change in operator [] of Octave_map,
+	which now returns a octave_value_list (not octave_value as
+	before).
+
+2001-12-13  Rafael Laboissiere  <rafael@debian.org>
+
+	* configure.in: Package version 0.1.2.
+
+	* README, gpc_plot.m: Removed reference to "matcompat". (Thanks to
+	Paul Kienzle <pkienzle@users.sf.net>).
+
+	* Makefile.am (install-data-hook): Make symbolic links instead of
+	hard ones.
+
+2001-07-27  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* configure.in: Bumped version number to 0.1.1.
+
+	* README: Copyright notice.
+
+	* NEWS: Copyright notice and information about release 0.1.1.
+
+2001-07-26  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* gpc_write.cc (gpc_write): Correctly call get_gpc_pt, avoid
+	segmentation faults.
+
+	* gpc_create.cc (gpc_create): Removed spurious call to warning ().
+
+2001-07-25  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* gpc_plot.m: Fixed logic for assigning values to default input
+	parameters.  Thanks to Etienne Grossmann
+	<etienne@anonimo.isr.ist.utl.pt>.
+
+2001-07-23  Rafael Laboissiere  <rafael@icp.inpg.fr>
+
+	* Initial release 0.1.
+

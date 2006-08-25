@@ -31,9 +31,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "utils.h"
 #include "oct-env.h"
 #include "file-io.h"
-#ifndef HAVE_OCTAVE_29
-#include "pt-plot.h"
-#endif
 #include "sighandlers.h"
 #include "parse.h"
 #include "cmd-edit.h"
@@ -46,12 +43,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "oct-iostrm.h"
 #include "unwind-prot.h"
 #include "input.h"
-
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#else
 #include "quit.h"
-#endif
 
 #include <stdio.h>
 #include <sys/types.h>

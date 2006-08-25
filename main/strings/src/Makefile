@@ -15,4 +15,4 @@ all: $(PROGS)
 pcregexp.oct: pcregexp.cc
 	$(MKOCTFILE) $< $(PCRE_OPTIONS)
 
-clean: ; -$(RM) *.o core octave-core *.oct *~ $(t2.9.4)
+clean: ; -$(RM) *.o core octave-core *.oct *~

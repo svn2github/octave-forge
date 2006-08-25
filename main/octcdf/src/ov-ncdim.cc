@@ -64,7 +64,7 @@ octave_ncdim::octave_ncdim(octave_ncfile* ncfilep, int dimid) {
 // // ncdim_var(:) = y
 
 // octave_value octave_ncdim::subsasgn(const std::string & type,
-// 				const LIST < octave_value_list > &idx,
+// 				const std::list < octave_value_list > &idx,
 // 				const octave_value & rhs)
 // {
 //   int status;
@@ -84,8 +84,8 @@ octave_ncdim::octave_ncdim(octave_ncfile* ncfilep, int dimid) {
 
 // ncdim_var(:) 
 
-octave_value octave_ncdim::subsref(const std::string SUBSREF_STRREF type,
-			       const LIST < octave_value_list > &idx)
+octave_value octave_ncdim::subsref(const std::string &type,
+			       const std::list < octave_value_list > &idx)
 {
   octave_value retval;
 

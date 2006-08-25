@@ -153,7 +153,7 @@ octave_ncatt::octave_ncatt(octave_ncfile* ncfilep, std::string attnamep) {
 // ncatt_var(:) = y
 
 octave_value octave_ncatt::subsasgn(const std::string & type,
-				    const LIST < octave_value_list > &idx,
+				    const std::list < octave_value_list > &idx,
 				    const octave_value & rhs)
 {
   octave_value retval;
@@ -184,8 +184,8 @@ octave_value octave_ncatt::subsasgn(const std::string & type,
 
 // ncatt_var(:) 
 
-octave_value octave_ncatt::subsref(const std::string SUBSREF_STRREF type,
-			       const LIST < octave_value_list > &idx)
+octave_value octave_ncatt::subsref(const std::string &type,
+			       const std::list < octave_value_list > &idx)
 {
   octave_value retval;
 

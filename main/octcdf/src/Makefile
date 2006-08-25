@@ -61,6 +61,8 @@ ifeq ($(HAVE_NETCDF),yes)
 all: $(TARGETS)
 else
 all:
+	@echo "netcdf libraries or headers missing"
+	false
 endif
 
 mfiles: $(MFILES)

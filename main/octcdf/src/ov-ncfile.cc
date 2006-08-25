@@ -127,7 +127,7 @@ void octave_ncfile::read_info() {
 // x.v = y     x(idx).v = y     x{idx}.v = y
 
 octave_value octave_ncfile::subsasgn(const std::string & type,
-				const LIST < octave_value_list > &idx,
+				const std::list < octave_value_list > &idx,
 				const octave_value & rhs)
 {
   int status;
@@ -298,8 +298,8 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 
 // x.v     x(idx).v     x{idx}.v
 
-octave_value octave_ncfile::subsref(const std::string SUBSREF_STRREF type,
-			       const LIST < octave_value_list > &idx)
+octave_value octave_ncfile::subsref(const std::string &type,
+			       const std::list < octave_value_list > &idx)
 {
   int dimid, status;
   size_t length;

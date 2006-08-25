@@ -46,11 +46,11 @@ public:
   OV_REP_TYPE *clone(void) const { return new octave_ncatt(*this); }
 
   octave_value subsasgn(const std::string & type,
-			const LIST < octave_value_list > &idx,
+			const std::list < octave_value_list > &idx,
 			const octave_value & rhs);
 
-  octave_value subsref(const std::string SUBSREF_STRREF type,
-		       const LIST < octave_value_list > &idx);
+  octave_value subsref(const std::string & type,
+		       const std::list < octave_value_list > &idx);
 
   octave_value_list do_multi_index_op(int, const octave_value_list &)
   {

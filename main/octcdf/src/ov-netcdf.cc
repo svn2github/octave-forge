@@ -679,17 +679,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
       count[i] = (*it).nelem();
       stride[i] = (long int) (*it).inc();
       sliced_dim_vector(i) =  count[i];
-
-      // since Octave 2.9.3 Array<T>::permute expect a zero-
-      // based permuation vector while Octave 2.1.71 seems to 
-      // be happy with a one-based permutation vector
-
-#     ifdef OCTAVE_PERMVEC_ZEROBASED      
       perm_vector(i) = ncndim-i-1;
-#     else
-      perm_vector(i) = ncndim-i;
-#     endif
-
       i=i+1;
     }
 
@@ -812,16 +802,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   Array<int> perm_vector(rhs.ndims());
 
   for(i=0; i<rhs.ndims(); i++) { 
-    
-      // in Octave 2.9.3 Array<T>::permute expect a zero-
-      // based permuation vector while Octave 2.1.71 seems to 
-      // be happy with a one-based permutation vector
-
-#     ifdef OCTAVE_PERMVEC_ZEROBASED      
       perm_vector(i) = rhs.ndims()-i-1;
-#     else
-      perm_vector(i) = rhs.ndims()-i;
-#     endif
   }
 
   sliced_numel = sliced_dim_vector.numel();

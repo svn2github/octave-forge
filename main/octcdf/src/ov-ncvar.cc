@@ -153,7 +153,7 @@ void octave_ncvar::read_info() {
 // x.v = y     x(idx).v = y     x{idx}.v = y
 
 octave_value octave_ncvar::subsasgn(const std::string & type,
-			       const LIST < octave_value_list > &idx,
+			       const std::list < octave_value_list > &idx,
 			       const octave_value & rhs) {
   octave_value scale_factor, add_offset, scaledrhs;
   octave_value fillvalue;
@@ -277,8 +277,8 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 // References of the type:
 // x.v     x(idx)     x{idx}
 
-octave_value octave_ncvar::subsref(const std::string SUBSREF_STRREF type,
-			      const LIST < octave_value_list > &idx)
+octave_value octave_ncvar::subsref(const std::string & type,
+			      const std::list < octave_value_list > &idx)
 {
   octave_value scale_factor, add_offset;
   octave_value fillvalue;

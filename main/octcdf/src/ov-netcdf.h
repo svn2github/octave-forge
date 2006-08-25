@@ -34,8 +34,8 @@
 #include<string>
 #include <netcdf.h>
 #include <ArrayN.h>
+#include <list>
 
-#ifdef HAVE_OCTAVE_INT
 #include "ov-uint64.h"
 #include "ov-uint32.h"
 #include "ov-uint16.h"
@@ -44,22 +44,10 @@
 #include "ov-int32.h"
 #include "ov-int16.h"
 #include "ov-int8.h"
-#endif
 
 #include "ov-scalar.h"
 #include "ov-range.h"
 #include "ov-cell.h"
-
-#ifdef HAVE_SLLIST_H
-#define LIST SLList
-#define LISTSIZE length
-#define SUBSREF_STRREF
-#else
-#include <list>
-#define LIST std::list
-#define LISTSIZE size
-#define SUBSREF_STRREF &
-#endif
 
 
 #define STORAGE_ORDER 1
@@ -69,17 +57,6 @@
 //#define OCTCDF_64BIT_OFFSET 
 
 //#define  OV_NETCDF_VERBOSE
-
-#ifdef HAVE_OCTAVE_21
-#define octave_idx_type int
-#else
-#define OCTAVE_PERMVEC_ZEROBASED 
-#endif
-
-
-#ifndef OV_REP_TYPE
-#define OV_REP_TYPE octave_value
-#endif
 
 //#define OCTAVE_VALUE_COUNT_CONSTRUCTOR
 

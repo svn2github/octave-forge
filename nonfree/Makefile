@@ -28,7 +28,9 @@ dopkg2/%:
           cd $$p; \
 	fi
 	ver=`grep "Version:" $(opkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
-	tar -zcf $(PKGDIR)/$(opkg)-$$ver.tar.gz $(REAL_PKG_FILES)
+	name=`grep Name: comm/DESCRIPTION | sed -e 's/^Name: *//' | 
+	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
+	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $(REAL_PKG_FILES)
 else
 all:
 	@echo not yet configured

@@ -13,7 +13,7 @@ REAL_PKG_FILES = $(filter-out $(opkg)/%/CVS $(opkg)/%/.cvsignore %~ %/autom4te.c
 pkg/%: pre-pkg/%
 	cd ..; \
 	ver=`grep "Version:" $(opkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
-	name=`grep Name: comm/DESCRIPTION | sed -e 's/^Name: *//' | \
+	name=`grep Name: $(opkg)/DESCRIPTION | sed -e 's/^Name: *//' | \
 	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
 	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $(REAL_PKG_FILES); \
 	cd $(opkg); \

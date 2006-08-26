@@ -1,0 +1,15 @@
+COPYING
+INSTALL
+Makefile
+Makefile.in
+aclocal.m4
+build-stamp
+config.log
+config.status
+configure
+PKG_ADD
+*.octlink
+*.oct
+install-sh
+missing
+mkinstalldirs

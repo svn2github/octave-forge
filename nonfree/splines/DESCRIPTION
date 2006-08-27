@@ -1,0 +1,10 @@
+Name: spline-gcvspl
+Version: 1.0.0
+Date: 2006-08-05
+Author: Joerg Specht
+Maintainer: Joerg Specht
+Title: Spline function based on GCVSPL package
+Description: B-spline data smoothing using generalized cross-validation and mean squared prediction or explicit user smoothing
+Depends: octave (>= 2.9.7)
+License: Non Commercial Use Only
+Url: http://octave.sf.net

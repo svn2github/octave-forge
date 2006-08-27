@@ -1,4 +1,4 @@
-sinclude ../../Makeconf
+sinclude ./Makeconf
 
 all: gcvspl.oct
 

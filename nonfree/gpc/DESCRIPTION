@@ -6,5 +6,5 @@ Maintainer: Rafael Laboissiere <rafael@laboissiere.net>
 Title: General Polygon Clipper
 Description: Add a description to this package!
 Depends: octave (>= 2.9.7)
-License: GPL version 2 or later
+License: GPL version 2 or later (Underlying library Non Distributable!!!!)
 Url: http://octave.sf.net

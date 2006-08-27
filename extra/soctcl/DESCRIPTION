@@ -1,0 +1,10 @@
+Name: Tcl-Octave
+Version: 0.1
+Date: 2006-08-05
+Author: Paul Kienzle
+Maintainer: Paul Kienzle
+Title: Tcl Interface to Octave
+Description:  socket implementation of a tcl-octave connection
+Depends: octave (>= 2.9.7)
+License: Public Domain
+Url: http://octave.sf.net

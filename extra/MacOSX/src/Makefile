@@ -17,7 +17,8 @@ all: ../bin/ofsndplay ../inst/image.m
 
 ## Trick installation of image.m by keeping it in src and only copying to
 ## ../inst if needed
-../inst/image.m.in:
+../inst/image.m : image.m.in 
+	if [ ! -d ../inst ]; then mkdir ../inst; fi
 	cp image.m.in ../inst/image.m
 
 endif

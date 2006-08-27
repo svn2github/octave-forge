@@ -13,3 +13,4 @@ PKG_ADD
 install-sh
 missing
 mkinstalldirs
+autom4te.cache

@@ -1,2 +1,2 @@
-autoload ("partint", fullfile (fileparts (mfilename ("fullpath")), "partition.oct"));
-autoload ("partcnt", fullfile (fileparts (mfilename ("fullpath")), "partition.oct"));
+autoload ("partint", which ("partition"));
+autoload ("partcnt", which ("partition"));

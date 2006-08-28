@@ -2,7 +2,9 @@ sinclude ../Makeconf
 sinclude ../pkg.mk
 
 ifeq ($(PKGDIR),)
-PKGDIR = ../packages
+PKGDIR = ../packages/main
+else
+PKGDIR += /main
 endif
 
 # Determine which subdirectories are to be installed.  Of those, determine
@@ -15,7 +17,12 @@ INSTALLDIRS = $(filter-out $BUILDDIRS, $(filter-out CVS/ $(NOINSTALLDIRS), $(dir
 .PHONY: all install clean distclean $(SUBMAKEDIRS)
 
 ifdef OCTAVE_FORGE
-all: $(patsubst %,dopkg/%,$(BUILDDIRS)) $(patsubst %,dopkg2/%,$(INSTALLDIRS))
+all:
+
+package: checkpkgdir $(patsubst %,dopkg/%,$(BUILDDIRS)) $(patsubst %,dopkg2/%,$(INSTALLDIRS))
+
+checkpkgdir:
+	@if [ ! -d $(PKGDIR) ]; then mkdir $(PKGDIR); fi
 
 dopkg/%:
 	$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg)
@@ -33,6 +40,9 @@ dopkg2/%:
 	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $(REAL_PKG_FILES)
 else
 all:
+	@echo not yet configured
+
+package:
 	@echo not yet configured
 endif
 

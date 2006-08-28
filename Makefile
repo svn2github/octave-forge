@@ -16,33 +16,26 @@ ifdef OCTAVE_FORGE
 .PHONY: all install check icheck
 
 all: clearlog subdirs
-	@echo "Build finished."
+	@echo "Packaging finished."
 	@if test -f build.fail ; then cat build.fail ;\
-	  echo "Some functions failed to compile (search build.log for errors) but many" ;\
-	  echo "other functions will still work correctly.  Run 'make check' to see" ;\
-	  echo "what works.  Run 'make install' to install what has been built." ;\
+	  echo "Some functions failed to be packed (search build.log for errors)." ;\
+	  echo "This should not happen and if it does it is a bug in the package creation" ; \
+	  echo "process."; \
           false; fi
-	@echo "Please read FIXES/README before you install."
+	@echo "You can find the individual packages in the sub-directories of packages/";
+	@echo "and bundles of these packages in packages/ itself. Please run 'make check' to"
+	@echo "ensure that the packages are useable and that all dependencies are correct."
+
+# Use the structure below to chaneg MAKECMDGOALS to "package"
+package: subdirs
+packages:
+	@($(MAKE) -C $@ -k package
 
 install: subdirs
-	@echo " "
-	@echo "Installation complete."
-	@echo " "
-	@echo "To use, add the following to .octaverc:"
-	@echo "   LOADPATH = [ '$(OPATH):$(MPATH)//:', LOADPATH ];"
-	@echo "   EXEC_PATH = [ '$(XPATH):', EXEC_PATH ];"
-	@echo " "
-	@echo "To uninstall, remove the following:"
-	@echo "   MPATH    = $(MPATH)"
-	@echo "   OPATH    = $(OPATH)"
-	@echo "   XPATH    = $(XPATH)"
-	@echo "   ALTMPATH = $(ALTMPATH)"
-	@echo "   ALTOPATH = $(ALTOPATH)"	
-	@echo " "
-	@echo "Some FIXES may be out of date.  Check the scripts in:"
-	@echo "   $(MPATH)/FIXES"
-	@echo "   $(OPATH)"
-	@echo "against those in your version of Octave."
+	@echo "There is no longer any install target within octave-forge's CVS"
+	@echo "Please install the individual packages using the Octave package"
+	@echo "Manager."
+	false
 
 check:
 	admin/mktests.sh admin/mkpkgadd
@@ -55,10 +48,6 @@ icheck:
 		echo "demo('$$file');" >> fndemos.m ; done
 	$(RUN_OCTAVE) -q fndemos.m
 	$(RUN_OCTAVE) -q interact_test.m
-
-run:
-	$(RUN_OCTAVE)
-
 else
 
 .PHONY: all install
@@ -73,7 +62,6 @@ endif
 clean: clearlog subdirs
 	-$(RM) fntests.m fntests.log
 	-$(RM) core octave-core octave configure.in
-	-$(RM) main/*/PKG_ADD extra/*/PKG_ADD
 
 distclean: subdirs
 	-$(MAKE) clean

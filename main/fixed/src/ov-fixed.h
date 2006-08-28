@@ -100,7 +100,8 @@ public:
   OV_REP_TYPE *clone (void) const { return new octave_fixed (*this); }
   OV_REP_TYPE *empty_clone (void) const { return new octave_fixed (); }
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok = 0);
+  octave_value do_index_op (const octave_value_list& idx, 
+			    bool resize_ok = false);
   idx_vector index_vector (void) const 
     { return idx_vector (::fixedpoint(scalar)); }
 

@@ -117,7 +117,8 @@ public:
 
   OV_REP_TYPE *try_narrowing_conversion (void);
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok = 0);
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   FixedPoint fixed_value (bool = false) const ;
   FixedPointComplex fixed_complex_value (bool = false) const { return scalar; }

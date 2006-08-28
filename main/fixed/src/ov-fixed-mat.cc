@@ -107,7 +107,7 @@ octave_fixed_matrix::resize (const dim_vector& dv, bool) const
 
 FixedMatrix
 octave_fixed_matrix::do_index_intern (const octave_value_list& idx,
-				     int resize_ok)
+				     bool resize_ok)
 {
   FixedMatrix retval;
 
@@ -146,7 +146,7 @@ octave_fixed_matrix::do_index_intern (const octave_value_list& idx,
 
 octave_value
 octave_fixed_matrix::do_index_op (const octave_value_list& idx,
-				     int resize_ok)
+				     bool resize_ok)
 {
   octave_value retval;
 
@@ -189,24 +189,24 @@ octave_fixed_matrix::subsasgn (const std::string& type,
 	      error("can not directly change the value of a fixed structure");
 	    else if (key == __FIXED_DECSIZE_STR) {
 	      if (rhs.is_matrix_type()) {
-		FixedMatrix old_matrix = do_index_intern(idx.front(), 0);
+		FixedMatrix old_matrix = do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_matrix(
 		    old_matrix.chdecsize(rhs.matrix_value()));
 		retval = numeric_assign (type, idx, new_matrix);
 	      } else {
-		FixedMatrix old_matrix = do_index_intern(idx.front(), 0);
+		FixedMatrix old_matrix = do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_matrix(
 		    old_matrix.chdecsize(rhs.double_value()));
 		retval = numeric_assign (type, idx, new_matrix);
 	      }
 	    } else if (key == __FIXED_INTSIZE_STR) {
 	      if (rhs.is_matrix_type()) {
-		FixedMatrix old_matrix = do_index_intern(idx.front(), 0);
+		FixedMatrix old_matrix = do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_matrix(
 		    old_matrix.chintsize(rhs.matrix_value()));
 		retval = numeric_assign (type, idx, new_matrix);
 	      } else {
-		FixedMatrix old_matrix = do_index_intern(idx.front(), 0);
+		FixedMatrix old_matrix = do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_matrix(
 		    old_matrix.chintsize(rhs.double_value()));
 		retval = numeric_assign (type, idx, new_matrix);

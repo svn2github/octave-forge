@@ -188,7 +188,7 @@ octave_fixed_complex::try_narrowing_conversion (void)
 }
 
 octave_value
-octave_fixed_complex::do_index_op (const octave_value_list& idx, int resize_ok)
+octave_fixed_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
   octave_value retval;
 

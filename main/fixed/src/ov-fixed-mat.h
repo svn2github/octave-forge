@@ -87,7 +87,7 @@ public:
     { return do_index_op (idx, 0); }
 
   octave_value do_index_op (const octave_value_list& idx,
-			    int resize_ok);
+			    bool resize_ok = false);
 
   octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,
@@ -147,7 +147,8 @@ public:
 #endif
 
 private:
-  FixedMatrix do_index_intern (const octave_value_list& idx, int resize_ok);
+  FixedMatrix do_index_intern (const octave_value_list& idx, 
+			       bool resize_ok = false);
 
   DECLARE_OCTAVE_ALLOCATOR
 

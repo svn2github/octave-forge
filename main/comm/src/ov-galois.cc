@@ -96,7 +96,7 @@ octave_galois::dotref (const octave_value_list& idx)
 
 octave_value
 octave_galois::do_index_op (const octave_value_list& idx,
-			    int resize_ok)
+			    bool resize_ok)
 {
   octave_value retval;
 

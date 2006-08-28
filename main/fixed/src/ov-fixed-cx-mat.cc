@@ -118,7 +118,7 @@ octave_fixed_complex_matrix::resize (const dim_vector& dv, bool) const
 
 FixedComplexMatrix
 octave_fixed_complex_matrix::do_index_intern (const octave_value_list& idx,
-				     int resize_ok)
+				     bool resize_ok)
 {
   FixedComplexMatrix retval;
 
@@ -156,7 +156,7 @@ octave_fixed_complex_matrix::do_index_intern (const octave_value_list& idx,
 
 octave_value
 octave_fixed_complex_matrix::do_index_op (const octave_value_list& idx,
-				     int resize_ok)
+				     bool resize_ok)
 {
   octave_value retval;
 
@@ -199,13 +199,13 @@ octave_fixed_complex_matrix::subsasgn (const std::string& type,
 	    else if (key == __FIXED_DECSIZE_STR) {
 	      if (rhs.is_matrix_type()) {
 		FixedComplexMatrix old_matrix = 
-		  do_index_intern(idx.front(), 0);
+		  do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_complex_matrix(
 		    old_matrix.chdecsize(rhs.complex_matrix_value()));
 		retval = numeric_assign (type, idx, new_matrix);
 	      } else {
 		FixedComplexMatrix old_matrix = 
-		  do_index_intern(idx.front(), 0);
+		  do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_complex_matrix(
 		    old_matrix.chdecsize(rhs.complex_value()));
 		retval = numeric_assign (type, idx, new_matrix);
@@ -213,13 +213,13 @@ octave_fixed_complex_matrix::subsasgn (const std::string& type,
 	    } else if (key == __FIXED_INTSIZE_STR) {
 	      if (rhs.is_matrix_type()) {
 		FixedComplexMatrix old_matrix = 
-		  do_index_intern(idx.front(), 0);
+		  do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_complex_matrix(
 		    old_matrix.chintsize(rhs.complex_matrix_value()));
 		retval = numeric_assign (type, idx, new_matrix);
 	      } else {
 		FixedComplexMatrix old_matrix = 
-		  do_index_intern(idx.front(), 0);
+		  do_index_intern(idx.front());
 		octave_value new_matrix = new octave_fixed_complex_matrix(
 		    old_matrix.chintsize(rhs.complex_value()));
 		retval = numeric_assign (type, idx, new_matrix);

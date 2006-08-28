@@ -1,0 +1,2 @@
+autoload ("dispatch_help", which ("dispatch"));
+autoload ("builtin", which ("dispatch"));

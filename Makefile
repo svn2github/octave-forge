@@ -38,9 +38,7 @@ install: subdirs
 	false
 
 check:
-	admin/mktests.sh admin/mkpkgadd
-	$(RUN_OCTAVE) -q fntests.m
-	$(RUN_OCTAVE) -q batch_test.m
+	@$(MAKE) -C packages 
 
 icheck:
 	@echo 'disp("starting demos...")' > fndemos.m

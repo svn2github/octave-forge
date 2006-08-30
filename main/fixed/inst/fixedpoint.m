@@ -68,7 +68,7 @@ function retval = fixedpoint(typ, tests)
     tests = "all";
   endif
 
-  infofile = "fixed.info";
+  infofile = [fileparts(mfilename('fullpath')),'/doc.info'];
   n = 10;
   m = 20;
   is = 7;
@@ -1736,6 +1736,10 @@ function ret = _fixedpoint_test_function(func,is,ds,n,eps,includezero)
   endif
 
 endfunction
+
+%!test
+%! try fixedpoint("test");
+%! catch disp(lasterr()); end
 
 ## Local Variables: ***
 ## mode: Octave ***

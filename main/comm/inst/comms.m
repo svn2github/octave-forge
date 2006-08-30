@@ -74,7 +74,7 @@ function retval = comms(typ, tests)
     tests = 'all';
   endif
 
-  infofile = 'comms.info';
+
   if strcmp(tests,"all") 
     nodename = "Top";
   elseif strcmp(tests,"random") 
@@ -661,3 +661,7 @@ function retval = comms(typ, tests)
     usage("comms: Unknown argument");
   endif
 endfunction
+
+%!test
+%! try comms("test");
+%! catch disp(lasterr()); end

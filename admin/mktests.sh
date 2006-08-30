@@ -1,7 +1,7 @@
 #! /bin/sh
 
-# Where to find mkpkgadd
-MKPKGADD=$1
+# Root of the search
+root=`pwd`
 
 # Create a new fntests.m file
 echo "fid=fopen('fntests.log','wt');" > fntests.m
@@ -10,7 +10,7 @@ echo "test('','explain',fid);" >> fntests.m
 echo "passes=0; tests=0;" >>fntests.m
 
 # Find all toplevel non-cvs directories
-DIRS="`find FIXES main/* extra/* nonfree/* -type d ! -name CVS -prune`"
+DIRS="`find $* -type d ! -name CVS`"
 
 # Find the tests in that directory
 for dir in $DIRS; do
@@ -19,22 +19,12 @@ for dir in $DIRS; do
     # skip the NOINSTALL directories
     if test -f "$dir/NOINSTALL"; then continue; fi
 
-    # Create local copy of PKG_ADD for in place testing
-    if test -e "$dir/PKG_ADD" ; then rm -f $dir/PKG_ADD; fi
-    $MKPKGADD $dir > $dir/PKG_ADD
-    if test -z "`cat $dir/PKG_ADD`" ; then rm -f $dir/PKG_ADD;  fi
- 
     # Build a list of possible test files
     FILES=""
 
-    # Find all successfully compiled .cc files
+    # Find all .cc files
     cxx_files=`echo $dir/*.cc`
-    if test "$cxx_files" != "$dir/*.cc"; then 
-	for file in $cxx_files; do
-      	    obj=`echo "$file" | sed -e 's-\.cc$-.o-'`
-	    if test -f "$obj" ; then FILES="$FILES $file"; fi
-	done
-    fi
+    if test "$cxx_files" != "$dir/*.cc"; then FILES="$FILES $cxx_files"; fi
 
     # Find all m-files
     m_files=`echo $dir/*.m`
@@ -58,7 +48,7 @@ for dir in $DIRS; do
     else 
 	echo "dp=dn=0;" >>fntests.m
 	for file in $TESTS ; do
-            echo "[p,n] = test('$file','quiet',fid);" >>fntests.m
+            echo "[p,n] = test('$root/$file','quiet',fid);" >>fntests.m
             echo "dp += p; dn += n;" >>fntests.m
 	done
 	echo "if dp==dn, printf('%-40s ---> success',''); else" >>fntests.m

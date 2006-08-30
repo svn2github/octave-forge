@@ -17,20 +17,24 @@ ROOT=`pwd`
 BINPATH="$PATH"
 LDPATH="$LD_LIBRARY_PATH"
 DYLDPATH="$DYLD_LIBRARY_PATH"
-OCTPATH="$OCTAVE_PATH"
+OCTPATH="$OCTAVE_PATH:../"
 # XXX FIXME XXX strictly speaking, the default octave bin directories
 # should be in the middle of EXECPATH and PATH, but it should be safe
 # to put them at the end since octave probably isn't overriding anything
 # on the system.  We may also want to pick up the OCTAVE_EXEC_PATH if
 # there is one.
 EXECPATH="$PATH:"
-for f in install/* main/* extra/* nonfree/*; do
+for f in code/* install/*; do
     # exclude CVS directories, only include directories, skip NOINSTALL
     case "$f" in
       */CVS) ;;
       *)
     if test -d $f -a ! -f $f/NOINSTALL; then 
 	OCTPATH="$ROOT/$f:$OCTPATH"
+
+	# if in a package source directory add inst/ src/
+	if test -d "$f/inst"; then OCTPATH="$ROOT/$f/inst:$OCTPATH"; fi
+	if test -d "$f/src"; then OCTPATH="$ROOT/$f/src:$OCTPATH"; fi
 
 	# if there is install data, include in on the path
 	if test -d "$f/data"; then OCTPATH="$ROOT/$f/data:$OCTPATH"; fi
@@ -52,7 +56,7 @@ done
 LD_LIBRARY_PATH="$LDPATH" 
 DYLD_LIBRARY_PATH="$DYLDPATH" 
 PATH="$BINPATH" 
-OCTAVE_PATH="$OCTPATH"
+OCTAVE_LOADPATH="$OCTPATH"
 OCTAVE_EXEC_PATH="$EXECPATH"
-export LD_LIBRARY_PATH DYLD_LIBRARY_PATH PATH OCTAVE_PATH OCTAVE_EXEC_PATH
+export LD_LIBRARY_PATH DYLD_LIBRARY_PATH PATH OCTAVE_LOADPATH OCTAVE_EXEC_PATH
 $*

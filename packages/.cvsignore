@@ -1,10 +1,7 @@
 *.tar.gz
-install
-.octave_packages
-.octave_hist
-tmp
-build-stamp
 *~
 main
 nonfree
 extra
+sandbox
+fntests.log

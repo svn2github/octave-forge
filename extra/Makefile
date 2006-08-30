@@ -14,7 +14,7 @@ NOINSTALLDIRS = $(dir $(wildcard */NOINSTALL))
 BUILDDIRS = $(filter-out $(NOINSTALLDIRS), $(SUBMAKEDIRS))
 INSTALLDIRS = $(filter-out $BUILDDIRS, $(filter-out CVS/ $(NOINSTALLDIRS), $(dir $(wildcard */.))))
 
-.PHONY: all install clean distclean $(SUBMAKEDIRS)
+.PHONY: all package clean distclean $(SUBMAKEDIRS)
 
 ifdef OCTAVE_FORGE
 all: 

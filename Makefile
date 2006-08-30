@@ -13,9 +13,9 @@ SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 
 ifdef OCTAVE_FORGE
 
-.PHONY: all install check icheck
+.PHONY: all install packages package check icheck
 
-all: clearlog subdirs
+all: clearlog packages subdirs
 	@echo "Packaging finished."
 	@if test -f build.fail ; then cat build.fail ;\
 	  echo "Some functions failed to be packed (search build.log for errors)." ;\
@@ -26,10 +26,10 @@ all: clearlog subdirs
 	@echo "and bundles of these packages in packages/ itself. Please run 'make check' to"
 	@echo "ensure that the packages are useable and that all dependencies are correct."
 
-# Use the structure below to chaneg MAKECMDGOALS to "package"
+# Use the structure below to change MAKECMDGOALS to "package"
 package: subdirs
 packages:
-	@($(MAKE) -C $@ -k package
+	@$(MAKE) -k package
 
 install: subdirs
 	@echo "There is no longer any install target within octave-forge's CVS"
@@ -53,7 +53,7 @@ else
 .PHONY: all install
 
 all install:
-	@echo "./configure ; make ; make install"
+	@echo "./configure ; make"
 
 endif
 

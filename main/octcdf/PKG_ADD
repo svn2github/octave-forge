@@ -4,7 +4,7 @@ autoload ("ncenddef", which ("netcdf"));
 autoload ("ncsync", which ("netcdf"));
 autoload ("ncvar", which ("netcdf"));
 autoload ("ncatt", which ("netcdf"));
-autoload (ncdim"", which ("netcdf"));
+autoload ("ncdim", which ("netcdf"));
 autoload ("ncname", which ("netcdf"));
 autoload ("ncdatatype", which ("netcdf"));
 autoload ("ncautonan", which ("netcdf"));

@@ -18,7 +18,7 @@
 ##
 ##                    infinity
 ##                   /
-##       expint(x) = | exp(t)/t dt
+##       expint_E1(x) = | exp(t)/t dt
 ##                   /
 ##                  x
 ##

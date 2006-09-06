@@ -18,7 +18,7 @@
 ##
 ##                      infinity
 ##                     /
-##       expint(x) = - | exp(t)/t dt
+##    expint_Ei(x) = - | exp(t)/t dt
 ##                     /
 ##                     -x
 ##
@@ -32,11 +32,15 @@ function y = expint_Ei(x)
 	if(x<0)
 		y = -quad("expintbase",-x,Inf);
 	else
-		y = 0;
-		for i = 1:100;
-			y = y + x.^i./(i.*factorial(i));
-		endfor
+		if(abs(x) > 2 && imag(x) == 0)
+			y = expint_Ei(2) - quad("expintbase",-x,-2);
+		else
+			y = 0;
+			for i = 1:100;
+				y = y + x.^i./(i.*factorial(i));
+			endfor
 
-		y = 0.577215664901532860606512090082402431 + log(x) + y;
+			y = 0.577215664901532860606512090082402431 + log(x) + y;
+		endif
 	endif;
 endfunction;

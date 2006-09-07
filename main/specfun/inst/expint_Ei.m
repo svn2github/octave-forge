@@ -28,12 +28,12 @@ function y = expint_Ei(x)
 	if (nargin != 1)
 		usage ("expint_Ei(x)");
 	endif
-	
+	F = @(x) exp(-x)./x;
 	if(x<0)
-		y = -quad("expintbase",-x,Inf);
+		y = -quad(F,-x,Inf);
 	else
 		if(abs(x) > 2 && imag(x) == 0)
-			y = expint_Ei(2) - quad("expintbase",-x,-2);
+			y = expint_Ei(2) - quad(F,-x,-2);
 		else
 			y = 0;
 			for i = 1:100;

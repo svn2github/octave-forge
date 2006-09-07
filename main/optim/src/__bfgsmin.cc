@@ -488,9 +488,9 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		printf("\n param    gradient  change\n");
 		for (j = 0; j<k; j++) printf("%8.4f %8.4f %8.4f\n",theta(j),g(j),p(j));
 	}
-	f_return(0) = theta;
-	f_return(1) = obj_value;
-	f_return(2) = convergence;
 	f_return(3) = iter;
-	return octave_value_list(f_return);
+	f_return(2) = convergence;
+	f_return(1) = obj_value;
+	f_return(0) = theta;
+	return f_return;
 }

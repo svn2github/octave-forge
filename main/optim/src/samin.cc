@@ -4,15 +4,15 @@
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation; either version 2 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // simann.cc (c) 2004 Michael Creel <michael.creel@uab.es>
 // References:
 //
@@ -20,7 +20,7 @@
 // Goffe, William L. (1996) "SIMANN: A Global Optimization Algorithm
 //	using Simulated Annealing " Studies in Nonlinear Dynamics & Econometrics
 //  Oct96, Vol. 1 Issue 3.
-// 
+//
 // The code uses the same names for control variables,
 // for the most part. A notable difference is that the initial
 // temperature is found automatically to ensure that the active
@@ -36,9 +36,9 @@
 //
 // Goffe, et. al. (1994) "Global Optimization of Statistical Functions
 // 	with Simulated Annealing", Journal of Econometrics,
-// 	V. 60, N. 1/2.  
-	
-	
+// 	V. 60, N. 1/2.
+
+
 #include <oct.h>
 #include <octave/parse.h>
 #include <octave/Cell.h>
@@ -58,14 +58,14 @@ any_bad_argument(const octave_value_list& args)
 		error("samin: first argument must be string holding objective function name");
 		return true;
 	}
-	
+
 	// are function arguments contained in a cell?
 	if (!args(1).is_cell())
 	{
 		error("samin: second argument must cell array of function arguments");
 		return true;
 	}
-	
+
 	// is control a cell?
 	Cell control (args(2).cell_value());
 	if (error_state)
@@ -73,14 +73,14 @@ any_bad_argument(const octave_value_list& args)
 		error("samin: third argument must cell array of algorithm controls");
 		return true;
 	}
-	
+
 	// does control have proper number of elements?
 	if (!(control.length() == 11))
 	{
 		error("samin: third argument must be a cell array with 11 elements");
 		return true;
 	}
-	
+
 	// now check type of each element of control
 	if (!(control(0).is_real_matrix()) || (control(0).is_real_scalar()))
 	{
@@ -92,20 +92,20 @@ any_bad_argument(const octave_value_list& args)
 	{
 		error("samin: 1st element of controls must be LB: a vector of lower bounds");
 		return true;
-	}	
+	}
 
 	if (!(control(1).is_real_matrix()) || (control(1).is_real_scalar()))
 	{
 		error("samin: 1st element of controls must be UB: a vector of lower bounds");
 		return true;
 	}
-	
+
 	if ((control(1).is_real_matrix()) && (control(1).columns() != 1))
 	{
 		error("samin: 2nd element of controls must be UB: a vector of lower bounds");
 		return true;
 	}
-	
+
 	int tmp = control(2).int_value();
 	if (error_state || tmp < 1)
 	{
@@ -113,14 +113,14 @@ any_bad_argument(const octave_value_list& args)
 loops per temperature reduction");
 		return true;
 	}
-	
+
 	tmp = control(3).int_value();
 	if (error_state || tmp < 1)
 	{
 		error("samin: 4th element of controls must be NS: positive integer\n\
 loops per stepsize adjustment");
 		return true;
-	}	
+	}
 
 	double tmp2 = control(4).double_value();
 	if (error_state || tmp < 0)
@@ -128,7 +128,7 @@ loops per stepsize adjustment");
 		error("samin: 5th element of controls must be RT:\n\
 temperature reduction factor, RT > 0");
 		return true;
-	}	
+	}
 
 	tmp2 = control(5).double_value();
 	if (error_state || tmp < 0)
@@ -136,36 +136,36 @@ temperature reduction factor, RT > 0");
 		error("samin: 6th element of controls must be integer MAXEVALS > 0 ");
 		return true;
 	}
-	
+
 	tmp = control(6).int_value();
 	if (error_state || tmp < 0)
 	{
 		error("samin: 7th element of controls must be NEPS: positive integer\n\
 number of final obj. values that must be within EPS of eachother ");
 		return true;
-	}	
-	
+	}
+
 	tmp2 = control(7).double_value();if (error_state || tmp2 < 0)
 	{
 		error("samin: 8th element of controls must must be FUNCTOL (> 0)\n\
 used to compare the last NEPS obj values for convergence test");
 	 	return true;
-	}	
-	
+	}
+
  	tmp2 = control(8).double_value();
 	if (error_state || tmp2 < 0)
 	{
 		error("samin: 9th element of controls must must be PARAMTOL (> 0)\n\
 used to compare the last NEPS obj values for convergence test");
    		return true;
-	}	
+	}
 
 	tmp = control(9).int_value();
 	if (error_state || tmp < 0 || tmp > 2)
 	{
 		error("samin: 9th element of controls must be VERBOSITY (0, 1, or 2)");
 		return true;
-	}	
+	}
 
 	tmp = control(10).int_value();
 	if (error_state || tmp < 0)
@@ -174,15 +174,15 @@ used to compare the last NEPS obj values for convergence test");
 		position of argument to minimize wrt");
 		return true;
 	}
-	
+
 	// make sure that minarg points to an existing element
-	if ((tmp > args(1).length())||(tmp < 1))  
+	if ((tmp > args(1).length())||(tmp < 1))
 	{
 		error("bfgsmin: 4th argument must be a positive integer that indicates \n\
 which of the elements of the second argument is the one minimization is over");
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -268,7 +268,7 @@ ans = 3.1416\n\
 	Cell f_args (args(1).cell_value());
 	Cell control (args(2).cell_value());
 
-	octave_value_list c_args(2,1); // for cellevall {f, f_args}  
+	octave_value_list c_args(2,1); // for cellevall {f, f_args}
 	octave_value_list f_return; // holder for feval returns
 
 	int m, i, j, h, n, nacc, func_evals;
@@ -286,13 +286,13 @@ ans = 3.1416\n\
 	const double functol (control(7).double_value());
 	const double paramtol (control(8).double_value());
 	const int verbosity (control(9).int_value());
-	const int minarg (control(10).int_value());   
+	const int minarg (control(10).int_value());
 
 
 	double f, fp, p, pp, fopt, rand_draw, ratio, t;
 
 	// type checking for minimization parameter done here, since we don't know minarg
-	// until now    
+	// until now
 	if (!(f_args(minarg - 1).is_real_matrix() || (f_args(minarg - 1).is_real_scalar())))
 	{
 		error("samin: minimization must be with respect to a column vector");
@@ -303,7 +303,7 @@ ans = 3.1416\n\
         	error("samin: minimization must be with respect to a column vector");
         	return octave_value_list();
 	}
-	
+
 	Matrix x  = f_args(minarg - 1).matrix_value();
 	Matrix bounds = ub - lb;
 	n = x.rows();
@@ -311,11 +311,11 @@ ans = 3.1416\n\
 	Matrix xp(n, 1);
 	Matrix nacp(n,1);
 
-	//  Set initial values  
+	//  Set initial values
 	nacc = 0;
 	func_evals = 0;
 
-	Matrix fstar(neps,1);  
+	Matrix fstar(neps,1);
 	fstar.fill(1e20);
 
 
@@ -327,13 +327,13 @@ ans = 3.1416\n\
 			error("samin: initial parameter %d out of bounds", i);
 			return octave_value_list();
 		}
-	}   
+	}
 
 	// Initial obj_value
 	c_args(0) = obj_fn;
 	c_args(1) = f_args;
-	f_return = feval("celleval", c_args); 
-	f = f_return(0).double_value(); 
+	f_return = feval("celleval", c_args);
+	f = f_return(0).double_value();
 
 	fopt = f;
 	fstar(0) = f;
@@ -341,7 +341,7 @@ ans = 3.1416\n\
 	// First stage: find initial temperature so that
 	// bounds grow to cover parameter space
 	t = 1000;
-	converge = 0;	 
+	converge = 0;
 	while((converge==0) & t < sqrt(DBL_MAX))
 	{
 		nup = 0;
@@ -349,7 +349,7 @@ ans = 3.1416\n\
 		nnew = 0;
 		ndown = 0;
 		lnobds = 0;
-		
+
 		// repeat nt times then adjust temperature
 		for(m = 0;m < nt;m++)
 		{
@@ -370,14 +370,14 @@ ans = 3.1416\n\
 						xp(h) = lb(h) + (ub(h) - lb(h)) * rand_draw;
 						lnobds = lnobds + 1;
 					}
-					
+
 					// Evaluate function at new point
 					f_args(minarg - 1) = xp;
 					c_args(1) = f_args;
 					f_return = feval("celleval", c_args);
 					fp = f_return(0).double_value();
 					func_evals = func_evals + 1;
-					
+
 					//  If too many function evaluations occur, terminate the algorithm.
 					if(func_evals >= maxevals)
 					{
@@ -398,7 +398,7 @@ ans = 3.1416\n\
 						f_return(2) = 0;
 						return octave_value_list(f_return);
 					}
-					
+
 					//  Accept the new point if the function value decreases
 					if(fp <= f)
 					{
@@ -407,7 +407,7 @@ ans = 3.1416\n\
 						nacc = nacc + 1;
 						nacp(h) = nacp(h) + 1;
 						nup = nup + 1;
-						
+
 						//  If greater than any other point, record as new optimum.
 						if(fp < fopt)
 						{
@@ -416,7 +416,7 @@ ans = 3.1416\n\
 							nnew = nnew + 1;
 						}
 					}
-					
+
 					// If the point is higher, use the Metropolis criteria to decide on
 					// acceptance or rejection.
 					else
@@ -436,7 +436,7 @@ ans = 3.1416\n\
 					}
 				}
 			}
-			
+
 			//  Adjust bounds so that approximately half of all evaluations are accepted.
 			test = 0;
 			for(i = 0;i < n;i++)
@@ -454,7 +454,7 @@ ans = 3.1416\n\
 			nacp.fill(0.0);
 			converge = (test == n);
 		}
-		
+
 		if(verbosity == 1)
 		{
 			printf("\nFirst stage: Increasing temperature to cover parameter space\n");
@@ -471,7 +471,7 @@ ans = 3.1416\n\
 			for(i = 0; i < n; i++) printf("%20f%20f\n", xopt(i), bounds(i));
 			printf("\n");
 		}
-		
+
 		// Increase temperature quickly
 		t = t*t;
 		for(i = neps-1; i > 0; i--) fstar(i) = fstar(i-1);
@@ -480,7 +480,7 @@ ans = 3.1416\n\
 	}
 
 	// Second stage: temperature reduction loop
-	converge = 0;	 
+	converge = 0;
 	while(converge==0)
 	{
 		nup = 0;
@@ -488,7 +488,7 @@ ans = 3.1416\n\
 		nnew = 0;
 		ndown = 0;
 		lnobds = 0;
-		
+
 		// repeat nt times then adjust temperature
 		for(m = 0;m < nt;m++)
 		{
@@ -509,14 +509,14 @@ ans = 3.1416\n\
 						xp(h) = lb(h) + (ub(h) - lb(h)) * rand_draw;
 						lnobds = lnobds + 1;
 					}
-					
+
 					// Evaluate function at new point
 					f_args(minarg - 1) = xp;
 					c_args(1) = f_args;
 					f_return = feval("celleval", c_args);
 					fp = f_return(0).double_value();
 					func_evals = func_evals + 1;
-					
+
 					// If too many function evaluations occur, terminate the algorithm
 					if(func_evals >= maxevals)
 					{
@@ -531,13 +531,13 @@ ans = 3.1416\n\
 							printf("	   parameter	    search width\n");
 							for(i = 0; i < n; i++) printf("%20f%20f\n", xopt(i), bounds(i));
 							printf("================================================\n");
-						}			      
+						}
 						f_return(0) = xopt;
 						f_return(1) = fopt;
 						f_return(2) = 0;
 						return octave_value_list(f_return);
 					}
-					
+
 					//  Accept the new point if the function value decreases
 					if(fp <= f)
 					{
@@ -554,7 +554,7 @@ ans = 3.1416\n\
 							nnew = nnew + 1;
 						}
 					}
-					
+
 					// If the point is higher, use the Metropolis criteria to decide on
 					// acceptance or rejection.
 					else
@@ -574,7 +574,7 @@ ans = 3.1416\n\
 					}
 				}
 			}
-			
+
 			//  Adjust bounds so that approximately half of all evaluations are accepted
 			for(i = 0;i < n;i++)
 			{
@@ -628,8 +628,8 @@ ans = 3.1416\n\
 
 		// check if too close to bounds, and change convergence message if so
 		if (converge) if (lnobds > 0) converge = 2;
-		
-		// Are we done yet?    
+
+		// Are we done yet?
 		if(converge>0)
 		{
 			if(verbosity >= 1)
@@ -664,10 +664,10 @@ but is too close to bounds of parameter space\n");
 		f = fopt;
 		x = xopt;
 	}
-	f_return(0) = xopt;
-	f_return(1) = fopt;
 	f_return(2) = converge;
-	return octave_value_list(f_return);
+	f_return(1) = fopt;
+	f_return(0) = xopt;
+	return f_return;
 }
 
 

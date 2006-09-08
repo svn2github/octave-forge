@@ -37,6 +37,7 @@ public:
 
   enum type
     {
+      std,
       economy,
       sigma_only
     };

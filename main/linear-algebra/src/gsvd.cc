@@ -45,9 +45,10 @@ Compute the generalised singular value decomposition of (@var{a}, @var{b})\n\
 @iftex\n\
 @tex\n\
 $$\n\
- U^H A X = C R\n\
- V^H B X = S R\n\
+ U^H A X = [I 0; 0 C] [0 R]\n\
+ V^H B X = [0 S; 0 0] [0 R]\n\
  C*C + S*S = eye(columns(A))\n\
+ I and 0 are padding matrices of suitable size\n\
  R is upper triangular\n\
 $$\n\
 @end tex\n\
@@ -55,27 +56,42 @@ $$\n\
 @ifinfo\n\
 \n\
 @example\n\
-u' * a * x = c * r\n\
-v' * b * x = s * r'\n\
+u' * a * x = [I 0; 0 c] * [0 r]\n\
+v' * b * x = [0 s; 0 0] * [0 r]\n\
 c * c + s * s = eye(columns(a))\n\
+I and 0 are padding matrices of suitable size\n\
 r is upper triangular\n\
 @end example\n\
 @end ifinfo\n\
 \n\
-The function @code{gsvd} normally returns the vector of singular values.\n\
-If asked for three return values, it computes\n\
+The function @code{gsvd} normally returns the vector of generalised singular\n\
+values @iftex @tex diag(C)./diag(S). @end tex @end iftex\n\
+@ifinfo diag(r)./diag(s). @end ifinfo\n\
+If asked for five return values, it computes\n\
 @iftex\n\
 @tex\n\
-$U$, $S$, and $V$.\n\
+$U$, $V$, and $X$.\n\
 @end tex\n\
 @end iftex\n\
 @ifinfo\n\
-U, S, and V.\n\
+U, V, and X.\n\
 @end ifinfo\n\
+With a sixth output argument, it also returns\n\
+@iftex @tex R, @end tex @end iftex\n\
+@ifinfo r, @end ifinfo\n\
+The common upper triangular right term. Other authors, like S. Van Huffel,\n\
+define this transformation as the simulatenous diagonalisation of the\n\
+input matrices, this can be achieved by multiplying \n\
+@iftex @tex X @end tex @end iftex\n\
+@ifinfo x @end ifinfo\n\
+by the inverse of\n\
+@iftex @tex [I 0; 0 R]. @end tex @end iftex\n\
+@ifinfo [I 0; 0 r]. @end ifinfo\n\
+\n\
 For example,\n\
 \n\
 @example\n\
-svd (hilb (3))\n\
+gsvd (hilb (3), [1 2 3; 3 2 1])\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -84,16 +100,15 @@ returns\n\
 @example\n\
 ans =\n\
 \n\
-  1.4083189\n\
-  0.1223271\n\
-  0.0026873\n\
+  0.1055705\n\
+  0.0031759\n\
 @end example\n\
 \n\
 @noindent\n\
 and\n\
 \n\
 @example\n\
-[u, s, v] = svd (hilb (3))\n\
+[u, v, c, s, x, r] = gsvd (hilb (3),  [1 2 3; 3 2 1])\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -102,21 +117,34 @@ returns\n\
 @example\n\
 u =\n\
 \n\
-  -0.82704   0.54745   0.12766\n\
-  -0.45986  -0.52829  -0.71375\n\
-  -0.32330  -0.64901   0.68867\n\
-\n\
-s =\n\
-\n\
-  1.40832  0.00000  0.00000\n\
-  0.00000  0.12233  0.00000\n\
-  0.00000  0.00000  0.00269\n\
+  -0.965609   0.240893   0.097825\n\
+  -0.241402  -0.690927  -0.681429\n\
+  -0.096561  -0.681609   0.725317\n\
 \n\
 v =\n\
 \n\
-  -0.82704   0.54745   0.12766\n\
-  -0.45986  -0.52829  -0.71375\n\
-  -0.32330  -0.64901   0.68867\n\
+  -0.41974   0.90765\n\
+  -0.90765  -0.41974\n\
+\n\
+c =\n\
+\n\
+   0.10499   0.00000\n\
+   0.00000   0.00318\n\
+\n\
+s =\n\
+   0.99447   0.00000\n\
+   0.00000   0.99999\n\
+x =\n\
+\n\
+   0.408248   0.902199   0.139179\n\
+  -0.816497   0.429063  -0.386314\n\
+   0.408248  -0.044073  -0.911806\n\
+\n\
+r =\n\
+  -0.14093  -1.24345   0.43737\n\
+   0.00000  -3.90043   2.57818\n\
+   0.00000   0.00000  -2.52599\n\
+\n\
 @end example\n\
 \n\
 If given a second argument, @code{svd} returns an economy-sized\n\
@@ -157,7 +185,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
     }
   else
     {
-      if ((nc != np) || (nn != np))
+      if ((nc != np))
 	{
 	  print_usage ();
 	  return retval;
@@ -165,7 +193,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
       GSVD::type type = ((nargout == 0 || nargout == 1)
 			? GSVD::sigma_only
-			: GSVD::economy );
+			: (nargout > 5) ? GSVD::std : GSVD::economy );
 
       if (argA.is_real_type () && argB.is_real_type ())
 	{
@@ -195,8 +223,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 		{
 		  DiagMatrix sigA =  result.singular_values_A ();
 		  DiagMatrix sigB =  result.singular_values_B ();
-		  for (int i = 0; i < nc; i++)
-		    tmpA.xelem(i, i) /= tmpB.xelem(i, i);
+		  for (int i = sigA.rows() - 1; i >=0; i--)
+		    sigA.xelem(i, i) /= sigB.xelem(i, i);
 		  retval(0) = sigA.diag();
 		}
 	      else
@@ -236,8 +264,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 		{
 		  DiagMatrix sigA =  result.singular_values_A ();
 		  DiagMatrix sigB =  result.singular_values_B ();
-		  for (int i = 0; i < nc; i++)
-		    ctmpA.xelem(i, i) /= ctmpB.xelem(i, i);
+		  for (int i = sigA.rows() - 1; i >=0; i--)
+		    sigA.xelem(i, i) /= sigB.xelem(i, i);
 		  retval(0) = sigA.diag();
 		}
 	      else

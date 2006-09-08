@@ -30,6 +30,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dbleGSVD.h"
 #include "f77-fcn.h"
 
+/* 
+   uncomment those lines to monitor k and l
+   #include "oct-obj.h"
+   #include "pager.h"
+*/
+
 extern "C"
 {
   F77_RET_T
@@ -96,7 +102,7 @@ GSVD::right_singular_matrix (void) const
   if (type_computed == GSVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("dbleSVD: X not computed because type == GSVD::sigma_only");
+	("dbleGSVD: X not computed because type == GSVD::sigma_only");
       return Matrix ();
     }
   else
@@ -105,10 +111,10 @@ GSVD::right_singular_matrix (void) const
 Matrix
 GSVD::R_matrix (void) const
 {
-  if (type_computed == GSVD::sigma_only)
+  if (type_computed != GSVD::std)
     {
       (*current_liboctave_error_handler)
-	("dbleSVD: R not computed because type == GSVD::sigma_only");
+	("dbleGSVD: R not computed because type != GSVD::std");
       return Matrix ();
     }
   else
@@ -124,8 +130,8 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
   octave_idx_type n = a.cols ();
   octave_idx_type p = b.rows ();
   
-  R = a;
-  double *tmp_dataA = R.fortran_vec ();
+  Matrix atmp = a;
+  double *tmp_dataA = atmp.fortran_vec ();
   
   Matrix btmp = b;
   double *tmp_dataB = btmp.fortran_vec ();
@@ -160,7 +166,7 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
       jobq = 'N';
       nrow_u = nrow_v = nrow_q = 1;
       break;
-
+      
     default:
       break;
     }
@@ -178,12 +184,6 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
   }
 
   double *v = left_smB.fortran_vec ();
-
-  sigmaA.resize (n, n);
-  // double *c_vec  = sigmaA.fortran_vec ();
-
-  sigmaB.resize (n, n);
-  // double *s_vec  = sigmaB.fortran_vec ();
 
   if (! (jobq == 'N' || jobq == 'O')) {
     right_sm.resize (nrow_q, n);
@@ -221,29 +221,68 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
       (*current_liboctave_error_handler) ("dggsvd.f: Jacobi-type procedure failed to converge."); 
 	
     } else {
-      octave_idx_type i;
-      for (i = 0; i < k; i++) {
-	sigmaA.xelem(i, i) = 1.0;
-	sigmaB.xelem(i, i) = 0.0;
+      octave_idx_type i, j;
+      
+      if (GSVD::std == gsvd_type) {
+	R.resize(k+l, k+l); 
+	int astart = n-k-l;
+	if (m - k - l >=  0) {
+	  int astart = n-k-l;
+	  /*
+	   *  R is stored in A(1:K+L,N-K-L+1:N)
+	   */
+	  for (i = 0; i < k+l; i++) 	    
+	    for (j = 0; j < k+l; j++)
+	      R.xelem(i, j) = atmp.xelem(i, astart + j); 
+	} else {  
+	  /*
+	   *    (R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N), 
+	   *    ( 0  R22 R23 )
+	   */
+
+	   for (i = 0; i < m; i++)
+	     for (j = 0; j < k+l; j++)
+	       R.xelem(i, j) = atmp.xelem(i, astart + j);
+	   /*
+	    * and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
+	    */
+	   for (i = k+l-1; i >=m; i--) {
+	     for (j = 0; j < m; j++)
+	       R.xelem(i, j) = 0.0;
+	     for (j = m; j < k+l; j++)
+	       R.xelem(i, j) = btmp.xelem(i - k, astart + j);
+	   }
+	}
       }
+      /*
+	uncomment this to monitor k and l
+	octave_value tmp;
+	octave_stdout << "dbleGSVD k: "; 
+	tmp = k;
+	tmp.print(octave_stdout);
+	octave_stdout << "\n";
+	octave_stdout << "dbleGSVD l: "; 
+	tmp = l;
+	tmp.print(octave_stdout);
+	octave_stdout << "\n";
+      */
+
       if (m-k-l >= 0) { 
-	for (i = k; i < l; i++) {
-	  sigmaA.xelem(i, i) = alpha.elem(i);
-	  sigmaB.xelem(i, i) = beta.elem(i);
+	// Fills in C and S
+	sigmaA.resize (l, l);
+	sigmaB.resize (l, l);
+	for (i = 0; i < l; i++) {
+	  sigmaA.xelem(i, i) = alpha.elem(k+i);
+	  sigmaB.xelem(i, i) = beta.elem(k+i);
 	} 
       } else {
-	for (i = k; i < m; i++) {
-	  sigmaA.xelem(i, i) = alpha.elem(i);
-	  sigmaB.xelem(i, i) = beta.elem(i);
+	// Fills in C and S
+	sigmaA.resize (m-k, m-k);
+	sigmaB.resize (m-k, m-k);
+	for (i = 0; i < m-k; i++) {
+	  sigmaA.xelem(i, i) = alpha.elem(k+i);
+	  sigmaB.xelem(i, i) = beta.elem(k+i);
 	}
-	for (i = k; i < m; i++) {
-          sigmaA.xelem(i, i) = alpha.elem(i);
-          sigmaB.xelem(i, i) = beta.elem(i);
-        }
-	for (i = m; i < k+l; i++) {
-          sigmaA.xelem(i, i) = 0.0;
-          sigmaB.xelem(i, i) = 1.0;;
-        }
       }
     }
   }

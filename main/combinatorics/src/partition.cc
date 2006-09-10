@@ -116,6 +116,18 @@ Joerg Arndt: Algorithms for programmers (http://www.jjj.de), 2006.\n\n\
     return r;
 }
 
+/*
+
+%!assert(partcnt(1), 1);
+%!assert(partcnt(17), 297);
+%!fail("partcnt()", "partcnt");
+%!fail("partcnt(1,2)", "partcnt");
+%!fail("partcnt('xyz')", "partcnt");
+%!demo
+%! p = partcnt([1, 5; 17 -5])
+
+*/
+
 DEFUN_DLD (partint, args, ,
 "-*- texinfo -*-\n\
 @deftypefn{Loadable Function} {@var{p} =} partint(@var{n})\n\
@@ -205,7 +217,17 @@ Joerg Arndt: Algorithms for programmers (http://www.jjj.de), 2006.\n\n\
     return r;
 }
 
+/*
 
+%!assert(partint(1), 1);
+%!assert(all(partint(n=17) * [1:n]' == n) - 1, 0); 
+%!fail("partint()", "partint");
+%!fail("partint(1,2)", "partint");
+%!fail("partint('xyz')", "partint");
+%!demo
+%! p = partint(4)
+
+*/
 
 /*
   ;;; Local Variables: ***

@@ -18,8 +18,8 @@
 # $Date$
 # $RCSfile$
 
-OCT = partition.oct
-HDR = partition.h
+OCT = partint.oct
+HDR = partint.h
 SRC := $(OCT:.oct=.cc)
 BASE := $(OCT:.oct=)
 

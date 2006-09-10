@@ -1,2 +1,1 @@
-autoload ("partint", which ("partition"));
-autoload ("partcnt", which ("partition"));
+autoload ("partcnt", which ("partint"));

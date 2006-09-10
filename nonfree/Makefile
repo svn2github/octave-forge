@@ -28,16 +28,7 @@ dopkg/%:
 	$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg)
 
 dopkg2/%:
-	@if [ -f $(opkg)/src/autogen.sh ]; then \
-	  p=`pwd`; \
-          cd $(opkg)/src; \
-          sh ./autogen.sh; \
-          cd $$p; \
-	fi
-	@ver=`grep "Version:" $(opkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
-	name=`grep Name: $(opkg)/DESCRIPTION | sed -e 's/^Name: *//' | \
-	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
-	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $(REAL_PKG_FILES)
+	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg) -f../../pkg.mk
 else
 package:
 	@echo not yet configured

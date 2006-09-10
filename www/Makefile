@@ -51,3 +51,7 @@ dist:
 	tar cf dist.tar $(SOURCES) Makefile macros.m4
 	gzip --best dist.tar
 .PHONY: dist
+
+# Do nothing for the package target 
+package:
+

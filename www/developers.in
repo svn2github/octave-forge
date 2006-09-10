@@ -246,7 +246,7 @@ of octave.  The following conditions are defined in configure.base:
 <dl>
 <dt>HAVE_SLLIST_H
 <dd>subsref changed from using SLList to using std::list.
-To support older versions of octave, use:<pre><code>
+To support older versions of octave, use:<pre>
 #ifdef HAVE_SLLIST_H
 #define LIST SLList
 #define LISTSIZE length
@@ -270,10 +270,10 @@ To support older versions of octave, use:<pre><code>
      if (idx.LISTSIZE () > 1)
         ...
   }
-</code></pre>
+</pre>
 <dt>NEED_OCTAVE_QUIT
 <dd>signal handling changed from longjump to C++ exceptions. To support 
-older versions of octave, use:<pre><code>
+older versions of octave, use:<pre>
 #ifdef NEED_OCTAVE_QUIT
 #define OCTAVE_QUIT do {} while (0)
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
@@ -283,15 +283,15 @@ older versions of octave, use:<pre><code>
 #else
 #include &lt;octave/quit.h&gt;
 #endif
-</code></pre>
+</pre>
 <dt>USE_OCTAVE_NAN
 <dd>octave_NaN and octave_Inf constants were converted to functions.  
-To support older versions of octave, use:<pre><code>
+To support older versions of octave, use:<pre>
 #ifdef USE_OCTAVE_NAN
 #define lo_ieee_nan_value() octave_NaN
 #define lo_ieee_inf_value() octave_Inf
 #endif
-</code></pre>
+</pre>
 </dl>
 <p>m-file support across multiple versions
 is tricky.  Sometimes try/catch will help, but for syntax

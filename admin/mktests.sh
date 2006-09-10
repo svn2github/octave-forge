@@ -59,5 +59,4 @@ for dir in $DIRS; do
 done
 
 echo "printf('passes %d out of %d tests',passes,tests);disp('');" >> fntests.m
-echo "printf('see fntests.log for details');disp('');" >> fntests.m
 echo "fclose(fid);" >> fntests.m

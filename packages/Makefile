@@ -44,7 +44,7 @@ checkpkg/%: cleancheck checkdep/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	$(TOPDIR)/admin/mktests.sh code; \
-	$(RUN_OCTAVE) --eval "pkg('load','all');fntests();path()" ; \
+	$(RUN_OCTAVE) --eval "pkg('load','all');fntests" ; \
 	if [ ! -e ../fntests.log ]; then touch ../fntests.log; fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..

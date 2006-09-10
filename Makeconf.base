@@ -66,6 +66,7 @@ DVIPS = @DVIPS@
 
 MKDOC = @MKDOC@
 MKTEXI = @MKTEXI@
+TOPDIR = @TOPDIR@
 
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<

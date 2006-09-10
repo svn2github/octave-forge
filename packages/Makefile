@@ -9,11 +9,10 @@ else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
 HOME=`pwd`
-TOPLEVEL=/home/adb014/octave/cvs/octave-forge
-RUN_OCTAVE= HOME=$(HOME) $(TOPLEVEL)/admin/run_forge $(OCTAVE) -H -q --no-site-file
+RUN_OCTAVE= HOME=$(HOME) $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
 PKGDIRS = $(filter-out packages, $(patsubst ../%/, %, $(dir $(wildcard ../*/Makefile))))
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
-TESTLOG=$(TOPLEVEL)/packages/fntests.log
+TESTLOG=$(TOPDIR)/packages/fntests.log
 
 .PHONY: $(PKGDIRS)
 
@@ -44,7 +43,7 @@ cleanlog:
 checkpkg/%: cleancheck checkdep/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
-	$(TOPLEVEL)/admin/mktests.sh code; \
+	$(TOPDIR)/admin/mktests.sh code; \
 	$(RUN_OCTAVE) --eval "pkg('load','all');fntests();path()" ; \
 	if [ ! -e ../fntests.log ]; then touch ../fntests.log; fi ; \
 	cat fntests.log >> $(TESTLOG); \

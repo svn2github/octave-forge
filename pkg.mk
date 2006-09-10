@@ -6,8 +6,8 @@ ifeq ($(PKG_FILE),)
 PKG_FILES = COPYING DESCRIPTION $(wildcard INDEX) $(wildcard PKG_ADD) \
 	$(wildcard PKG_DEL) $(wildcard post_install.m) \
 	$(wildcard pre_install.m)  $(wildcard on_uninstall.m) \
-	$(wildcard inst/*) $(wildcard src/*) $(wildcard doc/*) \
-	$(wildcard bin/*)
+	$(wildcard inst/*) $(wildcard src/*) \
+	$(wildcard doc/*) $(wildcard bin/*))
 endif
 REAL_PKG_FILES = $(filter-out $(opkg)/%/CVS $(opkg)/%/.cvsignore %~ %/autom4te.cache, $(patsubst %, $(opkg)/%, $(PKG_FILES)))
 
@@ -15,8 +15,9 @@ pkg/%: pre-pkg/%
 	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//"`; \
 	name=`grep Name: DESCRIPTION | sed -e 's/^Name: *//' | \
 	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
+	files="$(REAL_PKG_FILES)"; \
 	cd ..; \
-	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $(REAL_PKG_FILES); \
+	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $$files; \
 	cd $(opkg); \
 	$(MAKE) post-pkg/$(opkg)
 

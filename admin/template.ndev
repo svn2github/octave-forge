@@ -163,151 +163,163 @@ Consult
 for a comprehensive list of Open Source licenses.
 
 <h3>Package structure</h3>
+<p>
+Octave has evolved into a source repository is octave pacakges rather
+than a package in itself. Each sub-directory is considered to be a
+package can should respect Octave's package managers file layout.
 <dl>
 <dt>package/NOINSTALL
-<dd>	don't install this package; the user can rename or delete this
-	file if they want the package installed anyway.
-<dt>package/*.m 
-<dd>	m-files for the package; these will be installed in
-	site/mfiles/octave-forge/package
-<dt>package/data/*
-<dd>	datafiles to be installed with the mfiles.  You can accesses
-	them from your m-files with x = file_in_load_path("a").
-<dt>package/Makefile 
-<dd>	Makefile with a default target to build anything that needs
-	building, an optional "install" target in case you need to
-	install something other than m-files, oct-files, data files or
-	octave binaries, and a "clean" target to remove everything that
-	has been built.  See below for details.
-<dt>package/configure.add, package/Makeconf.add
-<dd>	Additional configuration-time commands to run in order to 
-	find all the components that your package requires.  You 
-	can look for anything you want in configure.add and note 
-	what you need in Makeconf.add.  The definitions in 
-	Makeconf.add will be available when you include ../../Makeconf 
-	in your Makefile.  See main/symbolic for an example.
-<dt>package/*.oct
-<dd>	oct-files built by Makefile. These will be installed all 
-	together in site-oct-files/octave-forge.  You may assume that
-	HAVE_OCTAVE_20 is defined for 2.0.x series mkoctfile, and
-	HAVE_OCTAVE_21 is defined for 2.1.x series mkoctfile.
-<dt>package/bin/*
-<dd>	executable files built by Makefile.  These will be 
-	installed in Octave's EXEC_PATH, so they will be available 
-	from Octave but not from the shell. You have two options
-	regarding this directory.  The better one would be to make
-	sure that the directory exists before you try building the
-	binary.  The other option is to have a hidden bin/.keepdir
-	so that CVS won't delete it for you automatically.
-</dl>
+<dd>	This is an optional file, whose presence tells octave-forge
+	that this package should be ignored. This is typically for
+	packages that are kept for historical reasons.
+<dt>package/DESCRIPTION
+<dd>	This is a required file containing information about the
+	package. It must contain the following fields
+    <table border="1">
+      <tr><td>Name:</td>
+          <td>Name of the package</td></tr>
+      <tr><td>Version:</td>
+          <td>Version of the package</td></tr>
+      <tr><td>Date:</td>
 
-<h3>Adding a Makefile</h3>
+          <td>Date of last update</td></tr>
+      <tr><td>Author:</td>
+          <td>Original author of the package</td></tr>
+      <tr><td>Maintainer:</td>
+          <td>Maintainer of the package</td></tr>
+      <tr><td>Title:</td>
 
-If your package has something other than m-files you will need a 
-Makefile in your directory.  This could be as short as three lines:
+          <td>A one line description of the package</td></tr>
+      <tr><td>Description:</td>
+          <td>A one paragraph description of the package</td></tr>
+      <tr><td>Categories:</td>
+           <td>Optional keywords descriping the package
+            (if no INDEX file is given this is mandatory)</td></tr>
+      <tr><td>Problems:</td>
+
+          <td>Optional list of known problems</td></tr>
+      <tr><td>Url:</td>
+          <td>Optional list of homepages related to the package</td></tr>
+      <tr><td>Depends:</td>
+          <td>A list of other packages that this package depends on</td></tr>
+      <tr><td>License:</td>
+
+          <td>An optional short description of the used license 
+              (e.g. GPL version 2 or newer). This is optional
+              since the file COPYING is mandatory.</td></tr>
+      <tr><td>SystemRequirements:</td>
+          <td>External dependencies (will not be checked)</td></tr>
+    </table>
+    The file format should be something like this:
+    </p>
+    <ul>
+      <li>Lines starting with # are comments</li>
+
+      <li>Lines starting with a blank character are continuations
+        from the previous line.</li>
+      <li>Everything else is of the form NameOfOption: ValueOfOption</li>
+    </ul>
+	The developer is free to add additional arguments to the
+        DESCRIPTION file for their own purposes.
+<dt>package/COPYING
+<dd>	This is a required containing the license of the package.
+<dt>package/INDEX
+<dd>	This is an optional file describing the functions provided by
+	the package. If this file is not given then one with be
+	created automatically from the functions in the package and
+	the Categories keyword.
+<dt>package/PKG_ADD
+<dd>	An optional file that includes commands that are run when the
+        package is added to the users path. Note that PKG_ADD
+        directives in the source code of the package will also be
+        added to this file by the octave package manager. Note that
+        symbolic links are to be avoided in packages, as symbolic
+        links do not exist on some file systems, and so a typical use
+        for this file is the replacement of the symbolic link
+<pre><i>
+ln -s foo.oct bar.oct
+</i></pre>
+	with an autoload directive like
+<pre><i>
+autoload ('bar', which ('foo'));
+</i></pre>
+<dt>package/PKG_DEL
+<dd>	An optional file that includes commands that are run when the
+        package is removed from the users path. Note that PKG_DEL
+        directives in the source code of the package will also be
+        added to this file by the octave package manager.
+<dt>package/Makefile
+<dd>	This is an optional file that is for the use of Octave-Forge
+        only. It allows the developer to have fine control over
+        exactly what is included in the package and anything that
+        needs to be done before or after the package is built. The
+        default Makefile is
 <pre>
+<i>
 include ../../Makeconf
-all: f1.oct
-clean: ; -$(RM) *.o core octave-core *.oct *~
-</pre><p>
+include ../../pkg.mk
 
-If you define multiple DEFUN_DLD's in a file, you may need to
-use symbolic links in order for Octave to find them:
-<pre>
-include ../../Makeconf
+PKG_FILES = COPYING DESCRIPTION $(wildcard INDEX) $(wildcard PKG_ADD) \
+	$(wildcard PKG_DEL) $(wildcard post_install.m) \
+	$(wildcard pre_install.m)  $(wildcard on_uninstall.m) \
+	$(wildcard inst/*) $(wildcard src/*) $(wildcard doc/*) \
+	$(wildcard bin/*)
 
-# extra functions defined in fn.oct
-fn_LINKS=fn2.oct fn3.oct
+pre-pkg/%::
+	# Do nothing prior to packaging
 
-# all compiled functions
-PROGS=fn.oct $(fn_LINKS) gn.oct
-
-all: $(PROGS)
-
-$(PROGS): Makefile
-
-$(fn_LINKS):
-	-$(RM) $@
-	$(LN_S) fn.oct $@
-
-clean: ; -$(RM) *.o core octave-core *.oct *~
-</pre><p>
-
-The "include ../../Makeconf" line above includes all of the definitions 
-that were created during configuration.  This includes things like MKOCTFILE,
-as well as implicit rules for compiling oct-files.  See Makeconf.base 
-for a list of predefined variables and rules.  Sometimes you will see
-"sinclude ../../Makeconf".  This is for packages which can be compiled
-independently of Octave-forge.  If Octave-forge is configured, then the
-variable OCTAVE_FORGE will be defined.<p>
-
-Even more complicated makefiles are sometimes necessary, particularly when
-the package depends on external libraries.  See main/symbolic/Makefile
-for an example.  The external libraries must be found during configure
-so main/symbolic/configure.add provides detection rules.  The results 
-are posted in main/symbolic/Makeconf.add, and will be available during make.<p>
-
-Please try to keep compatibility with older versions of Octave.  The main
-configure script tests for features that have changed since octave-2.1.36.
-The tests are done in such a way that conditions are only defined if you
-are using an older version of octave.  That way if the tests are not performed
-and the conditions are not defined, support defaults to the newer version
-of octave.  The following conditions are defined in configure.base:
-<dl>
-<dt>HAVE_SLLIST_H
-<dd>subsref changed from using SLList to using std::list.
-To support older versions of octave, use:<pre><code>
-#ifdef HAVE_SLLIST_H
-#define LIST SLList
-#define LISTSIZE length
-#define SUBSREF_STRREF
-#else
-#include &lt;list&gt;
-#define LIST std::list
-#define LISTSIZE size
-#define SUBSREF_STRREF &amp;
-#endif
-...
-  octave_value subsref (const std::string SUBSREF_STRREF type,
-                        const LIST&lt;octave_value_list&gt;&amp; idx) {
-	...
-  }
-  octave_value_list subsref (const std::string SUBSREF_STRREF type,
-                             const LIST&lt;octave_value_list&gt;&amp; idx,
-                             int nargout) {
-        ...
-
-     if (idx.LISTSIZE () > 1)
-        ...
-  }
-</code></pre>
-<dt>NEED_OCTAVE_QUIT
-<dd>signal handling changed from longjump to C++ exceptions. To support 
-older versions of octave, use:<pre><code>
-#ifdef NEED_OCTAVE_QUIT
-#define OCTAVE_QUIT do {} while (0)
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
-#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
-#define octave_throw_bad_alloc() \
-   do { jump_to_top_level(); panic_impossible(); } while (0)
-#else
-#include &lt;octave/quit.h&gt;
-#endif
-</code></pre>
-<dt>USE_OCTAVE_NAN
-<dd>octave_NaN and octave_Inf constants were converted to functions.  
-To support older versions of octave, use:<pre><code>
-#ifdef USE_OCTAVE_NAN
-#define lo_ieee_nan_value() octave_NaN
-#define lo_ieee_inf_value() octave_Inf
-#endif
-</code></pre>
+post-pkg/%::
+	# Do nothing post packaging
+</i>
+</pre>
+	which packages all of the required and existing optional files
+	and directories discussed here. 
+<dt>package/pre_install.m
+<dd>	This is an optional script that is run prior to the
+        installation of a package.
+<dt>package/post_install.m
+<dd>	This is an optional script that is run after the
+        installation of a package.
+<dt>package/on_uninstall.m
+<dd>	This is an optional script that is run prior to the
+        de-installation of a package.
+<dt>package/doc
+<dd>	An optional directory containing documentation for the
+	package. The files in this directory will be directly
+	installed in a sub-directory of the installed package for
+	future reference.
+<dt>package/inst
+<dd>	An optional directory containing any files that are directly
+	installed by package. Typically this will include any m-files.
+<dt>package/bin
+<dd>	An optional directory containing files that will be added to
+	the Octave EXEC_PATH when the package is loaded. This might
+	contain external scripts, etc, called by functions within the
+	package.
+<dt>package/src
+<dd>	An optional directory containing code that must be 'built' prior
+	to the packages installation. If this directory contains a
+	file autogen.sh, and package/Makefile does not exist, this
+	script will be called prior to the packaging. The Octave
+	package manager will execute "./configure" in this directory
+	is this script exists, and will then call "make" if a file
+	"Makefile" exists in this directory. "make install" will
+	however not be called. If a file called "files" exist all
+	files listed there will be copied to the "inst" directory, so
+	they also will be installed. If the "src/files" file doesn't
+	exist "src/*.m" and "src/*.oct" will be copied to
+	"inst". There are two reasons for doing this rather than "make
+	install":
+    <ul>
+      <li>At some point, it would be good to have a 'build' command
+      that creates a binary version of a package. I don't mean a .dep
+      or a .rpm, but an octave package, in which everything has been
+      compiled. 
+      <li>At some point in the future, somebody clever might tell us
+      that the package system should run in a sandboxed environment
+      for security reasons.
+    </ul>
 </dl>
-<p>m-file support across multiple versions
-is tricky.  Sometimes try/catch will help, but for syntax
-changes you will need some sort of preprocessor, such as
-awk or sed.
-</p>
 
 <h3>Submit your code!</h3>
 You are now ready to upload your code to the Gnu Octave Repository.

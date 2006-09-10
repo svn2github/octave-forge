@@ -1,0 +1,25 @@
+__HEADER__(`Documentation')
+
+<p>On this page you'll find various kinds of documentation. If you need documentation
+on individual packages, see the package page.</p>
+
+<h2>User Questions</h2>
+<p>Most questions asked by users are answers in the <a href="FAQ.html">FAQ</a>.</p>
+
+<h2>Developers Documents</h2>
+<ul>
+<li>
+<a href="coda/index.html">Da Coda Al Fine: Pushing Octave's Limits</a> 
+[<a href="coda/coda.pdf">pdf</a>, <a href="coda/coda-sgml.tar.gz">source</a>, <a href="coda-www.tar.gz">all</a>] (using C++ with Octave).
+</li>
+<li><a href="new_developer.html">Octave-forge developer's guide</a></li>
+<li><a href="translation.html">Octave translator guide</a></li>
+<li>
+<a href="texmacs.pdf">TeXmacs Interface</a> - Information on using <a href="http://www.texmacs.org/">TeXmaxs</a> with octave.
+</li>
+<li><a href="octave_embed.tar.gz">Sample code for embedding octave</a></li>
+<li><a href="MIP73-isoheaders.tar.gz">Headers for compiling octave with SGI MIPSpro 7.3 compiler</a></li>
+</ul>
+
+
+__TRAILER__

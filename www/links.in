@@ -1,0 +1,18 @@
+__HEADER__(`Links')
+
+<p>This page contains a list of links that are somehow interesting for Octave users.</p>
+
+<p><a href="http://www.octave.org">http://www.octave.org</a>: The GNU Octave web page.</p>
+<p><a href="http://wiki.octave.org/">http://wiki.octave.org</a>: The GNU Octave wiki. 
+  This page contains a lot of information about the use and development of Octave.</p>
+<p><a href="http://octaviz.sourceforge.net/">http://octaviz.sourceforge.net</a>: The Octaviz web page.
+  Octaviz is a visualization system for Octave. It is a wrapper that makes all VTK classes accessible
+  from within Octave using the same object-oriented syntax as in C++ or Python.</p>
+<p><a href="http://octplot.sourceforge.net/">http://octplot.sourceforge.net</a>: The Octplot web page.
+  OctPlot is a handle graphics package for Octave. OctPlot provides quality postscript(TM) 
+  and screen graphics.</p>
+<p><a href="http://www.math.mcgill.ca/loisel/octave-workshop/">http://www.math.mcgill.ca/loisel/octave-workshop</a>:
+ The Octave Workshop web page. A GUI implementation for Octave that has the goal of being completely
+ cross platform.</p>
+
+__TRAILER__

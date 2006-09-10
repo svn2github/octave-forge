@@ -1,0 +1,33 @@
+__HEADER__(`Octave-Forge')
+
+  <p>
+   Octave-Forge is a central location for the collaborative
+   development of packages for <a href="http://www.octave.org">GNU Octave</a>.
+  </p>
+  <p>
+    The Octave-forge packages contains the source for all the functions and are
+    designed to work with the Octave package system. In general the packages are
+    designed to work with the latest development version of Octave, but it should
+    be possible to use most packages with earlier versions.
+  </p>
+  <p>
+    You can find the list of packages by clicking on the <em>Packages</em> link to the left.
+    To install a package, download the package file, and install it from the Octave prompt
+    by typing
+  </p>
+  <p>
+    <code>
+    pkg install package_file_name.tar.gz
+    </code>
+  </p>
+  <p>
+    where <em>package_file_name.tar.gz</em> is the name of the file you downloaded.
+  </p>
+  <p>
+    If you have code to contribute, send a message to the 
+    <a href="http://lists.sourceforge.net/mailman/listinfo/octave-dev">repository mailing list</a>
+    or <a href="developers.html">join the development team</a>.
+  </p>
+
+
+__TRAILER__

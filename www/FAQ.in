@@ -1,0 +1,99 @@
+__HEADER__(`Frequently Asked Questions')
+
+<p>
+The following page contains some questions often asked by users and developers along
+with the answers. You'll find the following topics covered by this page
+<ul>
+  <li><a href="#packages">Using the packages</a></li>
+  <li><a href="#about">About Octave-Forge</a></li>
+  <li><a href="#compatibility">Matlab Compatibility</a></li>
+</ul>
+</p>
+
+<h2 id="packages">Using the packages</h2>
+ <h3 class="question" id="install">How do I install a package?</h3>
+   <p>First you need to download the package, by going to the package 
+      web page and clicking <em>download</em>. Then start Octave and go
+      to the directory where you placed the downloaded package using
+      the <em>cd</em> command. Then type
+   </p><p>
+      <code>pkg install package_file_name.tar.gz</code>
+   </p><p>
+      where <em>package_file_name.tar.gz</em> is the file name of the 
+      package you downloaded.
+   </p>
+   
+ <h3 class="question">What's with the dependencies?</h3>
+   <p>Some packages depend on functionality provided by other packages 
+     in order to function properly. So if package A depends on package
+     B, you need to install package B either before or at the same time
+     you install package A.
+   </p>
+   <p>If you don't want to install the dependencies of a package, you
+     can use the <em>-no-deps</em> flag for the <em>pkg</em> command
+   </p><p>
+     <code>pkg install -no-deps package_file_name.tar.gz</code>
+   </p><p>
+     If you choose to do this, you might experience problems with
+     the package. So in general the <em>-no-deps</em> is not recommended.
+   </p>
+   
+ <h3 class="question">How do I uninstall a package?</h3>
+   <p>You simply type</p>
+   <p><code>pkg uninstall package_name</code</p>
+   <p>where <em>package_name</em> is the name of the package you want to uninstall
+     (e.g. <em>image</em>).</p>
+   
+ <h3 class="question">How do I use the functions in a package?</h3>
+   <p>You simply type</p>
+   <p><code>pkg load package_name</code></p>
+   <p>where <em>package_name</em> is the name of the package you wish to use.
+     If you need to use all you packages, you can simply type</p>
+   <p><code>pkg load all</code></p>
+   <p>Often you simply add the above line to your .octaverc. That way your packages
+     are all loaded when Octave is started.</p>
+   
+ <h3 class="question">I get a lot of weird errors during installation. What should I do?</h3>
+   <p>If you get alot of weird errors during installation, it is often because you don't
+     have the needed system packages installed. You should verify that you have the needed
+     packages installed, by checking the package web page. If you are using GNU/Linux you often
+     need to install developer packages. These are often called something that ends with <em>-dev</em>.
+   </p>
+   
+<h2 id="about">About Octave-Forge</h2>
+ <h3 class="question">What is Octave-Forge?</h3>
+   <p>Octave-Forge is a collection of packages for <a href="http://www.octave.org">GNU Octave</a>.
+     It also serves as a testbed for code, that eventually will end up in Octave.
+   </p>
+   
+ <h3 class="question">How do i submit packages to Octave-Forge?</h3>
+   <p>Currently we don't have a certain system for including packages, so you
+     should just send a message to the <a href="archive.html">mailing list</a>
+     describing your package.
+   </p>
+   
+ <h3 class="question">I think I've found a bug in a package. What should I do?</h3>
+   <p>You should report it the developers. See <a href="bugs.html">this page</a>
+     for details.
+   </p>
+   
+ <h3 class="question">Where can I get more help?</h3>
+   <p>You can always ask questions on either the <a href="archive.html"Octave-Forge mailing list</a>,
+     or you can ask on the <a href="http://www.gnu.org/software/octave/archive.html">Octave help mailing list</a>.
+   </p>
+    
+<h2 id="compatibility">Matlab Compatibility</h2>
+ <h3 class="question">I'm using a certain Matlab toolbox. Is there an equivalent one for Octave?</h3>
+   <p>Very often you can find a package that provides something quite similar to the Matlab toolboxes.
+     Simply browse the <a href="packages.html">list of package</a> and see if something fits
+     your needs. If you can't find anything you should feel free to ask on the
+     <a href="archive.html">mailing list</a>.
+   </p>
+   
+ <h3 class="question">Does Octave support feature XXX?</h3>
+   <p>Octave supports most of the Matlab language, so in general the answer is Yes.
+     The easiest way to check if your needs are supported by octave, is to install
+     octave. 
+   </p>
+
+__TRAILER__

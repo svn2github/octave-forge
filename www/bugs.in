@@ -1,0 +1,10 @@
+__HEADER__(`Bugs')
+
+<p>If you think you have found a bug in one of the Octave-Forge packages,
+  please report it, by sending a message to the 
+  <a href="archive.html">mailing list</a>. Please report all the facts
+  relevant to reproducing the bug, so developers can fix the problem.
+  If you have a fix for the problem yourself, please send it along
+  with your message.</p>
+
+__TRAILER__

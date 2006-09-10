@@ -1,0 +1,387 @@
+__HEADER__(`Developer's Notes')
+
+<h2>Contributing Code to the Gnu Octave Repository</h2>
+
+
+<h3>Requirements</h3>
+<p>
+To contribute your .m files, C++, C, or Fortran code to the GNU Octave
+Repository (octave-forge) you need to
+<ul>
+    <li> have an account on SourceForge,
+    <li> be registered as an octave-forge developer,
+    <li> have <a href="http://www.cvshome.org/">CVS</a>
+        installed on the computer from which you
+        will submit contributions, and
+    <li> have the secure shell,
+         <a href="http://www.openssh.com/"><tt>ssh</tt></a>, installed
+         on your computer.
+</ul>
+The first two requirements are easy but may take a few days.  
+If you don't already have one, request a SourceForge (SF) account
+<a href="http://sourceforge.net/account/register.php"> here</a>.
+To register as a developer send a request 
+to the octave-forge mailing list 
+<a href="mailto:octave-dev@lists.sf.net">octave-dev@lists.sf.net</a>.
+Include a bit of information about the code
+you plan to submit. 
+Finally, if your computer runs linux or
+FreeBSD, chances are good that both <tt>ssh</tt> and CVS are already 
+installed on your system. 
+If they aren't, 
+you will need to find prebuilt packages for them or download their
+source codes and build them.
+
+<h3>Create a SF home directory</h3>
+<p>
+If you've never submitted code to a SourceForge project before,
+create your home directory by
+logging onto the octave-forge account with <tt>ssh</tt>:
+<pre>
+   $ ssh -l <FONT COLOR="#800000"><i>sflogin</i></FONT>  octave.cvs.sourceforge.net
+   Password:  <FONT COLOR="#800000"><i>your SF password</i></FONT>
+</pre>
+Although SF will only show you a message-of-the-day screen then log
+you out, this process has the useful side effect of creating a home
+directory for you if one doesn't already exist.  Some CVS commands will fail
+if you do not have a home directory on SF.
+
+<h3>Download the latest octave-forge distribution</h3>
+CVS expects the 
+code you plan to submit to reside in a directory within the existing
+octave-forge directory structure.
+You will therefore need to download a copy of the latest octave-forge
+distribution to work in.  Change directories to a place you want
+to put the code, then issue the CVS <i>checkout</i>
+(abreviated as 'co') command:
+<pre>
+   $ cd <FONT COLOR="#800000"><i>working_directory</i></FONT>
+   $ export CVS_RSH=ssh
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@cvs.sourceforge.net:/cvsroot/octave co octave-forge
+</pre>
+
+<h3>Where does your code belong?</h3>
+
+Put your file(s) in a subdirectory under the <tt>octave-forge/</tt>
+directory.  Here are some guidelines to help you decide where your
+code belongs:
+<ul>
+	<li> <b><tt>admin/</tt></b><br>
+	Contains files and scripts used to administer the octave-forge
+	website and build the release files.  Nothing in here is needed
+	by octave-forge users.
+
+	<li> <b><tt>doc/</tt></b><br>
+	Documentation for octave in general.  Documentation for specific
+	packages goes into the <tt>doc/</tt> subdirectory of the individual package 
+	directories.  There are no standards for documentation at this
+	time.
+
+	<li> <b><tt>extra/</tt></b><br>
+	Packages which:
+	<ul>     <li> are too narrow in scope for <tt>main/</tt>, or
+	    <li> act as alternatives for functions in <tt>main/</tt>, or
+	    <li> do not follow octave conventions (because they want
+	     to retain compatibility with matlab for example), or
+	    <li> are primarily developed elsewhere, or
+	    <li> require patches to Octave, or
+	    <li> are designed for older versions of Octave, or
+	    <li> haven't been tested enough.
+</ul>
+	<li> <b><tt>extra/patches/</tt></b><br>
+	Small patches to Octave. Patches should be labelled as
+	name-version.patch, with version being the Octave version 
+	number on which the patch was based.  The start of the 
+	patch file should contain a description of what it does.  
+	Patches should be generated with diff -c or diff -cp.
+
+	<li> <b><tt>main/</tt></b><br>
+	Packages which may eventually be included in the main octave 
+	distribution.  As such, they should follow Octave conventions.  
+	The octave-forge CVS tree should be the primary development/release 
+	site.  All functions should work with the latest Octave 
+	interpreter without any special compilation switches or patches
+	applied.
+
+	<li> <b><tt>nonfree/</tt></b><br>
+	Packages which are not freely modifiable and redistributable 
+	with modifications, or which depend on code which is not 
+	free.  This includes functions which only permit non-commercial 
+	use and functions which must be kept together as a package.  
+	Functions in all other directories must be freely redistributable 
+	with modifications.  Functions in non-free must be freely 
+	redistributable for non-commercial use.  Functions of unknown
+	license should not be included anywhere, since no license implies
+	default license implies no rights to redistribute.
+
+</ul>
+
+<h3>Add a copyright notice</h3>
+<p>
+Each file in octave-forge must contain a copyright notice.  
+If you wish to release your
+code under the 
+GNU <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>
+, insert the following text at the top of your file:
+<pre>
+## Copyright (C) <FONT COLOR="#800000"><i>year</i></FONT>   <FONT COLOR="#800000"><i>Your Name</i></FONT>   &lt;<FONT COLOR="#800000"><i>your@preferred.email</i></FONT>&gt;
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+</pre>
+
+Here are other popular open source licenses:
+<ul>
+    <li> <a href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser GPL</a>
+    <li> <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation License</a>
+    <li> <a href="http://www.opensource.org/licenses/artistic-license.html">Artistic License</a>
+    <li> <a href="http://www.opensource.org/licenses/bsd-license.html">BSD License</a>
+</ul>
+Consult 
+<a href="http://www.opensource.org/licenses/index.html">opensource.org</a>.
+for a comprehensive list of Open Source licenses.
+
+<h3>Package structure</h3>
+<dl>
+<dt>package/NOINSTALL
+<dd>	don't install this package; the user can rename or delete this
+	file if they want the package installed anyway.
+<dt>package/*.m 
+<dd>	m-files for the package; these will be installed in
+	site/mfiles/octave-forge/package
+<dt>package/data/*
+<dd>	datafiles to be installed with the mfiles.  You can accesses
+	them from your m-files with x = file_in_load_path("a").
+<dt>package/Makefile 
+<dd>	Makefile with a default target to build anything that needs
+	building, an optional "install" target in case you need to
+	install something other than m-files, oct-files, data files or
+	octave binaries, and a "clean" target to remove everything that
+	has been built.  See below for details.
+<dt>package/configure.add, package/Makeconf.add
+<dd>	Additional configuration-time commands to run in order to 
+	find all the components that your package requires.  You 
+	can look for anything you want in configure.add and note 
+	what you need in Makeconf.add.  The definitions in 
+	Makeconf.add will be available when you include ../../Makeconf 
+	in your Makefile.  See main/symbolic for an example.
+<dt>package/*.oct
+<dd>	oct-files built by Makefile. These will be installed all 
+	together in site-oct-files/octave-forge.  You may assume that
+	HAVE_OCTAVE_20 is defined for 2.0.x series mkoctfile, and
+	HAVE_OCTAVE_21 is defined for 2.1.x series mkoctfile.
+<dt>package/bin/*
+<dd>	executable files built by Makefile.  These will be 
+	installed in Octave's EXEC_PATH, so they will be available 
+	from Octave but not from the shell. You have two options
+	regarding this directory.  The better one would be to make
+	sure that the directory exists before you try building the
+	binary.  The other option is to have a hidden bin/.keepdir
+	so that CVS won't delete it for you automatically.
+</dl>
+
+<h3>Adding a Makefile</h3>
+
+If your package has something other than m-files you will need a 
+Makefile in your directory.  This could be as short as three lines:
+<pre>
+include ../../Makeconf
+all: f1.oct
+clean: ; -$(RM) *.o core octave-core *.oct *~
+</pre><p>
+
+If you define multiple DEFUN_DLD's in a file, you may need to
+use symbolic links in order for Octave to find them:
+<pre>
+include ../../Makeconf
+
+# extra functions defined in fn.oct
+fn_LINKS=fn2.oct fn3.oct
+
+# all compiled functions
+PROGS=fn.oct $(fn_LINKS) gn.oct
+
+all: $(PROGS)
+
+$(PROGS): Makefile
+
+$(fn_LINKS):
+	-$(RM) $@
+	$(LN_S) fn.oct $@
+
+clean: ; -$(RM) *.o core octave-core *.oct *~
+</pre><p>
+
+The "include ../../Makeconf" line above includes all of the definitions 
+that were created during configuration.  This includes things like MKOCTFILE,
+as well as implicit rules for compiling oct-files.  See Makeconf.base 
+for a list of predefined variables and rules.  Sometimes you will see
+"sinclude ../../Makeconf".  This is for packages which can be compiled
+independently of Octave-forge.  If Octave-forge is configured, then the
+variable OCTAVE_FORGE will be defined.<p>
+
+Even more complicated makefiles are sometimes necessary, particularly when
+the package depends on external libraries.  See main/symbolic/Makefile
+for an example.  The external libraries must be found during configure
+so main/symbolic/configure.add provides detection rules.  The results 
+are posted in main/symbolic/Makeconf.add, and will be available during make.<p>
+
+Please try to keep compatibility with older versions of Octave.  The main
+configure script tests for features that have changed since octave-2.1.36.
+The tests are done in such a way that conditions are only defined if you
+are using an older version of octave.  That way if the tests are not performed
+and the conditions are not defined, support defaults to the newer version
+of octave.  The following conditions are defined in configure.base:
+<dl>
+<dt>HAVE_SLLIST_H
+<dd>subsref changed from using SLList to using std::list.
+To support older versions of octave, use:<pre><code>
+#ifdef HAVE_SLLIST_H
+#define LIST SLList
+#define LISTSIZE length
+#define SUBSREF_STRREF
+#else
+#include &lt;list&gt;
+#define LIST std::list
+#define LISTSIZE size
+#define SUBSREF_STRREF &amp;
+#endif
+...
+  octave_value subsref (const std::string SUBSREF_STRREF type,
+                        const LIST&lt;octave_value_list&gt;&amp; idx) {
+	...
+  }
+  octave_value_list subsref (const std::string SUBSREF_STRREF type,
+                             const LIST&lt;octave_value_list&gt;&amp; idx,
+                             int nargout) {
+        ...
+
+     if (idx.LISTSIZE () > 1)
+        ...
+  }
+</code></pre>
+<dt>NEED_OCTAVE_QUIT
+<dd>signal handling changed from longjump to C++ exceptions. To support 
+older versions of octave, use:<pre><code>
+#ifdef NEED_OCTAVE_QUIT
+#define OCTAVE_QUIT do {} while (0)
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
+#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE
+#define octave_throw_bad_alloc() \
+   do { jump_to_top_level(); panic_impossible(); } while (0)
+#else
+#include &lt;octave/quit.h&gt;
+#endif
+</code></pre>
+<dt>USE_OCTAVE_NAN
+<dd>octave_NaN and octave_Inf constants were converted to functions.  
+To support older versions of octave, use:<pre><code>
+#ifdef USE_OCTAVE_NAN
+#define lo_ieee_nan_value() octave_NaN
+#define lo_ieee_inf_value() octave_Inf
+#endif
+</code></pre>
+</dl>
+<p>m-file support across multiple versions
+is tricky.  Sometimes try/catch will help, but for syntax
+changes you will need some sort of preprocessor, such as
+awk or sed.
+</p>
+
+<h3>Submit your code!</h3>
+You are now ready to upload your code to the Gnu Octave Repository.
+Do this with two CVS commands--one to add a new
+entry for your file in the octave-forge catalog, and a second command
+to actually upload the file:
+<pre>
+   $ cvs add <FONT COLOR="#800000"><i>files</i></FONT>
+   $ cvs commit <FONT COLOR="#800000"><i>files</i></FONT>
+</pre>
+
+After hitting the carriage return at the end of the commit command,
+CVS will open your default editor so that you can enter comments about
+the commit. The first time you commit a file the comment might be
+something as simple as `Initial commit into CVS.' However, for all
+subsequent commits please add meaningful comments that explain why
+changes were made to the file since all comments will appear in the
+changelog.  Try to gather related changes into one commit command.
+<p>
+Aside:  the default editor can be defined like so:
+<pre>
+   $ export EDITOR=<FONT COLOR="#800000">vim</FONT>
+</pre>
+<p>
+
+If you are uploading an entire package, then put your directory into the
+octave-forge tree and do the following:
+<pre>
+   $ cd octave-forge/main
+   $ cvs add <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cvs commit <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cd <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cvs add *
+   $ cvs commit *
+</pre>
+
+You may find it easier to use the import command, especially if your
+package contains subdirectories.  In this case, you should not put
+your directory into the octave-forge tree.  Instead, change to the
+root of your package tree and enter the following:
+<pre>
+   $ cd <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@octave.cvs.sourceforge.net:/cvsroot/octave import -m "<FONT COLOR="#800000"><i>package name</i></FONT>" octave-forge/<FONT COLOR="#800000"><i>main/package</i></FONT> <FONT COLOR="#800000"><i>sflogin</i></FONT> start
+</pre>
+
+You can then fetch the new package from octave-forge as follows:
+<pre>
+   $ cd octave-forge
+   $ cvs -q update -d
+</pre>
+
+<p>
+From time to time, you will need to synchronize with CVS:
+<pre>
+   $ cd octave-forge
+   $ cvs -q update -d
+</pre>
+Each file will be listed with one of the following codes:
+<ul>
+<li> `?' for files you created didn't add and commit.
+<li> `M' for files you modified but didn't commit.
+<li> `C' for files which have unresolvable conflicts.  Look inside the file to
+see what it was that couldn't be resolved.  It will be clearly marked, or you
+can do a cvs diff on the file to highlight the conflict.
+<li> `U' for files you haven't touched but are modified on the server.
+<li> `P' for files you have modified in a way consistent with the modifications
+on the server (?), e.g., because you submitted a patch for someone else to apply.
+</ul>
+
+<h3>Learn more about CVS</h3>
+The few CVS commands shown here just scratch the surface of this
+powerful versioning package.  If you become an active contributor
+you will benefit from learning more CVS commands and understanding 
+how CVS works.
+The
+<a href="http://cvsbook.red-bean.com/cvsbook.html">
+CVS Book</a> is a great place to begin your exploration.
+
+<h3>Join the developers' mailing list</h3>
+Finally, consider joining the octave-forge developer's 
+<a href="http://lists.sourceforge.net/lists/listinfo/octave-dev">
+mailing list</a>.  It is very low traffic.  It is used to announce
+pending releases of octave-forge and discuss issues related to
+working with octave-forge.  Discussion of the functions in
+octave-forge mostly occurs on the primary octave mailing lists.
+
+__TRAILER__

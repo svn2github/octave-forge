@@ -3,24 +3,25 @@
 opkg = $(filter-out %/,$(subst /,/ ,$@))
 ifeq ($(PKG_FILE),)
 # Use the wildcard on INDEX and PKG_ADD as well to allow for their absence
-PKG_FILES = $(opkg)/COPYING $(opkg)/DESCRIPTION \
-	$(wildcard $(opkg)/INDEX) $(wildcard $(opkg)/PKG_ADD) \
-	$(wildcard $(opkg)/inst/*) $(wildcard $(opkg)/src/*) \
-	$(wildcard $(opkg)/doc/*)
+PKG_FILES = COPYING DESCRIPTION $(wildcard INDEX) $(wildcard PKG_ADD) \
+	$(wildcard PKG_DEL) $(wildcard post_install.m) \
+	$(wildcard pre_install.m)  $(wildcard on_uninstall.m) \
+	$(wildcard inst/*) $(wildcard src/*) $(wildcard doc/*) \
+	$(wildcard bin/*)
 endif
-REAL_PKG_FILES = $(filter-out $(opkg)/%/CVS $(opkg)/%/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
+REAL_PKG_FILES = $(filter-out $(opkg)/%/CVS $(opkg)/%/.cvsignore %~ %/autom4te.cache, $(patsubst %, $(opkg)/%, $(PKG_FILES)))
 
 pkg/%: pre-pkg/%
-	cd ..; \
-	ver=`grep "Version:" $(opkg)/DESCRIPTION | sed -e "s/Version: *//"`; \
-	name=`grep Name: $(opkg)/DESCRIPTION | sed -e 's/^Name: *//' | \
+	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//"`; \
+	name=`grep Name: DESCRIPTION | sed -e 's/^Name: *//' | \
 	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
+	cd ..; \
 	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $(REAL_PKG_FILES); \
 	cd $(opkg); \
 	$(MAKE) post-pkg/$(opkg)
 
 pre-pkg/%::
-	if [ -f src/autogen.sh ]; then \
+	@if [ -f src/autogen.sh ]; then \
           cd src; \
           sh ./autogen.sh; \
           cd ..; \

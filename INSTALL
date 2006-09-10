@@ -1,3 +1,5 @@
+FIXME: These instructions need updating for the new package manager!!!
+
 =======================================================================
 Prerequisites
 
@@ -249,22 +251,6 @@ extra/tk_octave
 	pthreads.  Since it isn't usually, this will not be installed
 	by default.
 
-extra/patches
-	The build process does not modify octave itself, but there 
-	are a number of patches included in extra/patches which 
-	you could apply to the octave sources by hand.  Some of the 
-	patches may have already been applied if you are using the 
-	bleeding-edge octave.  Most of them will not apply if you 
-	are using the 2.0 series.  The patches may not apply cleanly 
-	to the bleeding-edge octave and may even conflict with each 
-	other.  Patches should include the Octave version number on
-	which they are based.
-
-extra/ver20
-	Backported functions on which functions in main depend, or
-	backported versions of functions in main.  These were mentioned
-	above
-
 extra/Windows
 	Functions specific to windows. These are things like image, 
 	which load a different image display program than the default 
@@ -274,11 +260,3 @@ extra/Windows
 
 extra/engine
 	No installation scripts written yet.
-
-extra/fake-sparse
-	Real sparse routines are included in main, but you may want
-	these if you can't use DLD functions
-
-extra/testfun
-	functions for embedding demo and test scripts in m-files; not
-	sure if we want to use them

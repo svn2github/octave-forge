@@ -1,9 +1,8 @@
 sinclude ../../Makeconf
 sinclude ../../pkg.mk
 
-PKG_FILES = $(patsubst %, fixed/%, COPYING DESCRIPTION INDEX PKG_ADD \
-	$(wildcard src/*) $(wildcard inst/*) $(wildcard examples/*) \
-	doc/fixed.pdf)
+PKG_FILES = COPYING DESCRIPTION INDEX PKG_ADD $(wildcard src/*) \
+	$(wildcard inst/*) $(wildcard examples/*) doc/fixed.pdf
 SUBDIRS = doc/
 
 .PHONY: $(SUBDIRS)

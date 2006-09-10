@@ -52,13 +52,6 @@ extra/
 	   * are designed for older versions of Octave, or
 	   * haven't been tested enough.
 
-extra/patches/
-	Small patches to Octave. Patches should be labelled as
-	name-version.patch, with version being the Octave version 
-	number on which the patch was based.  The start of the 
-	patch file should contain a description of what it does.  
-	Patches should be generated with diff -c or diff -cp.
-
 main/
 	Packages which may eventually be included in the main octave 
 	distribution.  As such, they should follow Octave conventions.  

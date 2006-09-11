@@ -151,31 +151,46 @@ def handle_package(packdir, outdir):
     raise Exception('spam', 'eggs');
 
 def main():
-    main_dir = "../main/";
-    packages = os.listdir(main_dir);
-    
     ## Start the package file
     index = open("packages.in", "w");
     index.write("__HEADER__(`Packages')");
     index.write('<p>The following packages are currently available in the repository.\n');
     index.write("If you don't know how to install the packages please read the\n");
     index.write('relevant part of the <a href="FAQ.html#install">FAQ</a>.\n</p>');
+    index.write('<p>Currently Octave-Forge is divided into seperate repositories\n');
+    index.write('<ul><li><a href="#main">Main repository</a> contains packages that\n');
+    index.write('are well tested and suited for most users.</li>\n');
+    index.write('<li><a href="#extra">Extra packages</a> contains packages that\n');
+    index.write("for various reasons aren't suited for everybody.</li>\n");
+    index.write('<li><a href="#nonfree">Non-free packages</a> contains packages\n');
+    index.write('that have license issues. Usually the packages themselves are\n');
+    index.write('Free Software that depend on non-free libraries.</li></ul>\n');
     
-    for i in range(0, len(packages)):
-        p = packages[i];
-        packdir = main_dir + p;
-        outdir  = "./" + p;
-        try:
-            desc = handle_package(packdir, outdir);
-            index.write('<div class="package">\n');
-            index.write('  <b>' + desc['name'] + '</b>\n');
-            index.write('<p>' + desc['description'][:100] + '...</p>\n');
-            index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
-            index.write('<a href="' + outdir + '/index.html">download</a></p>\n');
-            index.write('</div>\n');
-        except:
-            print("Skipping " + p);
-
+    main_dirs = ["main",            "extra",          "nonfree"];
+    headers   = ["Main repository", "Extra packages", "Non-free packages"];
+    for i in range(len(main_dirs)):
+        name = main_dirs[i];
+        main_dir = "../"  + name + "/";
+        header = headers[i];
+        packages = os.listdir(main_dir);
+        
+        index.write('<h2 id="' + name + '">' + header + '</h2>\n');
+        
+        for i in range(0, len(packages)):
+            p = packages[i];
+            packdir = main_dir + p;
+            outdir  = "./" + p;
+            try:
+                desc = handle_package(packdir, outdir);
+                index.write('<div class="package">\n');
+                index.write('  <b>' + desc['name'] + '</b>\n');
+                index.write('<p>' + desc['description'][:100] + '...</p>\n');
+                index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
+                index.write('<a href="' + outdir + '/index.html">download</a></p>\n');
+                index.write('</div>\n');
+            except:
+                print("Skipping " + p);
+    
     index.write('__TRAILER__\n');
     index.close();
 

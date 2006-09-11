@@ -1,7 +1,16 @@
 __HEADER__(`Packages')<p>The following packages are currently available in the repository.
 If you don't know how to install the packages please read the
 relevant part of the <a href="FAQ.html#install">FAQ</a>.
-</p><div class="package">
+</p><p>Currently Octave-Forge is divided into seperate repositories
+<ul><li><a href="#main">Main repository</a> contains packages that
+are well tested and suited for most users.</li>
+<li><a href="#extra">Extra packages</a> contains packages that
+for various reasons aren't suited for everybody.</li>
+<li><a href="#nonfree">Non-free packages</a> contains packages
+that have license issues. Usually the packages themselves are
+Free Software that depend on non-free libraries.</li></ul>
+<h2 id="main">Main repository</h2>
+<div class="package">
   <b>Audio</b>
 <p>Add a description to this package!...</p>
 <p class="package_link">&raquo; <a href="./audio/index.html">details</a> | <a href="./audio/index.html">download</a></p>
@@ -145,5 +154,82 @@ relevant part of the <a href="FAQ.html#install">FAQ</a>.
   <b>Vrml</b>
 <p>Add a description to this package!...</p>
 <p class="package_link">&raquo; <a href="./vrml/index.html">details</a> | <a href="./vrml/index.html">download</a></p>
+</div>
+<h2 id="extra">Extra packages</h2>
+<div class="package">
+  <b>MacOSX</b>
+<p>Provides additional functionality on Mac OS X...</p>
+<p class="package_link">&raquo; <a href="./MacOSX/index.html">details</a> | <a href="./MacOSX/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>NaN</b>
+<p>Missing value statistical toolbox...</p>
+<p class="package_link">&raquo; <a href="./NaN/index.html">details</a> | <a href="./NaN/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Windows</b>
+<p>Provides additional functionality on Windows...</p>
+<p class="package_link">&raquo; <a href="./Windows/index.html">details</a> | <a href="./Windows/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Civil-Engineering</b>
+<p>Add a description to this package!...</p>
+<p class="package_link">&raquo; <a href="./civil/index.html">details</a> | <a href="./civil/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Engine</b>
+<p>An external interface library for Octave...</p>
+<p class="package_link">&raquo; <a href="./engine/index.html">details</a> | <a href="./engine/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Integration</b>
+<p>Toolbox for 1-D, 2-D, and n-D Numerical Integration...</p>
+<p class="package_link">&raquo; <a href="./integration/index.html">details</a> | <a href="./integration/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Mapping</b>
+<p>Add a description to this package!...</p>
+<p class="package_link">&raquo; <a href="./mapping/index.html">details</a> | <a href="./mapping/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>ODE</b>
+<p>Add a description to this package!...</p>
+<p class="package_link">&raquo; <a href="./ode/index.html">details</a> | <a href="./ode/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>PDB</b>
+<p>Reads and display PDB-files from the Brookhaven protein databank...</p>
+<p class="package_link">&raquo; <a href="./pdb/index.html">details</a> | <a href="./pdb/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Tcl-Octave</b>
+<p>socket implementation of a tcl-octave connection...</p>
+<p class="package_link">&raquo; <a href="./soctcl/index.html">details</a> | <a href="./soctcl/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>SymBand</b>
+<p>Add a description to this package!...</p>
+<p class="package_link">&raquo; <a href="./symband/index.html">details</a> | <a href="./symband/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Tk-Octave</b>
+<p>Add a description to this package!...</p>
+<p class="package_link">&raquo; <a href="./tk_octave/index.html">details</a> | <a href="./tk_octave/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>TSA</b>
+<p>Stochastic concepts and maximum entropy methods for time series analysis...</p>
+<p class="package_link">&raquo; <a href="./tsa/index.html">details</a> | <a href="./tsa/index.html">download</a></p>
+</div>
+<h2 id="nonfree">Non-free packages</h2>
+<div class="package">
+  <b>GPC</b>
+<p>Add a description to this package!...</p>
+<p class="package_link">&raquo; <a href="./gpc/index.html">details</a> | <a href="./gpc/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>spline-gcvspl</b>
+<p>B-spline data smoothing using generalized cross-validation and mean squared prediction or explicit u...</p>
+<p class="package_link">&raquo; <a href="./splines/index.html">details</a> | <a href="./splines/index.html">download</a></p>
 </div>
 __TRAILER__

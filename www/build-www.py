@@ -47,19 +47,10 @@ def create_index_html(packdir, outdir):
         raise;
     
     ## Write header
-    fid = open(outdir + "/index.html", "w");
-    fid.write('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">\n');
-    fid.write('<html lang="en">\n');
-    fid.write('  <head>\n');
-    fid.write('    <title>Octave-Forge: ' + desc['name'] + '</title>\n');
-    fid.write('    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n');
-    fid.write('    <link type="text/css" rel="stylesheet" href="http://octave.org/octave.css">\n');
-    fid.write('    <link type="text/css" rel="stylesheet" href="../package.css">\n');
-    fid.write('  </head>\n\n');
-    fid.write('  <body>\n');
+    fid = open(outdir + "/index.in", "w");
+    fid.write("__HEADER__(`The " + desc['name'] + " package')");
     
     ## Write important data
-    fid.write("    <h2>" + desc["title"] + "</h2>\n");
     fid.write('    <table id="main_package_table">\n');
     fid.write('      <tr><td>Package Name:</td><td>'       + desc["name"]       + "</td></tr>\n");
     fid.write('      <tr><td>Package Version:</td><td>'    + desc["version"]    + "</td></tr>\n");
@@ -79,22 +70,63 @@ def create_index_html(packdir, outdir):
     fid.write('    </div>\n\n');
     
     ## Write less important data
-    already_shown_keys = ["title", "name", "version", "date", "author", "maintainer", "description", "html-file"];
     keys = desc.keys();
-    if (len(keys) > len(already_shown_keys)):
-        fid.write("    <h3>Other information</h3>\n");
-        fid.write('    <table id="extra_package_table">\n');
-        for k in keys:
-            if (already_shown_keys.count(k) == 0):
-                value = desc[k];
-                fid.write("      <tr><td>" + k + "</td><td>" + value + "</td></tr>\n");
-        fid.write("    </table>\n");
+    fid.write("    <h3>Other information</h3>\n");
+    fid.write('    <table id="extra_package_table">\n');
+    ## License
+    fid.write('      <tr><td>License: </td><td><a href="license.html">');
+    if (desc.has_key("license")):
+        fid.write(desc['license']);
+    else:
+        fid.write('details');
+    fid.write('</a></td></tr>\n');
+    ## URL
+    if (desc.has_key("url")):
+        fid.write('      <tr><td>Web page: </td><td><a href="' + desc['url'] + '">');
+        fid.write(desc['url']);
+        fid.write('</a></td></tr>\n');
+    ## Dependencies
+    if (desc.has_key("depends")):
+        fid.write('      <tr><td>Dependencies: </td><td>');
+        fid.write(desc['depends']);
+        fid.write('</td></tr>\n');
+    ## Everything else
+    already_shown_keys = ["title", "name", "version", "date", "author", 
+                          "maintainer", "description", "html-file", 
+                          "license", "url", "depends"];
+    for k in keys:
+        if (already_shown_keys.count(k) == 0):
+            value = desc[k];
+            fid.write("      <tr><td>" + k + ":</td><td>" + value + "</td></tr>\n");
+    fid.write("    </table>\n");
     
     ## Write footer
-    fid.write("  </body>\n</html>\n");
+    fid.write("__TRAILER__\n");
+    fid.close();
+    return desc;
+
+def create_license_html(package_name, packdir, outdir):
+    ## Read License
+    filename = packdir + "/COPYING";
+    fid = open(filename, 'r');
+    license = fid.readlines();
     fid.close();
 
+    ## Write output
+    fid = open(outdir + "/license.in", "w");
+    fid.write("__HEADER__(`The " + package_name + " package')\n");
+    fid.write("<h3>The license terms for the " + package_name + " package are as follows</h3>\n");
+    fid.write('<p><textarea rows="20" cols="80" readonly>');
+    for c in license:
+        fid.write(c)
+    fid.write('</textarea></p>\n');
+    fid.write('<p><a href="index.html">Back to the package page</a></p>\n');
+    fid.write("__TRAILER__\n");
+    fid.close();
+
+
 def rm_rf(p):
+    #print("Deleting " + p);
     for root, dirs, files in os.walk(p, topdown=False):
         for name in files:
             os.remove(os.path.join(root, name));
@@ -108,40 +140,41 @@ def handle_package(packdir, outdir):
             rm_rf(outdir);
         os.mkdir(outdir);
         try:
-            create_index_html(packdir, outdir)
-            return 1;
+            desc = create_index_html(packdir, outdir);
+            create_license_html(desc['name'], packdir, outdir);
+            return desc;
         except:
             rm_rf(outdir);
-            return 0;
-    return 0;
+            raise Exception('spam', 'eggs');
+    raise Exception('spam', 'eggs');
 
 def main():
     main_dir = "../main/";
     packages = os.listdir(main_dir);
     
-    ## Start main index file
-    index = open("index.html", "w");
-    index.write('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">\n');
-    index.write('<html lang="en">\n');
-    index.write('  <head>\n');
-    index.write('    <title>Octave-Forge packages</title>\n');
-    index.write('    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n');
-    index.write('    <link type="text/css" rel="stylesheet" href="http://octave.org/octave.css">\n');
-    index.write('    <link type="text/css" rel="stylesheet" href="package.css">\n');
-    index.write('  </head>\n\n');
-    index.write('  <body>\n');
+    ## Start the package file
+    index = open("packages.in", "w");
+    index.write("__HEADER__(`Packages')");
+    index.write('<p>The following packages are currently available in the repository.\n');
+    index.write("If you don't know how to install the packages please read the\n");
+    index.write('relevant part of the <a href="FAQ.html#install">FAQ</a>.\n</p>');
     
     for i in range(0, len(packages)):
         p = packages[i];
         packdir = main_dir + p;
         outdir  = "./" + p;
-        s = handle_package(packdir, outdir);
-        if (s):
-            index.write('<a href="' + outdir + '/index.html">' + p + '</a><br>\n');
-        else:
+        try:
+            desc = handle_package(packdir, outdir);
+            index.write('<div class="package">\n');
+            index.write('  <b>' + desc['name'] + '</b>\n');
+            index.write('<p>' + desc['description'][:100] + '...</p>\n');
+            index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
+            index.write('<a href="' + outdir + '/index.html">download</a></p>\n');
+            index.write('</div>\n');
+        except:
             print("Skipping " + p);
 
-    index.write('  </body>\n</html>\n');
+    index.write('__TRAILER__\n');
     index.close();
 
 main();

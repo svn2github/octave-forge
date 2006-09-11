@@ -14,13 +14,13 @@ PKGDIRS = $(filter-out packages, $(patsubst ../%/, %, $(dir $(wildcard ../*/Make
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
 
-.PHONY: $(PKGDIRS)
+.PHONY: $(PKGDIRS) install
 
 # Construct the bundles from the individual packages
 all: $(patsubst %,mkbundle/%,$(PKGDIRS))
 
 mkbundle/%:
-	d=`date +%Y%m%d`; \
+	@d=`date +%Y%m%d`; \
 	cd $(odir); \
 	tar cvzf ../octave-forge-$(odir)-$$d.tar.gz ../README *
 
@@ -29,18 +29,29 @@ package:
 
 # Assume all packages have .tar.gz extensions
 mostlyclean: 
-	@rm -fr $(TESTLOG) sandbox *~ build-stamp .octave_packages *.tar.gz
+	@rm -fr $(TESTLOG) sandbox *~ *.tar.gz
 
 clean: mostlyclean
 	@rm -fr $(PKGDIRS)
 
 check: cleanlog $(patsubst %, checkpkg/%, $(PACKAGES))
 
+icheck: $(patsubst %, icheckpkg/%, $(PACKAGES))
+
 cleanlog:
-	rm $(TESTLOG)
+	@rm $(TESTLOG)
+
+install:
+	@cmd="pkg('install'"; \
+	for _pkg in $(PACKAGES); do \
+	  cmd="$$cmd,'$$_pkg'"; \
+	done; \
+	cmd="$$cmd);"; \
+	echo $$cmd; \
+	octave -H -q --eval "$$cmd;"
 
 # No spaces in eval argument please!!
-checkpkg/%: cleancheck checkdep/% mkpkg/%
+checkpkg/%: cleancheck mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	$(TOPDIR)/admin/mktests.sh code; \
@@ -48,6 +59,14 @@ checkpkg/%: cleancheck checkdep/% mkpkg/%
 	if [ ! -e ../fntests.log ]; then touch ../fntests.log; fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..
+
+icheckpkg/%: clencheck mkpkg/%
+	@echo "Running demo code for $(opkg) and its dependencies" ; \
+	cd sandbox; \
+	echo 'disp("starting demos...")' > fndemos.m; \
+	for file in `grep -l '^%!demo' code/*/*/*.{cc,m}` ; do \
+	  echo "demo('$$file');" >> fndemos.m ; done
+	$(RUN_OCTAVE) -q fndemos.m
 
 cleancheck:
 	@if [ -d sandbox/ ]; then rm -rf sandbox; fi ; \
@@ -57,25 +76,32 @@ cleancheck:
 	echo "OCTAVE_PACKAGE_PREFIX=[pwd() '/install'];" >> .octaverc ; \
 	cd ..
 
-# FIXME: This does not do any dependency checking yet!!
-checkdep/%:
-	@echo "Checking dependencies of $(opkg)"; \
-	cd sandbox; mkdir tmp; cd tmp; \
-	tar xzf ../../$(opkg) ; \
-	echo " **** Add dependency checking code here! ****"; \
-	if [ ! -d ../code ]; then mkdir ../code; fi;  \
-	mv * ../code; \
-	cd ../; rm -fr tmp/; \
-	cd code; \
-	tar czf ../bundle.tar.gz * ; \
-	cd ../..
-
-# No spaces in eval argument please!!
+# For now assume that there is only one version of the package for 
+# dependencies. Some version check code should be added!!
 mkpkg/%:
 	@echo "Building $(opkg) and its dependencies"; \
 	cd sandbox; \
 	if [ ! -d install ]; then mkdir install; fi ; \
-	$(RUN_OCTAVE) --eval "pkg('install','bundle.tar.gz')" ; \
+	if [ ! -d code ]; then mkdir code; fi; \
+	cd code; tar xzf ../../$(opkg); cd ..; \
+	pkgs="'../$(opkg)'"; \
+	until $(RUN_OCTAVE) --eval "pkg('install',$$pkgs)" 2> baddeps; do \
+	  deps=`cat baddeps | grep " needs " | sed -e 's/^.*needs\s\+\(\S*\).*$$/\1/'`; \
+	  ops=`cat  baddeps | grep " needs " | sed -e 's/^.*needs\s\+\S*\s\+\(\S*\).*$$/\1/'`; \
+	  vers=`cat  baddeps | grep " needs " | sed -e 's/^.*\s\+\(\S*\)\s*$$/\1/'`; \
+	  for _dep in $$deps; do \
+	    for _dir in $(PKGDIRS); do \
+	      if [ -d ../$$_dir ]; then \
+		_fdep=`find ../$$_dir -name "$$_dep*"`; \
+		if [ -n "$$_fdep" ]; then \
+		  pkgs="'$$_fdep',$$pkgs"; \
+		  cd code; tar xzf ../$$_fdep; cd ..; \
+		  break 2; \
+		fi; \
+	      fi; \
+	    done; \
+	  done; \
+	done; \
 	cd ..
 
 run:

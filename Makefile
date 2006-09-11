@@ -15,7 +15,7 @@ ifdef OCTAVE_FORGE
 
 .PHONY: all install packages package check icheck
 
-all: clearlog packages subdirs
+all: clearlog packages
 	@echo "Packaging finished."
 	@if test -f build.fail ; then cat build.fail ;\
 	  echo "Some functions failed to be packed (search build.log for errors)." ;\
@@ -31,21 +31,22 @@ package: subdirs
 packages:
 	@$(MAKE) -k package
 
-install: subdirs
-	@echo "There is no longer any install target within octave-forge's CVS"
-	@echo "Please install the individual packages using the Octave package"
-	@echo "Manager."
-	false
+install: installpause clearlog packages
+	@$(MAKE) -C packages $(MAKECMDGOALS)
+	@echo "Type \"pkg('load','all')\" at the octave prompt to start"
+	@echo "using the installed packages"
+
+installpause:
+	@echo "***  The install target is deprecated and the individual  ***"
+	@echo "*** packages should be installed using the Octave package ***"
+	@echo "***          manager. Press any key to continue.          ***"
+	@read -n 1
 
 check:
-	@$(MAKE) -C packages 
+	@$(MAKE) -C packages $(MAKECMDGOALS)
 
 icheck:
-	@echo 'disp("starting demos...")' > fndemos.m
-	@for file in `grep -l '^%!demo' */*/*.{cc,m}` ; do \
-		echo "demo('$$file');" >> fndemos.m ; done
-	$(RUN_OCTAVE) -q fndemos.m
-	$(RUN_OCTAVE) -q interact_test.m
+	@$(MAKE) -C packages $(MAKECMDGOALS)
 else
 
 .PHONY: all install

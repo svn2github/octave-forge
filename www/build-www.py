@@ -127,6 +127,8 @@ def create_license_html(package_name, packdir, outdir):
 
 def rm_rf(p):
     #print("Deleting " + p);
+    if (p == "./CVS"):
+        return;
     for root, dirs, files in os.walk(p, topdown=False):
         for name in files:
             os.remove(os.path.join(root, name));

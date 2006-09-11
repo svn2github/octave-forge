@@ -1002,7 +1002,9 @@ C
 C***  Check on special cases: M=0, M=1, M>1
 C
       NM1 = N - 1
-      IF (M-1) 10,40,80
+      IF (M-1 .lt. 0) GO TO 10
+      IF (M-1 .eq. 0) GO TO 40
+      GO TO 80
 C
 C***  M = 0: Diagonal system
 C

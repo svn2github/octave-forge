@@ -4,61 +4,9 @@
 ->         populating the "Where does your code belong" section.
 ->         Albert Danial Jan 2 2002
 
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<!-- 
-      The file new_developer.html is generated dynamically by the Perl 
-      program 'get_contents'.  Edit admin/template.ndev to make permanent 
-      changes to new_developer.html.
-      Albert Danial Jan 2 2002
-  -->
-<html>
-<head>
-<title>Octave-Forge Developer's Notes</title>
-   <meta name="keywords" content="instruction,octave,developer,contribute">
-</head>
-<body bgcolor="#FFFFFF">
+__HEADER__(`Developer's Notes')
 
-<!-- top table {{{1 -->
-<table align="center" BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="95%" BGCOLOR="#444444" >
-<tr>
-<td>
-<table BORDER=0 cellspacing=1 CELLPADDING=3 WIDTH="100%" >
-<tr>
-<td ALIGN=CENTER VALIGN=CENTER BGCOLOR="#FFFFFF">
-	<font face="Arial, Helvetica, Sans Serif" size=+2 color="#0000CC">
-		GNU Octave Repository	
-	</font>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p align="center">
-<font size="-1">
-<A href="http://octave.sourceforge.net">Home</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/projects/octave/">Summary</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/forum/?group_id=2888">Forums</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/bugs/?group_id=2888">Bugs</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/support/?group_id=2888">Support</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/patch/?group_id=2888">Patches</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/mail/?group_id=2888">Lists</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/pm/?group_id=2888">Tasks</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/docman/?group_id=2888">Docs</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/survey/?group_id=2888">Surveys</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/news/?group_id=2888">News</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/cvs/?group_id=2888">CVS</A>&nbsp;|&nbsp;
-<A href="http://sourceforge.net/project/showfiles.php?group_id=2888">Files</A>
-</font>
-</p>
-
-
-<!-- 1}}} end top table -->
-
-<p>
-<center>
 <h2>Contributing Code to the Gnu Octave Repository</h2>
-</center>
 
 
 <h3>Requirements</h3>
@@ -406,12 +354,4 @@ pending releases of octave-forge and discuss issues related to
 working with octave-forge.  Discussion of the functions in
 octave-forge mostly occurs on the primary octave mailing lists.
 
-<hr noshade size=1>
-
-<center>
-<p>
-<small>Hosted by</small>
-<br><a  href="http://sourceforge.net"><img  src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=4"  width="125" height="37" border="0" alt="SourceForge.net Logo"  /></a>
-
-</body>
-</html>
+__TRAILER__

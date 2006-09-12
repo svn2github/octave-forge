@@ -1,10 +1,10 @@
 M4 := m4
 MACRO_FILE := macros.m4
-HTML_SRC := $(shell find . | grep "\.in")
-IMG_HTML := $(HTML_SRC:.in=.html)
+HTML_SRC = $(shell find . | grep "\.in")
+IMG_HTML = $(HTML_SRC:.in=.html)
 
-all: build-www $(IMG_HTML) developers.html
-.PHONY: all
+all: build-www developers.html
+	make $(IMG_HTML)
 
 build-www:
 	./build-www.py

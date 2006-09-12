@@ -16,11 +16,6 @@ Free Software that depend on non-free libraries.</li></ul>
 <p class="package_link">&raquo; <a href="./audio/index.html">details</a> | <a href="./audio/index.html">download</a></p>
 </div>
 <div class="package">
-  <b>Combinatorics</b>
-<p>Add a description to this package!...</p>
-<p class="package_link">&raquo; <a href="./combinatorics/index.html">details</a> | <a href="./combinatorics/index.html">download</a></p>
-</div>
-<div class="package">
   <b>Communications</b>
 <p>Add a description to this package!...</p>
 <p class="package_link">&raquo; <a href="./comm/index.html">details</a> | <a href="./comm/index.html">download</a></p>
@@ -154,6 +149,11 @@ Free Software that depend on non-free libraries.</li></ul>
   <b>Vrml</b>
 <p>Add a description to this package!...</p>
 <p class="package_link">&raquo; <a href="./vrml/index.html">details</a> | <a href="./vrml/index.html">download</a></p>
+</div>
+<div class="package">
+  <b>Combinatorics</b>
+<p>Add a description to this package!...</p>
+<p class="package_link">&raquo; <a href="./combinatorics/index.html">details</a> | <a href="./combinatorics/index.html">download</a></p>
 </div>
 <h2 id="extra">Extra packages</h2>
 <div class="package">

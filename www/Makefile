@@ -20,5 +20,14 @@ developers.html:
 	$(M4) $(MACRO_FILE) $< > $@
 
 clean:
-	sh cleanup.sh $(IMG_HTML)
+	@for f in $(IMG_HTML); do \
+	  d=`dirname $$f`; \
+	  if [ -d $$d ]; then \
+	    if [ "$$d" != "." ]; then \
+	      rm -rf $$d; \
+	    fi; \
+	  fi; \
+	done
 	rm -f *.html developers.in
+
+package:

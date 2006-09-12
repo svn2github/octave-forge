@@ -75,34 +75,47 @@ nonfree/
 Package organization
 
 package/NOINSTALL
-	don't install this package; rename or delete this
-	file if you want the package installed anyway.
+	This is an optional file, whose presence tells octave-forge
+	that this package should be ignored. This is typically for
+	packages that are kept for historical reasons.
+package/DESCRIPTION
+	This is a required file containing information about the
+	package.
+package/COPYING
+	This is a required containing the license of the package.
 package/INDEX
-	a functions in the directory organized into categories.  See
-	octave-forge/INDEX for a description of the format.
-package/*.m 
-	m-files for the package.  These will be installed in
-	site/mfiles/octave-forge/package
-package/data/*
-	datafiles to be installed with the mfiles.  You can accesses
-	them from your m-files with x = file_in_load_path("a").
-package/Makefile 
-	Makefile with a default target to build anything that needs
-	building, an "install" target to install anything that needs
-	installing (other than oct-files and m-files---they are handled
-	automatically), and a "clean" target to delete everything that
-	was built.
-package/configure.add
-package/Makeconf.add
-	Additional configuration-time commands to run in order to 
-	find all the components that the package requires.
-package/*.oct
-	oct-files built by Makefile. These will be installed all 
-	together in site-oct-files/octave-forge.
-package/bin/*
-	executable files built by Makefile.  These will be 
-	installed in Octave's EXEC_PATH, so they will be available 
-	from Octave but not from the shell.  
+	This is an optional file describing the functions provided by
+	the package.
+package/PKG_ADD
+	An optional file that includes commands that are run when the
+        package is added to the users path.
+package/PKG_DEL
+	An optional file that includes commands that are run when the
+        package is removed from the users path.
+package/Makefile
+	This is an optional file that is for the use of Octave-Forge
+        only.
+package/pre_install.m
+	This is an optional script that is run prior to the
+        installation of a package.
+package/post_install.m
+	This is an optional script that is run after the
+        installation of a package.
+package/on_uninstall.m
+	This is an optional script that is run prior to the
+        de-installation of a package.
+package/doc
+	An optional directory containing documentation for the
+	package.
+package/inst
+	An optional directory containing any files that are directly
+	installed by package.
+package/bin
+	An optional directory containing files that will be added to
+	the Octave EXEC_PATH when the package is loaded.
+package/src
+	An optional directory containing code that must be 'built' prior
+	to the packages installation.
 
 ==========================================================================
 Administrative files
@@ -113,26 +126,13 @@ autogen.sh
 configure.base
 Makeconf.base
 	Basic configuration checks, such as locating the install paths,
-	and the associated variables to be put into Makeconf.  Each 
-	package can append checks by including configure.add in the 
-	package directory.
-
-octinst.sh.in
-	Install program for packages, with pieces to be filed in by
-	./configure
-
-install-sh
-	intall program to use if /usr/bin/install does not work
+	and the associated variables to be put into Makeconf.
 
 COPYING
-	License for the collection, plus an out-of-date list of functions 
-	in the collection and their licenses.
+	License for the collection
 
 COPYING.GPL
 	The text of the GPL license
-
-cvs-tree
-	Generate web listing of m-files in the tree
 
 README
 	This file
@@ -148,13 +148,6 @@ Makefile
 
 release.sh
 	Generates release tarball
-
-cvsdir.sh
-	Save/restore CVS adminstration files.  You need this to install
-	directly from the CVS tree rather than an exported tarball.  E.g.,
-	   $ cvsdir.sh save
-	   $ make install
-	   $ cvsdir.sh restore
 
 ==========================================================================
 Compatibility Issues

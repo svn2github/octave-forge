@@ -18,7 +18,7 @@
 ##
 ##                    infinity
 ##                   /
-##       expint_E1(x) = | exp(t)/t dt
+##       expint(x) = | exp(t)/t dt
 ##                   /
 ##                  x
 ##
@@ -28,9 +28,13 @@ function v = expint_E1(x)
 	if (nargin != 1)
 		usage ("expint_E1(x)");
 	endif
-	if(x > 0 && imag(x) == 0)
+	if(x > 0 && imag(x)==0)
 		v = -expint_Ei(-x);
 	else
-		v = -expint_Ei(-x) - i.*pi;
+		if(imag(x) > 0)
+			v = -expint_Ei(-x) -i.*pi;
+		else
+			v = -expint_Ei(-x) +i.*pi;
+		endif
 	endif
 endfunction

@@ -29,18 +29,30 @@ function y = expint_Ei(x)
 		usage ("expint_Ei(x)");
 	endif
 	F = @(x) exp(-x)./x;
-	if(x<0)
-		y = -quad(F,-x,Inf);
+	if(x<0 && imag(x) == 0)
+			y = -quad(F,-x,Inf);
 	else
 		if(abs(x) > 2 && imag(x) == 0)
 			y = expint_Ei(2) - quad(F,-x,-2);
 		else
-			y = 0;
-			for i = 1:100;
-				y = y + x.^i./(i.*factorial(i));
-			endfor
-
-			y = 0.577215664901532860606512090082402431 + log(x) + y;
+			if(abs(x) >= 10)
+				if(imag(x) <= 0)
+					a1 = 4.03640;
+					a2 = 1.15198;
+					b1 = 5.03637;
+					b2 = 4.19160;
+					y = -(x.^2 - a1.*x + a2)./((x.^2-b1.*x+b2).*(-x).*exp(-x))-i.*pi;
+				else
+					y = conj(expint_Ei(conj(x)));
+				endif;
+## Serie Expansion
+			else 
+				y = 0;
+				for i = 1:100;
+					y = y + x.^i./(i.*factorial(i));
+				endfor
+				y = 0.577215664901532860606512090082402431 + log(x) + y;
+			endif
 		endif
 	endif;
 endfunction;

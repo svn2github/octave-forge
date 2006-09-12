@@ -35,7 +35,7 @@ all:		liboct.a mattest
 %.o : %.c ; $(CC) $(CFLAGS) -D_BSD_SOURCE -c $*.c
 
 liboct.a:	$(TARGETS)
-	$(AR) $(ARFLAGS) liboct.a $(TARGETS)
+	$(AR) $(ARFLAGS) liboct.a $(TARGETS) > /dev/null 2>&1
 	$(RANLIB) liboct.a
 
 install:

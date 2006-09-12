@@ -8,8 +8,7 @@ ifeq ($(MPATH),$(OPATH))
 else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
-HOME=`pwd`
-RUN_OCTAVE= HOME=$(HOME) $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
+RUN_OCTAVE= HOME=`pwd` $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
 PKGDIRS = $(filter-out packages, $(patsubst ../%/, %, $(dir $(wildcard ../*/Makefile))))
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
@@ -42,12 +41,13 @@ cleanlog:
 	@rm $(TESTLOG)
 
 install:
-	@cmd="pkg('install'"; \
+	@echo "***  INSTALLING ALL PACKAGES  ***"; \
+	echo  "*** This is likely to be long ***"; \
+	cmd="pkg('install'"; \
 	for _pkg in $(PACKAGES); do \
 	  cmd="$$cmd,'$$_pkg'"; \
 	done; \
 	cmd="$$cmd);"; \
-	echo $$cmd; \
 	octave -H -q --eval "$$cmd;"
 
 # No spaces in eval argument please!!

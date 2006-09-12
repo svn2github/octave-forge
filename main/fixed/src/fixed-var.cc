@@ -43,7 +43,7 @@ DEFUN_DLD (fixed_point_warn_overflow, args, nargout,
 Query or set the internal variable @code{fixed_point_warn_overflow}.\n\
 If enabled, Octave warns of overflows in fixed point operations.\n\
 By default, these warnings are disabled.\n\
-@end deftyepfn")
+@end deftypefn")
 {
   return set_internal_variable (Fixed::FP_Overflow, args, nargout,
 				"fixed_point_warn_overflow");

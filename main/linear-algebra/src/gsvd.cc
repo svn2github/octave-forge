@@ -65,8 +65,15 @@ r is upper triangular\n\
 @end ifinfo\n\
 \n\
 The function @code{gsvd} normally returns the vector of generalised singular\n\
-values @iftex\n @tex\n diag(C)./diag(S). @end tex\n @end iftex\n\
-@ifinfo\n diag(r)./diag(s).\n @end ifinfo\n\
+values\n\
+@iftex\n\
+@tex\n\
+diag(C)./diag(S).\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+diag(r)./diag(s).\n\
+@end ifinfo\n\
 If asked for five return values, it computes\n\
 @iftex\n\
 @tex\n\
@@ -77,16 +84,34 @@ $U$, $V$, and $X$.\n\
 U, V, and X.\n\
 @end ifinfo\n\
 With a sixth output argument, it also returns\n\
-@iftex\n @tex\n R, @end tex\n @end iftex\n\
-@ifinfo\n r,\n @end ifinfo\n\
+@iftex\n\
+@tex\n\
+R,\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+r,\n\
+@end ifinfo\n\
 The common upper triangular right term. Other authors, like S. Van Huffel,\n\
 define this transformation as the simulatenous diagonalisation of the\n\
 input matrices, this can be achieved by multiplying \n\
-@iftex\n @tex\n X @end tex\n @end iftex\n\
-@ifinfo\n x\n @end ifinfo\n\
+@iftex\n\
+@tex\n\
+X\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+x\n\
+@end ifinfo\n\
 by the inverse of\n\
-@iftex\n @tex\n [I 0; 0 R]. @end tex\n @end iftex\n\
-@ifinfo\n[I 0; 0 r].\n @end ifinfo\n\
+@iftex\n\
+@tex\n\
+[I 0; 0 R].\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+[I 0; 0 r].\n\
+@end ifinfo\n\
 \n\
 For example,\n\
 \n\
@@ -150,7 +175,7 @@ r =\n\
 If given a second argument, @code{svd} returns an economy-sized\n\
 decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 @var{v}.\n\
-@end deftypefn")
+@end deftypefn\n")
 {
   octave_value_list retval;
 

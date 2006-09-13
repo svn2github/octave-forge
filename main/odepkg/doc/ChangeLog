@@ -1,0 +1,39 @@
+	* File:	       ChangeLog
+	* Created:     2006.08.16
+	* Author:      Thomas Treichl
+	* Description: OdePkg ChangeLog File
+
+2006.09.13
+	* Removed temporary files
+	* Added a DESCRIPTION and COPYING file
+	* Checked all files, tests and demos for a first push to cvs
+
+2006.09.12
+	* Renamed all functions and files from tt_XXX to XXX
+	  eg. tt_ode23 became ode23.m etc. 
+	* Replaced the octave-license with the one of octave-forge
+	
+2006.08.20
+	* Checklist for odepkg files
+	  - tt_odepkg_example_pendulous is ready to contribute
+	  - tt_odepkg_example_secondorderlag is ready to contribute
+	  - tt_odepkg_example_vanderpol is ready to contribute
+	  - tt_odepkg_structure_check.m is ready to contribute
+	  - tt_odeget.m is ready to contribute
+	  - tt_odeset.m is ready to contribute
+	  - tt_odeplot.m is ready to contribute
+	  - tt_odeprint.m is ready to contribute
+	  - tt_ode23.m is ready to contribute
+	  - tt_ode45.m is ready to contribute
+	  - tt_ode54.m is ready to contribute
+	  - tt_ode78.m is ready to contribute
+
+2006.08.16
+	* What has to be done for the first release
+	  - parameters need to be given to the ODEs
+	  - add help texts in odeplot.m, ode23.m, ode2f.m etc.
+	  - add demos and tests to all function files
+
+Local Variables: ***
+mode: change-log ***
+End: ***

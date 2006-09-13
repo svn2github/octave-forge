@@ -4,7 +4,7 @@
 ->         populating the "Where does your code belong" section.
 ->         Albert Danial Jan 2 2002
 
-__HEADER__(`Developer's Notes')
+__HEADER__([[[Developer's Notes]]])
 
 <h2>Contributing Code to the Gnu Octave Repository</h2>
 

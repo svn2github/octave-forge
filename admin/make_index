@@ -15,9 +15,10 @@ use POSIX ":sys_wait_h";
 
 ## Local configuration; the OCTAVE directory should contain
 # src/DOCSTRINGS (which is a build product) and scripts/.
-my $OCTAVE  = "../octave";
+#my $OCTAVE  = "../octave";
+my $OCTAVE  = "/home/sh/Download/octave-2.9.8";
 my $tmpdir = "/tmp";   # temp directory
-my $catdir = "index";  # output directory
+my $catdir = "www/doc";  # output directory
 
 ## Commands to grab the last few defs from octave
 ## Use the first def if you want to extract from
@@ -637,13 +638,13 @@ sub write_html { # {{{1
     mkdir "$catdir";
     mkdir "$catdir/f";
 
-    write_main();
-    write_forgebar();
-    write_intro();
+    #write_main();
+    #write_forgebar();
+    write_index();
     write_alphabetic_navbar();
     write_TBnavbar();
     foreach ( toolbox_list() ) {
-	write_TBnavbar($_);
+	#write_TBnavbar($_);
 	write_TBdetails($_);
     }
 
@@ -657,9 +658,8 @@ sub write_html { # {{{1
 	my $body = long_desc($func);
 	if ($body ne "") {
 	    # XXX FIXME XXX this will die if the punctuation is too wild
-	    open FUNC, ">$catdir/f/$func.html" or die "Could not open $func.html";
-	    print FUNC "<html><head><title>$func</title></head>\n";
-	    print FUNC "<body>\n";
+	    open FUNC, ">$catdir/f/$func.in" or die "Could not open $func.in";
+	    print FUNC "__DOC_HEADER__([[[Function Reference: $func]]])";
 	    print FUNC "<table width=100%><tr><td align=left><b>$func</b>\n";
 	    # The toolboxes to which it belongs
 	    foreach my $pair ( @{$index_by_function{$func}} ) {
@@ -668,7 +668,7 @@ sub write_html { # {{{1
 	    }
 	    print FUNC "    <td align=right>", download_ref($func), "</table>\n";
 	    print FUNC "$body\n";
-	    print FUNC "$forgelink\n</body></html>";
+	    print FUNC "__TRAILER__";
             close FUNC;
 	}
 
@@ -678,7 +678,7 @@ sub write_html { # {{{1
 	my $next = uc(substr($func, 0, 1));
 	if ($next ne $Letter) {
 	    if ($Letter =~ /[A-Y]/) {
-		print OUT "</dl>\n$forgelink\n</body></html>\n";
+		print OUT "</dl>\n__TRAILER__\n";
 		close OUT;
 	    } else {
 		print OUT "</dl>\n";
@@ -692,15 +692,12 @@ sub write_html { # {{{1
 		} else {
 		    $head = "Z";
 		}
-		my $file = ">$catdir/$head.html";
+		my $file = ">$catdir/$head.in";
 		open(OUT, $file) or die "Cannot write $file";
-		print OUT "<html><head>\n";
-		print OUT "<title>Octave Functions: $head</title>\n";
-		print OUT "<meta name=\"keywords\" content=\"\"></head>\n";
-		print OUT "<body>\n";
+		print OUT "__DOC_HEADER__([[[Function Reference: $head]]])";
 	    }
 	    $Letter = $next;
-	    print OUT "<h1><a name=\"$Letter\">$Letter</a></h1>";
+	    print OUT "<h2><a name=\"$Letter\">$Letter</a></h2>\n";
 	    print OUT "<dl>\n";
 	}
 
@@ -719,7 +716,7 @@ sub write_html { # {{{1
 	print OUT "    <dd>",html_desc($func),"\n";
     }
 
-    print OUT "</dl>\n$forgelink\n</body></html>\n";
+    print OUT "</dl>\n__TRAILER__\n";
     close(OUT);
 } # 1}}}
 sub writenav { # 1{{{
@@ -778,59 +775,38 @@ sub download_ref {
 	return "";
     }
 }
-sub write_intro { # 1{{{
-    open(OUT,">$catdir/intro.html") or die "Could not open $catdir/intro.html";
+sub write_index { # 1{{{
+    open(OUT,">$catdir/index.in") or die "Could not open $catdir/index.in";
     print OUT <<EOF;
-<HTML><HEAD><TITLE>Octave-forge index intro</TITLE></HEAD>
-<BODY>
-<H1>Welcome to Octave-forge</H1>
-$forgelink
-</BODY></HTML>
+__DOC_HEADER__([[[Function Reference]]])
+<p>This page contains the documentation for individual functions provided by
+Octave and Octave-Forge. The documentation can either be accessed by category using 
+menu to the left, or alphabetically using the list in the top of the page.</p>
+__TRAILER__
 EOF
     close OUT;
 } # 1}}}
 sub write_TBnavbar { # 1{{{
     my $openTB = shift;
-    my $file = "categorical";
+    my $file = "menu";
     $file = "nav$openTB" if $openTB ne "";
-    open(OUT,">$catdir/$file.html") or die "Could not open $catdir/$file.html";
-    print OUT <<EOF;
-<html><head><title>Octave-forge categorical index</title></head>
-<body>
-What\'s available:
-<ol>
-EOF
+    open(OUT,">$catdir/$file.include") or die "Could not open $catdir/$file.include";
+
+	print OUT "<a href=\"__BASE_ADDRESS__/index.html\">Home</a>\n";
+
     foreach my $TB (toolbox_list()) {
-#	print OUT "<li><a href=\"$TB.html\" target=content><a href=\"nav$TB.html#$TB\" target=navbar>$TB_description{$TB}</a></a>";
-	print OUT "<li>";
-	if ($openTB eq $TB) {
-	    print OUT "<a name=\"$TB\"><a href=\"categorical.html#$TB\" target=navbar>
-$TB_description{$TB}</a></a>";
-	    print OUT "<ul>\n";
-	    foreach my $cat ( cat_list($TB) ) {
-		my $anchor = cat_anchor($cat);
-		print OUT "    <li><a href=\"$TB.html#$anchor\" target=content>$cat</a></li>\n";
-	    }
-	    print OUT "</ul>\n";
-	} else {
-	    print OUT "<a name=\"$TB\"><a href=\"nav$TB.html#$TB\" target=navbar>$TB_description{$TB}</a></a>";
-	}
+	print OUT "<a href=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</a>\n";
     }
-    print OUT "</ol>\n</body></html>";
     close OUT;
 } # 1}}}
 sub write_TBdetails { # 1{{{
     my $TB = shift;
-    my $file   = "$catdir/$TB.html";
+    my $file   = "$catdir/$TB.in";
     
     open(OUT, ">$file") or die "Cannot write $file:  $!\n";
     print OUT <<EOF;
-<html><head>
-<title>$TB</title>
-<meta name=\"keywords\" content=\"\">
-</head>
-<body>
-<h1>$TB_description{$TB}</h1>
+__DOC_HEADER__([[[$TB]]])
+<h2>$TB_description{$TB}</h2>
 EOF
 
     # summary list of categories
@@ -844,7 +820,7 @@ EOF
     # Each category has a table of its functions and their descriptions.
     foreach my $cat ( cat_list($TB) ) {
 	my $anchor = cat_anchor($cat);
-	print OUT "<h2><a name=\"$anchor\">$cat</a></h2>\n";
+	print OUT "<h3><a name=\"$anchor\">$cat</a></h3>\n";
 	print OUT "<dl>\n";
 	foreach my $func ( cat_funcs($TB,$cat) ) {
 	    
@@ -859,22 +835,18 @@ EOF
 	}
 	print OUT "</dl>\n";
     }
-    print OUT "$forgelink\n</body></html>\n";
+    print OUT "__TRAILER__\n";
     close(OUT);
 } # 1}}}
 sub write_alphabetic_navbar { # 1{{{
-    open(OUT,">$catdir/alphabetic.html") or die "Could not open $catdir/alphabetic.html";
-    print OUT <<EOF;
-<html><head><title>Octave-Forge alphabetic list</title></head>
-<base target=content>
-<body>
-EOF
+    open(OUT,">$catdir/alphabetic.include") or die "Could not open $catdir/alphabetic.include";
+
     my $A_to_Z     = "";
     foreach (first_letters (indexed_funcs())) {
         $A_to_Z .= letter_ref($_) . "|";
     }
     $A_to_Z         =~ s/\s*\|\s*$//;  # strip last pipe separator
-    print OUT "<center>$A_to_Z</center>\n</body></html>\n";
+    print OUT "<div id=\"alphabetical\">>$A_to_Z</div>\n";
     close OUT;
 } # 1}}}
 sub oldnavbar { # 1{{{

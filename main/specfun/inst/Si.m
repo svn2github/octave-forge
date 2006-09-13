@@ -33,8 +33,12 @@ function y = Si(x)
 			y = quad(F,0,x);
 		else
 			y = 0;
-			for i = 1:100;
-				y = y + (-1)^(i-1).*((x.^(2.*i-1))/((2.*i-1).*factorial(2.*i-1)));
-			endfor;
+			for k = 0:100
+				y = y + (besselj(k + 0.5,x./2)).^2;
+			endfor
+			y = y.*pi;
+			if(real(x)==0)
+				y=imag(y);
+			endif
 		endif;
 endfunction;

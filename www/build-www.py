@@ -48,7 +48,7 @@ def create_index_html(packdir, outdir):
     
     ## Write header
     fid = open(outdir + "/index.in", "w");
-    fid.write("__HEADER__(`The " + desc['name'] + " package')");
+    fid.write("__HEADER__([[[The " + desc['name'] + " package]]])");
     
     ## Write important data
     fid.write('    <table id="main_package_table">\n');
@@ -114,7 +114,7 @@ def create_license_html(package_name, packdir, outdir):
 
     ## Write output
     fid = open(outdir + "/license.in", "w");
-    fid.write("__HEADER__(`The " + package_name + " package')\n");
+    fid.write("__HEADER__([[[The " + package_name + " package]]])\n");
     fid.write("<h3>The license terms for the " + package_name + " package are as follows</h3>\n");
     fid.write('<p><textarea rows="20" cols="80" readonly>');
     for c in license:
@@ -153,7 +153,7 @@ def handle_package(packdir, outdir):
 def main():
     ## Start the package file
     index = open("packages.in", "w");
-    index.write("__HEADER__(`Packages')");
+    index.write("__HEADER__([[[Packages]]])");
     index.write('<p>The following packages are currently available in the repository.\n');
     index.write("If you don't know how to install the packages please read the\n");
     index.write('relevant part of the <a href="FAQ.html#install">FAQ</a>.\n</p>');
@@ -184,7 +184,10 @@ def main():
                 desc = handle_package(packdir, outdir);
                 index.write('<div class="package">\n');
                 index.write('  <b>' + desc['name'] + '</b>\n');
-                index.write('<p>' + desc['description'][:100] + '...</p>\n');
+                index.write('<p>' + desc['description'][:100]);
+                if (len(desc['description']) > 100):
+                    index.write('...');
+                index.write('</p>\n');
                 index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
                 index.write('<a href="' + outdir + '/index.html">download</a></p>\n');
                 index.write('</div>\n');

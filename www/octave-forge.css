@@ -29,7 +29,7 @@ div#nav {
   font-size: 0.8em;
   margin: 1em 0 0 1em;
   padding: 0;
-  position: fixed;
+  //position: fixed;
   text-align: left;
   width: 10em;
 }
@@ -51,9 +51,17 @@ div#nav a:hover {
 
 /* the page content */
 
+div#alphabetical {
+  display: block;
+  margin-left: 11em;
+  margin-top: 1em;
+  text-align: center;
+}
+
 div#content {
-display: block;
-margin-left: 11em;
+  display: block;
+  margin-left: 11em;
+  margin-top: 1em;
 }
 
 div.section {
@@ -131,14 +139,16 @@ padding: 2px;
 margin-top: 5px;
 }
 
+/*
 code {
-  padding: 5px;
+  padding: 1px;
   margin-left: 1em;
   border: 1px solid;
   border-color: #babdb6;
   background-color: #d3d7cf;
   color: black;
 }
+*/
 
 table#main_package_table {
   margin-top: 1em;

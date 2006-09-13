@@ -1,4 +1,4 @@
-__HEADER__(`Bugs')
+__HEADER__([[[Bugs]]])
 
 <p>If you think you have found a bug in one of the Octave-Forge packages,
   please report it, by sending a message to the 

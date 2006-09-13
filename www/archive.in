@@ -1,4 +1,4 @@
-__HEADER__(`Mailing list')
+__HEADER__([[[Mailing list]]])
 
 <p>Bugs, enhancements, and other stuff are debated on the Octave-Forge
   mailing list. It's a fairly low-trafic list, and you are most welcome

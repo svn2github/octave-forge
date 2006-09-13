@@ -1,10 +1,13 @@
-__HEADER__(`Documentation')
+__HEADER__([[[Documentation]]])
 
 <p>On this page you'll find various kinds of documentation. If you need documentation
 on individual packages, see the package page.</p>
 
 <h2>User Questions</h2>
 <p>Most questions asked by users are answers in the <a href="FAQ.html">FAQ</a>.</p>
+
+<h2>Function Reference</h2>
+<p>Documentation for individual functions can be found <a href="doc/index.html">here</a>.</p>
 
 <h2>Developers Documents</h2>
 <ul>

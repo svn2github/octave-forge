@@ -95,6 +95,25 @@ define(`__HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 dnl
 dnl
 dnl
+define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<head>
+<title>$1</title>
+<link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
+</head>
+<body>
+<div id="title"><h1>$1</h1></div>
+<div id="nav">
+include([[[doc/menu.include]]])
+</div>
+include([[[doc/alphabetic.include]]])
+<div id="content">
+')dnl
+dnl
+dnl
+dnl
 define(`__BIG_HEADER__', `__HEADER__($1)
 <p>
 ifdef(`__TEXT_MODE__',
@@ -257,3 +276,7 @@ ifdef(`__TEXT_MODE__',
 `__GRAPHICS_DOWNLOAD_INFO__($@)')
 </p>
 ')dnl
+dnl
+dnl
+dnl
+changequote([[[, ]]])

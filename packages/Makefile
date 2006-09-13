@@ -12,6 +12,7 @@ RUN_OCTAVE= HOME=`pwd` $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
 PKGDIRS = $(filter-out packages, $(patsubst ../%/, %, $(dir $(wildcard ../*/Makefile))))
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
+RPMDIR=RPM
 
 .PHONY: $(PKGDIRS) install
 
@@ -31,11 +32,13 @@ mostlyclean:
 	@rm -fr $(TESTLOG) sandbox *~ *.tar.gz
 
 clean: mostlyclean
-	@rm -fr $(PKGDIRS)
+	@rm -fr $(PKGDIRS) $(RPMDIR)
 
 check: cleanlog $(patsubst %, checkpkg/%, $(PACKAGES))
 
 icheck: $(patsubst %, icheckpkg/%, $(PACKAGES))
+
+srpms: $(patsubst %, srpm/%, $(PACKAGES))
 
 cleanlog:
 	@rm $(TESTLOG)
@@ -103,6 +106,9 @@ mkpkg/%:
 	  done; \
 	done; \
 	cd ..
+
+srpm/%:
+	@$(TOPDIR)/admin/make_rpm $(opkg) $(TOPDIR)/admin/template.rpm $(RPMDIR)
 
 run:
 	cd sandbox; \

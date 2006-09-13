@@ -1,0 +1,195 @@
+#!/usr/bin/env perl
+#
+# David Bateman Sep 12 2006
+# 
+# Creates a source RPM from an octave package.
+
+#use strict;
+use Cwd;
+use File::Basename;
+use Text::Wrap;
+use FileHandle;
+
+my $pkg = shift @ARGV;
+my $template = shift @ARGV;
+my $rpmdir = shift @ARGV;
+my $tmpdir = "rpm_tmp";
+my $rpmdesc = sprintf("%s/DESCRIPTION", $tmpdir);
+my $old_pwd = cwd();
+
+system ("rm -rf $tmpdir");
+mkdir($tmpdir);
+chdir($tmpdir);
+system ("tar xpzf $old_pwd/$pkg");
+system ("mv */DESCRIPTION .");
+chdir($old_pwd);
+
+mkdir($rpmdir);
+mkdir(sprintf("%s/SPECS", $rpmdir));
+mkdir(sprintf("%s/SOURCES", $rpmdir));
+mkdir(sprintf("%s/SRPMS", $rpmdir));
+system(sprintf("cp %s %s/SOURCES", $pkg, $rpmdir));
+
+my %desc = parse_description ($rpmdesc, $pkg);
+my $spec = sprintf("%s/SPECS/%s.spec", $rpmdir, $desc{"NAME"});
+system ("rm -rf $tmpdir");
+
+create_spec ($spec, $template, %desc);
+create_srpm ($spec, $pkg, $rpmdir);
+#system (sprintf("mv %s/SRPMS/* .", $rpmdir));
+#system (sprinf("rm -rf %s", $rpmdir));
+
+sub date {
+    my ($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, 
+	$dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
+    my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+    my @weekdays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+    my $dstr = sprintf("%s %s %d %d", $weekdays[$dayOfWeek], 
+		       $months[$month], $dayOfMonth, $yearOffset+1900);
+    return $dstr;
+}
+
+sub create_srpm {	# {{{1
+    my ($spec,		# The spec file to write
+	$pkg,		# The binary octave package itself
+	$rpmdir		# Where the rpm's are built
+	)	= @_;
+    system (sprintf("rpm -bs --define '_topdir %s/%s' %s", cwd(), $rpmdir, $spec));
+}	# 1}}}
+
+sub create_spec {	# {{{1
+    my ($spec,		# The spec file to write
+	$template,	# The location of the template
+	%desc,		# The hash of the description file
+	@deps		# Array of hashs of the dependencies
+	)	= @_;
+
+    open (OUT,sprintf(">%s",$spec)) or die "Couldn't open $spec";
+    open (RPM,$template) or die "Could not open file $template";
+    while (<RPM>) {
+	while ( /@\w+@/ ) {
+	    my $keyword = $_;
+	    $keyword =~ s/^.*@(\w*)@.*$/\1/;
+	    chomp $keyword;
+	    my $key = sprintf("@%s@", $keyword);
+	    if (! defined $desc{$keyword} ) {
+		s/$key//;
+	    } else {
+		my $value = $desc{$keyword};
+		s/$key/$value/;
+	    }
+	}
+	if ( /^>>REQUIRES<<$/ ) {
+	    # Write the additional octave run time dependencies
+	    my $depstr = "";
+	    if (defined $desc{"DEPENDS"}) {
+		my @deps = cleanup_depends ($desc{"DEPENDS"});
+
+		foreach my $i ( 0 .. $#deps ) {
+		    my $hash = $deps[$i];
+		    next if $hash->{"package"} =~ /^octave$/;
+		    $depstr = sprintf("%sRequires: octave_%s", $depstr, 
+				      $hash->{"package"});
+		    if ( $hash->{"version"}  !~ /^0.0.0$/ ) {
+			$depstr = sprintf("%s %s %s", $depstr, 
+					  $hash->{"operator"},
+					  $hash->{"version"});
+		    }
+		    $depstr = sprintf("%s\n", $depstr);
+		}
+	    }
+	    $_ = $depstr;
+	}
+	if ( /^>>BUILDREQUIRES<<$/ ) {
+	    # Write the additional build dependencies
+	    my $depstr = "";
+	    if ( system ("rpm -q octave-devel > /dev/null 2>&1") == 0) {
+		$depstr = "BuildRequires: octave-devel\n";
+	    } else {
+		$depstr = "BuildRequires: octave\n";
+	    }
+
+	    if (defined $desc{"SYSTEMREQUIREMENTS"}) {
+		my @deps = cleanup_depends ($desc{"SYSTEMREQUIREMENTS"});
+
+		foreach my $i ( 0 .. $#deps ) {
+		    my $hash = $deps[$i];
+		    $depstr = sprintf("%sRequires: %s", $depstr, 
+				      $hash->{"package"});
+		    if ( $hash->{"version"}  !~ /^0.0.0$/ ) {
+			$depstr = sprintf("%s %s %s", $depstr, 
+					  $hash->{"operator"},
+					  $hash->{"version"});
+		    }
+		    $depstr = sprintf("%s\n", $depstr);
+		}
+	    }
+	    $_ = $depstr;
+	}
+	print OUT sprintf("%s", $_);
+    }
+    close (OUT);
+    close (RPM);
+}	# 1}}}
+
+sub parse_description { # {{{1
+    my ($rpmdesc,	# The package description file
+	$pkg		# The binary octave package itself
+	)       = @_;
+
+    my %desc = ();
+    open(DESC,$rpmdesc) or die "Could not open file $rpmdesc\n";
+    my $keyword = "";
+    while (<DESC>) {
+	# Comments
+	next if /^#/;
+	if ( /^\s+/ ) {
+	    # Continuation line
+	    if ( $keyword !~ /^$/ && defined $desc{$keyword}) {
+		$desc{$keyword} = sprintf("%s%s", $desc{$keyword}, $_);
+	    }
+	} else {
+	    # Keyword/value pair
+	    $keyword = $_;
+	    $keyword =~ s/^\s*(\w+)\s*:.*$/\1/;
+	    chomp $keyword;
+	    my $value = $_;
+	    $value =~ s/^\s*\w+\s*:\s*(.*)$/\1/;
+	    chomp $value;
+	    if ( $keyword !~ /^$/ ) {
+		$keyword = uc $keyword;	# Convert to uppercase
+		$desc{$keyword} = $value;
+	    }
+	}
+    }
+    close (DESC);
+    # Do the cleanup that is needed
+    $desc{"NAME"} = lc $desc{"NAME"};	# Name must be lower-case
+
+    # There are two special keywords that must be set
+    $desc{"DATE"} = date();
+    $pkg =~ s/^.*\///;	# Remove main/, extra/, etc from package
+    $desc{"PACKAGE"} = $pkg;
+    return %desc;
+}	# 1}}}
+
+sub cleanup_depends {	# {{{1
+    my ($depstr,	# The string with the dependencies
+	)	= @_;
+    my @deps = ();
+    foreach my $d ( split (/,/,$depstr) ) {
+	my $hash;
+	my $p = $d;
+	$p =~ s/^\s*(\w*).*$/\1/;
+	$hash->{"package"} = $p;
+	my $o = $d;
+	$o =~ s/^.*\(\s*([<>=]+).*$/\1/;
+	$o =~ s/==/=/;
+	$hash->{"operator"} = $o;
+	my $v = $d;
+	$v =~ s/^.*\(\s*[<>=]+\s*(.*)\).*$/\1/;
+	$hash->{"version"} = $v;
+	push @deps, $hash;
+    } 
+    return @deps;
+}	# 1}}}

@@ -13,7 +13,7 @@ SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 
 ifdef OCTAVE_FORGE
 
-.PHONY: all install packages package check icheck
+.PHONY: all install packages package check icheck srpms
 
 all: clearlog packages
 	@echo "Packaging finished."
@@ -47,11 +47,15 @@ check:
 
 icheck:
 	@$(MAKE) -C packages $(MAKECMDGOALS)
+
+srpms:
+	@$(MAKE) -C packages $(MAKECMDGOALS)
+	@echo "*** You can find the built SRPMs in packages/RPM/SRPMS ***"
 else
 
-.PHONY: all install
+.PHONY: all install srpms
 
-all install:
+all install srpms:
 	@echo "./configure ; make"
 
 endif

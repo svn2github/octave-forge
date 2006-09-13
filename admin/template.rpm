@@ -1,0 +1,80 @@
+Name:           octave_@NAME@
+Version:	@VERSION@
+Release:	1%{distsuffix}
+Summary:	@TITLE@
+Group:		Applications/Engineering
+License:	@LICENSE@
+URL:		http://octave.sourceforge.net
+Source0:	http://prdownloads.sourceforge.net/octave/@PACKAGE@
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+
+## Package installs in a directory tree specific to the installed
+## version of octave, so the following version dependency is necessary.
+%define octave_ep  %(rpm -q --qf '%%{epoch}' octave)
+%define octave_ver %(rpm -q --qf '%%{version}' octave)
+
+Requires:	octave = %{octave_ep}:%{octave_ver}
+>>REQUIRES<<
+BuildRequires:	gcc-c++ tetex gcc-gfortran libstdc++-devel
+BuildRequires:	libstdc++-devel 
+>>BUILDREQUIRES<<
+
+## FIXME Need to correctly define the %octave macro to treat multiple
+## installed versions of octave.
+%define builtpackage @NAME@_built-@VERSION@.tar.gz
+%define octave octave
+
+%description
+@DESCRIPTION@
+
+%prep
+rm -fr @NAME@-@VERSION@
+mkdir @NAME@-@VERSION@
+cd @NAME@-@VERSION@
+cp %{_sourcedir}/@PACKAGE@ .
+chmod a+r @PACKAGE@
+mkdir -p install/@NAME@
+mkdir install/inst
+
+%build
+cd @NAME@-@VERSION@
+echo "global OCTAVE_PACKAGE_PREFIX;" > .octaverc
+echo "OCTAVE_PACKAGE_PREFIX=[pwd() '/install'];" >> .octaverc
+HOME=`pwd` %{octave} -H -q --no-site-file --eval 'pkg("install","@PACKAGE@")'
+cd install
+mv @NAME@-@VERSION@/packinfo/* @NAME@
+rm -rf @NAME@-@VERSION@/packinfo
+if [ -d @NAME@-@VERSION@/doc ]; then mv @NAME@-@VERSION@/doc @NAME@; fi
+if [ -d @NAME@-@VERSION@/bin ]; then mv @NAME@-@VERSION@/bin @NAME@; fi
+if [ -e @NAME@-@VERSION@/PKG_ADD ]; then mv @NAME@-@VERSION@/PKG_ADD @NAME@; fi
+if [ -e @NAME@-@VERSION@/PKG_DEL ]; then mv @NAME@-@VERSION@/PKG_DEL @NAME@; fi
+mv @NAME@-@VERSION@/* @NAME@/inst
+tar czf ../%{builtpackage} @NAME@
+
+%install
+cd @NAME@-@VERSION@
+rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_datadir}
+cp %{builtpackage} %{buildroot}%{_datadir}
+
+%post
+%{octave} -H -q --no-site-file --eval "pkg('install','%{builtpackage}')"
+rm %{_datadir}/%{builtpackage}
+
+%postun
+%{octave} -H -q --no-site-file --eval "pkg('uninstall','@NAME@')"
+
+%clean
+rm -fr %{buildroot}
+
+%files
+%defattr(-,root,root)
+%{_datadir}/*
+
+%changelog
+# Changelog for packages rebuilt on stable releases (leave it first):
+%{!?_with_unstable:* %(LC_ALL=C date +"%a %b %d %Y") %{packager} %{version}-%{release}}
+%{!?_with_unstable: - rebuild of %{version}-%{rel}%{distsuffix} for %{distversion}}
+
+* @DATE@ @MAINTAINER@ @VERSION@-1%{distsuffix}
+- Automatically created from octave-forge package

@@ -176,6 +176,10 @@ dnl
 dnl
 dnl
 define(`__TRAILER__', `
+<div id="sf_logo">
+  <a  href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=4"  width="125"
+height="37" border="0" alt="SourceForge.net Logo"  /></a>
+</div>
 </body>
 </html>')dnl
 dnl

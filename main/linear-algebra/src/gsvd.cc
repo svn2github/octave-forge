@@ -39,9 +39,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 DEFUN_DLD (gsvd, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} gsvd (@var{a}, @var{b})\n\
-@deftypefnx {Loadable Function} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x}] =} gsvd (@var{a}, @var{b})\n\
+@deftypefnx {Loadable Function} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x} [, @var{r}]] =} gsvd (@var{a}, @var{b})\n\
 @cindex generalised singular value decomposition\n\
-Compute the generalised singular value decomposition of (@var{a}, @var{b})\n\
+Compute the generalised singular value decomposition of (@var{a}, @var{b}):\n\
 @iftex\n\
 @tex\n\
 $$\n\
@@ -172,9 +172,8 @@ r =\n\
 \n\
 @end example\n\
 \n\
-If given a second argument, @code{svd} returns an economy-sized\n\
-decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
-@var{v}.\n\
+The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.\n\
+\n\
 @end deftypefn\n")
 {
   octave_value_list retval;

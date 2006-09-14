@@ -1,6 +1,6 @@
 Name:           octave_@NAME@
 Version:	@VERSION@
-Release:	1%{distsuffix}
+Release:	1%{?distsuffix}
 Summary:	@TITLE@
 Group:		Applications/Engineering
 License:	@LICENSE@
@@ -21,7 +21,7 @@ BuildRequires:	libstdc++-devel
 
 ## FIXME Need to correctly define the %octave macro to treat multiple
 ## installed versions of octave.
-%define builtpackage @NAME@_built-@VERSION@.tar.gz
+%define builtpackage @NAME@-@VERSION@.tar.gz
 %define octave octave
 
 %description
@@ -49,6 +49,7 @@ if [ -d @NAME@-@VERSION@/bin ]; then mv @NAME@-@VERSION@/bin @NAME@; fi
 if [ -e @NAME@-@VERSION@/PKG_ADD ]; then mv @NAME@-@VERSION@/PKG_ADD @NAME@; fi
 if [ -e @NAME@-@VERSION@/PKG_DEL ]; then mv @NAME@-@VERSION@/PKG_DEL @NAME@; fi
 mv @NAME@-@VERSION@/* @NAME@/inst
+rm -fr @PACKAGE@
 tar czf ../%{builtpackage} @NAME@
 
 %install
@@ -74,7 +75,7 @@ rm -fr %{buildroot}
 %changelog
 # Changelog for packages rebuilt on stable releases (leave it first):
 %{!?_with_unstable:* %(LC_ALL=C date +"%a %b %d %Y") %{packager} %{version}-%{release}}
-%{!?_with_unstable: - rebuild of %{version}-%{rel}%{distsuffix} for %{distversion}}
+%{!?_with_unstable: - rebuild of %{version}-%{rel}%{?distsuffix} for %{distversion}}
 
-* @DATE@ @MAINTAINER@ @VERSION@-1%{distsuffix}
+* @DATE@ @MAINTAINER@ @VERSION@-1%{?distsuffix}
 - Automatically created from octave-forge package

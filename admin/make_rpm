@@ -54,7 +54,7 @@ sub create_srpm {	# {{{1
 	$pkg,		# The binary octave package itself
 	$rpmdir		# Where the rpm's are built
 	)	= @_;
-    system (sprintf("rpm -bs --define '_topdir %s/%s' %s", cwd(), $rpmdir, $spec));
+    system (sprintf("rpmbuild -bs --define '_topdir %s/%s' %s", cwd(), $rpmdir, $spec));
 }	# 1}}}
 
 sub create_spec {	# {{{1

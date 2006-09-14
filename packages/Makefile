@@ -108,7 +108,7 @@ mkpkg/%:
 	cd ..
 
 srpm/%:
-	@$(TOPDIR)/admin/make_rpm $(opkg) $(TOPDIR)/admin/template.rpm $(RPMDIR)
+	@$(TOPDIR)/admin/make_rpm $(opkg) $(TOPDIR)/admin/rpm_template.in $(RPMDIR)
 
 run:
 	cd sandbox; \

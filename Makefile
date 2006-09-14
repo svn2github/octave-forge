@@ -48,7 +48,7 @@ check:
 icheck:
 	@$(MAKE) -C packages $(MAKECMDGOALS)
 
-srpms:
+srpms: clearlog packages
 	@$(MAKE) -C packages $(MAKECMDGOALS)
 	@echo "*** You can find the built SRPMs in packages/RPM/SRPMS ***"
 else

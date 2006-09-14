@@ -17,12 +17,13 @@ Requires:	octave = %{octave_ep}:%{octave_ver}
 >>REQUIRES<<
 BuildRequires:	gcc-c++ tetex gcc-gfortran libstdc++-devel
 BuildRequires:	libstdc++-devel 
+BuildRequires:  %(rpm -q --qf '%%{name}' %(rpm -q -f `which mkoctfile`))
 >>BUILDREQUIRES<<
 
 ## FIXME Need to correctly define the %octave macro to treat multiple
 ## installed versions of octave.
 %define builtpackage @NAME@-@VERSION@.tar.gz
-%define octave octave
+%define octave octave-%{octave_ver}
 
 %description
 @DESCRIPTION@
@@ -34,7 +35,7 @@ cd @NAME@-@VERSION@
 cp %{_sourcedir}/@PACKAGE@ .
 chmod a+r @PACKAGE@
 mkdir -p install/@NAME@
-mkdir install/inst
+mkdir install/@NAME@/inst
 
 %build
 cd @NAME@-@VERSION@
@@ -49,7 +50,7 @@ if [ -d @NAME@-@VERSION@/bin ]; then mv @NAME@-@VERSION@/bin @NAME@; fi
 if [ -e @NAME@-@VERSION@/PKG_ADD ]; then mv @NAME@-@VERSION@/PKG_ADD @NAME@; fi
 if [ -e @NAME@-@VERSION@/PKG_DEL ]; then mv @NAME@-@VERSION@/PKG_DEL @NAME@; fi
 mv @NAME@-@VERSION@/* @NAME@/inst
-rm -fr @PACKAGE@
+rm -fr @PACKAGE@
 tar czf ../%{builtpackage} @NAME@
 
 %install
@@ -59,7 +60,7 @@ mkdir -p %{buildroot}%{_datadir}
 cp %{builtpackage} %{buildroot}%{_datadir}
 
 %post
-%{octave} -H -q --no-site-file --eval "pkg('install','%{builtpackage}')"
+%{octave} -H -q --no-site-file --eval "warning('off','all');pkg('install','%{_datadir}/%{builtpackage}')"
 rm %{_datadir}/%{builtpackage}
 
 %postun

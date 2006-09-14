@@ -1,1 +1,37 @@
-This is the target directory, where the source packages are placed.
+This is the target directory, where the source packages are placed. It
+is also the directory where the test code is run for each of the
+packages and where the source RPMs are automatically built. There
+should be no reason for the user to add files to this directory
+
+There are several top-level make targets that will affect the contents
+of this directory. These are
+
+"make all" - This will cause all of the octave-forge sub-directories
+to be traversed and the source packages for these built and place in
+this directory. These are placed in sub-directories corresponding to
+the sub-directory name where the CVS controlled code is found. That is
+main/, extra/ or nonfree/.
+
+"make check" - This will build all of the packages individually in an
+environment protected from other installed octave packages and test
+each package individually. This allows checking of the packages
+dependencies on other octave packages to also be debugged. Note that
+this means that the packages are compiled prior to the checks being
+run and so this target is likely to take some time
+
+"make icheck" - This is similar to the above target but allows the
+interactive demo code in the packages to be shown. It will equally
+take a long time due to the packages being rebuilt
+
+"make install" - This is a deprecated target that allows all of the
+packages in this directory to be installed. Control of which packages
+to install in determined by the NOINSTALL files in the main package
+source repositories.
+
+"make srpms" - This target allows the automatic creation of the SRPM
+files for each of the packages. These will appear under the RPM
+sub-directory. This target should be run on the distribution where it
+will be used, as some of the automatic dependency checking code is
+defined at the time this target is run.
+
+"make debs" - FIXME this target does not yet exist

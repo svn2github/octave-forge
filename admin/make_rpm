@@ -31,7 +31,7 @@ mkdir(sprintf("%s/SRPMS", $rpmdir));
 system(sprintf("cp %s %s/SOURCES", $pkg, $rpmdir));
 
 my %desc = parse_description ($rpmdesc, $pkg);
-my $spec = sprintf("%s/SPECS/%s.spec", $rpmdir, $desc{"NAME"});
+my $spec = sprintf("%s/SPECS/octave_%s.spec", $rpmdir, $desc{"NAME"});
 system ("rm -rf $tmpdir");
 
 create_spec ($spec, $template, %desc);
@@ -103,11 +103,6 @@ sub create_spec {	# {{{1
 	if ( /^>>BUILDREQUIRES<<$/ ) {
 	    # Write the additional build dependencies
 	    my $depstr = "";
-	    if ( system ("rpm -q octave-devel > /dev/null 2>&1") == 0) {
-		$depstr = "BuildRequires: octave-devel\n";
-	    } else {
-		$depstr = "BuildRequires: octave\n";
-	    }
 
 	    if (defined $desc{"SYSTEMREQUIREMENTS"}) {
 		my @deps = cleanup_depends ($desc{"SYSTEMREQUIREMENTS"});

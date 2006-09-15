@@ -1,0 +1,25 @@
+Name:		octave_forge_@NAME@
+Version:	@VERSION@
+Release:	1%{?distsuffix}
+Summary:	Metapackage for octave-forge @NAME@ packages
+Group:		Applications/Engineering
+License:	Distributable
+URL:		http://octave.sourceforge.org
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+
+>>REQUIRES<<
+
+BuildArch: noarch
+
+%description
+@DESCRIPTION@
+
+%files
+
+%changelog
+# Changelog for packages rebuilt on stable releases (leave it first):
+%{!?_with_unstable:* %(LC_ALL=C date +"%a %b %d %Y") %{packager} %{version}-%{release}}
+%{!?_with_unstable: - rebuild of %{version}-%{rel}%{?distsuffix} for %{distversion}}
+
+* @DATE@ @MAINTAINER@ @VERSION@-1%{?distsuffix}
+- Automatically created from octave-forge package

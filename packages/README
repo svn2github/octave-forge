@@ -34,4 +34,10 @@ sub-directory. This target should be run on the distribution where it
 will be used, as some of the automatic dependency checking code is
 defined at the time this target is run.
 
-"make debs" - FIXME this target does not yet exist
+"make debs" - FIXME this target does not yet exist.
+
+Please note that we supply the automatically generated RPMs and DEBs
+as a service to the distribution packages. Due to name conflicts of
+packages between distributions we consider these automatically
+generated packages to be a starting point for the final packager to
+work from rather than a final version.

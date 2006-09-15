@@ -1,0 +1,131 @@
+#!/usr/bin/env perl
+#
+# David Bateman Sep 12 2006
+# 
+# Creates a source RPM from an octave package.
+
+#use strict;
+use Cwd;
+use File::Find;
+use File::Basename;
+use Text::Wrap;
+use FileHandle;
+
+my $ofdir = shift @ARGV;
+my $template = shift @ARGV;
+my $rpmdir = shift @ARGV;
+
+my @desc_files = ();
+find(\&desc_files, $ofdir);
+sub desc_files { # {{{1 populates global array @files
+    return unless -f and /DESCRIPTION$/;
+    return if (-e "NOINSTALL");
+    my $file = "$File::Find::dir/$_";
+    $file =~ s|^[.]/||;
+    push @desc_files, $file; 
+} # 1}}}
+
+exit unless ($#desc_files >= 0);
+
+my ($dstr, $ver) = date();
+my $pkg = sprintf("octave-forge-%s-%s.tar.gz", $name, $ver);
+my $contents = get_contents($ofdir);
+my $name = $ofdir;
+$name =~ s|^.*/||;
+my %desc = ( 'NAME', $name, 
+	    'VERSION', $ver, 
+	    'PACKAGE', $pkg, 
+	    'DESCRIPTION', $contents, 
+	    'DATE', $dstr, 
+	    'MAINTAINER', 'The Octave-Forge Community');
+
+my $spec = sprintf("%s/SPECS/octave_forge_%s-%s.spec", $rpmdir, 
+		   $desc{"NAME"}, $desc{"VERSION"});
+
+create_spec ($spec, $template, %desc);
+create_srpm ($spec, $pkg, $rpmdir);
+
+sub date {
+    my ($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, 
+	$dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
+    my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+    my @weekdays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+    my $dstr = sprintf("%s %s %d %d", $weekdays[$dayOfWeek], 
+		       $months[$month], $dayOfMonth, $yearOffset+1900);
+    my $ver = sprintf("%4s%02s%02s", $yearOffset+1900, $month, $dayOfMonth);
+    return ($dstr, $ver);
+}
+
+sub get_contents {
+    my ($ofdir		# The directory where to find the CONTENTS file
+	)	= @_;
+    my $file = sprintf ("%s/CONTENTS", $ofdir);
+    open (CNT, $file) or die  "Could not open file $file";
+    my $cnt = "";
+    while (<CNT>) {
+	$cnt = sprintf("%s%s", $cnt, $_);
+    }
+    close (CNT);
+
+    return $cnt;
+}
+
+sub create_srpm {	# {{{1
+    my ($spec,		# The spec file to write
+	$pkg,		# The binary octave package itself
+	$rpmdir		# Where the rpm's are built
+	)	= @_;
+    system (sprintf("rpmbuild -bs --define '_topdir %s/%s' %s", cwd(), $rpmdir, $spec));
+}	# 1}}}
+
+sub create_spec {	# {{{1
+    my ($spec,		# The spec file to write
+	$template,	# The location of the template
+	%desc		# The hash of the description file
+	)	= @_;
+
+    open (OUT,sprintf(">%s",$spec)) or die "Couldn't open $spec";
+    open (RPM,$template) or die "Could not open file $template";
+    while (<RPM>) {
+	while ( /@\w+@/ ) {
+	    my $keyword = $_;
+	    $keyword =~ s/^.*@(\w*)@.*$/\1/;
+	    chomp $keyword;
+	    my $key = sprintf("@%s@", $keyword);
+	    if (! defined $desc{$keyword} ) {
+		s/$key//;
+	    } else {
+		my $value = $desc{$keyword};
+		s/$key/$value/;
+	    }
+	}
+	if ( /^>>REQUIRES<<$/ ) {
+	    my $depstr = "";
+	    foreach my $f ( @desc_files ) {
+		open (DESC, $f) or die "Could not open file $f";
+		my $specname;
+		my $specversion;
+		while ( <DESC> ) {
+		    if ( /^Name:/ ) {
+			$specname = $_;
+			$specname =~ s/^Name:\s*//;
+			chomp $specname;
+			$specname = sprintf ("octave_%s", lc $specname);
+		    }
+		    if ( /^Version:/ ) {
+			$specversion = $_;
+			$specversion =~ s/^Version:\s*//;
+			chomp $specversion;
+		    }
+		}
+		close (DESC);
+		$depstr = sprintf("%sRequires:  %s = %s\n", 
+				  $depstr, $specname, $specversion);
+	    } 
+	    $_ = $depstr;
+	}
+	print OUT sprintf("%s", $_);
+    }
+    close (OUT);
+    close (RPM);
+}	# 1}}}

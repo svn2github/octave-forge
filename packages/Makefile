@@ -9,7 +9,7 @@ else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
 RUN_OCTAVE= HOME=`pwd` $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
-PKGDIRS = $(filter-out packages, $(patsubst ../%/, %, $(dir $(wildcard ../*/Makefile))))
+PKGDIRS = $(filter-out packages, $(patsubst $(TOPDIR)/%/, %, $(dir $(wildcard $(TOPDIR)/*/Makefile))))
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
 RPMDIR=RPM
@@ -38,7 +38,7 @@ check: cleanlog $(patsubst %, checkpkg/%, $(PACKAGES))
 
 icheck: $(patsubst %, icheckpkg/%, $(PACKAGES))
 
-srpms: $(patsubst %, srpm/%, $(PACKAGES))
+srpms: $(patsubst %, srpm/%, $(PACKAGES)) $(patsubst %, metarpm/%, $(PKGDIRS))
 
 cleanlog:
 	@rm $(TESTLOG)
@@ -108,7 +108,38 @@ mkpkg/%:
 	cd ..
 
 srpm/%:
-	@$(TOPDIR)/admin/make_rpm $(opkg) $(TOPDIR)/admin/rpm_template.in $(RPMDIR)
+	@if [ -e "/etc/mandriva-release" ] || [ -e "/etc/mandrake-release" ]; then \
+	  DIST="mandriva"; \
+	elif [ -e "/etc/fedora-release" ]; then \
+	  DIST="fedora"; \
+	elif [ -e "/etc/redhat-release" ] || [ -e "/etc/redhat_version" ]; then \
+	  DIST="redhat"; \
+	elif [ -e "/etc/SuSE-release" ]; then \
+	  DIST="suse"; \
+	elif [ -e "/etc/debian_version" ] || [ -e "/etc/debian_release" ]; then \
+	  DIST="debian"; \
+	elif [ -e "/etc/ubuntu-release" ]; then \
+	  DIST="ubuntu"; \
+	elif [ -e "/etc/slackware-release" ] || [ -e "/etc/slackware_version" ]; then \
+	  DIST="slackware"; \
+	elif [ -e "/etc/yellowdog-release" ]; then \
+	  DIST="yellowdog"; \
+	elif [ -e "/etc/gentoo-release" ]; then \
+	  DIST="gentoo"; \
+	elif [ `uname | grep -i mingw` ]; then \
+	  DIST="mingw"; \
+	elif [ `uname | grep -i cygwin` ]; then \
+	  DIST="cygwin"; \
+	else \
+	  echo "Can not identify the platform"; \
+	  exit -1; \
+	fi; \
+	$(TOPDIR)/admin/make_rpm $(opkg) $(TOPDIR)/admin/rpm_template.in $(RPMDIR) $$DIST
+
+metarpm/%:
+	@if [ -d $(opkg) ]; then \
+	  $(TOPDIR)/admin/make_rpmmeta $(TOPDIR)/$(opkg) $(TOPDIR)/admin/meta_template.in $(RPMDIR); \
+	fi
 
 run:
 	cd sandbox; \

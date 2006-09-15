@@ -16,7 +16,7 @@ use POSIX ":sys_wait_h";
 ## Local configuration; the OCTAVE directory should contain
 # src/DOCSTRINGS (which is a build product) and scripts/.
 #my $OCTAVE  = "../octave";
-my $OCTAVE  = "/home/sh/Download/octave-2.9.8";
+my $OCTAVE  = "/home/adb014/octave/cvs/octave";
 my $tmpdir = "/tmp";   # temp directory
 my $catdir = "www/doc";  # output directory
 

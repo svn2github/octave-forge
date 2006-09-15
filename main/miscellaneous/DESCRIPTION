@@ -7,5 +7,7 @@ Title: Miscellaneous functions.
 Description: Add a description to this package!
 Categories: Miscellaneous
 Depends: octave (>= 2.9.7)
+SystemRequirements: units
+BuildRequires: libtermcap-devel [Mandriva] libtermcap2-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net

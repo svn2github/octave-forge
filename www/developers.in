@@ -106,6 +106,12 @@ code belongs:
 	license should not be included anywhere, since no license implies
 	default license implies no rights to redistribute.
 
+	<li> <b><tt>packages/</tt></b><br>
+	This is the target directory, where the source packages are placed. It
+	is also the directory where the test code is run for each of the
+	packages and where the source RPMs are automatically built. There
+	should be no reason for the user to add files to this directory
+
 </ul>
 
 <h3>Add a copyright notice</h3>

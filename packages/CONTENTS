@@ -1,0 +1,4 @@
+This is the target directory, where the source packages are placed. It
+is also the directory where the test code is run for each of the
+packages and where the source RPMs are automatically built. There
+should be no reason for the user to add files to this directory

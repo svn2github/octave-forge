@@ -83,7 +83,7 @@ define(`__HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  <a href="__BASE_ADDRESS__/index.html">Home</a>
  <a href="__BASE_ADDRESS__/packages.html">Packages</a>
  <a href="__BASE_ADDRESS__/developers.html">Developers</a>
- <a href="__BASE_ADDRESS__/docs.html">Docs</a>
+ <a href="__BASE_ADDRESS__/docs.html">Documentation</a>
  <a href="__BASE_ADDRESS__/FAQ.html">FAQ</a> 
  <a href="__BASE_ADDRESS__/bugs.html">Bugs</a> 
  <a href="__BASE_ADDRESS__/archive.html">Mailing Lists</a>

@@ -189,14 +189,36 @@ package can should respect Octave's package managers file layout.
       <tr><td>Url:</td>
           <td>Optional list of homepages related to the package</td></tr>
       <tr><td>Depends:</td>
-          <td>A list of other packages that this package depends on</td></tr>
+          <td>A list of other octave packages that this package
+	      depends on. This can include dependencies on particular
+	      versions, which a format.
+<pre>
+	Depends: package (>= 1.0.0)
+</pre>
+	      Possible operators are <, <=, ==, >= or >. If the part
+	      of the dependency in () is missing, any version of the
+	      package is acceptable. Multiple dependencies can be
+	      defined either as a comma separated list or on separate
+	      Depends lines.</td></tr>
       <tr><td>License:</td>
-
           <td>An optional short description of the used license 
               (e.g. GPL version 2 or newer). This is optional
               since the file COPYING is mandatory.</td></tr>
       <tr><td>SystemRequirements:</td>
-          <td>External dependencies (will not be checked)</td></tr>
+          <td>These are the external install dependencies of the package
+	      and are not checked by the package manager. This here as a
+              hint to the distribution packager. They follows the same
+	      conventions as the Depends keyword.</td></tr>
+      <tr><td>BuildRequires:</td>
+      	  <td>These are the external build dependencies of the package
+	      and are not checked by the package manager. This here as
+	      a hint to the distribution packager. They follows the same
+	      conventions as the Depends keyword. Note that in
+	      general, packaging systems such as rpm or deb and
+	      autoprobe the install dependencies from the build
+	      dependencies, and therefore the often a BuildRequires
+	      dependency removes the need for a SystemRequirements
+	      dependency.</td></tr>
     </table>
     The file format should be something like this:
     </p>
@@ -208,7 +230,20 @@ package can should respect Octave's package managers file layout.
       <li>Everything else is of the form NameOfOption: ValueOfOption</li>
     </ul>
 	The developer is free to add additional arguments to the
-        DESCRIPTION file for their own purposes.
+        DESCRIPTION file for their own purposes. Note that
+        octave-forge contains an automatic build process of RPMs and
+        DEBs from the octave packages, and this relies on the
+        DESCRIPTION files being correctly formatted. One further
+        detail to aid the packager is that the SystemRequirments and
+        BuildRequires keywords can have distribution dependent
+        section, and the automatic build process will use these. An
+        example pf the format of this is
+<pre>
+	BuildRequires: libtermcap-devel [Mandriva] libtermcap2-devel
+</pre>
+	where the first package name will be used as a default and if
+        the RPMs are build on a Mandriva distribution, then the second
+        package name will be used instead.
 <dt>package/COPYING
 <dd>	This is a required containing the license of the package.
 <dt>package/INDEX

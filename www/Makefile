@@ -21,6 +21,9 @@ doc:
 	cd .. && admin/make_index
 	cd $(wd)
 
+html: $(IMG_HTML)
+	
+
 %.html : %.in
 	$(M4) $(MACRO_FILE) $< > $@
 

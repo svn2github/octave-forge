@@ -49,7 +49,7 @@ def create_index_html(packdir, outdir):
     ## Write header
     fid = open(outdir + "/index.in", "w");
     fid.write("__HEADER__([[[The " + desc['name'] + " package]]])");
-    
+
     ## Write important data
     fid.write('    <table id="main_package_table">\n');
     fid.write('      <tr><td>Package Name:</td><td>'       + desc["name"]       + "</td></tr>\n");
@@ -57,8 +57,10 @@ def create_index_html(packdir, outdir):
     fid.write('      <tr><td>Last Release Date:</td><td>'  + desc["date"]       + "</td></tr>\n");
     fid.write('      <tr><td>Package Author:</td><td>'     + desc["author"]     + "</td></tr>\n");
     fid.write('      <tr><td>Package Maintainer:</td><td>' + desc["maintainer"] + "</td></tr>\n");
-    fid.write('      <tr><td colspan="2"><img src="../download.png" alt="Download"/><a href="">Download this package</a></td></tr>\n');
-    fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Documentation"/><a href="">Read package documentation</a></td></tr>\n');
+    fid.write('      <tr><td colspan="2"><img src="../download.png" alt="Download"/>');
+    fid.write('<a href="">Download this package</a></td></tr>\n');
+    fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Documentation"/>');
+    fid.write('<a href="../doc/' + desc['name'].lower() + '.html">Read package documentation</a></td></tr>\n');
     fid.write("    </table>\n");
     fid.write('    <div id="description_box">\n');
     if (desc.has_key("html-file")):
@@ -147,8 +149,8 @@ def handle_package(packdir, outdir):
             return desc;
         except:
             rm_rf(outdir);
-            raise Exception('spam', 'eggs');
-    raise Exception('spam', 'eggs');
+            raise Exception("Can't create index.html");
+    raise Exception('not packdir');
 
 def main():
     ## Start the package file
@@ -191,8 +193,9 @@ def main():
                 index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
                 index.write('<a href="' + outdir + '/index.html">download</a></p>\n');
                 index.write('</div>\n');
-            except:
+            except Exception, e:
                 print("Skipping " + p);
+                print(e)
     
     index.write('__TRAILER__\n');
     index.close();

@@ -1,4 +1,4 @@
-define(`__GROUP_ID__',`groud_id=2888')dnl
+define(`__GROUP_ID__',`group_id=2888')dnl
 define(`__SOURCEFORGE__',`http://sourceforge.net')dnl
 define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')dnl
 define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')dnl
@@ -180,7 +180,7 @@ dnl
 dnl
 define(`__TRAILER__', `
 <div id="sf_logo">
-  <a  href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=4"  width="125"
+  <a  href="__SOURCEFORGE__"><img src="__SOURCEFORGE__/sflogo.php?__GROUP_ID__&amp;type=4"  width="125"
 height="37" border="0" alt="SourceForge.net Logo"  /></a>
 </div>
 </body>

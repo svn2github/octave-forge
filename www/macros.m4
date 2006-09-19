@@ -1,3 +1,12 @@
+define(`__GROUP_ID__',`groud_id=2888')dnl
+define(`__SOURCEFORGE__',`http://sourceforge.net')dnl
+define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')dnl
+define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')dnl
+define(`__CVS__',`__SOURCEFORGE__/cvs/?__GROUP_ID__')dnl
+define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')dnl
+dnl
+dnl
+dnl
 define(`__BASE_ADDRESS__', `esyscmd(/bin/sh ./get-base-address)')dnl
 define(`__TEXT_DIR__', `__BASE_ADDRESS__`text/'')dnl
 define(`__IMAGE_DIR__', `__BASE_ADDRESS__`images/'')dnl
@@ -88,6 +97,9 @@ define(`__HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  <a href="__BASE_ADDRESS__/bugs.html">Bugs</a> 
  <a href="__BASE_ADDRESS__/archive.html">Mailing Lists</a>
  <a href="__BASE_ADDRESS__/links.html">Links</a>
+ <a href="__SUMMARY__">SourceForge</a>
+ <a href="__DOWNLOAD__">Download</a>
+ <a href="__CVS__">CVS</a>
 </div>
 
 <div id="content">
@@ -95,17 +107,8 @@ define(`__HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 dnl
 dnl
 dnl
-define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<head>
-<title>$1</title>
-<link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
-</head>
-<body>
-<div id="title"><h1>$1</h1></div>
-<div id="nav">
+define(`__DOC_HEADER__', `__HEADER__([[[$1]]])
+<div id="nav2">
 include([[[doc/menu.include]]])
 </div>
 include([[[doc/alphabetic.include]]])

@@ -21,15 +21,21 @@ function z = zeta(t)
 	if (nargin != 1)
 			usage ("zeta(x)");
 	endif
-
-	if(t > 1 && imag(t) == 0)
-		F= @(x) 1./(gamma(t)).*x.^(t-1)./(exp(x)-1);
-		z = quad(F,0,Inf);
-	else
-		if(t<0 && imag(t) == 0)
-			z = 2.^t.*pi.^(t-1).*sin(pi.*t./2).*gamma(1-t).*zeta(1-t);
-		else 
-			error("unable to handle complex arguments");
+	s = rows(t)
+	for j = 1:s
+		if(real(t(j)) > 0)
+			if(imag(t(j)) == 0 && real(t(j)) > 1)
+				F= @(x) 1./(gamma(t)).*x.^(t-1)./(exp(x)-1);
+				z(j) = quad(F,0,Inf);
+			else
+				z(j) = 0;
+				for k = 1:100
+					z(j) = z(j) + (-1).^(k-1)./(k.^t(j));
+				endfor
+				z(j) = 1./(1-2.^(1-t(j))).*z(j);
+			endif
+		else
+			z(j) = 2.^t(j).*pi.^(t(j)-1).*sin(pi.*t(j)./2).*gamma(1-t(j)).*zeta(1-t(j));
 		endif
-	endif
+	endfor
 endfunction

@@ -29,17 +29,21 @@ function y = Si(x)
 	   endif
 		s = size(x)(2);
 		for t = 1:s
-			if(imag(x(t)) == 0)
-				F = @(x) sin(x)./x;
-				y(t) = quad(F,0,x(t));
+			if( x == 0)
+				y = 0;
 			else
-				y(t) = 0;
-				for k = 0:100
-					y(t) = y(t) + (besselj(k + 0.5,x(t)./2)).^2;
-				endfor
-				y(t) = y(t).*pi;
-				if(real(x(t))==0)
-					y(t)=i.*imag(y(t));
+				if(imag(x(t)) == 0)
+					F = @(x) sin(x)./x;
+					y(t) = quad(F,0,x(t));
+				else
+					y(t) = 0;
+					for k = 0:100
+						y(t) = y(t) + (besselj(k + 0.5,x(t)./2)).^2;
+					endfor
+					y(t) = y(t).*pi;
+					if(real(x(t))==0)
+						y(t)=i.*imag(y(t));
+					endif
 				endif
 			endif
 		endfor

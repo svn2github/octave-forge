@@ -27,18 +27,20 @@ function y = Si(x)
 		if (nargin != 1)
 			usage ("Si(x)");
 	   endif
-		
-		if(imag(x) == 0)
-			F = @(x) sin(x)./x;
-			y = quad(F,0,x);
-		else
-			y = 0;
-			for k = 0:100
-				y = y + (besselj(k + 0.5,x./2)).^2;
-			endfor
-			y = y.*pi;
-			if(real(x)==0)
-				y=imag(y);
+		s = size(x)(2);
+		for t = 1:s
+			if(imag(x(t)) == 0)
+				F = @(x) sin(x)./x;
+				y(t) = quad(F,0,x(t));
+			else
+				y(t) = 0;
+				for k = 0:100
+					y(t) = y(t) + (besselj(k + 0.5,x(t)./2)).^2;
+				endfor
+				y(t) = y(t).*pi;
+				if(real(x(t))==0)
+					y(t)=i.*imag(y(t));
+				endif
 			endif
-		endif;
-endfunction;
+		endfor
+endfunction

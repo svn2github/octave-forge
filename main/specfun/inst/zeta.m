@@ -21,7 +21,7 @@ function z = zeta(t)
 	if (nargin != 1)
 			usage ("zeta(x)");
 	endif
-	s = rows(t)
+	s = columns(t)
 	for j = 1:s
 		if(real(t(j)) > 0)
 			if(imag(t(j)) == 0 && real(t(j)) > 1)

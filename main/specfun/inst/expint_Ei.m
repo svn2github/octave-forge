@@ -29,30 +29,33 @@ function y = expint_Ei(x)
 		usage ("expint_Ei(x)");
 	endif
 	F = @(x) exp(-x)./x;
-	if(x<0 && imag(x) == 0)
-			y = -quad(F,-x,Inf);
-	else
-		if(abs(x) > 2 && imag(x) == 0)
-			y = expint_Ei(2) - quad(F,-x,-2);
+	s = columns(x);
+	for t = 1:s;
+		if(x(t)<0 && imag(x(t)) == 0)
+			y = -quad(F,-x(t),Inf);
 		else
-			if(abs(x) >= 10)
-				if(imag(x) <= 0)
-					a1 = 4.03640;
-					a2 = 1.15198;
-					b1 = 5.03637;
-					b2 = 4.19160;
-					y = -(x.^2 - a1.*x + a2)./((x.^2-b1.*x+b2).*(-x).*exp(-x))-i.*pi;
-				else
-					y = conj(expint_Ei(conj(x)));
-				endif;
-## Serie Expansion
-			else 
-				y = 0;
-				for i = 1:100;
-					y = y + x.^i./(i.*factorial(i));
-				endfor
-				y = 0.577215664901532860606512090082402431 + log(x) + y;
+			if(abs(x(t)) > 2 && imag(x(t)) == 0)
+				y(t) = expint_Ei(2) - quad(F,-x(t),-2);
+			else
+				if(abs(x(t)) >= 10)
+					if(imag(x(t)) <= 0)
+						a1 = 4.03640;
+						a2 = 1.15198;
+						b1 = 5.03637;
+						b2 = 4.19160;
+						y(t) = -(x(t).^2 - a1.*x(t) + a2)./((x(t).^2-b1.*x(t)+b2).*(-x(t)).*exp(-x(t)))-i.*pi;
+					else
+						y(t) = conj(expint_Ei(conj(x(t))));
+					endif;
+		## Serie Expansion
+				else 
+					y(t) = 0;
+					for i = 1:100;
+						y(t) = y(t) + x(t).^i./(i.*factorial(i));
+					endfor
+					y(t) = 0.577215664901532860606512090082402431 + log(x(t)) + y(t);
+				endif
 			endif
-		endif
-	endif;
+		endif;
+	endfor
 endfunction;

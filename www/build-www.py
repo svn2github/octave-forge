@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+import sys
 import os
+import shutil
 
 ## This function parses a DESCRIPTION file
 def parse_description(filename):
@@ -37,6 +39,35 @@ def parse_description(filename):
     except:
         print("Couldn't parse the DESCRIPTION file " + filename);
         raise
+
+def create_INDEX(desc, packdir):
+    try:
+        wd = os.getcwd();
+        name_version = desc['name'] + "-" + desc['version'];
+        
+        ## Create a tarball to be installed
+        install_dir = wd + "/install/";
+        tarball = name_version + ".tgz";
+        if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + desc['name']) != 0):
+            raise Exception("Can't create tarball"); 
+        
+        ## Run octave installation
+        command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
+        command = command + 'pkg("install", "-nodeps", "' + tarball + '");';
+        if (os.system("octave -H -q --no-site-file --no-init-file --eval '" + command + "'") != 0):
+            raise Exception("Can't run Octave"); 
+        
+        ## Copy the INDEX file to packdir
+        shutil.copy2(install_dir + name_version + "/packinfo/INDEX", packdir + "/INDEX");
+    
+        ## Clean up
+        command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
+        command = command + 'pkg("uninstall", "-nodeps", "' + desc['name'] + '");';
+        if (os.system("octave -H -q --no-site-file --no-init-file --eval '" + command + "'") != 0):
+            raise Exception("Can't run Octave"); 
+        os.system("rm -rf " + install_dir + " " + tarball);
+    except:
+        raise;
 
 ## Creates the index.html files for a package in packdir.
 ## The result is placed in outdir.
@@ -105,6 +136,12 @@ def create_index_html(packdir, outdir):
     ## Write footer
     fid.write("__TRAILER__\n");
     fid.close();
+    
+    ## Check if the package has an INDEX file (if not create one)
+    INDEX_file = packdir + "/INDEX";
+    if (not os.path.isfile(INDEX_file)):
+        create_INDEX(desc, packdir);
+    
     return desc;
 
 def create_license_html(package_name, packdir, outdir):

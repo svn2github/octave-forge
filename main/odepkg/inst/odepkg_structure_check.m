@@ -44,10 +44,14 @@ function [vret] = odepkg_structure_check (vret)
   end
 
   for vcntarg = 1:vint.len %# Run through the number of structure field names
+    %# vint.fld{vcntarg}
+    %# vret.(vint.fld{vcntarg})
+
     switch (vint.fld{vcntarg})
 
       case 'RelTol'
         if (isreal (vret.(vint.fld{vcntarg})) == true && ...
+            isscalar (vret.(vint.fld{vcntarg})) == true && ...
             vret.(vint.fld{vcntarg}) > 0)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
@@ -57,7 +61,9 @@ function [vret] = odepkg_structure_check (vret)
 
       case 'AbsTol'
         if (isreal (vret.(vint.fld{vcntarg})) == true && ...
-            vret.(vint.fld{vcntarg}) > 0)
+            (isvector (vret.(vint.fld{vcntarg})) == true || ...
+             isscalar (vret.(vint.fld{vcntarg})) == true) && ...
+            all (vret.(vint.fld{vcntarg}) > 0) == true) %# LabMat needs 'all'?!
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -76,6 +82,13 @@ function [vret] = odepkg_structure_check (vret)
       case 'NonNegative'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
             isvector (vret.(vint.fld{vcntarg})) == true)
+%#          for vcounter = 1:length (vret.(vint.fld{vcntarg}))
+%#            if (isbool (int8 (vret.(vint.fld{vcntarg})(vcounter))) == false)
+%#              vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
+%#                vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
+%#              error (vmsg);
+%#            end
+%#          end
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -84,7 +97,8 @@ function [vret] = odepkg_structure_check (vret)
 
       case 'OutputFcn'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
+            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
+          %# strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -92,8 +106,9 @@ function [vret] = odepkg_structure_check (vret)
         end
 
       case 'OutputSel'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            isvector (vret.(vint.fld{vcntarg})) == true)
+        if (isempty  (vret.(vint.fld{vcntarg})) == true || ...
+            isvector (vret.(vint.fld{vcntarg})) == true || ...
+            isscalar (vret.(vint.fld{vcntarg})) == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -140,7 +155,8 @@ function [vret] = odepkg_structure_check (vret)
 
       case 'Events'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
+            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
+          %# strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -249,10 +265,10 @@ function [vret] = odepkg_structure_check (vret)
   end %# for
 
   %# Check sizes of the parameters RelTol and AbsTol
-  if (any (size (vret.AbsTol) ~= size (vret.RelTol)) == true)
-    vmsg = sprintf ('Sizes of parameters "RelTol" and "AbsTol" must be the same');
-    error (vmsg);
-  end 
+%#  if (any (size (vret.AbsTol) ~= size (vret.RelTol)) == true)
+%#    vmsg = sprintf ('Sizes of parameters "RelTol" and "AbsTol" must be the same');
+%#    error (vmsg);
+%#  end 
 
   %# The following line can be uncommented for a even higher level error detection
   %# if (vint.len ~= 21)

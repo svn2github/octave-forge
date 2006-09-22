@@ -33,7 +33,7 @@ function y = odepkg_equations_lorenz (t, x)
 %!demo
 %!
 %! A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1); 
-%! [t,y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
+%! [t, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
 %!
 %! subplot (2, 2, 1); grid ('on'); plot (t, y(:,1), '-b;f_x(t);', ...
 %!    t, y(:,2), '-g;f_y(t);', t, y(:,3), '-r;f_z(t);');

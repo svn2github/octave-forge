@@ -16,8 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[vret]} =} odephas3 (@var{vt}, @var{vy}, @var{vflag})
-%# Opens a new figure window and plots the first, the second and the third result of the differential equation in three dimensions. The return value @var{vret} depends on the input value @var{vflag}. If @var{vflag} is the string "init" then nothing is returned, else if @var{vflag} is the value true (resp. logical 1) then either the value true is returned if the calling solver function should continue or the value false (resp. logical 0) if the calling solver function should terminate, else if @var{vflag} is the string "done" then again nothing will be returned. The input arguments @var{vt} and @var{vy} are the actual time stamp and the solver outputs. There is no error handling implemented in this function to achieve the highest performance.
+%# @deftypefn {Function} {@var{[ret]} =} odephas3 (@var{t, y, flag})
+%# Opens a new figure window and plots the first, the second and the third result from the variable @var{y} of the differential equations in three dimensions while solving. The return value @var{ret} depends on the input value of the variable @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then the value true (resp. value 1) is returned, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver outputs. The value of the variable @var{t} is not needed by this function. There is no error handling implemented in this function to achieve the highest performance.
 %#
 %# Run
 %# @example
@@ -33,27 +33,38 @@
 %# ChangeLog:
 
 function [varargout] = odephas3 (vt, vy, vflag)
-  persistent vfigure; %# vt and vy are always row vectors
-  persistent vyold;   %# and also for all OutputFcns in odepkg
+  %# vt and vy are always row vectors, vflag can be either 'init' or []
+  %# or 'done'. If 'init' then varargout{1} = [], if [] the
+  %# varargout{1} either true or false, if 'done' then varargout{1} = [].
+  persistent vfigure;
+  persistent vyold;
   persistent vcounter;
+
   if (strcmp (vflag, 'init') == true) 
-    %# nothing to return
     %# vt is either the time slot [tstart tstop] or [t0, t1, ..., tn]
-    %# vy is the inital value vector vinit
-    vfigure = figure; vyold = vy(1,:); vcounter = 1;
+    %# vy is the inital value vector vinit from the caller function
+    vfigure = figure; 
+    vyold = vy(1,:); 
+    vcounter = 1;
+
   elseif (isempty (vflag) == true)
-     %# Return something in varargout{1}
-    vcounter = vcounter + 1; figure (vfigure);
-    vyold(vcounter,:) = vy(1,:); plot3 (vyold(:,1), vyold(:,2), vyold (:,3), '-o');
+    %# Return something in varargout{1} = true or false
+    vcounter = vcounter + 1; 
+    figure (vfigure);
+    vyold(vcounter,:) = vy(1,:); 
+    plot3 (vyold(:,1), vyold(:,2), vyold (:,3), '-o');
     varargout{1} = true; 
-    %# Do not stop the integration algorithm
+    %# Do not stop the integration algorithm if varargout{1} = true;
     %# if varargout{1} = false; stop the integration algorithm
+
   elseif (strcmp (vflag, 'done') == true)
-    %# Cleanup will be done
-    %# Nothing to do in this function
+    %# Cleanup will be done, but nothing to do in this function
+
   else
-    %# vmsg = sprintf ('Check number and types of input arguments');
-  end
+    vmsg = sprintf ('Check number and types of input arguments');
+    error (vmsg);
+
+  end %# if (strcmp (vflag, 'init') == true)
 
 %!demo
 %!

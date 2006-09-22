@@ -77,8 +77,8 @@ function ydot = odepkg_equations_secondorderlag (tvar, yvar, varargin)
 
 %!demo
 %!
-%! A = odeset ('RelTol', 1e-2);
-%! [vt, vy] = ode23 (@odepkg_equations_secondorderlag, [0 1.4], [0 0], A);
+%! A = odeset ('RelTol', 1e-3);
+%! [vt, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1.4], [0 0], A);
 %! 
 %! axis ([0 1.4]);
 %! plot(vt, 10 * ones (length (vy(:,1)),1), "-or;in (t);", ...
@@ -93,8 +93,8 @@ function ydot = odepkg_equations_secondorderlag (tvar, yvar, varargin)
 %! % T2 = 0.1s^2. The accumulated value (t->inf) is y = u*K = 10.
 %!demo
 %!
-%! A = odeset ('RelTol', 2e-2);
-%! [vt, vy] = ode23 (@odepkg_equations_secondorderlag, ...
+%! A = odeset ('RelTol', 2e-2, 'NormControl', 'on');
+%! [vt, vy] = ode45 (@odepkg_equations_secondorderlag, ...
 %!                      [0 12], [0 0],  A, 5, 1, 0.01, 0.01);
 %! 
 %! axis ([0 12]);

@@ -16,8 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[vret]} =} odeplot (@var{vt}, @var{vy}, @var{vflag})
-%# Opens a new figure window and plots the results of the differential equations while solving. The return value @var{vret} depends on the input value @var{vflag}. If @var{vflag} is the string "init" then nothing is returned, else if @var{vflag} is the value true then either the value true is returned if the calling solver function should continue or the value false if the calling solver function should terminate, else if @var{vflag} is the string "done" then again nothing will be returned. The input arguments @var{vt} and @var{vy} are the actual time stamp and the solver outputs. There is no error handling implemented in this function to achieve the highest processing speed.
+%# @deftypefn {Function} {@var{[ret]} =} odeplot (@var{t, y, flag})
+%# Opens a new figure window and plots the results from the variable @var{y} of the differential equations while solving. The return value @var{ret} depends on the input value @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then the value true (resp. value 1) is returned, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver outputs. There is no error handling implemented in this function to achieve the highest performance.
 %#
 %# Run
 %# @example
@@ -35,23 +35,37 @@
 function [varargout] = odeplot (vt, vy, vflag)
   %# No input argument check is done for a higher processing speed
   %# vt and vy are row vectors
-  persistent vfigure; persistent vtold; 
-  persistent vyold; persistent vcounter;
-  if (strcmp (vflag, 'init') == true) %# nothing to return
-    %# vt is either the time slot [tstart tstop] or [t0, t1, ..., tn]
-    %# vy is the inital value vector vinit
-    vfigure = figure; axis ([vt(1,1), vt(1,length(vt))]);
-    vtold = vt(1,1); vyold = vy(1,:); vcounter = 1;
-  elseif (isempty (vflag) == true) %# Return varargout{1}
-    vcounter = vcounter + 1; figure (vfigure);
-    vtold(vcounter,1) = vt(1,1); vyold(vcounter,:) = vy(1,:);
+  persistent vfigure; 
+  persistent vtold; 
+  persistent vyold; 
+  persistent vcounter;
+
+  if (strcmp (vflag, 'init') == true) 
+    %# Nothing to return, vt is either the time slot [tstart tstop] or
+    %# [t0, t1, ..., tn], vy is the inital value vector vinit
+    vfigure = figure; 
+ %   axis ([vt(1,1), vt(1,length(vt))]);
+    vtold = vt(1,1); 
+    vyold = vy(1,:); 
+    vcounter = 1;
+
+  elseif (isempty (vflag) == true) 
+    %# Return something in varargout{1}
+    vcounter = vcounter + 1; 
+    figure (vfigure);
+    vtold(vcounter,1) = vt(1,1); 
+    vyold(vcounter,:) = vy(1,:);
     plot (vtold, vyold, '-o');
-    varargout{1} = true; %# Do not stop the integration algorithm
-    %# if varargout{1} = false; stop the integration algorithm
-  elseif (strcmp (vflag, 'done') == true) %# Cleanup will be done
+    varargout{1} = true; 
+    %# Do not stop the integration algorithm, if varargout{1} = false;
+    %# stop the integration algorithm
+
+  elseif (strcmp (vflag, 'done') == true) 
+    %# Cleanup will be done, but nothing to be done in this function
 
   else
-%    vmsg = sprintf ('Check number and types of input arguments');
+    %# Maybe somewhen in the future
+
   end
 
 %!demo

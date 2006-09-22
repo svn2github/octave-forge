@@ -17,7 +17,7 @@
 
 %# -*- texinfo -*-
 %# @deftypefn  {Function} odepkg_equations_vanderpol ()
-%# Displays the help text of the function and exits with an error.
+%# Displays the help text of the function and terminates with an error.
 %#
 %# @deftypefnx {Function} {@var{ydot} =} odepkg_equations_vanderpol (@var{tvar}, @var{yvar})
 %# Returns the states of the "Van Der Pol Equation" example that depend on the input argument @var{yvar}. The variable @var{yvar} must be a valid column vector. Optionally the "Second Order Lag" can be parametrized by the variables @var{vu} as the input signal, @var{vK} as the amplification, @var{vT1} as the smaller time constant and @var{vT2} as the greater time constant. Use "type odepkg_equations_secondorderlag" to see the source code of this "Linear Time-Invariant" (LTI) system. If an invalid input argument is given then the function terminates with an error.Use "type odepkg_equations_vanderpol" to see the source code of this differential equation.
@@ -66,12 +66,17 @@ function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
   %# yvar and ydot must be row vectors with 1 column
   ydot = [yvar(2); mu*(1-yvar(1)^2)*yvar(2)-yvar(1)];
 
-%!test [vt, vy] = ode23 (@odepkg_equations_vanderpol, [0 1], [2 0]);
-%!test [vt, vy] = ode23 (@odepkg_equations_vanderpol, [0 1], [2 2], 300);
+  %# A stiff ode euqation test preocedure is
+  %# A = odeset ('RelTol', 1e-1, 'AbsTol', 1, 'InitialStep', 1e-2, ...
+  %#   'NormControl', 'on', 'Stats', 'on', 'OutputFcn', @odeprint);
+  %# [x, y] = ode78 (@odepkg_equations_vanderpol, [0 300], [2 0], A, 100);
+
+%!test [vt, vy] = ode78 (@odepkg_equations_vanderpol, [0 1], [2 0]);
+%#!test [vt, vy] = ode78 (@odepkg_equations_vanderpol, [0 1], [2 2], 300);
 
 %!demo
 %!
-%! [vt, vy] = ode45 (@odepkg_equations_vanderpol, [0 20], [2 0]);
+%! [vt, vy] = ode78 (@odepkg_equations_vanderpol, [0 20], [2 0]);
 %!
 %! axis ([0, 20]);
 %! plot (vt, vy(:,1), '-or;x1(t);', vt, vy(:,2), '-ob;x2(t);');
@@ -83,7 +88,8 @@ function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
 %! % If not manually parametrized then mu = 1 as in this demo.
 %!demo
 %!
-%! [vt, vy] = ode45 (@odepkg_equations_vanderpol, [0 40], [2 0], 20);
+%! A = odeset ('NormControl', 'on', 'InitialStep', 1e-3);
+%! [vt, vy] = ode78 (@odepkg_equations_vanderpol, [0 40], [2 0], A, 20);
 %!
 %! axis ([0, 40]);
 %! plot (vt, vy(:,1), '-or;x1(t);', vt, vy(:,2), '-ob;x2(t);');

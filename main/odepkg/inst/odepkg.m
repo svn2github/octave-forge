@@ -20,7 +20,7 @@
 %# A more detailed help for the odepkg implementation will be added here soon.
 %# @end deftypefn
 
-%# Some tests from me
+%# Some tests from mine
 %# @unnumberedsubsec ode2f
 %# @command{ode2f} integrates a system of ordinary differential equations using a 2nd order Runge-Kutta formulae called Ralston's method. This choice of 2nd order coefficients provides a minimum bound on truncation error. For more information see Ralston & Rabinowitz (1978) or Numerical Methods for Engineers, 2nd Ed., Chappra & Cannle, McGraw-Hill, 1985. 2nd-order accurate RK methods have a local error estimate of O(h^3). @command{ode2f} requires two function evaluations per integration step.
 
@@ -32,11 +32,19 @@
 function [] = odepkg (varargin)
 %# File will be cleaned up in the future
   if (ischar (varargin{1}) == true)
-    %# Hidden functions of developer are called
+
+    %# Hidden developer functions are called if any valid string is
+    %# given as an input argument.
     switch (varargin{1})
       case 'odepkg_package_check'
         odepkg_package_check;
-    endswitch
+      case 'odepkg_versus_lsode'
+        odepkg_versus_lsode;
+      case 'odepkg_tolerances_check'
+        odepkg_tolerances_check;
+      case 'odepkg_outputselection_check'
+        odepkg_outputselection_check;
+    end
 
   else %# if (ischar (varargin{1}) ~= true)
     help ('odepkg');
@@ -66,18 +74,91 @@ function [] = odepkg_package_check ()
   test ('odepkg_equations_secondorderlag', 'verbose'); clear ('all');
   test ('odepkg_equations_vanderpol', 'verbose'); clear ('all');
 
-%# File will be cleaned up in the future
-function [] = odepkg_vs_lsode ()
+  %# This part of the function is used to check the solver functions
+  %# with the options RelTol and AbsTol (AbsTol as scalars and vectors).
+  %# Also the option value Stats == 'on' is checked with this function
+  %# calls.
+function [] = odepkg_tolerances_check ()
+  figure; subplot (2,2,1); hold ('on');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
+  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
+  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
+  grid ('on'); hold ('off');
 
-  %# The options of today's lsode are displayed
-  AbsTol = lsode_options ("absolute tolerance")
-  RelTol = lsode_options ("relative tolerance")
-  Solver = lsode_options ("integration method") # "adams", "non-stiff", "bdf", "stiff"
-  InitStep = lsode_options ("initial step size")
-  MaxOrder = lsode_options ("maximum order")
-  MaxStepSize = lsode_options ("maximum step size")
-  MinStepSize = lsode_options ("minimum step size")
-  StepLimit = lsode_options ("step limit")
+  subplot (2,2,2); hold ('on');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
+  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
+  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
+  grid ('on'); hold ('off');
+
+  subplot (2,2,3); hold ('on');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
+  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
+  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
+  grid ('on'); hold ('off');
+
+  subplot (2,2,4); hold ('on');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
+  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
+  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
+  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
+  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
+  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
+  grid ('on'); hold ('off');
+
+%# This function is used to check the ode78 function with option
+%# OutputSel. The other solvers should have the same behavior.
+function [] = odepkg_outputselection_check ()
+  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', 1);
+  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
+  subplot(2, 2, 1); plot (x, y, '-b');
+  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', 2);
+  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
+  subplot(2, 2, 2); plot (x, y, '-g');
+  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', 3);
+  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
+  subplot(2, 2, 3); plot (x, y, '-r');
+  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', [1 2 3]);
+  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
+  subplot(2, 2, 4); plot (x, y);
+%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
+%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 25), [0 0]);
+%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 22), [0 0]);
+%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
+%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 30), [0 0]);
+%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 13), [0 0]);
+%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, logspace (-1, 0, 13), [0 0]);
+%[vx, vy, va, vb, vc] = ode23 (@odepkg_equations_secondorderlag, logspace (-1, 0, 31), [0 0]);
+
+%# File will be cleaned up in the future
+function [] = odepkg_versus_lsode ()
+
+  %# The options of octave's lsode are displayed
+  AbsTol = lsode_options ('absolute tolerance')
+  RelTol = lsode_options ('relative tolerance')
+  Solver = lsode_options ('integration method') %# "adams", "non-stiff", "bdf", "stiff"
+  InitStep = lsode_options ('initial step size')
+  MaxOrder = lsode_options ('maximum order')
+  MaxStepSize = lsode_options ('maximum step size')
+  MinStepSize = lsode_options ('minimum step size')
+  StepLimit = lsode_options ('step limit') %# default value is 100000
 
 %#  lsode_options ("integration method", "non-stiff");
 %#  [a, b, c] = lsode (@vanderpol, [2 0], [0 20])
@@ -120,6 +201,11 @@ function xdot = odepkg_example_dococtave (t, x)
   xdot(1) = 77.27 * (x(2) - x(1)*x(2) + x(1) - 8.375e-06*x(1)^2);
   xdot(2) = (x(3) - x(1)*x(2) - x(2)) / 77.27;
   xdot(3) = 0.161*(x(1) - x(3));
+endfunction
+
+function xdot = odepkg_example_stiffnonnegative (x, t)
+  epsilon = 1e-2;
+  xdot = ((1 - x) * t - t^2) / epsilon;
 endfunction
 
 %# Local Variables: ***

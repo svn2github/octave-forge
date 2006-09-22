@@ -45,7 +45,7 @@ function [vret] = odeget (varargin)
     help ('odeget'); error (vmsg);
   elseif (isstruct (varargin{1}) == true) %# Check first input argument
     vint.odestruct = odepkg_structure_check (varargin{1});
-    vint.otemplate = odeset (); %# Create default odepkg otpions structure
+    vint.otemplate = odeset; %# Create default odepkg otpions structure
   else
     vmsg = sprintf ('First input argument must be a valid odepkg otpions structure');
     error (vmsg);

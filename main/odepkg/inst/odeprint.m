@@ -16,8 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[vret]} =} odeprint (@var{vt}, @var{vy}, @var{vflag})
-%# Displays the results of the differential equations while solving. The return value @var{vret} depends on the input value @var{vflag}. If @var{vflag} is the string "init" then nothing is returned, else if @var{vflag} is the value true then either the value true is returned if the calling solver function should continue or the value false if the calling solver function should terminate, else if @var{vflag} is the string "done" then again nothing will be returned. The input arguments @var{vt} and @var{vy} are the actual time stamp and the solver outputs. There is no error handling implemented in this function to achieve the highest processing speed.
+%# @deftypefn {Function} {@var{[ret]} =} odeprint (@var{t, y, flag})
+%# Displays the results of the differential equations in the octave window while solving. The first column shows the actual time stamp, the following columns show the values of the solvers for each time stamp. The return value @var{ret} depends on the input value @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then true (resp. value 1) is returned to tell the calling solver function to continue, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver outputs as row vectors. There is no error handling implemented in this function to achieve the highest performance.
 %#
 %# Run
 %# @example
@@ -32,20 +32,24 @@
 %# Created: 20060809
 %# ChangeLog:
 
-function [varargout] = odeprint (vt, vy, vflag)
+function [varargout] = odeprint (vt, vy, vflag, varargin)
   %# No input argument check is done for a higher processing speed
-  %# vt and vy are row vectors, vflag is either "init", true or false or "done"
-  if (strcmp (vflag, 'init') == true) %# nothing to return
-    vtstart = vt (1,1);
-    printf ('%f', vtstart); printf (' %f', vy); printf ('\n');
+  %# vt and vy are always row vectors, see also function odeplot,
+  %# odephas2 and odephas3 for another implementation. vflag is either
+  %# "init", [] or "done".
+
+  if (strcmp (vflag, 'init') == true)
+    fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
+
   elseif (isempty (vflag) == true) %# Return varargout{1}
-    printf ('%f', vt); printf (' %f', vy); printf ('\n');
-    varargout{1} = true; %# Do not stop the integration algorithm
+    fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
+    varargout{1} = true; 
+    %# Do not stop the integration algorithm
     %# if varargout{1} = false; stop the integration algorithm
-  elseif (strcmp (vflag, 'done') == true) %# Cleanup will be done
-    %# Nothing to do in this function
-  else
-    vmsg = sprintf ('Check number and types of input arguments');
+
+  elseif (strcmp (vflag, 'done') == true) 
+    %# Cleanup will be done, but nothing to do in this function
+
   end
 
 %!demo

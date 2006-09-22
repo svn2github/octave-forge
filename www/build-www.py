@@ -49,12 +49,14 @@ def create_INDEX(desc, packdir):
         install_dir = wd + "/install/";
         tarball = name_version + ".tgz";
         if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + desc['name']) != 0):
+            os.system("rm -rf " + tarball);
             raise Exception("Can't create tarball"); 
         
         ## Run octave installation
         command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
         command = command + 'pkg("install", "-nodeps", "' + tarball + '");';
         if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "'") != 0):
+            os.system("rm -rf " + install_dir + " " + tarball);
             raise Exception("Can't run Octave"); 
         
         ## Copy the INDEX file to packdir
@@ -64,6 +66,7 @@ def create_INDEX(desc, packdir):
         command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
         command = command + 'pkg("uninstall", "-nodeps", "' + desc['name'] + '");';
         if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "'") != 0):
+            os.system("rm -rf " + install_dir + " " + tarball);
             raise Exception("Can't run Octave"); 
         os.system("rm -rf " + install_dir + " " + tarball);
     except:

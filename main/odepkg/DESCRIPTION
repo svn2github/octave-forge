@@ -6,6 +6,6 @@ Maintainer: Thomas Treichl
 Title: OdePkg.
 Description: A description will be added to this package!
 Categories: Ordinary Differential Equations
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 2.9.8)
 License: GPL version 2 or later
 Url: http://octave.sf.net

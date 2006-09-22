@@ -61,7 +61,7 @@ interpreter >> Interpreter
 Help
  help 
  demo 
- ver = use <f>version</f>
+ ver
  version 
 Variables
  who 
@@ -91,7 +91,7 @@ Functions
  which 
  pcode 
  inmem = use <f>who</f> with -functions
- mex= install octave-forge mex package and use <f>system</f><code>(["mex ", name])</code>
+ mex
  source
  mark_as_command unmark_command
  mark_as_rawcommand unmark_rawcommand
@@ -110,11 +110,11 @@ Output
  format 
 Environment
  cd pwd
- dir=alias for <f>ls</f>
+ dir
  ls
  mkdir isdir
  copyfile= use <f>system</f><code>("[cp ", source, " ", dest])</code>
- delete = use <f>unlink</f> 
+ delete
  getenv 
  putenv
  dos
@@ -471,7 +471,7 @@ Special matrices
  wilkinson 
  $TESTMAT= available in Nick Higham's <a href="http://www.ma.man.ac.uk/~higham/testmat.html">Test Matrix Toolbox</a>
  gallery= $TESTMAT
- hadamard= $TESTMAT
+ hadamard
 Linear algebra
  dmult
  cross 
@@ -732,7 +732,7 @@ Line plots
  semilogx 
  semilogy 
  polar 
- plotyy= use <f>__gnuplot_raw</f> with <code> ... axes x1y2</code>
+ plotyy= use <f>__gnuplot_raw__</f> with <code> ... axes x1y2</code>
  errorbar semilogxerr semilogyerr loglogerr
  scatter 
  plotmatrix 
@@ -889,7 +889,7 @@ File operations
  mkstemp
  tmpfile
  tmpnam
- tempname = use <f>tmpnam</f>
+ tempname
  prefdir 
  rename link unlink symlink readlink 
  mkfifo umask stat lstat

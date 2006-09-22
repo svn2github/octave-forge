@@ -791,11 +791,14 @@ sub write_TBnavbar { # 1{{{
     $file = "nav$openTB" if $openTB ne "";
     open(OUT,">$catdir/$file.include") or die "Could not open $catdir/$file.include";
 
-	print OUT "<a href=\"__BASE_ADDRESS__/index.html\">Home</a>\n";
+	#print OUT "<a href=\"__BASE_ADDRESS__/index.html\">Home</a>\n";
+	print OUT "<select name=\"dropdowncat\" size=\"1\" onChange=\"javascript:goto_url(docform.dropdowncat.value)\">\n";
+	print OUT "<option value=\"-1\">Categories</option>\n";
 
     foreach my $TB (toolbox_list()) {
-	print OUT "<a href=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</a>\n";
+	print OUT "<option value=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</option>\n";
     }
+    print OUT "</select>\n";
     close OUT;
 } # 1}}}
 sub write_TBdetails { # 1{{{
@@ -842,10 +845,11 @@ sub write_alphabetic_navbar { # 1{{{
 
     my $A_to_Z     = "";
     foreach (first_letters (indexed_funcs())) {
-        $A_to_Z .= letter_ref($_) . "|";
+        $A_to_Z .= letter_option($_) . "\n";
     }
-    $A_to_Z         =~ s/\s*\|\s*$//;  # strip last pipe separator
-    print OUT "<div id=\"alphabetical\">>$A_to_Z</div>\n";
+    my $select = "<select name=\"dropdownalpha\" size=\"1\" onChange=\"javascript:goto_url(docform.dropdownalpha.value)\">";
+    $select .=  "\n<option value=\"-1\">Alphabetical</option>\n";
+    print OUT $select . $A_to_Z . "\n</select>\n";    
     close OUT;
 } # 1}}}
 sub oldnavbar { # 1{{{
@@ -975,6 +979,10 @@ sub letter_file { # 1{{{
 sub letter_ref { # 1{{{
 # letter_ref($letter) returns a link to the letter
     return "<a href=\"" . letter_file($_) . "#$_\">$_</a>";
+} # 1}}}
+sub letter_option { # 1{{{
+# letter_option($letter) returns a link to the letter
+    return "<option value=\"__BASE_ADDRESS__/doc/" . letter_file($_) . "#$_\">$_</option>";
 } # 1}}}
 sub ascii_desc { # 1{{{
 # ascii_desc($func) returns a decription of $func using ascii markup

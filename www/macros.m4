@@ -78,17 +78,30 @@ define(`__OCTAVE_TEXT_MODE_GRAPHIC__',
 dnl
 dnl
 dnl
-define(`__HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <head>
 <title>$1</title>
 <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
+<script type="text/javascript">
+<!--
+function goto_url(url) {
+  if (url != "-1") {
+    location.href=url;
+  }
+}
+// -->
+</script>
 </head>
 <body>
 <div id="title"><h1>$1</h1></div>
-<div id="nav">
+')dnl
+dnl
+dnl
+dnl
+define(`__MENU__', `<div id="nav">
  <a href="__BASE_ADDRESS__/index.html">Home</a>
  <a href="__BASE_ADDRESS__/packages.html">Packages</a>
  <a href="__BASE_ADDRESS__/developers.html">Developers</a>
@@ -101,17 +114,25 @@ define(`__HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  <a href="__DOWNLOAD__">Download</a>
  <a href="__CVS__">CVS</a>
 </div>
-
+')dnl
+dnl
+dnl
+dnl
+define(`__HEADER__', `__HTML_HEADER__([[[$1]]])
+__MENU__
 <div id="content">
 ')dnl
 dnl
 dnl
 dnl
-define(`__DOC_HEADER__', `__HEADER__([[[$1]]])
+define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
+__MENU__
 <div id="nav2">
-include([[[doc/menu.include]]])
-</div>
+<form name="docform">
 include([[[doc/alphabetic.include]]])
+include([[[doc/menu.include]]])
+</form>
+</div>
 <div id="content">
 ')dnl
 dnl

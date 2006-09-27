@@ -17,7 +17,12 @@
 ## ERFCX compute the scaled complementary error function define by :
 ##
 ##		erfcx(x) = exp(x^2)*erfc(x)
+##
+##
 
 function [y] = erfcx(x)
+	if (nargin != 1)
+			usage ("erfcx(x)");
+	endif
 	y = exp(x.^2).*erfc(x);
 endfunction;

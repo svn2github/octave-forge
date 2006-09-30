@@ -22,10 +22,6 @@ function y = dirac(x)
 		if (nargin != 1)
 			usage ("dirac(x)");
 	   endif
-		
-		if(x == 0)
-			y = Inf;
-		else
-			y = 0;
-		endif
+		y = double(x == 0.);
+		y(x == 0) = Inf;
 endfunction;

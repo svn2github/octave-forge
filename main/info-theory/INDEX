@@ -1,0 +1,24 @@
+Information Theory >> InformationTheory
+ binaryn
+ bscchannel
+ conditionalentropy_XY
+ conditionalentropy_YX
+ entropy
+ jointentropy
+ laverage
+ marginalc
+ marginalr
+ mutualinformation
+ redundancy
+ relativeentropy
+Source Coding
+ tunstallcode
+ rle_decode
+ rle_encode
+ shannonfano_code
+ unarydec
+ unaryenc
+ huffman
+ huffman_minvar
+ arithmetic_decode
+ arithmetic_encode

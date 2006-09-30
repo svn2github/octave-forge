@@ -32,7 +32,7 @@ function [y] = psi(x)
 		if(x(t) == 0)	
 			y(t) = -Inf;
 		else
-			h = 0.00000001;
+			h = 10^-9;
 			if(imag(x(t)) == 0 && x(t) > 0)
 				y(t) = (lgamma(x(t)+h)-lgamma(x(t)-h))./(2.*h);
 			else

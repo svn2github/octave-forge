@@ -21,11 +21,11 @@ function z = zeta(t)
 	if (nargin != 1)
 			usage ("zeta(x)");
 	endif
-	s = columns(t)
+	s = columns(t);
 	for j = 1:s
 		if(real(t(j)) > 0)
 			if(imag(t(j)) == 0 && real(t(j)) > 1)
-				F= @(x) 1./(gamma(t)).*x.^(t-1)./(exp(x)-1);
+				F= @(x) 1./(gamma(t(j))).*x.^(t(j)-1)./(exp(x)-1);
 				z(j) = quad(F,0,Inf);
 			else
 				z(j) = 0;

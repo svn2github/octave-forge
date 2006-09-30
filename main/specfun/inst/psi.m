@@ -27,22 +27,13 @@ function [y] = psi(x)
 	if (nargin != 1)
 			usage ("psi(x)");
 	endif
-	s = size(x)(2);
-	for t = 1:s
-		if(x(t) == 0)	
-			y(t) = -Inf;
+		if(imag(x) != zeros(size(x)))
+			error('unable to handle complex arguments');
 		else
-			h = 10^-9;
-			if(imag(x(t)) == 0 && x(t) > 0)
-				y(t) = (lgamma(x(t)+h)-lgamma(x(t)-h))./(2.*h);
-			else
-				if(imag(x(t)) == 0)
-					y(t) = (lgamma((1-x(t))+h)-lgamma((1-x(t))-h))./(2.*h) + pi.*cot(pi.*(1-x(t)));
-				else
-					error("unable to handle complex arguments");
-				endif
-			endif
+			h = 10.^-9;
+			y = x;	
+			y(x == 0) = -Inf;
+			y(x>0) = (lgamma(y(x>0)+h)-lgamma(y(x>0)-h))./(2.*h);
+			y(x<0) = (lgamma((1-y(x<0))+h)-lgamma((1-y(x<0))-h))./(2.*h) + pi.*cot(pi.*(1-y(x<0)));
 		endif
-	endfor
-
 endfunction

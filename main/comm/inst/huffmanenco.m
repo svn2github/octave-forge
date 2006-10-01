@@ -1,0 +1,45 @@
+## (C) 2006, Sep 30, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+##
+
+##
+## usage: huffmanenco(sig,dict)
+## The function returns the Huffman encoded signal using dict.
+## This function uses a dict built from the huffmandict
+## and uses it to encode a signal list into a huffman list.
+## Restrictions include a signal set that strictly belongs
+## in the range [1,N] with N=length(dict). Also dict can
+## only be from the huffmandict() routine.
+## 
+## 
+## example: hd=huffmandict(1:4,[0.5 0.25 0.15 0.10])
+##          huffmanenco(1:4,hd) #  [ 1   0   1   0   0   0   0   0   1 ]
+##          
+##
+function hcode=huffmanenco(sig,dict)
+  if ( nargin < 2 || strcmp(class(dict),"cell")~=1 )
+    error('usage: huffmanenco(sig,dict)');
+  end
+  if (max(sig) > length(dict)) || ( min(sig) < 1)
+    error("signal has elements that are outside alphabet set ...
+	Cannot encode.");
+  end
+  hcode=[dict{sig}];
+  return
+end
+%! 
+%! assert(huffmanenco(1:4, huffmandict(1:4,[0.5 0.25 0.15 0.10])), [ 1   0   1   0   0   0   0   0   1 ],0)
+%!

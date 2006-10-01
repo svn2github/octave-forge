@@ -1,5 +1,6 @@
 define(`__GROUP_ID__',`group_id=2888')dnl
 define(`__SOURCEFORGE__',`http://sourceforge.net')dnl
+define(`__PACKAGE__',`http://prdownloads.sourceforge.net/octave')dnl
 define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')dnl
 define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')dnl
 define(`__CVS__',`__SOURCEFORGE__/cvs/?__GROUP_ID__')dnl

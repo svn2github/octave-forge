@@ -40,14 +40,41 @@ def parse_description(filename):
         print("Couldn't parse the DESCRIPTION file " + filename);
         raise
 
+def local_documentation(outdir, packdir):
+    try:
+        ## Copy any local documentation to packdir/local
+        cmd = 'find ' + packdir + ' -name "*.[hH][tT][mM][lL]"  -print; find ' + packdir + ' -name "*.[hH][tT][mM]"  -print'
+        for file in os.popen(cmd).readlines():
+            if (not os.path.exists(outdir + "/local")):
+                os.mkdir(outdir + "/local");
+            name = file[:-1];
+            shutil.copy2(name, outdir + "/local/");
+
+        if (os.path.exists(outdir + "/local/index.html")):
+            return "local/index.html";
+        elif (os.path.exists(outdir + "/local/index.htm")):
+            return "local/index.htm";
+        elif (os.path.exists(outdir + "/local")):
+            ## This could really be improved as it only returns the first
+            ## html page that find returns.
+            cmd = 'find ' + outdir + '/local -name "*.[hH][tT][mM][lL]"  -print; find ' + packdir + ' -name "*.[hH][tT][mM]"  -print'
+            for file in os.popen(cmd).readlines():
+                name = file[:-1];
+                return "local" + name; 
+        else:
+            return None;
+    except:
+        print("Bad copy " + packdir);
+        return None;
+
 def create_INDEX(desc, packdir):
     try:
         wd = os.getcwd();
-        name_version = desc['name'] + "-" + desc['version'];
+        name_version = desc['name'].lower() + "-" + desc['version'];
         
         ## Create a tarball to be installed
         install_dir = wd + "/install/";
-        tarball = name_version + ".tgz";
+        tarball = name_version + ".tar.gz";
         if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + desc['name']) != 0):
             os.system("rm -rf " + tarball);
             raise Exception("Can't create tarball"); 
@@ -92,9 +119,14 @@ def create_index_html(packdir, outdir):
     fid.write('      <tr><td>Package Author:</td><td>'     + desc["author"]     + "</td></tr>\n");
     fid.write('      <tr><td>Package Maintainer:</td><td>' + desc["maintainer"] + "</td></tr>\n");
     fid.write('      <tr><td colspan="2"><img src="../download.png" alt="Download"/>');
-    fid.write('<a href="">Download this package</a></td></tr>\n');
-    fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Documentation"/>');
-    fid.write('<a href="../doc/' + desc['name'].lower() + '.html">Read package documentation</a></td></tr>\n');
+    fid.write('<a href="__PACKAGE__/' + desc['name'].lower() + '-' + desc['version'] + '.tar.gz?download">Download this package</a></td></tr>\n');
+    fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Function Reference"/>');
+    fid.write('<a href="../doc/' + desc['name'].lower() + '.html">Read package function reference</a></td></tr>\n');
+    local = local_documentation(outdir, packdir);
+    if (local):
+        fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Documentation"/>');
+        fid.write('<a href="' + local + '">Documentation</a></td></tr>\n');
+
     fid.write("    </table>\n");
     fid.write('    <div id="description_box">\n');
     if (desc.has_key("html-file")):
@@ -224,6 +256,7 @@ def main():
             outdir  = "./" + p;
             try:
                 desc = handle_package(packdir, outdir);
+                archiv = desc['name'].lower() + '-' + desc['version'] + '.tar.gz';
                 index.write('<div class="package">\n');
                 index.write('  <b>' + desc['name'] + '</b>\n');
                 index.write('<p>' + desc['description'][:100]);
@@ -231,7 +264,7 @@ def main():
                     index.write('...');
                 index.write('</p>\n');
                 index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
-                index.write('<a href="' + outdir + '/index.html">download</a></p>\n');
+                index.write('<a href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
                 index.write('</div>\n');
             except Exception, e:
                 print("Skipping " + p);

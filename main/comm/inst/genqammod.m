@@ -15,22 +15,26 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ##
 
-## usage: y = genqammod (x, c);   
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} =} genqammod (@var{x}, @var{c})
 ##
-## Modulates an information sequence of intergers x in the range [0..M-1] 
-## onto a quadrature amplitude modulated signal y, where M=length(c)-1 and
-## c is a 1D vector specifing the signal constellation mapping to be used.
+## Modulates an information sequence of intergers @var{x} in the range
+## @code{[0 @dots{} M-1]} onto a quadrature amplitude modulated signal 
+## @var{y}, where  @code{M = length(c) - 1} and @var{c} is a 1D vector 
+## specifing the signal constellation mapping to be used. An example of
+## combined 4PAM-4PSK is
 ##
-##
-##  EXAMPLE: Combined 4PAM-4PSK
-##
-##	d=randint(1,1e4,8);
-##	c=[1+j -1+j -1-j 1-j 1+sqrt(3) j*(1+sqrt(3)) -1-sqrt(3) -j*(1+sqrt(3))];
-##	y=genqammod(d,c);
-##	z=awgn(y,20);
-##	plot(z,'rx')
-##
-## See also: genqamdemod
+## @example
+## @group
+##  d = randint(1,1e4,8);
+##  c = [1+j -1+j -1-j 1-j 1+sqrt(3) j*(1+sqrt(3)) -1-sqrt(3) -j*(1+sqrt(3))];
+##  y = genqammod(d,c);
+##  z = awgn(y,20);
+##  plot(z,'rx')
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{genqamdemod}
 
 function y=genqammod(x,c)
 

@@ -15,21 +15,28 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ##
 
-## usage: y = pammod (x, M, [phi, [type]]);   
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} = } pammod (@var{x}, @var{m})
+## @deftypefnx {Function File} {@var{y} = } pammod (@var{x}, @var{m}, @var{phi})
+## @deftypefnx {Function File} {@var{y} = } pammod (@var{x}, @var{m}, @var{phi}, @var{type})
 ##
-## Modulates an information sequence of intergers x in the range [0..M-1] 
-## onto a pulse amplitude modulated signal y. phi controls the initial phase and 
-## type controls the constellation mapping. If type is set to 'Bin' will result in 
-## binary encoding, in constrast, if set to 'Gray' will give Gray encoding.
+## Modulates an information sequence of integers @var{x} in the range 
+## @code{[0 @dots{} M-1]} onto a pulse amplitude modulated signal @var{y}. 
+## @var{phi} controls the initial phase and @var{type} controls the 
+## constellation mapping. If @var{type} is set to 'Bin' will result in 
+## binary encoding, in contrast, if set to 'Gray' will give Gray encoding.
+## An example of Gray-encoded 8-PAM is
 ##
-##  EXAMPLE: Gray-encoded 8-PAM
-##
-##	d=randint(1,1e4,8);
-##	y=pammod(d,8,0,'Gray');
-##	z=awgn(y,20);
-##	plot(z,'rx')
-##
-## See also: pamdemod
+## @example
+## @group
+## d = randint(1,1e4,8);
+## y = pammod(d,8,0,'Gray');
+## z = awgn(y,20);
+## plot(z,'rx')
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{pamdemod}
 
 function y=pammod(x,M,phi,type)
 

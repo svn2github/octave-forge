@@ -15,22 +15,30 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ##
 
-## usage: y = pskdemod (x, M, [phi, [type]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} = } pamdemod (@var{x}, @var{m})
+## @deftypefnx {Function File} {@var{y} = } pamdemod (@var{x}, @var{m}, @var{phi})
+## @deftypefnx {Function File} {@var{y} = } pamdemod (@var{x}, @var{m}, @var{phi}, @var{type})
 ##
 ## Demodulates a complex-baseband phase shift keying modulated signal 
-## into an information sequence of intergers in the range [0..M-1]. 
-## phi controls the initial phase and type ('Bin' or 'Gray') controls 
-## the symbol ordering that was used for encoding.
+## into an information sequence of integers in the range 
+## @code{[0 @dots{} M-1]}. @var{phi} controls the initial phase and 
+## @var{type} controls the constellation mapping. If @var{type} is set
+## to 'Bin' will result in binary encoding, in contrast, if set to 
+##'Gray' will give Gray encoding.  An example of Gray-encoded 8-PSK is
 ##
-## EXAMPLE: Demodulation of Gray-encoded 8-PSK 
-##
-##	d=randint(1,1e3,8);
-##	y=pskmod(d,8,0,'Gray');
-##	z=awgn(y,20);
-##	d_est=pskdemod(z,8,0,'Gray');
-##	plot(z,'rx')
-##	biterr(d,d_est)
-##
+## @example
+## @group
+## d = randint(1,1e3,8);
+## y = pskmod(d,8,0,'Gray');
+## z = awgn(y,20);
+## d_est = pskdemod(z,8,0,'Gray');
+## plot(z,'rx')
+## biterr(d,d_est)
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{pskmod}
 
 function y=pskdemod(x,M,phi,type)
 

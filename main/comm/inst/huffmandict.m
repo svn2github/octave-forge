@@ -1,4 +1,4 @@
-## (C) 2006, Sep 30, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2006, Sep 30, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,34 +15,44 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: huffmandict(symbols, source probability vector, {toggle},{minvar})
-## toggle is a 1,0 optional argument that starts building a
-## code based on 1's or 0's, defaulting to 0. Also minvar is a boolean
-## value that is useful in choosing if you want to optimize buffer for
-## transmission in the applications of Huffman coding, however it doesnt
-## affect the type or average codeword length of the generated code.
+## -*- texinfo -*-
+## @deftypefn {Function File} {}  huffmandict (@var{symb}, @var{prob})
+## @deftypefnx {Function File} {}  huffmandict (@var{symb}, @var{prob}, @var{toggle})
+## @deftypefnx {Function File} {}  huffmandict (@var{symb}, @var{prob}, @var{toggle}, @var{minvar})
 ##
-## This function builds a Huffman code, given the probability list.
-## The Huffman codes persymbol are output as a list of
-## strings-per-source symbol. A zero probability symbol is NOT assigned
-## any codeword as this symbol doesnt occur in practice anyway.
-## 
-## example: huffmandict(symbols, [0.5 0.25 0.15 0.1]) => CW(0,10,111,110)
-##          huffmandict(symbols, 0.25*ones(1,4)) => CW(11,10,01,00)
+## Builds a Huffman code, given a probability list. The Huffman codes 
+## per symbol are output as a list of strings-per-source symbol. A zero 
+## probability symbol is NOT assigned any codeword as this symbol doesn't 
+## occur in practice anyway.
 ##
-##          prob=[0.5 0 0.25 0.15 0.1]
-##          dict=huffmandict(1:5,[0.5 0 0.25 0.15 0.1],1)
-##          entropy(prob)
-##          laverage(dict,prob)
+## @var{toggle} is an optional argument with values 1 or 0, that starts 
+## building a code based on 1's or 0's, defaulting to 0. Also @var{minvar} 
+## is a boolean value that is useful in choosing if you want to optimize 
+## buffer for transmission in the applications of Huffman coding, however 
+## it doesn't affect the type or average codeword length of the generated 
+## code. An example of the use of @code{huffmandict} is
+##
+## @example
+## @group
+##   huffmandict(symbols, [0.5 0.25 0.15 0.1]) => CW(0,10,111,110)
+##   huffmandict(symbols, 0.25*ones(1,4)) => CW(11,10,01,00)
+##
+##   prob=[0.5 0 0.25 0.15 0.1]
+##   dict=huffmandict(1:5,[0.5 0 0.25 0.15 0.1],1)
+##   entropy(prob)
+##   laverage(dict,prob)
 ##         
-##          x =   [0.20000   0.40000   0.20000   0.10000   0.10000];
-##          #illustrates the minimum variance thing.
-##          huffmandict(1,x,0,true) #min variance tree.
-##          huffmandict(1,x)     #normal huffman tree.
+##   x =   [0.20000   0.40000   0.20000   0.10000   0.10000];
+##   #illustrates the minimum variance thing.
+##   huffmandict(1,x,0,true) #min variance tree.
+##   huffmandict(1,x)     #normal huffman tree.
+## @end group
+## @end example
 ##
-##          Ref: Dr.Rao's course EE5351 Digital Video Coding,
-##               at UT-Arlington.
-##
+## Reference: Dr.Rao's course EE5351 Digital Video Coding, at UT-Arlington.
+## @end deftypefn
+## @seealso{huffmandeco, huffmanenco}
+
 ## Huffman code algorithm.
 ## while (uncombined_symbols_remain)
 ##       combine least probable symbols into one with,

@@ -15,22 +15,29 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ##
 
-## usage: y = pskmod (x, M, [phi, [type]]);   
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} = } pskmod (@var{x}, @var{m})
+## @deftypefnx {Function File} {@var{y} = } pskmod (@var{x}, @var{m}, @var{phi})
+## @deftypefnx {Function File} {@var{y} = } pskmod (@var{x}, @var{m}, @var{phi}, @var{type})
 ##
-## Modulates an information sequence of intergers x in the range [0..M-1] 
-## onto a complex baseband phase shift keying modulated signal y. phi controls 
-## the initial phase and type controls the constellation mapping. If type is 
-## set to 'Bin' will result in binary encoding, in constrast, if set to 'Gray' 
-## will give Gray encoding.
+## Modulates an information sequence of integers @var{x} in the range 
+## @code{[0 @dots{} M-1]} onto a complex baseband phase shift keying 
+## modulated signal @var{y}. @var{phi} controls the initial phase and
+## @var{type} controls the constellation mapping. If @var{type} is set
+## to 'Bin' will result in binary encoding, in contrast, if set to 'Gray'
+## will give Gray encoding. An example of Gray-encoded QPSK is
 ##
-##  EXAMPLE: Gray-encoded QPSK
+## @example
+## @group
+## d = randint(1,5e3,4);
+## y = pskmod(d,4,0,'Gray');
+## z = awgn(y,30);
+## plot(z,'rx')
 ##
-##	d=randint(1,5e3,4);
-##	y=pskmod(d,4,0,'Gray');
-##	z=awgn(y,30);
-##	plot(z,'rx')
-##
-## See also: pskdemod
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{pskdemod}
 
 function y=pskmod(x,M,phi,type)
 

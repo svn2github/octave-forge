@@ -1,4 +1,4 @@
-## (C) 2006, Sep 30, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2006, Sep 30, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,20 +15,25 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} huffmanenco (@var{sig}, @var{dict})
 ##
-## usage: huffmanenco(sig,dict)
-## The function returns the Huffman encoded signal using dict.
-## This function uses a dict built from the huffmandict
-## and uses it to encode a signal list into a huffman list.
-## Restrictions include a signal set that strictly belongs
-## in the range [1,N] with N=length(dict). Also dict can
-## only be from the huffmandict() routine.
-## 
-## 
-## example: hd=huffmandict(1:4,[0.5 0.25 0.15 0.10])
-##          huffmanenco(1:4,hd) #  [ 1   0   1   0   0   0   0   0   1 ]
-##          
+## Returns the Huffman encoded signal using @var{dict}. This function uses 
+## a @var{dict} built from the @code{huffmandict} and uses it to encode a
+## signal list into a huffman list. A restrictions is that a signal set must
+## strictly belong in the range @code{[1,N]} with @code{N = length(dict)}. 
+## Also @var{dict} can only be from the @code{huffmandict} routine.
+## An exmaple of the use of @code{huffmanenco} is
 ##
+## @example
+## @group
+##   hd = huffmandict(1:4,[0.5 0.25 0.15 0.10])
+##   huffmanenco(1:4,hd) #  [ 1 0 1 0 0 0 0 0 1 ]
+## @end group
+## @end example
+## @end deftypefn
+## @seealso {huffmandict, huffmandeco}
+
 function hcode=huffmanenco(sig,dict)
   if ( nargin < 2 || strcmp(class(dict),"cell")~=1 )
     error('usage: huffmanenco(sig,dict)');

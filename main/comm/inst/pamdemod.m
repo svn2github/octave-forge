@@ -15,22 +15,31 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ##
 
-## usage: y = pamdemod (x, M, [phi, [type]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} = } pamdemod (@var{x}, @var{m})
+## @deftypefnx {Function File} {@var{y} = } pamdemod (@var{x}, @var{m}, @var{phi})
+## @deftypefnx {Function File} {@var{y} = } pamdemod (@var{x}, @var{m}, @var{phi}, @var{type})
 ##
-## Demodulates a pulse amplitude modulated signal x into an information sequence 
-## of intergers in the range [0..M-1]. phi controls the initial phase and type 
-## ('Bin' or 'Gray') controls the symbol ordering that was used for encoding.
 ##
-## EXAMPLE: Demodulation of Gray-encoded 8-PAM 
+## Demodulates a pulse amplitude modulated signal @var{x} into an 
+## information sequence of integers in the range @code{[0 @dots{} M-1]}. 
+## @var{phi} controls the initial phase and @var{type} controls the 
+## constellation mapping. If @var{type} is set to 'Bin' will result in 
+## binary encoding, in contrast, if set to 'Gray' will give Gray encoding.
+## An example of Gray-encoded 8-PAM is
 ##
-##	d=randint(1,1e4,8);
-##	y=pammod(d,8,0,'Gray');
-##	z=awgn(y,20);
-##	d_est=pamdemod(z,8,0,'Gray');
-##	plot(z,'rx')
-##	biterr(d,d_est)
-##
-## See also: pammod
+## @example
+## @group
+## d = randint(1,1e4,8);
+## y = pammod(d,8,0,'Gray');
+## z = awgn(y,20);
+## d_est = pamdemod(z,8,0,'Gray');
+## plot(z,'rx')
+## biterr(d,d_est)
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{pamdemod}
 
 function y=pamdemod(x,M,phi,type)
 

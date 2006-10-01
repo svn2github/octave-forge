@@ -20,7 +20,6 @@
 ## @deftypefnx {Function File} {@var{y} = } pamdemod (@var{x}, @var{m}, @var{phi})
 ## @deftypefnx {Function File} {@var{y} = } pamdemod (@var{x}, @var{m}, @var{phi}, @var{type})
 ##
-##
 ## Demodulates a pulse amplitude modulated signal @var{x} into an 
 ## information sequence of integers in the range @code{[0 @dots{} M-1]}. 
 ## @var{phi} controls the initial phase and @var{type} controls the 
@@ -39,7 +38,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso{pamdemod}
+## @seealso{pammod}
 
 function y=pamdemod(x,M,phi,type)
 

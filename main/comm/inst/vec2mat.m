@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{m} = } vec2mat (@var{v}, @var{c})
 ## @deftypefnx {Function File} {@var{m} = } vec2mat (@var{v}, @var{c}, @var{d})
-## @deftypefnx {Function File} [{@var{m}, @var{add}] = } vec2mat (@var{..})
+## @deftypefnx {Function File} {[@var{m}, @var{add}] = } vec2mat (@dots{})
 ##
 ## Converts the vector @var{v} into a @var{c} column matrix with row priority
 ## arrangement and with the final column padded with the value @var{d} to the

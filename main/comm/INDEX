@@ -16,6 +16,9 @@ Source Coding
  dpcmdeco
  dpcmenco
  dpcmopt
+ huffmandeco
+ huffmandict
+ huffmanenco
  lloyds
  quantiz
 Block Coding
@@ -47,7 +50,12 @@ Modulations
  demodmap
  dmod
  dmodce
+ genqammod
  modmap
+ pamdemod
+ pammod
+ pskdemod
+ pskmod
  qaskdeco
  qaskenco
 Special Filters

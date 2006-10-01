@@ -37,7 +37,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso {huffmandict, huffmanenco}
+## @seealso{huffmandict, huffmanenco}
 
 function sig=huffmandeco(hcode,dict)
   if ( nargin < 2 || strcmp(class(dict),"cell")~=1 )

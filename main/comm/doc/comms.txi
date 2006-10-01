@@ -1189,7 +1189,7 @@ To be written.
 To be written.
 
 Currently have functions amodce, ademodce, apkconst, demodmap, modmap,
-qaskdeco and qaskenco.
+qaskdeco, qaskenco, genqammod, pamdemod, pammod, pskdemod and pskmod.
 
 @node Special Filters, Galois Fields, Modulations, Top
 @chapter Special Filters

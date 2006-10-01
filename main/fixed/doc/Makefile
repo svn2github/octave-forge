@@ -7,6 +7,7 @@ MKTEXI = ../../../admin/mktexi
 MAKEINFO = makeinfo --no-split
 TEXI2DVI = texi2dvi --clean
 DVIPS = dvips
+LN_S = ln -s
 endif
 
 FIXEDVERTARGET = fixedversion.txi
@@ -18,7 +19,7 @@ DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) $(TEXIDOC) *~
-DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html
+DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html fixed/
 
 all : $(PDFDOC) ../inst/doc.info
 
@@ -56,12 +57,21 @@ $(FIXEDVERTARGET) :
 	fi
 
 # Need a stupid copy of the TOC for older texi2html versions
+# Newer texi2html place documentation in a sub-directory
 %.html : %.texi
 	@if test "x$(TEXI2HTML)" != "x"; then \
 	  echo "Making html $@"; \
 	  $(TEXI2HTML) -I . -I ../../.. -expandinfo $< ; \
-	  if test ! -e "$@"; then \
-	    $(INSTALL_DATA) -f $(@:.html=_toc.html) $@ ; \
+	  if test ! -e "$1(@:.html=_toc.html)"; then \
+	    if test ! -e "fixed/$@"; then \
+	      $(INSTALL_DATA) fixed/$(@:.html=_toc.html) fixed/$@ ; \
+	    fi; \
+	    $(LN_S) $@ fixed/index.html; \
+	  else \
+	    if test ! -e "$@"; then \
+	      $(INSTALL_DATA) $(@:.html=_toc.html) $@ ; \
+	    fi; \
+	    $(LN_S) $@ index.html; \
 	  fi \
 	fi
 
@@ -74,7 +84,7 @@ $(FIXEDVERTARGET) :
 
 clean:
 	@echo "Cleaning..."; \
-	$(RM) -f $(DELETES)
+	$(RM) -fr $(DELETES)
 
 dist: all
 

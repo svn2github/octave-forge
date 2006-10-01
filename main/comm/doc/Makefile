@@ -7,6 +7,7 @@ MKTEXI = ../../../admin/mktexi
 MAKEINFO = makeinfo --no-split
 TEXI2DVI = texi2dvi --clean
 DVIPS = dvips
+LN_S = ln -s
 endif
 
 INFODOC = comms.info
@@ -17,7 +18,7 @@ DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(TEXIDOC) *~
-DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html
+DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html comms/
 
 all : $(PDFDOC) ../inst/doc.info
 
@@ -51,12 +52,21 @@ all : $(PDFDOC) ../inst/doc.info
 	fi
 
 # Need a stupid copy of the TOC for older texi2html versions
+# Newer texi2html place documentation in a sub-directory
 %.html : %.texi
 	@if test "x$(TEXI2HTML)" != "x"; then \
 	  echo "Making html $@"; \
 	  $(TEXI2HTML) -I . -I ../../.. -expandinfo $< ; \
-	  if test ! -e "$@"; then \
-	    $(INSTALL_DATA) -f $(@:.html=_toc.html) $@ ; \
+	  if test ! -e "$1(@:.html=_toc.html)"; then \
+	    if test ! -e "comms/$@"; then \
+	      $(INSTALL_DATA) comms/$(@:.html=_toc.html) comms/$@ ; \
+	    fi; \
+	    $(LN_S) $@ comms/index.html; \
+	  else \
+	    if test ! -e "$@"; then \
+	      $(INSTALL_DATA) $(@:.html=_toc.html) $@ ; \
+	    fi; \
+	    $(LN_S) $@ index.html; \
 	  fi \
 	fi
 
@@ -69,7 +79,7 @@ all : $(PDFDOC) ../inst/doc.info
 
 clean:
 	@echo "Cleaning..."; \
-	$(RM) -f $(DELETES)
+	$(RM) -fr $(DELETES)
 
 dist: all
 

@@ -65,6 +65,7 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
     error("Usage: huffman_dict(source_prob,{togglecode 1-0 in code});")
   elseif nargin < 3
     togglecode=0;
+  elseif nargin < 4
     minvar=0;
   end
   

@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Various Authors
 Maintainer: The Octave Community
 Title: Specfun
-Description: Add a description to this package!
+Description: Special functions including ellipitic functions, etc
 Categories: Specfun
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later

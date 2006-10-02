@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: David Bateman
 Maintainer: David Bateman
 Title: Communications.
-Description: Digital Communications, Error Correcting Codes (Channel Code), Source Code functions
+Description: Digital Communications, Error Correcting Codes (Channel Code), Source Code functions, Modulation and Galois Fields
 Depends: octave (>= 2.9.7), signal (>= 1.0.0)
 License: GPL version 2 or later
 Url: http://octave.sf.net

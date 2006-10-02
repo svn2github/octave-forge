@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Matthew W. Roberts
 Maintainer: The Octave Community
 Title: Civil Engineering
-Description: Add a description to this package!
+Description: Functions to solution some ODE's in Civil Engineering.
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

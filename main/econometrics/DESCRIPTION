@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Michael Creel <michael.creel@uab.es>
 Maintainer: Michael Creel <michael.creel@uab.es>
 Title: Econometrics.
-Description: Add a description to this package!
+Description: Econometrics functions including MLE and GMM based techniques.
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

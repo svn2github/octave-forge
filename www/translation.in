@@ -1,0 +1,152 @@
+__HEADER__([[[Documentation]]])
+
+<h2>Octave Translation Project</h2>
+
+<p>Octave should be available in your own language.  The original authors, being
+primarily English speakers, are unable to provide this service.  Instead it is
+up to you, the user, to help translate Octave documentation into your language.
+The Octave translation project provides the infrastructure to do so.</p>
+
+<h2>The idea</h2>
+<p>For each function in octave, and each chapter in the octave manual, we will have
+a corresponding document in the ZZ language tree containing the translation of
+this document.  The translation provides a function 'help', 'aide', 'ajuda', etc.,
+which searches for fn.ZZ and displays that instead of the original file help.</p>
+
+<p>We want to be able to tell if translated help is out of date with the current text 
+in an octave function.  The plan is to generate an md5 sum for the raw octave help 
+string (currently extracted from DOCSTRINGS) and store that with the translated file. 
+When the user asks for help on the function, the help command will look for a 
+localized help string in the search path (e.g., file_in_loadpath('filter.pt')), 
+extract the octave help string, compute its md5 sum and compare it to the md5 sum 
+stored in the translated file.  If it differs the user will be warned that the 
+translated help is out of date and will be given instructions to get the original help.  
+The octave help function will need to be extended so that it returns the raw help 
+string, and a second output for dispatch help.</p>
+
+<p>When the base text changes, translators need to know exactly how it changed.  For 
+this reason we are storing the original text for the translation in the octave-lang 
+source tree and updating it whenever octave is released.  We will store the revision 
+number of the base file in the translated file. The translator can then use e.g., 
+`"cvs diff -r1.2 filter" in the base directory to find out how filter has changed 
+between version 1.2 and the current version.</p>
+
+<p>Translators can also add their name and email to the translated file.</p>
+
+<p>The top line will look something like:
+<pre>
+   mdf="d52f61a8b12616e7b99f7cd5ecbf18fb";rev="1.1";by="I.M. Translator &lt;im.translator@gmail.com&gt;"
+</pre>
+</p>
+
+<h2>Downloading and installing</h2>
+
+The translations are not yet complete, and no installable packages are available.
+
+<h2>Contributing your own translations</h2>
+<p>If you want to help with the octave translation project, the tree is now available 
+at source-forge.</p>
+
+<ol>
+<li>Create an account at <a href="http://sourceforge.net">SourceForge</a>.  You
+    can choose your own source forge id SFID. </li>
+<li>Send a message to <a href="mailto:octave-dev@lists.sf.net">octave-dev@lists.sf.net</a>
+ with your SFID.  Ask to be included in the translation project.</li>
+
+<li>Check out the current octave language sources for your language:<br>
+<pre>
+	export SFID=your sourceforge id
+        export CVS_RSH=ssh
+	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave login
+	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang
+</pre>
+
+You can restrict it to a particular language ZZ using:
+<pre>
+	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang/admin
+	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang/base
+	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang/ZZ
+</pre>
+
+admin will contain administration tools to identify what needs to be translated.
+base contains the strings which need to be translated.
+ZZ contains the translations for a particular language.
+</li>
+</ol>
+
+<p>After each translation, run 'octlang tag file.ZZ' (not yet written) 
+which computes the md5 sum in the base directory and tags the top line of 
+the translation with
+<pre>
+   mdf="$MD5SUM";rev="$REV";by="$OCTAVE_TRANSLATOR"
+</pre>
+where MD5SUM and REV are computed by the script and OCTAVE_TRANSLATOR is
+exported from the shell.
+</p>
+
+<h2>Maintaining your translations</h2>
+<p>As octave evolves you will need to keep your translations up to date.  The
+script octave-lang/admin/octlang (not yet written) can help you:
+<dl>
+<dt>octlang missing
+<dd>walk the current subtree listing all translations which are missing.
+<dt>octlang updated
+<dd>walk the current subtree listing all translations which are out of date.
+<dt>octlang diff file.ZZ
+
+<dd>list differences between the original text which was translated and the
+current text in base.
+<dt>octlang tag file.ZZ
+<dd>tag file.ZZ as up to date, marking the header with the current md5 sum
+and version number from base.
+</dl>
+
+<h2>Updating base</h2>
+<p>Once per octave release, somebody will need to update the help
+messages stored in the base translation tree.</p>
+<ol>
+<li>Download and unbundle the latest 2.9.xx development release from 
+<a href="http://www.octave.org/download.html">www.octave.org</a></li>
+<li>Create src/DOCSTRINGS and scripts/DOCSTRINGS using:
+<pre>
+	cd octave-2.9.xx
+	./configure
+	(cd src && make omit_deps=1 DOCSTRINGS)
+	(cd scripts && make DOCSTRINGS)
+
+</pre>
+</li>
+<li>Update base docs using:
+<pre>
+	export OCTAVE_ROOT=~/Downloads/octave-2.9.xx
+	cd octave-lang/base/octave/help
+	../../../admin/split_docstrings $OCTAVE_ROOT/src/DOCSTRINGS
+	../../../admin/split_docstrings $OCTAVE_ROOT/scripts/DOCSTRINGS
+</pre>
+</li>
+<li>Compare new base docs to those on the server:
+<pre>
+	cvs -q update -dp
+</pre>
+Those that have been updated since the last release will be
+marked <em>M</em>.  Those that are new will be marked <em>?</em>.
+You won't be able to tell if any have been deleted.
+
+</li>
+<li>Inform server of new docs:
+<pre>
+	cvs add ...
+</pre>
+where <em>...</em> is the list of names marked by <em>?</em>.
+</li>
+<li>Update server with new base docs and tag it with the new version:
+<pre>
+	cvs commit
+	cvs tag ss-2-9-xx
+
+</pre>
+</li>
+</ol>
+
+
+__TRAILER__

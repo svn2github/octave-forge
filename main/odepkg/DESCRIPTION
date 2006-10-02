@@ -4,7 +4,7 @@ Date: 2006-09-12
 Author: Thomas Treichl
 Maintainer: Thomas Treichl
 Title: OdePkg.
-Description: A description will be added to this package!
+Description: A toolkit for Ordinary Differential Equations.
 Categories: Ordinary Differential Equations
 Depends: octave (>= 2.9.8)
 License: GPL version 2 or later

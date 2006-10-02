@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Various Authors
 Maintainer: The Octave Community
 Title: Linear Algebra.
-Description: Add a description to this package!
+Description: Additional linear algebra code, including general SVD and matrix functions.
 Categories: Linear-Algebra
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later

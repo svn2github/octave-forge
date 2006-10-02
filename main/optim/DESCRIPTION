@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Various Authors
 Maintainer: The Octave Community
 Title: Optimzation.
-Description: Add a description to this package!
+Description: Unconstrained Non-linear Optimization toolkit.
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

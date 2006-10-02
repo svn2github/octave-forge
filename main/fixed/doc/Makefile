@@ -14,6 +14,7 @@ FIXEDVERTARGET = fixedversion.txi
 INFODOC = fixed.info
 PSDOC = $(patsubst %.info,%.ps,$(INFODOC))
 PDFDOC = $(patsubst %.info,%.pdf,$(INFODOC))
+HTMLDOC = $(patsubst %.info,%.html,$(INFODOC))
 TEXIDOC = $(patsubst %.info,%.texi,$(INFODOC))
 DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
@@ -21,7 +22,7 @@ INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) $(TEXIDOC) *~
 DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html fixed/ html/
 
-all : $(PDFDOC) ../inst/doc.info
+all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 
 ../inst/doc.info : $(INFODOC)
 	cp -f $(INFODOC) ../inst/doc.info
@@ -61,7 +62,7 @@ $(FIXEDVERTARGET) :
 %.html : %.texi
 	@if test "x$(TEXI2HTML)" != "x"; then \
 	  echo "Making html $@"; \
-	  $(TEXI2HTML) -I . -I ../../.. -expandinfo $< ; \
+	  $(TEXI2HTML) -I . -I ../../.. -iftex --subdir=./ -expandinfo $< ; \
 	  if test ! -e "$(@:.html=_toc.html)"; then \
 	    if test ! -e "fixed/$@"; then \
 	      $(INSTALL_DATA) fixed/$(@:.html=_toc.html) fixed/$@ ; \

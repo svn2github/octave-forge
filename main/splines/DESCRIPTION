@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Kai Habel and Paul Kienzle
 Maintainer: Kai Habel and Paul Kienzle
 Title: Splines.
-Description: Add a description to this package!
+Description: Additional Cubic spline functions.
 Categories: Splines
 Depends: octave (>= 2.9.7)
 License: GPL v2 or later, and Public Domain

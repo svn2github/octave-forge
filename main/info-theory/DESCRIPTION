@@ -1,9 +1,11 @@
-Name: Information Theory 
+Name: InformationTheory 
 Version: 0.1.0
+Date: 2006-09-30
 Author: Muthiah Annamalai
 Maintainer: Muthiah Annamalai
 Title: Information Theory
 Description: Functions and routines for basic Information Theory definitions, and source coding.
+Categories: Information Theory
 Depends: octave (>= 2.9.7)
 Licesnse: GPL version 2 or later
 Url: http://octave.sf.net

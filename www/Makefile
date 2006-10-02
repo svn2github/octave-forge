@@ -5,6 +5,9 @@ IMG_HTML = $(HTML_SRC:.in=.html)
 
 all: build-www doc developers.html
 	make $(IMG_HTML)
+	make -k -C ../doc/coda www-dist
+	if [ ! -e coda ]; then rm -rf coda; fi
+	tar xzf ../doc/coda/out/coda-www.tar.gz
 
 build-www:
 	./build-www.py
@@ -36,6 +39,6 @@ clean:
 	    fi; \
 	  fi; \
 	done
-	rm -f *.html developers.in
+	rm -f *.html developers.in INDEX
 
 package:

@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Torsten Finke   <fi@igh-essen.com>
 Maintainer: Torsten Finke   <fi@igh-essen.com>
 Title: Combinatorics.
-Description: Add a description to this package!
+Description: Combinatorics functions, incuding partitioning.
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

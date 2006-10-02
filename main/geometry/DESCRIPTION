@@ -4,7 +4,7 @@ Date: 2006-08-06
 Author: Various Authors
 Maintainer: The Octave Community
 Title: Geometry.
-Description: Add a description to this package!
+Description: Geometry tools including convex hull, triangulation, etc.
 Categories: Geometry
 Depends: octave (>= 2.9.7)
 BuildRequires: qhull-devel [Mandriva] libqhull0-devel

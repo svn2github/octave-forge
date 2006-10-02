@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Etienne Grossmann
 Maintainer: Etienne Grossmann
 Title: VRML.
-Description: Add a description to this package!
+Description: 3D graphics using VRML
 Depends: octave (>= 2.9.7)
 SystemRequirements: freewrl
 License: GPL version 2 or later

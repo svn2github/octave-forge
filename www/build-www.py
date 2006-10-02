@@ -43,12 +43,24 @@ def parse_description(filename):
 def local_documentation(outdir, packdir):
     try:
         ## Copy any local documentation to packdir/local
-        cmd = 'find ' + packdir + ' -name "*.[hH][tT][mM][lL]"  -print; find ' + packdir + ' -name "*.[hH][tT][mM]"  -print'
+        cmd = 'find ' + packdir + ' -name "[hH][tT][mM][lL]" -type d  -print; find ' + packdir + ' -name "[hH][tT][mM]" -type d  -print'
+        docdir = None;
         for file in os.popen(cmd).readlines():
+            name = file[:-1];
+            docdir = 1;
             if (not os.path.exists(outdir + "/local")):
                 os.mkdir(outdir + "/local");
-            name = file[:-1];
-            shutil.copy2(name, outdir + "/local/");
+            for root, dirs, files in os.walk(name, topdown=False):
+                for file2 in files:
+                    shutil.copy2(root + "/" + file2, outdir + "/local/");
+
+        if (not docdir):
+            cmd = 'find ' + packdir + ' -name "*.[hH][tT][mM][lL]"  -print; find ' + packdir + ' -name "*.[hH][tT][mM]"  -print'
+            for file in os.popen(cmd).readlines():
+                if (not os.path.exists(outdir + "/local")):
+                    os.mkdir(outdir + "/local");
+                name = file[:-1];
+                shutil.copy2(name, outdir + "/local/");
 
         if (os.path.exists(outdir + "/local/index.html")):
             return "local/index.html";
@@ -57,17 +69,18 @@ def local_documentation(outdir, packdir):
         elif (os.path.exists(outdir + "/local")):
             ## This could really be improved as it only returns the first
             ## html page that find returns.
-            cmd = 'find ' + outdir + '/local -name "*.[hH][tT][mM][lL]"  -print; find ' + packdir + ' -name "*.[hH][tT][mM]"  -print'
-            for file in os.popen(cmd).readlines():
+            cmd2 = 'cd ' + outdir + '; find local -name "*.[hH][tT][mM][lL]"  -print; find local -name "*.[hH][tT][mM]"  -print';
+            for file in os.popen(cmd2).readlines():
                 name = file[:-1];
-                return "local" + name; 
+                return name; 
+            return None;
         else:
             return None;
     except:
         print("Bad copy " + packdir);
         return None;
 
-def create_INDEX(desc, packdir):
+def create_INDEX(desc, packdir, p):
     try:
         wd = os.getcwd();
         name_version = desc['name'].lower() + "-" + desc['version'];
@@ -75,24 +88,29 @@ def create_INDEX(desc, packdir):
         ## Create a tarball to be installed
         install_dir = wd + "/install/";
         tarball = name_version + ".tar.gz";
-        if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + desc['name']) != 0):
+        if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + p) != 0):
             os.system("rm -rf " + tarball);
             raise Exception("Can't create tarball"); 
         
         ## Run octave installation
         command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
         command = command + 'pkg("install", "-nodeps", "' + tarball + '");';
-        if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "'") != 0):
+        if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "' > /dev/null 2>&1") != 0):
+            os.system("ls -la " + install_dir);
             os.system("rm -rf " + install_dir + " " + tarball);
             raise Exception("Can't run Octave"); 
         
-        ## Copy the INDEX file to packdir
-        shutil.copy2(install_dir + name_version + "/packinfo/INDEX", packdir + "/INDEX");
+        ## Copy the INDEX file to local INDEX file
+        index = open(install_dir + name_version + "/packinfo/INDEX", "r");
+        local_index = open("INDEX","a");
+        local_index.writelines(index.readlines());
+        local_index.close();
+        index.close();
     
         ## Clean up
         command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
-        command = command + 'pkg("uninstall", "-nodeps", "' + desc['name'] + '");';
-        if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "'") != 0):
+        command = command + 'pkg("uninstall", "-nodeps", "' + desc['name'].lower() + '");';
+        if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "' > /dev/null 2>&1") != 0):
             os.system("rm -rf " + install_dir + " " + tarball);
             raise Exception("Can't run Octave"); 
         os.system("rm -rf " + install_dir + " " + tarball);
@@ -101,12 +119,12 @@ def create_INDEX(desc, packdir):
 
 ## Creates the index.html files for a package in packdir.
 ## The result is placed in outdir.
-def create_index_html(packdir, outdir):
+def create_index_html(packdir, outdir, p):
     try:
         desc = parse_description(packdir + "/DESCRIPTION");
     except:
         raise;
-    
+
     ## Write header
     fid = open(outdir + "/index.in", "w");
     fid.write("__HEADER__([[[The " + desc['name'] + " package]]])");
@@ -175,7 +193,7 @@ def create_index_html(packdir, outdir):
     ## Check if the package has an INDEX file (if not create one)
     INDEX_file = packdir + "/INDEX";
     if (not os.path.isfile(INDEX_file)):
-        create_INDEX(desc, packdir);
+        create_INDEX(desc, packdir, p);
     
     return desc;
 
@@ -210,18 +228,21 @@ def rm_rf(p):
             os.rmdir(os.path.join(root, name));
     os.rmdir(p);
 
-def handle_package(packdir, outdir):
+def handle_package(packdir, outdir, p):
     if (os.path.isdir(packdir)):
-        if (os.path.exists(outdir)):
-            rm_rf(outdir);
-        os.mkdir(outdir);
-        try:
-            desc = create_index_html(packdir, outdir);
-            create_license_html(desc['name'], packdir, outdir);
-            return desc;
-        except:
-            rm_rf(outdir);
-            raise Exception("Can't create index.html");
+        if (not os.path.exists(packdir + "/NOINSTALL")):
+            if (os.path.exists(outdir)):
+                rm_rf(outdir);
+            os.mkdir(outdir);
+            try:
+                desc = create_index_html(packdir, outdir, p);
+                create_license_html(desc['name'], packdir, outdir);
+                return desc;
+            except:
+                rm_rf(outdir);
+                raise Exception("Can't create index.html");
+        else:
+            raise Exception("Package marked NOINSTALL");
     raise Exception('not packdir');
 
 def main():
@@ -239,7 +260,9 @@ def main():
     index.write('<li><a href="#nonfree">Non-free packages</a> contains packages\n');
     index.write('that have license issues. Usually the packages themselves are\n');
     index.write('Free Software that depend on non-free libraries.</li></ul>\n');
-    
+    if (os.path.exists("INDEX")):
+        os.system("rm -f INDEX");
+
     main_dirs = ["main",            "extra",          "nonfree"];
     headers   = ["Main repository", "Extra packages", "Non-free packages"];
     for i in range(len(main_dirs)):
@@ -253,22 +276,23 @@ def main():
         for i in range(0, len(packages)):
             p = packages[i];
             packdir = main_dir + p;
-            outdir  = "./" + p;
-            try:
-                desc = handle_package(packdir, outdir);
-                archiv = desc['name'].lower() + '-' + desc['version'] + '.tar.gz';
-                index.write('<div class="package">\n');
-                index.write('  <b>' + desc['name'] + '</b>\n');
-                index.write('<p>' + desc['description'][:100]);
-                if (len(desc['description']) > 100):
-                    index.write('...');
-                index.write('</p>\n');
-                index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
-                index.write('<a href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
-                index.write('</div>\n');
-            except Exception, e:
-                print("Skipping " + p);
-                print(e)
+            if (os.path.isdir(packdir) and p != "CVS"):
+                outdir  = "./" + p;
+                try:
+                    desc = handle_package(packdir, outdir, p);
+                    archiv = desc['name'].lower() + '-' + desc['version'] + '.tar.gz';
+                    index.write('<div class="package">\n');
+                    index.write('  <b>' + desc['name'] + '</b>\n');
+                    index.write('<p>' + desc['description'][:100]);
+                    if (len(desc['description']) > 100):
+                        index.write('...');
+                    index.write('</p>\n');
+                    index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
+                    index.write('<a href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
+                    index.write('</div>\n');
+                except Exception, e:
+                    print("Skipping " + p);
+                    print(e)
     
     index.write('__TRAILER__\n');
     index.close();

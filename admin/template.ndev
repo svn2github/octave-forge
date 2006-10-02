@@ -270,7 +270,10 @@ post-pkg/%::
 <dd>	An optional directory containing documentation for the
 	package. The files in this directory will be directly
 	installed in a sub-directory of the installed package for
-	future reference.
+	future reference. Note that any html files included in this
+	directory will be included in the octave-forge package
+	webpages. To include images or arbitrary files use a
+	sub-directory html/ in this directory.
 <dt>package/inst
 <dd>	An optional directory containing any files that are directly
 	installed by package. Typically this will include any m-files.

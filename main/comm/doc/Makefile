@@ -13,14 +13,15 @@ endif
 INFODOC = comms.info
 PSDOC = $(patsubst %.info,%.ps,$(INFODOC))
 PDFDOC = $(patsubst %.info,%.pdf,$(INFODOC))
+HTMLDOC = $(patsubst %.info,%.html,$(INFODOC))
 TEXIDOC = $(patsubst %.info,%.texi,$(INFODOC))
-DOCS = $(INFODOC) $(PDFDOC) 
+DOCS = $(INFODOC) $(PDFDOC)  
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(TEXIDOC) *~
 DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html comms/ html/
 
-all : $(PDFDOC) ../inst/doc.info
+all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 
 ../inst/doc.info : $(INFODOC)
 	cp -f $(INFODOC) ../inst/doc.info
@@ -56,7 +57,7 @@ all : $(PDFDOC) ../inst/doc.info
 %.html : %.texi
 	@if test "x$(TEXI2HTML)" != "x"; then \
 	  echo "Making html $@"; \
-	  $(TEXI2HTML) -I . -I ../../.. --iftex -expandinfo $< ; \
+	  $(TEXI2HTML) -I . -I ../../.. --iftex --subdir=./ -expandinfo $< ; \
 	  if test ! -e "$(@:.html=_toc.html)"; then \
 	    if test ! -e "comms/$@"; then \
 	      $(INSTALL_DATA) comms/$(@:.html=_toc.html) comms/$@ ; \

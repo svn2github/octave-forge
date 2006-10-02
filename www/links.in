@@ -14,5 +14,8 @@ __HEADER__([[[Links]]])
 <p><a href="http://www.math.mcgill.ca/loisel/octave-workshop/">http://www.math.mcgill.ca/loisel/octave-workshop</a>:
  The Octave Workshop web page. A GUI implementation for Octave that has the goal of being completely
  cross platform.</p>
+<p><a
+href="http://perso.orange.fr/prthomas/intro.html">http://perso.orange.fr/prthomas/intro.html</a>:
+Dal Segno al Coda - The octave dynamically linked function cookbook.</p>
 
 __TRAILER__

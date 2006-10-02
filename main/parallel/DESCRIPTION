@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Hayato Fujiwara
 Maintainer: Hayato Fujiwara
 Title: Parallel Computing.
-Description: Add a description to this package!
+Description: Parallel execution package for cluster computers
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

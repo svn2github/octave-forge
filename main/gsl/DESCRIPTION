@@ -4,7 +4,7 @@ Date: 2006-08-06
 Author: Teemu Ikonen   <tpikonen@pcu.helsinki.fi>
 Maintainer: Teemu Ikonen   <tpikonen@pcu.helsinki.fi>
 Title: GNU Scientific Library.
-Description: Add a description to this package!
+Description: Octave bindings to the GNU Scientific Library
 Depends: octave (>= 2.9.7)
 BuildRequires: gsl-devel [Mandriva] libgsl0-devel
 License: GPL version 2 or later

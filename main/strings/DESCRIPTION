@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Various Authors
 Maintainer: The Octave Community
 Title: String Handling.
-Description: Add a description to this package!
+Description: Additional manipulation functions
 Depends: octave (>= 2.9.7)
 BuildRequires: libpcre-devel [Mandriva] libpcre0-devel
 License: See individual files

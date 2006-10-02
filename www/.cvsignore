@@ -42,3 +42,11 @@ time
 tk_octave
 tsa
 vrml
+coda
+doc
+.octave_hist
+.octave_packages
+INDEX
+info-theory
+odepkg
+packages.in

@@ -4,7 +4,7 @@ Date: 2006-08-06
 Author: David Bateman
 Maintainer: David Bateman
 Title: Fixed Point Computations.
-Description: Add a description to this package!
+Description: Fixed point real and complex matrix toolbox
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

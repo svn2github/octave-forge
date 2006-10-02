@@ -4,7 +4,7 @@ Date: 2006-08-05
 Author: Various Authors
 Maintainer: The Octave Community
 Title: Miscellaneous functions.
-Description: Add a description to this package!
+Description: Miscellaneous tools including waitbar, xml tools, etc
 Categories: Miscellaneous
 Depends: octave (>= 2.9.7)
 SystemRequirements: units

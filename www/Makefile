@@ -39,6 +39,6 @@ clean:
 	    fi; \
 	  fi; \
 	done
-	rm -f *.html developers.in INDEX
+	rm -fr *.html developers.in INDEX coda
 
 package:

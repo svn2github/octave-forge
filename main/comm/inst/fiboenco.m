@@ -28,13 +28,14 @@
 ## the standard binaary Fibonacci codes, which means that row vectors
 ## can only contain 0 or 1. Ref: http://en.wikipedia.org/wiki/Fibonacci_coding
 ## Ugly O(k.N^2) encoder.Ref: Wikipedia article accessed March, 2006.
-## http://en.wikipedia.org/wiki/Fibonacci_coding,  UCI Data Compression
-## Book,  http://www.ics.uci.edu/~dan/pubs/DC-Sec3.html,(accessed October 2006)
+## @url{http://en.wikipedia.org/wiki/Fibonacci_coding},  UCI Data Compression
+## Book, @url{http://www.ics.uci.edu/~dan/pubs/DC-Sec3.html}, (accessed 
+## October 2006)
 ## 
 ## @example
 ## @group
-##      fiboenco(10) #=  code is {[ 0 1 0 0 1 1]}
-##      fiboenco(1:4) #= code is {[1 1],[0 1 1],[0 0 1 1],[1 0 1 1]}
+##      fiboenco(10) #=  code is @{[ 0 1 0 0 1 1]@}
+##      fiboenco(1:4) #= code is @{[1 1],[0 1 1],[0 0 1 1],[1 0 1 1]@}
 ## @end group
 ## @end example
 ## @end deftypefn

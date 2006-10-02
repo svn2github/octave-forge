@@ -27,12 +27,12 @@
 ## parts. Partitioning the stream is as simple as identifying the
 ## "11" pairs that occur, at the terminating ends. This system implements
 ## the standard binaary Fibonacci codes, which means that row vectors
-## can only contain 0 or 1. Ref: http://en.wikipedia.org/wiki/Fibonacci_coding
+## can only contain 0 or 1. Ref: @url{http://en.wikipedia.org/wiki/Fibonacci_coding}
 ## 
 ## @example
 ## @group
-##     fibodeco({[0 1 0 0 1 1]}) %decoded to 10
-##     fibodeco({[1 1],[0 1 1],[0 0 1 1],[1 0 1 1]}) %[1:4]
+##     fibodeco(@{[0 1 0 0 1 1]@}) %decoded to 10
+##     fibodeco(@{[1 1],[0 1 1],[0 0 1 1],[1 0 1 1]@}) %[1:4]
 ## @end group
 ## @end example
 ## @end deftypefn

@@ -19,7 +19,7 @@ DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) $(TEXIDOC) *~
-DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html fixed/
+DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html fixed/ html/
 
 all : $(PDFDOC) ../inst/doc.info
 
@@ -62,16 +62,22 @@ $(FIXEDVERTARGET) :
 	@if test "x$(TEXI2HTML)" != "x"; then \
 	  echo "Making html $@"; \
 	  $(TEXI2HTML) -I . -I ../../.. -expandinfo $< ; \
-	  if test ! -e "$1(@:.html=_toc.html)"; then \
+	  if test ! -e "$(@:.html=_toc.html)"; then \
 	    if test ! -e "fixed/$@"; then \
 	      $(INSTALL_DATA) fixed/$(@:.html=_toc.html) fixed/$@ ; \
 	    fi; \
 	    $(LN_S) $@ fixed/index.html; \
+	    mv fixed html; \
+	    $(INSTALL_DATA) *.png html; \
 	  else \
 	    if test ! -e "$@"; then \
 	      $(INSTALL_DATA) $(@:.html=_toc.html) $@ ; \
 	    fi; \
-	    $(LN_S) $@ index.html; \
+	    if [ ! -e "html/" ]; then \
+	      mkdir html; \
+	    fi; \
+	    $(INSTALL_DATA) *.png *.html html; \
+	    $(LN_S) $@ html/index.html; \
 	  fi \
 	fi
 

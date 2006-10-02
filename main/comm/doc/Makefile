@@ -18,7 +18,7 @@ DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(TEXIDOC) *~
-DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html comms/
+DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html comms/ html/
 
 all : $(PDFDOC) ../inst/doc.info
 
@@ -56,17 +56,23 @@ all : $(PDFDOC) ../inst/doc.info
 %.html : %.texi
 	@if test "x$(TEXI2HTML)" != "x"; then \
 	  echo "Making html $@"; \
-	  $(TEXI2HTML) -I . -I ../../.. -expandinfo $< ; \
-	  if test ! -e "$1(@:.html=_toc.html)"; then \
+	  $(TEXI2HTML) -I . -I ../../.. --iftex -expandinfo $< ; \
+	  if test ! -e "$(@:.html=_toc.html)"; then \
 	    if test ! -e "comms/$@"; then \
 	      $(INSTALL_DATA) comms/$(@:.html=_toc.html) comms/$@ ; \
 	    fi; \
 	    $(LN_S) $@ comms/index.html; \
+	    mv comms html; \
+	    $(INSTALL_DATA) *.png html; \
 	  else \
 	    if test ! -e "$@"; then \
 	      $(INSTALL_DATA) $(@:.html=_toc.html) $@ ; \
 	    fi; \
-	    $(LN_S) $@ index.html; \
+	    if [ ! -e "html/" ]; then \
+	      mkdir html; \
+	    fi; \
+	    $(INSTALL_DATA) *.png *.html html; \
+	    $(LN_S) $@ html/index.html; \
 	  fi \
 	fi
 

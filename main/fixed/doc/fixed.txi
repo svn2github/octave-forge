@@ -2887,7 +2887,7 @@ This allowed a single version of the code to be instantiated to perform
 both the fixed and floating point implementations of the same code. The
 instantiations of this class are
 
-@example @asis
+@example
 template Fft<double,Complex,ComplexRowVector>;
 template Fft<FixedPoint,FixedPointComplex,FixedComplexRowVector>;
 

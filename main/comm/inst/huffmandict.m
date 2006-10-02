@@ -75,6 +75,7 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
     error("Usage: huffman_dict(source_prob,{togglecode 1-0 in code});")
   elseif nargin < 3
     togglecode=0;
+    minvar=0;
   elseif nargin < 4
     minvar=0;
   end
@@ -163,10 +164,6 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
     % Loopie
     I=I+1;
   end
-
-  one_cw="1";
-  zero_cw="0";
-
 
   if (togglecode==0)
       one_cw=1;

@@ -1,0 +1,104 @@
+## (C) 2006, September 29, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+##
+
+## usage: shannonfanodict(symbols,symbol_probabilites)
+##        computes the code words for the symbol probabilities using the
+##        shannon fano scheme. Output is a dictionary cell-array, which 
+##        are codewords, and correspond to the order of input probability.
+##
+##
+## example: CW=shannonfanodict(1:4,[0.5 0.25 0.15 0.1]);
+##          assert(redundancy(CW,[0.5 0.25 0.15 0.1]),0.25841,0.001)
+##
+function [cw_list]=shannonfanodict(symbol,P)
+  DMAX=length(P);
+  S=1:DMAX;
+#
+#FIXME: Is there any other way of doing the
+#topological sort? Insertion sort is bad.
+#
+#Sort the probability list in 
+#descending/non-increasing order.
+#Using plain vanilla insertion sort.
+#
+  for i=1:DMAX
+    for j=i:DMAX
+      
+      if(P(i) < P(j))
+	
+				#Swap prob
+	t=P(i);
+	P(i)=P(j);
+	P(j)=t;
+	
+				#Swap symb
+	t=S(i);
+	S(i)=S(j);
+	S(j)=t;
+      end
+      
+    end
+  end
+  
+  
+  #Now for each symbol you need to
+  #create code as first [-log p(i)] bits of
+  #cumulative function sum(p(1:i))
+  #
+  #printf("Shannon Codes\n");
+  #data_table=zeros(1,DMAX);
+
+   cw_list={};
+   for i=1:DMAX
+     if(P(i)>0)
+       digits=ceil(-log2(P(i))); #somany digits needed.
+     else
+       digits=0; #dont assign digits for zero probability symbols.
+     end
+     
+     Psum = sum([0 P](1:i)); #Cumulative probability
+     s=[];
+     for i=1:digits;
+       Psum=2*Psum;
+       if(Psum >= 1)
+	 s=[s 1];
+	 Psum=Psum-1;
+       else
+	 s=[s 0];
+       end       
+     end
+     cw_list{i}=s;
+   end
+   
+   #re-arrange the list accroding to input prob list.
+   cw_list2={};
+   for i=1:length(cw_list)
+     cw_list2{i}=cw_list{S(i)};
+   end
+   cw_list=cw_list2;
+
+   return;
+end
+
+%!
+%!CW=shannonfanodict(1:4,[0.5 0.25 0.15 0.1]);
+%!assert(redundancy(CW,[0.5 0.25 0.15 0.1]),0.057980,0.001)
+%!CW=shannonfanodict(1:4,[0.5 0.15 0.25 0.1]);
+%!P=[0.5 0.25 0.15 0.1 0];
+%!CW=shannonfanodict(1:5,P);
+%!redundancy(CW,P)
+%!

@@ -13,12 +13,7 @@ Information Theory >> InformationTheory
  relativeentropy
 Source Coding
  tunstallcode
- rle_decode
- rle_encode
- shannonfano_code
  unarydec
  unaryenc
- huffman
- huffman_minvar
  arithmetic_decode
  arithmetic_encode

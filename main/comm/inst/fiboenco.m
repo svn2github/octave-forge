@@ -1,5 +1,4 @@
 ## Copyright (C) 2006, Oct 2nd, Muthiah Annamalai,<muthiah.annamalai@uta.edu>
-## Copyright (C) 2006, March 28,Muthiah Annamalai. 
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -17,19 +16,20 @@
 ##
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{op} = } fiboenco (@var{num})
+## @deftypefn {Function File} {} fiboenco (@var{num})
 ## 
-## Returns the cell-array of encoded fibonacci value from the column vectors @var{num,val} .
-## Universal codes like fibonacci codes have a useful synchronization property,
-## only for 255 maximum value we have designed these routines. We assume
+## Returns the cell-array of encoded fibonacci value from the column vectors @var{num}.
+## Universal codes like fibonacci codes have a useful synchronization
+## property, only for 255 maximum value we have designed these routines. We assume
 ## user has partitioned the code into several unique segments based on
-## the suffix property of unique strings "11" and we just decode the
-## parts. Partitioning the stream is as simple as identifying the
-## "11" pairs that occur, at the terminating ends. This system implements
+## the suffix property of unique elements [1 1] and we just decode the
+## parts. Partitioning the stream is as simple as identifying the [1 1]
+## pairs that occur, at the terminating ends. This system implements
 ## the standard binaary Fibonacci codes, which means that row vectors
-## can only contain 0 or 1.
-##
-## Ref: http://en.wikipedia.org/wiki/Fibonacci_coding
+## can only contain 0 or 1. Ref: http://en.wikipedia.org/wiki/Fibonacci_coding
+## Ugly O(k.N^2) encoder.Ref: Wikipedia article accessed March, 2006.
+## http://en.wikipedia.org/wiki/Fibonacci_coding,  UCI Data Compression
+## Book,  http://www.ics.uci.edu/~dan/pubs/DC-Sec3.html,(accessed October 2006)
 ## 
 ## @example
 ## @group
@@ -40,14 +40,6 @@
 ## @end deftypefn
 ## @seealso{fibodeco}
 
-%
-% 
-% Ugly O(k.N^2) encoder. 
-%
-% Ref: Wikipedia article accessed March, 2006. http://en.wikipedia.org/wiki/Fibonacci_coding
-%      UCI Data Compression Book, http://www.ics.uci.edu/~dan/pubs/DC-Sec3.html,
-%      (accessed October 2006)
-%
 function op_num=fiboenco(num)
      %
      % generate fibonacci series table.

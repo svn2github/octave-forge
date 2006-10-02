@@ -17,9 +17,9 @@
 ##
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sig} = } fibodeco (@var{code})
+## @deftypefn {Function File} { } fibodeco (@var{code})
 ## 
-## Returns the decoded fibonacci value from the binary vectors @var{code} .
+## Returns the decoded fibonacci value from the binary vectors @var{code}.
 ## Universal codes like fibonacci codes Have a useful synchronization property,
 ## only for 255 maximum value we have designed these routines. We assume
 ## user has partitioned the code into several unique segments based on
@@ -27,9 +27,7 @@
 ## parts. Partitioning the stream is as simple as identifying the
 ## "11" pairs that occur, at the terminating ends. This system implements
 ## the standard binaary Fibonacci codes, which means that row vectors
-## can only contain 0 or 1.
-##
-## Ref: http://en.wikipedia.org/wiki/Fibonacci_coding
+## can only contain 0 or 1. Ref: http://en.wikipedia.org/wiki/Fibonacci_coding
 ## 
 ## @example
 ## @group

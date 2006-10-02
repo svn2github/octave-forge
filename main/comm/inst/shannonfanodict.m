@@ -15,14 +15,22 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: shannonfanodict(symbols,symbol_probabilites)
-##        computes the code words for the symbol probabilities using the
-##        shannon fano scheme. Output is a dictionary cell-array, which 
-##        are codewords, and correspond to the order of input probability.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} shannonfanodict (@var{symbols},@var{symbol_probabilites})
+##        
+## Returns the code dictionary for source using shanno fano algorithm.
+## Dictionary is built from @var{symbol_probabilities} using the shannon
+## fano scheme.  Output is a dictionary cell-array, which 
+## are codewords, and correspond to the order of input probability.
 ##
-##
-## example: CW=shannonfanodict(1:4,[0.5 0.25 0.15 0.1]);
+## @example
+## @group
+##          CW=shannonfanodict(1:4,[0.5 0.25 0.15 0.1]);
 ##          assert(redundancy(CW,[0.5 0.25 0.15 0.1]),0.25841,0.001)
+## @end group
+## @end example
+## @end deftypefn
+## @seealso { shannonfanoenc, shannonfanodec }
 ##
 function [cw_list]=shannonfanodict(symbol,P)
   DMAX=length(P);

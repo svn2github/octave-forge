@@ -17,15 +17,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} shannonfanoenco (@var{hcode},@var{dict})
+## 
 ## Returns the Shannon Fano encoded signal using @var{dict}.
 ## This function uses a @var{dict} built from the @code{shannonfanodict}
 ## and uses it to encode a signal list into a shannon fano code.
 ## Restrictions include a signal set that strictly belongs  in the
 ## @code{range [1,N]} with @code{N=length(dict)}. Also dict can only be
 ## from the @code{shannonfanodict()} routine.
-## 
-
 ## An example use of @code{shannonfanoenco} is
+##
 ## @example
 ## @group
 ##          hd=shannonfanodict(1:4,[0.5 0.25 0.15 0.10])

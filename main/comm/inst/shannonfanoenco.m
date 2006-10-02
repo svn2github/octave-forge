@@ -15,20 +15,27 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-##
-## usage:shannonfanoenco(sig,dict)
-## The function returns the Shannon Fano encoded signal using dict.
-## This function uses a dict built from the shannonfanodict
+## -*- texinfo -*-
+## @deftypefn {Function File} {} shannonfanoenco (@var{hcode},@var{dict})
+## Returns the Shannon Fano encoded signal using @var{dict}.
+## This function uses a @var{dict} built from the @code{shannonfanodict}
 ## and uses it to encode a signal list into a shannon fano code.
-## Restrictions include a signal set that strictly belongs
-## in the range [1,N] with N=length(dict). Also dict can
-## only be from the shannonfanodict() routine.
+## Restrictions include a signal set that strictly belongs  in the
+## @code{range [1,N]} with @code{N=length(dict)}. Also dict can only be
+## from the @code{shannonfanodict()} routine.
 ## 
-## 
-## example: hd=shannonfanodict(1:4,[0.5 0.25 0.15 0.10])
+
+## An example use of @code{shannonfanoenco} is
+## @example
+## @group
+##          hd=shannonfanodict(1:4,[0.5 0.25 0.15 0.10])
 ##          shannonfanoenco(1:4,hd) #  [   0   1   0   1   1   0   1   1   1   0]
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{shannonfanodeco, shannonfanodict}
 ##
-##
+
 function sf_code=shannonfanoenco(sig,dict)
   if nargin < 2
     error('usage: huffmanenco(sig,dict)');

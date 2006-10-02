@@ -15,19 +15,25 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: rledeco(message)
-## This function decodes a run-length encoded message into its
-## original form. The encoded message has to be in the form of a 
-## row-vector. The message format (encoded RLE) is like  repetition 
-## factor, value.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} rledeco (@var{message})
 ##
-## example: 
+## Returns decoded run-length @var{message}. 
+## The RLE encoded @var{message} has to be in the form of a 
+## row-vector. The message format (encoded RLE) is like  repetition 
+## [factor, value]+.
+##
+## An example use of @code{rledeco} is
+## @example
+## @group
 ##          message=[1 5 2 4 3 1];
 ##          rledeco(message) #gives
 ##          ans = [    5   4   4   1   1   1]
-##
-## see also: rleenco()
-##
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{rledeco}
+
 function rmsg=rledeco(message)
      if nargin < 1
        error('Usage: rledeco(message)')

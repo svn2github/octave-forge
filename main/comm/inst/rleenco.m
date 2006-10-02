@@ -15,20 +15,25 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: rleenco(message)
-## This function decodes a run-length encodes a message into its
-## rle form. The original message has to be in the form of a 
-## row-vector. The message format (encoded RLE) is like  repetition 
-## factor, value.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} rleenco (@var{message})
 ##
-## example: 
+## Returns  run-length encoded @var{message}. The
+## rle form is built from @var{message}. The original @var{message}
+## has to be in the form of a  row-vector. The encoded @var{message}
+## format (encoded RLE) is like  [repetition factor]+, values.
+##
+## An example use of @code{rleenco} is
+## @example
+## @group
 ##          message=[    5   4   4   1   1   1]
 ##          rleenco(message) #gives
 ##          ans = [1 5 2 4 3 1];
-##
-##
-## see also: rledeco()
-##
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{rleenco}
+
 function rmsg=rleenco(message)
      if nargin < 1
        error('Usage: rleenco(message)')

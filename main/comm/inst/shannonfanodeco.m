@@ -15,24 +15,32 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} shannonfanodeco (@var{hcode},@var{dict})
 ##
-## usage: sig=shannonfanodeco(hcode,dict)
-## The function returns the original signal that was 
-## Shannonfano encoded signal using shannonfanoenco. This function uses
-## a dict built from the shannonfanodict and uses it to decode a signal 
-## list into a shannonfano list.
-## Restrictions include hcode is expected to be a binary code;
-## returned signal set that strictly belongs in the range [1,N]
-## with N=length(dict). Also dict can  only be from the
-## shannonfanodict() routine. Whenever decoding fails,
+## Returns the original signal that was Shannonfano encoded. The signal
+## was encoded using @code{shannonfanoenco}. This function uses
+## a dict built from the @code{shannonfanodict} and uses it to decode a signal 
+## list into a shannonfano list. Restrictions include hcode is expected to be a binary code;
+## returned signal set that strictly belongs in the @code{range [1,N]},
+## with @code{N=length(dict)}. Also dict can  only be from the
+## @code{shannonfanodict(...)} routine. Whenever decoding fails,
 ## those signal values are indicated by -1, and we successively 
 ## try to restart decoding from the next bit that hasnt failed in 
 ## decoding, ad-infinitum. 
 ##
-## example: hd=shannonfanodict(1:4,[0.5 0.25 0.15 0.10])
+## An example use of @code{shannonfanodeco} is
+## @example
+## @group
+##          hd=shannonfanodict(1:4,[0.5 0.25 0.15 0.10])
 ##          hcode=shannonfanoenco(1:4,hd) #  [ 1   0   1   0   0   0   0   0   1 ]
 ##          shannonfanodeco(hcode,hd) # [1 2 3 4]
 ## 
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{shannonfanoenco, shannonfanodict}
+
 function sig=shannonfanodeco(hcode,dict)
   if ( nargin < 2 || strcmp(class(dict),"cell")~=1 )
     error('usage: shannonfanoenco(sig,dict)');

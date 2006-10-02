@@ -21,8 +21,22 @@ Source Coding
  huffmanenco
  lloyds
  quantiz
+ huffmandict
+ huffmanenco
+ huffmandeco
+ shannonfanodict
+ shannonfanoenco
+ shannonfanodeco
+ rleenco
+ rledeco
+Block Interleavers
+ intrlv
+ algintrlv
+ helscanintrlv
+ matintrlv
+ randintrlv
 Block Coding
- bchdeco
+ bchdeco	
  bchenco
  bchpoly
  convenc

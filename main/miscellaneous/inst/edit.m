@@ -1,4 +1,5 @@
-## edit name
+## -*- texinfo -*-
+## @deftypefn {Command} edit @var{name}
 ##   Edit the named function.  
 ##
 ##   If the function is available in a file on your path and that file 
@@ -25,52 +26,66 @@
 ##   is available.  If you are editting a .cc file, you will need
 ##   to mkoctfile name.cc before the definition will be available.
 ##
-## edit field value
+## @deftypefnx {Command} edit @var{field} @var{value}
 ##   Set the value for an edit control field.
 ##
-## edit get field
+## @deftypefnx {Command} @var{value} = edit get @var{field}
 ##   Return the value for an edit control field.
 ##
 ## The following control fields are used:
 ##
-## editor
+## @table @samp
+## @item editor
 ##   This is the editor to use to modify the functions.  By default it uses
 ##   Octave's EDITOR state variable, which comes from getenv("EDITOR") and
 ##   defaults to vi.  Use %s in place of the function name.  E.g.,
-##     [EDITOR, " %s"]
+##   @table @samp
+##   @item [EDITOR, " %s"]
 ##       use the editor which Octave uses for bug_report
-##     "xedit %s &"           
+##   @item "xedit %s &"           
 ##       pop up simple X11 editor in a separate window
-##     "gnudoit -q \"(find-file \\\"%s\\\")\""   
+##   @item "gnudoit -q \"(find-file \\\"%s\\\")\""   
 ##       send it to current emacs; must have (gnuserv-start) in .emacs
+##   @end table
 ##
 ##   On cygwin, you will need to convert the cygwin path to a windows
 ##   path if you are using a native Windows editor.  For example
-##     '"C:/Program Files/Good Editor/Editor.exe" `cygpath -wa %s`'
+##   @example
+##     "C:/Program Files/Good Editor/Editor.exe" `cygpath -wa %s`
+##   @end example
+##   @noindent
 ##   Pay attention to the "" and ``; they are significant.
 ##
-## home
+## @item home
 ##   This is the location of user local m-files. Be be sure it is in your
 ##   path. The default is ~/octave.
 ##
-## author
+## @item author
 ##   This is the name to put after the "## Author:" field of new functions.
 ##   By default it guesses from the `gecos' field of password database.
 ## 
-## email
+## @item email
 ##   This is the e-mail address to list after the name in the author field.
-##   By default it guesses <$LOGNAME@$HOSTNAME>, and if $HOSTNAME is not
+##   By default it guesses <$LOGNAME@@$HOSTNAME>, and if $HOSTNAME is not
 ##   defined it uses "uname -n".  You probably want to override this.  Be
-##   sure to use "<user@host>" as your format.
+##   sure to use "<user@@host>" as your format.
 ##
-## license
-##   gpl     GNU General Public License (default)
-##   bsd     BSD-style license without advertising clause
-##   pd      public domain
-##   "text"  your own default copyright and license
+## @item license
+##   @table @samp
+##   @item gpl
+##     GNU General Public License (default)
+##   @item bsd
+##     BSD-style license without advertising clause
+##   @item pd
+##      public domain
+##   @item "text"
+##      your own default copyright and license
+##   @end table
 ## 
 ##   Unless you specify PD, edit will prepend the copyright statement 
 ##   with "Copyright (C) yyyy Function Author"
+## @end table
+## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 

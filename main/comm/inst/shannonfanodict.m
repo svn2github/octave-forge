@@ -32,7 +32,7 @@
 ## @end deftypefn
 ## @seealso { shannonfanoenc, shannonfanodec }
 ##
-function [cw_list]=shannonfanodict(symbol,P)
+function cw_list=shannonfanodict(symbol,P)
   DMAX=length(P);
   S=1:DMAX;
 #
@@ -70,25 +70,25 @@ function [cw_list]=shannonfanodict(symbol,P)
   #printf("Shannon Codes\n");
   #data_table=zeros(1,DMAX);
    cw_list={};
-   for i=1:DMAX
-     if(P(i)~=0)
-       digits=ceil(-log2(P(i))); #somany digits needed.
+   for itr=1:DMAX
+     if(P(itr)~=0)
+       digits=ceil(-log2(P(itr))); #somany digits needed.
      else
        digits=0; #dont assign digits for zero probability symbols.
      end
      
-     Psum = sum([0 P](1:i)); #Cumulative probability
+     Psum = sum([0 P](1:itr)); #Cumulative probability
      s=[];
      for i=1:digits;
        Psum=2*Psum;
-       if(Psum >= 1)
+       if(Psum >= 1.00)
 	 s=[s 1];
-	 Psum=Psum-1;
+	 Psum=Psum-1.00;
        else
 	 s=[s 0];
        end       
      end
-     cw_list{i}=s;
+     cw_list{itr}=s;
    end
    
    #re-arrange the list accroding to input prob list.

@@ -80,7 +80,8 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
     minvar=0;
   end
   
-  if(sum(source_prob)!=1.0)
+  %need to compare to 1
+  if((sum(source_prob)-1.0) > 1e-7 )
     error("source probabilities must add up to 1.0");
   end
 

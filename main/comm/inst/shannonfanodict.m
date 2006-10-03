@@ -69,10 +69,9 @@ function [cw_list]=shannonfanodict(symbol,P)
   #
   #printf("Shannon Codes\n");
   #data_table=zeros(1,DMAX);
-
    cw_list={};
    for i=1:DMAX
-     if(P(i)>0)
+     if(P(i)~=0)
        digits=ceil(-log2(P(i))); #somany digits needed.
      else
        digits=0; #dont assign digits for zero probability symbols.

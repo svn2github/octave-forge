@@ -31,13 +31,14 @@
 ## @example
 ## @group
 ##
-## fibodeco(fibosplitstream([fiboenco(randint(1,100,[0 255])){:}]))
-## fibodeco(fibosplitstream([fiboenco(1:10){:}]))
+## fibodeco(fibosplitstream([fiboenco(randint(1,100,[0 255]))@{:@}]))
+## fibodeco(fibosplitstream([fiboenco(1:10)@{:@}]))
 ##
 ## @end group
 ## @end example
-## @end deftypefn
 ## @seealso{fiboenco,fibodeco}
+## @end deftypefn
+
 function symbols=fibosplitstream(stream)
   if nargin < 1
      error('usage: fibosplitstream(stream); see help')

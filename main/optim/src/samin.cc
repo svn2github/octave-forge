@@ -167,8 +167,7 @@ which of the elements of the second argument is the one minimization is over");
 }
 
 //-------------- The annealing algorithm --------------
-DEFUN_DLD(samin, args, ,
-	  "samin: simulated annealing minimization of a function. See samin_example.m\n\
+DEFUN_DLD(samin, args, , "samin: simulated annealing minimization of a function. See samin_example.m\n\
 \n\
 [x, obj, convergence, details] = samin(\"f\", {args}, {control})\n\
 \n\

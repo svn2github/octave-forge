@@ -86,8 +86,7 @@ ans =\n\
 ")
 {
 	int nargin = args.length();
-	if (!((nargin == 2)|| (nargin == 3)))
-	{
+	if (!((nargin == 2)|| (nargin == 3))) {
 		error("numgradient: you must supply 2 or 3 arguments");
 		return octave_value_list();
 	}
@@ -96,33 +95,34 @@ ans =\n\
 	if (any_bad_argument(args)) return octave_value_list();
 
 	std::string f (args(0).string_value());
-	Cell f_args (args(1).cell_value());
-	octave_value_list c_args(2,1); // for cellevall {f, f_args}
-	octave_value_list f_return;
-	c_args(0) = f;
-	c_args(1) = f_args;
+	Cell f_args_cell (args(1).cell_value());
+	octave_value_list f_args, f_return;
 	Matrix obj_value, obj_left, obj_right;
 	double SQRT_EPS, p, delta, diff;
-	int i, j, minarg, test;
+	int i, j, k, n, minarg, test;
 
 	// Default values for controls
 	minarg = 1; // by default, first arg is one over which we minimize
 
-	// possibly minimization not over 1st arg
+	// copy cell contents over to octave_value_list to use feval()
+	k = f_args_cell.length();
+	f_args(k); // resize only once
+	for (i = 0; i<k; i++) f_args(i) = f_args_cell(i);
+
+	// check which arg w.r.t which we need to differentiate
 	if (args.length() == 3) minarg = args(2).int_value();
 	Matrix parameter = f_args(minarg - 1).matrix_value();
 
 	// initial function value
-	f_return = feval("celleval", c_args);
+	f_return = feval(f, f_args);
 	obj_value = f_return(0).matrix_value();
 
-	const int n = obj_value.rows(); // find out dimension
-	const int k = parameter.rows();
+	n = obj_value.rows(); // find out dimension
+	k = parameter.rows();
 	Matrix derivative(n, k);
 	Matrix columnj;
 
-	for (j=0; j<k; j++) // get 1st derivative by central difference
-	{
+	for (j=0; j<k; j++) { // get 1st derivative by central difference
 		p = parameter(j);
 
 		// determine delta for finite differencing
@@ -135,15 +135,13 @@ ans =\n\
 		// right side
 		parameter(j) = p + delta;
 		f_args(minarg - 1) = parameter;
-		c_args(1) = f_args;
-		f_return = feval("celleval", c_args);
+		f_return = feval(f, f_args);
 		obj_right = f_return(0).matrix_value();
 
 		// left size
 		parameter(j) = p - delta;
 		f_args(minarg - 1) = parameter;
-		c_args(1) = f_args;
-		f_return = feval("celleval", c_args);
+		f_return = feval(f, f_args);
 		obj_left = f_return(0).matrix_value();
 
 		parameter(j) = p;  // restore original parameter

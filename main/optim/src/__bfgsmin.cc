@@ -30,16 +30,13 @@
 #include "error.h"
 
 
-int __bfgsmin_obj(double &obj, std::string f, Cell f_args, ColumnVector theta, int minarg)
+int __bfgsmin_obj(double &obj, const std::string f, octave_value_list f_args, const ColumnVector theta, const int minarg)
 {
 	octave_value_list f_return;
-	octave_value_list c_args(2,1); // for cellevall {f, f_args}
 	int success = 1;
 
-	c_args(0) = f;
 	f_args(minarg - 1) = theta;
-	c_args(1) = f_args;
-	f_return = feval("celleval", c_args);
+	f_return = feval(f, f_args);
 	obj = f_return(0).double_value();
 	// bullet-proof the objective function
 	if (error_state)
@@ -55,7 +52,7 @@ int __bfgsmin_obj(double &obj, std::string f, Cell f_args, ColumnVector theta, i
 // __numgradient: numeric central difference gradient for bfgs.
 // This is the same as numgradient, except the derivative is known to be a vector, it's defined as a column,
 // and the finite difference delta is incorporated directly rather than called from a function
-int __numgradient(ColumnVector &derivative, std::string f, Cell f_args, int minarg)
+int __numgradient(ColumnVector &derivative, const std::string f, const octave_value_list f_args, const int minarg)
 {
 	double SQRT_EPS, diff, delta, obj_left, obj_right, p;
 	int j, test, success;
@@ -89,27 +86,22 @@ int __numgradient(ColumnVector &derivative, std::string f, Cell f_args, int mina
 }
 
 
-int __bfgsmin_gradient(ColumnVector &derivative, std::string f, Cell f_args, ColumnVector theta, int minarg, int try_analytic_gradient, int &have_analytic_gradient) {
+int __bfgsmin_gradient(ColumnVector &derivative, const std::string f, octave_value_list f_args, const ColumnVector theta, const int minarg, int try_analytic_gradient, int &have_analytic_gradient) {
 	octave_value_list f_return;
-	octave_value_list c_args(2,1); // for cellevall {f, f_args}
 	int k = theta.rows();
 	int success;
 	ColumnVector g(k);
 	Matrix check_gradient(k,1);
 
 	if (have_analytic_gradient) {
-		c_args(0) = f;
 		f_args(minarg - 1) = theta;
-		c_args(1) = f_args;
-		f_return = feval("celleval", c_args);
+		f_return = feval(f, f_args);
 		g = f_return(1).column_vector_value();
 	}
 
 	else if (try_analytic_gradient) {
-		c_args(0) = f;
 		f_args(minarg - 1) = theta;
-		c_args(1) = f_args;
-		f_return = feval("celleval", c_args);
+		f_return = feval(f, f_args);
 		if (f_return.length() > 1) {
 			if (f_return(1).is_real_matrix()) {
         			if ((f_return(1).rows() == k) & (f_return(1).columns() == 1)) {
@@ -139,7 +131,7 @@ int __bfgsmin_gradient(ColumnVector &derivative, std::string f, Cell f_args, Col
 
 
 // this is the lbfgs direction, used if control has 5 elements
-ColumnVector lbfgs_recursion(int memory, Matrix sigmas, Matrix gammas, ColumnVector d)
+ColumnVector lbfgs_recursion(const int memory, const Matrix sigmas, const Matrix gammas, ColumnVector d)
 {
 	if (memory == 0)
   	{
@@ -174,7 +166,7 @@ ColumnVector lbfgs_recursion(int memory, Matrix sigmas, Matrix gammas, ColumnVec
 }
 
 // __bisectionstep: fallback stepsize method if __newtonstep fails
-int __bisectionstep(double &step, double &obj, std::string f, Cell f_args, ColumnVector dx, int minarg, int verbose)
+int __bisectionstep(double &step, double &obj, const std::string f, const octave_value_list f_args, const ColumnVector dx, const int minarg, const int verbose)
 {
 	double obj_0, a;
 	int found_improvement;
@@ -226,7 +218,7 @@ int __bisectionstep(double &step, double &obj, std::string f, Cell f_args, Colum
 }
 
 // __newtonstep: default stepsize algorithm
-int __newtonstep(double &a, double &obj, std::string f, Cell f_args, ColumnVector dx, int minarg, int verbose)
+int __newtonstep(double &a, double &obj, const std::string f, const octave_value_list f_args, const ColumnVector dx, const int minarg, const int verbose)
 {
 	double obj_0, obj_left, obj_right, delta, inv_delta_sq, gradient, hessian;
 	int found_improvement = 0;
@@ -280,8 +272,8 @@ int __newtonstep(double &a, double &obj, std::string f, Cell f_args, ColumnVecto
 DEFUN_DLD(__bfgsmin, args, ,"__bfgsmin: backend for bfgs minimization\n\
 Users should not use this directly. Use bfgsmin.m instead") {
 	std::string f (args(0).string_value());
-  	Cell f_args (args(1).cell_value());
-  	octave_value_list f_return; // holder for return items
+  	Cell f_args_cell (args(1).cell_value());
+	octave_value_list f_args, f_return; // holder for return items
 
 	int max_iters, verbosity, criterion, minarg, convergence, iter, memory, \
 		gradient_ok, i, j, k, conv_fun, conv_param, conv_grad, have_gradient, \
@@ -305,6 +297,11 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	// want to see warnings?
 	warnings = 0;
 	if (verbosity == 3) warnings = 1;
+
+	// copy cell contents over to octave_value_list to use feval()
+	k = f_args_cell.length();
+	f_args(k); // resize only once
+	for (i = 0; i<k; i++) f_args(i) = f_args_cell(i);
 
 	// get the minimization argument
 	ColumnVector theta  = f_args(minarg - 1).column_vector_value();

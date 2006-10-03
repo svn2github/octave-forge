@@ -1,85 +1,85 @@
-define(`__GROUP_ID__',`group_id=2888')dnl
-define(`__SOURCEFORGE__',`http://sourceforge.net')dnl
-define(`__PACKAGE__',`http://prdownloads.sourceforge.net/octave')dnl
-define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')dnl
-define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')dnl
-define(`__CVS__',`__SOURCEFORGE__/cvs/?__GROUP_ID__')dnl
-define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')dnl
-dnl
-dnl
-dnl
-define(`__BASE_ADDRESS__', `esyscmd(/bin/sh ./get-base-address)')dnl
-define(`__TEXT_DIR__', `__BASE_ADDRESS__`text/'')dnl
-define(`__IMAGE_DIR__', `__BASE_ADDRESS__`images/'')dnl
-dnl
-dnl
-dnl
-define(`__LINK__', `ifdef(`__TEXT_MODE__', `', `link="$1"')')dnl
-define(`__VLINK__', `ifdef(`__TEXT_MODE__', `', `vlink="$1"')')dnl
-define(`__ALINK__', `ifdef(`__TEXT_MODE__', `', `alink="$1"')')dnl
-define(`__TEXT__', `ifdef(`__TEXT_MODE__', `', `text="$1"')')dnl
-define(`__COLOR__', `ifdef(`__TEXT_MODE__', `', `color="$1"')')dnl
-define(`__BGCOLOR__', `ifdef(`__TEXT_MODE__', `', `bgcolor="$1"')')dnl
-dnl
-define(`__FACE__', `ifdef(`__TEXT_MODE__', `', `face="$1"')')dnl
-dnl
-dnl
-define(`__LINK_COLOR__', `#0050fa')dnl
-define(`__VLINK_COLOR__', `#33ccff')dnl
-define(`__ALINK_COLOR__', `#ff0000')dnl
-define(`__TEXT_COLOR__', `#000000')dnl
-define(`__BG_COLOR__', `#ffffff')dnl
-dnl
-define(`__TITLE_BAR_BG_COLOR__',   `#10a0ff')dnl
-define(`__TITLE_BAR_FONT_COLOR__', `#ffffff')dnl
-define(`__TITLE_BAR_FACE__', `Helvetica')dnl
-dnl
-ifdef(`__TEXT_MODE__',
-      `define(`__RULE__', `<hr>')',
-      `define(`__RULE__', `<hr noshade="noshade">')')dnl
-dnl
-define(`__DOWNLOAD_BG_COLOR__', `#d0e0ff')dnl
-define(`__NAV_SELECTED_COLOR__', `#000000')dnl
-define(`__NAV_BG_COLOR__', `#ffffff')dnl
-dnl
-define(`__NAV_FACE__', `Helvetica')dnl
-dnl
-dnl
-dnl
-define(`__DEFAULT_LINK_TEXT__', `ifelse($#, 2, `$1://$2', `$3')')dnl
-define(`__HTTP__',
-       ``<a href="http://$1">'__DEFAULT_LINK_TEXT__(`http', $*)`</a>'')dnl
-define(`__MAILTO__',
-       ``<a href="mailto:$1">'__DEFAULT_LINK_TEXT__(`http', $*)`</a>'')dnl
-define(`__FTP__',
-       ``<a href="ftp://$1">'__DEFAULT_LINK_TEXT__(`http', $*)`</a>'')dnl
-dnl
-define(`__OCTAVE_IMAGE__',
-       ``<img src="'__IMAGE_DIR__`$1" alt="[$2]" ' ifelse($#, 3, `$3')`>'')dnl
-dnl
-define(`__OCTAVE_TEXT_HTTP__',
-       ``<a href="'__TEXT_DIR__`$1">$2</a>'')dnl
-dnl
-define(`__OCTAVE_GRAPHICS_HTTP__',
-       ``<a href="'__BASE_ADDRESS__`$1">$2</a>'')dnl
-dnl
-ifdef(`__TEXT_MODE__',
-      `define(`__OCTAVE_HTTP__', `__OCTAVE_TEXT_HTTP__($1, $2)')',
-      `define(`__OCTAVE_HTTP__', `__OCTAVE_GRAPHICS_HTTP__($1, $2)')')dnl
-dnl
-dnl
-dnl
-define(`__OCTAVE_FTP__',
-       `__FTP__(ftp.octave.org/pub/octave/$1, $2)')dnl
-dnl
-dnl
-dnl
-define(`__OCTAVE_TEXT_MODE_GRAPHIC__',
-       `__OCTAVE_GRAPHICS_HTTP__(images/$1, $2)')dnl
-dnl
-dnl
-dnl
-define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+m4_define(`__GROUP_ID__',`group_id=2888')m4_dnl
+m4_define(`__SOURCEFORGE__',`http://sourceforge.net')m4_dnl
+m4_define(`__PACKAGE__',`http://prdownloads.sourceforge.net/octave')m4_dnl
+m4_define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')m4_dnl
+m4_define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')m4_dnl
+m4_define(`__CVS__',`__SOURCEFORGE__/cvs/?__GROUP_ID__')m4_dnl
+m4_define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__BASE_ADDRESS__', `m4_esyscmd(/bin/sh ./get-base-address)')m4_dnl
+m4_define(`__TEXT_DIR__', `__BASE_ADDRESS__`text/'')m4_dnl
+m4_define(`__IMAGE_DIR__', `__BASE_ADDRESS__`images/'')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__LINK__', `m4_ifdef(`__TEXT_MODE__', `', `link="$1"')')m4_dnl
+m4_define(`__VLINK__', `m4_ifdef(`__TEXT_MODE__', `', `vlink="$1"')')m4_dnl
+m4_define(`__ALINK__', `m4_ifdef(`__TEXT_MODE__', `', `alink="$1"')')m4_dnl
+m4_define(`__TEXT__', `m4_ifdef(`__TEXT_MODE__', `', `text="$1"')')m4_dnl
+m4_define(`__COLOR__', `m4_ifdef(`__TEXT_MODE__', `', `color="$1"')')m4_dnl
+m4_define(`__BGCOLOR__', `m4_ifdef(`__TEXT_MODE__', `', `bgcolor="$1"')')m4_dnl
+m4_dnl
+m4_define(`__FACE__', `m4_ifdef(`__TEXT_MODE__', `', `face="$1"')')m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__LINK_COLOR__', `#0050fa')m4_dnl
+m4_define(`__VLINK_COLOR__', `#33ccff')m4_dnl
+m4_define(`__ALINK_COLOR__', `#ff0000')m4_dnl
+m4_define(`__TEXT_COLOR__', `#000000')m4_dnl
+m4_define(`__BG_COLOR__', `#ffffff')m4_dnl
+m4_dnl
+m4_define(`__TITLE_BAR_BG_COLOR__',   `#10a0ff')m4_dnl
+m4_define(`__TITLE_BAR_FONT_COLOR__', `#ffffff')m4_dnl
+m4_define(`__TITLE_BAR_FACE__', `Helvetica')m4_dnl
+m4_dnl
+m4_ifdef(`__TEXT_MODE__',
+      `m4_define(`__RULE__', `<hr>')',
+      `m4_define(`__RULE__', `<hr noshade="noshade">')')m4_dnl
+m4_dnl
+m4_define(`__DOWNLOAD_BG_COLOR__', `#d0e0ff')m4_dnl
+m4_define(`__NAV_SELECTED_COLOR__', `#000000')m4_dnl
+m4_define(`__NAV_BG_COLOR__', `#ffffff')m4_dnl
+m4_dnl
+m4_define(`__NAV_FACE__', `Helvetica')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__DEFAULT_LINK_TEXT__', `ifelse($#, 2, `$1://$2', `$3')')m4_dnl
+m4_define(`__HTTP__',
+       ``<a href="http://$1">'__DEFAULT_LINK_TEXT__(`http', $*)`</a>'')m4_dnl
+m4_define(`__MAILTO__',
+       ``<a href="mailto:$1">'__DEFAULT_LINK_TEXT__(`http', $*)`</a>'')m4_dnl
+m4_define(`__FTP__',
+       ``<a href="ftp://$1">'__DEFAULT_LINK_TEXT__(`http', $*)`</a>'')m4_dnl
+m4_dnl
+m4_define(`__OCTAVE_IMAGE__',
+       ``<img src="'__IMAGE_DIR__`$1" alt="[$2]" ' ifelse($#, 3, `$3')`>'')m4_dnl
+m4_dnl
+m4_define(`__OCTAVE_TEXT_HTTP__',
+       ``<a href="'__TEXT_DIR__`$1">$2</a>'')m4_dnl
+m4_dnl
+m4_define(`__OCTAVE_GRAPHICS_HTTP__',
+       ``<a href="'__BASE_ADDRESS__`$1">$2</a>'')m4_dnl
+m4_dnl
+m4_ifdef(`__TEXT_MODE__',
+      `m4_define(`__OCTAVE_HTTP__', `__OCTAVE_TEXT_HTTP__($1, $2)')',
+      `m4_define(`__OCTAVE_HTTP__', `__OCTAVE_GRAPHICS_HTTP__($1, $2)')')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__OCTAVE_FTP__',
+       `__FTP__(ftp.octave.org/pub/octave/$1, $2)')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__OCTAVE_TEXT_MODE_GRAPHIC__',
+       `__OCTAVE_GRAPHICS_HTTP__(images/$1, $2)')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -98,11 +98,11 @@ function goto_url(url) {
 </head>
 <body>
 <div id="title"><h1>$1</h1></div>
-')dnl
-dnl
-dnl
-dnl
-define(`__MENU__', `<div id="nav">
+')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__MENU__', `<div id="nav">
  <a href="__BASE_ADDRESS__/index.html">Home</a>
  <a href="__BASE_ADDRESS__/packages.html">Packages</a>
  <a href="__BASE_ADDRESS__/developers.html">Developers</a>
@@ -115,33 +115,33 @@ define(`__MENU__', `<div id="nav">
  <a href="__DOWNLOAD__">Download</a>
  <a href="__CVS__">CVS</a>
 </div>
-')dnl
-dnl
-dnl
-dnl
-define(`__HEADER__', `__HTML_HEADER__([[[$1]]])
+')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__HEADER__', `__HTML_HEADER__([[[$1]]])
 __MENU__
 <div id="content">
-')dnl
-dnl
-dnl
-dnl
-define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
+')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
 __MENU__
 <div id="nav2">
 <form name="docform">
-include([[[doc/alphabetic.include]]])
-include([[[doc/menu.include]]])
+m4_include([[[doc/alphabetic.include]]])
+m4_include([[[doc/menu.include]]])
 </form>
 </div>
 <div id="content">
-')dnl
-dnl
-dnl
-dnl
-define(`__BIG_HEADER__', `__HEADER__($1)
+')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__BIG_HEADER__', `__HEADER__($1)
 <p>
-ifdef(`__TEXT_MODE__',
+m4_ifdef(`__TEXT_MODE__',
   `<h1>__OCTAVE_TEXT_MODE_GRAPHIC__(`octave-logo.jpg', `Octave')</h1>
   <h2>__OCTAVE_TEXT_MODE_GRAPHIC__(`lorenz.jpg', `Lorenz Attractor')</h2>
   <hr>',
@@ -152,31 +152,31 @@ ifdef(`__TEXT_MODE__',
   __OCTAVE_IMAGE__(`lorenz.jpg', `Lorenz Attractor')</td></tr>
 <tr><td colspan="2">__RULE__</td></tr>
 </table>')
-</p>')dnl
-dnl
-dnl
-dnl
-define(`__nav_button__',
+</p>')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__nav_button__',
 `ifelse(`$1', `$2',
   `<font color="__NAV_SELECTED_COLOR__">$4</font>',
-  `__OCTAVE_HTTP__($3, $4)')')dnl
-dnl
-dnl
-dnl
-define(`__ext_nav_button__', `__HTTP__($1, $2)')dnl
-dnl
-dnl
-dnl
-define(`__view_button__',
-`ifdef(`__TEXT_MODE__',
+  `__OCTAVE_HTTP__($3, $4)')')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__ext_nav_button__', `__HTTP__($1, $2)')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__view_button__',
+`m4_ifdef(`__TEXT_MODE__',
        `__OCTAVE_GRAPHICS_HTTP__(__FILE_NAME__, `Graphics View')',
-       `__OCTAVE_TEXT_HTTP__(__FILE_NAME__, `Text View')')')dnl
-dnl
-dnl
-dnl
-define(`__NAVIGATION__', `<small>
+       `__OCTAVE_TEXT_HTTP__(__FILE_NAME__, `Text View')')')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__NAVIGATION__', `<small>
 <p>
-ifdef(`__TEXT_MODE__', `<center>',
+m4_ifdef(`__TEXT_MODE__', `<center>',
 `<table width="100%" cellpadding="3" border="0">
 <tr><td align="center" __BG_COLOR__(`__NAV_BG_COLOR__')>
 <font __COLOR__(`__LINK_COLOR__')
@@ -195,29 +195,29 @@ ifdef(`__TEXT_MODE__', `<center>',
  | __nav_button__($1, `archive', `archive.html', `Mailing List Archive')
  | __nav_button__($1, `funding', `funding.html', `Funding')
  | __nav_button__($1, `help-wanted', `help-wanted.html', `Help Wanted') ]
-ifdef(`__TEXT_MODE__', `</center>', `</font></td></tr></table>')
-</p>')dnl
-dnl
-dnl
-dnl
-define(`__TRAILER__', `
+m4_ifdef(`__TEXT_MODE__', `</center>', `</font></td></tr></table>')
+</p>')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__TRAILER__', `
 <div id="sf_logo">
   <a  href="__SOURCEFORGE__"><img src="__SOURCEFORGE__/sflogo.php?__GROUP_ID__&amp;type=1"  width="88"
 height="31" border="0" alt="SourceForge.net Logo"  /></a>
 </div>
 </body>
-</html>')dnl
-dnl
-dnl
-dnl
-define(`__OCTAVE_TRAILER__', `__NAVIGATION__(`$1')
+</html>')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__OCTAVE_TRAILER__', `__NAVIGATION__(`$1')
 __COPYING__
-__TRAILER__')dnl
-dnl
-dnl
-dnl
-define(`__TITLE_BAR__', `<p>
-ifdef(`__TEXT_MODE__',
+__TRAILER__')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__TITLE_BAR__', `<p>
+m4_ifdef(`__TEXT_MODE__',
 `<h3>$1</h3>',
 `<table width="100%" cellpadding="3" border="0">
 <tr>
@@ -233,11 +233,11 @@ $1
 </td>
 </tr>
 </table>')
-</p>')dnl
-dnl
-dnl
-dnl
-define(`__TEXT_DOWNLOAD_INFO__', `<ul>
+</p>')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__TEXT_DOWNLOAD_INFO__', `<ul>
 <li> __FTP__(`ftp.octave.org/pub/octave', `Stable') (also currently ancient and obsolete)
 <ul>
 <li>Version: $1
@@ -266,10 +266,10 @@ define(`__TEXT_DOWNLOAD_INFO__', `<ul>
 </ul>
 </li>
 </ul>')
-dnl
-dnl
-dnl
-define(`__GRAPHICS_DOWNLOAD_INFO__',
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__GRAPHICS_DOWNLOAD_INFO__',
 `<table width="100%" cellpadding="3" border="0">
 <tr><td><b>Octave version</b></td>
 <td><b>Version</b></td>
@@ -295,17 +295,17 @@ __FTP__(`ftp.octave.org/pub/octave/bleeding-edge', `Development')  (latest featu
     (__OCTAVE_FTP__(`bleeding-edge/octave-'$5`.tar.bz2',`.tar.bz2'))
 </td>
 <td __BGCOLOR__(`__DOWNLOAD_BG_COLOR__')>$6</td></tr>
-</table>')dnl
-dnl
-dnl
-dnl
-define(`__DOWNLOAD_INFO__', `<p>
-ifdef(`__TEXT_MODE__',
+</table>')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__DOWNLOAD_INFO__', `<p>
+m4_ifdef(`__TEXT_MODE__',
 `__TEXT_DOWNLOAD_INFO__($@)',
 `__GRAPHICS_DOWNLOAD_INFO__($@)')
 </p>
-')dnl
-dnl
-dnl
-dnl
-changequote([[[, ]]])
+')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_changequote([[[, ]]])

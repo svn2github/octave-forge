@@ -1,5 +1,6 @@
 M4 := m4
 MACRO_FILE := macros.m4
+M4_OPTIONS := --prefix-builtins
 HTML_SRC = $(shell find . | grep "\.in")
 IMG_HTML = $(HTML_SRC:.in=.html)
 
@@ -26,9 +27,11 @@ doc:
 
 html: $(IMG_HTML)
 	
+doc/f/edit.html:
+	@echo Skipping edit.html
 
 %.html : %.in
-	$(M4) $(MACRO_FILE) $< > $@
+	$(M4) $(M4_OPTIONS) $(MACRO_FILE) $< > $@
 
 clean:
 	@for f in $(IMG_HTML); do \

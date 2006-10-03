@@ -1,4 +1,4 @@
-Fixedpoint >> Fixed Point Type
+fixed >> Fixed Point Type
 Fixed Point Operators
  + - = Addition/subtraction in a fixed point algebra.
  * / \ = Multiplication/division in fixed point (Division for scalars only).

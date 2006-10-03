@@ -1,3 +1,4 @@
-General polygon clipper
+gpc >> General polygon clipper
+General polygon clipping
  gpc_clip gpc_create gpc_get gpc_is_polygon gpc_plot gpc_read
  gpc_tristrip gpc_write gpc_test

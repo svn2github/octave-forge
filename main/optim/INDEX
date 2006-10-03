@@ -1,4 +1,4 @@
-optimization >> Optimization
+optim >> Optimization
 Minimization
  minimize 
  nelder_mead_min

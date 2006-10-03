@@ -5,7 +5,7 @@ Author: Jesse Bennett <jesse@seas.smu.edu>
 Maintainer: Paul Kienzle
 Title: Engine
 Description: An external interface library for Octave
-Categories: External
+Categories: engine, External
 Depends: octave (>= 2.9.7)
 License: GPL version 2 or later
 Url: http://octave.sf.net

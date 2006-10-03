@@ -1,4 +1,5 @@
-Missing data statistics (not installed by default)
+nan >> Missing data statistics
+Missing data statistics
  coefficient_of_variation geomean meansq skewness
  covm cor cov corrcoef harmmean median statistic
  detrend kurtosis moment std mad naninsttest nantest 

@@ -36,7 +36,8 @@ def parse_description(filename):
             line = fid.readline();
         fid.close();
         return desc;
-    except:
+    except Exception, e:
+        print(e);
         print("Couldn't parse the DESCRIPTION file " + filename);
         raise
 
@@ -76,7 +77,8 @@ def local_documentation(outdir, packdir):
             return None;
         else:
             return None;
-    except:
+    except Exception, e:
+        print(e);
         print("Bad copy " + packdir);
         return None;
 
@@ -230,19 +232,20 @@ def rm_rf(p):
 
 def handle_package(packdir, outdir, p):
     if (os.path.isdir(packdir)):
-        if (not os.path.exists(packdir + "/NOINSTALL")):
-            if (os.path.exists(outdir)):
-                rm_rf(outdir);
-            os.mkdir(outdir);
-            try:
-                desc = create_index_html(packdir, outdir, p);
-                create_license_html(desc['name'], packdir, outdir);
-                return desc;
-            except:
-                rm_rf(outdir);
-                raise Exception("Can't create index.html");
-        else:
-            raise Exception("Package marked NOINSTALL");
+        #if (not os.path.exists(packdir + "/NOINSTALL")):
+        if (os.path.exists(outdir)):
+            rm_rf(outdir);
+        os.mkdir(outdir);
+        try:
+            desc = create_index_html(packdir, outdir, p);
+            create_license_html(desc['name'], packdir, outdir);
+            return desc;
+        except Exception, e:
+            print(e);
+            rm_rf(outdir);
+            raise Exception("Can't create index.html");
+        #else:
+        #    raise Exception("Package marked NOINSTALL");
     raise Exception('not packdir');
 
 def main():

@@ -1,4 +1,4 @@
-extra >> Extra packages
+parallel >> Parallel Computing
 Parallel
  send recv reval
  server getid pserver

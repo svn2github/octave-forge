@@ -27,14 +27,25 @@
 ## @group
 ##          CW=shannonfanodict(1:4,[0.5 0.25 0.15 0.1]);
 ##          assert(redundancy(CW,[0.5 0.25 0.15 0.1]),0.25841,0.001)
+##          shannonfanodict(1:5,[0.35 0.17 0.17 0.16 0.15])
+##          shannonfanodict(1:8,[8 7 6 5 5 4 3 2]./40)
 ## @end group
 ## @end example
 ## @end deftypefn
 ## @seealso { shannonfanoenc, shannonfanodec }
 ##
 function cw_list=shannonfanodict(symbol,P)
+
+  if nargin < 2
+    error('Usage: shannonfanodict(symbol,P); see help');
+  end
+
   DMAX=length(P);
   S=1:DMAX;
+  
+  if(sum(P)-1.000 > 1e-7)
+    error('Sum of probabilities must be 1.000');
+  end
 #
 #FIXME: Is there any other way of doing the
 #topological sort? Insertion sort is bad.

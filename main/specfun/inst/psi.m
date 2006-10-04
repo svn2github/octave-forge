@@ -30,7 +30,7 @@ function [y] = psi(x)
 		if(imag(x) != zeros(size(x)))
 			error('unable to handle complex arguments');
 		else
-			h = 10.^-9;
+			h = 1e-9;
 			y = x;	
 			y(x == 0) = -Inf;
 			y(x>0) = (lgamma(y(x>0)+h)-lgamma(y(x>0)-h))./(2.*h);

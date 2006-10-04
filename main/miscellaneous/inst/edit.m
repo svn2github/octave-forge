@@ -1,47 +1,53 @@
 ## -*- texinfo -*-
 ## @deftypefn {Command} edit @var{name}
-##   Edit the named function.  
+## @deftypefnx {Command} edit @var{field} @var{value}
+## @deftypefnx {Command} @var{value} = edit get @var{field}
+##   Edit the named function, or change editor settings.
 ##
-##   If the function is available in a file on your path and that file 
-##   is modifiable, then it will be editted in place.  If it is a system 
-##   function, then it will first be copied to the directory HOME 
-##   and then editted.  
+##   If @code{edit} is called with the name of a file or function as
+##   it's argument it will be opened in a text editor.
+##   
+##   @itemize @bullet
+##   @item If the function @var{name} is available in a file on your path and
+##   that file is modifiable, then it will be editted in place.  If it 
+##   is a system function, then it will first be copied to the directory
+##   @code{HOME} (see further down) and then editted.  
 ##
-##   If name is the name of a function defined in the interpreter but 
-##   not in an m-file, then an m-file will be created in HOME
+##   @item If @var{name} is the name of a function defined in the interpreter but 
+##   not in an m-file, then an m-file will be created in @code{HOME}
 ##   to contain that function along with its current definition.  
 ##
-##   If name.cc is specified, then it will search for name.cc in the
-##   path and try to modify it, otherwise it will create a new .cc file
-##   in HOME.  If name happens to be an m-file or interpreter
+##   @item If @code{name.cc} is specified, then it will search for @code{name.cc}
+##   in the path and try to modify it, otherwise it will create a new .cc file
+##   in @code{HOME}.  If @var{name} happens to be an m-file or interpreter
 ##   defined function, then the text of that function will be inserted
 ##   into the .cc file as a comment.
 ##
-##   If name.ext is on your path then it will be editted, otherwise
-##   the editor will be started with HOME/name.ext as the
-##   filename.  If name.ext is not modifiable, it will be copied to
-##   HOME before editting.
+##   @item If @var{name.ext} is on your path then it will be editted, otherwise
+##   the editor will be started with @code{HOME/name.ext} as the
+##   filename.  If @code{name.ext} is not modifiable, it will be copied to
+##   @code{HOME} before editting.
 ##
-##   WARNING!! You may need to clear name before the new definition
+##   @strong{WARNING!} You may need to clear name before the new definition
 ##   is available.  If you are editting a .cc file, you will need
-##   to mkoctfile name.cc before the definition will be available.
+##   to mkoctfile @code{name.cc} before the definition will be available.
+##   @end itemize
 ##
-## @deftypefnx {Command} edit @var{field} @var{value}
-##   Set the value for an edit control field.
-##
-## @deftypefnx {Command} @var{value} = edit get @var{field}
-##   Return the value for an edit control field.
-##
+## If @code{edit} is called with @var{field} and @var{value} variables,
+## the value of the control field @var{field} will be @var{value}.
+## If an output argument is requested and the first argument is @code{get}
+## then @code{edit} will return the value of the control field @var{field}.
 ## The following control fields are used:
 ##
 ## @table @samp
 ## @item editor
 ##   This is the editor to use to modify the functions.  By default it uses
-##   Octave's EDITOR state variable, which comes from getenv("EDITOR") and
-##   defaults to vi.  Use %s in place of the function name.  E.g.,
+##   Octave's @code{EDITOR} built-in function, which comes from 
+##   @code{getenv("EDITOR")} and defaults to @code{vi}.  Use @code{%s}
+##   in place of the function name.  E.g.,
 ##   @table @samp
 ##   @item [EDITOR, " %s"]
-##       use the editor which Octave uses for bug_report
+##       use the editor which Octave uses for @code{bug_report}
 ##   @item "xedit %s &"           
 ##       pop up simple X11 editor in a separate window
 ##   @item "gnudoit -q \"(find-file \\\"%s\\\")\""   
@@ -51,23 +57,23 @@
 ##   On cygwin, you will need to convert the cygwin path to a windows
 ##   path if you are using a native Windows editor.  For example
 ##   @example
-##     'C:/Program Files/Good Editor/Editor.exe $(cygpath -wa %s)'
+##     '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
 ##   @end example
 ##   @noindent
 ##
 ## @item home
 ##   This is the location of user local m-files. Be be sure it is in your
-##   path. The default is ~/octave.
+##   path. The default is @code{~/octave}.
 ##
 ## @item author
 ##   This is the name to put after the "## Author:" field of new functions.
-##   By default it guesses from the `gecos' field of password database.
+##   By default it guesses from the @code{gecos} field of password database.
 ## 
 ## @item email
 ##   This is the e-mail address to list after the name in the author field.
-##   By default it guesses <$LOGNAME@@$HOSTNAME>, and if $HOSTNAME is not
-##   defined it uses "uname -n".  You probably want to override this.  Be
-##   sure to use "<user@@host>" as your format.
+##   By default it guesses @code{<$LOGNAME@@$HOSTNAME>}, and if @code{$HOSTNAME}
+##   is not defined it uses @code{uname -n}.  You probably want to override this.
+##   Be sure to use @code{<user@@host>} as your format.
 ##
 ## @item license
 ##   @table @samp
@@ -97,7 +103,7 @@
 
 function ret = edit(file,state)
   ## pick up globals or default them
-  persistent FUNCTION = struct ("EDITOR", [ EDITOR, " %s" ],
+  persistent FUNCTION = struct ("EDITOR", [ EDITOR(), " %s" ],
   				"HOME", [ getenv("HOME"), "/octave" ],
   				"AUTHOR", getpwuid(getuid).gecos,
   				"EMAIL",  [],

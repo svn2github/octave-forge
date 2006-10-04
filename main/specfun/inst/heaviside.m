@@ -22,8 +22,6 @@ function y = heaviside(x)
 		if (nargin != 1)
 			usage ("heaviside(x)");
 	   endif
-		y = x;
-      y(x>0) = 1.;
-      y(x<0) = 0.;
-      y(x==0) = NaN;
+		y = double(x>0);
+   	y(x==0) = NaN; 
 endfunction;

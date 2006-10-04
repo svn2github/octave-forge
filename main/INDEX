@@ -59,7 +59,8 @@ $EG= Etienne Grossman's <a href="http://www.isr.ist.utl.pt/~etienne/octave/">Oct
 
 interpreter >> Interpreter
 Help
- help 
+ help
+ doc 
  demo 
  ver
  version 
@@ -141,6 +142,8 @@ Debugging
  debug_on_interrupt
  debug_on_warning
  debug_symtab_lookups
+Installation
+ mkoctfile mex tar untar unzip pkg
 Profiling
  profile 
  flops 
@@ -214,8 +217,7 @@ Constants
  O_APPEND O_ASYNC O_CREAT O_EXCL O_NONBLOCK O_RDONLY
  O_RDWR O_SYNC O_TRUNC O_WRONLY
  SEEK_CUR SEEK_END SEEK_SET
- OCTAVE_HOME OCTAVE_VERSION OCTAVE_FORGE_VERSION
- DEFAULT_LOADPATH DEFAULT_EXEC_PATH
+ OCTAVE_HOME OCTAVE_VERSION
  octave_config_info
  program_name argv
  program_invocation_name
@@ -359,6 +361,7 @@ Function arguments
  argn = string names of the input parameters
 User I/O
  disp printf puts
+ print_usage
  error 
  warning 
  lasterr 
@@ -387,6 +390,7 @@ Cell arrays
  cell2mat 
  cell2struct 
  struct2cell 
+ mat2cell
 Structures
  struct 
  fieldnames 
@@ -412,6 +416,9 @@ Types
  int8 int16 int32 int64
  uint8 uint16 uint32 uint64
  sizeof
+Deprecated
+  is_bool is_complex is_list is_stream is_struct
+
 
 matrix >> Linear Algebra
 Generating matrices
@@ -433,7 +440,7 @@ Matrix properties
  islogical isdefinite
  logical 
  isscalar isvector ismatrix issquare 
- issymmetric is_duplicate_entry
+ issymmetric is_duplicate_entry isequalwithequalnans
 Rearranging matrices
  reshape 
  tril 
@@ -492,9 +499,7 @@ Linear algebra
  eig(A,B)= use <f>qz</f>
  polyeig 
  condeig 
- trisolve
  syl
- pcg
 Matrix factorization
  chol 
  lu 
@@ -524,6 +529,165 @@ Matrix functions
  logm 
  sqrtm 
  funm thfm
+Deprecated
+ is_scalar is_matrix is_square is_symmetric is_vector
+
+sparse >> Sparse matrix support
+Generate sparse matrix
+ speye 
+ sprand 
+ sprandn 
+ sprandsym 
+ spdiags 
+ spconvert 
+ spvcat sphcat
+Manipulate sparse matrices
+ sparse issparse 
+ full
+ issparse
+ spy 
+ nnz 
+ spfind spdump
+ nonzeros 
+ nzmax 
+ spones 
+ spfun 
+ spalloc 
+ spkron
+ matrix_type
+Graph Theory
+ etree
+ etreeplot
+ gplot
+ treelayout
+ treeplot
+Sparse matrix reordering
+ ccolamd
+ colamd
+ colperm
+ csymamd
+ dmperm
+ randperm
+ symamd
+ symrcm
+Linear algebra
+ condest
+ eigs
+ normest
+ spchol
+ spchol2inv
+ spcholinv
+ spdet
+ spinv 
+ splchol
+ splu
+ sprank
+ svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
+Iterative techniques
+ bicg
+ bicgstab
+ cgs
+ cholinc
+ gmres
+ lsqr
+ luinc
+ minres
+ pcg
+ pcr
+ qmr
+ symmlq
+Miscellaneous
+ spaugment
+ spparms 
+ symbfact
+ spstats
+ spprod
+ spcumprod
+ spcumsum
+ spsum
+ spsumsq
+ spmin
+ spmax
+ spatan2
+ spdiag
+
+strings >> Strings
+Creation
+ char 
+ double 
+ cellstr 
+ blanks 
+ single
+Tests
+ ischar= use <f>isstr</f> 
+ iscellstr 
+ isletter 
+ isspace 
+ isalnum
+ isalpha
+ isascii
+ iscntrl
+ isdigit
+ isgraph
+ islower
+ isprint
+ ispunct
+ isstr
+ isupper
+ isxdigit
+Search and replace
+ strmatch 
+ fnmatch
+ regexp
+ regexpi
+ strcmp
+ strncmp 
+ strcmpi 
+ strncmpi 
+ findstr strfind
+ index rindex
+ strrep
+ substr
+ cellidx
+Operations
+ deblank split 
+ strcat 
+ strvcat 
+ strcmp 
+ strjust 
+ strtok 
+ upper 
+ lower 
+ tolower
+ toupper
+ do_string_escapes
+ undo_string_escapes
+ strappend
+ strsort
+Conversion
+ toascii setstr
+ num2str com2str str2mat
+ str2num strftime
+ mat2str 
+ int2str 
+ str2double 
+ sprintf 
+ sscanf 
+ hex2num 
+ hex2dec 
+ bin2dec 
+ base2dec 
+ dec2hex 
+ dec2bin 
+ dec2base 
+ strptime
+ base64encode
+ csvexplode csvconcat
+Flags
+ warn_num_to_str
+ warn_str_to_num
+ warn_single_quote_string
+ string_fill_char
 
 math >> Mathematics
 Trigonometry
@@ -642,7 +806,7 @@ Fourier analysis
  ifftn 
  fftshift 
  ifftshift
- FFTW_WISDOM_PROGRAM
+ fftw_wisdom_program
 Interpolation
  bicubic
  interp1 
@@ -855,6 +1019,7 @@ Gnuplot Interface
  gnuplot_command_axes gnuplot_command_end gnuplot_command_plot
  gnuplot_command_replot gnuplot_command_splot gnuplot_command_title
  gnuplot_command_using gnuplot_command_with purge_tmp_files
+ gnuplot_use_title_option
  __gnuplot_raw__ __gnuplot_set__ __gnuplot_show__ __gnuplot_plot__
  __gnuplot_splot__ __gnuplot_replot__
 
@@ -931,4 +1096,134 @@ Finance
  fv fvl irr nper npv pmt pv pvl rate vol
 Server
  listen send senderror
+
+statistics >> Statistics
+Depreciated
+ beta_cdf beta_inv beta_pdf beta_rnd
+ binomial_cdf binomial_inv binomial_pdf binomial_rnd
+ chisquare_cdf chisquare_inv chisquare_pdf chisquare_rnd
+ exponential_cdf exponential_inv exponential_pdf exponential_rnd
+ f_cdf f_inv f_pdf f_rnd
+ gamma_cdf gamma_inv gamma_pdf gamma_rnd
+ geometric_cdf geometric_inv geometric_pdf geometric_rnd
+ hypergeometric_cdf hypergeometric_inv hypergeometric_pdf hypergeometric_rnd
+ lognormal_cdf lognormal_inv lognormal_pdf lognormal_rnd
+ normal_cdf normal_inv normal_pdf normal_rnd
+ poisson_cdf poisson_inv poisson_pdf poisson_rnd
+ t_cdf t_inv t_pdf t_rnd
+ uniform_cdf uniform_inv uniform_pdf uniform_rnd
+ wblcdf wblinv wblpdf wblrnd
+ weibull_cdf weibull_inv weibull_pdf weibull_rnd
+ wiener_rnd 
+Distributions
+ betacdf betainv betapdf betarnd
+ binocdf binoinv binopdf binornd
+ cauchy_cdf cauchy_inv cauchy_pdf cauchy_rnd
+ chi2cdf chi2inv chi2pdf chi2rnd
+ discrete_cdf discrete_inv discrete_pdf discrete_rnd
+ empirical_cdf empirical_inv empirical_pdf empirical_rnd
+ expcdf expinv exppdf exprnd
+ fcdf finv fpdf frnd
+ gamcdf gaminv gampdf gamrnd
+ geocdf geoinv geopdf geornd
+ hygecdf hygeinv hygepdf hygernd
+ kolmogorov_smirnov_cdf
+ laplace_cdf laplace_inv laplace_pdf laplace_rnd
+ logistic_cdf logistic_inv logistic_pdf logistic_rnd
+ logncdf logninv lognpdf lognrnd
+ normcdf norminv normpdf normrnd
+ pascal_cdf pascal_inv pascal_pdf pascal_rnd
+ poisscdf poissinv poisspdf poissrnd
+ stdnormal_cdf stdnormal_inv stdnormal_pdf stdnormal_rnd
+ tcdf tinv tpdf trnd
+ unidrnd
+ unifcdf unifinv unifpdf unifrnd
+ weibcdf weibinv weibpdf weibrnd
+ wienrnd
+Descriptive statistics
+ max 
+ min 
+ mean meansq
+ median 
+ std 
+ var 
+ cut hist
+ histc 
+ corrcoef 
+ cov cor
+ sum sumsq 
+ prod 
+ trapz 
+ cumsum 
+ cumprod 
+ cumtrapz 
+ nanfunc
+ iqr		
+ kurtosis	
+ moment	
+ range	
+ skewness	
+ spearman
+ run_count
+ statistics
+ studentize
+ table
+ values mahalanobis
+ ranks
+ probit logit kendall cloglog
+Experimental design
+ fullfact ff2n hadamard
+Linear regression
+ anova anovan
+ polyfit wpolyfit	
+ polyval polyconf	
+ gls ols wsolve
+ princomp
+Plots
+ qqplot ppplot boxplot scatter normplot 
+ pareto 
+ histfit
+Nonlinear regression
+ leasqr	
+Models
+ hmmdecode
+ logistic_regression logistic_regression_derivatives 
+ logistic_regression_likelihood
+Hypothesis testing
+ u_test	
+ wilcoxon_test	
+ sign_test	
+ t_test	
+ t_test_2	
+ t_test_regression
+ z_test	
+ z_test_2
+ bartlett_test
+ chisquare_test_homogeneity
+ chisquare_test_independence
+ cor_test
+ f_test_regression
+ hotelling_test
+ hotelling_test_2
+ kolmogorov_smirnov_test
+ kolmogorov_smirnov_test_2
+ kruskal_wallis_test
+ manova
+ mcnemar_test
+ prop_test_2
+ run_test
+ var_test
+ welch_test
+Compatibility
+ nbin*= use <code>pascal_*</code>
+ unid*= use <code>discrete_*</code>
+ anova1= use <f>anova</f>
+ nlinfit= use <f>leasqr</f>
+ barttest= use <f>bartlett_test</f>
+ ranksum= use <f>u_test</f>
+ signrank= use <f>wilcoxon_test</f>
+ signtest= use <f>sign_test</f>
+ ttest= use <f>t_test</f>
+ ttest2= use <f>t_test_2</f>
+ ztest= use <f>z_test</f>
 

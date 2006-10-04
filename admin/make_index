@@ -513,7 +513,8 @@ sub register_function { # {{{1
 	my $entry = $file;
 	$entry = "$file: $function" if $file !~ /[.]m$/;
 	if ($function =~ /__/ || $file =~ /test/ 
-	    || $function =~ /^[Cc]ontents?$/) {
+	    || $function =~ /^[Cc]ontents?$/
+	    || $function =~ /pre_install/ || $function =~ /post_install/) {
 	    push @skipped, $entry;
 	} else {
 	    push @uncategorized, $entry;

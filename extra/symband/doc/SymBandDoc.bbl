@@ -1,0 +1,13 @@
+\begin{thebibliography}{2}
+
+\bibitem{GoluVanLoan96}
+G. Golub and C. Van Loan,
+\newblock \textit{Matrix computations},
+John Hopkins University Press, third edition, 1996
+
+\bibitem{VarFem}
+A. Stahel,
+\newblock \textit{Calculus of Variations and Finite Elements},
+Lecture notes used at HTA Biel, 2000
+
+\end{thebibliography}

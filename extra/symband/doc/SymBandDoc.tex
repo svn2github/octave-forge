@@ -13,22 +13,19 @@
 %\usepackage{rotating}
 %\usepackage{fancybox}
 
+\setlength{\oddsidemargin}{-5mm}
+\setlength{\evensidemargin}{-5mm}
+\setlength{\headheight}{2em}
+\setlength{\headsep}{1cm}
+\setlength{\topmargin}{-15mm} %letter
+\setlength{\textheight}{235mm}
+\setlength{\textwidth}{173mm}
 
-
-%\input pagesizeLetter 
-%%%% pagesizeLetter.tex %%%%%%%%%
-%\setlength{\oddsidemargin}{-5mm}
-%\setlength{\evensidemargin}{-5mm}
-%\setlength{\headheight}{2em}
-%\setlength{\headsep}{1cm}
-%\setlength{\topmargin}{-15mm} %letter
-%\setlength{\textheight}{235mm}
-%\setlength{\textwidth}{173mm}
-
-
-\input pagesizeA4
-
-\input macros
+%%\input macros
+\newcommand{\text}[1]{\ #1 \ }
+\newcommand{\id}{\mathbb{I}}
+\newcommand{\dfrac}{\frac}
+\newcommand{\Octave}{\textit{Octave}}
 
 %\selectlanguage{english}
 \makeindex
@@ -120,9 +117,14 @@ given in~\cite{VarFem}.
 
 To take advantage of the symmetry and the band structure the matrices will
 be stored in a modified format, as illustrated below.
-\[\Matrix{5}{10&2&3&0&0\\2&20&4&5&0\\3&4&30&6&7\\0&5&6&40&8\\0&0&7&8&50}
+\[\left|
+  \begin{array}{ccccc}
+   10&2&3&0&0\\2&20&4&5&0\\3&4&30&6&7\\0&5&6&40&8\\0&0&7&8&50
+  \end{array} \right|
 \longrightarrow
-\Matrix{3}{10&2&3\\20&4&5\\30&6&7\\40&8&0\\50&0&0}\]
+  \left| \begin{array}{ccc}
+   10&2&3\\20&4&5\\30&6&7\\40&8&0\\50&0&0
+  \end{array} \right| \]
 A banded version of the $LDL^T$ factorization in~\cite{GoluVanLoan96}
 can be implemented. If the matrix $A$ is strictly positive definite, then
 the algorithm is known to be stable. If $A$ is not positive definite, then
@@ -404,8 +406,8 @@ included.
 
 %\newpage
 
-\bibliographystyle{keysort}
-%\bibliographystyle{apalike}
+%\bibliographystyle{keysort}
+\bibliographystyle{apalike}
 %\bibliographystyle{siam}
 \addcontentsline{toc}{section}{Bibliography}
 \bibliography{school,book,fem,new}

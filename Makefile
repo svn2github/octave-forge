@@ -51,6 +51,10 @@ icheck:
 srpms: clearlog packages
 	@$(MAKE) -C packages $(MAKECMDGOALS)
 	@echo "*** You can find the built SRPMs in packages/RPM/SRPMS ***"
+
+www: clearlog packages
+	@$(MAKE) -C www $(MAKECMDGOALS)
+
 else
 
 .PHONY: all install srpms

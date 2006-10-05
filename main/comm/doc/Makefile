@@ -62,7 +62,9 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 	    if test ! -e "comms/$@"; then \
 	      $(INSTALL_DATA) comms/$(@:.html=_toc.html) comms/$@ ; \
 	    fi; \
-	    $(LN_S) $@ comms/index.html; \
+	    if [ ! -e "comms/index.html" ]; then \
+	      $(LN_S) $@ comms/index.html; \
+	    fi; \
 	    mv comms html; \
 	    $(INSTALL_DATA) *.png html; \
 	  else \
@@ -73,7 +75,9 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 	      mkdir html; \
 	    fi; \
 	    $(INSTALL_DATA) *.png *.html html; \
-	    $(LN_S) $@ html/index.html; \
+	    if [ ! -e "html/index.html" ]; then \
+	      $(LN_S) $@ html/index.html; \
+	    fi \
 	  fi \
 	fi
 

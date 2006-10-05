@@ -1060,7 +1060,8 @@ sub info2html { # 1{{{
     $body =~ s/^\s*-[*]- texinfo -[*]-//;
     my $cmd = "makeinfo --fill-column 80 --no-warn --no-validate --force --html --ifinfo -o -";
     open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
-    print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
+    #SH# print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
+    print Writer "\@macro seealso{args}\n m4_changequote(`, ')\n seealso(\\args\\)\n m4_changequote([[[, ]]])\n\@end macro\n";
     # I have no idea why but makeinfo is introducing some weirdness with <p>
     # at the front of the document.  The following works for my particular
     # version but I have little hope for it working in general

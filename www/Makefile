@@ -15,7 +15,7 @@ build-www:
 
 developers.html: ../admin/template.ndev
 	wd=`pwd`
-	cd ../admin && ./get_contents
+	cd .. && ./admin/get_contents
 	cd $(wd)
 	$(M4) $(MACRO_FILE) developers.in > developers.html
 

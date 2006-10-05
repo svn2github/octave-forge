@@ -32,7 +32,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso { shannonfanoenc, shannonfanodec }
+## @seealso{shannonfanoenc, shannonfanodec}
 ##
 function cw_list=shannonfanodict(symbol,P)
 

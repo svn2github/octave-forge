@@ -31,6 +31,8 @@ Source Coding
  fiboenco
  fibodeco
  fibosplitstream
+ golombenco
+ golombdeco
 Block Interleavers
  intrlv
  algintrlv

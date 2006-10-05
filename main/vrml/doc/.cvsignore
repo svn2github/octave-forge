@@ -2,3 +2,6 @@
 *.dvi
 *.log
 *.ps
+html
+vrml-mini-howto-1
+*.pdf

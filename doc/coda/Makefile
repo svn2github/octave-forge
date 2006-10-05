@@ -32,7 +32,7 @@ clean:
 	cd $(outputdir) && $(RM) *.html *.ps HTML.index
 	cd $(outputdir) && $(RM) coda.{out,tex,dvi,log,aux,ps.gz,pdf}
 	cd $(outputdir) && $(RM) *.tar.gz
-	rmdir coda coda.junk
+	$(RM) -fr coda coda.junk
 
 .phony: distclean
 distclean: clean
@@ -45,10 +45,10 @@ www-dist: html pdf dist
 	cd $(outputdir) && install -m 644 -p *.html *.png coda.pdf coda-sgml.tar.gz coda/
 	cd $(outputdir) && tar czf coda-www.tar.gz coda
 	rm -rf $(outputdir)/coda
-	
+
 
 .phony: html
-html: $(outputdir)/index.html $(outputdir)/matpow.png
+html: $(outputdir)/matpow.png $(outputdir)/index.html 
 
 .phony: ps
 ps: $(outputdir)/coda.ps.gz
@@ -66,7 +66,7 @@ index.sgml: $(src)
 	-docbook2html $(dbflags) -V html-index coda.sgml
 	test \! -f $(autoidx) && touch $(autoidx); true
 	$(coidx) $(coidxflags) $(autoidx) > index.sgml
-	
+
 $(outputdir)/index.html: $(src) index.sgml
 	-docbook2html $(dbflags) coda.sgml
 	cd $(outputdir) && tidy -modify $(tidyflags) *.html 2>/dev/null; true
@@ -87,8 +87,12 @@ $(outputdir)/coda.ps: $(src) index.sgml $(pdfimages)
 
 $(outputdir)/coda.ps.gz: $(outputdir)/coda.ps
 
+## Work around faulty Mandriva 2006 sgml -> tex mangle for muticol tables
+## by calling three times in a single shell. The use of "make -k" ensures
+## that the error here will be bypassed.
 $(outputdir)/coda.pdf: $(src) index.sgml $(pdfimages)
-	-docbook2pdf -o $(outputdir) coda.sgml >/dev/null 2>&1
+	docbook2pdf -o $(outputdir) coda.sgml >/dev/null 2>&1 ; \
+	docbook2pdf -o $(outputdir) coda.sgml >/dev/null 2>&1 ; \
 	docbook2pdf -o $(outputdir) coda.sgml
 
 #	cd $(outputdir) && \

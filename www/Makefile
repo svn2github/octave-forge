@@ -17,7 +17,6 @@ developers.html: ../admin/template.ndev
 	wd=`pwd`
 	cd ../admin && ./get_contents
 	cd $(wd)
-	cp ../doc/new_developer.html ./developers.in
 	$(M4) $(MACRO_FILE) developers.in > developers.html
 
 doc:

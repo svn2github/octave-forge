@@ -85,7 +85,7 @@ sub fill_README {  # {{{1
 sub fill_developer_html {  # {{{1
     my (@files, ) = @_;
     my $template = "admin/template.ndev";          # <- reads
-    my $RM       = "doc/new_developer.html";       # <- writes
+    my $RM       = "www/developer.in";       # <- writes
     if (!-r $template) {
         warn "Unable to read the file '$template'; cannot make README\n";
         return;

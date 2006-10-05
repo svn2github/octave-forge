@@ -26,8 +26,8 @@ doc:
 
 html: $(IMG_HTML)
 	
-doc/f/edit.html:
-	@echo Skipping edit.html
+#doc/f/edit.html:
+#	@echo Skipping edit.html
 
 %.html : %.in
 	$(M4) $(M4_OPTIONS) $(MACRO_FILE) $< > $@

@@ -308,4 +308,10 @@ m4_ifdef(`__TEXT_MODE__',
 m4_dnl
 m4_dnl
 m4_dnl
+m4_define(`seealso_body', `m4_ifelse(`$#', `0', , `$#', `1', ``<a href="$1.html">$1</a>'',
+                               `<a href="$1.html">`$1'</a>, seealso_body(m4_shift($@))')')
+m4_define(`seealso', `<div class="see_also">See also: seealso_body($@)</div>')
+m4_dnl
+m4_dnl
+m4_dnl
 m4_changequote([[[, ]]])

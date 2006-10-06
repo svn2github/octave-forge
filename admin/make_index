@@ -355,7 +355,9 @@ sub process_docstrings {
   my $desc = "";
   while (<IN>) {
     if (/^\037/) {
-	register_function($function,$desc,$OCTAVE,1) unless $function eq "";
+	if ($n_appearances{$function} == 0) {
+	    register_function($function,$desc,$OCTAVE,1) unless $function eq "";
+	}
 	$function = $_;
 	$function =~ s/^\037//;
 	$function =~ s/\n$//;
@@ -364,7 +366,9 @@ sub process_docstrings {
       $desc .= $_;
     }
   }
-  register_function($function,$desc,$OCTAVE,1) unless $function eq "";
+  if ($n_appearances{$function} == 0) {
+      register_function($function,$desc,$OCTAVE,1) unless $function eq "";
+  }
   close(IN);
 }
 

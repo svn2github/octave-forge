@@ -140,7 +140,7 @@ export    funcname=gsl_sf_hazard
 cat << \EOF > docstring.txt
 The hazard function for the normal distrbution, also known as the 
 inverse Mill's ratio, is defined as 
-h(x) = Z(x)/Q(x) = \sqrt{2/\pi \exp(-x^2 / 2) / \erfc(x/\sqrt 2)}. 
+h(x) = Z(x)/Q(x) = \sqrt@{2/\pi \exp(-x^2 / 2) / \erfc(x/\sqrt 2)@}. 
 It decreases rapidly as x approaches -\infty and asymptotes to 
 h(x) \sim x as x approaches +\infty.
 EOF
@@ -203,7 +203,7 @@ export    funcname=gsl_sf_expint_Ei
 cat << \EOF > docstring.txt
 These routines compute the exponential integral E_i(x),
 
-Ei(x) := - PV(\int_{-x}^\infty dt \exp(-t)/t)
+Ei(x) := - PV(\int_@{-x@}^\infty dt \exp(-t)/t)
 
 where PV denotes the principal value of the integral.
 EOF
@@ -268,7 +268,7 @@ EOF
 export octave_name=fermi_dirac_mhalf
 export    funcname=gsl_sf_fermi_dirac_mhalf
 cat << \EOF > docstring.txt
-These routines compute the complete Fermi-Dirac integral F_{-1/2}(x).
+These routines compute the complete Fermi-Dirac integral F_@{-1/2@}(x).
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -276,7 +276,7 @@ EOF
 export octave_name=fermi_dirac_half
 export    funcname=gsl_sf_fermi_dirac_half
 cat << \EOF > docstring.txt
-These routines compute the complete Fermi-Dirac integral F_{1/2}(x).
+These routines compute the complete Fermi-Dirac integral F_@{1/2@}(x).
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -284,7 +284,7 @@ EOF
 export octave_name=fermi_dirac_3half
 export    funcname=gsl_sf_fermi_dirac_3half
 cat << \EOF > docstring.txt
-These routines compute the complete Fermi-Dirac integral F_{3/2}(x).
+These routines compute the complete Fermi-Dirac integral F_@{3/2@}(x).
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -318,7 +318,7 @@ cat << \EOF > docstring.txt
 These routines compute the regulated Gamma Function \Gamma^*(x) 
 for x > 0. The regulated gamma function is given by,
 
-\Gamma^*(x) = \Gamma(x)/(\sqrt{2\pi} x^{(x-1/2)} \exp(-x))
+\Gamma^*(x) = \Gamma(x)/(\sqrt@{2\pi@} x^@{(x-1/2)@} \exp(-x))
             = (1 + (1/12x) + ...)  for x \to \infty
 
 and is a useful suggestion of Temme. 
@@ -343,7 +343,7 @@ Lambert's W functions, W(x), are defined to be solutions of the
 equation W(x) \exp(W(x)) = x. This function has multiple branches 
 for x < 0; however, it has only two real-valued branches. 
 We define W_0(x) to be the principal branch, where W > -1 for x < 0, 
-and W_{-1}(x) to be the other real branch, where W < -1 for x < 0.
+and W_@{-1@}(x) to be the other real branch, where W < -1 for x < 0.
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -352,13 +352,13 @@ export octave_name=lambert_Wm1
 export    funcname=gsl_sf_lambert_Wm1
 cat << \EOF > docstring.txt
 These compute the secondary real-valued branch of the Lambert 
-W function, W_{-1}(x).
+W function, W_@{-1@}(x).
 
 Lambert's W functions, W(x), are defined to be solutions of the
 equation W(x) \exp(W(x)) = x. This function has multiple branches 
 for x < 0; however, it has only two real-valued branches. 
 We define W_0(x) to be the principal branch, where W > -1 for x < 0, 
-and W_{-1}(x) to be the other real branch, where W < -1 for x < 0.
+and W_@{-1@}(x) to be the other real branch, where W < -1 for x < 0.
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -403,7 +403,7 @@ export octave_name=synchrotron_1
 export    funcname=gsl_sf_synchrotron_1
 cat << \EOF > docstring.txt
 These routines compute the first synchrotron function 
-x \int_x^\infty dt K_{5/3}(t) for x >= 0.
+x \int_x^\infty dt K_@{5/3@}(t) for x >= 0.
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -412,7 +412,7 @@ export octave_name=synchrotron_2
 export    funcname=gsl_sf_synchrotron_2
 cat << \EOF > docstring.txt
 These routines compute the second synchrotron function 
-x K_{2/3}(x) for x >= 0.
+x K_@{2/3@}(x) for x >= 0.
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -492,7 +492,7 @@ These routines compute the Riemann zeta function \zeta(s) for
 arbitrary s, s \ne 1.
 
 The Riemann zeta function is defined by the infinite sum 
-\zeta(s) = \sum_{k=1}^\infty k^{-s}. 
+\zeta(s) = \sum_@{k=1@}^\infty k^@{-s@}. 
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -502,7 +502,7 @@ export    funcname=gsl_sf_eta
 cat << \EOF > docstring.txt
 These routines compute the eta function \eta(s) for arbitrary s.
 
-The eta function is defined by \eta(s) = (1-2^{1-s}) \zeta(s).
+The eta function is defined by \eta(s) = (1-2^@{1-s@}) \zeta(s).
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -606,7 +606,7 @@ These routines compute the N-relative exponential, which is the n-th
 generalization of the functions gsl_sf_exprel and gsl_sf_exprel2. The
 N-relative exponential is given by,
 
-exprel_N(x) = N!/x^N (\exp(x) - \sum_{k=0}^{N-1} x^k/k!)
+exprel_N(x) = N!/x^N (\exp(x) - \sum_@{k=0@}^@{N-1@} x^k/k!)
             = 1 + x/(N+1) + x^2/((N+1)(N+2)) + ...
             = 1F1 (1,1+N,x)
 EOF
@@ -653,7 +653,7 @@ EOF
 export octave_name=psi_n
 export    funcname=gsl_sf_psi_n
 cat << \EOF > docstring.txt
-These routines compute the polygamma function \psi^{(m)}(x) 
+These routines compute the polygamma function \psi^@{(m)@}(x) 
 for m >= 0, x > 0.
 EOF
 ./replace_template.sh int_double_to_double.cc.template >> gsl_sf.cc
@@ -738,7 +738,7 @@ export octave_name=fermi_dirac_inc_0
 export    funcname=gsl_sf_fermi_dirac_inc_0
 cat << \EOF > docstring.txt
 These routines compute the incomplete Fermi-Dirac integral with an
-index of zero, F_0(x,b) = \ln(1 + e^{b-x}) - (b-x).
+index of zero, F_0(x,b) = \ln(1 + e^@{b-x@}) - (b-x).
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
 
@@ -778,7 +778,7 @@ export octave_name=gamma_inc_Q
 export    funcname=gsl_sf_gamma_inc_Q
 cat << \EOF > docstring.txt
 These routines compute the normalized incomplete Gamma Function 
-Q(a,x) = 1/\Gamma(a) \int_x\infty dt t^{a-1} \exp(-t) for a > 0, x >= 0.
+Q(a,x) = 1/\Gamma(a) \int_x\infty dt t^@{a-1@} \exp(-t) for a > 0, x >= 0.
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
 
@@ -787,19 +787,19 @@ export octave_name=gamma_inc_P
 export    funcname=gsl_sf_gamma_inc_P
 cat << \EOF > docstring.txt
 These routines compute the complementary normalized incomplete Gamma
-Function P(a,x) = 1/\Gamma(a) \int_0^x dt t^{a-1} \exp(-t) 
+Function P(a,x) = 1/\Gamma(a) \int_0^x dt t^@{a-1@} \exp(-t) 
 for a > 0, x >= 0.
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
 
 
-if test -n "${missing##* gamma_inc *}"; then
+if test -n "${missing##* gamma_inc *@}"; then
 export octave_name=gamma_inc
 export    funcname=gsl_sf_gamma_inc
 cat << \EOF > docstring.txt
 These functions compute the incomplete Gamma Function the
 normalization factor included in the previously defined functions:
-\Gamma(a,x) = \int_x\infty dt t^{a-1} \exp(-t) for a real and x >= 0.
+\Gamma(a,x) = \int_x\infty dt t^@{a-1@} \exp(-t) for a real and x >= 0.
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
 fi
@@ -835,7 +835,7 @@ export octave_name=conicalP_half
 export    funcname=gsl_sf_conicalP_half
 cat << \EOF > docstring.txt
 These routines compute the irregular Spherical Conical Function
-P^{1/2}_{-1/2 + i \lambda}(x) for x > -1.
+P^@{1/2@}_@{-1/2 + i \lambda@}(x) for x > -1.
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
 
@@ -844,7 +844,7 @@ export octave_name=conicalP_mhalf
 export    funcname=gsl_sf_conicalP_mhalf
 cat << \EOF > docstring.txt
 These routines compute the regular Spherical Conical Function
-P^{-1/2}_{-1/2 + i \lambda}(x) for x > -1.
+P^@{-1/2@}_@{-1/2 + i \lambda@}(x) for x > -1.
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
 
@@ -852,7 +852,7 @@ EOF
 export octave_name=conicalP_0
 export    funcname=gsl_sf_conicalP_0
 cat << \EOF > docstring.txt
-These routines compute the conical function P^0_{-1/2 + i \lambda}(x)
+These routines compute the conical function P^0_@{-1/2 + i \lambda@}(x)
 for x > -1.
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
@@ -861,7 +861,7 @@ EOF
 export octave_name=conicalP_1
 export    funcname=gsl_sf_conicalP_1
 cat << \EOF > docstring.txt
-These routines compute the conical function P^1_{-1/2 + i \lambda}(x)
+These routines compute the conical function P^1_@{-1/2 + i \lambda@}(x)
 for x > -1.
 EOF
 ./replace_template.sh double_double_to_double.cc.template >> gsl_sf.cc
@@ -1070,7 +1070,7 @@ export octave_name=legendre_sphPlm
 export    funcname=gsl_sf_legendre_sphPlm
 cat << \EOF > docstring.txt
 These routines compute the normalized associated Legendre polynomial
-$\sqrt{(2l+1)/(4\pi)} \sqrt{(l-m)!/(l+m)!} P_l^m(x)$ suitable for use
+$\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)$ suitable for use
 in spherical harmonics. The parameters must satisfy m >= 0, l >= m,
 |x| <= 1. Theses routines avoid the overflows that occur for the
 standard normalization of P_l^m(x).

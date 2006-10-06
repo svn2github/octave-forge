@@ -5,7 +5,8 @@ DEFUN_DLD(GSL_OCTAVE_NAME, args, nargout, "\
 \n\
 GSL_FUNC_DOCSTRING
 \n\
-@var{err} contains an estimate of the absolute error in the value @var{y}.\n\n\
+@var{err} contains an estimate of the absolute error in the value @var{y}.\n\
+\n\
 This function is from the GNU Scientific Library,\n\
 see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
 @end deftypefn\n\

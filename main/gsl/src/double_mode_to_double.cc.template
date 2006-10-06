@@ -16,7 +16,8 @@ The second argument @var{mode} must be an integer corresponding to\n\
     Approximate values, a relative accuracy of approximately @code{5 * 10^-4}.\n\
 @end table
 \n\
-@var{err} contains an estimate of the absolute error in the value @var{y}.\n\n\
+@var{err} contains an estimate of the absolute error in the value @var{y}.\n\
+\n\
 This function is from the GNU Scientific Library,\n\
 see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
 @end deftypefn\n\

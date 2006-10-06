@@ -30,7 +30,7 @@ my $OCTAVEINIT = "suppress_verbose_help_message = 1;";
 
 # Links to octave/octave-forge web CVS
 my $OCTAVECVS = "http://www.octave.org/cgi-bin/viewcvs.cgi/~checkout~/octave";
-my $FORGECVS = "http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/octave/octave-forge/";
+my $FORGECVS = "http://octave.cvs.sourceforge.net/cgi-bin/octave/octave-forge/";
 
 #my $script  = basename($0);
 
@@ -69,6 +69,7 @@ my @index_files = ();
 find(\&index_files, ".");
 sub index_files { # {{{1 populates global array @files
     return unless -f and /INDEX$/;  # INDEX files
+    return if ($File::Find::dir =~ /packages$/);
     my $path = "$File::Find::dir/$_";
     $path =~ s|^[.]/||;
     push @index_files, $path; 

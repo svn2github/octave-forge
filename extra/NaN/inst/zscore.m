@@ -1,20 +1,20 @@
-function i = zscore(i,DIM)
+function [i,v,m] = zscore(i,DIM)
 % ZSCORE removes the mean and normalizes the data 
-% to a variance of 1. 
+% to a variance of 1. Can be used for Pre-Whitening of the data, too. 
 %
-% z = zscore(x,DIM)
-%   calculates the z-score of x along dimension DIM
-%   it removes the 
+% [z,r,m] = zscore(x,DIM)
+%   z   z-score of x along dimension DIM
+%   r   is the inverse of the standard deviation
+%   m   is the mean of x
+%
+% The data x can be reconstrated with 
+%     x = z*diag(1./r) + repmat(m,size(z)./size(m))  
+%     z = x*diag(r) - repmat(m.*v,size(z)./size(m))  
 %
 % DIM	dimension
 %	1: STATS of columns
 %	2: STATS of rows
 %	default or []: first DIMENSION, with more than 1 element
-%
-% features:
-% - can deal with NaN's (missing values)
-% - dimension argument 
-% - compatible to Matlab and Octave
 %
 % see also: SUMSKIPNAN, MEAN, STD, DETREND
 %
@@ -43,14 +43,19 @@ function i = zscore(i,DIM)
 
 if any(size(i)==0); return; end;
 
-if nargin < 2,
-	[S,N,SSQ] = sumskipnan(i);		% sum
-else
-	[S,N,SSQ] = sumskipnan(i,DIM);		% sum
+if nargin<2
+        DIM=[]; 
+end
+if isempty(DIM), 
+        DIM=min(find(size(i)>1));
+        if isempty(DIM), DIM=1; end;
 end;
 
-M = S./N;
-i = i - repmat(M,size(i)./size(S));		% remove mean
-i = i.*repmat(sqrt((SSQ-real(S).*real(M)-imag(S).*imag(M)).\max(N-1,0)),size(i)./size(S));	 % normalize by STD
 
+% pre-whitening
+m = mean(i,DIM);
+i = i-repmat(m,size(i)./size(m));  % remove mean
+v = 1./sqrt(mean(i.^2,DIM));
+i = i.*repmat(v,size(i)./size(v)); % scale to var=1
 
+        

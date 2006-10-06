@@ -12,18 +12,19 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh]=mvfreqz(B,A,C,N,
 %  A=[a0,a1,a2,...,ap] and B=[b0,b1,b2,...,bq] must be matrices of
 %  size  Mx((p+1)*M) and Mx((q+1)*M), respectively. 
 %
-%  C is the covariance of the input noise X
+%  C is the covariance of the input noise X (i.e. D'*D if D is the mixing matrix)
 %  N if scalar, N is the number of frequencies 
 %    if N is a vector, N are the designated frequencies. 
 %  Fs sampling rate [default 2*pi]
 % 
-%  A,B and C can by obtained from a multivariate time series 
+%  A,B,C and D can by obtained from a multivariate time series 
 %       through the following commands: 
 %  [AR,RC,PE] = mvar(Y,P);
 %       M = size(AR,1); % number of channels       
 %       A = [eye(M),-AR];
 %       B = eye(M); 
 %       C = PE(:,M*P+1:M*(P+1)); 
+%       D = sqrtm(C); 
 %
 % OUTPUT: 
 % ======= 
@@ -51,7 +52,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh]=mvfreqz(B,A,C,N,
 % Nolte G, Bai O, Wheaton L, Mari Z, Vorbach S, Hallett M.
 %	Identifying true brain interaction from EEG data using the imaginary part of coherency.
 %	Clin Neurophysiol. 2004 Oct;115(10):2292-307. 
-% Schlögl A., Supp G.
+% Schlogl A., Supp G.
 %       Analyzing event-related EEG data with multivariate autoregressive parameters.
 %       (Eds.) C. Neuper and W. Klimesch, 
 %       Progress in Brain Research: Event-related Dynamics of Brain Oscillations. 
@@ -59,7 +60,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh]=mvfreqz(B,A,C,N,
 
 
 %	$Id$
-%	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2006 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
 %       http://hci.tugraz.at/schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
@@ -97,7 +98,7 @@ if nargin<5,
         Fs= 1;        
 end;
 if all(size(N)==1),	
-        f = (0:N-1)/N;
+        f = (0:N-1)*(Fs/(2*N));
 else
         f = N;
         N = length(N);
@@ -122,17 +123,23 @@ tmp2=zeros(1,K1);
 M = zeros(K1,K1,N);
 detG = zeros(N,1);
 
+D = sqrtm(C);
+iD= inv(D);
 for n=1:N,
         atmp = zeros(K1);
         for k = 1:p+1,
                 atmp = atmp + A(:,k*K1+(1-K1:0))*exp(z*(k-1)*f(n));
-        end;        
+        end;   
+        
+        % compensation of instantaneous correlation 
+        % atmp = iD*atmp*D;
+        
         btmp = zeros(K1);
         for k = 1:q+1,
                 btmp = btmp + B(:,k*K1+(1-K1:0))*exp(z*(k-1)*f(n));
         end;        
-        h(:,:,n) = atmp\btmp;        
-        S(:,:,n) = h(:,:,n)*C*h(:,:,n)';        
+        h(:,:,n)  = atmp\btmp;        
+        S(:,:,n)  = h(:,:,n)*C*h(:,:,n)';        
         S1(:,:,n) = h(:,:,n)*h(:,:,n)';        
         
         for k1 = 1:K1,

@@ -273,6 +273,7 @@ def main():
         main_dir = "../"  + name + "/";
         header = headers[i];
         packages = os.listdir(main_dir);
+        packages.sort(key=str.lower);
         
         index.write('<h2 id="' + name + '">' + header + '</h2>\n');
         

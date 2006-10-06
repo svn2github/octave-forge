@@ -1,20 +1,25 @@
 DEFUN_DLD(GSL_OCTAVE_NAME, args, nargout, "\
-y = GSL_OCTAVE_NAME (x, MODE)\n\n\
+  -*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{y} =} GSL_OCTAVE_NAME (@var{x}, @var{mode})\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{err}] =} GSL_OCTAVE_NAME (@dots{})\n\
+\n\
 GSL_FUNC_DOCSTRING
 \n\
-The second argument MODE must be an integer corresponding to\n\
+The second argument @var{mode} must be an integer corresponding to\n\
 \n\
-0 = GSL_PREC_DOUBLE\n\
-    Double-precision, a relative accuracy of approximately 2 * 10^-16.\n\
-1 = GSL_PREC_SINGLE\n\
-    Single-precision, a relative accuracy of approximately 10^-7.\n\
-2 = GSL_PREC_APPROX\n\
-    Approximate values, a relative accuracy of approximately 5 * 10^-4.\n\
+@table @asis\n\
+@item 0 = GSL_PREC_DOUBLE\n\
+    Double-precision, a relative accuracy of approximately @code{2 * 10^-16}.\n\
+@item 1 = GSL_PREC_SINGLE\n\
+    Single-precision, a relative accuracy of approximately @code{10^-7}.\n\
+@item 2 = GSL_PREC_APPROX\n\
+    Approximate values, a relative accuracy of approximately @code{5 * 10^-4}.\n\
+@end table
 \n\
-[y, err] = GSL_OCTAVE_NAME (...)\n\n\
-err contains an estimate of the absolute error in the value y.\n\n\
+@var{err} contains an estimate of the absolute error in the value @var{y}.\n\n\
 This function is from the GNU Scientific Library,\n\
-see http://www.gnu.org/software/gsl/ for documentation.\n\
+see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
+@end deftypefn\n\
 ")
 {
     int i;

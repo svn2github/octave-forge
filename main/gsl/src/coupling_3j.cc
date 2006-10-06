@@ -28,18 +28,24 @@ void octave_gsl_errorhandler (const char * reason, const char * file,
 }
 
 DEFUN_DLD(coupling_3j, args, nargout, "\
-function y = coupling_3j (two_ja, two_jb, two_jc, two_ma, two_mb, two_mc)\n\n\
+  -*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{y} =} coupling_3j (@var{two_ja}, @var{two_jb}, @var{two_jc}, @var{two_ma}, @var{two_mb}, @var{two_mc})\n\
+\n\
 These routines compute the Wigner 3-j coefficient,\n\
 \n\
+@example\n\
+@group\n\
 (ja jb jc\n\
  ma mb mc)\n\
+@end group\n\
+@end example\n\
 \n\
 where the arguments are given in half-integer units,\n\
-ja = two_ja/2, ma = two_ma/2, etc.\n\
+@code{ja = two_ja/2}, @code{ma = two_ma/2}, etc.\n\
 \n\
 This function is from the GNU Scientific Library,\n\
-see http://www.gnu.org/software/gsl/ for documentation.\n\
-")
+see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
+@end deftypefn")
 {
     int i;
     

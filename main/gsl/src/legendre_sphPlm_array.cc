@@ -28,14 +28,24 @@ void octave_gsl_errorhandler (const char * reason, const char * file,
 }
 
 DEFUN_DLD(legendre_sphPlm_array, args, nargout, "\
-function y = legendre_sphPlm_array (lmax, m, x)\n\n\
+  -*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{y} =} legendre_sphPlm_array (@var{lmax}, @var{m}, @var{x})\n\
+\n\
 This function computes an array of normalized associated Legendre functions\n\
+@iftex\n\
+@tex\n\
 $\\sqrt{(2l+1)/(4\\pi)} \\sqrt{(l-m)!/(l+m)!} P_l^m(x)$\n\
+for $m >= 0, l = |m|, ..., lmax, |x| <= 1.0$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo
+sqrt((2l+1)/(4\\pi)) * sqrt((l-m)!/(l+m)!) Plm (x)\n\
 for m >= 0, l = |m|, ..., lmax, |x| <= 1.0\n\
+@end ifinfo\n\
 \n\
 This function is from the GNU Scientific Library,\n\
-see http://www.gnu.org/software/gsl/ for documentation.\n\
-")
+see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
+@end deftypefn")
 {
     int i;
     

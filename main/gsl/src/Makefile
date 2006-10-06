@@ -27,4 +27,5 @@ $(PROGS): Makefile
 gsl_sf.cc: $(SF_BUILDSCRIPT)
 	${SHELL} $(SF_BUILDSCRIPT) $(GSL_MISSING)
 
-clean: ; -$(RM) gsl_sf.cc *.o core octave-core *.oct *~
+clean: ; -$(RM) -f gsl_sf.cc *.o core octave-core *.oct *~
+

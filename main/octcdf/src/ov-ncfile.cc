@@ -302,7 +302,6 @@ octave_value octave_ncfile::subsref(const std::string &type,
 			       const std::list < octave_value_list > &idx)
 {
   int dimid, status;
-  size_t length;
   octave_value retval;
 
   //  check_args_string("octave_ncfile::subsref",idx.front());
@@ -335,21 +334,7 @@ octave_value octave_ncfile::subsref(const std::string &type,
    	  return  octave_value();
 	}
 
-	// previously a call like nc('dimension name') return the size of the dimension,
-	// now it return the dimension object in order to be compatible with the 
-	// Matlab toolbox.
-
-#       if 0
- 	status = nc_inq_dimlen(get_ncid(), dimid, &length);
-
- 	if (status != NC_NOERR) {
- 	  error("Error while querying dimension %s: %s",name.c_str(), nc_strerror(status));
-    	  return  octave_value();
- 	}
- 	retval = octave_value(length);
-#       else
 	retval = octave_value(new octave_ncdim(this,dimid));
-#       endif
 
 	break;
       }

@@ -9,3 +9,4 @@ autoload ("ncname", which ("netcdf"));
 autoload ("ncdatatype", which ("netcdf"));
 autoload ("ncautonan", which ("netcdf"));
 autoload ("ncautoscale", which ("netcdf"));
+autoload ("ncisrecord", which ("netcdf"));

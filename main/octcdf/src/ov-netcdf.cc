@@ -484,6 +484,30 @@ value of the _FillValue attribute. This feature is disabled if autonan is 0 (def
   }
 }
 
+DEFUN_DLD(ncisrecord, args,, 
+"-*- texinfo -*-\n\
+@deftypefn {Loadable Function} @var{r} = ncisrecord(@var{nd}) \n\
+Return 1 if the netcdf dimension is a record dimension, otherwise 0. \n\
+@end deftypefn")
+{
+
+  if (args.length() != 1) {
+      print_usage ();
+      return octave_value();
+    }
+
+  if (args(0).class_name() != "ncdim" ) {
+      print_usage ();
+      return octave_value();
+    }
+
+   octave_ncdim& ncdim = (octave_ncdim&)args(0).get_rep();
+
+   return octave_value(ncdim.is_record());
+}
+
+
+
 DEFUN_DLD(ncautoscale, args,, 
 "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} @var{status} = ncautoscale(@var{nv}) \n\

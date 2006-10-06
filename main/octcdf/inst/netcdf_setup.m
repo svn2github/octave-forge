@@ -45,3 +45,5 @@ dispatch('datatype','ncdatatype','ncatt');
 
 dispatch('autoscale','ncautoscale','ncvar');
 dispatch('autonan','ncautonan','ncvar');
+
+dispatch('isrecord','ncisrecord','ncdim');

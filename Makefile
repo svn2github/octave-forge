@@ -53,7 +53,7 @@ srpms: clearlog packages
 	@echo "*** You can find the built SRPMs in packages/RPM/SRPMS ***"
 
 www: clearlog packages
-	@$(MAKE) -C www $(MAKECMDGOALS)
+	@$(MAKE) -C www
 
 else
 

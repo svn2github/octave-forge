@@ -56,3 +56,7 @@ Fixed Point Functions
  fsumsq
  ftanh
  ftan
+Examples
+ ffft
+ fifft
+ fixed_inc

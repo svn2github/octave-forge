@@ -74,6 +74,6 @@ function w = gfweight (arg1, arg2)
   ## We do the equivalent of 
   ## w = min(sum((mod(de2bi([1:2^k-1]') * gen, 2))'));
   ## But in a more memory efficient manner in an oct-file
-  w = _gfweight(gen);
+  w = __gfweight__(gen);
 
 endfunction

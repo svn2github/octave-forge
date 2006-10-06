@@ -7,8 +7,8 @@ GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc \
 GALOISOBJECTS = $(patsubst %.cc,%.o,$(GALOISSOURCES))
 
 GALOISDEPENDS = $(patsubst %.cc,%.d,$(GALOISSOURCES))
-OTHERSOURCES = primpoly.cc isprimitive.cc _errcore.cc cyclpoly.cc cyclgen.cc \
-                    syndtable.cc _gfweight.cc genqamdemod.cc
+OTHERSOURCES = primpoly.cc isprimitive.cc __errcore__.cc cyclpoly.cc \
+                    cyclgen.cc syndtable.cc __gfweight__.cc genqamdemod.cc
 OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
 OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
 OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))

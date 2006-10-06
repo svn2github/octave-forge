@@ -404,7 +404,7 @@ DEFUN_DLD (fixed, args, nargout,
 // appear on a new-line, otherwise the idnexing script will be confused!!
 #define DEFUN_DLD_FIXED_SNGL_ARG(NAME, HELP, FUNC, \
    REAL_CAN_RET_CMPLX_UPPER,UPPER, REAL_CAN_RET_CMPLX_LOWER, \
-   LOWER) DEFUN_DLD ( NAME, args, nargout, HELP) \
+   LOWER) DEFUN_DLD (NAME, args, nargout, HELP) \
   { \
     int nargin = args.length(); \
     octave_value retval; \
@@ -653,7 +653,7 @@ Return the smallest integer not less than @var{x}.\n\
 @seealso{fround, ffloor}", ::ceil, 0, 0, 0, 0);
 
 #define DEFUN_DLD_FIXED_DIM_ARG(NAME, HELP, FUNC) \
-  DEFUN_DLD ( NAME, args, nargout, HELP) \
+  DEFUN_DLD (NAME, args, nargout, HELP) \
   { \
     int nargin = args.length(); \
     octave_value retval; \

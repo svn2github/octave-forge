@@ -139,7 +139,7 @@ function [num, rate, ind] = biterr (a, b, varargin)
   endif
   
   ## Call the core error function to count the bit errors 
-  ind = _errcore(a,b);
+  ind = __errcore__(a,b);
 
   switch (flag)
     case 'row',

@@ -69,6 +69,7 @@ Modulations
  dmod
  dmodce
  genqammod
+ genqamdemod
  modmap
  pamdemod
  pammod
@@ -109,6 +110,7 @@ Galois Fields of Even Characateristic
  gifft
  ginv
  ginverse
+ gisequal
  glog
  glu
  gprod

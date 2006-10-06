@@ -4,6 +4,7 @@ vrml >> Vrml
  select_3D_points
  vrml_browse
  vrml_kill
+ vrml_anim
 Create 3D objects
  vrml_surf
  vrml_points
@@ -19,6 +20,21 @@ Create 3D objects
  vrml_arrow
  vrml_lines
  vrml_group
+Support Functions
+ save_vrml
+ best_dir
+ best_dir_cov
+ proplan
+ bound_convex
+ vrml_DirectionalLight
+ vrml_ROUTE
+ vrml_TimeSensor
+ vrml_ellipsoid
+ vrml_interp
+ vrml_material
+ vrml_newname
+ vrml_parallelogram
+ vrml_thick_surf
 Demos
  test_vmesh
  test_vrml_faces

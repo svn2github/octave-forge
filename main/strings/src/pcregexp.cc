@@ -26,7 +26,7 @@
 #include <pcre.h>
 #include <iostream>
 
-DEFUN_DLD( pcregexp, args, nargout, "\
+DEFUN_DLD(pcregexp, args, nargout, "\
 Perl-compatible regular expression matching.\n\
 \n\
 See also \"help regexp\" and the manpage for 'pcre'.\n\

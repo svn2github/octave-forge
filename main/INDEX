@@ -57,6 +57,22 @@
 $COMPAT= http://octave.sf.net/compatibility.html
 $EG= Etienne Grossman's <a href="http://www.isr.ist.utl.pt/~etienne/octave/">Octave code</a>
 
+audio >> Audio
+Record and play
+ speak 
+ recordsound 
+ wavrecord 
+ soundcap 
+ loadaudio saveaudio playaudio record setaudio
+Read and write
+ wavwrite 
+ wavread 
+ readsnd 
+ writesnd 
+Process
+ mu2lin 
+ lin2mu
+
 interpreter >> Interpreter
 Help
  help
@@ -100,10 +116,13 @@ Functions
 Load path
  path 
  addpath 
+ savepath
  rmpath 
  pathtool 
  file_in_path file_in_loadpath find_first_of_in_loadpath
  rehash
+ genpath
+ pathdef
 Output
  echo 
  more 
@@ -177,27 +196,7 @@ Error Handling
  debug_on_warning
  errno
  errno_list
- warn_divide_by_zero
- warn_function_name_clash
- warn_future_time_stamp
- warn_missing_semicolon
- warn_separator_insert
- warn_variable_switch_label
- warn_assign_as_truth_value
- warn_reload_forces_clear
- warn_single_quote_string
- warn_precedence_change
- warn_matlab_incompatible
- warn_fortran_indexing
- warn_imag_to_real
- warn_undefined_return_values 
- warn_empty_list_elements
- warn_num_to_str
- warn_str_to_num
- warn_neg_dim_as_zero
- warn_resize_on_range_error
- warn_associativity_change
- warn_string_concat
+ warning_ids
 Processing
  variables_can_hide_functions
  max_recursion_depth
@@ -210,8 +209,9 @@ File output
  save_precision
  save_header_format_string
 Support programs
- EDITOR INFO_FILE INFO_PROGRAM MAKEINFO_PROGRAM PAGER gnuplot_binary
- toggle_grace_use
+ EDITOR 
+ info_file info_program makeinfo_program
+ PAGER gnuplot_binary
 Constants
  F_DUPFD F_GETFD F_GETFL F_SETFD F_SETFL
  O_APPEND O_ASYNC O_CREAT O_EXCL O_NONBLOCK O_RDONLY
@@ -251,6 +251,17 @@ Controlling subprocesses
  popen popen2 pclose
  fork exec pipe waitpid kill
  EXEC_PATH sleep usleep
+ WCONTINUE
+ WCOREDUMP
+ WEXITSTATUS
+ WIFCONTINUED
+ WIFEXITED
+ WIFSIGNALED
+ WIFSTOPPED
+ WNOHANG
+ WSTOPSIG
+ WTERMSIG
+ WUNTRACED
 Process information
  getrusage
  getpgrp
@@ -401,6 +412,7 @@ Structures
  isstruct
  struct_contains
  struct_elements
+ orderfields
 Lists
  list islist
  nth
@@ -417,7 +429,7 @@ Types
  uint8 uint16 uint32 uint64
  sizeof
 Deprecated
-  is_bool is_complex is_list is_stream is_struct
+  is_bool is_complex is_list is_stream is_struct is_global
 
 
 matrix >> Linear Algebra
@@ -581,6 +593,7 @@ Linear algebra
  spinv 
  splchol
  splu
+ spqr
  sprank
  svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
 Iterative techniques
@@ -640,6 +653,7 @@ Search and replace
  fnmatch
  regexp
  regexpi
+ regexprep
  strcmp
  strncmp 
  strcmpi 
@@ -664,6 +678,7 @@ Operations
  undo_string_escapes
  strappend
  strsort
+ strtrunc
 Conversion
  toascii setstr
  num2str com2str str2mat
@@ -682,11 +697,7 @@ Conversion
  dec2base 
  strptime
  base64encode
- csvexplode csvconcat
 Flags
- warn_num_to_str
- warn_str_to_num
- warn_single_quote_string
  string_fill_char
 
 math >> Mathematics
@@ -886,6 +897,7 @@ Ordinary differential equations
  dassl dassl_options
  daspk daspk_options
  dasrt dasrt_options
+ lpsolve lpsolve_options
  colloc
 
 plot >> Plotting
@@ -1059,6 +1071,13 @@ File operations
  rename link unlink symlink readlink 
  mkfifo umask stat lstat
  mark_for_deletion
+ S_ISBLK
+ S_ISCHR
+ S_ISDIR
+ S_ISFIFO
+ S_ISLNK
+ S_ISREG
+ S_ISSOCK
 Directory operations
  cd pwd ls dir
  filesep 
@@ -1090,6 +1109,7 @@ Linear programming
  glpk
  sqp
  qp
+ glpkmex
 
 extra >> Extra packages
 Finance

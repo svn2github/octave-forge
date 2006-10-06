@@ -117,7 +117,7 @@ function [num, rate, ind] = symerr (a, b, _flag)
   endif
   
   ## Call the core error function to count the bit errors 
-  ind = (_errcore(a,b) != 0);
+  ind = (__errcore__(a,b) != 0);
 
   switch (flag)
     case 'row',

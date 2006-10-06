@@ -92,8 +92,8 @@ Galois Fields of Even Characateristic
  .** .^ = Element by element matrix exponentiation of Galois arrays.
  ' .' = Matrix transpose of Galois arrays.
  == ~= != > >= < <= = Logical operators on Galois arrays.
- all = True if all elements of Galois array are non-zero.
- any = True if any element of Galois array are non-zero.
+ all
+ any
  cosets
  gconv
  gconvmtx
@@ -120,14 +120,14 @@ Galois Fields of Even Characateristic
  groots
  gsum
  gsumsq
- isempty = True if Galois array is empty.
+ isempty
  isgalois
  isprimitive
- length = Length of a Galois vector.
+ length
  minpol
- polyval = Evaluate polynomial in a Galois Field.
+ polyval
  primpoly
- size = The size of a Galois array.
+ size
 Galois Fields of Odd Characteristic
  gfadd
  gfconv

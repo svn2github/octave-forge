@@ -29,7 +29,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct.h>
 #include <octave/pager.h>
 
-DEFUN_DLD (_errcore, args, ,
+DEFUN_DLD (__errcore__, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{c} =} _errcore (@var{a}, @var{b})\n"
 "\n"

@@ -54,9 +54,6 @@
 #  arcov = $TSA <code>armcv</code>
 # id is any string of letters, numbers and _.
 
-$COMPAT= http://octave.sf.net/compatibility.html
-$EG= Etienne Grossman's <a href="http://www.isr.ist.utl.pt/~etienne/octave/">Octave code</a>
-
 audio >> Audio
 Record and play
  speak 
@@ -101,7 +98,6 @@ Functions
  type
  isa 
  dispatch
- dispatch_help
  edit 
  open 
  lookfor 
@@ -119,7 +115,7 @@ Load path
  savepath
  rmpath 
  pathtool 
- file_in_path file_in_loadpath find_first_of_in_loadpath
+ file_in_path file_in_loadpath
  rehash
  genpath
  pathdef
@@ -127,7 +123,9 @@ Output
  echo 
  more 
  diary 
- format 
+ format
+ terminal_size
+ list_in_columns 
 Environment
  cd pwd
  dir
@@ -151,6 +149,7 @@ Environment
  native_float_format
  license ver
  uname
+ extproc
 Debugging
  dbclear
  dbstatus
@@ -262,6 +261,7 @@ Controlling subprocesses
  WSTOPSIG
  WTERMSIG
  WUNTRACED
+ SIG
 Process information
  getrusage
  getpgrp
@@ -357,7 +357,6 @@ Symbol table
  munlock 
  mislocked
  command typeinfo
- initialize_global_variables
 Function arguments
  nargchk 
  nargin 
@@ -367,9 +366,9 @@ Function arguments
  inputname
  fcnchk 
  read_options
- va_start va_arg vr_val
  usage
  argn = string names of the input parameters
+ parseparams
 User I/O
  disp printf puts
  print_usage
@@ -383,6 +382,7 @@ User I/O
  keyboard kbhit
  pause menu
  waitbar beep
+ yes_or_no
 Inline functions
  inline
  argnames 
@@ -431,7 +431,6 @@ Types
 Deprecated
   is_bool is_complex is_list is_stream is_struct is_global
 
-
 matrix >> Linear Algebra
 Generating matrices
  zeros 
@@ -443,6 +442,7 @@ Generating matrices
  logspace 
  randperm
  meshgrid meshdom
+ ndgrid
 Matrix properties
  size rows columns common_size ndims
  length 
@@ -455,6 +455,7 @@ Matrix properties
  issymmetric is_duplicate_entry isequalwithequalnans
 Rearranging matrices
  reshape 
+ resize
  tril 
  triu 
  fliplr 
@@ -631,8 +632,9 @@ Creation
  cellstr 
  blanks 
  single
+ cast
 Tests
- ischar= use <f>isstr</f> 
+ ischar
  iscellstr 
  isletter 
  isspace 
@@ -950,7 +952,7 @@ Surface plots
  sombrero
  peaks
 
-plotcontrol >> Plot controls
+plot >> Plot controls
 Figure controls
  newplot 	 
  figure 	 
@@ -964,7 +966,6 @@ Figure controls
  replot
 Axis controls
  axis 
- zoom= use <f>gzoom</f>
  grid 
  hold 
  ishold 
@@ -1052,6 +1053,7 @@ Basic handle operations
  fcntl
  stdin stdout stderr
  isstreamoff streamoff
+ fclear
 Formatted I/O
  fgetl 
  fgets 
@@ -1067,6 +1069,7 @@ File operations
  tmpfile
  tmpnam
  tempname
+ P_tmpdir
  prefdir 
  rename link unlink symlink readlink 
  mkfifo umask stat lstat
@@ -1091,6 +1094,7 @@ Directory operations
  file_in_path
  file_in_loadpath
  canonicalize_file_name
+ confirm_recursive_rmdir
 Import/Export
  csv2cell cell2csv
  textread
@@ -1246,4 +1250,91 @@ Compatibility
  ttest= use <f>t_test</f>
  ttest2= use <f>t_test_2</f>
  ztest= use <f>z_test</f>
+
+control >> Control theory
+OCST demos
+ DEMOcontrol
+ controldemo
+ sysrepdemo
+ bddemo jet707 analdemo
+ frdemo
+ dgkfdemo hinfdemo dhinfdemo moddemo rldemo
+System interface functions
+ sysrepdemo
+ fir2sys sys2fir
+ ss2sys sys2ss
+ tf2sys sys2tf
+ zp2sys sys2zp
+ tf2ss ss2tf
+ zp2tf tf2zp
+ zp2ss ss2zp zp
+ ss
+ tf
+Data structure access
+ syschtsam
+ sysdimensions
+ sysgetsignals
+ sysgettsam
+ sysgettype
+ syssetsignals
+ sysupdate
+ minfo
+System display functions
+ sysout polyout tfout zpout
+Block diagram manipulations
+ bddemo jet707
+ buildssic ord2 parallel sysadd sysmin
+ sysappend sysconnect
+ syscont sysdisc
+ sysdup sysgroup sysmult sysprune
+ sysreorder sysscale syssub ugain wgt1o
+ starp
+Numerical functions
+ are dare dgram dlyap gram lyap pinv dre
+ zgfmul zgfslv zginit zgreduce zgrownorm zgscal zgsgiv
+ zgshsr
+System properties
+ analdemo
+ abcddim ctrb h2norm hinfnorm obsv pzmap
+ is_abcd is_controllable is_detectable is_dgkf
+ is_digital is_observable is_sample is_siso is_stabilizable
+ is_signal_list is_stable
+Time domain analysis
+ c2d d2c dmr2d damp dcgain impulse step
+Frequency domain analysis
+ frdemo
+ bode bode_bounds nichols
+ freqchkw ltifr nyquist tzero tzero2
+ rlocus
+Controller design
+ dgkfdemo hinfdemo dhinfdemo
+ dlqe dlqr lqe lqg lqr 
+ hinf_ctr hinfsyn hinfsyn_ric hinfsyn_chk
+ lsim place dkalman h2syn
+Miscellaneous
+ axis2dlim prompt sortcom swap run_cmd
+ strappend listidx packedform sysidx
+Obsolete
+ dezero dlqg minfo packsys unpacksys swaprows swapcols rotg qzval
+ syschnames series
+Internal
+ __bodquist__ __freqresp__ __stepimp__ __abcddims__ __syschnamesl__ 
+ __syscont_disc__ __sysdefioname__ __sysdefstname__ __sysgroupn__
+ __tf2sysl__ __zp2ssg2__ __outlist__ __zgpbal__
+Compatibility
+ filt= use <f>tf2sys</f>
+ zpk= use <f>zp2sys</f>
+ ssdata= use <f>sys2ss</f>
+ tfdata=use <f>sys2tf</f>
+ zpkdata=use <f>sys2zp</f>
+ isct=use !<f>is_digital</f>
+ isdt=use <f>is_digital</f>
+ issiso=use <f>is_siso</f>
+ append(sys)=use <f>sysappend</f>
+ connect=use <f>sysconnect</f>
+ lft=use <f>starp</f>
+ norm(sys)=use <f>h2norm</f>, <f>hinfnorm</f> or <f>zgrownorm</f>
+ zero=use <f>tzero</f> or <f>tzero2</f>
+ kalman=use <f>lqe</f>
+ kalmd=use <f>dlqe</f> or <f>dkalman</f>
 

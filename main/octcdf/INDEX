@@ -21,3 +21,7 @@ NetCDF
  ncsync
  ncvar
  netcdf
+ ncisrecord
+Examples
+ example_netcdf
+ example_opendap

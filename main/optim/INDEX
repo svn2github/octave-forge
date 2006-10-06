@@ -26,10 +26,11 @@ Numerical derivatives
  dfdp bs_gradient cdiff deriv leval
  numgradient numhessian finitedifference
 Tests
-  lp_test test_min_1 test_min_2 test_min_3 test_min_4
+  test_min_1 test_min_2 test_min_3 test_min_4
   test_d2_min_1 test_d2_min_2 test_d2_min_3
   test_nelder_mead_min_1 test_nelder_mead_min_2
   poly_2_ex test_minimize_1
-	bfgsmin-example.m lbfgsmin-example.m samin-example.m
-
-
+Examples
+ bfgsmin_example
+ rosenbrock
+ samin_example

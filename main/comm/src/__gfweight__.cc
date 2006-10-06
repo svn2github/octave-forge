@@ -53,7 +53,7 @@ get_weight (const Array<char>& codeword, const Matrix& gen,
   return retval;
 }
 
-DEFUN_DLD (_gfweight, args, ,
+DEFUN_DLD (__gfweight__, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{w} =} _gfweight (@var{gen})\n"
 "\n"

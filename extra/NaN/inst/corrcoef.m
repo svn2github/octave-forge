@@ -149,7 +149,7 @@ if isempty(Y),
         [jxo,jyo] = find(IX);
 	R = eye(c1);        
 else
-        IX = zeros(c1+c2);
+        IX = sparse([],[],[],c1+c2,c1+c2,c1*c2);
         IX(1:c1,c1+(1:c2)) = 1;
         [jx,jy] = find(IX);
         

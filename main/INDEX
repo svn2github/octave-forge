@@ -1356,3 +1356,44 @@ Representation
 Colour maps
  gray
  ocean
+
+signal >> Signal processing
+Signals
+ hurst
+ periodogram
+ sinc
+ sinetone
+ sinewave
+ stft
+ synthesis
+Filtering
+ fftfilt 
+ spencer
+ fractdiff
+Filter analysis
+ freqz freqz_plot
+Filter conversion
+ ss2tf 
+ ss2zp 
+ tf2ss 
+ tf2zp 
+ zp2ss 
+ zp2tf 
+IIR Filter design
+ yulewalker
+Power spectrum analysis
+ spectral_adf spectral_xdf
+Window functions
+ bartlett 
+ blackman 
+ hamming 
+ hanning
+ rectangle_lw
+ rectangle_sw
+ triangle_lw
+ triangle_sw
+System identification
+ durbinlevinson
+ diffpara
+ arch_rnd arch_fit arch_test
+ arma_rnd autoreg_matrix autocor autocov

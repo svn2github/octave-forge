@@ -1,4 +1,4 @@
-## (C) 2006, May 31, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2006, May 31, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,16 +15,23 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: entropy(symbol_probabilites,{base})
-## computes the shannon entropy of a discrete source whose
-## probabilities are given in first argument, and optionally 
-## base can be specified. Base of logarithm defaults to 2,
+## -*- texinfo -*-
+## @deftypefn {Function File} {} entropy (@var{symbol_probabilites}, @var{base})
+##
+## Computes the Shannon entropy of a discrete source whose
+## probabilities are by @var{symbol_probabilities}, and optionally 
+## @var{base} can be specified. Base of logarithm defaults to 2,
 ## when the entropy can be thought of as a measure of bits
-## needed to represent any message of the source.
+## needed to represent any message of the source. For example
 ##
-## example: entropy([0.25 0.25 0.25 0.25]) ans = 2
-##          entropy([0.25 0.25 0.25 0.25],4) ans = 1
-##
+## @example
+## @group
+##          entropy([0.25 0.25 0.25 0.25]) @result{} ans = 2
+##          entropy([0.25 0.25 0.25 0.25],4) @result{} ans = 1
+## @end group
+## @end example
+## @end deftypefn
+
 function val=entropy(symprob,base)
   if nargin < 1
        error("usage: entropy(symbol_probability_list); computes entropy in base-2");

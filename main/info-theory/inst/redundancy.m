@@ -1,4 +1,4 @@
-## (C) 2006, September 28, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2006, September 28, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,15 +15,22 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: redundancy(code_word_list,symbol_probabilites)
-##        computes the wasted excessive bits over the entropy 
-##        when using a particular coding scheme.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} redundancy (@var{code_word_list}, @var{symbol_probabilites})
 ##
-## example: prob_list=[0.5 0.25 0.15 0.1];
-##          min_bits=entropy(prob_list);
-##          cw_list=huffman(prob_list);
+## Computes the wasted excessive bits over the entropy when using a
+## particular coding scheme. For example
+##
+## @example
+## @group
+##          prob_list = [0.5 0.25 0.15 0.1];
+##          min_bits = entropy(prob_list);
+##          cw_list = huffman(prob_list);
 ##          redundancy(cw_list,prob_list)
-##
+## @end group
+## @end example
+## @end deftypefn
+
 function [val,ent,lavg]=redundancy(code_word_list,symprob)
   if ( nargin < 2 )
        error("usage: redundancy(code_word_list,symbol_probability_list); computes entropy in base-2");

@@ -1,4 +1,4 @@
-## (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,17 +15,17 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: relativeentropy(p,q) computes the 
-## relative entropy between the 2 give pdf's.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} relativeentropy (@var{p}, @var{q})
 ##
-## d(p || q) =
-## Kullback-Leiber distance between 2 probability,
-## distributions, is relative entropy. Not a real measure
-## as its not symmetric. wherever infinity is present, we
-## reduce it to zeros
-##
-## see also: entropy, conditionalentropy
-##
+## Computes the relative entropy between the 2 given pdf's. 
+## @code{d(@var{p} || @var{q})} is the Kullback-Leiber distance
+## between 2 probability, distributions, is relative entropy. 
+## Not a real measure as its not symmetric. wherever infinity is 
+## present, we reduce it to zeros
+## @end deftypefn
+## @seealso{entropy, conditionalentropy}
+
 function val=relativeentropy(p,q)
   if nargin < 2 || size(p)~=size(q) || ~isvector(p) || ~isvector(q)
     error('usage: relativeentropy(p,q) of equal length');

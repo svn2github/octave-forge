@@ -1,4 +1,4 @@
-## (C) 2006, August, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2006, August, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,19 +14,25 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## usage: unarydec(value)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} unarydec (@var{value})
+##
 ## This function decodes the unary encoded value.
-## useful if you are trying to perform golomb-rice coding
-## value needs to be a number or row-vector.
+## Useful if you are trying to perform golomb-rice coding
+## value needs to be a number or row-vector. For example
 ##
-## example: 
-##          message=[    5   4   4   1   1   1]
-##          coded=unaryenc(message); #gives    62   30   30    2    2    2
-##          unarydec(coded) #gives message  back.
-##
+## @example
+## @group
+##  message = [5   4   4   1   1   1]
+##  coded = unaryenc(message)
+##        @result{} [62   30   30    2    2    2]
+##  unarydec(coded)
+##        @result{} [5   4   4   1   1   1]
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{unaryenc}
 
-## See also: unaryenc
-##
 function rval=unarydec(val)
      rval=log2(val+2)-1;
 end

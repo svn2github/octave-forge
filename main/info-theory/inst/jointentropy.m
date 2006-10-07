@@ -1,4 +1,4 @@
-## (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,13 +14,16 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## usage: jointentropy(XY) computes the 
-## joint entropy of the given channel transition matrix.
-## By definition we have H(X,Y) given as
-## H(X:Y) = SUMx( SUMy( P(x,y) log2 ( p(x,y) ) ) ) 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} jointentropy (@var{xy})
 ##
-## see also: entropy, conditionalentropy
-##
+## Computes the joint entropy of the given channel transition matrix.
+## By definition we have @code{H(@var{x}, @var{y})} given as
+## @code{H(@var{x}:@var{y}) = SUMx(SUMy(P(@var{x}, @var{y}) * 
+## log2(p(@var{x}, @var{y}))))}
+## @end deftypefn
+## @seealso{entropy, conditionalentropy}
+
 function val=jointentropy(XY)
      if nargin < 1 || ~ismatrix(XY)
        error('Usage: jointentropy(XY) where XY is the transition matrix');

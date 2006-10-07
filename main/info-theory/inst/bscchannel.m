@@ -1,4 +1,4 @@
-## (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,13 +15,14 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: bscchannel(p) 
+## -*- texinfo -*-
+## @deftypefn {Function File} {}  bscchannel (@var{p})
+## 
 ## Returns the transition matrix for a Binary Symmetric
-## Channel with error probability, p.
-##
+## Channel with error probability, @var{p}.
+## @end deftypefn
+## @seealso{entropy}
 
-## see also: entropy
-##
 function transmat=bschannel(p)
   transmat=[ 1-p p; p 1-p];
   return

@@ -1,4 +1,4 @@
-## (C) 2006, August, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2006, August, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,18 +15,23 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: arithmetic_encode(message,symbol_probabilites_list)
-## computes the arithmetic code for the message with symbol
-## probabilities are given. The arithmetic coding procedure assumes
-## that the message is a list of numbers and the symbol probabilities
-## correspond to the index.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} arithmetic_encode (@var{message}, @var{symbol_probabilites_list})
 ##
-## example: symbols=[1,2,3,4]; sym_prob=[0.5 0.25 0.15 0.10];
+## Computes the arithmetic code for the message with symbol
+## probabilities are given. The arithmetic coding procedure assumes
+## that @var{message} is a list of numbers and the symbol probabilities
+## correspond to the index. For example
+##
+## @example
+## @group
+##          symbols=[1,2,3,4]; sym_prob=[0.5 0.25 0.15 0.10];
 ##          message=[1, 1, 2, 3, 4];
 ##          arithmetic_encode(message,sym_prob) ans=0.18078
-##
-## see also: arithmetic_decode
-##
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{arithmetic_decode}
 
 %  FIXME
 % -------

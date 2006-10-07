@@ -1,4 +1,4 @@
-## (C) Aug, 2006 Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) Aug, 2006 Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,16 +14,22 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## usage: avgbits = laverage(codebook,problist);
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{avgbits} =} laverage (@var{codebook}, @var{problist})
 ##
-## Compute the average word length SUM(i=1:N)Li.Pi
+## Compute the average word length @code{SUM(@var{i} = 1:@var{N})* Li * Pi}
 ## where codebook is a struct of strings, where each
 ## string represents the codeword. Problist is the 
-## probability values.
+## probability values. For example
 ## 
-## example: x={"0","111","1110"}; p=[0.1 0.5 0.4];
-## laverage(x,p) #must give
-## ans =  3.2000
+## @example
+## @group
+##      x = @{"0","111","1110"@}; p=[0.1 0.5 0.4];
+##      laverage(x, p) @result{} ans = 3.2000
+## @end group
+## @end example
+## @end deftypefn
+
 function Lavg=laverage(codebook,problist)
      if nargin < 2
         error('usage laverage(codebook,problist)');

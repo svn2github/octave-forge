@@ -1,4 +1,4 @@
-## (C) June 2006, Muthiah Annamalai Sat Jun  3 01:44:59 CDT 2006 
+## Copyright (C) June 2006, Muthiah Annamalai Sat Jun  3 01:44:59 CDT 2006 
 ## <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
@@ -15,28 +15,34 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## usage: code_dictionary = tunstallcode(probability_list)
-## Implementation of a |A|-bit tunstall coder
-## given the source probability of the |A| symbols 
-## from the source with 2^|A| code-words involved.
-## The variable probability_list ordering of symbols is 
-## preserved in the output symbol/code dictionary.
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{code_dictionary} =} tunstallcode (@var{probability_list})
+##
+## Implementation of a @code{|A|}-bit tunstall coder given the source 
+## probability of the @code{|A|} symbols from the source with @code{2^|A|} 
+## code-words involved. The variable @var{probability_list} ordering of 
+## symbols is preserved in the output symbol/code dictionary.
 ## Tunstall code is a variable to fixed source coding scheme,
 ## and the arrangement of the codeword list order corrseponds to
 ## to the regular tunstall code ordering of the variable source 
 ## word list, and the codes for each of them are enumerations 
-## from 1:2^N. Return only the ordering (grouping) of source symbols
+## from @code{1:2^N}. Return only the ordering (grouping) of source symbols
 ## as their index of match is the corresponding code word. The
 ## probabilites of the various symbols are also stored in here.
+## for example
 ##
-## example: [cw_list,prob_list]=tunstallcode([0.6 .3 0.1]) 
-##          essentially you will use the cw_list to parse the input
-##          and then compute the code as the binary value of their index
-##          of match, since it is a variable to fixed code.
+## @example
+##   [cw_list, prob_list] = tunstallcode([0.6 .3 0.1]) 
+## @end example
+##
+## essentially you will use the cw_list to parse the input
+## and then compute the code as the binary value of their index
+## of match, since it is a variable to fixed code.
 ##
 ## Reference: "Synthesis of noiseless compression codes", Ph.D. Thesis
 ##             of B.P. Tunstall, Georgia Tech, Sept 1967
-##
+## @end deftypefn
+
 function [cw_list,prob_list]=tunstallcode(prob_list)
   if nargin < 1
     error('usage: tunstallcode(probability_list)');

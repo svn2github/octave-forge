@@ -1,4 +1,4 @@
-## (C) 2006, August, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2006, August, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,18 +14,25 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
-## usage: arithmetic_decode(tag_message,symbol_probabilites_list)
-## computes the message from arithmetic code given  with symbol
-## probabilities. The arithmetic decoding procedure assumes
-## that the message is a list of numbers and the symbol probabilities
-## correspond to the index. The message is returned.
 
-## example: symbols=[1,2,3,4]; sym_prob=[0.5 0.25 0.15 0.10];
+## -*- texinfo -*-
+## @deftypefn {Function File} {} arithmetic_decode (@var{tag_message}, @var{symbol_probabilites_list})
+##
+## Computes the message from arithmetic code given  with symbol
+## probabilities. The arithmetic decoding procedure assumes
+## that @var{message} is a list of numbers and the symbol probabilities
+## correspond to the index. The message is returned. For example
+##
+## @example
+## @group
+##          symbols=[1,2,3,4]; sym_prob=[0.5 0.25 0.15 0.10];
 ##          message=[1, 1, 2, 3, 4];
 ##          arithmetic_encode(message,sym_prob) ans=0.18078
 ##          arithmetic_decode(0.18078,sym_prob) ans=[1 1 2 3 4];
-## see also: arithmetic_encode
-##
+## @end group
+## @end example
+## @end deftypefn
+## @seealso{arithmetic_encode}
 
 % FIXME
 % -----

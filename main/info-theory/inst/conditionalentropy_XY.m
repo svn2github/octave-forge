@@ -1,4 +1,4 @@
-## (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,16 +15,38 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: conditionalentropy_XY(XY) computes the 
-## H(X/Y) = SUM( P(Yi)*H(X/Yi) ) , where H(X/Yi) = SUM( -P(Xk/Yi)log(P(Xk/Yi)) )
-##                               , where P(Xk/Yi) = P(Xk,Yi)/P(Yi)
-## XY matrix must have, Y along rows
-## X along columns
+## -*- texinfo -*-
+## @deftypefn {Function File} {} conditionalentropy_XY (@var{x}, @var{y}) 
+##
+## Computes the
+## @iftex
+## @tex
+## $H(\frac{X}{Y}) = \sum_i{P(Y_i) H(\frac{X}{Y_i})$, where
+## $H(\frac{X}{Y_i}) = \sum_k{-P(\frac{X_k}{Y_i}) \log(P(\frac{X_k}{Y_i}))$,
+## where $P(\frac{X_k}{Y_i} = \frac{P(X_k,Y_i)}{P(Y_i)}$.
+## @end tex
+## @end iftex
+## @ifinfo
+## H(X/Y) = SUM( P(Yi)*H(X/Yi) ) , where 
+## H(X/Yi) = SUM( -P(Xk/Yi)log(P(Xk/Yi))), where
+## P(Xk/Yi) = P(Xk,Yi)/P(Yi).
+## @end ifinfo
+## The matrix @var{xy} must have @var{y} along rows and @var{x} along columns.
+## @iftex
+## @tex
+## $X_i = \sum{COL_i} 
+## $Y_i = \sum{ROW_i}
+## $H(X|Y) = H(X,Y) - H(Y)$
+## @end tex
+## @end iftex
+## @ifinfo
 ## Xi = SUM( COLi ) 
 ## Yi = SUM( ROWi )
 ## H(X|Y) = H(X,Y) - H(Y)
-## see also: entropy, conditionalentropy
-##
+## @end ifinfo
+## @end deftypefn
+## @seealso{entropy, conditionalentropy}
+
 function val=conditionalentropy_XY(XY)
   val=0.0;
   for i=1:size(XY)(2)

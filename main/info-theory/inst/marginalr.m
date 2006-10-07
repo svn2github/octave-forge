@@ -1,4 +1,4 @@
-## (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
+## Copyright (C) 2005, December, Muthiah Annamalai, <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,12 +15,14 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: marginalr(XY)
-##        computes marginal  probabilities along rows.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} marginalr (@var{xy})
 ##
-## XY is the transition matrix
-## see also: marginalc
-##
+## Computes marginal  probabilities along rows. Where @var{xy} is the
+## transition matrix
+## @end deftypefn
+## @seealso{marginalc}
+
 function val=marginalr(XY)
    val=sum(XY');
    return

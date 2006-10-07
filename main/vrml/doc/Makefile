@@ -10,8 +10,10 @@ all : $(PDF) html/index.html
 	latex $< > /dev/null 2>&1
 	dvipdf $(@:.pdf=.dvi)
 
+# Note verbosity=0 as well as making latex2html quieter, has the side-effect
+# of not including a url to the raw text, which it'll get wrong
 html/index.html : $(TEX)
-	latex2html $<
+	latex2html -verbosity=0 $<
 	if [ -e "html" ]; then \
 	  rm -fr html; \
 	fi; \

@@ -25,3 +25,5 @@ clean:
 	rm -f $(patsubst %.tex,%.aux,$(TEX))
 	rm -f $(patsubst %.tex,%.out,$(TEX))
 	rm -f $(patsubst %.tex,%.dvi,$(TEX))
+	rm -f $(patsubst %.tex,%.toc,$(TEX))
+	rm -f $(patsubst %.tex,%.idx,$(TEX))

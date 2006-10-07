@@ -6,3 +6,5 @@
 html
 SymBandDoc
 *.pdf
+*.idx
+*.toc

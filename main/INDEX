@@ -1115,11 +1115,9 @@ Linear programming
  qp
  glpkmex
 
-extra >> Extra packages
+finance >> Finance
 Finance
  fv fvl irr nper npv pmt pv pvl rate vol
-Server
- listen send senderror
 
 statistics >> Statistics
 Depreciated
@@ -1338,3 +1336,23 @@ Compatibility
  kalman=use <f>lqe</f>
  kalmd=use <f>dlqe</f> or <f>dkalman</f>
 
+image >> Image processing
+Display
+ image
+ imagesc
+ imshow
+Read/write
+ loadimage saveimage
+Colour controls
+ hsv2rgb
+ ntsc2rgb
+ rgb2hsv
+ rgb2ntsc
+Representation
+ gray2ind
+ ind2gray
+ ind2rgb
+ rgb2ind
+Colour maps
+ gray
+ ocean

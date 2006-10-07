@@ -1,5 +1,5 @@
-##       y = grep(x) ==  x(find(x))
-##   [y,f] =         == [x(find(x)),find(x)]
+##   y = grep(x) = x(find(x))
+##   [y,f] = [x(find(x)),find(x)]
 ##
 ## This function is just to save typing and improve readability, as in
 ##

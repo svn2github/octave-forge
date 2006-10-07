@@ -30,41 +30,40 @@
 
 %# Maintainer: Thomas Treichl
 %# Created: 20060809
-%# ChangeLog:
+%# ChangeLog: 20060929, Thomas Treichl
+%#    As in the definitions of initial value problems as functions
+%#    and if somebody uses event functions all input and output
+%#    vectors must be column vectors by now.
 
 function [varargout] = odeplot (vt, vy, vflag)
+
   %# No input argument check is done for a higher processing speed
-  %# vt and vy are row vectors
-  persistent vfigure; 
-  persistent vtold; 
-  persistent vyold; 
-  persistent vcounter;
+  persistent vfigure; persistent vtold; 
+  persistent vyold; persistent vcounter;
 
   if (strcmp (vflag, 'init') == true) 
-    %# Nothing to return, vt is either the time slot [tstart tstop] or
-    %# [t0, t1, ..., tn], vy is the inital value vector vinit
+    %# Nothing to return, vt is either the time slot [tstart tstop]
+    %# or [t0, t1, ..., tn], vy is the inital value vector 'vinit'
     vfigure = figure; 
- %   axis ([vt(1,1), vt(1,length(vt))]);
+%#  axis ([vt(1,1), vt(1,length(vt))]);
     vtold = vt(1,1); 
-    vyold = vy(1,:); 
+    vyold = vy(:,1); 
     vcounter = 1;
 
   elseif (isempty (vflag) == true) 
-    %# Return something in varargout{1}
+    %# Return something in varargout{1}, either true for 'not stopping
+    %# the integration' or false for 'stopping the integration'
     vcounter = vcounter + 1; 
     figure (vfigure);
     vtold(vcounter,1) = vt(1,1); 
-    vyold(vcounter,:) = vy(1,:);
+    vyold(:,vcounter) = vy(:,1);
     plot (vtold, vyold, '-o');
     varargout{1} = true; 
-    %# Do not stop the integration algorithm, if varargout{1} = false;
-    %# stop the integration algorithm
 
   elseif (strcmp (vflag, 'done') == true) 
-    %# Cleanup will be done, but nothing to be done in this function
-
-  else
-    %# Maybe somewhen in the future
+    %# Cleanup has to be done, clear the persistent variables because
+    %# we don't need them anymore
+    clear ('vfigure', 'vtold', 'vyold', 'vcounter')
 
   end
 

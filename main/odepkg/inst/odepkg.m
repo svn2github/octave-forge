@@ -20,18 +20,19 @@
 %# A more detailed help for the odepkg implementation will be added here soon.
 %# @end deftypefn
 
-%# Some tests from mine
-%# @unnumberedsubsec ode2f
-%# @command{ode2f} integrates a system of ordinary differential equations using a 2nd order Runge-Kutta formulae called Ralston's method. This choice of 2nd order coefficients provides a minimum bound on truncation error. For more information see Ralston & Rabinowitz (1978) or Numerical Methods for Engineers, 2nd Ed., Chappra & Cannle, McGraw-Hill, 1985. 2nd-order accurate RK methods have a local error estimate of O(h^3). @command{ode2f} requires two function evaluations per integration step.
-
 %# Maintainer: Thomas Treichl
 %# Created: 20060912
 %# ChangeLog:
 
 %# File will be cleaned up in the future
 function [] = odepkg (varargin)
-%# File will be cleaned up in the future
-  if (ischar (varargin{1}) == true)
+
+  %# Check number and types of all input arguments
+  if (nargin == 0 || nargin >= 2)
+    help ('odepkg');
+    error ('Number of input arguments must be exactly one');
+
+   elseif (ischar (varargin{1}) == true)
 
     %# Hidden developer functions are called if any valid string is
     %# given as an input argument.
@@ -46,19 +47,19 @@ function [] = odepkg (varargin)
         odepkg_outputselection_check;
     end
 
-  else %# if (ischar (varargin{1}) ~= true)
-    help ('odepkg');
-    return;
-  end
+  else
+    error ('The one and only input argument must be a valid string');
+
+  end %# Check number and types of all input arguments
 
 %# The call of this function may take a while and will open a lot of
 %# figures that have to be checked.
 function [] = odepkg_package_check ()
 
-  test ('ode23', 'verbose'); clear ('all');
-  test ('ode45', 'verbose'); clear ('all');
-  test ('ode54', 'verbose'); clear ('all');
   test ('ode78', 'verbose'); clear ('all');
+  test ('ode54', 'verbose'); clear ('all');
+  test ('ode45', 'verbose'); clear ('all');
+  test ('ode23', 'verbose'); clear ('all');
 
   test ('odeget.m', 'verbose'); clear ('all');
   test ('odeset.m', 'verbose'); clear ('all');
@@ -138,14 +139,15 @@ function [] = odepkg_outputselection_check ()
   A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', [1 2 3]);
   [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
   subplot(2, 2, 4); plot (x, y);
-%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
-%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 25), [0 0]);
-%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 22), [0 0]);
-%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
-%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 30), [0 0]);
-%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 13), [0 0]);
-%[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, logspace (-1, 0, 13), [0 0]);
-%[vx, vy, va, vb, vc] = ode23 (@odepkg_equations_secondorderlag, logspace (-1, 0, 31), [0 0]);
+
+%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
+%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 25), [0 0]);
+%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 22), [0 0]);
+%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
+%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 30), [0 0]);
+%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 13), [0 0]);
+%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, logspace (-1, 0, 13), [0 0]);
+%#[vx, vy, va, vb, vc] = ode23 (@odepkg_equations_secondorderlag, logspace (-1, 0, 31), [0 0]);
 
 %# File will be cleaned up in the future
 function [] = odepkg_versus_lsode ()
@@ -207,6 +209,33 @@ function xdot = odepkg_example_stiffnonnegative (x, t)
   epsilon = 1e-2;
   xdot = ((1 - x) * t - t^2) / epsilon;
 endfunction
+
+%!function y = f(x)
+%! y = 3 * x;
+%!test 
+%!  d = f(3) * 3
+
+%% test/octave.test/error/error-2.m
+%!function g () 
+%! error ("foo\n");
+%!function f () 
+%! g 
+%!error <foo> f ();
+
+%!shared A
+%!demo A
+%!  function y=f(x)
+%!    y=x;
+%!  endfunction
+%!  f(3)
+%!demo A
+
+%# Diese demo kann dann mit dem Befehl
+%#   [A, B] = example ('odepkg', 1);
+%# extrahiert werden und mit dem Aufruf
+%#   eval (A);
+%# ausgeführt werden
+%#   Baue eventuell eine neue demo.m function
 
 %# Local Variables: ***
 %# mode: octave ***

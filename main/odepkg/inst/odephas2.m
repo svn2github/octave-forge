@@ -30,35 +30,37 @@
 
 %# Maintainer: Thomas Treichl
 %# Created: 20060906
-%# ChangeLog:
+%# ChangeLog: 20060929, Thomas Treichl
+%#    As in the definitions of initial value problems as functions and
+%#    if somebody uses event functions all input and output vectors
+%#    must be column vectors by now.
 
 function [varargout] = odephas2 (vt, vy, vflag)
-  %# vt and vy are always row vectors for all OutputFcns in odepkg
-  persistent vfigure;
-  persistent vyold;
-  persistent vcounter;
+
+  %# No input argument check is done for a higher processing speed
+  persistent vfigure; persistent vyold; persistent vcounter;
 
   if (strcmp (vflag, 'init') == true) 
-    %# nothing to return, vt is either the time slot [tstart tstop] or
-    %# [t0, t1, ..., tn], vy is the inital value vector vinit
-    vfigure = figure; vyold = vy(1,:); vcounter = 1;
+    %# Nothing to return, vt is either the time slot [tstart tstop]
+    %# or [t0, t1, ..., tn], vy is the inital value vector 'vinit'
+    vfigure = figure; vyold = vy(:,1); vcounter = 1;
 
   elseif (isempty (vflag) == true) 
-    %# Return something in varargout{1}
+    %# Return something in varargout{1}, either true for 'not stopping
+    %# the integration' or false for 'stopping the integration'
     vcounter = vcounter + 1; 
     figure (vfigure);
-    vyold(vcounter,:) = vy(1,:); 
-    plot (vyold(:,1), vyold(:,2), '-o');
+    vyold(:,vcounter) = vy(:,1); 
+    plot (vyold(1,:), vyold(2,:), '-o');
     varargout{1} = true; 
     %# Do not stop the integration algorithm if varargout{1} = true;
     %# stop the integration algorithm if varargout{1} = false;
 
   elseif (strcmp (vflag, 'done') == true) 
-    %# Cleanup will be done but nothing to do in this function
+    %# Cleanup has to be done, clear the persistent variables because
+    %# we don't need them anymore
+    clear ('vfigure', 'vyold', 'vcounter')
 
-  else
-    %# Not necessary - cf. source code of function odeprint
-    %# vmsg = sprintf ('Check number and types of input arguments');
   end
 
 %!demo

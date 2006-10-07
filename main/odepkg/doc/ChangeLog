@@ -1,8 +1,27 @@
-	* File:	       ChangeLog
-	* Created:     2006.08.16
-	* Author:      Thomas Treichl
-	* Description: OdePkg ChangeLog File
+File:    ChangeLog
+Created: 2006.08.16
+Author:  Thomas Treichl <treichl@users.sourceforge.net>
+Description: OdePkg ChangeLog File
 
+2006.10.06 Thomas Treichl <treichl@users.sourceforge.net>
+	* ChangeLog: changed appearence for next entries
+	* ode23.m, ode45.m, ode54.m, ode78.m: Further improved 
+	  functionality. Added event handling and other functions
+	  to handle other options.
+	* INDEX: file has been created for pkg management.
+	* TODO: check the whole package and release first stable
+	  version 0.1.0.
+	
+2006.09.28
+	* All input output vectors of the initial value problems
+	  the OutputFcns and the EventFcns are column vectors
+	
+2006.09.27
+	* TODO: Input vectors of event functions and plot functions
+	  must be column vectors
+	* TODO: Add/change examples of initial value problems resp.
+	  the number of sets of ordinary differential equations
+	
 2006.09.13
 	* Removed temporary files
 	* Added a DESCRIPTION and COPYING file

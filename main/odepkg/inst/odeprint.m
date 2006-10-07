@@ -33,10 +33,11 @@
 %# ChangeLog:
 
 function [varargout] = odeprint (vt, vy, vflag, varargin)
+
   %# No input argument check is done for a higher processing speed
-  %# vt and vy are always row vectors, see also function odeplot,
-  %# odephas2 and odephas3 for another implementation. vflag is either
-  %# "init", [] or "done".
+  %# vt and vy are always column vectors, see also function odeplot,
+  %# odephas2 and odephas3 for another implementation. vflag either
+  %# is "init", [] or "done".
 
   if (strcmp (vflag, 'init') == true)
     fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
@@ -48,7 +49,7 @@ function [varargout] = odeprint (vt, vy, vflag, varargin)
     %# if varargout{1} = false; stop the integration algorithm
 
   elseif (strcmp (vflag, 'done') == true) 
-    %# Cleanup will be done, but nothing to do in this function
+    %# Cleanup could be done, but nothing to do in this function
 
   end
 

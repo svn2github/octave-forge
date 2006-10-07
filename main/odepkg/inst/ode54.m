@@ -144,11 +144,9 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   if (isempty (vodeoptions.MaxStep) == true)
     vodeoptions.MaxStep = abs (vslot(1,1) - vslot(1,length (vslot))) / 10; end
 
-%# I'm implementing this feature at the moment
   if (isequal (vodeoptions.Events, vodetemp.Events) == false)
-%#    vhaveeventfunction = true; warning ('Not yet implemented option "Events" will be ignored');
-%#  else, vhaveeventfunction = false;
-    warning ('Not yet implemented option "Events" will be ignored'); end
+    vhaveeventfunction = true; %# default value is []
+  else, vhaveeventfunction = false; end
 
   %# Option Jacobian will be ignored by this solver because when using an
   %# explicite solver mechanism then no Jacobian Matrix is calculated
@@ -215,9 +213,16 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     vretvalresult = vinit(vodeoptions.OutputSel);
   else, vretvalresult = vinit; end
 
-  if (vhaveoutputfunction == true), %# Initialize OutputFcn
-    feval (vodeoptions.OutputFcn, vslot, ...
-           vretvalresult, 'init', vfunarguments{:});
+  %# Initialize OutputFcn
+  if (vhaveoutputfunction == true)
+    feval (vodeoptions.OutputFcn, vslot', ...
+      vretvalresult', 'init', vfunarguments{:});
+  end
+
+  %# Initialize EventFcn
+  if (vhaveeventfunction == true)
+    odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
+      vretvalresult', 'init', vfunarguments{:});
   end
 
   vpow = 1/6;               %# See p.91 in Ascher & Petzold
@@ -235,7 +240,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 
   %# The solver main loop - stop if endpoint has been reached
   vcntloop = 2; vcntcycles = 1; vu = vinit; vk = vu' * zeros(1,7);
-  vunhandledtermination = true;
+  vcntiter = 0; vunhandledtermination = true;
   while ((vtimestamp < vtimestop && vstepsize >= vminstepsize) == true)
 
     %# Hit the endpoint of the time slot exactely
@@ -287,8 +292,32 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       if (vhaveoutputselection == true)
         vretvalresult(vcntloop,:) = vu(vodeoptions.OutputSel);
       else, vretvalresult(vcntloop,:) = vu; end
-      vcntloop = vcntloop + 1;
-    end
+      vcntloop = vcntloop + 1; vcntiter = 0;
+
+      %# Call plot only if a valid result has been found, therefore this
+      %# code fragment has moved here. Stop integration if plot function
+      %# returns false
+      if (vhaveoutputfunction == true)
+        vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...
+          vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
+        if (vpltret == false), vunhandledtermination = false; break; end
+      end
+
+      %# Call event only if a valid result has been found, therefore this
+      %# code fragment has moved here. Stop integration if veventbreak is
+      %# true
+      if (vhaveeventfunction == true)
+        vevent = ...
+          odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
+            vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
+        if (vevent{1} == true)
+          vretvaltime(vcntloop-1,:) = vevent{3}(end,:);
+          vretvalresult(vcntloop-1,:) = vevent{4}(end,:);
+          vunhandledtermination = false; break;
+        end
+     end
+
+    end %# If the error is acceptable ...
 
     %# Update the step size for the next integration step
     if (vstepsizegiven == false)
@@ -300,30 +329,29 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       end
     end
 
-    %# Update counter that counts the number of cycles
-    vcntcycles = vcntcycles + 1; %# needed for postprocessing
+    %# Update counters that count the number of iteration cycles
+    vcntcycles = vcntcycles + 1; %# Needed for postprocessing
+    vcntiter = vcntiter + 1;     %# Needed to find iteration problems
 
-    %# Stop integration if return value of plotting function is false
-    if (vhaveoutputfunction == true)
-      vpltret = feval (vodeoptions.OutputFcn, vtimestamp, vretvalresult(vcntloop-1,:), [], vfunarguments{:});
-      if (vpltret == false), vunhandledtermination = false; break; end
+    %# Stop solving because the last 1000 steps no successful valid
+    %# value has been found
+    if (vcntiter >= 1000)
+      vmsg = sprintf (['Solving has not been successful. The iterative', ...
+        ' integration loop exited at time t = %f before endpoint at', ...
+        ' tend = %f was reached. This happened because the iterative', ...
+        ' integration loop does not find a valid soultion at this time', ...
+        ' stamp. Try to reduce the value of "InitialStep" and/or', ...
+        ' "MaxStep" with the command "odeset".\n'], vtimestamp, vtimestop);
+      error (vmsg);
     end
-
-    %# Handle the event function if an event function was set with odeset
-%#    if (vhaveeventfunction == true)
-      %# [vreteve, vretter, vretdir] = feval (vodeoptions.Events, vtimestamp, vretvalresult(vcntloop-1,:)');
-      %# Reminder: Event handling should be in an extra function with
-      %#   'init', [], 'done' like the odeplot functions (using also
-      %# persistent variables to store needed variables etc.
-%#    end
 
   end %# The main loop
 
   %# Check if integration of the ode has been successful
   if (vtimestamp < vtimestop)
-    if (vunhandledtermination == false)
+    if (vunhandledtermination == true)
       vmsg = sprintf (['Solving has not been successful. The iterative', ...
-        ' integration loop has been exited at time t = %f', ...
+        ' integration loop exited at time t = %f', ...
         ' before endpoint at tend = %f was reached. This may', ...
         ' happen if the stepsize grows smaller than defined in', ...
         ' vminstepsize. Try to reduce the value of "InitialStep" and/or', ...
@@ -333,15 +361,20 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       vmsg = sprintf (['Solver has been stopped by a call of "break" in', ...
         ' the main iteration loop at time t = %f before endpoint at', ...
         ' tend = %f was reached. This may happen because the @odeplot', ...
-        ' or the @event function returned zero.'], vtimestamp, vtimestop);
+        ' function returned zero or the @event function returned one.'], ...
+        vtimestamp, vtimestop);
       warning (vmsg);
     end
   end
 
   %# Postprocessing, do whatever when terminating integration algorithm
-  if (vhaveoutputfunction == true), %# Cleanup plotter
+  if (vhaveoutputfunction == true) %# Cleanup plotter
     feval (vodeoptions.OutputFcn, vtimestamp, ...
-           vretvalresult(vcntloop-1,:), 'done', vfunarguments{:});
+      vretvalresult(vcntloop-1,:)', 'done', vfunarguments{:});
+  end
+  if (vhaveeventfunction == true) %# Cleanup event function handling
+    odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
+      vretvalresult(vcntloop-1,:), 'done', vfunarguments{:});
   end
 
   %# Print additional information if option Stats is set
@@ -364,9 +397,13 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   elseif (nargout == 5)
     varargout{1} = vretvaltime;     %# Same as (nargout == 2)
     varargout{2} = vretvalresult;   %# Same as (nargout == 2)
-    varargout{3} = [];              %# Not yet implemented
-    varargout{4} = [];              %# Not yet implemented
-    varargout{5} = [];              %# Not yet implemented
+    if (vhaveeventfunction == true) 
+      varargout{3} = vevent{3};     %# Time info when an event occured
+      varargout{4} = vevent{4};     %# Results when an event occured
+      varargout{5} = vevent{2};     %# Index info which event occured
+    else
+      varargout{3} = varargout{4} = varargout{5} = [];
+    end
   %# else nothing will be returned, varargout{1} undefined
   end
 

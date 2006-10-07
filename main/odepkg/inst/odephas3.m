@@ -30,41 +30,40 @@
 
 %# Maintainer: Thomas Treichl
 %# Created: 20060912
-%# ChangeLog:
+%# ChangeLog: 20060929, Thomas Treichl
+%#    As in the definitions of initial value problems as functions
+%#    and if somebody uses event functions all input and output
+%#    vectors must be column vectors by now.
 
 function [varargout] = odephas3 (vt, vy, vflag)
-  %# vt and vy are always row vectors, vflag can be either 'init' or []
-  %# or 'done'. If 'init' then varargout{1} = [], if [] the
+
+  %# vt and vy are always column vectors, vflag can be either 'init'
+  %# or [] or 'done'. If 'init' then varargout{1} = [], if [] the
   %# varargout{1} either true or false, if 'done' then varargout{1} = [].
-  persistent vfigure;
-  persistent vyold;
-  persistent vcounter;
+  persistent vfigure; persistent vyold; persistent vcounter;
 
   if (strcmp (vflag, 'init') == true) 
     %# vt is either the time slot [tstart tstop] or [t0, t1, ..., tn]
     %# vy is the inital value vector vinit from the caller function
     vfigure = figure; 
-    vyold = vy(1,:); 
+    vyold = vy(:,1); 
     vcounter = 1;
 
   elseif (isempty (vflag) == true)
-    %# Return something in varargout{1} = true or false
+    %# Return something in varargout{1}, either true for 'not stopping
+    %# the integration' or false for 'stopping the integration'
     vcounter = vcounter + 1; 
     figure (vfigure);
-    vyold(vcounter,:) = vy(1,:); 
-    plot3 (vyold(:,1), vyold(:,2), vyold (:,3), '-o');
+    vyold(:,vcounter) = vy(:,1); 
+    plot3 (vyold(1,:), vyold(2,:), vyold (3,:), '-o');
     varargout{1} = true; 
-    %# Do not stop the integration algorithm if varargout{1} = true;
-    %# if varargout{1} = false; stop the integration algorithm
 
   elseif (strcmp (vflag, 'done') == true)
-    %# Cleanup will be done, but nothing to do in this function
+    %# Cleanup has to be done, clear the persistent variables because
+    %# we don't need them anymore
+    clear ('vfigure', 'vyold', 'vcounter')
 
-  else
-    vmsg = sprintf ('Check number and types of input arguments');
-    error (vmsg);
-
-  end %# if (strcmp (vflag, 'init') == true)
+  end
 
 %!demo
 %!

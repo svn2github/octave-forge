@@ -39,7 +39,7 @@ for $m >= 0, l = |m|, ..., lmax, |x| <= 1.0$\n\
 @end tex\n\
 @end iftex\n\
 @ifinfo
-sqrt((2l+1)/(4\\pi)) * sqrt((l-m)!/(l+m)!) Plm (x)\n\
+sqrt((2l+1)/(4*pi)) * sqrt((l-m)!/(l+m)!) Plm (x)\n\
 for m >= 0, l = |m|, ..., lmax, |x| <= 1.0\n\
 @end ifinfo\n\
 \n\

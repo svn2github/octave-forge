@@ -30,7 +30,7 @@ my $OCTAVEINIT = "suppress_verbose_help_message = 1;";
 
 # Links to octave/octave-forge web CVS
 my $OCTAVECVS = "http://www.octave.org/cgi-bin/viewcvs.cgi/~checkout~/octave";
-my $FORGECVS = "http://octave.cvs.sourceforge.net/cgi-bin/octave/octave-forge/";
+my $FORGECVS = "http://octave.cvs.sourceforge.net/octave/octave-forge/";
 
 #my $script  = basename($0);
 

@@ -21,16 +21,19 @@ function z = zeta(t)
 	if (nargin != 1)
 			usage ("zeta(x)");
 	endif
-	s = columns(t);
-	for j = 1:s
-		if(real(t(j)) > 0)
+	z = zeros(size(t));
+	for j = 1:prod(size(t))
+		if(real(t(j)) >= 0)
 			if(imag(t(j)) == 0 && real(t(j)) > 1)
 				F= @(x) 1./(gamma(t(j))).*x.^(t(j)-1)./(exp(x)-1);
 				z(j) = quad(F,0,Inf);
+			elseif(t(j) == 0)
+				z(j) = -0.5;
+			elseif(t(j) == 1)
+				z(j) = Inf;
 			else
-				z(j) = 0;
 				for k = 1:100
-					z(j) = z(j) + (-1).^(k-1)./(k.^t(j));
+					z(j) += (-1).^(k-1)./(k.^t(j));
 				endfor
 				z(j) = 1./(1-2.^(1-t(j))).*z(j);
 			endif
@@ -38,4 +41,4 @@ function z = zeta(t)
 			z(j) = 2.^t(j).*pi.^(t(j)-1).*sin(pi.*t(j)./2).*gamma(1-t(j)).*zeta(1-t(j));
 		endif
 	endfor
-endfunction
+endfunction;

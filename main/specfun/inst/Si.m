@@ -14,17 +14,29 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+##SI compute the sine integral function define by:
+##
+##                    x
+##                   /
+##           Si(x) = | sin(t)/t dt
+##                   /
+##                   0
+##
 
 function y = Si(x)
-		if (nargin != 1)
-			usage ("Si(x)");
-	   endif
-		y = 0;
-
-		for k = 0:100
-			y = y + (besselj(k + 0.5,x./2)).^2;
-		endfor
+	if (nargin != 1)
+		usage ("Si(x)");
+	endif
+	y = zeros(size(x));
+ 	if prod(size(x)) < 101
+  		for k = 1:prod(size(x))
+   		y(k) = sum(besselj([0:100]+0.5,(x(k)/2)).^2);
+  		endfor
 		y = y.*pi;
-		y(x == 0) = 0;
-		y(real(x)==0) = i.*imag(y(real(x)==0));
+ 	else
+  		for k=0:100
+   		y += besselj(k+0.5,x/2).^2;
+  		endfor
+		y = y.*pi;
+ 	endif 
 endfunction;

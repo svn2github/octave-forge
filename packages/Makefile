@@ -41,7 +41,7 @@ icheck: $(patsubst %, icheckpkg/%, $(PACKAGES))
 srpms: $(patsubst %, srpm/%, $(PACKAGES)) $(patsubst %, metarpm/%, $(PKGDIRS))
 
 cleanlog:
-	@rm $(TESTLOG)
+	@rm -f $(TESTLOG)
 
 install:
 	@echo "***  INSTALLING ALL PACKAGES  ***"; \
@@ -54,16 +54,16 @@ install:
 	octave -H -q --eval "$$cmd;"
 
 # No spaces in eval argument please!!
-checkpkg/%: cleancheck mkpkg/%
+checkpkg/%: cleancheck/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	$(TOPDIR)/admin/mktests.sh code; \
 	$(RUN_OCTAVE) --eval "pkg('load','all');fntests" ; \
-	if [ ! -e ../fntests.log ]; then touch ../fntests.log; fi ; \
+	if [ ! -e $(TESTLOG) ]; then touch $(TESTLOG); fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..
 
-icheckpkg/%: clencheck mkpkg/%
+icheckpkg/%: cleancheck/% mkpkg/%
 	@echo "Running demo code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	echo 'disp("starting demos...")' > fndemos.m; \
@@ -71,7 +71,7 @@ icheckpkg/%: clencheck mkpkg/%
 	  echo "demo('$$file');" >> fndemos.m ; done
 	$(RUN_OCTAVE) -q fndemos.m
 
-cleancheck:
+cleancheck/%:
 	@if [ -d sandbox/ ]; then rm -rf sandbox; fi ; \
 	mkdir sandbox; \
 	cd sandbox; \
@@ -92,13 +92,16 @@ mkpkg/%:
 	  deps=`cat baddeps | grep " needs " | sed -e 's/^.*needs\s\+\(\S*\).*$$/\1/'`; \
 	  ops=`cat  baddeps | grep " needs " | sed -e 's/^.*needs\s\+\S*\s\+\(\S*\).*$$/\1/'`; \
 	  vers=`cat  baddeps | grep " needs " | sed -e 's/^.*\s\+\(\S*\)\s*$$/\1/'`; \
+	  if [ -z $$deps ] && [ -z $$ops ] && [ -z $$vers ]; then \
+	    echo "Failed to build $(opkg)!!!"; \
+	    break; \
+	  fi; \
 	  for _dep in $$deps; do \
 	    for _dir in $(PKGDIRS); do \
 	      if [ -d ../$$_dir ]; then \
 		_fdep=`find ../$$_dir -name "$$_dep*"`; \
 		if [ -n "$$_fdep" ]; then \
 		  pkgs="'$$_fdep',$$pkgs"; \
-		  cd code; tar xzf ../$$_fdep; cd ..; \
 		  break 2; \
 		fi; \
 	      fi; \

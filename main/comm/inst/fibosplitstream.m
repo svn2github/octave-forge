@@ -79,5 +79,5 @@ function symbols=fibosplitstream(stream)
   return
 end
 %!
-%!assert(fibodeco(fibosplitstream([fiboenco(1:10)){:}]),[1:10])
+%!assert(fibodeco(fibosplitstream([fiboenco(1:10){:}])),[1:10])
 %!

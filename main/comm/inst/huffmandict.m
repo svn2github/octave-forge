@@ -233,5 +233,5 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
 end
 %!
 %!assert(huffmandict(1:4,[0.5 0.25 0.15 0.1],1), {[0],[1 0],[1 1 1],[1 1 0]},0)
-%!assert(huffman(0.25*ones(1,4),1),{[1 1],[1 0],[0 1],[0 0]},0)
+%!assert(huffmandict(1:4,0.25*ones(1,4),1),{[1 1],[1 0],[0 1],[0 0]},0)
 %!

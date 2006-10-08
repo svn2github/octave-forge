@@ -87,5 +87,5 @@ function op_num=fiboenco(num)
      return
 end
 %!
-%!assert(fibodec(fiboenco(1:600)),[1:600])
+%!assert(fibodeco(fiboenco(1:600)),[1:600])
 %!

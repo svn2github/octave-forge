@@ -14,7 +14,7 @@ The second argument @var{mode} must be an integer corresponding to\n\
     Single-precision, a relative accuracy of approximately @code{10^-7}.\n\
 @item 2 = GSL_PREC_APPROX\n\
     Approximate values, a relative accuracy of approximately @code{5 * 10^-4}.\n\
-@end table
+@end table\n\
 \n\
 @var{err} contains an estimate of the absolute error in the value @var{y}.\n\
 \n\

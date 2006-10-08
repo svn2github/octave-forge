@@ -38,7 +38,7 @@ $\\sqrt{(2l+1)/(4\\pi)} \\sqrt{(l-m)!/(l+m)!} P_l^m(x)$\n\
 for $m >= 0, l = |m|, ..., lmax, |x| <= 1.0$\n\
 @end tex\n\
 @end iftex\n\
-@ifinfo
+@ifinfo\n\
 sqrt((2l+1)/(4*pi)) * sqrt((l-m)!/(l+m)!) Plm (x)\n\
 for m >= 0, l = |m|, ..., lmax, |x| <= 1.0\n\
 @end ifinfo\n\

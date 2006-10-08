@@ -9,7 +9,7 @@ if nargin < 2
   val = [];
 elseif nargin > 2
   op1 = " key DEF ";
-  df = tar (key, DEF);
+  df = tars (key, DEF);
   s = read_options (varargin, "op1", op1, "default", df);
   [key, DEF] = getfields (s, "key", "DEF");
 end

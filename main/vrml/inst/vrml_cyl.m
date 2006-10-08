@@ -50,7 +50,7 @@ if nargin > 1
   op1 = " rad tran col hcol brad emit " ;
   op0 = " verbose balls noemit arrow " ;
 
-  df = tar (rad, tran, col, hcol, verbose, balls, noemit, arrow, brad, \
+  df = tars (rad, tran, col, hcol, verbose, balls, noemit, arrow, brad, \
 	    emit);
 
 
@@ -78,7 +78,7 @@ N = columns (x);
 
 				# Make col 3xN
 if prod (size (col)) == 3, col = col(:); col = col(:, ones(1,N)); end
-if emit, emitcol = col; else emitcol = nan(ones(1,N)); end
+if emit, emitcol = col; else emitcol = nan(1,N); end
 if prod (size (tran)) == 1, tran = tran(ones(1,N)); end
 tran(find (tran==0)) = nan ;
 

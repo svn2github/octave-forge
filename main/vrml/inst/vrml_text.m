@@ -44,7 +44,7 @@ if nargin > 1
   op1 = " col size family justify style " ;
   op0 = " verbose " ;
 
-  df = tar (col, size, family, justify, style, verbose);
+  df = tars (col, size, family, justify, style, verbose);
 
   s = read_options (varargin{:}, "op1",op1,"op0",op0, "default",df);
   col=       s.col;

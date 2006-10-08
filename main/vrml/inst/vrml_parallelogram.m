@@ -44,7 +44,7 @@ bcol = btran = bemit = brad = borad = bocol = boemit = nan;
 
 if nargin > 1
   op1 = " col emit tran balls border bcol btran bemit brad borad bocol boemit ";
-  df = tar (col,emit,tran,balls,border,bcol,btran,bemit,brad,borad,bocol,boemit);
+  df = tars (col,emit,tran,balls,border,bcol,btran,bemit,brad,borad,bocol,boemit);
   s = read_options (varargin, "op1",op1, "default",df);
   col=s.col; emit=s.emit; tran=s.tran; balls=s.balls; border=s.border;
   bcol = s.bcol; btran = s.btran; bemit = s.bemit; brad = s.brad;

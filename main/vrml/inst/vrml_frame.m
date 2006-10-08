@@ -66,7 +66,7 @@ if args
 
   verbose = 0;
 
-  ## df = tar (col, hcol, diam, scale, verbose);
+  ## df = tars (col, hcol, diam, scale, verbose);
   df = struct ("col",    col,   \
 	       "hcol",   hcol,  \
 	       "diam",   diam,  \

@@ -74,6 +74,7 @@ end
 vrml_b_name = "freewrl" ;
 
 ##b_opt = [out_option," ",bop," ",best_option," --server --snapb octave.snap "] ;
+##b_opt = [out_option," ",bop," ",best_option," --snapb octave_freewrl_snapshots "] ;
 b_opt = [out_option," ",bop," ",best_option] ;
 
 

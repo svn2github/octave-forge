@@ -103,7 +103,7 @@ if nargin > 3,
   op1 = " tran col creaseAngle emit colorPerVertex checker DEFcoord DEFcol zcol ";
   op0 = " smooth zgrey zrb " ;
 
-  default = tar (tran, col, creaseAngle, emit, colorPerVertex, \
+  default = tars (tran, col, creaseAngle, emit, colorPerVertex, \
 		 DEFcoord, DEFcol, zcol, smooth, checker, zgrey, zrb);
 
   s = read_options (varargin,"op0",op0,"op1",op1,"default",default);

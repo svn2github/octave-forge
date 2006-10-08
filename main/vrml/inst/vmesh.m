@@ -98,7 +98,7 @@ if nargin > 3,
 	 " level lcol ltran "];
   op0 = " smooth zgrey zrb ";
 
-  df = tar (level, lcol, ltran);
+  df = tars (level, lcol, ltran);
 
   opts = read_options (varargin,"op0",op0,"op1",op1,"default",df);
 

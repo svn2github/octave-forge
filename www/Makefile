@@ -1,4 +1,4 @@
-M4 := m4 --prefix-builtins
+M4 := m4
 MACRO_FILE := macros.m4
 M4_OPTIONS := --prefix-builtins
 HTML_SRC = $(shell find . | grep "\.in")

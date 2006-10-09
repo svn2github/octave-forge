@@ -28,11 +28,12 @@ function y = expint_Ei(x)
 	if (nargin != 1)
 		usage ("expint_Ei(x)");
 	endif
+	y = zeros(size(x));
 	F = @(x) exp(-x)./x;
-	s = columns(x);
+	s = prod(size(x));
 	for t = 1:s;
 		if(x(t)<0 && imag(x(t)) == 0)
-			y = -quad(F,-x(t),Inf);
+			y(t) = -quad(F,-x(t),Inf);
 		else
 			if(abs(x(t)) > 2 && imag(x(t)) == 0)
 				y(t) = expint_Ei(2) - quad(F,-x(t),-2);
@@ -49,9 +50,8 @@ function y = expint_Ei(x)
 					endif;
 		## Serie Expansion
 				else 
-					y(t) = 0;
-					for i = 1:100;
-						y(t) = y(t) + x(t).^i./(i.*factorial(i));
+					for k = 1:100;
+						y(t) = y(t) + x(t).^k./(k.*factorial(k));
 					endfor
 					y(t) = 0.577215664901532860606512090082402431 + log(x(t)) + y(t);
 				endif

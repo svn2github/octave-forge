@@ -24,17 +24,13 @@
 ##
 ## See also expint_Ei, expint.
 
-function v = expint_E1(x)
+function y = expint_E1(x)
 	if (nargin != 1)
 		usage ("expint_E1(x)");
 	endif
-	if(x > 0 && imag(x)==0)
-		v = -expint_Ei(-x);
-	else
-		if(imag(x) > 0)
-			v = -expint_Ei(-x) -i.*pi;
-		else
-			v = -expint_Ei(-x) +i.*pi;
-		endif
-	endif
-endfunction
+	y = x;
+	y(imag(x) > 0 & imag(x) != 0) = -expint_Ei(-y(imag(x) > 0 & imag(x) != 0)) -i.*pi;
+	y(imag(x) < 0 & imag(x) != 0) = -expint_Ei(-y(imag(x) < 0 & imag(x) != 0)) +i.*pi;
+	y(real(x) >= 0 & imag(x)==0) = -expint_Ei(-y(real(x) >= 0 & imag(x)==0));
+	y(real(x) < 0 & imag(x)==0) = -expint_Ei(-y(real(x) < 0 & imag(x)==0)) -i.*pi;
+endfunction;

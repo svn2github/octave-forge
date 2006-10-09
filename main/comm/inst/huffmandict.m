@@ -88,8 +88,11 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
   %
   %need to find & eliminate the zero-probability code words.
   %in practice we donot need to assign anything to them. Reasoning
-  %being that if it doesnt occur why bother saving its vale anyway?
-  %
+  %being that if_ it doesnt occur why bother saving its value anyway?
+  %--(Oct 9) Actually some experts in the area dont agree to this,
+  %and being a generic implementation we should stick to generating
+  %CW's for_ zero symbols. Why impose a bad implementation? --Muthu
+  % 
   
   origsource_prob=source_prob;
 
@@ -112,15 +115,6 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
     end
   end
   
-  %index
-  %source_prob
-  
-  idx=find(source_prob==0);
-  if(not(isempty(idx)))    
-    source_prob=source_prob(1:idx(1)-1);
-  end
-  clear idx;
-
   stage_list={};
   cw_list{1:L}=[];
 
@@ -234,4 +228,5 @@ end
 %!
 %!assert(huffmandict(1:4,[0.5 0.25 0.15 0.1],1), {[0],[1 0],[1 1 1],[1 1 0]},0)
 %!assert(huffmandict(1:4,0.25*ones(1,4),1),{[1 1],[1 0],[0 1],[0 0]},0)
+%!assert(huffmandict(1:4,[1  0 0 0 ]),{[1],[0 1],[0 0 0],[0 0 1]},0)
 %!

@@ -1,6 +1,7 @@
 m4_define(`__GROUP_ID__',`group_id=2888')m4_dnl
 m4_define(`__SOURCEFORGE__',`http://sourceforge.net')m4_dnl
 m4_define(`__PACKAGE__',`http://prdownloads.sourceforge.net/octave')m4_dnl
+m4_define(`__PACKAGE_TRAILER__',`?download')m4_dnl
 m4_define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')m4_dnl
 m4_define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')m4_dnl
 m4_define(`__CVS__',`__SOURCEFORGE__/cvs/?__GROUP_ID__')m4_dnl

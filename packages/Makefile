@@ -59,7 +59,7 @@ checkpkg/%: cleancheck/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	$(TOPDIR)/admin/mktests.sh code; \
-	$(RUN_OCTAVE) --eval "pkg('load','all');addpath(genpath('./'),'-end');fntests" ; \
+	$(RUN_OCTAVE) --eval "pkg('prefix',[pwd(),'/install']);pkg('load','all');addpath(genpath('./'),'-end');fntests" ; \
 	if [ ! -e $(TESTLOG) ]; then touch $(TESTLOG); fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..
@@ -74,11 +74,7 @@ icheckpkg/%: cleancheck/% mkpkg/%
 
 cleancheck/%:
 	@if [ -d sandbox/ ]; then rm -rf sandbox; fi ; \
-	mkdir sandbox; \
-	cd sandbox; \
-	echo "global OCTAVE_PACKAGE_PREFIX;" > .octaverc ; \
-	echo "OCTAVE_PACKAGE_PREFIX=[pwd() '/install'];" >> .octaverc ; \
-	cd ..
+	mkdir sandbox;
 
 # For now assume that there is only one version of the package for 
 # dependencies. Some version check code should be added!!
@@ -89,7 +85,7 @@ mkpkg/%:
 	if [ ! -d code ]; then mkdir code; fi; \
 	cd code; tar xzf ../../$(opkg); cd ..; \
 	pkgs="'../$(opkg)'"; \
-	until $(RUN_OCTAVE) --eval "pkg('install',$$pkgs)" 2> baddeps; do \
+	until $(RUN_OCTAVE) --eval "pkg('prefix',[pwd(),'/install']);pkg('install',$$pkgs)" 2> baddeps; do \
 	  deps=`cat baddeps | grep " needs " | sed -e 's/^.*needs\s\+\(\S*\).*$$/\1/'`; \
 	  ops=`cat  baddeps | grep " needs " | sed -e 's/^.*needs\s\+\S*\s\+\(\S*\).*$$/\1/'`; \
 	  vers=`cat  baddeps | grep " needs " | sed -e 's/^.*\s\+\(\S*\)\s*$$/\1/'`; \

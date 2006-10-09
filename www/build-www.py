@@ -3,6 +3,7 @@
 import sys
 import os
 import shutil
+import time
 
 ## This function parses a DESCRIPTION file
 def parse_description(filename):
@@ -95,7 +96,7 @@ def create_INDEX(desc, packdir, p):
             raise Exception("Can't create tarball"); 
         
         ## Run octave installation
-        command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
+        command = 'pkg("prefix","' + install_dir + '"); ';
         command = command + 'pkg("install", "-nodeps", "' + tarball + '");';
         if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "' > /dev/null 2>&1") != 0):
             os.system("ls -la " + install_dir);
@@ -108,9 +109,9 @@ def create_INDEX(desc, packdir, p):
         local_index.writelines(index.readlines());
         local_index.close();
         index.close();
-    
+
         ## Clean up
-        command = 'global OCTAVE_PACKAGE_PREFIX="' + install_dir + '"; ';
+        command = 'pkg("prefix","' + install_dir + '"); ';
         command = command + 'pkg("uninstall", "-nodeps", "' + desc['name'].lower() + '");';
         if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "' > /dev/null 2>&1") != 0):
             os.system("rm -rf " + install_dir + " " + tarball);
@@ -139,7 +140,7 @@ def create_index_html(packdir, outdir, p):
     fid.write('      <tr><td>Package Author:</td><td>'     + desc["author"]     + "</td></tr>\n");
     fid.write('      <tr><td>Package Maintainer:</td><td>' + desc["maintainer"] + "</td></tr>\n");
     fid.write('      <tr><td colspan="2"><img src="../download.png" alt="Download"/>');
-    fid.write('<a href="__PACKAGE__/' + desc['name'].lower() + '-' + desc['version'] + '.tar.gz__PACKAGE_TRAILER__">Download this package</a></td></tr>\n');
+    fid.write('<a href="__PACKAGE__/' + desc['name'].lower() + '-' + desc['version'] + '.tar.gz?download">Download this package</a></td></tr>\n');
     fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Function Reference"/>');
     fid.write('<a href="../doc/' + desc['name'].lower() + '.html">Read package function reference</a></td></tr>\n');
     local = local_documentation(outdir, packdir);
@@ -292,7 +293,7 @@ def main():
                         index.write('...');
                     index.write('</p>\n');
                     index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
-                    index.write('<a href="__PACKAGE__/' + archiv + '__PACKAGE_TRAILER__">download</a></p>\n');
+                    index.write('<a href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
                     index.write('</div>\n');
                 except Exception, e:
                     print("Skipping " + p);

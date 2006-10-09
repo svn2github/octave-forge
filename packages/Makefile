@@ -53,12 +53,13 @@ install:
 	cmd="$$cmd);"; \
 	octave -H -q --eval "$$cmd;"
 
-# No spaces in eval argument please!!
+# No spaces in eval argument please!! Need the addpath(genpath('./'),'-end')
+# as the package might include uninstalled code that has tests..
 checkpkg/%: cleancheck/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	$(TOPDIR)/admin/mktests.sh code; \
-	$(RUN_OCTAVE) --eval "pkg('load','all');fntests" ; \
+	$(RUN_OCTAVE) --eval "pkg('load','all');addpath(genpath('./'),'-end');fntests" ; \
 	if [ ! -e $(TESTLOG) ]; then touch $(TESTLOG); fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..

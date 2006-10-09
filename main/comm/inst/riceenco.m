@@ -59,11 +59,10 @@ function [rcode,K,Ltot]=riceenco(sig,K)
 	. Accepts only non-negative numbers. Cannot encode.");
   end
 
-  ##error('FIXME: Has a Bug in the used region handling');
-  
+    
   L=length(sig);
 
-  %compute the optimal rice parameter.
+  ##compute the optimal rice parameter.
   if(use_optimal_k)
     k_opt=0;
     len_past=sum(sig)+L+k_opt*L;

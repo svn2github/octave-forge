@@ -67,6 +67,7 @@ function [rcode,K,Ltot]=riceenco(sig,K)
   if(use_optimal_k)
     k_opt=0;
     len_past=sum(sig)+L+k_opt*L;
+    quot=sig;
     
     for k=1:7
       k_pow_2=2**k;

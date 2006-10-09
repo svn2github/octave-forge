@@ -76,7 +76,7 @@ static bool any_bad_argument(const octave_value_list& args)
 	}
 
 	// now check type of each element of control
-	if (!(control(0).is_real_matrix()) || (control(0).is_real_scalar())) {
+	if (!(control(0).is_real_matrix()) && !(control(0).is_real_scalar())) {
 		error("samin: 1st element of controls must be LB: a vector of lower bounds");
 		return true;
 	}
@@ -86,7 +86,7 @@ static bool any_bad_argument(const octave_value_list& args)
 		return true;
 	}
 
-	if (!(control(1).is_real_matrix()) || (control(1).is_real_scalar())) {
+	if (!(control(1).is_real_matrix()) && !(control(1).is_real_scalar())) {
 		error("samin: 1st element of controls must be UB: a vector of lower bounds");
 		return true;
 	}

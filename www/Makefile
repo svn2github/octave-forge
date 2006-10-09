@@ -41,6 +41,6 @@ clean:
 	    fi; \
 	  fi; \
 	done
-	rm -fr *.html developers.in INDEX coda
+	rm -fr *.html developers.in INDEX coda .octave_hist .octave_packages install 
 
 package:

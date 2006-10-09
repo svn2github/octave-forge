@@ -112,11 +112,15 @@ function cw_list=shannonfanodict(symbol,P)
    return;
 end
 
+%!shared CW,P
+%!test
+%!  addpath('../../info-theory/inst')
+%!  P  = [0.5 0.25 0.15 0.1];
+%!  CW = shannonfanodict(1:4,P);
 %!
-%!CW=shannonfanodict(1:4,[0.5 0.25 0.15 0.1]);
-%!assert(redundancy(CW,[0.5 0.25 0.15 0.1]),0.057980,0.001)
-%!CW=shannonfanodict(1:4,[0.5 0.15 0.25 0.1]);
-%!P=[0.5 0.25 0.15 0.1 0];
-%!CW=shannonfanodict(1:5,P);
-%!redundancy(CW,P)
+%!assert(redundancy(CW,P),0.057980,0.001)
+%!test
+%!  P =[0.5 0.25 0.15 0.1 0];
+%!  CW=shannonfanodict(1:4,[0.5 0.15 0.25 0.1]);
+%!assert(redundancy(CW,P),0.10629,1e-4);
 %!

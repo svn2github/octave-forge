@@ -59,7 +59,7 @@ function [rcode,K,Ltot]=riceenco(sig,K)
 	. Accepts only non-negative numbers. Cannot encode.");
   end
 
-  error('FIXME: Has a Bug in the used region handling');
+  ##error('FIXME: Has a Bug in the used region handling');
   
   L=length(sig);
 

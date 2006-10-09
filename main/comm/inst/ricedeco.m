@@ -39,19 +39,19 @@
 ## @end deftypefn
 ## @seealso{riceenco}
 
-#
-#
+##
+##
 ##! /usr/bin/octave -q
-#A stress test routine
-#for i=1:100
-#  sig=abs(randint(1,10,[0,255]));
-#  [code,k]=riceenco(sig)
-#  sig_d=ricedeco(code,k)
-#  if(isequal(sig_d,sig)~=1)
-#    error('Some mistake in ricedeco/enco pair');
-#  end
-#end
-#
+##A stress test routine
+##for i=1:100
+##  sig=abs(randint(1,10,[0,255]));
+##  [code,k]=riceenco(sig)
+##  sig_d=ricedeco(code,k)
+##  if(isequal(sig_d,sig)~=1)
+##    error('Some mistake in ricedeco/enco pair');
+##  end
+##end
+##
 function sig_op=ricedeco(code,K)
   if ( nargin < 2 ) || (strcmp(class(code),"cell")~=1)
     error('usage: ricedeco(code,K)');

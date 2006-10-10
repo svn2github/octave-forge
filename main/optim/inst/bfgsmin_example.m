@@ -42,9 +42,8 @@ function obj_value = objective2(theta, location)
 	obj_value = rosenbrock(x);
 endfunction
 
-
 # initial values
-dim = 50; # dimension of Rosenbrock function
+dim = 20; # dimension of Rosenbrock function
 theta0 = zeros(dim+1,1);  # starting values
 location = (0:dim)/dim; # true values
 location = location';
@@ -53,111 +52,120 @@ printf("EXAMPLE 1: Ordinary BFGS, using analytic gradient\n");
 t=cputime();
 control = {-1;1};  # maxiters, verbosity
 [theta, obj_value, convergence] = bfgsmin("objective", {theta0, location}, control);
-printf("EXAMPLE 1: Ordinary BFGS, using analytic gradient\n");
-t = cputime() - t;
+fflush(1);
+t1 = cputime() - t;
 conv = norm(theta-location, 'inf');
-test = conv < 1e-5;
-if test
-	printf("Success!! :-)\n");
-else
-	printf("Failure?! :-(\n");
-endif
-printf("Elapsed time = %f\n\n\n\n",t);
-pause(5);
+test1 = conv < 1e-5;
 
 printf("EXAMPLE 2: Same as Example 1, but verbose\n");
 t=cputime();
 control = {-1;3};  # maxiters, verbosity
 [theta, obj_value, convergence] = bfgsmin("objective", {theta0, location}, control);
-printf("EXAMPLE 2: Same as Example 1, but verbose\n");
-t = cputime() - t;
+fflush(1);
+t2 = cputime() - t;
 conv = norm(theta-location, 'inf');
-test = conv < 1e-5;
-if test
-	printf("Success!! :-)\n");
-else
-	printf("Failure?! :-(\n");
-endif
-printf("Elapsed time = %f\n\n\n\n",t);
-pause(5);
-
+test2 = conv < 1e-5;
 
 printf("EXAMPLE 3: Limited memory BFGS, using analytic gradient\n");
 t=cputime();
-control = {-1;1;1;1;5};  # maxiters, verbosity, conv. requirement., arg_to_min, lbfgs memory
+control = {-1;1;1;1;3};  # maxiters, verbosity, conv. requirement., arg_to_min, lbfgs memory
 [theta, obj_value, convergence] = bfgsmin("objective", {theta0, location}, control);
-printf("EXAMPLE 3: Limited memory BFGS, using analytic gradient\n");
-t = cputime() - t;
+fflush(1);
+t3 = cputime() - t;
 conv = norm(theta-location, 'inf');
-test = conv < 1e-5;
-if test
-	printf("Success!! :-)\n");
-else
-	printf("Failure?! :-(\n");
-endif
-printf("Elapsed time = %f\n\n\n\n",t);
-pause(5);
+test3 = conv < 1e-5;
 
 printf("EXAMPLE 4: Ordinary BFGS, using numeric gradient\n");
 t=cputime();
 control = {-1;1};  # maxiters, verbosity
 [theta, obj_value, convergence] = bfgsmin("objective2", {theta0, location}, control);
-printf("EXAMPLE 4: Ordinary BFGS, using numeric gradient\n");
-t = cputime() - t;
+fflush(1);
+t4 = cputime() - t;
 conv = norm(theta-location, 'inf');
-test = conv < 1e-5;
-if test
-	printf("Success!! :-)\n");
-else
-	printf("Failure?! :-(\n");
-endif
-printf("Elapsed time = %f\n\n\n\n",t);
-pause(5);
+test4 = conv < 1e-5;
 
 printf("EXAMPLE 5: Limited memory BFGS, using numeric gradient\n");
 t=cputime();
-control = {-1;1;1;1;5};  # maxiters, verbosity, conv. reg., arg_to_min, lbfgs memory
+control = {-1;1;1;1;3};  # maxiters, verbosity, conv. reg., arg_to_min, lbfgs memory
 [theta, obj_value, convergence] = bfgsmin("objective2", {theta0, location}, control);
-printf("EXAMPLE 5: Limited memory BFGS, using numeric gradient\n");
-t = cputime() - t;
+fflush(1);
+t5 = cputime() - t;
 conv = norm(theta-location, 'inf');
-test = conv < 1e-5;
-if test
-	printf("Success!! :-)\n");
-else
-	printf("Failure?! :-(\n");
-endif
-printf("Elapsed time = %f\n\n\n\n",t);
-pause(5);
+test5 = conv < 1e-5;
+
 
 printf("EXAMPLE 6: Funny case: minimize w.r.t. second argument, Ordinary BFGS, using numeric gradient\n");
 t=cputime();
 control = {-1;1;1;2};  # maxiters, verbosity, conv. reg., arg_to_min
 [theta, obj_value, convergence] = bfgsmin("objective2", {location, theta0}, control);
-printf("EXAMPLE 6: Funny case: minimize w.r.t. second argument, Ordinary BFGS, using numeric gradient\n");
-t = cputime() - t;
+fflush(1);
+t6 = cputime() - t;
 conv = norm(theta-location, 'inf');
-test = conv < 1e-5;
-if test
-	printf("Success!! :-)\n");
-else
-	printf("Failure?! :-(\n");
-endif
-printf("Elapsed time = %f\n\n\n\n",t);
+test6 = conv < 1e-5;
 
 printf("EXAMPLE 7: Ordinary BFGS, using numeric gradient, using non-default tolerances\n");
 t=cputime();
 control = {-1;1;1;1;0;1e-6;1e-2;1e-2};  # maxiters, verbosity, conv. reg., arg_to_min, lbfgs memory, fun. tol., param. tol., gradient tol.
 [theta, obj_value, convergence] = bfgsmin("objective2", {theta0, location}, control);
-printf("EXAMPLE 7: Ordinary BFGS, using numeric gradient. Note that gradient is only roughly zero.\n");
-t = cputime() - t;
+fflush(1);
+t7 = cputime() - t;
 conv = norm(theta-location, 'inf');
-test = conv < 1e-2;
-if test
+test7 = conv < 1e-2;
+
+
+printf("EXAMPLE 1: Ordinary BFGS, using analytic gradient\n");
+if test1
 	printf("Success!! :-)\n");
 else
 	printf("Failure?! :-(\n");
 endif
-printf("Elapsed time = %f\n\n\n\n",t);
-pause(5);
+printf("Elapsed time = %f\n\n\n\n",t1);
+
+printf("EXAMPLE 2: Same as Example 1, but verbose\n");
+if test2
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t2);
+
+printf("EXAMPLE 3: Limited memory BFGS, using analytic gradient\n");
+if test3
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t3);
+
+printf("EXAMPLE 4: Ordinary BFGS, using numeric gradient\n");
+if test4
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t4);
+
+printf("EXAMPLE 5: Limited memory BFGS, using numeric gradient\n");
+if test5
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t5);
+
+printf("EXAMPLE 6: Funny case: minimize w.r.t. second argument, Ordinary BFGS, using numeric gradient\n");
+if test6
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t6);
+
+printf("EXAMPLE 7: Ordinary BFGS, using numeric gradient, using non-default tolerances\n");
+if test7
+	printf("Success!! :-)\n");
+else
+	printf("Failure?! :-(\n");
+endif
+printf("Elapsed time = %f\n\n\n\n",t7);
 

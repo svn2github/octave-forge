@@ -41,7 +41,7 @@
 ## 		3 = detailed information
 ## 	* elem 3: convergence criterion
 ## 		1 = strict (function, gradient and param change) (default)
-## 		2 = weak - only function convergence required
+## 		0 = weak - only function convergence required
 ## 	* elem 4: arg in f_args with respect to which minimization is done (default is first)
 ## 	* elem 5: (optional) Memory limit for lbfgs. If it's a positive integer
 ## 		then lbfgs will be use. Otherwise ordinary bfgs is used

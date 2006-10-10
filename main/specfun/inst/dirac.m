@@ -14,9 +14,11 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## DIRAC compute the dirac delta function.
-## see also heaviside.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dirac(@var{x})
+## Compute the dirac delta function.
+## @seealso{heaviside}
+## @end deftypefn
 
 function y = dirac(x)
 		if (nargin != 1)

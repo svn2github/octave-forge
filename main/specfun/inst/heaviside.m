@@ -14,9 +14,11 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-## HEAVISIDE compute the heaviside step function.
-## see also dirac.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} heaviside(@var{x})
+## Compute the heaviside step function.
+## @seealso{dirac}
+## @end deftypefn
 
 function y = heaviside(x)
 		if (nargin != 1)

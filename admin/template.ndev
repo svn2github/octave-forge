@@ -114,7 +114,7 @@ for a comprehensive list of Open Source licenses.
 <p>
 Octave has evolved into a source repository is octave pacakges rather
 than a package in itself. Each sub-directory is considered to be a
-package can should respect Octave's package managers file layout.
+package and should respect Octave's package managers file layout.
 <dl>
 <dt>package/NOINSTALL
 <dd>	This is an optional file, whose presence tells octave-forge
@@ -141,7 +141,7 @@ package can should respect Octave's package managers file layout.
       <tr><td>Description:</td>
           <td>A one paragraph description of the package</td></tr>
       <tr><td>Categories:</td>
-           <td>Optional keywords descriping the package
+           <td>Optional keyword describing the package
             (if no INDEX file is given this is mandatory)</td></tr>
       <tr><td>Problems:</td>
 
@@ -166,12 +166,12 @@ package can should respect Octave's package managers file layout.
               since the file COPYING is mandatory.</td></tr>
       <tr><td>SystemRequirements:</td>
           <td>These are the external install dependencies of the package
-	      and are not checked by the package manager. This here as a
+	      and are not checked by the package manager. This is here as a
               hint to the distribution packager. They follows the same
 	      conventions as the Depends keyword.</td></tr>
       <tr><td>BuildRequires:</td>
       	  <td>These are the external build dependencies of the package
-	      and are not checked by the package manager. This here as
+	      and are not checked by the package manager. This is here as
 	      a hint to the distribution packager. They follows the same
 	      conventions as the Depends keyword. Note that in
 	      general, packaging systems such as rpm or deb and
@@ -197,15 +197,15 @@ package can should respect Octave's package managers file layout.
         detail to aid the packager is that the SystemRequirments and
         BuildRequires keywords can have distribution dependent
         section, and the automatic build process will use these. An
-        example pf the format of this is
+        example of the format of this is
 <pre>
 	BuildRequires: libtermcap-devel [Mandriva] libtermcap2-devel
 </pre>
 	where the first package name will be used as a default and if
-        the RPMs are build on a Mandriva distribution, then the second
+        the RPMs are built on a Mandriva distribution, then the second
         package name will be used instead.
 <dt>package/COPYING
-<dd>	This is a required containing the license of the package.
+<dd>	This is a required file containing the license of the package.
 <dt>package/INDEX
 <dd>	This is an optional file describing the functions provided by
 	the package. If this file is not given then one with be

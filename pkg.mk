@@ -9,18 +9,22 @@ PKG_FILES = COPYING DESCRIPTION $(wildcard INDEX) $(wildcard PKG_ADD) \
 	$(wildcard inst/*) $(wildcard src/*) \
 	$(wildcard doc/*) $(wildcard bin/*)
 endif
-REAL_PKG_FILES = $(filter-out $(opkg)/%/CVS $(opkg)/%/.cvsignore %~ %/autom4te.cache, $(patsubst %, $(opkg)/%, $(PKG_FILES)))
+REAL_PKG_FILES = $(filter-out %/CVS %/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
 
 pkg/%: pre-pkg/% real-pkg/% post-pkg/%
 	@true
 
 real-pkg/%:
-	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//"`; \
+	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//" | \
+	  sed -e "s/^\s*//" | sed -e "s/\s*$$//"`; \
 	name=`grep "Name:" DESCRIPTION | sed -e "s/^Name: *//" | \
+	  sed -e "s/^\s*//" | sed -e "s/\s*$$//" | \
 	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
-	cd ..; \
-	tar -zcf $(PKGDIR)/$$name-$$ver.tar.gz $(REAL_PKG_FILES); \
-	cd $(opkg)
+	mkdir ../$(PKGDIR)/$$name-$$ver; \
+	tar -cf - $(REAL_PKG_FILES) | (cd ../$(PKGDIR)/$$name-$$ver; tar -xf -); \
+	cd ../$(PKGDIR); \
+	tar -zcf $$name-$$ver.tar.gz $$name-$$ver; \
+	rm -fr $$name-$$ver;
 
 pre-pkg/%::
 	@if [ -f src/autogen.sh ]; then \

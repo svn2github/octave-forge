@@ -162,6 +162,7 @@ Debugging
  debug_symtab_lookups
 Installation
  mkoctfile mex tar untar unzip pkg
+ compare_versions movefile 
 Profiling
  profile 
  flops 
@@ -1397,3 +1398,7 @@ System identification
  diffpara
  arch_rnd arch_fit arch_test
  arma_rnd autoreg_matrix autocor autocov
+
+web >> Web Services
+Read/write
+ urlread urlwrite

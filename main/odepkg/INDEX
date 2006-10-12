@@ -5,6 +5,19 @@ Solver
  ode54
  ode78
 Solver Options
- odeset = Hallo Wolrd
+ odeset= for <code>odeset(options,param)</code> use <code>options.param</code>
  odeget
  odepkg_structure_check
+Display
+ odeplot
+ odeprint
+Developer test funtions
+ odephas2
+ odephas3
+ odepkg
+ odepkg_equations_lorenz
+ odepkg_equations_pendulous
+ odepkg_equations_roessler
+ odepkg_equations_secondorderlag
+ odepkg_equations_vanderpol
+ odepkg_event_handle

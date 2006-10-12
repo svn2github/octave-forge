@@ -63,6 +63,7 @@ my %index_by_function = (); # i_function{function} =[ [toolbox_1,category_1],
 #                         [toolbox_2,category_2],..]
 my %TB_description    = ();
 my %index_notes = (); # index_notes{function} = comment
+my %index_by_package = (); # i_package{package} = list of functions
 
 # find and load all indices
 my @index_files = ();
@@ -512,8 +513,15 @@ sub register_function { # {{{1
     } else {
         ++$n_functions;
     }
-
-    $octave_forge_function{$function} = 1 unless $file =~ /^$OCTAVE/;
+    if (! ($file =~ /^$OCTAVE/)) {
+	$octave_forge_function{$function} = 1;
+	my $package = $file;
+	$package =~ s|^\s*([^/]+/[^/]+/).*$|$1|;
+	if ($package =~ /^\s*$/) {
+	    printf("%-12s %-20s %s\n", $function, $file, $package);
+	}
+	push @{$index_by_package{$package}}, $function;
+    }
     if (!defined $index_by_function{$function}) {
 	my $entry = $file;
 	$entry = "$file: $function" if $file !~ /[.]m$/;
@@ -651,6 +659,9 @@ sub write_html { # {{{1
     foreach ( toolbox_list() ) {
 	#write_TBnavbar($_);
 	write_TBdetails($_);
+    }
+    foreach ( package_list() ) {
+	write_package_details($_);
     }
 
     # Write one file for each letter.
@@ -843,6 +854,48 @@ EOF
 	}
 	print OUT "</dl>\n";
     }
+    print OUT "__TRAILER__\n";
+    close(OUT);
+} # 1}}}
+sub write_package_details { # 1{{{
+    my $packdir = shift;
+    my $package;
+    my $title;
+    my $desc = sprintf("%s/DESCRIPTION", $packdir);
+    open(IN, $desc) or die "Cannot read $desc:  $!\n";
+    while(<IN>) {
+	if (/^[Nn]ame:/) {
+	    chomp;
+	    s/^[Nn]ame:\s*//;
+	    s/\s*$//;
+	    $package = lc($_);
+	} elsif (/^[Tt]itle:/) {
+	    chomp;
+	    s/^[Tt]itle:\s*//;
+	    s/\s*$//;
+	    $title = $_;
+	}
+    }
+    close(IN);
+    my $file   = "$catdir/funref_$package.in";
+    
+    open(OUT, ">$file") or die "Cannot write $file:  $!\n";
+    print OUT <<EOF;
+__HEADER__([[[$title]]])
+EOF
+    print OUT "<dl>\n";
+    foreach my $func ( pack_list($packdir) ) {
+	
+	# column 1:  the function (x-ref to full description in
+	#                          cvs-tree's html file)
+	print OUT "<dt><table width=100%><tr><td align=left><b>",func_ref($func,$func),"</b>\n";
+	print OUT "    <td align=right>", download_ref($func), "</table>\n";
+	
+	# column 2: the description, if it exists
+	#
+	print OUT "<dd>",html_desc($func),"\n";
+    }
+    print OUT "</dl>\n";
     print OUT "__TRAILER__\n";
     close(OUT);
 } # 1}}}
@@ -1086,10 +1139,19 @@ sub toolbox_list { # 1{{{
 # toolbox_list() returns an ordered list of toolboxes.
     return sort { uc($a) cmp uc($b) } keys %index_by_TB_cat;
 } # 1}}}
+sub package_list { # 1{{{
+# package_list() returns an ordered list of package directories.
+    return sort { uc($a) cmp uc($b) } keys %index_by_package;
+} # 1}}}
 sub cat_list { # 1{{{
 # cat_list($TB) returns an ordered list of categories in a toolbox $TB.
     my ($TB) = @_;
     return sort keys %{$index_by_TB_cat{$TB}};
+} # 1}}}
+sub pack_list { # 1{{{
+# pack_list($package) returns an ordered list of functions in a package directory.
+    my ($package) = @_;
+    return sort @{$index_by_package{$package}};
 } # 1}}}
 sub cat_funcs { # 1{{{
 # cat_funcs($TB,$cat) returns an ordered list of functions in $TB,$cat

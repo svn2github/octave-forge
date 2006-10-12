@@ -142,7 +142,7 @@ def create_index_html(packdir, outdir, p):
     fid.write('      <tr><td colspan="2"><img src="../download.png" alt="Download"/>');
     fid.write('<a href="__PACKAGE__/' + desc['name'].lower() + '-' + desc['version'] + '.tar.gz?download">Download this package</a></td></tr>\n');
     fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Function Reference"/>');
-    fid.write('<a href="../doc/' + desc['name'].lower() + '.html">Read package function reference</a></td></tr>\n');
+    fid.write('<a href="../doc/funref_' + desc['name'].lower() + '.html">Read package function reference</a></td></tr>\n');
     local = local_documentation(outdir, packdir);
     if (local):
         fid.write('      <tr><td colspan="2"><img src="../doc.png" alt="Documentation"/>');
@@ -233,20 +233,20 @@ def rm_rf(p):
 
 def handle_package(packdir, outdir, p):
     if (os.path.isdir(packdir)):
-        #if (not os.path.exists(packdir + "/NOINSTALL")):
-        if (os.path.exists(outdir)):
-            rm_rf(outdir);
-        os.mkdir(outdir);
-        try:
-            desc = create_index_html(packdir, outdir, p);
-            create_license_html(desc['name'], packdir, outdir);
-            return desc;
-        except Exception, e:
-            print(e);
-            rm_rf(outdir);
-            raise Exception("Can't create index.html");
-        #else:
-        #    raise Exception("Package marked NOINSTALL");
+        if (not os.path.exists(packdir + "/NOINSTALL")):
+            if (os.path.exists(outdir)):
+                rm_rf(outdir);
+            os.mkdir(outdir);
+            try:
+                desc = create_index_html(packdir, outdir, p);
+                create_license_html(desc['name'], packdir, outdir);
+                return desc;
+            except Exception, e:
+                print(e);
+                rm_rf(outdir);
+                raise Exception("Can't create index.html");
+        else:
+            raise Exception("Package marked NOINSTALL");
     raise Exception('not packdir');
 
 def main():

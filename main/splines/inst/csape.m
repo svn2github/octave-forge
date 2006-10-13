@@ -47,15 +47,27 @@ function pp = csape (x, y, cond, valc)
 
   x = x(:);
   n = length(x);
-  if n < 3, error("csape requires at least 3 points"); endif
+  if (n < 3) 
+    error("csape requires at least 3 points"); 
+  endif
 
-  transpose = (columns(y) == n);
-  if (transpose) y = y'; endif
+  ## Check the size and shape of y
+  ndy = ndims (y);
+  szy = size (y);
+  if (ndy == 2 && (szy(1) == 1 || szy(2) == 1))
+    if (szy(1) == 1)
+      a = y.';
+    else
+      a = y;
+      szy = fliplr (szy);
+    endif
+  else
+    a = reshape (y, [prod(szy(1:end-1)), szy(end)]).';
+  endif
 
-  a = y;
-  b = c = zeros (size (y));
+  b = c = zeros (size (a));
   h = diff (x);
-  idx = ones (columns(y),1);
+  idx = ones (columns(a),1);
 
   if (nargin < 3 || strcmp(cond,"complete"))
     # specified first derivative at end point
@@ -160,7 +172,7 @@ function pp = csape (x, y, cond, valc)
 
   elseif (strcmp(cond,"not-a-knot"))
 
-    g = zeros(n - 2,columns(y));
+    g = zeros(n - 2,columns(a));
     g(1,:) = 3 / (h(1) + h(2)) * (a(3,:) - a(2,:)\
           - h(2) / h(1) * (a(2,:) - a(1,:)));
     g(n - 2,:) = 3 / (h(n - 1) + h(n - 2)) *\
@@ -208,57 +220,57 @@ function pp = csape (x, y, cond, valc)
 
   d = d(1:n-1,:); c=c(1:n-1,:); b=b(1:n-1,:); a=a(1:n-1,:);
   coeffs = [d(:), c(:), b(:), a(:)];
-  pp = mkpp (x, coeffs);
+  pp = mkpp (x, coeffs, szy(1:end-1));
 
 endfunction
 
 
 %!shared x,y,cond
-%! x = linspace(0,2*pi,15)'; y = sin(x);
+%! x = linspace(0,2*pi,15); y = sin(x);
 
 %!assert (ppval(csape(x,y),x), y, 10*eps);
 %!assert (ppval(csape(x,y),x'), y', 10*eps);
 %!assert (ppval(csape(x',y'),x'), y', 10*eps);
 %!assert (ppval(csape(x',y'),x), y, 10*eps);
-%!assert (ppval(csape(x,[y,y]),x), \
-%!	  [ppval(csape(x,y),x),ppval(csape(x,y),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y]),x), \
+%!	  [ppval(csape(x,y),x);ppval(csape(x,y),x)], 10*eps)
 
 %!test cond='complete';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
 %!assert (ppval(csape(x,y,cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
-%!assert (ppval(csape(x,[y,y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x),ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x), \
+%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='variational';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
 %!assert (ppval(csape(x,y,cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
-%!assert (ppval(csape(x,[y,y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x),ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x), \
+%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='second';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
 %!assert (ppval(csape(x,y,cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
-%!assert (ppval(csape(x,[y,y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x),ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x), \
+%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='periodic';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
 %!assert (ppval(csape(x,y,cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
-%!assert (ppval(csape(x,[y,y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x),ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x), \
+%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)
 
 %!test cond='not-a-knot';
 %!assert (ppval(csape(x,y,cond),x), y, 10*eps);
 %!assert (ppval(csape(x,y,cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x'), y', 10*eps);
 %!assert (ppval(csape(x',y',cond),x), y, 10*eps);
-%!assert (ppval(csape(x,[y,y],cond),x), \
-%!	  [ppval(csape(x,y,cond),x),ppval(csape(x,y,cond),x)], 10*eps)
+%!assert (ppval(csape(x,[y;y],cond),x), \
+%!	  [ppval(csape(x,y,cond),x);ppval(csape(x,y,cond),x)], 10*eps)

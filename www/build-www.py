@@ -206,13 +206,15 @@ def create_license_html(package_name, packdir, outdir):
     fid = open(filename, 'r');
     license = fid.readlines();
     fid.close();
-
+    
     ## Write output
     fid = open(outdir + "/license.in", "w");
     fid.write("__HEADER__([[[The " + package_name + " package]]])\n");
     fid.write("<h3>The license terms for the " + package_name + " package are as follows</h3>\n");
-    fid.write('<p><textarea rows="20" cols="80" readonly>');
+    fid.write('<p><textarea rows="20" cols="80" readonly="readonly">');
     for c in license:
+        c = c.replace("<", "&lt;");
+        c = c.replace(">", "&gt;");
         fid.write(c)
     fid.write('</textarea></p>\n');
     fid.write('<p><a href="index.html">Back to the package page</a></p>\n');

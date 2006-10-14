@@ -73,7 +73,10 @@ sub index_files { # {{{1 populates global array @files
     return if ($File::Find::dir =~ /packages$/);
     my $path = "$File::Find::dir/$_";
     $path =~ s|^[.]/||;
-    push @index_files, $path; 
+    my $noinstall = sprintf("%s/NOINSTALL", $path);
+    if (! -e $noinstall) {
+	push @index_files, $path; 
+    }
 } # 1}}}
 foreach my $f ( @index_files ) {
     load_index($f,
@@ -99,10 +102,13 @@ sub cc_and_m_files { # {{{1 populates global array @files
     return unless -f and /\.(m|cc|l|y)$/;  # .m and .cc files (lex & yacc too!)
     my $path = "$File::Find::dir/$_";
     $path =~ s|^[.]/||;
-    if (/\.m$/) {
-        push @m_files, $path;
-    } else {
-        push @C_files, $path;
+    my $noinstall = sprintf("%s/NOINSTALL", $path);
+    if (! -e $noinstall) {
+	if (/\.m$/) {
+	    push @m_files, $path;
+	} else {
+	    push @C_files, $path;
+	}
     }
 } # 1}}}
 
@@ -812,7 +818,7 @@ sub write_TBnavbar { # 1{{{
 	print OUT "<select name=\"dropdowncat\" size=\"1\" onChange=\"javascript:goto_url(docform.dropdowncat.value)\">\n";
 	print OUT "<option value=\"-1\">Categories</option>\n";
 
-    foreach my $TB (toolbox_list()) {
+    foreach my $TB (toolbox_list_sorted_by_desc()) {
 	print OUT "<option value=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</option>\n";
     }
     print OUT "</select>\n";
@@ -1138,6 +1144,10 @@ sub info2html { # 1{{{
 sub toolbox_list { # 1{{{
 # toolbox_list() returns an ordered list of toolboxes.
     return sort { uc($a) cmp uc($b) } keys %index_by_TB_cat;
+} # 1}}}
+sub toolbox_list_sorted_by_desc { # 1{{{
+# toolbox_list_sorted_by_desc() returns an ordered list of toolboxes.
+    return sort { uc($TB_description{$a}) cmp uc($TB_description{$b}) } keys %index_by_TB_cat;
 } # 1}}}
 sub package_list { # 1{{{
 # package_list() returns an ordered list of package directories.

@@ -12,11 +12,13 @@ body {
 }
 
 a:link {
-  color: #3465a4;
+  //color: #3465a4;
+  color: #4e9a06;
 }
 
 a:visited {
-  color: #204a87;
+  //color: #204a87;
+  color: #73d216;
 }
 
 
@@ -35,9 +37,11 @@ div#nav {
 }
 
 div#nav a {
-  background-color: #729fcf;
+  //background-color: #729fcf;
+  background-color: #4e9a06;
   border: 1px solid;
-  border-color: #3465a4;
+  //border-color: #3465a4;
+  border-color: #73d216;
   display: block;
   padding: 0.2em 0.5em 0.2em 0.5em ;
   text-decoration: none;
@@ -46,14 +50,16 @@ div#nav a {
 }
 
 div#nav a:hover {
-  background-color: #204a87;
+  //background-color: #204a87;
+  background-color: #73d216;
 }
 
 /* the navigation choices for function reference. */
 
 div#nav2 {
   float: right;
-  background-color: #729fcf;
+  //background-color: #729fcf;
+  background-color: #4e9a06;
   //border: 1px solid;
   padding: 3px;
   
@@ -100,9 +106,11 @@ div#title {
 
 div#title h1 {
   background-color: #ffffff;
-  border-bottom: 4px solid #729fcf;
+  //border-bottom: 4px solid #729fcf;
+  border-bottom: 4px solid #4e9a06;
   font-size: xx-large;
-  color: #729fcf;
+  //color: #729fcf;
+  color: #4e9a06;
   padding: 0;
   margin: 0;
 }

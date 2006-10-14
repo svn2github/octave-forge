@@ -15,14 +15,22 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} zip (@var{zipfile},@var{files})
-## Compress the list of files specified in 'files' into the archive 'zipfiles' in the same directory.
+## @deftypefn {Function File} {@var{entries} =} zip (@var{zipfile},@var{files})
+## @deftypefnx {Function File} {@var{entries} =} zip (@var{zipfile},@var{files},@var{rootdir})
+## Compress the list of files and/or directories specified in @var{files} 
+## into the archive @var{zipfiles} in the same directory. If @var{rootdir} 
+## is defined the @var{files} is located relative to @var{rootdir} rather 
+## than the current directory
 ## @seealso{unzip,tar}
 ## @end deftypefn
 
-function zip(zipfile, files)
-	
-  if (nargin == 2)
+function entries = zip(zipfile, files, rootdir)
+  if (nargin != 3)
+    rootdir = "./";
+  endif
+
+  if (nargin == 2 || nargin == 3)
+    rootdir = tilde_expand(rootdir);
 
     if (ischar (files))
       files = cellstr (files);
@@ -30,18 +38,24 @@ function zip(zipfile, files)
 
     if (ischar (zipfile) && iscellstr (files))
 
-      cmd = sprintf ("zip %s %s", zipfile,
+      cmd = sprintf ("cd %s; zip -r %s %s", rootdir, [pwd(),"/",zipfile],
 		     sprintf (" %s", files{:}));
 
       [status, output] = system (cmd);
 
       if (status == 0)
 	if (nargout > 0)
-	  if (output(end) == "\n")
-	    output(end) = [];
+	  cmd = sprintf ("zipinfo -1 %s", zipfile);
+	  [status, entries] = system (cmd);
+	  if (status == 0)
+	    if (entries(end) == "\n")
+	      entries(end) = [];
+	    endif
+            entries = cellstr (split (entries, "\n"));
+	    entries = entries';
+	  else
+	    error("zip: zipinfo exit status = %d", status);
 	  endif
-          entries = cellstr (split (output, "\n"));
-	  entries = entries';
 	endif
       else
 	error ("zip: zip exited with status = %d", status);
@@ -52,7 +66,7 @@ function zip(zipfile, files)
     endif
 
   else
-		usage(" zip(zipfiles,files)");
+    print_usage();
   endif
 
 endfunction

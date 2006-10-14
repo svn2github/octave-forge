@@ -285,15 +285,30 @@ def main():
                 outdir  = "./" + p;
                 try:
                     desc = handle_package(packdir, outdir, p);
-                    archiv = desc['name'].lower() + '-' + desc['version'] + '.tar.gz';
-                    index.write('<div class="package">\n');
-                    index.write('  <b>' + desc['name'] + '</b>\n');
-                    index.write('<p>' + desc['description'][:100]);
-                    if (len(desc['description']) > 100):
-                        index.write('...');
-                    index.write('</p>\n');
-                    index.write('<p class="package_link">&raquo; <a href="' + outdir + '/index.html">details</a> | ');
-                    index.write('<a href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
+                    n = desc['name'].lower();
+                    archiv = n + '-' + desc['version'] + '.tar.gz';
+                    
+                    index.write('<div class="package" id="' + n + '_detailed" style="display: none;">\n');
+                    index.write('  <table class="package"><tr>\n');
+                    index.write('    <td><b><a href="javascript:fold(\'' + n + '\');" class="package_head_link">' + desc['name'] + '</a></b></td>\n');
+                    index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir + '/index.html" class="package_link">details</a> |\n');
+                    index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
+                    
+                    index.write('    </td>\n');
+                    index.write('  </tr></table>\n');
+                    index.write('  <p id="' + n + '_details">\n');
+                    index.write(desc['description']);
+                    index.write('  </p>\n');
+                    index.write('</div>\n');
+
+                    index.write('<div class="package" id="' + n + '">\n');
+                    index.write('  <table class="package"><tr>\n');
+                    index.write('    <td><b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">' + desc['name'] + '</a></b></td>\n');
+                    index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir + '/index.html" class="package_link">details</a> |\n');
+                    index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
+                    
+                    index.write('    </td>\n');
+                    index.write('  </tr></table>\n');
                     index.write('</div>\n');
                 except Exception, e:
                     print("Skipping " + p);

@@ -176,20 +176,29 @@ div#description_box {
 }
 
 div.package {
-  margin-top: 0.5em;
+  margin-top: 0.2em;
   background-color: #d3d7cf;
   border: 1px solid;
   border-color: #babdb6;
-  margin: 1em 5em 0 1em;
   padding: 0.2em 0.2em 0em 0.2em;
-  text-decoration: none;
   color: black;
 }
 
-p.package_link {
-  margin: 0.2em;
+a.package_link {
+  color: black;
   font-weight: bold;
   font-size: 80%;
+  text-decoration: none;
+}
+
+a.package_head_link {
+  color: black;
+  text-decoration: none;
+}
+
+table.package {
+  table-layout: fixed;
+  width: 100%;
 }
 
 p.package_link a {

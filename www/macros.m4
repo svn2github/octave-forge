@@ -83,8 +83,8 @@ m4_dnl
 m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>$1</title>
 <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
 <script type="text/javascript">
@@ -93,6 +93,14 @@ function goto_url(url) {
   if (url != "-1") {
     location.href=url;
   }
+}
+function unfold(id) {
+    document.getElementById(id).style.display = "none;";
+    document.getElementById(id+"_detailed").style.display = "block;";
+}
+function fold(id) {
+    document.getElementById(id+"_detailed").style.display = "none;";
+    document.getElementById(id).style.display = "block;";
 }
 // -->
 </script>
@@ -202,9 +210,10 @@ m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__TRAILER__', `
+</div>
 <div id="sf_logo">
   <a  href="__SOURCEFORGE__"><img src="__SOURCEFORGE__/sflogo.php?__GROUP_ID__&amp;type=1"  width="88"
-height="31" border="0" alt="SourceForge.net Logo"  /></a>
+height="31" style="border: 0;" alt="SourceForge.net Logo"  /></a>
 </div>
 </body>
 </html>')m4_dnl

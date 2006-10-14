@@ -10,19 +10,19 @@ __HEADER__([[[Developer's Notes]]])
 
 
 <h3>Requirements</h3>
-To contribute your .m files, C++, C, or Fortran code to the GNU Octave
-Repository (octave-forge) you need to
+<p>To contribute your .m files, C++, C, or Fortran code to the GNU Octave
+Repository (octave-forge) you need to</p>
 <ul>
-    <li> have an account on SourceForge,
-    <li> be registered as an octave-forge developer,
-    <li> have <a href="http://www.cvshome.org/">CVS</a>
+    <li>have an account on SourceForge,</li>
+    <li>be registered as an octave-forge developer,</li>
+    <li>have <a href="http://www.cvshome.org/">CVS</a>
         installed on the computer from which you
-        will submit contributions, and
-    <li> have the secure shell,
-         <a href="http://www.openssh.com/"><tt>ssh</tt></a>, installed
-         on your computer.
+        will submit contributions, and</li>
+    <li>have the secure shell,
+        <a href="http://www.openssh.com/"><tt>ssh</tt></a>, installed
+        on your computer.</li>
 </ul>
-The first two requirements are easy but may take a few days.  
+<p>The first two requirements are easy but may take a few days.  
 If you don't already have one, request a SourceForge (SF) account
 <a href="http://sourceforge.net/account/register.php"> here</a>.
 To register as a developer send a request 
@@ -35,54 +35,52 @@ FreeBSD, chances are good that both <tt>ssh</tt> and CVS are already
 installed on your system. 
 If they aren't, 
 you will need to find prebuilt packages for them or download their
-source codes and build them.
+source codes and build them.</p>
 
 <h3>Create a SF home directory</h3>
 <p>
 If you've never submitted code to a SourceForge project before,
 create your home directory by
-logging onto the octave-forge account with <tt>ssh</tt>:
+logging onto the octave-forge account with <tt>ssh</tt>:</p>
 <pre>
-   $ ssh -l <FONT COLOR="#800000"><i>sflogin</i></FONT>  octave.cvs.sourceforge.net
-   Password:  <FONT COLOR="#800000"><i>your SF password</i></FONT>
+   $ ssh -l <span style="color: #800000;"><i>sflogin</i></span>  octave.cvs.sourceforge.net
+   Password:  <span style="color: #800000;"><i>your SF password</i></span>
 </pre>
-Although SF will only show you a message-of-the-day screen then log
+<p>Although SF will only show you a message-of-the-day screen then log
 you out, this process has the useful side effect of creating a home
 directory for you if one doesn't already exist.  Some CVS commands will fail
-if you do not have a home directory on SF.
+if you do not have a home directory on SF.</p>
 
 <h3>Download the latest octave-forge distribution</h3>
-CVS expects the 
+<p>CVS expects the 
 code you plan to submit to reside in a directory within the existing
 octave-forge directory structure.
 You will therefore need to download a copy of the latest octave-forge
 distribution to work in.  Change directories to a place you want
 to put the code, then issue the CVS <i>checkout</i>
-(abreviated as 'co') command:
+(abreviated as 'co') command:</p>
 <pre>
-   $ cd <FONT COLOR="#800000"><i>working_directory</i></FONT>
+   $ cd <span style="color: #800000;"><i>working_directory</i></span>
    $ export CVS_RSH=ssh
-   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@octave.cvs.sourceforge.net:/cvsroot/octave co octave-forge
+   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave co octave-forge
 </pre>
 
 <h3>Where does your code belong?</h3>
-
-Put your file(s) in a subdirectory under the <tt>octave-forge/</tt>
+<p>Put your file(s) in a subdirectory under the <tt>octave-forge/</tt>
 directory.  Here are some guidelines to help you decide where your
-code belongs:
+code belongs:</p>
 <ul>
 >>>INSERT CONTENTS HERE<<<
 </ul>
 
 <h3>Add a copyright notice</h3>
-<p>
-Each file in octave-forge must contain a copyright notice.  
+<p>Each file in octave-forge must contain a copyright notice.  
 If you wish to release your
 code under the 
 GNU <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>
-, insert the following text at the top of your file:
+, insert the following text at the top of your file:</p>
 <pre>
-## Copyright (C) <FONT COLOR="#800000"><i>year</i></FONT>   <FONT COLOR="#800000"><i>Your Name</i></FONT>   &lt;<FONT COLOR="#800000"><i>your@preferred.email</i></FONT>&gt;
+## Copyright (C) <span style="color: #800000;"><i>year</i></span>   <span style="color: #800000;"><i>Your Name</i></span>   &lt;<span style="color: #800000;"><i>your@preferred.email</i></span>&gt;
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -99,22 +97,22 @@ GNU <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 </pre>
 
-Here are other popular open source licenses:
+<p>Here are other popular open source licenses:</p>
 <ul>
-    <li> <a href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser GPL</a>
-    <li> <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation License</a>
-    <li> <a href="http://www.opensource.org/licenses/artistic-license.html">Artistic License</a>
-    <li> <a href="http://www.opensource.org/licenses/bsd-license.html">BSD License</a>
+    <li><a href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser GPL</a></li>
+    <li><a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation License</a></li>
+    <li><a href="http://www.opensource.org/licenses/artistic-license.html">Artistic License</a></li>
+    <li><a href="http://www.opensource.org/licenses/bsd-license.html">BSD License</a></li>
 </ul>
-Consult 
+<p>Consult 
 <a href="http://www.opensource.org/licenses/index.html">opensource.org</a>.
-for a comprehensive list of Open Source licenses.
+for a comprehensive list of Open Source licenses.</p>
 
 <h3>Package structure</h3>
 <p>
 Octave has evolved into a source repository is octave pacakges rather
 than a package in itself. Each sub-directory is considered to be a
-package and should respect Octave's package managers file layout.
+package and should respect Octave's package managers file layout.</p>
 <dl>
 <dt>package/NOINSTALL
 <dd>	This is an optional file, whose presence tells octave-forge
@@ -308,88 +306,85 @@ post-pkg/%::
 </dl>
 
 <h3>Submit your code!</h3>
-You are now ready to upload your code to the Gnu Octave Repository.
+<p>You are now ready to upload your code to the Gnu Octave Repository.
 Do this with two CVS commands--one to add a new
 entry for your file in the octave-forge catalog, and a second command
-to actually upload the file:
+to actually upload the file:</p>
 <pre>
-   $ cvs add <FONT COLOR="#800000"><i>files</i></FONT>
-   $ cvs commit <FONT COLOR="#800000"><i>files</i></FONT>
+   $ cvs add <span style="color: #800000;"><i>files</i></span>
+   $ cvs commit <span style="color: #800000;"><i>files</i></span>
 </pre>
-
-After hitting the carriage return at the end of the commit command,
+<p>After hitting the carriage return at the end of the commit command,
 CVS will open your default editor so that you can enter comments about
 the commit. The first time you commit a file the comment might be
 something as simple as `Initial commit into CVS.' However, for all
 subsequent commits please add meaningful comments that explain why
 changes were made to the file since all comments will appear in the
-changelog.  Try to gather related changes into one commit command.
-<p>
-Aside:  the default editor can be defined like so:
-<pre>
-   $ export EDITOR=<FONT COLOR="#800000">vim</FONT>
-</pre>
-<p>
+changelog.  Try to gather related changes into one commit command.</p>
 
-If you are uploading an entire package, then put your directory into the
-octave-forge tree and do the following:
+<p>Aside:  the default editor can be defined like so:</p>
+<pre>
+   $ export EDITOR=<span style="color: #800000;">vim</span>
+</pre>
+
+<p>If you are uploading an entire package, then put your directory into the
+octave-forge tree and do the following:</p>
 <pre>
    $ cd octave-forge/main
-   $ cvs add <FONT COLOR="#800000"><i>package</i></FONT>
-   $ cvs commit <FONT COLOR="#800000"><i>package</i></FONT>
-   $ cd <FONT COLOR="#800000"><i>package</i></FONT>
+   $ cvs add <span style="color: #800000;"><i>package</i></span>
+   $ cvs commit <span style="color: #800000;"><i>package</i></span>
+   $ cd <span style="color: #800000;"><i>package</i></span>
    $ cvs add *
    $ cvs commit *
 </pre>
 
-You may find it easier to use the import command, especially if your
+<p>You may find it easier to use the import command, especially if your
 package contains subdirectories.  In this case, you should not put
 your directory into the octave-forge tree.  Instead, change to the
-root of your package tree and enter the following:
+root of your package tree and enter the following:</p>
 <pre>
-   $ cd <FONT COLOR="#800000"><i>package</i></FONT>
-   $ cvs -d:ext:<FONT COLOR="#800000"><i>sflogin</i></FONT>@octave.cvs.sourceforge.net:/cvsroot/octave import -m "<FONT COLOR="#800000"><i>package name</i></FONT>" octave-forge/<FONT COLOR="#800000"><i>main/package</i></FONT> <FONT COLOR="#800000"><i>sflogin</i></FONT> start
+   $ cd <span style="color: #800000;"><i>package</i></span>
+   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave import -m "<span style="color: #800000;"><i>package name</i></span>" octave-forge/<span style="color: #800000;"><i>main/package</i></span> <span style="color: #800000;"><i>sflogin</i></span> start
 </pre>
 
-You can then fetch the new package from octave-forge as follows:
+<p>You can then fetch the new package from octave-forge as follows:</p>
 <pre>
    $ cd octave-forge
    $ cvs -q update -d
 </pre>
 
-<p>
-From time to time, you will need to synchronize with CVS:
+<p>From time to time, you will need to synchronize with CVS:</p>
 <pre>
    $ cd octave-forge
    $ cvs -q update -d
 </pre>
-Each file will be listed with one of the following codes:
+<p>Each file will be listed with one of the following codes:</p>
 <ul>
-<li> `?' for files you created didn't add and commit.
-<li> `M' for files you modified but didn't commit.
+<li> `?' for files you created didn't add and commit.</li>
+<li> `M' for files you modified but didn't commit.</li>
 <li> `C' for files which have unresolvable conflicts.  Look inside the file to
 see what it was that couldn't be resolved.  It will be clearly marked, or you
-can do a cvs diff on the file to highlight the conflict.
-<li> `U' for files you haven't touched but are modified on the server.
+can do a cvs diff on the file to highlight the conflict.</li>
+<li> `U' for files you haven't touched but are modified on the server.</li>
 <li> `P' for files you have modified in a way consistent with the modifications
-on the server (?), e.g., because you submitted a patch for someone else to apply.
+on the server (?), e.g., because you submitted a patch for someone else to apply.</li>
 </ul>
 
 <h3>Learn more about CVS</h3>
-The few CVS commands shown here just scratch the surface of this
+<p>The few CVS commands shown here just scratch the surface of this
 powerful versioning package.  If you become an active contributor
 you will benefit from learning more CVS commands and understanding 
 how CVS works.
 The
 <a href="http://cvsbook.red-bean.com/cvsbook.html">
-CVS Book</a> is a great place to begin your exploration.
+CVS Book</a> is a great place to begin your exploration.</p>
 
 <h3>Join the developers' mailing list</h3>
-Finally, consider joining the octave-forge developer's 
+<p>Finally, consider joining the octave-forge developer's 
 <a href="http://lists.sourceforge.net/lists/listinfo/octave-dev">
 mailing list</a>.  It is very low traffic.  It is used to announce
 pending releases of octave-forge and discuss issues related to
 working with octave-forge.  Discussion of the functions in
-octave-forge mostly occurs on the primary octave mailing lists.
+octave-forge mostly occurs on the primary octave mailing lists.</p>
 
 __TRAILER__

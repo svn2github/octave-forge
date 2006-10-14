@@ -33,11 +33,10 @@ between version 1.2 and the current version.</p>
 
 <p>Translators can also add their name and email to the translated file.</p>
 
-<p>The top line will look something like:
+<p>The top line will look something like:</p>
 <pre>
    mdf="d52f61a8b12616e7b99f7cd5ecbf18fb";rev="1.1";by="I.M. Translator &lt;im.translator@gmail.com&gt;"
 </pre>
-</p>
 
 <h2>Downloading and installing</h2>
 
@@ -53,7 +52,7 @@ at source-forge.</p>
 <li>Send a message to <a href="mailto:octave-dev@lists.sf.net">octave-dev@lists.sf.net</a>
  with your SFID.  Ask to be included in the translation project.</li>
 
-<li>Check out the current octave language sources for your language:<br>
+<li>Check out the current octave language sources for your language:<br/>
 <pre>
 	export SFID=your sourceforge id
         export CVS_RSH=ssh
@@ -76,29 +75,29 @@ ZZ contains the translations for a particular language.
 
 <p>After each translation, run 'octlang tag file.ZZ' (not yet written) 
 which computes the md5 sum in the base directory and tags the top line of 
-the translation with
+the translation with</p>
 <pre>
    mdf="$MD5SUM";rev="$REV";by="$OCTAVE_TRANSLATOR"
 </pre>
-where MD5SUM and REV are computed by the script and OCTAVE_TRANSLATOR is
+<p>where MD5SUM and REV are computed by the script and OCTAVE_TRANSLATOR is
 exported from the shell.
 </p>
 
 <h2>Maintaining your translations</h2>
 <p>As octave evolves you will need to keep your translations up to date.  The
-script octave-lang/admin/octlang (not yet written) can help you:
+script octave-lang/admin/octlang (not yet written) can help you:</p>
 <dl>
-<dt>octlang missing
-<dd>walk the current subtree listing all translations which are missing.
-<dt>octlang updated
-<dd>walk the current subtree listing all translations which are out of date.
-<dt>octlang diff file.ZZ
+<dt>octlang missing</dt>
+<dd>walk the current subtree listing all translations which are missing.</dd>
+<dt>octlang updated</dt>
+<dd>walk the current subtree listing all translations which are out of date.</dd>
+<dt>octlang diff file.ZZ</dt>
 
 <dd>list differences between the original text which was translated and the
-current text in base.
-<dt>octlang tag file.ZZ
+current text in base.</dd>
+<dt>octlang tag file.ZZ</dt>
 <dd>tag file.ZZ as up to date, marking the header with the current md5 sum
-and version number from base.
+and version number from base.</dd>
 </dl>
 
 <h2>Updating base</h2>

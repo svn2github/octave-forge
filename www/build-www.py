@@ -256,7 +256,7 @@ def main():
     index.write('<p>The following packages are currently available in the repository.\n');
     index.write("If you don't know how to install the packages please read the\n");
     index.write('relevant part of the <a href="FAQ.html#install">FAQ</a>.\n</p>');
-    index.write('<p>Currently Octave-Forge is divided into seperate repositories\n');
+    index.write('<p>Currently Octave-Forge is divided into seperate repositories</p>\n');
     index.write('<ul><li><a href="#main">Main repository</a> contains packages that\n');
     index.write('are well tested and suited for most users.</li>\n');
     index.write('<li><a href="#extra">Extra packages</a> contains packages that\n');
@@ -292,7 +292,7 @@ def main():
                     index.write('  <table class="package"><tr>\n');
                     index.write('    <td><b><a href="javascript:fold(\'' + n + '\');" class="package_head_link">' + desc['name'] + '</a></b></td>\n');
                     index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir + '/index.html" class="package_link">details</a> |\n');
-                    index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
+                    index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a>\n');
                     
                     index.write('    </td>\n');
                     index.write('  </tr></table>\n');
@@ -305,7 +305,7 @@ def main():
                     index.write('  <table class="package"><tr>\n');
                     index.write('    <td><b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">' + desc['name'] + '</a></b></td>\n');
                     index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir + '/index.html" class="package_link">details</a> |\n');
-                    index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a></p>\n');
+                    index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a>\n');
                     
                     index.write('    </td>\n');
                     index.write('  </tr></table>\n');

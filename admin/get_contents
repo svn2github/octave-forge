@@ -114,14 +114,14 @@ sub fill_developer_html {  # {{{1
                 my $dir  = $1;
                 my $file = $2;
                 $dir     =~ s{^\./}{};  # strip leading  ./
-                print README "\t<li> <b><tt>$dir/</tt></b><br>\n";
+                print README "\t<li> <b><tt>$dir/</tt></b><br/>\n";
                 foreach my $line (@c) {
                     # use fixed font for words that end with /
                     # (ie, directory names).
                     $line =~ s{\s(\S+/)([.,\s])}{ <tt>$1</tt>$2}g;
                     print README "\t$line";
                 }
-                print README "\n";
+                print README "</li>\n";
             }
             $added_contents = 1;
         } else {

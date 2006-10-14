@@ -3,12 +3,12 @@ __HEADER__([[[Frequently Asked Questions]]])
 <p>
 The following page contains some questions often asked by users and developers along
 with the answers. You'll find the following topics covered by this page
+</p>
 <ul>
   <li><a href="#packages">Using the packages</a></li>
   <li><a href="#about">About Octave-Forge</a></li>
   <li><a href="#compatibility">Matlab Compatibility</a></li>
 </ul>
-</p>
 
 <h2 id="packages">Using the packages</h2>
  <h3 class="question" id="install">How do I install a package?</h3>
@@ -16,9 +16,9 @@ with the answers. You'll find the following topics covered by this page
       web page and clicking <em>download</em>. Then start Octave and go
       to the directory where you placed the downloaded package using
       the <em>cd</em> command. Then type
-   </p><p>
+   </p>
       <code>pkg install package_file_name.tar.gz</code>
-   </p><p>
+   <p>
       where <em>package_file_name.tar.gz</em> is the file name of the 
       package you downloaded.
    </p>
@@ -31,16 +31,16 @@ with the answers. You'll find the following topics covered by this page
    </p>
    <p>If you don't want to install the dependencies of a package, you
      can use the <em>-no-deps</em> flag for the <em>pkg</em> command
-   </p><p>
+   </p>
      <code>pkg install -no-deps package_file_name.tar.gz</code>
-   </p><p>
+   <p>
      If you choose to do this, you might experience problems with
      the package. So in general the <em>-no-deps</em> is not recommended.
    </p>
    
  <h3 class="question">How do I uninstall a package?</h3>
    <p>You simply type</p>
-   <p><code>pkg uninstall package_name</code</p>
+   <code>pkg uninstall package_name</code>
    <p>where <em>package_name</em> is the name of the package you want to uninstall
      (e.g. <em>image</em>).</p>
    

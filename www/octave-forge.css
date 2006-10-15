@@ -212,3 +212,7 @@ div.see_also {
   font-family: sans-serif;
   font-weight: bold;
 }
+
+dt {
+font-weight: bold;
+}

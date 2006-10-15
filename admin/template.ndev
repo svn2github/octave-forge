@@ -344,7 +344,8 @@ your directory into the octave-forge tree.  Instead, change to the
 root of your package tree and enter the following:</p>
 <pre>
    $ cd <span style="color: #800000;"><i>package</i></span>
-   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave import -m "<span style="color: #800000;"><i>package name</i></span>" octave-forge/<span style="color: #800000;"><i>main/package</i></span> <span style="color: #800000;"><i>sflogin</i></span> start
+   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave import \
+     -m "<span style="color: #800000;"><i>package name</i></span>" octave-forge/<span style="color: #800000;"><i>main/package</i></span> <span style="color: #800000;"><i>sflogin</i></span> start
 </pre>
 
 <p>You can then fetch the new package from octave-forge as follows:</p>

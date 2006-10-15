@@ -119,6 +119,7 @@ m4_define(`__MENU__', `<div id="nav">
  <a href="__BASE_ADDRESS__/FAQ.html">FAQ</a> 
  <a href="__BASE_ADDRESS__/bugs.html">Bugs</a> 
  <a href="__BASE_ADDRESS__/archive.html">Mailing Lists</a>
+ <a href="__BASE_ADDRESS__/NEWS.html">News Archive</a>
  <a href="__BASE_ADDRESS__/links.html">Links</a>
  <a href="__SUMMARY__">SourceForge</a>
  <a href="__DOWNLOAD__">Download</a>

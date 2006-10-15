@@ -1,0 +1,436 @@
+__HEADER__([[[Octave-Forge News Archive]]])
+
+<div class="section">
+<p>This is an abbreviated list of the changes that were introduced in
+various versions of octave-forge. For a full list of changes please
+see the <a href="__BASE_ADDRESS__/ChangeLog">ChangeLog</a>.</p>
+</div>
+<div class="section">
+<dl>
+<dt>October 20, 2006</dt>
+<dd>
+<p>Octave-forge reorganized as a series of packages for use with
+the Octave package manager. See the <a
+href="/packages.html">packages</a> for more details</p>
+</dd>
+<dt>July 09, 2006</dt>
+<dd>
+<p>Octave-forge version 200607008 released. This version version
+was the last monolithic release and the first release that only
+supported version of octave later than Octave 2.9.</p>
+<p>An abbreviated list of changes is:</p>
+<ul>
+   <li>purge functions moved to Octave and remove pre-2.9.x support.</li>
+   <li>comm: new functions pam/genqam/psk mod/demod</li>
+   <li>combinatorics: new functions for integer partitions</li>
+   <li>geometry: fix qhull problems (finally!?)</li>
+   <li>signal: new function square to generate square waves</li>
+   <li>statistics: new function hmm viterbi/generate</li>
+   <li>strings: remove regexp; api changed when moved to Octave</li>
+   <li>linear-algebra: new function for gsvd</li>
+   <li>general bug fixes and improvements</li>
+</ul>
+</dd>
+<dt>March 16, 2006</dt>
+<dd>
+<p>Octave-forge version 20060316 released. An abbreviated list of
+changes is:</p>
+<ul>
+   <li>statistics/regress: new function</li>
+   <li>general bug fixes and improvements</li>
+</ul>
+</dd>
+<dt>January 28, 2006</dt>
+<dd>
+<p>Octave-forge version 20060128 released. An abbreviated list of
+changes is:</p>
+<ul>
+   <li>audio/waveread: big-endian fix; 2-channel file fix</li>
+   <li>comm/galois: fix rank calculation for galois array</li>
+   <li>general/interp2: cubic interpolation</li>
+   <li>image/: return MxNx3 matrices of appropriate numeric class</li>
+   <li>io/textread: faster</li>
+   <li>io/dlmwrite: control precision and line separator; allow append</li>
+   <li>miscellaneous/mfilename: compatibility function</li>
+   <li>miscellaneous/listen: subnet patterns; loopback support</li>
+   <li>NaN/xcovf: missing data xcorr</li>
+   <li>octcdf/: support for netcdf files</li>
+   <li>optim/wpolyfit: return row vector; allow centering and scaling</li>
+   <li>plot/legend: fix error on first call</li>
+   <li>plot/print: add PDF option</li>
+   <li>signal/residued,residuez: partial fraction expansion of filters</li>
+   <li>signal/qp_kaiser: PPN filter bank coefficients</li>
+   <li>statistics/histfit: allow negative data</li>
+   <li>statistics/mvnpdf,mvnrnd: multivariate normal distribution</li>
+   <li>tsa/: improved speed, style and docs</li>
+   <li>tsa/amarma: adaptive mean ARMA modeling</li>
+   <li>tsa/y2res: add entropy estimation; add equidistant quantisation</li>
+   <li>tsa/mvfreqz: add PDCF</li>
+   <li>support for 2.9.4</li>
+   <li>support for 64-bit indexing</li>
+   <li>support for MinGW build</li>
+   <li>general bug fixes and improvements</li>
+</ul>
+</dd>
+<dt>June 13, 2005</dt>
+<dd>
+<p>Octave-forge version 20050613 released. An abbreviated list of
+changes is:</p>
+<ul>
+   <li>textread now returns cell arrays</li>
+   <li>use new gnuplot interface for functions</li>
+   <li>fix rand bug on non-intel architectures</li>
+   <li>more econometrics functions</li>
+   <li>new functions: randg, cellfun, cell2mat, bwarea, imresize, savepath</li>
+   <li>bug fixes and improvements</li>
+</ul>
+</dd>
+<dt>November 16, 2004</dt>
+<dd>
+<p>Octave-forge version 20041116 released. Extends support to Octave 2.1.62.
+An abbreviated list of changes is:</p>
+<ul>
+   <li>initial econometrics toolbox</li>
+   <li>updated protein databank (extra/pdb) functions</li>
+   <li>new functions: wavread wavwrite hann strfind randp sprandn conv2nan</li>
+   <li>many bug fixes and improvements</li>
+</ul>
+</dd>
+<dt>September 07, 2004</dt>
+<dd>
+<p>Octave-forge version 20040907 released. Extends support to Octave 2.1.58.
+An abbreviated list of changes is:</p>
+<ul>
+   <li>Base</li>
+   <ul>
+      <li>getfield/setfield now have a compatible interface; for the
+          old behaviour, use setfields/getfields.</li>
+      <li>Fill full 53-bit mantissa with the random number generators; new 
+          sequences will be different from old sequences with the same 
+          seed.</li>
+      <li>Removed restrictions on datenum/datevec and added 
+          calendar/eomday</li>
+      <li>Added nthroot to return real root if available</li>
+      <li>Added isa to test for class membership</li>
+      <li>clf resets to line graphs</li>
+      <li>Quiver plot is faster and no longer requires clf</li>
+      <li>Added audio playback on OS X</li>
+   </ul>
+   <li>Image processing</li>
+   <ul>
+      <li>Initial support for int* types.</li>
+      <li>Added dilate erode bweuler bwmorph houghtf stretchlim
+          makelut applylut uintlut padarray roicolor poly2mask
+          qtdecomp qtgetblk qtsetblk bestblk blkproc nlfilter
+          cmunique cmpermute col2im im2col graycomatrix conndef isrgb</li>
+   </ul>
+   <li>Optimization</li>
+   <ul>
+      <li>Replacement fzero using Brent's root finder</li>
+   </ul>
+   <li>Communications:</li>
+   <ul>
+      <li>Support for concatenation operator [] on galois type</li>
+      <li>Reduce restrictions on bchpoly syndtable</li>
+   </ul>
+   <li>Signal processing:</li>
+   <ul>
+      <li>Added flattopwin</li>
+      <li>fir1/fir2 have more flexible argument handling</li>
+   </ul>
+   <li>Sparse:</li>
+   <ul>
+      <li>Load/save support</li>
+      <li>Support for concatenation operator []</li>
+      <li>Added pcr for preconditioned conjugate gradient</li>
+   </ul>
+   <li>Statistics:</li>
+   <ul>
+      <li>Added histfit pareto tabulate anderson_darling_cdf 
+          anderson_darling_test</li>
+   </ul>
+</ul>
+</dd>
+<dt>July 07, 2004</dt>
+<dd>
+<p>Octave-forge version 20040707 released. Extends support to Octave 2.1.57.
+An abbreviated list of changes is:</p>
+<ul>
+   <li>The optimization functions have been replaced but the new interface 
+       is not yet settled.  See the files in the optim directory.</li>
+   <li>New package gsl: GNU Scientific library bindings.</li>
+   <li>New package fixed: Fixed point numeric operations.</li>
+   <li>New functions: polyconf wsolve fullfact pcg princomp filtic
+       rande azimuth deg2rad rad2deg distance zoom inputname fnval
+       fftconv2 mvaar</li>
+   <li>Bug fixes everywhere they are found.</li>
+</ul>
+</dd>
+<dt>February 11, 2004</dt>
+<dd>
+<p>Octave-forge version 20040211 released. Extends support to Octave
+2.1.53 for all oct-files.  Improved build environment and better
+testing. We still need more tests! If you need a function and don't
+see any test cases in it, add some and send them our way.  See 
+'help test' for details. An abbreviated list of changes is:</p>
+<ul>
+   <li>Changes</li>
+   <ul>
+      <li>rand/randn: generates a different random number sequence
+          from before.</li>
+   </ul>
+   <li>New functions</li>
+   <ul>
+      <li>anovan: analysis of variance</li>
+      <li>append_save: add a variable to a save file</li>
+      <li>assert: now supports structure arrays and cell arrays</li>
+      <li>BFGSMin: alternative to bfgs minimizer</li>
+      <li>conv2nan: 2-D convolution which ignores missing data</li>
+      <li>convhull/convhulln: now allows direct control of qhull
+          parameters</li>
+      <li>csape: support n=3 case --- need to verify it is correct</li>
+      <li>dxfwrite: output plot to DXF format (AutoCAD)</li>
+      <li>fail: checks if code fails with a given error message</li>
+      <li>galois: load/save support</li>
+      <li>gpick: alternative to ginput</li>
+      <li>imread: now supports 16-bit grayscale</li>
+      <li>irsa_*: irregularly sampled data analysis functions</li>
+      <li>map: apply a function across all elements of a cell array</li>
+      <li>mex: initial support for structures</li>
+      <li>pngread/pngwrite: direct access to libpng</li>
+      <li>quadl: improved adaptive quadrature routine</li>
+      <li>rand/randn: faster and now supports for nD arrays</li>
+      <li>sort: fast sort based on python's timsort</li>
+      <li>sprandn: random sparse matrix filled with normally
+      distributed values</li>
+      <li>str2double: convert string to double</li>
+      <li>struct: now creates structure arrays</li>
+      <li>toggle_grace_use: use grace plotting package rather than gnuplot</li>
+      <li>xmlwrite: save data to xml format</li>
+   </ul>
+   <li>Plus the usual bug fixes and documentation updates.</li>
+</ul>
+</dd>
+<dt>June 02, 2003</dt>
+<dd>
+<p>Octave-forge version 20030602 released. For Octave 2.1.36 and up.
+An abbreviated list of changes is:</p>
+<ul>
+   <li>Extended support backward to octave 2.1.36 and forward to octave 2.1.49
+       for all oct-files.  Some scripts make use of features only available in
+       more recent versions of Octave.</li>
+   <li>Communications:</li>
+   <ul>
+       <li>sqrt over Galois field</li>
+       <li>BCH code, modulator</li>
+       <li>bug fixes and documentation improvements</li>
+   </ul>
+   <li>Image:</li>
+   <ul>
+      <li>added rotate_scale()</li>
+   </ul>
+   <li>Optimization:</li>
+   <ul>
+      <li>added Nick Higham's adsmax, mdsmax nmsmax for fmins</li>
+      <li>lp() fix range error</li>
+   </ul>
+   <li>Plotting:</li>
+   <ul>
+      <li>surf()/surfc() support gnuplot 3.8i shaded surfaces</li>
+      <li>added peaks()</li>
+      <li>legend() inside/ouside/boxon/boxoff/right/left</li>
+   <li>Signal Processing </li>
+      <li>added freqs, invfreqs, invfreqz</li>
+      <li>return statespace and laplacian IIR filters (butter, cheby1, 
+          cheby2, ellip)</li>
+      <li>fixed aryule() to return the correct filter
+   </ul>
+   <li>Statistics:</li>
+   <ul>
+      <li>added normplot()</li>
+      <li>scatter() optimization</li>
+   </ul>
+   <li>Sparse:</li>
+   <ul>
+      <li>added concatenation functions spvcat() and sphcat()</li>
+   </ul>
+   </li>Symbolic: </li>
+   <ul>
+      <li>added poly2sym, sym2poly, numden, findsymbols, findsym, symlsolve, 
+          symfsolve, syminfo</li>
+      <li>subs() accepts cell arrays</li>
+   </ul>
+   <li>TSA/NaN:</li>
+   <ul>
+      <li>many bug fixes and documentation improvements</li>
+   </ul>
+   <li>Miscellaneous:</li>
+   <ul>
+      <li>added cellstr()</li>
+      <li>fieldnames() now returns cell array</li>
+      <li>listen() bugfixes</li>
+      <li>ellipke() supports m < 0</li>
+      <li>deal() now supports [a,b] = deal(b,a)</li>
+      <li>dlmread() converted to C++ for speed and more flexible input</li>
+   </ul>
+   <li>administration: </li>
+   <ul>
+      <li>target specific build instructions (MacOSX, windows, Irix)</li>
+   </ul>
+</ul>
+</dd>
+<dt>February 22, 2003</dt>
+<dd>
+<p>Octave-forge version 20030222 released. An abbreviated list of 
+changes is:</p>
+<ul>
+   <li>Updates for octave 2.1.45</li>
+   <li>Parallel: Light weight parallel programming added but 
+        flagged NOINSTALL.</li>
+   <li>Communications: add galois field functions and others</li>
+   <li>Signal Processing: add convmtx and dftmtx</li>
+   <li>Geometry: add (poor) griddata/tsearch support --- please improve!!</li>
+   <li>VRML: new options 'z(grey|rb|col)' for vmesh() and
+        vrml_surf(). Fixes and improvements to many functions.</li>
+   <li>NaN: enhanced cov/covm, NaN arithmetic fixes </li>
+   <li>TSA: bug fix (matlab 5.3 bug)</li>
+   <li>Sparse: add spstats and x.^a, more robust</li>
+   <li>Base functions: add fileparts, filesep, char, dos; improve dlmread</li>
+   <li>Function overloading: dispatch() lets you call tf rather
+        than f if the first argument to f is t.</li>
+   <li>Octave server: listen() sets up a socket to receive octave
+        commands from a particular host --- please improve!!</li>
+   <li>Many fixes, compatibility improvements and better Windows support.</li>
+</ul>
+</dd>
+<dt>November 30, 2002</dt>
+<dd>
+<p>Octave-forge version 20021130 released. For Octave 2.1.40. An
+abbreviated list of changes is:</p>
+<ul>
+   <li>New functions</li>
+   <ul>
+      <li>general/ndims: compatibility function</li>
+      <li>image/imginfo: determines size of image using 'convert'</li>
+      <li>image/colfilt: image block filtering function</li>
+      <li>image/im{rotate,translate,shear}: image transformations</li>
+      <li>miscellaneous/inline: generate a function from an expression</li>
+      <li>miscellaneous/slurp_file: loads a file into a string</li>
+      <li>miscellaneous/{rotv,rotparams}: parameterize 3D rotation
+          matrices</li>
+      <li>plot/contour.f: filled contours</li>
+      <li>sparse/{sprand,spdiags,issparse}: sparse functions</li>
+      <li>specfun/lambertw: Lambert's W function: x=w(x)*exp(w(x))</li>
+      <li>specfun/betaln: log beta</li>
+      <li>splines/pchip: Piecewise Cubic Hermitian Interpolating
+          Polynomial</li>
+      <li>statistics/{boxplot,scatter}: statistical plots</li>
+      <li>symbolic/{cheb,chebwin}: Dolph-Chebyshev windows</li>
+      <li>vrml/vmesh: 3D visualization of a surface</li>
+      <li>vrml/*: represent and show 3D objects as VRML code (needs
+          FreeWRL)</li>
+   </ul>
+   <li>Extended interfaces</li>
+   <ul>
+      <li>audio/au{load,save}: support floating point .wav formats</li>
+      <li>image/colorgradient: allow instantaneous transitions (weight 0)</li>
+      <li>optim/wpolyfit: option to fit through origin</li>
+      <li>signal/{ellip,ellipord}: compatible interfac</li>
+      <li>sparse/spy: accept dense matrices</li>
+      <li>strings/mat2string: accept [] and complex</li>
+      <li>symbolic/*: relational operators</li>
+      <li>time/datestr: more format codes; handle vectors of
+          dates</li>
+   </ul>
+   <li>Changed interfaces</li>
+   <ul>
+      <li>image/bwlabel: C++ version---may be different from m-file
+          interface</li>
+      <li>extra/ode: moved from v1.06 to v1.14</li>
+      <li>optim/*: unified interface supporting options</li>
+      <li>optim/wpolyfit: don't return yf</li>
+      <li>optim/wpolyfit: return row vectors for compatibility with
+          polyfit</li>
+      <li>signal/nellip: replaced by ellip, ellipord</li>
+      <li>OCTAVE_FORGE_VERSION is now an ordered integer: yyyymmdd</li>
+      <li>FIXES/fsolve: removed because it hasn't been updated to 2.1.40</li>
+   </ul>
+   <li>extra/tsa</li>
+   <ul>
+      <li>significance test and confidence intervals for PACF</li>
+      <li>added histogram functions for multicolumn data</li>
+      <li>support for new releases of octave and matlab</li>
+      <li>bug fixes</li>
+   </ul>
+   <li>extra/NaN</li>
+   <ul>
+      <li>added TRIMEAN, NORMPDF, NORMCDF and NORMRND</li>
+      <li>extended NANTEST</li>
+      <li>significance test and confidence intervals for CORRCOEF</li>
+      <li>faster RANKS</li>
+      <li>support for new releases of octave and matlab</li>
+   </ul>
+   <li>Internal changes</li>
+   <ul>
+      <li>extra/symband: eigenvector bug removed</li>
+      <li>io/dlmread: returned matrix was transposed</li>
+      <li>general/rat: display 1/0 for infinity</li>
+      <li>plot/ginput: m-file version based on grab.cc</li>
+      <li>plot/legend: give gnuplot time to respond to parameter request</li>
+      <li>signal/{buttord,fir1}: bug fixes</li>
+      <li>sparse/spy: prettier graph</li>
+      <li>gcc 3.2 updates</li>
+      <li>octave 2.1.40 updates</li>
+      <li>remove functions and fixes that are now in octave</li>
+   </ul>
+   <li>Administration</li>
+   <ul>
+      <li>vrml/doc: LaTeX tutorial on 3D visualization tools</li>
+      <li>Octave for Windows FAQ updates</li>
+      <li>INSTALL.WINDOWS installation notes</li>
+      <li>support for static build under Windows</li>
+   </ul>
+</ul>
+</dd>
+<dt>May 09, 2002</dt>
+<dd>
+<p>Octave-forge version 20020509 released. This is a bug fix release.
+Many thanks to the good folks at Debian for finding the portability 
+problems. An abbreviated list of changes is:</p>
+<ul>
+   <li>New functions</li>
+   <ul>
+      <li>miscellaneous/OCTAVE_FORGE_VERSION</li>
+      <li>extra/tsa/durlev</li>
+      <li>strings/base64encode</li>
+      <li>signal/guasswin</li>
+      <li>image/colfilt</li>
+   </ul>
+   <li>Changes</li>
+   <ul>
+      <li>audio/sound: uses ssh rather than rsh for remote audio</li>
+      <li>testfun/assert: use tol>0 for relative error, tol<0 for
+          absolute err</li>
+      <li>optim/bfgs: new interface</li>
+      <li>optim/minimize: ndiff, jac, hess and ihess options</li>
+      <li>NaN/sumskipnan: additional outputs</li>
+      <li>NaN/*: bug fixes</li>
+   </ul>
+   <li>Bug fixes</li>
+   <ul>
+      <li>signal/triang: for n=2, peak=1 at the virtual center of
+          the window</li>
+      <li>signal/gaussian: now returns a symmetric window</li>
+      <li>now compiles on most Debian systems which support Octave.</li>
+      <li>updated doc strings, tests
+   </ul>
+   <li>Administration</li>
+   <ul>
+      <li>make check and make icheck added.  Only supports the compiled
+	  functions at the moment, but it is a start.
+   </ul>
+</ul>
+</dd>
+</dl>
+</div>
+__TRAILER__

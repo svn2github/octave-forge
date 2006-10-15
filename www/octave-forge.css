@@ -38,10 +38,10 @@ div#nav {
 
 div#nav a {
   //background-color: #729fcf;
-  background-color: #4e9a06;
+  background-color: #73d216; //#4e9a06;
   border: 1px solid;
   //border-color: #3465a4;
-  border-color: #73d216;
+  border-color: #4e9a06; //#73d216;
   display: block;
   padding: 0.2em 0.5em 0.2em 0.5em ;
   text-decoration: none;
@@ -51,7 +51,7 @@ div#nav a {
 
 div#nav a:hover {
   //background-color: #204a87;
-  background-color: #73d216;
+  background-color: #4e9a06; //#73d216;
 }
 
 /* the navigation choices for function reference. */
@@ -59,7 +59,7 @@ div#nav a:hover {
 div#nav2 {
   float: right;
   //background-color: #729fcf;
-  background-color: #4e9a06;
+  background-color: #73d216; //#4e9a06;
   //border: 1px solid;
   padding: 3px;
   
@@ -107,10 +107,10 @@ div#title {
 div#title h1 {
   background-color: #ffffff;
   //border-bottom: 4px solid #729fcf;
-  border-bottom: 4px solid #4e9a06;
+  border-bottom: 4px solid #73d216; //#4e9a06;
   font-size: xx-large;
   //color: #729fcf;
-  color: #4e9a06;
+  color: #73d216; //#4e9a06;
   padding: 0;
   margin: 0;
 }
@@ -186,7 +186,7 @@ div.package {
 
 a.package_link {
   color: black;
-  font-weight: bold;
+  font-weight: bold;#73d216; //#4e9a06;
   font-size: 80%;
   text-decoration: none;
 }

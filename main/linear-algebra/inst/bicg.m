@@ -49,6 +49,9 @@ function x = bicg(A,b,tol,maxit,M)
 	if(!isscalar(tol))
 		error('tol must be a scalar');
 	endif
+	if(!isscalar(maxit))
+		error('maxit must be a scalar');
+	endif
 	if(rows(M) != rows(A) && columns(M) != columns(A))
 		error('M and A must have the same size');
 	endif

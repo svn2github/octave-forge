@@ -161,7 +161,7 @@ Debugging
  debug_on_warning
  debug_symtab_lookups
 Installation
- mkoctfile mex tar untar unzip pkg
+ mkoctfile mex tar untar zip unzip pkg
  compare_versions movefile 
 Profiling
  profile 
@@ -519,7 +519,6 @@ Matrix factorization
  lu 
  qr 
  svd 
- gsvd 
  hess 
  qz 
  schur 
@@ -599,7 +598,6 @@ Linear algebra
  sprank
  svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
 Iterative techniques
- bicg
  bicgstab
  cgs
  cholinc
@@ -836,10 +834,7 @@ Interpolation
  lookup
 Spline functions
  interp1
- csapi
- csape
  csaps
- fnplt fnder
  gcvspl
 Geometry
  delaunay 
@@ -966,7 +961,8 @@ Figure controls
  clg
  replot
 Axis controls
- axis 
+ axis
+ box 
  grid 
  hold 
  ishold 

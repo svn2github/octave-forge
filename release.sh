@@ -1,4 +1,4 @@
-# !/bin/sh
+#! /bin/sh
 
 ## These are the steps you need to take to do a new octave-forge release.
 ## You will need:
@@ -27,95 +27,89 @@
 ##
 ##    Make sure it builds on your machine at least.
 ##
-## 3) cvs2cl.pl -f changes
+## 3) admin/make_index
 ##
-##    Generate a list of changes.  Use it to update RELEASE_NOTES with 
-##    a summary of changes.  Set the date in the RELEASE_NOTES file.
+##    Check the list of function that are either not found or uncategorized
+##    and fix the INDEX files accordingly.
 ##
-## 4) cvs commit RELEASE_NOTES
+## 4) cvs2cl.pl -f changes
 ##
-##    Post the new notes.
+##    Generate a list of changes.  Use it to update www/NEWS.in and
+##    www/index.in with a summary of changes.
 ##
-## 3) admin/get_contents
-## 
-##    Update README and the developer's guide.  Follow the instructions 
-##    for updating the web and CVS.
+## 5) make clean; make; make www
 ##
-## 4) admin/get_authors
+##    Build the web-pages and ancillary files.
+##
+## 6) admin/get_authors
 ##
 ##    Verify copyrights.  Look at the AUTHORS file to see which names
 ##    have been butcherd and update the corresponding sources.
 ##
-## 5) admin/make_index
+## 7) cvs commit AUTHORS, README, www/index.in, www/NEWS.in and 
+##    www/developers.in
 ##
-##    Verify documentation and licenses.  To update the web docs, use the 
-##    following commands:
-##
-##        tar czf index.tar.gz index
-##        scp index.tar.gz $OFHOME
-##        ssh octave.sf.net
-##        cd /home/groups/o/oc/octave/htdocs
-##        rm -rf index
-##        tar xzf index.tar.gz
-##	  chmod -R g+w index
-##
-## 6) cvs -q update -dP
+## 8) cvs -q update -dP
 ##
 ##    Make sure you've logged all changes to licenses and doc strings.
 ##
-## 7) ./release.sh
+## 9) ./release.sh
 ##
-##    This is the actual release step.  It tags the CVS tree and generates 
-##    a release tarball. 
+##    This is the actual release step.  It tags the CVS tree.
 ##
-## 8) https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
+## 10) https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
 ##
 ##    Log in to your source forge account and announce the release of the
-##    package.  Cut and paste the top two sections of RELEASE_NOTES.  Use 
-##    the Upload button to add the new tarball
+##    packages.  Check the MD5 sums of the package files on sourceforge
+##    against the MD5 sums of the files in packages/{main,extra,nonfree}.
+##    Upload the packages that have changed with appropriate notes.
 ##
-##        octave-forge-yyyy.mm.dd.tar.gz
+## 11) Upload the webpages to sourceforge.
 ##
-## 9) sources@octave.org, octave-dev@lists.sf.net
+##        tar cvzf www.tar.gz www
+##        scp www.tar.gz $OFHOME
+##        ssh octave.sf.net
+##        cd /home/groups/o/oc/octave/htdocs
+##        rm -rf *
+##        tar xzf www.tar.gz
+##        mv -pr www/* .
+##        rmdir www 
+##        chmod -R g+w *
+##
+## 12) sources@octave.org, octave-dev@lists.sf.net
 ##
 ##    Announce the new release on the appropriate mailing lists.
 ##
-## 10) ./cvs-tree > afunclist.html; scp afunclist.html $OFHOME
-##
-##    Update the alphabetical list (do we still need this??)
-##
 ## Done.
+
+# Find the name of cvs2cl
+if which cvs2cl.pl > /dev/null 2>&1; then
+  CVS2CL="cvs2cl.pl"
+elif which cvs2cl > /dev/null 2>&1; then
+  CVS2CL="cvs2cl"
+else
+  echo "Can not find cvs2cl. Please visit http://www.red-bean.com/cvs2cl/"
+  exit -1;
+fi
 
 # base name of the project
 PROJECT=octave-forge
 
 # use Ryyyy-mm-dd as the tag for revision yyyy.mm.dd
 TAG=R`date +%Y-%m-%d`
-ROOT=$PROJECT-`date +%Y.%m.%d`
 
 # generate the updated ChangeLog and version command
-cvs2cl.pl --fsf --file ChangeLog.tmp
+$(CVS2CL) --fsf --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
-cat <<EOF > main/miscellaneous/OCTAVE_FORGE_VERSION.m
-## OCTAVE_FORGE_VERSION The release date of octave-forge, as integer YYYYMMDD
-function v=OCTAVE_FORGE_VERSION
-  v=`date +%Y%m%d`;
-endfunction
-EOF
-cvs commit -m "$TAG release" ChangeLog main/miscellaneous/OCTAVE_FORGE_VERSION.m
+cp ChangeLog www/ChangeLog
+
+# generate the AUTHORS file
+./admin/get_authors
+
+exit 0;
+
+cvs commit -m "$TAG release" ChangeLog www/ChangeLog README AUTHORS
 
 # tag the CVS tree with the revision number
 cvs rtag -F $TAG $PROJECT
-
-# extract the tree into a tagged directory
-cvs export -r $TAG -d $ROOT $PROJECT
-
-# generate the AUTHORS file
-( cd $ROOT ; make dist )
-
-# build the tar ball
-tar czf $ROOT.tar.gz $ROOT
-
-# remove the tagged directory
-rm -rf $ROOT

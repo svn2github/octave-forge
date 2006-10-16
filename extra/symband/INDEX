@@ -1,4 +1,4 @@
-symband >> Linear Algebra
+matrix >> Linear Algebra
 Banded matrices
   BandToFull BandToSparse FullToBand
   SBBacksub SBEig SBFactor SBFactor2 SBProd SBSolve

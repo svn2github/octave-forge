@@ -1,4 +1,4 @@
-spline-gcvspl >> Spline function based on GCVSPL package
-Interpolation
+analysis >> Data analysis
+Spline functions
   csaps
   gcvspl

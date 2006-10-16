@@ -1,3 +1,17 @@
+WWW
+===
+* move www/ directory to doc/htdocs so as to simplify structure of 
+octave-forge and the install process in the sourceforge site. 
+
+* Move www/build-www.py to admin/ as that where all of the other
+scripts are.
+
+* Figure out why the octave-forge.css doesn't pass XHTML validation
+
+Packages
+========
+* Graceplot and GPC package needs conversion to package manager
+
 Bugs
 ====
 * ausave -> auload changes the data
@@ -12,71 +26,33 @@ comments from all of the scripts.  Update all functions to include
 compatibility notes (aka missing features) in these comments.  Some
 function specific notes in matcompat/compat.dat belong in TODO comments.
 
-* make doc subdirectory for each script directory for ancillary docs and 
-use install to put them in a reasonable place; ideally they should 
-piece-wise construct a manual describing the available functions and
-the relationships between them.  Alternatively, each package could have
-an index.html which is installed in /usr/share/doc/octave-forge/package.html
-
-* Use ../../Makeconf for engine functions.  Engine functions are not
-installed; figure out how and where to install them (presumably as
-a shared library in /usr/local/lib).
-
-* extra/ver20 is not presently installed, but it could be if we detected
-an octave version of 2.0.x rather than 2.1.x
-
 * nonfree/gpc uses its own configure script and build process
 
 * consider -enable/disable on a package by package basis as a way
 to override the NOINSTALL files on some of the directories; maybe
 just an -enable-all option?
 
-* how to "chmod a+x octinst.sh" from configure? Currently I do it
-in the makefile during install.
-
 All functions
 =============
 
-* Use texinfo in the function descriptions.  Call makeinfo to preformat 
-the descriptions when installing for version 2.0.x.
+* Use texinfo in the function descriptions.
 
 * Add test and demo scripts for each function.  Should we use
 extra/testfun, or should we use name_test.m and name_demo.m?
 	
 * Replace x(find(cond)) with x(cond) since it is faster and cleaner.
 Remove unwind_protect blocks for do_fortran_indexing, since most
-instances will be covered by this.  For the 2.0.x version of the 
-function you will need to either use find() or set prefer_zero_one_indexing
-to 1 inside an unwind_protect block.
-
-* For 2.0.x, be sure x(:,ones(n,1)) uses prefer_zero_one_indexing = 0.
+instances will be covered by this.
 
 * Replace max(max(x)) with max(x(:)), and so on for min, sum, etc.
-This will be faster when using version >2.1.31
 
 Specific functions
 ==================
 
 * Use newer version of QHull.
 
-* Define idx=lookup(table, y, k) which guarantees that the window of width
-k will lie fully within the table.  Maybe this is equivalent to
-	lookup (table (1+k : length (table)-k), y) + floor(k/2);
-
-* Consider defining lookup as
-	table(idx) < y <= table(idx+1)
-rather than
-	table(idx) <= y < table(idx+1)
-This could be a compatibility issue.
-
-* Maybe recode lookup() in C++.  Use binary search for small y and 
-sort-merge for large y.
-
 * merge plot/dhbar with Octave's bar; add preference variable for 'filled';
 add control for bar width
-
-* split FIXES/freqz into FIXES/freqz and FIXES/freqz_plot so that a 
-non-gnuplot based plot package can override freqz's plot.
 
 * Give ginput a "number of inputs" parameter.  Redefine gtext as an
 m-file which calls ginput(1) to get the text location.

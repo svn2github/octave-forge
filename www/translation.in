@@ -110,8 +110,8 @@ messages stored in the base translation tree.</p>
 <pre>
 	cd octave-2.9.xx
 	./configure
-	(cd src && make omit_deps=1 DOCSTRINGS)
-	(cd scripts && make DOCSTRINGS)
+	(cd src &amp;&amp; make omit_deps=1 DOCSTRINGS)
+	(cd scripts &amp;&amp; make DOCSTRINGS)
 
 </pre>
 </li>

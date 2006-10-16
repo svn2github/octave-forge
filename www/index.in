@@ -1,4 +1,5 @@
 __HEADER__([[[Octave-Forge]]])
+<div class="section">
   <p>
    <img src="greensombrero.png" alt="[3D graph]" style="float:right;" />
    Octave-Forge is a central location for the collaborative
@@ -28,6 +29,64 @@ __HEADER__([[[Octave-Forge]]])
     <a href="http://lists.sourceforge.net/mailman/listinfo/octave-dev">repository mailing list</a>
     or <a href="developers.html">join the development team</a>.
   </p>
-
-
+</div>
+<div class="section">
+<h2>Recent News</h2>
+<p>This is a short abbreviated list of the changes that were introduced in
+recent versions of octave-forge. For a full list of changes please
+see the <a href="__BASE_ADDRESS__/NEWS.html">News Archive</a> or the
+<a href="__BASE_ADDRESS__/ChangeLog">ChangeLog</a>.</p>
+<dl>
+<dt>October 20, 2006</dt>
+<dd>
+<p>Octave-forge reorganized as a series of packages for use with
+the Octave package manager. See the <a
+href="__BASE_ADDRESS__/packages.html">packages</a> for more details
+Apart from the changes associated with the conversion to use the
+package manager, the following additional changes are notable:</p>
+<ul>
+   <li>odepkg: A new matlab compatible package for ODE that replaces
+   the existing extra/ode package</li>
+   <li>info-theory: A new package of information theory functions</li> 
+   <li>linear-algebra: New function bicg</li>
+   <li>spline: Allow NDArrays in csape and make it compatible</li>
+   <li>comm: New functions fibodeco, fibodeco, fiboenco, fibosplitstream,
+   golombdeco, golombenco, huffmandeco, huffmandict, huffmandict,
+   huffmanenco, ricedeco, riceenco, rledeco, rleenco, shannonfanodeco,
+   shannonfanodict and shannonfanoenco</li>
+   <li>specfun: New functions dirac, erfcx, expint_E1, expint_Ei, expint,
+   heaviside, psi, Si, sinint and zeta</li>
+   <li>statistics: New functions betastat, binostat, chi2stat,
+   expstat, fstat, gamstat, geostat, hygestat, lognstat,
+   normstat, pascal_stat, poisstat, tstat, unidstat,
+   unifstat and weibstat</li>
+   <li>polynomial: New function polyint</li>
+   <li>miscellaneous: New functions zagzig, zigzag</li>
+   <li> optim: New function __bfsmin replacing bfgsmin and
+   finitedifference</li>
+   <li>image: __magick_read__ Fix for non 8bit Quantum sizes in 
+   imagemagick</li>
+   <li>general bug fixes and improvements</li>
+</ul>
+</dd>
+<dt>July 09, 2006</dt>
+<dd>
+<p>Octave-forge version 200607008 released. This version version
+was the last monolithic release and the first release that only
+supported version of octave later than Octave 2.9.</p>
+<p>An abbreviated list of changes is:</p>
+<ul>
+   <li>purge functions moved to Octave and remove pre-2.9.x support.</li>
+   <li>comm: new functions pam/genqam/psk mod/demod</li>
+   <li>combinatorics: new functions for integer partitions</li>
+   <li>geometry: fix qhull problems (finally!?)</li>
+   <li>signal: new function square to generate square waves</li>
+   <li>statistics: new function hmm viterbi/generate</li>
+   <li>strings: remove regexp; api changed when moved to Octave</li>
+   <li>linear-algebra: new function for gsvd</li>
+   <li>general bug fixes and improvements</li>
+</ul>
+</dd>
+</dl>
+</div>
 __TRAILER__

@@ -11,7 +11,33 @@ see the <a href="__BASE_ADDRESS__/ChangeLog">ChangeLog</a>.</p>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a
-href="/packages.html">packages</a> for more details</p>
+href="__BASE_ADDRESS__/packages.html">packages</a> for more details.
+Apart from the changes associated with the conversion to use the
+package manager, the following additional changes are notable:</p>
+<ul>
+   <li>odepkg: A new matlab compatible package for ODE that replaces
+   the existing extra/ode package</li>
+   <li>info-theory: A new package of information theory functions</li> 
+   <li>linear-algebra: New function bicg</li>
+   <li>spline: Allow NDArrays in csape and make it compatible</li>
+   <li>comm: New functions fibodeco, fibodeco, fiboenco, fibosplitstream,
+   golombdeco, golombenco, huffmandeco, huffmandict, huffmandict,
+   huffmanenco, ricedeco, riceenco, rledeco, rleenco, shannonfanodeco,
+   shannonfanodict and shannonfanoenco</li>
+   <li>specfun: New functions dirac, erfcx, expint_E1, expint_Ei, expint,
+   heaviside, psi, Si, sinint and zeta</li>
+   <li>statistics: New functions betastat, binostat, chi2stat,
+   expstat, fstat, gamstat, geostat, hygestat, lognstat,
+   normstat, pascal_stat, poisstat, tstat, unidstat,
+   unifstat and weibstat</li>
+   <li>polynomial: New function polyint</li>
+   <li>miscellaneous: New functions zagzig, zigzag</li>
+   <li> optim: New function __bfsmin replacing bfgsmin and
+   finitedifference</li>
+   <li>image: __magick_read__ Fix for non 8bit Quantum sizes in 
+   imagemagick</li>
+   <li>general bug fixes and improvements</li>
+</ul>
 </dd>
 <dt>July 09, 2006</dt>
 <dd>
@@ -101,7 +127,7 @@ An abbreviated list of changes is:</p>
 <p>Octave-forge version 20040907 released. Extends support to Octave 2.1.58.
 An abbreviated list of changes is:</p>
 <ul>
-   <li>Base</li>
+   <li>Base
    <ul>
       <li>getfield/setfield now have a compatible interface; for the
           old behaviour, use setfields/getfields.</li>
@@ -115,40 +141,40 @@ An abbreviated list of changes is:</p>
       <li>clf resets to line graphs</li>
       <li>Quiver plot is faster and no longer requires clf</li>
       <li>Added audio playback on OS X</li>
-   </ul>
-   <li>Image processing</li>
+   </ul></li>
+   <li>Image processing
    <ul>
       <li>Initial support for int* types.</li>
       <li>Added dilate erode bweuler bwmorph houghtf stretchlim
           makelut applylut uintlut padarray roicolor poly2mask
           qtdecomp qtgetblk qtsetblk bestblk blkproc nlfilter
           cmunique cmpermute col2im im2col graycomatrix conndef isrgb</li>
-   </ul>
-   <li>Optimization</li>
+   </ul></li>
+   <li>Optimization
    <ul>
       <li>Replacement fzero using Brent's root finder</li>
-   </ul>
-   <li>Communications:</li>
+   </ul></li>
+   <li>Communications:
    <ul>
       <li>Support for concatenation operator [] on galois type</li>
       <li>Reduce restrictions on bchpoly syndtable</li>
-   </ul>
-   <li>Signal processing:</li>
+   </ul></li>
+   <li>Signal processing:
    <ul>
       <li>Added flattopwin</li>
       <li>fir1/fir2 have more flexible argument handling</li>
-   </ul>
-   <li>Sparse:</li>
+   </ul></li>
+   <li>Sparse:
    <ul>
       <li>Load/save support</li>
       <li>Support for concatenation operator []</li>
       <li>Added pcr for preconditioned conjugate gradient</li>
-   </ul>
-   <li>Statistics:</li>
+   </ul></li>
+   <li>Statistics:
    <ul>
       <li>Added histfit pareto tabulate anderson_darling_cdf 
           anderson_darling_test</li>
-   </ul>
+   </ul></li>
 </ul>
 </dd>
 <dt>July 07, 2004</dt>
@@ -174,12 +200,12 @@ testing. We still need more tests! If you need a function and don't
 see any test cases in it, add some and send them our way.  See 
 'help test' for details. An abbreviated list of changes is:</p>
 <ul>
-   <li>Changes</li>
+   <li>Changes
    <ul>
       <li>rand/randn: generates a different random number sequence
           from before.</li>
-   </ul>
-   <li>New functions</li>
+   </ul></li>
+   <li>New functions
    <ul>
       <li>anovan: analysis of variance</li>
       <li>append_save: add a variable to a save file</li>
@@ -207,7 +233,7 @@ see any test cases in it, add some and send them our way.  See
       <li>struct: now creates structure arrays</li>
       <li>toggle_grace_use: use grace plotting package rather than gnuplot</li>
       <li>xmlwrite: save data to xml format</li>
-   </ul>
+   </ul></li>
    <li>Plus the usual bug fixes and documentation updates.</li>
 </ul>
 </dd>
@@ -219,64 +245,66 @@ An abbreviated list of changes is:</p>
    <li>Extended support backward to octave 2.1.36 and forward to octave 2.1.49
        for all oct-files.  Some scripts make use of features only available in
        more recent versions of Octave.</li>
-   <li>Communications:</li>
+   <li>Communications:
    <ul>
        <li>sqrt over Galois field</li>
        <li>BCH code, modulator</li>
        <li>bug fixes and documentation improvements</li>
-   </ul>
-   <li>Image:</li>
+   </ul></li>
+   <li>Image:
    <ul>
       <li>added rotate_scale()</li>
-   </ul>
-   <li>Optimization:</li>
+   </ul></li>
+   <li>Optimization:
    <ul>
       <li>added Nick Higham's adsmax, mdsmax nmsmax for fmins</li>
       <li>lp() fix range error</li>
-   </ul>
-   <li>Plotting:</li>
+   </ul></li>
+   <li>Plotting:
    <ul>
       <li>surf()/surfc() support gnuplot 3.8i shaded surfaces</li>
       <li>added peaks()</li>
       <li>legend() inside/ouside/boxon/boxoff/right/left</li>
-   <li>Signal Processing </li>
+   </ul></li>
+   <li>Signal Processing:
+   <ul>
       <li>added freqs, invfreqs, invfreqz</li>
       <li>return statespace and laplacian IIR filters (butter, cheby1, 
           cheby2, ellip)</li>
-      <li>fixed aryule() to return the correct filter
-   </ul>
-   <li>Statistics:</li>
+      <li>fixed aryule() to return the correct filter</li>
+   </ul></li>
+   <li>Statistics:
    <ul>
       <li>added normplot()</li>
       <li>scatter() optimization</li>
-   </ul>
-   <li>Sparse:</li>
+   </ul></li>
+   <li>Sparse:
    <ul>
       <li>added concatenation functions spvcat() and sphcat()</li>
-   </ul>
-   </li>Symbolic: </li>
+   </ul></li>
+   <li>Symbolic:
    <ul>
       <li>added poly2sym, sym2poly, numden, findsymbols, findsym, symlsolve, 
           symfsolve, syminfo</li>
       <li>subs() accepts cell arrays</li>
-   </ul>
-   <li>TSA/NaN:</li>
+   </ul></li>
+   <li>TSA/NaN:
    <ul>
       <li>many bug fixes and documentation improvements</li>
-   </ul>
-   <li>Miscellaneous:</li>
+   </ul></li>
+   <li>Miscellaneous:
    <ul>
       <li>added cellstr()</li>
       <li>fieldnames() now returns cell array</li>
       <li>listen() bugfixes</li>
-      <li>ellipke() supports m < 0</li>
+      <li>ellipke() supports m &lt; 0</li>
       <li>deal() now supports [a,b] = deal(b,a)</li>
       <li>dlmread() converted to C++ for speed and more flexible input</li>
-   </ul>
-   <li>administration: </li>
+   </ul></li>
+   <li>Administration:
    <ul>
       <li>target specific build instructions (MacOSX, windows, Irix)</li>
-   </ul>
+   </ul></li>
 </ul>
 </dd>
 <dt>February 22, 2003</dt>
@@ -308,7 +336,7 @@ changes is:</p>
 <p>Octave-forge version 20021130 released. For Octave 2.1.40. An
 abbreviated list of changes is:</p>
 <ul>
-   <li>New functions</li>
+   <li>New functions
    <ul>
       <li>general/ndims: compatibility function</li>
       <li>image/imginfo: determines size of image using 'convert'</li>
@@ -329,8 +357,8 @@ abbreviated list of changes is:</p>
       <li>vrml/vmesh: 3D visualization of a surface</li>
       <li>vrml/*: represent and show 3D objects as VRML code (needs
           FreeWRL)</li>
-   </ul>
-   <li>Extended interfaces</li>
+   </ul></li>
+   <li>Extended interfaces
    <ul>
       <li>audio/au{load,save}: support floating point .wav formats</li>
       <li>image/colorgradient: allow instantaneous transitions (weight 0)</li>
@@ -341,8 +369,8 @@ abbreviated list of changes is:</p>
       <li>symbolic/*: relational operators</li>
       <li>time/datestr: more format codes; handle vectors of
           dates</li>
-   </ul>
-   <li>Changed interfaces</li>
+   </ul></li>
+   <li>Changed interfaces
    <ul>
       <li>image/bwlabel: C++ version---may be different from m-file
           interface</li>
@@ -354,23 +382,23 @@ abbreviated list of changes is:</p>
       <li>signal/nellip: replaced by ellip, ellipord</li>
       <li>OCTAVE_FORGE_VERSION is now an ordered integer: yyyymmdd</li>
       <li>FIXES/fsolve: removed because it hasn't been updated to 2.1.40</li>
-   </ul>
-   <li>extra/tsa</li>
+   </ul></li>
+   <li>extra/tsa
    <ul>
       <li>significance test and confidence intervals for PACF</li>
       <li>added histogram functions for multicolumn data</li>
       <li>support for new releases of octave and matlab</li>
       <li>bug fixes</li>
-   </ul>
-   <li>extra/NaN</li>
+   </ul></li>
+   <li>extra/NaN
    <ul>
       <li>added TRIMEAN, NORMPDF, NORMCDF and NORMRND</li>
       <li>extended NANTEST</li>
       <li>significance test and confidence intervals for CORRCOEF</li>
       <li>faster RANKS</li>
       <li>support for new releases of octave and matlab</li>
-   </ul>
-   <li>Internal changes</li>
+   </ul></li>
+   <li>Internal changes
    <ul>
       <li>extra/symband: eigenvector bug removed</li>
       <li>io/dlmread: returned matrix was transposed</li>
@@ -382,14 +410,14 @@ abbreviated list of changes is:</p>
       <li>gcc 3.2 updates</li>
       <li>octave 2.1.40 updates</li>
       <li>remove functions and fixes that are now in octave</li>
-   </ul>
-   <li>Administration</li>
+   </ul></li>
+   <li>Administration
    <ul>
       <li>vrml/doc: LaTeX tutorial on 3D visualization tools</li>
       <li>Octave for Windows FAQ updates</li>
       <li>INSTALL.WINDOWS installation notes</li>
       <li>support for static build under Windows</li>
-   </ul>
+   </ul></li>
 </ul>
 </dd>
 <dt>May 09, 2002</dt>
@@ -398,37 +426,37 @@ abbreviated list of changes is:</p>
 Many thanks to the good folks at Debian for finding the portability 
 problems. An abbreviated list of changes is:</p>
 <ul>
-   <li>New functions</li>
+   <li>New functions
    <ul>
       <li>miscellaneous/OCTAVE_FORGE_VERSION</li>
       <li>extra/tsa/durlev</li>
       <li>strings/base64encode</li>
       <li>signal/guasswin</li>
       <li>image/colfilt</li>
-   </ul>
-   <li>Changes</li>
+   </ul></li>
+   <li>Changes
    <ul>
       <li>audio/sound: uses ssh rather than rsh for remote audio</li>
-      <li>testfun/assert: use tol>0 for relative error, tol<0 for
+      <li>testfun/assert: use tol &gt; 0 for relative error, tol &lt; 0 for
           absolute err</li>
       <li>optim/bfgs: new interface</li>
       <li>optim/minimize: ndiff, jac, hess and ihess options</li>
       <li>NaN/sumskipnan: additional outputs</li>
       <li>NaN/*: bug fixes</li>
-   </ul>
-   <li>Bug fixes</li>
+   </ul></li>
+   <li>Bug fixes
    <ul>
       <li>signal/triang: for n=2, peak=1 at the virtual center of
           the window</li>
       <li>signal/gaussian: now returns a symmetric window</li>
       <li>now compiles on most Debian systems which support Octave.</li>
-      <li>updated doc strings, tests
-   </ul>
-   <li>Administration</li>
+      <li>updated doc strings, tests</li>
+   </ul></li>
+   <li>Administration
    <ul>
       <li>make check and make icheck added.  Only supports the compiled
-	  functions at the moment, but it is a start.
-   </ul>
+	  functions at the moment, but it is a start.</li>
+   </ul></li>
 </ul>
 </dd>
 </dl>

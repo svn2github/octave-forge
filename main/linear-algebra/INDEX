@@ -1,0 +1,14 @@
+matrix >> Linear Algebra
+Matrix functions
+ funm
+ thfm
+Matrix factorization
+ gsvd 
+ GramSchmidt
+Test
+ test_gsvd
+
+sparse >> Sparse matrix support
+Iterative techniques
+ bicg
+

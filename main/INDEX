@@ -826,16 +826,13 @@ Interpolation
  interp2 
  interp3 
  interpn 
- spline 
  pchip pchip_deriv
- ppval fnval
- mkpp 
- unmkpp 
  lookup
 Spline functions
- interp1
- csaps
- gcvspl
+ spline 
+ ppval
+ mkpp 
+ unmkpp 
 Geometry
  delaunay 
  delaunay3

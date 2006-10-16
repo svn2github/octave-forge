@@ -114,11 +114,12 @@ Octave has evolved into a source repository is octave pacakges rather
 than a package in itself. Each sub-directory is considered to be a
 package and should respect Octave's package managers file layout.</p>
 <dl>
-<dt>package/NOINSTALL
+<dt>package/NOINSTALL</dt>
 <dd>	This is an optional file, whose presence tells octave-forge
 	that this package should be ignored. This is typically for
 	packages that are kept for historical reasons.
-<dt>package/DESCRIPTION
+</dd>
+<dt>package/DESCRIPTION</dt>
 <dd>	This is a required file containing information about the
 	package. It must contain the following fields
     <table border="1">
@@ -153,9 +154,9 @@ package and should respect Octave's package managers file layout.</p>
 <pre>
 	Depends: package (>= 1.0.0)
 </pre>
-	      Possible operators are <, <=, ==, >= or >. If the part
-	      of the dependency in () is missing, any version of the
-	      package is acceptable. Multiple dependencies can be
+	      Possible operators are &lt;, &lt;=, ==, &gt;= or &gt;. If
+	      the part of the dependency in () is missing, any version
+	      of the package is acceptable. Multiple dependencies can be
 	      defined either as a comma separated list or on separate
 	      Depends lines.</td></tr>
       <tr><td>License:</td>
@@ -178,8 +179,7 @@ package and should respect Octave's package managers file layout.</p>
 	      dependency removes the need for a SystemRequirements
 	      dependency.</td></tr>
     </table>
-    The file format should be something like this:
-    </p>
+    <p>The file format should be something like this:</p>
     <ul>
       <li>Lines starting with # are comments</li>
 
@@ -202,14 +202,16 @@ package and should respect Octave's package managers file layout.</p>
 	where the first package name will be used as a default and if
         the RPMs are built on a Mandriva distribution, then the second
         package name will be used instead.
-<dt>package/COPYING
-<dd>	This is a required file containing the license of the package.
-<dt>package/INDEX
+</dd>
+<dt>package/COPYING</dt>
+<dd>	This is a required file containing the license of the package.</dd>
+<dt>package/INDEX</dt>
 <dd>	This is an optional file describing the functions provided by
 	the package. If this file is not given then one with be
 	created automatically from the functions in the package and
 	the Categories keyword.
-<dt>package/PKG_ADD
+</dd>
+<dt>package/PKG_ADD</dt>
 <dd>	An optional file that includes commands that are run when the
         package is added to the users path. Note that PKG_ADD
         directives in the source code of the package will also be
@@ -224,12 +226,14 @@ ln -s foo.oct bar.oct
 <pre><i>
 autoload ('bar', which ('foo'));
 </i></pre>
-<dt>package/PKG_DEL
+</dd>
+<dt>package/PKG_DEL</dt>
 <dd>	An optional file that includes commands that are run when the
         package is removed from the users path. Note that PKG_DEL
         directives in the source code of the package will also be
         added to this file by the octave package manager.
-<dt>package/Makefile
+</dd>
+<dt>package/Makefile</dt>
 <dd>	This is an optional file that is for the use of Octave-Forge
         only. It allows the developer to have fine control over
         exactly what is included in the package and anything that
@@ -255,16 +259,20 @@ post-pkg/%::
 </pre>
 	which packages all of the required and existing optional files
 	and directories discussed here. 
-<dt>package/pre_install.m
+</dd>
+<dt>package/pre_install.m</dt>
 <dd>	This is an optional script that is run prior to the
         installation of a package.
-<dt>package/post_install.m
+</dd>
+<dt>package/post_install.m</dt>
 <dd>	This is an optional script that is run after the
         installation of a package.
-<dt>package/on_uninstall.m
+</dd>
+<dt>package/on_uninstall.m</dt>
 <dd>	This is an optional script that is run prior to the
         de-installation of a package.
-<dt>package/doc
+</dd>
+<dt>package/doc</dt>
 <dd>	An optional directory containing documentation for the
 	package. The files in this directory will be directly
 	installed in a sub-directory of the installed package for
@@ -272,15 +280,18 @@ post-pkg/%::
 	directory will be included in the octave-forge package
 	webpages. To include images or arbitrary files use a
 	sub-directory html/ in this directory.
-<dt>package/inst
+</dd>
+<dt>package/inst</dt>
 <dd>	An optional directory containing any files that are directly
 	installed by package. Typically this will include any m-files.
-<dt>package/bin
+</dd>
+<dt>package/bin</dt>
 <dd>	An optional directory containing files that will be added to
 	the Octave EXEC_PATH when the package is loaded. This might
 	contain external scripts, etc, called by functions within the
 	package.
-<dt>package/src
+</dd>
+<dt>package/src</dt>
 <dd>	An optional directory containing code that must be 'built' prior
 	to the packages installation. If this directory contains a
 	file autogen.sh, and package/Makefile does not exist, this
@@ -298,11 +309,12 @@ post-pkg/%::
       <li>At some point, it would be good to have a 'build' command
       that creates a binary version of a package. I don't mean a .dep
       or a .rpm, but an octave package, in which everything has been
-      compiled. 
+      compiled.</li> 
       <li>At some point in the future, somebody clever might tell us
       that the package system should run in a sandboxed environment
-      for security reasons.
+      for security reasons.</li>
     </ul>
+</dd>
 </dl>
 
 <h3>Submit your code!</h3>

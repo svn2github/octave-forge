@@ -167,9 +167,15 @@ sub text_bullet_list_to_HTML { # {{{1
 
     # finally, insert the HTML
     for (my $i = 0; $i < scalar @{$ra_contents}; $i++) {
-        $ra_contents->[$i] =~ s{^(\s*)\*}{$1 <li>};
-        $ra_contents->[$i] = "<ul> " . $ra_contents->[$i] if $i == $start_line;
-        $ra_contents->[$i] = $ra_contents->[$i] . "</ul>" if $i == $end_line;
+	if ($i == $start_line) {
+	    $ra_contents->[$i] =~ s{^(\s*)\*}{$1 <li>};
+	    $ra_contents->[$i] = "<ul> " . $ra_contents->[$i];
+	} else {
+	    $ra_contents->[$i] =~ s{^(\s*)\*}{$1 </li>\n$1 <li>};
+	    if ($i == $end_line) {
+		$ra_contents->[$i] = $ra_contents->[$i] . "</li></ul>";
+	    }
+	}
     }
 } # 1}}}
 

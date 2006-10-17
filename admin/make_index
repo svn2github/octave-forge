@@ -681,15 +681,18 @@ sub write_html { # {{{1
 	if ($body ne "") {
 	    # XXX FIXME XXX this will die if the punctuation is too wild
 	    open FUNC, ">$catdir/f/$func.in" or die "Could not open $func.in";
-	    print FUNC "__DOC_HEADER__([[[Function Reference: $func]]])";
-	    print FUNC "<table width=100%><tr><td align=left><b>$func</b>\n";
+	    print FUNC "__DOC_HEADER__([[[Function Reference: $func]]])\n";
+	    print FUNC "<div class=\"func\"><b>$func</b>\n";
 	    # The toolboxes to which it belongs
 	    foreach my $pair ( @{$index_by_function{$func}} ) {
 		my ( $TB, $cat ) = @{$pair};
 		print FUNC "    ", cat_ref_up($TB, $cat, "[$TB]"), "\n";
 	    }
-	    print FUNC "    <td align=right>", download_ref($func), "</table>\n";
+	    print FUNC "</div>\n";
+	    print FUNC "<div class=\"flink\">",download_ref($func),"</div>\n";
+	    print FUNC "<div class=\"ftext\">\n";
 	    print FUNC "$body\n";
+	    print FUNC "</div>\n";
 	    print FUNC "__TRAILER__";
             close FUNC;
 	}
@@ -700,10 +703,10 @@ sub write_html { # {{{1
 	my $next = uc(substr($func, 0, 1));
 	if ($next ne $Letter) {
 	    if ($Letter =~ /[A-Y]/) {
-		print OUT "</dl>\n__TRAILER__\n";
+		print OUT "</div>\n__TRAILER__\n";
 		close OUT;
 	    } else {
-		print OUT "</dl>\n";
+		print OUT "</div>\n";
 	    }
 	    if ($Letter =~ /[\0A-Y]/) {
 		my $head = "";
@@ -720,25 +723,25 @@ sub write_html { # {{{1
 	    }
 	    $Letter = $next;
 	    print OUT "<h2><a name=\"$Letter\">$Letter</a></h2>\n";
-	    print OUT "<dl>\n";
+	    print OUT "<div>\n";
 	}
 
 	# Function reference
-	print OUT "<dt><table width=100%><tr><td align=left><b>",func_ref($func,$func),"</b>\n";
+	print OUT "<div class=\"func\"><b>",func_ref($func,$func),"</b>\n";
 	# The toolboxes to which it belongs
 	foreach my $pair ( @{$index_by_function{$func}} ) {
 	    my ( $TB, $cat ) = @{$pair};
 	    print OUT "    ", cat_ref($TB, $cat, "[$TB]"), "\n";
 	}
-	print OUT "    <td align=right>", download_ref($func), "</table>\n";
-
+	print OUT "</div>\n";
+	print OUT "<div class=\"flink\">",download_ref($func),"</div>\n";
 
 	# column 3:  the function description
 	# XXX FIXME XXX multiple functions???
-	print OUT "    <dd>",html_desc($func),"\n";
+	print OUT "    <div class=\"ftext\">",html_desc($func),"</div>\n";
     }
 
-    print OUT "</dl>\n__TRAILER__\n";
+    print OUT "</div>\n__TRAILER__\n";
     close(OUT);
 } # 1}}}
 sub writenav { # 1{{{
@@ -789,10 +792,10 @@ sub download_ref {
 
     my $path = $function_description{$func}[0];
     if ($path ne "" && $path !~ /^$OCTAVE/) {
-	return "[<a href=\"$FORGECVS$path\?rev=HEAD\&content-type=text/plain\">octave-forge/$path</a>]";
+	return "[<a href=\"$FORGECVS$path\?rev=HEAD\&amp;content-type=text/plain\">octave-forge/$path</a>]";
     } elsif ($path =~ /^$OCTAVE/) {
 	$path =~ s/^$OCTAVE//;
-	return "[<a href=\"$OCTAVECVS$path\?rev=HEAD\&content-type=text/plain\">octave$path</a>]";
+	return "[<a href=\"$OCTAVECVS$path\?rev=HEAD\&amp;content-type=text/plain\">octave$path</a>]";
     } else {
 	return "";
     }
@@ -815,7 +818,7 @@ sub write_TBnavbar { # 1{{{
     open(OUT,">$catdir/$file.include") or die "Could not open $catdir/$file.include";
 
 	#print OUT "<a href=\"__BASE_ADDRESS__/index.html\">Home</a>\n";
-	print OUT "<select name=\"dropdowncat\" size=\"1\" onChange=\"javascript:goto_url(docform.dropdowncat.value)\">\n";
+	print OUT "<select name=\"dropdowncat\" size=\"1\" onchange=\"javascript:goto_url(this)\">\n";
 	print OUT "<option value=\"-1\">Categories</option>\n";
 
     foreach my $TB (toolbox_list_sorted_by_desc()) {
@@ -846,19 +849,18 @@ EOF
     foreach my $cat ( cat_list($TB) ) {
 	my $anchor = cat_anchor($cat);
 	print OUT "<h3><a name=\"$anchor\">$cat</a></h3>\n";
-	print OUT "<dl>\n";
+	print OUT "<div>\n";
 	foreach my $func ( cat_funcs($TB,$cat) ) {
 	    
 	    # column 1:  the function (x-ref to full description in
 	    #                          cvs-tree's html file)
-	    print OUT "<dt><table width=100%><tr><td align=left><b>",func_ref($func,$func),"</b>\n";
-	    print OUT "    <td align=right>", download_ref($func), "</table>\n";
-	    
+	    print OUT "<div class=\"func\"><b>",func_ref($func,$func),"</b></div>\n";
+	    print OUT "    <div class=\"flink\">", download_ref($func), "</div>\n";
 	    # column 2: the description, if it exists
 	    #
-	    print OUT "<dd>",html_desc($func),"\n";
+	    print OUT "<div class=\"ftext\">",html_desc($func),"</div>\n";
 	}
-	print OUT "</dl>\n";
+	print OUT "</div>\n";
     }
     print OUT "__TRAILER__\n";
     close(OUT);
@@ -890,19 +892,20 @@ sub write_package_details { # 1{{{
     print OUT <<EOF;
 __HEADER__([[[$title]]])
 EOF
-    print OUT "<dl>\n";
+    print OUT "<div>\n";
     foreach my $func ( pack_list($packdir) ) {
 	
 	# column 1:  the function (x-ref to full description in
 	#                          cvs-tree's html file)
-	print OUT "<dt><table width=100%><tr><td align=left><b>",func_ref($func,$func),"</b>\n";
-	print OUT "    <td align=right>", download_ref($func), "</table>\n";
+
+	print OUT "<div class=\"func\"><b>",func_ref($func,$func),"</b></div>\n";
+	print OUT "    <div class=\"flink\">", download_ref($func), "</div>\n";
 	
 	# column 2: the description, if it exists
 	#
-	print OUT "<dd>",html_desc($func),"\n";
+	print OUT "<div class=\"ftext\">",html_desc($func),"</div>\n";
     }
-    print OUT "</dl>\n";
+    print OUT "</div>\n";
     print OUT "__TRAILER__\n";
     close(OUT);
 } # 1}}}
@@ -913,7 +916,7 @@ sub write_alphabetic_navbar { # 1{{{
     foreach (first_letters (indexed_funcs())) {
         $A_to_Z .= letter_option($_) . "\n";
     }
-    my $select = "<select name=\"dropdownalpha\" size=\"1\" onChange=\"javascript:goto_url(docform.dropdownalpha.value)\">";
+    my $select = "<select name=\"dropdownalpha\" size=\"1\" onchange=\"javascript:goto_url(this)\">";
     $select .=  "\n<option value=\"-1\">Alphabetical</option>\n";
     print OUT $select . $A_to_Z . "\n</select>\n";    
     close OUT;
@@ -1008,12 +1011,21 @@ sub func_ref { # 1{{{
     my ($func,$ref) = @_;
     if ( defined $function_description{$func}[2] &&
 	 $function_description{$func}[2] ne "") {
-	return "<a href=\"f/$func.html\">$ref</a>";
+	my $ret = $ref;
+	$ret =~ s|<|&lt;|g;
+	$ret =~ s|>|&gt;|g;
+	return "<a href=\"f/$func.html\">$ret</a>";
     } elsif ( $ref ne $func ) {
 	# XXX FIXME XXX do we want "$ref ($func)"? Check how it is called.
-	return $ref;
+	my $ret = $ref;
+	$ret =~ s|<|&lt;|g;
+	$ret =~ s|>|&gt;|g;
+	return $ret;
     } else {
-	return $ref;
+	my $ret = $ref;
+	$ret =~ s|<|&lt;|g;
+	$ret =~ s|>|&gt;|g;
+	return $ret;
     }
 } # 1}}}
 sub split_long_name { # 1{{{
@@ -1079,11 +1091,15 @@ sub html_desc { # 1{{{
 	# shut of the bold italics during "code" formatting
 	$notes =~ s|<code>|</i><code>|g;
 	$notes =~ s|</code>|</code><i>|g;
+	$notes =~ s|&|&amp|;
 	$notes =~ s|<f>(\w+)</f>|</i><code><a href="f/$1.html">$1</a></code><i>|g;
 	return "<i>$notes</i>";
     } else {
 	print "ignoring $func = $notes\n" if $notes ne "";
 	my $desc = $function_description{$func}[1];
+	$desc =~ s|&|&amp;|g;
+	$desc =~ s|>|&gt;|g;
+	$desc =~ s|<|&lt;|g;
 	if ($desc eq "") {
 	    return "<i>no description</i>";
 	} else {

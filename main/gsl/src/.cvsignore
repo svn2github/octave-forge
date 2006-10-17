@@ -1,4 +1,3 @@
 *.oct
-gsl_sf.cc
 configure
 autom4te.cache

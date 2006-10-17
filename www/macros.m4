@@ -89,9 +89,9 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
 <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
 <script type="text/javascript">
 <!--
-function goto_url(url) {
-  if (url != "-1") {
-    location.href=url;
+function goto_url (selSelectObject) {
+  if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
+   location.href=selSelectObject.options[selSelectObject.selectedIndex].value;
   }
 }
 function unfold(id) {
@@ -116,6 +116,7 @@ m4_define(`__MENU__', `<div id="nav">
  <a href="__BASE_ADDRESS__/packages.html">Packages</a>
  <a href="__BASE_ADDRESS__/developers.html">Developers</a>
  <a href="__BASE_ADDRESS__/docs.html">Documentation</a>
+ <a href="__BASE_ADDRESS__/doc/index.html">Function Reference</a>
  <a href="__BASE_ADDRESS__/FAQ.html">FAQ</a> 
  <a href="__BASE_ADDRESS__/bugs.html">Bugs</a> 
  <a href="__BASE_ADDRESS__/archive.html">Mailing Lists</a>
@@ -139,10 +140,8 @@ m4_dnl
 m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
 __MENU__
 <div id="nav2">
-<form name="docform">
 m4_include([[[doc/alphabetic.include]]])
 m4_include([[[doc/menu.include]]])
-</form>
 </div>
 <div id="content">
 ')m4_dnl
@@ -212,7 +211,7 @@ m4_dnl
 m4_dnl
 m4_define(`__TRAILER__', `
 </div>
-<div id="sf_logo">
+<div class="sf_logo">
   <a  href="__SOURCEFORGE__"><img src="__SOURCEFORGE__/sflogo.php?__GROUP_ID__&amp;type=1"  width="88"
 height="31" style="border: 0;" alt="SourceForge.net Logo"  /></a>
 </div>

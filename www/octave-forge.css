@@ -56,8 +56,32 @@ div#nav a:hover {
 
 div#nav2 {
   float: right;
-  background-color: #73d216; //#4e9a06;
+  background-color: #73d216;
+  color: black;
   padding: 3px;
+}
+
+/* The style for the function refeence sections */
+.func {
+  background-color: inherit;
+  color: inherit;
+  text-align: left;
+  display: block;
+  float: left;
+}
+
+.flink {
+  background-color: inherit;
+  color: inherit;
+  text-align: right;
+  display: block;
+  float: right;
+}
+
+.ftext {
+  margin-left: 5ex;
+  margin-bottom: 2ex;
+  clear: both;
 }
 
 /* the page content */
@@ -68,9 +92,11 @@ div#content {
   margin-top: 3em;
 }
 
-div#sf_logo {
+.sf_logo {
   text-align: right;
   position: relative;
+  display: block;
+  float: right;
   top: 3em;
 }
 

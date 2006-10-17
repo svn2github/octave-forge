@@ -1054,7 +1054,6 @@ EOF
 ./replace_template.sh int_to_double.cc.template >> gsl_sf.cc
 
 
-
 # (int, int, double) to double
 
 export octave_name=legendre_Plm

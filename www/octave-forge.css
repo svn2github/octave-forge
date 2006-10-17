@@ -52,6 +52,17 @@ div#nav a:hover {
   color: inherit;
 }
 
+div#nav div#currentnav {
+  background-color: #ccccdd;
+  border: 1px solid;
+  border-color: #4e9a06;
+  display: block;
+  padding: 0.2em 0.5em 0.2em 0.5em ;
+  text-decoration: none;
+  color: black;
+  text-align: right;
+}
+
 /* the navigation choices for function reference. */
 
 div#nav2 {

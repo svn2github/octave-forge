@@ -25,7 +25,7 @@ __HEADER__([[[Octave-Forge]]])
     where <em>package_file_name.tar.gz</em> is the name of the file you downloaded.
   </p>
   <p>
-    If you have code to contribute, send a message to the 
+    If you have code to contribute, send a message to the
     <a href="http://lists.sourceforge.net/mailman/listinfo/octave-dev">repository mailing list</a>
     or <a href="developers.html">join the development team</a>.
   </p>
@@ -47,7 +47,7 @@ package manager, the following additional changes are notable:</p>
 <ul>
    <li>odepkg: A new matlab compatible package for ODE that replaces
    the existing extra/ode package</li>
-   <li>info-theory: A new package of information theory functions</li> 
+   <li>info-theory: A new package of information theory functions</li>
    <li>linear-algebra: New function bicg</li>
    <li>spline: Allow NDArrays in csape and make it compatible</li>
    <li>comm: New functions fibodeco, fibodeco, fiboenco, fibosplitstream,
@@ -62,9 +62,7 @@ package manager, the following additional changes are notable:</p>
    unifstat and weibstat</li>
    <li>polynomial: New function polyint</li>
    <li>miscellaneous: New functions zagzig, zigzag</li>
-   <li> optim: New function __bfsmin replacing bfgsmin and
-   finitedifference</li>
-   <li>image: __magick_read__ Fix for non 8bit Quantum sizes in 
+   <li>image: __magick_read__ Fix for non 8bit Quantum sizes in
    imagemagick</li>
    <li>general bug fixes and improvements</li>
 </ul>

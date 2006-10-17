@@ -17,7 +17,7 @@ package manager, the following additional changes are notable:</p>
 <ul>
    <li>odepkg: A new matlab compatible package for ODE that replaces
    the existing extra/ode package</li>
-   <li>info-theory: A new package of information theory functions</li> 
+   <li>info-theory: A new package of information theory functions</li>
    <li>linear-algebra: New function bicg</li>
    <li>spline: Allow NDArrays in csape and make it compatible</li>
    <li>comm: New functions fibodeco, fibodeco, fiboenco, fibosplitstream,
@@ -32,9 +32,7 @@ package manager, the following additional changes are notable:</p>
    unifstat and weibstat</li>
    <li>polynomial: New function polyint</li>
    <li>miscellaneous: New functions zagzig, zigzag</li>
-   <li> optim: New function __bfsmin replacing bfgsmin and
-   finitedifference</li>
-   <li>image: __magick_read__ Fix for non 8bit Quantum sizes in 
+   <li>image: __magick_read__ Fix for non 8bit Quantum sizes in
    imagemagick</li>
    <li>general bug fixes and improvements</li>
 </ul>
@@ -131,10 +129,10 @@ An abbreviated list of changes is:</p>
    <ul>
       <li>getfield/setfield now have a compatible interface; for the
           old behaviour, use setfields/getfields.</li>
-      <li>Fill full 53-bit mantissa with the random number generators; new 
-          sequences will be different from old sequences with the same 
+      <li>Fill full 53-bit mantissa with the random number generators; new
+          sequences will be different from old sequences with the same
           seed.</li>
-      <li>Removed restrictions on datenum/datevec and added 
+      <li>Removed restrictions on datenum/datevec and added
           calendar/eomday</li>
       <li>Added nthroot to return real root if available</li>
       <li>Added isa to test for class membership</li>
@@ -172,7 +170,7 @@ An abbreviated list of changes is:</p>
    </ul></li>
    <li>Statistics:
    <ul>
-      <li>Added histfit pareto tabulate anderson_darling_cdf 
+      <li>Added histfit pareto tabulate anderson_darling_cdf
           anderson_darling_test</li>
    </ul></li>
 </ul>
@@ -182,7 +180,7 @@ An abbreviated list of changes is:</p>
 <p>Octave-forge version 20040707 released. Extends support to Octave 2.1.57.
 An abbreviated list of changes is:</p>
 <ul>
-   <li>The optimization functions have been replaced but the new interface 
+   <li>The optimization functions have been replaced but the new interface
        is not yet settled.  See the files in the optim directory.</li>
    <li>New package gsl: GNU Scientific library bindings.</li>
    <li>New package fixed: Fixed point numeric operations.</li>
@@ -197,7 +195,7 @@ An abbreviated list of changes is:</p>
 <p>Octave-forge version 20040211 released. Extends support to Octave
 2.1.53 for all oct-files.  Improved build environment and better
 testing. We still need more tests! If you need a function and don't
-see any test cases in it, add some and send them our way.  See 
+see any test cases in it, add some and send them our way.  See
 'help test' for details. An abbreviated list of changes is:</p>
 <ul>
    <li>Changes
@@ -269,7 +267,7 @@ An abbreviated list of changes is:</p>
    <li>Signal Processing:
    <ul>
       <li>added freqs, invfreqs, invfreqz</li>
-      <li>return statespace and laplacian IIR filters (butter, cheby1, 
+      <li>return statespace and laplacian IIR filters (butter, cheby1,
           cheby2, ellip)</li>
       <li>fixed aryule() to return the correct filter</li>
    </ul></li>
@@ -284,7 +282,7 @@ An abbreviated list of changes is:</p>
    </ul></li>
    <li>Symbolic:
    <ul>
-      <li>added poly2sym, sym2poly, numden, findsymbols, findsym, symlsolve, 
+      <li>added poly2sym, sym2poly, numden, findsymbols, findsym, symlsolve,
           symfsolve, syminfo</li>
       <li>subs() accepts cell arrays</li>
    </ul></li>
@@ -309,11 +307,11 @@ An abbreviated list of changes is:</p>
 </dd>
 <dt>February 22, 2003</dt>
 <dd>
-<p>Octave-forge version 20030222 released. An abbreviated list of 
+<p>Octave-forge version 20030222 released. An abbreviated list of
 changes is:</p>
 <ul>
    <li>Updates for octave 2.1.45</li>
-   <li>Parallel: Light weight parallel programming added but 
+   <li>Parallel: Light weight parallel programming added but
         flagged NOINSTALL.</li>
    <li>Communications: add galois field functions and others</li>
    <li>Signal Processing: add convmtx and dftmtx</li>
@@ -423,7 +421,7 @@ abbreviated list of changes is:</p>
 <dt>May 09, 2002</dt>
 <dd>
 <p>Octave-forge version 20020509 released. This is a bug fix release.
-Many thanks to the good folks at Debian for finding the portability 
+Many thanks to the good folks at Debian for finding the portability
 problems. An abbreviated list of changes is:</p>
 <ul>
    <li>New functions

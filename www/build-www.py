@@ -292,8 +292,11 @@ def main():
                     
                     index.write('<div class="package" id="' + n + '_detailed" style="display: none;">\n');
                     index.write('  <table class="package"><tr>\n');
-                    index.write('    <td><b><a href="javascript:fold(\'' + n + '\');" class="package_head_link">' + desc['name'] + '</a></b></td>\n');
-                    index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir + '/index.html" class="package_link">details</a> |\n');
+                    index.write('    <td><img src="hide.png" style="padding-right: 0.5em;"/>\n');
+                    index.write('   <b><a href="javascript:fold(\'' + n + '\');" class="package_head_link">');
+                    index.write(desc['name'] + '</a></b></td>\n');
+                    index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
+                    index.write('/index.html" class="package_link">details</a> |\n');
                     index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a>\n');
                     
                     index.write('    </td>\n');
@@ -305,8 +308,11 @@ def main():
 
                     index.write('<div class="package" id="' + n + '">\n');
                     index.write('  <table class="package"><tr>\n');
-                    index.write('    <td><b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">' + desc['name'] + '</a></b></td>\n');
-                    index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir + '/index.html" class="package_link">details</a> |\n');
+                    index.write('    <td><img src="show.png" style="padding-right: 0.5em;"/>\n');
+                    index.write('    <b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">');
+                    index.write(desc['name'] + '</a></b></td>\n');
+                    index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
+                    index.write('/index.html" class="package_link">details</a> |\n');
                     index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a>\n');
                     
                     index.write('    </td>\n');

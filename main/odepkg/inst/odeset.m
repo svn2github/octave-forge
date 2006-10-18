@@ -16,27 +16,37 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn  {Function} odeset ()
-%# Displays the help text of the function and terminates with an error.
-%#
-%# @deftypefnx {Function} {@var{[odestruct]} =} odeset ()
-%# Creates a new ode options structure with all necessary fields and sets the values of all fields to the defaults.
-%#
+%# @deftypefn {Function} {@var{[odestruct]} =} odeset ()
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{"field1"}, @var{value1}, @dots{})
-%# Creates a new ode options structure with all necessary fields and sets the values of the fields @var{field1}, @var{field2} etc. to the values @var{value1}, @var{value2}, etc. If an unknown option field or an invalid option value is detected then the function terminates with an error.
-%#
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @dots{})
-%# Overwrites all values of the structure @var{oldstruct} in the fields @var{field1}, @var{field2}, etc. with new values @var{value1}, @var{value2}, etc. If an unknown option field or an invalid option value is detected then the function terminates with an error.
-%#
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{newstruct})
-%# Overwrites all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Any empty matrix values from @var{newstruct} are not treated. If an unknown option field or an invalid option value is detected then the function terminates with an error.
+%#
+%# Called without arguments, creates a new ode options structure with all 
+%# necessary fields and sets the values of all fields to the defaults.
+%#
+%# Called with only string arguments, creates a new ode options structure
+%# with all necessary fields and sets the values of the fields @var{field1},
+%# @var{field2} etc. to the values @var{value1}, @var{value2}, etc. If an
+%# unknown option field or an invalid option value is detected then the 
+%#function terminates with an error.
+%#
+%# Called with the first argument being a structure returned by @code{odeset},
+%# overwrites all values of the structure @var{oldstruct} in the fields 
+%# @var{field1}, @var{field2}, etc. with new values @var{value1},
+%# @var{value2}, etc. If an unknown option field or an invalid option value 
+%# is detected then the function terminates with an error.
+%#
+%# Called with two structures, overwrites all values in the fields from the 
+%# structure @var{oldstruct} with new values of the fields from the structure 
+%# @var{newstruct}. Any empty matrix values from @var{newstruct} are not 
+%# treated. If an unknown option field or an invalid option value is detected
+%# then the function terminates with an error.
 %#
 %# Run
 %# @example
 %# demo odeset
 %# @end example
 %# to see an example.
-%# @end deftypefn
 %#
 %# @unnumberedsubsec Valid field names of the odepkg options structure
 %# The odepkg options structure may contain the following fields and default values if calling @command{odeset}
@@ -64,6 +74,8 @@
 %# @item "MaxOrder" must be an integer between 1 and 5 (default 5)
 %# @item "BDF" must be "on" or "off" (default "off")
 %# @end itemize
+%#
+%# @end deftypefn
 %#
 %# @seealso{odepkg}
 

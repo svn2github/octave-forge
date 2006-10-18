@@ -16,14 +16,26 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} ode45 ()
-%# Displays the help text of the function and terminates with an error.
-%#
-%# @deftypefnx {Function} {@var{[sol]} =} ode45 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
-%# Returns the solution structure @var{sol} after solving the set of ordinary differential equations defined in a function and specified by the function handle @var{@@fun}. The first input argument @var{slot} must be the time slot, @var{init} must be the states initial values, @var{opt} can optionally be the options structure that is created with the command @command{odeset} and @var{[P1, P2, @dots{}]} can optionally be all arguments that have to be passed to the function @var{fun}. If an invalid input argument is detected then the function terminates with an error.
-%#
+%# @deftypefn {Function} {@var{[sol]} =} ode45 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
 %# @deftypefnx {Function} {@var{[t, y, [te, ye, ie]]} =} ode45 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
-%# Returns the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{te}, the extended solution information @var{ye} and the extended index information @var{ie} of the event function if any event property is set in the option argument @var{opt}. See the description for the input arguments before. If an invalid input argument is detected then the function terminates with an error.
+%#
+%# Returns the solution structure @var{sol} after solving the set of 
+%# ordinary differential equations defined in a function and specified
+%# by the function handle @var{@@fun}. The first input argument @var{slot} 
+%# must be the time slot, @var{init} must be the states initial values,
+%# @var{opt} can optionally be the options structure that is created with
+%# the command @command{odeset} and @var{[P1, P2, @dots{}]} can optionally
+%# be all arguments that have to be passed to the function @var{fun}. If
+%# an invalid input argument is detected then the function terminates
+%# with an error.
+%#
+%# If called with more than one return argument, returns the time stamps 
+%# @var{t}, the solution values @var{y} and optionally the extended time
+%# stamp information @var{te}, the extended solution information @var{ye}
+%# and the extended index information @var{ie} of the event function if
+%# any event property is set in the option argument @var{opt}. See the
+%# description for the input arguments before. If an invalid input argument
+%# is detected then the function terminates with an error.
 %#
 %# Run
 %# @example

@@ -16,14 +16,21 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn  {Function} odeget ()
-%# Displays the help text of the function and terminates with an error.
-%#
-%# @deftypefnx {Function} {@var{[vret]} =} odeget (@var{vodestruct}, @var{vname}, @var{[vdefault]})
-%# Returns the option value @var{vret} that is specified by the option name @var{vname} from the odepkg option structure @var{vodestruct}. Optionally the default value @var{vdefault} is returned if no option was set in @var{vodestruct} manually by the user. If an invalid input argument is detected then the function terminates with an error.
-%#
+%# @deftypefn {Function} {@var{[vret]} =} odeget (@var{vodestruct}, @var{vname}, @var{[vdefault]})
 %# @deftypefnx {Function} {@var{[vret]} =} odeget (@var{vodestruct}, @var{@{vnames@}}, @var{[@{vdefaults@}]})
-%# Returns the option values as a cell array @var{vret} that is specified by the cell array of option names @var{@{vnames@}} from the odepkg option structure @var{vodestruct}. Optionally the default value of @var{[@{vdefaults@}]} is returned if no option was set in @var{vodestruct} manually by the user. If an invalid input argument is detected then the function terminates with an error.
+%#
+%# Returns the option value @var{vret} that is specified by the option name 
+%# @var{vname} from the odepkg option structure @var{vodestruct}. Optionally 
+%# the default value @var{vdefault} is returned if no option was set in 
+%# @var{vodestruct} manually by the user. If an invalid input argument is 
+%# detected then the function terminates with an error.
+%#
+%# The second form, returns the option values as a cell array @var{vret} that
+%# is specified by the cell array of option names @var{@{vnames@}} from the 
+%# odepkg option structure @var{vodestruct}. Optionally the default value of
+%# @var{[@{vdefaults@}]} is returned if no option was set in @var{vodestruct}
+%# manually by the user. If an invalid input argument is detected then the
+%# function terminates with an error.
 %#
 %# Run
 %# @example

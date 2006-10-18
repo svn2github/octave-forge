@@ -521,12 +521,15 @@ sub register_function { # {{{1
     }
     if (! ($file =~ /^$OCTAVE/)) {
 	$octave_forge_function{$function} = 1;
-	my $package = $file;
-	$package =~ s|^\s*([^/]+/[^/]+/).*$|$1|;
-	if ($package =~ /^\s*$/) {
-	    printf("%-12s %-20s %s\n", $function, $file, $package);
+	if (defined $index_by_function{$function} ||
+	    ($function !~ /__/ && $file !~ /test/ 
+	     && $function !~ /^[Cc]ontents?$/
+	     && $function !~ /pre_install/
+	     && $function !~ /post_install/)) {
+	    my $package = $file;
+	    $package =~ s|^\s*([^/]+/[^/]+/).*$|$1|;
+	    push @{$index_by_package{$package}}, $function;
 	}
-	push @{$index_by_package{$package}}, $function;
     }
     if (!defined $index_by_function{$function}) {
 	my $entry = $file;

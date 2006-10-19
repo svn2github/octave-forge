@@ -16,7 +16,7 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefnx {Function} {@var{[sol]} =} ode54 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
+%# @deftypefn {Function} {@var{[sol]} =} ode54 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
 %# @deftypefnx {Function} {@var{[t, y, [te, ye, ie]]} =} ode54 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
 %#
 %# Returns the solution structure @var{sol} after solving the set of

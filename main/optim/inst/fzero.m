@@ -127,7 +127,7 @@ function [Z, FZ, INFO] =fzero(Func,bracket,options,varargin)
 	  usage("[x, fx, info] = fzero(@fcn, [lo,hi]|start, options)"); 
 	endif
 
-	if !ischar(Func) && !isa(Func,"function handle") && !isa(Func,"inline function")
+	if !ischar(Func) && !isa(Func,"function_handle") && !isa(Func,"inline function")
 	  error("fzero expects a function as the first argument");
 	endif
 	bracket = bracket(:);

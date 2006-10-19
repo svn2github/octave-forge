@@ -292,8 +292,9 @@ def main():
                     
                     index.write('<div class="package" id="' + n + '_detailed" style="display: none;">\n');
                     index.write('  <table class="package"><tr>\n');
-                    index.write('    <td><img src="hide.png" style="padding-right: 0.5em;"/>\n');
+                    index.write('    <td>\n');
                     index.write('   <b><a href="javascript:fold(\'' + n + '\');" class="package_head_link">');
+                    index.write('   <img src="hide.png" style="padding-right: 0.5em; border: none;"/>\n');
                     index.write(desc['name'] + '</a></b></td>\n');
                     index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
                     index.write('/index.html" class="package_link">details</a> |\n');
@@ -308,8 +309,9 @@ def main():
 
                     index.write('<div class="package" id="' + n + '">\n');
                     index.write('  <table class="package"><tr>\n');
-                    index.write('    <td><img src="show.png" style="padding-right: 0.5em;"/>\n');
+                    index.write('    <td>\n');
                     index.write('    <b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">');
+                    index.write('    <img src="show.png" style="padding-right: 0.5em; border: none;"/>\n');
                     index.write(desc['name'] + '</a></b></td>\n');
                     index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
                     index.write('/index.html" class="package_link">details</a> |\n');

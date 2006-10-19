@@ -7,8 +7,11 @@ endif
 DEFINES = -DHAVE_CONFIG_H
 GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o 
 GSVD_TARGET = gsvd.oct
-OBJECTS = GramSchmidt.o $(GSVD_OBJECTS)
-TARGETS = $(GSVD_TARGET) GramSchmidt.oct
+OTHER_OBJECTS = outer.o GramSchmidt.o
+OTHER_TARGETS = $(patsubst %.o,%.cc,$(OTHER_OBJECTS)
+
+OBJECTS = $(OTHER_OBJECTS) $(GSVD_OBJECTS)
+TARGETS = $(OTHER_TARGETS) $(GSVD_TARGET) 
 
 MYDEPENDS = $(patsubst %.o,%.d,$(OBJECTS))
 

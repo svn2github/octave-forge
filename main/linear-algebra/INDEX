@@ -3,6 +3,7 @@ Matrix functions
  condeig
  funm
  thfm
+ outer
 Matrix factorization
  gsvd 
  GramSchmidt

@@ -39,9 +39,7 @@ mkdir install/@NAME@/inst
 
 %build
 cd @NAME@-@VERSION@
-echo "global OCTAVE_PACKAGE_PREFIX;" > .octaverc
-echo "OCTAVE_PACKAGE_PREFIX=[pwd() '/install'];" >> .octaverc
-HOME=`pwd` %{octave} -H -q --no-site-file --eval 'pkg("install","@PACKAGE@")'
+HOME=`pwd` %{octave} -H -q --no-site-file --eval 'pkg('prefix',[pwd(),'/install']);pkg("install","@PACKAGE@")'
 cd install
 mv @NAME@-@VERSION@/packinfo/* @NAME@
 rm -rf @NAME@-@VERSION@/packinfo

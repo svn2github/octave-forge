@@ -21,7 +21,7 @@ html : $(HTML)
 # Note verbosity=0 as well as making latex2html quieter, has the side-effect
 # of not including a url to the raw text, which it'll get wrong
 html/%/index.html : %.tex
-	latex2html -verbosity=0 $<
+	latex2html -verbosity=0 -local_icons $<
 	if [ ! -e "html" ]; then \
 	  mkdir html; \
 	fi; \

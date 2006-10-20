@@ -256,6 +256,12 @@ def handle_package(packdir, outdir, p):
     raise Exception('not packdir');
 
 def main():
+    ## Identify the package bundle
+    cmd = 'find ../packages -name "octave-forge-bundle*.tar.gz" -prune -type f -print';
+    bundle = None;
+    for file in os.popen(cmd).readlines():
+        bundle = file[:-1];
+
     ## Start the package file
     index = open("packages.in", "w");
     index.write("__HEADER__([[[Packages]]])");
@@ -270,6 +276,12 @@ def main():
     index.write('<li><a href="#nonfree">Non-free packages</a> contains packages\n');
     index.write('that have license issues. Usually the packages themselves are\n');
     index.write('Free Software that depend on non-free libraries.</li></ul>\n');
+    if (bundle):
+        index.write('<p>For convenience, all of the packages below are available\n');
+        index.write('as a <a href="__PACKAGE__/' + bundle +'?download">single file</a>.\n');
+        index.write('This file is not however an octave package and the individiual\n');
+        index.write('packages it contains must be installed separately</p>\n');
+
     if (os.path.exists("INDEX")):
         os.system("rm -f INDEX");
 
@@ -298,7 +310,7 @@ def main():
                     index.write('  <table class="package"><tr>\n');
                     index.write('    <td>\n');
                     index.write('   <b><a href="javascript:fold(\'' + n + '\');" class="package_head_link">');
-                    index.write('   <img src="hide.png" style="padding-right: 0.5em; border: none;"/>\n');
+                    index.write('   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>\n');
                     index.write(desc['name'] + '</a></b></td>\n');
                     index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
                     index.write('/index.html" class="package_link">details</a> |\n');
@@ -315,7 +327,7 @@ def main():
                     index.write('  <table class="package"><tr>\n');
                     index.write('    <td>\n');
                     index.write('    <b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">');
-                    index.write('    <img src="show.png" style="padding-right: 0.5em; border: none;"/>\n');
+                    index.write('    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>\n');
                     index.write(desc['name'] + '</a></b></td>\n');
                     index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
                     index.write('/index.html" class="package_link">details</a> |\n');

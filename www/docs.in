@@ -18,7 +18,7 @@ on individual packages, see the package page.</p>
 <li><a href="developers.html">Octave-forge developer's guide</a></li>
 <li><a href="translation.html">Octave translator guide</a></li>
 <li>
-<a href="texmacs.pdf">TeXmacs Interface</a> - Information on using <a href="http://www.texmacs.org/">TeXmaxs</a> with octave.
+<a href="texmacs.pdf">TeXmacs Interface</a> - Information on using <a href="http://www.texmacs.org/">TeXmacs</a> with octave.
 </li>
 <li><a href="octave_embed.tar.gz">Sample code for embedding octave</a></li>
 <li><a href="MIP73-isoheaders.tar.gz">Headers for compiling octave with SGI MIPSpro 7.3 compiler</a></li>

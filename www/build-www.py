@@ -4,6 +4,7 @@ import sys
 import os
 import shutil
 import time
+import re
 
 ## This function parses a DESCRIPTION file
 def parse_description(filename):
@@ -54,7 +55,11 @@ def local_documentation(outdir, packdir):
                 os.mkdir(outdir + "/local");
             for root, dirs, files in os.walk(name, topdown=False):
                 for file2 in files:
-                    shutil.copy2(root + "/" + file2, outdir + "/local/");
+                    p = re.compile( name )
+                    new_root = p.sub ('', root);
+                    if (not os.path.exists(outdir + "/local" + new_root)):
+                        os.mkdir(outdir + "/local" + new_root);
+                    shutil.copy2(root + "/" + file2, outdir + "/local/" + new_root);
 
         if (not docdir):
             cmd = 'find ' + packdir + ' -name "*.[hH][tT][mM][lL]"  -print; find ' + packdir + ' -name "*.[hH][tT][mM]"  -print'
@@ -99,7 +104,6 @@ def create_INDEX(desc, packdir, p):
         command = 'pkg("prefix","' + install_dir + '"); ';
         command = command + 'pkg("install", "-nodeps", "' + tarball + '");';
         if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "' > /dev/null 2>&1") != 0):
-            os.system("ls -la " + install_dir);
             os.system("rm -rf " + install_dir + " " + tarball);
             raise Exception("Can't run Octave"); 
         

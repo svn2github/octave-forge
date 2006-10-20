@@ -9,20 +9,19 @@ else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
 RUN_OCTAVE= HOME=`pwd` $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
-PKGDIRS = $(filter-out packages, $(patsubst $(TOPDIR)/%/, %, $(dir $(wildcard $(TOPDIR)/*/Makefile))))
+PKGDIRS = $(filter-out packages www, $(patsubst $(TOPDIR)/%/, %, $(dir $(wildcard $(TOPDIR)/*/Makefile))))
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
 RPMDIR=RPM
 
 .PHONY: $(PKGDIRS) install
 
-# Construct the bundles from the individual packages
-all: $(patsubst %,mkbundle/%,$(PKGDIRS))
+# Construct the bundle from the individual packages
+all: mkbundle
 
-mkbundle/%:
+mkbundle:
 	@d=`date +%Y%m%d`; \
-	cd $(odir); \
-	tar cvzf ../octave-forge-$(odir)-$$d.tar.gz ../README *
+	tar cvzf octave-forge-bundle-$$d.tar.gz $(PKGDIRS)
 
 # Do nothing for the package target 
 package:

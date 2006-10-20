@@ -30,6 +30,7 @@ all: clearlog packages
 package: subdirs
 packages:
 	@$(MAKE) -k package
+	@$(MAKE) -C packages mkbundle
 
 install: installpause clearlog packages
 	@$(MAKE) -C packages $(MAKECMDGOALS)

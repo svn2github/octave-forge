@@ -1,17 +1,6 @@
 \documentclass[11pt]{article}
-\usepackage{makeidx}
-%\usepackage{showidx}
-\usepackage{latexsym}
-%\usepackage{german}
-%\usepackage{mypage}
-%\usepackage{fancyhdr}
-\usepackage{epsfig}
 \usepackage{verbatim}
-%\usepackage{ncode}
-%\usepackage{myexercise}
 \usepackage{amsfonts}
-%\usepackage{rotating}
-%\usepackage{fancybox}
 
 \setlength{\oddsidemargin}{-5mm}
 \setlength{\evensidemargin}{-5mm}
@@ -26,79 +15,24 @@
 \newcommand{\id}{\mathbb{I}}
 \newcommand{\dfrac}{\frac}
 \newcommand{\Octave}{\textit{Octave}}
-
-%\selectlanguage{english}
-\makeindex
-
-
-\newcounter{twoyear}
-\setcounter{twoyear}{\number\year}
-\addtocounter{twoyear}{-2000}
-
-\pagestyle{plain}
-%  \pagestyle{fancy}
-%  \lhead{\fancyplain{}{\sl\leftmark}}
-%  \rhead{\rm\thepage}
-%  \chead{}
-%  \cfoot{}
-%  %\rfoot{{\tiny SHA \number\day-\number\month-\number\year}}
-%  \rfoot{{\tiny SHA \number\day-\number\month-0\thetwoyear}}
-%  \lfoot{}
+\newcommand{\currdir}{./}
+\newcommand{\ID}[1]{\index{#1}}
 
 \title{Symmetric Banded Matrices}
 \author{Version 0.1 December, 2001\\
 Andreas Stahel
-%\\\texttt{Andreas.Stahel@hta-bi.bfh.ch}\\
-%\texttt{http://www.hta-bi.bfh.ch/\~{}sha}
 }
-\date{\today}
-%\includeonly{}
-
 
 \begin{document}
-\newcommand{\currdir}{./}
 
 \maketitle
-%\input elements
+
 %%%%%%%%%%%%%%%%%%%%%%%% Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \def\currdir{./}
-\newcommand\ID[1]{\index{#1}}
 \setlength{\marginparwidth}{25mm}
 
-%\newcommand\eqref[1]{(\ref{#1})}
-
-
-% to put a translation of a given word in the margin
-\newcommand\DF[1]{$^*$\marginpar{#1}}
-%\renewcommand\DF[1]{}
-
-% \thispagestyle{empty}
-% \dummy
-% %\vspace{18cm}
-% \vfill
-% {\small
-% \noindent
-% \copyright Andreas Stahel, 2000\\
-% All rights reserved. This work may not be translated or copied in whole or in
-% part without the written permission by the author, except for brief excerpts in
-% connection with reviews or scholarly analysis. Use in connection with any form
-% of information storage and retrieval, electronic adaptation, computer software
-% is forbidden.
-% }
-% \newpage
-
-%\pagenumbering{roman}
 \tableofcontents
-%\addcontentsline{toc}{section}{List of Figures}
-%\listoffigures
-
-%\addcontentsline{toc}{chapter}{List of Tables}
-%\listoftables
-
-%\newpage
-%\pagenumbering{arabic}
-
 
 \section{Basic description}
 Many  matrices used to solve PDE (using FEM) are symmetric. It the
@@ -399,23 +333,29 @@ matrix.
 
   B is full matrix Ax=B
 \end{verbatim}
+
 \subsection{\texttt{BandToFull}, \texttt{FullToBand} and \texttt{BandToSparse}}
 With these commands conversion between full, symmetric matrices and banded
 symmetric matrices is possible. A conversion to a sparse format is also
 included.
 
-%\newpage
+%%\addcontentsline{toc}{section}{Bibliography}
 
-%\bibliographystyle{keysort}
-\bibliographystyle{apalike}
-%\bibliographystyle{siam}
-\addcontentsline{toc}{section}{Bibliography}
-\bibliography{school,book,fem,new}
+\begin{thebibliography}{2}
 
+\bibitem{GoluVanLoan96}
+G. Golub and C. Van Loan,
+\newblock \textit{Matrix computations},
+John Hopkins University Press, third edition, 1996
+
+\bibitem{VarFem}
+A. Stahel,
+\newblock \textit{Calculus of Variations and Finite Elements},
+Lecture notes used at HTA Biel, 2000
+
+\end{thebibliography}
 
 %\clearpage
-
-
 
 %\printindex
 %\addcontentsline{toc}{section}{Index}

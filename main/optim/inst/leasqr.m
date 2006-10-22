@@ -22,24 +22,30 @@ function [f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 % Levenberg-Marquardt nonlinear regression of f(x,p) to y(x).
 %
 % Version 3.beta
-%  {}= optional parameters
-% x=vec or mat of indep variables, 1 row/observation: x=[x0 x1....xm]
-% y=vec of obs values, same no. of rows as x.
-% wt=vec(dim=length(x)) of statistical weights.  These should be set
-%   to be proportional to (sqrt of var(y))^-1; (That is, the covariance
-%   matrix of the data is assumed to be proportional to diagonal with diagonal
-%   equal to (wt.^2)^-1.  The constant of proportionality will be estimated.),
-%   default=ones(length(y),1).
-% pin=vector of initial parameters to be adjusted by leasqr.
-% dp=fractional incr of p for numerical partials,default= .001*ones(size(pin))
-%   dp(j)>0 means central differences.
-%   dp(j)<0 means one-sided differences.
-% Note: dp(j)=0 holds p(j) fixed i.e. leasqr wont change initial guess: pin(j)
-% F=name of function in quotes,of the form y=f(x,p)
-% dFdp=name of partials M-file in quotes default is prt=dfdp(x,f,p,dp,F)
-% stol=scalar tolerances on fractional improvement in ss,default stol=.0001
-% niter=scalar max no. of iterations, default = 20
-% options=matrix of n rows (same number of rows as pin) containing 
+% Optional parameters are in braces {}.
+% x = column vector or matrix of independent variables, 1 row per
+%   observation: x = [x0 x1....xm].
+% y = column vector of observed values, same number of rows as x.
+% wt = column vector (dim=length(x)) of statistical weights.  These
+%   should be set to be proportional to (sqrt of var(y))^-1; (That is,
+%   the covariance matrix of the data is assumed to be proportional to
+%   diagonal with diagonal equal to (wt.^2)^-1.  The constant of
+%   proportionality will be estimated.); default = ones(length(y),1).
+% pin = column vec of initial parameters to be adjusted by leasqr.
+% dp = fractional increment of p for numerical partial derivatives;
+%   default = .001*ones(size(pin))
+%   dp(j) > 0 means central differences on j-th parameter p(j).
+%   dp(j) < 0 means one-sided differences on j-th parameter p(j).
+%   dp(j) = 0 holds p(j) fixed i.e. leasqr wont change initial guess: pin(j)
+% F = name of function in quotes; the function shall be of the form y=f(x,p),
+%   with y, x, p of the form y, x, pin as described above.
+% dFdp = name of partial derivative function in quotes; default is "dfdp", a
+%   slow but general partial derivatives function; the function shall be
+%   of the form prt=dfdp(x,f,p,dp,F) (see dfdp.m).
+% stol = scalar tolerance on fractional improvement in scalar sum of
+%   squares = sum((wt.*(y-f))^2); default stol = .0001;
+% niter = scalar maximum number of iterations; default = 20;
+% options = matrix of n rows (same number of rows as pin) containing
 %   column 1: desired fractional precision in parameter estimates.
 %     Iterations are terminated if change in parameter vector (chg) on two
 %     consecutive iterations is less than their corresponding elements
@@ -52,16 +58,16 @@ function [f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 %     default = Inf*ones().
 %
 %          OUTPUT VARIABLES
-% f=vec function values computed in function func.
-% p=vec trial or final parameters. i.e, the solution.
-% kvg=scalar: =1 if convergence, =0 otherwise.
-% iter=scalar no. of interations used.
-% corp= correlation matrix for parameters
-% covp= covariance matrix of the parameters
-% covr = diag(covariance matrix of the residuals)
-% stdresid= standardized residuals
-% Z= matrix that defines confidence region
-% r2= coefficient of multiple determination
+% f = column vector of values computed: f = F(x,p).
+% p = column vector trial or final parameters. i.e, the solution.
+% kvg = scalar: = 1 if convergence, = 0 otherwise.
+% iter = scalar number of iterations used.
+% corp = correlation matrix for parameters.
+% covp = covariance matrix of the parameters.
+% covr = diag(covariance matrix of the residuals).
+% stdresid = standardized residuals.
+% Z = matrix that defines confidence region (see comments in the source).
+% r2 = coefficient of multiple determination.
 %
 % All Zero guesses not acceptable
 
@@ -113,7 +119,7 @@ function [f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 %       8) Change to more efficent algorithm of Bard for selecting epsL.
 %       9) Tighten up memory usage by making use of sparse matrices (if 
 %          MATLAB version >= 4.0) in computation of covp, corp, stdresid.
-% Modified by Francesco Potorti
+% Modified by Francesco Potortì
 %       for use in Octave
 %
 % References:

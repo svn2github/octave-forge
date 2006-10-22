@@ -18,7 +18,6 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function} {@var{[y]} =} odepkg_equations_roessler (@var{t}, @var{x})
 %# TODO
-%# @end deftypefn
 %#
 %# Run
 %# @example
@@ -28,6 +27,7 @@
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
+
 %#
 %# - TODO - REWORK THE HELP TEXT ABOVE BECAUSE IT MAY NOT BE CORRECT -
 %# - TODO - REWORK THE DEMO TEXT BELOW BECAUSE IT MAY NOT BE CORRECT -

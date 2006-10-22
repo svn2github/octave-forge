@@ -17,7 +17,7 @@
 
 %# -*- texinfo -*-
 %# @deftypefn {Function} {@var{[ret]} =} odeprint (@var{t, y, flag})
-%# Displays the results of the differential equations in the octave window while solving. The first column shows the actual time stamp, the following columns show the values of the solvers for each time stamp. The return value @var{ret} depends on the input value @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then true (resp. value 1) is returned to tell the calling solver function to continue, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver outputs as row vectors. There is no error handling implemented in this function to achieve the highest performance.
+%# Displays the results of the differential equations in the octave window while solving. The first column shows the actual time stamp, the following columns show the values of the solvers for each time stamp. The return value @var{ret} depends on the input value @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then true (resp. value 1) is returned to tell the calling solver function to continue, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver output. This function is an odepkg plotter function that can be set with @command{odeset}, therefore this function should never be directly called by the user. No error handling has been implemented in this function to achieve the highest processing speed.
 %#
 %# Run
 %# @example

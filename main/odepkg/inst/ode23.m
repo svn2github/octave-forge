@@ -16,26 +16,15 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[sol]} =} ode23 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
-%# @deftypefnx {Function} {@var{[t, y, [te, ye, ie]]} =} ode23 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
+%# @deftypefn  {Function} ode23 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
+%# @deftypefnx {Function} {@var{sol} =} ode23 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
+%# @deftypefnx {Function} {@var{[t, y, [xe, ye, ie]]} =} ode23 (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
 %#
-%# Returns the solution structure @var{sol} after solving the set of 
-%# ordinary differential equations defined in a function and specified 
-%# by the function handle @var{@@fun}. The first input argument @var{slot} 
-%# must be the time slot, @var{init} must be the states initial values, 
-%# @var{opt} can optionally be the options structure that is created with 
-%# the command @command{odeset} and @var{[P1, P2, @dots{}]} can optionally
-%# be all arguments that have to be passed to the function @var{fun}. If 
-%# an invalid input argument is detected then the function terminates 
-%# with an error.
+%# If called with no return argument, plots the solutions over time in a figure window while solving the set of equations that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} must be the time slot, @var{init} must be the states initial values, @var{opt} can optionally be the options structure that is created with the command @command{odeset} and @var{[P1, P2, @dots{}]} can optionally be all arguments that have to be passed to the function @var{fun}. If an invalid input argument is detected then the function terminates with an error.
 %#
-%# If called with more than one return argument, returns the time stamps 
-%# @var{t}, the solution values @var{y} and optionally the extended time
-%# stamp information @var{te}, the extended solution information @var{ye}
-%# and the extended index information @var{ie} of the event function if
-%# any event property is set in the option argument @var{opt}. See the
-%# description for the input arguments before. If an invalid input argument
-%# is detected then the function terminates with an error.
+%# If called with one return argument, returns the solution structure @var{sol} after solving the set of ordinary differential equations. The solution structure @var{sol} has the fields @var{x} for the steps chosen by the solver, @var{y} for the solver solutions, @var{solver} for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} of the event function if an event property is set in the option argument @var{opt}. See the description for the input arguments before. If an invalid input argument is detected then the function terminates with an error.
+%#
+%# If called with more than one return argument, returns the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} of the event function if an event property is set in the option argument @var{opt}. See the description for the input arguments before. If an invalid input argument is detected then the function terminates with an error.
 %#
 %# Run
 %# @example
@@ -398,6 +387,11 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     varargout{1}.x = vretvaltime;   %# Time stamps are saved in field x
     varargout{1}.y = vretvalresult; %# Results are saved in field y
     varargout{1}.solver = 'ode23';  %# Solver name is saved in field solver
+    if (vhaveeventfunction == true) 
+      varargout{1}.ie = vevent{2};  %# Index info which event occured
+      varargout{1}.xe = vevent{3};  %# Time info when an event occured
+      varargout{1}.ye = vevent{4};  %# Results when an event occured
+    end
   elseif (nargout == 2)
     varargout{1} = vretvaltime;     %# Time stamps are first output argument
     varargout{2} = vretvalresult;   %# Results are second output argument
@@ -415,20 +409,20 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   end
 
 %# The following tests have been added to check the function's input arguments and output arguments
-%!test vx = ode23 (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
+%!test vsol = ode23 (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
 %!test [vx, vy] = ode23 (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
 %!test [vx, vy, va, vb, vc] = ode23 (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
-%!test vx = ode23 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 52), [0 0]);
+%!test vsol = ode23 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 52), [0 0]);
 %!test [vx, vy] = ode23 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 52), [0 0]);
 %!test [vx, vy, va, vb, vc] = ode23 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 52), [0 0]);
 %!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     vx = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
+%!     vsol = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
 %!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
 %!     [vx, vy] = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
 %!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
 %!     [vx, vy, va, vb, vc] = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
 %!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     vx = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
+%!     vsol = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
 %!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
 %!     [vx, vy] = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
 %!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 

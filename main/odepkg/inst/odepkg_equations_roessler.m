@@ -16,11 +16,21 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[y]} =} odepkg_equations_lorenz (@var{t}, @var{x})
+%# @deftypefn {Function} {@var{[y]} =} odepkg_equations_roessler (@var{t}, @var{x})
 %# TODO
 %# @end deftypefn
-%# 
+%#
+%# Run
+%# @example
+%# demo odepkg_equations_roessler
+%# @end example
+%# to see an example.
+%# @end deftypefn
+%#
 %# @seealso{odepkg}
+%#
+%# - TODO - REWORK THE HELP TEXT ABOVE BECAUSE IT MAY NOT BE CORRECT -
+%# - TODO - REWORK THE DEMO TEXT BELOW BECAUSE IT MAY NOT BE CORRECT -
 
 function y = odepkg_equations_roessler (t, x)
   y = [- ( x(2) + x(3) );
@@ -44,6 +54,8 @@ function y = odepkg_equations_roessler (t, x)
 %!
 %! % -------------------------------------------------------------------------
 %! % TODO
+%! % TODO explain how to use odephas3 but o not add it as a demo because it
+%! % will need a lot of processing time!!!
 
 %# Local Variables: ***
 %# mode: octave ***

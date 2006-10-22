@@ -30,6 +30,8 @@
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
+%#
+%# - TODO - REWORK THE HELP TEXT ABOVE BECAUSE IT MAY NOT BE CORRECT -
 
 %# Maintainer: Thomas Treichl
 %# Created: 20060809

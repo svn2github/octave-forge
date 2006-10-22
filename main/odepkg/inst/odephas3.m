@@ -17,7 +17,7 @@
 
 %# -*- texinfo -*-
 %# @deftypefn {Function} {@var{[ret]} =} odephas3 (@var{t, y, flag})
-%# Opens a new figure window and plots the first, the second and the third result from the variable @var{y} of the differential equations in three dimensions while solving. The return value @var{ret} depends on the input value of the variable @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then the value true (resp. value 1) is returned, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver outputs. The value of the variable @var{t} is not needed by this function. There is no error handling implemented in this function to achieve the highest performance.
+%# Opens a new figure window and plots the first result from the variable @var{y} over the second and the third result from the variable @var{y} in three dimensions while solving. The return value @var{ret} depends on the input value of the variable @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then the value true (resp. value 1) is returned, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver output. This function is an odepkg plotter function that can be set with @command{odeset}, therefore this function should never be directly called by the user. No error handling has been implemented in this function to achieve the highest processing speed.
 %#
 %# Run
 %# @example

@@ -72,6 +72,7 @@ function [] = odepkg_package_check ()
 
   test ('odepkg_equations_lorenz', 'verbose'); clear ('all');
   test ('odepkg_equations_pendulous', 'verbose'); clear ('all');
+  test ('odepkg_equations_roessler', 'verbose'); clear ('all');
   test ('odepkg_equations_secondorderlag', 'verbose'); clear ('all');
   test ('odepkg_equations_vanderpol', 'verbose'); clear ('all');
 

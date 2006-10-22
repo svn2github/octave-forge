@@ -16,11 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} odepkg_structure_check ()
-%# Displays the help text of the function and terminates with an error.
-%#
-%# @deftypefnx {Function} {@var{[vodestruct]} =} odepkg_structure_check (@var{vodestruct})
-%# Checks the field names and the field values of the odepkg option structure @var{vodestruct} and returns it. If an invalid field name or an invalid field value is detected then the function terminates with an error.
+%# @deftypefn {Function} {@var{odestruct} =} odepkg_structure_check (@var{odestruct})
+%# Checks the field names and the field values of the odepkg option structure @var{odestruct} and returns it again if it is valid. If an invalid field name or an invalid field value is detected then the function terminates with an error.
 %#
 %# Run
 %# @example

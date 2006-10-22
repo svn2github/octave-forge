@@ -19,6 +19,15 @@
 %# @deftypefn {Function} {@var{[ydot]} =} odepkg_equations_pendulous (@var{tvar}, @var{xvar})
 %# Returns the states of the differential equations from a pendulum implementation, i.e. the motion of a simple pendulum with damping. The first state variable @var{ydot(1,1)} describes the angular position and the second state variable @var{ydot(2,1)} describes the velocity of the pendulum. The variables @var{xvar} and @var{ydot} are column vectors, the variable @var{tvar} is the actual time stamp. There is no error handling implemented in this function to achieve the highest processing speed.
 %# @end deftypefn
+%#
+%# Run
+%# @example
+%# demo odepkg_equations_pendulous
+%# @end example
+%# to see an example.
+%# @end deftypefn
+%#
+%# @seealso{odepkg}
 
 function ydot = odepkg_equations_pendulous (tvar, xvar)
   m = 1;    %# The pendulum mass in kg

@@ -19,8 +19,17 @@
 %# @deftypefn {Function} {@var{[y]} =} odepkg_equations_lorenz (@var{t}, @var{x})
 %# Returns the states of the ordinary differential equations from the Lorenz equation implementation, ie. the force to a conductor caused by movement in a magnetic field, cf. @url{http://en.wikipedia.org/wiki/Lorenz_equation} for further details. The variable @var{x} has the values for the state variables, @var{y} has the results after each integration step. Both variables are column vectors, the variable @var{t} is the actual time stamp. There is no error handling implemented in this function to achieve the highest performance.
 %# @end deftypefn
-%# 
+%#
+%# Run
+%# @example
+%# demo odepkg_equations_lorenz
+%# @end example
+%# to see an example.
+%# @end deftypefn
+%#
 %# @seealso{odepkg}
+%#
+%# - TODO - REWORK THE HELP TEXT ABOVE BECAUSE IT MAY NOT BE CORRECT -
 
 function y = odepkg_equations_lorenz (t, x)
   y = [10 * (x(2) - x(1));

@@ -1,38 +1,55 @@
-File:    ChangeLog
-Created: 2006.08.16
-Author:  Thomas Treichl <treichl@users.sourceforge.net>
+Filename:    ChangeLog
+Created:     2006.08.16
+Creator:     Thomas Treichl
 Description: OdePkg ChangeLog File
 
-2006.10.06 Thomas Treichl <treichl@users.sourceforge.net>
+2006.10.22 Thomas Treichl
+	* -NEEDED-: update all -*-texinfo-*- help texts in all function files
+	* OdePkg-0.1.1: ready to put it into cvs-repository
+
+2006.10.19 David Bateman
+	* ode23.m, ode45.m, ode54.m, ode78.m, odeset, odeget:
+	  changed -*-texinfo-*- help texts for octave-forge web-page creation
+
+2006.10.15 Thomas Treichl
+	* dir.src: created and added first test files, these 
+	  files will not be added to the cvs repository yet
+	* -NEEDED-: configure.base Makeconf.in and autogen.sh
+
+2006.10.13 Thomas Treichl
+	* INDEX: file has been updated
+	* DESCRIBTION: file has been updated
+
+2006.10.06 Thomas Treichl
 	* ChangeLog: changed appearence for next entries
 	* ode23.m, ode45.m, ode54.m, ode78.m: Further improved 
 	  functionality. Added event handling and other functions
-	  to handle other options.
-	* INDEX: file has been created for pkg management.
+	  to handle other options
+	* INDEX: file has been created for pkg management
 	* TODO: check the whole package and release first stable
-	  version 0.1.0.
-	
-2006.09.28
+	  version 0.1.0
+
+2006.09.28 Thomas Treichl
 	* All input output vectors of the initial value problems
 	  the OutputFcns and the EventFcns are column vectors
-	
-2006.09.27
+
+2006.09.27 Thomas Treichl
 	* TODO: Input vectors of event functions and plot functions
 	  must be column vectors
 	* TODO: Add/change examples of initial value problems resp.
 	  the number of sets of ordinary differential equations
-	
-2006.09.13
+
+2006.09.13 Thomas Treichl
 	* Removed temporary files
 	* Added a DESCRIPTION and COPYING file
 	* Checked all files, tests and demos for a first push to cvs
 
-2006.09.12
+2006.09.12 Thomas Treichl
 	* Renamed all functions and files from tt_XXX to XXX
 	  eg. tt_ode23 became ode23.m etc. 
 	* Replaced the octave-license with the one of octave-forge
-	
-2006.08.20
+
+2006.08.20 Thomas Treichl
 	* Checklist for odepkg files
 	  - tt_odepkg_example_pendulous is ready to contribute
 	  - tt_odepkg_example_secondorderlag is ready to contribute
@@ -47,11 +64,12 @@ Description: OdePkg ChangeLog File
 	  - tt_ode54.m is ready to contribute
 	  - tt_ode78.m is ready to contribute
 
-2006.08.16
+2006.08.16 Thomas Treichl
 	* What has to be done for the first release
 	  - parameters need to be given to the ODEs
 	  - add help texts in odeplot.m, ode23.m, ode2f.m etc.
 	  - add demos and tests to all function files
+	  - add all ode files and ode functions that already exist
 
 Local Variables: ***
 mode: change-log ***

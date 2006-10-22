@@ -16,8 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[sol]} =} odepkg_event_handle (@var{@@fun, time, y, flag, [P1, P2, @dots{}]})
-%# Evaluates the event function of an ode solver call, if before the event option was set with the command odeset. This function is an internal helper function, therefore this function should never be directly called by a user. No error handling has been implemented in this function.
+%# @deftypefn {Function} {@var{sol} =} odepkg_event_handle (@var{@@fun, time, y, flag, [P1, P2, @dots{}]})
+%# Evaluates the event function that is specified by the function handle @var{@@fun}. This function is an odepkg internal helper function, therefore this function should never be directly called by a user. No error handling has been implemented in this function to achieve the highest processing speed.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}

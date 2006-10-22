@@ -7,20 +7,19 @@ OdePkg Solver Functions
  ode54
  ode78
 OdePkg Options Functions
- odeset= for <code>odeset(options,param)</code> use <code>options.param</code>
+ odeset
  odeget
- odepkg_structure_check
-Odepkg Output Functions
+OdePkg Output Functions
  odeplot
  odeprint
  odephas2
  odephas3
-OdePkg Demo Functions
+OdePkg Example Functions
  odepkg_equations_lorenz
  odepkg_equations_pendulous
  odepkg_equations_roessler
  odepkg_equations_secondorderlag
  odepkg_equations_vanderpol
 OdePkg Helper Functions
- odepkg_structure_check
  odepkg_event_handle
+ odepkg_structure_check

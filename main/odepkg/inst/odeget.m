@@ -16,21 +16,12 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[vret]} =} odeget (@var{vodestruct}, @var{vname}, @var{[vdefault]})
-%# @deftypefnx {Function} {@var{[vret]} =} odeget (@var{vodestruct}, @var{@{vnames@}}, @var{[@{vdefaults@}]})
+%# @deftypefn  {Function} {@var{ret} =} odeget (@var{odestruct}, @var{name}, @var{[default]})
+%# @deftypefnx {Function} {@var{ret} =} odeget (@var{odestruct}, @var{@{names@}}, @var{[@{defaults@}]})
 %#
-%# Returns the option value @var{vret} that is specified by the option name 
-%# @var{vname} from the odepkg option structure @var{vodestruct}. Optionally 
-%# the default value @var{vdefault} is returned if no option was set in 
-%# @var{vodestruct} manually by the user. If an invalid input argument is 
-%# detected then the function terminates with an error.
+%# The first form returns the option value @var{ret} that is specified by the option name @var{name} from the odepkg option structure @var{odestruct}. Optionally the default value @var{default} is returned if this option was not manually set in @var{odestruct}. If an invalid input argument is detected then the function terminates with an error.
 %#
-%# The second form, returns the option values as a cell array @var{vret} that
-%# is specified by the cell array of option names @var{@{vnames@}} from the 
-%# odepkg option structure @var{vodestruct}. Optionally the default value of
-%# @var{[@{vdefaults@}]} is returned if no option was set in @var{vodestruct}
-%# manually by the user. If an invalid input argument is detected then the
-%# function terminates with an error.
+%# The second form returns the option values as a cell array @var{ret} in that order that is specified by the cell array of option names @var{@{names@}} from the odepkg option structure @var{odestruct}. Optionally the default value from the cell array @var{@{defaults@}} is returned that depends on that option that was not manually set in @var{odestruct}. If an invalid input argument is detected then the function terminates with an error.
 %#
 %# Run
 %# @example
@@ -43,7 +34,11 @@
 
 %# Maintainer: Thomas Treichl
 %# Created: 20060809
-%# ChangeLog:
+%# ChangeLog: 20061022, Thomas Treichl
+%#    Changed help text. We cannot create a function of the form 
+%#    odeget (@var{odestruct}, @var{name1}, @var{name2}) because we
+%#    would get a mismatch with function form 1 like described above.
+
 
 function [vret] = odeget (varargin)
 

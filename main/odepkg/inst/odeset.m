@@ -16,37 +16,29 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[odestruct]} =} odeset ()
+%# @deftypefn  {Function} {@var{[odestruct]} =} odeset ()
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{"field1"}, @var{value1}, @dots{})
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @dots{})
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{newstruct})
 %#
-%# Called without arguments, creates a new ode options structure with all 
-%# necessary fields and sets the values of all fields to the defaults.
+%# Called without return argument, creates a new ode options structure with all necessary fields and sets the values of all fields to the defaults.
 %#
-%# Called with only string arguments, creates a new ode options structure
-%# with all necessary fields and sets the values of the fields @var{field1},
-%# @var{field2} etc. to the values @var{value1}, @var{value2}, etc. If an
-%# unknown option field or an invalid option value is detected then the 
-%#function terminates with an error.
+%# Called with string input arguments identifying valid odepkg structure options, creates a new odepkg options structure with all necessary fields and sets the values of the fields @var{field1}, @var{field2} etc. to the values @var{value1}, @var{value2}, etc. If an unknown option field or an invalid option value is detected then the function terminates with an error.
 %#
-%# Called with the first argument being a structure returned by @code{odeset},
-%# overwrites all values of the structure @var{oldstruct} in the fields 
-%# @var{field1}, @var{field2}, etc. with new values @var{value1},
-%# @var{value2}, etc. If an unknown option field or an invalid option value 
-%# is detected then the function terminates with an error.
+%# Called with the first argument being a structure returned by @command{odeset}, overwrites all option values of the structure @var{oldstruct} in the fields @var{field1}, @var{field2}, etc. with new values @var{value1}, @var{value2}, etc. If an unknown option field or an invalid option value is detected then the function terminates with an error.
 %#
-%# Called with two structures, overwrites all values in the fields from the 
-%# structure @var{oldstruct} with new values of the fields from the structure 
-%# @var{newstruct}. Any empty matrix values from @var{newstruct} are not 
-%# treated. If an unknown option field or an invalid option value is detected
-%# then the function terminates with an error.
+%# Called with two structures, overwrites all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Any empty matrix values from @var{newstruct} are not treated. If an unknown option field or an invalid option value is detected then the function terminates with an error.
 %#
 %# Run
 %# @example
 %# demo odeset
 %# @end example
 %# to see an example.
+%# @end deftypefn
+%#
+%# @seealso{odepkg}
+%#
+%# - TODO - ODESET - CLEANUP HELP TEXT FROM HERE TO HELP TEXT BUTTOM -
 %#
 %# @unnumberedsubsec Valid field names of the odepkg options structure
 %# The odepkg options structure may contain the following fields and default values if calling @command{odeset}
@@ -74,10 +66,6 @@
 %# @item "MaxOrder" must be an integer between 1 and 5 (default 5)
 %# @item "BDF" must be "on" or "off" (default "off")
 %# @end itemize
-%#
-%# @end deftypefn
-%#
-%# @seealso{odepkg}
 
 %# Maintainer: Thomas Treichl
 %# Created: 20060809
@@ -118,7 +106,7 @@ function [vret] = odeset (varargin)
   elseif (length (varargin) < 2)
     vmsg = sprintf ('odeset ("field1", "value1", ...)'); usage (vmsg);
   elseif (ischar (varargin{1}) == true && mod (length (varargin), 2) == 0)
-    vint.nmb = 1; %# Check if the first input argument is a string (and all other)
+    vint.nmb = 1; %# Check if the first input argument is a string (and every second)
     for vcntarg = 1:2:length (varargin)
       if (ischar (varargin{vcntarg}) == true)
         vint.arg{vint.nmb} = varargin{vcntarg};

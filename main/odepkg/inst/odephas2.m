@@ -16,8 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[ret]} =} odephas2 (@var{t, y, flag})
-%# Opens a new figure window and plots the first and the second result from the variable @var{y} of the differential equation in two dimensions while solving. The return value @var{ret} depends on the input value  of the variable @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then the value true (resp. value 1) is returned, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver outputs. The value of the variable @var{t} is not needed by this function. There is no error handling implemented in this function to achieve the highest performance.
+%# @deftypefn {Function} {@var{ret} =} odephas2 (@var{t, y, flag})
+%# Opens a new figure window and plots the first result from the variable @var{y} over the second result from the variable @var{y} while solving. The return value @var{ret} depends on the input value of the variable @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then the value true (resp. value 1) is returned, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver outputs. The value of the variable @var{t} is not needed by this function. The input arguments @var{t} and @var{y} are the actual time stamp and the solver output. This function is an odepkg plotter function that can be set with @command{odeset}, therefore this function should never be directly called by the user. No error handling has been implemented in this function to achieve the highest processing speed.
 %#
 %# Run
 %# @example

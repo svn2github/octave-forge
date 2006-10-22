@@ -101,6 +101,7 @@ div#content {
   display: block;
   margin-left: 11em;
   margin-top: 3em;
+  padding-top: 1em;
 }
 
 .sf_logo {
@@ -116,6 +117,8 @@ div#content {
 div#title {
   width: 100%;
   clear: both;
+  position: fixed;
+  top: 0;
 }
 
 div#title h1 {

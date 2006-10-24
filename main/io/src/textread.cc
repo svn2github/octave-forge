@@ -56,7 +56,7 @@ public:
 	}
     }
 
-    bool
+    void
     open()
     {
 	data.open(filename.c_str());
@@ -128,7 +128,7 @@ public:
     void
     readline()
     {
-	data.getline(buffer, 4096);
+	data.getline(buffer, BUFFER_SIZE);
 	if (std::string(buffer).length() != 0) {
 	    line.str(buffer);
 	    line.clear();
@@ -280,7 +280,7 @@ Currently implemented @var{prop} arguments are:\n\
     std::vector<Matrix> matrix_output;
     std::vector<Cell> cell_output;
 
-    for (int i = 0; i < input.columns.size(); i++) {
+    for (unsigned int i = 0; i < input.columns.size(); i++) {
 	if ((input.columns[i] == "%d") || (input.columns[i] == "%f") || (input.columns[i] == "%u")) {
 	    // Storage matrix
 	    matrix_output.push_back(Matrix(1, nr_rows, 0));
@@ -299,8 +299,6 @@ Currently implemented @var{prop} arguments are:\n\
     }
 
     std::string s;
-    double d;
-    char buf[1024];
     long unsigned int row = 0;
     try 
 	{
@@ -335,7 +333,7 @@ Currently implemented @var{prop} arguments are:\n\
 	}
 
     dim_vector dim(1, nr_rows);
-    for (int i = 0; i < input.columns.size(); i++) {
+    for (unsigned int i = 0; i < input.columns.size(); i++) {
 	long unsigned int cl = cell_output[i].length();
 	long unsigned int ml = matrix_output[i].length();
 

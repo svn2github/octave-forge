@@ -90,7 +90,7 @@ public:
 
 	    char buf[BUFFER_SIZE];
 	    while (!tmpdata.eof()) {
-		tmpdata.getline(buf, 4096);
+		tmpdata.getline(buf, BUFFER_SIZE);
 		if (std::string(buf).length() != 0) {
 		    _lines++;
 		}
@@ -167,6 +167,7 @@ private:
 DEFUN_DLD(textread, args, ,
 "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{a}, @var{b}, @var{c}, ...] =} textread (@var{filename}, @var{format}[, @var{N}])\n\
+@deftypefnx {Loadable Function} {[@var{a}, @var{b}, @var{c}, ...] =} textread (..., @var{prop}, @var{value})\n\
 \n\
 Read data from the columns of a text file.\n\
 \n\
@@ -180,7 +181,7 @@ is repeated @var{N} times.  It may continue the following specifiers:\n\
 @item %s\n\
 for a string,\n\
 \n\
-@item %d\n\
+@item %d,%f\n\
 for a double, floating-point or integer number and\n\
 \n\
 @item %*\n\
@@ -200,30 +201,56 @@ Penguin Tux   6\n\
 can be read using\n\
 \n\
 @example\n\
-@code{[a,b,c] = textread(\"test.txt\", \"%s %s %d\").}\n\
+@code{[a,b,c] = textread(\"test.txt\", \"%s %s %f\").}\n\
 @end example\n\
 \n\
+Currently implemented @var{prop} arguments are:\n\
+@itemize \n\
+@item \"headerlines\": \n\
+@var{value} represents the number of header lines to skip.\n\
+@end itemize \n\
 @end deftypefn\n\
 @seealso{load, dlmread, fscanf}")
 {
     octave_value_list retval;
-
-    if ((args.length() < 2) || (args.length() > 3)) {
+    int nargin = args.length();
+ 
+    if (nargin < 2) {
 	print_usage ();
 	return retval;
     }
 
     std::string filename = args(0).string_value();
     std::string format = args(1).string_value();
+    unsigned int headerlines = 0;
+
     int repeat = 0;
-    if (args.length() == 3) {
+    int param_arg = 2;
+
+    if (nargin > 2) {
+      if (!args(2).is_string()) {
 	repeat = args(2).int_value();
+        param_arg = 3;
+      }
     }
+
+    for (int i=param_arg; i<nargin-1; i+=2) {
+      std::string prop = args(i).string_value();
+
+      if (prop == "headerlines")
+        headerlines = args(i+1).int_value();
+      else
+	error("Unknown property %s.",prop.c_str());
+
+    }
+
     if (error_state) {
 	error("Invalid argument specified");
 	print_usage ();
 	return retval;
     }
+
+
 
     TextFile input(filename.c_str());
     if (!input.is_valid()) {
@@ -240,9 +267,15 @@ can be read using\n\
     input.ignore_whitespace();
 
     long unsigned int nr_rows = input.lines();
+
     if (nr_rows == 0) {
 	return retval;
     }
+
+    // nr_rows represents the number of lines in the file minus the ignored 
+    // header lines
+
+    nr_rows -= headerlines;
 
     std::vector<Matrix> matrix_output;
     std::vector<Cell> cell_output;
@@ -271,6 +304,13 @@ can be read using\n\
     long unsigned int row = 0;
     try 
 	{
+	    while ((row < headerlines) && input.is_valid()) {
+		input.readline();
+		row++;
+	    }
+
+            row = 0;
+
 	    while ((row < nr_rows) && input.is_valid()) {
 		input.readline();
 
@@ -294,7 +334,7 @@ can be read using\n\
 	    return retval;
 	}
 
-    dim_vector dim(1, input.lines());
+    dim_vector dim(1, nr_rows);
     for (int i = 0; i < input.columns.size(); i++) {
 	long unsigned int cl = cell_output[i].length();
 	long unsigned int ml = matrix_output[i].length();
@@ -303,7 +343,7 @@ can be read using\n\
 	    continue;
 	}
 	else if (cl == 0) {
-	    matrix_output[i].resize(1, input.lines());
+	    matrix_output[i].resize(1, nr_rows);
 	    retval.append(octave_value(matrix_output[i].transpose()));
 	} else {
 	    cell_output[i].resize(dim);

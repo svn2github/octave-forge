@@ -12,8 +12,6 @@ OTHERSOURCES = primpoly.cc isprimitive.cc __errcore__.cc cyclpoly.cc \
 OTHERTARGETS = $(patsubst %.cc,%.oct,$(OTHERSOURCES))
 OTHEROBJECTS = $(patsubst %.cc,%.o,$(OTHERSOURCES))
 OTHERDEPENDS = $(patsubst %.cc,%.d,$(OTHERSOURCES))
-##SUBDIRS = ../doc
-SUBDIRS = 
 
 TARGETS = $(GALOISTARGET) $(OTHERTARGETS)
 SOURCES = $(GALOISSOURCES) $(OTHERSOURCES)
@@ -30,12 +28,12 @@ DELETES = $(OBJECTS) $(GALOISDEPENDS) $(OTHERDEPENDS) *~ $(TARGETS) core octave-
 DEFINES = -DGALOIS_DISP_PRIVATES
 MOFLAGS =
 
-.PHONY: all dist clean realclean count $(SUBDIRS)
+.PHONY: all dist clean realclean count
 .SUFFIXES:
 
-all : $(DEPENDS) $(OTHERTARGETS) $(GALOISTARGET) $(SUBDIRS)
+all : $(DEPENDS) $(OTHERTARGETS) $(GALOISTARGET)
 
-install : $(SUBDIRS)
+install :
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/comm
 
 $(GALOISTARGET) : $(DEPENDS) $(GALOISOBJECTS) 
@@ -45,13 +43,6 @@ $(GALOISTARGET) : $(DEPENDS) $(GALOISOBJECTS)
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)
 endif
-
-$(SUBDIRS) :
-	@if test -z "$(MAKECMDGOALS)" ; then \
-	    cd $@ && $(MAKE) ; \
-	elif grep -q "^$(MAKECMDGOALS) *[:]" $@/Makefile ; then \
-	    cd $@ && $(MAKE) $(MAKECMDGOALS) ; \
-	fi
 
 %.oct : %.d %.o
 	@echo "Linking $@"; \
@@ -65,16 +56,16 @@ $(SUBDIRS) :
 	@echo "Compiling $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 
-clean: $(SUBDIRS)
+clean:
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
-realclean: $(SUBDIRS)
+realclean:
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
-dist: $(SUBDIRS)
+dist:
 
-count: $(SUBDIRS)
+count:
 	wc *{.cc,.h,.m,.txi}
 

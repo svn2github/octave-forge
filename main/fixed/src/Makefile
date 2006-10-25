@@ -3,14 +3,11 @@ sinclude Makeconf
 FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
-SUBDIRS =
-
 ifeq (,$(findstring cygwin,$(canonical_host_type)))
  ifeq (,$(findstring mingw,$(canonical_host_type)))
    OCT_INCLUDES_LIB = 1
   endif
 endif
-export OCT_INCLUDES_LIB
 
 ifeq (1,$(OCT_INCLUDES_LIB))
   FIXEDSOURCES = fixedColVector.cc fixedRowVector.cc \
@@ -71,33 +68,35 @@ endif
 
 DELETES = $(OBJECTS) $(FIXEDDEPENDS) $(TARGETS) $(FIXEDLIBTARGET).a \
 	$(FIXEDVERTARGET) core octave-core *~ *.d-t int/fixed.o int/fixed.d \
-	int/fixed.d-t
+	int/fixed.d-t FILES
 
-DEFINES = -DOCTAVE_FORGE $(HAVE_DO_FORTRAN_INDEXING) \
-	$(HAVE_PROPAGATE_EMPTY_MATRICES) \
-	$(HAVE_OK_TO_LOSE_IMAGINARY_PART) \
-	$(HAVE_ND_ARRAYS) $(TYPEID_HAS_CLASS) \
-	$(CLASS_HAS_LOAD_SAVE) $(MX_ND_RED_NUM) \
-	$(HAVE_OCTAVE_CONCAT) $(HAVE_SWAP_BYTES) $(HAVE_OCTAVE_UPLUS)
+DEFINES = -DOCTAVE_FORGE
 MOFLAGS =
 
-.PHONY: all clean count $(SUBDIRS)
+.PHONY: all clean count
 
 .SUFFIXES:
 
 .PRECIOUS: %.d %.o
 
-all : $(TARGETS) $(SUBDIRS)
+all : $(TARGETS)
+	@if [ -f FILES ]; then \
+	  $(RM) -f FILES; \
+	fi; \
+	touch FILES; \
+	for _f in $(TARGETS); do \
+	  echo $$_f >> FILES; \
+	done
 
 ifndef OCTAVE_FORGE
 install :
 	@echo "Where exactly do you want me to install to!!!"
 else
 ifeq (1,$(OCT_INCLUDES_LIB))
-install : $(SUBDIRS)
+install : 
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed
 else
-install : $(SUBDIRS)
+install : 
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed; \
 	if test ! -e $(bindir)/liboctave.dll ; then \
 	  echo "****** WARNING: $(FIXEDLIBTARGET) not correctly installed."; \
@@ -131,13 +130,6 @@ ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)
 endif
 
-$(SUBDIRS) :
-	@if test -z "$(MAKECMDGOALS)" ; then \
-	    cd $@ && $(MAKE) ; \
-	elif grep -q "^$(MAKECMDGOALS) *[:]" $@/Makefile ; then \
-	    cd $@ && $(MAKE) $(MAKECMDGOALS) ; \
-	fi
-
 fixed-int.d : int/fixed.cc
 	@echo "Depending $<"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M int/fixed.cc; \
@@ -160,15 +152,15 @@ fixed-int.o : int/fixed.cc fixed-int.d
 	@echo "Compiling $@"; \
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 
-clean: $(SUBDIRS)
+clean:
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
-realclean: $(SUBDIRS)
+realclean:
 	@echo "Cleaning..."; \
 	$(RM) -f $(DELETES)
 
-dist: $(SUBDIRS)
+dist:
 
-count: $(SUBDIRS)
+count:
 	wc *{.cc,.h,.m} int/*.{cc,h}

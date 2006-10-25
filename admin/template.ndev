@@ -299,9 +299,9 @@ post-pkg/%::
 	package manager will execute "./configure" in this directory
 	is this script exists, and will then call "make" if a file
 	"Makefile" exists in this directory. "make install" will
-	however not be called. If a file called "files" exist all
+	however not be called. If a file called "FILES" exist all
 	files listed there will be copied to the "inst" directory, so
-	they also will be installed. If the "src/files" file doesn't
+	they also will be installed. If the "src/FILES" file doesn't
 	exist "src/*.m" and "src/*.oct" will be copied to
 	"inst". There are two reasons for doing this rather than "make
 	install":

@@ -162,6 +162,7 @@ Debugging
  debug_symtab_lookups
 Installation
  mkoctfile mex tar untar zip unzip pkg
+ bunzip2 gunzip unpack
  compare_versions movefile 
 Profiling
  profile 

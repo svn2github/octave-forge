@@ -17,22 +17,22 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{c} =} condeig (@var{a})
 ## @deftypefnx {Function File} {[@var{v}, @var{lambda}, @var{c}] =} condeig (@var{a})
-## Computes condition numbers for the eigenvalues of a matrix. The
+## Computes condition numbers of the eigenvalues of a matrix. The
 ## condition numbers are the reciprocals of the cosines of the angles
 ## between the left and right eigenvectors.
 ##
-## Arguments are
+## @subheading Arguments
 ##
 ## @itemize @bullet
 ## @item
 ## @var{a} must be a square numeric matrix.
 ## @end itemize
 ##
-## Return values are
+## @subheading Return values
 ##
 ## @itemize @bullet
 ## @item
-## @var{c} is a vector of condition numbers for the eigenvalue of
+## @var{c} is a vector of condition numbers of the eigenvalue of
 ## @var{a}.
 ##
 ## @item
@@ -44,7 +44,7 @@
 ## result is the same as for @code{[v, lambda] = eig (a)}.
 ## @end itemize
 ##
-## Example:
+## @subheading Example
 ##
 ## @example
 ## @group
@@ -55,8 +55,8 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Arno Onken <whyly@gmx.net>
-## Description: Condition numbers for eigenvalues
+## Author: Arno Onken <whyly@whyly.org>
+## Description: Condition numbers of eigenvalues
 
 function [v, lambda, c] = condeig (a)
 

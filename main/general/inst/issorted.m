@@ -21,15 +21,17 @@
 ## @seealso{sort, sortrows}
 ## @end deftypefn
 
-function y = issorted(x,str)
+function y = issorted2(x,str)
 	if(nargin == 0)
 		usage(" \n issorted(x) \n issorted(A,'rows')");
 	else
 		if(nargin == 1)
-			y = all(all(x == sort(x)));
+			y = all(all(diff(x)>=0));
 		else
 			if(nargin == 2 && str == 'rows')
-				y = all(all(x == sortrows(x)));
+				t = sign(diff(x)); # t contains -1, 0, or 1
+   			t(t==1) = columns(x); # t contains -1, 0, or n
+   			y = all(all (cumsum(t,2) >= 0));
 			else
 				error("The second argument must be equal to 'rows'\n");
 			endif;

@@ -50,7 +50,7 @@ end;
 [y,n] = sumskipnan(center(i,DIM).^2,DIM);
 
 if (FLAG~=1)
-        y = sqrt(y./(n.*max(n-1,0)));	% normalize with N-1
+        y = sqrt(y./max(n-1,0));	% normalize with N-1
 else
         y = sqrt(y)./n;	% normalize with N
 end;

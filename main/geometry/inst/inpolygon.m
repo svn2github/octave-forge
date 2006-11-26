@@ -27,12 +27,10 @@
 
 function [IN, ON] = inpolygon (X, Y, xv, yv)
 
-  if (length (xv) != length (yv))
-    error ("inpolygon: polygon lengths not equal between x and y")
-  endif
-
-  if ( length (X) != length (Y) )
-    error ("inpolygon: input points lengths not equal between x and y");
+  if ( !(isreal(X) && isreal(Y) && ismatrix(Y) && ismatrix(Y) && size_equal(X, Y)) )
+    error( "inpolygon: first two arguments must be real matrices of same size");
+  elseif ( !(isreal(xv) && isreal(yv) && isvector(xv) && isvector(yv) && size_equal(X, Y)) )
+    error( "inpolygon: last two arguments must be real vectors of same size");
   endif
 
   npol = length(xv);
@@ -55,10 +53,9 @@ function [IN, ON] = inpolygon (X, Y, xv, yv)
     if (nargout == 2)
       ON = zeros (size(X), "logical");
       j = npol;
-      for i=1:npol
-        idx = ( (xv(j)-xv(i)).*(Y-yv(i)) == (yv(j) - yv(i)) .* (X-xv(i)));
+      for i=1:npol-1
+        idx = ( (xv(i+1)-xv(i))*(Y-yv(i)) == (yv(i+1) - yv(i)) * (X-xv(i)));
         ON(idx) = true;
-        j = i;
       endfor
     endif
   unwind_protect_cleanup

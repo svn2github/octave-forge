@@ -6,12 +6,11 @@
 ## Public License.
 
 ## -*- texinfo -*-
-##
 ## @deftypefn {Function File} {[@var{IN}, @var{ON}] = } inpolygon (@var{X}, @var{Y}, @var{xv}, @var{xy})
 ##
 ## For a polygon defined by (@var{xv},@var{yv}) points, determine if the
 ## points (X,Y) are inside or outside the polygon.  @var{X}, @var{Y},
-## @var{IN} must all have the same dimensions. The optional output "ON"
+## @var{IN} must all have the same dimensions. The optional output @var{ON}
 ## will give point on the polygon. 
 ##
 ## @end deftypefn
@@ -26,9 +25,9 @@
 ## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/ and is
 ## credited to Randolph Franklin.
 
-function [IN ON] = inpolygon (X, Y, xv, yv)
+function [IN, ON] = inpolygon (X, Y, xv, yv)
 
-  if (length (xv) != length (xv))
+  if (length (xv) != length (yv))
     error ("inpolygon: polygon lengths not equal between x and y")
   endif
 
@@ -36,25 +35,82 @@ function [IN ON] = inpolygon (X, Y, xv, yv)
     error ("inpolygon: input points lengths not equal between x and y");
   endif
 
-  IN = zeros (size(X), "logical");
-  ON = zeros (size(X), "logical");
-
   npol = length(xv);
-
-  for i = 1:npol
-    j = mod(i, npol)+1;
-    idx = ( ( ((yv(i) <= Y) & (Y < yv(j))) | ((yv(j) <= Y) & (Y < yv(i))) ) &
-              (X * (yv(j) - yv(i)) + xv(i)) < (xv(j) - xv(i)) * (Y - yv(i)) );
-    IN(idx) = !IN(idx);
-  endfor
-  if (nargout == 2)
-    for i=1:npol-1
-      idx = ( (xv(i+1)-xv(i))*(Y-yv(i)) == (yv(i+1) - yv(i)) * (X-xv(i)));
-      ON(idx) = true;
+  
+  ## Disable warning caused by divede-by-zero
+  dbz = warning("query", "Octave:divide-by-zero");
+  warning("off", "Octave:divide-by-zero");
+  
+  unwind_protect
+    IN = zeros (size(X), "logical");
+    j = npol;
+    for i = 1:npol
+      idx = ((((yv(i) <= Y) & (Y < yv(j))) |
+             ((yv(j) <= Y) & (Y < yv(i)))) &
+            (X < (xv(j) - xv(i)) .* (Y - yv(i)) ./ (yv(j) - yv(i)) + xv(i)));
+      IN(idx) = !IN(idx);
+      j = i;
     endfor
-  endif
-
+  
+    if (nargout == 2)
+      ON = zeros (size(X), "logical");
+      j = npol;
+      for i=1:npol
+        idx = ( (xv(j)-xv(i)).*(Y-yv(i)) == (yv(j) - yv(i)) .* (X-xv(i)));
+        ON(idx) = true;
+        j = i;
+      endfor
+    endif
+  unwind_protect_cleanup
+    warning(dbz.state, "Octave:divide-by-zero");
+  end_unwind_protect
 endfunction
 
+%!demo
+%!  xv=[ 0.05840, 0.48375, 0.69356, 1.47478, 1.32158, \
+%!       1.94545, 2.16477, 1.87639, 1.18218, 0.27615, \
+%!       0.05840 ];
+%!  yv=[ 0.60628, 0.04728, 0.50000, 0.50000, 0.02015, \
+%!       0.18161, 0.78850, 1.13589, 1.33781, 1.04650, \
+%!       0.60628 ];
+%! xa=[0:0.1:2.3];
+%! ya=[0:0.1:1.4];
+%! [x,y]=meshgrid(xa,ya);
+%! [IN,ON]=inpolygon(x,y,xv,yv);
+%! 
+%! inside=IN & !ON;
+%! clearplot
+%! plot(xv,yv)
+%! hold on
+%! plot(x(inside),y(inside),"@g")
+%! plot(x(~IN),y(~IN),"@m")
+%! plot(x(ON),y(ON),"@b")
+%! hold off
+%! disp("Green points are inside polygon, magenta are outside,");
+%! disp("and blue are on boundary.");
 
+%!demo
+%!  xv=[ 0.05840, 0.48375, 0.69356, 1.47478, 1.32158, \
+%!       1.94545, 2.16477, 1.87639, 1.18218, 0.27615, \
+%!       0.05840, 0.73295, 1.28913, 1.74221, 1.16023, \
+%!       0.73295, 0.05840 ];
+%!  yv=[ 0.60628, 0.04728, 0.50000, 0.50000, 0.02015, \
+%!       0.18161, 0.78850, 1.13589, 1.33781, 1.04650, \
+%!       0.60628, 0.82096, 0.67155, 0.96114, 1.14833, \
+%!       0.82096, 0.60628];
+%! xa=[0:0.1:2.3];
+%! ya=[0:0.1:1.4];
+%! [x,y]=meshgrid(xa,ya);
+%! [IN,ON]=inpolygon(x,y,xv,yv);
+%! 
+%! inside=IN & ~ ON;
+%! clearplot
+%! plot(xv,yv)
+%! hold on
+%! plot(x(inside),y(inside),"@g")
+%! plot(x(~IN),y(~IN),"@m")
+%! plot(x(ON),y(ON),"@b")
+%! hold off
+%! disp("Green points are inside polygon, magenta are outside,");
+%! disp("and blue are on boundary.");
 

@@ -53,9 +53,13 @@ function [IN, ON] = inpolygon (X, Y, xv, yv)
     if (nargout == 2)
       ON = zeros (size(X), "logical");
       j = npol;
-      for i=1:npol-1
-        idx = ( (xv(i+1)-xv(i))*(Y-yv(i)) == (yv(i+1) - yv(i)) * (X-xv(i)));
+      for i=1:npol
+        a = (yv(i)-yv(j))./(xv(i)-xv(j));
+        idx = ( ( ((Y >= yv(i)) & (Y <= yv(j))) | ((Y >= yv(j)) & (Y <= yv(i))) ) &
+                ( ((X >= xv(i)) & (X <= xv(j))) | ((X >= xv(j)) & (X <= xv(i))) ) &
+                ( (Y == a.*(X-xv(i)) + yv(i)) | isinf(a) ) );
         ON(idx) = true;
+        j = i;
       endfor
     endif
   unwind_protect_cleanup
@@ -76,7 +80,6 @@ endfunction
 %! [IN,ON]=inpolygon(x,y,xv,yv);
 %! 
 %! inside=IN & !ON;
-%! clearplot
 %! plot(xv,yv)
 %! hold on
 %! plot(x(inside),y(inside),"@g")
@@ -101,7 +104,6 @@ endfunction
 %! [IN,ON]=inpolygon(x,y,xv,yv);
 %! 
 %! inside=IN & ~ ON;
-%! clearplot
 %! plot(xv,yv)
 %! hold on
 %! plot(x(inside),y(inside),"@g")

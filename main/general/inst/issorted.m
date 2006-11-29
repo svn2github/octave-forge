@@ -1,4 +1,4 @@
-## Copyright (C) 2006   Sissou   <sylvain.pelissier@gmail.com>
+## Copyright (C) 2006 Sissou and Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,6 +20,9 @@
 ##equal to sortrows(@var{x}) and 0 also. 
 ## @seealso{sort, sortrows}
 ## @end deftypefn
+
+## Author: Sissou <sylvain.pelissier@gmail.com> 
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function y = issorted(x,str)
 	if(nargin == 0)

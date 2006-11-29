@@ -27,9 +27,9 @@
 
 function [IN, ON] = inpolygon (X, Y, xv, yv)
 
-  if ( !(isreal(X) && isreal(Y) && ismatrix(Y) && ismatrix(Y) && size_equal(X, Y)) )
+  if ( !(isreal(X) && isreal(Y) && ismatrix(Y) && ismatrix(Y) && size_equal(X,Y)) )
     error( "inpolygon: first two arguments must be real matrices of same size");
-  elseif ( !(isreal(xv) && isreal(yv) && isvector(xv) && isvector(yv) && size_equal(X, Y)) )
+  elseif ( !(isreal(xv) && isreal(yv) && isvector(xv) && isvector(yv) && size_equal(xv,yv)) )
     error( "inpolygon: last two arguments must be real vectors of same size");
   endif
 

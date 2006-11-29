@@ -34,37 +34,33 @@ function [IN, ON] = inpolygon (X, Y, xv, yv)
   endif
 
   npol = length(xv);
+  do_boundary = (nargout >= 2);
   
-  ## Disable warning caused by divede-by-zero
-  dbz = warning("query", "Octave:divide-by-zero");
-  warning("off", "Octave:divide-by-zero");
+  IN = zeros (size(X), "logical");
+  if (do_boundary), ON = zeros (size(X), "logical"); endif
   
-  unwind_protect
-    IN = zeros (size(X), "logical");
-    j = npol;
-    for i = 1:npol
-      idx = ((((yv(i) <= Y) & (Y < yv(j))) |
-             ((yv(j) <= Y) & (Y < yv(i)))) &
-            (X < (xv(j) - xv(i)) .* (Y - yv(i)) ./ (yv(j) - yv(i)) + xv(i)));
-      IN(idx) = !IN(idx);
-      j = i;
-    endfor
-  
-    if (nargout == 2)
-      ON = zeros (size(X), "logical");
-      j = npol;
-      for i=1:npol
-        a = (yv(i)-yv(j))./(xv(i)-xv(j));
-        idx = ( ( ((Y >= yv(i)) & (Y <= yv(j))) | ((Y >= yv(j)) & (Y <= yv(i))) ) &
-                ( ((X >= xv(i)) & (X <= xv(j))) | ((X >= xv(j)) & (X <= xv(i))) ) &
-                ( (Y == a.*(X-xv(i)) + yv(i)) | isinf(a) ) );
-        ON(idx) = true;
-        j = i;
-      endfor
+  j = npol;
+  for i = 1:npol
+    delta_xv = xv(j) - xv(i);
+    delta_yv = yv(j) - yv(i);
+    ## distance = [distance from (X,Y) to edge] * length(edge)
+    distance = delta_xv.*(Y-yv(i)) - (X-xv(i)).*delta_yv;
+    ##
+    ## is Y between the y-values of edge i,j
+    ##        AND (X,Y) on the left of the edge ?
+    idx1 = ( (yv(i)<=Y & Y<yv(j)) | (yv(j)<=Y & Y<yv(i)) ) & ...
+           0< distance.*delta_yv;
+    IN(idx1) = !IN(idx1);
+
+    ## Check if (X,Y) are actually ON the boundary of the polygon.
+    if (do_boundary)
+       idx2 = ( (yv(i)<=Y & Y<=yv(j)) | (yv(j)<=Y & Y<=yv(i)) ) & ...
+              ( (xv(i)<=X & X<=xv(j)) | (xv(j)<=X & X<=xv(i)) ) & ...
+              ( 0 == distance | !delta_xv );
+       ON(idx2) = true;
     endif
-  unwind_protect_cleanup
-    warning(dbz.state, "Octave:divide-by-zero");
-  end_unwind_protect
+    j = i;
+  endfor
 endfunction
 
 %!demo

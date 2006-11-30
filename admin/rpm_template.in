@@ -39,7 +39,7 @@ mkdir install/@NAME@/inst
 
 %build
 cd @NAME@-@VERSION@
-HOME=`pwd` %{octave} -H -q --no-site-file --eval 'pkg('prefix',[pwd(),'/install']);pkg("install","@PACKAGE@")'
+HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install','@PACKAGE@')"
 cd install
 mv @NAME@-@VERSION@/packinfo/* @NAME@
 rm -rf @NAME@-@VERSION@/packinfo

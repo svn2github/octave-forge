@@ -8,6 +8,7 @@ Minimization
  line_min
  fmins adsmax mdsmax nmsmax
  bfgsmin samin battery
+ fminsearch
 Data fitting
  expfit expdemo
  wpolyfit wpolyfitdemo 

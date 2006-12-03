@@ -105,6 +105,7 @@ Functions
  pcode 
  inmem = use <f>who</f> with -functions
  mex
+ mexext
  source
  mark_as_command unmark_command
  mark_as_rawcommand unmark_rawcommand
@@ -130,6 +131,7 @@ Environment
  cd pwd
  dir
  ls
+ ls_command
  mkdir isdir
  copyfile= use <f>system</f><code>("[cp ", source, " ", dest])</code>
  delete
@@ -213,6 +215,7 @@ Support programs
  EDITOR 
  info_file info_program makeinfo_program
  PAGER gnuplot_binary
+ PAGER_FLAGS
 Constants
  F_DUPFD F_GETFD F_GETFL F_SETFD F_SETFL
  O_APPEND O_ASYNC O_CREAT O_EXCL O_NONBLOCK O_RDONLY
@@ -455,6 +458,10 @@ Matrix properties
  logical 
  isscalar isvector ismatrix issquare 
  issymmetric is_duplicate_entry isequalwithequalnans
+ size_equal
+Assignment
+ subsasgn subsref
+ substruct
 Rearranging matrices
  reshape 
  resize
@@ -1336,6 +1343,7 @@ Display
  image
  imagesc
  imshow
+ image_viewer
 Read/write
  loadimage saveimage
 Colour controls

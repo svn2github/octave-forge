@@ -7,7 +7,7 @@ see the <a href="__BASE_ADDRESS__/ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>October 20, 2006</dt>
+<dt>December 3, 2006</dt>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a
@@ -24,16 +24,24 @@ package manager, the following additional changes are notable:</p>
    golombdeco, golombenco, huffmandeco, huffmandict, huffmandict,
    huffmanenco, ricedeco, riceenco, rledeco, rleenco, shannonfanodeco,
    shannonfanodict and shannonfanoenco</li>
-   <li>specfun: New functions dirac, erfcx, expint_E1, expint_Ei, expint,
-   heaviside, psi, Si, sinint and zeta</li>
+   <li>specfun: New functions dirac, erfcinv, erfcx, expint_E1, 
+   expint_Ei, expint, heaviside, psi, Si, sinint and zeta</li>
    <li>statistics: New functions betastat, binostat, chi2stat,
-   expstat, fstat, gamstat, geostat, hygestat, lognstat,
-   normstat, pascal_stat, poisstat, tstat, unidstat,
-   unifstat and weibstat</li>
+   expstat, fstat, gamfit, gamlike, gamstat, geostat, hygestat,
+   juscdf,  juspdf, lognstat, normstat, pascal_stat, poisstat,
+   tstat, unidstat, unifstatand and weibstat, </li>
    <li>polynomial: New function polyint</li>
    <li>miscellaneous: New functions zagzig, zigzag</li>
-   <li>image: __magick_read__ Fix for non 8bit Quantum sizes in
-   imagemagick</li>
+   <li>image: New function deriche. __magick_read__ Fix for non 8bit
+   Quantum sizes in imagemagick. Compatiability changes to imwrite,
+   isgray and rgb2gray</li>
+   <li>signal: New function ar_psd, arburg, cohere, cpsd, csd, mscohere,
+   pburg, pwelch, pyulear, tfe, tfestimate, replacing existing functions
+   with main more features and much better compatibility</li>
+   <li>plot: New function hist2d</li>
+   <li>geometry: New function inpolygon</li>
+   <li>general: New function issorted</li>
+   <li>optim: New function fminsearch</li>
    <li>general bug fixes and improvements</li>
 </ul>
 </dd>

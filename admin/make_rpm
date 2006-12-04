@@ -188,6 +188,7 @@ sub parse_description { # {{{1
     close (DESC);
     # Do the cleanup that is needed
     $desc{"NAME"} = lc $desc{"NAME"};	# Name must be lower-case
+    $desc{"NAME"} =~ s/\s*$//; # Name must not have trailing white spaces
 
     # There are two special keywords that must be set
     $desc{"DATE"} = date();

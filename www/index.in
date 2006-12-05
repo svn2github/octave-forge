@@ -67,7 +67,8 @@ package manager, the following additional changes are notable:</p>
    isgray and rgb2gray</li>
    <li>signal: New function ar_psd, arburg, cohere, cpsd, csd, mscohere,
    pburg, pwelch, pyulear, tfe, tfestimate, replacing existing functions
-   with main more features and much better compatibility</li>
+   with main more features and much better compatibility. New function
+   dst</li>
    <li>plot: New function hist2d</li>
    <li>geometry: New function inpolygon</li>
    <li>general: New function issorted</li>

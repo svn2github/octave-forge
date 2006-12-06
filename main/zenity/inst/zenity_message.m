@@ -21,13 +21,15 @@
 ## optional variable @var{type} sets the type of the message.
 ## @var{type} must be one of the following strings @code{error},
 ## @code{info}, @code{question}, and @code{warning}. The default
-## value of @var{type} is @code{info}.
+## value of @var{type} is @code{info}. Retuns the value @code{status}
+## which is 0 for 'Ok' and 1 for 'Cancel' button selection; a value 
+## of -1 indicates a failure of dialog box.
 ##
 ## @seealso{zenity_calendar, zenity_list, zenity_progress, zenity_entry,
 ## zenity_text_info, zenity_file_selection, zenity_notification}
 ## @end deftypefn
 
-function zenity_message(text, type)
+function status=zenity_message(text, type)
   if (nargin == 0 || !ischar(text)), print_usage(); endif
   if (nargin < 2), type = "info"; endif
   if !(ischar(type) && any(strcmp(type, {"error", "info", "question", "warning"})))

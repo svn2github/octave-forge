@@ -8,4 +8,4 @@ Simple GUIs
   zenity_notification
   zenity_text_info
   zenity_progress
-
+  zenity_scale

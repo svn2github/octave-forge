@@ -21,7 +21,7 @@
 ## default value, and step sizes.
 ## The variable @var{title} sets the title of the window.
 ## The variable @var{text} sets the label of the range widget.
-## The optional arguments @var{value}, @var{minval},@var{maxval},
+## The other arguments @var{value}, @var{minval},@var{maxval},
 ## @var{step}, @var{print_partial}, and @var{hideval}.
 ## The range widget can be used to select anywhere from @var{minval} to
 ## @var{maxval} values in increments of @var{step}. The variable
@@ -37,7 +37,9 @@
 
 function output = zenity_scale(title,text, value, minval, maxval, step, print_partial, hideval)
 
-  if (nargin < 3), error("Usage: zenity_scale(tite,text, value, minval, maxval, step, print_partial, hideval)");   endif
+  if (nargin < 1), title="Adjust the scale value"; endif
+  if (nargin < 2), text=""; endif
+  if (nargin < 3), value=0; endif
   if (nargin < 4), minval= 0; endif
   if (nargin < 5), maxval= 100; endif
   if (nargin < 6), step  = 1; endif

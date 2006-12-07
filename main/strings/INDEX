@@ -4,5 +4,6 @@ Search and replace
 Operations
  strsort
  strtrim
+ editdistance
 Conversion
  base64encode

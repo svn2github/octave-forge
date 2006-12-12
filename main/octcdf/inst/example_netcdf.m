@@ -1,5 +1,4 @@
-% This is an example for creating a netcdf file with 
-% octcdf, a netcdf toolbox for octave
+% Example for creating and reading a netcdf file
 
 
 % create some variables to store them in a netcdf file

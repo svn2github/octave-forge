@@ -1,4 +1,6 @@
 
+% Example for loading a dataset from an OPeNDAP server
+
 nc = netcdf('http://asterix.rsmas.miami.edu/thredds/dodsC/atl-ops-forecast/ssh','r');
 
 lat = nc{'Latitude'}(:);

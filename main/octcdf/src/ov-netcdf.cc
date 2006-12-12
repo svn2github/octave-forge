@@ -703,7 +703,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
       count[i] = (*it).nelem();
       stride[i] = (long int) (*it).inc();
       sliced_dim_vector(i) =  count[i];
-      perm_vector(i) = ncndim-i-1;
+      perm_vector(i) = ncndim-i-1 + OCTAVE_PERMVEC_INDEX_ORIGIN;
       i=i+1;
     }
 
@@ -826,7 +826,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   Array<int> perm_vector(rhs.ndims());
 
   for(i=0; i<rhs.ndims(); i++) { 
-      perm_vector(i) = rhs.ndims()-i-1;
+      perm_vector(i) = rhs.ndims()-i-1 + OCTAVE_PERMVEC_INDEX_ORIGIN;
   }
 
   sliced_numel = sliced_dim_vector.numel();

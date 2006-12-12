@@ -60,6 +60,21 @@
 
 //#define OCTAVE_VALUE_COUNT_CONSTRUCTOR
 
+
+#ifdef HAVE_OCTAVE_21
+#define octave_idx_type int
+#define OCTAVE_PERMVEC_INDEX_ORIGIN 1 
+#define print_usage() 
+#else
+#define OCTAVE_PERMVEC_INDEX_ORIGIN 0
+#endif
+
+
+#ifndef OV_REP_TYPE
+#define OV_REP_TYPE octave_value
+#endif
+
+
 using namespace std;
 
 

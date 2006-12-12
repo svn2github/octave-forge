@@ -1,3 +1,31 @@
+
+dispatch('close','ncclose','ncfile');
+dispatch('redef','ncredef','ncfile');
+dispatch('endef','endef','ncfile');
+dispatch('sync','ncsync','ncfile');
+
+dispatch('var','ncvar','ncfile');
+
+dispatch('att','ncatt','ncfile');
+dispatch('att','ncatt','ncvar');
+
+dispatch('dim','ncdim','ncfile');
+dispatch('dim','ncdim','ncvar');
+
+dispatch('name','ncname','ncfile');
+dispatch('name','ncname','ncvar');
+dispatch('name','ncname','ncatt');
+dispatch('name','ncname','ncdim');
+
+dispatch('datatype','ncdatatype','ncvar');
+dispatch('datatype','ncdatatype','ncatt');
+
+dispatch('autoscale','ncautoscale','ncvar');
+dispatch('autonan','ncautonan','ncvar');
+
+dispatch('isrecord','ncisrecord','ncdim');
+
+
 autoload ("ncclose", which ("netcdf"));
 autoload ("ncredef", which ("netcdf"));
 autoload ("ncenddef", which ("netcdf"));

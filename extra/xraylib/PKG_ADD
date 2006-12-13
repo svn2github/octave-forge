@@ -21,6 +21,7 @@ autoload ("ComptonEnergy", "xraylib.oct");
 autoload ("CS_Total", "xraylib.oct");
 autoload ("CS_Photo", "xraylib.oct");
 autoload ("CS_Rayl", "xraylib.oct");
+autoload ("CS_Compt", "xraylib.oct");
 autoload ("CSb_FluorLine", "xraylib.oct");
 autoload ("CSb_Total", "xraylib.oct");
 autoload ("CSb_Photo", "xraylib.oct");

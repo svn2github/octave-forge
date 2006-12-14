@@ -39,8 +39,10 @@ __MULTIBEG__(ONAME, 1, DOCSTRING) \
    for(int i = 0; i < n.length(); i++) { \
       y(i) = static_cast<double>(FNAME(static_cast<T1>(n.xelem(i)))); \
    } \
-__MULTIEND__
-
+   y.resize(dim_vector(y.dims().elem(0), 1)); \
+   retval = octave_value(y).squeeze(); \
+   return retval; \
+}
 
 #define DEF_MULTIMAPPER2(ONAME, FNAME, T1, T2, DOCSTRING) \
 __MULTIBEG__(ONAME, 2, DOCSTRING) \
@@ -122,7 +124,7 @@ F23_TRANS  4\n\
 @end deftypefn\n\
 ")		      
 
-DEF_MULTIMAPPER3(CS_FluorLine, CS_FluorLine, int, int, int, "\
+DEF_MULTIMAPPER3(CS_FluorLine, CS_FluorLine, int, int, float, "\
   -*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{a} =} CS_FluorLine (@var{Z}, @var{E},@var{line})\n\
 \n\
@@ -130,7 +132,6 @@ Fluorescent line cross section (cm2/g)\n\
 \n\
 @example\n\
 @var{Z} : atomic number\n\
-@var{E} : energy (keV)\n\
 @var{line} :\n\
 KA_LINE 0\n\
 KB_LINE 1\n\
@@ -138,6 +139,7 @@ LA_LINE 2\n\
 LB_LINE 3\n\
 (Individual lines are also defined with negative flags\n\
 See file lines.h in src directory for equivalences.)\n\
+@var{E} : energy (keV)\n\
 @end example\n\
 @end deftypefn\n\
 ")
@@ -260,7 +262,7 @@ for polarized beam (cm2/g/sterad)\n\
 @end deftypefn\n\
 ")    									    
 
-DEF_MULTIMAPPER3(DCSP_KN, DCSP_KN, int, int, int, "\
+DEF_MULTIMAPPER3(DCSP_KN, DCSP_KN, float, float, float, "\
   -*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{a} =} DCSP_KN (@var{E}, @var{theta}, @var{phi})\n\
 \n\
@@ -275,7 +277,7 @@ for polarized beam (barn/atom/sterad)\n\
 @end deftypefn\n\
 ")    
 
-DEF_MULTIMAPPER2(DCSP_Thoms, DCSP_Thoms, int, int, "\
+DEF_MULTIMAPPER2(DCSP_Thoms, DCSP_Thoms, float, float, "\
   -*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{a} =} DCSP_Thoms (@var{theta}, @var{phi})\n\
 \n\
@@ -334,7 +336,7 @@ Incoherent scattering function for Compton scattering\n\
 @end deftypefn\n\
 ")
 
-DEF_MULTIMAPPER1(DCS_Thoms, DCS_Thoms, int, "\
+DEF_MULTIMAPPER1(DCS_Thoms, DCS_Thoms, float, "\
   -*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{a} =} DCS_Thoms (@var{theta})\n\
 \n\
@@ -439,7 +441,7 @@ Total cross section  (cm2/g)\n\
 @end deftypefn\n\
 ")
    
-DEF_MULTIMAPPER2(CS_Photo, CS_Photo, int, int, "\
+DEF_MULTIMAPPER2(CS_Photo, CS_Photo, int, float, "\
   -*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{a} =} CS_Photo (@var{Z}, @var{E})\n\
 \n\

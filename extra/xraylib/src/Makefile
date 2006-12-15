@@ -8,4 +8,4 @@ xraylib_stamp:
 	touch xraylib_stamp
 clean:
 	make -C xraylib/src clean
-	-rm *.o *~ xraylib_stamp xraylib.oct
+	-rm *.o *.oct *~ xraylib_stamp

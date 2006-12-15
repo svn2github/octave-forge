@@ -64,7 +64,7 @@ __MULTIBEG__(ONAME, 3, DOCSTRING) \
    for(int i = 0; i < p.length(); i++) { \
       for(int j = 0; j < m.length(); j++) { \
          for(int k = 0; k < n.length(); k++) { \
-            y(k, j, i) = static_cast<double>(FNAME(static_cast<T1>(n.xelem(j)), \
+            y(k, j, i) = static_cast<double>(FNAME(static_cast<T1>(n.xelem(k)), \
                                                    static_cast<T2>(m.xelem(j)), \
                                                    static_cast<T3>(p.xelem(i)))); \
          } \
@@ -89,8 +89,8 @@ __MULTIBEG__(ONAME, 4, DOCSTRING) \
       idx(2) = k; \
       for(int l = 0; l < n.length(); l++) { \
       idx(3) = i; \
-	 y(idx) = static_cast<double>(FNAME(static_cast<T1>(n.xelem(j)), \
-                                            static_cast<T2>(m.xelem(j)), \
+	 y(idx) = static_cast<double>(FNAME(static_cast<T1>(n.xelem(l)), \
+                                            static_cast<T2>(m.xelem(k)), \
                                             static_cast<T3>(p.xelem(j)), \
                                             static_cast<T4>(q.xelem(i)))); \
       } } } \

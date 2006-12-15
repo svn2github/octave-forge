@@ -8,8 +8,8 @@
 /////            Variables                                       /////
 //////////////////////////////////////////////////////////////////////
 
-int HardExit;
-int ExitStatus;
+int HardExit = 0;
+int ExitStatus = 0;
 char XRayLibDir[MAXFILENAMESIZE];
 
 char ShellName[][5] = {

@@ -41,9 +41,11 @@ function [varargout] = odeprint (vt, vy, vflag, varargin)
 
   if (strcmp (vflag, 'init') == true)
     fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
+    fflush (1);
 
   elseif (isempty (vflag) == true) %# Return varargout{1}
     fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
+    fflush (1);
     varargout{1} = true; 
     %# Do not stop the integration algorithm
     %# if varargout{1} = false; stop the integration algorithm

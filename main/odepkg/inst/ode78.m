@@ -402,12 +402,19 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
 
   %# Print additional information if option Stats is set
   if (strcmp (vodeoptions.Stats, 'on') == true)
+    vhavestats = true;
+    vsuccess   = vcntloop-2;                    %# vcntloop from 2..end
+    vfailed    = (vcntcycles-1)-(vcntloop-2)+1; %# vcntcycl from 1..end
+    vfuncalls  = 13*(vcntcycles-1);
+    vludecomp  = 0;
+    vpartderv  = 0;
+    vxxxxxxxx  = 0;
     vmsg = sprintf ('Number of successful steps:   %d', ...
-                    vcntloop-1); disp (vmsg);
+                    vsuccess); disp (vmsg);
     vmsg = sprintf ('Number of failed attempts:    %d', ...
-                    ((vcntcycles-1)-(vcntloop-1))); disp (vmsg);
+                    vfailed); disp (vmsg);
     vmsg = sprintf ('Number of ode function calls: %d', ...
-                    (13*(vcntcycles-1))); disp (vmsg);
+                    vfuncalls); disp (vmsg);
   end
 
   if (nargout == 1)                 %# Sort output variables, depends on nargout
@@ -419,18 +426,26 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       varargout{1}.xe = vevent{3};  %# Time info when an event occured
       varargout{1}.ye = vevent{4};  %# Results when an event occured
     end
+    if (vhavestats == true)
+      varargout{1}.stats.success = vsuccess;
+      varargout{1}.stats.failed  = vfailed;    
+      varargout{1}.stats.fevals  = vfuncalls;  
+      varargout{1}.stats.partial = vpartderv; 
+      varargout{1}.stats.ludecom = vludecomp; 
+    end
   elseif (nargout == 2)
     varargout{1} = vretvaltime;     %# Time stamps are first output argument
     varargout{2} = vretvalresult;   %# Results are second output argument
   elseif (nargout == 5)
     varargout{1} = vretvaltime;     %# Same as (nargout == 2)
     varargout{2} = vretvalresult;   %# Same as (nargout == 2)
+    varargout{3} = [];              %# LabMat doesn't accept lines like
+    varargout{4} = [];              %# varargout{3} = varargout{4} = [];
+    varargout{5} = [];
     if (vhaveeventfunction == true) 
       varargout{3} = vevent{3};     %# Time info when an event occured
       varargout{4} = vevent{4};     %# Results when an event occured
       varargout{5} = vevent{2};     %# Index info which event occured
-    else
-      varargout{3} = varargout{4} = varargout{5} = [];
     end
   %# else nothing will be returned, varargout{1} undefined
   end

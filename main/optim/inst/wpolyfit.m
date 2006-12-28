@@ -44,12 +44,12 @@
 ## @example
 ## [poly1,S1] = wpolyfit(x,y,dy,n);
 ## [poly2,S2] = wpolyfit(x,y,dy,n+1);
-## F = (S1.normr^2 - S2.normr^2)/(S2.normr^2/S2.df);
-## p = 1-f_cdf(F,1,S2.df);
+## F = (S1.normr^2 - S2.normr^2)/(S1.df-S2.df)/(S2.normr^2/S2.df);
+## p = 1-f_cdf(F,S1.df-S2.df,S2.df);
 ## @end example
 ## p is the probability of observing the improvement in chi^2 obtained
 ## by adding the extra parameter to the fit.  If p < 0.01, you can reject 
-## the higher order polynomial at the 1% level.
+## the lower order polynomial at the 1% level.
 ##
 ## You can estimate the uncertainty in the polynomial coefficients 
 ## themselves using

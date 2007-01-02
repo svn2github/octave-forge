@@ -65,8 +65,9 @@ m4_define(`__OCTAVE_FORGE_HTTP__',
 m4_dnl
 m4_dnl
 m4_dnl
-m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html lang="en">
+m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <title>$1</title>
@@ -127,7 +128,7 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
       <tr>
         <td style="width: 90px;" class="menu" rowspan="2">
           <a name="top">
-          <img src="__BASE_ADDRESS__/oct.png" alt="Octave logo">
+          <img src="__BASE_ADDRESS__/oct.png" alt="Octave logo" />
           </a>
         </td>
         <td class="menu" style="padding-top: 0.9em;">
@@ -190,10 +191,10 @@ m4_dnl
 m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
 
 <div id="left-switcher">
-  <div class="tab" id="cat-tab" onClick="javascript:switch_to_cat();">
+  <div class="tab" id="cat-tab" onclick="javascript:switch_to_cat();">
     Categorical
   </div>
-  <div class="tab" id="alpha-tab" onClick="javascript:switch_to_alpha();">
+  <div class="tab" id="alpha-tab" onclick="javascript:switch_to_alpha();">
     Alphabetical
   </div>
 </div> 
@@ -211,7 +212,7 @@ m4_dnl
 m4_define(`__TRAILER__', `
 </div>
 <div id="sf_logo">
-  <a ref="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=1"
+  <a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=1"
      width="88" height="31" style="border: 0;" alt="SourceForge.net Logo"/></a>
 </div>
 </body>

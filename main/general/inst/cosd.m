@@ -21,5 +21,6 @@
 ## @end deftypefn
 
 function y = cosd(x)
+	if (nargin == 0); usage('cosd(x)'); end
 	y=cos(x.*pi./180);
 endfunction

@@ -9,14 +9,14 @@ div.menu {
 	/*background: #ea5224;*/ /* Orange */
 	/*background: #ea9024;*/ /* Puke yellow */
 	background: #729fcf;
-	//background: white;
+	/*background: white;*/
 	width: 100%;
 	position: fixed;
-//	position: absolute;
+	/*position: absolute;*/
 	top: 0px;
 	left: 0px;
 	padding-bottom: 0em;
-	//text-align: center;
+	/*text-align: center;*/
 }
 
 table.menu {
@@ -78,13 +78,13 @@ body {
 
 a:link {
   background-color: inherit;
-  //color: #4e9a06;
+  /*color: #4e9a06;*/
   color: black;
 }
 
 a:visited {
   background-color: inherit;
-  //color: #73d216;
+  /*color: #73d216;*/
   color: black;
 }
 
@@ -172,7 +172,7 @@ div#nav2 {
   padding-top: 1em;
 }
 #doccontent {
-  //display: block;
+  /*display: block;*/
   margin-left: 18em;
   margin-top: 4.5em;
   padding-top: 1em;
@@ -345,7 +345,7 @@ div.left-menu {
 }
 
 #left-switcher {
-	//border: solid 2px;
+	/*border: solid 2px;*/
 	width: 15em;
 	height: 2em;
 	position: fixed;

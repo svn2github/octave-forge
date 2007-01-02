@@ -49,7 +49,7 @@ m4_dnl
 m4_dnl
 m4_define(`__DEFAULT_LINK_TEXT__', `m4_ifelse($#, 2, [[[$1://$2]]], [[[$3]]])')m4_dnl
 m4_define(`__HTTP__',
-       `<a href="$1">__DEFAULT_LINK_TEXT__([[[http]]], $*)</a>')m4_dnl
+       `<a href="$1" class="menu">__DEFAULT_LINK_TEXT__([[[http]]], $*)</a>')m4_dnl
 m4_define(`__MAILTO__',
        ``<a href="mailto:$1">'__DEFAULT_LINK_TEXT__(`http', $*)`</a>'')m4_dnl
 m4_define(`__FTP__',
@@ -61,45 +61,93 @@ m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__OCTAVE_FORGE_HTTP__',
-       `<a href="__BASE_ADDRESS__/$1">$2</a>')m4_dnl
+       `<a href="__BASE_ADDRESS__/$1" class="menu">$2</a>')m4_dnl
 m4_dnl
 m4_dnl
 m4_dnl
-m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>$1</title>
-<link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
-<script type="text/javascript">
-<!--
-function goto_url (selSelectObject) {
-  if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
-   location.href=selSelectObject.options[selSelectObject.selectedIndex].value;
+m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>$1</title>
+  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
+  <script type="text/javascript">
+  <!--
+  function goto_url (selSelectObject) {
+    if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
+     location.href=selSelectObject.options[selSelectObject.selectedIndex].value;
+    }
   }
-}
-function unfold(id) {
+  function unfold(id) {
     document.getElementById(id).style.display = "none;";
     document.getElementById(id+"_detailed").style.display = "block;";
-}
-function fold(id) {
+  }
+  function fold(id) {
     document.getElementById(id+"_detailed").style.display = "none;";
     document.getElementById(id).style.display = "block;";
-}
-// -->
-</script>
-</head>
+  }
+  function switch_to(id) {
+    if (id == "cat") {
+        other = "alpha";
+    } else { // id == "alpha"
+        other = "cat";
+    }
+
+    document.getElementById(id).style.visibility = "visible";
+    document.getElementById(other).style.visibility = "hidden";
+
+    document.getElementById(id+"-tab").style.border = "solid 2px";
+    document.getElementById(id+"-tab").style.borderBottom = "none";
+    document.getElementById(other+"-tab").style.border = "solid 1px";
+    document.getElementById(other+"-tab").style.borderBottom = "solid 2px";
+
+    document.getElementById(id+"-tab").style.height = "1.3em";
+    document.getElementById(other+"-tab").style.height = "1.2em;";
+
+    document.getElementById(id+"-tab").style.zIndex = "3";
+    document.getElementById(other+"-tab").style.zIndex = "2";
+
+    document.getElementById(id+"-tab").style.fontWeight = "bold";
+    document.getElementById(other+"-tab").style.fontWeight = "normal";
+  }
+  function switch_to_cat() {
+    switch_to("cat");
+  }
+  function switch_to_alpha() {
+    switch_to("alpha");
+  }
+  // -->
+  </script>
+  </head>
+
 <body>
-<div id="title"><h1>$1</h1></div>
-__MENU__([[[$1]]])
+
+  <div id="top-menu" class="menu"> 
+   <table class="menu">
+      <tr>
+        <td style="width: 90px;" class="menu" rowspan="2">
+          <a name="top">
+          <img src="__BASE_ADDRESS__/oct.png" alt="Octave logo">
+          </a>
+        </td>
+        <td class="menu" style="padding-top: 0.9em;">
+          <big class="menu">Octave-Forge</big><small class="menu"> - Extra packages for GNU Octave</small>
+        </td>
+      </tr>
+      <tr>
+        <td class="menu">
+          __MENU__([[[$1]]])
+        </td>
+      </tr>
+    </table>
+   </div>
 ')m4_dnl
 m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__nav_button__',
 `m4_ifelse($1, $2,
-  [[[<div id="currentnav">$4</div>]]],
+  [[[<b>$4</b>]]],
   [[[__OCTAVE_FORGE_HTTP__($3, $4)]]])')m4_dnl
 m4_dnl
 m4_dnl
@@ -115,21 +163,20 @@ m4_define(`__view_button__',
 m4_dnl
 m4_dnl
 m4_dnl
-m4_define(`__MENU__', `<div id="nav">
- __nav_button__($1, [[[Octave-Forge]]], [[[index.html]]], [[[Home]]])
- __nav_button__($1, [[[Packages]]], [[[packages.html]]], [[[Packages]]])
- __nav_button__($1, [[[Developer Notes]]], [[[developers.html]]], [[[Developers]]])
- __nav_button__($1, [[[Documentation]]], [[[docs.html]]], [[[Documentation]]])
- __nav_button__($1, [[[Function Reference]]], [[[doc/index.html]]], [[[Function Reference]]])
- __nav_button__($1, [[[Frequently Asked Questions]]], [[[FAQ.html]]], [[[FAQ]]])
- __nav_button__($1, [[[Bugs]]], [[[bugs.html]]], [[[Bugs]]])
- __nav_button__($1, [[[Mailing List]]], [[[archive.html]]], [[[Mailing Lists]]])
- __nav_button__($1, [[[Octave-Forge News Archive]]], [[[NEWS.html]]], [[[News Archive]]])
- __nav_button__($1, [[[Links]]], [[[links.html]]], [[[Links]]])
- __ext_nav_button__([[[__SUMMARY__]]], [[[SourceForge]]])
- __ext_nav_button__([[[__DOWNLOAD__]]], [[[Download]]])
+m4_define(`__MENU__', `
+ __nav_button__($1, [[[Octave-Forge]]], [[[index.html]]], [[[Home]]]) &middot;
+ __nav_button__($1, [[[Packages]]], [[[packages.html]]], [[[Packages]]]) &middot;
+ __nav_button__($1, [[[Developer Notes]]], [[[developers.html]]], [[[Developers]]]) &middot;
+ __nav_button__($1, [[[Documentation]]], [[[docs.html]]], [[[Documentation]]]) &middot;
+ __nav_button__($1, [[[Function Reference]]], [[[doc/index.html]]], [[[Function Reference]]]) &middot;
+ __nav_button__($1, [[[Frequently Asked Questions]]], [[[FAQ.html]]], [[[FAQ]]]) &middot;
+ __nav_button__($1, [[[Bugs]]], [[[bugs.html]]], [[[Bugs]]]) &middot;
+ __nav_button__($1, [[[Mailing List]]], [[[archive.html]]], [[[Mailing Lists]]]) &middot;
+m4_dnl __nav_button__($1, [[[Octave-Forge News Archive]]], [[[NEWS.html]]], [[[News Archive]]]) &middot;
+ __nav_button__($1, [[[Links]]], [[[links.html]]], [[[Links]]]) &middot;
+m4_dnl __ext_nav_button__([[[__SUMMARY__]]], [[[SourceForge]]]) &middot;
+m4_dnl __ext_nav_button__([[[__DOWNLOAD__]]], [[[Download]]]) &middot;
  __ext_nav_button__([[[__CVS__]]], [[[CVS]]])
-</div>
 ')m4_dnl
 m4_dnl
 m4_dnl
@@ -141,20 +188,31 @@ m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
-<div id="nav2">
-m4_include([[[doc/alphabetic.include]]])
+
+<div id="left-switcher">
+  <div class="tab" id="cat-tab" onClick="javascript:switch_to_cat();">
+    Categorical
+  </div>
+  <div class="tab" id="alpha-tab" onClick="javascript:switch_to_alpha();">
+    Alphabetical
+  </div>
+</div> 
+<div id="cat" class="left-menu">
 m4_include([[[doc/menu.include]]])
 </div>
-<div id="content">
+<div id="alpha" class="left-menu" style="visibility: hidden;">
+m4_include([[[doc/alphabetic.include]]])
+</div>
+<div id="doccontent">
 ')m4_dnl
 m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__TRAILER__', `
 </div>
-<div class="sf_logo">
-  <a  href="__SOURCEFORGE__"><img src="__SOURCEFORGE__/sflogo.php?__GROUP_ID__&amp;type=1"  width="88"
-height="31" style="border: 0;" alt="SourceForge.net Logo"  /></a>
+<div id="sf_logo">
+  <a ref="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=1"
+     width="88" height="31" style="border: 0;" alt="SourceForge.net Logo"/></a>
 </div>
 </body>
 </html>')m4_dnl

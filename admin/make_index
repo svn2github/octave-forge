@@ -821,13 +821,14 @@ sub write_TBnavbar { # 1{{{
     open(OUT,">$catdir/$file.include") or die "Could not open $catdir/$file.include";
 
 	#print OUT "<a href=\"__BASE_ADDRESS__/index.html\">Home</a>\n";
-	print OUT "<select name=\"dropdowncat\" size=\"1\" onchange=\"javascript:goto_url(this)\">\n";
-	print OUT "<option value=\"-1\">Categories</option>\n";
+	#print OUT "<select name=\"dropdowncat\" size=\"1\" onchange=\"javascript:goto_url(this)\">\n";
+	#print OUT "<option value=\"-1\">Categories</option>\n";
 
     foreach my $TB (toolbox_list_sorted_by_desc()) {
-	print OUT "<option value=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</option>\n";
+	#print OUT "<option value=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</option>\n";
+        print OUT "<a href=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</a><br/>\n";
     }
-    print OUT "</select>\n";
+    #print OUT "</select>\n";
     close OUT;
 } # 1}}}
 sub write_TBdetails { # 1{{{
@@ -919,9 +920,10 @@ sub write_alphabetic_navbar { # 1{{{
     foreach (first_letters (indexed_funcs())) {
         $A_to_Z .= letter_option($_) . "\n";
     }
-    my $select = "<select name=\"dropdownalpha\" size=\"1\" onchange=\"javascript:goto_url(this)\">";
-    $select .=  "\n<option value=\"-1\">Alphabetical</option>\n";
-    print OUT $select . $A_to_Z . "\n</select>\n";    
+    #my $select = "<select name=\"dropdownalpha\" size=\"1\" onchange=\"javascript:goto_url(this)\">";
+    #$select .=  "\n<option value=\"-1\">Alphabetical</option>\n";
+    #print OUT $select . $A_to_Z . "\n</select>\n";    
+    print OUT $A_to_Z;
     close OUT;
 } # 1}}}
 sub oldnavbar { # 1{{{
@@ -1063,7 +1065,8 @@ sub letter_ref { # 1{{{
 } # 1}}}
 sub letter_option { # 1{{{
 # letter_option($letter) returns a link to the letter
-    return "<option value=\"__BASE_ADDRESS__/doc/" . letter_file($_) . "#$_\">$_</option>";
+    #return "<option value=\"__BASE_ADDRESS__/doc/" . letter_file($_) . "#$_\">$_</option>";
+    return "<a href=\"__BASE_ADDRESS__/doc/" . letter_file($_) . "#$_\">$_</a><br/>";
 } # 1}}}
 sub ascii_desc { # 1{{{
 # ascii_desc($func) returns a decription of $func using ascii markup

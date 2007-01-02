@@ -17,10 +17,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{y}] =} sind(@var{x})
 ##	sind compute the sine of an angle in degrees.
-## @seealso{sin}
+## @seealso{sin, cosd}
 ## @end deftypefn
 
 function y = sind(x)
 	if (nargin == 0); usage('sind(x)'); end
-	y = sin(x.*2.*pi./360);
+	y = sin(x.*pi./180);
 endfunction;

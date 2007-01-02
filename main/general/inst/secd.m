@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{y}] =} secd(@var{x})
-##	sind compute the secant of an angle in degrees.
+##	secd compute the secant of an angle in degrees.
 ## @seealso{sin, cosd}
 ## @end deftypefn
 

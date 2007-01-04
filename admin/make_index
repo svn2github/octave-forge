@@ -894,7 +894,7 @@ sub write_package_details { # 1{{{
     
     open(OUT, ">$file") or die "Cannot write $file:  $!\n";
     print OUT <<EOF;
-__HEADER__([[[$title]]])
+__DOC_HEADER__([[[$title]]])
 EOF
     print OUT "<div>\n";
     foreach my $func ( pack_list($packdir) ) {

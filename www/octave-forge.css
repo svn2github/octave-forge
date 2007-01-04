@@ -88,7 +88,10 @@ a:visited {
   color: black;
 }
 
-
+/* Layout of packages page */
+div.func {
+  margin-left: 1em;
+}
 
 /* the navigation choices at the bottom of the page. */
 

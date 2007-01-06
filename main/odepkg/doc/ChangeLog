@@ -3,6 +3,12 @@ Created:     2006.08.16
 Creator:     Thomas Treichl
 Description: OdePkg ChangeLog File
 
+2007.01.05 Thomas Treichl
+	* ChangeLog, DESCRIBTION files have been updated
+	* odepkg_mexsolver_dop853.c, dopri.tar.gz:
+	  Added to directory odepkg/src, no functionality by now
+	* odepkg/src directory has been created in CVS
+	
 2006.12.25 Thomas Treichl
 	* ode23.m, ode45.m, ode54.m, ode78.m, odeprint:
 	  Did some updates and improved functionality

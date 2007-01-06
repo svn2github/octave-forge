@@ -241,6 +241,7 @@ div#title h1 {
 
 /* Changes for Octave Wiki */
 
+/*
 h1 {
   background-color: #3465a4;
   color: #ffffff;
@@ -248,6 +249,7 @@ h1 {
   padding: 2em;
   margin: 8em;
 }
+*/
 
 h3.question {
   font-size: small;

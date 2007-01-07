@@ -56,6 +56,9 @@ srpms: clearlog packages
 www: clearlog packages
 	@$(MAKE) -C www
 
+doxygen:
+	@$(MAKE) -C www doxygen
+
 else
 
 .PHONY: all install srpms

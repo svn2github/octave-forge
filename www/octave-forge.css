@@ -10,6 +10,7 @@ div.menu {
 	/*background: #ea9024;*/ /* Puke yellow */
 	background: #729fcf;
 	/*background: white;*/
+	color: black;
 	width: 100%;
 	position: fixed;
 	/*position: absolute;*/

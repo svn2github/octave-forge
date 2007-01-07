@@ -41,6 +41,14 @@ clean:
 	    fi; \
 	  fi; \
 	done
-	rm -fr *.html developers.in INDEX coda .octave_hist .octave_packages install 
+	rm -fr *.html developers.in INDEX coda .octave_hist .octave_packages install doxygen 
 
 package:
+
+doxygen: Doxyfile
+	$(M4) $(M4_OPTIONS) $(MACRO_FILE) htmlheader.html > tmphtmlheader.html
+	$(M4) $(M4_OPTIONS) $(MACRO_FILE) htmlfooter.html > tmphtmlfooter.html
+	doxygen Doxyfile
+	rm -f tmphtmlheader.html tmphtmlfooter.html
+	$(M4) $(M4_OPTIONS) $(MACRO_FILE) doxygen/html/index.html > index.result
+	mv -f index.result doxygen/html/index.html

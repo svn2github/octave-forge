@@ -71,6 +71,7 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <title>$1</title>
+  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/doxygen.css" />
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   <script type="text/javascript">
   <!--

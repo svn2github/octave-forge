@@ -7,7 +7,14 @@ on individual packages, see the package page.</p>
 <p>Most questions asked by users are answers in the <a href="FAQ.html">FAQ</a>.</p>
 
 <h2>Function Reference</h2>
-<p>Documentation for individual functions can be found <a href="doc/index.html">here</a>.</p>
+<ul>
+  <li><a href="doc/index.html">Octave function reference</a>. The documentation for all functions 
+    available from the Octave prompt.</li>
+  <li><a href="doxygen/html/index.html">C++ API</a>. The API reference for working with
+    octave from C++ (doxygen generated). For a tutorial on working with Octave from C++,
+    see <a href="coda/index.html">Da Coda Al Fine</a>.</li>
+</ul>
+<p>Documentation for individual Octave functions can be found <a href="doc/index.html">here</a>.</p>
 
 <h2>Developers Documents</h2>
 <ul>

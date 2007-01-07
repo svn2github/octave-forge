@@ -3,7 +3,7 @@ Version: 1.0.0
 Date: 2006-12-11
 Author: Teemu Ikonen   <tpikonen@gmail.com>
 Maintainer: Teemu Ikonen   <tpikonen@gmail.com>
-Title: GNU Scientific Library.
+Title: GNU Scientific Library
 Description: Bindings to the Xraylib functions
 Categories: X-raydata
 License: GPL version 2

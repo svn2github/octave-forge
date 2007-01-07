@@ -29,6 +29,17 @@ void octave_gsl_errorhandler (const char * reason, const char * file,
     error("GSL error %d at %s, line %d: %s\n", gsl_errno, file, line, reason);
 }
 
+DEFUN_DLD (gsl_sf, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} gsl_sf ()\n\
+\n\
+Octave bindings to the GNU Scientific Library. All GSL functions can be\n\
+called with by the GSL names within octave.\n\
+@end deftypefn")
+{
+  usage("gsl_sf");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

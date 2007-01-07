@@ -681,6 +681,8 @@ sub write_html { # {{{1
 	# The source file
 
 	my $body = long_desc($func);
+	print $body;
+	print "\n";
 	if ($body ne "") {
 	    # XXX FIXME XXX this will die if the punctuation is too wild
 	    open FUNC, ">$catdir/f/$func.in" or die "Could not open $func.in";
@@ -825,6 +827,7 @@ sub write_TBnavbar { # 1{{{
 	#print OUT "<option value=\"-1\">Categories</option>\n";
 
     foreach my $TB (toolbox_list_sorted_by_desc()) {
+	$TB = trim($TB);
 	#print OUT "<option value=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</option>\n";
         print OUT "<a href=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</a><br/>\n";
     }
@@ -832,7 +835,7 @@ sub write_TBnavbar { # 1{{{
     close OUT;
 } # 1}}}
 sub write_TBdetails { # 1{{{
-    my $TB = shift;
+    my $TB = trim(shift);
     my $file   = "$catdir/$TB.in";
     
     open(OUT, ">$file") or die "Cannot write $file:  $!\n";
@@ -1203,6 +1206,14 @@ sub scanned_funcs { # 1{{{
 # scanned_funcs() returns an ordered list of all functions found in m-files and oct-files
     return sort { uc($a) cmp uc($b) } %function_description;
 } # 1}}}
+sub trim($) {
+# This functions trims spaces from the beginning and end of a string
+	my $string = shift;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	return $string;
+}
+
 __END__
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

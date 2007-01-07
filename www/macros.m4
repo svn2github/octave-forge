@@ -62,18 +62,9 @@ m4_dnl
 m4_dnl
 m4_define(`__OCTAVE_FORGE_HTTP__',
        `<a href="__BASE_ADDRESS__/$1" class="menu">$2</a>')m4_dnl
-m4_dnl
-m4_dnl
-m4_dnl
-m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-  <head>
-  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  <title>$1</title>
-  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/doxygen.css" />
-  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
-  <script type="text/javascript">
+
+m4_define(`__JAVA_SCRIPT__',
+ `<script type="text/javascript">
   <!--
   function goto_url (selSelectObject) {
     if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
@@ -119,11 +110,12 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
     switch_to("alpha");
   }
   // -->
-  </script>
-  </head>
-
-<body>
-
+  </script>')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__TOP_MENU__',
+ `<body>
   <div id="top-menu" class="menu"> 
    <table class="menu">
       <tr>
@@ -142,7 +134,35 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
         </td>
       </tr>
     </table>
-   </div>
+  </div>')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>$1</title>
+  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
+  __JAVA_SCRIPT__
+  </head>
+  __TOP_MENU__
+')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
+m4_define(`__DOXY_HEADER__', `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+  <html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>$1</title>
+  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/doxygen.css">
+  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css">
+  __JAVA_SCRIPT__
+  </head>
+  __TOP_MENU__
+  <div id="content">
 ')m4_dnl
 m4_dnl
 m4_dnl

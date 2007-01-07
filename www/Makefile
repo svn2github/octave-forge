@@ -46,8 +46,8 @@ clean:
 package:
 
 doxygen: Doxyfile
-	$(M4) $(M4_OPTIONS) $(MACRO_FILE) htmlheader.html > tmphtmlheader.html
-	$(M4) $(M4_OPTIONS) $(MACRO_FILE) htmlfooter.html > tmphtmlfooter.html
+	$(M4) $(M4_OPTIONS) $(MACRO_FILE) htmlheader.htm > tmphtmlheader.html
+	$(M4) $(M4_OPTIONS) $(MACRO_FILE) htmlfooter.htm > tmphtmlfooter.html
 	doxygen Doxyfile
 	rm -f tmphtmlheader.html tmphtmlfooter.html
 	$(M4) $(M4_OPTIONS) $(MACRO_FILE) doxygen/html/index.html > index.result

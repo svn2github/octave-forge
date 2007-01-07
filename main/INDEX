@@ -133,7 +133,7 @@ Environment
  ls
  ls_command
  mkdir isdir
- copyfile= use <f>system</f><code>("[cp ", source, " ", dest])</code>
+ copyfile
  delete
  getenv 
  putenv
@@ -372,7 +372,6 @@ Function arguments
  fcnchk 
  read_options
  usage
- argn = string names of the input parameters
  parseparams
 User I/O
  disp printf puts

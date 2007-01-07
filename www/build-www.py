@@ -20,7 +20,7 @@ def parse_description(filename):
                 print("Skip");
             ## Continuation lines
             elif (line[0].isspace()):
-                if (keyword != "" & desc.has_key(keyword)):
+                if ((keyword != "") & desc.has_key(keyword)):
                     desc[keyword] += line;
             ## Keyword/value pair
             else:

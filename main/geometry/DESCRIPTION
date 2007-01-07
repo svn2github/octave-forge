@@ -3,7 +3,7 @@ Version: 1.0.0
 Date: 2006-08-06
 Author: Various Authors
 Maintainer: The Octave Community
-Title: Geometry.
+Title: Geometry
 Description: Geometry tools including convex hull, triangulation, etc.
 Categories: Geometry
 Depends: octave (>= 2.9.7)

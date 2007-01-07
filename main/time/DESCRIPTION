@@ -3,7 +3,7 @@ Version: 1.0.0
 Date: 2006-08-05
 Author: Bill Denney <bill@givebillmoney.com>
 Maintainer: Bill Denney <bill@givebillmoney.com>
-Title: Time and Dates.
+Title: Time and Dates
 Description: Additional date manipulation tools.
 Categories: Time
 Depends: octave (>= 2.9.7)

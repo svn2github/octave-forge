@@ -3,7 +3,7 @@ Version: 1.0.0
 Date: 2006-08-05
 Author: Various authors
 Maintainer: The Octave Community
-Title: General.
+Title: General
 Description: General tools for octave.
 Categories: General
 Depends: octave (>= 2.9.7)

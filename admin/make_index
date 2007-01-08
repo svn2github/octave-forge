@@ -681,8 +681,6 @@ sub write_html { # {{{1
 	# The source file
 
 	my $body = long_desc($func);
-	print $body;
-	print "\n";
 	if ($body ne "") {
 	    # XXX FIXME XXX this will die if the punctuation is too wild
 	    open FUNC, ">$catdir/f/$func.in" or die "Could not open $func.in";

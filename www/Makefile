@@ -21,7 +21,7 @@ developers.html: ../admin/template.ndev
 
 doc:
 	wd=`pwd`
-	cd .. && admin/make_index
+	cd .. && ./admin/make_index
 	cd $(wd)
 
 html: $(IMG_HTML)

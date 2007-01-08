@@ -22,14 +22,15 @@ div.menu {
 
 table.menu {
     border: none;
-    border-style: hidden;
+    /* border-style: hidden; */
     width: 100%;
     height: 4em;
-    padding-left: 5%;
-	padding-right: 0em;
-	padding-top: 0.5em;
-	padding-bottom: 0em;
-	color: #363636;
+    padding-left: 5em;
+    padding-right: 0em;
+    padding-top: 0.5em;
+    padding-bottom: 0em;
+    color: #363636;
+    background-color: inherit;
 }
 td.menu {
     border: none;
@@ -42,9 +43,11 @@ a.menu {
 }
 a.menu:visited {
     color: black;
+    background-color: inherit;
 }
 a.menu:link {
     color: black;
+    background-color: inherit;
 }
 a.menu:hover {
     text-decoration: underline;
@@ -198,10 +201,12 @@ h2.flash {
   line-height: 1.2em;
   font-weight: bold;
   color: black;
+  background-color: inherit;
 }
 div.flash {
     border: solid 3px black;
     width: 70%;
+    color: black;
     background: #fcaf3e; /* Orange */
     padding: 0.3em;
 }
@@ -337,8 +342,9 @@ dt {
 /* Documentation left menu */
 div.left-menu {
 	background: #EEEEEE;
+	color: black;
 	border: solid 2px;
-	border-top: none;
+	/* border-top: none; */
 	width: 14em;
 	position: fixed;
 	top: 6.5em;
@@ -362,9 +368,10 @@ div.left-menu {
 
 div.tab {
     border: solid;
-    border-bottom: none;
+    /* border-bottom: none; */
     width: 7.5em;
     background: #EEEEEE; 
+    color: black;
     position: absolute;
     bottom: -1px;
     text-align: center;
@@ -373,7 +380,7 @@ div.tab {
 
 div#cat-tab {
     border: solid 2px;
-    border-bottom: none;
+    /* border-bottom: none; */
     z-index: 3;
     font-weight: bold;
     height: 1.3em;
@@ -381,7 +388,7 @@ div#cat-tab {
 
 div#alpha-tab {
     border: solid 1px;
-    border-bottom: solid 2px;
+    /* border-bottom: solid 2px; */
     left: 7.5em;
     z-index: 2;
     height: 1.2em;
@@ -433,6 +440,7 @@ DIV.tabs A:link, DIV.tabs A:visited,
 DIV.tabs A:active, DIV.tabs A:hover
 {
        color: black;
+       background-color: inherit;
 }
 
 DIV.tabs SPAN
@@ -482,12 +490,13 @@ DIV.tabs LI#current SPAN
    background-position: 0% -150px;
    padding-bottom   : 5px;
    background       : #eeeeec;
+   color	    : black;
 }
 
 DIV.nav
 {
    background       : none;
    border           : none;
-   border-bottom    : 2px solid #d3d7cf;
+   /* border-bottom    : 2px solid #d3d7cf; */
 }
 /* End doxygen */

@@ -112,4 +112,5 @@ Special functions
  transport_5
  zeta
  zeta_int
- 
+Support
+ gsl_sf

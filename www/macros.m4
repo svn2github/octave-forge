@@ -147,7 +147,7 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   __JAVA_SCRIPT__
   </head>
-  __TOP_MENU__
+  __TOP_MENU__([[[$1]]])
 ')m4_dnl
 m4_dnl
 m4_dnl
@@ -161,7 +161,7 @@ m4_define(`__DOXY_HEADER__', `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transi
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css">
   __JAVA_SCRIPT__
   </head>
-  __TOP_MENU__
+  __TOP_MENU__([[[$1]]])
   <div id="content">
 ')m4_dnl
 m4_dnl

@@ -5,7 +5,8 @@ Author: Joao Cardoso & Rafael Laboissiere
 Maintainer:  Rafael Laboissiere
 Title: Graceplot
 Description: Graceplot bindings for octave.
-Depends: octave (>= 2.9.7)
+Categories: graphics
+Depends: octave (>= 2.9.7), io (>= 1.0.0)
 BuildRequires: grace-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net

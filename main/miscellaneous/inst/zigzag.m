@@ -42,7 +42,7 @@
 ## @end deftypefn
 ## @seealso{zagzig}
 
-## Author:   Fredrik Bulow, <fredrik.bulow@gmail.com>
+## Author:   Fredrik Bulow <fredrik.bulow@gmail.com>
 
 function rval = zigzag(mtrx)
   if nargin < 1

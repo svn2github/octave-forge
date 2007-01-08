@@ -44,7 +44,7 @@
 ## @end deftypefn
 ## @seealso{zigzag}
 
-## Author:   Fredrik Bulow, <fredrik.bulow@gmail.com>
+## Author:   Fredrik Bulow <fredrik.bulow@gmail.com>
 
 function rval = zagzig(mtrx)
 

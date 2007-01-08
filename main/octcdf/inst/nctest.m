@@ -20,7 +20,7 @@
 ## should pass.
 ## @end deftypefn
 
-## Author: Alexander Barth (abarth@marine.usf.edu)
+## Author: Alexander Barth <abarth@marine.usf.edu>
 
 
 

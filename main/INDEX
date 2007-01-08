@@ -430,7 +430,7 @@ Operations
 Types
  sparse cell struct 
  int8 int16 int32 int64
- uint8 uint16 uint32 uint64
+ uint8 uint16 uint32 uint64 isinteger
  sizeof
 Deprecated
   is_bool is_complex is_list is_stream is_struct is_global
@@ -603,7 +603,7 @@ Linear algebra
  splu
  spqr
  sprank
- svds= create an interface to <a href="http://www.caam.rice.edu/software/ARPACK/">ARPACK</a> and add it to octave-forge
+ svds
 Iterative techniques
  bicgstab
  cgs
@@ -817,7 +817,7 @@ Filtering
  deconv 
  detrend center clip
 Fourier analysis
- fft fftw_wisdom
+ fft fftw
  fft2 
  fftn 
  ifft 

@@ -1,4 +1,4 @@
-PROGS = $(wildcard *.cc)
+PROGS = $(patsubst %.cc,%.oct,$(wildcard *.cc))
 
 all: $(PROGS)
 

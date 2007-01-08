@@ -1,4 +1,977 @@
-# Automatically generated file --- DO NOT EDIT
+2007-01-08 21:57  adb014
+
+	* www/: Makefile, get-base-address, octave-forge.css: fix
+	  validation errors in html
+
+2007-01-08 21:50  hauberg
+
+	* www/macros.m4: Current page isn't clickable in the top menu
+
+2007-01-08 21:30  adb014
+
+	* www/: NEWS.in, index.in: Update news items
+
+2007-01-08 21:29  adb014
+
+	* admin/make_index: Remove spurious output
+
+2007-01-08 21:28  adb014
+
+	* main/statistics/INDEX: That should read jsu{cdf,pdf} and not
+	  jus{cdf,pdf}
+
+2007-01-08 21:22  adb014
+
+	* main/: miscellaneous/inst/zagzig.m, miscellaneous/inst/zigzag.m,
+	  octcdf/inst/nctest.m: Fix copyright for AUTHORS build
+
+2007-01-08 21:21  adb014
+
+	* main/image/INDEX: index missing functions
+
+2007-01-08 21:18  adb014
+
+	* main/gsl/INDEX: index gdl_sf
+
+2007-01-08 21:18  adb014
+
+	* main/fixed/src/fixed.cc: modify macro to aid indexing
+
+2007-01-08 21:16  adb014
+
+	* main/INDEX: Fix INDEX for new and removed functions
+
+2007-01-08 21:13  adb014
+
+	* extra/xraylib/src/xraylib.cc: reorganize macros to aid indexing
+
+2007-01-08 21:13  adb014
+
+	* extra/xraylib/PKG_ADD: Add missing DCSP_Thoms function to
+	  autoload
+
+2007-01-08 21:12  adb014
+
+	* extra/symband/src/Makefile: error in makefile prevented oct-file
+	  being built
+
+2007-01-08 21:09  adb014
+
+	* extra/graceplot/: COPYING, DESCRIPTION, INDEX, NOINSTALL,
+	  inst/.cvsignore, inst/alternatives/__errcomm__.m,
+	  inst/alternatives/__errplot__.m,
+	  inst/alternatives/__grpltfmt__.m, inst/alternatives/__plr1__.m,
+	  inst/alternatives/__plr2__.m, inst/alternatives/__plr__.m,
+	  inst/alternatives/__plt1__.m, inst/alternatives/__plt2__.m,
+	  inst/alternatives/__plt2mm__.m, inst/alternatives/__plt2mv__.m,
+	  inst/alternatives/__plt2ss__.m, inst/alternatives/__plt2vm__.m,
+	  inst/alternatives/__plt2vv__.m, inst/alternatives/__plt__.m,
+	  inst/alternatives/__pltopt1__.m, inst/alternatives/__pltopt__.m,
+	  inst/alternatives/axis.m, inst/alternatives/bar.m,
+	  inst/alternatives/cla.m, inst/alternatives/clf.m,
+	  inst/alternatives/errorbar.m, inst/alternatives/figure.m,
+	  inst/alternatives/hold.m, inst/alternatives/ishold.m,
+	  inst/alternatives/legend.m, inst/alternatives/mplot.m,
+	  inst/alternatives/multiplot.m, inst/alternatives/oneplot.m,
+	  inst/alternatives/plot.m, inst/alternatives/polar.m,
+	  inst/alternatives/print.m, inst/alternatives/semilogx.m,
+	  inst/alternatives/semilogxerr.m, inst/alternatives/semilogy.m,
+	  inst/alternatives/semilogyerr.m, inst/alternatives/subplot.m,
+	  inst/alternatives/subtitle.m, inst/alternatives/subwindow.m,
+	  inst/alternatives/title.m, inst/alternatives/xlabel.m,
+	  inst/alternatives/ylabel.m, src/Makefile,
+	  src/grace_octave_path.m.in: Port graceplot to package manager
+
+2007-01-08 21:05  adb014
+
+	* www/.cvsignore: Also ignore graceplot
+
+2007-01-08 21:04  adb014
+
+	* extra/xraylib/INDEX: Add index file to include autoloaded
+	  functions
+
+2007-01-08 21:04  adb014
+
+	* extra/ode/README: Add Readme stating this package is deprecated
+
+2007-01-08 12:21  sis-sou
+
+	* main/general/inst/tand.m: Initial commit into CVS.
+
+2007-01-07 21:38  hauberg
+
+	* www/: htmlheader.htm, macros.m4: introduce __DOXY_HEADER__ for
+	  the doxygen documentation
+
+2007-01-07 21:21  adb014
+
+	* www/.cvsignore: ignore zenity and doxygen as well
+
+2007-01-07 21:10  hauberg
+
+	* www/: doxygen.css, octave-forge.css: Remove warnings from css
+	  files (by david bateman)
+
+2007-01-07 16:19  hauberg
+
+	* www/build-www.py: Handle continuation lines in DESCRIPTION
+	  properly
+
+2007-01-07 15:55  hauberg
+
+	* main/INDEX: copyfile is now in octave
+
+2007-01-07 15:50  hauberg
+
+	* www/doxygen.css: Removed hover effect that affacted the logo
+
+2007-01-07 15:45  hauberg
+
+	* main/: general/DESCRIPTION, geometry/DESCRIPTION, io/DESCRIPTION,
+	  miscellaneous/DESCRIPTION, special-matrix/DESCRIPTION,
+	  time/DESCRIPTION: Removed dots (.) from titles in DESCRIPTION
+
+2007-01-07 15:18  hauberg
+
+	* www/: Makefile, htmlfooter.htm, htmlfooter.html, htmlheader.htm,
+	  htmlheader.html: Renamed html[header|footer].html to .htm to
+	  avoid problems with make clean
+
+2007-01-07 15:15  hauberg
+
+	* www/docs.in: Added a reference to the doxygen documentation on
+	  the developer documentation page
+
+2007-01-07 13:46  adb014
+
+	* Makefile, www/Makefile: Add toplevel makefile directive for
+	  doxygen and add to all directive in the www directory
+
+2007-01-07 12:59  hauberg
+
+	* www/: Doxyfile, Makefile, doxygen.css, doxygen_mainpage.cc,
+	  htmlfooter.html, htmlheader.html, macros.m4, octave-forge.css:
+	  Added support for building doxygen documentation
+
+2007-01-07 12:07  gnumuthu
+
+	* main/miscellaneous/inst/reduce.m: Reduce: the python way
+
+2007-01-07 02:36  hauberg
+
+	* admin/make_index, extra/xraylib/DESCRIPTION,
+	  main/gsl/src/gsl_sf.cc, main/zenity/DESCRIPTION: Dirt hack to
+	  remove spaces
+
+2007-01-06 17:04  treichl
+
+	* main/odepkg/: DESCRIPTION, doc/ChangeLog, src/dopri.tar.gz,
+	  src/odepkg_mexsolver_dop853.c: Read the local ChangeLog file in
+	  main/odepkg/doc.
+
+2007-01-06 16:23  hauberg
+
+	* www/octave-forge.css: Removed style for h1 as it wasn't used
+
+2007-01-06 14:15  adb014
+
+	* www/.cvsignore: Also ignore the xraylib and optiminterp
+	  directories
+
+2007-01-05 00:50  hauberg
+
+	* main/image/inst/: jet.m, makelut.m, medfilt2.m, nlfilter.m,
+	  ordfilt2.m, pink.m, prism.m, qtdecomp.m, qtgetblk.m, qtsetblk.m,
+	  rainbow.m, spring.m, stretchlim.m, summer.m, white.m, winter.m:
+	  Put seealso before end deftypefn
+
+2007-01-05 00:47  hauberg
+
+	* main/image/inst/: hot.m, hsv.m, im2col.m, imadjust.m: Put seealso
+	  before end deftypefn
+
+2007-01-05 00:46  hauberg
+
+	* main/image/inst/: col2im.m, cool.m, copper.m, dilate.m, erode.m,
+	  grayslice.m: Minor changes in help text
+
+2007-01-05 00:41  hauberg
+
+	* main/image/inst/: bweuler.m, bwmorph.m, bwselect.m, conndef.m,
+	  edge.m, mat2gray.m, qtdecomp.m, qtgetblk.m, qtsetblk.m,
+	  applylut.m, autumn.m, bestblk.m, blkproc.m, bone.m, cmpermute.m,
+	  cmunique.m: Minor changes in help text
+
+2007-01-05 00:35  hauberg
+
+	* main/image/inst/: bwborder.m, corr2.m, histeq.m, imhist.m,
+	  imrotate.m, imshear.m, imtranslate.m, isbw.m, isgray.m, isind.m,
+	  isrgb.m, mat2gray.m, mean2.m, std2.m, blkproc.m, col2im.m,
+	  im2col.m, nlfilter.m, poly2mask.m: Minor changes in help text
+
+2007-01-05 00:35  hauberg
+
+	* admin/make_index: funref files now use DOC_HEADER
+
+2007-01-05 00:34  hauberg
+
+	* www/octave-forge.css: Minor changes
+
+2007-01-04 22:58  hauberg
+
+	* main/image/src/: __magick_read__.cc, bwfill.cc, bwlabel.cc,
+	  cordflt2.cc, deriche.cc, graycomatrix.cc, houghtf.cc, jpgread.cc,
+	  jpgwrite.cc, pngwrite.cc, rotate_scale.cc: Texinfo-fication of
+	  the help texts
+
+2007-01-02 22:58  hauberg
+
+	* main/image/inst/: bmpwrite.m, bwborder.m, bwlabel.m, bwselect.m,
+	  colfilt.m, colorgradient.m, deriche.m, edge.m, fftconv2.m,
+	  flag.m, fspecial.m, imginfo.m, imnoise.m, imread.m, imwrite.m:
+	  Documentation is now in Texinfo (looks better on the website)
+
+2007-01-02 21:22  hauberg
+
+	* www/octave-forge.css: css validation fixes
+
+2007-01-02 20:52  hauberg
+
+	* www/macros.m4: xhtml validation fixes
+
+2007-01-02 16:43  hauberg
+
+	* admin/make_index, www/get-base-address, www/index.in,
+	  www/macros.m4, www/oct.png, www/octave-forge.css: New layout for
+	  the web page
+
+2007-01-02 10:48  sis-sou
+
+	* main/general/inst/asecd.m: Initial commit into CVS.
+
+2007-01-02 10:40  sis-sou
+
+	* main/general/inst/secd.m: Small modification.
+
+2007-01-02 10:33  sis-sou
+
+	* main/general/inst/secd.m: Initial commit into CVS.
+
+2007-01-02 10:32  sis-sou
+
+	* main/general/inst/cosd.m: Argument verification added.
+
+2007-01-02 10:22  sis-sou
+
+	* main/general/inst/cosd.m: Initial commit into CVS.
+
+2007-01-02 10:21  sis-sou
+
+	* main/general/inst/sind.m: Small modification.
+
+2006-12-29 17:57  treichl
+
+	* main/odepkg/doc/ChangeLog: Updated.
+
+2006-12-29 01:34  hauberg
+
+	* main/image/inst/bwdist.m: Missing sqrt
+
+2006-12-28 23:42  hauberg
+
+	* main/image/: inst/bwdist.m, src/Makefile, src/__bwdist.cc: First
+	  revision of bwarea.m and __bwarea.cc
+
+2006-12-28 07:15  pkienzle
+
+	* main/optim/inst/wpolyfit.m: Corrections to comments regarding
+	  F-test for polynomial degree
+
+2006-12-27 20:21  hauberg
+
+	* main/image/inst/fspecial.m: First revision
+
+2006-12-23 13:19  hauberg
+
+	* main/image/inst/imread.m: imread now uses tilde_expand
+
+2006-12-22 17:09  treichl
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m,
+	  odeprint.m: Read the local ChangeLog file
+	  /main/odepkg/doc/ChangeLog.
+
+2006-12-20 13:59  adb014
+
+	* main/image/inst/imread.m: Probe image depth from bits rather than
+	  Red field, fixes grayscale images (For Thomas Weber)
+
+2006-12-17 23:28  abarth93
+
+	* main/optiminterp/src/configure.base: better autoconf test for
+	  Fortran 90
+
+2006-12-17 22:01  abarth93
+
+	* main/optiminterp/src/example_optiminterp.F90: Fix example
+
+2006-12-15 17:16  tpikonen
+
+	* extra/xraylib/src/: Makefile, xraylib.cc, xraylib/src/xrayvars.c:
+	  Fix indexing errors, Makefile and init a few vars in xraylib
+
+2006-12-14 17:34  tpikonen
+
+	* extra/xraylib/src/xraylib.cc: Make 1-argument functions work, fix
+	  numerous type errors in macro calls.
+
+2006-12-13 18:20  abarth93
+
+	* main/optiminterp/: inst/example_optiminterp.m,
+	  inst/optiminterp1.m, inst/optiminterp2.m, inst/optiminterp3.m,
+	  src/optiminterp.cc: Improve example and fix typos
+
+2006-12-13 17:56  abarth93
+
+	* main/optiminterp/: inst/optiminterp1.m, inst/optiminterp2.m,
+	  inst/optiminterp3.m, src/optiminterp.cc: make the use of the
+	  correlation length uniform
+
+2006-12-13 17:31  abarth93
+
+	* main/optiminterp/inst/: test_optiminterp2.m,
+	  test_optiminterp_mult.m: Rename test
+
+2006-12-13 17:08  abarth93
+
+	* main/optiminterp/src/Makefile: Initial import
+
+2006-12-13 16:14  tpikonen
+
+	* extra/pdb/src/Makefile: Fix Makefile
+
+2006-12-13 15:13  tpikonen
+
+	* extra/xraylib/PKG_ADD: Add missing CS_Compt
+
+2006-12-13 00:31  abarth93
+
+	* main/optiminterp/: COPYING, DESCRIPTION, INDEX, inst/.cvsignore,
+	  src/.cvsignore, src/autogen.sh: [no log message]
+
+2006-12-13 00:29  abarth93
+
+	* main/optiminterp/: inst/example_optiminterp.m,
+	  inst/optiminterp1.m, inst/optiminterp2.m, inst/optiminterp3.m,
+	  inst/test_optiminterp.m, inst/test_optiminterp2.m,
+	  src/Makeconf.in, src/configure.base, src/example_optiminterp.F90,
+	  src/optimal_interpolation.F90, src/optiminterp.cc,
+	  src/optiminterp_wrapper.F90: Initial import
+
+2006-12-12 16:27  tpikonen
+
+	* extra/xraylib/: COPYING, DESCRIPTION, PKG_ADD, src/Makefile,
+	  src/note_from_xraylib_author.txt, src/xraylib.cc,
+	  src/xraylib/install.sh, src/xraylib/note.txt,
+	  src/xraylib/bin/messages.py, src/xraylib/bin/runxraylib.py,
+	  src/xraylib/bin/xrayhelp.py, src/xraylib/bin/xraylib,
+	  src/xraylib/bin/xraylib.py, src/xraylib/data/CS_Compt.dat,
+	  src/xraylib/data/CS_Photo.dat, src/xraylib/data/CS_Rayl.dat,
+	  src/xraylib/data/FF.dat, src/xraylib/data/SF.dat,
+	  src/xraylib/data/atomicweight.dat, src/xraylib/data/coskron.dat,
+	  src/xraylib/data/edges.dat, src/xraylib/data/fluor_lines.dat,
+	  src/xraylib/data/fluor_yield.dat, src/xraylib/data/jump.dat,
+	  src/xraylib/data/radrate.dat, src/xraylib/doc/xraybanner.txt,
+	  src/xraylib/doc/xraydoc.txt, src/xraylib/doc/xrayfunc.txt,
+	  src/xraylib/doc/xrayhelp.txt, src/xraylib/example/make.sh,
+	  src/xraylib/example/xrlexample.c, src/xraylib/idl/lines.pro,
+	  src/xraylib/idl/shells.pro, src/xraylib/idl/xraylib.pro,
+	  src/xraylib/idl/xraylib_help.pro,
+	  src/xraylib/idl/xraylib_lines.pro,
+	  src/xraylib/idl/xraylib_shells.pro, src/xraylib/src/Makefile,
+	  src/xraylib/src/atomicweight.c, src/xraylib/src/clean.sh,
+	  src/xraylib/src/compile.sh, src/xraylib/src/coskron.c,
+	  src/xraylib/src/cross_sections.c, src/xraylib/src/cs_barns.c,
+	  src/xraylib/src/cs_line.c, src/xraylib/src/edges.c,
+	  src/xraylib/src/fluor_lines.c, src/xraylib/src/fluor_yield.c,
+	  src/xraylib/src/jump.c, src/xraylib/src/lines.h,
+	  src/xraylib/src/make_idl.sh, src/xraylib/src/make_python.sh,
+	  src/xraylib/src/make_shared.sh, src/xraylib/src/polarized.c,
+	  src/xraylib/src/pr_data.c, src/xraylib/src/radrate.c,
+	  src/xraylib/src/scattering.c, src/xraylib/src/shells.h,
+	  src/xraylib/src/splint.c, src/xraylib/src/splint.h,
+	  src/xraylib/src/xrayfiles.c, src/xraylib/src/xrayfiles_inline.c,
+	  src/xraylib/src/xrayglob.c, src/xraylib/src/xrayglob.h,
+	  src/xraylib/src/xraylib.c, src/xraylib/src/xraylib.h,
+	  src/xraylib/src/xraylib.i, src/xraylib/src/xraylib.py,
+	  src/xraylib/src/xraylib_idl.c, src/xraylib/src/xraylib_wrap.c,
+	  src/xraylib/src/xraylib_wrap.doc, src/xraylib/src/xrayvars.c,
+	  src/xraylib/src/xrayvars.h: Initial revision
+
+2006-12-12 16:27  tpikonen
+
+	* extra/xraylib/: COPYING, DESCRIPTION, PKG_ADD, src/Makefile,
+	  src/note_from_xraylib_author.txt, src/xraylib.cc,
+	  src/xraylib/install.sh, src/xraylib/note.txt,
+	  src/xraylib/bin/messages.py, src/xraylib/bin/runxraylib.py,
+	  src/xraylib/bin/xrayhelp.py, src/xraylib/bin/xraylib,
+	  src/xraylib/bin/xraylib.py, src/xraylib/data/CS_Compt.dat,
+	  src/xraylib/data/CS_Photo.dat, src/xraylib/data/CS_Rayl.dat,
+	  src/xraylib/data/FF.dat, src/xraylib/data/SF.dat,
+	  src/xraylib/data/atomicweight.dat, src/xraylib/data/coskron.dat,
+	  src/xraylib/data/edges.dat, src/xraylib/data/fluor_lines.dat,
+	  src/xraylib/data/fluor_yield.dat, src/xraylib/data/jump.dat,
+	  src/xraylib/data/radrate.dat, src/xraylib/doc/xraybanner.txt,
+	  src/xraylib/doc/xraydoc.txt, src/xraylib/doc/xrayfunc.txt,
+	  src/xraylib/doc/xrayhelp.txt, src/xraylib/example/make.sh,
+	  src/xraylib/example/xrlexample.c, src/xraylib/idl/lines.pro,
+	  src/xraylib/idl/shells.pro, src/xraylib/idl/xraylib.pro,
+	  src/xraylib/idl/xraylib_help.pro,
+	  src/xraylib/idl/xraylib_lines.pro,
+	  src/xraylib/idl/xraylib_shells.pro, src/xraylib/src/Makefile,
+	  src/xraylib/src/atomicweight.c, src/xraylib/src/clean.sh,
+	  src/xraylib/src/compile.sh, src/xraylib/src/coskron.c,
+	  src/xraylib/src/cross_sections.c, src/xraylib/src/cs_barns.c,
+	  src/xraylib/src/cs_line.c, src/xraylib/src/edges.c,
+	  src/xraylib/src/fluor_lines.c, src/xraylib/src/fluor_yield.c,
+	  src/xraylib/src/jump.c, src/xraylib/src/lines.h,
+	  src/xraylib/src/make_idl.sh, src/xraylib/src/make_python.sh,
+	  src/xraylib/src/make_shared.sh, src/xraylib/src/polarized.c,
+	  src/xraylib/src/pr_data.c, src/xraylib/src/radrate.c,
+	  src/xraylib/src/scattering.c, src/xraylib/src/shells.h,
+	  src/xraylib/src/splint.c, src/xraylib/src/splint.h,
+	  src/xraylib/src/xrayfiles.c, src/xraylib/src/xrayfiles_inline.c,
+	  src/xraylib/src/xrayglob.c, src/xraylib/src/xrayglob.h,
+	  src/xraylib/src/xraylib.c, src/xraylib/src/xraylib.h,
+	  src/xraylib/src/xraylib.i, src/xraylib/src/xraylib.py,
+	  src/xraylib/src/xraylib_idl.c, src/xraylib/src/xraylib_wrap.c,
+	  src/xraylib/src/xraylib_wrap.doc, src/xraylib/src/xrayvars.c,
+	  src/xraylib/src/xrayvars.h: xraylib
+
+2006-12-12 03:58  abarth93
+
+	* main/octcdf/: PKG_ADD, inst/example_netcdf.m,
+	  inst/example_opendap.m, src/ov-netcdf.cc, src/ov-netcdf.h: [no
+	  log message]
+
+2006-12-08 12:06  adb014
+
+	* main/image/src/Makefile: Add deriche to the list of oct-files to
+	  build
+
+2006-12-08 07:43  cocus
+
+	* main/image/src/deriche.cc: fast c implementation to replace m
+	  file deriche.m
+
+2006-12-08 07:41  cocus
+
+	* main/image/inst/deriche.m: interface changed to match cc
+	  implementation. (returns magnitude by default)
+
+2006-12-07 09:10  gnumuthu
+
+	* main/strings/: INDEX, inst/editdistance.m: Adding the levenshtein
+	  edit distance algorithm to the strings tools, implemented as in
+	  the Wikipedia article
+
+2006-12-07 08:00  gnumuthu
+
+	* main/zenity/inst/zenity_scale.m: Updating zenity_scale, in spirit
+	  of Haubergs implementation
+
+2006-12-06 15:46  gnumuthu
+
+	* main/: comm/inst/fibodeco.m, comm/inst/fiboenco.m,
+	  comm/inst/fibosplitstream.m, comm/inst/golombdeco.m,
+	  comm/inst/golombenco.m, comm/inst/huffmandeco.m,
+	  comm/inst/huffmandict.m, comm/inst/huffmanenco.m,
+	  comm/inst/ricedeco.m, comm/inst/riceenco.m, comm/inst/rledeco.m,
+	  comm/inst/rleenco.m, comm/inst/shannonfanodeco.m,
+	  comm/inst/shannonfanodict.m, comm/inst/shannonfanoenco.m,
+	  info-theory/inst/arithmetic_decode.m,
+	  info-theory/inst/arithmetic_encode.m,
+	  info-theory/inst/bscchannel.m,
+	  info-theory/inst/conditionalentropy_XY.m,
+	  info-theory/inst/conditionalentropy_YX.m,
+	  info-theory/inst/entropy.m, info-theory/inst/jointentropy.m,
+	  info-theory/inst/laverage.m, info-theory/inst/marginalc.m,
+	  info-theory/inst/marginalr.m,
+	  info-theory/inst/mutualinformation.m,
+	  info-theory/inst/narysource.m, info-theory/inst/redundancy.m,
+	  info-theory/inst/relativeentropy.m,
+	  info-theory/inst/tunstallcode.m, info-theory/inst/unarydec.m,
+	  info-theory/inst/unaryenc.m, miscellaneous/inst/zagzig.m,
+	  miscellaneous/inst/zigzag.m: Fixing copyright statement as David
+	  requested.
+
+2006-12-06 08:20  gnumuthu
+
+	* main/zenity/INDEX: zenity_scale
+
+2006-12-06 08:19  gnumuthu
+
+	* main/zenity/inst/: zenity_message.m, zenity_scale.m:
+	  zenity_scale: Shamelessly copied from Søren Hauberg's
+	  zenity_calendar
+
+2006-12-06 00:31  adb014
+
+	* main/signal/INDEX, www/NEWS.in, www/index.in: Index new idst
+	  function
+
+2006-12-05 23:09  sis-sou
+
+	* main/general/inst/sind.m: Initial commit into CVS.
+
+2006-12-05 21:45  pkienzle
+
+	* main/signal/inst/idst.m: Inverse discrete sine transform
+
+2006-12-05 21:45  pkienzle
+
+	* main/signal/inst/: dct.m, dst.m: Spelling corrections
+
+2006-12-05 21:26  adb014
+
+	* www/: NEWS.in, index.in: update news for dct function
+
+2006-12-05 21:23  adb014
+
+	* main/signal/INDEX: Index newly added dst function
+
+2006-12-05 20:30  pkienzle
+
+	* main/signal/inst/dst.m: Fix docs for scaling factor; add license
+	  notice
+
+2006-12-05 20:27  pkienzle
+
+	* main/signal/inst/dst.m: Discrete sine transform, type I
+
+2006-12-04 21:26  adb014
+
+	* extra/graceplot/.cvsignore: remove .cvsignore file as its no
+	  longer needed
+
+2006-12-04 21:04  hauberg
+
+	* main/zenity/: COPYING, DESCRIPTION, INDEX,
+	  inst/zenity_calendar.m, inst/zenity_entry.m,
+	  inst/zenity_file_selection.m, inst/zenity_list.m,
+	  inst/zenity_message.m, inst/zenity_notification.m,
+	  inst/zenity_progress.m, inst/zenity_text_info.m: Added zenity
+	  package (a simple GUI system)
+
+2006-12-04 20:46  adb014
+
+	* admin/make_rpm: Ensure that the name from DESCRIPTION has no
+	  trailing white space
+
+2006-12-04 12:25  adb014
+
+	* main/info-theory/DESCRIPTION: Syntax errors in the DESCRIPTION
+	  file
+
+2006-12-04 12:11  adb014
+
+	* main/gsl/src/precode.cc.template: Define dummy gsl_sf function,
+	  so that which('gsl_sf') will work correctly
+
+2006-12-04 01:53  pkienzle
+
+	* main/control/DESCRIPTION: No maintainer for the control toolbox
+
+2006-12-04 01:49  pkienzle
+
+	* main/audio/DESCRIPTION: Correct the Author designation.
+
+2006-12-03 23:35  adb014
+
+	* extra/graceplot/src/grace_octave_path.m.in: Copyright fix so
+	  get_authors works
+
+2006-12-03 23:10  adb014
+
+	* www/: NEWS.in, index.in: Update NEWS.in and index.in for changes
+	  since October
+
+2006-12-03 22:54  adb014
+
+	* main/: INDEX, image/INDEX, optim/INDEX, statistics/INDEX: Update
+	  INDEX files for new functions
+
+2006-12-03 11:53  cocus
+
+	* main/image/inst/deriche.m: initial m-file implementetaion.
+
+2006-12-02 22:16  pkienzle
+
+	* main/statistics/inst/: gamfit.m, gamlike.m: [for Martijn van
+	  Oosterhout] likelihood and distribution for gamma and fit
+
+2006-12-01 05:10  pkienzle
+
+	* main/plot/inst/hist2d.m: Create a 2D histogram from x,y points
+
+2006-11-30 14:07  adb014
+
+	* admin/rpm_template.in, packages/Makefile: Fix srpm build using
+	  local_list and global_list variables of pkg that will be in
+	  2.9.10
+
+2006-11-30 14:06  pvlanspeary
+
+	* main/signal/inst/: ar_psd.m, arburg.m, aryule.m, cohere.m,
+	  cpsd.m, csd.m, mscohere.m, pburg.m, pwelch.m, pyulear.m, tfe.m,
+	  tfestimate.m: restore traceback on error() messages
+
+2006-11-29 23:53  whyly
+
+	* main/statistics/inst/: betastat.m, binostat.m, raylstat.m,
+	  chi2stat.m, expstat.m, fstat.m, gamstat.m, geostat.m, hygestat.m,
+	  lognstat.m, normstat.m, pascal_stat.m, poisstat.m, tstat.m,
+	  unidstat.m, unifstat.m, weibstat.m: Documentation update.
+
+2006-11-29 22:42  whyly
+
+	* main/statistics/inst/: hmmestimate.m, hmmgenerate.m,
+	  hmmviterbi.m, raylcdf.m, raylinv.m, raylpdf.m, raylrnd.m:
+	  Replaced Wikipedia References
+
+2006-11-29 17:52  hauberg
+
+	* main/geometry/inst/inpolygon.m: Small bugfix
+
+2006-11-29 17:44  hauberg
+
+	* main/geometry/inst/inpolygon.m: Remove the need for division (and
+	  hence the division-by-zero warnings)
+
+2006-11-29 04:52  pkienzle
+
+	* main/general/inst/issorted.m: Note joint authorship
+
+2006-11-26 15:17  hauberg
+
+	* main/geometry/inst/inpolygon.m: The code now checks correctly if
+	  the points are on the polygon
+
+2006-11-26 14:16  hauberg
+
+	* main/geometry/inst/inpolygon.m: Better input checking
+
+2006-11-26 14:06  hauberg
+
+	* main/geometry/inst/inpolygon.m: Some bugfixing and two demos
+
+2006-11-26 11:47  hauberg
+
+	* main/image/inst/imwrite.m: Compatibility changes
+
+2006-11-24 21:17  adb014
+
+	* main/linear-algebra/src/Makefile: Typo in pattern subs
+
+2006-11-24 17:33  hauberg
+
+	* main/image/inst/: isgray.m, rgb2gray.m: Compatibility changes
+
+2006-11-24 12:55  schloegl
+
+	* extra/NaN/inst/nanstd.m: fix normalization
+
+2006-11-22 14:07  sis-sou
+
+	* main/general/inst/issorted.m: Errors fixed.
+
+2006-11-21 20:56  sis-sou
+
+	* main/general/inst/issorted.m: Optimisation.
+
+2006-11-20 19:49  sis-sou
+
+	* main/general/inst/issorted.m: Initial commit into CVS.
+
+2006-11-18 19:01  hauberg
+
+	* main/statistics/inst/: jsucdf.m, jsupdf.m: Added the Johnson SU
+	  distribution (by Rick Niles)
+
+2006-11-15 20:48  hauberg
+
+	* main/geometry/inst/inpolygon.m: Added inpolygon by Rick A Niles
+
+2006-11-15 01:50  whyly
+
+	* main/: statistics/inst/hmmestimate.m,
+	  statistics/inst/hmmviterbi.m, statistics/inst/raylcdf.m,
+	  statistics/inst/raylinv.m, statistics/inst/raylpdf.m,
+	  statistics/inst/raylrnd.m, linear-algebra/inst/condeig.m:
+	  Documentation update
+
+2006-11-15 01:49  whyly
+
+	* main/statistics/inst/hmmgenerate.m: Reduced loop size;
+	  Documentation update
+
+2006-11-10 10:20  gnumuthu
+
+	* main/info-theory/INDEX: Changed INDEX to update nary source
+	  checkin
+
+2006-11-10 08:06  gnumuthu
+
+	* main/info-theory/inst/narysource.m: N-ary source probability
+	  generator function, given the pdf of a source
+
+2006-11-09 15:34  qspencer
+
+	* main/plot/inst/legend.m: Remove legend.m since it was recently
+	  added to octave CVS.
+
+2006-11-08 20:06  etienne
+
+	* main/statistics/inst/boxplot.m: Correction: | instead of ||
+
+2006-11-07 21:54  adb014
+
+	* main/signal/inst/aryule.m: Fix scaling error in variance,
+	  spurious warning due to residual complex value and the nargout==0
+	  case. Add argument checking (For Peter Lanspeary)
+
+2006-11-07 21:48  adb014
+
+	* main/signal/inst/levinson.m: fix for complex autocorrelation, and
+	  transposed vectors. Add argument checking and adjust variance for
+	  rounding errors (For Peter Lanspeary)
+
+2006-11-06 20:41  adb014
+
+	* main/signal/INDEX: Update index with newly introduced functions
+
+2006-11-06 14:10  pvlanspeary
+
+	* main/signal/inst/: ar_psd.m, arburg.m, cohere.m, cpsd.m, csd.m,
+	  mscohere.m, pburg.m, pwelch.m, pyulear.m, tfe.m, tfestimate.m:
+	  Replaces Matlab-R11-compatible Welch/FFT method functions with
+	  Matlab-R12-compatible functions.  Many new features, including
+	  two-channel spectrum analyser in pwelch.  Compatibility level
+	  (R11/R12/native) is selected by calling pwelch with a single
+	  string argument.  csd, tfe and cohere are retained as R11-only
+	  functions.  The corresponding R12 functions are cpsd, tfestimate
+	  and mscohere.  Pwelch is complicated; please see "help pwelch".
+	  "demo pwelch" shows why I have not adopted ALL Matlab R12
+	  defaults...
+
+	  Burg-method functions:  arburg --- model length selection via
+	  'criterion' arg,	       upgrade to handle complex data
+	  correctly  ar_psd, pburg -- has more 'range', 'plot_type' and
+	  'method' features
+
+2006-11-05 11:31  sis-sou
+
+	* main/optim/inst/fminsearch.m: Initial commint into CVS.
+
+2006-10-31 23:22  sis-sou
+
+	* main/specfun/inst/erfcinv.m: Initial commit into CVS.
+
+2006-10-30 23:46  adb014
+
+	* main/INDEX: Add newly added octave functions to INDEX
+
+2006-10-25 05:54  adb014
+
+	* main/: fixed/src/Makefile, comm/src/Makefile: Get rid of
+	  redundant build code. Fixes build issue on Solaris
+
+2006-10-25 05:42  adb014
+
+	* admin/template.ndev: The file src/files is in fact named
+	  src/FILES
+
+2006-10-24 04:12  abarth93
+
+	* main/io/src/textread.cc: code cleanup
+
+2006-10-24 04:06  abarth93
+
+	* main/io/src/textread.cc: add support for headerlines
+
+2006-10-22 23:20  adb014
+
+	* main/odepkg/inst/: odepkg_equations_lorenz.m,
+	  odepkg_equations_pendulous.m, odepkg_equations_roessler.m: Fix
+	  texinfo errors. Don't include the TODO line outside of deftypefn
+	  block
+
+2006-10-22 19:49  treichl
+
+	* main/odepkg/: DESCRIPTION, INDEX, doc/ChangeLog, inst/ode23.m,
+	  inst/ode45.m, inst/ode54.m, inst/ode78.m, inst/odeget.m,
+	  inst/odephas2.m, inst/odephas3.m, inst/odepkg.m,
+	  inst/odepkg_equations_lorenz.m,
+	  inst/odepkg_equations_pendulous.m,
+	  inst/odepkg_equations_roessler.m,
+	  inst/odepkg_equations_vanderpol.m, inst/odepkg_event_handle.m,
+	  inst/odepkg_structure_check.m, inst/odeplot.m, inst/odeprint.m,
+	  inst/odeset.m: See local ChangeLog file in main/odepkg/doc.
+
+2006-10-22 16:54  rlaboiss
+
+	* main/optim/inst/leasqr.m: Improved documentation.  Thanks to
+	  Francesco Potorti for the patch.
+
+2006-10-22 12:58  hauberg
+
+	* www/octave-forge.css: The title now stays on top
+
+2006-10-20 22:23  adb014
+
+	* www/build-www.py: Add alt field to package buttons. If a bundle
+	  is found, add a section on a package bundle to the leading text
+
+2006-10-20 22:22  adb014
+
+	* packages/Makefile: Modify mkbundle target to create a single
+	  tarball rather than three
+
+2006-10-20 22:22  adb014
+
+	* Makefile: packages target should call the mkbundle target in the
+	  packages subdirectory
+
+2006-10-20 19:58  adb014
+
+	* www/: build-www.py, docs.in: fix up copying of multiple
+	  sub-directories in local documentation for a package
+
+2006-10-20 19:56  adb014
+
+	* extra/symband/doc/: SymBandDoc.bbl, SymBandDoc.tex: Massage latex
+	  document so that it plays nicely with latex2html
+
+2006-10-20 19:55  adb014
+
+	* main/vrml/doc/Makefile, main/optim/doc/Makefile,
+	  extra/MacOSX/doc/Makefile, extra/symband/doc/Makefile: COpy
+	  latex2html nav buttons
+
+2006-10-20 00:01  hauberg
+
+	* www/build-www.py: The triangle in packages.html is now clickable
+
+2006-10-19 21:36  adb014
+
+	* main/linear-algebra/: INDEX, src/Makefile, src/outer.cc: Add
+	  Muthu's outer product code
+
+2006-10-19 21:05  adb014
+
+	* admin/rpm_template.in: Change octave prefix command for pkg to
+	  reflect change in octave cvs
+
+2006-10-19 19:42  adb014
+
+	* main/optim/inst/fzero.m: function_handle and not function handle
+
+2006-10-19 11:39  adb014
+
+	* main/odepkg/inst/: ode54.m, ode78.m: deftypefn and not deftypefnx
+
+2006-10-19 00:58  hauberg
+
+	* www/: build-www.py, hide.png, show.png: Added show/hide triangles
+	  to packages.html
+
+2006-10-18 22:19  adb014
+
+	* admin/make_index: Only index files in the function reference that
+	  aren't ignored
+
+2006-10-18 22:18  adb014
+
+	* www/.cvsignore: ignore a couple more files
+
+2006-10-18 20:58  adb014
+
+	* www/docs.in: Nightly tarballs of sourceforge deprecated. Remove
+	  link from webpages
+
+2006-10-18 20:53  adb014
+
+	* www/translation.in: Different title name for translation.html
+	  header so that m4 parsing gets the navbar right
+
+2006-10-18 20:51  adb014
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m, odeget.m,
+	  odeset.m: deftypefnx should come at the top of the file so that
+	  the makeinfo build for web documentation formats correctly
+
+2006-10-18 00:54  adb014
+
+	* ChangeLog, admin/template.ndev, www/archive.in,
+	  www/get-base-address, www/index.in, www/macros.m4,
+	  www/octave-forge.css: Include special casing of active nav-link,
+	  like for octave page (Soren want to change the colour scheme?)
+
+2006-10-18 00:18  whyly
+
+	* main/linear-algebra/: INDEX, inst/condeig.m: Initial commit into
+	  CVS.
+
+2006-10-17 21:12  adb014
+
+	* www/: macros.m4, octave-forge.css: Compliant to strict XHTML 1.0,
+	  all except the code produced by makeinfo
+
+2006-10-17 21:09  adb014
+
+	* main/gsl/src/buildgsl_sf.sh: trivial change to buildgsl_sf.sh so
+	  that its time stamp is later than gsl_sf.cc
+
+2006-10-17 21:08  adb014
+
+	* main/gsl/src/gsl_sf.cc: Commit derived file gsl_sf.cc to the CVS
+	  so that the function help can find it
+
+2006-10-17 21:07  adb014
+
+	* main/gsl/src/.cvsignore: Don't ignore gsl_sf.cc
+
+2006-10-17 21:06  adb014
+
+	* admin/make_index: Compliant to strict XHTML 1.0, all except the
+	  code produced by makeinfo
+
+2006-10-17 13:32  sis-sou
+
+	* main/specfun/inst/cosint.m: Initial commit into CVS.
+
+2006-10-17 13:22  sis-sou
+
+	* main/specfun/inst/Ci.m: Initial commit into CVS.
+
+2006-10-17 10:07  mcreel
+
+	* www/: NEWS.in, index.in: minor correction
+
+2006-10-17 04:02  pkienzle
+
+	* main/signal/inst/bilinear.m: Fix docs so that the table will
+	  format nicely on the web.
+
+2006-10-16 23:08  adb014
+
+	* www/translation.in: Further validation errors
+
+2006-10-16 22:50  adb014
+
+	* main/INDEX: Move some functions from main INDEX to packae INDEX
+
 2006-10-16 21:25  adb014
 
 	* TODO: Update the TODO list
@@ -46,7 +1019,8 @@
 2006-10-16 21:09  adb014
 
 	* release.sh: Update release.sh for package manager. This is still
-	  very simple, but does describe the release process in the comments
+	  very simple, but does describe the release process in the
+	  comments
 
 2006-10-16 21:08  adb014
 
@@ -228,7 +1202,6 @@
 2006-10-10 21:40  gnumuthu
 
 	* main/comm/inst/shannonfanodict.m:
-
 	  removed redundancy based checks
 
 2006-10-10 21:24  gnumuthu
@@ -278,8 +1251,8 @@
 2006-10-10 01:14  adb014
 
 	* packages/Makefile, www/build-www.py: No longer have global
-	  OCTAVE_PACKAGE_PREFIX. Use the 'prefix' directive to pkg to replae
-	  it
+	  OCTAVE_PACKAGE_PREFIX. Use the 'prefix' directive to pkg to
+	  replae it
 
 2006-10-10 01:13  adb014
 
@@ -303,8 +1276,8 @@
 2006-10-09 22:01  adb014
 
 	* www/: build-www.py, macros.m4: Use macro to include '?download'
-	  in octave-forge download site, as it'll make it easier later for the
-	  test site
+	  in octave-forge download site, as it'll make it easier later for
+	  the test site
 
 2006-10-09 21:59  adb014
 
@@ -432,8 +1405,8 @@
 
 	* extra/MacOSX/doc/Makefile, extra/symband/doc/Makefile,
 	  main/optim/doc/Makefile, main/vrml/doc/Makefile: Add -verbosity=0
-	  to latex2html commands so that the url link to a non existent file
-	  is not added
+	  to latex2html commands so that the url link to a non existent
+	  file is not added
 
 2006-10-07 21:01  adb014
 
@@ -442,8 +1415,8 @@
 	  entropy.m, jointentropy.m, laverage.m, marginalc.m, marginalr.m,
 	  mutualinformation.m, redundancy.m, relativeentropy.m,
 	  tunstallcode.m, unarydec.m, unaryenc.m: texinfo-fy the help of
-	  information theory function. Add Copyright so that octave recognizes
-	  that first block is a copyright
+	  information theory function. Add Copyright so that octave
+	  recognizes that first block is a copyright
 
 2006-10-07 20:03  treichl
 
@@ -611,14 +1584,13 @@
 
 2006-10-05 11:36  gnumuthu
 
-	* main/comm/INDEX:
-	   golomb encoder & decoder update index
+	* main/comm/INDEX:  golomb encoder & decoder update index
 
 2006-10-05 11:35  gnumuthu
 
-	* main/comm/inst/: golombdeco.m, golombenco.m:
-	   golomb encoder & decoder routines as in S.Golomb, Run Length
-	   Encodings, IEEE Info Theory 1966
+	* main/comm/inst/: golombdeco.m, golombenco.m:	golomb encoder &
+	  decoder routines as in S.Golomb, Run Length Encodings, IEEE Info
+	  Theory 1966
 
 2006-10-05 11:33  adb014
 
@@ -658,8 +1630,8 @@
 	* admin/make_index, main/INDEX, main/statistics/INDEX,
 	  main/strings/INDEX, main/symbolic/DESCRIPTION,
 	  main/symbolic/src/symbols.cc, nonfree/gpc/INDEX, www/Makefile:
-	  Start fixing the main INDEX file and making a clearer split with the
-	  octave core functions
+	  Start fixing the main INDEX file and making a clearer split with
+	  the octave core functions
 
 2006-10-04 19:55  hauberg
 
@@ -736,7 +1708,7 @@
 
 2006-10-03 05:01  gnumuthu
 
-	* main/comm/inst/shannonfanodict.m: Shannonfano code fixed for  a
+	* main/comm/inst/shannonfanodict.m: Shannonfano code fixed for	a
 	  alias storage and two-i-s problem within loops
 
 2006-10-03 03:06  gnumuthu
@@ -819,8 +1791,8 @@
 
 	* main/comm/: INDEX, inst/ricedeco.m, inst/riceenco.m: rice
 	  (golomb-rice family of source codes when parameter is power of 2
-	  value k. Update Index. A very slow encoder, forced to be O(N^2) when
-	  some searches are involved ;-(, decoder is O(N) or closer.
+	  value k. Update Index. A very slow encoder, forced to be O(N^2)
+	  when some searches are involved ;-(, decoder is O(N) or closer.
 
 2006-10-02 09:47  gnumuthu
 
@@ -846,7 +1818,8 @@
 2006-10-02 08:45  gnumuthu
 
 	* main/comm/: INDEX, inst/rledeco.m, inst/rleenco.m: Index changed
-	  to reflect added rleenco & rledeco as when other-lead.. catches up
+	  to reflect added rleenco & rledeco as when other-lead.. catches
+	  up
 
 2006-10-02 08:44  gnumuthu
 
@@ -921,12 +1894,12 @@
 2006-10-01 09:02  gnumuthu
 
 	* main/comm/inst/: huffmandeco.m, huffmandict.m, huffmanenco.m:
-	  Octave now has huffman coding algorithms which are compatible with
-	  the other-leading-brand and even better with 2 other options for
-	  Huffman code generation including a minimum variance of code word
-	  option. The computational complexity of these routines are way high,
-	  sorry about that. But O(N*log(N)) encoding & decoding exist which we
-	  can implement as time permits.
+	  Octave now has huffman coding algorithms which are compatible
+	  with the other-leading-brand and even better with 2 other options
+	  for Huffman code generation including a minimum variance of code
+	  word option. The computational complexity of these routines are
+	  way high, sorry about that. But O(N*log(N)) encoding & decoding
+	  exist which we can implement as time permits.
 
 2006-09-30 13:21  sis-sou
 
@@ -963,8 +1936,8 @@
 2006-09-30 07:01  gnumuthu
 
 	* main/info-theory/: COPYING, DESCRIPTION, INDEX: First commit of
-	  basic Information Theory functions from earlier course work.  AFAIK
-	  all of the are correct.
+	  basic Information Theory functions from earlier course work.
+	  AFAIK all of the are correct.
 
 2006-09-30 02:47  adb014
 
@@ -1133,12 +2106,11 @@
 
 2006-09-14 12:17  cdemills
 
-	* main/linear-algebra/src/gsvd.cc:
-	  - removed some left-around from svd help
-	  - the function prototype indicates there can be an optionnal 6th
-	  output arg
-	  - explicitelly document the way the computation is performed
-	  			Pascal Dupuis, Sep 14th, 2006
+	* main/linear-algebra/src/gsvd.cc: - removed some left-around from
+	  svd help - the function prototype indicates there can be an
+	  optionnal 6th output arg - explicitelly document the way the
+	  computation is performed		      Pascal Dupuis, Sep
+	  14th, 2006
 
 2006-09-14 10:08  mcreel
 
@@ -1183,8 +2155,8 @@
 2006-09-13 13:22  treichl
 
 	* main/odepkg/doc/ChangeLog: 2006.09.13 First add to CVS.2006.09.13
-	  First add to CVS.2006.09.13 First add to CVS.2006.09.13 First add to
-	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  First add to CVS.2006.09.13 First add to CVS.2006.09.13 First add
+	  to CVS.2006.09.13 First add to CVS.2006.09.13 First add to
 	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
 	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
 	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
@@ -2087,7 +3059,8 @@
 	  CVS2006.09.13 First at to CVS2006.09.13 First at to CVS2006.09.13
 	  First at to CVS2006.09.13 First at to CVS2006.09.13 First at to
 	  CVS2006.09.13 First at to CVS2006.09.13 First at to CVS2006.09.13
-	  First at to CVS2006.09.13 First at to CVS2006.09.13 First at to CVS
+	  First at to CVS2006.09.13 First at to CVS2006.09.13 First at to
+	  CVS
 
 2006-09-12 22:35  adb014
 
@@ -2201,8 +3174,8 @@
 2006-09-11 00:25  adb014
 
 	* main/combinatorics/src/: partcnt, partint, partition.cc: Embedded
-	  combinatorics tests in the code, as the checking code doesn't look
-	  in seperate files
+	  combinatorics tests in the code, as the checking code doesn't
+	  look in seperate files
 
 2006-09-11 00:17  adb014
 
@@ -2266,22 +3239,19 @@
 2006-09-08 14:24  cdemills
 
 	* main/linear-algebra/src/: CmplxGSVD.cc, dbleGSVD.cc, dbleGSVD.h,
-	  gsvd.cc, test_gsvd.m:
-	  - only returns the non-trivial extended singular values, no padding
-	    with ones and 0
-	  - If called with a 6th output arg, returns R such that
-	    U'*A*X = C*R; V'*B*X = S*R
+	  gsvd.cc, test_gsvd.m: - only returns the non-trivial extended
+	  singular values, no padding	with ones and 0 - If called with a
+	  6th output arg, returns R such that	U'*A*X = C*R; V'*B*X = S*R
 	  - works correctly if the number of rows of A is smaller than the
-	    number of columns of B
-	  - a case test, test_gsvd.m, has been included. It verifies the basic
-	    properties on all cases of possible rank-deficiencies: rank(A) <
-	    rank(B), rank(B) < rank(A), rank([A' B']) < min(rows([A' B']),
-	    columns([A' B'])). Real and Complex computations are tested.
-	  - updated the doc
+	   number of columns of B - a case test, test_gsvd.m, has been
+	  included. It verifies the basic   properties on all cases of
+	  possible rank-deficiencies: rank(A) <   rank(B), rank(B) <
+	  rank(A), rank([A' B']) < min(rows([A' B']),	columns([A' B'])).
+	  Real and Complex computations are tested.  - updated the doc
 
-	  Todo: There is some issue with tags opening and closing in the doc,
-	  I can't figure it out.
-	  					Pascal Dupuis, 2006-09-08
+	  Todo: There is some issue with tags opening and closing in the
+	  doc, I can't figure it out.
+	  Pascal Dupuis, 2006-09-08
 
 2006-09-08 03:22  pkienzle
 
@@ -2827,8 +3797,8 @@
 	  symbolic/src/ov-vpa.cc, symbolic/src/ov-vpa.h,
 	  symbolic/src/sumterms.cc, symbolic/src/symbols.cc,
 	  symbolic/src/symbols.h, vrml/Makefile: Further package manager
-	  updates. All but miscellaneous and audio should build in main/. Some
-	  broken symlinks in image and octcdf still
+	  updates. All but miscellaneous and audio should build in main/.
+	  Some broken symlinks in image and octcdf still
 
 2006-08-24 17:39  qspencer
 
@@ -2922,8 +3892,9 @@
 	  main/fixed/src/autogen.sh, main/fixed/src/configure.add,
 	  main/fixed/src/configure.base, packages/.cvsignore,
 	  packages/.octaverc, packages/Makefile, packages/README: First cut
-	  and packaging and test build with configure;make. Works partially,
-	  with some broken packages. extras/nonfree to be converted
+	  and packaging and test build with configure;make. Works
+	  partially, with some broken packages. extras/nonfree to be
+	  converted
 
 2006-08-22 22:25  adb014
 
@@ -2977,7 +3948,8 @@
 	  genqamdemod.cc, gf.cc, octinst.sh.in, op-fil-gm.cc, op-gm-gm.cc,
 	  op-gm-m.cc, op-gm-s.cc, op-m-gm.cc, op-s-gm.cc, ov-galois.cc,
 	  ov-galois.h, syndtable.cc: first attempt at port of comms
-	  toolbox. Doc's still broken and needs more work on the PKG_ADD file
+	  toolbox. Doc's still broken and needs more work on the PKG_ADD
+	  file
 
 2006-08-21 20:39  hauberg
 
@@ -3139,12 +4111,14 @@
 	  inst/vrml_newname.m, inst/vrml_parallelogram.m,
 	  inst/vrml_points.m, inst/vrml_select_points.m, inst/vrml_surf.m,
 	  inst/vrml_text.m, inst/vrml_thick_surf.m, inst/vrml_transfo.m:
-	  Changed the directory structure of vrml to match the package system
+	  Changed the directory structure of vrml to match the package
+	  system
 
 2006-08-20 16:26  hauberg
 
 	* main/time/: COPYING, DESCRIPTION, datesplit.m, inst/datesplit.m:
-	  Changed the directory structure of time to match the package system
+	  Changed the directory structure of time to match the package
+	  system
 
 2006-08-20 16:23  hauberg
 
@@ -3641,8 +4615,8 @@
 2006-07-11 18:26  qspencer
 
 	* main/plot/legend.m: Fixed minor bug in legend that appears to
-	  have been due to incorrectly fixing the system bug. Also converted
-	  the file to unix line endings.
+	  have been due to incorrectly fixing the system bug. Also
+	  converted the file to unix line endings.
 
 2006-07-10 10:03  mcreel
 
@@ -3735,8 +4709,7 @@
 2006-06-08 01:12  tnfnk
 
 	* main/combinatorics/: Makefile, octave20.h, partcnt, partint,
-	  partition.cc, partition.h:
-	  - partint: calculate integer partition
+	  partition.cc, partition.h: - partint: calculate integer partition
 	  - partcnt: calculate number of integer partitions
 
 2006-06-06 18:32  abarth93
@@ -3811,8 +4784,8 @@
 	  op-fcs-fs.cc, op-fm-fcm.cc, op-fm-fcs.cc, op-fm-fm.cc,
 	  op-fm-fs.cc, op-fs-fcm.cc, op-fs-fcs.cc, op-fs-fm.cc,
 	  op-fs-fs.cc, ov-fixed-cx-mat.cc, ov-fixed-mat.cc: Replace use of
-	  FOUR_BYTE_INT, TWO_BYTE_INT by int32_t and int16_t. Include config.h
-	  before gripes.h
+	  FOUR_BYTE_INT, TWO_BYTE_INT by int32_t and int16_t. Include
+	  config.h before gripes.h
 
 2006-05-25 23:17  adb014
 
@@ -3934,13 +4907,11 @@
 2006-05-05 00:42  tom_holroyd
 
 	* main/geometry/convhulln.cc:
-
 	  fixed spelling error
 
 2006-05-05 00:40  tom_holroyd
 
 	* main/geometry/convhulln.cc:
-
 	  Guarantee consistent windings and simplicial facets in all
 	  dimensions with QJ.
 
@@ -4229,21 +5200,20 @@
 2006-03-23 15:29  mcreel
 
 	* main/optim/bfgsmin.cc: Incorporate stepsize, numeric gradient and
-	  finite difference functions. This makes them all use common argument
-	  checking, and simplifies code. Gives roughly 15% performance
-	  improvement.
+	  finite difference functions. This makes them all use common
+	  argument checking, and simplifies code. Gives roughly 15%
+	  performance improvement.
 
 2006-03-22 18:50  qspencer
 
 	* extra/Windows/dos.m, extra/graceplot/toggle_grace_use.m,
-	  extra/graceplot/alternatives/print.m, main/audio/sound.m,
-	  main/comm/comms.m, main/fixed/fixedpoint.m, main/general/unix.m,
-	  main/image/imginfo.m, main/image/imread.m, main/image/imwrite.m,
-	  main/miscellaneous/edit.m, main/miscellaneous/slurp_file.m,
-	  main/miscellaneous/units.m, main/plot/print.m.in,
-	  main/vrml/select_3D_points.m, main/vrml/vrml_browse.m: Change
-	  calls to 'system' function to reflect new ordering of output
-	  arguments.
+	  main/audio/sound.m, main/comm/comms.m, main/fixed/fixedpoint.m,
+	  main/general/unix.m, main/image/imginfo.m, main/image/imread.m,
+	  main/image/imwrite.m, main/miscellaneous/edit.m,
+	  main/miscellaneous/slurp_file.m, main/miscellaneous/units.m,
+	  main/plot/print.m.in, main/vrml/select_3D_points.m,
+	  main/vrml/vrml_browse.m: Change calls to 'system' function to
+	  reflect new ordering of output arguments.
 
 2006-03-20 10:01  pkienzle
 
@@ -4360,13 +5330,13 @@
 2006-02-13 14:56  rlaboiss
 
 	* Makefile: Since the distclean target depends on the clean target,
-	  we would expect that that calling "make distclean" would include the
-	  effects of "make clean".  This was not the case, because when the
-	  subdirs target is executed, make is called for each sub-directory
-	  with MAKECMDGOALS = distclean.
+	  we would expect that that calling "make distclean" would include
+	  the effects of "make clean".	This was not the case, because when
+	  the subdirs target is executed, make is called for each
+	  sub-directory with MAKECMDGOALS = distclean.
 
-	  The distclean target depends now on subdirs, which insures that make
-	  distclean is executed recursively.  A call to make clean is
+	  The distclean target depends now on subdirs, which insures that
+	  make distclean is executed recursively.  A call to make clean is
 	  explicitly done now in the distclean stanza.
 
 2006-02-12 14:25  pkienzle
@@ -4444,7 +5414,8 @@
 2006-01-25 21:35  abarth93
 
 	* main/octcdf/ov-netcdf.cc: Bug fix: Octave function ncdim uses now
-	  ncdimvec (NetCDF conventions) instead of dimvec (Octave conventions)
+	  ncdimvec (NetCDF conventions) instead of dimvec (Octave
+	  conventions)
 
 2006-01-25 21:31  abarth93
 
@@ -4535,22 +5506,13 @@
 
 2006-01-07 06:23  adb014
 
-	* extra/graceplot/alternatives/axis.m,
-	  extra/graceplot/alternatives/errorbar.m,
-	  extra/graceplot/alternatives/legend.m,
-	  extra/graceplot/alternatives/print.m,
-	  extra/graceplot/alternatives/semilogx.m,
-	  extra/graceplot/alternatives/semilogxerr.m,
-	  extra/graceplot/alternatives/semilogy.m,
-	  extra/graceplot/alternatives/semilogyerr.m, main/comm/modmap.m,
-	  main/fixed/examples/testofdm.m, main/irsa/irsa_act.m,
-	  main/irsa/irsa_dft.m, main/irsa/irsa_jitsp.m,
-	  main/irsa/irsa_mdsp.m, main/irsa/irsa_plotdft.m,
-	  main/irsa/irsa_rgenreal.m, main/plot/__plt3__.m,
-	  main/plot/gget.m, main/plot/meshc.m, main/plot/quiver.m,
-	  main/signal/arburg.m, main/signal/freqs_plot.m,
-	  main/signal/rceps.m, main/signal/zplane.m: remove all references
-	  to gset, gshow, graw, gsplot and replace with __gnuplot_* versions
+	* main/: comm/modmap.m, fixed/examples/testofdm.m, irsa/irsa_act.m,
+	  irsa/irsa_dft.m, irsa/irsa_jitsp.m, irsa/irsa_mdsp.m,
+	  irsa/irsa_plotdft.m, irsa/irsa_rgenreal.m, plot/__plt3__.m,
+	  plot/gget.m, plot/meshc.m, plot/quiver.m, signal/arburg.m,
+	  signal/freqs_plot.m, signal/rceps.m, signal/zplane.m: remove all
+	  references to gset, gshow, graw, gsplot and replace with
+	  __gnuplot_* versions
 
 2006-01-07 06:11  adb014
 
@@ -4920,8 +5882,9 @@
 
 2005-10-14 15:07  sjvdw
 
-	* main/image/imread.m: Fix reading rectangular images.  Tell
-	  'convert' to compress ppm files.  Remove temporary files when done.
+	* main/image/imread.m: Fix reading rectangular images.	Tell
+	  'convert' to compress ppm files.  Remove temporary files when
+	  done.
 
 2005-10-14 04:38  pkienzle
 
@@ -4930,7 +5893,7 @@
 
 2005-10-13 14:43  sjvdw
 
-	* main/image/pngread.cc: Correctly return alpha layer.  Texinfo
+	* main/image/pngread.cc: Correctly return alpha layer.	Texinfo
 	  docstring.
 
 2005-10-12 20:47  adb014
@@ -5037,18 +6000,19 @@
 	  pngread.cc, pngwrite.cc: Changes to handle MxNx3 images of
 	  different numeric classes:
 
-	  * imread.m: Return the appropriate numeric class. Colour images are
-	  of size MxNx3, gray images MxN.  Uses ImageMagick's "identify" to
-	  find the image type (b&w/grayscale/colour).
+	  * imread.m: Return the appropriate numeric class. Colour images
+	  are of size MxNx3, gray images MxN.  Uses ImageMagick's
+	  "identify" to find the image type (b&w/grayscale/colour).
 
 	  * jpgread.cc: Error handler modified to prevent segfaults. Colour
 	  images are returned as MxNx3 matrices, gray images as MxN.
-	  Conversion from colour to grey-level is not done anymore (rather use
-	  im2gray).
+	  Conversion from colour to grey-level is not done anymore (rather
+	  use im2gray).
 
 	  * pngread.cc: No segfault on loading invalid file types. Handle
 	  different depths correctly. Split into pngread, pngwrite and
-	  pngcanvas. Return the appropriate numeric classes and matrix sizes.
+	  pngcanvas. Return the appropriate numeric classes and matrix
+	  sizes.
 
 	  * imread.m: Prefer jpgread and pngread to ImageMagick.
 
@@ -5078,25 +6042,15 @@
 
 2005-09-08 04:00  pkienzle
 
-	* extra/NaN/statistic.m,
-	  extra/graceplot/alternatives/__errcomm__.m,
-	  extra/graceplot/alternatives/__plt1__.m,
-	  extra/graceplot/alternatives/__plt2__.m,
-	  extra/graceplot/alternatives/__plt__.m,
-	  extra/graceplot/alternatives/__pltopt1__.m,
-	  extra/graceplot/alternatives/__pltopt__.m,
-	  extra/graceplot/alternatives/axis.m,
-	  extra/graceplot/alternatives/legend.m,
-	  extra/graceplot/alternatives/polar.m,
-	  extra/graceplot/alternatives/print.m, extra/pdb/strtoz.m,
-	  extra/perl/Octave.pm, extra/soctcl/tclsend.m,
-	  extra/tk_octave/tk_dialog.m, extra/tk_octave/tk_entry.m,
-	  main/audio/auplot.m, main/comm/ademodce.m, main/comm/amodce.m,
-	  main/comm/apkconst.m, main/comm/awgn.m, main/comm/bchpoly.m,
-	  main/comm/bi2de.m, main/comm/biterr.m, main/comm/de2bi.m,
-	  main/comm/decode.m, main/comm/demodmap.m, main/comm/encode.m,
-	  main/comm/eyediagram.m, main/comm/gfweight.m, main/comm/lloyds.m,
-	  main/comm/modmap.m, main/comm/rsdecof.m, main/comm/rsencof.m,
+	* extra/NaN/statistic.m, extra/pdb/strtoz.m, extra/perl/Octave.pm,
+	  extra/soctcl/tclsend.m, extra/tk_octave/tk_dialog.m,
+	  extra/tk_octave/tk_entry.m, main/audio/auplot.m,
+	  main/comm/ademodce.m, main/comm/amodce.m, main/comm/apkconst.m,
+	  main/comm/awgn.m, main/comm/bchpoly.m, main/comm/bi2de.m,
+	  main/comm/biterr.m, main/comm/de2bi.m, main/comm/decode.m,
+	  main/comm/demodmap.m, main/comm/encode.m, main/comm/eyediagram.m,
+	  main/comm/gfweight.m, main/comm/lloyds.m, main/comm/modmap.m,
+	  main/comm/rsdecof.m, main/comm/rsencof.m,
 	  main/comm/scatterplot.m, main/comm/symerr.m, main/comm/wgn.m,
 	  main/econometrics/prettyprint.m, main/general/double.m,
 	  main/general/interp2.m, main/general/sortrows.m,
@@ -5153,8 +6107,8 @@
 2005-08-22 16:56  qspencer
 
 	* main/miscellaneous/edit.m: Applied patch sent to Octave mailing
-	  list by Bill Denney to fix the warnings about the default file open
-	  mode being binary.
+	  list by Bill Denney to fix the warnings about the default file
+	  open mode being binary.
 
 2005-08-14 18:47  etienne
 
@@ -5325,9 +6279,9 @@
 	  main/image/erode.m, main/plot/peaks.m, main/signal/butter.m,
 	  main/signal/cheby1.m, main/signal/cheby2.m, main/signal/ellip.m,
 	  main/strings/str2double.m: Converted several files from DOS
-	  end-of-line to UNIX-style (using the dos2unix utility). These files
-	  were inconsistent with the line encoding used throughout the rest of
-	  octave-forge.
+	  end-of-line to UNIX-style (using the dos2unix utility). These
+	  files were inconsistent with the line encoding used throughout
+	  the rest of octave-forge.
 
 2005-05-31 05:06  adb014
 
@@ -5436,8 +6390,7 @@
 
 2005-05-25 15:42  pkienzle
 
-	* extra/graceplot/alternatives/print.m, extra/tsa/rmle.m,
-	  main/audio/wavread.m, main/audio/wavwrite.m,
+	* extra/tsa/rmle.m, main/audio/wavread.m, main/audio/wavwrite.m,
 	  main/image/imrotate.m, main/linear-algebra/GramSchmidt.cc,
 	  main/miscellaneous/waitbar.cc, main/parallel/getid.m,
 	  main/parallel/scloseall.m, main/parallel/server.m,
@@ -5670,7 +6623,6 @@
 2005-04-26 06:44  alnd
 
 	* admin/get_authors:
-
 	  Improve logic to identify public domain files; add -s option to
 	  define size of "short" programs.
 
@@ -5786,8 +6738,8 @@
 2005-03-09 23:07  qspencer
 
 	* main/io/: textread.m, xlsread.m: Changed textread.m so that it
-	  returns cell arrays rather than lists. Changed xlsread from DOS to
-	  UNIX end of line characters.
+	  returns cell arrays rather than lists. Changed xlsread from DOS
+	  to UNIX end of line characters.
 
 2005-03-07 23:33  aadler
 
@@ -6017,11 +6969,6 @@
 	* main/optim/bfgsmin.cc: add check for obj fn value, fix lbfgs
 	  memory bug
 
-2005-01-13 11:45  tpikonen
-
-	* extra/graceplot/alternatives/legend.m: Add Grace support for
-	  legend-command.
-
 2004-12-29 00:33  pkienzle
 
 	* admin/Windows/octave.nsi: Clean up test and cancel code for
@@ -6034,8 +6981,8 @@
 2004-12-28 23:32  pkienzle
 
 	* admin/Windows/octave.nsi: remove cruft; add nag; fix cancel
-	  during language selection; remove strings from .oninit; convert all
-	  strings to LangStrings; use Octave as name; use XPStyle
+	  during language selection; remove strings from .oninit; convert
+	  all strings to LangStrings; use Octave as name; use XPStyle
 
 2004-12-23 18:39  schloegl
 
@@ -6205,8 +7152,8 @@
 2004-11-10 16:26  adb014
 
 	* main/symbolic/: findsymbols.cc, ov-ex.cc: Must explicitly use the
-	  "GiNaC::operator ==" as there is an ambiguity between this and the
-	  newly introduced int-type operators in the octave core..
+	  "GiNaC::operator ==" as there is an ambiguity between this and
+	  the newly introduced int-type operators in the octave core..
 
 2004-11-10 00:34  adb014
 
@@ -6378,9 +7325,9 @@
 2004-09-24 23:09  adb014
 
 	* admin/make_index: Update make_index to check for DEFCONST, also
-	  use DOCSTRINGS for text of help even if function is found elsewhere
-	  to allow for help string defined as macros, and call help in octave
-	  to find operators and keywords
+	  use DOCSTRINGS for text of help even if function is found
+	  elsewhere to allow for help string defined as macros, and call
+	  help in octave to find operators and keywords
 
 2004-09-24 17:38  adb014
 
@@ -6642,18 +7589,8 @@
 2004-09-07 12:30  mcreel
 
 	* main/optim/: bfgsmin.cc, lbfgsmin.cc, newtonstep.cc, samin.cc:
-	  Fix newtonstep bug introduced in July, and add pointers to examples
-	  to algorithms
-
-2004-09-06 16:45  tpikonen
-
-	* extra/graceplot/alternatives/: __errcomm__.m, __errplot__.m,
-	  __plr2__.m, __plt2mm__.m, __plt2mv__.m, __plt2ss__.m,
-	  __plt2vm__.m, __plt2vv__.m, __plt__.m, __pltopt__.m, bar.m,
-	  errorbar.m, mplot.m, multiplot.m, oneplot.m, plot.m, polar.m,
-	  semilogx.m, semilogxerr.m, semilogy.m, semilogyerr.m, subplot.m,
-	  subwindow.m, xlabel.m, ylabel.m: Cleanup and update alternative
-	  plotting functions.
+	  Fix newtonstep bug introduced in July, and add pointers to
+	  examples to algorithms
 
 2004-09-06 15:50  mcreel
 
@@ -6664,8 +7601,8 @@
 
 	* main/optim/: bfgsmin-example.m, bfgsmin.cc, bisectionstep.cc,
 	  finitedifference.cc, lbfgsmin.cc, newtonstep.cc: Improvement of
-	  help strings and argument checking for internal use functions. Still
-	  need to check types.
+	  help strings and argument checking for internal use functions.
+	  Still need to check types.
 
 2004-09-06 07:59  pkienzle
 
@@ -6713,8 +7650,8 @@
 
 	* main/optim/fzero.m: Complete replacement for the old wrapper
 	  function. Now fzero actually implements the Brent's root-finding
-	  method or, if necessary, falls back to fsolve(). This function has
-	  been written by a student of mine, Lukasz Bodzon.
+	  method or, if necessary, falls back to fsolve(). This function
+	  has been written by a student of mine, Lukasz Bodzon.
 
 2004-09-03 15:40  jmones
 
@@ -6987,7 +7924,7 @@
 2004-08-02 20:39  rlaboiss
 
 	* main/miscellaneous/map.m: Make map work with two input arguments.
-	  The following works now:
+	   The following works now:
 
 	      map ("mean", {[1,2,5], [3,7,9]});
 
@@ -7055,8 +7992,8 @@
 
 	* main/general/: Makefile, bitcmp.m, bitcmp.m.in, bitget.m,
 	  bitget.m.in, bitset.m, bitset.m.in, bitshift.m, bitshift.m.in:
-	  Make building and installation of bitfcns optional on version 2.1.57
-	  or less
+	  Make building and installation of bitfcns optional on version
+	  2.1.57 or less
 
 2004-07-27 22:39  pkienzle
 
@@ -7066,15 +8003,14 @@
 2004-07-27 21:46  rlaboiss
 
 	* main/optim/fmins.m: Put the description of the options vector
-	  inside a @verbatim environment.  I did not check whether this would
-	  look okay when processed by TeX but, at least, the output of "help
-	  fmins" is not gibberish anymore.
+	  inside a @verbatim environment.  I did not check whether this
+	  would look okay when processed by TeX but, at least, the output
+	  of "help fmins" is not gibberish anymore.
 
 2004-07-27 10:50  mazet
 
-	* main/miscellaneous/: cell2csv.cc, csvexplode.cc:
-	  * Empty cell are no more replaced by NaN
-	  * Fix a bug with string in cell
+	* main/miscellaneous/: cell2csv.cc, csvexplode.cc: * Empty cell are
+	  no more replaced by NaN * Fix a bug with string in cell
 
 2004-07-27 03:04  pkienzle
 
@@ -7162,11 +8098,11 @@
 2004-07-25 04:30  rlaboiss
 
 	* nonfree/gpc/: configure.in, octave-gpc.cc, gpc_create.cc: Version
-	  0.1.5.  Adjusted assignments to Octave_map objects in octave-gpc.cc
-	  gpc_read.cc to the new API for Octave: instead of using the
-	  overloaded operator [], use the member functions assign() and
-	  contents().  For this reason, check for version >= 2.1.57 of Octave
-	  in configure.in.
+	  0.1.5.  Adjusted assignments to Octave_map objects in
+	  octave-gpc.cc gpc_read.cc to the new API for Octave: instead of
+	  using the overloaded operator [], use the member functions
+	  assign() and contents().  For this reason, check for version >=
+	  2.1.57 of Octave in configure.in.
 
 2004-07-25 04:27  rlaboiss
 
@@ -7220,14 +8156,14 @@
 	  double_mode_to_double.cc.template, double_to_double.cc.template,
 	  int_double_to_double.cc.template,
 	  int_int_double_to_double.cc.template, int_to_double.cc.template:
-	  Possible ambiguous use of octave_value_list with latest octave CVS.
-	  Use octave_value instead.
+	  Possible ambiguous use of octave_value_list with latest octave
+	  CVS. Use octave_value instead.
 
 2004-07-20 12:10  adb014
 
 	* main/gsl/: coupling_3j.cc, coupling_6j.cc, coupling_9j.cc:
-	  Possible ambiguous use of octave_value_list with latest octave CVS.
-	  Use octave_value instead
+	  Possible ambiguous use of octave_value_list with latest octave
+	  CVS. Use octave_value instead
 
 2004-07-20 12:05  adb014
 
@@ -7246,11 +8182,6 @@
 
 	* main/comm/: _gfweight.cc, bchpoly.m, syndtable.cc: Remove
 	  restriction on gfweight and reduce restriction on syndtable
-
-2004-07-15 02:14  pkienzle
-
-	* extra/graceplot/alternatives/__errplot__.m: [for Miki Dovrat]
-	  match end to block type
 
 2004-07-14 21:59  pkienzle
 
@@ -7356,14 +8287,13 @@
 
 2004-07-08 06:56  pkienzle
 
-	* extra/graceplot/toggle_grace_use.m,
-	  extra/graceplot/alternatives/multiplot.m,
-	  main/geometry/tsearch.cc, main/image/fftconv2.m,
-	  main/plot/print.m, main/specfun/nchoosek.m,
-	  main/strings/mat2str.m, main/strings/strmatch.m: Fix copyright
-	  strings.  Only one allowed on top line so keep the most recent there
-	  and move the rest below the license statement.  'And' copyrights
-	  still not handled correctly.
+	* extra/graceplot/toggle_grace_use.m, main/geometry/tsearch.cc,
+	  main/image/fftconv2.m, main/plot/print.m,
+	  main/specfun/nchoosek.m, main/strings/mat2str.m,
+	  main/strings/strmatch.m: Fix copyright strings.  Only one allowed
+	  on top line so keep the most recent there and move the rest below
+	  the license statement.  'And' copyrights still not handled
+	  correctly.
 
 2004-07-08 06:32  pkienzle
 
@@ -7399,7 +8329,8 @@
 2004-07-07 17:25  pkienzle
 
 	* main/: optim/polyconf.m, strings/strtok.m, struct/struct.cc:
-	  Correct tests; hide unimplemented features and known bugs in sparse
+	  Correct tests; hide unimplemented features and known bugs in
+	  sparse
 
 2004-07-07 16:21  pkienzle
 
@@ -7426,8 +8357,8 @@
 	  main/specfun/Makefile, main/splines/Makefile,
 	  main/strings/Makefile, main/struct/Makefile, nonfree/Makefile,
 	  nonfree/splines/Makefile: Allow dist, distclean and clean targets
-	  to run without Makeconf. Replace include with sinclude in Makefiles.
-	  Build fixed and comm docs as part of dist target
+	  to run without Makeconf. Replace include with sinclude in
+	  Makefiles. Build fixed and comm docs as part of dist target
 
 2004-07-07 09:58  persquare
 
@@ -7441,7 +8372,8 @@
 2004-07-07 07:13  pkienzle
 
 	* Makefile, extra/Makefile, main/Makefile, nonfree/Makefile: Have
-	  make continue after errors, but report which portions did not build.
+	  make continue after errors, but report which portions did not
+	  build.
 
 2004-07-06 23:48  persquare
 
@@ -7546,8 +8478,8 @@
 
 	* main/fixed/: Makeconf.add, Makefile, configure.add, fixed.cc,
 	  fixedCNDArray.cc, fixedNDArray.cc: Patch for change to
-	  MX_ND_REDUCTION args for octave CVS. Seems to be only change needed
-	  for octave cvs relative to 2.1.57
+	  MX_ND_REDUCTION args for octave CVS. Seems to be only change
+	  needed for octave cvs relative to 2.1.57
 
 2004-06-28 14:11  mcreel
 
@@ -7627,8 +8559,8 @@
 2004-06-19 21:38  pkienzle
 
 	* admin/make_index, INDEX, main/INDEX: Windows/OS X have
-	  case-insensitive file names, so move INDEX out of the way of index,
-	  and make sure the index building still works.
+	  case-insensitive file names, so move INDEX out of the way of
+	  index, and make sure the index building still works.
 
 2004-06-19 07:53  pkienzle
 
@@ -7671,7 +8603,8 @@
 2004-06-17 01:05  adb014
 
 	* main/comm/: cyclgen.cc, cyclpoly.cc, gf.cc: Another try and
-	  fixing test for irreducible polynomials. Minor bug fix for gfilter
+	  fixing test for irreducible polynomials. Minor bug fix for
+	  gfilter
 
 2004-06-16 17:13  adb014
 
@@ -7839,10 +8772,11 @@
 2004-05-30 05:04  pkienzle
 
 	* main/miscellaneous/dispatch.cc: Fix help so that base file help
-	  is loaded as needed.  Fix bug which caused dispatch to be ignored if
-	  base called before dispatch.  Add 'any' type which allows complete
-	  replacement of builtin functions even if called without arguments.
-	  Fix clear bug (which may or may not have been committed to CVS).
+	  is loaded as needed.	Fix bug which caused dispatch to be ignored
+	  if base called before dispatch.  Add 'any' type which allows
+	  complete replacement of builtin functions even if called without
+	  arguments.  Fix clear bug (which may or may not have been
+	  committed to CVS).
 
 2004-05-29 23:59  pkienzle
 
@@ -7912,9 +8846,9 @@
 2004-05-25 21:39  pkienzle
 
 	* main/optim/wpolyfit.m: Support matrix inputs:
-	  wpolyfit([x,y,dy],n).  Correct comments.  Use 'uncertainty' instead
-	  of 'error'.  Remove GPL license (trivial amounts of John's code or
-	  comments left).
+	  wpolyfit([x,y,dy],n).  Correct comments.  Use 'uncertainty'
+	  instead of 'error'.  Remove GPL license (trivial amounts of
+	  John's code or comments left).
 
 2004-05-25 21:35  pkienzle
 
@@ -7995,8 +8929,8 @@
 2004-05-22 02:01  pkienzle
 
 	* main/optim/: wpolyfit.m, wsolve.m: Separate system solver from
-	  observation matrix construction; the solver is useful by itself, for
-	  example in solving weighted systems.
+	  observation matrix construction; the solver is useful by itself,
+	  for example in solving weighted systems.
 
 2004-05-22 01:39  pkienzle
 
@@ -8005,19 +8939,19 @@
 2004-05-21 22:57  pkienzle
 
 	* main/optim/: test_wpolyfit.m, wpolyfit.m: Correct the
-	  fit-through-origin test; add monte carlo test; warn in documentation
-	  that monte carlo results do not match fit results.
+	  fit-through-origin test; add monte carlo test; warn in
+	  documentation that monte carlo results do not match fit results.
 
 2004-05-21 21:57  pkienzle
 
 	* main/optim/wpolyfit.m: More accurate and faster computation of
 	  uncertainty in parameters.
 
-	  For weighted fits, use weights to compute uncertainty in parameters.
-	  Now computing the standard deviation on the parameters from a monte
-	  carlo simulation of an unweighted fit to data selected from a
-	  gaussian distribution according to weights matches the uncertainty
-	  computed from the weighted fit.
+	  For weighted fits, use weights to compute uncertainty in
+	  parameters.  Now computing the standard deviation on the
+	  parameters from a monte carlo simulation of an unweighted fit to
+	  data selected from a gaussian distribution according to weights
+	  matches the uncertainty computed from the weighted fit.
 
 	  For unweighted data, continue to estimate uncertainty from chisq.
 
@@ -8136,11 +9070,9 @@
 
 2004-04-22 05:22  pkienzle
 
-	* main/signal/zplane.m: [for Stefan van der Welt]
-	   * plot correct nr of zeros at 0
-	   * label nr of zeros/poles at a point
-	   * use different colours for plotting each column (matrix
-	   zeros/poles)
+	* main/signal/zplane.m: [for Stefan van der Welt]  * plot correct
+	  nr of zeros at 0  * label nr of zeros/poles at a point  * use
+	  different colours for plotting each column (matrix zeros/poles)
 	  * set automatic_replot to 0 for duration of demo
 
 2004-04-22 01:55  pkienzle
@@ -8244,11 +9176,13 @@
 	* main/geometry/: __voronoi__.cc, configure.add, convhulln.cc,
 	  delaunayn.cc: [RL for Dirk Eddelbuettel]
 
-	  Applied patch from Dirk for the Debian octave-forge package.  From
-	  the debian/changelog:
+	  Applied patch from Dirk for the Debian octave-forge package.
+	  From the debian/changelog:
 
-	    * main/geometry/{convhulln,delaunayn,voronoi}.cc: Change version
-	      identifier declaration to `char *qh_version' to match libqhull5
+	    * main/geometry/{convhulln,delaunayn,voronoi}.cc: Change
+	  version
+	      identifier declaration to `char *qh_version' to match
+	  libqhull5
 
 2004-03-18 09:34  persquare
 
@@ -8270,8 +9204,8 @@
 
 	* main/comm/: apkconst.m, eyediagram.m, galois-def.h, modmap.m,
 	  ov-galois.cc, ov-galois.h, qaskenco.m, scatterplot.m: Changes for
-	  2.1.57 compatiablity: automatic_replot, array_value and return value
-	  of ==
+	  2.1.57 compatiablity: automatic_replot, array_value and return
+	  value of ==
 
 2004-03-15 16:55  pkienzle
 
@@ -8473,11 +9407,11 @@
 2004-02-04 20:46  qspencer
 
 	* main/general/double.m: This change improves MATLAB compatibility.
-	  Previously, the "toascii" function was called when the input was a
-	  string. However, this only worked correctly for values under 128.
-	  Values between 128 and 256 were mapped to the range below 128,
-	  destroying the information in the most significant bit. The new
-	  implementation preserves this information, but it takes two
+	  Previously, the "toascii" function was called when the input was
+	  a string. However, this only worked correctly for values under
+	  128. Values between 128 and 256 were mapped to the range below
+	  128, destroying the information in the most significant bit. The
+	  new implementation preserves this information, but it takes two
 	  operations and is therefore slower.
 
 2004-02-04 20:25  qspencer
@@ -8502,8 +9436,9 @@
 
 	* main/miscellaneous/: Makefile, xmlread.cc, xmltree.c, xmltree.h,
 	  xmltree_read.act, xmltree_read.c, xmltree_read.h, xmltree_read.l:
-	  Xmlread is now finished and fully tested. There's now a easy way for
-	  Octave to exchange data with XML powered languages (Perl and Php).
+	  Xmlread is now finished and fully tested. There's now a easy way
+	  for Octave to exchange data with XML powered languages (Perl and
+	  Php).
 
 2004-01-31 22:39  mazet
 
@@ -8527,8 +9462,8 @@
 2004-01-30 00:23  schloegl
 
 	* extra/NaN/: INDEX, README.TXT, mod.m, rem.m: alternative REM and
-	  MOD: more intuitive usage, especially with extrem values, like y=0
-	  and inf.
+	  MOD: more intuitive usage, especially with extrem values, like
+	  y=0 and inf.
 
 2004-01-29 22:24  pkienzle
 
@@ -8578,8 +9513,8 @@
 2004-01-28 23:19  pkienzle
 
 	* main/miscellaneous/listen.cc: Use Feval directly rather than
-	  trying to simulate it --- this should be more robust against changes
-	  in the octave interpreter.
+	  trying to simulate it --- this should be more robust against
+	  changes in the octave interpreter.
 
 2004-01-28 17:57  etienne
 
@@ -8594,9 +9529,9 @@
 2004-01-28 03:06  pkienzle
 
 	* Makeconf.base, configure.base: Streamline use of Octave during
-	  configuration tests by providing OCTAVE_EVAL to set a variable to an
-	  octave expression and OCTAVE_CHECK_EXIST to perform one or another
-	  action depending on whether a symbol exists in Octave.
+	  configuration tests by providing OCTAVE_EVAL to set a variable to
+	  an octave expression and OCTAVE_CHECK_EXIST to perform one or
+	  another action depending on whether a symbol exists in Octave.
 
 	  Add tests for HAVE_OCTAVE_MAP_INDEX and SHLEXT
 
@@ -8610,10 +9545,7 @@
 
 2004-01-27 01:13  pkienzle
 
-	* extra/graceplot/alternatives/__errcomm__.m,
-	  extra/graceplot/alternatives/__errplot__.m,
-	  extra/graceplot/alternatives/__plt__.m,
-	  extra/tk_octave/tk_dialog.m, main/miscellaneous/read_options.m,
+	* extra/tk_octave/tk_dialog.m, main/miscellaneous/read_options.m,
 	  main/plot/legend.m, main/plot/plot3.m, main/struct/rmfield.m,
 	  main/vrml/save_vrml.m, main/vrml/vrml_cyl.m,
 	  main/vrml/vrml_frame.m, main/vrml/vrml_group.m,
@@ -8706,40 +9638,36 @@
 
 2004-01-05 22:20  rlaboiss
 
-	* nonfree/gpc/octave-gpc.h:
-	  * Added constructor octave_gpc_polygon::octave_gpc_polygon (void)
-	  * Updated copyright notice
+	* nonfree/gpc/octave-gpc.h: * Added constructor
+	  octave_gpc_polygon::octave_gpc_polygon (void) * Updated copyright
+	  notice
 
 2004-01-05 22:18  rlaboiss
 
-	* nonfree/gpc/octave-gpc.cc:
-	  * Call DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA macro with three
-	    argument, as required for the newest Octave version (2.1.52).
+	* nonfree/gpc/octave-gpc.cc: * Call
+	  DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA macro with three argument, as
+	    required for the newest Octave version (2.1.52).
 
-	  *
-	  * Updated copyright notice
+	  *  * Updated copyright notice
 
 2004-01-05 22:13  rlaboiss
 
-	* nonfree/gpc/gpc_plot.m:
-	  * Updated copyright notice
-	  * Removed blank spaces before opening parenthesis in a matrix,
-	    making the code work when empty_list_elements_ok == 0
+	* nonfree/gpc/gpc_plot.m: * Updated copyright notice * Removed
+	  blank spaces before opening parenthesis in a matrix, making the
+	  code work when empty_list_elements_ok == 0
 
 2004-01-05 22:10  rlaboiss
 
-	* nonfree/gpc/bootstrap.sh:
-	  * Added function run() for user-friendly echo during call to the
-	  Autotools.
-	  * Changed shabang program to /bin/bash.
+	* nonfree/gpc/bootstrap.sh: * Added function run() for
+	  user-friendly echo during call to the Autotools.  * Changed
+	  shabang program to /bin/bash.
 
 2004-01-05 22:08  rlaboiss
 
-	* nonfree/gpc/Makefile.am:
-	  * Added copyright notice.
+	* nonfree/gpc/Makefile.am: * Added copyright notice.
 
-	  * Removed "$(prefix)/" from the installation directories, since this
-	    is coped with in configure.in.
+	  * Removed "$(prefix)/" from the installation directories, since
+	  this is coped   with in configure.in.
 
 	  * Removed redundant install-hook rule.
 
@@ -8750,15 +9678,15 @@
 
 2004-01-05 21:25  rlaboiss
 
-	* nonfree/gpc/configure.in:
-	  * Release 0.1.4 of OCtave-GPC (appears in AC_INIT).
+	* nonfree/gpc/configure.in: * Release 0.1.4 of OCtave-GPC (appears
+	  in AC_INIT).
 
 	  * Restructured and modernized for the latest Autotools: AC_INIT
-	    accepts now three arguments and AM_INIT_AUTOMAKE none.
+	  accepts now	three arguments and AM_INIT_AUTOMAKE none.
 
-	  * Use AC_HELP_MSG as arguments of AC_ARG_WITH.  Use AC_CONFIG_FILES
-	    instead of an argument of AC_OUTPUT.  Replaced long repetitive code
-	    by macros defined now in acinclude.m4.
+	  * Use AC_HELP_MSG as arguments of AC_ARG_WITH.  Use
+	  AC_CONFIG_FILES instead   of an argument of AC_OUTPUT.  Replaced
+	  long repetitive code by macros   defined now in acinclude.m4.
 
 	  * Removed libexec sirectory setting and use.
 
@@ -8774,7 +9702,8 @@
 
 	* nonfree/gpc/: gpc_clip.cc, gpc_create.cc, gpc_get.cc,
 	  gpc_is_polygon.cc, gpc_read.cc, gpc_tristrip.cc, gpc_write.cc:
-	  Changed package name octave-gpc -> Octave-GPC in copyright notices
+	  Changed package name octave-gpc -> Octave-GPC in copyright
+	  notices
 
 2004-01-05 21:08  rlaboiss
 
@@ -8861,16 +9790,16 @@
 2003-12-14 17:53  rlaboiss
 
 	* main/geometry/: __voronoi__.cc, convhulln.cc, delaunayn.cc:
-	  Update all the qh_version strings to the date of today.  Made them
-	  compliant to the ISO 8601 norm, i.e. the date strings are in the
-	  form YYYY-MM-DD.
+	  Update all the qh_version strings to the date of today.  Made
+	  them compliant to the ISO 8601 norm, i.e. the date strings are in
+	  the form YYYY-MM-DD.
 
 2003-12-14 17:42  rlaboiss
 
 	* main/geometry/: __voronoi__.cc, voronoi.m, voronoin.m: Introduced
 	  a optional argument to the voronoi* functions for passing extra
-	  options to the underlying qhull command.  Again, only minimal tests
-	  have been done.  Please, test this changes.
+	  options to the underlying qhull command.  Again, only minimal
+	  tests have been done.  Please, test this changes.
 
 2003-12-14 05:00  pkienzle
 
@@ -8888,8 +9817,8 @@
 2003-12-12 23:19  pkienzle
 
 	* Makefile: First attempt at incorporating embedded tests --- need
-	  to avoid testing functions that haven't been built and need to avoid
-	  testing in directories that are not being installed.
+	  to avoid testing functions that haven't been built and need to
+	  avoid testing in directories that are not being installed.
 
 2003-12-12 23:06  pkienzle
 
@@ -8981,7 +9910,8 @@
 2003-12-08 09:21  pkienzle
 
 	* main/: io/dlmread.cc, optim/lp.cc, signal/medfilt1.cc: Use
-	  lo_ieee_* functions for finite, isinf, isnan, inf_value, nan_value
+	  lo_ieee_* functions for finite, isinf, isnan, inf_value,
+	  nan_value
 
 2003-12-07 23:14  adb014
 
@@ -9100,12 +10030,12 @@
 
 	* admin/make_index, INDEX, main/control/INDEX, main/optim/INDEX,
 	  main/signal/INDEX, main/statistics/INDEX, main/strings/INDEX:
-	  Transform "use <code>fn</code>" to "use <f>fn</f>", and make it link
-	  to fn.  Fix links to octave-forge CVS Add links to octave CVS We now
-	  walk the octave source tree instead of using DOCSTRINGS, so some
-	  function descriptions are broken.  Perhaps we could separate
-	  DOCSTRINGS from file locations somehow so everything works nicely
-	  together.
+	  Transform "use <code>fn</code>" to "use <f>fn</f>", and make it
+	  link to fn.  Fix links to octave-forge CVS Add links to octave
+	  CVS We now walk the octave source tree instead of using
+	  DOCSTRINGS, so some function descriptions are broken.  Perhaps we
+	  could separate DOCSTRINGS from file locations somehow so
+	  everything works nicely together.
 
 2003-11-11 17:46  pkienzle
 
@@ -9156,8 +10086,8 @@
 2003-11-06 22:49  pkienzle
 
 	* autogen.sh, configure.base: Only allowed one AC_OUTPUTS
-	  statement, so define CONFIGURE_OUTPUTS which can gather outputs from
-	  multiple directories.
+	  statement, so define CONFIGURE_OUTPUTS which can gather outputs
+	  from multiple directories.
 
 2003-11-06 21:53  schloegl
 
@@ -9167,8 +10097,8 @@
 2003-11-06 21:20  schloegl
 
 	* extra/tsa/adim.m: add mode=6: stable adaptive estimation w/o W ;
-	  corrected IR(1,1)-1 can be immediately used for Mahalanobis Distance
-	  x*IR*x'
+	  corrected IR(1,1)-1 can be immediately used for Mahalanobis
+	  Distance x*IR*x'
 
 2003-11-06 15:42  adb014
 
@@ -9183,11 +10113,6 @@
 2003-11-06 15:36  adb014
 
 	* admin/: mkdoc, mktexi: execute flag for mkdoc/mktexi
-
-2003-11-05 18:47  tpikonen
-
-	* extra/graceplot/alternatives/: cla.m, clf.m, figure.m: Added
-	  documentation strings.
 
 2003-11-05 12:04  schloegl
 
@@ -9208,8 +10133,8 @@
 2003-10-31 19:15  schloegl
 
 	* extra/NaN/: INSTALL, sumskipnan.m: improve performance
-	  (exist-function and FLAG_IMPLICIT_SKIP_NAN are removed because they
-	  slow down significantly);
+	  (exist-function and FLAG_IMPLICIT_SKIP_NAN are removed because
+	  they slow down significantly);
 
 2003-10-31 19:13  schloegl
 
@@ -9343,8 +10268,8 @@
 2003-09-25 11:44  schloegl
 
 	* extra/NaN/std.m: implement best unbiased estimation of S.D.
-	  (Note: this is different than the square root of the best unbiased
-	  estimator of the variance)
+	  (Note: this is different than the square root of the best
+	  unbiased estimator of the variance)
 
 2003-09-24 09:38  schloegl
 
@@ -9389,11 +10314,10 @@
 2003-09-18 22:48  qspencer
 
 	* main/miscellaneous/waitbar.cc:
-
-	  Adds new functionality that enables display of text strings in the
-	  waitbar, for greater compatibility with MATLAB. Also fixes a
-	  cosmetic bug that in some cases resulted in a double "%" character
-	  by replacing printf commands with fputs(string,stdout).
+	  Adds new functionality that enables display of text strings in
+	  the waitbar, for greater compatibility with MATLAB. Also fixes a
+	  cosmetic bug that in some cases resulted in a double "%"
+	  character by replacing printf commands with fputs(string,stdout).
 
 2003-09-18 17:40  schloegl
 
@@ -9430,10 +10354,9 @@
 2003-09-14 10:16  kahacjde
 
 	* main/general/gradient.m:
-
 	  Bug fix. It is triggerd in case of column-wise gradients and
-	  non-square matrices.  Thanks to Eric Hill Matlis for sending the bug
-	  report.
+	  non-square matrices.	Thanks to Eric Hill Matlis for sending the
+	  bug report.
 
 2003-09-12 16:22  adb014
 
@@ -9455,14 +10378,14 @@
 2003-09-12 14:14  schloegl
 
 	* extra/NaN/: INDEX, INSTALL, README.TXT, tcdf.m, tinv.m, tpdf.m:
-	  TPDF, TCDF and TINV included - these are needed to fix some Matlab
-	  bux
+	  TPDF, TCDF and TINV included - these are needed to fix some
+	  Matlab bux
 
 2003-09-12 14:12  schloegl
 
 	* extra/NaN/nantest.m: TPDF, TCDF and TINV included; test Matrix
-	  Division Error NaN/NaN modified for ML6.5 - Dimension must be p=3 or
-	  larger)
+	  Division Error NaN/NaN modified for ML6.5 - Dimension must be p=3
+	  or larger)
 
 2003-09-12 14:10  schloegl
 
@@ -9477,14 +10400,14 @@
 2003-09-10 14:22  schloegl
 
 	* extra/NaN/: INDEX, README.TXT: NANTEST separated; NANTEST checks
-	  only NaN-related properties of standard octave; NANINSTTEST checks
-	  whether the NaN-tb is correctly installed
+	  only NaN-related properties of standard octave; NANINSTTEST
+	  checks whether the NaN-tb is correctly installed
 
 2003-09-10 14:17  schloegl
 
 	* extra/NaN/: naninsttest.m, nantest.m: NANTEST separated; NANTEST
-	  checks only NaN-related properties of standard octave; NANINSTTEST
-	  checks whether the NaN-tb is correctly installed
+	  checks only NaN-related properties of standard octave;
+	  NANINSTTEST checks whether the NaN-tb is correctly installed
 
 2003-09-10 10:59  schloegl
 
@@ -9508,50 +10431,12 @@
 2003-08-25 17:15  tpikonen
 
 	* extra/graceplot/: Makefile, README, TODO, __grcmd__.cc,
-	  grace_octave_path.m.in, toggle_grace_use.m,
-	  alternatives/__errcomm__.m, alternatives/__errplot__.m,
-	  alternatives/__grpltfmt__.m, alternatives/__plr1__.m,
-	  alternatives/__plr2__.m, alternatives/__plr__.m,
-	  alternatives/__plt1__.m, alternatives/__plt2__.m,
-	  alternatives/__plt2mm__.m, alternatives/__plt2mv__.m,
-	  alternatives/__plt2ss__.m, alternatives/__plt2vm__.m,
-	  alternatives/__plt2vv__.m, alternatives/__plt__.m,
-	  alternatives/__pltopt1__.m, alternatives/__pltopt__.m,
-	  alternatives/axis.m, alternatives/bar.m, alternatives/cla.m,
-	  alternatives/clf.m, alternatives/errorbar.m,
-	  alternatives/figure.m, alternatives/hold.m,
-	  alternatives/ishold.m, alternatives/mplot.m,
-	  alternatives/multiplot.m, alternatives/oneplot.m,
-	  alternatives/plot.m, alternatives/polar.m, alternatives/print.m,
-	  alternatives/semilogx.m, alternatives/semilogxerr.m,
-	  alternatives/semilogy.m, alternatives/semilogyerr.m,
-	  alternatives/subplot.m, alternatives/subtitle.m,
-	  alternatives/subwindow.m, alternatives/title.m,
-	  alternatives/xlabel.m, alternatives/ylabel.m: Initial revision
+	  grace_octave_path.m.in, toggle_grace_use.m: Initial revision
 
 2003-08-25 17:15  tpikonen
 
 	* extra/graceplot/: Makefile, README, TODO, __grcmd__.cc,
-	  grace_octave_path.m.in, toggle_grace_use.m,
-	  alternatives/__errcomm__.m, alternatives/__errplot__.m,
-	  alternatives/__grpltfmt__.m, alternatives/__plr1__.m,
-	  alternatives/__plr2__.m, alternatives/__plr__.m,
-	  alternatives/__plt1__.m, alternatives/__plt2__.m,
-	  alternatives/__plt2mm__.m, alternatives/__plt2mv__.m,
-	  alternatives/__plt2ss__.m, alternatives/__plt2vm__.m,
-	  alternatives/__plt2vv__.m, alternatives/__plt__.m,
-	  alternatives/__pltopt1__.m, alternatives/__pltopt__.m,
-	  alternatives/axis.m, alternatives/bar.m, alternatives/cla.m,
-	  alternatives/clf.m, alternatives/errorbar.m,
-	  alternatives/figure.m, alternatives/hold.m,
-	  alternatives/ishold.m, alternatives/mplot.m,
-	  alternatives/multiplot.m, alternatives/oneplot.m,
-	  alternatives/plot.m, alternatives/polar.m, alternatives/print.m,
-	  alternatives/semilogx.m, alternatives/semilogxerr.m,
-	  alternatives/semilogy.m, alternatives/semilogyerr.m,
-	  alternatives/subplot.m, alternatives/subtitle.m,
-	  alternatives/subwindow.m, alternatives/title.m,
-	  alternatives/xlabel.m, alternatives/ylabel.m: graceplot
+	  grace_octave_path.m.in, toggle_grace_use.m: graceplot
 
 2003-08-25 17:10  tpikonen
 
@@ -9566,7 +10451,6 @@
 2003-08-19 15:51  tpikonen
 
 	* configure.base:
-
 	  Fixed an M4 quoting bug in a sed command giving value to subver.
 
 2003-07-28 23:10  pkienzle
@@ -9578,8 +10462,8 @@
 2003-07-28 18:05  pkienzle
 
 	* admin/Windows/install_octave.sh: Remove dependency on cmd by
-	  always linking all drives.  An alternative is to try to detect the
-	  existing drives from NSIS and create links there.
+	  always linking all drives.  An alternative is to try to detect
+	  the existing drives from NSIS and create links there.
 
 2003-07-28 06:10  pkienzle
 
@@ -9613,9 +10497,9 @@
 2003-07-17 22:09  pkienzle
 
 	* admin/Windows/mkstdc++dll.sh: Just create libstdc++.dll.a, but
-	  don't put it anywhere in particular.  Let the user decide if shared
-	  or static linking will be the default, and explain how to override
-	  the default.
+	  don't put it anywhere in particular.	Let the user decide if
+	  shared or static linking will be the default, and explain how to
+	  override the default.
 
 2003-07-17 19:42  schloegl
 
@@ -9740,7 +10624,7 @@
 
 	  It would be nice if we could handle, e.g.,
 
-	  	inline('if x<3, 3; else x; end')
+		  inline('if x<3, 3; else x; end')
 
 	  but I don't know how.
 
@@ -9898,14 +10782,15 @@
 	  main/specfun/.cvsignore, main/splines/.cvsignore,
 	  main/miscellaneous/.cvsignore, main/strings/.cvsignore,
 	  main/struct/.cvsignore, main/symbolic/.cvsignore: Ignore build
-	  targets when doing cvs -q update -dP --- makes it easier to notice
-	  that files have been added.
+	  targets when doing cvs -q update -dP --- makes it easier to
+	  notice that files have been added.
 
 2003-05-29 23:10  cgijobs
 
 	* doc/octave-forge-home.html: Added documentation and link for
-	  Octave interface on TeXmacs.  The pdf file is not much to look at,
-	  but it prints up O.K.  I've requested a better copy from the author.
+	  Octave interface on TeXmacs.	The pdf file is not much to look
+	  at, but it prints up O.K.  I've requested a better copy from the
+	  author.
 
 2003-05-29 15:00  etienne
 
@@ -10085,45 +10970,42 @@
 
 	* main/symbolic/: findsym.m, findsymbols.cc, numden.cc,
 	  symfsolve.m, syminfo.cc, symlsolve.cc: main/symbolic/numden.cc
-	    Initial version - Oct file to get numerator and denominator of a
-	    ratio of polynomials.  main/symbolic/findsymbols.cc
-	    Initial version - Oct file to retrieve a sorted list of symbols in
-	    expression.  main/symbolic/findsym.m
-	    Initial version - M file to retrieve list of symbols,
-	    m****b-compatible.  main/symbolic/symlsolve.cc
-	    Initial version - Oct file to call GiNaC::lsolve() - solve linear
-	    system of equations.  main/symbolic/symfsolve.m
-	    Initial version - M file generates temporary function file and
-	    applies fsolve() to a (set of) symbolic equations.
-	  main/symbolic/syminfo.cc
-	    Initial version - Oct file to retrieve information about
-	    expressions - calls GiNaC::info().  main/symbolic/Makefile
-	    Added new targets.
+	  Initial version - Oct file to get numerator and denominator of a
+	  ratio of polynomials.  main/symbolic/findsymbols.cc	 Initial
+	  version - Oct file to retrieve a sorted list of symbols in
+	  expression.  main/symbolic/findsym.m	 Initial version - M file
+	  to retrieve list of symbols, m****b-compatible.
+	  main/symbolic/symlsolve.cc   Initial version - Oct file to call
+	  GiNaC::lsolve() - solve linear system   of equations.
+	  main/symbolic/symfsolve.m   Initial version - M file generates
+	  temporary function file and applies	fsolve() to a (set of)
+	  symbolic equations.  main/symbolic/syminfo.cc   Initial version -
+	  Oct file to retrieve information about expressions -	 calls
+	  GiNaC::info().  main/symbolic/Makefile   Added new targets.
 
 2003-05-05 23:39  watsma
 
 	* main/symbolic/: ov-ex.h, ov-ex.cc: main/symbolic/ov-ex.h
-	  main/symbolic/ov-ex.cc
-	    Modified the constructors and the destructor and added a symbol
-	    list and symbol reference count. New members are:
-	         void assign_symbol_to_list(GiNaC::symbol &sym);
-	         class symbol_list_item;
-	         static std::vector<symbol_list_item> symbol_list;
-	    This is a work-around for the fact that GiNaC can have different
-	    symbols with the same string name, while in octave you want a
-	    symbol that appears the same to actually be the same. It works
-	    great as long as symbols are declared in octave. It is still
-	    possible to have same-name symbols that are different to GiNaC, if a
-	    symbol goes out of scope in octave without it being defined in
-	    octave's workspace. This could be fixed by also keeping reference
-	  counts for symbols in expressions.
+	  main/symbolic/ov-ex.cc   Modified the constructors and the
+	  destructor and added a symbol list   and symbol reference count.
+	  New members are:	  void assign_symbol_to_list(GiNaC::symbol
+	  &sym);	class symbol_list_item;        static
+	  std::vector<symbol_list_item> symbol_list;   This is a
+	  work-around for the fact that GiNaC can have different   symbols
+	  with the same string name, while in octave you want a symbol
+	  that appears the same to actually be the same. It works great as
+	  long as   symbols are declared in octave. It is still possible to
+	  have same-name   symbols that are different to GiNaC, if a symbol
+	  goes out of scope in	 octave without it being defined in
+	  octave's workspace. This could be   fixed by also keeping
+	  reference counts for symbols in expressions.
 
 2003-05-05 23:36  watsma
 
 	* main/symbolic/: symbols.cc, symbols.h: Added get_relation() Fixed
 	  a remaining multiline-string - added \n\ Modified subs() to also
-	    accept list or cell arguments for old and new expressions. Updated
-	  the documentation string.
+	  accept list or cell arguments for old and new   expressions.
+	  Updated the documentation string.
 
 2003-05-05 23:21  adb014
 
@@ -10181,7 +11063,8 @@
 2003-04-11 06:34  pkienzle
 
 	* main/plot/: peaks.m, surf.m: (for Fabio Rainone) surf using
-	  gnuplot 3.8i color extensions (for Paul Kienzle) peaks test surface
+	  gnuplot 3.8i color extensions (for Paul Kienzle) peaks test
+	  surface
 
 2003-04-08 10:43  persquare
 
@@ -10190,10 +11073,9 @@
 
 2003-04-08 10:28  mazet
 
-	* main/plot/legend.m:
-	  * Bug fixed for octave 2.1.40+
-	  * New legend positions (inside, outside...)
-	  * New functionality "boxon", "boxoff", alignment left and right
+	* main/plot/legend.m: * Bug fixed for octave 2.1.40+ * New legend
+	  positions (inside, outside...) * New functionality "boxon",
+	  "boxoff", alignment left and right
 
 2003-04-04 04:29  pkienzle
 
@@ -10219,8 +11101,8 @@
 
 2003-03-29 14:26  schloegl
 
-	* extra/tsa/ar_spa.m:
-	   investigate whether A<0 is possible, run a few checks, cleaner code
+	* extra/tsa/ar_spa.m:  investigate whether A<0 is possible, run a
+	  few checks, cleaner code
 
 2003-03-28 15:59  pkienzle
 
@@ -10291,14 +11173,12 @@
 2003-03-16 20:38  kahacjde
 
 	* main/io/dlmread.cc:
-
 	  fix infinite loop when undefined characters aren't followed by
 	  separator
 
 2003-03-16 18:47  kahacjde
 
 	* main/io/dlmread.cc:
-
 	  next rewrite, handles user provided range now
 
 2003-03-15 04:57  pkienzle
@@ -10480,9 +11360,10 @@
 2003-02-27 14:03  pkienzle
 
 	* main/miscellaneous/: listen.cc, listencanfork.c, Makefile: Don't
-	  fork in Windows 9x --- anyone know how to pass a socket through the
-	  command line to another app so that we can use spawn instead?  The
-	  other option is threads, but octave really isn't ready for that.
+	  fork in Windows 9x --- anyone know how to pass a socket through
+	  the command line to another app so that we can use spawn instead?
+	  The other option is threads, but octave really isn't ready for
+	  that.
 
 2003-02-26 14:13  schloegl
 
@@ -10540,7 +11421,6 @@
 2003-02-22 16:04  kahacjde
 
 	* main/geometry/Makefile:
-
 	  Target griddata does not (yet?) exist
 
 2003-02-22 14:48  pkienzle
@@ -10581,9 +11461,9 @@
 	* main/: comm/Makefile, comm/galois.h, comm/gf.cc, image/bwfill.cc,
 	  image/bwlabel.cc, image/cordflt2.cc, miscellaneous/dispatch.cc,
 	  miscellaneous/listen.cc, signal/remez.cc, strings/regexp.cc: Use
-	  of "T x[n]" where n is not constant is a g++ extension so replace it
-	  with OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the picky
-	  MipsPRO CC compiler happy.
+	  of "T x[n]" where n is not constant is a g++ extension so replace
+	  it with OCTAVE_LOCAL_BUFFER(T,x,n), and other things to keep the
+	  picky MipsPRO CC compiler happy.
 
 2003-02-20 18:44  pkienzle
 
@@ -10720,7 +11600,6 @@
 2003-02-08 10:50  kahacjde
 
 	* main/io/dlmread.cc:
-
 	  rewrite, handles now different line length
 
 2003-02-06 14:30  pkienzle
@@ -10747,8 +11626,8 @@
 2003-02-05 03:56  pkienzle
 
 	* main/signal/: dftmtx.m, convmtx.m: (for David Bateman
-	  <David.Bateman@motorola.com>) texinfo help for convmtx, new function
-	  dftmtx
+	  <David.Bateman@motorola.com>) texinfo help for convmtx, new
+	  function dftmtx
 
 2003-02-04 20:37  etienne
 
@@ -10775,7 +11654,6 @@
 2003-02-02 20:11  kahacjde
 
 	* main/io/: dlmread.cc, dlmwrite.m:
-
 	  added new file dlmread.cc
 
 2003-02-02 14:57  schloegl
@@ -10812,8 +11690,8 @@
 	  flag.m, hot.m, hsv.m, jet.m, pink.m, prism.m, rainbow.m,
 	  spring.m, summer.m, white.m, winter.m: Remove reference to global
 	  variable __current_colormap__; we need to do this because the
-	  semantics of global have changed so that a new symbol is created as
-	  empty if no default has been defined, which in turn means that
+	  semantics of global have changed so that a new symbol is created
+	  as empty if no default has been defined, which in turn means that
 	  exist("__some_global__") now returns true even if __some_global__
 	  wasn't previously defined.
 
@@ -10831,10 +11709,10 @@
 
 	* main/miscellaneous/: Makeconf.add, Makefile, configure.add,
 	  listen.cc, listen.doc: Add lame octave compute server (socket
-	  based alternative to pipes).  No support yet for capturing command
-	  output.  Protocol is partly binary, so can't e.g. telnet to it.  No
-	  authentication or sandbox so run it as nobody.  Only accepts
-	  connections from a single host.
+	  based alternative to pipes).	No support yet for capturing
+	  command output.  Protocol is partly binary, so can't e.g. telnet
+	  to it.  No authentication or sandbox so run it as nobody.  Only
+	  accepts connections from a single host.
 
 2003-01-23 05:18  pkienzle
 
@@ -10890,7 +11768,8 @@
 2003-01-09 16:14  cgijobs
 
 	* doc/octave-forge-home.html: Updated link to Kai Habel's page.
-	  Goctave link seems to be bad.  I've linked to the GNU project page.
+	  Goctave link seems to be bad.  I've linked to the GNU project
+	  page.
 
 2003-01-07 03:47  aadler
 
@@ -11100,10 +11979,9 @@
 2002-12-01 00:09  alnd
 
 	* admin/get_authors:
-
 	  Recognize as licensed files placed in public domain; attribute to
-	  'Anonymous' any file which is licensed but has no author; show code
-	  and comment line counts.
+	  'Anonymous' any file which is licensed but has no author; show
+	  code and comment line counts.
 
 2002-11-30 15:33  pkienzle
 
@@ -11140,15 +12018,14 @@
 2002-11-30 09:55  kahacjde
 
 	* main/general/bitset.m:
-
 	  fixing a bug found by Pawel <gutentag at wp.pl> bitset(32,4,1)
 	  works now correctly
 
 2002-11-29 07:32  pkienzle
 
 	* main/statistics/boxplot.m: Handle missing data.  Accept cell
-	  array of datasets.  Box width relative to the number of elements in
-	  the dataset.
+	  array of datasets.  Box width relative to the number of elements
+	  in the dataset.
 
 2002-11-28 16:26  pkienzle
 
@@ -11187,7 +12064,7 @@
 
 2002-11-27 18:12  pkienzle
 
-	* TODO: minor updates.  Still need to add the entry: rename TODO to
+	* TODO: minor updates.	Still need to add the entry: rename TODO to
 	  IGNORE
 
 2002-11-27 18:08  pkienzle
@@ -11734,9 +12611,10 @@
 2002-09-26 13:06  rlaboiss
 
 	* main/geometry/: AUTHORS, delaunay.m, delaunay3.m: Make delaunay
-	  and delaunay3 functions accept an extra argument containing options
-	  to the qhull command.  This completes the changes for the delaunay*
-	  functions.  The same has to be done with voronoi and convhull.
+	  and delaunay3 functions accept an extra argument containing
+	  options to the qhull command.  This completes the changes for the
+	  delaunay* functions.	The same has to be done with voronoi and
+	  convhull.
 
 2002-09-25 20:25  rlaboiss
 
@@ -11833,12 +12711,12 @@
 2002-09-19 20:42  pkienzle
 
 	* main/image/bwlabel.m: Modified by David Fletcher
-	  <david@megapico.co.uk> to avoid artificially separate regions which
-	  actually touch (as indicated when "prudent" is set) through addition
-	  of lrow update within loop over touching regions. Also removed
-	  "sayif" function references, and call to read_options. Enabled
-	  options, setting of output verbosity. "Prudent" is left in place,
-	  but should no longer find any errors.
+	  <david@megapico.co.uk> to avoid artificially separate regions
+	  which actually touch (as indicated when "prudent" is set) through
+	  addition of lrow update within loop over touching regions. Also
+	  removed "sayif" function references, and call to read_options.
+	  Enabled options, setting of output verbosity. "Prudent" is left
+	  in place, but should no longer find any errors.
 
 2002-09-18 20:19  pkienzle
 
@@ -11871,7 +12749,8 @@
 2002-09-13 00:04  schloegl
 
 	* extra/NaN/: sumskipnan.m, statistic.m: Use different version
-	  check, some bugs are fixed now in the latest CVS version of Octave
+	  check, some bugs are fixed now in the latest CVS version of
+	  Octave
 
 2002-09-12 22:12  schloegl
 
@@ -11982,8 +12861,7 @@
 
 2002-08-20 19:50  schloegl
 
-	* extra/NaN/rankcorr.m:
-	   remove warnings
+	* extra/NaN/rankcorr.m:  remove warnings
 
 2002-08-20 18:13  schloegl
 
@@ -12006,8 +12884,8 @@
 2002-08-20 15:59  schloegl
 
 	* extra/NaN/corrcoef.m: in case of missing values (NaN), pairwise
-	  calculation of r. User has not to worry about rank shifts - warnings
-	  are removed
+	  calculation of r. User has not to worry about rank shifts -
+	  warnings are removed
 
 2002-08-20 15:57  schloegl
 
@@ -12060,8 +12938,8 @@
 2002-08-16 21:59  pkienzle
 
 	* main/image/colorgradient.m: Accept weight of 0 on a transition
-	  (for instantaneous color changes).  Accept colormap length without
-	  n.
+	  (for instantaneous color changes).  Accept colormap length
+	  without n.
 
 2002-08-15 17:52  pkienzle
 
@@ -12200,15 +13078,15 @@
 
 	* main/optim/: test_wpolyfit.m, wpolyfit.m: Oops --- removed the
 	  need for flipud(p) but didn't remove flipud(p) This didn't
-	  completely fix the problem with my dataset, so I added the dataset
-	  to test_wpolyfit.
+	  completely fix the problem with my dataset, so I added the
+	  dataset to test_wpolyfit.
 
 2002-05-30 19:27  pkienzle
 
 	* main/optim/: wpolyfit.m, wpolyfitdemo.m: Option to force
-	  polynomial through the origin.  Only return p,dp (yf is easy enough
-	  to calculate).  Tidy output when no polynomial is returned.
-	  Parameterize demo to take polynomial coefficients.
+	  polynomial through the origin.  Only return p,dp (yf is easy
+	  enough to calculate).  Tidy output when no polynomial is
+	  returned.  Parameterize demo to take polynomial coefficients.
 
 2002-05-29 01:07  pkienzle
 
@@ -12223,9 +13101,10 @@
 
 	* extra/tsa/: acovf.m, durlev.m, flag_implicit_samplerate.m,
 	  flix.m, invest0.m, invest1.m, tsademo.m: cleanup; for
-	  compatibility reasons to previous octave versions, some workarounds
-	  were necessary e.g. DIM-arg was not available in 2.0.14. Since this
-	  is implemented now, these workarounds are not neccessary anymore.
+	  compatibility reasons to previous octave versions, some
+	  workarounds were necessary e.g. DIM-arg was not available in
+	  2.0.14. Since this is implemented now, these workarounds are not
+	  neccessary anymore.
 
 2002-05-23 17:56  schloegl
 
@@ -12248,8 +13127,8 @@
 
 	* main/symbolic/: op-ex.cc, op-vpa.cc, ov-relational.cc, sym-ops.h:
 	  Added functions to handle the relational operators for the
-	  non-matrix types.  I am not sure it makes sense to allow the use of
-	  the relational operators for symbolic matrices or symbolic
+	  non-matrix types.  I am not sure it makes sense to allow the use
+	  of the relational operators for symbolic matrices or symbolic
 	  variables/regular matrices.
 
 2002-05-20 15:53  pkienzle
@@ -12263,7 +13142,8 @@
 	  ellipdemo.m, ellipord.m, nellip.m, nellipdemo.m: (for Paulo Neis)
 	  find the stop band edge which yields the precise stop band
 	  attenuation given in the design specification for the filter.
-	  Rename to ellip/ellipord and reorder parameters for compatibility.
+	  Rename to ellip/ellipord and reorder parameters for
+	  compatibility.
 
 2002-05-20 07:49  aadler
 
@@ -12293,8 +13173,8 @@
 	  ov-sym.cc, ov-sym.h, sym-bool.cc, sym-create.cc, sym-ops.h,
 	  symbols.cc, symbols.h: I have removed the octave_sym class. Now,
 	  the octave_ex class feels in for sym variables.   All the same
-	  routines exist and it looks and operates the same.  This should also
-	  fix a problem with subs that would cause octave to crash.
+	  routines exist and it looks and operates the same.  This should
+	  also fix a problem with subs that would cause octave to crash.
 
 2002-05-13 22:40  schloegl
 
@@ -12327,8 +13207,8 @@
 2002-05-12 23:50  rlaboiss
 
 	* nonfree/gpc/configure.in: Debian release 0.1.2-5.  Small fix in
-	  perl on-line script in configure.in.  This does not deserve a 0.1.3
-	  release, yet.
+	  perl on-line script in configure.in.	This does not deserve a
+	  0.1.3 release, yet.
 
 2002-05-12 21:09  schloegl
 
@@ -13229,10 +14109,10 @@
 	  things.  Moved the operators into seperate files. Added a new
 	  "relational" type for comparing symbolic types.  Defined binary
 	  operators for +,-,* and / operators for
-	  vpa,scalar,complex,sym,matrix, complex_matrix and ex_matrix types.
-	  The unary operators have been temporarily removed. Removed many
-	  unused include files.  Moved some functions from symbols.cc into
-	  seperate files.
+	  vpa,scalar,complex,sym,matrix, complex_matrix and ex_matrix
+	  types. The unary operators have been temporarily removed. Removed
+	  many unused include files.  Moved some functions from symbols.cc
+	  into seperate files.
 
 2002-03-26 23:08  bensapp
 
@@ -13330,8 +14210,8 @@
 2002-03-19 19:14  aadler
 
 	* main/image/: imread.m, imwrite.m: unfortunately using popen seems
-	  to create problems, mostly on win32, but also on linux, so we need
-	  to move to a tmpfile approach
+	  to create problems, mostly on win32, but also on linux, so we
+	  need to move to a tmpfile approach
 
 2002-03-18 23:45  bensapp
 
@@ -13375,13 +14255,11 @@
 2002-03-17 22:38  alnd
 
 	* main/io/textread.m:
-
 	  Added author credit to Paul Kienzle for major rewrite.
 
 2002-03-17 22:34  alnd
 
 	* admin/get_authors:
-
 	  Minor tweak to regex matching "Authors:" -- allow optional
 	  whitespace before colon.
 
@@ -13538,8 +14416,9 @@
 2002-03-14 16:48  pkienzle
 
 	* main/: io/textread.m, strings/str_incr.m: ## * remove dependency
-	  on str_incr ## * return list of strings for %s rather than character
-	  matrix ## * proper handling of leading text ## * handle %* and %%
+	  on str_incr ## * return list of strings for %s rather than
+	  character matrix ## * proper handling of leading text ## * handle
+	  %* and %%
 
 2002-03-13 23:05  pkienzle
 
@@ -13659,17 +14538,15 @@
 2002-01-31 07:16  alnd
 
 	* README:
-
 	  Lastest version from admin/get_contents.
 
 2002-01-31 07:09  alnd
 
 	* main/general/polyarea.m:
-
 	  Cosmetic changes in the comment section for 'Copyright' and/or
-	  'Author' lines to enable parsing by the admin/get_authors script and
-	  automatic generation of the AUTHORS file.  No changes to executable
-	  code!
+	  'Author' lines to enable parsing by the admin/get_authors script
+	  and automatic generation of the AUTHORS file.  No changes to
+	  executable code!
 
 2002-01-31 07:06  alnd
 
@@ -13677,11 +14554,10 @@
 	  plot/meshc.m, plot/plot3.m, image/bwborder.m, image/bwlabel.m,
 	  linear-algebra/funm.m, linear-algebra/rref.m,
 	  linear-algebra/thfm.m, optim/dfdp.m:
-
 	  Cosmetic changes in the comment section for 'Copyright' and/or
-	  'Author' lines to enable parsing by the admin/get_authors script and
-	  automatic generation of the AUTHORS file.  No changes to executable
-	  code!
+	  'Author' lines to enable parsing by the admin/get_authors script
+	  and automatic generation of the AUTHORS file.  No changes to
+	  executable code!
 
 2002-01-31 07:01  alnd
 
@@ -13691,11 +14567,10 @@
 	  signal/bilinear.m, signal/butter.m, signal/cceps.m,
 	  signal/cheby1.m, signal/cheby2.m, signal/kaiser.m,
 	  signal/ncauer.m:
-
 	  Cosmetic changes in the comment section for 'Copyright' and/or
-	  'Author' lines to enable parsing by the admin/get_authors script and
-	  automatic generation of the AUTHORS file.  No changes to executable
-	  code!
+	  'Author' lines to enable parsing by the admin/get_authors script
+	  and automatic generation of the AUTHORS file.  No changes to
+	  executable code!
 
 2002-01-31 06:58  alnd
 
@@ -13703,16 +14578,14 @@
 	  struct/rmfield.m, struct/setfield.m, struct/struct.m,
 	  special-matrix/wilkinson.m, strings/mat2str.m, strings/strcmpi.m,
 	  strings/strncmp.m, strings/strncmpi.m, strings/strvcat.m:
-
 	  Cosmetic changes in the comment section for 'Copyright' and/or
-	  'Author' lines to enable parsing by the admin/get_authors script and
-	  automatic generation of the AUTHORS file.  No changes to executable
-	  code!
+	  'Author' lines to enable parsing by the admin/get_authors script
+	  and automatic generation of the AUTHORS file.  No changes to
+	  executable code!
 
 2002-01-31 06:27  alnd
 
 	* admin/get_authors:
-
 	  Allow only one person's name per Copyright or Author line; fix
 	  %files so that it is a hash of hashes instead of hash of arrays
 	  (prevents duplicate entries).
@@ -13796,22 +14669,20 @@
 2002-01-07 15:27  pkienzle
 
 	* main/geometry/voronoi.m: Use unique(x,"rows") rather than the no
-	  longer available __unique_rows__ provide example limit default graph
-	  to the data set rather than the entire voronoi diagram
+	  longer available __unique_rows__ provide example limit default
+	  graph to the data set rather than the entire voronoi diagram
 
 2002-01-07 15:01  alnd
 
 	* get_authors, get_contents, template.readme:
-
-	  Deleting get_authors, get_contents, template.readme from top level
-	  dir since they were moved into admin/.
+	  Deleting get_authors, get_contents, template.readme from top
+	  level dir since they were moved into admin/.
 
 2002-01-07 14:59  alnd
 
 	* admin/: CONTENTS, get_authors, get_contents, template.readme:
-
-	  Moving get_authors, get_contents, template.readme from top level dir
-	  to admin/.  Adding admin/CONTENTS.
+	  Moving get_authors, get_contents, template.readme from top level
+	  dir to admin/.  Adding admin/CONTENTS.
 
 2002-01-04 16:56  pkienzle
 
@@ -13845,43 +14716,39 @@
 2002-01-02 14:18  alnd
 
 	* admin/: new_developer.html, template.ndev:
-
-	  Adding a new directory to contain administrative files not directly
-	  related to octave itself.  The admin directory will contain items
-	  such instructions for octave-forge developers, coding and
-	  documentation standards.  The file 'template.ndev' is a template
-	  used by the Perl script get_contents.  get_contents will read
-	  template.ndev and from it and the CONTENTS files distributed
-	  throughout the directory tree, create new_developer.html (and also
-	  the top-level README).
+	  Adding a new directory to contain administrative files not
+	  directly related to octave itself.  The admin directory will
+	  contain items such instructions for octave-forge developers,
+	  coding and documentation standards.  The file 'template.ndev' is
+	  a template used by the Perl script get_contents.  get_contents
+	  will read template.ndev and from it and the CONTENTS files
+	  distributed throughout the directory tree, create
+	  new_developer.html (and also the top-level README).
 
 2002-01-02 14:11  alnd
 
 	* get_contents, template.readme:
-
-	  Add new Perl script 'get_contents'.  It finds CONTENTS files in the
-	  directory tree, extracts the text from the files, and inserts the
-	  text into the top-level README and the developer's guide html file.
-	  The octave documentation can be kept up to date more easily this
-	  way.
+	  Add new Perl script 'get_contents'.  It finds CONTENTS files in
+	  the directory tree, extracts the text from the files, and inserts
+	  the text into the top-level README and the developer's guide html
+	  file.  The octave documentation can be kept up to date more
+	  easily this way.
 
 2002-01-02 14:07  alnd
 
 	* doc/CONTENTS, extra/CONTENTS:
-
-	  Append / to directory names to allow get_contents script to add HTML
-	  fixed font markup.
+	  Append / to directory names to allow get_contents script to add
+	  HTML fixed font markup.
 
 2002-01-02 03:01  alnd
 
 	* extra/CONTENTS, main/CONTENTS, doc/CONTENTS, nonfree/CONTENTS:
-
 	  Added CONTENTS file to several directories.  The CONTENTS file
 	  should have a brief explanation on the nature of the files &/|
-	  subdirectories within this directory.  A Perl script will later find
-	  all CONTENTS files and extract the explanations and include them in
-	  the topmost README and other documentation (such as the Octave
-	  Developer's Guide .html file).
+	  subdirectories within this directory.  A Perl script will later
+	  find all CONTENTS files and extract the explanations and include
+	  them in the topmost README and other documentation (such as the
+	  Octave Developer's Guide .html file).
 
 2001-12-21 21:48  pkienzle
 
@@ -13923,27 +14790,24 @@
 2001-12-15 23:06  alnd
 
 	* get_authors:
-
-	  Initial import of perl script which extracts author & copyright info
-	  from .m headers; writes 'AUTHORS' file.  This will eventually be
-	  called from one of the initializing shell scripts.  Should first
-	  adopt a consistent format scheme for this info and modify existing
-	  .m files whose formats stray too far from what this routine can
-	  handle.
+	  Initial import of perl script which extracts author & copyright
+	  info from .m headers; writes 'AUTHORS' file.	This will
+	  eventually be called from one of the initializing shell scripts.
+	  Should first adopt a consistent format scheme for this info and
+	  modify existing .m files whose formats stray too far from what
+	  this routine can handle.
 
 2001-12-15 23:01  alnd
 
 	* main/: io/textread.m, strings/str_incr.m:
-
 	  Put usage info in standard format.
 
 2001-12-15 23:00  alnd
 
 	* cvs-tree:
-
-	  Use location-independent shebang invokation of perl via /usr/bin/env
-	  (as described in 'perldoc perlrun'... and now depends on env's
-	  location?).
+	  Use location-independent shebang invokation of perl via
+	  /usr/bin/env (as described in 'perldoc perlrun'... and now
+	  depends on env's location?).
 
 2001-12-14 19:33  rlaboiss
 
@@ -13998,17 +14862,15 @@
 2001-12-05 06:40  alnd
 
 	* main/strings/str_incr.m:
-
 	  This function called by main/io/textread.m.
 
 2001-12-05 06:38  alnd
 
 	* main/io/textread.m:
-
-	  Added directory main/io and file main/io/textread.m.  textread.m is
-	  a first shot at the matlab function of the same name.  This version
-	  depends on a new string function str_incr.m which will go into the
-	  main/strings/ directory.
+	  Added directory main/io and file main/io/textread.m.	textread.m
+	  is a first shot at the matlab function of the same name.  This
+	  version depends on a new string function str_incr.m which will go
+	  into the main/strings/ directory.
 
 2001-12-03 19:35  pkienzle
 
@@ -14043,7 +14905,6 @@
 2001-11-18 23:57  tpikonen
 
 	* extra/pdb/bin/rasmol.sh:
-
 	  Initial version
 
 2001-11-18 23:54  tpikonen
@@ -14059,8 +14920,8 @@
 2001-11-18 04:22  aadler
 
 	* extra/perl/: Makefile.PL, Octave.pm, t/4_multisections.t:
-	  multisections now ok, cleaned up singleton object, octave no longer
-	  freaks out on ctrl-c
+	  multisections now ok, cleaned up singleton object, octave no
+	  longer freaks out on ctrl-c
 
 2001-11-17 03:15  aadler
 

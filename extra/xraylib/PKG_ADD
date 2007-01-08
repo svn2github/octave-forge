@@ -8,6 +8,7 @@ autoload ("JumpFactor", "xraylib.oct");
 autoload ("DCSP_Rayl", "xraylib.oct");
 autoload ("DCSP_Compt", "xraylib.oct");
 autoload ("DCSP_KN", "xraylib.oct");
+autoload ("DCSP_Thoms", "xraylib.oct");
 autoload ("RadRate", "xraylib.oct");
 autoload ("FF_Rayl", "xraylib.oct");
 autoload ("SF_Compt", "xraylib.oct");

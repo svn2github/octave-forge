@@ -14,12 +14,14 @@ function [X,T]=detrend(t,X,p)
 %	p must be a scalar
 %
 % [...]=detrend(X,0)
+% [...]=detrend(X,'constant')
 %	removes the mean
 %
 % [...]=detrend(X,p)
 %	removes polynomial of order p (default p=1)
 %
 % [...]=detrend(X,1) - default
+% [...]=detrend(X,'linear')
 %	removes linear trend 
 %
 % [X,T]=detrend(...) 
@@ -27,26 +29,28 @@ function [X,T]=detrend(t,X,p)
 % X is the detrended data
 % T is the removed trend
 % 
-% see also: SUMSKIPNAN 
+% see also: SUMSKIPNAN, ZSCORE		
 
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
+%    This program is free software; you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation; either version 2 of the License, or
+%    (at your option) any later version.
 %
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; if not, write to the
-% Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
+%    You should have received a copy of the GNU General Public License
+%    along with this program; if not, write to the Free Software
+%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-% Copyright (C) 1995, 1996  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-% Copyright (C) 2001 by Alois Schloegl <a.schloegl@ieee.org>	
-% last revision 13 Apr 2001, Ver 2.74
+
+% Copyright (C) 1995, 1996 Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+%       $Id$
+%       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the TSA-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
 
 
 if (nargin == 1)
@@ -54,7 +58,17 @@ if (nargin == 1)
        	X = t;
 	t = [];
 elseif (nargin == 2)
-        if all(size(X)==1), 
+	if strcmpi(X,'constant'),
+		p = 0; 
+		X = t; 
+		t = [];
+	elseif strcmpi(X,'linear'),
+		p = 1; 
+		X = t; 
+		t = [];
+	elseif ischar(X)
+		error('unknown 2nd input argument');	
+        elseif all(size(X)==1), 
                 p = X;
                 X = t;
                 t = [];
@@ -62,6 +76,9 @@ elseif (nargin == 2)
                 p = 1;
     	end;            
 elseif (nargin == 3)
+        if ischar(X),
+		warning('input arguments are not supported');	
+        end; 
         
 elseif (nargin > 3)
     	fprintf (1,'usage: detrend (x [, p])\n');

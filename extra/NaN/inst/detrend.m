@@ -14,12 +14,14 @@ function [X,T]=detrend(t,X,p)
 %	p must be a scalar
 %
 % [...]=detrend(X,0)
+% [...]=detrend(X,'constant')
 %	removes the mean
 %
 % [...]=detrend(X,p)
 %	removes polynomial of order p (default p=1)
 %
 % [...]=detrend(X,1) - default
+% [...]=detrend(X,'linear')
 %	removes linear trend 
 %
 % [X,T]=detrend(...) 
@@ -45,8 +47,10 @@ function [X,T]=detrend(t,X,p)
 
 
 % Copyright (C) 1995, 1996 Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-% Copyright (C) 2001 by Alois Schloegl <a.schloegl@ieee.org>	
-% last revision 04 Mar 2002, Ver 1.13
+%       $Id$
+%       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
 if (nargin == 1)
@@ -54,7 +58,17 @@ if (nargin == 1)
        	X = t;
 	t = [];
 elseif (nargin == 2)
-        if all(size(X)==1), 
+	if strcmpi(X,'constant'),
+		p = 0; 
+		X = t; 
+		t = [];
+	elseif strcmpi(X,'linear'),
+		p = 1; 
+		X = t; 
+		t = [];
+	elseif ischar(X)
+		error('unknown 2nd input argument');	
+        elseif all(size(X)==1), 
                 p = X;
                 X = t;
                 t = [];
@@ -62,6 +76,9 @@ elseif (nargin == 2)
                 p = 1;
     	end;            
 elseif (nargin == 3)
+        if ischar(X),
+		warning('input arguments are not supported');	
+        end; 
         
 elseif (nargin > 3)
     	fprintf (1,'usage: detrend (x [, p])\n');

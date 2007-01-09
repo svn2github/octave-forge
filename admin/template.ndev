@@ -110,7 +110,7 @@ for a comprehensive list of Open Source licenses.</p>
 
 <h3>Package structure</h3>
 <p>
-Octave has evolved into a source repository is octave pacakges rather
+Octave has evolved into a source repository of Octave pacakges rather
 than a package in itself. Each sub-directory is considered to be a
 package and should respect Octave's package managers file layout.</p>
 <dl>
@@ -150,7 +150,7 @@ package and should respect Octave's package managers file layout.</p>
       <tr><td>Depends:</td>
           <td>A list of other octave packages that this package
 	      depends on. This can include dependencies on particular
-	      versions, which a format.
+	      versions, with a format.
 <pre>
 	Depends: package (>= 1.0.0)
 </pre>

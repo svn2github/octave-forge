@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
+Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
 OdePkg - Package for solving ordinary differential equations with octave
 
 This program is free software; you can redistribute it and/or modify
@@ -17,54 +17,73 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-/* mkoctfile --mex -Wall -W -Wshadow -I./cprog odepkg_mexsolver_dopri5.c cprog/dopri5.c */
+/* mkoctfile --mex -Wall -W -Wshadow -I./cprog odepkg_mexsolver_dop853.c cprog/dop853.c */
+/* octave --eval "A = odeset (\"RelTol\", 1e-3, \"AbsTol\", [1e-4, 1e-5]), \
+   [A, B] = odepkg_mexsolver_dop853 (@odepkg_equations_vanderpol, [0, 1], [2, 0], A)" */
 
-#include "config.h"
+/* #include "config.h" */
 #include "mex.h"
 
 #include <string.h> /* Needed for the memcpy function */
 #include <stdio.h>
 #include "dop853.h"
+#include "odepkgext.h"
 
-#ifndef mwSize
-#define mwSize int
-#endif
-
-#ifndef mwSize
-#define mwSize int
-#endif
-
-#ifndef true
-#define true 1
-#endif
-
-#ifndef false
-#define false 0
-#endif
+#define ODEPKGDEBUG 1
 
 char format99[] = "x=%f  y=%12.10f %12.10f  nstep=%li\r\n";
 
-char            *vodefunction  = NULL; /* The name of the function as mxArray string */
-static mxArray **vodefunargs   = NULL; /* Further arguments for the ode-function */
-static mwSize    vodefunargn   = 0;    /* The number of the further arguments */
+typedef struct _ttolerance {
+  double *reltols;
+  size_t  reltoln;
+  double *abstols;
+  size_t  abstoln;
+  int     toltype;
+} _ttolerance;
+
+typedef struct _todeoptions {
+  mxArray *odeoptions;
+  mxArray *defoptions;
+} _todeoptions;
+
+typedef struct _todefunction {
+  mxArray  *funhandle;
+  mxArray  *mexstring;
+  char     *funstring;
+  mxArray **funargs;
+  mwSize    funargn;
+} _todefunction;
+
+typedef _ttolerance ttolerance;
+typedef _todeoptions todeoptions;
+typedef _todefunction todefunction;
+
+//static    char  *vodefunction = NULL; /* The name of the function as mxArray string */
+//static mxArray **vfunargs  = NULL; /* Further arguments for the ode function */
+//static  mwSize   vfunargn  = 0;    /* The number of the further arguments */
+
+static todefunction vodefunction = {NULL, NULL, NULL, NULL, 0};
+static todefunction vplotfunction = {NULL, NULL, NULL, NULL, 0};
 
 /* This is the proto */
-void fodefun (unsigned n, double x, double *y, double *f) {
-  uint      vcnt = 0;
+void fodefunction (unsigned n, double x, double *y, double *f) {
+  int  vcnt = 0;
+  char vmsg[64] = "";
   mxArray **vlhs = NULL;
   mxArray **vrhs = NULL;
 
   vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
-  vrhs = (mxArray **) mxCalloc (2 + vodefunargn, sizeof (mxArray *));
+  vrhs = (mxArray **) mxCalloc (2 + vodefunction.funargn, sizeof (mxArray *));
   vrhs[0] = mxCreateDoubleScalar (x);
   vrhs[1] = mxCreateDoubleMatrix (1, n, mxREAL);
-
   memcpy ((void *) mxGetPr (vrhs[1]), (void *) y, n * sizeof (double));
-  for (vcnt = 0; vcnt < vodefunargn; vcnt++)
-    vrhs[vcnt+2] = mxDuplicateArray (vodefunargs[vcnt]);
+  for (vcnt = 0; vcnt < vodefunction.funargn; vcnt++)
+    vrhs[vcnt+2] = mxDuplicateArray (vodefunction.funargs[vcnt]);
 
-  if (mexCallMATLAB (1, vlhs, 2, vrhs, vodefunction))
-    mexPrintf("calling '%s' has failed", vodefunction);
+  if (mexCallMATLAB (1, vlhs, 2, vrhs, vodefunction.funstring)) {
+    sprintf (vmsg, "Calling '%s' has failed", vodefunction.funstring);
+    mexErrMsgTxt (vmsg);
+  }
 
   memcpy ((void *) f, (void *) mxGetPr (vlhs[0]), n * sizeof (double));
 
@@ -72,7 +91,7 @@ void fodefun (unsigned n, double x, double *y, double *f) {
   mxFree (vrhs);
 }
 
-
+/* This function needs to be eliminated or changed */
 void solout (long nr, double xold, double x, double* y, unsigned n, int* irtrn)
 {
   static double xout; 
@@ -91,30 +110,23 @@ void solout (long nr, double xold, double x, double* y, unsigned n, int* irtrn)
     
 } /* solout */
 
-void mexUsgMsgTxt (const char *vusg) {
-  mexPrintf ("usage: %s\n", vusg);
-  mexErrMsgTxt ("");
-}
-
-void mexFixMsgTxt (const char *vfix) {
-  mexPrintf ("FIXME: %s\n", vfix);
-}
-
-bool mxIsVector (const mxArray *vinp) {
-  if (mxIsNumeric (vinp)) {
-    if ( (mxGetM (vinp) == 1 && mxGetN (vinp) > 1) ||
-         (mxGetN (vinp) == 1 && mxGetM (vinp) > 1) )
-      /* mexPrintf ("Yes it is a vector!"); */
-      return (true);
-  }
-  return (false);
-}
 
 void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) { 
-  mxArray *vodefunhandle = NULL;
-  mxArray *vodefunstring = NULL;
-  mxArray *vodeoptions   = NULL;
-  int      vcnt = 0;
+  int vcnt = 0;
+  int vodedimensions = 0;
+  double *vtimeslot = NULL;
+  double *vinitvalues = NULL;
+
+  ttolerance  vtolerance = {NULL, 0, NULL, 0, 0}; /* Make sure that initialisation is correct */
+  todeoptions vodeoptions = {NULL, NULL};         /* Make sure that initialisation is correct */
+
+  // mxArray *vfunhandle  = NULL;
+  // mxArray *vfunstring  = NULL;
+  // mxArray *vodeoptions    = NULL;
+  mxArray *vfieldvalue    = NULL; 
+
+int res;
+int iout;
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
     mexFixMsgTxt ("Do something like this as in octave: help ('ode23');");
@@ -133,64 +145,150 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     mexErrMsgTxt ("Third input argument must be a valid vector"); 
   }
   else if (nrhs >= 4) {
-    /* No option structure has been set */
+
+    /* No option structure has been set as prhs[3] */
     if (!mxIsStruct (prhs[3])) {
-      vodeoptions = NULL; vodefunargn = nrhs-3;
-      vodefunargs = (mxArray **) mxCalloc (vodefunargn, sizeof (mxArray *));
+      vodeoptions.odeoptions = NULL;
+      vodefunction.funargn = nrhs - 3;
+      vodefunction.funargs = (mxArray **) mxCalloc (vodefunction.funargn, sizeof (mxArray *));
       for (vcnt = 3; vcnt < nrhs; vcnt++)
-        vodefunargs[vcnt-3] = mxDuplicateArray (prhs[vcnt]);
-      if (mexCallMATLAB (1, &vodeoptions, 0, NULL, "odeset")) 
+        vodefunction.funargs[vcnt-3] = mxDuplicateArray (prhs[vcnt]);
+      if (mexCallMATLAB (1, &vodeoptions.odeoptions, 0, NULL, "odeset")) 
         mexErrMsgTxt ("Calling 'odeset' has failed");
     }
+
     /* An option structure and further arguments have been set */
     else if (nrhs > 4) {
-      vodeoptions = mxDuplicateArray (prhs[3]); vodefunargn = nrhs-4;
-      vodefunargs = (mxArray **) mxCalloc (vodefunargn, sizeof (mxArray *));
+      vodeoptions.defoptions  = mxDuplicateArray (prhs[3]);
+      vodefunction.funargn = nrhs - 4;
+      vodefunction.funargs = (mxArray **) mxCalloc (vodefunction.funargn, sizeof (mxArray *));
       for (vcnt = 4; vcnt < nrhs; vcnt++)
-        vodefunargs[vcnt-4] = mxDuplicateArray (prhs[vcnt]);
-      if (mexCallMATLAB (1, &vodeoptions, 1, &vodeoptions, "odepkg_structure_check"))
+        vodefunction.funargs[vcnt-4] = mxDuplicateArray (prhs[vcnt]);
+      if (mexCallMATLAB (1, &vodeoptions.odeoptions, 1, &vodeoptions.defoptions, "odepkg_structure_check"))
         mexErrMsgTxt ("Calling 'odepkg_structure_check' has failed");
     }
+
     /* Only an option-structure and no further arguments have been set */
     else {
-      vodeoptions = mxDuplicateArray (prhs[3]);
-      mexCallMATLAB (1, &vodeoptions, 1, &vodeoptions, "odepkg_structure_check");
+      vodeoptions.defoptions = mxDuplicateArray (prhs[3]);
+      if (mexCallMATLAB (1, &vodeoptions.odeoptions, 1, &vodeoptions.defoptions, "odepkg_structure_check"))
+        mexErrMsgTxt ("Calling 'odepkg_structure_check' has failed");
     }
-  }
-  /* No valid function call has been found before, 
-     so we set the default options with odeset */
+
+  } /* No valid function call has been found before, 
+       so we set the default options with odeset */
   else {
-    mexCallMATLAB (1, &vodeoptions, 0, NULL, "odeset");
-    vodefunargs = NULL;
+    mexCallMATLAB (1, &vodeoptions.odeoptions, 0, NULL, "odeset");
+    vodefunction.funargs = NULL;
   }
 
-  /* Create a string from the function handle and save the string in the static
-     variable vodefunction. */
-  vodefunhandle = mxDuplicateArray (prhs[0]);
-  mexCallMATLAB (1, &vodefunstring , 1, &vodefunhandle, "func2str");
-  vodefunction = mxArrayToString (vodefunstring);
+  /* Nedd to get the default options that are set if odeset is called
+     without further arguments. */
+  if (mexCallMATLAB (1, &vodeoptions.defoptions, 0, NULL, "odeset"))
+    mexErrMsgTxt ("Calling 'odeset' has failed");
 
-  double   y[2];
-  int      res, iout, itoler;
-  double   x, xend, atoler, rtoler;
+  /* Handle the prhs[0] element: Create a string from the function
+     handle and save the function handle and the string in the global
+     (static) structure vodefunction. The structure vodefunction is
+     used by the prototype function fodefunction. */
+  vodefunction.funhandle = mxDuplicateArray (prhs[0]);
+  if (mexCallMATLAB (1, &vodefunction.mexstring, 1, &vodefunction.funhandle, "func2str"))
+    mexPrintf ("Calling 'func2str' has failed");
+  vodefunction.funstring = mxArrayToString (vodefunction.mexstring);
+
+  /* Handle the prhs[1] element: Extract the information about the
+     interval that has to be solved. Fixed step sizes (as with
+     ode23..ode78 can not be handled). Do this by copying the data
+     from prhs[1] into the double array vtimeslot if valid. */
+  if (mxGetM (prhs[1]) == 2 || mxGetN (prhs[1]) == 2) {
+    vtimeslot = mxMalloc (2 * sizeof (double));
+    memcpy ((void *) vtimeslot, (void *) mxGetPr (prhs[1]), 2 * sizeof (double));
+  }
+  else mexErrMsgTxt ("Second input argument must be of size 1x2 or 2x1 for this solver");
+#ifdef ODEPKGDEBUG
+  mexPrintf ("ODEPKGDEBUG: Solving is done from tStart=%f to tStop=%f\n", 
+             vtimeslot[0], vtimeslot[1]);
+#endif
+
+  /* Handle the prhs[2] element: Extract the information about the
+     initial values that have to be used. Do this by copying the data
+     from prhs[2] into the double array vinitvalues. */
+  if (mxIsRowVector (prhs[2])) vodedimensions = mxGetN (prhs[2]);
+  else vodedimensions = mxGetM (prhs[2]);
+  vinitvalues = mxMalloc (vodedimensions * sizeof (double));
+  memcpy ((void *) vinitvalues, (void *) mxGetPr (prhs[2]), vodedimensions * sizeof (double));
+#ifdef ODEPKGDEBUG
+  mexPrintf ("ODEPKGDEBUG: Number of initial values is %d\n", vodedimensions);
+  mexPrintf ("ODEPKGDEBUG: Last element of initial values is %f\n", vinitvalues[vodedimensions-1]);
+#endif
+
+  if (mexCallMATLAB (1, &vodeoptions.defoptions, 0, NULL, "odeset"))
+    mexErrMsgTxt ("Calling 'odeset' has failed");
+
+  /* Handle the odeoptions structure: Extract the information about
+     the relative error tolerance and the absolute error tolerance
+     from the mxArray options structure and set the type of the error
+     calculation for the dopri solver. */
+  vfieldvalue = mxGetField (vodeoptions.odeoptions, 0, "RelTol");
+  if (mxIsRowVector (vfieldvalue)) vtolerance.reltoln = mxGetN (vfieldvalue);
+  else vtolerance.reltoln = mxGetM (vfieldvalue); /* if mxIsColumnVector */
+  vtolerance.reltols = mxMalloc (vtolerance.reltoln * sizeof (double));
+  memcpy ((void *) vtolerance.reltols, (void *) mxGetPr (vfieldvalue), vtolerance.reltoln * sizeof (double));
+
+  vfieldvalue = mxGetField (vodeoptions.odeoptions, 0, "AbsTol");
+  if (mxIsRowVector (vfieldvalue)) vtolerance.abstoln = mxGetN (vfieldvalue);
+  else vtolerance.abstoln = mxGetM (vfieldvalue);
+  vtolerance.abstols = mxMalloc (vtolerance.abstoln * sizeof (double));
+  memcpy ((void *) vtolerance.abstols, (void *) mxGetPr (vfieldvalue), vtolerance.abstoln * sizeof (double));
+#ifdef ODEPKGDEBUG
+  mexPrintf ("ODEPKGDEBUG: Number of relative tolerances is %d\n", vtolerance.reltoln);
+  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", vtolerance.reltols[vtolerance.reltoln-1]);
+  mexPrintf ("ODEPKGDEBUG: Number of absolute tolerances is %d\n", vtolerance.abstoln);
+  mexPrintf ("ODEPKGDEBUG: Last element of absolute error is %f\n", vtolerance.abstols[vtolerance.abstoln-1]);
+#endif
+ 
+  if (vtolerance.reltoln != vtolerance.abstoln)
+    mexErrMsgTxt ("Values of 'AbsTol' and 'RelTol' must have same size");
+  else {
+    if (vtolerance.abstoln > 1) vtolerance.toltype = 1;
+    else vtolerance.toltype = 0;
+  }
+#ifdef ODEPKGDEBUG
+   mexPrintf ("ODEPKGDEBUG: Type of tolerance handling is %d\n", vtolerance.toltype);
+#endif
+
+  /* Handle the odeoptions structure: Extract the information about
+     the output function (if any) from the mxArray options structure
+     and set the type of the switch for the output function.  */
+  vplotfunction.funhandle = mxGetField (vodeoptions.odeoptions, 0, "OutputFcn");
+  if (mxIsEmpty (vplotfunction.funhandle) && (nlhs == 0)) {
+  }
+  if (mexCallMATLAB (1, &vplotfunction.mexstring, 1, &vplotfunction.funhandle, "func2str"))
+    mexPrintf ("Calling 'func2str' has failed");
+  vplotfunction.funstring = mxArrayToString (vplotfunction.mexstring);
+    
+/* typedef struct _todefunction { */
+/*   mxArray  *funhandle; */
+/*   mxArray  *mexstring; */
+/*   char     *funstring; */
+/*   mxArray **funargs; */
+/*   mwSize    funargn; */
+/* } _todefunction; */
+
 
   iout = 2;
-  x = 0.0;
-  y[0] = 2.0;
-  y[1] = 0.0;
-  xend = 1.0;
-  itoler = 0;
-  rtoler = 1.0E-6;
-  atoler = rtoler;
   
-  res = dop853 (2, fodefun, x, y, xend, &rtoler, &atoler, itoler, solout, iout,
-		stdout, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 1, 2, NULL, 0);
+  res = dop853 (vodedimensions, fodefunction, vtimeslot[0], vinitvalues, vtimeslot[1], 
+                vtolerance.reltols, vtolerance.abstols, vtolerance.toltype, 
+                solout, iout,
+                stdout, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 1, 2, NULL, 0);
 
-/*   plhs[0] = vodefunargs[0]; */
-/*   plhs[1] = vodefunargs[1]; */
-/*   plhs[2] = vodefunargs[2]; */
-
-  mxFree (vodefunargs);
+  // plhs[0] = vabstolerance;
+  //    plhs[1] = vreltolerance;
+/*   plhs[1] = vfunargs[1]; */
+/*   plhs[2] = vfunargs[2]; */
+/* mxFree (vtolerance.reltols); */
+/*  mxFree (vfunargs); */
 }
 
 

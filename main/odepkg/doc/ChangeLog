@@ -3,8 +3,14 @@ Created:     2006.08.16
 Creator:     Thomas Treichl
 Description: OdePkg ChangeLog File
 
+2007.01.08 Thomas Treichl
+	* odepkgext.h, odepkgext.c added
+	* odepkg_mexsolver_dop853.c another step forward but with
+	  partial odepkg functionality, make rules will be added
+	  later
+	
 2007.01.05 Thomas Treichl
-	* ChangeLog, DESCRIBTION files have been updated
+	* ChangeLog, DESCRIPTION files have been updated
 	* odepkg_mexsolver_dop853.c, dopri.tar.gz:
 	  Added to directory odepkg/src, no functionality by now
 	* odepkg/src directory has been created in CVS

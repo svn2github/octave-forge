@@ -343,8 +343,10 @@ dt {
 div.left-menu {
 	background: #EEEEEE;
 	color: black;
-	border: solid 2px;
-	/* border-top: none; */
+	border-top: solid 2px;
+	border-left: solid 2px;
+	border-right: solid 2px;
+	border-top: none;
 	width: 14em;
 	position: fixed;
 	top: 6.5em;
@@ -379,8 +381,10 @@ div.tab {
 }
 
 div#cat-tab {
-    border: solid 2px;
-    /* border-bottom: none; */
+    border-top: solid 2px;
+    border-left: solid 2px;
+    border-right: solid 2px;
+    border-bottom: none;
     z-index: 3;
     font-weight: bold;
     height: 1.3em;

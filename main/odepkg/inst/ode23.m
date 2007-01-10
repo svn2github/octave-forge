@@ -55,13 +55,13 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     vmsg = sprintf ('[t, y] = ode23 (fun, slot, init, varargin)\n');
     usage (vmsg);
   elseif (isa (vfun, 'function_handle') == false)
-    vmsg = sprintf ('First input argument must be valid function handle');
+    vmsg = sprintf ('First input argument must be a valid function handle');
     error (vmsg);
   elseif (isvector (vslot) == false || length (vslot) < 2)
-    vmsg = sprintf ('Second input argument must be valid vector');
+    vmsg = sprintf ('Second input argument must be a valid vector');
     error (vmsg);
   elseif (isvector (vinit) == false || isnumeric (vinit) == false)
-    vmsg = sprintf ('Third input argument must be valid vector');
+    vmsg = sprintf ('Third input argument must be a valid vector');
     error (vmsg);
   elseif (nargin >= 4)
     if (isstruct (varargin{1}) == false)
@@ -388,6 +388,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
                     vfailed); disp (vmsg);
     vmsg = sprintf ('Number of ode function calls: %d', ...
                     vfuncalls); disp (vmsg);
+  else, vhavestats = false;
   end
 
   if (nargout == 1)                 %# Sort output variables, depends on nargout

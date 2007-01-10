@@ -105,6 +105,7 @@ function [vret] = odeget (varargin)
 %! % Returns the manually changed value RelTol of the odepkg options
 %! % strutcure A. If RelTol wouldn't have been changed then [] would
 %! % be returned.
+
 %!demo
 %!
 %! A = odeset ('RelTol', 1e-1);

@@ -1,4 +1,4 @@
-%# Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
+%# Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - Package for solving ordinary differential equations with octave
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -21,8 +21,10 @@
 %# @end deftypefn
 
 %# Maintainer: Thomas Treichl
-%# Created: 20060912
-%# ChangeLog:
+%# Created:    20060912
+%# ChangeLog:  
+%#    20070108, Thomas Treichl
+%#       Completely changed the behaviour of this function.
 
 %# File will be cleaned up in the future
 function [] = odepkg (varargin)
@@ -31,50 +33,67 @@ function [] = odepkg (varargin)
   if (nargin == 0 || nargin >= 2)
     help ('odepkg');
     error ('Number of input arguments must be exactly one');
-
-   elseif (ischar (varargin{1}) == true)
-
-    %# Hidden developer functions are called if any valid string is
-    %# given as an input argument.
-    switch (varargin{1})
-      case 'odepkg_package_check'
-        odepkg_package_check;
-      case 'odepkg_versus_lsode'
-        odepkg_versus_lsode;
-      case 'odepkg_tolerances_check'
-        odepkg_tolerances_check;
-      case 'odepkg_outputselection_check'
-        odepkg_outputselection_check;
-    end
-
+  elseif (ischar (varargin{1}) == true)
+    eval (varargin{1}, disp ('Not found'));
   else
-    error ('The one and only input argument must be a valid string');
+    error ('The input argument must be a valid string');
 
   end %# Check number and types of all input arguments
 
-%# The call of this function may take a while and will open a lot of
-%# figures that have to be checked.
-function [] = odepkg_package_check ()
+function [] = tests ()
 
-  test ('ode78', 'verbose'); clear ('all');
-  test ('ode54', 'verbose'); clear ('all');
-  test ('ode45', 'verbose'); clear ('all');
-  test ('ode23', 'verbose'); clear ('all');
+  printf ('Testing function ode78 ... '); test ('ode78', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function ode54 ... '); test ('ode54', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function ode45 ... '); test ('ode45', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function ode23 ... '); test ('ode23', 'normal'); fflush (1); clear ('all');
 
-  test ('odeget.m', 'verbose'); clear ('all');
-  test ('odeset.m', 'verbose'); clear ('all');
-  test ('odepkg_structure_check.m', 'verbose'); clear ('all');
+  printf ('Testing function odeget ... '); test ('odeget.m', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odeset ... '); test ('odeset.m', 'normal'); fflush (1); clear ('all');
 
-  test('odeplot.m', 'verbose'); clear ('all');
-  test('odephas2.m', 'verbose'); clear ('all');
-  test('odephas3.m', 'verbose'); clear ('all');
-  test('odeprint.m', 'verbose'); clear ('all');
+  printf ('Testing function odepkg_structure_check ... ');
+    test ('odepkg_structure_check.m', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odepkg_event_handle    ... ');
+    test ('odepkg_event_handle.m', 'normal'); fflush (1); clear ('all');
 
-  test ('odepkg_equations_lorenz', 'verbose'); clear ('all');
-  test ('odepkg_equations_pendulous', 'verbose'); clear ('all');
-  test ('odepkg_equations_roessler', 'verbose'); clear ('all');
-  test ('odepkg_equations_secondorderlag', 'verbose'); clear ('all');
-  test ('odepkg_equations_vanderpol', 'verbose'); clear ('all');
+  printf ('Testing function odeplot ... '); test('odeplot.m', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odephas2 ... '); test('odephas2.m', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odephas3 ... '); test('odephas3.m', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odeprint ... '); test('odeprint.m', 'normal'); fflush (1); clear ('all');
+
+  printf ('Testing function odepkg_equations_lorenz ... ');
+    test ('odepkg_equations_lorenz', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odepkg_equations_pendulous ... ');
+    test ('odepkg_equations_pendulous', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odepkg_equations_roessler ... ');
+    test ('odepkg_equations_roessler', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odepkg_equations_secondorderlag ... ');
+    test ('odepkg_equations_secondorderlag', 'normal'); fflush (1); clear ('all');
+  printf ('Testing function odepkg_equations_vanderpol ... ');
+    test ('odepkg_equations_vanderpol', 'normal'); fflush (1); clear ('all');
+
+function [] = demos ()
+
+%  test ('ode78', 'verbose'); clear ('all');
+%  test ('ode54', 'verbose'); clear ('all');
+%  test ('ode45', 'verbose'); clear ('all');
+%  test ('ode23', 'verbose'); clear ('all');
+
+  demo ('odeget.m');
+  demo ('odeset.m');
+  demo ('odepkg_structure_check.m'); clear ('all');
+  demo ('odepkg_event_handle.m', 'verbose'); clear ('all');
+
+  demo('odeplot.m', 'verbose'); clear ('all');
+  demo('odephas2.m', 'verbose'); clear ('all');
+  demo('odephas3.m', 'verbose'); clear ('all');
+  demo('odeprint.m'); clear ('all');
+
+  demo ('odepkg_equations_lorenz'); clear ('all');
+  demo ('odepkg_equations_pendulous'); clear ('all');
+  demo ('odepkg_equations_roessler'); clear ('all');
+  demo ('odepkg_equations_secondorderlag'); clear ('all');
+  demo ('odepkg_equations_vanderpol'); clear ('all');
+
 
   %# This part of the function is used to check the solver functions
   %# with the options RelTol and AbsTol (AbsTol as scalars and vectors).

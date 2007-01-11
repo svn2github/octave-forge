@@ -735,6 +735,18 @@ Trigonometry
  coth 
  acot 
  acoth 
+ sind
+ asind
+ cosd
+ acosd
+ tand
+ atand
+ secd
+ asecd
+ cscd
+ acscd
+ cotd
+ acotd
 Exponentials
  exp 
  log 

@@ -17,16 +17,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ODEPKG_EXT__
-#define __ODEPKG_EXT__ 1
+#ifndef __ODEPKGEXT__
+#define __ODEPKGEXT__ 1
 
-#ifndef mwSize
-#define mwSize int
-#endif
-
-#ifndef mwSize
-#define mwSize int
-#endif
+typedef int mwSize;
+typedef int mwIndex;
 
 #ifndef true
 #define true 1
@@ -36,11 +31,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #define false 0
 #endif
 
-void mexFixMsgTxt (const char *vfix);
-void mexUsgMsgTxt (const char *vusg);
+extern void mexFixMsgTxt (const char *vfix);
+extern void mexUsgMsgTxt (const char *vusg);
+extern bool mxIsEqual (const mxArray *vone, const mxArray *vtwo);
+extern bool mxIsColumnVector (const mxArray *vinp);
+extern bool mxIsRowVector (const mxArray *vinp);
+extern bool mxIsVector (const mxArray *vinp);
 
-bool mxIsVector (const mxArray *vinp);
-bool mxIsColumnVector (const mxArray *vinp);
-bool mxIsRowVector (const mxArray *vinp);
-
-#endif /* __ODEPKG_EXT__ */
+#endif /* __ODEPKGEXT__ */

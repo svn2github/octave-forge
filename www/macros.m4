@@ -72,12 +72,12 @@ m4_define(`__JAVA_SCRIPT__',
     }
   }
   function unfold(id) {
-    document.getElementById(id).style.display = "none;";
-    document.getElementById(id+"_detailed").style.display = "block;";
+    document.getElementById(id).style.display = "none";
+    document.getElementById(id+"_detailed").style.display = "block";
   }
   function fold(id) {
-    document.getElementById(id+"_detailed").style.display = "none;";
-    document.getElementById(id).style.display = "block;";
+    document.getElementById(id+"_detailed").style.display = "none";
+    document.getElementById(id).style.display = "block";
   }
   function switch_to(id) {
     if (id == "cat") {
@@ -95,7 +95,7 @@ m4_define(`__JAVA_SCRIPT__',
     document.getElementById(other+"-tab").style.borderBottom = "solid 2px";
 
     document.getElementById(id+"-tab").style.height = "1.3em";
-    document.getElementById(other+"-tab").style.height = "1.2em;";
+    document.getElementById(other+"-tab").style.height = "1.2em";
 
     document.getElementById(id+"-tab").style.zIndex = "3";
     document.getElementById(other+"-tab").style.zIndex = "2";
@@ -119,12 +119,12 @@ m4_define(`__TOP_MENU__',
   <div id="top-menu" class="menu"> 
    <table class="menu">
       <tr>
-        <td style="width: 90px;" class="menu" rowspan="2">
+        <td style="width: 90px" class="menu" rowspan="2">
           <a name="top">
           <img src="__BASE_ADDRESS__/oct.png" alt="Octave logo" />
           </a>
         </td>
-        <td class="menu" style="padding-top: 0.9em;">
+        <td class="menu" style="padding-top: 0.9em">
           <big class="menu">Octave-Forge</big><small class="menu"> - Extra packages for GNU Octave</small>
         </td>
       </tr>
@@ -212,17 +212,17 @@ m4_dnl
 m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
 
 <div id="left-switcher">
-  <div class="tab" id="cat-tab" onclick="javascript:switch_to_cat();">
+  <div class="tab" id="cat-tab" onclick="javascript:switch_to_cat()">
     Categorical
   </div>
-  <div class="tab" id="alpha-tab" onclick="javascript:switch_to_alpha();">
+  <div class="tab" id="alpha-tab" onclick="javascript:switch_to_alpha()">
     Alphabetical
   </div>
 </div> 
 <div id="cat" class="left-menu">
 m4_include([[[doc/menu.include]]])
 </div>
-<div id="alpha" class="left-menu" style="visibility: hidden;">
+<div id="alpha" class="left-menu" style="visibility: hidden">
 m4_include([[[doc/alphabetic.include]]])
 </div>
 <div id="doccontent">
@@ -234,7 +234,7 @@ m4_define(`__TRAILER__', `
 </div>
 <div id="sf_logo">
   <a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=1"
-     width="88" height="31" style="border: 0;" alt="SourceForge.net Logo"/></a>
+     width="88" height="31" style="border: 0" alt="SourceForge.net Logo"/></a>
 </div>
 </body>
 </html>')m4_dnl

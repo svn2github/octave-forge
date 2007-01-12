@@ -82,7 +82,7 @@ package manager, the following additional changes are notable:</p>
    dst and idst</li>
    <li>plot: New function hist2d</li>
    <li>geometry: New function inpolygon</li>
-   <li>general: New functions issorted, cosd, sind, asecd, secd, and tand</li>
+   <li>general: New function issorted</li>
    <li>optim: New function fminsearch</li>
    <li>general bug fixes and improvements</li>
 </ul>

@@ -177,7 +177,7 @@ div#nav2 {
   display: block;
   position: absolute;
   margin-left: 6em;
-  margin-right: 3em;
+  margin-right: 8em;
   margin-top: 4.5em;
   padding-top: 1em;
 }
@@ -187,14 +187,13 @@ div#nav2 {
   padding-left: 18em;
   padding-top: 1em;
   margin-top: 4.5em;
-  margin-right: 3em;
+  margin-right: 4em;
   z-index: 1;
 }
 
 div#sf_logo {
   text-align: right;
   float: right;
-  padding-right: 1em;
 }
 
 /* NEWS FLASH */

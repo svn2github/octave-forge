@@ -64,6 +64,17 @@ m4_define(`__OCTAVE_FORGE_HTTP__',
        `<a href="__BASE_ADDRESS__/$1" class="menu">$2</a>')m4_dnl
 
 m4_changequote([[[, ]]])
+m4_define([[[__JAVA_SCRIPT_FIXED__]]],
+ [[[<script type="text/javascript">
+  <!--
+  function fix_top_menu() {
+    if (navigator.appVersion.indexOf('MSIE') == -1) {
+      document.getElementById("top-menu").style.position = "fixed";
+    } // end non-IE
+  }
+  // -->
+  </script>]]])m4_dnl
+m4_dnl
 m4_define([[[__JAVA_SCRIPT__]]],
  [[[<script type="text/javascript">
   <!--
@@ -106,8 +117,8 @@ m4_define([[[__JAVA_SCRIPT__]]],
     tab1.style.fontWeight = "bold";
     tab2.style.fontWeight = "normal";
     
-    tab1.style.background = "#EEEEEE";
-    tab2.style.background = "white";
+    tab1.style.background = "#EEEEEC";
+    tab2.style.background = "transparent";
   }
   function switch_to_cat() {
     switch_to("cat");
@@ -121,15 +132,47 @@ m4_define([[[__JAVA_SCRIPT__]]],
     d.innerHTML = '\
     m4_include([[[doc/alphabetic.include]]])';
   }
+  __JAVA_SCRIPT_FIXED__
+  function write_left_menu() {
+    // Only do this if we are running non-IE browsers
+    if (navigator.appVersion.indexOf('MSIE') == -1) {
+      menuhtml = '<div id="left-switcher">\
+                    <div class="tab" id="cat-tab" onclick="javascript:switch_to_cat()">\
+                      <a href="javascript:switch_to_cat();" style="text-decoration: none;">Categorical</a>\
+                    </div>\
+                    <div class="tab" id="alpha-tab" onclick="javascript:switch_to_alpha()">\
+                      <a href="javascript:switch_to_alpha();" style="text-decoration: none;">Alphabetical</a>\
+                    </div>\
+                    <div id="menu-contents" class="left-menu" style="position: fixed; overflow: auto;">\
+                    </div>\
+                  </div>';
+      var left_menu_span = document.getElementById("left-menu-span");
+      left_menu_span.innerHTML = menuhtml;
+      var cat_tab = document.getElementById("cat-tab");
+      var alpha_tab = document.getElementById("alpha-tab");
+      cat_tab.style.width = "7.5em";
+      cat_tab.style.position = "absolute";
+      cat_tab.style.bottom = "-4px";
+      alpha_tab.style.width = "7.5em";
+      alpha_tab.style.position = "absolute";
+      alpha_tab.style.bottom = "-4px";
+    } // end non-IE
+    switch_to_cat();
+  }
   // -->
   </script>]]])m4_dnl
 m4_changequote(`, ')
 m4_dnl
 m4_dnl
 m4_dnl
+m4_define(`__BODY__', `<body onload="javascript:fix_top_menu();">')
+m4_dnl
+m4_define(`__DOC_BODY__', `<body onload="javascript:fix_top_menu(); write_left_menu();">')
+m4_dnl
+m4_dnl
+m4_dnl
 m4_define(`__TOP_MENU__',
- `<body onload="javascript:switch_to_cat();">
-  <div id="top-menu" class="menu"> 
+ `<div id="top-menu" class="menu"> 
    <table class="menu">
       <tr>
         <td style="width: 90px;" class="menu" rowspan="2">
@@ -160,6 +203,7 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   __JAVA_SCRIPT__
   </head>
+  __BODY__
   __TOP_MENU__([[[$1]]])
 ')m4_dnl
 m4_dnl
@@ -172,7 +216,9 @@ m4_define(`__DOXY_HEADER__', `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transi
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/doxygen.css">
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css">
+  __JAVA_SCRIPT_FIXED__
   </head>
+  __BODY__
   __TOP_MENU__([[[$1]]])
   <div id="content">
 ')m4_dnl
@@ -221,8 +267,19 @@ m4_define(`__HEADER__', `__HTML_HEADER__([[[$1]]])
 m4_dnl
 m4_dnl
 m4_dnl
-m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
-
+m4_define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>$1</title>
+  <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
+  __JAVA_SCRIPT__
+  </head>
+  __DOC_BODY__
+  __TOP_MENU__([[[$1]]])
+<span id="left-menu-span">
+<!--[if IE]>
 <table id="left-menu">
   <tr><td>
     <div class="tab" id="cat-tab">
@@ -238,6 +295,8 @@ m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
     </div>
   </td></tr>
 </table>
+<![endif]-->
+</span>
 <div id="doccontent">
 ')m4_dnl
 m4_dnl

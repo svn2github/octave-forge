@@ -17,6 +17,7 @@ div.menu {
 	top: 0px;
 	left: 0px;
 	padding-bottom: 0em;
+	z-index: 3;
 	/*text-align: center;*/
 }
 
@@ -380,6 +381,34 @@ div.tab {
     margin-bottom: -1px;
     padding: 0px;
     z-index: 2;
+}
+
+/* only active for non-IE browsers */
+#left-switcher {
+    /*border: solid 2px;*/
+    width: 15em;
+    height: 2em;
+    position: fixed;
+    top: 4.5em;
+    left: 0px;
+    padding: 0em;
+    z-index: 2;
+}
+div.left-menu {
+	color: black;
+	border: none;
+	position: fixed;
+	float: left;
+	top: 7em;
+	left: 0em;
+	margin: 2px;
+	padding: 0px;
+	width: 15em;
+	bottom: 0em;
+	z-index: 2;
+}
+div#alpha-tab {
+    left: 7.5em;
 }
 
 /* Headers in the function reference */

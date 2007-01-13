@@ -73,12 +73,12 @@ m4_define([[[__JAVA_SCRIPT__]]],
     }
   }
   function unfold(id) {
-    document.getElementById(id).style.display = "none;";
-    document.getElementById(id+"_detailed").style.display = "block;";
+    document.getElementById(id).style.display = "none";
+    document.getElementById(id+"_detailed").style.display = "block";
   }
   function fold(id) {
-    document.getElementById(id+"_detailed").style.display = "none;";
-    document.getElementById(id).style.display = "block;";
+    document.getElementById(id+"_detailed").style.display = "none";
+    document.getElementById(id).style.display = "block";
   }
   function switch_to(id) {
     if (id == "cat") {

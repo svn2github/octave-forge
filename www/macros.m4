@@ -278,7 +278,7 @@ m4_define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict
   </head>
   __DOC_BODY__
   __TOP_MENU__([[[$1]]])
-<span id="left-menu-span">
+<div id="left-menu-span">
 <!--[if IE]>
 <table id="left-menu">
   <tr><td>
@@ -296,7 +296,7 @@ m4_define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict
   </td></tr>
 </table>
 <![endif]-->
-</span>
+</div>
 <div id="doccontent">
 ')m4_dnl
 m4_dnl

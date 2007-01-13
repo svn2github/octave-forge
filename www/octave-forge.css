@@ -12,7 +12,7 @@ div.menu {
 	/*background: white;*/
 	color: black;
 	width: 100%;
-	//position: fixed;
+	/* position: fixed;*/
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -332,10 +332,9 @@ p.package_link a {
 }
 
 div.see_also {
-  color: black;
-  background-color: #d3d7cf;
-  font-family: sans-serif;
-  font-weight: bold;
+  background: #EEEEEC;
+  border: solid 2px #babdb6;
+  padding: 2px;
 }
 
 dt {
@@ -346,7 +345,7 @@ dt {
 #left-menu {
 	color: black;
 	border: none;
-	//position: fixed;
+	/* position: fixed; */
 	position: absolute;
 	float: left;
 	top: 5em;
@@ -361,7 +360,7 @@ dt {
 }
 
 div#menu-contents {
-    background: #EEEEEE;
+    background: #EEEEEC;
 	padding-left: 1em;
 	padding-top: 0.5em;
     padding-bottom: 0.5em;
@@ -374,13 +373,20 @@ div#menu-contents {
 
 div.tab {
     width: 100%;
-    background: #EEEEEE;
+    background: #EEEEEC;
     color: black;
     text-align: center;
     margin: -2px;
     margin-bottom: -1px;
     padding: 0px;
     z-index: 2;
+}
+
+/* Headers in the function reference */
+h3.category {
+    background: #EEEEEC;
+    border: solid 2px #babdb6;
+    padding: 4px;
 }
 
 /* Doxygen stylesheet */

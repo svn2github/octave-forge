@@ -841,7 +841,7 @@ sub write_TBdetails { # 1{{{
     open(OUT, ">$file") or die "Cannot write $file:  $!\n";
     print OUT <<EOF;
 __DOC_HEADER__([[[$TB]]])
-<h2>$TB_description{$TB}</h2>
+<h2 class="tbdesc">$TB_description{$TB}</h2>
 EOF
 
     # summary list of categories
@@ -855,7 +855,7 @@ EOF
     # Each category has a table of its functions and their descriptions.
     foreach my $cat ( cat_list($TB) ) {
 	my $anchor = cat_anchor($cat);
-	print OUT "<h3><a name=\"$anchor\">$cat</a></h3>\n";
+	print OUT "<h3 class=\"category\"><a name=\"$anchor\">$cat</a></h3>\n";
 	print OUT "<div>\n";
 	foreach my $func ( cat_funcs($TB,$cat) ) {
 	    

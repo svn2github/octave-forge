@@ -128,7 +128,7 @@ m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__TOP_MENU__',
- `<body onLoad="javascript:switch_to_cat();">
+ `<body onload="javascript:switch_to_cat();">
   <div id="top-menu" class="menu"> 
    <table class="menu">
       <tr>

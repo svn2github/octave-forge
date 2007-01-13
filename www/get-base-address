@@ -7,8 +7,8 @@ case `hostname` in
     echo -n "file:/home/jwe/src/octave-www/"
   ;;
   *)
-    echo -n ""
-    #echo -n `pwd`
+    #echo -n ""
+    echo -n `pwd`
   ;;
 esac
 

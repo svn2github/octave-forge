@@ -4,7 +4,7 @@ M4_OPTIONS := --prefix-builtins
 HTML_SRC = $(shell find . | grep "\.in")
 IMG_HTML = $(HTML_SRC:.in=.html)
 
-all: doxygen build-www doc developers.html
+all: build-www doc developers.html doxygen
 	make $(IMG_HTML)
 	make -k -C ../doc/coda www-dist
 	if [ ! -e coda ]; then rm -rf coda; fi

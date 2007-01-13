@@ -681,6 +681,8 @@ sub write_html { # {{{1
 	# The source file
 
 	my $body = long_desc($func);
+	print $body;
+	print "\n";
 	if ($body ne "") {
 	    # XXX FIXME XXX this will die if the punctuation is too wild
 	    open FUNC, ">$catdir/f/$func.in" or die "Could not open $func.in";
@@ -827,7 +829,7 @@ sub write_TBnavbar { # 1{{{
     foreach my $TB (toolbox_list_sorted_by_desc()) {
 	$TB = trim($TB);
 	#print OUT "<option value=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</option>\n";
-        print OUT "<a href=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</a><br/>\n";
+        print OUT "<a href=\"__BASE_ADDRESS__/doc/$TB.html\">$TB_description{$TB}</a><br/>\\\n";
     }
     #print OUT "</select>\n";
     close OUT;
@@ -919,7 +921,7 @@ sub write_alphabetic_navbar { # 1{{{
 
     my $A_to_Z     = "";
     foreach (first_letters (indexed_funcs())) {
-        $A_to_Z .= letter_option($_) . "\n";
+        $A_to_Z .= letter_option($_) . "\\\n";
     }
     #my $select = "<select name=\"dropdownalpha\" size=\"1\" onchange=\"javascript:goto_url(this)\">";
     #$select .=  "\n<option value=\"-1\">Alphabetical</option>\n";
@@ -1060,6 +1062,10 @@ sub letter_file { # 1{{{
     return "A.html" if $_ lt "A";
     return "Z.html";
 } # 1}}}
+sub deping { # 1{{{
+    return "\\'" if $_ eq "'";
+    return "$_";
+} # 1}}}
 sub letter_ref { # 1{{{
 # letter_ref($letter) returns a link to the letter
     return "<a href=\"" . letter_file($_) . "#$_\">$_</a>";
@@ -1067,7 +1073,7 @@ sub letter_ref { # 1{{{
 sub letter_option { # 1{{{
 # letter_option($letter) returns a link to the letter
     #return "<option value=\"__BASE_ADDRESS__/doc/" . letter_file($_) . "#$_\">$_</option>";
-    return "<a href=\"__BASE_ADDRESS__/doc/" . letter_file($_) . "#$_\">$_</a><br/>";
+    return "<a href=\"__BASE_ADDRESS__/doc/" . letter_file($_) . "#" . deping($_) . "\">" . deping($_) . "</a><br/>";
 } # 1}}}
 sub ascii_desc { # 1{{{
 # ascii_desc($func) returns a decription of $func using ascii markup

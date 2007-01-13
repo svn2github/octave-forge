@@ -63,8 +63,9 @@ m4_dnl
 m4_define(`__OCTAVE_FORGE_HTTP__',
        `<a href="__BASE_ADDRESS__/$1" class="menu">$2</a>')m4_dnl
 
-m4_define(`__JAVA_SCRIPT__',
- `<script type="text/javascript">
+m4_changequote([[[, ]]])
+m4_define([[[__JAVA_SCRIPT__]]],
+ [[[<script type="text/javascript">
   <!--
   function goto_url (selSelectObject) {
     if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
@@ -72,59 +73,71 @@ m4_define(`__JAVA_SCRIPT__',
     }
   }
   function unfold(id) {
-    document.getElementById(id).style.display = "none";
-    document.getElementById(id+"_detailed").style.display = "block";
+    document.getElementById(id).style.display = "none;";
+    document.getElementById(id+"_detailed").style.display = "block;";
   }
   function fold(id) {
-    document.getElementById(id+"_detailed").style.display = "none";
-    document.getElementById(id).style.display = "block";
+    document.getElementById(id+"_detailed").style.display = "none;";
+    document.getElementById(id).style.display = "block;";
   }
   function switch_to(id) {
     if (id == "cat") {
-        other = "alpha";
+        other = "alpha-tab";
+        left = "2";
+        right = "1";
     } else { // id == "alpha"
-        other = "cat";
+        other = "cat-tab";
+        left = "1";
+        right = "2";
     }
+    id = id + "-tab";
+    var tab1 = document.getElementById(id);
+    var tab2 = document.getElementById(other);
 
-    document.getElementById(id).style.visibility = "visible";
-    document.getElementById(other).style.visibility = "hidden";
+    tab1.style.borderTop    = "2px solid black";
+    tab1.style.borderLeft   = "2px solid black";
+    tab1.style.borderRight  = right+"px solid black";
+    tab1.style.borderBottom = "2px solid #EEEEEE";
+    tab2.style.borderTop    = "1px solid black";
+    tab2.style.borderLeft   = left+"px solid black";
+    tab2.style.borderRight  = "1px solid black";
+    tab2.style.borderBottom = "2px solid black";
 
-    document.getElementById(id+"-tab").style.border = "solid 2px";
-    document.getElementById(id+"-tab").style.borderBottom = "none";
-    document.getElementById(other+"-tab").style.border = "solid 1px";
-    document.getElementById(other+"-tab").style.borderBottom = "solid 2px";
-
-    document.getElementById(id+"-tab").style.height = "1.3em";
-    document.getElementById(other+"-tab").style.height = "1.2em";
-
-    document.getElementById(id+"-tab").style.zIndex = "3";
-    document.getElementById(other+"-tab").style.zIndex = "2";
-
-    document.getElementById(id+"-tab").style.fontWeight = "bold";
-    document.getElementById(other+"-tab").style.fontWeight = "normal";
+    tab1.style.fontWeight = "bold";
+    tab2.style.fontWeight = "normal";
+    
+    tab1.style.background = "#EEEEEE";
+    tab2.style.background = "white";
   }
   function switch_to_cat() {
     switch_to("cat");
+    var d = document.getElementById("menu-contents");
+    d.innerHTML = '\
+    m4_include([[[doc/menu.include]]])';
   }
   function switch_to_alpha() {
     switch_to("alpha");
+    var d = document.getElementById("menu-contents");
+    d.innerHTML = '\
+    m4_include([[[doc/alphabetic.include]]])';
   }
   // -->
-  </script>')m4_dnl
+  </script>]]])m4_dnl
+m4_changequote(`, ')
 m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__TOP_MENU__',
- `<body>
+ `<body onLoad="javascript:switch_to_cat();">
   <div id="top-menu" class="menu"> 
    <table class="menu">
       <tr>
-        <td style="width: 90px" class="menu" rowspan="2">
+        <td style="width: 90px;" class="menu" rowspan="2">
           <a name="top">
           <img src="__BASE_ADDRESS__/oct.png" alt="Octave logo" />
           </a>
         </td>
-        <td class="menu" style="padding-top: 0.9em">
+        <td class="menu" style="padding-top: 0.9em;">
           <big class="menu">Octave-Forge</big><small class="menu"> - Extra packages for GNU Octave</small>
         </td>
       </tr>
@@ -211,30 +224,31 @@ m4_dnl
 m4_dnl
 m4_define(`__DOC_HEADER__', `__HTML_HEADER__([[[$1]]])
 
-<div id="left-switcher">
-  <div class="tab" id="cat-tab" onclick="javascript:switch_to_cat()">
-    Categorical
-  </div>
-  <div class="tab" id="alpha-tab" onclick="javascript:switch_to_alpha()">
-    Alphabetical
-  </div>
-</div> 
-<div id="cat" class="left-menu">
-m4_include([[[doc/menu.include]]])
-</div>
-<div id="alpha" class="left-menu" style="visibility: hidden">
-m4_include([[[doc/alphabetic.include]]])
-</div>
+<table id="left-menu">
+  <tr><td>
+    <div class="tab" id="cat-tab">
+    <a href="javascript:switch_to_cat();" style="text-decoration: none;">Categorical</a>
+    </div>
+  </td><td>
+    <div class="tab" id="alpha-tab">
+    <a href="javascript:switch_to_alpha();" style="text-decoration: none;">Alphabetical</a>
+    </div>
+  </td></tr>
+  <tr><td colspan="2">
+    <div id="menu-contents">
+    </div>
+  </td></tr>
+</table>
 <div id="doccontent">
 ')m4_dnl
 m4_dnl
 m4_dnl
 m4_dnl
 m4_define(`__TRAILER__', `
-</div>
 <div id="sf_logo">
   <a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2888&amp;type=1"
-     width="88" height="31" style="border: 0" alt="SourceForge.net Logo"/></a>
+     width="88" height="31" style="border: 0;" alt="SourceForge.net Logo"/></a>
+</div>
 </div>
 </body>
 </html>')m4_dnl

@@ -76,7 +76,8 @@ m4_define([[[__JAVA_SCRIPT_FIXED__]]],
   </script>]]])m4_dnl
 m4_dnl
 m4_define([[[__JAVA_SCRIPT__]]],
- [[[<script type="text/javascript">
+ [[[  __JAVA_SCRIPT_FIXED__
+  <script type="text/javascript">
   <!--
   function goto_url (selSelectObject) {
     if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
@@ -132,7 +133,6 @@ m4_define([[[__JAVA_SCRIPT__]]],
     d.innerHTML = '\
     m4_include([[[doc/alphabetic.include]]])';
   }
-  __JAVA_SCRIPT_FIXED__
   function write_left_menu() {
     // Only do this if we are running non-IE browsers
     if (navigator.appVersion.indexOf('MSIE') == -1) {

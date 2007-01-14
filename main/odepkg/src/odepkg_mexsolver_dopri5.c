@@ -26,42 +26,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #ifdef HAVE_CONFIG_H
-  #include "config.h"
+  #include "config.h"  /* Needed for GCC_ATTR_UNUSED */
 #endif
-#include "mex.h"
-
+#include "mex.h"       /* Needed for the mex-definitions */
 #include <string.h>    /* Needed for the "memcpy" and "strcmp" functions */
 #include <stdio.h>     /* Should be removed */
 #include "dopri5.h"    /* Needed for the solver function "dopri5" */
-#include "odepkgext.h" /* Needed for the mxIsVector, mxIsColumnVector etc. functions */
+#include "odepkgmex.h" /* Needed for the mxIsVector, mxIsColumnVector etc. functions */
+#include "odepkgext.h" /* Needed for the fplotfunction, etc. */
 
-typedef struct {
-  double *reltols;
-  size_t  reltoln;
-  double *abstols;
-  size_t  abstoln;
-  int     toltype;
-} _ttolerance;
-
-typedef struct {
-  mxArray *odeoptions;
-  mxArray *defoptions;
-} _todeoptions;
-
-typedef struct {
-  mxArray  *funhandle;
-  mxArray  *mexstring;
-  char     *funstring;
-  mxArray **funargs;
-  mwSize    funargn;
-} _todefunction;
-
-typedef _ttolerance ttolerance;
-typedef _todeoptions todeoptions;
-typedef _todefunction todefunction;
-
-static todefunction vodefunction = {NULL, NULL, NULL, NULL, 0}; /* Make sure that initialisation is correct */;
-static todefunction vplotfunction = {NULL, NULL, NULL, NULL, 0}; /* Make sure that initialisation is correct */;
+/* There is no other way to put values into the functions that are
+   needed by the dopri solvers. Therefore we put them via global
+   variables into the functiions. Make sure that the initialisation of
+   the following global variables is correct. */;
+todefunction vodefunction  = {NULL, NULL, NULL, NULL, 0};
+todefunction vplotfunction = {NULL, NULL, NULL, NULL, 0};
+todeoptions  vodeoptions   = {NULL, NULL};
 
 void fodefunction (unsigned n, double x, double *y, double *f) {
   int  vcnt = 0;
@@ -74,83 +54,50 @@ void fodefunction (unsigned n, double x, double *y, double *f) {
   vrhs[0] = mxCreateDoubleScalar (x);
   vrhs[1] = mxCreateDoubleMatrix (1, n, mxREAL);
 
+  /* Copy the values that are given from the solver into the mxArray */
   memcpy ((void *) mxGetPr (vrhs[1]), (void *) y, n * sizeof (double));
-  if (vodefunction.funargn > 0) /* Fill up vrhs[2..] with the ode options from the command line */
+  if (vodefunction.funargn > 0) /* Fill up vrhs[2..] */
     for (vcnt = 0; vcnt < vodefunction.funargn; vcnt++)
       vrhs[vcnt+2] = vodefunction.funargs[vcnt];
 
   /* Evaluate the ode function in the octave caller workspace */
-  if (mexCallMATLAB (1, vlhs, 2, vrhs, vodefunction.funstring)) {
+  if (mexCallMATLAB (1, vlhs, vodefunction.funargn+2, vrhs, vodefunction.funstring)) {
     sprintf (vmsg, "Calling \"%s\" has failed", vodefunction.funstring);
     mexErrMsgTxt (vmsg);
-  } /* Save the result of this time step in the variable f */
+  }
 
+  /* Save the result of this time step in the variable f */
   memcpy ((void *) f, (void *) mxGetPr (vlhs[0]), n * sizeof (double));
   mxFree (vlhs); /* Free the vlhs mxArray */
   mxFree (vrhs); /* Free the vrhs mxArray */
 }
 
-/* This function needs to be changed */
-void fodesolution (long nr, double xold, double x, double* y, unsigned n, int* irtrn) {
+void fodesolution (GCC_ATTR_UNUSED long nr, GCC_ATTR_UNUSED double xold, 
+                   double x, double* y, unsigned n, int* irtrn) {
 
-#ifdef __ODEPKGDEBUG__
-  if (nr == 1)
-    mexPrintf ("ODEPKGDEBUG: step=%02d  told=%7.5f  time=%7.5f  y[1]=%7.5f  y[2]=%7.5f\n",
-      nr, xold, x, y[0], y[1]);
-  else 
-    mexPrintf ("ODEPKGDEBUG: step=%02d  told=%7.5f  time=%7.5f  y[1]=%7.5f  y[2]=%7.5f\n",
-      nr, xold, x, contd5(0,x), contd5(1,x));
-#endif
-}
+  bool vret = false;
 
-bool fplotfunction (mxArray *vtime, mxArray *vvalues, mxArray *vflag, mxArray *vselect) {
-  int  vcnt = 0;
-  char vmsg[64] = "";
+  mxArray *vtime   = NULL;
+  mxArray *vvalues = NULL;
+  mxArray *vflag   = NULL;
 
-  int     voutputseln = 0;
-  double *voutputsels = NULL;
-  double *voutputplot = NULL;
-  double *vinputvals  = NULL;
+  vtime   = mxCreateDoubleScalar (x);
+  vvalues = mxCreateDoubleMatrix (1, n, mxREAL);
+  memcpy ((void *) mxGetPr (vvalues), (void *) y, n * sizeof (double));
+  vflag = mxCreateString (""); /* Do calculation ... */
+  vret = fplotfunction (vtime, vvalues, vflag, vodeoptions.odeoptions);
 
-  vplotfunction.funargn = 3 + vodefunction.funargn;
-  vplotfunction.funargs = (mxArray **) mxMalloc (vplotfunction.funargn * sizeof (mxArray *));
+  irtrn[0] = (int) (vret - 1); /* Stop integration on negative value */
 
-  vplotfunction.funargs[0] = vtime;
+/* #ifdef __ODEPKGDEBUG__ */
+/*   if (nr == 1) */
+/*     mexPrintf ("ODEPKGDEBUG: n=%d step=%02d  told=%7.5f  time=%7.5f  y[1]=%7.5f  y[2]=%7.5f\n", */
+/*                n, nr, xold, x, y[0], y[1]); */
+/*   else  */
+/*     mexPrintf ("ODEPKGDEBUG: n=%d step=%02d  told=%7.5f  time=%7.5f  y[1]=%7.5f  y[2]=%7.5f\n", */
+/*                n, nr, xold, x, contd5(0,x), contd5(1,x)); */
+/* #endif */
 
-  if (mxIsEmpty (vselect)) /* All results are needed */
-    vplotfunction.funargs[1] = vvalues; /* mxDuplicateArray (vvalues) */
-  else { /* OutputSel is not empty, only some results are needed */
-    voutputsels = mxGetPr (vselect);
-    voutputseln = mxGetNumberOfElements (vselect);
-    vplotfunction.funargs[1] = mxCreateDoubleMatrix (1, voutputseln, mxREAL);
-    voutputplot = mxGetPr (vplotfunction.funargs[1]);
-    vinputvals  = mxGetPr (vvalues);
-    if (voutputseln != 0)
-      for (vcnt = 0; vcnt < voutputseln; vcnt++) {
-  if (voutputseln < ((int)(voutputsels[vcnt]))) { /* Check if valid */
-    sprintf (vmsg, "Not valid number element \"%d\" in option \"OutputSel\"", 
-       ((int)(voutputsels[vcnt]))); mexErrMsgTxt (vmsg); }
-  else voutputplot[vcnt] = vinputvals[((int)(voutputsels[vcnt]))-1];
-      }
-  }
-
-  vplotfunction.funargs[2] = vflag;
-
-  if (vodefunction.funargn > 0) { /* Fill up vplotfunction.funargs[3..] */
-    /* mexPrintf ("----> GEHT NOCH %d\n", vodefunction.funargn); */
-    for (vcnt = 0; vcnt < vodefunction.funargn; vcnt++){
-      /* mexPrintf ("----> GEHT NOCH %d\n", vcnt); */
-      vplotfunction.funargs[vcnt+3] = vodefunction.funargs[vcnt];}
-  }
-
-  /* TO DO: CONNECT RETURN VALUE */
-  if (mexCallMATLAB (0, NULL, vplotfunction.funargn, 
-                     vplotfunction.funargs, vplotfunction.funstring)) {
-    sprintf (vmsg, "Calling \"%s\" has failed", vplotfunction.funstring);
-    mexErrMsgTxt (vmsg);
-  }
-
-  mxFree (vplotfunction.funargs);
 }
 
 void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) { 
@@ -162,8 +109,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   double vinitstep = 0.0;
   double vmaximumstep = 0.0;
 
-  ttolerance  vtolerance = {NULL, 0, NULL, 0, 0}; /* Make sure that initialisation is correct */
-  todeoptions vodeoptions = {NULL, NULL};         /* Make sure that initialisation is correct */
+  ttolerance vtolerance = {NULL, 0, NULL, 0, 0}; /* Make sure that initialisation is correct */
 
   mxArray *vfieldvalue = NULL; /* This is a temporary mxArray */
   mxArray *vtemporary  = NULL; /* This is a temporary mxArray */
@@ -294,9 +240,8 @@ int iout;
 #endif
 
   /* Handle the odeoptions structure field: NORMCONTROL */
-  vfieldvalue = mxGetField (vodeoptions.odeoptions, 0, "NormControl");
-  vtemporary  = mxGetField (vodeoptions.defoptions, 0, "NormControl");
-  if (strcmp (mxArrayToString (vfieldvalue), mxArrayToString (vtemporary)))
+  if (!mxIsEqual (mxGetField (vodeoptions.odeoptions, 0, "NormControl"),
+                  mxGetField (vodeoptions.defoptions, 0, "NormControl") ) )
     mexWarnMsgTxt ("Option \"NormControl\" will be ignored by this solver");
 
   /* Handle the odeoptions structure field: OUTPUTFCN  */
@@ -323,9 +268,9 @@ int iout;
   else mexPrintf ("ODEPKGDEBUG: No output function has been set.\n");
 #endif
 
-  /* Handle the odeoptions structure field: OUTPUTSEL
-     Implementation of the option OUTPUTSEL has been finished but the
-     output selection itself is handled in the output function "fplotfunction" */
+  /* Handle the odeoptions structure field: OUTPUTSEL. Implementation
+     of the option OUTPUTSEL has been finished. The output selection
+     itself is handled in the output function "fplotfunction" */
 
   /* Handle the odeoptions structure field: REFINE */
   vfieldvalue = mxGetField (vodeoptions.odeoptions, 0, "Refine");
@@ -388,17 +333,25 @@ int iout;
 
   iout = 2;
 
-  fplotfunction (mxDuplicateArray (prhs[1]), /* TODO */
-     mxDuplicateArray (prhs[2]), 
-     mxCreateString ("init"), 
-     mxGetField (vodeoptions.odeoptions, 0, "OutputSel"));
+  /*TODO REPLACE MXDUPLICTEARRAY */
+  fplotfunction (mxDuplicateArray (prhs[1]), /*TODO*/
+                 mxDuplicateArray (prhs[2]),
+                 mxCreateString ("init"),
+                 vodeoptions.odeoptions);
 
   /* Call the solver with all input arguments that can be used, here
      are some comments about this implementation: */
   res = dopri5 (vodedimensions, fodefunction, vtimeslot[0], vinitvalues, 
                 vtimeslot[1], vtolerance.reltols, vtolerance.abstols, 
                 vtolerance.toltype, fodesolution, iout,
-                NULL, 0.0, 0.0, 0.0, 0.0, 0.0, vmaximumstep, vinitstep, 0, 0, 1, vodedimensions, NULL, vodedimensions);
+                stdout, 0.0, 0.0, 0.0, 0.0, 0.0, vmaximumstep, vinitstep, 
+                0, 0, 1, vodedimensions, NULL, vodedimensions);
+
+  /*TODO REPLACE MXDUPLICTEARRAY */
+  fplotfunction (mxDuplicateArray (prhs[1]), /*TODO*/
+                 mxDuplicateArray (prhs[2]),
+                 mxCreateString ("done"),
+                 vodeoptions.odeoptions);
 
 /*   plhs[0] = vplotfunction.funargs[0]; */
 /*   plhs[1] = vplotfunction.funargs[1]; */

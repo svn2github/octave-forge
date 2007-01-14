@@ -17,35 +17,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ODEPKGEXT__
-#define __ODEPKGEXT__ 1
+#ifndef __ODEPKGMEX__
+#define __ODEPKGMEX__ 1
 
-typedef struct {
-  double *reltols;
-  size_t  reltoln;
-  double *abstols;
-  size_t  abstoln;
-  int     toltype;
-} _ttolerance;
+typedef int mwSize;
+typedef int mwIndex;
 
-typedef struct {
-  mxArray *odeoptions;
-  mxArray *defoptions;
-} _todeoptions;
+#ifndef true
+#define true 1
+#endif
 
-typedef struct {
-  mxArray  *funhandle;
-  mxArray  *mexstring;
-  char     *funstring;
-  mxArray **funargs;
-  mwSize    funargn;
-} _todefunction;
+#ifndef false
+#define false 0
+#endif
 
-
-typedef _ttolerance ttolerance;
-typedef _todeoptions todeoptions;
-typedef _todefunction todefunction;
-
-extern bool fplotfunction (mxArray *vtime, mxArray *vvalues, mxArray *vflag, mxArray *voptions);
+extern void mexFixMsgTxt (const char *vfix);
+extern void mexUsgMsgTxt (const char *vusg);
+extern bool mxIsEqual (const mxArray *vone, const mxArray *vtwo);
+extern bool mxIsColumnVector (const mxArray *vinp);
+extern bool mxIsRowVector (const mxArray *vinp);
+extern bool mxIsVector (const mxArray *vinp);
 
 #endif /* __ODEPKGEXT__ */

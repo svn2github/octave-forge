@@ -29,7 +29,9 @@ Open Source Initiative (www.opensource.org)
 #include "galois.h"
 #include "ov-galois.h"
 
+#ifndef HAVE_OCTAVE_29
 extern int Vstruct_levels_to_print;
+#endif
 
 #include <octave/byte-swap.h>
 #include <octave/ls-oct-ascii.h>
@@ -556,13 +558,13 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   if (group_hid < 0 ) return false;
 
   dim_vector d = dims ();
-  hsize_t hdims[d.length () > 2 ? d.length () : 3];
+  OCTAVE_LOCAL_BUFFER(hsize_t, hdims, d.length () > 2 ? d.length () : 3);
   hid_t space_hid = -1, data_hid = -1;
   bool retval = true;
   char tmp;
   int32_t itmp;
 
-  space_hid = H5Screate_simple (0, hdims, (hsize_t*) 0);
+  space_hid = H5Screate_simple (0, &hdims[0], (hsize_t*) 0);
   if (space_hid < 0) 
     {
       H5Gclose (group_hid);
@@ -614,7 +616,7 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   for (int i = 0, j = d.length() - 1; i < d.length (); i++, j--)
     hdims[i] = d (j);
 
-  space_hid = H5Screate_simple (d.length(), hdims, (hsize_t*) 0);
+  space_hid = H5Screate_simple (d.length(), &hdims[0], (hsize_t*) 0);
   if (space_hid < 0) return false;
 
   double *mtmp = mval.fortran_vec ();

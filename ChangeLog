@@ -1,3 +1,7 @@
+2007-01-15 17:20 goffioul
+	* main/image/src/pngread.cc: opens image file in binary mode
+	  to avoid automatic LF->CRLF conversion with MSVC
+
 2007-01-15 17:17 goffioul
 	* main/gsl/src/Makefile: defines GSL_DLL for compilation
 	  with MSVC

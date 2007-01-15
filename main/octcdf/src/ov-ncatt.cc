@@ -218,8 +218,9 @@ octave_value octave_ncatt::subsref(const std::string &type,
     return;
   }
 
-  nca->dimvec.resize(1);
-  nca->dimvec(0) = length;
+  nca->dimvec.resize(2);
+  nca->dimvec(0) = 1;
+  nca->dimvec(1) = length;
   }
 
 

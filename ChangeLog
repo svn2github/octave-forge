@@ -1,3 +1,7 @@
+2007-01-15 17:08 goffioul
+	* extra/MacOSX/doc/Makefile,
+	  extra/symband/doc/Makefile: s/dvipdf/$(DVIPDF)
+
 2007-01-08 21:57  adb014
 
 	* www/: Makefile, get-base-address, octave-forge.css: fix

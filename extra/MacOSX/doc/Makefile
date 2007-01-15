@@ -8,7 +8,7 @@ all : $(PDF) html/index.html
 %.pdf : %.tex
 	latex $< > /dev/null 2>&1
 	latex $< > /dev/null 2>&1
-	dvipdf $(@:.pdf=.dvi)
+	$(DVIPDF) $(@:.pdf=.dvi)
 
 # Note verbosity=0 as well as making latex2html quieter, has the side-effect
 # of not including a url to the raw text, which it'll get wrong

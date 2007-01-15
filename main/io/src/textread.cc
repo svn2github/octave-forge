@@ -56,13 +56,15 @@ public:
 	}
     }
 
-    void
+    bool
     open()
     {
 	data.open(filename.c_str());
 	if (!data) {
 	    error("textread: couldn't open data file %s", filename.c_str());
+	    return false;
 	}
+	return true;
     }
 
     void

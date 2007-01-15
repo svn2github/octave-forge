@@ -105,6 +105,7 @@ void octave_ncvar::read_info() {
   set_natts(natts);
 
   set_varname(string(name));
+  if (ndims > 2)
   ncdimvec.resize(ndims);
 
   // reverse dimids if FORTRAN_ORDER
@@ -229,12 +230,12 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 
           if (!fillvalue.is_empty()) {
             if ( scaledrhs.numel() == 1) {
-              if (isnan(scaledrhs.scalar_value())) 
+              if (lo_ieee_isnan(scaledrhs.scalar_value())) 
 		scaledrhs = fillvalue;
 	    }
             else
 	      for (int i=0; i < scaledrhs.numel(); i++) {
-		if (isnan(scaledrhs.array_value().xelem(i)))
+		if (lo_ieee_isnan(scaledrhs.array_value().xelem(i)))
 		  scaledrhs.array_value().xelem(i) = fillvalue.scalar_value();
 	      }
 	  }

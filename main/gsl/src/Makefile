@@ -12,7 +12,12 @@ SF_AVAILABLE=$(filter-out $(GSL_MISSING),$(SF_ALL_FNS))
 # all separately compiled functions
 PROGS=coupling_3j.oct coupling_6j.oct coupling_9j.oct legendre_sphPlm_array.oct gsl_sf.oct
 
-%.oct: %.cc ; $(MKOCTFILE) $< $(LIBGSL)
+DEFINES=
+ifeq ($(canonical_host_type),i686-pc-msdosmsvc)
+DEFINES=-DWIN32 -DGSL_DLL
+endif
+
+%.oct: %.cc ; $(MKOCTFILE) $(DEFINES) $< $(LIBGSL)
 
 ifeq ($(HAVE_GSL),yes)
 all: gsl_sf.cc $(SF_LINKS) $(PROGS)

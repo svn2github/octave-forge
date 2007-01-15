@@ -1,3 +1,7 @@
+2007-01-15 17:15 goffioul
+	* main/io/src/textread.cc: mismatch between declared return
+	  value and "return" statements
+
 2007-01-15 17:11 goffioul
 	* main/octcdf/src/: ov-ncatt.cc, ov-ncvar.cc: make sure
 	  dim_vector objects are not resized < 2; use lo_ieee_isnan

@@ -1,3 +1,9 @@
+2007-01-15 17:24 goffioul
+	* admin/mkpkgadd: fix PKG_ADD extraction from source files
+	* octinst.sh.in: create mpath even when only .oct files (to
+	  hold the PKG_ADD file); quote command to allow spaces in
+	  source dir
+
 2007-01-15 17:20 goffioul
 	* main/image/src/pngread.cc: opens image file in binary mode
 	  to avoid automatic LF->CRLF conversion with MSVC

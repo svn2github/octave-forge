@@ -40,6 +40,10 @@ if test "$files" != "$source/*.oct" ; then
     $INSTALL -d $opath
 ## Grrr... install doesn't preserve links.  Hope this works.
     cp $COPY_FLAGS $files $opath
+    files=`echo $source/*.octlink`
+    if test "$files" != "$sources/*.octlink"; then
+      $INSTALL -d $mpath
+    fi
 fi
 
 # install alternatives
@@ -61,7 +65,7 @@ fi
 # Create PKG_ADD, and destroy it immediately if it is empty
 # XXX FIXME XXX no PKG_ADD created if only oct-files and no m-files.
 if test -d "$mpath" ; then
-    $MKPKGADD $source > $mpath/PKG_ADD
+    "$MKPKGADD" $source > $mpath/PKG_ADD
     if test -z "`cat $mpath/PKG_ADD`" ; then rm -f $mpath/PKG_ADD;  fi
 fi
 # PKG_ADD for alternatives

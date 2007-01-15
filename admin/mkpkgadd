@@ -14,7 +14,7 @@ cxx_files=`echo *.cc`
 ln_files=`echo *.octlink`
 
 if test "$m_files" != "*.m"; then
-  sed -n 's/^[#%][#%]* *PKG_ADD: *//p' $m_files
+  sed -n 's/^[#%][#%]* *PKG_ADD:\? *//p' $m_files
 fi
 
 if test "$cxx_files" != "*.cc"; then

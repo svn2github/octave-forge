@@ -375,6 +375,12 @@ FixedMatrix::operator == (const FixedMatrix& a) const
 }
 
 bool
+FixedMatrix::operator != (const FixedMatrix& a) const
+{
+  return !(*this == a);
+}
+
+bool
 FixedMatrix::is_symmetric (void) const
 {
   if (is_square () && rows () > 0)

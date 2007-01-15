@@ -621,6 +621,12 @@ FixedComplexMatrix::operator == (const FixedComplexMatrix& a) const
 }
 
 bool
+FixedComplexMatrix::operator != (const FixedComplexMatrix& a) const
+{
+  return !(*this == a);
+}
+
+bool
 FixedComplexMatrix::is_symmetric (void) const
 {
   if (is_square () && rows () > 0)

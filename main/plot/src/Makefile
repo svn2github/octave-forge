@@ -15,6 +15,7 @@ endif
 ifdef HAVE_X
 all: $(PROGS)
 else
+all:
 	@echo WARNING: X Windows not found on your system
 endif
 

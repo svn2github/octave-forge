@@ -79,6 +79,36 @@ m4_define([[[__JAVA_SCRIPT__]]],
  [[[  __JAVA_SCRIPT_FIXED__
   <script type="text/javascript">
   <!--
+  var cookie_name = "octave_forge_cookie";
+  function set_cookie(val) {
+    if (document.cookie != document.cookie) {
+      index = document.cookie.indexOf(cookie_name);
+    } else {
+      index = -1;
+    }
+    if (index == -1) {
+      var cval = cookie_name + "=" + val + "; ";
+      var d = new Date();
+      d.setSeconds(d.getSeconds()+30);
+      cval = cval + "expires=" + d.toString() + ";";
+      document.cookie = cval;
+    }
+  }
+  function get_cookie() {
+    var retval = -1;
+    if (document.cookie) {
+      var index = document.cookie.indexOf(cookie_name);
+      if (index != -1) {
+        var start = document.cookie.indexOf("=", index) + 1;
+        stop = document.cookie.indexOf(";", start);
+        if (stop == -1) {
+          stop = document.cookie.length;
+        }
+        retval = document.cookie.substring(start, stop);
+      }
+    }
+    return retval;
+  }
   function goto_url (selSelectObject) {
     if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
      location.href=selSelectObject.options[selSelectObject.selectedIndex].value;
@@ -93,6 +123,7 @@ m4_define([[[__JAVA_SCRIPT__]]],
     document.getElementById(id).style.display = "block";
   }
   function switch_to(id) {
+    set_cookie(id);
     if (id == "cat") {
         other = "alpha-tab";
         left = "2";
@@ -157,7 +188,12 @@ m4_define([[[__JAVA_SCRIPT__]]],
       alpha_tab.style.position = "absolute";
       alpha_tab.style.bottom = "-4px";
     } // end non-IE
-    switch_to_cat();
+    var tab = get_cookie();
+    if (tab == "alpha") {
+      switch_to_alpha();
+    } else {
+      switch_to_cat();
+    }
   }
   // -->
   </script>]]])m4_dnl

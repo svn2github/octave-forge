@@ -25,6 +25,7 @@
 #include <octave/oct.h>
 #include <pcre.h>
 #include <iostream>
+#include <vector>
 
 DEFUN_DLD(pcregexp, args, nargout, "\
 Perl-compatible regular expression matching.\n\
@@ -62,8 +63,8 @@ See also \"help regexp\" and the manpage for 'pcre'.\n\
     int status = pcre_fullinfo(re, NULL, PCRE_INFO_CAPTURECOUNT, &subpatterns);
 
     // Match expression
-    int ovector[(subpatterns+1)*3];
-    int matches = pcre_exec(re, NULL, input.c_str(), input.length(), 0, 0, ovector, (subpatterns+1)*3);
+    OCTAVE_LOCAL_BUFFER(int, ovector, (subpatterns+1)*3);
+    int matches = pcre_exec(re, NULL, input.c_str(), input.length(), 0, 0, &ovector[0], (subpatterns+1)*3);
 
     if (matches == PCRE_ERROR_NOMATCH) {
 	for (int i=nargout-1; i>=0; i--) retval(i) = "";
@@ -76,7 +77,7 @@ See also \"help regexp\" and the manpage for 'pcre'.\n\
     }
 
     const char **listptr;
-    status = pcre_get_substring_list(input.c_str(), ovector, matches, &listptr);
+    status = pcre_get_substring_list(input.c_str(), &ovector[0], matches, &listptr);
 
     if (status == PCRE_ERROR_NOMEMORY) {
 	error("pcregexp: cannot allocate memory in pcre_get_substring_list");

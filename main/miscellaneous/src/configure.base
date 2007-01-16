@@ -301,6 +301,9 @@ esac
 AC_SUBST(MISCDEFS)
 AC_SUBST(HAVE_LIB_TERMCAP)
 
+AC_CHECK_FUNCS(fork, [have_fork=yes], [have_fork=])
+AC_SUBST(have_fork)
+
 dnl In modern autoconf, we should be able to replace this with something
 dnl the CHECK_TYPE macro
 AC_DEFUN([TYPE_SOCKLEN_T],

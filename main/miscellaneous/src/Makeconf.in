@@ -62,6 +62,7 @@ ALTOPATH = @altopath@
 
 HAVE_LIB_TERMCAP = @HAVE_LIB_TERMCAP@
 MISCDEFS = @MISCDEFS@
+HAVE_FORK = @have_fork@
 
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<

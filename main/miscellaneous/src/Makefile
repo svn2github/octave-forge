@@ -4,7 +4,13 @@ ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap
 endif
 
-TARGETS=waitbar.oct listen.oct xmlread.oct \
+ifdef HAVE_FORK
+	LISTEN=listen.oct
+else
+	LISTEN=
+endif
+
+TARGETS=waitbar.oct $(LISTEN) xmlread.oct \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct
 
 all:	$(TARGETS)

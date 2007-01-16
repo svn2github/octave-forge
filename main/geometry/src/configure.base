@@ -298,6 +298,9 @@ case "$canonical_host_type" in
     ;;
 esac
 
+AC_CHECK_FUNCS(snprintf, [have__snprintf=no], [AC_CHECK_FUNCS(_snprintf, [have__snprintf=yes])])
+AC_SUBST(have__snprintf)
+
 AC_DEFUN(AC_CHECK_QHULL_VERSION,
 [AC_MSG_CHECKING([for qh_qhull in -lqhull with qh_version])
 AC_CACHE_VAL(ac_cv_lib_qhull_version,

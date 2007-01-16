@@ -32,6 +32,10 @@ extern "C" {
 #endif
 #include <octave/oct.h>
 
+#ifdef HAVE__SNPRINTF
+#define snprintf _snprintf
+#endif
+
 #ifdef NEED_QHULL_VERSION
 char qh_version[] = "convhulln.oct 2006-05-01";
 #endif

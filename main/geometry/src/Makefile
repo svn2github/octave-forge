@@ -11,6 +11,9 @@ endif
 ifeq ($(NEED_QHULL_VERSION),yes)
 	DEFS=-DNEED_QHULL_VERSION
 endif
+ifeq ($(HAVE__SNPRINTF),yes)
+	DEFS:=$(DEFS) -DHAVE__SNPRINTF
+endif
 %.oct: %.cc ; $(MKOCTFILE) $(DEFS) -lqhull $<
 
 ifeq ($(HAVE_QHULL),yes)

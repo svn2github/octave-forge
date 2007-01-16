@@ -87,6 +87,11 @@
 ##      your own default copyright and license
 ##   @end table
 ## 
+## mode
+##   This value determines whether the editor should be started in async mode
+##   or sync mode. Set it to "async" to start the editor in async mode. The
+##   default is "sync" (see also "system").
+## 
 ##   Unless you specify PD, edit will prepend the copyright statement 
 ##   with "Copyright (C) yyyy Function Author"
 ## @end table
@@ -104,10 +109,11 @@
 function ret = edit(file,state)
   ## pick up globals or default them
   persistent FUNCTION = struct ("EDITOR", [ EDITOR(), " %s" ],
-  				"HOME", [ getenv("HOME"), "/octave" ],
-  				"AUTHOR", getpwuid(getuid).gecos,
+  				"HOME", fullfile(default_home, "octave"),
+  				"AUTHOR", default_user(1),
   				"EMAIL",  [],
-  				"LICENSE",  "GPL");
+  				"LICENSE",  "GPL",
+				"MODE", "sync");
   mlock; # make sure the state variables survive "clear functions"
 
   if (nargin == 2)
@@ -116,7 +122,7 @@ function ret = edit(file,state)
     	FUNCTION.EDITOR=state;
     case 'HOME'
         if !isempty(state) && state(1) == '~'
-	  state = [ getenv("HOME"), state(2:end) ];
+	  state = [ default_home, state(2:end) ];
 	endif
     	FUNCTION.HOME=state;
     case 'AUTHOR'
@@ -125,19 +131,35 @@ function ret = edit(file,state)
     	FUNCTION.EMAIL=state;
     case 'LICENSE'
     	FUNCTION.LICENSE=state;
+    case 'MODE'
+	if (strcmp(state, "sync") || strcmp(state, "async"))
+          FUNCTION.MODE=state;
+        else
+    	  error('expected "edit MODE sync|async"');
+	endif
     case 'GET'
         ret = FUNCTION.(toupper(state));
     otherwise
-    	error('expected "edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE val"');
+    	error('expected "edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE|MODE val"');
     end
     return
   end
 
   ## start the editor without a file if no file is given
   if nargin < 1
-    system(['cd "',FUNCTION.HOME,'" ; ',sprintf(FUNCTION.EDITOR,"")]);
+    if (exist(FUNCTION.HOME, "dir") == 7 && (isunix() || !ispc()))
+      system(['cd "',FUNCTION.HOME,'" ; ',sprintf(FUNCTION.EDITOR,"")], [], FUNCTION.MODE);
+    else
+      system(sprintf(FUNCTION.EDITOR,""), [], FUNCTION.MODE);
+    endif
     return
   endif
+
+  ## check if the user is trying to edit a builtin of compiled function
+  switch (exist(file))
+    case {3,5}
+      error('unable to edit a built-in or compiled function');
+  end
 
   ## find file in path
   idx = rindex(file,'.');
@@ -161,23 +183,31 @@ function ret = edit(file,state)
       fclose(fid);
     else
       from = path;
-      path = [ FUNCTION.HOME, from(rindex(from,"/"):length(from)) ] ;
-      system (sprintf("cp '%s' '%s'", from, path));
+      path = [ FUNCTION.HOME, from(rindex(from,filesep):length(from)) ] ;
+      [status, msg] = copyfile (from, path, 1);
+      if (status == 0)
+        error (msg);
+      endif
     endif
-    system(sprintf(FUNCTION.EDITOR, ["'", path, "'"]));
+    system(sprintf(FUNCTION.EDITOR, ["\"", path, "\""]), [], FUNCTION.MODE);
     return
   endif
 
   ## if editing something other than a m-file or an oct-file, just
   ## edit it.
-  path = [ FUNCTION.HOME, "/", file ];
+  idx = rindex(file, filesep);
+  if idx != 0
+    path = file;
+  else
+    path = fullfile(FUNCTION.HOME, file);
+  endif
   idx = rindex(file,'.');
   name = file(1:idx-1);
   ext = file(idx+1:length(file));
   switch (ext)
     case { "cc", "m" } 0;
     otherwise
-      system(sprintf(FUNCTION.EDITOR, ["'", path, "'"]));
+      system(sprintf(FUNCTION.EDITOR, ["\"", path, "\""]), [], FUNCTION.MODE);
       return;
   endswitch
       
@@ -187,6 +217,9 @@ function ret = edit(file,state)
   ## guess the email name if it was not given.
   if (isempty(FUNCTION.EMAIL))
     host=getenv("HOSTNAME");
+    if (strcmp(host, "") && ispc ())
+      host = getenv ("COMPUTERNAME");
+    endif
     if isempty(host), 
       [status, host] = system("uname -n");
                                 # trim newline from end of hostname
@@ -195,7 +228,7 @@ function ret = edit(file,state)
     if isempty(host)
       FUNCTION.EMAIL = " ";
     else
-      FUNCTION.EMAIL = [ "<", getpwuid(getuid).name, "@", host, ">" ];
+      FUNCTION.EMAIL = [ "<", default_user(0), "@", host, ">" ];
     endif
   endif
     
@@ -316,6 +349,45 @@ SUCH DAMAGE.\
   fclose(fid);
 
   ## Finally we are ready to edit it!
-  system(sprintf(FUNCTION.EDITOR, ["'", path, "'"]));
+  system(sprintf(FUNCTION.EDITOR, ["\"", path, "\""]), [], FUNCTION.MODE);
+
+endfunction
+
+function ret = default_home
+
+  ret = getenv("HOME");
+  if (strcmp(ret, ""))
+    ret = glob("~");
+    if (!isempty(ret))
+      ret = ret{1};
+    else
+      ret = "";
+    endif
+  endif
+
+endfunction
+
+## default_user(form)
+## Returns the name associated with the current user ID.
+##
+## If form==1 return the full name.  This will be the
+## default author.  If form==0 return the login name.
+## login@host will be the default email address.
+
+function ret = default_user(long_form)
+
+  ent = getpwuid(getuid);
+  if (!isstruct(ent))
+    ret = getenv("USER");
+    if (strcmp(ret, ""))
+      ret = getenv("USERNAME");
+    endif
+  else
+    if (long_form)
+      ret = ent.gecos;
+    else
+      ret = ent.name;
+    endif
+  endif
 
 endfunction

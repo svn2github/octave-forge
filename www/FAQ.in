@@ -35,7 +35,7 @@ with the answers. You'll find the following topics covered by this page
      <code>pkg install -no-deps package_file_name.tar.gz</code>
    <p>
      If you choose to do this, you might experience problems with
-     the package. So in general the <em>-no-deps</em> is not recommended.
+     the package. So in general the <em>-no-deps</em> flag is not recommended.
    </p>
    
  <h3 class="question">How do I uninstall a package?</h3>
@@ -73,7 +73,7 @@ with the answers. You'll find the following topics covered by this page
    </p>
    
  <h3 class="question">I think I've found a bug in a package. What should I do?</h3>
-   <p>You should report it the developers. See <a href="bugs.html">this page</a>
+   <p>You should report it to the developers. See <a href="bugs.html">this page</a>
      for details.
    </p>
    

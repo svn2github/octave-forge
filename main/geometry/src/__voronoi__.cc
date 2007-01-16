@@ -94,7 +94,8 @@ Internal function for voronoi.\n\
 
 		facetT *facet;
 		vertexT *vertex;
-		unsigned int i=0,n=0,k=0,ni[np],m=0,fidx=0,j=0,r=0;
+		unsigned int i=0,n=0,k=0,m=0,fidx=0,j=0,r=0;
+		OCTAVE_LOCAL_BUFFER(unsigned int, ni, np);
 		for (int i=0;i<np;i++) ni[i]=0;
 		qh_setvoronoi_all();
 		bool infinity_seen = false;

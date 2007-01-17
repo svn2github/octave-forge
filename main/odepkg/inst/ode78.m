@@ -338,8 +338,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
           vretvalresult(vcntloop-1,:) = vevent{4}(end,:);
           vunhandledtermination = false; break;
         end
-     end
-
+      end
     end %# If the error is acceptable ...
 
     %# Update the step size for the next integration step

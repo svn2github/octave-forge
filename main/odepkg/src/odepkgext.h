@@ -20,32 +20,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #ifndef __ODEPKGEXT__
 #define __ODEPKGEXT__ 1
 
-typedef struct {
-  double *reltols;
-  size_t  reltoln;
-  double *abstols;
-  size_t  abstoln;
-  int     toltype;
-} _ttolerance;
-
-typedef struct {
-  mxArray *odeoptions;
-  mxArray *defoptions;
-} _todeoptions;
-
-typedef struct {
-  mxArray  *funhandle;
-  mxArray  *mexstring;
-  char     *funstring;
-  mxArray **funargs;
-  mwSize    funargn;
-} _todefunction;
-
-
-typedef _ttolerance ttolerance;
-typedef _todeoptions todeoptions;
-typedef _todefunction todefunction;
-
-extern bool fplotfunction (mxArray *vtime, mxArray *vvalues, mxArray *vflag, mxArray *voptions);
+bool fodepkgvar (const unsigned int vtodo, const char *vname, mxArray **vvalue);
+bool fodepkgplot (mxArray *vtime, mxArray *vvalues, mxArray *vflag);
 
 #endif /* __ODEPKGEXT__ */
+
+/*
+Local Variables: ***
+mode: C ***
+End: ***
+*/

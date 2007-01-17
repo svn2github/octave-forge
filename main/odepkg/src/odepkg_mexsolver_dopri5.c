@@ -18,51 +18,62 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 /* mkoctfile --mex -Wall -W -Wshadow -DHAVE_CONFIG_H -D__ODEPKGDEBUG__ -I./cprog\
-   odepkg_mexsolver_dopri5.c odepkgext.c cprog/dopri5.o
+   odepkg_mexsolver_dopri5.c odepkgmex.c odepkgext.c cprog/dopri5.o
 */
 /* octave --eval "A = odeset (\"RelTol\", 1e-3, \"AbsTol\", 1e-4, \"OutputFcn\", \
    @odeprint, \"OutputSel\", [2, 1], \"Refine\", 3); \
-   [A, B] = odepkg_mexsolver_dopri5 (@odepkg_equations_vanderpol, [0, 1], [2, 0], A, 12)"
+   [C, B] = odepkg_mexsolver_dopri5 (@odepkg_equations_vanderpol, [0, 1], [2, 0], A, 12)"
+*/
+
+/* mex -v -D__ODEPKGDEBUG__ -I./cprog odepkg_mexsolver_dopri5.c odepkgext.c odepkgmex.c cprog/dopri5.c
+   odepkg_mexsolver_dopri5 (@odepkg_equations_vanderpol, [0,2], [2,0])
 */
 
 #ifdef HAVE_CONFIG_H
-  #include "config.h"  /* Needed for GCC_ATTR_UNUSED */
+  #include "config.h"  /* Needed for GCC_ATTR_UNUSED if compiled with mkoctfile */
 #endif
-#include "mex.h"       /* Needed for the mex-definitions */
-#include <string.h>    /* Needed for the "memcpy" and "strcmp" functions */
-#include <stdio.h>     /* Should be removed */
-#include "dopri5.h"    /* Needed for the solver function "dopri5" */
-#include "odepkgmex.h" /* Needed for the mxIsVector, mxIsColumnVector etc. functions */
-#include "odepkgext.h" /* Needed for the fplotfunction, etc. */
 
-/* There is no other way to put values into the functions that are
-   needed by the dopri solvers. Therefore we put them via global
-   variables into the functiions. Make sure that the initialisation of
-   the following global variables is correct. */;
-todefunction vodefunction  = {NULL, NULL, NULL, NULL, 0};
-todefunction vplotfunction = {NULL, NULL, NULL, NULL, 0};
-todeoptions  vodeoptions   = {NULL, NULL};
+#include <mex.h>       /* Needed for all mex definitions */
+#include <string.h>    /* Needed for the memcpy function etc.*/
+#include "odepkgmex.h" /* Needed for the mex extensions */
+#include "odepkgext.h" /* Needed for the odepkg extensions */
+#include "dopri5.h"    /* Needed for the solver function */
 
-void fodefunction (unsigned n, double x, double *y, double *f) {
+/* These are the prototypes in this file */
+void fodefun (unsigned n, double x, double *y, double *f);
+void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn);
+void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]);
+
+void fodefun (unsigned n, double x, double *y, double *f) {
   int  vcnt = 0;
+  int  vnum = 0;
   char vmsg[64] = "";
+
+  mxArray  *vtmp = NULL;
   mxArray **vlhs = NULL;
   mxArray **vrhs = NULL;
 
+  /* Get number of varargin elements for allocating memory */
+  fodepkgvar (2, "varargin", &vtmp);
+  vnum = mxGetNumberOfElements (vtmp);
+
+  /* Allocate memory and set up variables lhs-arguments and rhs-arguments */
   vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
-  vrhs = (mxArray **) mxMalloc ((2 + vodefunction.funargn) * sizeof (mxArray *));
+  vrhs = (mxArray **) mxMalloc ((2 + vnum) * sizeof (mxArray *));
   vrhs[0] = mxCreateDoubleScalar (x);
-  vrhs[1] = mxCreateDoubleMatrix (1, n, mxREAL);
 
   /* Copy the values that are given from the solver into the mxArray */
+  vrhs[1] = mxCreateDoubleMatrix (1, n, mxREAL);
   memcpy ((void *) mxGetPr (vrhs[1]), (void *) y, n * sizeof (double));
-  if (vodefunction.funargn > 0) /* Fill up vrhs[2..] */
-    for (vcnt = 0; vcnt < vodefunction.funargn; vcnt++)
-      vrhs[vcnt+2] = vodefunction.funargs[vcnt];
+
+  if (vnum > 0) /* Fill up vrhs[2..] */
+    for (vcnt = 0; vcnt < vnum; vcnt++)
+      vrhs[vcnt+2] = mxGetCell (vtmp, vcnt);
 
   /* Evaluate the ode function in the octave caller workspace */
-  if (mexCallMATLAB (1, vlhs, vodefunction.funargn+2, vrhs, vodefunction.funstring)) {
-    sprintf (vmsg, "Calling \"%s\" has failed", vodefunction.funstring);
+  fodepkgvar (2, "odefun", &vtmp);
+  if (mexCallMATLAB (1, vlhs, vnum+2, vrhs, mxArrayToString (vtmp))) {
+    sprintf (vmsg, "Calling \"%s\" has failed", mxArrayToString (vtmp));
     mexErrMsgTxt (vmsg);
   }
 
@@ -72,57 +83,57 @@ void fodefunction (unsigned n, double x, double *y, double *f) {
   mxFree (vrhs); /* Free the vrhs mxArray */
 }
 
-void fodesolution (GCC_ATTR_UNUSED long nr, GCC_ATTR_UNUSED double xold, 
-                   double x, double* y, unsigned n, int* irtrn) {
+void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn) {
+  bool vsucc = false;
+  mxArray *vtmp = NULL;
 
-  bool vret = false;
+  fodepkgvar (2, "plotfun", &vtmp);
 
-  mxArray *vtime   = NULL;
-  mxArray *vvalues = NULL;
-  mxArray *vflag   = NULL;
-
-  vtime   = mxCreateDoubleScalar (x);
-  vvalues = mxCreateDoubleMatrix (1, n, mxREAL);
-  memcpy ((void *) mxGetPr (vvalues), (void *) y, n * sizeof (double));
-  vflag = mxCreateString (""); /* Do calculation ... */
-  vret = fplotfunction (vtime, vvalues, vflag, vodeoptions.odeoptions);
-
-  irtrn[0] = (int) (vret - 1); /* Stop integration on negative value */
-
+  /* Call plotting function if this is not the initial call */
+  if (!mxIsEmpty (vtmp) && nr > 1) {
+    vtmp = mxCreateDoubleMatrix (1, n, mxREAL);
+    memcpy ((void *) mxGetPr (vtmp), (void *) y, n * sizeof (double));
+    vsucc = fodepkgplot (mxCreateDoubleScalar (x), vtmp, mxCreateString (""));
+    irtrn[0] = ((int) vsucc) - 1;
+  }
 /* #ifdef __ODEPKGDEBUG__ */
-/*   if (nr == 1) */
-/*     mexPrintf ("ODEPKGDEBUG: n=%d step=%02d  told=%7.5f  time=%7.5f  y[1]=%7.5f  y[2]=%7.5f\n", */
-/*                n, nr, xold, x, y[0], y[1]); */
-/*   else  */
-/*     mexPrintf ("ODEPKGDEBUG: n=%d step=%02d  told=%7.5f  time=%7.5f  y[1]=%7.5f  y[2]=%7.5f\n", */
-/*                n, nr, xold, x, contd5(0,x), contd5(1,x)); */
+/*   mexPrintf ("%ld  %f  %f  %f  %f  %d  %d\n",  */
+/*     nr, xold, x, y[0], y[1], n, irtrn[0]); */
 /* #endif */
-
 }
 
 void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) { 
   int vcnt = 0;
-  int vodedimensions = 0;
+  int vnum = 0;
 
-  double *vtimeslot = NULL;
-  double *vinitvalues = NULL;
-  double vinitstep = 0.0;
-  double vmaximumstep = 0.0;
+  double *vdbl = NULL;
+  char    vmsg[64] = "";
 
-  ttolerance vtolerance = {NULL, 0, NULL, 0, 0}; /* Make sure that initialisation is correct */
+  mxArray *vtmp = NULL;
+  mxArray *vtem = NULL;
 
-  mxArray *vfieldvalue = NULL; /* This is a temporary mxArray */
-  mxArray *vtemporary  = NULL; /* This is a temporary mxArray */
+  int      vodedimen = 0;
+  double  *vtimeslot = NULL;
+  double  *vinitvals = NULL;
 
-int res;
-int iout;
+  int      vtoltype  = 0;
+  double  *vtolrelat = NULL;
+  double  *vtolabsol = NULL;
+
+  double   vinitstep = 0.0;
+  double   vmaxstep  = 0.0;
+
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER INITIALISATION PROCEDURE\n");
+#endif
+  fodepkgvar (0, NULL, NULL);
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
     mexFixMsgTxt ("Do something like this as in octave: help (\"ode23\");");
     mexErrMsgTxt ("Number of input arguments must be greater than zero");
   }
   else if (nrhs < 3) { /* Check if number of input arguments >= 3 */
-    mexUsgMsgTxt ("[t, y] = odetmpl (fun, slot, init, varargin)");
+    mexUsgMsgTxt ("[t, y] = odepkg_mexsolver_dopri5 (fun, slot, init, varargin)");
   }
   else if (mxGetClassID (prhs[0]) != mxFUNCTION_CLASS) {
     mexErrMsgTxt ("First input argument must be valid function handle");
@@ -136,146 +147,161 @@ int iout;
   else if (nrhs >= 4) {
 
     if (!mxIsStruct (prhs[3])) { /* No option structure has been set in prhs[3] */
-      vodefunction.funargn = nrhs - 3;
-      vodefunction.funargs = (mxArray **) mxCalloc (vodefunction.funargn, sizeof (mxArray *));
+      vnum = nrhs - 3; vtmp = mxCreateCellArray (1, &vnum);
       for (vcnt = 3; vcnt < nrhs; vcnt++)
-        vodefunction.funargs[vcnt-3] = mxDuplicateArray (prhs[vcnt]);
-
-      if (mexCallMATLAB (1, &vodeoptions.odeoptions, 0, NULL, "odeset")) 
+        mxSetCell (vtmp, vcnt-3, mxDuplicateArray (prhs[vcnt]));
+      fodepkgvar (1, "varargin", &vtmp);
+      if (mexCallMATLAB (1, &vtmp, 0, NULL, "odeset"))
         mexErrMsgTxt ("Calling \"odeset\" has failed");
+      fodepkgvar (1, "odeoptions", &vtmp);
     }
 
     else if (nrhs > 4) { /* An option structure and further arguments have been set */
-      vodefunction.funargn = nrhs - 4;
-      vodefunction.funargs = (mxArray **) mxCalloc (vodefunction.funargn, sizeof (mxArray *));
+      vnum = nrhs - 4; vtmp = mxCreateCellArray (1, &vnum);
       for (vcnt = 4; vcnt < nrhs; vcnt++)
-        vodefunction.funargs[vcnt-4] = mxDuplicateArray (prhs[vcnt]);
-
-      vodeoptions.defoptions = mxDuplicateArray (prhs[3]);
-      if (mexCallMATLAB (1, &vodeoptions.odeoptions, 1, &vodeoptions.defoptions, "odepkg_structure_check"))
+        mxSetCell (vtmp, vcnt-4, mxDuplicateArray (prhs[vcnt]));
+      fodepkgvar (1, "varargin", &vtmp);
+      vtem = mxDuplicateArray (prhs[3]);
+      if (mexCallMATLAB (1, &vtmp, 1, &vtem, "odepkg_structure_check"))
         mexErrMsgTxt ("Calling \"odepkg_structure_check\" has failed");
+      fodepkgvar (1, "odeoptions", &vtmp);
     }
 
     else { /* Only an option-structure and no further arguments have been set */
-      vodefunction.funargn = 0;
-      vodefunction.funargs = NULL;
-
-      vodeoptions.defoptions = mxDuplicateArray (prhs[3]);
-      if (mexCallMATLAB (1, &vodeoptions.odeoptions, 1, &vodeoptions.defoptions, "odepkg_structure_check"))
+      vnum = 0; vtmp = mxCreateCellArray (1, &vnum);
+      fodepkgvar (1, "varargin", &vtmp);
+      vtem = mxDuplicateArray (prhs[3]);
+      if (mexCallMATLAB (1, &vtmp, 1, &vtem, "odepkg_structure_check"))
         mexErrMsgTxt ("Calling \"odepkg_structure_check\" has failed");
+      fodepkgvar (1, "odeoptions", &vtmp);
     }
 
   } /* No valid function call has been found before - set the defaults */
   else {
-    mexCallMATLAB (1, &vodeoptions.odeoptions, 0, NULL, "odeset");
-    vodefunction.funargn = 0;
-    vodefunction.funargs = NULL;
+      vnum = 0; vtmp = mxCreateCellArray (1, &vnum);
+      fodepkgvar (1, "varargin", &vtmp);
+      if (mexCallMATLAB (1, &vtmp, 0, NULL, "odeset"))
+        mexErrMsgTxt ("Calling \"odeset\" has failed");
+      fodepkgvar (1, "odeoptions", &vtmp);
   }
+
   /* Get the default options (Calling 'odeset' without arguments) */
-  if (mexCallMATLAB (1, &vodeoptions.defoptions, 0, NULL, "odeset"))
+  if (mexCallMATLAB (1, &vtmp, 0, NULL, "odeset"))
     mexErrMsgTxt ("Calling \"odeset\" has failed");
-
-
+  fodepkgvar (1, "defoptions", &vtmp);
 
   /* Handle the prhs[0] element: The ode function that has to be solved */
-  vodefunction.funhandle = mxDuplicateArray (prhs[0]);
-  if (mexCallMATLAB (1, &vodefunction.mexstring, 1, &vodefunction.funhandle, "func2str"))
+  vtem = mxDuplicateArray (prhs[0]);
+  if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
     mexErrMsgTxt ("Calling \"func2str\" has failed");
-  vodefunction.funstring = mxArrayToString (vodefunction.mexstring);
-#ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: The function that has to be solved is \"%s\"\n", 
-             vodefunction.funstring);
-#endif
+  fodepkgvar (1, "odefun", &vtmp);
 
   /* Handle the prhs[1] element: Split the integration interval */
   if (mxGetM (prhs[1]) == 2 || mxGetN (prhs[1]) == 2) {
     vtimeslot = mxMalloc (2 * sizeof (double));
     memcpy ((void *) vtimeslot, (void *) mxGetPr (prhs[1]), 2 * sizeof (double));
   }
-  else mexErrMsgTxt ("Second input argument must be of size 1x2 or 2x1 for this solver");
+  else mexErrMsgTxt ("Second input argument for this solver must be of size 1x2 or 2x1");
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: Solving is done from tStart=%f to tStop=%f\n", 
              vtimeslot[0], vtimeslot[1]);
 #endif
 
   /* Handle the prhs[2] element: Set the initial values */
-  if (mxIsRowVector (prhs[2])) vodedimensions = mxGetN (prhs[2]);
-  else vodedimensions = mxGetM (prhs[2]);
-  vinitvalues = mxMalloc (vodedimensions * sizeof (double));
-  memcpy ((void *) vinitvalues, (void *) mxGetPr (prhs[2]), vodedimensions * sizeof (double));
+  if (mxIsRowVector (prhs[2])) vodedimen = (int) mxGetN (prhs[2]);
+  else vodedimen = (int) mxGetM (prhs[2]);
+  vinitvals = mxMalloc (vodedimen * sizeof (double));
+  vtmp = mxCreateDoubleScalar (vodedimen);
+  fodepkgvar (1, "odedim", &vtmp);
+  memcpy ((void *) vinitvals, (void *) mxGetPr (prhs[2]), vodedimen * sizeof (double));
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: Number of initial values is %d\n", vodedimensions);
-  mexPrintf ("ODEPKGDEBUG: Last element of initial values is %f\n", vinitvalues[vodedimensions-1]);
+  mexPrintf ("ODEPKGDEBUG: Number of initial values is %d\n", vodedimen);
+  mexPrintf ("ODEPKGDEBUG: Last element of initial values is %f\n", vinitvals[vodedimen-1]);
 #endif
 
-
-
-  /* Handle the odeoptions structure field: RELTOL, ABSTOL */
-  vfieldvalue = mxGetField (vodeoptions.odeoptions, 0, "RelTol");
-  if (mxIsRowVector (vfieldvalue)) vtolerance.reltoln = mxGetN (vfieldvalue);
-  else vtolerance.reltoln = mxGetM (vfieldvalue); /* if mxIsColumnVector */
-  vtolerance.reltols = mxMalloc (vtolerance.reltoln * sizeof (double));
-  memcpy ((void *) vtolerance.reltols, (void *) mxGetPr (vfieldvalue), vtolerance.reltoln * sizeof (double));
-
-  vfieldvalue = mxGetField (vodeoptions.odeoptions, 0, "AbsTol");
-  if (mxIsRowVector (vfieldvalue)) vtolerance.abstoln = mxGetN (vfieldvalue);
-  else vtolerance.abstoln = mxGetM (vfieldvalue); /* if mxIsColumnVector */
-  vtolerance.abstols = mxMalloc (vtolerance.abstoln * sizeof (double));
-  memcpy ((void *) vtolerance.abstols, (void *) mxGetPr (vfieldvalue), vtolerance.abstoln * sizeof (double));
+  /* Handle the odeoptions structure field: RELTOL */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  vtem = mxGetField (vtmp, 0, "RelTol");
+  if (mxIsRowVector (vtem)) vcnt = (int) mxGetN (vtem);
+  else vcnt = (int) mxGetM (vtem);
+  vtolrelat = mxMalloc (vcnt * sizeof (double));
+  memcpy ((void *) vtolrelat, (void *) mxGetPr (vtem), vcnt * sizeof (double));
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: Number of relative tolerances is %d\n", vtolerance.reltoln);
-  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", vtolerance.reltols[vtolerance.reltoln-1]);
-  mexPrintf ("ODEPKGDEBUG: Number of absolute tolerances is %d\n", vtolerance.abstoln);
-  mexPrintf ("ODEPKGDEBUG: Last element of absolute error is %f\n", vtolerance.abstols[vtolerance.abstoln-1]);
+  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", vtolrelat[vcnt-1]);
 #endif
- 
-  if (vtolerance.reltoln != vtolerance.abstoln)
+
+  /* Handle the odeoptions structure field: ABSTOL */
+  vtem = mxGetField (vtmp, 0, "AbsTol");
+  if (mxIsRowVector (vtem)) vnum = (int) mxGetN (vtem);
+  else vnum = (int) mxGetM (vtem);
+  vtolabsol = mxMalloc (vnum * sizeof (double));
+  memcpy ((void *) vtolabsol, (void *) mxGetPr (vtem), vnum * sizeof (double));
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", vtolabsol[vnum-1]);
+#endif
+
+  /* Handle the odeoptions structure field: RELTOL vs. ABSTOL */
+  if (vcnt != vnum)
     mexErrMsgTxt ("Values of \"AbsTol\" and \"RelTol\" must have same size");
-  else {
-    if (vtolerance.abstoln > 1) vtolerance.toltype = 1;
-    else vtolerance.toltype = 0;
-  }
+  else if (vcnt > 1) vtoltype = 1;
+  else vtoltype = 0;
 #ifdef __ODEPKGDEBUG__
-   mexPrintf ("ODEPKGDEBUG: Type of dopri tolerance handling is %d\n", vtolerance.toltype);
+   mexPrintf ("ODEPKGDEBUG: Type of dopri tolerance handling is %d\n", vtoltype);
 #endif
 
   /* Handle the odeoptions structure field: NORMCONTROL */
-  if (!mxIsEqual (mxGetField (vodeoptions.odeoptions, 0, "NormControl"),
-                  mxGetField (vodeoptions.defoptions, 0, "NormControl") ) )
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "NormControl"),
+                  mxGetField (vtem, 0, "NormControl") ) )
     mexWarnMsgTxt ("Option \"NormControl\" will be ignored by this solver");
 
   /* Handle the odeoptions structure field: OUTPUTFCN  */
-  vplotfunction.funhandle = mxGetField (vodeoptions.odeoptions, 0, "OutputFcn");
-  vplotfunction.mexstring = NULL; /* Make sure that this pointer is NULL */
-  vplotfunction.funstring = NULL; /* Make sure that this pointer is NULL */
-  if (mxIsEmpty (vplotfunction.funhandle) && (nlhs == 0)) {
-    vplotfunction.mexstring = mxCreateString ("odeplot");
-    vplotfunction.funstring = mxArrayToString (vplotfunction.mexstring);
-    if (mexCallMATLAB (1, &vplotfunction.funhandle, 1, &vplotfunction.mexstring, "str2func"))
-      mexErrMsgTxt ("Calling \"str2func\" has failed");
-  } /* else if mxIsEmpty (vplotfunction.funhandle) there is no output function */
-
+  fodepkgvar (2, "odeoptions", &vtmp);
+  vtem = mxGetField (vtmp, 0, "OutputFcn");
+  if (mxIsEmpty (vtem) && (nlhs == 0)) {
+    vtmp = mxCreateString ("odeplot");
+    fodepkgvar (1, "plotfun", &vtmp);
+  }
+  else if (!mxIsEmpty (vtem)) {
+    if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
+      mexErrMsgTxt ("Calling \"func2str\" has failed");
+    fodepkgvar (1, "plotfun", &vtmp);
+  }
   else {
-    if (!mxIsEmpty (vplotfunction.funhandle)) {
-      if (mexCallMATLAB (1, &vplotfunction.mexstring, 1, &vplotfunction.funhandle, "func2str"))
-        mexErrMsgTxt ("Calling \"func2str\" has failed");
-      vplotfunction.funstring = mxArrayToString (vplotfunction.mexstring);
-    }
+    vtmp = mxCreateString ("");
+    fodepkgvar (1, "plotfun", &vtmp);
   }
 #ifdef __ODEPKGDEBUG__
-  if (vplotfunction.funstring) mexPrintf ("ODEPKGDEBUG: The output function was set to \"%s\"\n", 
-    vplotfunction.funstring); /* An output function is set if !mxIsEmpty(funhandle) */
-  else mexPrintf ("ODEPKGDEBUG: No output function has been set.\n");
+  mexPrintf ("ODEPKGDEBUG: The output function was set to \"%s\"\n",
+             mxArrayToString (vtmp));
 #endif
 
-  /* Handle the odeoptions structure field: OUTPUTSEL. Implementation
-     of the option OUTPUTSEL has been finished. The output selection
-     itself is handled in the output function "fplotfunction" */
+  /* Handle the odeoptions structure field: OUTPUTSEL */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  vtmp = mxGetField (vtmp, 0, "OutputSel");
+  vtem = mxGetField (vtem, 0, "OutputSel");
+  if (!mxIsEqual (vtmp, vtem)) {
+    vnum = (int) mxGetNumberOfElements (vtmp);
+    vdbl = mxGetPr (vtmp);
+    for (vcnt = 0; vcnt < vnum; vcnt++)
+      if ((int)(vdbl[vcnt]) > vodedimen) {
+	sprintf (vmsg, "Found invalid number element \"%d\" in option \"OuputSel\"", 
+	  (int)(vdbl[vcnt]));
+	mexErrMsgTxt (vmsg);
+      }
+    fodepkgvar (1, "outputsel", &vtmp);
+  }
+  else fodepkgvar (1, "outputsel", &vtmp);
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: The outputsel option has successfully been set\n");
+#endif
 
   /* Handle the odeoptions structure field: REFINE */
-  vfieldvalue = mxGetField (vodeoptions.odeoptions, 0, "Refine");
-  vtemporary  = mxGetField (vodeoptions.defoptions, 0, "Refine");
-  if (*mxGetPr (vfieldvalue) != *mxGetPr (vtemporary))
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Refine"), mxGetField (vtem, 0, "Refine")))
     mexWarnMsgTxt ("Not yet implemented option \"Refine\" will be ignored");
 #ifdef __ODEPKGDEBUG__
   else
@@ -283,8 +309,9 @@ int iout;
 #endif
 
   /* Handle the odeoptions structure field: STATS */
-  if (!mxIsEqual (mxGetField (vodeoptions.odeoptions, 0, "Stats"), 
-                  mxGetField (vodeoptions.defoptions, 0, "Stats") ) )
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Stats"), mxGetField (vtem, 0, "Stats")))
     mexWarnMsgTxt ("Not yet implemented option \"Stats\" will be ignored");
 #ifdef __ODEPKGDEBUG__
   else
@@ -292,75 +319,175 @@ int iout;
 #endif
 
   /* Handle the odeoptions structure field: INITIALSTEP */
-  if (!mxIsEqual (mxGetField (vodeoptions.odeoptions, 0, "InitialStep"), 
-                  mxGetField (vodeoptions.defoptions, 0, "InitialStep") ) )
-    vinitstep = *mxGetPr (mxGetField (vodeoptions.odeoptions, 0, "InitialStep") );
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "InitialStep"), mxGetField (vtem, 0, "InitialStep")))
+    vinitstep = *mxGetPr (mxGetField (vtmp, 0, "InitialStep") );
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: The inital step size is %f\n", vinitstep);
 #endif
 
   /* Handle the odeoptions structure field: MAXSTEP */
-  if (!mxIsEqual (mxGetField (vodeoptions.odeoptions, 0, "MaxStep"), 
-                  mxGetField (vodeoptions.defoptions, 0, "MaxStep") ) )
-    vmaximumstep = *mxGetPr (mxGetField (vodeoptions.odeoptions, 0, "MaxStep") );
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "MaxStep"), mxGetField (vtem, 0, "MaxStep")))
+    vmaxstep = *mxGetPr (mxGetField (vtmp, 0, "MaxStep") );
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: The maximum step size is %f\n", vmaximumstep);
+  mexPrintf ("ODEPKGDEBUG: The maximum step size is %f\n", vmaxstep);
 #endif
 
+  /* Handle the odeoptions structure field: EVENTS */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Events"), mxGetField (vtem, 0, "Events")))
+    mexWarnMsgTxt ("Not yet implemented option \"Events\" will be ignored");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The Events option has not been set\n");
+#endif
 
-  /* Handle the odeoptions structure field: EVENT */
-  mexFixMsgTxt ("No implementation for Event by now");
-  /* No implementation for Jacobian by now */
-  mexFixMsgTxt ("No implementation for Jacobian by now");
-  /* No implementation for JPattern by now */
-  mexFixMsgTxt ("No implementation for JPattern by now");
-  /* No implementation for Vectorized by now */
-  mexFixMsgTxt ("No implementation for Vectorized by now");
-  /* No implementation for Mass by now */
-  mexFixMsgTxt ("No implementation for Mass by now");
-  /* No implementation for MStateDep by now */
-  mexFixMsgTxt ("No implementation for MStateDep by now");
-  /* No implementation for MvPattern by now */
-  mexFixMsgTxt ("No implementation for MvPattern by now");
-  /* No implementation for MassSingular by now */
-  mexFixMsgTxt ("No implementation for MassSingular by now");
-  /* No implementation for InitialSlope by now */
-  mexFixMsgTxt ("No implementation for InitialSlope by now");
-  /* No implementation for MaxOrder by now */
-  mexFixMsgTxt ("No implementation for MaxOrder by now");
-  /* No implementation for BDF by now */
-  mexFixMsgTxt ("No implementation for BDF by now");
+  /* Handle the odeoptions structure field: JACOBIAN */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Jacobian"), mxGetField (vtem, 0, "Jacobian")))
+    mexWarnMsgTxt ("Option \"Jacobian\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The Jacobian option has not been set\n");
+#endif
 
-  iout = 2;
+  /* Handle the odeoptions structure field: JPATTERN */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "JPattern"), mxGetField (vtem, 0, "JPattern")))
+    mexWarnMsgTxt ("Option \"JPattern\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The JPattern option has not been set\n");
+#endif
 
-  /*TODO REPLACE MXDUPLICTEARRAY */
-  fplotfunction (mxDuplicateArray (prhs[1]), /*TODO*/
-                 mxDuplicateArray (prhs[2]),
-                 mxCreateString ("init"),
-                 vodeoptions.odeoptions);
+  /* Handle the odeoptions structure field: VECTORIZED */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Vectorized"), mxGetField (vtem, 0, "Vectorized")))
+    mexWarnMsgTxt ("Option \"Vectorized\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The Vectorized option has not been set\n");
+#endif
 
-  /* Call the solver with all input arguments that can be used, here
-     are some comments about this implementation: */
-  res = dopri5 (vodedimensions, fodefunction, vtimeslot[0], vinitvalues, 
-                vtimeslot[1], vtolerance.reltols, vtolerance.abstols, 
-                vtolerance.toltype, fodesolution, iout,
-                stdout, 0.0, 0.0, 0.0, 0.0, 0.0, vmaximumstep, vinitstep, 
-                0, 0, 1, vodedimensions, NULL, vodedimensions);
+  /* Handle the odeoptions structure field: MASS */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Mass"), mxGetField (vtem, 0, "Mass")))
+    mexWarnMsgTxt ("Option \"Mass\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The Mass option has not been set\n");
+#endif
 
-  /*TODO REPLACE MXDUPLICTEARRAY */
-  fplotfunction (mxDuplicateArray (prhs[1]), /*TODO*/
-                 mxDuplicateArray (prhs[2]),
-                 mxCreateString ("done"),
-                 vodeoptions.odeoptions);
+  /* Handle the odeoptions structure field: MSTATEDEP */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "MStateDependence"), mxGetField (vtem, 0, "MStateDependence")))
+    mexWarnMsgTxt ("Option \"MStateDependence\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The MStateDependence option has not been set\n");
+#endif
 
-/*   plhs[0] = vplotfunction.funargs[0]; */
-/*   plhs[1] = vplotfunction.funargs[1]; */
-/*   plhs[2] = vplotfunction.funargs[2]; */
-/*   plhs[3] = vplotfunction.funargs[3]; */
+  /* Handle the odeoptions structure field: MVPATTERN */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "MvPattern"), mxGetField (vtem, 0, "MvPattern")))
+    mexWarnMsgTxt ("Option \"MvPattern\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The MvPattern option has not been set\n");
+#endif
 
-/*   mxFree (vtolerance.reltols); */
-/*   mxFree (vfunargs); */
+  /* Handle the odeoptions structure field: MASSSINGULAR */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "MassSingular"), mxGetField (vtem, 0, "MassSingular")))
+    mexWarnMsgTxt ("Option \"MassSingular\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The MassSingular option has not been set\n");
+#endif
 
+  /* Handle the odeoptions structure field: INITIALSLOPE */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "InitialSlope"), mxGetField (vtem, 0, "InitialSlope")))
+    mexWarnMsgTxt ("Option \"InitialSlope\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The InitialSlope option has not been set\n");
+#endif
+
+  /* Handle the odeoptions structure field: MAXORDER */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "MaxOrder"), mxGetField (vtem, 0, "MaxOrder")))
+    mexWarnMsgTxt ("Option \"MaxOrder\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The MaxOrder option has not been set\n");
+#endif
+
+  /* Handle the odeoptions structure field: BDF */
+  fodepkgvar (2, "odeoptions", &vtmp);
+  fodepkgvar (2, "defoptions", &vtem);
+  if (!mxIsEqual (mxGetField (vtmp, 0, "BDF"), mxGetField (vtem, 0, "BDF")))
+    mexWarnMsgTxt ("Option \"BDF\" will be ignored by this solver");
+#ifdef __ODEPKGDEBUG__
+  else
+    mexPrintf ("ODEPKGDEBUG: The BDF option has not been set\n");
+#endif
+
+  fodepkgvar (2, "plotfun", &vtmp);
+  if (!mxIsEmpty (vtmp)) {
+    vtmp = mxDuplicateArray (prhs[1]);
+    vtem = mxDuplicateArray (prhs[2]);
+    if (!fodepkgplot (vtmp, vtem, mxCreateString ("init"))) {
+      fodepkgvar (2, "plotfun", &vtmp);
+      sprintf (vmsg, "Error at initialisation of output function \"%s\"", mxArrayToString (vtmp));
+      mexErrMsgTxt (vmsg);
+    }
+  }
+/* #ifdef __ODEPKGDEBUG__ */
+/*   fodepkgvar (9, NULL, NULL); */
+/* #endif */
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER CALCULATION PROCEDURE\n");
+#endif
+
+  vnum = dopri5 (vodedimen, fodefun, vtimeslot[0], vinitvals, 
+    vtimeslot[1], vtolrelat, vtolabsol, vtoltype, fsolout, 2,
+    NULL, 0.0, 0.0, 0.0, 0.0, 0.0, vmaxstep, vinitstep, 
+    0, 0, 10, vodedimen, NULL, vodedimen);
+
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER CLEANUP PROCEDURE\n");
+#endif
+
+  fodepkgvar (2, "plotfun", &vtmp);
+  if (!mxIsEmpty (vtmp)) {
+    vtmp = mxDuplicateArray (prhs[1]);
+    vtem = mxDuplicateArray (prhs[2]);
+    if (!fodepkgplot (vtmp, vtem, mxCreateString ("done"))) {
+      fodepkgvar (2, "plotfun", &vtmp);
+      sprintf (vmsg, "Error at initialisation of output function \"%s\"", mxArrayToString (vtmp));
+      mexErrMsgTxt (vmsg);
+    }
+  }
+
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER POSTPROCESSING PROCEDURE\n");
+#endif
+
+  fodepkgvar (4, NULL, NULL);
 }
 
 /*

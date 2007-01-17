@@ -3,6 +3,14 @@ Created:     2006.08.16
 Creator:     Thomas Treichl
 Description: OdePkg ChangeLog File
 
+2007.01.17 Thomas Treichl
+	* odepkgmex.h, odepkgmex.c, odepkg_mexsolver_dopri5.c added
+	* odepkg_mexsolver_dopri5.c becomes more stable, all possible
+	  'odeset' options have to be implemented
+	* odepkg_mexsolver_dop853.c won't work anymore cause of a
+	  lot of changes in odepkgmex.c and odepkgext.c, file will be
+	  updated after finishing odepkg_mexsolver_dopri5.c
+
 2007.01.08 Thomas Treichl
 	* odepkgext.h, odepkgext.c added
 	* odepkg_mexsolver_dop853.c another step forward but with

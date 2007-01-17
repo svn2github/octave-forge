@@ -17,98 +17,137 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <stdio.h>
-#include <mex.h>
-#include "odepkgmex.h"
+#ifdef HAVE_CONFIG_H
+  #include "config.h"  /* Needed for GCC_ATTR_UNUSED if compiled with mkoctfile */
+#endif
+
+#include <mex.h>       /* Needed for all mex definitions */
+#include <string.h>    /* Needed for the strcmp function */
+#include <stdio.h>     /* Needed for the sprintf function */
 #include "odepkgext.h"
+#include "odepkgmex.h"
 
-extern todefunction vplotfunction;
-extern todefunction vodefunction;
-
-bool fplotfunction (mxArray *vtime, mxArray *vvalues, mxArray *vflag, mxArray *voptions) {
-  int  vcnt = 0;
+bool fodepkgvar (const unsigned int vtodo, const char *vname, mxArray **vvalue) {
+  int  cone = 1;
   bool vret = false;
-  char vmsg[64] = "";
+  int  vnmb = 0;
 
-  int     voutputseln = 0;
-  double *voutputsels = NULL;
-  double *voutputplot = NULL;
-  double *vinputvals  = NULL;
+  static mxArray *vodesetvar = NULL;
 
-  mxArray *vselect = NULL;
-  mxArray *vreturn = NULL;
+  switch (vtodo) {
+    case 0:  /* Initialisation has to be performed */
+      vodesetvar = mxCreateStructArray (1, &cone, 0, NULL);
+      vret = true;
+      break;
 
-  const mxArray *cinit = mxCreateString ("init");
-  const mxArray *ccalc = mxCreateString ("");
-  const mxArray *cdone = mxCreateString ("done");
+    case 1:  /* Setting a value has to be performed */
+      mxAddField (vodesetvar, vname);
+      vnmb = mxGetFieldNumber (vodesetvar, vname);
+      mxSetFieldByNumber (vodesetvar, 0, vnmb, mxDuplicateArray (vvalue[0]));
+      vret = true; /* mxDuplicateArray is used to delete variable outside */
+      break;
 
-/* #ifdef __ODEPKGDEBUG__ */
-/*   mexPrintf ("ODEPKGDEBUG: time=%7.5f  val[0]= %7.5f  flag=%s  sel[0]=%d\n",  */
-/*              *mxGetPr (vtime), *mxGetPr (vvalues),  */
-/*              mxArrayToString (vflag), (int) *mxGetPr (vselect)); */
-/* #endif */
+    case 2:  /* Getting a value has to be performed */
+      vnmb = mxGetFieldNumber (vodesetvar, vname);
+      vvalue[0] = mxGetFieldByNumber (vodesetvar, 0, vnmb);
+      vret = true;
+      break;
 
-  if (mxIsEqual (vflag, cinit)) {
-    vplotfunction.funargn = 3 + vodefunction.funargn;
-    vplotfunction.funargs = (mxArray **) mxMalloc (vplotfunction.funargn * sizeof (mxArray *));
-  }
+    case 3:  /* Removing a structure field and its value */
+      vnmb = mxGetFieldNumber (vodesetvar, vname);
+      mxRemoveField (vodesetvar, vnmb);
+      vret = true;
+      break;
 
-  /* Set the vplotfunction.funargs[0] element */
-  vplotfunction.funargs[0] = vtime;
+    case 4:  /* Removing the whole structure and clear memory */
+      mxDestroyArray (vodesetvar);
+      vret = true;
+      break;
 
-  /* Set the vplotfunction.funargs[1] element */
-  vselect = mxGetField (voptions, 0, "OutputSel");
-  if (mxIsEmpty (vselect)) /* All results are needed */
-    vplotfunction.funargs[1] = vvalues; /* mxDuplicateArray (vvalues) */
+    case 9:  /* Disp the whole structure (for debugging purpose) */
+      mexCallMATLAB (0, NULL, 1, &vodesetvar, "disp");
+      vret = true;
+      break;
 
-  else { /* OutputSel is not empty, only some results are needed */
-    voutputsels = mxGetPr (vselect);
-    voutputseln = mxGetNumberOfElements (vselect);
-
-    /* vplotfunction.funargs[1] must be a column vector */
-    vplotfunction.funargs[1] = mxCreateDoubleMatrix (voutputseln, 1, mxREAL);
-    voutputplot = mxGetPr (vplotfunction.funargs[1]);
-    vinputvals  = mxGetPr (vvalues);
-
-    if (voutputseln != 0)
-      for (vcnt = 0; vcnt < voutputseln; vcnt++) {
-        if (voutputseln < ((int)(voutputsels[vcnt]))) { /* Check if valid */
-          sprintf (vmsg, "No valid number element \"%d\" in option \"OutputSel\"", 
-            ((int)(voutputsels[vcnt]))); mexErrMsgTxt (vmsg); }
-        else voutputplot[vcnt] = vinputvals[((int)(voutputsels[vcnt]))-1];
-      }
-  }
-
-  /* Set the vplotfunction.funargs[2] element */
-  vplotfunction.funargs[2] = vflag;
-
-  /* Fill up vplotfunction.funargs[3..] if vflag == "init" */
-  if (mxIsEqual (vflag, cinit))
-    if (vodefunction.funargn > 0)
-      for (vcnt = 0; vcnt < vodefunction.funargn; vcnt++)
-        vplotfunction.funargs[vcnt+3] = vodefunction.funargs[vcnt];
-
-  /* Eval the output function */
-  if (mxIsEqual (vflag, ccalc)) {
-    vreturn = mxCreateLogicalScalar (false);
-    if (mexCallMATLAB (1, &vreturn, vplotfunction.funargn, vplotfunction.funargs, 
-                       vplotfunction.funstring)) {
-      sprintf (vmsg, "Calling \"%s\" has failed", vplotfunction.funstring);
-      mexErrMsgTxt (vmsg);
+    default: /* Nothing has to done, get out of here */
+      break;
     }
-    vret = mxIsLogicalScalarTrue (vreturn);
-    /* mxDestroyArray (vreturn); Needed or not needed? */
-  }
-  else if (mexCallMATLAB (0, NULL, vplotfunction.funargn, vplotfunction.funargs, 
-                          vplotfunction.funstring)) {
-    sprintf (vmsg, "Calling \"%s\" has failed", vplotfunction.funstring);
-    mexErrMsgTxt (vmsg);
-  }
-
-  if (mxIsEqual (vflag, cdone)) mxFree (vplotfunction.funargs);
-  /* mxDestroyArray (&cinit); Needed or not needed? */
-  /* mxDestroyArray (&ccalc); Needed or not needed? */
-  /* mxDestroyArray (&cdone); Needed or not needed? */
-
   return (vret);
 }
+
+bool fodepkgplot (mxArray *vtime, mxArray *vvalues, mxArray *vflag) {
+  bool vret = false;
+  int  vcnt = 0;
+  int  vnum = 0;
+  int  velm = 0;
+  char vmsg[64] = "";
+
+  double   *vdbl = NULL;
+  double   *vdob = NULL;
+  double   *vdou = NULL;
+
+  mxArray  *vtmp = NULL;
+  mxArray **vlhs = NULL;
+  mxArray **vrhs = NULL;
+
+  /* Get number of varargin elements for allocating memory */
+  fodepkgvar (2, "varargin", &vtmp);
+  velm = mxGetNumberOfElements (vtmp);
+  vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
+  vrhs = (mxArray **) mxMalloc ((3 + velm) * sizeof (mxArray *));
+
+  /* Set the vrhs[0] element for the plotting function */
+  vrhs[0] = vtime;
+
+  /* Set the vrhs[1] element for the plotting function */
+  fodepkgvar (2, "outputsel", &vtmp);
+  if (!mxIsEmpty (vtmp)) {
+    vnum = mxGetNumberOfElements (vtmp);
+    vdob = mxGetPr (vtmp);    /* vtmp = outputsel */
+    vrhs[1] = mxCreateDoubleMatrix (1, vnum, mxREAL);
+    vdbl = mxGetPr (vrhs[1]); /* vdbl = vrhs[1] */
+    vdou = mxGetPr (vvalues); /* vdou = vvalues */
+    for (vcnt = 0; vcnt < vnum; vcnt++)
+      vdbl[vcnt] = vdou[((int)(vdob[vcnt]))-1];
+  }
+  else vrhs[1] = vvalues;
+
+  /* Set the vrhs[2] element for the plotting function */
+  if (!mxIsEmpty (vflag)) vrhs[2] = vflag;
+  else vrhs[2] = mxCreateString ("");
+
+  /* Set the vrhs[3..] element for the plotting function */
+  fodepkgvar (2, "varargin", &vtmp);
+  if (velm > 0) /* Fill up vrhs[3..] */
+    for (vcnt = 0; vcnt < velm; vcnt++)
+      vrhs[3+vcnt] = mxGetCell (vtmp, vcnt);
+
+  /* Call the plotting function */
+  fodepkgvar (2, "plotfun", &vtmp);
+  if (strcmp (mxArrayToString (vflag), "init") ||
+      strcmp (mxArrayToString (vflag), "done")) {
+    if (mexCallMATLAB (0, NULL, 3+velm, vrhs, mxArrayToString (vtmp))) {
+      sprintf (vmsg, "Calling \"%s\" has failed", mxArrayToString (vtmp));
+      mexErrMsgTxt (vmsg);
+    }
+    vret = true;
+  }
+  else {
+    if (mexCallMATLAB (1, vlhs, 3+velm, vrhs, mxArrayToString (vtmp))) {
+      sprintf (vmsg, "Calling \"%s\" has failed", mxArrayToString (vtmp));
+      mexErrMsgTxt (vmsg);
+    }
+    if (!mxIsLogicalScalarTrue (vlhs[0])) vret = true;
+    else vret = false;
+  }
+
+  mxFree (vlhs); /* Free the vlhs mxArray */
+  mxFree (vrhs); /* Free the vrhs mxArray */
+  return (vret);
+}
+
+/*
+Local Variables: ***
+mode: C ***
+End: ***
+*/

@@ -564,7 +564,7 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   char tmp;
   int32_t itmp;
 
-  space_hid = H5Screate_simple (0, &hdims[0], (hsize_t*) 0);
+  space_hid = H5Screate_simple (0, hdims, (hsize_t*) 0);
   if (space_hid < 0) 
     {
       H5Gclose (group_hid);
@@ -616,7 +616,7 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   for (int i = 0, j = d.length() - 1; i < d.length (); i++, j--)
     hdims[i] = d (j);
 
-  space_hid = H5Screate_simple (d.length(), &hdims[0], (hsize_t*) 0);
+  space_hid = H5Screate_simple (d.length(), hdims, (hsize_t*) 0);
   if (space_hid < 0) return false;
 
   double *mtmp = mval.fortran_vec ();

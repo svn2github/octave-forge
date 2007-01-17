@@ -38,6 +38,7 @@ called with by the GSL names within octave.\n\
 @end deftypefn")
 {
   usage("gsl_sf");
+  return octave_value();
 }
 
 /*

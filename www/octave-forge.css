@@ -387,7 +387,7 @@ div.tab {
 /* only active for non-IE browsers */
 #left-switcher {
     /*border: solid 2px;*/
-    width: 15em;
+    width: 14em;
     height: 2em;
     position: fixed;
     top: 4.5em;
@@ -404,7 +404,7 @@ div.left-menu {
 	left: 0em;
 	margin: 2px;
 	padding: 0px;
-	width: 15em;
+	width: 14em;
 	bottom: 0em;
 	z-index: 2;
 }

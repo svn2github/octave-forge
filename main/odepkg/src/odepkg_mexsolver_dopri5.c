@@ -39,7 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "odepkgext.h" /* Needed for the odepkg extensions */
 #include "dopri5.h"    /* Needed for the solver function */
 
-/* These are the prototypes in this file */
+/* These are the prototypes from this file */
 void fodefun (unsigned n, double x, double *y, double *f);
 void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn);
 void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]);
@@ -87,27 +87,28 @@ void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn)
   bool vsucc = false;
   mxArray *vtmp = NULL;
 
+  /* Call plotting function if this is not the initial first call */
   fodepkgvar (2, "plotfun", &vtmp);
-
-  /* Call plotting function if this is not the initial call */
   if (!mxIsEmpty (vtmp) && nr > 1) {
     vtmp = mxCreateDoubleMatrix (1, n, mxREAL);
     memcpy ((void *) mxGetPr (vtmp), (void *) y, n * sizeof (double));
     vsucc = fodepkgplot (mxCreateDoubleScalar (x), vtmp, mxCreateString (""));
     irtrn[0] = ((int) vsucc) - 1;
   }
-/* #ifdef __ODEPKGDEBUG__ */
-/*   mexPrintf ("%ld  %f  %f  %f  %f  %d  %d\n",  */
-/*     nr, xold, x, y[0], y[1], n, irtrn[0]); */
-/* #endif */
+
+  /* #ifdef __ODEPKGDEBUG__ */
+  /*   mexPrintf ("%ld  %f  %f  %f  %f  %d  %d\n",  */
+  /*     nr, xold, x, y[0], y[1], n, irtrn[0]); */
+  /* #endif */
 }
 
 void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) { 
   int vcnt = 0;
   int vnum = 0;
+  int vone = 1;
 
-  double *vdbl = NULL;
-  char    vmsg[64] = "";
+  double  *vdbl = NULL;
+  char     vmsg[64] = "";
 
   mxArray *vtmp = NULL;
   mxArray *vtem = NULL;
@@ -311,8 +312,11 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* Handle the odeoptions structure field: STATS */
   fodepkgvar (2, "odeoptions", &vtmp);
   fodepkgvar (2, "defoptions", &vtem);
-  if (!mxIsEqual (mxGetField (vtmp, 0, "Stats"), mxGetField (vtem, 0, "Stats")))
-    mexWarnMsgTxt ("Not yet implemented option \"Stats\" will be ignored");
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Stats"), mxGetField (vtem, 0, "Stats"))) {
+    /* mexWarnMsgTxt ("Not yet implemented option \"Stats\" will be ignored"); */
+    vtmp = mxCreateLogicalScalar (true);
+    fodepkgvar (1, "stats", &vtmp);
+  }
 #ifdef __ODEPKGDEBUG__
   else
     mexPrintf ("ODEPKGDEBUG: The Stats option has not been set\n");
@@ -487,6 +491,59 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER POSTPROCESSING PROCEDURE\n");
 #endif
 
+  /* Handle the odeoptions structure field: STATS */
+  fodepkgvar (2, "stats", &vtmp);
+  if (mxIsLogicalScalarTrue (vtmp)) { /* Print additional information */
+    vnum = nstepRead (); /* A dopri solver function */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vsuccess", &vtem);
+    mexPrintf ("Number of used steps:     %d\n", vnum);
+
+    vnum = naccptRead (); /* A dopri solver function */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vaccept", &vtem);
+    mexPrintf ("Number of accepted steps: %d\n", vnum);
+
+    vnum = nrejctRead (); /* A dopri solver function */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vreject", &vtem);
+    mexPrintf ("Number of rejected steps: %d\n", vnum);
+
+    vnum = nfcnRead (); /* A dopri solver function */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vevals", &vtem);
+    mexPrintf ("Number of function calls: %d\n", vnum);
+  }
+
+  /* Handle the PLHS array */
+  if (nlhs == 1) {
+    plhs[0] = mxCreateStructArray (1, &vone, 0, NULL);
+
+    mxAddField (plhs[0], "x");
+    vnum = mxGetFieldNumber (plhs[0], "x");
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateDoubleScalar (0.0));
+
+    mxAddField (plhs[0], "y");
+    vnum = mxGetFieldNumber (plhs[0], "y");
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateDoubleScalar (0.0));
+
+    mxAddField (plhs[0], "solver");
+    vnum = mxGetFieldNumber (plhs[0], "solver");
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("ode5d"));
+
+    fodepkgvar (2, "stats", &vtmp);
+    if (mxIsLogicalScalarTrue (vtmp)) { /* Print additional information */
+
+    }
+  }
+  else if (nlhs == 2) {
+
+  }
+  else if (nlhs == 5) {
+
+  }
+
+  /* Cleanup the internal odepkgvar structure before returning */
   fodepkgvar (4, NULL, NULL);
 }
 

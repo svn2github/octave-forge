@@ -262,12 +262,6 @@ function [vret] = odepkg_structure_check (vret)
     end %# switch
   end %# for
 
-  %# Check sizes of the parameters RelTol and AbsTol
-%#  if (any (size (vret.AbsTol) ~= size (vret.RelTol)) == true)
-%#    vmsg = sprintf ('Sizes of parameters "RelTol" and "AbsTol" must be the same');
-%#    error (vmsg);
-%#  end 
-
   %# The following line can be uncommented for a even higher level error detection
   %# if (vint.len ~= 21)
   %#   vmsg = sprintf ('Number of fields in structure must match 21');
@@ -281,14 +275,13 @@ function [vret] = odepkg_structure_check (vret)
 %!
 %! odepkg_structure_check (odeset);
 %!
-%! %---------------------------------------------------------------
-%! % Returns the checked odepkg options structure created by
-%! % odeset.
+%! %----------------------------------------------------------------
+%! % Returns the checked odepkg options structure created by odeset.
 %!demo
 %!
 %! A = odeset (); odepkg_structure_check (A);
 %!
-%! %---------------------------------------------------------------
+%! %----------------------------------------------------------------
 %! % Create the odepkg options structure A with odeset and check
 %! % it with odepkg_structure_check.
 

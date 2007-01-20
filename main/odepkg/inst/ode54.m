@@ -145,6 +145,8 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   if (isempty (vodeoptions.MaxStep) == true)
     vodeoptions.MaxStep = abs (vslot(1,1) - vslot(1,length (vslot))) / 10; end
 
+  %# Implementation of the option Events has been finished. This option
+  %# can be set by the user to another value than default value.
   if (isequal (vodeoptions.Events, vodetemp.Events) == false)
     vhaveeventfunction = true; %# default value is []
   else, vhaveeventfunction = false; end
@@ -316,8 +318,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
           vretvalresult(vcntloop-1,:) = vevent{4}(end,:);
           vunhandledtermination = false; break;
         end
-     end
-
+      end
     end %# If the error is acceptable ...
 
     %# Update the step size for the next integration step
@@ -340,7 +341,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       vmsg = sprintf (['Solving has not been successful. The iterative', ...
         ' integration loop exited at time t = %f before endpoint at', ...
         ' tend = %f was reached. This happened because the iterative', ...
-        ' integration loop does not find a valid soultion at this time', ...
+        ' integration loop does not find a valid solution at this time', ...
         ' stamp. Try to reduce the value of "InitialStep" and/or', ...
         ' "MaxStep" with the command "odeset".\n'], vtimestamp, vtimestop);
       error (vmsg);

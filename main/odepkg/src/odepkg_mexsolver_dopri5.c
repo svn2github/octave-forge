@@ -63,7 +63,7 @@ void fodefun (unsigned n, double x, double *y, double *f) {
   vrhs[0] = mxCreateDoubleScalar (x);
 
   /* Copy the values that are given from the solver into the mxArray */
-  vrhs[1] = mxCreateDoubleMatrix (1, n, mxREAL);
+  vrhs[1] = mxCreateDoubleMatrix (n, 1, mxREAL);
   memcpy ((void *) mxGetPr (vrhs[1]), (void *) y, n * sizeof (double));
 
   if (vnum > 0) /* Fill up vrhs[2..] */
@@ -84,16 +84,21 @@ void fodefun (unsigned n, double x, double *y, double *f) {
 }
 
 void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn) {
-  bool vsucc = false;
+  bool     vsuc = false;
   mxArray *vtmp = NULL;
+  mxArray *vtem = NULL;
+  mxArray *vtim = NULL;
+
+  /* Convert the double *y into a selection of variables */
+  fy2mxArray (n, y, &vtem);
+  vtim = mxCreateDoubleScalar (x);
+  if (nr > 1) fsolstore (1, &vtim, &vtem);
 
   /* Call plotting function if this is not the initial first call */
   fodepkgvar (2, "plotfun", &vtmp);
   if (!mxIsEmpty (vtmp) && nr > 1) {
-    vtmp = mxCreateDoubleMatrix (1, n, mxREAL);
-    memcpy ((void *) mxGetPr (vtmp), (void *) y, n * sizeof (double));
-    vsucc = fodepkgplot (mxCreateDoubleScalar (x), vtmp, mxCreateString (""));
-    irtrn[0] = ((int) vsucc) - 1;
+    vsuc = fodepkgplot (vtim, vtem, mxCreateString (""));
+    irtrn[0] = ((int) vsuc) - 1;
   }
 
   /* #ifdef __ODEPKGDEBUG__ */
@@ -130,7 +135,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (0, NULL, NULL);
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
-    mexFixMsgTxt ("Do something like this as in octave: help (\"ode23\");");
+    vtmp = mxCreateString ("ode5d");
+    if (mexCallMATLAB (0, NULL, 1, &vtmp, "help"))
+      mexErrMsgTxt ("Calling \"help\" has failed");
     mexErrMsgTxt ("Number of input arguments must be greater than zero");
   }
   else if (nrhs < 3) { /* Check if number of input arguments >= 3 */
@@ -317,10 +324,13 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vtmp = mxCreateLogicalScalar (true);
     fodepkgvar (1, "stats", &vtmp);
   }
+  else {
+    vtmp = mxCreateLogicalScalar (false);
+    fodepkgvar (1, "stats", &vtmp);
 #ifdef __ODEPKGDEBUG__
-  else
     mexPrintf ("ODEPKGDEBUG: The Stats option has not been set\n");
 #endif
+  }
 
   /* Handle the odeoptions structure field: INITIALSTEP */
   fodepkgvar (2, "odeoptions", &vtmp);
@@ -450,10 +460,11 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     mexPrintf ("ODEPKGDEBUG: The BDF option has not been set\n");
 #endif
 
+  /* Initialize the function: FODEPKGPLOT */
   fodepkgvar (2, "plotfun", &vtmp);
   if (!mxIsEmpty (vtmp)) {
     vtmp = mxDuplicateArray (prhs[1]);
-    vtem = mxDuplicateArray (prhs[2]);
+    fy2mxArray (vodedimen, vinitvals, &vtem);
     if (!fodepkgplot (vtmp, vtem, mxCreateString ("init"))) {
       fodepkgvar (2, "plotfun", &vtmp);
       sprintf (vmsg, "Error at initialisation of output function \"%s\"", mxArrayToString (vtmp));
@@ -463,29 +474,20 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 /* #ifdef __ODEPKGDEBUG__ */
 /*   fodepkgvar (9, NULL, NULL); */
 /* #endif */
+
+  /* Initialize the function: FSOLSTORE */
+  vtmp = mxCreateDoubleScalar (vtimeslot[0]);
+  fy2mxArray (vodedimen, vinitvals, &vtem);
+  fsolstore (0, &vtmp, &vtem);
+
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER CALCULATION PROCEDURE\n");
 #endif
 
   vnum = dopri5 (vodedimen, fodefun, vtimeslot[0], vinitvals, 
     vtimeslot[1], vtolrelat, vtolabsol, vtoltype, fsolout, 2,
-    NULL, 0.0, 0.0, 0.0, 0.0, 0.0, vmaxstep, vinitstep, 
+    stdout, 0.0, 0.0, 0.0, 0.0, 0.0, vmaxstep, vinitstep, 
     0, 0, 10, vodedimen, NULL, vodedimen);
-
-#ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER CLEANUP PROCEDURE\n");
-#endif
-
-  fodepkgvar (2, "plotfun", &vtmp);
-  if (!mxIsEmpty (vtmp)) {
-    vtmp = mxDuplicateArray (prhs[1]);
-    vtem = mxDuplicateArray (prhs[2]);
-    if (!fodepkgplot (vtmp, vtem, mxCreateString ("done"))) {
-      fodepkgvar (2, "plotfun", &vtmp);
-      sprintf (vmsg, "Error at initialisation of output function \"%s\"", mxArrayToString (vtmp));
-      mexErrMsgTxt (vmsg);
-    }
-  }
 
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER POSTPROCESSING PROCEDURE\n");
@@ -494,7 +496,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* Handle the odeoptions structure field: STATS */
   fodepkgvar (2, "stats", &vtmp);
   if (mxIsLogicalScalarTrue (vtmp)) { /* Print additional information */
-    vnum = nstepRead (); /* A dopri solver function */
+    vnum = nstepRead ();  /* A dopri solver function */
     vtem = mxCreateDoubleScalar ((double) vnum);
     fodepkgvar (1, "vsuccess", &vtem);
     mexPrintf ("Number of used steps:     %d\n", vnum);
@@ -509,9 +511,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     fodepkgvar (1, "vreject", &vtem);
     mexPrintf ("Number of rejected steps: %d\n", vnum);
 
-    vnum = nfcnRead (); /* A dopri solver function */
+    vnum = nfcnRead ();  /* A dopri solver function */
     vtem = mxCreateDoubleScalar ((double) vnum);
-    fodepkgvar (1, "vevals", &vtem);
+    fodepkgvar (1, "vfevals", &vtem);
     mexPrintf ("Number of function calls: %d\n", vnum);
   }
 
@@ -519,31 +521,97 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (nlhs == 1) {
     plhs[0] = mxCreateStructArray (1, &vone, 0, NULL);
 
+    fsolstore (2, &vtmp, &vtem);
+
     mxAddField (plhs[0], "x");
     vnum = mxGetFieldNumber (plhs[0], "x");
-    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateDoubleScalar (0.0));
+    mxSetFieldByNumber (plhs[0], 0, vnum, vtmp);
+
+    if (mexCallMATLAB (1, &vtmp, 1, &vtem, "transpose"))
+      mexErrMsgTxt ("Calling \"transpose\" has failed");
 
     mxAddField (plhs[0], "y");
     vnum = mxGetFieldNumber (plhs[0], "y");
-    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateDoubleScalar (0.0));
+    mxSetFieldByNumber (plhs[0], 0, vnum, vtmp);
 
     mxAddField (plhs[0], "solver");
     vnum = mxGetFieldNumber (plhs[0], "solver");
     mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("ode5d"));
 
     fodepkgvar (2, "stats", &vtmp);
-    if (mxIsLogicalScalarTrue (vtmp)) { /* Print additional information */
+    if (mxIsLogicalScalarTrue (vtmp)) { /* Put additional information */
+      vtmp = mxCreateStructArray (1, &vone, 0, NULL);
+
+      mxAddField (vtmp, "success");
+      vnum = mxGetFieldNumber (vtmp, "success");
+      fodepkgvar (2, "vsuccess", &vtem);
+      mxSetFieldByNumber (vtmp, 0, vnum, vtem);
+
+      mxAddField (vtmp, "failed");
+      vnum = mxGetFieldNumber (vtmp, "failed");
+      fodepkgvar (2, "vreject", &vtem);
+      mxSetFieldByNumber (vtmp, 0, vnum, vtem);
+
+      mxAddField (vtmp, "fevals");
+      vnum = mxGetFieldNumber (vtmp, "fevals");
+      fodepkgvar (2, "vfevals", &vtem);
+      mxSetFieldByNumber (vtmp, 0, vnum, vtem);
+
+      mxAddField (vtmp, "partial");
+      vnum = mxGetFieldNumber (vtmp, "partial");
+      mxSetFieldByNumber (vtmp, 0, vnum, mxCreateDoubleScalar (0.0));
+
+      mxAddField (vtmp, "ludecom");
+      vnum = mxGetFieldNumber (vtmp, "ludecom");
+      mxSetFieldByNumber (vtmp, 0, vnum, mxCreateDoubleScalar (0.0));
+
+      mxAddField (vtmp, "linsol");
+      vnum = mxGetFieldNumber (vtmp, "linsol");
+      mxSetFieldByNumber (vtmp, 0, vnum, mxCreateDoubleScalar (0.0));
+
+      mxAddField (plhs[0], "stats");
+      vnum = mxGetFieldNumber (plhs[0], "stats");
+      mxSetFieldByNumber (plhs[0], 0, vnum, vtmp);
 
     }
   }
-  else if (nlhs == 2) {
 
+  else if (nlhs == 2) {
+    fsolstore (2, &vtmp, &vtem);
+    plhs[0] = vtmp;
+    if (mexCallMATLAB (1, &vtmp, 1, &vtem, "transpose"))
+      mexErrMsgTxt ("Calling \"transpose\" has failed");
+    plhs[1] = vtmp;
   }
+
   else if (nlhs == 5) {
 
   }
 
-  /* Cleanup the internal odepkgvar structure before returning */
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER CLEANUP PROCEDURE\n");
+#endif
+
+/*   fsolstore (2, vtmp, vtem); */
+/*   vdbl = mxGetPr (vtmp); */
+/*   mexPrintf ("-----> %f\n", vdbl[0]); */
+/*   plhs[0] = vtmp; */
+
+  /* Cleanup all internals of: FODEPKGPLOT */
+  fodepkgvar (2, "plotfun", &vtmp);
+  if (!mxIsEmpty (vtmp)) {
+    vtmp = mxDuplicateArray (prhs[1]);
+    vtem = mxDuplicateArray (prhs[2]);
+    if (!fodepkgplot (vtmp, vtem, mxCreateString ("done"))) {
+      fodepkgvar (2, "plotfun", &vtmp);
+      sprintf (vmsg, "Error at finalisation of output function \"%s\"", mxArrayToString (vtmp));
+      mexErrMsgTxt (vmsg);
+    }
+  }
+
+  /* Cleanup all internals of: FSOLSTORE */
+  fsolstore (4, NULL, NULL);
+  /* Cleanup all internals of: FODEPKGVAR */
   fodepkgvar (4, NULL, NULL);
 }
 

@@ -75,16 +75,82 @@ bool fodepkgvar (const unsigned int vtodo, const char *vname, mxArray **vvalue) 
   return (vret);
 }
 
+bool fsolstore (unsigned int vz, mxArray **vt, mxArray **vy) {
+  bool vret = false;
+  static int vdim = 0;
+  static int vcnt = 0;
+  static double *vtstore = NULL;
+  static double *vystore = NULL;
+
+  switch (vz) {
+    case 0:
+      vtstore = (double *) mxMalloc (1 * sizeof (double));
+      memcpy ((void *) (vtstore + 0), (void *) mxGetPr (vt[0]), 1 * sizeof (double));
+      vdim = mxGetNumberOfElements (vy[0]);
+      vystore = (double *) mxMalloc (vdim * sizeof (double));
+      memcpy ((void *) (vystore + 0), (void *) mxGetPr (vy[0]), vdim * sizeof (double));
+      vcnt = 0; vcnt++; vret = true; break;
+
+    case 1:
+      vtstore = (double *) mxRealloc (vtstore, (vcnt+1) * sizeof (double));
+      memcpy ((void *) (vtstore+vcnt), (void *) mxGetPr (vt[0]), sizeof (double));
+      vystore = (double *) mxRealloc (vystore, (vcnt+1) * vdim * sizeof (double));
+      memcpy ((void *) (vystore+(vcnt*vdim)), (void *) mxGetPr (vy[0]), vdim * sizeof (double));
+      vcnt++; vret = true; break;
+
+    case 2:
+      vt[0] = mxCreateDoubleMatrix (vcnt, 1, mxREAL);
+      memcpy ((void *) mxGetPr (vt[0]), (void *) vtstore, vcnt * sizeof (double));
+      vy[0] = mxCreateDoubleMatrix (vdim, vcnt, mxREAL);
+      memcpy ((void *) mxGetPr (vy[0]), (void *) vystore, vcnt * vdim * sizeof (double));
+      vret = true; break;
+
+    case 3:
+      break;
+
+    case 4:
+      mxFree (vtstore);
+      mxFree (vystore);
+      vret = true; break;
+
+    default:
+      break;
+  }
+
+  return (vret);
+}
+
+bool fy2mxArray (unsigned int n, double *y, mxArray **vval) {
+  int      vnum = 0;
+  int      vcnt = 0;
+  double  *vdbl = NULL;
+  double  *vdob = NULL;
+  mxArray *vtmp = NULL;
+
+  fodepkgvar (2, "outputsel", &vtmp);
+  if (!mxIsEmpty (vtmp)) {
+    vnum = mxGetNumberOfElements (vtmp);
+    vdob = mxGetPr (vtmp);    /* vdob = outputsel[0] */
+
+    vval[0] = mxCreateDoubleMatrix (vnum, 1, mxREAL);
+    vdbl = mxGetPr (vval[0]); /* vdbl = vval[0] */
+
+    for (vcnt = 0; vcnt < vnum; vcnt++)
+      vdbl[vcnt] = y[((int)(vdob[vcnt]))-1];
+  }
+  else {
+    vval[0] = mxCreateDoubleMatrix (n, 1, mxREAL);
+    memcpy ((void *) mxGetPr (vval[0]), (void *) y, n * sizeof (double));
+  }
+
+  return (true);
+}
+
 bool fodepkgplot (mxArray *vtime, mxArray *vvalues, mxArray *vflag) {
   bool vret = false;
   int  vcnt = 0;
-  int  vnum = 0;
   int  velm = 0;
   char vmsg[64] = "";
-
-  double   *vdbl = NULL;
-  double   *vdob = NULL;
-  double   *vdou = NULL;
 
   mxArray  *vtmp = NULL;
   mxArray **vlhs = NULL;
@@ -100,17 +166,7 @@ bool fodepkgplot (mxArray *vtime, mxArray *vvalues, mxArray *vflag) {
   vrhs[0] = vtime;
 
   /* Set the vrhs[1] element for the plotting function */
-  fodepkgvar (2, "outputsel", &vtmp);
-  if (!mxIsEmpty (vtmp)) {
-    vnum = mxGetNumberOfElements (vtmp);
-    vdob = mxGetPr (vtmp);    /* vtmp = outputsel */
-    vrhs[1] = mxCreateDoubleMatrix (1, vnum, mxREAL);
-    vdbl = mxGetPr (vrhs[1]); /* vdbl = vrhs[1] */
-    vdou = mxGetPr (vvalues); /* vdou = vvalues */
-    for (vcnt = 0; vcnt < vnum; vcnt++)
-      vdbl[vcnt] = vdou[((int)(vdob[vcnt]))-1];
-  }
-  else vrhs[1] = vvalues;
+  vrhs[1] = vvalues;
 
   /* Set the vrhs[2] element for the plotting function */
   if (!mxIsEmpty (vflag)) vrhs[2] = vflag;

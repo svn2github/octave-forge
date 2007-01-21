@@ -209,7 +209,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vtimeslot = mxMalloc (2 * sizeof (double));
     memcpy ((void *) vtimeslot, (void *) mxGetPr (prhs[1]), 2 * sizeof (double));
   }
-  else mexErrMsgTxt ("Second input argument for this solver must be of size 1x2 or 2x1");
+  else mexErrMsgTxt ("Second input argument of this solver must be of size 1x2 or 2x1");
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: Solving is done from tStart=%f to tStop=%f\n", 
              vtimeslot[0], vtimeslot[1]);
@@ -527,12 +527,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vnum = mxGetFieldNumber (plhs[0], "x");
     mxSetFieldByNumber (plhs[0], 0, vnum, vtmp);
 
-    if (mexCallMATLAB (1, &vtmp, 1, &vtem, "transpose"))
-      mexErrMsgTxt ("Calling \"transpose\" has failed");
-
     mxAddField (plhs[0], "y");
     vnum = mxGetFieldNumber (plhs[0], "y");
-    mxSetFieldByNumber (plhs[0], 0, vnum, vtmp);
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxTransposeMatrix (vtem));
 
     mxAddField (plhs[0], "solver");
     vnum = mxGetFieldNumber (plhs[0], "solver");
@@ -540,38 +537,38 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
     fodepkgvar (2, "stats", &vtmp);
     if (mxIsLogicalScalarTrue (vtmp)) { /* Put additional information */
-      vtmp = mxCreateStructArray (1, &vone, 0, NULL);
+      vtem = mxCreateStructArray (1, &vone, 0, NULL);
 
-      mxAddField (vtmp, "success");
-      vnum = mxGetFieldNumber (vtmp, "success");
-      fodepkgvar (2, "vsuccess", &vtem);
-      mxSetFieldByNumber (vtmp, 0, vnum, vtem);
+      mxAddField (vtem, "success");
+      vnum = mxGetFieldNumber (vtem, "success");
+      fodepkgvar (2, "vsuccess", &vtmp);
+      mxSetFieldByNumber (vtem, 0, vnum, mxDuplicateArray (vtmp));
 
-      mxAddField (vtmp, "failed");
-      vnum = mxGetFieldNumber (vtmp, "failed");
-      fodepkgvar (2, "vreject", &vtem);
-      mxSetFieldByNumber (vtmp, 0, vnum, vtem);
+      mxAddField (vtem, "failed");
+      vnum = mxGetFieldNumber (vtem, "failed");
+      fodepkgvar (2, "vreject", &vtmp);
+      mxSetFieldByNumber (vtem, 0, vnum, mxDuplicateArray (vtmp));
 
-      mxAddField (vtmp, "fevals");
-      vnum = mxGetFieldNumber (vtmp, "fevals");
-      fodepkgvar (2, "vfevals", &vtem);
-      mxSetFieldByNumber (vtmp, 0, vnum, vtem);
+      mxAddField (vtem, "fevals");
+      vnum = mxGetFieldNumber (vtem, "fevals");
+      fodepkgvar (2, "vfevals", &vtmp);
+      mxSetFieldByNumber (vtem, 0, vnum, mxDuplicateArray (vtmp));
 
-      mxAddField (vtmp, "partial");
-      vnum = mxGetFieldNumber (vtmp, "partial");
-      mxSetFieldByNumber (vtmp, 0, vnum, mxCreateDoubleScalar (0.0));
+      mxAddField (vtem, "partial");
+      vnum = mxGetFieldNumber (vtem, "partial");
+      mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
 
-      mxAddField (vtmp, "ludecom");
-      vnum = mxGetFieldNumber (vtmp, "ludecom");
-      mxSetFieldByNumber (vtmp, 0, vnum, mxCreateDoubleScalar (0.0));
+      mxAddField (vtem, "ludecom");
+      vnum = mxGetFieldNumber (vtem, "ludecom");
+      mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
 
-      mxAddField (vtmp, "linsol");
-      vnum = mxGetFieldNumber (vtmp, "linsol");
-      mxSetFieldByNumber (vtmp, 0, vnum, mxCreateDoubleScalar (0.0));
+      mxAddField (vtem, "linsol");
+      vnum = mxGetFieldNumber (vtem, "linsol");
+      mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
 
       mxAddField (plhs[0], "stats");
       vnum = mxGetFieldNumber (plhs[0], "stats");
-      mxSetFieldByNumber (plhs[0], 0, vnum, vtmp);
+      mxSetFieldByNumber (plhs[0], 0, vnum, vtem);
 
     }
   }
@@ -579,9 +576,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   else if (nlhs == 2) {
     fsolstore (2, &vtmp, &vtem);
     plhs[0] = vtmp;
-    if (mexCallMATLAB (1, &vtmp, 1, &vtem, "transpose"))
-      mexErrMsgTxt ("Calling \"transpose\" has failed");
-    plhs[1] = vtmp;
+    plhs[1] = mxTransposeMatrix (vtem);
   }
 
   else if (nlhs == 5) {

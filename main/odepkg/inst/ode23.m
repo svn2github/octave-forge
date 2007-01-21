@@ -90,11 +90,14 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 
   %# Implementation of the option RelTol has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isequal (vodeoptions.RelTol, vodetemp.RelTol) == false && ...
+  if (isscalar (vodeoptions.RelTol) == false)
+    error ('Option "RelTol" must be a scalar value for this solver');
+  elseif (isequal (vodeoptions.RelTol, vodetemp.RelTol) == false && ...
       vstepsizegiven == true)
     vmsg = strcat ('Option "RelTol" will be ignored if fixed time', ...
       ' stamps = [t0 t1 ...] are given');
-    warning (vmsg); end
+    warning (vmsg);
+  end
 
   %# Implementation of the option AbsTol has been finished. This option
   %# can be set by the user to another value than default value.
@@ -126,8 +129,10 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   if (isempty (vodeoptions.OutputSel) == false), vhaveoutputselection = true;
   else, vhaveoutputselection = false; end %# default value is []
 
+  %# Implementation of the option Refine has been finished. This option
+  %# can be set by the user to another value than default value.
   if (isequal (vodeoptions.Refine, vodetemp.Refine) == false)
-    warning ('Not yet implemented option "Refine" will be ignored'); end
+    vhaverefine = true; else, vhaverefine = false; end
 
   %# Implementation of the option Stats has been finished. This option
   %# can be set by the user to another value than default value.
@@ -137,7 +142,9 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   %# Implementation of the option InitialStep has been finished. This option
   %# can be set by the user to another value than default value.
   if (isequal (vodeoptions.InitialStep, vodetemp.InitialStep) == true)
-    vodeoptions.InitialStep = abs (vslot(1,1) - vslot(1,2)) / 10; end
+    vodeoptions.InitialStep = abs (vslot(1,1) - vslot(1,2)) / 10;
+    vodeoptions.InitialStep = vodeoptions.InitialStep / 10^vodeoptions.Refine;
+  end
 
   %# Implementation of the option MaxStep has been finished. This option
   %# can be set by the user to another value than default value.
@@ -227,7 +234,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       vretvalresult', 'init', vfunarguments{:});
   end
 
-  vpow = 1/4;               %# See p.91 in Ascher & Petzold
+  vpow = 1/8;               %# See p.91 in Ascher & Petzold
   va = [0, 0, 0, 0;         %# The Runge-Kutta-Fehlberg 2(3) coefficients
         1/4, 0, 0, 0;       %# Coefficients proved on 20060827
         -189/800, 729/800, 0, 0;
@@ -296,6 +303,19 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       %# code fragment has moved here. Stop integration if plot function
       %# returns false
       if (vhaveoutputfunction == true)
+        if (vhaverefine == true) %# We have a refine value, do interpolation
+          if (vodeoptions.Refine+2 < vcntloop) %# Enough results for interpolation
+            vinterX = vretvaltime(vcntloop-2-vodeoptions.Refine:vcntloop-1,:);
+            vinterY = vretvalresult(vcntloop-2-vodeoptions.Refine:vcntloop-1,:);
+            vinterS = (vretvaltime(vcntloop-1)-vretvaltime(vcntloop-2))/(vodeoptions.Refine+1);
+            vinterP = [vretvaltime(vcntloop-2):vinterS:vretvaltime(vcntloop-1)-vinterS];
+            vinterZ = interp1 (vinterX, vinterY, vinterP, 'spline');
+            for (vcnt = 1:vodeoptions.Refine)
+              feval (vodeoptions.OutputFcn, vinterP(vcnt), ...
+                vinterZ(vcnt,:)', [], vfunarguments{:});
+            end
+          end
+        end
         vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...
           vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
         if (vpltret == false), vunhandledtermination = false; break; end
@@ -379,16 +399,13 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     vhavestats = true;
     vsuccess   = vcntloop-2;                    %# vcntloop from 2..end
     vfailed    = (vcntcycles-1)-(vcntloop-2)+1; %# vcntcycl from 1..end
-    vfuncalls  = 13*(vcntcycles-1);
-    vludecomp  = 0;
-    vpartderv  = 0;
-    vxxxxxxxx  = 0;
-    vmsg = sprintf ('Number of successful steps:   %d', ...
-                    vsuccess); disp (vmsg);
-    vmsg = sprintf ('Number of failed attempts:    %d', ...
-                    vfailed); disp (vmsg);
-    vmsg = sprintf ('Number of ode function calls: %d', ...
-                    vfuncalls); disp (vmsg);
+    vfuncalls  = 4*(vcntcycles-1);              %# number of ode evaluations
+    vludecomp  = 0;                             %# number of LU decompositions
+    vpartderv  = 0;                             %# number of partial derivatives
+    vlinsols   = 0;                             %# no. of solutions of linear systems
+    vmsg = sprintf ('Number of successful steps: %d', vsuccess); disp (vmsg);
+    vmsg = sprintf ('Number of failed attempts:  %d', vfailed); disp (vmsg);
+    vmsg = sprintf ('Number of function calls:   %d', vfuncalls); disp (vmsg);
   else, vhavestats = false;
   end
 
@@ -406,7 +423,8 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       varargout{1}.stats.failed  = vfailed;    
       varargout{1}.stats.fevals  = vfuncalls;  
       varargout{1}.stats.partial = vpartderv; 
-      varargout{1}.stats.ludecom = vludecomp; 
+      varargout{1}.stats.ludecom = vludecomp;
+      varargout{1}.stats.linsol  = vlinsols; 
     end
   elseif (nargout == 2)
     varargout{1} = vretvaltime;     %# Time stamps are first output argument

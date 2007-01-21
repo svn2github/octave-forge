@@ -38,4 +38,6 @@ extern bool mxIsColumnVector (const mxArray *vinp);
 extern bool mxIsRowVector (const mxArray *vinp);
 extern bool mxIsVector (const mxArray *vinp);
 
+extern mxArray *mxTransposeMatrix (mxArray *vmat);
+
 #endif /* __ODEPKGEXT__ */

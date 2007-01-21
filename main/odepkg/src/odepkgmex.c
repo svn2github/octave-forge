@@ -73,3 +73,51 @@ bool mxIsVector (const mxArray *vinp) {
   }
   return (false);
 }
+
+mxArray *mxTransposeMatrix (mxArray *vmat) {
+  bool vbool = false;
+  int  vrows = 0;
+  int  vcols = 0;
+  int  vcntR = 0;
+  int  vcntC = 0;
+
+  double  *vdob = NULL;
+  double  *vdbl = NULL;
+  mxArray *vret = NULL;
+
+  if (!mxIsNumeric (vmat))       /* Check if input argument is numeric */
+    mexErrMsgTxt ("Input argument of mxTransposeMatrix must be valid matrix");
+
+  else if (!mxIsSparse (vmat)) { /* Check if input argument is a sparse matrix */
+    vrows = mxGetM (vmat);
+    vcols = mxGetN (vmat);
+    vbool = mxIsComplex (vmat);
+
+    if (!vbool)                  /* Check if input argument is a complex matrix */
+      vret = mxCreateDoubleMatrix (vcols, vrows, mxREAL);
+    else
+      vret = mxCreateDoubleMatrix (vcols, vrows, mxCOMPLEX);
+
+    vdob = mxGetPr (vmat);
+    vdbl = mxGetPr (vret);
+    for (vcntR = 0; vcntR < vrows; vcntR++)
+      for (vcntC = 0; vcntC < vcols; vcntC++)
+          vdbl[(vcntR*vcols)+vcntC] = vdob[(vcntC*vrows)+vcntR];
+
+    if (vbool) {                 /* On complex matrix also transpose imaginary part */
+      vdob = mxGetPi (vmat);
+      vdbl = mxGetPi (vret);
+      for (vcntR = 0; vcntR < vrows; vcntR++)
+        for (vcntC = 0; vcntC < vcols; vcntC++)
+          vdbl[(vcntR*vcols)+vcntC] = vdob[(vcntC*vrows)+vcntR];
+    }
+  }
+
+  else {                         /* Input argument is a sparse matrix, no implementation */
+    mexFixMsgTxt ("mxTransposeMatrix: No implementation to transpose a sparse matrix");
+    mexFixMsgTxt ("mxTransposeMatrix: Returning a matrix that is not transposed");
+    vret = vmat;
+  }
+
+  return (vret);
+}

@@ -1,4 +1,5 @@
 ## Copyright (C) 2003 Tomer Altman
+## Copyright (C) 2007 Muthiah Annamalai
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public
@@ -16,15 +17,16 @@
 ## write to the Free Software Foundation, 59 Temple Place -
 ## Suite 330, Boston, MA 02111-1307, USA.
 
-## usage: result = map ( FUN_STR, ARG1, ... )
+## usage: result = map ( FUN_HANDLE, ARG1, ... )
 ##
-## map, like LISP's ( & numerous other language's ) function for
+## map, like Lisp's ( & numerous other language's ) function for
 ## iterating the result of a function applied to each of the data
 ## structure's elements in turn. The results are stored in the
 ## corresponding input's place. For now, just will work with cells and
 ## matrices, but support for structs are intended for future versions.
 ## Also, only "prefix" functions ( like "min(a,b,c,...)" ) are
-## supported.
+## supported. FUN_HANDLE can either be a function name string or a
+## function handle (recommended).
 ##
 ## Example:
 ##
@@ -44,7 +46,7 @@
 ##   [1,2] = 0.16765
 ##   [2,2] = 0.85477
 ## }
-## octave> map("min",A,B)
+## octave> map(@min,A,B)
 ## ans =
 ## {
 ##   [1,1] = 0.0096243
@@ -59,83 +61,98 @@
 ## Created: November 15, 2003
 ## Version: 0.1
 
-function return_type = map (fun_str,data_struct,varargin)
+## Last Modified by Muthiah Annamalai
+
+function return_type = map (fun_handle,data_struct,varargin)
   
+  if (nargin >= 1)
+
+    try
+      if ( ischar(fun_handle) )
+	fun_handle=eval(strcat("@",fun_handle));
+      end
+      fstr=typeinfo(fun_handle);
+    catch
+      error('Error: Cannot find function handle, or funtion doesnt exist')
+    end
+  end
+
   if (nargin<2)
-
     error("map: incorrect number of arguments; expecting at least two.");
-
-  elseif ( !ischar(fun_str) )
-
-    error("map: first argument must be a string: ", fun_str);
-
-  elseif ( !exist(fun_str) )
-
-    error("map: first argument is not a valid function name.");
-
+  elseif ( strcmp(fstr,"function handle")==0 )
+    error("map: first argument is not a valid function handle ");
   elseif ( !( isnumeric(data_struct) || iscell(data_struct) ) )
-
     error("map: second argument must be either a matrix or a cell object:");
+  end
 
+  [ rows, cols ] = size(data_struct);
+  typecell=0;
+  
+  if ( iscell(data_struct) )
+    typecell=1;
+    return_type = cell(rows,cols);
   else
+    typecell=0;
+    return_type = zeros(rows,cols);
+  endif
+  
+  otherdata = length(varargin);
+  val{1:otherdata+1}=0;
 
-    [ rows, cols ] = size(data_struct);
-
-    if ( iscell(data_struct) )
-
-      index_str = "{i,j}";
-
-      return_type = cell(rows,cols);
+  if(typecell)
+    
+    if(otherdata >= 1)
+      
+      for i=1:rows	  
+	for j=1:cols
+	  val{1}=data_struct{i,j};
+	  for idx=2:otherdata+1
+	    val{idx}=varargin{idx-1}{i,j};
+	  end
+  	  return_type{i,j}=apply(fun_handle,val);
+	end
+      end
+      
+    else
+      
+      for i=1:rows	  
+	for j=1:cols	    
+	  return_type{i,j}=fun_handle(data_struct{i,j});
+	end
+      end
+      
+    end
+    
+  else
+    
+    if(otherdata >= 1)
+      
+      for i=1:rows
+	for j=1:cols
+	  val{1}=data_struct(i,j);
+	  for idx=2:otherdata+1
+	    val{idx}=varargin{idx-1}(i,j);
+	  end
+  	  return_type(i,j)=apply(fun_handle,val);
+	end
+      end
 
     else
 
-      index_str = "(i,j)";
+      for i=1:rows
+	for j=1:cols
+	  return_type(i,j)=fun_handle(data_struct(i,j));
+	end
+      end
 
-      return_type = zeros(rows,cols);
+    end
 
-    endif
-      
-    ## List-o-infix-operators: +, -, /, *, &, &&, |, ||, \, ^, **, <, <=,
-    ## >, >=, ==, !=, ~=, <>, = 
-
-    for i=1:rows
-	
-      for j=1:cols
-	
-	##return_type{i,j} = feval( fun_str, data_struct{i,j} );
-	
-	LHS = ["return_type",index_str," = "];
-	
-	funcall = [fun_str, " ( "];
-	
-	data = ["data_struct",index_str];
-	
-	otherdata = length(varargin);
-	
-	for k=1:(otherdata-1)
-	  
-	  data = [data,", varargin{",int2str(k),"}",index_str];
-	  
-	endfor
-        
-        if otherdata != 0
-          data = [data,", varargin{",int2str(otherdata),"}",index_str];
-        endif
-        
-        data = [data," ); "];
-	
-	map_str = [LHS,funcall,data];
-
-	error_str = ["error(\"map: ",error_text,"\" )"];
-	
-	eval(map_str,error_str);
-		 
-      endfor
-
-    endfor
-
-    data_struct = {};
-
-  endif
+  end
 
 endfunction
+%!
+%!assert(map(@min,[1 2 3 4 5],[5 4 3 2 1]), [1 2 3 2 1])
+%!assert(map(@min,rand(1,5),[0 0 0 0 0]), [0 0 0 0 0])
+%!assert(map(@(x,y) (sin(x).^2 + cos(y).^2),-pi:0.5:+pi,-pi:0.5:+pi),ones(1,13))
+%!assert(map(@(x,y) (sin(x).^2 + cos(y).^2),-pi:0.5:+pi,-pi:0.5:+pi),ones(1,13))
+%!

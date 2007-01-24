@@ -275,6 +275,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     %# Compute the 2nd and the 3rd order estimation
     y2 = vu' + vstepsize * (vk * vb2);
     y3 = vu' + vstepsize * (vk * vb3);
+    vSaveVUForRefine = vu;
 
     %# Calculate the absolute local truncation error and the acceptable error
     if (vstepsizegiven == false)
@@ -304,16 +305,14 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       %# returns false
       if (vhaveoutputfunction == true)
         if (vhaverefine == true) %# We have a refine value, do interpolation
-          if (vodeoptions.Refine+2 < vcntloop) %# Enough results for interpolation
-            vinterX = vretvaltime(vcntloop-2-vodeoptions.Refine:vcntloop-1,:);
-            vinterY = vretvalresult(vcntloop-2-vodeoptions.Refine:vcntloop-1,:);
-            vinterS = (vretvaltime(vcntloop-1)-vretvaltime(vcntloop-2))/(vodeoptions.Refine+1);
-            vinterP = [vretvaltime(vcntloop-2):vinterS:vretvaltime(vcntloop-1)-vinterS];
-            vinterZ = interp1 (vinterX, vinterY, vinterP, 'spline');
-            for (vcnt = 1:vodeoptions.Refine)
-              feval (vodeoptions.OutputFcn, vinterP(vcnt), ...
-                vinterZ(vcnt,:)', [], vfunarguments{:});
+          for (vcnt = 0:vodeoptions.Refine) %# Approximation between told and t
+            vapproxtime = (vcnt + 1) * vstepsize / (vodeoptions.Refine + 2);
+            vapproxvals = vSaveVUForRefine' + vapproxtime * (vk * vb3);
+            if (vhaveoutputselection == true)
+              vapproxvals = vapproxvals(vodeoptions.OutputSel);
             end
+            feval (vodeoptions.OutputFcn, (vtimestamp - vstepsize) + vapproxtime, ...
+              vapproxvals, [], vfunarguments{:});
           end
         end
         vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...

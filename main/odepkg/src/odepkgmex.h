@@ -31,13 +31,15 @@ typedef int mwIndex;
 #define false 0
 #endif
 
-extern void mexFixMsgTxt (const char *vfix);
-extern void mexUsgMsgTxt (const char *vusg);
+extern void mexFixMsgTxt (const char *vmsg);
+extern void mexUsgMsgTxt (const char *vmsg);
 extern bool mxIsEqual (const mxArray *vone, const mxArray *vtwo);
-extern bool mxIsColumnVector (const mxArray *vinp);
-extern bool mxIsRowVector (const mxArray *vinp);
-extern bool mxIsVector (const mxArray *vinp);
+extern bool mxIsColumnVector (const mxArray *vmat);
+extern bool mxIsRowVector (const mxArray *vmat);
+extern bool mxIsVector (const mxArray *vmat);
 
+extern mxArray *mxGetMatrixRow (mxArray *vmat, unsigned int vind);
+extern mxArray *mxGetMatrixColumn (mxArray *vmat, unsigned int vind);
 extern mxArray *mxTransposeMatrix (mxArray *vmat);
 
 #endif /* __ODEPKGEXT__ */

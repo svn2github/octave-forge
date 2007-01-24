@@ -20,11 +20,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #ifndef __ODEPKGEXT__
 #define __ODEPKGEXT__ 1
 
-extern bool fodepkgvar (const unsigned int vtodo, const char *vname, mxArray **vvalue);
-extern bool fsolstore (unsigned int vz, mxArray **vt, mxArray **vy);
-extern bool fy2mxArray (unsigned int n, double *y, mxArray **vval);
-extern bool fodepkgplot (mxArray *vtime, mxArray *vvalues, mxArray *vflag);
-
+extern bool fodepkgvar   (const unsigned int vdeci, const char *vname, mxArray **vvalue);
+extern bool fsolstore    (unsigned int vdeci, mxArray **vt, mxArray **vy);
+extern bool fy2mxArray   (unsigned int n, double *y, mxArray **vval);
+extern bool fodepkgplot  (mxArray *vtime, mxArray *vvalues, mxArray *vdeci);
+extern bool fodepkgevent (mxArray *vtime, mxArray *vvalues, mxArray *vdeci, mxArray **vval);
 #endif /* __ODEPKGEXT__ */
 
 /*

@@ -8,7 +8,7 @@ DEFINES = -DHAVE_CONFIG_H
 GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o 
 GSVD_TARGET = gsvd.oct
 OTHER_OBJECTS = outer.o GramSchmidt.o
-OTHER_TARGETS = $(patsubst %.o,%.cc,$(OTHER_OBJECTS))
+OTHER_TARGETS = $(patsubst %.o,%.oct,$(OTHER_OBJECTS))
 
 OBJECTS = $(OTHER_OBJECTS) $(GSVD_OBJECTS)
 TARGETS = $(OTHER_TARGETS) $(GSVD_TARGET) 

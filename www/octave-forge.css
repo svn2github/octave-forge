@@ -341,6 +341,7 @@ div.see_also {
 
 dt {
   font-weight: bold;
+  padding-top: 1em;
 }
 
 /* Documentation left menu */

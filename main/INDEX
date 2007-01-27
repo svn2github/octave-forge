@@ -837,7 +837,6 @@ Fourier analysis
  ifftn 
  fftshift 
  ifftshift
- fftw_wisdom_program
 Interpolation
  bicubic
  interp1 

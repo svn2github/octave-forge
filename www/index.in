@@ -38,14 +38,14 @@ __HEADER__([[[Octave-Forge]]])
 <h2>Recent News</h2>
 <p>This is a short abbreviated list of the changes that were introduced in
 recent versions of octave-forge. For a full list of changes please
-see the <a href="__BASE_ADDRESS__/NEWS.html">News Archive</a> or the
-<a href="__BASE_ADDRESS__/ChangeLog">ChangeLog</a>.</p>
+see the <a href="NEWS.html">News Archive</a> or the
+<a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
-<dt>January 7, 2007</dt>
+<dt>January 27, 2007</dt>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a
-href="__BASE_ADDRESS__/packages.html">packages</a> for more details.
+href="packages.html">packages</a> for more details.
 Apart from the changes associated with the conversion to use the
 package manager, the following additional changes are notable:</p>
 <ul>
@@ -62,6 +62,11 @@ package manager, the following additional changes are notable:</p>
    golombdeco, golombenco, huffmandeco, huffmandict, huffmandict,
    huffmanenco, ricedeco, riceenco, rledeco, rleenco, shannonfanodeco,
    shannonfanodict and shannonfanoenco</li>
+   <li>econometrics: New functions __kernel_epanechnikov,
+   __kernel_normal, kernel_density, kernel_density_cvscore,
+   kernel_density_nodes, kernel_example, kernel_optimal_bandwidth, 
+   kernel_regression, kernel_regression_cvscore.m and
+   kernel_regression_nodes</li>
    <li>specfun: New functions dirac, erfcinv, erfcx, expint_E1, 
    expint_Ei, expint, heaviside, psi, Si, sinint and zeta</li>
    <li>statistics: New functions betastat, binostat, chi2stat,
@@ -70,20 +75,23 @@ package manager, the following additional changes are notable:</p>
    tstat, unidstat, unifstatand and weibstat, </li>
    <li>polynomial: New function polyint</li>
    <li>miscellaneous: New functions zagzig, zigzag and reduce</li>
-   <li>image: New functions deriche, fspecial, bwarea and
-   __bwarea. __magick_read__ Fix for non 8bit
-   Quantum sizes in imagemagick. Compatiability changes to imwrite,
-   isgray and rgb2gray. imread, probe depth from bits rather than Red
-   field, allows loading of gray scale images. Convert all functions
-   to use texinfo help.</li>
+   <li>image: New functions apply, deriche, fspecial, bwarea, __bwarea,
+   bwperim, graythresh, impersepectivewap, label2rgb 
+    im2double, im2uint8, im2uint16 and imremap. 
+   __magick_read__ Fix for non 8bit. Quantum sizes in imagemagick. 
+   Compatiability changes to imwrite, isgray and rgb2gray. imread, 
+   probe depth from bits rather than Red field, allows loading of gray 
+   scale images. The function map modified to treat function handles.   
+   Convert all functions to use texinfo help.</li>
    <li>signal: New function ar_psd, arburg, cohere, cpsd, csd, mscohere,
    pburg, pwelch, pyulear, tfe, tfestimate, replacing existing functions
    with main more features and much better compatibility. New functions
-   dst and idst</li>
+   upsample, downsample, rectwin, dst and idst</li>
    <li>plot: New function hist2d</li>
    <li>geometry: New function inpolygon</li>
    <li>general: New function issorted</li>
    <li>optim: New function fminsearch</li>
+   <li>MSVC: Changes in build system to support Microsodt VC compiler</li>
    <li>general bug fixes and improvements</li>
 </ul>
 </dd>

@@ -1,5 +1,5 @@
 sinclude ../Makeconf
-sinclude ../pkg.mk
+
 
 ifeq ($(PKGDIR),)
 PKGDIR = ../packages/nonfree
@@ -28,7 +28,7 @@ dopkg/%:
 	$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg)
 
 dopkg2/%:
-	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg) -f../../pkg.mk
+	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg) -f../../Makeconf
 else
 package:
 	@echo not yet configured

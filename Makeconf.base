@@ -97,7 +97,7 @@ real-pkg/%:
 	  sed -e "s/^\s*//" | sed -e "s/\s*$$//" | \
 	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
 	mkdir ../$(PKGDIR)/$$name-$$ver; \
-	if [! -f ChangeLog ]; then \
+	if [ ! -f ChangeLog ]; then \
 	  if test "x$(CVS2CL)" != "x"; then \
 	    $(CVS2CL) --fsf --file ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
 	    echo "# Automatically generated file --- DO NOT EDIT" | \

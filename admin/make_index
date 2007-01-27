@@ -615,7 +615,7 @@ sub load_index { # {{{1
         } elsif (/^(\w.*?)\s*$/) {
 	    # category lines start in the left most column
             $category    = $1;
-        } elsif (/^\s+(\S.*[^=~!><])=\s*(\S.*\S)\s*$/) {
+        } elsif (/^\s+(\S.*?[^=~!><])=\s*(\S.*\S)\s*$/) {
 	    # Process "function = notes" explicit descriptions
 	    $function = $1;
 	    $description = $2;
@@ -811,7 +811,7 @@ sub write_index { # 1{{{
 __DOC_HEADER__([[[Function Reference]]])
 <p>This page contains the documentation for individual functions provided by
 Octave and Octave-Forge. The documentation can either be accessed by category or alphabetically.
-Simply use the drop-down menus at the top of the page.</p>
+Simply use the menus at the left of the page.</p>
 __TRAILER__
 EOF
     close OUT;

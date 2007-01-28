@@ -187,6 +187,7 @@ m4_define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta name="date" content="__CURRENT_DATE__"/>
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   __JAVA_SCRIPT__

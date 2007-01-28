@@ -111,6 +111,9 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <meta name="date" content="__CURRENT_DATE__"/>
+  <meta name="author" content="The Octave-Forge Community" />
+  <meta name="description" content="Octave-Forge is a collection of packages providing extra functionality for GNU Octave." />
+  <meta name="keywords" lang="en" content="Octave-Forge, Octave, extra packages" />
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   __JAVA_SCRIPT__
@@ -127,6 +130,9 @@ m4_define(`__DOXY_HEADER__', `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transi
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
   <meta name="date" content="__CURRENT_DATE__">
+  <meta name="author" content="The Octave-Forge Community">
+  <meta name="description" content="Octave-Forge is a collection of packages providing extra functionality for GNU Octave.">
+  <meta name="keywords" lang="en" content="Octave-Forge, Octave, extra packages">
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/doxygen.css">
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css">
@@ -188,6 +194,9 @@ m4_define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <meta name="date" content="__CURRENT_DATE__"/>
+  <meta name="author" content="The Octave-Forge Community" />
+  <meta name="description" content="Octave-Forge is a collection of packages providing extra functionality for GNU Octave." />
+  <meta name="keywords" lang="en" content="Octave-Forge, Octave, extra packages" /> 
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   __JAVA_SCRIPT__

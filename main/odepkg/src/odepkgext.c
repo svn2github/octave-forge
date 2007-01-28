@@ -177,8 +177,8 @@ bool fsolstore (unsigned int vdeci, mxArray **vt, mxArray **vy) {
  *
  * Takes elements out of a vector @y that has the size @n. The
  * elements that have to be taken are stored via the fodepkgvar()
- * function in the variable @outputsel (make sure calling
- * fodepkgvar(1, "outputsel", @value) before calling this
+ * function in the variable @OutputSelection (make sure calling
+ * fodepkgvar(1, "OutputSel", @value) before calling this
  * fy2mxArray()).  The solution is stored in a newly allocated mxArray
  * and is returned as a pointer @val;
  *
@@ -191,13 +191,13 @@ bool fy2mxArray (unsigned int n, double *y, mxArray **vval) {
   double  *vdob = NULL;
   mxArray *vtmp = NULL;
 
-  fodepkgvar (2, "outputsel", &vtmp);
+  fodepkgvar (2, "OutputSelection", &vtmp);
   if (!mxIsEmpty (vtmp)) {
     vnum = mxGetNumberOfElements (vtmp);
-    vdob = mxGetPr (vtmp);    /* vdob = outputsel[0] */
+    vdob = mxGetPr (vtmp);    /* vdob eq. OutputSelection[0] */
 
     vval[0] = mxCreateDoubleMatrix (vnum, 1, mxREAL);
-    vdbl = mxGetPr (vval[0]); /* vdbl = vval[0] */
+    vdbl = mxGetPr (vval[0]); /* vdbl eq. vval[0] */
 
     for (vcnt = 0; vcnt < vnum; vcnt++)
       vdbl[vcnt] = y[((int)(vdob[vcnt]))-1];
@@ -222,7 +222,7 @@ bool fy2mxArray (unsigned int n, double *y, mxArray **vval) {
  * actual timevalue and vvalues the solution vector. The output
  * function that has to be called from fodepkgplot() is set via the
  * command odeset() at interpreter side. Before calling this function
- * fodepkgvar(1, "varargin", value) and fodepkgvar(1, "plotfun",
+ * fodepkgvar(1, "varargin", value) and fodepkgvar(1, "PlotFunction",
  * value) have to be called to set the necessary name of the output
  * function and further arguments that have to be passed.
  *
@@ -261,7 +261,7 @@ bool fodepkgplot (mxArray *vtime, mxArray *vvalues, mxArray *vdeci) {
       vrhs[3+vcnt] = mxGetCell (vtmp, vcnt);
 
   /* Call the plotting function */
-  fodepkgvar (2, "plotfun", &vtmp);
+  fodepkgvar (2, "PlotFunction", &vtmp);
   if ((strcmp (mxArrayToString (vdeci), "init") == 0) ||
       (strcmp (mxArrayToString (vdeci), "done") == 0)) {
     /* mexPrintf ("-----> INIT or DONE\n"); */
@@ -299,7 +299,7 @@ bool fodepkgplot (mxArray *vtime, mxArray *vvalues, mxArray *vdeci) {
  * actual timevalue and vvalues the solution vector. The event
  * function that has to be called from fodepkgplot() is set via the
  * command odeset() at interpreter side. Before calling this function
- * fodepkgvar(1, "varargin", value) and fodepkgvar(1, "eventfun",
+ * fodepkgvar(1, "varargin", value) and fodepkgvar(1, "EventFunction",
  * value) have to be called to set the necessary name of the output
  * function and further arguments that have to be passed.
  *
@@ -324,7 +324,7 @@ bool fodepkgevent (mxArray *vtime, mxArray *vvalues, mxArray *vdeci, mxArray **v
   vrhs = (mxArray **) mxMalloc ((4 + velm) * sizeof (mxArray *));
 
   /* Set the vrhs[0] element for the event function */
-  fodepkgvar (2, "eventfun", &vtmp);
+  fodepkgvar (2, "EventFunction", &vtmp);
   vrhs[0] = vtmp;
 
   /* Set the vrhs[1] element for the event function */

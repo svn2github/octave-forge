@@ -34,12 +34,21 @@ typedef int mwIndex;
 extern void mexFixMsgTxt (const char *vmsg);
 extern void mexUsgMsgTxt (const char *vmsg);
 extern bool mxIsEqual (const mxArray *vone, const mxArray *vtwo);
+
+extern bool mxIsVector (const mxArray *vmat);
 extern bool mxIsColumnVector (const mxArray *vmat);
 extern bool mxIsRowVector (const mxArray *vmat);
-extern bool mxIsVector (const mxArray *vmat);
+
+extern bool mxIsMatrix (const mxArray *vmat);
 
 extern mxArray *mxGetMatrixRow (mxArray *vmat, unsigned int vind);
 extern mxArray *mxGetMatrixColumn (mxArray *vmat, unsigned int vind);
 extern mxArray *mxTransposeMatrix (mxArray *vmat);
 
 #endif /* __ODEPKGEXT__ */
+
+/*
+Local Variables: ***
+mode: C ***
+End: ***
+*/

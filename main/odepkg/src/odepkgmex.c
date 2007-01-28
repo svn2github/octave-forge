@@ -24,7 +24,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * mexFixMsgTxt - Prints a fixme message
  * @vmsg: The string that has to be displayed
  *
- * Displays the string @vmsg in the octave window as "FIXME: ..."
+ * Displays the string @vmsg in the octave window as "FIXME: ..." and
+ * continues.
  **/
 void mexFixMsgTxt (const char *vmsg) {
   mexPrintf ("FIXME: %s\n", vmsg);
@@ -34,7 +35,8 @@ void mexFixMsgTxt (const char *vmsg) {
  * mexUsgMsgTxt - Prints a usage message
  * @vmsg: The string that has to be displayed
  *
- * Displays the string @vmsg in the octave window as "usage: ..."
+ * Displays the string @vmsg in the octave window as "usage: ..." and
+ * stops computation because of an empty error message.
  **/
 void mexUsgMsgTxt (const char *vmsg) {
   mexPrintf ("usage: %s\n", vmsg);
@@ -73,6 +75,24 @@ bool mxIsEqual (const mxArray *vone, const mxArray *vtwo) {
 }
 
 /**
+ * mxIsVector - Checks for vector
+ * @vmat: The numerical mxArray
+ *
+ * Returns a boolean value that is either %true if @vmat is a vector
+ * or %false if @vmat is no vector.
+ *
+ * Return value: The constant %true or %false.
+ **/
+bool mxIsVector (const mxArray *vmat) {
+  if (mxIsMatrix (vmat)) {
+    if ( (mxGetM (vmat) == 1 && mxGetN (vmat) > 1) ||
+         (mxGetN (vmat) == 1 && mxGetM (vmat) > 1) )
+      return (true);
+  }
+  return (false);
+}
+
+/**
  * mxIsColumnVector - Checks for column vector
  * @vmat: The numerical mxArray
  *
@@ -82,7 +102,7 @@ bool mxIsEqual (const mxArray *vone, const mxArray *vtwo) {
  * Return value: The constant %true or %false.
  **/
 bool mxIsColumnVector (const mxArray *vmat) {
-  if (mxIsNumeric (vmat)) {
+  if (mxIsVector (vmat)) {
     if (mxGetN (vmat) == 1 && mxGetM (vmat) > 1)
       return (true);
   }
@@ -99,7 +119,7 @@ bool mxIsColumnVector (const mxArray *vmat) {
  * Return value: The constant %true or %false.
  **/
 bool mxIsRowVector (const mxArray *vmat) {
-  if (mxIsNumeric (vmat)) {
+  if (mxIsVector (vmat)) {
     if (mxGetM (vmat) == 1 && mxGetN (vmat) > 1)
       return (true);
   }
@@ -107,23 +127,32 @@ bool mxIsRowVector (const mxArray *vmat) {
 }
 
 /**
- * mxIsVector - Checks for vector
+ * mxIsRowVector - Checks for matrix
  * @vmat: The numerical mxArray
  *
- * Returns a boolean value that is either %true if @vmat is a vector
- * or %false if @vmat is no vector.
+ * Returns a boolean value that is either %true if @vmat is a
+ * numerical matrix or %false if @vmat is no matrix.
  *
  * Return value: The constant %true or %false.
  **/
-bool mxIsVector (const mxArray *vmat) {
+bool mxIsMatrix (const mxArray *vmat) {
   if (mxIsNumeric (vmat)) {
-    if ( (mxGetM (vmat) == 1 && mxGetN (vmat) > 1) ||
-         (mxGetN (vmat) == 1 && mxGetM (vmat) > 1) )
+    if (mxGetNumberOfElements (vmat) > 1)
+      /* if (mxGetM (vmat) >= 1 && mxGetN (vmat) >= 1) */
       return (true);
   }
   return (false);
 }
 
+/**
+ * mxGetMatrixRow - Returns one row from a matrix or vector
+ * @vmat: The numerical mxArray
+ *
+ * Returns a newly allocated numerical mxArray with one row of
+ * elements from the matrix or vector @vmat.
+ *
+ * Return value: An newly allocated mxArray.
+ **/
 mxArray *mxGetMatrixRow (mxArray *vmat, unsigned int vind) {
   bool vbool = false;
   unsigned int vcnt = 0;
@@ -135,9 +164,9 @@ mxArray *mxGetMatrixRow (mxArray *vmat, unsigned int vind) {
   mxArray *vret = NULL;
 
   if (mxIsSparse (vmat))
-    mexFixMsgTxt ("mxGetMatrixRow: No vector given back, sparse matrix found");
+    mexFixMsgTxt ("mxGetMatrixRow: No vector is given back, sparse matrix found");
 
-  if (mxIsNumeric (vmat)) {
+  if (mxIsVector (vmat) || mxIsMatrix (vmat)) {
     vbool = mxIsComplex (vmat);
     vdbl  = mxGetPr (vmat);
     vrow  = mxGetM (vmat);
@@ -163,14 +192,65 @@ mxArray *mxGetMatrixRow (mxArray *vmat, unsigned int vind) {
   }
 
   else
-    mexErrMsgTxt ("mxGetMatrixRow: Numerical matrix expected");
+    mexErrMsgTxt ("mxGetMatrixRow: Numerical mxArray matrix or vector expected");
 
   return (vret);
 }
 
+/**
+ * mxGetMatrixColumn - Returns one column from a matrix or vector
+ * @vmat: The numerical mxArray
+ *
+ * Returns a newly allocated numerical mxArray with one column of
+ * elements from the matrix or vector @vmat.
+ *
+ * Return value: An newly allocated mxArray.
+ **/
 mxArray *mxGetMatrixColumn (mxArray *vmat, unsigned int vind) {
-  vmat = NULL;
-  vind = 0;
+  bool vbool = false;
+  unsigned int vcnt = 0;
+  unsigned int vrow = 0;
+  unsigned int vcol = 0;
+
+  double  *vdbl = NULL;
+  double  *vdob = NULL;
+  mxArray *vret = NULL;
+
+  if (mxIsSparse (vmat))
+    mexFixMsgTxt ("mxGetMatrixRow: No vector is given back, sparse matrix found");
+
+  if (mxIsVector (vmat) || mxIsMatrix (vmat)) {
+    vbool = mxIsComplex (vmat);
+    vdbl  = mxGetPr (vmat);
+    vrow  = mxGetM (vmat);
+    vcol  = mxGetN (vmat);
+
+    if (!vbool)
+      vret = mxCreateDoubleMatrix (vrow, 1, mxREAL);
+    else /* Found a complex matrix... */
+      vret = mxCreateDoubleMatrix (vrow, 1, mxCOMPLEX);
+
+    vdob = mxGetPr (vret);
+    /* mexPrintf ("%f %f %f %f %f %f %f %f %f %f %f %f \n", */
+    /*   vdbl[0], vdbl[1], vdbl[2], vdbl[3], */
+    /*   vdbl[4], vdbl[5], vdbl[6], vdbl[7], */
+    /*   vdbl[8], vdbl[9], vdbl[10], vdbl[11]); */
+    if (vind > (vcol-1))
+      mexErrMsgTxt ("mxGetMatrixColumn: Index exceeds matrix dimension");
+    else {
+      for (vcnt = 0; vcnt < vrow; vcnt++) vdob[vcnt] = vdbl[vcnt+vind*vrow];
+      if (vbool) { /* If we have a complex matrix... */
+        vdbl = mxGetPi (vmat);
+        vdob = mxGetPi (vret);
+        for (vcnt = 0; vcnt < vrow; vcnt++) vdob[vcnt] = vdbl[vcnt+vind*vrow];
+      }
+    }
+  }
+
+  else
+    mexErrMsgTxt ("mxGetMatrixColumn: Numerical mxArray matrix or vector expected");
+
+  return (vret);
 }
 
 /**
@@ -178,7 +258,7 @@ mxArray *mxGetMatrixColumn (mxArray *vmat, unsigned int vind) {
  * @vmat: The numerical mxArray
  *
  * Returns a newly allocated numerical mxArray matrix that is the
- * transposed matrix of @vmat.
+ * non-conjugate transposed matrix of @vmat.
  *
  * Return value: An newly allocated mxArray.
  **/
@@ -193,7 +273,7 @@ mxArray *mxTransposeMatrix (mxArray *vmat) {
   double  *vdbl = NULL;
   mxArray *vret = NULL;
 
-  if (!mxIsNumeric (vmat))       /* Check if input argument is numeric */
+  if (!mxIsMatrix (vmat))       /* Check if input argument is numeric */
     mexErrMsgTxt ("Input argument of mxTransposeMatrix must be valid matrix");
 
   else if (!mxIsSparse (vmat)) { /* Check if input argument is a sparse matrix */
@@ -223,9 +303,29 @@ mxArray *mxTransposeMatrix (mxArray *vmat) {
 
   else {                         /* Input argument is a sparse matrix, no implementation */
     mexFixMsgTxt ("mxTransposeMatrix: No implementation to transpose a sparse matrix");
-    mexFixMsgTxt ("mxTransposeMatrix: Returning a matrix that is not transposed");
+    mexFixMsgTxt ("mxTransposeMatrix: Returning the input matrix that is not transposed");
     vret = vmat;
   }
 
   return (vret);
 }
+
+/* Developer function for a fast trial and error implementation of a
+   test procedure, this is a comment region by default.
+   Developers normally do something like this: mex -v odepkgmex.c
+*/
+/* void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+  mxArray *vtmp = mxDuplicateArray (prhs[0]);
+  plhs[0] = mxCreateLogicalScalar (mxIsVector (vtmp));
+  plhs[1] = mxCreateLogicalScalar (mxIsRowVector (vtmp));
+  plhs[2] = mxCreateLogicalScalar (mxIsColumnVector (vtmp));
+  plhs[0] = mxGetMatrixRow (vtmp, 1);
+  plhs[1] = mxGetMatrixColumn (vtem, 1);
+  plhs[0] = mxTransposeMatrix (vtmp);
+} */
+
+/*
+Local Variables: ***
+mode: C ***
+End: ***
+*/

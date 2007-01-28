@@ -4,7 +4,7 @@ M4_OPTIONS := --prefix-builtins
 HTML_SRC = $(shell find . | grep "\.in")
 IMG_HTML = $(HTML_SRC:.in=.html)
 
-all: build-www doc developers.html doxygen
+all: build-www doc developers.html doxygen javascript.js
 	make $(IMG_HTML)
 	make -k -C ../doc/coda www-dist
 	if [ ! -e coda ]; then rm -rf coda; fi
@@ -32,6 +32,9 @@ html: $(IMG_HTML)
 %.html : %.in
 	$(M4) $(M4_OPTIONS) $(MACRO_FILE) $< > $@
 
+javascript.js: javascript.jsin
+	$(M4) $(M4_OPTIONS) $(MACRO_FILE) $< > $@
+
 clean:
 	@for f in $(IMG_HTML); do \
 	  d=`dirname $$f`; \
@@ -41,7 +44,7 @@ clean:
 	    fi; \
 	  fi; \
 	done
-	rm -fr *.html developers.in INDEX coda .octave_hist .octave_packages install doxygen 
+	rm -fr *.html developers.in INDEX coda .octave_hist .octave_packages install doxygen javascript.js
 
 package:
 

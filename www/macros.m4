@@ -9,6 +9,10 @@ m4_define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')m4
 m4_dnl
 m4_dnl
 m4_dnl
+m4_define(`__CURRENT_DATE__', `m4_esyscmd(/bin/sh ./get_current_date.sh)')m4_dnl
+m4_dnl
+m4_dnl
+m4_dnl
 m4_define(`__BASE_ADDRESS__', `m4_esyscmd(/bin/sh ./get-base-address)')m4_dnl
 m4_define(`__TEXT_DIR__', `__BASE_ADDRESS__`text/'')m4_dnl
 m4_define(`__IMAGE_DIR__', `__BASE_ADDRESS__`images/'')m4_dnl
@@ -63,141 +67,12 @@ m4_dnl
 m4_define(`__OCTAVE_FORGE_HTTP__',
        `<a href="__BASE_ADDRESS__/$1" class="menu">$2</a>')m4_dnl
 
-m4_changequote([[[, ]]])
-m4_define([[[__JAVA_SCRIPT_FIXED__]]],
- [[[<script type="text/javascript">
-  <!--
-  function fix_top_menu() {
-    if (navigator.appVersion.indexOf('MSIE') == -1) {
-      document.getElementById("top-menu").style.position = "fixed";
-    } // end non-IE
-  }
-  // -->
-  </script>]]])m4_dnl
+m4_define(`__JAVA_SCRIPT_FIXED__',
+  `<script src="__BASE_ADDRESS__/fixed.js" type="text/javascript"></script>') m4_dnl
 m4_dnl
-m4_define([[[__JAVA_SCRIPT__]]],
- [[[  __JAVA_SCRIPT_FIXED__
-  <script type="text/javascript">
-  <!--
-  var cookie_name = "octave_forge_cookie";
-  function set_cookie(val) {
-    if (document.cookie != document.cookie) {
-      index = document.cookie.indexOf(cookie_name);
-    } else {
-      index = -1;
-    }
-    if (index == -1) {
-      var cval = cookie_name + "=" + val + "; ";
-      var d = new Date();
-      d.setSeconds(d.getSeconds()+30);
-      cval = cval + "expires=" + d.toString() + ";";
-      document.cookie = cval;
-    }
-  }
-  function get_cookie() {
-    var retval = -1;
-    if (document.cookie) {
-      var index = document.cookie.indexOf(cookie_name);
-      if (index != -1) {
-        var start = document.cookie.indexOf("=", index) + 1;
-        stop = document.cookie.indexOf(";", start);
-        if (stop == -1) {
-          stop = document.cookie.length;
-        }
-        retval = document.cookie.substring(start, stop);
-      }
-    }
-    return retval;
-  }
-  function goto_url (selSelectObject) {
-    if (selSelectObject.options[selSelectObject.selectedIndex].value != "-1") {
-     location.href=selSelectObject.options[selSelectObject.selectedIndex].value;
-    }
-  }
-  function unfold(id) {
-    document.getElementById(id).style.display = "none";
-    document.getElementById(id+"_detailed").style.display = "block";
-  }
-  function fold(id) {
-    document.getElementById(id+"_detailed").style.display = "none";
-    document.getElementById(id).style.display = "block";
-  }
-  function switch_to(id) {
-    set_cookie(id);
-    if (id == "cat") {
-        other = "alpha-tab";
-        left = "2";
-        right = "1";
-    } else { // id == "alpha"
-        other = "cat-tab";
-        left = "1";
-        right = "2";
-    }
-    id = id + "-tab";
-    var tab1 = document.getElementById(id);
-    var tab2 = document.getElementById(other);
-
-    tab1.style.borderTop    = "2px solid black";
-    tab1.style.borderLeft   = "2px solid black";
-    tab1.style.borderRight  = right+"px solid black";
-    tab1.style.borderBottom = "2px solid #EEEEEE";
-    tab2.style.borderTop    = "1px solid black";
-    tab2.style.borderLeft   = left+"px solid black";
-    tab2.style.borderRight  = "1px solid black";
-    tab2.style.borderBottom = "2px solid black";
-
-    tab1.style.fontWeight = "bold";
-    tab2.style.fontWeight = "normal";
-    
-    tab1.style.background = "#EEEEEC";
-    tab2.style.background = "transparent";
-  }
-  function switch_to_cat() {
-    switch_to("cat");
-    var d = document.getElementById("menu-contents");
-    d.innerHTML = '\
-    m4_include([[[doc/menu.include]]])';
-  }
-  function switch_to_alpha() {
-    switch_to("alpha");
-    var d = document.getElementById("menu-contents");
-    d.innerHTML = '\
-    m4_include([[[doc/alphabetic.include]]])';
-  }
-  function write_left_menu() {
-    // Only do this if we are running non-IE browsers
-    if (navigator.appVersion.indexOf('MSIE') == -1) {
-      menuhtml = '<div id="left-switcher">\
-                    <div class="tab" id="cat-tab" onclick="javascript:switch_to_cat()">\
-                      <a href="javascript:switch_to_cat();" style="text-decoration: none;">Categorical</a>\
-                    </div>\
-                    <div class="tab" id="alpha-tab" onclick="javascript:switch_to_alpha()">\
-                      <a href="javascript:switch_to_alpha();" style="text-decoration: none;">Alphabetical</a>\
-                    </div>\
-                    <div id="menu-contents" class="left-menu" style="position: fixed; overflow: auto;">\
-                    </div>\
-                  </div>';
-      var left_menu_span = document.getElementById("left-menu-span");
-      left_menu_span.innerHTML = menuhtml;
-      var cat_tab = document.getElementById("cat-tab");
-      var alpha_tab = document.getElementById("alpha-tab");
-      cat_tab.style.width = "7.5em";
-      cat_tab.style.position = "absolute";
-      cat_tab.style.bottom = "-4px";
-      alpha_tab.style.width = "7.5em";
-      alpha_tab.style.position = "absolute";
-      alpha_tab.style.bottom = "-4px";
-    } // end non-IE
-    var tab = get_cookie();
-    if (tab == "alpha") {
-      switch_to_alpha();
-    } else {
-      switch_to_cat();
-    }
-  }
-  // -->
-  </script>]]])m4_dnl
-m4_changequote(`, ')
+m4_define(`__JAVA_SCRIPT__',
+  `__JAVA_SCRIPT_FIXED__
+   <script src="__BASE_ADDRESS__/javascript.js" type="text/javascript"></script>') m4_dnl
 m4_dnl
 m4_dnl
 m4_dnl
@@ -235,9 +110,11 @@ m4_define(`__HTML_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stric
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta name="date" content="__CURRENT_DATE__"/>
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   __JAVA_SCRIPT__
+  <link rel="shortcut icon" href="__BASE_ADDRESS__/favicon.ico" />
   </head>
   __BODY__
   __TOP_MENU__([[[$1]]])
@@ -249,10 +126,12 @@ m4_define(`__DOXY_HEADER__', `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transi
   <html>
   <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <meta name="date" content="__CURRENT_DATE__">
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/doxygen.css">
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css">
   __JAVA_SCRIPT_FIXED__
+  <link rel="shortcut icon" href="__BASE_ADDRESS__/favicon.ico">
   </head>
   __BODY__
   __TOP_MENU__([[[$1]]])
@@ -311,6 +190,7 @@ m4_define(`__DOC_HEADER__', `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict
   <title>$1</title>
   <link rel="stylesheet" type="text/css" href="__BASE_ADDRESS__/octave-forge.css" />
   __JAVA_SCRIPT__
+  <link rel="shortcut icon" href="__BASE_ADDRESS__/favicon.ico" />
   </head>
   __DOC_BODY__
   __TOP_MENU__([[[$1]]])

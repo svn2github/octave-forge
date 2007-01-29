@@ -3,10 +3,13 @@ __HEADER__([[[Mailing List]]])
 <p>Bugs, enhancements, and other stuff are debated on the Octave-Forge
   mailing list. It's a fairly low-trafic list, and you are most welcome
   to join. You can subscribe to the list by going to 
-  <a href="https://lists.sourceforge.net/lists/listinfo/octave-dev">this page</a>.
-  On the same page you can also find archives of the mailing list. A lot
-  of the people on the Octave-Forge mailing list are also subscribed to the
-  <a href="http://www.gnu.org/software/octave/archive.html">Octave mailing lists</a>,
+  <a href="https://lists.sourceforge.net/lists/listinfo/octave-dev">this 
+  page</a>, and you can access the archives for this list <a
+  href="__SOURCEFORGE__/mailarchive/forum.php?forum_id=33111">here</a>.
+  A lot of the people on the Octave-Forge mailing list are also
+  subscribed  to the 
+  <a href="http://www.gnu.org/software/octave/archive.html">
+  Octave mailing lists</a>,
   so you might want to joing those lists as well.</p>
 
 <p>There are equally, <a href="__FORUMS__">support forums</a>

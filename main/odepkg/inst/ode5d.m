@@ -52,24 +52,24 @@ function [varargout] = ode5d (varargin)
   end
 
 %# The following tests have been added to check the function's input arguments and output arguments
-%!test vsol = ode5d (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
-%!test [vx, vy] = ode5d (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
-%!test [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
+%#!test vsol = ode5d (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
+%#!test [vx, vy] = ode5d (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
+%#!test [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_secondorderlag, [0 0.1], [0 0]);
 %#test vsol = ode5d (@odepkg_equations_secondorderlag, linspace (0, 2.5, 52), [0 0]);
 %#test [vx, vy] = ode5d (@odepkg_equations_secondorderlag, linspace (0, 2.5, 52), [0 0]);
 %#test [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_secondorderlag, linspace (0, 2.5, 52), [0 0]);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     vsol = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     vsol = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
+%#!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
+%#!     vsol = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
+%#!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
+%#!     [vx, vy] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
+%#!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
+%#!     [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
+%#!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
+%#!     vsol = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
+%#!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
+%#!     [vx, vy] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
+%#!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
+%#!     [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
 
 %!demo
 %!

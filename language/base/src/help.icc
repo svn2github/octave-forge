@@ -206,7 +206,11 @@ HELP_TEXT
 
 	  if (! h.empty())
 	    {
-	      horig += '\n';
+	      // Due to the way the base strings are created horig must
+	      // terminate in a '\n'.
+	      if (horig.substr(horig.length()-1,1) != "\n")
+		horig += '\n';
+
 	      MD5_CTX mdContext;
 	      MD5Init (&mdContext);
 	      // static_cast = We don't change the string in the RSA MD5 code

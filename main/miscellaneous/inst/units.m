@@ -47,8 +47,8 @@ function y = units(fromUnit, toUnit, x)
     (0 == status) || error([rawoutput,
         'Verify that GNU units is installed in the current path.']);
     
-    i = index(rawoutput, '*');
-    j = index(rawoutput, '\n') - 1;
+    i = index(rawoutput, "*");
+    j = index(rawoutput, "\n") - 1;
     i && (i < j) || error('parsing units output "%s"', rawoutput);
 
     exist("x", "var") || (x = 1);

@@ -79,8 +79,8 @@ CVS2CL = @CVS2CL@
 opkg = $(filter-out %/,$(subst /,/ ,$@))
 ifeq ($(PKG_FILE),)
 # Use the wildcard on INDEX and PKG_ADD as well to allow for their absence
-PKG_FILES = COPYING DESCRIPTION $(wildcard INDEX) $(wildcard PKG_ADD) \
-	$(wildcard PKG_DEL) $(wildcard post_install.m) \
+PKG_FILES = COPYING DESCRIPTION $(wildcard ChangeLog) $(wildcard INDEX) \
+	$(wildcard PKG_ADD) $(wildcard PKG_DEL) $(wildcard post_install.m) \
 	$(wildcard pre_install.m)  $(wildcard on_uninstall.m) \
 	$(wildcard inst/*) $(wildcard src/*) \
 	$(wildcard doc/*) $(wildcard bin/*)

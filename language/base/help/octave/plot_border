@@ -1,0 +1,29 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} plot_border (...)
+Multiple arguments allowed to specify the sides on which the border
+is shown.  Allowed arguments include:
+
+@table @code
+@item "blank"
+No borders displayed.
+
+@item "all"
+All borders displayed
+
+@item "north"
+North Border
+
+@item "south"
+South Border
+
+@item "east"
+East Border
+
+@item "west"
+West Border
+@end table
+
+@noindent
+The arguments may be abbreviated to single characters.  Without any
+arguments, @code{plot_border} turns borders off.
+@end deftypefn

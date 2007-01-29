@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} cellstr (@var{string})
+Create a new cell array object from the elements of the string
+array @var{string}.
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} dmult (@var{a}, @var{b})
+If @var{a} is a vector of length @code{rows (@var{b})}, return
+@code{diag (@var{a}) * @var{b}} (but computed much more efficiently).
+@end deftypefn

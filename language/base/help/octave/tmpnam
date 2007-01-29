@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})
+Return a unique temporary file name as a string.
+
+If @var{prefix} is omitted, a value of @code{"oct-"} is used.
+If @var{dir} is also omitted, the default directory for temporary files
+is used.  If @var{dir} is provided, it must exist, otherwise the default
+directory for temporary files is used.  Since the named file is not
+opened, by @code{tmpnam}, it is possible (though relatively unlikely)
+that it will not be available by the time your program attempts to open it.
+@seealso{tmpfile, mkstemp, P_tmpdir}
+@end deftypefn

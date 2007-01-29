@@ -1,0 +1,54 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} error (@var{template}, @dots{})
+Format the optional arguments under the control of the template string
+@var{template} using the same rules as the @code{printf} family of
+functions (@pxref{Formatted Output}) and print the resulting message
+on the @code{stderr} stream.  The message is prefixed by the character
+string @samp{error: }.
+
+Calling @code{error} also sets Octave's internal error state such that
+control will return to the top level without evaluating any more
+commands.  This is useful for aborting from functions or scripts.
+
+If the error message does not end with a new line character, Octave will
+print a traceback of all the function calls leading to the error.  For
+example, given the following function definitions:
+
+@example
+@group
+function f () g () end
+function g () h () end
+function h () nargin == 1 || error ("nargin != 1"); end
+@end group
+@end example
+
+@noindent
+calling the function @code{f} will result in a list of messages that
+can help you to quickly locate the exact location of the error:
+
+@example
+@group
+f ()
+error: nargin != 1
+error: evaluating index expression near line 1, column 30
+error: evaluating binary operator `||' near line 1, column 27
+error: called from `h'
+error: called from `g'
+error: called from `f'
+@end group
+@end example
+
+If the error message ends in a new line character, Octave will print the
+message but will not display any traceback messages as it returns
+control to the top level.  For example, modifying the error message
+in the previous example to end in a new line causes Octave to only print
+a single message:
+
+@example
+@group
+function h () nargin == 1 || error ("nargin != 1\n"); end
+f ()
+error: nargin != 1
+@end group
+@end example
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} INFO_FILE
+The variable @code{INFO_FILE} names the location of the Octave info file.
+The default value is @code{"@var{octave-home}/info/octave.info"}, in
+which @var{octave-home} is the directory where all of Octave is installed.
+@end defvr

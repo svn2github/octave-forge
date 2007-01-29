@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} cotd (@var{x})
+Compute the cotangent of an angle in degrees.
+@seealso{cot, tand}
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} class (@var{expr})
+
+Return the class of the expression @var{expr}, as a string.
+@end deftypefn

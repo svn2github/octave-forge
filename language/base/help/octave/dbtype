@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} dbtype ()
+List script file with line numbers.
+@seealso{dbclear, dbstatus, dbstop}
+@end deftypefn

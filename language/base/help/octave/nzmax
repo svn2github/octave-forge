@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{scalar} =} nzmax (@var{SM})
+Return the amount of storage allocated to the sparse matrix @var{SM}.
+Note that Octave tends to crop unused memory at the first oppurtunity
+for sparse objects. There are some cases of user created sparse objects
+where the value returned by @dfn{nzmaz} will not be the same as @dfn{nnz},
+but in general they will give the same result.
+@seealso{sparse, spalloc}
+@end deftypefn

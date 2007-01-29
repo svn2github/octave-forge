@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} spfind (@var{x})
+@deftypefnx {Loadable Function} {} spfind (@var{x}, @var{n})
+@deftypefnx {Loadable Function} {} spfind (@var{x}, @var{n}, @var{direction})
+@deftypefnx {Loadable Function} {[@var{i}, @var{j}, @var{v}} spfind (@dots{})
+
+A sparse version of the @code{find} function. Please see the @code{find}
+for details of its use.
+
+Note that this function is particularly useful for sparse matrices, as
+it extracts the non-zero elements as vectors, which can then be used to
+create the original matrix. For example,
+
+@example
+@group
+sz = size(a);
+[i, j, v] = spfind (a);
+b = sparse(i, j, v, sz(1), sz(2));
+@end group
+@end example
+@seealso{sparse}
+@end deftypefn

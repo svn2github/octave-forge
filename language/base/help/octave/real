@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} real (@var{z})
+Return the real part of @var{z}.
+@seealso{imag, conj}
+@end deftypefn

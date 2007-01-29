@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} DEFAULT_EXEC_PATH
+A colon separated list of directories in which to search when executing
+external programs.  The value of this variable is automatically
+substituted for leading, trailing, or doubled colons that appear in the
+built-in variable @code{EXEC_PATH}.
+@end defvr

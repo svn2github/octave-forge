@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isxdigit (@var{s})
+Return 1 for characters that are hexadecimal digits.
+@end deftypefn

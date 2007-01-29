@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} tilde_expand (@var{string})
+Performs tilde expansion on @var{string}.  If @var{string} begins with a
+tilde character, (@samp{~}), all of the characters preceding the first
+slash (or all characters, if there is no slash) are treated as a
+possible user name, and the tilde and the following characters up to the
+slash are replaced by the home directory of the named user.  If the
+tilde is followed immediately by a slash, the tilde is replaced by the
+home directory of the user running Octave.  For example,
+
+@example
+@group
+tilde_expand ("~joeuser/bin")
+     @result{} "/home/joeuser/bin"
+tilde_expand ("~/bin")
+     @result{} "/home/jwe/bin"
+@end group
+@end example
+@end deftypefn

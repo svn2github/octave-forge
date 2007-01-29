@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}] =} quaternion (w)
+@deftypefnx {Function File} {[@var{vv}, @var{theta}] =} quaternion (w)
+@deftypefnx {Function File} {@var{w} =} quaternion (@var{a}, @var{b}, @var{c}, @var{d})
+@deftypefnx {Function File} {@var{w} =} quaternion (@var{vv}, @var{theta})
+Construct or extract a quaternion
+
+@example
+w = a*i + b*j + c*k + d
+@end example
+
+@noindent
+from given data.
+@end deftypefn

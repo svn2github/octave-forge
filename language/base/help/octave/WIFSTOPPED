@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} WIFSTOPPED (@var{status})
+Given @var{status} from a call to @code{waitpid}, return true if the
+child process was stopped by delivery of a signal; this is only
+possible if the call was done using @code{WUNTRACED} or when the child
+is being traced (see ptrace(2)).
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WSTOPSIG, WIFCONTINUED}
+@end deftypefn

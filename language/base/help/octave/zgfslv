@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} zgfslv (@var{n}, @var{m}, @var{p}, @var{b})
+Solve system of equations for dense zgep problem.
+@end deftypefn

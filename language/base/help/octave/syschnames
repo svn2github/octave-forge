@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} syschnames (@var{sys}, @var{opt}, @var{list}, @var{names})
+Superseded by @command{syssetsignals}.
+@end deftypefn

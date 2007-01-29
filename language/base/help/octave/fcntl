@@ -1,0 +1,55 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})
+Change the properties of the open file @var{fid}.  The following values
+may be passed as @var{request}:
+
+@vtable @code
+@item F_DUPFD
+Return a duplicate file descriptor.
+
+@item F_GETFD
+Return the file descriptor flags for @var{fid}.
+
+@item F_SETFD
+Set the file descriptor flags for @var{fid}.
+
+@item F_GETFL
+Return the file status flags for @var{fid}.  The following codes may be
+returned (some of the flags may be undefined on some systems).
+
+@vtable @code
+@item O_RDONLY
+Open for reading only.
+
+@item O_WRONLY
+Open for writing only.
+
+@item O_RDWR
+Open for reading and writing.
+
+@item O_APPEND
+Append on each write.
+
+@item O_CREAT
+Create the file if it does not exist.
+
+@item O_NONBLOCK
+Nonblocking mode.
+
+@item O_SYNC
+Wait for writes to complete.
+
+@item O_ASYNC
+Asynchronous I/O.
+@end vtable
+
+@item F_SETFL
+Set the file status flags for @var{fid} to the value specified by
+@var{arg}.  The only flags that can be changed are @code{O_APPEND} and
+@code{O_NONBLOCK}.
+@end vtable
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@end deftypefn

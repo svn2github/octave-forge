@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} pmt (@var{r}, @var{n}, @var{a}, @var{l}, @var{method})
+Return the amount of periodic payment necessary to amortize a loan
+of amount a with interest rate @var{r} in @var{n} periods.
+
+The optional argument @var{l} may be used to specify a terminal
+lump-sum payment.
+
+The optional argument @var{method} may be used to specify whether
+payments are made at the end (@var{"e"}, default) or at the beginning
+(@var{"b"}) of each period.
+@seealso{pv, nper, rate}
+@end deftypefn

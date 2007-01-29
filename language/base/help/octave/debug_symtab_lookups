@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} debug_symtab_lookups ()
+@deftypefnx {Built-in Function} {@var{old_val} =} debug_symtab_lookups (@var{new_val})
+Query or set the internal variable that controls whether debugging
+information is printed when searching for symbols in the symbol tables.
+@end deftypefn

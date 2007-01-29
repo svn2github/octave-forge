@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} __gnuplot_send_inline_data__ (@var{data}, @var{ndim}, @var{parametric})
+Send @var{val} to gnuplot subprocess as inline data.
+@end deftypefn

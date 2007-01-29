@@ -1,0 +1,25 @@
+-*- texinfo -*-
+@deffn {Command} echo options
+Control whether commands are displayed as they are executed.  Valid
+options are:
+
+@table @code
+@item on
+Enable echoing of commands as they are executed in script files.
+
+@item off
+Disable echoing of commands as they are executed in script files.
+
+@item on all
+Enable echoing of commands as they are executed in script files and
+functions.
+
+@item off all
+Disable echoing of commands as they are executed in script files and
+functions.
+@end table
+
+@noindent
+If invoked without any arguments, @code{echo} toggles the current echo
+state.
+@end deffn

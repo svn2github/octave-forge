@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} autocov (@var{x}, @var{h})
+Return the autocovariances from lag 0 to @var{h} of vector @var{x}.
+If @var{h} is omitted, all autocovariances are computed.
+If @var{x} is a matrix, the autocovariances of each column are
+computed.
+@end deftypefn

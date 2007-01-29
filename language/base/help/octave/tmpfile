@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} tmpfile ()
+Return the file ID corresponding to a new temporary file with a unique
+name.  The file is opened in binary read/write (@code{"w+b"}) mode.
+The file will be deleted automatically when it is closed or when Octave
+exits.
+
+If successful, @var{fid} is a valid file ID and @var{msg} is an empty
+string.  Otherwise, @var{fid} is -1 and @var{msg} contains a
+system-dependent error message.
+@seealso{tmpnam, mkstemp, P_tmpdir}
+@end deftypefn

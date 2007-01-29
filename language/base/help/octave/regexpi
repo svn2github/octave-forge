@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexpi (@var{str}, @var{pat})
+@deftypefnx {Loadable Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, @var{opts}, @dots{})
+
+Case insensitive regular expression string matching. Matches @var{pat} in
+@var{str} and returns the position and matching substrings or empty values
+if there are none. See @code{regexp} for more details
+@end deftypefn

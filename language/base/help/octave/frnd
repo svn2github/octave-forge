@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} frnd (@var{m}, @var{n}, @var{r}, @var{c})
+@deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{sz})
+Return an @var{r} by @var{c} matrix of random samples from the F
+distribution with @var{m} and @var{n} degrees of freedom.  Both
+@var{m} and @var{n} must be scalar or of size @var{r} by @var{c}.
+If @var{sz} is a vector the random samples are in a matrix of 
+size @var{sz}.
+
+If @var{r} and @var{c} are omitted, the size of the result matrix is
+the common size of @var{m} and @var{n}.
+@end deftypefn

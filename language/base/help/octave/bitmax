@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} bitmax ()
+Return the largest integer that can be represented as a floating point
+value.  On IEEE-754 compatiable systems, @code{bitmax} is @code{2^53 - 1}.
+@end deftypefn

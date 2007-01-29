@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{val} =} gnuplot_command_end ()
+@deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_end (@var{new_val})
+@end deftypefn

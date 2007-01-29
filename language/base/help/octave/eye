@@ -1,0 +1,42 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} eye (@var{x})
+@deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})
+@deftypefnx {Built-in Function} {} eye (@dots{}, @var{class})
+Return an identity matrix.  If invoked with a single scalar argument,
+@code{eye} returns a square matrix with the dimension specified.  If you
+supply two scalar arguments, @code{eye} takes them to be the number of
+rows and columns.  If given a vector with two elements, @code{eye} uses
+the values of the elements as the number of rows and columns,
+respectively.  For example,
+
+@example
+@group
+eye (3)
+     @result{}  1  0  0
+         0  1  0
+         0  0  1
+@end group
+@end example
+
+The following expressions all produce the same result:
+
+@example
+@group
+eye (2)
+@equiv{}
+eye (2, 2)
+@equiv{}
+eye (size ([1, 2; 3, 4])
+@end group
+@end example
+
+The optional argument @var{class}, allows @code{eye} to return an array of
+the specified type, like
+
+@example
+val = zeros (n,m, "uint8")
+@end example
+
+For compatibility with @sc{Matlab}, calling @code{eye} with no arguments
+is equivalent to calling it with an argument of 1.
+@end deftypefn

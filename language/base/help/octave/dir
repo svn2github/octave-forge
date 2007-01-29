@@ -1,0 +1,25 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} dir (@var{directory})
+@deftypefnx {Function File} {[@var{list}] =} dir (@var{directory})
+Display file listing for directory @var{directory}.  If a return
+value is requested, return a structure array with the fields
+
+@example
+@group
+name
+bytes
+date
+isdir
+statinfo
+@end group
+@end example
+
+@noindent
+in which @code{statinfo} is the structure returned from @code{stat}.
+
+If @var{directory} is not a directory, return information about the
+named @var{filename}.  @var{directory} may be a list of directories
+specified either by name or with wildcard characters (like * and ?)
+which will be expanded with glob.
+@seealso{ls, stat, readdir, glob, filesep}
+@end deftypefn

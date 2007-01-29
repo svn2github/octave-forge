@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} split (@var{s}, @var{t}, @var{n})
+Divides the string @var{s} into pieces separated by @var{t}, returning
+the result in a string array (padded with blanks to form a valid
+matrix).  If the optional input @var{n} is supplied, split @var{s}
+into at most @var{n} different pieces.
+
+For example,
+
+@example
+split ("Test string", "t")
+@result{} "Tes "
+        " s  "
+        "ring"
+@end example
+
+@example
+split ("Test string", "t", 2)
+@result{} "Tes    "
+        " string"
+@end example
+@end deftypefn

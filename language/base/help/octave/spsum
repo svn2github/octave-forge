@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{y} =} spsum (@var{x},@var{dim})
+Sum of elements along dimension @var{dim}.  If @var{dim} is omitted, it
+defaults to 1 (column-wise sum).
+@seealso{spprod, spsumsq}
+@end deftypefn

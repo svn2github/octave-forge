@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} putenv (@var{var}, @var{value})
+Set the value of the environment variable @var{var} to @var{value}.
+@end deftypefn

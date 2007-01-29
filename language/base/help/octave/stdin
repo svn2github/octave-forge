@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} stdin ()
+Return the numeric value corresponding to the standard input stream.
+When Octave is used interactively, this is filtered through the command
+line editing functions.
+@seealso{stdout, stderr}
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isprint (@var{s})
+Return 1 for printable characters (including the space character).
+@end deftypefn

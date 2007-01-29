@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} clearplot ()
+This function has been deprecated.  Use clf instead.
+@end deftypefn

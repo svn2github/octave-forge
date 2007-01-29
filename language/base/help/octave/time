@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} time ()
+Return the current time as the number of seconds since the epoch.  The
+epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
+1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the
+value returned by @code{time} was 856163706.
+@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn

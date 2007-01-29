@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} realmax (@var{x})
+@deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m})
+@deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Built-in Function} {} realmax (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all equal
+to the largest floating point number that is representable.  The actual
+value is system-dependent.  On machines that support 64-bit IEEE
+floating point arithmetic, @code{realmax} is approximately
+@ifinfo
+ 1.7977e+308
+@end ifinfo
+@iftex
+@tex
+ $1.7977\times10^{308}$.
+@end tex
+@end iftex
+@seealso{realmin}
+@end deftypefn

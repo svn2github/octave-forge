@@ -1,0 +1,92 @@
+-*- texinfo -*-
+@deffn {Command} load options file v1 v2 @dots{}
+Load the named variables from the file @var{file}.  As with @code{save},
+you may specify a list of variables and @code{load} will only extract
+those variables with names that match.  For example, to restore the
+variables saved in the file @file{data}, use the command
+
+@example
+load data
+@end example
+
+If load is invoked using the functional form
+
+@example
+load ("-text", "file.txt", "a")
+@end example
+
+@noindent
+then the @var{options}, @var{file}, and variable name arguments
+(@var{v1}, @dots{}) must be specified as character strings.
+
+If a variable that is not marked as global is loaded from a file when a
+global symbol with the same name already exists, it is loaded in the
+global symbol table.  Also, if a variable is marked as global in a file
+and a local symbol exists, the local symbol is moved to the global
+symbol table and given the value from the file.  Since it seems that
+both of these cases are likely to be the result of some sort of error,
+they will generate warnings.
+
+If invoked with a single output argument, Octave returns data instead
+of inserting variables in the symbol table.  If the data file contains
+only numbers (TAB- or space-delimited columns), a matrix of values is
+returned.  Otherwise, @code{load} returns a structure with members
+ corresponding to the names of the variables in the file.
+
+The @code{load} command can read data stored in Octave's text and
+binary formats, and @sc{Matlab}'s binary format.  It will automatically
+detect the type of file and do conversion from different floating point
+formats (currently only IEEE big and little endian, though other formats
+may added in the future).
+
+Valid options for @code{load} are listed in the following table.
+
+@table @code
+@item -force
+The @samp{-force} option is accepted but ignored for backward
+compatibility. Octave now overwrites variables currently in memory with
+the same name as those found in the file.
+
+@item -ascii
+Force Octave to assume the file contains columns of numbers in text format
+without any header or other information.  Data in the file will be loaded
+as a single numeric matrix with the name of the variable derived from the
+name of the file.
+
+@item -binary
+Force Octave to assume the file is in Octave's binary format.
+
+@item -mat
+@itemx -mat-binary
+@itemx -6
+@itemx -v6
+@itemx -7
+@itemx -v7
+Force Octave to assume the file is in @sc{Matlab}'s version 6 or 7 binary
+format.
+
+@item -V4
+@itemx -v4
+@itemx -4
+@itemx -mat4-binary
+Force Octave to assume the file is in the binary format written by
+@sc{Matlab} version 4.
+
+@item -hdf5
+Force Octave to assume the file is in HDF5 format.
+(HDF5 is a free, portable binary format developed by the National
+Center for Supercomputing Applications at the University of Illinois.)
+Note that Octave can read HDF5 files not created by itself, but may
+skip some datasets in formats that it cannot support.
+
+HDF5 load and save are not available, as this Octave executable was
+not linked with the HDF5 library.
+@item -import
+The @samp{-import} is accepted but ignored for backward compatibility.
+Octave can now support multi-dimensional HDF data and automatically
+modifies variable names if they are invalid Octave identifiers.
+
+@item -text
+Force Octave to assume the file is in Octave's text format.
+@end table
+@end deffn

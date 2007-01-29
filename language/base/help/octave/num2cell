@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{c} =} num2cell (@var{m})
+@deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{d})
+Convert to matrix @var{m} into a cell array. If @var{d} is defined the
+value @var{c} is of dimension 1 in this dimension and the elements of
+@var{m} are placed in slices in @var{c}.
+@seealso{mat2cell}
+@end deftypefn

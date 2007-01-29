@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} spcholinv (@var{a})
+Use the Cholesky factorization to compute the inverse of the
+sparse symmetric positive definite matrix @var{a}.
+@seealso{spchol, spchol2inv}
+@end deftypefn

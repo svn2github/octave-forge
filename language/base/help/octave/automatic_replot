@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{val} =} automatic_replot ()
+@deftypefnx {Loadable Function} {@var{old_val} =} automatic_replot (@var{new_val})
+Query or set the current automatic replot state.  Although it is fairly
+inefficient, especially for large plots, automatic replotting is enabled
+by default for compatibility with Matlab.
+@end deftypefn

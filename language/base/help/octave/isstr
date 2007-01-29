@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} isstr (@var{a})
+This function has been deprecated.  Use ischar instead.
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} program_name ()
+Return the last component of of the value returned by
+@code{program_invocation_name}.
+@seealso{program_invocation_name}
+@end deftypefn

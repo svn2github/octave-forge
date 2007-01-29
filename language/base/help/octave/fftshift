@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} fftshift (@var{v})
+@deftypefnx {Function File} {} fftshift (@var{v}, @var{dim})
+Perform a shift of the vector @var{v}, for use with the @code{fft}
+and @code{ifft} functions, in order the move the frequency 0 to the
+center of the vector or matrix.
+
+If @var{v} is a vector of @math{N} elements corresponding to @math{N}
+time samples spaced of @math{Dt} each, then @code{fftshift (fft
+(@var{v}))} corresponds to frequencies
+
+@example
+f = ((1:N) - ceil(N/2)) / N / Dt
+@end example
+
+If @var{v} is a matrix, the same holds for rows and columns. If 
+@var{v} is an array, then the same holds along each dimension.
+
+The optional @var{dim} argument can be used to limit the dimension
+along which the permutation occurs.
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isnumeric (@var{x})
+Return nonzero if @var{x} is a numeric object.
+@end deftypefn

@@ -1,0 +1,12 @@
+Name: template
+Version: 1.0.0
+Date: 2007-01-13
+Author: David Bateman <dbateman@free.fr>
+Maintainer: David Bateman <dbateman@free.fr>
+Title: Template translation package
+Description: Template package for the construction of native language
+ translations of Octave functions.
+Categories: languages
+Depends: octave (>= 2.9.7)
+License: GPL version 2 or later
+Url: http://octave.sf.net

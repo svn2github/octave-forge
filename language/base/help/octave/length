@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} length (@var{a})
+Return the `length' of the object @var{a}.  For matrix objects, the
+length is the number of rows or columns, whichever is greater (this
+odd definition is used for compatibility with Matlab).
+@end deftypefn

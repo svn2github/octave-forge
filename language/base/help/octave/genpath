@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} genpath (@var{dir})
+Return a path constructed from @var{dir} and all its subdiretories.
+@end deftypefn

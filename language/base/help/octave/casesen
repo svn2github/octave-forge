@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deffn {Command} casesen arg
+Provided for compatibility with Matlab, but does nothing.
+@end deffn

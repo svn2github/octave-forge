@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} octave_core_file_limit ()
+@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_limit (@var{new_val})
+Query or set the internal variable that specifies the maximum amount
+of memory (in kilobytes) of the top-level workspace that Octave will
+attempt to save when writing data to the crash dump file (the name of
+the file is specified by @var{octave_core_file_name}).  If
+@var{octave_core_file_options} flags specifies a binary format,
+then @var{octave_core_file_limit} will be approximately the maximum
+size of the file.  If a text file format is used, then the file could
+be much larger than the limit.  The default value is -1 (unlimited)
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@end deftypefn

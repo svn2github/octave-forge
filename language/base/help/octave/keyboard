@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} keyboard (@var{prompt})
+This function is normally used for simple debugging.  When the
+@code{keyboard} function is executed, Octave prints a prompt and waits
+for user input.  The input strings are then evaluated and the results
+are printed.  This makes it possible to examine the values of variables
+within a function, and to assign new values to variables.  No value is
+returned from the @code{keyboard} function, and it continues to prompt
+for input until the user types @samp{quit}, or @samp{exit}.
+
+If @code{keyboard} is invoked without any arguments, a default prompt of
+@samp{debug> } is used.
+@end deftypefn

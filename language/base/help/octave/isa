@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} isa (@var{x}, @var{class})
+Return true if @var{x} is a value from the class @var{class}.
+@end deftypefn

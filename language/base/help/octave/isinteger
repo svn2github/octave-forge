@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isinteger (@var{x})
+Return true if @var{x} is an integer object (int8, uint8, int16, etc.).
+Note that @code{isinteger (14)} is false because numeric constants in
+are double precision floating point values.
+@seealso{isreal, isnumeric, class, isa}
+@end deftypefn

@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} O_RDONLY ()
+Return the numerical value of the file status flag that may be
+returned by @code{fcntl} to indicate that a file is open for
+reading only.
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@end deftypefn

@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} sprintf (@var{template}, @dots{})
+This is like @code{printf}, except that the output is returned as a
+string.  Unlike the C library function, which requires you to provide a
+suitably sized string as an argument, Octave's @code{sprintf} function
+returns the string, automatically sized to hold all of the items
+converted.
+@seealso{printf, fprintf, sscanf}
+@end deftypefn

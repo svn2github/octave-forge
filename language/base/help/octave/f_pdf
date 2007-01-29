@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} f_pdf (@var{x}, @var{m}, @var{n})
+For each element of @var{x}, compute the probability density function
+(PDF) at @var{x} of the F distribution with @var{m} and @var{n}
+degrees of freedom.
+@end deftypefn

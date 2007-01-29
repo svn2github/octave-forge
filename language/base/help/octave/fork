@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} fork ()
+Create a copy of the current process.
+
+Fork can return one of the following values:
+
+@table @asis
+@item > 0
+You are in the parent process.  The value returned from @code{fork} is
+the process id of the child process.  You should probably arrange to
+wait for any child processes to exit.
+
+@item 0
+You are in the child process.  You can call @code{exec} to start another
+process.  If that fails, you should probably call @code{exit}.
+
+@item < 0
+The call to @code{fork} failed for some reason.  You must take evasive
+action.  A system dependent error message will be waiting in @var{msg}.
+@end table
+@end deftypefn

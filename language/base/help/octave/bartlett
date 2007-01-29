@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} bartlett (@var{m})
+Return the filter coefficients of a Bartlett (triangular) window of
+length @var{m}.
+
+For a definition of the Bartlett window, see e.g. A. V. Oppenheim &
+R. W. Schafer, "Discrete-Time Signal Processing".
+@end deftypefn

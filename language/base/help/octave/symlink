@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})
+Create a symbolic link @var{new} which contains the string @var{old}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@seealso{link, readlink}
+@end deftypefn

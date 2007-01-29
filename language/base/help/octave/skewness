@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} skewness (@var{x}, @var{dim})
+If @var{x} is a vector of length @math{n}, return the skewness
+@iftex
+@tex
+$$
+{\rm skewness} (x) = {1\over N \sigma(x)^3} \sum_{i=1}^N (x_i-\bar{x})^3
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+skewness (x) = N^(-1) std(x)^(-3) sum ((x - mean(x)).^3)
+@end example
+@end ifinfo
+
+@noindent
+of @var{x}.  If @var{x} is a matrix, return the skewness along the
+first non-singleton dimension of the matrix. If the optional
+@var{dim} argument is given, operate along this dimension.
+@end deftypefn

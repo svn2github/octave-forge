@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})
+Return names of the files in the directory @var{dir} as a cell array of
+strings.  If an error occurs, return an empty cell array in @var{files}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@seealso{dir, glob}
+@end deftypefn

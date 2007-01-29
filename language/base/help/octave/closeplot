@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} closeplot
+Close stream to the @code{gnuplot} subprocess.  If you are using X11,
+this will close the plot window.
+@end deftypefn

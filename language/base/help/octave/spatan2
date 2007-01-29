@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} spatan2 (@var{y}, @var{x})
+Compute atan (Y / X) for corresponding sparse matrix elements of Y and X.
+The result is in range -pi to pi.
+@end deftypefn

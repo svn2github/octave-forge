@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{p} =} dmperm (@var{s})
+@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{s}] =} dmperm (@var{s})
+
+@cindex Dulmage-Mendelsohn decomposition
+Perform a Dulmage-Mendelsohn permutation on the sparse matrix @var{s}.
+With a single output argument @dfn{dmperm} performs the row permutations
+@var{p} such that @code{@var{s} (@var{p},:)} has no zero elements on the
+diagonal.
+
+Called with two or more output arguments, returns the row and column
+permutations, such that @code{@var{s} (@var{p}, @var{q})} is in block
+triangular form. The values of @var{r} and @var{s} define the boundaries
+of the blocks. If @var{s} is square then @code{@var{r} == @var{s}}.
+
+The method used is described in: A. Pothen & C.-J. Fan. Computing the block
+triangular form of a sparse matrix. ACM Trans. Math. Software,
+16(4):303-324, 1990.
+@seealso{colamd, ccolamd}
+@end deftypefn

@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } spinv (@var{a}, @var{Q})
+Compute the inverse of the sparse square matrix @var{a}.  Return an estimate
+of the reciprocal condition number if requested, otherwise warn of an
+ill-conditioned matrix if the reciprocal condition number is small.
+This function takes advantage of the sparsity of the matrix to accelerate
+the calculation of the inverse.
+
+In general @var{x} will be a full matrix, and so if possible forming the
+inverse of a sparse matrix should be avoided. It is significantly more
+accurate and faster to do @code{@var{y} = @var{a} \ @var{b}}, rather
+than @code{@var{y} = spinv (@var{a}) * @var{b}}.
+@end deftypefn

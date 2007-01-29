@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} makeinfo_program ()
+@deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})
+Query or set the internal variable that specifies the name of the
+makeinfo program that Octave runs to format help text containing
+Texinfo markup commands.  The default initial value is @code{"makeinfo"}.
+@seealso{info_file, info_program, doc, help}
+@end deftypefn

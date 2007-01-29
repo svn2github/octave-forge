@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} spencer (@var{x})
+Return Spencer's 15 point moving average of every single column of
+@var{x}.
+@end deftypefn

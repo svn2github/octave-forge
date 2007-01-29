@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{uts}, @var{err}, @var{msg}] =} uname ()
+Return system information in the structure.  For example,
+
+@example
+@group
+uname ()
+     @result{} @{
+           sysname = x86_64
+           nodename = segfault
+           release = 2.6.15-1-amd64-k8-smp
+           version = Linux
+           machine = #2 SMP Thu Feb 23 04:57:49 UTC 2006
+         @}
+@end group
+@end example
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@end deftypefn

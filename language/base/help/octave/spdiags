@@ -1,0 +1,35 @@
+-*- texinfo -*-
+@deftypefn {function File} {[@var{b}, @var{c}]} = spdiags (@var{a})
+@deftypefnx {function File} {@var{b}} = spdiags (@var{a}, @var{c})
+@deftypefnx {function File} {@var{b}} = spdiags (@var{v}, @var{c}, @var{a})
+@deftypefnx {function File} {@var{b}} = spdiags (@var{v}, @var{c}, @var{m}, @var{n})
+A generalization of the function @code{spdiag}. Called with a single
+input argument, the non-zero diagonals @var{c} of @var{A} are extracted.
+With two arguments the diagonals to extract are given by the vector 
+@var{c}.
+
+The other two forms of @code{spdiags} modify the input matrix by
+replacing the diagonals. They use the columns of @var{v} to replace
+the columns represented by the vector @var{c}. If the sparse matrix
+@var{a} is defined then the diagonals of this matrix are replaced.
+Otherwise a matrix of @var{m} by @var{n} is created with the
+diagonals given by @var{v}.
+
+Negative values of @var{c} representive diagonals below the main
+diagonal, and positive values of @var{c} diagonals above the main
+diagonal.
+
+For example
+
+@example
+@group
+spdiags (reshape (1:12, 4, 3), [-1 0 1], 5, 4)
+@result{}    5 10  0  0
+      1  6 11  0
+      0  2  7 12
+      0  0  3  8
+      0  0  0  4
+@end group
+@end example
+
+@end deftypefn

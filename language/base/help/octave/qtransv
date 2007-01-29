@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qtransv (@var{v}, @var{q})
+Transform the 3-D vector @var{v} by the unit quaternion @var{q}.
+Return a column vector.
+
+@example
+vi = (2*real(q)^2 - 1)*vb + 2*imag(q)*(imag(q)'*vb) 
+   + 2*real(q)*cross(imag(q),vb)
+@end example
+
+@noindent
+Where imag(q) is a column vector of length 3.
+@end deftypefn

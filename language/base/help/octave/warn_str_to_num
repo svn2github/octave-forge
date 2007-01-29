@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_str_to_num
+If the value of @code{warn_str_to_num} is nonzero, a warning is printed
+for implicit conversions of strings to their numeric ASCII equivalents.
+For example,
+@example
+@group
+"abc" + 0
+     @result{} 97 98 99
+@end group
+@end example
+elicits a warning if @code{warn_str_to_num} is nonzero.  The default
+value is 0.
+@end defvr

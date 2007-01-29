@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} asinh (@var{x})
+Compute the inverse hyperbolic sine of each element of @var{x}.
+@end deftypefn

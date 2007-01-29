@@ -1,0 +1,36 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} imshow (@var{im})
+@deftypefnx {Function File} {} imshow (@var{im}, @var{limits})
+@deftypefnx {Function File} {} imshow (@var{im}, @var{map})
+@deftypefnx {Function File} {} imshow (@var{R}, @var{G}, @var{B}, @dots{})
+@deftypefnx {Function File} {} imshow (@var{filename})
+@deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, ...)
+Display the image @var{im}, where @var{im} can a 2-dimensional
+(gray-scale image) or a 3-dimensional (RGB image) matrix. If three matrices
+of the same size are given as arguments, they will be concatenated into
+a 3-dimensional (RGB image) matrix.
+
+If @var{limits} is a 2-element vector @code{[@var{low}, @var{high}]},
+the image is shown using a display range between @var{low} and
+@var{high}.  If an empty matrix is passed for @var{limits}, the
+display range is computed as the range between the minimal and the
+maximal value in the image.
+
+If @var{map} is a valid color map, the image will be shown as an indexed
+image using the supplied color map.
+
+If a file name is given instead of an image, the file will be read and
+shown.
+
+If given, the parameter @var{string_param1} has value
+@var{value1}. @var{string_param1} can be any of the following:
+@table @samp
+@item "display_range"
+@var{value1} is the display range as described above.
+
+@item "InitialMagnification"
+@var{value1} sets the zoom level in percent. 
+If @var{value1} is 100 the image is showed unscaled.
+@end table
+@seealso{image, imagesc, colormap, gray2ind, rgb2ind}
+@end deftypefn

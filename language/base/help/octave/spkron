@@ -1,0 +1,29 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} spkron (@var{a}, @var{b})
+Form the kronecker product of two sparse matrices. This is defined
+block by block as
+
+@example
+x = [a(i, j) b]
+@end example
+
+For example,
+
+@example
+@group
+kron(speye(3),spdiag([1,2,3]))
+@result{}
+Compressed Column Sparse (rows = 9, cols = 9, nnz = 9)
+
+  (1, 1) ->  1
+  (2, 2) ->  2
+  (3, 3) ->  3
+  (4, 4) ->  1
+  (5, 5) ->  2
+  (6, 6) ->  3
+  (7, 7) ->  1
+  (8, 8) ->  2
+  (9, 9) ->  3
+@end group
+@end example
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} ftell (@var{fid})
+Return the position of the file pointer as the number of characters
+from the beginning of the file @var{fid}.
+@seealso{fseek, fopen, fclose}
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_future_time_stamp
+If the value of this variable is nonzero, Octave will print a warning
+if it finds a function file with a time stamp that is in the future.
+@end defvr

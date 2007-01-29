@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} irr (@var{p}, @var{i})
+Return the internal rate of return of a series of payments @var{p}
+from an initial investment @var{i} (i.e., the solution of
+@code{npv (r, p) = i}.  If the second argument is omitted, a value of
+0 is used.
+@seealso{npv, pv, rate}
+@end deftypefn

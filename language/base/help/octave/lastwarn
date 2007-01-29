@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn (@var{msg}, @var{msgid})
+Without any arguments, return the last warning message.  With one
+argument, set the last warning message to @var{msg}.  With two arguments,
+also set the last message identifier.
+@end deftypefn

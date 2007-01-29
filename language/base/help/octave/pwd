@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} pwd ()
+Return the current working directory.
+@seealso{dir, ls}
+@end deftypefn

@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} sign (@var{x})
+Compute the @dfn{signum} function, which is defined as
+@iftex
+@tex
+$$
+{\rm sign} (@var{x}) = \cases{1,&$x>0$;\cr 0,&$x=0$;\cr -1,&$x<0$.\cr}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+           -1, x < 0;
+sign (x) =  0, x = 0;
+            1, x > 0.
+@end example
+@end ifinfo
+
+For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.
+@end deftypefn

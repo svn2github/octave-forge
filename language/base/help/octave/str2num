@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} str2num (@var{s})
+Convert the string @var{s} to a number.
+@end deftypefn

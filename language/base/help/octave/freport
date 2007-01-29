@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} freport ()
+Print a list of which files have been opened, and whether they are open
+for reading, writing, or both.  For example,
+
+@example
+@group
+freport ()
+
+     @print{}  number  mode  name
+     @print{} 
+     @print{}       0     r  stdin
+     @print{}       1     w  stdout
+     @print{}       2     w  stderr
+     @print{}       3     r  myfile
+@end group
+@end example
+@end deftypefn

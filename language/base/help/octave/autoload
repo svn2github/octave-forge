@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})
+Define @var{function} to autoload from @var{file}.
+
+With no arguments, return a structure with information about all
+currently autoloaded functions.
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} cholinv (@var{a})
+Use the Cholesky factorization to compute the inverse of the
+symmetric positive definite matrix @var{a}.
+@seealso{chol, chol2inv}
+@end deftypefn

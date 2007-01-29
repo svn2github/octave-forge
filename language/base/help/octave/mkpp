@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{pp} = } mkpp (@var{x}, @var{p})
+@deftypefnx {Function File} {@var{pp} = } mkpp (@var{x}, @var{p}, @var{d})
+
+Construct a piece-wise polynomial structure from sample points
+@var{x} and coefficients @var{p}.  The ith row of @var{p},
+@code{@var{p} (@var{i},:)}, contains the coefficients for the polynomial
+over the @var{i}-th interval, ordered from highest to 
+lowest. There must be one row for each interval in @var{x}, so 
+@code{rows (@var{p}) == length (@var{x}) - 1}.  
+
+You can concatenate multiple polynomials of the same order over the 
+same set of intervals using @code{@var{p} = [ @var{p1}; @var{p2}; 
+@dots{}; @var{pd} ]}.  In this case, @code{rows (@var{p}) == @var{d} 
+* (length (@var{x}) - 1)}.
+
+@var{d} specifies the shape of the matrix @var{p} for all except the
+last dimension. If @var{d} is not specified it will be computed as
+@code{round (rows (@var{p}) / (length (@var{x}) - 1)) instead.
+
+@seealso{unmkpp, ppval, spline}
+@end deftypefn

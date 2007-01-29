@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} native_float_format ()
+Return the native floating point format as a string
+@end deftypefn

@@ -1,0 +1,28 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} LOADPATH
+A colon separated list of directories in which to search for function
+files.  @xref{Functions and Scripts}.  The value of @code{LOADPATH}
+overrides the environment variable @code{OCTAVE_PATH}.  @xref{Installation}.
+
+@code{LOADPATH} is now handled in the same way as @TeX{} handles
+@code{TEXINPUTS}.  Leading, trailing, or doubled colons that appear in
+@code{LOADPATH} are replaced by the value of @code{DEFAULT_LOADPATH}.
+The default value of @code{LOADPATH} is @code{"
+:"}, which tells Octave to search in the directories specified by
+@code{DEFAULT_LOADPATH}.
+
+In addition, if any path element ends in @samp{//}, that directory and
+all subdirectories it contains are searched recursively for function
+files.  This can result in a slight delay as Octave caches the lists of
+files found in the @code{LOADPATH} the first time Octave searches for a
+function.  After that, searching is usually much faster because Octave
+normally only needs to search its internal cache for files.
+
+To improve performance of recursive directory searching, it is best for
+each directory that is to be searched recursively to contain
+@emph{either} additional subdirectories @emph{or} function files, but
+not a mixture of both.
+
+@xref{Organization of Functions}, for a description of the function file
+directories that are distributed with Octave.
+@end defvr

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} nth (@var{list}, @var{n})
+Return the @var{n}-th element of @var{list}.
+@end deftypefn

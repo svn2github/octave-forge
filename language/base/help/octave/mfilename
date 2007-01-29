@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} mfilename ()
+@deftypefnx {Built-in Function} {} mfilename (@code{"fullpath"})
+@deftypefnx {Built-in Function} {} mfilename (@code{"fullpathext"})
+Return the name of the currently executing file.  At the top-level,
+return the empty string.  Given the argument @code{"fullpath"},
+include the directory part of the file name, but not the extension.
+Given the argument @code{"fullpathext"}, include the directory part
+of the file name and the extension.
+@end deftypefn

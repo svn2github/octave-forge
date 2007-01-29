@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} weibull_pdf (@var{x}, @var{shape}, @var{scale})
+Compute the probability density function (PDF) at @var{x} of the
+Weibull distribution with shape parameter @var{scale} and scale
+parameter @var{shape} which is given by
+
+@example
+   scale * shape^(-scale) * x^(scale-1) * exp(-(x/shape)^scale)
+@end example
+
+@noindent
+for @var{x} > 0.
+@end deftypefn

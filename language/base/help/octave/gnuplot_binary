@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{val} =} gnuplot_binary ()
+@deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_binary (@var{new_val})
+Query or set the name of the program invoked by the plot command.
+The default value @code{"gnuplot"}.  @xref{Installation}.
+@end deftypefn

@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} log2 (@var{x})
+@deftypefnx {Mapping Function} {[@var{f}, @var{e}] =} log2 (@var{x})
+Compute the base-2 logarithm of @var{x}.  With two outputs, returns
+@var{f} and @var{e} such that
+@iftex
+@tex
+ $1/2 <= |f| < 1$ and $x = f \cdot 2^e$.
+@end tex
+@end iftex
+@ifinfo
+ 1/2 <= abs(f) < 1 and x = f * 2^e.
+@end ifinfo
+@seealso{log, log10, logspace, exp}
+@end deftypefn

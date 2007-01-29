@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deffn {Operator} ;
+Array row or command separator.
+@seealso{comma}
+@end deffn

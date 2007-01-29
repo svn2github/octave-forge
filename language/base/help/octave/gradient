@@ -1,0 +1,31 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{x} = } gradient (@var{M})
+@deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] = } gradient (@var{M})
+@deftypefnx {Function File} {[@dots{}] = } gradient (@var{M}, @var{s})
+@deftypefnx {Function File} {[@dots{}] = } gradient (@var{M}, @var{dx}, @var{dy}, @dots{})
+
+Calculates the gradient. @code{@var{x} = gradient (@var{M})}
+calculates the one dimensional gradient if @var{M} is a vector. If
+@var{M} is a matrix the gradient is calculated for each row.
+
+@code{[@var{x}, @var{y}] = gradient (@var{M})} calculates the one
+dimensional gradient for each direction if @var{M} if @var{M} is a
+matrix. Additional return arguments can be use for multi-dimensional
+matrices.
+
+Spacing values between two points can be provided by the
+@var{dx}, @var{dy} or @var{h} parameters. If @var{h} is supplied it
+is assumed to be the spacing in all directions. Otherwise, seperate
+values of the spacing can be supplied by the @var{dx}, etc variables.
+A scalar value specifies an equidistant spacing, while a vector value
+can be used to specify a variable spacing. The length must match
+their respective dimension of @var{M}.
+
+At boundary points a linear extrapolation is applied. Interior points
+are calculated with the first approximation of the numerical gradient
+
+@example
+y'(i) = 1/(x(i+1)-x(i-1)) *(y(i-1)-y(i+1)).
+@end example
+
+@end deftypefn

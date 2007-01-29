@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} reverse (@var{list})
+Return a new list created by reversing the elements of @var{list}.
+@end deftypefn

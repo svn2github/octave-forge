@@ -1,0 +1,42 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{m}, @var{n})
+@deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{d1}, @var{d2}, @dots{})
+@deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{r})
+Converts the matrix @var{a} to a cell array If @var{a} is 2-D, then
+it is required that @code{sum (@var{m}) == size (@var{a}, 1)} and
+@code{sum (@var{n}) == size (@var{a}, 2)}. Similarly, if @var{a} is
+a multi-dimensional and the number of dimensional arguments is equal
+to the dimensions of @var{a}, then it is required that @code{sum (@var{di})
+== size (@var{a}, i)}.
+
+Given a single dimensional argument @var{r}, the other dimensional
+arguments are assumed to equal @code{size (@var{a},@var{i})}.
+
+An example of the use of mat2cell is
+
+@example
+@group
+mat2cell (reshape(1:16,4,4),[3,1],[3,1])
+@result{} @{
+  [1,1] =
+
+     1   5   9
+     2   6  10
+     3   7  11
+
+  [2,1] =
+
+     4   8  12
+
+  [1,2] =
+
+    13
+    14
+    15
+
+  [2,2] = 16
+@}
+@end group
+@end example
+@seealso{num2cell, cell2mat}
+@end deftypefn

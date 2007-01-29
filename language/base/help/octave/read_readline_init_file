@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} read_readline_init_file (@var{file})
+Read the readline library initialiazation file @var{file}.  If
+@var{file} is omitted, read the default initialization file (normally
+@file{~/.inputrc}.
+@end deftypefn

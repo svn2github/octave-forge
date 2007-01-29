@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} umask (@var{mask})
+Set the permission mask for file creation.  The parameter @var{mask}
+is an integer, interpreted as an octal number.  If successful,
+returns the previous value of the mask (as an integer to be
+interpreted as an octal number); otherwise an error message is printed.
+@end deftypefn

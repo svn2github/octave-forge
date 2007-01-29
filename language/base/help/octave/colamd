@@ -1,0 +1,66 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{p} =} colamd (@var{s})
+@deftypefnx {Loadable Function} {@var{p} =} colamd (@var{s}, @var{knobs})
+@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{s})
+@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{s}, @var{knobs})
+
+Column approximate minimum degree permutation. @code{@var{p} = colamd
+(@var{s})} returns the column approximate minimum degree permutation
+vector for the sparse matrix @var{s}. For a non-symmetric matrix @var{s},
+@code{@var{s} (:,@var{p})} tends to have sparser LU factors than @var{s}.
+The Cholesky factorization of @code{@var{s} (:,@var{p})' * @var{s}
+(:,@var{p})} also tends to be sparser than that of @code{@var{s}' *
+@var{s}}.
+
+@var{knobs} is an optional one- to three-element input vector.  If @var{s} is
+m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))} entries
+are ignored. Columns with more than @code{max(16,knobs(2)*sqrt(min(m,n)))}
+entries are removed prior to ordering, and ordered last in the output
+permutation @var{p}. Only completely dense rows or columns are removed
+if @code{@var{knobs} (1)} and @code{@var{knobs} (2)} are < 0, respectively.
+If @code{@var{knobs} (3)} is nonzero, @var{stats} and @var{knobs} are
+printed.  The default is @code{@var{knobs} = [10 10 0]}.  Note that
+@var{knobs} differs from earlier versions of colamd
+
+@var{stats} is an optional 20-element output vector that provides data
+about the ordering and the validity of the input matrix @var{s}. Ordering
+statistics are in @code{@var{stats} (1:3)}. @code{@var{stats} (1)} and
+@code{@var{stats} (2)} are the number of dense or empty rows and columns
+ignored by COLAMD and @code{@var{stats} (3)} is the number of garbage
+collections performed on the internal data structure used by COLAMD
+(roughly of size @code{2.2 * nnz(@var{s}) + 4 * @var{m} + 7 * @var{n}}
+integers).
+
+Octave built-in functions are intended to generate valid sparse matrices,
+with no duplicate entries, with ascending row indices of the nonzeros
+in each column, with a non-negative number of entries in each column (!)
+and so on.  If a matrix is invalid, then COLAMD may or may not be able
+to continue.  If there are duplicate entries (a row index appears two or
+more times in the same column) or if the row indices in a column are out
+of order, then COLAMD can correct these errors by ignoring the duplicate
+entries and sorting each column of its internal copy of the matrix
+@var{s} (the input matrix @var{s} is not repaired, however). If a matrix
+is invalid in other ways then COLAMD cannot continue, an error message is
+printed, and no output arguments (@var{p} or @var{stats}) are returned.
+COLAMD is thus a simple way to check a sparse matrix to see if it's
+valid.
+
+@code{@var{stats} (4:7)} provide information if COLAMD was able to
+continue. The matrix is OK if @code{@var{stats} (4)} is zero, or 1 if
+invalid. @code{@var{stats} (5)} is the rightmost column index that is
+unsorted or contains duplicate entries, or zero if no such column exists.
+@code{@var{stats} (6)} is the last seen duplicate or out-of-order row
+index in the column index given by @code{@var{stats} (5)}, or zero if no
+such row index exists. @code{@var{stats} (7)} is the number of duplicate
+or out-of-order row indices. @code{@var{stats} (8:20)} is always zero in
+the current version of COLAMD (reserved for future use).
+
+The ordering is followed by a column elimination tree post-ordering.
+
+The authors of the code itself are Stefan I. Larimore and Timothy A.
+Davis (davis@@cise.ufl.edu), University of Florida.  The algorithm was
+developed in collaboration with John Gilbert, Xerox PARC, and Esmond
+Ng, Oak Ridge National Laboratory. (see
+@url{http://www.cise.ufl.edu/research/sparse/colamd})
+@seealso{colperm, symamd}
+@end deftypefn

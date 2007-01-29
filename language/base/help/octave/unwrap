@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{b} =} unwrap (@var{a}, @var{tol}, @var{dim})
+
+Unwrap radian phases by adding multiples of 2*pi as appropriate to
+remove jumps greater than @var{tol}.  @var{tol} defaults to pi.
+
+Unwrap will unwrap along the first non-singleton dimension of
+@var{a}, unless the optional argument @var{dim} is given, in 
+which case the data will be unwrapped along this dimension
+@end deftypefn

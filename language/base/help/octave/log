@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} log (@var{x})
+Compute the natural logarithm for each element of @var{x}.  To compute the
+matrix logarithm, see @ref{Linear Algebra}.
+@seealso{log2, log10, logspace, exp}
+@end deftypefn

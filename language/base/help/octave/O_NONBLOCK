@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} O_NONBLOCK ()
+Return the numerical value of the file status flag that may be
+returned by @code{fcntl} to indicate that non-blocking I/O is in use,
+or that may be passsed to @code{fcntl} to set non-blocking I/O.
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@end deftypefn

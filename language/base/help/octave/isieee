@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isieee ()
+Return 1 if your computer claims to conform to the IEEE standard for
+floating point calculations.
+@end deftypefn

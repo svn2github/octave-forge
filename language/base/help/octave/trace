@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} trace (@var{a})
+Compute the trace of @var{a}, @code{sum (diag (@var{a}))}.
+@end deftypefn

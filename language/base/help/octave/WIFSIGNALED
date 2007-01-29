@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} WIFSIGNALED (@var{status})
+Given @var{status} from a call to @code{waitpid}, return true if the
+child process was terminated by a signal.
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@end deftypefn

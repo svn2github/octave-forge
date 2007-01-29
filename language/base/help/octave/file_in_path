@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})
+@deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, "all")
+Return the absolute name of @var{file} if it can be found in
+@var{path}.  The value of @var{path} should be a colon-separated list of
+directories in the format described for @code{path}.  If no file
+is found, return an empty matrix.  For example,
+
+@example
+file_in_path (EXEC_PATH, "sh")
+     @result{} "/bin/sh"
+@end example
+
+If the second argument is a cell array of strings, search each
+directory of the path for element of the cell array and return
+the first that matches.
+
+If the third optional argument @code{"all"} is supplied, return
+a cell array containing the list of all files that have the same
+name in the path.  If no files are found, return an empty cell array.
+@seealso{file_in_loadpath}
+@end deftypefn

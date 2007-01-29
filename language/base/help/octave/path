@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} path (@dots{})
+Modify or display Octave's @code{LOADPATH}.
+
+If @var{nargin} and @var{nargout} are zero, display the elements of
+Octave's @code{LOADPATH} in an easy to read format.
+
+If @var{nargin} is zero and nargout is greater than zero, return the
+current value of @code{LOADPATH}.
+
+If @var{nargin} is greater than zero, concatenate the arguments,
+separating them with @code{pathsep()}.  Set the internal search path
+to the result and return it.
+
+No checks are made for duplicate elements.
+@seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn

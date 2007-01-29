@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} oneplot ()
+If in multiplot mode, switches to single plot mode.
+@end deftypefn

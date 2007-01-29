@@ -1,0 +1,34 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{s} =} urlread(@var{url})
+@deftypefnx {Loadable Function} {[@var{s}, @var{success}] =} urlread (@var{url})
+@deftypefnx {Loadable Function} {[@var{s}, @var{success}, @var{message}] =} urlread(@var{url})
+@deftypefnx {Loadable Function} {[...] =} urlread (@var{url}, @var{method}, @var{param})
+Download a remote file specified by its @var{URL} and return its content
+in string @var{s}.  For example,
+
+@example
+s = urlread ('ftp://ftp.octave.org/pub/octave/README');
+@end example
+
+The variable @var{success} is 1 if the download was successful,
+otherwise it is 0 in which case @var{message} contains an error
+message.  If no output argument is specified and if an error occurs,
+then the error is signaled through octave's error handling mechanism.
+
+This function uses libcurl.  Curl supports, among others, the HTTP,
+FTP and FILE protocols.  Username and password may be specified in the
+URL.  For example,
+
+@example
+s = urlread ('http://username:password@@example.com/file.txt');
+@end example
+
+GET and POST requests can be specified by @var{method} and @var{param}.
+The parameter @var{method} is either 'get' or 'post' and @var{param} is a
+cell array of parameter and value pairs.  For example,
+
+@example
+s = urlread ('http://www.google.com/search', 'get', @{'query', 'octave'@});
+@end example
+@seealso{urlwrite}
+@end deftypefn

@@ -1,0 +1,42 @@
+-*- texinfo -*-
+@deftypefn {Function File}  @var{string} = regexprep(@var{string}, @var{pat}, @var{repstr}, @var{options})
+Replace matches of @var{pat} in  @var{string} with @var{repstr}.
+
+
+The replacement can contain @code{$i}, which subsubstitutes
+for the ith set of parentheses in the match string.  E.g.,
+@example
+
+   regexprep("Bill Dunn",'(\w+) (\w+)','$2, $1')
+
+@end example
+returns "Dunn, Bill"
+
+@var{options} may be zero or more of
+@table @samp
+
+@item once
+Replace only the first occurance of @var{pat} in the result.
+
+@item warnings
+This option is present for compatibility but is ignored.
+
+@item ignorecase or matchcase
+Ignore case for the pattern matching (see @code{regexpi}).
+Alternatively, use (?i) or (?-i) in the pattern.
+
+@item lineanchors and stringanchors
+Whether characters ^ and $ match the beginning and ending of lines.
+Alternatively, use (?m) or (?-m) in the pattern.
+
+@item dotexceptnewline and dotall
+Whether . matches newlines in the string.
+Alternatively, use (?s) or (?-s) in the pattern.
+
+@item freespacing or literalspacing
+Whether whitespace and # comments can be used to make the regular expression more readable.
+Alternatively, use (?x) or (?-x) in the pattern.
+
+@end table
+@seealso{regexp,regexpi}
+@end deftypefn

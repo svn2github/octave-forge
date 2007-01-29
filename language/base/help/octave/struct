@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} struct ("field", @var{value}, "field", @var{value}, @dots{})
+
+Create a structure and initialize its value.
+
+If the values are cell arrays, create a structure array and initialize
+its values.  The dimensions of each cell array of values must match.
+Singleton cells and non-cell values are repeated so that they fill
+the entire array.  If the cells are empty, create an empty structure
+array with the specified field names.
+@end deftypefn

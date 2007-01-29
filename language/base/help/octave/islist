@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} islist (@var{x})
+Return nonzero if @var{x} is a list.
+@end deftypefn

@@ -1,0 +1,23 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{sys} =} syssub (@var{Gsys}, @var{Hsys})
+Return @math{sys = Gsys - Hsys}.
+
+@strong{Method}
+
+@var{Gsys} and @var{Hsys} are connected in parallel.
+The input vector is connected to both systems; the outputs are
+subtracted.  Returned system names are those of @var{Gsys}.
+@example
+@group
+         +--------+
+    +--->|  Gsys  |---+
+    |    +--------+   |
+    |                +|
+u --+                (_)--> y
+    |                -|
+    |    +--------+   |
+    +--->|  Hsys  |---+
+         +--------+
+@end group
+@end example
+@end deftypefn

@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})
+Read the value of the symbolic link @var{symlink}.
+
+If successful, @var{result} contains the contents of the symbolic link
+@var{symlink}, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@seealso{link, symlink}
+@end deftypefn

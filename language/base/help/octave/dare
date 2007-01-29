@@ -1,0 +1,54 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{x} =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
+
+Return the solution, @var{x} of the discrete-time algebraic Riccati
+equation
+@iftex
+@tex
+$$
+A^TXA - X + A^TXB  (R + B^TXB)^{-1} B^TXA + Q = 0
+$$
+@end tex
+@end iftex
+@ifinfo
+@example
+a' x a - x + a' x b (r + b' x b)^(-1) b' x a + q = 0
+@end example
+@end ifinfo
+@noindent
+
+@strong{Inputs}
+@table @var
+@item a
+@var{n} by @var{n} matrix;
+
+@item b
+@var{n} by @var{m} matrix;
+
+@item q
+@var{n} by @var{n} matrix, symmetric positive semidefinite, or a @var{p} by @var{n} matrix,
+In the latter case @math{q:=q'*q} is used;
+
+@item r
+@var{m} by @var{m}, symmetric positive definite (invertible);
+
+@item opt
+(optional argument; default = @code{"B"}):
+String option passed to @code{balance} prior to ordered @var{QZ} decomposition.
+@end table
+
+@strong{Output}
+@table @var
+@item x
+solution of @acronym{DARE}.
+@end table
+
+@strong{Method}
+Generalized eigenvalue approach (Van Dooren; @acronym{SIAM} J.
+ Sci. Stat. Comput., Vol 2) applied  to the appropriate symplectic pencil.
+
+ See also: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
+ Algebraic Riccati Equations}, Mathematics of Control, Signals and
+ Systems, Vol 5, no 2 (1992), pp 165--194.
+@seealso{balance, are}
+@end deftypefn

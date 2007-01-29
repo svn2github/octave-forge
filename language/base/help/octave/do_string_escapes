@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} do_string_escapes (@var{string})
+Convert special characters in @var{string} to their escaped forms.
+@end deftypefn

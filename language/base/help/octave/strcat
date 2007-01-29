@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
+Return a string containing all the arguments concatenated.  For example,
+
+@example
+@group
+s = [ "ab"; "cde" ];
+strcat (s, s, s)
+@result{} "ab ab ab "
+        "cdecdecde"
+@end group
+@end example
+@end deftypefn

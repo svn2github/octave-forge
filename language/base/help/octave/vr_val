@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} vr_val (@var{x})
+Each time this function is called, it places the value of its argument
+at the end of the list of values to return from the current
+function.  Once @code{vr_val} has been called, there is no way to go
+back to the beginning of the list and rewrite any of the return
+values.  This function may only be called within functions that have
+been declared to return an unspecified number of output arguments.
+@end deftypefn

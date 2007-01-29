@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} vech (@var{x})
+Return the vector obtained by eliminating all supradiagonal elements of
+the square matrix @var{x} and stacking the result one column above the
+other.
+@end deftypefn

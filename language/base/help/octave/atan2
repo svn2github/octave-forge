@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})
+Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}
+and @var{x}.  The result is in range -pi to pi.
+@end deftypefn

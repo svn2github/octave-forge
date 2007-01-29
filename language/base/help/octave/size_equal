@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b})
+Return true if the dimensions of @var{a} and @var{b} agree.
+Trailing singleton dimensions are ignored.
+@seealso{size, numel}
+@end deftypefn

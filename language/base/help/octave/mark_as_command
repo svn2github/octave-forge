@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} mark_as_command (@var{name})
+Enter @var{name} into the list of commands.
+@seealso{unmark_command, iscommand}
+@end deftypefn

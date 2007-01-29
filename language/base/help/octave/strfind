@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{idx} =} strfind (@var{str}, @var{pattern})
+@deftypefnx {Function File} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})
+Search for @var{pattern} in the string @var{str} and return the
+starting index of every such occurrence in the vector @var{idx}.
+If there is no such occurrence, or if @var{pattern} is longer
+than @var{str}, then @var{idx} is the empty array @code{[]}.
+
+If the cell array of strings @var{cellstr} is specified instead of the
+string @var{str}, then @var{idx} is a cell array of vectors, as specified
+above.
+@seealso{findstr, strmatch, strcmp, strncmp, strcmpi, strncmpi}
+@end deftypefn

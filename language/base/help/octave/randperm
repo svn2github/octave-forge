@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} randperm (@var{n})
+Return a row vector containing a random permutation of the
+integers from 1 to @var{n}.
+@end deftypefn

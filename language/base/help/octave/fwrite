@@ -1,0 +1,16 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{count} =} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})
+Write data in binary form of type @var{precision} to the specified file
+ID @var{fid}, returning the number of values successfully written to the
+file.
+
+The argument @var{data} is a matrix of values that are to be written to
+the file.  The values are extracted in column-major order.
+
+The remaining arguments @var{precision}, @var{skip}, and @var{arch} are
+optional, and are interpreted as described for @code{fread}.
+
+The behavior of @code{fwrite} is undefined if the values in @var{data}
+are too large to fit in the specified precision.
+@seealso{fread, fopen, fclose}
+@end deftypefn

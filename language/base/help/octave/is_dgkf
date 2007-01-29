@@ -1,0 +1,87 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{asys}, @var{nu}, @var{ny}, @var{tol} )
+Determine whether a continuous time state space system meets
+assumptions of @acronym{DGKF} algorithm.
+Partitions system into:
+@example
+[dx/dt]   [A  | Bw  Bu  ][w]
+[ z   ] = [Cz | Dzw Dzu ][u]
+[ y   ]   [Cy | Dyw Dyu ]
+@end example
+or similar discrete-time system.
+If necessary, orthogonal transformations @var{qw}, @var{qz} and nonsingular
+transformations @var{ru}, @var{ry} are applied to respective vectors
+@var{w}, @var{z}, @var{u}, @var{y} in order to satisfy @acronym{DGKF} assumptions.
+Loop shifting is used if @var{dyu} block is nonzero.
+
+@strong{Inputs}
+@table @var
+@item         asys
+system data structure
+@item           nu
+number of controlled inputs
+@item        ny
+number of measured outputs
+@item        tol
+threshold for 0; default: 200*@code{eps}.
+@end table
+@strong{Outputs}
+@table @var
+@item    retval
+true(1) if system passes check, false(0) otherwise
+@item    dgkf_struct
+data structure of @command{is_dgkf} results.  Entries:
+@table @var
+@item      nw
+@itemx     nz
+dimensions of @var{w}, @var{z}
+@item      a
+system @math{A} matrix
+@item      bw
+(@var{n} x @var{nw}) @var{qw}-transformed disturbance input matrix
+@item      bu
+(@var{n} x @var{nu}) @var{ru}-transformed controlled input matrix;
+
+@math{B = [Bw Bu]}
+@item      cz
+(@var{nz} x @var{n}) Qz-transformed error output matrix
+@item      cy
+(@var{ny} x @var{n}) @var{ry}-transformed measured output matrix
+
+@math{C = [Cz; Cy]}
+@item      dzu
+@item      dyw
+off-diagonal blocks of transformed system @math{D} matrix that enter
+@var{z}, @var{y} from @var{u}, @var{w} respectively
+@item      ru
+controlled input transformation matrix
+@item      ry
+observed output transformation matrix
+@item      dyu_nz
+nonzero if the @var{dyu} block is nonzero.
+@item      dyu
+untransformed @var{dyu} block
+@item      dflg
+nonzero if the system is discrete-time
+@end table
+@end table
+@code{is_dgkf} exits with an error if the system is mixed
+discrete/continuous.
+
+@strong{References}
+@table @strong
+@item [1]
+Doyle, Glover, Khargonekar, Francis, @cite{State Space Solutions to Standard}
+@iftex
+@tex
+$ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+@end tex
+@end iftex
+@ifinfo
+@cite{H-2 and H-infinity}
+@end ifinfo
+@cite{Control Problems}, @acronym{IEEE} @acronym{TAC} August 1989.
+@item [2]
+Maciejowksi, J.M., @cite{Multivariable Feedback Design}, Addison-Wesley, 1989.
+@end table
+@end deftypefn

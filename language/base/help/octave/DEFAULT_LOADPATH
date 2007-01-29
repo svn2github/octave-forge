@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} DEFAULT_LOADPATH
+A colon separated list of directories in which to search for function
+files.  The value of this variable is automatically substituted for
+leading, trailing, or doubled colons that appear in the built-in
+variable @code{LOADPATH}.
+@end defvr

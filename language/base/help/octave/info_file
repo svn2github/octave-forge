@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} info_file ()
+@deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})
+Query or set the internal variable that specifies the name of the
+Octave info file.  The default value is
+@code{"@var{octave-home}/info/octave.info"}, in
+which @var{octave-home} is the directory where all of Octave is installed.
+@seealso{info_program, doc, help, makeinfo_program}
+@end deftypefn

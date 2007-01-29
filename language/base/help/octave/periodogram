@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} periodogram (@var{x})
+For a data matrix @var{x} from a sample of size @var{n}, return the
+periodogram.
+@end deftypefn

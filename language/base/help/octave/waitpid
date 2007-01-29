@@ -1,0 +1,43 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{pid}, @var{status}, @var{msg}] =} waitpid (@var{pid}, @var{options})
+Wait for process @var{pid} to terminate.  The @var{pid} argument can be:
+
+@table @asis
+@item @minus{}1
+Wait for any child process.
+
+@item 0
+Wait for any child process whose process group ID is equal to that of
+the Octave interpreter process.
+
+@item > 0
+Wait for termination of the child process with ID @var{pid}.
+@end table
+
+The @var{options} argument can be a bitwise OR of zero or more of
+the following constants:
+
+@table @code
+@item 0
+Wait until signal is received or a child process exits (this is the
+default if the @var{options} argument is missing).
+
+@item WNOHANG
+Do not hang if status is not immediately available.
+
+@item WUNTRACED
+Report the status of any child processes that are stopped, and whose
+status has not yet been reported since they stopped.
+
+@item WCONTINUED
+Return if a stopped child has been resumed by delivery of @code{SIGCONT}.
+This value may not be meaningful on all systems.
+@end table
+
+If the returned value of @var{pid} is greater than 0, it is the process
+ID of the child process that exited.  If an error occurs, @var{pid} will
+be less than zero and @var{msg} will contain a system-dependent error
+message.  The value of @var{status} contains additional system-depenent
+information about the subprocess that exited.
+@seealso{WNOHANG, WUNTRACED, WCONTINUED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@end deftypefn

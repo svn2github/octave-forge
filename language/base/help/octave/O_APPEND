@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} O_APPEND ()
+Return the numerical value of the file status flag that may be
+returned by @code{fcntl} to indicate each write operation appends,
+or that may be passed to @code{fcntl} to set the write mode to append.@seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
+@end deftypefn

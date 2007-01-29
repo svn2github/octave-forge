@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} zeros (@var{x})
+@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})
+@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Built-in Function} {} zeros (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all 0.
+The arguments are handled the same as the arguments for @code{eye}.
+
+The optional argument @var{class}, allows @code{zeros} to return an array of
+the specified type, for example
+
+@example
+val = zeros (n,m, "uint8")
+@end example
+@end deftypefn

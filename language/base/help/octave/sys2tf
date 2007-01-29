@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname}] =} sys2tf (@var{sys})
+Extract transfer function data from a system data structure.
+
+See @command{tf} for parameter descriptions.
+
+@strong{Example}
+@example
+octave:1> sys=ss([1 -2; -1.1,-2.1],[0;1],[1 1]);
+octave:2> [num,den] = sys2tf(sys)
+num = 1.0000  -3.0000
+den = 1.0000   1.1000  -4.3000
+@end example
+@end deftypefn

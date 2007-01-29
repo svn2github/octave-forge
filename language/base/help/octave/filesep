@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} filesep ()
+Return the system-dependent character used to separate directory names.
+@seealso{pathsep, dir, ls}
+@end deftypefn

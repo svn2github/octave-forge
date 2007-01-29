@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isspace (@var{s})
+Return 1 for whitespace characters (space, formfeed, newline,
+carriage return, tab, and vertical tab).
+@end deftypefn

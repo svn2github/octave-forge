@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{x} =} zgshsr (@var{y})
+Apply householder vector based on 
+@iftex
+@tex
+$ e^m $
+@end tex
+@end iftex
+@ifinfo
+@math{e^(m)}
+@end ifinfo
+to column vector @var{y}.
+Called by @command{zgfslv}.
+@end deftypefn

@@ -1,0 +1,44 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@var{file})
+Return information about @var{file}.
+
+If successful, @var{status} is 1, with @var{result} containing a
+structure with the following fields:
+
+@table @code
+@item Name
+Full name of @var{file}.
+@item archive
+True if @var{file} is an archive (Windows).
+@item system
+True if @var{file} is a system file (Windows).
+@item hidden
+True if @var{file} is a hidden file (Windows).
+@item directory
+True if @var{file} is a directory.
+@item UserRead
+@itemx GroupRead
+@itemx OtherRead
+True if the user (group; other users) has read permission for
+@var{file}.
+@item UserWrite
+@itemx GroupWrite
+@itemx OtherWrite
+True if the user (group; other users) has write permission for
+@var{file}.
+@item UserExecute
+@itemx GroupExecute
+@itemx OtherExecute
+True if the user (group; other users) has execute permission for
+@var{file}.
+@end table
+If an attribute does not apply (i.e., archive on a Unix system) then
+the field is set to NaN.
+
+With no input arguments, return information about the current
+directory.
+
+If @var{file} contains globbing characters, return information about
+all the matching files.
+@seealso{glob}
+@end deftypefn

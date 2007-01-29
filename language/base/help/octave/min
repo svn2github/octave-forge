@@ -1,0 +1,42 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} min (@var{x}, @var{y}, @var{dim})
+@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} min (@var{x})
+@cindex Utility Functions
+For a vector argument, return the minimum value.  For a matrix
+argument, return the minimum value from each column, as a row
+vector, or over the dimension @var{dim} if defined. For two matrices
+(or a matrix and scalar), return the pair-wise minimum.
+Thus,
+
+@example
+min (min (@var{x}))
+@end example
+
+@noindent
+returns the smallest element of @var{x}, and
+
+@example
+@group
+min (2:5, pi)
+    @result{}  2.0000  3.0000  3.1416  3.1416
+@end group
+@end example
+@noindent
+compares each element of the range @code{2:5} with @code{pi}, and
+returns a row vector of the minimum values.
+
+For complex arguments, the magnitude of the elements are used for
+comparison.
+
+If called with one input and two output arguments,
+@code{min} also returns the first index of the
+minimum value(s). Thus,
+
+@example
+@group
+[x, ix] = min ([1, 3, 0, 2, 5])
+    @result{}  x = 0
+        ix = 3
+@end group
+@end example
+@end deftypefn

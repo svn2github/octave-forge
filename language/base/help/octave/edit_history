@@ -1,0 +1,34 @@
+-*- texinfo -*-
+@deffn {Command} edit_history options
+If invoked with no arguments, @code{edit_history} allows you to edit the
+history list using the editor named by the variable @code{EDITOR}.  The
+commands to be edited are first copied to a temporary file.  When you
+exit the editor, Octave executes the commands that remain in the file.
+It is often more convenient to use @code{edit_history} to define functions 
+rather than attempting to enter them directly on the command line.
+By default, the block of commands is executed as soon as you exit the
+editor.  To avoid executing any commands, simply delete all the lines
+from the buffer before exiting the editor.
+
+The @code{edit_history} command takes two optional arguments specifying
+the history numbers of first and last commands to edit.  For example,
+the command
+
+@example
+edit_history 13
+@end example
+
+@noindent
+extracts all the commands from the 13th through the last in the history
+list.  The command
+
+@example
+edit_history 13 169
+@end example
+
+@noindent
+only extracts commands 13 through 169.  Specifying a larger number for
+the first command than the last command reverses the list of commands
+before placing them in the buffer to be edited.  If both arguments are
+omitted, the previous command in the history list is used.
+@end deffn

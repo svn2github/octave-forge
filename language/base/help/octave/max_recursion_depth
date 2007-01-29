@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} max_recursion_depth ()
+@deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})
+Query or set the internal limit on the number of times a function may
+be called recursively.  If the limit is exceeded, an error message is
+printed and control returns to the top level.
+@end deftypefn

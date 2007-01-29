@@ -1,0 +1,10 @@
+O B S O L E T E: use ss instead.
+function Asys = packsys(a,b,c[,d,dflg])
+
+  dflg: 0 for continuous time system, 1 for discrete-time system.
+
+defaults:
+     D: 0 matrix of appropriate dimension.
+  dflg: 0 (continuous time)
+
+Note: discrete-state sampling time is not included!

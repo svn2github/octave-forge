@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} sumsq (@var{x}, @var{dim})
+Sum of squares of elements along dimension @var{dim}.  If @var{dim}
+is omitted, it defaults to 1 (column-wise sum of squares).
+
+As a special case, if @var{x} is a vector and @var{dim} is omitted,
+return the sum of squares of the elements.
+
+This function is conceptually equivalent to computing
+@example
+sum (x .* conj (x), dim)
+@end example
+but it uses less memory and avoids calling conj if @var{x} is real.
+@end deftypefn

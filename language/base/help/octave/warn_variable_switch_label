@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_variable_switch_label
+If the value of this variable is nonzero, Octave will print a warning if
+a switch label is not a constant or constant expression
+@end defvr

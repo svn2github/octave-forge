@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} pascal_inv (@var{x}, @var{n}, @var{p})
+For each element of @var{x}, compute the quantile at @var{x} of the
+Pascal (negative binomial) distribution with parameters @var{n} and
+@var{p}.
+
+The number of failures in a Bernoulli experiment with success
+probability @var{p} before the @var{n}-th success follows this
+distribution.
+@end deftypefn

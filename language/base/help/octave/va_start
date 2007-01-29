@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} va_start ()
+Position an internal pointer to the first unnamed argument in
+functions that have been declared to accept a variable number of
+arguments.  It is an error to call @code{va_start} in a function
+that has not been declared to take a variable number of parameters.
+@end deftypefn

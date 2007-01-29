@@ -1,0 +1,34 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{sys} =} sysgroup (@var{asys}, @var{bsys})
+Combines two systems into a single system.
+
+@strong{Inputs}
+@table @var
+@item asys
+@itemx bsys
+System data structures.
+@end table
+
+@strong{Output}
+@table @var
+@item sys
+@math{sys = @r{block diag}(asys,bsys)}
+@end table
+@example
+@group
+         __________________
+         |    ________    |
+u1 ----->|--> | asys |--->|----> y1
+         |    --------    |
+         |    ________    |
+u2 ----->|--> | bsys |--->|----> y2
+         |    --------    |
+         ------------------
+              Ksys
+@end group
+@end example
+The function also rearranges the internal state-space realization of @var{sys}
+so that the continuous states come first and the discrete states come last.
+If there are duplicate names, the second name has a unique suffix appended
+on to the end of the name.
+@end deftypefn

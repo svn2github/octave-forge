@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} quad_options (@var{opt}, @var{val})
+When called with two arguments, this function
+allows you set options parameters for the function @code{quad}.
+Given one argument, @code{quad_options} returns the value of the
+corresponding option.  If no arguments are supplied, the names of all
+the available options and their current values are displayed.
+
+Options include
+
+@table @code
+@item "absolute tolerance"
+Absolute tolerance; may be zero for pure relative error test.
+@item "relative tolerance"
+Nonnegative relative tolerance.  If the absolute tolerance is zero,
+the relative tolerance must be greater than or equal to 
+@code{max (50*eps, 0.5e-28)}.
+@end table
+@end deftypefn

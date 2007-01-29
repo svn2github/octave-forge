@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isempty (@var{a})
+Return 1 if @var{a} is an empty matrix (either the number of rows, or
+the number of columns, or both are zero).  Otherwise, return 0.
+@end deftypefn

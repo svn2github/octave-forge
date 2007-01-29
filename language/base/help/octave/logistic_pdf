@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} logistic_pdf (@var{x})
+For each component of @var{x}, compute the PDF at @var{x} of the
+logistic distribution.
+@end deftypefn

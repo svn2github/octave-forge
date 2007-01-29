@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} OCTAVE_VERSION ()
+Return the version number of Octave, as a string.
+@end deftypefn

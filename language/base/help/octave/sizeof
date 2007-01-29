@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} sizeof (@var{val})
+Return the size of @var{val} in bytes
+@end deftypefn

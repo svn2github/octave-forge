@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} kbhit ()
+Read a single keystroke from the keyboard. If called with one
+argument, don't wait for a keypress.  For example,
+
+@example
+x = kbhit ();
+@end example
+
+@noindent
+will set @var{x} to the next character typed at the keyboard as soon as
+it is typed.
+
+@example
+x = kbhit (1);
+@end example
+
+@noindent
+identical to the above example, but don't wait for a keypress,
+returning the empty string if no key is available.
+@end deftypefn

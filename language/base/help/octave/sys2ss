@@ -1,0 +1,54 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{yd}] =} sys2ss (@var{sys})
+Extract state space representation from system data structure.
+
+@strong{Input}
+@table @var
+@item sys
+System data structure.
+@end table
+
+@strong{Outputs}
+@table @var
+@item a
+@itemx b
+@itemx c
+@itemx d
+State space matrices for @var{sys}.
+
+@item tsam
+Sampling time of @var{sys} (0 if continuous).
+
+@item n
+@itemx nz
+Number of continuous, discrete states (discrete states come
+last in state vector @var{x}).
+
+@item stname
+@itemx inname
+@itemx outname
+Signal names (lists of strings);  names of states,
+inputs, and outputs, respectively.
+
+@item yd
+Binary vector; @var{yd}(@var{ii}) is 1 if output @var{y}(@var{ii})
+is discrete (sampled); otherwise  @var{yd}(@var{ii}) is 0.
+
+@end table
+A warning massage is printed if the system is a mixed
+continuous and discrete system.
+
+@strong{Example}
+@example
+octave:1> sys=tf2sys([1 2],[3 4 5]);
+octave:2> [a,b,c,d] = sys2ss(sys)
+a =
+   0.00000   1.00000
+  -1.66667  -1.33333
+b =
+  0
+  1
+c = 0.66667  0.33333
+d = 0
+@end example
+@end deftypefn

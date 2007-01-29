@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} setgrent ()
+Return the internal pointer to the beginning of the group database.
+@end deftypefn

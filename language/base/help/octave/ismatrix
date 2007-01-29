@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} ismatrix (@var{a})
+Return 1 if @var{a} is a matrix.  Otherwise, return 0.
+@end deftypefn

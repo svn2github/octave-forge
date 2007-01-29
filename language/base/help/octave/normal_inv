@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} normal_inv (@var{x}, @var{m}, @var{v})
+For each element of @var{x}, compute the quantile (the inverse of the
+CDF) at @var{x} of the normal distribution with mean @var{m} and
+variance @var{v}.
+
+Default values are @var{m} = 0, @var{v} = 1.
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} cscd (@var{x})
+Compute the cosecant of an angle in degrees.
+@seealso{csc, secd, sind, cosd}
+@end deftypefn

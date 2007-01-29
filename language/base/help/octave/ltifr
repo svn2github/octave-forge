@@ -1,0 +1,33 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{out} =} ltifr (@var{a}, @var{b}, @var{w})
+@deftypefnx {Function File} {@var{out} =} ltifr (@var{sys}, @var{w})
+Linear time invariant frequency response of single-input systems.
+
+@strong{Inputs}
+@table @var
+@item a
+@itemx b
+coefficient matrices of @math{dx/dt = A x + B u}
+@item sys
+system data structure
+@item w
+vector of frequencies
+@end table
+@strong{Output}
+@table @var
+@item out
+frequency response, that is:
+@end table
+@iftex
+@tex
+$$ G(j\omega) = (j\omega I-A)^{-1}B $$
+@end tex
+@end iftex
+@ifinfo
+@example
+                           -1
+             G(s) = (jw I-A) B
+@end example
+@end ifinfo
+for complex frequencies @math{s = jw}.
+@end deftypefn

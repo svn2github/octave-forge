@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} fclear (@var{fid})
+Clear the stream state for the specified file.
+@end deftypefn

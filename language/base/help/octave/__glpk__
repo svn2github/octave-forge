@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{values}] =} __glpk__ (@var{args})
+Internal interface for the GNU GLPK library.
+You should be using using the @code{glpk} function instead.
+@end deftypefn

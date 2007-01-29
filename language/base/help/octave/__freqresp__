@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __freqresp__ (@var{sys}, @var{USEW}, @var{w})
+Frequency response function - used internally by @command{bode}, @command{nyquist}.
+minimal argument checking; ``do not attempt to do this at home''.
+
+@strong{Inputs}
+@table @var
+@item sys
+system data structure
+@item USEW
+returned by @code{freqchkw}
+@item optional
+must be present if @var{USEW} is true (nonzero)
+@end table
+@strong{Outputs}
+@table @var
+@item @var{out}
+vector of finite @math{G(j*w)} entries (or @math{||G(j*w)||} for @acronym{MIMO})
+@item w
+vector of corresponding frequencies
+@end table
+@end deftypefn

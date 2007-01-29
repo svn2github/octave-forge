@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} frdemo ()
+Octave Control Toolbox demo: Frequency Response demo.
+@end deftypefn

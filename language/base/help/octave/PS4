@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} PS4 ()
+@deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})
+Query or set the character string used to prefix output produced
+when echoing commands when @code{echo_executing_commands} is enabled.
+The default value is @code{"+ "}.  @xref{Invoking Octave}, for
+a description of @code{--echo-commands}.
+@seealso{echo_executing_commands, PS1, PS2}
+@end deftypefn

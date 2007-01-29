@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} exp (@var{x})
+Compute the exponential of @var{x}.  To compute the matrix exponential,
+see @ref{Linear Algebra}.
+@end deftypefn

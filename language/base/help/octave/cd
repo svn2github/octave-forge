@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deffn {Command} cd dir
+@deffnx {Command} chdir dir
+Change the current working directory to @var{dir}.  If @var{dir} is
+omitted, the current directory is changed to the users home
+directory.  For example,
+
+@example
+cd ~/octave
+@end example
+
+@noindent
+Changes the current working directory to @file{~/octave}.  If the
+directory does not exist, an error message is printed and the working
+directory is not changed.
+@seealso{mkdir, rmdir, dir}
+@end deffn

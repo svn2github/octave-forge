@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{csys}, @var{acd}, @var{ccd}] =} syscont (@var{sys})
+Extract the purely continuous subsystem of an input system.
+
+@strong{Input}
+@table @var
+@item sys
+system data structure.
+@end table
+
+@strong{Outputs}
+@table @var
+@item csys
+is the purely continuous input/output connections of @var{sys}
+@item acd
+@itemx ccd
+connections from discrete states to continuous states,
+discrete states to continuous outputs, respectively.
+
+returns @var{csys} empty if no continuous/continous path exists
+@end table
+@end deftypefn

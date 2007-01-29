@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} logit (@var{p})
+For each component of @var{p}, return the logit @code{log (@var{p} /
+(1-@var{p}))} of @var{p}.
+@end deftypefn

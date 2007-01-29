@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} issymmetric (@var{x}, @var{tol})
+This function has been deprecated.  Use issymmetric instead.
+@end deftypefn

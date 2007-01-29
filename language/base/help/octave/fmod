@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})
+Compute the floating point remainder of dividing @var{x} by @var{y}
+using the C library function @code{fmod}.  The result has the same
+sign as @var{x}.  If @var{y} is zero, the result implementation-defined.
+@end deftypefn

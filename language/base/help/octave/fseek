@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} fseek (@var{fid}, @var{offset}, @var{origin})
+Set the file pointer to any location within the file @var{fid}.
+
+The pointer is positioned @var{offset} characters from the @var{origin},
+which may be one of the predefined variables @code{SEEK_CUR} (current
+position), @code{SEEK_SET} (beginning), or @code{SEEK_END} (end of
+file) or strings "cof", "bof" or "eof". If @var{origin} is omitted,
+@code{SEEK_SET} is assumed.  The offset must be zero, or a value returned
+by @code{ftell} (in which case @var{origin} must be @code{SEEK_SET}).
+
+Return 0 on success and -1 on error.
+@seealso{ftell, fopen, fclose}
+@end deftypefn

@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} fvl (@var{r}, @var{n}, @var{l})
+Return the future value at the end of @var{n} periods of an initial
+lump sum investment @var{l}, given a per-period interest rate
+@var{r}.
+
+Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+not 5 percent).
+@end deftypefn

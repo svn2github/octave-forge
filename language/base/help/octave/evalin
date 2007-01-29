@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})
+Like @code{eval}, except that the expressions are evaluated in the
+context @var{context}, which may be either @code{"caller"} or
+@code{"base"}.
+@end deftypefn

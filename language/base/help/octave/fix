@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} fix (@var{x})
+Truncate @var{x} toward zero.  If @var{x} is complex, return
+@code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.
+@end deftypefn

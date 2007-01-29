@@ -1,0 +1,27 @@
+-*- texinfo -*-
+@deffn {Command} history options
+If invoked with no arguments, @code{history} displays a list of commands
+that you have executed.  Valid options are:
+
+@table @code
+@item -w @var{file}
+Write the current history to the file @var{file}.  If the name is
+omitted, use the default history file (normally @file{~/.octave_hist}).
+
+@item -r @var{file}
+Read the file @var{file}, replacing the current history list with its
+contents.  If the name is omitted, use the default history file
+(normally @file{~/.octave_hist}).
+
+@item @var{n}
+Only display the most recent @var{n} lines of history.
+
+@item -q
+Don't number the displayed lines of history.  This is useful for cutting
+and pasting commands if you are using the X Window System.
+@end table
+
+For example, to display the five most recent commands that you have
+typed without displaying line numbers, use the command
+@kbd{history -q 5}.
+@end deffn

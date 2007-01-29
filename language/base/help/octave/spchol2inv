@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} spchol2inv (@var{u})
+Invert a sparse symmetric, positive definite square matrix from its
+Cholesky decomposition, @var{u}.  Note that @var{u} should be an
+upper-triangular matrix with positive diagonal elements.
+@code{chol2inv (@var{u})} provides @code{inv (@var{u}'*@var{u})} but
+it is much faster than using @code{inv}.
+@seealso{spchol, spcholinv}
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} lgamma (@var{x})
+@deftypefnx {Mapping Function} {} gammaln (@var{x})
+Return the natural logarithm of the gamma function.
+@seealso{gamma, gammai}
+@end deftypefn

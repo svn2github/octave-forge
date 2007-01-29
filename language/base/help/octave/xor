@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} xor (@var{x}, @var{y})
+Return the `exclusive or' of the entries of @var{x} and @var{y}.
+For boolean expressions @var{x} and @var{y},
+@code{xor (@var{x}, @var{y})} is true if and only if @var{x} or @var{y}
+is true, but not if both @var{x} and @var{y} are true.
+@end deftypefn

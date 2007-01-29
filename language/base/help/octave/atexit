@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} atexit (@var{fcn})
+Register a function to be called when Octave exits.  For example,
+
+@example
+@group
+function print_fortune ()
+  printf ("\n%s\n", system ("fortune"));
+  fflush (stdout);
+endfunction
+atexit ("print_fortune");
+@end group
+@end example
+
+@noindent
+will print a message when Octave exits.
+@end deftypefn

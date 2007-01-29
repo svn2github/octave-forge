@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} ceil (@var{x})
+Return the smallest integer not less than @var{x}.  If @var{x} is
+complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.
+@end deftypefn

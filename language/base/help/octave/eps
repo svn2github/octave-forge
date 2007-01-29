@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} eps (@var{x})
+@deftypefnx {Built-in Function} {} eps (@var{n}, @var{m})
+@deftypefnx {Built-in Function} {} eps (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Built-in Function} {} eps (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all eps,
+the machine precision.  More precisely, @code{eps} is the largest
+relative spacing between any two adjacent numbers in the machine's
+floating point system.  This number is obviously system-dependent.  On
+machines that support 64 bit IEEE floating point arithmetic, @code{eps}
+is approximately
+@ifinfo
+ 2.2204e-16.
+@end ifinfo
+@iftex
+@tex
+ $2.2204\times10^{-16}$.
+@end tex
+@end iftex
+@end deftypefn

@@ -1,0 +1,23 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} echo_executing_commands ()
+@deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})
+Query or set the internal variable that controls the echo state.
+It may be the sum of the following values:
+
+@table @asis
+@item 1
+Echo commands read from script files.
+
+@item 2
+Echo commands from functions.
+
+@item 4
+Echo commands read from command line.
+@end table
+
+More than one state can be active at once.  For example, a value of 3 is
+equivalent to the command @kbd{echo on all}.
+
+The value of @code{echo_executing_commands} is set by the @kbd{echo}
+command and the command line option @code{--echo-input}.
+@end deftypefn

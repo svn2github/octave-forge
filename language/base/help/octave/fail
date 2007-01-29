@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} fail (@var{code},@var{pattern})
+@deftypefnx {Function File} {} fail (@var{code},'warning',@var{pattern})
+
+Return true if @var{code} fails with an error message matching
+@var{pattern}, otherwise produce an error. Note that @var{code}
+is a string and if @var{code} runs successfully, the error produced is:
+
+@example
+          expected error but got none  
+@end example
+
+If the code fails with a different error, the message produced is:
+
+@example
+          expected <pattern>
+          but got <text of actual error>
+@end example
+
+The angle brackets are not part of the output.
+
+Called with three arguments, the behavior is similar to 
+@code{fail(@var{code}, @var{pattern})}, but produces an error if no 
+warning is given during code execution or if the code fails.
+
+@end deftypefn

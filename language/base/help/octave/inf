@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@defvr {Built-in Constant} Inf
+@defvrx {Built-in Constant} inf
+Infinity.  This is the result of an operation like 1/0, or an operation
+that results in a floating point overflow.
+@end defvr

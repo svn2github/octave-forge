@@ -1,0 +1,35 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
+Return the coefficients of a polynomial @var{p}(@var{x}) of degree
+@var{n} that minimizes
+@iftex
+@tex
+$$
+\sum_{i=1}^N (p(x_i) - y_i)^2
+$$
+@end tex
+@end iftex
+@ifinfo
+@code{sumsq (p(x(i)) - y(i))},
+@end ifinfo
+ to best fit the data in the least squares sense.
+
+The polynomial coefficients are returned in a row vector.
+
+If two output arguments are requested, the second is a structure
+containing the following fields:
+
+@table @code
+@item R
+The Cholesky factor of the Vandermonde matrix used to compute the
+polynomial coefficients.
+@item X
+The Vandermonde matrix used to compute the polynomial coefficients.
+@item df
+The degrees of freedom.
+@item normr
+The norm of the residuals.
+@item yf
+The values of the polynomial for each value of @var{x}.
+@end table
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} asind (@var{x})
+Compute the inverse sine of an angle in degrees.
+@seealso{asin, sind, acosd}
+@end deftypefn

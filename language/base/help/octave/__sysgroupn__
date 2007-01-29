@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __sysgroupn__ (@var{names})
+Locate and mark duplicate names
+inputs:
+names: list of signal names
+kind: kind of signal name (used for diagnostic message purposes only)
+outputs:
+returns names with unique suffixes added; diagnostic warning
+message is printed to inform the user of the new signal name
+
+used internally in sysgroup and elsewhere.
+@end deftypefn

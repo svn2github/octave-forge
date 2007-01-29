@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} acotd (@var{x})
+Compute the inverse cotangent of an angle in degrees.
+@seealso{atan, tand}
+@end deftypefn

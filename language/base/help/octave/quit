@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} exit (@var{status})
+@deftypefnx {Built-in Function} {} quit (@var{status})
+Exit the current Octave session.  If the optional integer value
+@var{status} is supplied, pass that value to the operating system as the
+Octave's exit status.
+@end deftypefn

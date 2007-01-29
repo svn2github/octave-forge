@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} all (@var{x}, @var{dim})
+The function @code{all} behaves like the function @code{any}, except
+that it returns true only if all the elements of a vector, or all the
+elements along dimension @var{dim} of a matrix, are nonzero.
+@end deftypefn

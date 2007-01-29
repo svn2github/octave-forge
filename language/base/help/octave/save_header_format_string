@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} save_header_format_string ()
+@deftypefnx {Built-in Function} {@var{old_val} =} save_header_format_string (@var{new_val})
+Query or set the internal variable that specifies the format
+string used for the comment line written at the beginning of
+text-format data files saved by Octave.  The format string is
+passed to @code{strftime} and should begin with the character
+@samp{#} and contain no newline characters.  If the value of
+@code{save_header_format_string} is the empty string,
+the header comment is omitted from text-format data files.  The
+default value is
+
+@example
+"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>"
+@end example
+@seealso{strftime}
+@end deftypefn

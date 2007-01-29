@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})
+Create a new link (also known as a hard link) to an existing file.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@seealso{symlink}
+@end deftypefn

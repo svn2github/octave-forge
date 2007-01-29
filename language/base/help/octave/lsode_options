@@ -1,0 +1,53 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} lsode_options (@var{opt}, @var{val})
+When called with two arguments, this function
+allows you set options parameters for the function @code{lsode}.
+Given one argument, @code{lsode_options} returns the value of the
+corresponding option.  If no arguments are supplied, the names of all
+the available options and their current values are displayed.
+
+Options include
+
+@table @code
+@item "absolute tolerance"
+Absolute tolerance.  May be either vector or scalar.  If a vector, it
+must match the dimension of the state vector.
+@item "relative tolerance"
+Relative tolerance parameter.  Unlike the absolute tolerance, this
+parameter may only be a scalar.
+
+The local error test applied at each integration step is
+
+@example
+  abs (local error in x(i)) <= rtol * abs (y(i)) + atol(i)
+@end example
+@item "integration method"
+A string specifing the method of integration to use to solve the ODE
+system.  Valid values are
+
+@table @asis
+@item "adams"
+@itemx "non-stiff"
+No Jacobian used (even if it is available).
+@item "bdf"
+@item "stiff"
+Use stiff backward differentiation formula (BDF) method.  If a
+function to compute the Jacobian is not supplied, @code{lsode} will
+compute a finite difference approximation of the Jacobian matrix.
+@end table
+@item "initial step size"
+The step size to be attempted on the first step (default is determined
+automatically).
+@item "maximum order"
+Restrict the maximum order of the solution method.  If using the Adams
+method, this option must be between 1 and 12.  Otherwise, it must be
+between 1 and 5, inclusive.
+@item "maximum step size"
+Setting the maximum stepsize will avoid passing over very large
+regions  (default is not specified).
+@item "minimum step size"
+The minimum absolute step size allowed (default is 0).
+@item "step limit"
+Maximum number of steps allowed (default is 100000).
+@end table
+@end deftypefn

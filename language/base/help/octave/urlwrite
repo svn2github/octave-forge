@@ -1,0 +1,35 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} urlwrite (@var{URL}, @var{localfile})
+@deftypefnx {Loadable Function} {@var{f} =} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {Loadable Function} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {Loadable Function} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})
+Download a remote file specified by its @var{URL} and save it as
+@var{localfile}.  For example,
+
+@example
+urlwrite ('ftp://ftp.octave.org/pub/octave/README', 'README.txt');
+@end example
+
+The full path of the downloaded file is returned in @var{f}.  The
+variable @var{success} is 1 if the download was successful,
+otherwise it is 0 in which case @var{message} contains an error
+message.  If no output argument is specified and if an error occurs,
+then the error is signaled through octave's error handling mechanism.
+
+This function uses libcurl.  Curl supports, among others, the HTTP,
+FTP and FILE protocols.  Username and password may be specified in
+the URL, for example:
+
+@example
+urlwrite ('http://username:password@@example.com/file.txt', 'file.txt');
+@end example
+
+GET and POST requests can be specified by @var{method} and @var{param}.
+The parameter @var{method} is either 'get' or 'post' and @var{param} is a
+cell array of parameter and value pairs.  For example:
+
+@example
+urlwrite ('http://www.google.com/search', 'search.html', 'get', @{'query', 'octave'@});
+@end example
+@seealso{urlread}
+@end deftypefn

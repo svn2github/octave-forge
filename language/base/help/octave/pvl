@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} pvl (@var{r}, @var{n}, @var{p})
+Return the present value of an investment that will pay off @var{p}
+in one lump sum at the end of @var{n} periods, given the interest
+rate @var{r}.
+
+Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+not 5 percent).
+@end deftypefn

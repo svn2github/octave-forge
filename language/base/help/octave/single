@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} single (@var{val})
+Convert the numeric value @var{val} to single precision.
+
+@strong{Note}: this function currently returns its argument unchanged
+because Octave does not yet have a single-precision numeric data
+type.
+@end deftypefn

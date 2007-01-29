@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} IMAGEPATH
+A colon separated list of directories in which to search for image
+files.
+@end defvr

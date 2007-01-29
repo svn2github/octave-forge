@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} SEEK_SET ()
+@deftypefnx {Built-in Function} {} SEEK_CUR ()
+@deftypefnx {Built-in Function} {} SEEK_END ()
+Return the value required to request that @code{fseek} perform
+one of the following actions:
+@table @code
+@item SEEK_SET
+Position file relative to the beginning.
+
+@item SEEK_CUR
+Position file relative to the current position.
+
+@item SEEK_END
+Position file relative to the end.
+@end table
+@end deftypefn

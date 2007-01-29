@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
+Return the CDF at @var{x} of the Kolmogorov-Smirnov distribution,
+@iftex
+@tex
+$$ Q(x) = sum_{k=-\infty}^\infty (-1)^k exp(-2 k^2 x^2) $$
+@end tex
+@end iftex
+@ifinfo
+@example
+         Inf
+Q(x) =   SUM    (-1)^k exp(-2 k^2 x^2)
+       k = -Inf
+@end example
+@end ifinfo
+
+@noindent
+for @var{x} > 0.
+
+The optional parameter @var{tol} specifies the precision up to which
+the series should be evaluated;  the default is @var{tol} = @code{eps}.
+@end deftypefn

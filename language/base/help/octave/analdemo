@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} analdemo ()
+Octave Controls toolbox demo: State Space analysis demo
+@end deftypefn

@@ -1,0 +1,3 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __plt3__ (@var{x}, @var{y}, @var{z}, @var{fmt})
+@end deftypefn

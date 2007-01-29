@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {y =} conv2 (@var{a}, @var{b}, @var{shape})
+@deftypefnx {Loadable Function} {y =} conv2 (@var{v1}, @var{v2}, @var{M}, @var{shape})
+
+Returns 2D convolution of @var{a} and @var{b} where the size
+of @var{c} is given by
+
+@table @asis
+@item @var{shape}= 'full'
+returns full 2-D convolution
+@item @var{shape}= 'same'
+same size as a. 'central' part of convolution
+@item @var{shape}= 'valid'
+only parts which do not include zero-padded edges
+@end table
+
+By default @var{shape} is 'full'. When the third argument is a matrix
+returns the convolution of the matrix @var{M} by the vector @var{v1}
+in the column direction and by vector @var{v2} in the row direction
+@end deftypefn

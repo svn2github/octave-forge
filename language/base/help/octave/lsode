@@ -1,0 +1,107 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{x}, @var{istate}, @var{msg}]} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})
+Solve the set of differential equations
+@tex
+$$ {dx \over dt} = f (x, t) $$
+with
+$$ x(t_0) = x_0 $$
+@end tex
+@ifinfo
+
+@example
+dx
+-- = f(x, t)
+dt
+@end example
+
+with
+
+@example
+x(t_0) = x_0
+@end example
+
+@end ifinfo
+The solution is returned in the matrix @var{x}, with each row
+corresponding to an element of the vector @var{t}.  The first element
+of @var{t} should be @math{t_0} and should correspond to the initial
+state of the system @var{x_0}, so that the first row of the output
+is @var{x_0}.
+
+The first argument, @var{fcn}, is a string, or cell array of strings,
+inline or function handles, that names the function to call to compute
+the vector of right hand sides for the set of equations. The function
+must have the form
+
+@example
+@var{xdot} = f (@var{x}, @var{t})
+@end example
+
+@noindent
+in which @var{xdot} and @var{x} are vectors and @var{t} is a scalar.
+
+If @var{fcn} is a two-element string array, the first element names the
+function @math{f} described above, and the second element names a function
+to compute the Jacobian of @math{f}.  The Jacobian function must have the
+form
+
+@example
+@var{jac} = j (@var{x}, @var{t})
+@end example
+
+in which @var{jac} is the matrix of partial derivatives
+@tex
+$$ J = {\partial f_i \over \partial x_j} = \left[\matrix{
+{\partial f_1 \over \partial x_1}
+  & {\partial f_1 \over \partial x_2}
+  & \cdots
+  & {\partial f_1 \over \partial x_N} \cr
+{\partial f_2 \over \partial x_1}
+  & {\partial f_2 \over \partial x_2}
+  & \cdots
+  & {\partial f_2 \over \partial x_N} \cr
+ \vdots & \vdots & \ddots & \vdots \cr
+{\partial f_3 \over \partial x_1}
+  & {\partial f_3 \over \partial x_2}
+  & \cdots
+  & {\partial f_3 \over \partial x_N} \cr}\right]$$
+@end tex
+@ifinfo
+
+@example
+             | df_1  df_1       df_1 |
+             | ----  ----  ...  ---- |
+             | dx_1  dx_2       dx_N |
+             |                       |
+             | df_2  df_2       df_2 |
+             | ----  ----  ...  ---- |
+      df_i   | dx_1  dx_2       dx_N |
+jac = ---- = |                       |
+      dx_j   |  .    .     .    .    |
+             |  .    .      .   .    |
+             |  .    .       .  .    |
+             |                       |
+             | df_N  df_N       df_N |
+             | ----  ----  ...  ---- |
+             | dx_1  dx_2       dx_N |
+@end example
+
+@end ifinfo
+
+The second and third arguments specify the intial state of the system,
+@math{x_0}, and the initial value of the independent variable @math{t_0}.
+
+The fourth argument is optional, and may be used to specify a set of
+times that the ODE solver should not integrate past.  It is useful for
+avoiding difficulties with singularities and points where there is a
+discontinuity in the derivative.
+
+After a successful computation, the value of @var{istate} will be 2
+(consistent with the Fortran version of @sc{Lsode}).
+
+If the computation is not successful, @var{istate} will be something
+other than 2 and @var{msg} will contain additional information.
+
+You can use the function @code{lsode_options} to set optional
+parameters for @code{lsode}.
+@seealso{daspk, dassl, dasrt}
+@end deftypefn

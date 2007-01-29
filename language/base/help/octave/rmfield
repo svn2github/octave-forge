@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} rmfield (@var{s}, @var{f})
+Remove field @var{f} from the structure @var{s}.  If @var{f} is a
+cell array of character strings or a character array, remove the
+named fields.
+@seealso{cellstr, iscellstr, setfield}
+@end deftypefn

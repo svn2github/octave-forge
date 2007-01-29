@@ -1,0 +1,41 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})
+@deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})
+@deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})
+
+@code{[dd, aa] = balance (a)} returns @code{aa = dd \ a * dd}.
+@code{aa} is a matrix whose row and column norms are roughly equal in
+magnitude, and @code{dd} = @code{p * d}, where @code{p} is a permutation
+matrix and @code{d} is a diagonal matrix of powers of two.  This allows
+the equilibration to be computed without roundoff.  Results of
+eigenvalue calculation are typically improved by balancing first.
+
+@code{[cc, dd, aa, bb] = balance (a, b)} returns @code{aa = cc*a*dd} and
+@code{bb = cc*b*dd)}, where @code{aa} and @code{bb} have non-zero
+elements of approximately the same magnitude and @code{cc} and @code{dd}
+are permuted diagonal matrices as in @code{dd} for the algebraic
+eigenvalue problem.
+
+The eigenvalue balancing option @code{opt} is selected as follows:
+
+@table @asis
+@item @code{"N"}, @code{"n"}
+No balancing; arguments copied, transformation(s) set to identity.
+
+@item @code{"P"}, @code{"p"}
+Permute argument(s) to isolate eigenvalues where possible.
+
+@item @code{"S"}, @code{"s"}
+Scale to improve accuracy of computed eigenvalues.
+
+@item @code{"B"}, @code{"b"}
+Permute and scale, in that order. Rows/columns of a (and b)
+that are isolated by permutation are not scaled.  This is the default
+behavior.
+@end table
+
+Algebraic eigenvalue balancing uses standard @sc{Lapack} routines.
+
+Generalized eigenvalue problem balancing uses Ward's algorithm
+(SIAM Journal on Scientific and Statistical Computing, 1981).
+@end deftypefn

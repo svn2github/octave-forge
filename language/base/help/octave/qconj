@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qconj (@var{q})
+Conjugate of a quaternion.
+
+@example
+q = [w, x, y, z] = w*i + x*j + y*k + z
+qconj (q) = -w*i -x*j -y*k + z
+@end example
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} tanh (@var{x})
+Compute hyperbolic tangent of each element of @var{x}.
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __sysdefstname__ (@var{n}, @var{nz})
+return default state names given @var{n}, @var{nz}
+
+used internally, minimal argument checking
+@end deftypefn

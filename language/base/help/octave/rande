@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} rande (@var{x})
+@deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})
+@deftypefnx {Loadable Function} {} rande ("state", @var{x})
+@deftypefnx {Loadable Function} {} rande ("seed", @var{x})
+Return a matrix with exponentially distributed random elements. The
+arguments are handled the same as the arguments for @code{rand}.
+
+By default, @code{randn} uses a Marsaglia and Tsang Ziggurat technique to
+transform from a uniform to a exponential distribution. (G. Marsaglia and
+W.W. Tsang, 'Ziggurat method for generating random variables',
+J. Statistical Software, vol 5, 2000,
+@url{http://www.jstatsoft.org/v05/i08/})
+@seealso{rand,randn,randg,randp}
+@end deftypefn

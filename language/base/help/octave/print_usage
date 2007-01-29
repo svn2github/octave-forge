@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} print_usage ()
+Print the usage message for the currently executing function.  The
+@code{print_usage} function is only intended to work inside a
+user-defined function.
+@seealso{help}
+@end deftypefn

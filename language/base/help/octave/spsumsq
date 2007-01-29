@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{y} =} spsumsq (@var{x},@var{dim})
+Sum of squares of elements along dimension @var{dim}.  If @var{dim}
+is omitted, it defaults to 1 (column-wise sum of squares).
+This function is equivalent to computing
+@example
+spsum (x .* spconj (x), dim)
+@end example
+but it uses less memory and avoids calling @code{spconj} if @var{x} is
+real.
+@seealso{spprod, spsum}
+@end deftypefn

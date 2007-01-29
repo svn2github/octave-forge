@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} pclose (@var{fid})
+Close a file identifier that was opened by @code{popen}.  You may also
+use @code{fclose} for the same purpose.
+@end deftypefn

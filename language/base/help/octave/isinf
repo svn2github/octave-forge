@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isinf (@var{x})
+Return 1 for elements of @var{x} that are infinite and zero
+otherwise. For example,
+
+@example
+@group
+isinf ([13, Inf, NA, NaN])
+     @result{} [ 0, 1, 0, 0 ]
+@end group
+@end example
+@end deftypefn

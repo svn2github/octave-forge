@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qcoordinate_plot (@var{qf}, @var{qb}, @var{qv})
+Plot in the current figure a set of coordinate axes as viewed from 
+the orientation specified by quaternion @var{qv}.  Inertial axes are
+also plotted:
+
+@table @var
+@item qf
+Quaternion from reference (x,y,z) to inertial.
+@item qb
+Quaternion from reference to body.
+@item qv
+Quaternion from reference to view angle.
+@end table
+@end deftypefn

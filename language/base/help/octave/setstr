@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} setstr (@var{s})
+This function has been deprecated.  Use char instead.
+@end deftypefn

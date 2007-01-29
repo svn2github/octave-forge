@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
+Return the rate of return on an investment of present value @var{v} which
+pays @var{p} in @var{n} consecutive periods.
+
+The optional argument @var{l} may be used to specify an additional
+lump-sum payment made at the end of @var{n} periods.
+
+The optional string argument @var{method} may be used to specify
+whether payments are made at the end (@code{"e"}, default) or at the
+beginning (@code{"b"}) of each period.
+@seealso{pv, pmt, nper, npv}
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} stdout ()
+Return the numeric value corresponding to the standard output stream.
+Data written to the standard output is normally filtered through the pager.
+@seealso{stdin, stderr}
+@end deftypefn

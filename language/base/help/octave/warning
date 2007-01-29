@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} warning (@var{template}, @dots{})
+@deftypefnx {Built-in Function} {} warning (@var{id}, @var{template})
+Format the optional arguments under the control of the template string
+@var{template} using the same rules as the @code{printf} family of
+functions (@pxref{Formatted Output}) and print the resulting message
+on the @code{stderr} stream.  The message is prefixed by the character
+string @samp{warning: }.
+You should use this function when you want to notify the user
+of an unusual condition, but only when it makes sense for your program
+to go on.
+
+The optional message identifier allows users to enable or disable
+warnings tagged by @var{id}.  The special identifier @samp{"all"} may
+be used to set the state of all warnings.
+
+@deftypefnx {Built-in Function} {} warning ("on", @var{id})
+@deftypefnx {Built-in Function} {} warning ("off", @var{id})
+@deftypefnx {Built-in Function} {} warning ("error", @var{id})
+@deftypefnx {Built-in Function} {} warning ("query", @var{id})
+Set or query the the state of a particular warning using the identifier
+@var{id}.  If the identifier is omitted, a value of @samp{"all"} is
+assumed.  If you set the state of a warning to @samp{"error"}, the
+warning named by @var{id} is handled as if it were an error instead.
+@seealso{warning_ids}
+@end deftypefn

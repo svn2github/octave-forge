@@ -1,0 +1,39 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})
+Compute Airy functions of the first and second kind, and their
+derivatives.
+
+@example
+  K   Function   Scale factor (if a third argument is supplied)
+ ---  --------   ----------------------------------------------
+  0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))
+  1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))
+  2   Bi (Z)     exp (-abs (real ((2/3) * Z *sqrt (Z))))
+  3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z *sqrt (Z))))
+@end example
+
+The function call @code{airy (@var{z})} is equivalent to
+@code{airy (0, @var{z})}.
+
+The result is the same size as @var{z}.
+
+If requested, @var{ierr} contains the following status information and
+is the same size as the result.
+
+@enumerate 0
+@item
+Normal return.
+@item
+Input error, return @code{NaN}.
+@item
+Overflow, return @code{Inf}.
+@item
+Loss of significance by argument reduction results in less than half
+ of machine accuracy.
+@item
+Complete loss of significance by argument reduction, return @code{NaN}.
+@item
+Error---no computation, algorithm termination condition not met,
+return @code{NaN}.
+@end enumerate
+@end deftypefn

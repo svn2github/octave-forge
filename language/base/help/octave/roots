@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} roots (@var{v})
+
+For a vector @var{v} with @math{N} components, return
+the roots of the polynomial
+@iftex
+@tex
+$$
+v_1 z^{N-1} + \cdots + v_{N-1} z + v_N.
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+v(1) * z^(N-1) + ... + v(N-1) * z + v(N)
+@end example
+@end ifinfo
+@end deftypefn

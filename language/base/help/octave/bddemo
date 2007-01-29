@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} bddemo (@var{inputs})
+Octave Controls toolbox demo: Block Diagram Manipulations demo.
+@end deftypefn

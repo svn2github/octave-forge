@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} EXEC_PATH ()
+@deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})
+Query or set the internal variable that specifies a colon separated
+list of directories to search when executing external programs.
+Its initial value is taken from the environment variable
+@code{OCTAVE_EXEC_PATH} (if it exists) or @code{PATH}, but that
+value can be overridden by the command line argument
+@code{--exec-path PATH}.  At startup, an additional set of
+directories (including the shell PATH) is appended to the path
+specified in the environment or on the command line.  If you use
+the @code{EXEC_PATH} function to modify the path, you should take
+care to preserve these additional directories.
+@end deftypefn

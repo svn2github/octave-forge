@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} logical (@var{arg})
+Convert @var{arg} to a logical value.  For example,
+
+@example
+logical ([-1, 0, 1])
+@end example
+
+@noindent
+is equivalent to
+
+@example
+[-1, 0, 1] != 0
+@end example
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_square (@var{x})
+This function has been deprecated.  Use issquare instead.
+@end deftypefn

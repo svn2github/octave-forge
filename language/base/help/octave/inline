@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} inline (@var{str})
+@deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, ...)
+@deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})
+Create an inline function from the character string @var{str}.
+If called with a single argument, the arguments of the generated
+function are extracted from the function itself. The generated
+function arguments will then be in alphabetical order. It should
+be noted that i, and j are ignored as arguments due to the
+ambiguity between their use as a variable or their use as an inbuilt
+constant. All arguments followed by a parentheses are considered
+to be functions.
+
+If the second and subsequent arguments are character strings,
+they are the names of the arguments of the function.
+
+If the second argument is an integer @var{n}, the arguments are
+@code{"x"}, @code{"P1"}, @dots{}, @code{"P@var{N}"}.
+@seealso{argnames, formula, vectorize}
+@end deftypefn

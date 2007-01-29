@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} cell (@var{x})
+@deftypefnx {Built-in Function} {} cell (@var{n}, @var{m})
+Create a new cell array object.  If invoked with a single scalar
+argument, @code{cell} returns a square cell array with the dimension
+specified.  If you supply two scalar arguments, @code{cell} takes
+them to be the number of rows and columns.  If given a vector with two
+elements, @code{cell} uses the values of the elements as the number of
+rows and columns, respectively.
+@end deftypefn

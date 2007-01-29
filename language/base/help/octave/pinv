@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} pinv (@var{x}, @var{tol})
+Return the pseudoinverse of @var{x}.  Singular values less than
+@var{tol} are ignored. 
+
+If the second argument is omitted, it is assumed that
+
+@example
+tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,
+@end example
+
+@noindent
+where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
+@end deftypefn

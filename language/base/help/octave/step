@@ -1,0 +1,33 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{y}, @var{t}] =} step (@var{sys}, @var{inp}, @var{tstop}, @var{n})
+Step response for a linear system.
+The system can be discrete or multivariable (or both).
+If no output arguments are specified, @code{step}
+produces a plot or the step response data for system @var{sys}.
+
+@strong{Inputs}
+@table @var
+@item sys
+System data structure.
+@item inp
+Index of input being excited
+@item tstop
+The argument @var{tstop} (scalar value) denotes the time when the
+simulation should end.
+@item n
+the number of data values.
+
+Both parameters @var{tstop} and @var{n} can be omitted and will be
+computed from the eigenvalues of the A Matrix.
+@end table
+@strong{Outputs}
+@table @var
+@item y
+Values of the step response.
+@item t
+Times of the step response.
+@end table
+
+When invoked with the output parameter @var{y} the plot is not displayed.
+@seealso{impulse, __stepimp__}
+@end deftypefn

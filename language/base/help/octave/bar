@@ -1,0 +1,27 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} bar (@var{x}, @var{y})
+Given two vectors of x-y data, @code{bar} produces a bar graph.
+
+If only one argument is given, it is taken as a vector of y-values
+and the x coordinates are taken to be the indices of the elements.
+
+If two output arguments are specified, the data are generated but
+not plotted.  For example,
+
+@example
+bar (x, y);
+@end example
+
+@noindent
+and
+
+@example
+[xb, yb] = bar (x, y);
+plot (xb, yb);
+@end example
+
+@noindent
+are equivalent.
+@seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
+stairs, replot, xlabel, ylabel, title}
+@end deftypefn

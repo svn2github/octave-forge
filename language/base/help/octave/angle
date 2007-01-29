@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} angle (@var{z})
+See arg.
+@end deftypefn

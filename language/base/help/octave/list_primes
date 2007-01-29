@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} list_primes (@var{n})
+List the first @var{n} primes.  If @var{n} is unspecified, the first
+30 primes are listed.
+
+The algorithm used is from page 218 of the
+@iftex
+@tex
+ \TeXbook.
+@end tex
+@end iftex
+@ifinfo
+ TeXbook.
+@end ifinfo
+@end deftypefn

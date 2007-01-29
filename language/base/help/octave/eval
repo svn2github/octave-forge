@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} eval (@var{try}, @var{catch})
+Parse the string @var{try} and evaluate it as if it were an Octave
+program.  If that fails, evaluate the string @var{catch}.
+The string @var{try} is evaluated in the current context,
+so any results remain available after @code{eval} returns.
+@end deftypefn

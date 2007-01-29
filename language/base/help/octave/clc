@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} clc ()
+@deftypefnx {Built-in Function} {} home ()
+Clear the terminal screen and move the cursor to the upper left corner.
+@end deftypefn

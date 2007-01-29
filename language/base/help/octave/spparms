@@ -1,0 +1,51 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} { } spparms ()
+@deftypefnx {Loadable Function} {@var{vals} =} spparms ()
+@deftypefnx {Loadable Function} {[@var{keys}, @var{vals}] =} spparms ()
+@deftypefnx {Loadable Function} {@var{val} =} spparms (@var{key})
+@deftypefnx {Loadable Function} { } spparms (@var{vals})
+@deftypefnx {Loadable Function} { } spparms ('defaults')
+@deftypefnx {Loadable Function} { } spparms ('tight')
+@deftypefnx {Loadable Function} { } spparms (@var{key}, @var{val})
+Sets or displays the parameters used by the sparse solvers and factorization
+functions. The first four calls above get information about the current
+settings, while the others change the current settings. The parameters are
+stored as pairs of keys and values, where the values are all floats and the
+keys are one of the strings
+
+@itemize
+@item spumoni
+Printing level of debugging information of the solvers (default 0)
+@item ths_rel
+Included for compatiability. Bot used. (default 1)
+@item ths_abs
+Included for compatiability. Bot used. (default 1)
+@item exact_d
+Included for compatiability. Bot used. (default 0)
+@item supernd
+Included for compatiability. Not used. (default 3)
+@item rreduce
+Included for compatiability. Not used. (default 3)
+@item wh_frac
+Inluded for compatiability. Not used. (default 0.5)
+@item autommd
+Flag whether the LU/QR and the '\' and '/' operators will automatically
+use the sparsity preserving mmd functions (default 1)
+@item autoamd
+Flag whether the LU and the '\' and '/' operators will automatically
+use the sparsity preserving amd functions (default 1)
+@item piv_tol
+The pivot tolerance of the UMFPACK solvers (default 0.1)
+@item bandden
+?? (default 0.5)
+@item umfpack
+Flag whether the UMFPACK or mmd solvers are used for the LU, '\' and
+'/' operations (default 1)
+@end itemize
+
+The value of individual keys can be set with @code{spparms (@var{key},
+@var{val})}. The default values can be restored with the special keyword
+'defaults'. The special keyword 'tight' can be used to set the mmd solvers
+to attempt for a sparser solution at the potetial cost of longer running
+time.
+@end deftypefn

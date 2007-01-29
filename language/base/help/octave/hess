@@ -1,0 +1,25 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{h} =} hess (@var{a})
+@deftypefnx {Loadable Function} {[@var{p}, @var{h}] =} hess (@var{a})
+@cindex Hessenberg decomposition
+Compute the Hessenberg decomposition of the matrix @var{a}.
+
+The Hessenberg decomposition is usually used as the first step in an
+eigenvalue computation, but has other applications as well (see Golub,
+Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).  The
+Hessenberg decomposition is
+@iftex
+@tex
+$$
+A = PHP^T
+$$
+where $P$ is a square unitary matrix ($P^HP = I$), and $H$
+is upper Hessenberg ($H_{i,j} = 0, \forall i \ge j+1$).
+@end tex
+@end iftex
+@ifinfo
+@code{p * h * p' = a} where @code{p} is a square unitary matrix
+(@code{p' * p = I}, using complex-conjugate transposition) and @code{h}
+is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).
+@end ifinfo
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} columns (@var{a})
+Return the number of columns of @var{a}.
+@seealso{size, numel, rows, length, isscalar, isvector, and ismatrix}
+@end deftypefn

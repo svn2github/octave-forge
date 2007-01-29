@@ -1,0 +1,33 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
+
+Compute the binomial coeeficient or all combinations of @var{n}.
+If @var{n} is a scalar then, calculate the binomial coefficient
+of @var{n} and @var{k}, defined as
+
+@iftex
+@tex
+$$
+ {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@group
+ /   \
+ | n |    n (n-1) (n-2) ... (n-k+1)
+ |   |  = -------------------------
+ | k |               k!
+ \   /
+@end group
+@end example
+@end ifinfo
+
+If @var{n} is a vector generate all combinations of the elements
+of @var{n}, taken @var{k} at a time, one row per combination. The 
+resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
+@var{k}), @var{k}]}.
+
+@end deftypefn

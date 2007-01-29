@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} pathdef ()
+Return the default list of directories in which to search for function
+files.
+@seealso{path, addpath, rmpath, genpath, savepath, pathsep}
+@end deftypefn

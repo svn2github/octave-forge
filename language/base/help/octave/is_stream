@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_stream (@var{a})
+This function has been deprecated.  Use isstream instead.
+@end deftypefn

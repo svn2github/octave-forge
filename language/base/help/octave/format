@@ -1,0 +1,155 @@
+-*- texinfo -*-
+@deffn {Command} format options
+Control the format of the output produced by @code{disp} and Octave's
+normal echoing mechanism.  Valid options are listed in the following
+table.
+
+@table @code
+@item short
+Octave will try to print numbers with at
+least 5 significant figures within a field that is a maximum of 10
+characters wide (not counting additional spacing that is added between
+columns of a matrix).
+
+If Octave is unable to format a matrix so that columns line up on the
+decimal point and all the numbers fit within the maximum field width,
+it switches to an @samp{e} format.
+
+@item long
+Octave will try to print numbers with at least 15 significant figures
+within a field that is a maximum of 20 characters wide (not counting
+additional spacing that is added between columns of a matrix).
+
+As will the @samp{short} format, Octave will switch to an @samp{e}
+format if it is unable to format a matrix so that columns line up on the
+decimal point and all the numbers fit within the maximum field width.
+
+@item long e
+@itemx short e
+The same as @samp{format long} or @samp{format short} but always display
+output with an @samp{e} format.  For example, with the @samp{short e}
+format, @code{pi} is displayed as @code{3.14e+00}.
+
+@item long E
+@itemx short E
+The same as @samp{format long e} or @samp{format short e} but always
+display output with an uppercase @samp{E} format.  For example, with
+the @samp{long E} format, @code{pi} is displayed as
+@code{3.14159265358979E+00}.
+@item long g
+@itemx short g
+Choose between normal @samp{long} (or @samp{short}) and and
+@samp{long e} (or @samp{short e}) formats based on the magnitude
+of the number.  For example, with the @samp{short g} format,
+@code{pi .^ [2; 4; 8; 16; 32]} is displayed as
+
+@example
+@group
+ans =
+
+      3.1416
+      9.8696
+      97.409
+      9488.5
+  9.0032e+07
+  8.1058e+15
+@end group
+@end example
+
+@item long G
+@itemx short G
+The same as @samp{format long g} or @samp{format short g} but use an
+uppercase @samp{E} format.  For example, with the @samp{short G} format,
+@code{pi .^ [2; 4; 8; 16; 32]} is displayed as
+
+@example
+@group
+ans =
+
+      3.1416
+      9.8696
+      97.409
+      9488.5
+  9.0032E+07
+  8.1058E+15
+@end group
+@end example
+
+@item free
+@itemx none
+Print output in free format, without trying to line up columns of
+matrices on the decimal point.  This also causes complex numbers to be
+formatted like this @samp{(0.604194, 0.607088)} instead of like this
+@samp{0.60419 + 0.60709i}.
+
+@item bank
+Print in a fixed format with two places to the right of the decimal
+point.
+
+@item +
+@itemx + @var{chars}
+@itemx plus
+@itemx plus @var{chars}
+Print a @samp{+} symbol for nonzero matrix elements and a space for zero
+matrix elements.  This format can be very useful for examining the
+structure of a large matrix.
+
+The optional argument @var{chars} specifies a list of 3 characters to use
+for printing values greater than zero, less than zero and equal to zero.
+For example, with the @samp{+ "+-."} format, @code{[1, 0, -1; -1, 0, 1]}
+is displayed as
+
+@example
+@group
+ans =
+
++.-
+-.+
+@end group
+@end example
+
+@itemx native-hex
+Print the hexadecimal representation numbers as they are stored in
+memory.  For example, on a workstation which stores 8 byte real values
+in IEEE format with the least significant byte first, the value of
+@code{pi} when printed in @code{hex} format is @code{400921fb54442d18}.
+This format only works for numeric values.
+
+@item hex
+The same as @code{native-hex}, but always print the most significant
+byte first.
+@item native-bit
+Print the bit representation of numbers as stored in memory.
+For example, the value of @code{pi} is
+
+@example
+@group
+01000000000010010010000111111011
+01010100010001000010110100011000
+@end group
+@end example
+
+(shown here in two 32 bit sections for typesetting purposes) when
+printed in bit format on a workstation which stores 8 byte real values
+in IEEE format with the least significant byte first.  This format only
+works for numeric types.
+@item bit
+The same as @code{native-bit}, but always print the most significant
+bits first.
+@item compact
+Remove extra blank space around column number labels.
+@item loose
+Insert blank lines above and below column number labels (this is the
+default).
+@end table
+
+By default, Octave will try to print numbers with at least 5 significant
+figures within a field that is a maximum of 10 characters wide.
+
+If Octave is unable to format a matrix so that columns line up on the
+decimal point and all the numbers fit within the maximum field width,
+it switches to an @samp{e} format.
+
+If @code{format} is invoked without any options, the default format
+state is restored.
+@end deffn

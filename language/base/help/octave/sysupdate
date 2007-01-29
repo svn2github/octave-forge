@@ -1,0 +1,33 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} sysupdate (@var{sys}, @var{opt})
+Update the internal representation of a system.
+
+@strong{Inputs}
+@table @var
+@item sys:
+system data structure
+@item opt
+string:
+@table @code
+@item "tf"
+update transfer function form
+@item "zp"
+update zero-pole form
+@item "ss"
+update state space form
+@item "all"
+all of the above
+@end table
+@end table
+
+@strong{Outputs}
+@table @var
+@item retsys
+Contains union of data in sys and requested data.
+If requested data in @var{sys} is already up to date then @var{retsys}=@var{sys}.
+@end table
+
+Conversion to @command{tf} or @command{zp} exits with an error if the system is
+mixed continuous/digital.
+@seealso{tf, ss, zp, sysout, sys2ss, sys2tf, sys2zp}
+@end deftypefn

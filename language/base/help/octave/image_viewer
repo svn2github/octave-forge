@@ -1,0 +1,45 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{fcn}, @var{default_zoom}] =} image_viewer (@var{fcn}, @var{default_zoom})
+Change the program or function used for viewing images and return the
+previous values.
+
+When the @code{image} or @code{imshow} function is called it will
+launch an external program to display the image.  The default behaviour
+is to use gnuplot if the installed version supports image viewing,
+and otherwise try the programs @code{display}, @code{xv}, and
+@code{xloadimage}.  Using this function it is possible to change that
+behaviour.
+
+When called with one input argument images will be displayed by saving
+the image to a file and the system command @var{command} will called
+to view the image.  The @var{command} must be a string containing
+@code{%s} and possibly @code{%f}. The @code{%s} will be replaced by
+the filename of the image, and the @code{%f} will (if present) be
+replaced by the zoom factor given to the @code{image} function.
+For example,
+@example
+image_viewer ("eog %s");
+@end example
+changes the image viewer to the @code{eog} program.
+
+With two input arguments, images will be displayed by calling
+the function @var{function_handle}.  For example,
+@example
+image_viewer (data, @@my_image_viewer);
+@end example
+sets the image viewer function to @code{my_image_viewer}.  The image
+viewer function is called with
+@example
+my_image_viewer (@var{x}, @var{y}, @var{im}, @var{zoom}, @var{data})
+@end example
+where @var{x} and @var{y} are the axis of the image, @var{im} is the image
+variable, and @var{data} is extra user-supplied data to be passed to
+the viewer function.
+
+With three input arguments it is possible to change the zooming.
+Some programs (like @code{xloadimage}) require the zoom factor to be
+between 0 and 100, and not 0 and 1 like Octave assumes. This is
+solved by setting the third argument to 100.
+
+@seealso{image, imshow, __img_gnuplot__, __img_via_file__}
+@end deftypefn

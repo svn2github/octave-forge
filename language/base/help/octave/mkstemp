@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (@var{template}, @var{delete})
+Return the file ID corresponding to a new temporary file with a unique
+name created from @var{template}.  The last six characters of @var{template}
+must be @code{XXXXXX} and these are replaced with a string that makes the
+filename unique.  The file is then created with mode read/write and
+permissions that are system dependent (on GNU/Linux systems, the permissions
+will be 0600 for versions of glibc 2.0.7 and later).  The file is opened
+with the @code{O_EXCL} flag.
+
+If the optional argument @var{delete} is supplied and is true,
+the file will be deleted automatically when Octave exits, or when
+the function @code{purge_tmp_files} is called.
+
+If successful, @var{fid} is a valid file ID, @var{name} is the name of
+the file, and and @var{msg} is an empty string.  Otherwise, @var{fid}
+is -1, @var{name} is empty, and @var{msg} contains a system-dependent
+error message.
+@seealso{tmpfile, tmpnam, P_tmpdir}
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Functin File} {} dezero (@var{s})
+Remove trailing blank entries and all zero entries from the string s.
+@end deftypefn

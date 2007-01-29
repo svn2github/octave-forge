@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} probit (@var{p})
+For each component of @var{p}, return the probit (the quantile of the
+standard normal distribution) of @var{p}.
+@end deftypefn

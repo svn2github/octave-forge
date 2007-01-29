@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_associativity_change
+If the value of this variable is nonzero, Octave will warn about
+possible changes in the meaning of some code due to changes in
+associativity for some operators.  Associativity changes have typically
+been made for Matlab compatibility.  The default value is 1.
+@end defvr

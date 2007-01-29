@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} geocdf (@var{x}, @var{p})
+For each element of @var{x}, compute the CDF at @var{x} of the
+geometric distribution with parameter @var{p}.
+@end deftypefn

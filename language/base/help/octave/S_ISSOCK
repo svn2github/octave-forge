@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} S_ISSOCK (@var{mode})
+@seealso{stat, lstat}
+@end deftypefn

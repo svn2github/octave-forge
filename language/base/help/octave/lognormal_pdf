@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} lognormal_pdf (@var{x}, @var{a}, @var{v})
+For each element of @var{x}, compute the probability density function
+(PDF) at @var{x} of the lognormal distribution with parameters
+@var{a} and @var{v}.  If a random variable follows this distribution,
+its logarithm is normally distributed with mean @code{log (@var{a})}
+and variance @var{v}.
+
+Default values are @var{a} = 1, @var{v} = 1.
+@end deftypefn

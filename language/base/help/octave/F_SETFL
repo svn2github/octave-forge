@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} F_SETFL ()
+Return the value required to request that @code{fcntl} to set the file
+status flags.
+@seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}
+@end deftypefn

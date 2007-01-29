@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} sysgettype (@var{sys})
+return the initial system type of the system
+
+@strong{Input}
+@table @var
+@item sys
+System data structure.
+@end table
+
+@strong{Output}
+@table @var
+@item systype
+String indicating how the structure was initially
+constructed. Values: @code{"ss"}, @code{"zp"}, or @code{"tf"}.
+@end table
+
+@acronym{FIR} initialized systems return @code{systype="tf"}.
+@end deftypefn

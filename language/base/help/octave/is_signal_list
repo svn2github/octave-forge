@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_signal_list (@var{mylist})
+Return true if @var{mylist} is a list of individual strings.
+@end deftypefn

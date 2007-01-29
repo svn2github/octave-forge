@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isnan (@var{x})
+Return 1 for elements of @var{x} that are NaN values and zero
+otherwise.  NA values are also considered NaN values.  For example,
+
+@example
+@group
+isnan ([13, Inf, NA, NaN])
+     @result{} [ 0, 0, 1, 1 ]
+@end group
+@end example
+@end deftypefn

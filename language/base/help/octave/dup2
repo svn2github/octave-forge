@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})
+Duplicate a file descriptor.
+
+If successful, @var{fid} is greater than zero and contains the new file
+ID.  Otherwise, @var{fid} is negative and @var{msg} contains a
+system-dependent error message.
+@end deftypefn

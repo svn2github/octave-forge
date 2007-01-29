@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} conv (@var{a}, @var{b})
+Convolve two vectors.
+
+@code{y = conv (a, b)} returns a vector of length equal to
+@code{length (a) + length (b) - 1}.
+If @var{a} and @var{b} are polynomial coefficient vectors, @code{conv}
+returns the coefficients of the product polynomial.
+@seealso{deconv, poly, roots, residue, polyval, polyderiv, polyinteg}
+@end deftypefn

@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} dbclear (func, line)
+Delete a breakpoint in a function
+@table @code
+@item func
+String representing the function name.  When already in debug
+mode this should be left out and only the line should be given.
+@item line
+Line where you would like to remove the the breakpoint
+@end table
+No checking is done to make sure that the line you requested is really
+a breakpoint.   If you get the wrong line nothing will happen.
+@seealso{dbstop, dbstatus, dbwhere}
+@end deftypefn

@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} printf (@var{template}, @dots{})
+Print optional arguments under the control of the template string
+@var{template} to the stream @code{stdout} and return the number of
+characters printed.
+@ifclear OCTAVE_MANUAL
+
+See the Formatted Output section of the GNU Octave manual for a
+complete description of the syntax of the template string.
+@end ifclear
+@seealso{fprintf, sprintf, scanf}
+@end deftypefn

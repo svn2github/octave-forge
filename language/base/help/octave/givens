@@ -1,0 +1,32 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{g} =} givens (@var{x}, @var{y})
+@deftypefnx {Loadable Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})
+@iftex
+@tex
+Return a $2\times 2$ orthogonal matrix
+$$
+ G = \left[\matrix{c & s\cr -s'& c\cr}\right]
+$$
+such that
+$$
+ G \left[\matrix{x\cr y}\right] = \left[\matrix{\ast\cr 0}\right]
+$$
+with $x$ and $y$ scalars.
+@end tex
+@end iftex
+@ifinfo
+Return a 2 by 2 orthogonal matrix
+@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]} such that
+@code{@var{g} [@var{x}; @var{y}] = [*; 0]} with @var{x} and @var{y} scalars.
+@end ifinfo
+
+For example,
+
+@example
+@group
+givens (1, 1)
+     @result{}   0.70711   0.70711
+         -0.70711   0.70711
+@end group
+@end example
+@end deftypefn

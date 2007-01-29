@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{pv} =} sysreorder (@var{vlen}, @var{list})
+
+@strong{Inputs}
+@table @var
+@item vlen
+Vector length.
+@item list
+A subset of @code{[1:vlen]}.
+@end table
+
+@strong{Output}
+@table @var
+@item pv
+A permutation vector to order elements of @code{[1:vlen]} in
+@code{list} to the end of a vector.
+@end table
+
+Used internally by @code{sysconnect} to permute vector elements to their
+desired locations.
+@end deftypefn

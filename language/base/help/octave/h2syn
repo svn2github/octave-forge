@@ -1,0 +1,57 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{K}, @var{gain}, @var{kc}, @var{kf}, @var{pc}, @var{pf}] = } h2syn (@var{asys}, @var{nu}, @var{ny}, @var{tol})
+Design 
+@iftex
+@tex
+$ { \cal H }_2 $
+@end tex
+@end iftex
+@ifinfo
+H-2
+@end ifinfo
+optimal controller per procedure in 
+Doyle, Glover, Khargonekar, Francis, @cite{State-Space Solutions to Standard}
+@iftex
+@tex
+$ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+@end tex
+@end iftex
+@ifinfo
+@cite{H-2 and H-infinity}
+@end ifinfo
+@cite{Control Problems}, @acronym{IEEE} @acronym{TAC} August 1989.
+
+Discrete-time control per Zhou, Doyle, and Glover, @cite{Robust and optimal control}, Prentice-Hall, 1996.
+
+@strong{Inputs}
+@table @var
+@item asys
+system data structure (see ss, sys2ss)
+@itemize @bullet
+@item controller is implemented for continuous time systems
+@item controller is @strong{not} implemented for discrete time systems
+@end itemize
+@item nu
+number of controlled inputs
+@item ny
+number of measured outputs
+@item tol
+threshold for 0.  Default: 200*@code{eps}
+@end table
+
+@strong{Outputs}
+@table @var
+@item    k
+system controller
+@item    gain
+optimal closed loop gain
+@item    kc
+full information control (packed)
+@item    kf
+state estimator (packed)
+@item    pc
+@acronym{ARE} solution matrix for regulator subproblem
+@item    pf
+@acronym{ARE} solution matrix for filter subproblem
+@end table
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})
+ returns a full storage matrix from a sparse one
+@seealso{sparse}
+@end deftypefn

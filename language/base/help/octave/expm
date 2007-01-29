@@ -1,0 +1,84 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} expm (@var{a})
+Return the exponential of a matrix, defined as the infinite Taylor
+series
+@iftex
+@tex
+$$
+ \exp (A) = I + A + {A^2 \over 2!} + {A^3 \over 3!} + \cdots
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+expm(a) = I + a + a^2/2! + a^3/3! + ...
+@end example
+
+@end ifinfo
+The Taylor series is @emph{not} the way to compute the matrix
+exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
+Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
+uses Ward's diagonal
+@iftex
+@tex
+Pad\'e
+@end tex
+@end iftex
+@ifinfo
+Pade'
+@end ifinfo
+approximation method with three step preconditioning (SIAM Journal on
+Numerical Analysis, 1977).  Diagonal
+@iftex
+@tex
+Pad\'e
+@end tex
+@end iftex
+@ifinfo
+Pade'
+@end ifinfo
+ approximations are rational polynomials of matrices
+@iftex
+@tex
+$D_q(a)^{-1}N_q(a)$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+     -1
+D (a)   N (a)
+@end example
+
+@end ifinfo
+ whose Taylor series matches the first
+@iftex
+@tex
+$2 q + 1 $
+@end tex
+@end iftex
+@ifinfo
+@code{2q+1}
+@end ifinfo
+terms of the Taylor series above; direct evaluation of the Taylor series
+(with the same preconditioning steps) may be desirable in lieu of the
+@iftex
+@tex
+Pad\'e
+@end tex
+@end iftex
+@ifinfo
+Pade'
+@end ifinfo
+approximation when
+@iftex
+@tex
+$D_q(a)$
+@end tex
+@end iftex
+@ifinfo
+@code{Dq(a)}
+@end ifinfo
+is ill-conditioned.
+@end deftypefn

@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{X} =} bitget (@var{a},@var{n})
+Return the status of bit(s) @var{n} of unsigned integers in @var{a}
+the lowest significant bit is @var{n} = 1.
+
+@example
+bitget (100, 8:-1:1)
+@result{} 0  1  1  0  0  1  0  0 
+@end example
+@seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, bitmax}
+@end deftypefn

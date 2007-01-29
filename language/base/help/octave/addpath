@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} addpath (@var{dir1}, @dots{})
+@deftypefnx {Function File} {} addpath (@var{dir1}, @dots{}, @var{option})
+Add @var{dir1}, @dots{} to the current function search path.  If
+@var{option} is @samp{"-begin"} or 0 (the default), prepend the
+directory name to the current path.  If @var{option} is @samp{"-end"}
+or 1, append the directory name to the current path.
+Directories added to the path must exist.
+@seealso{path, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn

@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} moment (@var{x}, @var{p}, @var{opt}, @var{dim})
+If @var{x} is a vector, compute the @var{p}-th moment of @var{x}.
+
+If @var{x} is a matrix, return the row vector containing the
+@var{p}-th moment of each column.
+
+With the optional string opt, the kind of moment to be computed can
+be specified.  If opt contains @code{"c"} or @code{"a"}, central
+and/or absolute moments are returned.  For example,
+
+@example
+moment (x, 3, "ac")
+@end example
+
+@noindent
+computes the third central absolute moment of @var{x}.
+
+If the optional argument @var{dim} is supplied, work along dimension
+@var{dim}.
+@end deftypefn

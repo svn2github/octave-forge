@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} binomial_cdf (@var{x}, @var{n}, @var{p})
+For each element of @var{x}, compute the CDF at @var{x} of the
+binomial distribution with parameters @var{n} and @var{p}.
+@end deftypefn

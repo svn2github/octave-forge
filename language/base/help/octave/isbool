@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Functio} {} isbool (@var{x})
+Return true if @var{x} is a boolean object.
+@end deftypefn

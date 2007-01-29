@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} warranty ()
+Describe the conditions for copying and distributing Octave.
+@end deftypefn

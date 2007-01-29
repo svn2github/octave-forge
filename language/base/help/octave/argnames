@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} argnames (@var{fun})
+Return a cell array of character strings containing the names of
+the arguments of the inline function @var{fun}.
+@seealso{argnames, inline, formula, vectorize}
+@end deftypefn

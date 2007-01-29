@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} getenv (@var{var})
+Return the value of the environment variable @var{var}.  For example,
+
+@example
+getenv ("PATH")
+@end example
+
+@noindent
+returns a string containing the value of your path.
+@end deftypefn

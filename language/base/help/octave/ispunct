@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} ispunct (@var{s})
+Return 1 for punctuation characters.
+@end deftypefn

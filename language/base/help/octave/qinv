@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qinv (@var{q})
+Return the inverse of a quaternion.
+
+@example
+q = [w, x, y, z] = w*i + x*j + y*k + z
+qmult (q, qinv (q)) = 1 = [0 0 0 1]
+@end example
+@end deftypefn

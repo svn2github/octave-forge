@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} typeinfo (@var{expr})
+
+Return the type of the expression @var{expr}, as a string.  If
+@var{EXPR}  is omitted, return an array of strings containing all the
+currently installed data types.
+@end deftypefn

@@ -1,0 +1,27 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{xinf}, @var{x_ha_err}] =} hinfsyn_ric (@var{a}, @var{bb}, @var{c1}, @var{d1dot}, @var{r}, @var{ptol})
+Forms
+@example
+xx = ([bb; -c1'*d1dot]/r) * [d1dot'*c1 bb'];
+Ha = [a 0*a; -c1'*c1 - a'] - xx;
+@end example
+and solves associated Riccati equation.
+The error code @var{x_ha_err} indicates one of the following
+conditions:
+@table @asis
+@item 0
+successful
+@item 1
+@var{xinf} has imaginary eigenvalues
+@item 2
+@var{hx} not Hamiltonian
+@item 3
+@var{xinf} has infinite eigenvalues (numerical overflow)
+@item 4
+@var{xinf} not symmetric
+@item 5
+@var{xinf} not positive definite
+@item 6
+@var{r} is singular
+@end table
+@end deftypefn

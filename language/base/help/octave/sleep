@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} sleep (@var{seconds})
+Suspend the execution of the program for the given number of seconds.
+@end deftypefn

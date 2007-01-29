@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} blanks (@var{n})
+Return a string of @var{n} blanks.
+@seealso{repmat}
+@end deftypefn

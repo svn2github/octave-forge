@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} npv (@var{r}, @var{p}, @var{i})
+Returns the net present value of a series of irregular (i.e., not
+necessarily identical) payments @var{p} which occur at the ends of @var{n}
+consecutive periods.  @var{r} specifies the one-period interest rates and
+can either be a scalar (constant rates) or a vector of the same
+length as @var{p}.
+
+The optional argument @var{i} may be used to specify an initial
+investment.
+
+Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+not 5 percent).
+@seealso{irr, pv}
+@end deftypefn

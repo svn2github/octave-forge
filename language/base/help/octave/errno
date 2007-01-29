@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{err} =} errno ()
+@deftypefnx {Built-in Function} {@var{err} =} errno (@var{val})
+@deftypefnx {Built-in Function} {@var{err} =} errno (@var{name})
+Return the current value of the system-dependent variable errno,
+set its value to @var{val} and return the previous value, or return
+the named error code given @var{name} as a character string, or -1
+if @var{name} is not found.
+@end deftypefn

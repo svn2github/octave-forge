@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} WSTOPSIG (@var{status})
+Given @var{status} from a call to @code{waitpid}, return the number of
+the signal which caused the child to stop.  This function should only
+be employed if @code{WIFSTOPPED} returned true.
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WIFCONTINUED}
+@end deftypefn

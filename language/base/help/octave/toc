@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} toc ()
+See tic.
+@end deftypefn

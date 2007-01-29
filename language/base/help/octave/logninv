@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} logninv (@var{x}, @var{mu}, @var{sigma})
+For each element of @var{x}, compute the quantile (the inverse of the
+CDF) at @var{x} of the lognormal distribution with parameters @var{mu}
+and @var{sigma}.  If a random variable follows this distribution, its
+logarithm is normally distributed with mean @code{log (@var{mu})} and
+variance @var{sigma}.
+
+Default values are @var{mu} = 1, @var{sigma} = 1.
+@end deftypefn

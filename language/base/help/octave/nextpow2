@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} nextpow2 (@var{x})
+If @var{x} is a scalar, returns the first integer @var{n} such that
+@iftex
+@tex
+ $2^n \ge |x|$.
+@end tex
+@end iftex
+@ifinfo
+ 2^n >= abs (x).
+@end ifinfo
+
+If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
+@seealso{pow2}
+@end deftypefn

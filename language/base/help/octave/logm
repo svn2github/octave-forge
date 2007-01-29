@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} logm (@var{a})
+Compute the matrix logarithm of the square matrix @var{a}.  Note that
+this is currently implemented in terms of an eigenvalue expansion and
+needs to be improved to be more robust.
+@end deftypefn

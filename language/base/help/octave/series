@@ -1,0 +1,18 @@
+Forms the series connection of two systems.
+
+Superseded by sysmult.  Do not use this routine!
+used internally in zp2ss
+
+Type of input: Transfer functions
+Command:       [num,den]=series(num1,den1,num2,den2)
+Forms the series representation of the two transfer functions.
+
+Type of input: State space systems
+Command:       [a,b,c,d]=series(a1,b1,c1,d1,a2,b2,c2,d2)
+Forms the series representation of the two state space system arguments.
+The series connected system will have the inputs of system 1 and the
+outputs of system 2.
+
+Type of input: system data structure
+Command:       syst=series(syst1,syst2)
+Forms the series representation of the two mu system arguments.

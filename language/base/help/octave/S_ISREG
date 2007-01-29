@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} S_ISREG (@var{mode})
+Return true if @var{mode} corresponds to a regular file.  The value
+of @var{mode} is assumed to be returned from a call to @code{stat}.
+@seealso{stat, lstat}
+@end deftypefn

@@ -1,0 +1,46 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{g} =} gcd (@var{a1}, @code{...})
+@deftypefnx {Loadable Function} {[@var{g}, @var{v1}, @var{...}] =} gcd (@var{a1}, @code{...})
+
+If a single argument is given then compute the greatest common divisor of
+the elements of this argument. Otherwise if more than one argument is
+given all arguments must be the same size or scalar. In this case the
+greatest common divisor is calculated for element individually. All
+elements must be integers. For example,
+
+@example
+@group
+gcd ([15, 20])
+    @result{}  5
+@end group
+@end example
+
+@noindent
+and
+
+@example
+@group
+gcd ([15, 9], [20 18])
+    @result{}  5  9
+@end group
+@end example
+
+Optional return arguments @var{v1}, etc, contain integer vectors such
+that,
+
+@ifinfo
+@example
+@var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @var{...}
+@end example
+@end ifinfo
+@iftex
+@tex
+$g = v_1 a_1 + v_2 a_2 + \cdots$
+@end tex
+@end iftex
+
+For backward compatiability with previous versions of this function, when
+all arguments are scalr, a single return argument @var{v1} containing
+all of the values of @var{v1}, @var{...} is acceptable.
+@seealso{lcm, min, max, ceil, floor}
+@end deftypefn

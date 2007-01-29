@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isupper (@var{s})
+Return 1 for upper case letters.
+@end deftypefn

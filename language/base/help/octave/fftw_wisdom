@@ -1,0 +1,37 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} fftw_wisdom (@var{file}, @var{mode})
+Save or load FFTW wisdom data to @var{file}.  The optional argument
+@var{mode} may be either @samp{"r"} or @samp{"w"}.  The default
+value is @samp{"r"}.
+
+@deftypefnx {Loadable Function} {} fftw_wisdom (@var{n})
+Pre-calculate FFTW wisdom data for an FFT of size @var{n}.
+Each row of @var{n} represents the size of an FFT for
+which it is desired to pre-calculate the wisdom needed to accelerate it.
+Any value of the matrix that is less than 1, is assumed to indicate an
+absent dimension.  For example,
+
+@example
+fftw_wisdom ([102, 0, 0; 103, 103, 0; 102, 103, 105]);
+a = fft (rand (1,102));
+b = fft (rand (103,103));
+c = fftn (rand ([102, 103, 105]));
+@end example
+
+calculates the wisdom necessary to accelerate the 103, 102x102 and
+the 102x103x105 FFTs. Note that calculated wisdom will be lost when
+restarting Octave. However, the wisdom data can be reloaded if it is
+saved to a file as described above.  Also, any system-wide wisdom
+file that has been found will also be used. Saved wisdom files
+should not be used on different platforms since they will not be
+efficient and the point of calculating the wisdom is lost.
+
+Wisdom data can be used to significantly accelerate the calculation
+of the FFTs but is only profitable if the same FFT is called many
+times due to the overhead in calculating the wisdom data.
+
+Note that the program @code{fftw-wisdom} supplied with FFTW can equally
+be used to create a file containing wisdom that can be imported into
+Octave.
+@seealso{fft, ifft, fft2, ifft2, fftn, ifftn}
+@end deftypefn

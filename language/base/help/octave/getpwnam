@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwnam (@var{name})
+Return a structure containing the first entry from the password database
+with the user name @var{name}.  If the user name does not exist in the
+database, @code{getpwname} returns 0.
+@end deftypefn

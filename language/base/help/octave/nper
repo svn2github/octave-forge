@@ -1,0 +1,16 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} nper (@var{r}, @var{p}, @var{a}, @var{l}, @var{method})
+Return the number of regular payments of @var{p} necessary to
+amortize @var{a} loan of amount @var{a} and interest @var{r}.
+
+The optional argument @var{l} may be used to specify an additional
+lump-sum payment of @var{l} made at the end of the amortization time.
+
+The optional argument @var{method} may be used to specify whether
+payments are made at the end (@var{"e"}, default) or at the beginning
+(@var{"b"}) of each period.
+
+Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+not 5 percent).
+@seealso{pv, pmt, rate, npv}
+@end deftypefn

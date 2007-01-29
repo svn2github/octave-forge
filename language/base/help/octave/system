@@ -1,0 +1,41 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})
+Execute a shell command specified by @var{string}.  The second
+argument is optional.  If @var{type} is @code{"async"}, the process
+is started in the background and the process id of the child process
+is returned immediately.  Otherwise, the process is started, and
+Octave waits until it exits.  If @var{type} argument is omitted, a
+value of @code{"sync"} is assumed.
+
+If two input arguments are given (the actual value of
+@var{return_output} is irrelevant) and the subprocess is started
+synchronously, or if @var{system} is called with one input argument and
+one or more output arguments, the output from the command is returned.
+Otherwise, if the subprocess is executed synchronously, its output is
+sent to the standard output.  To send the output of a command executed
+with @var{system} through the pager, use a command like
+
+@example
+disp (system (cmd, 1));
+@end example
+
+@noindent
+or
+
+@example
+printf ("%s
+", system (cmd, 1));
+@end example
+
+The @code{system} function can return two values.  The first is the
+exit status of the command and the second is any output from the
+command that was written to the standard output stream.  For example,
+
+@example
+[status, output] = system ("echo foo; exit 2");
+@end example
+
+@noindent
+will set the variable @code{output} to the string @samp{foo}, and the
+variable @code{status} to the integer @samp{2}.
+@end deftypefn

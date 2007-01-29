@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} fsolve_options (@var{opt}, @var{val})
+When called with two arguments, this function allows you set options
+parameters for the function @code{fsolve}.  Given one argument,
+@code{fsolve_options} returns the value of the corresponding option.  If
+no arguments are supplied, the names of all the available options and
+their current values are displayed.
+
+Options include
+
+@table @code
+@item "tolerance"
+Nonnegative relative tolerance.
+@end table
+@end deftypefn

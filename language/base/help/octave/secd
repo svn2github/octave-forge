@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} secd (@var{x})
+Compute the secant of an angle in degrees.
+@seealso{sec, cscd, sind, cosd}
+@end deftypefn

@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+
+Return a matrix @var{zi} corresponding to the the bicubic
+interpolations at @var{xi} and @var{yi} of the data supplied
+as @var{x}, @var{y} and @var{z}. 
+
+For further information please see bicubic.pdf available at
+@url{http://wiki.woodpecker.org.cn/moin/Octave/Bicubic}
+@seealso{interp2}
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@defvr __kluge_procbuf_delay__
+Number of microseconds to delay in the parent after forking.
+@end defvr

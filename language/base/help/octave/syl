@@ -1,0 +1,25 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{x} =} syl (@var{a}, @var{b}, @var{c})
+Solve the Sylvester equation
+@iftex
+@tex
+$$
+ A X + X B + C = 0
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+A X + X B + C = 0
+@end example
+@end ifinfo
+using standard @sc{Lapack} subroutines.  For example,
+
+@example
+@group
+syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
+     @result{} [ -0.50000, -0.66667; -0.66667, -0.50000 ]
+@end group
+@end example
+@end deftypefn

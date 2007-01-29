@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} perms (@var{v})
+
+Generate all permutations of @var{v}, one row per permutation. The
+result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}
+is the length of @var{v}.
+
+@end deftypefn

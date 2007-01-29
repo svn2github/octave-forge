@@ -1,0 +1,48 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} whos_line_format ()
+@deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})
+Query or set the format string used by the @code{whos}.
+
+The following escape sequences may be used in the format:
+@table @code
+@item %b
+Prints number of bytes occupied by variables.
+@item %c
+Prints class names of variables.
+@item %e
+Prints elements held by variables.
+@item %n
+Prints variable names.
+@item %p
+Prints protection attributtes of variables.
+@item %s
+Prints dimensions of variables.
+@item %t
+Prints type names of variables.
+@end table
+
+Every command may also have a modifier:
+@table @code
+@item l
+Left alignment.
+@item r
+Right alignment (this is the default).
+@item c
+Centered (may only be applied to command %s).
+@end table
+
+A command is composed like this:
+%[modifier]<command>[:size_of_parameter[:center-specific[:print_dims[:balance]]]];
+
+Command and modifier is already explained. Size_of_parameter
+tells how many columns the parameter will need for printing.
+print_dims tells how many dimensions to print. If number of
+dimensions exceeds print_dims, dimensions will be printed like
+x-D.
+center-specific and print_dims may only be applied to command
+%s. A negative value for print_dims will cause Octave to print all
+dimensions whatsoever.
+balance specifies the offset for printing of the dimensions string.
+
+The default format is "  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lc:-1;\n".
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} sinh (@var{x})
+Compute the hyperbolic sine of each element of @var{x}.
+@end deftypefn

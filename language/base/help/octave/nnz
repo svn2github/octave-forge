@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{scalar} =} nnz (@var{a})
+Returns the number of non zero elements in @var{a}.
+@seealso{sparse}
+@end deftypefn

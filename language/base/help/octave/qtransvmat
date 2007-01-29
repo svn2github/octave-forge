@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qtransvmat (@var{qib})
+Construct a 3x3 transformation matrix from quaternion @var{qib} that
+is equivalent to rotation of th radians about axis @var{vv}, where
+@code{[@var{vv}, @var{th}] = quaternion (@var{qib})}.
+@end deftypefn

@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{housv}, @var{beta}, @var{zer}] =} housh (@var{x}, @var{j}, @var{z})
+Computes householder reflection vector housv to reflect x to be
+jth column of identity, i.e., (I - beta*housv*housv')x =e(j)
+inputs
+  x: vector
+  j: index into vector
+  z: threshold for zero  (usually should be the number 0)
+outputs: (see Golub and Van Loan)
+  beta: If beta = 0, then no reflection need be applied (zer set to 0)
+  housv: householder vector
+@end deftypefn

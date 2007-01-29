@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} frewind (@var{fid})
+Move the file pointer to the beginning of the file @var{fid}, returning
+0 for success, and -1 if an error was encountered.  It is equivalent to
+@code{fseek (@var{fid}, 0, SEEK_SET)}.
+@end deftypefn

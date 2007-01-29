@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} int64 (@var{x})
+Convert @var{x} to 64-bit integer type.
+@end deftypefn

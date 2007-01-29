@@ -1,0 +1,29 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{retsys}, @var{nc}, @var{no}] =} sysmin (@var{sys}, @var{flg})
+Returns a minimal (or reduced order) system
+
+@strong{Inputs}
+@table @var
+@item sys
+System data structure
+@item flg
+When equal to 0 (default value), returns minimal system,
+in which state names are lost; when equal to 1, returns system 
+with physical states removed that are either uncontrollable or 
+unobservable (cannot reduce further without discarding physical
+meaning of states).
+@end table
+@strong{Outputs}
+@table @var
+@item retsys
+Returned system.
+@item nc
+Number of controllable states in the returned system.
+@item no
+Number of observable states in the returned system.
+@item cflg
+@code{is_controllable(retsys)}.
+@item oflg
+@code{is_observable(retsys)}.
+@end table
+@end deftypefn

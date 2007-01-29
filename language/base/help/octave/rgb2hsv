@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} @var{hsv_map} = rgb2hsv (@var{rgb_map})
+Transform a colormap from the rgb space to the hsv space.
+
+A color n the RGB space consists of the red, green and blue intensities.
+
+In the HSV space each color is represented by their hue, saturation
+and value (brightness).  Value gives the amount of light in the color.
+Hue describes the dominant wavelegth. 
+Saturation is the amount of Hue mixed into the color.
+@seealso{hsv2rgb}
+@end deftypefn

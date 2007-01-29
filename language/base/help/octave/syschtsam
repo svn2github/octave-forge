@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} syschtsam (@var{sys}, @var{tsam})
+This function changes the sampling time (tsam) of the system.  Exits with
+an error if sys is purely continuous time.
+@end deftypefn

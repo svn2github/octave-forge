@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isglobal (@var{name})
+Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For
+example,
+
+@example
+@group
+global x
+isglobal ("x")
+     @result{} 1
+@end group
+@end example
+@end deftypefn

@@ -1,0 +1,99 @@
+#! /bin/sh
+
+# Find path to base files
+octlang=`basename $0`
+sub=${PWD#*language/??/}
+lang=${PWD#*language/}; lang=${lang%%/*}
+path_to_root=`echo $sub | sed -e's/[^/]*/../g'`
+base=$path_to_root/..$sub/../base/
+tmpfile="$octlang.$$"
+
+# Does the base directory exist
+if test ! -d $base; then
+    echo "Base directory not found. $octlang should be run from"
+    echo "toplevel of language directory"
+    exit -1;
+fi
+
+# Which MD5 command to use
+if test `which md5 2> /dev/null`; then
+    have_md5="yes"
+elif test ! `which md5sum 2> /dev/null`; then
+   echo "$octlang: Can not find md5 or md5sum command"
+   exit -1
+fi
+
+case $1 in
+    missing)
+	basefiles=`find $base -type f`
+	for basefile in $basefiles; do
+	    file=${basefile##*/}
+	    test ! `find help -name $file.$lang` && echo $file
+        done
+    ;;
+    updated)
+	files=`find help -name \*.$lang`
+	for file in $files; do
+	    basefile=`basename ${file##*/} .$lang`
+	    basefile=`find $base -type f -name $basefile`
+	    if test -n $basefile; then
+		if test -n "$have_md5"; then
+		    basesum=`md5 -q $basefile`
+		else
+		    basesum=`md5sum $basefile | cut -c1-32`
+		fi
+		transum=`head -1 $file | sed -e's/^.*md5="//;s/".*$//'`
+		test $basesum != $transum && echo $file
+	    fi
+	done
+    ;;
+    diff)
+        shift
+        for file in $*; do
+	    _file=`find help -name $file.$lang`
+	    tranver=`head -1 $_file | sed -e's/^.*rev="//;s/".*$//'`
+	    basedir=`find $base -name $file | xargs dirname`
+	    (cd $basedir && cvs diff -cp -r $tranver ${file%.??})
+	done
+    ;;
+    tag)
+	if test -z "$OCTAVE_TRANSLATOR"; then
+	    echo "The environment variable OCTAVE_TRANSLATOR must be defined"
+	    exit -1
+	fi
+        shift
+        for file in $*; do
+	    _file=`find help -name $file.$lang`
+	    basefile=`find $base -name $file`
+	    basedir=`dirname $basefile`
+	    baserev=`cat $basedir/CVS/Entries | grep /$file/ | awk -F '/' '{print $3'`
+	    if test -n "$have_md5"; then
+		basesum=`md5 -q $basefile`
+	    else
+		basesum=`md5sum $basefile | cut -c1-32`
+	    fi
+	    if test -e $tmpfile; then
+		rm $tmpfile
+	    fi
+	    echo "md5=\"$basesum\";rev=\"$baserev\";by=\"$OCTAVE_TRANSLATOR\"" > \
+		$tmpfile
+	    tranver=`head -1 $_file | sed -e's/^.*rev="//;s/".*$//'`
+	    if test -n $tranver; then
+		cat $_file | sed -n '2~1p' >> $tmpfile
+	    else
+		cat $_file >> $tmpfile
+	    fi
+	    mv $tmpfile $_file
+	done
+    ;;
+    help)
+	echo "$octlang: Octave Language Translation Support Script"
+	echo "  help         - This message"
+        echo "  missing      - Identify translated help strings"
+        echo "  update       - Identify translated help strings that need updating"
+	echo "  diff <files> - Changes between translated version of file and base version"
+	echo "  tag <files>  - Tag file with md5 and rev number of base file"
+    ;;
+    *) echo "$octlang: $1 not implemented"
+esac
+

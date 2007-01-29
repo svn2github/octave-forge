@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_missing_semicolon
+If the value of this variable is nonzero, Octave will warn when
+statements in function definitions don't end in semicolons.  The default
+value is 0.
+@end defvr

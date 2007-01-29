@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} stderr ()
+Return the numeric value corresponding to the standard error stream.
+Even if paging is turned on, the standard error is not sent to the
+pager.  It is useful for error messages and prompts.
+@seealso{stdin, stdout}
+@end deftypefn

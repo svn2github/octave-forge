@@ -1,0 +1,36 @@
+-*- texinfo -*-
+@deffn {Command} who options pattern @dots{}
+@deffnx {Command} whos options pattern @dots{}
+List currently defined symbols matching the given patterns.  The
+following are valid options.  They may be shortened to one character but
+may not be combined.
+
+@table @code
+@item -all
+List all currently defined symbols.
+
+@item -builtins
+List built-in functions.  This includes all currently
+compiled function files, but does not include all function files that
+are in the search path.
+
+@item -functions
+List user-defined functions.
+
+@item -long
+Print a long listing including the type and dimensions of any symbols.
+The symbols in the first column of output indicate whether it is
+possible to redefine the symbol, and whether it is possible for it to be
+cleared.
+
+@item -variables
+List user-defined variables.
+@end table
+
+Valid patterns are the same as described for the @code{clear} command
+above.  If no patterns are supplied, all symbols from the given category
+are listed.  By default, only user defined functions and variables
+visible in the local scope are displayed.
+
+The command @kbd{whos} is equivalent to @kbd{who -long}.
+@end deffn

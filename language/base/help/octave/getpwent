@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwent ()
+Return a structure containing an entry from the password database,
+opening it if necessary. Once the end of the data has been reached,
+@code{getpwent} returns 0.
+@end deftypefn

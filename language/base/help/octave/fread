@@ -1,0 +1,172 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})
+Read binary data of type @var{precision} from the specified file ID
+@var{fid}.
+
+The optional argument @var{size} specifies the amount of data to read
+and may be one of
+
+@table @code
+@item Inf
+Read as much as possible, returning a column vector.
+
+@item @var{nr}
+Read up to @var{nr} elements, returning a column vector.
+
+@item [@var{nr}, Inf]
+Read as much as possible, returning a matrix with @var{nr} rows.  If the
+number of elements read is not an exact multiple of @var{nr}, the last
+column is padded with zeros.
+
+@item [@var{nr}, @var{nc}]
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with
+@var{nr} rows.  If the number of elements read is not an exact multiple
+of @var{nr}, the last column is padded with zeros.
+@end table
+
+@noindent
+If @var{size} is omitted, a value of @code{Inf} is assumed.
+
+The optional argument @var{precision} is a string specifying the type of
+data to read and may be one of
+
+@table @code
+@item "schar"
+@itemx "signed char"
+Signed character.
+
+@item "uchar"
+@itemx "unsigned char"
+Unsigned character.
+
+@item "int8"
+@itemx "integer*1"
+
+8-bit signed integer.
+
+@item "int16"
+@itemx "integer*2"
+16-bit signed integer.
+
+@item "int32"
+@itemx "integer*4"
+32-bit signed integer.
+
+@item "int64"
+@itemx "integer*8"
+64-bit signed integer.
+
+@item "uint8"
+8-bit unsigned integer.
+
+@item "uint16"
+16-bit unsigned integer.
+
+@item "uint32"
+32-bit unsigned integer.
+
+@item "uint64"
+64-bit unsigned integer.
+
+@item "single"
+@itemx "float32"
+@itemx "real*4"
+32-bit floating point number.
+
+@item "double"
+@itemx "float64"
+@itemx "real*8"
+64-bit floating point number.
+
+@item "char"
+@itemx "char*1"
+Single character.
+
+@item "short"
+Short integer (size is platform dependent).
+
+@item "int"
+Integer (size is platform dependent).
+
+@item "long"
+Long integer (size is platform dependent).
+
+@item "ushort"
+@itemx "unsigned short"
+Unsigned short integer (size is platform dependent).
+
+@item "uint"
+@itemx "unsigned int"
+Unsigned integer (size is platform dependent).
+
+@item "ulong"
+@itemx "unsigned long"
+Unsigned long integer (size is platform dependent).
+
+@item "float"
+Single precision floating point number (size is platform dependent).
+@end table
+
+@noindent
+The default precision is @code{"uchar"}.
+
+The @var{precision} argument may also specify an optional repeat
+count.  For example, @samp{32*single} causes @code{fread} to read
+a block of 32 single precision floating point numbers.  Reading in
+blocks is useful in combination with the @var{skip} argument.
+
+The @var{precision} argument may also specify a type conversion.
+For example, @samp{int16=>int32} causes @code{fread} to read 16-bit
+integer values and return an array of 32-bit integer values.  By
+default, @code{fread} returns a double precision array.  The special
+form @samp{*TYPE} is shorthand for @samp{TYPE=>TYPE}.
+
+The conversion and repeat counts may be combined.  For example,
+@samp{32*single=>single} causes @code{fread} to read blocks of single
+precision floating point values and return an array of single precision
+values instead of the default array of double precision values.
+
+The optional argument @var{skip} specifies the number of bytes to skip
+after each element (or block of elements) is read.  If it is not
+specified, a value of 0 is assumed.  If the final block read is not
+complete, the final skip is omitted.  For example,
+
+@example
+fread (f, 10, "3*single=>single", 8)
+@end example
+
+@noindent
+will omit the final 8-byte skip because the last read will not be
+a complete block of 3 values.
+
+The optional argument @var{arch} is a string specifying the data format
+for the file.  Valid values are
+
+@table @code
+@item "native"
+The format of the current machine.
+
+@item "ieee-be"
+IEEE big endian.
+
+@item "ieee-le"
+IEEE little endian.
+
+@item "vaxd"
+VAX D floating format.
+
+@item "vaxg"
+VAX G floating format.
+
+@item "cray"
+Cray floating format.
+@end table
+
+@noindent
+Conversions are currently only supported for @code{"ieee-be"} and
+@code{"ieee-le"} formats.
+
+The data read from the file is returned in @var{val}, and the number of
+values read is returned in @code{count}
+@seealso{fwrite, fopen, fclose}
+@end deftypefn

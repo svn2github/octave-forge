@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} INFO_PROGRAM
+The variable @code{INFO_PROGRAM} names the info program to run.  Its
+default initial value is
+@code{"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info"}
+in which @var{octave-home} is the directory where all of Octave is
+installed, @var{version} is the Octave version number, and @var{arch}
+is the system type (for example, @code{i686-pc-linux-gnu}).  The
+default initial value may be overridden by the environment variable
+@code{OCTAVE_INFO_PROGRAM}, or the command line argument
+@code{--info-program NAME}, or by setting the value of
+@code{INFO_PROGRAM} in a startup script
+@end defvr

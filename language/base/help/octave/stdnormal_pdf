@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} stdnormal_pdf (@var{x})
+For each element of @var{x}, compute the probability density function
+(PDF) of the standard normal distribution at @var{x}.
+@end deftypefn

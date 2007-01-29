@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} sin (@var{x})
+Compute the sine of each element of @var{x}.
+@end deftypefn

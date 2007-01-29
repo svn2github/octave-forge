@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} complex (@var{val})
+@deftypefnx {Built-in Function} {} complex (@var{re}, @var{im})
+Convert @var{x} to a complex value.
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {pgid =} getpgrp ()
+Return the process group id of the current process.
+@end deftypefn

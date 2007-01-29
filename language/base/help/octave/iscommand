@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} iscommand (@var{name})
+Return true if @var{name} is a command style function.  If @var{name}
+is omitted, return a list of identifiers which are marked as commands with
+mark_as_command.
+@seealso{mark_as_command, unmark_command}
+@end deftypefn

@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} unmark_rawcommand (@var{name})
+Remove @var{name} from the list of raw input commands.
+Note that this does not remove @var{name} from the list of command style
+functions.
+@seealso{mark_as_rawcommand, israwcommand, iscommand, unmark_command}
+@end deftypefn

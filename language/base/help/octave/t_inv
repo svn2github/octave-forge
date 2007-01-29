@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} t_inv (@var{x}, @var{n})
+For each component of @var{x}, compute the quantile (the inverse of
+the CDF) at @var{x} of the t (Student) distribution with parameter
+@var{n}.
+@end deftypefn

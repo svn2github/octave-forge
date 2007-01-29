@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} gamma_rnd (@var{a}, @var{b}, @var{r}, @var{c})
+@deftypefnx {Function File} {} gamma_rnd (@var{a}, @var{b}, @var{sz})
+Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of 
+random samples from the Gamma distribution with parameters @var{a}
+and @var{b}.  Both @var{a} and @var{b} must be scalar or of size 
+@var{r} by @var{c}.
+
+If @var{r} and @var{c} are omitted, the size of the result matrix is
+the common size of @var{a} and @var{b}.
+@end deftypefn

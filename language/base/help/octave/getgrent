@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrent ()
+Return an entry from the group database, opening it if necessary.
+Once the end of the data has been reached, @code{getgrent} returns 0.
+@end deftypefn

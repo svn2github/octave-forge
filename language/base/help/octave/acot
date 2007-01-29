@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} acot (@var{x})
+Compute the inverse cotangent of each element of @var{x}.
+@end deftypefn

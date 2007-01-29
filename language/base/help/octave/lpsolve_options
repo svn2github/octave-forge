@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} lpsolve_options ()
+Not implemented yet...
+@end deftypefn

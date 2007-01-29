@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_string_concat
+If the value of @code{warn_string_concat} is nonzero, print a
+warning when concatenating a mixture of double and single quoted strings.
+The default value is 1.
+@end defvr

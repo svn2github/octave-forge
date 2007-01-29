@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} struct_contains (@var{expr}, @var{name})
+This function has been deprecated.  Use isfield instead.
+@end deftypefn

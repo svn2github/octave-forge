@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{n_tot}, @var{st_c}, @var{st_d}, @var{y_c}, @var{y_d}] =} __syscont_disc__ (@var{sys})
+Used internally in syscont and sysdisc.
+
+@strong{Inputs}
+@var{sys} is a system data structure.
+
+@strong{Outputs}
+@table @var
+@item n_tot
+total number of states
+@item st_c
+vector of continuous state indices (empty if none)
+@item st_d
+vector of discrete state indices (empty if none)
+@item y_c
+vector of continuous output indices
+@item y_d
+vector of discrete output indices
+@end table
+@end deftypefn

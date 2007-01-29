@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{zer}, @var{pol}] =} pzmap (@var{sys})
+Plots the zeros and poles of a system in the complex plane.
+
+@strong{Input}
+@table @var
+@item sys
+System data structure.
+@end table
+
+@strong{Outputs}
+@table @var
+@item pol
+@item zer
+if omitted, the poles and zeros are plotted on the screen.
+otherwise, @var{pol} and @var{zer} are returned as the 
+system poles and zeros (see @command{sys2zp} for a preferable function call).
+@end table
+@end deftypefn

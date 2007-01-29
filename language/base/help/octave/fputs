@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})
+Write a string to a file with no formatting.
+
+Return a non-negative number on success and EOF on error.
+@end deftypefn

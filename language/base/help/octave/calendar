@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} calendar (@dots{})
+@deftypefnx {Function File} {@var{c} =} calendar ()
+@deftypefnx {Function File} {@var{c} =} calendar (@var{d})
+@deftypefnx {Function File} {@var{c} =} calendar (@var{y}, @var{m})
+If called with no arguments, return the current monthly calendar in
+a 6x7 matrix.
+
+If @var{d} is specified, return the calendar for the month containing
+the day @var{d}, which must be a serial date number or a date string.
+
+If @var{y} and @var{m} are specified, return the calendar for year @var{y}
+and month @var{m}.
+
+If no output arguments are specified, print the calendar on the screen
+instead of returning a matrix.
+@seealso{datenum}
+@end deftypefn

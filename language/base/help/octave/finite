@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} finite (@var{x})
+Return 1 for elements of @var{x} that are finite values and zero
+otherwise. For example,
+
+@example
+@group
+finite ([13, Inf, NA, NaN])
+     @result{} [ 1, 0, 0, 0 ]
+@end group
+@end example
+@end deftypefn

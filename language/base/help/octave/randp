@@ -1,0 +1,30 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} randp (@var{l}, @var{x})
+@deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})
+@deftypefnx {Loadable Function} {} randp ("state", @var{x})
+@deftypefnx {Loadable Function} {} randp ("seed", @var{x})
+Return a matrix with Poisson distributed random elements. The arguments
+are handled the same as the arguments for @code{rand}, except for the
+argument @var{l}.
+
+Five different algorithms are used depending on the range of @var{l}
+and whether or not @var{l} is a scalar or a matrix.
+
+@table @asis
+@item For scalar @var{l} <= 12, use direct method.
+Press, et al., 'Numerical Recipes in C', Cambridge University Press, 1992.
+@item For scalar @var{l} > 12, use rejection method.[1]
+Press, et al., 'Numerical Recipes in C', Cambridge University Press, 1992.
+@item For matrix @var{l} <= 10, use inversion method.[2]
+Stadlober E., et al., WinRand source code, available via FTP.
+@item For matrix @var{l} > 10, use patchwork rejection method.
+Stadlober E., et al., WinRand source code, available via FTP, or
+H. Zechner, 'Efficient sampling from continuous and discrete
+unimodal distributions', Doctoral Dissertaion, 156pp., Technical
+University Graz, Austria, 1994.
+@item For @var{l} > 1e8, use normal approximation.
+L. Montanet, et al., 'Review of Particle Properties', Physical Review
+D 50 p1284, 1994
+@end table
+@seealso{rand,randn,rande,randg}
+@end deftypefn

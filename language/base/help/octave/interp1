@@ -1,0 +1,60 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
+@deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
+@deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
+@deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, 'pp')
+
+One-dimensional interpolation. Interpolate @var{y}, defined at the
+points @var{x}, at the points @var{xi}. The sample points @var{x} 
+must be strictly monotonic. If @var{y} is an array, treat the columns
+of @var{y} seperately.
+
+Method is one of:
+
+@table @asis
+@item 'nearest'
+Return the nearest neighbour.
+@item 'linear'
+Linear interpolation from nearest neighbours
+@item 'pchip'
+Piece-wise cubic hermite interpolating polynomial
+@item 'cubic'
+Cubic interpolation from four nearest neighbours
+@item 'spline'
+Cubic spline interpolation--smooth first and second derivatives
+throughout the curve
+@end table
+
+Appending '*' to the start of the above method forces @code{interp1}
+to assume that @var{x} is uniformly spaced, and only @code{@var{x}
+(1)} and @code{@var{x} (2)} are referenced. This is usually faster,
+and is never slower. The default method is 'linear'.
+
+If @var{extrap} is the string 'extrap', then extrapolate values beyond
+the endpoints.  If @var{extrap} is a number, replace values beyond the
+endpoints with that number.  If @var{extrap} is missing, assume NaN.
+
+If the string argument 'pp' is specified, then @var{xi} should not be
+supplied and @code{interp1} returns the piece-wise polynomial that
+can later be used with @code{ppval} to evaluate the interpolation.
+There is an equivalence, such that @code{ppval (interp1 (@var{x},
+@var{y}, @var{method}, 'pp'), @var{xi}) == interp1 (@var{x}, @var{y},
+@var{xi}, @var{method}, 'extrap')}.
+
+An example of the use of @code{interp1} is
+
+@example
+@group
+   xf=[0:0.05:10]; yf = sin(2*pi*xf/5);
+   xp=[0:10];      yp = sin(2*pi*xp/5);
+   lin=interp1(xp,yp,xf);
+   spl=interp1(xp,yp,xf,'spline');
+   cub=interp1(xp,yp,xf,'cubic');
+   near=interp1(xp,yp,xf,'nearest');
+   plot(xf,yf,';original;',xf,lin,';linear;',xf,spl,';spline;',...
+        xf,cub,';cubic;',xf,near,';nearest;',xp,yp,'*;;');
+@end group
+@end example
+
+@seealso{interpft}
+@end deftypefn

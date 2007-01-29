@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} realmin (@var{x})
+@deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m})
+@deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Built-in Function} {} realmin (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all equal
+to the smallest normalized floating point number that is representable.
+The actual value is system-dependent.  On machines that support
+64-bit IEEE floating point arithmetic, @code{realmin} is approximately
+@ifinfo
+ 2.2251e-308
+@end ifinfo
+@iftex
+@tex
+ $2.2251\times10^{-308}$.
+@end tex
+@end iftex
+@seealso{realmax}
+@end deftypefn

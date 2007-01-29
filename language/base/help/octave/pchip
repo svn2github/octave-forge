@@ -1,0 +1,43 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{pp} = } pchip (@var{x}, @var{y})
+@deftypefnx {Function File} {@var{yi} = } pchip (@var{x}, @var{y}, @var{xi})
+
+Piecewise Cubic Hermite interpolating polynomial. Called with two
+arguments, the piece-wise polynomial @var{pp} is returned, that may
+later be used with @code{ppval} to evaluate the polynomial at
+specific points.
+
+The variable @var{x} must be a strictly monotonic vector (either
+increasing or decreasing). While @var{y} can be either a vector or
+array. In the case where @var{y} is a vector, it must have a length
+of @var{n}. If @var{y} is an array, then the size of @var{y} must
+have the form
+@iftex
+@tex
+$$[s_1, s_2, \cdots, s_k, n]$$
+@end tex
+@end iftex
+@ifinfo
+@code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n}]}
+@end ifinfo
+The array is then reshaped internally to a matrix where to leading
+dimension is given by 
+@iftex
+@tex
+$$s_1 s_2 \cdots s_k$$
+@end tex
+@end iftex
+@ifinfo
+@code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
+@end ifinfo
+and each row this matrix is then treated seperately. Note that this
+is exactly the opposite treatment than @code{interp1} and is done
+for compatiability.
+
+Called with a third input argument, @code{pchip} evaluates the 
+piece-wise polynomial at the points @var{xi}. There is an equivalence
+between @code{ppval (pchip (@var{x}, @var{y}), @var{xi})} and
+@code{pchip (@var{x}, @var{y}, @var{xi})}.
+
+@seealso{spline, ppval, mkpp, unmkpp}
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} top_title (@var{string})
+@deftypefnx {Function File} {} bottom_title (@var{string})
+Makes a title with text @var{string} at the top (bottom) of the plot.
+@end deftypefn

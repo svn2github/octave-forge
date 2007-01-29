@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} __print_symtab_info__ ()
+Print raw symbol table statistices.
+@end deftypefn

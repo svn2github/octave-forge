@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{x} =} bitset (@var{a}, @var{n})
+@deftypefnx {Function File} {@var{x} =} bitset (@var{a}, @var{n}, @var{v})
+Set or reset bit(s) @var{n} of unsigned integers in @var{a}.
+@var{v} = 0 resets and @var{v} = 1 sets the bits.
+The lowest significant bit is: @var{n} = 1
+
+@example
+dec2bin (bitset (10, 1))
+@result{} 1011
+@end example
+@seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
+@end deftypefn

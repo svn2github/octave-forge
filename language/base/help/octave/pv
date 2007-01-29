@@ -1,0 +1,16 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} pv (@var{r}, @var{n}, @var{p}, @var{l}, @var{method})
+Returns the present value of an investment that will pay off @var{p} for @var{n}
+consecutive periods, assuming an interest @var{r}.
+
+The optional argument @var{l} may be used to specify an additional
+lump-sum payment made at the end of @var{n} periods.
+
+The optional argument @var{method} may be used to specify whether
+payments are made at the end (@code{"e"}, default) or at the
+beginning (@code{"b"}) of each period.
+
+Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
+not 5 percent).
+@seealso{pmt, nper, rate, npv}
+@end deftypefn

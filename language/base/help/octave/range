@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} range (@var{x})
+@deftypefnx {Function File} {} range (@var{x}, @var{dim})
+If @var{x} is a vector, return the range, i.e., the difference
+between the maximum and the minimum, of the input data.
+
+If @var{x} is a matrix, do the above for each column of @var{x}.
+
+If the optional argument @var{dim} is supplied, work along dimension
+@var{dim}.
+@end deftypefn

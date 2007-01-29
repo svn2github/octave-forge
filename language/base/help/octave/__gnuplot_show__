@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deffn {Loadable Function} __gnuplot_show__ options
+Show plotting options.
+@end deffn

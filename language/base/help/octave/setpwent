@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} setpwent ()
+Return the internal pointer to the beginning of the password database.
+@end deftypefn

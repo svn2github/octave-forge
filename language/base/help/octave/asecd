@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} asecd (@var{x})
+Compute inverse secant in degrees.
+@seealso{asec, secd, acscd}
+@end deftypefn

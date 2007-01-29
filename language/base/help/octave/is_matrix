@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_matrix (@var{a})
+This function has been deprecated.  Use ismatrix instead.
+@end deftypefn

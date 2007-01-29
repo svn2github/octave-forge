@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} log10 (@var{x})
+Compute the base-10 logarithm for each element of @var{x}.
+@seealso{log, log2, logspace, exp}
+@end deftypefn

@@ -1,0 +1,80 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{mag}, @var{phase}, @var{w}] =} bode (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
+If no output arguments are given: produce Bode plots of a system; otherwise,
+compute the frequency response of a system data structure
+
+@strong{Inputs}
+@table @var
+@item   sys
+a system data structure (must be either purely continuous or discrete;
+see is_digital)
+@item   w
+frequency values for evaluation.
+
+if @var{sys} is continuous, then bode evaluates @math{G(jw)} where
+@math{G(s)} is the system transfer function.
+
+if @var{sys} is discrete, then bode evaluates G(@code{exp}(jwT)), where
+@itemize @bullet
+@item @math{T} is the system sampling time
+@item @math{G(z)} is the system transfer function.
+@end itemize
+
+@strong{Default} the default frequency range is selected as follows: (These
+steps are @strong{not} performed if @var{w} is specified)
+@enumerate
+@item via routine __bodquist__, isolate all poles and zeros away from
+@var{w}=0 (@var{jw}=0 or @math{@code{exp}(jwT)}=1) and select the frequency
+range based on the breakpoint locations of the frequencies.
+@item if @var{sys} is discrete time, the frequency range is limited
+              to @math{jwT} in
+@ifinfo
+[0,2 pi /T]
+@end ifinfo
+@iftex
+@tex
+$[0,2\pi/T]$
+@end tex
+@end iftex
+@item A "smoothing" routine is used to ensure that the plot phase does
+not change excessively from point to point and that singular
+points (e.g., crossovers from +/- 180) are accurately shown.
+
+@end enumerate
+@item out_idx
+@itemx in_idx
+
+The names or indices of outputs and inputs to be used in the frequency
+response.  See @code{sysprune}.
+
+@strong{Example}
+@example
+bode(sys,[],"y_3", @{"u_1","u_4"@});
+@end example
+@end table
+@strong{Outputs}
+@table @var
+@item mag
+@itemx phase
+the magnitude and phase of the frequency response @math{G(jw)} or
+@math{G(@code{exp}(jwT))} at the selected frequency values.
+@item w
+the vector of frequency values used
+@end table
+
+@enumerate
+@item If no output arguments are given, e.g.,
+@example
+bode(sys);
+@end example
+bode plots the results to the screen.  Descriptive labels are
+automatically placed.
+
+Failure to include a concluding semicolon will yield some garbage
+being printed to the screen (@code{ans = []}).
+
+@item If the requested plot is for an @acronym{MIMO} system, mag is set to
+@math{||G(jw)||} or @math{||G(@code{exp}(jwT))||}
+and phase information is not computed.
+@end enumerate
+@end deftypefn

@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deffn {Command} help
+Octave's @code{help} command can be used to print brief usage-style
+messages, or to display information directly from an on-line version of
+the printed manual, using the GNU Info browser.  If invoked without any
+arguments, @code{help} prints a list of all the available operators
+and functions.  If the first argument is @code{-i}, the @code{help}
+command searches the index of the on-line version of this manual for
+the given topics.
+
+For example, the command @kbd{help help} prints a short message
+describing the @code{help} command, and @kbd{help -i help} starts the
+GNU Info browser at this node in the on-line version of the manual.
+
+Once the GNU Info browser is running, help for using it is available
+using the command @kbd{C-h}.
+@seealso{doc, which, lookfor}
+@end deffn

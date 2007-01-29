@@ -1,0 +1,24 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} arg (@var{z})
+@deftypefnx {Mapping Function} {} angle (@var{z})
+Compute the argument of @var{z}, defined as
+@iftex
+@tex
+$\theta = \tan^{-1}(y/x)$.
+@end tex
+@end iftex
+@ifinfo
+@var{theta} = @code{atan (@var{y}/@var{x})}.
+@end ifinfo
+@noindent
+in radians. 
+
+For example,
+
+@example
+@group
+arg (3 + 4i)
+     @result{} 0.92730
+@end group
+@end example
+@end deftypefn

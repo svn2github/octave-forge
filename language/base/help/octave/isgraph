@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isgraph (@var{s})
+Return 1 for printable characters (but not the space character).
+@end deftypefn

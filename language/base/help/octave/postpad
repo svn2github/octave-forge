@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} postpad (@var{x}, @var{l}, @var{c})
+See prepad.
+@end deftypefn

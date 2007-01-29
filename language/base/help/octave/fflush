@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} fflush (@var{fid})
+Flush output to @var{fid}.  This is useful for ensuring that all
+pending output makes it to the screen before some other event occurs.
+For example, it is always a good idea to flush the standard output
+stream before calling @code{input}.
+
+@code{fflush} returns 0 on success and an OS dependent error value
+(@minus{}1 on unix) on error.
+@seealso{fopen, fclose}
+@end deftypefn

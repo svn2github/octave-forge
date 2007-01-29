@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deffn {Command} whos options pattern @dots{}
+See who.
+@end deffn

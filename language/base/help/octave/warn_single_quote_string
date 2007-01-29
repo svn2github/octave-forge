@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_single_quote_string
+Print warning if a signle quote character is used to introduce a
+string constant.
+@end defvr

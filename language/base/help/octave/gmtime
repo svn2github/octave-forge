@@ -1,0 +1,25 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} gmtime (@var{t})
+Given a value returned from time (or any nonnegative integer),
+return a time structure corresponding to CUT.  For example,
+
+@example
+@group
+gmtime (time ())
+     @result{} @{
+           usec = 0
+           year = 97
+           mon = 1
+           mday = 17
+           sec = 6
+           zone = CST
+           min = 15
+           wday = 1
+           hour = 7
+           isdst = 0
+           yday = 47
+         @}
+@end group
+@end example
+@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn

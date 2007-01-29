@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} horzcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})
+Return the horizontal concatenation of N-d array objects, @var{array1},
+@var{array2}, @dots{}, @var{arrayN} along dimension 2.
+@seealso{cat, vertcat}
+@end deftypefn

@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} fftconv (@var{a}, @var{b}, @var{n})
+Return the convolution of the vectors @var{a} and @var{b}, as a vector
+with length equal to the @code{length (a) + length (b) - 1}.  If @var{a}
+and @var{b} are the coefficient vectors of two polynomials, the returned
+value is the coefficient vector of the product polynomial.
+
+The computation uses the FFT by calling the function @code{fftfilt}.  If
+the optional argument @var{n} is specified, an N-point FFT is used.
+@end deftypefn

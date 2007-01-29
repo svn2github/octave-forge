@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} kill (@var{pid}, @var{sig})
+Send signal @var{sig} to process @var{pid}.
+
+If @var{pid} is positive, then signal @var{sig} is sent to @var{pid}.
+
+If @var{pid} is 0, then signal @var{sig} is sent to every process
+in the process group of the current process.
+
+If @var{pid} is -1, then signal @var{sig} is sent to every process
+except process 1.
+
+If @var{pid} is less than -1, then signal @var{sig} is sent to every
+process in the process group @var{-pid}.
+
+If @var{sig} is 0, then no signal is sent, but error checking is still
+performed.
+
+Return 0 if sucessful, otherwise return -1.
+@end deftypefn

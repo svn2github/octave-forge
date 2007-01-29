@@ -1,0 +1,33 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{f}, @var{w}, @var{rsys}] =} __bodquist__ (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
+Used internally by @command{bode}, @command{nyquist}; compute system frequency response.
+
+@strong{Inputs}
+@table @var
+@item sys
+input system structure
+@item w
+range of frequencies; empty if user wants default
+@item out_idx
+@itemx in_idx
+names or indices of output/input signal names; empty if user wants all
+@item rname
+name of routine that called __bodquist__ ("bode", "nyquist", or "nichols")
+@end table
+@strong{Outputs}
+@table @var
+@item w
+list of frequencies
+@item f
+frequency response of sys; @math{f(ii) = f(omega(ii))}
+@item rsys
+system with selected inputs and outputs
+@end table
+
+@code{bode}, @code{nichols}, and @code{nyquist} share the same 
+introduction, so the common parts are
+in __bodquist__.  It contains the part that finds the number of arguments,
+determines whether or not the system is @acronym{SISO}, and computes the frequency
+response.  Only the way the response is plotted is different between the
+these functions.
+@end deftypefn

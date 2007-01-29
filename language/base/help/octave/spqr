@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{r} =} spqr (@var{a})
+@deftypefnx {Loadable Function} {@var{r} =} spqr (@var{a},0)
+@deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a},@var{b})
+@deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a},@var{b},0)
+@cindex QR factorization
+Compute the sparse QR factorization of @var{a}, using @sc{CSparse}.
+As the matrix @var{Q} is in general a full matrix, this function returns
+the @var{Q}-less factorization @var{r} of @var{a}, such that
+@code{@var{r} = chol (@var{a}' * @var{a})}.
+
+If the final argument is the scalar @code{0} and the number of rows is
+larger than the number of columns, then an economy factorization is
+returned. That is @var{r} will have only @code{size (@var{a},1)} rows.
+
+If an additional matrix @var{b} is supplied, then @code{spqr} returns
+@var{c}, where @code{@var{c} = @var{q}' * @var{b}}. This allows the
+least squares approximation of @code{@var{a} \ @var{b}} to be calculated
+as
+
+@example
+[@var{c},@var{r}] = spqr (@var{a},@var{b})
+@var{x} = @var{r} \ @var{c}
+@end example
+@seealso{spchol, qr}
+@end deftypefn

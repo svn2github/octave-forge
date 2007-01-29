@@ -1,0 +1,206 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{s} =} schur (@var{a})
+@deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})
+@cindex Schur decomposition
+The Schur decomposition is used to compute eigenvalues of a
+square matrix, and has applications in the solution of algebraic
+Riccati equations in control (see @code{are} and @code{dare}).
+@code{schur} always returns
+@iftex
+@tex
+$S = U^T A U$
+@end tex
+@end iftex
+@ifinfo
+@code{s = u' * a * u}
+@end ifinfo
+where
+@iftex
+@tex
+$U$
+@end tex
+@end iftex
+@ifinfo
+@code{u}
+@end ifinfo
+ is a unitary matrix
+@iftex
+@tex
+($U^T U$ is identity)
+@end tex
+@end iftex
+@ifinfo
+(@code{u'* u} is identity)
+@end ifinfo
+and
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+is upper triangular.  The eigenvalues of
+@iftex
+@tex
+$A$ (and $S$)
+@end tex
+@end iftex
+@ifinfo
+@code{a} (and @code{s})
+@end ifinfo
+are the diagonal elements of
+@iftex
+@tex
+$S$.
+@end tex
+@end iftex
+@ifinfo
+@code{s}.
+@end ifinfo
+If the matrix
+@iftex
+@tex
+$A$
+@end tex
+@end iftex
+@ifinfo
+@code{a}
+@end ifinfo
+is real, then the real Schur decomposition is computed, in which the
+matrix
+@iftex
+@tex
+$U$
+@end tex
+@end iftex
+@ifinfo
+@code{u}
+@end ifinfo
+is orthogonal and
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+is block upper triangular
+with blocks of size at most
+@iftex
+@tex
+$2\times 2$
+@end tex
+@end iftex
+@ifinfo
+@code{2 x 2}
+@end ifinfo
+along the diagonal.  The diagonal elements of
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+(or the eigenvalues of the
+@iftex
+@tex
+$2\times 2$
+@end tex
+@end iftex
+@ifinfo
+@code{2 x 2}
+@end ifinfo
+blocks, when
+appropriate) are the eigenvalues of
+@iftex
+@tex
+$A$
+@end tex
+@end iftex
+@ifinfo
+@code{a}
+@end ifinfo
+and
+@iftex
+@tex
+$S$.
+@end tex
+@end iftex
+@ifinfo
+@code{s}.
+@end ifinfo
+
+The eigenvalues are optionally ordered along the diagonal according to
+the value of @code{opt}.  @code{opt = "a"} indicates that all
+eigenvalues with negative real parts should be moved to the leading
+block of
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+(used in @code{are}), @code{opt = "d"} indicates that all eigenvalues
+with magnitude less than one should be moved to the leading block of
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+(used in @code{dare}), and @code{opt = "u"}, the default, indicates that
+no ordering of eigenvalues should occur.  The leading
+@iftex
+@tex
+$k$
+@end tex
+@end iftex
+@ifinfo
+@code{k}
+@end ifinfo
+columns of
+@iftex
+@tex
+$U$
+@end tex
+@end iftex
+@ifinfo
+@code{u}
+@end ifinfo
+always span the
+@iftex
+@tex
+$A$-invariant
+@end tex
+@end iftex
+@ifinfo
+@code{a}-invariant
+@end ifinfo
+subspace corresponding to the
+@iftex
+@tex
+$k$
+@end tex
+@end iftex
+@ifinfo
+@code{k}
+@end ifinfo
+leading eigenvalues of
+@iftex
+@tex
+$S$.
+@end tex
+@end iftex
+@ifinfo
+@code{s}.
+@end ifinfo
+@end deftypefn

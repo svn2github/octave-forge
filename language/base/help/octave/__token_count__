@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} __token_count__
+Number of language tokens processed since Octave startup.
+@end deftypefn

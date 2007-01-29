@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})
+Create a directory named @var{dir}.
+
+If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty
+character strings.  Otherwise, @var{status} is 0, @var{msg} contains a
+system-dependent error message, and @var{msgid} contains a unique
+message identifier.
+@seealso{rmdir}
+@end deftypefn

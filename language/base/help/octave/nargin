@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} nargin ()
+@deftypefnx {Built-in Function} {} nargin (@var{fcn_name})
+Within a function, return the number of arguments passed to the function.
+At the top level, return the number of command line arguments passed to
+Octave.  If called with the optional argument @var{fcn_name}, return the
+maximum number of arguments the named function can accept, or -1 if the
+function accepts a variable number of arguments.
+@seealso{nargout, varargin, varargout}
+@end deftypefn

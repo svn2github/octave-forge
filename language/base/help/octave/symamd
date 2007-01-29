@@ -1,0 +1,63 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{p} =} symamd (@var{s})
+@deftypefnx {Loadable Function} {@var{p} =} symamd (@var{s}, @var{knobs})
+@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} symamd (@var{s})
+@deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} symamd (@var{s}, @var{knobs})
+
+For a symmetric positive definite matrix @var{s}, returns the permutation
+vector p such that @code{@var{s} (@var{p}, @var{p})} tends to have a
+sparser Cholesky factor than @var{s}. Sometimes SYMAMD works well for
+symmetric indefinite matrices too. The matrix @var{s} is assumed to be
+symmetric; only the strictly lower triangular part is referenced. @var{s}
+must be square.
+
+@var{knobs} is an optional one- to two-element input vector.  If @var{s} is
+n-by-n, then rows and columns with more than
+@code{max(16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,
+and ordered last in the output permutation @var{p}. No rows/columns are
+removed if @code{@var{knobs}(1) < 0}.  If @code{@var{knobs} (2)} is nonzero,
+@code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs} 
+= [10 0]}.  Note that @var{knobs} differs from earlier versions of symamd.
+
+@var{stats} is an optional 20-element output vector that provides data
+about the ordering and the validity of the input matrix @var{s}. Ordering
+statistics are in @code{@var{stats} (1:3)}. @code{@var{stats} (1) =
+@var{stats} (2)} is the number of dense or empty rows and columns
+ignored by SYMAMD and @code{@var{stats} (3)} is the number of garbage
+collections performed on the internal data structure used by SYMAMD
+(roughly of size @code{8.4 * nnz (tril (@var{s}, -1)) + 9 * @var{n}}
+integers).
+
+Octave built-in functions are intended to generate valid sparse matrices,
+with no duplicate entries, with ascending row indices of the nonzeros
+in each column, with a non-negative number of entries in each column (!)
+and so on.  If a matrix is invalid, then SYMAMD may or may not be able
+to continue.  If there are duplicate entries (a row index appears two or
+more times in the same column) or if the row indices in a column are out
+of order, then SYMAMD can correct these errors by ignoring the duplicate
+entries and sorting each column of its internal copy of the matrix S (the
+input matrix S is not repaired, however).  If a matrix is invalid in
+other ways then SYMAMD cannot continue, an error message is printed, and
+no output arguments (@var{p} or @var{stats}) are returned.  SYMAMD is
+thus a simple way to check a sparse matrix to see if it's valid.
+
+@code{@var{stats} (4:7)} provide information if SYMAMD was able to
+continue. The matrix is OK if @code{@var{stats} (4)} is zero, or 1
+if invalid. @code{@var{stats} (5)} is the rightmost column index that
+is unsorted or contains duplicate entries, or zero if no such column
+exists. @code{@var{stats} (6)} is the last seen duplicate or out-of-order
+row index in the column index given by @code{@var{stats} (5)}, or zero
+if no such row index exists. @code{@var{stats} (7)} is the number of
+duplicate or out-of-order row indices. @code{@var{stats} (8:20)} is
+always zero in the current version of SYMAMD (reserved for future use).
+
+The ordering is followed by a column elimination tree post-ordering.
+
+
+The authors of the code itself are Stefan I. Larimore and Timothy A.
+Davis (davis@@cise.ufl.edu), University of Florida.  The algorithm was
+developed in collaboration with John Gilbert, Xerox PARC, and Esmond
+Ng, Oak Ridge National Laboratory. (see
+@url{http://www.cise.ufl.edu/research/sparse/colamd})
+@seealso{colperm, colamd}
+@end deftypefn

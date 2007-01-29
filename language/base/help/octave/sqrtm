@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{result}, @var{error_estimate}] =} sqrtm (@var{a})
+Compute the matrix square root of the square matrix @var{a}.
+
+Ref: Nicholas J. Higham. A new sqrtm for MATLAB. Numerical Analysis
+Report No. 336, Manchester Centre for Computational Mathematics,
+Manchester, England, January 1999.
+@seealso{expm, logm, funm}
+@end deftypefn

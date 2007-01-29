@@ -1,0 +1,16 @@
+-*- texinfo -*-
+
+@deffn {Command} type options name @dots{}
+Display the definition of each @var{name} that refers to a function.
+
+Normally also displays if each @var{name} is user-defined or builtin;
+the @code{-q} option suppresses this behaviour.
+
+Currently, Octave can only display functions that can be compiled
+cleanly, because it uses its internal representation of the function to
+recreate the program text.
+
+Comments are not displayed because Octave's parser currently discards
+them as it converts the text of a function file to its internal
+representation.  This problem may be fixed in a future release.
+@end deffn

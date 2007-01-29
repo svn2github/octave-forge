@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} page_screen_output ()
+@deftypefnx {Built-in Function} {@var{old_val} =} page_screen_output (@var{new_val})
+Query or set the internal variable that controls whether output intended
+for the terminal window that is longer than one page is sent through a
+pager.  This allows you to view one screenful at a time.  Some pagers
+(such as @code{less}---see @ref{Installation}) are also capable of moving
+backward on the output.
+@end deftypefn

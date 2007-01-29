@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} bottom_title (@var{string})
+See top_title.
+@end deftypefn

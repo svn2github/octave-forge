@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} OCTAVE_HOME ()
+Return the name of the top-level Octave installation directory.
+@end deftypefn

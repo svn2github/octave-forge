@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{retval} =} is_detectable (@var{a}, @var{c}, @var{tol}, @var{dflg})
+@deftypefnx {Function File} {@var{retval} =} is_detectable (@var{sys}, @var{tol})
+Test for detactability (observability of unstable modes) of (@var{a}, @var{c}).
+
+Returns 1 if the system @var{a} or the pair (@var{a}, @var{c}) is
+detectable, 0 if not, and -1 if the system has unobservable modes at the
+imaginary axis (unit circle for discrete-time systems).
+
+@strong{See} @command{is_stabilizable} for detailed description of
+arguments and computational method.
+@seealso{is_stabilizable, size, rows, columns, length, ismatrix,
+isscalar, isvector}
+@end deftypefn

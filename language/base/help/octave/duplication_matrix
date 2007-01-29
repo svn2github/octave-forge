@@ -1,0 +1,51 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} duplication_matrix (@var{n})
+Return the duplication matrix
+@iftex
+@tex
+ $D_n$
+@end tex
+@end iftex
+@ifinfo
+@math{Dn}
+@end ifinfo
+ which is the unique
+@iftex
+@tex
+ $n^2 \times n(n+1)/2$
+@end tex
+@end iftex
+@ifinfo
+@math{n^2} by @math{n*(n+1)/2}
+@end ifinfo
+ matrix such that
+@iftex
+@tex
+ $D_n * {\rm vech} (A) = {\rm vec} (A)$
+@end tex
+@end iftex
+@ifinfo
+@math{Dn vech (A) = vec (A)}
+@end ifinfo
+ for all symmetric
+@iftex
+@tex
+ $n \times n$
+@end tex
+@end iftex
+@ifinfo
+@math{n} by @math{n}
+@end ifinfo
+ matrices
+@iftex
+@tex
+ $A$.
+@end tex
+@end iftex
+@ifinfo
+@math{A}.
+@end ifinfo
+
+See Magnus and Neudecker (1988), Matrix differential calculus with
+applications in statistics and econometrics.
+@end deftypefn

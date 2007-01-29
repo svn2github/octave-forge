@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} undo_string_escapes (@var{s})
+Converts special characters in strings back to their escaped forms.  For
+example, the expression
+
+@example
+bell = "\a";
+@end example
+
+@noindent
+assigns the value of the alert character (control-g, ASCII code 7) to
+the string variable @code{bell}.  If this string is printed, the
+system will ring the terminal bell (if it is possible).  This is
+normally the desired outcome.  However, sometimes it is useful to be
+able to print the original representation of the string, with the
+special characters replaced by their escape sequences.  For example,
+
+@example
+octave:13> undo_string_escapes (bell)
+ans = \a
+@end example
+
+@noindent
+replaces the unprintable alert character with its printable
+representation.
+@end deftypefn

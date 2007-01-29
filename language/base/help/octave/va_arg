@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} va_arg ()
+Return the value of the next available argument and move the internal
+pointer to the next argument.  It is an error to call @code{va_arg}
+when ther eare no more arguments available, or in a function that
+has not been declared to take a variable number of parameters.
+@end deftypefn

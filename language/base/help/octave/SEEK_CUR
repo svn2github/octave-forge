@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} SEEK_CUR ()
+See SEEK_SET.
+@end deftypefn

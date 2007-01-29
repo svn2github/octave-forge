@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Variable} O_TRUNC ()
+Return the numerical value of the file status flag that may be
+returned by @code{fcntl} to indicate that if file exists, it should
+be truncated when writing.
+@seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}
+@end deftypefn

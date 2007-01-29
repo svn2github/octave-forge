@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} mlock (@var{name})
+Lock the named function into memory.  If no function is named
+then lock in the current function.
+@seealso{munlock, mislocked, persistent}
+@end deftypefn

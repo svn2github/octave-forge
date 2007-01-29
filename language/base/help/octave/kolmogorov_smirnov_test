@@ -1,0 +1,29 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{pval}, @var{ks}] =} kolmogorov_smirnov_test (@var{x}, @var{dist}, @var{params}, @var{alt})
+Perform a Kolmogorov-Smirnov test of the null hypothesis that the
+sample @var{x} comes from the (continuous) distribution dist. I.e.,
+if F and G are the CDFs corresponding to the sample and dist,
+respectively, then the null is that F == G.
+
+The optional argument @var{params} contains a list of parameters of
+@var{dist}.  For example, to test whether a sample @var{x} comes from
+a uniform distribution on [2,4], use
+
+@example
+kolmogorov_smirnov_test(x, "uniform", 2, 4)
+@end example
+
+With the optional argument string @var{alt}, the alternative of
+interest can be selected.  If @var{alt} is @code{"!="} or
+@code{"<>"}, the null is tested against the two-sided alternative F
+!= G.  In this case, the test statistic @var{ks} follows a two-sided
+Kolmogorov-Smirnov distribution.  If @var{alt} is @code{">"}, the
+one-sided alternative F > G is considered.  Similarly for @code{"<"},
+the one-sided alternative F > G is considered.  In this case, the
+test statistic @var{ks} has a one-sided Kolmogorov-Smirnov
+distribution.  The default is the two-sided case.
+
+The p-value of the test is returned in @var{pval}.
+
+If no output argument is given, the p-value is displayed.
+@end deftypefn

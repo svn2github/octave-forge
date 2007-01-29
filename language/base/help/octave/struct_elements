@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} struct_elements (@var{struct})
+This function has been deprecated.  Use fieldnames instead.
+@end deftypefn

@@ -1,0 +1,16 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} glob (@var{pattern})
+Given an array of strings (as a char array or a cell array) in
+@var{pattern}, return a cell array of file names that match any of
+them, or an empty cell array if no patterns match.  Tilde expansion
+is performed on each of the patterns before looking for matching file
+names.  For example,
+
+@example
+@group
+glob ("/vm*")
+     @result{} "/vmlinuz"
+@end group
+@end example
+@seealso{dir, ls, stat, readdir}
+@end deftypefn

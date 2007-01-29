@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} zgreduce (@var{sys}, @var{meps})
+Implementation of procedure REDUCE in (Emami-Naeini and Van Dooren,
+Automatica, # 1982).
+@end deftypefn

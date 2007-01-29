@@ -1,0 +1,72 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} syssetsignals (@var{sys}, @var{opt}, @var{names}, @var{sig_idx})
+change the names of selected inputs, outputs and states.
+
+@strong{Inputs}
+@table @var
+@item sys
+System data structure.
+
+@item opt
+Change default name (output).
+
+@table @code
+@item "out"
+Change selected output names.
+@item "in"
+Change selected input names.
+@item "st"
+Change selected state names.
+@item "yd"
+Change selected outputs from discrete to continuous or
+from continuous to discrete.
+@end table
+
+@item names
+@table @code
+@item opt = "out", "in", "st"
+string or string array containing desired signal names or values.
+@item opt = "yd"
+To desired output continuous/discrete flag.
+Set name to 0 for continuous, or 1 for discrete.
+@end table
+@item sig_idx
+indices or names of outputs, yd, inputs, or
+states whose respective names/values should be changed.
+
+Default: replace entire cell array of names/entire yd vector.
+@end table
+
+@strong{Outputs}
+@table @var
+@item retsys
+@var{sys} with appropriate signal names changed
+(or @var{yd} values, where appropriate).
+@end table
+
+@strong{Example}
+@example
+octave:1> sys=ss([1 2; 3 4],[5;6],[7 8]);
+octave:2> sys = syssetsignals(sys,"st",str2mat("Posx","Velx"));
+octave:3> sysout(sys)
+Input(s)
+        1: u_1
+Output(s):
+        1: y_1
+state-space form:
+2 continuous states, 0 discrete states
+State(s):
+        1: Posx
+        2: Velx
+A matrix: 2 x 2
+  1  2
+  3  4
+B matrix: 2 x 1
+  5
+  6
+C matrix: 1 x 2
+  7  8
+D matrix: 1 x 1
+0
+@end example
+@end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} upper (@var{s})
+Transform all letters in the character string (or cell array of
+character strings) @var{s} to upper case.
+@seealso{lower, tolower, toupper}
+@end deftypefn

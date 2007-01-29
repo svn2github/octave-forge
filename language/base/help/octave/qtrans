@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qtrans (@var{v}, @var{q})
+Transform the unit quaternion @var{v} by the unit quaternion @var{q}.
+Returns @code{@var{v} = @var{q}*@var{v}/@var{q}}.
+@end deftypefn

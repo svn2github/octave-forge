@@ -1,0 +1,3 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __plr__ (@var{theta}, @var{rho}, @var{fmt})
+@end deftypefn

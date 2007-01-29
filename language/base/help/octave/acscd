@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} acscd (@var{x})
+Compute the inverse cosecant of an angle in degrees.
+@seealso{acsc, cscd, asecd}
+@end deftypefn

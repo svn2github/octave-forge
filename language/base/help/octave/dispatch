@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} dispatch (@var{f}, @var{r}, @var{type})
+
+Replace the function @var{f} with a dispatch so that function @var{r}
+is called when @var{f} is called with the first argument of the named
+@var{type}. If the type is @var{any} then call @var{r} if no other type
+matches.  The original function @var{f} is accessible using
+@code{builtin (@var{f}, @dots{}).
+
+If @var{r} is omitted, clear dispatch function associated with @var{type}.
+
+If both @var{r} and @var{type} are omitted, list dispatch functions
+for @var{f}.
+@seealso{builtin}
+@end deftypefn

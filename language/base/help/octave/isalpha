@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isalpha (@var{s})
+@deftypefnx {Mapping Function} {} isletter (@var{s})
+Return true for characters that are letters (@code{isupper (@var{s})}
+or @code{islower (@var{s})} is true).
+@end deftypefn

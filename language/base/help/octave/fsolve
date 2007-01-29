@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{x}, @var{info}, @var{msg}] =} fsolve (@var{fcn}, @var{x0})
+Given @var{fcn}, the name of a function of the form @code{f (@var{x})}
+and an initial starting point @var{x0}, @code{fsolve} solves the set of
+equations such that @code{f(@var{x}) == 0}.
+
+If @var{fcn} is a two-element string array, or a two element cell array
+containing either the function name or inline or function handle. The
+first element names the function @math{f} described above, and the second
+element names a function of the form @code{j (@var{x})} to compute the
+Jacobian matrix with elements
+@tex
+$$ J = {\partial f_i \over \partial x_j} $$
+@end tex
+@ifinfo
+
+@example
+           df_i
+jac(i,j) = ----
+           dx_j
+@end example
+@end ifinfo
+
+You can use the function @code{fsolve_options} to set optional
+parameters for @code{fsolve}.
+@end deftypefn

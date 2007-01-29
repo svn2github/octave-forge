@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Command} {} close
+@deftypefnx {Command} {} close all
+Close the plot window(s).
+@end deftypefn

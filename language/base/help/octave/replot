@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} replot ()
+Refresh the plot window.
+@end deftypefn

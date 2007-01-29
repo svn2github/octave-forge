@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} WCONINTUE ()
+Return the numerical value of the option argument that may be
+passed to @code{waitpid} to indicate that it should also return
+if a stopped child has been resumed by delivery of a @code{SIGCONT}
+signal.
+@seealso{waitpid, WNOHANG, WUNTRACED}
+@end deftypefn

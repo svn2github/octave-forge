@@ -3,6 +3,7 @@
 main
 nonfree
 extra
+language
 sandbox
 fntests.log
 RPM

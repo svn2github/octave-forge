@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width})
+Return a string containing the elements of @var{arg} listed in
+columns with an overall maximum width of @var{width}.  The argument
+@var{arg} must be a cell array of character strings or a character array.
+If @var{width} is not specified, the width of the terminal screen is used.
+@seealso{terminal_size}
+@end deftypefn

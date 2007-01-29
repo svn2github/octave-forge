@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deffn {Operator} (
+@deffnx {Operator} )
+Array index or function argument delimeter.
+@end deffn

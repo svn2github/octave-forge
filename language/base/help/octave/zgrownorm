@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{nonz}, @var{zer}] =} zgrownorm (@var{mat}, @var{meps})
+Return @var{nonz} = number of rows of @var{mat} whose two norm
+exceeds @var{meps}, and @var{zer} = number of rows of mat whose two
+norm is less than @var{meps}.
+@end deftypefn

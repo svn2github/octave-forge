@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} usleep (@var{microseconds})
+Suspend the execution of the program for the given number of
+microseconds.  On systems where it is not possible to sleep for periods
+of time less than one second, @code{usleep} will pause the execution for
+@code{round (@var{microseconds} / 1e6)} seconds.
+@end deftypefn

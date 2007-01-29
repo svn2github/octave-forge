@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} document (@var{symbol}, @var{text})
+Set the documentation string for @var{symbol} to @var{text}.
+@end deftypefn

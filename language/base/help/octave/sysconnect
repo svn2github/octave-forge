@@ -1,0 +1,51 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{clsys} =} sysconnect (@var{sys}, @var{out_idx}, @var{in_idx}, @var{order}, @var{tol})
+Close the loop from specified outputs to respective specified inputs
+
+@strong{Inputs}
+@table @var
+@item   sys
+System data structure.
+@item   out_idx
+@itemx  in_idx
+Names or indices of signals to connect (see @code{sysidx}).
+The output specified by @math{out_idx(ii)} is connected to the input
+specified by @math{in_idx(ii)}.
+@item   order
+logical flag (default = 0)
+@table @code
+@item        0
+Leave inputs and outputs in their original order.
+@item        1
+Permute inputs and outputs to the order shown in the diagram below.
+@end table
+@item     tol
+Tolerance for singularities in algebraic loops, default: 200@code{eps}.
+@end table
+
+@strong{Outputs}
+@table @var
+@item clsys
+Resulting closed loop system.
+@end table
+
+@strong{Method}
+
+@code{sysconnect} internally permutes selected inputs, outputs as shown
+below, closes the loop, and then permutes inputs and outputs back to their
+original order
+@example
+@group
+                 --------------------
+ u_1       ----->|                  |----> y_1
+                 |        sys       |
+         old u_2 |                  |
+u_2* ---->(+)--->|                  |----->y_2
+(in_idx)   ^     --------------------    | (out_idx)
+           |                             |
+           -------------------------------
+@end group
+@end example
+The input that has the summing junction added to it has an * added to
+the end  of the input name.
+@end deftypefn

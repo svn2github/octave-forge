@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __errcomm__ (@var{args})
+Common argument handling code for all error plots (errorbar, loglogerr,
+semilogyerr, semilogxerr).
+@seealso{errorbar, semilogxerr, semilogyerr, loglogerr, __pltopt__}
+@end deftypefn

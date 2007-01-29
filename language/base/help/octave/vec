@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} vec (@var{x})
+Return the vector obtained by stacking the columns of the matrix @var{x}
+one above the other.
+@end deftypefn

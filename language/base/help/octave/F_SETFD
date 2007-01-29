@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} F_SETFD ()
+Return the value required to request that @code{fcntl} to set the file
+descriptor flags.
+@seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}
+@end deftypefn

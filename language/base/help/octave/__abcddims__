@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{y}, @var{my}, @var{ny}] =} __abcddims__ (@var{x})
+
+Used internally in @code{abcddim}.  If @var{x} is a zero-size matrix,
+both dimensions are set to 0 in @var{y}.
+@var{my} and @var{ny} are the row and column dimensions of the result.
+@end deftypefn

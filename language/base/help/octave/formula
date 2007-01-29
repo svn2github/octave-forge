@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} formula (@var{fun})
+Return a character string representing the inline function @var{fun}.
+Note that @code{char (@var{fun})} is equivalent to
+@code{formula (@var{fun})}.
+@seealso{argnames, inline, vectorize}
+@end deftypefn

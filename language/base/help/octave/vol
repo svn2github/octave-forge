@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} vol (@var{x}, @var{m}, @var{n})
+Return the volatility of each column of the input matrix @var{x}.
+The number of data sets per period is given by @var{m} (e.g. the
+number of data per year if you want to compute the volatility per
+year).  The optional parameter @var{n} gives the number of past
+periods used for computation, if it is omitted, a value of 1 is used.
+If @var{t} is the number of rows of @var{x}, @code{vol} returns the
+volatility from @code{n*m} to @var{t}.
+@end deftypefn

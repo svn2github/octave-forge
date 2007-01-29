@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} sysrepdemo
+Tutorial for the use of the system data structure functions.
+@end deftypefn

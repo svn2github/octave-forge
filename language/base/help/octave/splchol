@@ -1,0 +1,42 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{l} =} splchol (@var{a})
+@deftypefnx {Loadable Function} {[@var{l}, @var{p}] =} splchol (@var{a})
+@deftypefnx {Loadable Function} {[@var{l}, @var{p}, @var{q}] =} splchol (@var{a})
+@cindex Cholesky factorization
+Compute the Cholesky factor, @var{l}, of the symmetric positive definite
+sparse matrix @var{a}, where
+@iftex
+@tex
+$ L L^T = A $.
+@end tex
+@end iftex
+@ifinfo
+
+@example
+l * l' = a.
+@end example
+@end ifinfo
+
+If called with 2 or more outputs @var{p} is the 0 when @var{l} is positive
+definite and @var{l} is a positive integer otherwise.
+
+If called with 3 outputs that a sparsity preserving row/column permutation
+is applied to @var{a} prior to the factorization. That is @var{l}
+is the factorization of @code{@var{a}(@var{q},@var{q})} such that
+@iftex
+@tex
+$ L R^T = A (Q, Q)$.
+@end tex
+@end iftex
+@ifinfo
+
+@example
+r * r' = a (q, q).
+@end example
+@end ifinfo
+
+Note that @code{splchol} factorizations is faster and use less memory
+than @code{spchol}. @code{splchol(@var{a})} is equivalent to
+@code{spchol(@var{a})'}.
+@seealso{spcholinv, spchol2inv, splchol}
+@end deftypefn

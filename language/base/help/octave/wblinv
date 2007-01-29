@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} wblinv (@var{x}, @var{scale}, @var{shape})
+Compute the quantile (the inverse of the CDF) at @var{x} of the
+Weibull distribution with shape parameter @var{scale} and scale
+parameter @var{shape}.
+@end deftypefn

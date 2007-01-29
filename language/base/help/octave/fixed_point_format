@@ -1,0 +1,28 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} fixed_point_format ()
+@deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})
+Query or set the internal variable that controls whether Octave will
+use a scaled format to print matrix values such that the largest
+element may be written with a single leading digit with the scaling
+factor is printed on the first line of output.  For example,
+
+@example
+@group
+octave:1> logspace (1, 7, 5)'
+ans =
+
+  1.0e+07  *
+
+  0.00000
+  0.00003
+  0.00100
+  0.03162
+  1.00000
+@end group
+@end example
+
+@noindent
+Notice that first value appears to be zero when it is actually 1.  For
+this reason, you should be careful when setting
+@code{fixed_point_format} to a nonzero value.
+@end deftypefn

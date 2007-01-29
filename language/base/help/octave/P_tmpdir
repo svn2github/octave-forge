@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} P_tmpdir ()
+Return the default name of the directory for temporary files on
+this system.  The name of this directory is system dependent.
+@end deftypefn

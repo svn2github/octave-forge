@@ -1,0 +1,32 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
+Return the binomial coefficient of @var{n} and @var{k}, defined as
+@iftex
+@tex
+$$
+ {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@group
+ /   \
+ | n |    n (n-1) (n-2) ... (n-k+1)
+ |   |  = -------------------------
+ | k |               k!
+ \   /
+@end group
+@end example
+@end ifinfo
+
+For example,
+
+@example
+@group
+bincoeff (5, 2)
+@result{} 10
+@end group
+@end example
+@end deftypefn

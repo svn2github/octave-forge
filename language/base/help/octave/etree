@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{p} =} etree (@var{s})
+@deftypefnx {Loadable Function} {@var{p} =} etree (@var{s}, @var{typ})
+@deftypefnx {Loadable Function} {[@var{p}, @var{q}] =} etree (@var{s}, @var{typ})
+
+Returns the elimination tree for the matrix @var{s}. By default @var{s}
+is assumed to be symmetric and the symmetric elimination tree is
+returned. The argument @var{typ} controls whether a symmetric or
+column elimination tree is returned. Valid values of @var{typ} are
+'sym' or 'col', for symmetric or column elimination tree respectively
+
+Called with a second argument, @dfn{etree} also returns the postorder
+permutations on the tree.
+@end deftypefn

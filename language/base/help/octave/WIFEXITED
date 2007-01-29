@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} WIFEXITED (@var{status})
+Given @var{status} from a call to @code{waitpid}, return true if the
+child terminated normally.
+@seealso{waitpid, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@end deftypefn

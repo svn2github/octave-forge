@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {gid =} getgid ()
+Return the real group id of the current process.
+@end deftypefn

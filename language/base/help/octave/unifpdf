@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} unifpdf (@var{x}, @var{a}, @var{b})
+For each element of @var{x}, compute the PDF at @var{x} of the uniform
+distribution on [@var{a}, @var{b}].
+
+Default values are @var{a} = 0, @var{b} = 1.
+@end deftypefn

@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} purge_tmp_files
+Delete the temporary files created by the plotting commands.
+
+Octave creates temporary data files for @code{gnuplot} and then sends
+commands to @code{gnuplot} through a pipe.  Octave will delete the
+temporary files on exit, but if you are doing a lot of plotting you may
+want to clean up in the middle of a session.
+
+A future version of Octave will eliminate the need to use temporary
+files to hold the plot data.
+@end deftypefn

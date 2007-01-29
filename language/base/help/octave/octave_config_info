@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} octave_config_info (@var{option})
+Return a structure containing configuration and installation
+information for Octave.
+
+if @var{option} is a string, return the configuration information for the
+specified option.
+
+@end deftypefn

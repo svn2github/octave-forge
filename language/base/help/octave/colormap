@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} colormap (@var{map})
+@deftypefnx {Function File} {} colormap ("default")
+Set the current colormap.
+
+@code{colormap (@var{map})} sets the current colormap to @var{map}.  The
+color map should be an @var{n} row by 3 column matrix.  The columns
+contain red, green, and blue intensities respectively.  All entries
+should be between 0 and 1 inclusive.  The new colormap is returned.
+
+@code{colormap ("default")} restores the default colormap (a gray scale
+colormap with 64 entries).  The default colormap is returned.
+
+With no arguments, @code{colormap} returns the current color map.
+@end deftypefn

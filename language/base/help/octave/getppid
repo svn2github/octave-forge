@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {pid =} getppid ()
+Return the process id of the parent process.
+@end deftypefn

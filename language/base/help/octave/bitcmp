@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{X} =} bitcmp (@var{a},@var{k})
+Return the @var{k}-bit complement of integers in @var{a}.  If
+@var{k} is omitted @code{k = log2(bitmax) + 1} is assumed.
+
+@example
+bitcmp(7,4)
+@result{} 8
+dec2bin(11)
+@result{} 1011
+dec2bin(bitcmp(11))
+@result{} 11111111111111111111111111110100
+@end example
+@seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}
+@end deftypefn

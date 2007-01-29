@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} double (@var{x})
+Convert @var{x} to double precision type.
+@end deftypefn

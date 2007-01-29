@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} demoquat ()
+Demonstrate the functions available for manipulating quaternions.
+
+Thanks to Mr. Charles Hall, Dr. Don Krupp and Dr. Larry Mullins at
+NASA's Marshall Space Flight Center for notes and instruction in
+use and conventions with quaternions.  - A. S. Hodel
+@end deftypefn

@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} WTERMSIG (@var{status})
+Given @var{status} from a call to @code{waitpid}, return the number of
+the signal that caused the child process to terminate. This function
+should only be employed if @code{WIFSIGNALED} returned true.
+@seealso{waitpid, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}
+@end deftypefn

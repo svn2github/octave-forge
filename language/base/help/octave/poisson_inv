@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} poisson_inv (@var{x}, @var{lambda})
+For each component of @var{x}, compute the quantile (the inverse of
+the CDF) at @var{x} of the Poisson distribution with parameter
+@var{lambda}.
+@end deftypefn

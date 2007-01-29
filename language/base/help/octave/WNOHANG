@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} WNOHANG ()
+Return the numerical value of the option argument that may be
+passed to @code{waitpid} to indicate that it should return its
+status immediately instead of waiting for a process to exit.
+@seealso{waitpid, WUNTRACED, WCONTINUE}
+@end deftypefn

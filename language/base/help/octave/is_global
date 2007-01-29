@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isglobal (@var{name})
+This function has been deprecated.  Use isglobal instead.
+@end deftypefn

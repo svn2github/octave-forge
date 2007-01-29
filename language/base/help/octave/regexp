@@ -1,0 +1,130 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})
+@deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, @var{opts}, @dots{})
+
+Regular expression string matching. Matches @var{pat} in @var{str} and
+returns the position and matching substrings or empty values if there are
+none.
+
+The matched pattern @var{pat} can include any of the standard regex
+operators, including:
+
+@table @code
+@item .
+Match any character
+@item * + ? @{@}
+Repetition operators, representing
+@table @code
+@item *
+Match zero or more times
+@item +
+Match one or more times
+@item ?
+Match zero or one times
+@item @{@}
+Match range operator, which is of the form @code{@{@var{n}@}} to match exactly
+@var{n} times, @code{@{@var{m},@}} to match @var{m} or more times,
+@code{@{@var{m},@var{n}@}} to match between @var{m} and @var{n} times.
+@end table
+@item [@dots{}] [^@dots{}]
+List operators, where for example @code{[ab]c} matches @code{ac} and @code{bc}
+@item ()
+Grouping operator
+@item |
+Alternation operator. Match one of a choice of regular expressions. The
+alternatives must be delimited by the grouoing operator @code{()} above
+@item ^ $
+Anchoring operator. @code{^} matches the start of the string @var{str} and
+@code{$} the end
+@end table
+
+In addition the following escaped characters have special meaning. It should
+be noted that it is recommended to quote @var{pat} in single quotes rather
+than double quotes, to avoid the escape sequences being interpreted by octave
+before being passed to @code{regexp}.
+
+@table @code
+@item \b
+Match a word boundary
+@item \B
+Match within a word
+@item \w
+Matches any word character
+@item \W
+Matches any non word character
+@item \<
+Matches the beginning of a word
+@item \>
+Matches the end of a word
+@item \s
+Matches any whitespace character
+@item \S
+Matches any non whitespace character
+@item \d
+Matches any digit
+@item \D
+Matches any non-digit
+@end table
+
+The outputs of @code{regexp} by default are in the order as given below
+
+@table @asis
+@item @var{s}
+The start indices of each of the matching substrings
+
+@item @var{e}
+The end indices of each matching substring
+
+@item @var{te}
+The extents of each of the matched token surrounded by @code{(@dots{})} in
+@var{pat}.
+
+@item @var{m}
+A cell array of the text of each match.
+
+@item @var{t}
+A cell array of the text of each token matched.
+
+@item @var{nm}
+A structure containing the text of each matched named token, with the name
+being used as the fieldname. A named token is denoted as
+@code{(?<name>@dots{})}
+@end table
+
+Particular output arguments or the order of the output arguments can be
+selected by additional @var{opts} arguments. These are strings and the
+correspondence between the output arguments and the optional argument
+are
+
+@multitable @columnfractions 0.2 0.3 0.3 0.2
+@item @tab 'start'        @tab @var{s}  @tab
+@item @tab 'end'          @tab @var{e}  @tab
+@item @tab 'tokenExtents' @tab @var{te} @tab
+@item @tab 'match'        @tab @var{m}  @tab
+@item @tab 'tokens'       @tab @var{t}  @tab
+@item @tab 'names'        @tab @var{nm}  @tab
+@end multitable
+
+A further optional argument is 'once', that limits the number of returned
+matches to the first match. Additional arguments are
+
+@table @asis
+@item matchcase
+Make the matching case sensitive.
+@item ignorecase
+Make the matching case insensitive.
+@item stringanchors
+Match the anchor characters at the beginning and end of the string.
+@item lineanchors
+Match the anchor characters at the beginning and end of the line.
+@item dotall
+The character @code{.} matches the newline character.
+@item dotexceptnewline
+The character @code{.} matches all but the newline character.
+@item freespacing
+The pattern can include arbitrary whitespace and comments starting with
+@code{#}.
+@item literalspacing
+The pattern is taken literally.
+@end table
+@end deftypefn

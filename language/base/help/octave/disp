@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} disp (@var{x})
+Display the value of @var{x}.  For example,
+
+@example
+disp ("The value of pi is:"), disp (pi)
+
+     @print{} the value of pi is:
+     @print{} 3.1416
+@end example
+
+@noindent
+Note that the output from @code{disp} always ends with a newline.
+
+If an output value is requested, @code{disp} prints nothing and
+returns the formatted output in a string.
+@seealso{fdisp}
+@end deftypefn

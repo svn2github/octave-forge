@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} chi2cdf (@var{x}, @var{n})
+For each element of @var{x}, compute the cumulative distribution
+function (CDF) at @var{x} of the chisquare distribution with @var{n}
+degrees of freedom.
+@end deftypefn

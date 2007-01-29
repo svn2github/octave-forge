@@ -1,0 +1,82 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{l}, @var{m}, @var{p}, @var{e}] =} dlqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
+Construct the linear quadratic estimator (Kalman filter) for the
+discrete time system
+@iftex
+@tex
+$$
+ x_{k+1} = A x_k + B u_k + G w_k
+$$
+$$
+ y_k = C x_k + D u_k + v_k
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+x[k+1] = A x[k] + B u[k] + G w[k]
+  y[k] = C x[k] + D u[k] + v[k]
+@end example
+
+@end ifinfo
+where @var{w}, @var{v} are zero-mean gaussian noise processes with
+respective intensities @code{@var{sigw} = cov (@var{w}, @var{w})} and
+@code{@var{sigv} = cov (@var{v}, @var{v})}.
+
+If specified, @var{z} is @code{cov (@var{w}, @var{v})}.  Otherwise
+@code{cov (@var{w}, @var{v}) = 0}.
+
+The observer structure is
+@iftex
+@tex
+$$
+ z_{k|k} = z_{k|k-1} + l (y_k - C z_{k|k-1} - D u_k)
+$$
+$$
+ z_{k+1|k} = A z_{k|k} + B u_k
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+z[k|k] = z[k|k-1] + L (y[k] - C z[k|k-1] - D u[k])
+z[k+1|k] = A z[k|k] + B u[k]
+@end example
+@end ifinfo
+
+@noindent
+The following values are returned:
+
+@table @var
+@item l
+The observer gain,
+@iftex
+@tex
+$(A - ALC)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{a}@var{l}@var{c}).
+@end ifinfo
+is stable.
+
+@item m
+The Riccati equation solution.
+
+@item p
+The estimate error covariance after the measurement update.
+
+@item e
+The closed loop poles of
+@iftex
+@tex
+$(A - ALC)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{a}@var{l}@var{c}).
+@end ifinfo
+@end table
+@end deftypefn

@@ -1,0 +1,28 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} nargout ()
+@deftypefnx {Built-in Function} {} nargout (@var{fcn_name})
+Within a function, return the number of values the caller expects to
+receive.  If called with the optional argument @var{fcn_name}, return the
+maximum number of values the named function can produce, or -1 if the
+function can produce a variable number of values.
+
+For example,
+
+@example
+f ()
+@end example
+
+@noindent
+will cause @code{nargout} to return 0 inside the function @code{f} and
+
+@example
+[s, t] = f ()
+@end example
+
+@noindent
+will cause @code{nargout} to return 2 inside the function
+@code{f}.
+
+At the top level, @code{nargout} is undefined.
+@seealso{nargin, varargin, varargout}
+@end deftypefn

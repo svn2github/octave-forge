@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})
+Return the vertical concatenation of N-d array objects, @var{array1},
+@var{array2}, @dots{}, @var{arrayN} along dimension 1.
+@seealso{cat, horzcat}
+@end deftypefn

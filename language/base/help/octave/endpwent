@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} endpwent ()
+Close the password database.
+@end deftypefn

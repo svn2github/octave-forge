@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {rline =} dbstop (func, line)
+Set a breakpoint in a function
+@table @code
+@item func
+String representing the function name.  When already in debug
+mode this should be left out and only the line should be given.
+@item line
+Line you would like the breakpoint to be set on
+@end table
+
+The rline returned is the real line that the breakpoint was set at.
+@seealso{dbclear, dbstatus, dbnext}
+@end deftypefn

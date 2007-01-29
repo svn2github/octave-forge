@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} permute (@var{a}, @var{perm})
+Return the generalized transpose for an N-d array object @var{a}.
+The permutation vector @var{perm} must contain the elements
+@code{1:ndims(a)} (in any order, but each element must appear just once).
+@seealso{ipermute}
+@end deftypefn

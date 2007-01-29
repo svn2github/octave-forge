@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@dots{}]} builtin (@var{f}, @dots{})
+Call the base function @var{f} even if @var{f} is overloaded to
+some other function for the given type signature.
+@seealso{dispatch}
+@end deftypefn

@@ -1,0 +1,34 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})
+@cindex LU decomposition
+Compute the LU decomposition of @var{a}, using subroutines from
+@sc{Lapack}.  The result is returned in a permuted form, according to
+the optional return value @var{p}.  For example, given the matrix
+@code{a = [1, 2; 3, 4]},
+
+@example
+[l, u, p] = lu (a)
+@end example
+
+@noindent
+returns
+
+@example
+l =
+
+  1.00000  0.00000
+  0.33333  1.00000
+
+u =
+
+  3.00000  4.00000
+  0.00000  0.66667
+
+p =
+
+  0  1
+  1  0
+@end example
+
+The matrix is not required to be square.
+@end deftypefn

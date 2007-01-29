@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} index (@var{s}, @var{t})
+@deftypefnx {Function File} {} index (@var{s}, @var{t}, @var{direction})
+Return the position of the first occurrence of the string @var{t} in the
+string @var{s}, or 0 if no occurrence is found.  For example,
+
+@example
+index ("Teststring", "t")
+@result{} 4
+@end example
+
+If @var{direction} is @samp{"first"}, return the first element found.
+If @var{direction} is @samp{"last"}, return the last element found.
+The @code{rindex} function is equivalent to @code{index} with
+@var{direction} set to @samp{"last"}.
+
+@strong{Caution:}  This function does not work for arrays of
+character strings.
+@seealso{find, rindex}
+@end deftypefn

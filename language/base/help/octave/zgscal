@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{x} =} zgscal (@var{f}, @var{z}, @var{n}, @var{m}, @var{p})
+Generalized conjugate gradient iteration to
+solve zero-computation generalized eigenvalue problem balancing equation
+@math{fx=z}; called by @command{zgepbal}.
+@end deftypefn

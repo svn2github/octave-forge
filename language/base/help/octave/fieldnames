@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} fieldnames (@var{struct})
+Return a cell array of strings naming the elements of the structure
+@var{struct}.  It is an error to call @code{fieldnames} with an
+argument that is not a structure.
+@end deftypefn

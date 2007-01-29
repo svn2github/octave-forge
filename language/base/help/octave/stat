@@ -1,0 +1,93 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})
+@deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})
+Return a structure @var{s} containing the following information about
+@var{file}.
+
+@table @code
+@item dev
+ID of device containing a directory entry for this file.
+
+@item ino
+File number of the file.
+
+@item mode
+File mode, as an integer.  Use the functions @code{S_ISREG},
+@code{S_ISDIR}, @code{S_ISCHR}, @code{S_ISBLK}, @code{S_ISFIFO},
+@code{S_ISLNK}, or @code{S_ISSOCK} to extract information from this
+value.
+
+@item modestr
+File mode, as a string of ten letters or dashes as would be returned by
+@kbd{ls -l}.
+
+@item nlink
+Number of links.
+
+@item uid
+User ID of file's owner.
+
+@item gid
+Group ID of file's group.
+
+@item rdev
+ID of device for block or character special files.
+
+@item size
+Size in bytes.
+
+@item atime
+Time of last access in the same form as time values returned from
+@code{time}.  @xref{Timing Utilities}.
+
+@item mtime
+Time of last modification in the same form as time values returned from
+@code{time}.  @xref{Timing Utilities}.
+
+@item ctime
+Time of last file status change in the same form as time values
+returned from @code{time}.  @xref{Timing Utilities}.
+
+@item blksize
+Size of blocks in the file.
+
+@item blocks
+Number of blocks allocated for file.
+@end table
+
+If the call is successful @var{err} is 0 and @var{msg} is an empty
+string.  If the file does not exist, or some other error occurs, @var{s}
+is an empty matrix, @var{err} is @minus{}1, and @var{msg} contains the
+corresponding system error message.
+
+If @var{file} is a symbolic link, @code{stat} will return information
+about the actual file the is referenced by the link.  Use @code{lstat}
+if you want information about the symbolic link itself.
+
+For example,
+
+@example
+@group
+[s, err, msg] = stat ("/vmlinuz")
+      @result{} s =
+        @{
+          atime = 855399756
+          rdev = 0
+          ctime = 847219094
+          uid = 0
+          size = 389218
+          blksize = 4096
+          mtime = 847219094
+          gid = 6
+          nlink = 1
+          blocks = 768
+          mode = -rw-r--r--
+          modestr = -rw-r--r--
+          ino = 9316
+          dev = 2049
+        @}
+     @result{} err = 0
+     @result{} msg = 
+@end group
+@end example
+@end deftypefn

@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qmult (@var{a}, @var{b})
+Multiply two quaternions.
+
+@example
+[w, x, y, z] = w*i + x*j + y*k + z
+@end example
+
+@noindent
+identities:
+
+@example
+i^2 = j^2 = k^2 = -1
+ij = k                 jk = i
+ki = j                 kj = -i
+ji = -k                ik = -j
+@end example
+@end deftypefn

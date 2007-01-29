@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} intersection (@var{x}, @var{y})
+This function has been deprecated.  Use intersect instead.
+@end deftypefn

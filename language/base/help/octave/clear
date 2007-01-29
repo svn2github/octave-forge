@@ -1,0 +1,43 @@
+-*- texinfo -*-
+@deffn {Command} clear [-x] pattern @dots{}
+Delete the names matching the given patterns from the symbol table.  The
+pattern may contain the following special characters:
+
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
+match all lower and upper case alphabetic characters.
+@end table
+
+For example, the command
+
+@example
+clear foo b*r
+@end example
+
+@noindent
+clears the name @code{foo} and all names that begin with the letter
+@code{b} and end with the letter @code{r}.
+
+If @code{clear} is called without any arguments, all user-defined
+variables (local and global) are cleared from the symbol table.  If
+@code{clear} is called with at least one argument, only the visible
+names matching the arguments are cleared.  For example, suppose you have
+defined a function @code{foo}, and then hidden it by performing the
+assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once
+will clear the variable definition and restore the definition of
+@code{foo} as a function.  Executing @kbd{clear foo} a second time will
+clear the function definition.
+
+With -x, clear the variables that don't match the patterns.
+
+This command may not be used within a function body.
+@end deffn

@@ -1,0 +1,25 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} betainc (@var{x}, @var{a}, @var{b})
+Return the incomplete Beta function,
+@iftex
+@tex
+$$
+ \beta (x, a, b) = B (a, b)^{-1} \int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@smallexample
+                                      x
+                                     /
+betainc (x, a, b) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.
+                                     /
+                                  t=0
+@end smallexample
+@end ifinfo
+
+If x has more than one component, both @var{a} and @var{b} must be
+scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
+compatible dimensions.
+@end deftypefn

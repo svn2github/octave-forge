@@ -1,0 +1,100 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})
+@deftypefnx {Built-in Function} {@var{fid_list} =} fopen ("all")
+@deftypefnx {Built-in Function} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})
+The first form of the @code{fopen} function opens the named file with
+the specified mode (read-write, read-only, etc.) and architecture
+interpretation (IEEE big endian, IEEE little endian, etc.), and returns
+an integer value that may be used to refer to the file later.  If an
+error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the
+corresponding system error message.  The @var{mode} is a one or two
+character string that specifies whether the file is to be opened for
+reading, writing, or both.
+
+The second form of the @code{fopen} function returns a vector of file ids
+corresponding to all the currently open files, excluding the
+@code{stdin}, @code{stdout}, and @code{stderr} streams.
+
+The third form of the @code{fopen} function returns information about the
+open file given its file id.
+
+For example,
+
+@example
+myfile = fopen ("splat.dat", "r", "ieee-le");
+@end example
+
+@noindent
+opens the file @file{splat.dat} for reading.  If necessary, binary
+numeric values will be read assuming they are stored in IEEE format with
+the least significant bit first, and then converted to the native
+representation.
+
+Opening a file that is already open simply opens it again and returns a
+separate file id.  It is not an error to open a file several times,
+though writing to the same file through several different file ids may
+produce unexpected results.
+
+The possible values @samp{mode} may have are
+
+@table @asis
+@item @samp{r}
+Open a file for reading.
+
+@item @samp{w}
+Open a file for writing.  The previous contents are discared.
+
+@item @samp{a}
+Open or create a file for writing at the end of the file.
+
+@item @samp{r+}
+Open an existing file for reading and writing.
+
+@item @samp{w+}
+Open a file for reading or writing.  The previous contents are
+discarded.
+
+@item @samp{a+}
+Open or create a file for reading or writing at the end of the
+file.
+@end table
+
+Append a "t" to the mode string to open the file in text mode or a
+"b" to open in binary mode.  On Windows and Macintosh systems, text
+mode reading and writing automatically converts linefeeds to the
+appropriate line end character for the system (carriage-return linefeed
+on Windows, carriage-returnn on Macintosh).  The default if no mode is
+specified is binary mode.
+
+Additionally, you may append a "z" to the mode string to open a
+gzipped file for reading or writing.  For this to be successful, you
+must also open the file in binary mode.
+
+The parameter @var{arch} is a string specifying the default data format
+for the file.  Valid values for @var{arch} are:
+
+@table @asis
+@samp{native}
+The format of the current machine (this is the default).
+
+@samp{ieee-be}
+IEEE big endian format.
+
+@samp{ieee-le}
+IEEE little endian format.
+
+@samp{vaxd}
+VAX D floating format.
+
+@samp{vaxg}
+VAX G floating format.
+
+@samp{cray}
+Cray floating format.
+@end table
+
+@noindent
+however, conversions are currently only supported for @samp{native}
+@samp{ieee-be}, and @samp{ieee-le} formats.
+@seealso{fclose, fread, fseek}
+@end deftypefn

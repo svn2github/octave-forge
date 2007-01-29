@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} errno_list ()
+Return a structure containing the system-dependent errno values.
+@end deftypefn

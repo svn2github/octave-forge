@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} ndims (@var{a})
+Returns the number of dimensions of array @var{a}.
+For any array, the result will always be larger than or equal to 2.
+Trailing singleton dimensions are not counted.
+@end deftypefn

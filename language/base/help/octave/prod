@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} prod (@var{x}, @var{dim})
+Product of elements along dimension @var{dim}.  If @var{dim} is
+omitted, it defaults to 1 (column-wise products).
+
+As a special case, if @var{x} is a vector and @var{dim} is omitted,
+return the product of the elements.
+@end deftypefn

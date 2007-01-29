@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} int32 (@var{x})
+Convert @var{x} to 32-bit integer type.
+@end deftypefn

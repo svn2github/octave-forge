@@ -1,0 +1,1 @@
+[x, lambda, info, iter] = __qp__ (x0, H, q, Aeq, beq, Ain, bin, maxit)

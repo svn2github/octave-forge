@@ -2,106 +2,137 @@ __HEADER__([[[Translation]]])
 
 <h2>Octave Translation Project</h2>
 
-<p>Octave should be available in your own language.  The original authors, being
-primarily English speakers, are unable to provide this service.  Instead it is
-up to you, the user, to help translate Octave documentation into your language.
-The Octave translation project provides the infrastructure to do so.</p>
+<p>Octave should be available in your own language.  The original authors,
+being primarily English speakers, are unable to provide this service.
+Instead it is up to you, the user, to help translate Octave
+documentation into your language. The Octave translation project
+provides the infrastructure to do so.</p>
 
 <h2>The idea</h2>
-<p>For each function in octave, and each chapter in the octave manual, we will have
-a corresponding document in the ZZ language tree containing the translation of
-this document.  The translation provides a function 'help', 'aide', 'ajuda', etc.,
-which searches for fn.ZZ and displays that instead of the original file help.</p>
+<p>For each function in Octave, and each chapter in the Octave manual,
+we will have a corresponding document in the ZZ language tree
+containing the translation of this document.  The translation provides
+a function 'help', 'aide', 'ajuda', etc., which searches for fn.ZZ and
+displays that instead of the original file help.</p>
 
-<p>We want to be able to tell if translated help is out of date with the current text 
-in an octave function.  The plan is to generate an md5 sum for the raw octave help 
-string (currently extracted from DOCSTRINGS) and store that with the translated file. 
-When the user asks for help on the function, the help command will look for a 
-localized help string in the search path (e.g., file_in_loadpath('filter.pt')), 
-extract the octave help string, compute its md5 sum and compare it to the md5 sum 
-stored in the translated file.  If it differs the user will be warned that the 
-translated help is out of date and will be given instructions to get the original help.  
-The octave help function will need to be extended so that it returns the raw help 
-string, and a second output for dispatch help.</p>
+<p>We want to be able to tell if translated help is out of date with
+the current text in an Octave function. The plan is to generate an md5
+sum for the raw Octave help string (currently extracted from
+DOCSTRINGS) and store that with the translated file. When the user
+asks for help on the function, the help command will look for a
+localized help string in the search path (e.g.,
+file_in_loadpath('filter.pt') for the Portuguese translation of
+filter), extract the Octave help string, compute its md5 sum and
+compare it to the md5 sum stored in the translated file.  If it
+differs the user will be warned that the translated help is out of
+date and will be given instructions to get the original help.</p>
 
-<p>When the base text changes, translators need to know exactly how it changed.  For 
-this reason we are storing the original text for the translation in the octave-lang 
-source tree and updating it whenever octave is released.  We will store the revision 
-number of the base file in the translated file. The translator can then use e.g., 
-`"cvs diff -r1.2 filter" in the base directory to find out how filter has changed 
-between version 1.2 and the current version.</p>
+<p>When the base text changes, translators need to know exactly how it
+changed.  For this reason we are storing the original text for the
+translation in the language source tree and updating it whenever
+Octave is released.  We will store the revision number of the base
+file in the translated file. The translator can then use e.g., 
+`"cvs diff -r1.2 filter" in the base directory to find out how filter
+has changed between version 1.2 and the current version.</p>
 
 <p>Translators can also add their name and email to the translated file.</p>
 
 <p>The top line will look something like:</p>
 <pre>
-   mdf="d52f61a8b12616e7b99f7cd5ecbf18fb";rev="1.1";by="I.M. Translator &lt;im.translator@gmail.com&gt;"
+   md5="d52f61a8b12616e7b99f7cd5ecbf18fb";rev="1.1";by="I.M. Translator &lt;im.translator@gmail.com&gt;"
 </pre>
 
 <h2>Downloading and installing</h2>
 
-The translations are not yet complete, and no installable packages are available.
+<p>The translations themselves are available as standard Octave packages,
+and can be downloaded from the <a href="packages.html">packages</a> page.</p>
 
 <h2>Contributing your own translations</h2>
-<p>If you want to help with the octave translation project, the tree is now available 
-at source-forge.</p>
+<p>If you want to help with the Octave translation project, the tree
+is now available at source-forge.</p>
 
 <ol>
-<li>Create an account at <a href="http://sourceforge.net">SourceForge</a>.  You
-    can choose your own source forge id SFID. </li>
-<li>Send a message to <a href="mailto:octave-dev@lists.sf.net">octave-dev@lists.sf.net</a>
- with your SFID.  Ask to be included in the translation project.</li>
-
-<li>Check out the current octave language sources for your language:<br/>
+<li>You first need to become an Octave-Forge <a
+href="developers.html">developer</a></li>
+<li><p>Check out the current Octave-Forge tree that contains the
+language sources:</p>
 <pre>
-	export SFID=your sourceforge id
-        export CVS_RSH=ssh
-	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave login
-	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang
+   $ cd <span style="color: #800000;"><i>working_directory</i></span>
+   $ export CVS_RSH=ssh
+   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave co octave-forge
 </pre>
-
-You can restrict it to a particular language ZZ using:
-<pre>
-	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang/admin
-	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang/base
-	cvs -d:ext:$SFID@cvs.sf.net:/cvsroot/octave co octave-lang/ZZ
-</pre>
-
-admin will contain administration tools to identify what needs to be translated.
-base contains the strings which need to be translated.
-ZZ contains the translations for a particular language.
+<p>language/admin will contain administration tools to identify what
+needs to be translated, while language/base contains the strings which 
+need to be translated.</p>
 </li>
 </ol>
-
-<p>After each translation, run 'octlang tag file.ZZ' (not yet written) 
-which computes the md5 sum in the base directory and tags the top line of 
-the translation with</p>
+<p>To create a new language translation in the octave-forge/language
+directory, you need to:</p>
+<ol>
+<li>Choose a language extension. In general a standard language
+   extension such as fr, jp or pt should be used. Call the chosen
+   extension &lt;ext&gt;.<li>
+<li>Copy the base/template directory to &lt;ext&gt;.</li>
+<li>Choose a name meaning "help" in your language and move the
+   &lt;ext&gt;/src/help.cc to a file with this name. For example for
+   French aide.cc is an appropriate name.</li>
+<li>Edit &lt;ext&gt;/Makefile and modify EXT. This should, but is not
+   required to be &lt;ext&gt;. The translated files under
+   &lt;ext&gt;/help must have this suffix.</li>
+<li>Edit &lt;ext&gt;/DESCRIPTION and modify the author, maintainer,
+   etc fields</li>
+<li>Edit the new help file and alter the macros and PKG_ADD directive
+   at the top of the file. In particular LANG_EXT must match EXT. All
+   of the macros must be translated to the new language</li>
+<li>Remove the files under &lt;ext&gt;/help/octave/ as these are examples</li>
+<li>Translations of Octave core functions should be under
+   &lt;ext&gt;/help/octave, whereas translations of help strings from
+   Octave-Forge packages should be under &lt;ext&gt;/help/&lt;package&gt;</lt>
+</ol>
+<p>Some things to look out for when translating:</p>
+<ol>
+<li>do not translate anything that have an "*" or an "@" until you are
+certain what you are doing. texinfo use these for special purposes.</li>
+<li>Search for special characters (diacritical marks) in your
+language, and where needed use the texinfo versions of these. For example,
+in Portuguese these are:
+<pre>
+        @'a @'A @`a @`A @'e @'E @`e @`E @'I
+        @`o @`O @'u @'U @`u @`U @,{c} @,{C}
+        @~o @~O @"u @"U
+</pre></li>
+</ol>
+<p>The scripts under admin/ can be used to help in maintaining the
+translations. In particular octlang allows the maintanence of the
+translations.</p>
+<p>After each translation, run 'octlang tag function' in the root
+directory of your translation. This locates the file "file.EXT"
+corresponding to the translation of the functaion, computes the md5 
+sum in the base directory and tags the top line of the translation with</p>
 <pre>
    mdf="$MD5SUM";rev="$REV";by="$OCTAVE_TRANSLATOR"
 </pre>
 <p>where MD5SUM and REV are computed by the script and OCTAVE_TRANSLATOR is
-exported from the shell.
-</p>
+exported from the shell.</p>
 
 <h2>Maintaining your translations</h2>
-<p>As octave evolves you will need to keep your translations up to date.  The
-script octave-lang/admin/octlang (not yet written) can help you:</p>
+<p>As Octave evolves you will need to keep your translations up to date.  The
+script language/admin/octlang can help you:</p>
 <dl>
 <dt>octlang missing</dt>
 <dd>walk the current subtree listing all translations which are missing.</dd>
 <dt>octlang updated</dt>
 <dd>walk the current subtree listing all translations which are out of date.</dd>
-<dt>octlang diff file.ZZ</dt>
-
+<dt>octlang diff function</dt>
 <dd>list differences between the original text which was translated and the
 current text in base.</dd>
-<dt>octlang tag file.ZZ</dt>
-<dd>tag file.ZZ as up to date, marking the header with the current md5 sum
+<dt>octlang tag function</dt>
+<dd>tag function.ZZ as up to date, marking the header with the current md5 sum
 and version number from base.</dd>
 </dl>
 
 <h2>Updating base</h2>
-<p>Once per octave release, somebody will need to update the help
+<p>Once per Octave release, somebody will need to update the help
 messages stored in the base translation tree.</p>
 <ol>
 <li>Download and unbundle the latest 2.9.xx development release from 
@@ -112,13 +143,12 @@ messages stored in the base translation tree.</p>
 	./configure
 	(cd src &amp;&amp; make omit_deps=1 DOCSTRINGS)
 	(cd scripts &amp;&amp; make DOCSTRINGS)
-
 </pre>
 </li>
 <li>Update base docs using:
 <pre>
 	export OCTAVE_ROOT=~/Downloads/octave-2.9.xx
-	cd octave-lang/base/octave/help
+	cd octave-forge/language/base/help/octave
 	../../../admin/split_docstrings $OCTAVE_ROOT/src/DOCSTRINGS
 	../../../admin/split_docstrings $OCTAVE_ROOT/scripts/DOCSTRINGS
 </pre>
@@ -138,14 +168,11 @@ You won't be able to tell if any have been deleted.
 </pre>
 where <em>...</em> is the list of names marked by <em>?</em>.
 </li>
-<li>Update server with new base docs and tag it with the new version:
+<li>Update server with new base docs:
 <pre>
 	cvs commit
-	cvs tag ss-2-9-xx
-
 </pre>
 </li>
 </ol>
-
 
 __TRAILER__

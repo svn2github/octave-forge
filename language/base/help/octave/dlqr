@@ -1,0 +1,80 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} dlqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+Construct the linear quadratic regulator for the discrete time system
+@iftex
+@tex
+$$
+ x_{k+1} = A x_k + B u_k
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+x[k+1] = A x[k] + B u[k]
+@end example
+
+@end ifinfo
+to minimize the cost functional
+@iftex
+@tex
+$$
+ J = \sum x^T Q x + u^T R u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+J = Sum (x' Q x + u' R u)
+@end example
+@end ifinfo
+
+@noindent
+@var{z} omitted or
+@iftex
+@tex
+$$
+ J = \sum x^T Q x + u^T R u + 2 x^T Z u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+J = Sum (x' Q x + u' R u + 2 x' Z u)
+@end example
+
+@end ifinfo
+@var{z} included.
+
+The following values are returned:
+
+@table @var
+@item k
+The state feedback gain,
+@iftex
+@tex
+$(A - B K)$
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{b}@var{k})
+@end ifinfo
+is stable.
+
+@item p
+The solution of algebraic Riccati equation.
+
+@item e
+The closed loop poles of
+@iftex
+@tex
+$(A - B K)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{b}@var{k}).
+@end ifinfo
+@end table
+@end deftypefn

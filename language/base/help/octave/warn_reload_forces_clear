@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_reload_forces_clear
+If several functions have been loaded from the same file, Octave must
+clear all the functions before any one of them can be reloaded.  If
+@code{warn_reload_forces_clear}, Octave will warn you when this happens,
+and print a list of the additional functions that it is forced to clear.
+@end defvr

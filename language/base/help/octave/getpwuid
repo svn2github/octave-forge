@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwuid (@var{uid}).
+Return a structure containing the first entry from the password database
+with the user ID @var{uid}.  If the user ID does not exist in the
+database, @code{getpwuid} returns 0.
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_separator_insert
+Print warning if commas or semicolons might be inserted
+automatically in literal matrices.
+@end defvr

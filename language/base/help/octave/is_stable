@@ -1,0 +1,23 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_stable (@var{a}, @var{tol}, @var{dflg})
+@deftypefnx {Function File} {} is_stable (@var{sys}, @var{tol})
+Returns 1 if the matrix @var{a} or the system @var{sys}
+is stable, or 0 if not.
+
+@strong{Inputs}
+@table @var
+@item  tol
+is a roundoff parameter, set to 200*@code{eps} if omitted.
+@item dflg
+Digital system flag (not required for system data structure):
+@table @code
+@item @var{dflg} != 0
+stable if eig(a) is in the unit circle
+
+@item @var{dflg} == 0
+stable if eig(a) is in the open LHP (default)
+@end table
+@end table
+@seealso{size, rows, columns, length, ismatrix, isscalar, isvector
+is_observable, is_stabilizable, is_detectable, krylov, krylovb}
+@end deftypefn

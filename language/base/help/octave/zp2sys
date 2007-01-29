@@ -1,0 +1,39 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} zp2sys (@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname})
+Create system data structure from zero-pole data.
+
+@strong{Inputs}
+@table @var
+@item   zer
+Vector of system zeros.
+@item   pol
+Vector of system poles.
+@item   k
+Scalar leading coefficient.
+@item   tsam
+Sampling period; default: 0 (continuous system).
+@item   inname
+@itemx  outname
+Input/output signal names (lists of strings).
+@end table
+
+@strong{Output}
+@table @var
+@item sys
+System data structure.
+@end table
+
+@strong{Example}
+@example
+octave:1> sys=zp2sys([1 -1],[-2 -2 0],1);
+octave:2> sysout(sys)
+Input(s)
+        1: u_1
+Output(s):
+        1: y_1
+zero-pole form:
+1 (s - 1) (s + 1)
+-----------------
+s (s + 2) (s + 2)
+@end example
+@end deftypefn

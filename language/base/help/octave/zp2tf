@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{num}, @var{den}] =} zp2tf (@var{zer}, @var{pol}, @var{k})
+Converts zeros / poles to a transfer function.
+
+@strong{Inputs}
+@table @var
+@item zer
+@itemx pol
+Vectors of (possibly complex) poles and zeros of a transfer
+function.  Complex values must appear in conjugate pairs.
+@item k
+Real scalar (leading coefficient).
+@end table
+@end deftypefn

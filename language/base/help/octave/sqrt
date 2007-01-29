@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} sqrt (@var{x})
+Compute the square root of @var{x}.  If @var{x} is negative, a complex
+result is returned.  To compute the matrix square root, see
+@ref{Linear Algebra}.
+@end deftypefn

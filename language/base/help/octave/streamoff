@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} streamoff (@var{x})
+@deftypefnx {Built-in Function} {} streamoff (@var{n}, @var{m})
+Create a new streamoff array object.  If invoked with a single scalar
+argument, @code{streamoff} returns a square streamoff array with
+the dimension specified.  If you supply two scalar arguments,
+@code{streamoff} takes them to be the number of rows and columns.
+If given a vector with two elements, @code{streamoff} uses the values
+of the elements as the number of rows and columns, respectively.
+@end deftypefn

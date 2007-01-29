@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} S_ISCHR (@var{mode})
+Return true if @var{mode} corresponds to a character devicey.  The value
+of @var{mode} is assumed to be returned from a call to @code{stat}.
+@seealso{stat, lstat}
+@end deftypefn

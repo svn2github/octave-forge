@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} subwindow (@var{xn}, @var{yn})
+Sets the subwindow position in multiplot mode for the next plot.  The
+multiplot mode has to be previously initialized using the
+@code{multiplot} function, otherwise this command just becomes an alias
+to @code{multiplot}
+@end deftypefn

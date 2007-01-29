@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} title (@var{string})
+Specify a title for a plot.
+@seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
+bar, stairs, replot, xlabel, ylabel}
+@end deftypefn

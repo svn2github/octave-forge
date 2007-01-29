@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} qderivmat (@var{omega})
+Derivative of a quaternion.
+
+Let Q be a quaternion to transform a vector from a fixed frame to
+a rotating frame.  If the rotating frame is rotating about the 
+[x, y, z] axes at angular rates [wx, wy, wz], then the derivative
+of Q is given by
+
+@example
+Q' = qderivmat (omega) * Q
+@end example
+
+If the passive convention is used (rotate the frame, not the vector),
+then
+
+@example
+Q' = -qderivmat (omega) * Q.
+@end example
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isvarname (@var{name})
+Return true if @var{name} is a valid variable name
+@end deftypefn

@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} assert (@var{cond})
+@deftypefnx {Function File} {} assert (@var{observed},@var{expected})
+@deftypefnx {Function File} {} assert (@var{observed},@var{expected},@var{tol})
+
+Produces an error if the condition is not met. @code{assert} can be
+called in three different ways.
+
+@table @code
+@item assert (@var{cond})
+Called with a single argument @var{cond}, @code{assert} produces an
+error if @var{cond} is zero.
+
+@item assert (@var{observed}, @var{expected})
+Produce an error if observed is not the same as expected. Note that 
+observed and expected can be strings, scalars, vectors, matrices, 
+lists or structures.
+
+@item assert(@var{observed}, @var{expected}, @var{tol})
+Produce an error if relative error is less than tolerance. That is, 
+@code{abs(@var{observed} - @var{expected}) > @var{tol} * @var{expected}}.  
+Absolute error @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})} 
+will be used when tolerance is negative or when the expected value is zero.
+@end table
+@seealso{test}
+@end deftypefn

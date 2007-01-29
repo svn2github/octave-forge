@@ -1,0 +1,59 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} randg (@var{a}, @var{x})
+@deftypefnx {Loadable Function} {} randg (@var{a}, @var{n}, @var{m})
+@deftypefnx {Loadable Function} {} randg ("state", @var{x})
+@deftypefnx {Loadable Function} {} randg ("seed", @var{x})
+Return a matrix with @code{gamma(@var{a},1)} distributed random elements.
+The arguments are handled the same as the arguments for @code{rand},
+except for the argument @var{a}.
+
+This can be used to generate many distributions:
+
+@table @asis
+@item @code{gamma (a,b)} for @code{a > -1}, @code{b > 0}
+@example
+r = b*randg(a)
+@end example
+@item @code{beta(a,b)} for @code{a > -1}, @code{b > -1}
+@example
+r1 = randg(a,1)
+r = r1 / (r1 + randg(b,1))
+@end example
+@item @code{Erlang(a, n)}
+@example
+r = a*randg(n)
+@end example
+@item @code{chisq(df)} for @code{df > 0}
+@example
+r = 2*randg(df/2)
+@end example
+@item @code{t(df)} for @code{0 < df < inf} (use randn if df is infinite)
+@example
+r = randn() / sqrt(2*randg(df/2)/df)
+@end example
+@item @code{F(n1,n2)} for @code{0 < n1}, @code{0 < n2}
+@example
+r1 = 2*randg(n1/2)/n1 or 1 if n1 is infinite
+r2 = 2*randg(n2/2)/n2 or 1 if n2 is infinite
+r = r1 / r2
+
+@end example
+@item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}
+@example
+r = randp((1-p)/p * randg(n))
+@end example
+@item non-central @code{chisq(df,L)}, for @code{df >= 0} and @code{L > 0}
+(use chisq if @code{L = 0})
+@example
+r = randp(L/2)
+r(r > 0) = 2*randg(r(r > 0))
+r(df > 0) += 2*randg(df(df > 0)/2)
+@end example
+@item @code{Dirichlet(a1,...,ak)}
+@example
+r = (randg(a1),...,randg(ak))
+r = r / sum(r)
+@end example
+@end table
+@seealso{rand,randn,rande,randp}
+@end deftypefn

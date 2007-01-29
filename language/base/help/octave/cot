@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} cot (@var{x})
+Compute the cotangent of each element of @var{x}.
+@end deftypefn

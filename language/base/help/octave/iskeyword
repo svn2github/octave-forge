@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} iskeyword (@var{name})
+Return true if @var{name} is an Octave keyword.  If @var{name}
+is omitted, return a list of keywords.
+@end deftypefn

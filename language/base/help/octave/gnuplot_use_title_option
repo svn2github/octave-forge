@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{val} =} gnuplot_use_title_option ()
+@deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_use_title_option (@var{new_val})
+If enabled, append @samp{-title "Figure NN"} to the gnuplot command.
+By default, this feature is enabled if the @code{DISPLAY} environment
+variable is set when Octave starts.
+@end deftypefn

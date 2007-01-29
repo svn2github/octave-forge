@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} uint16 (@var{x})
+Convert @var{x} to unsigned 16-bit integer type.
+@end deftypefn

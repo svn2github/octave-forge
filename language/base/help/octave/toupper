@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} toupper (@var{s})
+Return a copy of the string @var{s}, with each  lower-case character
+replaced by the corresponding upper-case one; nonalphabetic characters
+are left unchanged.  For example,
+
+@example
+@group
+toupper ("MiXeD cAsE 123")
+     @result{} "MIXED CASE 123"
+@end group
+@end example
+@end deftypefn

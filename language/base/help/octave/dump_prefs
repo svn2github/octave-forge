@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} dump_prefs (@var{file})
+Have Octave dump all the current user preference variables to
+@var{file} in a format that can be parsed by Octave later.  If
+@var{file} is omitted, the listing is printed to stdout.
+@end deftypefn

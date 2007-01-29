@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} swap (@var{inputs})
+@format
+[a1,b1] = swap(a,b)
+interchange a and b
+@end format
+@end deftypefn

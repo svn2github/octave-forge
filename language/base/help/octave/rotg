@@ -1,0 +1,4 @@
+function [c,s] = rotg(a,b)
+givens rotation calculation
+
+NOTE: Use [c,s] = givens(a,b) instead.

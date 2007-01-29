@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} info_program ()
+@deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})
+Query or set the internal variable that specifies the name of the
+info program to run.  The default initial value is
+@code{"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info"}
+in which @var{octave-home} is the directory where all of Octave is
+installed, @var{version} is the Octave version number, and @var{arch}
+is the system type (for example, @code{i686-pc-linux-gnu}).  The
+default initial value may be overridden by the environment variable
+@code{OCTAVE_INFO_PROGRAM}, or the command line argument
+@code{--info-program NAME}.
+@seealso{info_file, doc, help, makeinfo_program}
+@end deftypefn

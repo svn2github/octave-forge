@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} controldemo ()
+Control Systems Toolbox demo.
+@seealso{Demo programs: bddemo, frdemo, analdemo, moddmeo, rldemo}
+@end deftypefn

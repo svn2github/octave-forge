@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} hadamard (@var{n})
+
+Construct a Hadamard matrix @var{Hn} of size @var{n}-by-@var{n}. The 
+size @var{n} must be of the form @code{2 ^ @var{k} * @var{p}} where
+@var{p} is one of 1, 12, 20 or 28. The returned matrix is normalized,
+meaning @var{Hn (:, 1) == 1} and @var{H (1, :) == 1}.
+
+Some of the properties of Hadamard matrices are:
+
+@itemize @bullet
+@item
+@code{kron (@var{Hm}, @var{Hn})} is a Hadamard matrix of size 
+@var{m}-by-@var{n}.
+@item
+@code{Hn * Hn' == @var{n) * eye (@var{n})}.
+@item
+The rows of @var{Hn} are orthogonal.
+@item
+@code{det (@var{A}) <= det (@var{Hn})} for all @var{A} with 
+@code{abs (@var{A} (@var{i}, @var{j})) <= 1}.
+@item
+Multiply any row or column by -1 and still have a Hadamard matrix.
+@end itemize
+
+@end deftypefn

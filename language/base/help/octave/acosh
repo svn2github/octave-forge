@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} acosh (@var{x})
+Compute the inverse hyperbolic cosine of each element of @var{x}.
+@end deftypefn

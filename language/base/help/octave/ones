@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} ones (@var{x})
+@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})
+@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Built-in Function} {} ones (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all 1.
+The arguments are handled the same as the arguments for @code{eye}.
+
+If you need to create a matrix whose values are all the same, you should
+use an expression like
+
+@example
+val_matrix = val * ones (n, m)
+@end example
+
+The optional argument @var{class}, allows @code{ones} to return an array of
+the specified type, for example
+
+@example
+val = ones (n,m, "uint8")
+@end example
+@end deftypefn

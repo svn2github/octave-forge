@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __sysdefioname__ (@var{n}, @var{str}, @var{m})
+return default input or output names given @var{n}, @var{str}, @var{m}.
+@var{n} is the final value, @var{str} is the string prefix, and @var{m}
+is start value
+
+used internally, minimal argument checking
+
+@strong{Example} @code{ioname = __sysdefioname__(5,"u",3)}
+returns the cell array:
+@example
+ioname =
+(
+  [1] = u_3
+  [2] = u_4
+  [3] = u_5
+)
+@end example
+@end deftypefn

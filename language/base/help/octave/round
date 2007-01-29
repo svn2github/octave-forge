@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} round (@var{x})
+Return the integer nearest to @var{x}.  If @var{x} is complex, return
+@code{round (real (@var{x})) + round (imag (@var{x})) * I}.
+@seealso{rem}
+@end deftypefn

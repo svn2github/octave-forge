@@ -1,0 +1,31 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} gammainc (@var{x}, @var{a})
+Compute the normalized incomplete gamma function,
+@iftex
+@tex
+$$
+ \gamma (x, a) = {\displaystyle\int_0^x e^{-t} t^{a-1} dt \over \Gamma (a)}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@smallexample
+                                x
+                      1        /
+gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt
+                  gamma (a)    /
+                            t=0
+@end smallexample
+
+@end ifinfo
+with the limiting value of 1 as @var{x} approaches infinity.
+The standard notation is @math{P(a,x)}, e.g. Abramowitz and Stegun (6.5.1).
+
+If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned
+for each element of @var{x} and vice versa.
+
+If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and
+@var{a} must agree, and @var{gammainc} is applied element-by-element.
+@seealso{gamma, lgamma}
+@end deftypefn

@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} yes_or_no (@var{prompt})
+Ask the user a yes-or-no question.  Return 1 if the answer is yes.
+Takes one argument, which is the string to display to ask the
+question.  It should end in a space; @samp{yes-or-no-p} adds
+@samp{(yes or no) } to it.  The user must confirm the answer with
+RET and can edit it until it has been confirmed.
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} moddemo (@var{inputs})
+Octave Control toolbox demo: Model Manipulations demo.
+@end deftypefn

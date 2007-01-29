@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} tolower (@var{s})
+Return a copy of the string @var{s}, with each upper-case character
+replaced by the corresponding lower-case one; nonalphabetic characters
+are left unchanged.  For example,
+
+@example
+tolower ("MiXeD cAsE 123")
+     @result{} "mixed case 123"
+@end example
+@end deftypefn

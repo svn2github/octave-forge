@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{entries} =} tar (@var{tarfile}, @var{files}, @var{root})
+Pack @var{files} @var{files} into the TAR archive @var{tarfile}.  The
+list of files must be a string or a cell array of strings.
+
+The optional argument @var{root} changes the relative path of @var{files}
+from the current directory.
+
+If an output argument is requested the entries in the archive are
+returned in a cell array.
+@seealso{untar, gzip, gunzip, zip, unzip}
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} rgb2ntsc (@var{rgb})
+Image format conversion.
+@end deftypefn

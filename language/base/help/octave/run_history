@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deffn {Command} run_history [first] [last]
+Similar to @code{edit_history}, except that the editor is not invoked,
+and the commands are simply executed as they appear in the history list.
+@end deffn

@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] = } sscanf (@var{string}, @var{template}, "C")
+This is like @code{fscanf}, except that the characters are taken from the
+string @var{string} instead of from a stream.  Reaching the end of the
+string is treated as an end-of-file condition.
+@seealso{fscanf, scanf, sprintf}
+@end deftypefn

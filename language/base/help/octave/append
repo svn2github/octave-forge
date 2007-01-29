@@ -1,0 +1,16 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} append (@var{list}, @var{a1}, @var{a2}, @dots{})
+Return a new list created by appending @var{a1}, @var{a1}, @dots{}, to
+@var{list}.  If any of the arguments to be appended is a list, its
+elements are appended individually.  For example,
+
+@example
+x = list (1, 2);
+y = list (3, 4);
+append (x, y);
+@end example
+
+@noindent
+results in the list containing the four elements @samp{(1 2 3 4)}, not
+a list containing the three elements @samp{(1 2 (3 4))}.
+@end deftypefn

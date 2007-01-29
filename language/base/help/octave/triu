@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} triu (@var{a}, @var{k})
+See tril.
+@end deftypefn

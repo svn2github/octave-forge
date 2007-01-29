@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isalnum (@var{s})
+Return 1 for characters that are letters or digits (@code{isalpha
+(@var{s})} or @code{isdigit (@var{s})} is true).
+@end deftypefn

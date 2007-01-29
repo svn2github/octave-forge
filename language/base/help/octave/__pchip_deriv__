@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} __pchip_deriv__ (@var{x}, @var{y})
+Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates for
+piecewise polynomials.  You should be using @code{pchip} function instead.
+@end deftypefn

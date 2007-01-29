@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, "left", "right")
+Compute derivative and integral weight matrices for orthogonal
+collocation using the subroutines given in J. Villadsen and
+M. L. Michelsen, @cite{Solution of Differential Equation Models by
+Polynomial Approximation}.
+@end deftypefn

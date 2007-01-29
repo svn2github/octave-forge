@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{lambda} =} eig (@var{a})
+@deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a})
+The eigenvalues (and eigenvectors) of a matrix are computed in a several
+step process which begins with a Hessenberg decomposition, followed by a
+Schur decomposition, from which the eigenvalues are apparent.  The
+eigenvectors, when desired, are computed by further manipulations of the
+Schur decomposition.
+
+The eigenvalues returned by @code{eig} are not ordered.
+@end deftypefn

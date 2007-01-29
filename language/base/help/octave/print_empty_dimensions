@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} print_empty_dimensions ()
+@deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})
+Query or set the internal varaible that controls whether the
+dimensions of empty matrices are printed along with the empty matrix
+symbol, @samp{[]}.  For example, the expression
+
+@example
+zeros (3, 0)
+@end example
+
+@noindent
+will print
+
+@example
+ans = [](3x0)
+@end example
+@end deftypefn

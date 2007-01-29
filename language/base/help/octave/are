@@ -1,0 +1,45 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{x} =} are (@var{a}, @var{b}, @var{c}, @var{opt})
+Solve the Algebraic Riccati Equation
+@iftex
+@tex
+$$
+A^TX + XA - XBX + C = 0
+$$
+@end tex
+@end iftex
+@ifinfo
+@example
+a' * x + x * a - x * b * x + c = 0
+@end example
+@end ifinfo
+
+@strong{Inputs}
+@noindent
+for identically dimensioned square matrices
+@table @var
+@item a
+@var{n} by @var{n} matrix;
+@item b
+@var{n} by @var{n} matrix or @var{n} by @var{m} matrix; in the latter case
+@var{b} is replaced by @math{b:=b*b'};
+@item c
+@var{n} by @var{n} matrix or @var{p} by @var{m} matrix; in the latter case
+@var{c} is replaced by @math{c:=c'*c};
+@item opt
+(optional argument; default = @code{"B"}):
+String option passed to @code{balance} prior to ordered Schur decomposition.
+@end table
+
+@strong{Output}
+@table @var
+@item x
+solution of the @acronym{ARE}.
+@end table
+
+@strong{Method}
+Laub's Schur method (@acronym{IEEE} Transactions on
+Automatic Control, 1979) is applied to the appropriate Hamiltonian
+matrix.
+@seealso{balance, dare}
+@end deftypefn

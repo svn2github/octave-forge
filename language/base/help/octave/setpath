@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} @var{opath} setpath (@var{npath})
+Set @code{LOADPATH} to @var{path} and return the previous value.
+
+@seealso{LOADPATH, addpath, rmpath, savepath}
+@end deftypefn

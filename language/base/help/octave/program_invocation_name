@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} program_invocation_name ()
+Return the name that was typed at the shell prompt to run Octave.
+
+If executing a script from the command line (e.g., @code{octave foo.m})
+or using an executable Octave script, the program name is set to the
+name of the script.  @xref{Executable Octave Programs}, for an example of
+how to create an executable Octave script.
+@seealso{program_name}
+@end deftypefn

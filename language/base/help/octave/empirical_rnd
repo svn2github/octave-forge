@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} empirical_rnd (@var{n}, @var{data})
+@deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r}, @var{c})
+@deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{sz})
+Generate a bootstrap sample of size @var{n} from the empirical
+distribution obtained from the univariate sample @var{data}.
+
+If @var{r} and @var{c} are given create a matrix with @var{r} rows and
+@var{c} columns. Or if @var{sz} is a vector, create a matrix of size
+@var{sz}.
+@end deftypefn

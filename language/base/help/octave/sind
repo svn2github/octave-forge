@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} sind (@var{x})
+Compute the sine of each element of @var{x}.  Returns zero in elements
+for which @code{@var{x}/180} is an integer.
+@seealso{sin, cosd, tand, acosd, asind, atand}
+@end deftypefn

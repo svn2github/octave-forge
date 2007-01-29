@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} acosd (@var{x})
+Compute the inverse cosine of an angle in degrees.
+@seealso{acos, cosd, asecd}
+@end deftypefn

@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{ksys} =} parallel (@var{asys}, @var{bsys})
+Forms the parallel connection of two systems.
+
+@example
+@group
+             --------------------
+             |      --------    |
+    u  ----->|----> | asys |--->|----> y1
+        |    |      --------    |
+        |    |      --------    |
+        |--->|----> | bsys |--->|----> y2
+             |      --------    |
+             --------------------
+                  ksys
+@end group
+@end example
+@end deftypefn

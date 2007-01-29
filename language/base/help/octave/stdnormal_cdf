@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} stdnormal_cdf (@var{x})
+For each component of @var{x}, compute the CDF of the standard normal
+distribution at @var{x}.
+@end deftypefn

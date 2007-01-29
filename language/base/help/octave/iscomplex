@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} iscomplex (@var{x})
+Return true if @var{x} is a complex-valued numeric object.
+@end deftypefn

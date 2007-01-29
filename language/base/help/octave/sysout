@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} sysout (@var{sys}, @var{opt})
+print out a system data structure in desired format
+@table @var
+@item  sys
+system data structure
+@item  opt
+Display option
+@table @code
+@item []
+primary system form (default)
+@item      "ss"
+state space form
+@item      "tf"
+transfer function form
+@item      "zp"
+zero-pole form
+@item      "all"
+all of the above
+@end table
+@end table
+@end deftypefn

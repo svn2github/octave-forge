@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} issparse (@var{expr})
+Return 1 if the value of the expression @var{expr} is a sparse matrix.
+@end deftypefn

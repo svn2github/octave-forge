@@ -1,0 +1,20 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} feval (@var{name}, @dots{})
+Evaluate the function named @var{name}.  Any arguments after the first
+are passed on to the named function.  For example,
+
+@example
+feval ("acos", -1)
+     @result{} 3.1416
+@end example
+
+@noindent
+calls the function @code{acos} with the argument @samp{-1}.
+
+The function @code{feval} is necessary in order to be able to write
+functions that call user-supplied functions, because Octave does not
+have a way to declare a pointer to a function (like C) or to declare a
+special kind of variable that can be used to hold the name of a function
+(like @code{EXTERNAL} in Fortran).  Instead, you must refer to functions
+by name, and use @code{feval} to call them.
+@end deftypefn

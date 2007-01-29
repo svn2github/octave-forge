@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deffn {Command} diary options
+Create a list of all commands @emph{and} the output they produce, mixed
+together just as you see them on your terminal.  Valid options are:
+
+@table @code
+@item on
+Start recording your session in a file called @file{diary} in your
+current working directory.
+
+@item off
+Stop recording your session in the diary file.
+
+@item @var{file}
+Record your session in the file named @var{file}.
+@end table
+
+Without any arguments, @code{diary} toggles the current diary state.
+@end deffn

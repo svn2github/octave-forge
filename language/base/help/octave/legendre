@@ -1,0 +1,38 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{L} =} legendre (@var{n}, @var{X})
+
+Legendre Function of degree n and order m
+where all values for m = 0..@var{n} are returned.
+@var{n} must be a scalar in the range [0..255].
+The return value has one dimension more than @var{x}.
+
+@example
+The Legendre Function of degree n and order m
+
+@group
+ m        m       2  m/2   d^m
+P(x) = (-1) * (1-x  )    * ----  P (x)
+ n                         dx^m   n
+@end group
+
+with:
+Legendre Polynom of degree n
+
+@group
+          1     d^n   2    n
+P (x) = ------ [----(x - 1)  ] 
+ n      2^n n!  dx^n
+@end group
+
+legendre(3,[-1.0 -0.9 -0.8]) returns the matrix
+
+@group
+ x  |   -1.0   |   -0.9   |  -0.8
+------------------------------------
+m=0 | -1.00000 | -0.47250 | -0.08000
+m=1 |  0.00000 | -1.99420 | -1.98000
+m=2 |  0.00000 | -2.56500 | -4.32000
+m=3 |  0.00000 | -1.24229 | -3.24000 
+@end group
+@end example
+@end deftypefn

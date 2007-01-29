@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} exec (@var{file}, @var{args})
+Replace current process with a new process.  Calling @code{exec} without
+first calling @code{fork} will terminate your current Octave process and
+replace it with the program named by @var{file}.  For example,
+
+@example
+exec ("ls" "-l")
+@end example
+
+@noindent
+will run @code{ls} and return you to your shell prompt.
+
+If successful, @code{exec} does not return.  If @code{exec} does return,
+@var{err} will be nonzero, and @var{msg} will contain a system-dependent
+error message.
+@end deftypefn

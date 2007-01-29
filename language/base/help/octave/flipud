@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} flipud (@var{x})
+Return a copy of @var{x} with the order of the rows reversed.  For
+example,
+
+@example
+@group
+flipud ([1, 2; 3, 4])
+@result{}  3  4
+         1  2
+@end group
+@end example
+
+Due to the difficulty of defining which axis about which to flip the 
+matrix @code{flipud} only work with 2-d arrays.  To flip N-d arrays
+use @code{flipdim} instead.
+@seealso{fliplr, flipdim, rot90, rotdim}
+@end deftypefn

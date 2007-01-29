@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} islower (@var{s})
+Return 1 for characters that are lower case letters.
+@end deftypefn

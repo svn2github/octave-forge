@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} sysidx (@var{sys}, @var{sigtype}, @var{signamelist})
+Return indices of signals with specified signal names
+inputs given a system data structure @var{sys}, a signal type to be
+selected @var{sigtype} (@code{"in"}, @code{"out"}, @code{"st"}), and
+a list of desired signal names @var{signamelist}.
+@end deftypefn

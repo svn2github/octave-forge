@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_bool (@var{a})
+This function has been deprecated.  Use isbool instead.
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} sysgettsam (@var{sys})
+Return the sampling time of the system @var{sys}.
+@end deftypefn

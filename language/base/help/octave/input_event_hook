@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{ofcn}, @var{odata}] =} input_event_hook (@var{fcn}, @var{data})
+Given the name of a function as a string and any Octave value object,
+install @var{fcn} as a function to call periodically, when Octave is
+waiting for input.  The function should have the form
+@example
+@var{fcn} (@var{data})
+@end example
+
+If @var{data} is omitted, Octave calls the function without any
+arguments.  If both @var{fcn} and @var{data} are omitted, Octave
+clears the hook.  In all cases, the name of the previous hook function
+and the user data are returned.
+@end deftypefn

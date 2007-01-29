@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} flipdim (@var{x}, @var{dim})
+Return a copy of @var{x} flipped about the dimension @var{dim}.
+For example
+
+@example
+@group
+flipdim ([1, 2; 3, 4], 2)
+@result{}  2  1
+         4  3
+@end group
+@end example
+@seealso{fliplr, flipud, rot90, rotdim}
+@end deftypefn

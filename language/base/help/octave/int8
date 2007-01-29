@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} int8 (@var{x})
+Convert @var{x} to 8-bit integer type.
+@end deftypefn

@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} cloglog (@var{x})
+Return the complementary log-log function of @var{x}, defined as
+
+@example
+- log (- log (@var{x}))
+@end example
+@end deftypefn

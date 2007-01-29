@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} iscntrl (@var{s})
+Return 1 for control characters.
+@end deftypefn

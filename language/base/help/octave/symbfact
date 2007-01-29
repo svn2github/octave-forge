@@ -1,0 +1,50 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}]} = symbfact (@var{s}, @var{typ}, @var{mode})
+
+Performs a symbolic factorization analysis on the sparse matrix @var{s}.
+Where
+
+@table @asis
+@item @var{s}
+@var{s} is a complex or real sparse matrix.
+
+@item @var{typ}
+Is the type of the factorization and can be one of
+
+@table @code
+@item sym
+Factorize @var{s}. This is the default.
+
+@item col
+Factorize @code{@var{s}' * @var{s}}.
+@item row
+Factorize @code{@var{s} * @var{s}'}.
+@item lo
+Factorize @code{@var{s}'}
+@end table
+
+@item @var{mode}
+The default is to return the Cholesky factorization for @var{r}, and if
+@var{mode} is 'L', the conjugate transpose of the Choleksy factorization
+is returned. The conjugate transpose version is faster and uses less
+memory, but returns the same values for @var{count}, @var{h}, @var{parent}
+and @var{post} outputs.
+@end table
+
+The output variables are
+
+@table @asis
+@item @var{count}
+The row counts of the Cholesky factorization as determined by @var{typ}.
+
+@item @var{h}
+The height of the elimination tree.
+
+@item @var{parent}
+The elimination tree itself.
+
+@item @var{post}
+A sparse boolean matrix whose structure is that of the Cholesky
+factorization as determined by @var{typ}.
+@end table
+@end deftypefn

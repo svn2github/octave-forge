@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} beta_cdf (@var{x}, @var{a}, @var{b})
+For each element of @var{x}, returns the CDF at @var{x} of the beta
+distribution with parameters @var{a} and @var{b}, i.e.,
+PROB (beta (@var{a}, @var{b}) <= @var{x}).
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} rldemo (@var{inputs})
+Octave Control toolbox demo: Root Locus demo.
+@end deftypefn

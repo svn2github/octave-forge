@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} abs (@var{z})
+Compute the magnitude of @var{z}, defined as
+@iftex
+@tex
+$|z| = \sqrt{x^2 + y^2}$.
+@end tex
+@end iftex
+@ifinfo
+|@var{z}| = @code{sqrt (x^2 + y^2)}.
+@end ifinfo
+
+For example,
+
+@example
+@group
+abs (3 + 4i)
+     @result{} 5
+@end group
+@end example
+@end deftypefn

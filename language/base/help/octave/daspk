@@ -1,0 +1,93 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
+Solve the set of differential-algebraic equations
+@tex
+$$ 0 = f (x, \dot{x}, t) $$
+with
+$$ x(t_0) = x_0, \dot{x}(t_0) = \dot{x}_0 $$
+@end tex
+@ifinfo
+
+@example
+0 = f (x, xdot, t)
+@end example
+
+with
+
+@example
+x(t_0) = x_0, xdot(t_0) = xdot_0
+@end example
+
+@end ifinfo
+The solution is returned in the matrices @var{x} and @var{xdot},
+with each row in the result matrices corresponding to one of the
+elements in the vector @var{t}.  The first element of @var{t}
+should be @math{t_0} and correspond to the initial state of the
+system @var{x_0} and its derivative @var{xdot_0}, so that the first
+row of the output @var{x} is @var{x_0} and the first row
+of the output @var{xdot} is @var{xdot_0}.
+
+The first argument, @var{fcn}, is a string or a two element cell array
+of strings, inline or function handle, that names the function, to call
+to compute the vector of residuals for the set of equations. It must
+have the form
+
+@example
+@var{res} = f (@var{x}, @var{xdot}, @var{t})
+@end example
+
+@noindent
+in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a
+scalar.
+
+If @var{fcn} is a two-element string array, the first element names
+the function @math{f} described above, and the second element names
+a function to compute the modified Jacobian
+@tex
+$$
+J = {\partial f \over \partial x}
+  + c {\partial f \over \partial \dot{x}}
+$$
+@end tex
+@ifinfo
+
+@example
+      df       df
+jac = -- + c ------
+      dx     d xdot
+@end example
+@end ifinfo
+
+The modified Jacobian function must have the form
+
+@example
+
+@var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{c})
+
+@end example
+
+The second and third arguments to @code{daspk} specify the initial
+condition of the states and their derivatives, and the fourth argument
+specifies a vector of output times at which the solution is desired,
+including the time corresponding to the initial condition.
+
+The set of initial states and derivatives are not strictly required to
+be consistent.  If they are not consistent, you must use the
+@code{daspk_options} function to provide additional information so
+that @code{daspk} can compute a consistent starting point.
+
+The fifth argument is optional, and may be used to specify a set of
+times that the DAE solver should not integrate past.  It is useful for
+avoiding difficulties with singularities and points where there is a
+discontinuity in the derivative.
+
+After a successful computation, the value of @var{istate} will be
+greater than zero (consistent with the Fortran version of @sc{Daspk}).
+
+If the computation is not successful, the value of @var{istate} will be
+less than zero and @var{msg} will contain additional information.
+
+You can use the function @code{daspk_options} to set optional
+parameters for @code{daspk}.
+@seealso{dassl}
+@end deftypefn

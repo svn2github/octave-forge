@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} mark_as_rawcommand (@var{name})
+Enter @var{name} into the list of raw input commands and to the list of
+command style functions.
+Raw input commands are like normal command style functions, but they
+receive their input unprocessed (ie. strings still contain the quotes
+and escapes they had when input). However, comments and continuations
+are handled as usual, you cannot pass a token starting with a comment
+character ('#' or '%') to your function, and the last token cannot be
+a continuation token ('\' or '...').
+@seealso{unmark_rawcommand, israwcommand, iscommand, mark_as_command}
+@end deftypefn

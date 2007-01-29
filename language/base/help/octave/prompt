@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} prompt (@var{str})
+Prompt user to continue
+
+@strong{Input}
+@table @var
+@item str
+Input string. Its default value is: 
+@example 
+\n ---- Press a key to  continue ---
+@end example
+@end table
+@end deftypefn

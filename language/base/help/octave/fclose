@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} fclose (@var{fid})
+Closes the specified file.  If successful, @code{fclose} returns 0,
+otherwise, it returns -1.
+@seealso{fopen, fseek, ftell}
+@end deftypefn

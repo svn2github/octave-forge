@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{img}, @var{map}] =} gray2ind (@var{})
+Convert a gray scale intensity image to an Octave indexed image.
+@end deftypefn

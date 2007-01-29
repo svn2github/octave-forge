@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} str2func (@var{fcn_name})
+Return a function handle constructed from the string @var{fcn_name}.
+@end deftypefn

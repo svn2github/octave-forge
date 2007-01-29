@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})
+Convert @var{cell} to a structure. The number of fields in @var{fields}
+must match the number of elements in @var{cell} along dimension @var{dim},
+that is @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.
+
+@example
+@group
+A = cell2struct(@{'Peter', 'Hannah', 'Robert'; 185, 170, 168@}, @{'Name','Height'@}, 1);
+A(1)
+@result{} ans =
+      @{
+        Height = 185
+        Name   = Peter
+      @}
+
+@end group
+@end example
+@end deftypefn

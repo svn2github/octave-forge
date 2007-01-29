@@ -1,0 +1,21 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} PS1 ()
+@deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})
+Query or set the primary prompt string.  When executing interactively,
+Octave displays the primary prompt when it is ready to read a command.
+
+The default value of the primary prompt string is @code{"\s:\#> "}.
+To change it, use a command like
+
+@example
+octave:13> PS1 = "\\u@@\\H> "
+@end example
+
+@noindent
+which will result in the prompt @samp{boris@@kremvax> } for the user
+@samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two
+backslashes are required to enter a backslash into a double-quoted
+character string.
+@xref{Strings}.
+@seealso{PS1, PS2}
+@end deftypefn

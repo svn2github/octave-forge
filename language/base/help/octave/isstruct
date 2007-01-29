@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isstruct (@var{expr})
+Return 1 if the value of the expression @var{expr} is a structure.
+@end deftypefn

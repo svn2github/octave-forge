@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __tf2sysl__ (@var{vec})
+used internally in tf2sys.
+strip leading zero coefficients to get the true polynomial length
+@end deftypefn

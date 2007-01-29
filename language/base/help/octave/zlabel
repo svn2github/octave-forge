@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} zlabel (@var{string})
+See xlabel.
+@end deftypefn

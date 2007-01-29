@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } det (@var{a})
+Compute the determinant of @var{a} using @sc{Lapack}.  Return an estimate
+of the reciprocal condition number if requested.
+@end deftypefn

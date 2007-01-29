@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@defvr {Built-in Variable} warn_neg_dim_as_zero
+If the value of @code{warn_neg_dim_as_zero} is nonzero, print a warning
+for expressions like
+
+@example
+eye (-1)
+@end example
+
+@noindent
+The default value is 0.
+@end defvr

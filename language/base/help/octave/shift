@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} shift (@var{x}, @var{b})
+@deftypefnx {Function File} {} shift (@var{x}, @var{b}, @var{dim})
+If @var{x} is a vector, perform a circular shift of length @var{b} of
+the elements of @var{x}.
+
+If @var{x} is a matrix, do the same for each column of @var{x}.
+If the optional @var{dim} argument is given, operate along this 
+dimension
+@end deftypefn

@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} argv ()
+Return the command line arguments passed to Octave.  For example,
+if you invoked Octave using the command
+
+@example
+octave --no-line-editing --silent
+@end example
+
+@noindent
+@code{argv} would return a cell array of strings with the elements
+@code{--no-line-editing} and @code{--silent}.
+
+If you write an executable Octave script, @code{argv} will return the
+list of arguments passed to the script.  @xref{Executable Octave Programs},
+for an example of how to create an executable Octave script.
+@end deftypefn

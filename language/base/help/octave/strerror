@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} strerror (@var{name}, @var{num})
+Return the text of an error message for function @var{name}
+corresponding to the error number @var{num}.  This function is intended
+to be used to print useful error messages for those functions that
+return numeric error codes.
+@end deftypefn

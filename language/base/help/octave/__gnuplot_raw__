@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} __gnuplot_raw__ (@var{string})
+Send @var{string} directly to gnuplot subprocess.
+@end deftypefn

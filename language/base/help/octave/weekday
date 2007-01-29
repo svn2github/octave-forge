@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{n}, @var{s}] =} weekday (@var{d}, [@var{form}])
+Return the day of week as a number in @var{n} and a string in @var{s},
+for example @code{[1, "Sun"]}, @code{[2, "Mon"]}, @dots{}, or
+@code{[7, "Sat"]}.
+
+@var{d} is a serial date number or a date string.
+
+If the string @var{form} is given and is @code{"long"}, @var{s} will
+contain the full name of the weekday; otherwise (or if @var{form} is
+@code{"short"}), @var{s} will contain the abbreviated name of the weekday.
+@seealso{datenum, datevec, eomday}
+@end deftypefn

@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} bartlett_test (@var{x1}, @dots{}) 
+Perform a Bartlett test for the homogeneity of variances in the data
+vectors @var{x1}, @var{x2}, @dots{}, @var{xk}, where @var{k} > 1.
+
+Under the null of equal variances, the test statistic @var{chisq}
+approximately follows a chi-square distribution with @var{df} degrees of
+freedom.
+
+The p-value (1 minus the CDF of this distribution at @var{chisq}) is
+returned in @var{pval}.
+
+If no output argument is given, the p-value is displayed.
+@end deftypefn

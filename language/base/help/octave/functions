@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} functions (@var{fcn_handle})
+Return a struct containing information about the function handle
+@var{fcn_handle}.
+@end deftypefn

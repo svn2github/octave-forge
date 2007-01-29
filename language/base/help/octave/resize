@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} resize (@var{x}, @var{m})
+@deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n})
+Destructively resize @var{x}.
+
+@strong{Values in @var{x} are not preserved as they are with
+@code{reshape}.}
+
+If only @var{m} is supplied and it is a scalar, the dimension of the
+result is @var{m}-by-@var{m}.  If @var{m} is a vector, then the
+dimensions of the result are given by the elements of @var{m}.
+If both @var{m} and @var{n} are scalars, then the dimensions of
+the result are @var{m}-by-@var{n}.
+@seealso{reshape}
+@end deftypefn

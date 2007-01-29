@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isascii (@var{s})
+Return 1 for characters that are ASCII (in the range 0 to 127 decimal).
+@end deftypefn

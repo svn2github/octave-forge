@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} ferror (@var{fid})
+Return 1 if an error condition has been encountered for a given file
+and 0 otherwise.  Note that it will only return 1 if an error has
+already been encountered, not if the next operation will result in an
+error condition.
+@end deftypefn

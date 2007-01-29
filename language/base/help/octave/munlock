@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} munlock (@var{fcn})
+Unlock the named function.  If no function is named
+then unlock the current function.
+@seealso{mlock, mislocked, persistent}
+@end deftypefn

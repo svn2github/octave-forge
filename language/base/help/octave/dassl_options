@@ -1,0 +1,52 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} dassl_options (@var{opt}, @var{val})
+When called with two arguments, this function
+allows you set options parameters for the function @code{dassl}.
+Given one argument, @code{dassl_options} returns the value of the
+corresponding option.  If no arguments are supplied, the names of all
+the available options and their current values are displayed.
+
+Options include
+
+@table @code
+@item "absolute tolerance"
+Absolute tolerance.  May be either vector or scalar.  If a vector, it
+must match the dimension of the state vector, and the relative
+tolerance must also be a vector of the same length.
+@item "relative tolerance"
+Relative tolerance.  May be either vector or scalar.  If a vector, it
+must match the dimension of the state vector, and the absolute
+tolerance must also be a vector of the same length.
+
+The local error test applied at each integration step is
+
+@example
+  abs (local error in x(i))
+       <= rtol(i) * abs (Y(i)) + atol(i)
+@end example
+@item "compute consistent initial condition"
+If nonzero, @code{dassl} will attempt to compute a consistent set of intial
+conditions.  This is generally not reliable, so it is best to provide
+a consistent set and leave this option set to zero.
+@item "enforce nonnegativity constraints"
+If you know that the solutions to your equations will always be
+nonnegative, it may help to set this parameter to a nonzero
+value.  However, it is probably best to try leaving this option set to
+zero first, and only setting it to a nonzero value if that doesn't
+work very well.
+@item "initial step size"
+Differential-algebraic problems may occaisionally suffer from severe
+scaling difficulties on the first step.  If you know a great deal
+about the scaling of your problem, you can help to alleviate this
+problem by specifying an initial stepsize.
+@item "maximum order"
+Restrict the maximum order of the solution method.  This option must
+be between 1 and 5, inclusive.
+@item "maximum step size"
+Setting the maximum stepsize will avoid passing over very large
+regions  (default is not specified).
+@item "step limit"
+Maximum number of integration steps to attempt on a single call to the
+underlying Fortran code.
+@end table
+@end deftypefn

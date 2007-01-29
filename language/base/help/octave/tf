@@ -1,0 +1,35 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} tf (@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname})
+build system data structure from transfer function format data
+
+@strong{Inputs}
+@table @var
+@item  num
+@itemx den
+coefficients of numerator/denominator polynomials
+@item tsam
+sampling interval. default: 0 (continuous time)
+@item inname
+@itemx outname
+input/output signal names; may be a string or cell array with a single string
+entry.
+@end table
+
+@strong{Outputs}
+@var{sys} = system data structure
+
+@strong{Example}
+@example
+octave:1> sys=tf([2 1],[1 2 1],0.1);
+octave:2> sysout(sys)
+Input(s)
+        1: u_1
+Output(s):
+        1: y_1 (discrete)
+Sampling interval: 0.1
+transfer function form:
+2*z^1 + 1
+-----------------
+1*z^2 + 2*z^1 + 1
+@end example
+@end deftypefn

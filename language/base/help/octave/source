@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} source (@var{file})
+Parse and execute the contents of @var{file}.  This is equivalent to
+executing commands from a script file, but without requiring the file to
+be named @file{@var{file}.m}.
+@end deftypefn

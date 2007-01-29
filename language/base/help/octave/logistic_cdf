@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} logistic_cdf (@var{x})
+For each component of @var{x}, compute the CDF at @var{x} of the
+logistic distribution.
+@end deftypefn

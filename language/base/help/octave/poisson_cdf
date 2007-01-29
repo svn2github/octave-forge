@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} poisson_cdf (@var{x}, @var{lambda})
+For each element of @var{x}, compute the cumulative distribution
+function (CDF) at @var{x} of the Poisson distribution with parameter
+lambda.
+@end deftypefn

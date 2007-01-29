@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isdigit (@var{s})
+Return 1 for characters that are decimal digits.
+@end deftypefn

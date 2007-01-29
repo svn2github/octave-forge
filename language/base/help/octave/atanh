@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} atanh (@var{x})
+Compute the inverse hyperbolic tangent of each element of @var{x}.
+@end deftypefn

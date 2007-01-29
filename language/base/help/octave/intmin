@@ -1,0 +1,27 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} intmin (@var{type})
+Return the smallest integer that can be represented in an integer type.
+The variable @var{type} can be
+
+@table @code
+@item int8
+signed 8-bit integer.
+@item int16
+signed 16-bit integer.
+@item int32
+signed 32-bit integer.
+@item int64
+signed 64-bit integer.
+@item uint8
+unsigned 8-bit integer.
+@item uint16
+unsigned 16-bit integer.
+@item uint32
+unsigned 32-bit integer.
+@item uint64
+unsigned 64-bit integer.
+@end table
+
+The default for @var{type} is @code{uint32}.
+@seealso{intmax, bitmax}
+@end deftypefn

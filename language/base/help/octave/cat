@@ -1,0 +1,46 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})
+Return the concatenation of N-d array objects, @var{array1},
+@var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.
+
+@example
+@group
+A = ones (2, 2);
+B = zeros (2, 2);
+cat (2, A, B)
+@result{} ans =
+
+     1 1 0 0
+     1 1 0 0
+@end group
+@end example
+
+Alternatively, we can concatenate @var{A} and @var{B} along the
+second dimension the following way:
+
+@example
+@group
+[A, B].
+@end group
+@end example
+
+@var{dim} can be larger than the dimensions of the N-d array objects
+and the result will thus have @var{dim} dimensions as the
+following example shows:
+@example
+@group
+cat (4, ones(2, 2), zeros (2, 2))
+@result{} ans =
+
+   ans(:,:,1,1) =
+
+     1 1
+     1 1
+
+   ans(:,:,1,2) =
+     0 0
+     0 0
+@end group
+@end example
+@seealso{horzcat, vertcat}
+@end deftypefn

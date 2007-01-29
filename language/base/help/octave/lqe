@@ -1,0 +1,69 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} lqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
+Construct the linear quadratic estimator (Kalman filter) for the
+continuous time system
+@iftex
+@tex
+$$
+ {dx\over dt} = A x + G u
+$$
+$$
+ y = C x + v
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+dx
+-- = A x + G u
+dt
+
+y = C x + v
+@end example
+
+@end ifinfo
+where @var{w} and @var{v} are zero-mean gaussian noise processes with
+respective intensities
+
+@example
+sigw = cov (w, w)
+sigv = cov (v, v)
+@end example
+
+The optional argument @var{z} is the cross-covariance
+@code{cov (@var{w}, @var{v})}.  If it is omitted,
+@code{cov (@var{w}, @var{v}) = 0} is assumed.
+
+Observer structure is @code{dz/dt = A z + B u + k (y - C z - D u)}
+
+The following values are returned:
+
+@table @var
+@item k
+The observer gain,
+@iftex
+@tex
+$(A - K C)$
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{k}@var{c})
+@end ifinfo
+is stable.
+
+@item p
+The solution of algebraic Riccati equation.
+
+@item e
+The vector of closed loop poles of
+@iftex
+@tex
+$(A - K C)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{k}@var{c}).
+@end ifinfo
+@end table
+@end deftypefn

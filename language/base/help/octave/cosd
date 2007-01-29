@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} cosd (@var{x})
+Compute the cosine of an angle in degrees.  Returns zero in elements
+for which @code{(@var{x}-90)/180} is an integer.
+@seealso{cos, sind, tand, acosd, asind, atand}
+@end deftypefn

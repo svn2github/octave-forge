@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} SIG ()
+Return a structure containing Unix signal names and their defined values.
+@end deftypefn

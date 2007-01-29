@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} swaprows (inputs)
+@format
+ function B = swaprows(A)
+ permute rows of A into reverse order
+@end format
+@end deftypefn

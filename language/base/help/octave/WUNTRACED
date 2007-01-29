@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} WUNTRACED ()
+Return the numerical value of the option argument that may be
+passed to @code{waitpid} to indicate that it should also return
+if the child process has stopped but is not traced via the
+@code{ptrace} system call
+@seealso{waitpid, WNOHANG, WCONTINUE}
+@end deftypefn

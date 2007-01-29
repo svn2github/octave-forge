@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} bin2dec (@var{s})
+Return the decimal number corresponding to the binary number stored
+in the string @var{s}.  For example,
+
+@example
+bin2dec ("1110")
+@result{} 14
+@end example
+
+If @var{s} is a string matrix, returns a column vector of converted
+numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
+@seealso{dec2hex, base2dec, dec2base, hex2dec, dec2bin}
+@end deftypefn

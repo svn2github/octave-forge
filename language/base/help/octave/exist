@@ -1,0 +1,30 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} exist (@var{name}, @var{type})
+Return 1 if the name exists as a variable, 2 if the name (after
+appending @samp{.m}) is a function file in Octave's @code{path}, 3 if the
+name is a @samp{.oct} or @samp{.mex} file in Octave's @code{path},
+5 if the name is a built-in function, 7 if the name is a directory, or 103
+if the name is a function not associated with a file (entered on
+the command line).
+
+Otherwise, return 0.
+
+This function also returns 2 if a regular file called @var{name}
+exists in Octave's search path.  If you want information about
+other types of files, you should use some combination of the functions
+@code{file_in_path} and @code{stat} instead.
+
+If the optional argument @var{type} is supplied, check only for
+symbols of the specified type.  Valid types are
+
+@table @samp
+@item "var"
+Check only for variables.
+@item "builtin"
+Check only for built-in functions.
+@item "file"
+Check only for files.
+@item "dir"
+Check only for directories.
+@end table
+@end deftypefn

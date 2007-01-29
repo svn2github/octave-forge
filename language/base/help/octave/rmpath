@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} rmpath (@var{dir1}, @dots{})
+Remove @var{dir1}, @dots{} from the current function search path.
+
+@seealso{path, addpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn

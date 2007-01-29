@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} argnames (@var{fun})
+Create a vectorized version of the inline function @var{fun}
+by replacing all occurrences of @code{*}, @code{/}, etc., with
+@code{.*}, @code{./}, etc.
+@end deftypefn

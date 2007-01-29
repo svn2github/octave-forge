@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_siso (@var{sys})
+Returns nonzero if the system data structure
+@var{sys} is single-input, single-output.
+@end deftypefn

@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{zr} =} tzero2 (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
+Compute the transmission zeros of @var{a}, @var{b}, @var{c}, @var{d}.
+
+@var{bal} = balancing option (see balance); default is @code{"B"}.
+
+Needs to incorporate @command{mvzero} algorithm to isolate finite zeros; 
+use @command{tzero} instead.
+@end deftypefn

@@ -1,0 +1,32 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} size (@var{a}, @var{n})
+Return the number rows and columns of @var{a}.
+
+With one input argument and one output argument, the result is returned
+in a row vector.  If there are multiple output arguments, the number of
+rows is assigned to the first, and the number of columns to the second,
+etc.  For example,
+
+@example
+@group
+size ([1, 2; 3, 4; 5, 6])
+     @result{} [ 3, 2 ]
+
+[nr, nc] = size ([1, 2; 3, 4; 5, 6])
+     @result{} nr = 3
+     @result{} nc = 2
+@end group
+@end example
+
+If given a second argument, @code{size} will return the size of the
+corresponding dimension.  For example
+
+@example
+size ([1, 2; 3, 4; 5, 6], 2)
+     @result{} 2
+@end example
+
+@noindent
+returns the number of columns in the given matrix.
+@seealso{numel}
+@end deftypefn

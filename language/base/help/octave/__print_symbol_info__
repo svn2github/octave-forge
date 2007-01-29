@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} __dump_symbol_info__ (@var{name})
+Print symbol table information for the symbol @var{name}.
+@end deftypefn

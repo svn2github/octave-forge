@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} values (@var{x})
+Return the different values in a column vector, arranged in ascending
+order.
+@end deftypefn

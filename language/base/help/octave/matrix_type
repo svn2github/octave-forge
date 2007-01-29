@@ -1,0 +1,62 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{type} =} matrix_type (@var{a})
+@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, @var{type})
+@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'upper', @var{perm})
+@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'lower', @var{perm})
+@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'banded', @var{nl}, @var{nu})
+Identify the matrix type or mark a matrix as a particular type. This allows rapid
+for solutions of linear equations involving @var{a} to be performed. Called with a
+single argument, @code{matrix_type} returns the type of the matrix and caches it for
+future use. Called with more than one argument, @code{matrix_type} allows the type
+of the matrix to be defined.
+
+The possible matrix types depend on whether the matrix is full or sparse, and can be
+one of the following
+
+@table @asis
+@item 'unknown'
+Remove any previously cached matrix type, and mark type as unknown
+
+@item 'full'
+Mark the matrix as full.
+
+@item 'positive definite'
+Full positive definite matrix.
+
+@item 'diagonal'
+Diagonal Matrix. (Sparse matrices only)
+
+@item 'permuted diagonal'
+Permuted Diagonal matrix. The permutation does not need to be specifically
+indicated, as the structure of the matrix explicitly gives this. (Sparse matrices
+only)
+
+@item 'upper'
+Upper triangular. If the optional third argument @var{perm} is given, the matrix is
+assumed to be a permuted upper triangular with the permutations defined by the
+vector @var{perm}.
+
+@item 'lower'
+Lower triangular. If the optional third argument @var{perm} is given, the matrix is
+assumed to be a permuted lower triangular with the permutations defined by the
+vector @var{perm}.
+
+@item 'banded'
+@itemx 'banded positive definite'
+Banded matrix with the band size of @var{nl} below the diagonal and @var{nu} above
+it. If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal and treated
+with specialized code. In addition the matrix can be marked as positive definite
+(Sparse matrices only)
+
+@item 'singular'
+The matrix is assumed to be singular and will be treated with a minimum norm solution
+
+@end table
+
+Note that the matrix type will be discovered automatically on the first attempt to
+solve a linear equation involving @var{a}. Therefore @code{matrix_type} is only
+useful to give Octave hints of the matrix type. Incorrectly defining the
+matrix type will result in incorrect results from solutions of linear equations,
+and so it is entirely the responsibility of the user to correctly indentify the
+matrix type.
+@end deftypefn

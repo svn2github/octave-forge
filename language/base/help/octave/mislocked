@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} mislocked (@var{fcn})
+Return true if the named function is locked.  If no function is named
+then return true if the current function is locked.
+@seealso{mlock, munlock, persistent}
+@end deftypefn

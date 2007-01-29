@@ -1,0 +1,47 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{size})
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] = } fscanf (@var{fid}, @var{template}, "C")
+In the first form, read from @var{fid} according to @var{template},
+returning the result in the matrix @var{val}.
+
+The optional argument @var{size} specifies the amount of data to read
+and may be one of
+
+@table @code
+@item Inf
+Read as much as possible, returning a column vector.
+
+@item @var{nr}
+Read up to @var{nr} elements, returning a column vector.
+
+@item [@var{nr}, Inf]
+Read as much as possible, returning a matrix with @var{nr} rows.  If the
+number of elements read is not an exact multiple of @var{nr}, the last
+column is padded with zeros.
+
+@item [@var{nr}, @var{nc}]
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with
+@var{nr} rows.  If the number of elements read is not an exact multiple
+of @var{nr}, the last column is padded with zeros.
+@end table
+
+@noindent
+If @var{size} is omitted, a value of @code{Inf} is assumed.
+
+A string is returned if @var{template} specifies only character
+conversions.
+
+The number of items successfully read is returned in @var{count}.
+
+In the second form, read from @var{fid} according to @var{template},
+with each conversion specifier in @var{template} corresponding to a
+single scalar return value.  This form is more `C-like', and also
+compatible with previous versions of Octave.  The number of successful
+conversions is returned in @var{count}
+@ifclear OCTAVE_MANUAL
+
+See the Formatted Input section of the GNU Octave manual for a
+complete description of the syntax of the template string.
+@end ifclear
+@seealso{scanf, sscanf, fread, fprintf}
+@end deftypefn

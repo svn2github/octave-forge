@@ -1,0 +1,3 @@
+-*- texinfo -*-
+@deftypefn {Function File} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})
+@end deftypefn

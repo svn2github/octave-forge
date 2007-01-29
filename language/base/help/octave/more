@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deffn {Command} more
+@deffnx {Command} more on
+@deffnx {Command} more off
+Turn output pagination on or off.  Without an argument, @code{more}
+toggles the current state.
+@end deffn

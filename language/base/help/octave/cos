@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} cos (@var{x})
+Compute the cosine of each element of @var{x}.
+@end deftypefn

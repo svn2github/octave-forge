@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} ind2gray (@var{x}, @var{map})
+Convert an Octave indexed image to a gray scale intensity image.
+If @var{map} is omitted, the current colormap is used to determine the
+intensities.
+@seealso{gray2ind, rgb2ntsc, image, colormap}
+@end deftypefn

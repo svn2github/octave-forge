@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} cauchy_cdf (@var{x}, @var{lambda}, @var{sigma})
+For each element of @var{x}, compute the cumulative distribution
+function (CDF) at @var{x} of the Cauchy distribution with location
+parameter @var{lambda} and scale parameter @var{sigma}.  Default
+values are @var{lambda} = 0, @var{sigma} = 1. 
+@end deftypefn

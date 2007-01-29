@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{"s"})
+Remove the directory named @var{dir}.
+
+If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty
+character strings.  Otherwise, @var{status} is 0, @var{msg} contains a
+system-dependent error message, and @var{msgid} contains a unique
+message identifier.
+
+If the optional second parameter is suplied with value @code{"s"},
+recursively remove all subdirectories as well.
+@seealso{mkdir, confirm_recursive_rmdir}
+@end deftypefn

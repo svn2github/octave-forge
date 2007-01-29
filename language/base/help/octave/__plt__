@@ -1,0 +1,3 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __plt__ (@code{caller}, @dots{})
+@end deftypefn

@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})
+Read characters from a file, stopping after a newline, or EOF,
+or @var{len} characters have been read.  The characters read, excluding
+the possible trailing newline, are returned as a string.
+
+If @var{len} is omitted, @code{fgetl} reads until the next newline
+character.
+
+If there are no more characters to read, @code{fgetl} returns @minus{}1.
+@seealso{fread, fscanf}
+@end deftypefn

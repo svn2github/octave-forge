@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrgid (@var{gid}).
+Return the first entry from the group database with the group ID
+@var{gid}.  If the group ID does not exist in the database,
+@code{getgrgid} returns 0.
+@end deftypefn

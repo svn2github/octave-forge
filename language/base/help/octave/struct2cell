@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} struct2cell (@var{S})
+Create a new cell array from the objects stored in the struct object.
+If @var{f} is the number of fields in the structure, the resulting
+cell array will have a dimension vector corresponding to
+@code{[@var{F} size(@var{S})]}.
+@seealso{cell2struct, fieldnames}
+@end deftypefn

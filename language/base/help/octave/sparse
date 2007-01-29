@@ -1,0 +1,47 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{sparse_val} =} sparse (...)
+SPARSE: create a sparse matrix
+
+sparse can be called in the following ways:
+
+@enumerate
+@item @var{S} = sparse(@var{A})  where @var{A} is a full matrix
+
+@item @var{S} = sparse(@var{A},1)  where @var{A} is a full matrix, result
+is forced back to a full matrix is resulting matrix is sparse
+
+@item @var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},@var{nzmax})  where
+   @itemize @w 
+@var{i},@var{j}   are integer index vectors (1 x nnz) @* 
+@var{s}     is the vector of real or complex entries (1 x nnz) @* 
+@var{m},@var{n}   are the scalar dimentions of S @* 
+@var{nzmax} is ignored (here for compatability with Matlab) @* 
+
+        if multiple values are specified with the same @var{i},@var{j}
+        position, the corresponding values in @var{s} will be added
+   @end itemize
+
+@item The following usages are equivalent to (2) above:
+   @itemize @w 
+@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n})@*
+@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'summation')@*
+@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'sum')@*
+   @end itemize
+
+@item @var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'unique')@*
+
+   @itemize @w 
+same as (2) above, except that rather than adding,
+if more than two values are specified for the same @var{i},@var{j}
+position, then the last specified value will be kept
+   @end itemize
+
+@item @var{S}=  sparse(@var{i},@var{j},@var{sv})          uses @var{m}=max(@var{i}), @var{n}=max(@var{j})
+
+@item @var{S}=  sparse(@var{m},@var{n})            does sparse([],[],[],@var{m},@var{n},0)
+
+@var{sv}, and @var{i} or @var{j} may be scalars, in
+which case they are expanded to all have the same length
+@end enumerate
+@seealso{full}
+@end deftypefn

@@ -1,0 +1,77 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{lambda} =} qz (@var{a}, @var{b})
+Generalized eigenvalue problem @math{A x = s B x},
+@var{QZ} decomposition. There are three ways to call this function:
+@enumerate
+@item @code{lambda = qz(A,B)}
+
+Computes the generalized eigenvalues
+@iftex
+@tex
+$\lambda$
+@end tex
+@end iftex
+@ifinfo
+@var{lambda}
+@end ifinfo
+of @math{(A - s B)}.
+@item @code{[AA, BB, Q, Z, V, W, lambda] = qz (A, B)}
+
+Computes qz decomposition, generalized eigenvectors, and 
+generalized eigenvalues of @math{(A - sB)}
+@iftex
+@tex
+$$ AV = BV{ \rm diag }(\lambda) $$
+$$ W^T A = { \rm diag }(\lambda)W^T B $$
+$$ AA = Q^T AZ, BB = Q^T BZ $$
+@end tex
+@end iftex
+@ifinfo
+@example
+@group
+
+    A*V = B*V*diag(lambda)
+    W'*A = diag(lambda)*W'*B
+    AA = Q'*A*Z, BB = Q'*B*Z
+
+@end group
+@end example
+@end ifinfo
+with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}
+
+@item @code{[AA,BB,Z@{, lambda@}] = qz(A,B,opt)}
+
+As in form [2], but allows ordering of generalized eigenpairs
+for (e.g.) solution of discrete time algebraic Riccati equations.
+Form 3 is not available for complex matrices, and does not compute
+the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.
+@table @var
+@item opt
+for ordering eigenvalues of the GEP pencil.  The leading  block
+of the revised pencil contains all eigenvalues that satisfy:
+@table @code
+@item "N"
+= unordered (default) 
+
+@item "S"
+= small: leading block has all |lambda| <=1 
+
+@item "B"
+= big: leading block has all |lambda| >= 1 
+
+@item "-"
+= negative real part: leading block has all eigenvalues
+in the open left half-plane
+
+@item "+"
+= nonnegative real part: leading block has all eigenvalues
+in the closed right half-plane
+@end  table
+@end table
+@end enumerate
+
+Note: qz performs permutation balancing, but not scaling (see balance).
+Order of output arguments was selected for compatibility with MATLAB
+
+@seealso{balance, dare, eig, schur}
+@end deftypefn

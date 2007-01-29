@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} floor (@var{x})
+Return the largest integer not greater than @var{x}.  If @var{x} is
+complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
+@end deftypefn

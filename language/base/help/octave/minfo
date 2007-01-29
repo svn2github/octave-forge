@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{systype}, @var{nout}, @var{nin}, @var{ncstates}, @var{ndstates}] =} minfo (@var{inmat})
+Determines the type of system matrix.  @var{inmat} can be a varying, 
+a system, a constant, and an empty matrix.
+
+@strong{Outputs}
+@table @var
+@item systype 
+Can be one of: varying, system, constant, and empty.
+@item nout 
+The number of outputs of the system.
+@item nin
+The number of inputs of the system.
+@item ncstates
+The number of continuous states of the system.
+@item ndstates 
+The number of discrete states of the system.
+@end table
+@end deftypefn

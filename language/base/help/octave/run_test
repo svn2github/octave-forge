@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{pval}, @var{chisq}] =} run_test (@var{x})
+Perform a chi-square test with 6 degrees of freedom based on the
+upward runs in the columns of @var{x}.  Can be used to test whether
+@var{x} contains independent data.
+
+The p-value of the test is returned in @var{pval}.
+
+If no output argument is given, the p-value is displayed.
+@end deftypefn

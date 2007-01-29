@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} ispc ()
+Return 1 if Octave is running on a Windows system and 0 otherwise.
+@end deftypefn

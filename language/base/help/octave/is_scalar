@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} is_scalar (@var{a})
+This function has been deprecated.  Use isscalar instead.
+@end deftypefn

@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} mktime (@var{tm_struct})
+Convert a time structure corresponding to the local time to the number
+of seconds since the epoch.  For example,
+
+@example
+@group
+mktime (localtime (time ())
+     @result{} 856163706
+@end group
+@end example
+@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn

@@ -1,0 +1,31 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{fid} =} popen (@var{command}, @var{mode})
+Start a process and create a pipe.  The name of the command to run is
+given by @var{command}.  The file identifier corresponding to the input
+or output stream of the process is returned in @var{fid}.  The argument
+@var{mode} may be
+
+@table @code
+@item "r"
+The pipe will be connected to the standard output of the process, and
+open for reading.
+
+@item "w"
+The pipe will be connected to the standard input of the process, and
+open for writing.
+@end table
+
+For example,
+
+@example
+@group
+fid = popen ("ls -ltr / | tail -3", "r");
+while (isstr (s = fgets (fid)))
+  fputs (stdout, s);
+endwhile
+     @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc
+     @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib
+     @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp
+@end group
+@end example
+@end deftypefn

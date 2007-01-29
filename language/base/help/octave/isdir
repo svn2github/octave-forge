@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} isdir (@var{f})
+Return true if @var{f} is a directory.
+@end deftypefn

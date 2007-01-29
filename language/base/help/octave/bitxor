@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})
+Return the bitwise XOR of nonnegative integers.
+@var{x}, @var{y} must be in range [0..bitmax]
+@seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, bitmax}
+@end deftypefn

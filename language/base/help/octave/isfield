@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} isfield (@var{expr}, @var{name})
+Return true if the expression @var{expr} is a structure and it includes an
+element named @var{name}.  The first argument must be a structure and
+the second must be a string.
+@end deftypefn

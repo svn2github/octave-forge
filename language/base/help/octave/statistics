@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} statistics (@var{x})
+If @var{x} is a matrix, return a matrix with the minimum, first
+quartile, median, third quartile, maximum, mean, standard deviation,
+skewness and kurtosis of the columns of @var{x} as its rows.
+
+If @var{x} is a vector, treat it as a column vector.
+@end deftypefn

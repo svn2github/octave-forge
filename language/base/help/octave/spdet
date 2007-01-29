@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } spdet (@var{a})
+Compute the determinant of sparse matrix @var{a} using UMFPACK.  Return
+an estimate of the reciprocal condition number if requested.
+@end deftypefn

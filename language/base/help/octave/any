@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} any (@var{x}, @var{dim})
+For a vector argument, return 1 if any element of the vector is
+nonzero.
+
+For a matrix argument, return a row vector of ones and
+zeros with each element indicating whether any of the elements of the
+corresponding column of the matrix are nonzero.  For example,
+
+@example
+@group
+any (eye (2, 4))
+     @result{} [ 1, 1, 0, 0 ]
+@end group
+@end example
+
+If the optional argument @var{dim} is supplied, work along dimension
+@var{dim}.  For example,
+
+@example
+@group
+any (eye (2, 4), 2)
+     @result{} [ 1; 1 ]
+@end group
+@end example
+@end deftypefn

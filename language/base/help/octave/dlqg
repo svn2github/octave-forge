@@ -1,0 +1,26 @@
+ O B S O L E T E * * * D O   N O T   U S E!
+
+ Use lqg instead.
+
+function [K,Q,P,Ee,Er] = dlqg(A,B,C,G,Sigw,Sigv,Q,R)
+function [K,Q,P,Ee,Er] = dlqg(Sys,Sigw,Sigv,Q,R)
+
+design a discrete-time linear quadratic gaussian optimal controller
+for the system
+
+ x(k+1) = A x(k) + B u(k) + G w(k)       [w]=N(0,[Sigw 0    ])
+   y(k) = C x(k) + v(k)                  [v]  (    0   Sigv ])
+
+Outputs:
+   K: system data structure format LQG optimal controller
+   P: Solution of control (state feedback) algebraic Riccati equation
+   Q: Solution of estimation algebraic Riccati equation
+   Ee: estimator poles
+   Es: controller poles
+inputs:
+ A,B,C,G, or Sys: state space representation of system.
+ Sigw, Sigv: covariance matrices of independent Gaussian noise processes
+     (as above)
+ Q, R: state, control weighting matrices for dlqr call respectively.
+
+See also: lqg, dlqe, dlqr

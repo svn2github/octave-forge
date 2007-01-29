@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} rehash ()
+Reinitialize Octave's @code{LOADPATH} directory cache.
+@end deftypefn

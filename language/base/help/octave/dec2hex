@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} dec2hex (@var{n}, @var{len})
+Return the hexadecimal string corresponding to the nonnegative 
+integer @var{n}.  For example,
+
+@example
+dec2hex (2748)
+@result{} "ABC"
+@end example
+
+If @var{n} is a vector, returns a string matrix, one row per value,
+padded with leading zeros to the width of the largest value.
+
+The optional second argument, @var{len}, specifies the minimum
+number of digits in the result.
+@seealso{hex2dec, dec2base, base2dec, bin2dec, dec2bin}
+@end deftypefn

@@ -1,0 +1,19 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} ifft (@var{a}, @var{n}, @var{dim})
+Compute the inverse FFT of @var{a} using subroutines from
+@sc{Fftpack}. The inverse FFT is calculated along the first non-singleton dimension
+of the array. Thus if @var{a} is a matrix, @code{fft (@var{a})} computes
+the inverse FFT for each column of @var{a}.
+
+If called with two arguments, @var{n} is expected to be an integer
+specifying the number of elements of @var{a} to use, or an empty
+matrix to specify that its value should be ignored. If @var{n} is
+larger than the dimension along which the inverse FFT is calculated, then
+@var{a} is resized and padded with zeros. Otherwise, if@var{n} is
+smaller than the dimension along which the inverse FFT is calculated,
+then @var{a} is truncated.
+
+If called with three agruments, @var{dim} is an integer specifying the
+dimension of the matrix along which the inverse FFT is performed
+@seealso{fft, ifft2, ifftn, fftw_wisdom}
+@end deftypefn

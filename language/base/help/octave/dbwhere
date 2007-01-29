@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} dbwhere ()
+Show where we are in the code
+@seealso{dbclear, dbstatus, dbstop}
+@end deftypefn

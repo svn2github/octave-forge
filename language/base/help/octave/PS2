@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} PS2 ()
+@deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})
+Query or set the secondary prompt string.  The secondary prompt is
+printed when Octave is expecting additional input to complete a
+command.  For example, if you are typing a for loop that spans several
+lines, Octave will print the secondary prompt at the beginning of
+each line after the first.  The default value of the secondary prompt
+string is @code{"> "}.
+@seealso{PS1, PS4}
+@end deftypefn

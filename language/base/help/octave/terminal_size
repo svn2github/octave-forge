@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} terminal_size ()
+Return a two-element row vector containing the current size of the
+terminal window in characters (rows and columns).
+@seealso{list_in_columns}
+@end deftypefn

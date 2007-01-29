@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} ipermute (@var{a}, @var{iperm})
+The inverse of the @code{permute} function.  The expression
+
+@example
+ipermute (permute (a, perm), perm)
+@end example
+returns the original array @var{a}.
+@seealso{permute}
+@end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} tan (@var{z})
+Compute tangent of each element of @var{x}.
+@end deftypefn

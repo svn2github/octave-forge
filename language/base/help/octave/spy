@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} spy (@var{x})
+Plot the sparsity pattern of the sparse matrix @var{x}.
+@end deftypefn

@@ -1,0 +1,8 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} mu2lin (@var{x}, @var{bps})
+Converts audio data from linear to mu-law.  Mu-law values are 8-bit
+unsigned integers.  Linear values use @var{n}-bit signed integers
+or floating point values in the range -1<=y<=1 if @var{n} is 0.  If
+@var{n} is not specified it defaults to 8.
+@seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, record}
+@end deftypefn

@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} Inf (@var{x})
+@deftypefnx {Built-in Function} {} Inf (@var{n}, @var{m})
+@deftypefnx {Built-in Function} {} Inf (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Built-in Function} {} Inf (@dots{}, @var{class})
+Return a matrix or N-dimensional array whose elements are all Infinity.
+The arguments are handled the same as the arguments for @code{eye}.
+The optional argument @var{class} may be either @samp{"single"} or
+@samp{"double"}.  The default is @samp{"double"}.
+@end deftypefn

@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} PAGER_FLAGS ()
+@deftypefnx {Built-in Function} {@var{old_val} =} PAGER_FLAGS (@var{new_val})
+Query or set the internal variable that specifies the options to pass
+to the pager.
+@seealso{PAGER}
+@end deftypefn

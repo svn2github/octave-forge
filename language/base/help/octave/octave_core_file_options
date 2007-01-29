@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} octave_core_file_options ()
+@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})
+Query or set the internal variable that specifies the options used for
+saving the workspace data if Octave aborts.  The value of
+@code{octave_core_file_options} should follow the same format as the
+options for the @code{save} function. The default value is Octave's binary
+format.
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}
+@end deftypefn

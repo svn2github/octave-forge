@@ -1,0 +1,18 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {} chol (@var{a})
+@cindex Cholesky factorization
+Compute the Cholesky factor, @var{r}, of the symmetric positive definite
+matrix @var{a}, where
+@iftex
+@tex
+$ R^T R = A $.
+@end tex
+@end iftex
+@ifinfo
+
+@example
+r' * r = a.
+@end example
+@end ifinfo
+@seealso{cholinv, chol2inv}
+@end deftypefn

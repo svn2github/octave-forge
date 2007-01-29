@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} clf
+Clear the plot window and any titles or axis labels.  This function
+is equivalent to @code{clearplot}.
+@end deftypefn

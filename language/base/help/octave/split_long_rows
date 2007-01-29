@@ -1,0 +1,27 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} split_long_rows ()
+@deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})
+Query or set the internal variable that controls whether rows of a matrix
+may be split when displayed to a terminal window.  If the rows are split,
+Octave will display the matrix in a series of smaller pieces, each of
+which can fit within the limits of your terminal width and each set of
+rows is labeled so that you can easily see which columns are currently
+being displayed.  For example:
+
+@smallexample
+@group
+octave:13> rand (2,10)
+ans =
+
+ Columns 1 through 6:
+
+  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467
+  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201
+
+ Columns 7 through 10:
+
+  0.90174  0.11854  0.72313  0.73326
+  0.44672  0.94303  0.56564  0.82150
+@end group
+@end smallexample
+@end deftypefn

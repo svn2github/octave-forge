@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} inputname (@var{n})
+Return the text defining @var{n}-th input to the function.
+@end deftypefn

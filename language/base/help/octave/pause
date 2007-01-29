@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} pause (@var{seconds})
+Suspend the execution of the program.  If invoked without any arguments,
+Octave waits until you type a character.  With a numeric argument, it
+pauses for the given number of seconds.  For example, the following
+statement prints a message and then waits 5 seconds before clearing the
+screen.
+
+@example
+@group
+fprintf (stderr, "wait please...
+");
+pause (5);
+clc;
+@end group
+@end example
+@end deftypefn

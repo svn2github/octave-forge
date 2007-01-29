@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} israwcommand (@var{name})
+Return true if @var{name} is a raw input command function.
+If @var{name} is omitted, return a list of identifiers which are marked as
+raw input commands with mark_as_rawcommand.
+@seealso{mark_as_rawcommand, unmark_rawcommand}
+@end deftypefn

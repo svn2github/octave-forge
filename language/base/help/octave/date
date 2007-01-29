@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} date ()
+Return the date as a character string in the form DD-MMM-YY.  For
+example,
+
+@example
+@group
+date ()
+@result{} "20-Aug-93"
+@end group
+@end example
+@end deftypefn

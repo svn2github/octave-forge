@@ -1,0 +1,80 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{s} =} svd (@var{a})
+@deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})
+@cindex singular value decomposition
+Compute the singular value decomposition of @var{a}
+@iftex
+@tex
+$$
+ A = U\Sigma V^H
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+a = u * sigma * v'
+@end example
+@end ifinfo
+
+The function @code{svd} normally returns the vector of singular values.
+If asked for three return values, it computes
+@iftex
+@tex
+$U$, $S$, and $V$.
+@end tex
+@end iftex
+@ifinfo
+U, S, and V.
+@end ifinfo
+For example,
+
+@example
+svd (hilb (3))
+@end example
+
+@noindent
+returns
+
+@example
+ans =
+
+  1.4083189
+  0.1223271
+  0.0026873
+@end example
+
+@noindent
+and
+
+@example
+[u, s, v] = svd (hilb (3))
+@end example
+
+@noindent
+returns
+
+@example
+u =
+
+  -0.82704   0.54745   0.12766
+  -0.45986  -0.52829  -0.71375
+  -0.32330  -0.64901   0.68867
+
+s =
+
+  1.40832  0.00000  0.00000
+  0.00000  0.12233  0.00000
+  0.00000  0.00000  0.00269
+
+v =
+
+  -0.82704   0.54745   0.12766
+  -0.45986  -0.52829  -0.71375
+  -0.32330  -0.64901   0.68867
+@end example
+
+If given a second argument, @code{svd} returns an economy-sized
+decomposition, eliminating the unnecessary rows or columns of @var{u} or
+@var{v}.
+@end deftypefn

@@ -1,0 +1,31 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{l}, @var{u}] =} splu (@var{a})
+@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{P}] =} splu (@var{a})
+@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{P}, @var{Q}] =} splu (@var{a})
+@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{P}, @var{Q}] =} splu (@dots{}, @var{thres})
+@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{P}] =} splu (@dots{}, @var{Q})
+@cindex LU decomposition
+Compute the LU decomposition of the sparse matrix @var{a}, using
+subroutines from UMFPACK.  The result is returned in a permuted
+form, according to the optional return values @var{P} and @var{Q}.
+
+Called with two or three output arguments and a single input argument,
+@dfn{splu} is a replacement for @dfn{lu}, and therefore the sparsity
+preserving column permutations @var{Q} are not performed. Called with
+a fourth output argument, the sparsity preserving column transformation
+@var{Q} is returned, such that @code{@var{P} * @var{a} * @var{Q} =
+@var{l} * @var{u}}.
+
+An additional input argument @var{thres}, that defines the pivoting
+threshold can be given. Alternatively, the desired sparsity preserving
+column permutations @var{Q} can be passed. Note that @var{Q} is assumed
+to be fixed if three are fewer than four output arguments. Otherwise,
+the updated column permutations are returned as the fourth argument.
+
+With two output arguments, returns the permuted forms of the upper and
+lower triangular matrices, such that @code{@var{a} = @var{l} * @var{u}}.
+With two or three output arguments, if a user-defined @var{Q} is given,
+then @code{@var{u} * @var{Q}'} is returned. The matrix is not required to
+be square.
+@seealso{sparse, spinv, colamd, symamd}
+@end deftypefn

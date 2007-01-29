@@ -1,0 +1,10 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})
+Convert the string @var{str} to the time structure @var{tm_struct} under
+the control of the format string @var{fmt}.
+
+If @var{fmt} fails to match, @var{nchars} is 0; otherwise it is set to the
+position of last matched character plus 1. Always check for this unless
+you're absolutely sure the date string will be parsed correctly.
+@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn

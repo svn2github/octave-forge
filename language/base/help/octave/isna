@@ -1,0 +1,12 @@
+-*- texinfo -*-
+@deftypefn {Mapping Function} {} isna (@var{x})
+Return 1 for elements of @var{x} that are NA (missing) values and zero
+otherwise.  For example,
+
+@example
+@group
+isna ([13, Inf, NA, NaN])
+     @result{} [ 0, 0, 1, 0 ]
+@end group
+@end example
+@end deftypefn

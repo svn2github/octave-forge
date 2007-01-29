@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{val} =} FFTW_WISDOM_PROGRAM ()
+@deftypefnx {Built-in Function} {@var{old_val} =} FFTW_WISDOM_PROGRAM (@var{new_val})
+Query or set the internal variable that specifies the FFTW wisdom
+program to use to create wisdom data to accelerate Fourier transforms.
+If the environment variable @code{OCTAVE_WISDOM_PROGRAM} is set when
+Octave starts, its value is used as the default. Otherwise,
+@code{WISDOM_PROGRAM} is set to @code{"fftw-wisdom"}.
+@end deftypefn

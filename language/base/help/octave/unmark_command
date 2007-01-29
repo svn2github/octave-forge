@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} unmark_command (@var{name})
+Remove @var{name} from the list of commands.
+@seealso{mark_as_command, iscommand}
+@end deftypefn

@@ -1,0 +1,6 @@
+md5="ebc142f7aa1375706cab9e217dab0fe9";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+-*- texinfo -*-
+@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} floor (@var{x})
+Retorna o maior inteiro n@~ao maior que @var{x}.  Se @var{x} for
+complexo, retorna @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
+@end deftypefn

@@ -1,0 +1,5 @@
+md5="b5b8c2d90ea782b844465c47ecc5797c";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+-*- texinfo -*-
+@deftypefn {Fun@value{cedilha}@~ao Interna} {} __gnuplot_raw__ (@var{string})
+Envia @var{string} diretamente para o processo do gnuplot.
+@end deftypefn

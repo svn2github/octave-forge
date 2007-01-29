@@ -1,5 +1,5 @@
 # Change the name "help" below to the name of the help function
-HELP = help
+HELP = ajuda
 
 all: $(HELP).oct
 

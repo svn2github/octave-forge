@@ -1,0 +1,6 @@
+md5="07998067ea93f7534580df19ee3187c0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+-*- texinfo -*-
+@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} imag (@var{z})
+Retorna a parte imagin@'aria do n@'umero complexo @var{z} como se fosse um n@'umero real.
+@seealso{real and conj}
+@end deftypefn

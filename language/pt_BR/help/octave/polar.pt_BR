@@ -1,0 +1,10 @@
+md5="3cabeb095299fdc5d399d7f82be3ff86";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+-*- texinfo -*-
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} polar (@var{theta}, @var{rho}, @var{fmt})
+Faz um gr@'afico bidimensional dando as coordenadas polares @var{theta} e
+@var{rho}.
+
+O terceiro argumento opcional especifica o tipo de linha.
+@seealso{plot, semilogx, semilogy, loglog, mesh, contour, bar,
+stairs, replot, xlabel, ylabel, and title}
+@end deftypefn

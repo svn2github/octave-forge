@@ -1,0 +1,11 @@
+md5="8c54296fc73913f791aa98af1e185deb";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+-*- texinfo -*-
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} xlabel (@var{string})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} ylabel (@var{string})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} zlabel (@var{string})
+Especifica r@'otulos para os eixos x, y, e z para montagem de gr@'aficos.  Se voc@^e j@'a tiver um gr@'afico
+sendo mostrado, use o comando @code{replot} para redesenhar esse gr@'afico com os novos
+r@'otulos.
+@seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
+bar, stairs, replot, ylabel, e title}
+@end deftypefn

@@ -1,0 +1,6 @@
+md5="db1ecfd121561f8762c7beaada1fb16e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+-*- texinfo -*-
+@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} ceil (@var{x})
+Retorna o menor inteiro n@~ao menor que @var{x}.  Se @var{x} for
+complexo, retorna @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.
+@end deftypefn

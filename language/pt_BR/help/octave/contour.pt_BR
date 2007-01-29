@@ -1,0 +1,9 @@
+md5="d02dd82fb36e7d64479bbc121a1fb28a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+-*- texinfo -*-
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} contour (@var{z}, @var{n})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} contour (@var{x}, @var{y}, @var{z}, @var{n})
+Monta um gr@'afico de contorno de uma superf@'icie tridimensional descrita por
+@var{z}.  Algu@'em precisa melhorar as rotinas de contorno do @code{gnuplot}
+antes da fun@value{cedilha}@~ao @code{contour} vir a ser muito @'util.
+@seealso{plot, mesh, meshgrid}
+@end deftypefn

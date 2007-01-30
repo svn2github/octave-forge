@@ -93,12 +93,20 @@ def create_INDEX(desc, packdir, p):
         wd = os.getcwd();
         name_version = desc['name'].lower() + "-" + desc['version'];
         
-        ## Create a tarball to be installed
+        ## Look for tarball in ../packages, and if it is found use it
         install_dir = wd + "/install/";
         tarball = name_version + ".tar.gz";
-        if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + p) != 0):
-            os.system("rm -rf " + tarball);
-            raise Exception("Can't create tarball"); 
+        cmd = 'find ../packages -name ' + tarball + ' -prune -type f -print';
+        have_tarball = None;
+        for file in os.popen(cmd).readlines():
+            have_tarball = file[:-1];
+        if (have_tarball):
+            shutil.copy2(have_tarball, tarball);
+        else:
+           ## Create a tarball to be installed
+            if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + p) != 0):
+                os.system("rm -rf " + tarball);
+                raise Exception("Can't create tarball"); 
         
         ## Run octave installation
         command = 'pkg("prefix","' + install_dir + '"); ';
@@ -273,6 +281,8 @@ def main():
     index.write('are well tested and suited for most users.</li>\n');
     index.write('<li><a href="#extra">Extra packages</a> contains packages that\n');
     index.write("for various reasons aren't suited for everybody.</li>\n");
+    index.write('<li><a href="#language">Native Translation packages</a> contains packages of\n');
+    index.write("translations of the help strings of octave.</li>\n");
     index.write('<li><a href="#nonfree">Non-free packages</a> contains packages\n');
     index.write('that have license issues. Usually the packages themselves are\n');
     index.write('Free Software that depend on non-free libraries.</li></ul>\n');
@@ -285,8 +295,8 @@ def main():
     if (os.path.exists("INDEX")):
         os.system("rm -f INDEX");
 
-    main_dirs = ["main",            "extra",          "nonfree"];
-    headers   = ["Main repository", "Extra packages", "Non-free packages"];
+    main_dirs = ["main",            "extra",          "language",           "nonfree"];
+    headers   = ["Main repository", "Extra packages", "Native Translations", "Non-free packages"];
     for i in range(len(main_dirs)):
         name = main_dirs[i];
         main_dir = "../"  + name + "/";

@@ -120,6 +120,8 @@ my %n_appearances = ();
 my $n_functions = 0;
 my @shadow_paths = ('FIXES', 'extra/NaN', 'extra/Windows', 'extra/ver20'); 
 my @shadowed = ();
+my @duplicated = ();
+my %n_duplicated = ();
 
 # grab help from C++ files
 foreach my $f ( @C_files ) {
@@ -356,6 +358,13 @@ if (@shadowed) {
     print "  ", sort(@shadowed); $, = $rs;
     print "\n";
 #    print wrap("\t", "\t", join(" ", sort @shadowed)), "\n";
+}
+
+if (@duplicated) {
+    print "unexpected duplicate indexing of ", scalar(@duplicated), " functions";
+    my $rs = $,; $, = "\n  ";
+    print "  ", sort(@duplicated); $, = $rs;
+    print "\n";
 }
 
 sub process_docstrings {
@@ -639,6 +648,10 @@ sub load_index { # {{{1
 	    die "Function $function (line $.) has no category" unless $category;
 	    push @{$index_by_TB_cat{$toolbox}{$category}}, $function;
 	    push @{$index_by_function{$function}}, [$toolbox, $category];
+	    ++$n_duplicated{$function};
+	    if ($n_duplicated{$function} > 1) {
+		push @duplicated, "$file:$function";
+	    }
 	} else {
             s/^\s+//;
             my @list = split /\s+/;
@@ -681,8 +694,6 @@ sub write_html { # {{{1
 	# The source file
 
 	my $body = long_desc($func);
-	print $body;
-	print "\n";
 	if ($body ne "") {
 	    # XXX FIXME XXX this will die if the punctuation is too wild
 	    open FUNC, ">$catdir/f/$func.in" or die "Could not open $func.in";

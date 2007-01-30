@@ -52,6 +52,13 @@ extra/
 	   * are designed for older versions of Octave, or
 	   * haven't been tested enough.
 
+language/
+	Packages that supply translations of core Octave functions and 
+	Octave-Forge packages. The directory base/template/ contains example
+	code to and the directory base/help the original text of the functions
+	to translate.
+	
+
 main/
 	Packages which may eventually be included in the main octave 
 	distribution.  As such, they should follow Octave conventions.  

@@ -2,6 +2,8 @@ graceplot >> Graceplot
 graphics
   grace_octave_path
   toggle_grace_use
+  subtitle
+  cla
 support
   __grcmd__
   __grcla__

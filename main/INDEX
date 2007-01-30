@@ -928,7 +928,8 @@ Line plots
  stem3 
  stairs 
  comet 
- feather 
+ feather
+ line 
 Business graphs
  pie 
  pie3 
@@ -942,6 +943,7 @@ Business graphs
  fill 
 Contour plots
  contour 
+ contourc
  contourf 
  contour3 
  clabel 
@@ -974,6 +976,10 @@ Figure controls
  automatic_replot clearplot closeplot
  clg
  replot
+ isfigure
+ ishandle
+ closereq
+ gca gcf
 Axis controls
  axis
  box 
@@ -985,6 +991,7 @@ Axis controls
  datetick
  tics
 Labels
+ axes
  title bottom_title top_title
  xlabel 
  ylabel 

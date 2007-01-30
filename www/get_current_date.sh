@@ -1,2 +1,2 @@
 #!/bin/sh
-echo -n `/bin/date --rfc-3339=seconds`
+echo -n `date "+%Y-%m-%d %H:%M:%S%z"`

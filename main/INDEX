@@ -150,6 +150,7 @@ Environment
  bug_report warranty
  native_float_format
  license ver
+ news
  uname
  extproc
 Debugging
@@ -865,8 +866,6 @@ Geometry
  griddata 
  griddata3
  griddatan
- inpolygon=  use David Doolin's <a href="http://www.che.wisc.edu/octave/mailing-lists/octave-sources/1999/12">inpoly.m</a>, but with <a href="http://www.che.wisc.edu/octave/mailing-lists/octave-sources/1999/13">caveats</a>
-
  rectint 
  polyarea 
  __voronoi__

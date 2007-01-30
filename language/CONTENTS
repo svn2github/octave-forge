@@ -1,4 +1,5 @@
 Packages that supply translations of core Octave functions and 
-Octave-Forge packages. The directory template/ contains example
-code to and the directory admin/ supporting scripts to help
-the developer.
+Octave-Forge packages. The directory base/template/ contains example
+code to and the directory base/help the original text of the functions
+to translate.
+

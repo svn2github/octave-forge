@@ -21,7 +21,7 @@ all: mkbundle
 
 mkbundle:
 	@d=`date +%Y%m%d`; \
-	tar cvzf octave-forge-bundle-$$d.tar.gz $(PKGDIRS)
+	tar czf octave-forge-bundle-$$d.tar.gz $(PKGDIRS)
 
 # Do nothing for the package target 
 package:

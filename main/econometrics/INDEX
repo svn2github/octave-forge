@@ -12,3 +12,11 @@ Econometrics
  poisson_moments
  prettyprint_c
  sum_moments_nodes
+ kernel_density
+ kernel_density_cvscore
+ kernel_density_nodes
+ kernel_example
+ kernel_optimal_bandwidth
+ kernel_regression
+ kernel_regression_cvscore
+ kernel_regression_nodes

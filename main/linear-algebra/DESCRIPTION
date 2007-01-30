@@ -7,5 +7,6 @@ Title: Linear Algebra.
 Description: Additional linear algebra code, including general SVD and matrix functions.
 Categories: Linear-Algebra
 Depends: octave (>= 2.9.7)
+Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

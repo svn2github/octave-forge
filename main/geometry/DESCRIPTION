@@ -7,6 +7,7 @@ Title: Geometry
 Description: Geometry tools including convex hull, triangulation, etc.
 Categories: Geometry
 Depends: octave (>= 2.9.7)
+Autoload: yes
 BuildRequires: qhull-devel [Mandriva] libqhull0-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net

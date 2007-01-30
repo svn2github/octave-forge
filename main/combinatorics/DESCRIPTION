@@ -6,5 +6,6 @@ Maintainer: Torsten Finke   <fi@igh-essen.com>
 Title: Combinatorics.
 Description: Combinatorics functions, incuding partitioning.
 Depends: octave (>= 2.9.7)
+Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

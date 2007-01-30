@@ -6,6 +6,7 @@ Maintainer: Alexander Barth <abarth@marine.usf.edu>
 Title: octcdf
 Description: A NetCDF interface for octave
 Depends: octave (>= 2.9.7)
+Autoload: yes
 BuildRequires: netcdf-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net

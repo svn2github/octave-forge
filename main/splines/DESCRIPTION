@@ -7,5 +7,6 @@ Title: Splines.
 Description: Additional Cubic spline functions.
 Categories: Splines
 Depends: octave (>= 2.9.7)
+Autoload: yes
 License: GPL v2 or later, and Public Domain
 Url: http://octave.sf.net

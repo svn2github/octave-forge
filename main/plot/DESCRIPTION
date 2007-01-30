@@ -7,6 +7,7 @@ Title: Plotting.
 Description: Additional ploting tools for Octave.
 Categories: Plotting
 Depends: octave (>= 2.9.7)
+Autoload: yes
 BuildRequires: xorg-x11-devel [Mandriva] libxorg-x11-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net

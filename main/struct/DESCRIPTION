@@ -7,5 +7,6 @@ Title: Structure Handling.
 Description: Additional Structure manipulations functions.
 Categories: Structs
 Depends: octave (>= 2.9.7)
+Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

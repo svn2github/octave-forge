@@ -7,5 +7,6 @@ Title: OdePkg.
 Description: A toolkit for Ordinary Differential Equations and Initial Value Problems.
 Categories: Ordinary Differential Equations
 Depends: octave (>= 2.9.9)
+Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

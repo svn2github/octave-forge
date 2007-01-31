@@ -22,7 +22,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // These are the language specific parts of this file that need changing
 
 // Language file extension. For example .fr for french, .pt or portuguese
-// or .pt_BR for Brazilian
+// or .pt_BR for brazilian portuguese
 #define LANG_EXT ".pt_BR"
 
 // Function name, both with and without the quotes. This should match the
@@ -36,21 +36,21 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // The texinfo formatted help message for the function. Please be careful
 // that accented characters respect texinfo formatting
 #define HELP_TEXT  \
- "@deftypefn (Command} {} ajuda @var{nomearqivo}\n\
+ "@deftypefn {Comando} {} ajuda @var{nomearqivo}\n\
   @deftypefnx {Fun@,{c}@~ao Carreg@'avel} {} ajuda (@var{nomearqivo})\n\
-  Fun@,{c}@~ao de ajuda em Portugu@^es.\n"
+  Fun@,{c}@~ao de ajuda em Portugu@^es do Brasil.\n"
 
 // Some additional non texinfo formatted message 
 #define NOT_FOUND "não encontrado" 
 #define NOT_DOCUMENTED "não está documentado"
 #define MD5_MISMATCH \
-  "MD5 mismatch na seqüência de caracteres traduzida.\nUse `help' para obter a seqüência de caracteres original"
+  "MD5 não coincide na seqüência de caracteres traduzida.\nUse `help' para obter a seqüência de caracteres original"
 #define TEXINFO_ERROR_1 "A formatação do filtro terminou de forma inesperada"
 #define TEXINFO_ERROR_2 "O código fonte Texinfo do texto de ajuda encontra-se adiante..."
 
 // Additional help message.
 #define ADDITIONAL_HELP \
-"Ajuda adiconal para funções internas e operadores está\n\
+"Ajuda adicional para funções internas e operadores está\n\
 disponível na versão on-line do manual.  Use o comando\n\
 `doc <tópico>' para procurar o índice do manual.\n\
 \n\

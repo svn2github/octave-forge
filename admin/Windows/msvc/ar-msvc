@@ -1,0 +1,105 @@
+#!/bin/sh
+
+# ar-msvc
+# Wrapper around MS's lib.exe to make it act more like Unix ar. This
+# software is largely inspired by cccl (http://cccl.sourceforge.net).
+#
+# Copyright (C) 2006 Michael Goffioul
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
+
+usage()
+{
+	cat <<EOF
+Usage: ar-msvc [OPTIONS]
+
+ar-msvc is a wrapper around Microsoft's lib.exe. It translates parameters
+that Unix ar's understand to parameters that lib undertsand.
+EOF
+	exit $1
+}
+
+cmd=
+cmdopts=
+archive_file=
+files=
+
+cmd="$1"
+shift
+
+cmd=`echo "$cmd" | sed 's/-\?-\?\(.*\)/\1/g'`
+
+case $cmd in
+  version)
+    cat <<EOF
+ar-msvc 0.1
+
+Copyright 2006 Michael Goffioul
+This is free software; see the source for copying conditions.  There is NO
+waranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+EOF
+    exit 0
+    ;;
+  help | h)
+    usage 0
+    ;;
+  r* | cr*)
+    cmd=replace
+    ;;
+  t*)
+    cmd=list
+    ;;
+  x*)
+    cmd=extract
+    ;;
+  *)
+    echo "Unsupported command flag: $cmd"
+    exit 1
+    ;;
+esac
+
+while test $# -gt 0; do
+  if test "x$archive_file" == "x"; then
+    archive_file="$1"
+    # converts libxxx.a to xxx.lib
+    archive_file=`echo $archive_file | sed 's/lib\([^\.]*\)\.a/\1.lib/'`
+  else
+    files="$files $1"
+  fi
+  shift
+done
+
+if test "x$cmd" == "x"; then
+  usage 1
+fi
+
+case $cmd in
+  extract)
+    for f in $files; do
+      lib -extract:$f -out:$f $archive_file
+    done
+    ;;
+  list)
+    lib -list $archive_file
+    ;;
+  replace)
+    if test -f "$archive_file"; then
+      lib $archive_file $files
+    else
+      lib -out:$archive_file $files
+    fi
+    ;;
+esac

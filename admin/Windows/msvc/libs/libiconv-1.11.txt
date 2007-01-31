@@ -1,0 +1,31 @@
+Package: libiconv
+Version: 1.11
+Home page: http://www.gnu.org/software/libiconv/
+Download: ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.11.tar.gz
+License: LGPL
+
+Compilation: from windows command shell with VS environment
+
+Requirement: gettext (optional)
+
+1) Go to top source directory and apply the patch
+
+2) nmake -f Makefile.msvc NO_NLS=1 DLL=1 MFLAGS=-MD PREFIX=<dir1> IIPREFIX=<dir2>
+
+   where <dir1> : the installation directory (ex: C:\Software\gnu)
+         <dir2> : <dir1> with backslash doubled (ex: C:\\Software\\gnu)
+
+2b) If you want to build the iconv tools with internationalization support, build
+    and install gettext and then go back to libiconv and
+
+	nmake -f Makefile.msvc DLL=1 MFLAGS=-MD PREFIX=<dir1> IIPREFIX=<dir2>
+
+	This step is not necessary as only the DLL is needed, and this does not
+	rely on the internationalization library.
+
+3) nmake -f Makefile.msvc DLL=1 MFLAGS=-MD PREFIX=<dir1> IIPREFIX=<dir2> install
+
+   The actual required files are:
+     . DLL (in $install/bin)
+	 . headers (in $install/include)
+	 . lib files (in $install/lib)

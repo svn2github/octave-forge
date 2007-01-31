@@ -1,0 +1,24 @@
+Package: zlib
+Version: 1.2.3
+Home page: http://www.zlib.net/
+Download: http://www.zlib.net/zlib123.zip
+License: Free (http://www.zlib.net/zlib_license.html)
+
+Compilation: from Windows command shell with VS environment
+
+Requirement: none
+
+1) Edit the file win32\Makefile.msc and
+	. change STATICLIB to zlib-static.lib
+	. change IMPLIB to zlib.lib
+	. be sure -MD is part of the compilation flags
+	  (normally, it is the case)
+
+2) nmake -f win32\Makefile.msc
+
+3) mt -outputresource:zlib1.dll -manifest zlib1.dll.manifest
+
+4) Install (copy manually):
+	. zlib1.dll into bin directory
+	. zlib.lib into lib directory
+	. zconf.h and zlib.h into include directory

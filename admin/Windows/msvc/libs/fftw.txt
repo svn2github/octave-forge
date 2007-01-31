@@ -1,0 +1,16 @@
+Package: FFTW
+Version: 3.1.2
+Home page: http://www.fftw.org
+Download: ftp://ftp.fftw.org/pub/fftw/fftw-3.1.2-dll.zip
+License: GPL
+
+Compilation: none, using binary package
+
+Requirement: none
+
+1) Download the package and install (copy manually):
+	. libfftw3-3.dll into bin directory
+	. fftw3.h into include directory
+
+2) Follow the instructions in Readme-windows to create the
+   lib file and install it into lib directory

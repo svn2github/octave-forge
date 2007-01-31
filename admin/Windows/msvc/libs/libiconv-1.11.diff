@@ -1,0 +1,89 @@
+diff -ur original-libraries/libiconv-1.11/lib/Makefile.msvc libiconv-1.11/lib/Makefile.msvc
+--- original-libraries/libiconv-1.11/lib/Makefile.msvc	2005-01-06 17:37:08.000000000 +0100
++++ libiconv-1.11/lib/Makefile.msvc	2007-01-31 13:05:33.898508200 +0100
+@@ -121,6 +121,7 @@
+ # iconv.dll and iconv.lib are created together.
+ iconv.lib : $(OBJECTS) $(RESOURCES)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feiconv.dll
++	mt -outputresource:iconv.dll -manifest iconv.dll.manifest
+ 
+ iconv.res : $(srcdir)/../windows/iconv.rc
+ 	rc -Fo iconv.res $(srcdir)/../windows/iconv.rc
+diff -ur original-libraries/libiconv-1.11/libcharset/lib/Makefile.msvc libiconv-1.11/libcharset/lib/Makefile.msvc
+--- original-libraries/libiconv-1.11/libcharset/lib/Makefile.msvc	2005-01-06 17:46:04.000000000 +0100
++++ libiconv-1.11/libcharset/lib/Makefile.msvc	2007-01-31 13:05:09.503044100 +0100
+@@ -116,6 +116,7 @@
+ # charset.dll and charset.lib are created together.
+ charset.lib : $(OBJECTS) $(RESOURCES)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Fecharset.dll
++	mt -outputresource:charset.dll -manifest charset.dll.manifest
+ 
+ charset.res : $(srcdir)/../windows/charset.rc
+ 	rc -Fo charset.res $(srcdir)/../windows/charset.rc
+diff -ur original-libraries/libiconv-1.11/src/Makefile.msvc libiconv-1.11/src/Makefile.msvc
+--- original-libraries/libiconv-1.11/src/Makefile.msvc	2003-05-18 14:27:30.000000000 +0200
++++ libiconv-1.11/src/Makefile.msvc	2007-01-31 13:11:22.396885400 +0100
+@@ -98,6 +98,7 @@
+ # This is the temporary iconv executable, without internationalization.
+ iconv_no_i18n.exe : $(srcdir)/iconv_no_i18n.c $(srcdir)/iconv.c ../srclib/icrt.lib ../lib/iconv.lib
+ 	$(CC) $(INCLUDES) -I..\lib $(CFLAGS) -DINSTALLPREFIX=\"$(IIprefix)\" -DINSTALLDIR=\"$(IIbindir)\" $(srcdir)/iconv_no_i18n.c ../srclib/icrt.lib ../lib/iconv.lib -Feiconv_no_i18n.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 	$(RM) iconv_no_i18n.obj
+ !if $(DLL)
+ 	copy ..\lib\iconv.dll iconv.dll
+@@ -105,6 +106,7 @@
+ 
+ iconv.exe : $(srcdir)/iconv.c ../srclib/icrt.lib ../lib/iconv.lib
+ 	$(CC) $(INCLUDES) -I..\lib $(CFLAGS) -DINSTALLPREFIX=\"$(IIprefix)\" -DINSTALLDIR=\"$(IIbindir)\" $(srcdir)/iconv.c ../srclib/icrt.lib $(LIBINTL) ../lib/iconv.lib -Feiconv.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 	$(RM) iconv.obj
+ !if $(DLL)
+ 	copy ..\lib\iconv.dll iconv.dll
+diff -ur original-libraries/libiconv-1.11/srclib/Makefile.msvc libiconv-1.11/srclib/Makefile.msvc
+--- original-libraries/libiconv-1.11/srclib/Makefile.msvc	2004-01-24 10:11:24.000000000 +0100
++++ libiconv-1.11/srclib/Makefile.msvc	2007-01-23 13:06:43.231791800 +0100
+@@ -64,7 +64,7 @@
+ LIBINTL = $(libdir)\intl.lib
+ !endif
+ 
+-CFLAGS = $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H $(NLSFLAGS) -DDEPENDS_ON_LIBICONV=1 -DDEPENDS_ON_LIBINTL=1
++CFLAGS = $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H $(NLSFLAGS) -DDEPENDS_ON_LIBICONV=1 -DDEPENDS_ON_LIBINTL=1 -DEXEEXT=\".exe\"
+ 
+ INCLUDES = -I. -I.. -I..\windows $(INCINTL)
+ 
+@@ -90,7 +90,7 @@
+   xmalloc.obj xstrdup.obj \
+   \
+   relocatable.obj \
+-  setenv.obj unsetenv.obj
++  setenv.obj unsetenv.obj width.obj
+ 
+ all : icrt.lib
+ 
+@@ -121,6 +121,9 @@
+ unsetenv.obj : unsetenv.c
+ 	$(CC) $(INCLUDES) $(CFLAGS) -c unsetenv.c
+ 
++width.obj : width.c
++	$(CC) $(INCLUDES) $(CFLAGS) -c width.c
++
+ icrt.lib : $(OBJECTS)
+ 	-$(RM) icrt.lib
+ 	$(AR) $(AR_FLAGS)icrt.lib $(OBJECTS)
+diff -ur original-libraries/libiconv-1.11/srclib/unitypes.h libiconv-1.11/srclib/unitypes.h
+--- original-libraries/libiconv-1.11/srclib/unitypes.h	2005-05-19 19:58:24.000000000 +0200
++++ libiconv-1.11/srclib/unitypes.h	2007-01-23 13:02:45.617520900 +0100
+@@ -20,7 +20,13 @@
+ #define _UNITYPES_H
+ 
+ /* Get uint8_t, uint16_t, uint32_t.  */
++#ifndef _MSC_VER
+ #include <stdint.h>
++#else
++typedef unsigned int uint32_t;
++typedef unsigned short uint16_t;
++typedef unsigned char uint8_t;
++#endif
+ 
+ /* Type representing a Unicode character.  */
+ typedef uint32_t ucs4_t;

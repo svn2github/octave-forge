@@ -1,0 +1,17 @@
+Package: LAPACK
+Version: 3.1.0 (should work for other versions as well)
+Home page: http://www.netlib.org/lapack
+Download: http://www.netlib.org/lapack/lapack-3.1.0.tgz
+License: Free
+
+Compilation: from MinGW shell with VS environment + f2c + cc-msvc
+
+Requirement: BLAS, cc-msvc, f2c, libf2c
+
+1) Copy lapack.makefile into SRC/ subdir
+
+2) make -f lapack.makefile (from SRC/ subdir)
+
+3) Install (copy manually):
+	. lapack.dll into bin directory
+	. lapack.lib into lib directory

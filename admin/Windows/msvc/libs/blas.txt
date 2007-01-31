@@ -1,0 +1,17 @@
+Package: BLAS
+Version: <none>
+Home page: http://www.netlib.org/blas
+Download: http://www.netlib.org/blas/blas.tgz
+License: Free
+
+Compilation: from MinGW shell with VS environment + f2c + cc-msvc
+
+Requirement: cc-msvc, f2c, libf2c
+
+1) Copy blas.makefile to BLAS source tree
+
+2) make -f blas.makefile
+
+3) Install (copy manually):
+	. blas.dll into bin directory
+	. blas.lib into lib directory

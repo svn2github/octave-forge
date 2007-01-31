@@ -1,0 +1,25 @@
+Package: readline
+Version: 5.2 (modified for Win32/MSVC)
+Home page: http://tiswww.case.edu/~chet/readline/rltop.html
+Download: ftp://ftp.gnu.org/gnu/readline/readline-5.2.tar.gz (original)
+Download: ??? (modified)
+License: GPL
+
+Compilation: from MinGW with VS environment + cc-msvc
+
+Requirement: cc-msvc
+
+1) Download the modified sources or apply the patch to the
+   original sources
+
+2) CC=cc-msvc CXX=cc-msvc ./configure --build=i686-pc-msdosmsvc \
+     --prefix=/whatever/you/want
+
+3) make shared
+
+4) make install-shared
+
+   Import lib files are not installed, so copy manually readline.lib and
+   history.lib into lib directory. The command "make install-shared" also
+   installs the DLL into the lib directory, so move them into your bin
+   directory.

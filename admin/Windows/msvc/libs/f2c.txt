@@ -1,0 +1,12 @@
+Package: f2c
+Version: none
+Home page: http://www.netlib.org/f2c/
+Download: http://www.netlib.org/f2c/mswin/f2c.exe.gz
+License: Free
+
+Compilation: none
+
+Requirement: libf2c
+
+1) Download the pre-compile binary and install it in
+   your bin directory

@@ -1,0 +1,15 @@
+Package: libf2c
+Version: none
+Home page: http://www.netlib.org/f2c/
+Download: http://www.netlib.org/f2c/libf2c.zip
+License: Free
+
+Compilation: from Windows command shell with VS environment
+
+Requirement: none
+
+1) Edit makefile.vc and add "-MD" to the CFLAGS variable
+
+2) nmake -f makefile.vc
+
+3) Copy vcf2c.lib as f2c.lib into your lib directory

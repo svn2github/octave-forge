@@ -1,0 +1,29 @@
+Package: SuiteSparse
+Version: 2.3.1
+Home page: http://www.cise.ufl.edu/research/sparse/SuiteSparse/
+Download: http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-2.3.1.tar.gz
+License: LGPL (all modules?)
+
+Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc
+
+Requirement: cc-msvc, ar-msvc, BLAS, LAPACK
+
+1) Apply the patch
+
+2) make
+
+3) Install (copy manually)
+	. AMD\Lib\amd.lib => lib
+	. AMD\Include\amd.h => include\suitesparse
+	. CAMD\Lib\camd.lib => lib
+	. CAMD\Include\camd.h => include\suitesparse
+	. CCOLAMD\ccolamd.lib => lib
+	. CCOLAND\ccolamd.h => include\suitesparse
+	. COLAMD\colamd.lib => lib
+	. COLAND\colamd.h => include\suitesparse
+	. CHOLMOD\Lib\cholmod.lib => lib
+	. CHOLMOD\Include\*.h => include\suitesparse
+	. UMFPACK\Lib\umfpack.lib => lib
+	. UMFPACK\Include\*.h => include\suitesparse
+	. CXSparse-C++\Source\cxsparse.lib => lib
+	. CXSparse-C++\Source\cs.h => include\suitesparse

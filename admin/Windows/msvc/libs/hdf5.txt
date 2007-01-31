@@ -1,0 +1,34 @@
+Package: HDF5
+Version: 1.6.5
+Home page: http://www.hdfgroup.org/HDF5/
+Download: ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/hdf5-1.6.5.tar.gz
+License: custom, BSD-like (ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/unpacked/COPYING)
+
+Compilation: from Visual Studio environment
+
+Requirement: zlib
+
+1) Install source package and rename top source dir to "hdf5"
+
+2) Unzip the file windows\all.zip into the parent directory of the top
+   source tree
+
+3) Open the project file proj\all\all.dsw into Visual Studio and tune
+   the project hdf5dll properties to:
+	. create hdf5.dll and hdf5.lib (instead of hdf5dll.[dll|lib])
+	. add ZLIB include and lib dir
+	. link against zlib.lib
+	. remove odbc32.lib, odbccp32.lib
+
+4) Edit h5pubconf.h and comment the 2 lines
+
+	#define H5_HAVE_SZLIB_H 1
+	#define H5_HAVE_FILTER_SZIP 1
+
+5) Build the project
+
+6) Install (copy manually)
+	. hdf5.dll into bin directory
+	. hdf5.lib into lib directory
+	. src/*.h into include directory (not all headers are required, if
+	  you want to know them, look into src/Makefile.in)

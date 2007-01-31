@@ -14,10 +14,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kernel_density: kernel regression estimator
+# kernel_regression: kernel regression estimator
 #
 # usage:
-# 	dens = kernel_regression(eval_points, depvar, condvars, bandwidth)
+# 	fit = kernel_regression(eval_points, depvar, condvars, bandwidth)
 #
 # inputs:
 #	eval_points: PxK matrix of points at which to calculate the density
@@ -37,7 +37,7 @@
 #	kernel (optional): string. Name of the kernel function. Default is radial
 #		symmetric Epanechnikov kernel.
 # outputs:
-#	dens: Px1 vector: the fitted density value at each of the P evaluation points.
+#	fit: Px1 vector: the fitted value at each of the P evaluation points.
 #
 
 function z = kernel_regression(eval_points, depvar, condvars, bandwidth, do_cv, nslaves, debug, bandwith_matrix, kernel)

@@ -143,10 +143,16 @@ package and should respect Octave's package managers file layout.</p>
            <td>Optional keyword describing the package
             (if no INDEX file is given this is mandatory)</td></tr>
       <tr><td>Problems:</td>
-
           <td>Optional list of known problems</td></tr>
       <tr><td>Url:</td>
           <td>Optional list of homepages related to the package</td></tr>
+      <tr><td>Autoload:</td>
+          <td>Optional field that sets the default loading behavior
+	      for the package. If set to 'yes', 'true' or 'on', then
+	      Octave will automatically load the package when
+              starting. Otherwise the package must be manually loaded
+	      with the <i>pkg load</i> command. This default behavior
+	      can be overridden when the package is installed.</td></tr>
       <tr><td>Depends:</td>
           <td>A list of other octave packages that this package
 	      depends on. This can include dependencies on particular
@@ -242,7 +248,6 @@ autoload ('bar', which ('foo'));
 <pre>
 <i>
 include ../../Makeconf
-include ../../pkg.mk
 
 PKG_FILES = COPYING DESCRIPTION $(wildcard INDEX) $(wildcard PKG_ADD) \
 	$(wildcard PKG_DEL) $(wildcard post_install.m) \

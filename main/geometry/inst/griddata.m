@@ -30,13 +30,13 @@
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
 
-function [rx, ry, rz] = griddata (x,y,z,xi,yi)
+function [rx, ry, rz] = griddata (x,y,z,xi,yi,method)
 	
   if nargin==5
     method='linear';
   endif
-  if (nargin <5|nargin>7 )
-    usage('griddata(x,y,z,xi,yi)');
+  if nargin <5 || nargin>7 
+    usage('griddata(x,y,z,xi,yi[,method])');
   endif
   if ischar(method), method=tolower(method); endif
   if !all( (size(x)==size(y)) & (size(x)==size(z)) )

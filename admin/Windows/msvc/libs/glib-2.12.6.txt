@@ -2,7 +2,12 @@ Package: glib
 Version: 2.12.6
 Home page: http://www.gtk.org/
 Download: ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.6.tar.gz
-License: GPL
+License: LGPL
+
+Compilation: from Windows command shell
+
+Requirement: libiconv, gettext (libintl)
+
 
 1) Apply the patch
 

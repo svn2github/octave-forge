@@ -1,0 +1,20 @@
+Package: libjpeg
+Version: 6b (patched by GnuWin32 project)
+Home page: http://www.ijg.org/
+Download: http://gnuwin32.sourceforge.net/packages/jpeg.htm
+License: Free
+
+Compilation: from Windows command shell with VS environment
+
+Requirement: none
+
+1) Apply patch
+
+2) Enter src\jpeg\6b\jpeg-6b-src directory
+
+3) nmake -f makefile.vc nodebug=1
+
+4) Install (copy manually):
+	. jpeg6b.dll into bin directory
+	. jpeg.lib into lib directory
+	. jconfig.h, jerror.h, jmorecfg.h and jpeglib.h into include directory

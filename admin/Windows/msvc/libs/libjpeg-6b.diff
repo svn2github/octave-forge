@@ -1,0 +1,166 @@
+diff -urN jpeg6b/src/jpeg/6b/jpeg-6b-src/jconfig.h jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/jconfig.h
+--- jpeg6b/src/jpeg/6b/jpeg-6b-src/jconfig.h	1970-01-01 01:00:00.000000000 +0100
++++ jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/jconfig.h	2007-02-01 11:39:20.371567800 +0100
+@@ -0,0 +1,47 @@
++/* jconfig.vc --- jconfig.h for Microsoft Visual C++ on Windows 95 or NT. */
++/* see jconfig.doc for explanations */
++
++#define HAVE_PROTOTYPES
++#define HAVE_UNSIGNED_CHAR
++#define HAVE_UNSIGNED_SHORT
++/* #define void char */
++/* #define const */
++#undef CHAR_IS_UNSIGNED
++#define HAVE_STDDEF_H
++#define HAVE_STDLIB_H
++#undef NEED_BSD_STRINGS
++#undef NEED_SYS_TYPES_H
++#undef NEED_FAR_POINTERS	/* we presume a 32-bit flat memory model */
++#undef NEED_SHORT_EXTERNAL_NAMES
++#undef INCOMPLETE_TYPES_BROKEN
++
++#include <windows.h>
++
++/* Define "boolean" as unsigned char, not int, per Windows custom */
++#ifndef __RPCNDR_H__		/* don't conflict if rpcndr.h already read */
++typedef unsigned char boolean;
++#endif
++#define HAVE_BOOLEAN		/* prevent jmorecfg.h from redefining it */
++
++
++#ifdef JPEG_INTERNALS
++
++#undef RIGHT_SHIFT_IS_UNSIGNED
++
++#endif /* JPEG_INTERNALS */
++
++#ifdef JPEG_CJPEG_DJPEG
++
++#define BMP_SUPPORTED		/* BMP image file format */
++#define GIF_SUPPORTED		/* GIF image file format */
++#define PPM_SUPPORTED		/* PBMPLUS PPM/PGM image file format */
++#undef RLE_SUPPORTED		/* Utah RLE image file format */
++#define TARGA_SUPPORTED		/* Targa image file format */
++
++#define TWO_FILE_COMMANDLINE	/* optional */
++#define USE_SETMODE		/* Microsoft has setmode() */
++#undef NEED_SIGNAL_CATCHER
++#undef DONT_USE_B_MODE
++#undef PROGRESS_REPORT		/* optional */
++
++#endif /* JPEG_CJPEG_DJPEG */
+diff -urN jpeg6b/src/jpeg/6b/jpeg-6b-src/jmorecfg.h jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/jmorecfg.h
+--- jpeg6b/src/jpeg/6b/jpeg-6b-src/jmorecfg.h	2005-05-14 18:17:40.000000000 +0200
++++ jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/jmorecfg.h	2007-02-01 12:03:11.569046800 +0100
+@@ -25,7 +25,7 @@
+ #if (defined (_MSC_VER) && (_MSC_VER >= 800))
+ #define HAVE_UNSIGNED_CHAR
+ #define HAVE_ALL_INTS
+-#define EXTERN(type)  extern type __cdecl
++/*#define EXTERN(type)  extern type __cdecl*/
+ #endif
+ 
+ /*
+diff -urN jpeg6b/src/jpeg/6b/jpeg-6b-src/jpeg.rc jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/jpeg.rc
+--- jpeg6b/src/jpeg/6b/jpeg-6b-src/jpeg.rc	1970-01-01 01:00:00.000000000 +0100
++++ jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/jpeg.rc	2007-02-01 12:25:01.022338700 +0100
+@@ -0,0 +1,31 @@
++#define WIN32_LEAN_AND_MEAN
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	6, 2, 0, 0
++PRODUCTVERSION	6, 2, 0, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"Independent JPEG Group <www.ijg.org>\0"
++			VALUE	"FileDescription",	"Jpeg: library and tools for JPEG images\0"
++			VALUE	"FileVersion",	"6b"
++			VALUE	"InternalName",	"jpeg6b\0"
++			VALUE	"LegalCopyright",	"© 2005 Independent JPEG Group <www.ijg.org>\0"
++			VALUE	"OriginalFilename",	"jpeg6b.dll\0"
++			VALUE	"ProductName",	"Jpeg\0"
++			VALUE	"ProductVersion",	"6b\0"
++		END
++	END
++END
+diff -urN jpeg6b/src/jpeg/6b/jpeg-6b-src/makefile.vc jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/makefile.vc
+--- jpeg6b/src/jpeg/6b/jpeg-6b-src/makefile.vc	1998-03-21 19:08:58.000000000 +0100
++++ jpeg6b-mod/src/jpeg/6b/jpeg-6b-src/makefile.vc	2007-02-01 12:31:49.748326800 +0100
+@@ -12,12 +12,13 @@
+ !include <win32.mak>
+ 
+ # You may want to adjust these compiler options:
+-CFLAGS= $(cflags) $(cdebug) $(cvars) -I.
++CFLAGS= $(cflags) $(cdebug) $(cvarsdll) -I. -DJPEG_DLL
+ # Generally, we recommend defining any configuration symbols in jconfig.h,
+ # NOT via -D switches here.
+ 
+ # Link-time options:
+ LDFLAGS= $(ldebug) $(conlflags)
++LDFLAGS_DLL= $(ldebug) $(dlllflags)
+ 
+ # To link any special libraries, add the necessary commands here.
+ LDLIBS= $(conlibs)
+@@ -97,21 +98,27 @@
+ .c.obj:
+ 	$(cc) $(CFLAGS) $*.c
+ 
++JPEGLIB = jpeg.lib
++JPEGDLL = jpeg6b.dll
+ 
+-all: libjpeg.lib cjpeg.exe djpeg.exe jpegtran.exe rdjpgcom.exe wrjpgcom.exe
++all: $(JPEGLIB) cjpeg.exe djpeg.exe jpegtran.exe rdjpgcom.exe wrjpgcom.exe
+ 
+-libjpeg.lib: $(LIBOBJECTS)
+-	$(RM) libjpeg.lib
+-	lib -out:libjpeg.lib  $(LIBOBJECTS)
++$(JPEGLIB): $(LIBOBJECTS) jpeg.res
++	$(RM) $@
++	$(link) $(LDFLAGS_DLL) -out:$(JPEGDLL) -implib:$@ $(LIBOBJECTS) jpeg.res
++	mt -outputresource:$(JPEGDLL) -manifest $(JPEGDLL).manifest
+ 
+-cjpeg.exe: $(COBJECTS) libjpeg.lib
+-	$(link) $(LDFLAGS) -out:cjpeg.exe $(COBJECTS) libjpeg.lib $(LDLIBS)
++jpeg.res: jpeg.rc
++	rc -fo $@ jpeg.rc
+ 
+-djpeg.exe: $(DOBJECTS) libjpeg.lib
+-	$(link) $(LDFLAGS) -out:djpeg.exe $(DOBJECTS) libjpeg.lib $(LDLIBS)
++cjpeg.exe: $(COBJECTS) $(JPEGLIB)
++	$(link) $(LDFLAGS) -out:cjpeg.exe $(COBJECTS) $(JPEGLIB) $(LDLIBS)
+ 
+-jpegtran.exe: $(TROBJECTS) libjpeg.lib
+-	$(link) $(LDFLAGS) -out:jpegtran.exe $(TROBJECTS) libjpeg.lib $(LDLIBS)
++djpeg.exe: $(DOBJECTS) $(JPEGLIB)
++	$(link) $(LDFLAGS) -out:djpeg.exe $(DOBJECTS) $(JPEGLIB) $(LDLIBS)
++
++jpegtran.exe: $(TROBJECTS) $(JPEGLIB)
++	$(link) $(LDFLAGS) -out:jpegtran.exe $(TROBJECTS) $(JPEGLIB) $(LDLIBS)
+ 
+ rdjpgcom.exe: rdjpgcom.obj
+ 	$(link) $(LDFLAGS) -out:rdjpgcom.exe rdjpgcom.obj $(LDLIBS)
+@@ -121,8 +128,10 @@
+ 
+ 
+ clean:
+-	$(RM) *.obj *.exe libjpeg.lib
++	$(RM) *.obj *.exe $(JPEGLIB) $(JPEGDLL) jpeg.res
+ 	$(RM) testout*
++	$(RM) *.pdb *.exp
++	$(RM) *.manifest
+ 
+ test: cjpeg.exe djpeg.exe jpegtran.exe
+ 	$(RM) testout*

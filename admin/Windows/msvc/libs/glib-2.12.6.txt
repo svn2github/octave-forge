@@ -1,0 +1,14 @@
+Package: glib
+Version: 2.12.6
+Home page: http://www.gtk.org/
+Download: ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.6.tar.gz
+License: GPL
+
+1) Apply the patch
+
+2) nmake -f makefile.msc
+
+3) edit build\win32\module.defs and set VCLIBS_PREFIX variable to
+   the installation directory (last line of module.defs)
+
+4) nmake -f makefile.msc install

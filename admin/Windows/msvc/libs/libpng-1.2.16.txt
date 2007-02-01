@@ -2,7 +2,7 @@ Package: libpng
 Version: 1.2.16
 Home page: http://www.libpng.org/pub/png/libpng.html
 Download: http://www.libpng.org/pub/png/libpng.html
-License: Free
+License: zlib/libpng (OSI approved)
 
 Compilation: from Visual Studio environment
 

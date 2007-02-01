@@ -2,7 +2,7 @@ Package: zlib
 Version: 1.2.3
 Home page: http://www.zlib.net/
 Download: http://www.zlib.net/zlib123.zip
-License: Free (http://www.zlib.net/zlib_license.html)
+License: zlib/libpng (OSI approved)
 
 Compilation: from Windows command shell with VS environment
 

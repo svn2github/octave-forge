@@ -1,0 +1,414 @@
+diff -urN original-libraries/gettext-0.15/Makefile.msvc gettext-0.15/Makefile.msvc
+--- original-libraries/gettext-0.15/Makefile.msvc	2003-04-14 16:46:46.000000000 +0200
++++ gettext-0.15/Makefile.msvc	2007-01-23 13:33:56.141637600 +0100
+@@ -63,7 +63,7 @@
+ !else
+ # "-GD" (msvc5) optimizes for DLL.
+ # mscv4 doesn't know about this flag and ignores it.
+-PICFLAGS = -GD
++PICFLAGS = -D_DLL
+ !endif
+ 
+ !if $(DEBUG)
+diff -urN original-libraries/gettext-0.15/gettext-runtime/intl/Makefile.msvc gettext-0.15/gettext-runtime/intl/Makefile.msvc
+--- original-libraries/gettext-0.15/gettext-runtime/intl/Makefile.msvc	2005-08-01 14:14:02.000000000 +0200
++++ gettext-0.15/gettext-runtime/intl/Makefile.msvc	2007-02-01 09:26:23.398506200 +0100
+@@ -204,6 +204,7 @@
+ # intl.dll and intl.lib are created together.
+ intl.lib : $(OBJECTS) $(RESOURCES)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(libdir)\iconv.lib $(RESOURCES) -Feintl.dll
++	mt -outputresource:intl.dll -manifest intl.dll.manifest
+ 
+ intl.res : $(srcdir)\..\windows\intl.rc
+ 	rc -Fo intl.res $(srcdir)\..\windows\intl.rc
+@@ -254,6 +255,7 @@
+ 	$(RM) *.dll
+ 	$(RM) intl.res
+ 	$(RM) core
++	$(RM) *.manifest
+ 
+ distclean : clean
+ 
+diff -urN original-libraries/gettext-0.15/gettext-runtime/lib/Makefile.msvc gettext-0.15/gettext-runtime/lib/Makefile.msvc
+--- original-libraries/gettext-0.15/gettext-runtime/lib/Makefile.msvc	2006-05-08 16:26:30.000000000 +0200
++++ gettext-0.15/gettext-runtime/lib/Makefile.msvc	2007-01-23 13:23:33.830680200 +0100
+@@ -40,7 +40,7 @@
+ OPTIMFLAGS = -D_NDEBUG -O1
+ !endif
+ 
+-CFLAGS = $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H -DDEPENDS_ON_LIBINTL=1
++CFLAGS = $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H -DDEPENDS_ON_LIBINTL=1 -DEXEEXT=\".exe\"
+ 
+ INCLUDES = -I. -I.. -I..\intl -I..\..\gettext-tools\lib -I..\..\gettext-tools\windows -I$(includedir)
+ 
+diff -urN original-libraries/gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc
+--- original-libraries/gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc	2005-02-12 19:41:40.000000000 +0100
++++ gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc	2007-02-01 09:36:10.787954000 +0100
+@@ -177,11 +177,12 @@
+ 	$(RM) config.h
+ 	$(RM) alloca.h
+ 	$(RM) *.obj
+-	$(RM) *.lib
++	$(RM) asprintf.lib
+ 	$(RM) *.exp
+ 	$(RM) *.dll
+ 	$(RM) asprintf.res
+ 	$(RM) core
++	$(RM) *.manifest
+ 
+ distclean : clean
+ 
+diff -urN original-libraries/gettext-0.15/gettext-runtime/src/Makefile.msvc gettext-0.15/gettext-runtime/src/Makefile.msvc
+--- original-libraries/gettext-0.15/gettext-runtime/src/Makefile.msvc	2005-02-10 16:49:08.000000000 +0100
++++ gettext-0.15/gettext-runtime/src/Makefile.msvc	2007-02-01 09:33:16.513406600 +0100
+@@ -140,6 +140,8 @@
+ 	$(RM) *.obj
+ 	$(RM) $(PROGRAMS)
+ 	$(RM) core
++	$(RM) *.manifest
++	$(RM) *.lib *.exp
+ 
+ distclean : clean
+ 
+diff -urN original-libraries/gettext-0.15/gettext-tools/config.h.msvc gettext-0.15/gettext-tools/config.h.msvc
+--- original-libraries/gettext-0.15/gettext-tools/config.h.msvc	2006-07-21 17:30:18.000000000 +0200
++++ gettext-0.15/gettext-tools/config.h.msvc	2007-02-01 09:43:25.778974400 +0100
+@@ -31,7 +31,7 @@
+ 
+ /* Define according to the byte order of the target machine: 1 for big endian,
+    0 for little endian. */
+-#undef ENDIANNESS
++#define ENDIANNESS 0
+ 
+ /* Define to 1 if you have `alloca', as a function or macro. */
+ #define HAVE_ALLOCA 1
+diff -urN original-libraries/gettext-0.15/gettext-tools/lib/Makefile.msvc gettext-0.15/gettext-tools/lib/Makefile.msvc
+--- original-libraries/gettext-0.15/gettext-tools/lib/Makefile.msvc	2006-05-03 14:34:04.000000000 +0200
++++ gettext-0.15/gettext-tools/lib/Makefile.msvc	2007-02-01 09:26:07.600822400 +0100
+@@ -50,7 +50,7 @@
+ !else
+ # "-GD" (msvc5) optimizes for DLL.
+ # mscv4 doesn't know about this flag and ignores it.
+-PICFLAGS = -GD
++PICFLAGS = -GD -D_DLL
+ !endif
+ 
+ !if $(DEBUG)
+@@ -345,6 +345,7 @@
+ # gettextlib.dll and gettextlib.lib are created together.
+ gettextlib.lib : ..\windows\gettextlib.def $(OBJECTS) $(RESOURCES)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD ..\windows\gettextlib.def $(OBJECTS) ..\intl\intl.lib $(libdir)\iconv.lib $(RESOURCES) -Fegettextlib.dll
++	mt -outputresource:gettextlib.dll -manifest gettextlib.dll.manifest
+ 
+ gettextlib.res : ../windows/gettextlib.rc
+ 	rc -Fo gettextlib.res ../windows/gettextlib.rc
+@@ -382,6 +383,7 @@
+ 	$(RM) *.dll
+ 	$(RM) gettextlib.res
+ 	$(RM) core
++	$(RM) *.manifest
+ 
+ distclean : clean
+ 
+diff -urN original-libraries/gettext-0.15/gettext-tools/lib/gettext.h gettext-0.15/gettext-tools/lib/gettext.h
+--- original-libraries/gettext-0.15/gettext-tools/lib/gettext.h	2006-06-09 23:29:10.000000000 +0200
++++ gettext-0.15/gettext-tools/lib/gettext.h	2007-01-23 13:45:53.227842600 +0100
+@@ -143,7 +143,7 @@
+ #include <string.h>
+ 
+ #define _LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS \
+-  (__GNUC__ >= 3 || defined __cplusplus)
++  ((__GNUC__ >= 3 || defined __cplusplus) && ! defined _MSC_VER)
+ 
+ #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS
+ #include <stdlib.h>
+diff -urN original-libraries/gettext-0.15/gettext-tools/lib/xvasprintf.c gettext-0.15/gettext-tools/lib/xvasprintf.c
+--- original-libraries/gettext-0.15/gettext-tools/lib/xvasprintf.c	2006-05-09 20:01:24.000000000 +0200
++++ gettext-0.15/gettext-tools/lib/xvasprintf.c	2007-01-23 13:42:44.875654800 +0100
+@@ -48,7 +48,11 @@
+ 
+   /* Determine the total size.  */
+   totalsize = 0;
++#ifndef _MSC_VER
+   va_copy (ap, args);
++#else
++  ap = args;
++#endif
+   for (i = argcount; i > 0; i--)
+     {
+       const char *next = va_arg (ap, const char *);
+diff -urN original-libraries/gettext-0.15/gettext-tools/src/Makefile.msvc gettext-0.15/gettext-tools/src/Makefile.msvc
+--- original-libraries/gettext-0.15/gettext-tools/src/Makefile.msvc	2006-03-29 14:29:20.000000000 +0200
++++ gettext-0.15/gettext-tools/src/Makefile.msvc	2007-02-01 09:47:39.795344400 +0100
+@@ -81,7 +81,7 @@
+ DEBUGFLAGS =
+ !endif
+ 
+-CFLAGS = $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H -DLOCALEDIR=\"$(IIlocaledir)\" -DLOCALE_ALIAS_PATH=\"$(IIaliaspath)\" -DGETTEXTJAR=\"$(IIjardir)\\gettext.jar\" -DLIBDIR=\"$(IIlibdir)\" -DGETTEXTDATADIR=\"$(IIpkgdatadir)\" -DPROJECTSDIR=\"$(IIprojectsdir)\"
++CFLAGS = $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H -DLOCALEDIR=\"$(IIlocaledir)\" -DBISON_LOCALEDIR=\"$(IIlocaledir)\" -DLOCALE_ALIAS_PATH=\"$(IIaliaspath)\" -DGETTEXTJAR=\"$(IIjardir)\\gettext.jar\" -DLIBDIR=\"$(IIlibdir)\" -DGETTEXTDATADIR=\"$(IIpkgdatadir)\" -DPROJECTSDIR=\"$(IIprojectsdir)\"
+ 
+ INCLUDES = -I. -I.. -I..\libgrep -I..\libuniname -I..\lib -I..\intl -I..\..\gettext-runtime\intl -I..\windows -I$(includedir)
+ 
+@@ -108,6 +108,7 @@
+ OBJECTS = \
+   message.obj \
+   po-error.obj \
++  po-xerror.obj \
+   read-po-abstract.obj \
+   po-lex.obj \
+   po-gram-gen.obj \
+@@ -128,9 +129,11 @@
+   msgl-english.obj \
+   file-list.obj \
+   msgl-charset.obj \
++  msgl-check.obj \
+   po-time.obj \
+-  plural.obj \
++  plural-exp.obj \
+   plural-table.obj \
++  plural-eval.obj \
+   format.obj \
+   format-c.obj \
+   format-sh.obj \
+@@ -153,7 +156,7 @@
+   format-boost.obj
+ 
+ msgcmp_OBJECTS = msgcmp.obj
+-msgfmt_OBJECTS = msgfmt.obj write-mo.obj write-java.obj write-csharp.obj write-resources.obj write-tcl.obj write-qt.obj plural-eval.obj hash-string.obj
++msgfmt_OBJECTS = msgfmt.obj write-mo.obj write-java.obj write-csharp.obj write-resources.obj write-tcl.obj write-qt.obj hash-string.obj
+ msgmerge_OBJECTS = msgmerge.obj msgl-fsearch.obj plural-count.obj
+ msgunfmt_OBJECTS = msgunfmt.obj read-mo.obj read-java.obj read-csharp.obj read-resources.obj read-tcl.obj
+ xgettext_OBJECTS = xgettext.obj x-c.obj x-po.obj x-sh.obj x-python.obj x-lisp.obj x-elisp.obj x-librep.obj x-scheme.obj x-smalltalk.obj x-java.obj x-csharp.obj x-awk.obj x-ycp.obj x-tcl.obj x-perl.obj x-php.obj x-rst.obj x-glade.obj
+@@ -182,6 +185,9 @@
+ po-error.obj : po-error.c
+ 	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c -Tp po-error.c
+ 
++po-xerror.obj : po-xerror.c
++	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c -Tp po-xerror.c
++
+ read-po-abstract.obj : read-po-abstract.c
+ 	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c read-po-abstract.c
+ 
+@@ -224,6 +230,9 @@
+ msgl-ascii.obj : msgl-ascii.c
+ 	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c msgl-ascii.c
+ 
++msgl-check.obj : msgl-check.c
++	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c msgl-check.c
++
+ msgl-iconv.obj : msgl-iconv.c
+ 	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c msgl-iconv.c
+ 
+@@ -245,8 +254,8 @@
+ po-time.obj : po-time.c
+ 	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c po-time.c
+ 
+-plural.obj : plural.c
+-	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c plural.c
++plural-exp.obj : plural-exp.c
++	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c plural-exp.c
+ 
+ plural-table.obj : plural-table.c
+ 	$(CC) $(INCLUDES) $(CFLAGS) $(PICFLAGS) -c plural-table.c
+@@ -322,6 +331,7 @@
+ # gettextsrc.dll and gettextsrc.lib are created together.
+ gettextsrc.lib : ..\windows\gettextsrc.def $(OBJECTS) $(RESOURCES)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD ..\windows\gettextsrc.def $(OBJECTS) ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(RESOURCES) -Fegettextsrc.dll
++	mt -outputresource:gettextsrc.dll -manifest gettextsrc.dll.manifest
+ 
+ gettextsrc.res : ../windows/gettextsrc.rc
+ 	rc -Fo gettextsrc.res ../windows/gettextsrc.rc
+@@ -488,51 +498,67 @@
+ 
+ msgcmp.exe : $(msgcmp_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgcmp_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgcmp.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgfmt.exe : $(msgfmt_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgfmt_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgfmt.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgmerge.exe : $(msgmerge_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgmerge_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgmerge.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgunfmt.exe : $(msgunfmt_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgunfmt_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgunfmt.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ xgettext.exe : $(xgettext_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(xgettext_OBJECTS) ..\libuniname\uniname.lib gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Fexgettext.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgattrib.exe : $(msgattrib_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgattrib_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgattrib.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgcat.exe : $(msgcat_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgcat_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgcat.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgcomm.exe : $(msgcomm_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgcomm_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgcomm.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgconv.exe : $(msgconv_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgconv_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgconv.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgen.exe : $(msgen_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgen_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgen.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgexec.exe : $(msgexec_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgexec_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgexec.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msgfilter.exe : $(msgfilter_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msgfilter_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsgfilter.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msggrep.exe : $(msggrep_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msggrep_OBJECTS) ..\libgrep\grep.lib gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsggrep.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msginit.exe : $(msginit_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msginit_OBJECTS) ..\intl\localename.obj gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsginit.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ msguniq.exe : $(msguniq_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(msguniq_OBJECTS) gettextsrc.lib ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Femsguniq.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ recode-sr-latin.exe : $(recode_sr_latin_OBJECTS)
+ 	$(CC) $(MFLAGS) $(DEBUGFLAGS) $(recode_sr_latin_OBJECTS) ..\lib\gettextlib.lib ..\intl\intl.lib $(libdir)\iconv.lib $(LDADD) -Ferecode-sr-latin.exe
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ # Compilation rules for gettextpo.lib objects, with $(PICFLAGS).
+ 
+@@ -638,8 +664,10 @@
+ 	$(RM) *.exp
+ 	$(RM) *.dll
+ 	$(RM) gettextsrc.res
++	$(RM) gettextpo.res
+ 	$(RM) $(PROGRAMS)
+ 	$(RM) core
++	$(RM) *.manifest
+ 
+ distclean : clean
+ 
+diff -urN original-libraries/gettext-0.15/gettext-tools/windows/byteswap.h gettext-0.15/gettext-tools/windows/byteswap.h
+--- original-libraries/gettext-0.15/gettext-tools/windows/byteswap.h	1970-01-01 01:00:00.000000000 +0100
++++ gettext-0.15/gettext-tools/windows/byteswap.h	2007-01-23 14:02:32.592537000 +0100
+@@ -0,0 +1,2 @@
++/* The system doesn't have <byteswap.h>.  Use our byteswap.h emulation.  */
++#include "byteswap_.h"
+diff -urN original-libraries/gettext-0.15/gettext-tools/windows/gettextlib.def gettext-0.15/gettext-tools/windows/gettextlib.def
+--- original-libraries/gettext-0.15/gettext-tools/windows/gettextlib.def	2005-02-08 12:26:08.000000000 +0100
++++ gettext-0.15/gettext-tools/windows/gettextlib.def	2007-01-23 14:20:38.334881100 +0100
+@@ -40,7 +40,9 @@
+ create_pipe_bidi
+ create_pipe_in
+ create_pipe_out
+-delete_hash
++hash_destroy
++hash_set_value
++hash_iterate_modify
+ error
+ error_at_line
+ error_one_per_line
+@@ -49,7 +51,7 @@
+ execute_csharp_program
+ execute_java_class
+ find_backup_file_name
+-find_entry
++hash_find_entry
+ find_in_path
+ freesa
+ fstrcmp
+@@ -61,9 +63,9 @@
+ gnu_basename
+ gnu_mbswidth
+ gnu_stpncpy
+-init_hash
+-insert_entry
+-iterate_table
++hash_init
++hash_insert_entry
++hash_iterate
+ locale_charset
+ mallocsa
+ maybe_print_progname
+@@ -92,8 +94,17 @@
+ shell_quote_copy
+ shell_quote_length
+ stpcpy
+-strcasecmp
+-strncasecmp
++;strcasecmp
++;strncasecmp
++iconv_string
++proper_name
++proper_name_utf8
++cleanup_temp_dir
++create_temp_dir
++register_temp_subdir
++unregister_temp_subdir
++register_temp_file
++unregister_temp_file
+ u8_possible_linebreaks
+ u8_width_linebreaks
+ uc_width
+diff -urN original-libraries/gettext-0.15/gettext-tools/windows/gettextsrc.def gettext-0.15/gettext-tools/windows/gettextsrc.def
+--- original-libraries/gettext-0.15/gettext-tools/windows/gettextsrc.def	2005-02-12 20:07:36.000000000 +0100
++++ gettext-0.15/gettext-tools/windows/gettextsrc.def	2007-01-23 14:22:14.383958200 +0100
+@@ -17,6 +17,7 @@
+ formatstring_perl_brace
+ formatstring_php
+ formatstring_python
++get_python_format_unnamed_arg_count
+ formatstring_sh
+ formatstring_smalltalk
+ formatstring_tcl
+@@ -37,6 +38,9 @@
+ po_charset_utf8
+ po_error
+ po_error_at_line
++textmode_xerror
++textmode_xerror2
++check_message
+ po_gram_lval
+ po_lex_charset
+ po_lex_iconv
+@@ -47,6 +51,7 @@
+ catenate_msgdomain_list
+ compare_po_locale_charsets
+ check_msgid_msgstr_format
++check_message_list
+ convert_string
+ default_constructor
+ default_destructor
+@@ -92,11 +97,14 @@
+ message_list_list_append
+ message_list_list_append_list
+ message_list_list_search
+-message_list_list_search_fuzzy
++message_list_list_free
++;message_list_list_search_fuzzy
++fuzzy_search_goal_function
+ message_list_prepend
+ message_list_remove_if_not
+ message_list_search
+ message_list_search_fuzzy
++message_list_free
+ message_page_width_ignore
+ message_page_width_set
+ message_print_comment
+@@ -127,6 +135,7 @@
+ po_callback_message
+ po_charset_ascii_compatible
+ po_charset_canonicalize
++po_charset_character_iterator
+ po_gram_error_at_line
+ po_gram_lex
+ po_gram_parse

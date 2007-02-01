@@ -1,0 +1,27 @@
+Package: gettext
+Version: 0.15
+Home page: http://www.gnu.org/software/gettext/
+Download: ftp://ftp.belnet.be/mirror/ftp.gnu.org/gnu/gettext/gettext-0.15.tar.gz
+License: GPL
+
+Compilation: from Windows command shell with VS environment
+
+Requirement: libiconv (built without internationalization support)
+
+1) Apply the patch
+
+2) nmake -f Makefile.msvc DLL=1 MFLAGS=-MD PREFIX=<dir1> IIPREFIX=<dir2>
+
+   where <dir1> : installation directory (preferably the same as libiconv)
+         <dir2> : <dir1> with backslash doubled
+
+   Example: <dir1> = C:\Software\gnu
+            <dir2> = C:\\Software\\gnu
+
+3) nmake -f Makefile.msvc DLL=1 MFLAGS=-MD PREFIX=<dir1> IIPREFIX=<dir2> install
+
+   Note that the only thing you will need in the context of octave is
+   the internationalization library. This means:
+	. <prefix>\bin\intl.dll
+	. <prefix>\lib\intl.lib
+	. <prefix>\include\libintl.h

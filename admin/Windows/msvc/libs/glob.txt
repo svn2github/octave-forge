@@ -1,0 +1,19 @@
+Package: glob library
+Version: none
+Home page: none
+Download: none
+License: LGPL
+
+Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc + ranlib-msvc
+
+Requirement: cc-msvc, ar-msvc, randlib-msvc
+
+1) autoconf
+
+2) ./configure.vc
+
+3) make
+
+4) Install (copy manually):
+	. glob.lib into lib directory
+	. fnmatch.h and glob.h into include directory

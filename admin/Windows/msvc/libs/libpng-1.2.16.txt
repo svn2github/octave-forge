@@ -1,0 +1,31 @@
+Package: libpng
+Version: 1.2.16
+Home page: http://www.libpng.org/pub/png/libpng.html
+Download: http://www.libpng.org/pub/png/libpng.html
+License: Free
+
+Compilation: from Visual Studio environment
+
+Requirement: zlib
+
+1) Open projects\visualc71\libpng.sln into Visual Studio
+
+2) Remove zlib from the dependencies of libpng project
+
+3) Edit libpng project settings ("DLL Release" configuration)
+	. make it use your compiled zlib (headers and lib)
+	. make it generate png.lib as import library
+
+   Note that you can use the "DLL ASM Release" configuration,
+   which uses optimized assembler, but then you'll need to add
+   several preprocessor definitions:
+	. PNG_HAVE_MMX_COMBINE_ROW
+	. PNG_HAVE_MMX_READ_INTERLACE
+	. PNG_HAVE_MMX_READ_FILTER_ROW
+
+4) Build libpng project
+
+5) Install (copy manually):
+	. libpng13.dll into bin directory
+	. png.lib into lib directory
+	. png.h and pngconf.h into include directory

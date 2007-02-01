@@ -1,0 +1,18 @@
+Package: PCRE
+Version: 7.0
+Home page: http://www.pcre.org/
+Download: ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.0.tar.gz
+License: BSD
+
+Compilation: from Windows command shell with VS environment
+
+Requirement: none
+
+1) Apply the patch
+
+2) nmake -f Makefile.vc
+
+3) Install (copy manually):
+	. pcre70.dll into bin directory
+	. pcre.lib into lib directory
+	. pcre.h and pcreposix.h into include directory

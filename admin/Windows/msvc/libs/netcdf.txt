@@ -1,0 +1,21 @@
+Package: NetCDF
+Version: 3.6.1
+Home page: http://www.unidata.ucar.edu/software/netcdf/
+Download: ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf.tar.gz
+License: Free (BSD-like)
+
+Compilation: from Visual Studio environment
+
+Requirement: none
+
+1) Open src\win32\NET\netcdf.sln in Visual Studio
+
+2) Edit netcdf project properties and set the runtime library
+   to "Multi-threaded DLL" (which use the /MD compilation flag)
+
+3) Build netcdf project
+
+4) Install (copy manually):
+	. netcdf.dll into bin directory
+	. netcdf.lib into lib directory
+	. src\libsrc\netcdf.h into include directory

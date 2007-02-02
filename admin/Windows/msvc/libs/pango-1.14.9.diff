@@ -1,0 +1,111 @@
+diff -urN pango-1.14.9/pango/makefile.msc ../pango-1.14.9/pango/makefile.msc
+--- pango-1.14.9/pango/makefile.msc	2006-06-05 19:29:20.000000000 +0200
++++ ../pango-1.14.9/pango/makefile.msc	2007-02-02 15:58:58.395624100 +0100
+@@ -1,5 +1,5 @@
+ TOP = ../..
+-!INCLUDE $(TOP)/glib/build/win32/make.msc
++!INCLUDE $(TOP)/glib-2.12.6/build/win32/make.msc
+ 
+ !IFNDEF PERL
+ PERL = perl
+@@ -42,6 +42,7 @@
+ PRJ_TOP = ..
+ PKG_VER = $(PANGO_VER)
+ PKG_DEF = $(PACKAGE).def
++PKG_RC  = $(PACKAGE).res
+ 
+ PKG_CFLAGS = -FImsvc_recommended_pragmas.h -I.. -I. -I$(PRJ_TOP) \
+ 		-DPACKAGE=\"Pango\" -DVERSION=\"$(PANGO_VER)\" \
+@@ -94,6 +95,7 @@
+ 	glyphstring.obj \
+ 	mapping.obj \
+ 	modules.obj \
++	module-defs-lang.obj \
+ 	pango-attributes.obj \
+ 	pango-engine.obj \
+ 	pango-color.obj \
+@@ -104,6 +106,7 @@
+ 	pango-glyph-item.obj \
+ 	pango-item.obj \
+ 	pango-markup.obj \
++	pango-matrix.obj \
+ 	pango-layout.obj \
+ 	pango-renderer.obj \
+ 	pango-script.obj \
+@@ -224,7 +227,7 @@
+ 	pangofc-font.h	   \
+ 	pangofc-fontmap.h
+ 
+-pango-enum-types.h: $(pango_headers) makefile.msc
++pango-enum-types.h: $(pango_headers)
+ 	$(PERL) $(GLIB)\gobject\glib-mkenums  \
+ 		--fhead "#ifndef __PANGO_ENUM_TYPES_H__\n#define __PANGO_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+ 		--fprod "/* enumerations from \"@filename@\" */\n" \
+@@ -232,7 +235,7 @@
+ 		--ftail "G_END_DECLS\n#endif /* __PANGO_ENUM_TYPES_H__ */" \
+ 		$(pango_headers) > pango-enum-types.h
+ 
+-pango-enum-types.c: $(pango_headers) pango-enum-types.h makefile.msc
++pango-enum-types.c: $(pango_headers) pango-enum-types.h
+ 	$(PERL) $(GLIB)\gobject\glib-mkenums  \
+ 		--fhead "#include <pango.h>" \
+ 		--fprod "\n/* enumerations from \"@filename@\" */" \
+@@ -244,12 +247,13 @@
+ $(PACKAGE)-$(PKG_VER)s.lib : $(OBJECTS) $(PRJ_TOP)\config.h
+ 	lib /out:$(PACKAGE)-$(PKG_VER)s.lib $(OBJECTS)
+ 
+-lib$(PACKAGE)-$(PKG_VER)-0.dll : $(OBJECTS) $(PKG_DEF) $(PRJ_TOP)\config.h
+-	$(CC) $(CFLAGS) -LD -Fe$@ $(OBJECTS) $(PKG_LINK) \
++lib$(PACKAGE)-$(PKG_VER)-0.dll : $(PRJ_TOP)\config.h $(OBJECTS) $(PKG_DEF) $(PKG_RC)
++	$(CC) $(CFLAGS) -LD -Fe$@ $(OBJECTS) $(PKG_RC) $(PKG_LINK) \
+ 	user32.lib gdi32.lib advapi32.lib $(LDFLAGS) /implib:$(PACKAGE)-$(PKG_VER).lib /def:$(PKG_DEF)
+ 
+-$(PACKAGE).exe : $(PKG_LINK) $(OBJECTS)
++$(PACKAGE).exe : $(OBJECTS)
+ 	$(CC) $(CFLAGS) -Fe$(PACKAGE).exe $(OBJECTS) $(PKG_LINK) gdi32.lib user32.lib
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ $(PRJ_TOP)\config.h.win32 : makefile.msc
+ 	echo /*empty*/ > $(PRJ_TOP)\config.h.win32
+@@ -261,4 +265,7 @@
+ .c.obj :
+ 	$(CC) $(CFLAGS) -GD -c $(PKG_CFLAGS) -DPANGO_VERSION=\"$(PANGO_VER)\" $<
+ 
++.rc.res:
++	rc -fo $@ $<
++
+ !ENDIF #PACKAGE
+diff -urN pango-1.14.9/pango/pangocairo.rc ../pango-1.14.9/pango/pangocairo.rc
+--- pango-1.14.9/pango/pangocairo.rc	1970-01-01 01:00:00.000000000 +0100
++++ ../pango-1.14.9/pango/pangocairo.rc	2007-02-02 16:00:36.813186700 +0100
+@@ -0,0 +1,30 @@
++#include <winver.h>
++
++VS_VERSION_INFO VERSIONINFO
++  FILEVERSION 1,14,9,0
++  PRODUCTVERSION 1,14,9,0
++  FILEFLAGSMASK 0
++  FILEFLAGS 0
++  FILEOS VOS__WINDOWS32
++  FILETYPE VFT_DLL
++  FILESUBTYPE VFT2_UNKNOWN
++  BEGIN
++    BLOCK "StringFileInfo"
++    BEGIN
++      BLOCK "040904B0"
++      BEGIN
++	VALUE "CompanyName", "Red Hat Software"
++	VALUE "FileDescription", "PangoCairo"
++	VALUE "FileVersion", "1.14.9.0"
++	VALUE "InternalName", "pangocairo-1.0-0"
++	VALUE "LegalCopyright", "Copyright © 1999 Red Hat Software. Copyright © 2000 Tor Lillqvist"
++	VALUE "OriginalFilename", "pangocairo-1.0-0.dll"
++	VALUE "ProductName", "PangoCairo"
++	VALUE "ProductVersion", "1.14.9"
++      END
++    END
++    BLOCK "VarFileInfo"
++    BEGIN
++      VALUE "Translation", 0x409, 1200
++    END
++  END

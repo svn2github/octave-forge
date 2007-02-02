@@ -1,0 +1,59 @@
+Package: Pango
+Version: 1.14.9
+Home page: http://www.gtk.org
+Download: ftp://ftp.gtk.org/pub/pango/1.14/pango-1.14.9.tar.gz
+License: LGPL
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: glib, cairo
+
+1) Compile glib package and leave the source tree in place
+
+2) Install pango sources at the same location as glib sources
+   such that both packages are at the same level
+
+3) Apply the patch
+
+4) Delete the files pango\module-defs-fc.c and pango\module-defs-win32.c
+
+5) Enter pango sub-directory
+
+6) nmake -f makefile.msc
+
+   (Note: compilation of pangoft2 will fail)
+
+7) Install (copy manually):
+	. into bin directory
+		libpango-1.0-0.dll
+		libpangocairo-1.0-0.dll
+		libpangowin32-1.0-0.dll
+	. into lib directory
+		pango-1.0.lib
+		pangocairo-1.0.lib
+		pangowin32-1.0.lib
+	. into include\pango-1.0\pango directory
+		pango.h
+		pango-attributes.h
+		pango-break.h
+		pangocairo.h
+		pango-context.h
+		pango-coverage.h
+		pango-engine.h
+		pango-enum-types.h
+		pangofc-font.h
+		pangofc-fontmap.h
+		pango-font.h
+		pango-fontmap.h
+		pango-fontset.h
+		pango-glyph.h
+		pango-glyph-item.h
+		pango-item.h
+		pango-layout.h
+		pango-modules.h
+		pango-renderer.h
+		pango-script.h
+		pango-tabs.h
+		pango-types.h
+		pango-utils.h
+		pangowin32.h

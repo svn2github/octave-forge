@@ -89,7 +89,7 @@ function switch_to_cat()
     switch_to("cat");
     var d = document.getElementById("menu-contents");
     d.innerHTML = '\
-    m4_include([[[doc/menu.include]]])';
+    m4_include([[[htdocs/doc/menu.include]]])';
 }
 
 function switch_to_alpha()
@@ -97,7 +97,7 @@ function switch_to_alpha()
     switch_to("alpha");
     var d = document.getElementById("menu-contents");
     d.innerHTML = '\
-    m4_include([[[doc/alphabetic.include]]])';
+    m4_include([[[htdocs/doc/alphabetic.include]]])';
 }
 
 function write_left_menu()

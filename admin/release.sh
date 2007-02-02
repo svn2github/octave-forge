@@ -37,7 +37,7 @@
 ##    Generate a list of changes.  Use it to update www/NEWS.in and
 ##    www/index.in with a summary of changes.
 ##
-## 5) make clean; make; make www
+## 5) make clean; make www
 ##
 ##    Build the web-pages and ancillary files.
 ##
@@ -46,8 +46,7 @@
 ##    Verify copyrights.  Look at the AUTHORS file to see which names
 ##    have been butcherd and update the corresponding sources.
 ##
-## 7) cvs commit AUTHORS, README, www/index.in, www/NEWS.in and 
-##    www/developers.in
+## 7) cvs commit AUTHORS, README, www/htdocs/index.in and www/htdocs/NEWS.in
 ##
 ## 8) cvs -q update -dP
 ##
@@ -67,14 +66,12 @@
 ## 11) Upload the webpages to sourceforge.
 ##
 ##        tar cvzf www.tar.gz www
-##        scp www.tar.gz $OFHOME
+##        scp doc/htdocs.tar.gz $OFHOME
 ##        ssh octave.sf.net
-##        cd /home/groups/o/oc/octave/htdocs
-##        rm -rf *
-##        tar xzf www.tar.gz
-##        mv -pr www/* .
-##        rmdir www 
-##        chmod -R g+w *
+##        cd /home/groups/o/oc/octave/
+##        rm -rf htdocs
+##        tar xzf htdocs.tar.gz
+##        chmod -R g+w htdocs
 ##
 ## 12) sources@octave.org, octave-dev@lists.sf.net
 ##
@@ -102,14 +99,14 @@ TAG=R`date +%Y-%m-%d`
 $(CVS2CL) --fsf --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
-cp ChangeLog www/ChangeLog
+cp ChangeLog www/htdocs/ChangeLog
 
 # generate the AUTHORS file
 ./admin/get_authors
 
 exit 0;
 
-cvs commit -m "$TAG release" ChangeLog www/ChangeLog README AUTHORS
+cvs commit -m "$TAG release" ChangeLog www/htdocs/ChangeLog README AUTHORS
 
 # tag the CVS tree with the revision number
 cvs rtag -F $TAG $PROJECT

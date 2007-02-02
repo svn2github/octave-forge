@@ -9,11 +9,11 @@ m4_define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')m4
 m4_dnl
 m4_dnl
 m4_dnl
-m4_define(`__CURRENT_DATE__', `m4_esyscmd(/bin/sh ./get_current_date.sh)')m4_dnl
+m4_define(`__CURRENT_DATE__', `m4_esyscmd(/bin/sh ../admin/get_current_date.sh)')m4_dnl
 m4_dnl
 m4_dnl
 m4_dnl
-m4_define(`__BASE_ADDRESS__', `m4_esyscmd(/bin/sh ./get-base-address)')m4_dnl
+m4_define(`__BASE_ADDRESS__', `m4_esyscmd(/bin/sh ../admin/get-base-address)')m4_dnl
 m4_define(`__TEXT_DIR__', `__BASE_ADDRESS__`text/'')m4_dnl
 m4_define(`__IMAGE_DIR__', `__BASE_ADDRESS__`images/'')m4_dnl
 m4_dnl

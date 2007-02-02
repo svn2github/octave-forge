@@ -54,10 +54,10 @@ srpms: clearlog packages
 	@echo "*** You can find the built SRPMs in packages/RPM/SRPMS ***"
 
 www: clearlog packages
-	@$(MAKE) -C www
+	@$(MAKE) -C doc
 
 doxygen:
-	@$(MAKE) -C www doxygen
+	@$(MAKE) -C doc doxygen
 
 else
 

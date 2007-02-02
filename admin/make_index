@@ -17,7 +17,7 @@ use POSIX ":sys_wait_h";
 # src/DOCSTRINGS (which is a build product) and scripts/.
 my $OCTAVE  = "../octave";
 my $tmpdir = "/tmp";   # temp directory
-my $catdir = "www/doc";  # output directory
+my $catdir = "doc/htdocs/doc";  # output directory
 
 ## Commands to grab the last few defs from octave
 ## Use the first def if you want to extract from
@@ -213,12 +213,18 @@ foreach my $f ( @C_files ) {
 		my $macro = $desc;
 		# Deal with issues of multiple macros...
 		# $macro =~ s/^.*[^\\]\"\s*(\S+?)\s*[^\\]\".*$/$1/;
-		($macro) =   ($macro =~ /[^\\]\"\s*(\S+?)\s*\".*$/);
+		($macro) =   ($macro =~ /[^\\]\"\s*(\S+?)\s*\"/);
 		$macro =~ s/\n//;
 		my $macro_defn;
 		my $line;
+		last unless $macro =~ /\S+/;
 		if ( open(IN2, $f) ) {
 		  while ($line = <IN2>) {
+		    if ($line =~ /^\#\s*define\s+$macro\s*\\\s*$/) {
+		      $line =~ s/\s*\\$//;
+		      $line .= <IN2>; 
+		      $line =~ s/\\\s*\n/\n/;
+		    }
 		    next unless $line =~ /^\#\s*define\s+$macro\s+\"/;
 		    $macro_defn = $line;
 		    $macro_defn =~ s/^\#\s*define\s+$macro\s+\"(.*)\n$/$1/;
@@ -231,6 +237,7 @@ foreach my $f ( @C_files ) {
 		    $macro_defn =~ s/\\n/\n/g;          # insert fake line ends
 		    $macro_defn =~ s/([^\"])\".*$/$1/;  # chop everything after final '"'
 		    $macro_defn =~ s/\\\"/\"/;          # convert \"; XXX FIXME XXX \\"
+		    $macro_defn =~ s/\\\\/\\/g;          # convert \"; XXX FIXME XXX \\"
 		    last;
 		  }
 		  close (IN2);

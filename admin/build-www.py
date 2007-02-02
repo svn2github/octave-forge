@@ -90,29 +90,29 @@ def local_documentation(outdir, packdir):
 
 def create_INDEX(desc, packdir, p):
     try:
-        wd = os.getcwd();
+        wd = os.getcwd() + "/tmp/";
         name_version = desc['name'].lower() + "-" + desc['version'];
         
         ## Look for tarball in ../packages, and if it is found use it
-        install_dir = wd + "/install/";
+        install_dir = wd + "install/";
         tarball = name_version + ".tar.gz";
         cmd = 'find ../packages -name ' + tarball + ' -prune -type f -print';
         have_tarball = None;
         for file in os.popen(cmd).readlines():
             have_tarball = file[:-1];
         if (have_tarball):
-            shutil.copy2(have_tarball, tarball);
+            shutil.copy2(have_tarball, wd+ tarball);
         else:
            ## Create a tarball to be installed
-            if (os.system("tar -zcf " + tarball + " -C " + packdir + "/.. " + p) != 0):
-                os.system("rm -rf " + tarball);
+            if (os.system("tar -zcf " + wd + tarball + " -C " + packdir + "/.. " + p) != 0):
+                os.system("rm -rf " + wd + tarball);
                 raise Exception("Can't create tarball"); 
         
         ## Run octave installation
         command = 'pkg("prefix","' + install_dir + '"); ';
-        command = command + 'pkg("install", "-nodeps", "' + tarball + '");';
+        command = command + 'pkg("install", "-nodeps", "' + wd + tarball + '");';
         if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "' > /dev/null 2>&1") != 0):
-            os.system("rm -rf " + install_dir + " " + tarball);
+            os.system("rm -rf " + install_dir + " " + wd + tarball);
             raise Exception("Can't run Octave"); 
         
         ## Copy the INDEX file to local INDEX file
@@ -126,9 +126,9 @@ def create_INDEX(desc, packdir, p):
         command = 'pkg("prefix","' + install_dir + '"); ';
         command = command + 'pkg("uninstall", "-nodeps", "' + desc['name'].lower() + '");';
         if (os.system("HOME=" + wd + "; octave -H -q --no-site-file --no-init-file --eval '" + command + "' > /dev/null 2>&1") != 0):
-            os.system("rm -rf " + install_dir + " " + tarball);
+            os.system("rm -rf " + install_dir + " " + wd + tarball);
             raise Exception("Can't run Octave"); 
-        os.system("rm -rf " + install_dir + " " + tarball);
+        os.system("rm -rf " + install_dir + " " + wd + tarball);
     except:
         raise;
 
@@ -271,7 +271,7 @@ def main():
         bundle = file[:-1];
 
     ## Start the package file
-    index = open("packages.in", "w");
+    index = open("htdocs/packages.in", "w");
     index.write("__HEADER__([[[Packages]]])");
     index.write('<p>The following packages are currently available in the repository.\n');
     index.write("If you don't know how to install the packages please read the\n");
@@ -312,7 +312,7 @@ def main():
             if (os.path.isdir(packdir) and p != "CVS"):
                 outdir  = "./" + p;
                 try:
-                    desc = handle_package(packdir, outdir, p);
+                    desc = handle_package(packdir, "./htdocs/" + p, p);
                     n = desc['name'].lower();
                     archiv = n + '-' + desc['version'] + '.tar.gz';
                     

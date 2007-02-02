@@ -1,0 +1,4 @@
+*.html
+.octave_hist
+.octave_packages
+INDEX

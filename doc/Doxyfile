@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "GNU Octave"
 PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY       = doxygen/
+OUTPUT_DIRECTORY       = htdocs/doxygen/
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO

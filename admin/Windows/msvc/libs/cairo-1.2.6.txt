@@ -1,0 +1,19 @@
+Package: cairo
+Version: 1.2.6
+Home page: http://cairographics.org/
+Download: http://cairographics.org/releases/cairo-1.2.6.tar.gz
+License: LGPL
+
+Compilation: from MinGW shell with VS environment
+
+Requirement: libpng, zlib
+
+1) Apply the patch
+
+2) make -f Makefile.win32
+
+3) Install (copy manually):
+	. libcairo-2.dll into bin directory
+	. cairo.lib into lib directory
+	. cairo.h, cairo-features.h, cairo-pdf.h, cairo-ps.h,
+	  cairo-svg.h and cairo-win32.h into include\cairo directory

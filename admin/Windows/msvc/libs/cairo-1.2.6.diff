@@ -1,0 +1,617 @@
+diff -urN original-libraries/cairo-1.2.6/Makefile.win32 cairo-1.2.6/Makefile.win32
+--- original-libraries/cairo-1.2.6/Makefile.win32	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.2.6/Makefile.win32	2007-02-02 09:04:07.223579500 +0100
+@@ -0,0 +1,37 @@
++#
++# Win32 makefile
++#
++
++CAIRO_VERSION = 1.2.6
++CAIRO_VERSION_MAJOR = 1
++CAIRO_VERSION_MINOR = 2
++CAIRO_VERSION_MICRO = 6
++
++SUBDIRS = pixman/src src
++
++TEST_SUBDIRS = test
++
++all: cairo
++
++cairo: src/cairo-features.h
++	@list='$(SUBDIRS)'; for f in $$list ; do \
++		echo making all in $$f... ; \
++		(cd $$f ; make -f Makefile.win32) || exit 1 ; \
++	done
++
++test: cairo
++	@list='$(TEST_SUBDIRS)'; for f in $$list ; do \
++		echo making all in $$f... ; \
++		(cd $$f ; make -f Makefile.win32) || exit 1 ; \
++	done
++	@(cd test ; make -f Makefile.win32 test)
++
++html:
++	@(cd test ; make -f Makefile.win32 html)
++
++
++clean:
++	@list='$(SUBDIRS) test'; for f in $$list ; do \
++		echo cleaning in $$f... ; \
++		(cd $$f ; make -f Makefile.win32 clean) || exit 1 ; \
++	done
+diff -urN original-libraries/cairo-1.2.6/pixman/src/Makefile.win32 cairo-1.2.6/pixman/src/Makefile.win32
+--- original-libraries/cairo-1.2.6/pixman/src/Makefile.win32	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.2.6/pixman/src/Makefile.win32	2007-02-01 16:50:37.568622000 +0100
+@@ -0,0 +1,40 @@
++CC = cl
++CFLAGS = -nologo -MD -O2 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE
++
++RM = rm -f
++
++SOURCES = \
++	fbcompose.c \
++	fbedge.c \
++	fbpict.c \
++	fbtrap.c \
++	icblt.c \
++	icbltone.c \
++	iccolor.c \
++	icformat.c \
++	icimage.c \
++	icpixels.c \
++	icrect.c \
++	icstipple.c \
++	ictransform.c \
++	ictrap.c \
++	ictri.c \
++	icutil.c \
++	pixregion.c \
++	renderedge.c \
++	$(NULL)
++
++OBJECTS = $(subst .c,.obj,$(SOURCES))
++
++all: pixman.lib
++
++%.obj: %.c
++	@$(CC) $(CFLAGS) -c -Fo"$@" $<
++
++pixman.lib: $(OBJECTS)
++	lib -NOLOGO -OUT:$@ $(OBJECTS)
++
++
++clean:
++	-$(RM) *.obj
++	-$(RM) pixman.lib
+diff -urN original-libraries/cairo-1.2.6/src/Makefile.win32 cairo-1.2.6/src/Makefile.win32
+--- original-libraries/cairo-1.2.6/src/Makefile.win32	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.2.6/src/Makefile.win32	2007-02-02 09:50:00.052452000 +0100
+@@ -0,0 +1,116 @@
++CC = cl
++LINK = link
++
++CFLAGS = -MD -nologo -O2 -c -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -I../pixman/src -I. -DPACKAGE_VERSION="" -DPACKAGE_BUGREPORT="" -DCAIRO_BUILD
++
++RM = rm -f
++
++DEFFILE = cairo.def
++srcdir = `pwd`
++
++SOURCES = \
++	cairo-arc.c \
++	cairo-array.c \
++	cairo-cache.c \
++	cairo-clip.c \
++	cairo-color.c \
++	cairo-debug.c \
++	cairo-fixed.c \
++	cairo-font-options.c \
++	cairo-font.c \
++	cairo-gstate.c \
++	cairo-hash.c \
++	cairo-hull.c \
++	cairo-image-surface.c \
++	cairo-lzw.c \
++	cairo-matrix.c \
++	cairo-meta-surface.c \
++	cairo-output-stream.c \
++	cairo-operator.c \
++	cairo-path-bounds.c \
++	cairo-path.c \
++	cairo-path-fill.c \
++	cairo-path-stroke.c \
++	cairo-path-data.c \
++	cairo-pattern.c \
++	cairo-pen.c \
++	cairo-polygon.c \
++	cairo-png.c \
++	cairo-rectangle.c \
++	cairo-region.c \
++	cairo-scaled-font.c \
++	cairo-slope.c \
++	cairo-spline.c \
++	cairo-stroke-style.c \
++	cairo-surface-fallback.c \
++	cairo-surface.c \
++	cairo-traps.c \
++	cairo-truetype-subset.c \
++	cairo-unicode.c \
++	cairo-wideint.c \
++	cairo-win32-font.c \
++	cairo.c \
++	cairo-svg-surface.c \
++	cairo-ps-surface.c \
++	cairo-pdf-surface.c \
++	cairo-scaled-font-subsets.c \
++	cairo-paginated-surface.c \
++	cairo-analysis-surface.c \
++	cairo-base85-stream.c \
++	cairo.res \
++	$(NULL)
++
++STATIC_SOURCES = cairo-win32-surface.c 
++
++cairo_headers = \
++	cairo.h \
++	cairo-pdf.h \
++	cairo-ps.h \
++	cairo-svg.h \
++	cairo-win32.h \
++	cairo-pdf-test.h \
++	cairo-ps-test.h \
++	cairo-scaled-font-test.h \
++	cairo-svg-test.h \
++	cairo-features.h \
++	$(NULL)
++
++OBJECTS = $(subst .c,.obj,$(SOURCES))
++SHARED_OBJECTS = $(subst .c,.obj,$(STATIC_SOURCES))
++STATIC_OBJECTS = $(subst .c,-static.obj,$(STATIC_SOURCES))
++
++all: libcairo-2.dll cairo-static.lib
++
++%.obj: %.c
++	@$(CC) $(CFLAGS) -Fo"$@" $<
++
++%.res: %.rc
++	rc -fo $@ $<
++
++%-static.obj: %.c
++	@$(CC) $(CFLAGS) -DCAIRO_WIN32_STATIC_BUILD=1 -Fo"$@" $<
++
++$(DEFFILE):
++	(echo EXPORTS; \
++	(cd $(srcdir); cat $(cairo_headers) || echo 'cairo_ERROR ()' ) | \
++	grep -v -E '^# *include' | \
++	( gcc -include cairo-features.h -E - || echo 'cairo_ERROR ()' ) | \
++	grep -E '^_?cairo_.* \(' | \
++	sed -e 's/[ 	].*//' | \
++	sort; \
++	echo LIBRARY libcairo-2.dll; \
++	) >$@
++	@ ! grep -q cairo_ERROR $@ || ($(RM) $@; false)
++
++libcairo-2.dll: $(OBJECTS) $(SHARED_OBJECTS) $(DEFFILE)
++	$(LINK) -DLL -OUT:$@ ../pixman/src/pixman.lib $(OBJECTS) $(SHARED_OBJECTS) -IMPLIB:cairo.lib -DEF:$(DEFFILE) user32.lib gdi32.lib png.lib zlib.lib
++	mt -outputresource:$@ -manifest $@.manifest
++
++cairo-static.lib: $(OBJECTS) $(STATIC_OBJECTS)
++	lib -NOLOGO -OUT:$@ ../pixman/src/pixman.lib $(OBJECTS) $(STATIC_OBJECTS)
++
++
++clean:
++	-@rm -f *.obj *.res || rm -f *.dll || rm -f *.lib || rm -f *.exe || rm -f *.exe.manifest || rm -f *.pdb || rm -f *.ilk
++	-$(RM) cairo.lib cairo-static.lib cairo.exp
++	-$(RM) libcairo-2.*
+diff -urN original-libraries/cairo-1.2.6/src/cairo-features.h cairo-1.2.6/src/cairo-features.h
+--- original-libraries/cairo-1.2.6/src/cairo-features.h	2006-11-03 00:30:10.000000000 +0100
++++ cairo-1.2.6/src/cairo-features.h	2007-01-24 13:44:45.612133300 +0100
+@@ -23,9 +23,8 @@
+ #define CAIRO_HAS_SVG_SURFACE 1
+ #define CAIRO_HAS_PDF_SURFACE 1
+ #define CAIRO_HAS_PS_SURFACE 1
+-#define CAIRO_HAS_FT_FONT 1
+ #define CAIRO_HAS_PNG_FUNCTIONS 1
+-#define CAIRO_HAS_XLIB_XRENDER_SURFACE 1
+-#define CAIRO_HAS_XLIB_SURFACE 1
++#define CAIRO_HAS_WIN32_FONT 1
++#define CAIRO_HAS_WIN32_SURFACE 1
+ 
+ #endif
+diff -urN original-libraries/cairo-1.2.6/src/cairo.def cairo-1.2.6/src/cairo.def
+--- original-libraries/cairo-1.2.6/src/cairo.def	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.2.6/src/cairo.def	2007-01-24 13:51:08.949736900 +0100
+@@ -0,0 +1,216 @@
++EXPORTS
++_cairo_pdf_test_force_fallbacks
++_cairo_ps_test_force_fallbacks
++_cairo_scaled_font_test_set_max_glyphs_cached_per_font
++_cairo_svg_test_force_fallbacks
++cairo_append_path
++cairo_arc
++cairo_arc_negative
++cairo_clip
++cairo_clip_preserve
++cairo_close_path
++cairo_copy_page
++cairo_copy_path
++cairo_copy_path_flat
++cairo_create
++cairo_curve_to
++cairo_debug_reset_static_data
++cairo_destroy
++cairo_device_to_user
++cairo_device_to_user_distance
++cairo_fill
++cairo_fill_extents
++cairo_fill_preserve
++cairo_font_extents
++cairo_font_face_destroy
++cairo_font_face_get_type
++cairo_font_face_get_user_data
++cairo_font_face_reference
++cairo_font_face_set_user_data
++cairo_font_face_status
++cairo_font_options_copy
++cairo_font_options_create
++cairo_font_options_destroy
++cairo_font_options_equal
++cairo_font_options_get_antialias
++cairo_font_options_get_hint_metrics
++cairo_font_options_get_hint_style
++cairo_font_options_get_subpixel_order
++cairo_font_options_hash
++cairo_font_options_merge
++cairo_font_options_set_antialias
++cairo_font_options_set_hint_metrics
++cairo_font_options_set_hint_style
++cairo_font_options_set_subpixel_order
++cairo_font_options_status
++cairo_get_antialias
++cairo_get_current_point
++cairo_get_fill_rule
++cairo_get_font_face
++cairo_get_font_matrix
++cairo_get_font_options
++cairo_get_group_target
++cairo_get_line_cap
++cairo_get_line_join
++cairo_get_line_width
++cairo_get_matrix
++cairo_get_miter_limit
++cairo_get_operator
++cairo_get_source
++cairo_get_target
++cairo_get_tolerance
++cairo_glyph_extents
++cairo_glyph_path
++cairo_identity_matrix
++cairo_image_surface_create
++cairo_image_surface_create_for_data
++cairo_image_surface_create_from_png
++cairo_image_surface_create_from_png_stream
++cairo_image_surface_get_data
++cairo_image_surface_get_format
++cairo_image_surface_get_height
++cairo_image_surface_get_stride
++cairo_image_surface_get_width
++cairo_in_fill
++cairo_in_stroke
++cairo_line_to
++cairo_mask
++cairo_mask_surface
++cairo_matrix_init
++cairo_matrix_init_identity
++cairo_matrix_init_rotate
++cairo_matrix_init_scale
++cairo_matrix_init_translate
++cairo_matrix_invert
++cairo_matrix_multiply
++cairo_matrix_rotate
++cairo_matrix_scale
++cairo_matrix_transform_distance
++cairo_matrix_transform_point
++cairo_matrix_translate
++cairo_move_to
++cairo_new_path
++cairo_new_sub_path
++cairo_paint
++cairo_paint_with_alpha
++cairo_path_destroy
++cairo_pattern_add_color_stop_rgb
++cairo_pattern_add_color_stop_rgba
++cairo_pattern_create_for_surface
++cairo_pattern_create_linear
++cairo_pattern_create_radial
++cairo_pattern_create_rgb
++cairo_pattern_create_rgba
++cairo_pattern_destroy
++cairo_pattern_get_extend
++cairo_pattern_get_filter
++cairo_pattern_get_matrix
++cairo_pattern_get_type
++cairo_pattern_reference
++cairo_pattern_set_extend
++cairo_pattern_set_filter
++cairo_pattern_set_matrix
++cairo_pattern_status
++cairo_pdf_surface_create
++cairo_pdf_surface_create_for_stream
++cairo_pdf_surface_set_size
++cairo_pop_group
++cairo_pop_group_to_source
++cairo_ps_surface_create
++cairo_ps_surface_create_for_stream
++cairo_ps_surface_dsc_begin_page_setup
++cairo_ps_surface_dsc_begin_setup
++cairo_ps_surface_dsc_comment
++cairo_ps_surface_set_size
++cairo_push_group
++cairo_push_group_with_content
++cairo_rectangle
++cairo_reference
++cairo_rel_curve_to
++cairo_rel_line_to
++cairo_rel_move_to
++cairo_reset_clip
++cairo_restore
++cairo_rotate
++cairo_save
++cairo_scale
++cairo_scaled_font_create
++cairo_scaled_font_destroy
++cairo_scaled_font_extents
++cairo_scaled_font_get_ctm
++cairo_scaled_font_get_font_face
++cairo_scaled_font_get_font_matrix
++cairo_scaled_font_get_font_options
++cairo_scaled_font_get_type
++cairo_scaled_font_glyph_extents
++cairo_scaled_font_reference
++cairo_scaled_font_status
++cairo_scaled_font_text_extents
++cairo_select_font_face
++cairo_set_antialias
++cairo_set_dash
++cairo_set_fill_rule
++cairo_set_font_face
++cairo_set_font_matrix
++cairo_set_font_options
++cairo_set_font_size
++cairo_set_line_cap
++cairo_set_line_join
++cairo_set_line_width
++cairo_set_matrix
++cairo_set_miter_limit
++cairo_set_operator
++cairo_set_scaled_font
++cairo_set_source
++cairo_set_source_rgb
++cairo_set_source_rgba
++cairo_set_source_surface
++cairo_set_tolerance
++cairo_show_glyphs
++cairo_show_page
++cairo_show_text
++cairo_status
++cairo_status_to_string
++cairo_stroke
++cairo_stroke_extents
++cairo_stroke_preserve
++cairo_surface_create_similar
++cairo_surface_destroy
++cairo_surface_finish
++cairo_surface_flush
++cairo_surface_get_content
++cairo_surface_get_device_offset
++cairo_surface_get_font_options
++cairo_surface_get_type
++cairo_surface_get_user_data
++cairo_surface_mark_dirty
++cairo_surface_mark_dirty_rectangle
++cairo_surface_reference
++cairo_surface_set_device_offset
++cairo_surface_set_fallback_resolution
++cairo_surface_set_user_data
++cairo_surface_status
++cairo_surface_write_to_png
++cairo_surface_write_to_png_stream
++cairo_svg_get_versions
++cairo_svg_surface_create
++cairo_svg_surface_create_for_stream
++cairo_svg_surface_restrict_to_version
++cairo_svg_version_to_string
++cairo_text_extents
++cairo_text_path
++cairo_transform
++cairo_translate
++cairo_user_to_device
++cairo_user_to_device_distance
++cairo_version
++cairo_version_string
++cairo_win32_font_face_create_for_hfont
++cairo_win32_font_face_create_for_logfontw
++cairo_win32_scaled_font_done_font
++cairo_win32_scaled_font_get_metrics_factor
++cairo_win32_scaled_font_select_font
++cairo_win32_surface_create
++cairo_win32_surface_create_with_dib
++cairo_win32_surface_get_dc
++LIBRARY libcairo-2.dll
+diff -urN original-libraries/cairo-1.2.6/src/cairo.rc cairo-1.2.6/src/cairo.rc
+--- original-libraries/cairo-1.2.6/src/cairo.rc	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.2.6/src/cairo.rc	2007-02-02 09:47:59.826309600 +0100
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	1, 2, 6, 0
++PRODUCTVERSION	1, 2, 6, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"Freedesktop.org <www.freedesktop.org>\0"
++			VALUE	"FileDescription",	"Cairo: 2D vector graphics library\0"
++			VALUE	"FileVersion",	"1.2.6\0"
++			VALUE	"InternalName",	"Cairo\0"
++			VALUE	"LegalCopyright",	"Copyright © 2006 Freedesktop.org\0"
++			VALUE	"OriginalFilename",	"libcairo-2.dll\0"
++			VALUE	"ProductName",	"Cairo\0"
++			VALUE	"ProductVersion",	"1.2.6\0"
++		END
++	END
++END
+diff -urN original-libraries/cairo-1.2.6/test/Makefile.win32 cairo-1.2.6/test/Makefile.win32
+--- original-libraries/cairo-1.2.6/test/Makefile.win32	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.2.6/test/Makefile.win32	2007-02-02 09:38:04.553810100 +0100
+@@ -0,0 +1,122 @@
++CC = cl
++CFLAGS = -nologo -O2 -MD -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -Dsnprintf=_snprintf -I../src -I../pixman/src
++LDFLAGS = ../src/cairo.lib ../pixman/src/pixman.lib png.lib zlib.lib gdi32.lib msimg32.lib user32.lib
++
++TESTS = 			\
++a8-mask				\
++caps-joins			\
++caps-joins-alpha		\
++caps-sub-paths			\
++clip-all			\
++clip-fill-rule			\
++clip-fill-rule-pixel-aligned	\
++clip-nesting			\
++clip-operator			\
++clip-twice			\
++composite-integer-translate-source \
++composite-integer-translate-over \
++composite-integer-translate-over-repeat \
++create-for-stream		\
++create-from-png			\
++create-from-png-stream		\
++dash-caps-joins			\
++dash-no-dash			\
++dash-offset-negative		\
++dash-scale			\
++dash-zero-length		\
++degenerate-path			\
++device-offset			\
++device-offset-positive		\
++extend-reflect			\
++fill-and-stroke			\
++fill-and-stroke-alpha		\
++fill-and-stroke-alpha-add	\
++fill-rule			\
++filter-nearest-offset		\
++font-face-get-type		\
++font-matrix-translation		\
++glyph-cache-pressure		\
++get-and-set			\
++get-group-target		\
++gradient-alpha			\
++leaky-dash			\
++leaky-polygon			\
++line-width			\
++line-width-scale		\
++linear-gradient			\
++mask				\
++mask-ctm			\
++mask-surface-ctm		\
++move-to-show-surface		\
++new-sub-path			\
++nil-surface			\
++operator-clear			\
++operator-source			\
++paint				\
++paint-source-alpha		\
++paint-with-alpha		\
++pattern-get-type		\
++pixman-rotate			\
++rectangle-rounding-error	\
++scale-source-surface-paint	\
++select-font-face		\
++select-font-no-show-text	\
++self-copy			\
++self-intersecting		\
++set-source			\
++show-text-current-point		\
++source-clip			\
++source-surface-scale-paint	\
++surface-finish-twice		\
++surface-pattern			\
++text-antialias-gray		\
++text-antialias-none		\
++text-antialias-subpixel		\
++text-cache-crash		\
++text-pattern			\
++text-rotate			\
++transforms			\
++translate-show-surface		\
++trap-clip			\
++unantialiased-shapes		\
++unbounded-operator		\
++user-data			\
++rel-path                        \
++push-group			\
++zero-alpha			\
++svg-surface			\
++svg-clip			\
++pdf-features			\
++ps-features			\
++fallback-resolution		\
++$(NULL)
++
++TEST_EXE = $(addsuffix .exe,$(TESTS))
++
++all: $(TEST_EXE)
++
++$(TEST_EXE): libcairotest.lib
++
++%.exe: %.c
++	@$(CC) $(CFLAGS) -Fe"$@" $< -link libcairotest.lib $(LDFLAGS)
++
++%.obj: %.c
++	@$(CC) $(CFLAGS) -c -Fo$@ $<
++
++libcairotest.lib: buffer-diff.obj cairo-test.obj xmalloc.obj
++	@lib -OUT:$@ buffer-diff.obj cairo-test.obj xmalloc.obj
++
++test: $(TEST_EXE)
++	@for exe in $(TEST_EXE) ; do \
++		echo $$exe ; \
++		( ./$$exe || exit 0 ) ; \
++	done
++
++html:
++	@echo Creating index.html...
++	@perl make-html.pl > index.html
++
++clean:
++	-rm -f *.exe *.manifest *.obj
++	-rm -f *.ps *.pdf *.svg *-out.png *-diff.png *.log
++	-rm libcairotest.lib
+diff -urN original-libraries/cairo-1.2.6/test/cairo-test.c cairo-1.2.6/test/cairo-test.c
+--- original-libraries/cairo-1.2.6/test/cairo-test.c	2006-11-03 00:15:10.000000000 +0100
++++ cairo-1.2.6/test/cairo-test.c	2007-01-24 14:13:26.885174100 +0100
+@@ -1246,8 +1246,13 @@
+     }
+ 
+     cairo_surface_finish (surface);
++#ifndef _MSC_VER
+     sprintf (command, "gs -q -r72 -g%dx%d -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pngalpha -sOutputFile=%s %s",
+ 	     ptc->width, ptc->height, filename, ptc->filename);
++#else
++    sprintf (command, "gswin32c -q -r72 -g%dx%d -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pngalpha -sOutputFile=%s %s",
++	     ptc->width, ptc->height, filename, ptc->filename);
++#endif
+     if (system (command) == 0)
+ 	return CAIRO_STATUS_SUCCESS;
+     return CAIRO_STATUS_WRITE_ERROR;

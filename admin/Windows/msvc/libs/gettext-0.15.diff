@@ -1,6 +1,6 @@
-diff -urN original-libraries/gettext-0.15/Makefile.msvc gettext-0.15/Makefile.msvc
---- original-libraries/gettext-0.15/Makefile.msvc	2003-04-14 16:46:46.000000000 +0200
-+++ gettext-0.15/Makefile.msvc	2007-01-23 13:33:56.141637600 +0100
+diff -urN gettext-0.15/Makefile.msvc ../gettext-0.15/Makefile.msvc
+--- gettext-0.15/Makefile.msvc	2003-04-14 16:46:46.000000000 +0200
++++ ../gettext-0.15/Makefile.msvc	2007-01-23 13:33:56.141637600 +0100
 @@ -63,7 +63,7 @@
  !else
  # "-GD" (msvc5) optimizes for DLL.
@@ -10,9 +10,9 @@ diff -urN original-libraries/gettext-0.15/Makefile.msvc gettext-0.15/Makefile.ms
  !endif
  
  !if $(DEBUG)
-diff -urN original-libraries/gettext-0.15/gettext-runtime/intl/Makefile.msvc gettext-0.15/gettext-runtime/intl/Makefile.msvc
---- original-libraries/gettext-0.15/gettext-runtime/intl/Makefile.msvc	2005-08-01 14:14:02.000000000 +0200
-+++ gettext-0.15/gettext-runtime/intl/Makefile.msvc	2007-02-01 09:26:23.398506200 +0100
+diff -urN gettext-0.15/gettext-runtime/intl/Makefile.msvc ../gettext-0.15/gettext-runtime/intl/Makefile.msvc
+--- gettext-0.15/gettext-runtime/intl/Makefile.msvc	2005-08-01 14:14:02.000000000 +0200
++++ ../gettext-0.15/gettext-runtime/intl/Makefile.msvc	2007-02-01 09:26:23.398506200 +0100
 @@ -204,6 +204,7 @@
  # intl.dll and intl.lib are created together.
  intl.lib : $(OBJECTS) $(RESOURCES)
@@ -29,9 +29,21 @@ diff -urN original-libraries/gettext-0.15/gettext-runtime/intl/Makefile.msvc get
  
  distclean : clean
  
-diff -urN original-libraries/gettext-0.15/gettext-runtime/lib/Makefile.msvc gettext-0.15/gettext-runtime/lib/Makefile.msvc
---- original-libraries/gettext-0.15/gettext-runtime/lib/Makefile.msvc	2006-05-08 16:26:30.000000000 +0200
-+++ gettext-0.15/gettext-runtime/lib/Makefile.msvc	2007-01-23 13:23:33.830680200 +0100
+diff -urN gettext-0.15/gettext-runtime/intl/libgnuintl.h.msvc-shared ../gettext-0.15/gettext-runtime/intl/libgnuintl.h.msvc-shared
+--- gettext-0.15/gettext-runtime/intl/libgnuintl.h.msvc-shared	2006-07-20 22:17:00.000000000 +0200
++++ ../gettext-0.15/gettext-runtime/intl/libgnuintl.h.msvc-shared	2007-02-02 10:37:20.943398700 +0100
+@@ -415,6 +415,8 @@
+        libintl_set_relocation_prefix (const char *orig_prefix,
+ 				      const char *curr_prefix);
+ 
++/* From gettextP.h */
++extern LIBINTL_DLL_EXPORTED int _nl_msg_cat_cntr;
+ 
+ #ifdef __cplusplus
+ }
+diff -urN gettext-0.15/gettext-runtime/lib/Makefile.msvc ../gettext-0.15/gettext-runtime/lib/Makefile.msvc
+--- gettext-0.15/gettext-runtime/lib/Makefile.msvc	2006-05-08 16:26:30.000000000 +0200
++++ ../gettext-0.15/gettext-runtime/lib/Makefile.msvc	2007-01-23 13:23:33.830680200 +0100
 @@ -40,7 +40,7 @@
  OPTIMFLAGS = -D_NDEBUG -O1
  !endif
@@ -41,9 +53,9 @@ diff -urN original-libraries/gettext-0.15/gettext-runtime/lib/Makefile.msvc gett
  
  INCLUDES = -I. -I.. -I..\intl -I..\..\gettext-tools\lib -I..\..\gettext-tools\windows -I$(includedir)
  
-diff -urN original-libraries/gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc
---- original-libraries/gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc	2005-02-12 19:41:40.000000000 +0100
-+++ gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc	2007-02-01 09:36:10.787954000 +0100
+diff -urN gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc ../gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc
+--- gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc	2005-02-12 19:41:40.000000000 +0100
++++ ../gettext-0.15/gettext-runtime/libasprintf/Makefile.msvc	2007-02-01 09:36:10.787954000 +0100
 @@ -177,11 +177,12 @@
  	$(RM) config.h
  	$(RM) alloca.h
@@ -58,9 +70,9 @@ diff -urN original-libraries/gettext-0.15/gettext-runtime/libasprintf/Makefile.m
  
  distclean : clean
  
-diff -urN original-libraries/gettext-0.15/gettext-runtime/src/Makefile.msvc gettext-0.15/gettext-runtime/src/Makefile.msvc
---- original-libraries/gettext-0.15/gettext-runtime/src/Makefile.msvc	2005-02-10 16:49:08.000000000 +0100
-+++ gettext-0.15/gettext-runtime/src/Makefile.msvc	2007-02-01 09:33:16.513406600 +0100
+diff -urN gettext-0.15/gettext-runtime/src/Makefile.msvc ../gettext-0.15/gettext-runtime/src/Makefile.msvc
+--- gettext-0.15/gettext-runtime/src/Makefile.msvc	2005-02-10 16:49:08.000000000 +0100
++++ ../gettext-0.15/gettext-runtime/src/Makefile.msvc	2007-02-01 09:33:16.513406600 +0100
 @@ -140,6 +140,8 @@
  	$(RM) *.obj
  	$(RM) $(PROGRAMS)
@@ -70,9 +82,9 @@ diff -urN original-libraries/gettext-0.15/gettext-runtime/src/Makefile.msvc gett
  
  distclean : clean
  
-diff -urN original-libraries/gettext-0.15/gettext-tools/config.h.msvc gettext-0.15/gettext-tools/config.h.msvc
---- original-libraries/gettext-0.15/gettext-tools/config.h.msvc	2006-07-21 17:30:18.000000000 +0200
-+++ gettext-0.15/gettext-tools/config.h.msvc	2007-02-01 09:43:25.778974400 +0100
+diff -urN gettext-0.15/gettext-tools/config.h.msvc ../gettext-0.15/gettext-tools/config.h.msvc
+--- gettext-0.15/gettext-tools/config.h.msvc	2006-07-21 17:30:18.000000000 +0200
++++ ../gettext-0.15/gettext-tools/config.h.msvc	2007-02-01 09:43:25.778974400 +0100
 @@ -31,7 +31,7 @@
  
  /* Define according to the byte order of the target machine: 1 for big endian,
@@ -82,9 +94,9 @@ diff -urN original-libraries/gettext-0.15/gettext-tools/config.h.msvc gettext-0.
  
  /* Define to 1 if you have `alloca', as a function or macro. */
  #define HAVE_ALLOCA 1
-diff -urN original-libraries/gettext-0.15/gettext-tools/lib/Makefile.msvc gettext-0.15/gettext-tools/lib/Makefile.msvc
---- original-libraries/gettext-0.15/gettext-tools/lib/Makefile.msvc	2006-05-03 14:34:04.000000000 +0200
-+++ gettext-0.15/gettext-tools/lib/Makefile.msvc	2007-02-01 09:26:07.600822400 +0100
+diff -urN gettext-0.15/gettext-tools/lib/Makefile.msvc ../gettext-0.15/gettext-tools/lib/Makefile.msvc
+--- gettext-0.15/gettext-tools/lib/Makefile.msvc	2006-05-03 14:34:04.000000000 +0200
++++ ../gettext-0.15/gettext-tools/lib/Makefile.msvc	2007-02-01 09:26:07.600822400 +0100
 @@ -50,7 +50,7 @@
  !else
  # "-GD" (msvc5) optimizes for DLL.
@@ -110,9 +122,9 @@ diff -urN original-libraries/gettext-0.15/gettext-tools/lib/Makefile.msvc gettex
  
  distclean : clean
  
-diff -urN original-libraries/gettext-0.15/gettext-tools/lib/gettext.h gettext-0.15/gettext-tools/lib/gettext.h
---- original-libraries/gettext-0.15/gettext-tools/lib/gettext.h	2006-06-09 23:29:10.000000000 +0200
-+++ gettext-0.15/gettext-tools/lib/gettext.h	2007-01-23 13:45:53.227842600 +0100
+diff -urN gettext-0.15/gettext-tools/lib/gettext.h ../gettext-0.15/gettext-tools/lib/gettext.h
+--- gettext-0.15/gettext-tools/lib/gettext.h	2006-06-09 23:29:10.000000000 +0200
++++ ../gettext-0.15/gettext-tools/lib/gettext.h	2007-01-23 13:45:53.227842600 +0100
 @@ -143,7 +143,7 @@
  #include <string.h>
  
@@ -122,9 +134,9 @@ diff -urN original-libraries/gettext-0.15/gettext-tools/lib/gettext.h gettext-0.
  
  #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS
  #include <stdlib.h>
-diff -urN original-libraries/gettext-0.15/gettext-tools/lib/xvasprintf.c gettext-0.15/gettext-tools/lib/xvasprintf.c
---- original-libraries/gettext-0.15/gettext-tools/lib/xvasprintf.c	2006-05-09 20:01:24.000000000 +0200
-+++ gettext-0.15/gettext-tools/lib/xvasprintf.c	2007-01-23 13:42:44.875654800 +0100
+diff -urN gettext-0.15/gettext-tools/lib/xvasprintf.c ../gettext-0.15/gettext-tools/lib/xvasprintf.c
+--- gettext-0.15/gettext-tools/lib/xvasprintf.c	2006-05-09 20:01:24.000000000 +0200
++++ ../gettext-0.15/gettext-tools/lib/xvasprintf.c	2007-01-23 13:42:44.875654800 +0100
 @@ -48,7 +48,11 @@
  
    /* Determine the total size.  */
@@ -137,9 +149,9 @@ diff -urN original-libraries/gettext-0.15/gettext-tools/lib/xvasprintf.c gettext
    for (i = argcount; i > 0; i--)
      {
        const char *next = va_arg (ap, const char *);
-diff -urN original-libraries/gettext-0.15/gettext-tools/src/Makefile.msvc gettext-0.15/gettext-tools/src/Makefile.msvc
---- original-libraries/gettext-0.15/gettext-tools/src/Makefile.msvc	2006-03-29 14:29:20.000000000 +0200
-+++ gettext-0.15/gettext-tools/src/Makefile.msvc	2007-02-01 09:47:39.795344400 +0100
+diff -urN gettext-0.15/gettext-tools/src/Makefile.msvc ../gettext-0.15/gettext-tools/src/Makefile.msvc
+--- gettext-0.15/gettext-tools/src/Makefile.msvc	2006-03-29 14:29:20.000000000 +0200
++++ ../gettext-0.15/gettext-tools/src/Makefile.msvc	2007-02-01 09:47:39.795344400 +0100
 @@ -81,7 +81,7 @@
  DEBUGFLAGS =
  !endif
@@ -297,15 +309,15 @@ diff -urN original-libraries/gettext-0.15/gettext-tools/src/Makefile.msvc gettex
  
  distclean : clean
  
-diff -urN original-libraries/gettext-0.15/gettext-tools/windows/byteswap.h gettext-0.15/gettext-tools/windows/byteswap.h
---- original-libraries/gettext-0.15/gettext-tools/windows/byteswap.h	1970-01-01 01:00:00.000000000 +0100
-+++ gettext-0.15/gettext-tools/windows/byteswap.h	2007-01-23 14:02:32.592537000 +0100
+diff -urN gettext-0.15/gettext-tools/windows/byteswap.h ../gettext-0.15/gettext-tools/windows/byteswap.h
+--- gettext-0.15/gettext-tools/windows/byteswap.h	1970-01-01 01:00:00.000000000 +0100
++++ ../gettext-0.15/gettext-tools/windows/byteswap.h	2007-01-23 14:02:32.592537000 +0100
 @@ -0,0 +1,2 @@
 +/* The system doesn't have <byteswap.h>.  Use our byteswap.h emulation.  */
 +#include "byteswap_.h"
-diff -urN original-libraries/gettext-0.15/gettext-tools/windows/gettextlib.def gettext-0.15/gettext-tools/windows/gettextlib.def
---- original-libraries/gettext-0.15/gettext-tools/windows/gettextlib.def	2005-02-08 12:26:08.000000000 +0100
-+++ gettext-0.15/gettext-tools/windows/gettextlib.def	2007-01-23 14:20:38.334881100 +0100
+diff -urN gettext-0.15/gettext-tools/windows/gettextlib.def ../gettext-0.15/gettext-tools/windows/gettextlib.def
+--- gettext-0.15/gettext-tools/windows/gettextlib.def	2005-02-08 12:26:08.000000000 +0100
++++ ../gettext-0.15/gettext-tools/windows/gettextlib.def	2007-01-23 14:20:38.334881100 +0100
 @@ -40,7 +40,9 @@
  create_pipe_bidi
  create_pipe_in
@@ -359,9 +371,9 @@ diff -urN original-libraries/gettext-0.15/gettext-tools/windows/gettextlib.def g
  u8_possible_linebreaks
  u8_width_linebreaks
  uc_width
-diff -urN original-libraries/gettext-0.15/gettext-tools/windows/gettextsrc.def gettext-0.15/gettext-tools/windows/gettextsrc.def
---- original-libraries/gettext-0.15/gettext-tools/windows/gettextsrc.def	2005-02-12 20:07:36.000000000 +0100
-+++ gettext-0.15/gettext-tools/windows/gettextsrc.def	2007-01-23 14:22:14.383958200 +0100
+diff -urN gettext-0.15/gettext-tools/windows/gettextsrc.def ../gettext-0.15/gettext-tools/windows/gettextsrc.def
+--- gettext-0.15/gettext-tools/windows/gettextsrc.def	2005-02-12 20:07:36.000000000 +0100
++++ ../gettext-0.15/gettext-tools/windows/gettextsrc.def	2007-01-23 14:22:14.383958200 +0100
 @@ -17,6 +17,7 @@
  formatstring_perl_brace
  formatstring_php

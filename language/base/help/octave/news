@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} news ()
+Display the current NEWS file for Octave.
+@end deftypefn

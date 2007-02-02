@@ -1,0 +1,41 @@
+Package: freetype
+Version: 2.3.1
+Home page: http://www.freetype.org/
+Download: http://download.savannah.gnu.org/releases/freetype/freetype-2.3.1.tar.gz
+License: GPL / FTL
+
+Compilation:
+
+Requirements:
+
+1) Apply the patch
+
+2) Open builds\win32\visualc\freetype.sln in Visual Studio
+
+3) Select "Release Multithreaded" configuration
+
+4) Edit project properties and set "Configuration Type" to
+   "Dynamic Library (.dll)"
+
+5) Edit project properties again and set output DLL name to
+   freetype6.dll and import library name to freetype.lib (this
+   is mainly to match the names used by GnuWin32 project).
+   Configure also code generation to use the DLL runtime
+   (/MD flag).
+
+6) Build freetype project
+
+7) Install (copy manually):
+	. freetype6.dll into bin directory
+	. freetype.lib into lib directory
+	. include\ft2build.h into include directory
+	. include\freetype into include\freetype2, except the "internal" subdirectory
+
+   The target include directory should then include the following:
+
+	include\ft2build.h
+	include\freetype2\freetype\*.h
+	include\freetype2\freetype\config\*.h
+
+   Finally, copy the script freetype-config into bin directory and
+   edit the "prefix" definition to match your setup

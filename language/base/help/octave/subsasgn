@@ -5,7 +5,7 @@ the subscript specified by @var{idx}.
 
 The subscript @var{idx} is expected to be a structure array with
 fields @samp{type} and @samp{subs}.  Valid values for @samp{type}
-are @samp{"()"}, @samp{"@{@}", and @samp{"."}.
+are @samp{"()"}, @samp{"@{@}"}, and @samp{"."}.
 The @samp{subs} field may be either @samp{":"} or a cell array
 of index values.
 @seealso{subsref, substruct}

@@ -6,7 +6,7 @@ List the first @var{n} primes.  If @var{n} is unspecified, the first
 The algorithm used is from page 218 of the
 @iftex
 @tex
- \TeXbook.
+ {\TeX}book.
 @end tex
 @end iftex
 @ifinfo

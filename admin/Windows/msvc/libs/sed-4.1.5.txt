@@ -1,0 +1,26 @@
+Package: sed
+Version: 4.1.5
+Home page: http://www.gnu.org/software/sed/sed.html
+Download: ftp://ftp.gnu.org/gnu/sed/sed-4.1.5.tar.gz
+License: GPL
+
+Compilation: from MinGW shell with VS environment + cc-msvc
+
+Requirements: cc-msvc, libiconv, gettext(*)
+
+1) Apply the patch
+
+2) CC=cc-msvc CFLAGS="-O2 -MD -DWIN32 -D_WIN32 -DHAVE_FCNTL_H" ./configure --without-included-gettext
+
+3) make
+
+4) Install (copy manually):
+	. sed\sed.exe into bin directory
+
+-------------------------------------------------------------------
+
+(*) You will need the following components from the gettext package:
+	. libintl library (intl.dll, intl.lib and libintl.h)
+	. msgfmt.exe
+	. xgettext.exe
+	. msgmerge.exe

@@ -1,0 +1,205 @@
+diff -urN sed-4.1.5/configure sed-4.1.5-mod/configure
+--- sed-4.1.5/configure	2006-02-03 10:24:40.000000000 +0100
++++ sed-4.1.5-mod/configure	2007-02-02 12:12:34.110416500 +0100
+@@ -9341,7 +9341,7 @@
+ cat >>conftest.$ac_ext <<_ACEOF
+ /* end confdefs.h.  */
+ #include <libintl.h>
+-extern int _nl_msg_cat_cntr;
++/*extern int _nl_msg_cat_cntr;*/
+ int
+ main ()
+ {
+diff -urN sed-4.1.5/lib/regcomp.c sed-4.1.5-mod/lib/regcomp.c
+--- sed-4.1.5/lib/regcomp.c	2005-12-06 09:46:52.000000000 +0100
++++ sed-4.1.5-mod/lib/regcomp.c	2007-02-02 12:36:24.977435100 +0100
+@@ -506,8 +506,8 @@
+    from either regcomp or regexec.   We don't use PREG here.  */
+ 
+ size_t
+-regerror (errcode, preg, errbuf, errbuf_size)
+-    int errcode;
++regerror (_errcode, preg, errbuf, errbuf_size)
++    int _errcode;
+     const regex_t *__restrict preg;
+     char *__restrict errbuf;
+     size_t errbuf_size;
+@@ -515,8 +515,8 @@
+   const char *msg;
+   size_t msg_size;
+ 
+-  if (BE (errcode < 0
+-	  || errcode >= (int) (sizeof (__re_error_msgid_idx)
++  if (BE (_errcode < 0
++	  || _errcode >= (int) (sizeof (__re_error_msgid_idx)
+ 			       / sizeof (__re_error_msgid_idx[0])), 0))
+     /* Only error codes returned by the rest of the code should be passed
+        to this routine.  If we are given anything else, or if other regex
+@@ -524,7 +524,7 @@
+        Dump core so we can fix it.  */
+     abort ();
+ 
+-  msg = gettext (__re_error_msgid + __re_error_msgid_idx[errcode]);
++  msg = gettext (__re_error_msgid + __re_error_msgid_idx[_errcode]);
+ 
+   msg_size = strlen (msg) + 1; /* Includes the null.  */
+ 
+@@ -558,7 +558,14 @@
+ static const bitset_t utf8_sb_map =
+ {
+   /* Set the first 128 bits.  */
++#ifndef _MSC_VER
+   [0 ... 0x80 / BITSET_WORD_BITS - 1] = BITSET_WORD_MAX
++#else
++  BITSET_WORD_MAX,
++  BITSET_WORD_MAX,
++  BITSET_WORD_MAX,
++  BITSET_WORD_MAX
++#endif
+ };
+ #endif
+ 
+@@ -855,8 +862,8 @@
+     codeset_name = strchr (codeset_name, '.') + 1;
+ # endif
+ 
+-  if (strcasecmp (codeset_name, "UTF-8") == 0
+-      || strcasecmp (codeset_name, "UTF8") == 0)
++  if (stricmp (codeset_name, "UTF-8") == 0
++      || stricmp (codeset_name, "UTF8") == 0)
+     dfa->is_utf8 = 1;
+ 
+   /* We check exhaustively in the loop below if this charset is a
+diff -urN sed-4.1.5/lib/regex_internal.h sed-4.1.5-mod/lib/regex_internal.h
+--- sed-4.1.5/lib/regex_internal.h	2005-12-06 09:50:56.000000000 +0100
++++ sed-4.1.5-mod/lib/regex_internal.h	2007-02-02 12:27:10.133728900 +0100
+@@ -410,7 +410,13 @@
+ #define re_string_skip_bytes(pstr,idx) ((pstr)->cur_idx += (idx))
+ #define re_string_set_index(pstr,idx) ((pstr)->cur_idx = (idx))
+ 
++#ifdef HAVE_ALLOCA_H
+ #include <alloca.h>
++#endif
++
++#ifdef HAVE_MALLOC_H
++#include <malloc.h>
++#endif
+ 
+ #ifndef _LIBC
+ # if HAVE_ALLOCA
+diff -urN sed-4.1.5/lib/regexec.c sed-4.1.5-mod/lib/regexec.c
+--- sed-4.1.5/lib/regexec.c	2005-12-06 09:46:56.000000000 +0100
++++ sed-4.1.5-mod/lib/regexec.c	2007-02-02 12:34:00.936683900 +0100
+@@ -2894,7 +2894,7 @@
+ 	      sizeof (re_dfastate_t *) * (path->alloc - old_alloc));
+     }
+ 
+-  str_idx = path->next_idx ?: top_str;
++  str_idx = path->next_idx ? 0 : top_str;
+ 
+   /* Temporary modify MCTX.  */
+   backup_state_log = mctx->state_log;
+@@ -3289,6 +3289,12 @@
+ /* Build transition table for the state.
+    Return 1 if succeeded, otherwise return NULL.  */
+ 
++#ifdef _MSC_VER
++typedef int bool;
++#define true 1
++#define false 0
++#endif
++
+ static int
+ internal_function
+ build_trtable (const re_dfa_t *dfa, re_dfastate_t *state)
+diff -urN sed-4.1.5/lib/utils.c sed-4.1.5-mod/lib/utils.c
+--- sed-4.1.5/lib/utils.c	2005-06-21 17:09:40.000000000 +0200
++++ sed-4.1.5-mod/lib/utils.c	2007-02-02 14:42:23.271674000 +0100
+@@ -54,6 +54,10 @@
+ static struct open_file *open_files = NULL;
+ static void do_ck_fclose P_((FILE *fp));
+ 
++#ifdef _MSC_VER
++# define __STDC__ 1
++#endif
++
+ /* Print an error message and exit */
+ #if !defined __STDC__ || !(__STDC__-0)
+ # include <varargs.h>
+diff -urN sed-4.1.5/sed/Makefile.in sed-4.1.5-mod/sed/Makefile.in
+--- sed-4.1.5/sed/Makefile.in	2006-02-03 10:24:36.000000000 +0100
++++ sed-4.1.5-mod/sed/Makefile.in	2007-02-02 12:38:13.971575100 +0100
+@@ -65,7 +65,7 @@
+ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+ PROGRAMS = $(bin_PROGRAMS)
+ am_sed_OBJECTS = sed.$(OBJEXT) compile.$(OBJEXT) execute.$(OBJEXT) \
+-	regexp.$(OBJEXT) fmt.$(OBJEXT) mbcs.$(OBJEXT)
++	regexp.$(OBJEXT) fmt.$(OBJEXT) mbcs.$(OBJEXT) sed.res
+ sed_OBJECTS = $(am_sed_OBJECTS)
+ DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
+ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
+@@ -202,7 +202,7 @@
+ 	-I$(top_srcdir) -I$(top_builddir)/lib \
+ 	-I$(top_builddir)/intl -DLOCALEDIR=\"$(localedir)\"
+ 
+-sed_LDADD = ../lib/libsed.a @INTLLIBS@
++sed_LDADD = ../lib/libsed.a @INTLLIBS@ -lmsvcprt
+ sed_DEPENDENCIES = ../lib/libsed.a
+ all: all-am
+ 
+@@ -280,6 +280,9 @@
+ 	@rm -f sed$(EXEEXT)
+ 	$(LINK) $(sed_LDFLAGS) $(sed_OBJECTS) $(sed_LDADD) $(LIBS)
+ 
++sed.res: sed.rc
++	rc -fo $@ $<
++
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+ 
+diff -urN sed-4.1.5/sed/execute.c sed-4.1.5-mod/sed/execute.c
+--- sed-4.1.5/sed/execute.c	2006-02-03 10:06:40.000000000 +0100
++++ sed-4.1.5-mod/sed/execute.c	2007-02-02 12:35:00.729411900 +0100
+@@ -673,7 +673,7 @@
+         panic(_("couldn't edit %s: is a terminal"), input->in_file_name);
+ 
+       fstat (fileno (input->fp), &st);
+-      if (!S_ISREG (st.st_mode))
++      if (!(st.st_mode & S_IFREG))
+         panic(_("couldn't edit %s: not a regular file"), input->in_file_name);
+ 
+       output_file.fp = ck_mkstemp (&input->out_file_name, tmpdir, "sed");
+diff -urN sed-4.1.5/sed/sed.rc sed-4.1.5-mod/sed/sed.rc
+--- sed-4.1.5/sed/sed.rc	1970-01-01 01:00:00.000000000 +0100
++++ sed-4.1.5-mod/sed/sed.rc	2007-02-02 12:34:24.816267900 +0100
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	4, 1, 5, 0
++PRODUCTVERSION	4, 1, 5, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"GNU <www.gnu.org>\0"
++			VALUE	"FileDescription",	"Sed - Stream editor\0"
++			VALUE	"FileVersion",	"4.1.5\0"
++			VALUE	"InternalName",	"Sed\0"
++			VALUE	"LegalCopyright",	"Copyright (C) 1989-2006 Free Software Foundation, Inc\0"
++			VALUE	"OriginalFilename",	"sed.exe\0"
++			VALUE	"ProductName",	"Sed\0"
++			VALUE	"ProductVersion",	"4.1.5\0"
++		END
++	END
++END

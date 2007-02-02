@@ -69,6 +69,22 @@ que é uma lista de discurssão.\n"
 Veja tamb@'em: \\args\\.\n\
 @end macro\n"
 
+// Below is a bit of magic that allows the indexing script to correctly
+// find the function and the help text. Yes it is supposed to be commented,
+// and whether the indexing script finds the macros correctly is very sensitive
+// to the formatting (leave the dummy comment). Please note that DEFUN_DLD 
+// must appear on a newline. The first argument name needs to be the same 
+// as HELP_NAME
+/*
+DEFUN_DLD_DUMMY (ajuda, 
+"-*- texinfo -*-\n" 
+MAKEINFO_MACROS
+"@c dummy comment\n"
+HELP_TEXT
+"@seealso{help, doc}\n\
+@end deftypefn")
+*/
+
 // This includes the part of the function that should be identical for all
 // language specific help functions
 // DO NOT CHANGE THE NAME OF THE INCLUDED FILE BELOW

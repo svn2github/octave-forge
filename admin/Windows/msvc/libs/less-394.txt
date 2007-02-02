@@ -1,0 +1,17 @@
+Package: less
+Version: 394
+Home page: http://www.greenwoodsoftware.com/less/
+Download: http://www.greenwoodsoftware.com/less/less-394.zip
+License: BSD
+
+Compilation: from Windows command shell with VS environment
+
+Requirement: PCRE
+
+1) Apply the patch
+
+2) nmake -f Makefile.wnm
+
+3) Install (copy manually):
+	. less.exe into bin directory
+	. lesskey.exe into bin directory (optional)

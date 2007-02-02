@@ -1,0 +1,37 @@
+Package: TeXinfo
+Version: 4.8a
+Home page: http://www.gnu.org/software/texinfo/
+Download: http://ftp.gnu.org/gnu/texinfo/texinfo-4.8a.tar.gz
+License: GPL
+
+Compilation: from MinGW shell with VS environment + cc-msvc
+
+Requirements: cc-msvc, libiconv, gettext(*)
+
+1) Apply patch
+
+2) CC=cc-msvc CFLAGS="-O2 -MD" ./configure --without-included-gettext
+
+   When the configure script checks whether division by zero raises
+   SIGFPE, it is possible that the Windows crash dialog appears. In
+   such case, just close the dialog and the configure script should
+   continue normally.
+
+3) Execute the following lines:
+
+	make -C lib
+	make -C makeinfo
+	cd makeinfo
+	rc -fo makeinfo.res makeinfo.rc
+	cc-msvc -O2 -MD -o makeinfo.exe *.o makeinfo.res ../lib/libtxi.a -lintl
+
+4) Install (copy manually):
+	. makeinfo\makeinfo.exe into bin directory
+
+-------------------------------------------------------------------
+
+(*) You will need the following components from the gettext package:
+	. libintl library (intl.dll, intl.lib and libintl.h)
+	. msgfmt.exe
+	. xgettext.exe
+	. msgmerge.exe

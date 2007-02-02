@@ -1,0 +1,142 @@
+diff -urN less-394/Makefile.wnm less-394-mod/Makefile.wnm
+--- less-394/Makefile.wnm	2005-09-13 20:21:38.000000000 +0200
++++ less-394-mod/Makefile.wnm	2007-02-02 10:06:25.060112700 +0100
+@@ -6,7 +6,7 @@
+ CC = cl
+ 
+ # Normal flags
+-CFLAGS = /nologo /ML /W3 /GX /O2 /I "." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /c
++CFLAGS = /nologo /MD /W3 /EHsc /O2 /I "." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /c /D_CRT_SECURE_NO_DEPRECATE
+ LDFLAGS = /subsystem:console /incremental:no /machine:I386
+ 
+ # Debugging flags
+@@ -14,7 +14,7 @@
+ #LDFLAGS = /subsystem:console /incremental:yes /debug /machine:I386
+ 
+ LD = link
+-LIBS = user32.lib
++LIBS = user32.lib pcre.lib
+ 
+ #### End of system configuration section. ####
+ 
+@@ -28,7 +28,7 @@
+ 	input.obj jump.obj line.obj linenum.obj lsystem.obj \
+ 	mark.obj optfunc.obj option.obj opttbl.obj os.obj output.obj \
+ 	position.obj prompt.obj search.obj signal.obj tags.obj \
+-	ttyin.obj version.obj regexp.obj
++	ttyin.obj version.obj regexp.obj less.res
+ 
+ all: less.exe lesskey.exe
+ 
+@@ -36,10 +36,12 @@
+ # MS-DOS if we try to link ${OBJ}.
+ less.exe: $(OBJ)
+ 	-del lesskey.obj
+-	$(LD) $(LDFLAGS) *.obj $(LIBS) /out:$@
++	$(LD) $(LDFLAGS) *.obj less.res $(LIBS) /out:$@
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+-lesskey.exe: lesskey.obj version.obj
+-	$(LD) $(LDFLAGS) lesskey.obj version.obj $(LIBS) /out:$@
++lesskey.exe: lesskey.obj lesskey.res version.obj
++	$(LD) $(LDFLAGS) lesskey.obj lesskey.res version.obj $(LIBS) /out:$@
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ defines.h: defines.wn
+ 	-del defines.h
+@@ -47,9 +49,13 @@
+ 
+ $(OBJ): less.h defines.h funcs.h cmd.h
+ 
++.rc.res:
++	rc /fo $@ $<
++
+ clean:
+-	-del *.obj 
++	-del *.obj *.manifest *.res
+ 	-del less.exe
+ 	-del lesskey.exe
++	-del defines.h
+ 
+ 
+diff -urN less-394/defines.wn less-394-mod/defines.wn
+--- less-394/defines.wn	2005-09-29 08:34:18.000000000 +0200
++++ less-394-mod/defines.wn	2007-02-02 09:54:59.414921700 +0100
+@@ -200,7 +200,8 @@
+ /* #undef HAVE_POSIX_REGCOMP */
+ /* #undef HAVE_RE_COMP */
+ /* #undef HAVE_REGCMP */
+-#define HAVE_V8_REGCOMP 1
++/* #undef HAVE_V8_REGCOMP */
++#define HAVE_PCRE 1
+ /* #undef NO_REGEX */
+ #define HAVE_REGEXEC2 1
+ 
+diff -urN less-394/less.rc less-394-mod/less.rc
+--- less-394/less.rc	1970-01-01 01:00:00.000000000 +0100
++++ less-394-mod/less.rc	2007-02-02 10:00:48.658118100 +0100
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	394, 0, 0, 0
++PRODUCTVERSION	394, 0, 0, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"Greenwood Software\0"
++			VALUE	"FileDescription",	"Less - Advanced file viewer\0"
++			VALUE	"FileVersion",	"394\0"
++			VALUE	"InternalName",	"Less\0"
++			VALUE	"LegalCopyright",	"Copyright (C) 1984-2006  Mark Nudelman\0"
++			VALUE	"OriginalFilename",	"less.exe\0"
++			VALUE	"ProductName",	"Less\0"
++			VALUE	"ProductVersion",	"394\0"
++		END
++	END
++END
+diff -urN less-394/lesskey.rc less-394-mod/lesskey.rc
+--- less-394/lesskey.rc	1970-01-01 01:00:00.000000000 +0100
++++ less-394-mod/lesskey.rc	2007-02-02 10:01:26.572469400 +0100
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	394, 0, 0, 0
++PRODUCTVERSION	394, 0, 0, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"Greenwood Software\0"
++			VALUE	"FileDescription",	"Key-binding utility for Less\0"
++			VALUE	"FileVersion",	"394\0"
++			VALUE	"InternalName",	"Less\0"
++			VALUE	"LegalCopyright",	"Copyright (C) 1984-2006  Mark Nudelman\0"
++			VALUE	"OriginalFilename",	"less.exe\0"
++			VALUE	"ProductName",	"Less\0"
++			VALUE	"ProductVersion",	"394\0"
++		END
++	END
++END

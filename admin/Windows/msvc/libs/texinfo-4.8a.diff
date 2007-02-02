@@ -1,0 +1,81 @@
+diff -urN texinfo-4.8/configure texinfo-4.8-mod/configure
+--- texinfo-4.8/configure	2004-12-31 19:01:50.000000000 +0100
++++ texinfo-4.8-mod/configure	2007-02-02 10:54:09.261789600 +0100
+@@ -12943,7 +12943,7 @@
+ cat >>conftest.$ac_ext <<_ACEOF
+ /* end confdefs.h.  */
+ #include <libintl.h>
+-extern int _nl_msg_cat_cntr;
++/*extern int _nl_msg_cat_cntr;*/
+ extern
+ #ifdef __cplusplus
+ "C"
+diff -urN texinfo-4.8/lib/system.h texinfo-4.8-mod/lib/system.h
+--- texinfo-4.8/lib/system.h	2004-04-26 16:56:58.000000000 +0200
++++ texinfo-4.8-mod/lib/system.h	2007-02-02 11:28:46.755895900 +0100
+@@ -179,6 +179,9 @@
+ #  include <stdarg.h>
+ #  define VA_START(args, lastarg) va_start(args, lastarg)
+ # else
++#  ifdef va_arg
++#   undef va_arg
++#  endif
+ #  include <varargs.h>
+ #  define VA_START(args, lastarg) va_start(args)
+ # endif
+@@ -288,4 +291,8 @@
+ #endif
+ #define MAX(a,b) ((a) > (b) ? (a) : (b))
+ 
++#ifndef R_OK
++#define R_OK 4
++#endif
++
+ #endif /* TEXINFO_SYSTEM_H */
+diff -urN texinfo-4.8/makeinfo/makeinfo.c texinfo-4.8-mod/makeinfo/makeinfo.c
+--- texinfo-4.8/makeinfo/makeinfo.c	2004-12-19 18:15:42.000000000 +0100
++++ texinfo-4.8-mod/makeinfo/makeinfo.c	2007-02-02 11:31:04.528574500 +0100
+@@ -544,7 +544,9 @@
+      of the argument to @multicolumn.  */
+   setlocale (LC_TIME, "");
+ #ifdef LC_MESSAGES /* ultrix */
++# ifndef _MSC_VER
+   setlocale (LC_MESSAGES, "");
++# endif
+ #endif
+   setlocale (LC_CTYPE, "");
+   setlocale (LC_COLLATE, "");
+diff -urN texinfo-4.8/makeinfo/makeinfo.rc texinfo-4.8-mod/makeinfo/makeinfo.rc
+--- texinfo-4.8/makeinfo/makeinfo.rc	1970-01-01 01:00:00.000000000 +0100
++++ texinfo-4.8-mod/makeinfo/makeinfo.rc	2007-02-02 11:02:47.270045600 +0100
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	4, 8, 1, 0
++PRODUCTVERSION	4, 8, 1, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"GNU <www.gnu.org>\0"
++			VALUE	"FileDescription",	"TeXInfo - Documentation system\0"
++			VALUE	"FileVersion",	"4.8a\0"
++			VALUE	"InternalName",	"Makeinfo\0"
++			VALUE	"LegalCopyright",	"Copyright 2006 Free Software Foundation\0"
++			VALUE	"OriginalFilename",	"makeinfo.exe\0"
++			VALUE	"ProductName",	"TeXInfo\0"
++			VALUE	"ProductVersion",	"4.8a\0"
++		END
++	END
++END

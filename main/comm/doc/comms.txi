@@ -514,7 +514,7 @@ For example the above example can be continued
 
 @example
 octave:8> [table2, codes2] = lloyds(y, table, codes);
-octave:9> [i,z2 = quantiz(y, table2, codes2);
+octave:9> [i,z2] = quantiz(y, table2, codes2);
 @end example
 
 Which the mapping suggested by the function @dfn{lloyds}. It should be

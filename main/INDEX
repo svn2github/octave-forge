@@ -379,7 +379,9 @@ User I/O
  print_usage
  error 
  warning 
- lasterr 
+ lasterr
+ lasterror
+ rethrow 
  lastwarn 
  clc 
  home 

@@ -37,9 +37,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // The texinfo formatted help message for the function. Please be careful
 // that accented characters respect texinfo formatting
 #define HELP_TEXT  \
- "@deftypefn (Command} {} help @var{topic}\n\
-  @deftypefnx {Loadable FUnction} {} help (@var{topic})\n\
-  Example help function for English.\n"
+ "@deftypefn {Command} {} help @var{topic}\n\
+  @deftypefnx {Loadable Function} {} help (@var{topic})\n\
+  Help function for English.\n"
 
 // Some additional non texinfo formatted message 
 #define NOT_FOUND "not found" 
@@ -68,6 +68,22 @@ mailing list.\n"
 @noindent\n\
 See also: \\args\\.\n\
 @end macro\n"
+
+// Below is a bit of magic that allows the indexing script to correctly
+// find the function and the help text. Yes it is supposed to be commented,
+// and whether the indexing script finds the macros correctly is very sensitive
+// to the formatting (leave the dummy comment). Please note that DEFUN_DLD 
+// must appear on a newline. The first argument name needs to be the same 
+// as HELP_NAME
+/*
+DEFUN_DLD_DUMMY (help, 
+"-*- texinfo -*-\n" 
+MAKEINFO_MACROS
+"@c dummy comment\n"
+HELP_TEXT
+"@seealso{help, doc}\n\
+@end deftypefn")
+*/
 
 // This includes the part of the function that should be identical for all
 // language specific help functions.

@@ -180,7 +180,7 @@ local_help_from_file (const std::string& nm, std::string &md5)
 DEFUN_DLD (HELP_NAME, args, nargout,
    "-*- texinfo -*-\n"
 HELP_TEXT
-"@seealso{help,doc}\n\
+"@seealso{help, doc}\n\
 @end deftypefn")
 {
   octave_value_list retval;

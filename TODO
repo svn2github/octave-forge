@@ -1,13 +1,3 @@
-WWW
-===
-* move www/ directory to doc/htdocs so as to simplify structure of 
-octave-forge and the install process in the sourceforge site. 
-
-* Move www/build-www.py to admin/ as that where all of the other
-scripts are.
-
-* Figure out why the octave-forge.css doesn't pass XHTML validation
-
 Packages
 ========
 * Graceplot and GPC package needs conversion to package manager

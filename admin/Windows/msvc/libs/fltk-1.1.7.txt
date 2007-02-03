@@ -1,0 +1,27 @@
+Package: FLTK
+Version: 1.1.7
+Home page: http://www.fltk.org
+Download: http://www.fltk.org/software.php?VERSION=1.1.x-r5653&FILE=fltk/1.1.7/fltk-1.1.7-source.tar.gz
+License: LGPL
+
+Compilation: from Visual Studio environment
+
+Requirements: zlib, libjpeg, libpng
+
+1) Open vc2005\fltk.sln into Visual Studio
+
+2) Edit dependencies of project fltkdll and disable
+   jpeg, libpng, zlib and pixmap_browser
+
+3) Edit properties of project fltkdll and make it use your
+   previously installed versions of zlib, libpng and libjpeg:
+	. include directories
+	. library directories
+	. linker input (import libraries)
+
+4) Build project fltkfll
+
+5) Install (copy manually):
+	. vc2005\fltkdll.dll into bin directory
+	. test\fltkdll.lib into lib directory
+	. FL\*.h into include\FL directory

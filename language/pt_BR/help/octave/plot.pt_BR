@@ -29,18 +29,18 @@ interpretados como segue:
 
 @itemize @bullet
 @item
-Se um argumento simples de dados @'e fornecido, eles s@~ao entendidos como o conjunto ordenadas
+Se um argumento simples de dados @'e fornecido, esse conjunto de dados @'e entendido como o conjunto ordenadas
 @var{y} e as abscissas @var{x} ambas tomadas para serem os @'indices dos
 elementos, come@,{c}ando com 1.
 
 @item
-Se o primeiro argumento for um vetor e o segundo uma matriz, o
-vetor @'e impresso versus as colunas (ou linhas) da matriz.
+Se @var{x}for um vetor e @var{y} for uma matriz, as
+colunas (ou linhas de @var{y} ser@~ao impressas versus @var{x}.
 (usando qualquer uma das combina@,{c}@~oes que corresponda, com colunas tentadas primeiro.)
 
 @item
-Se o primeiro argumento for uma matriz e o segundo for um vetor, as
-colunas (ou linhas) da matriz s@~ao mostradas versus o vetor.
+Se @var{x} for uma matriz e @var{y} for um vetor,
+@var{y} s@~ao mostradas versus as colunas (ou linhas) de @var{x}.
 (usando qualquer combina@,{c}@~ao que corresponda, com colunas tentadas primeiro.)
 
 @item
@@ -89,14 +89,9 @@ intervalo de 1 to 6, @var{m} @'e interpretado como o estilo do ponto.  Isso @'e 
 somente em combina@,{c}@`oes com os especificadores @code{@@} ou @code{-@@}.
 
 @item @var{c}
-Se @var{c} for um entre @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
-@code{"c"}, or @code{"w"}, isso @'e interpretado como cor de gr@'afico (red - vermelho,
-green - verde, blue - azul, magenta, cyan - ciano, ou white - branco).
-
-Se @var{c} for um entre @code{"k"}, @code{"r"}, @code{"g"}, @code{"b"},
-@code{"m"}, @code{"c"}, ou @code{"w"}, isso @'e interpretado como cor de
-gr@'afico (preto/black - k, vermelho/red - r, verde/green - g, azul/blue - b, magenta - m, ciano - c, ou branco/white - w).
-
+Se @var{c} for um entre @code{"k"} (preto - "black"), @code{"r"} (vermelho-"red"), @code{"g"}
+ (verde-"green") @code{"c"} ( ciano-"cyan"),
+ ou @code{"w"} (branco-"white"), isso @'e interpretado como cor de linha de gr@'afico.
 
 @item ";t@'itulo;"
 Aqui @code{"t@'itulo"} @'e o r@'otulo para a chave.
@@ -105,7 +100,7 @@ Aqui @code{"t@'itulo"} @'e o r@'otulo para a chave.
 @itemx *
 @itemx o
 @itemx x
-Usado em combina@,{c}@~ao com os estilos de ponto ou linhas e pontos, escolhe os estilos de
+Usado em combina@,{c}@~ao com os estilos de ponto ou estilos de linhas e pontos, escolhe os estilos de
 ponto.
 @end table
 

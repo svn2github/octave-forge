@@ -1,0 +1,258 @@
+diff -ur ginac-1.3.6/configure ginac-1.3.6-mod/configure
+--- ginac-1.3.6/configure	2006-12-13 16:35:15.000000000 +0100
++++ ginac-1.3.6-mod/configure	2007-01-30 12:08:31.000000000 +0100
+@@ -2439,6 +2439,7 @@
+    'extern "C" void std::exit (int) throw (); using std::exit;' \
+    'extern "C" void std::exit (int); using std::exit;' \
+    'extern "C" void exit (int) throw ();' \
++   'extern "C" __declspec(noreturn dllimport) void exit (int);' \
+    'extern "C" void exit (int);' \
+    'void exit (int);'
+ do
+@@ -3771,6 +3772,7 @@
+    'extern "C" void std::exit (int) throw (); using std::exit;' \
+    'extern "C" void std::exit (int); using std::exit;' \
+    'extern "C" void exit (int) throw ();' \
++   'extern "C" __declspec(noreturn dllimport) void exit (int);' \
+    'extern "C" void exit (int);' \
+    'void exit (int);'
+ do
+@@ -9292,7 +9294,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-extern "C" void exit (int);
++extern "C" __declspec(noreturn dllimport) void exit (int);
+ #endif
+ 
+ void fnord() { int i=42;}
+@@ -9390,7 +9392,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-extern "C" void exit (int);
++extern "C" __declspec(noreturn dllimport) void exit (int);
+ #endif
+ 
+ void fnord() { int i=42;}
+@@ -13069,7 +13071,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-extern "C" void exit (int);
++extern "C" __declspec(noreturn dllimport) void exit (int);
+ #endif
+ 
+ void fnord() { int i=42;}
+@@ -13167,7 +13169,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-extern "C" void exit (int);
++extern "C" __declspec(noreturn dllimport) void exit (int);
+ #endif
+ 
+ void fnord() { int i=42;}
+@@ -18800,7 +18802,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-extern "C" void exit (int);
++extern "C" __declspec(noreturn dllimport) void exit (int);
+ #endif
+ 
+ void fnord() { int i=42;}
+@@ -18898,7 +18900,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-extern "C" void exit (int);
++extern "C" __declspec(noreturn dllimport) void exit (int);
+ #endif
+ 
+ void fnord() { int i=42;}
+diff -ur ginac-1.3.6/ginac/Makefile.in ginac-1.3.6-mod/ginac/Makefile.in
+--- ginac-1.3.6/ginac/Makefile.in	2006-12-13 15:09:34.000000000 +0100
++++ ginac-1.3.6-mod/ginac/Makefile.in	2007-02-03 15:23:14.984375000 +0100
+@@ -59,15 +59,15 @@
+ libLTLIBRARIES_INSTALL = $(INSTALL)
+ LTLIBRARIES = $(lib_LTLIBRARIES)
+ libginac_la_LIBADD =
+-am_libginac_la_OBJECTS = add.lo archive.lo basic.lo clifford.lo \
+-	color.lo constant.lo ex.lo expair.lo expairseq.lo exprseq.lo \
+-	fail.lo fderivative.lo function.lo idx.lo indexed.lo \
+-	inifcns.lo inifcns_trans.lo inifcns_gamma.lo \
+-	inifcns_nstdsums.lo integral.lo lst.lo matrix.lo mul.lo \
+-	ncmul.lo normal.lo numeric.lo operators.lo power.lo \
+-	registrar.lo relational.lo remember.lo pseries.lo print.lo \
+-	structure.lo symbol.lo symmetry.lo tensor.lo utils.lo \
+-	wildcard.lo input_parser.lo input_lexer.lo
++am_libginac_la_OBJECTS = add.o archive.o basic.o clifford.o \
++	color.o constant.o ex.o expair.o expairseq.o exprseq.o \
++	fail.o fderivative.o function.o idx.o indexed.o \
++	inifcns.o inifcns_trans.o inifcns_gamma.o \
++	inifcns_nstdsums.o integral.o lst.o matrix.o mul.o \
++	ncmul.o normal.o numeric.o operators.o power.o \
++	registrar.o relational.o remember.o pseries.o print.o \
++	structure.o symbol.o symmetry.o tensor.o utils.o \
++	wildcard.o input_parser.o input_lexer.o
+ libginac_la_OBJECTS = $(am_libginac_la_OBJECTS)
+ DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
+ depcomp = $(SHELL) $(top_srcdir)/depcomp
+@@ -228,7 +228,7 @@
+ sharedstatedir = @sharedstatedir@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
+-lib_LTLIBRARIES = libginac.la
++lib_LTLIBRARIES = ginac.lib
+ libginac_la_SOURCES = add.cpp archive.cpp basic.cpp clifford.cpp color.cpp \
+   constant.cpp ex.cpp expair.cpp expairseq.cpp exprseq.cpp fail.cpp \
+   fderivative.cpp function.cpp idx.cpp indexed.cpp inifcns.cpp \
+@@ -292,8 +292,8 @@
+ 	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+ 	  if test -f $$p; then \
+ 	    f=$(am__strip_dir) \
+-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(libdir)/$$f'"; \
+-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(libdir)/$$f"; \
++	    echo " $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(libdir)/$$f'"; \
++	    $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(libdir)/$$f"; \
+ 	  else :; fi; \
+ 	done
+ 
+@@ -318,8 +318,8 @@
+ 	  rm -f input_parser.cc; \
+ 	  $(MAKE) input_parser.cc; \
+ 	else :; fi
+-libginac.la: $(libginac_la_OBJECTS) $(libginac_la_DEPENDENCIES) 
+-	$(CXXLINK) -rpath $(libdir) $(libginac_la_LDFLAGS) $(libginac_la_OBJECTS) $(libginac_la_LIBADD) $(LIBS)
++ginac.lib: $(libginac_la_OBJECTS) $(libginac_la_DEPENDENCIES)
++	$(AR) r $@ $(libginac_la_OBJECTS)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+@@ -455,6 +455,8 @@
+ 	  echo " $(ginacincludeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(ginacincludedir)/$$f'"; \
+ 	  $(ginacincludeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(ginacincludedir)/$$f"; \
+ 	done
++	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
++	$(INSTALL_DATA) ../ginac-config "$(DESTDIR)$(bindir)/ginac-config"
+ 
+ uninstall-ginacincludeHEADERS:
+ 	@$(NORMAL_UNINSTALL)
+diff -ur ginac-1.3.6/ginac/clifford.cpp ginac-1.3.6-mod/ginac/clifford.cpp
+--- ginac-1.3.6/ginac/clifford.cpp	2005-05-01 20:12:42.000000000 +0200
++++ ginac-1.3.6-mod/ginac/clifford.cpp	2007-01-30 13:31:46.000000000 +0100
+@@ -1161,7 +1161,7 @@
+ 	if (algebraic) // check if algebraic method is applicable
+ 		for (unsigned int i = 0; i < D; i++) 
+ 			if (pow(c.subs(mu == i), 2).is_zero() 
+-				or (not is_a<numeric>(pow(c.subs(mu == i), 2))))
++				|| (! is_a<numeric>(pow(c.subs(mu == i), 2))))
+ 				algebraic = false;
+ 	lst V; 
+ 	if (algebraic) 
+diff -ur ginac-1.3.6/ginac/ex.h ginac-1.3.6-mod/ginac/ex.h
+--- ginac-1.3.6/ginac/ex.h	2006-08-07 14:51:24.000000000 +0200
++++ ginac-1.3.6-mod/ginac/ex.h	2007-01-30 13:44:37.000000000 +0100
+@@ -58,6 +58,8 @@
+ class const_preorder_iterator;
+ class const_postorder_iterator;
+ 
++class ex;
++extern const ex _ex0;
+ 
+ /** Lightweight wrapper for GiNaC's symbolic objects.  It holds a pointer to
+  *  the other object in order to do garbage collection by the method of
+@@ -206,7 +208,7 @@
+ 	// comparison
+ 	int compare(const ex & other) const;
+ 	bool is_equal(const ex & other) const;
+-	bool is_zero() const { extern const ex _ex0; return is_equal(_ex0); }
++	bool is_zero() const { /*extern const ex _ex0;*/ return is_equal(_ex0); }
+ 	
+ 	// symmetry
+ 	ex symmetrize() const;
+diff -ur ginac-1.3.6/ginac/integral.cpp ginac-1.3.6-mod/ginac/integral.cpp
+--- ginac-1.3.6/ginac/integral.cpp	2006-12-11 10:40:14.000000000 +0100
++++ ginac-1.3.6-mod/ginac/integral.cpp	2007-01-30 13:34:41.000000000 +0100
+@@ -223,7 +223,7 @@
+ 
+ struct error_and_integral_is_less
+ {
+-	bool operator()(const error_and_integral &e1,const error_and_integral &e2)
++	bool operator()(const error_and_integral &e1,const error_and_integral &e2) const
+ 	{
+ 		int c = e1.integral.compare(e2.integral);
+ 		if(c < 0)
+diff -ur ginac-1.3.6/ginac/utils.h ginac-1.3.6-mod/ginac/utils.h
+--- ginac-1.3.6/ginac/utils.h	2005-06-29 16:15:19.000000000 +0200
++++ ginac-1.3.6-mod/ginac/utils.h	2007-02-03 15:08:29.265625000 +0100
+@@ -115,7 +115,7 @@
+ 				sign = -sign;
+ 			} else if (!(*other < *i))
+ 				return 0;
+-			--i; --other;
++			--i; if (other != first) --other;
+ 		}
+ 		if (!swapped)
+ 			return sign;
+@@ -134,7 +134,7 @@
+ 				sign = -sign;
+ 			} else if (!(*i < *other))
+ 				return 0;
+-			++i; ++other;
++			++i; if (other != last) ++other;
+ 		}
+ 		if (!swapped)
+ 			return sign;
+diff -ur ginac-1.3.6/ginac-config.in ginac-1.3.6-mod/ginac-config.in
+--- ginac-1.3.6/ginac-config.in	1999-12-01 17:03:37.000000000 +0100
++++ ginac-1.3.6-mod/ginac-config.in	2007-02-03 11:54:06.859375000 +0100
+@@ -46,7 +46,7 @@
+       ;;
+     --libs)
+       libdirs=-L@libdir@
+-      echo $libdirs -lginac @GINACLIB_LIBS@
++      echo $libdirs @GINACLIB_LIBS@ -lginac
+       ;;
+     *)
+       echo "${usage}" 1>&2
+diff -ur ginac-1.3.6/ginsh/Makefile.in ginac-1.3.6-mod/ginsh/Makefile.in
+--- ginac-1.3.6/ginsh/Makefile.in	2006-12-13 15:09:34.000000000 +0100
++++ ginac-1.3.6-mod/ginsh/Makefile.in	2007-02-03 12:06:35.156250000 +0100
+@@ -55,7 +55,7 @@
+ am_ginsh_OBJECTS = ginsh_parser.$(OBJEXT) ginsh_lexer.$(OBJEXT)
+ ginsh_OBJECTS = $(am_ginsh_OBJECTS)
+ am__DEPENDENCIES_1 =
+-ginsh_DEPENDENCIES = ../ginac/libginac.la $(am__DEPENDENCIES_1)
++ginsh_DEPENDENCIES = ../ginac/ginac.lib $(am__DEPENDENCIES_1)
+ DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
+ depcomp = $(SHELL) $(top_srcdir)/depcomp
+ am__depfiles_maybe = depfiles
+@@ -65,7 +65,7 @@
+ 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+ 	$(AM_CXXFLAGS) $(CXXFLAGS)
+ CXXLD = $(CXX)
+-CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
++CXXLINK = $(CXXLD) $(AM_CXXFLAGS) \
+ 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+ LEXCOMPILE = $(LEX) $(LFLAGS) $(AM_LFLAGS)
+ LTLEXCOMPILE = $(LIBTOOL) --mode=compile $(LEX) $(LFLAGS) $(AM_LFLAGS)
+@@ -217,7 +217,7 @@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
+ ginsh_SOURCES = ginsh_parser.yy ginsh_lexer.ll ginsh.h ginsh_extensions.h
+-ginsh_LDADD = ../ginac/libginac.la $(GINSH_LIBS)
++ginsh_LDADD = ../ginac/ginac.lib $(GINSH_LIBS)
+ INCLUDES = -I$(srcdir)/../ginac -I../ginac -DIN_GINAC
+ AM_YFLAGS = -d
+ man_MANS = ginsh.1
+@@ -293,7 +293,7 @@
+ 	else :; fi
+ ginsh$(EXEEXT): $(ginsh_OBJECTS) $(ginsh_DEPENDENCIES) 
+ 	@rm -f ginsh$(EXEEXT)
+-	$(CXXLINK) $(ginsh_LDFLAGS) $(ginsh_OBJECTS) $(ginsh_LDADD) $(LIBS)
++	$(CXXLINK) $(ginsh_LDFLAGS) $(ginsh_OBJECTS) $(LIBS) $(ginsh_LDADD)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)

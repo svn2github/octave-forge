@@ -1,0 +1,25 @@
+Package: GiNaC
+Version: 1.3.6
+Home page: http://www.ginac.de
+Download: 
+License: GPL
+
+Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc
+
+Requirements: cc-msvc, ar-msvc, cln, readline (for the GiNaC shell)
+
+1) Apply the patch
+
+2) CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
+     CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc ./configure --disable-shared \
+     --prefix=<dir>
+
+   where <dir> is the target installation directory in Windows form
+   with forward slahes. For instance, to install into C:\Software\VCLibs,
+   use C:/Software/VCLibs as prefix.
+
+3) make -C ginac
+
+3b) make -C ginsh (optional, if you want to build the GiNaC shell)
+
+4) make -C ginac install

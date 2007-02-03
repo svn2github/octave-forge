@@ -1,0 +1,22 @@
+Package: CLN
+Version: 1.3.6
+Home page: http://www.ginac.de/CLN/
+Download: 
+License: GPL
+
+Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc
+
+Requirements: cc-msvc, ar-msvc
+
+1) Apply the patch
+
+2) CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
+     CPPFLAGS="-DWIN32 -D_WIN32 -DASM_UNDERSCORE" AR=ar-msvc ./configure --prefix=<dir>
+
+   where <dir> is the target installation directory in Windows form
+   with forward slahes. For instance, to install into C:\Software\VCLibs,
+   use C:/Software/VCLibs as prefix.
+
+3) make -C src
+
+4) make -C src install

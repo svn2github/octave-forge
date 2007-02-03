@@ -1,0 +1,395 @@
+diff -ur cln-1.1.13/include/cln/io.h cln-1.1.13-mod/include/cln/io.h
+--- cln-1.1.13/include/cln/io.h	2000-12-14 17:53:05.000000000 +0100
++++ cln-1.1.13-mod/include/cln/io.h	2007-01-30 11:14:50.000000000 +0100
+@@ -83,11 +83,11 @@
+ }
+ 
+ 
+-class cl_print_flags;
+-class cl_print_number_flags;
+-class cl_print_real_flags;
+-class cl_print_rational_flags;
+-class cl_print_float_flags;
++struct cl_print_flags;
++struct cl_print_number_flags;
++struct cl_print_real_flags;
++struct cl_print_rational_flags;
++struct cl_print_float_flags;
+ CL_REQUIRE(cl_prin_globals)
+ 
+ 
+diff -ur cln-1.1.13/include/cln/number.h cln-1.1.13-mod/include/cln/number.h
+--- cln-1.1.13/include/cln/number.h	2001-01-28 18:23:08.000000000 +0100
++++ cln-1.1.13-mod/include/cln/number.h	2007-01-29 19:31:01.000000000 +0100
+@@ -47,15 +47,19 @@
+ 
+ #if (long_bitsize==32)
+ // `long' == `sintL', `unsigned long' == `uintL'.
++namespace cln {
++extern cl_private_thing cl_I_constructor_from_L (sint32 wert);
++extern cl_private_thing cl_I_constructor_from_UL (uint32 wert);
++}
+ #define CL_DEFINE_LONG_CONSTRUCTORS(_class_)  \
+ inline _class_::_class_ (const long wert)				\
+ {									\
+-	extern cl_private_thing cl_I_constructor_from_L (sint32 wert);	\
++	/*extern cl_private_thing cl_I_constructor_from_L (sint32 wert);*/	\
+ 	pointer = cl_I_constructor_from_L(wert);			\
+ }									\
+ inline _class_::_class_ (const unsigned long wert)			\
+ {									\
+-	extern cl_private_thing cl_I_constructor_from_UL (uint32 wert);	\
++	/*extern cl_private_thing cl_I_constructor_from_UL (uint32 wert);*/	\
+ 	pointer = cl_I_constructor_from_UL(wert);			\
+ }
+ #elif (long_bitsize==64)
+@@ -78,14 +82,14 @@
+ #define CL_DEFINE_LONG_ASSIGNMENT_OPERATORS(_class_)  \
+ inline _class_& _class_::operator= (const long wert)			\
+ {									\
+-	extern cl_private_thing cl_I_constructor_from_L (sint32 wert);	\
++	/*extern cl_private_thing cl_I_constructor_from_L (sint32 wert);*/	\
+ 	cl_dec_refcount(*this);						\
+ 	pointer = cl_I_constructor_from_L(wert);			\
+ 	return *this;							\
+ }									\
+ inline _class_& _class_::operator= (const unsigned long wert)		\
+ {									\
+-	extern cl_private_thing cl_I_constructor_from_UL (uint32 wert);	\
++	/*extern cl_private_thing cl_I_constructor_from_UL (uint32 wert);*/	\
+ 	cl_dec_refcount(*this);						\
+ 	pointer = cl_I_constructor_from_UL(wert);			\
+ 	return *this;							\
+diff -ur cln-1.1.13/include/cln/object.h cln-1.1.13-mod/include/cln/object.h
+--- cln-1.1.13/include/cln/object.h	2005-08-16 23:47:56.000000000 +0200
++++ cln-1.1.13-mod/include/cln/object.h	2007-01-29 20:34:41.000000000 +0100
+@@ -193,7 +193,7 @@
+ 
+ // Debugging support for dynamic typing: Register a debugging print function.
+ #define cl_register_type_printer(type,printer)  \
+-  { extern cl_class type; type.dprint = (printer); }
++  { /*extern cl_class type;*/ type.dprint = (printer); }
+ 
+ 
+ // cl_private_thing: An immediate value or a pointer into the heap.
+diff -ur cln-1.1.13/src/Makefile.in cln-1.1.13-mod/src/Makefile.in
+--- cln-1.1.13/src/Makefile.in	2006-08-06 14:14:41.000000000 +0200
++++ cln-1.1.13-mod/src/Makefile.in	2007-02-03 12:19:28.687500000 +0100
+@@ -11,6 +11,7 @@
+ local_prefix = /usr/local
+ exec_prefix = @exec_prefix@
+ datarootdir = @datarootdir@
++bindir = @bindir@
+ datadir = @datadir@
+ libdir = @libdir@
+ includedir = @includedir@
+@@ -21,6 +22,8 @@
+ # C compiler
+ CC = @CC@
+ CFLAGS = @CFLAGS@
++AS_CC = gcc
++AS_CFLAGS = -O2
+ CPP = @CPP@
+ CPPFLAGS = @CPPFLAGS@
+ # C++ compiler
+@@ -31,12 +34,12 @@
+ override CPPFLAGS += $(INCLUDES)
+ LDFLAGS = @LDFLAGS@
+ LIBS = @LIBS@
+-LIBTOOL = @LIBTOOL@
+-LIBTOOL_COMPILE = $(LIBTOOL) --mode=compile
+-LIBTOOL_LINK = $(LIBTOOL) --mode=link
+-LIBTOOL_INSTALL = $(LIBTOOL) --mode=install
+-LIBTOOL_UNINSTALL = $(LIBTOOL) --mode=uninstall
+-AR = ar
++LIBTOOL =
++LIBTOOL_COMPILE =
++LIBTOOL_LINK =
++LIBTOOL_INSTALL =
++LIBTOOL_UNINSTALL =
++AR = @AR@
+ AR_FLAGS = rc
+ RANLIB = @RANLIB@
+ MV = mv
+@@ -88,11 +91,11 @@
+ 
+ FILES_S := $(patsubst %.cc,%.s,$(FILES_CC))
+ 
+-FILES_LO := $(patsubst %.cc,%.lo,$(FILES_CC))
++FILES_LO := $(patsubst %.cc,%.o,$(FILES_CC))
+ 
+ ASMFILES_S := $(patsubst %.cc,%.s,$(ASMFILES_CC))
+ 
+-ASMFILES_LO := $(patsubst %.cc,%.lo,$(ASMFILES_CC))
++ASMFILES_LO := $(patsubst %.cc,%.o,$(ASMFILES_CC))
+ 
+ OBJECTS_LO = $(FILES_LO) $(ASMFILES_LO)
+ 
+@@ -111,11 +114,11 @@
+ ALLFILES_CC := $(filter-out %.i.cc, $(ALLFILES_CC))
+ ALLASMFILES_CC := $(patsubst cl_asm_@host_cpu@_%.cc,cl_asm_%.cc, $(filter cl_asm_@host_cpu@_%.cc, $(ALLFILES_CC)))
+ ALLFILES_CC := $(filter-out cl_asm_%.cc, $(ALLFILES_CC))
+-ALLFILES_LO := $(patsubst %.cc,%.lo,$(ALLFILES_CC))
+-ALLASMFILES_LO := $(patsubst %.cc,%.lo,$(ALLASMFILES_CC))
++ALLFILES_LO := $(patsubst %.cc,%.o,$(ALLFILES_CC))
++ALLASMFILES_LO := $(patsubst %.cc,%.o,$(ALLASMFILES_CC))
+ ALLOBJECTS_LO = $(ALLFILES_LO) $(ALLASMFILES_LO)
+ 
+-all : $(OBJECTS_LO) $(SUBDIRS_TARGET) libcln.la
++all : $(OBJECTS_LO) $(SUBDIRS_TARGET) cln.lib
+ else
+ all : $(OBJECTS_LO) $(SUBDIRS_TARGET)
+ endif
+@@ -131,10 +134,10 @@
+ 
+ # Rules for normal compilation.
+ 
+-%.lo : %.c
++%.o : %.c
+ 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $<
+ 
+-%.lo : %.cc
++%.o : %.cc
+ 	$(LIBTOOL_COMPILE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $<
+ 
+ # Rules for normal compilation, only needed for debugging.
+@@ -174,20 +177,20 @@
+ 	-$(CXXCPP) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -P $(ASMFLAGS) $< > $@
+ else
+ $(ASMFILES_S) : %.s : %.cc
+-	$(CXXCPP) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -P $(ASMFLAGS) $< > $@
++	$(CXXCPP) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -E $(ASMFLAGS) $< > $@
+ endif
+ endif
+ endif
+ 
+ ifeq (@host_cpu@,hppa)
+ # Only the native as groks the .SHORTDATA statements
+-$(ASMFILES_LO) : %.lo : %.s
++$(ASMFILES_LO) : %.o : %.s
+ 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS) $(TARGET_ARCH) -c $< \
+ 	|| COMPILER_PATH=/usr/ccs/bin $(LIBTOOL_COMPILE) $(CC) $(CFLAGS) $(TARGET_ARCH) -c $< \
+ 	|| COMPILER_PATH=/bin $(LIBTOOL_COMPILE) $(CC) $(CFLAGS) $(TARGET_ARCH) -c $<
+ else
+-$(ASMFILES_LO) : %.lo : %.s
+-	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS) $(ASMFLAGS) $(TARGET_ARCH) -c $<
++$(ASMFILES_LO) : %.o : %.s
++	$(LIBTOOL_COMPILE) $(AS_CC) $(AS_CFLAGS) $(ASMFLAGS) $(TARGET_ARCH) -c $<
+ endif
+ 
+ endif
+@@ -204,16 +207,18 @@
+ 
+ $(ALLOBJECTS_LO) : $(SUBDIRS_TARGET)
+ 
+-libcln.la : $(LIBTOOL) $(ALLOBJECTS_LO)
++cln.lib : $(LIBTOOL) $(ALLOBJECTS_LO)
+ 	echo $(ALLOBJECTS_LO) | tr ' ' '\n' > libcln.objectlist
+-	$(LIBTOOL_LINK) $(CXX) -o libcln.la -rpath $(libdir) -version-info $(CL_CURRENT):$(CL_REVISION):$(CL_AGE) $(LDFLAGS) $(LIBS) -objectlist libcln.objectlist
++	$(AR) r $@ @libcln.objectlist
+ 
+ install : all force
+ 	$(MKDIR) $(DESTDIR)$(libdir)
+-	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) libcln.la $(DESTDIR)$(libdir)/libcln.la
++	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) cln.lib $(DESTDIR)$(libdir)/cln.lib
+ 	$(MKDIR) $(DESTDIR)$(includedir)/cln
+ 	$(INSTALL_DATA) $(top_srcdir)/include/cln/*.h $(DESTDIR)$(includedir)/cln
+ 	$(INSTALL_DATA) ../include/cln/*.h $(DESTDIR)$(includedir)/cln
++	$(MKDIR) $(DESTDIR)$(bindir)
++	$(INSTALL_PROGRAM) ../cln-config $(DESTDIR)$(bindir)/cln-config
+ 
+ installdirs : force
+ 	$(MKDIR) $(DESTDIR)$(libdir)
+@@ -228,7 +233,7 @@
+ mostlyclean : clean
+ 
+ clean : force
+-	$(RM) *.s *.o *.lo *.a *.la *.objectlist core
++	$(RM) *.s *.o *.o *.a *.la *.objectlist core *.lib
+ 	$(RM) -r .libs _libs
+ 
+ distclean : clean
+diff -ur cln-1.1.13/src/base/cl_macros.h cln-1.1.13-mod/src/base/cl_macros.h
+--- cln-1.1.13/src/base/cl_macros.h	2004-06-30 23:51:32.000000000 +0200
++++ cln-1.1.13-mod/src/base/cl_macros.h	2007-01-30 10:47:29.000000000 +0100
+@@ -39,6 +39,9 @@
+         typedef void CONCAT3(funname,_function_,__LINE__) arguments; \
+         storclass __volatile__ CONCAT3(funname,_function_,__LINE__) funname
+     #endif
++  #elif defined (_MSC_VER)
++    #define nonreturning_function(storclass,funname,arguments)  \
++      __declspec(noreturn) storclass void funname arguments
+   #else
+     #define nonreturning_function(storclass,funname,arguments)  \
+       storclass void funname arguments
+diff -ur cln-1.1.13/src/base/cl_malloc.cc cln-1.1.13-mod/src/base/cl_malloc.cc
+--- cln-1.1.13/src/base/cl_malloc.cc	2004-06-23 23:11:21.000000000 +0200
++++ cln-1.1.13-mod/src/base/cl_malloc.cc	2007-01-30 10:44:26.000000000 +0100
+@@ -13,12 +13,14 @@
+ #include "cln/io.h"
+ #include "cln/abort.h"
+ 
++#ifndef _MSC_VER
+ #ifndef malloc
+   extern "C" void* malloc (size_t size);
+ #endif
+ #ifndef free
+   extern "C" void free (void* ptr);
+ #endif
++#endif
+ 
+ namespace cln {
+ 
+diff -ur cln-1.1.13/src/base/digitseq/cl_asm_i386_.cc cln-1.1.13-mod/src/base/digitseq/cl_asm_i386_.cc
+--- cln-1.1.13/src/base/digitseq/cl_asm_i386_.cc	2000-01-28 12:37:28.000000000 +0100
++++ cln-1.1.13-mod/src/base/digitseq/cl_asm_i386_.cc	2007-02-03 14:13:56.656250000 +0100
+@@ -62,7 +62,7 @@
+   #endif
+   // Alignment. Note that some assemblers need ".align 3,0x90" whereas other
+   // assemblers don't like this syntax. So we put in the "nop"s by hand.
+-  #if defined(ASM_UNDERSCORE) && !(defined(__CYGWIN32__) || defined(__MINGW32__))
++  #if defined(ASM_UNDERSCORE) && !(defined(__CYGWIN32__) || defined(__MINGW32__) || defined(_MSC_VER))
+     // BSD syntax assembler
+     #define ALIGN  .align 3
+   #else
+diff -ur cln-1.1.13/src/base/low/cl_low_div.cc cln-1.1.13-mod/src/base/low/cl_low_div.cc
+--- cln-1.1.13/src/base/low/cl_low_div.cc	2001-07-22 14:55:13.000000000 +0200
++++ cln-1.1.13-mod/src/base/low/cl_low_div.cc	2007-02-03 14:32:20.421875000 +0100
+@@ -8,13 +8,12 @@
+ 
+ 
+ // Implementation.
+-
+ #ifdef NEED_VAR_divu_16_rest
+-uint16 divu_16_rest;
++extern "C" { uint16 divu_16_rest; };
+ #endif
+ 
+ #ifdef NEED_FUNCTION_divu_3216_1616_
+-uint16 divu_16_rest;
++extern "C" { uint16 divu_16_rest; };
+ namespace cln {
+ #if 1
+ // Most processors have a good 32 by 32 bit division, use that.
+@@ -101,11 +100,11 @@
+ #endif
+ 
+ #ifdef NEED_VAR_divu_32_rest
+-uint32 divu_32_rest;
++extern "C" { uint32 divu_32_rest; };
+ #endif
+ 
+ #ifdef NEED_FUNCTION_divu_6432_3232_
+-uint32 divu_32_rest;
++extern "C" { uint32 divu_32_rest; };
+ namespace cln {
+ uint32 divu_6432_3232_(uint32 xhi, uint32 xlo, uint32 y)
+ // Methode:
+diff -ur cln-1.1.13/src/base/low/cl_low_mul.cc cln-1.1.13-mod/src/base/low/cl_low_mul.cc
+--- cln-1.1.13/src/base/low/cl_low_mul.cc	2001-07-22 14:55:13.000000000 +0200
++++ cln-1.1.13-mod/src/base/low/cl_low_mul.cc	2007-02-03 14:33:08.109375000 +0100
+@@ -10,11 +10,11 @@
+ // Implementation.
+ 
+ #ifdef NEED_VAR_mulu32_high
+-uint32 mulu32_high;
++extern "C" { uint32 mulu32_high; };
+ #endif
+ 
+ #ifdef NEED_FUNCTION_mulu32_
+-uint32 mulu32_high;
++extern "C" { uint32 mulu32_high; };
+ namespace cln {
+ uint32 mulu32_ (uint32 x, uint32 y)
+ {
+diff -ur cln-1.1.13/src/base/random/cl_random_from.cc cln-1.1.13-mod/src/base/random/cl_random_from.cc
+--- cln-1.1.13/src/base/random/cl_random_from.cc	2006-08-03 00:27:39.000000000 +0200
++++ cln-1.1.13-mod/src/base/random/cl_random_from.cc	2007-02-03 11:08:10.609375000 +0100
+@@ -62,7 +62,9 @@
+ #endif
+ 
+ #elif defined(_WIN32)
++#ifndef _MSC_VER
+ #include <sys/time.h>
++#endif
+ #include <sys/timeb.h>
+ 
+ namespace cln {
+diff -ur cln-1.1.13/src/modinteger/cl_MI_debug.cc cln-1.1.13-mod/src/modinteger/cl_MI_debug.cc
+--- cln-1.1.13/src/modinteger/cl_MI_debug.cc	2000-08-29 00:08:21.000000000 +0200
++++ cln-1.1.13-mod/src/modinteger/cl_MI_debug.cc	2007-01-29 20:38:21.000000000 +0100
+@@ -20,6 +20,7 @@
+ 	fprint(cl_debugout, "(cl_modint_ring) Z mod ");
+ 	fprint(cl_debugout, obj->modulus);
+ }
++extern cl_class cl_class_modint_ring;
+ AT_INITIALIZATION(dprint_modint_ring)
+ { cl_register_type_printer(cl_class_modint_ring,dprint); }
+ 
+diff -ur cln-1.1.13/src/modinteger/cl_MI_int.h cln-1.1.13-mod/src/modinteger/cl_MI_int.h
+--- cln-1.1.13/src/modinteger/cl_MI_int.h	2000-12-14 17:53:08.000000000 +0100
++++ cln-1.1.13-mod/src/modinteger/cl_MI_int.h	2007-01-29 20:04:38.000000000 +0100
+@@ -33,7 +33,7 @@
+ 	unused randomstate;
+ 	fprint(std::cerr, "Z / 0 Z not a finite set - no equidistributed random function.\n");
+ 	cl_abort();
+-#if ((defined(__sparc__) || defined(__sparc64__)) && !defined(__GNUC__)) // Sun CC wants a return value
++#if ((defined(__sparc__) || defined(__sparc64__) || defined(_MSC_VER)) && !defined(__GNUC__)) // Sun CC wants a return value
+ 	return _cl_MI(R, 0);
+ #endif
+ }
+diff -ur cln-1.1.13/src/polynomial/misc/cl_UP_debug.cc cln-1.1.13-mod/src/polynomial/misc/cl_UP_debug.cc
+--- cln-1.1.13/src/polynomial/misc/cl_UP_debug.cc	2000-08-29 00:08:22.000000000 +0200
++++ cln-1.1.13-mod/src/polynomial/misc/cl_UP_debug.cc	2007-01-29 20:39:19.000000000 +0100
+@@ -20,6 +20,7 @@
+ 	fprint(cl_debugout, "(cl_univpoly_ring) ring");
+ 	fprint(cl_debugout, get_varname((cl_heap_univpoly_ring*)pointer));
+ }
++extern cl_class cl_class_univpoly_ring;
+ AT_INITIALIZATION(dprint_univpoly_ring)
+ { cl_register_type_printer(cl_class_univpoly_ring,dprint); }
+ 
+diff -ur cln-1.1.13/src/vector/cl_GV_I_debug.cc cln-1.1.13-mod/src/vector/cl_GV_I_debug.cc
+--- cln-1.1.13/src/vector/cl_GV_I_debug.cc	2000-08-29 00:08:25.000000000 +0200
++++ cln-1.1.13-mod/src/vector/cl_GV_I_debug.cc	2007-01-29 20:35:51.000000000 +0100
+@@ -19,6 +19,7 @@
+ 	fprint(cl_debugout, "(cl_GV_I) ");
+ 	fprint(cl_debugout, obj);
+ }
++extern cl_class cl_class_gvector_integer;
+ AT_INITIALIZATION(dprint_GV_I)
+ { cl_register_type_printer(cl_class_gvector_integer,dprint); }
+ 
+diff -ur cln-1.1.13/src/vector/cl_GV_number_debug.cc cln-1.1.13-mod/src/vector/cl_GV_number_debug.cc
+--- cln-1.1.13/src/vector/cl_GV_number_debug.cc	2000-12-14 17:53:09.000000000 +0100
++++ cln-1.1.13-mod/src/vector/cl_GV_number_debug.cc	2007-01-29 20:35:06.000000000 +0100
+@@ -28,6 +28,7 @@
+ 	fprint(cl_debugout, "(cl_GV_number) ");
+ 	print_vector(cl_debugout,default_print_flags,&print_for_debug,obj);
+ }
++extern cl_class cl_class_gvector_number;
+ AT_INITIALIZATION(dprint_GV_number)
+ { cl_register_type_printer(cl_class_gvector_number,dprint); }
+ 
+diff -ur cln-1.1.13/src/vector/cl_SV_number_debug.cc cln-1.1.13-mod/src/vector/cl_SV_number_debug.cc
+--- cln-1.1.13/src/vector/cl_SV_number_debug.cc	2000-12-14 17:53:09.000000000 +0100
++++ cln-1.1.13-mod/src/vector/cl_SV_number_debug.cc	2007-01-29 20:36:42.000000000 +0100
+@@ -28,6 +28,7 @@
+ 	fprint(cl_debugout, "(cl_SV_number) ");
+ 	print_vector(cl_debugout,default_print_flags,&print_for_debug,obj);
+ }
++extern cl_class cl_class_svector_number;
+ AT_INITIALIZATION(dprint_SV_number)
+ { cl_register_type_printer(cl_class_svector_number,dprint); }
+ 
+diff -ur cln-1.1.13/src/vector/cl_SV_ringelt_debug.cc cln-1.1.13-mod/src/vector/cl_SV_ringelt_debug.cc
+--- cln-1.1.13/src/vector/cl_SV_ringelt_debug.cc	2000-08-29 00:08:25.000000000 +0200
++++ cln-1.1.13-mod/src/vector/cl_SV_ringelt_debug.cc	2007-01-29 20:37:41.000000000 +0100
+@@ -20,6 +20,7 @@
+ 	fprint(cl_debugout, "(cl_SV_ringelt) ");
+ 	cl_dprint_unknown(pointer);
+ }
++extern cl_class cl_class_svector_ringelt;
+ AT_INITIALIZATION(dprint_SV_ringelt)
+ { cl_register_type_printer(cl_class_svector_ringelt,dprint); }
+ 

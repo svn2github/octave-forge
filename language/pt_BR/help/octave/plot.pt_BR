@@ -1,4 +1,4 @@
-md5="bd60380d89354d59fa5c9e5e3b95e673";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9a74239c574531a1a5f141fb94b056dc";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} plot (@var{args})
 Essa fun@value{cedilha}@~ao produz gr@'aficos bidimensionais.  Muitas diferentes

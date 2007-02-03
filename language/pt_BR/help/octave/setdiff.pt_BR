@@ -1,9 +1,9 @@
-md5="fbc3808138bf696de7eeb9b41c595dfe";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b550a39526dcf4452664d5518bef9c9b";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} setdiff (@var{a}, @var{b})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} setdiff(@var{a}, @var{b}, "rows")
 Retorna os elementos de @var{a} que n@~ao pertencem a @var{b}, ordenados
-de forma ascendnte.  Se @var{a} e @var{b} forem ambos vetores coluna
+de forma ascendente.  Se @var{a} e @var{b} forem ambos vetores coluna
 retorna um vetor coluna, de outa forma retorna um vetor linha.
 
 Dado o terceiro argumento opcional @samp{"rows"}, retorna as linhas em

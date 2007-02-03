@@ -1,7 +1,7 @@
 Package: CLN
 Version: 1.3.6
 Home page: http://www.ginac.de/CLN/
-Download: 
+Download: ftp://ftpthep.physik.uni-mainz.de/pub/gnu/cln-1.1.13.tar.bz2
 License: GPL
 
 Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc

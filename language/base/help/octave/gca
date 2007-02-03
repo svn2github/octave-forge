@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} gca ()
+Return the current axis handle.
+@end deftypefn

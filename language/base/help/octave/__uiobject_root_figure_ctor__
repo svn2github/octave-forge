@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_root_figure_ctor__ ()
+Create the root figure object with default properties.
+@end deftypefn

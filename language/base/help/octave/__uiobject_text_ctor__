@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_text_ctor__ (p)
+Create a text object with parent @var{p}.
+@end deftypefn

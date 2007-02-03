@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} gcf ()
+Return the current figure handle.
+@end deftypefn

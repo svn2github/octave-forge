@@ -1,8 +1,9 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} {@var{c}} = contour (@var{x},@var{y},@var{z},@var{vv})
+@deftypefn {Function File} {} [@var{c}, @var{lev}] =  contourc (@var{x}, @var{y}, @var{z}, @var{vv})
 Compute isolines (countour lines) of the matrix @var{z}. 
-parameters @var{x}, @var{y} and @var{vn} are optional.
+Parameters @var{x}, @var{y} and @var{vn} are optional.
 
+The return value @var{lev} is a vector of the contour levels.
 The return value @var{c} is a 2 by @var{n} matrix containing the
 contour lines in the following format
 
@@ -16,13 +17,13 @@ in which contour line @var{n} has a level (height) of @var{levn} and
 length of @var{lenn}.
 
 If @var{x} and @var{y} are omitted they are taken as the row/column 
-index of @var{z}.  @var{vn} is either a scalar denoting the number of
-lines to compute or a vector containing the values of the lines.  If
-only one value is wanted, set @code{@var{vn} = [val, val]}.  If
-@var{vn} is omitted it defaults to 10.
+index of @var{z}.  @var{vn} is either a scalar denoting the number of lines 
+to compute or a vector containing the values of the lines. If only one 
+value is wanted, set @code{@var{vn} = [val, val]};
+If @var{vn} is omitted it defaults to 10.
 
 @example
 @var{c}=contourc (@var{x}, @var{y}, @var{z}, linspace(0,2*pi,10))
 @end example
-@seealso{contourc,line,plot}
+@seealso{contour}
 @end deftypefn

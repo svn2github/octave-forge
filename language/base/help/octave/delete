@@ -1,4 +1,5 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} delete (file)
-Delete the named file.  Delete is a wrapper for @code{unlink}.
+@deftypefn {Function File} {} delete (@var{file})
+@deftypefnx {Function File} {} delete (@var{h})
+Delete the named file or figure handle.
 @end deftypefn

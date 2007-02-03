@@ -1,6 +1,4 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} title (@var{string})
-Specify a title for a plot.
-@seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-bar, stairs, replot, xlabel, ylabel}
+@deftypefn {Function File} {} title (@var{title})
+Create a title object and return a handle to it.
 @end deftypefn

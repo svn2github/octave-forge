@@ -1,3 +1,3 @@
 -*- texinfo -*-
-@deftypefn {Function File} {[data, fmtstr] =} __plt1__ (@var{x1}, @var{fmt})
+@deftypefn {Function File} {} __plt1__ (@var{h}, @var{x1}, @var{fmt}, @var{key})
 @end deftypefn

@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_axes_dtor__ (@var{obj})
+Delete an axes object @var{obj}.
+@end deftypefn

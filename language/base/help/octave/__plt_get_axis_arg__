@@ -1,0 +1,3 @@
+-*- texinfo -*-
+@deftypefn {Function File} {[@var{h}, @var{remaining_args}} plot (@var{args})
+@end deftypefn

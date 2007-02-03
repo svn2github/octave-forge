@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} line (@var{x}, @var{y})
+@deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z})
+Create line object from @var{x} and @var{y} and insert in current
+axes object.  Return handle to line object.
+@end deftypefn

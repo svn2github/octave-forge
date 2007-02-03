@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} ishandle (@var{h})
+Return 1 if @var{h} is a graphics handle and 0 otherwise.
+@end deftypefn

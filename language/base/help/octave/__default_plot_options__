@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __default_plot_options__ ()
+Return a default options structure for __pltopt__.
+@seealso{__pltopt__}
+@end deftypefn

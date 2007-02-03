@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_draw_axes__ (@var{axis_obj}, @var{plot_stream})
+Display the axes @var{axis_obj} on @var{plot_stream}.
+@end deftypefn

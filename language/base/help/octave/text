@@ -1,0 +1,7 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{h} =} text (@var{x}, @var{y}, @var{label})
+@deftypefnx {Function File} {@var{h} =} text (@var{x}, @var{y}, @var{z}, @var{label})
+Create a text object with text @var{label} at position @var{x},
+@var{y}, @var{z} on the current axes.  The label may be followed by
+property-value pairs.
+@end deftypefn

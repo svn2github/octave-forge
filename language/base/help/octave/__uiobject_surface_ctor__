@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_surface_ctor__ (@var{p})
+Create a surface object with parent @var{p}.
+@end deftypefn

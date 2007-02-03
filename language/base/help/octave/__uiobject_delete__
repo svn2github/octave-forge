@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} delete (@var{h})
+Delete the graphics object @var{h}
+@end deftypefn

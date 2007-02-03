@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_line_ctor__ (@var{p})
+Create a line object with parent @var{p}.
+@end deftypefn

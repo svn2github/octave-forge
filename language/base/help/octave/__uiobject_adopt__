@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_adopt__ (@var{parent}, @var{child})
+Add @var{child} to the list of children in @var{parent}.
+@end deftypefn

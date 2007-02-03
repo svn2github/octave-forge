@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __default_colormap__ ()
+Return the default colormap.
+@end deftypefn

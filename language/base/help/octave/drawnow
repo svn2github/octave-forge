@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} drawnow ()
+Display the current graphics.
+@end deftypefn

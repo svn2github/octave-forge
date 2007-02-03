@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{s}} __uiobject_axes_setr__ (@var{p}, @var{v}, @dots{}))
+Set properties for axes objects.
+@end deftypefn

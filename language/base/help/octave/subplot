@@ -40,11 +40,14 @@ height13pt&5&6&7&8\cr height12pt&&&&\cr\noalign{\hrule}}}
 @ifinfo
 @display
 @group
+@example
+
 +-----+-----+-----+-----+
 |  1  |  2  |  3  |  4  |
 +-----+-----+-----+-----+
 |  5  |  6  |  7  |  8  |
 +-----+-----+-----+-----+
+@end example
 @end group
 @end display
 @end ifinfo

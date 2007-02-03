@@ -17,6 +17,14 @@ If @var{option} is @code{-nodeps} the package manager will disable the
 dependency checking. That way it is possible to install a package even
 if it depends on another package that's not installed on the system.
 @strong{Use this option with care.}
+
+If @var{option} is @code{-noauto} the package manager will not
+automatically load the installed package when starting Octave,
+even if the package requests that it is.
+
+If @var{option} is @code{-auto} the package manager will
+automatically load the installed package when starting Octave,
+even if the package requests that it isn't.
 @item uninstall
 Uninstall named packages.  For example,
 @example

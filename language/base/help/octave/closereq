@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} closereq ()
+Close the current figure.
+@end deftypefn

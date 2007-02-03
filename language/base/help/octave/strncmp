@@ -18,7 +18,7 @@ or character string.
 
 @example
 @group
-strncmp ("abce", {"abcd", "bca", "abc"}, 3)
+strncmp ("abce", @{"abcd", "bca", "abc"@}, 3)
      @result{} [1, 0, 1]
 @end group
 @end example

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} __request_drawnow__ ()
+@deftypefnx {Built-in Function} {} __request_drawnow__ (@var{flag})
+Request a call drawnow at the next user prompt.
+@end deftypefn

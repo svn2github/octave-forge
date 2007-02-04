@@ -17,38 +17,63 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-/* mkoctfile --mex -Wall -W -Wshadow -DHAVE_CONFIG_H -D__ODEPKGDEBUG__ -I./cprog\
-   odepkg_mexsolver_dopri5.c odepkgmex.c odepkgext.c cprog/dopri5.o
+/* To manually compile this file with debug messages
+
+     mkoctfile --mex -Wall -W -Wshadow -D__ODEPKGDEBUG__ \
+     odepkg_mexsolver_dopri5.c odepkgmex.c odepkgext.c hairer/dopri5.f
+
+   or
+
+     mex -v -D__ODEPKGDEBUG__ odepkg_mexsolver_dopri5.c odepkgext.c \
+     odepkgmex.c hairer/dopri5.f
+
+   a function check can be done via
+
+     octave --quiet --eval "A = odeset (\"RelTol\", 1e-3, \"AbsTol\", 1e-4, \
+       \"OutputFcn\", @odeprint, \"OutputSel\", [2, 1], \"Refine\", 3); \
+     [C, B] = odepkg_mexsolver_dopri5 (@odepkg_equations_vanderpol, \
+       [0, 1], [2, 0], A, 12)"
 */
-/* octave --eval "A = odeset (\"RelTol\", 1e-3, \"AbsTol\", 1e-4, \"OutputFcn\", \
-   @odeprint, \"OutputSel\", [2, 1], \"Refine\", 3); \
-   [C, B] = odepkg_mexsolver_dopri5 (@odepkg_equations_vanderpol, [0, 1], [2, 0], A, 12)"
-*/
 
-/* mex -v -D__ODEPKGDEBUG__ -I./cprog odepkg_mexsolver_dopri5.c odepkgext.c odepkgmex.c cprog/dopri5.c
-   odepkg_mexsolver_dopri5 (@odepkg_equations_vanderpol, [0,2], [2,0])
-*/
+#include <config.h>        /* Needed for the F77_FUNC definition etc. */
+#include <mex.h>           /* Needed for all mex definitions */
+/* #include <f77-fcn.h> */ /* Needed for the use of Fortran routines */
+#include <stdio.h>         /* Needed for the sprintf function etc.*/
+#include <string.h>        /* Needed for the memcpy function etc.*/
+#include "odepkgmex.h"     /* Needed for the mex extensions */
+#include "odepkgext.h"     /* Needed for the odepkg interfaces */
 
-#ifdef HAVE_CONFIG_H
-  #include "config.h"  /* Needed for GCC_ATTR_UNUSED if compiled with mkoctfile */
-#endif
-
-#include <mex.h>       /* Needed for all mex definitions */
-#include <string.h>    /* Needed for the memcpy function etc.*/
-#include "odepkgmex.h" /* Needed for the mex extensions */
-#include "odepkgext.h" /* Needed for the odepkg interfaces */
-#include "dopri5.h"    /* Needed for the solver function */
-
-/* These prototype definitions from functions that are found in this file */
-void fodefun (unsigned n, double x, double *y, double *f);
-void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn);
-void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]);
+/**
+ * dopri5 - Stores mxArrays in an internal variable
+ * @vdeci: The decision for what has to be done
+ * @vname: The name of the variable that is stored
+ * @vvalue: The value of the stored variable
+ *
+ * TODO TODO TODO If @vdeci is 0 (@vname is %NULL and @vvalue is
+ * %NULL) then this function @is initialized. Otherwise if @vdeci is 1
+ * (@vname must be the name of the variable and @vvalue must be a
+ * pointer to its
+ *
+ * Return value: On success the constant %true, otherwise %false.
+ **/
+extern void F77_FUNC (dopri5, DOPRI5) (int *N, void *FCN, double *X, double *Y,
+  double *XEND, double *RTOL, double *ATOL, int *ITOL, void *SOL, int *IOUT,
+  double *WORK, int *LWORK, int *IWORK, int *LIWORK, double *RPAR, int *IPAR, 
+  int *VRET);
 
 /**
  * TODO
- * Return value: On success the constant %true, otherwise %false.
+ *
  **/
-void fodefun (unsigned n, double x, double *y, double *f) {
+extern double F77_FUNC (contd5, CONTD5) (int *II, double *X, double *CON,
+  int *ICOMP, int *ND);
+
+/**
+ * TODO
+ *
+ **/
+void F77_FUNC (ffcn, FFCN) (int *N, double *X, double *Y, double *F, 
+  GCC_ATTR_UNUSED double *RPAR, GCC_ATTR_UNUSED int *IPAR) {
   int  vcnt = 0;
   int  vnum = 0;
   char vmsg[64] = "";
@@ -64,11 +89,11 @@ void fodefun (unsigned n, double x, double *y, double *f) {
   /* Allocate memory and set up variables lhs-arguments and rhs-arguments */
   vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
   vrhs = (mxArray **) mxMalloc ((2 + vnum) * sizeof (mxArray *));
-  vrhs[0] = mxCreateDoubleScalar (x);
+  vrhs[0] = mxCreateDoubleScalar (*X);
 
   /* Copy the values that are given from the solver into the mxArray */
-  vrhs[1] = mxCreateDoubleMatrix (n, 1, mxREAL);
-  memcpy ((void *) mxGetPr (vrhs[1]), (void *) y, n * sizeof (double));
+  vrhs[1] = mxCreateDoubleMatrix (*N, 1, mxREAL);
+  memcpy ((void *) mxGetPr (vrhs[1]), (void *) Y, *N * sizeof (double));
 
   if (vnum > 0) /* Fill up vrhs[2..] */
     for (vcnt = 0; vcnt < vnum; vcnt++)
@@ -82,17 +107,24 @@ void fodefun (unsigned n, double x, double *y, double *f) {
   }
 
   /* Save the result of this time step in the variable f */
-  memcpy ((void *) f, (void *) mxGetPr (vlhs[0]), n * sizeof (double));
+  memcpy ((void *) F, (void *) mxGetPr (vlhs[0]), *N * sizeof (double));
   mxFree (vlhs); /* Free the vlhs mxArray */
   mxFree (vrhs); /* Free the vrhs mxArray */
 }
 
-void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn) {
+/**
+ * TODO
+ *
+ **/
+void F77_FUNC (fsol, FSOL) (int *NR, double *XOLD, double *X, double *Y, int *N,
+  double *CON, int *ICOMP, int *ND, GCC_ATTR_UNUSED double *RPAR, 
+  GCC_ATTR_UNUSED int *IPAR, int *IRTRN) {
+
   bool     vsuc = false;
   double   vdbt = 0.0;
   unsigned int vref = 0;
   unsigned int vcnt = 0;
-  unsigned int vnum = 0;
+  int vnum = 0;
 
   double  *vdob = NULL;
   double  *vdbl = NULL;
@@ -103,29 +135,31 @@ void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn)
   mxArray *vrvl = NULL;
 
   /* Convert the double *y into a selection of variables */
-  fy2mxArray (n, y, &vtem);
-  vtim = mxCreateDoubleScalar (x);
+  fy2mxArray (*N, Y, &vtem);
+  vtim = mxCreateDoubleScalar (*X);
 
   /* Save the solution if this is not the initial first call */
-  if (nr > 1) fsolstore (1, &vtim, &vtem);
+  if (*NR > 1) fsolstore (1, &vtim, &vtem);
 
   /* Call output function if this is not the initial first call */
   fodepkgvar (2, "PlotFunction", &vtmp);
-  if (!mxIsEmpty (vtmp) && nr > 1) {
+  if (!mxIsEmpty (vtmp) && *NR > 1) {
     fodepkgvar (2, "Refine", &vtmp); /* Check for "Refine" option */
     vdbl = mxGetPr (vtmp);
     vref = (int)vdbl[0];
 
     if (vref > 0) { /* If the Refine option is > 0 */
-      vdob = (double *) mxMalloc (n * sizeof (double));
+      vdob = (double *) mxMalloc (*N * sizeof (double));
 
       for (vcnt = 0; vcnt < vref; vcnt++) {
-        vdbt = xold + (double)(vcnt + 1) * ((x - xold) / (vdbl[0] + 2));
+        vdbt = *XOLD + (double)(vcnt + 1) * ((*X - *XOLD) / (vref + 2));
         vrtm = mxCreateDoubleScalar (vdbt);
-        /* Time stamps for approximation: mexPrintf ("%f %f %f\n", xold, vdbt, x); */
+        /* Time stamps for approximation: mexPrintf ("%f %f %f\n", *XOLD, vdbt, x); */
 
-        for (vnum = 0; vnum < n; vnum++) vdob[vnum] = contd5(vnum, vdbt);
-        fy2mxArray (n, vdob, &vrvl);
+        for (vnum = 1; vnum <= *N; vnum++)
+          vdob[vnum-1] = F77_FUNC (contd5, CONTD5) (&vnum, &vdbt, CON, ICOMP, ND);
+
+        fy2mxArray (*N, vdob, &vrvl);
         /* Time stamps and approx. values: mexPrintf ("%f %f %f\n", vdbt, vdob[0], vdob[1]); */
         fodepkgplot (vrtm, vrvl, mxCreateString (""));
       }
@@ -133,8 +167,8 @@ void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn)
     }
     vsuc = fodepkgplot (vtim, vtem, mxCreateString (""));
     if (vsuc == false) {
-      mexPrintf ("Integration has been stopped from output function at time t=%f\n", x);
-      irtrn[0] = - 1; /* Stop integration ? */
+      mexPrintf ("Integration has been stopped from output function at time t=%f\n", *X);
+      IRTRN[0] = - 1; /* Stop integration ? */
     }
   }
 
@@ -148,36 +182,37 @@ void fsolout (long nr, double xold, double x, double* y, unsigned n, int* irtrn)
     if (mxIsLogicalScalarTrue (vtem)) {
       fsolstore (3, NULL, NULL);   /* Remove the last solution entry */
       vtem = mxGetCell (vtmp, 3);  /* Get last row of events solution */
-      vtim = mxCreateDoubleScalar (x);
+      vtim = mxCreateDoubleScalar (*X);
       vtmp = mxGetMatrixRow (vtem, mxGetM (vtem) - 1);
       fsolstore (1, &vtim, &vtmp); /* Set last row of events solution */
-      mexPrintf ("Integration has been stopped from event function at time t=%f\n", x);
-      irtrn[0] = -1;               /* Tell the solver to stop solving */
+      mexPrintf ("Integration has been stopped from event function at time t=%f\n", *X);
+      IRTRN[0] = -1;               /* Tell the solver to stop solving */
     }
   }
 }
 
 void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) { 
-  int vcnt = 0;
-  int vnum = 0;
-  int vone = 1;
-
+  int      vcnt = 0;
+  int      vnum = 0;
   double  *vdbl = NULL;
   char     vmsg[64] = "";
-
   mxArray *vtmp = NULL;
   mxArray *vtem = NULL;
 
-  int      vodedimen = 0;
-  double  *vtimeslot = NULL;
-  double  *vinitvals = NULL;
-
-  int      vtoltype  = 0;
-  double  *vtolrelat = NULL;
-  double  *vtolabsol = NULL;
-
-  double   vinitstep = 0.0;
-  double   vmaxstep  = 0.0;
+  /* Variables that are needed to call the solver function */
+  int     N = 0;        /* Dimension of differential equations */
+  int     ITOL = 0;     /* Type of error tolerance handling */
+  int     LWORK = 0;    /* Size of work vector will be set later */
+  int     LIWORK = 0;   /* Size of iwork vector will be set later */
+  int    *IWORK = NULL; /* Memory of iwork vector will be allocated later */
+  int     IPAR = 0;     /* Integer parameters will be unused */
+  int     VRET = 0;     /* Return value of the solver function */
+  double *SLOT = NULL;  /* Time slot values tstart and tend */
+  double *INIT = NULL;  /* Initial values for differential equations */
+  double *RTOL = NULL;  /* Relative tolerances scalar or vector */
+  double *ATOL = NULL;  /* Absolute tolerances scalar or vector */
+  double *WORK = NULL;  /* Memory of work vector will be allocated later */
+  double  RPAR = 0;     /* Real parameters will be unused */
 
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER INITIALISATION PROCEDURE\n");
@@ -256,55 +291,67 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   /* Handle the prhs[1] element: Split the integration interval */
   if (mxGetM (prhs[1]) == 2 || mxGetN (prhs[1]) == 2) {
-    vtimeslot = mxMalloc (2 * sizeof (double));
-    memcpy ((void *) vtimeslot, (void *) mxGetPr (prhs[1]), 2 * sizeof (double));
+    SLOT = mxMalloc (2 * sizeof (double));
+    memcpy ((void *) SLOT, (void *) mxGetPr (prhs[1]), 2 * sizeof (double));
   }
   else mexErrMsgTxt ("Second input argument of this solver must be of size 1x2 or 2x1");
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: Solving is done from tStart=%f to tStop=%f\n", 
-             vtimeslot[0], vtimeslot[1]);
+             SLOT[0], SLOT[1]);
 #endif
 
-  /* Handle the prhs[2] element: Set the initial values */
-  if (mxIsRowVector (prhs[2])) vodedimen = (int) mxGetN (prhs[2]);
-  else vodedimen = (int) mxGetM (prhs[2]);
-  vinitvals = mxMalloc (vodedimen * sizeof (double));
-  vtmp = mxCreateDoubleScalar (vodedimen);
+  /* Handle the prhs[2] element: Set the dimension and the initial values */
+  if (mxIsRowVector (prhs[2])) N = (int) mxGetN (prhs[2]);
+  else N = (int) mxGetM (prhs[2]);
+  INIT = mxMalloc (N * sizeof (double));
+  vtmp = mxCreateDoubleScalar (N);
   fodepkgvar (1, "OdeDimension", &vtmp);
-  memcpy ((void *) vinitvals, (void *) mxGetPr (prhs[2]), vodedimen * sizeof (double));
+  memcpy ((void *) INIT, (void *) mxGetPr (prhs[2]), N * sizeof (double));
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: Number of initial values is %d\n", vodedimen);
-  mexPrintf ("ODEPKGDEBUG: Last element of initial values is %f\n", vinitvals[vodedimen-1]);
+  mexPrintf ("ODEPKGDEBUG: Number of initial values is %d\n", N);
+  mexPrintf ("ODEPKGDEBUG: Last element of initial values is %f\n", INIT[N-1]);
 #endif
+
+  /* Initialize the WORK and LWORK vectors with zeros */
+  LWORK = 8*N+5*N+21; /* LWORK = 8*N+5*NRDENS+21; */
+  WORK = (double *) mxMalloc (LWORK * sizeof (double));
+  for (vcnt = 0; vcnt < LWORK; vcnt++) WORK[vcnt] = 0.0;
+  LIWORK = N+21; /* LIWORK = NRDENS+21; */
+  IWORK = (int *) mxMalloc (LIWORK * sizeof (int));
+  for (vcnt = 0; vcnt < LIWORK; vcnt++) IWORK[vcnt] = 0;
 
   /* Handle the OdeOptions structure field: RELTOL */
   fodepkgvar (2, "OdeOptions", &vtmp);
   vtem = mxGetField (vtmp, 0, "RelTol");
   if (mxIsRowVector (vtem)) vcnt = (int) mxGetN (vtem);
   else vcnt = (int) mxGetM (vtem);
-  vtolrelat = mxMalloc (vcnt * sizeof (double));
-  memcpy ((void *) vtolrelat, (void *) mxGetPr (vtem), vcnt * sizeof (double));
+  RTOL = mxMalloc (vcnt * sizeof (double));
+  memcpy ((void *) RTOL, (void *) mxGetPr (vtem), vcnt * sizeof (double));
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", vtolrelat[vcnt-1]);
+  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", RTOL[vcnt-1]);
 #endif
 
   /* Handle the OdeOptions structure field: ABSTOL */
   vtem = mxGetField (vtmp, 0, "AbsTol");
   if (mxIsRowVector (vtem)) vnum = (int) mxGetN (vtem);
   else vnum = (int) mxGetM (vtem);
-  vtolabsol = mxMalloc (vnum * sizeof (double));
-  memcpy ((void *) vtolabsol, (void *) mxGetPr (vtem), vnum * sizeof (double));
+  ATOL = mxMalloc (vnum * sizeof (double));
+  memcpy ((void *) ATOL, (void *) mxGetPr (vtem), vnum * sizeof (double));
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", vtolabsol[vnum-1]);
+  mexPrintf ("ODEPKGDEBUG: Last element of relative error is %f\n", ATOL[vnum-1]);
 #endif
 
-  /* Handle the OdeOptions structure field: RELTOL vs. ABSTOL */
+  /* Handle the OdeOptions structure field: RELTOL vs. ABSTOL vs. N */
   if (vcnt != vnum)
-    mexErrMsgTxt ("Values of \"AbsTol\" and \"RelTol\" must have same size");
-  else if (vcnt > 1) vtoltype = 1;
-  else vtoltype = 0;
+    mexErrMsgTxt ("\"AbsTol\" and \"RelTol\" must have same size");
+  else if (vcnt > 1) {
+    if (vcnt != N)
+      mexErrMsgTxt ("\"AbsTol\", \"RelTol\" and the dimension must have same size");
+    ITOL = 1;
+  }
+  else ITOL = 0;
 #ifdef __ODEPKGDEBUG__
-   mexPrintf ("ODEPKGDEBUG: Type of dopri tolerance handling is %d\n", vtoltype);
+   mexPrintf ("ODEPKGDEBUG: Type of dopri tolerance handling is %d\n", ITOL);
 #endif
 
   /* Handle the OdeOptions structure field: NORMCONTROL */
@@ -344,10 +391,10 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vnum = (int) mxGetNumberOfElements (vtmp);
     vdbl = mxGetPr (vtmp);
     for (vcnt = 0; vcnt < vnum; vcnt++)
-      if ((int)(vdbl[vcnt]) > vodedimen) {
-	sprintf (vmsg, "Found invalid number element \"%d\" in option \"OuputSel\"", 
-	  (int)(vdbl[vcnt]));
-	mexErrMsgTxt (vmsg);
+      if ((int)(vdbl[vcnt]) > N) {
+  sprintf (vmsg, "Found invalid number element \"%d\" in option \"OuputSel\"", 
+    (int)(vdbl[vcnt]));
+  mexErrMsgTxt (vmsg);
       }
     fodepkgvar (1, "OutputSelection", &vtmp);
   }
@@ -384,18 +431,18 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (2, "OdeOptions", &vtmp);
   fodepkgvar (2, "DefaultOptions", &vtem);
   if (!mxIsEqual (mxGetField (vtmp, 0, "InitialStep"), mxGetField (vtem, 0, "InitialStep")))
-    vinitstep = *mxGetPr (mxGetField (vtmp, 0, "InitialStep") );
+    WORK[6] = *mxGetPr (mxGetField (vtmp, 0, "InitialStep") );
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: The inital step size is %f\n", vinitstep);
+  mexPrintf ("ODEPKGDEBUG: The inital step size is %f\n", WORK[6]);
 #endif
 
   /* Handle the OdeOptions structure field: MAXSTEP */
   fodepkgvar (2, "OdeOptions", &vtmp);
   fodepkgvar (2, "DefaultOptions", &vtem);
   if (!mxIsEqual (mxGetField (vtmp, 0, "MaxStep"), mxGetField (vtem, 0, "MaxStep")))
-    vmaxstep = *mxGetPr (mxGetField (vtmp, 0, "MaxStep") );
+    WORK[5] = *mxGetPr (mxGetField (vtmp, 0, "MaxStep") );
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: The maximum step size is %f\n", vmaxstep);
+  mexPrintf ("ODEPKGDEBUG: The maximum step size is %f\n", WORK[5]);
 #endif
 
   /* Handle the OdeOptions structure field: EVENTS */
@@ -510,7 +557,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (2, "PlotFunction", &vtmp);
   if (!mxIsEmpty (vtmp)) {
     vtmp = mxDuplicateArray (prhs[1]);
-    fy2mxArray (vodedimen, vinitvals, &vtem);
+    fy2mxArray (N, INIT, &vtem);
     if (!fodepkgplot (vtmp, vtem, mxCreateString ("init"))) {
       fodepkgvar (2, "PlotFunction", &vtmp);
       sprintf (vmsg, "Error at initialisation of output function \"%s\"", mxArrayToString (vtmp));
@@ -525,8 +572,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* Initialize the function: FODEPKGEVENT */
   fodepkgvar (2, "EventFunction", &vtmp);
   if (!mxIsEmpty (vtmp)) {
-    vtmp = mxCreateDoubleScalar (vtimeslot[0]);
-    fy2mxArray (vodedimen, vinitvals, &vtem);
+    vtmp = mxCreateDoubleScalar (SLOT[0]);
+    fy2mxArray (N, INIT, &vtem);
     if (!fodepkgevent (vtmp, vtem, mxCreateString ("init"), NULL)) {
       fodepkgvar (2, "EventFunction", &vtmp);
       sprintf (vmsg, "Error at initialisation of event function \"%s\"", mxArrayToString (vtmp));
@@ -539,8 +586,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   }
 
   /* Initialize the function: FSOLSTORE */
-  vtmp = mxCreateDoubleScalar (vtimeslot[0]);
-  fy2mxArray (vodedimen, vinitvals, &vtem);
+  vtmp = mxCreateDoubleScalar (SLOT[0]);
+  fy2mxArray (N, INIT, &vtem);
   fsolstore (0, &vtmp, &vtem);
 #ifdef __ODEPKGDEBUG__
   mexPrintf ("ODEPKGDEBUG: Initialisation of fsolstore function successfully completed\n");
@@ -550,26 +597,38 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER CALCULATION PROCEDURE\n");
 #endif
 
-  vnum = dopri5 (vodedimen, fodefun, vtimeslot[0], vinitvals, 
-    vtimeslot[1], vtolrelat, vtolabsol, vtoltype, fsolout, 2,
-    stdout, 0.0, 0.0, 0.0, 0.0, 0.0, vmaxstep, vinitstep, 
-    0, 0, 100, vodedimen, NULL, vodedimen);
-  switch (vnum) {
+  /* IWORK[0] = 10^6; */ /* The maximal number of allowed steps */
+  IWORK[2] = -1;   /* Switch for turning on/off messages */
+  IWORK[3] = 1000; /* Step number for stiffness checking  */
+  IWORK[4] = N;    /* Number of components for dense output */
+
+  /* FORTRAN SUBROUTINE DOPRI5(N, FCN, X, Y, XEND, RTOL, ATOL, ITOL, */
+  /*   SOLOUT, IOUT, WORK, LWORK, IWORK, LIWORK, RPAR, IPAR, IDID) */
+
+  vnum = 2; /* Needed to call output at every successful step */
+  F77_FUNC (dopri5, DOPRI5) (&N, &F77_FUNC (ffcn, FFCN), &SLOT[0],
+    INIT, &SLOT[1], RTOL, ATOL, &ITOL, &F77_FUNC (fsol, FSOL), 
+    &vnum, WORK, &LWORK, IWORK, &LIWORK, &RPAR, &IPAR, &VRET);
+#ifdef __ODEPKGDEBUG__
+  mexPrintf ("ODEPKGDEBUG: Solving has been finished, exit status %d\n", VRET);
+#endif
+
+  switch (VRET) {
     case -4:
-      mexPrintf ("The computation has been stopped because the problem is probably stff\n");
+      mexPrintf ("The computation has been stopped because the problem is probably stiff\n");
       break;
     case -3:
       mexPrintf ("The step size grew too small, reduce InitialStep and/or MaxStep\n");
       break;
     case -2:
-      mexPrintf ("Maximal number of allowed steps (100000) has been reached\n");
+      mexPrintf ("Maximal number of allowed steps (1000000) has been reached\n");
       break;
     case -1:
       mexPrintf ("Input is not consistent\n");
       break;
     case 0:  break; /* Not treated */
     case 1:  break; /* Computation has been successful */
-    case 2:  break; /* Computation has been successful, stopped of fsolout */
+    case 2:  break; /* Computation has been successful, stopped by fsolout */
     default: break;
   }
 #ifdef __ODEPKGDEBUG__
@@ -578,30 +637,32 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   /* Handle the OdeOptions structure field: STATS */
   fodepkgvar (2, "Stats", &vtmp);
-  if (mxIsLogicalScalarTrue (vtmp)) { /* Print additional information */
-    vnum = nstepRead ();  /* A dopri solver function */
+  if (mxIsLogicalScalarTrue (vtmp)) { 
+    /* Print additional information on the screen */
+    vnum = IWORK[16]; /* A dopri solver result */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vfevals", &vtem);
+    mexPrintf ("Number of function calls: %d\n", vnum);
+
+    vnum = IWORK[17]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
     fodepkgvar (1, "vsuccess", &vtem);
     mexPrintf ("Number of used steps:     %d\n", vnum);
 
-    vnum = naccptRead (); /* A dopri solver function */
+    vnum = IWORK[18]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
     fodepkgvar (1, "vaccept", &vtem);
     mexPrintf ("Number of accepted steps: %d\n", vnum);
 
-    vnum = nrejctRead (); /* A dopri solver function */
+    vnum = IWORK[19]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
     fodepkgvar (1, "vreject", &vtem);
     mexPrintf ("Number of rejected steps: %d\n", vnum);
-
-    vnum = nfcnRead ();  /* A dopri solver function */
-    vtem = mxCreateDoubleScalar ((double) vnum);
-    fodepkgvar (1, "vfevals", &vtem);
-    mexPrintf ("Number of function calls: %d\n", vnum);
   }
 
   if (nlhs == 1) { /* Handle the PLHS array (1 output argument) */
-    plhs[0] = mxCreateStructArray (1, &vone, 0, NULL);
+    vnum = 1;
+    plhs[0] = mxCreateStructArray (1, &vnum, 0, NULL);
 
     fsolstore (2, &vtmp, &vtem);
 
@@ -618,8 +679,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("ode5d"));
 
     fodepkgvar (2, "Stats", &vtmp);
-    if (mxIsLogicalScalarTrue (vtmp)) { /* Put additional information */
-      vtem = mxCreateStructArray (1, &vone, 0, NULL);
+    if (mxIsLogicalScalarTrue (vtmp)) {
+      vnum = 1; /* Put additional information into structure */
+      vtem = mxCreateStructArray (1, &vnum, 0, NULL);
 
       mxAddField (vtem, "success");
       vnum = mxGetFieldNumber (vtem, "success");
@@ -654,7 +716,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     }
 
     fodepkgvar (2, "EventFunction", &vtmp);
-    if (!mxIsEmpty (vtmp)) { /* Put additional information about events */
+    if (!mxIsEmpty (vtmp)) { 
+      /* Put additional information about events into structure */
       fodepkgvar (2, "EventSolution", &vtem);
 
       mxAddField (plhs[0], "ie");
@@ -674,13 +737,15 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     }
   }
 
-  else if (nlhs == 2) { /* Handle the PLHS array (2 output arguments) */
+  else if (nlhs == 2) { 
+    /* Handle the PLHS array (2 output arguments) */
     fsolstore (2, &vtmp, &vtem);
     plhs[0] = vtmp;
     plhs[1] = mxTransposeMatrix (vtem);
   }
 
-  else if (nlhs == 5) { /* Handle the PLHS array (5 output arguments) */
+  else if (nlhs == 5) { 
+    /* Handle the PLHS array (5 output arguments) */
     fsolstore (2, &vtmp, &vtem);
     plhs[0] = vtmp;
     plhs[1] = mxTransposeMatrix (vtem);
@@ -700,7 +765,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (2, "PlotFunction", &vtmp);
   if (!mxIsEmpty (vtmp)) {
     vtmp = mxDuplicateArray (prhs[1]);
-    fy2mxArray (vodedimen, vinitvals, &vtem); /* vtem = mxDuplicateArray (prhs[2]); */
+    fy2mxArray (N, INIT, &vtem); /* vtem = mxDuplicateArray (prhs[2]); */
     if (!fodepkgplot (vtmp, vtem, mxCreateString ("done"))) {
       fodepkgvar (2, "PlotFunction", &vtmp);
       sprintf (vmsg, "Error at finalisation of output function \"%s\"", mxArrayToString (vtmp));
@@ -715,8 +780,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* Cleanup all internals of: FODEPKGEVENT */
   fodepkgvar (2, "EventFunction", &vtmp);
   if (!mxIsEmpty (vtmp)) {
-    vtmp = mxCreateDoubleScalar (vtimeslot[0]);
-    fy2mxArray (vodedimen, vinitvals, &vtem);
+    vtmp = mxCreateDoubleScalar (SLOT[0]);
+    fy2mxArray (N, INIT, &vtem);
     if (!fodepkgevent (vtmp, vtem, mxCreateString ("done"), NULL)) {
       fodepkgvar (2, "EventFunction", &vtmp);
       sprintf (vmsg, "Error at initialisation of event function \"%s\"", mxArrayToString (vtmp));
@@ -729,13 +794,13 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   }
 
   /* Free and destroy the mxAllocated arrays */
-/*   mxFree (vtimeslot); */
-/*   mxFree (vinitvals); */
-/*   mxFree (vtolrelat); */
-/*   mxFree (vtolabsol); */
+/*   mxFree (SLOT); */
+/*   mxFree (INIT); */
+/*   mxFree (RTOL); */
+/*   mxFree (ATOL); */
 /*   mxDestroyArray (vtmp); */
 /*   mxDestroyArray (vtem); */
-fodepkgvar (9, NULL, NULL);
+/* fodepkgvar (9, NULL, NULL); */
 
   /* Cleanup all internals of: FSOLSTORE */
   fsolstore (4, NULL, NULL);

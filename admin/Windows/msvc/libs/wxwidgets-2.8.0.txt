@@ -1,0 +1,18 @@
+Package: wxWidgets
+Version: 2.8.0
+Home page: http://www.wxwidgets.org
+Download: http://www.wxwidgets.org/downloads/
+License: wxWindows (~LGPL)
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: libpng, libjpeg, zlib
+
+1) Install the package and apply the patch
+
+2) Go into build\msw\ directory
+
+3) nmake -f makefile.vc
+
+Installation is not really required, as gnuplot compilation
+will use wxWidgets from its source directory.

@@ -1,0 +1,142 @@
+\input texinfo   @c -*-texinfo-*-
+
+@c Copyright (c)  2007  Thomas Treichl <treichl@users.sourceforge.net>
+@c odepkg.texi - A package for solving differential equations with octave
+@c
+@c Permission is granted to copy, distribute and/or modify this document
+@c under the terms of the GNU Free Documentation License, Version 1.2
+@c or any later version published by the Free Software Foundation;
+@c with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+@c Texts.  A copy of the license is included in the section entitled "GNU
+@c Free Documentation License".
+
+@c %*** Start of HEADER
+@setfilename odepkg.info
+@settitle OdePkg - A package for solving differential equations with octave
+@c %*** End of the HEADER
+
+@c %*** Start of COPYRIGHT
+@copying
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+@end copying
+@c %*** End of COPYRIGHT
+
+@c %*** Start of TITLEPAGE
+@titlepage
+@title OdePkg
+@subtitle A package for solving differential equations with octave
+@author by Thomas Treichl
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+@c %*** End of TITLEPAGE
+
+@c %*** Start of BODY
+@contents
+@ifnottex
+@node Top
+@top Copyright
+@insertcopying
+@end ifnottex
+
+@menu
+* Beginners's Guide:: Beginner
+* User's Guide:: User
+* Coder's Guide:: Coder
+@end menu
+
+@c %*** Start of first chapter: Beginner's Guide
+@node Beginners's Guide
+@chapter Beginners's Guide
+@cindex Beginners's Guide
+
+@section OdePkg history and roadmap
+@cindex OdePkg history and roadmap
+
+@multitable @columnfractions .25 .75
+@item OdePkg Version 0.0.1
+@tab The initial release was already a modification of the old @file{ode package} that was hosted at @b{Octave--Forge} and which was written by Marc Compere somewhen 2000@dots{}2001. The four variable step--size Runge--Kutta solvers and the four fixed step--size Runge--Kutta solvers have been merged together. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initialy have not been there.
+@item OdePkg Version 0.1.0
+@tab The major milestone along version 0.1.0 was that four stable solvers have been implemented (ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}) and also all necessary functions for setting their options (eg. @command{odeset}, @command{odepkg_structure_check}, etc.). Since version 0.1.3 there are also codes available that interface Fortran solvers that are written by Ernst Hairer and Gerhard Wanner (eg. @file{odepkg_mexsolver_dopri5.c} and the helper files @file{odepkgext.c} and @file{odepkgmex.c}).
+@item @b{(current)} Version 0.2.0
+@tab The main work that has to be done along version 0.2.0 is to make the interface functions for the solvers of Hairer and Wanner stable enough, so that they can be installed by default (by now they have to be installed by hand if somebody wants them).
+@item @b{(future)} Version 0.3.0
+@tab All interface functions for the solvers of Hairer and Wanner are stable so that they can be installed by default (via a @file{Makefile} or the @file{PKA_ADD} file). Finished adding all wrapper functions and help descriptions for theses solvers, added tests and demos for these solvers. Ongoing work with this manual.
+@item @b{(future)} Version 0.4.0
+@tab Maybe some of the Hindmarsh, Brown and Petzold solvers are added.
+@item @b{(future)} Version 0.5.0
+@tab Finished most work with this manual. Manual is build by default, making rules have been added to the OdePkg. A lot of compatibility tests will be done.
+@item @b{(future)} Version 0.6.0
+@tab Final release before version 1.0.0.
+@item @b{(future)} Version 1.0.0
+@tab Completed odepkg release 1.0.0 with m--solvers and mex--solvers.
+@end multitable
+
+@section Installation
+@cindex Installation
+OdePkg can be installed easily using the @command{pkg} command of Octave. Therefore get into the directory where the current release of OdePkg can be found, start @command{octave} and type
+@example
+demo ode23
+@end example
+
+@section First tests and demos
+@cindex First tests and demos
+
+@c %*** End of first chapter: Beginner's Guide
+
+@c %*** Start of second chapter: User's Guide
+@node User's Guide
+@chapter User's Guide
+@cindex User's Guide
+
+@section Function Reference
+@cindex Function Reference
+
+@c %*** End of second chapter: User's Guide
+
+@c %*** Start of third chapter: Coder's Guide
+@node Coder's Guide
+@chapter Coder's Guide
+@cindex Coder's Guide
+
+@section C Mex Function Reference
+@cindex C Mex Function Reference
+@include odepkgmex.texi
+
+@c %*** End of second chapter: Coder's Guide
+
+
+Here is a numbered list.
+
+@enumerate
+@item
+This is the first item.
+
+@item
+This is the second item.
+@end enumerate
+
+@appendix
+@node HALLO
+@include fdl.texi
+
+@node Index
+@unnumbered Index
+@printindex cp
+
+@node C Mex Function Index
+@unnumbered C Mex Function Index
+@printindex fn
+
+@bye
+
+@c Local Variables: 
+@c mode: texinfo
+@c TeX-master: "odepkg"
+@c End: 

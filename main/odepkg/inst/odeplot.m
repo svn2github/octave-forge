@@ -69,16 +69,16 @@ function [varargout] = odeplot (vt, vy, vflag)
 
 %!demo
 %!
-%! A = odeset ('MaxStep', 1.5/100);
-%! ode2f (@odepkg_example_secondorderlag, [0 1.5], [0 0], A);
+%! A = odeset ('MaxStep', 1.5/30, 'Refine', 3);
+%! ode45 (@odepkg_equations_secondorderlag, [0 1.5], [0 0], A);
 %!
 %! % ----------------------------------------------------------------
 %! % The output of the integration is ploted automatically with
 %! % odeplot because nargout == 0 when calling ode2f.
 %!demo
 %!
-%! A = odeset ('MaxStep', 1.5/100, 'OutputFcn', @odeplot);
-%! [vx, vy] = ode2f (@odepkg_example_secondorderlag, [0 1.5], [0 0], A);
+%! A = odeset ('OutputFcn', @odeplot, 'Refine', 0);
+%! [vx, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1.5], [0 0], A);
 %!
 %! % ---------------------------------------------------------------------------
 %! % The output of the integration is ploted with odeplot because the OuputFcn

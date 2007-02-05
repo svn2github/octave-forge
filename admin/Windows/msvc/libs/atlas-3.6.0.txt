@@ -1,0 +1,62 @@
+Package: ATLAS
+Version: 3.6.0
+Home page: http://math-atlas.sourceforge.net/
+Download: http://sourceforge.net/projects/math-atlas
+License: BSD
+
+Compilation: from Cygwin shell with VS environment + ar-msvc + cc-msvc + build_atlas_dll
+
+Requirements: ar-msvc, cc-msvc(*), lapack(*), build_atlas_dll(*)
+
+Note: install the ATLAS source package in a directory without
+      spaces in it. The build process does not handle spaces
+      in directories correctly
+
+1) Apply the patch
+
+2) make xconfig
+
+3) ./xconfig -c mvc
+
+   Answer the questions with the following specific answers
+   (this does not represent all answers, but only the specific
+   answers for MSVC compilation; the other answers are left to
+   the user)
+
+	. disable posix threads
+	. rebuild ATLwin_vc.exe
+		- specify the correct path for cl.exe
+	. do not use express setup
+	. Library name for ATLAS primitives => libatlas.lib
+	. Library name C interface to BLAS => libcblas.lib
+	. Library name F77 interface to BLAS => libf77blas.lib
+	. Enter C Flags (CCFLAGS) => add "-MD" to the existing flags
+	. Enter Archiver => ar-msvc
+	. Enter Archiver flags => --cygwin r
+
+4) Edit the generated file Make.<your_arch> (where <your_arch> is
+   the name of your architecture in ATLAS build process, for instance
+   WinNT_P4SSE2) and change the following variables:
+
+	. LAPACKlib: liblapack.a => liblapack.lib
+	. TESTlib: libtstatlas.a => libtstatlas.lib
+
+5) make install arch=<your_arch>
+
+   During compilation process, avoid using your computer to get
+   correct timing results.
+
+If you want to build ATLAS-based BLAS/LAPACK replacement DLL's
+
+6) Enter lib\<your_arch> subdirectory
+
+7) build_atlas_dll
+
+8) Install (copy manually):
+	. blas.dll and lapack.dll into bin directory
+	. blas.lib and lapack.lib into lib directory
+
+-----------------------------------------------------------------
+
+(*) These dependencies are required if you want to build ATLAS-based
+    BLAS/LAPACK replacement DLL's

@@ -1,0 +1,39 @@
+#!/bin/sh
+
+topdir=`dirname "$0" | sed -e 's,/bin,,'`
+case `uname -s` in
+  CYGWIN*)
+    topdir=`cygpath -m "$topdir"`
+    ;;
+  MINGW*)
+    topdir=`cd "$topdir" && pwd -W`
+    ;;
+esac
+
+echo "Generating BLAS DLL..."
+cc-msvc -shared -o blas.dll -Wl,-def:$topdir/lib/atl_blas.def libatlas.lib libf77blas.lib libcblas.lib -lf2c
+if test -f "blas.exp"; then
+  rm -f blas.exp
+fi
+
+echo "Copying original F77 lapack..."
+cp $topdir/lib/liblapack_f77.lib .
+
+echo "Extracting object files from LAPACK/ATLAS..."
+for f in `lib -nologo -list liblapack.lib | sed -e 's,\\r,,'`; do
+  echo "  -> $f"
+  lib -nologo -extract:$f liblapack.lib
+done
+
+echo "Merging object files in LAPACK/F77..."
+lib -nologo liblapack_f77.lib *.o
+
+echo "Generating LAPACK DLL..."
+cc-msvc -shared -o lapack.dll -Wl,-def:$topdir/lib/lapack.def liblapack_f77.lib blas.lib -lf2c
+if test -f "lapack.exp"; then
+  rm -f lapack.exp
+fi
+
+echo "Cleaning..."
+rm -f *.o
+rm -f liblapack_f77.lib

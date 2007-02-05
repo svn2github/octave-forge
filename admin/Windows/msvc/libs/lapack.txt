@@ -15,3 +15,8 @@ Requirement: BLAS, cc-msvc, f2c, libf2c
 3) Install (copy manually):
 	. lapack.dll into bin directory
 	. lapack.lib into lib directory
+
+If you plan to build an ATLAS-based LAPACK replacement dll
+
+4) Install (copy manually):
+	. liblapack_f77.lib into lib directory

@@ -29,6 +29,9 @@
 ## @end deftypefn
 
 ## Author:	Kai Habel <kai.habel@gmx.de>
+## Adapted-by:  Alexander Barth <barth.alexander@gmail.com>
+##              xi and yi are not "meshgridded" if both are vectors 
+##              of the same size (for compatibility)
 
 function [rx, ry, rz] = griddata (x,y,z,xi,yi,method)
 	
@@ -42,7 +45,14 @@ function [rx, ry, rz] = griddata (x,y,z,xi,yi,method)
   if !all( (size(x)==size(y)) & (size(x)==size(z)) )
     error('x,y,z must be vectors of same length');
   endif
-  if isvector(xi) && isvector(yi), [xi,yi]=meshgrid(xi,yi); endif
+  
+  ## meshgrid xi and yi if they are vectors unless they
+  ## are vectors of the same length 
+  if isvector(xi) && isvector(yi) && numel(xi) ~= numel(yi), 
+    [xi,yi]=meshgrid(xi,yi);     
+  endif
+    
+    
   if any(size(xi)!=size(yi))
     error('xi and yi must be vectors or matrices of same size');
   endif

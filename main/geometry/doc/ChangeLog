@@ -1,3 +1,8 @@
+2007-02-05 Alexander Barth <barth.alexander@gmail.com>
+
+	* griddata.m: xi and yi are not "meshgridded" if both are vectors 
+	of the same size (for compatibility)
+
 2001-04-28  Kai Habel  <kai.habel@gmx.de>
   
   * removed __unique_rows__.m: use unique(...,"rows") in voronoi

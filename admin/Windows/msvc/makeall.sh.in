@@ -1,0 +1,306 @@
+#!/bin/sh
+
+no_packages=":parallel:optiminterp:MacOSX:graceplot:pdb:xraylib:engine:"
+no_cmake=1
+
+INSTALL="@INSTALL@"
+INSTALL_DATA="@INSTALL_DATA@"
+INSTALL_PROGRAM="@INSTALL_PROGRAM@"
+INSTALL_SCRIPT="@INSTALL_SCRIPT@"
+MKPKGADD="@TOPDIR@/admin/mkpkgadd"
+mpath="@mpath@"
+
+doclean=
+donsi=
+subs=
+while true; do
+  if test -d "$1" -a -f "$1/DESCRIPTION"; then
+    subs="$subs $1/DESCRIPTION"
+    shift
+  else
+    break
+  fi
+done
+
+if test "x$1" = "x"; then
+  mode=all
+else
+  arg=$2
+  case $1 in
+    config | make | install | all)
+      mode=$1
+      ;;
+    nsi | nsidesc)
+      mode=$1
+      donsi=1
+      ;;
+    clean)
+      mode=make
+      arg=clean
+      doclean=1
+      ;;
+    *)
+      echo "invalid mode $1"
+      exit -1
+      ;;
+  esac
+fi
+
+if test "x$subs" = "x"; then
+  # FIXME: only perform operation in main/ subdirs
+  subs=`ls */*/DESCRIPTION | grep -v 'nonfree/'`
+fi
+
+failures=
+base_arg=$arg
+current_module=
+for s in $subs; do
+  packdir=`dirname $s`
+  packname=`echo $packdir | sed -e 's,^.*/,,'`
+  packmodule=`echo $packdir | sed -e 's,^\([^/]*\)/.*$,\1,'`
+  arg=$base_arg
+  if test -f "$packdir/NOINSTALL"; then
+    if test -z "$donsi"; then
+      echo " "
+      echo "*********************************"
+      echo "Skipping $packname (NOINSTALL found)"
+      echo "*********************************"
+    fi
+    continue
+  fi
+  if echo "$no_packages" | grep -e ":$packname:" > /dev/null; then
+    if test -z "$donsi"; then
+      echo " "
+      echo "*********************************"
+      echo "Skipping $packname (disabled with MSVC)"
+      echo "*********************************"
+    fi
+    continue
+  fi
+  case $mode in
+    config | all)
+      if test -f "$packdir/src/CMakeLists.txt.in" -a -z "$no_cmake"; then
+        echo "Generating $packdir/src/CMakeLists.txt ..."
+        pushd "$packdir/src" > /dev/null
+        cat <<EOF > CMakeLists.txt
+PROJECT ($packname)
+
+######################
+### Common section ###
+######################
+
+EOF
+        cat ../../../admin/Windows/msvc/CMakeLists.txt.base >> CMakeLists.txt
+        cat << EOF >> CMakeLists.txt
+
+################################
+### Package specific section ###
+################################
+
+EOF
+        cat CMakeLists.txt.in >> CMakeLists.txt
+        unix2dos CMakeLists.txt
+        popd > /dev/null
+      fi
+      if test -f "$packdir/src/CMakeLists.txt" -a -z "$no_cmake"; then
+        echo " "
+        echo "*********************************"
+        echo "Configuring $packname (cmake) ..."
+        echo "*********************************"
+        if test -d "$packdir/src/cmake_build"; then
+          echo "Removing previous configuration ..."
+          rm -rf "$packdir/src/cmake_build"
+        fi
+        mkdir -p "$packdir/src/cmake_build"
+        pushd "$packdir/src/cmake_build" > /dev/null
+        cmake -G "NMake Makefiles" ..
+        popd > /dev/null
+      elif test -f "$packdir/src/autogen.sh"; then
+        echo " "
+        echo "*************************************"
+        echo "Configuring $packname (autotools) ..."
+        echo "*************************************"
+        pushd "$packdir/src" > /dev/null
+        ./autogen.sh
+        "../../../admin/Windows/msvc/configure.vc" $arg
+        popd > /dev/null
+      else
+        echo " "
+        echo "*************************************"
+        echo "Nothing to configure for $packname"
+        echo "*************************************"
+      fi
+      if test "$mode" = "all"; then
+        arg=
+      fi
+      ;;
+  esac
+  case $mode in
+    make | all)
+      if test -f "$packdir/src/CMakeLists.txt" -a -z "$no_cmake"; then
+        if test ! -f "$packdir/src/cmake_build/Makefile"; then
+          echo " "
+          echo "*******************************"
+          echo "ERROR: run config first in $packdir"
+          echo "*******************************"
+          failures="$failures $packname"
+        else
+          echo " "
+          echo "*******************************"
+          echo "Building $packname (cmake) ..."
+          echo "*******************************"
+          pushd "$packdir/src/cmake_build" > /dev/null
+          nmake -nologo $arg
+          popd > /dev/null
+        fi
+      elif test -f "$packdir/src/Makefile"; then
+        if test -f "$packdir/Makeconf.in" -a ! -f "$packdir/src/Makeconf"; then
+          echo " "
+          echo "*******************************"
+          echo "ERROR: run config first in $packdir"
+          echo "*******************************"
+          failures="$failures $packname"
+        else
+          echo " "
+          echo "**********************************"
+          echo "Building $packname (autotools) ..."
+          echo "**********************************"
+          make -C "$packdir/src" $arg
+          if ! test "$?" = "0"; then
+            failures="$failures $packname"
+          fi
+          if test "x$doclean" != "x"; then
+            echo "Cleaning additional files ..."
+            (cd "$packdir/src" && rm -f *.ilk *.pdb *.exp *.lib)
+          fi
+        fi
+      fi
+      ;;
+  esac
+  case $mode in
+    install | all)
+      $INSTALL -d "$mpath"
+      echo " "
+      echo "*******************************"
+      echo "Installing $packname ..."
+      echo "*******************************"
+      if test -f "$packdir/src/CMakeLists.txt" -a -z "$no_cmake"; then
+        ofiles=`echo $packdir/src/cmake_build/*.oct`
+	if test "$ofiles" != "$packdir/src/cmake_build/*.oct"; then
+          echo "Installing .oct files ..."
+          $INSTALL -d "$mpath/$packname" 
+          $INSTALL_PROGRAM $ofiles "$mpath/$packname/"
+	fi
+      elif test -f "$packdir/src/Makefile"; then
+        if grep -e '^install *:' "$packdir/src/Makefile" > /dev/null; then
+          echo "Installing additional libraries/binaries ..."
+          make -C "$packdir/src" install
+        fi
+        ofiles=`echo $packdir/src/*.oct`
+	if test "$ofiles" != "$packdir/src/*.oct"; then
+          echo "Installing .oct files ..."
+          $INSTALL -d "$mpath/$packname" 
+          $INSTALL_PROGRAM $ofiles "$mpath/$packname/"
+	fi
+      fi
+      for f in PKG_ADD DESCRIPTION INDEX; do
+        if test -f "$packdir/$f"; then
+          $INSTALL -d "$mpath/$packname"
+	  rm -f "$mpath/$packname/$f"
+          $INSTALL_DATA "$packdir/$f" "$mpath/$packname/"
+        fi
+      done
+      if test -d "$packdir/inst"; then
+        echo "Installing .m files ..."
+        $INSTALL -d "$mpath/$packname"
+        for f in `find "$packdir/inst" -name "*.m"`; do
+          $INSTALL_DATA "$f" "$mpath/$packname/"
+        done
+        pkgadd_data=`"$MKPKGADD" "$packdir/inst"`
+	if test "x$pkgadd_data" != "x"; then
+          echo "$pkgadd_data" >>  "$mpath/$packname/PKG_ADD"
+        fi
+      fi
+      ;;
+  esac
+  case $mode in
+    nsi)
+      if test -z "$current_module"; then
+        echo "SectionGroup \"$packmodule\" GRP_forge_$packmodule"
+      elif test "$current_module" != "$packmodule"; then
+        echo "SectionGroupEnd"
+        echo "SectionGroup \"$packmodule\" GRP_forge_$packmodule"
+      fi
+      packdesc=`grep -e '^Name:' "$packdir/DESCRIPTION" | sed -e 's/^Name *: *//'`
+      if test "$packmodule" = "main"; then
+        echo "Section \"$packdesc\" SEC_$packname"
+      else
+        echo "Section /o \"$packdesc\" SEC_$packname"
+      fi
+      echo "  SetOverwrite try"
+      case "$packname" in
+        fixed)
+        echo "  SetOutPath \"\$INSTDIR\\bin\""
+        echo "  File \"\${OCTAVE_ROOT}\\bin\\octave_fixed.dll\""
+        echo "  SetOutPath \"\$INSTDIR\\lib\\octave-\${OCTAVE_VERSION}\""
+        echo "  File \"\${OCTAVE_ROOT}\\lib\\octave-\${OCTAVE_VERSION}\\octave_fixed.lib\""
+        ;;
+        octcdf)
+        echo "  SetOutPath \"\$INSTDIR\\bin\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\netcdf.dll\""
+        echo "  SetOutPath \"\$INSTDIR\\license\""
+        echo "  File \"\${VCLIBS_ROOT}\\license\\COPYRIGHT.NETCDF\""
+        ;;
+        image)
+        echo "  SetOutPath \"\$INSTDIR\\bin\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\jpeg6b.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
+        ;;
+        gsl)
+        echo "  SetOutPath \"\$INSTDIR\\bin\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas.dll\""
+        ;;
+      esac
+      echo "  SetOutPath \"\$INSTDIR\\forge\\$packname\""
+      echo "  File \"\${OCTAVE_ROOT}\\forge\\$packname\\*\""
+      echo "SectionEnd"
+      ;;
+    nsidesc)
+      if test -z "$current_module" -o "$current_module" != "$packmodule"; then
+        echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_$packmodule} \"\""
+      fi
+      packinfo=`grep -e '^Description:' "$packdir/DESCRIPTION" | sed -e 's/^Description *: *//'`
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${SEC_$packname} \"$packinfo\""
+      ;;
+    clean)
+      echo " "
+      echo "*******************************"
+      echo "Cleaning $packname ..."
+      echo "*******************************"
+      if test -f "$packdir/src/CMakeLists.txt"; then
+        if test -d "$packdir/src/cmake_build"; then
+          rm -rf "$packdir/src/cmake_build"
+        fi
+        if test -f "$packdir/src/CMakeLists.txt.in"; then
+          rm -f "$packdir/src/CMakeLists.txt"
+        fi
+      elif test -f "$packdir/src/Makefile"; then
+        make -C "$packdir/src" clean
+        pushd "$packdir/src" > /dev/null
+        "../../../admin/Windows/msvc/configure.vc" clean
+        popd > /dev/null
+      fi
+      ;;
+  esac
+  current_module=$packmodule
+done
+
+if test "$mode" = "nsi" -a -n "$current_module"; then
+  echo "SectionGroupEnd"
+fi
+
+echo " "
+for f in $failures; do
+  echo "Operation failed in $f"
+done

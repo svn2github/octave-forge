@@ -36,6 +36,14 @@ cmd=
 cmdopts=
 archive_file=
 files=
+convert=
+
+case $1 in
+  --cygwin)
+    convert=cygwin
+    shift
+    ;;
+esac
 
 cmd="$1"
 shift
@@ -81,6 +89,14 @@ while test $# -gt 0; do
   fi
   shift
 done
+
+if test "x$convert" != "x"; then
+  case $convert in
+    cygwin)
+      archive_file=`cygpath -m $archive_file`
+      ;;
+  esac
+fi
 
 if test "x$cmd" == "x"; then
   usage 1

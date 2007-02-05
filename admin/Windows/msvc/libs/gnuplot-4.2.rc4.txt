@@ -1,0 +1,33 @@
+Package: Gnuplot
+Version: 4.2rc4
+Home page: http://www.gnuplot.info
+Download: http://sourceforge.net/projects/gnuplot
+License: Custom (BSD-like)
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: wxWidgets(*), zlib, libpng, pango, cairo
+
+1) Apply the patch
+
+2) Edit config\makefile.nt and adapt the following variables:
+	. DESTDIR : the installation directory
+	. WXLOCATION : the wxWidgets source tree location
+	. VCLIBS_ROOT : the installation directory of support
+	  libraries (cairo, pango...)
+
+3) Enter src\ subdirectory
+
+4) nmake -f ..\config\makefile.nt (**)
+
+5) nmake -f ..\config\makefile.nt install
+
+-------------------------------------------------------------------
+
+(*) wxWidgets package should have been built and the source tree
+    left in place
+
+(**) The build of wgnuplot.hlp file has been disabled, because it
+     require MS Help Workshop installed, which is rarely the case.
+     The easiest is to grab the file from a pre-built binary on the
+     web and put it into the same directory as the gnuplot executables.

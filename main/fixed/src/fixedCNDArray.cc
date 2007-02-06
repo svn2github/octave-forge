@@ -157,7 +157,7 @@ FixedComplexNDArray::FixedComplexNDArray (Complex is, Complex ds,
   : MArrayN<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
-    elem (i) = FixedPointComplex(is, ds, a.elem (i));
+    elem (i) = FixedPointComplex(is, ds, FixedPointComplex(a.elem (i)));
 }
 
 FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
@@ -201,7 +201,7 @@ FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
   }
 
   for (int i = 0; i < nelem (); i++)
-    elem (i) = FixedPointComplex(is(i), ds(i), a.elem (i));
+    elem (i) = FixedPointComplex(is(i), ds(i), FixedPointComplex(a.elem (i)));
 }
 
 FixedComplexNDArray::FixedComplexNDArray (unsigned int is, 

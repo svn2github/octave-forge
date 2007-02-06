@@ -148,7 +148,7 @@ FixedComplexColumnVector::FixedComplexColumnVector (Complex is,
 	MArray<FixedPointComplex> (a.length())
 {
   for (int i = 0; i < length (); i++)
-    elem (i) = FixedPointComplex(is, ds, a(i));
+    elem (i) = FixedPointComplex(is, ds, FixedPointComplex(a(i)));
 }
 
 FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is, 
@@ -189,7 +189,7 @@ FixedComplexColumnVector::FixedComplexColumnVector (
   }
 
   for (int i = 0; i < length (); i++)
-    elem (i) = FixedPointComplex(is(i), ds(i), a(i));
+    elem (i) = FixedPointComplex(is(i), ds(i), FixedPointComplex(a(i)));
 }
 
 FixedComplexColumnVector::FixedComplexColumnVector (unsigned int is, 

@@ -167,7 +167,7 @@ FixedComplexMatrix::FixedComplexMatrix (Complex is, Complex ds,
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
-      elem (i, j) = FixedPointComplex(is, ds, a.elem (i, j));
+      elem (i, j) = FixedPointComplex(is, ds, FixedPointComplex(a.elem (i, j)));
 }
 
 FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
@@ -214,7 +214,7 @@ FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
-      elem (i, j) = FixedPointComplex( is(i,j), ds(i,j), a.elem (i, j));
+      elem (i, j) = FixedPointComplex( is(i,j), ds(i,j), FixedPointComplex(a.elem (i, j)));
 }
 
 FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds, 

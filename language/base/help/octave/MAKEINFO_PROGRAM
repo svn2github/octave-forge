@@ -1,6 +1,0 @@
--*- texinfo -*-
-@defvr {Built-in Variable} MAKEINFO_PROGRAM
-The variable @code{MAKEINFO_PROGRAM} names the makeinfo program that
-Octave runs to format help text that contains Texinfo markup commands.
-Its default initial value is @code{"makeinfo"}.
-@end defvr

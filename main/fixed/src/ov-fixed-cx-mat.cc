@@ -619,7 +619,7 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   if (group_hid < 0 ) return false;
 
   dim_vector d = dims ();
-  hsize_t hdims[d.length () > 2 ? d.length () : 3];
+  OCTAVE_LOCAL_BUFFER(hsize_t, hdims, d.length () > 2 ? d.length () : 3);
   hid_t space_hid = -1, data_hid = -1, type_hid = -1;
   int rank = ( (d (0) == 1) && (d.length () == 2) ? 1 : d.length ());
   bool retval = true;

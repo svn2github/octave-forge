@@ -52,24 +52,51 @@ function [varargout] = ode5d (varargin)
   end
 
 %# The following tests have been added to check the function's input arguments and output arguments
-%#!test vsol = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
-%#!test [vx, vy] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
-%#!test [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
-%#!test vsol = ode5d (@odepkg_equations_vanderpol, linspace (0, 0.1, 2), [2 0]);
-%#!test [vx, vy] = ode5d (@odepkg_equations_vanderpol, linspace (0, 0.1, 2), [2 0]);
-%#!test [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, linspace (0, 0.1, 2), [0 0]);
-%#!test A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%#!     vsol = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A);
-%#!test A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%#!     [vx, vy] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A);
-%#!test A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%#!     [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A);
-%#!test A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%#!     vsol = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
-%#!test A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%#!     [vx, vy] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
-%#!test A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%#!     [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    vsol = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
+%!  end 
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    [vx, vy] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
+%!  end
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
+%!  end
+
+%# Removed the fixed step size tests because they won't work with this solver
+
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!    vsol = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A);
+%!  end
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!    [vx, vy] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A);
+%!  end
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!    [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A);
+%!  end
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!    vsol = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
+%!  end
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!    [vx, vy] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
+%!  end
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), "undefined"))
+%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!    [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
+%!  end
 
 %!demo
 %!

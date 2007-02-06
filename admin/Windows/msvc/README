@@ -1,0 +1,110 @@
+***************************************************
+** Compilation of octave/octave-forge under MSVC **
+***************************************************
+
+This directory contains various tools and documentation files to compile
+octave or octave-forge with the MSVC compiler suite. Note that a recent
+MS compiler is required: all tests have been performed with the Visual
+Studio 2005 Express edition available from Microsoft web site.
+
+In general, it is assumed that you have installed a recent Visual Studio
+version, which is able to do Windows development. This can be achieved
+in two ways:
+	- use of the commercial version of Visual Studio
+	- use of the free version of Visual Studio combined with the
+	  Windows Platform SDK development kit
+It is also assumed that you are able to access a Windows command prompt
+that is fully configured to do Windows development. In particular, this
+means that following environment variables are correctly defined:
+	- PATH : contain the location of the various MS development tools
+	- INCLUDE : contain the default include directories
+	- LIB : contain the default library directories (import lib files)
+
+
+Description of the files
+========================
+
+ar-msvc
+cc-msvc.cc
+ranlib-msvc
+
+	UNIX-to-MSVC compilation helper tools. These tools are designed
+	to be UNIX-like replacement tools: they convert their arguments
+	into an equivalent MSVC-tools-based command. These tools should
+	be accessible from your PATH environment variable.
+
+atl_blas.def
+lapack.def
+build_atlas_dll
+
+	Support files to generate BLAS/LAPACK replacement DLL's from the
+	ATLAS library. They are used after a successful compilation of
+	ATLAS.
+
+octave.nsi
+octaverc.win
+
+	Support files for the generation of an octave/Win32 binary
+	distribution, using the NSIS installer system.
+
+libs\
+
+	Directory containing compilation instructions that various support
+	tools and libraries that are included in the octave/Win32 binary
+	distribution.
+
+
+Installation conventions
+========================
+
+When compiling octave/octave-forge, it is easier (and expected) to install
+all tools and support library in some central location that is available to
+the MSVC development tools (through the use of the PATH, INCLUDE and LIB
+variables). Using a central location makes it easier to make MSVC aware of
+all packages in a few commands.
+
+As it is mainly about compiling UNIX-oriented libraries, it also easier
+to follow the same directory conventions found under UNIX system. This
+means that you will have the following directories (given your central
+location is <prefix>):
+	<prefix>\bin : for executables, scripts and DLL's
+	<prefix>\include : for headers
+	<prefix>\lib : for import libraries
+	...
+
+
+Compilation under Windows command prompt
+========================================
+
+When compiling from the Windows command prompt, it is assumed that the full
+MSVC environment is available through the use of the PATH, INCLUDE and LIB
+variables. Moreover, MSVC should also be aware of all support tools and
+libraries that you installed. When using a central location as described
+above, this means that:
+	- PATH contains <prefix>\bin
+	- INCLUDE contains <prefix>\include
+	- LIB contains <prefix>\lib
+
+
+Compilation under MinGW shell (http://www.mingw.org)
+====================================================
+
+When compiling from the MinGW shell, it is assumed that the full MSVC
+environment and the full MinGW environment are available from the shell.
+The easiest way to achieve this is to start the MinGW shell from a fully
+configured Windows command prompt, as explained above, with a command
+like:
+
+	start <MinGW_prefix>\bin\rxvt.exe -e /bin/sh --login -i
+
+Note also that in some specific cases (like for GiNaC), you will also
+need the complete MinGW development environment, including gcc.
+
+
+Compilation under Cygwin shell (http://www.cygwin.com)
+======================================================
+
+The assumptions are the same as for MinGW shell. To get a fully configured
+Cygwin shell, simply run cygwin.bat from a configured Windows command
+prompt. The Cygwin shell is mainly used in ATLAS compilation, for which
+you will also need the gcc compiler suite.

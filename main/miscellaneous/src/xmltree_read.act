@@ -28,7 +28,9 @@
 <!-- Top -->
 
 <top><![CDATA[
+#ifndef _MSC_VER
 #include <stdlib.h>
+#endif
 #include "xmltree.h"
 
 #define warning perror

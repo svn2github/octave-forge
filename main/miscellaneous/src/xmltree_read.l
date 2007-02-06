@@ -869,7 +869,9 @@ static int fail(const char* fmt, ...)
 
 #line 30 "xmltree_read.act"
 
+#ifndef _MSC_VER
 #include <stdlib.h>
+#endif
 #include "xmltree.h"
 
 #define warning perror

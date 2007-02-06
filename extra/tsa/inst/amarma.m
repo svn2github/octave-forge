@@ -29,6 +29,9 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 %	E	error process (Adaptively filtered process)
 %       REV     relative error variance MSE/MSY
 %
+%
+% see also: AAR
+%
 % REFERENCE(S): 
 % [1] A. Schloegl (2000), The electroencephalogram and the adaptive autoregressive model: theory and applications. 
 %     ISBN 3-8265-7640-3 Shaker Verlag, Aachen, Germany. 
@@ -37,15 +40,8 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 %     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
 
 %	$Id$
-%       Copyright (c) 1998-2002,2005 by  Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (c) 1998-2002,2005,2006,2007 by  Alois Schloegl <a.schloegl@ieee.org>
 %
-
-% 12.04.1999 ESU included
-
-% 19.10.2000 aMode 13,14 included
-%            NaN handling 
-% 06.07.2002 Docu improved, included into TSA
-% 11.07.2002 nanmean replaced by mean
 
 %#realonly 
 %#inbounds
@@ -194,7 +190,11 @@ for t=1:nc,
                         W = sum(diag(Z))*dW;
                 elseif aMode==16
                         W = UC*eye(MOP);               % Schloegl 1998
-                %elseif aMode==17
+                elseif aMode==17
+      			Z = 0.5*(Z+Z');
+       			W = UC*Z;
+                elseif aMode==18
+       			W = 0.5*UC*(Z+Z');
 			%W=W;
                 end;
 

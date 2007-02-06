@@ -1,0 +1,197 @@
+#if defined (HAVE_CONFIG_H)
+#include <config.h>
+#endif
+
+#include <string>
+#include <map>
+#include <iostream>
+#include <algorithm>
+#include <cstdlib>
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#include <windows.h>
+#endif
+
+static bool initialized = false;
+static std::map<std::string,std::string> vars;
+static std::string OCTAVE_HOME;
+static std::string usage_msg = "usage: octave-config [options]";
+static std::string help_msg =
+"\n"
+"Options:\n"
+"\n"
+"  -h, -?, --help        Print this message.\n"
+"\n"
+"  --m-site-dir          Print the name of the directory where Octave\n"
+"                        expects to find locally installed .m files.\n"
+"\n"
+"  --oct-site-dir        Print the name of the directory where Octave\n"
+"                        expects to find locally installed .oct files.\n"
+"\n"
+"  -p VAR, --print VAR   Print the value of the given configuration\n"
+"		        variable VAR.  Recognized variables are:\n"
+"\n"
+"			  API_VERSION	         LOCALAPIARCHLIBDIR\n"
+"			  CANONICAL_HOST_TYPE	 LOCALAPIFCNFILEDIR\n"
+"			  DEFAULT_PAGER	         LOCALAPIOCTFILEDIR\n"
+"			  ARCHLIBDIR	         LOCALARCHLIBDIR\n"
+"			  BINDIR	         LOCALFCNFILEDIR\n"
+"			  DATADIR	         LOCALOCTFILEDIR\n"
+"			  EXEC_PREFIX	         LOCALSTARTUPFILEDIR\n"
+"			  FCNFILEDIR	         LOCALVERARCHLIBDIR\n"
+"			  LOCALVEROCTFILEDIR	 LOCALVERFCNFILEDIR\n"
+"			  IMAGEDIR	         MAN1DIR\n"
+"			  MAN1EXT	         MANDIR\n"
+"			  INCLUDEDIR	         OCTFILEDIR\n"
+"			  INFODIR	         OCTINCLUDEDIR\n"
+"			  INFOFILE	         OCTLIBDIR\n"
+"			  LIBDIR	         PREFIX\n"
+"			  LIBEXECDIR	         STARTUPFILEDIR\n"
+"			  LIBEXECDIR		 VERSION\n"
+"\n"
+"  -v, --version         Print the Octave version number.\n"
+"\n";
+
+static void initialize(void)
+{
+	if (initialized)
+		return;
+
+	initialized = true;
+
+	const char *homestr = getenv("OCTAVE_HOME");
+	OCTAVE_HOME = (homestr ? homestr : "");
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+	int n = 1024;
+
+	std::string bin_dir (n, '\0');
+
+	while (true)
+	{
+		int status = GetModuleFileName (0, &bin_dir[0], n);
+
+		if (status < n)
+		{
+			bin_dir.resize (status);
+			break;
+		}
+		else
+		{
+			n *= 2;
+			bin_dir.resize (n);
+		}
+	}
+
+	if (! bin_dir.empty ())
+	{
+		size_t pos = bin_dir.rfind ("\\bin\\");
+
+		if (pos != NPOS)
+			OCTAVE_HOME = bin_dir.substr (0, pos);
+	}
+#endif
+
+	vars["API_VERSION"] = %OCTAVE_API_VERSION%;
+	vars["CANONICAL_HOST_TYPE"] = %OCTAVE_CANONICAL_HOST_TYPE%;
+	vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
+	vars["ARCHLIBDIR"] = %OCTAVE_ARCHLIBDIR%;
+	vars["BINDIR"] = %OCTAVE_BINDIR%;
+	vars["DATADIR"] = %OCTAVE_DATADIR%;
+	vars["EXEC_PREFIX"] = %OCTAVE_EXEC_PREFIX%;
+	vars["FCNFILEDIR"] = %OCTAVE_FCNFILEDIR%;
+	vars["IMAGEDIR"] = %OCTAVE_IMAGEDIR%;
+	vars["INCLUDEDIR"] = %OCTAVE_INCLUDEDIR%;
+	vars["INFODIR"] = %OCTAVE_INFODIR%;
+	vars["INFOFILE"] = %OCTAVE_INFOFILE%;
+	vars["LIBDIR"] = %OCTAVE_LIBDIR%;
+	vars["LIBEXECDIR"] = %OCTAVE_LIBEXECDIR%;
+	vars["LIBEXECDIR"] = %OCTAVE_LIBEXECDIR%;
+	vars["LOCALAPIARCHLIBDIR"] = %OCTAVE_LOCALAPIARCHLIBDIR%;
+	vars["LOCALAPIFCNFILEDIR"] = %OCTAVE_LOCALAPIFCNFILEDIR%;
+	vars["LOCALAPIOCTFILEDIR"] = %OCTAVE_LOCALAPIOCTFILEDIR%;
+	vars["LOCALARCHLIBDIR"] = %OCTAVE_LOCALARCHLIBDIR%;
+	vars["LOCALFCNFILEDIR"] = %OCTAVE_LOCALFCNFILEDIR%;
+	vars["LOCALOCTFILEDIR"] = %OCTAVE_LOCALOCTFILEDIR%;
+	vars["LOCALSTARTUPFILEDIR"] = %OCTAVE_LOCALSTARTUPFILEDIR%;
+	vars["LOCALVERARCHLIBDIR"] = %OCTAVE_LOCALVERARCHLIBDIR%;
+	vars["LOCALVERFCNFILEDIR"] = %OCTAVE_LOCALVERFCNFILEDIR%;
+	vars["LOCALVEROCTFILEDIR"] = %OCTAVE_LOCALVEROCTFILEDIR%;
+	vars["MAN1DIR"] = %OCTAVE_MAN1DIR%;
+	vars["MAN1EXT"] = %OCTAVE_MAN1EXT%;
+	vars["MANDIR"] = %OCTAVE_MANDIR%;
+	vars["OCTFILEDIR"] = %OCTAVE_OCTFILEDIR%;
+	vars["OCTINCLUDEDIR"] = %OCTAVE_OCTINCLUDEDIR%;
+	vars["OCTLIBDIR"] = %OCTAVE_OCTLIBDIR%;
+	vars["PREFIX"] = %OCTAVE_PREFIX%;
+	vars["STARTUPFILEDIR"] = %OCTAVE_STARTUPFILEDIR%;
+	vars["VERSION"] = %OCTAVE_VERSION%;
+}
+
+std::string substitute_home(const std::string& s)
+{
+	std::string retval = s;
+	std::string PREFIX = vars["PREFIX"];
+
+	if (!PREFIX.empty() && OCTAVE_HOME != PREFIX)
+	{
+		int len = PREFIX.length();
+		if (retval.find(PREFIX) == 0)
+			retval.replace(0, len, OCTAVE_HOME);
+	}
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+	std::replace(retval.begin(), retval.end(), '/', '\\');
+#endif
+
+	return retval;
+}
+
+int main(int argc, char **argv)
+{
+	initialize();
+
+	if (argc == 1)
+	{
+		std::cout << usage_msg << std::endl;
+		return 1;
+	}
+
+	for (int i=1; i<argc; i++)
+	{
+		std::string arg(argv[i]);
+
+		if (arg == "-h" || arg == "-?" || arg == "--help")
+		{
+			std::cout << usage_msg << std::endl;
+			std::cout << help_msg;
+			return 0;
+		}
+		else if (arg == "--m-site-dir")
+			std::cout << substitute_home(vars["LOCALVERFCNFILEDIR"]) << std::endl;
+		else if (arg == "--oct-site-dir")
+			std::cout << substitute_home(vars["LOCALVEROCTFILEDIR"]) << std::endl;
+		else if (arg == "-v" || arg == "--version")
+			std::cout << vars["VERSION"] << std::endl;
+		else if (arg == "-p" || arg == "--print")
+		{
+			if (i < argc-1)
+			{
+				arg = argv[++i];
+				std::cout << substitute_home(vars[arg]) << std::endl;
+			}
+			else
+			{
+				std::cerr << "octave-config: " << arg << " options requires argument" << std::endl;
+				return 1;
+			}
+		}
+		else
+		{
+			std::cerr << "octave-config: unrecognized argument " << arg << std::endl;
+			return 1;
+		}
+	}
+
+	return 0;
+}

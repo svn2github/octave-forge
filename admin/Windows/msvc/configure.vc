@@ -1,0 +1,23 @@
+#!/bin/sh
+
+dodebug=true
+OCTAVE_ROOT=/usr/local/octave-vc8-debug
+
+case $1 in
+  release)
+    dodebug=false
+    OCTAVE_ROOT=/usr/local/octave-vc8
+    ;;
+  clean)
+    find -name "*.pdb" | xargs rm
+    find -name "*.ilk" | xargs rm
+    find -name "*.lib" | xargs rm
+    find -name "*.exp" | xargs rm
+    exit 0
+    ;;
+esac
+
+PATH=$OCTAVE_ROOT/bin:$PATH \
+	CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc \
+	./configure --build=i686-pc-msdosmsvc --prefix=$OCTAVE_ROOT \
+		    --with-path=$OCTAVE_ROOT/forge --with-opath=$OCTAVE_ROOT/forge/oct --with-mpath=$OCTAVE_ROOT/forge

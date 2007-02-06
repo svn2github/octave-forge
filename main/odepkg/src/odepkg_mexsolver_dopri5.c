@@ -35,43 +35,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
        [0, 1], [2, 0], A, 12)"
 */
 
-#include <config.h>        /* Needed for the F77_FUNC definition etc. */
-#include <mex.h>           /* Needed for all mex definitions */
-/* #include <f77-fcn.h> */ /* Needed for the use of Fortran routines */
-#include <stdio.h>         /* Needed for the sprintf function etc.*/
-#include <string.h>        /* Needed for the memcpy function etc.*/
-#include "odepkgmex.h"     /* Needed for the mex extensions */
-#include "odepkgext.h"     /* Needed for the odepkg interfaces */
+#include <config.h>    /* Needed for the F77_FUNC definition etc. */
+#include <mex.h>       /* Needed for all mex definitions */
+#include <f77-fcn.h>   /* Needed for the use of Fortran routines */
+#include <stdio.h>     /* Needed for the sprintf function etc.*/
+#include <string.h>    /* Needed for the memcpy function etc.*/
+#include "odepkgmex.h" /* Needed for the mex extensions */
+#include "odepkgext.h" /* Needed for the odepkg interfaces */
 
-/**
- * dopri5 - Stores mxArrays in an internal variable
- * @vdeci: The decision for what has to be done
- * @vname: The name of the variable that is stored
- * @vvalue: The value of the stored variable
- *
- * TODO TODO TODO If @vdeci is 0 (@vname is %NULL and @vvalue is
- * %NULL) then this function @is initialized. Otherwise if @vdeci is 1
- * (@vname must be the name of the variable and @vvalue must be a
- * pointer to its
- *
- * Return value: On success the constant %true, otherwise %false.
- **/
+/* These are the prototype definitions for the solver function, the
+   interpolation function that is used to achieve better results, the
+   Jacobian calculation function (if any), the mass calculation
+   function and the output function. These functions are very similar
+   to the functions from other solvers, therefore there is nor
+   explicit documentation for them in the manual. */
+
 extern void F77_FUNC (dopri5, DOPRI5) (int *N, void *FCN, double *X, double *Y,
   double *XEND, double *RTOL, double *ATOL, int *ITOL, void *SOL, int *IOUT,
   double *WORK, int *LWORK, int *IWORK, int *LIWORK, double *RPAR, int *IPAR, 
   int *VRET);
 
-/**
- * TODO
- *
- **/
 extern double F77_FUNC (contd5, CONTD5) (int *II, double *X, double *CON,
   int *ICOMP, int *ND);
 
-/**
- * TODO
- *
- **/
 void F77_FUNC (ffcn, FFCN) (int *N, double *X, double *Y, double *F, 
   GCC_ATTR_UNUSED double *RPAR, GCC_ATTR_UNUSED int *IPAR) {
   int  vcnt = 0;
@@ -112,10 +98,6 @@ void F77_FUNC (ffcn, FFCN) (int *N, double *X, double *Y, double *F,
   mxFree (vrhs); /* Free the vrhs mxArray */
 }
 
-/**
- * TODO
- *
- **/
 void F77_FUNC (fsol, FSOL) (int *NR, double *XOLD, double *X, double *Y, int *N,
   double *CON, int *ICOMP, int *ND, GCC_ATTR_UNUSED double *RPAR, 
   GCC_ATTR_UNUSED int *IPAR, int *IRTRN) {
@@ -621,7 +603,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
       mexPrintf ("The step size grew too small, reduce InitialStep and/or MaxStep\n");
       break;
     case -2:
-      mexPrintf ("Maximal number of allowed steps (1000000) has been reached\n");
+      mexPrintf ("Maximal number of allowed steps has been reached\n");
       break;
     case -1:
       mexPrintf ("Input is not consistent\n");
@@ -750,11 +732,18 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     plhs[0] = vtmp;
     plhs[1] = mxTransposeMatrix (vtem);
 
-    fodepkgvar (2, "EventSolution", &vtem);
-    plhs[2] = mxDuplicateArray (mxGetCell (vtem, 2));
-    plhs[3] = mxDuplicateArray (mxGetCell (vtem, 3));
-    plhs[4] = mxDuplicateArray (mxGetCell (vtem, 1));
-    /* mexCallMATLAB (0, NULL, 1, &vtem, "disp"); */
+    fodepkgvar (2, "EventFunction", &vtmp);
+    if (!mxIsEmpty (vtmp)) {
+      fodepkgvar (2, "EventSolution", &vtem);
+      plhs[2] = mxDuplicateArray (mxGetCell (vtem, 2));
+      plhs[3] = mxDuplicateArray (mxGetCell (vtem, 3));
+      plhs[4] = mxDuplicateArray (mxGetCell (vtem, 1));
+    }
+    else {
+      plhs[2] = mxCreateDoubleMatrix (0, 0, mxREAL);
+      plhs[3] = mxCreateDoubleMatrix (0, 0, mxREAL);
+      plhs[4] = mxCreateDoubleMatrix (0, 0, mxREAL);
+    }
   }
 
 #ifdef __ODEPKGDEBUG__

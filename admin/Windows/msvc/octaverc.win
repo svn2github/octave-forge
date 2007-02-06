@@ -1,0 +1,44 @@
+## System-wide startup file for Octave.
+##
+## This file should contain any commands that should be executed each
+## time Octave starts for every user at this site.
+
+## This startup script is customized for the Octave/Win32
+## binary distribution. It checks for the existence of
+## installed octave-forge, scite and octplot, and perform
+## the appropriate actions.
+
+## Configure readline using the file inputrc in the Octave startup
+## directory.
+
+read_readline_init_file (sprintf ("%s%s%s",
+				  octave_config_info ("startupfiledir"),
+				  filesep, "inputrc"));
+
+if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
+  PAGER_FLAGS ('-P"-- less ?pB(%pB\%):--. (f)orward, (b)ack, (q)uit$"');
+endif
+
+# Load octave-forge
+forge_path = sprintf ("%s%sforge", octave_config_info ("prefix"), filesep);
+if (exist (forge_path, "dir"))
+  # addpath (genpath (sprintf ("%s%soct", forge_path, filesep)), "-end");
+  # addpath (genpath (sprintf ("%s%sm", forge_path, filesep)), "-end");
+  addpath (genpath (forge_path), "-end");
+  fprintf (" - Octave forge installed.\n");
+  scite_path = sprintf ("%s%stools%swscite", octave_config_info ("prefix"), filesep, filesep);
+  if (exist (scite_path, "dir"))
+    EDITOR (sprintf ("%s%sSciTE.exe", scite_path, filesep));
+    edit ("mode", "async");
+    fprintf (" - SciTE editor installed. Use `edit' to start the editor.\n");
+  endif
+endif
+
+# Load octplot
+oplot_path = sprintf ("%s%soctplot", octave_config_info ("prefix"), filesep);
+if (exist (oplot_path, "dir"))
+  addpath (sprintf ("%s%stoggle", oplot_path, filesep), "-end");
+  fprintf(" - Octplot installed.\n   To enable Octplot graphic engine, use `toggle_octplot'.\n\n");
+end
+
+clear forge_path oplot_path scite_path

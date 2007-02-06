@@ -43,6 +43,7 @@ class FixedMatrix;
 typedef FixedPoint (*f_f_Mapper)(FixedPoint);
 
 class
+OCTAVE_FIXED_API 
 FixedColumnVector : public MArray<FixedPoint>
 {
 public:

@@ -556,7 +556,7 @@ FixedComplexNDArray::operator == (const FixedComplexNDArray& a) const
 bool
 FixedComplexNDArray::operator != (const FixedComplexNDArray& a) const
 {
-  return !(*this != a);
+  return !(*this == a);
 }
 
 FixedComplexNDArray

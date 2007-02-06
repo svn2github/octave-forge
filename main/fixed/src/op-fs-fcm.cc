@@ -114,7 +114,7 @@ DEFCONV (fixed_complex_matrix_conv, fixed, fixed_complex_matrix)
   return new octave_fixed_complex_matrix (v.fixed_complex_matrix_value ());
 }
 
-void
+OCTAVE_FIXED_API void
 install_fs_fcm_ops (void)
 {
   INSTALL_BINOP (op_add, octave_fixed, octave_fixed_complex_matrix, 

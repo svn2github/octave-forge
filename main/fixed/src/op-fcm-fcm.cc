@@ -121,7 +121,7 @@ FIXED_DEFCATOP_FN (fcm_fcm, fixed_complex_matrix, fixed_complex_matrix,
 
 DEFASSIGNOP_FN (assign, fixed_complex_matrix, fixed_complex_matrix, assign)
 
-void
+OCTAVE_FIXED_API void
 install_fcm_fcm_ops (void)
 {
   INSTALL_UNOP (op_not, octave_fixed_complex_matrix, not);

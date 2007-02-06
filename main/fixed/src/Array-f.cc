@@ -26,17 +26,17 @@ Open Source Initiative (www.opensource.org)
 #include <octave/config.h>
 #include "int/fixed.h"
 #include "fixedComplex.h"
-#include "fixedMatrix.h"
-#include "fixedCMatrix.h"
+//#include "fixedMatrix.h"
+//#include "fixedCMatrix.h"
 
 #include <octave/Array.h>
 #include <octave/Array.cc>
 #include <octave/MArray.h>
 #include <octave/MArray.cc>
 
-template class Array<FixedPoint>;
+template class OCTAVE_FIXED_API Array<FixedPoint>;
 template class MArray<FixedPoint>;
-template class Array<FixedPointComplex>;
+template class OCTAVE_FIXED_API Array<FixedPointComplex>;
 template class MArray<FixedPointComplex>;
 
 template int assign (Array<FixedPoint>&, const Array<FixedPoint>&);

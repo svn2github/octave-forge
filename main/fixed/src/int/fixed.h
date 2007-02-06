@@ -81,7 +81,7 @@ const unsigned int halffixedsize = SIZEOF_FIXED * 4;
 #undef ERROR
 #endif
 
-class FixedPoint
+class OCTAVE_FIXED_API FixedPoint
 {
 private:
 
@@ -156,6 +156,12 @@ public:
 
   FixedPoint (const double x);
 
+#ifdef _MSC_VER
+  FixedPoint (const long double x) { *this = FixedPoint((const double)x); }
+
+  operator double () const { return fixedpoint(); }
+#endif
+
   FixedPoint (const FixedPoint &x) : number(x.number), decsize(x.decsize),
                                      intsize(x.intsize), filter(x.filter),
                                      value(x.value) { }
@@ -217,9 +223,9 @@ public:
   
   friend FixedPoint operator + (const FixedPoint &x);
   
-  friend FixedPoint operator - (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint operator - (const FixedPoint &x);
 
-  friend FixedPoint operator ! (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint operator ! (const FixedPoint &x);
   
   // FixedPoint operators
 
@@ -237,98 +243,99 @@ public:
   
   // FixedPoint comparators
 
-  friend bool operator ==  (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator ==  (const FixedPoint &x, const FixedPoint &y);
 
-  friend bool operator !=  (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator !=  (const FixedPoint &x, const FixedPoint &y);
 
-  friend bool operator >  (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator >  (const FixedPoint &x, const FixedPoint &y);
   
-  friend bool operator >=  (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator >=  (const FixedPoint &x, const FixedPoint &y);
   
-  friend bool operator <  (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator <  (const FixedPoint &x, const FixedPoint &y);
   
-  friend bool operator <=  (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator <=  (const FixedPoint &x, const FixedPoint &y);
   
   // FixedPoint shifting functions
 
-  friend FixedPoint rshift(const FixedPoint &x, int s);
+  friend OCTAVE_FIXED_API FixedPoint rshift(const FixedPoint &x, int s);
   
-  friend FixedPoint lshift(const FixedPoint &x, int s);
+  friend OCTAVE_FIXED_API FixedPoint lshift(const FixedPoint &x, int s);
   
   // FixedPoint mathematic functions
 
-  friend FixedPoint real  (const FixedPoint &x);
-  friend FixedPoint imag  (const FixedPoint &x);
-  friend FixedPoint conj  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint real  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint imag  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint conj  (const FixedPoint &x);
+  friend FixedPoint arg  (const FixedPoint &x);
 
-  friend FixedPoint abs  (const FixedPoint &x);
-  friend FixedPoint cos  (const FixedPoint &x);
-  friend FixedPoint cosh  (const FixedPoint &x);
-  friend FixedPoint sin  (const FixedPoint &x);
-  friend FixedPoint sinh  (const FixedPoint &x);
-  friend FixedPoint tan  (const FixedPoint &x);
-  friend FixedPoint tanh  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint abs  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint cos  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint cosh  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint sin  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint sinh  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint tan  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint tanh  (const FixedPoint &x);
 
-  friend FixedPoint sqrt  (const FixedPoint &x);
-  friend FixedPoint pow  (const FixedPoint &w, const int y);
-  friend FixedPoint pow  (const FixedPoint &x, const double y);
-  friend FixedPoint pow  (const FixedPoint &x, const FixedPoint &y);
-  friend FixedPoint exp  (const FixedPoint &x);
-  friend FixedPoint log  (const FixedPoint &x);
-  friend FixedPoint log10  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint sqrt  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint pow  (const FixedPoint &w, const int y);
+  friend OCTAVE_FIXED_API FixedPoint pow  (const FixedPoint &x, const double y);
+  friend OCTAVE_FIXED_API FixedPoint pow  (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API FixedPoint exp  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint log  (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint log10  (const FixedPoint &x);
 
-  friend FixedPoint atan2 (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API FixedPoint atan2 (const FixedPoint &x, const FixedPoint &y);
 
-  friend FixedPoint round (const FixedPoint &x);
-  friend FixedPoint rint (const FixedPoint &x);
-  friend FixedPoint floor (const FixedPoint &x);
-  friend FixedPoint ceil (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint round (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint rint (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint floor (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint ceil (const FixedPoint &x);
 
   // FixedPoint I/O functions
 
-  friend std::istream &operator >>  (std::istream &is, FixedPoint &x);
-  friend std::ostream &operator <<  (std::ostream &os, const FixedPoint &x);
+  friend OCTAVE_FIXED_API std::istream &operator >>  (std::istream &is, FixedPoint &x);
+  friend OCTAVE_FIXED_API std::ostream &operator <<  (std::ostream &os, const FixedPoint &x);
 
-  friend std::string getbitstring (const FixedPoint &x);
+  friend OCTAVE_FIXED_API std::string getbitstring (const FixedPoint &x);
 
 };
 
 
 // Summary of the number of FixedPoint operations;
 
-class FixedPointOperation {
+class OCTAVE_FIXED_API FixedPointOperation {
 
   friend class FixedPoint;
-  friend FixedPoint operator ! (const FixedPoint &x);
-  friend FixedPoint operator - (const FixedPoint &x);
-  friend bool operator == (const FixedPoint &x, const FixedPoint &y);
-  friend bool operator != (const FixedPoint &x, const FixedPoint &y);
-  friend bool operator > (const FixedPoint &x, const FixedPoint &y);
-  friend bool operator >= (const FixedPoint &x, const FixedPoint &y);
-  friend bool operator < (const FixedPoint &x, const FixedPoint &y);
-  friend bool operator <= (const FixedPoint &x, const FixedPoint &y);
-  friend FixedPoint real (const FixedPoint &x);
-  friend FixedPoint imag (const FixedPoint &x);
-  friend FixedPoint conj (const FixedPoint &x);
-  friend FixedPoint abs (const FixedPoint &x);
-  friend FixedPoint cos (const FixedPoint &x);
-  friend FixedPoint cosh (const FixedPoint &x);
-  friend FixedPoint sin (const FixedPoint &x);
-  friend FixedPoint sinh (const FixedPoint &x);
-  friend FixedPoint tan (const FixedPoint &x);
-  friend FixedPoint tanh (const FixedPoint &x);
-  friend FixedPoint sqrt(const FixedPoint &x);
-  friend FixedPoint pow (const FixedPoint &w, const int y);
-  friend FixedPoint pow (const FixedPoint &x, const double y);
-  friend FixedPoint pow (const FixedPoint &x, const FixedPoint &y);
-  friend FixedPoint exp (const FixedPoint &x);
-  friend FixedPoint log (const FixedPoint &x);
-  friend FixedPoint log10 (const FixedPoint &x);
-  friend FixedPoint atan2 (const FixedPoint &x, const FixedPoint &y);
-  friend FixedPoint round (const FixedPoint &x);
-  friend FixedPoint rint (const FixedPoint &x);
-  friend FixedPoint floor (const FixedPoint &x);
-  friend FixedPoint ceil (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint operator ! (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint operator - (const FixedPoint &x);
+  friend OCTAVE_FIXED_API bool operator == (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator != (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator > (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator >= (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator < (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API bool operator <= (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API FixedPoint real (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint imag (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint conj (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint abs (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint cos (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint cosh (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint sin (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint sinh (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint tan (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint tanh (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint sqrt(const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint pow (const FixedPoint &w, const int y);
+  friend OCTAVE_FIXED_API FixedPoint pow (const FixedPoint &x, const double y);
+  friend OCTAVE_FIXED_API FixedPoint pow (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API FixedPoint exp (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint log (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint log10 (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint atan2 (const FixedPoint &x, const FixedPoint &y);
+  friend OCTAVE_FIXED_API FixedPoint round (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint rint (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint floor (const FixedPoint &x);
+  friend OCTAVE_FIXED_API FixedPoint ceil (const FixedPoint &x);
 
 private:
 
@@ -379,7 +386,7 @@ public:
 
   void reset ();
 
-  friend std::ostream &operator << (std::ostream &os, 
+  friend OCTAVE_FIXED_API std::ostream &operator << (std::ostream &os, 
                                     const FixedPointOperation &x);
 };
 
@@ -416,21 +423,21 @@ namespace Fixed {
 #endif
 
 #if !defined (__int_fixed_cc)
-  extern const char *FP_Version;
+  extern OCTAVE_FIXED_API const char *FP_Version;
 
-  extern const char *message[];
+  extern OCTAVE_FIXED_API const char *message[];
 
-  extern bool FP_Debug;
+  extern OCTAVE_FIXED_API bool FP_Debug;
 
-  extern bool FP_Overflow;
+  extern OCTAVE_FIXED_API bool FP_Overflow;
 
-  extern bool FP_CountOperations;
+  extern OCTAVE_FIXED_API bool FP_CountOperations;
 
-  extern FixedPointOperation FP_Operations;
+  extern OCTAVE_FIXED_API FixedPointOperation FP_Operations;
 #else
-  const char *FP_Version = FIXEDVERSION;
+  OCTAVE_FIXED_API const char *FP_Version = FIXEDVERSION;
 
-  const char *message[19] =
+  OCTAVE_FIXED_API const char *message[19] =
   { "Error",
     "Not enough data",
     "Wrong fixed point size",
@@ -452,13 +459,13 @@ namespace Fixed {
     "Losing most significant bits in post-decrement operator"
   };
 
-  bool FP_Debug = false;
+  OCTAVE_FIXED_API bool FP_Debug = false;
 
-  bool FP_Overflow = false;
+  OCTAVE_FIXED_API bool FP_Overflow = false;
 
-  bool FP_CountOperations = false;
+  OCTAVE_FIXED_API bool FP_CountOperations = false;
 
-  FixedPointOperation FP_Operations;
+  OCTAVE_FIXED_API FixedPointOperation FP_Operations;
 #endif
 };
 
@@ -491,8 +498,8 @@ inline FixedPoint operator + (const FixedPoint &x) {
   return FixedPoint(x);
 }
   
-FixedPoint operator - (const FixedPoint &x);
-FixedPoint operator ! (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint operator - (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint operator ! (const FixedPoint &x);
   
 inline FixedPoint operator +  (const FixedPoint &x, const FixedPoint &y) {
   FixedPoint x1(x);
@@ -513,7 +520,31 @@ inline FixedPoint operator /  (const FixedPoint &x, const FixedPoint &y) {
   FixedPoint x1(x);
   return (x1 /= y);
 }
-    
+   
+#ifdef _MSC_VER
+#define FIXED_OP(R, OP, T1, C1, T2, C2) \
+inline R operator OP (T1 x, T2 y) { \
+  return C1 (x) OP C2 (y); \
+}
+#define FIXED_OP2(R, OP, T) \
+FIXED_OP(R, OP, const FixedPoint&, , T, FixedPoint) \
+FIXED_OP(R, OP, T, FixedPoint, const FixedPoint&, )
+#define FIXED_OPS(T) \
+FIXED_OP2(FixedPoint, +, T) \
+FIXED_OP2(FixedPoint, -, T) \
+FIXED_OP2(FixedPoint, *, T) \
+FIXED_OP2(FixedPoint, /, T) \
+FIXED_OP2(bool, ==, T) \
+FIXED_OP2(bool, !=, T) \
+FIXED_OP2(bool, >, T) \
+FIXED_OP2(bool, >=, T) \
+FIXED_OP2(bool, <, T) \
+FIXED_OP2(bool, <=, T)
+
+FIXED_OPS(double)
+FIXED_OPS(int)
+#endif
+  
 inline FixedPoint operator <<  (const FixedPoint &x, const int s) {
   FixedPoint n = x;
   return (n <<= s);
@@ -524,47 +555,51 @@ inline FixedPoint operator >>  (const FixedPoint &x, const int s) {
   return (n >>= s);
 }
   
-bool operator ==  (const FixedPoint &x, const FixedPoint &y);
-bool operator !=  (const FixedPoint &x, const FixedPoint &y);
-bool operator >  (const FixedPoint &x, const FixedPoint &y);
-bool operator >=  (const FixedPoint &x, const FixedPoint &y);
-bool operator <  (const FixedPoint &x, const FixedPoint &y);
-bool operator <=  (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API bool operator ==  (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API bool operator !=  (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API bool operator >  (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API bool operator >=  (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API bool operator <  (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API bool operator <=  (const FixedPoint &x, const FixedPoint &y);
   
-FixedPoint rshift(const FixedPoint &x, int s = 1);
-FixedPoint lshift(const FixedPoint &x, int s = 1);
+OCTAVE_FIXED_API FixedPoint rshift(const FixedPoint &x, int s = 1);
+OCTAVE_FIXED_API FixedPoint lshift(const FixedPoint &x, int s = 1);
   
-FixedPoint real  (const FixedPoint &x);
-FixedPoint imag  (const FixedPoint &x);
-FixedPoint conj  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint real  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint imag  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint conj  (const FixedPoint &x);
+inline FixedPoint arg (const FixedPoint &x) {
+  return FixedPoint (x.getintsize (), x.getdecsize ());
+}
 
-FixedPoint abs  (const FixedPoint &x);
-FixedPoint cos  (const FixedPoint &x);
-FixedPoint cosh  (const FixedPoint &x);
-FixedPoint sin  (const FixedPoint &x);
-FixedPoint sinh  (const FixedPoint &x);
-FixedPoint tan  (const FixedPoint &x);
-FixedPoint tanh  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint abs  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint cos  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint cosh  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint sin  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint sinh  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint tan  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint tanh  (const FixedPoint &x);
 
-FixedPoint sqrt  (const FixedPoint &x);
-FixedPoint pow  (const FixedPoint &w, const int y);
-FixedPoint pow  (const FixedPoint &x, const double y);
-FixedPoint pow  (const FixedPoint &x, const FixedPoint &y);
-FixedPoint exp  (const FixedPoint &x);
-FixedPoint log  (const FixedPoint &x);
-FixedPoint log10  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint sqrt  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint pow  (const FixedPoint &w, const int y);
+OCTAVE_FIXED_API FixedPoint pow  (const FixedPoint &x, const double y);
+OCTAVE_FIXED_API FixedPoint pow  (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API FixedPoint exp  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint log  (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint log10  (const FixedPoint &x);
 
-FixedPoint atan2 (const FixedPoint &x, const FixedPoint &y);
+OCTAVE_FIXED_API FixedPoint atan2 (const FixedPoint &x, const FixedPoint &y);
 
-FixedPoint round (const FixedPoint &x);
-FixedPoint rint (const FixedPoint &x);
-FixedPoint floor (const FixedPoint &x);
-FixedPoint ceil (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint round (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint rint (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint floor (const FixedPoint &x);
+OCTAVE_FIXED_API FixedPoint ceil (const FixedPoint &x);
 
-std::istream &operator >>  (std::istream &is, FixedPoint &x);
-std::ostream &operator <<  (std::ostream &os, const FixedPoint &x);
+OCTAVE_FIXED_API std::istream &operator >>  (std::istream &is, FixedPoint &x);
+OCTAVE_FIXED_API std::ostream &operator <<  (std::ostream &os, const FixedPoint &x);
+OCTAVE_FIXED_API std::ostream &operator <<  (std::ostream &os, const FixedPointOperation &x);
 
-std::string getbitstring (const FixedPoint &x);
+OCTAVE_FIXED_API std::string getbitstring (const FixedPoint &x);
 
 #endif
 

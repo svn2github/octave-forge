@@ -46,6 +46,7 @@ class FixedComplexMatrix;
 typedef FixedPointComplex (*fc_fc_Mapper)(FixedPointComplex);
 
 class
+OCTAVE_FIXED_API 
 FixedComplexColumnVector : public MArray<FixedPointComplex>
 {
 public:

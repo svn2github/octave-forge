@@ -52,6 +52,7 @@ class tree_walker;
 // Complex matrix values.
 
 class
+OCTAVE_FIXED_API
 octave_fixed_complex_matrix : 
   public octave_base_fixed_matrix<FixedComplexMatrix>
 {

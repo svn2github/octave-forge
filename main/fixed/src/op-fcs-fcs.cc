@@ -190,7 +190,7 @@ FIXED_DEFCATOP_FN (fcs_fcs, fixed_complex, fixed_complex,
 		   fixed_complex_matrix, fixed_complex_matrix,
 		   fixed_complex_matrix, concat)
 
-void
+OCTAVE_FIXED_API void
 install_fcs_fcs_ops (void)
 {
   INSTALL_UNOP (op_not, octave_fixed_complex, not);

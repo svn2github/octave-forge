@@ -136,7 +136,7 @@ DEFBINOP (el_or, fixed, fixed)
 FIXED_DEFCATOP_FN (fs_fs, fixed, fixed, fixed_matrix, fixed_matrix, 
 		   fixed_matrix, concat)
 
-void
+OCTAVE_FIXED_API void
 install_fs_fs_ops (void)
 {
   INSTALL_UNOP (op_not, octave_fixed, not);

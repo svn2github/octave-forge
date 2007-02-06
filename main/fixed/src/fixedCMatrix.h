@@ -50,6 +50,7 @@ class FixedComplexRowVector;
 typedef FixedPointComplex (*fc_fc_Mapper)(FixedPointComplex);
 
 class
+OCTAVE_FIXED_API
 FixedComplexMatrix : public MArray2<FixedPointComplex>
 {
 public:
@@ -257,54 +258,54 @@ public:
   FixedComplexRowVector column_min (Array<int>& index) const;
   FixedComplexRowVector column_max (Array<int>& index) const;
 
-  friend FixedComplexMatrix operator * (const FixedComplexColumnVector& a,
+  friend OCTAVE_FIXED_API FixedComplexMatrix operator * (const FixedComplexColumnVector& a,
                                         const FixedComplexRowVector& b);
-  friend FixedComplexMatrix operator * (const FixedComplexMatrix& a,
+  friend OCTAVE_FIXED_API FixedComplexMatrix operator * (const FixedComplexMatrix& a,
                                         const FixedComplexMatrix& b);
 
-  friend FixedMatrix real (const FixedComplexMatrix &x);
-  friend FixedMatrix imag (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix conj (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedMatrix real (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedMatrix imag (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix conj (const FixedComplexMatrix &x);
 
-  friend FixedMatrix abs (const FixedComplexMatrix &x);
-  friend FixedMatrix norm (const FixedComplexMatrix &x);
-  friend FixedMatrix arg (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix polar (const FixedMatrix &r, const FixedMatrix &p);
+  friend OCTAVE_FIXED_API FixedMatrix abs (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedMatrix norm (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedMatrix arg (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix polar (const FixedMatrix &r, const FixedMatrix &p);
 
-  friend FixedComplexMatrix cos  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix cosh  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix sin  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix sinh  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix tan  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix tanh  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix cos  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix cosh  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix sin  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix sinh  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix tan  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix tanh  (const FixedComplexMatrix &x);
 
-  friend FixedComplexMatrix sqrt  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a, const int b);
-  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a, const double b);
-  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a,
+  friend OCTAVE_FIXED_API FixedComplexMatrix sqrt  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a, const int b);
+  friend OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a, const double b);
+  friend OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a,
                                   const FixedPointComplex &b);
-  friend FixedComplexMatrix pow  (const FixedComplexMatrix &a,
+  friend OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a,
                                   const FixedComplexMatrix &b);
-  friend FixedComplexMatrix exp  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix log  (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix log10  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix exp  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix log  (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix log10  (const FixedComplexMatrix &x);
 
-  friend FixedComplexMatrix round (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix rint (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix floor (const FixedComplexMatrix &x);
-  friend FixedComplexMatrix ceil (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix round (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix rint (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix floor (const FixedComplexMatrix &x);
+  friend OCTAVE_FIXED_API FixedComplexMatrix ceil (const FixedComplexMatrix &x);
 
-  friend ComplexMatrix fixedpoint (const FixedComplexMatrix& x);
-  friend ComplexMatrix sign (const FixedComplexMatrix& x);
-  friend ComplexMatrix getintsize (const FixedComplexMatrix& x);
-  friend ComplexMatrix getdecsize (const FixedComplexMatrix& x);
-  friend ComplexMatrix getnumber (const FixedComplexMatrix& x);
+  friend OCTAVE_FIXED_API ComplexMatrix fixedpoint (const FixedComplexMatrix& x);
+  friend OCTAVE_FIXED_API ComplexMatrix sign (const FixedComplexMatrix& x);
+  friend OCTAVE_FIXED_API ComplexMatrix getintsize (const FixedComplexMatrix& x);
+  friend OCTAVE_FIXED_API ComplexMatrix getdecsize (const FixedComplexMatrix& x);
+  friend OCTAVE_FIXED_API ComplexMatrix getnumber (const FixedComplexMatrix& x);
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os,
+  friend OCTAVE_FIXED_API std::ostream& operator << (std::ostream& os,
                                     const FixedComplexMatrix& a);
-  friend std::istream& operator >> (std::istream& is, FixedComplexMatrix& a);
+  friend OCTAVE_FIXED_API std::istream& operator >> (std::istream& is, FixedComplexMatrix& a);
 
 
   static FixedPointComplex resize_fill_value (void) 
@@ -316,42 +317,42 @@ private:
     MArray2<FixedPointComplex> (d, r, c) { }
 };
 
-FixedComplexMatrix operator * (const FixedComplexColumnVector& a, 
+OCTAVE_FIXED_API FixedComplexMatrix operator * (const FixedComplexColumnVector& a, 
 				const FixedComplexRowVector& b);
-FixedComplexMatrix operator * (const FixedComplexMatrix& a, 
+OCTAVE_FIXED_API FixedComplexMatrix operator * (const FixedComplexMatrix& a, 
 				const FixedComplexMatrix& b);
 
-FixedMatrix real (const FixedComplexMatrix &x);
-FixedMatrix imag (const FixedComplexMatrix &x);
-FixedComplexMatrix conj (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedMatrix real (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedMatrix imag (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix conj (const FixedComplexMatrix &x);
 
-FixedMatrix abs (const FixedComplexMatrix &x);
-FixedMatrix norm (const FixedComplexMatrix &x);
-FixedMatrix arg (const FixedComplexMatrix &x);
-FixedComplexMatrix polar (const FixedMatrix &r, const FixedMatrix &p);
+OCTAVE_FIXED_API FixedMatrix abs (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedMatrix norm (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedMatrix arg (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix polar (const FixedMatrix &r, const FixedMatrix &p);
 
-FixedComplexMatrix cos  (const FixedComplexMatrix &x);
-FixedComplexMatrix cosh  (const FixedComplexMatrix &x);
-FixedComplexMatrix sin  (const FixedComplexMatrix &x);
-FixedComplexMatrix sinh  (const FixedComplexMatrix &x);
-FixedComplexMatrix tan  (const FixedComplexMatrix &x);
-FixedComplexMatrix tanh  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix cos  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix cosh  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix sin  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix sinh  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix tan  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix tanh  (const FixedComplexMatrix &x);
 
-FixedComplexMatrix sqrt  (const FixedComplexMatrix &x);
-FixedComplexMatrix pow  (const FixedComplexMatrix &a, const int b);
-FixedComplexMatrix pow  (const FixedComplexMatrix &a, const double b);
-FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
+OCTAVE_FIXED_API FixedComplexMatrix sqrt  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a, const int b);
+OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a, const double b);
+OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
 				  const FixedPointComplex &b);
-FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
+OCTAVE_FIXED_API FixedComplexMatrix pow  (const FixedComplexMatrix &a, 
 				  const FixedComplexMatrix &b);
-FixedComplexMatrix exp  (const FixedComplexMatrix &x);
-FixedComplexMatrix log  (const FixedComplexMatrix &x);
-FixedComplexMatrix log10  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix exp  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix log  (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix log10  (const FixedComplexMatrix &x);
 
-FixedComplexMatrix round (const FixedComplexMatrix &x);
-FixedComplexMatrix rint (const FixedComplexMatrix &x);
-FixedComplexMatrix floor (const FixedComplexMatrix &x);
-FixedComplexMatrix ceil (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix round (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix rint (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix floor (const FixedComplexMatrix &x);
+OCTAVE_FIXED_API FixedComplexMatrix ceil (const FixedComplexMatrix &x);
 
 inline ComplexMatrix fixedpoint (const FixedComplexMatrix& x) 
      { return x.fixedpoint(); }
@@ -364,30 +365,30 @@ inline ComplexMatrix getdecsize (const FixedComplexMatrix& x)
 inline ComplexMatrix getnumber (const FixedComplexMatrix& x) 
      { return x.getnumber(); }
 
-std::ostream& operator << (std::ostream& os, 
+OCTAVE_FIXED_API std::ostream& operator << (std::ostream& os, 
 			    const FixedComplexMatrix& a);
-std::istream& operator >> (std::istream& is, FixedComplexMatrix& a);
+OCTAVE_FIXED_API std::istream& operator >> (std::istream& is, FixedComplexMatrix& a);
 
 
-FixedComplexMatrix min (FixedPointComplex d, 
+OCTAVE_FIXED_API FixedComplexMatrix min (FixedPointComplex d, 
 		       const FixedComplexMatrix& m);
-FixedComplexMatrix min (const FixedComplexMatrix& m, 
+OCTAVE_FIXED_API FixedComplexMatrix min (const FixedComplexMatrix& m, 
 		       FixedPointComplex d);
-FixedComplexMatrix min (const FixedComplexMatrix& a, 
+OCTAVE_FIXED_API FixedComplexMatrix min (const FixedComplexMatrix& a, 
 		       const FixedComplexMatrix& b);
 
-FixedComplexMatrix max (FixedPointComplex d,
+OCTAVE_FIXED_API FixedComplexMatrix max (FixedPointComplex d,
 		       const FixedComplexMatrix& m);
-FixedComplexMatrix max (const FixedComplexMatrix& m,
+OCTAVE_FIXED_API FixedComplexMatrix max (const FixedComplexMatrix& m,
 		       FixedPointComplex d);
-FixedComplexMatrix max (const FixedComplexMatrix& a,
+OCTAVE_FIXED_API FixedComplexMatrix max (const FixedComplexMatrix& a,
 		       const FixedComplexMatrix& b);
 
-FixedComplexMatrix elem_pow (const FixedComplexMatrix &a,
+OCTAVE_FIXED_API FixedComplexMatrix elem_pow (const FixedComplexMatrix &a,
 			     const FixedComplexMatrix &b);
-FixedComplexMatrix elem_pow (const FixedComplexMatrix &a,
+OCTAVE_FIXED_API FixedComplexMatrix elem_pow (const FixedComplexMatrix &a,
 			     const FixedPointComplex &b);
-FixedComplexMatrix elem_pow (const FixedPointComplex &a,
+OCTAVE_FIXED_API FixedComplexMatrix elem_pow (const FixedPointComplex &a,
 			     const FixedComplexMatrix &b);
 
 

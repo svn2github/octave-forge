@@ -59,6 +59,7 @@ class tree_walker;
 // Real matrix values.
 
 class
+OCTAVE_FIXED_API
 octave_fixed_matrix : public octave_base_fixed_matrix<FixedMatrix>
 {
 public:

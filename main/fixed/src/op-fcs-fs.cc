@@ -162,7 +162,7 @@ FIXED_DEFCATOP_FN (fcs_fs, fixed_complex, fixed,
 		   fixed_complex_matrix, fixed_matrix,
 		   fixed_complex_matrix, concat)
 
-void
+OCTAVE_FIXED_API void
 install_fcs_fs_ops (void)
 {
   INSTALL_BINOP (op_add, octave_fixed_complex, octave_fixed, add);

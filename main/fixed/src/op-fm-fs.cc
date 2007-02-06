@@ -109,7 +109,7 @@ FIXED_DEFCATOP_FN (fm_fs, fixed_matrix, fixed, fixed_matrix, fixed_matrix,
 
 DEFASSIGNOP_FN (assign, fixed_matrix, fixed, assign)
 
-void
+OCTAVE_FIXED_API void
 install_fm_fs_ops (void)
 {
   INSTALL_BINOP (op_add, octave_fixed_matrix, octave_fixed, add);

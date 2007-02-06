@@ -183,7 +183,7 @@ DEFCONV (complex_conv, fixed, fixed_complex)
   return new octave_fixed_complex (v.fixed_complex_value ());
 }
 
-void
+OCTAVE_FIXED_API void
 install_fs_fcs_ops (void)
 {
   INSTALL_BINOP (op_add, octave_fixed, octave_fixed_complex, add);

@@ -60,6 +60,7 @@ class tree_walker;
 // Fixed point values.
 
 class
+OCTAVE_FIXED_API
 octave_fixed : public octave_base_fixed<FixedPoint>
 {
 public:

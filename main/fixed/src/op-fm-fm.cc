@@ -114,7 +114,7 @@ CONVDECLX (fixed_matrix_conv)
 
 DEFASSIGNOP_FN (assign, fixed_matrix, fixed_matrix, assign)
 
-void
+OCTAVE_FIXED_API void
 install_fm_fm_ops (void)
 {
   INSTALL_UNOP (op_not, octave_fixed_matrix, not);

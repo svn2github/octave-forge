@@ -106,7 +106,7 @@ DEFCONV (fixed_matrix_conv, fixed, fixed_matrix)
   return new octave_fixed_matrix (v.fixed_matrix_value ());
 }
 
-void
+OCTAVE_FIXED_API void
 install_fs_fm_ops (void)
 {
   INSTALL_BINOP (op_add, octave_fixed, octave_fixed_matrix, add);

@@ -30,7 +30,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct-cmplx.h>
 #include "int/fixed.h"
 
-class FixedPointComplex : public std::complex<FixedPoint>
+class OCTAVE_FIXED_API FixedPointComplex : public std::complex<FixedPoint>
 {
 public:
 
@@ -142,40 +142,40 @@ public:
 
   // FixedPointComplex operators
 
-  friend FixedPointComplex operator ! (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex operator ! (const FixedPointComplex &x);
   
   // FixedPointComplex mathematic functions
 
-  friend FixedPoint real  (const FixedPointComplex &x);
-  friend FixedPoint imag  (const FixedPointComplex &x);
-  friend FixedPointComplex conj  (const FixedPointComplex &x);
-  friend FixedPoint abs  (const FixedPointComplex &x);
-  friend FixedPoint norm  (const FixedPointComplex &x);
-  friend FixedPoint arg  (const FixedPointComplex &x);
-  friend FixedPointComplex polar  (const FixedPoint &r, const FixedPoint &p);
-  friend FixedPointComplex cos  (const FixedPointComplex &x);
-  friend FixedPointComplex cosh  (const FixedPointComplex &x);
-  friend FixedPointComplex sin  (const FixedPointComplex &x);
-  friend FixedPointComplex sinh  (const FixedPointComplex &x);
-  friend FixedPointComplex tan  (const FixedPointComplex &x);
-  friend FixedPointComplex tanh  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPoint real  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPoint imag  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex conj  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPoint abs  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPoint norm  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPoint arg  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex polar  (const FixedPoint &r, const FixedPoint &p);
+  friend OCTAVE_FIXED_API FixedPointComplex cos  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex cosh  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex sin  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex sinh  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex tan  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex tanh  (const FixedPointComplex &x);
 
-  friend FixedPointComplex sqrt  (const FixedPointComplex &x);
-  friend FixedPointComplex pow  (const FixedPointComplex &w, const int y);
-  friend FixedPointComplex pow  (const FixedPointComplex &x, 
+  friend OCTAVE_FIXED_API FixedPointComplex sqrt  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex pow  (const FixedPointComplex &w, const int y);
+  friend OCTAVE_FIXED_API FixedPointComplex pow  (const FixedPointComplex &x, 
 				 const FixedPoint& y);
-  friend FixedPointComplex pow  (const FixedPoint &x, 
+  friend OCTAVE_FIXED_API FixedPointComplex pow  (const FixedPoint &x, 
 				 const FixedPointComplex& y);
-  friend FixedPointComplex pow  (const FixedPointComplex &x, 
+  friend OCTAVE_FIXED_API FixedPointComplex pow  (const FixedPointComplex &x, 
 				 const FixedPointComplex &y);
-  friend FixedPointComplex exp  (const FixedPointComplex &x);
-  friend FixedPointComplex log  (const FixedPointComplex &x);
-  friend FixedPointComplex log10  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex exp  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex log  (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex log10  (const FixedPointComplex &x);
 
-  friend FixedPointComplex round (const FixedPointComplex &x);
-  friend FixedPointComplex rint (const FixedPointComplex &x);
-  friend FixedPointComplex floor (const FixedPointComplex &x);
-  friend FixedPointComplex ceil (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex round (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex rint (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex floor (const FixedPointComplex &x);
+  friend OCTAVE_FIXED_API FixedPointComplex ceil (const FixedPointComplex &x);
 };
 
 inline Complex fixedpoint (const FixedPointComplex &x) { 
@@ -198,35 +198,35 @@ inline Complex getnumber (const FixedPointComplex &x) {
   return (x.getnumber());
 }
 
-FixedPointComplex operator ! (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex operator ! (const FixedPointComplex &x);
   
-FixedPoint real  (const FixedPointComplex &x);
-FixedPoint imag  (const FixedPointComplex &x);
-FixedPointComplex conj  (const FixedPointComplex &x);
-FixedPoint abs  (const FixedPointComplex &x);
-FixedPoint norm  (const FixedPointComplex &x);
-FixedPoint arg  (const FixedPointComplex &x);
-FixedPointComplex polar  (const FixedPoint &r, const FixedPoint &p);
-FixedPointComplex cos  (const FixedPointComplex &x);
-FixedPointComplex cosh  (const FixedPointComplex &x);
-FixedPointComplex sin  (const FixedPointComplex &x);
-FixedPointComplex sinh  (const FixedPointComplex &x);
-FixedPointComplex tan  (const FixedPointComplex &x);
-FixedPointComplex tanh  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPoint real  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPoint imag  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex conj  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPoint abs  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPoint norm  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPoint arg  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex polar  (const FixedPoint &r, const FixedPoint &p);
+OCTAVE_FIXED_API FixedPointComplex cos  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex cosh  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex sin  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex sinh  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex tan  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex tanh  (const FixedPointComplex &x);
 
-FixedPointComplex sqrt (const FixedPointComplex &x);
-FixedPointComplex pow (const FixedPointComplex &w, const int y);
-FixedPointComplex pow (const FixedPointComplex &x, const FixedPoint& y);
-FixedPointComplex pow (const FixedPoint &x, const FixedPointComplex& y);
-FixedPointComplex pow (const FixedPointComplex &x, const FixedPointComplex &y);
-FixedPointComplex exp  (const FixedPointComplex &x);
-FixedPointComplex log  (const FixedPointComplex &x);
-FixedPointComplex log10  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex sqrt (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex pow (const FixedPointComplex &w, const int y);
+OCTAVE_FIXED_API FixedPointComplex pow (const FixedPointComplex &x, const FixedPoint& y);
+OCTAVE_FIXED_API FixedPointComplex pow (const FixedPoint &x, const FixedPointComplex& y);
+OCTAVE_FIXED_API FixedPointComplex pow (const FixedPointComplex &x, const FixedPointComplex &y);
+OCTAVE_FIXED_API FixedPointComplex exp  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex log  (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex log10  (const FixedPointComplex &x);
 
-FixedPointComplex round (const FixedPointComplex &x);
-FixedPointComplex rint (const FixedPointComplex &x);
-FixedPointComplex floor (const FixedPointComplex &x);
-FixedPointComplex ceil (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex round (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex rint (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex floor (const FixedPointComplex &x);
+OCTAVE_FIXED_API FixedPointComplex ceil (const FixedPointComplex &x);
 
 #endif
 

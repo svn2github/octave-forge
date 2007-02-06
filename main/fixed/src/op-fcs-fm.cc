@@ -105,7 +105,7 @@ FIXED_DEFCATOP_FN (fcs_fm, fixed_complex, fixed_matrix,
 		   fixed_complex_matrix, fixed_matrix,
 		   fixed_complex_matrix, concat)
 
-void
+OCTAVE_FIXED_API void
 install_fcs_fm_ops (void)
 {
   INSTALL_BINOP (op_add, octave_fixed_complex, octave_fixed_matrix, add);

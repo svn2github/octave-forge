@@ -1,3 +1,10 @@
+;; This file contains the list of exported symbols that are
+;; required to create a BLAS replacement DLL from ATLAS. It
+;; also exports a few symbols that are required to create a
+;; LAPACK replacement DLL from ATLAS. This definition file is
+;; designed to be used in combination with the script
+;; build_atlas_dll found in octave-forge.
+
 EXPORTS
 ; FORTRAN interface
 caxpy_

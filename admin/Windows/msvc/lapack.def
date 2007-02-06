@@ -1,3 +1,8 @@
+;; This file contains the list of exported symbols that are
+;; required to build LAPACK replacement DLL from ATLAS. This
+;; definition file is designed to be used in combination with
+;; the script build_atlas_dll found in octave-forge.
+
 EXPORTS
 cbdsqr_
 cgbbrd_

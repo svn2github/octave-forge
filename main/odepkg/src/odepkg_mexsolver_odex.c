@@ -51,9 +51,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
    explicit documentation for them in the manual. */
 
 extern void F77_FUNC (odex, ODEX) (int *N, void *FCN, double *X, double *Y,
-  double *XEND, double *H, double *RTOL, double *ATOL, int *ITOL, void *SOL, int *IOUT,
-  double *WORK, int *LWORK, int *IWORK, int *LIWORK, double *RPAR, int *IPAR, 
-  int *VRET);
+  double *XEND, double *H, double *RTOL, double *ATOL, int *ITOL, void *SOL, 
+  int *IOUT, double *WORK, int *LWORK, int *IWORK, int *LIWORK, double *RPAR,
+  int *IPAR, int *VRET);
 
 extern double F77_FUNC (contex, CONTEX) (int *I, double *S, double *CON,
   int *NCON, int *ICOMP, int *ND);

@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      mkoctfile --mex -Wall -W -Wshadow -D__ODEPKGDEBUG__ \
      odepkg_mexsolver_dop853.c odepkgmex.c odepkgext.c hairer/dop853.f
 
-   or
+   or directly in octave
 
      mex -v -D__ODEPKGDEBUG__ odepkg_mexsolver_dop853.c odepkgext.c \
      odepkgmex.c hairer/dop853.f
@@ -339,8 +339,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* Handle the OdeOptions structure field: NORMCONTROL */
   fodepkgvar (2, "OdeOptions", &vtmp);
   fodepkgvar (2, "DefaultOptions", &vtem);
-  if (!mxIsEqual (mxGetField (vtmp, 0, "NormControl"),
-                  mxGetField (vtem, 0, "NormControl") ) )
+  if (!mxIsEqual (mxGetField (vtmp, 0, "NormControl"), mxGetField (vtem, 0, "NormControl") ) )
     mexWarnMsgTxt ("Option \"NormControl\" will be ignored by this solver");
 
   /* Handle the OdeOptions structure field: OUTPUTFCN  */
@@ -580,15 +579,15 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 #endif
 
   /* IWORK[0] = 10^6; */ /* The maximal number of allowed steps */
-  /* IWORK[1] = 0;    */ /* Switch for the choice of coefficients */
-  IWORK[2] = -1;         /* Switch for turning on/off messages */
-  /* IWORK[3] = 1000; */ /* Step number for stiffness checking  */
-  IWORK[4] = N;          /* Number of components for dense output */
+  /* IWORK[1] = 0; */    /* Switch for the choice of coefficients */
+  IWORK[2] = -1;   /* Switch for turning on/off messages */
+  IWORK[3] = 1000; /* Step number for stiffness checking  */
+  IWORK[4] = N;    /* Number of components for dense output */
 
   /* FORTRAN SUBROUTINE DOP853(N, FCN, X, Y, XEND, RTOL, ATOL, ITOL, */
   /*   SOLOUT, IOUT, WORK, LWORK, IWORK, LIWORK, RPAR, IPAR, IDID) */
 
-  vnum = 2; /* Needed to call output at every successful step */
+  vnum = 2; /* =IOUT, Needed to call output at every successful step */
   F77_FUNC (dop853, DOP853) (&N, &F77_FUNC (ffcn, FFCN), &SLOT[0],
     INIT, &SLOT[1], RTOL, ATOL, &ITOL, &F77_FUNC (fsol, FSOL), 
     &vnum, WORK, &LWORK, IWORK, &LIWORK, &RPAR, &IPAR, &VRET);
@@ -693,8 +692,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
       vnum = mxGetFieldNumber (vtem, "linsol");
       mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
 
-      mxAddField (plhs[0], "Stats");
-      vnum = mxGetFieldNumber (plhs[0], "Stats");
+      mxAddField (plhs[0], "stats");
+      vnum = mxGetFieldNumber (plhs[0], "stats");
       mxSetFieldByNumber (plhs[0], 0, vnum, vtem);
     }
 

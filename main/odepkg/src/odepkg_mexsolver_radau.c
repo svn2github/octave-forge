@@ -44,9 +44,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 /* These are the prototype definitions for the solver function, the
    interpolation function that is used to achieve better results, the
-   Jacobian calculation function (if any), the mass calculation
-   function and the output function. These functions are very similar
-   to the functions from other solvers, therefore there is nor
+   Jacobian calculation function (if any) and the mass calculation
+   function and the output function (if any). These functions are very
+   similar to the functions from other solvers, therefore there is nor
    explicit documentation for them in the manual. */
 
 extern void F77_FUNC (radau, RADAU) (int *N, void *FCN, double *X, double *Y,
@@ -98,8 +98,9 @@ void F77_FUNC (ffcn, FFCN) (int *N, double *X, double *Y, double *F,
   mxFree (vrhs); /* Free the vrhs mxArray */
 }
 
-void F77_FUNC (fjac, FJAC) (int *N, double *X, double *Y, double *DFY, int *LDFY, 
-  GCC_ATTR_UNUSED double *RPAR, GCC_ATTR_UNUSED int *IPAR) {
+void F77_FUNC (fjac, FJAC) (int *N, double *X, double *Y, double *DFY, 
+  GCC_ATTR_UNUSED int *LDFY, GCC_ATTR_UNUSED double *RPAR, 
+  GCC_ATTR_UNUSED int *IPAR) {
 
   int  vcnt = 0;
   int  vnum = 0;
@@ -717,7 +718,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vnum = IWORK[14]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
     fodepkgvar (1, "vjacobs", &vtem);
-    mexPrintf ("Number of Jacobian calls:    %d\n", vnum);
+    mexPrintf ("Number of Jacobian evals:    %d\n", vnum);
 
     vnum = IWORK[15]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
@@ -741,7 +742,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
     vnum = IWORK[19]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
-    fodepkgvar (1, "vfbsubst", &vtem);
+    fodepkgvar (1, "vlinsol", &vtem);
     mexPrintf ("Number of fb-substitutions:  %d\n", vnum);
   }
 
@@ -789,14 +790,16 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
       mxAddField (vtem, "ludecom");
       vnum = mxGetFieldNumber (vtem, "ludecom");
-      mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
+      fodepkgvar (2, "vludecom", &vtmp);
+      mxSetFieldByNumber (vtem, 0, vnum, mxDuplicateArray (vtmp));
 
       mxAddField (vtem, "linsol");
       vnum = mxGetFieldNumber (vtem, "linsol");
-      mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
+      fodepkgvar (2, "vlinsol", &vtmp);
+      mxSetFieldByNumber (vtem, 0, vnum, mxDuplicateArray (vtmp));
 
-      mxAddField (plhs[0], "Stats");
-      vnum = mxGetFieldNumber (plhs[0], "Stats");
+      mxAddField (plhs[0], "stats");
+      vnum = mxGetFieldNumber (plhs[0], "stats");
       mxSetFieldByNumber (plhs[0], 0, vnum, vtem);
     }
 
@@ -885,13 +888,13 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 #endif
   }
 
-  /* Free and destroy the mxAllocated arrays */
-/*   mxFree (SLOT); */
-/*   mxFree (INIT); */
-/*   mxFree (RTOL); */
-/*   mxFree (ATOL); */
-/*   mxDestroyArray (vtmp); */
-/*   mxDestroyArray (vtem); */
+/* Free and destroy the mxAllocated arrays */
+/* mxFree (SLOT); */
+/* mxFree (INIT); */
+/* mxFree (RTOL); */
+/* mxFree (ATOL); */
+/* mxDestroyArray (vtmp); */
+/* mxDestroyArray (vtem); */
 /* fodepkgvar (9, NULL, NULL); */
 
   /* Cleanup all internals of: FSOLSTORE */

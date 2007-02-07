@@ -20,19 +20,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 /* To manually compile this file with debug messages
 
      mkoctfile --mex -Wall -W -Wshadow -D__ODEPKGDEBUG__ \
-     odepkg_mexsolver_radau.c odepkgmex.c odepkgext.c hairer/radau.f
+     odepkg_mexsolver_radau.c odepkgmex.c odepkgext.c hairer/radau.f \
+     hairer/decsol.f hairer/dc_decsol.f
 
    or
 
-     mex -v -D__ODEPKGDEBUG__ odepkg_mexsolver_radau.c odepkgext.c \
-     odepkgmex.c hairer/radau.f
+     mex -v -D__ODEPKGDEBUG__ odepkg_mexsolver_radau.c odepkgmex.c \
+     odepkgext.c hairer/radau.f hairer/decsol.f hairer/dc_decsol.f
 
    a function check can be done via
 
-     octave --quiet --eval "A = odeset (\"RelTol\", 1e-3, \"AbsTol\", 1e-4, \
-       \"OutputFcn\", @odeprint, \"OutputSel\", [2, 1], \"Refine\", 3); \
-     [C, B] = odepkg_mexsolver_radau (@odepkg_equations_vanderpol, \
-       [0, 1], [2, 0], A, 12)"
+     octave --quiet --eval "tic; A = odeset ('Jacobian', @jac, 'Stats', 'on'); \
+       B = odepkg_mexsolver_radau (@fun, [0 2], [2 0], A, 1e-6); toc"
 */
 
 #include <config.h>    /* Needed for the F77_FUNC definition etc. */
@@ -128,7 +127,7 @@ void F77_FUNC (fjac, FJAC) (int *N, double *X, double *Y, double *DFY, int *LDFY
 
     if (vnum > 0) /* Fill up vrhs[2..] */
       for (vcnt = 0; vcnt < vnum; vcnt++)
-	vrhs[vcnt+2] = mxGetCell (vtmp, vcnt);
+        vrhs[vcnt+2] = mxGetCell (vtmp, vcnt);
 
     /* Evaluate the ode function in the octave workspace */
     if (mexCallMATLAB (1, vlhs, vnum+2, vrhs, mxArrayToString (vjac))) {
@@ -140,9 +139,8 @@ void F77_FUNC (fjac, FJAC) (int *N, double *X, double *Y, double *DFY, int *LDFY
     vtmp = mxTransposeMatrix (vlhs[0]);
     /* vtmp = mxDuplicateArray (vlhs[0]); */
     vnum = mxGetM (vtmp) * mxGetN (vtmp);
-
     /* Save the result of this time step in the variable f */
-    memcpy ((void *) DFY, (void *) mxGetPr (vtmp), vnum * sizeof (double));
+    memcpy ((void *) DFY, (void *) mxGetPr (vlhs[0]), vnum * sizeof (double));
     /* mexCallMATLAB (0, NULL, 1, &vtmp, "disp"); */
     mxFree (vlhs); /* Free the vlhs mxArray */
     mxFree (vrhs); /* Free the vrhs mxArray */
@@ -510,7 +508,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vtem = mxGetField (vtmp, 0, "Jacobian");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
       if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
-	mexErrMsgTxt ("Calling \"func2str\" has failed");
+  mexErrMsgTxt ("Calling \"func2str\" has failed");
       fodepkgvar (1, "Jacobian", &vtmp);
     }
     else fodepkgvar (1, "Jacobian", &vtem); /* matrix */
@@ -668,6 +666,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* IWORK[11] = 0; */    /* Maximal number of stages NS */
   /* IWORK[12] = 0; */    /* Number of NS for the first step */
 
+  MLJAC = N;
+  MUJAC = N;
+
   /* FORTRAN SUBROUTINE RADAU(N,FCN,X,Y,XEND,H,RTOL,ATOL,ITOL,JAC,IJAC,MLJAC,MUJAC, */
   /*   MAS,IMAS,MLMAS,MUMAS,SOLOUT,IOUT,WORK,LWORK,IWORK,LIWORK,RPAR,IPAR,IDID) */
 
@@ -708,25 +709,40 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (2, "Stats", &vtmp);
   if (mxIsLogicalScalarTrue (vtmp)) { 
     /* Print additional information on the screen */
-    vnum = IWORK[16]; /* A dopri solver result */
+    vnum = IWORK[13]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
     fodepkgvar (1, "vfevals", &vtem);
-    mexPrintf ("Number of function calls: %d\n", vnum);
+    mexPrintf ("Number of function calls:    %d\n", vnum);
+
+    vnum = IWORK[14]; /* A dopri solver result */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vjacobs", &vtem);
+    mexPrintf ("Number of Jacobian calls:    %d\n", vnum);
+
+    vnum = IWORK[15]; /* A dopri solver result */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vsuccess", &vtem);
+    mexPrintf ("Number of computed steps:    %d\n", vnum);
+
+    vnum = IWORK[16]; /* A dopri solver result */
+    vtem = mxCreateDoubleScalar ((double) vnum);
+    fodepkgvar (1, "vaccept", &vtem);
+    mexPrintf ("Number of accepted steps:    %d\n", vnum);
 
     vnum = IWORK[17]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
-    fodepkgvar (1, "vsuccess", &vtem);
-    mexPrintf ("Number of used steps:     %d\n", vnum);
+    fodepkgvar (1, "vreject", &vtem);
+    mexPrintf ("Number of rejected steps:    %d\n", vnum);
 
     vnum = IWORK[18]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
-    fodepkgvar (1, "vaccept", &vtem);
-    mexPrintf ("Number of accepted steps: %d\n", vnum);
+    fodepkgvar (1, "vludecom", &vtem);
+    mexPrintf ("Number of LU decompositions: %d\n", vnum);
 
     vnum = IWORK[19]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
-    fodepkgvar (1, "vreject", &vtem);
-    mexPrintf ("Number of rejected steps: %d\n", vnum);
+    fodepkgvar (1, "vfbsubst", &vtem);
+    mexPrintf ("Number of fb-substitutions:  %d\n", vnum);
   }
 
   if (nlhs == 1) { /* Handle the PLHS array (1 output argument) */

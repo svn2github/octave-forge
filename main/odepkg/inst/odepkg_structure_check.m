@@ -41,8 +41,6 @@ function [vret] = odepkg_structure_check (vret)
   end
 
   for vcntarg = 1:vint.len %# Run through the number of structure field names
-    %# vint.fld{vcntarg}
-    %# vret.(vint.fld{vcntarg})
 
     switch (vint.fld{vcntarg})
 
@@ -89,7 +87,6 @@ function [vret] = odepkg_structure_check (vret)
       case 'OutputFcn'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
             isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
-          %# strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -185,7 +182,6 @@ function [vret] = odepkg_structure_check (vret)
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
             ismatrix (vret.(vint.fld{vcntarg})) == true || ...
             isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
-          %# strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));

@@ -1,0 +1,152 @@
+diff -urN glpk-4.9/glpk.rc glpk-4.9-mod/glpk.rc
+--- glpk-4.9/glpk.rc	1970-01-01 01:00:00.000000000 +0100
++++ glpk-4.9-mod/glpk.rc	2007-02-08 14:59:15.551112100 +0100
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	4, 9, 0, 0
++PRODUCTVERSION	4, 9, 0, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"GNU <www.gnu.org>\0"
++			VALUE	"FileDescription",	"GNU Linear Programming Kit\0"
++			VALUE	"FileVersion",	"4.9\0"
++			VALUE	"InternalName",	"GLPK\0"
++			VALUE	"LegalCopyright",	"Copyright 2000-2006 Andrew Makhorin\0"
++			VALUE	"OriginalFilename",	"glpk49.dll\0"
++			VALUE	"ProductName",	"GLPK\0"
++			VALUE	"ProductVersion",	"4.9\0"
++		END
++	END
++END
+diff -urN glpk-4.9/w32vc8d.mak glpk-4.9-mod/w32vc8d.mak
+--- glpk-4.9/w32vc8d.mak	1970-01-01 01:00:00.000000000 +0100
++++ glpk-4.9-mod/w32vc8d.mak	2007-02-08 15:02:13.824655100 +0100
+@@ -0,0 +1,114 @@
++## w32vc6d.mak (W32 multi-threaded dynamic library, VC++ 6.0) ##
++
++##----------------------------------------------------------------------
++## To build W32 multi-threaded dynamic library for GLPK with VC++ 6.0
++## enter the subdirectory where the file you are reading is placed and
++## type the command:
++##
++##    nmake.exe /f w32vc6d.mak
++##
++## The following three files will be created in the same subdirectory:
++##
++##    glpk49.dll, GLPK dynamic library,
++##
++##    glpk49.lib, GLPK import library, and
++##
++##    glpsol.exe, stand-alone LP/MIP solver.
++##
++## To check if GLPK has been successfully compiled type the command:
++##
++##    nmake.exe /f w32vc6d.mak check
++##
++## Header files needed to use the GLPK dynamic library are contained in
++## the subdirectory 'include'.
++##
++## Written by Andrew Makhorin <mao@mai2.rcnet.ru>, <mao@gnu.org>.
++##----------------------------------------------------------------------
++
++CFLAGS = /nologo /W3 /MD /O2 /D_CRT_SECURE_NO_DEPRECATE
++
++DESTDIR = D:\Software\VCLibs
++
++.c.obj:
++        cl.exe $(CFLAGS) /Iinclude /Fo$*.obj /c $*.c
++
++all: glpk49.dll glpsol.exe tspsol.exe
++
++check: glpsol.exe
++        glpsol.exe examples\plan.mps
++
++glpk49.dll: src\glpavl.obj \
++        src\glpdmp.obj \
++        src\glphbm.obj \
++        src\glpiet.obj \
++        src\glpinv.obj \
++        src\glpios1.obj \
++        src\glpios2.obj \
++        src\glpios3.obj \
++        src\glpipm.obj \
++        src\glpipp1.obj \
++        src\glpipp2.obj \
++        sysdep\w32\glplib1a.obj \
++        sysdep\w32\glplib1b.obj \
++        src\glplib2.obj \
++        src\glplib3.obj \
++        src\glplib4.obj \
++        src\glplpp1.obj \
++        src\glplpp2.obj \
++        src\glplpx1.obj \
++        src\glplpx2.obj \
++        src\glplpx3.obj \
++        src\glplpx4.obj \
++        src\glplpx5.obj \
++        src\glplpx6a.obj \
++        src\glplpx6b.obj \
++        src\glplpx6c.obj \
++        src\glplpx6d.obj \
++        src\glplpx7.obj \
++        src\glplpx7a.obj \
++        src\glplpx8a.obj \
++        src\glplpx8b.obj \
++        src\glplpx8c.obj \
++        src\glplpx8d.obj \
++        src\glplpx8e.obj \
++        src\glpluf.obj \
++        src\glpmat.obj \
++        src\glpmip1.obj \
++        src\glpmip2.obj \
++        src\glpmpl1.obj \
++        src\glpmpl2.obj \
++        src\glpmpl3.obj \
++        src\glpmpl4.obj \
++        src\glpqmd.obj \
++        src\glprng.obj \
++        src\glpspx1.obj \
++        src\glpspx2.obj \
++        src\glpstr.obj \
++        src\glptsp.obj \
++	glpk.res
++        cl.exe $(CFLAGS) /LD /Feglpk49.dll src\*.obj sysdep\w32\*.obj \
++                w32vc6d.def glpk.res /link /implib:glpk.lib
++	mt.exe -outputresource:$@ -manifest $@.manifest
++
++glpk.res: glpk.rc
++	rc /fo $@ glpk.rc
++
++glpsol.exe: examples\glpsol.obj glpk49.dll
++        cl.exe $(CFLAGS) /Feglpsol.exe examples\glpsol.obj glpk.lib
++
++tspsol.exe: examples\tspsol.obj glpk49.dll
++        cl.exe $(CFLAGS) /Fetspsol.exe examples\tspsol.obj glpk.lib
++
++installwin:
++	-mkdir $(DESTDIR)\bin
++	copy /y glpk49.dll $(DESTDIR)\bin
++	-mkdir $(DESTDIR)\lib
++	copy /y glpk.lib $(DESTDIR)\lib
++	-mkdir $(DESTDIR)\include
++	xcopy /y include\*.h $(DESTDIR)\include
++
++clean:
++	-del src\*.obj src\sysdep\*.obj examples\*.obj glpk.res
++	-del *.exe glpk49.dll glpk.lib glpk.exp *.manifest
++
++## eof ##

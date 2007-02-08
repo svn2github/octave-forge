@@ -1,0 +1,15 @@
+Package: glpk
+Version: 4.9
+Home page: http://www.gnu.org/software/glpk
+Download: ftp://ftp.gnu.org/gnu/glpk/glpk-4.9.tar.gz
+License: GPL
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: none
+
+1) Apply the patch
+
+2) nmake -f w32vc8d.mak
+
+3) nmake -f w32vc8d.mak install

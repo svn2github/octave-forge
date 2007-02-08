@@ -47,7 +47,7 @@
 ; License page
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "Click Next to continue."
 !define MUI_LICENSEPAGE_BUTTON "Next >"
-!insertmacro MUI_PAGE_LICENSE "${OCTAVE_FORGE}\COPYING.GPL"
+!insertmacro MUI_PAGE_LICENSE "octave-sources.txt"
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
 ; Directory page

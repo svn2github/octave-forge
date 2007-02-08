@@ -1,0 +1,10 @@
+
+                Octave/Win32 Sources package
+
+
+This package contains all the sources used to build the Octave/Win32
+binary installer. Each package is covered by its own license that is
+available in the original source package.
+
+All packages are licensed under some kind of free license, mainly GPL,
+LPGL and BSD.

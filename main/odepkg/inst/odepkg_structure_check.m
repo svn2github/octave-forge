@@ -80,13 +80,6 @@ function [vret] = odepkg_structure_check (vret)
       case 'NonNegative'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
             isvector (vret.(vint.fld{vcntarg})) == true)
-%#          for vcounter = 1:length (vret.(vint.fld{vcntarg}))
-%#            if (isbool (int8 (vret.(vint.fld{vcntarg})(vcounter))) == false)
-%#              vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
-%#                vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-%#              error (vmsg);
-%#            end
-%#          end
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -154,7 +147,6 @@ function [vret] = odepkg_structure_check (vret)
       case 'Events'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
             isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
-          %# strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -164,7 +156,7 @@ function [vret] = odepkg_structure_check (vret)
       case 'Jacobian'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
             ismatrix (vret.(vint.fld{vcntarg})) == true || ...
-            strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
+            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -192,7 +184,8 @@ function [vret] = odepkg_structure_check (vret)
       case 'Mass'
         if (isempty (vret.(vint.fld{vcntarg})) == true || ...
             ismatrix (vret.(vint.fld{vcntarg})) == true || ...
-            strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
+            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
+          %# strcmp ('function handle', strrep (class (vret.(vint.fld{vcntarg})), '_', ' ')) == true)
         else
           vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
             vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
@@ -268,8 +261,94 @@ function [vret] = odepkg_structure_check (vret)
   %#   error (vmsg);
   %# end
 
-%!test odepkg_structure_check (odeset);
-%!test A = odeset (); odepkg_structure_check (A);
+%!test  A = odeset ('RelTol', 1e-4);         %# odeset calls odepkg_structure_check
+%!test  A = odeset ('RelTol', [1e-4, 1e-3]); %# after the options have been set
+%!error A = odeset ('RelTol', []);
+%!error A = odeset ('RelTol', '1e-4');
+%!test  A = odeset ('AbsTol', 1e-4);
+%!test  A = odeset ('AbsTol', [1e-4, 1e-3]);
+%!error A = odeset ('AbsTol', []);
+%!error A = odeset ('AbsTol', '1e-4');
+%!test  A = odeset ('NormControl', 'on');
+%!test  A = odeset ('NormControl', 'off');
+%!error A = odeset ('NormControl', []);
+%!error A = odeset ('NormControl', '12');
+%!test  A = odeset ('NonNegative', 1);
+%!test  A = odeset ('NonNegative', [1, 2, 3]);
+%!error A = odeset ('NonNegative', []);
+%!error A = odeset ('NonNegative', '12');
+%!test  A = odeset ('OutputFcn', @odeprint);
+%!test  A = odeset ('OutputFcn', @odeplot);
+%!error A = odeset ('OutputFcn', []);
+%!error A = odeset ('OutputFcn', 'odeprint');
+%!test  A = odeset ('OutputSel', 1);
+%!test  A = odeset ('OutputSel', [1, 2, 3]);
+%!error A = odeset ('OutputSel', []);
+%!error A = odeset ('OutputSel', '12');
+%!test  A = odeset ('Refine', 3);
+%!error A = odeset ('Refine', [1, 2, 3]);
+%!error A = odeset ('Refine', []);
+%!error A = odeset ('Refine', 6);
+%!test  A = odeset ('Stats', 'on');
+%!test  A = odeset ('Stats', 'off');
+%!error A = odeset ('Stats', []);
+%!error A = odeset ('Stats', '12');
+%!test  A = odeset ('InitialStep', 3);
+%!error A = odeset ('InitialStep', [1, 2, 3]);
+%!error A = odeset ('InitialStep', []);
+%!error A = odeset ('InitialStep', 6);
+%!test  A = odeset ('MaxStep', 3);
+%!error A = odeset ('MaxStep', [1, 2, 3]);
+%!error A = odeset ('MaxStep', []);
+%!error A = odeset ('MaxStep', 6);
+%!test  A = odeset ('Events', @demo);
+%!error A = odeset ('Events', 'off');
+%!error A = odeset ('Events', []);
+%!error A = odeset ('Events', '12');
+%!test  A = odeset ('Jacobian', @demo);
+%!test  A = odeset ('Jacobian', [1, 2; 3, 4]);
+%!error A = odeset ('Jacobian', []);
+%!error A = odeset ('Jacobian', '12');
+%#!test  A = odeset ('JPattern', );
+%#!test  A = odeset ('JPattern', );
+%#!error A = odeset ('JPattern', );
+%#!error A = odeset ('JPattern', );
+%!test  A = odeset ('Vectorized', 'on');
+%!test  A = odeset ('Vectorized', 'off');
+%!error A = odeset ('Vectorized', []);
+%!error A = odeset ('Vectorized', '12');
+%!test  A = odeset ('Mass', @demo);
+%!test  A = odeset ('Mass', [1, 2; 3, 4]);
+%!error A = odeset ('Mass', []);
+%!error A = odeset ('Mass', '12');
+%!test  A = odeset ('MStateDependence', 'none');
+%!test  A = odeset ('MStateDependence', 'weak');
+%!test  A = odeset ('MStateDependence', 'strong');
+%!error A = odeset ('MStateDependence', [1, 2; 3, 4]);
+%!error A = odeset ('MStateDependence', []);
+%!error A = odeset ('MStateDependence', '12');
+%#!test  A = odeset ('JPattern', );
+%#!test  A = odeset ('JPattern', );
+%#!error A = odeset ('JPattern', );
+%#!error A = odeset ('JPattern', );
+%!test  A = odeset ('MassSingular', 'yes');
+%!test  A = odeset ('MassSingular', 'no');
+%!test  A = odeset ('MassSingular', 'maybe');
+%!error A = odeset ('MassSingular', [1, 2; 3, 4]);
+%!error A = odeset ('MassSingular', []);
+%!error A = odeset ('MassSingular', '12');
+%!test  A = odeset ('InitialSlope', [1, 2, 3]);
+%!error A = odeset ('InitialSlope', 1);
+%!error A = odeset ('InitialSlope', []);
+%!error A = odeset ('InitialSlope', '12');
+%!test  A = odeset ('MaxOrder', 3);
+%!error A = odeset ('MaxOrder', 3.5);
+%!error A = odeset ('MaxOrder', [1, 2; 3, 4]);
+%!error A = odeset ('MaxOrder', []);
+%!test  A = odeset ('BDF', 'on');
+%!test  A = odeset ('BDF', 'off');
+%!error A = odeset ('BDF', [1, 2; 3, 4]);
+%!error A = odeset ('BDF', []);
 
 %!demo
 %!

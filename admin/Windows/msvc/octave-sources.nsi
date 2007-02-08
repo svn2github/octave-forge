@@ -84,12 +84,250 @@ InstallDir "$PROGRAMFILES\Octave\src"
 ShowInstDetails show
 ShowUnInstDetails show
 
-Section "ATLAS" SEC_ATLAS
+Section /o "Atlas" SEC_ATLAS
   SetOutPath "$INSTDIR\atlas"
   SetOverwrite try
   File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\atlas-3.6.0.diff"
   File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\atlas-3.6.0.txt"
   File "${LIBS_ROOT}\atlas3.6.0.tar.bz2"
+SectionEnd
+
+Section /o "Blas" SEC_BLAS
+  SetOutPath "$INSTDIR\blas"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\blas.makefile"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\blas.txt"
+  File "${LIBS_ROOT}\blas.tar.gz"
+SectionEnd
+
+Section /o "Cairo" SEC_CAIRO
+  SetOutPath "$INSTDIR\cairo"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\cairo-1.2.6.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\cairo-1.2.6.txt"
+  File "${LIBS_ROOT}\cairo-1.2.6.tar.gz"
+SectionEnd
+
+Section /o "Cln" SEC_CLN
+  SetOutPath "$INSTDIR\cln"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\cln-1.1.13.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\cln-1.1.13.txt"
+  File "${LIBS_ROOT}\cln-1.1.13.tar.bz2"
+SectionEnd
+
+Section /o "F2c" SEC_F2C
+  SetOutPath "$INSTDIR\f2c"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\f2c.txt"
+SectionEnd
+
+Section /o "Fftw" SEC_FFTW
+  SetOutPath "$INSTDIR\fftw"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\fftw.txt"
+  File "${LIBS_ROOT}\fftw-3.1.2.tar.gz"
+SectionEnd
+
+Section /o "Fltk" SEC_FLTK
+  SetOutPath "$INSTDIR\fltk"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\fltk-1.1.7.txt"
+  File "${LIBS_ROOT}\fltk-1.1.7-source.tar.gz"
+SectionEnd
+
+Section /o "Freetype" SEC_FREETYPE
+  SetOutPath "$INSTDIR\freetype"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\freetype-2.3.1.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\freetype-2.3.1.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\freetype-config"
+  File "${LIBS_ROOT}\freetype-2.3.1.tar.gz"
+SectionEnd
+
+Section /o "Gd" SEC_GD
+  SetOutPath "$INSTDIR\gd"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\gd-2.0.34.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\gd-2.0.34.txt"
+  File "${LIBS_ROOT}\gd-2.0.34.tar.gz"
+SectionEnd
+
+Section /o "Gettext" SEC_GETTEXT
+  SetOutPath "$INSTDIR\gettext"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\gettext-0.15.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\gettext-0.15.txt"
+  File "${LIBS_ROOT}\gettext-0.15.tar.gz"
+SectionEnd
+
+Section /o "Ginac" SEC_GINAC
+  SetOutPath "$INSTDIR\ginac"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\ginac-1.3.6.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\ginac-1.3.6.txt"
+  File "${LIBS_ROOT}\ginac-1.3.6.tar.bz2"
+SectionEnd
+
+Section /o "Glib" SEC_GLIB
+  SetOutPath "$INSTDIR\glib"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\glib-2.12.6.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\glib-2.12.6.txt"
+  File "${LIBS_ROOT}\glib-2.12.6.tar.gz"
+SectionEnd
+
+Section /o "Glob" SEC_GLOB
+  SetOutPath "$INSTDIR\glob"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\glob.txt"
+  File "${LIBS_ROOT}\glob.tar.gz"
+SectionEnd
+
+Section /o "Glpk" SEC_GLPK
+  SetOutPath "$INSTDIR\glpk"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\glpk-4.9.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\glpk-4.9.txt"
+  File "${LIBS_ROOT}\glpk-4.9.tar.gz"
+SectionEnd
+
+Section /o "Gnuplot" SEC_GNUPLOT
+  SetOutPath "$INSTDIR\gnuplot"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\gnuplot-4.2.rc4.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\gnuplot-4.2.rc4.txt"
+  File "${LIBS_ROOT}\gnuplot-4.2.rc4.tar.gz"
+SectionEnd
+
+Section /o "Gsl" SEC_GSL
+  SetOutPath "$INSTDIR\gsl"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\gsl-1.8.txt"
+  File "${LIBS_ROOT}\gsl-1.8-src.zip"
+SectionEnd
+
+Section /o "Hdf5" SEC_HDF5
+  SetOutPath "$INSTDIR\hdf5"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\hdf5.txt"
+  File "${LIBS_ROOT}\hdf5-1.6.5.tar.gz"
+SectionEnd
+
+Section /o "Lapack" SEC_LAPACK
+  SetOutPath "$INSTDIR\lapack"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\lapack.makefile"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\lapack.txt"
+  File "${LIBS_ROOT}\lapack-lite-3.1.0.tar.gz"
+SectionEnd
+
+Section /o "Less" SEC_LESS
+  SetOutPath "$INSTDIR\less"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\less-394.diff"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\less-394.txt"
+  File "${LIBS_ROOT}\less-394.zip"
+SectionEnd
+
+Section /o "Libf2c" SEC_LIBF2C
+  SetOutPath "$INSTDIR\libf2c"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\libf2c.txt"
+  File "${LIBS_ROOT}\libf2c.zip"
+SectionEnd
+
+Section /o "Libiconv" SEC_LIBICONV
+  SetOutPath "$INSTDIR\libiconv"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\libiconv-1.11.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\libiconv-1.11.diff"
+  File "${LIBS_ROOT}\libiconv-1.11.tar.gz"
+SectionEnd
+
+Section /o "Libjpeg" SEC_LIBJPEG
+  SetOutPath "$INSTDIR\libjpeg"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\libjpeg-6b.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\libjpeg-6b.diff"
+  File "${LIBS_ROOT}\jpeg-6b-4-src.zip"
+SectionEnd
+
+Section /o "Libpng" SEC_LIBPNG
+  SetOutPath "$INSTDIR\libpng"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\libpng-1.2.16.txt"
+  File "${LIBS_ROOT}\lpng1216.zip"
+SectionEnd
+
+Section /o "Netcdf" SEC_NETCDF
+  SetOutPath "$INSTDIR\netcdf"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\netcdf.txt"
+  File "${LIBS_ROOT}\netcdf.tar.gz"
+SectionEnd
+
+Section /o "Pango" SEC_PANGO
+  SetOutPath "$INSTDIR\pango"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\pango-1.14.9.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\pango-1.14.9.diff"
+  File "${LIBS_ROOT}\pango-1.14.9.tar.gz"
+SectionEnd
+
+Section /o "Pcre" SEC_PCRE
+  SetOutPath "$INSTDIR\pcre"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\pcre-7.0.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\pcre-7.0.diff"
+  File "${LIBS_ROOT}\pcre-7.0.tar.gz"
+SectionEnd
+
+Section /o "Readline" SEC_READLINE
+  SetOutPath "$INSTDIR\readline"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\readline-5.2.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\readline-5.2.diff"
+  File "${LIBS_ROOT}\readline-5.2.tar.gz"
+SectionEnd
+
+Section /o "Sed" SEC_SED
+  SetOutPath "$INSTDIR\sed"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\sed-4.1.5.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\sed-4.1.5.diff"
+  File "${LIBS_ROOT}\sed-4.1.5.tar.gz"
+SectionEnd
+
+Section /o "SuiteSparse" SEC_SUITESPARSE
+  SetOutPath "$INSTDIR\suitesparse"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\suitesparse.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\suitesparse.diff"
+  File "${LIBS_ROOT}\SuiteSparse-2.3.1.zip"
+SectionEnd
+
+Section /o "Texinfo" SEC_TEXINFO
+  SetOutPath "$INSTDIR\texinfo"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\texinfo-4.8a.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\texinfo-4.8a.diff"
+  File "${LIBS_ROOT}\texinfo-4.8a.tar.gz"
+SectionEnd
+
+Section /o "WxWidgets" SEC_WX
+  SetOutPath "$INSTDIR\wxwidgets"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\wxwidgets-2.8.0.txt"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\wxwidgets-2.8.0.diff"
+  File "${LIBS_ROOT}\wxMSW-2.8.0-Setup.exe"
+SectionEnd
+
+Section /o "Zlib" SEC_ZLIB
+  SetOutPath "$INSTDIR\zlib"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\zlib.txt"
+  File "${LIBS_ROOT}\zlib123.zip"
 SectionEnd
 
 Section -AdditionalIcons
@@ -111,7 +349,38 @@ SectionEnd
 
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS} "Automatically Tuned Linear Algebra System (3.6.0)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS} "Automatically Tuned Linear Algebra Software (3.6.0)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_BLAS} "Basic Linear Algebra Subprograms"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CAIRO} "2D Vector Graphics Library (1.2.6)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLN} "Class Library for Numbers (1.1.13)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_F2C} "Fortran to C translator"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FFTW} "Fast Fourier Transform C Library (3.1.2)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FLTK} "Fast Light ToolKit (1.1.7): cross-platform C++ GUI ToolKit"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FREETYPE} "Portable High-Quality Font Engine (2.3.1)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GD} "Image Graphics Library (2.0.34)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GETTEXT} "GNU Translation Helper Tools (0.15)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GINAC} "Symbolic Compatution Alegbra System (1.3.6)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GLIB} "Low-level Core Library of GTK+ (2.12.6)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GLOB} "File Name Globbing and Matching Library"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GLPK} "GNU Linear Programming Kit (4.9)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GNUPLOT} "Interactive Data and Function Plotting Tool (4.2rc4)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GSL} "GNU Scientific Library (1.8)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HDF5} "General Purpose Library for Storing Scientific Data (1.6.5)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LAPACK} "Linear Algebra Package (3.1.0)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LESS} "Advanced Text Viewer (394)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LIBF2C} "Support Library for the Fortran to C Translator (f2c)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LIBICONV} "GNU Text Encoding Library (1.11)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LIBJPEG} "JPEG Imaging Library (6b)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LIBPNG} "PNG Imaging Library (1.2.16)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_NETCDF} "Network Common Data Form Library (3.6.1)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PANGO} "Text Layout and Rendering Library of GTK+ (1.14.9)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PCRE} "Perl-Compatible Regular Expression Library (7.0)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_READLINE} "GNU Line Editing Library (5.2)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SED} "GNU Stream Editor (4.1.5)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SUITESPARSE} "Sparse Matrix Library (2.3.1)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_TEXINFO} "GNU Documentation System (4.8a)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WX} "WxWidgets C++ Cross-Platform GUI ToolKit (2.8.0)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ZLIB} "Compression Library (1.2.3)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 

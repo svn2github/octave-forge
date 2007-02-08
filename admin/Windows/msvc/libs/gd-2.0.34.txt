@@ -1,0 +1,23 @@
+Package: LibGD
+Version: 2.0.34
+Home page: http://www.libgd.org
+Download: http://www.libgd.org/releases/gd-2.0.34.tar.gz
+License: BSD-like
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: zlib, libpng, libjpeg, freetype2
+
+1) Apply the patch
+
+2) Enter windows\ subdirectory
+
+3) Edit Makefile and adapt the variable FREETYPE_INC to match
+   your setup
+
+3) nmake
+
+4) Install (copy manually):
+	. bgd.dll into bin directory
+	. bgd.lib into lib directory
+	. *.h into include directory

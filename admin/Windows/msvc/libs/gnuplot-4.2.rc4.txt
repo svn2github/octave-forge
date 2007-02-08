@@ -6,7 +6,7 @@ License: Custom (BSD-like)
 
 Compilation: from Windows command shell with VS environment
 
-Requirements: wxWidgets(*), zlib, libpng, pango, cairo
+Requirements: wxWidgets(*), zlib, libpng, pango, cairo, gd
 
 1) Apply the patch
 

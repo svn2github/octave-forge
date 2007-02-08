@@ -1,0 +1,44 @@
+diff -ur gd-2.0.34/windows/Makefile gd-2.0.34-mod/windows/Makefile
+--- gd-2.0.34/windows/Makefile	2007-02-03 02:41:00.000000000 +0100
++++ gd-2.0.34-mod/windows/Makefile	2007-02-08 12:11:41.415628500 +0100
+@@ -1,6 +1,8 @@
+ # Makefile form Microsoft C++ nmake.exe
+ # $Id$
+ 
++FREETYPE_INC = D:\Software\VCLibs\include\freetype2
++
+ CC=cl.exe
+ LD=link.exe
+ 
+@@ -26,9 +28,9 @@
+    /D HAVE_LIBPNG  \
+    /D USE_GD_IMGSTRTTF
+ 
+-CFLAGS=-I. -I.. -nologo -DWIN32 -D_WIN32 -DMSWIN32 -DBGDWIN32 $(LIBGDCFLAGS)
++CFLAGS=-I. -I.. -I$(FREETYPE_INC) -nologo -DWIN32 -D_WIN32 -DMSWIN32 -DBGDWIN32 $(LIBGDCFLAGS)
+ 
+-LIBS=libjpeg.lib freetype2.lib libpng.lib zlib.lib kernel32.lib user32.lib advapi32.lib
++LIBS=jpeg.lib freetype.lib png.lib zlib.lib kernel32.lib user32.lib advapi32.lib
+ 
+ !if "$(BUILD)" == "Debug"
+ CFLAGS=$(CFLAGS) /Od /Zi /MDd /D_DEBUG /LDd
+@@ -126,6 +128,7 @@
+ 		$(OBJS) \
+ 		libgd.dll.res \
+ 		$(LIBS)
++	mt -outputresource:$@ -manifest $@.manifest
+ 		
+ dist: all
+ 	-rmdir /s /q distro
+diff -ur gd-2.0.34/windows/libgd.rc gd-2.0.34-mod/windows/libgd.rc
+--- gd-2.0.34/windows/libgd.rc	2007-02-06 23:29:32.000000000 +0100
++++ gd-2.0.34-mod/windows/libgd.rc	2007-02-08 11:55:39.704930500 +0100
+@@ -5,7 +5,7 @@
+ # error dont edit with MSVC
+ #endif
+ 
+-#include "winres.h"
++#include <windows.h>
+ #include "../gd.h"
+ 
+ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US

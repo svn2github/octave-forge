@@ -1,18 +1,18 @@
 diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.nt
---- gnuplot-4.2.rc4/config/makefile.nt	2006-08-11 18:35:29.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/config/makefile.nt	2007-02-05 10:23:20.593750000 +0100
+--- gnuplot-4.2.rc4/config/makefile.nt	2006-08-11 19:35:30.000000000 +0200
++++ gnuplot-4.2.rc4-mod/config/makefile.nt	2007-02-08 12:35:17.835580900 +0100
 @@ -31,8 +31,17 @@
  # where to place gnuplot.gih helpfile
  HELPFILE = wgnuplot.hlp
  
 +# installation directory
-+DESTDIR = C:\Software\Gnuplot4.2
++DESTDIR = D:\Software\Gnuplot4.2
 +
 +# wxWidgets source tree location
-+WXLOCATION = C:\Software\wxWidgets
++WXLOCATION = D:\Software\wxWidgets
 +
 +# Support libraries location (cairo, pango...)
-+VCLIBS_ROOT = C:\Software\VCLibs
++VCLIBS_ROOT = D:\Software\VCLibs
 +
  # directory for PostScript prolog and associated files
 -GNUPLOT_PS_DIR = share\\PostScript
@@ -20,14 +20,11 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  
  TOP = .
  
-@@ -54,11 +63,17 @@
- 
+@@ -55,10 +64,15 @@
  # compiler flags
  OPTIONS = /DUSE_MOUSE
--OPTIONS = $(OPTIONS) /DHAVE_LIBGD /DHAVE_GD_GIF /DHAVE_GD_PNG /DHAVE_GD_JPEG /DHAVE_GD_TTF
+ OPTIONS = $(OPTIONS) /DHAVE_LIBGD /DHAVE_GD_GIF /DHAVE_GD_PNG /DHAVE_GD_JPEG /DHAVE_GD_TTF
 -OPTIONS = $(OPTIONS) /DHAVE_LIBPDF
-+#OPTIONS = $(OPTIONS) /DHAVE_LIBGD /DHAVE_GD_GIF /DHAVE_GD_PNG /DHAVE_GD_JPEG /DHAVE_GD_TTF
-+OPTIONS = $(OPTIONS) /DHAVE_LIBPNG
 +#OPTIONS = $(OPTIONS) /DHAVE_LIBPDF
  OPTIONS = $(OPTIONS) /DGNUPLOT_HISTORY
 -CBASEFLAGS = /G5 /GX /GR /MD /O2 /nologo
@@ -41,7 +38,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  
  !IF "$(PROCESSOR_ARCHITECTURE)" == "ALPHA"
  MACHINE = $(PROCESSOR_ARCHITECTURE)
-@@ -67,11 +82,13 @@
+@@ -67,11 +81,13 @@
  !ENDIF
  
  # paths for external libs added here... 
@@ -57,7 +54,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  
  # macros for makefile.all
  O=obj
-@@ -79,7 +96,7 @@
+@@ -79,7 +95,7 @@
  D=..\\docs\\
  M=..\\demo\\
  
@@ -66,7 +63,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  
  !INCLUDE makefile.all
  
-@@ -88,6 +105,8 @@
+@@ -88,6 +104,8 @@
  WINOBJS = winmain.obj wgnuplib.obj wgraph.obj wprinter.obj wtext.obj \
  	wpause.obj wmenu.obj gpexecute.obj
  
@@ -75,7 +72,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  WINDOWS = makefile.win makefile.nt README.win win\wcommon.h \
  	win\wgnuplib.c win\wgnuplib.def win\wgnuplib.h win\wgnuplib.rc \
  	win\wgnuplot.def win\wgnuplot.hpj win\wgnuplot.mnu win\wgraph.c \
-@@ -95,10 +114,15 @@
+@@ -95,10 +113,15 @@
  	win\wresourc.h win\wtext.c win\wtext.h win\geticon.c \
  	$(D)doc2rtf.c $(T)win.trm win\grpicon.ico win\texticon.ico
  
@@ -91,7 +88,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  $(OBJS): config.h
  
  linkopt1.msw: makefile.nt
-@@ -112,6 +136,8 @@
+@@ -112,6 +135,8 @@
  	echo wpause >> linkopt1.msw
  	echo wgraph >> linkopt1.msw
  	echo wprinter >> linkopt1.msw
@@ -100,17 +97,16 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  	echo kernel32.lib >> linkopt1.msw
  	echo user32.lib >> linkopt1.msw
  	echo gdi32.lib >> linkopt1.msw
-@@ -119,8 +145,21 @@
+@@ -119,8 +144,21 @@
  	echo comdlg32.lib >> linkopt1.msw
  	echo advapi32.lib >> linkopt1.msw
  	echo shell32.lib >> linkopt1.msw
 -	echo pdflib.lib >> linkopt1.msw
--	echo bgd.lib >> linkopt1.msw
 +	echo ole32.lib >> linkopt1.msw
 +	echo oleaut32.lib >> linkopt1.msw
 +	echo comctl32.lib >> linkopt1.msw
 +#	echo pdflib.lib >> linkopt1.msw
-+#	echo bgd.lib >> linkopt1.msw
+ 	echo bgd.lib >> linkopt1.msw
 +	echo wxmsw28.lib >> linkopt1.msw
 +	echo wxtiff.lib >> linkopt1.msw
 +	echo jpeg.lib >> linkopt1.msw
@@ -124,7 +120,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  	echo wgnuplot.res >> linkopt1.msw
  
  makefile.nt: ..\config\makefile.nt
-@@ -129,45 +168,95 @@
+@@ -129,45 +167,95 @@
  config.h: ..\config\config.nt
  	copy ..\config\config.nt config.h
  
@@ -223,7 +219,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
 +$(ALL_CONSOLE_OBJS)
 +kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib
 +advapi32.lib shell32.lib ole32.lib oleaut32.lib comctl32.lib
-+wxmsw28.lib wxtiff.lib
++bgd.lib wxmsw28.lib wxtiff.lib
 +jpeg.lib png.lib
 +glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib
 +cairo.lib pango-1.0.lib pangocairo-1.0.lib
@@ -233,7 +229,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  
  # extract icons from wgnuplot.rc
  texticon.ico: grpicon.ico
-@@ -201,6 +290,7 @@
+@@ -201,6 +289,7 @@
  # clean up temporary files
  clean:
  	if exist *.obj del *.obj
@@ -241,7 +237,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  	if exist *.ico del *.ico
  	if exist wgnuplot.res del wgnuplot.res
  	if exist win\gnuplot.rtf del win\gnuplot.rtf
-@@ -216,6 +306,7 @@
+@@ -216,6 +305,7 @@
  	if exist wgnuplot.hlp del wgnuplot.hlp
  	if exist wgnuplot.mnu del wgnuplot.mnu
  	if exist pgnuplot.exe del pgnuplot.exe
@@ -249,7 +245,7 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
  	if exist ..\demo\binary1 del ..\demo\binary1
  	if exist ..\demo\binary2 del ..\demo\binary2
  	if exist ..\demo\binary3 del ..\demo\binary3
-@@ -223,3 +314,18 @@
+@@ -223,3 +313,18 @@
  	if exist ..\demo\soundfit.par del ..\demo\soundfit.par
  	if exist config.h del config.h
  	if exist makefile.nt del makefile.nt
@@ -269,8 +265,8 @@ diff -ur gnuplot-4.2.rc4/config/makefile.nt gnuplot-4.2.rc4-mod/config/makefile.
 +	if not exist $(DESTDIR)\share\gnuplot\demo mkdir $(DESTDIR)\share\gnuplot\demo
 +	xcopy /Y ..\demo $(DESTDIR)\share\gnuplot\demo
 diff -ur gnuplot-4.2.rc4/src/command.c gnuplot-4.2.rc4-mod/src/command.c
---- gnuplot-4.2.rc4/src/command.c	2006-10-11 23:48:09.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/src/command.c	2007-02-05 08:29:59.734375000 +0100
+--- gnuplot-4.2.rc4/src/command.c	2006-10-12 00:48:10.000000000 +0200
++++ gnuplot-4.2.rc4-mod/src/command.c	2007-02-08 12:32:56.848214500 +0100
 @@ -2605,6 +2605,8 @@
  	    if ('\n' == c) {
  		dest[i] = '\0';
@@ -290,8 +286,8 @@ diff -ur gnuplot-4.2.rc4/src/command.c gnuplot-4.2.rc4-mod/src/command.c
  		    /* Watch out that we don't backup beyond 0 (1-1-1) */
  		    if (last > 0)
 diff -ur gnuplot-4.2.rc4/src/plot.c gnuplot-4.2.rc4-mod/src/plot.c
---- gnuplot-4.2.rc4/src/plot.c	2006-11-10 23:49:37.000000000 +0100
-+++ gnuplot-4.2.rc4-mod/src/plot.c	2007-02-05 08:29:59.750000000 +0100
+--- gnuplot-4.2.rc4/src/plot.c	2006-11-10 23:49:38.000000000 +0100
++++ gnuplot-4.2.rc4-mod/src/plot.c	2007-02-08 12:33:21.736609300 +0100
 @@ -480,7 +480,7 @@
      else
  	interactive = FALSE;
@@ -302,8 +298,8 @@ diff -ur gnuplot-4.2.rc4/src/plot.c gnuplot-4.2.rc4-mod/src/plot.c
  # else
      interactive = isatty(fileno(stdin));
 diff -ur gnuplot-4.2.rc4/src/readline.c gnuplot-4.2.rc4-mod/src/readline.c
---- gnuplot-4.2.rc4/src/readline.c	2006-04-28 18:54:03.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/src/readline.c	2007-02-05 08:29:59.796875000 +0100
+--- gnuplot-4.2.rc4/src/readline.c	2006-04-28 19:54:04.000000000 +0200
++++ gnuplot-4.2.rc4-mod/src/readline.c	2007-02-08 12:33:41.406721700 +0100
 @@ -259,7 +259,12 @@
  #  include "win/winmain.h"
  #  define TEXTUSER 0xf1
@@ -344,8 +340,8 @@ diff -ur gnuplot-4.2.rc4/src/readline.c gnuplot-4.2.rc4-mod/src/readline.c
  static char
  msdos_getch()
 diff -ur gnuplot-4.2.rc4/src/term.c gnuplot-4.2.rc4-mod/src/term.c
---- gnuplot-4.2.rc4/src/term.c	2006-10-06 01:52:18.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/src/term.c	2007-02-05 08:29:59.812500000 +0100
+--- gnuplot-4.2.rc4/src/term.c	2006-10-06 02:52:18.000000000 +0200
++++ gnuplot-4.2.rc4-mod/src/term.c	2007-02-08 12:33:49.077909300 +0100
 @@ -101,6 +101,7 @@
  void close_printer __PROTO((FILE * outfile));
  # ifdef __MSC__
@@ -356,7 +352,7 @@ diff -ur gnuplot-4.2.rc4/src/term.c gnuplot-4.2.rc4-mod/src/term.c
  # endif                         /* MSC */
 diff -ur gnuplot-4.2.rc4/src/win/wgnuplib.h gnuplot-4.2.rc4-mod/src/win/wgnuplib.h
 --- gnuplot-4.2.rc4/src/win/wgnuplib.h	2006-03-05 02:15:56.000000000 +0100
-+++ gnuplot-4.2.rc4-mod/src/win/wgnuplib.h	2007-02-05 08:29:59.828125000 +0100
++++ gnuplot-4.2.rc4-mod/src/win/wgnuplib.h	2007-02-08 12:34:02.451710900 +0100
 @@ -45,7 +45,9 @@
  #include <windows.h>
  
@@ -369,8 +365,8 @@ diff -ur gnuplot-4.2.rc4/src/win/wgnuplib.h gnuplot-4.2.rc4-mod/src/win/wgnuplib
  
  /* HBB 19990506: The following used to be #ifdef __DLL__.
 diff -ur gnuplot-4.2.rc4/src/win/winmain.c gnuplot-4.2.rc4-mod/src/win/winmain.c
---- gnuplot-4.2.rc4/src/win/winmain.c	2006-03-28 11:55:22.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/src/win/winmain.c	2007-02-05 10:18:20.984375000 +0100
+--- gnuplot-4.2.rc4/src/win/winmain.c	2006-03-28 12:55:22.000000000 +0200
++++ gnuplot-4.2.rc4-mod/src/win/winmain.c	2007-02-08 12:34:08.873010500 +0100
 @@ -101,6 +101,7 @@
  PW pausewin;
  MW menuwin;
@@ -538,8 +534,8 @@ diff -ur gnuplot-4.2.rc4/src/win/winmain.c gnuplot-4.2.rc4-mod/src/win/winmain.c
   * (formerly in win.trm)
   */
 diff -ur gnuplot-4.2.rc4/src/win/winmain.h gnuplot-4.2.rc4-mod/src/win/winmain.h
---- gnuplot-4.2.rc4/src/win/winmain.h	2006-07-16 04:50:56.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/src/win/winmain.h	2007-02-05 10:11:15.546875000 +0100
+--- gnuplot-4.2.rc4/src/win/winmain.h	2006-07-16 05:50:56.000000000 +0200
++++ gnuplot-4.2.rc4-mod/src/win/winmain.h	2007-02-08 12:34:11.919612500 +0100
 @@ -55,6 +55,7 @@
  
  extern LPSTR winhelpname;
@@ -549,8 +545,8 @@ diff -ur gnuplot-4.2.rc4/src/win/winmain.h gnuplot-4.2.rc4-mod/src/win/winmain.h
  int Pause __PROTO((LPSTR str));
  void screen_dump __PROTO((void));
 diff -ur gnuplot-4.2.rc4/src/win/wtext.h gnuplot-4.2.rc4-mod/src/win/wtext.h
---- gnuplot-4.2.rc4/src/win/wtext.h	2004-07-01 19:10:11.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/src/win/wtext.h	2007-02-05 08:29:59.875000000 +0100
+--- gnuplot-4.2.rc4/src/win/wtext.h	2004-07-01 20:10:12.000000000 +0200
++++ gnuplot-4.2.rc4-mod/src/win/wtext.h	2007-02-08 12:34:17.731591700 +0100
 @@ -40,6 +40,8 @@
  /* redefine functions that can talk to tty devices, to use
   * implementation in winmain.c/wgnuplot.dll */
@@ -571,8 +567,8 @@ diff -ur gnuplot-4.2.rc4/src/win/wtext.h gnuplot-4.2.rc4-mod/src/win/wtext.h
 +
 +#endif /* CONSOLE */
 diff -ur gnuplot-4.2.rc4/src/wxterminal/gp_cairo.c gnuplot-4.2.rc4-mod/src/wxterminal/gp_cairo.c
---- gnuplot-4.2.rc4/src/wxterminal/gp_cairo.c	2006-09-10 19:49:44.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/src/wxterminal/gp_cairo.c	2007-02-05 08:29:59.890625000 +0100
+--- gnuplot-4.2.rc4/src/wxterminal/gp_cairo.c	2006-09-10 20:49:44.000000000 +0200
++++ gnuplot-4.2.rc4-mod/src/wxterminal/gp_cairo.c	2007-02-08 12:34:28.933712900 +0100
 @@ -78,6 +78,10 @@
  #include <pango/pangocairo.h>
  #include <glib.h>
@@ -601,8 +597,8 @@ diff -ur gnuplot-4.2.rc4/src/wxterminal/gp_cairo.c gnuplot-4.2.rc4-mod/src/wxter
  
  	/* free the layout object */
 diff -ur gnuplot-4.2.rc4/src/wxterminal/wxt_gui.cpp gnuplot-4.2.rc4-mod/src/wxterminal/wxt_gui.cpp
---- gnuplot-4.2.rc4/src/wxterminal/wxt_gui.cpp	2006-11-28 21:26:55.000000000 +0100
-+++ gnuplot-4.2.rc4-mod/src/wxterminal/wxt_gui.cpp	2007-02-05 08:29:59.906250000 +0100
+--- gnuplot-4.2.rc4/src/wxterminal/wxt_gui.cpp	2006-11-28 21:26:56.000000000 +0100
++++ gnuplot-4.2.rc4-mod/src/wxterminal/wxt_gui.cpp	2007-02-08 12:34:35.386259700 +0100
 @@ -129,6 +129,7 @@
  	EVT_COMMAND( wxID_ANY, wxExitLoopEvent, wxtApp::OnExitLoop )
  	EVT_CLOSE( wxtFrame::OnClose )
@@ -666,8 +662,8 @@ diff -ur gnuplot-4.2.rc4/src/wxterminal/wxt_gui.cpp gnuplot-4.2.rc4-mod/src/wxte
  		wxApp::m_nCmdShow = SW_SHOW;
  #endif
 diff -ur gnuplot-4.2.rc4/term/post.trm gnuplot-4.2.rc4-mod/term/post.trm
---- gnuplot-4.2.rc4/term/post.trm	2006-11-19 21:40:49.000000000 +0100
-+++ gnuplot-4.2.rc4-mod/term/post.trm	2007-02-05 10:19:55.093750000 +0100
+--- gnuplot-4.2.rc4/term/post.trm	2006-11-19 21:40:50.000000000 +0100
++++ gnuplot-4.2.rc4-mod/term/post.trm	2007-02-08 12:34:44.479194900 +0100
 @@ -3135,9 +3135,9 @@
  # if defined(_Windows)
  	/* retrieve prologues path relatively to gnuplot executable,
@@ -681,8 +677,8 @@ diff -ur gnuplot-4.2.rc4/term/post.trm gnuplot-4.2.rc4-mod/term/post.trm
  	/* GNUPLOT_PS_DIR is _relative_ path */
  	strcat(ps_prologue_dir, GNUPLOT_PS_DIR);
 diff -ur gnuplot-4.2.rc4/term/win.trm gnuplot-4.2.rc4-mod/term/win.trm
---- gnuplot-4.2.rc4/term/win.trm	2006-07-21 04:35:48.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/term/win.trm	2007-02-05 08:29:59.937500000 +0100
+--- gnuplot-4.2.rc4/term/win.trm	2006-07-21 05:35:48.000000000 +0200
++++ gnuplot-4.2.rc4-mod/term/win.trm	2007-02-08 12:34:52.384736500 +0100
 @@ -86,6 +86,7 @@
  TERM_PUBLIC void WIN_set_cursor __PROTO((int, int, int));
  TERM_PUBLIC void WIN_put_tmptext __PROTO((int, const char str[]));
@@ -721,8 +717,8 @@ diff -ur gnuplot-4.2.rc4/term/win.trm gnuplot-4.2.rc4-mod/term/win.trm
  #endif
      , WIN_make_palette, 0 /* previous_palette */,
 diff -ur gnuplot-4.2.rc4/term/wxt.trm gnuplot-4.2.rc4-mod/term/wxt.trm
---- gnuplot-4.2.rc4/term/wxt.trm	2006-09-15 16:09:36.000000000 +0200
-+++ gnuplot-4.2.rc4-mod/term/wxt.trm	2007-02-05 08:29:59.953125000 +0100
+--- gnuplot-4.2.rc4/term/wxt.trm	2006-09-15 17:09:36.000000000 +0200
++++ gnuplot-4.2.rc4-mod/term/wxt.trm	2007-02-08 12:34:56.368754500 +0100
 @@ -59,12 +59,20 @@
  
  /* terminal state, defined extern in wxt_term.h */

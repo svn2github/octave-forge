@@ -55,7 +55,7 @@
 ; Start menu page
 var ICONS_GROUP
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "GNU Octave/Sources"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "GNU Octave\Sources"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
@@ -90,6 +90,9 @@ Section /o "Atlas" SEC_ATLAS
   File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\atlas-3.6.0.diff"
   File "${OCTAVE_FORGE}\admin\Windows\msvc\libs\atlas-3.6.0.txt"
   File "${LIBS_ROOT}\atlas3.6.0.tar.bz2"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\build_atlas_dll"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\atl_blas.def"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\lapack.def"
 SectionEnd
 
 Section /o "Blas" SEC_BLAS
@@ -260,6 +263,14 @@ Section /o "Libpng" SEC_LIBPNG
   File "${LIBS_ROOT}\lpng1216.zip"
 SectionEnd
 
+Section /o "Msvc tools" SEC_TOOLS
+  SetOutPath "$INSTDIR\msvc-tools"
+  SetOverwrite try
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\cc-msvc.cc"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\ar-msvc"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\ranlib-msvc"
+SectionEnd
+
 Section /o "Netcdf" SEC_NETCDF
   SetOutPath "$INSTDIR\netcdf"
   SetOverwrite try
@@ -333,6 +344,7 @@ SectionEnd
 Section -AdditionalIcons
   SetOutPath $INSTDIR
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+  CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk" "$INSTDIR\uninst.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
@@ -379,6 +391,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SED} "GNU Stream Editor (4.1.5)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SUITESPARSE} "Sparse Matrix Library (2.3.1)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_TEXINFO} "GNU Documentation System (4.8a)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_TOOLS} "MSVC Compiler Related Tools"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WX} "WxWidgets C++ Cross-Platform GUI ToolKit (2.8.0)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ZLIB} "Compression Library (1.2.3)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END

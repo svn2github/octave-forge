@@ -1,0 +1,27 @@
+Package: GSL
+Version: 1.8
+Home page: http://www.gnu.org/software/gsl
+Download: http://gnuwin32.sourceforge.net/packages/gsl.htm
+License: GPL
+
+Compilation: from Visual Studio environment
+
+Requirements: none
+
+1) Open src\gsl\1.8\gsl-1.8\VC8\libgsl.sln into Visual Studio
+
+2) Select Release-DLL configuration
+
+3) Edit the properties of projects libgsl and set the Import
+   Library file name to gsl.lib
+
+4) Do the same with libgslcblas project and gslcblas.lib
+
+5) Add the file version.c to the source files of project libsgl
+
+6) Build the project libgsl
+
+7) Install (copy manually):
+	. libgsl.dll and libgslcblas.dll into bin directory
+	. gsl.lib and gslcblas.lib into lib directory
+	. gsl\gsl_*.h into include\gsl directory

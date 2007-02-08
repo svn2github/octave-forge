@@ -138,10 +138,11 @@ void F77_FUNC (fjac, FJAC) (int *N, double *X, double *Y, double *DFY,
 
     /* Transpose the matrix, because Fortran stores elements column-wise */
     vtmp = mxTransposeMatrix (vlhs[0]);
-    /* vtmp = mxDuplicateArray (vlhs[0]); */
-    vnum = mxGetM (vtmp) * mxGetN (vtmp);
+
     /* Save the result of this time step in the variable f */
+    vnum = mxGetM (vtmp) * mxGetN (vtmp);
     memcpy ((void *) DFY, (void *) mxGetPr (vlhs[0]), vnum * sizeof (double));
+
     /* mexCallMATLAB (0, NULL, 1, &vtmp, "disp"); */
     mxFree (vlhs); /* Free the vlhs mxArray */
     mxFree (vrhs); /* Free the vrhs mxArray */
@@ -151,10 +152,57 @@ void F77_FUNC (fjac, FJAC) (int *N, double *X, double *Y, double *DFY,
   }
 }
 
-void F77_FUNC (fmas, FMAS) (int *N, double *AM, int *LMAS,
+void F77_FUNC (fmas, FMAS) (int *N, double *X, double *Y, double *AM, int *LMAS,
   double *RPAR, int *IPAR) {
 
-  mexPrintf ("Calc the mas");
+  int  vcnt = 0;
+  int  vnum = 0;
+  char vmsg[64] = "";
+
+  mxArray  *vmas = NULL;
+  mxArray  *vtmp = NULL;
+  mxArray **vlhs = NULL;
+  mxArray **vrhs = NULL;
+
+  fodepkgvar (2, "Mass", &vmas);
+  if (mxIsChar (vmas)) { /* Found the name of the Mass function */
+    /* Get number of varargin elements for allocating memory */
+    fodepkgvar (2, "varargin", &vtmp);
+    vnum = mxGetNumberOfElements (vtmp);
+
+    /* Allocate memory and set up variables lhs-arguments and rhs-arguments */
+    vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
+    vrhs = (mxArray **) mxMalloc ((2 + vnum) * sizeof (mxArray *));
+    vrhs[0] = mxCreateDoubleScalar (*X);
+
+    /* Copy the values that are given from the solver into the mxArray */
+    vrhs[1] = mxCreateDoubleMatrix (*N, 1, mxREAL);
+    memcpy ((void *) mxGetPr (vrhs[1]), (void *) Y, *N * sizeof (double));
+
+    if (vnum > 0) /* Fill up vrhs[2..] */
+      for (vcnt = 0; vcnt < vnum; vcnt++)
+        vrhs[vcnt+2] = mxGetCell (vtmp, vcnt);
+
+    /* Evaluate the ode function in the octave workspace */
+    if (mexCallMATLAB (1, vlhs, vnum+2, vrhs, mxArrayToString (vmas))) {
+      sprintf (vmsg, "Calling \"%s\" has failed", mxArrayToString (vmas));
+      mexErrMsgTxt (vmsg);
+    }
+
+    /* Transpose the matrix, because Fortran stores elements column-wise */
+    vtmp = mxTransposeMatrix (vlhs[0]);
+    vnum = mxGetM (vtmp) * mxGetN (vtmp);
+    memcpy ((void *) AM, (void *) mxGetPr (vlhs[0]), vnum * sizeof (double));
+
+    /* mexCallMATLAB (0, NULL, 1, &vtmp, "disp"); */
+    mxFree (vlhs); /* Free the vlhs mxArray */
+    mxFree (vrhs); /* Free the vrhs mxArray */
+  }
+  else { /* Found constant matrix of the Mass */
+    vtmp = mxTransposeMatrix (vmas);
+    vnum = mxGetM (vtmp) * mxGetN (vtmp);
+    memcpy ((void *) AM, (void *) mxGetPr (vtmp), vnum * sizeof (double));
+  }
 }
 
 void F77_FUNC (fsol, FSOL) (int *NR, double *XOLD, double *X, double *Y, 
@@ -505,11 +553,12 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (2, "OdeOptions", &vtmp);
   fodepkgvar (2, "DefaultOptions", &vtem);
   if (!mxIsEqual (mxGetField (vtmp, 0, "Jacobian"), mxGetField (vtem, 0, "Jacobian"))) {
-    IJAC = 1; /* Tell the solver that we have a Jacobian matrix */
+    IJAC = 1;  /* Tell the solver that we have a Jacobian matrix */
+    MLJAC = N; /* Tell the solver that the matrix is full */
     vtem = mxGetField (vtmp, 0, "Jacobian");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
       if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
-  mexErrMsgTxt ("Calling \"func2str\" has failed");
+        mexErrMsgTxt ("Calling \"func2str\" has failed");
       fodepkgvar (1, "Jacobian", &vtmp);
     }
     else fodepkgvar (1, "Jacobian", &vtem); /* matrix */
@@ -542,8 +591,17 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* Handle the OdeOptions structure field: MASS */
   fodepkgvar (2, "OdeOptions", &vtmp);
   fodepkgvar (2, "DefaultOptions", &vtem);
-  if (!mxIsEqual (mxGetField (vtmp, 0, "Mass"), mxGetField (vtem, 0, "Mass")))
-    mexWarnMsgTxt ("Option \"Mass\" will be ignored by this solver");
+  if (!mxIsEqual (mxGetField (vtmp, 0, "Mass"), mxGetField (vtem, 0, "Mass"))) {
+    IMAS = 1;  /* Tell the solver that we have a Jacobian matrix */
+    MLMAS = N; /* Tell the solver that the matrix is full */
+    vtem = mxGetField (vtmp, 0, "Mass");
+    if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
+      if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
+        mexErrMsgTxt ("Calling \"func2str\" has failed");
+      fodepkgvar (1, "Mass", &vtmp);
+    }
+    else fodepkgvar (1, "Mass", &vtem); /* matrix */
+  }
 #ifdef __ODEPKGDEBUG__
   else
     mexPrintf ("ODEPKGDEBUG: The Mass option has not been set\n");

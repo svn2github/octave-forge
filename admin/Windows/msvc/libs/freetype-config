@@ -72,17 +72,17 @@ while test $# -gt 0 ; do
     echo_exec_prefix=yes
     ;;
   --version)
-    echo 9.8.3
+    echo 9.12.3
     exit 0
     ;;
   --ftversion)
-    major=`grep define D:/Software/GnuWin32/include/freetype2/freetype/freetype.h \
+    major=`grep define $prefix/include/freetype2/freetype/freetype.h \
            | grep FREETYPE_MAJOR \
            | sed 's/.*[ 	]\([0-9][0-9]*\).*/\1/'`
-    minor=`grep define D:/Software/GnuWin32/include/freetype2/freetype/freetype.h \
+    minor=`grep define $prefix/include/freetype2/freetype/freetype.h \
            | grep FREETYPE_MINOR \
            | sed 's/.*[ 	]\([0-9][0-9]*\).*/\1/'`
-    patch=`grep define D:/Software/GnuWin32/include/freetype2/freetype/freetype.h \
+    patch=`grep define $prefix/include/freetype2/freetype/freetype.h \
            | grep FREETYPE_PATCH \
            | sed 's/.*[ 	]\([0-9][0-9]*\).*/\1/'`
     echo $major.$minor.$patch

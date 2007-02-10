@@ -1,4 +1,4 @@
-md5="6073f58e64f0ec8be816fb3a0e2328b2";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="366a432c1303453cb5e0ae4a0deed50b";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[dado, fmtstr] =} __plt2mv__ (@var{x}, @var{y}, @var{fmt})
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __plt2mv__ (@var{h}, @var{x}, @var{y}, @var{op@,{c}@~oes})
 @end deftypefn

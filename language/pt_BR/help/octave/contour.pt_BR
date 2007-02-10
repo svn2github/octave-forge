@@ -1,9 +1,29 @@
-md5="d02dd82fb36e7d64479bbc121a1fb28a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="8f9751c4cd0253e11f1979516c35b79e";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} contour (@var{z}, @var{n})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} contour (@var{x}, @var{y}, @var{z}, @var{n})
-Monta um gr@'afico de contorno de uma superf@'icie tridimensional descrita por
-@var{z}.  Algu@'em precisa melhorar as rotinas de contorno do @code{gnuplot}
-antes da fun@value{cedilha}@~ao @code{contour} vir a ser muito @'util.
-@seealso{plot, mesh, meshgrid}
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c}} = contour (@var{x},@var{y},@var{z},@var{vv})
+Monta um gr@'afico de contorno da matriz @var{z}. 
+Os par@^ametros @var{x}, @var{y} e @var{vn} s@~ao opcionais.
+
+O valor de retorno @var{c} @'e uma matriz 2 por @var{n} contendo as
+linhas de contorno no seguinte formato
+
+@example
+@var{c} = [niv1 , x1 , x2 , ... , nivn , x1 , x2 , ... 
+     com1   , y1 , y2 , ... , comn   , y1 , y2 , ...  ]
+@end example
+
+@noindent
+no qual a linha de contorno @var{n} tem um n@'ivel (altura) de @var{nivn} e
+comprimento de @var{comn}.
+
+Se @var{x} e @var{y} forem omitidos eles s@~ao tomados como @'indices de
+linha/coluna de @var{z}.  @var{vn} @'e ou um escalar denotando o n@'umero de
+linhas a calcular ou um vetor contendo os valores das linhas.  Se
+somante um valor for procurado, escolha @code{@var{vn} = [val, val]}.  Se
+@var{vn} for omitido seu valor padr@~ao @'e 10.
+
+@example
+@var{c}=contourc (@var{x}, @var{y}, @var{z}, linspace(0,2*pi,10))
+@end example
+@seealso{contourc,line,plot}
 @end deftypefn

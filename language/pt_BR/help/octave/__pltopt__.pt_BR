@@ -1,69 +1,63 @@
-md5="9f0317035a3311b76e804549c29d063a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="220740ec0d6c52a2b23cd1ccb05e8a5b";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __pltopt__ (@var{chamador}, @var{op@value{cedilha}@value{o_til}es})
 Decodifica seq@"u@^encias de caracteres que representam op@value{cedilha}@value{o_til}es de impress@~ao.
-
-If @var{op@value{cedilha}@value{o_til}es} @'e uma seq@"u@^encia de caracteres v@'alida, retorna uma seq@"u@^encia de caracteres da forma
-@code{"w l 2"} ("with lines 2" - com linhas 2).  Usa abreia@value{cedilha}@value{o_til}es para op@value{cedilha}@value{o_til}es
-evitando sobrecarregar a @'area de armazenamento de linha de comando do gnuplot desnecessariamente.
 
 @var{op@value{cedilha}@value{o_til}es} pode atualmente ser alguma combina@value{cedilha}@~ao das seguintes:
 
 @table @code
 @item "-"
-Para estilos de impress@~ao de linha (padr@~ao).
+Para estilo de linha s@'olido (padr@~ao).
 
-@item "."
-Para estilo de impress@~ao de pontos (um pixel por ponto).
+@item "--"
+Para estilo tracejado de linha.
+ 
+@item "-."
+Para estilo de impress@~ao linespoints.
 
-@item "@@"
-Para estilos de impress@~ao de pontos (um s@'imbolo por ponto).
+@item ":"
+Para estilo de impress@~ao dots.
 
-@item "-@@"
-Para estilos de impress@~ao linespoints.
+@item "r"
+Linha de cor vermelha.
 
-@item "^"
-Para estilos de impress@~ao  impulses.
+@item "g"
+Linha de cor verde.
 
-@item "L"
-Para estilos de impress@~ao steps.
+@item "b"
+Linha de cor azul.
+ 
+@item "c"
+Linha de cor ciano.
+ 
+@item "m"
+Linha de cor magenta.
+ 
+@item "y"
+Linha de cor amarela.
+ 
+@item "k"
+LLinha de cor preta.
 
-@item "#"
-Para estilos de impress@~ao boxes.
-
-@item "~"
-Para estilos de impress@~ao yerrorbars.
-
-@item ">"
-Para estilos de impress@~ao xerrorbars.
-
-@item "~>"
-Para estilos de impress@~ao xyerrorbars.
-
-@item "#~"
-Para estilos de impress@~ao boxerrorbars.
-
-@item "#~>"
-Para estilos de impress@~ao boxxyerrorbars.
-
-@item "n"
-Com @code{n} em 1-6 (envolvido em 8), cor de impress@~ao
-
-@item "nm"
-Com @code{m} em 1-6 (envolvido em 6), estilo de impress@~ao de ponto (um s@'imbolo por ponto - somente @'alido para @code{"@@"} ou
-@code{"-@@"})
-
-@item @var{c}
-Onde @var{c} @'e um entre as cores @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
-@code{"c"}, ou @code{"w"}.
+@item "w"
+Linha de cor branca.
 
 @item ";t@'itulo;"
 Aqui @code{"t@'itulo"} @'e o r@'otulo para a chave.
 
-@item +
-@itemx *
-@itemx o
-@itemx x
+@item "+"
+@itemx "o"
+@itemx "*"
+@itemx "."
+@itemx "x"
+@itemx "s"
+@itemx "d"
+@itemx "^"
+@itemx "v"
+@itemx ">"
+@itemx "<"
+@itemx "p"
+@itemx "h"
 Usados em combina@,{c}@~oes com pontos (@@ ou -@@) em combina@,{c}@~oes com os estilos pontos ou pontolinhas, escolhe o estilo de
 ponto.
 @end table
@@ -71,20 +65,6 @@ ponto.
 A legenda ser@'a modificada para incluir o nome da var@'avel
 cujo gr@'afico est@'a sendo impresso em alguma futura vers@~ao do Octave.
 
-As cores, estilos de linha, e estilos de pontos possuem o seguinte
-significado para terminais X11 e Postscript sob Gnuplot 3.6.
-
-@example
-Number ------ Color -------  Line Style      ---- Points Style ----
-       x11       postscript  postscript      x11         postscript
-=====================================================================
-  1    vermelho  verde       s@'olido        "o"         "+"
-  2    verde     azul        salpicado longo "+"         "x"
-  3    azul      vermelho    salpic curto   quadrado     "*"
-  4    magenta   magenta     pontuado        "x"        quadr vazio
-  5    ciano     ciano       pt salp longo  triangulo   quadr preenc
-  6    marrom    amarelo     pt salp curto   "*"         "o"
-@end example
 @seealso{__pltopt1__}
 @end deftypefn
 

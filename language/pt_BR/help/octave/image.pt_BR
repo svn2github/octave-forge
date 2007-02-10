@@ -1,11 +1,11 @@
-md5="8b61106e1a8687ecabae0dfbb0f3547a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="e320b65e7d5804f00ef00603dd17dc5a";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} image (@var{x}, @var{zoom})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} image (@var{x}, @var{y}, @var{A}, @var{zoom})
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} image (@var{img})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} image (@var{x}, @var{y}, @var{img})
+
 Mostra uma matriz como uma imagem coloriada.  Os elementos de @var{x} s@~ao @'indices
 dentro do mapa de cores atual e podem ter valores emtre 1 e o
-comprimento do mapa de cores.  Se @var{zoom} for omitido, a imagem ser@'a
-alterada proporcionalmente para ajustar-se dentro da resolu@,{c}@~ao de 600x350 (para um m@'aximo de 4).
+comprimento do mapa de cores.
 
 A fun@value{cedilha}@~ao code{image} primeiramente tenta usar @code{gnuplot}, a seguir tenta o @code{display} de 
 @code{ImageMagick}, tenta a seguir @code{xv}, e por @'utimo tenta @code{xloadimage}.

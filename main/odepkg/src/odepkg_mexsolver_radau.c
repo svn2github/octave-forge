@@ -152,8 +152,9 @@ void F77_FUNC (fjac, FJAC) (int *N, double *X, double *Y, double *DFY,
   }
 }
 
-void F77_FUNC (fmas, FMAS) (int *N, double *X, double *Y, double *AM, int *LMAS,
-  double *RPAR, int *IPAR) {
+void F77_FUNC (fmas, FMAS) (int *N, double *X, double *Y, double *AM, 
+  GCC_ATTR_UNUSED int *LMAS, GCC_ATTR_UNUSED double *RPAR,
+  GCC_ATTR_UNUSED int *IPAR) {
 
   int  vcnt = 0;
   int  vnum = 0;
@@ -553,8 +554,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (2, "OdeOptions", &vtmp);
   fodepkgvar (2, "DefaultOptions", &vtem);
   if (!mxIsEqual (mxGetField (vtmp, 0, "Jacobian"), mxGetField (vtem, 0, "Jacobian"))) {
-    IJAC = 1;  /* Tell the solver that we have a Jacobian matrix */
-    MLJAC = N; /* Tell the solver that the matrix is full */
+    IJAC = 1;     /* Tell the solver that we have a Jacobian matrix */
+    MLJAC = N;    /* Tell the solver that the matrix is full */
+    WORK[2] = -1; /* Tell the solver to recompute Jacobian after every succesful step */
     vtem = mxGetField (vtmp, 0, "Jacobian");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
       if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
@@ -711,7 +713,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   mexPrintf ("ODEPKGDEBUG: ----- STARTING SOLVER CALCULATION PROCEDURE\n");
 #endif
 
-  IWORK[00] = 0;          /* Switch for transformation of Jacobian into Hessenberg form */
+  IWORK[00] = 1;          /* Switch for transformation of Jacobian into Hessenberg form */
   /* IWORK[01] = 0; */    /* Maximal number of allowed steps */
   /* IWORK[02] = 7; */    /* Maximal number of newton iterations (default value = 7) */
   /* IWORK[03] = 0; */    /* Take extrapolated collocation solution at startup */
@@ -731,7 +733,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* FORTRAN SUBROUTINE RADAU(N,FCN,X,Y,XEND,H,RTOL,ATOL,ITOL,JAC,IJAC,MLJAC,MUJAC, */
   /*   MAS,IMAS,MLMAS,MUMAS,SOLOUT,IOUT,WORK,LWORK,IWORK,LIWORK,RPAR,IPAR,IDID) */
 
-  vnum = 2; /* Needed to call output at every successful step */
+  vnum = 1; /* Needed to call output at every successful step */
   F77_FUNC (radau, RADAU) (&N, &F77_FUNC (ffcn, FFCN), &SLOT[0],
     INIT, &SLOT[1], &H, RTOL, ATOL, &ITOL,
     &F77_FUNC (fjac, FJAC), &IJAC, &MLJAC, &MUJAC,
@@ -744,7 +746,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   switch (VRET) {
     case -4:
-      mexPrintf ("The computation has been stopped because the problem is probably stiff\n");
+      mexPrintf ("The matrix is repeatedly singular\n");
       break;
     case -3:
       mexPrintf ("The step size grew too small, reduce InitialStep and/or MaxStep\n");
@@ -757,7 +759,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
       break;
     case 0:  break; /* Not treated */
     case 1:  break; /* Computation has been successful */
-    case 2:  break; /* Computation has been successful, stopped by fsolout */
+    case 2:  break; /* Computation has been successful, stopped by fsol */
     default: break;
   }
 #ifdef __ODEPKGDEBUG__
@@ -801,7 +803,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vnum = IWORK[19]; /* A dopri solver result */
     vtem = mxCreateDoubleScalar ((double) vnum);
     fodepkgvar (1, "vlinsol", &vtem);
-    mexPrintf ("Number of fb-substitutions:  %d\n", vnum);
+    mexPrintf ("Number of forw/back. subst.: %d\n", vnum);
   }
 
   if (nlhs == 1) { /* Handle the PLHS array (1 output argument) */

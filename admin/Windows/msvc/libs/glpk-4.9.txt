@@ -10,6 +10,9 @@ Requirements: none
 
 1) Apply the patch
 
-2) nmake -f w32vc8d.mak
+2) Edit w32vc8d.mak and adapt the DESTDIR variable to match
+   your setup
 
-3) nmake -f w32vc8d.mak install
+3) nmake -f w32vc8d.mak
+
+4) nmake -f w32vc8d.mak install

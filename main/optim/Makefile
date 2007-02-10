@@ -2,10 +2,9 @@ sinclude ../../Makeconf
 
 
 PKG_FILES = COPYING DESCRIPTION INDEX $(wildcard src/*) \
-	$(wildcard inst/*) doc/*.pdf
-SUBDIRS = doc/
+	$(wildcard inst/*) 
 
-.PHONY: $(SUBDIRS)
+SUBDIRS = 
 
 pre-pkg/%::
 	@for _dir in $(SUBDIRS); do \

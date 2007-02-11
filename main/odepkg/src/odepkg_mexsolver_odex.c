@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      mkoctfile --mex -Wall -W -Wshadow -D__ODEPKGDEBUG__ \
      odepkg_mexsolver_odex.c odepkgmex.c odepkgext.c hairer/odex.f
 
-   or
+   or directly in octave
 
      mex -v -D__ODEPKGDEBUG__ odepkg_mexsolver_odex.c odepkgext.c \
      odepkgmex.c hairer/odex.f
@@ -203,7 +203,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (0, NULL, NULL);
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
-    vtmp = mxCreateString ("ode5d");
+    vtmp = mxCreateString ("odeox");
     if (mexCallMATLAB (0, NULL, 1, &vtmp, "help"))
       mexErrMsgTxt ("Calling \"help\" has failed");
     mexErrMsgTxt ("Number of input arguments must be greater than zero");
@@ -651,7 +651,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
     mxAddField (plhs[0], "solver");
     vnum = mxGetFieldNumber (plhs[0], "solver");
-    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("ode5d"));
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("odeox"));
 
     fodepkgvar (2, "Stats", &vtmp);
     if (mxIsLogicalScalarTrue (vtmp)) {
@@ -685,8 +685,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
       vnum = mxGetFieldNumber (vtem, "linsol");
       mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
 
-      mxAddField (plhs[0], "Stats");
-      vnum = mxGetFieldNumber (plhs[0], "Stats");
+      mxAddField (plhs[0], "stats");
+      vnum = mxGetFieldNumber (plhs[0], "stats");
       mxSetFieldByNumber (plhs[0], 0, vnum, vtem);
     }
 

@@ -100,3 +100,68 @@
        END IF
        CALJAC=.TRUE.
        CALHES=.TRUE.
+
+--- hairer/radau5.f     2007-02-04 13:39:30.000000000 +0100
++++ hairer/radau5.f     2007-02-11 11:29:29.000000000 +0100
+@@ -691,6 +691,10 @@
+ C *** *** *** *** *** *** ***
+ C  INITIALISATIONS
+ C *** *** *** *** *** *** ***
++      THQOLD=-1.0D0
++      DYNOLD=-1.0D0
++      HACC=-1.0D0
++      ERRACC=-1.0D0
+ C --------- DUPLIFY N FOR COMMON BLOCK CONT -----
+       NN=N
+       NN2=2*N
+@@ -701,7 +705,7 @@
+       INDEX2=NIND2.NE.0
+       INDEX3=NIND3.NE.0
+ C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
+-      IF (IMPLCT) CALL MAS(NM1,FMAS,LDMAS,RPAR,IPAR)
++      IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+ C ---------- CONSTANTS ---------
+       SQ6=DSQRT(6.D0)
+       C1=(4.D0-SQ6)/10.D0
+@@ -841,6 +845,8 @@
+       ELSE
+ C --- COMPUTE JACOBIAN MATRIX ANALYTICALLY
+          CALL JAC(N,X,Y,FJAC,LDJAC,RPAR,IPAR)
++C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
++         IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+       END IF
+       CALJAC=.TRUE.
+       CALHES=.TRUE.
+
+--- hairer/seulex.f     2007-02-04 13:40:00.000000000 +0100
++++ hairer/seulex.f     2007-02-11 13:46:00.000000000 +0100
+@@ -654,10 +654,11 @@
+           END DO
+        END IF
+ C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
+-      IF (IMPLCT) CALL MAS(NM1,FMAS,LDMAS,RPAR,IPAR)
++      IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+ C *** *** *** *** *** *** ***
+ C  INITIALISATIONS
+ C *** *** *** *** *** *** ***
++       HOPT=-1.0D0
+        LRDE=(KM+2)*NRD
+        MLE=MLJAC
+        MUE=MUJAC
+@@ -793,6 +794,8 @@
+             ELSE
+ C --- COMPUTE JACOBIAN MATRIX ANALYTICALLY
+                CALL JAC(N,X,Y,FJAC,LFJAC,RPAR,IPAR)
++C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
++               IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+            END IF
+            CALJAC=.TRUE.
+            CALHES=.TRUE.
+@@ -1174,6 +1177,7 @@
+       COMMON /COSEU/XOLD,H,NRD,IR
+ C ----- COMPUTE PLACE OF II-TH COMPONENT 
+       I=0 
++      CONTEX=0.0D0
+       DO J=1,NRD
+         IF (IC(J).EQ.II) I=J
+       END DO

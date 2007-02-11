@@ -52,7 +52,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 extern void F77_FUNC (rodas, RODAS) (int *N, void *FCN, int *IFCN, double *X,
   double *Y, double *XEND, double *H, double *RTOL, double *ATOL, int *ITOL,
   void *JAC, int *IJAC, int *MLJAC, int *MUJAC, void *DFX, int *IDFX,
-  void *MAS , int *IMAS, int *MLMAS, int *MUMAS,
+  void *MAS, int *IMAS, int *MLMAS, int *MUMAS,
   void *SOL, int *IOUT, double *WORK, int *LWORK, int *IWORK, int *LIWORK,
   double *RPAR, int *IPAR, int *VRET);
 
@@ -325,7 +325,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (0, NULL, NULL);
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
-    vtmp = mxCreateString ("oderd");
+    vtmp = mxCreateString ("odero");
     if (mexCallMATLAB (0, NULL, 1, &vtmp, "help"))
       mexErrMsgTxt ("Calling \"help\" has failed");
     mexErrMsgTxt ("Number of input arguments must be greater than zero");
@@ -821,7 +821,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
     mxAddField (plhs[0], "solver");
     vnum = mxGetFieldNumber (plhs[0], "solver");
-    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("oderd"));
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("odero"));
 
     fodepkgvar (2, "Stats", &vtmp);
     if (mxIsLogicalScalarTrue (vtmp)) {

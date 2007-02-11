@@ -317,7 +317,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (0, NULL, NULL);
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
-    vtmp = mxCreateString ("oderd");
+    vtmp = mxCreateString ("oder5");
     if (mexCallMATLAB (0, NULL, 1, &vtmp, "help"))
       mexErrMsgTxt ("Calling \"help\" has failed");
     mexErrMsgTxt ("Number of input arguments must be greater than zero");
@@ -530,7 +530,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (!mxIsEqual (mxGetField (vtmp, 0, "InitialStep"), mxGetField (vtem, 0, "InitialStep")))
     H = *mxGetPr (mxGetField (vtmp, 0, "InitialStep") );
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: The inital step size is %f\n", WORK[6]);
+  mexPrintf ("ODEPKGDEBUG: The inital step size is %f\n", H);
 #endif
 
   /* Handle the OdeOptions structure field: MAXSTEP */
@@ -539,7 +539,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (!mxIsEqual (mxGetField (vtmp, 0, "MaxStep"), mxGetField (vtem, 0, "MaxStep")))
     WORK[6] = *mxGetPr (mxGetField (vtmp, 0, "MaxStep") );
 #ifdef __ODEPKGDEBUG__
-  mexPrintf ("ODEPKGDEBUG: The maximum step size is %f\n", WORK[5]);
+  mexPrintf ("ODEPKGDEBUG: The maximum step size is %f\n", WORK[6]);
 #endif
 
   /* Handle the OdeOptions structure field: EVENTS */
@@ -727,9 +727,6 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* IWORK[11] = 0; */    /* Maximal number of stages NS */
   /* IWORK[12] = 0; */    /* Number of NS for the first step */
 
-  MLJAC = N;
-  MUJAC = N;
-
   /* FORTRAN SUBROUTINE RADAU5(N,FCN,X,Y,XEND,H,RTOL,ATOL,ITOL,JAC,IJAC,MLJAC,MUJAC, */
   /*   MAS,IMAS,MLMAS,MUMAS,SOLOUT,IOUT,WORK,LWORK,IWORK,LIWORK,RPAR,IPAR,IDID) */
 
@@ -822,7 +819,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
     mxAddField (plhs[0], "solver");
     vnum = mxGetFieldNumber (plhs[0], "solver");
-    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("oderd"));
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("oder5"));
 
     fodepkgvar (2, "Stats", &vtmp);
     if (mxIsLogicalScalarTrue (vtmp)) {

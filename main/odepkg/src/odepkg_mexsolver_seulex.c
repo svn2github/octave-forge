@@ -49,9 +49,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
    similar to the functions from other solvers, therefore there is nor
    explicit documentation for them in the manual. */
 
-extern void F77_FUNC (seulex, SEULEX) (int *N, void *FCN, 
-  int *IFCN, double *X, double *Y,
-  double *XEND, double *H, double *RTOL, double *ATOL, int *ITOL, 
+extern void F77_FUNC (seulex, SEULEX) (int *N, void *FCN, int *IFCN, double *X,
+  double *Y, double *XEND, double *H, double *RTOL, double *ATOL, int *ITOL,
   void *JAC, int *IJAC, int *MLJAC, int *MUJAC,
   void *MAS , int *IMAS, int *MLMAS, int *MUMAS,
   void *SOL, int *IOUT, double *WORK, int *LWORK, int *IWORK, int *LIWORK,
@@ -241,7 +240,7 @@ void F77_FUNC (fsol, FSOL) (int *NR, double *XOLD, double *X, double *Y,
     vref = (int)vdbl[0];
 
     if (vref > 0) { /* If the Refine option is > 0 */
-      mexPrintf ("----> %d %f %f %f %f %d %d\n", *N, *X, *XOLD, RC[0], RC[1], IC[0], IC[1]);
+      /* mexPrintf ("----> %d %f %f %f %f %d %d\n", *N, *X, *XOLD, RC[0], RC[1], IC[0], IC[1]); */
       vdob = (double *) mxMalloc (*N * sizeof (double));
 
       for (vcnt = 0; vcnt < vref; vcnt++) {
@@ -320,7 +319,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (0, NULL, NULL);
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
-    vtmp = mxCreateString ("oderd");
+    vtmp = mxCreateString ("odesx");
     if (mexCallMATLAB (0, NULL, 1, &vtmp, "help"))
       mexErrMsgTxt ("Calling \"help\" has failed");
     mexErrMsgTxt ("Number of input arguments must be greater than zero");
@@ -560,7 +559,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (!mxIsEqual (mxGetField (vtmp, 0, "Jacobian"), mxGetField (vtem, 0, "Jacobian"))) {
     IJAC = 1;     /* Tell the solver that we have a Jacobian matrix */
     MLJAC = N;    /* Tell the solver that the matrix is full */
-    WORK[2] = -1; /* Tell the solver to recompute Jacobian after every succesful step */
+    /* WORK[2] = -1; */ /* Tell the solver to recompute Jacobian after every succesful step */
     vtem = mxGetField (vtmp, 0, "Jacobian");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
       if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
@@ -728,9 +727,6 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* IWORK[08] = 0; */    /* Value for the M1 variable */
   /* IWORK[09] = 0; */    /* Value for the M2 variable */
 
-  MLJAC = N;
-  MUJAC = N;
-
   /* FORTRAN SUBROUTINE SEULEX(N,FCN,IFCN,X,Y,XEND,H,RTOL,ATOL,ITOL,JAC,IJAC,MLJAC,MUJAC, */
   /*   MAS,IMAS,MLMAS,MUMAS,SOLOUT,IOUT,WORK,LWORK,IWORK,LIWORK,RPAR,IPAR,IDID) */
 
@@ -824,7 +820,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
     mxAddField (plhs[0], "solver");
     vnum = mxGetFieldNumber (plhs[0], "solver");
-    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("oderd"));
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("odesx"));
 
     fodepkgvar (2, "Stats", &vtmp);
     if (mxIsLogicalScalarTrue (vtmp)) {

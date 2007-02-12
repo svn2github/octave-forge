@@ -107,7 +107,10 @@ def make_physconst_func(func_metadata,PATH):
     
     #func-name#'es => [Desc, Val,Units, Uncertanity]
     k=1;
-    for key,v in func_metadata.items():
+    key_sorted=func_metadata.keys();
+    key_sorted.sort();
+    for key in key_sorted:
+        v=func_metadata[key]; #sort by name
         print "   unit_data( %d ).name=\"%s\";"%(k,key);
         print "   unit_data( %d ).description=\"%s\";"%(k,v[0]);
         print "   unit_data( %d ).value=%s;"%(k,v[1]);
@@ -147,18 +150,37 @@ def make_physconst_func(func_metadata,PATH):
     print ""
     print " matches=[]; pmatches=[];"
     print " LN=length(arg);"
-    print " arg=toupper(arg); "
-    print " for idx = 1:length(unit_data)"
-    print "    if ( strcmp(arg,unit_data( idx ).name) == 1 )"
-    print "        matches=[matches, idx];"
-    print "    end"
-    print "    if ( strncmp(arg,unit_data( idx ).name,LN) == 1 )"
-    print "       pmatches=[pmatches, idx];"
-    print "    end"
+    print " arg=toupper(arg);"
+    #print " for idx = 1:length(unit_data) %replace to binary search"
+    #print "    if ( strcmp(arg,unit_data( idx ).name) == 1 )"
+    #print "        matches=[matches, idx];"
+    #print "    end"
+    #print " end"
+    print " %binary search"
+    print " low=1;high=length(unit_data);"
+    print " while ( low <= high ) "
+    print "   idx=low+floor((high-low)/2);"
+    print "   val=cstrcmp(unit_data( idx ).name,arg);"
+    print "   if val == 0"
+    print "      matches=[matches, idx];"
+    print "      break;"
+    print "   elseif val==-1"
+    print "      low=idx+1;"
+    print "   else %val ==+1";
+    print "      high=idx;"
+    print "   end"
     print " end"
+    print " if (length(matches) == 0) %search only when we dont have matches"
+    print "   for idx = 1:length(unit_data)"
+    print "     if ( strncmp(arg,unit_data( idx ).name,LN) == 1 )"
+    print "        pmatches=[pmatches, idx];"
+    print "     end"
+    print "   end"
+    print " end"
+    print ""
     print " matches = [matches, pmatches]; "
     print " if (length(matches) >= 1)"
-    print "       if (length(matches) > 1)"
+    print "       if (length(matches) == length(pmatches)) %Only partial matches exist"
     print "            warning(\" Too many matches. Picking first %s (1'st) by default for %s.\",unit_data(matches(1)).name,arg)"
     print "        end"
     print "    match=unit_data(matches(1));"
@@ -180,15 +202,40 @@ def make_physconst_func(func_metadata,PATH):
     print " end"
     print " return;"
     print "end"
+    print ""
+    print "function v=cstrcmp(s1,s2)"
+    print " L2=length(s2);"
+    print " L1=length(s1);"
+    print " L=min(L1,L2);"
+    print " for idx=1:L"
+    print """   p=s1(idx);
+    q=s2(idx);
+    if ( p ~= q )
+     v=sign(p-q);
+     return
+   end"""
+#    print "   if s1(idx)!=s2(idx)"
+#    print "     if ( s1(idx)>s2(idx) )"
+#    print "        v=+1;"
+#    print "     else"
+#    print "        v=-1;"
+#    print "     end"
+#    print "    return"
+#    print "   end"
+    print " end"
+    print " v=sign(L1-L2);"
+    print " return;"
+    print "end"
 
     ## tests
-    for key,v in func_metadata.items():
+    for key in key_sorted:
+        v=func_metadata[key];
         print "%%!assert( physical_constant( \"%s\" ),%s,eps);"%(key,v[1])
     
     sys.stdout.close()
     return
 
-    
+
 if __name__ == "__main__":
     y=file("nist-allascii.txt");
     x=y.readlines()[14:]; ## skip first 14 lines.
@@ -256,7 +303,7 @@ if __name__ == "__main__":
 
         #func-name#'es => [Desc, Val,Units, Uncertanity]
         func_metadata[name]=[Description,Val, Units, Uncertainity];
-
+        
     ##generate main file.
     make_physconst_func(func_metadata,PATH);
     
@@ -264,3 +311,4 @@ if __name__ == "__main__":
 
 
 ##python ./gen.py > constants.m && octave -q constants.m
+##octave -q --eval 'test physical_constant'

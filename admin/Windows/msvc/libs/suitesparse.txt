@@ -25,5 +25,5 @@ Requirement: cc-msvc, ar-msvc, BLAS, LAPACK
 	. CHOLMOD\Include\*.h => include\suitesparse
 	. UMFPACK\Lib\umfpack.lib => lib
 	. UMFPACK\Include\*.h => include\suitesparse
-	. CXSparse-C++\Source\cxsparse.lib => lib
-	. CXSparse-C++\Source\cs.h => include\suitesparse
+	. CXSparse\Source\cxsparse.lib => lib
+	. CXSparse\Source\cs.h => include\suitesparse

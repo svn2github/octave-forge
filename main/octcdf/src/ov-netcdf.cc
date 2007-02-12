@@ -333,9 +333,9 @@ Creates a cell array of all dimenstion in a NetCDF file. The length of the NetCD
     octave_ncvar& ncvar = (octave_ncvar&)args(0).get_rep();
 
     //    Cell  vars = Cell (dim_vector(1,ncvar.ndims()));
-    Cell  vars = Cell (dim_vector(1,ncvar.ncdims().length() ));
+    Cell  vars = Cell (dim_vector(1,ncvar.ncndims() ));
 
-    for (int i=0; i < ncvar.ncdims().length(); i++) {
+    for (int i=0; i < ncvar.ncndims(); i++) {
       octave_ncdim *d = new octave_ncdim(ncvar.get_ncfile(),ncvar.get_dimid(i));
       vars(i) = octave_value(d);
     }
@@ -823,6 +823,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
       i=i+1;
     }
 
+
   Array<int> perm_vector(rhs.ndims());
 
   for(i=0; i<rhs.ndims(); i++) { 
@@ -840,7 +841,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   // check number of elements
 
   if (rhs.numel() !=  sliced_numel && rhs.numel() != 1) 
-    error("unexpected number of elements, found %d, expected 1 or %d ",rhs.numel(),sliced_numel);
+    error("octcdf: unexpected number of elements, found %d, expected 1 or %d ",rhs.numel(),sliced_numel);
 
   switch (nctype)
     {
@@ -879,7 +880,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
       case netcdf_type:							\
 	{								\
 	  if (rhs.is_string())						\
-	    error("unexpected type: %s",rhs.type_name().c_str());	\
+	    error("octcdf: unexpected type: %s",rhs.type_name().c_str());\
 									\
 	  c_type *var = new  c_type[sliced_numel];			\
 									\

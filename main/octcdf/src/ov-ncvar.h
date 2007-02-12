@@ -34,7 +34,7 @@ typedef struct {
   dim_vector dimvec;
 
   // NetCDF-like dim_vector. A scale would have a dimension of 0
-  dim_vector ncdimvec;
+  vector<int> ncdimvec;
 
   int varid, natts;
   octave_ncfile* ncfile;
@@ -89,9 +89,9 @@ public:
 
   // Get dim_vector following NetCDF conventions
 
-  dim_vector ncdims() const {  return ncv->ncdimvec; }
+  vector<int> ncdims() const {  return ncv->ncdimvec; }
 
-  int ncndims() const  { return ncdims().length(); }
+  int ncndims() const  { return ncdims().size(); }
 
 
   void print(std::ostream & os, bool pr_as_read_syntax) const;

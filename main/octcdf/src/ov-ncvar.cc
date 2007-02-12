@@ -87,7 +87,8 @@ void octave_ncvar::read_info() {
   char name[NC_MAX_NAME];
   size_t length;
   nc_type nctype;
-  dim_vector dimvec, ncdimvec;
+  dim_vector dimvec;
+  vector<int> ncdimvec;
   std::list<std::string> dimnames;
 
   if (get_varid() == -1) return;
@@ -105,8 +106,12 @@ void octave_ncvar::read_info() {
   set_natts(natts);
 
   set_varname(string(name));
-  if (ndims > 2)
+  //if (ndims > 2)
   ncdimvec.resize(ndims);
+
+  // octave dimvec
+  // Number of dimensions is at least 2
+  dimvec.resize(max(ndims,2));
 
   // reverse dimids if FORTRAN_ORDER
 
@@ -125,25 +130,20 @@ void octave_ncvar::read_info() {
 
     set_dimid(i,dimids[i]);
     dimnames.push_back(name);  
-    ncdimvec(i) = length;
+    ncdimvec[i] = length;
+    dimvec(i) = length;
   }
 
-  // octave dimvec
-  // Number of dimensions is at least 2
 
-  dimvec.resize(max(ndims,2));
+  // fill remaining dimvec's with 1
 
-  if (ndims > 1)
-    dimvec = ncdimvec;
-  else {
+  if (ndims == 0) {
+    dimvec(0) = 1;
     dimvec(1) = 1;
-
-    if (ndims == 1)
-      dimvec(0) = ncdimvec(0);
-    else 
-      dimvec(0) = 1;
   }
-
+  else if (ndims == 1) {
+    dimvec(1) = 1;
+  }
 
   ncv->dimvec = dimvec;
   ncv->ncdimvec = ncdimvec;
@@ -379,7 +379,7 @@ void  octave_ncvar::print(std::ostream & os, bool pr_as_read_syntax = false) con
   os << "autonan = " << (int)autonan() << std::endl;
 
   os << "size = " << dims().str() << std::endl;
-  os << "ncsize = " << ncv->ncdimvec.str() << std::endl;
+  //  os << "ncsize = " << ncv->ncdimvec.str() << std::endl;
 
 //   os << "size = ";
 //   for (i=0; i<ndims()-1; i++) {

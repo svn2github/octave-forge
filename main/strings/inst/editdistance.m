@@ -15,24 +15,29 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-## usage: [dist,L]=editdistance(string1,string2,weights)
-## computes the Levenshtein edit distance between the two strings
+## -*- texinfo -*-
+## @deftypefn {Function File} [@var{dist},@var{L}] = {} editdistance(@var{string1},@var{string2},@var{weights})
+## computes the Levenshtein edit distance between the two strings.
 ## @var{string1} and @var{string2}. This operation is symmetrical.
 ## The optional argument @var{weights} specifies weights for the
-## deletion, matched, and insertion operations; these are set to
+## deletion, matched, and insertion operations; by default it is set to
 ## +1, 0, +1 respectively, so that a least editdistance means a 
 ## closer match between the two strings. This function implements
 ## the Levenshtein edit distance as presented in Wikipedia article,
 ## accessed Nov 2006. Also the levenshtein edit distance of a string
 ## with an empty string is defined to be its length.
 ## 
-## The default return value is dist the edit distance, and
-## the other return value  L is the distance matrix.
+## The default return value is @var{dist} the edit distance, and
+## the other return value  @var{L} is the distance matrix.
 ##
-## example: editdistance('marry','marie') 
+## @example
+## @group  
+##          editdistance('marry','marie') 
 ##          ##returns value +2 for the distance.
-##          
-## see also: 
+## @end group
+## @end example
+##
+## @end deftypefn
 ##
 
 function [dist,L]=editdistance(str1,str2,weights)

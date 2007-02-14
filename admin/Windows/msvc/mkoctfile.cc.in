@@ -491,7 +491,7 @@ int main(int argc, char **argv)
 
 			unlink(dfile.c_str());
 			cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " " + vars["CPPFLAGS"] + " " +
-			      vars["ALL_CFLAGS"] + " " + incflags  + " " + defs + " " + f;
+			      vars["ALL_CFLAGS"] + " " + incflags  + " " + defs + " " + quote_path(f);
 
 			FILE *fd = popen(cmd.c_str(), "r");
 			ofstream fo(dfile.c_str());
@@ -518,7 +518,7 @@ int main(int argc, char **argv)
 
 			unlink(dfile.c_str());
 			cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " " + vars["CPPFLAGS"] + " " +
-			      vars["ALL_CXXFLAGS"] + " " + incflags  + " " + defs + quote_path(f);
+			      vars["ALL_CXXFLAGS"] + " " + incflags  + " " + defs + " " + quote_path(f);
 
 			FILE *fd = popen(cmd.c_str(), "r");
 			ofstream fo(dfile.c_str());

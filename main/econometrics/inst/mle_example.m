@@ -1,15 +1,15 @@
 ## Copyright (C) 2003,2004  Michael Creel <michael.creel@uab.es>
-## 
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2 of the License, or
 ## (at your option) any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,7 +27,7 @@ theta = 1:3; # true coefficients are 1,2,3
 theta = theta';
 
 lambda = exp(x*theta);
-y = randp(lambda); # generate the dependent variable
+y = poisson_rnd(lambda); # generate the dependent variable
 
 ####################################
 # define arguments for mle_results #
@@ -38,7 +38,7 @@ theta = zeros(3,1);
 # data
 data = [y, x];
 # name of model to estimate
-model = "poisson"; 
+model = "poisson";
 modelargs = {0}; # if this is zero the function gives analytic score, otherwise not
 # parameter names
 names = str2mat("beta1", "beta2", "beta3");

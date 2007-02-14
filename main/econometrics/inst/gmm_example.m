@@ -1,22 +1,22 @@
 # Copyright (C) 2003,2004, 2005  Michael Creel <michael.creel@uab.es>
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 # GMM example file, shows initial consistent estimator,
 # estimation of efficient weight, and second round
-# efficient estimator 
+# efficient estimator
 
 
 n = 1000;
@@ -26,7 +26,7 @@ x = [ones(n,1) rand(n,k-1)];
 w = [x, rand(n,1)];
 theta = [-k+1; ones(k-1,1)];
 lambda = exp(x*theta);
-y = randp(lambda);
+y = poisson_rnd(lambda);
 [xs, scalecoef] = scale_data(x);
 
 

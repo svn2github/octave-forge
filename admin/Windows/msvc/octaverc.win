@@ -24,7 +24,7 @@ forge_path = sprintf ("%s%sforge", octave_config_info ("prefix"), filesep);
 if (exist (forge_path, "dir"))
   # addpath (genpath (sprintf ("%s%soct", forge_path, filesep)), "-end");
   # addpath (genpath (sprintf ("%s%sm", forge_path, filesep)), "-end");
-  addpath (genpath (forge_path), "-end");
+  addpath (genpath (forge_path));
   fprintf (" - Octave forge installed.\n");
   scite_path = sprintf ("%s%stools%swscite", octave_config_info ("prefix"), filesep, filesep);
   if (exist (scite_path, "dir"))

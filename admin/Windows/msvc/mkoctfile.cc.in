@@ -407,7 +407,7 @@ int main(int argc, char **argv)
 		}
 		else if (starts_with(arg, "-I"))
 		{
-			incflags += (" " + arg);
+			incflags += (" " + quote_path(arg));
 		}
 		else if (arg == "-idirafter")
 		{

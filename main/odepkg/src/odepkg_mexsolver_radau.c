@@ -556,6 +556,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (!mxIsEqual (mxGetField (vtmp, 0, "Jacobian"), mxGetField (vtem, 0, "Jacobian"))) {
     IJAC = 1;     /* Tell the solver that we have a Jacobian matrix */
     MLJAC = N;    /* Tell the solver that the matrix is full */
+    MUJAC = N;    /* Tell the solver that the matrix is full */
     WORK[2] = -1; /* Tell the solver to recompute Jacobian after every succesful step */
     vtem = mxGetField (vtmp, 0, "Jacobian");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
@@ -596,6 +597,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (!mxIsEqual (mxGetField (vtmp, 0, "Mass"), mxGetField (vtem, 0, "Mass"))) {
     IMAS = 1;  /* Tell the solver that we have a Jacobian matrix */
     MLMAS = N; /* Tell the solver that the matrix is full */
+    MUMAS = N; /* Tell the solver that the matrix is full */
     vtem = mxGetField (vtmp, 0, "Mass");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
       if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))

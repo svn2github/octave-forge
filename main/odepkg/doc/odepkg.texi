@@ -67,9 +67,9 @@ OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project
 
 @multitable @columnfractions .25 .75
 @item OdePkg Version 0.0.1
-@tab The initial release was already a modification of the old ``ode package'' that was hosted at Octave--Forge and that was written by Marc Compere somewhen between 1999 and 2001. The four variable step--size Runge--Kutta solvers and the four fixed step--size solvers have been merged. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initialy have not been there.
+@tab The initial release was already a modification of the old ``ode package'' that was hosted at Octave--Forge and that was written by Marc Compere somewhen between 1999 and 2001. The four variable step--size Runge--Kutta algorithms in three solver files and the three fixed step--size solvers have been merged. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initialy have not been there.
 @item OdePkg Version 0.1.x
-@tab The major milestone along version 0.1.x was that four stable solvers have been implemented (ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}) supporting all options that can be set for these kind of solvers and also all necessary functions for setting their options (eg. @command{odeset}, @command{odepkg_structure_check}, etc.). Since version 0.1.3 there is also code available that interfaces the Fortran solver @file{dopri5.f} that is written by Ernst Hairer and Gerhard Wanner (cf. @file{odepkg_mexsolver_dopri5.c} and the helper files @file{odepkgext.c} and @file{odepkgmex.c}).
+@tab The major milestone along versions 0.1.x was that four stable solvers have been implemented (ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}) supporting all options that can be set for these kind of solvers and also all necessary functions for setting their options (eg. @command{odeset}, @command{odepkg_structure_check}, etc.). Since version 0.1.3 there is also code available that interfaces the Fortran solver @file{dopri5.f} that is written by Ernst Hairer and Gerhard Wanner (cf. @file{odepkg_mexsolver_dopri5.c} and the helper files @file{odepkgext.c} and @file{odepkgmex.c}).
 @item @b{(current)} Version 0.2.x
 @tab The main work that has to be done along version 0.2.x is to make the interface functions for the solvers of Hairer and Wanner stable enough, so that they can be installed by default (by now they have to be installed by hand if somebody wants them).
 @item @b{(future)} Version 0.3.x
@@ -141,7 +141,6 @@ Interface functions for the solvers from Ernst Hairer and Gerhard Wanner (hosted
 @node ODE/DAE options,  , Solver families, User's Guide
 @section ODE/DAE options
 @cindex ODE/DAE options
-
 The default values of odeset can be displayed if odeset is called without any input argument and one output argument argument, eg. the following way
 @example
 A = odeset ();
@@ -150,64 +149,88 @@ disp (A);
 
 @table @samp
 @item RelTol
-The option @option{RelTol} is used to set the relative error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalised it may be of the form 
-@iftex
-@math{\vec{e}(t) = \max\left(\overrightarrow{\textstyle{RelTol}}^T \cdot \vec{u}, AbsTol\right)}.
-@end iftex
-@ifnottex 
-@math{error_{hjk} = max (RelTol \cdot u)} 
-@end ifnottex
-Run
+The option @option{RelTol} is used to set the relative error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalised it may be of the form @math{e(t) = max (RelTol^T y(t), AbsTol)}. Run
 @example
 A = odeset ('RelTol', 1, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('RelTol', 1e-10, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option RelTol.
+to see the effect of using different values for the option @option{RelTol}.
 
 @item AbsTol
-The option @option{AbsTol} is used to set the absolute error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalised it may be of the form
-@math{vtau = max (vodeoptions.RelTol * vu', vodeoptions.AbsTol);}
-Run
+The option @option{AbsTol} is used to set the absolute error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalised it may be of the form @math{e(t) = max (RelTol^T y(t), AbsTol)}. Run
 @example
 A = odeset ('AbsTol', 1e-3, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('AbsTol', 1e-10, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option AbsTol.
+to see the effect of using different values for the option @option{AbsTol}.
 
 @item NormControl
-The option @option{NormControl} is used to set the type of error tolerance calculation of the solver while solving. It can either be the string 'on' or 'off'. At the time the solver starts the initialisation procedure a warning message can be displayed if the solver will ignore the 'on' setting of this option because of a missing implementation. The definite error estimation equation if set 'on' also depends on the solver that is used, but generalised it may be of the form
-@math{wuff}
-Run
+The option @option{NormControl} is used to set the type of error tolerance calculation of the solver while solving. It can either be the string @command{'on'} or @command{'off'}. At the time the solver starts the initialisation procedure a warning message may be displayed if the solver will ignore the @command{'on'} setting of this option because of an unhandled resp. missing implementation. The definite error estimation equation if set @command{'on'} also depends on the solver that is used, but generalised it may be of the form @math{e(t) = max (RelTol^T max || y(t), 1.0 ||, AbsTol)}. Run
 @example
 A = odeset ('NormControl', 'on', 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('NormControl', 'off', 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option NormControl.
+to see the effect of using different values for the option @option{NormControl}.
 
 @item MaxStep
+The option @option{MaxStep} is used to set the maximum step size for the solver that is used while solving. It can only be a positive scalar. By default this value is set internally by every solver and also may be different when using different solvers. Run
+@example
+A = odeset ('MaxStep', 10, 'OutputFcn', @@odeprint);
+ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
+B = odeset ('MaxStep', 1e-1, 'OutputFcn', @@odeprint);
+ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
+@end example
+to see the effect of using different values for the option @option{MaxStep}.
 
 @item InitialStep
+The option @option{InitialStep} is used to set the initial first step size for the solver. It can only be a positive scalar. By default this value is set internally by every solver and also may be different when using different solvers. Run
+@example
+A = odeset ('InitialStep', 1, 'OutputFcn', @@odeprint);
+ode78 (@@odepkg_equations_vanderpol, [0 1], [2 0], A);
+B = odeset ('InitialStep', 1e-5, 'OutputFcn', @@odeprint);
+ode78 (@@odepkg_equations_vanderpol, [0 1], [2 0], B);
+@end example
+to see the effect of using different values for the option @option{InitialStep}.
 
 @item InitialSlope
+The option @option{InitialSlope} is not handled by any of the solvers by now.
 
 @item OutputFcn
-The option OutputFcn can be used to set up an output function for displaying the results of the solver while solving. It must be a function handle to a valid function. There are four predefined output functions available with OdePkg. @command{odeprint} prints the actual time values and results while solving in the octave window, @command{odeplot} plots the results while solving over time in a new figure window, @command{odephas2} plots the first result over the second result as a two--dimensional plot while solving and @command{odephas3} plots the first result over the second result over the third result as a three--dimensional plot while solving. Run
+The option @option{OutputFcn} can be used to set up an output function for displaying the results of the solver while solving. It must be a function handle to a valid function. There are four predefined output functions available with OdePkg. @command{odeprint} prints the actual time values and results in the octave window while solving, @command{odeplot} plots the results over time in a new figure window while solving, @command{odephas2} plots the first result over the second result as a two--dimensional plot while solving and @command{odephas3} plots the first result over the second result over the third result as a three--dimensional plot while solving. Run
 @example
 A = odeset ('OutputFcn', @@odeprint);
 ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], A);
 @end example
-to see the effect of using an output function with the option OutputFcn. User defined output functions can also be used, the function definition of the output function must then be of the form
-@c @code
-function [] = (t, y, XXXX)
-@c @end code
+to see the effect of using an output function with the option @option{OutputFcn}. User defined output functions can also be used. A typical framework for a self--made output function may then be of the form
+@example
+function [vret] = odeoutput (vt, vy, vdeci, varargin)
+  switch vdeci
+    case 'init'
+      ## Do everything needed to intialize output function
+    case 'calc'
+      ## Do everything needed to create output
+    case 'done'
+      ## Do everything needed to clean up output function
+  endswitch
+endfunction
+@end example
 
 @item Refine
+The option @option{Refine} is used to set the interpolation factor that is used to increase the quality for the output values if an output function is also set with the option @option{OutputFcn}. It can only be a scalar integer value @math{0<=Refine<=5}. Run
+@example
+A = odeset ('Refine', 0, 'OutputFcn', @@odeplot);
+ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
+B = odeset ('Refine', 3, 'OutputFcn', @@odeplot);
+ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
+@end example
+to see the effect of using different values for the option @option{AbsTol}.
+
 @item OutputSel
 @item Stats
 
@@ -220,12 +243,13 @@ function [] = (t, y, XXXX)
 @item MvPattern 
 @item MassSingular
 
-Others
 @item NonNegative
-At the moment there is no solver that can handle this option.
+The option @option{NonNegative} is not handled by any of the solvers by now.
 @item Events
 @item MaxOrder
+The option @option{MaxOrder} is not handled by any of the solvers by now.
 @item BDF
+The option @option{BDF} is not handled by any of the solvers by now.
 @end table
 
 @c %*** End of second chapter: User's Guide

@@ -25,21 +25,16 @@ static bool initialized = false;
 static map<string,string> vars;
 
 static string OCTAVE_VERSION = %OCTAVE_CONF_VERSION%;
-static string OCTAVE_HOME;
 
-static std::string substitute_home(const std::string& s)
+static std::string substitute_prefix(const std::string& s, const std::string& prefix, const std::string& new_prefix)
 {
 	std::string retval = s;
-	std::string PREFIX = vars["PREFIX"];
 
-	if (!PREFIX.empty() && OCTAVE_HOME != PREFIX)
+	if (!prefix.empty() && new_prefix != prefix)
 	{
-		int len = PREFIX.length(), start = 0;
-		while ((start=retval.find(PREFIX, start)) != NPOS)
-		{
-			retval.replace(start, len, OCTAVE_HOME);
-			start += len;
-		}
+		int len = prefix.length();
+		if (retval.find(prefix) == 0)
+			retval.replace(0, len, new_prefix);
 	}
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
@@ -71,11 +66,11 @@ static string get_line(FILE *fp)
 }
 
 
-static string get_variable(const char *name, const char *defval)
+static string get_variable(const char *name, const string& defval)
 {
 	const char *val = getenv(name);
 	if (val == NULL || val[0] == '\0')
-		return string(defval);
+		return defval;
 	else
 		return string(val);
 }
@@ -94,8 +89,7 @@ static void initialize(void)
 
 	initialized = true;
 
-	const char *homestr = getenv("OCTAVE_HOME");
-	OCTAVE_HOME = (homestr ? homestr : "");
+	vars["OCTAVE_HOME"] = get_variable("OCTAVE_HOME", "");
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 	int n = 1024;
@@ -123,15 +117,41 @@ static void initialize(void)
 		size_t pos = bin_dir.rfind ("\\bin\\");
 
 		if (pos != NPOS)
-			OCTAVE_HOME = bin_dir.substr (0, pos);
+			vars["OCTAVE_HOME"] = bin_dir.substr (0, pos);
 	}
 #endif
 	
 	vars["SED"] = get_variable("SED", %OCTAVE_CONF_SED%);
-	vars["PREFIX"] = %OCTAVE_PREFIX%;
+
+	vars["OCTAVE_CONF_PREFIX"] = %OCTAVE_CONF_PREFIX%;
+
+	std::string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
+	std::string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
+	std::string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
+
+	if (! vars["OCTAVE_HOME"].empty())
+	{
+		DEFAULT_OCTINCLUDEDIR = substitute_prefix(DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_CONF_PREFIX"], vars["OCTAVE_HOME"]);
+		DEFAULT_INCLUDEDIR = substitute_prefix(DEFAULT_INCLUDEDIR, vars["OCTAVE_CONF_PREFIX"], vars["OCTAVE_HOME"]);
+		DEFAULT_OCTLIBDIR = substitute_prefix(DEFAULT_OCTLIBDIR, vars["OCTAVE_CONF_PREFIX"], vars["OCTAVE_HOME"]);
+	}
+
+	vars["OCTINCLUDEDIR"] = get_variable("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);
+	vars["INCLUDEDIR"] = get_variable("INCLUDEDIR", DEFAULT_INCLUDEDIR);
+	vars["OCTLIBDIR"] = get_variable("OCTLIBDIR", DEFAULT_OCTLIBDIR);
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+	std::string DEFAULT_INCFLAGS = "-I" + vars["OCTINCLUDEDIR"] + " -I" + vars["OCTINCLUDEDIR"] + "\\octave";
+#else
+	std::string DEFAULT_INCFLAGS = "-I" + vars["OCTINCLUDEDIR"] + " -I" + vars["OCTINCLUDEDIR"] + "/octave";
+#endif
+	if (vars["INCLUDEDIR"] != "/usr/include")
+		DEFAULT_INCFLAGS += " -I" + vars["INCLUDEDIR"];
+
+	std::string DEFAULT_LFLAGS = "-L" + vars["OCTLIBDIR"];
 
 	vars["CPPFLAGS"] = get_variable("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
-	vars["INCFLAGS"] = substitute_home(get_variable("INCFLAGS", %OCTAVE_CONF_MKOCTFILE_INCFLAGS%));
+	vars["INCFLAGS"] = get_variable("INCFLAGS", DEFAULT_INCFLAGS);
 	vars["F2C"] = get_variable("F2C", %OCTAVE_CONF_F2C%);
 	vars["F2CFLAGS"] = get_variable("F2CFLAGS", %OCTAVE_CONF_F2CFLAGS%);
 	vars["F77"] = get_variable("F77", %OCTAVE_CONF_F77%);
@@ -165,7 +185,7 @@ static void initialize(void)
 	vars["LD_CXX"] = get_variable("LD_CXX", %OCTAVE_CONF_LD_CXX%);
 	vars["LDFLAGS"] = get_variable("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
 	vars["LD_STATIC_FLAG"] = get_variable("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
-	vars["LFLAGS"] = substitute_home(get_variable("LFLAGS", %OCTAVE_CONF_MKOCTFILE_LFLAGS%));
+	vars["LFLAGS"] = get_variable("LFLAGS", DEFAULT_LFLAGS);
 
 	vars["ALL_FFLAGS"] = vars["FFLAGS"];
 
@@ -258,6 +278,10 @@ static string help_msg =
 "                            .f90  Fortran source (free form)\n"
 "                            .F90  Fortran source (free form)\n"
 "                            .o    object file\n"
+"                            .a    library file\n"
+#ifdef _MSC_VER
+"                            .lib  library file\n"
+#endif
 "\n";
 
 static string basename(const string& s, bool strip_path = false)
@@ -300,7 +324,7 @@ int main(int argc, char **argv)
 {
 	initialize();
 
-	string objfiles, octfile, outputfile, incflags, defs, ldflags, pass_on_options, output_ext, file, output_option, cmd;
+	string objfiles, libfiles, octfile, outputfile, incflags, defs, ldflags, pass_on_options, output_ext, file, output_option, cmd;
 	bool strip, no_oct_file_strip_on_this_platform, link, link_stand_alone, depend, compile;
 	list<string> cfiles, ccfiles, f77files;
 	int result = 0;
@@ -309,6 +333,7 @@ int main(int argc, char **argv)
 	//ccfiles = "";
 	//f77files = "";
 	objfiles = "";
+	libfiles = "";
 	octfile = "";
 	outputfile = "";
 	incflags = "";
@@ -361,6 +386,11 @@ int main(int argc, char **argv)
 			file = arg;
 			objfiles += (" " + quote_path(arg));
 		}
+		else if (ends_with(arg, ".lib") || ends_with(arg, ".a"))
+		{
+			file = arg;
+			libfiles += (" " + quote_path(arg));
+		}
 		else if (arg == "-d" || arg == "--debug" || arg == "-v" || arg == "--verbose")
 		{
 			debug = true;
@@ -396,11 +426,6 @@ int main(int argc, char **argv)
 		else if (starts_with(arg, "-Wl,") || starts_with(arg, "-l") || starts_with(arg, "-L") || starts_with(arg, "-R"))
 		{
 			ldflags += (" " + arg);
-		}
-		else if (ends_with(arg, ".lib") || ends_with(arg, ".a"))
-		{
-			// FIXME: should probably quote this
-			ldflags += (" " + quote_path(arg));
 		}
 		else if (arg == "-M" || arg == "--depend")
 		{
@@ -637,7 +662,7 @@ int main(int argc, char **argv)
 			if (!vars["LD_CXX"].empty())
 			{
 				cmd= vars["LD_CXX"] + " " + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " " + vars["RDYNAMIC_FLAG"] + " " +
-				     vars["ALL_LDFLAGS"] + " " +  pass_on_options + " " +  output_option + " " + objfiles + " " +
+				     vars["ALL_LDFLAGS"] + " " +  pass_on_options + " " +  output_option + " " + objfiles + " " + libfiles + " " +
 				     ldflags + " " + vars["LFLAGS"] + " " + vars["RLD_FLAG"] + " " + vars["OCTAVE_LIBS"] + " " + 
 				     vars["BLAS_LIBS"] + " " + vars["FFTW_LIBS"] + " " + vars["LIBREADLINE"] + " " + vars["LIBS"] + " " +
 				     vars["FLIBS"];
@@ -654,7 +679,7 @@ int main(int argc, char **argv)
 			string LINK_DEPS = vars["LFLAGS"] + " " + vars["OCTAVE_LIBS"] + " " + vars["LDFLAGS"] + " " + vars["BLAS_LIBS"] + " " +
 					   vars["FFTW_LIBS"] + " " + vars["LIBS"] + " " + vars["FLIBS"];
 			cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " " + pass_on_options + " -o " + octfile + " " + objfiles + " " +
-			      ldflags + " " + LINK_DEPS;
+			      libfiles + " " + ldflags + " " + LINK_DEPS;
 			result = run_command(cmd);
 		}
 

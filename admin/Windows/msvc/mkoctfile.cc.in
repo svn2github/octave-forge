@@ -123,7 +123,7 @@ static void initialize(void)
 	
 	vars["SED"] = get_variable("SED", %OCTAVE_CONF_SED%);
 
-	vars["OCTAVE_CONF_PREFIX"] = %OCTAVE_CONF_PREFIX%;
+	vars["OCTAVE_PREFIX"] = %OCTAVE_CONF_PREFIX%;
 
 	std::string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
 	std::string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
@@ -131,9 +131,9 @@ static void initialize(void)
 
 	if (! vars["OCTAVE_HOME"].empty())
 	{
-		DEFAULT_OCTINCLUDEDIR = substitute_prefix(DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_CONF_PREFIX"], vars["OCTAVE_HOME"]);
-		DEFAULT_INCLUDEDIR = substitute_prefix(DEFAULT_INCLUDEDIR, vars["OCTAVE_CONF_PREFIX"], vars["OCTAVE_HOME"]);
-		DEFAULT_OCTLIBDIR = substitute_prefix(DEFAULT_OCTLIBDIR, vars["OCTAVE_CONF_PREFIX"], vars["OCTAVE_HOME"]);
+		DEFAULT_OCTINCLUDEDIR = substitute_prefix(DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
+		DEFAULT_INCLUDEDIR = substitute_prefix(DEFAULT_INCLUDEDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
+		DEFAULT_OCTLIBDIR = substitute_prefix(DEFAULT_OCTLIBDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
 	}
 
 	vars["OCTINCLUDEDIR"] = get_variable("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);

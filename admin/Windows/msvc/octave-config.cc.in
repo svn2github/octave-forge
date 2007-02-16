@@ -37,16 +37,16 @@ static std::string help_msg =
 "			  ARCHLIBDIR	         LOCALARCHLIBDIR\n"
 "			  BINDIR	         LOCALFCNFILEDIR\n"
 "			  DATADIR	         LOCALOCTFILEDIR\n"
-"			  EXEC_PREFIX	         LOCALSTARTUPFILEDIR\n"
-"			  FCNFILEDIR	         LOCALVERARCHLIBDIR\n"
-"			  LOCALVEROCTFILEDIR	 LOCALVERFCNFILEDIR\n"
-"			  IMAGEDIR	         MAN1DIR\n"
-"			  MAN1EXT	         MANDIR\n"
-"			  INCLUDEDIR	         OCTFILEDIR\n"
-"			  INFODIR	         OCTINCLUDEDIR\n"
-"			  INFOFILE	         OCTLIBDIR\n"
-"			  LIBDIR	         PREFIX\n"
-"			  LIBEXECDIR	         STARTUPFILEDIR\n"
+"			  DATAROOTDIR	         LOCALSTARTUPFILEDIR\n"
+"			  EXEC_PREFIX	         LOCALVERARCHLIBDIR\n"
+"			  FCNFILEDIR		 LOCALVERFCNFILEDIR\n"
+"			  LOCALVEROCTFILEDIR	 MAN1DIR\n"
+"			  IMAGEDIR	         MANDIR\n"
+"			  MAN1EXT	         OCTFILEDIR\n"
+"			  INCLUDEDIR	         OCTINCLUDEDIR\n"
+"			  INFODIR	         OCTLIBDIR\n"
+"			  INFOFILE	         PREFIX\n"
+"			  LIBDIR	         STARTUPFILEDIR\n"
 "			  LIBEXECDIR		 VERSION\n"
 "\n"
 "  -v, --version         Print the Octave version number.\n"
@@ -116,8 +116,8 @@ static void initialize(void)
 	vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
 	vars["ARCHLIBDIR"] = substitute_prefix (%OCTAVE_ARCHLIBDIR%, PREFIX, OCTAVE_HOME);
 	vars["BINDIR"] = substitute_prefix (%OCTAVE_BINDIR%, PREFIX, OCTAVE_HOME);
-	//vars["DATADIR"] =substitute_prefix (%OCTAVE_DATADIR%, PREFIX, OCTAVE_HOME);
-	vars["DATADIR"] =substitute_prefix (%OCTAVE_DATAROOTDIR%, PREFIX, OCTAVE_HOME);
+	vars["DATADIR"] =substitute_prefix (%OCTAVE_DATADIR%, PREFIX, OCTAVE_HOME);
+	vars["DATAROOTDIR"] =substitute_prefix (%OCTAVE_DATAROOTDIR%, PREFIX, OCTAVE_HOME);
 	vars["EXEC_PREFIX"] =substitute_prefix (%OCTAVE_EXEC_PREFIX%, PREFIX, OCTAVE_HOME);
 	vars["FCNFILEDIR"] =substitute_prefix (%OCTAVE_FCNFILEDIR%, PREFIX, OCTAVE_HOME);
 	vars["IMAGEDIR"] =substitute_prefix (%OCTAVE_IMAGEDIR%, PREFIX, OCTAVE_HOME);

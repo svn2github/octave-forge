@@ -174,27 +174,51 @@ void F77_FUNC (fmas, FMAS) (int *N, double *X, double *Y, double *AM,
 
   fodepkgvar (2, "Mass", &vmas);
   if (mxIsChar (vmas)) { /* Found the name of the Mass function */
-    /* Get number of varargin elements for allocating memory */
-    fodepkgvar (2, "varargin", &vtmp);
-    vnum = mxGetNumberOfElements (vtmp);
+    fodepkgvar (2, "MStateDependence", &vtmp);
+    if (mxIsEqual (vtmp, mxCreateLogicalScalar (true))) {
+      /* Get number of varargin elements for allocating memory */
+      fodepkgvar (2, "varargin", &vtmp);
+      vnum = mxGetNumberOfElements (vtmp);
 
-    /* Allocate memory and set up variables lhs-arguments and rhs-arguments */
-    vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
-    vrhs = (mxArray **) mxMalloc ((2 + vnum) * sizeof (mxArray *));
-    vrhs[0] = mxCreateDoubleScalar (*X);
+      /* Allocate memory and set up variables lhs-arguments and rhs-arguments */
+      vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
+      vrhs = (mxArray **) mxMalloc ((2 + vnum) * sizeof (mxArray *));
+      vrhs[0] = mxCreateDoubleScalar (*X);
 
-    /* Copy the values that are given from the solver into the mxArray */
-    vrhs[1] = mxCreateDoubleMatrix (*N, 1, mxREAL);
-    memcpy ((void *) mxGetPr (vrhs[1]), (void *) Y, *N * sizeof (double));
+      /* Copy the values that are given from the solver into the mxArray */
+      vrhs[1] = mxCreateDoubleMatrix (*N, 1, mxREAL);
+      memcpy ((void *) mxGetPr (vrhs[1]), (void *) Y, *N * sizeof (double));
 
-    if (vnum > 0) /* Fill up vrhs[2..] */
-      for (vcnt = 0; vcnt < vnum; vcnt++)
-        vrhs[vcnt+2] = mxGetCell (vtmp, vcnt);
+      if (vnum > 0) /* Fill up vrhs[2..] */
+        for (vcnt = 0; vcnt < vnum; vcnt++)
+          vrhs[vcnt+2] = mxGetCell (vtmp, vcnt);
 
-    /* Evaluate the ode function in the octave workspace */
-    if (mexCallMATLAB (1, vlhs, vnum+2, vrhs, mxArrayToString (vmas))) {
-      sprintf (vmsg, "Calling \"%s\" has failed", mxArrayToString (vmas));
-      mexErrMsgTxt (vmsg);
+      /* Evaluate the mass function in the octave workspace */
+      if (mexCallMATLAB (1, vlhs, vnum+2, vrhs, mxArrayToString (vmas))) {
+        sprintf (vmsg, "Calling \"%s\" has failed", mxArrayToString (vmas));
+        mexErrMsgTxt (vmsg);
+      }
+    }
+
+    else { /* Call the mass function with one argument less */
+      /* Get number of varargin elements for allocating memory */
+      fodepkgvar (2, "varargin", &vtmp);
+      vnum = mxGetNumberOfElements (vtmp);
+
+      /* Allocate memory and set up variables lhs-arguments and rhs-arguments */
+      vlhs = (mxArray **) mxMalloc (sizeof (mxArray *));
+      vrhs = (mxArray **) mxMalloc ((1 + vnum) * sizeof (mxArray *));
+      vrhs[0] = mxCreateDoubleScalar (*X);
+
+      if (vnum > 0) /* Fill up vrhs[1..] */
+        for (vcnt = 0; vcnt < vnum; vcnt++)
+          vrhs[vcnt+1] = mxGetCell (vtmp, vcnt);
+
+      /* Evaluate the mass function in the octave workspace */
+      if (mexCallMATLAB (1, vlhs, vnum+1, vrhs, mxArrayToString (vmas))) {
+        sprintf (vmsg, "Calling \"%s\" has failed", mxArrayToString (vmas));
+        mexErrMsgTxt (vmsg);
+      }
     }
 
     /* Transpose the matrix, because Fortran stores elements column-wise */
@@ -497,9 +521,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     vdbl = mxGetPr (vtmp);
     for (vcnt = 0; vcnt < vnum; vcnt++)
       if ((int)(vdbl[vcnt]) > N) {
-  sprintf (vmsg, "Found invalid number element \"%d\" in option \"OuputSel\"", 
-    (int)(vdbl[vcnt]));
-  mexErrMsgTxt (vmsg);
+        sprintf (vmsg, "Found invalid number element \"%d\" in option \"OuputSel\"", 
+          (int)(vdbl[vcnt]));
+        mexErrMsgTxt (vmsg);
       }
     fodepkgvar (1, "OutputSelection", &vtmp);
   }
@@ -564,6 +588,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (!mxIsEqual (mxGetField (vtmp, 0, "Jacobian"), mxGetField (vtem, 0, "Jacobian"))) {
     IJAC = 1;     /* Tell the solver that we have a Jacobian matrix */
     MLJAC = N;    /* Tell the solver that the matrix is full */
+    MUJAC = N;    /* Tell the solver that the matrix is full */
     /* WORK[2] = -1; */ /* Tell the solver to recompute Jacobian after every succesful step */
     vtem = mxGetField (vtmp, 0, "Jacobian");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
@@ -604,6 +629,11 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   if (!mxIsEqual (mxGetField (vtmp, 0, "Mass"), mxGetField (vtem, 0, "Mass"))) {
     IMAS = 1;  /* Tell the solver that we have a Jacobian matrix */
     MLMAS = N; /* Tell the solver that the matrix is full */
+    MUMAS = N; /* Tell the solver that the matrix is full */
+
+    /* BugFix for the rodas solver - if no Jacobian but a mass matrix is given */
+    if (IJAC == 0) {MLJAC = N; MUJAC = N;}
+
     vtem = mxGetField (vtmp, 0, "Mass");
     if (mxGetClassID (vtem) == mxFUNCTION_CLASS) { /* function handle */
       if (mexCallMATLAB (1, &vtmp, 1, &vtem, "func2str"))
@@ -619,12 +649,16 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   /* Handle the OdeOptions structure field: MSTATEDEP */
   fodepkgvar (2, "OdeOptions", &vtmp);
-  fodepkgvar (2, "DefaultOptions", &vtem);
-  if (!mxIsEqual (mxGetField (vtmp, 0, "MStateDependence"), mxGetField (vtem, 0, "MStateDependence")))
-    mexWarnMsgTxt ("Option \"MStateDependence\" will be ignored by this solver");
+  if (mxIsEqual (mxGetField (vtmp, 0, "MStateDependence"), mxCreateString ("none"))) {
+    vtem = mxCreateLogicalScalar (false);
+    fodepkgvar (1, "MStateDependence", &vtem);
+  }
+  else {
+    vtem = mxCreateLogicalScalar (true);
+    fodepkgvar (1, "MStateDependence", &vtem);
+  }
 #ifdef __ODEPKGDEBUG__
-  else
-    mexPrintf ("ODEPKGDEBUG: The MStateDependence option has not been set\n");
+  mexPrintf ("ODEPKGDEBUG: The MStateDependence option was set successfully\n");
 #endif
 
   /* Handle the OdeOptions structure field: MVPATTERN */

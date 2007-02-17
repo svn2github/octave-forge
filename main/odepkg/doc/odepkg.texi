@@ -169,7 +169,7 @@ ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 to see the effect of using different values for the option @option{AbsTol}.
 
 @item NormControl
-The option @option{NormControl} is used to set the type of error tolerance calculation of the solver while solving. It can either be the string @command{'on'} or @command{'off'}. At the time the solver starts the initialisation procedure a warning message may be displayed if the solver will ignore the @command{'on'} setting of this option because of an unhandled resp. missing implementation. The definite error estimation equation if set @command{'on'} also depends on the solver that is used, but generalised it may be of the form @math{e(t) = max (RelTol^T max || y(t), 1.0 ||, AbsTol)}. Run
+The option @option{NormControl} is used to set the type of error tolerance calculation of the solver while solving. It can either be the string @command{'on'} or @command{'off'}. At the time the solver starts the initialisation procedure a warning message may be displayed if the solver will ignore the @command{'on'} setting of this option because of an unhandled resp. missing implementation. The definite error estimation equation if set @command{'on'} also depends on the solver that is used, but generalised it may be of the form @math{e(t) = max (RelTol^T max ( norm (y(t), Inf)), AbsTol)}. Run
 @example
 A = odeset ('NormControl', 'on', 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
@@ -220,34 +220,141 @@ function [vret] = odeoutput (vt, vy, vdeci, varargin)
   endswitch
 endfunction
 @end example
+The output function @command{odeplot} is also set automatically if the solver calculation routine is called without any output argument. Run
+@example
+ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0]);
+@end example
+to see an example.
 
 @item Refine
-The option @option{Refine} is used to set the interpolation factor that is used to increase the quality for the output values if an output function is also set with the option @option{OutputFcn}. It can only be a scalar integer value @math{0<=Refine<=5}. Run
+The option @option{Refine} is used to set the interpolation factor that is used to increase the quality for the output values if an output function is also set with the option @option{OutputFcn}. It can only be a integer value @math{0<=Refine<=5}. Run
 @example
 A = odeset ('Refine', 0, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('Refine', 3, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{AbsTol}.
+to see the effect of using different values for the option @option{Refine}.
 
 @item OutputSel
+The option @option{OutputSel} is used to set the componentes for which output has to be performed if an output function is also set with the option @option{OutputFcn}. It can only be a vector of integer values. Run
+@example
+A = odeset ('OutputSel', [1, 2], 'OutputFcn', @@odeplot);
+ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
+B = odeset ('OutputSel', [2], 'OutputFcn', @@odeplot);
+ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
+@end example
+to see the effect of using different values for the option @option{OutputSel}.
+
 @item Stats
+The option @option{Stats} is used to print cost statistics about the solving process after solving has been finished. It can either be the string @command{'on'} or @command{'off'}. Run
+@example
+A = odeset ('Stats', 'off');
+[a, b] = ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], A);
+B = odeset ('Stats', 'on');
+[c, d] = ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], B);
+@end example
+to see the effect of using different values for the option @option{Stats}. The cost statistics cn also be obtained if the solver calculation routine is called with one output argument. The cost statistics then are in the output structure in field @option{stats}. Run
+@example
+A = odeset ('Stats', 'on');
+B = ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], A);
+disp (B);
+@end example
+to see an example.
 
 @item Jacobian
+The option @option{Jacobian} can be used to set up an external Jacobian function or Jacobian matrix for DAE solvers to achieve faster and better results (ODE Runge--Kutta solvers do not need to handle a Jacobian function handle or Jacobian matrix). It must either be a function handle to a valid function or a full constant matrix of size squared the dimension of the set of differential equations. Run
+@example
+function vdy = fpol (vt, vy, varargin)
+  vdy = [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+endfunction
+
+function vr = fjac (vt, vy, varargin)
+  vr = [0, 1; ...
+        -1-2*vy(1)*vy(2), 1-vy(1)^2];
+endfunction
+
+A = odeset ('Stats', 'on');
+B = odepkg_mexsolver_radau (@@fpol, [0 20], [2 0], A);
+C = odeset ('Jacobian', @@fjac, 'Stats', 'on');
+D = odepkg_mexsolver_radau (@@fpol, [0 20], [2 0], C);
+@end example
+to see the effect of using an Jacobian function with the option @option{Jacobian}. User defined Jacobian functions must have the form as described before (ie. @samp{function vr = fjac (vt, vy, varargin)}.
+
 @item JPattern
+The option @option{JPattern} is not handled by any of the solvers by now.
+
 @item Vectorized
+The option @option{Vectorized} is not handled by any of the solvers by now.
 
 @item Mass 
-@item MStateDependence 
-@item MvPattern 
+The option @option{Mass} can be used to set up an external Mass function or Mass matrix for solving DAE problems. It depends on the solver that is used if @option{Mass} is supported or not. It must either be a function handle to a valid function or a full constant matrix of size squared the dimension of the set of differential equations. Run
+@example
+function vdy = frob (t, y, varargin)
+  vdy(1,1) = -0.04*y(1)+1e4*y(2)*y(3);
+  vdy(2,1) =  0.04*y(1)-1e4*y(2)*y(3)-3e7*y(2)^2;
+  vdy(3,1) =  y(1)+y(2)+y(3)-1;
+endfunction
+
+function vmas = fmas (vt, vy, varargin)
+  vmas =  [1, 0, 0; 0, 1, 0; 0, 0, 0];
+endfunction
+
+A = odeset ('Mass', @@fmas);
+B = oderd (@@frob, [0 1e8], [1 0 0], A);
+@end example
+to see the effect of using a Mass function with the option @option{Mass}. User defined Mass functions must have the form as described before (ie. @samp{function vmas = fmas (vt, vy, varargin)}.
+
+@item MStateDependence
+The option @option{MStateDependence} can be used to set up the type of the external Mass function for solving DAE problems if a Mass function handle is set with the option @option{Mass}. It depends on the solver that is used if @option{MStateDependence} is supported or not. It must be a string of the form @command{'none'}, @command{'weak'} or @command{'strong'}. Run
+@example
+function vdy = frob (vt, vy, varargin)
+  vdy(1,1) = -0.04*vy(1)+1e4*vy(2)*vy(3);
+  vdy(2,1) =  0.04*vy(1)-1e4*vy(2)*vy(3)-3e7*vy(2)^2;
+  vdy(3,1) =  vy(1)+vy(2)+vy(3)-1;
+endfunction
+
+function vmas = fmas (vt, varargin)
+  vmas =  [1, 0, 0; 0, 1, 0; 0, 0, 0];
+endfunction
+
+A = odeset ('Mass', @@fmas, 'MStateDependence', 'none');
+B = oderd (@@frob, [0 1e8], [1 0 0], A);
+@end example
+to see the effect of using a Mass function with the option @option{MStateDependence}. User defined Mass functions must have the form as described before (ie. @samp{function vmas = fmas (vt, varargin)} if the option @option{MStateDependence} was set to @command{'none'}, otherwise the user defined Mass function must have the form @samp{function vmas = fmas (vt, vy, varargin)} if the option @option{MStateDependence} was set to either @command{'weak'} or @command{'strong'}.
+
+@item MvPattern
+The option @option{MvPattern} is not handled by any of the solvers by now.
+ 
 @item MassSingular
+The option @option{MassSingular} is not handled by any of the solvers by now.
 
 @item NonNegative
 The option @option{NonNegative} is not handled by any of the solvers by now.
+
 @item Events
+The option @option{Events} can be used to set up an Event function, ie. the Event function can be used to find zero crossings in one of the results. It must either be a function handle to a valid function. Run
+@example
+function vdy = fbal (vt, vy, varargin)
+  vdy(1,1) =  vy(2)+3; 
+  vdy(2,1) = -9.81; %# m/s²
+endfunction
+
+function [veve, vterm, vdir] = feve (vt, vy, varargin)
+  veve  = vy(1); %# Which event component should be tread
+  vterm =     1; %# Terminate if an event is found
+  vdir  =    -1; %# In which direction, -1 for falling
+endfunction
+
+A = odeset ('Events', @@feve);
+B = ode78 (@@fbal, [0 1.5], [1 3], A);
+plot (B.x, B.y(:,1));
+@end example
+to see the effect of using an Events function with the option @option{Events}.
+
 @item MaxOrder
 The option @option{MaxOrder} is not handled by any of the solvers by now.
+
 @item BDF
 The option @option{BDF} is not handled by any of the solvers by now.
 @end table

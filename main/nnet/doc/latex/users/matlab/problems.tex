@@ -1,0 +1,42 @@
+\section{Problems}
+\subsection{Object-oriented programming}
+The Neural Network Toolbox of Matlab is written in object-oriented programming style.
+Octave can't handle this technology till 13. December 2005. In Matlab exist directorys with
+the \textit{@}-Symbol in the name. Inside this directorys exist functions with the same name like
+other functions. But this directory symbols the \textit{object-oriented programming style} and all
+functions, called from the \textit{network.m}-file calls the functions inside the \textit{@network}-directory.
+For this reason, it must be checked, which of the functions will be called at which position...\\
+Good luck!
+
+\subsection{isa}
+The command \textit{isa} does not exist in Octave. So the behaviour of this function in Matlab will be testet and a work around for Octave developed.
+
+\paragraph{isa(var,'double')}
+Tabel \ref{tab:isaDouble} shows the properties of this command and the corresponding output for diffenrent input types.
+\begin{table}
+	\centering
+	\begin{tabular}{c c}
+		\toprule
+																						& Matlab- \\
+									 Input										& Output\\
+		\midrule
+  								 4 										  	  & 1 \\
+									 4.0  										  &	1 \\
+									 4.0+3i 										& 1 \\
+									 char(4) 										& 0 \\
+									 num2cell(4) 								& 0 \\
+									 single(4)									& 0 \\
+									 uint8(4) 									& 0\\
+									 uint16(4)									&  0\\
+									 uint32(4) 									& 0 \\ 
+									 uint64(4) 									& 0 \\ 
+									 complex(4) 								& 1 \\
+									 a.a = 4 / Input: a.a  			& 1 \\
+									 a.a = 4 / Input: a   			& 0 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Matlabs command \textbf{isa(a,'double')} and the corresponding output}
+	\label{tab:isaDouble}
+\end{table}
+
+At this moment, there is no reason to work for a Octave version of \textbf{isa(a,'double')}, because I do not understand, why this variables must be of the type double!

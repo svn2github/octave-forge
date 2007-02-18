@@ -1,0 +1,14 @@
+\subsection{newff}
+\textit{newff} is the short form for \textit{\textbf{new f}eed \textbf{f}orward network}. This command creates a structure which holds informations about the neural network structure.\\
+
+\noindent \textbf{\textcolor{brown}{Syntax:}}\\
+
+\noindent net = newff(Rx2,[2 1])\\
+\noindent net = newff(Rx2,[2 1],\{"tansig","purelin"\});\\
+\noindent net = newff(Rx2,[2 1],\{"tansig","purelin"\},"trainlm");\\
+\noindent net = newff(Rx2,[2 1],\{"tansig","purelin"\},"trainlm","learngdm");\\
+\noindent net = newff(Rx2,[2 1],\{"tansig","purelin"\},"trainlm","learngdm","mse");\\
+
+In this version, only one output neuron is alowed and only one hidden layer. This means you can have one input layer, one hidden layer and one output layer(with only one neuron). That's it.\\
+
+

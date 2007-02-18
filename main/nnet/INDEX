@@ -1,0 +1,6 @@
+nnet >> Neural Networks
+Feed forward multi-layer neural networks
+ min_max mse newff poststd
+ prestd sim train trastd
+Neural network utils
+ saveMLPStruct

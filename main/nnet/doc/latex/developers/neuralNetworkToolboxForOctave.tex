@@ -1,0 +1,117 @@
+% Präambel
+\documentclass[a4paper,openany]{report}
+
+
+\usepackage{a4wide}
+\usepackage[ansinew]{inputenc}
+\usepackage[T1]{fontenc}
+\RequirePackage{ifpdf}
+%\usepackage[ngerman]{babel}
+
+
+\usepackage{hyperref}
+	\hypersetup{%
+  colorlinks=true,   % aktiviert farbige Referenzen
+  pdfpagemode=None,  % PDF-Viewer startet ohne Inhaltsverzeichnis et.al.
+  pdfstartview=FitH, % PDF-Viewer benutzt beim Start bestimmte Seitenbreite
+  %linkbordercolor=111,
+  % citebordercolor=111,
+  citecolor=blue,
+  linkcolor=blue}
+
+\ifpdf
+  \usepackage[pdftex]{graphicx}
+	  \DeclareGraphicsExtensions{.pdf}
+\else
+  \usepackage[dvips]{graphicx}
+	  \DeclareGraphicsExtensions{.eps}
+\fi
+%
+%\usepackage[pdftex]{hyperref}
+%	\hypersetup{%
+%  colorlinks=true,   % aktiviert farbige Referenzen
+%  pdfpagemode=None,  % PDF-Viewer startet ohne Inhaltsverzeichnis et.al.
+%  pdfstartview=FitH, % PDF-Viewer benutzt beim Start bestimmte Seitenbreite
+%  %linkbordercolor=111,
+%  % citebordercolor=111,
+%  citecolor=blue,
+%  linkcolor=blue}
+	
+\usepackage{fancyhdr}
+%\usepackage{supertabular}
+\usepackage{booktabs}
+%\usepackage{longtable}
+\usepackage[dvips]{rotating}
+\usepackage{multirow}
+\usepackage{multicol}
+
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{alltt}
+%\usepackage{array}
+%\usepackage{colortbl}
+
+\clubpenalty = 10000
+\widowpenalty = 10000 \displaywidowpenalty = 10000
+
+\definecolor{hellgrau}{gray}{0.95}
+\definecolor{dunkelgrau}{gray}{0.55}
+% ================================= START Kopf- und Fusszeile ============================
+% alles löschen
+%\fancyhead{}
+%\fancyfoot{}
+
+% neuen Style definieren...
+%\fancypagestyle{fancy}{%
+%	\setlength{\topmargin}{-2cm}
+%}
+%\fancyhf{}
+%\fancyhead[L]{
+%	\includegraphics{templates/templatePictures/Logo-Technik.eps}
+%}
+%%\markright{NDS/MSc. Mechatronics 2004/05}
+%\fancyhead[R]{
+%	\begin{tabular}[b]{r}
+%		NDS/MSc. Mechatronics 2004/05
+%	\end{tabular}
+%}
+% ================================= ENDE Kopf- und Fusszeile ============================
+
+
+
+\renewcommand{\headrulewidth}{0pt} % keine Trennlinie
+\renewcommand{\footrulewidth}{0pt} % keine Trennlinie
+%\addtolength{\headheight}{39pt}
+
+%\setlength{\footskip}{20pt}
+
+%\nointend
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% start text here!!
+
+
+\begin{document}
+\pagenumbering{roman}
+\input{title}
+
+\tableofcontents
+%\include{notations}
+\pagenumbering{arabic}
+
+\include{introduction}
+\include{matlab/neuroToolbox}
+\include{octave/octave}
+\include{codingGuideline/codingGuideline}
+\include{algorithm/algorithmen}
+\include{tests/tests}
+\include{analyzing/matlab}
+
+\appendix
+\include{examples/examples}
+\include{../common/bibliography}
+
+
+
+\end{document}
+
+

@@ -56,9 +56,17 @@ Documentation License".
 @chapter Beginners's Guide
 The ``Beginner's Guide'' is intended for new users who want to solve differential equations with the higher level interpreter language Octave and the toolbox OdePkg. In this chapter it will be explained what OdePkg is about in @ref{About OdePkg} and how OdePkg grew up from the beginning in @ref{OdePkg history and roadmap}. In @ref{Installation and deinstallation} it is explained how OdePkg can be installed and in @ref{First tests and demos} the first examples are explained.
 
+@menu
+* About OdePkg::                
+* OdePkg history and roadmap::  
+* Installation and deinstallation::  
+* Reporting Bugs::              
+* First tests and demos::       
+@end menu
+
 @node About OdePkg, OdePkg history and roadmap, Beginners's Guide, Beginners's Guide
 @section About OdePkg
-OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project) that is hosted at @url{http://octave.sourceforge.net}. The package includes commands for setting up options, output functions etc. before solving a set of differential equations. OdePkg formerly was initiated to solve explicitly formulated ordinary differential equations (ODEs) only, but there are already improvements so that differential algebraic equations (DAEs) in explicit form can also be solved. At this time OdePkg is under development with the main target, to make a package that is mostly compatible to the solver functions of Matlab.
+OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project) that is hosted at @url{http://octave.sourceforge.net}. The package includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are also included. OdePkg formerly was initiated to solve explicitly formulated ordinary differential equations (ODEs) only, but there are already improvements so that differential algebraic equations (DAEs) in explicit form can also be solved. At this time OdePkg is under development with the main target, to make a package that is mostly compatible to the solver functions of the commercial Octave clone.
 
 @node OdePkg history and roadmap, Installation and deinstallation, About OdePkg, Beginners's Guide
 @section OdePkg history and roadmap
@@ -75,7 +83,7 @@ OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project
 @item @b{(future)} Version 0.3.x
 @tab All interface functions for the solvers of Hairer and Wanner are stable so that they can be installed by default (via a @file{Makefile} or the @file{PKA_ADD} file). Finished adding all wrapper functions and help descriptions for theses solvers, added tests and demos for these solvers. Ongoing work with this manual.
 @item @b{(future)} Version 0.4.x
-@tab Maybe some of the Hindmarsh, Brown and Petzold solvers are added, but I think I prefer the solvers of Jeff Cash instead.
+@tab Maybe some of the Hindmarsh, Brown and Petzold solvers are added, but/and/or I think I prefer the solvers of Jeff Cash instead.
 @item @b{(future)} Version 0.5.x
 @tab Finished most work with this manual. Manual is build by default, making rules have been added to the OdePkg. A lot of compatibility tests will be done.
 @item @b{(future)} Version 0.6.x
@@ -84,7 +92,7 @@ OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project
 @tab Completed odepkg release 1.0.0 with m--solvers and mex--solvers.
 @end multitable
 
-@node Installation and deinstallation, First tests and demos, OdePkg history and roadmap, Beginners's Guide
+@node Installation and deinstallation, Reporting Bugs, OdePkg history and roadmap, Beginners's Guide
 @section Installation and deinstallation
 @cindex installation
 @cindex deinstallation
@@ -97,11 +105,62 @@ where @file{x.x.x} in the name of the @file{*.tar.gz} file is the current releas
 @example
 pkg uninstall odepkg-x.x.x.tar.gz
 @end example
-If you encounter problems when installing OdePkg with the @command{pkg} command or if you have an OdePkg that seems to be broken then please report this on the mailing--list of Octave--Forge using the email adress @email{octave-dev@@lists.sourceforge.net}. Please do the same if you encounter problems during @dots{}
+If you encounter problems during the installation process of OdePkg with the @command{pkg} command or if you have an OdePkg that seems to be broken then please report this on the mailing--list of Octave--Forge using the email adress @email{octave-dev@@lists.sourceforge.net}.
 
-@node First tests and demos,  , Installation and deinstallation, Beginners's Guide
+@node Reporting Bugs, First tests and demos, Installation and deinstallation, Beginners's Guide
+@section Reporting Bugs
+@cindex bugs
+If you encounter problems while using OdePkg or if you find bugs in the source codes then please report that via email at the Octave--Forge mailing--list using the email adress @email{octave-dev@@lists.sourceforge.net} and directly send a copy to the email adress @email{treichl@@users.sourceforge.net}.
+
+@node First tests and demos,  , Reporting Bugs, Beginners's Guide
 @section First tests and demos
 @cindex First tests and demos
+Let's have a look at the first ordinary differential equation with the name ``foo''. The ``foo'' equation of second order may be of the form @math{y''(t) + C_1 y'(t) + C_2 y(t) = C_3}. With the substitutions @math{y_1(t) = y(t)} and @math{y_2(t) = y'(t)} this differential equation of second order can be split into two differential equations of first order, ie. @math{y'_1(t) = y_2(t)} and @math{y'_2(t) = - C_1 y_2(t) - C_2 y_1(t) + C_3}. Next the numerical values for the constants need to be defined, ie. @math{C_1 = 2.0}, @math{C_2 = 5.0}, @math{C_3 = 10.0}. This set of ordinary differential equations can now be written as an Octave function like
+@example
+function vdy = foo (vt, vy, varargin)
+  vdy(1,1) = vy(2);
+  vdy(2,1) = - 2.0 * vy(2) - 5.0 * vy(1) + 10.0;
+endfunction
+@end example
+It is seen that this ODEs do not depend on time, nevertheless the first input argument of this function needs to be defined as the time argument, followed by a integrated state argument @command{vy} and a variable size input argument @command{varargin} that can be used to set up user defined constants or control variables. As it is known that ``foo'' is a set of @slanted{ordinary} differential equations we can choose one of the four m--file Runge--Kutta solvers (cf. @ref{Solver families}). It is also known that the time period of interest may be between @math{t_0=0.0} and @math{t_e = 5.0} as well as that the initial values of the ODEs are @math{y_1(t=0) = 0.0} and @math{y_2(t=0) = 0.0}. Solving this set of ODEs can be done by typing the following commands in the Octave interpreter window
+@example
+ode45 (@@foo, [0 5], [0 0]);
+@end example
+A figure window opens and it can be seen how this ODEs are solved from @math{t_0=0.0} to @math{t_e = 5.0}. If opening the figure window is unwanted then output arguments have to be used to catch the results of the solving process, eg.
+@example
+[t, y] = ode45 (@@foo, [0 5], [0 0]);
+@end example
+Results can also be obtained as a Octave structure if one output argument is used like in the following example. Then the results are stored in the fields @command{S.x} and @command{S.y}.
+@example
+S = ode45 (@@foo, [0 5], [0 0]);
+@end example
+As noticed before, a function for the ordinary differential equations must not be rewritten all the time if some of the parameters are going to change, that's what the input argument @command{varargin} is for. So rewrite the function @command{foo} into @command{newfoo} the following way
+@example
+function vdy = newfoo (vt, vy, varargin)
+  vdy(1,1) = vy(2);
+  vdy(2,1) = -varargin@{1@}*vy(2)-varargin@{2@}*vy(1)+varargin@{3@};
+endfunction
+@end example
+There is nothing said about the constant values anymore, but if using the following caller routine in the Octave interpreter window then the same results can be obtained as before (ie. the parameters are directly feed through from the caller routine to the function @command{newfoo}).
+@example
+ode45 (@@newfoo, [0 5], [0 0], 2.0, 5.0, 10.0);
+@end example
+The OdePkg can do much more while solving ODEs and DAEs, eg. you can set up other output functions instead of the function @command{odeplot}. So as a last example in this beginning chapter it is shown how this can be done, ie. with the command @command{odeset}
+@example
+A = odeset ('OutputFcn', @@odeset);
+ode45 (@@newfoo, [0 5], [0 0], A, 2.0, 5.0, 10.0);
+@end example
+The options structure @command{A} that can be set up with with the command @command{odeset} must always be the fourth input argument when using the m--file Runge--Kutta solvers (read the help files for the other solvers if there may be changes). The options that can be set are described in @ref{ODE/DAE options}.
+
+Before you continue reading the next chapter notice that nearly every function that belongs to the OdePkg has its own help describtion and demos, so you can have a look for yourself how the different functions can be used. If you want to have a look at the help describition then type
+@example
+help fcnname
+@end example
+in the Octave interpreter window where @command{fcnname} is the name of the function for the help describtion to be viewed. Type
+@example
+demo fcnname
+@end example
+in the Octave interpreter window where @command{fcnname} is the name of the function of the demo to run.
 
 @c %*** End of first chapter: Beginner's Guide
 

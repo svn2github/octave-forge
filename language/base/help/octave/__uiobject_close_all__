@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __uiobject_close_all__ ()
+Internal function to close all figures.
+@seealso{drawnow}
+@end deftypefn

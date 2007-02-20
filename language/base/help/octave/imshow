@@ -4,7 +4,7 @@
 @deftypefnx {Function File} {} imshow (@var{im}, @var{map})
 @deftypefnx {Function File} {} imshow (@var{R}, @var{G}, @var{B}, @dots{})
 @deftypefnx {Function File} {} imshow (@var{filename})
-@deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, ...)
+@deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
 Display the image @var{im}, where @var{im} can a 2-dimensional
 (gray-scale image) or a 3-dimensional (RGB image) matrix. If three matrices
 of the same size are given as arguments, they will be concatenated into

@@ -1,11 +1,11 @@
-md5="a1a757d6b8627bc257c14dbd21607e19";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="368dd5c9ac467f8e79ffe2491f0d931c";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@var{im})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@var{im}, @var{limites})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@var{im}, @var{map})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@var{R}, @var{G}, @var{B}, @dots{})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@var{nomearquivo})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@dots{}, @var{string_param1}, @var{value1}, ...)
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
 Mostra a imagem @var{im}, onde @var{im} pode ser uma matriz bidimensional
 (imagem em tos de cinza) ou uma matriz tridimensional (imagem RGB). Se tr@^es matrizes
 do mesmo tamanho forem fornecidas como argumentos, elas dever@~ao ser concatenadas dentro

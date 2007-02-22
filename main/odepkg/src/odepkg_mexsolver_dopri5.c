@@ -156,6 +156,10 @@ void F77_FUNC (fsol, FSOL) (int *NR, double *XOLD, double *X, double *Y, int *N,
 
   fodepkgvar (2, "EventFunction", &vtmp);
   if (!mxIsEmpty (vtmp)) {
+    /* 20070221, bugfix, all solutions have to be passed to the event function */
+    /* Don't use the OutputSel option here, therefore set new vtem variable */
+    vtem = mxCreateDoubleMatrix (*N, 1, mxREAL);
+    memcpy ((void *) mxGetPr (vtem), (void *) Y, *N * sizeof (double));
     fodepkgevent (vtim, vtem, mxCreateString (""), &vtmp);
     fodepkgvar (3, "EventSolution", NULL);  /* Remove the last events results */
     fodepkgvar (1, "EventSolution", &vtmp); /* Set the new events results */

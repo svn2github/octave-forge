@@ -351,7 +351,9 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       if (vhaveeventfunction == true)
         vevent = ...
           odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
-            vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
+            vu(:), [], vfunarguments{:});
+        %# 20070222, bugfix, Calling event function does not depend on
+        %# OutputSel vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
         if (vevent{1} == true)
           vretvaltime(vcntloop-1,:) = vevent{3}(end,:);
           vretvalresult(vcntloop-1,:) = vevent{4}(end,:);

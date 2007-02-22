@@ -234,7 +234,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       vretvalresult', 'init', vfunarguments{:});
   end
 
-  vpow = 1/8;               %# See p.91 in Ascher & Petzold
+  vpow = 1/4;               %# See p.91 in Ascher & Petzold
   va = [0, 0, 0, 0;         %# The Runge-Kutta-Fehlberg 2(3) coefficients
         1/4, 0, 0, 0;       %# Coefficients proved on 20060827
         -189/800, 729/800, 0, 0;
@@ -283,8 +283,8 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
         vdelta = y3 - y2;
         vtau = max (vodeoptions.RelTol * vu', vodeoptions.AbsTol);
       else
-	      vdelta = norm (y3 - y2, Inf);
-	      vtau = max (vodeoptions.RelTol * max (norm (vu', Inf), 1.0), vodeoptions.AbsTol);
+              vdelta = norm (y3 - y2, Inf);
+              vtau = max (vodeoptions.RelTol * max (norm (vu', Inf), 1.0), vodeoptions.AbsTol);
       end
     else %# if (vstepsizegiven == true)
       vdelta = 1; vtau = 2;
@@ -326,7 +326,9 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       if (vhaveeventfunction == true)
         vevent = ...
           odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
-            vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
+            vu(:), [], vfunarguments{:});
+        %# 20070222, bugfix, Calling event function does not depend on
+        %# OutputSel vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
         if (vevent{1} == true)
           vretvaltime(vcntloop-1,:) = vevent{3}(end,:);
           vretvalresult(vcntloop-1,:) = vevent{4}(end,:);

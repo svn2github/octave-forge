@@ -4,9 +4,9 @@ Date: 2007-02-21
 Author: David Bateman
 Maintainer: David Bateman
 Title: Arpack.
-Description: Octave binds to ARPACK, including the eigs and svds function.
+Description: Octave bindings to ARPACK, including the eigs and svds function.
 Depends: octave (> 2.9.9)
 Autoload: yes
 License: GPL version 2 or later. Note ARPACK redistristibution
  restriction discussed in the documentation
-Url: http://octave.sf.net
+Url: http://octave.sf.net http://www.caam.rice.edu/software/ARPACK

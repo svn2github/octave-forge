@@ -1,0 +1,54 @@
+LICENSE:
+-------
+
+Note that the ARPACK license includes the clause
+
+<quote>
+Written notification is provided to the developers of intent to use this 
+software. Also, we ask that use of ARPACK is properly cited in any 
+resulting publications or software documentation.
+</quote>
+
+This clause is difficult to interpret and so clarification has been
+requested from the authors. Initial clarification can be found in the
+e-mail Sorenson.eml. However, this is not considered to go far enough
+to allow inclusion in Fedora. See the bug report
+
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=214967
+
+for more information.
+
+However, the e-mail does make it clear that there is no restrictions
+on the distribution of this binding of ARPACK to Octave, and no
+restrictions on its use. Furthermore, I take the clarification to mean
+that modifications of these Octave bindings are allowed without
+further notification to the authors. However, if ARPACK is to be used
+with another package, even if it uses the octave code as a basis, then
+further notification must be obtained.
+
+DOWNLOAD:
+--------
+
+The main webpage for ARPACK is http://www.caam.rice.edu/software/ARPACK/
+where two files can be obtained, these being
+
+http://www.caam.rice.edu/software/ARPACK/SRC/arpack96.tar.gz
+http://www.caam.rice.edu/software/ARPACK/SRC/patch.tar.gz
+
+Note that the second file is not a patch, but rather another tar
+archive that overwrites the existing files with replacements
+
+Chao Yang maintains an updated version of ARPACK, and is one of the
+authors of ARPACK. However, I'm unsure if this version has any
+official status. It can be found at
+
+http://www.cs.ucsb.edu/~viral/parpack96/patch.tar.gz
+
+PATCHES:
+-------
+Included here are a patch and a changelog file that were created
+against the CVS of octave as of 22 Feb 2007. These might be used to
+port this code to Octave once the above licensing question is
+addressed. Note that the code eigs.cc, eigs-base.cc and svds.m must
+also be copied to an appropriate place in the Octave source tree when
+applying this patch

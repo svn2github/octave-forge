@@ -1,0 +1,24 @@
+2007-02-21  David Bateman  <dbateman@free.fr>
+
+	* interpreter/sparse.txi: Document the svds and eigs functions
+	
+2007-02-21  David Bateman  <dbateman@free.fr>
+
+	* configure.in (ARPACK_LIBS): Add test for ARPACK. Warn if it
+	isn't found. Set HAVE_ARPACK and ARPACK_LIBS.
+	* Makeconf.in (ARPACK_LIBS): New variable.
+	
+2007-02-21  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: Add eigs-base.cc to TEMPLATE_SRC.
+	* eigs-base.cc: New template class file for ARPACk functions.
+	
+2007-02-21  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: Add specific build for eigs.oct to include -larpack.
+	(DLD_XSRC): Add eigs.cc.
+	* DLD-FUNCTIONS/eigs.cc: New file.
+
+2007-02-21  David Bateman  <dbateman@free.fr>
+
+	* sparse/svds.m: New file.

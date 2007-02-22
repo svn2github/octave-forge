@@ -1,0 +1,4 @@
+sparse >> Sparse matrix support
+Linear algebra
+ eigs
+ svds

@@ -1,0 +1,264 @@
+*** ./Makeconf.in.orig41	2007-02-21 13:19:49.648245987 +0100
+--- ./Makeconf.in	2007-02-21 13:39:38.661764244 +0100
+***************
+*** 221,226 ****
+--- 221,227 ----
+  CCOLAMD_LIBS = @CCOLAMD_LIBS@
+  CHOLMOD_LIBS = @CHOLMOD_LIBS@
+  CXSPARSE_LIBS = @CXSPARSE_LIBS@
++ ARPACK_LIBS = @ARPACK_LIBS@
+  LIBS = @LIBS@
+  
+  USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
+*** ./doc/interpreter/sparse.txi.orig41	2007-02-21 13:33:25.269502039 +0100
+--- ./doc/interpreter/sparse.txi	2007-02-21 13:38:33.886013421 +0100
+***************
+*** 421,430 ****
+    @dfn{csymamd}, @dfn{dmperm}, @dfn{symamd}, @dfn{randperm}, (symrcm)
+  
+  @item Linear algebra:
+!   @dfn{matrix\_type}, @dfn{spchol}, @dfn{cpcholinv}, 
+!   @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv}, @dfn{spkron},
+!   @dfn{splchol}, @dfn{splu}, @dfn{spqr}, (condest, eigs, normest, 
+!   sprank, svds, spaugment)
+  
+  @item Iterative techniques:
+    @dfn{luinc}, @dfn{pcg}, @dfn{pcr}, (bicg, bicgstab, cholinc, cgs, 
+--- 421,430 ----
+    @dfn{csymamd}, @dfn{dmperm}, @dfn{symamd}, @dfn{randperm}, (symrcm)
+  
+  @item Linear algebra:
+!   @dfn{eigs}, @dfn{matrix\_type}, @dfn{normest}, @dfn{spchol},
+!   @dfn{spcholinv}, @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv}, @dfn{spkron},
+!   @dfn{splchol}, @dfn{splu}, @dfn{spqr}, @dfn{sprank}, @dfn{svds}, 
+!   (condest, spaugment)
+  
+  @item Iterative techniques:
+    @dfn{luinc}, @dfn{pcg}, @dfn{pcr}, (bicg, bicgstab, cholinc, cgs, 
+***************
+*** 1434,1440 ****
+  @item condest
+  @emph{Not implemented}
+  @item eigs
+! @emph{Not implemented}
+  @item @ref{matrix_type}
+  Identify the matrix type or mark a matrix as a particular type.
+  @item @ref{normest}
+--- 1434,1441 ----
+  @item condest
+  @emph{Not implemented}
+  @item eigs
+! Calculate a limited number of eigenvalues and eigenvectors of @var{a},
+! based on a selection criteria.
+  @item @ref{matrix_type}
+  Identify the matrix type or mark a matrix as a particular type.
+  @item @ref{normest}
+***************
+*** 1462,1468 ****
+  @item @ref{sprank}
+  Calculates the structural rank of a sparse matrix @var{s}.
+  @item svds
+! @emph{Not implemented}
+  @end table
+  @subsubsection Iterative techniques
+  @table @asis
+--- 1463,1469 ----
+  @item @ref{sprank}
+  Calculates the structural rank of a sparse matrix @var{s}.
+  @item svds
+! Find a few singular values of the matrix @var{a}.
+  @end table
+  @subsubsection Iterative techniques
+  @table @asis
+***************
+*** 1537,1542 ****
+--- 1538,1545 ----
+  		sparser Cholesky factor than S.
+  * dmperm::	Perfrom a Deulmage-Mendelsohn permutation on the sparse
+  		matrix S.
++ * eigs::	Calculate a limited number of eigenvalues and eigenvectors
++ 		of @var{a}, based on a selection criteria.
+  * etree::	Returns the elimination tree for the matrix S.
+  * etreeplot::   Plots the elimination tree of the matrix @var{s} or 
+  		@code{@var{s}+@var{s}'} if @var{s} in non-symmetric.
+***************
+*** 1608,1613 ****
+--- 1611,1617 ----
+  * spsum::	Sum of elements along dimension DIM.
+  * spsumsq::	Sum of squares of elements along dimension DIM.
+  * spy:: 	Plot the sparsity pattern of the sparse matrix X
++ * svds::	Find a few singular values of the matrix @var{a}.
+  * symamd::	For a symmetric positive definite matrix S, returns the
+  		permutation vector p such that `S (P, P)' tends to have a
+  		sparser Cholesky factor than S.
+***************
+*** 1636,1647 ****
+  
+  @DOCSTRING(csymamd)
+  
+! @node dmperm, etree, csymamd, Function Reference
+  @subsubsection dmperm
+  
+  @DOCSTRING(dmperm)
+  
+! @node etree, etreeplot, dmperm, Function Reference
+  @subsubsection etree
+  
+  @DOCSTRING(etree)
+--- 1640,1656 ----
+  
+  @DOCSTRING(csymamd)
+  
+! @node dmperm, eigs, csymamd, Function Reference
+  @subsubsection dmperm
+  
+  @DOCSTRING(dmperm)
+  
+! @node eigs, etree, dmperm, Function Reference
+! @subsubsection eigs
+! 
+! @DOCSTRING(eigs)
+! 
+! @node etree, etreeplot, eigs, Function Reference
+  @subsubsection etree
+  
+  @DOCSTRING(etree)
+***************
+*** 1867,1878 ****
+  
+  @DOCSTRING(spsumsq)
+  
+! @node spy, symamd, spsumsq, Function Reference
+  @subsubsection spy
+  
+  @DOCSTRING(spy)
+  
+! @node symamd, symbfact, spy, Function Reference
+  @subsubsection symamd
+  
+  @DOCSTRING(symamd)
+--- 1876,1892 ----
+  
+  @DOCSTRING(spsumsq)
+  
+! @node spy, svds, spsumsq, Function Reference
+  @subsubsection spy
+  
+  @DOCSTRING(spy)
+  
+! @node svds, symamd, spy, Function Reference
+! @subsubsection svds
+! 
+! @DOCSTRING(svds)
+! 
+! @node symamd, symbfact, svds, Function Reference
+  @subsubsection symamd
+  
+  @DOCSTRING(symamd)
+*** ./src/Makefile.in.orig41	2007-02-21 13:19:49.646246085 +0100
+--- ./src/Makefile.in	2007-02-21 13:39:38.652764696 +0100
+***************
+*** 49,56 ****
+  
+  DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc \
+  	ccolamd.cc colamd.cc colloc.cc conv2.cc daspk.cc dasrt.cc \
+! 	dassl.cc det.cc dispatch.cc eig.cc expm.cc fft.cc fft2.cc \
+! 	fftn.cc fftw.cc filter.cc find.cc fsolve.cc \
+  	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
+  	givens.cc hess.cc interpn.cc inv.cc kron.cc lpsolve.cc lsode.cc \
+  	lu.cc luinc.cc matrix_type.cc minmax.cc pinv.cc qr.cc \
+--- 49,56 ----
+  
+  DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc \
+  	ccolamd.cc colamd.cc colloc.cc conv2.cc daspk.cc dasrt.cc \
+! 	dassl.cc det.cc dispatch.cc eig.cc eigs.cc expm.cc fft.cc \
+! 	fft2.cc fftn.cc fftw.cc filter.cc find.cc fsolve.cc \
+  	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
+  	givens.cc hess.cc interpn.cc inv.cc kron.cc lpsolve.cc lsode.cc \
+  	lu.cc luinc.cc matrix_type.cc minmax.cc pinv.cc qr.cc \
+***************
+*** 577,582 ****
+--- 577,584 ----
+  
+  ifeq ($(ENABLE_DYNAMIC_LINKING), true)
+    ifdef CXXPICFLAG
++     eigs.oct : pic/eigs.o octave$(EXEEXT)
++ 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(ARPACK_LIBS)
+      regexp.oct : pic/regexp.o octave$(EXEEXT)
+  	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
+      urlwrite.oct : pic/urlwrite.o octave$(EXEEXT)
+***************
+*** 584,589 ****
+--- 586,593 ----
+      __glpk__.oct : pic/__glpk__.o octave$(EXEEXT)
+  	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
+    else
++     eigs.oct : eigs.o octave$(EXEEXT)
++ 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(ARPACK_LIBS)
+      regexp.oct : regexp.o octave$(EXEEXT)
+  	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
+      urlwrite.oct : urlwrite.o octave$(EXEEXT)
+*** ./configure.in.orig41	2007-02-21 13:19:49.648245987 +0100
+--- ./configure.in	2007-02-21 13:39:38.659764345 +0100
+***************
+*** 1001,1006 ****
+--- 1001,1035 ----
+    AC_MSG_WARN($warn_cxsparse)
+  fi
+  
++ WITH_ARPACK=true
++ AC_ARG_WITH(arpack,
++   [AS_HELP_STRING([--without-arpack], [don't use arpack])],
++   with_arpack=$withval, with_arpack=yes)
++ 
++ arpack_lib=
++ if test "$with_arpack" = yes; then
++   arpack_lib="arpack"
++ elif test "$with_arpack" != no; then
++   arpack_lib="$with_arpack"
++ fi
++ 
++ ARPACK_LIBS=
++ AC_SUBST(ARPACK_LIBS)
++ WITH_ARPACK=false
++ if test -n "$arpack_lib"; then
++   AC_CHECK_LIB($arpack_lib, F77_FUNC(dseupd,DSEUPD), [
++ 	WITH_ARPACK=true
++         ARPACK_LIBS="-l$arpack_lib"
++         FLIBS="$ARPACK_LIBS $FLIBS"
++         AC_DEFINE(HAVE_ARPACK, 1, [Define if ARPACK is available.])], , 
++ 	$BLAS_LIBS $FLIBS)
++ fi
++ if test $WITH_ARPACK = no; then
++   warn_arpack="arpack not found. This will result in a lack of the eigs function."
++   AC_MSG_WARN($warn_arpack)
++ fi
++ 
++ 
+  ### Handle shared library options.
+  
+  ### Enable creation of static libraries.
+***************
+*** 2019,2024 ****
+--- 2048,2054 ----
+    CCOLAMD libraries:    $CCOLAMD_LIBS
+    CHOLMOD libraries:    $CHOLMOD_LIBS
+    CXSPARSE libraries:   $CXSPARSE_LIBS
++   ARPACK libraries:     $ARPACK_LIBS
+    HDF5 libraries:       $HDF5_LIBS
+    CURL libraries:       $CURL_LIBS
+    REGEX libraries:      $REGEX_LIBS
+***************
+*** 2126,2131 ****
+--- 2156,2166 ----
+    warn_msg_printed=true
+  fi
+  
++ if test -n "$warn_arpack"; then
++   AC_MSG_WARN($warn_arpack)
++   warn_msg_printed=true
++ fi
++ 
+  if test -n "$warn_fftw"; then
+    AC_MSG_WARN($warn_fftw)
+    warn_msg_printed=true

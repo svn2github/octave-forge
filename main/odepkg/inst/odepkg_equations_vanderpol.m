@@ -19,8 +19,8 @@
 %# @deftypefn  {Function} odepkg_equations_vanderpol ()
 %# Displays the help text of the function and terminates with an error.
 %#
-%# @deftypefnx {Function} {@var{ydot} =} odepkg_equations_vanderpol (@var{tvar}, @var{yvar})
-%# Returns the states of the "Van Der Pol Equation" example that depend on the input argument @var{yvar}. The variable @var{yvar} must be a valid column vector. Optionally the "Second Order Lag" can be parametrized by the variables @var{vu} as the input signal, @var{vK} as the amplification, @var{vT1} as the smaller time constant and @var{vT2} as the greater time constant. Use "type odepkg_equations_secondorderlag" to see the source code of this "Linear Time-Invariant" (LTI) system. If an invalid input argument is given then the function terminates with an error.Use "type odepkg_equations_vanderpol" to see the source code of this differential equation.
+%# @deftypefnx {Function} {@var{ydot} =} odepkg_equations_vanderpol (@var{t, y})
+%# Returns two derivatives of the ordinary differential equations (ODEs) from the "Van der Pol" implementation, cf. @url{http://en.wikipedia.org/wiki/Van_der_Pol_oscillator} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a scalar value with actual time stamp. There is a error handling implemented in this function, ie. if an unvalid input argument is found then this function terminates with an error.
 %#
 %# Run
 %# @example
@@ -30,27 +30,30 @@
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
-%#
-%# - TODO - REWORK THE HELP TEXT ABOVE BECAUSE IT MAY NOT BE CORRECT -
 
 %# Maintainer: Thomas Treichl
 %# Created: 20060809
 %# ChangeLog:
 
 function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
+
   %# odepkg_equations_vanderpol is a demo function. Therefore some
   %# error handling is done. If you would write your own function you
   %# would not add any error handling to achieve highest performance.
+
   if (nargin == 0)
     help ('odepkg_equations_vanderpol');
     vmsg = sprintf ('Number of input arguments must be greater than zero');
     error (vmsg);
+
   elseif (nargin < 2 || nargin > 3)
     vmsg = sprintf ('Number of input arguments must be greater 1 and lower 4');
     error (vmsg);
+
   elseif (isnumeric (tvar) == false || isnumeric (yvar) == false)
     vmsg = sprintf ('First and second input argument must be valid numeric values');
     error (vmsg);
+
   elseif (isvector (yvar) == false || length (yvar) ~= 2)
     vmsg = sprintf ('Second input argument must be a vector of length 2');
     error (vmsg);
@@ -65,13 +68,14 @@ function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
     end
   else, mu = 1; end
 
-  %# yvar and ydot must be row vectors with 1 column
-  ydot = [yvar(2); mu*(1-yvar(1)^2)*yvar(2)-yvar(1)];
+  %# yvar and ydot must be column vectors
+  ydot = [yvar(2); ...
+          mu * (1 - yvar(1)^2) * yvar(2) - yvar(1)];
 
-  %# A stiff ode euqation test preocedure is
-  %# A = odeset ('RelTol', 1e-1, 'AbsTol', 1, 'InitialStep', 1e-2, ...
-  %#   'NormControl', 'on', 'Stats', 'on', 'OutputFcn', @odeprint);
-  %# [x, y] = ode78 (@odepkg_equations_vanderpol, [0 300], [2 0], A, 100);
+%#! A stiff ode euqation test preocedure is
+%#! A = odeset ('RelTol', 1e-1, 'AbsTol', 1, 'InitialStep', 1e-2, ...
+%#!   'NormControl', 'on', 'Stats', 'on', 'OutputFcn', @odeprint);
+%#! [x, y] = ode78 (@odepkg_equations_vanderpol, [0 300], [2 0], A, 100);
 
 %!test [vt, vy] = ode78 (@odepkg_equations_vanderpol, [0 1], [2 0]);
 
@@ -82,11 +86,13 @@ function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
 %! axis ([0, 20]);
 %! plot (vt, vy(:,1), '-or;x1(t);', vt, vy(:,2), '-ob;x2(t);');
 %!
-%! % ----------------------------------------------------------------------
-%! % The figure window shows the two states of the "Van Der Pol Equation"
+%! % ---------------------------------------------------------------------------
+%! % The figure window shows the two states of the "Van Der Pol" implementation
 %! % example. The math equation for this differential equation is
+%! %
 %! %   d^2y/dt^2 - mu*(1-y^2)*dy/dt + y = 0.
-%! % If not manually parametrized then mu = 1 as in this demo.
+%! %
+%! % If not manually parametrized then mu = 1.
 %!demo
 %!
 %! A = odeset ('NormControl', 'on', 'InitialStep', 1e-3);
@@ -95,10 +101,9 @@ function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
 %! axis ([0, 40]);
 %! plot (vt, vy(:,1), '-or;x1(t);', vt, vy(:,2), '-ob;x2(t);');
 %!
-%! % ----------------------------------------------------------------------
-%! % The figure window shows the two integrated states of the "Van Der Pol
-%! % Equation" example. The parameter mu = 20 was set manually in this
-%! % demo.
+%! % ---------------------------------------------------------------------------
+%! % The figure window shows the two integrated states of the "Van Der Pol"
+%! % implementation. The parameter mu = 20 was set manually for this demo.
 
 %# Local Variables: ***
 %# mode: octave ***

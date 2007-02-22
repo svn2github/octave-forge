@@ -16,8 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[y]} =} odepkg_equations_roessler (@var{t}, @var{x})
-%# TODO
+%# @deftypefn {Function} {@var{ydot} =} odepkg_equations_roessler (@var{t, y})
+%# Returns three derivatives of the ordinary differential equations (ODEs) from the Roessler attractor implementation, cf. @url{http://en.wikipedia.org/wiki/R%C3%B6ssler_attractor} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a scalar value with actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
 %#
 %# Run
 %# @example
@@ -27,10 +27,6 @@
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
-
-%#
-%# - TODO - REWORK THE HELP TEXT ABOVE BECAUSE IT MAY NOT BE CORRECT -
-%# - TODO - REWORK THE DEMO TEXT BELOW BECAUSE IT MAY NOT BE CORRECT -
 
 function y = odepkg_equations_roessler (t, x)
   y = [- ( x(2) + x(3) );
@@ -52,10 +48,11 @@ function y = odepkg_equations_roessler (t, x)
 %! subplot (2, 2, 4); grid ('on'); plot3 (y(:,1), y(:,2), y(:,3), ...
 %!    '-b;f_{xyz}(x, y, z);');
 %!
-%! % -------------------------------------------------------------------------
-%! % TODO
-%! % TODO explain how to use odephas3 but o not add it as a demo because it
-%! % will need a lot of processing time!!!
+%! % ----------------------------------------------------------------------------
+%! % The upper left subfigure shows the three results of the integration over
+%! % time. The upper right subfigure shows the force f in a two dimensional (x,y)
+%! % plane as well as the lower left subfigure shows the force in the (y,z)
+%! % plane. The three dimensional force is plotted in the lower right subfigure.
 
 %# Local Variables: ***
 %# mode: octave ***

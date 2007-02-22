@@ -16,8 +16,8 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[y]} =} odepkg_equations_lorenz (@var{t}, @var{x})
-%# Returns the states of the ordinary differential equations from the Lorenz equation implementation, ie. the force to a conductor caused by movement in a magnetic field, cf. @url{http://en.wikipedia.org/wiki/Lorenz_equation} for further details. The variable @var{x} has the values for the state variables, @var{y} has the results after each integration step. Both variables are column vectors, the variable @var{t} is the actual time stamp. There is no error handling implemented in this function to achieve the highest performance.
+%# @deftypefn {Function} {@var{ydot} =} odepkg_equations_lorenz (@var{t, y})
+%# Returns three derivatives of the ordinary differential equations (ODEs) from the Lorenz equation implementation, cf. @url{http://en.wikipedia.org/wiki/Lorenz_equation} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a scalar value with actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
 %#
 %# Run
 %# @example
@@ -27,9 +27,6 @@
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
-
-%#
-%# - TODO - REWORK THE HELP TEXT ABOVE BECAUSE IT MAY NOT BE CORRECT -
 
 function y = odepkg_equations_lorenz (t, x)
   y = [10 * (x(2) - x(1));
@@ -41,7 +38,7 @@ function y = odepkg_equations_lorenz (t, x)
 
 %!demo
 %!
-%! A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1); 
+%! A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
 %! [t, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
 %!
 %! subplot (2, 2, 1); grid ('on'); plot (t, y(:,1), '-b;f_x(t);', ...

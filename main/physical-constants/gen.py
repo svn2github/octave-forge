@@ -258,7 +258,7 @@ if __name__ == "__main__":
                   '_relationship':''};
     uncert_dict={'(exact)':'0.0'};
     val_dict={' ':'',
-              '.':''}
+              '...':''} # . is decimal!
     
     PATH="./" #default path.
     ostd=sys.stdout;

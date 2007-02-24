@@ -2240,7 +2240,7 @@ been previously described above.
 The final signal processing function available in this package are the
 functions to perform Fourier transforms over a Galois field. Three
 functions are available, @dfn{fft}, @dfn{ifft} and @dfn{dftmtx}. The
-first two functions use the third to perform their work. Give an element
+first two functions use the third to perform their work. Given an element
 @var{a} of the Galois field GF(2^M), @dfn{dftmtx} returns the @code{2^M - 1} 
 square matrix used in the Fourier transforms with respect to @var{a}. The 
 minimum polynomial of @var{a} must be primitive in GF(2^M). In the case of 
@@ -2263,7 +2263,7 @@ check = 1
 In all cases, the length of the vector to be transformed must be
 @code{2^M -1}. As the @dfn{dftmtx} creates a matrix representing the
 Fourier transform, to limit the computational task only Fourier
-transform in GF(2^M), where M is less than or equal to 8.
+transforms in GF(2^M), where M is less than or equal to 8, can be treated.
 
 @node Function Reference, , Galois Fields, Top
 @chapter Function Reference

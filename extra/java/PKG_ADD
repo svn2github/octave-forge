@@ -1,0 +1,7 @@
+autoload ("java_init", which ("__java__"));
+autoload ("java_exit", which ("__java__"));
+autoload ("java_new", which ("__java__"));
+autoload ("java_invoke", which ("__java__"));
+autoload ("java_get", which ("__java__"));
+autoload ("java_set", which ("__java__"));
+atexit ("java_exit");

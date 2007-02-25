@@ -7,7 +7,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>January 27, 2007</dt>
+<dt>February 25, 2007</dt>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a
@@ -15,6 +15,7 @@ href="packages.html">packages</a> for more details.
 Apart from the changes associated with the conversion to use the
 package manager, the following additional changes are notable:</p>
 <ul>
+   <li>nnet: A new neural network toolbox</li>
    <li>odepkg: A new matlab compatible package for ODE that replaces
    the existing extra/ode package</li>
    <li>info-theory: A new package of information theory functions</li>
@@ -22,6 +23,12 @@ package manager, the following additional changes are notable:</p>
    user interfaces.</li>
    <li>xraylib: A new package for bindings to the gnu xray library.</li>
    <li>optiminterp: A new package for optimal interpolation.</li>
+   <li>java: A new package for java interface</li>
+   <li>arpack: A new package with bindings to ARPACK for the eigs and
+   svds functions</li>
+   <li>physical_constants: A new package with elemental physical
+   constants based on NIST data</li>
+   <li>pt_BR: A new package with Portuguese language translations</li>
    <li>linear-algebra: New function bicg</li>
    <li>spline: Allow NDArrays in csape and make it compatible</li>
    <li>comm: New functions fibodeco, fibodeco, fiboenco, fibosplitstream,
@@ -53,10 +60,12 @@ package manager, the following additional changes are notable:</p>
    pburg, pwelch, pyulear, tfe, tfestimate, replacing existing functions
    with main more features and much better compatibility. New functions
    upsample, downsample, rectwin, dst and idst</li>
+   <li>strings: New function cstrcmp</li>
    <li>plot: New function hist2d</li>
    <li>geometry: New function inpolygon</li>
    <li>general: New function issorted</li>
    <li>optim: New function fminsearch</li>
+   <li>Windows: New functions for Windows COM bindings</li>
    <li>MSVC: Changes in build system to support Microsodt VC compiler</li>
    <li>general bug fixes and improvements</li>
 </ul>

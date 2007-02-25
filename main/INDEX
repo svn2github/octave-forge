@@ -1173,12 +1173,13 @@ Distributions
  laplace_cdf laplace_inv laplace_pdf laplace_rnd
  logistic_cdf logistic_inv logistic_pdf logistic_rnd
  logncdf logninv lognpdf lognrnd
+ nbincdf nbininv nbinpdf nbinrnd
  normcdf norminv normpdf normrnd
  pascal_cdf pascal_inv pascal_pdf pascal_rnd
  poisscdf poissinv poisspdf poissrnd
  stdnormal_cdf stdnormal_inv stdnormal_pdf stdnormal_rnd
  tcdf tinv tpdf trnd
- unidrnd
+ unidcdf unidinc unidpdf unidrnd
  unifcdf unifinv unifpdf unifrnd
  weibcdf weibinv weibpdf weibrnd
  wienrnd

@@ -97,7 +97,7 @@ PROJECT=octave-forge
 TAG=R`date +%Y-%m-%d`
 
 # generate the updated ChangeLog and version command
-$(CVS2CL) --fsf --file ChangeLog.tmp
+$CVS2CL --fsf --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
 cp ChangeLog www/htdocs/ChangeLog

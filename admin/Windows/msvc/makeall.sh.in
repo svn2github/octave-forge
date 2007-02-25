@@ -211,7 +211,7 @@ EOF
           fi
         fi
       fi
-      for f in PKG_ADD DESCRIPTION INDEX; do
+      for f in PKG_ADD DESCRIPTION INDEX COPYING; do
         if test -f "$packdir/$f"; then
           $INSTALL -d "$mpath/$packname"
 	  rm -f "$mpath/$packname/$f"

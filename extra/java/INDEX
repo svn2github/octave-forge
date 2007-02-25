@@ -1,7 +1,9 @@
 java >> Java
 Java Interface
+ jave_exit
  java_invoke
  java_get
+ java_init
  java_set
  java_new
  javaaddpath

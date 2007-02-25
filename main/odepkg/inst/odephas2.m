@@ -52,6 +52,7 @@ function [varargout] = odephas2 (vt, vy, vflag)
     figure (vfigure);
     vyold(:,vcounter) = vy(:,1); 
     plot (vyold(1,:), vyold(2,:), '-o');
+    drawnow;
     varargout{1} = true; 
     %# Do not stop the integration algorithm if varargout{1} = true;
     %# stop the integration algorithm if varargout{1} = false;

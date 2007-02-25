@@ -58,6 +58,7 @@ function [varargout] = odeplot (vt, vy, vflag)
     vtold(vcounter,1) = vt(1,1); 
     vyold(:,vcounter) = vy(:,1);
     plot (vtold, vyold, '-o');
+    drawnow;
     varargout{1} = true; 
 
   elseif (strcmp (vflag, 'done') == true) 

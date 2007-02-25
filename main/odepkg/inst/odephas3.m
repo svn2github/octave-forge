@@ -56,6 +56,7 @@ function [varargout] = odephas3 (vt, vy, vflag)
     figure (vfigure);
     vyold(:,vcounter) = vy(:,1); 
     plot3 (vyold(1,:), vyold(2,:), vyold (3,:), '-o');
+    drawnow;
     varargout{1} = true; 
 
   elseif (strcmp (vflag, 'done') == true)

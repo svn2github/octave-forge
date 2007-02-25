@@ -9,7 +9,7 @@ else
   LOADPATH = $(MPATH)//:$(OPATH)//:
 endif
 RUN_OCTAVE= HOME=`pwd` $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
-PKGDIRS = $(filter-out packages www, $(patsubst $(TOPDIR)/%/, %, $(dir $(wildcard $(TOPDIR)/*/Makefile))))
+PKGDIRS = $(filter-out packages doc, $(patsubst $(TOPDIR)/%/, %, $(dir $(wildcard $(TOPDIR)/*/Makefile))))
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
 RPMDIR=RPM

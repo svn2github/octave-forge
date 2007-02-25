@@ -3,7 +3,7 @@
 ## These are the steps you need to take to do a new octave-forge release.
 ## You will need:
 ##    * cvs2cl.pl from http://www.red-bean.com/cvs2cl/
-##    * perl and the texinfo toolchain
+##    * perl, python, and the texinfo toolchain
 ##    * autoconf
 ##
 ## You should also have the following in your .bashrc:
@@ -25,7 +25,8 @@
 ##
 ## 2) ./configure; make; make check
 ##
-##    Make sure it builds on your machine at least.
+##    Make sure it builds and at least passes its own tests on your machine 
+##    at least.
 ##
 ## 3) admin/make_index
 ##

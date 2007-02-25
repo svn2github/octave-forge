@@ -18,7 +18,7 @@
 
 ## This is a test to train a 9-2-2 MLP (was a real project).
 
-## author: msd 
+## author: Michel D. Schmid <michaelschmid@users.sourceforge.net> 
 
 
 ## for debug purpose only

@@ -18,7 +18,7 @@
 
 ## This is a test to train a 9-2-2-1 MLP
 
-## author: msd
+## author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 
 mData = load("mData.txt","mData");
 mData = mData.mData;

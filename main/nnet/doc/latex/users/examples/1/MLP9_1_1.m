@@ -19,7 +19,7 @@
 
 ## This is a test to train a 9-1-1 MLP (was a real project).
 
-## author: msd 
+## author: Michel D. Schmid <michaelschmid@users.sourceforge.net> 
 ## e-mail: michaelschmid@users.sourceforge.net
 
 

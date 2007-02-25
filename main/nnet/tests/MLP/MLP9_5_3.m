@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## This is a test to train a 9-5-3 MLP
-## author: msd
+## author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 
 
 ## for debug purpose only

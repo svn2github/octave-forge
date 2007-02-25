@@ -48,7 +48,7 @@ fi
 
 if test "x$subs" = "x"; then
   # FIXME: only perform operation in main/ subdirs
-  subs=`ls */*/DESCRIPTION | grep -v 'nonfree/'`
+  subs=`ls */*/DESCRIPTION | grep -v 'nonfree/' | grep -v 'language/'`
 fi
 
 failures=
@@ -196,12 +196,20 @@ EOF
           echo "Installing additional libraries/binaries ..."
           make -C "$packdir/src" install
         fi
-        ofiles=`echo $packdir/src/*.oct`
-	if test "$ofiles" != "$packdir/src/*.oct"; then
-          echo "Installing .oct files ..."
+        if test -f "$packdir/src/FILES"; then
+          echo "Installing compiled files ..."
           $INSTALL -d "$mpath/$packname" 
-          $INSTALL_PROGRAM $ofiles "$mpath/$packname/"
-	fi
+          for f in `cat "$packdir/src/FILES"`; do
+            $INSTALL_PROGRAM "$packdir/src/$f" "$mpath/$packname/"
+          done
+        else
+          ofiles=`echo $packdir/src/*.oct`
+          if test "$ofiles" != "$packdir/src/*.oct"; then
+            echo "Installing .oct files ..."
+            $INSTALL -d "$mpath/$packname" 
+            $INSTALL_PROGRAM $ofiles "$mpath/$packname/"
+          fi
+        fi
       fi
       for f in PKG_ADD DESCRIPTION INDEX; do
         if test -f "$packdir/$f"; then

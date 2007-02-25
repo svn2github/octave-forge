@@ -16,7 +16,7 @@
 %# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 %# -*- texinfo -*-
-%# @deftypefnx {Function} {@var{ydot} =} odepkg_equations_secondorderlag (@var{t, y, [u, K, T1, T2]})
+%# @deftypefn {Function} {@var{ydot} =} odepkg_equations_secondorderlag (@var{t, y, [u, K, T1, T2]})
 %# Returns two derivatives of the ordinary differential equations (ODEs) from the second order lag implementation (control theory), cf. @url{http://en.wikipedia.org/wiki/Category:Control_theory} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a scalar value with actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
 %#
 %# Run

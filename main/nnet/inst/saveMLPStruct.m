@@ -50,14 +50,24 @@ function saveMLPStruct(net,strFileName)
   # open the first level file
   fid1 = fopen(strFileName,"w+t","ieee-le");
 
-	## print header
-	printMLPHeader(fid1);
-  
-	## chech for field "numInputs"
-	printNumInputs(fid1,net);
+  if (fid1 < 0)
+    error ("Can not open %s", strFileName);
+  endif
 
-	## check for field "numLayers"
-	printNumLayers(fid1,net)
+  ## print header
+  try
+    printMLPHeader(fid1);
+  catch
+    ## Add saveMLPStructure directory to the path and try again
+    addpath ([fileparts(mfilename()),"/saveMLPStructure"]);
+    printMLPHeader(fid1);
+  end_try_catch
+  
+  ## check for field "numInputs"
+  printNumInputs(fid1,net);
+
+  ## check for field "numLayers"
+  printNumLayers(fid1,net)
 
   ## check for field "biasConnect"
   printBiasConnect(fid1,net)
@@ -187,7 +197,5 @@ function saveMLPStruct(net,strFileName)
 
 
   fclose(fid1);
-
-
 
 endfunction

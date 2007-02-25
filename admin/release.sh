@@ -100,7 +100,7 @@ TAG=R`date +%Y-%m-%d`
 $CVS2CL --fsf --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
-cp ChangeLog www/htdocs/ChangeLog
+cp -f ChangeLog doc/htdocs/ChangeLog
 
 # generate the AUTHORS file
 ./admin/get_authors

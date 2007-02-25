@@ -37,7 +37,7 @@
 ## noch nicht geschrieben
 ## @end deftypefn
 
-## Author: mds
+## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 
 function saveMLPStruct(net,strFileName)
 

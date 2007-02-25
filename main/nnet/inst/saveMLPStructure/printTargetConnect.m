@@ -23,7 +23,7 @@
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
 
-## Author: mds
+## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 ## e-mail: michaelschmid@users.sourceforge.net
 
 function printTargetConnect(fid,net)

@@ -34,7 +34,7 @@
 !define VCREDIST_FILE "D:\Temp\vcredist_x86.exe"
 !endif
 !define OCTAVE_VERSION "2.9.9+"
-!define OCTAVE_CVS_VERSION "20070126"
+!define OCTAVE_CVS_VERSION "20070225"
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "GNU Octave"
@@ -134,7 +134,7 @@ Section "Core" SEC_CORE
   File "${OCTAVE_ROOT}\bin\octave.dll"
   File "${OCTAVE_ROOT}\bin\octave.exe"
   File "${OCTAVE_ROOT}\bin\octinterp.dll"
-  File "${OCTAVE_FORGE}\admin\Windows\octave.ico"
+  File "${OCTAVE_FORGE}\admin\Windows\cygwin\octave.ico"
   ; octave compiled modules
   SetOutPath "$INSTDIR\libexec"
   File /r /x "COM" "${OCTAVE_ROOT}\libexec\*.*"
@@ -234,6 +234,7 @@ Section "Gnuplot" SEC_GNUPLOT
   SetOverwrite try
   SetOutPath "$INSTDIR\bin"
   File /x "*.dll" /x "*.GID" "${GNUPLOT_ROOT}\bin\*.*"
+  File "${VCLIBS_ROOT}\bin\bgd.dll"
   File "${VCLIBS_ROOT}\bin\iconv.dll"
   File "${VCLIBS_ROOT}\bin\intl.dll"
   File "${VCLIBS_ROOT}\bin\jpeg6b.dll"

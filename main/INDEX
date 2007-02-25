@@ -1179,7 +1179,7 @@ Distributions
  poisscdf poissinv poisspdf poissrnd
  stdnormal_cdf stdnormal_inv stdnormal_pdf stdnormal_rnd
  tcdf tinv tpdf trnd
- unidcdf unidinc unidpdf unidrnd
+ unidcdf unidinv unidpdf unidrnd
  unifcdf unifinv unifpdf unifrnd
  weibcdf weibinv weibpdf weibrnd
  wienrnd

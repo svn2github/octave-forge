@@ -1,4 +1,3128 @@
 # Automatically generated file --- DO NOT EDIT
+2007-02-26 00:27  adb014
+
+	* admin/release.sh: update comments on requirements
+
+2007-02-26 00:24  adb014
+
+	* main/nnet/: doc/latex/users/examples/1/MLP9_1_1.m,
+	  tests/MLP/MLP9_1_1.m, tests/MLP/MLP9_2_1.m, tests/MLP/MLP9_2_2.m,
+	  tests/MLP/MLP9_2_2_1.m, tests/MLP/MLP9_2_3.m,
+	  tests/MLP/MLP9_5_3.m: Update author fields so that that automatic
+	  creation of AUTHORS file is correct
+
+2007-02-26 00:17  adb014
+
+	* main/nnet/: INDEX, inst/calcjacobian.m, inst/calcperf.m,
+	  inst/checknetstruct.m, inst/dpurelin.m, inst/dtansig.m,
+	  inst/getx.m, inst/init.m, inst/isposint.m, inst/min_max.m,
+	  inst/mse.m, inst/newff.m, inst/newnetwork.m, inst/poststd.m,
+	  inst/prestd.m, inst/purelin.m, inst/saveMLPStruct.m, inst/setx.m,
+	  inst/sim.m, inst/tansig.m, inst/train.m, inst/trainlm.m,
+	  inst/trastd.m, inst/saveMLPStructure/printAdaptFcn.m,
+	  inst/saveMLPStructure/printAdaptParam.m,
+	  inst/saveMLPStructure/printB.m,
+	  inst/saveMLPStructure/printBiasConnect.m,
+	  inst/saveMLPStructure/printBiases.m,
+	  inst/saveMLPStructure/printIW.m,
+	  inst/saveMLPStructure/printInitFcn.m,
+	  inst/saveMLPStructure/printInitParam.m,
+	  inst/saveMLPStructure/printInputConnect.m,
+	  inst/saveMLPStructure/printInputWeights.m,
+	  inst/saveMLPStructure/printInputs.m,
+	  inst/saveMLPStructure/printLW.m,
+	  inst/saveMLPStructure/printLayerConnect.m,
+	  inst/saveMLPStructure/printLayerWeights.m,
+	  inst/saveMLPStructure/printLayers.m,
+	  inst/saveMLPStructure/printMLPHeader.m,
+	  inst/saveMLPStructure/printNumInputDelays.m,
+	  inst/saveMLPStructure/printNumInputs.m,
+	  inst/saveMLPStructure/printNumLayerDelays.m,
+	  inst/saveMLPStructure/printNumLayers.m,
+	  inst/saveMLPStructure/printNumOutputs.m,
+	  inst/saveMLPStructure/printNumTargets.m,
+	  inst/saveMLPStructure/printOutputConnect.m,
+	  inst/saveMLPStructure/printOutputs.m,
+	  inst/saveMLPStructure/printPerformFcn.m,
+	  inst/saveMLPStructure/printPerformParam.m,
+	  inst/saveMLPStructure/printTargetConnect.m,
+	  inst/saveMLPStructure/printTargets.m,
+	  inst/saveMLPStructure/printTrainFcn.m,
+	  inst/saveMLPStructure/printTrainParam.m: Update author fields so
+	  that that automatic creation of AUTHORS file is correct
+
+2007-02-26 00:00  adb014
+
+	* doc/htdocs/: NEWS.in, index.in: Update news for latest changes
+
+2007-02-25 23:44  adb014
+
+	* main/INDEX, extra/java/INDEX: typo
+
+2007-02-25 23:35  adb014
+
+	* main/nnet/inst/saveMLPStruct.m: add saveMLPStructure directory to
+	  path if can't print header and try again
+
+2007-02-25 23:25  adb014
+
+	* main/nnet/inst/: calcjacobian.m, calcperf.m, checknetstruct.m,
+	  dpurelin.m, dtansig.m, getx.m, init.m, isposint.m, min_max.m,
+	  mse.m, newff.m, newnetwork.m, poststd.m, prestd.m, purelin.m,
+	  saveMLPStruct.m, setx.m, sim.m, tansig.m, train.m, trainlm.m,
+	  trastd.m, saveMLPStructure/printAdaptFcn.m,
+	  saveMLPStructure/printAdaptParam.m, saveMLPStructure/printB.m,
+	  saveMLPStructure/printBiasConnect.m,
+	  saveMLPStructure/printBiases.m, saveMLPStructure/printIW.m,
+	  saveMLPStructure/printInitFcn.m,
+	  saveMLPStructure/printInitParam.m,
+	  saveMLPStructure/printInputConnect.m,
+	  saveMLPStructure/printInputWeights.m,
+	  saveMLPStructure/printInputs.m, saveMLPStructure/printLW.m,
+	  saveMLPStructure/printLayerConnect.m,
+	  saveMLPStructure/printLayerWeights.m,
+	  saveMLPStructure/printLayers.m,
+	  saveMLPStructure/printMLPHeader.m,
+	  saveMLPStructure/printNumInputDelays.m,
+	  saveMLPStructure/printNumInputs.m,
+	  saveMLPStructure/printNumLayerDelays.m,
+	  saveMLPStructure/printNumLayers.m,
+	  saveMLPStructure/printNumOutputs.m,
+	  saveMLPStructure/printNumTargets.m,
+	  saveMLPStructure/printOutputConnect.m,
+	  saveMLPStructure/printOutputs.m,
+	  saveMLPStructure/printPerformFcn.m,
+	  saveMLPStructure/printPerformParam.m,
+	  saveMLPStructure/printTargetConnect.m,
+	  saveMLPStructure/printTargets.m,
+	  saveMLPStructure/printTrainFcn.m,
+	  saveMLPStructure/printTrainParam.m: Reorganise the nnet package
+	  in a way that it will actually be available aftaer installation.
+	  Note saveMLPStructure directory still not visible
+
+2007-02-25 23:14  adb014
+
+	* main/nnet/Makefile: When building package don't build the
+	  documentation
+
+2007-02-25 23:14  adb014
+
+	* main/INDEX: Index new functions
+
+2007-02-25 23:07  adb014
+
+	* extra/: Windows/INDEX, java/INDEX: Index new functions
+
+2007-02-25 23:03  adb014
+
+	* main/odepkg/inst/odepkg_equations_secondorderlag.m: texinfo
+	  syntax error
+
+2007-02-25 22:31  treichl
+
+	* main/odepkg/inst/ode5d.m: In octave te "which" function changed,
+	  therefore the tests of this file had to be adapted.
+
+2007-02-25 22:23  treichl
+
+	* main/odepkg/src/Makefile: Initially added.
+
+2007-02-25 17:03  treichl
+
+	* main/odepkg/inst/: odephas2.m, odephas3.m, odeplot.m: Adapted to
+	  the new plot functions of Octave.
+
+2007-02-25 17:00  treichl
+
+	* main/odepkg/doc/Makefile: Initially added.
+
+2007-02-25 14:59  goffioul
+
+	* admin/Windows/msvc/makeall.sh.in: Install also COPYING
+
+2007-02-25 14:53  goffioul
+
+	* admin/Windows/msvc/octave.nsi: Fix installer script: icon moved +
+	  image support in gnuplot + CVS version bumped
+
+2007-02-25 11:03  goffioul
+
+	* admin/Windows/msvc/makeall.sh.in: Do not compile languages/
+	  subdirs (yet). Use FILES for src/ installation.
+
+2007-02-25 02:09  adb014
+
+	* main/physical-constants/INDEX: Syntax error in INDEX file
+
+2007-02-25 01:59  adb014
+
+	* packages/Makefile: filter out doc/ from package directories
+
+2007-02-25 00:40  adb014
+
+	* main/comm/doc/comms.txi: Typos in documentation
+
+2007-02-25 00:39  adb014
+
+	* main/octcdf/Makefile: Don't build octcdf code during the
+	  packaging stage
+
+2007-02-24 22:59  goffioul
+
+	* extra/java/: COPYING, DESCRIPTION, INDEX, PKG_ADD,
+	  inst/javaArray.m, inst/javaaddpath.m, inst/javaclasspath.m,
+	  src/Makeconf.in, src/Makefile, src/__java__.cc, src/autogen.sh,
+	  src/configure.base, src/org/octave/ClassHelper.java,
+	  src/org/octave/OctClassLoader.java: New package for java
+	  interface
+
+2007-02-23 07:37  gnumuthu
+
+	* main/physical-constants/: gen.py, inst/physical_constant.m: Fix
+	  errors in generating value of constant, where decimal was omitted
+	  earlier. Ugh
+
+2007-02-22 19:43  adb014
+
+	* nonfree/arpack/DESCRIPTION: Add ARPACK website to DESCRIPTION
+
+2007-02-22 17:35  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_dop853.c,
+	  odepkg_mexsolver_dopri5.c, odepkg_mexsolver_odex.c,
+	  odepkg_mexsolver_radau.c, odepkg_mexsolver_radau5.c,
+	  odepkg_mexsolver_rodas.c, odepkg_mexsolver_seulex.c: Removed bug
+	  that did an OutputSelection at event calls.
+
+2007-02-22 17:32  treichl
+
+	* main/odepkg/inst/: odepkg_equations_lorenz.m,
+	  odepkg_equations_pendulous.m, odepkg_equations_roessler.m,
+	  odepkg_equations_secondorderlag.m, odepkg_equations_vanderpol.m:
+	  Help string, tests and demos updates.
+
+2007-02-22 17:31  treichl
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m: Removed
+	  bug that did an OutputSelection at event calls.
+
+2007-02-22 01:01  adb014
+
+	* nonfree/arpack/doc/: ChangeLog, patch.changelog: move patches
+	  changelog, and it clashes with main changelog
+
+2007-02-22 01:00  adb014
+
+	* nonfree/arpack/: COPYING, DESCRIPTION, INDEX, doc/ChangeLog,
+	  doc/README, doc/Sorensen.eml, doc/patch, inst/svds.m,
+	  src/.cvsignore, src/Makeconf.in, src/Makefile, src/autogen.sh,
+	  src/configure.base, src/eigs-base.cc, src/eigs.cc: Add arpack
+	  eigs/svds functions here till final licensing issue can be worked
+	  out
+
+2007-02-20 21:20  ficmatinfmag
+
+	* language/pt_BR/help/octave/imshow.pt_BR: Brazilian portuguese
+	  translation imsho.pt_BR -> updating to english cvs version 1.2
+
+2007-02-20 21:10  ficmatinfmag
+
+	* language/base/help/octave/: __uiobject_globals__, figure, imshow,
+	  nchoosek: changed in octave.org.cvs
+
+2007-02-20 21:10  ficmatinfmag
+
+	* language/base/help/octave/: __img__, __uiobject_close_all__,
+	  stem: added in octave.org-cvs
+
+2007-02-19 19:05  michaelschmid
+
+	* main/nnet/Makefile: add Makefile to root directory of nnet
+
+2007-02-19 00:10  treichl
+
+	* main/odepkg/doc/odepkg.texi: Updated.
+
+2007-02-18 22:11  treichl
+
+	* main/odepkg/DESCRIPTION: Released version 0.2.1 because of
+	  ongoing work with mexsolvers.
+
+2007-02-18 14:23  michaelschmid
+
+	* main/nnet/tests/MLP/: MLP9_1_1.m, MLP9_2_1.m, MLP9_2_2_1.m,
+	  MLP9_5_3.m, mData_original.txt, MLP9_2_2.m, MLP9_2_3.m,
+	  mData.txt: Initial commit into CVS
+
+2007-02-18 14:09  michaelschmid
+
+	* main/nnet/doc/pdf/neuralNetworkToolboxForOctaveUsersGuide.pdf:
+	  Initial commit into CVS
+
+2007-02-18 14:06  michaelschmid
+
+	* main/nnet/doc/latex/users/tests/functions/:
+	  isposint_netw_priv.tex, min_max.tex: Initial commit into CVS
+
+2007-02-18 14:03  michaelschmid
+
+	* main/nnet/doc/latex/users/: octave/neuroToolbox/min_max.tex,
+	  octave/neuroToolbox/neuroToolbox.tex,
+	  octave/neuroToolbox/saveMLPStruct.tex,
+	  octave/neuroToolbox/train.tex, octave/neuroToolbox/newff.tex,
+	  octave/neuroToolbox/sim.tex, tests/tests.tex: Initial commit into
+	  CVS
+
+2007-02-18 13:58  michaelschmid
+
+	* main/nnet/doc/latex/users/: matlab/neuroToolbox.tex,
+	  matlab/problems.tex, octave/octave.tex,
+	  octave/functions/isposintOct.tex,
+	  octave/functions/isposint_netw_privOct.tex: Initial commit into
+	  CVS
+
+2007-02-18 13:54  michaelschmid
+
+	* main/nnet/doc/latex/users/: bibliography.tex, introduction.tex,
+	  knownIncompatibilities.tex,
+	  neuralNetworkToolboxForOctaveUsersGuide.tcp,
+	  neuralNetworkToolboxForOctaveUsersGuide.tex, notations.tex,
+	  numbering.tex, title2.tex, examples/1/1.tex,
+	  examples/1/MLP9_1_1.m, examples/1/MLP9_1_1.tex,
+	  examples/1/mData.txt, examples/examples.tex: Initial import into
+	  CVS
+
+2007-02-18 13:50  michaelschmid
+
+	* main/nnet/doc/latex/developers/tests/: tests.tex,
+	  functions/isposint_netw_priv.tex, functions/min_max.tex: Initial
+	  import into CVS
+
+2007-02-18 13:46  michaelschmid
+
+	* main/nnet/doc/latex/developers/octave/: directorys.tex,
+	  octave.tex, functions/isposintOct.tex,
+	  functions/isposint_netw_privOct.tex, functions/min_max.tex:
+	  Initial import into CVS
+
+2007-02-18 13:43  michaelschmid
+
+	* main/nnet/doc/latex/developers/: examples/example1.tex,
+	  examples/example2.tex, examples/examples.tex,
+	  matlab/neuroToolbox.tex, matlab/problems.tex: Initial commit into
+	  CVS
+
+2007-02-18 13:41  michaelschmid
+
+	*
+	  main/nnet/doc/latex/developers/codingGuideline/codingGuideline.tex:
+	  Initial import into CVS
+
+2007-02-18 13:39  michaelschmid
+
+	* main/nnet/doc/latex/developers/: codeConvention.tex,
+	  introduction.tex, neuralNetworkToolboxForOctave.tcp,
+	  neuralNetworkToolboxForOctave.tex, notations.tex, numbering.tex,
+	  title.tex, varietes.tex: Initial commit into CVS
+
+2007-02-18 13:34  michaelschmid
+
+	* main/nnet/doc/latex/developers/: algorithm/algorithmen.tex,
+	  analyzing/analyzingNewff.tex, analyzing/matlab.tex: Initial
+	  commit into CVS
+
+2007-02-18 13:31  michaelschmid
+
+	* main/nnet/doc/latex/: common/bibliography.tex,
+	  developers/algorithm/LevenbergMarquardt.tex: Initial commit into
+	  CVS
+
+2007-02-18 13:17  michaelschmid
+
+	* main/nnet/: COPYING, DESCRIPTION, INDEX:
+
+	  Initial commit into CVS
+
+2007-02-17 20:16  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_radau.c,
+	  odepkg_mexsolver_radau5.c, odepkg_mexsolver_rodas.c,
+	  odepkg_mexsolver_seulex.c: Added code to the Hairer interface
+	  functions to also support the option "MStateDependence" if this is
+	  set with odeset.
+
+2007-02-17 20:13  treichl
+
+	* main/odepkg/doc/odepkg.texi: Updated.
+
+2007-02-16 23:31  treichl
+
+	* main/odepkg/: doc/odepkg.texi, src/odepkg_mexsolver_radau.c,
+	  src/odepkg_mexsolver_radau5.c, src/odepkg_mexsolver_seulex.c:
+	  Updated.
+
+2007-02-16 21:29  treichl
+
+	* main/odepkg/doc/odepkg.texi: Updated.
+
+2007-02-16 17:01  goffioul
+
+	* admin/Windows/msvc/mkoctfile.cc.in: Quote include path when
+	  necessary
+
+2007-02-16 11:58  goffioul
+
+	* admin/Windows/msvc/: mkoctfile.cc.in, octave-config.cc.in:
+	  Include fixes from script versions.
+
+2007-02-16 11:50  goffioul
+
+	* admin/Windows/msvc/: mkoctfile.cc.in, octave-config.cc.in:
+	  Include latest change from script versions: support for libfiles +
+	  full OCTAVE_HOME substitution + building of include/lib flags from
+	  atomic paths
+
+2007-02-16 11:12  mcreel
+
+	* main/econometrics/inst/kernel_example.m: clean up a bit, add a
+	  nice plot of parallel performance
+
+2007-02-15 11:38  goffioul
+
+	* admin/Windows/msvc/octaverc.win: Prepend octave-forge path.
+
+2007-02-14 14:22  goffioul
+
+	* admin/Windows/msvc/mkoctfile.cc.in: Fix depend command
+	  generation.
+
+2007-02-14 12:42  mcreel
+
+	* main/econometrics/inst/: gmm_example.m, mle_example.m: randp ->
+	  poisson_rnd (using deprecated for compatibility with 2.1.x)
+
+2007-02-14 05:47  gnumuthu
+
+	* main/physical-constants/: gen.py, inst/physical_constant.m: Fix a
+	  bug in binary search. Ugh.
+
+2007-02-13 14:53  goffioul
+
+	* extra/Windows/: DESCRIPTION, INDEX, PKG_ADD, examples/mat2xls.m,
+	  src/Makefile, src/__COM__.cc: Add COM interface for octave +
+	  example about automating Excel.
+
+2007-02-13 05:04  gnumuthu
+
+	* main/miscellaneous/inst/match.m: match(func,list), is the filter
+	  in Python/Lisp
+
+2007-02-13 00:42  gnumuthu
+
+	* main/strings/: INDEX, inst/editdistance.m: Update INDEX for
+	  cstrcmp(); added texinfo doc for editdistance
+
+2007-02-12 23:40  abarth93
+
+	* main/octcdf/Makefile: add Makefile to propagate "make clean"
+
+2007-02-12 23:11  abarth93
+
+	* main/octcdf/DESCRIPTION: The shape of a netcdf variable is now
+	  stored in a vector<int> instead of a dim_vector since the number of
+	  dimension can be smaller than 2
+
+2007-02-12 23:08  abarth93
+
+	* main/octcdf/src/: ov-ncvar.cc, ov-ncvar.h, ov-netcdf.cc: The
+	  shape of a netcdf variable is now stored in a vector<int> instead of
+	  a dim_vector since the number of dimension can be smaller than 2
+
+2007-02-12 18:46  gnumuthu
+
+	* main/strings/inst/cstrcmp.m: C-like strcmp function, with
+	  Octave-strcmp arguments/semantics
+
+2007-02-12 18:02  gnumuthu
+
+	* main/physical-constants/: gen.py, inst/physical_constant.m: Use
+	  binary search; generate sorted list
+
+2007-02-12 11:20  goffioul
+
+	* admin/Windows/msvc/libs/: suitesparse.diff, suitesparse.txt: Use
+	  a less intrusive patch for CXSparse.
+
+2007-02-11 19:50  treichl
+
+	* main/odepkg/src/hairer.diff: Update.
+
+2007-02-11 19:49  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_radau.c,
+	  odepkg_mexsolver_radau5.c, odepkg_mexsolver_rodas.c,
+	  odepkg_mexsolver_seulex.c: Small update for stiff solvers.
+
+2007-02-11 19:48  treichl
+
+	* main/odepkg/src/odepkg_mexsolver_odex.c: Small update of ODE
+	  solvers.
+
+2007-02-11 18:29  treichl
+
+	* main/odepkg/src/odepkg_mexsolver_rodas.c: Added interface
+	  function for stiff Fortran solver rodas.
+
+2007-02-11 13:53  treichl
+
+	* main/odepkg/src/: hairer.diff, odepkg_mexsolver_radau5.c,
+	  odepkg_mexsolver_seulex.c: Added interface functions for the
+	  stiff-solvers radau5 and seulex.
+
+2007-02-10 22:38  gnumuthu
+
+	* main/physical-constants/INDEX: INDEX only physical_constant
+
+2007-02-10 22:34  gnumuthu
+
+	* main/physical-constants/inst/:
+	  ALPHA_PARTICLE_ELECTRON_MASS_RATIO.m, ALPHA_PARTICLE_MASS.m,
+	  ALPHA_PARTICLE_MASS_ENERGY_EQUIVALENT.m,
+	  ALPHA_PARTICLE_MASS_ENERGY_EQUIVALENT_IN_MEV.m,
+	  ALPHA_PARTICLE_MASS_IN_U.m, ALPHA_PARTICLE_MOLAR_MASS.m,
+	  ALPHA_PARTICLE_PROTON_MASS_RATIO.m, ANGSTROM_STAR.m,
+	  ATOMIC_MASS_CONSTANT.m, ATOMIC_MASS_CONSTANT_ENERGY_EQUIVALENT.m,
+	  ATOMIC_MASS_CONSTANT_ENERGY_EQUIVALENT_IN_MEV.m,
+	  ATOMIC_MASS_UNIT_ELECTRON_VOLT.m, ATOMIC_MASS_UNIT_HARTREE.m,
+	  ATOMIC_MASS_UNIT_HERTZ.m, ATOMIC_MASS_UNIT_INVERSE_METER.m,
+	  ATOMIC_MASS_UNIT_JOULE.m, ATOMIC_MASS_UNIT_KELVIN.m,
+	  ATOMIC_MASS_UNIT_KILOGRAM.m,
+	  ATOMIC_UNIT_OF_1ST_HYPERPOLARIZABLITY.m,
+	  ATOMIC_UNIT_OF_2ND_HYPERPOLARIZABLITY.m, ATOMIC_UNIT_OF_ACTION.m,
+	  ATOMIC_UNIT_OF_CHARGE.m, ATOMIC_UNIT_OF_CHARGE_DENSITY.m,
+	  ATOMIC_UNIT_OF_CURRENT.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_DIPOLE_MOMENT.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_FIELD.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_FIELD_GRADIENT.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_POLARIZABLITY.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_POTENTIAL.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_QUADRUPOLE_MOMENT.m,
+	  ATOMIC_UNIT_OF_ENERGY.m, ATOMIC_UNIT_OF_FORCE.m,
+	  ATOMIC_UNIT_OF_LENGTH.m, ATOMIC_UNIT_OF_MAGNETIZABILITY.m,
+	  ATOMIC_UNIT_OF_MAGN_DIPOLE_MOMENT.m,
+	  ATOMIC_UNIT_OF_MAGN_FLUX_DENSITY.m, ATOMIC_UNIT_OF_MASS.m,
+	  ATOMIC_UNIT_OF_MOMENTUM.m, ATOMIC_UNIT_OF_PERMITTIVITY.m,
+	  ATOMIC_UNIT_OF_TIME.m, ATOMIC_UNIT_OF_VELOCITY.m,
+	  AVOGADRO_CONSTANT.m, BOHR_MAGNETON.m,
+	  BOHR_MAGNETON_IN_EV_PER_T.m, BOHR_MAGNETON_IN_HZ_PER_T.m,
+	  BOHR_MAGNETON_IN_INVERSE_METERS_PER_TESLA.m,
+	  BOHR_MAGNETON_IN_K_PER_T.m, BOHR_RADIUS.m, BOLTZMANN_CONSTANT.m,
+	  BOLTZMANN_CONSTANT_IN_EV_PER_K.m,
+	  BOLTZMANN_CONSTANT_IN_HZ_PER_K.m,
+	  BOLTZMANN_CONSTANT_IN_INVERSE_METERS_PER_KELVIN.m,
+	  CHARACTERISTIC_IMPEDANCE_OF_VACUUM.m,
+	  CLASSICAL_ELECTRON_RADIUS.m, COMPTON_WAVELENGTH.m,
+	  COMPTON_WAVELENGTH_BY_2_PI.m, CONDUCTANCE_QUANTUM.m,
+	  CONVENTIONAL_VALUE_OF_JOSEPHSON_CONSTANT.m,
+	  CONVENTIONAL_VALUE_OF_VON_KLITZING_CONSTANT.m, CU_X_UNIT.m,
+	  DEUTERON_ELECTRON_MAGN_MOMENT_RATIO.m,
+	  DEUTERON_ELECTRON_MASS_RATIO.m, DEUTERON_MAGN_MOMENT.m,
+	  DEUTERON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  DEUTERON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  DEUTERON_MASS.m, DEUTERON_MASS_ENERGY_EQUIVALENT.m,
+	  DEUTERON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, DEUTERON_MASS_IN_U.m,
+	  DEUTERON_MOLAR_MASS.m, DEUTERON_NEUTRON_MAGN_MOMENT_RATIO.m,
+	  DEUTERON_PROTON_MAGN_MOMENT_RATIO.m,
+	  DEUTERON_PROTON_MASS_RATIO.m, DEUTERON_RMS_CHARGE_RADIUS.m,
+	  ELECTRIC_CONSTANT.m, ELECTRON_CHARGE_TO_MASS_QUOTIENT.m,
+	  ELECTRON_DEUTERON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_DEUTERON_MASS_RATIO.m, ELECTRON_GYROMAGN_RATIO.m,
+	  ELECTRON_GYROMAGN_RATIO_BY_2_PI.m, ELECTRON_G_FACTOR.m,
+	  ELECTRON_MAGN_MOMENT.m, ELECTRON_MAGN_MOMENT_ANOMALY.m,
+	  ELECTRON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  ELECTRON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  ELECTRON_MASS.m, ELECTRON_MASS_ENERGY_EQUIVALENT.m,
+	  ELECTRON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, ELECTRON_MASS_IN_U.m,
+	  ELECTRON_MOLAR_MASS.m, ELECTRON_MUON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_MUON_MASS_RATIO.m, ELECTRON_NEUTRON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_NEUTRON_MASS_RATIO.m,
+	  ELECTRON_PROTON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_PROTON_MASS_RATIO.m, ELECTRON_TAU_MASS_RATIO.m,
+	  ELECTRON_TO_ALPHA_PARTICLE_MASS_RATIO.m,
+	  ELECTRON_TO_SHIELDED_HELION_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_TO_SHIELDED_PROTON_MAGN_MOMENT_RATIO.m, ELECTRON_VOLT.m,
+	  ELECTRON_VOLT_ATOMIC_MASS_UNIT.m, ELECTRON_VOLT_HARTREE.m,
+	  ELECTRON_VOLT_HERTZ.m, ELECTRON_VOLT_INVERSE_METER.m,
+	  ELECTRON_VOLT_JOULE.m, ELECTRON_VOLT_KELVIN.m,
+	  ELECTRON_VOLT_KILOGRAM.m, ELEMENTARY_CHARGE.m,
+	  ELEMENTARY_CHARGE_BY_H.m, FARADAY_CONSTANT.m,
+	  FARADAY_CONSTANT_FOR_CONVENTIONAL_ELECTRIC_CURRENT.m,
+	  FERMI_COUPLING_CONSTANT.m, FINE_STRUCTURE_CONSTANT.m,
+	  FIRST_RADIATION_CONSTANT.m,
+	  FIRST_RADIATION_CONSTANT_FOR_SPECTRAL_RADIANCE.m,
+	  HARTREE_ATOMIC_MASS_UNIT.m, HARTREE_ELECTRON_VOLT.m,
+	  HARTREE_ENERGY.m, HARTREE_ENERGY_IN_EV.m, HARTREE_HERTZ.m,
+	  HARTREE_INVERSE_METER.m, HARTREE_JOULE.m, HARTREE_KELVIN.m,
+	  HARTREE_KILOGRAM.m, HELION_ELECTRON_MASS_RATIO.m, HELION_MASS.m,
+	  HELION_MASS_ENERGY_EQUIVALENT.m,
+	  HELION_MASS_ENERGY_EQUIVALENT_IN_MEV.m, HELION_MASS_IN_U.m,
+	  HELION_MOLAR_MASS.m, HELION_PROTON_MASS_RATIO.m,
+	  HERTZ_ATOMIC_MASS_UNIT.m, HERTZ_ELECTRON_VOLT.m, HERTZ_HARTREE.m,
+	  HERTZ_INVERSE_METER.m, HERTZ_JOULE.m, HERTZ_KELVIN.m,
+	  HERTZ_KILOGRAM.m, INVERSE_FINE_STRUCTURE_CONSTANT.m,
+	  INVERSE_METER_ATOMIC_MASS_UNIT.m, INVERSE_METER_ELECTRON_VOLT.m,
+	  INVERSE_METER_HARTREE.m, INVERSE_METER_HERTZ.m,
+	  INVERSE_METER_JOULE.m, INVERSE_METER_KELVIN.m,
+	  INVERSE_METER_KILOGRAM.m, INVERSE_OF_CONDUCTANCE_QUANTUM.m,
+	  JOSEPHSON_CONSTANT.m, JOULE_ATOMIC_MASS_UNIT.m,
+	  JOULE_ELECTRON_VOLT.m, JOULE_HARTREE.m, JOULE_HERTZ.m,
+	  JOULE_INVERSE_METER.m, JOULE_KELVIN.m, JOULE_KILOGRAM.m,
+	  KELVIN_ATOMIC_MASS_UNIT.m, KELVIN_ELECTRON_VOLT.m,
+	  KELVIN_HARTREE.m, KELVIN_HERTZ.m, KELVIN_INVERSE_METER.m,
+	  KELVIN_JOULE.m, KELVIN_KILOGRAM.m, KILOGRAM_ATOMIC_MASS_UNIT.m,
+	  KILOGRAM_ELECTRON_VOLT.m, KILOGRAM_HARTREE.m, KILOGRAM_HERTZ.m,
+	  KILOGRAM_INVERSE_METER.m, KILOGRAM_JOULE.m, KILOGRAM_KELVIN.m,
+	  LATTICE_PARAMETER_OF_SILICON.m, LATTICE_SPACING_OF_SILICON.m,
+	  LOSCHMIDT_CONSTANT_.m, MAGN_CONSTANT.m, MAGN_FLUX_QUANTUM.m,
+	  MOLAR_GAS_CONSTANT.m, MOLAR_MASS_CONSTANT.m,
+	  MOLAR_MASS_OF_CARBON_12.m, MOLAR_PLANCK_CONSTANT.m,
+	  MOLAR_PLANCK_CONSTANT_TIMES_C.m, MOLAR_VOLUME_OF_IDEAL_GAS_.m,
+	  MOLAR_VOLUME_OF_SILICON.m, MO_X_UNIT.m,
+	  MUON_COMPTON_WAVELENGTH.m, MUON_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  MUON_ELECTRON_MASS_RATIO.m, MUON_G_FACTOR.m, MUON_MAGN_MOMENT.m,
+	  MUON_MAGN_MOMENT_ANOMALY.m,
+	  MUON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  MUON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m, MUON_MASS.m,
+	  MUON_MASS_ENERGY_EQUIVALENT.m,
+	  MUON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, MUON_MASS_IN_U.m,
+	  MUON_MOLAR_MASS.m, MUON_NEUTRON_MASS_RATIO.m,
+	  MUON_PROTON_MAGN_MOMENT_RATIO.m, MUON_PROTON_MASS_RATIO.m,
+	  MUON_TAU_MASS_RATIO.m, NATURAL_UNIT_OF_ACTION.m,
+	  NATURAL_UNIT_OF_ACTION_IN_EV_S.m, NATURAL_UNIT_OF_ENERGY.m,
+	  NATURAL_UNIT_OF_ENERGY_IN_MEV.m, NATURAL_UNIT_OF_LENGTH.m,
+	  NATURAL_UNIT_OF_MASS.m, NATURAL_UNIT_OF_MOMENTUM.m,
+	  NATURAL_UNIT_OF_MOMENTUM_IN_MEV_PER_C.m, NATURAL_UNIT_OF_TIME.m,
+	  NATURAL_UNIT_OF_VELOCITY.m, NEUTRON_COMPTON_WAVELENGTH.m,
+	  NEUTRON_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  NEUTRON_ELECTRON_MAGN_MOMENT_RATIO.m,
+	  NEUTRON_ELECTRON_MASS_RATIO.m, NEUTRON_GYROMAGN_RATIO.m,
+	  NEUTRON_GYROMAGN_RATIO_BY_2_PI.m, NEUTRON_G_FACTOR.m,
+	  NEUTRON_MAGN_MOMENT.m,
+	  NEUTRON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  NEUTRON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m, NEUTRON_MASS.m,
+	  NEUTRON_MASS_ENERGY_EQUIVALENT.m,
+	  NEUTRON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, NEUTRON_MASS_IN_U.m,
+	  NEUTRON_MOLAR_MASS.m, NEUTRON_MUON_MASS_RATIO.m,
+	  NEUTRON_PROTON_MAGN_MOMENT_RATIO.m, NEUTRON_PROTON_MASS_RATIO.m,
+	  NEUTRON_TAU_MASS_RATIO.m,
+	  NEUTRON_TO_SHIELDED_PROTON_MAGN_MOMENT_RATIO.m,
+	  NEWTONIAN_CONSTANT_OF_GRAVITATION.m,
+	  NEWTONIAN_CONSTANT_OF_GRAVITATION_BY_H_BAR_C.m,
+	  NUCLEAR_MAGNETON.m, NUCLEAR_MAGNETON_IN_EV_PER_T.m,
+	  NUCLEAR_MAGNETON_IN_INVERSE_METERS_PER_TESLA.m,
+	  NUCLEAR_MAGNETON_IN_K_PER_T.m, NUCLEAR_MAGNETON_IN_MHZ_PER_T.m,
+	  PLANCK_CONSTANT.m, PLANCK_CONSTANT_BY_2_PI.m,
+	  PLANCK_CONSTANT_BY_2_PI_IN_EV_S.m,
+	  PLANCK_CONSTANT_BY_2_PI_TIMES_C_IN_MEV_FM.m,
+	  PLANCK_CONSTANT_IN_EV_S.m, PLANCK_LENGTH.m, PLANCK_MASS.m,
+	  PLANCK_TEMPERATURE.m, PLANCK_TIME.m,
+	  PROTON_CHARGE_TO_MASS_QUOTIENT.m, PROTON_COMPTON_WAVELENGTH.m,
+	  PROTON_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  PROTON_ELECTRON_MASS_RATIO.m, PROTON_GYROMAGN_RATIO.m,
+	  PROTON_GYROMAGN_RATIO_BY_2_PI.m, PROTON_G_FACTOR.m,
+	  PROTON_MAGN_MOMENT.m,
+	  PROTON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  PROTON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  PROTON_MAGN_SHIELDING_CORRECTION.m, PROTON_MASS.m,
+	  PROTON_MASS_ENERGY_EQUIVALENT.m,
+	  PROTON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, PROTON_MASS_IN_U.m,
+	  PROTON_MOLAR_MASS.m, PROTON_MUON_MASS_RATIO.m,
+	  PROTON_NEUTRON_MAGN_MOMENT_RATIO.m, PROTON_NEUTRON_MASS_RATIO.m,
+	  PROTON_RMS_CHARGE_RADIUS.m, PROTON_TAU_MASS_RATIO.m,
+	  QUANTUM_OF_CIRCULATION.m, QUANTUM_OF_CIRCULATION_TIMES_2.m,
+	  RYDBERG_CONSTANT.m, RYDBERG_CONSTANT_TIMES_C_IN_HZ.m,
+	  RYDBERG_CONSTANT_TIMES_HC_IN_EV.m,
+	  RYDBERG_CONSTANT_TIMES_HC_IN_J.m, SACKUR_TETRODE_CONSTANT_.m,
+	  SECOND_RADIATION_CONSTANT.m, SHIELDED_HELION_GYROMAGN_RATIO.m,
+	  SHIELDED_HELION_GYROMAGN_RATIO_BY_2_PI.m,
+	  SHIELDED_HELION_MAGN_MOMENT.m,
+	  SHIELDED_HELION_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  SHIELDED_HELION_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  SHIELDED_HELION_TO_PROTON_MAGN_MOMENT_RATIO.m,
+	  SHIELDED_HELION_TO_SHIELDED_PROTON_MAGN_MOMENT_RATIO.m,
+	  SHIELDED_PROTON_GYROMAGN_RATIO.m,
+	  SHIELDED_PROTON_GYROMAGN_RATIO_BY_2_PI.m,
+	  SHIELDED_PROTON_MAGN_MOMENT.m,
+	  SHIELDED_PROTON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  SHIELDED_PROTON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  SPEED_OF_LIGHT_IN_VACUUM.m, STANDARD_ACCELERATION_OF_GRAVITY.m,
+	  STANDARD_ATMOSPHERE.m, STEFAN_BOLTZMANN_CONSTANT.m,
+	  TAU_COMPTON_WAVELENGTH.m, TAU_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  TAU_ELECTRON_MASS_RATIO.m, TAU_MASS.m,
+	  TAU_MASS_ENERGY_EQUIVALENT.m,
+	  TAU_MASS_ENERGY_EQUIVALENT_IN_MEV.m, TAU_MASS_IN_U.m,
+	  TAU_MOLAR_MASS.m, TAU_MUON_MASS_RATIO.m,
+	  TAU_NEUTRON_MASS_RATIO.m, TAU_PROTON_MASS_RATIO.m,
+	  THOMSON_CROSS_SECTION.m, UNIFIED_ATOMIC_MASS_UNIT.m,
+	  VON_KLITZING_CONSTANT.m, WEAK_MIXING_ANGLE.m,
+	  WIEN_DISPLACEMENT_LAW_CONSTANT.m: Removing older files
+
+2007-02-10 22:29  gnumuthu
+
+	* main/physical-constants/inst/physical_constant.m: Autogenerated
+	  file
+
+2007-02-10 22:28  gnumuthu
+
+	* main/physical-constants/test-consts.m: changed tests
+
+2007-02-10 22:28  gnumuthu
+
+	* main/physical-constants/gen.py: generator updated to produce a
+	  new modified constants file
+
+2007-02-10 19:20  treichl
+
+	* main/odepkg/: doc/odepkg.texi, inst/odepkg_structure_check.m:
+	  Tiny update.
+
+2007-02-10 19:18  treichl
+
+	* main/odepkg/src/odepkg_mexsolver_radau.c: Finished implementation
+	  of the interface function for stiff-problem (ODE/DAE) solver radau.
+
+2007-02-10 18:25  goffioul
+
+	* admin/Windows/msvc/libs/glpk-4.9.txt: DESTDIR variable of the
+	  makefile needs to be adapted.
+
+2007-02-10 15:29  mcreel
+
+	* main/optim/Makefile: revert ver 1.18 to 1.17, as requested
+
+2007-02-10 11:15  gnumuthu
+
+	* main/physical-constants/inst/:
+	  ALPHA_PARTICLE_ELECTRON_MASS_RATIO.m, ALPHA_PARTICLE_MASS.m,
+	  ALPHA_PARTICLE_MASS_ENERGY_EQUIVALENT.m,
+	  ALPHA_PARTICLE_MASS_ENERGY_EQUIVALENT_IN_MEV.m,
+	  ALPHA_PARTICLE_MASS_IN_U.m, ALPHA_PARTICLE_MOLAR_MASS.m,
+	  ALPHA_PARTICLE_PROTON_MASS_RATIO.m, ANGSTROM_STAR.m,
+	  ATOMIC_MASS_CONSTANT.m, ATOMIC_MASS_CONSTANT_ENERGY_EQUIVALENT.m,
+	  ATOMIC_MASS_CONSTANT_ENERGY_EQUIVALENT_IN_MEV.m,
+	  ATOMIC_MASS_UNIT_ELECTRON_VOLT.m, ATOMIC_MASS_UNIT_HARTREE.m,
+	  ATOMIC_MASS_UNIT_HERTZ.m, ATOMIC_MASS_UNIT_INVERSE_METER.m,
+	  ATOMIC_MASS_UNIT_JOULE.m, ATOMIC_MASS_UNIT_KELVIN.m,
+	  ATOMIC_MASS_UNIT_KILOGRAM.m,
+	  ATOMIC_UNIT_OF_1ST_HYPERPOLARIZABLITY.m,
+	  ATOMIC_UNIT_OF_2ND_HYPERPOLARIZABLITY.m, ATOMIC_UNIT_OF_ACTION.m,
+	  ATOMIC_UNIT_OF_CHARGE.m, ATOMIC_UNIT_OF_CHARGE_DENSITY.m,
+	  ATOMIC_UNIT_OF_CURRENT.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_DIPOLE_MOMENT.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_FIELD.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_FIELD_GRADIENT.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_POLARIZABLITY.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_POTENTIAL.m,
+	  ATOMIC_UNIT_OF_ELECTRIC_QUADRUPOLE_MOMENT.m,
+	  ATOMIC_UNIT_OF_ENERGY.m, ATOMIC_UNIT_OF_FORCE.m,
+	  ATOMIC_UNIT_OF_LENGTH.m, ATOMIC_UNIT_OF_MAGNETIZABILITY.m,
+	  ATOMIC_UNIT_OF_MAGN_DIPOLE_MOMENT.m,
+	  ATOMIC_UNIT_OF_MAGN_FLUX_DENSITY.m, ATOMIC_UNIT_OF_MASS.m,
+	  ATOMIC_UNIT_OF_MOMENTUM.m, ATOMIC_UNIT_OF_PERMITTIVITY.m,
+	  ATOMIC_UNIT_OF_TIME.m, ATOMIC_UNIT_OF_VELOCITY.m,
+	  AVOGADRO_CONSTANT.m, BOHR_MAGNETON.m,
+	  BOHR_MAGNETON_IN_EV_PER_T.m, BOHR_MAGNETON_IN_HZ_PER_T.m,
+	  BOHR_MAGNETON_IN_INVERSE_METERS_PER_TESLA.m,
+	  BOHR_MAGNETON_IN_K_PER_T.m, BOHR_RADIUS.m, BOLTZMANN_CONSTANT.m,
+	  BOLTZMANN_CONSTANT_IN_EV_PER_K.m,
+	  BOLTZMANN_CONSTANT_IN_HZ_PER_K.m,
+	  BOLTZMANN_CONSTANT_IN_INVERSE_METERS_PER_KELVIN.m,
+	  CHARACTERISTIC_IMPEDANCE_OF_VACUUM.m,
+	  CLASSICAL_ELECTRON_RADIUS.m, COMPTON_WAVELENGTH.m,
+	  COMPTON_WAVELENGTH_BY_2_PI.m, CONDUCTANCE_QUANTUM.m,
+	  CONVENTIONAL_VALUE_OF_JOSEPHSON_CONSTANT.m,
+	  CONVENTIONAL_VALUE_OF_VON_KLITZING_CONSTANT.m, CU_X_UNIT.m,
+	  DEUTERON_ELECTRON_MAGN_MOMENT_RATIO.m,
+	  DEUTERON_ELECTRON_MASS_RATIO.m, DEUTERON_MAGN_MOMENT.m,
+	  DEUTERON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  DEUTERON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  DEUTERON_MASS.m, DEUTERON_MASS_ENERGY_EQUIVALENT.m,
+	  DEUTERON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, DEUTERON_MASS_IN_U.m,
+	  DEUTERON_MOLAR_MASS.m, DEUTERON_NEUTRON_MAGN_MOMENT_RATIO.m,
+	  DEUTERON_PROTON_MAGN_MOMENT_RATIO.m,
+	  DEUTERON_PROTON_MASS_RATIO.m, DEUTERON_RMS_CHARGE_RADIUS.m,
+	  ELECTRIC_CONSTANT.m, ELECTRON_CHARGE_TO_MASS_QUOTIENT.m,
+	  ELECTRON_DEUTERON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_DEUTERON_MASS_RATIO.m, ELECTRON_GYROMAGN_RATIO.m,
+	  ELECTRON_GYROMAGN_RATIO_BY_2_PI.m, ELECTRON_G_FACTOR.m,
+	  ELECTRON_MAGN_MOMENT.m, ELECTRON_MAGN_MOMENT_ANOMALY.m,
+	  ELECTRON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  ELECTRON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  ELECTRON_MASS.m, ELECTRON_MASS_ENERGY_EQUIVALENT.m,
+	  ELECTRON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, ELECTRON_MASS_IN_U.m,
+	  ELECTRON_MOLAR_MASS.m, ELECTRON_MUON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_MUON_MASS_RATIO.m, ELECTRON_NEUTRON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_NEUTRON_MASS_RATIO.m,
+	  ELECTRON_PROTON_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_PROTON_MASS_RATIO.m, ELECTRON_TAU_MASS_RATIO.m,
+	  ELECTRON_TO_ALPHA_PARTICLE_MASS_RATIO.m,
+	  ELECTRON_TO_SHIELDED_HELION_MAGN_MOMENT_RATIO.m,
+	  ELECTRON_TO_SHIELDED_PROTON_MAGN_MOMENT_RATIO.m, ELECTRON_VOLT.m,
+	  ELECTRON_VOLT_ATOMIC_MASS_UNIT.m, ELECTRON_VOLT_HARTREE.m,
+	  ELECTRON_VOLT_HERTZ.m, ELECTRON_VOLT_INVERSE_METER.m,
+	  ELECTRON_VOLT_JOULE.m, ELECTRON_VOLT_KELVIN.m,
+	  ELECTRON_VOLT_KILOGRAM.m, ELEMENTARY_CHARGE.m,
+	  ELEMENTARY_CHARGE_BY_H.m, FARADAY_CONSTANT.m,
+	  FARADAY_CONSTANT_FOR_CONVENTIONAL_ELECTRIC_CURRENT.m,
+	  FERMI_COUPLING_CONSTANT.m, FINE_STRUCTURE_CONSTANT.m,
+	  FIRST_RADIATION_CONSTANT.m,
+	  FIRST_RADIATION_CONSTANT_FOR_SPECTRAL_RADIANCE.m,
+	  HARTREE_ATOMIC_MASS_UNIT.m, HARTREE_ELECTRON_VOLT.m,
+	  HARTREE_ENERGY.m, HARTREE_ENERGY_IN_EV.m, HARTREE_HERTZ.m,
+	  HARTREE_INVERSE_METER.m, HARTREE_JOULE.m, HARTREE_KELVIN.m,
+	  HARTREE_KILOGRAM.m, HELION_ELECTRON_MASS_RATIO.m, HELION_MASS.m,
+	  HELION_MASS_ENERGY_EQUIVALENT.m,
+	  HELION_MASS_ENERGY_EQUIVALENT_IN_MEV.m, HELION_MASS_IN_U.m,
+	  HELION_MOLAR_MASS.m, HELION_PROTON_MASS_RATIO.m,
+	  HERTZ_ATOMIC_MASS_UNIT.m, HERTZ_ELECTRON_VOLT.m, HERTZ_HARTREE.m,
+	  HERTZ_INVERSE_METER.m, HERTZ_JOULE.m, HERTZ_KELVIN.m,
+	  HERTZ_KILOGRAM.m, INVERSE_FINE_STRUCTURE_CONSTANT.m,
+	  INVERSE_METER_ATOMIC_MASS_UNIT.m, INVERSE_METER_ELECTRON_VOLT.m,
+	  INVERSE_METER_HARTREE.m, INVERSE_METER_HERTZ.m,
+	  INVERSE_METER_JOULE.m, INVERSE_METER_KELVIN.m,
+	  INVERSE_METER_KILOGRAM.m, INVERSE_OF_CONDUCTANCE_QUANTUM.m,
+	  JOSEPHSON_CONSTANT.m, JOULE_ATOMIC_MASS_UNIT.m,
+	  JOULE_ELECTRON_VOLT.m, JOULE_HARTREE.m, JOULE_HERTZ.m,
+	  JOULE_INVERSE_METER.m, JOULE_KELVIN.m, JOULE_KILOGRAM.m,
+	  KELVIN_ATOMIC_MASS_UNIT.m, KELVIN_ELECTRON_VOLT.m,
+	  KELVIN_HARTREE.m, KELVIN_HERTZ.m, KELVIN_INVERSE_METER.m,
+	  KELVIN_JOULE.m, KELVIN_KILOGRAM.m, KILOGRAM_ATOMIC_MASS_UNIT.m,
+	  KILOGRAM_ELECTRON_VOLT.m, KILOGRAM_HARTREE.m, KILOGRAM_HERTZ.m,
+	  KILOGRAM_INVERSE_METER.m, KILOGRAM_JOULE.m, KILOGRAM_KELVIN.m,
+	  LATTICE_PARAMETER_OF_SILICON.m, LATTICE_SPACING_OF_SILICON.m,
+	  LOSCHMIDT_CONSTANT_.m, MAGN_CONSTANT.m, MAGN_FLUX_QUANTUM.m,
+	  MOLAR_GAS_CONSTANT.m, MOLAR_MASS_CONSTANT.m,
+	  MOLAR_MASS_OF_CARBON_12.m, MOLAR_PLANCK_CONSTANT.m,
+	  MOLAR_PLANCK_CONSTANT_TIMES_C.m, MOLAR_VOLUME_OF_IDEAL_GAS_.m,
+	  MOLAR_VOLUME_OF_SILICON.m, MO_X_UNIT.m,
+	  MUON_COMPTON_WAVELENGTH.m, MUON_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  MUON_ELECTRON_MASS_RATIO.m, MUON_G_FACTOR.m, MUON_MAGN_MOMENT.m,
+	  MUON_MAGN_MOMENT_ANOMALY.m,
+	  MUON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  MUON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m, MUON_MASS.m,
+	  MUON_MASS_ENERGY_EQUIVALENT.m,
+	  MUON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, MUON_MASS_IN_U.m,
+	  MUON_MOLAR_MASS.m, MUON_NEUTRON_MASS_RATIO.m,
+	  MUON_PROTON_MAGN_MOMENT_RATIO.m, MUON_PROTON_MASS_RATIO.m,
+	  MUON_TAU_MASS_RATIO.m, NATURAL_UNIT_OF_ACTION.m,
+	  NATURAL_UNIT_OF_ACTION_IN_EV_S.m, NATURAL_UNIT_OF_ENERGY.m,
+	  NATURAL_UNIT_OF_ENERGY_IN_MEV.m, NATURAL_UNIT_OF_LENGTH.m,
+	  NATURAL_UNIT_OF_MASS.m, NATURAL_UNIT_OF_MOMENTUM.m,
+	  NATURAL_UNIT_OF_MOMENTUM_IN_MEV_PER_C.m, NATURAL_UNIT_OF_TIME.m,
+	  NATURAL_UNIT_OF_VELOCITY.m, NEUTRON_COMPTON_WAVELENGTH.m,
+	  NEUTRON_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  NEUTRON_ELECTRON_MAGN_MOMENT_RATIO.m,
+	  NEUTRON_ELECTRON_MASS_RATIO.m, NEUTRON_GYROMAGN_RATIO.m,
+	  NEUTRON_GYROMAGN_RATIO_BY_2_PI.m, NEUTRON_G_FACTOR.m,
+	  NEUTRON_MAGN_MOMENT.m,
+	  NEUTRON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  NEUTRON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m, NEUTRON_MASS.m,
+	  NEUTRON_MASS_ENERGY_EQUIVALENT.m,
+	  NEUTRON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, NEUTRON_MASS_IN_U.m,
+	  NEUTRON_MOLAR_MASS.m, NEUTRON_MUON_MASS_RATIO.m,
+	  NEUTRON_PROTON_MAGN_MOMENT_RATIO.m, NEUTRON_PROTON_MASS_RATIO.m,
+	  NEUTRON_TAU_MASS_RATIO.m,
+	  NEUTRON_TO_SHIELDED_PROTON_MAGN_MOMENT_RATIO.m,
+	  NEWTONIAN_CONSTANT_OF_GRAVITATION.m,
+	  NEWTONIAN_CONSTANT_OF_GRAVITATION_BY_H_BAR_C.m,
+	  NUCLEAR_MAGNETON.m, NUCLEAR_MAGNETON_IN_EV_PER_T.m,
+	  NUCLEAR_MAGNETON_IN_INVERSE_METERS_PER_TESLA.m,
+	  NUCLEAR_MAGNETON_IN_K_PER_T.m, NUCLEAR_MAGNETON_IN_MHZ_PER_T.m,
+	  PLANCK_CONSTANT.m, PLANCK_CONSTANT_BY_2_PI.m,
+	  PLANCK_CONSTANT_BY_2_PI_IN_EV_S.m,
+	  PLANCK_CONSTANT_BY_2_PI_TIMES_C_IN_MEV_FM.m,
+	  PLANCK_CONSTANT_IN_EV_S.m, PLANCK_LENGTH.m, PLANCK_MASS.m,
+	  PLANCK_TEMPERATURE.m, PLANCK_TIME.m,
+	  PROTON_CHARGE_TO_MASS_QUOTIENT.m, PROTON_COMPTON_WAVELENGTH.m,
+	  PROTON_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  PROTON_ELECTRON_MASS_RATIO.m, PROTON_GYROMAGN_RATIO.m,
+	  PROTON_GYROMAGN_RATIO_BY_2_PI.m, PROTON_G_FACTOR.m,
+	  PROTON_MAGN_MOMENT.m,
+	  PROTON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  PROTON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  PROTON_MAGN_SHIELDING_CORRECTION.m, PROTON_MASS.m,
+	  PROTON_MASS_ENERGY_EQUIVALENT.m,
+	  PROTON_MASS_ENERGY_EQUIVALENT_IN_MEV.m, PROTON_MASS_IN_U.m,
+	  PROTON_MOLAR_MASS.m, PROTON_MUON_MASS_RATIO.m,
+	  PROTON_NEUTRON_MAGN_MOMENT_RATIO.m, PROTON_NEUTRON_MASS_RATIO.m,
+	  PROTON_RMS_CHARGE_RADIUS.m, PROTON_TAU_MASS_RATIO.m,
+	  QUANTUM_OF_CIRCULATION.m, QUANTUM_OF_CIRCULATION_TIMES_2.m,
+	  RYDBERG_CONSTANT.m, RYDBERG_CONSTANT_TIMES_C_IN_HZ.m,
+	  RYDBERG_CONSTANT_TIMES_HC_IN_EV.m,
+	  RYDBERG_CONSTANT_TIMES_HC_IN_J.m, SACKUR_TETRODE_CONSTANT_.m,
+	  SECOND_RADIATION_CONSTANT.m, SHIELDED_HELION_GYROMAGN_RATIO.m,
+	  SHIELDED_HELION_GYROMAGN_RATIO_BY_2_PI.m,
+	  SHIELDED_HELION_MAGN_MOMENT.m,
+	  SHIELDED_HELION_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  SHIELDED_HELION_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  SHIELDED_HELION_TO_PROTON_MAGN_MOMENT_RATIO.m,
+	  SHIELDED_HELION_TO_SHIELDED_PROTON_MAGN_MOMENT_RATIO.m,
+	  SHIELDED_PROTON_GYROMAGN_RATIO.m,
+	  SHIELDED_PROTON_GYROMAGN_RATIO_BY_2_PI.m,
+	  SHIELDED_PROTON_MAGN_MOMENT.m,
+	  SHIELDED_PROTON_MAGN_MOMENT_TO_BOHR_MAGNETON_RATIO.m,
+	  SHIELDED_PROTON_MAGN_MOMENT_TO_NUCLEAR_MAGNETON_RATIO.m,
+	  SPEED_OF_LIGHT_IN_VACUUM.m, STANDARD_ACCELERATION_OF_GRAVITY.m,
+	  STANDARD_ATMOSPHERE.m, STEFAN_BOLTZMANN_CONSTANT.m,
+	  TAU_COMPTON_WAVELENGTH.m, TAU_COMPTON_WAVELENGTH_BY_2_PI.m,
+	  TAU_ELECTRON_MASS_RATIO.m, TAU_MASS.m,
+	  TAU_MASS_ENERGY_EQUIVALENT.m,
+	  TAU_MASS_ENERGY_EQUIVALENT_IN_MEV.m, TAU_MASS_IN_U.m,
+	  TAU_MOLAR_MASS.m, TAU_MUON_MASS_RATIO.m,
+	  TAU_NEUTRON_MASS_RATIO.m, TAU_PROTON_MASS_RATIO.m,
+	  THOMSON_CROSS_SECTION.m, UNIFIED_ATOMIC_MASS_UNIT.m,
+	  VON_KLITZING_CONSTANT.m, WEAK_MIXING_ANGLE.m,
+	  WIEN_DISPLACEMENT_LAW_CONSTANT.m: cookie-cutter constant
+	  functions
+
+2007-02-10 10:59  gnumuthu
+
+	* main/: optim/Makefile, physical-constants/COPYING,
+	  physical-constants/DESCRIPTION, physical-constants/INDEX,
+	  physical-constants/gen.py, physical-constants/test-consts.m: NIST
+	  based physical constants functions. The main file not included, as I
+	  dont know terms of distribution from NIST. Python generator is
+	  included, but not a serious candidate for real-time generation
+
+2007-02-10 09:47  ficmatinfmag
+
+	* language/pt_BR/help/octave/: __plr1__.pt_BR, __plr2__.pt_BR,
+	  __plt1__.pt_BR, __plt2__.pt_BR, __plt2mm__.pt_BR,
+	  __plt2mv__.pt_BR, __plt2ss__.pt_BR, __plt2vm__.pt_BR,
+	  __plt2vv__.pt_BR, __pltopt__.pt_BR, contour.pt_BR, image.pt_BR:
+	  Brazilian portuguese translation updating the files below to english
+	      cvs version 1.2: contour.pt_BR
+	      image.pt_BR
+	      __plr1__.pt_BR
+	      __plr2__.pt_BR
+	      __plt1__.pt_BR
+	      __plt2mm__.pt_BR
+	      __plt2mv__.pt_BR
+	      __plt2ss__.pt_BR
+	      __plt2__.pt_BR
+	      __plt2vm__.pt_BR
+	      __plt2vv__.pt_BR
+	      __pltopt__.pt_BR
+
+2007-02-09 20:46  goffioul
+
+	* admin/Windows/msvc/libs/freetype-config: Use prefix when looking
+	  for include files
+
+2007-02-09 04:42  pkienzle
+
+	* main/signal/src/remez.cc: Support single band by not allowing
+	  grid density as the 4th parameter.
+
+2007-02-08 22:12  treichl
+
+	* main/odepkg/inst/odepkg_structure_check.m: Removed old
+	  unnecessary comments in the source code.
+
+2007-02-08 22:09  treichl
+
+	* main/odepkg/src/odepkg_mexsolver_radau.c: Added mass matrix
+	  support.
+
+2007-02-08 22:09  treichl
+
+	* main/odepkg/src/hairer.diff: Added a line for the support of
+	  not-constant mass matrices in radau.f.
+
+2007-02-08 22:07  treichl
+
+	* main/odepkg/inst/odepkg_structure_check.m: Replaced all
+	  strcmp(class(*),'function handle') with isa(*,'function_handle') and
+	  added a lot of tests for this fundamental function.
+
+2007-02-08 17:27  goffioul
+
+	* admin/Windows/msvc/octave-sources.nsi: Add msvc-related tools.
+
+2007-02-08 17:14  goffioul
+
+	* admin/Windows/msvc/: octave-sources.nsi, octave-sources.txt: Use
+	  a license "proxy" in the sources installer.
+
+2007-02-08 17:06  goffioul
+
+	* admin/Windows/msvc/octave-sources.nsi: Add all dependent
+	  tools/libraries to the source installer.
+
+2007-02-08 16:06  goffioul
+
+	* admin/Windows/msvc/octave-sources.nsi: Add a sources package
+	  installer (just the skeleton for the moment) to comply with GPL
+	  license.
+
+2007-02-08 15:43  goffioul
+
+	* admin/Windows/msvc/libs/gsl-1.8.txt: Add compilation instructions
+	  for gsl.
+
+2007-02-08 15:04  goffioul
+
+	* admin/Windows/msvc/libs/: glpk-4.9.diff, glpk-4.9.txt: Add
+	  compilation instructions for GLPK-4.9
+
+2007-02-08 12:37  goffioul
+
+	* admin/Windows/msvc/libs/: gd-2.0.34.diff, gd-2.0.34.txt,
+	  gnuplot-4.2.rc4.diff, gnuplot-4.2.rc4.txt: Add libgd compilation
+	  instructions (for gnuplot).
+
+2007-02-08 01:04  pkienzle
+
+	* main/image/inst/bmpwrite.m: Use truecolor format if colourmap is
+	  longer than 256.
+
+2007-02-07 21:27  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_dop853.c,
+	  odepkg_mexsolver_dopri5.c, odepkg_mexsolver_odex.c,
+	  odepkg_mexsolver_radau.c: Some updates.
+
+2007-02-07 20:56  treichl
+
+	* main/odepkg/src/hairer.diff: First patches for *f solver files
+	  because I really don't like warnings if I use the compilation
+	  options "-Wall -W -Wshadow".
+
+2007-02-07 18:29  treichl
+
+	* main/odepkg/src/odepkg_mexsolver_radau.c: Updated.
+
+2007-02-07 12:33  goffioul
+
+	* admin/Windows/msvc/atlascpu.ini: Custom GUI page for octave/win32
+	  installer.
+
+2007-02-06 21:14  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_odex.c,
+	  odepkg_mexsolver_radau.c: Updated and added two new interface
+	  functions for the solvers odex and radau.
+
+2007-02-06 20:58  treichl
+
+	* main/odepkg/src/hairer.tgz: Repacked, because 2 files were
+	  missing for stiff solver radau.
+
+2007-02-06 20:41  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_dop853.c,
+	  odepkg_mexsolver_dopri5.c: Updated.
+
+2007-02-06 20:39  treichl
+
+	* main/odepkg/inst/: ode5d.m, odepkg.m: The tests in the wrapper
+	  function ode5d are executed only if the mex function
+	  odepkg_mexsolver_dopri5 is found.
+
+2007-02-06 16:51  goffioul
+
+	* main/miscellaneous/src/: xmltree_read.act, xmltree_read.c,
+	  xmltree_read.l: Fix MSVC compilation error: late inclusion of
+	  stdlib.h leads to function declaration *after* function actual use.
+
+2007-02-06 16:08  goffioul
+
+	* main/fixed/src/: fixedCColVector.cc, fixedCMatrix.cc,
+	  fixedCNDArray.cc, fixedCRowVector.cc: Fix MSVC compilation.
+
+2007-02-06 13:44  goffioul
+
+	* admin/Windows/msvc/configure.vc: Configure script starter, for
+	  MSVC (required by makeall.sh.in).
+
+2007-02-06 13:43  goffioul
+
+	* admin/Windows/msvc/README: Add general compilation instructions.
+
+2007-02-06 13:02  goffioul
+
+	* admin/Windows/msvc/: atl_blas.def, lapack.def: Add small
+	  description text.
+
+2007-02-06 12:02  goffioul
+
+	* admin/Windows/msvc/: mkoctfile.cc.in, octave-config.cc.in: C++
+	  equivalents of octave support scripts: removes shell dependency.
+	  Until a better location (or plain dismissal) is decided, I put them
+	  here.
+
+2007-02-06 11:57  goffioul
+
+	* admin/Windows/msvc/: octave.nsi, octaverc.win: Add octave/win32
+	  binary distribution/installer support files.
+
+2007-02-06 11:32  goffioul
+
+	* main/fixed/src/: Array-f.cc, Makefile, configure.base,
+	  fixedCColVector.h, fixedCMatrix.h, fixedCNDArray.cc,
+	  fixedCRowVector.h, fixedColVector.h, fixedComplex.h,
+	  fixedMatrix.h, fixedRowVector.h, op-fcm-fcm.cc, op-fcm-fcs.cc,
+	  op-fcm-fm.cc, op-fcm-fs.cc, op-fcs-fcm.cc, op-fcs-fcs.cc,
+	  op-fcs-fm.cc, op-fcs-fs.cc, op-fm-fcm.cc, op-fm-fcs.cc,
+	  op-fm-fm.cc, op-fm-fs.cc, op-fs-fcm.cc, op-fs-fcs.cc,
+	  op-fs-fm.cc, op-fs-fs.cc, ov-fixed-complex.h, ov-fixed-cx-mat.h,
+	  ov-fixed-mat.h, ov-fixed.h, int/fixed.h, int/fixedversion.h:
+	  Implement symbol export mechanism similar to octave, for MSVC
+
+2007-02-06 11:08  adb014
+
+	* language/pt_BR/help/octave/fftw_wisdom.pt_BR: fftw_wisdom removed
+	  from 2.9.9+
+
+2007-02-06 11:07  adb014
+
+	* language/base/help/octave/: INFO_FILE, INFO_PROGRAM,
+	  MAKEINFO_PROGRAM, i, inf, j, nan: Remove builtin constants that
+	  were replaced with functions
+
+2007-02-06 11:02  adb014
+
+	* language/base/help/octave/: FFTW_WISDOM_PROGRAM, fftw_wisdom,
+	  fftw_wisdom_program: fftw_wisdom removed from 2.9.9+
+
+2007-02-06 10:41  goffioul
+
+	* main/fixed/src/: ov-fixed-cx-mat.cc, ov-fixed-mat.cc: Replace
+	  variable size arrays with OCTAVE_LOCAL_BUFFER
+
+2007-02-06 10:33  schloegl
+
+	* extra/tsa/inst/amarma.m: include stable RLS algorithm
+
+2007-02-06 08:02  goffioul
+
+	* main/symbolic/src/ov-ex.cc: Fix problem with STL iterator going
+	  past the end of a container
+
+2007-02-06 02:03  pkienzle
+
+	* main/image/inst/bmpwrite.m: Print an error if more than 256
+	  colours used in the indexed map.
+
+2007-02-05 21:53  abarth93
+
+	* main/geometry/: DESCRIPTION, doc/ChangeLog, inst/griddata.m:
+	  griddata.m: xi and yi are not "meshgridded" if both are vectors of
+	  the same size (for compatibility)
+
+2007-02-05 21:05  goffioul
+
+	* admin/Windows/msvc/ar-msvc: Add cygwin path conversion (used when
+	  compiling ATLAS)
+
+2007-02-05 20:59  goffioul
+
+	* configure.base, admin/Windows/msvc/makeall.sh.in: Add compilation
+	  support script for MSVC
+
+2007-02-05 20:18  treichl
+
+	* main/odepkg/: doc/odepkg.texi, src/odepkg_mexsolver_dop853.c:
+	  Updated.
+
+2007-02-05 19:22  goffioul
+
+	* admin/Windows/msvc/build_atlas_dll: Add license
+
+2007-02-05 19:07  goffioul
+
+	* admin/Windows/msvc/: libs/atlas-3.6.0.diff, libs/atlas-3.6.0.txt,
+	  libs/lapack.txt, atl_blas.def, build_atlas_dll, lapack.def: Add
+	  compilation instructions for ATLAS + support files
+
+2007-02-05 10:38  goffioul
+
+	* admin/Windows/msvc/libs/: gnuplot-4.2.rc4.diff,
+	  gnuplot-4.2.rc4.txt: Add compilation instructions for gnuplot
+
+2007-02-04 20:06  goffioul
+
+	* admin/Windows/msvc/libs/: wxwidgets-2.8.0.diff,
+	  wxwidgets-2.8.0.txt: Add compilation instructions for wxWidgets
+	  (required by gnuplot)
+
+2007-02-04 17:47  treichl
+
+	* main/odepkg/doc/: fdl.texi, odepkg.texi, odepkgmex.texi: Added
+	  files for manual but don't create the manual by now.
+
+2007-02-04 17:46  treichl
+
+	* main/odepkg/DESCRIPTION: Updated to version 0.2.0 because first
+	  stable interface function to Fortran solver dopri5.f is out and
+	  started to write the manual (odepkg.texi).
+
+2007-02-04 14:34  treichl
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode5d.m,
+	  odepkg_equations_vanderpol.m, odeplot.m: Did some tests- and
+	  demos-updates on the mex files.
+
+2007-02-04 13:45  treichl
+
+	* main/odepkg/src/: dopri.tar.gz, hairer.tgz,
+	  odepkg_mexsolver_dop853.c, odepkg_mexsolver_dopri5.c: Removed the
+	  C solver package dopri.tar.gz but added the Fortran solver package
+	  hairer.tgz instead.
+
+2007-02-03 20:57  ficmatinfmag
+
+	* language/base/help/octave/: __contourc__, __default_colormap__,
+	  __default_plot_options__, __lock_global__, __next_line_color__,
+	  __plr1__, __plr2__, __plt1__, __plt2__, __plt2mm__, __plt2mv__,
+	  __plt2ss__, __plt2vm__, __plt2vv__, __plt_get_axis_arg__,
+	  __pltopt__, __request_drawnow__, __uiobject_adopt__,
+	  __uiobject_axes_ctor__, __uiobject_axes_dtor__,
+	  __uiobject_axes_setr__, __uiobject_delete__,
+	  __uiobject_draw_axes__, __uiobject_draw_figure__,
+	  __uiobject_figure_ctor__, __uiobject_globals__,
+	  __uiobject_image_ctor__, __uiobject_line_ctor__,
+	  __uiobject_root_figure_ctor__, __uiobject_surface_ctor__,
+	  __uiobject_text_ctor__, axes, box, clf, close, closereq, contour,
+	  contourc, delete, drawnow, figure, gca, gcf, grid, image,
+	  isfigure, ishandle, line, newplot, pkg, plot3, strncmp, subplot,
+	  text, title, view: added and/or changed in octave.org-cvs
+
+2007-02-03 19:43  ficmatinfmag
+
+	* language/pt_BR/help/octave/: plot.pt_BR, setdiff.pt_BR: adjusting
+	  translation
+
+2007-02-03 19:39  goffioul
+
+	* admin/Windows/msvc/libs/fltk-1.1.7.txt: Add compilation
+	  instructions for FLTK (used by octplot)
+
+2007-02-03 19:12  ficmatinfmag
+
+	* language/pt_BR/help/octave/plot.pt_BR: adjusting translation
+
+2007-02-03 18:24  ficmatinfmag
+
+	* language/pt_BR/help/octave/: bin2dec.pt_BR, create_set.pt_BR,
+	  lcm.pt_BR, plot.pt_BR: adjusting errors with md5 line
+
+2007-02-03 16:33  goffioul
+
+	* admin/Windows/msvc/libs/: cln-1.1.13.txt, ginac-1.3.6.txt: Update
+	  download location
+
+2007-02-03 15:48  goffioul
+
+	* admin/Windows/msvc/libs/: cln-1.1.13.diff, cln-1.1.13.txt,
+	  ginac-1.3.6.diff, ginac-1.3.6.txt: Add compilation instructions
+	  for CLN and GiNaC
+
+2007-02-03 15:40  adb014
+
+	* TODO: Remove doc/www reorg from TODO list
+
+2007-02-02 23:22  adb014
+
+	* Makefile, README, admin/build-www.py, admin/get-base-address,
+	  admin/get_contents, admin/get_current_date.sh, admin/make_index,
+	  admin/release.sh, doc/.cvsignore, doc/CONTENTS, doc/Doxyfile,
+	  doc/Makefile, doc/doxygen_mainpage.cc, doc/htmlfooter.htm,
+	  doc/htmlheader.htm, doc/javascript.jsin, doc/macros.m4,
+	  doc/htdocs/.cvsignore, doc/htdocs/ChangeLog, doc/htdocs/FAQ.in,
+	  doc/htdocs/MIPS73-isoheaders.tar.gz, doc/htdocs/NEWS.in,
+	  doc/htdocs/archive.in, doc/htdocs/bugs.in, doc/htdocs/doc.png,
+	  doc/htdocs/doc_transparent.png, doc/htdocs/docs.in,
+	  doc/htdocs/download.png, doc/htdocs/download_transparent.png,
+	  doc/htdocs/doxygen.css, doc/htdocs/favicon.ico,
+	  doc/htdocs/fixed.js, doc/htdocs/hide.png,
+	  doc/htdocs/hide_transparent.png, doc/htdocs/index.in,
+	  doc/htdocs/links.in, doc/htdocs/oct.png,
+	  doc/htdocs/oct2mat.tar.gz, doc/htdocs/octave-forge.css,
+	  doc/htdocs/octave_embed.tar.gz, doc/htdocs/octtransparent.png,
+	  doc/htdocs/packages.in, doc/htdocs/robots.txt,
+	  doc/htdocs/show.png, doc/htdocs/show_transparent.png,
+	  doc/htdocs/soctcl0.1.zip, doc/htdocs/texmacs.pdf,
+	  doc/htdocs/translation.in: Rearrange the html build, isolating
+	  all scripts in admin/ and all docs in doc/.
+
+2007-02-02 23:01  adb014
+
+	* main/comm/doc/comms.txi: typo
+
+2007-02-02 23:01  adb014
+
+	* main/INDEX: Index rethrow and lasterror
+
+2007-02-02 23:00  adb014
+
+	* language/pt_BR/src/ajuda.cc: Add dummy comment to help functions,
+	  so that the indexing script an fix and run makeinfo correctly on
+	  them
+
+2007-02-02 22:45  adb014
+
+	* language/base/: src/help.icc, template/src/help.cc: Add dummy
+	  comment to help functions, so that the indexing script an fix and
+	  run makeinfo correctly on them
+
+2007-02-02 22:41  adb014
+
+	* doc/Octave_Windows.htm, admin/Windows/cygwin/Octave_Windows.htm:
+	  Move out of date windwows webpage
+
+2007-02-02 16:59  goffioul
+
+	* admin/Windows/msvc/libs/: freetype-2.3.1.diff,
+	  freetype-2.3.1.txt, freetype-config: Add compilation instructions
+	  for freetype-2.3.1
+
+2007-02-02 16:28  goffioul
+
+	* admin/Windows/msvc/libs/: pango-1.14.9.diff, pango-1.14.9.txt:
+	  Add compilation instructions for pango-1.14.9 (required by gnuplot)
+
+2007-02-02 15:18  goffioul
+
+	* admin/Windows/msvc/libs/: sed-4.1.5.diff, sed-4.1.5.txt: Add
+	  compilation instructions for sed
+
+2007-02-02 15:18  goffioul
+
+	* admin/Windows/msvc/libs/: texinfo-4.8a.diff, texinfo-4.8a.txt:
+	  Fix crash in makeinfo.exe
+
+2007-02-02 11:57  goffioul
+
+	* admin/Windows/msvc/libs/: less-394.diff, less-394.txt,
+	  texinfo-4.8a.diff, texinfo-4.8a.txt: Add compilation instructions
+	  for less and makeinfo
+
+2007-02-02 11:57  goffioul
+
+	* admin/Windows/msvc/libs/gettext-0.15.diff: Add definition for
+	  _nl_msg_cat_cntr
+
+2007-02-02 09:52  goffioul
+
+	* admin/Windows/msvc/libs/: cairo-1.2.6.diff, cairo-1.2.6.txt: Add
+	  compilation instrictions for cairo library (required by gnuplot).
+
+2007-02-02 08:34  ficmatinfmag
+
+	* language/base/help/octave/: bunzip2, compare_versions, dispatch,
+	  factor, glpk, gunzip, hadamard, ind2rgb, interp2, intersect,
+	  list_primes, mkpp, setdiff, strappend, strncmp, subsasgn, tand,
+	  untar, unzip, wavwrite: changed in octave.org.cvs
+
+2007-02-02 08:34  ficmatinfmag
+
+	* language/base/help/octave/news: added in octave.org-cvs
+
+2007-02-01 16:47  goffioul
+
+	* admin/Windows/msvc/libs/glib-2.12.6.txt: Use correct GLIB license
+	  and add compilation requirements.
+
+2007-02-01 16:40  goffioul
+
+	* admin/Windows/msvc/libs/: glib-2.12.6.diff, glib-2.12.6.txt: Add
+	  compilation instructions for glib-1.12.6
+
+2007-02-01 15:26  goffioul
+
+	* admin/Windows/msvc/libs/: netcdf.txt, pcre-7.0.diff,
+	  pcre-7.0.txt: Add compilation instructions for NetCDF and PCRE
+	  libraries
+
+2007-02-01 15:25  goffioul
+
+	* admin/Windows/msvc/libs/: libpng-1.2.16.txt, zlib.txt: Use
+	  correct license name.
+
+2007-02-01 14:26  pkienzle
+
+	* main/geometry/inst/griddata.m: Add method argument to griddata
+
+2007-02-01 14:14  pkienzle
+
+	* main/image/inst/bmpwrite.m: Document that values are in the range
+	  0-255 for truecolor bitmaps
+
+2007-02-01 12:36  goffioul
+
+	* admin/Windows/msvc/libs/: libjpeg-6b.diff, libjpeg-6b.txt: Add
+	  compilation instructions for libjpeg.
+
+2007-02-01 11:16  goffioul
+
+	* admin/Windows/msvc/libs/libpng-1.2.16.txt: Add compilation
+	  instruction for libpng.
+
+2007-02-01 10:00  goffioul
+
+	* admin/Windows/msvc/libs/: gettext-0.15.diff, gettext-0.15.txt,
+	  glob.txt: New compilation instructions for gettext (used by
+	  gnuplot) and glob library.
+
+2007-02-01 09:59  goffioul
+
+	* admin/Windows/msvc/ranlib-msvc: New compilation tool ranlib-msvc
+	  (dummy script to make configure scripts and Makefiles happy)
+
+2007-01-31 22:45  adb014
+
+	* admin/Windows/: DetectDrives.nsi, Makefile, README, README-1st,
+	  TODO, bsubst.c, config_octave.sh, donation.txt,
+	  install_octave.sh, mkdll.sh, mkstdc++dll.sh,
+	  octave-install-win32.nsi, octave.ico, octave.nsi,
+	  start_octave.sh, cygwin/DetectDrives.nsi, cygwin/Makefile,
+	  cygwin/README, cygwin/README-1st, cygwin/TODO, cygwin/bsubst.c,
+	  cygwin/config_octave.sh, cygwin/donation.txt,
+	  cygwin/install_octave.sh, cygwin/mkdll.sh, cygwin/mkstdc++dll.sh,
+	  cygwin/octave-install-win32.nsi, cygwin/octave.ico,
+	  cygwin/octave.nsi, cygwin/start_octave.sh: move old Windows build
+	  scripts to cygwin directory
+
+2007-01-31 16:26  goffioul
+
+	* admin/Windows/msvc/libs/: blas.makefile, blas.txt, f2c.txt,
+	  fftw.txt, hdf5.txt, lapack.makefile, lapack.txt, libf2c.txt,
+	  libiconv-1.11.diff, libiconv-1.11.txt, readline-5.2.diff,
+	  readline-5.2.txt, suitesparse.diff, suitesparse.txt, zlib.txt:
+	  Compilation instructions and patches for support libraries of octave
+
+2007-01-31 16:24  goffioul
+
+	* admin/Windows/msvc/: ar-msvc, cc-msvc.cc: New helper tools to
+	  compile octave/octave-forge with MSVC
+
+2007-01-31 10:27  adb014
+
+	* admin/template.ndev: Document new Autoload field in the
+	  DESCRIPTION file
+
+2007-01-31 10:24  mcreel
+
+	* main/econometrics/inst/kernel_regression.m: Fix up documentation
+	  string
+
+2007-01-31 08:21  ficmatinfmag
+
+	* language/pt_BR/src/ajuda.cc: small adjust
+
+2007-01-30 23:35  adb014
+
+	* README: Update README with language package info
+
+2007-01-30 23:23  adb014
+
+	* main/: audio/DESCRIPTION, combinatorics/DESCRIPTION,
+	  comm/DESCRIPTION, control/DESCRIPTION, econometrics/DESCRIPTION,
+	  fixed/DESCRIPTION, general/DESCRIPTION, geometry/DESCRIPTION,
+	  gsl/DESCRIPTION, ident/DESCRIPTION, image/DESCRIPTION,
+	  info-theory/DESCRIPTION, io/DESCRIPTION, irsa/DESCRIPTION,
+	  linear-algebra/DESCRIPTION, miscellaneous/DESCRIPTION,
+	  octcdf/DESCRIPTION, odepkg/DESCRIPTION, optim/DESCRIPTION,
+	  optiminterp/DESCRIPTION, parallel/DESCRIPTION, plot/DESCRIPTION,
+	  polynomial/DESCRIPTION, signal/DESCRIPTION, specfun/DESCRIPTION,
+	  special-matrix/DESCRIPTION, splines/DESCRIPTION,
+	  statistics/DESCRIPTION, strings/DESCRIPTION, struct/DESCRIPTION,
+	  symbolic/DESCRIPTION, time/DESCRIPTION, vrml/DESCRIPTION: Add
+	  Autoload field to DESCRIPTION of main/ packages
+
+2007-01-30 23:23  adb014
+
+	* main/INDEX: Index new plotting functions
+
+2007-01-30 21:34  adb014
+
+	* packages/Makefile: Silence the tar command that creates the
+	  bundle
+
+2007-01-30 21:33  adb014
+
+	* main/statistics/INDEX: Compatibility functions are indexed in
+	  main/INDEX. Remove them here
+
+2007-01-30 21:31  adb014
+
+	* main/: econometrics/INDEX, odepkg/INDEX, signal/INDEX: INDEX new
+	  functions
+
+2007-01-30 21:30  adb014
+
+	* main/INDEX: Remove message about inpolygon as real version now
+	  exists, add news function to INDEX
+
+2007-01-30 21:27  adb014
+
+	* language/base/NOINSTALL: Add NOINSTALL to language/base
+
+2007-01-30 21:26  adb014
+
+	* language/CONTENTS: Update CONTENTS text
+
+2007-01-30 21:25  adb014
+
+	* extra/: Windows/INDEX, graceplot/INDEX: INDEX new functions
+
+2007-01-30 21:24  adb014
+
+	* admin/make_index: Add test for duplication of functions in the
+	  INDEX files. Remove debugging print-out
+
+2007-01-30 16:57  hauberg
+
+	* main/image/inst/: impad.m, imremap.m, imrotate.m,
+	  imrotate_Fourier.m, isgray.m: Bug fixes
+
+2007-01-29 22:30  adb014
+
+	* language/base/src/help.icc: Careful with the EOF of the help
+	  strings to get the right MD5 sum
+
+2007-01-29 21:42  adb014
+
+	* language/base/help/octave/plot: Update plot to the same version
+	  as in the original octave-lang
+
+2007-01-29 21:35  adb014
+
+	* language/: base/template/src/Makefile, pt_BR/COPYING,
+	  pt_BR/DESCRIPTION, pt_BR/Makefile, pt_BR/help/octave/I.pt_BR,
+	  pt_BR/help/octave/Inf.pt_BR, pt_BR/help/octave/J.pt_BR,
+	  pt_BR/help/octave/NaN.pt_BR,
+	  pt_BR/help/octave/__abcddims__.pt_BR,
+	  pt_BR/help/octave/__axis_label__.pt_BR,
+	  pt_BR/help/octave/__bodquist__.pt_BR,
+	  pt_BR/help/octave/__end__.pt_BR,
+	  pt_BR/help/octave/__errcomm__.pt_BR,
+	  pt_BR/help/octave/__errplot__.pt_BR,
+	  pt_BR/help/octave/__freqresp__.pt_BR,
+	  pt_BR/help/octave/__glpk__.pt_BR,
+	  pt_BR/help/octave/__gnuplot_init__.pt_BR,
+	  pt_BR/help/octave/__gnuplot_plot__.pt_BR,
+	  pt_BR/help/octave/__gnuplot_raw__.pt_BR,
+	  pt_BR/help/octave/__gnuplot_replot__.pt_BR,
+	  pt_BR/help/octave/__gnuplot_set__.pt_BR,
+	  pt_BR/help/octave/__gnuplot_show__.pt_BR,
+	  pt_BR/help/octave/__gnuplot_splot__.pt_BR,
+	  pt_BR/help/octave/__kluge_procbuf_delay__.pt_BR,
+	  pt_BR/help/octave/__outlist__.pt_BR,
+	  pt_BR/help/octave/__plr1__.pt_BR,
+	  pt_BR/help/octave/__plr2__.pt_BR,
+	  pt_BR/help/octave/__plt1__.pt_BR,
+	  pt_BR/help/octave/__plt2__.pt_BR,
+	  pt_BR/help/octave/__plt2mm__.pt_BR,
+	  pt_BR/help/octave/__plt2mv__.pt_BR,
+	  pt_BR/help/octave/__plt2ss__.pt_BR,
+	  pt_BR/help/octave/__plt2vm__.pt_BR,
+	  pt_BR/help/octave/__plt2vv__.pt_BR,
+	  pt_BR/help/octave/__plt__.pt_BR,
+	  pt_BR/help/octave/__pltopt1__.pt_BR,
+	  pt_BR/help/octave/__pltopt__.pt_BR,
+	  pt_BR/help/octave/__print_symbol_info__.pt_BR,
+	  pt_BR/help/octave/__print_symtab_info__.pt_BR,
+	  pt_BR/help/octave/__qp__.pt_BR,
+	  pt_BR/help/octave/__stepimp__.pt_BR,
+	  pt_BR/help/octave/__tf2sysl__.pt_BR,
+	  pt_BR/help/octave/__tfl__.pt_BR,
+	  pt_BR/help/octave/__zp2ssg2__.pt_BR,
+	  pt_BR/help/octave/abcddim.pt_BR, pt_BR/help/octave/abs.pt_BR,
+	  pt_BR/help/octave/acos.pt_BR, pt_BR/help/octave/acosh.pt_BR,
+	  pt_BR/help/octave/acot.pt_BR, pt_BR/help/octave/acoth.pt_BR,
+	  pt_BR/help/octave/acsc.pt_BR, pt_BR/help/octave/acsch.pt_BR,
+	  pt_BR/help/octave/airy.pt_BR, pt_BR/help/octave/all.pt_BR,
+	  pt_BR/help/octave/angle.pt_BR, pt_BR/help/octave/anova.pt_BR,
+	  pt_BR/help/octave/any.pt_BR, pt_BR/help/octave/arch_fit.pt_BR,
+	  pt_BR/help/octave/arch_test.pt_BR, pt_BR/help/octave/are.pt_BR,
+	  pt_BR/help/octave/arg.pt_BR, pt_BR/help/octave/asec.pt_BR,
+	  pt_BR/help/octave/asech.pt_BR, pt_BR/help/octave/asin.pt_BR,
+	  pt_BR/help/octave/asinh.pt_BR, pt_BR/help/octave/atan.pt_BR,
+	  pt_BR/help/octave/atan2.pt_BR, pt_BR/help/octave/atanh.pt_BR,
+	  pt_BR/help/octave/autocor.pt_BR, pt_BR/help/octave/autocov.pt_BR,
+	  pt_BR/help/octave/autoreg_matrix.pt_BR,
+	  pt_BR/help/octave/axis.pt_BR, pt_BR/help/octave/axis2dlim.pt_BR,
+	  pt_BR/help/octave/balance.pt_BR,
+	  pt_BR/help/octave/bartlett_test.pt_BR,
+	  pt_BR/help/octave/base2dec.pt_BR, pt_BR/help/octave/bessel.pt_BR,
+	  pt_BR/help/octave/besselj.pt_BR,
+	  pt_BR/help/octave/beta_cdf.pt_BR,
+	  pt_BR/help/octave/beta_inv.pt_BR,
+	  pt_BR/help/octave/beta_rnd.pt_BR,
+	  pt_BR/help/octave/bin2dec.pt_BR,
+	  pt_BR/help/octave/binomial_cdf.pt_BR,
+	  pt_BR/help/octave/binomial_rnd.pt_BR,
+	  pt_BR/help/octave/buildssic.pt_BR, pt_BR/help/octave/c2d.pt_BR,
+	  pt_BR/help/octave/cauchy_cdf.pt_BR,
+	  pt_BR/help/octave/cauchy_inv.pt_BR,
+	  pt_BR/help/octave/cauchy_rnd.pt_BR, pt_BR/help/octave/ceil.pt_BR,
+	  pt_BR/help/octave/cellidx.pt_BR, pt_BR/help/octave/center.pt_BR,
+	  pt_BR/help/octave/char.pt_BR,
+	  pt_BR/help/octave/chisquare_cdf.pt_BR,
+	  pt_BR/help/octave/chisquare_inv.pt_BR,
+	  pt_BR/help/octave/chisquare_rnd.pt_BR,
+	  pt_BR/help/octave/chisquare_test_homogeneity.pt_BR,
+	  pt_BR/help/octave/chisquare_test_independence.pt_BR,
+	  pt_BR/help/octave/chol.pt_BR, pt_BR/help/octave/chol2inv.pt_BR,
+	  pt_BR/help/octave/cholinv.pt_BR, pt_BR/help/octave/colamd.pt_BR,
+	  pt_BR/help/octave/colloc.pt_BR, pt_BR/help/octave/colormap.pt_BR,
+	  pt_BR/help/octave/columns.pt_BR,
+	  pt_BR/help/octave/common_size.pt_BR,
+	  pt_BR/help/octave/commutation_matrix.pt_BR,
+	  pt_BR/help/octave/compan.pt_BR,
+	  pt_BR/help/octave/complement.pt_BR, pt_BR/help/octave/cond.pt_BR,
+	  pt_BR/help/octave/conj.pt_BR, pt_BR/help/octave/contour.pt_BR,
+	  pt_BR/help/octave/conv.pt_BR, pt_BR/help/octave/cor.pt_BR,
+	  pt_BR/help/octave/cos.pt_BR, pt_BR/help/octave/cosh.pt_BR,
+	  pt_BR/help/octave/cot.pt_BR, pt_BR/help/octave/coth.pt_BR,
+	  pt_BR/help/octave/create_set.pt_BR,
+	  pt_BR/help/octave/cross.pt_BR, pt_BR/help/octave/csc.pt_BR,
+	  pt_BR/help/octave/csch.pt_BR, pt_BR/help/octave/ctrb.pt_BR,
+	  pt_BR/help/octave/cut.pt_BR, pt_BR/help/octave/d2c.pt_BR,
+	  pt_BR/help/octave/damp.pt_BR, pt_BR/help/octave/dare.pt_BR,
+	  pt_BR/help/octave/daspk.pt_BR, pt_BR/help/octave/dasrt.pt_BR,
+	  pt_BR/help/octave/dassl.pt_BR, pt_BR/help/octave/deblank.pt_BR,
+	  pt_BR/help/octave/dec2base.pt_BR,
+	  pt_BR/help/octave/dec2bin.pt_BR, pt_BR/help/octave/dec2hex.pt_BR,
+	  pt_BR/help/octave/deconv.pt_BR, pt_BR/help/octave/det.pt_BR,
+	  pt_BR/help/octave/detrend.pt_BR, pt_BR/help/octave/dgram.pt_BR,
+	  pt_BR/help/octave/diag.pt_BR, pt_BR/help/octave/diff.pt_BR,
+	  pt_BR/help/octave/diffpara.pt_BR,
+	  pt_BR/help/octave/discrete_cdf.pt_BR,
+	  pt_BR/help/octave/discrete_inv.pt_BR,
+	  pt_BR/help/octave/discrete_rnd.pt_BR,
+	  pt_BR/help/octave/disp.pt_BR, pt_BR/help/octave/dkalman.pt_BR,
+	  pt_BR/help/octave/dlyap.pt_BR, pt_BR/help/octave/dot.pt_BR,
+	  pt_BR/help/octave/duplication_matrix.pt_BR,
+	  pt_BR/help/octave/e.pt_BR, pt_BR/help/octave/eig.pt_BR,
+	  pt_BR/help/octave/empirical_cdf.pt_BR,
+	  pt_BR/help/octave/empirical_inv.pt_BR,
+	  pt_BR/help/octave/empirical_rnd.pt_BR,
+	  pt_BR/help/octave/errorbar.pt_BR, pt_BR/help/octave/etree.pt_BR,
+	  pt_BR/help/octave/exp.pt_BR, pt_BR/help/octave/expm.pt_BR,
+	  pt_BR/help/octave/exponential_cdf.pt_BR,
+	  pt_BR/help/octave/exponential_inv.pt_BR,
+	  pt_BR/help/octave/exponential_rnd.pt_BR,
+	  pt_BR/help/octave/eye.pt_BR, pt_BR/help/octave/f_cdf.pt_BR,
+	  pt_BR/help/octave/f_inv.pt_BR, pt_BR/help/octave/f_rnd.pt_BR,
+	  pt_BR/help/octave/f_test_regression.pt_BR,
+	  pt_BR/help/octave/fclose.pt_BR, pt_BR/help/octave/fdisp.pt_BR,
+	  pt_BR/help/octave/fft.pt_BR, pt_BR/help/octave/fft2.pt_BR,
+	  pt_BR/help/octave/fftconv.pt_BR, pt_BR/help/octave/fftfilt.pt_BR,
+	  pt_BR/help/octave/fftshift.pt_BR,
+	  pt_BR/help/octave/fftw_wisdom.pt_BR,
+	  pt_BR/help/octave/file_in_loadpath.pt_BR,
+	  pt_BR/help/octave/file_in_path.pt_BR,
+	  pt_BR/help/octave/filter.pt_BR, pt_BR/help/octave/find.pt_BR,
+	  pt_BR/help/octave/finite.pt_BR,
+	  pt_BR/help/octave/fixed_point_format.pt_BR,
+	  pt_BR/help/octave/flipdim.pt_BR, pt_BR/help/octave/fliplr.pt_BR,
+	  pt_BR/help/octave/flipud.pt_BR, pt_BR/help/octave/floor.pt_BR,
+	  pt_BR/help/octave/fopen.pt_BR, pt_BR/help/octave/format.pt_BR,
+	  pt_BR/help/octave/fprintf.pt_BR, pt_BR/help/octave/fputs.pt_BR,
+	  pt_BR/help/octave/fread.pt_BR, pt_BR/help/octave/frewind.pt_BR,
+	  pt_BR/help/octave/fscanf.pt_BR, pt_BR/help/octave/fseek.pt_BR,
+	  pt_BR/help/octave/fsolve.pt_BR,
+	  pt_BR/help/octave/fsolve_options.pt_BR,
+	  pt_BR/help/octave/ftell.pt_BR, pt_BR/help/octave/full.pt_BR,
+	  pt_BR/help/octave/functions.pt_BR,
+	  pt_BR/help/octave/fwrite.pt_BR, pt_BR/help/octave/gamma.pt_BR,
+	  pt_BR/help/octave/gamma_cdf.pt_BR,
+	  pt_BR/help/octave/gamma_inv.pt_BR,
+	  pt_BR/help/octave/gamma_pdf.pt_BR,
+	  pt_BR/help/octave/gamma_rnd.pt_BR,
+	  pt_BR/help/octave/gammai.pt_BR, pt_BR/help/octave/gammainc.pt_BR,
+	  pt_BR/help/octave/gcd.pt_BR,
+	  pt_BR/help/octave/geometric_cdf.pt_BR,
+	  pt_BR/help/octave/geometric_rnd.pt_BR,
+	  pt_BR/help/octave/getrusage.pt_BR,
+	  pt_BR/help/octave/givens.pt_BR, pt_BR/help/octave/hankel.pt_BR,
+	  pt_BR/help/octave/hess.pt_BR, pt_BR/help/octave/hex2dec.pt_BR,
+	  pt_BR/help/octave/hilb.pt_BR,
+	  pt_BR/help/octave/hotelling_test.pt_BR,
+	  pt_BR/help/octave/hotelling_test_2.pt_BR,
+	  pt_BR/help/octave/hurst.pt_BR,
+	  pt_BR/help/octave/hypergeometric_cdf.pt_BR,
+	  pt_BR/help/octave/hypergeometric_rnd.pt_BR,
+	  pt_BR/help/octave/ifft.pt_BR, pt_BR/help/octave/ifft2.pt_BR,
+	  pt_BR/help/octave/imag.pt_BR, pt_BR/help/octave/image.pt_BR,
+	  pt_BR/help/octave/imagesc.pt_BR, pt_BR/help/octave/impulse.pt_BR,
+	  pt_BR/help/octave/imshow.pt_BR,
+	  pt_BR/help/octave/intersection.pt_BR,
+	  pt_BR/help/octave/inv.pt_BR, pt_BR/help/octave/inverse.pt_BR,
+	  pt_BR/help/octave/invhilb.pt_BR, pt_BR/help/octave/iqr.pt_BR,
+	  pt_BR/help/octave/is_abcd.pt_BR,
+	  pt_BR/help/octave/is_controllable.pt_BR,
+	  pt_BR/help/octave/is_detectable.pt_BR,
+	  pt_BR/help/octave/is_observable.pt_BR,
+	  pt_BR/help/octave/is_stabilizable.pt_BR,
+	  pt_BR/help/octave/is_stable.pt_BR,
+	  pt_BR/help/octave/isempty.pt_BR, pt_BR/help/octave/isinf.pt_BR,
+	  pt_BR/help/octave/ismatrix.pt_BR,
+	  pt_BR/help/octave/ismember.pt_BR, pt_BR/help/octave/isna.pt_BR,
+	  pt_BR/help/octave/isnan.pt_BR, pt_BR/help/octave/isscalar.pt_BR,
+	  pt_BR/help/octave/issparse.pt_BR,
+	  pt_BR/help/octave/issquare.pt_BR,
+	  pt_BR/help/octave/issymmetric.pt_BR,
+	  pt_BR/help/octave/isvector.pt_BR,
+	  pt_BR/help/octave/kendall.pt_BR,
+	  pt_BR/help/octave/kolmogorov_smirnov_cdf.pt_BR,
+	  pt_BR/help/octave/kron.pt_BR, pt_BR/help/octave/kurtosis.pt_BR,
+	  pt_BR/help/octave/laplace_cdf.pt_BR,
+	  pt_BR/help/octave/laplace_inv.pt_BR,
+	  pt_BR/help/octave/laplace_rnd.pt_BR, pt_BR/help/octave/lcm.pt_BR,
+	  pt_BR/help/octave/length.pt_BR, pt_BR/help/octave/lgamma.pt_BR,
+	  pt_BR/help/octave/listidx.pt_BR, pt_BR/help/octave/load.pt_BR,
+	  pt_BR/help/octave/log.pt_BR, pt_BR/help/octave/log10.pt_BR,
+	  pt_BR/help/octave/log2.pt_BR,
+	  pt_BR/help/octave/logistic_cdf.pt_BR,
+	  pt_BR/help/octave/logistic_inv.pt_BR,
+	  pt_BR/help/octave/logistic_rnd.pt_BR,
+	  pt_BR/help/octave/logit.pt_BR, pt_BR/help/octave/loglog.pt_BR,
+	  pt_BR/help/octave/loglogerr.pt_BR, pt_BR/help/octave/logm.pt_BR,
+	  pt_BR/help/octave/lognormal_cdf.pt_BR,
+	  pt_BR/help/octave/lognormal_inv.pt_BR,
+	  pt_BR/help/octave/lognormal_rnd.pt_BR,
+	  pt_BR/help/octave/lsode.pt_BR,
+	  pt_BR/help/octave/lsode_options.pt_BR,
+	  pt_BR/help/octave/lu.pt_BR, pt_BR/help/octave/luinc.pt_BR,
+	  pt_BR/help/octave/manova.pt_BR,
+	  pt_BR/help/octave/matrix_type.pt_BR, pt_BR/help/octave/max.pt_BR,
+	  pt_BR/help/octave/mcnemar_test.pt_BR,
+	  pt_BR/help/octave/mean.pt_BR, pt_BR/help/octave/meansq.pt_BR,
+	  pt_BR/help/octave/median.pt_BR, pt_BR/help/octave/mesh.pt_BR,
+	  pt_BR/help/octave/meshdom.pt_BR,
+	  pt_BR/help/octave/meshgrid.pt_BR, pt_BR/help/octave/min.pt_BR,
+	  pt_BR/help/octave/minfo.pt_BR, pt_BR/help/octave/mod.pt_BR,
+	  pt_BR/help/octave/nargchk.pt_BR, pt_BR/help/octave/nnz.pt_BR,
+	  pt_BR/help/octave/nonzeros.pt_BR, pt_BR/help/octave/norm.pt_BR,
+	  pt_BR/help/octave/normal_cdf.pt_BR,
+	  pt_BR/help/octave/normal_inv.pt_BR,
+	  pt_BR/help/octave/normal_rnd.pt_BR,
+	  pt_BR/help/octave/nzmax.pt_BR, pt_BR/help/octave/obsv.pt_BR,
+	  pt_BR/help/octave/ones.pt_BR,
+	  pt_BR/help/octave/output_precision.pt_BR,
+	  pt_BR/help/octave/pascal_cdf.pt_BR,
+	  pt_BR/help/octave/pascal_rnd.pt_BR, pt_BR/help/octave/path.pt_BR,
+	  pt_BR/help/octave/pause.pt_BR,
+	  pt_BR/help/octave/periodogram.pt_BR, pt_BR/help/octave/pi.pt_BR,
+	  pt_BR/help/octave/plot.pt_BR,
+	  pt_BR/help/octave/poisson_cdf.pt_BR,
+	  pt_BR/help/octave/poisson_inv.pt_BR,
+	  pt_BR/help/octave/poisson_rnd.pt_BR,
+	  pt_BR/help/octave/polar.pt_BR, pt_BR/help/octave/poly.pt_BR,
+	  pt_BR/help/octave/polyderiv.pt_BR,
+	  pt_BR/help/octave/polyfit.pt_BR, pt_BR/help/octave/polygcd.pt_BR,
+	  pt_BR/help/octave/polyinteg.pt_BR,
+	  pt_BR/help/octave/polyval.pt_BR,
+	  pt_BR/help/octave/polyvalm.pt_BR, pt_BR/help/octave/pow2.pt_BR,
+	  pt_BR/help/octave/ppplot.pt_BR, pt_BR/help/octave/prepad.pt_BR,
+	  pt_BR/help/octave/print_empty_dimensions.pt_BR,
+	  pt_BR/help/octave/printf.pt_BR, pt_BR/help/octave/prompt.pt_BR,
+	  pt_BR/help/octave/qp.pt_BR, pt_BR/help/octave/qqplot.pt_BR,
+	  pt_BR/help/octave/qr.pt_BR, pt_BR/help/octave/qtransvmat.pt_BR,
+	  pt_BR/help/octave/quaternion.pt_BR, pt_BR/help/octave/qz.pt_BR,
+	  pt_BR/help/octave/qzhess.pt_BR, pt_BR/help/octave/rand.pt_BR,
+	  pt_BR/help/octave/randn.pt_BR, pt_BR/help/octave/range.pt_BR,
+	  pt_BR/help/octave/ranks.pt_BR, pt_BR/help/octave/real.pt_BR,
+	  pt_BR/help/octave/replot.pt_BR, pt_BR/help/octave/repmat.pt_BR,
+	  pt_BR/help/octave/reshape.pt_BR, pt_BR/help/octave/residue.pt_BR,
+	  pt_BR/help/octave/rgb2hsv.pt_BR, pt_BR/help/octave/roots.pt_BR,
+	  pt_BR/help/octave/rot90.pt_BR, pt_BR/help/octave/rotdim.pt_BR,
+	  pt_BR/help/octave/rows.pt_BR, pt_BR/help/octave/saveimage.pt_BR,
+	  pt_BR/help/octave/schur.pt_BR, pt_BR/help/octave/sec.pt_BR,
+	  pt_BR/help/octave/sech.pt_BR, pt_BR/help/octave/setdiff.pt_BR,
+	  pt_BR/help/octave/shift.pt_BR, pt_BR/help/octave/sin.pt_BR,
+	  pt_BR/help/octave/sinh.pt_BR, pt_BR/help/octave/size.pt_BR,
+	  pt_BR/help/octave/skewness.pt_BR, pt_BR/help/octave/sort.pt_BR,
+	  pt_BR/help/octave/sortrows.pt_BR,
+	  pt_BR/help/octave/spalloc.pt_BR, pt_BR/help/octave/sparse.pt_BR,
+	  pt_BR/help/octave/spatan2.pt_BR,
+	  pt_BR/help/octave/spconvert.pt_BR, pt_BR/help/octave/spdet.pt_BR,
+	  pt_BR/help/octave/spdiag.pt_BR, pt_BR/help/octave/spdiags.pt_BR,
+	  pt_BR/help/octave/spearman.pt_BR, pt_BR/help/octave/speye.pt_BR,
+	  pt_BR/help/octave/spfun.pt_BR, pt_BR/help/octave/spinv.pt_BR,
+	  pt_BR/help/octave/spkron.pt_BR, pt_BR/help/octave/split.pt_BR,
+	  pt_BR/help/octave/split_long_rows.pt_BR,
+	  pt_BR/help/octave/splu.pt_BR, pt_BR/help/octave/spmax.pt_BR,
+	  pt_BR/help/octave/spmin.pt_BR, pt_BR/help/octave/spones.pt_BR,
+	  pt_BR/help/octave/sprand.pt_BR, pt_BR/help/octave/sprandn.pt_BR,
+	  pt_BR/help/octave/spstats.pt_BR, pt_BR/help/octave/spy.pt_BR,
+	  pt_BR/help/octave/sqp.pt_BR, pt_BR/help/octave/sqrt.pt_BR,
+	  pt_BR/help/octave/sqrtm.pt_BR, pt_BR/help/octave/stat.pt_BR,
+	  pt_BR/help/octave/statistics.pt_BR, pt_BR/help/octave/std.pt_BR,
+	  pt_BR/help/octave/stdnormal_cdf.pt_BR,
+	  pt_BR/help/octave/stdnormal_inv.pt_BR,
+	  pt_BR/help/octave/stdnormal_rnd.pt_BR,
+	  pt_BR/help/octave/step.pt_BR, pt_BR/help/octave/stft.pt_BR,
+	  pt_BR/help/octave/str2double.pt_BR,
+	  pt_BR/help/octave/str2mat.pt_BR,
+	  pt_BR/help/octave/string_fill_char.pt_BR,
+	  pt_BR/help/octave/studentize.pt_BR,
+	  pt_BR/help/octave/sylvester_matrix.pt_BR,
+	  pt_BR/help/octave/symamd.pt_BR, pt_BR/help/octave/symbfact.pt_BR,
+	  pt_BR/help/octave/sys2ss.pt_BR,
+	  pt_BR/help/octave/sysappend.pt_BR,
+	  pt_BR/help/octave/sysprune.pt_BR,
+	  pt_BR/help/octave/sysscale.pt_BR,
+	  pt_BR/help/octave/syssetsignals.pt_BR,
+	  pt_BR/help/octave/t_cdf.pt_BR, pt_BR/help/octave/t_inv.pt_BR,
+	  pt_BR/help/octave/t_rnd.pt_BR, pt_BR/help/octave/tan.pt_BR,
+	  pt_BR/help/octave/tanh.pt_BR, pt_BR/help/octave/tf2ss.pt_BR,
+	  pt_BR/help/octave/toascii.pt_BR,
+	  pt_BR/help/octave/toeplitz.pt_BR, pt_BR/help/octave/tril.pt_BR,
+	  pt_BR/help/octave/triu.pt_BR,
+	  pt_BR/help/octave/uniform_cdf.pt_BR,
+	  pt_BR/help/octave/uniform_inv.pt_BR,
+	  pt_BR/help/octave/uniform_rnd.pt_BR,
+	  pt_BR/help/octave/union.pt_BR, pt_BR/help/octave/vander.pt_BR,
+	  pt_BR/help/octave/var.pt_BR, pt_BR/help/octave/vec.pt_BR,
+	  pt_BR/help/octave/vech.pt_BR, pt_BR/help/octave/vol.pt_BR,
+	  pt_BR/help/octave/warn_empty_list_elements.pt_BR,
+	  pt_BR/help/octave/warn_fortran_indexing.pt_BR,
+	  pt_BR/help/octave/warn_num_to_str.pt_BR,
+	  pt_BR/help/octave/warn_resize_on_range_error.pt_BR,
+	  pt_BR/help/octave/warn_separator_insert.pt_BR,
+	  pt_BR/help/octave/weibrnd.pt_BR,
+	  pt_BR/help/octave/weibull_cdf.pt_BR,
+	  pt_BR/help/octave/weibull_inv.pt_BR,
+	  pt_BR/help/octave/wiener_rnd.pt_BR,
+	  pt_BR/help/octave/xlabel.pt_BR, pt_BR/help/octave/ylabel.pt_BR,
+	  pt_BR/help/octave/zeros.pt_BR, pt_BR/help/octave/zgfmul.pt_BR,
+	  pt_BR/help/octave/zlabel.pt_BR, pt_BR/src/Makefile,
+	  pt_BR/src/ajuda.cc: Import of octave-lang into octave-forge
+
+2007-01-29 21:30  adb014
+
+	* admin/octlang: typo in octlang
+
+2007-01-29 21:23  adb014
+
+	* packages/.cvsignore: Import of octave-lang into octave-forge
+
+2007-01-29 21:23  adb014
+
+	* Makeconf.base: Package ChangeLog file with packages if one exists
+
+2007-01-29 21:19  adb014
+
+	* language/CONTENTS, language/Makefile,
+	  language/base/help/octave/DEFAULT_EXEC_PATH,
+	  language/base/help/octave/DEFAULT_LOADPATH,
+	  language/base/help/octave/DEMOcontrol,
+	  language/base/help/octave/EDITOR,
+	  language/base/help/octave/EXEC_PATH,
+	  language/base/help/octave/FFTW_WISDOM_PROGRAM,
+	  language/base/help/octave/F_DUPFD,
+	  language/base/help/octave/F_GETFD,
+	  language/base/help/octave/F_GETFL,
+	  language/base/help/octave/F_SETFD,
+	  language/base/help/octave/F_SETFL, language/base/help/octave/I,
+	  language/base/help/octave/IMAGEPATH,
+	  language/base/help/octave/IMAGE_PATH,
+	  language/base/help/octave/INFO_FILE,
+	  language/base/help/octave/INFO_PROGRAM,
+	  language/base/help/octave/Inf, language/base/help/octave/J,
+	  language/base/help/octave/LOADPATH,
+	  language/base/help/octave/MAKEINFO_PROGRAM,
+	  language/base/help/octave/NA, language/base/help/octave/NaN,
+	  language/base/help/octave/OCTAVE_HOME,
+	  language/base/help/octave/OCTAVE_VERSION,
+	  language/base/help/octave/O_APPEND,
+	  language/base/help/octave/O_ASYNC,
+	  language/base/help/octave/O_CREAT,
+	  language/base/help/octave/O_EXCL,
+	  language/base/help/octave/O_NONBLOCK,
+	  language/base/help/octave/O_RDONLY,
+	  language/base/help/octave/O_RDWR,
+	  language/base/help/octave/O_SYNC,
+	  language/base/help/octave/O_TRUNC,
+	  language/base/help/octave/O_WRONLY,
+	  language/base/help/octave/PAGER,
+	  language/base/help/octave/PAGER_FLAGS,
+	  language/base/help/octave/PS1, language/base/help/octave/PS2,
+	  language/base/help/octave/PS4,
+	  language/base/help/octave/P_tmpdir,
+	  language/base/help/octave/SEEK_CUR,
+	  language/base/help/octave/SEEK_END,
+	  language/base/help/octave/SEEK_SET,
+	  language/base/help/octave/SIG, language/base/help/octave/S_ISBLK,
+	  language/base/help/octave/S_ISCHR,
+	  language/base/help/octave/S_ISDIR,
+	  language/base/help/octave/S_ISFIFO,
+	  language/base/help/octave/S_ISLNK,
+	  language/base/help/octave/S_ISREG,
+	  language/base/help/octave/S_ISSOCK,
+	  language/base/help/octave/WCONTINUE,
+	  language/base/help/octave/WCOREDUMP,
+	  language/base/help/octave/WEXITSTATUS,
+	  language/base/help/octave/WIFCONTINUED,
+	  language/base/help/octave/WIFEXITED,
+	  language/base/help/octave/WIFSIGNALED,
+	  language/base/help/octave/WIFSTOPPED,
+	  language/base/help/octave/WNOHANG,
+	  language/base/help/octave/WSTOPSIG,
+	  language/base/help/octave/WTERMSIG,
+	  language/base/help/octave/WUNTRACED,
+	  language/base/help/octave/__abcddims__,
+	  language/base/help/octave/__axis_label__,
+	  language/base/help/octave/__bodquist__,
+	  language/base/help/octave/__clear_plot_window__,
+	  language/base/help/octave/__end__,
+	  language/base/help/octave/__errcomm__,
+	  language/base/help/octave/__errplot__,
+	  language/base/help/octave/__freqresp__,
+	  language/base/help/octave/__fsolve_defopts__,
+	  language/base/help/octave/__glpk__,
+	  language/base/help/octave/__gnuplot_init__,
+	  language/base/help/octave/__gnuplot_plot__,
+	  language/base/help/octave/__gnuplot_raw__,
+	  language/base/help/octave/__gnuplot_replot__,
+	  language/base/help/octave/__gnuplot_save_data__,
+	  language/base/help/octave/__gnuplot_send_inline_data__,
+	  language/base/help/octave/__gnuplot_set__,
+	  language/base/help/octave/__gnuplot_show__,
+	  language/base/help/octave/__gnuplot_splot__,
+	  language/base/help/octave/__gnuplot_version__,
+	  language/base/help/octave/__img_gnuplot__,
+	  language/base/help/octave/__img_via_file__,
+	  language/base/help/octave/__isequal__,
+	  language/base/help/octave/__kluge_procbuf_delay__,
+	  language/base/help/octave/__outlist__,
+	  language/base/help/octave/__pchip_deriv__,
+	  language/base/help/octave/__plot_globals__,
+	  language/base/help/octave/__plr1__,
+	  language/base/help/octave/__plr2__,
+	  language/base/help/octave/__plr__,
+	  language/base/help/octave/__plt1__,
+	  language/base/help/octave/__plt2__,
+	  language/base/help/octave/__plt2mm__,
+	  language/base/help/octave/__plt2mv__,
+	  language/base/help/octave/__plt2ss__,
+	  language/base/help/octave/__plt2vm__,
+	  language/base/help/octave/__plt2vv__,
+	  language/base/help/octave/__plt3__,
+	  language/base/help/octave/__plt__,
+	  language/base/help/octave/__pltopt1__,
+	  language/base/help/octave/__pltopt__,
+	  language/base/help/octave/__print_symbol_info__,
+	  language/base/help/octave/__print_symtab_info__,
+	  language/base/help/octave/__qp__,
+	  language/base/help/octave/__stepimp__,
+	  language/base/help/octave/__syschnamesl__,
+	  language/base/help/octave/__syscont_disc__,
+	  language/base/help/octave/__sysdefioname__,
+	  language/base/help/octave/__sysdefstname__,
+	  language/base/help/octave/__sysgroupn__,
+	  language/base/help/octave/__tf2sysl__,
+	  language/base/help/octave/__tfl__,
+	  language/base/help/octave/__token_count__,
+	  language/base/help/octave/__version_info__,
+	  language/base/help/octave/__zgpbal__,
+	  language/base/help/octave/__zp2ssg2__,
+	  language/base/help/octave/abcddim, language/base/help/octave/abs,
+	  language/base/help/octave/acos, language/base/help/octave/acosd,
+	  language/base/help/octave/acosh, language/base/help/octave/acot,
+	  language/base/help/octave/acotd, language/base/help/octave/acoth,
+	  language/base/help/octave/acsc, language/base/help/octave/acscd,
+	  language/base/help/octave/acsch,
+	  language/base/help/octave/addpath,
+	  language/base/help/octave/airy, language/base/help/octave/all,
+	  language/base/help/octave/analdemo,
+	  language/base/help/octave/angle, language/base/help/octave/anova,
+	  language/base/help/octave/ans, language/base/help/octave/any,
+	  language/base/help/octave/append,
+	  language/base/help/octave/arch_fit,
+	  language/base/help/octave/arch_rnd,
+	  language/base/help/octave/arch_test,
+	  language/base/help/octave/are, language/base/help/octave/arg,
+	  language/base/help/octave/argnames,
+	  language/base/help/octave/argv,
+	  language/base/help/octave/arma_rnd,
+	  language/base/help/octave/asctime,
+	  language/base/help/octave/asec, language/base/help/octave/asecd,
+	  language/base/help/octave/asech, language/base/help/octave/asin,
+	  language/base/help/octave/asind, language/base/help/octave/asinh,
+	  language/base/help/octave/assert,
+	  language/base/help/octave/assignin,
+	  language/base/help/octave/atan, language/base/help/octave/atan2,
+	  language/base/help/octave/atand, language/base/help/octave/atanh,
+	  language/base/help/octave/atexit,
+	  language/base/help/octave/autocor,
+	  language/base/help/octave/autocov,
+	  language/base/help/octave/autoload,
+	  language/base/help/octave/automatic_replot,
+	  language/base/help/octave/autoreg_matrix,
+	  language/base/help/octave/axis,
+	  language/base/help/octave/axis2dlim,
+	  language/base/help/octave/balance, language/base/help/octave/bar,
+	  language/base/help/octave/bartlett,
+	  language/base/help/octave/bartlett_test,
+	  language/base/help/octave/base2dec,
+	  language/base/help/octave/bddemo, language/base/help/octave/beep,
+	  language/base/help/octave/beep_on_error,
+	  language/base/help/octave/bessel,
+	  language/base/help/octave/besselh,
+	  language/base/help/octave/besseli,
+	  language/base/help/octave/besselj,
+	  language/base/help/octave/besselk,
+	  language/base/help/octave/bessely,
+	  language/base/help/octave/beta,
+	  language/base/help/octave/beta_cdf,
+	  language/base/help/octave/beta_inv,
+	  language/base/help/octave/beta_pdf,
+	  language/base/help/octave/beta_rnd,
+	  language/base/help/octave/betacdf,
+	  language/base/help/octave/betai,
+	  language/base/help/octave/betainc,
+	  language/base/help/octave/betainv,
+	  language/base/help/octave/betaln,
+	  language/base/help/octave/betapdf,
+	  language/base/help/octave/betarnd,
+	  language/base/help/octave/bicubic,
+	  language/base/help/octave/bin2dec,
+	  language/base/help/octave/bincoeff,
+	  language/base/help/octave/binocdf,
+	  language/base/help/octave/binoinv,
+	  language/base/help/octave/binomial_cdf,
+	  language/base/help/octave/binomial_inv,
+	  language/base/help/octave/binomial_pdf,
+	  language/base/help/octave/binomial_rnd,
+	  language/base/help/octave/binopdf,
+	  language/base/help/octave/binornd,
+	  language/base/help/octave/bitand,
+	  language/base/help/octave/bitcmp,
+	  language/base/help/octave/bitget,
+	  language/base/help/octave/bitmax,
+	  language/base/help/octave/bitor,
+	  language/base/help/octave/bitset,
+	  language/base/help/octave/bitshift,
+	  language/base/help/octave/bitxor,
+	  language/base/help/octave/blackman,
+	  language/base/help/octave/blanks,
+	  language/base/help/octave/blkdiag,
+	  language/base/help/octave/bode,
+	  language/base/help/octave/bode_bounds,
+	  language/base/help/octave/bottom_title,
+	  language/base/help/octave/box,
+	  language/base/help/octave/bug_report,
+	  language/base/help/octave/buildssic,
+	  language/base/help/octave/builtin,
+	  language/base/help/octave/bunzip2, language/base/help/octave/c2d,
+	  language/base/help/octave/calendar,
+	  language/base/help/octave/canonicalize_file_name,
+	  language/base/help/octave/cart2pol,
+	  language/base/help/octave/cart2sph,
+	  language/base/help/octave/casesen, language/base/help/octave/cat,
+	  language/base/help/octave/cauchy_cdf,
+	  language/base/help/octave/cauchy_inv,
+	  language/base/help/octave/cauchy_pdf,
+	  language/base/help/octave/cauchy_rnd,
+	  language/base/help/octave/ccolamd, language/base/help/octave/cd,
+	  language/base/help/octave/ceil, language/base/help/octave/cell,
+	  language/base/help/octave/cell2mat,
+	  language/base/help/octave/cell2struct,
+	  language/base/help/octave/cellfun,
+	  language/base/help/octave/cellidx,
+	  language/base/help/octave/cellstr,
+	  language/base/help/octave/center, language/base/help/octave/char,
+	  language/base/help/octave/chi2cdf,
+	  language/base/help/octave/chi2inv,
+	  language/base/help/octave/chi2pdf,
+	  language/base/help/octave/chi2rnd,
+	  language/base/help/octave/chisquare_cdf,
+	  language/base/help/octave/chisquare_inv,
+	  language/base/help/octave/chisquare_pdf,
+	  language/base/help/octave/chisquare_rnd,
+	  language/base/help/octave/chisquare_test_homogeneity,
+	  language/base/help/octave/chisquare_test_independence,
+	  language/base/help/octave/chol,
+	  language/base/help/octave/chol2inv,
+	  language/base/help/octave/cholinv,
+	  language/base/help/octave/circshift,
+	  language/base/help/octave/class, language/base/help/octave/clc,
+	  language/base/help/octave/clear,
+	  language/base/help/octave/clearplot,
+	  language/base/help/octave/clf, language/base/help/octave/clg,
+	  language/base/help/octave/clock,
+	  language/base/help/octave/cloglog,
+	  language/base/help/octave/close,
+	  language/base/help/octave/closeplot,
+	  language/base/help/octave/colamd,
+	  language/base/help/octave/colloc,
+	  language/base/help/octave/colormap,
+	  language/base/help/octave/colperm,
+	  language/base/help/octave/columns,
+	  language/base/help/octave/com2str,
+	  language/base/help/octave/comma,
+	  language/base/help/octave/common_size,
+	  language/base/help/octave/commutation_matrix,
+	  language/base/help/octave/compan,
+	  language/base/help/octave/compare_versions,
+	  language/base/help/octave/complement,
+	  language/base/help/octave/completion_append_char,
+	  language/base/help/octave/completion_matches,
+	  language/base/help/octave/complex,
+	  language/base/help/octave/computer,
+	  language/base/help/octave/cond,
+	  language/base/help/octave/confirm_recursive_rmdir,
+	  language/base/help/octave/conj,
+	  language/base/help/octave/contour,
+	  language/base/help/octave/controldemo,
+	  language/base/help/octave/conv, language/base/help/octave/conv2,
+	  language/base/help/octave/copyfile,
+	  language/base/help/octave/cor,
+	  language/base/help/octave/cor_test,
+	  language/base/help/octave/corrcoef,
+	  language/base/help/octave/cos, language/base/help/octave/cosd,
+	  language/base/help/octave/cosh, language/base/help/octave/cot,
+	  language/base/help/octave/cotd, language/base/help/octave/coth,
+	  language/base/help/octave/cov,
+	  language/base/help/octave/cplxpair,
+	  language/base/help/octave/cputime,
+	  language/base/help/octave/crash_dumps_octave_core,
+	  language/base/help/octave/create_set,
+	  language/base/help/octave/cross, language/base/help/octave/csc,
+	  language/base/help/octave/cscd, language/base/help/octave/csch,
+	  language/base/help/octave/csymamd,
+	  language/base/help/octave/ctime, language/base/help/octave/ctrb,
+	  language/base/help/octave/cumprod,
+	  language/base/help/octave/cumsum,
+	  language/base/help/octave/cumtrapz,
+	  language/base/help/octave/cut, language/base/help/octave/d2c,
+	  language/base/help/octave/damp, language/base/help/octave/dare,
+	  language/base/help/octave/daspk,
+	  language/base/help/octave/daspk_options,
+	  language/base/help/octave/dasrt,
+	  language/base/help/octave/dasrt_options,
+	  language/base/help/octave/dassl,
+	  language/base/help/octave/dassl_options,
+	  language/base/help/octave/date,
+	  language/base/help/octave/datenum,
+	  language/base/help/octave/datestr,
+	  language/base/help/octave/datevec,
+	  language/base/help/octave/dbclear,
+	  language/base/help/octave/dbstatus,
+	  language/base/help/octave/dbstop,
+	  language/base/help/octave/dbtype,
+	  language/base/help/octave/dbwhere,
+	  language/base/help/octave/dcgain, language/base/help/octave/deal,
+	  language/base/help/octave/deblank,
+	  language/base/help/octave/debug_on_error,
+	  language/base/help/octave/debug_on_interrupt,
+	  language/base/help/octave/debug_on_warning,
+	  language/base/help/octave/debug_symtab_lookups,
+	  language/base/help/octave/dec2base,
+	  language/base/help/octave/dec2bin,
+	  language/base/help/octave/dec2hex,
+	  language/base/help/octave/deconv,
+	  language/base/help/octave/default_save_options,
+	  language/base/help/octave/delete, language/base/help/octave/demo,
+	  language/base/help/octave/demoquat,
+	  language/base/help/octave/det, language/base/help/octave/detrend,
+	  language/base/help/octave/dezero,
+	  language/base/help/octave/dgkfdemo,
+	  language/base/help/octave/dgram,
+	  language/base/help/octave/dhinfdemo,
+	  language/base/help/octave/diag, language/base/help/octave/diary,
+	  language/base/help/octave/diff,
+	  language/base/help/octave/diffpara,
+	  language/base/help/octave/dir,
+	  language/base/help/octave/discrete_cdf,
+	  language/base/help/octave/discrete_inv,
+	  language/base/help/octave/discrete_pdf,
+	  language/base/help/octave/discrete_rnd,
+	  language/base/help/octave/disp,
+	  language/base/help/octave/dispatch,
+	  language/base/help/octave/dkalman,
+	  language/base/help/octave/dlqe, language/base/help/octave/dlqg,
+	  language/base/help/octave/dlqr, language/base/help/octave/dlyap,
+	  language/base/help/octave/dmperm,
+	  language/base/help/octave/dmr2d, language/base/help/octave/dmult,
+	  language/base/help/octave/do_string_escapes,
+	  language/base/help/octave/doc,
+	  language/base/help/octave/document,
+	  language/base/help/octave/dos, language/base/help/octave/dot,
+	  language/base/help/octave/double, language/base/help/octave/dre,
+	  language/base/help/octave/dump_prefs,
+	  language/base/help/octave/dup2,
+	  language/base/help/octave/duplication_matrix,
+	  language/base/help/octave/durbinlevinson,
+	  language/base/help/octave/e, language/base/help/octave/echo,
+	  language/base/help/octave/echo_executing_commands,
+	  language/base/help/octave/edit_history,
+	  language/base/help/octave/eig,
+	  language/base/help/octave/empirical_cdf,
+	  language/base/help/octave/empirical_inv,
+	  language/base/help/octave/empirical_pdf,
+	  language/base/help/octave/empirical_rnd,
+	  language/base/help/octave/endgrent,
+	  language/base/help/octave/endpwent,
+	  language/base/help/octave/eomday, language/base/help/octave/eps,
+	  language/base/help/octave/erf, language/base/help/octave/erfc,
+	  language/base/help/octave/erfinv,
+	  language/base/help/octave/errno,
+	  language/base/help/octave/errno_list,
+	  language/base/help/octave/error,
+	  language/base/help/octave/errorbar,
+	  language/base/help/octave/etime, language/base/help/octave/etree,
+	  language/base/help/octave/etreeplot,
+	  language/base/help/octave/eval, language/base/help/octave/evalin,
+	  language/base/help/octave/example,
+	  language/base/help/octave/exec, language/base/help/octave/exist,
+	  language/base/help/octave/exp, language/base/help/octave/expcdf,
+	  language/base/help/octave/expinv, language/base/help/octave/expm,
+	  language/base/help/octave/exponential_cdf,
+	  language/base/help/octave/exponential_inv,
+	  language/base/help/octave/exponential_pdf,
+	  language/base/help/octave/exponential_rnd,
+	  language/base/help/octave/exppdf,
+	  language/base/help/octave/exprnd, language/base/help/octave/eye,
+	  language/base/help/octave/f_cdf, language/base/help/octave/f_inv,
+	  language/base/help/octave/f_pdf, language/base/help/octave/f_rnd,
+	  language/base/help/octave/f_test_regression,
+	  language/base/help/octave/factor,
+	  language/base/help/octave/factorial,
+	  language/base/help/octave/fail, language/base/help/octave/false,
+	  language/base/help/octave/fcdf, language/base/help/octave/fclear,
+	  language/base/help/octave/fclose,
+	  language/base/help/octave/fcntl, language/base/help/octave/fdisp,
+	  language/base/help/octave/feof, language/base/help/octave/ferror,
+	  language/base/help/octave/feval,
+	  language/base/help/octave/fflush, language/base/help/octave/fft,
+	  language/base/help/octave/fft2,
+	  language/base/help/octave/fftconv,
+	  language/base/help/octave/fftfilt,
+	  language/base/help/octave/fftn,
+	  language/base/help/octave/fftshift,
+	  language/base/help/octave/fftw,
+	  language/base/help/octave/fftw_wisdom,
+	  language/base/help/octave/fftw_wisdom_program,
+	  language/base/help/octave/fgetl, language/base/help/octave/fgets,
+	  language/base/help/octave/fieldnames,
+	  language/base/help/octave/figure,
+	  language/base/help/octave/file_in_loadpath,
+	  language/base/help/octave/file_in_path,
+	  language/base/help/octave/fileattrib,
+	  language/base/help/octave/fileparts,
+	  language/base/help/octave/filesep,
+	  language/base/help/octave/filter,
+	  language/base/help/octave/filter2,
+	  language/base/help/octave/find,
+	  language/base/help/octave/find_first_of_in_loadpath,
+	  language/base/help/octave/findstr,
+	  language/base/help/octave/finite, language/base/help/octave/finv,
+	  language/base/help/octave/fir2sys, language/base/help/octave/fix,
+	  language/base/help/octave/fixed_point_format,
+	  language/base/help/octave/flipdim,
+	  language/base/help/octave/fliplr,
+	  language/base/help/octave/flipud,
+	  language/base/help/octave/floor, language/base/help/octave/flops,
+	  language/base/help/octave/fmod,
+	  language/base/help/octave/fnmatch,
+	  language/base/help/octave/fopen, language/base/help/octave/fork,
+	  language/base/help/octave/format,
+	  language/base/help/octave/formula,
+	  language/base/help/octave/fpdf, language/base/help/octave/fplot,
+	  language/base/help/octave/fprintf,
+	  language/base/help/octave/fputs,
+	  language/base/help/octave/fractdiff,
+	  language/base/help/octave/frdemo,
+	  language/base/help/octave/fread,
+	  language/base/help/octave/freport,
+	  language/base/help/octave/freqchkw,
+	  language/base/help/octave/freqz,
+	  language/base/help/octave/freqz_plot,
+	  language/base/help/octave/frewind,
+	  language/base/help/octave/frnd, language/base/help/octave/fscanf,
+	  language/base/help/octave/fseek,
+	  language/base/help/octave/fsolve,
+	  language/base/help/octave/fsolve_options,
+	  language/base/help/octave/ftell, language/base/help/octave/full,
+	  language/base/help/octave/fullfile,
+	  language/base/help/octave/func2str,
+	  language/base/help/octave/functions,
+	  language/base/help/octave/fv, language/base/help/octave/fvl,
+	  language/base/help/octave/fwrite,
+	  language/base/help/octave/gamcdf,
+	  language/base/help/octave/gaminv,
+	  language/base/help/octave/gamma,
+	  language/base/help/octave/gamma_cdf,
+	  language/base/help/octave/gamma_inv,
+	  language/base/help/octave/gamma_pdf,
+	  language/base/help/octave/gamma_rnd,
+	  language/base/help/octave/gammai,
+	  language/base/help/octave/gammainc,
+	  language/base/help/octave/gampdf,
+	  language/base/help/octave/gamrnd, language/base/help/octave/gcd,
+	  language/base/help/octave/genpath,
+	  language/base/help/octave/geocdf,
+	  language/base/help/octave/geoinv,
+	  language/base/help/octave/geometric_cdf,
+	  language/base/help/octave/geometric_inv,
+	  language/base/help/octave/geometric_pdf,
+	  language/base/help/octave/geometric_rnd,
+	  language/base/help/octave/geopdf,
+	  language/base/help/octave/geornd,
+	  language/base/help/octave/getegid,
+	  language/base/help/octave/getenv,
+	  language/base/help/octave/geteuid,
+	  language/base/help/octave/getfield,
+	  language/base/help/octave/getgid,
+	  language/base/help/octave/getgrent,
+	  language/base/help/octave/getgrgid,
+	  language/base/help/octave/getgrnam,
+	  language/base/help/octave/getpgrp,
+	  language/base/help/octave/getpid,
+	  language/base/help/octave/getppid,
+	  language/base/help/octave/getpwent,
+	  language/base/help/octave/getpwnam,
+	  language/base/help/octave/getpwuid,
+	  language/base/help/octave/getrusage,
+	  language/base/help/octave/getuid,
+	  language/base/help/octave/givens, language/base/help/octave/glob,
+	  language/base/help/octave/glpk,
+	  language/base/help/octave/glpkmex, language/base/help/octave/gls,
+	  language/base/help/octave/gmtime,
+	  language/base/help/octave/gnuplot_binary,
+	  language/base/help/octave/gnuplot_command_axes,
+	  language/base/help/octave/gnuplot_command_end,
+	  language/base/help/octave/gnuplot_command_plot,
+	  language/base/help/octave/gnuplot_command_replot,
+	  language/base/help/octave/gnuplot_command_splot,
+	  language/base/help/octave/gnuplot_command_title,
+	  language/base/help/octave/gnuplot_command_using,
+	  language/base/help/octave/gnuplot_command_with,
+	  language/base/help/octave/gnuplot_use_title_option,
+	  language/base/help/octave/gplot,
+	  language/base/help/octave/gradient,
+	  language/base/help/octave/gram, language/base/help/octave/graw,
+	  language/base/help/octave/gray,
+	  language/base/help/octave/gray2ind,
+	  language/base/help/octave/grid, language/base/help/octave/gset,
+	  language/base/help/octave/gshow,
+	  language/base/help/octave/gsplot,
+	  language/base/help/octave/gunzip,
+	  language/base/help/octave/h2norm,
+	  language/base/help/octave/h2syn,
+	  language/base/help/octave/hadamard,
+	  language/base/help/octave/hamming,
+	  language/base/help/octave/hankel,
+	  language/base/help/octave/hanning,
+	  language/base/help/octave/help, language/base/help/octave/hess,
+	  language/base/help/octave/hex2dec,
+	  language/base/help/octave/hilb,
+	  language/base/help/octave/hinf_ctr,
+	  language/base/help/octave/hinfdemo,
+	  language/base/help/octave/hinfnorm,
+	  language/base/help/octave/hinfsyn,
+	  language/base/help/octave/hinfsyn_chk,
+	  language/base/help/octave/hinfsyn_ric,
+	  language/base/help/octave/hist,
+	  language/base/help/octave/history,
+	  language/base/help/octave/history_file,
+	  language/base/help/octave/history_size,
+	  language/base/help/octave/history_timestamp_format_string,
+	  language/base/help/octave/hold,
+	  language/base/help/octave/horzcat,
+	  language/base/help/octave/hotelling_test,
+	  language/base/help/octave/hotelling_test_2,
+	  language/base/help/octave/housh,
+	  language/base/help/octave/hsv2rgb,
+	  language/base/help/octave/hurst,
+	  language/base/help/octave/hygecdf,
+	  language/base/help/octave/hygeinv,
+	  language/base/help/octave/hygepdf,
+	  language/base/help/octave/hygernd,
+	  language/base/help/octave/hypergeometric_cdf,
+	  language/base/help/octave/hypergeometric_inv,
+	  language/base/help/octave/hypergeometric_pdf,
+	  language/base/help/octave/hypergeometric_rnd,
+	  language/base/help/octave/i, language/base/help/octave/ifft,
+	  language/base/help/octave/ifft2, language/base/help/octave/ifftn,
+	  language/base/help/octave/ifftshift,
+	  language/base/help/octave/ignore_function_time_stamp,
+	  language/base/help/octave/imag, language/base/help/octave/image,
+	  language/base/help/octave/image_viewer,
+	  language/base/help/octave/imagesc,
+	  language/base/help/octave/impulse,
+	  language/base/help/octave/imshow,
+	  language/base/help/octave/ind2gray,
+	  language/base/help/octave/ind2rgb,
+	  language/base/help/octave/ind2sub,
+	  language/base/help/octave/index, language/base/help/octave/inf,
+	  language/base/help/octave/info_file,
+	  language/base/help/octave/info_program,
+	  language/base/help/octave/inline,
+	  language/base/help/octave/input,
+	  language/base/help/octave/input_event_hook,
+	  language/base/help/octave/inputname,
+	  language/base/help/octave/int16,
+	  language/base/help/octave/int2str,
+	  language/base/help/octave/int32, language/base/help/octave/int64,
+	  language/base/help/octave/int8,
+	  language/base/help/octave/interp1,
+	  language/base/help/octave/interp2,
+	  language/base/help/octave/interpft,
+	  language/base/help/octave/intersect,
+	  language/base/help/octave/intersection,
+	  language/base/help/octave/intmax,
+	  language/base/help/octave/intmin, language/base/help/octave/inv,
+	  language/base/help/octave/inverse,
+	  language/base/help/octave/invhilb,
+	  language/base/help/octave/ipermute,
+	  language/base/help/octave/iqr, language/base/help/octave/irr,
+	  language/base/help/octave/is_abcd,
+	  language/base/help/octave/is_bool,
+	  language/base/help/octave/is_complex,
+	  language/base/help/octave/is_controllable,
+	  language/base/help/octave/is_detectable,
+	  language/base/help/octave/is_dgkf,
+	  language/base/help/octave/is_digital,
+	  language/base/help/octave/is_duplicate_entry,
+	  language/base/help/octave/is_global,
+	  language/base/help/octave/is_leap_year,
+	  language/base/help/octave/is_list,
+	  language/base/help/octave/is_matrix,
+	  language/base/help/octave/is_observable,
+	  language/base/help/octave/is_sample,
+	  language/base/help/octave/is_scalar,
+	  language/base/help/octave/is_signal_list,
+	  language/base/help/octave/is_siso,
+	  language/base/help/octave/is_square,
+	  language/base/help/octave/is_stabilizable,
+	  language/base/help/octave/is_stable,
+	  language/base/help/octave/is_stream,
+	  language/base/help/octave/is_struct,
+	  language/base/help/octave/is_symmetric,
+	  language/base/help/octave/is_vector,
+	  language/base/help/octave/isa, language/base/help/octave/isalnum,
+	  language/base/help/octave/isalpha,
+	  language/base/help/octave/isascii,
+	  language/base/help/octave/isbool,
+	  language/base/help/octave/iscell,
+	  language/base/help/octave/iscellstr,
+	  language/base/help/octave/ischar,
+	  language/base/help/octave/iscntrl,
+	  language/base/help/octave/iscommand,
+	  language/base/help/octave/iscomplex,
+	  language/base/help/octave/isdefinite,
+	  language/base/help/octave/isdigit,
+	  language/base/help/octave/isdir,
+	  language/base/help/octave/isempty,
+	  language/base/help/octave/isequal,
+	  language/base/help/octave/isequalwithequalnans,
+	  language/base/help/octave/isfield,
+	  language/base/help/octave/isglobal,
+	  language/base/help/octave/isgraph,
+	  language/base/help/octave/ishold,
+	  language/base/help/octave/isieee,
+	  language/base/help/octave/isinf,
+	  language/base/help/octave/isinteger,
+	  language/base/help/octave/iskeyword,
+	  language/base/help/octave/isletter,
+	  language/base/help/octave/islist,
+	  language/base/help/octave/islower,
+	  language/base/help/octave/ismatrix,
+	  language/base/help/octave/ismember,
+	  language/base/help/octave/isna, language/base/help/octave/isnan,
+	  language/base/help/octave/isnumeric,
+	  language/base/help/octave/ispc,
+	  language/base/help/octave/isprime,
+	  language/base/help/octave/isprint,
+	  language/base/help/octave/ispunct,
+	  language/base/help/octave/israwcommand,
+	  language/base/help/octave/isreal,
+	  language/base/help/octave/isscalar,
+	  language/base/help/octave/isspace,
+	  language/base/help/octave/issparse,
+	  language/base/help/octave/issquare,
+	  language/base/help/octave/isstr,
+	  language/base/help/octave/isstreamoff,
+	  language/base/help/octave/isstruct,
+	  language/base/help/octave/issymmetric,
+	  language/base/help/octave/isunix,
+	  language/base/help/octave/isupper,
+	  language/base/help/octave/isvarname,
+	  language/base/help/octave/isvector,
+	  language/base/help/octave/isxdigit, language/base/help/octave/j,
+	  language/base/help/octave/jet707,
+	  language/base/help/octave/kbhit,
+	  language/base/help/octave/kendall,
+	  language/base/help/octave/keyboard,
+	  language/base/help/octave/kill,
+	  language/base/help/octave/kolmogorov_smirnov_cdf,
+	  language/base/help/octave/kolmogorov_smirnov_test,
+	  language/base/help/octave/kolmogorov_smirnov_test_2,
+	  language/base/help/octave/kron,
+	  language/base/help/octave/kruskal_wallis_test,
+	  language/base/help/octave/krylov,
+	  language/base/help/octave/krylovb,
+	  language/base/help/octave/kurtosis,
+	  language/base/help/octave/laplace_cdf,
+	  language/base/help/octave/laplace_inv,
+	  language/base/help/octave/laplace_pdf,
+	  language/base/help/octave/laplace_rnd,
+	  language/base/help/octave/lasterr,
+	  language/base/help/octave/lastwarn,
+	  language/base/help/octave/lcm, language/base/help/octave/legend,
+	  language/base/help/octave/legendre,
+	  language/base/help/octave/length,
+	  language/base/help/octave/lgamma,
+	  language/base/help/octave/license,
+	  language/base/help/octave/lin2mu, language/base/help/octave/link,
+	  language/base/help/octave/linspace,
+	  language/base/help/octave/list,
+	  language/base/help/octave/list_in_columns,
+	  language/base/help/octave/list_primes,
+	  language/base/help/octave/listidx,
+	  language/base/help/octave/load,
+	  language/base/help/octave/loadaudio,
+	  language/base/help/octave/loadimage,
+	  language/base/help/octave/localtime,
+	  language/base/help/octave/log, language/base/help/octave/log10,
+	  language/base/help/octave/log2,
+	  language/base/help/octave/logical,
+	  language/base/help/octave/logistic_cdf,
+	  language/base/help/octave/logistic_inv,
+	  language/base/help/octave/logistic_pdf,
+	  language/base/help/octave/logistic_regression,
+	  language/base/help/octave/logistic_regression_derivatives,
+	  language/base/help/octave/logistic_regression_likelihood,
+	  language/base/help/octave/logistic_rnd,
+	  language/base/help/octave/logit,
+	  language/base/help/octave/loglog,
+	  language/base/help/octave/loglogerr,
+	  language/base/help/octave/logm,
+	  language/base/help/octave/logncdf,
+	  language/base/help/octave/logninv,
+	  language/base/help/octave/lognormal_cdf,
+	  language/base/help/octave/lognormal_inv,
+	  language/base/help/octave/lognormal_pdf,
+	  language/base/help/octave/lognormal_rnd,
+	  language/base/help/octave/lognpdf,
+	  language/base/help/octave/lognrnd,
+	  language/base/help/octave/logspace,
+	  language/base/help/octave/lookfor,
+	  language/base/help/octave/lookup,
+	  language/base/help/octave/lower,
+	  language/base/help/octave/lpsolve,
+	  language/base/help/octave/lpsolve_options,
+	  language/base/help/octave/lqe, language/base/help/octave/lqg,
+	  language/base/help/octave/lqr, language/base/help/octave/ls,
+	  language/base/help/octave/ls_command,
+	  language/base/help/octave/lsim, language/base/help/octave/lsode,
+	  language/base/help/octave/lsode_options,
+	  language/base/help/octave/lstat, language/base/help/octave/ltifr,
+	  language/base/help/octave/lu, language/base/help/octave/luinc,
+	  language/base/help/octave/lyap, language/base/help/octave/magic,
+	  language/base/help/octave/mahalanobis,
+	  language/base/help/octave/makeinfo_program,
+	  language/base/help/octave/manova,
+	  language/base/help/octave/mark_as_command,
+	  language/base/help/octave/mark_as_rawcommand,
+	  language/base/help/octave/mat2cell,
+	  language/base/help/octave/mat2str,
+	  language/base/help/octave/matrix_type,
+	  language/base/help/octave/max,
+	  language/base/help/octave/max_recursion_depth,
+	  language/base/help/octave/mcnemar_test,
+	  language/base/help/octave/mean, language/base/help/octave/meansq,
+	  language/base/help/octave/median, language/base/help/octave/menu,
+	  language/base/help/octave/mesh,
+	  language/base/help/octave/meshdom,
+	  language/base/help/octave/meshgrid,
+	  language/base/help/octave/mex, language/base/help/octave/mexext,
+	  language/base/help/octave/mfilename,
+	  language/base/help/octave/min, language/base/help/octave/minfo,
+	  language/base/help/octave/mislocked,
+	  language/base/help/octave/mkdir,
+	  language/base/help/octave/mkfifo,
+	  language/base/help/octave/mkoctfile,
+	  language/base/help/octave/mkpp,
+	  language/base/help/octave/mkstemp,
+	  language/base/help/octave/mktime,
+	  language/base/help/octave/mlock, language/base/help/octave/mod,
+	  language/base/help/octave/moddemo,
+	  language/base/help/octave/moment, language/base/help/octave/more,
+	  language/base/help/octave/movefile,
+	  language/base/help/octave/mplot,
+	  language/base/help/octave/mu2lin,
+	  language/base/help/octave/multiplot,
+	  language/base/help/octave/munlock, language/base/help/octave/nan,
+	  language/base/help/octave/nargchk,
+	  language/base/help/octave/nargin,
+	  language/base/help/octave/nargout,
+	  language/base/help/octave/native_float_format,
+	  language/base/help/octave/nchoosek,
+	  language/base/help/octave/ndgrid,
+	  language/base/help/octave/ndims,
+	  language/base/help/octave/nextpow2,
+	  language/base/help/octave/nichols, language/base/help/octave/nnz,
+	  language/base/help/octave/nonzeros,
+	  language/base/help/octave/norm,
+	  language/base/help/octave/normal_cdf,
+	  language/base/help/octave/normal_inv,
+	  language/base/help/octave/normal_pdf,
+	  language/base/help/octave/normal_rnd,
+	  language/base/help/octave/normcdf,
+	  language/base/help/octave/normest,
+	  language/base/help/octave/norminv,
+	  language/base/help/octave/normpdf,
+	  language/base/help/octave/normrnd, language/base/help/octave/not,
+	  language/base/help/octave/now, language/base/help/octave/nper,
+	  language/base/help/octave/npv, language/base/help/octave/nth,
+	  language/base/help/octave/nthroot,
+	  language/base/help/octave/ntsc2rgb,
+	  language/base/help/octave/null,
+	  language/base/help/octave/num2cell,
+	  language/base/help/octave/num2str,
+	  language/base/help/octave/numel,
+	  language/base/help/octave/nyquist,
+	  language/base/help/octave/nzmax, language/base/help/octave/obsv,
+	  language/base/help/octave/ocean,
+	  language/base/help/octave/octave_config_info,
+	  language/base/help/octave/octave_core_file_limit,
+	  language/base/help/octave/octave_core_file_name,
+	  language/base/help/octave/octave_core_file_options,
+	  language/base/help/octave/ols, language/base/help/octave/oneplot,
+	  language/base/help/octave/ones,
+	  language/base/help/octave/optimset,
+	  language/base/help/octave/ord2,
+	  language/base/help/octave/orderfields,
+	  language/base/help/octave/orient, language/base/help/octave/orth,
+	  language/base/help/octave/output_max_field_width,
+	  language/base/help/octave/output_precision,
+	  language/base/help/octave/pack,
+	  language/base/help/octave/packsys,
+	  language/base/help/octave/page_output_immediately,
+	  language/base/help/octave/page_screen_output,
+	  language/base/help/octave/parallel,
+	  language/base/help/octave/paren,
+	  language/base/help/octave/parseparams,
+	  language/base/help/octave/pascal,
+	  language/base/help/octave/pascal_cdf,
+	  language/base/help/octave/pascal_inv,
+	  language/base/help/octave/pascal_pdf,
+	  language/base/help/octave/pascal_rnd,
+	  language/base/help/octave/path,
+	  language/base/help/octave/pathdef,
+	  language/base/help/octave/pathsep,
+	  language/base/help/octave/pause, language/base/help/octave/pcg,
+	  language/base/help/octave/pchip,
+	  language/base/help/octave/pclose, language/base/help/octave/pcr,
+	  language/base/help/octave/periodogram,
+	  language/base/help/octave/perms,
+	  language/base/help/octave/permute,
+	  language/base/help/octave/perror, language/base/help/octave/pi,
+	  language/base/help/octave/pinv, language/base/help/octave/pipe,
+	  language/base/help/octave/pkg, language/base/help/octave/place,
+	  language/base/help/octave/playaudio,
+	  language/base/help/octave/plot, language/base/help/octave/plot3,
+	  language/base/help/octave/plot_border,
+	  language/base/help/octave/pmt,
+	  language/base/help/octave/poisscdf,
+	  language/base/help/octave/poissinv,
+	  language/base/help/octave/poisson_cdf,
+	  language/base/help/octave/poisson_inv,
+	  language/base/help/octave/poisson_pdf,
+	  language/base/help/octave/poisson_rnd,
+	  language/base/help/octave/poisspdf,
+	  language/base/help/octave/poissrnd,
+	  language/base/help/octave/pol2cart,
+	  language/base/help/octave/polar, language/base/help/octave/poly,
+	  language/base/help/octave/polyarea,
+	  language/base/help/octave/polyder,
+	  language/base/help/octave/polyderiv,
+	  language/base/help/octave/polyfit,
+	  language/base/help/octave/polygcd,
+	  language/base/help/octave/polyinteg,
+	  language/base/help/octave/polyout,
+	  language/base/help/octave/polyreduce,
+	  language/base/help/octave/polyval,
+	  language/base/help/octave/polyvalm,
+	  language/base/help/octave/popen,
+	  language/base/help/octave/popen2,
+	  language/base/help/octave/postpad,
+	  language/base/help/octave/pow2, language/base/help/octave/ppplot,
+	  language/base/help/octave/ppval,
+	  language/base/help/octave/prepad,
+	  language/base/help/octave/primes,
+	  language/base/help/octave/print,
+	  language/base/help/octave/print_answer_id_name,
+	  language/base/help/octave/print_empty_dimensions,
+	  language/base/help/octave/print_rhs_assign_val,
+	  language/base/help/octave/print_usage,
+	  language/base/help/octave/printf,
+	  language/base/help/octave/probit, language/base/help/octave/prod,
+	  language/base/help/octave/program_invocation_name,
+	  language/base/help/octave/program_name,
+	  language/base/help/octave/prompt,
+	  language/base/help/octave/prop_test_2,
+	  language/base/help/octave/purge_tmp_files,
+	  language/base/help/octave/putenv, language/base/help/octave/puts,
+	  language/base/help/octave/pv, language/base/help/octave/pvl,
+	  language/base/help/octave/pwd, language/base/help/octave/pzmap,
+	  language/base/help/octave/qconj,
+	  language/base/help/octave/qcoordinate_plot,
+	  language/base/help/octave/qderiv,
+	  language/base/help/octave/qderivmat,
+	  language/base/help/octave/qinv, language/base/help/octave/qmult,
+	  language/base/help/octave/qp, language/base/help/octave/qqplot,
+	  language/base/help/octave/qr, language/base/help/octave/qtrans,
+	  language/base/help/octave/qtransv,
+	  language/base/help/octave/qtransvmat,
+	  language/base/help/octave/quad,
+	  language/base/help/octave/quad_options,
+	  language/base/help/octave/quadl,
+	  language/base/help/octave/quaternion,
+	  language/base/help/octave/quit, language/base/help/octave/qz,
+	  language/base/help/octave/qzhess,
+	  language/base/help/octave/qzval, language/base/help/octave/rand,
+	  language/base/help/octave/rande, language/base/help/octave/randg,
+	  language/base/help/octave/randn, language/base/help/octave/randp,
+	  language/base/help/octave/randperm,
+	  language/base/help/octave/range, language/base/help/octave/rank,
+	  language/base/help/octave/ranks, language/base/help/octave/rate,
+	  language/base/help/octave/read_readline_init_file,
+	  language/base/help/octave/readdir,
+	  language/base/help/octave/readlink,
+	  language/base/help/octave/real,
+	  language/base/help/octave/realmax,
+	  language/base/help/octave/realmin,
+	  language/base/help/octave/record,
+	  language/base/help/octave/rectangle_lw,
+	  language/base/help/octave/rectangle_sw,
+	  language/base/help/octave/regexp,
+	  language/base/help/octave/regexpi,
+	  language/base/help/octave/regexprep,
+	  language/base/help/octave/rehash, language/base/help/octave/rem,
+	  language/base/help/octave/rename,
+	  language/base/help/octave/replot,
+	  language/base/help/octave/repmat,
+	  language/base/help/octave/reshape,
+	  language/base/help/octave/residue,
+	  language/base/help/octave/resize,
+	  language/base/help/octave/reverse,
+	  language/base/help/octave/rgb2hsv,
+	  language/base/help/octave/rgb2ind,
+	  language/base/help/octave/rgb2ntsc,
+	  language/base/help/octave/rindex,
+	  language/base/help/octave/rldemo,
+	  language/base/help/octave/rlocus,
+	  language/base/help/octave/rmdir,
+	  language/base/help/octave/rmfield,
+	  language/base/help/octave/rmpath,
+	  language/base/help/octave/roots,
+	  language/base/help/octave/rosser,
+	  language/base/help/octave/rot90,
+	  language/base/help/octave/rotdim, language/base/help/octave/rotg,
+	  language/base/help/octave/round, language/base/help/octave/rows,
+	  language/base/help/octave/rref,
+	  language/base/help/octave/run_cmd,
+	  language/base/help/octave/run_count,
+	  language/base/help/octave/run_history,
+	  language/base/help/octave/run_test,
+	  language/base/help/octave/save,
+	  language/base/help/octave/save_header_format_string,
+	  language/base/help/octave/save_precision,
+	  language/base/help/octave/saveaudio,
+	  language/base/help/octave/saveimage,
+	  language/base/help/octave/savepath,
+	  language/base/help/octave/saving_history,
+	  language/base/help/octave/scanf, language/base/help/octave/schur,
+	  language/base/help/octave/sec, language/base/help/octave/secd,
+	  language/base/help/octave/sech,
+	  language/base/help/octave/semicolon,
+	  language/base/help/octave/semilogx,
+	  language/base/help/octave/semilogxerr,
+	  language/base/help/octave/semilogy,
+	  language/base/help/octave/semilogyerr,
+	  language/base/help/octave/series,
+	  language/base/help/octave/setaudio,
+	  language/base/help/octave/setdiff,
+	  language/base/help/octave/setfield,
+	  language/base/help/octave/setgrent,
+	  language/base/help/octave/setpath,
+	  language/base/help/octave/setpwent,
+	  language/base/help/octave/setstr,
+	  language/base/help/octave/setxor, language/base/help/octave/shg,
+	  language/base/help/octave/shift,
+	  language/base/help/octave/shiftdim,
+	  language/base/help/octave/sighup_dumps_octave_core,
+	  language/base/help/octave/sign,
+	  language/base/help/octave/sign_test,
+	  language/base/help/octave/sigterm_dumps_octave_core,
+	  language/base/help/octave/silent_functions,
+	  language/base/help/octave/sin, language/base/help/octave/sinc,
+	  language/base/help/octave/sind,
+	  language/base/help/octave/sinetone,
+	  language/base/help/octave/sinewave,
+	  language/base/help/octave/single, language/base/help/octave/sinh,
+	  language/base/help/octave/size,
+	  language/base/help/octave/size_equal,
+	  language/base/help/octave/sizeof,
+	  language/base/help/octave/skewness,
+	  language/base/help/octave/sleep,
+	  language/base/help/octave/sombrero,
+	  language/base/help/octave/sort,
+	  language/base/help/octave/sortcom,
+	  language/base/help/octave/sortrows,
+	  language/base/help/octave/source,
+	  language/base/help/octave/spalloc,
+	  language/base/help/octave/sparse,
+	  language/base/help/octave/spatan2,
+	  language/base/help/octave/spchol,
+	  language/base/help/octave/spchol2inv,
+	  language/base/help/octave/spcholinv,
+	  language/base/help/octave/spconvert,
+	  language/base/help/octave/spcumprod,
+	  language/base/help/octave/spcumsum,
+	  language/base/help/octave/spdet,
+	  language/base/help/octave/spdiag,
+	  language/base/help/octave/spdiags,
+	  language/base/help/octave/spearman,
+	  language/base/help/octave/spectral_adf,
+	  language/base/help/octave/spectral_xdf,
+	  language/base/help/octave/speed,
+	  language/base/help/octave/spencer,
+	  language/base/help/octave/speye,
+	  language/base/help/octave/spfind,
+	  language/base/help/octave/spfun,
+	  language/base/help/octave/sph2cart,
+	  language/base/help/octave/sphcat,
+	  language/base/help/octave/spinv,
+	  language/base/help/octave/spkron,
+	  language/base/help/octave/splchol,
+	  language/base/help/octave/splice,
+	  language/base/help/octave/spline,
+	  language/base/help/octave/split,
+	  language/base/help/octave/split_long_rows,
+	  language/base/help/octave/splu, language/base/help/octave/spmax,
+	  language/base/help/octave/spmin,
+	  language/base/help/octave/spones,
+	  language/base/help/octave/spparms,
+	  language/base/help/octave/spprod, language/base/help/octave/spqr,
+	  language/base/help/octave/sprand,
+	  language/base/help/octave/sprandn,
+	  language/base/help/octave/sprandsym,
+	  language/base/help/octave/sprank,
+	  language/base/help/octave/sprintf,
+	  language/base/help/octave/spstats,
+	  language/base/help/octave/spsum,
+	  language/base/help/octave/spsumsq,
+	  language/base/help/octave/spvcat, language/base/help/octave/spy,
+	  language/base/help/octave/sqp, language/base/help/octave/sqrt,
+	  language/base/help/octave/sqrtm,
+	  language/base/help/octave/squeeze, language/base/help/octave/ss,
+	  language/base/help/octave/ss2sys,
+	  language/base/help/octave/ss2tf, language/base/help/octave/ss2zp,
+	  language/base/help/octave/sscanf,
+	  language/base/help/octave/stairs,
+	  language/base/help/octave/starp, language/base/help/octave/stat,
+	  language/base/help/octave/statistics,
+	  language/base/help/octave/std, language/base/help/octave/stderr,
+	  language/base/help/octave/stdin,
+	  language/base/help/octave/stdnormal_cdf,
+	  language/base/help/octave/stdnormal_inv,
+	  language/base/help/octave/stdnormal_pdf,
+	  language/base/help/octave/stdnormal_rnd,
+	  language/base/help/octave/stdout, language/base/help/octave/step,
+	  language/base/help/octave/stft,
+	  language/base/help/octave/str2double,
+	  language/base/help/octave/str2func,
+	  language/base/help/octave/str2mat,
+	  language/base/help/octave/str2num,
+	  language/base/help/octave/strappend,
+	  language/base/help/octave/strcat,
+	  language/base/help/octave/strcmp,
+	  language/base/help/octave/strcmpi,
+	  language/base/help/octave/streamoff,
+	  language/base/help/octave/strerror,
+	  language/base/help/octave/strfind,
+	  language/base/help/octave/strftime,
+	  language/base/help/octave/string_fill_char,
+	  language/base/help/octave/strjust,
+	  language/base/help/octave/strmatch,
+	  language/base/help/octave/strncmp,
+	  language/base/help/octave/strncmpi,
+	  language/base/help/octave/strptime,
+	  language/base/help/octave/strrep,
+	  language/base/help/octave/strtok,
+	  language/base/help/octave/strtrunc,
+	  language/base/help/octave/struct,
+	  language/base/help/octave/struct2cell,
+	  language/base/help/octave/struct_contains,
+	  language/base/help/octave/struct_elements,
+	  language/base/help/octave/struct_levels_to_print,
+	  language/base/help/octave/strvcat,
+	  language/base/help/octave/studentize,
+	  language/base/help/octave/sub2ind,
+	  language/base/help/octave/subplot,
+	  language/base/help/octave/subsasgn,
+	  language/base/help/octave/subsref,
+	  language/base/help/octave/substr,
+	  language/base/help/octave/substruct,
+	  language/base/help/octave/subwindow,
+	  language/base/help/octave/sum, language/base/help/octave/sumsq,
+	  language/base/help/octave/suppress_verbose_help_message,
+	  language/base/help/octave/svd, language/base/help/octave/swap,
+	  language/base/help/octave/swapcols,
+	  language/base/help/octave/swaprows,
+	  language/base/help/octave/syl,
+	  language/base/help/octave/sylvester_matrix,
+	  language/base/help/octave/symamd,
+	  language/base/help/octave/symbfact,
+	  language/base/help/octave/symlink,
+	  language/base/help/octave/synthesis,
+	  language/base/help/octave/sys2fir,
+	  language/base/help/octave/sys2ss,
+	  language/base/help/octave/sys2tf,
+	  language/base/help/octave/sys2zp,
+	  language/base/help/octave/sysadd,
+	  language/base/help/octave/sysappend,
+	  language/base/help/octave/syschnames,
+	  language/base/help/octave/syschtsam,
+	  language/base/help/octave/sysconnect,
+	  language/base/help/octave/syscont,
+	  language/base/help/octave/sysdimensions,
+	  language/base/help/octave/sysdisc,
+	  language/base/help/octave/sysdup,
+	  language/base/help/octave/sysgetsignals,
+	  language/base/help/octave/sysgettsam,
+	  language/base/help/octave/sysgettype,
+	  language/base/help/octave/sysgroup,
+	  language/base/help/octave/sysidx,
+	  language/base/help/octave/sysmin,
+	  language/base/help/octave/sysmult,
+	  language/base/help/octave/sysout,
+	  language/base/help/octave/sysprune,
+	  language/base/help/octave/sysreorder,
+	  language/base/help/octave/sysrepdemo,
+	  language/base/help/octave/sysscale,
+	  language/base/help/octave/syssetsignals,
+	  language/base/help/octave/syssub,
+	  language/base/help/octave/system,
+	  language/base/help/octave/sysupdate,
+	  language/base/help/octave/t_cdf, language/base/help/octave/t_inv,
+	  language/base/help/octave/t_pdf, language/base/help/octave/t_rnd,
+	  language/base/help/octave/t_test,
+	  language/base/help/octave/t_test_2,
+	  language/base/help/octave/t_test_regression,
+	  language/base/help/octave/table, language/base/help/octave/tan,
+	  language/base/help/octave/tand, language/base/help/octave/tanh,
+	  language/base/help/octave/tar, language/base/help/octave/tcdf,
+	  language/base/help/octave/tempdir,
+	  language/base/help/octave/tempname,
+	  language/base/help/octave/terminal_size,
+	  language/base/help/octave/test,
+	  language/base/help/octave/texas_lotto,
+	  language/base/help/octave/tf, language/base/help/octave/tf2ss,
+	  language/base/help/octave/tf2sys,
+	  language/base/help/octave/tf2zp, language/base/help/octave/tfout,
+	  language/base/help/octave/tic,
+	  language/base/help/octave/tilde_expand,
+	  language/base/help/octave/time, language/base/help/octave/tinv,
+	  language/base/help/octave/title,
+	  language/base/help/octave/tmpfile,
+	  language/base/help/octave/tmpnam,
+	  language/base/help/octave/toascii, language/base/help/octave/toc,
+	  language/base/help/octave/toeplitz,
+	  language/base/help/octave/tolower,
+	  language/base/help/octave/top_title,
+	  language/base/help/octave/toupper,
+	  language/base/help/octave/tpdf, language/base/help/octave/trace,
+	  language/base/help/octave/trapz,
+	  language/base/help/octave/treeplot,
+	  language/base/help/octave/triangle_lw,
+	  language/base/help/octave/triangle_sw,
+	  language/base/help/octave/tril, language/base/help/octave/triu,
+	  language/base/help/octave/trnd, language/base/help/octave/true,
+	  language/base/help/octave/type,
+	  language/base/help/octave/typeinfo,
+	  language/base/help/octave/tzero,
+	  language/base/help/octave/tzero2,
+	  language/base/help/octave/u_test,
+	  language/base/help/octave/ugain,
+	  language/base/help/octave/uint16,
+	  language/base/help/octave/uint32,
+	  language/base/help/octave/uint64,
+	  language/base/help/octave/uint8, language/base/help/octave/umask,
+	  language/base/help/octave/uname,
+	  language/base/help/octave/undo_string_escapes,
+	  language/base/help/octave/unidrnd,
+	  language/base/help/octave/unifcdf,
+	  language/base/help/octave/unifinv,
+	  language/base/help/octave/uniform_cdf,
+	  language/base/help/octave/uniform_inv,
+	  language/base/help/octave/uniform_pdf,
+	  language/base/help/octave/uniform_rnd,
+	  language/base/help/octave/unifpdf,
+	  language/base/help/octave/unifrnd,
+	  language/base/help/octave/union,
+	  language/base/help/octave/unique, language/base/help/octave/unix,
+	  language/base/help/octave/unlink,
+	  language/base/help/octave/unmark_command,
+	  language/base/help/octave/unmark_rawcommand,
+	  language/base/help/octave/unmkpp,
+	  language/base/help/octave/unpack,
+	  language/base/help/octave/unpacksys,
+	  language/base/help/octave/untar,
+	  language/base/help/octave/unwrap,
+	  language/base/help/octave/unzip, language/base/help/octave/upper,
+	  language/base/help/octave/urlread,
+	  language/base/help/octave/urlwrite,
+	  language/base/help/octave/usage,
+	  language/base/help/octave/usleep,
+	  language/base/help/octave/va_arg,
+	  language/base/help/octave/va_start,
+	  language/base/help/octave/values,
+	  language/base/help/octave/vander, language/base/help/octave/var,
+	  language/base/help/octave/var_test,
+	  language/base/help/octave/variables_can_hide_functions,
+	  language/base/help/octave/vec, language/base/help/octave/vech,
+	  language/base/help/octave/vectorize,
+	  language/base/help/octave/ver, language/base/help/octave/version,
+	  language/base/help/octave/vertcat, language/base/help/octave/vol,
+	  language/base/help/octave/vr_val,
+	  language/base/help/octave/waitpid,
+	  language/base/help/octave/warn_assign_as_truth_value,
+	  language/base/help/octave/warn_associativity_change,
+	  language/base/help/octave/warn_divide_by_zero,
+	  language/base/help/octave/warn_empty_list_elements,
+	  language/base/help/octave/warn_fortran_indexing,
+	  language/base/help/octave/warn_function_name_clash,
+	  language/base/help/octave/warn_future_time_stamp,
+	  language/base/help/octave/warn_imag_to_real,
+	  language/base/help/octave/warn_matlab_incompatible,
+	  language/base/help/octave/warn_missing_semicolon,
+	  language/base/help/octave/warn_neg_dim_as_zero,
+	  language/base/help/octave/warn_num_to_str,
+	  language/base/help/octave/warn_precedence_change,
+	  language/base/help/octave/warn_reload_forces_clear,
+	  language/base/help/octave/warn_resize_on_range_error,
+	  language/base/help/octave/warn_separator_insert,
+	  language/base/help/octave/warn_single_quote_string,
+	  language/base/help/octave/warn_str_to_num,
+	  language/base/help/octave/warn_string_concat,
+	  language/base/help/octave/warn_undefined_return_values,
+	  language/base/help/octave/warn_variable_switch_label,
+	  language/base/help/octave/warning,
+	  language/base/help/octave/warning_ids,
+	  language/base/help/octave/warranty,
+	  language/base/help/octave/wavread,
+	  language/base/help/octave/wavwrite,
+	  language/base/help/octave/wblcdf,
+	  language/base/help/octave/wblinv,
+	  language/base/help/octave/wblpdf,
+	  language/base/help/octave/wblrnd,
+	  language/base/help/octave/weekday,
+	  language/base/help/octave/weibcdf,
+	  language/base/help/octave/weibinv,
+	  language/base/help/octave/weibpdf,
+	  language/base/help/octave/weibrnd,
+	  language/base/help/octave/weibull_cdf,
+	  language/base/help/octave/weibull_inv,
+	  language/base/help/octave/weibull_pdf,
+	  language/base/help/octave/weibull_rnd,
+	  language/base/help/octave/welch_test,
+	  language/base/help/octave/wgt1o, language/base/help/octave/which,
+	  language/base/help/octave/who, language/base/help/octave/whos,
+	  language/base/help/octave/whos_line_format,
+	  language/base/help/octave/wiener_rnd,
+	  language/base/help/octave/wienrnd,
+	  language/base/help/octave/wilcoxon_test,
+	  language/base/help/octave/wilkinson,
+	  language/base/help/octave/xlabel, language/base/help/octave/xor,
+	  language/base/help/octave/yes_or_no,
+	  language/base/help/octave/ylabel,
+	  language/base/help/octave/yulewalker,
+	  language/base/help/octave/z_test,
+	  language/base/help/octave/z_test_2,
+	  language/base/help/octave/zeros,
+	  language/base/help/octave/zgfmul,
+	  language/base/help/octave/zgfslv,
+	  language/base/help/octave/zginit,
+	  language/base/help/octave/zgreduce,
+	  language/base/help/octave/zgrownorm,
+	  language/base/help/octave/zgscal,
+	  language/base/help/octave/zgsgiv,
+	  language/base/help/octave/zgshsr, language/base/help/octave/zip,
+	  language/base/help/octave/zlabel, language/base/help/octave/zp,
+	  language/base/help/octave/zp2ss,
+	  language/base/help/octave/zp2sys,
+	  language/base/help/octave/zp2tf, language/base/help/octave/zpout,
+	  language/base/src/help.icc, language/base/src/md5.c,
+	  language/base/src/md5.h, language/base/template/COPYING,
+	  language/base/template/DESCRIPTION,
+	  language/base/template/Makefile,
+	  language/base/template/help/octave/lookfor.en,
+	  language/base/template/src/Makefile,
+	  language/base/template/src/help.cc, admin/diacritical,
+	  admin/octlang, admin/split_docstrings: Import of octave-lang into
+	  octave-forge
+
+2007-01-29 20:51  adb014
+
+	* main/statistics/inst/regress.m: Relax the error tolerance of test
+	  to allow for random failures of test code
+
+2007-01-29 20:50  adb014
+
+	* main/miscellaneous/inst/units.m: use double quotes so that
+	  escaped characters are correctly treated
+
+2007-01-29 20:06  treichl
+
+	* main/odepkg/inst/: ode23.m, ode5d.m: Fixed bug so that 'make
+	  check' of packages succeeds.
+
+2007-01-28 19:04  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_dopri5.c, odepkgext.c,
+	  odepkgmex.c, odepkgmex.h: Checked in some improvements for
+	  solver.
+
+2007-01-27 17:37  adb014
+
+	* Makeconf.base: Small typo in Makeconf.base
+
+2007-01-27 17:32  adb014
+
+	* Makeconf.base, configure.base, pkg.mk, extra/Makefile,
+	  extra/MacOSX/Makefile, extra/soctcl/Makefile,
+	  extra/symband/Makefile, extra/tk_octave/Makefile, main/Makefile,
+	  main/comm/Makefile, main/fixed/Makefile, main/gsl/Makefile,
+	  main/image/Makefile, main/optim/Makefile, main/vrml/Makefile,
+	  nonfree/Makefile: Remove pkg.mk and incorporate in Makeconf.base.
+	  Update Makefiles accordingly. Use cvs2cl to create ChangeLog files
+	  for all of the packages if a ChangeLog file doesn't exist. Package
+	  build machine must therefore have access to the CVS
+
+2007-01-27 17:26  adb014
+
+	* main/INDEX: remove fftw_wisdom_program from INDEX
+
+2007-01-27 17:25  adb014
+
+	* admin/make_index: Doc fix and fix for notes index items
+
+2007-01-27 17:23  adb014
+
+	* ChangeLog: [no log message]
+
 2007-01-26 14:05  goffioul
 
 	* main/linear-algebra/src/Makefile: Include outer.oct and
@@ -179,6 +3303,11 @@
 	* main/odepkg/src/: odepkgmex.c, odepkgmex.h: Added the "mxArray
 	  *mxTransposeMatrix (mxArray *)" function.
 
+2007-01-21 19:07  treichl
+
+	* main/odepkg/doc/ChangeLog: Removed the local ChangeLog file in
+	  main/odepkg/doc.
+
 2007-01-21 19:04  treichl
 
 	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m: Added
@@ -198,6 +3327,11 @@
 
 	* main/signal/inst/downsample.m: Rewrite more compactly and with
 	  phase argument; add tests.
+
+2007-01-20 18:55  treichl
+
+	* main/odepkg/doc/ChangeLog: Update of the local diary and
+	  ChangeLog file.
 
 2007-01-20 18:49  treichl
 
@@ -232,25 +3366,15 @@
 
 	* main/odepkg/inst/ode78.m: Changed some indents.
 
-2007-01-17 22:15  treichl
+2007-01-17 22:14  treichl
 
-	* main/odepkg/src/: odepkg_mexsolver_dopri5.c, odepkgext.c,
-	  odepkgext.h: Read the local ChangeLog file in main/odepkg/doc.
+	* main/odepkg/: doc/ChangeLog, src/odepkg_mexsolver_dopri5.c,
+	  src/odepkgext.c, src/odepkgext.h: Read the local ChangeLog file
+	  in main/odepkg/doc.
 
 2007-01-17 19:40  hauberg
 
 	* main/image/DESCRIPTION: Add a slightly longer package description
-
-2007-01-17 19:20  hauberg
-
-	* www/: doc.png, doc_transparent.png, download.png,
-	  download_transparent.png, hide.png, hide_transparent.png,
-	  show.png, show_transparent.png: Fix png transparency issues on IE
-
-2007-01-17 19:13  hauberg
-
-	* www/octave-forge.css: Make the left menu in the function
-	  reference slighter less wide
 
 2007-01-17 11:14  goffioul
 
@@ -265,18 +3389,6 @@
 
 	* main/: comm/src/ov-galois.cc, strings/src/pcregexp.cc: Reverse
 	  previous changes due to my misunderstanding of OCTAVE_LOCAL_BUFFER
-
-2007-01-17 00:13  hauberg
-
-	* www/FAQ.in: Add missing words
-
-2007-01-16 23:17  hauberg
-
-	* www/octave-forge.css: Fix the right margin for IE
-
-2007-01-16 16:01  hauberg
-
-	* www/macros.m4: Remember tab selection in the function reference
 
 2007-01-16 11:05  hauberg
 
@@ -380,31 +3492,9 @@
 	* main/odepkg/src/: odepkg_mexsolver_dopri5.c, odepkgext.c,
 	  odepkgext.h, odepkgmex.c, odepkgmex.h: Expanded functionality.
 
-2007-01-14 00:42  hauberg
-
-	* www/macros.m4: Stupid bug where I misplaced a script block
-
-2007-01-14 00:25  hauberg
-
-	* www/macros.m4: html validation fix
-
-2007-01-13 23:02  hauberg
-
-	* www/: macros.m4, octave-forge.css: Provide a better solution for
-	  non-IE users
-
-2007-01-13 21:14  hauberg
-
-	* www/macros.m4: Remove javascript from doxygen pages
-
-2007-01-13 20:53  hauberg
-
-	* www/macros.m4: validation fix
-
 2007-01-13 20:45  hauberg
 
-	* admin/make_index, main/image/INDEX, www/octave-forge.css: Minor
-	  layout changes
+	* admin/make_index, main/image/INDEX: Minor layout changes
 
 2007-01-13 18:03  hauberg
 
@@ -430,34 +3520,15 @@
 	  inst/imresize.m: New functions and an update of imresize to use
 	  imremap
 
-2007-01-13 09:54  hauberg
-
-	* www/octave-forge.css: Increase right margin
-
 2007-01-13 01:35  hauberg
 
-	* admin/make_index, www/macros.m4: Fixes for IE
-
-2007-01-13 01:32  hauberg
-
-	* www/: Makefile, get-base-address, macros.m4, oct.png,
-	  octave-forge.css, octtransparent.png: Fixes for IE
+	* admin/make_index: Fixes for IE
 
 2007-01-12 22:44  treichl
 
 	* main/odepkg/src/: odepkg_mexsolver_dop853.c,
 	  odepkg_mexsolver_dopri5.c, odepkgext.c, odepkgext.h: Checked in
 	  some updates.
-
-2007-01-12 21:42  adb014
-
-	* www/: octave-forge.css, macros.m4: IE6 javascript doesn't like
-	  semi-colons
-
-2007-01-12 21:41  adb014
-
-	* www/: NEWS.in, index.in: Remove news item on new sind, cosd, etc
-	  functions as these are migrated to octave
 
 2007-01-11 14:38  adb014
 
@@ -478,10 +3549,6 @@
 
 	* main/general/inst/acosd.m: Initial commit into CVS.
 
-2007-01-09 21:48  adb014
-
-	* www/octave-forge.css: fix validation warning in css
-
 2007-01-09 21:15  treichl
 
 	* main/odepkg/src/odepkgext.o: Object file has been successfully be
@@ -496,11 +3563,10 @@
 
 	* main/image/inst/imread.m: [a{:}]= and not a{:}=
 
-2007-01-09 21:08  treichl
+2007-01-09 21:09  treichl
 
-	* main/odepkg/src/: odepkgext.c, odepkgext.h,
-	  odepkg_mexsolver_dop853.c: Read the local ChangeLog file in
-	  main/odepkg/doc.
+	* main/odepkg/src/: odepkgext.h, odepkg_mexsolver_dop853.c: Read
+	  the local ChangeLog file in main/odepkg/doc.
 
 2007-01-09 21:08  adb014
 
@@ -510,32 +3576,19 @@
 
 	* admin/template.ndev: typos
 
+2007-01-09 21:06  treichl
+
+	* main/odepkg/: doc/ChangeLog, src/odepkgext.c: Read the local
+	  ChangeLog file in main/odepkg/doc.
+
 2007-01-09 19:08  schloegl
 
 	* extra/: NaN/inst/detrend.m, tsa/inst/detrend.m: enable LINEAR and
 	  CONSTANT as 2nd argument
 
-2007-01-09 14:22  hauberg
-
-	* www/octave-forge.css: Minor layout issue with the tabs in the
-	  function reference
-
 2007-01-08 22:19  adb014
 
 	* ChangeLog: [no log message]
-
-2007-01-08 21:57  adb014
-
-	* www/: Makefile, get-base-address, octave-forge.css: fix
-	  validation errors in html
-
-2007-01-08 21:50  hauberg
-
-	* www/macros.m4: Current page isn't clickable in the top menu
-
-2007-01-08 21:30  adb014
-
-	* www/: NEWS.in, index.in: Update news items
 
 2007-01-08 21:29  adb014
 
@@ -608,10 +3661,6 @@
 	  inst/alternatives/ylabel.m, src/Makefile,
 	  src/grace_octave_path.m.in: Port graceplot to package manager
 
-2007-01-08 21:05  adb014
-
-	* www/.cvsignore: Also ignore graceplot
-
 2007-01-08 21:04  adb014
 
 	* extra/xraylib/INDEX: Add index file to include autoloaded
@@ -625,32 +3674,9 @@
 
 	* main/general/inst/tand.m: Initial commit into CVS.
 
-2007-01-07 21:38  hauberg
-
-	* www/: htmlheader.htm, macros.m4: introduce __DOXY_HEADER__ for
-	  the doxygen documentation
-
-2007-01-07 21:21  adb014
-
-	* www/.cvsignore: ignore zenity and doxygen as well
-
-2007-01-07 21:10  hauberg
-
-	* www/: doxygen.css, octave-forge.css: Remove warnings from css
-	  files (by david bateman)
-
-2007-01-07 16:19  hauberg
-
-	* www/build-www.py: Handle continuation lines in DESCRIPTION
-	  properly
-
 2007-01-07 15:55  hauberg
 
 	* main/INDEX: copyfile is now in octave
-
-2007-01-07 15:50  hauberg
-
-	* www/doxygen.css: Removed hover effect that affacted the logo
 
 2007-01-07 15:45  hauberg
 
@@ -658,27 +3684,10 @@
 	  miscellaneous/DESCRIPTION, special-matrix/DESCRIPTION,
 	  time/DESCRIPTION: Removed dots (.) from titles in DESCRIPTION
 
-2007-01-07 15:18  hauberg
-
-	* www/: Makefile, htmlfooter.htm, htmlfooter.html, htmlheader.htm,
-	  htmlheader.html: Renamed html[header|footer].html to .htm to
-	  avoid problems with make clean
-
-2007-01-07 15:15  hauberg
-
-	* www/docs.in: Added a reference to the doxygen documentation on
-	  the developer documentation page
-
 2007-01-07 13:46  adb014
 
-	* Makefile, www/Makefile: Add toplevel makefile directive for
-	  doxygen and add to all directive in the www directory
-
-2007-01-07 12:59  hauberg
-
-	* www/: Doxyfile, Makefile, doxygen.css, doxygen_mainpage.cc,
-	  htmlfooter.html, htmlheader.html, macros.m4, octave-forge.css:
-	  Added support for building doxygen documentation
+	* Makefile: Add toplevel makefile directive for doxygen and add to
+	  all directive in the www directory
 
 2007-01-07 12:07  gnumuthu
 
@@ -692,18 +3701,9 @@
 
 2007-01-06 17:04  treichl
 
-	* main/odepkg/: DESCRIPTION, src/dopri.tar.gz,
+	* main/odepkg/: DESCRIPTION, doc/ChangeLog, src/dopri.tar.gz,
 	  src/odepkg_mexsolver_dop853.c: Read the local ChangeLog file in
 	  main/odepkg/doc.
-
-2007-01-06 16:23  hauberg
-
-	* www/octave-forge.css: Removed style for h1 as it wasn't used
-
-2007-01-06 14:15  adb014
-
-	* www/.cvsignore: Also ignore the xraylib and optiminterp
-	  directories
 
 2007-01-05 00:50  hauberg
 
@@ -740,10 +3740,6 @@
 
 	* admin/make_index: funref files now use DOC_HEADER
 
-2007-01-05 00:34  hauberg
-
-	* www/octave-forge.css: Minor changes
-
 2007-01-04 22:58  hauberg
 
 	* main/image/src/: __magick_read__.cc, bwfill.cc, bwlabel.cc,
@@ -758,19 +3754,9 @@
 	  flag.m, fspecial.m, imginfo.m, imnoise.m, imread.m, imwrite.m:
 	  Documentation is now in Texinfo (looks better on the website)
 
-2007-01-02 21:22  hauberg
-
-	* www/octave-forge.css: css validation fixes
-
-2007-01-02 20:52  hauberg
-
-	* www/macros.m4: xhtml validation fixes
-
 2007-01-02 16:43  hauberg
 
-	* admin/make_index, www/get-base-address, www/index.in,
-	  www/macros.m4, www/oct.png, www/octave-forge.css: New layout for
-	  the web page
+	* admin/make_index: New layout for the web page
 
 2007-01-02 10:48  sis-sou
 
@@ -795,6 +3781,10 @@
 2007-01-02 10:21  sis-sou
 
 	* main/general/inst/sind.m: Small modification.
+
+2006-12-29 17:57  treichl
+
+	* main/odepkg/doc/ChangeLog: Updated.
 
 2006-12-29 01:34  hauberg
 
@@ -1040,8 +4030,7 @@
 
 2006-12-06 00:31  adb014
 
-	* main/signal/INDEX, www/NEWS.in, www/index.in: Index new idst
-	  function
+	* main/signal/INDEX: Index new idst function
 
 2006-12-05 23:09  sis-sou
 
@@ -1054,10 +4043,6 @@
 2006-12-05 21:45  pkienzle
 
 	* main/signal/inst/: dct.m, dst.m: Spelling corrections
-
-2006-12-05 21:26  adb014
-
-	* www/: NEWS.in, index.in: update news for dct function
 
 2006-12-05 21:23  adb014
 
@@ -1113,11 +4098,6 @@
 
 	* extra/graceplot/src/grace_octave_path.m.in: Copyright fix so
 	  get_authors works
-
-2006-12-03 23:10  adb014
-
-	* www/: NEWS.in, index.in: Update NEWS.in and index.in for changes
-	  since October
 
 2006-12-03 22:54  adb014
 
@@ -1330,9 +4310,10 @@
 
 2006-10-22 19:49  treichl
 
-	* main/odepkg/: DESCRIPTION, INDEX, inst/ode23.m, inst/ode45.m,
-	  inst/ode54.m, inst/ode78.m, inst/odeget.m, inst/odephas2.m,
-	  inst/odephas3.m, inst/odepkg.m, inst/odepkg_equations_lorenz.m,
+	* main/odepkg/: DESCRIPTION, INDEX, doc/ChangeLog, inst/ode23.m,
+	  inst/ode45.m, inst/ode54.m, inst/ode78.m, inst/odeget.m,
+	  inst/odephas2.m, inst/odephas3.m, inst/odepkg.m,
+	  inst/odepkg_equations_lorenz.m,
 	  inst/odepkg_equations_pendulous.m,
 	  inst/odepkg_equations_roessler.m,
 	  inst/odepkg_equations_vanderpol.m, inst/odepkg_event_handle.m,
@@ -1344,15 +4325,6 @@
 	* main/optim/inst/leasqr.m: Improved documentation.  Thanks to
 	  Francesco Potorti for the patch.
 
-2006-10-22 12:58  hauberg
-
-	* www/octave-forge.css: The title now stays on top
-
-2006-10-20 22:23  adb014
-
-	* www/build-www.py: Add alt field to package buttons. If a bundle
-	  is found, add a section on a package bundle to the leading text
-
 2006-10-20 22:22  adb014
 
 	* packages/Makefile: Modify mkbundle target to create a single
@@ -1362,11 +4334,6 @@
 
 	* Makefile: packages target should call the mkbundle target in the
 	  packages subdirectory
-
-2006-10-20 19:58  adb014
-
-	* www/: build-www.py, docs.in: fix up copying of multiple
-	  sub-directories in local documentation for a package
 
 2006-10-20 19:56  adb014
 
@@ -1378,10 +4345,6 @@
 	* main/vrml/doc/Makefile, main/optim/doc/Makefile,
 	  extra/MacOSX/doc/Makefile, extra/symband/doc/Makefile: COpy
 	  latex2html nav buttons
-
-2006-10-20 00:01  hauberg
-
-	* www/build-www.py: The triangle in packages.html is now clickable
 
 2006-10-19 21:36  adb014
 
@@ -1401,29 +4364,10 @@
 
 	* main/odepkg/inst/: ode54.m, ode78.m: deftypefn and not deftypefnx
 
-2006-10-19 00:58  hauberg
-
-	* www/: build-www.py, hide.png, show.png: Added show/hide triangles
-	  to packages.html
-
 2006-10-18 22:19  adb014
 
 	* admin/make_index: Only index files in the function reference that
 	  aren't ignored
-
-2006-10-18 22:18  adb014
-
-	* www/.cvsignore: ignore a couple more files
-
-2006-10-18 20:58  adb014
-
-	* www/docs.in: Nightly tarballs of sourceforge deprecated. Remove
-	  link from webpages
-
-2006-10-18 20:53  adb014
-
-	* www/translation.in: Different title name for translation.html
-	  header so that m4 parsing gets the navbar right
 
 2006-10-18 20:51  adb014
 
@@ -1433,20 +4377,14 @@
 
 2006-10-18 00:54  adb014
 
-	* ChangeLog, admin/template.ndev, www/archive.in,
-	  www/get-base-address, www/index.in, www/macros.m4,
-	  www/octave-forge.css: Include special casing of active nav-link,
-	  like for octave page (Soren want to change the colour scheme?)
+	* ChangeLog, admin/template.ndev: Include special casing of active
+	  nav-link, like for octave page (Soren want to change the colour
+	  scheme?)
 
 2006-10-18 00:18  whyly
 
 	* main/linear-algebra/: INDEX, inst/condeig.m: Initial commit into
 	  CVS.
-
-2006-10-17 21:12  adb014
-
-	* www/: macros.m4, octave-forge.css: Compliant to strict XHTML 1.0,
-	  all except the code produced by makeinfo
 
 2006-10-17 21:09  adb014
 
@@ -1475,18 +4413,10 @@
 
 	* main/specfun/inst/Ci.m: Initial commit into CVS.
 
-2006-10-17 10:07  mcreel
-
-	* www/: NEWS.in, index.in: minor correction
-
 2006-10-17 04:02  pkienzle
 
 	* main/signal/inst/bilinear.m: Fix docs so that the table will
 	  format nicely on the web.
-
-2006-10-16 23:08  adb014
-
-	* www/translation.in: Further validation errors
 
 2006-10-16 22:50  adb014
 
@@ -1505,26 +4435,9 @@
 	* main/: linear-algebra/INDEX, splines/INDEX: Add INDEX with split
 	  in to categories of functions in this package
 
-2006-10-16 21:15  adb014
-
-	* www/favicon.ico: Add favicon.ico from exist site
-
 2006-10-16 21:14  adb014
 
 	* nonfree/splines/INDEX: Update category of INDEX for consistency
-
-2006-10-16 21:13  adb014
-
-	* www/index.in: Add News to front page
-
-2006-10-16 21:13  adb014
-
-	* www/developers.in: developers.in is a derived file. It shouldn't
-	  be in the CVS
-
-2006-10-16 21:12  adb014
-
-	* www/: NEWS.in, octave-forge.css: fix validation errors
 
 2006-10-16 21:10  adb014
 
@@ -1548,16 +4461,12 @@
 
 2006-10-16 16:48  adb014
 
-	* cvs-tree, cvsdir.sh, admin/cvsdir.sh, www/package.css: Remove a
-	  few more unused files
+	* cvs-tree, cvsdir.sh, admin/cvsdir.sh: Remove a few more unused
+	  files
 
 2006-10-16 11:42  sis-sou
 
 	* main/linear-algebra/inst/bicg.m: Error fixed.
-
-2006-10-16 09:51  hauberg
-
-	* www/: developers.in, greensombrero.png: Added greensombrero.png
 
 2006-10-15 22:49  adb014
 
@@ -1570,14 +4479,6 @@
 	  admin/Windows/README-1st: Remove a few more of the old files that
 	  aren't used
 
-2006-10-15 22:45  adb014
-
-	* www/: NEWS.in, macros.m4: Add News archive page
-
-2006-10-15 22:37  adb014
-
-	* www/octave-forge.css: Bold font of <dt> tag in css
-
 2006-10-15 21:50  whyly
 
 	* main/statistics/inst/: hmmestimate.m, hmmgenerate.m,
@@ -1587,17 +4488,9 @@
 
 	* admin/template.ndev: Break long cvs command into two lines
 
-2006-10-15 10:42  hauberg
-
-	* www/index.in: Added a green sombrero to go with the green look
-
 2006-10-15 10:04  hauberg
 
 	* main/image/inst/bwmorph.m: Fixed texinfo in bwmorph
-
-2006-10-15 10:00  hauberg
-
-	* www/octave-forge.css: Swapped the two green colors
 
 2006-10-14 19:39  hauberg
 
@@ -1615,23 +4508,13 @@
 	  main/optim/COPYING, main/parallel/COPYING, main/plot/COPYING,
 	  main/signal/COPYING, main/specfun/COPYING, main/splines/COPYING,
 	  main/struct/COPYING, main/symbolic/COPYING, main/time/COPYING,
-	  main/vrml/COPYING, nonfree/gpc/COPYING, www/build-www.py: Removed
-	  unvalid characters from all GPL licenses in the packages
+	  main/vrml/COPYING, nonfree/gpc/COPYING: Removed unvalid
+	  characters from all GPL licenses in the packages
 
-2006-10-14 18:43  hauberg
+2006-10-14 18:44  hauberg
 
-	* www/FAQ.in, www/build-www.py, www/developers.in,
-	  www/translation.in, admin/get_contents, admin/make_index,
-	  admin/template.ndev: HTML is more standard compliant
-
-2006-10-14 17:09  hauberg
-
-	* www/: build-www.py, macros.m4, octave-forge.css: Package listing
-	  now features javascript
-
-2006-10-14 14:45  hauberg
-
-	* www/octave-forge.css: Changed the website to a green one.
+	* admin/: get_contents, make_index, template.ndev: HTML is more
+	  standard compliant
 
 2006-10-14 07:18  adb014
 
@@ -1686,16 +4569,6 @@
 
 	* main/odepkg/INDEX: Add new functions to INDEX
 
-2006-10-12 22:27  adb014
-
-	* www/: build-www.py, get-base-address: Use alphabetic contents of
-	  package rather than categories page that might include functions
-	  from octaev itself
-
-2006-10-12 22:26  adb014
-
-	* www/developers.in: Grammar and typos
-
 2006-10-12 22:24  adb014
 
 	* admin/make_index: Create a seperate page list only the contents
@@ -1704,10 +4577,6 @@
 2006-10-12 22:23  adb014
 
 	* main/INDEX: Update index for new functions in octave
-
-2006-10-11 21:28  adb014
-
-	* www/octave-forge.css: Remove jitter in sidebar on mouse click
 
 2006-10-11 21:27  adb014
 
@@ -1750,29 +4619,10 @@
 
 	* main/specfun/inst/heaviside.m: Help added.
 
-2006-10-10 02:21  adb014
-
-	* www/Makefile: M4_OPTIONS in build of developers.html
-
-2006-10-10 01:23  adb014
-
-	* www/.cvsignore: ignore www/polynomial subdirectory as well
-
-2006-10-10 01:20  adb014
-
-	* www/Makefile: Also clean up some files/dirs that might be left by
-	  octave pkg function
-
-2006-10-10 01:15  adb014
-
-	* www/macros.m4: Can't have empty m4 macro it appears, so remove
-	  __PACKAGE_TRAILER__
-
 2006-10-10 01:14  adb014
 
-	* packages/Makefile, www/build-www.py: No longer have global
-	  OCTAVE_PACKAGE_PREFIX. Use the 'prefix' directive to pkg to replae
-	  it
+	* packages/Makefile: No longer have global OCTAVE_PACKAGE_PREFIX.
+	  Use the 'prefix' directive to pkg to replae it
 
 2006-10-10 01:13  adb014
 
@@ -1792,12 +4642,6 @@
 
 	* main/time/inst/datesplit.m: Reorganize the test codem disabling
 	  some that can't work
-
-2006-10-09 22:01  adb014
-
-	* www/: build-www.py, macros.m4: Use macro to include '?download'
-	  in octave-forge download site, as it'll make it easier later for the
-	  test site
 
 2006-10-09 21:59  adb014
 
@@ -1871,10 +4715,6 @@
 	* packages/Makefile: Remove infinite loop on build failure. Don't
 	  fail if fntest.log is missing
 
-2006-10-08 22:41  adb014
-
-	* www/Makefile: Don't need --prefix-builtins twice
-
 2006-10-08 22:39  adb014
 
 	* main/signal/inst/sgolay.m: enlarge error margin in a sgolay test
@@ -1946,10 +4786,10 @@
 
 2006-10-07 20:02  treichl
 
-	* main/odepkg/: COPYING, DESCRIPTION, INDEX, inst/ode23.m,
-	  inst/ode45.m, inst/ode54.m, inst/ode78.m, inst/odephas2.m,
-	  inst/odephas3.m, inst/odepkg.m, inst/odeplot.m, inst/odeprint.m:
-	  Updated.
+	* main/odepkg/: COPYING, DESCRIPTION, INDEX, doc/ChangeLog,
+	  inst/ode23.m, inst/ode45.m, inst/ode54.m, inst/ode78.m,
+	  inst/odephas2.m, inst/odephas3.m, inst/odepkg.m, inst/odeplot.m,
+	  inst/odeprint.m: Updated.
 
 2006-10-07 19:59  adb014
 
@@ -1998,10 +4838,6 @@
 	  main/optim/INDEX, main/signal/INDEX, extra/Windows/INDEX: more
 	  INDEX fixes
 
-2006-10-06 20:56  adb014
-
-	* www/build-www.py: sort packages alphabetically
-
 2006-10-06 16:33  abarth93
 
 	* main/octcdf/: DESCRIPTION, PKG_ADD, inst/netcdf_setup.m,
@@ -2028,10 +4864,6 @@
 	  main/strings/src/pcregexp.cc, main/vrml/INDEX: Some INDEX fixes.
 	  Many more needed
 
-2006-10-06 10:25  adb014
-
-	* www/: index.in, sombrero.jpg: keep sombrero local
-
 2006-10-06 10:16  schloegl
 
 	* extra/tsa/inst/mvfreqz.m: fix scalar N argument
@@ -2046,14 +4878,9 @@
 	* extra/NaN/inst/zscore.m: returns scaling coefficients iof
 	  pre-whitening; two-pass algorithm used to improve accuracy
 
-2006-10-05 18:25  hauberg
-
-	* www/index.in: Added test image to the front page
-
 2006-10-05 17:01  hauberg
 
-	* admin/get_contents, admin/make_index, www/Makefile:
-	  www/developers.html now builds
+	* admin/: get_contents, make_index: www/developers.html now builds
 
 2006-10-05 17:01  adb014
 
@@ -2078,11 +4905,6 @@
 
 	* main/optim/doc/Makefile: Documentation seems to auto build
 	  correctly
-
-2006-10-05 13:20  hauberg
-
-	* www/: Makefile, macros.m4, octave-forge.css: Added clickable See
-	  also links in the function reference
 
 2006-10-05 12:44  adb014
 
@@ -2115,7 +4937,7 @@
 
 2006-10-05 11:33  adb014
 
-	* admin/get_contents, www/Makefile: Redirect get_contents output to
+	* admin/get_contents: Redirect get_contents output to
 	  www/developers.in
 
 2006-10-05 11:32  adb014
@@ -2150,9 +4972,9 @@
 
 	* admin/make_index, main/INDEX, main/statistics/INDEX,
 	  main/strings/INDEX, main/symbolic/DESCRIPTION,
-	  main/symbolic/src/symbols.cc, nonfree/gpc/INDEX, www/Makefile:
-	  Start fixing the main INDEX file and making a clearer split with the
-	  octave core functions
+	  main/symbolic/src/symbols.cc, nonfree/gpc/INDEX: Start fixing the
+	  main INDEX file and making a clearer split with the octave core
+	  functions
 
 2006-10-04 19:55  hauberg
 
@@ -2190,13 +5012,8 @@
 	  main/econometrics/INDEX, main/fixed/INDEX, main/gsl/INDEX,
 	  main/ident/INDEX, main/irsa/INDEX,
 	  main/miscellaneous/inst/edit.m, main/octcdf/INDEX,
-	  main/optim/INDEX, main/parallel/INDEX, nonfree/gpc/INDEX,
-	  www/build-www.py: Fixed various INDEX files
-
-2006-10-03 11:52  hauberg
-
-	* www/: Makefile, macros.m4: Updated macros to handle
-	  --prefix_builtins
+	  main/optim/INDEX, main/parallel/INDEX, nonfree/gpc/INDEX: Fixed
+	  various INDEX files
 
 2006-10-03 11:02  mcreel
 
@@ -2242,11 +5059,6 @@
 	* doc/: .cvsignore, README, compatibility.html, index.html,
 	  octave-forge-home.html: remove dead files
 
-2006-10-03 00:05  adb014
-
-	* www/: Makefile, developers.in: remove coda directory in clean.
-	  Comment on installation of html in developers guide
-
 2006-10-02 23:21  adb014
 
 	* main/info-theory/INDEX: INDEX file syntax error
@@ -2282,11 +5094,7 @@
 	  main/splines/DESCRIPTION, main/statistics/DESCRIPTION,
 	  main/strings/DESCRIPTION, main/struct/DESCRIPTION,
 	  main/symbolic/DESCRIPTION, main/time/DESCRIPTION,
-	  main/vrml/DESCRIPTION, www/.cvsignore,
-	  www/MIPS73-isoheaders.tar.gz, www/Makefile, www/build-www.py,
-	  www/docs.in, www/links.in, www/oct2mat.tar.gz,
-	  www/octave_embed.tar.gz, www/soctcl0.1.zip, www/texmacs.pdf,
-	  www/translation.in: Latest mega package manager update
+	  main/vrml/DESCRIPTION: Latest mega package manager update
 
 2006-10-02 21:35  adb014
 
@@ -2372,12 +5180,6 @@
 2006-10-02 07:45  sis-sou
 
 	* main/specfun/inst/Si.m: Errors fixed.
-
-2006-10-01 23:53  adb014
-
-	* www/: build-www.py, macros.m4: Add what will probably be the real
-	  path to download the packages. First attempt at adding local
-	  documentation if it exists
 
 2006-10-01 23:45  whyly
 
@@ -2493,10 +5295,6 @@
 
 	* main/statistics/inst/anovan.m: remove static on bug report
 
-2006-09-23 21:12  hauberg
-
-	* www/macros.m4: Changed SF logo to type 1
-
 2006-09-22 19:02  treichl
 
 	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m, odeget.m,
@@ -2506,29 +5304,20 @@
 	  Further improved functionality. See the local Changelog file in
 	  main/odepkg/doc.
 
-2006-09-22 19:01  hauberg
-
-	* www/: build-www.py: Autogenerated INDEX files in build-www are
-	  now generated in a sandbox
-
 2006-09-22 19:01  treichl
 
 	* main/odepkg/DESCRIPTION: Changed "Depends" field. odepkg does not
 	  work with octave-2.9.7.
-
-2006-09-22 18:13  hauberg
-
-	* www/build-www.py: INDEX files can be autogenerated
 
 2006-09-22 15:07  hauberg
 
 	* admin/make_index: The text on the function reference main page
 	  corresponds to the new drop-down menus
 
-2006-09-22 12:22  hauberg
+2006-09-22 12:23  hauberg
 
-	* www/macros.m4, www/octave-forge.css, admin/make_index,
-	  main/INDEX: Added a new navigation bar for the function reference
+	* admin/make_index, main/INDEX: Added a new navigation bar for the
+	  function reference
 
 2006-09-20 19:39  sis-sou
 
@@ -2554,15 +5343,6 @@
 
 	* main/specfun/inst/Si.m: Error fixed
 
-2006-09-20 01:45  adb014
-
-	* www/macros.m4: typo
-
-2006-09-20 00:16  adb014
-
-	* www/: archive.in, macros.m4, octave-forge.css: slightly different
-	  try at function reference navigation
-
 2006-09-19 18:42  adb014
 
 	* main/signal/inst/pwelch.m: doc update for pwelch
@@ -2578,18 +5358,13 @@
 	  normstat.m, pascal_stat.m, poisstat.m, tstat.m, unidstat.m,
 	  unifstat.m, weibstat.m: Initial commit into CVS.
 
-2006-09-17 00:06  hauberg
-
-	* www/: FAQ.in, archive.in, macros.m4: Minor spelling errors
-
 2006-09-16 21:19  whyly
 
 	* main/statistics/inst/geomean.m: Removed typo.
 
 2006-09-16 13:51  hauberg
 
-	* admin/make_index, www/Makefile, www/build-www.py,
-	  www/developers.in: Just minor changes
+	* admin/make_index: Just minor changes
 
 2006-09-15 22:33  adb014
 
@@ -2601,8 +5376,8 @@
 	  main/miscellaneous/DESCRIPTION, main/octcdf/DESCRIPTION,
 	  main/plot/DESCRIPTION, main/strings/DESCRIPTION,
 	  main/symbolic/DESCRIPTION, main/vrml/DESCRIPTION,
-	  packages/CONTENTS, packages/Makefile, packages/README,
-	  www/developers.in: Further automatic rpm build fixes
+	  packages/CONTENTS, packages/Makefile, packages/README: Further
+	  automatic rpm build fixes
 
 2006-09-14 23:02  adb014
 
@@ -2614,11 +5389,6 @@
 	* Makefile, admin/make_rpm, admin/rpm_template.in, packages/README:
 	  working automatic RPM. Still lacking treatment of external
 	  dependencies
-
-2006-09-14 20:17  hauberg
-
-	* www/: macros.m4, octave-forge.css: Added SF logo to the bottom of
-	  all pages.
 
 2006-09-14 20:13  sis-sou
 
@@ -2648,18 +5418,11 @@
 	* admin/: make_index, template.ndev: Updated the webpage to include
 	  documentation
 
-2006-09-14 00:38  hauberg
-
-	* www/: FAQ.in, Makefile, archive.in, bugs.in, build-www.py,
-	  developers.in, docs.in, index.in, links.in, macros.m4,
-	  octave-forge.css, packages.in: Removed packages.in because it
-	  gets generated
-
 2006-09-13 21:29  adb014
 
 	* Makefile, admin/make_rpm, admin/template.rpm,
-	  packages/.cvsignore, packages/Makefile, www/.cvsignore: First
-	  attempt at automatic SRPM creation
+	  packages/.cvsignore, packages/Makefile: First attempt at
+	  automatic SRPM creation
 
 2006-09-13 21:25  sis-sou
 
@@ -2672,6 +5435,109 @@
 	  odepkg_equations_pendulous.m, odepkg_equations_secondorderlag.m,
 	  odepkg_equations_vanderpol.m, odepkg_structure_check.m,
 	  odeplot.m, odeprint.m, odeset.m: 2006.09.13 First add to CVS.
+
+2006-09-13 13:22  treichl
+
+	* main/odepkg/doc/ChangeLog: 2006.09.13 First add to CVS.2006.09.13
+	  First add to CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to
+	  CVS.2006.09.13 First add to CVS.2006.09.13 First add to CVS.
 
 2006-09-13 13:21  treichl
 
@@ -3503,15 +6369,6 @@
 
 	* main/specfun/inst/: expint_Ei.m, expint_E1.m: Errors fixed
 
-2006-09-12 22:18  adb014
-
-	* www/: Makefile, cleanup.sh, packages.in: add cleanup code in
-	  Makefile and package target
-
-2006-09-12 22:14  adb014
-
-	* www/.cvsignore: Add cvsignore
-
 2006-09-12 18:15  hauberg
 
 	* main/linear-algebra/src/gsvd.cc: Fixed the gsvd help text so it
@@ -3526,24 +6383,10 @@
 
 	* main/fixed/src/fixed-var.cc: Typo in fixed_point_warn_overflow
 
-2006-09-12 15:58  hauberg
-
-	* www/Makefile: Updated Makefile so you only need to run it once
-
 2006-09-12 00:25  hauberg
 
 	* admin/template.ndev: Replaced header and footer of template.ndev
 	  with m4 macros
-
-2006-09-12 00:23  hauberg
-
-	* www/: build-www.py, packages.in: build-www now creates pages for
-	  package in extra and nonfree as well
-
-2006-09-11 23:30  hauberg
-
-	* www/: Makefile, developers.in: Let developers.html be generated
-	  from get_contents in admin
 
 2006-09-11 21:57  adb014
 
@@ -3558,20 +6401,6 @@
 
 	* nonfree/splines/src/gcvsplf.f: Remove deprecated fortran
 	  arithmetic goto
-
-2006-09-11 20:35  hauberg
-
-	* www/: Makefile, build-www.py, cleanup.sh: Added a clean target to
-	  the Makefile
-
-2006-09-11 19:45  hauberg
-
-	* www/: get-base-address, macros.m4: Added get-base-address and
-	  macros.m4
-
-2006-09-11 19:44  hauberg
-
-	* www/build-www.py: Updated www/build-www
 
 2006-09-11 01:28  adb014
 
@@ -3596,8 +6425,8 @@
 
 2006-09-11 00:17  adb014
 
-	* pkg.mk, extra/Makefile, main/Makefile, nonfree/Makefile,
-	  www/Makefile: More makefile fixes
+	* pkg.mk, extra/Makefile, main/Makefile, nonfree/Makefile: More
+	  makefile fixes
 
 2006-09-10 23:42  adb014
 
@@ -3627,20 +6456,6 @@
 
 	* main/signal/inst/pwelch.m: Better error message to address debain
 	  bug report #373194
-
-2006-09-10 20:08  hauberg
-
-	* www/developers.in: Removed <code>'s
-
-2006-09-10 19:54  hauberg
-
-	* www/Makefile: Added Makefile
-
-2006-09-10 19:53  hauberg
-
-	* www/: FAQ.in, archive.in, bugs.in, developers.in, docs.in,
-	  index.in, links.in, octave-forge.css, packages.in: Added more web
-	  pages
 
 2006-09-10 07:41  adb014
 
@@ -3735,11 +6550,6 @@
 2006-09-03 11:22  sis-sou
 
 	* main/specfun/expint.m: [no log message]
-
-2006-08-31 21:25  hauberg
-
-	* www/: build-www.py, doc.png, download.png, package.css: Added a
-	  basic script for creating webpages from DESCRIPTION files
 
 2006-08-31 01:21  adb014
 

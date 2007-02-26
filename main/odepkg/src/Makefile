@@ -4,7 +4,7 @@
 #    from the Makefile of the comm package. Modifications have
 #    been done to create the documentatiion of the OdePkg.
 
-sinclude ../../../Makeconf
+sinclude Makeconf
 
 DEVELOPERDEFS = -Wall -W -Wshadow -D__ODEPKGDEBUG__
 

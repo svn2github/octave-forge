@@ -5,6 +5,7 @@
 ##    * cvs2cl.pl from http://www.red-bean.com/cvs2cl/
 ##    * perl, python, and the texinfo toolchain
 ##    * autoconf
+##    * wget
 ##
 ## You should also have the following in your .bashrc:
 ## 
@@ -53,18 +54,25 @@
 ##
 ##    Make sure you've logged all changes to licenses and doc strings.
 ##
-## 9) ./release.sh
+## 9) make comparepkgs
 ##
-##    This is the actual release step.  It tags the CVS tree.
+##    Compares the old versions of the packages on octave-forge for updates,
+##    and flag any conflicts. Conflicts in the version numbering should be 
+##    fixed and step 9) rerun.
+##
+##    Once run correctly, proceed to step 10.
 ##
 ## 10) https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
 ##
 ##    Log in to your source forge account and announce the release of the
-##    packages.  Check the MD5 sums of the package files on sourceforge
-##    against the MD5 sums of the files in packages/{main,extra,nonfree}.
-##    Upload the packages that have changed with appropriate notes.
+##    packages. Upload the packages that were identified as needing uploading
+##    in step 9).
 ##
-## 11) Upload the webpages to sourceforge.
+## 11) ./release.sh
+##
+##    This is the actual release step.  It tags the CVS tree.
+##
+## 12) Upload the webpages to sourceforge.
 ##
 ##        tar cvzf www.tar.gz www
 ##        scp doc/htdocs.tar.gz $OFHOME
@@ -74,7 +82,7 @@
 ##        tar xzf htdocs.tar.gz
 ##        chmod -R g+w htdocs
 ##
-## 12) sources@octave.org, octave-dev@lists.sf.net
+## 13) sources@octave.org, octave-dev@lists.sf.net
 ##
 ##    Announce the new release on the appropriate mailing lists.
 ##

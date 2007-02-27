@@ -1,0 +1,132 @@
+#!/usr/bin/env perl
+#
+# David Bateman Feb 27 2007
+# 
+# Compares the MD5 sum files of the octave-forge packages for files to update
+
+#use strict;
+use Cwd;
+use File::Find;
+use File::Basename;
+use Text::Wrap;
+use FileHandle;
+
+my $oldmd5 = shift @ARGV;
+my $newmd5 = shift @ARGV;
+my %oldpkglist = parsemd5file($oldmd5);
+my %newpkglist = parsemd5file($newmd5);
+
+my %conflicts = findconflicts();
+if (scalar(%conflicts)) {
+    print "#### There are ", scalar(keys %conflicts), " conflicting packages ####\n";
+    foreach my $name (pkgname_list(%conflicts)) {
+	my $ver = $conflicts{$name}[0];
+	my $md5 = $conflicts{$name}[1];
+	foreach my $oldname (pkgname_list(%oldpkglist)) {
+	    next unless $name =~ $oldname;
+	    my $oldver = $oldpkglist{$name}[0];
+	    if ($ver =~ $oldver) {
+		print "$name:   has same version number but different MD5 sum\n";
+	    } else {
+		print "$name:   has same MD5 sum but different version number\n";
+	    }
+	}
+    }
+    die "\nPlease repair these and rebuild the  packages before continuing\n";
+}
+
+my %newpkgs = findnewpkgs();
+if (scalar(%newpkgs)) {
+    print "#### There are ", scalar(keys %newpkgs), " new packages ####\n";
+    foreach my $name (pkgname_list(%newpkgs)) {
+	my $ver = $newpkgs{$name}[0];
+	my $md5 = $newpkgs{$name}[1];
+	print "$name    $ver   $md5\n"
+	}
+    print "\n";
+}
+
+my %updatedpkgs = findupdatedpkgs();
+if (scalar(%updatedpkgs)) {
+    print "#### There are ", scalar(keys %updatedpkgs), " updated packages ####\n";
+    foreach my $name (pkgname_list(%updatedpkgs)) {
+	my $ver = $updatedpkgs{$name}[0];
+	my $md5 = $updatedpkgs{$name}[1];
+	print "$name    $ver   $md5\n"
+    }
+    print "\n";
+}
+
+if (scalar(%newpkgs) || scalar(%updatedpkgs)) {
+    print "Please upload these new packages and update the website\n";
+} else {
+    print "Packages are all up to date\n";
+}
+
+sub findconflicts {
+    my %pkglist = ();
+    foreach my $name (pkgname_list(%newpkglist)) {
+	if (defined $oldpkglist{$name}) {
+	    my $oldmd5 = $oldpkglist{$name}[1];
+	    my $newmd5 = $newpkglist{$name}[1];
+	    my $oldver = $oldpkglist{$name}[0];
+	    my $newver = $newpkglist{$name}[0];
+	    if ($oldmd5 =~ $newmd5) {
+		if (!($oldver =~ $newver)) {
+		    @pkglist{$name} = [$newver, $newmd5];
+		}
+	    } else {
+		if ($oldver =~ $newver) {
+		    @pkglist{$name} = [$newver, $newmd5];
+		}
+	    }
+	}
+    }
+    return %pkglist;
+}
+
+sub findupdatedpkgs {
+    my %pkglist = ();
+    foreach my $name (pkgname_list(%newpkglist)) {
+	if (defined $oldpkglist{$name}) {
+	    my $oldmd5 = $oldpkglist{$name}[1];
+	    my $newmd5 = $newpkglist{$name}[1];
+	    next if  $oldmd5 =~ $newmd5;
+	    my $oldver = $oldpkglist{$name}[0];
+	    my $newver = $newpkglist{$name}[0];
+	    @pkglist{$name} = [$newver, $newmd5];
+	}
+    }
+    return %pkglist;
+}
+
+sub findnewpkgs {
+    my %pkglist = ();
+    foreach my $name (pkgname_list(%newpkglist)) {
+	if (!defined $oldpkglist{$name}) {
+	    @pkglist{$name} = [$newpkglist{$name}[0], $newpkglist{$name}[1]];
+	}
+    }
+    return %pkglist;
+}
+
+sub pkgname_list { # 1{{{
+    my ( %pkglist ) = @_;
+    return sort { uc($a) cmp uc($b) } keys %pkglist;
+} # 1}}}
+
+sub parsemd5file {
+    my ($file,		# The file containing the md5 sums
+	)	= @_;
+    my %pkglist = ();
+    open (FID, $file) or die  "Could not open file $oldmd5";
+    while (<FID>) {
+	s/^\s*//;
+	s/\s*$//;
+	next if /^$/;
+	my ($name,$ver,$md5) = /([^ ]*) ([^ ]*) ([^ ]*)/;   
+	@pkglist{$name} = [$ver, $md5]; 
+    }
+    close (FID);
+    return %pkglist;
+}

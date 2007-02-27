@@ -31,6 +31,7 @@ package: subdirs
 packages:
 	@$(MAKE) -k package
 	@$(MAKE) -C packages mkbundle
+	@$(MAKE) -C packages md5
 
 install: installpause clearlog packages
 	@$(MAKE) -C packages $(MAKECMDGOALS)
@@ -59,6 +60,12 @@ www: clearlog packages
 doxygen:
 	@$(MAKE) -C doc doxygen
 
+# FIXME: Update the address below when the website goes live
+comparepkgs: packages
+	@wget http://octave.dbateman.org/packages.md5; \
+	./admin/compare_md5sum packages.md5 doc/htdocs/packages.md5
+	@rm packages.md5
+
 else
 
 .PHONY: all install srpms
@@ -71,7 +78,7 @@ endif
 .PHONY: clean distclean dist checkindist changelog
 
 clean: clearlog subdirs
-	-$(RM) fntests.m fntests.log
+	-$(RM) fntests.m fntests.log packages.md5
 	-$(RM) core octave-core octave configure.in
 
 distclean: subdirs

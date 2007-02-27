@@ -13,15 +13,41 @@ PKGDIRS = $(filter-out packages doc, $(patsubst $(TOPDIR)/%/, %, $(dir $(wildcar
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
 RPMDIR=RPM
+MD5FILE=packages.md5
+M4 := m4
+MACRO_FILE := ../doc/macros.m4
+M4_OPTIONS := --prefix-builtin
 
 .PHONY: $(PKGDIRS) install
 
 # Construct the bundle from the individual packages
-all: mkbundle
+all: mkbundle md5
 
 mkbundle:
 	@d=`date +%Y%m%d`; \
 	tar czf octave-forge-bundle-$$d.tar.gz $(PKGDIRS)
+
+md5: cleanmd5 $(patsubst %, domd5/%, $(PACKAGES)) md5bundle
+	@$(M4) $(M4_OPTIONS) $(MACRO_FILE) $(MD5FILE) > $(MD5FILE).tmp; \
+	mv -f $(MD5FILE).tmp ../doc/htdocs/$(MD5FILE)
+
+cleanmd5:
+	@rm -f $(MD5FILE)
+
+domd5/%:
+	@ver=`echo $(opkg) | sed -e "s/.tar.gz$$//" | sed -e "s/^.*-//"`; \
+	name=`echo $(opkg) | sed -e "s|^.*/||" | sed -e "s/^\(.*\)-.*.tar.gz$$/\1/"`; \
+	dir=`echo $(opkg) | sed -e "s|^\(.*\)/.*$$|\1|"`; \
+	file=`echo $(opkg) | sed -e "s|^.*/\(.*\)$$|\1|"`; \
+	md5=`cd $$dir; md5sum $$file`; \
+	echo "$$name $$ver $$md5" | sed -e "s|$$file|__PACKAGE__/$$file|" >> $(MD5FILE)
+
+md5bundle:
+	@bundle=$(wildcard octave-forge-bundle-*.tar.gz); \
+	ver=`echo $$bundle | sed -e "s/.tar.gz$$//" | sed -e "s/^.*-//"`; \
+	name=`echo $$bundle | sed -e "s|^.*/||" | sed -e "s/^\(.*\)-.*.tar.gz$$/\1/"`; \
+	md5=`md5sum $$bundle`; \
+	echo "$$name $$ver $$md5" | sed -e "s|$$bundle|__PACKAGE__/$$bundle|" >> $(MD5FILE)
 
 # Do nothing for the package target 
 package:
@@ -31,7 +57,7 @@ mostlyclean:
 	@rm -fr $(TESTLOG) sandbox *~ *.tar.gz
 
 clean: mostlyclean
-	@rm -fr $(PKGDIRS) $(RPMDIR)
+	@rm -fr $(PKGDIRS) $(RPMDIR) $(MD5FILE)
 
 check: cleanlog $(patsubst %, checkpkg/%, $(PACKAGES))
 

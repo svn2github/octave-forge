@@ -92,9 +92,9 @@ pkg/%: pre-pkg/% real-pkg/% post-pkg/%
 
 real-pkg/%:
 	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//" | \
-	  sed -e "s/^\s*//" | sed -e "s/\s*$$//"`; \
+	  sed -e "s/^[[:space:]]*//" | sed -e "s/[[:space:]]*$$//"`; \
 	name=`grep "Name:" DESCRIPTION | sed -e "s/^Name: *//" | \
-	  sed -e "s/^\s*//" | sed -e "s/\s*$$//" | \
+	  sed -e "s/^[[:space:]]*//" | sed -e "s/[[:space:]]*$$//" | \
 	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
 	mkdir ../$(PKGDIR)/$$name-$$ver; \
 	if [ ! -f ChangeLog ]; then \

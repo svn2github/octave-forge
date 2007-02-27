@@ -115,9 +115,10 @@ clean :
 .PHONY : clean
 
 realclean : clean
+	$(RM) -r configure config.status config.log autom4te.cache Makeconf
 .PHONY : realclean
 
-distclean : clean
+distclean : realclean
 .PHONY : distclean
 
 dist : all

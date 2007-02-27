@@ -17,17 +17,15 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}[@var{perf}, @var{Ee}, @var{Aa}, @var{Nn}] = calcperf (@var{net},@var{xx},@var{Im},@var{Tt})
+## @deftypefn {Function File} {}[@var{perf}, @var{Ee}, @var{Aa}, @var{Nn}] = __calcperf (@var{net},@var{xx},@var{Im},@var{Tt})
 ## @code{calcperf} calculates the performance of a multi-layer neural network.
 ## PLEASE DON'T USE IT ELSEWHERE, it proparly won't work.
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
 
-function [perf,Ee,Aa,Nn] = calcperf(net,xx,Im,Tt)
+function [perf,Ee,Aa,Nn] = __calcperf(net,xx,Im,Tt)
 
   ## comment:
   ## perf, net performance.. from input to output through the hidden layers

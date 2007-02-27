@@ -1,6 +1,5 @@
 ## Copyright (C) 2005 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
-## This program is part of octnnettb.
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -24,8 +23,6 @@
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
 function a = purelin(n)
 

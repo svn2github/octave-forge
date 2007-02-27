@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}[@var{netOut}] = trainlm (@var{net},@var{mInputN},@var{mOutput},@var{[]},@var{[]},@var{VV})
+## @deftypefn {Function File} {}[@var{netOut}] = __trainlm (@var{net},@var{mInputN},@var{mOutput},@var{[]},@var{[]},@var{VV})
 ## A neural feed-forward network will be trained with @code{trainlm}
 ##
 ## @example
@@ -55,8 +55,6 @@
 ## @seealso{newff,prestd,trastd}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
 ## Comments: see in "A neural network toolbox for Octave User's Guide" [4]
 ##  for variable naming... there have inputs or targets only one letter,
@@ -64,7 +62,7 @@
 ## search for 1 letter variable... that's why it is written here like Pp, or Tt
 ## instead only P or T.
 
-function [net] = trainlm(net,Im,Pp,Tt,VV)
+function [net] = __trainlm(net,Im,Pp,Tt,VV)
 
   ## check range of input arguments
   error(nargchk(5,5,nargin))
@@ -98,19 +96,19 @@ function [net] = trainlm(net,Im,Pp,Tt,VV)
                        # some rows later
 
   ## the weights are used in column vector format
-  xx = getx(net); # x is the variable with respect to, but no
+  xx = __getx(net); # x is the variable with respect to, but no
                   # variables with only one letter!!
   ## define identity matrix
   muI = eye(length(xx));                  
 
   ## calc performance of the actual net
-  [perf,vE,Aa,Nn] = calcperf(net,xx,Im,Tt);
+  [perf,vE,Aa,Nn] = __calcperf(net,xx,Im,Tt);
   if (doValidation)
     ## calc performance if validation is used
     VV.net = net; # save the actual net in the validate
     # structure... if no train loop will show better validate
     # performance, this will be the returned net
-    vperf = calcperf(net,xx,VV.Im,VV.Tt);
+    vperf = __calcperf(net,xx,VV.Im,VV.Tt);
     VV.perf = vperf;
     VV.numFail = 0; # one of the stop criterias
   endif
@@ -120,7 +118,7 @@ function [net] = trainlm(net,Im,Pp,Tt,VV)
     ve = vE{nLayers,1};
     ## calc jacobian
     ## Jj is jacobian matrix
-    [Jj] = calcjacobian(net,Im,Nn,Aa,vE);
+    [Jj] = __calcjacobian(net,Im,Nn,Aa,vE);
 
     ## rerange error vector for jacobi matrix
     ve = ve(:);
@@ -164,19 +162,19 @@ function [net] = trainlm(net,Im,Pp,Tt,VV)
       ## add changes in x to actual x values (xx)
       x1 = xx + dx;
       ## now add x1 to a new network to see if performance will be better
-      net1 = setx(net,x1);
+      net1 = __setx(net,x1);
       ## calc now new performance with the new net
-      [perf1,vE1,Aa1,N1] = calcperf(net1,x1,Im,Tt);
+      [perf1,vE1,Aa1,N1] = __calcperf(net1,x1,Im,Tt);
 
       if (perf1 < perf)
         ## this means, net performance with new weight values is better...
         ## so save the new values
         xx = x1;
         net = net1;
-	    Nn = N1;
-	    Aa = Aa1;
-	    vE = vE1;
-	    perf = perf1;
+	Nn = N1;
+	Aa = Aa1;
+	vE = vE1;
+	perf = perf1;
 
         mu = mu * muDec;
         if (mu < 1e-20)   # 1e-20 is properly the hard coded parameter in MATLAB(TM)
@@ -189,7 +187,7 @@ function [net] = trainlm(net,Im,Pp,Tt,VV)
 
     ## validate with DeltaX
     if (doValidation)
-      vperf = calcperf(net,xx,VV.Im,VV.Tt);
+      vperf = __calcperf(net,xx,VV.Im,VV.Tt);
       if (vperf < VV.perf)
         VV.perf = vperf;
     	VV.net = net;

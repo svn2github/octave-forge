@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} @var{x} = getx (@var{net})
+## @deftypefn {Function File} {} @var{x} = __getx (@var{net})
 ## @code{getx} will rerange the weights in one columns vector.
 ##
 ##
@@ -27,9 +27,8 @@
 ## @seealso{setx}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
-function x = getx(net)
+
+function x = __getx(net)
 
   ## check number of inputs
   error(nargchk(1,1,nargin));

@@ -24,17 +24,15 @@
 ## @seealso{getx}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
-function net = setx(net,xx)
+function net = __setx(net,xx)
 
   ## check number of inputs
   error(nargchk(2,2,nargin));
 
   ## check input args
   ## check "net", must be a net structure
-  if !checknetstruct(net)
+  if !__checknetstruct(net)
     error("Structure doesn't seem to be a neural network")
   endif
 

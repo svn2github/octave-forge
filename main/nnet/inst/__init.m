@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} @var{net} = init (@var{net})
+## @deftypefn {Function File} {} @var{net} = __init (@var{net})
 ## @code{init} initializes a neural network. This will be done
 ## with the function @code{rand} from octave.
 ##
@@ -34,9 +34,8 @@
 ## @seealso{}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
-function net=init(net)
+
+function net=__init(net)
 
   ## check number of inputs
   error(nargchk(1,1,nargin));

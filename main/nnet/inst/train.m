@@ -48,8 +48,6 @@
 ## @seealso{newff,prestd,trastd}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
 ## Comments: see in "A neural network toolbox for Octave User's Guide" [4]
 ## for variable naming... there have inputs or targets only one letter,
@@ -126,7 +124,7 @@ function [net] = train(net,Pp,Tt,notUsed1,notUsed2,VV)
       if !strcmp(net.performFcn,"mse")
         error("Levenberg-Marquardt algorithm is defined with the MSE performance function, so please set MSE in NEWFF!")
       endif
-      net = trainlm(net,Im,Pp,Tt,VV);
+      net = __trainlm(net,Im,Pp,Tt,VV);
     otherwise
       error("train algorithm argument is not valid!")
   endswitch

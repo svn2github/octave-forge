@@ -17,18 +17,16 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}@var{Jj} = calcjacobian (@var{net},@var{Im},@var{Nn},@var{Aa},@var{vE})
+## @deftypefn {Function File} {}@var{Jj} = __calcjacobian (@var{net},@var{Im},@var{Nn},@var{Aa},@var{vE})
 ## This function calculates the jacobian matrix. It's used inside the
 ## Levenberg-Marquardt algorithm of the neural network toolbox.
 ## PLEASE DO NOT USE IT ELSEWEHRE, it proparly will not work!
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
 
-function [Jj] = calcjacobian(net,Im,Nn,Aa,vE)
+function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
 
   ## comment:
   ## - return value Jj is jacobi matrix

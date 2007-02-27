@@ -46,8 +46,6 @@
 ## @seealso{sim, init, train}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
 function net = newff(Pr,ss,trf,btf,blf,pf)
 
@@ -92,7 +90,7 @@ function net = newff(Pr,ss,trf,btf,blf,pf)
   nLayers = length(ss);
 
   ## Standard architecture of neural network
-  net = newnetwork(1,nLayers,1);
+  net = __newnetwork(1,nLayers,1);
   ## description:
   ##	first argument: number of inputs, nothing else allowed till now
   ## it's not the same like the number of neurons in this input
@@ -158,7 +156,7 @@ function net = newff(Pr,ss,trf,btf,blf,pf)
   net.trainFcn = btf; # actually, only trainlm will exist
   net = setTrainParam(net);
   ## Initialization
-  net = init(net);
+  net = __init(net);
 
 # ======================================================
 #

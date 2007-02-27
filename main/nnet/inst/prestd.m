@@ -24,8 +24,6 @@
 ## @seealso{trastd}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
 function [pn,meanp,stdp,tn,meant,stdt] = prestd(Pp,Tt)
 

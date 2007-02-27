@@ -22,8 +22,7 @@
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
+
 
 ## Comments: see in "A neural network toolbox for Octave User's Guide" [4]
 ##  for variable naming... there have inputs or targets only one letter,
@@ -38,7 +37,7 @@ function [netoutput] = sim(net,mInput)
 
   ## check input args
   ## check "net", must be a net structure
-  if !checknetstruct(net)
+  if !__checknetstruct(net)
     error("Structure doesn't seem to be a neural network")
   endif
   ## check "mInput", must have defined size

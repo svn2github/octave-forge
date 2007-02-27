@@ -17,8 +17,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}@var{perf} = mse (@var{E})
-## @code{mse} returns the Mean-Square-Error of a vector E
+## @deftypefn {Function File} {}@var{perf} = __mse (@var{E})
+## @code{__mse} returns the Mean-Square-Error of a vector E
 ##
 ## @example
 ##
@@ -30,10 +30,8 @@
 ## @seealso{}
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
 
-function perf = mse(E)
+function perf = __mse(E)
 
   ## check number of inputs
   error(nargchk(1,1,nargin));

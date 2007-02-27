@@ -1,50 +1,15 @@
 nnet >> Neural Networks
 Feed forward multi-layer neural networks
- min_max mse newff poststd
- prestd sim train trastd
- calcjacobian
- calcperf
- checknetstruct
  dpurelin
  dtansig
- getx
- init
  isposint
- newnetwork
+ min_max
+ newff
+ poststd
+ prestd
  purelin
- setx
- tansig
- trainlm
-Neural network utils
  saveMLPStruct
-Private saveMLPStructure
- printAdaptFcn
- printAdaptParam
- printB
- printBiasConnect
- printBiases
- printIW
- printInitFcn
- printInitParam
- printInputConnect
- printInputWeights
- printInputs
- printLW
- printLayerConnect
- printLayerWeights
- printLayers
- printMLPHeader
- printNumInputDelays
- printNumInputs
- printNumLayerDelays
- printNumLayers
- printNumOutputs
- printNumTargets
- printOutputConnect
- printOutputs
- printPerformFcn
- printPerformParam
- printTargetConnect
- printTargets
- printTrainFcn
- printTrainParam
+ sim
+ tansig
+ train
+ trastd

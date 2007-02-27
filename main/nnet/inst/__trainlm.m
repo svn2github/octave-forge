@@ -262,7 +262,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 
     ## check if show is activated
     if (!isnan(show) & !isposint(show))
-      error(["Show is not " "NaN" " or a positive integer."})
+      error(["Show is not " "NaN" " or a positive integer."])
     endif
 
     ## check at last the time argument, must be zero or a positive real value

@@ -35,7 +35,7 @@ function x = __getx(net)
 
   ## check input args
   ## check "net", must be a net structure
-  if !checknetstruct(net)
+  if !__checknetstruct(net)
     error("Structure doesn't seem to be a neural network")
   endif
 

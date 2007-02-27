@@ -100,7 +100,7 @@ function [perf,Ee,Aa,Nn] = __calcperf(net,xx,Im,Tt)
   ## now calc network performance
   switch(net.performFcn)
   case "mse"
-    perf = mse(Ee);
+    perf = __mse(Ee);
   otherwise
     error("for performance functions, only mse is currently valid!")
   endswitch

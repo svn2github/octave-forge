@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}{@var{net}} = newnetwork(@var{numInputs},@var{numLayers},@var{numOutputs})
+## @deftypefn {Function File} {}{@var{net}} = __newnetwork(@var{numInputs},@var{numLayers},@var{numOutputs})
 ## @code{newnetwork} create a custom 'zero'-network
 ##
 ##
@@ -38,10 +38,8 @@
 ## @end deftypefn
 
 ## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $Date$
-## $Rev: 38 $
 
-function net = newnetwork(numInputs,numLayers,numOutputs)
+function net = __newnetwork(numInputs,numLayers,numOutputs)
 
   ## check range of input arguments
   error(nargchk(3,3,nargin))

@@ -345,7 +345,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   fodepkgvar (0, NULL, NULL);
 
   if (nrhs == 0) { /* Check number and types of all input arguments */
-    vtmp = mxCreateString ("oder5");
+    vtmp = mxCreateString ("ode5r");
     if (mexCallMATLAB (0, NULL, 1, &vtmp, "help"))
       mexErrMsgTxt ("Calling \"help\" has failed");
     mexErrMsgTxt ("Number of input arguments must be greater than zero");
@@ -857,7 +857,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
     mxAddField (plhs[0], "solver");
     vnum = mxGetFieldNumber (plhs[0], "solver");
-    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("oder5"));
+    mxSetFieldByNumber (plhs[0], 0, vnum, mxCreateString ("ode5r"));
 
     fodepkgvar (2, "Stats", &vtmp);
     if (mxIsLogicalScalarTrue (vtmp)) {

@@ -595,7 +595,6 @@ Sparse matrix reordering
  symrcm
 Linear algebra
  condest
- eigs
  normest
  spchol
  spchol2inv
@@ -606,7 +605,6 @@ Linear algebra
  splu
  spqr
  sprank
- svds
 Iterative techniques
  bicgstab
  cgs

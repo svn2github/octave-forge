@@ -7,6 +7,12 @@ OdePkg Solver Functions
  ode54
  ode78
  ode5d
+ ode8d
+ odeox
+ ode2r
+ ode5r
+ oders
+ odesx
 OdePkg Options Functions
  odeset
  odeget

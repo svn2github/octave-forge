@@ -18,15 +18,15 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printMLPHeader (@var{fid})
-## @code{printMLPHeader} saves the header of a  neural network structure
+## @deftypefn {Function File} {} __printMLPHeader (@var{fid})
+## @code{__printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
 
 ## Author: mds
 ## $Revision$, $Date$
 
-function printMLPHeader(fid)
+function __printMLPHeader(fid)
 
      # one empty row
      fprintf(fid,"\n");

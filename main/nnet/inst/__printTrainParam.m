@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printTrainParam (@var{fid})
+## @deftypefn {Function File} {} __printTrainParam (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printTrainParam(fid,net)
+function __printTrainParam(fid,net)
 
   if isfield(net,"trainParam")
     str2 = "";

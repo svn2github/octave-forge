@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printLayerWeights (@var{fid})
+## @deftypefn {Function File} {} __printLayerWeights (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printLayerWeights(fid,net)
+function __printLayerWeights(fid,net)
 
   if isfield(net,"layerweights")
     # check if it's cell array

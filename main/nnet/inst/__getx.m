@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} @var{x} = __getx (@var{net})
-## @code{getx} will rerange the weights in one columns vector.
+## @code{__getx} will rerange the weights in one columns vector.
 ##
 ##
 ## @noindent

@@ -17,8 +17,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} @var{net} = setx (@var{net},@var{X2})
-## @code{setx} sets the new weights to the neural network structure
+## @deftypefn {Function File} {} @var{net} = __setx (@var{net},@var{X2})
+## @code{__setx} sets the new weights to the neural network structure
 ## @end deftypefn
 
 ## @seealso{getx}

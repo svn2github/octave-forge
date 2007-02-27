@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {}[@var{perf}, @var{Ee}, @var{Aa}, @var{Nn}] = __calcperf (@var{net},@var{xx},@var{Im},@var{Tt})
-## @code{calcperf} calculates the performance of a multi-layer neural network.
+## @code{__calcperf} calculates the performance of a multi-layer neural network.
 ## PLEASE DON'T USE IT ELSEWHERE, it proparly won't work.
 ## @end deftypefn
 

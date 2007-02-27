@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}[@var{isTrue}] = checknetstruct (@var{net})
+## @deftypefn {Function File} {}[@var{isTrue}] = __checknetstruct (@var{net})
 ## This function will check if a valid structure seems to be a neural network
 ## structure
 ##
@@ -42,7 +42,7 @@
 ## $Rev: 38 $
 
 
-function isTrue = checknetstruct(net)
+function isTrue = __checknetstruct(net)
 
   isTrue = 0;
   ## first check, if it's a structure

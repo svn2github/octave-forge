@@ -18,10 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {}[@var{netOut}] = __trainlm (@var{net},@var{mInputN},@var{mOutput},@var{[]},@var{[]},@var{VV})
-## A neural feed-forward network will be trained with @code{trainlm}
+## A neural feed-forward network will be trained with @code{__trainlm}
 ##
 ## @example
-## [netOut,tr,out,E] = trainlm(net,mInputN,mOutput,[],[],VV);
+## [netOut,tr,out,E] = __trainlm(net,mInputN,mOutput,[],[],VV);
 ## @end example
 ## @noindent
 ##

@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printNumLayerDelays (@var{fid})
+## @deftypefn {Function File} {} __printNumLayerDelays (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printNumLayerDelays(fid,net)
+function __printNumLayerDelays(fid,net)
 
      ## now check the structure fields..
      cellNetFields = fieldnames(net);

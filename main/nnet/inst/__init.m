@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} @var{net} = __init (@var{net})
-## @code{init} initializes a neural network. This will be done
+## @code{__init} initializes a neural network. This will be done
 ## with the function @code{rand} from octave.
 ##
 ## @example
-## net = init(net);
+## net = __init(net);
 ## @end example
 ##
 ## This function takes the octave function "rand" to init the 
@@ -42,7 +42,7 @@ function net=__init(net)
 
   ## check input
   if ( !isstruct(net) )
-    error("init: wrong argument type, must be a structure!");
+    error("__init: wrong argument type, must be a structure!");
   endif
 
   ## init with random numbers between +-1

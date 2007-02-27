@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printPerformFcn (@var{fid})
+## @deftypefn {Function File} {} __printPerformFcn (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printPerformFcn(fid,net)
+function __printPerformFcn(fid,net)
 
   if isfield(net,"performFcn")
     if isempty(net.performFcn)

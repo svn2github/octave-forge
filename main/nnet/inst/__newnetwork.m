@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {}{@var{net}} = __newnetwork(@var{numInputs},@var{numLayers},@var{numOutputs})
-## @code{newnetwork} create a custom 'zero'-network
+## @code{__newnetwork} create a custom 'zero'-network
 ##
 ##
 ## @example
-## net = newnetwork(numInputs,numLayers,numOutputs)
+## net = __newnetwork(numInputs,numLayers,numOutputs)
 ##
 ## numInputs : number of input vectors, actually only 1 allowed
 ## numLayers : number of layers
@@ -30,7 +30,7 @@
 ## @end example
 ##
 ## @example
-## net = newnetwork(1,2,1)
+## net = __newnetwork(1,2,1)
 ##       1 input layer, two hidden layers and one output layer
 ## @end example
 ##

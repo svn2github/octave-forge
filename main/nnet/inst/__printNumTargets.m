@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printNumTargets (@var{fid})
+## @deftypefn {Function File} {} __printNumTargets (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printNumTargets(fid,net)
+function __printNumTargets(fid,net)
 
      ## now check the structure fields..
      cellNetFields = fieldnames(net);

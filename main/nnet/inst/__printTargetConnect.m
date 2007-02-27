@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printTargetConnect (@var{fid})
+## @deftypefn {Function File} {} __printTargetConnect (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## e-mail: michaelschmid@users.sourceforge.net
 
-function printTargetConnect(fid,net)
+function __printTargetConnect(fid,net)
 
   if isfield(net,"targetConnect")
     # net.targetConnect can be a matrix..!

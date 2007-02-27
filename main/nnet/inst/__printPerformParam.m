@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printPerformParam(fid,net)
+function __printPerformParam(fid,net)
 
   if isfield(net,"performParam")
     if isempty(net.performParam)

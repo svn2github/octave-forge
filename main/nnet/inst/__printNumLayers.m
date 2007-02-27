@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printNumLayers (@var{fid})
+## @deftypefn {Function File} {} __printNumLayers (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printNumLayers(fid,net)
+function __printNumLayers(fid,net)
 
      if isfield(net,"numLayers")
         if isscalar(net.numLayers)

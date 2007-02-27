@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printLW (@var{fid})
+## @deftypefn {Function File} {} __printLW (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
@@ -26,7 +26,7 @@
 ## Author: mds
 ## $Revision$, $Date$
 
-function printLW(fid,net)
+function __printLW(fid,net)
 
   if isfield(net,"LW")
     nLayers = 0;

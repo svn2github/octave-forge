@@ -318,6 +318,9 @@ fi
 dnl Test for the texi2dvi program
 AC_CHECK_PROG(TEXI2DVI,texi2dvi,texi2dvi)
 if [ test -n "$TEXI2DVI" ]; then
+	if test -n "$COMSPEC"; then
+		TEXI2DVI="COMSPEC= $TEXI2DVI"
+	fi
 	dnl Check whether the texi2dvi command accepts the 
 	dnl "--clean" option
 	cat > conftest.texi <<EOF
@@ -328,14 +331,16 @@ EOF
 	ac_try="$TEXI2DVI conftest.texi > /dev/null"
 	if AC_TRY_EVAL(ac_try) ; then
 	    AC_MSG_RESULT(yes)
-	    AC_MSG_CHECKING([for texi2dvi --clean])
-	    ac_try="$TEXI2DVI --clean conftest.texi > /dev/null"
-	    if AC_TRY_EVAL(ac_try) ; then
-		TEXI2DVI="$TEXI2DVI --clean"
-		AC_MSG_RESULT(yes)
-	    else
-		AC_MSG_RESULT(no)
-	    fi
+		if test -z "$COMSPEC"; then
+		    AC_MSG_CHECKING([for texi2dvi --clean])
+		    ac_try="$TEXI2DVI --clean conftest.texi > /dev/null"
+		    if AC_TRY_EVAL(ac_try) ; then
+				TEXI2DVI="$TEXI2DVI --clean"
+				AC_MSG_RESULT(yes)
+		    else
+			AC_MSG_RESULT(no)
+			fi
+		fi
 	else
 	    TEXI2DVI=""
 	    AC_MSG_RESULT(no)
@@ -365,6 +370,9 @@ fi
 
 dnl Test for the dvipdf program
 AC_CHECK_PROG(DVIPDF,dvipdf,dvipdf)
+if test -z "$DVIPDF"; then
+	AC_CHECK_PROG(DVIPDF,dvipdfm,dvipdfm)
+fi
 
 dnl Test for the dvips program
 AC_CHECK_PROG(DVIPS,dvips,dvips)

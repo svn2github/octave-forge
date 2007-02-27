@@ -41,45 +41,20 @@ function [] = odepkg (vstr)
   end %# Check number and types of all input arguments
 
 function [] = odepkg_validate_mfiles ()
+  vsolver = {'ode23', 'ode45', 'ode54', 'ode78', ...
+             'ode5d', 'ode8d', 'odeox', ...
+             'ode2r', 'ode5r', 'oders', 'odesx', ...
+             'odeget', 'odeset', ...
+             'odepkg_structure_check', 'odepkg_event_handle', ...
+             'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
+             'odepkg_equations_lorenz', 'odepkg_equations_pendulous', ...
+             'odepkg_equations_roessler', 'odepkg_equations_secondorderlag', ...
+             'odepkg_equations_vanderpol'};
 
-  printf ('Testing function ode78 ... '); 
-    test ('ode78', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function ode54 ... '); 
-    test ('ode54', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function ode45 ... '); 
-    test ('ode45', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function ode23 ... '); 
-    test ('ode23', 'verbose'); fflush (1); clear ('all');
-
-  printf ('Testing function odeget ... '); 
-    test ('odeget.m', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odeset ... '); 
-    test ('odeset.m', 'verbose'); fflush (1); clear ('all');
-
-  printf ('Testing function odepkg_structure_check ... ');
-    test ('odepkg_structure_check.m', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odepkg_event_handle    ... ');
-    test ('odepkg_event_handle.m', 'verbose'); fflush (1); clear ('all');
-
-  printf ('Testing function odeplot ... '); 
-    test('odeplot.m', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odephas2 ... '); 
-    test('odephas2.m', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odephas3 ... '); 
-    test('odephas3.m', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odeprint ... '); 
-    test('odeprint.m', 'verbose'); fflush (1); clear ('all');
-
-  printf ('Testing function odepkg_equations_lorenz ... ');
-    test ('odepkg_equations_lorenz', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odepkg_equations_pendulous ... ');
-    test ('odepkg_equations_pendulous', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odepkg_equations_roessler ... ');
-    test ('odepkg_equations_roessler', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odepkg_equations_secondorderlag ... ');
-    test ('odepkg_equations_secondorderlag', 'verbose'); fflush (1); clear ('all');
-  printf ('Testing function odepkg_equations_vanderpol ... ');
-    test ('odepkg_equations_vanderpol', 'verbose'); fflush (1); clear ('all');
+  for vcnt=1:length(vsolver)
+    printf ('Testing function %s ... ', vsolver{vcnt});
+    test (vsolver{vcnt}, 'quiet'); fflush (1);
+  end
 
 function [] = odepkg_validate_mexsolvers ()
   vmexsolver = {@odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...

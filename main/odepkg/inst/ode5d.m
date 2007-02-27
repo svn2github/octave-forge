@@ -39,19 +39,12 @@ function [varargout] = ode5d (varargin)
   if (exist ('odepkg_mexsolver_dopri5') != 3)
     error ('Mex-function "odepkg_mexsolver_dopri5" is not installed');
   else
-    if (nargout == 0)
-      odepkg_mexsolver_dopri5 (varargin{:});
-    elseif (nargout == 1)
-      varargout{1} = odepkg_mexsolver_dopri5 (varargin{:});
-    elseif (nargout == 2)
-      [varargout{1}, varargout{2}] = odepkg_mexsolver_dopri5 (varargin{:});
-    elseif (nargout == 5)
-      [varargout{1}, varargout{2}, varargout{3}, varargout{4}, varargout{5}] = ...
-        odepkg_mexsolver_dopri5 (varargin{:});
+    [varargout{1:nargout}] = odepkg_mexsolver_dopri5 (varargin{:});
     end
   end
 
-%# The following tests have been added to check the function's input arguments and output arguments
+%# The following tests have been added to check the function's input arguments 
+%# and output arguments
 %!test
 %!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), ""))
 %!    vsol = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
@@ -64,9 +57,9 @@ function [varargout] = ode5d (varargin)
 %!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), ""))
 %!    [vx, vy, va, vb, vc] = ode5d (@odepkg_equations_vanderpol, [0 2], [2 0]);
 %!  end
-
+%#
 %# Removed the fixed step size tests because they won't work with this solver
-
+%#
 %!test
 %!  if (!strcmp (which ("odepkg_mexsolver_dopri5"), ""))
 %!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);

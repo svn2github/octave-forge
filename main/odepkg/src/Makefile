@@ -2,15 +2,15 @@
 # Describtion: Makefile for the src directory of the OdePkg
 # ChangeLog: 20070222, this Makefile was originally be created
 #    from the Makefile of the comm package. Modifications have
-#    been done to create the documentatiion of the OdePkg.
+#    been done to create the source codes of the OdePkg.
 
-sinclude Makeconf
+sinclude Makeconf # This is ok, David changed this line
 
 DEVELOPERDEFS = -Wall -W -Wshadow -D__ODEPKGDEBUG__
 
-MKMEXFILE = mkoctfile --mex # $(MKOCTFILE) --mex # $(DEVELOPERDEFS)
-TGZUNPACK = tar -xzf           # "tar -xzvf" to see what happens
-PATCHPROG = patch -p0          # For patching the Fortran codes
+MKMEXFILE = mkoctfile --mex # $(DEVELOPERDEFS)
+TGZUNPACK = tar -xzf        # "tar -xzvf" to see what happens
+PATCHPROG = patch -p0       # For patching the Fortran codes
 
 EXTERNALDIRS  = hairer
 EXTERNALPACKS = $(patsubst %, %.tgz,  $(EXTERNALDIRS))
@@ -91,7 +91,7 @@ $(EXTERNALDIRS) :
 	@echo "Patching external packages: $(EXTERNALDIFFS)"; \
 	$(PATCHPROG) <$(EXTERNALDIFFS)
 
-%.o: $(EXTERNALDIRS) %.f
+%.o : $(EXTERNALDIRS) %.f
 	@echo "Compiling $@"; \
 	$(MKMEXFILE) -c $<
 
@@ -101,8 +101,8 @@ $(EXTERNALDIRS) :
 
 %.mex : %.o
 	@echo "Linking $(ODEPKGMXFILES)"; \
-	$(MKMEXFILE) $(DOP853OBJECTS) -o $(DOP853MXFILES)
 	$(MKMEXFILE) $(DOPRI5OBJECTS) -o $(DOPRI5MXFILES)
+	$(MKMEXFILE) $(DOP853OBJECTS) -o $(DOP853MXFILES)
 	$(MKMEXFILE) $(ODEXOBJECTS)   -o $(ODEXMXFILES)
 	$(MKMEXFILE) $(RADAUOBJECTS)  -o $(RADAUMXFILES)
 	$(MKMEXFILE) $(RADAU5OBJECTS) -o $(RADAU5MXFILES)
@@ -120,5 +120,5 @@ realclean : clean
 distclean : clean
 .PHONY : distclean
 
-dist: all
+dist : all
 .PHONY : dist

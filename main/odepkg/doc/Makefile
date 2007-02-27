@@ -1,5 +1,8 @@
-# This is the Makefile from the comm package with modifications
-# for creating the documentation of the OdePkg, Changed 20070222
+# Filename:    Makefile
+# Describtion: Makefile for the doc directory of the OdePkg
+# ChangeLog: 20070222, this Makefile was originally be created
+#    from the Makefile of the comm package. Modifications have
+#    been done to create the documentatiion of the OdePkg.
 
 sinclude ../../../Makeconf
 
@@ -25,6 +28,7 @@ TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(TEXIDOC) *~
 DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html odepkg/ html/
 
 all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
+.PHONY : all
 
 ../inst/doc.info : $(INFODOC)
 	cp -f $(INFODOC) ../inst/doc.info
@@ -70,8 +74,13 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 clean :
 	@echo "Cleaning..."; \
 	$(RM) -fr $(DELETES) ../inst/doc.info;
+.PHONY : clean
 
 realclean : clean
-distclean : clean
+.PHONY : realclean
 
-dist: all
+distclean : clean
+.PHONY : distclean
+
+dist : all
+.PHONY : dist

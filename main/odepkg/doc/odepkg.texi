@@ -57,16 +57,16 @@ Documentation License".
 The ``Beginner's Guide'' is intended for new users who want to solve differential equations with the higher level interpreter language Octave and the toolbox OdePkg. In this chapter it will be explained what OdePkg is about in @ref{About OdePkg} and how OdePkg grew up from the beginning in @ref{OdePkg history and roadmap}. In @ref{Installation and deinstallation} it is explained how OdePkg can be installed and in @ref{First tests and demos} the first examples are explained.
 
 @menu
-* About OdePkg::                
-* OdePkg history and roadmap::  
-* Installation and deinstallation::  
-* Reporting Bugs::              
-* First tests and demos::       
+* About OdePkg:: An introduction about OdePkg
+* OdePkg history and roadmap:: From the initial release until now 
+* Installation and deinstallation:: Setting up OdePkg on your system
+* Reporting Bugs:: Writing about comments and bugs
+* First tests and demos:: The --foo-- example and others
 @end menu
 
 @node About OdePkg, OdePkg history and roadmap, Beginners's Guide, Beginners's Guide
 @section About OdePkg
-OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project) that is hosted at @url{http://octave.sourceforge.net}. The package includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are also included. OdePkg formerly was initiated to solve explicitly formulated ordinary differential equations (ODEs) only, but there are already improvements so that differential algebraic equations (DAEs) in explicit form can also be solved. At this time OdePkg is under development with the main target, to make a package that is mostly compatible to the solver functions of the commercial Octave clone.
+OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project was initiated by Paul Kienzle in 2000) that is hosted at @url{http://octave.sourceforge.net}. The package includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are also included. OdePkg formerly was initiated to solve explicitly formulated ordinary differential equations (ODEs) only, but there are already improvements so that differential algebraic equations (DAEs) in explicit form can also be solved. At this time OdePkg is under development with the main target, to make a package that is mostly compatible to the solver functions of the commercial Octave clone.
 
 @node OdePkg history and roadmap, Installation and deinstallation, About OdePkg, Beginners's Guide
 @section OdePkg history and roadmap
@@ -75,19 +75,19 @@ OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project
 
 @multitable @columnfractions .25 .75
 @item OdePkg Version 0.0.1
-@tab The initial release was already a modification of the old ``ode package'' that was hosted at Octave--Forge and that was written by Marc Compere somewhen between 1999 and 2001. The four variable step--size Runge--Kutta algorithms in three solver files and the three fixed step--size solvers have been merged. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initialy have not been there.
+@tab The initial release was already a modification of the old ``ode package'' that was hosted at Octave--Forge and that was written by Marc Compere somewhen between 2000 and 2001. The four variable step--size Runge--Kutta algorithms in three solver files and the three fixed step--size solvers have been merged. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initialy have not been there.
 @item OdePkg Version 0.1.x
 @tab The major milestone along versions 0.1.x was that four stable solvers have been implemented (ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}) supporting all options that can be set for these kind of solvers and also all necessary functions for setting their options (eg. @command{odeset}, @command{odepkg_structure_check}, etc.). Since version 0.1.3 there is also code available that interfaces the Fortran solver @file{dopri5.f} that is written by Ernst Hairer and Gerhard Wanner (cf. @file{odepkg_mexsolver_dopri5.c} and the helper files @file{odepkgext.c} and @file{odepkgmex.c}).
 @item @b{(current)} Version 0.2.x
-@tab The main work that has to be done along version 0.2.x is to make the interface functions for the solvers of Hairer and Wanner stable enough, so that they can be installed by default (by now they have to be installed by hand if somebody wants them).
+@tab The main work along version 0.2.x was, to make the interface functions for the non--stiff and stiff solvers from Ernst Hairer and Gerhard Wanner enough stable so that they could be installed by default. Wrapper functions have been added to the package with help texts and tests (namely <TODO>).
 @item @b{(future)} Version 0.3.x
 @tab All interface functions for the solvers of Hairer and Wanner are stable so that they can be installed by default (via a @file{Makefile} or the @file{PKA_ADD} file). Finished adding all wrapper functions and help descriptions for theses solvers, added tests and demos for these solvers. Ongoing work with this manual.
 @item @b{(future)} Version 0.4.x
-@tab Maybe some of the Hindmarsh, Brown and Petzold solvers are added, but/and/or I think I prefer the solvers of Jeff Cash instead.
+@tab (Maybe) Some of the Hindmarsh, Brown and Petzold solvers are added, but/and/or I think I prefer the solvers of Jeff Cash instead. Don't know if DDE solver and BVP solvers should be added to this package. By now I don't have the need for this.
 @item @b{(future)} Version 0.5.x
-@tab Finished most work with this manual. Manual is build by default, making rules have been added to the OdePkg. A lot of compatibility tests will be done.
+@tab (Maybe) A lot of compatibility tests will be done again.
 @item @b{(future)} Version 0.6.x
-@tab Final release before version 1.0.0.
+@tab (Maybe) Final release before version 1.0.0.
 @item @b{(future)} Version 1.0.0
 @tab Completed odepkg release 1.0.0 with m--solvers and mex--solvers.
 @end multitable
@@ -105,12 +105,33 @@ where @file{x.x.x} in the name of the @file{*.tar.gz} file is the current releas
 @example
 pkg uninstall odepkg-x.x.x.tar.gz
 @end example
-If you encounter problems during the installation process of OdePkg with the @command{pkg} command or if you have an OdePkg that seems to be broken then please report this on the mailing--list of Octave--Forge using the email adress @email{octave-dev@@lists.sourceforge.net}.
+If you encounter problems during the installation process of OdePkg with the @command{pkg} command or if you have an OdePkg that seems to be broken then please report this on the mailing--list of Octave--Forge using the email adress
+@ifnothtml
+@email{octave-dev@@lists.sourceforge.net}
+@end ifnothtml
+@ifhtml
+@email{octave-dev @{at) lists.sourceforge.net} (replace @{at) with @@)
+@end ifhtml 
+.
 
 @node Reporting Bugs, First tests and demos, Installation and deinstallation, Beginners's Guide
 @section Reporting Bugs
 @cindex bugs
-If you encounter problems while using OdePkg or if you find bugs in the source codes then please report that via email at the Octave--Forge mailing--list using the email adress @email{octave-dev@@lists.sourceforge.net} and directly send a copy to the email adress @email{treichl@@users.sourceforge.net}.
+If you encounter problems while using OdePkg or if you find bugs in the source codes then please report that via email at the Octave--Forge mailing--list using the email adress 
+@ifnothtml
+@email{octave-dev@@lists.sourceforge.net}
+@end ifnothtml 
+@ifhtml
+@email{octave-dev @{at) lists.sourceforge.net} (replace @{at) with @@)
+@end ifhtml 
+and directly send a copy to the email adress 
+@ifnothtml
+@email{treichl@@users.sourceforge.net}
+@end ifnothtml 
+@ifhtml
+@email{treichl (at@} users.sourceforge.net} (replace (at@} with @@)
+@end ifhtml
+.
 
 @node First tests and demos,  , Reporting Bugs, Beginners's Guide
 @section First tests and demos
@@ -176,20 +197,20 @@ The ``User's Guide'' is intended for users who already do know in principal how 
 
 @menu
 * M--file Runge--Kutta solvers::  
-* Mex--file Runge--Kutta solvers::  
+* Mex--file Hairer--Wanner solvers::  
 * Other solvers::               
 @end menu
 
-@node M--file Runge--Kutta solvers, Mex--file Runge--Kutta solvers, Solver families, Solver families
+@node M--file Runge--Kutta solvers, Mex--file Hairer--Wanner solvers, Solver families, Solver families
 @subsection M--file Runge--Kutta solvers
 The m--file Runge--Kutta solvers are written in the Octave interpreter language and ...
 
-@node Mex--file Runge--Kutta solvers, Other solvers, M--file Runge--Kutta solvers, Solver families
-@subsection Mex--file Runge--Kutta solvers
+@node Mex--file Hairer--Wanner solvers, Other solvers, M--file Runge--Kutta solvers, Solver families
+@subsection Mex--file Hairer--Wanner solvers
 
 Interface functions for the solvers from Ernst Hairer and Gerhard Wanner (hosted at @url{http://www.unige.ch/~hairer}) have been added to the OdePkg as a compressed file with the name @file{hairer.tgz}. The licence of these solvers is a modified BSD license (without advertising clause) and can be found as @file{licence.txt} file in the @file{hairer.tgz} package. Therefore the Fortran files are GPL compatible.
 
-@node Other solvers,  , Mex--file Runge--Kutta solvers, Solver families
+@node Other solvers,  , Mex--file Hairer--Wanner solvers, Solver families
 @subsection Other solvers
 @c The solvers from Jeff Cash http://www.ma.ic.ac.uk/~jcash have not been added to the OdePkg because it seems that there may exist some unfixed bugs. Modified solver files with bugfixes can be found at http://pitagora.dm.uniba.it/~testset, but the disclaimer's part of this site is not clear and maybe the modified solver files are not GPL compatible.
 

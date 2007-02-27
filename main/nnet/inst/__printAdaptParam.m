@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid
+## Copyright (C) 2006 Michel D. Schmid <michaelschmid@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##
@@ -18,15 +18,14 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printAdaptParam (@var{fid})
+## @deftypefn {Function File} {} __printAdaptParam (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
 
-## Author: mds
-## $Revision$, $Date$
+## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 
-function printAdaptParam(fid,net)
+function __printAdaptParam(fid,net)
 
   if isfield(net,"adaptParam")
     if isempty(net.adaptParam)

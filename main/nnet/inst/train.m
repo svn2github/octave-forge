@@ -139,7 +139,7 @@ function [net] = train(net,Pp,Tt,notUsed1,notUsed2,VV)
   function checkInputArgs(net,Pp,Tt)
       
     ## check "net", must be a net structure
-    if !checknetstruct(net)
+    if !__checknetstruct(net)
       error("Structure doesn't seem to be a neural network!")
     endif
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid
+## Copyright (C) 2006 Michel D. Schmid <michaelschmid@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##
@@ -18,16 +18,15 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printBiasConnect (@var{fid})
+## @deftypefn {Function File} {} __printBiasConnect (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
 
-## Author: mds
-## e-mail: michaelschmid@users.sourceforge.net
+## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 
 
-function printBiasConnect(fid,net)
+function __printBiasConnect(fid,net)
 
   if isfield(net,"biasConnect")
     # net.biasConnect can be a matrix..!

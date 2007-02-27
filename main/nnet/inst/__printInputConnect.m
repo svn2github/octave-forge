@@ -1,32 +1,30 @@
-## Copyright (C) 2006 Michel D. Schmid
+## Copyright (C) 2006 Michel D. Schmid <michaelschmid@users.sourceforge.net>
 ##
-## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
 ##
-## Octave is distributed in the hope that it will be useful, but
+## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
+## along with this program; see the file COPYING.  If not, write to the Free
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} printInputConnect (@var{fid})
+## @deftypefn {Function File} {} __printInputConnect (@var{fid})
 ## @code{printMLPHeader} saves the header of a  neural network structure
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
 
-## Author: mds
-## e-mail: michaelschmid@users.sourceforge.net
+## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
 
-function printInputConnect(fid,net)
+function __printInputConnect(fid,net)
 
   if isfield(net,"inputConnect")
     # net.inputConnect can be a matrix..!

@@ -234,17 +234,16 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       vretvalresult', 'init', vfunarguments{:});
   end
 
-  vpow = 1/4;               %# See p.91 in Ascher & Petzold
-  va = [0, 0, 0, 0;         %# The Runge-Kutta-Fehlberg 2(3) coefficients
-        1/4, 0, 0, 0;       %# Coefficients proved on 20060827
-        -189/800, 729/800, 0, 0;
-        214/891, 1/33, 650/891, 0];
-  vb2 = [214/891; 1/33; 650/891; 0];    %# 2nd and 3rd order
-  vb3 = [533/2106; 0; 900/1053; -1/78]; %# b-coefficients
+  vpow = 1/4;            %# See p.91 in Ascher & Petzold
+  va = [  0, 0, 0;       %# The Runge-Kutta-Fehlberg 2(3) coefficients
+        1/2, 0, 0;       %# Coefficients proved on 20060827
+         -1, 2, 0];
+  vb2 = [0; 1; 0];       %# 2nd and 3rd order
+  vb3 = [1/6; 2/3; 1/6]; %# b-coefficients
   vc = sum (va, 2);
 
   %# The solver main loop - stop if endpoint has been reached
-  vcntloop = 2; vcntcycles = 1; vu = vinit; vk = vu' * zeros(1,4);
+  vcntloop = 2; vcntcycles = 1; vu = vinit; vk = vu' * zeros(1,3);
   vcntiter = 0; vunhandledtermination = true;
   while ((vtimestamp < vtimestop && vstepsize >= vminstepsize) == true)
 
@@ -252,8 +251,8 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     if ((vtimestamp + vstepsize) > vtimestop)
       vstepsize = vtimestop - vtimestamp; end
 
-    %# Estimate the four results when using this solver
-    for j = 1:4
+    %# Estimate the three results when using this solver
+    for j = 1:3
       if (vhavemasshandle == true)   %# Handle only the dynamic mass matrix,
         if (vmassdependence == true) %# constant mass matrices have already
           vmass = feval ...          %# been set before (if any)
@@ -400,7 +399,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     vhavestats = true;
     vsuccess   = vcntloop-2;                    %# vcntloop from 2..end
     vfailed    = (vcntcycles-1)-(vcntloop-2)+1; %# vcntcycl from 1..end
-    vfuncalls  = 4*(vcntcycles-1);              %# number of ode evaluations
+    vfuncalls  = 3*(vcntcycles-1);              %# number of ode evaluations
     vludecomp  = 0;                             %# number of LU decompositions
     vpartderv  = 0;                             %# number of partial derivatives
     vlinsols   = 0;                             %# no. of solutions of linear systems
@@ -413,7 +412,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   if (nargout == 1)                 %# Sort output variables, depends on nargout
     varargout{1}.x = vretvaltime;   %# Time stamps are saved in field x
     varargout{1}.y = vretvalresult; %# Results are saved in field y
-    varargout{1}.solver = 'ode78';  %# Solver name is saved in field solver
+    varargout{1}.solver = 'ode23';  %# Solver name is saved in field solver
     if (vhaveeventfunction == true) 
       varargout{1}.ie = vevent{2};  %# Index info which event occured
       varargout{1}.xe = vevent{3};  %# Time info when an event occured

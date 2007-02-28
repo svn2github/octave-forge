@@ -418,7 +418,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   if (nargout == 1)                 %# Sort output variables, depends on nargout
     varargout{1}.x = vretvaltime;   %# Time stamps are saved in field x
     varargout{1}.y = vretvalresult; %# Results are saved in field y
-    varargout{1}.solver = 'ode78';  %# Solver name is saved in field solver
+    varargout{1}.solver = 'ode54';  %# Solver name is saved in field solver
     if (vhaveeventfunction == true) 
       varargout{1}.ie = vevent{2};  %# Index info which event occured
       varargout{1}.xe = vevent{3};  %# Time info when an event occured

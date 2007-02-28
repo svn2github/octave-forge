@@ -117,6 +117,16 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
 
   end %# if (strcmp (vflag, ...) == true)
 
+%#! The only test I can imagine that could be added here is: Write
+%#! an example that uses an event function and start a solver process.
+%#! Lines like this don't work, because the function handle that would
+%#! be needed is not found by the test command.
+%#!
+%#! function [] = evetest (veve, vt, vy, vf, varargin)
+%#!  disp (vfun)
+%#! endfunction
+%#!test odepkg_event_handle (@evetest, 0.0, [0 1 2 3], 'init', 123, 456);
+
 %# Local Variables: ***
 %# mode: octave ***
 %# End: ***

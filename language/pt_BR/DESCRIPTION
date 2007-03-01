@@ -7,6 +7,6 @@ Title: Brazilian Portuguese Language Package
 Description: Brazilian Portuguese translations of the help strings of the
  Octave functions. 
 Categories: languages
-Depends: octave (>= 2.9.7)
+Depends: octave (> 2.9.9)
 License: GPL version 2 or later
 Url: http://octave.sf.net

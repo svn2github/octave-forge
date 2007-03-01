@@ -5,20 +5,20 @@ sinclude ../../Makeconf
 EXT=en
 
 pre-pkg/%::
-	@cp ../base/src/{help.icc,md5.h,md5.c} src/
+	@cp ../base/src/help.icc src/
 	if [ ! -e inst/ ]; then \
 	  mkdir inst/; \
 	fi; \
 	find help -name "*.$(EXT)" -exec cp {} inst/ \; 
 
 post-pkg/%::
-	@rm -f inst/*.$(EXT) src/{help.icc,md5.h.md5.c}; \
+	@rm -f inst/*.$(EXT) src/help.icc; \
 	if [ -z $$(ls -1A inst/) ]; then \
 	  rmdir inst/; \
 	fi
 
 clean:
-	@rm -f inst/*.$(EXT) src/{help.icc,md5.h.md5.c}; \
+	@rm -f inst/*.$(EXT) src/help.icc; \
 	if [ -z $$(ls -1A inst/) ]; then \
 	  rmdir inst/; \
 	fi

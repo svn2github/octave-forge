@@ -7,6 +7,6 @@ Title: Template translation package
 Description: Template package for the construction of native language
  translations of Octave functions.
 Categories: languages
-Depends: octave (>= 2.9.7)
+Depends: octave (> 2.9.9)
 License: GPL version 2 or later
 Url: http://octave.sf.net

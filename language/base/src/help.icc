@@ -38,7 +38,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <octave/procstream.h>
 #include <octave/help.h>
 
-#include "md5.h"
+#include "oct-md5.h"
 
 static bool
 local_looks_like_texinfo (const std::string& msg, size_t& p1)
@@ -211,21 +211,7 @@ HELP_TEXT
 	      if (horig.substr(horig.length()-1,1) != "\n")
 		horig += '\n';
 
-	      MD5_CTX mdContext;
-	      MD5Init (&mdContext);
-	      // static_cast = We don't change the string in the RSA MD5 code
-	      MD5Update (&mdContext, reinterpret_cast<unsigned char *>
-			 (const_cast<char *>(horig.c_str())), 
-			 horig.length());
-	      MD5Final (&mdContext);
-
-	      OCTAVE_LOCAL_BUFFER (char, tmp, 33);
-	      for (i = 0; i < 16; i++)
-		sprintf (&tmp[2*i], "%02x", mdContext.digest[i]);
-	      tmp[32] = 0;
-	      std::string horig_md5 (tmp);
-
-	      if (horig_md5 != h_md5)
+	      if (oct_md5 (horig) != h_md5)
 		octave_stdout << MD5_MISMATCH << "\n\n";
 
 	      local_display_help_text (octave_stdout, h);

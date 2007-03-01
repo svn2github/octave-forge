@@ -24,7 +24,8 @@ M4_OPTIONS := --prefix-builtin
 all: mkbundle md5
 
 mkbundle:
-	@d=`date +%Y%m%d`; \
+	@rm -f $(wildcard octave-forge-bundle-*.tar.gz); \
+	d=`date +%Y%m%d`; \
 	tar czf octave-forge-bundle-$$d.tar.gz $(PKGDIRS)
 
 md5: cleanmd5 $(patsubst %, domd5/%, $(PACKAGES)) md5bundle
@@ -40,14 +41,14 @@ domd5/%:
 	dir=`echo $(opkg) | sed -e "s|^\(.*\)/.*$$|\1|"`; \
 	file=`echo $(opkg) | sed -e "s|^.*/\(.*\)$$|\1|"`; \
 	md5=`cd $$dir; md5sum $$file`; \
-	echo "$$name $$ver $$md5" | sed -e "s|$$file|__PACKAGE__/$$file|" >> $(MD5FILE)
+	echo "$$name $$ver $$md5" | sed -e "s|$$file|__PACKAGE__/$$file?download|" >> $(MD5FILE)
 
 md5bundle:
 	@bundle=$(wildcard octave-forge-bundle-*.tar.gz); \
 	ver=`echo $$bundle | sed -e "s/.tar.gz$$//" | sed -e "s/^.*-//"`; \
 	name=`echo $$bundle | sed -e "s|^.*/||" | sed -e "s/^\(.*\)-.*.tar.gz$$/\1/"`; \
 	md5=`md5sum $$bundle`; \
-	echo "$$name $$ver $$md5" | sed -e "s|$$bundle|__PACKAGE__/$$bundle|" >> $(MD5FILE)
+	echo "$$name $$ver $$md5" | sed -e "s|$$bundle|__PACKAGE__/$$bundle?download|" >> $(MD5FILE)
 
 # Do nothing for the package target 
 package:

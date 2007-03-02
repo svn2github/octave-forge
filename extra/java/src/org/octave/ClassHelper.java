@@ -123,7 +123,7 @@ public class ClassHelper
       }
   }
 
-  public static Object invokeMethod (Object target, String name, Object[] args, Class[] argTypes) throws Exception
+  public static Object invokeMethod (Object target, String name, Object[] args, Class[] argTypes) throws Throwable
     {
       Method m = findMethod (target.getClass (), name, argTypes);
       if (m != null)
@@ -135,14 +135,14 @@ public class ClassHelper
             }
           catch (InvocationTargetException ex)
             {
-              throw (Exception)ex.getCause ();
+              throw ex.getCause ();
             }
         }
       else
         throw new NoSuchMethodException (name);
     }
 
-  public static Object invokeStaticMethod (String cls, String name, Object[] args, Class[] argTypes) throws Exception
+  public static Object invokeStaticMethod (String cls, String name, Object[] args, Class[] argTypes) throws Throwable
     {
       Method m = findMethod (Class.forName (cls, true, loader), name, argTypes);
       if (m != null)
@@ -154,7 +154,7 @@ public class ClassHelper
             }
           catch (InvocationTargetException ex)
             {
-              throw (Exception)ex.getCause ();
+              throw ex.getCause ();
             }
         }
       else
@@ -173,7 +173,7 @@ public class ClassHelper
         throw new NoSuchMethodException (cls);
     }
 
-  public static Object getField (Object target, String name) throws Exception
+  public static Object getField (Object target, String name) throws Throwable
     {
       try
         {
@@ -190,7 +190,7 @@ public class ClassHelper
         }
     }
 
-  public static Object getStaticField (String cls, String name) throws Exception
+  public static Object getStaticField (String cls, String name) throws Throwable
     {
       try
         {

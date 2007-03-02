@@ -19,18 +19,27 @@
 #include <octave/parse.h>
 #include <octave/Cell.h>
 #include <octave/file-stat.h>
+#include <octave/file-ops.h>
 #include <jni.h>
 #ifdef __WIN32__
 #include <windows.h>
 #endif
 
 #include <algorithm>
+#include <map>
 
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *args);
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
+  (JNIEnv *, jclass, jstring, jobjectArray, jobjectArray);
+extern "C" JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
+  (JNIEnv *, jclass, jint, jstring, jobject);
 
 static JavaVM *jvm = 0;
 static JNIEnv *jni_env = 0;
 static void* jvmLib = 0;
+
+static std::map<int,octave_value> listener_map;
 
 template <class T>
 class java_local_ref
@@ -107,49 +116,59 @@ static std::string read_registry_string (const std::string& key, const std::stri
 }
 #endif
 
+static std::string initial_java_dir (void)
+{
+  static std::string retval;
+
+  if (retval.empty())
+    {
+#ifdef __WIN32__
+      int n = 1024;
+      HMODULE hnd = GetModuleHandle ("__java__.oct");
+
+      if (hnd)
+        {
+          retval = std::string (n, '\0');
+          while (true)
+            {
+              int status = GetModuleFileName (hnd, &retval[0], n);
+
+              if (status < n)
+                {
+                  retval.resize (status);
+                  break;
+                }
+              else
+                {
+                  n *= 2;
+                  retval.resize (n);
+                }
+            }
+
+          if (! retval.empty ())
+            {
+              size_t pos = retval.rfind ("\\__java__.oct");
+
+              if (pos != NPOS)
+                retval.resize (pos);
+              else
+                retval.resize (0);
+            }
+        }
+#endif
+    }
+
+  return retval;
+}
+
 static std::string initial_class_path (void)
 {
-  std::string retval;
-
-#ifdef __WIN32__
-  int n = 1024;
-  HMODULE hnd = GetModuleHandle ("__java__.oct");
-
-  if (hnd)
-  {
-    retval = std::string (n, '\0');
-    while (true)
-      {
-        int status = GetModuleFileName (hnd, &retval[0], n);
-        
-        if (status < n)
-          {
-            retval.resize (status);
-            break;
-          }
-        else
-          {
-            n *= 2;
-            retval.resize (n);
-          }
-      }
-
-    if (! retval.empty ())
-      {
-        size_t pos = retval.rfind ("\\__java__.oct");
-
-        if (pos != NPOS)
-          retval.resize (pos+1);
-        else
-          retval.resize (0);
-      }
-  }
-#endif
+  std::string retval = initial_java_dir ();
 
   // check for octave.jar file
   if (! retval.empty ())
     {
-      std::string jar_file = retval + "octave.jar";
+      std::string jar_file = retval + file_ops::dir_sep_str + "octave.jar";
       file_stat st (jar_file);
 
       if (st)
@@ -179,13 +198,17 @@ static bool initialize_jvm (std::string& msg)
                       JavaVMInitArgs vm_args;
                       JavaVMOption options[1];
                       std::string init_class_path = "-Djava.class.path=" + initial_class_path ();
+                      std::string init_octave_path = "-Doctave.java.path=" + initial_java_dir ();
 
                       OCTAVE_LOCAL_BUFFER (char, class_path_optionString, init_class_path.length () + 1);
                       strcpy (class_path_optionString, init_class_path.c_str ());
+                      OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, init_octave_path.length () + 1);
+                      strcpy (octave_path_optionString, init_octave_path.c_str ());
 
                       vm_args.version = JNI_VERSION_1_2;
-                      vm_args.nOptions = 1;
+                      vm_args.nOptions = 2;
                       options[0].optionString = class_path_optionString;
+                      options[1].optionString = octave_path_optionString;
                       vm_args.options = options;
                       vm_args.ignoreUnrecognized = false;
 
@@ -802,6 +825,19 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
 		jobj = 0;
 		jcls = jni_env->FindClass ("java/lang/Object");
 	}
+  else if (val.is_function_handle ())
+    {
+      jclass lcls = jni_env->FindClass ("org/octave/OctListener");
+      jmethodID mID = jni_env->GetMethodID (lcls, "<init>", "()V"),
+                mID2 = jni_env->GetMethodID (lcls, "getID", "()I");
+      int ID;
+
+      jobj = jni_env->NewObject (lcls, mID);
+      jcls = lcls;
+      ID = jni_env->CallIntMethod (jobj, mID2);
+      printf("made listener ID=%d threadID=%d\n", ID, GetCurrentThreadId());
+      listener_map[ID] = val;
+    }
   else
     {
       error ("unable to convert object of type %s to java", val.class_name ().c_str ());
@@ -817,8 +853,10 @@ static int unbox (const octave_value_list& args, jobjectArray_ref& jobjs, jobjec
   jclass_ref ocls = jni_env->FindClass ("java/lang/Object");
   jclass_ref ccls = jni_env->FindClass ("java/lang/Class");
 
-  jobjs = jni_env->NewObjectArray (args.length (), ocls, 0);
-  jclss = jni_env->NewObjectArray (args.length (), ccls, 0);
+  if (! jobjs)
+    jobjs = jni_env->NewObjectArray (args.length (), ocls, 0);
+  if (! jclss)
+    jclss = jni_env->NewObjectArray (args.length (), ccls, 0);
   for (int i=0; i<args.length (); i++)
     {
       jobject_ref jobj;
@@ -1231,4 +1269,50 @@ a shortcut syntax. For instance, the two following statements are equivalent\n\
 DEFUN_DLD (__java__, args, , "")
 {
   return octave_value ();
+}
+
+JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
+  (JNIEnv *env, jclass, jstring funcName, jobjectArray argin, jobjectArray argout)
+{
+  std::string fname = jstring_to_string (funcName);
+  int nargout = env->GetArrayLength (argout);
+  int nargin = env->GetArrayLength (argin);
+  octave_value_list varargin, varargout;
+
+  for (int i=0; i<nargin; i++)
+    varargin(i) = box (env->GetObjectArrayElement (argin, i), 0);
+  varargout = feval (fname, varargin, nargout);
+
+  if (! error_state)
+    {
+      jobjectArray_ref out_objs = argout, out_clss;
+
+      out_objs.detach ();
+      if (unbox (varargout, out_objs, out_clss))
+        return true;
+    }
+
+  return false;
+}
+
+JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
+  (JNIEnv *env, jclass, jint ID, jstring name, jobject event)
+{
+  printf("listener invoked ID=%d, threadID=%d\n", ID, GetCurrentThreadId());
+  std::map<int,octave_value>::iterator it = listener_map.find (ID);
+
+  if (it != listener_map.end ())
+    {
+      octave_function *fcn = (it->second).function_value ();
+      if (! error_state && fcn)
+        {
+          feval (fcn);
+          if (error_state)
+            printf ("listener execution failed");
+        }
+      else
+        printf ("invalid listener, not runnable");
+    }
+  else
+    printf ("invalid listener ID=%d\n", ID);
 }

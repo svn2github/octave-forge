@@ -7,7 +7,7 @@ SUBDIRS = src/
 
 .PHONY: $(SUBDIRS)
 
-pre-pkg/%::
+pre-pkg::
 	make -C src clean
 
 clean:

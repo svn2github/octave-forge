@@ -12,7 +12,7 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070226.tar.gz?download">single file</a>.
+as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070301.tar.gz?download">single file</a>.
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <h2 id="main">Main repository</h2>
@@ -379,7 +379,7 @@ Miscellaneous</a></b></td>
    <b><a href="javascript:fold('nnet');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 nnet</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./nnet/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/nnet-0.0.2-39.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/nnet-0.1.0.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="nnet_details">
@@ -391,7 +391,7 @@ A feed forward multi-layer neural network.  </p>
     <b><a href="javascript:unfold('nnet');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 nnet</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./nnet/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/nnet-0.0.2-39.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/nnet-0.1.0.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -423,7 +423,7 @@ octcdf</a></b></td>
    <b><a href="javascript:fold('odepkg');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 OdePkg</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odepkg/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odepkg-0.2.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odepkg-0.2.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="odepkg_details">
@@ -435,7 +435,7 @@ A toolkit for Differential Equations and Initial Value Problems.  </p>
     <b><a href="javascript:unfold('odepkg');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 OdePkg</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odepkg/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odepkg-0.2.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odepkg-0.2.2.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -467,7 +467,7 @@ Optim</a></b></td>
    <b><a href="javascript:fold('optiminterp');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 optiminterp</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./optiminterp/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="optiminterp_details">
@@ -479,7 +479,7 @@ A optimal interpolation toolbox for octave  </p>
     <b><a href="javascript:unfold('optiminterp');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 optiminterp</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./optiminterp/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -903,6 +903,28 @@ Provides Java interface with OO-like Java objects manipulation  </p>
 Java</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./java/index.html" class="package_link">details</a> |
     <a class="package_link" href="__PACKAGE__/java-1.0.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+</div>
+<div class="package" id="macosx_detailed" style="display: none;">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:fold('macosx');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
+MacOSX</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./MacOSX/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/macosx-1.0.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="macosx_details">
+Provides additional functionality on Mac OS X  </p>
+</div>
+<div class="package" id="macosx">
+  <table class="package"><tr>
+    <td>
+    <b><a href="javascript:unfold('macosx');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
+MacOSX</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./MacOSX/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/macosx-1.0.0.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>

@@ -87,7 +87,9 @@ PKG_FILES = COPYING DESCRIPTION $(wildcard ChangeLog) $(wildcard INDEX) \
 endif
 REAL_PKG_FILES = $(filter-out %/CVS %/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
 
-pkg/%: pre-pkg/% real-pkg/% post-pkg/%
+# Note can't include "/%" in pre-pkg and post-pkg target as then gnu
+# make doesn't respect the double-colon!!!
+pkg/%: pre-pkg real-pkg/% post-pkg
 	@true
 
 real-pkg/%:
@@ -100,10 +102,12 @@ real-pkg/%:
 	if [ ! -f ChangeLog ]; then \
 	  if test "x$(CVS2CL)" != "x"; then \
 	    $(CVS2CL) --fsf --file ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
-	    echo "# Automatically generated file --- DO NOT EDIT" | \
-	    cat - ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp > \
-	    ../$(PKGDIR)/$$name-$$ver/ChangeLog; \
-	    rm ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
+	    if [ -f ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp ]; then \
+	      echo "# Automatically generated file --- DO NOT EDIT" | \
+	      cat - ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp > \
+	      ../$(PKGDIR)/$$name-$$ver/ChangeLog; \
+	      rm ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
+	    fi; \
 	  fi; \
 	fi; \
 	tar -cf - $(REAL_PKG_FILES) | (cd ../$(PKGDIR)/$$name-$$ver; tar -xf -); \
@@ -111,7 +115,7 @@ real-pkg/%:
 	tar -zcf $$name-$$ver.tar.gz $$name-$$ver; \
 	rm -fr $$name-$$ver;
 
-pre-pkg/%::
+pre-pkg::
 	@if [ -f src/autogen.sh ]; then \
           cd src; \
           sh ./autogen.sh; \
@@ -119,6 +123,6 @@ pre-pkg/%::
 	fi
 
 # By default do nothing post packaging
-post-pkg/%::
+post-pkg::
 	@true
 

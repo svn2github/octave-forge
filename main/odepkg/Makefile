@@ -12,7 +12,7 @@ SUBDIRS = doc/
 
 .PHONY : $(SUBDIRS)
 
-pre-pkg/% ::
+pre-pkg::
 	@for _dir in $(SUBDIRS); do \
 	  make -C $$_dir; \
 	done

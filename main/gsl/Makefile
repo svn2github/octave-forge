@@ -6,10 +6,10 @@ SUBDIRS = src/
 
 .PHONY: $(SUBDIRS)
 
-pre-pkg/%::
+pre-pkg::
 	make -C src clean
 
-post-pkg/%::
+post-pkg::
 	make -C src gsl_sf.cc
 
 clean:

@@ -25,11 +25,14 @@ checkpkgdir:
 	@if [ ! -d $(PKGDIR) ]; then mkdir $(PKGDIR); fi
 
 dopkg/%:
+	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pre-pkg
 	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg)
+	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) post-pkg
 
 dopkg2/%:
+	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pre-pkg -f../../Makeconf
 	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg) -f../../Makeconf
-
+	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) post-pkg -f../../Makeconf
 else
 package:
 	@echo not yet configured

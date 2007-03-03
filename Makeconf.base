@@ -88,11 +88,8 @@ endif
 REAL_PKG_FILES = $(filter-out %/CVS %/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
 
 # Note can't include "/%" in pre-pkg and post-pkg target as then gnu
-# make doesn't respect the double-colon!!!
-pkg/%: pre-pkg real-pkg/% post-pkg
-	@true
-
-real-pkg/%:
+# make doesn't respect the double-colon!!! Force the order of the rules
+pkg/%:
 	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//" | \
 	  sed -e "s/^[[:space:]]*//" | sed -e "s/[[:space:]]*$$//"`; \
 	name=`grep "Name:" DESCRIPTION | sed -e "s/^Name: *//" | \

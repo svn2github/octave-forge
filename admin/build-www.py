@@ -118,6 +118,7 @@ def create_INDEX(desc, packdir, p):
         ## Copy the INDEX file to local INDEX file
         index = open(install_dir + name_version + "/packinfo/INDEX", "r");
         local_index = open("INDEX","a");
+        local_index.write("\n");
         local_index.writelines(index.readlines());
         local_index.close();
         index.close();

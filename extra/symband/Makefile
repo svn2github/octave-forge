@@ -8,7 +8,7 @@ SUBDIRS = doc/
 
 pre-pkg::
 	@for _dir in $(SUBDIRS); do \
-	  make -C $$_dir; \
+	  make -C $$_dir all; \
 	done
 
 clean:

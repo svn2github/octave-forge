@@ -242,7 +242,7 @@ public class ClassHelper
       //System.out.println(expCls.getCanonicalName() + " <=? " + argCls.getCanonicalName());
       if (expCls.isAssignableFrom (argCls))
         return true;
-      else if (isNumberClass (expCls) && isNumberClass (argCls))
+      else if ((isNumberClass (expCls) || isBooleanClass (expCls)) && isNumberClass (argCls))
         return true;
       else if (expCls.isArray () && argCls.isArray () &&
           isCallableFrom (expCls.getComponentType (), argCls.getComponentType ()))
@@ -265,6 +265,14 @@ public class ClassHelper
       );
     }
 
+  private static boolean isBooleanClass (Class cls)
+    {
+      return (
+          cls.equals (Boolean.class) ||
+          cls.equals (Boolean.TYPE)
+      );
+    }
+
   private static Object[] castArguments (Object[] args, Class[] argTypes, Class[] expTypes)
     {
       for (int i=0; i<args.length; i++)
@@ -284,6 +292,8 @@ public class ClassHelper
           else if (expType.equals (Double.TYPE) || expType.equals (Double.class))
             return new Double (((Number)obj).doubleValue());
         }
+      else if (isBooleanClass (expType))
+        return new Boolean (((Number)obj).intValue() != 0);
       else if (expType.isArray () && type.isArray ())
         {
           return castArray (obj, type.getComponentType (), expType.getComponentType ());

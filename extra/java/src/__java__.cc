@@ -20,6 +20,7 @@
 #include <octave/Cell.h>
 #include <octave/file-stat.h>
 #include <octave/file-ops.h>
+#include <octave/cmd-edit.h>
 #include <jni.h>
 #ifdef __WIN32__
 #include <windows.h>
@@ -1036,13 +1037,27 @@ static octave_value do_java_set (const std::string& class_name, const std::strin
   return retval;
 }
 
+static int java_event_hook (void)
+{
+  if (jni_env)
+    {
+      jclass_ref cls = jni_env->FindClass ("org/octave/OctListener");
+      jmethodID mID = jni_env->GetStaticMethodID (cls, "checkPendingListener", "()V");
+      jni_env->CallStaticVoidMethod (cls, mID);
+    }
+  return 0;
+}
+
 static void initialize_java (void)
 {
   if (! jvm)
     {
       std::string msg;
       if (initialize_jvm (msg))
-        octave_java::register_type ();
+        {
+          octave_java::register_type ();
+          command_editor::set_event_hook (java_event_hook);
+        }
       else
         error (msg.c_str ());
     }

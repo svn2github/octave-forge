@@ -1,5 +1,5 @@
-autoload ("SBBacksub", which ("SymBand"));
-autoload ("SBEig", which ("SymBand"));
-autoload ("SBFactor", which ("SymBand"));
-autoload ("SBProd", which ("SymBand"));
-autoload ("SBSolve", which ("SymBand"));
+autoload ("SBBacksub", fullfile (fileparts (mfilename ("fullpath")), "SymBand.oct"));
+autoload ("SBEig", fullfile (fileparts (mfilename ("fullpath")), "SymBand.oct"));
+autoload ("SBFactor", fullfile (fileparts (mfilename ("fullpath")), "SymBand.oct"));
+autoload ("SBProd", fullfile (fileparts (mfilename ("fullpath")), "SymBand.oct"));
+autoload ("SBSolve", fullfile (fileparts (mfilename ("fullpath")), "SymBand.oct"));

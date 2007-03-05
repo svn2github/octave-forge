@@ -1,3 +1,3 @@
-autoload ("tk_loop", which ("tk_interp"))
-autoload ("tk_end", which ("tk_interp"))
-autoload ("tk_cmd", which ("tk_interp"))
+autoload ("tk_loop", fullfile (fileparts (mfilename ("fullpath")), "tk_interp.oct"))
+autoload ("tk_end", fullfile (fileparts (mfilename ("fullpath")), "tk_interp.oct"))
+autoload ("tk_cmd", fullfile (fileparts (mfilename ("fullpath")), "tk_interp.oct"))

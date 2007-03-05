@@ -244,6 +244,8 @@ public class ClassHelper
         return true;
       else if ((isNumberClass (expCls) || isBooleanClass (expCls)) && isNumberClass (argCls))
         return true;
+      else if (isCharClass (expCls) && argCls.equals (String.class))
+        return true;
       else if (expCls.isArray () && argCls.isArray () &&
           isCallableFrom (expCls.getComponentType (), argCls.getComponentType ()))
         return true;
@@ -273,6 +275,14 @@ public class ClassHelper
       );
     }
 
+  private static boolean isCharClass (Class cls)
+    {
+      return (
+          cls.equals (Character.class) ||
+          cls.equals (Character.TYPE)
+      );
+    }
+
   private static Object[] castArguments (Object[] args, Class[] argTypes, Class[] expTypes)
     {
       for (int i=0; i<args.length; i++)
@@ -294,6 +304,13 @@ public class ClassHelper
         }
       else if (isBooleanClass (expType))
         return new Boolean (((Number)obj).intValue() != 0);
+      else if (isCharClass (expType))
+        {
+          String s = obj.toString();
+          if (s.length () != 1)
+            throw new ClassCastException ("cannot cast " + s + " to character");
+          return new Character (s.charAt(0));
+        }
       else if (expType.isArray () && type.isArray ())
         {
           return castArray (obj, type.getComponentType (), expType.getComponentType ());

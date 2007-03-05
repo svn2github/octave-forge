@@ -812,7 +812,7 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
       jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid));
       jobj = jni_env->NewObject (dcls, mid, dval);
     }
-  else if (val.is_real_matrix () && (val.rows() == 1 || val.columns() == 1))
+  else if ((val.is_real_matrix () && (val.rows() == 1 || val.columns() == 1)) || val.is_range ())
     {
       Matrix m = val.matrix_value ();
       jdoubleArray dv = jni_env->NewDoubleArray (m.length ());

@@ -1,4 +1,242 @@
 # Automatically generated file --- DO NOT EDIT
+2007-03-04 21:46  adb014
+
+	* doc/htdocs/NEWS.in, doc/htdocs/index.in, doc/htdocs/packages.in,
+	  extra/MacOSX/Makefile, extra/symband/Makefile,
+	  main/comm/Makefile, main/fixed/Makefile, main/odepkg/Makefile,
+	  main/optim/Makefile, main/vrml/Makefile: Add explicit taret for
+	  sub-directories of packages
+
+2007-03-04 20:12  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/ClassHelper.java,
+	  org/octave/OctListener.java: support number->bool conversion +
+	  execute octave code in octave main thread
+
+2007-03-03 01:13  adb014
+
+	* Makeconf.base, extra/Makefile, language/Makefile, main/Makefile,
+	  nonfree/Makefile: Another attempt at getting the mess of rue
+	  precedence for double-colon and pattern rules right. Force the
+	  precedence to the parent directory
+
+2007-03-03 01:10  adb014
+
+	* extra/engine/INDEX: Add INDEX to engine, as a dummy file as there
+	  are no functions for use within octave itself
+
+2007-03-02 23:22  adb014
+
+	* language/pt_BR/Makefile: double-colon in pattern match rule is a
+	  termination, so remove pattern match from pre-pkg and post-pkg rules
+
+2007-03-02 22:00  adb014
+
+	* Makeconf.base, doc/htdocs/packages.in, extra/MacOSX/Makefile,
+	  extra/symband/Makefile, main/comm/Makefile, main/fixed/Makefile,
+	  main/gsl/Makefile, main/octcdf/Makefile, main/odepkg/Makefile,
+	  main/optim/Makefile, main/vrml/Makefile: double-colon in pattern
+	  match rule is a termination, so remove pattern match from pre-pkg
+	  and post-pkg rules
+
+2007-03-02 16:52  goffioul
+
+	* extra/java/src/: .cvsignore, org/octave/.cvsignore: update CVS
+	  ignored files.
+
+2007-03-02 16:50  goffioul
+
+	* extra/java/src/: Makefile, __java__.cc,
+	  org/octave/ClassHelper.java, org/octave/OctListener.java,
+	  org/octave/Octave.java: provides java->octave calling mechanism +
+	  embryon of event handling in octave
+
+2007-03-01 23:27  adb014
+
+	* main/miscellaneous/PKG_ADD: Don't autoload dispatch_help and
+	  builtin here as these functions are part of octave
+
+2007-03-01 23:20  adb014
+
+	* packages/: .cvsignore, Makefile: Add ?download to filenames in
+	  packages.md5
+
+2007-03-01 23:18  adb014
+
+	* language/: base/src/help.icc, base/src/md5.c, base/src/md5.h,
+	  base/template/DESCRIPTION, base/template/Makefile,
+	  base/template/src/Makefile, pt_BR/DESCRIPTION, pt_BR/Makefile,
+	  pt_BR/src/Makefile: Use the MD5 code in octave itself. Remove the
+	  RSA MD5 code in language packages
+
+2007-02-28 23:22  treichl
+
+	* main/odepkg/inst/: odepkg.m, odepkg_event_handle.m: Added
+	  comments.
+
+2007-02-28 22:29  treichl
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m: Small fixes.
+
+2007-02-28 21:47  abarth93
+
+	* main/optiminterp/DESCRIPTION: support for 4D optimal
+	  interpolation
+
+2007-02-28 21:25  abarth93
+
+	* main/optiminterp/: inst/optiminterp4.m, inst/test_optiminterp.m,
+	  inst/test_optiminterp_mult.m, INDEX: support for 4D optimal
+	  interpolation
+
+2007-02-27 23:27  adb014
+
+	* Makefile, admin/compare_md5sum, admin/release.sh,
+	  doc/htdocs/.cvsignore, packages/Makefile: Add md5 checksum of
+	  packages
+
+2007-02-27 23:25  adb014
+
+	* main/INDEX: svds/eigs indexed in arapack package
+
+2007-02-27 22:54  adb014
+
+	* main/nnet/inst/: __calcperf.m, __checknetstruct.m, __getx.m,
+	  __init.m, __newnetwork.m, __printLW.m, __printLayerConnect.m,
+	  __printLayerWeights.m, __printLayers.m, __printMLPHeader.m,
+	  __printNumInputDelays.m, __printNumInputs.m,
+	  __printNumLayerDelays.m, __printNumLayers.m, __printNumOutputs.m,
+	  __printNumTargets.m, __printOutputConnect.m, __printOutputs.m,
+	  __printPerformFcn.m, __printPerformParam.m,
+	  __printTargetConnect.m, __printTargets.m, __printTrainFcn.m,
+	  __printTrainParam.m, __setx.m, __trainlm.m: Make function names
+	  agree with file names
+
+2007-02-27 22:43  treichl
+
+	* main/odepkg/src/Makefile: Added one more comment.
+
+2007-02-27 22:42  treichl
+
+	* main/odepkg/doc/odepkg.texi: Updated.
+
+2007-02-27 22:42  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_radau.c,
+	  odepkg_mexsolver_radau5.c, odepkg_mexsolver_rodas.c: Very little
+	  modifications needed for the m-file wrapper functions.
+
+2007-02-27 22:40  treichl
+
+	* main/odepkg/: DESCRIPTION, INDEX: Released 0.2.2: All necessary
+	  Makefiles are there and all wrapper functions for the mexsolver
+	  files.
+
+2007-02-27 22:36  treichl
+
+	* main/odepkg/inst/: ode5d.m, odepkg.m: Updated.
+
+2007-02-27 22:35  treichl
+
+	* main/odepkg/inst/: ode2r.m, ode5r.m, ode8d.m, odeox.m, oders.m,
+	  odesx.m: Wrapper functions to mexsolvers intially added.
+
+2007-02-27 21:12  michaelschmid
+
+	* main/nnet/inst/: __calcperf.m, __getx.m, __newnetwork.m,
+	  __trainlm.m: fixed some more renaming bugs
+
+2007-02-27 21:00  michaelschmid
+
+	* main/nnet/inst/: __printAdaptFcn.m, __printAdaptParam.m,
+	  __printB.m, __printBiasConnect.m, __printBiases.m, __printIW.m,
+	  __printInitFcn.m, __printInitParam.m, __printInputConnect.m,
+	  __printInputWeights.m, __printInputs.m, train.m: removed bug in
+	  train because renaming of private functions
+
+2007-02-27 20:41  michaelschmid
+
+	* main/nnet/INDEX: updated INDEX after renaming a lot of functions
+	  with the prefix '__'
+
+2007-02-27 20:37  michaelschmid
+
+	* main/nnet/inst/: __calcjacobian.m, __calcperf.m,
+	  __checknetstruct.m, __getx.m, __init.m, __mse.m, __newnetwork.m,
+	  __printAdaptFcn.m, __printAdaptParam.m, __printB.m,
+	  __printBiasConnect.m, __printBiases.m, __printIW.m,
+	  __printInitFcn.m, __printInitParam.m, __printInputConnect.m,
+	  __printInputWeights.m, __printInputs.m, __printLW.m,
+	  __printLayerConnect.m, __printLayerWeights.m, __printLayers.m,
+	  __printMLPHeader.m, __printNumInputDelays.m, __printNumInputs.m,
+	  __printNumLayerDelays.m, __printNumLayers.m, __printNumOutputs.m,
+	  __printNumTargets.m, __printOutputConnect.m, __printOutputs.m,
+	  __printPerformFcn.m, __printPerformParam.m,
+	  __printTargetConnect.m, __printTargets.m, __printTrainFcn.m,
+	  __printTrainParam.m, __setx.m, __trainlm.m, calcjacobian.m,
+	  calcperf.m, checknetstruct.m, getx.m, init.m, isposint.m,
+	  min_max.m, mse.m, newff.m, newnetwork.m, poststd.m, prestd.m,
+	  purelin.m, saveMLPStruct.m, setx.m, sim.m, train.m, trainlm.m,
+	  trastd.m: renamed a lot of functions with the prefix '__'
+
+2007-02-27 17:40  treichl
+
+	* main/odepkg/: Makefile, doc/Makefile, src/Makefile: Just very
+	  small cleanups and added some comments.
+
+2007-02-27 11:32  goffioul
+
+	* configure.base: Look for dvipdfm (MiKTeX) if dvipdf is not found
+	  + fixes for GnuWin32 texi2dvi by disabling COMSPEC variable and
+	  --clean argument
+
+2007-02-27 11:30  goffioul
+
+	* Makeconf.base: Older sed does not support \s character class,
+	  replace with [[:space:]]
+
+2007-02-27 10:16  adb014
+
+	* main/nnet/DESCRIPTION: Update nnet version number
+
+2007-02-26 21:16  adb014
+
+	* main/odepkg/inst/.cvsignore: ignore some temporary files
+
+2007-02-26 21:10  adb014
+
+	* main/fixed/Makefile: Avoid packaging some CVS files
+
+2007-02-26 21:07  adb014
+
+	* main/odepkg/: Makefile, doc/.cvsignore, src/.cvsignore,
+	  src/Makeconf.in, src/Makefile, src/autogen.sh,
+	  src/configure.base: Reorg of odepkg so that packaging builds doc
+	  and that there are lautoconf files in the package itself
+
+2007-02-26 11:02  adb014
+
+	* main/plot/inst/: drawnow.m, stem.m, text.m, view.m: remove
+	  drawnow, stem, text and view function as they are now in 2.9.9+
+
+2007-02-26 01:10  adb014
+
+	* extra/java/src/.cvsignore: Ignore built files for CVS operations
+
+2007-02-26 01:08  adb014
+
+	* doc/: .cvsignore, htdocs/.cvsignore: Ignore a few additiona files
+	  and directories
+
+2007-02-26 01:06  adb014
+
+	* ChangeLog, doc/htdocs/ChangeLog, doc/htdocs/packages.in: Update
+	  Changelog and packages.in files
+
+2007-02-26 00:31  adb014
+
+	* admin/: release.sh: minor bug
+
 2007-02-26 00:27  adb014
 
 	* admin/release.sh: update comments on requirements
@@ -19,37 +257,8 @@
 	  inst/mse.m, inst/newff.m, inst/newnetwork.m, inst/poststd.m,
 	  inst/prestd.m, inst/purelin.m, inst/saveMLPStruct.m, inst/setx.m,
 	  inst/sim.m, inst/tansig.m, inst/train.m, inst/trainlm.m,
-	  inst/trastd.m, inst/saveMLPStructure/printAdaptFcn.m,
-	  inst/saveMLPStructure/printAdaptParam.m,
-	  inst/saveMLPStructure/printB.m,
-	  inst/saveMLPStructure/printBiasConnect.m,
-	  inst/saveMLPStructure/printBiases.m,
-	  inst/saveMLPStructure/printIW.m,
-	  inst/saveMLPStructure/printInitFcn.m,
-	  inst/saveMLPStructure/printInitParam.m,
-	  inst/saveMLPStructure/printInputConnect.m,
-	  inst/saveMLPStructure/printInputWeights.m,
-	  inst/saveMLPStructure/printInputs.m,
-	  inst/saveMLPStructure/printLW.m,
-	  inst/saveMLPStructure/printLayerConnect.m,
-	  inst/saveMLPStructure/printLayerWeights.m,
-	  inst/saveMLPStructure/printLayers.m,
-	  inst/saveMLPStructure/printMLPHeader.m,
-	  inst/saveMLPStructure/printNumInputDelays.m,
-	  inst/saveMLPStructure/printNumInputs.m,
-	  inst/saveMLPStructure/printNumLayerDelays.m,
-	  inst/saveMLPStructure/printNumLayers.m,
-	  inst/saveMLPStructure/printNumOutputs.m,
-	  inst/saveMLPStructure/printNumTargets.m,
-	  inst/saveMLPStructure/printOutputConnect.m,
-	  inst/saveMLPStructure/printOutputs.m,
-	  inst/saveMLPStructure/printPerformFcn.m,
-	  inst/saveMLPStructure/printPerformParam.m,
-	  inst/saveMLPStructure/printTargetConnect.m,
-	  inst/saveMLPStructure/printTargets.m,
-	  inst/saveMLPStructure/printTrainFcn.m,
-	  inst/saveMLPStructure/printTrainParam.m: Update author fields so
-	  that that automatic creation of AUTHORS file is correct
+	  inst/trastd.m: Update author fields so that that automatic
+	  creation of AUTHORS file is correct
 
 2007-02-26 00:00  adb014
 
@@ -70,35 +279,9 @@
 	  dpurelin.m, dtansig.m, getx.m, init.m, isposint.m, min_max.m,
 	  mse.m, newff.m, newnetwork.m, poststd.m, prestd.m, purelin.m,
 	  saveMLPStruct.m, setx.m, sim.m, tansig.m, train.m, trainlm.m,
-	  trastd.m, saveMLPStructure/printAdaptFcn.m,
-	  saveMLPStructure/printAdaptParam.m, saveMLPStructure/printB.m,
-	  saveMLPStructure/printBiasConnect.m,
-	  saveMLPStructure/printBiases.m, saveMLPStructure/printIW.m,
-	  saveMLPStructure/printInitFcn.m,
-	  saveMLPStructure/printInitParam.m,
-	  saveMLPStructure/printInputConnect.m,
-	  saveMLPStructure/printInputWeights.m,
-	  saveMLPStructure/printInputs.m, saveMLPStructure/printLW.m,
-	  saveMLPStructure/printLayerConnect.m,
-	  saveMLPStructure/printLayerWeights.m,
-	  saveMLPStructure/printLayers.m,
-	  saveMLPStructure/printMLPHeader.m,
-	  saveMLPStructure/printNumInputDelays.m,
-	  saveMLPStructure/printNumInputs.m,
-	  saveMLPStructure/printNumLayerDelays.m,
-	  saveMLPStructure/printNumLayers.m,
-	  saveMLPStructure/printNumOutputs.m,
-	  saveMLPStructure/printNumTargets.m,
-	  saveMLPStructure/printOutputConnect.m,
-	  saveMLPStructure/printOutputs.m,
-	  saveMLPStructure/printPerformFcn.m,
-	  saveMLPStructure/printPerformParam.m,
-	  saveMLPStructure/printTargetConnect.m,
-	  saveMLPStructure/printTargets.m,
-	  saveMLPStructure/printTrainFcn.m,
-	  saveMLPStructure/printTrainParam.m: Reorganise the nnet package
-	  in a way that it will actually be available aftaer installation.
-	  Note saveMLPStructure directory still not visible
+	  trastd.m: Reorganise the nnet package in a way that it will
+	  actually be available aftaer installation. Note saveMLPStructure
+	  directory still not visible
 
 2007-02-25 23:14  adb014
 

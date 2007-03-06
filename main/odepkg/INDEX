@@ -1,7 +1,7 @@
 odepkg >> OdePkg
 OdePkg Tutorial
  odepkg
-OdePkg Solver Functions
+OdePkg ODE Solver Functions
  ode23
  ode45
  ode54
@@ -9,6 +9,7 @@ OdePkg Solver Functions
  ode5d
  ode8d
  odeox
+OdePkg DAE Solver Functions
  ode2r
  ode5r
  oders
@@ -27,6 +28,15 @@ OdePkg Example Functions
  odepkg_equations_roessler
  odepkg_equations_secondorderlag
  odepkg_equations_vanderpol
+OdePkg Testsuite Functions
+ odepkg_testsuite_calcscd
+ odepkg_testsuite_calcmescd
+ odepkg_testsuite_chemakzo
+ odepkg_testsuite_hires
+ odepkg_testsuite_oregonator
+ odepkg_testsuite_pollution
+ odepkg_testsuite_robertson
+ odepkg_testsuite_transistor
 OdePkg Helper Functions
  odepkg_event_handle
  odepkg_structure_check

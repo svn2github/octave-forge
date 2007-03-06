@@ -42,25 +42,25 @@ function [] = odepkg (vstr)
 
 function [] = odepkg_validate_mfiles ()
 
-  %# Can do all tests that do not produce output, if functions have to be tested
-  %# that do produce output then look below - they are called manually.
-  %# From command line run something like this:
+  %# Can do all tests that do not produce output, if functions have to be
+  %# tested that do produce output then look below - they are called
+  %# manually. From command line run something like this:
   %#   octave --quiet --eval "odepkg ('odepkg_validate_mfiles')"
-  vsolver = {'ode23', 'ode45', 'ode54', 'ode78', ...
-             'ode5d', 'ode8d', 'odeox', ...
-             'ode2r', 'ode5r', 'oders', 'odesx', ...
-             'odeget', 'odeset', ...
-             'odepkg_structure_check', ... %# 'odepkg_event_handle', ...
-             'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
-             'odepkg_equations_lorenz', 'odepkg_equations_pendulous', ...
-             'odepkg_equations_roessler', 'odepkg_equations_secondorderlag', ...
-             'odepkg_equations_vanderpol', ...
-             'odepkg_testsuite_calcscd', 'odepkg_testsuite_calcmescd', ...
-             };
 
-  for vcnt=1:length(vsolver)
-    printf ('Testing function %s ... ', vsolver{vcnt});
-    test (vsolver{vcnt}, 'quiet'); fflush (1);
+  vfun = {'ode23', 'ode45', 'ode54', 'ode78', ...
+          'ode5d', 'ode8d', 'odeox', ...
+          'ode2r', 'ode5r', 'oders', 'odesx', ...
+          'odeget', 'odeset', ...
+          'odepkg_structure_check', ... %# 'odepkg_event_handle', ...
+          'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
+          'odepkg_equations_lorenz', 'odepkg_equations_pendulous', ...
+          'odepkg_equations_roessler', 'odepkg_equations_secondorderlag', ...
+          'odepkg_equations_vanderpol', ...
+          'odepkg_testsuite_calcscd', 'odepkg_testsuite_calcmescd'};
+
+  for vcnt=1:length(vfun)
+    printf ('Testing function %s ... ', vfun{vcnt});
+    test (vfun{vcnt}, 'quiet'); fflush (1);
   end
 
   printf ('Testing function odepkg_testsuite_chemakzo ... ');
@@ -68,42 +68,60 @@ function [] = odepkg_validate_mfiles ()
   printf ('Testing function odepkg_testsuite_chemakzo ... ');
   odepkg_testsuite_chemakzo (@odepkg_mexsolver_seulex, 10^-04);
 
-
-function [] = odepkg_validate_mexsolvers ()
-  vmexsolver = {@odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
-		@odepkg_mexsolver_odex};
-
-  for i=1:length (vmexsolver)
-    fprintf (1, 'Validating solver %s... ', func2str(vmexsolver{i}));
-    vres = [2.4939, -2.6130, 0.0519];
-
-    [vx, vy] = feval (vmexsolver{i}, @odepkg_equations_roessler, [0 70], [0.1 0.3 0.1]);
-    odepkg_validate_tolerances (vy(end,:), vres*0.9, vres*1.1);
-
-    vopt = odeset ('RelTol', 1e-4, 'AbsTol', 1e-5);
-    [vx, vy] = feval (vmexsolver{i}, @odepkg_equations_roessler, [0 70], [0.1 0.3 0.1], vopt);
-    odepkg_validate_tolerances (vy(end,:), vres*0.9, vres*1.1);
-
-    vopt = odeset ('RelTol', [1.1e-4, 1.2e-4, 1.3e-4], 'AbsTol', [1.1e-5, 1.2e-5, 1.3e-5]);
-    [vx, vy] = feval (vmexsolver{i}, @odepkg_equations_roessler, [0 70], [0.1 0.3 0.1], vopt);
-    odepkg_validate_tolerances (vy(end,:), vres*0.9, vres*1.1);
-
-    vopt = odeset ('NormControl', 'on');
-    [vx, vy] = feval (vmexsolver{i}, @odepkg_equations_roessler, [0 70], [0.1 0.3 0.1], vopt);
-    odepkg_validate_tolerances (vy(end,:), vres*0.9, vres*1.1);
-
-    fprintf (1, 'Completed.\n', func2str(vmexsolver{i})); fflush (1);
+function [] = odepkg_performance_mathires ()
+  vfun = {@ode113, @ode23, @ode45, ...
+          @ode15s, @ode23s, @ode23t, @ode23tb};
+  for vcnt=1:length(vfun)
+    vsol{vcnt, 1} = odepkg_testsuite_hires (vfun{vcnt}, 1e-7);
   end
+  odepkg_testsuite_write (vsol);
 
-function [] = odepkg_validate_tolerances (vsol, vmin, vmax)
-  if (any (abs (vsol) < abs (vmin)))
-    error ('yes1');
+function [] = odepkg_performance_octavehires ()
+  vfun = {@ode23, @ode45, @ode54, @ode78, ...
+          @odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
+          @odepkg_mexsolver_radau, @odepkg_mexsolver_radau5, ...
+          @odepkg_mexsolver_seulex, @odepkg_mexsolver_rodas};
+  for vcnt=1:length(vfun)
+    vsol{vcnt, 1} = odepkg_testsuite_hires (vfun{vcnt}, 1e-7);
   end
-  if (any (abs (vsol) > abs (vmax)))
-    error ('yes2');
+  odepkg_testsuite_write (vsol);
+
+function [] = odepkg_performance_matchemakzo ()
+  vfun = {@ode23, @ode45, ...
+          @ode15s, @ode23s, @ode23t, @ode23tb};
+  for vcnt=1:length(vfun)
+    vsol{vcnt, 1} = odepkg_testsuite_chemakzo (vfun{vcnt}, 1e-7);
   end
+  odepkg_testsuite_write (vsol);
 
+function [] = odepkg_performance_octavechemakzo ()
+  vfun = {@ode23, @ode45, @ode54, @ode78, ...
+          @odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
+          @odepkg_mexsolver_radau, @odepkg_mexsolver_radau5, ...
+          @odepkg_mexsolver_seulex, @odepkg_mexsolver_rodas};
+  for vcnt=1:length(vfun)
+    vsol{vcnt, 1} = odepkg_testsuite_chemakzo (vfun{vcnt}, 1e-7);
+  end
+  odepkg_testsuite_write (vsol);
 
+function [] = odepkg_testsuite_write (vsol)
+
+  fprintf (1, ['-----------------------------------------------------------------------------------------\n']);
+  fprintf (1, [' Solver  RelTol  AbsTol   Init   Mescd    Scd  Steps  Accept  FEval  JEval  LUdec    Time\n']);
+  fprintf (1, ['-----------------------------------------------------------------------------------------\n']);
+
+  [vlin, vcol] = size (vsol);
+  for vcntlin = 1:vlin
+    if (isempty (vsol{vcntlin}{9})), vsol{vcntlin}{9} = 0; end
+    %# if (vcntlin > 1) %# Delete solver name if it is the same as before
+    %#   if (strcmp (func2str (vsol{vcntlin}{1}), func2str (vsol{vcntlin-1}{1})))
+    %#     vsol{vcntlin}{1} = ' ';
+    %#   end
+    %# end
+    fprintf (1, ['%7s  %6.0g  %6.0g  %6.0g  %5.2f  %5.2f  %5.0d  %6.0d  %5.0d  %5.0d  %5.0d  %6.3f\n'], ...
+             func2str (vsol{vcntlin}{1}), vsol{vcntlin}{2:12});
+  end
+  fprintf (1, ['-----------------------------------------------------------------------------------------\n']);
 
 function [] = demos ()
 
@@ -263,33 +281,6 @@ function xdot = odepkg_example_stiffnonnegative (x, t)
   epsilon = 1e-2;
   xdot = ((1 - x) * t - t^2) / epsilon;
 endfunction
-
-%!function y = f(x)
-%! y = 3 * x;
-%!test 
-%!  d = f(3) * 3
-
-%% test/octave.test/error/error-2.m
-%!function g () 
-%! error ("foo\n");
-%!function f () 
-%! g 
-%!error <foo> f ();
-
-%!shared A
-%!demo A
-%!  function y=f(x)
-%!    y=x;
-%!  endfunction
-%!  f(3)
-%!demo A
-
-%# Diese demo kann dann mit dem Befehl
-%#   [A, B] = example ('odepkg', 1);
-%# extrahiert werden und mit dem Aufruf
-%#   eval (A);
-%# ausgeführt werden
-%#   Baue eventuell eine neue demo.m function
 
 %# Local Variables: ***
 %# mode: octave ***

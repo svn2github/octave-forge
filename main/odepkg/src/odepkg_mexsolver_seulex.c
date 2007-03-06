@@ -881,7 +881,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
       mxAddField (vtem, "partial");
       vnum = mxGetFieldNumber (vtem, "partial");
-      mxSetFieldByNumber (vtem, 0, vnum, mxCreateDoubleScalar (0.0));
+      fodepkgvar (2, "vjacobs", &vtmp);
+      mxSetFieldByNumber (vtem, 0, vnum, mxDuplicateArray (vtmp));
 
       mxAddField (vtem, "ludecom");
       vnum = mxGetFieldNumber (vtem, "ludecom");

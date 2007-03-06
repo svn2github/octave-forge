@@ -28,6 +28,7 @@ typedef struct {
   std::string filename;
   int natts, nvars, unlimdimid, ndims;
   Modes mode;
+  int count;
 }  ncfile_t ;
 
 class octave_ncfile:public octave_base_value
@@ -35,11 +36,17 @@ class octave_ncfile:public octave_base_value
 public:
   octave_ncfile(void):octave_base_value(), nf(NULL) {}
 
-  octave_ncfile(const octave_ncfile& ncfile_val):octave_base_value(), nf(ncfile_val.nf) { }
+  octave_ncfile(const octave_ncfile& ncfile_val):octave_base_value(), nf(ncfile_val.nf) { 
+     nf->count++;  
+#    ifdef OV_NETCDF_VERBOSE
+     octave_stdout << "copy ncfile" << nf << endl;
+#    endif
+  }
 
   octave_ncfile(string filenamep, string open_mode);
 
   OV_REP_TYPE *clone(void) const { return new octave_ncfile(*this); }
+  //OV_REP_TYPE *clone(void) const { return (octave_base_value*)this; }
 
 // x.v = y     x(idx).v = y     x{idx}.v = y
 
@@ -92,10 +99,6 @@ public:
 
 private:
   ncfile_t* nf;
-
-//   int ncid;
-//   std::string filename;
-//   int natts, nvars, unlimdimid, ndims;
 
 
   DECLARE_OCTAVE_ALLOCATOR 

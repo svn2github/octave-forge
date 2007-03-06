@@ -41,14 +41,14 @@ typedef struct {
   std::string varname;
   bool autoscale;
   bool autonan;
-
+  int count;
 }  ncvar_t ;
 
 class octave_ncvar:public octave_base_value {
 public:
   octave_ncvar(void):octave_base_value(), ncv(NULL) {}
 
-  octave_ncvar(const octave_ncvar& nc_val):octave_base_value(), ncv(nc_val.ncv) { }
+  octave_ncvar(const octave_ncvar& nc_val):octave_base_value(), ncv(nc_val.ncv) { ncv->count++; }
 
   octave_ncvar(octave_ncfile* ncfilep, int varid);
    
@@ -73,7 +73,8 @@ public:
     return octave_value_list();
   }
 
-  ~octave_ncvar()  { }
+  // destructor
+  ~octave_ncvar();
  
   void read_info();
 
@@ -127,7 +128,13 @@ public:
 
 
   void set_nctype(const nc_type t) { ncv->nctype = t; };
-  void set_ncfile(octave_ncfile* t) { ncv->ncfile = t; };
+  void set_ncfile(const octave_ncfile* t) { 
+#    ifdef OV_NETCDF_VERBOSE
+     octave_stdout << "copy constructor"<< endl; 
+#    endif
+     ncv->ncfile = new octave_ncfile(*t); 
+  };
+
   void set_varid(const int& t)  { ncv->varid = t; };
   void set_ncid(const int& t)  { ncv->ncid = t; };
   void set_natts(const int& t)  { ncv->natts = t; };

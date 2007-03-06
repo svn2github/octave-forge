@@ -25,7 +25,6 @@
 #include "ov-ncatt.h"
 
 
-
 //
 // octave_ncatt
 //
@@ -34,11 +33,13 @@ octave_ncatt::octave_ncatt(octave_ncvar* ncvar, int attnump) {
   int status;
   char name[NC_MAX_NAME];
 
-# ifdef OV_NETCDF_VERBOSE
-  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << std::endl;
-# endif
 
   nca = new ncatt_t;
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << nca << std::endl;
+# endif
+
+  nca->count = 1;
 
   set_ncfile(ncvar->get_ncfile());
   set_ncvar(ncvar);
@@ -62,12 +63,12 @@ octave_ncatt::octave_ncatt(octave_ncvar* ncvar, int attnump) {
 octave_ncatt::octave_ncatt(octave_ncvar* ncvar, std::string attnamep) {
   int status, attnum;
 
-
+  nca = new ncatt_t;
 # ifdef OV_NETCDF_VERBOSE
-  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << std::endl;
+  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << nca << std::endl;
 # endif
 
-  nca = new ncatt_t;
+  nca->count = 1;
 
   set_ncfile(ncvar->get_ncfile());
   set_ncvar(ncvar);
@@ -92,11 +93,13 @@ octave_ncatt::octave_ncatt(octave_ncvar* ncvar, std::string attnamep) {
 octave_ncatt::octave_ncatt(octave_ncfile* ncfilep, int attnump) {
   int status;
   char name[NC_MAX_NAME];
-# ifdef OV_NETCDF_VERBOSE
-  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << "attm " << attnump<< std::endl;
-# endif
 
   nca = new ncatt_t;
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << nca << std::endl;
+# endif
+
+  nca->count = 1;
 
   set_ncfile(ncfilep);
   set_ncvar(NULL);
@@ -124,30 +127,31 @@ octave_ncatt::octave_ncatt(octave_ncfile* ncfilep, int attnump) {
 octave_ncatt::octave_ncatt(octave_ncfile* ncfilep, std::string attnamep) {
   int status, attnum;
 
+  nca = new ncatt_t;
 # ifdef OV_NETCDF_VERBOSE
-  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << std::endl;
+  octave_stdout << "new attr " <<  __LINE__ << ":"  << __FUNCTION__ << nca << std::endl;
 # endif
 
-    nca = new ncatt_t;
+  nca->count = 1;
 
-   set_ncfile(ncfilep);
-   set_ncvar(NULL);
-   set_name(attnamep);
-   set_varid(NC_GLOBAL);
-   set_ncid(get_ncfile()->get_ncid());
+  set_ncfile(ncfilep);
+  set_ncvar(NULL);
+  set_name(attnamep);
+  set_varid(NC_GLOBAL);
+  set_ncid(get_ncfile()->get_ncid());
 
 
-   status = nc_inq_attid(get_ncid(),get_varid(),get_name().c_str(),&attnum);
+  status = nc_inq_attid(get_ncid(),get_varid(),get_name().c_str(),&attnum);
 
-   if (status != NC_NOERR) {
-     error("Error while quering attribute: %s",nc_strerror(status));
-     return;
-   }
+  if (status != NC_NOERR) {
+    error("Error while quering attribute: %s",nc_strerror(status));
+    return;
+  }
 
-   set_attnum(attnum);
+  set_attnum(attnum);
 
-   read_info();
- }
+  read_info();
+}
  
 
 // ncatt_var(:) = y
@@ -185,7 +189,7 @@ octave_value octave_ncatt::subsasgn(const std::string & type,
 // ncatt_var(:) 
 
 octave_value octave_ncatt::subsref(const std::string &type,
-			       const std::list < octave_value_list > &idx)
+				   const std::list < octave_value_list > &idx)
 {
   octave_value retval;
 
@@ -204,7 +208,7 @@ octave_value octave_ncatt::subsref(const std::string &type,
 }
 
 
-  void octave_ncatt::read_info() {
+void octave_ncatt::read_info() {
   size_t length;
   int status;
   nc_type nctype;
@@ -221,16 +225,16 @@ octave_value octave_ncatt::subsref(const std::string &type,
   nca->dimvec.resize(2);
   nca->dimvec(0) = 1;
   nca->dimvec(1) = length;
-  }
+}
 
 
-  void octave_ncatt::print(std::ostream & os, bool pr_as_read_syntax) const {
-    os << "attname = " << get_name() << endl;;
-    os << "type = " << nctype2ncname(get_nctype()) << endl;;
-#   ifdef OV_NETCDF_VERBOSE
-    os << "attnum = " << get_attnum() << endl;;
-#   endif
-  }
+void octave_ncatt::print(std::ostream & os, bool pr_as_read_syntax) const {
+  os << "attname = " << get_name() << endl;;
+  os << "type = " << nctype2ncname(get_nctype()) << endl;;
+# ifdef OV_NETCDF_VERBOSE
+  os << "attnum = " << get_attnum() << endl;;
+# endif
+}
 
 void octave_ncatt::rename(string new_name) {
   int status;

@@ -29,6 +29,7 @@ typedef struct {
   octave_ncvar* ncvar;
   std::string attname;
   int ncid,varid,attnum;
+  int count;
 }  ncatt_t ;
 
 
@@ -36,7 +37,12 @@ class octave_ncatt:public octave_base_value {
 public:
   octave_ncatt(void):octave_base_value(), nca(NULL) { } 
 
-  octave_ncatt(const octave_ncatt& ncatt_val):octave_base_value(), nca(ncatt_val.nca) { }
+  octave_ncatt(const octave_ncatt& ncatt_val):octave_base_value(), nca(ncatt_val.nca) { 
+    nca->count++;  
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "copy ncatt " << nca << endl;
+#   endif
+  }
 
   octave_ncatt(octave_ncvar* ncvarp, int attnump); 
   octave_ncatt(octave_ncvar* ncvarp, std::string attnamep); 
@@ -58,7 +64,22 @@ public:
     return octave_value_list();
   }
 
-  ~octave_ncatt()  { }
+  ~octave_ncatt()  {
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "destruct nca " << nca << " count " << nca->count << endl;
+#   endif
+    nca->count--;
+
+    if (nca->count == 0) {
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "delete octave_nca: " << nca << endl;
+#     endif
+      delete nca->ncfile;
+      if (nca->ncvar) delete nca->ncvar;
+      delete nca;
+      nca = NULL;
+    }
+  }
  
   void read_info();
 
@@ -93,8 +114,13 @@ public:
 
   void set_nctype(const nc_type& t)  { nca->nctype = t; } ;
   void set_name(const std::string& t) { nca->attname = t; };
-  void set_ncfile(octave_ncfile* t)  { nca->ncfile = t; };
-  void set_ncvar(octave_ncvar* t)  { nca->ncvar = t; };
+  void set_ncfile(const octave_ncfile* t)  { nca->ncfile = new octave_ncfile(*t); };
+  void set_ncvar(const octave_ncvar* t)  { 
+    if (t)
+      nca->ncvar = new octave_ncvar(*t);
+    else 
+      nca->ncvar = NULL; 
+  };
   void set_ncid(const int& t)  { nca->ncid = t; };
   void set_varid(const int& t)  { nca->varid = t; };
   void set_attnum(const int& t)  { nca->attnum = t; };
@@ -118,7 +144,7 @@ private:
 
 
 /*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
+  ;;; Local Variables: ***
+  ;;; mode: C++ ***
+  ;;; End: ***
 */

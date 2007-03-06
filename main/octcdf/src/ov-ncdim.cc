@@ -35,29 +35,33 @@ octave_ncdim::octave_ncdim(octave_ncfile* ncfilep, int dimid) {
   char name[NC_MAX_NAME];
   size_t len;
 
-#   ifdef OV_NETCDF_VERBOSE
+# ifdef OV_NETCDF_VERBOSE
   octave_stdout << "new dim " <<  __LINE__ << ":"  << __FUNCTION__ << " dimid " <<dimid<< std::endl;
-#  endif
+# endif
 
-    ncd = new ncdim_t;
+  ncd = new ncdim_t;
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "allocate ncdim_t " << ncd << std::endl;
+# endif
+  ncd->count = 1;
 
-     set_ncfile(ncfilep);
-     set_dimid(dimid);
+  set_ncfile(ncfilep);
+  set_dimid(dimid);
 
-     //octave_stdout << "ncid " << ncid << endl;
+  //octave_stdout << "ncid " << ncid << endl;
 
-     status = nc_inq_dim(get_ncid(),get_dimid(),name,&len);
+  status = nc_inq_dim(get_ncid(),get_dimid(),name,&len);
 
-       //status = nc_inq_dimname(get_ncid(),get_dimid(),name);
-    set_name(string(name));
-    set_length(len);
+  //status = nc_inq_dimname(get_ncid(),get_dimid(),name);
+  set_name(string(name));
+  set_length(len);
 
-    status = nc_inq_unlimdim(get_ncid(),&unlimdimid);
+  status = nc_inq_unlimdim(get_ncid(),&unlimdimid);
 
-    set_record(dimid == unlimdimid);
+  set_record(dimid == unlimdimid);
 
-    //     read_info();
-  }
+  //     read_info();
+}
    
 
 
@@ -85,7 +89,7 @@ octave_ncdim::octave_ncdim(octave_ncfile* ncfilep, int dimid) {
 // ncdim_var(:) 
 
 octave_value octave_ncdim::subsref(const std::string &type,
-			       const std::list < octave_value_list > &idx)
+				   const std::list < octave_value_list > &idx)
 {
   octave_value retval;
 
@@ -105,17 +109,17 @@ octave_value octave_ncdim::subsref(const std::string &type,
 }
 
 
-  void octave_ncdim::read_info() {
+void octave_ncdim::read_info() {
 
   //dimvec.resize(length);
-  }
+}
 
 
-  void octave_ncdim::print(std::ostream & os, bool pr_as_read_syntax) const {
-    os << "dimname = " << get_name() << endl;;
-    os << "length = " << get_length() << endl;;
-    os << "is_record = " << is_record() << endl;;
-  }
+void octave_ncdim::print(std::ostream & os, bool pr_as_read_syntax) const {
+  os << "dimname = " << get_name() << endl;;
+  os << "length = " << get_length() << endl;;
+  os << "is_record = " << is_record() << endl;;
+}
 
 void octave_ncdim::rename(string new_name) {
   int status;

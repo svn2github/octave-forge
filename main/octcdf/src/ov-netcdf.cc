@@ -579,6 +579,7 @@ octave_value ov_nc_get_att(int ncid, int varid,const std::string name) {
 
 	var[lenp] = 0; 
 	retval = octave_value(var);
+        delete[] var;
 	break;
       }
 
@@ -604,7 +605,7 @@ octave_value ov_nc_get_att(int ncid, int varid,const std::string name) {
 	    retval = octave_value(arr);                                 \
 	  }                                                             \
 									\
-	  delete var;                                                   \
+	  delete[] var;                                                 \
 	  break;                                                        \
 	} 
 
@@ -654,7 +655,7 @@ void ov_nc_put_att(int ncid, int varid,const std::string name,
     case netcdf_type: { \
 	c_type *var = ov_ctype<c_type>(rhs,length);   \
 	status = nc_put_att(ncid,varid, name.c_str(),nctype,(size_t)length,var); \
-        delete var; \
+        delete[] var; \
 	break; \
     } \
 
@@ -726,9 +727,9 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
       for (int i = 0; i < sliced_numel; i++)				   \
 	arr.xelem(i) = (double)var[i];					   \
 									   \
-      delete var;							   \
+      delete[] var;							   \
                                                                            \
-      if (STORAGE_ORDER == FORTRAN_ORDER || ncndim == 1)	   		   \
+      if (STORAGE_ORDER == FORTRAN_ORDER || ncndim <= 1)	   		   \
         retval = octave_value(CAST_DARRAY(arr));                           \
       else                                                                 \
         retval = octave_value(CAST_DARRAY(arr.permute(perm_vector)));	   \
@@ -760,7 +761,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 	for (int i = 0; i < sliced_numel; i++)
 	  arr.xelem(i) = (char)var[i];
 
-	delete var;
+	delete[] var;
 
         if (STORAGE_ORDER == FORTRAN_ORDER || ncndim == 1)                                  
           retval = octave_value(CAST_CARRAY(arr),true);                                        
@@ -777,9 +778,9 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
     }
 
 
-  delete start;
-  delete count;
-  delete stride;
+  delete[] start;
+  delete[] count;
+  delete[] stride;
 
   // in Octave, vectors are represented as matrices
   // if the NetCDF object is a vector of length n
@@ -870,7 +871,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 	  nc_put_vars_text(ncid, varid, (const size_t *) start,
 			   (const size_t *) count,
 			   (const ptrdiff_t *) stride, var);
-	delete var;
+	delete[] var;
 
 	break;
       }
@@ -906,7 +907,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 	    nc_put_vars(ncid, varid, (const size_t *) start,		\
 			(const size_t *)count,				\
 			(const ptrdiff_t *)stride, var);		\
-	  delete var;							\
+	  delete[] var;							\
 									\
 	  break;							\
 	}                                                           
@@ -935,9 +936,9 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   }
 
 
-  delete start;
-  delete count;
-  delete stride;
+  delete[] start;
+  delete[] count;
+  delete[] stride;
 
 }
 

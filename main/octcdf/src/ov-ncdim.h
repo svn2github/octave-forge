@@ -28,22 +28,28 @@ typedef struct {
   bool is_record;
   int dimid;
   size_t length;
+  int count;
 }  ncdim_t ;
 
 
 class octave_ncdim:public octave_base_value {
 public:
-   octave_ncdim(void):octave_base_value(), ncd(NULL) { } 
+  octave_ncdim(void):octave_base_value(), ncd(NULL) { } 
 
-  octave_ncdim(const octave_ncdim& ncdim_val):octave_base_value(), ncd(ncdim_val.ncd) { }
+  octave_ncdim(const octave_ncdim& ncdim_val):octave_base_value(), ncd(ncdim_val.ncd) { 
+    ncd->count++;  
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "copy ncdim " << ncd << endl;
+#   endif
+  }
 
   octave_ncdim(octave_ncfile* ncfile, int dimid);
 
   OV_REP_TYPE *clone(void) const { return new octave_ncdim(*this); }
 
-//   octave_value subsasgn(const std::string & type,
-// 			const std::list < octave_value_list > &idx,
-// 			const octave_value & rhs);
+  //   octave_value subsasgn(const std::string & type,
+  // 			const std::list < octave_value_list > &idx,
+  // 			const octave_value & rhs);
 
   octave_value subsref(const std::string & type,
 		       const std::list < octave_value_list > &idx);
@@ -54,10 +60,20 @@ public:
     return octave_value_list();
   }
 
-  ~octave_ncdim()  { 
-#  ifdef OV_NETCDF_VERBOSE
-    octave_stdout << "destruct " << std::endl;  
-#  endif
+  ~octave_ncdim() { 
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "destruct ncdim " << ncd << " count " << ncd->count << endl;
+#   endif
+    ncd->count--;
+
+    if (ncd->count == 0) {
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "delete octave_ncdim: " << ncd << endl;
+#     endif
+      delete ncd->ncfile;
+      delete ncd;
+      ncd = NULL;
+    }
   }
  
   void read_info();
@@ -92,7 +108,7 @@ public:
   int get_ncid() const { return ncd->ncfile->get_ncid(); };
 
   void set_name(const std::string& t) { ncd->dimname = t; };
-  void set_ncfile(octave_ncfile* t)  { ncd->ncfile = t; };
+  void set_ncfile(const octave_ncfile* t)  { ncd->ncfile = new octave_ncfile(*t); };
   void set_dimid(const int& t)  { ncd->dimid = t; };
   void set_length(const size_t& t)  { ncd->length = t; };
   void set_record(bool t){ ncd->is_record = t; };
@@ -115,7 +131,7 @@ private:
 
 
 /*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
+  ;;; Local Variables: ***
+  ;;; mode: C++ ***
+  ;;; End: ***
 */

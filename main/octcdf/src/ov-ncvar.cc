@@ -33,6 +33,9 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, std::string varnamep) :octave
   int status, varid;
 
   ncv = new ncvar_t;
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "new ncvar " << ncv << endl;
+# endif
 
   set_ncfile(ncfilep);
   set_varname(varnamep);
@@ -55,12 +58,16 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, std::string varnamep) :octave
 
   autoscale() = false;
   autonan() = false;
+  ncv->count = 1;
 }
 
 
 octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, int varidp):octave_base_value() {
 
   ncv = new ncvar_t;
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "new ncvar " << ncv << endl;
+# endif
 
   set_varid(varidp);
   set_ncfile(ncfilep);
@@ -74,8 +81,25 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, int varidp):octave_base_value
 
   autoscale() = false;
   autonan() = false;
-
+  ncv->count = 1;
 }
+
+// destructor
+
+octave_ncvar::~octave_ncvar() {
+    ncv->count--;
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "ncv count " << count << endl;
+#   endif
+    if (ncv->count == 0) {
+#      ifdef OV_NETCDF_VERBOSE
+       octave_stdout << "delete ncv " << ncv << endl;
+#      endif
+       delete ncv->ncfile;
+       delete ncv;
+       ncv = NULL;
+    }
+ }
 
 // load charecteristics of netcdf variable from file
 
@@ -149,6 +173,9 @@ void octave_ncvar::read_info() {
   ncv->ncdimvec = ncdimvec;
   set_dimnames(dimnames);
 }
+
+
+
 
 // Assigmnent of the type:
 // x.v = y     x(idx).v = y     x{idx}.v = y

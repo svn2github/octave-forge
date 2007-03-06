@@ -33,11 +33,11 @@ octave_ncfile::octave_ncfile(string filenamep, string open_mode):octave_base_val
   int omode = NC_NOWRITE;
   bool do_open;
 
-#     ifdef OV_NETCDF_VERBOSE
-      octave_stdout << "allocate ncfile_t " << std::endl;
-#    endif
-
   nf = new ncfile_t;
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "allocate ncfile_t " << nf << std::endl;
+# endif
+  nf->count = 1;
 
   nf->filename = filenamep;
 
@@ -102,7 +102,7 @@ octave_ncfile::octave_ncfile(string filenamep, string open_mode):octave_base_val
 #    endif
 
     read_info();
-
+   
 }
 
 
@@ -213,7 +213,7 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 
             // downcast from octave_value to octave_ncvar
 
-            const octave_ncvar& ncvar = (const octave_ncvar&)rhs.get_rep();
+            const octave_ncvar& ncvar = (const octave_ncvar&)rhs.get_rep();            
 #           ifdef OV_NETCDF_VERBOSE
   	    octave_stdout << "define variable " << name <<  " nctype " << ncvar.get_nctype() << std::endl;
 #           endif
@@ -267,6 +267,8 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 	      new_idx.erase (new_idx.begin ());
 	      retval = var->subsasgn (type.substr(1), new_idx,rhs);
 	    }
+
+          delete var;
 
 	}
 
@@ -364,9 +366,22 @@ octave_value octave_ncfile::subsref(const std::string &type,
 
 octave_ncfile::~octave_ncfile(void)
 {
-  // not a good idea to close file, since copies of ncfile are created 
-  // which are destroyed when the original ncfile object is still used
-  //  close();
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "destructor octave_ncfile " << nf  << " count " << nf->count << endl;
+# endif
+  nf->count--;
+
+  if (nf->count == 0)
+    {
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "closing file: " << nf->filename << endl;
+      octave_stdout << "delete octave_ncfile: " << nf << endl;
+#     endif
+      close();
+      delete nf;
+      nf = NULL;
+    }
+
 }
 
 void octave_ncfile::close(void) {
@@ -405,6 +420,9 @@ void octave_ncfile::sync(void) {
 void octave_ncfile::set_mode(Modes new_mode)
 {
   int status;
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "set_mode nf " << nf << endl;
+# endif
 
   if (new_mode != get_mode())
     {

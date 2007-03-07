@@ -58,7 +58,7 @@ package manager, the following additional changes are notable:</p>
    Convert all functions to use texinfo help.</li>
    <li>signal: New function ar_psd, arburg, cohere, cpsd, csd, mscohere,
    pburg, pwelch, pyulear, tfe, tfestimate, replacing existing functions
-   with main more features and much better compatibility. New functions
+   with many more features and much better compatibility. New functions
    upsample, downsample, rectwin, dst and idst</li>
    <li>strings: New function cstrcmp</li>
    <li>plot: New function hist2d</li>
@@ -72,9 +72,9 @@ package manager, the following additional changes are notable:</p>
 </dd>
 <dt>July 09, 2006</dt>
 <dd>
-<p>Octave-forge version 200607008 released. This version version
-was the last monolithic release and the first release that only
-supported version of octave later than Octave 2.9.</p>
+<p>Octave-forge version 200607008 released. This version was the last 
+monolithic release and the first release that only supported version 
+of octave later than Octave 2.9.</p>
 <p>An abbreviated list of changes is:</p>
 <ul>
    <li>purge functions moved to Octave and remove pre-2.9.x support.</li>

@@ -786,6 +786,37 @@ static octave_value box (jobject jobj, jclass jcls)
   return retval;
 }
 
+static octave_value box_more (jobject jobj, jclass jcls)
+{
+  octave_value retval = box (jobj, jcls);
+
+  if (retval.class_name () == "octave_java")
+    {
+      retval = octave_value ();
+
+      if (retval.is_undefined ())
+        {
+          jclass_ref cls = jni_env->FindClass ("[D");
+          if (jni_env->IsInstanceOf (jobj, cls))
+            {
+              jdoubleArray jarr = reinterpret_cast<jdoubleArray> (jobj);
+              int len = jni_env->GetArrayLength (jarr);
+              if (len > 0)
+                {
+                  Matrix m (1, len);
+                  jni_env->GetDoubleArrayRegion (jarr, 0, len, m.fortran_vec ());
+                  retval = m;
+                }
+            }
+        }
+    }
+
+  if (retval.is_undefined ())
+    retval = octave_value (new octave_java (jobj, jcls));
+
+  return retval;
+}
+
 static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
 {
   int found = 1;
@@ -1277,6 +1308,26 @@ a shortcut syntax. For instance, the two following statements are equivalent\n\
       else
         print_usage ();
     }
+
+  return retval;
+}
+
+DEFUN_DLD (java2mat, args, , "")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
+    {
+      if (args(0).class_name () == "octave_java")
+        {
+          octave_java *jobj = TO_JAVA (args(0));
+          retval(0) = box_more (jobj->to_java (), 0);
+        }
+      else
+        retval(0) = args(0);
+    }
+  else
+    print_usage ();
 
   return retval;
 }

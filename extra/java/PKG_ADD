@@ -4,4 +4,5 @@ autoload ("java_new", fullfile (fileparts (mfilename ("fullpath")), "__java__.oc
 autoload ("java_invoke", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 autoload ("java_get", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 autoload ("java_set", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
+autoload ("java2mat", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 atexit ("java_exit");

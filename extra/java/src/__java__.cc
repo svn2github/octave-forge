@@ -853,10 +853,10 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
       jcls = jni_env->GetObjectClass (jobj);
     }
   else if (val.is_empty ())
-	{
-		jobj = 0;
-		jcls = jni_env->FindClass ("java/lang/Object");
-	}
+    {
+      jobj = 0;
+      jcls = jni_env->FindClass ("java/lang/Object");
+    }
   else if (val.is_function_handle ())
     {
       jclass lcls = jni_env->FindClass ("org/octave/OctListener");
@@ -869,6 +869,19 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
       ID = jni_env->CallIntMethod (jobj, mID2);
       printf("made listener ID=%d threadID=%d\n", ID, GetCurrentThreadId());
       listener_map[ID] = val;
+    }
+  else if (val.is_cellstr ())
+    {
+      Cell cellStr = val.cell_value ();
+      jclass_ref scls = jni_env->FindClass ("java/lang/String");
+      jobjectArray array = jni_env->NewObjectArray (cellStr.length (), scls, 0);
+      for (int i=0; i<cellStr.length (); i++)
+        {
+          jstring_ref jstr = jni_env->NewStringUTF (cellStr(i).string_value().c_str());
+          jni_env->SetObjectArrayElement (array, i, jstr);
+        }
+      jobj = array;
+      jcls = jni_env->GetObjectClass (jobj);
     }
   else
     {

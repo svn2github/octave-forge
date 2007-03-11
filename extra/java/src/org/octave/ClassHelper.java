@@ -249,6 +249,8 @@ public class ClassHelper
       else if (expCls.isArray () && argCls.isArray () &&
           isCallableFrom (expCls.getComponentType (), argCls.getComponentType ()))
         return true;
+      else if (expCls.equals (Object.class) && argCls.isPrimitive())
+        return true;
       else
         return false;
     }
@@ -315,6 +317,8 @@ public class ClassHelper
         {
           return castArray (obj, type.getComponentType (), expType.getComponentType ());
         }
+      else if (type.isPrimitive())
+        return obj;
       return null;
     }
 

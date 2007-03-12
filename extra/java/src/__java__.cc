@@ -807,6 +807,8 @@ static octave_value box_more (jobject jobj, jclass jcls)
                   jni_env->GetDoubleArrayRegion (jarr, 0, len, m.fortran_vec ());
                   retval = m;
                 }
+			  else
+                retval = Matrix ();
             }
         }
     }

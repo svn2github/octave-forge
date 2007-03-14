@@ -5,7 +5,7 @@
 @deftypefnx {Function File} {} imshow (@var{R}, @var{G}, @var{B}, @dots{})
 @deftypefnx {Function File} {} imshow (@var{filename})
 @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
-Display the image @var{im}, where @var{im} can a 2-dimensional
+Display the image @var{im}, where @var{im} can be a 2-dimensional
 (gray-scale image) or a 3-dimensional (RGB image) matrix. If three matrices
 of the same size are given as arguments, they will be concatenated into
 a 3-dimensional (RGB image) matrix.
@@ -25,12 +25,8 @@ shown.
 If given, the parameter @var{string_param1} has value
 @var{value1}. @var{string_param1} can be any of the following:
 @table @samp
-@item "display_range"
+@item "displayrange"
 @var{value1} is the display range as described above.
-
-@item "InitialMagnification"
-@var{value1} sets the zoom level in percent. 
-If @var{value1} is 100 the image is showed unscaled.
 @end table
 @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 @end deftypefn

@@ -1,0 +1,6 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} unidcdf (@var{x}, @var{v})
+For each element of @var{x}, compute the cumulative distribution
+function (CDF) at @var{x} of a univariate discrete distribution which
+assumes the values in @var{v} with equal probability.
+@end deftypefn

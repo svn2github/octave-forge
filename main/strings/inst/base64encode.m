@@ -1,16 +1,30 @@
-## Y = base64encode(X)
+## -*- texinfo -*-
+## @deftypefn @var{Y} = {Function File} {} base64encode(@var{X})
+## @deftypefnx @var{Y} = {Function File} {} base64encode(@var{X}, @var{do_reshape})
 ## Convert X into string of printable characters according to RFC 2045.
 ## The input may be a string or a matrix of integers in the range 0..255.
+## If want the output in the 1-row of strings format, pass the 
+## @var{do_reshape} argument as true.
+## 
+## Example:
+## @example
+## base64encode('Hakuna Matata',true) 
+## ##returns 'SGFrdW5hIE1hdGF0YQ=='
 ##
-## See: http://www.ietf.org/rfc/rfc2045.txt
+## @end example
+## @end deftypefn
+## @seealso{base64decode}
+##
 
 ## This program is in the public domain
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
+##
+function Y = base64encode(X,do_reshape)
 
-function Y = base64encode(X)
-
-  if (nargin != 1)
-    usage("Y = base64encode(X)");
+  if (nargin < 1)
+    usage("Y = base64encode(X,[do_reshape])");
+  elseif nargin != 2
+    do_reshape=false;
   endif
   if (ischar(X))
     X = toascii(X);
@@ -46,6 +60,18 @@ function Y = base64encode(X)
 
   ## 6-bit encoding table, plus 1 for padding
   table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+  table([ out1']+ 1);
+  table([ out2']+ 1);
+  table([ out3']+ 1);
+  table([ out4']+ 1);
+
   Y = table([ out1'; out2'; out3'; out4' ] + 1);
 
+  if ( do_reshape )
+     Y = reshape(Y,[1, prod(size(Y))]);
+  end
 endfunction
+%!
+%!assert(base64encode('Hakuna Matata',true),'SGFrdW5hIE1hdGF0YQ==')
+%!

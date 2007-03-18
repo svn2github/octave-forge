@@ -14,15 +14,13 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-##        s = setfields(s,'key1',value1,...)
-## 
-## Sets s.key1 = value1,  s.key2 = value2, ... and returns s.
-## 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} @var{s} = setfields(@var{s},@var{key},@var{value},...)
+## Sets @var{s}.@var{key1} = @var{value1},  @var{s}.@var{key2} = @var{value2}, etc, finally
+## returning s.
 ## For some compatibility and flexibility.
-## 
-## See also cmpstruct, fields, rmfield, isstruct, getfields, isfield,
-## struct. 
-## 
+## @seealso{cmpstruct, fields, rmfield, isstruct, getfields, isfield,struct}
+## @end deftypefn
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: January 2000
@@ -43,3 +41,6 @@ for i=1:2:nargin-1
     s.(varargin{i}) = varargin{i+1};
   end
 end
+%!
+%!assert(setfields({},'key','value'),struct('key','value'))
+%!

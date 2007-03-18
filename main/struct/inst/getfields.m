@@ -29,4 +29,7 @@ function [varargout] = getfields(s,varargin)
     for i=length(varargin):-1:1
 	varargout{i} = s.(varargin{i});
     end
-
+end
+%!
+%!assert(getfields(struct('key','value'),'key'),'value')
+%!

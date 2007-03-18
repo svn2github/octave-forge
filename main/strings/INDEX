@@ -9,3 +9,4 @@ Operations
  strjoin
 Conversion
  base64encode
+ base64decode

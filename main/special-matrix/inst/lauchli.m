@@ -1,13 +1,21 @@
-## A = lauchli (n [,mu])
-##    Creates the matrix [ ones(1,n); mu*eye(n) ]
-##    The value mu defaults to sqrt(eps)
-##    This is an ill-conditioned system for testing the
-##    accuracy of the QR routine.
-##    E.g., 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{a}} = lauchli (@var{n})
+## @deftypefnx {Function File} {@var{a}} = lauchli (@var{n},@var{mu})
+## Creates the matrix [ ones(1,@var{n}); @var{mu}*eye(@var{n}) ]
+## The value @var{mu} defaults to sqrt(eps).
+## This is an ill-conditioned system for testing the
+## accuracy of the QR routine.
+##
+## @example
+## @group
 ##       A = lauchli(15);
 ##       [Q, R] = qr(A);
 ##       norm(Q*R - A)
 ##       norm(Q'*Q - eye(rows(Q)))
+## @end group
+## @end example
+## @end deftypefn
+## @seealso {ones,zeros,eye}
 
 ## This program is in the public domain
 ## Author: Paul Kienzle <pkienzle@users.sf.net>

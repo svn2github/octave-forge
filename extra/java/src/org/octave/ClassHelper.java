@@ -240,7 +240,9 @@ public class ClassHelper
   private static boolean isCallableFrom (Class expCls, Class argCls)
     {
       //System.out.println(expCls.getCanonicalName() + " <=? " + argCls.getCanonicalName());
-      if (expCls.isAssignableFrom (argCls))
+	  if (argCls == null)
+        return ! expCls.isPrimitive ();
+	  else if (expCls.isAssignableFrom (argCls))
         return true;
       else if ((isNumberClass (expCls) || isBooleanClass (expCls)) && isNumberClass (argCls))
         return true;
@@ -295,7 +297,7 @@ public class ClassHelper
   private static Object castArgument (Object obj, Class type, Class expType)
     {
       //System.out.println(expType.getCanonicalName() + " <= " + type.getCanonicalName());
-      if (expType.isAssignableFrom (type))
+      if (type == null || expType.isAssignableFrom (type))
         return obj;
       else if (isNumberClass (expType))
         {

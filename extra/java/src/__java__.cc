@@ -857,7 +857,8 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
   else if (val.is_empty ())
     {
       jobj = 0;
-      jcls = jni_env->FindClass ("java/lang/Object");
+      //jcls = jni_env->FindClass ("java/lang/Object");
+      jcls = 0;
     }
   else if (val.is_function_handle ())
     {

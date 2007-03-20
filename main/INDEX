@@ -450,6 +450,7 @@ Generating matrices
  randperm
  meshgrid meshdom
  ndgrid
+ arrayfun
 Matrix properties
  size rows columns common_size ndims
  length 
@@ -980,6 +981,7 @@ Figure controls
  ishandle
  closereq
  gca gcf
+ get set
 Axis controls
  axis
  box 
@@ -1099,6 +1101,7 @@ File operations
  S_ISLNK
  S_ISREG
  S_ISSOCK
+ md5sum
 Directory operations
  cd pwd ls dir
  filesep 

@@ -21,22 +21,6 @@ ifndef OCTAVE_FORGE
 	INSTALL = /usr/bin/install -c
 	INSTALL_PROGRAM = $(INSTALL)
 	INSTALL_DATA = $(INSTALL) -m 644
-endif
-AR ?= ar
-ARFLAGS ?= rc
-
-# CONFIGURE: sources, includes, objects and libraries used.
-INCS =		engine.h engif.h
-TARGETS =	engif.o engClose.o engEvalString.o engGetFull.o \
-		engOpen.o engPutFull.o engOutputBuffer.o mxCalloc.o mxFree.o
-
-all:		liboct.a mattest
-
-%.o : %.c ; $(CC) $(CFLAGS) -D_BSD_SOURCE -c $*.c
-
-liboct.a:	$(TARGETS)
-	$(AR) $(ARFLAGS) liboct.a $(TARGETS) > /dev/null 2>&1
-	$(RANLIB) liboct.a
 
 install:
 	@if ! test -e $(DESTDIR)$(libdir) ; then \
@@ -58,6 +42,47 @@ install:
 	  $(INSTALL_DATA) engine.h $(DESTDIR)$(includedir)/engine.h ; \
 	fi
 
+endif
+AR ?= ar
+ARFLAGS ?= rc
+
+# CONFIGURE: sources, includes, objects and libraries used.
+INCS =		engine.h engif.h
+TARGETS =	engif.o engClose.o engEvalString.o engGetFull.o \
+		engOpen.o engPutFull.o engOutputBuffer.o mxCalloc.o mxFree.o
+
+all:		liboct.a mattest
+
+%.o : %.c ; $(CC) $(CFLAGS) -D_BSD_SOURCE -c $*.c
+
+liboct.a:	$(TARGETS)
+	$(AR) $(ARFLAGS) liboct.a $(TARGETS) > /dev/null 2>&1
+	$(RANLIB) liboct.a
+
+ifndef OCTAVE_FORGE
+install:
+	@if ! test -e $(DESTDIR)$(libdir) ; then \
+	  echo creating $(DESTDIR)$(libdir) ; \
+	  $(INSTALL) -d $(DESTDIR)$(libdir) ; \
+	fi
+	@if test -d $(DESTDIR)$(libdir) ; then \
+	  echo installing engine/liboct.a in $(DESTDIR)$(libdir) ; \
+	  $(RM) $(DESTDIR)$(libdir)/liboct.a ; \
+	  $(INSTALL_DATA) liboct.a $(DESTDIR)$(libdir)/liboct.a ; \
+	fi
+	@if ! test -e $(DESTDIR)$(includedir) ; then \
+	  echo creating $(DESTDIR)$(includedir) ; \
+	  $(INSTALL) -d $(DESTDIR)$(includedir) ; \
+	fi
+	@if test -d $(DESTDIR)$(includedir) ; then \
+	  echo installing engine/engine.h in $(DESTDIR)$(includedir) ; \
+	  $(RM) $(DESTDIR)$(includedir)/engine.h ; \
+	  $(INSTALL_DATA) engine.h $(DESTDIR)$(includedir)/engine.h ; \
+	fi
+else
+install:
+	@true
+endif
 
 mattest:	mattest.o liboct.a
 	$(CC) mattest.o -o mattest liboct.a -lm

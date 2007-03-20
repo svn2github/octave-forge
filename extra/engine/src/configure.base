@@ -268,7 +268,6 @@ dnl grab SHLEXT from octave config
 OCTAVE_EVAL(octave_config_info('SHLEXT'),SHLEXT)
 
 AC_PROG_LN_S
-AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 dnl Use $(COPY_FLAGS) to set options for cp when installing .oct files.

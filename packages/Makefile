@@ -138,13 +138,13 @@ install:
 	cmd="$$cmd);"; \
 	octave -H -q --eval "$$cmd;"
 
-# No spaces in eval argument please!! Need the addpath(genpath('./'),'-end')
+# No spaces in eval argument please!! Need the addpath([pwd(),"/code"],'-end')
 # as the package might include uninstalled code that has tests..
 checkpkg/%: cleancheck/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	$(TOPDIR)/admin/mktests.sh code; \
-	$(RUN_OCTAVE) --eval "pkg('unload','all');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('load','all');addpath(genpath(pwd()),'-end');fntests" ; \
+	$(RUN_OCTAVE) --eval "pkg('unload','all');addpath(genpath([pwd(),'/code']),'-end');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('load','all');fntests" ; \
 	if [ ! -e $(TESTLOG) ]; then touch $(TESTLOG); fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..

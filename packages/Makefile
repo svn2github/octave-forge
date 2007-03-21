@@ -40,7 +40,7 @@ domd5/%:
 	name=`echo $(opkg) | sed -e "s|^.*/||" | sed -e "s/^\(.*\)-.*.tar.gz$$/\1/"`; \
 	dir=`echo $(opkg) | sed -e "s|^\(.*\)/.*$$|\1|"`; \
 	file=`echo $(opkg) | sed -e "s|^.*/\(.*\)$$|\1|"`; \
-	md5=`cd $$dir; md5sum $$file`; \
+	md5=`cd $$dir; md5sum "$$file"`; \
 	echo "$$name $$ver $$md5" | sed -e "s|$$file|__PACKAGE__/$$file?download|" >> $(MD5FILE)
 
 md5bundle:
@@ -49,6 +49,65 @@ md5bundle:
 	name=`echo $$bundle | sed -e "s|^.*/||" | sed -e "s/^\(.*\)-.*.tar.gz$$/\1/"`; \
 	md5=`md5sum $$bundle`; \
 	echo "$$name $$ver $$md5" | sed -e "s|$$bundle|__PACKAGE__/$$bundle?download|" >> $(MD5FILE)
+
+compare:
+	@if [ -d  tmp ]; then rm -rf tmp; fi; \
+	mkdir tmp
+	@cd tmp; \
+	wget http://octave.dbateman.org/packages.md5; \
+	url=`cat packages.md5 | grep "bundle" | sed -e "s/^.*\(http[^\S]*\).*$$/\1/"`; \
+	bundle=`echo $$url | sed -e "s|^.*/\(.*\).*$$|\1|"`; \
+	wget $$url; \
+	tar xzf $$bundle;
+
+compare1:
+	@cd tmp; \
+	if [ -d toupload ]; then rm -fr toupload; fi; \
+	mkdir toupload; \
+	for _dir in $(PKGDIRS); do \
+	  mkdir toupload/$$_dir; \
+	done; \
+	pkgs=`find $(PKGDIRS) -name "*.tar.gz"`; \
+	for oldpkg in $$pkgs; do \
+	  olddir=`echo $$oldpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
+	  oldname=`echo $$olddir | sed -e "s/^\(.*\)-.*$$/\1/"`; \
+	  newpkg=`cd ..; find $(PKGDIRS) -name "$$oldname*"`; \
+	  newdir=`echo $$newpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
+	  tar xzf $$oldpkg; \
+	  mv $$olddir $${olddir}.orig; \
+	  tar xzf ../$$newpkg; \
+	  if diff -Nrq $$olddir.orig $$newdir >& /dev/null; then \
+	    cp $$oldpkg toupload/$$oldpkg; \
+	  else \
+	    cp $$newpkg toupload/$$oldpkg; \
+	    upload=yes; \
+	    oldver=`cat $${olddir}.orig/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
+	    newver=`cat $${newdir}/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
+	    echo "$$newver $$oldver"; \
+	    if [ "$$oldver" = "$$newver" ]; then \
+	      samever=yes; \
+	      echo "$$oldpkg differs from uploaded version but has same version"; \
+	    else \
+	      echo "$$oldpkg differs from uploaded version"; \
+            fi; \
+	  fi; \
+	  rm -fr $$olddir.orig $$newdir; \
+	done; \
+	if [ "X$${samever}" = "XX" ]; then \
+	  if [ "X$${upload}X" = "XX" ]; then \
+	    echo "Nothing to do"; \
+	  else \
+	    echo "Please upload packages/files in 'toupload' directory"; \
+	    if [ -d ../toupload ]; then rm -fr ../toupload; fi; \
+	    cd toupload; \
+	    d=`date +%Y%m%d`; \
+	    tar czf octave-forge-bundle-$$d.tar.gz $(PKGDIRS); \
+	    cd ..; \
+	    mv toupload ..; \
+	  fi; \
+	else \
+	  echo "Please fix the version numbering noted above before proceding"; \
+	fi; \
 
 # Do nothing for the package target 
 package:
@@ -85,7 +144,7 @@ checkpkg/%: cleancheck/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
 	$(TOPDIR)/admin/mktests.sh code; \
-	$(RUN_OCTAVE) --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('load','all');addpath(genpath('./'),'-end');fntests" ; \
+	$(RUN_OCTAVE) --eval "pkg('unload','all');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('load','all');addpath(genpath(pwd()),'-end');fntests" ; \
 	if [ ! -e $(TESTLOG) ]; then touch $(TESTLOG); fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..
@@ -111,7 +170,7 @@ mkpkg/%:
 	if [ ! -d code ]; then mkdir code; fi; \
 	cd code; tar xzf ../../$(opkg); cd ..; \
 	pkgs="'../$(opkg)'"; \
-	until $(RUN_OCTAVE) --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install',$$pkgs)" 2> baddeps; do \
+	until $(RUN_OCTAVE) --eval "pkg('unload','all');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install',$$pkgs)" 2> baddeps; do \
 	  deps=`cat baddeps | grep " needs " | sed -e 's/^.*needs\s\+\(\S*\).*$$/\1/'`; \
 	  ops=`cat  baddeps | grep " needs " | sed -e 's/^.*needs\s\+\S*\s\+\(\S*\).*$$/\1/'`; \
 	  vers=`cat  baddeps | grep " needs " | sed -e 's/^.*\s\+\(\S*\)\s*$$/\1/'`; \

@@ -145,9 +145,9 @@ function retval = comms(typ, tests)
       endif
     endif
   elseif (strcmp(typ,"test"))
-    pso = page_screen_output;
+    pso = page_screen_output();
     unwind_protect
-      page_screen_output = 0;
+      page_screen_output(0);
 
       if (strcmp(tests,"random") || strcmp(tests,"all"))
 	fprintf("\n<< Random Signals Package >>\n");
@@ -655,7 +655,7 @@ function retval = comms(typ, tests)
       endif
       fprintf("\n");
     unwind_protect_cleanup
-      page_screen_output = pso;
+      page_screen_output(pso);
     end_unwind_protect
   else
     usage("comms: Unknown argument");

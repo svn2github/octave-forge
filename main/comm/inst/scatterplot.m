@@ -139,7 +139,7 @@ function hout = scatterplot (x, n, _off, str, h)
   endif
   spts = spts(off+1:n:rows(xr),:);
 
-  try ar = automatic_replot;
+  try ar = automatic_replot();
   catch ar = 0;
   end
 
@@ -160,7 +160,7 @@ function hout = scatterplot (x, n, _off, str, h)
 ##    ylabel("");
 ##    axis();
 ##    title("");
-    automatic_replot = ar;
+    automatic_replot(ar);
   end_unwind_protect
 
 endfunction

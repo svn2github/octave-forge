@@ -126,7 +126,7 @@ function yout = apkconst(varargin)
   end
 
   if (nargout == 0)
-    try ar = automatic_replot;
+    try ar = automatic_replot();
     catch ar = 0;
     end
 
@@ -161,7 +161,7 @@ function yout = apkconst(varargin)
       if (printnums)
         text();
       endif
-      automatic_replot = ar;
+      automatic_replot(ar);
     end_unwind_protect
   else
     yout = y;

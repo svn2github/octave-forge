@@ -228,7 +228,7 @@ function hout = eyediagram (x, n, _per, _off, str, h)
   endif
   fclose(fid);
 
-  try ar = automatic_replot;
+  try ar = automatic_replot();
   catch ar = 0;
   end
 
@@ -259,7 +259,7 @@ function hout = eyediagram (x, n, _per, _off, str, h)
     if (strcmp(signal,"complex"))
       oneplot();
     endif
-    automatic_replot = ar;
+    automatic_replot(ar);
   end_unwind_protect
 
   ## XXX FIXME XXX

@@ -148,7 +148,7 @@ function y = modmap(varargin)
     endif
   endif
 
-  try ar = automatic_replot;
+  try ar = automatic_replot();
   catch ar = 0;
   end
 
@@ -216,7 +216,7 @@ function y = modmap(varargin)
 	title("");
 	__gnuplot_set__ autoscale;
 	hold off;
-        automatic_replot = ar;
+        automatic_replot(ar);
       end_unwind_protect
     else
       if (nargin > optarg)
@@ -255,7 +255,7 @@ function y = modmap(varargin)
 	title("");
 	__gnuplot_set__ autoscale;
 	hold off;
-        automatic_replot = ar;
+        automatic_replot(ar);
       end_unwind_protect
     else
       y = tone * x;
@@ -349,7 +349,7 @@ function y = modmap(varargin)
 	__gnuplot_set__ autoscale;
 	hold off;
 	text();
-        automatic_replot = ar;
+        automatic_replot(ar);
       end_unwind_protect
     else
       y = inphase(x+1) + 1i * quadr(x+1);

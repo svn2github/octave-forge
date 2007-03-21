@@ -8,6 +8,9 @@ on individual packages, see the package page.</p>
 
 <h2>Function Reference</h2>
 <ul>
+  <li><a href="http:/www.octave.org/doc/interpreter/">The Octave
+  manual</a>. This is an online version of a version version of the
+  Octave manual.</li>
   <li><a href="doc/index.html">Octave function reference</a>. The documentation for all functions 
     available from the Octave prompt.</li>
   <li><a href="doxygen/html/index.html">C++ API</a>. The API reference for working with

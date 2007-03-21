@@ -38,7 +38,7 @@ admin/
 doc/
 	Documentation for octave in general.  Documentation for specific
 	packages goes into the doc/ subdirectory of the individual package 
-	directories. This directory also contains the automatically build
+	directories. This directory also contains the automatically built
 	html code for the website.
 	
 

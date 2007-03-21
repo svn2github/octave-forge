@@ -93,22 +93,34 @@ pkg/%:
 	name=`grep "Name:" DESCRIPTION | sed -e "s/^Name: *//" | \
 	  sed -e "s/^[[:space:]]*//" | sed -e "s/[[:space:]]*$$//" | \
 	  sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`; \
-	mkdir ../$(PKGDIR)/$$name-$$ver; \
-	if [ ! -f ChangeLog ]; then \
-	  if test "x$(CVS2CL)" != "x"; then \
-	    $(CVS2CL) --fsf --file ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
-	    if [ -f ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp ]; then \
-	      echo "# Automatically generated file --- DO NOT EDIT" | \
-	      cat - ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp > \
-	      ../$(PKGDIR)/$$name-$$ver/ChangeLog; \
-	      rm ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
+	if [ -e "../$(PKGDIR)/$$name-$$ver.tar.gz" ]; then \
+	  newer=`find . -type f -newer ../$(PKGDIR)/$$name-$$ver.tar.gz`; \
+	  if test "X$${newer}X" != "XX"; then \
+	    build="yes"; \
+	  else \
+	    build="no"; \
+	  fi; \
+	else \
+	  build="yes"; \
+	fi; \
+	if test "X$${build}X" = "XyesX"; then \
+	  mkdir ../$(PKGDIR)/$$name-$$ver; \
+	  if [ ! -f ChangeLog ]; then \
+	    if test "x$(CVS2CL)" != "x"; then \
+	      $(CVS2CL) --fsf --file ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
+	      if [ -f ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp ]; then \
+	        echo "# Automatically generated file --- DO NOT EDIT" | \
+	        cat - ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp > \
+	        ../$(PKGDIR)/$$name-$$ver/ChangeLog; \
+	        rm ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
+	      fi; \
 	    fi; \
 	  fi; \
-	fi; \
-	tar -cf - $(REAL_PKG_FILES) | (cd ../$(PKGDIR)/$$name-$$ver; tar -xf -); \
-	cd ../$(PKGDIR); \
-	tar -zcf $$name-$$ver.tar.gz $$name-$$ver; \
-	rm -fr $$name-$$ver;
+	  tar -cf - $(REAL_PKG_FILES) | (cd ../$(PKGDIR)/$$name-$$ver; tar -xf -); \
+	  cd ../$(PKGDIR); \
+	  tar -zcf $$name-$$ver.tar.gz $$name-$$ver; \
+	  rm -fr $$name-$$ver; \
+	fi
 
 pre-pkg::
 	@if [ -f src/autogen.sh ]; then \

@@ -1,5 +1,4 @@
 ## Copyright (C) 2006 Muthiah Annamalai <muthiah.annamalai@uta.edu>
-## Copyright (C) 2006, March 28,Muthiah Annamalai. 
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

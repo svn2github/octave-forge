@@ -12,7 +12,7 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070304.tar.gz?download">single file</a>.
+as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070322.tar.gz?download">single file</a>.
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <h2 id="main">Main repository</h2>
@@ -401,7 +401,7 @@ nnet</a></b></td>
    <b><a href="javascript:fold('octcdf');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 octcdf</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./octcdf/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/octcdf-1.0.2.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/octcdf-1.0.3.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="octcdf_details">
@@ -413,7 +413,7 @@ A NetCDF interface for octave  </p>
     <b><a href="javascript:unfold('octcdf');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 octcdf</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./octcdf/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/octcdf-1.0.2.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/octcdf-1.0.3.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -423,7 +423,7 @@ octcdf</a></b></td>
    <b><a href="javascript:fold('odepkg');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 OdePkg</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odepkg/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odepkg-0.2.2.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odepkg-0.2.3.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="odepkg_details">
@@ -435,7 +435,7 @@ A toolkit for Differential Equations and Initial Value Problems.  </p>
     <b><a href="javascript:unfold('odepkg');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 OdePkg</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odepkg/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odepkg-0.2.2.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odepkg-0.2.3.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>

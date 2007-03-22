@@ -1,4 +1,297 @@
 # Automatically generated file --- DO NOT EDIT
+2007-03-22 02:29  adb014
+
+	* main/combinatorics/INDEX: Type in INDEX prevented proper indexing
+
+2007-03-22 02:06  adb014
+
+	* main/statistics/inst/regress.m: Make regress test error relative
+	  and smaller
+
+2007-03-22 01:19  adb014
+
+	* main/signal/inst/tripuls.m: Fix for changes to builtin variables
+	  like automatic_replot and warnings like warn_fortran_indexing
+
+2007-03-22 01:12  adb014
+
+	* main/nnet/inst/: __printLW.m, __printLayerConnect.m,
+	  __printLayerWeights.m, __printLayers.m, __printMLPHeader.m,
+	  __printNumInputDelays.m, __printNumInputs.m,
+	  __printNumLayerDelays.m, __printNumLayers.m, __printNumOutputs.m,
+	  __printNumTargets.m, __printOutputConnect.m, __printOutputs.m,
+	  __printPerformFcn.m, __printPerformParam.m,
+	  __printTargetConnect.m, __printTargets.m, __printTrainFcn.m,
+	  __printTrainParam.m: Copyright fix so get_authors works correctly
+
+2007-03-22 00:58  adb014
+
+	* main/comm/inst/fibodeco.m: Copyright fix so get_authors works
+	  correctly
+
+2007-03-22 00:41  adb014
+
+	* packages/Makefile: addpath the code directory prior to loading
+	  the package to check, so that the PKG_ADD file sources last is in
+	  the package
+
+2007-03-21 23:51  adb014
+
+	* packages/Makefile: Unload packages prior to dependency checking,
+	  so that existing packages don't interfere. No working comparison
+	  code to check which packages to upload
+
+2007-03-21 23:48  adb014
+
+	* doc/htdocs/docs.in: Include link to online Octave manual in
+	  documentation links
+
+2007-03-21 23:47  adb014
+
+	* README: typo
+
+2007-03-21 23:40  adb014
+
+	* Makeconf.base: Some conditional building of packages
+
+2007-03-21 23:29  adb014
+
+	* main/signal/inst/: rectpuls.m, tripuls.m: Fix for changes to
+	  builtin variables like automatic_replot and warnings like
+	  warn_fortran_indexing
+
+2007-03-21 23:23  adb014
+
+	* main/fixed/inst/fixedpoint.m: Fix for changes to builtin
+	  variables like automatic_replot and warnings like
+	  warn_fortran_indexing
+
+2007-03-21 23:11  adb014
+
+	* main/comm/inst/: apkconst.m, comms.m, eyediagram.m, modmap.m,
+	  qaskdeco.m, qaskenco.m, scatterplot.m: Fix for changes to builtin
+	  variables like automatic_replot and warnings like
+	  warn_fortran_indexing
+
+2007-03-21 09:13  adb014
+
+	* main/fixed/src/configure.base: Remove problematic install code
+
+2007-03-21 00:20  adb014
+
+	* main/comm/src/configure.base: Remove problematic install code
+
+2007-03-20 23:58  adb014
+
+	* extra/java/INDEX: index new functions
+
+2007-03-20 23:55  adb014
+
+	* main/INDEX: index new functions
+
+2007-03-20 23:54  adb014
+
+	* extra/engine/src/Makefile, extra/engine/src/configure.base,
+	  main/comm/src/configure.base, main/fixed/src/configure.base:
+	  Remove problematic install code
+
+2007-03-20 23:17  adb014
+
+	* nonfree/arpack/src/autogen.sh, nonfree/gpc/src/autogen.sh,
+	  nonfree/splines/src/autogen.sh, extra/engine/src/autogen.sh,
+	  extra/java/src/autogen.sh, extra/MacOSX/src/autogen.sh,
+	  extra/Windows/src/autogen.sh, extra/tk_octave/src/autogen.sh:
+	  Ensure that configure script is executable
+
+2007-03-20 23:13  adb014
+
+	* main/: audio/src/autogen.sh, comm/src/autogen.sh,
+	  fixed/src/autogen.sh, geometry/src/autogen.sh,
+	  gsl/src/autogen.sh, image/src/autogen.sh,
+	  linear-algebra/src/autogen.sh, miscellaneous/src/autogen.sh,
+	  octcdf/src/autogen.sh, odepkg/src/autogen.sh,
+	  optiminterp/src/autogen.sh, plot/src/autogen.sh,
+	  strings/src/autogen.sh, symbolic/src/autogen.sh: Ensure that
+	  configure script is executable
+
+2007-03-20 21:24  adb014
+
+	* doc/CONTENTS: Typo
+
+2007-03-20 15:09  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/ClassHelper.java: Map
+	  null to any reference type.
+
+2007-03-18 06:51  gnumuthu
+
+	* main/combinatorics/: INDEX, inst/combs.m: Combinations enumerator
+	  DFS algorithm
+
+2007-03-18 06:30  gnumuthu
+
+	* main/signal/inst/: dst.m, idst.m: texinfo fmt
+
+2007-03-18 06:28  gnumuthu
+
+	* main/special-matrix/inst/lauchli.m: formatting & docs
+
+2007-03-18 06:25  gnumuthu
+
+	* main/struct/inst/: getfields.m, setfields.m: tests & docs
+
+2007-03-18 06:22  gnumuthu
+
+	* main/strings/inst/: cstrcmp.m, editdistance.m, strjoin.m: FSF
+	  address
+
+2007-03-18 06:18  gnumuthu
+
+	* main/strings/inst/base64encode.m: String type output & texinfo
+	  help
+
+2007-03-18 06:09  gnumuthu
+
+	* main/strings/: INDEX, inst/base64decode.m: Base64 decoder
+
+2007-03-14 22:42  treichl
+
+	* main/odepkg/doc/odepkg.texi: Updated.
+
+2007-03-14 08:12  ficmatinfmag
+
+	* language/base/help/octave/: cast, nbincdf, nbininv, nbinpdf,
+	  nbinrnd, unidcdf, unidinv, unidpdf, glpk, imagesc, imshow, pkg,
+	  rlocus: added and/or changed in octave.org-cvs
+
+2007-03-12 09:20  goffioul
+
+	* extra/java/src/__java__.cc: convert zero-sized double[] into
+	  empty matrix
+
+2007-03-11 18:28  pkienzle
+
+	* main/signal/inst/pwelch.m: Force x .* conj(x) to be real
+
+2007-03-11 10:48  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/ClassHelper.java: allow
+	  numeric -> Object conversion + convert cell array of strings into
+	  String[]
+
+2007-03-09 17:02  goffioul
+
+	* extra/java/: PKG_ADD, src/__java__.cc: Add java2mat conversion
+	  function.
+
+2007-03-07 21:25  adb014
+
+	* doc/htdocs/: NEWS.in, index.in: Typos, etc
+
+2007-03-07 21:20  adb014
+
+	* extra/MacOSX/src/autogen.sh, extra/Windows/src/autogen.sh,
+	  extra/engine/src/autogen.sh, extra/java/src/autogen.sh,
+	  extra/tk_octave/src/autogen.sh, main/audio/src/autogen.sh,
+	  main/comm/src/autogen.sh, main/fixed/src/autogen.sh,
+	  main/geometry/src/autogen.sh, main/gsl/src/autogen.sh,
+	  main/image/src/autogen.sh, main/linear-algebra/src/autogen.sh,
+	  main/miscellaneous/src/autogen.sh, main/octcdf/src/autogen.sh,
+	  main/plot/src/autogen.sh, main/strings/src/autogen.sh,
+	  main/odepkg/src/autogen.sh, main/optiminterp/src/autogen.sh,
+	  main/symbolic/src/autogen.sh, nonfree/arpack/src/autogen.sh,
+	  nonfree/gpc/src/autogen.sh, nonfree/splines/src/autogen.sh:
+	  Conditional build of configure file
+
+2007-03-07 16:45  gnumuthu
+
+	* main/strings/: INDEX, inst/strjoin.m: strjoin
+
+2007-03-07 00:48  abarth93
+
+	* main/octcdf/DESCRIPTION: add reference counting for netcdf
+	  datatypes
+
+2007-03-07 00:43  abarth93
+
+	* main/octcdf/src/: ov-ncatt.cc, ov-ncatt.h, ov-ncdim.cc,
+	  ov-ncdim.h, ov-ncfile.cc, ov-ncfile.h, ov-ncvar.cc, ov-ncvar.h,
+	  ov-netcdf.cc: add reference counting for netcdf datatypes
+
+2007-03-06 19:23  treichl
+
+	* main/odepkg/: doc/odepkg.texi, inst/odepkg.m: Updated.
+
+2007-03-06 19:14  treichl
+
+	* main/odepkg/: DESCRIPTION, INDEX: Update to 0.2.3 because the
+	  testsuite functions have been added.
+
+2007-03-06 19:02  treichl
+
+	* main/odepkg/inst/: odepkg_testsuite_calcmescd.m,
+	  odepkg_testsuite_calcscd.m, odepkg_testsuite_chemakzo.m,
+	  odepkg_testsuite_hires.m, odepkg_testsuite_oregonator.m,
+	  odepkg_testsuite_pollution.m, odepkg_testsuite_robertson.m,
+	  odepkg_testsuite_transistor.m: Initially added the functions for
+	  the odepkg testsuite.
+
+2007-03-06 19:01  treichl
+
+	* main/odepkg/inst/odepkg.m: Added some functions to run the
+	  testsuite.
+
+2007-03-06 19:00  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_radau.c,
+	  odepkg_mexsolver_radau5.c, odepkg_mexsolver_rodas.c,
+	  odepkg_mexsolver_seulex.c: Updated the output routine for
+	  Jacobian evaluations if "Stats" is set.
+
+2007-03-06 18:57  treichl
+
+	* main/odepkg/doc/odepkg.texi: Updated.
+
+2007-03-05 22:10  adb014
+
+	* ChangeLog, doc/htdocs/ChangeLog, doc/htdocs/packages.in: Update
+	  Changelog, etc
+
+2007-03-05 22:09  adb014
+
+	* main/special-matrix/INDEX: INDEX lauchli in linear-algrebra
+	  section like all other special matrices
+
+2007-03-05 16:57  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/ClassHelper.java: smart
+	  conversion for java Character and ov-range.
+
+2007-03-05 14:19  adb014
+
+	* extra/Windows/PKG_ADD, extra/graceplot/PKG_ADD,
+	  extra/java/PKG_ADD, extra/symband/PKG_ADD,
+	  extra/tk_octave/PKG_ADD, extra/xraylib/PKG_ADD,
+	  main/combinatorics/PKG_ADD, main/comm/PKG_ADD,
+	  main/fixed/PKG_ADD, main/gsl/PKG_ADD, main/octcdf/PKG_ADD,
+	  main/symbolic/PKG_ADD: Don't use which in autoload, but a command
+	  that identifies a function that coexists with the PKG_ADD file in
+	  which the autoload is found
+
+2007-03-04 23:43  adb014
+
+	* language/pt_BR/DESCRIPTION: Shorten package name so the function
+	  reference column width is respected
+
+2007-03-04 23:30  adb014
+
+	* admin/build-www.py: Add a newline between INDEXed packages to
+	  avoid issues with packages without octave visible function
+
+2007-03-04 22:14  adb014
+
+	* main/comm/Makefile: Silence build code
+
 2007-03-04 21:46  adb014
 
 	* doc/htdocs/NEWS.in, doc/htdocs/index.in, doc/htdocs/packages.in,
@@ -7252,7 +7545,7 @@
 
 2006-08-24 01:35  adb014
 
-	* main/combinatorics/PKG_ADD: mv PKG_ADD file
+	* main/combinatorics/: PKG_ADD, inst/PKG_ADD: mv PKG_ADD file
 
 2006-08-24 01:31  adb014
 
@@ -7923,9 +8216,9 @@
 
 	* main/combinatorics/: COPYING, DESCRIPTION, INDEX, Makefile,
 	  octave20.h, partcnt, partint, partition.cc, partition.h,
-	  src/Makefile, src/octave20.h, src/partcnt, src/partint,
-	  src/partition.cc, src/partition.h: Moved combinatorics to the new
-	  directory structure for the package system.
+	  inst/PKG_ADD, src/Makefile, src/octave20.h, src/partcnt,
+	  src/partint, src/partition.cc, src/partition.h: Moved
+	  combinatorics to the new directory structure for the package system.
 
 2006-08-20 13:50  hauberg
 

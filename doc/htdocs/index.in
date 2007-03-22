@@ -41,7 +41,7 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
-<dt>March 4, 2007</dt>
+<dt>March 22, 2007</dt>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a
@@ -94,11 +94,12 @@ package manager, the following additional changes are notable:</p>
    pburg, pwelch, pyulear, tfe, tfestimate, replacing existing functions
    with many more features and much better compatibility. New functions
    upsample, downsample, rectwin, dst and idst</li>
-   <li>strings: New function cstrcmp</li>
+   <li>strings: New functions cstrcmp, base64decode</li>
    <li>plot: New function hist2d</li>
    <li>geometry: New function inpolygon</li>
    <li>general: New function issorted</li>
    <li>optim: New function fminsearch</li>
+   <li>combinatorics: new function combs</li>
    <li>Windows: New functions for Windows COM bindings</li>
    <li>MSVC: Changes in build system to support Microsodt VC compiler</li>
    <li>general bug fixes and improvements</li>

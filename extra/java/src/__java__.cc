@@ -197,7 +197,7 @@ static bool initialize_jvm (std::string& msg)
                   if (create_vm)
                     {
                       JavaVMInitArgs vm_args;
-                      JavaVMOption options[1];
+                      JavaVMOption options[3];
                       std::string init_class_path = "-Djava.class.path=" + initial_class_path ();
                       std::string init_octave_path = "-Doctave.java.path=" + initial_java_dir ();
 
@@ -207,9 +207,10 @@ static bool initialize_jvm (std::string& msg)
                       strcpy (octave_path_optionString, init_octave_path.c_str ());
 
                       vm_args.version = JNI_VERSION_1_2;
-                      vm_args.nOptions = 2;
+                      vm_args.nOptions = 3;
                       options[0].optionString = class_path_optionString;
                       options[1].optionString = octave_path_optionString;
+					  options[2].optionString = "-Dsun.java2d.opengl=True";
                       vm_args.options = options;
                       vm_args.ignoreUnrecognized = false;
 
@@ -849,7 +850,7 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
     {
       Matrix m = val.matrix_value ();
       jdoubleArray dv = jni_env->NewDoubleArray (m.length ());
-      for (int i=0; i<m.length (); i++)
+      //for (int i=0; i<m.length (); i++)
         jni_env->SetDoubleArrayRegion (dv, 0, m.length (), m.fortran_vec ());
       jobj = dv;
       jcls = jni_env->GetObjectClass (jobj);
@@ -870,7 +871,9 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
       jobj = jni_env->NewObject (lcls, mID);
       jcls = lcls;
       ID = jni_env->CallIntMethod (jobj, mID2);
+#ifdef __WIN32__
       printf("made listener ID=%d threadID=%d\n", ID, GetCurrentThreadId());
+#endif
       listener_map[ID] = val;
     }
   else if (val.is_cellstr ())
@@ -1380,7 +1383,9 @@ JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
 JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
   (JNIEnv *env, jclass, jint ID, jstring name, jobject event)
 {
+#ifdef __WIN32__
   printf("listener invoked ID=%d, threadID=%d\n", ID, GetCurrentThreadId());
+#endif
   std::map<int,octave_value>::iterator it = listener_map.find (ID);
 
   if (it != listener_map.end ())

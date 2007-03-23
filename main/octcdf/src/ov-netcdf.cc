@@ -108,7 +108,12 @@ creates a new file but an existing data sets in the netcdf file cannot be overwr
 
   octave_ncfile *nc = new octave_ncfile(args(0).string_value(), args(1).string_value());
 
-  return octave_value(nc);
+  if (error_state) {
+    delete nc;
+    return octave_value();
+  }
+  else
+    return octave_value(nc);
 }
 
 

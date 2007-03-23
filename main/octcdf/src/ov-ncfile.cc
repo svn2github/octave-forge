@@ -38,7 +38,6 @@ octave_ncfile::octave_ncfile(string filenamep, string open_mode):octave_base_val
   octave_stdout << "allocate ncfile_t " << nf << std::endl;
 # endif
   nf->count = 1;
-
   nf->filename = filenamep;
 
   if (open_mode == "r" || open_mode == "nowrite") {
@@ -64,44 +63,46 @@ octave_ncfile::octave_ncfile(string filenamep, string open_mode):octave_base_val
 
 
   if (do_open)  {
-      status = nc_open(nf->filename.c_str(), omode, &(nf->ncid));
+    status = nc_open(nf->filename.c_str(), omode, &(nf->ncid));
 
-      if (status != NC_NOERR)
-	{
-	  error("Error while opening %s: %s", nf->filename.c_str(),
-		nc_strerror(status));
-	  return;
-	}
+    if (status != NC_NOERR)
+      {
+	nf->ncid = -1;
+	error("Error while opening %s: %s", nf->filename.c_str(),
+	      nc_strerror(status));
+	return;
+      }
 
 
-      nf->mode = DataMode;
+    nf->mode = DataMode;
 
-    }
+  }
   else {
-#     ifdef OCTCDF_64BIT_OFFSET 
-      omode = omode | NC_64BIT_OFFSET;
-#     endif
+#   ifdef OCTCDF_64BIT_OFFSET 
+    omode = omode | NC_64BIT_OFFSET;
+#   endif
 
-      status = nc_create(nf->filename.c_str(), omode, &(nf->ncid));
+    status = nc_create(nf->filename.c_str(), omode, &(nf->ncid));
 
-      if (status != NC_NOERR)
-	{
-	  error("Error while creating %s: %s", nf->filename.c_str(),
-		nc_strerror(status));
-	  return;
-	}
+    if (status != NC_NOERR)
+      {
+	nf->ncid = -1;
+	error("Error while creating %s: %s", nf->filename.c_str(),
+	      nc_strerror(status));
+	return;
+      }
 
 
-      nf->mode = DefineMode;
+    nf->mode = DefineMode;
 
-    }
+  }
 
-#     ifdef OV_NETCDF_VERBOSE
-      octave_stdout << "Open file " << nf->filename.c_str() 
-        << " omode " << omode << " mode " << (int) nf->mode << std::endl;
-#    endif
+# ifdef OV_NETCDF_VERBOSE
+  octave_stdout << "Open file " << nf->filename.c_str() 
+		<< " omode " << omode << " mode " << (int) nf->mode << std::endl;
+# endif
 
-    read_info();
+  read_info();
    
 }
 
@@ -127,8 +128,8 @@ void octave_ncfile::read_info() {
 // x.v = y     x(idx).v = y     x{idx}.v = y
 
 octave_value octave_ncfile::subsasgn(const std::string & type,
-				const std::list < octave_value_list > &idx,
-				const octave_value & rhs)
+				     const std::list < octave_value_list > &idx,
+				     const octave_value & rhs)
 {
   int status;
   octave_value retval;
@@ -143,141 +144,141 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 
 
   switch (type[0]) {
-    case '.': {
+  case '.': {
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "create attribute " << name << std::endl;
+#   endif
+
+    set_mode(DefineMode);
+
+    if (!rhs.is_cell()) {
+
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "type_id" << rhs.type_id() << endl;
+#     endif
+
+      nc_type nctype = ovtype2nctype(rhs);
+
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "type " << nctype << endl;
+#     endif
+
+      ov_nc_put_att(get_ncid(),NC_GLOBAL,name,nctype,rhs);
+    }
+    else {
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "define attribute from cell " << get_ncid() << std::endl;
+#     endif
+
+      Cell c =  rhs.cell_value();
+
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "type " << c.elem(0).string_value()<< endl;
+#     endif
+      nc_type nctype = ncname2nctype(c.elem(0).string_value());
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "type " << nctype << endl;
+#     endif
+      ov_nc_put_att(get_ncid(),NC_GLOBAL,name,nctype,c.elem(1));
+    }
+
+    break;
+  }
+  case '(': {
+    int dimid;
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "create dimension " << name << std::endl;
+#   endif
+
+    set_mode(DefineMode);
+
+    status =
+      nc_def_dim(get_ncid(),name.c_str(), (size_t) rhs.scalar_value(),
+		 &dimid);
+
+    if (status == NC_ENAMEINUSE) {
+      octave_stdout << "dimension " << name.c_str() << " already exist" << std::endl;
+    }
+    else if (status != NC_NOERR) {
+      error("Error while creating dimension %s: %s",
+	    name.c_str(), nc_strerror(status));
+    }
+    break;
+  }
+  case '{': {
+    set_mode(DefineMode);
+
+    if (type.length() == 1) {
+      if (rhs.class_name() == "ncvar") {
+	// define a variables
+
+	// downcast from octave_value to octave_ncvar
+
+	const octave_ncvar& ncvar = (const octave_ncvar&)rhs.get_rep();            
 #       ifdef OV_NETCDF_VERBOSE
-	octave_stdout << "create attribute " << name << std::endl;
+	octave_stdout << "define variable " << name <<  " nctype " << ncvar.get_nctype() << std::endl;
 #       endif
 
-	set_mode(DefineMode);
+	ov_nc_def_var(get_ncid(),name,ncvar.get_nctype(),ncvar.get_dimnames());
 
-	if (!rhs.is_cell()) {
-
-#           ifdef OV_NETCDF_VERBOSE
-	    octave_stdout << "type_id" << rhs.type_id() << endl;
-#           endif
-
-            nc_type nctype = ovtype2nctype(rhs);
-
-#          ifdef OV_NETCDF_VERBOSE
-	    octave_stdout << "type " << nctype << endl;
-#          endif
-
-          ov_nc_put_att(get_ncid(),NC_GLOBAL,name,nctype,rhs);
-	}
-        else {
+      } 
+      else if (rhs.is_cell()) {
 #       ifdef OV_NETCDF_VERBOSE
-	  octave_stdout << "define attribute from cell " << get_ncid() << std::endl;
+	octave_stdout << "define variable from cell " << std::endl;
+#       endif
+	Cell c =  rhs.cell_value();
+
+#       ifdef OV_NETCDF_VERBOSE
+	octave_stdout << "type " << c.elem(0).string_value()<< endl;
+#       endif
+	nc_type nctype = ncname2nctype(c.elem(0).string_value());
+#       ifdef OV_NETCDF_VERBOSE
+	octave_stdout << "type " << nctype << endl;
 #       endif
 
-            Cell c =  rhs.cell_value();
+	std::list<std::string> dimnames;
 
-#           ifdef OV_NETCDF_VERBOSE
-	    octave_stdout << "type " << c.elem(0).string_value()<< endl;
-#           endif
-            nc_type nctype = ncname2nctype(c.elem(0).string_value());
-#           ifdef OV_NETCDF_VERBOSE
-	    octave_stdout << "type " << nctype << endl;
-#           endif
-     	    ov_nc_put_att(get_ncid(),NC_GLOBAL,name,nctype,c.elem(1));
+	for (int i = 1; i < c.nelem(); i++) {
+	  dimnames.push_back(c.elem(i).string_value());
+#         ifdef OV_NETCDF_VERBOSE
+	  octave_stdout << "dimention " << c.elem(i).string_value()<< endl;
+#         endif
 	}
 
-	break;
+	ov_nc_def_var(get_ncid(),name,nctype,dimnames);
+
       }
-    case '(': {
-	int dimid;
-#       ifdef OV_NETCDF_VERBOSE
-	octave_stdout << "create dimension " << name << std::endl;
-#       endif
+      else
+	error("Error rhs of assignment should be an ncvar");
+    }
+    else {
+      octave_ncvar *var = new octave_ncvar(this,name);
 
-	set_mode(DefineMode);
-
-	status =
-	  nc_def_dim(get_ncid(),name.c_str(), (size_t) rhs.scalar_value(),
-		     &dimid);
-
-	if (status == NC_ENAMEINUSE) {
-	  octave_stdout << "dimension " << name.c_str() << " already exist" << std::endl;
-	}
-        else if (status != NC_NOERR) {
-	    error("Error while creating dimension %s: %s",
-		  name.c_str(), nc_strerror(status));
-	  }
-	break;
-      }
-    case '{': {
-	set_mode(DefineMode);
-
-	if (type.length() == 1) {
-	  if (rhs.class_name() == "ncvar") {
-	    // define a variables
-
-            // downcast from octave_value to octave_ncvar
-
-            const octave_ncvar& ncvar = (const octave_ncvar&)rhs.get_rep();            
-#           ifdef OV_NETCDF_VERBOSE
-  	    octave_stdout << "define variable " << name <<  " nctype " << ncvar.get_nctype() << std::endl;
-#           endif
-
-            ov_nc_def_var(get_ncid(),name,ncvar.get_nctype(),ncvar.get_dimnames());
-
-	  } 
-	  else if (rhs.is_cell()) {
-#           ifdef OV_NETCDF_VERBOSE
-  	    octave_stdout << "define variable from cell " << std::endl;
-#           endif
-            Cell c =  rhs.cell_value();
-
-#           ifdef OV_NETCDF_VERBOSE
-	    octave_stdout << "type " << c.elem(0).string_value()<< endl;
-#           endif
-            nc_type nctype = ncname2nctype(c.elem(0).string_value());
-#           ifdef OV_NETCDF_VERBOSE
-	    octave_stdout << "type " << nctype << endl;
-#           endif
-
-            std::list<std::string> dimnames;
-
-            for (int i = 1; i < c.nelem(); i++) {
-              dimnames.push_back(c.elem(i).string_value());
-#             ifdef OV_NETCDF_VERBOSE
-	      octave_stdout << "dimention " << c.elem(i).string_value()<< endl;
-#             endif
-            }
-
-            ov_nc_def_var(get_ncid(),name,nctype,dimnames);
-
-	  }
-          else
-	    error("Error rhs of assignment should be an ncvar");
-	}
-	else {
-	  octave_ncvar *var = new octave_ncvar(this,name);
-
-          if (idx.front().length() == 2) 
-	    if (idx.front()(1).is_scalar_type()) 
-              var->autoscale() = idx.front()(1).scalar_value() == 1;
+      if (idx.front().length() == 2) 
+	if (idx.front()(1).is_scalar_type()) 
+	  var->autoscale() = idx.front()(1).scalar_value() == 1;
 
 
             
-	  if (! error_state && idx.size () > 1)
-	    {
-	      // make necessary assignment with netcdf variable
+      if (! error_state && idx.size () > 1)
+	{
+	  // make necessary assignment with netcdf variable
 
-	      std::list<octave_value_list> new_idx (idx);
-	      new_idx.erase (new_idx.begin ());
-	      retval = var->subsasgn (type.substr(1), new_idx,rhs);
-	    }
-
-          delete var;
-
+	  std::list<octave_value_list> new_idx (idx);
+	  new_idx.erase (new_idx.begin ());
+	  retval = var->subsasgn (type.substr(1), new_idx,rhs);
 	}
 
-
-	break;
-      }
-      break;
+      delete var;
 
     }
+
+
+    break;
+  }
+    break;
+
+  }
 
 
   // update characteristics
@@ -301,7 +302,7 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 // x.v     x(idx).v     x{idx}.v
 
 octave_value octave_ncfile::subsref(const std::string &type,
-			       const std::list < octave_value_list > &idx)
+				    const std::list < octave_value_list > &idx)
 {
   int dimid, status;
   octave_value retval;
@@ -314,51 +315,51 @@ octave_value octave_ncfile::subsref(const std::string &type,
   std::string name = idx.front()(0).string_value();
 
   switch (type[0]) {
-    case '.': {
-#       ifdef OV_NETCDF_VERBOSE
-	octave_stdout << "getting attribute " << name << std::endl;
-#       endif
+  case '.': {
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "getting attribute " << name << std::endl;
+#   endif
 
-	retval = ov_nc_get_att(get_ncid(),NC_GLOBAL,name);
+    retval = ov_nc_get_att(get_ncid(),NC_GLOBAL,name);
 
-	break;
+    break;
+  }
+  case '(':
+    {
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "getting dimension " << name << std::endl;
+#     endif
+
+      status = nc_inq_dimid(get_ncid(),name.c_str(), &dimid);
+
+      if (status != NC_NOERR) {
+	error("Error while querying dimension %s: %s",name.c_str(), nc_strerror(status));
+	return  octave_value();
       }
-    case '(':
-      {
-#       ifdef OV_NETCDF_VERBOSE
-        octave_stdout << "getting dimension " << name << std::endl;
-#       endif
 
-	status = nc_inq_dimid(get_ncid(),name.c_str(), &dimid);
+      retval = octave_value(new octave_ncdim(this,dimid));
 
-	if (status != NC_NOERR) {
-	  error("Error while querying dimension %s: %s",name.c_str(), nc_strerror(status));
-   	  return  octave_value();
-	}
-
-	retval = octave_value(new octave_ncdim(this,dimid));
-
-	break;
-      }
-    case '{': {
-#         ifdef OV_NETCDF_VERBOSE
-	octave_stdout << "getting variable " << name << std::endl;
-#         endif
-
-	octave_ncvar *var = new octave_ncvar(this, name);
-
-	// determine if the variable need to be scaled
-
-        if (idx.front().length() == 2) {
-            var->autoscale() = idx.front()(1).scalar_value() == 1;
-	}
-
-	retval = var;
-	break;
-      }
       break;
-
     }
+  case '{': {
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "getting variable " << name << std::endl;
+#   endif
+
+    octave_ncvar *var = new octave_ncvar(this, name);
+
+    // determine if the variable need to be scaled
+
+    if (idx.front().length() == 2) {
+      var->autoscale() = idx.front()(1).scalar_value() == 1;
+    }
+
+    retval = var;
+    break;
+  }
+    break;
+
+  }
 
   return retval.next_subsref(type, idx);
 }
@@ -386,17 +387,17 @@ octave_ncfile::~octave_ncfile(void)
 
 void octave_ncfile::close(void) {
   int status;
-#   ifdef OV_NETCDF_VERBOSE
+# ifdef OV_NETCDF_VERBOSE
   octave_stdout << "close file " << get_ncid() << std::endl;
-#   endif
+# endif
 
   if (get_ncid() == -1) return;
 
   status = nc_close(get_ncid());
 
-   if (status != NC_NOERR)  {
-       error("Error closing file: %s", nc_strerror(status));
-     }
+  if (status != NC_NOERR)  {
+    error("Error closing file: %s", nc_strerror(status));
+  }
 
   nf->ncid = -1;
 }
@@ -427,14 +428,14 @@ void octave_ncfile::set_mode(Modes new_mode)
   if (new_mode != get_mode())
     {
       if (new_mode == DataMode)
-	  status = nc_enddef(get_ncid());
+	status = nc_enddef(get_ncid());
       else
-	  status = nc_redef(get_ncid());
+	status = nc_redef(get_ncid());
 
       if (status != NC_NOERR)
-	  error("Error chaning mode: %s", nc_strerror(status));
+	error("Error chaning mode: %s", nc_strerror(status));
       else
-	  nf->mode = new_mode;
+	nf->mode = new_mode;
     }
 
 

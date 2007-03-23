@@ -12,27 +12,30 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## quiver (x, y, u, v)
-##   Plot the (u,v) components of a vector field in an (x,y) meshgrid.
-##   If the grid is uniform, you can specify x and y as vectors.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} quiver (@var{x}, @var{y}, @var{u}, @var{v})
+## @deftypefnx {Function File} {} quiver (@var{u}, @var{v})
+## Plot the @code{(@var{u}, @var{v})} components of a vector field in 
+## an @code{(@var{x}, @var{y})} meshgrid. If the grid is uniform, you can 
+## specify @var{x} and @var{y} as vectors.
 ##
-## quiver (u, v)
-##   Assume grid is uniform on (1:m,1:n) where [m,n]=size(u).
+## If @var{x} and @var{y} are undefined they are assumed to be
+## @code{(1:@var{m}, 1:@var{n})} where @code{[@var{m}, @var{n}] = 
+## size(@var{u})}.
 ##
-## Example
-##
+## @group
+## @example
 ##   [x,y] = meshgrid(1:2:20);
 ##   quiver(x,y,sin(2*pi*x/10),sin(2*pi*y/10))
+## @end example
+## @end group
 ##
-## The underlying gnuplot command is much richer than what we provide
-## through quiver.  With four column data M=[x,y,u,v], you can plot
-## a vector field using '__gnuplot_plot__ M with vector ...'. 
-##
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, __gnuplot_plot__, __gnuplot_splot__, replot, xlabel, ylabel, title
+## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, replot, xlabel, ylabel, title}
+## @end deftypefn
 
 ## Author: Roberto A. F. Almeida <roberto@calvin.ocfis.furg.br>
 ## Rewrite: Paul Kienzle <pkienzle@users.sf.net>
@@ -60,7 +63,7 @@ function quiver (x, y, u, v)
   endif
 
   M = [ x(:), y(:), u(:), v(:) ];
-  __gnuplot_plot__ M w v t ""
+  __gnuplot_plot__ M w vec t ""
 endfunction
 
 %!demo
@@ -72,6 +75,3 @@ endfunction
 %! x=linspace(0,3,80); y=sin(2*pi*x); theta=2*pi*x+pi/2;
 %! quiver(x,y,sin(theta)/10,cos(theta)/10);
 %! hold on; plot(x,y,';;'); hold off;
-
-%!demo
-%! clf; % reset axis('equal') setting

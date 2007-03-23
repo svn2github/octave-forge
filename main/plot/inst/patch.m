@@ -7,7 +7,7 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this file; see the file COPYING.  If not, write to the
-## Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
 ## patch creates a pseudo-shaded patch with a black boundary
@@ -48,7 +48,7 @@ function patch(x,y,z,c)
       Y=[y,y(1)];
       plot(X,Y,borderc);
     unwind_protect_cleanup
-      if (!held) hold off; endif
+      if (!held), hold off; endif
     end_unwind_protect
   else
     if any (size(x) != size(y)) || any (size(x) != size(z))
@@ -64,7 +64,7 @@ function patch(x,y,z,c)
       Z=[z,z(1)];
       plot3(X,Y,Z,borderc);
     unwind_protect_cleanup
-      if (!held) hold off; endif
+      if (!held), hold off; endif
     end_unwind_protect
   endif
 

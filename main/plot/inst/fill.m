@@ -7,7 +7,7 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this file; see the file COPYING.  If not, write to the
-## Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
 ## FILL creates a pseudo-shaded patch 
@@ -29,7 +29,8 @@ function fill(x,y,c)
     usage("fill (x,y,c)");
   end
   
-  c=[c(1),';;'];
+  col = 'rgbcmy';
+  c=[col(c(1)),';;'];
   
   xs=size(x);
   ys=size(y);
@@ -66,7 +67,7 @@ function fill(x,y,c)
       	hold on;
       end
     unwind_protect_cleanup
-      if (!held) hold off; end;
+      if (!held), hold off; end;
     end_unwind_protect
   end
 

@@ -78,24 +78,24 @@ endfunction
 %! eqfyp = irsa_dft( eqxp, yp, eqfxp ); 
 %! [eqfxp,idx] = sort( eqfxp ); eqfyp = eqfyp(idx);
 %! ## Plot 
-%! __gnuplot_set__ yrange [0:1.2]; __gnuplot_set__ xrange [-2.5:2.5] __gnuplot_set__ nokey
+%! figure();
 %! subplot( 211 )
+%! plot( eqfxp, abs(eqfyp)/N, '-b' ); text();
 %! title( "|DFT| of regular timeseries of ones (with spacing 1 and therefore a Nyquist frequency of 0.5)" );
 %! text( -1.5, 1.1, "The usual comb" );
-%! plot( eqfxp, abs(eqfyp)/N, '-3' ); text();
+%! axis([-2.5,2.5,0,1.2]);
+%! legend('off');
 %! mdfxp = irsa_dftfp( mdxp, hifac, ofac );
 %! mdfyp = irsa_dft( mdxp, yp, mdfxp ); 
 %! [mdfxp,idx] = sort( mdfxp ); mdfyp = mdfyp(idx);
 %! subplot( 212 )
+%! plot( mdfxp, abs(mdfyp)/N, '-r' ); text();
 %! title( "|DFT| of irregular timeseries of ones (minimum distance sampling with md = 0.8 and random part = 0.2)" );
-%! text( -1.5, 1.1, "The irregularity destroyes the comb" );
+%! text( -1.5, 1.1, "The irregularity destroys the comb" );
 %! text( -0.5,0.3,"blue noise"); text( 0.1,0.3,"blue noise" );
 %! xlabel( "Frequency" );
-%! plot( mdfxp, abs(mdfyp)/N, '-1' ); text();
-%! oneplot(); 
-%! ## Clean 
-%! __gnuplot_set__ autoscale; __gnuplot_set__ key
-%! xlabel(""); title("");
+%! axis([-2.5,2.5,0,1.2]);
+%! legend('off');
 
 ### Local Variables:
 ### mode: octave

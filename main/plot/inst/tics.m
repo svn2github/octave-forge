@@ -19,20 +19,12 @@
 function tics(axis,pos,lab)
 
   if nargin == 1
-    cmd = ["set ", axis, "tics autofreq;\n"];
-    __gnuplot_raw__ (cmd);
+    set (gca(), "XTickMode", "auto");
   elseif nargin == 2
-    tics = sprintf(' %g,', pos);
-    tics(length(tics)) = ' ';
-    cmd = ["set ", axis, "tics (", tics, ");\n"];
-    __gnuplot_raw__ (cmd);
+    set (gca(), "XTick", pos);
   elseif nargin == 3
-    tics = sprintf('"%s" %g', deblank(lab(1,:)), pos(1));
-    for i=2:rows(lab)
-      tics = [tics, sprintf(', "%s" %g', deblank(lab(i,:)), pos(i)) ];
-    endfor
-    cmd = [ "set ", axis, "tics (", tics ,");\n"];
-    __gnuplot_raw__ (cmd);
+    set (gca(), "XTick", pos);
+    set (gca(), "XTickLabel", lab);
   else
     usage("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
   endif

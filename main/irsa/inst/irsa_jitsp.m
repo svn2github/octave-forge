@@ -109,26 +109,17 @@ endfunction
 %! jitxp = irsa_jitsp( 1 , N, 1 ) + 1;
 %! o = ones(N,1);
 %! ## Plot 
-%! __gnuplot_set__ nokey
-%! __gnuplot_set__ xrange [0:13]
-%! __gnuplot_set__ yrange [0:1.5]
-%! __gnuplot_set__ xtics 1
-%! __gnuplot_set__ mxtics 2
-%! __gnuplot_set__ grid mxtics
-%! __gnuplot_set__ noytics
+%! figure();
+%! legend('off');
+%! axis([0,13,0,1.5]);
 %! subplot( 211 );
+%! plot( eqxp, o, '^b', eqxp, o, '*b' ); text(); title("");
 %! title( "Jittered Sampling versus regular (equidistant) sampling" );
 %! text( 2,1.25, 'regular sampling with distance = 1' );
-%! plot( eqxp, o, '^3', eqxp, o, '@*3' ); text(); title("");
 %! subplot( 212 );
+%! plot( jitxp, o, '^r', jitxp, o, 'xr' ); text; 
 %! xlabel( "Time" );
 %! text( 2,1.25, 'jittered sampling with mean distance = 1 and i.i.d. jitter within a range of 1' ); 
-%! plot( jitxp, o, '^1', jitxp, o, '@x1' ); text; 
-%! oneplot();
-%! ## Clean up gnuplot
-%! __gnuplot_set__ key; __gnuplot_set__ autoscale; __gnuplot_set__ xtics autofreq; __gnuplot_set__ ytics autofreq;
-%! __gnuplot_set__ nox2tics; __gnuplot_set__ nogrid; __gnuplot_set__ nomxtics; 
-%! xlabel(""); title(""); ylabel("");
 
 ### Local Variables:
 ### mode: octave

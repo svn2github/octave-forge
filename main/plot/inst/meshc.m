@@ -12,20 +12,20 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; see the file COPYING.  If not, write to the
-## Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} meshc (@var{x}, @var{y}, @var{z})
-## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshdom} and
+## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
+## @seealso{meshgrid, mesh, contour}
 ## @end deftypefn
-## @seealso{plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
-## contour, bar, stairs, __gnuplot_plot__, __gnuplot_splot__, replot, xlabel, ylabel, and title}
+
 
 ## Author: John W. Eaton
 ## Modified: 2000-11-17 Paul Kienzle <kienzle.powernet.co.uk>
@@ -38,88 +38,85 @@
 ## Dmitri A. Sergatskov <dasergatskov@gmail.com>
 ## April 18, 2005
 
-function meshc (x, y, z)
+## Modifed 2007-03-27 David Bateman
+##  Use new graphic handles interface
 
-  ## XXX FIXME XXX -- the plot states should really just be set
-  ## temporarily, probably inside an unwind_protect block, but there is
-  ## no way to determine their current values.
+function meshc (varargin)
+
+  newplot ();
 
   if (nargin == 1)
-    z = x;
-    if (is_matrix (z))
-      __gnuplot_raw__ ("set nokey;\n");
-      __gnuplot_raw__ ("set hidden3d;\n");
-      __gnuplot_raw__ ("set data style lines;\n");
-      __gnuplot_raw__ ("set surface;\n");
-      __gnuplot_raw__ ("set contour;\n");
-      __gnuplot_set__ noparametric;
-      __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-      __gnuplot_splot__ z'
+    z = varargin{1};
+    if (ismatrix (z))
+      [nr, nc] = size (z);
+      x = 1:nc;
+      y = (1:nr)';
     else
       error ("meshc: argument must be a matrix");
     endif
   elseif (nargin == 3)
-    if (isvector (x) && isvector (y) && is_matrix (z))
-      xlen = length (x);
-      ylen = length (y);
-      if (xlen == columns (z) && ylen == rows (z))
-        if (rows (y) == 1)
-          y = y';
-        endif
-        len = 3 * xlen;
-        zz = zeros (ylen, len);
-        k = 1;
-        for i = 1:3:len
-          zz(:,i)   = x(k) * ones (ylen, 1);
-          zz(:,i+1) = y;
-          zz(:,i+2) = z(:,k);
-          k++;
-        endfor
-	__gnuplot_raw__ ("set nokey;\n");
-	__gnuplot_raw__ ("set hidden3d;\n");
-	__gnuplot_raw__ ("set data style lines;\n");
-	__gnuplot_raw__ ("set surface;\n");
-	__gnuplot_raw__ ("set contour;\n");
-	__gnuplot_set__ parametric;
-	__gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-        __gnuplot_splot__ zz
-        __gnuplot_set__ noparametric ;
+    x = varargin{1};
+    y = varargin{2};
+    z = varargin{3};
+
+    if (isvector (x) && isvector (y) && ismatrix (z))
+      if (rows (z) == length (y) && columns (z) == length (x))
+        x = x(:)';
+        y = y(:);
       else
         msg = "meshc: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
         error (msg);
       endif
-    elseif (is_matrix (x) && is_matrix (y) && is_matrix (z))
-      xlen = columns (z);
-      ylen = rows (z);
-      if (xlen == columns (x) && xlen == columns (y) &&
-        ylen == rows (x) && ylen == rows(y))
-        len = 3 * xlen;
-        zz = zeros (ylen, len);
-        k = 1;
-        for i = 1:3:len
-          zz(:,i)   = x(:,k);
-          zz(:,i+1) = y(:,k);
-          zz(:,i+2) = z(:,k);
-          k++;
-        endfor
-	__gnuplot_raw__ ("set nokey;\n");
-	__gnuplot_raw__ ("set hidden3d;\n");
-	__gnuplot_raw__ ("set data style lines;\n");
-	__gnuplot_raw__ ("set surface;\n");
-	__gnuplot_raw__ ("set contour;\n");
-	__gnuplot_set__ parametric;
-	__gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-        __gnuplot_splot__ zz
-        __gnuplot_set__ noparametric;
-      else
+    elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
+      if (! (size_equal (x, y) && size_equal (x, z)))
         error ("meshc: x, y, and z must have same dimensions");
       endif
     else
       error ("meshc: x and y must be vectors and z must be a matrix");
     endif
   else
-    usage ("meshc (z)");
+    print_usage ();
   endif
 
+  ## make a default line object, and make it the current axes for the
+  ## current figure.
+  ca = gca ();
+
+  tmp = __go_surface__ (ca, "xdata", x, "ydata", y, "zdata", z);
+
+  set (ca, "view", [-37.5, 30]);
+
+  hold on;
+
+  [c, lev] = contourc (varargin{:});
+
+  cmap = get (gcf(), "colormap");
+  
+  levx = linspace (min (lev), max (lev), size (cmap, 1));
+
+  drawnow();
+  ax = axis();
+  zmin = 2 * ax(5) - ax(6);
+
+  ## decode contourc output format
+  i1 = 1;
+  while (i1 < length (c))
+
+    clev = c(1,i1);
+    clen = c(2,i1);
+
+    ccr = interp1 (levx, cmap(:,1), clev);
+    ccg = interp1 (levx, cmap(:,2), clev);
+    ccb = interp1 (levx, cmap(:,3), clev);
+
+    ii = i1+1:i1+clen;
+    line (c(1,ii), c(2,ii), zmin*ones(size(ii)), "color", [ccr, ccg, ccb]);
+
+    i1 += c(2,i1)+1;
+  endwhile
+  
+  if (nargout > 0)
+    h = tmp;
+  endif
 endfunction

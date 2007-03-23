@@ -71,26 +71,19 @@ endfunction
 %! mdxp = irsa_mdsp( .2 , .8, N, "randn" );
 %! o = ones(N,1);
 %! ## Plot 
-%! __gnuplot_set__ nokey
-%! ## __gnuplot_set__ xrange [-0.5:19.5]
-%! __gnuplot_set__ yrange [0:1.5]
-%! # __gnuplot_set__ xtics 2
-%! __gnuplot_set__ noytics
+%! figure();
 %! subplot( 211 );
+%! plot( eqxp, o, '^b', eqxp, o, '*b' ); text(); title("");
 %! title( "Irregular Minimum Distance Sampling versus regular (equidistant) sampling" );
+%! legend('off');
+%! axis ([-0.5,19.5,0,1.5]);
 %! text( 5,1.25, 'regular sampling with distance = 1' );
-%! plot( eqxp, o, '^3', eqxp, o, '@*3' ); text(); title("");
 %! subplot( 212 );
+%! plot( mdxp, o, '^r', mdxp, o, 'xr' ); text; 
 %! xlabel( "Time" );
 %! text( 5,1.25, 'minimum distance sampling with md = 0.2 and rd = 0.8' );
-%! plot( mdxp, o, '^1', mdxp, o, '@x1' ); text; 
-%! oneplot();
-%! ## Clean up gnuplot
-%! __gnuplot_set__ key
-%! __gnuplot_set__ autoscale
-%! __gnuplot_set__ xtics autofreq
-%! __gnuplot_set__ ytics autofreq
-%! xlabel("");
+%! legend('off');
+%! axis ([-0.5,19.5,0,1.5]);
 
 ### Local Variables:
 ### mode: octave

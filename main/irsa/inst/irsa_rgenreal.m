@@ -113,12 +113,13 @@ endfunction
 %! longxp = linspace( 0, N-(1/16), N*16 ) + xp1;
 %! [yp, fxp, fyp] = irsa_rgenreal( xp, 1/8 );
 %! longyp = irsa_idft( fxp, fyp, longxp, true )*16;
+%! figure();
+%! plot( longxp, longyp, '-r', xp, yp, '*b' );
 %! title( sprintf"Regular timeseries with spacing 1 and fmax = 1/8" );
 %! xlabel( "Sampling points" ); 
 %! ylabel( "Sampling values" );
-%! __gnuplot_set__ nokey;
-%! plot( longxp, longyp, '-', xp, yp, '@*3' );
-%! title(""); xlabel(""); ylabel(""); __gnuplot_set__ key;
+%! legend('off');
+%! hold on;
 %! input("Press Enter to see the spectrum up to the band-limit");
 %! irsa_plotdft( fxp, fyp ); 
 %! input("Press Enter to see the whole spectrum computed via FFT");
@@ -130,18 +131,20 @@ endfunction
 %! longxp = linspace( 0, N-(1/ofac), N*ofac ) + xp1;
 %! [yp, fxp, fyp] = irsa_rgenreal( xp, 1/8 ); 
 %! longyp = irsa_idft( fxp, fyp, longxp, true )*16;
+%! figure();
+%! plot( longxp, longyp, '-r', xp, yp, '*b' ); 
 %! title( "Irregular timeseries with mean spacing 1 and fmax = 1/8" );
 %! xlabel( "Sampling points" ); 
 %! ylabel( "Sampling values" );
-%! __gnuplot_set__ nokey;
-%! plot( longxp, longyp, '-', xp, yp, '@*3' ); 
-%! title(""); xlabel(""); ylabel(""); __gnuplot_set__ key;
+%! legend('off');
+%! hold on;
 %! input("Press Enter to see the spectrum up to the band-limit");
 %! irsa_plotdft( fxp, fyp ); 
 %! input("Press Enter to see the spectrum via DFT");
 %! fxp = irsa_dftfp( xp );
 %! fyp = irsa_dft( xp, yp, fxp );
 %! irsa_plotdft( fxp, fyp ); 
+
 ### Local Variables:
 ### mode: octave
 ### End:

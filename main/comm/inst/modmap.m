@@ -148,10 +148,6 @@ function y = modmap(varargin)
     endif
   endif
 
-  try ar = automatic_replot();
-  catch ar = 0;
-  end
-
   if (strcmp(method,"ask"))
     if (nargin > optarg + 1)
       error ("modmap: too many arguments");
@@ -201,23 +197,14 @@ function y = modmap(varargin)
       endif
 
       ## This is an ugly plot, with little info. But hey!!!
-      unwind_protect
-	title("MSK constellation");
-	xlabel("Frequency (Hz)");
-	ylabel("");
-	axis([-fd, 2*fd, 0, 2]);
-	try stem ([0, fd], [2, 1]);
-	catch
-	  error ("modmap: can not find stem-plot function");
-	end
-      unwind_protect_cleanup
-	xlabel("");
-	ylabel("");
-	title("");
-	__gnuplot_set__ autoscale;
-	hold off;
-        automatic_replot(ar);
-      end_unwind_protect
+      try stem ([0, fd], [2, 1]);
+      catch
+	error ("modmap: can not find stem-plot function");
+      end
+      title("MSK constellation");
+      xlabel("Frequency (Hz)");
+      ylabel("");
+      axis([-fd, 2*fd, 0, 2]);
     else
       if (nargin > optarg)
 	error ("modmap: too many arguments");
@@ -240,23 +227,14 @@ function y = modmap(varargin)
 
     if (nargout == 0)
       ## This is an ugly plot, with little info. But hey!!!
-      unwind_protect
-	title("FSK constellation");
-	xlabel("Frequency (Hz)");
-	ylabel("");
-	axis([-tone, M*tone, 0, 2]);
-	try stem ([0:tone:(M-1)*tone], [2, ones(1,M-1)]);
-	catch
-	  error ("modmap: can not find stem-plot function");
-	end
-      unwind_protect_cleanup
-	xlabel("");
-	ylabel("");
-	title("");
-	__gnuplot_set__ autoscale;
-	hold off;
-        automatic_replot(ar);
-      end_unwind_protect
+      try stem ([0:tone:(M-1)*tone], [2, ones(1,M-1)]);
+      catch
+	error ("modmap: can not find stem-plot function");
+      end
+      title("FSK constellation");
+      xlabel("Frequency (Hz)");
+      ylabel("");
+      axis([-tone, M*tone, 0, 2]);
     else
       y = tone * x;
     endif
@@ -317,40 +295,25 @@ function y = modmap(varargin)
     endif
     
     if (nargout == 0)
-      unwind_protect
-	inphase = inphase(:);
-	quadr = quadr(:);
-	clearplot;
-	title("QASK Constellation");
-	xlabel("In-phase");
-	ylabel("Quadrature");
-	axis([min(inphase)-1, max(inphase)+1, min(quadr)-1, max(quadr)+1]);
-	__gnuplot_set__ nokey;
-	hold off;
-	yy = [inphase, quadr];
-	eval("__gnuplot_plot__ yy w p 1;");
-	hold on;
-	xd = 0.02 * max(inphase);
-	if (nargin == 2)
-	  msg = msg(:);
-	  for i=1:length(inphase)
-	    text(inphase(i)+xd,quadr(i),num2str(msg(i)));
-	  end
-	else
-	  for i=1:length(inphase)
-	    text(inphase(i)+xd,quadr(i),num2str(i-1));
-	  end
-	endif
-	replot;
-      unwind_protect_cleanup
-	xlabel("");
-	ylabel("");
-	title("");
-	__gnuplot_set__ autoscale;
-	hold off;
-	text();
-        automatic_replot(ar);
-      end_unwind_protect
+      inphase = inphase(:);
+      quadr = quadr(:);
+      plot (inphase, quadr, "+r");
+      title("QASK Constellation");
+      xlabel("In-phase");
+      ylabel("Quadrature");
+      axis([min(inphase)-1, max(inphase)+1, min(quadr)-1, max(quadr)+1]);
+      xd = 0.02 * max(inphase);
+      if (nargin == 2)
+	msg = msg(:);
+	for i=1:length(inphase)
+	  text(inphase(i)+xd,quadr(i),num2str(msg(i)));
+	end
+      else
+	for i=1:length(inphase)
+	  text(inphase(i)+xd,quadr(i),num2str(i-1));
+	end
+      endif
+      replot;
     else
       y = inphase(x+1) + 1i * quadr(x+1);
       if (size(x,2) == 1)

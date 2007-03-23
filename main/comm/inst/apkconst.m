@@ -37,7 +37,7 @@
 ## in each ASK radii.
 ##
 ## In addition @dfn{apkconst} takes two string arguments 'n' and and @var{str}.
-## If the string 'n' is included in the erguments, then a number is printed
+## If the string 'n' is included in the arguments, then a number is printed
 ## next to each constellation point giving the symbol value that would be
 ## mapped to this point by the @dfn{modmap} function. The argument @var{str}
 ## is a plot style string (example 'r+') and determines the default gnuplot
@@ -63,7 +63,7 @@ function yout = apkconst(varargin)
 
   numargs = 0;
   printnums = 0;
-  fmt = "w p 1";
+  fmt = "+r";
   amp = [];
   phs = [];
 
@@ -78,7 +78,7 @@ function yout = apkconst(varargin)
 	  printnums = 0;
 	end
       else
-	fmt = __pltopt__ ("apkconst", arg);
+	fmt = arg;
       endif
     else
       numargs++;
@@ -126,43 +126,23 @@ function yout = apkconst(varargin)
   end
 
   if (nargout == 0)
-    try ar = automatic_replot();
-    catch ar = 0;
-    end
+    r = [0:0.02:2]'*pi;
+    x0 = cos(r) * amp;
+    y0 = sin(r) * amp;
+    plot(x0, y0, "b");
+    yy = [real(y), imag(y)];
+    hold on;
+    if (printnums)
+      xd = 0.05 * max(real(y));
+      for i=1:length(y)
+	text(real(y(i))+xd,imag(y(i)),num2str(i-1));
+      end
+    endif
+    plot (real(y), imag(y), fmt);
 
-    unwind_protect
-      clearplot;
-      title("ASK/PSK Constellation");
-      xlabel("In-phase");
-      ylabel("Quadrature");
-      axis([-1.1*max(amp), 1.1*max(amp), -1.1*max(amp), 1.1*max(amp)]);
-      legend("off");
-      hold off;
-      r = [0:0.02:2]'*pi;
-      x0 = cos(r) * amp;
-      y0 = sin(r) * amp;
-      plot(x0, y0, "2");
-      hold on;
-      yy = [real(y), imag(y)];
-      if (printnums)
-	xd = 0.05 * max(real(y));
-	for i=1:length(y)
-	  text(real(y(i))+xd,imag(y(i)),num2str(i-1));
-	end
-      endif
-      cmd = sprintf("__gnuplot_plot__ yy %s;", fmt);
-      eval(cmd);
-    unwind_protect_cleanup
-      xlabel("");
-      ylabel("");
-      title("");
-      axis();
-      hold off;
-      if (printnums)
-        text();
-      endif
-      automatic_replot(ar);
-    end_unwind_protect
+    title("ASK/PSK Constellation");
+    xlabel("In-phase");
+    ylabel("Quadrature");
   else
     yout = y;
   endif

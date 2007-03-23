@@ -54,7 +54,7 @@
 ## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
 ##     * modified for new gnuplot interface (octave > 2.9.0)
 
-function hout = scatterplot (x, n, _off, str, h)
+function varargout = scatterplot (x, n, _off, str, h)
 
   if ((nargin < 1) || (nargin > 5))
     usage (" h = scatterplot (x, n [, off [, str [, h]]]])");
@@ -64,6 +64,7 @@ function hout = scatterplot (x, n, _off, str, h)
     if (min(size(x)) == 1)
       signal = "real";
       xr = x(:);
+      xi = zeros(size(xr));
     elseif (size(x,2) == 2)
       signal = "complex";
       xr = x(:,1);
@@ -104,63 +105,55 @@ function hout = scatterplot (x, n, _off, str, h)
 
   if (nargin > 3)
     if (isempty(str))
-      fmt = "w p 1";
+      fmt = "-r";
     elseif (ischar(str))
-      fmt = __pltopt__ ("scatterplot", str);
+      fmt = str;
     else
       error ("scatterplot: plot format must be a string");
     endif
   else
-    fmt = "w p 1";
+    fmt = "-r";
   endif
 
   if (nargin > 4)
-    if (!isscalar(h) || !isreal(h) || (floor(h) != h) || (h < 0))
-      error ("scatterplot: figure handle must be a positive integer");
-    endif
-    if (!gnuplot_has_frames)
-      error ("scatterplot: gnuplot must have frames for figure handles");
-    endif
     hout = figure (h);
-    hold on;
   else
-    if (!gnuplot_has_frames)
-      hout = figure ();
-    else
-      hout = 0;
-    endif
-    hold off;
+    hout = figure ();
   endif
 
-  if (strcmp(signal,"complex"))
-    spts = [xr,xi];
-  else
-    spts = [xr,zeros(length(xr),1)];
+  xr = xr(off+1:n:rows(xr));
+  xi = xi(off+1:n:rows(xi));
+
+  plot(xr,xi,fmt);
+  if (!strcmp(signal,"complex"))
+    ## FIXME: What is the appropriate xrange
+    xmax = max(xr);
+    xmin = min(xr);
+    xran = xmax - xmin
+    xmax =  ceil(2 * xmax / xran) / 2 * xran;
+    xmin = floor(2 * xmin / xran) / 2 * xran;
+    axis([xmin, xmax, -1, 1]);
   endif
-  spts = spts(off+1:n:rows(xr),:);
+  title("Scatter plot");
+  xlabel("In-phase");
+  ylabel("Quadrature");
+  legend("off");
 
-  try ar = automatic_replot();
-  catch ar = 0;
-  end
-
-  unwind_protect
-    title("Scatter plot");
-    xlabel("In-phase");
-    ylabel("Quadrature");
-    legend("off");
-    if (!strcmp(signal,"complex"))
-      __gnuplot_raw__ ("set yrange [-1:1];\n")
-    endif
-    
-    cmd = sprintf("__gnuplot_plot__ spts %s", fmt);
-    eval(cmd);
-
-  unwind_protect_cleanup
-##    xlabel("");
-##    ylabel("");
-##    axis();
-##    title("");
-    automatic_replot(ar);
-  end_unwind_protect
+  if (nargout > 0)
+    varargout{1} = hout;
+  endif
 
 endfunction
+
+%!demo
+%! n = 200;
+%! ovsp=5;
+%! x = 1:n;
+%! xi = [1:1/ovsp:n-0.1];
+%! y = randsrc(1,n,[1 + 1i, 1 - 1i, -1 - 1i, -1 + 1i]) ;
+%! yi = interp1(x,y,xi);
+%! noisy = awgn(yi,15,"measured");
+%! hold off;
+%! h = scatterplot(noisy,1,0,"b",1);
+%! hold on;
+%! scatterplot(noisy,ovsp,0,"r+",h);

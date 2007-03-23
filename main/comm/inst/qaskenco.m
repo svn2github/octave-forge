@@ -153,45 +153,24 @@ function [a, b] = qaskenco(msg, M)
   endif
 
   if (nargout == 0)
-    try ar = automatic_replot();
-    catch ar = 0;
-    end
-
-    unwind_protect
-      automatic_replot (0)
-      inphase = inphase(:);
-      quadr = quadr(:);
-      clearplot;
-      title("QASK Constellation");
-      xlabel("In-phase");
-      ylabel("Quadrature");
-      axis([min(inphase)-1, max(inphase)+1, min(quadr)-1, max(quadr)+1]);
-      legend("off");
-      hold off;
-      yy = [inphase, quadr];
-      __gnuplot_plot__ yy w p 1;
-      hold on;
-      xd = 0.02 * max(inphase);
-      if (nargin == 2)
-	msg = msg(:);
-	for i=1:length(inphase)
-	  text(inphase(i)+xd,quadr(i),num2str(msg(i)));
-	end
-      else
-	for i=1:length(inphase)
-	  text(inphase(i)+xd,quadr(i),num2str(i-1));
-	end
-      endif
-      replot;
-    unwind_protect_cleanup
-      xlabel("");
-      ylabel("");
-      title("");
-      axis();
-      hold off;
-      text();
-      automatic_replot (ar);
-    end_unwind_protect
+    inphase = inphase(:);
+    quadr = quadr(:);
+    plot (inphase, quadr, "r+");
+    title("QASK Constellation");
+    xlabel("In-phase");
+    ylabel("Quadrature");
+    axis([min(inphase)-1, max(inphase)+1, min(quadr)-1, max(quadr)+1]);
+    xd = 0.02 * max(inphase);
+    if (nargin == 2)
+      msg = msg(:);
+      for i=1:length(inphase)
+	text(inphase(i)+xd,quadr(i),num2str(msg(i)));
+      end
+    else
+      for i=1:length(inphase)
+	text(inphase(i)+xd,quadr(i),num2str(i-1));
+      end
+    endif
   elseif (nargout == 1)
     a = inphase + 1i * quadr;
   else

@@ -31,7 +31,7 @@ function [RC,r0] = poly2rc(a,efinal);
 % You should have received a copy of the GNU Library General Public
 % License along with this library; if not, write to the
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
+% Boston, MA  02110-1301, USA.
 
 if all(size(a))>1,
         fprintf(2,'Error poly2rc: "a" must be a vector\n');

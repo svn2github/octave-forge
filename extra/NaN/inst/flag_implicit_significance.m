@@ -40,7 +40,7 @@ function DIM=flag_implicit_significance(i)
 %
 %    You should have received a copy of the GNU General Public License
 %    along with this program; if not, write to the Free Software
-%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+%    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 %	Version 2.99;	24 Aug 2002
 %	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	

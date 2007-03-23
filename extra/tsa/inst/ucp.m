@@ -25,7 +25,7 @@ function b=ucp(c)
 % You should have received a copy of the GNU Library General Public
 % License along with this library; if not, write to the
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
+% Boston, MA  02110-1301, USA.
 
 % Version 2.62
 % 07.04.1999

@@ -33,7 +33,7 @@ function [a,VAR,S,a_aux,b_aux,e_aux,MLE,pos] = rmle(arg1,arg2);
 % You should have received a copy of the GNU Library General Public
 % License along with this library; if not, write to the
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
+% Boston, MA  02110-1301, USA.
 
 x=arg1*1e-6;
 p=arg2;

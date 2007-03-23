@@ -55,7 +55,7 @@ function [z,e,REV,ESU,V,Z,SPUR] = aarmam(y, Mode, MOP, UC, z0, Z0, V0, W);
 % You should have received a copy of the GNU Library General Public
 % License along with this library; if not, write to the
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
+% Boston, MA  02110-1301, USA.
 
 % 12.04.1999 ESU included
 % 19.10.2000 aMode 13,14 included

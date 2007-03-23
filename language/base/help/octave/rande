@@ -1,15 +1,68 @@
 -*- texinfo -*-
-@deftypefn {Loadable Function} {} rande (@var{x})
-@deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})
-@deftypefnx {Loadable Function} {} rande ("state", @var{x})
-@deftypefnx {Loadable Function} {} rande ("seed", @var{x})
-Return a matrix with exponentially distributed random elements. The
-arguments are handled the same as the arguments for @code{rand}.
+@deftypefn {Loadable Function} {} rand (@var{x})
+@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})
+@deftypefnx {Loadable Function} {} rand ("state", @var{x})
+@deftypefnx {Loadable Function} {} rand ("seed", @var{x})
+Return a matrix with random elements uniformly distributed on the
+interval (0, 1).  The arguments are handled the same as the arguments
+for @code{eye}.
 
-By default, @code{randn} uses a Marsaglia and Tsang Ziggurat technique to
-transform from a uniform to a exponential distribution. (G. Marsaglia and
-W.W. Tsang, 'Ziggurat method for generating random variables',
-J. Statistical Software, vol 5, 2000,
-@url{http://www.jstatsoft.org/v05/i08/})
-@seealso{rand,randn,randg,randp}
+You can query the state of the random number generator using the
+form
+
+@example
+v = rand ("state")
+@end example
+
+This returns a column vector @var{v} of length 625. Later, you can
+restore the random number generator to the state @var{v}
+using the form
+
+@example
+rand ("state", v)
+@end example
+
+@noindent
+You may also initialize the state vector from an arbitrary vector of
+length <= 625 for @var{v}.  This new state will be a hash based on the
+value of @var{v}, not @var{v} itself.
+
+By default, the generator is initialized from @code{/dev/urandom} if it is
+available, otherwise from cpu time, wall clock time and the current
+fraction of a second.
+
+@code{rand} uses the Mersenne Twister with a period of 2^19937-1
+(See M. Matsumoto and T. Nishimura, ``Mersenne Twister: A 623-dimensionally
+equidistributed uniform pseudorandom number generator'', ACM Trans. on
+Modeling and Computer Simulation Vol. 8, No. 1, Januray pp.3-30 1998,
+@url{http://www.math.keio.ac.jp/~matumoto/emt.html}).
+Do NOT use for CRYPTOGRAPHY without securely hashing several returned
+values together, otherwise the generator state can be learned after
+reading 624 consecutive values.
+
+@code{rand} includes a second random number generator, that was the
+previous generator used in Octave. The new generator is used by default
+as it is significantly faster than the old generator, and produces
+random numbers with a significantly longer cycle time. However, in
+some circumstances it might be desirable to obtain the same random
+sequences as used by the old generators. To do this the keyword
+"seed" is used to specify that the old generators should be use,
+as in
+
+@example
+rand ("seed", val)
+@end example
+
+which sets the seed of the generator to @var{val}. The seed of the
+generator can be queried with
+
+@example
+s = rand ("seed")
+@end example
+
+However, it should be noted that querying the seed will not cause
+@code{rand} to use the old generators, only setting the seed will.
+To cause @code{rand} to once again use the new generators, the
+keyword "state" should be used to reset the state of the @code{rand}.
+@seealso{randn, rande, randg, randp}
 @end deftypefn

@@ -17,7 +17,7 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-dnl 02111-1307, USA.
+dnl 02110-1301, USA.
 dnl
 dnl
 dnl -------------------------------------------------------------------

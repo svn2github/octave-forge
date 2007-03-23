@@ -21,7 +21,7 @@ function ACF=rc2ac(RC,R0)
 % You should have received a copy of the GNU Library General Public
 % License along with this library; if not, write to the
 % Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
+% Boston, MA  02110-1301, USA.
 
 
 fprintf(2,'ERROR: RC2AC does not work yet. Sorry\n');

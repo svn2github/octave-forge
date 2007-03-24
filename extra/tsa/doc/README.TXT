@@ -41,8 +41,8 @@ other useful staff. Demo programs can be started with "demo" or "demotsa".
 %
 % You should have received a copy of the GNU Library General Public
 % License along with this library; if not, write to the
-% Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02110-1301, USA.
+% Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+% Boston, MA 02110-1301  USA
 
 Copyright (c) 1996-2003 by Alois Schloegl 
 E-Mail:   a.schloegl@ieee.org

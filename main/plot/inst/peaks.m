@@ -27,7 +27,7 @@ function [X_out,Y_out,Z_out] = peaks(x,y)
     endif
   endif
 
-  if (!ismatrix(x) && !ismatrix(y))
+  if (isvector(x) && isvector(y))
     [X,Y] = meshgrid(x,y);
   else
     X = x;

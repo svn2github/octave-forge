@@ -293,6 +293,10 @@ def main():
         index.write('This file is not however an octave package and the individiual\n');
         index.write('packages it contains must be installed separately</p>\n');
 
+    index.write('<p>These packages are meant for versions of Octave later than version\n');
+    index.write('2.9.10. For earlier versions of Octave, please use the older\n');
+    index.write('<a href="__MONOLITHIC__">monolithic releases of Octave-Forge</a>.</p>\n');
+
     if (os.path.exists("INDEX")):
         os.system("rm -f INDEX");
 

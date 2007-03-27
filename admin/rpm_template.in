@@ -5,7 +5,7 @@ Summary:	@TITLE@
 Group:		Applications/Engineering
 License:	@LICENSE@
 URL:		http://octave.sourceforge.net
-Source0:	http://prdownloads.sourceforge.net/octave/@PACKAGE@
+Source0:	http://downloads.sourceforge.net/octave/@PACKAGE@
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 
 ## Package installs in a directory tree specific to the installed
@@ -39,7 +39,7 @@ mkdir install/@NAME@/inst
 
 %build
 cd @NAME@-@VERSION@
-HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install','@PACKAGE@')"
+HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('install','@PACKAGE@')"
 cd install
 mv @NAME@-@VERSION@/packinfo/* @NAME@
 rm -rf @NAME@-@VERSION@/packinfo

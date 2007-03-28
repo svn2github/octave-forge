@@ -1,9 +1,9 @@
 M4 := m4
 MACRO_FILE := macros.m4
 M4_OPTIONS := --prefix-builtins
-HTML_SRC = $(shell find . | grep "\.in")
-IMG_HTML = $(HTML_SRC:.in=.html)
 HTDOCS = ./htdocs/
+HTML_SRC = $(shell find $(HTDOCS) | grep "\.in")
+IMG_HTML = $(HTML_SRC:.in=.html)
 HTDOCS_PKG = htdocs.tar.gz
 
 all: build-www doc $(HTDOCS)developers.html doxygen $(HTDOCS)javascript.js
@@ -50,6 +50,7 @@ clean:
 	  fi; \
 	done
 	@rm -fr $(HTDOCS)*.html $(HTDOCS)developers.in INDEX $(HTDOCS)coda .octave_hist .octave_packages $(HTDOCS)doxygen $(HTDOCS)javascript.js tmphtmlheader.html tmphtmlfooter.html tmp $(HTDOCS_PKG) *~ $(HTDOCS)/*~
+	@make -C coda clean
 
 $(HTDOCS_PKG):
 	@tar czf $@ --exclude=CVS --exclude=\*.in htdocs 

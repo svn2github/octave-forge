@@ -17,7 +17,7 @@ This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
 2.9.10. For earlier versions of Octave, please use the older
-<a href="__MONOLITHIC__">monolithic releases of Octave-Forge</a>.</p>
+<a href="__MONOLITHIC__">monolithic releases</a> of Octave-Forge.</p>
 <h2 id="main">Main repository</h2>
 <div class="package" id="audio_detailed" style="display: none;">
   <table class="package"><tr>

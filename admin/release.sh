@@ -113,9 +113,7 @@ cp -f ChangeLog doc/htdocs/ChangeLog
 # generate the AUTHORS file
 ./admin/get_authors
 
-exit 0;
-
-cvs commit -m "$TAG release" ChangeLog www/htdocs/ChangeLog README AUTHORS
+cvs commit -m "$TAG release" ChangeLog README AUTHORS
 
 # tag the CVS tree with the revision number
 cvs rtag -F $TAG $PROJECT

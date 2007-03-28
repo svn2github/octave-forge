@@ -15,6 +15,9 @@ Free Software that depend on non-free libraries.</li></ul>
 as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070328.tar.gz?download">single file</a>.
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
+<p>These packages are meant for versions of Octave later than version
+2.9.10. For earlier versions of Octave, please use the older
+<a href="__MONOLITHIC__">monolithic releases of Octave-Forge</a>.</p>
 <h2 id="main">Main repository</h2>
 <div class="package" id="audio_detailed" style="display: none;">
   <table class="package"><tr>
@@ -1066,7 +1069,7 @@ SymBand</a></b></td>
    <b><a href="javascript:fold('tsa');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 TSA</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./tsa/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/tsa-3.10.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/tsa-3.10.0.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="tsa_details">
@@ -1078,7 +1081,7 @@ Stochastic concepts and maximum entropy methods for time series analysis  </p>
     <b><a href="javascript:unfold('tsa');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 TSA</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./tsa/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/tsa-3.10.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/tsa-3.10.0.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>

@@ -46,9 +46,8 @@ www-dist: html pdf dist
 	cd $(outputdir) && tar czf coda-www.tar.gz coda
 	rm -rf $(outputdir)/coda
 
-
 .phony: html
-html: $(outputdir)/matpow.png $(outputdir)/index.html 
+html: $(htmlimages) $(outputdir)/index.html 
 
 .phony: ps
 ps: $(outputdir)/coda.ps.gz

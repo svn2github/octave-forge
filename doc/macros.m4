@@ -1,6 +1,7 @@
 m4_define(`__GROUP_ID__',`group_id=2888')m4_dnl
 m4_define(`__MONOLITHIC_ID__',`package_id=29785')m4_dnl
 m4_define(`__WINDOWS_ID__',`package_id=40078')m4_dnl
+m4_define(`__PACKAGES_ID__',`package_id=226520')m4_dnl
 m4_define(`__SOURCEFORGE__',`http://sourceforge.net')m4_dnl
 m4_define(`__PACKAGE__',`http://downloads.sourceforge.net/octave')m4_dnl
 m4_dnl m4_define(`__PACKAGE__',`http://octave.dbateman.org/packages')m4_dnl
@@ -8,8 +9,9 @@ m4_define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')m4_dnl
 m4_define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')m4_dnl
 m4_define(`__CVS__',`__SOURCEFORGE__/cvs/?__GROUP_ID__')m4_dnl
 m4_define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')m4_dnl
-m4_define(`__MONOLITHIC__',`__SOURCEFORGE__/showfiles.php?__GROUP_ID__&__MONOLITHIC_ID__')m4_dnl
-m4_define(`__WINDOWS__',`__SOURCEFORGE__/showfiles.php?__GROUP_ID__&__WINDOWS_ID__')m4_dnl
+m4_define(`__MONOLITHIC__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__MONOLITHIC_ID__')m4_dnl
+m4_define(`__WINDOWS__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__WINDOWS_ID__')m4_dnl
+m4_define(`__PACKAGES__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__PACKAGES_ID__')m4_dnl
 m4_dnl
 m4_dnl
 m4_dnl

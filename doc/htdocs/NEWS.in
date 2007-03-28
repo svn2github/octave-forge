@@ -7,7 +7,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>March 29, 2007</dt>
+<dt>March 28, 2007</dt>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a
@@ -67,7 +67,7 @@ package manager, the following additional changes are notable:</p>
    <li>optim: New function fminsearch</li>
    <li>combinatorics: new function combs</li>
    <li>Windows: New functions for Windows COM bindings</li>
-   <li>MSVC: Changes in build system to support Microsodt VC compiler</li>
+   <li>MSVC: Changes in build system to support Microsoft VC compiler</li>
    <li>general bug fixes and improvements</li>
 </ul>
 </dd>

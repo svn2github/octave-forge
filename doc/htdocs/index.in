@@ -33,6 +33,10 @@ __HEADER__([[[Octave-Forge]]])
     <a href="http://lists.sourceforge.net/mailman/listinfo/octave-dev">repository mailing list</a>
     or <a href="developers.html">join the development team</a>.
   </p>
+  <p>
+    For the convenience of Windows users, Octave-Forge supplies
+    <a href="__WINDOWS__">pre-built installers for Windows</a> platforms.
+  </p>
 </div>
 <div class="section">
 <h2>Recent News</h2>
@@ -41,7 +45,7 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
-<dt>March 22, 2007</dt>
+<dt>March 29, 2007</dt>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a

@@ -7,7 +7,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>March 22, 2007</dt>
+<dt>March 29, 2007</dt>
 <dd>
 <p>Octave-forge reorganized as a series of packages for use with
 the Octave package manager. See the <a
@@ -75,7 +75,7 @@ package manager, the following additional changes are notable:</p>
 <dd>
 <p>Octave-forge version 200607008 released. This version was the last 
 monolithic release and the first release that only supported version 
-of octave later than Octave 2.9.</p>
+of Octave later than Octave 2.9.</p>
 <p>An abbreviated list of changes is:</p>
 <ul>
    <li>purge functions moved to Octave and remove pre-2.9.x support.</li>

@@ -12,7 +12,7 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070322.tar.gz?download">single file</a>.
+as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070328.tar.gz?download">single file</a>.
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <h2 id="main">Main repository</h2>

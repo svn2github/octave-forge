@@ -16,9 +16,12 @@ my $template = shift @ARGV;
 my $rpmdir = shift @ARGV;
 
 my @desc_files = ();
+my $topdepth = ($ofdir) =~ tr!/!!;  #count slashes in top path
 find(\&desc_files, $ofdir);
 sub desc_files { # {{{1 populates global array @files
     return unless -f and /DESCRIPTION$/;
+    my $depth = ($File::Find::name) =~ tr!/!!; #count slashes in file
+    return if $depth > (2 + $topdepth);
     return if (-e "NOINSTALL");
     my $file = "$File::Find::dir/$_";
     $file =~ s|^[.]/||;

@@ -7,6 +7,6 @@ Title: String Handling.
 Description: Additional manipulation functions
 Depends: octave (>= 2.9.7)
 Autoload: yes
-BuildRequires: libpcre-devel [Mandriva] libpcre0-devel
+BuildRequires: pcre-devel
 License: See individual files
 Url: http://octave.sf.net

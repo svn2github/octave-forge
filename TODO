@@ -1,6 +1,12 @@
 Packages
 ========
-* Graceplot and GPC package needs conversion to package manager
+* GPC package needs conversion to package manager
+
+* Fix the "make -C packages compare" target so that it correctly
+  identifies packages that need updating on sourceforge
+
+* gsl_sf.cc is a derived file, but the function reference links to
+  rather than the template, consider a better means of addressing this.
 
 Bugs
 ====
@@ -17,10 +23,6 @@ compatibility notes (aka missing features) in these comments.  Some
 function specific notes in matcompat/compat.dat belong in TODO comments.
 
 * nonfree/gpc uses its own configure script and build process
-
-* consider -enable/disable on a package by package basis as a way
-to override the NOINSTALL files on some of the directories; maybe
-just an -enable-all option?
 
 All functions
 =============

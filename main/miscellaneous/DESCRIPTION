@@ -9,6 +9,6 @@ Categories: Miscellaneous
 Depends: octave (>= 2.9.7)
 Autoload: yes
 SystemRequirements: units
-BuildRequires: libtermcap-devel [Mandriva] libtermcap2-devel
+BuildRequires: termcap-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net

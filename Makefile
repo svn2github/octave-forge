@@ -60,7 +60,9 @@ www: clearlog packages
 doxygen:
 	@$(MAKE) -C doc doxygen
 
-# FIXME: Update the address below when the website goes live
+# FIXME: Update the address below when the website goes live.
+# FIXME: This is broken any any case. See the "make -C packages compare"
+#        target for work in progress to fix it.
 comparepkgs: packages
 	@wget http://octave.dbateman.org/packages.md5; \
 	./admin/compare_md5sum packages.md5 doc/htdocs/packages.md5
@@ -84,7 +86,7 @@ clean: clearlog subdirs
 distclean: subdirs
 	-$(MAKE) clean
 	-$(RM) Makeconf octinst.sh config.cache config.status config.log \
-		admin/RPM/octave-forge.spec build.log build.fail *~
+		build.log build.fail *~
 
 dist: checkindist subdirs
 	-$(RM) build.log build.fail

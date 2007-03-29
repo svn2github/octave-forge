@@ -566,7 +566,7 @@ Generate sparse matrix
  spconvert 
  spvcat sphcat
 Manipulate sparse matrices
- sparse issparse 
+ sparse
  full
  issparse
  spy 

@@ -38,7 +38,7 @@ package manager, the following additional changes are notable:</p>
    <li>econometrics: New functions __kernel_epanechnikov,
    __kernel_normal, kernel_density, kernel_density_cvscore,
    kernel_density_nodes, kernel_example, kernel_optimal_bandwidth, 
-   kernel_regression, kernel_regression_cvscore.m and
+   kernel_regression, kernel_regression_cvscore and
    kernel_regression_nodes</li>
    <li>specfun: New functions dirac, erfcinv, erfcx, expint_E1, 
    expint_Ei, expint, heaviside, psi, Si, sinint and zeta</li>

@@ -22,13 +22,12 @@
 n = 1000;
 k = 5;
 
-x = [ones(n,1) rand(n,k-1)];
+x = [ones(n,1) randn(n,k-1)];
 w = [x, rand(n,1)];
-theta = [-k+1; ones(k-1,1)];
-lambda = exp(x*theta);
+theta_true = ones(k,1);
+lambda = exp(x*theta_true);
 y = poisson_rnd(lambda);
 [xs, scalecoef] = scale_data(x);
-
 
 # The arguments for gmm_estimate
 theta = zeros(k,1);
@@ -40,7 +39,7 @@ momentargs = {k}; # needed to know where x ends and w starts
 # additional args for gmm_results
 names = str2mat("theta1", "theta2", "theta3", "theta4", "theta5");
 title = "Poisson GMM trial";
-control = {100,2,1,1};
+control = {100,0,1,1};
 
 
 # initial consistent estimate: only used to get efficient weight matrix, no screen output
@@ -54,7 +53,8 @@ weight = inverse(cov(m));
 
 # second round efficient estimator
 gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, control);
-
+printf("\nThe true parameter values used to generate the data:\n");
+prettyprint(theta_true, names, "value");
 
 # Example doing estimation in parallel on a cluster (requires MPITB)
 # uncomment the following if you have MPITB installed

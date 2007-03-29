@@ -42,14 +42,14 @@ model = "poisson";
 modelargs = {0}; # if this is zero the function gives analytic score, otherwise not
 # parameter names
 names = str2mat("beta1", "beta2", "beta3");
-title = "Poisson MLE trial"; # title for the run
+mletitle = "Poisson MLE trial"; # title for the run
 
 # controls for bfgsmin: 30 iterations is not always enough for convergence
-control = {50,0,1,1};
+control = {50,0};
 
 # This displays the results
 printf("\n\nanalytic score, unscaled data\n");
-[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, 0, control);
+[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, mletitle, 0, control);
 
 # This just calculates the results, no screen display
 printf("\n\nanalytic score, unscaled data, no screen display\n");
@@ -64,17 +64,17 @@ printf("\n\nanalytic score, scaled data\n");
 [scaled_x, unscale] = scale_data(x);
 data = [y, scaled_x];
 theta = zeros(3,1);
-[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control);
+[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, mletitle, unscale, control);
 
 # Example using numeric score
 printf("\n\nnumeric score, scaled data\n");
 theta = zeros(3,1);
 modelargs = {1}; # set the switch for no score
-[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control);
+[theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, mletitle, unscale, control);
 
 # Example doing estimation in parallel on a cluster (requires MPITB)
 # uncomment the following if you have MPITB installed
 # theta = zeros(3,1);
 # nslaves = 1;
 # title = "MLE estimation done in parallel";
-# [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control, nslaves);
+# [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, mletitle, unscale, control, nslaves);

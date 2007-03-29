@@ -38,7 +38,7 @@ momentargs = {k}; # needed to know where x ends and w starts
 
 # additional args for gmm_results
 names = str2mat("theta1", "theta2", "theta3", "theta4", "theta5");
-title = "Poisson GMM trial";
+gmmtitle = "Poisson GMM trial";
 control = {100,0,1,1};
 
 
@@ -52,7 +52,7 @@ m = feval(moments, theta, data, momentargs);
 weight = inverse(cov(m));
 
 # second round efficient estimator
-gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, control);
+gmm_results(theta, data, weight, moments, momentargs, names, gmmtitle, scalecoef, control);
 printf("\nThe true parameter values used to generate the data:\n");
 prettyprint(theta_true, names, "value");
 
@@ -62,4 +62,4 @@ prettyprint(theta_true, names, "value");
 # theta = zeros(k,1);
 # nslaves = 1;
 # title = "GMM estimation done in parallel";
-# gmm_results(theta, data, weight, moments, momentargs, names, title, scalecoef, control, nslaves);
+# gmm_results(theta, data, weight, moments, momentargs, names, gmmtitle, scalecoef, control, nslaves);

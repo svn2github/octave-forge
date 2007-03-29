@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Michael Creel <michael.creel@uab.es>
+# Copyright (C) 2007 Michael Creel <michael.creel@uab.es>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 n = 500;
 
 # set this to greater than 0 to try parallel computations (requires MPITB)
-compute_nodes = 3;
+compute_nodes = 0;
 nodes = compute_nodes + 1; # count master node
 
 close all;
@@ -51,9 +51,9 @@ t1 = toc;
 printf("\n");
 printf("########################################################################\n");
 printf("time for kernel regression example using %d data points and %d compute nodes: %f\n", n, nodes, t1);
+plot(x, fit, ";fit;", x, trueline,";true;");
 grid("on");
 title("Example 1: Kernel regression fit");
-plot(x, fit, x, trueline);
 
 ############################################################
 # kernel density example: univariate - fit to Chi^2(3) data
@@ -73,9 +73,8 @@ printf("########################################################################
 printf("time for univariate kernel density example using %d data points and %d compute nodes: %f\n", n, nodes, t1);
 printf("A rough integration under the fitted univariate density is %f\n", sum(dens)*stepsize);
 figure();
+plot(grid_x, dens, ";fitted density;", grid_x, chisquare_pdf(grid_x,3), ";true density;");
 title("Example 2: Kernel density fit: Univariate Chi^2(3) data");
-xlabel("true density is Chi^2(3)");
-plot(grid_x, [dens chisquare_pdf(grid_x,3)]);
 
 ############################################################
 # kernel density example: bivariate
@@ -104,11 +103,10 @@ printf("time for multivariate kernel density example using %d data points and %d
 dens = reshape(dens, gridsize, gridsize);
 printf("A rough integration under the fitted bivariate density is %f\n", sum(sum(dens))*stepsize^2);
 figure();
-#legend("off");
+surf(grid_x, grid_y, dens);
 title("Example 3: Kernel density fit: dependent bivatiate data");
 xlabel("true marginal density is N(0,1)");
 ylabel("true marginal density is Chi^2(3)");
-surf(grid_x, grid_y, dens);
 # more extensive test of parallel
 if compute_nodes > 0 # only try this if parallel is available
 	ns =[4000; 8000; 10000; 12000; 16000; 20000];

@@ -111,7 +111,7 @@ for a comprehensive list of Open Source licenses.</p>
 
 <h3>Package structure</h3>
 <p>
-Octave has evolved into a source repository of Octave pacakges rather
+Octave Forge has evolved into a source repository of Octave packages rather
 than a package in itself. Each sub-directory is considered to be a
 package and should respect Octave's package managers file layout.</p>
 <dl>

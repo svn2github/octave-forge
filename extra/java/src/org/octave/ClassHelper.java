@@ -72,9 +72,11 @@ public class ClassHelper
       catch (Exception e)
         {
           Constructor[] cList = cls.getConstructors ();
+          //System.out.println("# constructors: " + cList.length);
           Constructor c;
           for (int i=0; i<cList.length; i++)
             {
+              //System.out.println("Considering constructor: " + cList[i]);
               c = cList[i];
               if (c.getParameterTypes().length == argTypes.length &&
                   isCallableFrom (c, argTypes))

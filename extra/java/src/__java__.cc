@@ -812,6 +812,33 @@ static octave_value box_more (jobject jobj, jclass jcls)
                 retval = Matrix ();
             }
         }
+	  
+	  if (retval.is_undefined ())
+	  {
+        jclass_ref cls = jni_env->FindClass ("[[D");
+        if (jni_env->IsInstanceOf (jobj, cls))
+          {
+            jobjectArray jarr = reinterpret_cast<jobjectArray> (jobj);
+            int rows = jni_env->GetArrayLength (jarr), cols = 0;
+            if (rows > 0)
+              {
+                Matrix m;
+                for (int r = 0; r < rows; r++)
+                  {
+                    jdoubleArray_ref row = reinterpret_cast<jdoubleArray> (jni_env->GetObjectArrayElement (jarr, r));
+                    if (m.length () == 0)
+                      {
+                        cols = jni_env->GetArrayLength (row);
+                        m.resize (cols, rows);
+                      }
+                    jni_env->GetDoubleArrayRegion (row, 0, cols, m.fortran_vec () + r * cols);
+                  }
+                retval = m.transpose ();
+              }
+            else
+              retval = Matrix();
+          }
+	  }
     }
 
   if (retval.is_undefined ())

@@ -266,7 +266,7 @@ def handle_package(packdir, outdir, p):
 
 def main():
     ## Identify the package bundle
-    cmd = 'find ../packages -name "octave-forge-bundle*.tar.gz" -prune -type f -print';
+    cmd = 'find ../packages -name "octave-forge-bundle*.tar.gz" -prune -type f -print | sed -e "s|^.*/||"';
     bundle = None;
     for file in os.popen(cmd).readlines():
         bundle = file[:-1];

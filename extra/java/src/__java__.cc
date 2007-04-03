@@ -35,12 +35,16 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
   (JNIEnv *, jclass, jstring, jobjectArray, jobjectArray);
 extern "C" JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
   (JNIEnv *, jclass, jint, jstring, jobject);
+extern "C" JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
+  (JNIEnv *, jclass, jint);
 
 static JavaVM *jvm = 0;
 static JNIEnv *jni_env = 0;
 static void* jvmLib = 0;
 
 static std::map<int,octave_value> listener_map;
+static std::map<int,octave_value> octave_ref_map;
+static int octave_refcount = 0;
 
 template <class T>
 class java_local_ref
@@ -782,6 +786,20 @@ static octave_value box (jobject jobj, jclass jcls)
     }
 
   if (retval.is_undefined ())
+    {
+      jclass_ref cls = jni_env->FindClass ("org/octave/OctaveReference");
+      if (jni_env->IsInstanceOf (jobj, cls))
+        {
+          jmethodID mID = jni_env->GetMethodID (cls, "getID", "()I");
+          int ID = jni_env->CallIntMethod (jobj, mID);
+          std::map<int,octave_value>::iterator it = octave_ref_map.find (ID);
+
+          if (it != octave_ref_map.end ())
+            retval = it->second;
+        }
+    }
+
+  if (retval.is_undefined ())
     retval = octave_value (new octave_java (jobj, jcls));
 
   return retval;
@@ -918,8 +936,17 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
     }
   else
     {
+      /*
       error ("unable to convert object of type %s to java", val.class_name ().c_str ());
       found = 0;
+      */
+      jclass rcls = jni_env->FindClass ("org/octave/OctaveReference");
+      jmethodID mID = jni_env->GetMethodID (rcls, "<init>", "(I)V");
+      int ID = octave_refcount++;
+
+      jobj = jni_env->NewObject (rcls, mID, ID);
+      jcls = rcls;
+      octave_ref_map[ID] = val;
     }
 
   return found;
@@ -1429,4 +1456,10 @@ JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
     }
   else
     printf ("invalid listener ID=%d\n", ID);
+}
+
+JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
+  (JNIEnv *env, jclass, jint ID)
+{
+  octave_ref_map.erase (ID);
 }

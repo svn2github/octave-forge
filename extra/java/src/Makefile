@@ -2,7 +2,7 @@ sinclude ./Makeconf
 
 PROGS = __java__.oct octave.jar
 
-JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctListener.java
+JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctListener.java OctaveReference.java
 JAVADIR = org/octave
 
 JAVA_SOURCES = $(addprefix $(JAVADIR)/, $(JAVASRC))

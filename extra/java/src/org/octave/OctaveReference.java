@@ -25,4 +25,9 @@ public class OctaveReference
 	{
 		return ("<octave reference " + this.ID + ">");
 	}
+
+	public int getID()
+	{
+		return this.ID;
+	}
 }

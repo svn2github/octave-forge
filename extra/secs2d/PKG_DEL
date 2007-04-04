@@ -1,0 +1,6 @@
+ dirlist= {"Utilities","DDGOX","ThDDGOX","QDDGOX","METLINES","DDGOXT"};
+
+for ii=1:length(dirlist)
+   rmpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
+end
+

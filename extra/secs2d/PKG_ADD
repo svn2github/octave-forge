@@ -1,0 +1,22 @@
+ dirlist= {"Utilities","DDGOX","ThDDGOX","QDDGOX","METLINES","DDGOXT"};
+
+for ii=1:length(dirlist)
+   addpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
+end
+
+[status, output] = system ("which gmsh");
+if status
+   disp(["gmsh does not seem to be present some functionalities will be disabled"]);
+else
+   disp(["gmsh version found:"]);
+   system("gmsh --version");
+end
+
+
+[status, output] = system ("which dx");
+if status
+   disp(["dx does not seem to be present some functionalities will be disabled"]);
+else
+   disp(["dx version found:"]);
+   system("dx -version");
+end

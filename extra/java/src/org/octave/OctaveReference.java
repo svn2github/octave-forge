@@ -15,7 +15,6 @@ public class OctaveReference
 	}
 
 	private native static void doFinalize(int ID);
-	private native static Object doInvoke(int ID, Object[] args);
 
 	protected void finalize() throws Throwable
 	{
@@ -34,6 +33,15 @@ public class OctaveReference
 
 	public Object invoke(Object[] args)
 	{
-		return doInvoke(this.ID, args);
+		//System.out.println("OctaveReference::invoke");
+		Octave.doInvoke(this.ID, args);
+		return null;
+	}
+
+	public synchronized Object invokeAndWait(Object[] args)
+	{
+		//System.out.println("OctaveReference::invokeandWait");
+		Octave.invokeAndWait(this, args);
+		return null;
 	}
 }

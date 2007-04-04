@@ -33,12 +33,18 @@ typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *a
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
   (JNIEnv *, jclass, jstring, jobjectArray, jobjectArray);
+  /*
 extern "C" JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
   (JNIEnv *, jclass, jint, jstring, jobject);
+  */
 extern "C" JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
   (JNIEnv *, jclass, jint);
-extern "C" JNIEXPORT jobject JNICALL Java_org_octave_OctaveReference_doInvoke
+extern "C" JNIEXPORT void JNICALL Java_org_octave_Octave_doInvoke
   (JNIEnv *, jclass, jint, jobjectArray);
+extern "C" JNIEXPORT void JNICALL Java_org_octave_Octave_doEvalString
+  (JNIEnv *, jclass, jstring);
+extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokation
+  (JNIEnv *, jclass);
 
 static JavaVM *jvm = 0;
 static JNIEnv *jni_env = 0;
@@ -47,6 +53,7 @@ static void* jvmLib = 0;
 static std::map<int,octave_value> listener_map;
 static std::map<int,octave_value> octave_ref_map;
 static int octave_refcount = 0;
+static int octave_thread_ID = -1;
 
 template <class T>
 class java_local_ref
@@ -1149,8 +1156,8 @@ static int java_event_hook (void)
 {
   if (jni_env)
     {
-      jclass_ref cls = jni_env->FindClass ("org/octave/OctListener");
-      jmethodID mID = jni_env->GetStaticMethodID (cls, "checkPendingListener", "()V");
+      jclass_ref cls = jni_env->FindClass ("org/octave/Octave");
+      jmethodID mID = jni_env->GetStaticMethodID (cls, "checkPendingAction", "()V");
       jni_env->CallStaticVoidMethod (cls, mID);
     }
   return 0;
@@ -1165,6 +1172,9 @@ static void initialize_java (void)
         {
           octave_java::register_type ();
           command_editor::set_event_hook (java_event_hook);
+#ifdef __WIN32__
+          octave_thread_ID = GetCurrentThreadId();
+#endif
         }
       else
         error (msg.c_str ());
@@ -1438,6 +1448,7 @@ JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
   return false;
 }
 
+/*
 JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
   (JNIEnv *env, jclass, jint ID, jstring name, jobject event)
 {
@@ -1461,6 +1472,7 @@ JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
   else
     printf ("invalid listener ID=%d\n", ID);
 }
+*/
 
 JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
   (JNIEnv *env, jclass, jint ID)
@@ -1468,7 +1480,7 @@ JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
   octave_ref_map.erase (ID);
 }
 
-JNIEXPORT jobject JNICALL Java_org_octave_OctaveReference_doInvoke
+JNIEXPORT void JNICALL Java_org_octave_Octave_doInvoke
   (JNIEnv *env, jclass, jint ID, jobjectArray args)
 {
   std::map<int,octave_value>::iterator it = octave_ref_map.find (ID);
@@ -1492,10 +1504,26 @@ JNIEXPORT jobject JNICALL Java_org_octave_OctaveReference_doInvoke
           if (val.is_function_handle ())
             {
               octave_function *fcn = val.function_value ();
-	      feval (fcn, oct_args);
+              feval (fcn, oct_args);
             }
         }
     }
+}
 
-  return 0;
+JNIEXPORT void JNICALL Java_org_octave_Octave_doEvalString
+  (JNIEnv *env, jclass, jstring cmd)
+{
+  std::string s = jstring_to_string (cmd);
+  int pstatus;
+
+  eval_string (s, false, pstatus, 0);
+}
+
+JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokation
+  (JNIEnv *env, jclass)
+{
+#ifdef __WIN32__
+  return (GetCurrentThreadId() != octave_thread_ID);
+#endif
+  return false;
 }

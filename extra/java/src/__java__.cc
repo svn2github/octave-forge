@@ -37,6 +37,8 @@ extern "C" JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
   (JNIEnv *, jclass, jint, jstring, jobject);
 extern "C" JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
   (JNIEnv *, jclass, jint);
+extern "C" JNIEXPORT jobject JNICALL Java_org_octave_OctaveReference_doInvoke
+  (JNIEnv *, jclass, jint, jobjectArray);
 
 static JavaVM *jvm = 0;
 static JNIEnv *jni_env = 0;
@@ -906,6 +908,7 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
       //jcls = jni_env->FindClass ("java/lang/Object");
       jcls = 0;
     }
+  /*
   else if (val.is_function_handle ())
     {
       jclass lcls = jni_env->FindClass ("org/octave/OctListener");
@@ -921,6 +924,7 @@ static int unbox (const octave_value& val, jobject_ref& jobj, jclass_ref& jcls)
 #endif
       listener_map[ID] = val;
     }
+  */
   else if (val.is_cellstr ())
     {
       Cell cellStr = val.cell_value ();
@@ -1462,4 +1466,36 @@ JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
   (JNIEnv *env, jclass, jint ID)
 {
   octave_ref_map.erase (ID);
+}
+
+JNIEXPORT jobject JNICALL Java_org_octave_OctaveReference_doInvoke
+  (JNIEnv *env, jclass, jint ID, jobjectArray args)
+{
+  std::map<int,octave_value>::iterator it = octave_ref_map.find (ID);
+
+  if (it != octave_ref_map.end ())
+    {
+      octave_value val = it->second;
+      int len = jni_env->GetArrayLength (args);
+      octave_value_list oct_args;
+
+      for (int i=0; i<len; i++)
+        {
+          jobject_ref jobj = jni_env->GetObjectArrayElement (args, i);
+          oct_args(i) = box (jobj, 0);
+          if (error_state)
+            break;
+        }
+
+      if (! error_state)
+        {
+          if (val.is_function_handle ())
+            {
+              octave_function *fcn = val.function_value ();
+	      feval (fcn, oct_args);
+            }
+        }
+    }
+
+  return 0;
 }

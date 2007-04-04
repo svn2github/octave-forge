@@ -15,6 +15,7 @@ public class OctaveReference
 	}
 
 	private native static void doFinalize(int ID);
+	private native static Object doInvoke(int ID, Object[] args);
 
 	protected void finalize() throws Throwable
 	{
@@ -29,5 +30,10 @@ public class OctaveReference
 	public int getID()
 	{
 		return this.ID;
+	}
+
+	public Object invoke(Object[] args)
+	{
+		return doInvoke(this.ID, args);
 	}
 }

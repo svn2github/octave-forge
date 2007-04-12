@@ -1,5 +1,3 @@
-sinclude ../../../Makeconf
-
 all: xraylib_stamp
 	mkoctfile -I./xraylib/src xraylib.cc -L./xraylib/src -lxrl
 

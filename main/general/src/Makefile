@@ -1,10 +1,10 @@
-sinclude ../../Makeconf
-
-PROGS=command.oct deref.oct mark_for_deletion.oct
+PROGS = $(patsubst %.cc,%.oct,$(wildcard *.cc))
 
 all: $(PROGS)
 
 $(PROGS): Makefile
 
-clean:
-	-$(RM) *.o core octave-core *.oct
+%.oct: %.cc
+	mkoctfile $<
+
+clean: ; -rm *.o core octave-core *.oct *~

@@ -78,12 +78,23 @@ ODEPKGMXFILES = $(DOPRI5MXFILES) $(DOP853MXFILES) $(ODEXMXFILES) \
   $(RADAUMXFILES) $(RADAU5MXFILES) $(RODASMXFILES) $(SEULEXMXFILES)
 ODEPKGDELETES = $(ODEPKGOBJECTS) $(ODEPKGMXFILES) *~ octave-core $(EXTERNALDIRS)
 
+%.o : %.f ; $(MKMEXFILE) -c $< -o $@
+%.o : %.c ; $(MKMEXFILE) -c $< -o $@
+%.mex : %.o ; $(MKMEXFILE) $^ -o $@
+
+
 all : $(EXTERNALDIRS) $(ODEPKGOBJECTS) $(ODEPKGMXFILES)
-.PHONY : all
+
+$(DOPRI5MXFILES) : $(DOPRI5OBJECTS)
+$(DOP853MXFILES) : $(DOP853OBJECTS)
+$(ODEXMXFILES) : $(ODEXOBJECTS)
+$(RADAUMXFILES) : $(RADAUOBJECTS)
+$(RADAU5MXFILES) : $(RADAU5OBJECTS)
+$(RODASMXFILES) : $(RODASOBJECTS)
+$(SEULEXMXFILES) : $(SEULEXOBJECTS)
 
 install :
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/odepkg
-.PHONY : install
 
 $(EXTERNALDIRS) :
 	@echo "Unpacking external packages: $(EXTERNALPACKS)"; \
@@ -91,35 +102,11 @@ $(EXTERNALDIRS) :
 	@echo "Patching external packages: $(EXTERNALDIFFS)"; \
 	$(PATCHPROG) <$(EXTERNALDIFFS)
 
-%.o : $(EXTERNALDIRS) %.f
-	@echo "Compiling $@"; \
-	$(MKMEXFILE) -c $<
-
-%.o : %.c
-	@echo "Compiling $@"; \
-	$(MKMEXFILE) -c $<
-
-%.mex : %.o
-	@echo "Linking $(ODEPKGMXFILES)"; \
-	$(MKMEXFILE) $(DOPRI5OBJECTS) -o $(DOPRI5MXFILES)
-	$(MKMEXFILE) $(DOP853OBJECTS) -o $(DOP853MXFILES)
-	$(MKMEXFILE) $(ODEXOBJECTS)   -o $(ODEXMXFILES)
-	$(MKMEXFILE) $(RADAUOBJECTS)  -o $(RADAUMXFILES)
-	$(MKMEXFILE) $(RADAU5OBJECTS) -o $(RADAU5MXFILES)
-	$(MKMEXFILE) $(RODASOBJECTS)  -o $(RODASMXFILES)
-	$(MKMEXFILE) $(SEULEXOBJECTS) -o $(SEULEXMXFILES)
-
 clean :
 	@echo "Cleaning..."; \
 	$(RM) -fr $(ODEPKGDELETES)
-.PHONY : clean
 
-realclean : clean
+distclean realclean : clean
 	$(RM) -r configure config.status config.log autom4te.cache Makeconf
-.PHONY : realclean
-
-distclean : realclean
-.PHONY : distclean
 
 dist : all
-.PHONY : dist

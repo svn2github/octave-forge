@@ -1,18 +1,18 @@
 # Copyright (C) 2004   Michael Creel   <michael.creel@uab.es>
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA 
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 # samin_example: example script that contains examples of how to call
 # samin for minimization using simulated annealing.
@@ -23,7 +23,7 @@
 1; # this is a script file
 
 # Example objective function
-# remember that cos(0)=1, so 
+# remember that cos(0)=1, so
 # "a" has a local minimum at 0 (each dimension)
 # "b" makes the function value 0 at min
 # "c" adds some curvature to make the min
@@ -42,7 +42,7 @@ endfunction
 k = 5; # dimensionality
 theta = rand(k,1)*10 - 5; # random start value
 
-# if you set "curvature" very small, 
+# if you set "curvature" very small,
 # you will need to increase nt, ns, and rt
 # to minimize sucessfully
 curvature = 0.01;
@@ -58,7 +58,7 @@ maxevals = 1e10;
 neps = 5;
 functol = 1e-10;
 paramtol = 1e-3;
-verbosity = 1;
+verbosity = 1; # only final results. Inc
 minarg = 1;
 control = { lb, ub, nt, ns, rt, maxevals, neps, functol, paramtol, verbosity, 1};
 

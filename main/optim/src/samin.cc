@@ -169,7 +169,7 @@ which of the elements of the second argument is the one minimization is over");
 //-------------- The annealing algorithm --------------
 DEFUN_DLD(samin, args, , "samin: simulated annealing minimization of a function. See samin_example.m\n\
 \n\
-[x, obj, convergence, details] = samin(\"f\", {args}, {control})\n\
+usage: [x, obj, convergence, details] = samin(\"f\", {args}, {control})\n\
 \n\
 Arguments:\n\
 * \"f\": function name (string)\n\
@@ -179,11 +179,12 @@ Arguments:\n\
 	* UB - vector of upper bounds\n\
 	* nt - integer: # of iterations between temperature reductions\n\
 	* ns - integer: # of iterations between bounds adjustments\n\
-	* rt - 0 < rt <1: temperature reduction factor\n\
+	* rt - (0 < rt <1): temperature reduction factor\n\
 	* maxevals - integer: limit on function evaluations\n\
 	* neps - integer:  number of values final result is compared to\n\
-	* functol -   > 0: the required tolerance level for function value comparisons\n\
-	* paramtol -  > 0: the required tolerance level for parameters\n\
+	* functol -   (> 0): the required tolerance level for function value\n\
+	                   comparisons\n\
+	* paramtol -  (> 0): the required tolerance level for parameters\n\
 	* verbosity - scalar: 0, 1, or 2.\n\
 		* 0 = no screen output\n\
 		* 1 = only final results to screen\n\
@@ -196,8 +197,10 @@ Returns:\n\
 * convergence:\n\
 	0 if no convergence within maxevals function evaluations\n\
 	1 if normal convergence to a point interior to the parameter space\n\
-	2 if convergence to point very near bounds of parameter space (suggest re-running with looser bounds)\n\
-* details: a px2 matrix. The first column is the history of the temperature, the second is the history of the function value.\n\
+	2 if convergence to point very near bounds of parameter space\n\
+	  (suggest re-running with looser bounds)\n\
+* details: a px2 matrix. The first column is the history of the temperature,\n\
+           the second is the history of the function value.\n\
 \n\
 Example: see samin_example\n\
 ")

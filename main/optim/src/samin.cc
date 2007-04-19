@@ -199,8 +199,11 @@ Returns:\n\
 	1 if normal convergence to a point interior to the parameter space\n\
 	2 if convergence to point very near bounds of parameter space\n\
 	  (suggest re-running with looser bounds)\n\
-* details: a px2 matrix. The first column is the history of the temperature,\n\
-           the second is the history of the function value.\n\
+* details: a px3 matrix. p is the number of times improvements were found.\n\
+           The columns record information at the time an improvement was found\n\
+           * first: cumulative number of function evaluations\n\
+           * second: temperature\n\
+           * third: function value\n\
 \n\
 Example: see samin_example\n\
 ")
@@ -329,7 +332,7 @@ Example: see samin_example\n\
 						nacc = nacc + 1; // total number of acceptances
 						nacp(h) = nacp(h) + 1; // acceptances for this parameter
 						nup = nup + 1;
-						//  If greater than any other point, record as new optimum
+						//  If lower than any other point, record as new optimum
 						if(fp < fopt) {
 							xopt = xp;
 							fopt = fp;

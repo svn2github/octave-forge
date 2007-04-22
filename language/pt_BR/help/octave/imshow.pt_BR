@@ -1,4 +1,4 @@
-md5="368dd5c9ac467f8e79ffe2491f0d931c";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="09c3430f793cdff5c51016759092c8be";rev="1.3";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@var{im})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} imshow (@var{im}, @var{limites})
@@ -26,12 +26,8 @@ mostrado.
 Se for dado, o par@^ametro @var{string_param1} tendo valor
 @var{value1}. @var{string_param1} pode ser qualquer um dos seguintes:
 @table @samp
-@item "display_range"
+@item "displayrange"
 @var{value1} @'e o intervalo de visualiza@,{c}@~ao como descrito acima.
-
-@item "InitialMagnification"
-@var{value1} escolhe o n@'ivel de zoom na forma de porcentagem. 
-Se @var{value1} for 100 a imagem @'e mostrada fora de escala.
 @end table
 @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 @end deftypefn

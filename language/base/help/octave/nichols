@@ -49,7 +49,7 @@ The vector of frequency values used.
 @end table
 If no output arguments are given, @command{nichols} plots the results to the screen.
 Descriptive labels are automatically placed. See @command{xlabel}, 
-@command{ylabel}, @command{title}, and @command{replot}.
+@command{ylabel}, and @command{title}.
 
 Note: if the requested plot is for an @acronym{MIMO} system, @var{mag} is set to
 @iftex

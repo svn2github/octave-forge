@@ -1,19 +1,75 @@
-Copyright (C) 1999 Daniel Heiserer
-Copyright (C) 2001 Laurent Mazet
+-*- texinfo -*-
+@deftypefn {Function File} {} print (@var{filename}, @var{options})
 
-This file is part of Octave.
+Print a graph, or save it to a file
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+@var{filename} defines the file name of the output file. If no
+filename is specified, output is sent to the printer.
 
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+@var{options}:
+@table @code
+@item -P@var{printer}
+  Set the @var{printer} name to which the graph is sent if no
+@var{filename} is specified.
+@item -color
+@itemx -mono
+  Monochrome or colour lines.
+@item -solid
+@itemx -dashed
+  Solid or dashed lines.
+@item -portrait
+@itemx -landscape
+  Plot orientation, as returned by "orient".
+@item -d@var{device}
+  Output device, where @var{device} is one of:
+@table @code
+@item ps
+@itemx ps2
+@itemx psc
+@itemx psc2
+    Postscript (level 1 and 2, mono and color)
+@item eps
+@itemx eps2
+@itemx epsc
+@itemx epsc2
+    Encapsulated postscript (level 1 and 2, mono and color)
+@item ill
+@itemx aifm
+    Adobe Illustrator
+@item cdr
+@itemx corel
+    CorelDraw
+@item hpgl
+    HP plotter language
+@item fig
+    XFig
+@item dxf
+    AutoCAD
+@item mf
+    Metafont
+@item png
+    Portable network graphics
+@item pbm
+    PBMplus
+@item emf
+    Microsoft Enhanced Metafile
+@end table
 
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, write to the Free
-Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301, USA.
+  Other devices are supported by "convert" from ImageMagick.  Type
+  system("convert") to see what formats are available.
+
+  If the device is omitted, it is inferred from the file extension,
+  or if there is no filename it is sent to the printer as postscript.
+
+@item -F@var{fontname}
+@itemx -F@var{fontname}:@var{size}
+@itemx -F:@var{size}
+@var{fontname} set the postscript font (for use with postscript,
+  aifm, corel and fig). By default, 'Helvetica' is set for PS/Aifm,
+  and 'SwitzerlandLight' for Corel. It can also be 'Times-Roman'.
+@var{size} is given in points. @var{fontname} is ignored for the
+  fig device.
+@end table
+
+The filename and options can be given in any order.
+@end deftypefn

@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} __bar__ (@dots{})
+Support function for @ode{bar} and {hbar}. 
+@seealso{bar, hbar}
+@end deftypefn

@@ -1,19 +1,8 @@
-Copyright (C) 2000 Paul Kienzle
-Copyright (C) 2003 Alois Schloegl
-
-This file is part of Octave.
-
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
-
-Octave is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, write to the Free
-Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301, USA.
+-*- texinfo -*-
+@deftypefn {Function File} {} strmatch (@var{s}, @var{a}, "exact")
+Return true for entries of @var{a} that match the string @var{s}.
+The second argument @var{a} may be a string matrix or a cell array of
+strings.  If the third argument @code{"exact"} is not given, then
+@var{s} only needs to match @var{a} up to the length of @var{s}.  Nul
+characters match blanks.  Results are returned as a column vector.
+@end deftypefn

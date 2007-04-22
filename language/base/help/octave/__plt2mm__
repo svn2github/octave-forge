@@ -1,3 +1,3 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} __plt2mm__ (@var{h}, @var{x}, @var{y}, @var{options})
+@deftypefn {Function File} {} __plt2mm__ (@var{h}, @var{x}, @var{y}, @var{options}, @var{properties})
 @end deftypefn

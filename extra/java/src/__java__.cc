@@ -130,6 +130,47 @@ static std::string read_registry_string (const std::string& key, const std::stri
 }
 #endif
 
+#ifdef __WIN32__
+static std::string get_module_path(const std::string& name, bool strip_name = true)
+{
+  std::string retval;
+  int n = 1024;
+  HMODULE hnd = GetModuleHandle (name.c_str());
+
+  if (hnd)
+    {
+      retval = std::string (n, '\0');
+      while (true)
+        {
+          int status = GetModuleFileName (hnd, &retval[0], n);
+
+          if (status < n)
+            {
+              retval.resize (status);
+              break;
+            }
+          else
+            {
+              n *= 2;
+              retval.resize (n);
+            }
+        }
+          
+      if (! retval.empty ())
+        {
+          size_t pos = retval.rfind ("\\" + name);
+
+          if (pos != NPOS)
+            retval.resize (pos);
+          else
+            retval.resize (0);
+        }
+    }
+
+  return retval;
+}
+#endif
+
 static std::string initial_java_dir (void)
 {
   static std::string retval;
@@ -137,38 +178,7 @@ static std::string initial_java_dir (void)
   if (retval.empty())
     {
 #ifdef __WIN32__
-      int n = 1024;
-      HMODULE hnd = GetModuleHandle ("__java__.oct");
-
-      if (hnd)
-        {
-          retval = std::string (n, '\0');
-          while (true)
-            {
-              int status = GetModuleFileName (hnd, &retval[0], n);
-
-              if (status < n)
-                {
-                  retval.resize (status);
-                  break;
-                }
-              else
-                {
-                  n *= 2;
-                  retval.resize (n);
-                }
-            }
-
-          if (! retval.empty ())
-            {
-              size_t pos = retval.rfind ("\\__java__.oct");
-
-              if (pos != NPOS)
-                retval.resize (pos);
-              else
-                retval.resize (0);
-            }
-        }
+      retval = get_module_path ("__java__.oct", true);
 #endif
     }
 
@@ -223,7 +233,7 @@ static bool initialize_jvm (std::string& msg)
                       vm_args.nOptions = 3;
                       options[0].optionString = class_path_optionString;
                       options[1].optionString = octave_path_optionString;
-					  options[2].optionString = "-Dsun.java2d.opengl=True";
+                      options[2].optionString = "-Dsun.java2d.opengl=True";
                       vm_args.options = options;
                       vm_args.ignoreUnrecognized = false;
 

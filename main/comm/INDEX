@@ -20,6 +20,8 @@ Source Coding
  huffmandict
  huffmanenco
  lloyds
+ lz77deco
+ lz77enco
  quantiz
  shannonfanodict
  shannonfanoenco

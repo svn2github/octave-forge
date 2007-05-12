@@ -49,6 +49,11 @@ if [ -e @NAME@-@VERSION@/PKG_ADD ]; then mv @NAME@-@VERSION@/PKG_ADD @NAME@; fi
 if [ -e @NAME@-@VERSION@/PKG_DEL ]; then mv @NAME@-@VERSION@/PKG_DEL @NAME@; fi
 mv @NAME@-@VERSION@/* @NAME@/inst
 rm -fr @PACKAGE@
+cat << EOF > @NAME@/on_uninstall.m
+function on_uninstall (desc)
+  error ("Can not uninstall @NAME@-@VERSION@ installed by the RPM package manager");
+endfunction
+EOF
 tar czf ../%{builtpackage} @NAME@
 
 %install
@@ -62,7 +67,7 @@ cp %{builtpackage} %{buildroot}%{_datadir}
 rm %{_datadir}/%{builtpackage}
 
 %postun
-%{octave} -H -q --no-site-file --eval "pkg('uninstall','@NAME@')"
+%{octave} -H -q --no-site-file --eval "prefix=pkg('prefix');unlink(fullfile(prefix,'@NAME@-@VERSION@','on_uninstall.m');pkg('uninstall','@NAME@')"
 
 %clean
 rm -fr %{buildroot}

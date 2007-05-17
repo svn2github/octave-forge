@@ -184,7 +184,7 @@ Function
 Display
  echo_executing_commands
  page_screen_output page_output_immediately
- print_answer_id_name print_empty_dimensions print_rhs_assign_val
+ print_answer_id_name print_empty_dimensions
  struct_levels_to_print
  split_long_rows silent_functions
  suppress_verbose_help_message

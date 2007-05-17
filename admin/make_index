@@ -26,7 +26,7 @@ my $catdir = "doc/htdocs/doc";  # output directory
 #my $OCTAVECMD = "LD_LIBRARY_PATH=$OCTAVE/src/:$OCTAVE/liboctave:$OCTAVE/libcruft $OCTAVE/src/octave -q";
 #my $OCTAVEINIT = "path='.:$OCTAVE/src//:$OCTAVE/scripts//'; suppress_verbose_help_message = 1;";
 my $OCTAVECMD = "octave -q";
-my $OCTAVEINIT = "suppress_verbose_help_message(1);";
+my $OCTAVEINIT = "suppress_verbose_help_message(1); more off;";
 
 # Links to octave/octave-forge web CVS
 my $OCTAVECVS = "http://www.octave.org/cgi-bin/cvsweb.cgi/~checkout~/octave";
@@ -290,28 +290,47 @@ else {
 
 # Desperate last measure. Try help <func> within octave. Good for getting
 # keyword and operator descriptions
-print "Perl hacker: please make the following faster\n";
-# XXX FIXME XXX, we shouldn't respawn a new octave process each time !!!
+my $octstring = "";
+my @octfiles = ();
 foreach my $TB ( toolbox_list()) {
   foreach my $cat ( cat_list($TB) ) {
     foreach my $func ( cat_funcs($TB,$cat) ) {
       if (! defined $function_description{$func}[1] && ! defined $index_notes{$func} ) {
-	open3(*Writer, *Reader, *Errer, $OCTAVECMD) or die "Could not run octave";
-	print Writer $OCTAVEINIT;
-        print Writer "help $func; 1"; close(Writer);
-	my @lines = <Reader>; close(Reader);
-	my @err = <Errer>; close(Errer);
-	waitpid(-1,&WNOHANG);
+	  my $t =sprintf("help %s; disp('<CUT HERE>'); %s", $func, $octstring);
+	  $octstring = $t;
+	  push @octfiles, $func;
+      }
+    }
+  }
+}
 
-	# Display errors, if any
-	if (@err) {
-	  print "help $func\n>>> @err";
-	} else {
-	  my $body = join("",@lines);
-	  if ($body =~ /help: `(.*)' not found/ || $body =~ /help: sorry,/) {
+open3(*Writer, *Reader, *Errer, $OCTAVECMD) or die "Could not run octave";
+print Writer $OCTAVEINIT;
+print Writer "$octstring"; close(Writer);
+my @lines = <Reader>; close(Reader);
+my @err = <Errer>; close(Errer);
+waitpid(-1,&WNOHANG);
+my $bodies = join("",@lines);
+$bodies = substr($bodies,0, rindex($bodies, "<CUT HERE>"));
+
+# Display errors, if any
+if (@err) {
+    print "Help Errors:\n>>> @err";
+} else {
+    foreach my $func (@octfiles) {
+	my $idx = rindex($bodies, "<CUT HERE>");
+	my $body;
+	if ($idx < 0) {
+	    $body = substr($bodies, $idx);
+	} else  {
+	    $body = substr($bodies, $idx + 10);
+	}
+	$bodies = substr($bodies, 0, $idx);
+
+	if ($body =~ /help: `(.*)' not found/ || $body =~ /help: sorry,/) {
 	    # do nothing
-	  } else {
-	    print "help $func\n";
+	} else {
+	    ## print "help $func\n";
 
 	    my $start;
 	    if ($body =~ /^\n\*\*\*/) {
@@ -325,11 +344,8 @@ foreach my $TB ( toolbox_list()) {
 	    my $stop = index($body,"ans =");
 	    $body = substr($body,$start,$stop-$start);
 	    register_function($func,$body,$OCTAVE,0);
-	  }
 	}
-      }
     }
-  }
 }
 
 # print a summary table rather than generating the html

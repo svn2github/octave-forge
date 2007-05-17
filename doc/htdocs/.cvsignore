@@ -65,4 +65,7 @@ java
 nnet
 physical-constants
 packages.md5
-
+secs1d
+secs2d
+outliers
+sockets

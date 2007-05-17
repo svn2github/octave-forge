@@ -6,6 +6,7 @@
 ##    * perl, python, and the texinfo toolchain
 ##    * autoconf
 ##    * wget
+##    * The latest release of Octave installed in ${topdir}/../octave
 ##
 ## You should also have the following in your .bashrc:
 ## 
@@ -24,7 +25,9 @@
 ##    intend to post.  You may want to start with a fresh copy
 ##    of the repository in a separate directory.
 ##
-## 2) ./configure; make; make check
+## 2) ./configure; make clean; make all; make check
+##
+##    Fix any versioning errors identified by "make all".
 ##
 ##    Make sure it builds and at least passes its own tests on your machine 
 ##    at least.
@@ -39,7 +42,7 @@
 ##    Generate a list of changes.  Use it to update www/NEWS.in and
 ##    www/index.in with a summary of changes.
 ##
-## 5) make clean; make www
+## 5) make clean; make all; make www
 ##
 ##    Build the web-pages and ancillary files.
 ##
@@ -54,25 +57,17 @@
 ##
 ##    Make sure you've logged all changes to licenses and doc strings.
 ##
-## 9) make comparepkgs
-##
-##    Compares the old versions of the packages on octave-forge for updates,
-##    and flag any conflicts. Conflicts in the version numbering should be 
-##    fixed and step 9) rerun.
-##
-##    Once run correctly, proceed to step 10.
-##
-## 10) https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
+## 9) https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
 ##
 ##    Log in to your source forge account and announce the release of the
 ##    packages. Upload the packages that were identified as needing uploading
 ##    in step 9).
 ##
-## 11) ./release.sh
+## 10) ./release.sh
 ##
 ##    This is the actual release step.  It tags the CVS tree.
 ##
-## 12) Upload the webpages to sourceforge.
+## 11) Upload the webpages to sourceforge.
 ##
 ##        tar cvzf www.tar.gz www
 ##        scp doc/htdocs.tar.gz $OFHOME
@@ -82,6 +77,9 @@
 ##        tar xzf htdocs.tar.gz
 ##        chmod -R g+w htdocs
 ##
+## 12) Use releaseforge to upload the packages to the sourceforge file release
+##     system
+## 
 ## 13) sources@octave.org, octave-dev@lists.sf.net
 ##
 ##    Announce the new release on the appropriate mailing lists.

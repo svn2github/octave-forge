@@ -12,7 +12,7 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/../packages/octave-forge-bundle-20070328.tar.gz?download">single file</a>.
+as a <a href="__PACKAGE__/octave-forge-bundle-20070328.tar.gz?download">single file</a>.
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
@@ -69,7 +69,7 @@ Combinatorics</a></b></td>
    <b><a href="javascript:fold('communications');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Communications</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./comm/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/communications-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/communications-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="communications_details">
@@ -81,7 +81,7 @@ Digital Communications, Error Correcting Codes (Channel Code), Source Code funct
     <b><a href="javascript:unfold('communications');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Communications</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./comm/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/communications-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/communications-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -113,7 +113,7 @@ Control</a></b></td>
    <b><a href="javascript:fold('econometrics');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Econometrics</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./econometrics/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/econometrics-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/econometrics-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="econometrics_details">
@@ -125,7 +125,7 @@ Econometrics functions including MLE and GMM based techniques.  </p>
     <b><a href="javascript:unfold('econometrics');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Econometrics</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./econometrics/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/econometrics-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/econometrics-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -135,7 +135,7 @@ Econometrics</a></b></td>
    <b><a href="javascript:fold('fixed');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Fixed</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./fixed/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/fixed-0.7.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/fixed-0.7.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="fixed_details">
@@ -147,7 +147,7 @@ Fixed point real and complex matrix toolbox  </p>
     <b><a href="javascript:unfold('fixed');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Fixed</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./fixed/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/fixed-0.7.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/fixed-0.7.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -157,7 +157,7 @@ Fixed</a></b></td>
    <b><a href="javascript:fold('general');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 General</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./general/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/general-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/general-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="general_details">
@@ -169,7 +169,7 @@ General tools for octave.  </p>
     <b><a href="javascript:unfold('general');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 General</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./general/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/general-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/general-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -245,7 +245,7 @@ Ident</a></b></td>
    <b><a href="javascript:fold('image');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Image</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./image/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/image-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/image-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="image_details">
@@ -262,7 +262,7 @@ The Octave-forge Image package provides functions for reading, writing, and proc
     <b><a href="javascript:unfold('image');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Image</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./image/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/image-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/image-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -404,7 +404,7 @@ nnet</a></b></td>
    <b><a href="javascript:fold('octcdf');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 octcdf</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./octcdf/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/octcdf-1.0.3.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/octcdf-1.0.4.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="octcdf_details">
@@ -416,7 +416,7 @@ A NetCDF interface for octave  </p>
     <b><a href="javascript:unfold('octcdf');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 octcdf</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./octcdf/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/octcdf-1.0.3.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/octcdf-1.0.4.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -426,7 +426,7 @@ octcdf</a></b></td>
    <b><a href="javascript:fold('odepkg');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 OdePkg</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odepkg/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odepkg-0.2.3.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odepkg-0.2.4.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="odepkg_details">
@@ -438,7 +438,7 @@ A toolkit for Differential Equations and Initial Value Problems.  </p>
     <b><a href="javascript:unfold('odepkg');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 OdePkg</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odepkg/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odepkg-0.2.3.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odepkg-0.2.4.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -470,11 +470,11 @@ Optim</a></b></td>
    <b><a href="javascript:fold('optiminterp');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 optiminterp</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./optiminterp/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="optiminterp_details">
-A optimal interpolation toolbox for octave  </p>
+An optimal interpolation toolbox for octave  </p>
 </div>
 <div class="package" id="optiminterp">
   <table class="package"><tr>
@@ -482,7 +482,30 @@ A optimal interpolation toolbox for octave  </p>
     <b><a href="javascript:unfold('optiminterp');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 optiminterp</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./optiminterp/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/optiminterp-0.2.2.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+</div>
+<div class="package" id="outliers_detailed" style="display: none;">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:fold('outliers');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
+Outliers</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./outliers/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/outliers-1.0.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="outliers_details">
+Grubbs, Dixon and Cochran tests for outlier detection and p-value approximating routines.
+  </p>
+</div>
+<div class="package" id="outliers">
+  <table class="package"><tr>
+    <td>
+    <b><a href="javascript:unfold('outliers');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
+Outliers</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./outliers/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/outliers-1.0.0.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -580,7 +603,7 @@ Polynomial</a></b></td>
    <b><a href="javascript:fold('signal');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Signal</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./signal/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/signal-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/signal-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="signal_details">
@@ -592,7 +615,29 @@ Signal processing tools, including filtering, windowing and display functions.  
     <b><a href="javascript:unfold('signal');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Signal</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./signal/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/signal-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/signal-1.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+</div>
+<div class="package" id="sockets_detailed" style="display: none;">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:fold('sockets');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
+sockets</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./sockets/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/sockets-1.0.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="sockets_details">
+Socket functions  </p>
+</div>
+<div class="package" id="sockets">
+  <table class="package"><tr>
+    <td>
+    <b><a href="javascript:unfold('sockets');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
+sockets</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./sockets/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/sockets-1.0.0.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -668,7 +713,7 @@ splines</a></b></td>
    <b><a href="javascript:fold('statistics');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Statistics</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./statistics/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/statistics-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/statistics-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="statistics_details">
@@ -680,7 +725,7 @@ Additional statistics functions for Octave.  </p>
     <b><a href="javascript:unfold('statistics');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Statistics</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./statistics/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/statistics-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/statistics-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -778,7 +823,7 @@ time</a></b></td>
    <b><a href="javascript:fold('vrml');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Vrml</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./vrml/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/vrml-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/vrml-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="vrml_details">
@@ -790,7 +835,7 @@ Vrml</a></b></td>
     <b><a href="javascript:unfold('vrml');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Vrml</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./vrml/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/vrml-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/vrml-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -915,7 +960,7 @@ Integration</a></b></td>
    <b><a href="javascript:fold('java');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Java</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./java/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/java-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/java-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="java_details">
@@ -927,7 +972,7 @@ Provides Java interface with OO-like Java objects manipulation  </p>
     <b><a href="javascript:unfold('java');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Java</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./java/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/java-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/java-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -937,7 +982,7 @@ Java</a></b></td>
    <b><a href="javascript:fold('macosx');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 MacOSX</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./MacOSX/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/macosx-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/macosx-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="macosx_details">
@@ -949,7 +994,7 @@ Provides additional functionality on Mac OS X  </p>
     <b><a href="javascript:unfold('macosx');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 MacOSX</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./MacOSX/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/macosx-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/macosx-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -1019,6 +1064,50 @@ PDB</a></b></td>
     </td>
   </tr></table>
 </div>
+<div class="package" id="secs1d_detailed" style="display: none;">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:fold('secs1d');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
+SECS1D</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./secs1d/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/secs1d-0.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="secs1d_details">
+A Drift-Diffusion simulator for 1d semiconductor devices  </p>
+</div>
+<div class="package" id="secs1d">
+  <table class="package"><tr>
+    <td>
+    <b><a href="javascript:unfold('secs1d');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
+SECS1D</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./secs1d/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/secs1d-0.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+</div>
+<div class="package" id="secs2d_detailed" style="display: none;">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:fold('secs2d');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
+SECS2D</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./secs2d/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/secs2d-0.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="secs2d_details">
+A Drift-Diffusion simulator for 1d semiconductor devices  </p>
+</div>
+<div class="package" id="secs2d">
+  <table class="package"><tr>
+    <td>
+    <b><a href="javascript:unfold('secs2d');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
+SECS2D</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./secs2d/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/secs2d-0.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+</div>
 <div class="package" id="tcl-octave_detailed" style="display: none;">
   <table class="package"><tr>
     <td>
@@ -1047,7 +1136,7 @@ Tcl-Octave</a></b></td>
    <b><a href="javascript:fold('symband');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 SymBand</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./symband/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/symband-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/symband-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="symband_details">
@@ -1059,7 +1148,7 @@ Linear Algebra for Symmetric Banded Matrices.  </p>
     <b><a href="javascript:unfold('symband');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 SymBand</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./symband/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/symband-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/symband-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -1113,7 +1202,7 @@ Windows</a></b></td>
    <b><a href="javascript:fold('xraylib');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Xraylib</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./xraylib/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/xraylib-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/xraylib-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="xraylib_details">
@@ -1125,7 +1214,7 @@ Bindings to the Xraylib functions  </p>
     <b><a href="javascript:unfold('xraylib');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Xraylib</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./xraylib/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/xraylib-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/xraylib-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -1136,7 +1225,7 @@ Xraylib</a></b></td>
    <b><a href="javascript:fold('pt_br');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 pt_BR</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./pt_BR/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/pt_br-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/pt_br-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="pt_br_details">
@@ -1149,7 +1238,7 @@ Brazilian Portuguese translations of the help strings of the Octave functions.
     <b><a href="javascript:unfold('pt_br');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 pt_BR</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./pt_BR/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/pt_br-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/pt_br-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>

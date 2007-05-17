@@ -8,9 +8,10 @@ of this directory. These are
 
 "make all" - This will cause all of the octave-forge sub-directories
 to be traversed and the source packages for these built and place in
-this directory. These are placed in sub-directories corresponding to
-the sub-directory name where the CVS controlled code is found. That is
-main/, extra/ or nonfree/.
+this directory. These are compared to the uploaded versions and the
+MD5sums of the packages are calculated. These are placed in sub-
+directories corresponding to the sub-directory name where the CVS 
+controlled code is found. That is main/, extra/ or nonfree/.
 
 "make check" - This will build all of the packages individually in an
 environment protected from other installed octave packages and test

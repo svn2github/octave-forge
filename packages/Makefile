@@ -17,11 +17,13 @@ MD5FILE=packages.md5
 M4 := m4
 MACRO_FILE := ../doc/macros.m4
 M4_OPTIONS := --prefix-builtin
+PACKAGES_MD5 := http://octave.sourceforge.net/packages.md5
+
 
 .PHONY: $(PKGDIRS) install
 
 # Construct the bundle from the individual packages
-all: mkbundle md5
+all: compare mkbundle md5
 
 mkbundle:
 	@rm -f $(wildcard octave-forge-bundle-*.tar.gz); \
@@ -33,7 +35,7 @@ md5: cleanmd5 $(patsubst %, domd5/%, $(PACKAGES)) md5bundle
 	mv -f $(MD5FILE).tmp ../doc/htdocs/$(MD5FILE)
 
 cleanmd5:
-	@rm -f $(MD5FILE)
+	@rm -f $(MD5FILE) $(MD5FILE).tmp
 
 domd5/%:
 	@ver=`echo $(opkg) | sed -e "s/.tar.gz$$//" | sed -e "s/^.*-//"`; \
@@ -50,18 +52,26 @@ md5bundle:
 	md5=`md5sum $$bundle`; \
 	echo "$$name $$ver $$md5" | sed -e "s|$$bundle|__PACKAGE__/$$bundle?download|" >> $(MD5FILE)
 
-compare:
-	@if [ -d  tmp ]; then rm -rf tmp; fi; \
-	mkdir tmp
-	@cd tmp; \
-	wget http://octave.dbateman.org/packages.md5; \
+compare: prepare_compare real_compare move_compare
+
+move_compare:
+	@for pkgdir in $(PKGDIRS); do \
+	  cp -f compare/toupload/$${pkgdir}/* $${pkgdir}; \
+	done
+
+prepare_compare:
+	@if [ -d  compare ]; then rm -rf compare; fi; \
+	mkdir compare
+	@cd compare; \
+	wget $(PACKAGES_MD5); \
 	url=`cat packages.md5 | grep "bundle" | sed -e "s/^.*\(http[^\S]*\).*$$/\1/"`; \
 	bundle=`echo $$url | sed -e "s|^.*/\(.*\).*$$|\1|"`; \
 	wget $$url; \
+	bundle=`echo $$bundle | sed -e "s|\?download||"`; \
 	tar xzf $$bundle;
 
-compare1:
-	@cd tmp; \
+real_compare:
+	@cd compare; \
 	if [ -d toupload ]; then rm -fr toupload; fi; \
 	mkdir toupload; \
 	for _dir in $(PKGDIRS); do \
@@ -71,7 +81,7 @@ compare1:
 	for oldpkg in $$pkgs; do \
 	  olddir=`echo $$oldpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
 	  oldname=`echo $$olddir | sed -e "s/^\(.*\)-.*$$/\1/"`; \
-	  newpkg=`cd ..; find $(PKGDIRS) -name "$$oldname*"`; \
+	  newpkg=`cd ..; find $(PKGDIRS) -name "$$oldname*" | sort | tail -1`; \
 	  newdir=`echo $$newpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
 	  tar xzf $$oldpkg; \
 	  mv $$olddir $${olddir}.orig; \
@@ -79,34 +89,28 @@ compare1:
 	  if diff -Nrq $$olddir.orig $$newdir >& /dev/null; then \
 	    cp $$oldpkg toupload/$$oldpkg; \
 	  else \
-	    cp $$newpkg toupload/$$oldpkg; \
+	    cp ../$$newpkg toupload/$$newpkg; \
 	    upload=yes; \
 	    oldver=`cat $${olddir}.orig/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
 	    newver=`cat $${newdir}/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
-	    echo "$$newver $$oldver"; \
 	    if [ "$$oldver" = "$$newver" ]; then \
 	      samever=yes; \
-	      echo "$$oldpkg differs from uploaded version but has same version"; \
+	      echo "*** $$newpkg differs from uploaded version but has same version"; \
 	    else \
-	      echo "$$oldpkg differs from uploaded version"; \
+	      echo "$$newpkg differs from uploaded version"; \
             fi; \
 	  fi; \
 	  rm -fr $$olddir.orig $$newdir; \
 	done; \
-	if [ "X$${samever}" = "XX" ]; then \
+	if [ "X$${samever}"X = "XX" ]; then \
 	  if [ "X$${upload}X" = "XX" ]; then \
 	    echo "Nothing to do"; \
 	  else \
-	    echo "Please upload packages/files in 'toupload' directory"; \
-	    if [ -d ../toupload ]; then rm -fr ../toupload; fi; \
-	    cd toupload; \
-	    d=`date +%Y%m%d`; \
-	    tar czf octave-forge-bundle-$$d.tar.gz $(PKGDIRS); \
-	    cd ..; \
-	    mv toupload ..; \
+	    echo "Please upload packages/files in directories: $(PKGDIRS)"; \
 	  fi; \
 	else \
-	  echo "Please fix the version numbering noted above before proceding"; \
+	  echo "*** Please fix the version numbering noted above before proceding"; \
+	  exit -1; \
 	fi; \
 
 # Do nothing for the package target 
@@ -114,7 +118,7 @@ package:
 
 # Assume all packages have .tar.gz extensions
 mostlyclean: 
-	@rm -fr $(TESTLOG) sandbox *~ *.tar.gz
+	@rm -fr $(TESTLOG) sandbox *~ *.tar.gz compare
 
 clean: mostlyclean
 	@rm -fr $(PKGDIRS) $(RPMDIR) $(MD5FILE)

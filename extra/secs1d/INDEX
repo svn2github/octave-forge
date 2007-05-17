@@ -1,0 +1,23 @@
+secs1D >> 1D Semi-Conductor Simulation
+DDG
+ DDGelectron_driftdiffusion
+ DDGgummelmap
+ DDGhole_driftdiffusion
+ DDGn2phin
+ DDGnlpoisson
+ DDGp2phip
+ DDGphin2n
+ DDGphip2p
+ DDGplotresults
+DDN
+ DDNnewtonmap
+Utilities
+ constants
+ Ubern
+ Ubernoulli
+ Ucompconst
+ Ucomplap
+ Ucompmass
+ Udriftdiffusion
+ Umediaarmonica
+ Uscharfettergummel

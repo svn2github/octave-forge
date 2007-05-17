@@ -1,0 +1,34 @@
+secs2d >> 2-D Semi-Conductor Simulation
+DDGOX
+ DDGOXddcurrent
+ DDGOXelectron_driftdiffusion
+ DDGOXgummelmap
+ DDGOXhole_driftdiffusion
+ DDGOXnlpoisson
+ DDGOXplotresults
+DDGOXT
+ DDGOXTelectron_driftdiffusion
+ DDGOXTgummelmap
+ DDGOXThole_driftdiffusion
+METLINES
+ METLINEScapcomp
+ METLINESdefinepermittivity
+QDDGOX
+ QDDGOXcompdens
+ QDDGOXddcurrent
+ QDDGOXgummelmap
+ QDDGOXnlpoisson
+ ThDDGOX
+ ThDDGOXddcurrent
+ ThDDGOXelectron_driftdiffusion
+ ThDDGOXgummelmap
+ ThDDGOXheatequation
+ ThDDGOXhole_driftdiffusion
+ ThDDGOXinneriteration
+ ThDDGOXnlpoisson
+Utilities
+ constants
+ Ubern
+ Ucompconst
+ Ucomplap
+ Uscharfettergummel

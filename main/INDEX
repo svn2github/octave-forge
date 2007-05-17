@@ -711,6 +711,27 @@ Flags
  string_fill_char
 
 math >> Mathematics
+Operators
+ and
+ eq
+ ge
+ gt
+ ldivide
+ le
+ lt
+ minus
+ mldivide
+ mpower
+ mrdivide
+ mtimes
+ ne
+ or
+ plus
+ power
+ rdivide
+ times
+ uminus
+ uplus
 Trigonometry
  sin 
  sinh 
@@ -935,7 +956,7 @@ Business graphs
  pie 
  pie3 
  area 
- bar dhbar
+ bar hbar
  barh 
  bar3 
  bar3h 
@@ -974,7 +995,7 @@ Figure controls
  close 	 
  refresh= try <f>replot</f>
  drawnow
- automatic_replot clearplot closeplot
+ clearplot closeplot
  clg
  replot
  isfigure

@@ -13,7 +13,7 @@ SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 
 ifdef OCTAVE_FORGE
 
-.PHONY: all install packages package check icheck srpms
+.PHONY: all install packages package check icheck srpms www doxygen compare
 
 all: clearlog packages
 	@echo "Packaging finished."
@@ -30,10 +30,9 @@ all: clearlog packages
 package: subdirs
 packages:
 	@$(MAKE) -k package
-	@$(MAKE) -C packages mkbundle
-	@$(MAKE) -C packages md5
+	@$(MAKE) -C packages all
 
-install: installpause clearlog packages
+install: installpause
 	@$(MAKE) -C packages $(MAKECMDGOALS)
 	@echo "Type \"pkg('load','all')\" at the octave prompt to start"
 	@echo "using the installed packages"
@@ -50,24 +49,18 @@ check:
 icheck:
 	@$(MAKE) -C packages $(MAKECMDGOALS)
 
-srpms: clearlog packages
+srpms:
 	@$(MAKE) -C packages $(MAKECMDGOALS)
 	@echo "*** You can find the built SRPMs in packages/RPM/SRPMS ***"
 
-www: clearlog packages
+www:
 	@$(MAKE) -C doc
 
 doxygen:
 	@$(MAKE) -C doc doxygen
 
-# FIXME: Update the address below when the website goes live.
-# FIXME: This is broken any any case. See the "make -C packages compare"
-#        target for work in progress to fix it.
-comparepkgs: packages
-	@wget http://octave.dbateman.org/packages.md5; \
-	./admin/compare_md5sum packages.md5 doc/htdocs/packages.md5
-	@rm packages.md5
-
+compare:
+	make -C packages $(MAKECMDGOALS)
 else
 
 .PHONY: all install srpms
@@ -77,7 +70,7 @@ all install srpms:
 
 endif
 
-.PHONY: clean distclean dist checkindist changelog
+.PHONY: clean distclean dist checkindist
 
 clean: clearlog subdirs
 	-$(RM) fntests.m fntests.log packages.md5

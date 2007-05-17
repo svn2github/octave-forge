@@ -1,0 +1,12 @@
+Name: Outliers
+Version: 1.0.0
+Date: 2007-05-17
+Author: Lukasz Komsta
+Maintainer: Lukasz Komsta
+Title: Outlier Detection
+Description: Grubbs, Dixon and Cochran tests for outlier detection
+ and p-value approximating routines.
+Categories: outlier detection, statistics
+Autoload: yes
+License: GPL version 2 or later
+Url: http://www.komsta.net/

@@ -15,7 +15,7 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{c} =} lz77enco (@var{m}, @var{alph}, @var{la}, @var{n}
+## @deftypefn {Function File} {@var{c} =} lz77enco (@var{m}, @var{alph}, @var{la}, @var{n})
 ## Lempel-Ziv 77 source algorithm implementation. Where
 ##
 ## @table @asis

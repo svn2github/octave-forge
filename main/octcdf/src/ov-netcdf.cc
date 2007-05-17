@@ -697,8 +697,15 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   int status;
   Array<int> perm_vector(ncndim);
 
+  // octave arrays have at least 2 dimensions
+  // while NetCDF arrays can have only 1 dimensions
 
-  sliced_dim_vector.resize(ncndim);
+  int ndim = max(ncndim,2);
+
+  sliced_dim_vector.resize(ndim);
+
+  for (int i = 0; i < ndim; i++)	
+    sliced_dim_vector(i) = 1;
 
   int i = 0;
   std::list<Range>::const_iterator it;
@@ -734,7 +741,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 									   \
       delete[] var;							   \
                                                                            \
-      if (STORAGE_ORDER == FORTRAN_ORDER || ncndim <= 1)	   		   \
+      if (STORAGE_ORDER == FORTRAN_ORDER || ncndim <= 1)		   \
         retval = octave_value(CAST_DARRAY(arr));                           \
       else                                                                 \
         retval = octave_value(CAST_DARRAY(arr.permute(perm_vector)));	   \
@@ -801,18 +808,16 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 
 void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,octave_value rhs) {
 
-
   int ncndim = ranges.size();
   octave_value retval;
   long *start = new long[ncndim];
   long *count = new long[ncndim];
   long *stride = new long[ncndim];
-  long sliced_numel;
+  long sliced_numel = 1;
   ArrayN<double> arr;
-  dim_vector sliced_dim_vector;
   int status;
+  Array<int> perm_vector(rhs.ndims());
 
-  sliced_dim_vector.resize(ncndim);
 
 #  ifdef OV_NETCDF_VERBOSE
   octave_stdout << " ov_nc_put_vars" << std::endl;
@@ -825,18 +830,13 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
       start[i] =  (long int) (*it).min() - 1;
       count[i] = (*it).nelem();
       stride[i] = (long int) (*it).inc();
-      sliced_dim_vector(i) =  count[i];
+      sliced_numel *= count[i];
       i=i+1;
     }
-
-
-  Array<int> perm_vector(rhs.ndims());
 
   for(i=0; i<rhs.ndims(); i++) { 
       perm_vector(i) = rhs.ndims()-i-1 + OCTAVE_PERMVEC_INDEX_ORIGIN;
   }
-
-  sliced_numel = sliced_dim_vector.numel();
 
 #  ifdef OV_NETCDF_VERBOSE
   octave_stdout << "type " <<  rhs.type_name() << NC_INT << std::endl;

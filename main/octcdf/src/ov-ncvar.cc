@@ -273,11 +273,20 @@ octave_value octave_ncvar::subsasgn(const std::string & type,
 	octave_value_list key_idx = *idx.begin();
 	std::list<Range> ranges = get_slice(key_idx);
 
+#       ifdef OV_NETCDF_VERBOSE
+	octave_stdout << "putting var " << __LINE__ << std::endl;
+#       endif
+
         if (error_state)  return retval;
  
 	ov_nc_put_vars(get_ncid(),get_varid(),ranges,get_nctype(),scaledrhs);
 
 	retval = rhs;
+
+#       ifdef OV_NETCDF_VERBOSE
+	octave_stdout << "end putting var " << std::endl;
+#       endif
+
 	break;
       }
     case '{':
@@ -434,12 +443,11 @@ void  octave_ncvar::print(std::ostream & os, bool pr_as_read_syntax = false) con
 
 std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
 {
-
   //std::string key = key_idx(0).string_value ();
 
   std::list<Range> ranges;
-  dim_vector dv;
-  dv.resize(ncndims());
+  //dim_vector dv;
+  //dv.resize(ncndims());
 
   // special case: if only one colone, then retrieve all data
 
@@ -492,7 +500,6 @@ std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
 
   if (STORAGE_ORDER == FORTRAN_ORDER)
      ranges.reverse();
-
 
   return ranges;
 }

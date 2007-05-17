@@ -21,17 +21,17 @@
 #if !defined (octave_netcdf_int_h)
 #define octave_netcdf_int_h 1
 
-#include<iostream>
+#include <iostream>
 #include <octave/config.h>
-#include<octave/oct.h>
-#include<octave/parse.h>
-#include<octave/dynamic-ld.h>
-#include<octave/oct-map.h>
-#include<octave/oct-stream.h>
+#include <octave/oct.h>
+#include <octave/parse.h>
+#include <octave/dynamic-ld.h>
+#include <octave/oct-map.h>
+#include <octave/oct-stream.h>
 #include <octave/ov-base.h>
-#include<octave/ov-base-scalar.h>
-#include<vector>
-#include<string>
+#include <octave/ov-base-scalar.h>
+#include <vector>
+#include <string>
 #include <netcdf.h>
 #include <ArrayN.h>
 #include <list>

@@ -197,7 +197,20 @@ endfunction
 %! nv = ncautonan(nv,1);
 %! assert(all(isnan(nv(:))))
 
+%!# Test size of vector
+%!test
+%! nc{'vector'} = ncfloat('time'); 
+%! nc{'vector'}(:) = 0;  
+%! v = nc{'vector'}(:); 
+%! assert(size(v),[5 1])
 
+%!# Test scalar
+%!test
+%! nc{'scalar'} = ncint();
+%! nc{'scalar'}(:) = 10;
+%! v = nc{'scalar'}(:);
+%! assert(v,10)
+ 
 %!# Close file
 %!test
 %! ncclose(nc);

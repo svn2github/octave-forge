@@ -691,36 +691,48 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   long *start = new long[ncndim];
   long *count = new long[ncndim];
   long *stride = new long[ncndim];
-  long sliced_numel;
+  long sliced_numel = 1;
   ArrayN<double> arr;
   dim_vector sliced_dim_vector;
   int status;
+  // permutation vector for Fortran-storage to C-storage
+  // not used if ncndim == 1
   Array<int> perm_vector(ncndim);
+
+#  ifdef OV_NETCDF_VERBOSE
+  octave_stdout << " ov_nc_get_vars" << std::endl;
+#  endif
+
 
   // octave arrays have at least 2 dimensions
   // while NetCDF arrays can have only 1 dimensions
 
   int ndim = max(ncndim,2);
 
-  sliced_dim_vector.resize(ndim);
-
-  for (int i = 0; i < ndim; i++)	
-    sliced_dim_vector(i) = 1;
-
   int i = 0;
   std::list<Range>::const_iterator it;
 
-  for(it=ranges.begin(); it!=ranges.end(); ++it)
-    { 
+  for(it=ranges.begin(); it!=ranges.end(); ++it) { 
       start[i] =  (long int) (*it).min() - 1;
       count[i] = (*it).nelem();
       stride[i] = (long int) (*it).inc();
-      sliced_dim_vector(i) =  count[i];
+      sliced_numel *= count[i];
       perm_vector(i) = ncndim-i-1 + OCTAVE_PERMVEC_INDEX_ORIGIN;
       i=i+1;
     }
 
-  sliced_numel = sliced_dim_vector.numel();
+  if (ncndim <= 1) {
+    // this sliced_dim_vector is to be reversed
+    sliced_dim_vector.resize(2);
+    sliced_dim_vector(0) = 1;
+    sliced_dim_vector(1) = sliced_numel;
+  }
+  else {
+    sliced_dim_vector.resize(ncndim);
+    for (int i = 0; i < ncndim; i++)	
+      sliced_dim_vector(i) = count[i];
+  }
+
 
 #define OV_NETCDF_GET_VAR_CASE(netcdf_type,c_type,nc_get_vars)		   \
   case netcdf_type:							   \
@@ -794,13 +806,6 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   delete[] count;
   delete[] stride;
 
-  // in Octave, vectors are represented as matrices
-  // if the NetCDF object is a vector of length n
-  // we need to reshape it as a n-by-1 matrix
-
-  if (ncndim == 1) {
-    retval = retval.resize(dim_vector(retval.numel(),1));
-  }
 
   return retval;
 }
@@ -816,7 +821,9 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   long sliced_numel = 1;
   ArrayN<double> arr;
   int status;
-  Array<int> perm_vector(rhs.ndims());
+  // permutation vector for Fortran-storage to C-storage
+  // not used if ncndim == 1
+  Array<int> perm_vector(ncndim);
 
 
 #  ifdef OV_NETCDF_VERBOSE
@@ -831,12 +838,9 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
       count[i] = (*it).nelem();
       stride[i] = (long int) (*it).inc();
       sliced_numel *= count[i];
+      perm_vector(i) = ncndim-i-1 + OCTAVE_PERMVEC_INDEX_ORIGIN;
       i=i+1;
     }
-
-  for(i=0; i<rhs.ndims(); i++) { 
-      perm_vector(i) = rhs.ndims()-i-1 + OCTAVE_PERMVEC_INDEX_ORIGIN;
-  }
 
 #  ifdef OV_NETCDF_VERBOSE
   octave_stdout << "type " <<  rhs.type_name() << NC_INT << std::endl;

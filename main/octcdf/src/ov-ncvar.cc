@@ -440,14 +440,13 @@ void  octave_ncvar::print(std::ostream & os, bool pr_as_read_syntax = false) con
 
 // determine the slice of the variable to read or to store depending 
 // on the ranges given in key_idx
+// ranges contains ncndims elements
 
 std::list<Range> octave_ncvar::get_slice(octave_value_list key_idx)
 {
   //std::string key = key_idx(0).string_value ();
 
   std::list<Range> ranges;
-  //dim_vector dv;
-  //dv.resize(ncndims());
 
   // special case: if only one colone, then retrieve all data
 

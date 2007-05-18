@@ -17,7 +17,13 @@
 
 %# -*- texinfo -*-
 %# @deftypefn {Function} odepkg ()
-%# A more detailed help for the odepkg implementation will be added here soon.
+%# OdePkg is part of the GNU Octave Repository (resp. the Octave-Forge project). The package includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are also included. OdePkg formerly was initiated to solve explicitly formulated ordinary differential equations (ODEs) only, but there are already improvements so that differential algebraic equations (DAEs) in explicit form can also be solved. At this time OdePkg is under development with the main target, to make a package that is mostly compatible to commercial solver products.
+%# 
+%# For further details about the OdePkg run the following command to show up the complete tutorial
+%#
+%# @example
+%# doc odepkg
+%# @end example
 %# @end deftypefn
 
 %# Maintainer: Thomas Treichl
@@ -29,8 +35,9 @@
 %# File will be cleaned up in the future
 function [] = odepkg (vstr)
   %# Check number and types of all input arguments
-  if (nargin == 0 || nargin > 1)
-    help ('odepkg');
+  if (nargin == 0)
+    doc ('odepkg');
+  elseif (nargin > 1)
     error ('Number of input arguments must be exactly one');
   elseif (ischar (vstr) == true)
     feval (str2func (vstr));

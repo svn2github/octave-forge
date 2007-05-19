@@ -67,7 +67,7 @@ cp %{builtpackage} %{buildroot}%{_datadir}
 rm %{_datadir}/%{builtpackage}
 
 %postun
-%{octave} -H -q --no-site-file --eval "prefix=pkg('prefix');unlink(fullfile(prefix,'@NAME@-@VERSION@','on_uninstall.m');pkg('uninstall','@NAME@')"
+%{octave} -H -q --no-site-file --eval "prefix=pkg('prefix');unlink(fullfile(prefix,'@NAME@-@VERSION@','packinfo','on_uninstall.m');pkg('uninstall','@NAME@')"
 
 %clean
 rm -fr %{buildroot}

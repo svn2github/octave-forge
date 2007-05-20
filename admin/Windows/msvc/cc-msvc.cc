@@ -262,7 +262,8 @@ int main(int argc, char **argv)
 					clopt += " -Fo" + quote_path(arg);
 					objectfile = arg;
 				}
-				else if (ends_with(arg, ".exe") || ends_with(arg, ".dll") || ends_with(arg, ".oct"))
+				else if (ends_with(arg, ".exe") || ends_with(arg, ".dll") || ends_with(arg, ".oct")
+					 || ends_with(arg, ".mex"))
 				{
 					clopt += " -Fe" + quote_path(arg);
 					linkopt += " -out:" + quote_path(arg);

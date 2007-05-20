@@ -574,7 +574,7 @@ int main(int argc, char **argv)
 		{
 			string c = b + ".c";
 			cfiles.push_back(c);
-			cmd = vars["F2C"] + " " + vars["F2CFLAGS"] + " " + f;
+			cmd = vars["F2C"] + " " + vars["F2CFLAGS"] + " < " + f + " > " + c;
 			result = run_command(cmd);
 		}
 		else if (!vars["F77"].empty())

@@ -85,9 +85,9 @@ OdePkg is part of the @b{GNU Octave Repository} (resp. the Octave--Forge project
 @item OdePkg Version 0.2.x
 @tab The main work along version 0.2.x was making the interface functions for the non--stiff and stiff solvers from Ernst Hairer and Gerhard Wanner enough stable so that they could be compiled and installed by default. Wrapper functions have been added to the package with help texts and tests (eg. @command{ode2r}, @command{ode5r}, @command{oders} etc.). Six testsuite functions have been added for performance tests of the different solvers (@command{odepkg_testsuite_chemakzo}, @command{odepkg_testsuite_oregonator}, @command{odepkg_testsuite_transistor}, etc.).
 @item @b{(current)} Version 0.3.x
-@tab Ongoing work with this manual. Fetching and adding DDE--solvers from Netlib or Ernst Hairer or Jeff Cash. 
+@tab Ongoing work with this manual. Fetching and adding DDE--solvers from Netlib or Ernst Hairer or Jeff Cash if GPL compatible. 
 @item @b{(future)} Version 0.4.x
-@tab Ongoing work with this manual. Fetching and adding IDE--solvers from Netlib or Ernst Hairer or Jeff Cash.
+@tab Ongoing work with this manual. Fetching and adding IDE--solvers from Netlib or Ernst Hairer or Jeff Cash if GPL compatible.
 @item @b{(future)} Version 0.5.x
 @tab (Maybe) A lot of compatibility tests.
 @item @b{(future)} Version 0.6.x
@@ -265,9 +265,9 @@ The mex--file Hairer--Wanner solvers have been added to the OdePkg to also solve
 
 @node Other solvers, ODE solver performances, Mex--file Hairer--Wanner solvers, Solver families
 @subsection Other solvers
-The solvers from Jeff Cash http://www.ma.ic.ac.uk/~jcash have not been added to the OdePkg because it seems that there may exist some unfixed bugs. Modified solver files with bug fixes can be found at http://pitagora.dm.uniba.it/~testset, but the disclaimer's part of this site is not clear and maybe the modified solver files are not GNU--GPL compatible.
+@c The solvers from Jeff Cash http://www.ma.ic.ac.uk/~jcash have not been added to the OdePkg because it seems that there may exist some unfixed bugs. Modified solver files with bug fixes can be found at http://pitagora.dm.uniba.it/~testset, but the disclaimer's part of this site is not clear and maybe the modified solver files are not GNU--GPL compatible.
 
-The people from the University of Bari at http://pitagora.dm.uniba.it/~testset created the solvers BIMD and GAMD. But like before the disclaimer's part of this internet site is not clear and maybe they are not GNU--GPL compatible.
+@c The people from the University of Bari at http://pitagora.dm.uniba.it/~testset created the solvers BIMD and GAMD. But like before the disclaimer's part of this internet site is not clear and maybe they are not GNU--GPL compatible.
 
 @c The OdePack solvers from http://www.netlib.org/odepack have not been added to OdePkg, because the question is not answered if they are really needed from somebody. Other solvers from http://www.netlib.org/ode have not been added because of the same reason.
 

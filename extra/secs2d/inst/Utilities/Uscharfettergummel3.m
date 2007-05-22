@@ -287,6 +287,6 @@ endfunction
 %! S = Uscharfettergummel3(mesh,alpha,gamma,eta,beta);
 %! u = zeros(Nnodes,1);
 %! u(Varnodes) = S(Varnodes,Varnodes)\f(Varnodes);
-%! uex = x.*y.*(1-exp((x-1)/diff)).*(1-exp((y-1)/diff)); norm(uex-u,inf)
+%! uex = x.*y.*(1-exp((x-1)/diff)).*(1-exp((y-1)/diff)); 
 %! assert(u,uex,1e-7)
 

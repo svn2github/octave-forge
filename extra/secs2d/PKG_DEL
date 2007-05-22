@@ -1,5 +1,5 @@
 # Run this only if the package is installed
-if (! exist ("inst", "dir"))
+if (! exist (fullfile (fileparts (mfilename ("fullpath")), "inst"), "dir"))
   dirlist= {"Utilities","DDGOX","ThDDGOX","QDDGOX","METLINES","DDGOXT"};
 
   for ii=1:length(dirlist)

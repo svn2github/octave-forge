@@ -240,7 +240,5 @@ end
 res = normr;
 niter = newtit;
 
-% Last Revision:
-% $Author$
-% $Date$
+
 

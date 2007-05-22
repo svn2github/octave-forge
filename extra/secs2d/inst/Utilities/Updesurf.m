@@ -36,9 +36,17 @@ elseif nargin == 2
 
 	mesh = varargin{1};
 	u = varargin{2};
-	UDXoutput2Ddata('./.tmp.dx',mesh.p,mesh.t,u,'u',0,1,1);
+
+	dataname = mktemp("/tmp",".dx");
+	scriptname = mktemp("/tmp",".net");
+
+	UDXoutput2Ddata(dataname,mesh.p,mesh.t,u,'u',0,1,1);
+
 	showmesh = file_in_path(path,"Ucoloredrubbersheet.net");
-	command = ["dx -program " showmesh " -execute -image >& /dev/null &"];
+	system (["cp " showmesh " " scriptname]);
+	system (["sed -i \'s|__FILE__DX__|" dataname "|g\' " scriptname]);
+
+	command = ["dx -program " scriptname " -execute -image >& /dev/null &"];
 	system(command);
 
 else
@@ -46,3 +54,21 @@ else
 	fprintf(1,"wrong number of parameters\n\n")
 
 end
+
+endfunction 
+
+function filename = mktemp (direct,ext);
+
+if (~exist(direct,"dir"))
+  error("trying to save temporary file to non existing directory")
+end
+
+done=false;
+
+while ~done
+  filename = [direct,"/SECS2D.",num2str(floor(rand*1e7)),ext];
+  if ~exist(filename,"file")
+    done =true;
+  end
+end
+endfunction

@@ -291,6 +291,4 @@ odata.Fp = Fp(:,end);
 odata.G  = G(:,end);
 odata.Gp  = Gp(:,end);
 
-% Last Revision:
-% $Author$
-% $Date$
+

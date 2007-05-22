@@ -28,10 +28,32 @@ function Udrawedge(mesh);
 %  USA
 
 
+  dataname = mktemp("/tmp",".dx")
+  scriptname = mktemp("/tmp",".net");
+  
+  UDXoutput2Ddata(dataname,mesh.p,mesh.t,mesh.p(1,:)','u',0,1,1);
 
-  UDXoutput2Ddata('.tmp.dx',mesh.p,mesh.t,mesh.p(1,:)','u',0,1,1);
   showmesh = file_in_path(path,"Ushowgrid.net");
-  command = ["dx -program " showmesh " -execute -image >& /dev/null &"];
+  system (["cp " showmesh " " scriptname ]);
+  system (["sed -i \'s|__FILE__DX__|" dataname "|g\' " scriptname]);
+
+  command = ["dx -program " scriptname " -execute -image >& /dev/null &"];
   system(command);
 
+endfunction
+
+function filename = mktemp (direct,ext);
+
+if (~exist(direct,"dir"))
+  error("trying to save temporary file to non existing directory")
+end
+
+done=false;
+
+while ~done
+  filename = [direct,"/SECS2D.",num2str(floor(rand*1e7)),ext];
+  if ~exist(filename,"file")
+    done =true;
+  end
+end
 endfunction

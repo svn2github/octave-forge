@@ -1,10 +1,11 @@
-function n=ThDDGOXelectron_driftdiffusion(mesh,Dnodes,n,pin,V,...
-					  Tn,mobn0,mobn1,tn,tp,n0,p0)
-
+function Tl = ThDDGOXupdatelattice_temp(mesh,Dnodes,Tl,Tn,Tp,n,p,...
+					kappa,Egap,tn,tp,...
+                                        twn0,twp0,twn1,twp1,n0,p0)
   %%
-  %%   n=ThDDGOXelectron_driftdiffusion(mesh,Dnodes,n,pin,V,Tn,un0,un1,tn,tp,n0,p0)
-  %%
-
+  %% Tl = ThDDGOXupdatelattice_temp(mesh,Dnodes,Tl,Tn,Tp,n,p,...
+  %%				kappa,Egap,tn,tp,...
+  %%                            twn0,twp0,twn1,twp1,n0,p0)
+    
   %% This file is part of 
   %%
   %%            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
@@ -32,19 +33,22 @@ function n=ThDDGOXelectron_driftdiffusion(mesh,Dnodes,n,pin,V,...
   Nelements = columns(mesh.t);
   Varnodes  = setdiff(1:Nnodes,Dnodes);
 
-  alpha = mobn0;
-  gamma = mobn1;
-  eta   = Tn;
-  beta  = V-Tn;
-  Dn = Uscharfettergummel3(mesh,alpha,gamma,eta,beta);
+  alpha = kappa*ones(Nelements,1);
+  gamma = Tl.^(-4/3);
+  eta   = ones (Nnodes,1);
+  
+  L = Uscharfettergummel3(mesh,alpha,gamma,eta,0);
+  MASS_LHSn = Ucompmass2(mesh,1.5*n./twn1,1./twn0);
+  MASS_LHSp = Ucompmass2(mesh,1.5*p./twp1,1./twp0);
+  LHS = L+MASS_LHSn+MASS_LHSp;
+  
 
-  denom = (tp*(n+sqrt(n0.*p0))+tn*(pin+sqrt(n0.*p0)));
-  MASS_LHS = Ucompmass2(mesh,pin./denom,ones(Nelements,1));
+  denom  = (tp*(n+sqrt(n0.*p0))+tn*(p+sqrt(n0.*p0)));
+  U      = (p.*n-p0.*n0)./denom;
+  RHS1  = Ucompconst(mesh,(Egap+1.5*(Tn + Tp)).*U,ones(Nelements,1));
+  RHS2n  = Ucompconst(mesh,1.5*n.*Tn./twn1,1./twn0);
+  RHS2p  = Ucompconst(mesh,1.5*p.*Tp./twp1,1./twp0);
+  RHS    = RHS1 + RHS2n + RHS2p;
 
-  LHS = Dn+MASS_LHS;
-
-  RHS     = Ucompconst (mesh,p0.*n0./denom,ones(Nelements,1));
-
-  n(Varnodes) = LHS(Varnodes,Varnodes) \(RHS(Varnodes) -...
-      LHS(Varnodes,Dnodes)*n(Dnodes));
-
+  Tl(Varnodes) = LHS(Varnodes,Varnodes) \...
+      (RHS(Varnodes) - LHS(Varnodes,Dnodes)*Tl(Dnodes));

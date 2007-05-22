@@ -13,8 +13,8 @@ macro main(
 ) {
     // 
     // node FileSelector[1]: x = 52, y = 31, inputs = 0, label = FileSelector
-    // output[1]: visible = 1, type = 32, value = "./.tmp.dx"
-    // output[2]: visible = 1, type = 32, value = ".tmp.dx"
+    // output[1]: visible = 1, type = 32, value = "__FILE__DX__"
+    // output[2]: visible = 1, type = 32, value = "__FILE__DX__"
     //
     // 
     // node Import[1]: x = 104, y = 118, inputs = 6, label = Import

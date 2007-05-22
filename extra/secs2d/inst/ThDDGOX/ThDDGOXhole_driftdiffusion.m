@@ -1,51 +1,49 @@
-function p=ThDDGOXhole_driftdiffusion(mesh,Dsides,nin,pin,V,Vth,up,tn,tp,n0,p0)
+function p=ThDDGOXhole_driftdiffusion(mesh,Dnodes,nin,p,V,...
+				      Tp,mobp0,mobp1,tn,tp,n0,p0)
+  %%
+  %%  p=ThDDGOXhole_driftdiffusion(mesh,Dnodes,nin,p,V,Tp,monp0,mobp1,tn,tp,n0,p0)
+  %%
 
-%%
-%    p=DDGhole_driftdiffusion(mesh,Dsides,nin,pin,V,Vth,up,tn,tp,n0,p0)
-%   IN:
-%	  v    = electric potential
-%	  Vth  = thermal potential
-%         mesh = integration domain
-%         nin  = initial guess and BCs for electron density
-%         pin  = hole density (to compute SRH recombination)
-%   OUT:
-%     p    = updated hole density
-%%
+  %% This file is part of 
+  %%
+  %%            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
+  %%         -------------------------------------------------------------------
+  %%            Copyright (C) 2004-2006  Carlo de Falco
+  %%
+  %%
+  %%
+  %%  SECS2D is free software; you can redistribute it and/or modify
+  %%  it under the terms of the GNU General Public License as published by
+  %%  the Free Software Foundation; either version 2 of the License, or
+  %%  (at your option) any later version.
+  %%
+  %%  SECS2D is distributed in the hope that it will be useful,
+  %%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  %%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  %%  GNU General Public License for more details.
+  %%
+  %%  You should have received a copy of the GNU General Public License
+  %%  along with SECS2D; if not, write to the Free Software
+  %%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+  %%  USA
+  
+  Nnodes    = columns(mesh.p);
+  Nelements = columns(mesh.t);
+  Varnodes  = setdiff(1:Nnodes,Dnodes);
 
-% This file is part of 
-%
-%            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
-%         -------------------------------------------------------------------
-%            Copyright (C) 2004-2006  Carlo de Falco
-%
-%
-%
-%  SECS2D is free software; you can redistribute it and/or modify
-%  it under the terms of the GNU General Public License as published by
-%  the Free Software Foundation; either version 2 of the License, or
-%  (at your option) any later version.
-%
-%  SECS2D is distributed in the hope that it will be useful,
-%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%  GNU General Public License for more details.
-%
-%  You should have received a copy of the GNU General Public License
-%  along with SECS2D; if not, write to the Free Software
-%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-%  USA
+  alpha = mobp0;
+  gamma = mobp1;
+  eta   = Tp;
+  beta  = -V-Tp;
+  Dp = Uscharfettergummel3(mesh,alpha,gamma,eta,beta);
+  
+  denom = (tp*(nin+sqrt(n0.*p0))+tn*(p+sqrt(n0.*p0)));
+  MASS_LHS = Ucompmass2(mesh,nin./denom,ones(Nelements,1));
+  
+  LHS = Dp+MASS_LHS;
 
-Nnodes    = max(size(mesh.p));
-Nelements = max(size(mesh.t));
-
-denom = (tp*(nin+sqrt(n0.*p0))+tn*(pin+sqrt(n0.*p0)));
-u     = up;
-U     = n0.*p0./denom;
-M     = nin./denom;
-guess = pin;
-V     = -V;
-
-p = Udriftdiffusion2(mesh,Dsides,guess,M,U,V,Vth,u);
-
-
+  RHS     = Ucompconst (mesh,p0.*n0./denom,ones(Nelements,1));
+  
+  p(Varnodes) = LHS(Varnodes,Varnodes) \(RHS(Varnodes) -...
+      LHS(Varnodes,Dnodes)*p(Dnodes));
 

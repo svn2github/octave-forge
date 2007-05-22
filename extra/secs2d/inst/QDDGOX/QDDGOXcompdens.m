@@ -171,6 +171,3 @@ function [w,converged,G,L,Bmat]=onenewtit(w,G,fermiin,vin,L,Bmat,jnewt,mesh,Dnod
   end
   
         
-% Last Revision:
-% $Author$
-% $Date$

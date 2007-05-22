@@ -89,19 +89,37 @@ if (isfield(idata,'tp'))
 else
     odata.tp   = tp/odata.ts;
 end
+if (isfield(idata,'twn')) 
+    odata.twn    = idata.twn/odata.ts;
+else
+    odata.twn    = twn/odata.ts;
+end
+if (isfield(idata,'twp')) 
+    odata.twp    = idata.twp/odata.ts;
+else
+    odata.twp    = twp/odata.ts;
+end
 
 if (isfield(idata,'kappa')) 
   odata.kappa = idata.kappa /odata.kappas;
 else
-  odata.kappa = kappaSI/odata.kappas;
+  odata.kappa = kappaSi/odata.kappas;
 end
 
 odata.ni    = ni/odata.ns;
+if (isfield(idata,'n0')) 
+  odata.n0 = idata.n0 /odata.ns;
+  odata.p0 = idata.p0 /odata.ns;
+else
+  odata.n0 = ni /odata.ns;
+  odata.p0 = ni /odata.ns;
+end
 odata.Nc    = Nc/odata.ns;
 odata.Nv    = Nv/odata.ns;
 
 odata.ei    = Egap/(2*q*odata.Vs) - log(Nv/Nc)/2; 
 odata.eip   = Egap/(2*q*odata.Vs) + log(Nv/Nc)/2; 
+odata.Egap  = Eg0/(q*odata.Vs);
 
 odata.wn2   = 6*sqrt(mndos*2*Kb*T0/(pi*hbar^2))/(ni*odata.xs^2);
 
@@ -145,6 +163,13 @@ end
 if (isfield(idata,'Tl'))
     odata.Tl= idata.Tl/odata.Ts;
 end
+if (isfield(idata,'Tn'))
+    odata.Tn= idata.Tn/odata.Ts;
+end
+if (isfield(idata,'Tp'))
+    odata.Tp= idata.Tp/odata.Ts;
+end
+
 
 omesh.p     = imesh.p/odata.xs;
 

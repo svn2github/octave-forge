@@ -1,6 +1,6 @@
-function [current,divrg]=ThDDGOXddcurrent(mesh,Sinodes,data,contacts);
+function [current,divrg]=ThDDGOXddcurrent(Simesh,Sinodes,data,contacts);
 
-% [current,divrg]=DDGOXddcurrent(mesh,Sinodes,data,contacts);
+% [current,divrg]=DDGOXddcurrent(Simesh,Sinodes,data,contacts);
 
 
 % This file is part of 
@@ -30,10 +30,12 @@ load (file_in_path(path,'constants.mat'))
 
 
 Nelements = size(mesh.t,2);
-mob = data.un .* ones(columns(mesh.t),1);%Ufielddepmob(mesh,data.un,data.Fn,data.vsatn,data.mubn);
-An  = Uscharfettergummel2(mesh,data.V(Sinodes),mob,data.Tl);
-mob = data.up .* ones(columns(mesh.t),1);%Ufielddepmob(mesh,data.up,data.Fp,data.vsatp,data.mubp);
-Ap  = Uscharfettergummel2(mesh,-data.V(Sinodes),mob,data.Tl);
+mobn0 = thermdata.mobn0([],Simesh,Sinodes,[],data);
+mobp0 = thermdata.mobp0([],Simesh,Sinodes,[],data);
+mobn1 = thermdata.mobn1([],Simesh,Sinodes,[],data);
+mobp1 = thermdata.mobp1([],Simesh,Sinodes,[],data);
+An  = Uscharfettergummel3(Simesh,mobn0,mobn1,data.Tn,data.V(Sinodes)-data.Tn);
+Ap  = Uscharfettergummel3(Simesh,mobp0,mobp1,data.Tp,-data.V(Sinodes)-data.Tn);
 divrg = An * data.n + Ap * data.p;
 
 for con = 1:length(contacts)

@@ -76,6 +76,8 @@ mudopparp     = [   44.9e-4 %mumin1
 
 tp           = 1e-7;
 tn           = 1e-7;
+twp          = .1e-12;
+twn          = .1e-12;
 
 
 mnl          = 0.98*mn0;

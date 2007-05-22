@@ -4,36 +4,36 @@ function [V,n,p,res,niter] = ThDDGOXnlpoisson (mesh,Dsides,Sinodes,SiDnodes,...
                                                Fnin,Fpin,D,l2,l2ox,...
                                                toll,maxit,verbose)
 
-  %  
-  %   [V,n,p,res,niter] = DDGOXnlpoisson (mesh,Dsides,Sinodes,Vin,nin,pin,...
-					  %                                             Fnin,Fpin,D,l2,l2ox,toll,maxit,verbose)
-  %
-  %  solves $$ -\lambda^2 V'' + (n(V,Fn) - p(V,Fp) -D)$$
-  %
+  %%  
+  %%   [V,n,p,res,niter] = DDGOXnlpoisson (mesh,Dsides,Sinodes,Vin,nin,pin,...
+  %%                                       Fnin,Fpin,D,l2,l2ox,toll,maxit,verbose)
+  %%
+  %%  solves $$ -\lambda^2 V'' + (n(V,Fn,Tn) - p(V,Fp,Tp) -D) = 0$$
+  %%
 
 
-  % This file is part of 
-  %
-  %            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
-  %         -------------------------------------------------------------------
-  %            Copyright (C) 2004-2006  Carlo de Falco
-  %
-  %
-  %
-  %  SECS2D is free software; you can redistribute it and/or modify
-  %  it under the terms of the GNU General Public License as published by
-  %  the Free Software Foundation; either version 2 of the License, or
-  %  (at your option) any later version.
-  %
-  %  SECS2D is distributed in the hope that it will be useful,
-  %  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  %  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    %  GNU General Public License for more details.
-      %
-      %  You should have received a copy of the GNU General Public License
-      %  along with SECS2D; if not, write to the Free Software
-	%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-	%  USA
+  %% This file is part of 
+  %%
+  %%            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
+  %%         -------------------------------------------------------------------
+  %%            Copyright (C) 2004-2006  Carlo de Falco
+  %%
+  %%
+  %%
+  %%  SECS2D is free software; you can redistribute it and/or modify
+  %%  it under the terms of the GNU General Public License as published by
+  %%  the Free Software Foundation; either version 2 of the License, or
+  %%  (at your option) any later version.
+  %%
+  %%  SECS2D is distributed in the hope that it will be useful,
+  %%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  %%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  %%  GNU General Public License for more details.
+  %%
+  %%  You should have received a copy of the GNU General Public License
+  %%  along with SECS2D; if not, write to the Free Software
+  %%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+  %%  USA
 
 	global DDGOXNLPOISSON_LAP DDGOXNLPOISSON_MASS DDGOXNLPOISSON_RHS 
 
@@ -64,7 +64,9 @@ function [V,n,p,res,niter] = ThDDGOXnlpoisson (mesh,Dsides,Sinodes,SiDnodes,...
 	%%
 	%% 		initialization:
 	%% 		we're going to solve
-	%% 		$$ - \lambda^2 (\delta V)'' +  (\frac{\partial n}{\partial V} - \frac{\partial p}{\partial V})= -R $$
+	%% 		$$ - \lambda^2 (\delta V)'' 
+	%%                              + (\frac{\partial n}{\partial V} 
+	%%                              - \frac{\partial p}{\partial V})= -R $$
 	%%
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -138,7 +140,7 @@ function [V,n,p,res,niter] = ThDDGOXnlpoisson (mesh,Dsides,Sinodes,SiDnodes,...
 	    %%
 	    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	    for newtit=1:maxit
-	      if (verbose>0)
+	      if (verbose>2)
 		fprintf(1,'\n***\nNewton iteration: %d, reldVnorm = %e\n***\n',newtit,reldVnorm);
 	      end
 
@@ -152,7 +154,7 @@ function [V,n,p,res,niter] = ThDDGOXnlpoisson (mesh,Dsides,Sinodes,SiDnodes,...
 	    %%%%%%%%%%%%%%%%%%
 	    tk = 1;
 	    for dit = 1:dampit
-	      if (verbose>0)
+	      if (verbose>2)
 		fprintf(1,'\ndamping iteration: %d, residual norm = %e\n',dit,normrnew);
 	      end
 	      Vnew   = V + tk * dV;
@@ -202,7 +204,7 @@ function [V,n,p,res,niter] = ThDDGOXnlpoisson (mesh,Dsides,Sinodes,SiDnodes,...
 		    if (normrnew > normr(newtit))
 		      tk = tk/dampcoeff;
 		    else
-		      if (verbose>0)
+		      if (verbose>2)
 			fprintf(1,'\nexiting damping cycle because residual norm = %e \n-----------\n',normrnew);
 		      end		
 		      break
@@ -216,7 +218,7 @@ function [V,n,p,res,niter] = ThDDGOXnlpoisson (mesh,Dsides,Sinodes,SiDnodes,...
 		  % check if convergence has been reached
 		    reldVnorm           = dVnorm / norm(V,inf);
 		    if (reldVnorm <= toll)
-		      if(verbose>0)
+		      if(verbose>2)
 			fprintf(1,'\nexiting newton cycle because reldVnorm= %e \n',reldVnorm);
 		      end
 		      break

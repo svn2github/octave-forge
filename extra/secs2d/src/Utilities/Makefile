@@ -10,8 +10,13 @@ $(objectfile): Makefile
 %.o: %.cc
 	mkoctfile -c $(patsubst %.o, %.cc, $@ ) -o $@
 
-%.oct:  %.o $(filter-out $<, $(objfiles) ) 
-	mkoctfile -s $< $(filter-out $<, $(objfiles) ) -o $@
+Uscharfettergummel.oct: Uscharfettergummel.o Ubern.o
+	mkoctfile -s $< Ubern.o -o $@
+	$(RM) Uscharfettergummel.o
+
+%.oct:  %.o  
+	mkoctfile -s $< -o $@
 	strip -x $@
 
-clean: ; -$(RM) *.o core octave-core *.oct *~
+clean:
+	$(RM) *.o core octave-core *.oct *~

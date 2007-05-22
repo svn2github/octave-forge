@@ -1,37 +1,37 @@
 function [jx,jy]=Ufvsgcurrent2(omesh,n,psi,psith,coeffe);
 
-% [jx,jy]=Udrawcurrent2(omesh,n,psi,psith,coeffe);
-
-% This file is part of 
-%
-%            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
-%         -------------------------------------------------------------------
-%            Copyright (C) 2004-2006  Carlo de Falco
-%
-%
-%
-%  SECS2D is free software; you can redistribute it and/or modify
-%  it under the terms of the GNU General Public License as published by
-%  the Free Software Foundation; either version 2 of the License, or
-%  (at your option) any later version.
-%
-%  SECS2D is distributed in the hope that it will be useful,
-%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%  GNU General Public License for more details.
-%
-%  Youx should have received a copy of the GNU General Public License
-%  along with SECS2D; if not, write to the Free Software
-%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-%  USA
-
-Nelem = size(omesh.t,2);
-jx = NaN*ones(Nelem,1);
-jy = jx;
-coeffe = coeffe';
-%for iel=1:Nelem
-
-
+  %% [jx,jy]=Udrawcurrent2(omesh,n,psi,psith,coeffe);
+  
+  %% This file is part of 
+  %%
+  %%            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
+  %%         -------------------------------------------------------------------
+  %%            Copyright (C) 2004-2006  Carlo de Falco
+  %%
+  %%
+  %%
+  %%  SECS2D is free software; you can redistribute it and/or modify
+  %%  it under the terms of the GNU General Public License as published by
+  %%  the Free Software Foundation; either version 2 of the License, or
+  %%  (at your option) any later version.
+  %%
+  %%  SECS2D is distributed in the hope that it will be useful,
+  %%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  %%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  %%  GNU General Public License for more details.
+  %%
+  %%  Youx should have received a copy of the GNU General Public License
+  %%  along with SECS2D; if not, write to the Free Software
+  %%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+  %%  USA
+  
+  Nelem = size(omesh.t,2);
+  jx = NaN*ones(Nelem,1);
+  jy = jx;
+  coeffe = coeffe';
+  %%for iel=1:Nelem
+  
+  
   dpsi1 = (psi(omesh.t(3,:))-psi(omesh.t(2,:)))';
   dvth1 = (psith(omesh.t(3,:))-psith(omesh.t(2,:)))';
   vthm1 = Utemplogm(psith(omesh.t(3,:)),psith(omesh.t(2,:)))';
@@ -47,8 +47,8 @@ coeffe = coeffe';
   j1y    = vthm1.*(coeffe./l1) .* ( n(omesh.t(3,:))' .* bp - ...
 				   n(omesh.t(2,:))' .* bn) .* t1y;
   gg1= -reshape(omesh.shg(1,2,:).*omesh.shg(1,3,:)+...
-	omesh.shg(2,2,:).*omesh.shg(2,3,:),1,[]).*l1.^2;
-
+		omesh.shg(2,2,:).*omesh.shg(2,3,:),1,[]).*l1.^2;
+  
   dpsi2 = (psi(omesh.t(1,:))-psi(omesh.t(3,:)))';
   dvth2 = (psith(omesh.t(1,:))-psith(omesh.t(3,:)))';
   vthm2 = Utemplogm(psith(omesh.t(1,:)),psith(omesh.t(3,:)))';
@@ -59,12 +59,12 @@ coeffe = coeffe';
   t2x = t2x./l2;
   t2y = t2y./l2;
   j2x = vthm2.*(coeffe./l2) .* ( n(omesh.t(1,:))' .* bp - ...
-				 n(omesh.t(3,:))' .* bn) .* t2x;
+				n(omesh.t(3,:))' .* bn) .* t2x;
   j2y = vthm2.*(coeffe./l2) .* ( n(omesh.t(1,:))' .* bp - ...
-				 n(omesh.t(3,:))' .* bn) .* t2y;
+				n(omesh.t(3,:))' .* bn) .* t2y;
   gg2= -reshape(omesh.shg(1,1,:).*omesh.shg(1,3,:)+...
-	       omesh.shg(2,1,:).*omesh.shg(2,3,:),1,[]).*l2.^2;
-
+		omesh.shg(2,1,:).*omesh.shg(2,3,:),1,[]).*l2.^2;
+  
   dpsi3 = (psi(omesh.t(2,:))-psi(omesh.t(1,:)))';
   dvth3 = (psith(omesh.t(2,:))-psith(omesh.t(1,:)))';
   vthm3 = Utemplogm(psith(omesh.t(2,:)),psith(omesh.t(1,:)))';
@@ -79,9 +79,10 @@ coeffe = coeffe';
   j3y = vthm3.*(coeffe./l3) .* ( n(omesh.t(2,:))' .* bp - ...
 				n(omesh.t(1,:))' .* bn) .* t3y;
   gg3= -reshape(omesh.shg(1,2,:).*omesh.shg(1,1,:)+...
-	       omesh.shg(2,2,:).*omesh.shg(2,1,:),1,[]).*l3.^2;
-	
+		omesh.shg(2,2,:).*omesh.shg(2,1,:),1,[]).*l3.^2;
+  
   jx = j1x.*gg1+j2x.*gg2+j3x.*gg3;
   jy = j1y.*gg1+j2y.*gg2+j3y.*gg3;
+  
+  %%end
 
-%end

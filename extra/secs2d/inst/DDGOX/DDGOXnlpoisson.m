@@ -37,7 +37,7 @@ function [V,n,p,res,niter] = DDGOXnlpoisson (mesh,Dsides,Sinodes,SiDnodes,...
 global DDGOXNLPOISSON_LAP DDGOXNLPOISSON_MASS DDGOXNLPOISSON_RHS 
 
 %% Set some useful constants
-dampit 		= 3;
+dampit 		= 10;
 dampcoeff	= 2;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

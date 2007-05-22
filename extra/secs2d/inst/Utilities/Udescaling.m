@@ -66,6 +66,14 @@ else
     odata.un    = un;
 end
 
+if (isfield(idata,'n0'))    
+    odata.n0    = idata.n0*odata.ns;  
+    odata.p0    = idata.p0*odata.ns;  
+else
+    odata.p0    = ni;
+    odata.n0    = ni;
+end
+
 if (isfield(idata,'up'))
     odata.up    = idata.up*odata.us;
 else
@@ -82,6 +90,12 @@ if (isfield(idata,'Tl'))
     odata.Tl    = idata.Tl*odata.Ts;  
 end
 
+if (isfield(idata,'Tn'))    
+    odata.Tn    = idata.Tn*odata.Ts;  
+end
+
+if (isfield(idata,'Tp'))    
+    odata.Tp    = idata.Tp*odata.Ts;  
+end
+
 omesh.p     = imesh.p*odata.xs;
-
-

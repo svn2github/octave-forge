@@ -1,5 +1,5 @@
 //
-// time: Fri Jan  5 19:01:05 2007
+// time: Fri May 11 20:21:23 2007
 //
 // version: 3.2.0 (format), 4.3.2 (DX)
 //
@@ -13,8 +13,8 @@ macro main(
 ) {
     // 
     // node FileSelector[1]: x = 51, y = 31, inputs = 0, label = FileSelector
-    // output[1]: visible = 1, type = 32, value = "./.tmp.dx"
-    // output[2]: visible = 1, type = 32, value = ".tmp.dx"
+    // output[1]: visible = 1, type = 32, value = "__FILE__DX__"
+    // output[2]: visible = 1, type = 32, value = "__FILE__DX__"
     //
     // 
     // node Import[1]: x = 104, y = 118, inputs = 6, label = Import
@@ -64,7 +64,8 @@ main_ShowConnections_1_out_1 =
     ) [instance: 1, cache: 1];
     // 
     // node Color[1]: x = 72, y = 328, inputs = 5, label = Color
-    // input[2]: defaulting = 0, visible = 1, type = 32, value = "green"
+    // input[2]: defaulting = 0, visible = 1, type = 32, value = "black"
+    // input[3]: defaulting = 0, visible = 1, type = 5, value = .5
     //
 main_Color_1_out_1 = 
     Color(
@@ -114,7 +115,7 @@ main_Collect_1_out_1 =
     // input[6]: defaulting = 0, visible = 0, type = 8, value = [0.466889 0.863877 4.74189]
     // input[7]: defaulting = 0, visible = 0, type = 5, value = 1.01623
     // input[8]: defaulting = 0, visible = 0, type = 1, value = 1266
-    // input[9]: defaulting = 0, visible = 0, type = 5, value = 0.557
+    // input[9]: defaulting = 0, visible = 0, type = 5, value = 0.557267
     // input[10]: defaulting = 0, visible = 0, type = 8, value = [0 1 0]
     // input[11]: defaulting = 1, visible = 0, type = 5, value = 12.6739
     // input[12]: defaulting = 0, visible = 0, type = 1, value = 0
@@ -198,7 +199,7 @@ main_Image_1_out_3 =
 // network: end of macro body
 CacheScene(main_Image_1_in_1, main_Image_1_out_1, main_Image_1_out_2);
 }
-main_FileSelector_1_out_1 = "./.tmp.dx";
+main_FileSelector_1_out_1 = "__FILE__DX__";
 main_Import_1_in_2 = NULL;
 main_Import_1_in_3 = NULL;
 main_Import_1_in_4 = NULL;
@@ -221,8 +222,8 @@ main_AutoColor_1_in_10 = NULL;
 main_AutoColor_1_out_1 = NULL;
 main_AutoColor_1_out_2 = NULL;
 main_ShowConnections_1_out_1 = NULL;
-main_Color_1_in_2 = "green";
-main_Color_1_in_3 = NULL;
+main_Color_1_in_2 = "black";
+main_Color_1_in_3 = .5;
 main_Color_1_in_4 = NULL;
 main_Color_1_in_5 = NULL;
 main_Color_1_out_1 = NULL;
@@ -562,7 +563,7 @@ main_Image_1_in_5 = [0.466889 0.863877 0.166499];
 main_Image_1_in_6 = [0.466889 0.863877 4.74189];
 main_Image_1_in_7 = 1.01623;
 main_Image_1_in_8 = 1266;
-main_Image_1_in_9 = 0.557;
+main_Image_1_in_9 = 0.557267;
 main_Image_1_in_10 = [0 1 0];
 main_Image_1_in_11 = NULL;
 main_Image_1_in_12 = 0;

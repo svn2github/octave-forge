@@ -37,6 +37,3 @@ end
 Is = q*data.us*data.Vs*data.ns;
 current = current * Is;
 
-% Last Revision:
-% $Author$
-% $Date$

@@ -1,22 +1,25 @@
- dirlist= {"Utilities","DDGOX","ThDDGOX","QDDGOX","METLINES","DDGOXT"};
+# Run this only if the package is installed
+if (! exist ("inst", "dir"))
+  dirlist= {"Utilities","DDGOX","ThDDGOX","QDDGOX","METLINES","DDGOXT"};
 
-for ii=1:length(dirlist)
-   addpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
-end
+  for ii=1:length(dirlist)
+     addpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
+  end
 
-[status, output] = system ("which gmsh");
-if status
-   disp(["gmsh does not seem to be present some functionalities will be disabled"]);
-else
-   disp(["gmsh version found:"]);
-   system("gmsh --version");
-end
+  [status, output] = system ("which gmsh");
+  if status
+     disp(["gmsh does not seem to be present some functionalities will be disabled"]);
+  else
+     disp(["gmsh version found:"]);
+     system("gmsh --version");
+  end
 
 
-[status, output] = system ("which dx");
-if status
-   disp(["dx does not seem to be present some functionalities will be disabled"]);
-else
-   disp(["dx version found:"]);
-   system("dx -version");
+  [status, output] = system ("which dx");
+  if status
+     disp(["dx does not seem to be present some functionalities will be disabled"]);
+  else
+     disp(["dx version found:"]);
+     system("dx -version");
+  end
 end

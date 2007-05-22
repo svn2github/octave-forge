@@ -1,6 +1,9 @@
- dirlist= {"Utilities","DDGOX","ThDDGOX","QDDGOX","METLINES","DDGOXT"};
+# Run this only if the package is installed
+if (! exist ("inst", "dir"))
+  dirlist= {"Utilities","DDGOX","ThDDGOX","QDDGOX","METLINES","DDGOXT"};
 
-for ii=1:length(dirlist)
-   rmpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
+  for ii=1:length(dirlist)
+     rmpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
+  end
 end
 

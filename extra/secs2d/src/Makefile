@@ -1,5 +1,5 @@
 all:
-	Make -C Utilities all
+	make -C Utilities all
 	cp Utilities/*.oct ../inst/Utilities
 clean:
-	Make -C Utilities clean
+	make -C Utilities clean

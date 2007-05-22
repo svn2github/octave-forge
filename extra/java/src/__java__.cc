@@ -179,6 +179,11 @@ static std::string initial_java_dir (void)
     {
 #ifdef __WIN32__
       retval = get_module_path ("__java__.oct", true);
+
+      size_t pos = retval.rfind ("\\");
+
+      if (pos != NPOS)
+        retval.resiwe (pos);
 #endif
     }
 

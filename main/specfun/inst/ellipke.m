@@ -56,60 +56,46 @@ function [k,e] = ellipke( m )
   endif
 
   Nmax = 16;
-  try dfi = do_fortran_indexing;
-  catch dfi = 0;
-  end
-  try wfi = warn_fortran_indexing;
-  catch wfi = 0;
-  end
-  unwind_protect
-    do_fortran_indexing = 1;
-    warn_fortran_indexing = 0;
-
-    idx = find(m == 1);
-    if (!isempty(idx))
-      k(idx) = Inf;
-      e(idx) = 1.0;
-    endif
+  idx = find(m == 1);
+  if (!isempty(idx))
+    k(idx) = Inf;
+    e(idx) = 1.0;
+  endif
       
-    idx = find(m == -Inf);
-    if (!isempty(idx))
-      k(idx) = 0.0;
-      e(idx) = Inf;
-    endif
+  idx = find(m == -Inf);
+  if (!isempty(idx))
+    k(idx) = 0.0;
+    e(idx) = Inf;
+  endif
 
-    ## Arithmetic-Geometric Mean (AGM) algorithm
-    ## ( Abramowitz and Stegun, Section 17.6 )
-    idx = find(m != 1 & m != -Inf);
-    if (!isempty(idx))
-      idx_neg = find(m < 0 & m != -Inf);
-      mult_k = 1./sqrt(1-m(idx_neg));
-      mult_e = sqrt(1-m(idx_neg));
-      m(idx_neg) = -m(idx_neg)./(1-m(idx_neg));
-      a = ones(length(idx),1);
-      b = sqrt(1.0-m(idx));
-      c = sqrt(m(idx));
-      f = 0.5;
-      sum = f*c.*c;
-      for n = 2:Nmax
-        t = (a+b)/2;
-        c = (a-b)/2;
-        b = sqrt(a.*b);
-        a = t;
-        f = f * 2;
-        sum = sum + f*c.*c;
-        if all(c./a < eps), break; endif
-      endfor
-      if n >= Nmax, error("ellipke: not enough workspace"); endif
-      k(idx) = 0.5*pi./a;
-      e(idx) = 0.5*pi.*(1.0-sum)./a;
-      k(idx_neg) = mult_k.*k(idx_neg);
-      e(idx_neg) = mult_e.*e(idx_neg);
-      endif
-  unwind_protect_cleanup
-    do_fortran_indexing = dfi;
-    warn_fortran_indexing = wfi;
-  end_unwind_protect
+  ## Arithmetic-Geometric Mean (AGM) algorithm
+  ## ( Abramowitz and Stegun, Section 17.6 )
+  idx = find(m != 1 & m != -Inf);
+  if (!isempty(idx))
+    idx_neg = find(m < 0 & m != -Inf);
+    mult_k = 1./sqrt(1-m(idx_neg));
+    mult_e = sqrt(1-m(idx_neg));
+    m(idx_neg) = -m(idx_neg)./(1-m(idx_neg));
+    a = ones(length(idx),1);
+    b = sqrt(1.0-m(idx));
+    c = sqrt(m(idx));
+    f = 0.5;
+    sum = f*c.*c;
+    for n = 2:Nmax
+      t = (a+b)/2;
+      c = (a-b)/2;
+      b = sqrt(a.*b);
+      a = t;
+      f = f * 2;
+      sum = sum + f*c.*c;
+      if all(c./a < eps), break; endif
+    endfor
+    if n >= Nmax, error("ellipke: not enough workspace"); endif
+    k(idx) = 0.5*pi./a;
+    e(idx) = 0.5*pi.*(1.0-sum)./a;
+    k(idx_neg) = mult_k.*k(idx_neg);
+    e(idx_neg) = mult_e.*e(idx_neg);
+  endif
 
 endfunction
 

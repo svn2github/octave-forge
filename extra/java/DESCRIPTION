@@ -6,6 +6,6 @@ Maintainer: Michael Goffioul <michael.goffioul@swing.be>
 Title: Java Interface
 Description: Provides Java interface with OO-like Java objects manipulation
 Categories: Java
-Depends: octave (>= 2.9.9)
+Depends: octave (>= 2.9.12)
 License: GPL version 2 or later
 Url: http://octave.sf.net

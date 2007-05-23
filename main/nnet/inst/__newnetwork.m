@@ -92,9 +92,9 @@ function net = __newnetwork(numInputs,numLayers,numOutputs)
   ## define everything with "inputs"
   net.numInputs = numInputs;
   ## actually, it's only possible to have "one" input vector
-  net.inputs{1}.range = [0 0];
-  net.inputs{1}.size = 0;
-  net.inputs{1}.userdata = "Put your custom informations here!";
+  net.inputs{1,1}.range = [0 0];
+  net.inputs{1,1}.size = 0;
+  net.inputs{1,1}.userdata = "Put your custom informations here!";
   
   ## define everything with "layers"
   net.numLayers = numLayers;

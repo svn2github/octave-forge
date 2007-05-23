@@ -229,7 +229,7 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	  Octave_map map=val.map_value();
 	  octave_value_list ov_list;
 	  Cell c;
-	  int i,length=map.length(),key_len=0;
+	  int i,length=map.nfields(),key_len=0;
 	  string_vector key=map.keys();
 	  
   	  for (i=0;i<nsock;i++){

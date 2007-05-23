@@ -1,11 +1,11 @@
 Name: Parallel
-Version: 1.0.0
-Date: 2006-08-05
+Version: 1.0.1
+Date: 2006-05-23
 Author: Hayato Fujiwara
 Maintainer: Hayato Fujiwara
 Title: Parallel Computing.
 Description: Parallel execution package for cluster computers
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 2.9.12)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

@@ -39,7 +39,8 @@ mkdir install/@NAME@/inst
 
 %build
 cd @NAME@-@VERSION@
-HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install','-nodeps','@PACKAGE@')"
+HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install','-nodeps','-verbose','@PACKAGE@');movefile([pwd(),'/install/@NAME@-@VERSION@/',octave_config_info('canonical_host_type'),'-',octave_config_info('api_version'),'/PKG_*'],[pwd(),'/install/@NAME@-@VERSION@']);"
+
 cd install
 mv @NAME@-@VERSION@/packinfo/* @NAME@
 rm -rf @NAME@-@VERSION@/packinfo
@@ -63,7 +64,7 @@ mkdir -p %{buildroot}%{_datadir}
 cp %{builtpackage} %{buildroot}%{_datadir}
 
 %post
-%{octave} -H -q --no-site-file --eval "warning('off','all');pkg('install','%{_datadir}/%{builtpackage}')"
+%{octave} -H -q --no-site-file --eval "warning('off','all');pkg('install','-global','%{_datadir}/%{builtpackage}')"
 rm %{_datadir}/%{builtpackage}
 
 %postun

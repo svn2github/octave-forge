@@ -55,7 +55,7 @@ sub date {
     my @weekdays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
     my $dstr = sprintf("%s %s %d %d", $weekdays[$dayOfWeek], 
 		       $months[$month], $dayOfMonth, $yearOffset+1900);
-    my $ver = sprintf("%4s%02s%02s", $yearOffset+1900, $month, $dayOfMonth);
+    my $ver = sprintf("%4s%02s%02s", $yearOffset+1900, $month+1, $dayOfMonth);
     return ($dstr, $ver);
 }
 

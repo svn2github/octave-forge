@@ -9,14 +9,15 @@ LIBIMPEXT = dll.a
 DLLDEF =
 ifeq (,$(findstring cygwin,$(canonical_host_type)))
  ifeq (,$(findstring mingw,$(canonical_host_type)))
-   ifeq (,$(findstring msdosmsvc,$(canonical_host_type)))
-   OCT_INCLUDES_LIB = 1
-   else
-     LIBPRE =
-     LIBIMPEXT = lib
-     DLLDEF = -DFIXED_DLL
+   ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
+    DLLDEF = -DFIXED_DLL
    endif
-  endif
+   OCT_INCLUDES_LIB = 1
+ else
+   LIBPRE =
+   LIBIMPEXT = lib
+   DLLDEF = -DFIXED_DLL
+ endif
 endif
 
 ifeq (1,$(OCT_INCLUDES_LIB))
@@ -105,6 +106,8 @@ else
 ifeq (1,$(OCT_INCLUDES_LIB))
 install : 
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed
+
+$(FIXEDOBJECTS) $(FIXEDDEPENDS): DEFINES := $(DEFINES) $(DLLDEF)
 else
 install : 
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/fixed; \

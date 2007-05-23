@@ -6,13 +6,19 @@ SOURCES = $(wildcard *.cc)
 TARGETS = $(patsubst %.cc,%.oct,$(SOURCES)) $(LINKTARGETS)
 OBJECTS = $(patsubst %.cc,%.o,$(SOURCES))
 DEPENDS = $(patsubst %.cc,%.d,$(SOURCES))
-INCLUDES = -I..
+INCLUDES = -I../src
 DEFINES = 
 
-ifeq (1,$(OCT_INCLUDES_LIB))
-  MOFLAGS = $(INCLUDES)
-else
-  MOFLAGS = $(INCLUDES) -L../ -loctave_fixed
+ifeq (,$(findstring cygwin,$(canonical_host_type)))
+ ifeq (,$(findstring mingw,$(canonical_host_type)))
+   ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
+    MOFLAGS = $(INCLUDES) -L../src -lfixed
+   else
+    MOFLAGS = $(INCLUDES)
+   endif
+ else
+   MOFLAGS = $(INCLUDES) -L../ -loctave_fixed
+ endif
 endif
 
 .PHONY: all clean count

@@ -219,7 +219,13 @@ Connect hosts and return sockets.")
 	    read(sock,&nl,sizeof(int));
 	    sock_v[i+2*row]=ntohl(nl);
 	    //send endian
+#if defined (__BYTE_ORDER)
 	    nl=htonl(__BYTE_ORDER);
+#elif defined (BYTE_ORDER)
+	    nl=htonl(BYTE_ORDER);
+#else
+#  error "can not determine the byte order"
+#endif
 	    write(sock,&nl,sizeof(int));
 	    break;
 	  }else{

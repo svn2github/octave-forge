@@ -4,6 +4,11 @@ dodebug=true
 OCTAVE_ROOT=/usr/local/octave-vc8-debug
 
 case $1 in
+  release=*)
+    dodebug=false
+    o_version=`echo $1 | sed -e 's/release=\(.*\)/\1/'`
+    OCTAVE_ROOT=/usr/local/octave-$o_version
+    ;;
   release)
     dodebug=false
     OCTAVE_ROOT=/usr/local/octave-vc8

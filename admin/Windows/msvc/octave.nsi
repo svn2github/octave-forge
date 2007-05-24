@@ -4,11 +4,17 @@
 !define CONFIG_HOME
 #!define USE_DEBUG
 #!define USE_TIMING
+!define OCTAVE_SUFFIX "2.9.12"
+!define OCTAVE_VERSION "2.9.12"
+#!define OCTAVE_CVS_VERSION "20070225"
+#!define ATALS_PM
+#!define USE_OCTPLOT
+#!define USE_OCTAVE_FORGE
 
 !ifdef USE_DEBUG
-!define OCTAVE_BASE "octave-vc8-debug"
+!define OCTAVE_BASE "octave-${OCTAVE_SUFFIX}-debug"
 !else
-!define OCTAVE_BASE "octave-vc8"
+!define OCTAVE_BASE "octave-${OCTAVE_SUFFIX}"
 !endif
 
 ; Location of various components
@@ -19,8 +25,12 @@
 !define CONSOLE_ROOT "C:\Software\Console2"
 !define SCITE_ROOT "C:\Software\wscite"
 !define GNUPLOT_ROOT "C:\Software\Gnuplot4.2"
-!define OCTAVE_FORGE "C:\Documents and Settings\Michael\Mes documents\Sources\playground\c\fromwork\octave-forge-cvs"
-!define OCTAVE_SRC "C:\Documents and Settings\Michael\Mes documents\Sources\playground\c\fromwork\octave-cvs"
+!define OCTAVE_FORGE "C:\Sources\playground\c\octave-forge-cvs"
+!ifdef OCTAVE_CVS_VERSION
+!define OCTAVE_SRC "C:\Sources\playground\c\octave-cvs"
+!else
+!define OCTAVE_SRC "C:\Sources\playground\c\octave-${OCTAVE_SUFFIX}"
+!endif
 !define VCREDIST_FILE "C:\Temp\vcredist_x86.exe"
 !else
 !define OCTAVE_ROOT "D:\Software\MSYS\local\${OCTAVE_BASE}"
@@ -33,8 +43,6 @@
 !define OCTAVE_SRC "D:\Sources\MixDT\playground\c\octave-cvs"
 !define VCREDIST_FILE "D:\Temp\vcredist_x86.exe"
 !endif
-!define OCTAVE_VERSION "2.9.9+"
-!define OCTAVE_CVS_VERSION "20070225"
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "GNU Octave"
@@ -61,9 +69,14 @@
 
 !define LA_GEN "Generic (works on all systems)"
 !define LA_P4 "Intel Pentium 4 with SSE2"
+!ifdef ATLAS_PM
 !define LA_PM "Intel Pentium M with SSE2"
 !define LA_COUNT 3
 !define LA_ALL "${LA_GEN}|${LA_P4}|${LA_PM}"
+!else
+!define LA_COUNT 2
+!define LA_ALL "${LA_GEN}|${LA_P4}"
+!endif
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -80,7 +93,7 @@
 ; License page
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "Click Next to continue."
 !define MUI_LICENSEPAGE_BUTTON "Next >"
-!insertmacro MUI_PAGE_LICENSE "${OCTAVE_SRC}\COPYING"
+!insertmacro MUI_PAGE_LICENSE "${OCTAVE_FORGE}\COPYING.GPL"
 ; CPU detection page
 Page custom AtlasCpu AtlasCpuEnd
 ; Components page
@@ -140,7 +153,7 @@ Section "Core" SEC_CORE
   File /r /x "COM" "${OCTAVE_ROOT}\libexec\*.*"
   ; octave script modules
   SetOutPath "$INSTDIR\share"
-  File /r "${OCTAVE_ROOT}\share\*.*"
+  File /r /x "packages" /x "octave_packages" "${OCTAVE_ROOT}\share\*.*"
   ; support libraries and executables
   SetOutPath "$INSTDIR\bin"
   File "${VCLIBS_ROOT}\bin\pcre70.dll"
@@ -152,7 +165,7 @@ Section "Core" SEC_CORE
   File "${VCLIBS_ROOT}\bin\zlib1.dll"
   ; licenses
   SetOutPath "$INSTDIR\license"
-  File "${OCTAVE_SRC}\COPYING"
+  File "/oname=COPYING" "${OCTAVE_FORGE}\COPYING.GPL"
   File "${VCLIBS_ROOT}\license\COPYING.HDF5"
   ; README
   SetOutPath "$INSTDIR"
@@ -184,6 +197,14 @@ Section "Development files" SEC_DEV
   ;File "${OCTAVE_ROOT}\bin\octave-config"
   ;File "${OCTAVE_ROOT}\bin\octave-config-${OCTAVE_VERSION}"
   File "${VCLIBS_ROOT}\bin\cc-msvc.exe"
+  ; Additional dependent library files (required by mkoctfile, although not really used)
+  File "${VCLIBS_ROOT}\lib\blas.lib"
+  File "${VCLIBS_ROOT}\lib\lapack.lib"
+  File "${VCLIBS_ROOT}\lib\fftw3.lib"
+  File "${VCLIBS_ROOT}\lib\readline.lib"
+  File "${VCLIBS_ROOT}\lib\hdf5.lib"
+  File "${VCLIBS_ROOT}\lib\zlib.lib"
+  File "${VCLIBS_ROOT}\lib\f2c.lib"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -206,12 +227,14 @@ Section /o "P4/SSE2" SEC_LA_P4SSE2
   File /oname=lapack.dll "${VCLIBS_ROOT}\bin\lapack_atl_P4SSE2.dll"
 SectionEnd
 
+!ifdef ATLAS_PM
 Section /o "PM/SSE2" SEC_LA_PMSSE2
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
   File /oname=blas.dll "${VCLIBS_ROOT}\bin\blas_atl_PMSSE2.dll"
   File /oname=lapack.dll "${VCLIBS_ROOT}\bin\lapack_atl_PMSSE2.dll"
 SectionEnd
+!endif
 
 SectionGroupEnd
 
@@ -224,9 +247,11 @@ SectionEnd
 
 SectionGroupEnd
 
+!ifdef USE_OCTAVE_FORGE
 SectionGroup "Octave Forge" GRP_FORGE
 !include "${OCTAVE_FORGE}\octave_forge.nsi"
 SectionGroupEnd
+!endif
 
 SectionGroup /e "Graphics" GRP_GRAPHICS
 
@@ -261,6 +286,7 @@ Section "Gnuplot" SEC_GNUPLOT
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
+!ifdef USE_OCTPLOT
 Section "Octplot" SEC_OPLOT
   SetOverwrite try
   SetOutPath "$INSTDIR\bin"
@@ -271,6 +297,7 @@ Section "Octplot" SEC_OPLOT
   SetOutPath "$INSTDIR\license"
   File "${VCLIBS_ROOT}\license\COPYING.FLTK"
 SectionEnd
+!endif
 
 SectionGroupEnd
 
@@ -397,10 +424,14 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CORE} "Octave core files"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEV} "Octave development files (include and library files)"
+!ifdef USE_OCTAVE_FORGE
   !insertmacro MUI_DESCRIPTION_TEXT ${GRP_FORGE} "Additional toolboxes for Octave"
   !include "${OCTAVE_FORGE}\octave_forge_desc.nsi"
+!endif
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GNUPLOT} "Plotting component of Octave. If not selected, Gnuplot binary must in your PATH."
+!ifdef USE_OCTPLOT
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_OPLOT} "Alternative graphics/plot engine for Octave"
+!endif
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_TOOLS} "Additional GNU tools required (less, makeinfo, sed...). If not selected, those tools must be available in your PATH."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_VC} "Microsoft C/C++ runtime libraries required by Octave. It is STRONGLY recommended to use the default setting."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCITE} "Powerful code editor with syntax highlighting, directly accessible from the octave prompt (http://www.scintilla.org)"
@@ -416,7 +447,9 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${DOC_PDF} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_GEN} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_P4SSE2} ""
+!ifdef ATLAS_PM
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_PMSSE2} ""
+!endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -440,7 +473,9 @@ Function .onInit
   ;!insertmacro SetSectionFlag ${SEC_VC} ${SF_RO}
   !insertmacro SetSectionFlag ${SEC_LA_GEN} ${SF_RO}
   !insertmacro SetSectionFlag ${SEC_LA_P4SSE2} ${SF_RO}
+!ifdef ATLAS_PM
   !insertmacro SetSectionFlag ${SEC_LA_PMSSE2} ${SF_RO}
+!endif
   Call CheckMSVCR80
   Pop $0
   StrCmp $0 1 noruntime
@@ -481,11 +516,15 @@ timingabort:
 validate:
   !insertmacro ClearSectionFlag ${SEC_LA_GEN} ${SF_SELECTED}
   !insertmacro ClearSectionFlag ${SEC_LA_P4SSE2} ${SF_SELECTED}
+!ifdef ATLAS_PM
   !insertmacro ClearSectionFlag ${SEC_LA_PMSSE2} ${SF_SELECTED}
+!endif
   !insertmacro MUI_INSTALLOPTIONS_READ $0 "atlascpu.ini" "Field 3" "State"
   StrCmp $0 "${LA_GEN}" generic0
   StrCmp $0 "${LA_P4}" p4sse20
+!ifdef ATLAS_PM
   StrCmp $0 "${LA_PM}" pmsse20
+!endif
   Abort "Internal error: unexpected CPU type"
 generic0:
   !insertmacro SetSectionFlag ${SEC_LA_GEN} ${SF_SELECTED}
@@ -493,9 +532,11 @@ generic0:
 p4sse20:
   !insertmacro SetSectionFlag ${SEC_LA_P4SSE2} ${SF_SELECTED}
   Goto atlasend
+!ifdef ATLAS_PM
 pmsse20:
   !insertmacro SetSectionFlag ${SEC_LA_PMSSE2} ${SF_SELECTED}
   Goto atlasend
+!endif
 atlasend:
 FunctionEnd
 
@@ -516,13 +557,17 @@ Function DoTiming
   FileWrite $0 "$PLUGINSDIR\blas_f77.dll$\n"
   FileWrite $0 "${LA_P4}$\n"
   FileWrite $0 "$PLUGINSDIR\blas_atl_P4SSE2.dll$\n"
+!ifdef ATLAS_PM
   FileWrite $0 "${LA_PM}$\n"
   FileWrite $0 "$PLUGINSDIR\blas_atl_PMSSE2.dll$\n"
+!endif
   FileClose $0
   File "/oname=$PLUGINSDIR\blas_timer.exe" "${VCLIBS_ROOT}\bin\blas_timer.exe"
   File "/oname=$PLUGINSDIR\blas_f77.dll" "${VCLIBS_ROOT}\bin\blas_f77.dll"
   File "/oname=$PLUGINSDIR\blas_atl_P4SSE2.dll" "${VCLIBS_ROOT}\bin\blas_atl_P4SSE2.dll"
+!ifdef ATLAS_PM
   File "/oname=$PLUGINSDIR\blas_atl_PMSSE2.dll" "${VCLIBS_ROOT}\bin\blas_atl_PMSSE2.dll"
+!endif
   ExecWait '"$PLUGINSDIR\blas_timer.exe" "$PLUGINSDIR\blas.desc"'
 timingend:
 FunctionEnd

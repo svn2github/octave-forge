@@ -19,13 +19,8 @@ if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
   PAGER_FLAGS ('-P"-- less ?pB(%pB\%):--. (f)orward, (b)ack, (q)uit$"');
 endif
 
-# Load octave-forge
-forge_path = sprintf ("%s%sforge", octave_config_info ("prefix"), filesep);
-if (exist (forge_path, "dir"))
-  # addpath (genpath (sprintf ("%s%soct", forge_path, filesep)), "-end");
-  # addpath (genpath (sprintf ("%s%sm", forge_path, filesep)), "-end");
-  addpath (genpath (forge_path));
-  fprintf (" - Octave forge installed.\n");
+# Load editor settings
+if (exist ("edit"))
   scite_path = sprintf ("%s%stools%swscite", octave_config_info ("prefix"), filesep, filesep);
   if (exist (scite_path, "dir"))
     EDITOR (sprintf ("%s%sSciTE.exe", scite_path, filesep));

@@ -78,6 +78,8 @@ queue<Complex> read_textline(istringstream *linestrm, string sep) {
 	  linestrm->get(); 
 	line.push(0);
       } else {
+        while ( !(sep_is_next(linestrm, sep) || linestrm->eof()) )
+	  linestrm->get(); 
         line.push(cv);
       }    
     }

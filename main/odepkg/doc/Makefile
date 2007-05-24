@@ -50,7 +50,7 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 %.pdf : %.dvi
 	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPDF)" != "x"; then \
 	  echo "Making pdf $@"; \
-	  $(DVIPDF) $< $@ ; \
+	  $(DVIPDF) -o $@ $< ; \
 	fi
 
 %.info : %.texi

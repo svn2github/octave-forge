@@ -31,7 +31,7 @@ public class OctClassLoader extends java.net.URLClassLoader
 
   protected Class findClass (String name) throws ClassNotFoundException
     {
-      System.out.println ("Looking for class " + name);
+      //System.out.println ("Looking for class " + name);
       return super.findClass (name);
     }
 

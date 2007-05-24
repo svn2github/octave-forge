@@ -171,23 +171,24 @@ static std::string get_module_path(const std::string& name, bool strip_name = tr
 }
 #endif
 
-static std::string initial_java_dir (void)
+static std::string initial_java_dir (bool arch_dependent = false)
 {
-  static std::string retval;
+  static std::string path1;
+  static std::string path2;
 
-  if (retval.empty())
+  if (path1.empty())
     {
 #ifdef __WIN32__
-      retval = get_module_path ("__java__.oct", true);
+      path1 = path2 = get_module_path ("__java__.oct", true);
 
-      size_t pos = retval.rfind ("\\");
+      size_t pos = path2.rfind ("\\");
 
       if (pos != NPOS)
-        retval.resiwe (pos);
+        path2.resize (pos);
 #endif
     }
 
-  return retval;
+  return (arch_dependent ? path1 : path2);
 }
 
 static std::string initial_class_path (void)
@@ -227,7 +228,7 @@ static bool initialize_jvm (std::string& msg)
                       JavaVMInitArgs vm_args;
                       JavaVMOption options[3];
                       std::string init_class_path = "-Djava.class.path=" + initial_class_path ();
-                      std::string init_octave_path = "-Doctave.java.path=" + initial_java_dir ();
+                      std::string init_octave_path = "-Doctave.java.path=" + initial_java_dir (true);
 
                       OCTAVE_LOCAL_BUFFER (char, class_path_optionString, init_class_path.length () + 1);
                       strcpy (class_path_optionString, init_class_path.c_str ());

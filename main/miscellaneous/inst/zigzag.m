@@ -1,4 +1,4 @@
-## Copyright (C) 2006 October Fredrik Bulow <fredrik.bulow@gmail.com>
+## Copyright (C) 2006 Fredrik Bulow <fredrik.bulow@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

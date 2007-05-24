@@ -24,6 +24,13 @@ package: checkpkgdir $(patsubst %,dopkg/%,$(BUILDDIRS)) $(patsubst %,dopkg2/%,$(
 checkpkgdir:
 	@if [ ! -d $(PKGDIR) ]; then mkdir $(PKGDIR); fi
 
+pkg/%:
+	@if [ -e "$(opkg)/Makefile" ]; then \
+	  $(MAKE) dopkg/$(opkg); \
+	else \
+	  $(MAKE) dopkg2/$(opkg); \
+	fi
+
 dopkg/%:
 	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pre-pkg
 	@$(MAKE) PKGDIR=$(PKGDIR) -C $(opkg) pkg/$(opkg)

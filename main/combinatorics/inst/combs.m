@@ -19,7 +19,7 @@
 ## @deftypefn {Function File} @var{rval}= {} combs(@var{sym_set},@var{k})
 ## Function generates the nchoosek(N,K) combinations, and returns it.
 ## compute the combinations nchoosek(length(@var{sym_set}), @var{k})
-##
+## nchoosek()  is a much faster variant of this function.
 ## @example
 ## @group
 ##
@@ -33,7 +33,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso {perms}
+## @seealso {perms, nchoosek}
 
 ##
 ## Code modified from answer by 'leapinglizard-ga' on 

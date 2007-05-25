@@ -11,6 +11,7 @@ all: build-www doc $(HTDOCS)developers.html doxygen $(HTDOCS)javascript.js
 	make -k -C coda www-dist
 	if [ ! -e $(HTDOCS)coda ]; then rm -rf $(HTDOCS)coda; fi
 	tar xzCf $(HTDOCS) coda/out/coda-www.tar.gz
+	cp -f coda/out/coda-www.tar.gz $(HTDOCS)
 	make $(HTDOCS_PKG)
 
 build-www:
@@ -49,7 +50,7 @@ clean:
 	    fi; \
 	  fi; \
 	done
-	@rm -fr $(HTDOCS)*.html $(HTDOCS)developers.in INDEX $(HTDOCS)coda .octave_hist .octave_packages $(HTDOCS)doxygen $(HTDOCS)javascript.js tmphtmlheader.html tmphtmlfooter.html tmp $(HTDOCS_PKG) *~ $(HTDOCS)/*~
+	@rm -fr $(HTDOCS)*.html $(HTDOCS)developers.in INDEX $(HTDOCS)coda $(HTDOCS)/coda-www.tar.gz .octave_hist .octave_packages $(HTDOCS)doxygen $(HTDOCS)javascript.js tmphtmlheader.html tmphtmlfooter.html tmp $(HTDOCS_PKG) *~ $(HTDOCS)/*~
 	@make -C coda clean
 
 $(HTDOCS_PKG):

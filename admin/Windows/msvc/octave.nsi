@@ -7,7 +7,7 @@
 !define OCTAVE_SUFFIX "2.9.12"
 !define OCTAVE_VERSION "2.9.12"
 #!define OCTAVE_CVS_VERSION "20070225"
-#!define ATALS_PM
+#!define ATLAS_PM
 #!define USE_OCTPLOT
 !define USE_OCTAVE_FORGE
 

@@ -19,16 +19,20 @@ MACRO_FILE := ../doc/macros.m4
 M4_OPTIONS := --prefix-builtin
 PACKAGES_MD5 := http://octave.sourceforge.net/packages.md5
 
-
 .PHONY: $(PKGDIRS) install
 
 # Construct the bundle from the individual packages
 all: compare mkbundle md5
 
 mkbundle:
-	@rm -f $(wildcard octave-forge-bundle-*.tar.gz); \
+	@rm -fr $(wildcard octave-forge-bundle-*); \
 	d=`date +%Y%m%d`; \
-	tar czf octave-forge-bundle-$$d.tar.gz $(PKGDIRS)
+	mkdir octave-forge-bundle-$$d; \
+	for pkgdir in $(PKGDIRS); do \
+	  ln -s ../$$pkgdir octave-forge-bundle-$$d/$$pkgdir; \
+	done; \
+	tar czhf octave-forge-bundle-$$d.tar.gz octave-forge-bundle-$$d; \
+	rm -fr octave-forge-bundle-$$d
 
 md5: cleanmd5 $(patsubst %, domd5/%, $(PACKAGES)) md5bundle
 	@$(M4) $(M4_OPTIONS) $(MACRO_FILE) $(MD5FILE) > $(MD5FILE).tmp; \

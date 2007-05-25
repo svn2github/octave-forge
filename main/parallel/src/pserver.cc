@@ -449,7 +449,13 @@ Connect hosts and return sockets.")
 		      nl=htonl(result);
 		      write(dasock,&nl,sizeof(int));
 		      //send endian
+#if defined (__BYTE_ORDER)
 		      nl=htonl(__BYTE_ORDER);
+#elif defined (BYTE_ORDER)
+		      nl=htonl(BYTE_ORDER);
+#else
+#  error "can not determine the byte order"
+#endif
 		      write(dasock,&nl,sizeof(int));
 		      //recv endian
 		      read(sock,&nl,sizeof(int));
@@ -525,7 +531,13 @@ Connect hosts and return sockets.")
 		    read(sock,&nl,sizeof(int));
 		    sock_v[i+2*(num_nodes+1)]=ntohl(nl);
 		    //send endian
+#if defined (__BYTE_ORDER)
 		    nl=htonl(__BYTE_ORDER);
+#elif defined (BYTE_ORDER)
+		    nl=htonl(BYTE_ORDER);
+#else
+#  error "can not determine the byte order"
+#endif
 		    write(sock,&nl,sizeof(int));
 		    break;
 		  }else{

@@ -136,7 +136,13 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	    if((length-count) < BUFF_SIZE)
 	      r_len=length-count;
 	    count +=read(sock,p,r_len);
+#if defined (__BYTE_ORDER)
 	    if(endian != __BYTE_ORDER){
+#elif defined (BYTE_ORDER)
+	    if(endian != BYTE_ORDER){
+#else
+#  error "can not determine the byte order"
+#endif
 	      conv=(unsigned long long int *)((u_int32_t)p&0xfffffff8);
 	      for(int i=0;i<count/8;i++)
 		*conv++=swab64(conv);
@@ -149,7 +155,13 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	  double d;
 	  unsigned long long int *conv;
 	  read(sock,&d,sizeof(d));
+#if defined (__BYTE_ORDER)
 	  if(endian != __BYTE_ORDER){
+#elif defined (BYTE_ORDER)
+	  if(endian != BYTE_ORDER){
+#else
+#  error "can not determine the byte order"
+#endif
 	    conv=(unsigned long long int *)&d;
 	    *conv=swab64(conv);
 	  }
@@ -174,7 +186,13 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	    if((length-count) < BUFF_SIZE)
 	      r_len=length-count;
 	    count +=read(sock,p,r_len);
-	    if(endian != __BYTE_ORDER){
+#if defined (__BYTE_ORDER)
+	  if(endian != __BYTE_ORDER){
+#elif defined (BYTE_ORDER)
+	  if(endian != BYTE_ORDER){
+#else
+#  error "can not determine the byte order"
+#endif
 	      conv=(unsigned long long int *)((u_int32_t)p&0xfffffff8);
 	      for(int i=0;i<count/8;i++){
 		*conv++=swab64(conv);
@@ -189,7 +207,13 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	  Complex cx;
 	  
 	  read(sock,&cx,sizeof(cx));
+#if defined (__BYTE_ORDER)
 	  if(endian != __BYTE_ORDER){
+#elif defined (BYTE_ORDER)
+	  if(endian != BYTE_ORDER){
+#else
+#  error "can not determine the byte order"
+#endif
 	    long long int *conv;
 	    conv=(long long int *)&cx;
 	    *conv++=swab64(conv);

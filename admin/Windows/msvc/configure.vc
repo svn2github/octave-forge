@@ -25,4 +25,4 @@ esac
 PATH=$OCTAVE_ROOT/bin:$PATH \
 	CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc \
 	./configure --build=i686-pc-msdosmsvc --prefix=$OCTAVE_ROOT \
-		    --with-path=$OCTAVE_ROOT/forge --with-opath=$OCTAVE_ROOT/forge/oct --with-mpath=$OCTAVE_ROOT/forge
+		    --with-path=$OCTAVE_ROOT/share/octave/packages

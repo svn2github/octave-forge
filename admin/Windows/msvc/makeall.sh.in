@@ -233,13 +233,19 @@ EOF
   esac
   case $mode in
     nsi)
+      packdesc=`grep -e '^Name:' "$packdir/DESCRIPTION" | sed -e 's/^Name *: *//'`
+      packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+      packver=`grep -e '^Version:' "$packdir/DESCRIPTION" | sed -e 's/^Version *: *//'`
+	  packinstdir=$packdesc_low-$packver
+      if test ! -d "$mpath/$packinstdir"; then
+        continue
+      fi
       if test -z "$current_module"; then
         echo "SectionGroup \"$packmodule\" GRP_forge_$packmodule"
       elif test "$current_module" != "$packmodule"; then
         echo "SectionGroupEnd"
         echo "SectionGroup \"$packmodule\" GRP_forge_$packmodule"
       fi
-      packdesc=`grep -e '^Name:' "$packdir/DESCRIPTION" | sed -e 's/^Name *: *//'`
       if test "$packmodule" = "main"; then
         echo "Section \"$packdesc\" SEC_$packname"
       else
@@ -247,12 +253,12 @@ EOF
       fi
       echo "  SetOverwrite try"
       case "$packname" in
-        fixed)
-        echo "  SetOutPath \"\$INSTDIR\\bin\""
-        echo "  File \"\${OCTAVE_ROOT}\\bin\\octave_fixed.dll\""
-        echo "  SetOutPath \"\$INSTDIR\\lib\\octave-\${OCTAVE_VERSION}\""
-        echo "  File \"\${OCTAVE_ROOT}\\lib\\octave-\${OCTAVE_VERSION}\\octave_fixed.lib\""
-        ;;
+#        fixed)
+#        echo "  SetOutPath \"\$INSTDIR\\bin\""
+#        echo "  File \"\${OCTAVE_ROOT}\\bin\\octave_fixed.dll\""
+#        echo "  SetOutPath \"\$INSTDIR\\lib\\octave-\${OCTAVE_VERSION}\""
+#        echo "  File \"\${OCTAVE_ROOT}\\lib\\octave-\${OCTAVE_VERSION}\\octave_fixed.lib\""
+#        ;;
         octcdf)
         echo "  SetOutPath \"\$INSTDIR\\bin\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\netcdf.dll\""
@@ -270,11 +276,18 @@ EOF
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas.dll\""
         ;;
       esac
-      echo "  SetOutPath \"\$INSTDIR\\forge\\$packname\""
-      echo "  File \"\${OCTAVE_ROOT}\\forge\\$packname\\*\""
+      echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
+      echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
       echo "SectionEnd"
       ;;
     nsidesc)
+      packdesc=`grep -e '^Name:' "$packdir/DESCRIPTION" | sed -e 's/^Name *: *//'`
+      packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+      packver=`grep -e '^Version:' "$packdir/DESCRIPTION" | sed -e 's/^Version *: *//'`
+	  packinstdir=$packdesc_low-$packver
+      if test ! -d "$mpath/$packinstdir"; then
+        continue
+      fi
       if test -z "$current_module" -o "$current_module" != "$packmodule"; then
         echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_$packmodule} \"\""
       fi

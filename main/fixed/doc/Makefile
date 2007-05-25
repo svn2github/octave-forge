@@ -48,7 +48,7 @@ $(FIXEDVERTARGET) :
 %.pdf : %.dvi
 	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPDF)" != "x"; then \
 	  echo "Making pdf $@"; \
-	  $(DVIPDF) $< $@ ; \
+	  $(DVIPDF) $< ; \
 	fi
 
 %.info : %.texi

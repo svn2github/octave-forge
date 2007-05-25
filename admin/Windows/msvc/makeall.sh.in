@@ -186,11 +186,11 @@ EOF
       echo "*******************************"
       if test -f "$packdir/src/CMakeLists.txt" -a -z "$no_cmake"; then
         ofiles=`echo $packdir/src/cmake_build/*.oct`
-	if test "$ofiles" != "$packdir/src/cmake_build/*.oct"; then
+        if test "$ofiles" != "$packdir/src/cmake_build/*.oct"; then
           echo "Installing .oct files ..."
           $INSTALL -d "$mpath/$packname" 
           $INSTALL_PROGRAM $ofiles "$mpath/$packname/"
-	fi
+        fi
       elif test -f "$packdir/src/Makefile"; then
         if grep -e '^install *:' "$packdir/src/Makefile" > /dev/null; then
           echo "Installing additional libraries/binaries ..."
@@ -214,7 +214,7 @@ EOF
       for f in PKG_ADD DESCRIPTION INDEX COPYING; do
         if test -f "$packdir/$f"; then
           $INSTALL -d "$mpath/$packname"
-	  rm -f "$mpath/$packname/$f"
+          rm -f "$mpath/$packname/$f"
           $INSTALL_DATA "$packdir/$f" "$mpath/$packname/"
         fi
       done
@@ -225,7 +225,7 @@ EOF
           $INSTALL_DATA "$f" "$mpath/$packname/"
         done
         pkgadd_data=`"$MKPKGADD" "$packdir/inst"`
-	if test "x$pkgadd_data" != "x"; then
+        if test "x$pkgadd_data" != "x"; then
           echo "$pkgadd_data" >>  "$mpath/$packname/PKG_ADD"
         fi
       fi

@@ -38,23 +38,51 @@ mkdir -p install/@NAME@
 mkdir install/@NAME@/inst
 
 %build
+## Replace the mess below with "pkg build <builddir> <package>" in the future
 cd @NAME@-@VERSION@
-HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install','-nodeps','-verbose','@PACKAGE@');pkgadd=[pwd(),'/install/@NAME@-@VERSION@/',octave_config_info('canonical_host_type'),'-',octave_config_info('api_version'),'/PKG_ADD'];if(exist(pkgadd,'file')),movefile(pkgadd,[pwd(),'/install/@NAME@-@VERSION@']);endif;pkgdel=[pwd(),'/install/@NAME@-@VERSION@/',octave_config_info('canonical_host_type'),'-',octave_config_info('api_version'),'/PKG_DEL'];if(exist(pkgadd,'file')),movefile(pkgadd,[pwd(),'/install/@NAME@-@VERSION@']);endif;"
+HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install','-nodeps','-verbose','@PACKAGE@');"
 
 cd install
 mv @NAME@-@VERSION@/packinfo/* @NAME@
 rm -rf @NAME@-@VERSION@/packinfo
 if [ -d @NAME@-@VERSION@/doc ]; then mv @NAME@-@VERSION@/doc @NAME@; fi
 if [ -d @NAME@-@VERSION@/bin ]; then mv @NAME@-@VERSION@/bin @NAME@; fi
-if [ -e @NAME@-@VERSION@/PKG_ADD ]; then mv @NAME@-@VERSION@/PKG_ADD @NAME@; fi
-if [ -e @NAME@-@VERSION@/PKG_DEL ]; then mv @NAME@-@VERSION@/PKG_DEL @NAME@; fi
+
+if [ -e @NAME@/PKG_ADD ]; then rm @NAME@/PKG_ADD; fi
+PKG_ADD=`find @NAME@-@VERSION@ -name PKG_ADD`
+if [ -n "$PKG_ADD" ]; then
+  touch @NAME@/PKG_ADD
+  for pkg in $PKG_ADD; do
+    cat $pkg >> @NAME@/PKG_ADD
+    rm $pkg
+  done
+  if [ -e @NAME@-@VERSION@/PKG_ADD ]; then rm @NAME@-@VERSION@/PKG_ADD; fi
+elif [ -e @NAME@-@VERSION@/PKG_ADD ]; then
+  mv @NAME@-@VERSION@/PKG_ADD @NAME@/PKG_ADD
+fi
+
+if [ -e @NAME@/PKG_DEL ]; then rm @NAME@/PKG_DEL; fi
+PKG_DEL=`find @NAME@-@VERSION@ -name PKG_DEL`
+if [ -n "$PKG_DEL" ]; then
+  touch @NAME@/PKG_DEL
+  for pkg in $PKG_DEL; do
+    cat $pkg >> @NAME@/PKG_DEL
+    rm $pkg
+  done
+  if [ -e @NAME@-@VERSION@/PKG_DEL ]; then rm @NAME@-@VERSION@/PKG_DEL; fi
+elif [ -e @NAME@-@VERSION@/PKG_DEL ]; then
+  mv @NAME@-@VERSION@/PKG_DEL @NAME@/PKG_DEL
+fi
+
 mv @NAME@-@VERSION@/* @NAME@/inst
 rm -fr @PACKAGE@
+
 cat << EOF > @NAME@/on_uninstall.m
 function on_uninstall (desc)
   error ("Can not uninstall @NAME@-@VERSION@ installed by the RPM package manager");
 endfunction
 EOF
+
 tar czf ../%{builtpackage} @NAME@
 
 %install

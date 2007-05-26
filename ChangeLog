@@ -1,4 +1,653 @@
 # Automatically generated file --- DO NOT EDIT
+2007-05-26 14:16  adb014
+
+	* admin/release.sh, doc/htdocs/packages.in: pre-release doc update
+
+2007-05-26 13:11  adb014
+
+	* admin/rpm_template.in: More care with PKG_ADD and PKG_DEL files
+	  in SRPM SPEC files
+
+2007-05-26 12:41  adb014
+
+	* main/sockets/DESCRIPTION: For now don't mark the sockets package
+	  as autoloaded to avoid name space conflicts with
+	  miscellaneous/listen and parallel/{recv,send}
+
+2007-05-25 23:53  adb014
+
+	* packages/Makefile: Bundle in a sub-directory
+
+2007-05-25 23:48  adb014
+
+	* extra/secs2d/DESCRIPTION: 2d and not 1D in description
+
+2007-05-25 23:47  adb014
+
+	* extra/secs1d/INDEX: Index utility functions
+
+2007-05-25 23:47  adb014
+
+	* doc/Makefile: Copy coda www files as well
+
+2007-05-25 23:41  adb014
+
+	* main/parallel/src/: pserver.cc, recv.cc: Try BYTE_ORDER as well
+	  as __BYTE_ORDER for pserver and recv as well (For Thomas Treichl
+
+2007-05-25 21:15  goffioul
+
+	* admin/Windows/msvc/octaverc.win: cosmetic change
+
+2007-05-25 21:07  goffioul
+
+	* admin/Windows/msvc/octave.nsi: fix typo
+
+2007-05-25 16:54  goffioul
+
+	* admin/Windows/msvc/: configure.vc, makeall.sh.in, octave.nsi,
+	  octaverc.win: update to work with the regular package manager
+
+2007-05-25 14:14  goffioul
+
+	* admin/Windows/msvc/makeall.sh.in: aesthetic changes
+
+2007-05-25 14:13  goffioul
+
+	* main/: comm/doc/Makefile, fixed/doc/Makefile,
+	  odepkg/doc/Makefile: fixed DVIPDF calling syntax by removing
+	  output file specification (use default one)
+
+2007-05-25 13:31  goffioul
+
+	* main/vrml/doc/Makefile: use DVIPDF from Makeconf
+
+2007-05-24 23:40  goffioul
+
+	* admin/Windows/msvc/: configure.vc, octave.nsi, octaverc.win:
+	  Adapt windows installer and startup file to regular package manager
+	  usage.
+
+2007-05-24 23:38  goffioul
+
+	* main/: odepkg/doc/Makefile, optim/doc/Makefile: fix dvipdf calls
+
+2007-05-24 23:03  adb014
+
+	* main/io/DESCRIPTION: bump version
+
+2007-05-24 22:59  adb014
+
+	* main/io/src/dlmread.cc:
+	   '2 3' shouldn't be read as two numbers unless the seperator is
+	   space
+
+2007-05-24 22:36  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/OctClassLoader.java:
+	  make package work with arch-dependent installation directory (pkg
+	  manager)
+
+2007-05-24 22:34  adb014
+
+	* AUTHORS, doc/htdocs/packages.in, extra/secs2d/INDEX,
+	  extra/tsa/DESCRIPTION, extra/tsa/INDEX,
+	  main/combinatorics/DESCRIPTION, main/miscellaneous/DESCRIPTION,
+	  main/nnet/DESCRIPTION, main/specfun/DESCRIPTION: various
+	  versioning and documentation fixes
+
+2007-05-24 21:54  adb014
+
+	* main/parallel/src/connect.cc: Try __BYTE_ORDER as well as
+	  BYTE_ORDER
+
+2007-05-24 21:31  adb014
+
+	* main/miscellaneous/inst/zigzag.m: Be nice to the get_authors
+	  script
+
+2007-05-24 21:29  adb014
+
+	* main/image/inst/imrotate_Fourier.m: variable 'im' is in fact 'f'
+
+2007-05-24 21:23  adb014
+
+	* doc/htdocs/: NEWS.in, index.in: Start updating news items for
+	  release
+
+2007-05-24 21:22  adb014
+
+	* admin/rpm_template.in: Correctly save PKG_ADD and PKG_DEL files
+	  from architecture dependent directory
+
+2007-05-24 21:20  adb014
+
+	* main/statistics/inst/regress.m: Enlarge error tolerance slightly
+	  for regress
+
+2007-05-24 14:00  adb014
+
+	* extra/Makefile, language/Makefile, main/Makefile,
+	  nonfree/Makefile: Add pkg/% target to Makefiles to simplfy the
+	  building of a single package
+
+2007-05-24 03:33  gnumuthu
+
+	* main/combinatorics/inst/combs.m: added reference to nchoosek
+	  which can do all this combs does, and faster..
+
+2007-05-24 01:32  adb014
+
+	* admin/: make_rpmmeta, rpm_template.in: RPM fixes for the package
+	  release date and the PKG_ADD files in the arcitecture dependent
+	  directory
+
+2007-05-23 22:51  adb014
+
+	* extra/java/DESCRIPTION: Java autoload depends on Octave 2.9.12 or
+	  greater
+
+2007-05-23 22:45  adb014
+
+	* extra/soctcl/DESCRIPTION: 3 digit version numbers needed for RPM
+	  build
+
+2007-05-23 22:34  adb014
+
+	* extra/engine/: DESCRIPTION, post_install.m, src/Makefile: Just
+	  install liboct.a and engine.h in inst/ rather than try to do
+	  anything fancy
+
+2007-05-23 21:48  adb014
+
+	* main/parallel/: DESCRIPTION, src/send.cc: Octave_map length
+	  method replaced with nfields in 2.9.12
+
+2007-05-23 11:01  goffioul
+
+	* main/fixed/: examples/Makefile, src/Makefile: merge
+	  octave_fixed.dll into fixed.oct to avoid installing files (DLL)
+	  outside of the normal package directory [Win32/MSVC]
+
+2007-05-23 07:16  michaelschmid
+
+	* main/nnet/inst/__newnetwork.m: removed a bug in __newnetwork.m
+
+2007-05-22 22:40  goffioul
+
+	* extra/java/src/__java__.cc: strip arch-dependent dir from
+	  __java__.oct location, to get root package directory
+
+2007-05-22 22:34  cdf
+
+	* extra/secs2d/inst/Utilities/Uscharfettergummel3.m: removed
+	  unwanted output during test
+
+2007-05-22 22:19  adb014
+
+	* extra/: secs1d/PKG_ADD, secs1d/PKG_DEL, secs2d/PKG_ADD,
+	  secs2d/PKG_DEL: Get PKG_ADD/PKG_DEL command exclusion right this
+	  time
+
+2007-05-22 22:15  adb014
+
+	* extra/: secs2d/PKG_ADD, secs2d/PKG_DEL, secs1d/PKG_ADD,
+	  secs1d/PKG_DEL: Only run PKG_ADD and PKG_DEL commands if the
+	  package is installed
+
+2007-05-22 21:36  adb014
+
+	* extra/: secs1d/src/Makefile, secs2d/src/Makefile: 'make' and not
+	  'Make'
+
+2007-05-22 21:25  adb014
+
+	* admin/rpm_template.in: typo in uninstall target of rpm spec file
+
+2007-05-22 21:23  adb014
+
+	* main/specfun/inst/ellipke.m: Remove obsolete fortran_indexing
+	  flags
+
+2007-05-22 21:16  cdf
+
+	* extra/secs2d/: INDEX, inst/DDGOX/DDGOXnlpoisson.m,
+	  inst/QDDGOX/QDDGOXcompdens.m, inst/QDDGOX/QDDGOXddcurrent.m,
+	  inst/QDDGOX/QDDGOXgummelmap.m, inst/QDDGOX/QDDGOXnlpoisson.m,
+	  inst/ThDDGOX/ThDDGOXMOBN0STD.m, inst/ThDDGOX/ThDDGOXMOBN1STD.m,
+	  inst/ThDDGOX/ThDDGOXMOBP0STD.m, inst/ThDDGOX/ThDDGOXMOBP1STD.m,
+	  inst/ThDDGOX/ThDDGOXTWN0STD.m, inst/ThDDGOX/ThDDGOXTWN1STD.m,
+	  inst/ThDDGOX/ThDDGOXTWP0STD.m, inst/ThDDGOX/ThDDGOXTWP1STD.m,
+	  inst/ThDDGOX/ThDDGOXddcurrent.m,
+	  inst/ThDDGOX/ThDDGOXelectron_driftdiffusion.m,
+	  inst/ThDDGOX/ThDDGOXeletiteration.m,
+	  inst/ThDDGOX/ThDDGOXgummelmap.m,
+	  inst/ThDDGOX/ThDDGOXheatequation.m,
+	  inst/ThDDGOX/ThDDGOXhole_driftdiffusion.m,
+	  inst/ThDDGOX/ThDDGOXinneriteration.m,
+	  inst/ThDDGOX/ThDDGOXnlpoisson.m,
+	  inst/ThDDGOX/ThDDGOXthermaliteration.m,
+	  inst/ThDDGOX/ThDDGOXupdateelectron_temp.m,
+	  inst/ThDDGOX/ThDDGOXupdatehole_temp.m,
+	  inst/ThDDGOX/ThDDGOXupdatelattice_temp.m,
+	  inst/Utilities/UDXappend2Ddata.m,
+	  inst/Utilities/Ucoloredrubbersheet.cfg,
+	  inst/Utilities/Ucoloredrubbersheet.net,
+	  inst/Utilities/Ucoloredrubbersheetseries.net,
+	  inst/Utilities/Udescaling.m, inst/Utilities/Udrawcurrent.net,
+	  inst/Utilities/Udrawedge.m, inst/Utilities/Ufvsgcurrent2.m,
+	  inst/Utilities/Ufvsgcurrent3.m, inst/Utilities/Umsh2pdetool.m,
+	  inst/Utilities/Umshcreatemesh.m, inst/Utilities/Updemesh.m,
+	  inst/Utilities/Updesurf.m, inst/Utilities/Urubbersheet.net,
+	  inst/Utilities/Uscaling.m, inst/Utilities/Uscharfettergummel3.m,
+	  inst/Utilities/Ushowgrid.cfg, inst/Utilities/Ushowgrid.net,
+	  inst/Utilities/Usubmesh.m, inst/Utilities/constants.m,
+	  inst/Utilities/constants.mat, src/Utilities/Makefile: package
+	  brought up to date with main repository before release
+
+2007-05-22 17:38  schloegl
+
+	* extra/tsa/inst/selmo2.m: model order selection criteria for uni-
+	  and multivariate autoregressive models
+
+2007-05-21 20:07  treichl
+
+	* main/odepkg/doc/odepkg.texi: Small change.
+
+2007-05-20 21:28  goffioul
+
+	* main/optiminterp/src/Makefile: Fix Makefile syntax
+
+2007-05-20 21:25  goffioul
+
+	* admin/Windows/msvc/mkoctfile.cc.in: Try to use correct output
+	  files with F2C
+
+2007-05-20 21:25  goffioul
+
+	* admin/Windows/msvc/cc-msvc.cc: Define .mex as valid extension
+
+2007-05-19 20:28  adb014
+
+	* admin/rpm_template.in: on_uninstall.m is in the packinfo
+	  directorycd admin/
+
+2007-05-18 21:53  treichl
+
+	* main/odepkg/doc/: .cvsignore, odepkg.texi: Manual update.
+
+2007-05-18 21:50  treichl
+
+	* main/odepkg/inst/odepkg.m: Small changes.
+
+2007-05-18 18:35  luqqe
+
+	* main/outliers/DESCRIPTION: The version number was corrected to
+	  match the R version of the package.  Dependence to 2.9.9+ also
+	  added.
+
+2007-05-18 17:16  treichl
+
+	* main/odepkg/DESCRIPTION: Final tests done on MacOSX and Linux.
+	  The ongoing work with releases 0.3.x is adding DDE-solvers and
+	  improving the manual.
+
+2007-05-18 00:40  adb014
+
+	* admin/release.sh, doc/htdocs/.cvsignore, doc/htdocs/packages.in,
+	  extra/MacOSX/DESCRIPTION, extra/secs2d/INDEX,
+	  extra/symband/DESCRIPTION, main/fixed/DESCRIPTION,
+	  main/fixed/doc/configure.add, main/fixed/src/configure.base,
+	  main/sockets/INDEX, main/vrml/DESCRIPTION: More doc, indexing,
+	  versioning fixes
+
+2007-05-18 00:15  adb014
+
+	* main/comm/inst/: lz77deco.m, lz77enco.m: texinfo errors
+
+2007-05-17 23:26  adb014
+
+	* main/INDEX: more indexing fixes
+
+2007-05-17 23:16  adb014
+
+	* admin/make_index: Make make_index much faster
+
+2007-05-17 23:15  adb014
+
+	* main/sockets/src/sockets.cc: Give automatic help string search a
+	  little bit more help
+
+2007-05-17 22:29  adb014
+
+	* extra/secs1d/INDEX, extra/secs2d/INDEX, main/INDEX,
+	  main/signal/INDEX: Indexing updates
+
+2007-05-17 22:26  adb014
+
+	* extra/secs2d/inst/Utilities/: Makefile, Ubern.cc, Ubern.h,
+	  Ucompconst.cc, Ucomplap.cc, Ucompmass2.cc, Uscharfettergummel.cc:
+	  Remove duplicate files
+
+2007-05-17 22:00  adb014
+
+	* main/sockets/src/: Makefile, sockets.cc, sockets.cpp: C++ should
+	  end in .cc for Octave. Also modify macro for socket constants, so
+	  that the help strings are found by the automatic help script
+
+2007-05-17 21:24  hauberg
+
+	* main/outliers/: COPYING, DESCRIPTION, inst/chisqouttest.m,
+	  inst/cochrancdf.m, inst/cochraninv.m, inst/cochrantest.m,
+	  inst/dixoncdf.m, inst/dixoninv.m, inst/dixontest.m,
+	  inst/grubbscdf.m, inst/grubbsinv.m, inst/grubbstest.m,
+	  inst/outlier.m, inst/qtable.m, inst/rmoutlier.m, inst/scores.m:
+	  First revision of the 'outliers' package by Lukasz Komsta
+
+2007-05-17 21:16  adb014
+
+	* Makefile, extra/java/DESCRIPTION, extra/xraylib/DESCRIPTION,
+	  language/pt_BR/DESCRIPTION, main/comm/DESCRIPTION,
+	  main/econometrics/DESCRIPTION, main/general/DESCRIPTION,
+	  main/odepkg/DESCRIPTION, main/optiminterp/DESCRIPTION,
+	  main/signal/DESCRIPTION, main/statistics/DESCRIPTION: Update
+	  version numbers of changed packages
+
+2007-05-17 21:14  adb014
+
+	* packages/.cvsignore: Also ignore compare/
+
+2007-05-17 21:13  adb014
+
+	* packages/: Makefile, README: Fix the compare target so that it
+	  correctly creates the package tree to upload
+
+2007-05-17 21:13  hauberg
+
+	* main/image/inst/: imperspectivewarp.m, imremap.m: Fix bug when
+	  warps go more than two times the image width out of the image frame
+
+2007-05-17 16:55  abarth93
+
+	* main/octcdf/: DESCRIPTION, inst/nctest.m, src/ov-ncvar.cc,
+	  src/ov-netcdf.cc: fix bug: support for scalars
+
+2007-05-17 15:54  abarth93
+
+	* main/octcdf/src/: ov-ncvar.cc, ov-netcdf.cc, ov-netcdf.h: fix
+	  bug: no dim_vector with 1d-arrays
+
+2007-05-15 02:24  tom_holroyd
+
+	* main/sockets/: COPYING, ChangeLog, DESCRIPTION, INDEX, PKG_ADD,
+	  src/Makefile, src/sockets.cpp, src/test_octave_sockets,
+	  src/test_socket: Initial checkin of sockets package.
+
+2007-05-12 12:54  adb014
+
+	* admin/rpm_template.in: Modifiy SRPM build so that he RPMs when
+	  installed can't be removed by the octave package manager
+
+2007-05-09 11:44  hauberg
+
+	* main/image/inst/: imperspectivewarp.m, imremap.m, imresize.m,
+	  imrotate.m, imrotate_Fourier.m: Added more liberal input checking
+	  to the functions for spatial transformations
+
+2007-05-05 15:57  hauberg
+
+	* main/image/: INDEX, inst/MakeShears.m, inst/imrotate_Fourier.m:
+	  Moved 'MakeShears' into 'imrotate_Fourier' as a private function
+
+2007-05-03 15:59  mazet
+
+	* main/signal/inst/tukeywin.m: [no log message]
+
+2007-05-03 15:39  mazet
+
+	* main/signal/inst/tukeywin.m: Add Tukey window (also known as the
+	  cosine-tapered window) function
+
+2007-04-27 10:26  hauberg
+
+	* main/image/: DESCRIPTION, inst/imperspectivewarp.m: Added 'same'
+	  to imperspectivewarp
+
+2007-04-24 10:20  adb014
+
+	* main/comm/: INDEX, inst/lz77deco.m, inst/lz77enco.m: Add LZ77
+	  coding for Gorka Lertxundi Osa
+
+2007-04-23 16:52  goffioul
+
+	* extra/java/src/__java__.cc: factorize code.
+
+2007-04-23 01:20  ficmatinfmag
+
+	* language/pt_BR/help/octave/: conj.pt_BR, image.pt_BR,
+	  imagesc.pt_BR, imshow.pt_BR: Brazilian portuguese translation
+	  conj.pt_BR -> adjusting first and second lines repeated image.pt_BR
+	  -> updating to english cvs version 1.4 imagesc.pt_BR -> updating to
+	  english cvs version 1.2 imshow.pt_BR -> updating to english cvs
+	  version 1.3
+
+2007-04-22 23:37  ficmatinfmag
+
+	* language/base/help/octave/: __bar__, __errplot__,
+	  __gnuplot_version__, __go_close_all__, __go_draw_axes__,
+	  __go_draw_figure__, __line__, arrayfun, autoreg_matrix, bar,
+	  bitcmp, circshift, common_size, contour, contourc, datestr,
+	  diffpara, dmr2d, durbinlevinson, errorbar, filter2, fir2sys,
+	  flops, getfield, glpkmex, grid, hadamard, hbar, hsv2rgb,
+	  ifftshift, image, int2str, lcm, legend, license, __plt1__,
+	  __plt2__, __plt2mm__, __plt2mv__, __plt2ss__, __plt2vm__,
+	  __plt2vv__, line, loglog, loglogerr, meshdom, mex, mkoctfile,
+	  ndgrid, nichols, num2str, pack, pcg, plot, plot3, polar, print,
+	  rgb2hsv, run_count, semilogx, semilogxerr, semilogy, semilogyerr,
+	  setfield, shg, shiftdim, spdiags, speed, spline, spstats, stairs,
+	  stem, stft, strmatch, subplot, warning_ids, wavread, xlabel:
+	  added and/or changed in octave.org-cvs
+
+2007-04-19 10:57  mcreel
+
+	* main/optim/src/samin.cc: further fixes to help string and
+	  comments
+
+2007-04-19 10:27  mcreel
+
+	* main/optim/inst/samin_example.m: very minor improvements
+
+2007-04-19 10:25  mcreel
+
+	* main/optim/src/samin.cc: minor improvements to help string
+
+2007-04-15 17:29  pkienzle
+
+	* main/odepkg/src/Makefile: Restructure implicit rules for mex as
+	  implicit rules.
+
+2007-04-12 03:16  adb014
+
+	* extra/xraylib/src/Makefile, main/general/src/Makefile: exclude
+	  octave-forge Makeconf file from the packages themselves
+
+2007-04-04 23:13  cdf
+
+	* extra/secs1d/src/Makefile: added missing makefile
+
+2007-04-04 23:10  cdf
+
+	* extra/secs2d/: COPYING, DESCRIPTION, PKG_ADD, PKG_DEL, README,
+	  inst/DDGOX/DDGOXddcurrent.m,
+	  inst/DDGOX/DDGOXelectron_driftdiffusion.m,
+	  inst/DDGOX/DDGOXgummelmap.m,
+	  inst/DDGOX/DDGOXhole_driftdiffusion.m,
+	  inst/DDGOX/DDGOXnlpoisson.m, inst/DDGOX/DDGOXplotresults.m,
+	  inst/DDGOXT/DDGOXTelectron_driftdiffusion.m,
+	  inst/DDGOXT/DDGOXTgummelmap.m,
+	  inst/DDGOXT/DDGOXThole_driftdiffusion.m,
+	  inst/METLINES/METLINEScapcomp.m,
+	  inst/METLINES/METLINESdefinepermittivity.m,
+	  inst/QDDGOX/QDDGOXcompdens.m, inst/QDDGOX/QDDGOXddcurrent.m,
+	  inst/QDDGOX/QDDGOXgummelmap.m, inst/QDDGOX/QDDGOXnlpoisson.m,
+	  inst/ThDDGOX/ThDDGOXddcurrent.m,
+	  inst/ThDDGOX/ThDDGOXelectron_driftdiffusion.m,
+	  inst/ThDDGOX/ThDDGOXgummelmap.m,
+	  inst/ThDDGOX/ThDDGOXheatequation.m,
+	  inst/ThDDGOX/ThDDGOXhole_driftdiffusion.m,
+	  inst/ThDDGOX/ThDDGOXinneriteration.m,
+	  inst/ThDDGOX/ThDDGOXnlpoisson.m, inst/Utilities/Makefile,
+	  inst/Utilities/UDXappend2Ddata.m,
+	  inst/Utilities/UDXoutput2Ddata.m,
+	  inst/Utilities/UDXoutput2Dtimeseries.m,
+	  inst/Utilities/URREcyclingpattern.m, inst/Utilities/Ubern.cc,
+	  inst/Utilities/Ubern.h, inst/Utilities/Ubern.m,
+	  inst/Utilities/Ucoloredrubbersheet.cfg,
+	  inst/Utilities/Ucoloredrubbersheet.net,
+	  inst/Utilities/Ucoloredrubbersheetseries.net,
+	  inst/Utilities/Ucolumns.m, inst/Utilities/Ucompconst.cc,
+	  inst/Utilities/Ucompconst.m, inst/Utilities/Ucomplap.cc,
+	  inst/Utilities/Ucomplap.m, inst/Utilities/Ucompmass2.cc,
+	  inst/Utilities/Ucompmass2.m, inst/Utilities/Udescaling.m,
+	  inst/Utilities/Udopdepmob.m, inst/Utilities/Udrawedge.m,
+	  inst/Utilities/Udriftdepmob.m, inst/Utilities/Udriftdiffusion.m,
+	  inst/Utilities/Udriftdiffusion2.m, inst/Utilities/Ufielddepmob.m,
+	  inst/Utilities/Ufvsgcurrent.m, inst/Utilities/Ufvsgcurrent2.m,
+	  inst/Utilities/Uinvfermidirac.m, inst/Utilities/Uise2pde.m,
+	  inst/Utilities/Ujoinmeshes.m, inst/Utilities/Umeshproperties.m,
+	  inst/Utilities/Umsh2pdetool.m, inst/Utilities/Umshcreatemesh.m,
+	  inst/Utilities/Unodesonside.m, inst/Utilities/Updegrad.m,
+	  inst/Utilities/Updemesh.m, inst/Utilities/Updesurf.m,
+	  inst/Utilities/Urows.m, inst/Utilities/Urrextrapolation.m,
+	  inst/Utilities/Urubbersheet.net, inst/Utilities/Uscaling.m,
+	  inst/Utilities/Uscharfettergummel.cc,
+	  inst/Utilities/Uscharfettergummel.m,
+	  inst/Utilities/Uscharfettergummel2.m,
+	  inst/Utilities/Ushowgrid.cfg, inst/Utilities/Ushowgrid.net,
+	  inst/Utilities/Usmoothguess.m, inst/Utilities/Ustructmesh.m,
+	  inst/Utilities/Ustructmesh_left.m,
+	  inst/Utilities/Ustructmesh_random.m,
+	  inst/Utilities/Ustructmesh_right.m,
+	  inst/Utilities/Usubdomains2.m, inst/Utilities/Usubmesh.m,
+	  inst/Utilities/Utemplogm.m, inst/Utilities/constants.m,
+	  inst/Utilities/constants.mat, src/Makefile,
+	  src/Utilities/Makefile, src/Utilities/Ubern.cc,
+	  src/Utilities/Ubern.h, src/Utilities/Ucompconst.cc,
+	  src/Utilities/Ucomplap.cc, src/Utilities/Uscharfettergummel.cc:
+	  added secs2d package
+
+2007-04-04 22:36  cdf
+
+	* extra/secs1d/: COPYING, DESCRIPTION, PKG_ADD, PKG_DEL, README,
+	  inst/DDG/DDGelectron_driftdiffusion.m, inst/DDG/DDGgummelmap.m,
+	  inst/DDG/DDGhole_driftdiffusion.m, inst/DDG/DDGn2phin.m,
+	  inst/DDG/DDGnlpoisson.m, inst/DDG/DDGp2phip.m,
+	  inst/DDG/DDGphin2n.m, inst/DDG/DDGphip2p.m,
+	  inst/DDG/DDGplotresults.m, inst/DDN/DDNnewtonmap.m,
+	  inst/Utilities/Ubern.m, inst/Utilities/Ubernoulli.m,
+	  inst/Utilities/Ucompconst.m, inst/Utilities/Ucomplap.m,
+	  inst/Utilities/Ucompmass.m, inst/Utilities/Udriftdiffusion.m,
+	  inst/Utilities/Umediaarmonica.m,
+	  inst/Utilities/Uscharfettergummel.m, inst/Utilities/constants.m,
+	  src/Utilities/Makefile, src/Utilities/Ubern.cc: Added the secs1d
+	  package
+
+2007-04-04 14:38  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/Octave.java,
+	  org/octave/OctaveReference.java: Add thread-safe java->octave
+	  callback mechanism.
+
+2007-04-04 07:51  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/OctaveReference.java:
+	  Add invokation of octave reference (== callbacks).
+
+2007-04-03 21:30  goffioul
+
+	* extra/java/src/org/octave/OctaveReference.java: Add missing
+	  function.
+
+2007-04-03 17:01  goffioul
+
+	* extra/java/src/: Makefile, __java__.cc,
+	  org/octave/OctaveReference.java: Allow to pass octave values to
+	  Java as opaque objects.
+
+2007-04-03 04:02  pkienzle
+
+	* main/statistics/inst/prctile.m: Fix incorrect interpretation of
+	  prctile([0,1],[25,75])
+
+2007-04-01 09:30  adb014
+
+	* admin/build-www.py: strip directory name from the bundle
+
+2007-03-30 16:35  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/ClassHelper.java:
+	  Convert double[][] into double matrix.
+
+2007-03-29 21:12  adb014
+
+	* packages/.cvsignore: Also ignore tmp directory
+
+2007-03-29 21:11  adb014
+
+	* doc/htdocs/NEWS.in, doc/htdocs/index.in, main/INDEX: A few post
+	  release typos, etc
+
+2007-03-29 18:53  abarth93
+
+	* main/optiminterp/: inst/optiminterp1.m, inst/optiminterp2.m,
+	  inst/optiminterp3.m, inst/optiminterp4.m, src/optiminterp.cc: fix
+	  doc string
+
+2007-03-29 18:42  abarth93
+
+	* main/optiminterp/DESCRIPTION: fix typo
+
+2007-03-29 14:41  mcreel
+
+	* main/econometrics/inst/: gmm_example.m, mle_example.m: don't use
+	  reserved word "title" as a variable name
+
+2007-03-29 13:26  mcreel
+
+	* main/optim/inst/bs_gradient.m: this file has been just a backward
+	  compatibility a placeholder for a long time
+
+2007-03-29 13:08  mcreel
+
+	* main/econometrics/inst/kernel_example.m: turn off attempt to run
+	  in parallel, fix plotting for 2.6.10
+
+2007-03-29 13:07  mcreel
+
+	* main/econometrics/inst/gmm_example.m: adjust to use new bfgsmin
+	  controls
+
+2007-03-29 09:38  adb014
+
+	* admin/template.ndev: Typos
+
+2007-03-29 00:55  whyly
+
+	* main/statistics/inst/hmmgenerate.m: Fixed typo.
+
+2007-03-28 23:16  adb014
+
+	* doc/htdocs/docs.in: Couple of post release typos
+
+2007-03-28 23:10  adb014
+
+	* doc/htdocs/: ChangeLog, NEWS.in, archive.in, index.in: Couple of
+	  post release typos
+
+2007-03-28 22:23  adb014
+
+	* AUTHORS, ChangeLog: R2007-03-28 release
+
 2007-03-28 22:16  adb014
 
 	* doc/: Makefile, htdocs/packages.in: Doc updates

@@ -57,17 +57,11 @@
 ##
 ##    Make sure you've logged all changes to licenses and doc strings.
 ##
-## 9) https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
-##
-##    Log in to your source forge account and announce the release of the
-##    packages. Upload the packages that were identified as needing uploading
-##    in step 9).
-##
-## 10) ./release.sh
+## 9) ./release.sh
 ##
 ##    This is the actual release step.  It tags the CVS tree.
 ##
-## 11) Upload the webpages to sourceforge.
+## 10) Upload the webpages to sourceforge.
 ##
 ##        tar cvzf www.tar.gz www
 ##        scp doc/htdocs.tar.gz $OFHOME
@@ -77,10 +71,14 @@
 ##        tar xzf htdocs.tar.gz
 ##        chmod -R g+w htdocs
 ##
-## 12) Use releaseforge to upload the packages to the sourceforge file release
-##     system
+## 11) Use releaseforge (cf http://releaseforge.sf.net) to upload the 
+##     packages to the sourceforge file release system. Packages needing
+##     uploading were identified in step 2).
+##
+##     Finish upload process in the sourceforge admin system at
+##     https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
 ## 
-## 13) sources@octave.org, octave-dev@lists.sf.net
+## 12) sources@octave.org, octave-dev@lists.sf.net
 ##
 ##    Announce the new release on the appropriate mailing lists.
 ##

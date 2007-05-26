@@ -12,7 +12,7 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/octave-forge-bundle-20070328.tar.gz?download">single file</a>.
+as a <a href="__PACKAGE__/octave-forge-bundle-20070526.tar.gz?download">single file</a>.
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
@@ -294,7 +294,7 @@ InformationTheory</a></b></td>
    <b><a href="javascript:fold('io');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 io</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./io/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/io-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/io-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="io_details">
@@ -306,7 +306,7 @@ Input/Output in external formats.  </p>
     <b><a href="javascript:unfold('io');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 io</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./io/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/io-1.0.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/io-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -1096,7 +1096,7 @@ SECS2D</a></b></td>
     </td>
   </tr></table>
   <p id="secs2d_details">
-A Drift-Diffusion simulator for 1d semiconductor devices  </p>
+A Drift-Diffusion simulator for 2d semiconductor devices  </p>
 </div>
 <div class="package" id="secs2d">
   <table class="package"><tr>

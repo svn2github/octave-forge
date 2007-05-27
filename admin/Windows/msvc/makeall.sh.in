@@ -246,7 +246,7 @@ EOF
         echo "SectionGroupEnd"
         echo "SectionGroup \"$packmodule\" GRP_forge_$packmodule"
       fi
-      if test "$packmodule" = "main"; then
+      if test "$packmodule" = "main" -o "$packdesc_low" = "windows" -o "$packdesc_low" = "java"; then
         echo "Section \"$packdesc\" SEC_$packname"
       else
         echo "Section /o \"$packdesc\" SEC_$packname"

@@ -11,7 +11,7 @@
 !define USE_OCTPLOT
 !define USE_OCTAVE_FORGE
 !define USE_MSYS
-!define OPLOTGL_VERSION "0.1.0"
+!define OPLOTGL_VERSION "0.2.0"
 
 !ifdef USE_DEBUG
 !define OCTAVE_BASE "octave-${OCTAVE_SUFFIX}-debug"

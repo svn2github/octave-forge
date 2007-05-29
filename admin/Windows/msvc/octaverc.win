@@ -41,10 +41,25 @@ end
 
 # Load MSYS shell
 msys_path = sprintf ("%s%smsys", octave_config_info ("prefix"), filesep);
-if (exist (msys_path, "dir"))
-  msys_path = [msys_path, filesep, "bin", pathsep, EXEC_PATH];
-  EXEC_PATH (msys_path);
-  fprintf(" - MSYS shell installed.\n");
+if (! exist (msys_path, "dir"))
+  msys_path = "";
+  if (exist ([getenv("WINDIR"), filesep, "MSYS.INI"], "file"))
+    fid = fopen ([getenv("WINDIR"), filesep, "MSYS.INI"]);
+    if (fid != -1)
+      while ((line = fgetl (fid)) != -1)
+        if (strncmp (line, "InstallPath=", 12))
+          msys_path = line (13:end);
+          break;
+        endif
+      endwhile
+      fclose (fid);
+    endif
+  endif
+endif
+
+if (! isempty (msys_path))
+  EXEC_PATH ([msys_path, filesep, "bin", pathsep, EXEC_PATH]);
+  fprintf(" - MSYS shell available (%s).\n", msys_path);
 end
 
 clear oplot_path scite_path msys_path

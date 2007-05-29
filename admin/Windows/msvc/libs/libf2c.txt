@@ -8,7 +8,9 @@ Compilation: from Windows command shell with VS environment
 
 Requirement: none
 
-1) Edit makefile.vc and add "-MD" to the CFLAGS variable
+1) Edit makefile.vc and add "-MD -DIEEE_COMPLEX_DIVIDE" to the CFLAGS variable
+
+2) Edit fio.h and comment the line "extern int isatty(int);" (using /* */ pair)
 
 2) nmake -f makefile.vc
 

@@ -1,0 +1,38 @@
+## Copyright (C) 2007 Michael Goffioul
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301  USA
+
+function [ varargout ] = oplot_get (h, property)
+
+  handle = __get_object__ (h);
+  if (! isempty (handle))
+    if (nargin == 2)
+      varargout{1} = java2mat (handle.get (property));
+    elseif (nargout > 0)
+      names = char (handle.getNames ());
+      ret = struct([]);
+      for k = 1:length (names)
+        ret.(tolower(names{k})) = java2mat (handle.get (names{k}));
+      endfor
+      varargout{1} = ret;
+	else
+      handle.show ();
+    endif
+  else
+    error ("invalid handle");
+  endif
+
+endfunction

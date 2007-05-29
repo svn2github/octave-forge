@@ -1,0 +1,32 @@
+sinclude ./Makeconf
+
+JAR_FILES = oplot-gl.jar
+CLASSPATH = $(JOGL_JAR):$(OCTAVE_JAR)
+JAVA_DIR = org/octave/graphics
+JAVA_SOURCES = $(wildcard $(addprefix $(JAVA_DIR)/, *.java))
+
+ifeq ($(HAVE_JAVA),yes)
+all: $(JAR_FILES)
+	@if test -f" FILES"; then \
+	  rm -f FILES; \
+	fi; \
+	touch FILES; \
+	for _f in $(JAR_FILES); do \
+	  echo $$_f >> FILES; \
+	done
+else
+all:
+	@echo "Java support not compiled"
+	@exit -1
+endif
+
+test:
+	@echo $(JAVA_SOURCES)
+
+%.jar: $(JAVA_SOURCES)
+	-rm -f $@
+	$(JAVAC) -cp $(CLASSPATH) -source 1.2 -target 1.2 $(JAVA_SOURCES)
+	$(JAR) cf $@ $(JAVA_DIR)/*.class
+
+clean:
+	-rm -f FILES core octave-core *~ $(JAR_FILES) $(JAVA_DIR)/*.class

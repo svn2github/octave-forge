@@ -1,0 +1,25 @@
+if (file_in_path (EXEC_PATH, "jogl.jar"))
+  if (file_in_path (EXEC_PATH, "gluegen-rt.jar"))
+    javaaddpath (file_in_path (EXEC_PATH, "gluegen-rt.jar"));
+  endif
+  javaaddpath (file_in_path (EXEC_PATH, "jogl.jar"));
+  javaaddpath (fullfile (fileparts (mfilename ("fullpath")), "oplot-gl.jar"));
+
+  dispatch ("get", "oplot_get", "any");
+  dispatch ("set", "oplot_set", "any");
+  dispatch ("ishandle", "oplot_ishandle", "any");
+  dispatch ("__go_figure__", "oplot_go_figure", "any");
+  dispatch ("__go_delete__", "oplot_go_delete", "any");
+  dispatch ("__go_axes__", "oplot_go_axes", "any");
+  dispatch ("__go_axes_init__", "oplot_go_axes_init", "any");
+  dispatch ("__go_text__", "oplot_go_text", "any");
+  dispatch ("__go_surface__", "oplot_go_surface", "any");
+
+  atexit ("oplot_exit");
+
+  mark_as_command shading;
+  mark_as_command legend;
+  mark_as_command hidden;
+else
+  warning ("JOGL could not be found, oplot-gl is not loaded");
+endif

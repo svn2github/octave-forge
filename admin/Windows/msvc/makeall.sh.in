@@ -48,7 +48,7 @@ fi
 
 if test "x$subs" = "x"; then
   # FIXME: only perform operation in main/ subdirs
-  subs=`ls */*/DESCRIPTION | grep -v 'nonfree/' | grep -v 'language/'`
+  subs="`ls */*/DESCRIPTION | grep -v 'nonfree/' | grep -v 'language/'` nonfree/arpack/DESCRIPTION"
 fi
 
 failures=
@@ -58,6 +58,9 @@ for s in $subs; do
   packdir=`dirname $s`
   packname=`echo $packdir | sed -e 's,^.*/,,'`
   packmodule=`echo $packdir | sed -e 's,^\([^/]*\)/.*$,\1,'`
+  if test "$packmodule" = "nonfree"; then
+    packmodule=others
+  fi
   arg=$base_arg
   if test -f "$packdir/NOINSTALL"; then
     if test -z "$donsi"; then
@@ -246,7 +249,7 @@ EOF
         echo "SectionGroupEnd"
         echo "SectionGroup \"$packmodule\" GRP_forge_$packmodule"
       fi
-      if test "$packmodule" = "main" -o "$packdesc_low" = "windows" -o "$packdesc_low" = "java"; then
+      if test "$packmodule" = "main" -o "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
         echo "Section \"$packdesc\" SEC_$packname"
       else
         echo "Section /o \"$packdesc\" SEC_$packname"
@@ -274,6 +277,12 @@ EOF
         echo "  SetOutPath \"\$INSTDIR\\bin\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl.dll\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas.dll\""
+        ;;
+        arpack)
+        echo "  SetOutPath \"\$INSTDIR\\bin\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\arpack.dll\""
+        echo "  SetOutPath \"\$INSTDIR\\license\""
+        echo "  File \"\${VCLIBS_ROOT}\\license\\COPYRIGHT.ARPACK\""
         ;;
       esac
       echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""

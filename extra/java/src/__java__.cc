@@ -137,7 +137,8 @@ static std::string get_module_path(const std::string& name, bool strip_name = tr
 {
   std::string retval;
 
-  retval = octave_env::make_absolute (load_path::find_file (name), octave_env::getcwd ());
+  retval = octave_env::make_absolute (load_path::find_file (name), 
+				      octave_env::getcwd ());
 
   if (! retval.empty () && strip_name)
     {
@@ -182,6 +183,8 @@ static std::string initial_class_path (void)
 
       if (st)
         retval = jar_file;
+      else
+	retval.resize(0);
     }
 
   return retval;
@@ -195,12 +198,28 @@ static bool initialize_jvm (std::string& msg)
     {
       JavaVMInitArgs vm_args;
       JavaVMOption options[3];
-      std::string init_class_path = "-Djava.class.path=" + initial_class_path ();
-      std::string init_octave_path = "-Doctave.java.path=" + initial_java_dir (true);
+      std::string init_class_path = initial_class_path ();
+      std::string init_octave_path = initial_java_dir (true);
+      
+      if (init_octave_path.empty())
+	{
+	  msg = "failed to find path of __java__.oct";
+	  return false;
+	}
+      if (init_class_path.empty())
+	{
+	  msg = "failed to find path of octave.jar";
+	  return false;
+	}
 
-      OCTAVE_LOCAL_BUFFER (char, class_path_optionString, init_class_path.length () + 1);
+      init_class_path = "-Djava.class.path=" + init_class_path;
+      init_octave_path = "-Doctave.java.path=" + init_octave_path;
+
+      OCTAVE_LOCAL_BUFFER (char, class_path_optionString, 
+			   init_class_path.length () + 1);
       strcpy (class_path_optionString, init_class_path.c_str ());
-      OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, init_octave_path.length () + 1);
+      OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, 
+			   init_octave_path.length () + 1);
       strcpy (octave_path_optionString, init_octave_path.c_str ());
 
       vm_args.version = JNI_VERSION_1_2;
@@ -225,7 +244,6 @@ static bool initialize_jvm (std::string& msg)
         }
       else
         msg = "unable to find Java Runtime Environment";
-#endif
 
       if (! jvm_lib_path.empty ())
         {
@@ -251,9 +269,14 @@ static bool initialize_jvm (std::string& msg)
           else
             msg = "unable to load Java Runtime Environment";
         }
-
+#else
+      if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **>(&jni_env), 
+			    &vm_args) == JNI_OK)
+	return true;
+      else
+	msg = "unable to start Java VM";
+#endif
       return false;
-
     }
 
   return true;

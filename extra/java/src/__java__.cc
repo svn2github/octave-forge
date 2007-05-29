@@ -25,6 +25,9 @@
 #ifdef __WIN32__
 #include <windows.h>
 #endif
+#include <octave/load-path.h>
+#include <octave/oct-env.h>
+#include <octave/oct-shlib.h>
 
 #include <algorithm>
 #include <map>
@@ -130,46 +133,24 @@ static std::string read_registry_string (const std::string& key, const std::stri
 }
 #endif
 
-#ifdef __WIN32__
 static std::string get_module_path(const std::string& name, bool strip_name = true)
 {
   std::string retval;
-  int n = 1024;
-  HMODULE hnd = GetModuleHandle (name.c_str());
 
-  if (hnd)
+  retval = octave_env::make_absolute (load_path::find_file (name), octave_env::getcwd ());
+
+  if (! retval.empty () && strip_name)
     {
-      retval = std::string (n, '\0');
-      while (true)
-        {
-          int status = GetModuleFileName (hnd, &retval[0], n);
+      size_t pos = retval.rfind (file_ops::dir_sep_str + name);
 
-          if (status < n)
-            {
-              retval.resize (status);
-              break;
-            }
-          else
-            {
-              n *= 2;
-              retval.resize (n);
-            }
-        }
-          
-      if (! retval.empty ())
-        {
-          size_t pos = retval.rfind ("\\" + name);
-
-          if (pos != NPOS)
-            retval.resize (pos);
-          else
-            retval.resize (0);
-        }
+      if (pos != NPOS)
+        retval.resize (pos);
+      else
+        retval.resize (0);
     }
 
   return retval;
 }
-#endif
 
 static std::string initial_java_dir (bool arch_dependent = false)
 {
@@ -178,14 +159,12 @@ static std::string initial_java_dir (bool arch_dependent = false)
 
   if (path1.empty())
     {
-#ifdef __WIN32__
       path1 = path2 = get_module_path ("__java__.oct", true);
 
-      size_t pos = path2.rfind ("\\");
+      size_t pos = path2.rfind (file_ops::dir_sep_str);
 
       if (pos != NPOS)
         path2.resize (pos);
-#endif
     }
 
   return (arch_dependent ? path1 : path2);
@@ -208,60 +187,75 @@ static std::string initial_class_path (void)
   return retval;
 }
 
+static octave_shlib jvm_lib;
+
 static bool initialize_jvm (std::string& msg)
 {
   if (! jvm)
     {
+      JavaVMInitArgs vm_args;
+      JavaVMOption options[3];
+      std::string init_class_path = "-Djava.class.path=" + initial_class_path ();
+      std::string init_octave_path = "-Doctave.java.path=" + initial_java_dir (true);
+
+      OCTAVE_LOCAL_BUFFER (char, class_path_optionString, init_class_path.length () + 1);
+      strcpy (class_path_optionString, init_class_path.c_str ());
+      OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, init_octave_path.length () + 1);
+      strcpy (octave_path_optionString, init_octave_path.c_str ());
+
+      vm_args.version = JNI_VERSION_1_2;
+      vm_args.nOptions = 2 /* 3 */;
+      options[0].optionString = class_path_optionString;
+      options[1].optionString = octave_path_optionString;
+      //options[2].optionString = "-Dsun.java2d.opengl=True";
+      vm_args.options = options;
+      vm_args.ignoreUnrecognized = false;
+
+      std::string jvm_lib_path;
+
 #if defined (__WIN32__)
       std::string regval = read_registry_string ("software\\javasoft\\java runtime environment", "Currentversion");
       if (! regval.empty ())
         {
           regval = read_registry_string ("software\\javasoft\\java runtime environment\\" + regval, "RuntimeLib");
           if (! regval.empty())
-            {
-              jvmLib = LoadLibrary (regval.c_str ());
-              if (jvmLib)
-                {
-                  JNI_CreateJavaVM_t create_vm = (JNI_CreateJavaVM_t)GetProcAddress((HMODULE)jvmLib, "JNI_CreateJavaVM");
-                  if (create_vm)
-                    {
-                      JavaVMInitArgs vm_args;
-                      JavaVMOption options[3];
-                      std::string init_class_path = "-Djava.class.path=" + initial_class_path ();
-                      std::string init_octave_path = "-Doctave.java.path=" + initial_java_dir (true);
-
-                      OCTAVE_LOCAL_BUFFER (char, class_path_optionString, init_class_path.length () + 1);
-                      strcpy (class_path_optionString, init_class_path.c_str ());
-                      OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, init_octave_path.length () + 1);
-                      strcpy (octave_path_optionString, init_octave_path.c_str ());
-
-                      vm_args.version = JNI_VERSION_1_2;
-                      vm_args.nOptions = 3;
-                      options[0].optionString = class_path_optionString;
-                      options[1].optionString = octave_path_optionString;
-                      options[2].optionString = "-Dsun.java2d.opengl=True";
-                      vm_args.options = options;
-                      vm_args.ignoreUnrecognized = false;
-
-                      if (create_vm (&jvm, &jni_env, &vm_args) == JNI_OK)
-                        return true;
-                      else
-                        msg = "unable to start Java VM";
-                    }
-                  else
-                    msg = "unable to find correct entry point in jvm.dll";
-                }
-              else
-                msg = "unable to load Java Runtime Environment";
-            }
+            jvm_lib_path = regval;
           else
             msg = "unable to find Java Runtime Environment";
         }
       else
         msg = "unable to find Java Runtime Environment";
 #endif
+
+      if (! jvm_lib_path.empty ())
+        {
+          octave_shlib lib (jvm_lib_path);
+
+          if (lib)
+            {
+              JNI_CreateJavaVM_t create_vm = (JNI_CreateJavaVM_t)lib.search("JNI_CreateJavaVM");
+
+              if (create_vm)
+                {
+                  if (create_vm (&jvm, &jni_env, &vm_args) == JNI_OK)
+                    {
+                      jvm_lib = lib;
+                      return true;
+                    }
+                  else
+                    msg = "unable to start Java VM";
+                }
+              else
+                msg = "unable to find correct entry point in JVM library";
+            }
+          else
+            msg = "unable to load Java Runtime Environment";
+        }
+
       return false;
+
     }
+
   return true;
 }
 
@@ -272,9 +266,9 @@ static void terminate_jvm(void)
       jvm->DestroyJavaVM ();
       jvm = 0;
       jni_env = 0;
-#ifdef __WIN32__
-      FreeLibrary ((HMODULE)jvmLib);
-#endif
+
+      if (jvm_lib)
+        jvm_lib.close ();
     }
 }
 

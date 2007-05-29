@@ -3713,6 +3713,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
 			     bool cholB = 0, int disp = 0, int maxit = 300);
 #endif
 
+#ifndef _MSC_VER
 template static octave_idx_type
 lusolve (const SparseMatrix&, const SparseMatrix&, Matrix&);
 
@@ -3751,6 +3752,7 @@ utsolve (const ComplexMatrix&, const ColumnVector&, const ComplexMatrix&);
 
 template static Matrix
 utsolve (const Matrix&, const ColumnVector&, const Matrix&);
+#endif
 
 #endif
 

@@ -45,16 +45,16 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
-<dt>May 24, 2007</dt>
+<dt>May 26, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.12. Many packages
  will also function function with earlier versions of Octave 2.9.
  Notable changes in this release include:</p>
 <ul>
    <li>secs1d: A new package for 1D semiconductor drift diffusion
-   modelling.</li>
+   modeling.</li>
    <li>secs2d: A new package for 2D semiconductor drift diffusion
-   modelling.</li>
+   modeling.</li>
    <li>outliers: New package for outlier detection.</li>
    <li>sockets: New package for posix sockets layer.</li>
    <li>comm: New functions lz77enco and lz77deco.

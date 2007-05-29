@@ -10,7 +10,7 @@
 ##
 ## You should also have the following in your .bashrc:
 ## 
-##    export OFHOME=octave.sf.net:/home/groups/o/oc/octave/htdocs
+##    export OFHOME=octave.sf.net:/home/groups/o/oc/octave
 ## 
 ## 0) http://sourceforge.net/tracker/?group_id=2888&atid=102888
 ##    http://sourceforge.net/tracker/?group_id=2888&atid=202888
@@ -63,7 +63,6 @@
 ##
 ## 10) Upload the webpages to sourceforge.
 ##
-##        tar cvzf www.tar.gz www
 ##        scp doc/htdocs.tar.gz $OFHOME
 ##        ssh octave.sf.net
 ##        cd /home/groups/o/oc/octave/

@@ -11,7 +11,7 @@
 !define USE_OCTPLOT
 !define USE_OCTAVE_FORGE
 !define USE_MSYS
-!define OPLOTGL_VERSION "0.2.0"
+!define JHANDLES_VERSION "0.2.0"
 
 !ifdef USE_DEBUG
 !define OCTAVE_BASE "octave-${OCTAVE_SUFFIX}-debug"
@@ -214,6 +214,11 @@ Section "Development files" SEC_DEV
   File "${VCLIBS_ROOT}\lib\hdf5.lib"
   File "${VCLIBS_ROOT}\lib\zlib.lib"
   File "${VCLIBS_ROOT}\lib\f2c.lib"
+  ; Additional headers required by some octave headers
+  ; HDF5
+  SetOutPath "$INSTDIR\include"
+  File "${VCLIBS_ROOT}\include\H5*.h"
+  File "${VCLIBS_ROOT}\include\hdf5.h"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -268,11 +273,11 @@ SectionGroupEnd
 
 SectionGroup /e "Graphics" GRP_GRAPHICS
 
-!ifdef OPLOTGL_VERSION
-Section "OplotGL" SEC_OPLOTGL
+!ifdef JHANDLES_VERSION
+Section "JHandles" SEC_JHANDLES
   SetOverwrite try
-  SetOutPath "$INSTDIR\share\octave\packages\oplot-gl-${OPLOTGL_VERSION}"
-  File /r "${OCTAVE_ROOT}\share\octave\packages\oplot-gl-${OPLOTGL_VERSION}\*"
+  SetOutPath "$INSTDIR\share\octave\packages\jhandles-${JHANDLES_VERSION}"
+  File /r "${OCTAVE_ROOT}\share\octave\packages\jhandles-${JHANDLES_VERSION}\*"
   SetOutPath "$INSTDIR\bin"
   File "${OCTAVE_ROOT}\bin\jogl.jar"
   File "${OCTAVE_ROOT}\bin\jogl.dll"
@@ -397,7 +402,7 @@ Section "SciTE editor" SEC_SCITE
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
-Section "Console" SEC_CONSOLE
+Section /o "Console" SEC_CONSOLE
   SetOutPath "$INSTDIR\tools\console"
   SetOverwrite try
   File /x console.xml "${CONSOLE_ROOT}\*.*"
@@ -466,8 +471,8 @@ SectionEnd
 !ifdef USE_OCTPLOT
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_OPLOT} "Alternative graphics/plot engine for Octave"
 !endif
-!ifdef OPLOTGL_VERSION
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_OPLOTGL} "Java/OpenGL based 2D/3D graphics backend for Octave with high compatibility with Matlab handle graphics"
+!ifdef JHANDLES_VERSION
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JHANDLES} "Java/OpenGL based 2D/3D graphics backend for Octave with high compatibility with Matlab handle graphics"
 !endif
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_TOOLS} "Additional GNU tools required (less, makeinfo, sed...). If not selected, those tools must be available in your PATH."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_VC} "Microsoft C/C++ runtime libraries required by Octave. It is STRONGLY recommended to use the default setting."
@@ -519,6 +524,28 @@ Function .onInit
   ;Call CheckAdmin
   !insertmacro SetSectionFlag ${SEC_VC} ${SF_SELECTED}
 noruntime:
+  Call DetectJVM
+  Pop $0
+  StrCmp "" "$0" nojvm jvm
+jvm:
+  !insertmacro SetSectionFlag ${SEC_JAVA} ${SF_SELECTED}
+  !insertmacro SetSectionFlag ${SEC_JHANDLES} ${SF_SELECTED}
+  Goto endjvm
+nojvm:
+  !insertmacro ClearSectionFlag ${SEC_JAVA} ${SF_SELECTED}
+  !insertmacro ClearSectionFlag ${SEC_JHANDLES} ${SF_SELECTED}
+endjvm:
+!ifdef USE_MSYS
+  Call DetectMSYS
+  Pop $0
+  StrCmp $0 1 msys nomsys
+msys:
+  !insertmacro ClearSectionFlag ${SEC_MSYS} ${SF_SELECTED}
+  Goto endmsys
+nomsys:
+  !insertmacro SetSectionFlag ${SEC_MSYS} ${SF_SELECTED}
+endmsys:
+!endif
 FunctionEnd
 
 Function AtlasCpu
@@ -704,3 +731,20 @@ done:
   Pop $1
   Pop $0
 FunctionEnd
+
+Function DetectJVM
+  Push $0
+  ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" CurrentVersion
+  Exch $0
+FunctionEnd
+
+!ifdef USE_MSYS
+Function DetectMSYS
+  Push $0
+  StrCpy $0 1
+  IfFileExists "$WINDIR\MSYS.INI" done
+  StrCpy $0 0
+done:
+  Exch $0
+FunctionEnd
+!endif

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-no_packages=":parallel:optiminterp:MacOSX:graceplot:pdb:xraylib:engine:"
+no_packages=":parallel:optiminterp:MacOSX:graceplot:pdb:xraylib:engine:jhandles:"
 no_cmake=1
 
 INSTALL="@INSTALL@"
@@ -249,7 +249,8 @@ EOF
         echo "SectionGroupEnd"
         echo "SectionGroup \"$packmodule\" GRP_forge_$packmodule"
       fi
-      if test "$packmodule" = "main" -o "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
+      if test "$packmodule" = "main" -o "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o \
+		  "$packdesc_low" = "arpack"; then
         echo "Section \"$packdesc\" SEC_$packname"
       else
         echo "Section /o \"$packdesc\" SEC_$packname"

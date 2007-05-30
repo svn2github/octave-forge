@@ -392,7 +392,12 @@ SectionEnd
 Section "SciTE editor" SEC_SCITE
   SetOutPath "$INSTDIR\tools\wscite"
   SetOverwrite try
-  File /r /x License.txt "${SCITE_ROOT}\*.*"
+  File /r /x License.txt /x matlab.properties "${SCITE_ROOT}\*.*"
+  File "${OCTAVE_FORGE}\admin\Windows\msvc\matlab.properties.octave"
+  StrCpy $0 "$INSTDIR\tools\wscite\matlab.properties.octave"
+  StrCpy $1 "$INSTDIR\tools\wscite\matlab.properties"
+  Call ReplaceOctDir
+  Delete "$INSTDIR\tools\wscite\matlab.properties.octave"
   SetOutPath "$INSTDIR\license"
   File /oname=COPYRIGHT.SCITE "${SCITE_ROOT}\License.txt"
   SetOutPath "$INSTDIR"

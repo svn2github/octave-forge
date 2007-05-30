@@ -1,0 +1,56 @@
+2007-05-27
+	* Octave-2.9.12
+		. fix mkoctfile by including missing
+		  library files
+	* Octave-Forge-20070526, with new packages
+		. java
+		. outliers
+		. secs1d and secs2d
+	* Use the regular package manager of Octave
+	* Integrate stripped-down MSYS shell (mainly
+	  useful with the package manager)
+	* Integrate new Java/OpenGL based graphics backend
+	  with 2D/3D plots and high compatibility with Matlab
+	  handle graphics
+	* Octplot-0.4.1 (CVS)
+
+2007-01-26
+	* Update Octave CVS
+		. fix "cd" to root dir
+		. fix help searching when .m/.oct file
+		  exists
+	* Update octplot SVN
+		. fix legend label order
+	* Reduce number of DLL's by sharing them
+	* Upgrade to pcre-7.0 (instead of 6.3)
+	* Upgrade to gnuplot-4.2rc4 (instead of 4.0)
+		. wxt terminal with anti-aliasing
+		. enhanced text format with subscript
+		  and superscript (like Matlab)
+	* MSVC8 runtime DLL's are now installed locally
+	  when required (no admin rights needed)
+	* MSVC71 runtime DLL's are installed if missing
+	  on target system (needed by Console2)
+	* Add scrollbar to Console2 interface
+	* Provide optimized linear-algebra libraries (ATLAS)
+	  for P4/SSE2 and PM/SSE2
+	* Include additional packages from "extra/" subdir
+	  of octave-forge
+		. NaN
+		. Windows
+		. civil
+		. integration
+		. mapping
+		. soctcl (not functional as "listen" is not
+		  implemented for Windows)
+		. symband
+		. tsa
+	* Add README and octave-forge links in programs menu
+
+2007-01-07
+	* Update octave CVS
+	* Update octplot SVN: fix for legend labels
+	* Add SciTE text editor
+	* Add Console2 as octave console
+	* Add documentation (HTML/PDF)
+	* Structured components in the installer

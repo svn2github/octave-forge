@@ -292,6 +292,7 @@ Section "Gnuplot" SEC_GNUPLOT
   SetOutPath "$INSTDIR\bin"
   File /x "*.dll" /x "*.GID" "${GNUPLOT_ROOT}\bin\*.*"
   File "${VCLIBS_ROOT}\bin\bgd.dll"
+  File "${VCLIBS_ROOT}\bin\freetype6.dll"
   File "${VCLIBS_ROOT}\bin\iconv.dll"
   File "${VCLIBS_ROOT}\bin\intl.dll"
   File "${VCLIBS_ROOT}\bin\jpeg6b.dll"

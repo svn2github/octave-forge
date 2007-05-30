@@ -1,7 +1,7 @@
 sinclude ./Makeconf
 
 JAR_FILES = oplot-gl.jar
-CLASSPATH = $(JOGL_JAR):$(OCTAVE_JAR)
+CLASSPATH = $(JOGL_JAR)${OCTAVE_PATHSEP}$(OCTAVE_JAR)
 JAVA_DIR = org/octave/graphics
 JAVA_SOURCES = $(wildcard $(addprefix $(JAVA_DIR)/, *.java))
 
@@ -25,7 +25,7 @@ test:
 
 %.jar: $(JAVA_SOURCES)
 	-rm -f $@
-	$(JAVAC) -cp $(CLASSPATH) -source 1.2 -target 1.2 $(JAVA_SOURCES)
+	$(JAVAC) -cp '$(CLASSPATH)' -source 1.2 -target 1.2 $(JAVA_SOURCES)
 	$(JAR) cf $@ $(JAVA_DIR)/*.class
 
 clean:

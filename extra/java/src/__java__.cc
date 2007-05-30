@@ -184,7 +184,7 @@ static std::string initial_class_path (void)
       if (st)
         retval = jar_file;
       else
-	retval.resize(0);
+        retval.resize(0);
     }
 
   return retval;
@@ -202,15 +202,15 @@ static bool initialize_jvm (std::string& msg)
       std::string init_octave_path = initial_java_dir (true);
       
       if (init_octave_path.empty())
-	{
-	  msg = "failed to find path of __java__.oct";
-	  return false;
-	}
+        {
+          msg = "failed to find path of __java__.oct";
+          return false;
+        }
       if (init_class_path.empty())
-	{
-	  msg = "failed to find path of octave.jar";
-	  return false;
-	}
+        {
+          msg = "failed to find path of octave.jar";
+          return false;
+        }
 
       init_class_path = "-Djava.class.path=" + init_class_path;
       init_octave_path = "-Doctave.java.path=" + init_octave_path;
@@ -271,10 +271,10 @@ static bool initialize_jvm (std::string& msg)
         }
 #else
       if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **>(&jni_env), 
-			    &vm_args) == JNI_OK)
-	return true;
+            &vm_args) == JNI_OK)
+        return true;
       else
-	msg = "unable to start Java VM";
+        msg = "unable to start Java VM";
 #endif
       return false;
     }

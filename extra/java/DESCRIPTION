@@ -1,8 +1,8 @@
 Name: Java
-Version: 1.1.0
+Version: 1.2.0
 Date: 2007-05-15
-Author: Michael Goffioul <michael.goffioul@swing.be>
-Maintainer: Michael Goffioul <michael.goffioul@swing.be>
+Author: Michael Goffioul <michael.goffioul@gmail.com>
+Maintainer: Michael Goffioul <michael.goffioul@gmail.com>
 Title: Java Interface
 Description: Provides Java interface with OO-like Java objects manipulation
 Categories: Java

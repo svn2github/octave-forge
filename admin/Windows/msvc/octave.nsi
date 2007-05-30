@@ -504,6 +504,11 @@ FunctionEnd
 Function un.onInit
   MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
   Abort
+  Call un.DetectAdmin
+  Pop $0
+  StrCmp $0 1 0 endadmin
+  SetShellVarContext all
+endadmin:
 FunctionEnd
 
 Function .onInit
@@ -547,6 +552,11 @@ nomsys:
   !insertmacro SetSectionFlag ${SEC_MSYS} ${SF_SELECTED}
 endmsys:
 !endif
+  Call DetectAdmin
+  Pop $0
+  StrCmp $0 1 0 endadmin
+  SetShellVarContext all
+endadmin:
 FunctionEnd
 
 Function AtlasCpu
@@ -704,6 +714,44 @@ Function CheckAdmin
   win9x:
   Pop $1
   Pop $0
+FunctionEnd
+
+Function DetectAdmin
+  Push $0
+  Push $1
+  ClearErrors
+  UserInfo::GetName
+  IfErrors win9x
+  Pop $0
+  UserInfo::GetAccountType
+  Pop $1
+  StrCmp $1 "Admin" win9x 0
+  StrCpy $0 0
+  Goto done
+win9x:
+  StrCpy $0 1
+done:
+  Pop $1
+  Exch $0
+FunctionEnd
+
+Function un.DetectAdmin
+  Push $0
+  Push $1
+  ClearErrors
+  UserInfo::GetName
+  IfErrors win9x
+  Pop $0
+  UserInfo::GetAccountType
+  Pop $1
+  StrCmp $1 "Admin" win9x 0
+  StrCpy $0 0
+  Goto done
+win9x:
+  StrCpy $0 1
+done:
+  Pop $1
+  Exch $0
 FunctionEnd
 
 Function ReplaceOctDir

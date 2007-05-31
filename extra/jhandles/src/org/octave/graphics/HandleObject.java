@@ -90,8 +90,11 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public void deleteChildren()
 	{
-		while (Children.size() > 0)
-			Children.elementAt(0).delete();
+		synchronized (Children)
+		{
+			while (Children.size() > 0)
+				Children.elementAt(0).delete();
+		}
 	}
 
 	public boolean isLegendable()
@@ -120,12 +123,18 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public void addChild(HandleObject child)
 	{
-		Children.addElement(child);
+		synchronized (Children)
+		{
+			Children.addElement(child);
+		}
 	}
 
 	public void removeChild(HandleObject child)
 	{
-		Children.removeElement(child);
+		synchronized (Children)
+		{
+			Children.removeElement(child);
+		}
 	}
 
 	public void validate()

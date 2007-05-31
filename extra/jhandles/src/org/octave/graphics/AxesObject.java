@@ -125,6 +125,7 @@ public class AxesObject extends HandleObject
 	TextProperty Title;
 	TextProperty XLabel;
 	TextProperty YLabel;
+	TextProperty ZLabel;
 	DoubleArrayProperty CLim;
 	RadioProperty CLimMode;
 	DoubleArrayProperty ALim;
@@ -228,6 +229,13 @@ public class AxesObject extends HandleObject
 		yLabelObj.Parent.addElement(this);
 		yLabelObj.validate();
 		YLabel = new TextProperty(this, "YLabel", yLabelObj);
+		TextObject zLabelObj = new TextObject(null, "", new double[] {0,0,0});
+		zLabelObj.HAlign.reset(init3D ? "right" : "center");
+		zLabelObj.VAlign.reset(init3D ? "top" : "bottom");
+		zLabelObj.Rotation.reset(new Double(init3D ? 90.0 : 0.0));
+		zLabelObj.Parent.addElement(this);
+		zLabelObj.validate();
+		ZLabel = new TextProperty(this, "ZLabel", zLabelObj);
 		CLim = new DoubleArrayProperty(this, "CLim", new double[] {0, 1}, 2);
 		CLimMode = new RadioProperty(this, "CLimMode", new String[] {"auto", "manual"}, "auto");
 		ALim = new DoubleArrayProperty(this, "ALim", new double[] {0, 1}, 2);
@@ -339,6 +347,7 @@ public class AxesObject extends HandleObject
 		Title.reset("");
 		XLabel.reset("");
 		YLabel.reset("");
+		ZLabel.reset("");
 		CLim.reset(new double[] {0, 1});
 		CLimMode.reset("auto");
 		ALim.reset(new double[] {0, 1});
@@ -381,6 +390,7 @@ public class AxesObject extends HandleObject
 		Title.getText().delete();
 		XLabel.getText().delete();
 		YLabel.getText().delete();
+		ZLabel.getText().delete();
 		if (legend != null)
 			legend.delete();
 	}
@@ -1074,6 +1084,7 @@ public class AxesObject extends HandleObject
 		{
 			boolean doZGrid = ZGrid.isSet() && !ZGridStyle.is("none");
 			double[] zticks = ZTick.getArray();
+			int wmax = 0, hmax = 0;
 			String[] zticklabels = ZTickLabel.getArray();
 			ZColor.setup(gl);
 			for (int i=0; i<zticks.length; i++)
@@ -1147,10 +1158,70 @@ public class AxesObject extends HandleObject
 				// tick text
 				if (i < zticklabels.length)
 				{
-					GLTextRenderer.draw(canvas, gl, zticklabels[i],
-						2,
-						(zstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <0 ? 0 : 2)));
+					Dimension d = GLTextRenderer.draw(canvas, gl, zticklabels[i],
+									2,
+									(zstate == AXE_VERT_DIR ? 1 : (zd*zv[2] < 0 ? 0 : 2)));
+					if (d.width > wmax) wmax = d.width;
+					if (d.height > hmax) hmax = d.height;
 				}
+			}
+
+			// label
+			if (!ZLabel.isEmpty())
+			{
+				TextObject zLabObj = ZLabel.getText();
+				if (zLabObj.PositionMode.isSet())
+				{
+					zLabObj.HAlign.reset(zstate > AXE_DEPTH_DIR ? "center" : "right");
+					zLabObj.VAlign.reset(zstate == AXE_VERT_DIR ? "bottom" : (zd*zv[2] < 0 ? "bottom" : "top"));
+				
+					double angle = 0;
+					double[] p;
+					if (xySym)
+					{
+						p = new double[] {xPlaneN, yPlane, (zmin+zmax)/2};
+						if (Double.isInfinite(fy))
+							p[0] += (Math.signum(xPlaneN-xPlane)*fx*ztickoffset);
+						else
+							p[1] += (Math.signum(yPlane-yPlaneN)*fy*ztickoffset);
+					}
+					else
+					{
+						p = new double[] {xPlane, yPlaneN, (zmin+zmax)/2};
+						if (Double.isInfinite(fx))
+							p[1] += (Math.signum(yPlaneN-yPlane)*fy*ztickoffset);
+						else
+							p[0] += (Math.signum(xPlane-xPlaneN)*fx*ztickoffset);
+					}
+					x_render.transform(p[0], p[1], p[2], p, 0);
+					switch (zstate)
+					{
+						case AXE_ANY_DIR:
+							if (CameraUpVectorMode.is("auto"))
+							{
+								p[0] -= wmax;
+								angle = 90;
+							}
+							/* TODO: what's the correct offset?
+							p[0] += (!xySym ? wmax : -wmax);
+							p[1] += (zd*zv[2] <= 0 ? hmax : -hmax);
+							*/
+							break;
+						case AXE_VERT_DIR:
+							p[0] -= wmax;
+							angle = 90;
+							break;
+						case AXE_HORZ_DIR:
+							p[1] += hmax;
+							break;
+					}
+					x_renderInv.transform(p[0], p[1], p[2], p, 0);
+					zLabObj.Position.reset(new double[] {p[0], p[1], p[2]});
+					if (zLabObj.Rotation.doubleValue() != angle)
+						try { zLabObj.Rotation.set(new Double(angle)); }
+						catch (PropertyException e) {}
+				}
+				zLabObj.draw(r);
 			}
 		}
 		

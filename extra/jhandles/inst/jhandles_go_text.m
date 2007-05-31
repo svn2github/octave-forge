@@ -15,10 +15,16 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function oplot_go_delete (handle)
+function [ h ] = jhandles_go_text (ax, dummy1, txt, dummy2, pos, varargin)
 
-  obj = __get_object__ (handle);
-  obj.delete;
-  __request_drawnow__;
+  ax_obj = __get_object__ (ax);
+  txt_obj = java_new ("org.octave.graphics.TextObject", ax_obj, txt, pos);
+  h = txt_obj.getHandle ();
+
+  if (length (varargin) > 0)
+    set (h, varargin{:});
+  endif
+
+  txt_obj.validate ();
 
 endfunction

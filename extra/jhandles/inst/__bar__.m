@@ -23,7 +23,7 @@ function [ h ] = __bar__ (orient, mode3D, varargin)
   if (mode3D)
     tmp = makeBar3D (ax, xx, yy, w, mode, c, orient);
   else
-    tmp = oplot_go_barseries (ax, xx, yy, w, mode, c, orient);
+    tmp = jhandles_go_barseries (ax, xx, yy, w, mode, c, orient);
   endif
   if (nargout > 0)
     h = tmp;

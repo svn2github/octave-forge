@@ -15,16 +15,12 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = oplot_go_axes (fig, varargin)
+function [ ret ] = jhandles_ishandle (handle)
 
-  fig_obj = __get_object__ (fig);
-  ax_obj = java_new ("org.octave.graphics.AxesObject", fig_obj, 0);
-  h = ax_obj.getHandle ();
-
-  if (length (varargin) > 0)
-    set (h, varargin{:});
+  if (isnumeric (handle) && isscalar (handle))
+    ret = java_invoke ("org.octave.graphics.HandleObject", "isHandle", handle);
+  else
+    ret = 0;
   endif
-
-  ax_obj.validate ();
 
 endfunction

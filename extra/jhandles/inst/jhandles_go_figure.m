@@ -15,19 +15,18 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function oplot_set(h, varargin)
+function [ f ] = jhandles_go_figure (fnum)
 
-  for hk = h
-    handle = __get_object__ (hk);
-    if (! isempty (handle))
-      for k = 1:2:length(varargin)
-        handle.set (varargin{k}, mat2java (varargin{k+1}));
-      endfor
-    else
-      error ("invalid handle");
-    endif
-  endfor
-  
-  __request_drawnow__;
+  root = __get_object__ (0);
+  if (isempty (fnum) || isnan (fnum))
+    f = root.createNewFigure();
+  else
+    f = root.createNewFigure(fnum);
+  endif
+
+  f_obj = __get_object__ (f);
+  if (! isempty (f_obj))
+	  f_obj.validate ();
+  endif
 
 endfunction

@@ -15,18 +15,9 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ f ] = oplot_go_figure (fnum)
+function jhandles_go_axes_init (h, mode)
 
-  root = __get_object__ (0);
-  if (isempty (fnum) || isnan (fnum))
-    f = root.createNewFigure();
-  else
-    f = root.createNewFigure(fnum);
-  endif
-
-  f_obj = __get_object__ (f);
-  if (! isempty (f_obj))
-	  f_obj.validate ();
-  endif
+  ax_obj = __get_object__ (h);
+  ax_obj.reset (mode);
 
 endfunction

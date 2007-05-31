@@ -15,9 +15,19 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function oplot_go_axes_init (h, mode)
+function jhandles_set(h, varargin)
 
-  ax_obj = __get_object__ (h);
-  ax_obj.reset (mode);
+  for hk = h
+    handle = __get_object__ (hk);
+    if (! isempty (handle))
+      for k = 1:2:length(varargin)
+        handle.set (varargin{k}, mat2java (varargin{k+1}));
+      endfor
+    else
+      error ("invalid handle");
+    endif
+  endfor
+  
+  __request_drawnow__;
 
 endfunction

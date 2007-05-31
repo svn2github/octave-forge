@@ -15,7 +15,7 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = oplot_go_barseries (ax, xx, yy, width, mode, color, orient)
+function [ h ] = jhandles_go_barseries (ax, xx, yy, width, mode, color, orient)
 
   xx = xx(:);
   if (isvector (yy))

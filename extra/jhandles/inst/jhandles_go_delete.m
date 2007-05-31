@@ -15,12 +15,10 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ ret ] = oplot_ishandle (handle)
+function jhandles_go_delete (handle)
 
-  if (isnumeric (handle) && isscalar (handle))
-    ret = java_invoke ("org.octave.graphics.HandleObject", "isHandle", handle);
-  else
-    ret = 0;
-  endif
+  obj = __get_object__ (handle);
+  obj.delete;
+  __request_drawnow__;
 
 endfunction

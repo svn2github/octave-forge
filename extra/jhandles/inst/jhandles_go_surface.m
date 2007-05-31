@@ -15,7 +15,7 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = oplot_go_surface (ax, varargin)
+function [ h ] = jhandles_go_surface (ax, varargin)
 
   x = [];
   y = [];

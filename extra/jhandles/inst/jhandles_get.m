@@ -15,18 +15,24 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-if (exist ("oplot-gl.jar", "file"))
-  javaaddpath ("oplot-gl.jar");
-else
-  javaaddpath (".");
-endif
-javaaddpath ("jogl.jar");
-dispatch ("get", "oplot_get", "any");
-dispatch ("set", "oplot_set", "any");
-dispatch ("ishandle", "oplot_ishandle", "any");
-dispatch ("__go_figure__", "oplot_go_figure", "any");
-dispatch ("__go_delete__", "oplot_go_delete", "any");
-dispatch ("__go_axes__", "oplot_go_axes", "any");
-dispatch ("__go_axes_init__", "oplot_go_axes_init", "any");
-dispatch ("__go_text__", "oplot_go_text", "any");
-dispatch ("__go_surface__", "oplot_go_surface", "any");
+function [ varargout ] = jhandles_get (h, property)
+
+  handle = __get_object__ (h);
+  if (! isempty (handle))
+    if (nargin == 2)
+      varargout{1} = java2mat (handle.get (property));
+    elseif (nargout > 0)
+      names = char (handle.getNames ());
+      ret = struct([]);
+      for k = 1:length (names)
+        ret.(tolower(names{k})) = java2mat (handle.get (names{k}));
+      endfor
+      varargout{1} = ret;
+	else
+      handle.show ();
+    endif
+  else
+    error ("invalid handle");
+  endif
+
+endfunction

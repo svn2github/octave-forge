@@ -1,6 +1,6 @@
 sinclude ./Makeconf
 
-JAR_FILES = oplot-gl.jar
+JAR_FILES = jhandles.jar
 CLASSPATH = $(JOGL_JAR)${OCTAVE_PATHSEP}$(OCTAVE_JAR)
 JAVA_DIR = org/octave/graphics
 JAVA_SOURCES = $(wildcard $(addprefix $(JAVA_DIR)/, *.java))

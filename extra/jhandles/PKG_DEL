@@ -1,7 +1,7 @@
 try
-  atexit ("oplot_exit", false);
+  atexit ("jhandles_exit", false);
 catch
-  warning("Failed to remove atexit command in oplot-gl");
+  warning("Failed to remove atexit command in jhandles");
 end_try_catch
 
 dispatch ("get", "any");

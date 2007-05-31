@@ -15,24 +15,16 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ varargout ] = oplot_get (h, property)
+function [ h ] = jhandles_go_axes (fig, varargin)
 
-  handle = __get_object__ (h);
-  if (! isempty (handle))
-    if (nargin == 2)
-      varargout{1} = java2mat (handle.get (property));
-    elseif (nargout > 0)
-      names = char (handle.getNames ());
-      ret = struct([]);
-      for k = 1:length (names)
-        ret.(tolower(names{k})) = java2mat (handle.get (names{k}));
-      endfor
-      varargout{1} = ret;
-	else
-      handle.show ();
-    endif
-  else
-    error ("invalid handle");
+  fig_obj = __get_object__ (fig);
+  ax_obj = java_new ("org.octave.graphics.AxesObject", fig_obj, 0);
+  h = ax_obj.getHandle ();
+
+  if (length (varargin) > 0)
+    set (h, varargin{:});
   endif
+
+  ax_obj.validate ();
 
 endfunction

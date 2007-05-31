@@ -1,5 +1,5 @@
 /*
- * oplot-gl 
+ * jhandles 
  *
  * Copyright (C) 2007 Michael Goffioul 
  *

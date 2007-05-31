@@ -15,16 +15,18 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = oplot_go_text (ax, dummy1, txt, dummy2, pos, varargin)
-
-  ax_obj = __get_object__ (ax);
-  txt_obj = java_new ("org.octave.graphics.TextObject", ax_obj, txt, pos);
-  h = txt_obj.getHandle ();
-
-  if (length (varargin) > 0)
-    set (h, varargin{:});
-  endif
-
-  txt_obj.validate ();
-
-endfunction
+if (exist ("jhandles.jar", "file"))
+  javaaddpath ("jhandles.jar");
+else
+  javaaddpath (".");
+endif
+javaaddpath ("jogl.jar");
+dispatch ("get", "jhandles_get", "any");
+dispatch ("set", "jhandles_set", "any");
+dispatch ("ishandle", "jhandles_ishandle", "any");
+dispatch ("__go_figure__", "jhandles_go_figure", "any");
+dispatch ("__go_delete__", "jhandles_go_delete", "any");
+dispatch ("__go_axes__", "jhandles_go_axes", "any");
+dispatch ("__go_axes_init__", "jhandles_go_axes_init", "any");
+dispatch ("__go_text__", "jhandles_go_text", "any");
+dispatch ("__go_surface__", "jhandles_go_surface", "any");

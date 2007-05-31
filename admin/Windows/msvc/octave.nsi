@@ -824,6 +824,7 @@ Function DetectWinVer
   IfErrors is_error is_winnt
 is_winnt:
   StrCpy $1 $0 1
+  StrCmp $1 6 is_winxp
   StrCmp $1 5 0 is_error
   StrCmp $0 "5.0" is_win2k
   StrCmp $0 "5.1" is_winxp

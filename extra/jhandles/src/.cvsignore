@@ -10,3 +10,4 @@ Makeconf
 *.pdb
 config.log
 config.status
+oplot-gl.jar

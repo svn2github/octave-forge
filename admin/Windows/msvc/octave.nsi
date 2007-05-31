@@ -141,6 +141,9 @@ InstallDir "$PROGRAMFILES\Octave"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
+XPStyle on
+
+Var IS_WIN2K
 
 SectionGroup /e "Core" GRP_CORE
 
@@ -259,8 +262,16 @@ SectionGroupEnd
 Section /o "C/C++ Runtime Libraries" SEC_VC
   ;Call InstallRuntime
   SetOverwrite try
+  StrCmp $IS_WIN2K 1 is_win2k is_winxp
+is_winxp:
   SetOutPath "$INSTDIR\bin\Microsoft.VC80.CRT"
   File "${VCLIBS_ROOT}\bin\Microsoft.VC80.CRT\*.*"
+  Goto done
+is_win2k:
+  SetOutPath "$INSTDIR\bin"
+  File "${VCLIBS_ROOT}\bin\Microsoft.VC80.CRT\*.dll"
+  Goto done
+done:
 SectionEnd
 
 SectionGroupEnd
@@ -529,6 +540,7 @@ Function .onInit
 !ifdef ATLAS_PM
   !insertmacro SetSectionFlag ${SEC_LA_PMSSE2} ${SF_RO}
 !endif
+  Call DetectWinVer
   Call CheckMSVCR80
   Pop $0
   StrCmp $0 1 noruntime
@@ -683,6 +695,8 @@ Function CheckMSVCR80
   Push $4
   StrCpy $0 0
   FindFirst $1 $2 "$WINDIR\WinSxS\*"
+  # Under Win2K, force runtime installation
+  StrCmp $IS_WIN2K 1 done 0
   loop:
     StrCmp $2 "" done
     FindFirst $3 $4 "$WINDIR\WinSxS\$2\msvcr80.dll"
@@ -802,3 +816,31 @@ done:
   Exch $0
 FunctionEnd
 !endif
+
+Function DetectWinVer
+  Push $0
+  Push $1
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows NT\CurrentVersion" CurrentVersion
+  IfErrors is_error is_winnt
+is_winnt:
+  StrCpy $1 $0 1
+  StrCmp $1 5 0 is_error
+  StrCmp $0 "5.0" is_win2k
+  StrCmp $0 "5.1" is_winxp
+  Goto is_error
+is_win2k:
+  StrCpy $IS_WIN2K 1
+  Goto done
+is_winxp:
+  StrCpy $IS_WIN2K 0
+  Goto done
+is_error:
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows NT\CurrentVersion" ProductName
+  IfErrors 0 +4
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion" Version
+  IfErrors 0 +2
+  StrCpy $0 "Unknown"
+  MessageBox MB_ICONSTOP|MB_OK "This version of Octave cannot be installed on this system.$\r$\nSupported systems are Windows 2000 and Windows XP.$\r$\n$\r$\nCurrent system: $0"
+  Abort
+done:
+FunctionEnd

@@ -1590,6 +1590,11 @@ public class GLRenderer implements Renderer
 		gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, zmin-(zmax-zmin)/2, zmax+(zmax-zmin)/2);
 		gl.glMultMatrixd(ax.x_mat2.getData(), 0);
 		gl.glMatrixMode(GL.GL_MODELVIEW);
+
+		/* assumption: we start a new axes object, reset depth buffer such
+		 * that previous drawing are always overdrawn (to implement layering)
+		 */
+		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 	}
 
 	public void setViewport(int width, int height)

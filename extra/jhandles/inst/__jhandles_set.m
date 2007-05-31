@@ -15,7 +15,7 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function jhandles_set(h, varargin)
+function __jhandles_set(h, varargin)
 
   for hk = h
     handle = __get_object__ (hk);

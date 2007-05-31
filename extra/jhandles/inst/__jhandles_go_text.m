@@ -15,24 +15,16 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ varargout ] = jhandles_get (h, property)
+function [ h ] = __jhandles_go_text (ax, dummy1, txt, dummy2, pos, varargin)
 
-  handle = __get_object__ (h);
-  if (! isempty (handle))
-    if (nargin == 2)
-      varargout{1} = java2mat (handle.get (property));
-    elseif (nargout > 0)
-      names = char (handle.getNames ());
-      ret = struct([]);
-      for k = 1:length (names)
-        ret.(tolower(names{k})) = java2mat (handle.get (names{k}));
-      endfor
-      varargout{1} = ret;
-	else
-      handle.show ();
-    endif
-  else
-    error ("invalid handle");
+  ax_obj = __get_object__ (ax);
+  txt_obj = java_new ("org.octave.graphics.TextObject", ax_obj, txt, pos);
+  h = txt_obj.getHandle ();
+
+  if (length (varargin) > 0)
+    set (h, varargin{:});
   endif
+
+  txt_obj.validate ();
 
 endfunction

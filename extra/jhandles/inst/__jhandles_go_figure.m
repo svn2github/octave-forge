@@ -15,12 +15,18 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ ret ] = jhandles_ishandle (handle)
+function [ f ] = __jhandles_go_figure (fnum)
 
-  if (isnumeric (handle) && isscalar (handle))
-    ret = java_invoke ("org.octave.graphics.HandleObject", "isHandle", handle);
+  root = __get_object__ (0);
+  if (isempty (fnum) || isnan (fnum))
+    f = root.createNewFigure();
   else
-    ret = 0;
+    f = root.createNewFigure(fnum);
+  endif
+
+  f_obj = __get_object__ (f);
+  if (! isempty (f_obj))
+	  f_obj.validate ();
   endif
 
 endfunction

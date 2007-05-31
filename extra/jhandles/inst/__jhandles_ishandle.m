@@ -15,9 +15,12 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function jhandles_go_axes_init (h, mode)
+function [ ret ] = __jhandles_ishandle (handle)
 
-  ax_obj = __get_object__ (h);
-  ax_obj.reset (mode);
+  if (isnumeric (handle) && isscalar (handle))
+    ret = java_invoke ("org.octave.graphics.HandleObject", "isHandle", handle);
+  else
+    ret = 0;
+  endif
 
 endfunction

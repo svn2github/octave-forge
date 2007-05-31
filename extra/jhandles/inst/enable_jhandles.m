@@ -21,12 +21,12 @@ else
   javaaddpath (".");
 endif
 javaaddpath ("jogl.jar");
-dispatch ("get", "jhandles_get", "any");
-dispatch ("set", "jhandles_set", "any");
-dispatch ("ishandle", "jhandles_ishandle", "any");
-dispatch ("__go_figure__", "jhandles_go_figure", "any");
-dispatch ("__go_delete__", "jhandles_go_delete", "any");
-dispatch ("__go_axes__", "jhandles_go_axes", "any");
-dispatch ("__go_axes_init__", "jhandles_go_axes_init", "any");
-dispatch ("__go_text__", "jhandles_go_text", "any");
-dispatch ("__go_surface__", "jhandles_go_surface", "any");
+dispatch ("get", "__jhandles_get", "any");
+dispatch ("set", "__jhandles_set", "any");
+dispatch ("ishandle", "__jhandles_ishandle", "any");
+dispatch ("__go_figure__", "__jhandles_go_figure", "any");
+dispatch ("__go_delete__", "__jhandles_go_delete", "any");
+dispatch ("__go_axes__", "__jhandles_go_axes", "any");
+dispatch ("__go_axes_init__", "__jhandles_go_axes_init", "any");
+dispatch ("__go_text__", "__jhandles_go_text", "any");
+dispatch ("__go_surface__", "__jhandles_go_surface", "any");

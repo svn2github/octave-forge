@@ -15,8 +15,22 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function jhandles_exit
+function [ h ] = __jhandles_go_barseries (ax, xx, yy, width, mode, color, orient)
 
-  close all;
+  xx = xx(:);
+  if (isvector (yy))
+    yy = yy(:);
+  endif
+
+  h = [];
+  for k = 1:size (yy, 2)
+    obj = java_new ("org.octave.graphics.BarseriesObject", __get_object__ (ax), xx, yy(:,k), orient);
+    obj.validate ();
+    h = [h obj.getHandle()];
+    set (h(end), "barwidth", width, "barlayout", mode, "facecolor", color);
+  endfor
+
+  set(h, "bargroup", h);
+  __get_object__ (h(1)).updateBars ();
 
 endfunction

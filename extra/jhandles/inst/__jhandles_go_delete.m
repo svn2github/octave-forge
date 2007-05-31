@@ -15,18 +15,10 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ f ] = jhandles_go_figure (fnum)
+function __jhandles_go_delete (handle)
 
-  root = __get_object__ (0);
-  if (isempty (fnum) || isnan (fnum))
-    f = root.createNewFigure();
-  else
-    f = root.createNewFigure(fnum);
-  endif
-
-  f_obj = __get_object__ (f);
-  if (! isempty (f_obj))
-	  f_obj.validate ();
-  endif
+  obj = __get_object__ (handle);
+  obj.delete;
+  __request_drawnow__;
 
 endfunction

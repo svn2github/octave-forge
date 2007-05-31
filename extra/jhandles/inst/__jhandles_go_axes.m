@@ -15,16 +15,16 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = jhandles_go_text (ax, dummy1, txt, dummy2, pos, varargin)
+function [ h ] = __jhandles_go_axes (fig, varargin)
 
-  ax_obj = __get_object__ (ax);
-  txt_obj = java_new ("org.octave.graphics.TextObject", ax_obj, txt, pos);
-  h = txt_obj.getHandle ();
+  fig_obj = __get_object__ (fig);
+  ax_obj = java_new ("org.octave.graphics.AxesObject", fig_obj, 0);
+  h = ax_obj.getHandle ();
 
   if (length (varargin) > 0)
     set (h, varargin{:});
   endif
 
-  txt_obj.validate ();
+  ax_obj.validate ();
 
 endfunction

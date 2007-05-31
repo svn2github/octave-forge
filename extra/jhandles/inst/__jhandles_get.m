@@ -15,10 +15,24 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function jhandles_go_delete (handle)
+function [ varargout ] = __jhandles_get (h, property)
 
-  obj = __get_object__ (handle);
-  obj.delete;
-  __request_drawnow__;
+  handle = __get_object__ (h);
+  if (! isempty (handle))
+    if (nargin == 2)
+      varargout{1} = java2mat (handle.get (property));
+    elseif (nargout > 0)
+      names = char (handle.getNames ());
+      ret = struct([]);
+      for k = 1:length (names)
+        ret.(tolower(names{k})) = java2mat (handle.get (names{k}));
+      endfor
+      varargout{1} = ret;
+	else
+      handle.show ();
+    endif
+  else
+    error ("invalid handle");
+  endif
 
 endfunction

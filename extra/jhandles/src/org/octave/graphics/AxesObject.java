@@ -1172,8 +1172,10 @@ public class AxesObject extends HandleObject
 				TextObject zLabObj = ZLabel.getText();
 				if (zLabObj.PositionMode.isSet())
 				{
-					zLabObj.HAlign.reset(zstate > AXE_DEPTH_DIR ? "center" : "right");
-					zLabObj.VAlign.reset(zstate == AXE_VERT_DIR ? "bottom" : (zd*zv[2] < 0 ? "bottom" : "top"));
+					boolean camAuto = CameraUpVectorMode.is("auto");
+
+					zLabObj.HAlign.reset((zstate > AXE_DEPTH_DIR || camAuto) ? "center" : "right");
+					zLabObj.VAlign.reset(zstate == AXE_VERT_DIR ? "bottom" : ((zd*zv[2] < 0 || camAuto) ? "bottom" : "top"));
 				
 					double angle = 0;
 					double[] p;
@@ -1197,7 +1199,7 @@ public class AxesObject extends HandleObject
 					switch (zstate)
 					{
 						case AXE_ANY_DIR:
-							if (CameraUpVectorMode.is("auto"))
+							if (camAuto)
 							{
 								p[0] -= wmax;
 								angle = 90;

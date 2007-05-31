@@ -1,3 +1,17 @@
+2007-??-??
+	* Installer improvements/fixes
+		. select ATLAS/SSE2 if SSE2 detected
+		. install for all users if admin rights detected
+		. detect Win2K and install Runtime DLL's accordingly
+		. install freetype DLL when installing gnuplot
+		. detect existing MSYS and use it
+		. detect Java and pre-select corresponding packages
+		. do not install Console2 by default
+	* SciTE-1.73 (instead of 1.71)
+		. add possibility to run m-scripts directly from SciTE
+	* Gnuplot-4.2.0 (instead of 4.2rc4)
+	* JHandles (former OplotGL)
+
 2007-05-27
 	* Octave-2.9.12
 		. fix mkoctfile by including missing

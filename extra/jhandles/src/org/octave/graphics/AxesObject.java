@@ -43,7 +43,7 @@ public class AxesObject extends HandleObject
 	private String currentUnits;
 	private int maxLight;
 	private int axeIndex;
-	private int autoMode = 0;
+	protected int autoMode = 0;
 
 	RenderCanvas canvas;
 	LegendObject legend;
@@ -344,7 +344,10 @@ public class AxesObject extends HandleObject
 		ALim.reset(new double[] {0, 1});
 		ALimMode.reset("auto");
 		if (legend != null)
+		{
 			legend.delete();
+			legend = null;
+		}
 		Box.reset(new Boolean(true));
 		XDir.reset("normal");
 		YDir.reset("normal");
@@ -357,11 +360,19 @@ public class AxesObject extends HandleObject
 
 	public void validate()
 	{
-		updatePosition();
+		updateActivePosition();
 		autoTick();
 		autoAspectRatio();
 		autoCamera();
 		super.validate();
+	}
+
+	protected void setInternalPosition(double[] p)
+	{
+		autoSet(Position, p);
+		autoTick();
+		autoAspectRatio();
+		autoCamera();
 	}
 
 	public void deleteChildren()
@@ -1287,6 +1298,11 @@ public class AxesObject extends HandleObject
 		autoMode++;
 		p.set(value, true);
 		autoMode--;
+	}
+
+	boolean isAutoMode()
+	{
+		return (autoMode > 0);
 	}
 	
 	protected void autoScale()

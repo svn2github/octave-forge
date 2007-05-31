@@ -116,7 +116,6 @@ public class LegendObject extends AxesObject
 		ZColor.reset(EdgeColor.get());
 		Tag.reset("legend");
 
-		buildLegend(axes, names);
 		listen(axes.Position);
 		listen(axes.OuterPosition);
 		listen(Location);
@@ -124,6 +123,8 @@ public class LegendObject extends AxesObject
 		listen(EdgeColor);
 		listen(TextColor);
 		listen(String);
+		
+		buildLegend(axes, names);
 	}
 
 	public void buildLegend(AxesObject axes, String[] names)
@@ -249,8 +250,7 @@ public class LegendObject extends AxesObject
 			}
 		}
 
-		Position.reset(new double[] {0, 0, ((double)totalWidth)/canvas.getWidth(), ((double)totalHeight)/canvas.getHeight()});
-		updateOuterPosition();
+		Position.set(new double[] {0, 0, ((double)totalWidth)/canvas.getWidth(), ((double)totalHeight)/canvas.getHeight()}, true);
 		size = new Dimension(totalWidth, totalHeight);
 	}
 
@@ -265,6 +265,93 @@ public class LegendObject extends AxesObject
 		boolean outerActive = axes.ActivePositionProperty.is("outerposition");
 		int margin = 10;
 
+		String loc = Location.getValue().toLowerCase();
+		int hPos = (loc.contains("west") ? 0 : loc.contains("east") ? 2 : 1);
+		int vPos = (loc.contains("south") ? 0 : loc.contains("north") ? 2 : 1);
+		boolean outside = loc.contains("outside");
+
+		if (!outside)
+		{
+			switch (vPos)
+			{
+				case 0: /* south */
+					pos[1] = aPos[1]+margin;
+					break;
+				case 1: /* middle */
+					pos[1] = aPos[1]+(aPos[3]-pos[3])/2;
+					break;
+				case 2: /* north */
+					pos[1] = aPos[1]+aPos[3]-margin-pos[3];
+					break;
+			}
+			switch (hPos)
+			{
+				case 0: /* west */
+					pos[0] = aPos[0]+margin;
+					break;
+				case 1: /* center */
+					pos[0] = aPos[0]+(aPos[2]-pos[2])/2;
+					break;
+				case 2: /* east */
+					pos[0] = aPos[0]+aPos[2]-margin-pos[2];
+					break;
+			}
+		}
+		else
+		{
+			switch (hPos)
+			{
+				case 0: /* west */
+					if (outerActive)
+					{
+						double offset = margin+pos[2];
+						aPos[0] += offset;
+						aPos[2] -= offset;
+					}
+					pos[0] = aPos[0]-margin-pos[2];
+					break;
+				case 1: /* center */
+					pos[0] = aPos[0]+(aPos[2]-pos[2])/2;
+					break;
+				case 2: /* east */
+					if (outerActive)
+						aPos[2] -= (margin+pos[2]);
+					pos[0] = aPos[0]+aPos[2]+margin;
+					break;
+			}
+			switch (vPos)
+			{
+				case 0: /* south */
+					if (hPos == 1)
+					{
+						if (outerActive)
+						{
+							double offset = margin+pos[3];
+							aPos[1] += offset;
+							aPos[3] -= offset;
+						}
+						pos[1] = aPos[1]-margin-pos[3];
+					}
+					else
+						pos[1] = aPos[1];
+					break;
+				case 1: /* middle */
+					pos[1] = aPos[1]+(aPos[3]-pos[3])/2;
+					break;
+				case 2: /* north */
+					if (hPos == 1)
+					{
+						if (outerActive)
+							aPos[3] -= (margin+pos[3]);
+						pos[1] = aPos[1]+aPos[3]+margin;
+					}
+					else
+						pos[1] = aPos[1]+aPos[3]-pos[3];
+					break;
+			}
+		}
+
+		/*
 		if (Location.is("NorthEast"))
 		{
 			pos[0] = aPos[0]+aPos[2]-margin-pos[2];
@@ -287,12 +374,27 @@ public class LegendObject extends AxesObject
 				aPos[2] = aOPos[0]+aOPos[2]-2*margin-pos[2]-aPos[0];
 			}
 			pos[0] = aPos[0]+aPos[2]+margin;
-			pos[1] = aPos[1]+aPos[3]-margin-pos[3];
+			pos[1] = aPos[1]+aPos[3]-pos[3];
 		}
+		else if (Location.is("SouthEast"))
+		{
+			pos[0] = aPos[0]+aPos[2]-margin-pos[2];
+			pos[1] = aPos[1]+margin;
+		}
+		else if (Location.is("South"))
+		{
+			pos[0] = aPos[0]+(aPos[2]-pos[2])/2;
+			pos[1] = aPos[1]+margin;
+		}
+		else if (Location.is("SouthWest"))
+		{
+		}
+		*/
 
-		Position.reset(getFigure().convertPosition(pos, "pixels", Units.getValue()));
-		updateOuterPosition();
-		axes.Position.reset(getFigure().convertPosition(aPos, "pixels", axes.Units.getValue()));
+		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
+		autoMode++;
+		axes.setInternalPosition(getFigure().convertPosition(aPos, "pixels", axes.Units.getValue()));
+		autoMode--;
 	}
 
 	void updateActivePosition()
@@ -300,9 +402,8 @@ public class LegendObject extends AxesObject
 		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
 		pos[2] = size.width;
 		pos[3] = size.height;
-		Position.reset(getFigure().convertPosition(pos, "pixels", Units.getValue()));
+		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
 		doLocate();
-		updateOuterPosition();
 	}
 
 	public void propertyChanged(Property p) throws PropertyException
@@ -334,11 +435,13 @@ public class LegendObject extends AxesObject
 			System.arraycopy(s, 0, used_names, 0, used_names.length);
 			String.set(used_names);
 		}
-		else if (p == axes.Position || p == axes.OuterPosition)
+		else if (!isAutoMode() && (p == axes.Position || p == axes.OuterPosition))
 			doLocate();
 		else if (p == Location)
 		{
+			autoMode++;
 			axes.updateActivePosition();
+			autoMode--;
 			doLocate();
 		}
 		else if (p == Orientation)

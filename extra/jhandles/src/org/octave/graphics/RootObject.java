@@ -42,7 +42,10 @@ public class RootObject extends HandleObject
 	public static RootObject getInstance()
 	{
 		if (instance == null)
+		{
 			instance = new RootObject();
+			instance.validate();
+		}
 		return instance;
 	}
 
@@ -121,8 +124,11 @@ public class RootObject extends HandleObject
 	{
 		if (p == CurrentFigure)
 		{
-			if (CurrentFigure.size() > 0 && CurrentFigure.elementAt(0) == this)
-				CurrentFigure.removeAllElements();
+			if (CurrentFigure.size() > 0)
+				if (CurrentFigure.elementAt(0) == this)
+					CurrentFigure.removeAllElements();
+				else
+					((FigureObject)CurrentFigure.elementAt(0)).activate();
 		}
 	}
 }

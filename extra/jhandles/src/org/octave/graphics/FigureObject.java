@@ -145,6 +145,7 @@ public class FigureObject extends HandleObject
 	{
 		updateTitle();
 		super.validate();
+		activate();
 	}
 	
 	private void updateTitle()
@@ -208,6 +209,11 @@ public class FigureObject extends HandleObject
 	public AxesObject getAxesForPoint(Point pt)
 	{
 		return (CurrentAxes.size() > 0 ? (AxesObject)CurrentAxes.elementAt(0) : null);
+	}
+
+	public void activate()
+	{
+		frame.toFront();
 	}
 
 	public void redraw()
@@ -291,12 +297,15 @@ public class FigureObject extends HandleObject
 
 	public void reshape(RenderCanvas c, int x, int y, int width, int height)
 	{
-		Iterator it = Children.iterator();
-		while (it.hasNext())
+		synchronized (Children)
 		{
-			HandleObject hObj = (HandleObject)it.next();
-			if (hObj instanceof AxesObject && hObj.isValid())
-				((AxesObject)hObj).updateActivePosition();
+			Iterator it = Children.iterator();
+			while (it.hasNext())
+			{
+				HandleObject hObj = (HandleObject)it.next();
+				if (hObj instanceof AxesObject && hObj.isValid())
+					((AxesObject)hObj).updateActivePosition();
+			}
 		}
 	}
 
@@ -313,18 +322,21 @@ public class FigureObject extends HandleObject
 		// clear background
 		r.clear(FigColor.getColor());
 		// iterate over axes objects
-		Iterator it = Children.iterator();
-		int index = 0;
-		while (it.hasNext())
+		synchronized (Children)
 		{
-			HandleObject hObj = (HandleObject)it.next();
-			if (hObj instanceof AxesObject)
+			Iterator it = Children.iterator();
+			int index = 0;
+			while (it.hasNext())
 			{
-				AxesObject aObj = (AxesObject)hObj;
-				aObj.setAxeIndex(index++);
-				if (aObj.isValid() && (rect == null || rect.intersects(aObj.getOuterBoundingBox())))
+				HandleObject hObj = (HandleObject)it.next();
+				if (hObj instanceof AxesObject)
 				{
-					aObj.draw(r);
+					AxesObject aObj = (AxesObject)hObj;
+					aObj.setAxeIndex(index++);
+					if (aObj.isValid() && (rect == null || rect.intersects(aObj.getOuterBoundingBox())))
+					{
+						aObj.draw(r);
+					}
 				}
 			}
 		}

@@ -105,7 +105,10 @@
 ; CPU detection page
 Page custom AtlasCpu AtlasCpuEnd
 ; Components page
+!define MUI_PAGE_CUSTOMFUNCTION_LEAVE componentsLeave
 !insertmacro MUI_PAGE_COMPONENTS
+; Graphics backend selection
+Page custom Graphics GraphicsEnd
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Start menu page
@@ -144,6 +147,7 @@ ShowUnInstDetails show
 XPStyle on
 
 Var IS_WIN2K
+Var DEFAULT_GRAPHICS_BACKEND
 
 SectionGroup /e "Core" GRP_CORE
 
@@ -190,6 +194,21 @@ Section "Core" SEC_CORE
   CreateShortCut "$DESKTOP\Octave.lnk" "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" "" \
     "$INSTDIR\bin\octave.ico" 0
   !insertmacro MUI_STARTMENU_WRITE_END
+
+  ; Create __default_graphics__.m
+  ClearErrors
+  FileOpen $0 "$INSTDIR\share\octave\${OCTAVE_SUFFIX}\m\startup\__default_graphics__.m" w
+  IfErrors error1
+  StrCpy $1 $DEFAULT_GRAPHICS_BACKEND
+  FileWrite $0 'function ret = __default_graphics__, ret="$1";, endfunction$\n'
+  IfErrors error2
+  FileClose $0
+  Goto done
+error2:
+  FileClose $0
+error1:
+  MessageBox MB_OK|MB_ICONSTOP "Error while creating __default_graphics__.m file. Octave may not work correctly."
+done:
 SectionEnd
 
 Section "Development files" SEC_DEV
@@ -529,6 +548,7 @@ FunctionEnd
 
 Function .onInit
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "atlascpu.ini"
+  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "graphics.ini"
 !ifndef USE_TIMING
   !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Settings" "NumFields" "4"
 !endif
@@ -631,6 +651,54 @@ pmsse20:
   Goto atlasend
 !endif
 atlasend:
+FunctionEnd
+
+Function Graphics
+  !insertmacro MUI_HEADER_TEXT "Graphics backend selection" "Choose the graphics backend you want to use by default."
+  !insertmacro SectionFlagIsSet ${SEC_OPLOT} ${SF_SELECTED} octplot no_octplot
+octplot:
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 5" "Flags" ""
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 6" "Flags" "NOTABSTOP"
+  Goto end_octplot
+no_octplot:
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 5" "Flags" "DISABLED"
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 6" "Flags" "NOTABSTOP|DISABLED"
+  Goto end_octplot
+end_octplot:
+  !insertmacro SectionFlagIsSet ${SEC_JHANDLES} ${SF_SELECTED} jhandles no_jhandles
+jhandles:
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "Flags" ""
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 4" "Flags" "NOTABSTOP"
+  Goto end_jhandles
+no_jhandles:
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "Flags" "DISABLED"
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 4" "Flags" "NOTABSTOP|DISABLED"
+  Goto end_jhandles
+end_jhandles:
+  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "graphics.ini"
+FunctionEnd
+
+Function GraphicsEnd
+  Push $0
+check_gnuplot:
+  !insertmacro MUI_INSTALLOPTIONS_READ $0 "graphics.ini" "Field 1" "State"
+  StrCmp $0 0 check_jhandles
+  StrCpy $DEFAULT_GRAPHICS_BACKEND "gnuplot"
+  Goto done
+check_jhandles:
+  !insertmacro MUI_INSTALLOPTIONS_READ $0 "graphics.ini" "Field 3" "State"
+  StrCmp $0 0 check_octplot
+  StrCpy $DEFAULT_GRAPHICS_BACKEND "jhandles"
+  Goto done
+check_octplot:
+  !insertmacro MUI_INSTALLOPTIONS_READ $0 "graphics.ini" "Field 5" "State"
+  StrCmp $0 0 default
+  StrCpy $DEFAULT_GRAPHICS_BACKEND "octplot"
+  Goto done
+default:
+  StrCpy $DEFAULT_GRAPHICS_BACKEND "gnuplot"
+done:
+  Pop $0
 FunctionEnd
 
 !ifdef USE_TIMING
@@ -842,6 +910,20 @@ is_error:
   IfErrors 0 +2
   StrCpy $0 "Unknown"
   MessageBox MB_ICONSTOP|MB_OK "This version of Octave cannot be installed on this system.$\r$\nSupported systems are Windows 2000 and Windows XP.$\r$\n$\r$\nCurrent system: $0"
+  Abort
+done:
+FunctionEnd
+
+Function componentsLeave
+!ifdef JHANDLES_VERSION
+  !insertmacro SectionFlagIsSet ${SEC_JHANDLES} ${SF_SELECTED} check_jvm ""
+!endif
+  !insertmacro SectionFlagIsSet ${SEC_JAVA} ${SF_SELECTED} check_jvm done
+check_jvm:
+  Call DetectJVM
+  Pop $0
+  StrCmp "" "$0" 0 done
+  MessageBox MB_ICONEXCLAMATION|MB_YESNO "The Java and/or JHandles components have been selected. These components require$\r$\nthe Java Runtime Environment from Sun (http://java.sun.com) installed on your system,$\r$\nbut it seems Java is not available on this system. Installing those components without$\r$\nJava available might prevent Octave from working correctly.$\r$\n$\r$\nProceed with installation anway?" IDYES done
   Abort
 done:
 FunctionEnd

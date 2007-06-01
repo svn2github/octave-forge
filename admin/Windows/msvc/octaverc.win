@@ -62,6 +62,21 @@ if (! isempty (msys_path))
   fprintf(" - MSYS shell available (%s).\n", msys_path);
 end
 
-clear oplot_path scite_path msys_path
+# Default graphics backend
+try
+  gf = __default_graphics__;
+  switch gf
+    case "gnuplot"
+    case "octplot"
+      octplot_enable;
+    case "jhandles"
+      pkg load jhandles;
+  endswitch
+  fprintf (" - Graphics backend: %s.\n", gf);
+catch
+  warning ("unable to set default graphics backend");
+end_try_catch
+
+clear oplot_path scite_path msys_path gf
 
 fprintf ("\n");

@@ -489,7 +489,7 @@ Section -Post
 
   InitPluginsDir
   File "/oname=$PLUGINSDIR\do_pkg_init.m" "${OCTAVE_FORGE}\admin\Windows\msvc\do_pkg_init.m"
-  ExecWait '"$INSTDIR\bin\octave.exe" -q "$PLUGINSDIR\do_pkg_init.m"'
+  ExecWait '"$INSTDIR\bin\octave.exe" -qf "$PLUGINSDIR\do_pkg_init.m"'
 SectionEnd
 
 ; Section descriptions

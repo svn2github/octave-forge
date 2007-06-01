@@ -654,6 +654,7 @@ atlasend:
 FunctionEnd
 
 Function Graphics
+  Push $0
   !insertmacro MUI_HEADER_TEXT "Graphics backend selection" "Choose the graphics backend you want to use by default."
   !insertmacro SectionFlagIsSet ${SEC_OPLOT} ${SF_SELECTED} octplot no_octplot
 octplot:
@@ -663,7 +664,10 @@ octplot:
 no_octplot:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 5" "Flags" "DISABLED"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 6" "Flags" "NOTABSTOP|DISABLED"
-  Goto end_octplot
+  !insertmacro MUI_INSTALLOPTIONS_READ $0 "graphics.ini" "Field 5" "State"
+  StrCmp $0 0 end_octplot
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 1" "State" 1
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 5" "State" 0
 end_octplot:
   !insertmacro SectionFlagIsSet ${SEC_JHANDLES} ${SF_SELECTED} jhandles no_jhandles
 jhandles:
@@ -673,9 +677,13 @@ jhandles:
 no_jhandles:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "Flags" "DISABLED"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 4" "Flags" "NOTABSTOP|DISABLED"
-  Goto end_jhandles
+  !insertmacro MUI_INSTALLOPTIONS_READ $0 "graphics.ini" "Field 3" "State"
+  StrCmp $0 0 end_jhandles
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 1" "State" 1
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "State" 0
 end_jhandles:
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "graphics.ini"
+  Pop $0
 FunctionEnd
 
 Function GraphicsEnd

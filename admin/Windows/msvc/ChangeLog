@@ -7,10 +7,15 @@
 		. detect existing MSYS and use it
 		. detect Java and pre-select corresponding packages
 		. do not install Console2 by default
+		. add default graphics backend selection page
+		. warn if java-based packages are selected and no
+		  JRE was detected
 	* SciTE-1.73 (instead of 1.71)
 		. add possibility to run m-scripts directly from SciTE
 	* Gnuplot-4.2.0 (instead of 4.2rc4)
 	* JHandles (former OplotGL)
+	* New packages
+		. pt_BR (language)
 
 2007-05-27
 	* Octave-2.9.12

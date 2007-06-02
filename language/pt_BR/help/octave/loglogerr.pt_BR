@@ -1,4 +1,4 @@
-md5="7d78c3d8c0d49b15b3d52bd46c88d055";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="4b540254c83946873edcda4e081500ca";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} loglogerr (@var{args})
 Essa fun@value{cedilha}@~ao produz gr@'aficos bidimensionais sobre duplos eixos logar@'itmicos
@@ -15,5 +15,5 @@ com erros na escala-@var{y} definidos por @var{ey} e o gr@'afico
 formato definido por @var{fmt}. Veja @code{errorbar} para formatos dispon@'iveis e 
 informa@value{cedilha}@~ao adicional.
 @seealso{errorbar, semilogxerr, semilogyerr, polar, mesh, contour, 
-__pltopt__, bar, stairs, replot, xlabel, ylabel, title}
+__pltopt__, bar, stairs, xlabel, ylabel, title}
 @end deftypefn

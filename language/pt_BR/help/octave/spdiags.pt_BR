@@ -1,9 +1,9 @@
-md5="dcb5912ba87fc781a773218b731206a2";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="70430726c481bca28f9692350be478b1";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {fun@value{cedilha}@~ao File} {[@var{b}, @var{c}]} = spdiags (@var{a})
-@deftypefnx {fun@value{cedilha}@~ao File} {@var{b}} = spdiags (@var{a}, @var{c})
-@deftypefnx {fun@value{cedilha}@~ao File} {@var{b}} = spdiags (@var{v}, @var{c}, @var{a})
-@deftypefnx {fun@value{cedilha}@~ao File} {@var{b}} = spdiags (@var{v}, @var{c}, @var{m}, @var{n})
+@deftypefn {fun@value{cedilha}@~ao File} {[@var{b}, @var{c}] =} spdiags (@var{a})
+@deftypefnx {fun@value{cedilha}@~ao File} {@var{b} =} spdiags (@var{a}, @var{c})
+@deftypefnx {fun@value{cedilha}@~ao File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{a})
+@deftypefnx {fun@value{cedilha}@~ao File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{m}, @var{n})
 Uma generaliza@,{c}@~ao da fun@value{cedilha}@~ao @code{spdiag}. Chamada com um argumento
 de entrada simples, as @var{c} diagonais n@~ao nulas de @var{A} s@~ao extra@'idas.
 Com dois argumentos as diagonais para extrair s@~ao dadas atrav@'es do vetor 

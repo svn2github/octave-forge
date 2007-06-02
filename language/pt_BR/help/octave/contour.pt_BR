@@ -1,29 +1,23 @@
-md5="8f9751c4cd0253e11f1979516c35b79e";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b4a0f5690b03d3bca85635162be9f529";rev="1.4";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c}} = contour (@var{x},@var{y},@var{z},@var{vv})
-Monta um gr@'afico de contorno da matriz @var{z}. 
-Os par@^ametros @var{x}, @var{y} e @var{vn} s@~ao opcionais.
-
-O valor de retorno @var{c} @'e uma matriz 2 por @var{n} contendo as
-linhas de contorno no seguinte formato
-
-@example
-@var{c} = [niv1 , x1 , x2 , ... , nivn , x1 , x2 , ... 
-     com1   , y1 , y2 , ... , comn   , y1 , y2 , ...  ]
-@end example
-
-@noindent
-no qual a linha de contorno @var{n} tem um n@'ivel (altura) de @var{nivn} e
-comprimento de @var{comn}.
-
-Se @var{x} e @var{y} forem omitidos eles s@~ao tomados como @'indices de
-linha/coluna de @var{z}.  @var{vn} @'e ou um escalar denotando o n@'umero de
-linhas a calcular ou um vetor contendo os valores das linhas.  Se
-somante um valor for procurado, escolha @code{@var{vn} = [val, val]}.  Se
-@var{vn} for omitido seu valor padr@~ao @'e 10.
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c} =} contour (@var{z})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c} =} contour (@var{z}, @var{vn})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
+ 
+Monta gr@'{a}fico em curvas de n@'{i}vel (linhas de contorno) da matriz @var{z}, usando a
+matriz de contorno @var{c} calculada atrav@'{e}s de @code{contourc} a partir dos mesmos
+argumentos; veja the latter para sua interpreta@value{cedilha}@~{a}o.  @var{c} @'{e} somente
+retornada se for pedido explicitamente.  Por exemplo:
 
 @example
-@var{c}=contourc (@var{x}, @var{y}, @var{z}, linspace(0,2*pi,10))
+@group
+x = 0:2;
+y = x;
+z = x' * y;
+contour (x, y, z, 2:3)
+
+@end group
 @end example
-@seealso{contourc,line,plot}
+@seealso{contourc, line, plot}
 @end deftypefn

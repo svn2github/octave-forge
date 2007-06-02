@@ -1,6 +1,6 @@
-md5="e46d2319974ec4d1cf41508c0ec8d51a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="dc757d1763ba4dff5b1544ab29f727dc";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{d}, @var{dd}]} = diffpara (@var{x}, @var{a}, @var{b})
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{d}, @var{dd}] =} diffpara (@var{x}, @var{a}, @var{b})
 Retorna o estimador @var{d} para o par@^ametro de diferen@,{c}a de uma
 s@'erie tempo integrada.
 

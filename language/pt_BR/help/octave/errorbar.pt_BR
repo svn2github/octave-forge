@@ -1,4 +1,4 @@
-md5="31ba62e29cdf1c714725e6cde14ac21d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d20d997bfc1bd314637fb5a0507ffb1f";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} errorbar (@var{args})
 Essa fun@value{cedilha}@~ao produz gr@'aficos bidimensionais com barras de erro. Muitas
@@ -17,7 +17,7 @@ dos elementos, come@,{c}ando com 1.
 Se mais que dois argumentos forem dados, eles seram interpretados como
 
 @example
-errorbar (@var{x}, @var{y}, ..., @var{fmt} ...)
+errorbar (@var{x}, @var{y}, ..., @var{fmt}, ...)
 @end example
 
 @noindent
@@ -84,5 +84,5 @@ Gr@'afico xyerrorbar de @var{y} versus @var{x} onde errorbars de @var{x}
 s@~ao desenhadas de @var{x}-@var{lx} a @var{x}+@var{ux} e errorbars de @var{y}
 de @var{y}-@var{ly} a @var{y}+@var{uy}.
 @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
-bar, stairs, replot, xlabel, ylabel, title}
+bar, stairs, xlabel, ylabel, title}
 @end deftypefn

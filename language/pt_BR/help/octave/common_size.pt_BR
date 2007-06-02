@@ -1,6 +1,6 @@
-md5="bd944bb150dd93e95513b5d021487336";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0853a5c0c86e3daf6592b245db7523e9";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{err}, @var{y1}, ...] =} common_size (@var{x1}, ...)
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
 Determina se todos os argumentos de entrada s@~ao ou escalar ou de tamanho
 comum.  Se for dessa forma, @var{err} @'e zero, e @var{yi} @'e uma matriz de
 tamanho comum com todas as entradas iguais a @var{xi} se isso for um escalar escalar ou

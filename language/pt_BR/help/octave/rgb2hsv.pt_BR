@@ -1,6 +1,6 @@
-md5="8485acefbb5e627491f61d496c9d51fb";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="83a1a3922585ab1942b39aad5604a215";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} @var{hsv_map} = rgb2hsv (@var{rgb_map})
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{hsv_map} =} rgb2hsv (@var{rgb_map})
 Transforma um mapa de cores do formato rgb para o formato hsv.
 
 Uma cor no formato RGB consiste de intensidades de vermelho, verde e azul.

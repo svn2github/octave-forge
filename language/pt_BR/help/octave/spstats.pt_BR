@@ -1,11 +1,11 @@
-md5="65029f331ba740243a0bd700e235b65a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b410a0be83112b74841cb4a9370e8ef2";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{contador}, @var{m@'edia}, @var{var}]} = spstats (@var{s})
-@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {[@var{contador}, @var{m@'edia}, @var{var}]} = spstats (@var{s}, @var{j})
+@deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{contador}, @var{m@'edia}, @var{var}] =} spstats (@var{s})
+@deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {[@var{contador}, @var{m@'edia}, @var{var}] =} spstats (@var{s}, @var{j})
 Retorna dados estat@'isticos sobre os elementos n@~ao nulos da matriz esparsa @var{s}.
 @var{contador} @'e o n@'umero de n@~ao nulos em cada coluna, @var{m@'edia}
 @'e a m@'edia dos n@~ao nulos em cada coluna, e @var{var} @'e a
-variância de n@~ao nulos em cada coluna.
+vari@^{a}ncia de n@~ao nulos em cada coluna.
 
 Se chamada com dois argumentos de entrada, se @var{s} for os dados e @var{j}
 for o n@'umero bin@'ario para os dados, calcula os dados estat@'isticos para cada bin@'ario.  Nesse 

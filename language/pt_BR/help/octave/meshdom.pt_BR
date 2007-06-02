@@ -1,9 +1,5 @@
-md5="d3e902604a48293740dac610e1aa7df2";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="048c83f03e998f735886a06b4f63ef23";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} meshdom (@var{x}, @var{y})
-Dados vetores de coordenadas @var{x} e @var{y}, retorna duas matrizes
-correspondendo @`as coordenadas @var{x} e @var{y} da malha.
-
-Nota: essa fun@value{cedilha}@~ao @'e fornecida para compatibilidade com antigas vers@~oes
-do @sc{Matlab}.  Voc@^e pode usar @code{meshgrid} em lugar de @code{meshdom}.
+Essa fun@value{cedilha}@~{a}o est@'{a} desatualizada.  Use @code{meshgrid} em seu lugar.
 @end deftypefn

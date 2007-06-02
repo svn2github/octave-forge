@@ -1,6 +1,6 @@
-md5="0281838a4045c24804333477bf36702c";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="fe3d7e0386e44e88bd4fcf707abb6ec0";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
-@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} lcm (@var{x}, @code{...})
+@deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} lcm (@var{x}, @dots{})
 Calcula o menor m@'ultiplo comum entre os elementos de @var{x}, ou
 da lista de todos os argumentos.  Por exemplo,
 

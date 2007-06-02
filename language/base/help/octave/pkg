@@ -13,18 +13,35 @@ pkg install image-1.0.0.tar.gz
 @noindent
 installs the package found in the file @code{image-1.0.0.tar.gz}.
 
-If @var{option} is @code{-nodeps} the package manager will disable the
-dependency checking. That way it is possible to install a package even
-if it depends on another package that's not installed on the system.
-@strong{Use this option with care.}
+The @var{option} variable can contain options that affect the manner
+in which a package is installed. These options can be one or more of
 
-If @var{option} is @code{-noauto} the package manager will not
-automatically load the installed package when starting Octave,
-even if the package requests that it is.
+@table @code
+@item -nodeps
+The package manager will disable the dependency checking. That way it 
+is possible to install a package even if it depends on another package 
+that's not installed on the system. @strong{Use this option with care.}
 
-If @var{option} is @code{-auto} the package manager will
-automatically load the installed package when starting Octave,
-even if the package requests that it isn't.
+@item -noauto
+The package manager will not automatically load the installed package 
+when starting Octave, even if the package requests that it is.
+
+@item -auto
+The package manager will automatically load the installed package when 
+starting Octave, even if the package requests that it isn't.
+
+@item -local
+A local installation is forced, even if the user has system privileges.
+
+@item -global
+A global installation is forced, even if the user doesn't normally have
+system privileges
+
+@item -verbose
+The package manager will print the output of all of the commands that are 
+performed.
+@end table
+
 @item uninstall
 Uninstall named packages.  For example,
 @example
@@ -102,5 +119,30 @@ It is possible to get the current value of global_list with the following
 @example
 pkg global_list
 @end example
+@item rebuild
+Rebuilds the package database from the installed directories. This can 
+be used in cases where for some reason the package database is corrupted.
+It can also take the @code{-auto} and @code{-noauto} options to allow the
+autolaoding state of a package to be changed. For example
+
+@example
+pkg rebuild -noauto image
+@end example
+
+will remove the autoloading status of the image package.
+@item build
+Builds a binary form of a package or packages. The binary file produced
+will itself be an Octave package that can be installed normally with
+@code{pkg}. The form of the command to build a binary package is
+
+@example
+pkg build builddir image-1.0.0.tar.gz @dots{}
+@end example
+
+@noindent
+where @code{buiddir} is the name of a directory where the temporary
+installation will be produced and the binary packages will be found.
+The options @code{-verbose} and @code{-nodeps} are respected, while 
+the other options are ignored.
 @end table
 @end deftypefn

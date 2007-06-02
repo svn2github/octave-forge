@@ -9,7 +9,7 @@ dimension of @var{x} will not be shifted. For example
 
 @example
 @group
-x = [1, 2, 3; 4, 5, 6, 7, 8, 9];
+x = [1, 2, 3; 4, 5, 6; 7, 8, 9];
 circshift (x, 1)
 @result{}  7, 8, 9
     1, 2, 3

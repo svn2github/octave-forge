@@ -1,11 +1,11 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} normrnd (@var{m}, @var{v}, @var{r}, @var{c})
-@deftypefnx {Function File} {} normrnd (@var{m}, @var{v}, @var{sz})
+@deftypefn {Function File} {} normrnd (@var{m}, @var{s}, @var{r}, @var{c})
+@deftypefnx {Function File} {} normrnd (@var{m}, @var{s}, @var{sz})
 Return an @var{r} by @var{c}  or @code{size (@var{sz})} matrix of
-random samples from the normal distribution with parameters @var{m} 
-and @var{v}.  Both @var{m} and @var{v} must be scalar or of size 
-@var{r} by @var{c}.
+random samples from the normal distribution with parameters mean @var{m} 
+and standard deviation @var{s}.  Both @var{m} and @var{s} must be scalar 
+or of size @var{r} by @var{c}.
 
 If @var{r} and @var{c} are omitted, the size of the result matrix is
-the common size of @var{m} and @var{v}.
+the common size of @var{m} and @var{s}.
 @end deftypefn

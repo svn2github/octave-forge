@@ -14,8 +14,16 @@
 		. add possibility to run m-scripts directly from SciTE
 	* Gnuplot-4.2.0 (instead of 4.2rc4)
 	* JHandles (former OplotGL)
+		. fix layering problems (legends are now really on top
+		  of the corresponding plot)
+		. auto-activate figure window on figure creation and
+		  "figure" calls
+		. add Z label support
+		. full support for "Location" property of legends
 	* New packages
 		. pt_BR (language)
+	* Add support for localized languages in readline library
+	  (8-bits character languages should be OK now)
 
 2007-05-27
 	* Octave-2.9.12

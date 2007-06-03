@@ -1,4 +1,4 @@
-2007-??-??
+2007-06-03: 2.9.12-3
 	* Installer improvements/fixes
 		. select ATLAS/SSE2 if SSE2 detected
 		. install for all users if admin rights detected
@@ -20,12 +20,19 @@
 		  "figure" calls
 		. add Z label support
 		. full support for "Location" property of legends
-	* New packages
-		. pt_BR (language)
+	* Octave-forge
+		. added packages
+			+ pt_BR (language)
+			+ tsa (extra)
+			+ symband (extra)
+		. removed packages
+			+ zenity (main)
 	* Add support for localized languages in readline library
 	  (8-bits character languages should be OK now)
+	* Octave
+		. fix mkoctfile by installing HDF5 headers
 
-2007-05-27
+2007-05-27: 2.9.12-2
 	* Octave-2.9.12
 		. fix mkoctfile by including missing
 		  library files

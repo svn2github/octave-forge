@@ -153,6 +153,13 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	{
 	}
 
+	public void addProperty(Property p)
+	{
+		super.addProperty(p);
+		if (isValid())
+			p.unLock();
+	}
+
 	public boolean isValid()
 	{
 		return valid;

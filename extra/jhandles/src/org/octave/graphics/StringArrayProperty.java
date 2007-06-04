@@ -23,6 +23,11 @@ package org.octave.graphics;
 
 public class StringArrayProperty extends Property
 {
+	public StringArrayProperty(PropertySet parent, String name)
+	{
+		this(parent, name, new String[0]);
+	}
+
 	public StringArrayProperty(PropertySet parent, String name, String[] value)
 	{
 		super(parent, name);

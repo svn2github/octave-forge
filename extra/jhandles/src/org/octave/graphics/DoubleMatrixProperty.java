@@ -35,6 +35,11 @@ public class DoubleMatrixProperty extends Property
 		}
 	}
 
+	public DoubleMatrixProperty(PropertySet parent, String name)
+	{
+		this(parent, name, new double[0]);
+	}
+
 	public DoubleMatrixProperty(PropertySet parent, String name, Object value)
 	{
 		super(parent, name);

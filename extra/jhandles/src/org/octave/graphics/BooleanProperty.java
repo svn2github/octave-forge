@@ -23,6 +23,11 @@ package org.octave.graphics;
 
 public class BooleanProperty extends RadioProperty
 {
+	public BooleanProperty(PropertySet parent, String name)
+	{
+		this(parent, name, false);
+	}
+
 	public BooleanProperty(PropertySet parent, String name, boolean value)
 	{
 		super(parent, name, new String[] {"on", "off"}, (value ? "on" : "off"));

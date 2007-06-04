@@ -27,6 +27,11 @@ public class DoubleArrayProperty extends Property
 {
 	private int maxCount;
 
+	public DoubleArrayProperty(PropertySet parent, String name)
+	{
+		this(parent, name, new double[0], -1);
+	}
+
 	public DoubleArrayProperty(PropertySet parent, String name, double[] value, int maxCount)
 	{
 		super(parent, name);

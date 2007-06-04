@@ -26,6 +26,11 @@ import javax.media.opengl.*;
 
 public class LineStyleProperty extends RadioProperty
 {
+	public LineStyleProperty(PropertySet parent, String name)
+	{
+		this(parent, name, "-");
+	}
+
 	public LineStyleProperty(PropertySet parent, String name, String style)
 	{
 		super(parent, name, new String[] {"-", ":", "--", "-.", "none"}, style);

@@ -25,6 +25,11 @@ import java.text.DecimalFormat;
 
 public class DoubleProperty extends Property
 {
+	public DoubleProperty(PropertySet parent, String name)
+	{
+		this(parent, name, 0);
+	}
+
 	public DoubleProperty(PropertySet parent, String name, double value)
 	{
 		super(parent, name);

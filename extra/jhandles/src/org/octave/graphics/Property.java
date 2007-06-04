@@ -232,4 +232,13 @@ public abstract class Property implements HandleNotifier.Source
 	{
 		notifierList.remove(n);
 	}
+
+	public static Property createProperty(PropertySet parent, String name, String type)
+	{
+		if (type.equals("double"))
+			return new DoubleProperty(parent, name);
+		else if (type.equals("string"))
+			return new StringProperty(parent, name);
+		return null;
+	}
 }

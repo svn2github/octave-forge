@@ -40,6 +40,11 @@ public class RadioProperty extends Property
 	private Map valueSet;
 	//private String value;
 
+	public RadioProperty(PropertySet parent, String name)
+	{
+		this(parent, name, new String[0], "");
+	}
+
 	public RadioProperty(PropertySet parent, String name, String[] values, String defaultValue)
 	{
 		super(parent, name);
@@ -49,7 +54,7 @@ public class RadioProperty extends Property
 		if (valueSet.containsKey(defaultValue))
 			pvalue = defaultValue;
 		else
-			pvalue = values[0];
+			pvalue = (values.length > 0 ? values[0] : "");
 	}
 
 	protected Object convertValue(Object value) throws PropertyException

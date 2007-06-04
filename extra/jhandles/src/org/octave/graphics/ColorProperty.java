@@ -30,6 +30,11 @@ public class ColorProperty extends Property
 {
 	private Set valueSet;
 
+	public ColorProperty(PropertySet parent, String name)
+	{
+		this(parent, name, Color.black);
+	}
+
 	public ColorProperty(PropertySet parent, String name, Color color)
 	{
 		this(parent, name, color, null, null);

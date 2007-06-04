@@ -52,6 +52,11 @@ public class MarkerProperty extends RadioProperty
 		}
 	}
 
+	public MarkerProperty(PropertySet parent, String name)
+	{
+		this(parent, name, "none");
+	}
+
 	public MarkerProperty(PropertySet parent, String name, String marker)
 	{
 		super(parent, name, new String[] {

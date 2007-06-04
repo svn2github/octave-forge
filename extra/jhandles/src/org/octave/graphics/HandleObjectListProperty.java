@@ -27,6 +27,11 @@ public class HandleObjectListProperty extends Property
 {
 	int maxCount;
 
+	public HandleObjectListProperty(PropertySet parent, String name)
+	{
+		this(parent, name, -1);
+	}
+
 	public HandleObjectListProperty(PropertySet parent, String name, int maxCount)
 	{
 		super(parent, name);

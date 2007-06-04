@@ -28,6 +28,11 @@ public class DoubleRadioProperty extends Property
 {
 	private Set valueSet;
 
+	public DoubleRadioProperty(PropertySet parent, String name)
+	{
+		this(parent, name, 0, new String[0], null);
+	}
+
 	public DoubleRadioProperty(PropertySet parent, String name, double value, String[] values, String svalue)
 	{
 		super(parent, name);

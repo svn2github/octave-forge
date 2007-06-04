@@ -23,6 +23,11 @@ package org.octave.graphics;
 
 public class StringProperty extends Property
 {
+	public StringProperty(PropertySet parent, String name)
+	{
+		this(parent, name, "");
+	}
+
 	public StringProperty(PropertySet parent, String name, String value)
 	{
 		super(parent, name);

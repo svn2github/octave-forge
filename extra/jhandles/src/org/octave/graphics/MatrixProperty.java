@@ -37,6 +37,11 @@ public class MatrixProperty extends Property
 		}
 	}
 
+	public MatrixProperty(PropertySet parent, String name)
+	{
+		this(parent, name, new double[0]);
+	}
+
 	public MatrixProperty(PropertySet parent, String name, Object value)
 	{
 		super(parent, name);

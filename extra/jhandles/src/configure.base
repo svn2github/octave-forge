@@ -354,14 +354,18 @@ OCTAVE_EVAL(pathsep, OCTAVE_PATHSEP)
 
 if test "$HAVE_JAVA" = "yes"; then
    AC_MSG_CHECKING([for java package in Octave])
-
-   OCTAVE_JAVA_DIR=[`echo "dirs=readdir(pkg('prefix'));idx=cellfun('isempty',regexp(dirs,'^java-'));dirs(idx)=[];disp(fullfile(pkg('prefix'),dirs{1}));" | octave -qf`]
-   AC_MSG_RESULT($OCTAVE_JAVA_DIR)
-   OCTAVE_JAR="${OCTAVE_JAVA_DIR}${OCTAVE_FILESEP}octave.jar"
-   JOGL_JAR=[`echo 'jogl=file_in_path(EXEC_PATH,"jogl.jar");if (!isempty(jogl)), disp(jogl);, endif' | octave -qf`]
-   if test "x$JOGL_JAR" = "x"; then
-     JOGL_JAR=jogl.jar
-     HAVE_JAVA="Can not find jogl.jar"
+   HAVE_OCTAVE_JAVA=[`echo "pkg('load','java');disp('yes');" | octave -qf`]
+   if test "$HAVE_OCTAVE_JAVA" = "yes"; then
+     OCTAVE_JAVA_DIR=[`echo "pkg('load','java');disp(fileparts(file_in_loadpath('javaclasspath.m')))" | octave -qf`]
+     AC_MSG_RESULT($OCTAVE_JAVA_DIR)
+     OCTAVE_JAR="${OCTAVE_JAVA_DIR}${OCTAVE_FILESEP}octave.jar"
+     JOGL_JAR=[`echo 'jogl=file_in_path(EXEC_PATH,"jogl.jar");if (!isempty(jogl)), disp(jogl);, endif' | octave -qf`]
+     if test "x$JOGL_JAR" = "x"; then
+       JOGL_JAR=jogl.jar
+       HAVE_JAVA="Can not find jogl.jar"
+     fi
+   else
+     HAVE_JAVA="Could not find octave.jar";
    fi
 fi
 

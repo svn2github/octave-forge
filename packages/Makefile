@@ -12,7 +12,8 @@ RUN_OCTAVE= HOME=`pwd` $(TOPDIR)/admin/run_forge $(OCTAVE) -H -q --no-site-file
 PKGDIRS = $(filter-out packages doc, $(patsubst $(TOPDIR)/%/, %, $(dir $(wildcard $(TOPDIR)/*/Makefile))))
 PACKAGES = $(filter $(patsubst %,%/%,$(PKGDIRS)), $(wildcard */*.tar.gz))
 TESTLOG=$(TOPDIR)/packages/fntests.log
-RPMDIR=RPM
+RPMDIR := $(TOPDIR)/packages/RPM
+SPECS = $(wildcard $(RPMDIR)/SPECS/*.spec)
 MD5FILE=packages.md5
 M4 := m4
 MACRO_FILE := ../doc/macros.m4
@@ -133,6 +134,11 @@ icheck: $(patsubst %, icheckpkg/%, $(PACKAGES))
 
 srpms: $(patsubst %, srpm/%, $(PACKAGES)) $(patsubst %, metarpm/%, $(PKGDIRS))
 
+# If you want this target to work, you'll have to remoce the SPEC files that
+# won't build on your platform. Typically these are the platform specific
+# packages such as octave_windows.spec or octave_macosx.spec
+rpms: rpmdirs $(patsubst %, rpm/%, $(SPECS)) 
+
 cleanlog:
 	@rm -f $(TESTLOG)
 
@@ -228,6 +234,19 @@ srpm/%:
 	  exit -1; \
 	fi; \
 	$(TOPDIR)/admin/make_rpm $(opkg) $(TOPDIR)/admin/rpm_template.in $(RPMDIR) $$DIST
+
+rpmdirs:
+	@if [ ! -d  $(RPMDIR)/BUILD ]; then mkdir $(RPMDIR)/BUILD; fi; \
+	if [ ! -d  $(RPMDIR)/RPMS ]; then mkdir $(RPMDIR)/RPMS; fi; \
+	if [ ! -d  $(RPMDIR)/TMP ]; then mkdir $(RPMDIR)/TMP; fi; \
+	for rpmdir in athlon i386 i486 i586 i686 noarch; do \
+	  if [ ! -d  $(RPMDIR)/RPMS/$$rpmdir ]; then \
+	    mkdir $(RPMDIR)/RPMS/$$rpmdir; \
+          fi; \
+	done;
+
+rpm/%:
+	rpm -bb --define '_topdir $(RPMDIR)' --define '_tmppath $(RPMDIR)/TMP' $(opkg)
 
 metarpm/%:
 	@if [ -d $(opkg) ]; then \

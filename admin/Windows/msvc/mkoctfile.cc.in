@@ -127,17 +127,20 @@ static void initialize(void)
 
 	std::string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
 	std::string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
+	std::string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
 	std::string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
 
 	if (! vars["OCTAVE_HOME"].empty())
 	{
 		DEFAULT_OCTINCLUDEDIR = substitute_prefix(DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
 		DEFAULT_INCLUDEDIR = substitute_prefix(DEFAULT_INCLUDEDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
+		DEFAULT_LIBDIR = substitute_prefix(DEFAULT_LIBDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
 		DEFAULT_OCTLIBDIR = substitute_prefix(DEFAULT_OCTLIBDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
 	}
 
 	vars["OCTINCLUDEDIR"] = get_variable("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);
 	vars["INCLUDEDIR"] = get_variable("INCLUDEDIR", DEFAULT_INCLUDEDIR);
+	vars["LIBDIR"] = get_variable("LIBDIR", DEFAULT_LIBDIR);
 	vars["OCTLIBDIR"] = get_variable("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
@@ -149,6 +152,8 @@ static void initialize(void)
 		DEFAULT_INCFLAGS += " -I" + vars["INCLUDEDIR"];
 
 	std::string DEFAULT_LFLAGS = "-L" + vars["OCTLIBDIR"];
+	if (vars["LIBDIR"] != "/usr/lib")
+		DEFAULT_LFLAGS += " -L" + vars["LIBDIR"];
 
 	vars["CPPFLAGS"] = get_variable("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
 	vars["INCFLAGS"] = get_variable("INCFLAGS", DEFAULT_INCFLAGS);

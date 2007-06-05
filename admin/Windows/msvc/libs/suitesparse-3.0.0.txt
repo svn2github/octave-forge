@@ -1,0 +1,15 @@
+Package: SuiteSparse
+Version: 3.0.0
+Home page: http://www.cise.ufl.edu/research/sparse/SuiteSparse/
+Download: http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
+License: LGPL (all modules?)
+
+Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc
+
+Requirement: cc-msvc, ar-msvc, BLAS, LAPACK
+
+1) Apply the patch
+
+2) make
+
+3) make install INSTDIR=/where/you/want/to/install

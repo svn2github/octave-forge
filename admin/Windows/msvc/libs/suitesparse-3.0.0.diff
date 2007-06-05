@@ -1,6 +1,6 @@
-diff -urb SuiteSparse/AMD/Demo/Makefile SuiteSparse-new/AMD/Demo/Makefile
+diff -ur SuiteSparse/AMD/Demo/Makefile SuiteSparse-mod/AMD/Demo/Makefile
 --- SuiteSparse/AMD/Demo/Makefile	2007-05-05 16:25:26.000000000 +0200
-+++ SuiteSparse-new/AMD/Demo/Makefile	2007-06-04 22:26:32.812500000 +0200
++++ SuiteSparse-mod/AMD/Demo/Makefile	2007-06-05 12:22:38.736261300 +0200
 @@ -2,10 +2,10 @@
  # compile the AMD demo (for both GNU make or original make)
  #-----------------------------------------------------------------------------
@@ -111,9 +111,9 @@ diff -urb SuiteSparse/AMD/Demo/Makefile SuiteSparse-new/AMD/Demo/Makefile
 +	- $(RM) amd_f77demo$(EXEEXT) my_amd_f77demo.out
 +	- $(RM) amd_f77simple$(EXEEXT) my_amd_f77simple.out
 +	- $(RM) amd_f77cross$(EXEEXT) my_amd_f77cross.out
-diff -urb SuiteSparse/AMD/Lib/GNUmakefile SuiteSparse-new/AMD/Lib/GNUmakefile
+diff -ur SuiteSparse/AMD/Lib/GNUmakefile SuiteSparse-mod/AMD/Lib/GNUmakefile
 --- SuiteSparse/AMD/Lib/GNUmakefile	2007-05-06 14:32:19.000000000 +0200
-+++ SuiteSparse-new/AMD/Lib/GNUmakefile	2007-06-04 23:11:54.046875000 +0200
++++ SuiteSparse-mod/AMD/Lib/GNUmakefile	2007-06-05 12:22:38.767564900 +0200
 @@ -2,10 +2,10 @@
  # AMD Makefile for compiling on Unix systems (for GNU make only)
  #-------------------------------------------------------------------------------
@@ -166,9 +166,9 @@ diff -urb SuiteSparse/AMD/Lib/GNUmakefile SuiteSparse-new/AMD/Lib/GNUmakefile
  distclean: clean
 -	- $(RM) ../Lib/libamd.a ../Lib/libamdf77.a
 +	- $(RM) ../Lib/$(LIBPRE)amd.$(LIBEXT) ../Lib/$(LIBPRE)amdf77.$(LIBEXT)
-diff -urb SuiteSparse/AMD/Lib/Makefile SuiteSparse-new/AMD/Lib/Makefile
+diff -ur SuiteSparse/AMD/Lib/Makefile SuiteSparse-mod/AMD/Lib/Makefile
 --- SuiteSparse/AMD/Lib/Makefile	2007-05-06 14:32:40.000000000 +0200
-+++ SuiteSparse-new/AMD/Lib/Makefile	2007-06-04 23:15:45.531250000 +0200
++++ SuiteSparse-mod/AMD/Lib/Makefile	2007-06-05 12:22:38.783216700 +0200
 @@ -6,13 +6,13 @@
  # have GNU make.  Note that it is not used if you have GNU make.  It ignores
  # dependency checking and just compiles everything.
@@ -228,9 +228,9 @@ diff -urb SuiteSparse/AMD/Lib/Makefile SuiteSparse-new/AMD/Lib/Makefile
  distclean: clean
 -	- $(RM) ../Lib/libamd.a ../Lib/libamdf77.a
 +	- $(RM) ../Lib/$(LIBPRE)amd.$(LIBEXT) ../Lib/$(LIBPRE)amdf77.$(LIBEXT)
-diff -urb SuiteSparse/AMD/Makefile SuiteSparse-new/AMD/Makefile
+diff -ur SuiteSparse/AMD/Makefile SuiteSparse-mod/AMD/Makefile
 --- SuiteSparse/AMD/Makefile	2007-05-05 19:23:47.000000000 +0200
-+++ SuiteSparse-new/AMD/Makefile	2007-06-04 22:26:33.046875000 +0200
++++ SuiteSparse-mod/AMD/Makefile	2007-06-05 12:22:38.798868500 +0200
 @@ -2,13 +2,13 @@
  # AMD Makefile (for GNU Make or original make)
  #------------------------------------------------------------------------------
@@ -247,9 +247,9 @@ diff -urb SuiteSparse/AMD/Makefile SuiteSparse-new/AMD/Makefile
  	( cd Lib    ; $(MAKE) )
  	( cd Demo   ; $(MAKE) )
  
-diff -urb SuiteSparse/BTF/Lib/Makefile SuiteSparse-new/BTF/Lib/Makefile
+diff -ur SuiteSparse/BTF/Lib/Makefile SuiteSparse-mod/BTF/Lib/Makefile
 --- SuiteSparse/BTF/Lib/Makefile	2007-05-03 22:34:57.000000000 +0200
-+++ SuiteSparse-new/BTF/Lib/Makefile	2007-06-04 22:26:33.062500000 +0200
++++ SuiteSparse-mod/BTF/Lib/Makefile	2007-06-05 12:22:38.814520300 +0200
 @@ -15,14 +15,14 @@
  
  all: library
@@ -278,9 +278,9 @@ diff -urb SuiteSparse/BTF/Lib/Makefile SuiteSparse-new/BTF/Lib/Makefile
  
  clean:
  	- $(RM) $(CLEAN)
-diff -urb SuiteSparse/CAMD/Demo/Makefile SuiteSparse-new/CAMD/Demo/Makefile
+diff -ur SuiteSparse/CAMD/Demo/Makefile SuiteSparse-mod/CAMD/Demo/Makefile
 --- SuiteSparse/CAMD/Demo/Makefile	2007-05-05 16:30:34.000000000 +0200
-+++ SuiteSparse-new/CAMD/Demo/Makefile	2007-06-04 22:26:33.078125000 +0200
++++ SuiteSparse-mod/CAMD/Demo/Makefile	2007-06-05 12:22:38.845823900 +0200
 @@ -2,10 +2,10 @@
  # compile the CAMD demo (for both GNU make or original make)
  #-----------------------------------------------------------------------------
@@ -344,18 +344,22 @@ diff -urb SuiteSparse/CAMD/Demo/Makefile SuiteSparse-new/CAMD/Demo/Makefile
 +	- $(RM) camd_l_demo$(EXEEXT) my_camd_l_demo.out
 +	- $(RM) camd_demo2$(EXEEXT) my_camd_demo2.out
 +	- $(RM) camd_simple$(EXEEXT) my_camd_simple.out
-diff -urb SuiteSparse/CAMD/Lib/GNUmakefile SuiteSparse-new/CAMD/Lib/GNUmakefile
+diff -ur SuiteSparse/CAMD/Lib/GNUmakefile SuiteSparse-mod/CAMD/Lib/GNUmakefile
 --- SuiteSparse/CAMD/Lib/GNUmakefile	2007-05-05 16:29:25.000000000 +0200
-+++ SuiteSparse-new/CAMD/Lib/GNUmakefile	2007-06-04 23:16:29.359375000 +0200
-@@ -2,7 +2,7 @@
++++ SuiteSparse-mod/CAMD/Lib/GNUmakefile	2007-06-05 12:38:18.284068600 +0200
+@@ -2,10 +2,10 @@
  # CAMD Makefile for compiling on Unix systems (for GNU make only)
  #-------------------------------------------------------------------------------
  
 -default: libcamd.a
-+default: $(LIBPRE)camd.$(LIBEXT)
- 
+-
  include ../../UFconfig/UFconfig.mk
  
++default: $(LIBPRE)camd.$(LIBEXT)
++
+ C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+ 
+ #-------------------------------------------------------------------------------
 @@ -43,9 +43,9 @@
  # Create the libcamd.a library (C versions only)
  #-------------------------------------------------------------------------------
@@ -375,9 +379,9 @@ diff -urb SuiteSparse/CAMD/Lib/GNUmakefile SuiteSparse-new/CAMD/Lib/GNUmakefile
  distclean: clean
 -	- $(RM) libcamd.a
 +	- $(RM) $(LIBPRE)camd.$(LIBEXT)
-diff -urb SuiteSparse/CAMD/Lib/Makefile SuiteSparse-new/CAMD/Lib/Makefile
+diff -ur SuiteSparse/CAMD/Lib/Makefile SuiteSparse-mod/CAMD/Lib/Makefile
 --- SuiteSparse/CAMD/Lib/Makefile	2007-05-11 22:11:50.000000000 +0200
-+++ SuiteSparse-new/CAMD/Lib/Makefile	2007-06-04 22:26:33.093750000 +0200
++++ SuiteSparse-mod/CAMD/Lib/Makefile	2007-06-05 12:22:38.877127500 +0200
 @@ -6,13 +6,13 @@
  # have GNU make.  Note that it is not used if you have GNU make.  It ignores
  # dependency checking and just compiles everything.
@@ -417,9 +421,9 @@ diff -urb SuiteSparse/CAMD/Lib/Makefile SuiteSparse-new/CAMD/Lib/Makefile
  distclean: clean
 -	- $(RM) libcamd.a
 +	- $(RM) $(LIBPRE)camd.$(LIBEXT)
-diff -urb SuiteSparse/CAMD/Makefile SuiteSparse-new/CAMD/Makefile
+diff -ur SuiteSparse/CAMD/Makefile SuiteSparse-mod/CAMD/Makefile
 --- SuiteSparse/CAMD/Makefile	2007-05-05 16:28:33.000000000 +0200
-+++ SuiteSparse-new/CAMD/Makefile	2007-06-04 22:26:33.093750000 +0200
++++ SuiteSparse-mod/CAMD/Makefile	2007-06-05 12:22:38.892779300 +0200
 @@ -2,13 +2,13 @@
  # CAMD Makefile (for GNU Make or original make)
  #------------------------------------------------------------------------------
@@ -436,9 +440,9 @@ diff -urb SuiteSparse/CAMD/Makefile SuiteSparse-new/CAMD/Makefile
  	( cd Lib    ; $(MAKE) )
  	( cd Demo   ; $(MAKE) )
  
-diff -urb SuiteSparse/CCOLAMD/Demo/Makefile SuiteSparse-new/CCOLAMD/Demo/Makefile
+diff -ur SuiteSparse/CCOLAMD/Demo/Makefile SuiteSparse-mod/CCOLAMD/Demo/Makefile
 --- SuiteSparse/CCOLAMD/Demo/Makefile	2007-05-05 15:58:32.000000000 +0200
-+++ SuiteSparse-new/CCOLAMD/Demo/Makefile	2007-06-04 22:26:33.109375000 +0200
++++ SuiteSparse-mod/CCOLAMD/Demo/Makefile	2007-06-05 12:22:38.908431100 +0200
 @@ -2,10 +2,10 @@
  # compile the CCOLAMD demo
  #-----------------------------------------------------------------------------
@@ -481,9 +485,9 @@ diff -urb SuiteSparse/CCOLAMD/Demo/Makefile SuiteSparse-new/CCOLAMD/Demo/Makefil
 -	- $(RM) ccolamd_example ccolamd_l_example
 +	- $(RM) ccolamd_example$(EXEEXT) ccolamd_l_example$(EXEEXT)
  	- $(RM) my_ccolamd_example.out my_ccolamd_l_example.out
-diff -urb SuiteSparse/CCOLAMD/Lib/Makefile SuiteSparse-new/CCOLAMD/Lib/Makefile
+diff -ur SuiteSparse/CCOLAMD/Lib/Makefile SuiteSparse-mod/CCOLAMD/Lib/Makefile
 --- SuiteSparse/CCOLAMD/Lib/Makefile	2007-05-05 15:59:13.000000000 +0200
-+++ SuiteSparse-new/CCOLAMD/Lib/Makefile	2007-06-04 22:26:33.125000000 +0200
++++ SuiteSparse-mod/CCOLAMD/Lib/Makefile	2007-06-05 12:22:38.924082900 +0200
 @@ -2,10 +2,10 @@
  # CCOLAMD Makefile
  #-------------------------------------------------------------------------------
@@ -523,9 +527,9 @@ diff -urb SuiteSparse/CCOLAMD/Lib/Makefile SuiteSparse-new/CCOLAMD/Lib/Makefile
  distclean: clean
 -	- $(RM) libccolamd.a
 +	- $(RM) $(LIBPRE)ccolamd.$(LIBEXT)
-diff -urb SuiteSparse/CCOLAMD/Makefile SuiteSparse-new/CCOLAMD/Makefile
+diff -ur SuiteSparse/CCOLAMD/Makefile SuiteSparse-mod/CCOLAMD/Makefile
 --- SuiteSparse/CCOLAMD/Makefile	2007-05-05 15:57:17.000000000 +0200
-+++ SuiteSparse-new/CCOLAMD/Makefile	2007-06-04 22:26:33.125000000 +0200
++++ SuiteSparse-mod/CCOLAMD/Makefile	2007-06-05 12:22:38.955386500 +0200
 @@ -2,13 +2,13 @@
  # CCOLAMD Makefile
  #------------------------------------------------------------------------------
@@ -542,9 +546,9 @@ diff -urb SuiteSparse/CCOLAMD/Makefile SuiteSparse-new/CCOLAMD/Makefile
  	( cd Lib    ; $(MAKE) )
  	( cd Demo   ; $(MAKE) )
  
-diff -urb SuiteSparse/CHOLMOD/Demo/Makefile SuiteSparse-new/CHOLMOD/Demo/Makefile
+diff -ur SuiteSparse/CHOLMOD/Demo/Makefile SuiteSparse-mod/CHOLMOD/Demo/Makefile
 --- SuiteSparse/CHOLMOD/Demo/Makefile	2007-05-05 16:37:46.000000000 +0200
-+++ SuiteSparse-new/CHOLMOD/Demo/Makefile	2007-06-04 22:26:33.156250000 +0200
++++ SuiteSparse-mod/CHOLMOD/Demo/Makefile	2007-06-05 12:22:38.971038300 +0200
 @@ -11,9 +11,9 @@
  
  #-------------------------------------------------------------------------------
@@ -614,9 +618,9 @@ diff -urb SuiteSparse/CHOLMOD/Demo/Makefile SuiteSparse-new/CHOLMOD/Demo/Makefil
 -	$(F77) $(FFLAGS) -O -o reade reade.f
 +reade$(EXEEXT): reade.f
 +	$(F77) $(FFLAGS) -O -o reade$(EXEEXT) reade.f
-diff -urb SuiteSparse/CHOLMOD/Include/cholmod_blas.h SuiteSparse-new/CHOLMOD/Include/cholmod_blas.h
+diff -ur SuiteSparse/CHOLMOD/Include/cholmod_blas.h SuiteSparse-mod/CHOLMOD/Include/cholmod_blas.h
 --- SuiteSparse/CHOLMOD/Include/cholmod_blas.h	2006-12-13 14:25:21.000000000 +0100
-+++ SuiteSparse-new/CHOLMOD/Include/cholmod_blas.h	2007-06-04 22:26:33.156250000 +0200
++++ SuiteSparse-mod/CHOLMOD/Include/cholmod_blas.h	2007-06-05 12:22:38.986690100 +0200
 @@ -48,8 +48,10 @@
  #define CHOLMOD_CYGWIN
  #else
@@ -628,9 +632,9 @@ diff -urb SuiteSparse/CHOLMOD/Include/cholmod_blas.h SuiteSparse-new/CHOLMOD/Inc
  #define CHOLMOD_ARCHITECTURE "Microsoft Windows"
  
  #elif defined (__hppa) || defined (__hpux) || defined (MHPUX) || defined (ARCH_HPUX)
-diff -urb SuiteSparse/CHOLMOD/Lib/Makefile SuiteSparse-new/CHOLMOD/Lib/Makefile
+diff -ur SuiteSparse/CHOLMOD/Lib/Makefile SuiteSparse-mod/CHOLMOD/Lib/Makefile
 --- SuiteSparse/CHOLMOD/Lib/Makefile	2007-05-05 16:36:56.000000000 +0200
-+++ SuiteSparse-new/CHOLMOD/Lib/Makefile	2007-06-04 22:26:33.171875000 +0200
++++ SuiteSparse-mod/CHOLMOD/Lib/Makefile	2007-06-05 12:22:39.017993700 +0200
 @@ -10,14 +10,14 @@
  
  C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG)
@@ -662,9 +666,9 @@ diff -urb SuiteSparse/CHOLMOD/Lib/Makefile SuiteSparse-new/CHOLMOD/Lib/Makefile
  
  $(OBJ): $(INC)
  
-diff -urb SuiteSparse/COLAMD/Demo/Makefile SuiteSparse-new/COLAMD/Demo/Makefile
+diff -ur SuiteSparse/COLAMD/Demo/Makefile SuiteSparse-mod/COLAMD/Demo/Makefile
 --- SuiteSparse/COLAMD/Demo/Makefile	2007-05-05 15:42:44.000000000 +0200
-+++ SuiteSparse-new/COLAMD/Demo/Makefile	2007-06-04 22:26:33.187500000 +0200
++++ SuiteSparse-mod/COLAMD/Demo/Makefile	2007-06-05 12:22:39.033645500 +0200
 @@ -2,10 +2,10 @@
  # compile the COLAMD demo
  #-----------------------------------------------------------------------------
@@ -703,9 +707,9 @@ diff -urb SuiteSparse/COLAMD/Demo/Makefile SuiteSparse-new/COLAMD/Demo/Makefile
 -	- $(RM) colamd_example colamd_l_example
 +	- $(RM) colamd_example$(EXEEXT) colamd_l_example$(EXEEXT)
  	- $(RM) my_colamd_example.out my_colamd_l_example.out
-diff -urb SuiteSparse/COLAMD/Lib/Makefile SuiteSparse-new/COLAMD/Lib/Makefile
+diff -ur SuiteSparse/COLAMD/Lib/Makefile SuiteSparse-mod/COLAMD/Lib/Makefile
 --- SuiteSparse/COLAMD/Lib/Makefile	2007-05-05 15:41:47.000000000 +0200
-+++ SuiteSparse-new/COLAMD/Lib/Makefile	2007-06-04 22:26:33.203125000 +0200
++++ SuiteSparse-mod/COLAMD/Lib/Makefile	2007-06-05 12:22:39.049297300 +0200
 @@ -2,10 +2,10 @@
  # COLAMD Makefile
  #-------------------------------------------------------------------------------
@@ -745,9 +749,9 @@ diff -urb SuiteSparse/COLAMD/Lib/Makefile SuiteSparse-new/COLAMD/Lib/Makefile
  distclean: clean
 -	- $(RM) libcolamd.a
 +	- $(RM) $(LIBPRE)colamd.$(LIBEXT)
-diff -urb SuiteSparse/COLAMD/Makefile SuiteSparse-new/COLAMD/Makefile
+diff -ur SuiteSparse/COLAMD/Makefile SuiteSparse-mod/COLAMD/Makefile
 --- SuiteSparse/COLAMD/Makefile	2007-05-05 15:40:14.000000000 +0200
-+++ SuiteSparse-new/COLAMD/Makefile	2007-06-04 22:26:33.203125000 +0200
++++ SuiteSparse-mod/COLAMD/Makefile	2007-06-05 12:22:39.080600900 +0200
 @@ -2,13 +2,13 @@
  # COLAMD Makefile
  #------------------------------------------------------------------------------
@@ -764,9 +768,9 @@ diff -urb SuiteSparse/COLAMD/Makefile SuiteSparse-new/COLAMD/Makefile
  	( cd Lib    ; $(MAKE) )
  	( cd Demo   ; $(MAKE) )
  
-diff -urb SuiteSparse/CSparse/Demo/Makefile SuiteSparse-new/CSparse/Demo/Makefile
+diff -ur SuiteSparse/CSparse/Demo/Makefile SuiteSparse-mod/CSparse/Demo/Makefile
 --- SuiteSparse/CSparse/Demo/Makefile	2007-05-05 22:43:03.000000000 +0200
-+++ SuiteSparse-new/CSparse/Demo/Makefile	2007-06-04 22:26:33.234375000 +0200
++++ SuiteSparse-mod/CSparse/Demo/Makefile	2007-06-05 12:22:39.096252700 +0200
 @@ -1,11 +1,13 @@
 -CC = cc
 -CFLAGS = -O
@@ -812,9 +816,9 @@ diff -urb SuiteSparse/CSparse/Demo/Makefile SuiteSparse-new/CSparse/Demo/Makefil
  distclean: clean
 -	rm -f cs_demo1 cs_demo2 cs_demo3 *.a
 +	rm -f cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT) *.$(LIBEXT)
-diff -urb SuiteSparse/CSparse/Demo/cs_demo.c SuiteSparse-new/CSparse/Demo/cs_demo.c
+diff -ur SuiteSparse/CSparse/Demo/cs_demo.c SuiteSparse-mod/CSparse/Demo/cs_demo.c
 --- SuiteSparse/CSparse/Demo/cs_demo.c	2006-06-02 21:26:45.000000000 +0200
-+++ SuiteSparse-new/CSparse/Demo/cs_demo.c	2007-06-04 22:26:33.234375000 +0200
++++ SuiteSparse-mod/CSparse/Demo/cs_demo.c	2007-06-05 12:22:39.127556300 +0200
 @@ -81,7 +81,7 @@
      cs *T, *A, *C ;
      int sym, m, n, mn, nz1, nz2 ;
@@ -864,9 +868,13 @@ diff -urb SuiteSparse/CSparse/Demo/cs_demo.c SuiteSparse-new/CSparse/Demo/cs_dem
      }
      t = tic () ;
      ok = cs_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
-diff -urb SuiteSparse/CSparse/Lib/Makefile SuiteSparse-new/CSparse/Lib/Makefile
+Only in SuiteSparse-mod/CSparse/Demo: cs_demo.obj
+Only in SuiteSparse-mod/CSparse/Demo: cs_demo1.obj
+Only in SuiteSparse-mod/CSparse/Demo: cs_demo2.obj
+Only in SuiteSparse-mod/CSparse/Demo: cs_demo3.obj
+diff -ur SuiteSparse/CSparse/Lib/Makefile SuiteSparse-mod/CSparse/Lib/Makefile
 --- SuiteSparse/CSparse/Lib/Makefile	2007-05-05 22:46:13.000000000 +0200
-+++ SuiteSparse-new/CSparse/Lib/Makefile	2007-06-04 22:26:33.250000000 +0200
++++ SuiteSparse-mod/CSparse/Lib/Makefile	2007-06-05 12:22:39.158859900 +0200
 @@ -1,11 +1,15 @@
  # Modify the "-O" optimization option for best performance (-O3 on Linux):
 -CC = cc
@@ -907,9 +915,9 @@ diff -urb SuiteSparse/CSparse/Lib/Makefile SuiteSparse-new/CSparse/Lib/Makefile
  distclean: clean
 -	rm -f *.a
 +	rm -f *.$(LIBEXT)
-diff -urb SuiteSparse/CSparse/Source/cs_add.c SuiteSparse-new/CSparse/Source/cs_add.c
+diff -ur SuiteSparse/CSparse/Source/cs_add.c SuiteSparse-mod/CSparse/Source/cs_add.c
 --- SuiteSparse/CSparse/Source/cs_add.c	2007-02-23 20:38:56.000000000 +0100
-+++ SuiteSparse-new/CSparse/Source/cs_add.c	2007-06-04 22:26:33.265625000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_add.c	2007-06-05 12:22:39.174511700 +0200
 @@ -9,9 +9,9 @@
      if (A->m != B->m || A->n != B->n) return (NULL) ;
      m = A->m ; anz = A->p [A->n] ;
@@ -922,9 +930,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_add.c SuiteSparse-new/CSparse/Source/cs_
      C = cs_spalloc (m, n, anz + bnz, values, 0) ;	    /* allocate result*/
      if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
-diff -urb SuiteSparse/CSparse/Source/cs_amd.c SuiteSparse-new/CSparse/Source/cs_amd.c
+diff -ur SuiteSparse/CSparse/Source/cs_amd.c SuiteSparse-mod/CSparse/Source/cs_amd.c
 --- SuiteSparse/CSparse/Source/cs_amd.c	2006-06-24 23:19:11.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_amd.c	2007-06-04 22:26:33.281250000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_amd.c	2007-06-05 12:22:39.205815300 +0200
 @@ -59,8 +59,8 @@
      cs_fkeep (C, &cs_diag, NULL) ;	    /* drop diagonal entries */
      Cp = C->p ;
@@ -936,9 +944,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_amd.c SuiteSparse-new/CSparse/Source/cs_
      t = cnz + cnz/5 + 2*n ;		    /* add elbow room to C */
      if (!P || !W || !cs_sprealloc (C, t)) return (cs_idone (P, C, W, 0)) ;
      len  = W           ; nv     = W +   (n+1) ; next   = W + 2*(n+1) ;
-diff -urb SuiteSparse/CSparse/Source/cs_chol.c SuiteSparse-new/CSparse/Source/cs_chol.c
+diff -ur SuiteSparse/CSparse/Source/cs_chol.c SuiteSparse-mod/CSparse/Source/cs_chol.c
 --- SuiteSparse/CSparse/Source/cs_chol.c	2006-04-08 04:07:35.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_chol.c	2007-06-04 22:26:33.296875000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_chol.c	2007-06-05 12:22:39.221467100 +0200
 @@ -8,9 +8,9 @@
      csn *N ;
      if (!CS_CSC (A) || !S || !S->cp || !S->parent) return (NULL) ;
@@ -952,9 +960,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_chol.c SuiteSparse-new/CSparse/Source/cs
      cp = S->cp ; pinv = S->pinv ; parent = S->parent ;
      C = pinv ? cs_symperm (A, pinv, 1) : ((cs *) A) ;
      E = pinv ? C : NULL ;	    /* E is alias for A, or a copy E=A(p,p) */
-diff -urb SuiteSparse/CSparse/Source/cs_cholsol.c SuiteSparse-new/CSparse/Source/cs_cholsol.c
+diff -ur SuiteSparse/CSparse/Source/cs_cholsol.c SuiteSparse-mod/CSparse/Source/cs_cholsol.c
 --- SuiteSparse/CSparse/Source/cs_cholsol.c	2006-04-10 13:41:39.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_cholsol.c	2007-06-04 22:26:33.296875000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_cholsol.c	2007-06-05 12:22:39.237118900 +0200
 @@ -10,7 +10,7 @@
      n = A->n ;
      S = cs_schol (order, A) ;		    /* ordering and symbolic analysis */
@@ -964,9 +972,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_cholsol.c SuiteSparse-new/CSparse/Source
      ok = (S && N && x) ;
      if (ok)
      {
-diff -urb SuiteSparse/CSparse/Source/cs_compress.c SuiteSparse-new/CSparse/Source/cs_compress.c
+diff -ur SuiteSparse/CSparse/Source/cs_compress.c SuiteSparse-mod/CSparse/Source/cs_compress.c
 --- SuiteSparse/CSparse/Source/cs_compress.c	2006-05-27 20:08:36.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_compress.c	2007-06-04 22:26:33.312500000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_compress.c	2007-06-05 12:22:39.252770700 +0200
 @@ -8,7 +8,7 @@
      if (!CS_TRIPLET (T)) return (NULL) ;		/* check inputs */
      m = T->m ; n = T->n ; Ti = T->i ; Tj = T->p ; Tx = T->x ; nz = T->nz ;
@@ -976,9 +984,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_compress.c SuiteSparse-new/CSparse/Sourc
      if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
      for (k = 0 ; k < nz ; k++) w [Tj [k]]++ ;		/* column counts */
-diff -urb SuiteSparse/CSparse/Source/cs_counts.c SuiteSparse-new/CSparse/Source/cs_counts.c
+diff -ur SuiteSparse/CSparse/Source/cs_counts.c SuiteSparse-mod/CSparse/Source/cs_counts.c
 --- SuiteSparse/CSparse/Source/cs_counts.c	2006-04-04 13:24:19.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_counts.c	2007-06-04 22:26:33.328125000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_counts.c	2007-06-05 12:22:39.284074300 +0200
 @@ -22,8 +22,8 @@
      if (!CS_CSC (A) || !parent || !post) return (NULL) ;    /* check inputs */
      m = A->m ; n = A->n ;
@@ -990,9 +998,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_counts.c SuiteSparse-new/CSparse/Source/
      AT = cs_transpose (A, 0) ;				/* AT = A' */
      if (!AT || !colcount || !w) return (cs_idone (colcount, AT, w, 0)) ;
      ancestor = w ; maxfirst = w+n ; prevleaf = w+2*n ; first = w+3*n ;
-diff -urb SuiteSparse/CSparse/Source/cs_dropzeros.c SuiteSparse-new/CSparse/Source/cs_dropzeros.c
+diff -ur SuiteSparse/CSparse/Source/cs_dropzeros.c SuiteSparse-mod/CSparse/Source/cs_dropzeros.c
 --- SuiteSparse/CSparse/Source/cs_dropzeros.c	2006-04-05 16:47:22.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_dropzeros.c	2007-06-04 22:26:33.343750000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_dropzeros.c	2007-06-05 12:22:39.299726100 +0200
 @@ -1,7 +1,7 @@
  #include "cs.h"
  static int cs_nonzero (int i, int j, double aij, void *other)
@@ -1002,9 +1010,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_dropzeros.c SuiteSparse-new/CSparse/Sour
  }
  int cs_dropzeros (cs *A)
  {
-diff -urb SuiteSparse/CSparse/Source/cs_dupl.c SuiteSparse-new/CSparse/Source/cs_dupl.c
+diff -ur SuiteSparse/CSparse/Source/cs_dupl.c SuiteSparse-mod/CSparse/Source/cs_dupl.c
 --- SuiteSparse/CSparse/Source/cs_dupl.c	2006-04-04 02:18:23.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_dupl.c	2007-06-04 22:26:33.359375000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_dupl.c	2007-06-05 12:22:39.315377900 +0200
 @@ -6,7 +6,7 @@
      double *Ax ;
      if (!CS_CSC (A)) return (0) ;		/* check inputs */
@@ -1014,9 +1022,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_dupl.c SuiteSparse-new/CSparse/Source/cs
      if (!w) return (0) ;			/* out of memory */
      for (i = 0 ; i < m ; i++) w [i] = -1 ;	/* row i not yet seen */
      for (j = 0 ; j < n ; j++)
-diff -urb SuiteSparse/CSparse/Source/cs_etree.c SuiteSparse-new/CSparse/Source/cs_etree.c
+diff -ur SuiteSparse/CSparse/Source/cs_etree.c SuiteSparse-mod/CSparse/Source/cs_etree.c
 --- SuiteSparse/CSparse/Source/cs_etree.c	2006-04-04 13:10:19.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_etree.c	2007-06-04 22:26:33.359375000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_etree.c	2007-06-05 12:22:39.331029700 +0200
 @@ -5,8 +5,8 @@
      int i, k, p, m, n, inext, *Ap, *Ai, *w, *parent, *ancestor, *prev ;
      if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
@@ -1028,9 +1036,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_etree.c SuiteSparse-new/CSparse/Source/c
      if (!w || !parent) return (cs_idone (parent, NULL, w, 0)) ;
      ancestor = w ; prev = w + n ;
      if (ata) for (i = 0 ; i < m ; i++) prev [i] = -1 ;
-diff -urb SuiteSparse/CSparse/Source/cs_lu.c SuiteSparse-new/CSparse/Source/cs_lu.c
+diff -ur SuiteSparse/CSparse/Source/cs_lu.c SuiteSparse-mod/CSparse/Source/cs_lu.c
 --- SuiteSparse/CSparse/Source/cs_lu.c	2006-04-04 23:32:52.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_lu.c	2007-06-04 22:26:33.390625000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_lu.c	2007-06-05 12:22:39.362333300 +0200
 @@ -9,13 +9,13 @@
      if (!CS_CSC (A) || !S) return (NULL) ;	    /* check inputs */
      n = A->n ;
@@ -1049,9 +1057,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_lu.c SuiteSparse-new/CSparse/Source/cs_l
      if (!L || !U || !pinv) return (cs_ndone (N, NULL, xi, x, 0)) ;
      Lp = L->p ; Up = U->p ;
      for (i = 0 ; i < n ; i++) x [i] = 0 ;	    /* clear workspace */
-diff -urb SuiteSparse/CSparse/Source/cs_lusol.c SuiteSparse-new/CSparse/Source/cs_lusol.c
+diff -ur SuiteSparse/CSparse/Source/cs_lusol.c SuiteSparse-mod/CSparse/Source/cs_lusol.c
 --- SuiteSparse/CSparse/Source/cs_lusol.c	2006-04-10 13:41:52.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_lusol.c	2007-06-04 22:26:33.390625000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_lusol.c	2007-06-05 12:22:39.377985100 +0200
 @@ -10,7 +10,7 @@
      n = A->n ;
      S = cs_sqr (order, A, 0) ;		    /* ordering and symbolic analysis */
@@ -1061,9 +1069,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_lusol.c SuiteSparse-new/CSparse/Source/c
      ok = (S && N && x) ;
      if (ok)
      {
-diff -urb SuiteSparse/CSparse/Source/cs_maxtrans.c SuiteSparse-new/CSparse/Source/cs_maxtrans.c
+diff -ur SuiteSparse/CSparse/Source/cs_maxtrans.c SuiteSparse-mod/CSparse/Source/cs_maxtrans.c
 --- SuiteSparse/CSparse/Source/cs_maxtrans.c	2006-06-24 23:19:25.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_maxtrans.c	2007-06-04 22:26:33.406250000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_maxtrans.c	2007-06-05 12:22:39.409288700 +0200
 @@ -48,7 +48,7 @@
      cs *C ;
      if (!CS_CSC (A)) return (NULL) ;		    /* check inputs */
@@ -1082,9 +1090,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_maxtrans.c SuiteSparse-new/CSparse/Sourc
      if (!w) return (cs_idone (jimatch, (m2 < n2) ? C : NULL, w, 0)) ;
      cheap = w + n ; js = w + 2*n ; is = w + 3*n ; ps = w + 4*n ;
      for (j = 0 ; j < n ; j++) cheap [j] = Cp [j] ;  /* for cheap assignment */
-diff -urb SuiteSparse/CSparse/Source/cs_multiply.c SuiteSparse-new/CSparse/Source/cs_multiply.c
+diff -ur SuiteSparse/CSparse/Source/cs_multiply.c SuiteSparse-mod/CSparse/Source/cs_multiply.c
 --- SuiteSparse/CSparse/Source/cs_multiply.c	2007-02-23 20:38:21.000000000 +0100
-+++ SuiteSparse-new/CSparse/Source/cs_multiply.c	2007-06-04 22:26:33.421875000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_multiply.c	2007-06-05 12:22:39.424940500 +0200
 @@ -9,9 +9,9 @@
      if (A->n != B->m) return (NULL) ;
      m = A->m ; anz = A->p [A->n] ;
@@ -1097,9 +1105,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_multiply.c SuiteSparse-new/CSparse/Sourc
      C = cs_spalloc (m, n, anz + bnz, values, 0) ;	 /* allocate result */
      if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
      Cp = C->p ;
-diff -urb SuiteSparse/CSparse/Source/cs_pinv.c SuiteSparse-new/CSparse/Source/cs_pinv.c
+diff -ur SuiteSparse/CSparse/Source/cs_pinv.c SuiteSparse-mod/CSparse/Source/cs_pinv.c
 --- SuiteSparse/CSparse/Source/cs_pinv.c	2006-04-04 13:27:37.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_pinv.c	2007-06-04 22:26:33.437500000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_pinv.c	2007-06-05 12:22:39.440592300 +0200
 @@ -4,7 +4,7 @@
  {
      int k, *pinv ;
@@ -1109,9 +1117,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_pinv.c SuiteSparse-new/CSparse/Source/cs
      if (!pinv) return (NULL) ;			/* out of memory */
      for (k = 0 ; k < n ; k++) pinv [p [k]] = k ;/* invert the permutation */
      return (pinv) ;				/* return result */
-diff -urb SuiteSparse/CSparse/Source/cs_post.c SuiteSparse-new/CSparse/Source/cs_post.c
+diff -ur SuiteSparse/CSparse/Source/cs_post.c SuiteSparse-mod/CSparse/Source/cs_post.c
 --- SuiteSparse/CSparse/Source/cs_post.c	2006-04-07 17:56:11.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_post.c	2007-06-04 22:26:33.453125000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_post.c	2007-06-05 12:22:39.456244100 +0200
 @@ -4,8 +4,8 @@
  {
      int j, k = 0, *post, *w, *head, *next, *stack ;
@@ -1123,9 +1131,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_post.c SuiteSparse-new/CSparse/Source/cs
      if (!w || !post) return (cs_idone (post, NULL, w, 0)) ;
      head = w ; next = w + n ; stack = w + 2*n ;
      for (j = 0 ; j < n ; j++) head [j] = -1 ;		/* empty linked lists */
-diff -urb SuiteSparse/CSparse/Source/cs_qr.c SuiteSparse-new/CSparse/Source/cs_qr.c
+diff -ur SuiteSparse/CSparse/Source/cs_qr.c SuiteSparse-mod/CSparse/Source/cs_qr.c
 --- SuiteSparse/CSparse/Source/cs_qr.c	2007-03-01 22:30:20.000000000 +0100
-+++ SuiteSparse-new/CSparse/Source/cs_qr.c	2007-06-04 22:26:33.468750000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_qr.c	2007-06-05 12:22:39.487547700 +0200
 @@ -11,15 +11,15 @@
      m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
      q = S->q ; parent = S->parent ; pinv = S->pinv ; m2 = S->m2 ;
@@ -1146,9 +1154,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_qr.c SuiteSparse-new/CSparse/Source/cs_q
      if (!R || !V || !Beta) return (cs_ndone (N, NULL, w, x, 0)) ;
      Rp = R->p ; Ri = R->i ; Rx = R->x ;
      Vp = V->p ; Vi = V->i ; Vx = V->x ;
-diff -urb SuiteSparse/CSparse/Source/cs_qrsol.c SuiteSparse-new/CSparse/Source/cs_qrsol.c
+diff -ur SuiteSparse/CSparse/Source/cs_qrsol.c SuiteSparse-mod/CSparse/Source/cs_qrsol.c
 --- SuiteSparse/CSparse/Source/cs_qrsol.c	2006-04-10 13:42:05.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_qrsol.c	2007-06-04 22:26:33.484375000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_qrsol.c	2007-06-05 12:22:39.503199500 +0200
 @@ -14,7 +14,7 @@
      {
  	S = cs_sqr (order, A, 1) ;	    /* ordering and symbolic analysis */
@@ -1167,9 +1175,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_qrsol.c SuiteSparse-new/CSparse/Source/c
  	ok = (AT && S && N && x) ;
  	if (ok)
  	{
-diff -urb SuiteSparse/CSparse/Source/cs_randperm.c SuiteSparse-new/CSparse/Source/cs_randperm.c
+diff -ur SuiteSparse/CSparse/Source/cs_randperm.c SuiteSparse-mod/CSparse/Source/cs_randperm.c
 --- SuiteSparse/CSparse/Source/cs_randperm.c	2006-04-12 20:42:45.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_randperm.c	2007-06-04 22:26:33.500000000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_randperm.c	2007-06-05 12:22:39.518851300 +0200
 @@ -6,7 +6,7 @@
  {
      int *p, k, j, t ;
@@ -1179,9 +1187,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_randperm.c SuiteSparse-new/CSparse/Sourc
      if (!p) return (NULL) ;		/* out of memory */
      for (k = 0 ; k < n ; k++) p [k] = n-k-1 ;
      if (seed == -1) return (p) ;	/* return reverse permutation */
-diff -urb SuiteSparse/CSparse/Source/cs_scc.c SuiteSparse-new/CSparse/Source/cs_scc.c
+diff -ur SuiteSparse/CSparse/Source/cs_scc.c SuiteSparse-mod/CSparse/Source/cs_scc.c
 --- SuiteSparse/CSparse/Source/cs_scc.c	2006-04-04 13:16:05.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_scc.c	2007-06-04 22:26:33.515625000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_scc.c	2007-06-05 12:22:39.534503100 +0200
 @@ -9,7 +9,7 @@
      n = A->n ; Ap = A->p ;
      D = cs_dalloc (n, 0) ;			    /* allocate result */
@@ -1191,9 +1199,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_scc.c SuiteSparse-new/CSparse/Source/cs_
      if (!D || !AT || !xi) return (cs_ddone (D, AT, xi, 0)) ;
      Blk = xi ; rcopy = pstack = xi + n ;
      p = D->p ; r = D->r ; ATp = AT->p ;
-diff -urb SuiteSparse/CSparse/Source/cs_schol.c SuiteSparse-new/CSparse/Source/cs_schol.c
+diff -ur SuiteSparse/CSparse/Source/cs_schol.c SuiteSparse-mod/CSparse/Source/cs_schol.c
 --- SuiteSparse/CSparse/Source/cs_schol.c	2006-04-10 13:57:42.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_schol.c	2007-06-04 22:26:33.531250000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_schol.c	2007-06-05 12:22:39.565806700 +0200
 @@ -7,7 +7,7 @@
      css *S ;
      if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
@@ -1212,9 +1220,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_schol.c SuiteSparse-new/CSparse/Source/c
      S->unz = S->lnz = cs_cumsum (S->cp, c, n) ; /* find column pointers for L */
      cs_free (c) ;
      return ((S->lnz >= 0) ? S : cs_sfree (S)) ;
-diff -urb SuiteSparse/CSparse/Source/cs_sqr.c SuiteSparse-new/CSparse/Source/cs_sqr.c
+diff -ur SuiteSparse/CSparse/Source/cs_sqr.c SuiteSparse-mod/CSparse/Source/cs_sqr.c
 --- SuiteSparse/CSparse/Source/cs_sqr.c	2006-04-10 13:42:41.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_sqr.c	2007-06-04 22:26:33.546875000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_sqr.c	2007-06-05 12:22:39.581458500 +0200
 @@ -4,9 +4,9 @@
  {
      int i, k, p, pa, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i, *next, *head,
@@ -1237,9 +1245,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_sqr.c SuiteSparse-new/CSparse/Source/cs_
      if (!S) return (NULL) ;		    /* out of memory */
      S->q = cs_amd (order, A) ;		    /* fill-reducing ordering */
      if (order && !S->q) return (cs_sfree (S)) ;
-diff -urb SuiteSparse/CSparse/Source/cs_symperm.c SuiteSparse-new/CSparse/Source/cs_symperm.c
+diff -ur SuiteSparse/CSparse/Source/cs_symperm.c SuiteSparse-mod/CSparse/Source/cs_symperm.c
 --- SuiteSparse/CSparse/Source/cs_symperm.c	2006-04-04 13:30:22.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_symperm.c	2007-06-04 22:26:33.562500000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_symperm.c	2007-06-05 12:22:39.612762100 +0200
 @@ -8,7 +8,7 @@
      if (!CS_CSC (A)) return (NULL) ;			/* check inputs */
      n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
@@ -1249,9 +1257,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_symperm.c SuiteSparse-new/CSparse/Source
      if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
      for (j = 0 ; j < n ; j++)		/* count entries in each column of C */
-diff -urb SuiteSparse/CSparse/Source/cs_transpose.c SuiteSparse-new/CSparse/Source/cs_transpose.c
+diff -ur SuiteSparse/CSparse/Source/cs_transpose.c SuiteSparse-mod/CSparse/Source/cs_transpose.c
 --- SuiteSparse/CSparse/Source/cs_transpose.c	2006-04-04 13:20:14.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_transpose.c	2007-06-04 22:26:33.578125000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_transpose.c	2007-06-05 12:22:39.628413900 +0200
 @@ -8,7 +8,7 @@
      if (!CS_CSC (A)) return (NULL) ;	/* check inputs */
      m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
@@ -1261,9 +1269,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_transpose.c SuiteSparse-new/CSparse/Sour
      if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	   /* out of memory */
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
      for (p = 0 ; p < Ap [n] ; p++) w [Ai [p]]++ ;	   /* row counts */
-diff -urb SuiteSparse/CSparse/Source/cs_updown.c SuiteSparse-new/CSparse/Source/cs_updown.c
+diff -ur SuiteSparse/CSparse/Source/cs_updown.c SuiteSparse-mod/CSparse/Source/cs_updown.c
 --- SuiteSparse/CSparse/Source/cs_updown.c	2007-02-28 21:37:24.000000000 +0100
-+++ SuiteSparse-new/CSparse/Source/cs_updown.c	2007-06-04 22:26:33.593750000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_updown.c	2007-06-05 12:22:39.644065700 +0200
 @@ -8,7 +8,7 @@
      Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
@@ -1273,9 +1281,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_updown.c SuiteSparse-new/CSparse/Source/
      if (!w) return (0) ;			    /* out of memory */
      f = Ci [p] ;
      for ( ; p < Cp [1] ; p++) f = CS_MIN (f, Ci [p]) ;	/* f = min (find (C)) */
-diff -urb SuiteSparse/CSparse/Source/cs_util.c SuiteSparse-new/CSparse/Source/cs_util.c
+diff -ur SuiteSparse/CSparse/Source/cs_util.c SuiteSparse-mod/CSparse/Source/cs_util.c
 --- SuiteSparse/CSparse/Source/cs_util.c	2006-05-27 15:10:48.000000000 +0200
-+++ SuiteSparse-new/CSparse/Source/cs_util.c	2007-06-04 22:26:33.609375000 +0200
++++ SuiteSparse-mod/CSparse/Source/cs_util.c	2007-06-05 12:22:39.659717500 +0200
 @@ -2,15 +2,15 @@
  /* allocate a sparse matrix (triplet form or compressed-column form) */
  cs *cs_spalloc (int m, int n, int nzmax, int values, int triplet)
@@ -1371,9 +1379,9 @@ diff -urb SuiteSparse/CSparse/Source/cs_util.c SuiteSparse-new/CSparse/Source/cs
  }
  
  /* free workspace and return a numeric factorization (Cholesky, LU, or QR) */
-diff -urb SuiteSparse/CSparse_to_CXSparse SuiteSparse-new/CSparse_to_CXSparse
+diff -ur SuiteSparse/CSparse_to_CXSparse SuiteSparse-mod/CSparse_to_CXSparse
 --- SuiteSparse/CSparse_to_CXSparse	2007-03-01 22:32:20.000000000 +0100
-+++ SuiteSparse-new/CSparse_to_CXSparse	2007-06-04 22:56:31.156250000 +0200
++++ SuiteSparse-mod/CSparse_to_CXSparse	2007-06-05 12:22:39.691021100 +0200
 @@ -297,6 +297,7 @@
  		if ($fbase =~ /cs_qr/)
  		{
@@ -1382,9 +1390,9 @@ diff -urb SuiteSparse/CSparse_to_CXSparse SuiteSparse-new/CSparse_to_CXSparse
  		}
  
  		# cs_happly
-diff -urb SuiteSparse/CXSparse/Demo/Makefile SuiteSparse-new/CXSparse/Demo/Makefile
+diff -ur SuiteSparse/CXSparse/Demo/Makefile SuiteSparse-mod/CXSparse/Demo/Makefile
 --- SuiteSparse/CXSparse/Demo/Makefile	2007-05-10 16:35:12.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Demo/Makefile	2007-06-04 23:09:24.000000000 +0200
++++ SuiteSparse-mod/CXSparse/Demo/Makefile	2007-06-05 14:15:32.875184300 +0200
 @@ -1,20 +1,22 @@
 -CC = cc
 -CFLAGS = -O
@@ -1395,7 +1403,7 @@ diff -urb SuiteSparse/CXSparse/Demo/Makefile SuiteSparse-new/CXSparse/Demo/Makef
 +include ../../UFconfig/UFconfig.mk
  
 -CS = ../Lib/libcxsparse.a
-+I = -O2 -TP -EHs -I../Include -I../../UFconfig
++I = -O2 -TP -EHs -MD -I../Include -I../../UFconfig
  
 -all: $(CS) cs_demo1 cs_demo2 cs_demo3 \
 -	cs_di_demo1 cs_di_demo2 cs_di_demo3 \
@@ -1584,9 +1592,9 @@ diff -urb SuiteSparse/CXSparse/Demo/Makefile SuiteSparse-new/CXSparse/Demo/Makef
 +	rm -f cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT)
 +	rm -f cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)
 +	rm -f cs_idemo$(EXEEXT) cs_ldemo$(EXEEXT)
-diff -urb SuiteSparse/CXSparse/Demo/cs_ci_demo.c SuiteSparse-new/CXSparse/Demo/cs_ci_demo.c
+diff -ur SuiteSparse/CXSparse/Demo/cs_ci_demo.c SuiteSparse-mod/CXSparse/Demo/cs_ci_demo.c
 --- SuiteSparse/CXSparse/Demo/cs_ci_demo.c	2007-05-18 14:13:07.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Demo/cs_ci_demo.c	2007-06-04 23:09:52.421875000 +0200
++++ SuiteSparse-mod/CXSparse/Demo/cs_ci_demo.c	2007-06-05 12:22:39.753628300 +0200
 @@ -81,7 +81,7 @@
      cs_ci *T, *A, *C ;
      int sym, m, n, mn, nz1, nz2 ;
@@ -1636,9 +1644,9 @@ diff -urb SuiteSparse/CXSparse/Demo/cs_ci_demo.c SuiteSparse-new/CXSparse/Demo/c
      }
      t = tic () ;
      ok = cs_ci_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
-diff -urb SuiteSparse/CXSparse/Demo/cs_cl_demo.c SuiteSparse-new/CXSparse/Demo/cs_cl_demo.c
+diff -ur SuiteSparse/CXSparse/Demo/cs_cl_demo.c SuiteSparse-mod/CXSparse/Demo/cs_cl_demo.c
 --- SuiteSparse/CXSparse/Demo/cs_cl_demo.c	2007-05-18 14:13:07.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Demo/cs_cl_demo.c	2007-06-04 23:09:52.437500000 +0200
++++ SuiteSparse-mod/CXSparse/Demo/cs_cl_demo.c	2007-06-05 12:22:39.769280100 +0200
 @@ -81,7 +81,7 @@
      cs_cl *T, *A, *C ;
      UF_long sym, m, n, mn, nz1, nz2 ;
@@ -1688,9 +1696,9 @@ diff -urb SuiteSparse/CXSparse/Demo/cs_cl_demo.c SuiteSparse-new/CXSparse/Demo/c
      }
      t = tic () ;
      ok = cs_cl_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
-diff -urb SuiteSparse/CXSparse/Demo/cs_demo.c SuiteSparse-new/CXSparse/Demo/cs_demo.c
+diff -ur SuiteSparse/CXSparse/Demo/cs_demo.c SuiteSparse-mod/CXSparse/Demo/cs_demo.c
 --- SuiteSparse/CXSparse/Demo/cs_demo.c	2006-06-02 21:26:45.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Demo/cs_demo.c	2007-06-04 22:26:33.234375000 +0200
++++ SuiteSparse-mod/CXSparse/Demo/cs_demo.c	2007-06-05 12:22:39.816235500 +0200
 @@ -81,7 +81,7 @@
      cs *T, *A, *C ;
      int sym, m, n, mn, nz1, nz2 ;
@@ -1740,9 +1748,9 @@ diff -urb SuiteSparse/CXSparse/Demo/cs_demo.c SuiteSparse-new/CXSparse/Demo/cs_d
      }
      t = tic () ;
      ok = cs_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
-diff -urb SuiteSparse/CXSparse/Demo/cs_di_demo.c SuiteSparse-new/CXSparse/Demo/cs_di_demo.c
+diff -ur SuiteSparse/CXSparse/Demo/cs_di_demo.c SuiteSparse-mod/CXSparse/Demo/cs_di_demo.c
 --- SuiteSparse/CXSparse/Demo/cs_di_demo.c	2007-05-18 14:13:07.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Demo/cs_di_demo.c	2007-06-04 23:09:52.421875000 +0200
++++ SuiteSparse-mod/CXSparse/Demo/cs_di_demo.c	2007-06-05 12:22:39.831887300 +0200
 @@ -81,7 +81,7 @@
      cs_di *T, *A, *C ;
      int sym, m, n, mn, nz1, nz2 ;
@@ -1792,9 +1800,9 @@ diff -urb SuiteSparse/CXSparse/Demo/cs_di_demo.c SuiteSparse-new/CXSparse/Demo/c
      }
      t = tic () ;
      ok = cs_di_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
-diff -urb SuiteSparse/CXSparse/Demo/cs_dl_demo.c SuiteSparse-new/CXSparse/Demo/cs_dl_demo.c
+diff -ur SuiteSparse/CXSparse/Demo/cs_dl_demo.c SuiteSparse-mod/CXSparse/Demo/cs_dl_demo.c
 --- SuiteSparse/CXSparse/Demo/cs_dl_demo.c	2007-05-18 14:13:07.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Demo/cs_dl_demo.c	2007-06-04 23:09:52.421875000 +0200
++++ SuiteSparse-mod/CXSparse/Demo/cs_dl_demo.c	2007-06-05 12:22:39.863190900 +0200
 @@ -81,7 +81,7 @@
      cs_dl *T, *A, *C ;
      UF_long sym, m, n, mn, nz1, nz2 ;
@@ -1844,9 +1852,9 @@ diff -urb SuiteSparse/CXSparse/Demo/cs_dl_demo.c SuiteSparse-new/CXSparse/Demo/c
      }
      t = tic () ;
      ok = cs_dl_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
-diff -urb SuiteSparse/CXSparse/Include/cs.h SuiteSparse-new/CXSparse/Include/cs.h
+diff -ur SuiteSparse/CXSparse/Include/cs.h SuiteSparse-mod/CXSparse/Include/cs.h
 --- SuiteSparse/CXSparse/Include/cs.h	2007-05-18 14:12:04.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Include/cs.h	2007-06-04 22:49:25.000000000 +0200
++++ SuiteSparse-mod/CXSparse/Include/cs.h	2007-06-05 12:22:39.894494500 +0200
 @@ -13,6 +13,10 @@
  #ifndef NCOMPLEX
  #include <complex>
@@ -1883,9 +1891,9 @@ diff -urb SuiteSparse/CXSparse/Include/cs.h SuiteSparse-new/CXSparse/Include/cs.
 +cs_complex_t cs_cl_house (cs_complex_t *x, double *beta, UF_long n) ;
 +
  #endif
-diff -urb SuiteSparse/CXSparse/Lib/Makefile SuiteSparse-new/CXSparse/Lib/Makefile
+diff -ur SuiteSparse/CXSparse/Lib/Makefile SuiteSparse-mod/CXSparse/Lib/Makefile
 --- SuiteSparse/CXSparse/Lib/Makefile	2007-05-05 23:03:41.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Lib/Makefile	2007-06-04 22:47:32.000000000 +0200
++++ SuiteSparse-mod/CXSparse/Lib/Makefile	2007-06-05 14:15:09.266322500 +0200
 @@ -1,12 +1,16 @@
  # Modify the "-O" optimization option for best performance (-O3 on Linux):
 -CC = cc
@@ -1895,7 +1903,7 @@ diff -urb SuiteSparse/CXSparse/Lib/Makefile SuiteSparse-new/CXSparse/Lib/Makefil
 +
 +include ../../UFconfig/UFconfig.mk
 +
-+CFLAGS = -O2 -TP -EHs
++CFLAGS = -O2 -TP -EHs -MD
  I = -I../../UFconfig -I../Include
  
 -AR = ar cr
@@ -1927,9 +1935,9 @@ diff -urb SuiteSparse/CXSparse/Lib/Makefile SuiteSparse-new/CXSparse/Lib/Makefil
  distclean: clean
 -	rm -f *.a
 +	rm -f *.$(LIBEXT)
-diff -urb SuiteSparse/CXSparse/Source/cs_add.c SuiteSparse-new/CXSparse/Source/cs_add.c
+diff -ur SuiteSparse/CXSparse/Source/cs_add.c SuiteSparse-mod/CXSparse/Source/cs_add.c
 --- SuiteSparse/CXSparse/Source/cs_add.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_add.c	2007-06-04 23:09:52.437500000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_add.c	2007-06-05 12:22:39.941449900 +0200
 @@ -9,9 +9,9 @@
      if (A->m != B->m || A->n != B->n) return (NULL) ;
      m = A->m ; anz = A->p [A->n] ;
@@ -1942,9 +1950,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_add.c SuiteSparse-new/CXSparse/Source/c
      C = cs_spalloc (m, n, anz + bnz, values, 0) ;	    /* allocate result*/
      if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
-diff -urb SuiteSparse/CXSparse/Source/cs_amd.c SuiteSparse-new/CXSparse/Source/cs_amd.c
+diff -ur SuiteSparse/CXSparse/Source/cs_amd.c SuiteSparse-mod/CXSparse/Source/cs_amd.c
 --- SuiteSparse/CXSparse/Source/cs_amd.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_amd.c	2007-06-04 23:09:52.453125000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_amd.c	2007-06-05 12:22:39.972753500 +0200
 @@ -59,8 +59,8 @@
      cs_fkeep (C, &cs_diag, NULL) ;	    /* drop diagonal entries */
      Cp = C->p ;
@@ -1956,9 +1964,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_amd.c SuiteSparse-new/CXSparse/Source/c
      t = cnz + cnz/5 + 2*n ;		    /* add elbow room to C */
      if (!P || !W || !cs_sprealloc (C, t)) return (cs_idone (P, C, W, 0)) ;
      len  = W           ; nv     = W +   (n+1) ; next   = W + 2*(n+1) ;
-diff -urb SuiteSparse/CXSparse/Source/cs_chol.c SuiteSparse-new/CXSparse/Source/cs_chol.c
+diff -ur SuiteSparse/CXSparse/Source/cs_chol.c SuiteSparse-mod/CXSparse/Source/cs_chol.c
 --- SuiteSparse/CXSparse/Source/cs_chol.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_chol.c	2007-06-04 23:09:52.453125000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_chol.c	2007-06-05 12:22:39.988405300 +0200
 @@ -8,9 +8,9 @@
      csn *N ;
      if (!CS_CSC (A) || !S || !S->cp || !S->parent) return (NULL) ;
@@ -1972,9 +1980,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_chol.c SuiteSparse-new/CXSparse/Source/
      cp = S->cp ; pinv = S->pinv ; parent = S->parent ;
      C = pinv ? cs_symperm (A, pinv, 1) : ((cs *) A) ;
      E = pinv ? C : NULL ;	    /* E is alias for A, or a copy E=A(p,p) */
-diff -urb SuiteSparse/CXSparse/Source/cs_cholsol.c SuiteSparse-new/CXSparse/Source/cs_cholsol.c
+diff -ur SuiteSparse/CXSparse/Source/cs_cholsol.c SuiteSparse-mod/CXSparse/Source/cs_cholsol.c
 --- SuiteSparse/CXSparse/Source/cs_cholsol.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_cholsol.c	2007-06-04 23:09:52.453125000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_cholsol.c	2007-06-05 12:22:40.004057100 +0200
 @@ -10,7 +10,7 @@
      n = A->n ;
      S = cs_schol (order, A) ;		    /* ordering and symbolic analysis */
@@ -1984,9 +1992,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_cholsol.c SuiteSparse-new/CXSparse/Sour
      ok = (S && N && x) ;
      if (ok)
      {
-diff -urb SuiteSparse/CXSparse/Source/cs_compress.c SuiteSparse-new/CXSparse/Source/cs_compress.c
+diff -ur SuiteSparse/CXSparse/Source/cs_compress.c SuiteSparse-mod/CXSparse/Source/cs_compress.c
 --- SuiteSparse/CXSparse/Source/cs_compress.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_compress.c	2007-06-04 23:09:52.578125000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_compress.c	2007-06-05 12:22:40.019708900 +0200
 @@ -8,7 +8,7 @@
      if (!CS_TRIPLET (T)) return (NULL) ;		/* check inputs */
      m = T->m ; n = T->n ; Ti = T->i ; Tj = T->p ; Tx = T->x ; nz = T->nz ;
@@ -1996,9 +2004,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_compress.c SuiteSparse-new/CXSparse/Sou
      if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
      for (k = 0 ; k < nz ; k++) w [Tj [k]]++ ;		/* column counts */
-diff -urb SuiteSparse/CXSparse/Source/cs_counts.c SuiteSparse-new/CXSparse/Source/cs_counts.c
+diff -ur SuiteSparse/CXSparse/Source/cs_counts.c SuiteSparse-mod/CXSparse/Source/cs_counts.c
 --- SuiteSparse/CXSparse/Source/cs_counts.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_counts.c	2007-06-04 23:09:52.468750000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_counts.c	2007-06-05 12:22:40.051012500 +0200
 @@ -22,8 +22,8 @@
      if (!CS_CSC (A) || !parent || !post) return (NULL) ;    /* check inputs */
      m = A->m ; n = A->n ;
@@ -2010,9 +2018,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_counts.c SuiteSparse-new/CXSparse/Sourc
      AT = cs_transpose (A, 0) ;				/* AT = A' */
      if (!AT || !colcount || !w) return (cs_idone (colcount, AT, w, 0)) ;
      ancestor = w ; maxfirst = w+n ; prevleaf = w+2*n ; first = w+3*n ;
-diff -urb SuiteSparse/CXSparse/Source/cs_dropzeros.c SuiteSparse-new/CXSparse/Source/cs_dropzeros.c
+diff -ur SuiteSparse/CXSparse/Source/cs_dropzeros.c SuiteSparse-mod/CXSparse/Source/cs_dropzeros.c
 --- SuiteSparse/CXSparse/Source/cs_dropzeros.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_dropzeros.c	2007-06-04 23:09:52.484375000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_dropzeros.c	2007-06-05 12:22:40.066664300 +0200
 @@ -1,7 +1,7 @@
  #include "cs.h"
  static CS_INT cs_nonzero (CS_INT i, CS_INT j, CS_ENTRY aij, void *other)
@@ -2022,9 +2030,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_dropzeros.c SuiteSparse-new/CXSparse/So
  }
  CS_INT cs_dropzeros (cs *A)
  {
-diff -urb SuiteSparse/CXSparse/Source/cs_dupl.c SuiteSparse-new/CXSparse/Source/cs_dupl.c
+diff -ur SuiteSparse/CXSparse/Source/cs_dupl.c SuiteSparse-mod/CXSparse/Source/cs_dupl.c
 --- SuiteSparse/CXSparse/Source/cs_dupl.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_dupl.c	2007-06-04 23:09:52.484375000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_dupl.c	2007-06-05 12:22:40.082316100 +0200
 @@ -6,7 +6,7 @@
      CS_ENTRY *Ax ;
      if (!CS_CSC (A)) return (0) ;		/* check inputs */
@@ -2034,9 +2042,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_dupl.c SuiteSparse-new/CXSparse/Source/
      if (!w) return (0) ;			/* out of memory */
      for (i = 0 ; i < m ; i++) w [i] = -1 ;	/* row i not yet seen */
      for (j = 0 ; j < n ; j++)
-diff -urb SuiteSparse/CXSparse/Source/cs_etree.c SuiteSparse-new/CXSparse/Source/cs_etree.c
+diff -ur SuiteSparse/CXSparse/Source/cs_etree.c SuiteSparse-mod/CXSparse/Source/cs_etree.c
 --- SuiteSparse/CXSparse/Source/cs_etree.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_etree.c	2007-06-04 23:09:52.484375000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_etree.c	2007-06-05 12:22:40.097967900 +0200
 @@ -5,8 +5,8 @@
      CS_INT i, k, p, m, n, inext, *Ap, *Ai, *w, *parent, *ancestor, *prev ;
      if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
@@ -2048,9 +2056,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_etree.c SuiteSparse-new/CXSparse/Source
      if (!w || !parent) return (cs_idone (parent, NULL, w, 0)) ;
      ancestor = w ; prev = w + n ;
      if (ata) for (i = 0 ; i < m ; i++) prev [i] = -1 ;
-diff -urb SuiteSparse/CXSparse/Source/cs_house.c SuiteSparse-new/CXSparse/Source/cs_house.c
+diff -ur SuiteSparse/CXSparse/Source/cs_house.c SuiteSparse-mod/CXSparse/Source/cs_house.c
 --- SuiteSparse/CXSparse/Source/cs_house.c	2007-03-01 22:23:01.000000000 +0100
-+++ SuiteSparse-new/CXSparse/Source/cs_house.c	2007-06-04 22:37:33.000000000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_house.c	2007-06-05 12:22:40.129271500 +0200
 @@ -10,7 +10,7 @@
      /* s = norm(x) */
      for (i = 0 ; i < n ; i++) s += x [i] * CS_CONJ (x [i]) ;
@@ -2069,9 +2077,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_house.c SuiteSparse-new/CXSparse/Source
  	{
  	    s *= x [0] / CS_ABS (x [0]) ;
  	}
-diff -urb SuiteSparse/CXSparse/Source/cs_lu.c SuiteSparse-new/CXSparse/Source/cs_lu.c
+diff -ur SuiteSparse/CXSparse/Source/cs_lu.c SuiteSparse-mod/CXSparse/Source/cs_lu.c
 --- SuiteSparse/CXSparse/Source/cs_lu.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_lu.c	2007-06-04 23:09:52.515625000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_lu.c	2007-06-05 12:22:40.144923300 +0200
 @@ -10,13 +10,13 @@
      if (!CS_CSC (A) || !S) return (NULL) ;	    /* check inputs */
      n = A->n ;
@@ -2090,9 +2098,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_lu.c SuiteSparse-new/CXSparse/Source/cs
      if (!L || !U || !pinv) return (cs_ndone (N, NULL, xi, x, 0)) ;
      Lp = L->p ; Up = U->p ;
      for (i = 0 ; i < n ; i++) x [i] = 0 ;	    /* clear workspace */
-diff -urb SuiteSparse/CXSparse/Source/cs_lusol.c SuiteSparse-new/CXSparse/Source/cs_lusol.c
+diff -ur SuiteSparse/CXSparse/Source/cs_lusol.c SuiteSparse-mod/CXSparse/Source/cs_lusol.c
 --- SuiteSparse/CXSparse/Source/cs_lusol.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_lusol.c	2007-06-04 23:09:52.515625000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_lusol.c	2007-06-05 12:22:40.160575100 +0200
 @@ -10,7 +10,7 @@
      n = A->n ;
      S = cs_sqr (order, A, 0) ;		    /* ordering and symbolic analysis */
@@ -2102,9 +2110,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_lusol.c SuiteSparse-new/CXSparse/Source
      ok = (S && N && x) ;
      if (ok)
      {
-diff -urb SuiteSparse/CXSparse/Source/cs_maxtrans.c SuiteSparse-new/CXSparse/Source/cs_maxtrans.c
+diff -ur SuiteSparse/CXSparse/Source/cs_maxtrans.c SuiteSparse-mod/CXSparse/Source/cs_maxtrans.c
 --- SuiteSparse/CXSparse/Source/cs_maxtrans.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_maxtrans.c	2007-06-04 23:09:52.515625000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_maxtrans.c	2007-06-05 12:22:40.191878700 +0200
 @@ -48,7 +48,7 @@
      cs *C ;
      if (!CS_CSC (A)) return (NULL) ;		    /* check inputs */
@@ -2123,9 +2131,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_maxtrans.c SuiteSparse-new/CXSparse/Sou
      if (!w) return (cs_idone (jimatch, (m2 < n2) ? C : NULL, w, 0)) ;
      cheap = w + n ; js = w + 2*n ; is = w + 3*n ; ps = w + 4*n ;
      for (j = 0 ; j < n ; j++) cheap [j] = Cp [j] ;  /* for cheap assignment */
-diff -urb SuiteSparse/CXSparse/Source/cs_multiply.c SuiteSparse-new/CXSparse/Source/cs_multiply.c
+diff -ur SuiteSparse/CXSparse/Source/cs_multiply.c SuiteSparse-mod/CXSparse/Source/cs_multiply.c
 --- SuiteSparse/CXSparse/Source/cs_multiply.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_multiply.c	2007-06-04 23:09:52.531250000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_multiply.c	2007-06-05 12:22:40.207530500 +0200
 @@ -9,9 +9,9 @@
      if (A->n != B->m) return (NULL) ;
      m = A->m ; anz = A->p [A->n] ;
@@ -2138,9 +2146,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_multiply.c SuiteSparse-new/CXSparse/Sou
      C = cs_spalloc (m, n, anz + bnz, values, 0) ;	 /* allocate result */
      if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
      Cp = C->p ;
-diff -urb SuiteSparse/CXSparse/Source/cs_pinv.c SuiteSparse-new/CXSparse/Source/cs_pinv.c
+diff -ur SuiteSparse/CXSparse/Source/cs_pinv.c SuiteSparse-mod/CXSparse/Source/cs_pinv.c
 --- SuiteSparse/CXSparse/Source/cs_pinv.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_pinv.c	2007-06-04 23:09:52.531250000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_pinv.c	2007-06-05 12:22:40.223182300 +0200
 @@ -4,7 +4,7 @@
  {
      CS_INT k, *pinv ;
@@ -2150,9 +2158,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_pinv.c SuiteSparse-new/CXSparse/Source/
      if (!pinv) return (NULL) ;			/* out of memory */
      for (k = 0 ; k < n ; k++) pinv [p [k]] = k ;/* invert the permutation */
      return (pinv) ;				/* return result */
-diff -urb SuiteSparse/CXSparse/Source/cs_post.c SuiteSparse-new/CXSparse/Source/cs_post.c
+diff -ur SuiteSparse/CXSparse/Source/cs_post.c SuiteSparse-mod/CXSparse/Source/cs_post.c
 --- SuiteSparse/CXSparse/Source/cs_post.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_post.c	2007-06-04 23:09:52.531250000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_post.c	2007-06-05 12:22:40.238834100 +0200
 @@ -4,8 +4,8 @@
  {
      CS_INT j, k = 0, *post, *w, *head, *next, *stack ;
@@ -2164,9 +2172,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_post.c SuiteSparse-new/CXSparse/Source/
      if (!w || !post) return (cs_idone (post, NULL, w, 0)) ;
      head = w ; next = w + n ; stack = w + 2*n ;
      for (j = 0 ; j < n ; j++) head [j] = -1 ;		/* empty linked lists */
-diff -urb SuiteSparse/CXSparse/Source/cs_qr.c SuiteSparse-new/CXSparse/Source/cs_qr.c
+diff -ur SuiteSparse/CXSparse/Source/cs_qr.c SuiteSparse-mod/CXSparse/Source/cs_qr.c
 --- SuiteSparse/CXSparse/Source/cs_qr.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_qr.c	2007-06-04 23:09:52.546875000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_qr.c	2007-06-05 12:22:40.270137700 +0200
 @@ -12,15 +12,15 @@
      m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
      q = S->q ; parent = S->parent ; pinv = S->pinv ; m2 = S->m2 ;
@@ -2187,9 +2195,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_qr.c SuiteSparse-new/CXSparse/Source/cs
      if (!R || !V || !Beta) return (cs_ndone (N, NULL, w, x, 0)) ;
      Rp = R->p ; Ri = R->i ; Rx = R->x ;
      Vp = V->p ; Vi = V->i ; Vx = V->x ;
-diff -urb SuiteSparse/CXSparse/Source/cs_qrsol.c SuiteSparse-new/CXSparse/Source/cs_qrsol.c
+diff -ur SuiteSparse/CXSparse/Source/cs_qrsol.c SuiteSparse-mod/CXSparse/Source/cs_qrsol.c
 --- SuiteSparse/CXSparse/Source/cs_qrsol.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_qrsol.c	2007-06-04 23:09:52.546875000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_qrsol.c	2007-06-05 12:22:40.285789500 +0200
 @@ -14,7 +14,7 @@
      {
  	S = cs_sqr (order, A, 1) ;	    /* ordering and symbolic analysis */
@@ -2208,9 +2216,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_qrsol.c SuiteSparse-new/CXSparse/Source
  	ok = (AT && S && N && x) ;
  	if (ok)
  	{
-diff -urb SuiteSparse/CXSparse/Source/cs_randperm.c SuiteSparse-new/CXSparse/Source/cs_randperm.c
+diff -ur SuiteSparse/CXSparse/Source/cs_randperm.c SuiteSparse-mod/CXSparse/Source/cs_randperm.c
 --- SuiteSparse/CXSparse/Source/cs_randperm.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_randperm.c	2007-06-04 23:09:52.593750000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_randperm.c	2007-06-05 12:22:40.301441300 +0200
 @@ -6,7 +6,7 @@
  {
      CS_INT *p, k, j, t ;
@@ -2220,9 +2228,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_randperm.c SuiteSparse-new/CXSparse/Sou
      if (!p) return (NULL) ;		/* out of memory */
      for (k = 0 ; k < n ; k++) p [k] = n-k-1 ;
      if (seed == -1) return (p) ;	/* return reverse permutation */
-diff -urb SuiteSparse/CXSparse/Source/cs_scc.c SuiteSparse-new/CXSparse/Source/cs_scc.c
+diff -ur SuiteSparse/CXSparse/Source/cs_scc.c SuiteSparse-mod/CXSparse/Source/cs_scc.c
 --- SuiteSparse/CXSparse/Source/cs_scc.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_scc.c	2007-06-04 23:09:52.546875000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_scc.c	2007-06-05 12:22:40.332744900 +0200
 @@ -9,7 +9,7 @@
      n = A->n ; Ap = A->p ;
      D = cs_dalloc (n, 0) ;			    /* allocate result */
@@ -2232,9 +2240,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_scc.c SuiteSparse-new/CXSparse/Source/c
      if (!D || !AT || !xi) return (cs_ddone (D, AT, xi, 0)) ;
      Blk = xi ; rcopy = pstack = xi + n ;
      p = D->p ; r = D->r ; ATp = AT->p ;
-diff -urb SuiteSparse/CXSparse/Source/cs_schol.c SuiteSparse-new/CXSparse/Source/cs_schol.c
+diff -ur SuiteSparse/CXSparse/Source/cs_schol.c SuiteSparse-mod/CXSparse/Source/cs_schol.c
 --- SuiteSparse/CXSparse/Source/cs_schol.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_schol.c	2007-06-04 23:09:52.562500000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_schol.c	2007-06-05 12:22:40.348396700 +0200
 @@ -7,7 +7,7 @@
      css *S ;
      if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
@@ -2253,9 +2261,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_schol.c SuiteSparse-new/CXSparse/Source
      S->unz = S->lnz = cs_cumsum (S->cp, c, n) ; /* find column pointers for L */
      cs_free (c) ;
      return ((S->lnz >= 0) ? S : cs_sfree (S)) ;
-diff -urb SuiteSparse/CXSparse/Source/cs_sqr.c SuiteSparse-new/CXSparse/Source/cs_sqr.c
+diff -ur SuiteSparse/CXSparse/Source/cs_sqr.c SuiteSparse-mod/CXSparse/Source/cs_sqr.c
 --- SuiteSparse/CXSparse/Source/cs_sqr.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_sqr.c	2007-06-04 23:09:52.562500000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_sqr.c	2007-06-05 12:22:40.364048500 +0200
 @@ -4,9 +4,9 @@
  {
      CS_INT i, k, p, pa, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i, *next, *head,
@@ -2278,9 +2286,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_sqr.c SuiteSparse-new/CXSparse/Source/c
      if (!S) return (NULL) ;		    /* out of memory */
      S->q = cs_amd (order, A) ;		    /* fill-reducing ordering */
      if (order && !S->q) return (cs_sfree (S)) ;
-diff -urb SuiteSparse/CXSparse/Source/cs_symperm.c SuiteSparse-new/CXSparse/Source/cs_symperm.c
+diff -ur SuiteSparse/CXSparse/Source/cs_symperm.c SuiteSparse-mod/CXSparse/Source/cs_symperm.c
 --- SuiteSparse/CXSparse/Source/cs_symperm.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_symperm.c	2007-06-04 23:09:52.562500000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_symperm.c	2007-06-05 12:22:40.395352100 +0200
 @@ -8,7 +8,7 @@
      if (!CS_CSC (A)) return (NULL) ;			/* check inputs */
      n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
@@ -2290,9 +2298,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_symperm.c SuiteSparse-new/CXSparse/Sour
      if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
      for (j = 0 ; j < n ; j++)		/* count entries in each column of C */
-diff -urb SuiteSparse/CXSparse/Source/cs_transpose.c SuiteSparse-new/CXSparse/Source/cs_transpose.c
+diff -ur SuiteSparse/CXSparse/Source/cs_transpose.c SuiteSparse-mod/CXSparse/Source/cs_transpose.c
 --- SuiteSparse/CXSparse/Source/cs_transpose.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_transpose.c	2007-06-04 23:09:52.562500000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_transpose.c	2007-06-05 12:22:40.411003900 +0200
 @@ -8,7 +8,7 @@
      if (!CS_CSC (A)) return (NULL) ;	/* check inputs */
      m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
@@ -2302,9 +2310,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_transpose.c SuiteSparse-new/CXSparse/So
      if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	   /* out of memory */
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
      for (p = 0 ; p < Ap [n] ; p++) w [Ai [p]]++ ;	   /* row counts */
-diff -urb SuiteSparse/CXSparse/Source/cs_updown.c SuiteSparse-new/CXSparse/Source/cs_updown.c
+diff -ur SuiteSparse/CXSparse/Source/cs_updown.c SuiteSparse-mod/CXSparse/Source/cs_updown.c
 --- SuiteSparse/CXSparse/Source/cs_updown.c	2007-02-28 21:45:07.000000000 +0100
-+++ SuiteSparse-new/CXSparse/Source/cs_updown.c	2007-06-04 22:50:44.000000000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_updown.c	2007-06-05 12:22:40.426655700 +0200
 @@ -12,7 +12,7 @@
      Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
@@ -2328,9 +2336,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_updown.c SuiteSparse-new/CXSparse/Sourc
  	Lx [p] = delta * Lx [p] + ((sigma > 0) ? (gamma * w [j]) : 0) ;
  	beta = beta2 ;
  #ifdef CS_COMPLEX
-diff -urb SuiteSparse/CXSparse/Source/cs_util.c SuiteSparse-new/CXSparse/Source/cs_util.c
+diff -ur SuiteSparse/CXSparse/Source/cs_util.c SuiteSparse-mod/CXSparse/Source/cs_util.c
 --- SuiteSparse/CXSparse/Source/cs_util.c	2007-05-18 14:13:08.000000000 +0200
-+++ SuiteSparse-new/CXSparse/Source/cs_util.c	2007-06-04 23:09:52.578125000 +0200
++++ SuiteSparse-mod/CXSparse/Source/cs_util.c	2007-06-05 12:22:40.442307500 +0200
 @@ -2,15 +2,15 @@
  /* allocate a sparse matrix (triplet form or compressed-column form) */
  cs *cs_spalloc (CS_INT m, CS_INT n, CS_INT nzmax, CS_INT values, CS_INT triplet)
@@ -2426,9 +2434,9 @@ diff -urb SuiteSparse/CXSparse/Source/cs_util.c SuiteSparse-new/CXSparse/Source/
  }
  
  /* free workspace and return a numeric factorization (Cholesky, LU, or QR) */
-diff -urb SuiteSparse/CXSparse_newfiles/Demo/Makefile SuiteSparse-new/CXSparse_newfiles/Demo/Makefile
+diff -ur SuiteSparse/CXSparse_newfiles/Demo/Makefile SuiteSparse-mod/CXSparse_newfiles/Demo/Makefile
 --- SuiteSparse/CXSparse_newfiles/Demo/Makefile	2007-05-10 16:35:12.000000000 +0200
-+++ SuiteSparse-new/CXSparse_newfiles/Demo/Makefile	2007-06-04 23:09:24.734375000 +0200
++++ SuiteSparse-mod/CXSparse_newfiles/Demo/Makefile	2007-06-05 14:18:03.385576700 +0200
 @@ -1,20 +1,22 @@
 -CC = cc
 -CFLAGS = -O
@@ -2439,7 +2447,7 @@ diff -urb SuiteSparse/CXSparse_newfiles/Demo/Makefile SuiteSparse-new/CXSparse_n
 +include ../../UFconfig/UFconfig.mk
  
 -CS = ../Lib/libcxsparse.a
-+I = -O2 -TP -EHs -I../Include -I../../UFconfig
++I = -O2 -TP -EHs -MD -I../Include -I../../UFconfig
  
 -all: $(CS) cs_demo1 cs_demo2 cs_demo3 \
 -	cs_di_demo1 cs_di_demo2 cs_di_demo3 \
@@ -2628,9 +2636,9 @@ diff -urb SuiteSparse/CXSparse_newfiles/Demo/Makefile SuiteSparse-new/CXSparse_n
 +	rm -f cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT)
 +	rm -f cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)
 +	rm -f cs_idemo$(EXEEXT) cs_ldemo$(EXEEXT)
-diff -urb SuiteSparse/CXSparse_newfiles/Include/cs.h SuiteSparse-new/CXSparse_newfiles/Include/cs.h
+diff -ur SuiteSparse/CXSparse_newfiles/Include/cs.h SuiteSparse-mod/CXSparse_newfiles/Include/cs.h
 --- SuiteSparse/CXSparse_newfiles/Include/cs.h	2007-05-18 14:12:04.000000000 +0200
-+++ SuiteSparse-new/CXSparse_newfiles/Include/cs.h	2007-06-04 22:49:25.234375000 +0200
++++ SuiteSparse-mod/CXSparse_newfiles/Include/cs.h	2007-06-05 12:22:40.504914700 +0200
 @@ -13,6 +13,10 @@
  #ifndef NCOMPLEX
  #include <complex>
@@ -2667,9 +2675,9 @@ diff -urb SuiteSparse/CXSparse_newfiles/Include/cs.h SuiteSparse-new/CXSparse_ne
 +cs_complex_t cs_cl_house (cs_complex_t *x, double *beta, UF_long n) ;
 +
  #endif
-diff -urb SuiteSparse/CXSparse_newfiles/Lib/Makefile SuiteSparse-new/CXSparse_newfiles/Lib/Makefile
+diff -ur SuiteSparse/CXSparse_newfiles/Lib/Makefile SuiteSparse-mod/CXSparse_newfiles/Lib/Makefile
 --- SuiteSparse/CXSparse_newfiles/Lib/Makefile	2007-05-05 23:03:41.000000000 +0200
-+++ SuiteSparse-new/CXSparse_newfiles/Lib/Makefile	2007-06-04 22:47:32.671875000 +0200
++++ SuiteSparse-mod/CXSparse_newfiles/Lib/Makefile	2007-06-05 14:17:54.372418100 +0200
 @@ -1,12 +1,16 @@
  # Modify the "-O" optimization option for best performance (-O3 on Linux):
 -CC = cc
@@ -2679,7 +2687,7 @@ diff -urb SuiteSparse/CXSparse_newfiles/Lib/Makefile SuiteSparse-new/CXSparse_ne
 +
 +include ../../UFconfig/UFconfig.mk
 +
-+CFLAGS = -O2 -TP -EHs
++CFLAGS = -O2 -TP -EHs -MD
  I = -I../../UFconfig -I../Include
  
 -AR = ar cr
@@ -2711,9 +2719,9 @@ diff -urb SuiteSparse/CXSparse_newfiles/Lib/Makefile SuiteSparse-new/CXSparse_ne
  distclean: clean
 -	rm -f *.a
 +	rm -f *.$(LIBEXT)
-diff -urb SuiteSparse/CXSparse_newfiles/Source/cs_house.c SuiteSparse-new/CXSparse_newfiles/Source/cs_house.c
+diff -ur SuiteSparse/CXSparse_newfiles/Source/cs_house.c SuiteSparse-mod/CXSparse_newfiles/Source/cs_house.c
 --- SuiteSparse/CXSparse_newfiles/Source/cs_house.c	2007-03-01 22:23:01.000000000 +0100
-+++ SuiteSparse-new/CXSparse_newfiles/Source/cs_house.c	2007-06-04 22:37:33.187500000 +0200
++++ SuiteSparse-mod/CXSparse_newfiles/Source/cs_house.c	2007-06-05 12:22:40.551870100 +0200
 @@ -10,7 +10,7 @@
      /* s = norm(x) */
      for (i = 0 ; i < n ; i++) s += x [i] * CS_CONJ (x [i]) ;
@@ -2732,9 +2740,9 @@ diff -urb SuiteSparse/CXSparse_newfiles/Source/cs_house.c SuiteSparse-new/CXSpar
  	{
  	    s *= x [0] / CS_ABS (x [0]) ;
  	}
-diff -urb SuiteSparse/CXSparse_newfiles/Source/cs_updown.c SuiteSparse-new/CXSparse_newfiles/Source/cs_updown.c
+diff -ur SuiteSparse/CXSparse_newfiles/Source/cs_updown.c SuiteSparse-mod/CXSparse_newfiles/Source/cs_updown.c
 --- SuiteSparse/CXSparse_newfiles/Source/cs_updown.c	2007-02-28 21:45:07.000000000 +0100
-+++ SuiteSparse-new/CXSparse_newfiles/Source/cs_updown.c	2007-06-04 22:50:44.328125000 +0200
++++ SuiteSparse-mod/CXSparse_newfiles/Source/cs_updown.c	2007-06-05 12:22:40.567521900 +0200
 @@ -12,7 +12,7 @@
      Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
      Cp = C->p ; Ci = C->i ; Cx = C->x ;
@@ -2758,17 +2766,16 @@ diff -urb SuiteSparse/CXSparse_newfiles/Source/cs_updown.c SuiteSparse-new/CXSpa
  	Lx [p] = delta * Lx [p] + ((sigma > 0) ? (gamma * w [j]) : 0) ;
  	beta = beta2 ;
  #ifdef CS_COMPLEX
-Files SuiteSparse/CXSparse_newfiles.tar.gz and SuiteSparse-new/CXSparse_newfiles.tar.gz differ
-diff -urb SuiteSparse/KLU/Demo/Makefile SuiteSparse-new/KLU/Demo/Makefile
+diff -ur SuiteSparse/KLU/Demo/Makefile SuiteSparse-mod/KLU/Demo/Makefile
 --- SuiteSparse/KLU/Demo/Makefile	2007-05-11 17:56:36.000000000 +0200
-+++ SuiteSparse-new/KLU/Demo/Makefile	2007-06-04 22:26:34.078125000 +0200
-@@ -6,10 +6,10 @@
++++ SuiteSparse-mod/KLU/Demo/Makefile	2007-06-05 12:43:40.631525100 +0200
+@@ -6,15 +6,15 @@
  
  include ../../UFconfig/UFconfig.mk
  
 -LIB = ../Lib/libklu.a  ../../BTF/Lib/libbtf.a \
 -	../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a
-+LIB = ../Lib/$(LIBPRE)klu.$(LIBEXT)  ../../BTF/Lib/$(LIBPRE)btf.$(LIBEXT) \
++LIBS = ../Lib/$(LIBPRE)klu.$(LIBEXT)  ../../BTF/Lib/$(LIBPRE)btf.$(LIBEXT) \
 +	../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT) ../../COLAMD/Lib/$(LIBPRE)colamd.$(LIBEXT)
  
 -CHOLMOD = ../../CHOLMOD/Lib/libcholmod.a
@@ -2776,6 +2783,12 @@ diff -urb SuiteSparse/KLU/Demo/Makefile SuiteSparse-new/KLU/Demo/Makefile
  
  I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
  	-I../../BTF/Include -I../Include -I../../CHOLMOD/Include
+ 
+-all: $(LIB) klu_simple $(CHOLMOD) kludemo kluldemo
++all: $(LIBS) klu_simple$(EXEEXT) $(CHOLMOD) kludemo$(EXEEXT) kluldemo$(EXEEXT)
+ 	- ./klu_simple
+ 	- ./kludemo < ../Matrix/1c.mtx
+ 	- ./kludemo < ../Matrix/arrowc.mtx
 @@ -29,19 +29,19 @@
  	- ./kluldemo < ../Matrix/w156.mtx
  	- ./kluldemo < ../Matrix/ctina.mtx
@@ -2813,22 +2826,22 @@ diff -urb SuiteSparse/KLU/Demo/Makefile SuiteSparse-new/KLU/Demo/Makefile
  
 -kludemo: kludemo.c Makefile $(LIB)
 -	$(CC) $(CFLAGS) $(I) kludemo.c -o kludemo $(LIB) $(CHOLMOD) -lm
-+kludemo$(EXEEXT): kludemo.c Makefile $(LIB)
-+	$(CC) $(CFLAGS) $(I) kludemo.c -o kludemo$(EXEEXT) $(LIB) $(CHOLMOD) $(CLIB)
++kludemo$(EXEEXT): kludemo.c Makefile $(LIBS)
++	$(CC) $(CFLAGS) $(I) kludemo.c -o kludemo$(EXEEXT) $(LIBS) $(CHOLMOD) $(CLIB)
  
 -kluldemo: kludemo.c Makefile $(LIB)
 -	$(CC) $(CFLAGS) $(I) kluldemo.c -o kluldemo $(LIB) $(CHOLMOD) -lm
-+kluldemo$(EXEEXT): kludemo.c Makefile $(LIB)
-+	$(CC) $(CFLAGS) $(I) kluldemo.c -o kluldemo$(EXEEXT) $(LIB) $(CHOLMOD) $(CLIB)
++kluldemo$(EXEEXT): kludemo.c Makefile $(LIBS)
++	$(CC) $(CFLAGS) $(I) kluldemo.c -o kluldemo$(EXEEXT) $(LIBS) $(CHOLMOD) $(CLIB)
  
 -klu_simple: klu_simple.c Makefile $(LIB)
 -	$(CC) $(CFLAGS) $(I) klu_simple.c -o klu_simple $(LIB) -lm
-+klu_simple$(EXEEXT): klu_simple.c Makefile $(LIB)
-+	$(CC) $(CFLAGS) $(I) klu_simple.c -o klu_simple$(EXEEXT) $(LIB) $(CLIB)
++klu_simple$(EXEEXT): klu_simple.c Makefile $(LIBS)
++	$(CC) $(CFLAGS) $(I) klu_simple.c -o klu_simple$(EXEEXT) $(LIBS) $(CLIB)
  	- ./klu_simple
-diff -urb SuiteSparse/KLU/Lib/Makefile SuiteSparse-new/KLU/Lib/Makefile
+diff -ur SuiteSparse/KLU/Lib/Makefile SuiteSparse-mod/KLU/Lib/Makefile
 --- SuiteSparse/KLU/Lib/Makefile	2007-05-05 16:33:38.000000000 +0200
-+++ SuiteSparse-new/KLU/Lib/Makefile	2007-06-04 22:26:34.093750000 +0200
++++ SuiteSparse-mod/KLU/Lib/Makefile	2007-06-05 12:22:40.614477300 +0200
 @@ -17,7 +17,7 @@
  
  all: library
@@ -2860,9 +2873,9 @@ diff -urb SuiteSparse/KLU/Lib/Makefile SuiteSparse-new/KLU/Lib/Makefile
  
  clean:
  	- $(RM) $(CLEAN)
-diff -urb SuiteSparse/KLU/User/Makefile SuiteSparse-new/KLU/User/Makefile
+diff -ur SuiteSparse/KLU/User/Makefile SuiteSparse-mod/KLU/User/Makefile
 --- SuiteSparse/KLU/User/Makefile	2007-05-01 03:08:32.000000000 +0200
-+++ SuiteSparse-new/KLU/User/Makefile	2007-06-04 22:26:34.109375000 +0200
++++ SuiteSparse-mod/KLU/User/Makefile	2007-06-05 12:22:40.630129100 +0200
 @@ -2,20 +2,20 @@
  
  include ../../UFconfig/UFconfig.mk
@@ -2889,9 +2902,9 @@ diff -urb SuiteSparse/KLU/User/Makefile SuiteSparse-new/KLU/User/Makefile
  
  clean:
  	- $(RM) $(CLEAN)
-diff -urb SuiteSparse/LDL/Demo/Makefile SuiteSparse-new/LDL/Demo/Makefile
+diff -ur SuiteSparse/LDL/Demo/Makefile SuiteSparse-mod/LDL/Demo/Makefile
 --- SuiteSparse/LDL/Demo/Makefile	2007-05-05 19:30:08.000000000 +0200
-+++ SuiteSparse-new/LDL/Demo/Makefile	2007-06-04 22:26:34.125000000 +0200
++++ SuiteSparse-mod/LDL/Demo/Makefile	2007-06-05 12:22:40.645780900 +0200
 @@ -10,7 +10,7 @@
  
  C = $(CC) $(CFLAGS) $(I)
@@ -2986,9 +2999,9 @@ diff -urb SuiteSparse/LDL/Demo/Makefile SuiteSparse-new/LDL/Demo/Makefile
  	- $(RM) my_ldlmain.out my_ldlamd.out my_ldlsimple.out my_ldllamd.out
  	- $(RM) my_ldllsimple.out my_ldllmain.out
  
-diff -urb SuiteSparse/LDL/Lib/Makefile SuiteSparse-new/LDL/Lib/Makefile
+diff -ur SuiteSparse/LDL/Lib/Makefile SuiteSparse-mod/LDL/Lib/Makefile
 --- SuiteSparse/LDL/Lib/Makefile	2007-05-05 19:31:44.000000000 +0200
-+++ SuiteSparse-new/LDL/Lib/Makefile	2007-06-04 22:26:34.125000000 +0200
++++ SuiteSparse-mod/LDL/Lib/Makefile	2007-06-05 12:22:40.661432700 +0200
 @@ -10,22 +10,22 @@
  
  C = $(CC) $(CFLAGS) $(I)
@@ -3017,9 +3030,9 @@ diff -urb SuiteSparse/LDL/Lib/Makefile SuiteSparse-new/LDL/Lib/Makefile
  
  clean:
  	- $(RM) $(CLEAN)
-diff -urb SuiteSparse/LDL/Makefile SuiteSparse-new/LDL/Makefile
+diff -ur SuiteSparse/LDL/Makefile SuiteSparse-mod/LDL/Makefile
 --- SuiteSparse/LDL/Makefile	2007-05-05 19:24:14.000000000 +0200
-+++ SuiteSparse-new/LDL/Makefile	2007-06-04 22:26:34.140625000 +0200
++++ SuiteSparse-mod/LDL/Makefile	2007-06-05 12:22:40.677084500 +0200
 @@ -2,12 +2,12 @@
  # LDL Makefile
  #------------------------------------------------------------------------------
@@ -3035,9 +3048,9 @@ diff -urb SuiteSparse/LDL/Makefile SuiteSparse-new/LDL/Makefile
  	( cd Lib    ; $(MAKE) )
  	( cd Demo   ; $(MAKE) )
  
-diff -urb SuiteSparse/Makefile SuiteSparse-new/Makefile
+diff -ur SuiteSparse/Makefile SuiteSparse-mod/Makefile
 --- SuiteSparse/Makefile	2007-05-08 00:28:44.000000000 +0200
-+++ SuiteSparse-new/Makefile	2007-06-04 22:26:34.156250000 +0200
++++ SuiteSparse-mod/Makefile	2007-06-05 13:30:39.515933900 +0200
 @@ -7,7 +7,7 @@
  # Compile the default rules for each package
  default:
@@ -3065,9 +3078,37 @@ diff -urb SuiteSparse/Makefile SuiteSparse-new/Makefile
  	( cd AMD ; $(MAKE) clean )
  	( cd CAMD ; $(MAKE) clean )
  	( cd COLAMD ; $(MAKE) clean )
-diff -urb SuiteSparse/UFconfig/UFconfig.mk SuiteSparse-new/UFconfig/UFconfig.mk
+@@ -88,3 +88,27 @@
+ 	( cd CXSparse/Demo ; $(MAKE) > cs_demo.out )
+ 	( cd CXSparse ; $(MAKE) purge )
+ 
++install:
++	mkdir -p $(INSTDIR)/lib
++	mkdir -p $(INSTDIR)/include/suitesparse
++	cp AMD/Lib/amd.lib $(INSTDIR)/lib
++	cp AMD/Include/amd.h $(INSTDIR)/include/suitesparse
++	cp CAMD/Lib/camd.lib $(INSTDIR)/lib
++	cp CAMD/Include/camd.h $(INSTDIR)/include/suitesparse
++	cp CCOLAMD/Lib/ccolamd.lib $(INSTDIR)/lib
++	cp CCOLAMD/Include/ccolamd.h $(INSTDIR)/include/suitesparse
++	cp COLAMD/Lib/colamd.lib $(INSTDIR)/lib
++	cp COLAMD/Include/colamd.h $(INSTDIR)/include/suitesparse
++	cp CHOLMOD/Lib/cholmod.lib $(INSTDIR)/lib
++	cp CHOLMOD/Include/*.h $(INSTDIR)/include/suitesparse
++	cp UMFPACK/Lib/umfpack.lib $(INSTDIR)/lib
++	cp UMFPACK/Include/*.h $(INSTDIR)/include/suitesparse
++	cp CXSparse/Lib/cxsparse.lib $(INSTDIR)/lib
++	cp CXSparse/Include/cs.h $(INSTDIR)/include/suitesparse
++	cp BTF/Lib/btf.lib $(INSTDIR)/lib
++	cp BTF/Include/btf.h $(INSTDIR)/include/suitesparse
++	cp KLU/Lib/klu.lib $(INSTDIR)/lib
++	cp KLU/Include/klu.h $(INSTDIR)/include/suitesparse
++	cp LDL/Lib/ldl.lib $(INSTDIR)/lib
++	cp LDL/Include/ldl.h $(INSTDIR)/include/suitesparse
++	cp UFconfig/UFconfig.h $(INSTDIR)/include/suitesparse
+diff -ur SuiteSparse/UFconfig/UFconfig.mk SuiteSparse-mod/UFconfig/UFconfig.mk
 --- SuiteSparse/UFconfig/UFconfig.mk	2007-05-10 15:46:08.000000000 +0200
-+++ SuiteSparse-new/UFconfig/UFconfig.mk	2007-06-04 22:26:34.171875000 +0200
++++ SuiteSparse-mod/UFconfig/UFconfig.mk	2007-06-05 12:22:40.724039900 +0200
 @@ -32,12 +32,12 @@
  # C compiler and compiler flags:  These will normally not give you optimal
  # performance.  You should select the optimization parameters that are best
@@ -3165,9 +3206,9 @@ diff -urb SuiteSparse/UFconfig/UFconfig.mk SuiteSparse-new/UFconfig/UFconfig.mk
  
 -CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d
 +CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d *.exe *.lib *.ilk *.exp
-diff -urb SuiteSparse/UFconfig/xerbla/Makefile SuiteSparse-new/UFconfig/xerbla/Makefile
+diff -ur SuiteSparse/UFconfig/xerbla/Makefile SuiteSparse-mod/UFconfig/xerbla/Makefile
 --- SuiteSparse/UFconfig/xerbla/Makefile	2006-01-30 17:50:58.000000000 +0100
-+++ SuiteSparse-new/UFconfig/xerbla/Makefile	2007-06-04 22:26:34.187500000 +0200
++++ SuiteSparse-mod/UFconfig/xerbla/Makefile	2007-06-05 12:22:40.739691700 +0200
 @@ -4,22 +4,22 @@
  
  include ../UFconfig.mk
@@ -3198,9 +3239,9 @@ diff -urb SuiteSparse/UFconfig/xerbla/Makefile SuiteSparse-new/UFconfig/xerbla/M
  	- $(RM) xerbla.o
  
  distclean: purge
-diff -urb SuiteSparse/UMFPACK/Demo/Makefile SuiteSparse-new/UMFPACK/Demo/Makefile
+diff -ur SuiteSparse/UMFPACK/Demo/Makefile SuiteSparse-mod/UMFPACK/Demo/Makefile
 --- SuiteSparse/UMFPACK/Demo/Makefile	2007-05-05 21:56:55.000000000 +0200
-+++ SuiteSparse-new/UMFPACK/Demo/Makefile	2007-06-04 22:26:34.203125000 +0200
++++ SuiteSparse-mod/UMFPACK/Demo/Makefile	2007-06-05 12:22:40.770995300 +0200
 @@ -14,15 +14,15 @@
  
  INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../UFconfig/UFconfig.h
@@ -3329,9 +3370,9 @@ diff -urb SuiteSparse/UMFPACK/Demo/Makefile SuiteSparse-new/UMFPACK/Demo/Makefil
  
  clean:
  	- $(RM) $(CLEAN)
-diff -urb SuiteSparse/UMFPACK/Lib/Makefile SuiteSparse-new/UMFPACK/Lib/Makefile
+diff -ur SuiteSparse/UMFPACK/Lib/Makefile SuiteSparse-mod/UMFPACK/Lib/Makefile
 --- SuiteSparse/UMFPACK/Lib/Makefile	2007-05-05 21:50:23.000000000 +0200
-+++ SuiteSparse-new/UMFPACK/Lib/Makefile	2007-06-04 22:26:34.218750000 +0200
++++ SuiteSparse-mod/UMFPACK/Lib/Makefile	2007-06-05 12:22:40.802298900 +0200
 @@ -6,14 +6,14 @@
  # have GNU make.  Note that it is not used if you have GNU make.  It ignores
  # dependency checking and just compiles everything.
@@ -3360,9 +3401,9 @@ diff -urb SuiteSparse/UMFPACK/Lib/Makefile SuiteSparse-new/UMFPACK/Lib/Makefile
  	    umfpack_gn_global.o \
  	    umf_i_analyze.o umf_i_apply_order.o umf_i_colamd.o umf_i_free.o \
  	    umf_i_fsize.o umf_i_is_permutation.o umf_i_malloc.o umf_i_realloc.o \
-diff -urb SuiteSparse/UMFPACK/Source/cholmod_blas.h SuiteSparse-new/UMFPACK/Source/cholmod_blas.h
+diff -ur SuiteSparse/UMFPACK/Source/cholmod_blas.h SuiteSparse-mod/UMFPACK/Source/cholmod_blas.h
 --- SuiteSparse/UMFPACK/Source/cholmod_blas.h	2007-05-05 22:01:57.000000000 +0200
-+++ SuiteSparse-new/UMFPACK/Source/cholmod_blas.h	2007-06-04 22:26:34.234375000 +0200
++++ SuiteSparse-mod/UMFPACK/Source/cholmod_blas.h	2007-06-05 12:22:40.817950700 +0200
 @@ -48,8 +48,10 @@
  #define CHOLMOD_CYGWIN
  #else

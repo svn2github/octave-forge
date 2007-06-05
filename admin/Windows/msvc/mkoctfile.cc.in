@@ -482,6 +482,7 @@ int main(int argc, char **argv)
 		else if (arg == "--mex")
 		{
 			incflags += " -I.";
+			ldflags += " -Wl,-export:mexFunction";
 			output_ext = ".mex";
 		}
 		else if (starts_with(arg, "-W"))

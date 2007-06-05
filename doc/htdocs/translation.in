@@ -117,7 +117,7 @@ exported from the shell.</p>
 
 <h2>Maintaining your translations</h2>
 <p>As Octave evolves you will need to keep your translations up to date.  The
-script language/admin/octlang can help you:</p>
+script admin/octlang can help you:</p>
 <dl>
 <dt>octlang missing</dt>
 <dd>walk the current subtree listing all translations which are missing.</dd>
@@ -130,6 +130,10 @@ current text in base.</dd>
 <dd>tag function.ZZ as up to date, marking the header with the current md5 sum
 and version number from base.</dd>
 </dl>
+
+<p>These commands should be run in the base directory of your package
+and admin/ directory should be on your path or octlang should be
+called explicitly.</p>
 
 <h2>Updating base</h2>
 <p>Once per Octave release, somebody will need to update the help

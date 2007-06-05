@@ -1,3 +1,9 @@
+2007-??-??
+	* Octave
+		. mkoctfile now includes $prefix\lib in link command
+		. mkoctfile now exports mexFunction from mex files
+		. fix file handle leak
+
 2007-06-03: 2.9.12-3
 	* Installer improvements/fixes
 		. select ATLAS/SSE2 if SSE2 detected

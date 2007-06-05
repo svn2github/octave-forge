@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define HELP_STRING "help"
 
 // The final word in the following PKG_ADD command should match the above
-// PKG_ADD: mark_as_command ajuda
+// PKG_ADD: mark_as_command help
 
 // The texinfo formatted help message for the function. Please be careful
 // that accented characters respect texinfo formatting

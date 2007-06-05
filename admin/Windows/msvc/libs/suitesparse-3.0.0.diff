@@ -1,0 +1,3376 @@
+diff -urb SuiteSparse/AMD/Demo/Makefile SuiteSparse-new/AMD/Demo/Makefile
+--- SuiteSparse/AMD/Demo/Makefile	2007-05-05 16:25:26.000000000 +0200
++++ SuiteSparse-new/AMD/Demo/Makefile	2007-06-04 22:26:32.812500000 +0200
+@@ -2,10 +2,10 @@
+ # compile the AMD demo (for both GNU make or original make)
+ #-----------------------------------------------------------------------------
+ 
+-default: amd_simple amd_demo amd_demo2 amd_l_demo
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: amd_simple$(EXEEXT) amd_demo$(EXEEXT) amd_demo2$(EXEEXT) amd_l_demo$(EXEEXT)
++
+ C = $(CC) $(CFLAGS) -I../Include -I../../UFconfig
+ 
+ INC = ../Include/amd.h ../../UFconfig/UFconfig.h
+@@ -22,54 +22,54 @@
+ 
+ dist:
+ 
+-amd_demo: amd_demo.c library $(INC)
+-	$(C) -o amd_demo amd_demo.c ../Lib/libamd.a $(LIB)
++amd_demo$(EXEEXT): amd_demo.c library $(INC)
++	$(C) -o amd_demo$(EXEEXT) amd_demo.c ../Lib/$(LIBPRE)amd.$(LIBEXT) $(CLIB)
+ 	./amd_demo > my_amd_demo.out
+-	- diff amd_demo.out my_amd_demo.out
++	- diff -b amd_demo.out my_amd_demo.out
+ 
+-amd_l_demo: amd_l_demo.c library $(INC)
+-	$(C) -o amd_l_demo amd_l_demo.c ../Lib/libamd.a $(LIB)
++amd_l_demo$(EXEEXT): amd_l_demo.c library $(INC)
++	$(C) -o amd_l_demo$(EXEEXT) amd_l_demo.c ../Lib/$(LIBPRE)amd.$(LIBEXT) $(CLIB)
+ 	./amd_l_demo > my_amd_l_demo.out
+-	- diff amd_l_demo.out my_amd_l_demo.out
++	- diff -b amd_l_demo.out my_amd_l_demo.out
+ 
+-amd_demo2: amd_demo2.c library $(INC)
+-	$(C) -o amd_demo2 amd_demo2.c ../Lib/libamd.a $(LIB)
++amd_demo2$(EXEEXT): amd_demo2.c library $(INC)
++	$(C) -o amd_demo2$(EXEEXT) amd_demo2.c ../Lib/$(LIBPRE)amd.$(LIBEXT) $(CLIB)
+ 	./amd_demo2 > my_amd_demo2.out
+-	- diff amd_demo2.out my_amd_demo2.out
++	- diff -b amd_demo2.out my_amd_demo2.out
+ 
+-amd_simple: amd_simple.c library $(INC)
+-	$(C) -o amd_simple amd_simple.c ../Lib/libamd.a $(LIB)
++amd_simple$(EXEEXT): amd_simple.c library $(INC)
++	$(C) -o amd_simple$(EXEEXT) amd_simple.c ../Lib/$(LIBPRE)amd.$(LIBEXT) $(CLIB)
+ 	./amd_simple > my_amd_simple.out
+-	- diff amd_simple.out my_amd_simple.out
++	- diff -b amd_simple.out my_amd_simple.out
+ 
+ #------------------------------------------------------------------------------
+ # compile the Fortran demo
+ #------------------------------------------------------------------------------
+ 
+-fortran: amd_f77demo amd_f77simple
++fortran: amd_f77demo$(EXEEXT) amd_f77simple$(EXEEXT)
+ 
+-cross: amd_f77cross
++cross: amd_f77cross$(EXEEXT)
+ 
+-amd_f77demo: amd_f77demo.f f77lib
+-	$(F77) $(F77FLAGS) -o amd_f77demo amd_f77demo.f ../Lib/libamdf77.a \
++amd_f77demo$(EXEEXT): amd_f77demo.f f77lib
++	$(F77) $(F77FLAGS) -o amd_f77demo$(EXEEXT) amd_f77demo.f ../Lib/$(LIBPRE)amdf77.$(LIBEXT) \
+ 	    $(F77LIB)
+ 	./amd_f77demo > my_amd_f77demo.out
+-	- diff amd_f77demo.out my_amd_f77demo.out
++	- diff -b amd_f77demo.out my_amd_f77demo.out
+ 
+-amd_f77simple: amd_f77simple.f f77lib
+-	$(F77) $(F77FLAGS) -o amd_f77simple amd_f77simple.f \
+-	    ../Lib/libamdf77.a $(F77LIB)
++amd_f77simple$(EXEEXT): amd_f77simple.f f77lib
++	$(F77) $(F77FLAGS) -o amd_f77simple$(EXEEXT) amd_f77simple.f \
++	    ../Lib/$(LIBPRE)amdf77.$(LIBEXT) $(F77LIB)
+ 	./amd_f77simple > my_amd_f77simple.out
+-	- diff amd_f77simple.out my_amd_f77simple.out
++	- diff -b amd_f77simple.out my_amd_f77simple.out
+ 
+ amd_f77wrapper.o: amd_f77wrapper.c
+ 	$(C) -DDINT -c amd_f77wrapper.c
+ 
+-amd_f77cross:  amd_f77cross.f amd_f77wrapper.o ../Lib/libamd.a
++amd_f77cross:  amd_f77cross.f amd_f77wrapper.o ../Lib/$(LIBPRE)amd.$(LIBEXT)
+ 	$(F77) $(F77FLAGS) -o amd_f77cross amd_f77cross.f amd_f77wrapper.o \
+-	    ../Lib/libamd.a $(F77LIB)
++	    ../Lib/$(LIBPRE)amd.$(LIBEXT) $(F77LIB)
+ 	./amd_f77cross > my_amd_f77cross.out
+-	- diff amd_f77cross.out my_amd_f77cross.out
++	- diff -b amd_f77cross.out my_amd_f77cross.out
+ 
+ #------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+@@ -81,10 +81,10 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) amd_demo my_amd_demo.out
+-	- $(RM) amd_l_demo my_amd_l_demo.out
+-	- $(RM) amd_demo2 my_amd_demo2.out
+-	- $(RM) amd_simple my_amd_simple.out
+-	- $(RM) amd_f77demo my_amd_f77demo.out
+-	- $(RM) amd_f77simple my_amd_f77simple.out
+-	- $(RM) amd_f77cross my_amd_f77cross.out
++	- $(RM) amd_demo$(EXEEXT) my_amd_demo.out
++	- $(RM) amd_l_demo$(EXEEXT) my_amd_l_demo.out
++	- $(RM) amd_demo2$(EXEEXT) my_amd_demo2.out
++	- $(RM) amd_simple$(EXEEXT) my_amd_simple.out
++	- $(RM) amd_f77demo$(EXEEXT) my_amd_f77demo.out
++	- $(RM) amd_f77simple$(EXEEXT) my_amd_f77simple.out
++	- $(RM) amd_f77cross$(EXEEXT) my_amd_f77cross.out
+diff -urb SuiteSparse/AMD/Lib/GNUmakefile SuiteSparse-new/AMD/Lib/GNUmakefile
+--- SuiteSparse/AMD/Lib/GNUmakefile	2007-05-06 14:32:19.000000000 +0200
++++ SuiteSparse-new/AMD/Lib/GNUmakefile	2007-06-04 23:11:54.046875000 +0200
+@@ -2,10 +2,10 @@
+ # AMD Makefile for compiling on Unix systems (for GNU make only)
+ #-------------------------------------------------------------------------------
+ 
+-default: ../Lib/libamd.a
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: ../Lib/$(LIBPRE)amd.$(LIBEXT)
++
+ C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+ 
+ #-------------------------------------------------------------------------------
+@@ -43,15 +43,15 @@
+ # Create the libamd.a library (C versions only)
+ #-------------------------------------------------------------------------------
+ 
+-../Lib/libamd.a: amd_global.o $(AMDI) $(AMDL)
+-	$(AR) ../Lib/libamd.a $^
+-	- $(RANLIB) ../Lib/libamd.a
++../Lib/$(LIBPRE)amd.$(LIBEXT): amd_global.o $(AMDI) $(AMDL)
++	$(AR) ../Lib/$(LIBPRE)amd.$(LIBEXT) $^
++	- $(RANLIB) ../Lib/$(LIBPRE)amd.$(LIBEXT)
+ 
+ #-------------------------------------------------------------------------------
+ # compile the Fortran versions and the libamdf77.a library
+ #-------------------------------------------------------------------------------
+ 
+-fortran: ../Lib/libamdf77.a
++fortran: ../Lib/$(LIBPRE)amdf77.$(LIBEXT)
+ 
+ AMDF77 = amd.o amdbar.o
+ 
+@@ -61,9 +61,9 @@
+ amdbar.o: ../Source/amdbar.f
+ 	$(F77) $(F77FLAGS) -c ../Source/amdbar.f -o amdbar.o
+ 
+-../Lib/libamdf77.a: $(AMDF77)
+-	$(AR) ../Lib/libamdf77.a $^
+-	- $(RANLIB) ../Lib/libamdf77.a
++../Lib/$(LIBPRE)amdf77.$(LIBEXT): $(AMDF77)
++	$(AR) ../Lib/$(LIBPRE)amdf77.$(LIBEXT) $^
++	- $(RANLIB) ../Lib/$(LIBPRE)amdf77.$(LIBEXT)
+ 
+ #-------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+@@ -75,4 +75,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) ../Lib/libamd.a ../Lib/libamdf77.a
++	- $(RM) ../Lib/$(LIBPRE)amd.$(LIBEXT) ../Lib/$(LIBPRE)amdf77.$(LIBEXT)
+diff -urb SuiteSparse/AMD/Lib/Makefile SuiteSparse-new/AMD/Lib/Makefile
+--- SuiteSparse/AMD/Lib/Makefile	2007-05-06 14:32:40.000000000 +0200
++++ SuiteSparse-new/AMD/Lib/Makefile	2007-06-04 23:15:45.531250000 +0200
+@@ -6,13 +6,13 @@
+ # have GNU make.  Note that it is not used if you have GNU make.  It ignores
+ # dependency checking and just compiles everything.
+ 
+-default: everything
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: $(LIBPRE)amd.$(LIBEXT)
++
+ C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+ 
+-everything:
++$(LIBPRE)amd.$(LIBEXT):
+ 	$(C) -DDINT -c ../Source/amd_aat.c -o amd_i_aat.o
+ 	$(C) -DDINT -c ../Source/amd_1.c -o amd_i_1.o
+ 	$(C) -DDINT -c ../Source/amd_2.c -o amd_i_2.o
+@@ -26,7 +26,7 @@
+ 	$(C) -DDINT -c ../Source/amd_valid.c -o amd_i_valid.o
+ 	$(C) -DDINT -c ../Source/amd_preprocess.c -o amd_i_preprocess.o
+ 	$(C) -DDLONG -c ../Source/amd_aat.c -o amd_l_aat.o
+-	$(C) -DDLONG -c ../Source/amd_1.c -o ../Source/amd_l_1.o
++	$(C) -DDLONG -c ../Source/amd_1.c -o amd_l_1.o
+ 	$(C) -DDLONG -c ../Source/amd_2.c -o amd_l_2.o
+ 	$(C) -DDLONG -c ../Source/amd_dump.c -o amd_l_dump.o
+ 	$(C) -DDLONG -c ../Source/amd_postorder.c -o amd_l_postorder.o
+@@ -38,13 +38,13 @@
+ 	$(C) -DDLONG -c ../Source/amd_valid.c -o amd_l_valid.o
+ 	$(C) -DDLONG -c ../Source/amd_preprocess.c -o amd_l_preprocess.o
+ 	$(C) -c ../Source/amd_global.c
+-	$(AR) ../Lib/libamd.a amd_i_aat.o amd_i_1.o amd_i_2.o amd_i_dump.o \
++	$(AR) ../Lib/$(LIBPRE)amd.$(LIBEXT) amd_i_aat.o amd_i_1.o amd_i_2.o amd_i_dump.o \
+ 	    amd_i_postorder.o amd_i_post_tree.o amd_i_defaults.o amd_i_order.o \
+ 	    amd_i_control.o amd_i_info.o amd_i_valid.o amd_l_aat.o amd_l_1.o \
+ 	    amd_l_2.o amd_l_dump.o amd_l_postorder.o amd_l_post_tree.o \
+ 	    amd_l_defaults.o amd_l_order.o amd_l_control.o amd_l_info.o \
+ 	    amd_l_valid.o amd_i_preprocess.o amd_l_preprocess.o amd_global.o
+-	- $(RANLIB) ../Lib/libamd.a
++	- $(RANLIB) ../Lib/$(LIBPRE)amd.$(LIBEXT)
+ 
+ #-------------------------------------------------------------------------------
+ # compile the Fortran versions and the libamdf77.a library
+@@ -53,8 +53,8 @@
+ fortran:
+ 	$(F77) $(F77FLAGS) -c ../Source/amd.f -o amd.o
+ 	$(F77) $(F77FLAGS) -c ../Source/amdbar.f -o amdbar.o
+-	$(AR) ../Lib/libamdf77.a amd.o amdbar.o
+-	- $(RANLIB) ../Lib/libamdf77.a
++	$(AR) ../Lib/$(LIBPRE)amdf77.$(LIBEXT) amd.o amdbar.o
++	- $(RANLIB) ../Lib/$(LIBPRE)amdf77.$(LIBEXT)
+ 
+ #-------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+@@ -66,4 +66,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) ../Lib/libamd.a ../Lib/libamdf77.a
++	- $(RM) ../Lib/$(LIBPRE)amd.$(LIBEXT) ../Lib/$(LIBPRE)amdf77.$(LIBEXT)
+diff -urb SuiteSparse/AMD/Makefile SuiteSparse-new/AMD/Makefile
+--- SuiteSparse/AMD/Makefile	2007-05-05 19:23:47.000000000 +0200
++++ SuiteSparse-new/AMD/Makefile	2007-06-04 22:26:33.046875000 +0200
+@@ -2,13 +2,13 @@
+ # AMD Makefile (for GNU Make or original make)
+ #------------------------------------------------------------------------------
+ 
+-default: demo
++default: do_demo
+ 
+ include ../UFconfig/UFconfig.mk
+ 
+ # Compile all C code, including the C-callable routines.
+ # Do not compile the FORTRAN versions, or MATLAB interface.
+-demo:
++do_demo:
+ 	( cd Lib    ; $(MAKE) )
+ 	( cd Demo   ; $(MAKE) )
+ 
+diff -urb SuiteSparse/BTF/Lib/Makefile SuiteSparse-new/BTF/Lib/Makefile
+--- SuiteSparse/BTF/Lib/Makefile	2007-05-03 22:34:57.000000000 +0200
++++ SuiteSparse-new/BTF/Lib/Makefile	2007-06-04 22:26:33.062500000 +0200
+@@ -15,14 +15,14 @@
+ 
+ all: library
+ 
+-library: libbtf.a
++library: $(LIBPRE)btf.$(LIBEXT)
+ 
+ OBJ = btf_order.o btf_maxtrans.o btf_strongcomp.o \
+     btf_l_order.o btf_l_maxtrans.o btf_l_strongcomp.o
+ 
+-libbtf.a: $(OBJ)
+-	$(AR) libbtf.a $(OBJ)
+-	$(RANLIB) libbtf.a
++$(LIBPRE)btf.$(LIBEXT): $(OBJ)
++	$(AR) $(LIBPRE)btf.$(LIBEXT) $(OBJ)
++	$(RANLIB) $(LIBPRE)btf.$(LIBEXT)
+ 
+ $(OBJ): $(INC)
+ 
+@@ -53,7 +53,7 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) libbtf.a 
++	- $(RM) $(LIBPRE)btf.$(LIBEXT) 
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+diff -urb SuiteSparse/CAMD/Demo/Makefile SuiteSparse-new/CAMD/Demo/Makefile
+--- SuiteSparse/CAMD/Demo/Makefile	2007-05-05 16:30:34.000000000 +0200
++++ SuiteSparse-new/CAMD/Demo/Makefile	2007-06-04 22:26:33.078125000 +0200
+@@ -2,10 +2,10 @@
+ # compile the CAMD demo (for both GNU make or original make)
+ #-----------------------------------------------------------------------------
+ 
+-default: camd_simple camd_demo camd_demo2 camd_l_demo
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: camd_simple$(EXEEXT) camd_demo$(EXEEXT) camd_demo2$(EXEEXT) camd_l_demo$(EXEEXT)
++
+ C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+ 
+ UFCONFIG = ../../UFconfig/UFconfig.h
+@@ -21,25 +21,25 @@
+ 
+ dist:
+ 
+-camd_demo: camd_demo.c library $(INC)
+-	$(C) -o camd_demo camd_demo.c ../Lib/libcamd.a $(LIB)
++camd_demo$(EXEEXT): camd_demo.c library $(INC)
++	$(C) -o camd_demo$(EXEEXT) camd_demo.c ../Lib/$(LIBPRE)camd.$(LIBEXT) $(CLIB)
+ 	./camd_demo > my_camd_demo.out
+-	- diff camd_demo.out my_camd_demo.out
++	- diff -b camd_demo.out my_camd_demo.out
+ 
+-camd_l_demo: camd_l_demo.c library $(INC)
+-	$(C) -o camd_l_demo camd_l_demo.c ../Lib/libcamd.a $(LIB)
++camd_l_demo$(EXEEXT): camd_l_demo.c library $(INC)
++	$(C) -o camd_l_demo$(EXEEXT) camd_l_demo.c ../Lib/$(LIBPRE)camd.$(LIBEXT) $(CLIB)
+ 	./camd_l_demo > my_camd_l_demo.out
+-	- diff camd_l_demo.out my_camd_l_demo.out
++	- diff -b camd_l_demo.out my_camd_l_demo.out
+ 
+-camd_demo2: camd_demo2.c library $(INC)
+-	$(C) -o camd_demo2 camd_demo2.c ../Lib/libcamd.a $(LIB)
++camd_demo2$(EXEEXT): camd_demo2.c library $(INC)
++	$(C) -o camd_demo2$(EXEEXT) camd_demo2.c ../Lib/$(LIBPRE)camd.$(LIBEXT) $(CLIB)
+ 	./camd_demo2 > my_camd_demo2.out
+-	- diff camd_demo2.out my_camd_demo2.out
++	- diff -b camd_demo2.out my_camd_demo2.out
+ 
+-camd_simple: camd_simple.c library $(INC)
+-	$(C) -o camd_simple camd_simple.c ../Lib/libcamd.a $(LIB)
++camd_simple$(EXEEXT): camd_simple.c library $(INC)
++	$(C) -o camd_simple$(EXEEXT) camd_simple.c ../Lib/$(LIBPRE)camd.$(LIBEXT) $(CLIB)
+ 	./camd_simple > my_camd_simple.out
+-	- diff camd_simple.out my_camd_simple.out
++	- diff -b camd_simple.out my_camd_simple.out
+ 
+ #------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+@@ -51,7 +51,7 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) camd_demo my_camd_demo.out
+-	- $(RM) camd_l_demo my_camd_l_demo.out
+-	- $(RM) camd_demo2 my_camd_demo2.out
+-	- $(RM) camd_simple my_camd_simple.out
++	- $(RM) camd_demo$(EXEEXT) my_camd_demo.out
++	- $(RM) camd_l_demo$(EXEEXT) my_camd_l_demo.out
++	- $(RM) camd_demo2$(EXEEXT) my_camd_demo2.out
++	- $(RM) camd_simple$(EXEEXT) my_camd_simple.out
+diff -urb SuiteSparse/CAMD/Lib/GNUmakefile SuiteSparse-new/CAMD/Lib/GNUmakefile
+--- SuiteSparse/CAMD/Lib/GNUmakefile	2007-05-05 16:29:25.000000000 +0200
++++ SuiteSparse-new/CAMD/Lib/GNUmakefile	2007-06-04 23:16:29.359375000 +0200
+@@ -2,7 +2,7 @@
+ # CAMD Makefile for compiling on Unix systems (for GNU make only)
+ #-------------------------------------------------------------------------------
+ 
+-default: libcamd.a
++default: $(LIBPRE)camd.$(LIBEXT)
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+@@ -43,9 +43,9 @@
+ # Create the libcamd.a library (C versions only)
+ #-------------------------------------------------------------------------------
+ 
+-libcamd.a: camd_global.o $(CAMDI) $(CAMDL)
+-	$(AR) libcamd.a $^
+-	- $(RANLIB) libcamd.a
++$(LIBPRE)camd.$(LIBEXT): camd_global.o $(CAMDI) $(CAMDL)
++	$(AR) $(LIBPRE)camd.$(LIBEXT) $^
++	- $(RANLIB) $(LIBPRE)camd.$(LIBEXT)
+ 
+ #-------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+@@ -57,4 +57,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) libcamd.a
++	- $(RM) $(LIBPRE)camd.$(LIBEXT)
+diff -urb SuiteSparse/CAMD/Lib/Makefile SuiteSparse-new/CAMD/Lib/Makefile
+--- SuiteSparse/CAMD/Lib/Makefile	2007-05-11 22:11:50.000000000 +0200
++++ SuiteSparse-new/CAMD/Lib/Makefile	2007-06-04 22:26:33.093750000 +0200
+@@ -6,13 +6,13 @@
+ # have GNU make.  Note that it is not used if you have GNU make.  It ignores
+ # dependency checking and just compiles everything.
+ 
+-default: everything
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: $(LIBPRE)camd.$(LIBEXT)
++
+ C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+ 
+-everything:
++$(LIBPRE)camd.$(LIBEXT):
+ 	$(C) -DDINT -c ../Source/camd_aat.c -o camd_i_aat.o
+ 	$(C) -DDINT -c ../Source/camd_1.c -o camd_i_1.o
+ 	$(C) -DDINT -c ../Source/camd_2.c -o camd_i_2.o
+@@ -36,13 +36,13 @@
+ 	$(C) -DDLONG -c ../Source/camd_valid.c -o camd_l_valid.o
+ 	$(C) -DDLONG -c ../Source/camd_preprocess.c -o camd_l_preprocess.o
+ 	$(C) -c ../Source/camd_global.c
+-	$(AR) libcamd.a camd_i_aat.o camd_i_1.o camd_i_2.o camd_i_dump.o \
++	$(AR) $(LIBPRE)camd.$(LIBEXT) camd_i_aat.o camd_i_1.o camd_i_2.o camd_i_dump.o \
+ 	    camd_i_postorder.o camd_i_defaults.o camd_i_order.o \
+ 	    camd_i_control.o camd_i_info.o camd_i_valid.o camd_l_aat.o \
+ 	    camd_l_1.o camd_l_2.o camd_l_dump.o camd_l_postorder.o \
+ 	    camd_l_defaults.o camd_l_order.o camd_l_control.o camd_l_info.o \
+ 	    camd_l_valid.o camd_i_preprocess.o camd_l_preprocess.o camd_global.o
+-	- $(RANLIB) libcamd.a
++	- $(RANLIB) $(LIBPRE)camd.$(LIBEXT)
+ 
+ #-------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+@@ -54,4 +54,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) libcamd.a
++	- $(RM) $(LIBPRE)camd.$(LIBEXT)
+diff -urb SuiteSparse/CAMD/Makefile SuiteSparse-new/CAMD/Makefile
+--- SuiteSparse/CAMD/Makefile	2007-05-05 16:28:33.000000000 +0200
++++ SuiteSparse-new/CAMD/Makefile	2007-06-04 22:26:33.093750000 +0200
+@@ -2,13 +2,13 @@
+ # CAMD Makefile (for GNU Make or original make)
+ #------------------------------------------------------------------------------
+ 
+-default: demo
++default: do_demo
+ 
+ include ../UFconfig/UFconfig.mk
+ 
+ # Compile all C code, including the C-callable routine and the mexFunctions.
+ # Do not compile the FORTRAN versions, or MATLAB interface.
+-demo:
++do_demo:
+ 	( cd Lib    ; $(MAKE) )
+ 	( cd Demo   ; $(MAKE) )
+ 
+diff -urb SuiteSparse/CCOLAMD/Demo/Makefile SuiteSparse-new/CCOLAMD/Demo/Makefile
+--- SuiteSparse/CCOLAMD/Demo/Makefile	2007-05-05 15:58:32.000000000 +0200
++++ SuiteSparse-new/CCOLAMD/Demo/Makefile	2007-06-04 22:26:33.109375000 +0200
+@@ -2,10 +2,10 @@
+ # compile the CCOLAMD demo
+ #-----------------------------------------------------------------------------
+ 
+-default: ccolamd_example ccolamd_l_example
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: ccolamd_example$(EXEEXT) ccolamd_l_example$(EXEEXT)
++
+ I = -I../Include -I../../UFconfig
+ 
+ C = $(CC) $(CFLAGS) $(I)
+@@ -19,15 +19,15 @@
+ 
+ dist:
+ 
+-ccolamd_example: ccolamd_example.c library
+-	$(C) -o ccolamd_example ccolamd_example.c ../Lib/libccolamd.a -lm
++ccolamd_example$(EXEEXT): ccolamd_example.c library
++	$(C) -o ccolamd_example$(EXEEXT) ccolamd_example.c ../Lib/$(LIBPRE)ccolamd.$(LIBEXT) $(CLIB)
+ 	- ./ccolamd_example > my_ccolamd_example.out
+-	- diff ccolamd_example.out my_ccolamd_example.out
++	- diff -b ccolamd_example.out my_ccolamd_example.out
+ 
+-ccolamd_l_example: ccolamd_l_example.c library
+-	$(C) -o ccolamd_l_example ccolamd_l_example.c ../Lib/libccolamd.a -lm
++ccolamd_l_example$(EXEEXT): ccolamd_l_example.c library
++	$(C) -o ccolamd_l_example$(EXEEXT) ccolamd_l_example.c ../Lib/$(LIBPRE)ccolamd.$(LIBEXT) $(CLIB)
+ 	- ./ccolamd_l_example > my_ccolamd_l_example.out
+-	- diff ccolamd_example.out my_ccolamd_example.out
++	- diff -b ccolamd_example.out my_ccolamd_example.out
+ 
+ #------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+@@ -39,5 +39,5 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) ccolamd_example ccolamd_l_example
++	- $(RM) ccolamd_example$(EXEEXT) ccolamd_l_example$(EXEEXT)
+ 	- $(RM) my_ccolamd_example.out my_ccolamd_l_example.out
+diff -urb SuiteSparse/CCOLAMD/Lib/Makefile SuiteSparse-new/CCOLAMD/Lib/Makefile
+--- SuiteSparse/CCOLAMD/Lib/Makefile	2007-05-05 15:59:13.000000000 +0200
++++ SuiteSparse-new/CCOLAMD/Lib/Makefile	2007-06-04 22:26:33.125000000 +0200
+@@ -2,10 +2,10 @@
+ # CCOLAMD Makefile
+ #-------------------------------------------------------------------------------
+ 
+-default: libccolamd.a
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: $(LIBPRE)ccolamd.$(LIBEXT)
++
+ I = -I../Include -I../../UFconfig
+ 
+ INC = ../Include/ccolamd.h ../../UFconfig/UFconfig.h
+@@ -13,15 +13,15 @@
+ SRC = ../Source/ccolamd.c ../Source/ccolamd_global.c
+ 
+ # creates libccolamd.a, a C-callable COLAMD library
+-libccolamd.a:  $(SRC) $(INC)
++$(LIBPRE)ccolamd.$(LIBEXT):  $(SRC) $(INC)
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd_global.c
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c -DDLONG -o ccolamd_l.o
+-	$(AR) libccolamd.a ccolamd.o ccolamd_l.o ccolamd_global.o
++	$(AR) $(LIBPRE)ccolamd.$(LIBEXT) ccolamd.o ccolamd_l.o ccolamd_global.o
+ 
+-ccode: libccolamd.a
++ccode: $(LIBPRE)ccolamd.$(LIBEXT)
+ 
+-library: libccolamd.a
++library: $(LIBPRE)ccolamd.$(LIBEXT)
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+@@ -29,4 +29,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) libccolamd.a
++	- $(RM) $(LIBPRE)ccolamd.$(LIBEXT)
+diff -urb SuiteSparse/CCOLAMD/Makefile SuiteSparse-new/CCOLAMD/Makefile
+--- SuiteSparse/CCOLAMD/Makefile	2007-05-05 15:57:17.000000000 +0200
++++ SuiteSparse-new/CCOLAMD/Makefile	2007-06-04 22:26:33.125000000 +0200
+@@ -2,13 +2,13 @@
+ # CCOLAMD Makefile
+ #------------------------------------------------------------------------------
+ 
+-default: demo
++default: do_demo
+ 
+ include ../UFconfig/UFconfig.mk
+ 
+ # Compile all C code, including the C-callable routine and the mexFunctions.
+ # Do not the MATLAB interface.
+-demo:
++do_demo:
+ 	( cd Lib    ; $(MAKE) )
+ 	( cd Demo   ; $(MAKE) )
+ 
+diff -urb SuiteSparse/CHOLMOD/Demo/Makefile SuiteSparse-new/CHOLMOD/Demo/Makefile
+--- SuiteSparse/CHOLMOD/Demo/Makefile	2007-05-05 16:37:46.000000000 +0200
++++ SuiteSparse-new/CHOLMOD/Demo/Makefile	2007-06-04 22:26:33.156250000 +0200
+@@ -11,9 +11,9 @@
+ 
+ #-------------------------------------------------------------------------------
+ # With METIS, CCOLAMD, CAMD, and the Partition Module:
+-LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
+-	../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a \
+-	$(METIS) $(LAPACK) $(BLAS) $(XERBLA) $(LIB)
++LIB2 = ../Lib/$(LIBPRE)cholmod.$(LIBEXT) ../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT) ../../COLAMD/Lib/$(LIBPRE)colamd.$(LIBEXT) \
++	../../CCOLAMD/Lib/$(LIBPRE)ccolamd.$(LIBEXT) ../../CAMD/Lib/$(LIBPRE)camd.$(LIBEXT) \
++	$(METIS) $(LAPACK) $(BLAS) $(XERBLA) $(CLIB)
+ # Use this instead, if you compile with -DNPARTITION:
+ # LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/libcolamd.a \
+ 	$(LAPACK) $(BLAS) $(XERBLA) $(LIB)
+@@ -21,9 +21,9 @@
+ 
+ C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG)
+ 
+-code: library cholmod_demo cholmod_l_demo cholmod_simple
++code: library cholmod_demo$(EXEEXT) cholmod_l_demo$(EXEEXT) cholmod_simple$(EXEEXT)
+ 
+-fortran: readhb readhb2 reade 
++fortran: readhb$(EXEEXT) readhb2$(EXEEXT) reade$(EXEEXT) 
+ 
+ all: code
+ 	./cholmod_demo < Matrix/bcsstk01.tri
+@@ -41,8 +41,8 @@
+ distclean: purge
+ 
+ purge: clean
+-	- $(RM) cholmod_demo cholmod_l_demo readhb readhb2 reade
+-	- $(RM) cholmod_simple
++	- $(RM) cholmod_demo$(EXEEXT) cholmod_l_demo$(EXEEXT) readhb$(EXEEXT) readhb2$(EXEEXT) reade$(EXEEXT)
++	- $(RM) cholmod_simple$(EXEEXT)
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+@@ -66,20 +66,20 @@
+ 
+ I = -I../Include -I../../UFconfig
+ 
+-cholmod_demo: library cholmod_demo.c cholmod_demo.h
+-	$(C) -o cholmod_demo $(I) cholmod_demo.c $(LIB2)
++cholmod_demo$(EXEEXT): library cholmod_demo.c cholmod_demo.h
++	$(C) -o cholmod_demo$(EXEEXT) $(I) cholmod_demo.c $(LIB2)
+ 
+-cholmod_simple: library cholmod_simple.c
+-	$(C) -o cholmod_simple $(I) cholmod_simple.c $(LIB2)
++cholmod_simple$(EXEEXT): library cholmod_simple.c
++	$(C) -o cholmod_simple$(EXEEXT) $(I) cholmod_simple.c $(LIB2)
+ 
+-cholmod_l_demo: library cholmod_l_demo.c cholmod_demo.h
+-	$(C) -o cholmod_l_demo $(I) cholmod_l_demo.c $(LIB2)
++cholmod_l_demo$(EXEEXT): library cholmod_l_demo.c cholmod_demo.h
++	$(C) -o cholmod_l_demo$(EXEEXT) $(I) cholmod_l_demo.c $(LIB2)
+ 
+-readhb: readhb.f
+-	$(F77) $(FFLAGS) -o readhb readhb.f
++readhb$(EXEEXT): readhb.f
++	$(F77) $(FFLAGS) -o readhb$(EXEEXT) readhb.f
+ 
+-readhb2: readhb2.f
+-	$(F77) $(FFLAGS) -O -o readhb2 readhb2.f
++readhb2$(EXEEXT): readhb2.f
++	$(F77) $(FFLAGS) -O -o readhb2$(EXEEXT) readhb2.f
+ 
+-reade: reade.f
+-	$(F77) $(FFLAGS) -O -o reade reade.f
++reade$(EXEEXT): reade.f
++	$(F77) $(FFLAGS) -O -o reade$(EXEEXT) reade.f
+diff -urb SuiteSparse/CHOLMOD/Include/cholmod_blas.h SuiteSparse-new/CHOLMOD/Include/cholmod_blas.h
+--- SuiteSparse/CHOLMOD/Include/cholmod_blas.h	2006-12-13 14:25:21.000000000 +0100
++++ SuiteSparse-new/CHOLMOD/Include/cholmod_blas.h	2007-06-04 22:26:33.156250000 +0200
+@@ -48,8 +48,10 @@
+ #define CHOLMOD_CYGWIN
+ #else
+ #define CHOLMOD_WINDOWS
++#ifndef BLAS_UNDERSCORE
+ #define BLAS_NO_UNDERSCORE
+ #endif
++#endif
+ #define CHOLMOD_ARCHITECTURE "Microsoft Windows"
+ 
+ #elif defined (__hppa) || defined (__hpux) || defined (MHPUX) || defined (ARCH_HPUX)
+diff -urb SuiteSparse/CHOLMOD/Lib/Makefile SuiteSparse-new/CHOLMOD/Lib/Makefile
+--- SuiteSparse/CHOLMOD/Lib/Makefile	2007-05-05 16:36:56.000000000 +0200
++++ SuiteSparse-new/CHOLMOD/Lib/Makefile	2007-06-04 22:26:33.171875000 +0200
+@@ -10,14 +10,14 @@
+ 
+ C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG)
+ 
+-all: libcholmod.a
++all: $(LIBPRE)cholmod.$(LIBEXT)
+ 
+-library: libcholmod.a
++library: $(LIBPRE)cholmod.$(LIBEXT)
+ 
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) libcholmod.a
++	- $(RM) $(LIBPRE)cholmod.$(LIBEXT)
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+@@ -109,9 +109,9 @@
+ # to compile just the double/int version, use OBJ = $(DI)
+ OBJ = $(DI) $(DL)
+ 
+-libcholmod.a: $(OBJ)
+-	$(AR) libcholmod.a $(OBJ)
+-	$(RANLIB) libcholmod.a
++$(LIBPRE)cholmod.$(LIBEXT): $(OBJ)
++	$(AR) $(LIBPRE)cholmod.$(LIBEXT) $(OBJ)
++	$(RANLIB) $(LIBPRE)cholmod.$(LIBEXT)
+ 
+ $(OBJ): $(INC)
+ 
+diff -urb SuiteSparse/COLAMD/Demo/Makefile SuiteSparse-new/COLAMD/Demo/Makefile
+--- SuiteSparse/COLAMD/Demo/Makefile	2007-05-05 15:42:44.000000000 +0200
++++ SuiteSparse-new/COLAMD/Demo/Makefile	2007-06-04 22:26:33.187500000 +0200
+@@ -2,10 +2,10 @@
+ # compile the COLAMD demo
+ #-----------------------------------------------------------------------------
+ 
+-default: colamd_example colamd_l_example
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: colamd_example$(EXEEXT) colamd_l_example$(EXEEXT)
++
+ I = -I../Include -I../../UFconfig
+ 
+ C = $(CC) $(CFLAGS) $(I)
+@@ -19,13 +19,13 @@
+ 
+ dist:
+ 
+-colamd_example: colamd_example.c library
+-	$(C) -o colamd_example colamd_example.c ../Lib/libcolamd.a -lm
++colamd_example$(EXEEXT): colamd_example.c library
++	$(C) -o colamd_example$(EXEEXT) colamd_example.c ../Lib/$(LIBPRE)colamd.$(LIBEXT) $(CLIB)
+ 	- ./colamd_example > my_colamd_example.out
+ 	- diff colamd_example.out my_colamd_example.out
+ 
+-colamd_l_example: colamd_l_example.c library
+-	$(C) -o colamd_l_example colamd_l_example.c ../Lib/libcolamd.a -lm
++colamd_l_example$(EXEEXT): colamd_l_example.c library
++	$(C) -o colamd_l_example$(EXEEXT) colamd_l_example.c ../Lib/$(LIBPRE)colamd.$(LIBEXT) $(CLIB)
+ 	- ./colamd_l_example > my_colamd_l_example.out
+ 	- diff colamd_example.out my_colamd_example.out
+ 
+@@ -39,5 +39,5 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) colamd_example colamd_l_example
++	- $(RM) colamd_example$(EXEEXT) colamd_l_example$(EXEEXT)
+ 	- $(RM) my_colamd_example.out my_colamd_l_example.out
+diff -urb SuiteSparse/COLAMD/Lib/Makefile SuiteSparse-new/COLAMD/Lib/Makefile
+--- SuiteSparse/COLAMD/Lib/Makefile	2007-05-05 15:41:47.000000000 +0200
++++ SuiteSparse-new/COLAMD/Lib/Makefile	2007-06-04 22:26:33.203125000 +0200
+@@ -2,10 +2,10 @@
+ # COLAMD Makefile
+ #-------------------------------------------------------------------------------
+ 
+-default: libcolamd.a
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: $(LIBPRE)colamd.$(LIBEXT)
++
+ I = -I../Include -I../../UFconfig
+ 
+ INC = ../Include/colamd.h ../../UFconfig/UFconfig.h
+@@ -13,15 +13,15 @@
+ SRC = ../Source/colamd.c ../Source/colamd_global.c
+ 
+ # creates libcolamd.a, a C-callable COLAMD library
+-libcolamd.a:  $(SRC) $(INC)
++$(LIBPRE)colamd.$(LIBEXT):  $(SRC) $(INC)
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/colamd_global.c
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c -DDLONG -o colamd_l.o
+-	$(AR) libcolamd.a colamd.o colamd_l.o colamd_global.o
++	$(AR) $(LIBPRE)colamd.$(LIBEXT) colamd.o colamd_l.o colamd_global.o
+ 
+-ccode: libcolamd.a
++ccode: $(LIBPRE)colamd.$(LIBEXT)
+ 
+-library: libcolamd.a
++$(LIBPRE)rary: libcolamd.$(LIBEXT)
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+@@ -29,4 +29,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) libcolamd.a
++	- $(RM) $(LIBPRE)colamd.$(LIBEXT)
+diff -urb SuiteSparse/COLAMD/Makefile SuiteSparse-new/COLAMD/Makefile
+--- SuiteSparse/COLAMD/Makefile	2007-05-05 15:40:14.000000000 +0200
++++ SuiteSparse-new/COLAMD/Makefile	2007-06-04 22:26:33.203125000 +0200
+@@ -2,13 +2,13 @@
+ # COLAMD Makefile
+ #------------------------------------------------------------------------------
+ 
+-default: demo
++default: do_demo
+ 
+ include ../UFconfig/UFconfig.mk
+ 
+ # Compile all C code, including the C-callable routine and the mexFunctions.
+ # Do not the MATLAB interface.
+-demo:
++do_demo:
+ 	( cd Lib    ; $(MAKE) )
+ 	( cd Demo   ; $(MAKE) )
+ 
+diff -urb SuiteSparse/CSparse/Demo/Makefile SuiteSparse-new/CSparse/Demo/Makefile
+--- SuiteSparse/CSparse/Demo/Makefile	2007-05-05 22:43:03.000000000 +0200
++++ SuiteSparse-new/CSparse/Demo/Makefile	2007-06-04 22:26:33.234375000 +0200
+@@ -1,11 +1,13 @@
+-CC = cc
+-CFLAGS = -O
++# CC = cc
++# CFLAGS = -O
++
++include ../../UFconfig/UFconfig.mk
+ 
+ I = -I../Include
+ 
+-CS = ../Lib/libcsparse.a
++CS = ../Lib/$(LIBPRE)csparse.$(LIBEXT)
+ 
+-all: lib cs_demo1 cs_demo2 cs_demo3
++all: lib cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT)
+ 	- ./cs_demo1 < ../Matrix/t1
+ 	- ./cs_demo2 < ../Matrix/t1
+ 	- ./cs_demo2 < ../Matrix/ash219
+@@ -21,14 +23,14 @@
+ lib:
+ 	( cd ../Lib ; $(MAKE) )
+ 
+-cs_demo1: lib cs_demo1.c Makefile
+-	$(CC) $(CFLAGS) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm
++cs_demo1$(EXEEXT): lib cs_demo1.c Makefile
++	$(CC) $(CFLAGS) $(I) -o cs_demo1$(EXEEXT) cs_demo1.c $(CS) $(CLIB)
+ 
+-cs_demo2: lib cs_demo2.c cs_demo.c cs_demo.h Makefile
+-	$(CC) $(CFLAGS) $(I) -o cs_demo2 cs_demo2.c cs_demo.c $(CS) -lm
++cs_demo2$(EXEEXT): lib cs_demo2.c cs_demo.c cs_demo.h Makefile
++	$(CC) $(CFLAGS) $(I) -o cs_demo2$(EXEEXT) cs_demo2.c cs_demo.c $(CS) $(CLIB)
+ 
+-cs_demo3: lib cs_demo3.c cs_demo.c cs_demo.h Makefile
+-	$(CC) $(CFLAGS) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS) -lm
++cs_demo3$(EXEEXT): lib cs_demo3.c cs_demo.c cs_demo.h Makefile
++	$(CC) $(CFLAGS) $(I) -o cs_demo3$(EXEEXT) cs_demo3.c cs_demo.c $(CS) $(CLIB)
+ 
+ clean:
+ 	rm -f *.o
+@@ -36,4 +38,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	rm -f cs_demo1 cs_demo2 cs_demo3 *.a
++	rm -f cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT) *.$(LIBEXT)
+diff -urb SuiteSparse/CSparse/Demo/cs_demo.c SuiteSparse-new/CSparse/Demo/cs_demo.c
+--- SuiteSparse/CSparse/Demo/cs_demo.c	2006-06-02 21:26:45.000000000 +0200
++++ SuiteSparse-new/CSparse/Demo/cs_demo.c	2007-06-04 22:26:33.234375000 +0200
+@@ -81,7 +81,7 @@
+     cs *T, *A, *C ;
+     int sym, m, n, mn, nz1, nz2 ;
+     problem *Prob ;
+-    Prob = cs_calloc (1, sizeof (problem)) ;
++    Prob = (problem*)cs_calloc (1, sizeof (problem)) ;
+     if (!Prob) return (NULL) ;
+     T = cs_load (f) ;			/* load triplet matrix T from a file */
+     Prob->A = A = cs_compress (T) ;	/* A = compressed-column form of T */
+@@ -100,9 +100,9 @@
+ 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_norm (C)) ;
+     if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
+     if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
+-    Prob->b = cs_malloc (mn, sizeof (double)) ;
+-    Prob->x = cs_malloc (mn, sizeof (double)) ;
+-    Prob->resid = cs_malloc (mn, sizeof (double)) ;
++    Prob->b = (double*)cs_malloc (mn, sizeof (double)) ;
++    Prob->x = (double*)cs_malloc (mn, sizeof (double)) ;
++    Prob->resid = (double*)cs_malloc (mn, sizeof (double)) ;
+     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
+ }
+ 
+@@ -115,7 +115,7 @@
+     cs_free (Prob->b) ;
+     cs_free (Prob->x) ;
+     cs_free (Prob->resid) ;
+-    return (cs_free (Prob)) ;
++    return (problem*)(cs_free (Prob)) ;
+ }
+ 
+ /* solve a linear system using Cholesky, LU, and QR, with various orderings */
+@@ -204,7 +204,7 @@
+     rhs (x, b, n) ;				/* compute right-hand side */
+     printf ("\nchol then update/downdate ") ;
+     print_order (1) ;
+-    y = cs_malloc (n, sizeof (double)) ;
++    y = (double*)cs_malloc (n, sizeof (double)) ;
+     t = tic () ;
+     S = cs_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
+     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;
+@@ -234,7 +234,7 @@
+     {
+ 	p2 = p1 - Lp [k] ;
+ 	Wi [p2] = Li [p1] ;
+-	Wx [p2] = s * rand () / ((double) RAND_MAX) ;
++	Wx [p2] = s * (rand () / ((double) RAND_MAX)) ;
+     }
+     t = tic () ;
+     ok = cs_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
+diff -urb SuiteSparse/CSparse/Lib/Makefile SuiteSparse-new/CSparse/Lib/Makefile
+--- SuiteSparse/CSparse/Lib/Makefile	2007-05-05 22:46:13.000000000 +0200
++++ SuiteSparse-new/CSparse/Lib/Makefile	2007-06-04 22:26:33.250000000 +0200
+@@ -1,11 +1,15 @@
+ # Modify the "-O" optimization option for best performance (-O3 on Linux):
+-CC = cc
+-CFLAGS = -O -I../Include
++# CC = cc
++# CFLAGS = -O2 -I../Include
+ 
+-AR = ar cr
+-RANLIB = ranlib
++# AR = ar cr
++# RANLIB = ranlib
+ 
+-all: libcsparse.a
++include ../../UFconfig/UFconfig.mk
++
++CFLAGS = -O2 -I../Include
++
++all: $(LIBPRE)csparse.$(LIBEXT)
+ 
+ CS = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o cs_cumsum.o \
+ 	cs_droptol.o cs_dropzeros.o cs_dupl.o cs_entry.o \
+@@ -22,9 +26,9 @@
+ %.o: ../Source/%.c ../Include/cs.h
+ 	$(CC) $(CFLAGS) -c $<
+ 
+-libcsparse.a: $(CS)
+-	$(AR) libcsparse.a $(CS)
+-	$(RANLIB) libcsparse.a
++$(LIBPRE)csparse.$(LIBEXT): $(CS)
++	$(AR) $(LIBPRE)csparse.$(LIBEXT) $(CS)
++	$(RANLIB) $(LIBPRE)csparse.$(LIBEXT)
+ 
+ clean:
+ 	rm -f *.o
+@@ -32,4 +36,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	rm -f *.a
++	rm -f *.$(LIBEXT)
+diff -urb SuiteSparse/CSparse/Source/cs_add.c SuiteSparse-new/CSparse/Source/cs_add.c
+--- SuiteSparse/CSparse/Source/cs_add.c	2007-02-23 20:38:56.000000000 +0100
++++ SuiteSparse-new/CSparse/Source/cs_add.c	2007-06-04 22:26:33.265625000 +0200
+@@ -9,9 +9,9 @@
+     if (A->m != B->m || A->n != B->n) return (NULL) ;
+     m = A->m ; anz = A->p [A->n] ;
+     n = B->n ; Bp = B->p ; Bx = B->x ; bnz = Bp [n] ;
+-    w = cs_calloc (m, sizeof (int)) ;			    /* get workspace */
++    w = (int*)cs_calloc (m, sizeof (int)) ;			    /* get workspace */
+     values = (A->x != NULL) && (Bx != NULL) ;
+-    x = values ? cs_malloc (m, sizeof (double)) : NULL ;    /* get workspace */
++    x = values ? (double*)cs_malloc (m, sizeof (double)) : NULL ;    /* get workspace */
+     C = cs_spalloc (m, n, anz + bnz, values, 0) ;	    /* allocate result*/
+     if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+diff -urb SuiteSparse/CSparse/Source/cs_amd.c SuiteSparse-new/CSparse/Source/cs_amd.c
+--- SuiteSparse/CSparse/Source/cs_amd.c	2006-06-24 23:19:11.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_amd.c	2007-06-04 22:26:33.281250000 +0200
+@@ -59,8 +59,8 @@
+     cs_fkeep (C, &cs_diag, NULL) ;	    /* drop diagonal entries */
+     Cp = C->p ;
+     cnz = Cp [n] ;
+-    P = cs_malloc (n+1, sizeof (int)) ;	    /* allocate result */
+-    W = cs_malloc (8*(n+1), sizeof (int)) ; /* get workspace */
++    P = (int*)cs_malloc (n+1, sizeof (int)) ;	    /* allocate result */
++    W = (int*)cs_malloc (8*(n+1), sizeof (int)) ; /* get workspace */
+     t = cnz + cnz/5 + 2*n ;		    /* add elbow room to C */
+     if (!P || !W || !cs_sprealloc (C, t)) return (cs_idone (P, C, W, 0)) ;
+     len  = W           ; nv     = W +   (n+1) ; next   = W + 2*(n+1) ;
+diff -urb SuiteSparse/CSparse/Source/cs_chol.c SuiteSparse-new/CSparse/Source/cs_chol.c
+--- SuiteSparse/CSparse/Source/cs_chol.c	2006-04-08 04:07:35.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_chol.c	2007-06-04 22:26:33.296875000 +0200
+@@ -8,9 +8,9 @@
+     csn *N ;
+     if (!CS_CSC (A) || !S || !S->cp || !S->parent) return (NULL) ;
+     n = A->n ;
+-    N = cs_calloc (1, sizeof (csn)) ;	    /* allocate result */
+-    c = cs_malloc (2*n, sizeof (int)) ;	    /* get int workspace */
+-    x = cs_malloc (n, sizeof (double)) ;    /* get double workspace */
++    N = (csn*)cs_calloc (1, sizeof (csn)) ;	    /* allocate result */
++    c = (int*)cs_malloc (2*n, sizeof (int)) ;	    /* get int workspace */
++    x = (double*)cs_malloc (n, sizeof (double)) ;    /* get double workspace */
+     cp = S->cp ; pinv = S->pinv ; parent = S->parent ;
+     C = pinv ? cs_symperm (A, pinv, 1) : ((cs *) A) ;
+     E = pinv ? C : NULL ;	    /* E is alias for A, or a copy E=A(p,p) */
+diff -urb SuiteSparse/CSparse/Source/cs_cholsol.c SuiteSparse-new/CSparse/Source/cs_cholsol.c
+--- SuiteSparse/CSparse/Source/cs_cholsol.c	2006-04-10 13:41:39.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_cholsol.c	2007-06-04 22:26:33.296875000 +0200
+@@ -10,7 +10,7 @@
+     n = A->n ;
+     S = cs_schol (order, A) ;		    /* ordering and symbolic analysis */
+     N = cs_chol (A, S) ;		    /* numeric Cholesky factorization */
+-    x = cs_malloc (n, sizeof (double)) ;    /* get workspace */
++    x = (double*)cs_malloc (n, sizeof (double)) ;    /* get workspace */
+     ok = (S && N && x) ;
+     if (ok)
+     {
+diff -urb SuiteSparse/CSparse/Source/cs_compress.c SuiteSparse-new/CSparse/Source/cs_compress.c
+--- SuiteSparse/CSparse/Source/cs_compress.c	2006-05-27 20:08:36.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_compress.c	2007-06-04 22:26:33.312500000 +0200
+@@ -8,7 +8,7 @@
+     if (!CS_TRIPLET (T)) return (NULL) ;		/* check inputs */
+     m = T->m ; n = T->n ; Ti = T->i ; Tj = T->p ; Tx = T->x ; nz = T->nz ;
+     C = cs_spalloc (m, n, nz, Tx != NULL, 0) ;		/* allocate result */
+-    w = cs_calloc (n, sizeof (int)) ;			/* get workspace */
++    w = (int*)cs_calloc (n, sizeof (int)) ;			/* get workspace */
+     if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     for (k = 0 ; k < nz ; k++) w [Tj [k]]++ ;		/* column counts */
+diff -urb SuiteSparse/CSparse/Source/cs_counts.c SuiteSparse-new/CSparse/Source/cs_counts.c
+--- SuiteSparse/CSparse/Source/cs_counts.c	2006-04-04 13:24:19.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_counts.c	2007-06-04 22:26:33.328125000 +0200
+@@ -22,8 +22,8 @@
+     if (!CS_CSC (A) || !parent || !post) return (NULL) ;    /* check inputs */
+     m = A->m ; n = A->n ;
+     s = 4*n + (ata ? (n+m+1) : 0) ;
+-    delta = colcount = cs_malloc (n, sizeof (int)) ;	/* allocate result */
+-    w = cs_malloc (s, sizeof (int)) ;			/* get workspace */
++    delta = colcount = (int*)cs_malloc (n, sizeof (int)) ;	/* allocate result */
++    w = (int*)cs_malloc (s, sizeof (int)) ;			/* get workspace */
+     AT = cs_transpose (A, 0) ;				/* AT = A' */
+     if (!AT || !colcount || !w) return (cs_idone (colcount, AT, w, 0)) ;
+     ancestor = w ; maxfirst = w+n ; prevleaf = w+2*n ; first = w+3*n ;
+diff -urb SuiteSparse/CSparse/Source/cs_dropzeros.c SuiteSparse-new/CSparse/Source/cs_dropzeros.c
+--- SuiteSparse/CSparse/Source/cs_dropzeros.c	2006-04-05 16:47:22.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_dropzeros.c	2007-06-04 22:26:33.343750000 +0200
+@@ -1,7 +1,7 @@
+ #include "cs.h"
+ static int cs_nonzero (int i, int j, double aij, void *other)
+ {
+-    return (aij != 0) ;
++    return (aij != 0.) ;
+ }
+ int cs_dropzeros (cs *A)
+ {
+diff -urb SuiteSparse/CSparse/Source/cs_dupl.c SuiteSparse-new/CSparse/Source/cs_dupl.c
+--- SuiteSparse/CSparse/Source/cs_dupl.c	2006-04-04 02:18:23.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_dupl.c	2007-06-04 22:26:33.359375000 +0200
+@@ -6,7 +6,7 @@
+     double *Ax ;
+     if (!CS_CSC (A)) return (0) ;		/* check inputs */
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+-    w = cs_malloc (m, sizeof (int)) ;		/* get workspace */
++    w = (int*)cs_malloc (m, sizeof (int)) ;		/* get workspace */
+     if (!w) return (0) ;			/* out of memory */
+     for (i = 0 ; i < m ; i++) w [i] = -1 ;	/* row i not yet seen */
+     for (j = 0 ; j < n ; j++)
+diff -urb SuiteSparse/CSparse/Source/cs_etree.c SuiteSparse-new/CSparse/Source/cs_etree.c
+--- SuiteSparse/CSparse/Source/cs_etree.c	2006-04-04 13:10:19.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_etree.c	2007-06-04 22:26:33.359375000 +0200
+@@ -5,8 +5,8 @@
+     int i, k, p, m, n, inext, *Ap, *Ai, *w, *parent, *ancestor, *prev ;
+     if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ;
+-    parent = cs_malloc (n, sizeof (int)) ;		/* allocate result */
+-    w = cs_malloc (n + (ata ? m : 0), sizeof (int)) ;	/* get workspace */
++    parent = (int*)cs_malloc (n, sizeof (int)) ;		/* allocate result */
++    w = (int*)cs_malloc (n + (ata ? m : 0), sizeof (int)) ;	/* get workspace */
+     if (!w || !parent) return (cs_idone (parent, NULL, w, 0)) ;
+     ancestor = w ; prev = w + n ;
+     if (ata) for (i = 0 ; i < m ; i++) prev [i] = -1 ;
+diff -urb SuiteSparse/CSparse/Source/cs_lu.c SuiteSparse-new/CSparse/Source/cs_lu.c
+--- SuiteSparse/CSparse/Source/cs_lu.c	2006-04-04 23:32:52.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_lu.c	2007-06-04 22:26:33.390625000 +0200
+@@ -9,13 +9,13 @@
+     if (!CS_CSC (A) || !S) return (NULL) ;	    /* check inputs */
+     n = A->n ;
+     q = S->q ; lnz = S->lnz ; unz = S->unz ;
+-    x = cs_malloc (n, sizeof (double)) ;	    /* get double workspace */
+-    xi = cs_malloc (2*n, sizeof (int)) ;	    /* get int workspace */
+-    N = cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
++    x = (double*)cs_malloc (n, sizeof (double)) ;	    /* get double workspace */
++    xi = (int*)cs_malloc (2*n, sizeof (int)) ;	    /* get int workspace */
++    N = (csn*)cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
+     if (!x || !xi || !N) return (cs_ndone (N, NULL, xi, x, 0)) ;
+     N->L = L = cs_spalloc (n, n, lnz, 1, 0) ;	    /* allocate result L */
+     N->U = U = cs_spalloc (n, n, unz, 1, 0) ;	    /* allocate result U */
+-    N->pinv = pinv = cs_malloc (n, sizeof (int)) ;  /* allocate result pinv */
++    N->pinv = pinv = (int*)cs_malloc (n, sizeof (int)) ;  /* allocate result pinv */
+     if (!L || !U || !pinv) return (cs_ndone (N, NULL, xi, x, 0)) ;
+     Lp = L->p ; Up = U->p ;
+     for (i = 0 ; i < n ; i++) x [i] = 0 ;	    /* clear workspace */
+diff -urb SuiteSparse/CSparse/Source/cs_lusol.c SuiteSparse-new/CSparse/Source/cs_lusol.c
+--- SuiteSparse/CSparse/Source/cs_lusol.c	2006-04-10 13:41:52.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_lusol.c	2007-06-04 22:26:33.390625000 +0200
+@@ -10,7 +10,7 @@
+     n = A->n ;
+     S = cs_sqr (order, A, 0) ;		    /* ordering and symbolic analysis */
+     N = cs_lu (A, S, tol) ;		    /* numeric LU factorization */
+-    x = cs_malloc (n, sizeof (double)) ;    /* get workspace */
++    x = (double*)cs_malloc (n, sizeof (double)) ;    /* get workspace */
+     ok = (S && N && x) ;
+     if (ok)
+     {
+diff -urb SuiteSparse/CSparse/Source/cs_maxtrans.c SuiteSparse-new/CSparse/Source/cs_maxtrans.c
+--- SuiteSparse/CSparse/Source/cs_maxtrans.c	2006-06-24 23:19:25.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_maxtrans.c	2007-06-04 22:26:33.406250000 +0200
+@@ -48,7 +48,7 @@
+     cs *C ;
+     if (!CS_CSC (A)) return (NULL) ;		    /* check inputs */
+     n = A->n ; m = A->m ; Ap = A->p ; Ai = A->i ;
+-    w = jimatch = cs_calloc (m+n, sizeof (int)) ;   /* allocate result */
++    w = jimatch = (int*)cs_calloc (m+n, sizeof (int)) ;   /* allocate result */
+     if (!jimatch) return (NULL) ;
+     for (k = 0, j = 0 ; j < n ; j++)	/* count nonempty rows and columns */
+     {
+@@ -74,7 +74,7 @@
+     n = C->n ; m = C->m ; Cp = C->p ;
+     jmatch = (m2 < n2) ? jimatch + n : jimatch ;
+     imatch = (m2 < n2) ? jimatch : jimatch + m ;
+-    w = cs_malloc (5*n, sizeof (int)) ;		    /* get workspace */
++    w = (int*)cs_malloc (5*n, sizeof (int)) ;		    /* get workspace */
+     if (!w) return (cs_idone (jimatch, (m2 < n2) ? C : NULL, w, 0)) ;
+     cheap = w + n ; js = w + 2*n ; is = w + 3*n ; ps = w + 4*n ;
+     for (j = 0 ; j < n ; j++) cheap [j] = Cp [j] ;  /* for cheap assignment */
+diff -urb SuiteSparse/CSparse/Source/cs_multiply.c SuiteSparse-new/CSparse/Source/cs_multiply.c
+--- SuiteSparse/CSparse/Source/cs_multiply.c	2007-02-23 20:38:21.000000000 +0100
++++ SuiteSparse-new/CSparse/Source/cs_multiply.c	2007-06-04 22:26:33.421875000 +0200
+@@ -9,9 +9,9 @@
+     if (A->n != B->m) return (NULL) ;
+     m = A->m ; anz = A->p [A->n] ;
+     n = B->n ; Bp = B->p ; Bi = B->i ; Bx = B->x ; bnz = Bp [n] ;
+-    w = cs_calloc (m, sizeof (int)) ;			 /* get workspace */
++    w = (int*)cs_calloc (m, sizeof (int)) ;			 /* get workspace */
+     values = (A->x != NULL) && (Bx != NULL) ;
+-    x = values ? cs_malloc (m, sizeof (double)) : NULL ; /* get workspace */
++    x = values ? (double*)cs_malloc (m, sizeof (double)) : NULL ; /* get workspace */
+     C = cs_spalloc (m, n, anz + bnz, values, 0) ;	 /* allocate result */
+     if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
+     Cp = C->p ;
+diff -urb SuiteSparse/CSparse/Source/cs_pinv.c SuiteSparse-new/CSparse/Source/cs_pinv.c
+--- SuiteSparse/CSparse/Source/cs_pinv.c	2006-04-04 13:27:37.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_pinv.c	2007-06-04 22:26:33.437500000 +0200
+@@ -4,7 +4,7 @@
+ {
+     int k, *pinv ;
+     if (!p) return (NULL) ;			/* p = NULL denotes identity */
+-    pinv = cs_malloc (n, sizeof (int)) ;	/* allocate result */
++    pinv = (int*)cs_malloc (n, sizeof (int)) ;	/* allocate result */
+     if (!pinv) return (NULL) ;			/* out of memory */
+     for (k = 0 ; k < n ; k++) pinv [p [k]] = k ;/* invert the permutation */
+     return (pinv) ;				/* return result */
+diff -urb SuiteSparse/CSparse/Source/cs_post.c SuiteSparse-new/CSparse/Source/cs_post.c
+--- SuiteSparse/CSparse/Source/cs_post.c	2006-04-07 17:56:11.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_post.c	2007-06-04 22:26:33.453125000 +0200
+@@ -4,8 +4,8 @@
+ {
+     int j, k = 0, *post, *w, *head, *next, *stack ;
+     if (!parent) return (NULL) ;			/* check inputs */
+-    post = cs_malloc (n, sizeof (int)) ;		/* allocate result */
+-    w = cs_malloc (3*n, sizeof (int)) ;			/* get workspace */
++    post = (int*)cs_malloc (n, sizeof (int)) ;		/* allocate result */
++    w = (int*)cs_malloc (3*n, sizeof (int)) ;			/* get workspace */
+     if (!w || !post) return (cs_idone (post, NULL, w, 0)) ;
+     head = w ; next = w + n ; stack = w + 2*n ;
+     for (j = 0 ; j < n ; j++) head [j] = -1 ;		/* empty linked lists */
+diff -urb SuiteSparse/CSparse/Source/cs_qr.c SuiteSparse-new/CSparse/Source/cs_qr.c
+--- SuiteSparse/CSparse/Source/cs_qr.c	2007-03-01 22:30:20.000000000 +0100
++++ SuiteSparse-new/CSparse/Source/cs_qr.c	2007-06-04 22:26:33.468750000 +0200
+@@ -11,15 +11,15 @@
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+     q = S->q ; parent = S->parent ; pinv = S->pinv ; m2 = S->m2 ;
+     vnz = S->lnz ; rnz = S->unz ; leftmost = S->leftmost ;
+-    w = cs_malloc (m2+n, sizeof (int)) ;	    /* get int workspace */
+-    x = cs_malloc (m2, sizeof (double)) ;	    /* get double workspace */
+-    N = cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
++    w = (int*)cs_malloc (m2+n, sizeof (int)) ;	    /* get int workspace */
++    x = (double*)cs_malloc (m2, sizeof (double)) ;	    /* get double workspace */
++    N = (csn*)cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
+     if (!w || !x || !N) return (cs_ndone (N, NULL, w, x, 0)) ;
+     s = w + m2 ;				    /* s is size n */
+     for (k = 0 ; k < m2 ; k++) x [k] = 0 ;	    /* clear workspace x */
+     N->L = V = cs_spalloc (m2, n, vnz, 1, 0) ;	    /* allocate result V */
+     N->U = R = cs_spalloc (m2, n, rnz, 1, 0) ;	    /* allocate result R */
+-    N->B = Beta = cs_malloc (n, sizeof (double)) ;  /* allocate result Beta */
++    N->B = Beta = (double*)cs_malloc (n, sizeof (double)) ;  /* allocate result Beta */
+     if (!R || !V || !Beta) return (cs_ndone (N, NULL, w, x, 0)) ;
+     Rp = R->p ; Ri = R->i ; Rx = R->x ;
+     Vp = V->p ; Vi = V->i ; Vx = V->x ;
+diff -urb SuiteSparse/CSparse/Source/cs_qrsol.c SuiteSparse-new/CSparse/Source/cs_qrsol.c
+--- SuiteSparse/CSparse/Source/cs_qrsol.c	2006-04-10 13:42:05.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_qrsol.c	2007-06-04 22:26:33.484375000 +0200
+@@ -14,7 +14,7 @@
+     {
+ 	S = cs_sqr (order, A, 1) ;	    /* ordering and symbolic analysis */
+ 	N = cs_qr (A, S) ;		    /* numeric QR factorization */
+-	x = cs_calloc (S ? S->m2 : 1, sizeof (double)) ;    /* get workspace */
++	x = (double*)cs_calloc (S ? S->m2 : 1, sizeof (double)) ;    /* get workspace */
+ 	ok = (S && N && x) ;
+ 	if (ok)
+ 	{
+@@ -32,7 +32,7 @@
+ 	AT = cs_transpose (A, 1) ;	    /* Ax=b is underdetermined */
+ 	S = cs_sqr (order, AT, 1) ;	    /* ordering and symbolic analysis */
+ 	N = cs_qr (AT, S) ;		    /* numeric QR factorization of A' */
+-	x = cs_calloc (S ? S->m2 : 1, sizeof (double)) ;    /* get workspace */
++	x = (double*)cs_calloc (S ? S->m2 : 1, sizeof (double)) ;    /* get workspace */
+ 	ok = (AT && S && N && x) ;
+ 	if (ok)
+ 	{
+diff -urb SuiteSparse/CSparse/Source/cs_randperm.c SuiteSparse-new/CSparse/Source/cs_randperm.c
+--- SuiteSparse/CSparse/Source/cs_randperm.c	2006-04-12 20:42:45.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_randperm.c	2007-06-04 22:26:33.500000000 +0200
+@@ -6,7 +6,7 @@
+ {
+     int *p, k, j, t ;
+     if (seed == 0) return (NULL) ;	/* return p = NULL (identity) */
+-    p = cs_malloc (n, sizeof (int)) ;	/* allocate result */
++    p = (int*)cs_malloc (n, sizeof (int)) ;	/* allocate result */
+     if (!p) return (NULL) ;		/* out of memory */
+     for (k = 0 ; k < n ; k++) p [k] = n-k-1 ;
+     if (seed == -1) return (p) ;	/* return reverse permutation */
+diff -urb SuiteSparse/CSparse/Source/cs_scc.c SuiteSparse-new/CSparse/Source/cs_scc.c
+--- SuiteSparse/CSparse/Source/cs_scc.c	2006-04-04 13:16:05.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_scc.c	2007-06-04 22:26:33.515625000 +0200
+@@ -9,7 +9,7 @@
+     n = A->n ; Ap = A->p ;
+     D = cs_dalloc (n, 0) ;			    /* allocate result */
+     AT = cs_transpose (A, 0) ;			    /* AT = A' */
+-    xi = cs_malloc (2*n+1, sizeof (int)) ;	    /* get workspace */
++    xi = (int*)cs_malloc (2*n+1, sizeof (int)) ;	    /* get workspace */
+     if (!D || !AT || !xi) return (cs_ddone (D, AT, xi, 0)) ;
+     Blk = xi ; rcopy = pstack = xi + n ;
+     p = D->p ; r = D->r ; ATp = AT->p ;
+diff -urb SuiteSparse/CSparse/Source/cs_schol.c SuiteSparse-new/CSparse/Source/cs_schol.c
+--- SuiteSparse/CSparse/Source/cs_schol.c	2006-04-10 13:57:42.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_schol.c	2007-06-04 22:26:33.531250000 +0200
+@@ -7,7 +7,7 @@
+     css *S ;
+     if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
+     n = A->n ;
+-    S = cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
++    S = (css*)cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
+     if (!S) return (NULL) ;		    /* out of memory */
+     P = cs_amd (order, A) ;		    /* P = amd(A+A'), or natural */
+     S->pinv = cs_pinv (P, n) ;		    /* find inverse permutation */
+@@ -19,7 +19,7 @@
+     c = cs_counts (C, S->parent, post, 0) ; /* find column counts of chol(C) */
+     cs_free (post) ;
+     cs_spfree (C) ;
+-    S->cp = cs_malloc (n+1, sizeof (int)) ; /* allocate result S->cp */
++    S->cp = (int*)cs_malloc (n+1, sizeof (int)) ; /* allocate result S->cp */
+     S->unz = S->lnz = cs_cumsum (S->cp, c, n) ; /* find column pointers for L */
+     cs_free (c) ;
+     return ((S->lnz >= 0) ? S : cs_sfree (S)) ;
+diff -urb SuiteSparse/CSparse/Source/cs_sqr.c SuiteSparse-new/CSparse/Source/cs_sqr.c
+--- SuiteSparse/CSparse/Source/cs_sqr.c	2006-04-10 13:42:41.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_sqr.c	2007-06-04 22:26:33.546875000 +0200
+@@ -4,9 +4,9 @@
+ {
+     int i, k, p, pa, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i, *next, *head,
+ 	*tail, *nque, *pinv, *leftmost, *w, *parent = S->parent ;
+-    S->pinv = pinv = cs_malloc (m+n, sizeof (int)) ;	    /* allocate pinv, */
+-    S->leftmost = leftmost = cs_malloc (m, sizeof (int)) ;  /* and leftmost */
+-    w = cs_malloc (m+3*n, sizeof (int)) ;   /* get workspace */
++    S->pinv = pinv = (int*)cs_malloc (m+n, sizeof (int)) ;	    /* allocate pinv, */
++    S->leftmost = leftmost = (int*)cs_malloc (m, sizeof (int)) ;  /* and leftmost */
++    w = (int*)cs_malloc (m+3*n, sizeof (int)) ;   /* get workspace */
+     if (!pinv || !w || !leftmost)
+     {
+ 	cs_free (w) ;			    /* pinv and leftmost freed later */
+@@ -63,7 +63,7 @@
+     css *S ;
+     if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
+     n = A->n ;
+-    S = cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
++    S = (css*)cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
+     if (!S) return (NULL) ;		    /* out of memory */
+     S->q = cs_amd (order, A) ;		    /* fill-reducing ordering */
+     if (order && !S->q) return (cs_sfree (S)) ;
+diff -urb SuiteSparse/CSparse/Source/cs_symperm.c SuiteSparse-new/CSparse/Source/cs_symperm.c
+--- SuiteSparse/CSparse/Source/cs_symperm.c	2006-04-04 13:30:22.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_symperm.c	2007-06-04 22:26:33.562500000 +0200
+@@ -8,7 +8,7 @@
+     if (!CS_CSC (A)) return (NULL) ;			/* check inputs */
+     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+     C = cs_spalloc (n, n, Ap [n], values && (Ax != NULL), 0) ; /* alloc result*/
+-    w = cs_calloc (n, sizeof (int)) ;			/* get workspace */
++    w = (int*)cs_calloc (n, sizeof (int)) ;			/* get workspace */
+     if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     for (j = 0 ; j < n ; j++)		/* count entries in each column of C */
+diff -urb SuiteSparse/CSparse/Source/cs_transpose.c SuiteSparse-new/CSparse/Source/cs_transpose.c
+--- SuiteSparse/CSparse/Source/cs_transpose.c	2006-04-04 13:20:14.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_transpose.c	2007-06-04 22:26:33.578125000 +0200
+@@ -8,7 +8,7 @@
+     if (!CS_CSC (A)) return (NULL) ;	/* check inputs */
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+     C = cs_spalloc (n, m, Ap [n], values && Ax, 0) ;	   /* allocate result */
+-    w = cs_calloc (m, sizeof (int)) ;			   /* get workspace */
++    w = (int*)cs_calloc (m, sizeof (int)) ;			   /* get workspace */
+     if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	   /* out of memory */
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     for (p = 0 ; p < Ap [n] ; p++) w [Ai [p]]++ ;	   /* row counts */
+diff -urb SuiteSparse/CSparse/Source/cs_updown.c SuiteSparse-new/CSparse/Source/cs_updown.c
+--- SuiteSparse/CSparse/Source/cs_updown.c	2007-02-28 21:37:24.000000000 +0100
++++ SuiteSparse-new/CSparse/Source/cs_updown.c	2007-06-04 22:26:33.593750000 +0200
+@@ -8,7 +8,7 @@
+     Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     if ((p = Cp [0]) >= Cp [1]) return (1) ;	    /* return if C empty */
+-    w = cs_malloc (n, sizeof (double)) ;	    /* get workspace */
++    w = (double*)cs_malloc (n, sizeof (double)) ;	    /* get workspace */
+     if (!w) return (0) ;			    /* out of memory */
+     f = Ci [p] ;
+     for ( ; p < Cp [1] ; p++) f = CS_MIN (f, Ci [p]) ;	/* f = min (find (C)) */
+diff -urb SuiteSparse/CSparse/Source/cs_util.c SuiteSparse-new/CSparse/Source/cs_util.c
+--- SuiteSparse/CSparse/Source/cs_util.c	2006-05-27 15:10:48.000000000 +0200
++++ SuiteSparse-new/CSparse/Source/cs_util.c	2007-06-04 22:26:33.609375000 +0200
+@@ -2,15 +2,15 @@
+ /* allocate a sparse matrix (triplet form or compressed-column form) */
+ cs *cs_spalloc (int m, int n, int nzmax, int values, int triplet)
+ {
+-    cs *A = cs_calloc (1, sizeof (cs)) ;    /* allocate the cs struct */
++    cs *A = (cs*)cs_calloc (1, sizeof (cs)) ;    /* allocate the cs struct */
+     if (!A) return (NULL) ;		    /* out of memory */
+     A->m = m ;				    /* define dimensions and nzmax */
+     A->n = n ;
+     A->nzmax = nzmax = CS_MAX (nzmax, 1) ;
+     A->nz = triplet ? 0 : -1 ;		    /* allocate triplet or comp.col */
+-    A->p = cs_malloc (triplet ? nzmax : n+1, sizeof (int)) ;
+-    A->i = cs_malloc (nzmax, sizeof (int)) ;
+-    A->x = values ? cs_malloc (nzmax, sizeof (double)) : NULL ;
++    A->p = (int*)cs_malloc (triplet ? nzmax : n+1, sizeof (int)) ;
++    A->i = (int*)cs_malloc (nzmax, sizeof (int)) ;
++    A->x = values ? (double*)cs_malloc (nzmax, sizeof (double)) : NULL ;
+     return ((!A->p || !A->i || (values && !A->x)) ? cs_spfree (A) : A) ;
+ }
+ 
+@@ -20,9 +20,9 @@
+     int ok, oki, okj = 1, okx = 1 ;
+     if (!A) return (0) ;
+     if (nzmax <= 0) nzmax = (CS_CSC (A)) ? (A->p [A->n]) : A->nz ;
+-    A->i = cs_realloc (A->i, nzmax, sizeof (int), &oki) ;
+-    if (CS_TRIPLET (A)) A->p = cs_realloc (A->p, nzmax, sizeof (int), &okj) ;
+-    if (A->x) A->x = cs_realloc (A->x, nzmax, sizeof (double), &okx) ;
++    A->i = (int*)cs_realloc (A->i, nzmax, sizeof (int), &oki) ;
++    if (CS_TRIPLET (A)) A->p = (int*)cs_realloc (A->p, nzmax, sizeof (int), &okj) ;
++    if (A->x) A->x = (double*)cs_realloc (A->x, nzmax, sizeof (double), &okx) ;
+     ok = (oki && okj && okx) ;
+     if (ok) A->nzmax = nzmax ;
+     return (ok) ;
+@@ -35,7 +35,7 @@
+     cs_free (A->p) ;
+     cs_free (A->i) ;
+     cs_free (A->x) ;
+-    return (cs_free (A)) ;	/* free the cs struct and return NULL */
++    return (cs*)(cs_free (A)) ;	/* free the cs struct and return NULL */
+ }
+ 
+ /* free a numeric factorization */
+@@ -46,7 +46,7 @@
+     cs_spfree (N->U) ;
+     cs_free (N->pinv) ;
+     cs_free (N->B) ;
+-    return (cs_free (N)) ;	/* free the csn struct and return NULL */
++    return (csn*)(cs_free (N)) ;	/* free the csn struct and return NULL */
+ }
+ 
+ /* free a symbolic factorization */
+@@ -58,19 +58,19 @@
+     cs_free (S->parent) ;
+     cs_free (S->cp) ;
+     cs_free (S->leftmost) ;
+-    return (cs_free (S)) ;	/* free the css struct and return NULL */
++    return (css*)(cs_free (S)) ;	/* free the css struct and return NULL */
+ }
+ 
+ /* allocate a cs_dmperm or cs_scc result */
+ csd *cs_dalloc (int m, int n)
+ {
+     csd *D ;
+-    D = cs_calloc (1, sizeof (csd)) ;
++    D = (csd*)cs_calloc (1, sizeof (csd)) ;
+     if (!D) return (NULL) ;
+-    D->p = cs_malloc (m, sizeof (int)) ;
+-    D->r = cs_malloc (m+6, sizeof (int)) ;
+-    D->q = cs_malloc (n, sizeof (int)) ;
+-    D->s = cs_malloc (n+6, sizeof (int)) ;
++    D->p = (int*)cs_malloc (m, sizeof (int)) ;
++    D->r = (int*)cs_malloc (m+6, sizeof (int)) ;
++    D->q = (int*)cs_malloc (n, sizeof (int)) ;
++    D->s = (int*)cs_malloc (n+6, sizeof (int)) ;
+     return ((!D->p || !D->r || !D->q || !D->s) ? cs_dfree (D) : D) ;
+ }
+ 
+@@ -82,7 +82,7 @@
+     cs_free (D->q) ;
+     cs_free (D->r) ;
+     cs_free (D->s) ;
+-    return (cs_free (D)) ;
++    return (csd*)(cs_free (D)) ;
+ }
+ 
+ /* free workspace and return a sparse matrix result */
+@@ -98,7 +98,7 @@
+ {
+     cs_spfree (C) ;			/* free temporary matrix */
+     cs_free (w) ;			/* free workspace */
+-    return (ok ? p : cs_free (p)) ;	/* return result if OK, else free it */
++    return (ok ? p : (int*)cs_free (p)) ;	/* return result if OK, else free it */
+ }
+ 
+ /* free workspace and return a numeric factorization (Cholesky, LU, or QR) */
+diff -urb SuiteSparse/CSparse_to_CXSparse SuiteSparse-new/CSparse_to_CXSparse
+--- SuiteSparse/CSparse_to_CXSparse	2007-03-01 22:32:20.000000000 +0100
++++ SuiteSparse-new/CSparse_to_CXSparse	2007-06-04 22:56:31.156250000 +0200
+@@ -297,6 +297,7 @@
+ 		if ($fbase =~ /cs_qr/)
+ 		{
+ 		    s/n, sizeof \(CS_ENTRY\)/n, sizeof (double)/;
++		    s/Beta = \(CS_ENTRY\*\)cs_malloc /Beta = (double*)cs_malloc /;
+ 		}
+ 
+ 		# cs_happly
+diff -urb SuiteSparse/CXSparse/Demo/Makefile SuiteSparse-new/CXSparse/Demo/Makefile
+--- SuiteSparse/CXSparse/Demo/Makefile	2007-05-10 16:35:12.000000000 +0200
++++ SuiteSparse-new/CXSparse/Demo/Makefile	2007-06-04 23:09:24.000000000 +0200
+@@ -1,20 +1,22 @@
+-CC = cc
+-CFLAGS = -O
++# CC = cc
++# CFLAGS = -O
+ 
+-I = -I../Include -I../../UFconfig
++include ../../UFconfig/UFconfig.mk
+ 
+-CS = ../Lib/libcxsparse.a
++I = -O2 -TP -EHs -I../Include -I../../UFconfig
+ 
+-all: $(CS) cs_demo1 cs_demo2 cs_demo3 \
+-	cs_di_demo1 cs_di_demo2 cs_di_demo3 \
+-	cs_dl_demo1 cs_dl_demo2 cs_dl_demo3 \
+-	cs_ci_demo1 cs_ci_demo2 cs_ci_demo3 \
+-	cs_cl_demo1 cs_cl_demo2 cs_cl_demo3  \
+-	tests cs_idemo
++CS = ../Lib/$(LIBPRE)cxsparse.$(LIBEXT)
++
++all: $(CS) cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT) \
++	cs_di_demo1$(EXEEXT) cs_di_demo2$(EXEEXT) cs_di_demo3$(EXEEXT) \
++	cs_dl_demo1$(EXEEXT) cs_dl_demo2$(EXEEXT) cs_dl_demo3$(EXEEXT) \
++	cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT) \
++	cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)  \
++	tests cs_idemo$(EXEEXT)
+ 
+ tests: test_convert test test_di test_dl test_ci test_cl
+ 
+-test: cs_demo1 cs_demo2 cs_demo3
++test: cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT)
+ 	- ./cs_demo1 < ../Matrix/t1
+ 	- ./cs_demo2 < ../Matrix/t1
+ 	- ./cs_demo2 < ../Matrix/fs_183_1
+@@ -27,7 +29,7 @@
+ 	- ./cs_demo2 < ../Matrix/bcsstk16
+ 	- ./cs_demo3 < ../Matrix/bcsstk16
+ 
+-test_di: cs_di_demo1 cs_di_demo2 cs_di_demo3
++test_di: cs_di_demo1$(EXEEXT) cs_di_demo2$(EXEEXT) cs_di_demo3$(EXEEXT)
+ 	- ./cs_di_demo1 < ../Matrix/t1
+ 	- ./cs_di_demo2 < ../Matrix/t1
+ 	- ./cs_di_demo2 < ../Matrix/fs_183_1
+@@ -40,7 +42,7 @@
+ 	- ./cs_di_demo2 < ../Matrix/bcsstk16
+ 	- ./cs_di_demo3 < ../Matrix/bcsstk16
+ 
+-test_dl: cs_dl_demo1 cs_dl_demo2 cs_dl_demo3
++test_dl: cs_dl_demo1$(EXEEXT) cs_dl_demo2$(EXEEXT) cs_dl_demo3$(EXEEXT)
+ 	- ./cs_dl_demo1 < ../Matrix/t1
+ 	- ./cs_dl_demo2 < ../Matrix/t1
+ 	- ./cs_dl_demo2 < ../Matrix/fs_183_1
+@@ -53,7 +55,7 @@
+ 	- ./cs_dl_demo2 < ../Matrix/bcsstk16
+ 	- ./cs_dl_demo3 < ../Matrix/bcsstk16
+ 
+-test_ci: cs_ci_demo1 cs_ci_demo2 cs_ci_demo3
++test_ci: cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT)
+ 	- ./cs_ci_demo1 < ../Matrix/t2
+ 	- ./cs_ci_demo2 < ../Matrix/t2
+ 	- ./cs_ci_demo2 < ../Matrix/t3
+@@ -68,7 +70,7 @@
+ 	- ./cs_ci_demo2 < ../Matrix/mhd1280b
+ 	- ./cs_ci_demo3 < ../Matrix/mhd1280b
+ 
+-test_cl: cs_cl_demo1 cs_cl_demo2 cs_cl_demo3
++test_cl: cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)
+ 	- ./cs_cl_demo1 < ../Matrix/t2
+ 	- ./cs_cl_demo2 < ../Matrix/t2
+ 	- ./cs_cl_demo2 < ../Matrix/t3
+@@ -83,86 +85,86 @@
+ 	- ./cs_cl_demo2 < ../Matrix/mhd1280b
+ 	- ./cs_cl_demo3 < ../Matrix/mhd1280b
+ 
+-test_convert: cs_idemo cs_ldemo
++test_convert: cs_idemo$(EXEEXT) cs_ldemo$(EXEEXT)
+ 	- ./cs_idemo < ../Matrix/t2
+ 	- ./cs_ldemo < ../Matrix/t2
+ 
+ $(CS):
+ 	( cd ../Lib ; $(MAKE) )
+ 
+-cs_demo1: $(CS) cs_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm
++cs_demo1$(EXEEXT): $(CS) cs_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_demo1$(EXEEXT) cs_demo1.c $(CS) $(CLIB)
+ 
+-cs_demo2: $(CS) cs_demo2.c cs_demo.c cs_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_demo2 cs_demo2.c cs_demo.c $(CS) -lm
++cs_demo2$(EXEEXT): $(CS) cs_demo2.c cs_demo.c cs_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_demo2$(EXEEXT) cs_demo2.c cs_demo.c $(CS) $(CLIB)
+ 
+-cs_demo3: $(CS) cs_demo3.c cs_demo.c cs_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS) -lm
++cs_demo3$(EXEEXT): $(CS) cs_demo3.c cs_demo.c cs_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_demo3$(EXEEXT) cs_demo3.c cs_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+ 
+-cs_di_demo1: $(CS) cs_di_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_di_demo1 cs_di_demo1.c $(CS) -lm
++cs_di_demo1$(EXEEXT): $(CS) cs_di_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_di_demo1$(EXEEXT) cs_di_demo1.c $(CS) $(CLIB)
+ 
+-cs_di_demo2: $(CS) cs_di_demo2.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_di_demo2 cs_di_demo2.c cs_di_demo.c $(CS) -lm
++cs_di_demo2$(EXEEXT): $(CS) cs_di_demo2.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_di_demo2$(EXEEXT) cs_di_demo2.c cs_di_demo.c $(CS) $(CLIB)
+ 
+-cs_di_demo3: $(CS) cs_di_demo3.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_di_demo3 cs_di_demo3.c cs_di_demo.c $(CS) -lm
++cs_di_demo3$(EXEEXT): $(CS) cs_di_demo3.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_di_demo3$(EXEEXT) cs_di_demo3.c cs_di_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+ 
+-cs_ci_demo1: $(CS) cs_ci_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_ci_demo1 cs_ci_demo1.c $(CS) -lm
++cs_ci_demo1$(EXEEXT): $(CS) cs_ci_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_ci_demo1$(EXEEXT) cs_ci_demo1.c $(CS) $(CLIB)
+ 
+-cs_ci_demo2: $(CS) cs_ci_demo2.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_ci_demo2 cs_ci_demo2.c cs_ci_demo.c $(CS) -lm
++cs_ci_demo2$(EXEEXT): $(CS) cs_ci_demo2.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_ci_demo2$(EXEEXT) cs_ci_demo2.c cs_ci_demo.c $(CS) $(CLIB)
+ 
+-cs_ci_demo3: $(CS) cs_ci_demo3.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_ci_demo3 cs_ci_demo3.c cs_ci_demo.c $(CS) -lm
++cs_ci_demo3$(EXEEXT): $(CS) cs_ci_demo3.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_ci_demo3$(EXEEXT) cs_ci_demo3.c cs_ci_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+-cs_dl_demo1: $(CS) cs_dl_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_dl_demo1 cs_dl_demo1.c $(CS) -lm
++cs_dl_demo1$(EXEEXT): $(CS) cs_dl_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_dl_demo1$(EXEEXT) cs_dl_demo1.c $(CS) $(CLIB)
+ 
+-cs_dl_demo2: $(CS) cs_dl_demo2.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_dl_demo2 cs_dl_demo2.c cs_dl_demo.c $(CS) -lm
++cs_dl_demo2$(EXEEXT): $(CS) cs_dl_demo2.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_dl_demo2$(EXEEXT) cs_dl_demo2.c cs_dl_demo.c $(CS) $(CLIB)
+ 
+-cs_dl_demo3: $(CS) cs_dl_demo3.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_dl_demo3 cs_dl_demo3.c cs_dl_demo.c $(CS) -lm
++cs_dl_demo3$(EXEEXT): $(CS) cs_dl_demo3.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_dl_demo3$(EXEEXT) cs_dl_demo3.c cs_dl_demo.c $(CS) $(CLIB)
+ 
+ 
+-cs_cl_demo1: $(CS) cs_cl_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_cl_demo1 cs_cl_demo1.c $(CS) -lm
++cs_cl_demo1$(EXEEXT): $(CS) cs_cl_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_cl_demo1$(EXEEXT) cs_cl_demo1.c $(CS) $(CLIB)
+ 
+-cs_cl_demo2: $(CS) cs_cl_demo2.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_cl_demo2 cs_cl_demo2.c cs_cl_demo.c $(CS) -lm
++cs_cl_demo2$(EXEEXT): $(CS) cs_cl_demo2.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_cl_demo2$(EXEEXT) cs_cl_demo2.c cs_cl_demo.c $(CS) $(CLIB)
+ 
+-cs_cl_demo3: $(CS) cs_cl_demo3.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_cl_demo3 cs_cl_demo3.c cs_cl_demo.c $(CS) -lm
++cs_cl_demo3$(EXEEXT): $(CS) cs_cl_demo3.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_cl_demo3$(EXEEXT) cs_cl_demo3.c cs_cl_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+ 
+-cs_idemo: $(CS) cs_idemo.c Makefile $(CS)
+-	$(CC) $(I) -o cs_idemo cs_idemo.c $(CS) -lm
++cs_idemo$(EXEEXT): $(CS) cs_idemo.c Makefile $(CS)
++	$(CC) $(I) -o cs_idemo$(EXEEXT) cs_idemo.c $(CS) $(CLIB)
+ 
+-cs_ldemo: $(CS) cs_ldemo.c Makefile $(CS)
+-	$(CC) $(I) -DCS_LONG -o cs_ldemo cs_ldemo.c $(CS) -lm
++cs_ldemo$(EXEEXT): $(CS) cs_ldemo.c Makefile $(CS)
++	$(CC) $(I) -DCS_LONG -o cs_ldemo$(EXEEXT) cs_ldemo.c $(CS) $(CLIB)
+ 
+ 
+ clean:
+-	rm -f *.o
++	rm -f *.o *.obj
+ 
+ purge: distclean
+ 
+ distclean: clean
+-	rm -f cs_demo1 cs_demo2 cs_demo3 *.a
+-	rm -f cs_di_demo1 cs_di_demo2 cs_di_demo3
+-	rm -f cs_dl_demo1 cs_dl_demo2 cs_dl_demo3
+-	rm -f cs_ci_demo1 cs_ci_demo2 cs_ci_demo3
+-	rm -f cs_cl_demo1 cs_cl_demo2 cs_cl_demo3
+-	rm -f cs_idemo cs_ldemo
++	rm -f cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT) *.$(LIBEXT)
++	rm -f cs_di_demo1$(EXEEXT) cs_di_demo2$(EXEEXT) cs_di_demo3$(EXEEXT)
++	rm -f cs_dl_demo1$(EXEEXT) cs_dl_demo2$(EXEEXT) cs_dl_demo3$(EXEEXT)
++	rm -f cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT)
++	rm -f cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)
++	rm -f cs_idemo$(EXEEXT) cs_ldemo$(EXEEXT)
+diff -urb SuiteSparse/CXSparse/Demo/cs_ci_demo.c SuiteSparse-new/CXSparse/Demo/cs_ci_demo.c
+--- SuiteSparse/CXSparse/Demo/cs_ci_demo.c	2007-05-18 14:13:07.000000000 +0200
++++ SuiteSparse-new/CXSparse/Demo/cs_ci_demo.c	2007-06-04 23:09:52.421875000 +0200
+@@ -81,7 +81,7 @@
+     cs_ci *T, *A, *C ;
+     int sym, m, n, mn, nz1, nz2 ;
+     problem *Prob ;
+-    Prob = cs_ci_calloc (1, sizeof (problem)) ;
++    Prob = (problem*)cs_ci_calloc (1, sizeof (problem)) ;
+     if (!Prob) return (NULL) ;
+     T = cs_ci_load (f) ;			/* load triplet matrix T from a file */
+     Prob->A = A = cs_ci_compress (T) ;	/* A = compressed-column form of T */
+@@ -100,9 +100,9 @@
+ 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_ci_norm (C)) ;
+     if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
+     if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
+-    Prob->b = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
+-    Prob->x = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
+-    Prob->resid = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
++    Prob->b = (cs_complex_t*)cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
++    Prob->x = (cs_complex_t*)cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
++    Prob->resid = (cs_complex_t*)cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
+     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
+ }
+ 
+@@ -115,7 +115,7 @@
+     cs_ci_free (Prob->b) ;
+     cs_ci_free (Prob->x) ;
+     cs_ci_free (Prob->resid) ;
+-    return (cs_ci_free (Prob)) ;
++    return (problem*)(cs_ci_free (Prob)) ;
+ }
+ 
+ /* solve a linear system using Cholesky, LU, and QR, with various orderings */
+@@ -206,7 +206,7 @@
+     rhs (x, b, n) ;				/* compute right-hand side */
+     printf ("\nchol then update/downdate ") ;
+     print_order (1) ;
+-    y = cs_ci_malloc (n, sizeof (cs_complex_t)) ;
++    y = (cs_complex_t*)cs_ci_malloc (n, sizeof (cs_complex_t)) ;
+     t = tic () ;
+     S = cs_ci_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
+     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;
+@@ -236,7 +236,7 @@
+     {
+ 	p2 = p1 - Lp [k] ;
+ 	Wi [p2] = Li [p1] ;
+-	Wx [p2] = s * rand () / ((double) RAND_MAX) ;
++	Wx [p2] = s * (rand () / ((double) RAND_MAX)) ;
+     }
+     t = tic () ;
+     ok = cs_ci_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
+diff -urb SuiteSparse/CXSparse/Demo/cs_cl_demo.c SuiteSparse-new/CXSparse/Demo/cs_cl_demo.c
+--- SuiteSparse/CXSparse/Demo/cs_cl_demo.c	2007-05-18 14:13:07.000000000 +0200
++++ SuiteSparse-new/CXSparse/Demo/cs_cl_demo.c	2007-06-04 23:09:52.437500000 +0200
+@@ -81,7 +81,7 @@
+     cs_cl *T, *A, *C ;
+     UF_long sym, m, n, mn, nz1, nz2 ;
+     problem *Prob ;
+-    Prob = cs_cl_calloc (1, sizeof (problem)) ;
++    Prob = (problem*)cs_cl_calloc (1, sizeof (problem)) ;
+     if (!Prob) return (NULL) ;
+     T = cs_cl_load (f) ;			/* load triplet matrix T from a file */
+     Prob->A = A = cs_cl_compress (T) ;	/* A = compressed-column form of T */
+@@ -100,9 +100,9 @@
+ 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_cl_norm (C)) ;
+     if (nz1 != nz2) printf ("zero entries dropped: %ld\n", nz1 - nz2) ;
+     if (nz2 != A->p [n]) printf ("tiny entries dropped: %ld\n", nz2 - A->p [n]) ;
+-    Prob->b = cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
+-    Prob->x = cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
+-    Prob->resid = cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
++    Prob->b = (cs_complex_t*)cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
++    Prob->x = (cs_complex_t*)cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
++    Prob->resid = (cs_complex_t*)cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
+     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
+ }
+ 
+@@ -115,7 +115,7 @@
+     cs_cl_free (Prob->b) ;
+     cs_cl_free (Prob->x) ;
+     cs_cl_free (Prob->resid) ;
+-    return (cs_cl_free (Prob)) ;
++    return (problem*)(cs_cl_free (Prob)) ;
+ }
+ 
+ /* solve a linear system using Cholesky, LU, and QR, with various orderings */
+@@ -206,7 +206,7 @@
+     rhs (x, b, n) ;				/* compute right-hand side */
+     printf ("\nchol then update/downdate ") ;
+     print_order (1) ;
+-    y = cs_cl_malloc (n, sizeof (cs_complex_t)) ;
++    y = (cs_complex_t*)cs_cl_malloc (n, sizeof (cs_complex_t)) ;
+     t = tic () ;
+     S = cs_cl_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
+     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;
+@@ -236,7 +236,7 @@
+     {
+ 	p2 = p1 - Lp [k] ;
+ 	Wi [p2] = Li [p1] ;
+-	Wx [p2] = s * rand () / ((double) RAND_MAX) ;
++	Wx [p2] = s * (rand () / ((double) RAND_MAX)) ;
+     }
+     t = tic () ;
+     ok = cs_cl_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
+diff -urb SuiteSparse/CXSparse/Demo/cs_demo.c SuiteSparse-new/CXSparse/Demo/cs_demo.c
+--- SuiteSparse/CXSparse/Demo/cs_demo.c	2006-06-02 21:26:45.000000000 +0200
++++ SuiteSparse-new/CXSparse/Demo/cs_demo.c	2007-06-04 22:26:33.234375000 +0200
+@@ -81,7 +81,7 @@
+     cs *T, *A, *C ;
+     int sym, m, n, mn, nz1, nz2 ;
+     problem *Prob ;
+-    Prob = cs_calloc (1, sizeof (problem)) ;
++    Prob = (problem*)cs_calloc (1, sizeof (problem)) ;
+     if (!Prob) return (NULL) ;
+     T = cs_load (f) ;			/* load triplet matrix T from a file */
+     Prob->A = A = cs_compress (T) ;	/* A = compressed-column form of T */
+@@ -100,9 +100,9 @@
+ 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_norm (C)) ;
+     if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
+     if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
+-    Prob->b = cs_malloc (mn, sizeof (double)) ;
+-    Prob->x = cs_malloc (mn, sizeof (double)) ;
+-    Prob->resid = cs_malloc (mn, sizeof (double)) ;
++    Prob->b = (double*)cs_malloc (mn, sizeof (double)) ;
++    Prob->x = (double*)cs_malloc (mn, sizeof (double)) ;
++    Prob->resid = (double*)cs_malloc (mn, sizeof (double)) ;
+     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
+ }
+ 
+@@ -115,7 +115,7 @@
+     cs_free (Prob->b) ;
+     cs_free (Prob->x) ;
+     cs_free (Prob->resid) ;
+-    return (cs_free (Prob)) ;
++    return (problem*)(cs_free (Prob)) ;
+ }
+ 
+ /* solve a linear system using Cholesky, LU, and QR, with various orderings */
+@@ -204,7 +204,7 @@
+     rhs (x, b, n) ;				/* compute right-hand side */
+     printf ("\nchol then update/downdate ") ;
+     print_order (1) ;
+-    y = cs_malloc (n, sizeof (double)) ;
++    y = (double*)cs_malloc (n, sizeof (double)) ;
+     t = tic () ;
+     S = cs_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
+     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;
+@@ -234,7 +234,7 @@
+     {
+ 	p2 = p1 - Lp [k] ;
+ 	Wi [p2] = Li [p1] ;
+-	Wx [p2] = s * rand () / ((double) RAND_MAX) ;
++	Wx [p2] = s * (rand () / ((double) RAND_MAX)) ;
+     }
+     t = tic () ;
+     ok = cs_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
+diff -urb SuiteSparse/CXSparse/Demo/cs_di_demo.c SuiteSparse-new/CXSparse/Demo/cs_di_demo.c
+--- SuiteSparse/CXSparse/Demo/cs_di_demo.c	2007-05-18 14:13:07.000000000 +0200
++++ SuiteSparse-new/CXSparse/Demo/cs_di_demo.c	2007-06-04 23:09:52.421875000 +0200
+@@ -81,7 +81,7 @@
+     cs_di *T, *A, *C ;
+     int sym, m, n, mn, nz1, nz2 ;
+     problem *Prob ;
+-    Prob = cs_di_calloc (1, sizeof (problem)) ;
++    Prob = (problem*)cs_di_calloc (1, sizeof (problem)) ;
+     if (!Prob) return (NULL) ;
+     T = cs_di_load (f) ;			/* load triplet matrix T from a file */
+     Prob->A = A = cs_di_compress (T) ;	/* A = compressed-column form of T */
+@@ -100,9 +100,9 @@
+ 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_di_norm (C)) ;
+     if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
+     if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
+-    Prob->b = cs_di_malloc (mn, sizeof (double)) ;
+-    Prob->x = cs_di_malloc (mn, sizeof (double)) ;
+-    Prob->resid = cs_di_malloc (mn, sizeof (double)) ;
++    Prob->b = (double*)cs_di_malloc (mn, sizeof (double)) ;
++    Prob->x = (double*)cs_di_malloc (mn, sizeof (double)) ;
++    Prob->resid = (double*)cs_di_malloc (mn, sizeof (double)) ;
+     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
+ }
+ 
+@@ -115,7 +115,7 @@
+     cs_di_free (Prob->b) ;
+     cs_di_free (Prob->x) ;
+     cs_di_free (Prob->resid) ;
+-    return (cs_di_free (Prob)) ;
++    return (problem*)(cs_di_free (Prob)) ;
+ }
+ 
+ /* solve a linear system using Cholesky, LU, and QR, with various orderings */
+@@ -204,7 +204,7 @@
+     rhs (x, b, n) ;				/* compute right-hand side */
+     printf ("\nchol then update/downdate ") ;
+     print_order (1) ;
+-    y = cs_di_malloc (n, sizeof (double)) ;
++    y = (double*)cs_di_malloc (n, sizeof (double)) ;
+     t = tic () ;
+     S = cs_di_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
+     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;
+@@ -234,7 +234,7 @@
+     {
+ 	p2 = p1 - Lp [k] ;
+ 	Wi [p2] = Li [p1] ;
+-	Wx [p2] = s * rand () / ((double) RAND_MAX) ;
++	Wx [p2] = s * (rand () / ((double) RAND_MAX)) ;
+     }
+     t = tic () ;
+     ok = cs_di_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
+diff -urb SuiteSparse/CXSparse/Demo/cs_dl_demo.c SuiteSparse-new/CXSparse/Demo/cs_dl_demo.c
+--- SuiteSparse/CXSparse/Demo/cs_dl_demo.c	2007-05-18 14:13:07.000000000 +0200
++++ SuiteSparse-new/CXSparse/Demo/cs_dl_demo.c	2007-06-04 23:09:52.421875000 +0200
+@@ -81,7 +81,7 @@
+     cs_dl *T, *A, *C ;
+     UF_long sym, m, n, mn, nz1, nz2 ;
+     problem *Prob ;
+-    Prob = cs_dl_calloc (1, sizeof (problem)) ;
++    Prob = (problem*)cs_dl_calloc (1, sizeof (problem)) ;
+     if (!Prob) return (NULL) ;
+     T = cs_dl_load (f) ;			/* load triplet matrix T from a file */
+     Prob->A = A = cs_dl_compress (T) ;	/* A = compressed-column form of T */
+@@ -100,9 +100,9 @@
+ 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_dl_norm (C)) ;
+     if (nz1 != nz2) printf ("zero entries dropped: %ld\n", nz1 - nz2) ;
+     if (nz2 != A->p [n]) printf ("tiny entries dropped: %ld\n", nz2 - A->p [n]) ;
+-    Prob->b = cs_dl_malloc (mn, sizeof (double)) ;
+-    Prob->x = cs_dl_malloc (mn, sizeof (double)) ;
+-    Prob->resid = cs_dl_malloc (mn, sizeof (double)) ;
++    Prob->b = (double*)cs_dl_malloc (mn, sizeof (double)) ;
++    Prob->x = (double*)cs_dl_malloc (mn, sizeof (double)) ;
++    Prob->resid = (double*)cs_dl_malloc (mn, sizeof (double)) ;
+     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
+ }
+ 
+@@ -115,7 +115,7 @@
+     cs_dl_free (Prob->b) ;
+     cs_dl_free (Prob->x) ;
+     cs_dl_free (Prob->resid) ;
+-    return (cs_dl_free (Prob)) ;
++    return (problem*)(cs_dl_free (Prob)) ;
+ }
+ 
+ /* solve a linear system using Cholesky, LU, and QR, with various orderings */
+@@ -204,7 +204,7 @@
+     rhs (x, b, n) ;				/* compute right-hand side */
+     printf ("\nchol then update/downdate ") ;
+     print_order (1) ;
+-    y = cs_dl_malloc (n, sizeof (double)) ;
++    y = (double*)cs_dl_malloc (n, sizeof (double)) ;
+     t = tic () ;
+     S = cs_dl_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
+     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;
+@@ -234,7 +234,7 @@
+     {
+ 	p2 = p1 - Lp [k] ;
+ 	Wi [p2] = Li [p1] ;
+-	Wx [p2] = s * rand () / ((double) RAND_MAX) ;
++	Wx [p2] = s * (rand () / ((double) RAND_MAX)) ;
+     }
+     t = tic () ;
+     ok = cs_dl_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
+diff -urb SuiteSparse/CXSparse/Include/cs.h SuiteSparse-new/CXSparse/Include/cs.h
+--- SuiteSparse/CXSparse/Include/cs.h	2007-05-18 14:12:04.000000000 +0200
++++ SuiteSparse-new/CXSparse/Include/cs.h	2007-06-04 22:49:25.000000000 +0200
+@@ -13,6 +13,10 @@
+ #ifndef NCOMPLEX
+ #include <complex>
+ typedef std::complex<double> cs_complex_t ;
++#define creal(x) ((x).real())
++#define cimag(x) ((x).imag())
++#define cabs(x) abs(x)
++#define I cs_complex_t(0., 1.)
+ #endif
+ extern "C" {
+ #else
+@@ -415,7 +419,6 @@
+ int *cs_ci_etree (const cs_ci *A, int ata) ;
+ int cs_ci_fkeep (cs_ci *A, int (*fkeep) (int, int, cs_complex_t, void *),
+     void *other) ;
+-cs_complex_t cs_ci_house (cs_complex_t *x, double *beta, int n) ;
+ int *cs_ci_maxtrans (const cs_ci *A, int seed) ;
+ int *cs_ci_post (const int *parent, int n) ;
+ cs_cid *cs_ci_scc (cs_ci *A) ;
+@@ -555,7 +558,6 @@
+ UF_long *cs_cl_etree (const cs_cl *A, UF_long ata) ;
+ UF_long cs_cl_fkeep (cs_cl *A,
+     UF_long (*fkeep) (UF_long, UF_long, cs_complex_t, void *), void *other) ;
+-cs_complex_t cs_cl_house (cs_complex_t *x, double *beta, UF_long n) ;
+ UF_long *cs_cl_maxtrans (const cs_cl *A, UF_long seed) ;
+ UF_long *cs_cl_post (const UF_long *parent, UF_long n) ;
+ cs_cld *cs_cl_scc (cs_cl *A) ;
+@@ -731,4 +733,8 @@
+ #ifdef __cplusplus
+ }
+ #endif
++
++cs_complex_t cs_ci_house (cs_complex_t *x, double *beta, int n) ;
++cs_complex_t cs_cl_house (cs_complex_t *x, double *beta, UF_long n) ;
++
+ #endif
+diff -urb SuiteSparse/CXSparse/Lib/Makefile SuiteSparse-new/CXSparse/Lib/Makefile
+--- SuiteSparse/CXSparse/Lib/Makefile	2007-05-05 23:03:41.000000000 +0200
++++ SuiteSparse-new/CXSparse/Lib/Makefile	2007-06-04 22:47:32.000000000 +0200
+@@ -1,12 +1,16 @@
+ # Modify the "-O" optimization option for best performance (-O3 on Linux):
+-CC = cc
+-CFLAGS = -O
++# CC = cc
++# CFLAGS = -O
++
++include ../../UFconfig/UFconfig.mk
++
++CFLAGS = -O2 -TP -EHs
+ I = -I../../UFconfig -I../Include
+ 
+-AR = ar cr
+-RANLIB = ranlib
++# AR = ar cr
++# RANLIB = ranlib
+ 
+-all: libcxsparse.a
++all: $(LIBPRE)cxsparse.$(LIBEXT)
+ 
+ CS_SOURCE = cs_add.c cs_amd.c cs_chol.c cs_cholsol.c cs_counts.c cs_cumsum.c \
+ 	cs_droptol.c cs_dropzeros.c cs_dupl.c cs_entry.c \
+@@ -85,9 +89,9 @@
+ %_cl.o : ../Source/%.c
+ 	$(CC) $(CFLAGS) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
+ 
+-libcxsparse.a: $(CS)
+-	$(AR) libcxsparse.a $(CS)
+-	$(RANLIB) libcxsparse.a
++$(LIBPRE)cxsparse.$(LIBEXT): $(CS)
++	$(AR) $(LIBPRE)cxsparse.$(LIBEXT) $(CS)
++	$(RANLIB) $(LIBPRE)cxsparse.$(LIBEXT)
+ 
+ clean:
+ 	rm -f *.o
+@@ -95,4 +99,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	rm -f *.a
++	rm -f *.$(LIBEXT)
+diff -urb SuiteSparse/CXSparse/Source/cs_add.c SuiteSparse-new/CXSparse/Source/cs_add.c
+--- SuiteSparse/CXSparse/Source/cs_add.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_add.c	2007-06-04 23:09:52.437500000 +0200
+@@ -9,9 +9,9 @@
+     if (A->m != B->m || A->n != B->n) return (NULL) ;
+     m = A->m ; anz = A->p [A->n] ;
+     n = B->n ; Bp = B->p ; Bx = B->x ; bnz = Bp [n] ;
+-    w = cs_calloc (m, sizeof (CS_INT)) ;			    /* get workspace */
++    w = (CS_INT*)cs_calloc (m, sizeof (CS_INT)) ;			    /* get workspace */
+     values = (A->x != NULL) && (Bx != NULL) ;
+-    x = values ? cs_malloc (m, sizeof (CS_ENTRY)) : NULL ;    /* get workspace */
++    x = values ? (CS_ENTRY*)cs_malloc (m, sizeof (CS_ENTRY)) : NULL ;    /* get workspace */
+     C = cs_spalloc (m, n, anz + bnz, values, 0) ;	    /* allocate result*/
+     if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+diff -urb SuiteSparse/CXSparse/Source/cs_amd.c SuiteSparse-new/CXSparse/Source/cs_amd.c
+--- SuiteSparse/CXSparse/Source/cs_amd.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_amd.c	2007-06-04 23:09:52.453125000 +0200
+@@ -59,8 +59,8 @@
+     cs_fkeep (C, &cs_diag, NULL) ;	    /* drop diagonal entries */
+     Cp = C->p ;
+     cnz = Cp [n] ;
+-    P = cs_malloc (n+1, sizeof (CS_INT)) ;	    /* allocate result */
+-    W = cs_malloc (8*(n+1), sizeof (CS_INT)) ; /* get workspace */
++    P = (CS_INT*)cs_malloc (n+1, sizeof (CS_INT)) ;	    /* allocate result */
++    W = (CS_INT*)cs_malloc (8*(n+1), sizeof (CS_INT)) ; /* get workspace */
+     t = cnz + cnz/5 + 2*n ;		    /* add elbow room to C */
+     if (!P || !W || !cs_sprealloc (C, t)) return (cs_idone (P, C, W, 0)) ;
+     len  = W           ; nv     = W +   (n+1) ; next   = W + 2*(n+1) ;
+diff -urb SuiteSparse/CXSparse/Source/cs_chol.c SuiteSparse-new/CXSparse/Source/cs_chol.c
+--- SuiteSparse/CXSparse/Source/cs_chol.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_chol.c	2007-06-04 23:09:52.453125000 +0200
+@@ -8,9 +8,9 @@
+     csn *N ;
+     if (!CS_CSC (A) || !S || !S->cp || !S->parent) return (NULL) ;
+     n = A->n ;
+-    N = cs_calloc (1, sizeof (csn)) ;	    /* allocate result */
+-    c = cs_malloc (2*n, sizeof (CS_INT)) ;	    /* get CS_INT workspace */
+-    x = cs_malloc (n, sizeof (CS_ENTRY)) ;    /* get CS_ENTRY workspace */
++    N = (csn*)cs_calloc (1, sizeof (csn)) ;	    /* allocate result */
++    c = (CS_INT*)cs_malloc (2*n, sizeof (CS_INT)) ;	    /* get CS_INT workspace */
++    x = (CS_ENTRY*)cs_malloc (n, sizeof (CS_ENTRY)) ;    /* get CS_ENTRY workspace */
+     cp = S->cp ; pinv = S->pinv ; parent = S->parent ;
+     C = pinv ? cs_symperm (A, pinv, 1) : ((cs *) A) ;
+     E = pinv ? C : NULL ;	    /* E is alias for A, or a copy E=A(p,p) */
+diff -urb SuiteSparse/CXSparse/Source/cs_cholsol.c SuiteSparse-new/CXSparse/Source/cs_cholsol.c
+--- SuiteSparse/CXSparse/Source/cs_cholsol.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_cholsol.c	2007-06-04 23:09:52.453125000 +0200
+@@ -10,7 +10,7 @@
+     n = A->n ;
+     S = cs_schol (order, A) ;		    /* ordering and symbolic analysis */
+     N = cs_chol (A, S) ;		    /* numeric Cholesky factorization */
+-    x = cs_malloc (n, sizeof (CS_ENTRY)) ;    /* get workspace */
++    x = (CS_ENTRY*)cs_malloc (n, sizeof (CS_ENTRY)) ;    /* get workspace */
+     ok = (S && N && x) ;
+     if (ok)
+     {
+diff -urb SuiteSparse/CXSparse/Source/cs_compress.c SuiteSparse-new/CXSparse/Source/cs_compress.c
+--- SuiteSparse/CXSparse/Source/cs_compress.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_compress.c	2007-06-04 23:09:52.578125000 +0200
+@@ -8,7 +8,7 @@
+     if (!CS_TRIPLET (T)) return (NULL) ;		/* check inputs */
+     m = T->m ; n = T->n ; Ti = T->i ; Tj = T->p ; Tx = T->x ; nz = T->nz ;
+     C = cs_spalloc (m, n, nz, Tx != NULL, 0) ;		/* allocate result */
+-    w = cs_calloc (n, sizeof (CS_INT)) ;			/* get workspace */
++    w = (CS_INT*)cs_calloc (n, sizeof (CS_INT)) ;			/* get workspace */
+     if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     for (k = 0 ; k < nz ; k++) w [Tj [k]]++ ;		/* column counts */
+diff -urb SuiteSparse/CXSparse/Source/cs_counts.c SuiteSparse-new/CXSparse/Source/cs_counts.c
+--- SuiteSparse/CXSparse/Source/cs_counts.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_counts.c	2007-06-04 23:09:52.468750000 +0200
+@@ -22,8 +22,8 @@
+     if (!CS_CSC (A) || !parent || !post) return (NULL) ;    /* check inputs */
+     m = A->m ; n = A->n ;
+     s = 4*n + (ata ? (n+m+1) : 0) ;
+-    delta = colcount = cs_malloc (n, sizeof (CS_INT)) ;	/* allocate result */
+-    w = cs_malloc (s, sizeof (CS_INT)) ;			/* get workspace */
++    delta = colcount = (CS_INT*)cs_malloc (n, sizeof (CS_INT)) ;	/* allocate result */
++    w = (CS_INT*)cs_malloc (s, sizeof (CS_INT)) ;			/* get workspace */
+     AT = cs_transpose (A, 0) ;				/* AT = A' */
+     if (!AT || !colcount || !w) return (cs_idone (colcount, AT, w, 0)) ;
+     ancestor = w ; maxfirst = w+n ; prevleaf = w+2*n ; first = w+3*n ;
+diff -urb SuiteSparse/CXSparse/Source/cs_dropzeros.c SuiteSparse-new/CXSparse/Source/cs_dropzeros.c
+--- SuiteSparse/CXSparse/Source/cs_dropzeros.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_dropzeros.c	2007-06-04 23:09:52.484375000 +0200
+@@ -1,7 +1,7 @@
+ #include "cs.h"
+ static CS_INT cs_nonzero (CS_INT i, CS_INT j, CS_ENTRY aij, void *other)
+ {
+-    return (aij != 0) ;
++    return (aij != 0.) ;
+ }
+ CS_INT cs_dropzeros (cs *A)
+ {
+diff -urb SuiteSparse/CXSparse/Source/cs_dupl.c SuiteSparse-new/CXSparse/Source/cs_dupl.c
+--- SuiteSparse/CXSparse/Source/cs_dupl.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_dupl.c	2007-06-04 23:09:52.484375000 +0200
+@@ -6,7 +6,7 @@
+     CS_ENTRY *Ax ;
+     if (!CS_CSC (A)) return (0) ;		/* check inputs */
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+-    w = cs_malloc (m, sizeof (CS_INT)) ;		/* get workspace */
++    w = (CS_INT*)cs_malloc (m, sizeof (CS_INT)) ;		/* get workspace */
+     if (!w) return (0) ;			/* out of memory */
+     for (i = 0 ; i < m ; i++) w [i] = -1 ;	/* row i not yet seen */
+     for (j = 0 ; j < n ; j++)
+diff -urb SuiteSparse/CXSparse/Source/cs_etree.c SuiteSparse-new/CXSparse/Source/cs_etree.c
+--- SuiteSparse/CXSparse/Source/cs_etree.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_etree.c	2007-06-04 23:09:52.484375000 +0200
+@@ -5,8 +5,8 @@
+     CS_INT i, k, p, m, n, inext, *Ap, *Ai, *w, *parent, *ancestor, *prev ;
+     if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ;
+-    parent = cs_malloc (n, sizeof (CS_INT)) ;		/* allocate result */
+-    w = cs_malloc (n + (ata ? m : 0), sizeof (CS_INT)) ;	/* get workspace */
++    parent = (CS_INT*)cs_malloc (n, sizeof (CS_INT)) ;		/* allocate result */
++    w = (CS_INT*)cs_malloc (n + (ata ? m : 0), sizeof (CS_INT)) ;	/* get workspace */
+     if (!w || !parent) return (cs_idone (parent, NULL, w, 0)) ;
+     ancestor = w ; prev = w + n ;
+     if (ata) for (i = 0 ; i < m ; i++) prev [i] = -1 ;
+diff -urb SuiteSparse/CXSparse/Source/cs_house.c SuiteSparse-new/CXSparse/Source/cs_house.c
+--- SuiteSparse/CXSparse/Source/cs_house.c	2007-03-01 22:23:01.000000000 +0100
++++ SuiteSparse-new/CXSparse/Source/cs_house.c	2007-06-04 22:37:33.000000000 +0200
+@@ -10,7 +10,7 @@
+     /* s = norm(x) */
+     for (i = 0 ; i < n ; i++) s += x [i] * CS_CONJ (x [i]) ;
+     s = sqrt (s) ;
+-    if (s == 0)
++    if (s == 0.0)
+     {
+ 	(*beta) = 0 ;
+ 	x [0] = 1 ;
+@@ -18,7 +18,7 @@
+     else
+     {
+ 	/* s = sign(x[0]) * norm (x) ; */
+-	if (x [0] != 0)
++	if (x [0] != 0.0)
+ 	{
+ 	    s *= x [0] / CS_ABS (x [0]) ;
+ 	}
+diff -urb SuiteSparse/CXSparse/Source/cs_lu.c SuiteSparse-new/CXSparse/Source/cs_lu.c
+--- SuiteSparse/CXSparse/Source/cs_lu.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_lu.c	2007-06-04 23:09:52.515625000 +0200
+@@ -10,13 +10,13 @@
+     if (!CS_CSC (A) || !S) return (NULL) ;	    /* check inputs */
+     n = A->n ;
+     q = S->q ; lnz = S->lnz ; unz = S->unz ;
+-    x = cs_malloc (n, sizeof (CS_ENTRY)) ;	    /* get CS_ENTRY workspace */
+-    xi = cs_malloc (2*n, sizeof (CS_INT)) ;	    /* get CS_INT workspace */
+-    N = cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
++    x = (CS_ENTRY*)cs_malloc (n, sizeof (CS_ENTRY)) ;	    /* get CS_ENTRY workspace */
++    xi = (CS_INT*)cs_malloc (2*n, sizeof (CS_INT)) ;	    /* get CS_INT workspace */
++    N = (csn*)cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
+     if (!x || !xi || !N) return (cs_ndone (N, NULL, xi, x, 0)) ;
+     N->L = L = cs_spalloc (n, n, lnz, 1, 0) ;	    /* allocate result L */
+     N->U = U = cs_spalloc (n, n, unz, 1, 0) ;	    /* allocate result U */
+-    N->pinv = pinv = cs_malloc (n, sizeof (CS_INT)) ;  /* allocate result pinv */
++    N->pinv = pinv = (CS_INT*)cs_malloc (n, sizeof (CS_INT)) ;  /* allocate result pinv */
+     if (!L || !U || !pinv) return (cs_ndone (N, NULL, xi, x, 0)) ;
+     Lp = L->p ; Up = U->p ;
+     for (i = 0 ; i < n ; i++) x [i] = 0 ;	    /* clear workspace */
+diff -urb SuiteSparse/CXSparse/Source/cs_lusol.c SuiteSparse-new/CXSparse/Source/cs_lusol.c
+--- SuiteSparse/CXSparse/Source/cs_lusol.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_lusol.c	2007-06-04 23:09:52.515625000 +0200
+@@ -10,7 +10,7 @@
+     n = A->n ;
+     S = cs_sqr (order, A, 0) ;		    /* ordering and symbolic analysis */
+     N = cs_lu (A, S, tol) ;		    /* numeric LU factorization */
+-    x = cs_malloc (n, sizeof (CS_ENTRY)) ;    /* get workspace */
++    x = (CS_ENTRY*)cs_malloc (n, sizeof (CS_ENTRY)) ;    /* get workspace */
+     ok = (S && N && x) ;
+     if (ok)
+     {
+diff -urb SuiteSparse/CXSparse/Source/cs_maxtrans.c SuiteSparse-new/CXSparse/Source/cs_maxtrans.c
+--- SuiteSparse/CXSparse/Source/cs_maxtrans.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_maxtrans.c	2007-06-04 23:09:52.515625000 +0200
+@@ -48,7 +48,7 @@
+     cs *C ;
+     if (!CS_CSC (A)) return (NULL) ;		    /* check inputs */
+     n = A->n ; m = A->m ; Ap = A->p ; Ai = A->i ;
+-    w = jimatch = cs_calloc (m+n, sizeof (CS_INT)) ;   /* allocate result */
++    w = jimatch = (CS_INT*)cs_calloc (m+n, sizeof (CS_INT)) ;   /* allocate result */
+     if (!jimatch) return (NULL) ;
+     for (k = 0, j = 0 ; j < n ; j++)	/* count nonempty rows and columns */
+     {
+@@ -74,7 +74,7 @@
+     n = C->n ; m = C->m ; Cp = C->p ;
+     jmatch = (m2 < n2) ? jimatch + n : jimatch ;
+     imatch = (m2 < n2) ? jimatch : jimatch + m ;
+-    w = cs_malloc (5*n, sizeof (CS_INT)) ;		    /* get workspace */
++    w = (CS_INT*)cs_malloc (5*n, sizeof (CS_INT)) ;		    /* get workspace */
+     if (!w) return (cs_idone (jimatch, (m2 < n2) ? C : NULL, w, 0)) ;
+     cheap = w + n ; js = w + 2*n ; is = w + 3*n ; ps = w + 4*n ;
+     for (j = 0 ; j < n ; j++) cheap [j] = Cp [j] ;  /* for cheap assignment */
+diff -urb SuiteSparse/CXSparse/Source/cs_multiply.c SuiteSparse-new/CXSparse/Source/cs_multiply.c
+--- SuiteSparse/CXSparse/Source/cs_multiply.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_multiply.c	2007-06-04 23:09:52.531250000 +0200
+@@ -9,9 +9,9 @@
+     if (A->n != B->m) return (NULL) ;
+     m = A->m ; anz = A->p [A->n] ;
+     n = B->n ; Bp = B->p ; Bi = B->i ; Bx = B->x ; bnz = Bp [n] ;
+-    w = cs_calloc (m, sizeof (CS_INT)) ;			 /* get workspace */
++    w = (CS_INT*)cs_calloc (m, sizeof (CS_INT)) ;			 /* get workspace */
+     values = (A->x != NULL) && (Bx != NULL) ;
+-    x = values ? cs_malloc (m, sizeof (CS_ENTRY)) : NULL ; /* get workspace */
++    x = values ? (CS_ENTRY*)cs_malloc (m, sizeof (CS_ENTRY)) : NULL ; /* get workspace */
+     C = cs_spalloc (m, n, anz + bnz, values, 0) ;	 /* allocate result */
+     if (!C || !w || (values && !x)) return (cs_done (C, w, x, 0)) ;
+     Cp = C->p ;
+diff -urb SuiteSparse/CXSparse/Source/cs_pinv.c SuiteSparse-new/CXSparse/Source/cs_pinv.c
+--- SuiteSparse/CXSparse/Source/cs_pinv.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_pinv.c	2007-06-04 23:09:52.531250000 +0200
+@@ -4,7 +4,7 @@
+ {
+     CS_INT k, *pinv ;
+     if (!p) return (NULL) ;			/* p = NULL denotes identity */
+-    pinv = cs_malloc (n, sizeof (CS_INT)) ;	/* allocate result */
++    pinv = (CS_INT*)cs_malloc (n, sizeof (CS_INT)) ;	/* allocate result */
+     if (!pinv) return (NULL) ;			/* out of memory */
+     for (k = 0 ; k < n ; k++) pinv [p [k]] = k ;/* invert the permutation */
+     return (pinv) ;				/* return result */
+diff -urb SuiteSparse/CXSparse/Source/cs_post.c SuiteSparse-new/CXSparse/Source/cs_post.c
+--- SuiteSparse/CXSparse/Source/cs_post.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_post.c	2007-06-04 23:09:52.531250000 +0200
+@@ -4,8 +4,8 @@
+ {
+     CS_INT j, k = 0, *post, *w, *head, *next, *stack ;
+     if (!parent) return (NULL) ;			/* check inputs */
+-    post = cs_malloc (n, sizeof (CS_INT)) ;		/* allocate result */
+-    w = cs_malloc (3*n, sizeof (CS_INT)) ;			/* get workspace */
++    post = (CS_INT*)cs_malloc (n, sizeof (CS_INT)) ;		/* allocate result */
++    w = (CS_INT*)cs_malloc (3*n, sizeof (CS_INT)) ;			/* get workspace */
+     if (!w || !post) return (cs_idone (post, NULL, w, 0)) ;
+     head = w ; next = w + n ; stack = w + 2*n ;
+     for (j = 0 ; j < n ; j++) head [j] = -1 ;		/* empty linked lists */
+diff -urb SuiteSparse/CXSparse/Source/cs_qr.c SuiteSparse-new/CXSparse/Source/cs_qr.c
+--- SuiteSparse/CXSparse/Source/cs_qr.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_qr.c	2007-06-04 23:09:52.546875000 +0200
+@@ -12,15 +12,15 @@
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+     q = S->q ; parent = S->parent ; pinv = S->pinv ; m2 = S->m2 ;
+     vnz = S->lnz ; rnz = S->unz ; leftmost = S->leftmost ;
+-    w = cs_malloc (m2+n, sizeof (CS_INT)) ;	    /* get CS_INT workspace */
+-    x = cs_malloc (m2, sizeof (CS_ENTRY)) ;	    /* get CS_ENTRY workspace */
+-    N = cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
++    w = (CS_INT*)cs_malloc (m2+n, sizeof (CS_INT)) ;	    /* get CS_INT workspace */
++    x = (CS_ENTRY*)cs_malloc (m2, sizeof (CS_ENTRY)) ;	    /* get CS_ENTRY workspace */
++    N = (csn*)cs_calloc (1, sizeof (csn)) ;		    /* allocate result */
+     if (!w || !x || !N) return (cs_ndone (N, NULL, w, x, 0)) ;
+     s = w + m2 ;				    /* s is size n */
+     for (k = 0 ; k < m2 ; k++) x [k] = 0 ;	    /* clear workspace x */
+     N->L = V = cs_spalloc (m2, n, vnz, 1, 0) ;	    /* allocate result V */
+     N->U = R = cs_spalloc (m2, n, rnz, 1, 0) ;	    /* allocate result R */
+-    N->B = Beta = cs_malloc (n, sizeof (double)) ;  /* allocate result Beta */
++    N->B = Beta = (double*)cs_malloc (n, sizeof (double)) ;  /* allocate result Beta */
+     if (!R || !V || !Beta) return (cs_ndone (N, NULL, w, x, 0)) ;
+     Rp = R->p ; Ri = R->i ; Rx = R->x ;
+     Vp = V->p ; Vi = V->i ; Vx = V->x ;
+diff -urb SuiteSparse/CXSparse/Source/cs_qrsol.c SuiteSparse-new/CXSparse/Source/cs_qrsol.c
+--- SuiteSparse/CXSparse/Source/cs_qrsol.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_qrsol.c	2007-06-04 23:09:52.546875000 +0200
+@@ -14,7 +14,7 @@
+     {
+ 	S = cs_sqr (order, A, 1) ;	    /* ordering and symbolic analysis */
+ 	N = cs_qr (A, S) ;		    /* numeric QR factorization */
+-	x = cs_calloc (S ? S->m2 : 1, sizeof (CS_ENTRY)) ;    /* get workspace */
++	x = (CS_ENTRY*)cs_calloc (S ? S->m2 : 1, sizeof (CS_ENTRY)) ;    /* get workspace */
+ 	ok = (S && N && x) ;
+ 	if (ok)
+ 	{
+@@ -32,7 +32,7 @@
+ 	AT = cs_transpose (A, 1) ;	    /* Ax=b is underdetermined */
+ 	S = cs_sqr (order, AT, 1) ;	    /* ordering and symbolic analysis */
+ 	N = cs_qr (AT, S) ;		    /* numeric QR factorization of A' */
+-	x = cs_calloc (S ? S->m2 : 1, sizeof (CS_ENTRY)) ;    /* get workspace */
++	x = (CS_ENTRY*)cs_calloc (S ? S->m2 : 1, sizeof (CS_ENTRY)) ;    /* get workspace */
+ 	ok = (AT && S && N && x) ;
+ 	if (ok)
+ 	{
+diff -urb SuiteSparse/CXSparse/Source/cs_randperm.c SuiteSparse-new/CXSparse/Source/cs_randperm.c
+--- SuiteSparse/CXSparse/Source/cs_randperm.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_randperm.c	2007-06-04 23:09:52.593750000 +0200
+@@ -6,7 +6,7 @@
+ {
+     CS_INT *p, k, j, t ;
+     if (seed == 0) return (NULL) ;	/* return p = NULL (identity) */
+-    p = cs_malloc (n, sizeof (CS_INT)) ;	/* allocate result */
++    p = (CS_INT*)cs_malloc (n, sizeof (CS_INT)) ;	/* allocate result */
+     if (!p) return (NULL) ;		/* out of memory */
+     for (k = 0 ; k < n ; k++) p [k] = n-k-1 ;
+     if (seed == -1) return (p) ;	/* return reverse permutation */
+diff -urb SuiteSparse/CXSparse/Source/cs_scc.c SuiteSparse-new/CXSparse/Source/cs_scc.c
+--- SuiteSparse/CXSparse/Source/cs_scc.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_scc.c	2007-06-04 23:09:52.546875000 +0200
+@@ -9,7 +9,7 @@
+     n = A->n ; Ap = A->p ;
+     D = cs_dalloc (n, 0) ;			    /* allocate result */
+     AT = cs_transpose (A, 0) ;			    /* AT = A' */
+-    xi = cs_malloc (2*n+1, sizeof (CS_INT)) ;	    /* get workspace */
++    xi = (CS_INT*)cs_malloc (2*n+1, sizeof (CS_INT)) ;	    /* get workspace */
+     if (!D || !AT || !xi) return (cs_ddone (D, AT, xi, 0)) ;
+     Blk = xi ; rcopy = pstack = xi + n ;
+     p = D->p ; r = D->r ; ATp = AT->p ;
+diff -urb SuiteSparse/CXSparse/Source/cs_schol.c SuiteSparse-new/CXSparse/Source/cs_schol.c
+--- SuiteSparse/CXSparse/Source/cs_schol.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_schol.c	2007-06-04 23:09:52.562500000 +0200
+@@ -7,7 +7,7 @@
+     css *S ;
+     if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
+     n = A->n ;
+-    S = cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
++    S = (css*)cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
+     if (!S) return (NULL) ;		    /* out of memory */
+     P = cs_amd (order, A) ;		    /* P = amd(A+A'), or natural */
+     S->pinv = cs_pinv (P, n) ;		    /* find inverse permutation */
+@@ -19,7 +19,7 @@
+     c = cs_counts (C, S->parent, post, 0) ; /* find column counts of chol(C) */
+     cs_free (post) ;
+     cs_spfree (C) ;
+-    S->cp = cs_malloc (n+1, sizeof (CS_INT)) ; /* allocate result S->cp */
++    S->cp = (CS_INT*)cs_malloc (n+1, sizeof (CS_INT)) ; /* allocate result S->cp */
+     S->unz = S->lnz = cs_cumsum (S->cp, c, n) ; /* find column pointers for L */
+     cs_free (c) ;
+     return ((S->lnz >= 0) ? S : cs_sfree (S)) ;
+diff -urb SuiteSparse/CXSparse/Source/cs_sqr.c SuiteSparse-new/CXSparse/Source/cs_sqr.c
+--- SuiteSparse/CXSparse/Source/cs_sqr.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_sqr.c	2007-06-04 23:09:52.562500000 +0200
+@@ -4,9 +4,9 @@
+ {
+     CS_INT i, k, p, pa, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i, *next, *head,
+ 	*tail, *nque, *pinv, *leftmost, *w, *parent = S->parent ;
+-    S->pinv = pinv = cs_malloc (m+n, sizeof (CS_INT)) ;	    /* allocate pinv, */
+-    S->leftmost = leftmost = cs_malloc (m, sizeof (CS_INT)) ;  /* and leftmost */
+-    w = cs_malloc (m+3*n, sizeof (CS_INT)) ;   /* get workspace */
++    S->pinv = pinv = (CS_INT*)cs_malloc (m+n, sizeof (CS_INT)) ;	    /* allocate pinv, */
++    S->leftmost = leftmost = (CS_INT*)cs_malloc (m, sizeof (CS_INT)) ;  /* and leftmost */
++    w = (CS_INT*)cs_malloc (m+3*n, sizeof (CS_INT)) ;   /* get workspace */
+     if (!pinv || !w || !leftmost)
+     {
+ 	cs_free (w) ;			    /* pinv and leftmost freed later */
+@@ -63,7 +63,7 @@
+     css *S ;
+     if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
+     n = A->n ;
+-    S = cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
++    S = (css*)cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
+     if (!S) return (NULL) ;		    /* out of memory */
+     S->q = cs_amd (order, A) ;		    /* fill-reducing ordering */
+     if (order && !S->q) return (cs_sfree (S)) ;
+diff -urb SuiteSparse/CXSparse/Source/cs_symperm.c SuiteSparse-new/CXSparse/Source/cs_symperm.c
+--- SuiteSparse/CXSparse/Source/cs_symperm.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_symperm.c	2007-06-04 23:09:52.562500000 +0200
+@@ -8,7 +8,7 @@
+     if (!CS_CSC (A)) return (NULL) ;			/* check inputs */
+     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+     C = cs_spalloc (n, n, Ap [n], values && (Ax != NULL), 0) ; /* alloc result*/
+-    w = cs_calloc (n, sizeof (CS_INT)) ;			/* get workspace */
++    w = (CS_INT*)cs_calloc (n, sizeof (CS_INT)) ;			/* get workspace */
+     if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	/* out of memory */
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     for (j = 0 ; j < n ; j++)		/* count entries in each column of C */
+diff -urb SuiteSparse/CXSparse/Source/cs_transpose.c SuiteSparse-new/CXSparse/Source/cs_transpose.c
+--- SuiteSparse/CXSparse/Source/cs_transpose.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_transpose.c	2007-06-04 23:09:52.562500000 +0200
+@@ -8,7 +8,7 @@
+     if (!CS_CSC (A)) return (NULL) ;	/* check inputs */
+     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+     C = cs_spalloc (n, m, Ap [n], values && Ax, 0) ;	   /* allocate result */
+-    w = cs_calloc (m, sizeof (CS_INT)) ;			   /* get workspace */
++    w = (CS_INT*)cs_calloc (m, sizeof (CS_INT)) ;			   /* get workspace */
+     if (!C || !w) return (cs_done (C, w, NULL, 0)) ;	   /* out of memory */
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     for (p = 0 ; p < Ap [n] ; p++) w [Ai [p]]++ ;	   /* row counts */
+diff -urb SuiteSparse/CXSparse/Source/cs_updown.c SuiteSparse-new/CXSparse/Source/cs_updown.c
+--- SuiteSparse/CXSparse/Source/cs_updown.c	2007-02-28 21:45:07.000000000 +0100
++++ SuiteSparse-new/CXSparse/Source/cs_updown.c	2007-06-04 22:50:44.000000000 +0200
+@@ -12,7 +12,7 @@
+     Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     if ((p = Cp [0]) >= Cp [1]) return (1) ;	    /* return if C empty */
+-    w = cs_malloc (n, sizeof (CS_ENTRY)) ;	    /* get workspace */
++    w = (CS_ENTRY*) cs_malloc (n, sizeof (CS_ENTRY)) ;	    /* get workspace */
+     if (!w) return (0) ;			    /* out of memory */
+     f = Ci [p] ;
+     for ( ; p < Cp [1] ; p++) f = CS_MIN (f, Ci [p]) ;	/* f = min (find (C)) */
+@@ -22,11 +22,11 @@
+     {
+ 	p = Lp [j] ;
+ 	alpha = w [j] / Lx [p] ;		    /* alpha = w(j) / L(j,j) */
+-	beta2 = beta*beta + sigma*alpha*CS_CONJ(alpha) ;
++	beta2 = CS_REAL(beta*beta + double(sigma)*alpha*CS_CONJ(alpha)) ;
+ 	if (beta2 <= 0) break ;			    /* not positive definite */
+ 	beta2 = sqrt (beta2) ;
+ 	delta = (sigma > 0) ? (beta / beta2) : (beta2 / beta) ;
+-	gamma = sigma * CS_CONJ(alpha) / (beta2 * beta) ;
++	gamma = double(sigma) * CS_CONJ(alpha) / (beta2 * beta) ;
+ 	Lx [p] = delta * Lx [p] + ((sigma > 0) ? (gamma * w [j]) : 0) ;
+ 	beta = beta2 ;
+ #ifdef CS_COMPLEX
+diff -urb SuiteSparse/CXSparse/Source/cs_util.c SuiteSparse-new/CXSparse/Source/cs_util.c
+--- SuiteSparse/CXSparse/Source/cs_util.c	2007-05-18 14:13:08.000000000 +0200
++++ SuiteSparse-new/CXSparse/Source/cs_util.c	2007-06-04 23:09:52.578125000 +0200
+@@ -2,15 +2,15 @@
+ /* allocate a sparse matrix (triplet form or compressed-column form) */
+ cs *cs_spalloc (CS_INT m, CS_INT n, CS_INT nzmax, CS_INT values, CS_INT triplet)
+ {
+-    cs *A = cs_calloc (1, sizeof (cs)) ;    /* allocate the cs struct */
++    cs *A = (cs*)cs_calloc (1, sizeof (cs)) ;    /* allocate the cs struct */
+     if (!A) return (NULL) ;		    /* out of memory */
+     A->m = m ;				    /* define dimensions and nzmax */
+     A->n = n ;
+     A->nzmax = nzmax = CS_MAX (nzmax, 1) ;
+     A->nz = triplet ? 0 : -1 ;		    /* allocate triplet or comp.col */
+-    A->p = cs_malloc (triplet ? nzmax : n+1, sizeof (CS_INT)) ;
+-    A->i = cs_malloc (nzmax, sizeof (CS_INT)) ;
+-    A->x = values ? cs_malloc (nzmax, sizeof (CS_ENTRY)) : NULL ;
++    A->p = (CS_INT*)cs_malloc (triplet ? nzmax : n+1, sizeof (CS_INT)) ;
++    A->i = (CS_INT*)cs_malloc (nzmax, sizeof (CS_INT)) ;
++    A->x = values ? (CS_ENTRY*)cs_malloc (nzmax, sizeof (CS_ENTRY)) : NULL ;
+     return ((!A->p || !A->i || (values && !A->x)) ? cs_spfree (A) : A) ;
+ }
+ 
+@@ -20,9 +20,9 @@
+     CS_INT ok, oki, okj = 1, okx = 1 ;
+     if (!A) return (0) ;
+     if (nzmax <= 0) nzmax = (CS_CSC (A)) ? (A->p [A->n]) : A->nz ;
+-    A->i = cs_realloc (A->i, nzmax, sizeof (CS_INT), &oki) ;
+-    if (CS_TRIPLET (A)) A->p = cs_realloc (A->p, nzmax, sizeof (CS_INT), &okj) ;
+-    if (A->x) A->x = cs_realloc (A->x, nzmax, sizeof (CS_ENTRY), &okx) ;
++    A->i = (CS_INT*)cs_realloc (A->i, nzmax, sizeof (CS_INT), &oki) ;
++    if (CS_TRIPLET (A)) A->p = (CS_INT*)cs_realloc (A->p, nzmax, sizeof (CS_INT), &okj) ;
++    if (A->x) A->x = (CS_ENTRY*)cs_realloc (A->x, nzmax, sizeof (CS_ENTRY), &okx) ;
+     ok = (oki && okj && okx) ;
+     if (ok) A->nzmax = nzmax ;
+     return (ok) ;
+@@ -35,7 +35,7 @@
+     cs_free (A->p) ;
+     cs_free (A->i) ;
+     cs_free (A->x) ;
+-    return (cs_free (A)) ;	/* free the cs struct and return NULL */
++    return (cs*)(cs_free (A)) ;	/* free the cs struct and return NULL */
+ }
+ 
+ /* free a numeric factorization */
+@@ -46,7 +46,7 @@
+     cs_spfree (N->U) ;
+     cs_free (N->pinv) ;
+     cs_free (N->B) ;
+-    return (cs_free (N)) ;	/* free the csn struct and return NULL */
++    return (csn*)(cs_free (N)) ;	/* free the csn struct and return NULL */
+ }
+ 
+ /* free a symbolic factorization */
+@@ -58,19 +58,19 @@
+     cs_free (S->parent) ;
+     cs_free (S->cp) ;
+     cs_free (S->leftmost) ;
+-    return (cs_free (S)) ;	/* free the css struct and return NULL */
++    return (css*)(cs_free (S)) ;	/* free the css struct and return NULL */
+ }
+ 
+ /* allocate a cs_dmperm or cs_scc result */
+ csd *cs_dalloc (CS_INT m, CS_INT n)
+ {
+     csd *D ;
+-    D = cs_calloc (1, sizeof (csd)) ;
++    D = (csd*)cs_calloc (1, sizeof (csd)) ;
+     if (!D) return (NULL) ;
+-    D->p = cs_malloc (m, sizeof (CS_INT)) ;
+-    D->r = cs_malloc (m+6, sizeof (CS_INT)) ;
+-    D->q = cs_malloc (n, sizeof (CS_INT)) ;
+-    D->s = cs_malloc (n+6, sizeof (CS_INT)) ;
++    D->p = (CS_INT*)cs_malloc (m, sizeof (CS_INT)) ;
++    D->r = (CS_INT*)cs_malloc (m+6, sizeof (CS_INT)) ;
++    D->q = (CS_INT*)cs_malloc (n, sizeof (CS_INT)) ;
++    D->s = (CS_INT*)cs_malloc (n+6, sizeof (CS_INT)) ;
+     return ((!D->p || !D->r || !D->q || !D->s) ? cs_dfree (D) : D) ;
+ }
+ 
+@@ -82,7 +82,7 @@
+     cs_free (D->q) ;
+     cs_free (D->r) ;
+     cs_free (D->s) ;
+-    return (cs_free (D)) ;
++    return (csd*)(cs_free (D)) ;
+ }
+ 
+ /* free workspace and return a sparse matrix result */
+@@ -98,7 +98,7 @@
+ {
+     cs_spfree (C) ;			/* free temporary matrix */
+     cs_free (w) ;			/* free workspace */
+-    return (ok ? p : cs_free (p)) ;	/* return result if OK, else free it */
++    return (ok ? p : (CS_INT*)cs_free (p)) ;	/* return result if OK, else free it */
+ }
+ 
+ /* free workspace and return a numeric factorization (Cholesky, LU, or QR) */
+diff -urb SuiteSparse/CXSparse_newfiles/Demo/Makefile SuiteSparse-new/CXSparse_newfiles/Demo/Makefile
+--- SuiteSparse/CXSparse_newfiles/Demo/Makefile	2007-05-10 16:35:12.000000000 +0200
++++ SuiteSparse-new/CXSparse_newfiles/Demo/Makefile	2007-06-04 23:09:24.734375000 +0200
+@@ -1,20 +1,22 @@
+-CC = cc
+-CFLAGS = -O
++# CC = cc
++# CFLAGS = -O
+ 
+-I = -I../Include -I../../UFconfig
++include ../../UFconfig/UFconfig.mk
+ 
+-CS = ../Lib/libcxsparse.a
++I = -O2 -TP -EHs -I../Include -I../../UFconfig
+ 
+-all: $(CS) cs_demo1 cs_demo2 cs_demo3 \
+-	cs_di_demo1 cs_di_demo2 cs_di_demo3 \
+-	cs_dl_demo1 cs_dl_demo2 cs_dl_demo3 \
+-	cs_ci_demo1 cs_ci_demo2 cs_ci_demo3 \
+-	cs_cl_demo1 cs_cl_demo2 cs_cl_demo3  \
+-	tests cs_idemo
++CS = ../Lib/$(LIBPRE)cxsparse.$(LIBEXT)
++
++all: $(CS) cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT) \
++	cs_di_demo1$(EXEEXT) cs_di_demo2$(EXEEXT) cs_di_demo3$(EXEEXT) \
++	cs_dl_demo1$(EXEEXT) cs_dl_demo2$(EXEEXT) cs_dl_demo3$(EXEEXT) \
++	cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT) \
++	cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)  \
++	tests cs_idemo$(EXEEXT)
+ 
+ tests: test_convert test test_di test_dl test_ci test_cl
+ 
+-test: cs_demo1 cs_demo2 cs_demo3
++test: cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT)
+ 	- ./cs_demo1 < ../Matrix/t1
+ 	- ./cs_demo2 < ../Matrix/t1
+ 	- ./cs_demo2 < ../Matrix/fs_183_1
+@@ -27,7 +29,7 @@
+ 	- ./cs_demo2 < ../Matrix/bcsstk16
+ 	- ./cs_demo3 < ../Matrix/bcsstk16
+ 
+-test_di: cs_di_demo1 cs_di_demo2 cs_di_demo3
++test_di: cs_di_demo1$(EXEEXT) cs_di_demo2$(EXEEXT) cs_di_demo3$(EXEEXT)
+ 	- ./cs_di_demo1 < ../Matrix/t1
+ 	- ./cs_di_demo2 < ../Matrix/t1
+ 	- ./cs_di_demo2 < ../Matrix/fs_183_1
+@@ -40,7 +42,7 @@
+ 	- ./cs_di_demo2 < ../Matrix/bcsstk16
+ 	- ./cs_di_demo3 < ../Matrix/bcsstk16
+ 
+-test_dl: cs_dl_demo1 cs_dl_demo2 cs_dl_demo3
++test_dl: cs_dl_demo1$(EXEEXT) cs_dl_demo2$(EXEEXT) cs_dl_demo3$(EXEEXT)
+ 	- ./cs_dl_demo1 < ../Matrix/t1
+ 	- ./cs_dl_demo2 < ../Matrix/t1
+ 	- ./cs_dl_demo2 < ../Matrix/fs_183_1
+@@ -53,7 +55,7 @@
+ 	- ./cs_dl_demo2 < ../Matrix/bcsstk16
+ 	- ./cs_dl_demo3 < ../Matrix/bcsstk16
+ 
+-test_ci: cs_ci_demo1 cs_ci_demo2 cs_ci_demo3
++test_ci: cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT)
+ 	- ./cs_ci_demo1 < ../Matrix/t2
+ 	- ./cs_ci_demo2 < ../Matrix/t2
+ 	- ./cs_ci_demo2 < ../Matrix/t3
+@@ -68,7 +70,7 @@
+ 	- ./cs_ci_demo2 < ../Matrix/mhd1280b
+ 	- ./cs_ci_demo3 < ../Matrix/mhd1280b
+ 
+-test_cl: cs_cl_demo1 cs_cl_demo2 cs_cl_demo3
++test_cl: cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)
+ 	- ./cs_cl_demo1 < ../Matrix/t2
+ 	- ./cs_cl_demo2 < ../Matrix/t2
+ 	- ./cs_cl_demo2 < ../Matrix/t3
+@@ -83,86 +85,86 @@
+ 	- ./cs_cl_demo2 < ../Matrix/mhd1280b
+ 	- ./cs_cl_demo3 < ../Matrix/mhd1280b
+ 
+-test_convert: cs_idemo cs_ldemo
++test_convert: cs_idemo$(EXEEXT) cs_ldemo$(EXEEXT)
+ 	- ./cs_idemo < ../Matrix/t2
+ 	- ./cs_ldemo < ../Matrix/t2
+ 
+ $(CS):
+ 	( cd ../Lib ; $(MAKE) )
+ 
+-cs_demo1: $(CS) cs_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm
++cs_demo1$(EXEEXT): $(CS) cs_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_demo1$(EXEEXT) cs_demo1.c $(CS) $(CLIB)
+ 
+-cs_demo2: $(CS) cs_demo2.c cs_demo.c cs_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_demo2 cs_demo2.c cs_demo.c $(CS) -lm
++cs_demo2$(EXEEXT): $(CS) cs_demo2.c cs_demo.c cs_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_demo2$(EXEEXT) cs_demo2.c cs_demo.c $(CS) $(CLIB)
+ 
+-cs_demo3: $(CS) cs_demo3.c cs_demo.c cs_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS) -lm
++cs_demo3$(EXEEXT): $(CS) cs_demo3.c cs_demo.c cs_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_demo3$(EXEEXT) cs_demo3.c cs_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+ 
+-cs_di_demo1: $(CS) cs_di_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_di_demo1 cs_di_demo1.c $(CS) -lm
++cs_di_demo1$(EXEEXT): $(CS) cs_di_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_di_demo1$(EXEEXT) cs_di_demo1.c $(CS) $(CLIB)
+ 
+-cs_di_demo2: $(CS) cs_di_demo2.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_di_demo2 cs_di_demo2.c cs_di_demo.c $(CS) -lm
++cs_di_demo2$(EXEEXT): $(CS) cs_di_demo2.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_di_demo2$(EXEEXT) cs_di_demo2.c cs_di_demo.c $(CS) $(CLIB)
+ 
+-cs_di_demo3: $(CS) cs_di_demo3.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_di_demo3 cs_di_demo3.c cs_di_demo.c $(CS) -lm
++cs_di_demo3$(EXEEXT): $(CS) cs_di_demo3.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_di_demo3$(EXEEXT) cs_di_demo3.c cs_di_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+ 
+-cs_ci_demo1: $(CS) cs_ci_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_ci_demo1 cs_ci_demo1.c $(CS) -lm
++cs_ci_demo1$(EXEEXT): $(CS) cs_ci_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_ci_demo1$(EXEEXT) cs_ci_demo1.c $(CS) $(CLIB)
+ 
+-cs_ci_demo2: $(CS) cs_ci_demo2.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_ci_demo2 cs_ci_demo2.c cs_ci_demo.c $(CS) -lm
++cs_ci_demo2$(EXEEXT): $(CS) cs_ci_demo2.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_ci_demo2$(EXEEXT) cs_ci_demo2.c cs_ci_demo.c $(CS) $(CLIB)
+ 
+-cs_ci_demo3: $(CS) cs_ci_demo3.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_ci_demo3 cs_ci_demo3.c cs_ci_demo.c $(CS) -lm
++cs_ci_demo3$(EXEEXT): $(CS) cs_ci_demo3.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_ci_demo3$(EXEEXT) cs_ci_demo3.c cs_ci_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+-cs_dl_demo1: $(CS) cs_dl_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_dl_demo1 cs_dl_demo1.c $(CS) -lm
++cs_dl_demo1$(EXEEXT): $(CS) cs_dl_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_dl_demo1$(EXEEXT) cs_dl_demo1.c $(CS) $(CLIB)
+ 
+-cs_dl_demo2: $(CS) cs_dl_demo2.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_dl_demo2 cs_dl_demo2.c cs_dl_demo.c $(CS) -lm
++cs_dl_demo2$(EXEEXT): $(CS) cs_dl_demo2.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_dl_demo2$(EXEEXT) cs_dl_demo2.c cs_dl_demo.c $(CS) $(CLIB)
+ 
+-cs_dl_demo3: $(CS) cs_dl_demo3.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_dl_demo3 cs_dl_demo3.c cs_dl_demo.c $(CS) -lm
++cs_dl_demo3$(EXEEXT): $(CS) cs_dl_demo3.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_dl_demo3$(EXEEXT) cs_dl_demo3.c cs_dl_demo.c $(CS) $(CLIB)
+ 
+ 
+-cs_cl_demo1: $(CS) cs_cl_demo1.c Makefile $(CS)
+-	$(CC) $(I) -o cs_cl_demo1 cs_cl_demo1.c $(CS) -lm
++cs_cl_demo1$(EXEEXT): $(CS) cs_cl_demo1.c Makefile $(CS)
++	$(CC) $(I) -o cs_cl_demo1$(EXEEXT) cs_cl_demo1.c $(CS) $(CLIB)
+ 
+-cs_cl_demo2: $(CS) cs_cl_demo2.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_cl_demo2 cs_cl_demo2.c cs_cl_demo.c $(CS) -lm
++cs_cl_demo2$(EXEEXT): $(CS) cs_cl_demo2.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_cl_demo2$(EXEEXT) cs_cl_demo2.c cs_cl_demo.c $(CS) $(CLIB)
+ 
+-cs_cl_demo3: $(CS) cs_cl_demo3.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
+-	$(CC) $(I) -o cs_cl_demo3 cs_cl_demo3.c cs_cl_demo.c $(CS) -lm
++cs_cl_demo3$(EXEEXT): $(CS) cs_cl_demo3.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
++	$(CC) $(I) -o cs_cl_demo3$(EXEEXT) cs_cl_demo3.c cs_cl_demo.c $(CS) $(CLIB)
+ 
+ 
+ 
+ 
+-cs_idemo: $(CS) cs_idemo.c Makefile $(CS)
+-	$(CC) $(I) -o cs_idemo cs_idemo.c $(CS) -lm
++cs_idemo$(EXEEXT): $(CS) cs_idemo.c Makefile $(CS)
++	$(CC) $(I) -o cs_idemo$(EXEEXT) cs_idemo.c $(CS) $(CLIB)
+ 
+-cs_ldemo: $(CS) cs_ldemo.c Makefile $(CS)
+-	$(CC) $(I) -DCS_LONG -o cs_ldemo cs_ldemo.c $(CS) -lm
++cs_ldemo$(EXEEXT): $(CS) cs_ldemo.c Makefile $(CS)
++	$(CC) $(I) -DCS_LONG -o cs_ldemo$(EXEEXT) cs_ldemo.c $(CS) $(CLIB)
+ 
+ 
+ clean:
+-	rm -f *.o
++	rm -f *.o *.obj
+ 
+ purge: distclean
+ 
+ distclean: clean
+-	rm -f cs_demo1 cs_demo2 cs_demo3 *.a
+-	rm -f cs_di_demo1 cs_di_demo2 cs_di_demo3
+-	rm -f cs_dl_demo1 cs_dl_demo2 cs_dl_demo3
+-	rm -f cs_ci_demo1 cs_ci_demo2 cs_ci_demo3
+-	rm -f cs_cl_demo1 cs_cl_demo2 cs_cl_demo3
+-	rm -f cs_idemo cs_ldemo
++	rm -f cs_demo1$(EXEEXT) cs_demo2$(EXEEXT) cs_demo3$(EXEEXT) *.$(LIBEXT)
++	rm -f cs_di_demo1$(EXEEXT) cs_di_demo2$(EXEEXT) cs_di_demo3$(EXEEXT)
++	rm -f cs_dl_demo1$(EXEEXT) cs_dl_demo2$(EXEEXT) cs_dl_demo3$(EXEEXT)
++	rm -f cs_ci_demo1$(EXEEXT) cs_ci_demo2$(EXEEXT) cs_ci_demo3$(EXEEXT)
++	rm -f cs_cl_demo1$(EXEEXT) cs_cl_demo2$(EXEEXT) cs_cl_demo3$(EXEEXT)
++	rm -f cs_idemo$(EXEEXT) cs_ldemo$(EXEEXT)
+diff -urb SuiteSparse/CXSparse_newfiles/Include/cs.h SuiteSparse-new/CXSparse_newfiles/Include/cs.h
+--- SuiteSparse/CXSparse_newfiles/Include/cs.h	2007-05-18 14:12:04.000000000 +0200
++++ SuiteSparse-new/CXSparse_newfiles/Include/cs.h	2007-06-04 22:49:25.234375000 +0200
+@@ -13,6 +13,10 @@
+ #ifndef NCOMPLEX
+ #include <complex>
+ typedef std::complex<double> cs_complex_t ;
++#define creal(x) ((x).real())
++#define cimag(x) ((x).imag())
++#define cabs(x) abs(x)
++#define I cs_complex_t(0., 1.)
+ #endif
+ extern "C" {
+ #else
+@@ -415,7 +419,6 @@
+ int *cs_ci_etree (const cs_ci *A, int ata) ;
+ int cs_ci_fkeep (cs_ci *A, int (*fkeep) (int, int, cs_complex_t, void *),
+     void *other) ;
+-cs_complex_t cs_ci_house (cs_complex_t *x, double *beta, int n) ;
+ int *cs_ci_maxtrans (const cs_ci *A, int seed) ;
+ int *cs_ci_post (const int *parent, int n) ;
+ cs_cid *cs_ci_scc (cs_ci *A) ;
+@@ -555,7 +558,6 @@
+ UF_long *cs_cl_etree (const cs_cl *A, UF_long ata) ;
+ UF_long cs_cl_fkeep (cs_cl *A,
+     UF_long (*fkeep) (UF_long, UF_long, cs_complex_t, void *), void *other) ;
+-cs_complex_t cs_cl_house (cs_complex_t *x, double *beta, UF_long n) ;
+ UF_long *cs_cl_maxtrans (const cs_cl *A, UF_long seed) ;
+ UF_long *cs_cl_post (const UF_long *parent, UF_long n) ;
+ cs_cld *cs_cl_scc (cs_cl *A) ;
+@@ -731,4 +733,8 @@
+ #ifdef __cplusplus
+ }
+ #endif
++
++cs_complex_t cs_ci_house (cs_complex_t *x, double *beta, int n) ;
++cs_complex_t cs_cl_house (cs_complex_t *x, double *beta, UF_long n) ;
++
+ #endif
+diff -urb SuiteSparse/CXSparse_newfiles/Lib/Makefile SuiteSparse-new/CXSparse_newfiles/Lib/Makefile
+--- SuiteSparse/CXSparse_newfiles/Lib/Makefile	2007-05-05 23:03:41.000000000 +0200
++++ SuiteSparse-new/CXSparse_newfiles/Lib/Makefile	2007-06-04 22:47:32.671875000 +0200
+@@ -1,12 +1,16 @@
+ # Modify the "-O" optimization option for best performance (-O3 on Linux):
+-CC = cc
+-CFLAGS = -O
++# CC = cc
++# CFLAGS = -O
++
++include ../../UFconfig/UFconfig.mk
++
++CFLAGS = -O2 -TP -EHs
+ I = -I../../UFconfig -I../Include
+ 
+-AR = ar cr
+-RANLIB = ranlib
++# AR = ar cr
++# RANLIB = ranlib
+ 
+-all: libcxsparse.a
++all: $(LIBPRE)cxsparse.$(LIBEXT)
+ 
+ CS_SOURCE = cs_add.c cs_amd.c cs_chol.c cs_cholsol.c cs_counts.c cs_cumsum.c \
+ 	cs_droptol.c cs_dropzeros.c cs_dupl.c cs_entry.c \
+@@ -85,9 +89,9 @@
+ %_cl.o : ../Source/%.c
+ 	$(CC) $(CFLAGS) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
+ 
+-libcxsparse.a: $(CS)
+-	$(AR) libcxsparse.a $(CS)
+-	$(RANLIB) libcxsparse.a
++$(LIBPRE)cxsparse.$(LIBEXT): $(CS)
++	$(AR) $(LIBPRE)cxsparse.$(LIBEXT) $(CS)
++	$(RANLIB) $(LIBPRE)cxsparse.$(LIBEXT)
+ 
+ clean:
+ 	rm -f *.o
+@@ -95,4 +99,4 @@
+ purge: distclean
+ 
+ distclean: clean
+-	rm -f *.a
++	rm -f *.$(LIBEXT)
+diff -urb SuiteSparse/CXSparse_newfiles/Source/cs_house.c SuiteSparse-new/CXSparse_newfiles/Source/cs_house.c
+--- SuiteSparse/CXSparse_newfiles/Source/cs_house.c	2007-03-01 22:23:01.000000000 +0100
++++ SuiteSparse-new/CXSparse_newfiles/Source/cs_house.c	2007-06-04 22:37:33.187500000 +0200
+@@ -10,7 +10,7 @@
+     /* s = norm(x) */
+     for (i = 0 ; i < n ; i++) s += x [i] * CS_CONJ (x [i]) ;
+     s = sqrt (s) ;
+-    if (s == 0)
++    if (s == 0.0)
+     {
+ 	(*beta) = 0 ;
+ 	x [0] = 1 ;
+@@ -18,7 +18,7 @@
+     else
+     {
+ 	/* s = sign(x[0]) * norm (x) ; */
+-	if (x [0] != 0)
++	if (x [0] != 0.0)
+ 	{
+ 	    s *= x [0] / CS_ABS (x [0]) ;
+ 	}
+diff -urb SuiteSparse/CXSparse_newfiles/Source/cs_updown.c SuiteSparse-new/CXSparse_newfiles/Source/cs_updown.c
+--- SuiteSparse/CXSparse_newfiles/Source/cs_updown.c	2007-02-28 21:45:07.000000000 +0100
++++ SuiteSparse-new/CXSparse_newfiles/Source/cs_updown.c	2007-06-04 22:50:44.328125000 +0200
+@@ -12,7 +12,7 @@
+     Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
+     Cp = C->p ; Ci = C->i ; Cx = C->x ;
+     if ((p = Cp [0]) >= Cp [1]) return (1) ;	    /* return if C empty */
+-    w = cs_malloc (n, sizeof (CS_ENTRY)) ;	    /* get workspace */
++    w = (CS_ENTRY*) cs_malloc (n, sizeof (CS_ENTRY)) ;	    /* get workspace */
+     if (!w) return (0) ;			    /* out of memory */
+     f = Ci [p] ;
+     for ( ; p < Cp [1] ; p++) f = CS_MIN (f, Ci [p]) ;	/* f = min (find (C)) */
+@@ -22,11 +22,11 @@
+     {
+ 	p = Lp [j] ;
+ 	alpha = w [j] / Lx [p] ;		    /* alpha = w(j) / L(j,j) */
+-	beta2 = beta*beta + sigma*alpha*CS_CONJ(alpha) ;
++	beta2 = CS_REAL(beta*beta + double(sigma)*alpha*CS_CONJ(alpha)) ;
+ 	if (beta2 <= 0) break ;			    /* not positive definite */
+ 	beta2 = sqrt (beta2) ;
+ 	delta = (sigma > 0) ? (beta / beta2) : (beta2 / beta) ;
+-	gamma = sigma * CS_CONJ(alpha) / (beta2 * beta) ;
++	gamma = double(sigma) * CS_CONJ(alpha) / (beta2 * beta) ;
+ 	Lx [p] = delta * Lx [p] + ((sigma > 0) ? (gamma * w [j]) : 0) ;
+ 	beta = beta2 ;
+ #ifdef CS_COMPLEX
+Files SuiteSparse/CXSparse_newfiles.tar.gz and SuiteSparse-new/CXSparse_newfiles.tar.gz differ
+diff -urb SuiteSparse/KLU/Demo/Makefile SuiteSparse-new/KLU/Demo/Makefile
+--- SuiteSparse/KLU/Demo/Makefile	2007-05-11 17:56:36.000000000 +0200
++++ SuiteSparse-new/KLU/Demo/Makefile	2007-06-04 22:26:34.078125000 +0200
+@@ -6,10 +6,10 @@
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+-LIB = ../Lib/libklu.a  ../../BTF/Lib/libbtf.a \
+-	../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a
++LIB = ../Lib/$(LIBPRE)klu.$(LIBEXT)  ../../BTF/Lib/$(LIBPRE)btf.$(LIBEXT) \
++	../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT) ../../COLAMD/Lib/$(LIBPRE)colamd.$(LIBEXT)
+ 
+-CHOLMOD = ../../CHOLMOD/Lib/libcholmod.a
++CHOLMOD = ../../CHOLMOD/Lib/$(LIBPRE)cholmod.$(LIBEXT)
+ 
+ I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
+ 	-I../../BTF/Include -I../Include -I../../CHOLMOD/Include
+@@ -29,19 +29,19 @@
+ 	- ./kluldemo < ../Matrix/w156.mtx
+ 	- ./kluldemo < ../Matrix/ctina.mtx
+ 
+-../Lib/libklu.a:
++../Lib/$(LIBPRE)klu.$(LIBEXT):
+ 	( cd ../Lib ; $(MAKE) )
+ 
+-../../BTF/Lib/libbtf.a:
++../../BTF/Lib/$(LIBPRE)btf.$(LIBEXT):
+ 	( cd ../../BTF ; $(MAKE) library )
+ 
+-../../AMD/Lib/libamd.a:
++../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT):
+ 	( cd ../../AMD ; $(MAKE) library )
+ 
+-../../COLAMD/Lib/libcolamd.a:
++../../COLAMD/Lib/$(LIBPRE)colamd.$(LIBEXT):
+ 	( cd ../../COLAMD ; $(MAKE) library )
+ 
+-../../CHOLMOD/Lib/libcholmod.a:
++../../CHOLMOD/Lib/$(LIBPRE)cholmod.$(LIBEXT):
+ 	( cd ../../CHOLMOD ; $(MAKE) library )
+ #	( cd ../../CAMD ; $(MAKE) )
+ #	( cd ../../CCOLAMD ; $(MAKE) )
+@@ -50,17 +50,17 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) kludemo kluldemo klu_simple
++	- $(RM) kludemo$(EXEEXT) kluldemo$(EXEEXT) klu_simple$(EXEEXT)
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+ 
+-kludemo: kludemo.c Makefile $(LIB)
+-	$(CC) $(CFLAGS) $(I) kludemo.c -o kludemo $(LIB) $(CHOLMOD) -lm
++kludemo$(EXEEXT): kludemo.c Makefile $(LIB)
++	$(CC) $(CFLAGS) $(I) kludemo.c -o kludemo$(EXEEXT) $(LIB) $(CHOLMOD) $(CLIB)
+ 
+-kluldemo: kludemo.c Makefile $(LIB)
+-	$(CC) $(CFLAGS) $(I) kluldemo.c -o kluldemo $(LIB) $(CHOLMOD) -lm
++kluldemo$(EXEEXT): kludemo.c Makefile $(LIB)
++	$(CC) $(CFLAGS) $(I) kluldemo.c -o kluldemo$(EXEEXT) $(LIB) $(CHOLMOD) $(CLIB)
+ 
+-klu_simple: klu_simple.c Makefile $(LIB)
+-	$(CC) $(CFLAGS) $(I) klu_simple.c -o klu_simple $(LIB) -lm
++klu_simple$(EXEEXT): klu_simple.c Makefile $(LIB)
++	$(CC) $(CFLAGS) $(I) klu_simple.c -o klu_simple$(EXEEXT) $(LIB) $(CLIB)
+ 	- ./klu_simple
+diff -urb SuiteSparse/KLU/Lib/Makefile SuiteSparse-new/KLU/Lib/Makefile
+--- SuiteSparse/KLU/Lib/Makefile	2007-05-05 16:33:38.000000000 +0200
++++ SuiteSparse-new/KLU/Lib/Makefile	2007-06-04 22:26:34.093750000 +0200
+@@ -17,7 +17,7 @@
+ 
+ all: library
+ 
+-library: libklu.a
++library: $(LIBPRE)klu.$(LIBEXT)
+ 
+ KLU_D = klu_d.o klu_d_kernel.o klu_d_dump.o \
+     klu_d_factor.o klu_d_free_numeric.o klu_d_solve.o \
+@@ -47,9 +47,9 @@
+ 
+ OBJ = $(COMMON) $(KLU_D) $(KLU_Z) $(KLU_L) $(KLU_ZL)
+ 
+-libklu.a: $(OBJ)
+-	$(AR) libklu.a $(OBJ)
+-	$(RANLIB) libklu.a
++$(LIBPRE)klu.$(LIBEXT): $(OBJ)
++	$(AR) $(LIBPRE)klu.$(LIBEXT) $(OBJ)
++	$(RANLIB) $(LIBPRE)klu.$(LIBEXT)
+ 
+ $(OBJ): $(INC)
+ 
+@@ -149,7 +149,7 @@
+ purge: distclean
+ 
+ distclean: clean
+-	- $(RM) libklu.a 
++	- $(RM) $(LIBPRE)klu.$(LIBEXT) 
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+diff -urb SuiteSparse/KLU/User/Makefile SuiteSparse-new/KLU/User/Makefile
+--- SuiteSparse/KLU/User/Makefile	2007-05-01 03:08:32.000000000 +0200
++++ SuiteSparse-new/KLU/User/Makefile	2007-06-04 22:26:34.109375000 +0200
+@@ -2,20 +2,20 @@
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+-all: libklu_cholmod.a
++all: $(LIBPRE)klu_cholmod.$(LIBEXT)
+ 
+ I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include -I../../AMD/Include \
+     -I../../BTF/Include -I../../COLAMD
+ 
+-libklu_cholmod.a:  library klu_cholmod.c klu_cholmod.h
++$(LIBPRE)klu_cholmod.$(LIBEXT):  library klu_cholmod.c klu_cholmod.h
+ 	$(CC) $(CFLAGS) $(I) -c klu_cholmod.c
+-	$(AR) libklu_cholmod.a klu_cholmod.o
+-	$(RANLIB) libklu_cholmod.a
++	$(AR) $(LIBPRE)klu_cholmod.$(LIBEXT) klu_cholmod.o
++	$(RANLIB) $(LIBPRE)klu_cholmod.$(LIBEXT)
+ 
+ distclean: purge
+ 
+ purge: clean
+-	- $(RM) *.o *.a
++	- $(RM) *.o *.$(LIBEXT)
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+diff -urb SuiteSparse/LDL/Demo/Makefile SuiteSparse-new/LDL/Demo/Makefile
+--- SuiteSparse/LDL/Demo/Makefile	2007-05-05 19:30:08.000000000 +0200
++++ SuiteSparse-new/LDL/Demo/Makefile	2007-06-04 22:26:34.125000000 +0200
+@@ -10,7 +10,7 @@
+ 
+ C = $(CC) $(CFLAGS) $(I)
+ 
+-all: ldlsimple ldllsimple ldlmain ldllmain ldlamd ldllamd
++all: ldlsimple$(EXEEXT) ldllsimple$(EXEEXT) ldlmain$(EXEEXT) ldllmain$(EXEEXT) ldlamd$(EXEEXT) ldllamd$(EXEEXT)
+ 
+ library:
+ 	( cd ../../AMD ; $(MAKE) library )
+@@ -20,51 +20,51 @@
+ # stand-alone C programs:
+ #-------------------------------------------------------------------------------
+ 
+-ldlmain:  ldlmain.c library
+-	$(C) ldlmain.c ../Lib/libldl.a -o ldlmain -lm
++ldlmain$(EXEEXT):  ldlmain.c library
++	$(C) ldlmain.c ../Lib/$(LIBPRE)ldl.$(LIBEXT) -o ldlmain$(EXEEXT) $(CLIB)
+ 	- ./ldlmain > my_ldlmain.out
+-	- diff ldlmain.out my_ldlmain.out
++	- diff -b ldlmain.out my_ldlmain.out
+ 
+-ldllmain:  ldlmain.c library
+-	$(C) -DLDL_LONG ldlmain.c ../Lib/libldl.a -o ldllmain -lm
++ldllmain$(EXEEXT):  ldlmain.c library
++	$(C) -DLDL_LONG ldlmain.c ../Lib/$(LIBPRE)ldl.$(LIBEXT) -o ldllmain$(EXEEXT) $(CLIB)
+ 	- ./ldllmain > my_ldllmain.out
+-	- diff ldlmain.out my_ldllmain.out
++	- diff -b ldlmain.out my_ldllmain.out
+ 
+-ldlsimple:  ldlsimple.c library
+-	$(C) ldlsimple.c ../Lib/libldl.a -o ldlsimple -lm
++ldlsimple$(EXEEXT):  ldlsimple.c library
++	$(C) ldlsimple.c ../Lib/$(LIBPRE)ldl.$(LIBEXT) -o ldlsimple$(EXEEXT) $(CLIB)
+ 	- ./ldlsimple > my_ldlsimple.out
+-	- diff ldlsimple.out my_ldlsimple.out
++	- diff -b ldlsimple.out my_ldlsimple.out
+ 
+-ldllsimple:  ldlsimple.c library
+-	$(C) $(I) -DLDL_LONG ldlsimple.c ../Lib/libldl.a -o ldllsimple -lm
++ldllsimple$(EXEEXT):  ldlsimple.c library
++	$(C) $(I) -DLDL_LONG ldlsimple.c ../Lib/$(LIBPRE)ldl.$(LIBEXT) -o ldllsimple$(EXEEXT) $(CLIB)
+ 	- ./ldllsimple > my_ldllsimple.out
+-	- diff ldlsimple.out my_ldllsimple.out
++	- diff -b ldlsimple.out my_ldllsimple.out
+ 
+-ldlamd:  ldlmain.c library
++ldlamd$(EXEEXT):  ldlmain.c library
+ 	- $(C) -I../../AMD/Include -DUSE_AMD \
+-		ldlmain.c ../../AMD/Lib/libamd.a ../Lib/libldl.a -o ldlamd -lm
++		ldlmain.c ../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT) ../Lib/$(LIBPRE)ldl.$(LIBEXT) -o ldlamd$(EXEEXT) $(CLIB)
+ 	- ./ldlamd > my_ldlamd.out
+-	- diff ldlamd.out my_ldlamd.out
++	- diff -b ldlamd.out my_ldlamd.out
+ 
+-ldllamd:  ldlmain.c library
++ldllamd$(EXEEXT):  ldlmain.c library
+ 	- $(C) -DLDL_LONG $(I) -I../../AMD/Include -DUSE_AMD \
+-		ldlmain.c ../../AMD/Lib/libamd.a ../Lib/libldl.a -o ldllamd -lm
++		ldlmain.c ../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT) ../Lib/$(LIBPRE)ldl.$(LIBEXT) -o ldllamd$(EXEEXT) $(CLIB)
+ 	- ./ldllamd > my_ldllamd.out
+-	- diff ldllamd.out my_ldllamd.out
++	- diff -b ldllamd.out my_ldllamd.out
+ 
+ run:
+ 	- ./ldlsimple > my_ldlsimple.out
+-	- diff ldlsimple.out my_ldlsimple.out
++	- diff -b ldlsimple.out my_ldlsimple.out
+ 	- ./ldllsimple > my_ldllsimple.out
+-	- diff ldlsimple.out my_ldllsimple.out
++	- diff -b ldlsimple.out my_ldllsimple.out
+ 	- ./ldlmain > my_ldlmain.out
+-	- diff ldlmain.out my_ldlmain.out
++	- diff -b ldlmain.out my_ldlmain.out
+ 	- ./ldllmain > my_ldllmain.out
+-	- diff ldlmain.out my_ldllmain.out
++	- diff -b ldlmain.out my_ldllmain.out
+ 	- ./ldlamd > my_ldlamd.out
+-	- diff ldlamd.out my_ldlamd.out
++	- diff -b ldlamd.out my_ldlamd.out
+ 	- ./ldllamd > my_ldllamd.out
+-	- diff ldllamd.out my_ldllamd.out
++	- diff -b ldllamd.out my_ldllamd.out
+ 
+ 
+ #-------------------------------------------------------------------------------
+@@ -74,7 +74,7 @@
+ distclean: purge
+ 
+ purge: clean
+-	- $(RM) ldlmain ldllmain ldlsimple ldllsimple ldlamd ldllamd
++	- $(RM) ldlmain$(EXEEXT) ldllmain$(EXEEXT) ldlsimple$(EXEEXT) ldllsimple$(EXEEXT) ldlamd$(EXEEXT) ldllamd$(EXEEXT)
+ 	- $(RM) my_ldlmain.out my_ldlamd.out my_ldlsimple.out my_ldllamd.out
+ 	- $(RM) my_ldllsimple.out my_ldllmain.out
+ 
+diff -urb SuiteSparse/LDL/Lib/Makefile SuiteSparse-new/LDL/Lib/Makefile
+--- SuiteSparse/LDL/Lib/Makefile	2007-05-05 19:31:44.000000000 +0200
++++ SuiteSparse-new/LDL/Lib/Makefile	2007-06-04 22:26:34.125000000 +0200
+@@ -10,22 +10,22 @@
+ 
+ C = $(CC) $(CFLAGS) $(I)
+ 
+-all: libldl.a
++all: $(LIBPRE)ldl.$(LIBEXT)
+ 
+ #-------------------------------------------------------------------------------
+ # the ldl library:
+ #-------------------------------------------------------------------------------
+ 
+-libldl.a: ../Source/ldl.c ../Include/ldl.h
++$(LIBPRE)ldl.$(LIBEXT): ../Source/ldl.c ../Include/ldl.h
+ 	$(C) -c ../Source/ldl.c -o ldl.o
+ 	$(C) -DLDL_LONG -c ../Source/ldl.c -o ldll.o
+-	$(AR) libldl.a ldl.o ldll.o
+-	- $(RANLIB) libldl.a
++	$(AR) $(LIBPRE)ldl.$(LIBEXT) ldl.o ldll.o
++	- $(RANLIB) $(LIBPRE)ldl.$(LIBEXT)
+ 
+ distclean: purge
+ 
+ purge: clean
+-	- $(RM) libldl.a
++	- $(RM) $(LIBPRE)ldl.$(LIBEXT)
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+diff -urb SuiteSparse/LDL/Makefile SuiteSparse-new/LDL/Makefile
+--- SuiteSparse/LDL/Makefile	2007-05-05 19:24:14.000000000 +0200
++++ SuiteSparse-new/LDL/Makefile	2007-06-04 22:26:34.140625000 +0200
+@@ -2,12 +2,12 @@
+ # LDL Makefile
+ #------------------------------------------------------------------------------
+ 
+-default: demo
++default: do_demo
+ 
+ include ../UFconfig/UFconfig.mk
+ 
+ # Compile all C code, including the C-callable routine.
+-demo:
++do_demo:
+ 	( cd Lib    ; $(MAKE) )
+ 	( cd Demo   ; $(MAKE) )
+ 
+diff -urb SuiteSparse/Makefile SuiteSparse-new/Makefile
+--- SuiteSparse/Makefile	2007-05-08 00:28:44.000000000 +0200
++++ SuiteSparse-new/Makefile	2007-06-04 22:26:34.156250000 +0200
+@@ -7,7 +7,7 @@
+ # Compile the default rules for each package
+ default:
+ 	( cd UFconfig/xerbla ; $(MAKE) )
+-	( cd metis-4.0 ; $(MAKE) )
++#	( cd metis-4.0 ; $(MAKE) )
+ 	( cd AMD ; $(MAKE) )
+ 	( cd CAMD ; $(MAKE) )
+ 	( cd COLAMD ; $(MAKE) )
+@@ -41,7 +41,7 @@
+ # Remove all files not in the original distribution
+ purge:
+ 	( cd UFconfig/xerbla ; $(MAKE) purge )
+-	( cd metis-4.0 ; $(MAKE) realclean )
++#	( cd metis-4.0 ; $(MAKE) realclean )
+ 	( cd AMD ; $(MAKE) purge )
+ 	( cd CAMD ; $(MAKE) purge )
+ 	( cd COLAMD ; $(MAKE) purge )
+@@ -61,7 +61,7 @@
+ # Remove all files not in the original distribution, but keep the libraries
+ clean:
+ 	( cd UFconfig/xerbla ; $(MAKE) clean )
+-	( cd metis-4.0 ; $(MAKE) clean )
++#	( cd metis-4.0 ; $(MAKE) clean )
+ 	( cd AMD ; $(MAKE) clean )
+ 	( cd CAMD ; $(MAKE) clean )
+ 	( cd COLAMD ; $(MAKE) clean )
+diff -urb SuiteSparse/UFconfig/UFconfig.mk SuiteSparse-new/UFconfig/UFconfig.mk
+--- SuiteSparse/UFconfig/UFconfig.mk	2007-05-10 15:46:08.000000000 +0200
++++ SuiteSparse-new/UFconfig/UFconfig.mk	2007-06-04 22:26:34.171875000 +0200
+@@ -32,12 +32,12 @@
+ # C compiler and compiler flags:  These will normally not give you optimal
+ # performance.  You should select the optimization parameters that are best
+ # for your system.  On Linux, use "CFLAGS = -O3 -fexceptions" for example.
+-CC = cc
+-CFLAGS = -O
++CC = cc-msvc
++CFLAGS = -MD -O2
+ 
+ # ranlib, and ar, for generating libraries
+-RANLIB = ranlib
+-AR = ar cr
++RANLIB = ranlib-msvc
++AR = ar-msvc cr
+ 
+ # delete and rename a file
+ RM = rm -f
+@@ -49,7 +49,7 @@
+ F77LIB =
+ 
+ # C and Fortran libraries
+-LIB = -lm
++CLIB =
+ 
+ # For compiling MATLAB mexFunctions (MATLAB 7.4 or later)
+ MEX = mex -O -largeArrayDims -lmwlapack
+@@ -65,6 +65,10 @@
+ # MAKE = make
+ # MAKE = gmake
+ 
++LIBPRE =
++LIBEXT = lib
++EXEEXT = .exe
++
+ #------------------------------------------------------------------------------
+ # BLAS and LAPACK configuration:
+ #------------------------------------------------------------------------------
+@@ -85,7 +89,7 @@
+ # BLAS = -lgoto -lgfortran -lgfortranbegin
+ 
+ # This is probably slow ... it might connect to the Standard Reference BLAS:
+-BLAS = -lblas -lgfortran -lgfortranbegin
++BLAS = -lblas
+ LAPACK = -llapack
+ 
+ # The BLAS might not contain xerbla, an error-handling routine for LAPACK and
+@@ -114,13 +118,13 @@
+ # The path is relative to where it is used, in CHOLMOD/Lib, CHOLMOD/MATLAB, etc.
+ # You may wish to use an absolute path.  METIS is optional.  Compile
+ # CHOLMOD with -DNPARTITION if you do not wish to use METIS.
+-METIS_PATH = ../../metis-4.0
+-METIS = ../../metis-4.0/libmetis.a
++# METIS_PATH = ../../metis-4.0
++# METIS = ../../metis-4.0/$(LIBPRE)metis.$(LIBEXT)
+ 
+ # If you use CHOLMOD_CONFIG = -DNPARTITION then you must use the following
+ # options:
+-# METIS_PATH =
+-# METIS =
++METIS_PATH =
++METIS =
+ 
+ #------------------------------------------------------------------------------
+ # UMFPACK configuration:
+@@ -138,7 +142,7 @@
+ # -DNRECIPROCAL	do not multiply by the reciprocal
+ # -DNO_DIVIDE_BY_ZERO	do not divide by zero
+ 
+-UMFPACK_CONFIG = 
++UMFPACK_CONFIG = -DBLAS_UNDERSCORE
+ 
+ #------------------------------------------------------------------------------
+ # CHOLMOD configuration
+@@ -176,7 +180,7 @@
+ # -DNSUNPERF	    for Solaris only.  If defined, do not use the Sun
+ #			Performance Library
+ 
+-CHOLMOD_CONFIG =
++CHOLMOD_CONFIG = -DNPARTITION -DBLAS_UNDERSCORE
+ 
+ #------------------------------------------------------------------------------
+ # Linux
+@@ -193,7 +197,7 @@
+ # CFLAGS = -O3 -fexceptions \
+    	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
+-CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
++# CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+ # CFLAGS = -O3
+ 
+ # consider:
+@@ -307,4 +311,4 @@
+ # remove object files and profile output
+ #------------------------------------------------------------------------------
+ 
+-CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d
++CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d *.exe *.lib *.ilk *.exp
+diff -urb SuiteSparse/UFconfig/xerbla/Makefile SuiteSparse-new/UFconfig/xerbla/Makefile
+--- SuiteSparse/UFconfig/xerbla/Makefile	2006-01-30 17:50:58.000000000 +0100
++++ SuiteSparse-new/UFconfig/xerbla/Makefile	2007-06-04 22:26:34.187500000 +0200
+@@ -4,22 +4,22 @@
+ 
+ include ../UFconfig.mk
+ 
+-ccode: libcerbla.a
++ccode: $(LIBPRE)cerbla.$(LIBEXT)
+ 
+-fortran: libxerbla.a 
++fortran: $(LIBPRE)xerbla.$(LIBEXT) 
+ 
+-all: libxerbla.a libcerbla.a
++all: $(LIBPRE)xerbla.$(LIBEXT) $(LIBPRE)cerbla.$(LIBEXT)
+ 
+ # Fortran version:
+-libxerbla.a: xerbla.f
++$(LIBPRE)xerbla.$(LIBEXT): xerbla.f
+ 	$(F77) $(F77FLAGS) -c xerbla.f
+-	$(AR) libxerbla.a xerbla.o
++	$(AR) $(LIBPRE)xerbla.$(LIBEXT) xerbla.o
+ 	- $(RM) xerbla.o
+ 
+ # C version:
+-libcerbla.a: xerbla.c xerbla.h
++$(LIBPRE)cerbla.$(LIBEXT): xerbla.c xerbla.h
+ 	$(CC) $(CFLAGS) -c xerbla.c
+-	$(AR) libcerbla.a xerbla.o
++	$(AR) $(LIBPRE)cerbla.$(LIBEXT) xerbla.o
+ 	- $(RM) xerbla.o
+ 
+ distclean: purge
+diff -urb SuiteSparse/UMFPACK/Demo/Makefile SuiteSparse-new/UMFPACK/Demo/Makefile
+--- SuiteSparse/UMFPACK/Demo/Makefile	2007-05-05 21:56:55.000000000 +0200
++++ SuiteSparse-new/UMFPACK/Demo/Makefile	2007-06-04 22:26:34.203125000 +0200
+@@ -14,15 +14,15 @@
+ 
+ INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../UFconfig/UFconfig.h
+ 
+-LIBS = $(BLAS) $(XERBLA) $(LIB)
++LIBS = $(BLAS) $(XERBLA) $(CLIB)
+ 
+-../Lib/libumfpack.a:
++../Lib/$(LIBPRE)umfpack.$(LIBEXT):
+ 	( cd ../Lib ; $(MAKE) )
+ 
+-../../AMD/Lib/libamd.a:
++../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT):
+ 	( cd ../../AMD ; $(MAKE) library )
+ 
+-UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a
++UMFPACK = ../Lib/$(LIBPRE)umfpack.$(LIBEXT) ../../AMD/Lib/$(LIBPRE)amd.$(LIBEXT)
+ 
+ libs:
+ 	( cd ../Lib ; $(MAKE) )
+@@ -34,8 +34,8 @@
+ 
+ dist: umfpack_di_demo.c umfpack_dl_demo.c umfpack_zi_demo.c umfpack_zl_demo.c
+ 
+-umfpack_simple: umfpack_simple.c $(INC) $(UMFPACK)
+-	$(C) -o umfpack_simple umfpack_simple.c $(UMFPACK) $(LIBS)
++umfpack_simple$(EXEEXT): umfpack_simple.c $(INC) $(UMFPACK)
++	$(C) -o umfpack_simple$(EXEEXT) umfpack_simple.c $(UMFPACK) $(LIBS)
+ 
+ # the GNU rules are simpler:
+ # umfpack_%_demo.c: umfpack_xx_demo.c umfpack_%_demo.sed
+@@ -51,31 +51,31 @@
+ umfpack_di_demo.c: umfpack_xx_demo.c umfpack_di_demo.sed
+ 	- sed -f umfpack_di_demo.sed < umfpack_xx_demo.c > umfpack_di_demo.c
+ 
+-umfpack_di_demo: umfpack_di_demo.c $(INC) $(UMFPACK)
+-	$(C) -o umfpack_di_demo umfpack_di_demo.c $(UMFPACK) $(LIBS)
++umfpack_di_demo$(EXEEXT): umfpack_di_demo.c $(INC) $(UMFPACK)
++	$(C) -o umfpack_di_demo$(EXEEXT) umfpack_di_demo.c $(UMFPACK) $(LIBS)
+ 
+ # double-precision, UF_long verion:
+ umfpack_dl_demo.c: umfpack_xx_demo.c umfpack_dl_demo.sed
+ 	- sed -f umfpack_dl_demo.sed < umfpack_xx_demo.c > umfpack_dl_demo.c
+ 
+-umfpack_dl_demo: umfpack_dl_demo.c $(INC) $(UMFPACK)
+-	$(C) -o umfpack_dl_demo umfpack_dl_demo.c $(UMFPACK) $(LIBS)
++umfpack_dl_demo$(EXEEXT): umfpack_dl_demo.c $(INC) $(UMFPACK)
++	$(C) -o umfpack_dl_demo$(EXEEXT) umfpack_dl_demo.c $(UMFPACK) $(LIBS)
+ 
+ # complex, int verion:
+ umfpack_zi_demo.c: umfpack_xx_demo.c umfpack_zi_demo.sed
+ 	- sed -f umfpack_zi_demo.sed < umfpack_xx_demo.c > umfpack_zi_demo.c
+ 
+-umfpack_zi_demo: umfpack_zi_demo.c $(INC) $(UMFPACK)
+-	$(C) -o umfpack_zi_demo umfpack_zi_demo.c $(UMFPACK) $(LIBS)
++umfpack_zi_demo$(EXEEXT): umfpack_zi_demo.c $(INC) $(UMFPACK)
++	$(C) -o umfpack_zi_demo$(EXEEXT) umfpack_zi_demo.c $(UMFPACK) $(LIBS)
+ 
+ # complex, UF_long verion:
+ umfpack_zl_demo.c: umfpack_xx_demo.c umfpack_zl_demo.sed
+ 	- sed -f umfpack_zl_demo.sed < umfpack_xx_demo.c > umfpack_zl_demo.c
+ 
+-umfpack_zl_demo: umfpack_zl_demo.c $(INC) $(UMFPACK)
+-	$(C) -o umfpack_zl_demo umfpack_zl_demo.c $(UMFPACK) $(LIBS)
++umfpack_zl_demo$(EXEEXT): umfpack_zl_demo.c $(INC) $(UMFPACK)
++	$(C) -o umfpack_zl_demo$(EXEEXT) umfpack_zl_demo.c $(UMFPACK) $(LIBS)
+ 
+-run: umfpack_di_demo umfpack_zi_demo umfpack_dl_demo umfpack_zl_demo umfpack_simple
++run: umfpack_di_demo$(EXEEXT) umfpack_zi_demo$(EXEEXT) umfpack_dl_demo$(EXEEXT) umfpack_zl_demo$(EXEEXT) umfpack_simple$(EXEEXT)
+ 	./umfpack_simple
+ 	./umfpack_di_demo > my_umfpack_di_demo.out
+ 	- diff umfpack_di_demo.out my_umfpack_di_demo.out
+@@ -91,7 +91,7 @@
+ #-------------------------------------------------------------------------------
+ 
+ # the output of "make hb" is in the file umf4.out
+-hb: $(UMFPACK) umf4 readhb readhb_nozeros readhb_size
++hb: $(UMFPACK) umf4 readhb$(EXEEXT) readhb_nozeros$(EXEEXT) readhb_size$(EXEEXT)
+ 	- ./readhb_nozeros < HB/can_24.psa > tmp/A
+ 	- ./readhb_size    < HB/can_24.psa > tmp/Asize
+ 	- ./umf4
+@@ -114,17 +114,17 @@
+ 	- ./readhb_size    < HB/arc130.rua > tmp/Asize
+ 	- ./umf4 a 1e-6
+ 
+-umf4: umf4.c $(UMFPACK)
+-	$(C) -o umf4 umf4.c $(UMFPACK) $(LIBS)
++umf4$(EXEEXT): umf4.c $(UMFPACK)
++	$(C) -o umf4$(EXEEXT) umf4.c $(UMFPACK) $(LIBS)
+ 
+-readhb:  readhb.f
+-	$(F77) $(F77FLAGS) -o readhb readhb.f $(F77LIB)
++readhb$(EXEEXT):  readhb.f
++	$(F77) $(F77FLAGS) -o readhb$(EXEEXT) readhb.f $(F77LIB)
+ 
+-readhb_size:  readhb_size.f
+-	$(F77) $(F77FLAGS) -o readhb_size readhb_size.f $(F77LIB)
++readhb_size$(EXEEXT):  readhb_size.f
++	$(F77) $(F77FLAGS) -o readhb_size$(EXEEXT) readhb_size.f $(F77LIB)
+ 
+-readhb_nozeros:  readhb_nozeros.f
+-	$(F77) $(F77FLAGS) -o readhb_nozeros readhb_nozeros.f $(F77LIB)
++readhb_nozeros$(EXEEXT):  readhb_nozeros.f
++	$(F77) $(F77FLAGS) -o readhb_nozeros$(EXEEXT) readhb_nozeros.f $(F77LIB)
+ 
+ #-------------------------------------------------------------------------------
+ # compile the FORTRAN interface and demo
+@@ -163,14 +163,14 @@
+ #-------------------------------------------------------------------------------
+ 
+ purge: clean
+-	- $(RM) umfpack_simple a.out
+-	- $(RM) umfpack_di_demo my_umfpack_di_demo.out
+-	- $(RM) umfpack_dl_demo my_umfpack_dl_demo.out
+-	- $(RM) umfpack_zi_demo my_umfpack_zi_demo.out
+-	- $(RM) umfpack_zl_demo my_umfpack_zl_demo.out
++	- $(RM) umfpack_simple$(EXEEXT) a.out
++	- $(RM) umfpack_di_demo$(EXEEXT) my_umfpack_di_demo.out
++	- $(RM) umfpack_dl_demo$(EXEEXT) my_umfpack_dl_demo.out
++	- $(RM) umfpack_zi_demo$(EXEEXT) my_umfpack_zi_demo.out
++	- $(RM) umfpack_zl_demo$(EXEEXT) my_umfpack_zl_demo.out
+ 	- $(RM) umf4hb umf4zhb *.umf my_umf4hb.out
+ 	- $(RM) umf4hb64 my_umf4hb64.out my_umf4zhb.out
+-	- $(RM) umf4 readhb readhb_nozeros readhb_size tmp/*
++	- $(RM) umf4$(EXEEXT) readhb$(EXEEXT) readhb_nozeros$(EXEEXT) readhb_size$(EXEEXT) tmp/*
+ 
+ clean:
+ 	- $(RM) $(CLEAN)
+diff -urb SuiteSparse/UMFPACK/Lib/Makefile SuiteSparse-new/UMFPACK/Lib/Makefile
+--- SuiteSparse/UMFPACK/Lib/Makefile	2007-05-05 21:50:23.000000000 +0200
++++ SuiteSparse-new/UMFPACK/Lib/Makefile	2007-06-04 22:26:34.218750000 +0200
+@@ -6,14 +6,14 @@
+ # have GNU make.  Note that it is not used if you have GNU make.  It ignores
+ # dependency checking and just compiles everything.
+ 
+-default: everything
+-
+ include ../../UFconfig/UFconfig.mk
+ 
++default: $(LIBPRE)umfpack.$(LIBEXT)
++
+ C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) -I../Include -I../../AMD/Include \
+-    -I../Source
++    -I../Source -I../../UFconfig
+ 
+-everything:
++$(LIBPRE)umfpack.$(LIBEXT):
+ 	$(C) -c ../Source/umfpack_global.c -o umfpack_gn_global.o
+ 	$(C) -DDINT -c ../Source/umf_analyze.c -o umf_i_analyze.o
+ 	$(C) -DDINT -c ../Source/umf_apply_order.c -o umf_i_apply_order.o
+@@ -333,7 +333,7 @@
+ 	$(C) -DZLONG -c ../Source/umfpack_save_numeric.c -o umfpack_zl_save_numeric.o
+ 	$(C) -DZLONG -c ../Source/umfpack_load_symbolic.c -o umfpack_zl_load_symbolic.o
+ 	$(C) -DZLONG -c ../Source/umfpack_save_symbolic.c -o umfpack_zl_save_symbolic.o
+-	$(AR) ../Lib/libumfpack.a \
++	$(AR) ../Lib/$(LIBPRE)umfpack.$(LIBEXT) \
+ 	    umfpack_gn_global.o \
+ 	    umf_i_analyze.o umf_i_apply_order.o umf_i_colamd.o umf_i_free.o \
+ 	    umf_i_fsize.o umf_i_is_permutation.o umf_i_malloc.o umf_i_realloc.o \
+diff -urb SuiteSparse/UMFPACK/Source/cholmod_blas.h SuiteSparse-new/UMFPACK/Source/cholmod_blas.h
+--- SuiteSparse/UMFPACK/Source/cholmod_blas.h	2007-05-05 22:01:57.000000000 +0200
++++ SuiteSparse-new/UMFPACK/Source/cholmod_blas.h	2007-06-04 22:26:34.234375000 +0200
+@@ -48,8 +48,10 @@
+ #define CHOLMOD_CYGWIN
+ #else
+ #define CHOLMOD_WINDOWS
++#ifndef BLAS_UNDERSCORE
+ #define BLAS_NO_UNDERSCORE
+ #endif
++#endif
+ #define CHOLMOD_ARCHITECTURE "Microsoft Windows"
+ 
+ #elif defined (__hppa) || defined (__hpux) || defined (MHPUX) || defined (ARCH_HPUX)

@@ -285,6 +285,11 @@ EOF
         echo "  SetOutPath \"\$INSTDIR\\license\""
         echo "  File \"\${VCLIBS_ROOT}\\license\\COPYRIGHT.ARPACK\""
         ;;
+		miscellaneous)
+        echo "  SetOutPath \"\$INSTDIR\\bin\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
+		;;
       esac
       echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
       echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""

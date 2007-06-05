@@ -1,0 +1,16 @@
+Package: Units
+Version: 1.86
+Home page: http://www.gnu.org/software/units/
+Download: http://ftp.gnu.org/gnu/units/units-1.86.tar.gz
+License: GPL
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: none
+
+1) Apply the patch
+
+2) nmake -f Makefile.dos
+
+3) Install (copy manually)
+	. units.exe into bin directory

@@ -144,16 +144,16 @@ static void initialize(void)
 	vars["OCTLIBDIR"] = get_variable("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-	std::string DEFAULT_INCFLAGS = "-I" + vars["OCTINCLUDEDIR"] + " -I" + vars["OCTINCLUDEDIR"] + "\\octave";
+	std::string DEFAULT_INCFLAGS = "-I" + quote_path(vars["OCTINCLUDEDIR"]) + " -I" + quote_path(vars["OCTINCLUDEDIR"] + "\\octave");
 #else
-	std::string DEFAULT_INCFLAGS = "-I" + vars["OCTINCLUDEDIR"] + " -I" + vars["OCTINCLUDEDIR"] + "/octave";
+	std::string DEFAULT_INCFLAGS = "-I" + quote_path(vars["OCTINCLUDEDIR"]) + " -I" + quote_path(vars["OCTINCLUDEDIR"] + "/octave");
 #endif
 	if (vars["INCLUDEDIR"] != "/usr/include")
-		DEFAULT_INCFLAGS += " -I" + vars["INCLUDEDIR"];
+		DEFAULT_INCFLAGS += " -I" + quote_path(vars["INCLUDEDIR"]);
 
-	std::string DEFAULT_LFLAGS = "-L" + vars["OCTLIBDIR"];
+	std::string DEFAULT_LFLAGS = "-L" + quote_path(vars["OCTLIBDIR"]);
 	if (vars["LIBDIR"] != "/usr/lib")
-		DEFAULT_LFLAGS += " -L" + vars["LIBDIR"];
+		DEFAULT_LFLAGS += " -L" + quote_path(vars["LIBDIR"]);
 
 	vars["CPPFLAGS"] = get_variable("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
 	vars["INCFLAGS"] = get_variable("INCFLAGS", DEFAULT_INCFLAGS);
@@ -403,6 +403,8 @@ int main(int argc, char **argv)
 				vars["CC"] += " -d";
 			if (vars["CXX"] == "cc-msvc")
 				vars["CXX"] += " -d";
+			if (vars["DL_LD"] == "cc-msvc")
+				vars["DL_LD"] += " -d";
 		}
 		else if (arg == "-h" || arg == "-?" || arg == "--help")
 		{

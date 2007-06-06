@@ -1,0 +1,353 @@
+#!/bin/sh
+
+#################
+# Configuration #
+#################
+
+INSTALL_DIR=/d/Temp/vclibs_tmp
+DOWNLOAD_DIR=downloaded_packages
+WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+
+verbose=false
+
+###################################################################################
+
+function download_file
+{
+  filename=$1
+  location=$2
+  if ! test -f "$DOWNLOAD_DIR/$filename"; then
+    echo -n "downloading $filename... "
+    mkdir -p "$DOWNLOAD_DIR"
+    if $verbose; then
+      echo "wget $WGET_FLAGS -o \"$DOWNLOAD_DIR/$filename\" \"$location\""
+    fi
+    wget $WGET_FLAGS -q -O "$DOWNLOAD_DIR/$filename" "$location"
+    if ! test -f "$DOWNLOAD_DIR/$filename"; then
+      echo "failed"
+      exit -1
+    else
+      echo "done"
+    fi
+  fi
+}
+
+###################################################################################
+
+# Check Visual Studio availability
+echo -n "checking for Visual Studio... "
+cl_path=`which cl.exe`
+if test "x$cl_path" = "x"; then
+  echo "no"
+  echo "Visual Studio must be installed and in your PATH variable"
+  exit -1
+else
+  echo "yes"
+fi
+echo -n "checking for Platform SDK... "
+cat <<EOF > conftest.c
+#include <windows.h>
+int main(int argc, char **argv)
+{ return 0; }
+EOF
+cl -nologo -c conftest.c 2>&1 > /dev/null
+if ! test -f conftest.obj; then
+  echo "no"
+  echo "unable to compile simple windows program, Platform SDK is probably not available"
+  exit -1
+else
+  echo "yes"
+fi
+rm -f conftest.*
+
+# Create target directory
+echo -n "creating target directories... "
+mkdir -p $INSTALL_DIR
+mkdir -p $INSTALL_DIR/bin
+mkdir -p $INSTALL_DIR/lib
+mkdir -p $INSTALL_DIR/include
+echo "done"
+
+tbindir=$INSTALL_DIR/bin
+tlibdir=$INSTALL_DIR/lib
+tincludedir=$INSTALL_DIR/include
+PATH=$tbindir:$PATH
+tdir_w32=`cd "$INSTALL_DIR" && pwd -W`
+tdir_w32=`echo $tdir_w32 | sed -e 's,/,\\\\\\\\,g'`
+
+# Check cc-msvc
+echo -n "checking for cc-msvc.exe... "
+if ! test -f "$tbindir/cc-msvc.exe"; then
+  echo "compiling"
+  cl -nologo -O2 -EHs cc-msvc.cc
+  if ! test -f cc-msvc.exe; then
+    echo "failed to compile cc-msvc.exe"
+    exit -1
+  fi
+  mv -f cc-msvc.exe "$tbindir"
+  rm -f cc-msvc.obj
+else
+  echo "installed"
+fi
+
+# Check ar-msvc, ranlib-msvc
+echo -n "checking for ar-msvc... "
+if ! test -f "$tbindir/ar-msvc"; then
+  echo "copying"
+  cp -f ar-msvc "$tbindir"
+else
+  echo "installed"
+fi
+echo -n "checking for ranlib-msvc... "
+if ! test -f "$tbindir/ranlib-msvc"; then
+  echo "copying"
+  cp -f ranlib-msvc "$tbindir"
+else
+  echo "installed"
+fi
+
+#######
+# f2c #
+#######
+
+echo -n "checking for f2c... "
+if ! test -f "$tbindir/f2c.exe"; then
+  echo "no"
+  download_file f2c.exe.gz http://www.netlib.org/f2c/mswin/f2c.exe.gz
+  gzip -d -c "$DOWNLOAD_DIR/f2c.exe.gz" > "$tbindir/f2c.exe"
+else
+  echo "installed"
+fi
+
+##########
+# libf2c #
+##########
+
+echo -n "checking for libf2c... "
+if ! test -f "$tlibdir/f2c.lib"; then
+  echo "no"
+  download_file libf2c.zip http://www.netlib.org/f2c/libf2c.zip
+  (cd "$DOWNLOAD_DIR" && unzip -q libf2c.zip)
+  echo -n "compiling libf2c... "
+  (cd "$DOWNLOAD_DIR/libf2c";
+    sed -e 's/^CFLAGS = /CFLAGS = -MD -DIEEE_COMPLEX_DIVIDE /' makefile.vc > ttt;
+    mv ttt makefile.vc;
+    sed -e 's/^extern int isatty(int);$/\/*extern int isatty(in);*\//' fio.h > ttt;
+    mv ttt fio.h;
+    nmake -f makefile.vc;
+    cp -f vcf2c.lib "$tlibdir/f2c.lib") > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/libf2c"
+  if ! test -f "$tlibdir/f2c.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+########
+# BLAS #
+########
+
+echo -n "checking for BLAS... "
+if ! test -f "$tbindir/blas.dll"; then
+  echo "no"
+  download_file blas.tgz http://www.netlib.org/blas/blas.tgz
+  (cd "$DOWNLOAD_DIR" && tar xfz blas.tgz)
+  echo -n "compiling BLAS... "
+  cp libs/blas.makefile "$DOWNLOAD_DIR/BLAS"
+  (cd "$DOWNLOAD_DIR/BLAS" &&
+    make -f blas.makefile && 
+    cp blas.dll "$tbindir" &&
+    cp blas.lib "$tlibdir") > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/BLAS"
+  if ! test -f "$tbindir/blas.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+##########
+# LAPACK #
+##########
+
+echo -n "checking for LAPACK... "
+if ! test -f "$tbindir/lapack.dll"; then
+  echo "no"
+  download_file lapack-3.1.0.tgz http://www.netlib.org/lapack/lapack-3.1.0.tgz
+  echo -n "decompressing LAPACK... "
+  (cd "$DOWNLOAD_DIR" && tar xfz lapack-3.1.0.tgz)
+  echo "done"
+  echo -n "compiling LAPACK... "
+  cp libs/lapack.makefile "$DOWNLOAD_DIR/lapack-3.1.0/SRC"
+  (cd "$DOWNLOAD_DIR/lapack-3.1.0/SRC" &&
+    make -f lapack.makefile && 
+    cp lapack.dll "$tbindir" &&
+    cp lapack.lib liblapack_f77.lib "$tlibdir") > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/lapack-3.1.0"
+  if ! test -f "$tbindir/lapack.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+########
+# FFTW #
+########
+
+echo -n "checking for FFTW... "
+if ! test -f "$tbindir/libfftw3-3.dll"; then
+  echo "no"
+  download_file fftw-3.1.2-dll.zip ftp://ftp.fftw.org/pub/fftw/fftw-3.1.2-dll.zip
+  echo -n "decompressing FFTW... "
+  (cd "$DOWNLOAD_DIR" && mkdir fftw3 && cd fftw3 && unzip -q ../fftw-3.1.2-dll.zip)
+  echo "done"
+  echo -n "installing FFTW ..."
+  (cd "$DOWNLOAD_DIR/fftw3" &&
+    cp libfftw3-3.dll "$tbindir" && 
+    cp fftw3.h "$tincludedir" &&
+    lib -out:fftw3.lib -def:libfftw3-3.def &&
+    cp fftw3.lib "$tlibdir") > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/fftw3"
+  if ! test -f "$tbindir/libfftw3-3.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+########
+# PCRE #
+########
+
+echo -n "checking for PCRE... "
+if ! test -f "$tbindir/pcre70.dll"; then
+  echo "no"
+  download_file pcre-7.0.tar.gz ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.0.tar.gz
+  echo -n "decompressing PCRE... "
+  (cd "$DOWNLOAD_DIR" && tar xfz pcre-7.0.tar.gz)
+  echo "done"
+  echo -n "compiling PCRE... "
+  cp libs/pcre-7.0.diff "$DOWNLOAD_DIR/pcre-7.0"
+  (cd "$DOWNLOAD_DIR/pcre-7.0" &&
+    patch -p1 < pcre-7.0.diff &&
+    nmake -f Makefile.vc &&
+    cp pcre70.dll "$tbindir" &&
+    cp pcre.lib "$tlibdir" &&
+    cp pcre.h "$tincludedir") > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/pcre-7.0"
+  if ! test -f "$tbindir/pcre70.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+########
+# GLPK #
+########
+
+echo -n "checking for GLPK... "
+if ! test -f "$tbindir/glpk49.dll"; then
+  echo "no"
+  download_file glpk-4.9.tar.gz ftp://ftp.gnu.org/gnu/glpk/glpk-4.9.tar.gz
+  echo -n "decompressing GLPK... "
+  (cd "$DOWNLOAD_DIR" && tar xfz glpk-4.9.tar.gz)
+  cp libs/glpk-4.9.diff "$DOWNLOAD_DIR/glpk-4.9"
+  echo "done"
+  echo -n "compiling GLPK... "
+  (cd "$DOWNLOAD_DIR/glpk-4.9" &&
+    patch -p1 < glpk-4.9.diff &&
+    sed -e "s,^DESTDIR =.*$,DESTDIR = $tdir_w32," w32vc8d.mak > ttt &&
+    mv ttt w32vc8d.mak &&
+    nmake -f w32vc8d.mak &&
+    nmake -f w32vc8d.mak installwin) > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/glpk-4.9"
+  if ! test -f "$tbindir/glpk49.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+############
+# readline #
+############
+
+echo -n "checking for readline... "
+if ! test -f "$tbindir/readline.dll"; then
+  echo "no"
+  download_file readline-5.2.tar.gz ftp://ftp.gnu.org/gnu/readline/readline-5.2.tar.gz
+  echo -n "decompressing readline... "
+  (cd "$DOWNLOAD_DIR" && tar xfz readline-5.2.tar.gz)
+  cp libs/readline-5.2.diff "$DOWNLOAD_DIR/readline-5.2"
+  echo "done"
+  echo "compiling readline... "
+  (cd "$DOWNLOAD_DIR/readline-5.2" &&
+    patch -p1 < readline-5.2.diff &&
+    CC=cc-msvc CXX=cc-msvc ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALLDIR &&
+    make shared &&
+    make install-shared DESTDIR=$INSTALL_DIR &&
+    cp shlib/readline.lib "$tlibdir" &&
+    cp shlib/history.lib "$tlibdir"&&
+    mv "$tlibdir/readline.dll" "$tlibdir/history.dll" "$tbindir") > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/readline-5.2"
+  if ! test -f "$tbindir/readline.dll"; then
+    echo "failed"
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+########
+# zlib #
+########
+
+echo -n "checking for zlib... "
+if ! test -f "$tbindir/zlib1.dll"; then
+  echo "no"
+  download_file zlib123.zip http://www.zlib.net/zlib123.zip
+  echo -n "decompressing zlib... "
+  (cd "$DOWNLOAD_DIR" && mkdir zlib && cd zlib && unzip -q ../zlib123.zip)
+  echo "done"
+  echo -n "compiling zlib... "
+  (cd "$DOWNLOAD_DIR/zlib" &&
+    sed -e 's/^STATICLIB *=.*$/STATICLIB = zlib-static.lib/' -e 's/^IMPLIB *=.*$/IMPLIB = zlib.lib/' win32/Makefile.msc > ttt &&
+    mv ttt win32/Makefile.msc &&
+    sed -e 's/1,2,2,0/1,2,3,0/' win32/zlib1.rc > ttt &&
+    mv ttt win32/zlib1.rc &&
+    nmake -f win32\\Makefile.msc &&
+    mt -outputresource:zlib1.dll -manifest zlib1.dll.manifest &&
+    cp zlib1.dll "$tbindir" &&
+    cp zlib.lib "$tlibdir" &&
+    cp zlib.h zconf.h "$tincludedir") #> /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/zlib"
+  if ! test -f "$tbindir/zlib1.dll"; then
+    echo "failed"
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi

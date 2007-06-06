@@ -219,7 +219,7 @@ Section "Development files" SEC_DEV
   File /r /x *.lib.${OCTAVE_VERSION} /x octave_fixed.lib "${OCTAVE_ROOT}\lib\*.*"
   SetOutPath "$INSTDIR\bin"
   File "${OCTAVE_ROOT}\bin\mkoctfile.exe"
-  File "/oname=mkoctfile-${OCTAVE_VERSION}" "${OCTAVE_ROOT}\bin\mkoctfile.exe"
+  File "/oname=mkoctfile-${OCTAVE_VERSION}.exe" "${OCTAVE_ROOT}\bin\mkoctfile.exe"
   ;File "${OCTAVE_ROOT}\bin\mkoctfile"
   ;File "${OCTAVE_ROOT}\bin\mkoctfile-${OCTAVE_VERSION}"
   File "${OCTAVE_ROOT}\bin\octave-config.exe"

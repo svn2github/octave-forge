@@ -56,7 +56,7 @@ static void* jvmLib = 0;
 static std::map<int,octave_value> listener_map;
 static std::map<int,octave_value> octave_ref_map;
 static int octave_refcount = 0;
-static int octave_thread_ID = -1;
+static long octave_thread_ID = -1;
 
 template <class T>
 class java_local_ref
@@ -1185,6 +1185,25 @@ static octave_value do_java_set (const std::string& class_name, const std::strin
   return retval;
 }
 
+static long get_current_thread_ID()
+{
+  if (jni_env)
+    {
+      jclass_ref cls = jni_env->FindClass ("java/lang/Thread");
+      jmethodID mID = jni_env->GetStaticMethodID (cls, "currentThread", "()Ljava/lang/Thread;");
+      jobject_ref jthread = jni_env->CallStaticObjectMethod (cls, mID);
+      if (jthread)
+        {
+          jclass_ref jth_cls = jni_env->GetObjectClass (jthread);
+          mID = jni_env->GetMethodID (jth_cls, "getId", "()J");
+		  long result = jni_env->CallLongMethod (jthread, mID);
+		  printf("current java thread ID = %ld\n", result);
+		  return result;
+        }
+    }
+  return -1;
+}
+
 static int java_event_hook (void)
 {
   if (jni_env)
@@ -1205,9 +1224,13 @@ static void initialize_java (void)
         {
           octave_java::register_type ();
           command_editor::set_event_hook (java_event_hook);
+          /*
 #ifdef __WIN32__
           octave_thread_ID = GetCurrentThreadId();
 #endif
+*/
+          octave_thread_ID = get_current_thread_ID ();
+          printf("octave thread ID=%ld\n", octave_thread_ID);
         }
       else
         error (msg.c_str ());
@@ -1555,8 +1578,10 @@ JNIEXPORT void JNICALL Java_org_octave_Octave_doEvalString
 JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokation
   (JNIEnv *env, jclass)
 {
+  /*
 #ifdef __WIN32__
   return (GetCurrentThreadId() != octave_thread_ID);
 #endif
-  return false;
+*/
+  return (get_current_thread_ID () != octave_thread_ID);
 }

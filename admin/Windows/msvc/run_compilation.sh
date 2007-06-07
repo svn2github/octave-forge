@@ -1,5 +1,17 @@
 #!/bin/sh
 
+###################################################################################
+#
+# Requirements
+#	- Visual Studio (tested with VC++ Express 2005)
+#	- MSYS shell
+#	- MSYS Development Toolkit (DTK)
+#	- wget (GnuWin32)
+#	- unzip (GnuWin32)
+#	- octave-forge CVS tree (at least the admin/Windows/msvc/ directory)
+#
+###################################################################################
+
 #################
 # Configuration #
 #################
@@ -50,7 +62,7 @@ cat <<EOF > conftest.c
 int main(int argc, char **argv)
 { return 0; }
 EOF
-cl -nologo -c conftest.c 2>&1 > /dev/null
+cl -nologo -c conftest.c > /dev/null 2>&1
 if ! test -f conftest.obj; then
   echo "no"
   echo "unable to compile simple windows program, Platform SDK is probably not available"
@@ -180,9 +192,9 @@ fi
 echo -n "checking for LAPACK... "
 if ! test -f "$tbindir/lapack.dll"; then
   echo "no"
-  download_file lapack-3.1.0.tgz http://www.netlib.org/lapack/lapack-3.1.0.tgz
+  download_file lapack-lite-3.1.0.tgz http://www.netlib.org/lapack/lapack-lite-3.1.0.tgz
   echo -n "decompressing LAPACK... "
-  (cd "$DOWNLOAD_DIR" && tar xfz lapack-3.1.0.tgz)
+  (cd "$DOWNLOAD_DIR" && tar xfz lapack-lite-3.1.0.tgz)
   echo "done"
   echo -n "compiling LAPACK... "
   cp libs/lapack.makefile "$DOWNLOAD_DIR/lapack-3.1.0/SRC"
@@ -341,9 +353,36 @@ if ! test -f "$tbindir/zlib1.dll"; then
     mt -outputresource:zlib1.dll -manifest zlib1.dll.manifest &&
     cp zlib1.dll "$tbindir" &&
     cp zlib.lib "$tlibdir" &&
-    cp zlib.h zconf.h "$tincludedir") #> /dev/null 2>&1
+    cp zlib.h zconf.h "$tincludedir") > /dev/null 2>&1
   rm -rf "$DOWNLOAD_DIR/zlib"
   if ! test -f "$tbindir/zlib1.dll"; then
+    echo "failed"
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+###############
+# SuiteSparse #
+###############
+
+echo -n "checking for SuiteSparse... "
+if test ! -f "$tlibdir/cxsparse.lib" -o ! -d "$tincludedir/suitesparse"; then
+  echo "no"
+  download_file SuiteSparse-3.0.0.tar http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
+  echo -n "decompressing SuiteSparse... "
+  (cd "$DOWNLOAD_DIR" && tar xf SuiteSparse-3.0.0.tar)
+  cp libs/suitesparse-3.0.0.diff "$DOWNLOAD_DIR/SuiteSparse"
+  echo "done"
+  echo "compiling SuiteSpase... "
+  (cd "$DOWNLOAD_DIR/SuiteSparse" &&
+    patch -p1 < suitesparse-3.0.0.diff &&
+    make &&
+    make install INSTDIR="$INSTALL_DIR") > /dev/null 2>&1
+  rm -rf "$DOWNLOAD_DIR/SuiteSparse"
+  if test ! -f "$tlibdir/cxsparse.lib" -o ! -d "$tincludedir/suitesparse"; then
     echo "failed"
   else
     echo "done"

@@ -3,6 +3,9 @@
 		. mkoctfile now includes $prefix\lib in link command
 		. mkoctfile now exports mexFunction from mex files
 		. fix file handle leak
+	* Gnuplot
+		. include fix for bug #1716556 (problem with pipes and
+		  long input lines)
 
 2007-06-03: 2.9.12-3
 	* Installer improvements/fixes

@@ -37,7 +37,9 @@ $(LIB_DEFFILE): $(DEF_FILES)
 	cat $(DEF_FILES) >> $@
 
 $(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
-	$(CC) -shared -o $@ $(OBJECTS) -lf2c -lblas -Wl,-def:$(LIB_DEFFILE)
+	@echo $(OBJECTS) > link.tmp
+	$(CC) -shared -o $@ @link.tmp -lf2c -lblas -Wl,-def:$(LIB_DEFFILE)
+	@rm -f link.tmp
 
 $(LIBSTATIC): $(OBJECTS) $(LIB_DEFFILE)
 	$(AR) r $@ $(OBJECTS)

@@ -43,6 +43,7 @@ public class OctaveSink implements HandleNotifier.Sink
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		System.out.println("OctaveSink executing: thread ID = " + Thread.currentThread().getId());
 		ref.invokeAndWait(new Object[] {p});
 	}
 }

@@ -1183,7 +1183,7 @@ static long get_current_thread_ID(JNIEnv *jni_env)
           jclass_ref jth_cls (jni_env, jni_env->GetObjectClass (jthread));
           mID = jni_env->GetMethodID (jth_cls, "getId", "()J");
 		  long result = jni_env->CallLongMethod (jthread, mID);
-		  printf("current java thread ID = %ld\n", result);
+		  //printf("current java thread ID = %ld\n", result);
 		  return result;
         }
     }
@@ -1210,13 +1210,8 @@ static void initialize_java (void)
         {
           octave_java::register_type ();
           command_editor::set_event_hook (java_event_hook);
-          /*
-#ifdef __WIN32__
-          octave_thread_ID = GetCurrentThreadId();
-#endif
-*/
           octave_thread_ID = get_current_thread_ID (current_env);
-          printf("octave thread ID=%ld\n", octave_thread_ID);
+          //printf("octave thread ID=%ld\n", octave_thread_ID);
         }
       else
         error (msg.c_str ());
@@ -1542,10 +1537,5 @@ JNIEXPORT void JNICALL Java_org_octave_Octave_doEvalString
 JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokation
   (JNIEnv *env, jclass)
 {
-  /*
-#ifdef __WIN32__
-  return (GetCurrentThreadId() != octave_thread_ID);
-#endif
-*/
   return (get_current_thread_ID (env) != octave_thread_ID);
 }

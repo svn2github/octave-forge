@@ -1230,9 +1230,9 @@ public class GLRenderer implements Renderer
 					}
 				}
 				
-				for (int j=0; j<y.length; j++)
+				for (int j=0; j<y[0].length; j++)
 				{
-					for (int i=1; i<y[j].length; i++)
+					for (int i=1; i<y.length; i++)
 					{
 						gl.glBegin(GL.GL_LINES);
 

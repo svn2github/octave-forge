@@ -33,7 +33,7 @@ public class LineStyleProperty extends RadioProperty
 
 	public LineStyleProperty(PropertySet parent, String name, String style)
 	{
-		super(parent, name, new String[] {"-", ":", "--", "-.", "none"}, style);
+		super(parent, name, new String[] {"-", ":", "--", "-.", "none", ""}, style);
 	}
 
 	public void setup(GL gl)
@@ -96,6 +96,6 @@ public class LineStyleProperty extends RadioProperty
 
 	public boolean isSet()
 	{
-		return !is("none");
+		return !(is("none") || is(""));
 	}
 }

@@ -162,8 +162,9 @@ public class LegendObject extends AxesObject
 		doLayout();
 		doLocate();
 		
-		String[] used_names = new String[index];
-		System.arraycopy(names, 0, used_names, 0, index);
+		String[] used_names = new String[items.length];
+		for (int i=0; i<items.length; i++)
+			used_names[i] = items[i].name;
 		String.reset(used_names);
 	}
 

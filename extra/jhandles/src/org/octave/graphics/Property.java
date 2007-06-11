@@ -233,12 +233,28 @@ public abstract class Property implements HandleNotifier.Source
 		notifierList.remove(n);
 	}
 
-	public static Property createProperty(PropertySet parent, String name, String type)
+	public static Property createProperty(PropertySet parent, String name, String type) throws PropertyException
 	{
 		if (type.equals("double"))
 			return new DoubleProperty(parent, name);
 		else if (type.equals("string"))
 			return new StringProperty(parent, name);
 		return null;
+	}
+
+	public static Property createProperty(PropertySet parent, String name, String type, Object arg) throws PropertyException
+	{
+		if (type.equals("radio"))
+		{
+			String[] values = ((String)arg).split("|");
+			return new RadioProperty(parent, name, values, "");
+		}
+		else
+		{
+			Property p = createProperty(parent, name, type);
+			if (p != null)
+				p.set(arg);
+			return p;
+		}
 	}
 }

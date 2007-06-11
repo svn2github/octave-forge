@@ -112,16 +112,32 @@ public class DoubleMatrixProperty extends Property
 
 	public double[] getVector()
 	{
-		return (double[])getObject();
+		MatrixData m = (MatrixData)pvalue;
+		return (m.nDims == 1 ? (double[])getObject() : null);
 	}
 
 	public double[][] getMatrix()
 	{
-		return (double[][])getObject();
+		MatrixData m = (MatrixData)pvalue;
+		switch (m.nDims)
+		{
+		case 1:
+			return new double[][] { getVector() };
+		case 2:
+			return (double[][])getObject();
+		default:
+			return null;
+		}
 	}
 
 	public double[][][] getMatrix3()
 	{
-		return (double[][][])getObject();
+		MatrixData m = (MatrixData)pvalue;
+		if (m.nDims < 3)
+			return new double[][][] { getMatrix() };
+		else if (m.nDims == 3)
+			return (double[][][])getObject();
+		else
+			return null;
 	}
 }

@@ -30,21 +30,98 @@ public class GroupObject extends GraphicObject
 		super(parent, "hggroup");
 	}
 
+	private void updateLimits()
+	{
+		synchronized (Children)
+		{
+			double xmin, xmax, ymin, ymax, zmin, zmax, cmin, cmax, amin, amax;
+			Iterator it = Children.iterator();
+			double[] lim;
+
+			xmin = ymin = zmin = cmin = amin = Double.POSITIVE_INFINITY;
+			xmax = ymax = zmax = cmax = amax = Double.NEGATIVE_INFINITY;
+			while (it.hasNext())
+			{
+				GraphicObject obj = (GraphicObject)it.next();
+				lim = obj.XLim.getArray();
+				xmin = Math.min(lim[0], xmin);
+				xmax = Math.max(lim[1], xmax);
+				lim = obj.YLim.getArray();
+				ymin = Math.min(lim[0], ymin);
+				ymax = Math.max(lim[1], ymax);
+				lim = obj.ZLim.getArray();
+				zmin = Math.min(lim[0], zmin);
+				zmax = Math.max(lim[1], zmax);
+				lim = obj.CLim.getArray();
+				cmin = Math.min(lim[0], cmin);
+				cmax = Math.max(lim[1], cmax);
+				lim = obj.ALim.getArray();
+				amin = Math.min(lim[0], amin);
+				amax = Math.max(lim[1], amax);
+			}
+
+			XLim.set(new double[] {xmin, xmax}, true);
+			YLim.set(new double[] {ymin, ymax}, true);
+			ZLim.set(new double[] {zmin, zmax}, true);
+			CLim.set(new double[] {cmin, cmax}, true);
+			ALim.set(new double[] {amin, amax}, true);
+		}
+	}
+
+	public void childValidated(HandleObject child)
+	{
+		super.childValidated(child);
+		updateLimits();
+		if (child instanceof GraphicObject)
+		{
+			GraphicObject g = (GraphicObject)child;
+			listen(g.XLim);
+			listen(g.YLim);
+			listen(g.ZLim);
+			listen(g.CLim);
+			listen(g.ALim);
+		}
+	}
+
+	public void removeChild(HandleObject child)
+	{
+		super.removeChild(child);
+		updateLimits();
+	}
+
 	public void draw(Renderer r)
 	{
-		Iterator it = Children.iterator();
-		while (it.hasNext())
+		synchronized (Children)
 		{
-			GraphicObject obj = (GraphicObject)it.next();
-			obj.draw(r);
+			Iterator it = Children.iterator();
+			while (it.hasNext())
+			{
+				GraphicObject obj = (GraphicObject)it.next();
+				obj.draw(r);
+			}
 		}
 	}
 
 	public void validate()
 	{
-		Iterator it = Children.iterator();
-		while (it.hasNext())
-			((HandleObject)it.next()).validate();
-		super.validate();
+		synchronized (Children)
+		{
+			Iterator it = Children.iterator();
+			while (it.hasNext())
+				((HandleObject)it.next()).validate();
+			super.validate();
+		}
+	}
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		super.propertyChanged(p);
+		
+		String name = p.getName().toLowerCase();
+		if (name.equals("xlim") || name.equals("ylim") || name.equals("zlim") ||
+			name.equals("clim") || name.equals("alim"))
+		{
+			updateLimits();
+		}
 	}
 }

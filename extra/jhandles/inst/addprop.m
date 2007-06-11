@@ -20,7 +20,8 @@ function addprop (h, pname, ptype, varargin)
   if (ishandle (h))
     if (ischar (pname))
       if (ischar (ptype))
-        __jhandles_add_property (h, pname, ptype, varargin{:});
+        [args, opts] = parse_addprop_args (varargin{:});
+        __jhandles_add_property (h, pname, ptype, opts, args{:});
       else
         error ("invalid property type");
       endif
@@ -29,6 +30,25 @@ function addprop (h, pname, ptype, varargin)
     endif
   else
     error ("invalid handle");
+  endif
+
+endfunction
+
+function [args, opts] = parse_addprop_args (varargin)
+
+  opts = struct ("visible", true, "readonly", false);
+  args = varargin;
+
+  idx = find (strcmp (args, "hidden"));
+  if (! isempty (idx))
+    args(idx) = [];
+    opts.visible = false;
+  endif
+
+  idx = find (strcmp (args, "readonly"));
+  if (! isempty (idx))
+    args (idx) = [];
+    opts.readonly = true;
   endif
 
 endfunction

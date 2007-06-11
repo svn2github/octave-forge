@@ -904,22 +904,27 @@ is_winnt:
   StrCmp $1 5 0 is_error
   StrCmp $0 "5.0" is_win2k
   StrCmp $0 "5.1" is_winxp
+  StrCmp $0 "5.2" is_winxp64
   Goto is_error
 is_win2k:
   StrCpy $IS_WIN2K 1
   Goto done
+is_winxp64:
 is_winxp:
   StrCpy $IS_WIN2K 0
   Goto done
 is_error:
+  StrCpy $1 $0
   ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows NT\CurrentVersion" ProductName
   IfErrors 0 +4
   ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion" Version
   IfErrors 0 +2
   StrCpy $0 "Unknown"
-  MessageBox MB_ICONSTOP|MB_OK "This version of Octave cannot be installed on this system.$\r$\nSupported systems are Windows 2000 and Windows XP.$\r$\n$\r$\nCurrent system: $0"
+  MessageBox MB_ICONSTOP|MB_OK "This version of Octave cannot be installed on this system.$\r$\nSupported systems are Windows 2000 and Windows XP.$\r$\n$\r$\nCurrent system: $0 (version: $1)"
   Abort
 done:
+  Pop $1
+  Pop $0
 FunctionEnd
 
 Function componentsLeave

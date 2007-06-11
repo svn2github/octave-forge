@@ -22,11 +22,6 @@ function __jhandles_add_listener (h, pname, fun)
   # TODO
   #   - support object listeners
   #   - fun as "string"
-  p = parent.getProperty (pname);
-  if (! isempty (p))
-    java_new ("org.octave.graphics.OctaveSink", fun, p);
-  else
-    error ("unknown property `%s'", pname);
-  endif
+  java_new ("org.octave.graphics.OctaveSink", fun, parent, pname);
 
 endfunction

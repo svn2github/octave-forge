@@ -33,6 +33,22 @@ public class OctaveSink implements HandleNotifier.Sink
 		new HandleNotifier(p, this);
 	}
 
+	public OctaveSink(OctaveReference ref, HandleObject h, String[] pnames)
+	{
+		this.ref = ref;
+
+		HandleNotifier n = new HandleNotifier();
+		n.addSink(this);
+		for (int i=0; i<pnames.length; i++)
+		{
+			Property p = h.getProperty(pnames[i]);
+			if (p != null)
+				n.addSource(p);
+			else
+				System.out.println("WARNING: `" + pnames[i] + "' is not a valid property name of " + h.Type.toString());
+		}
+	}
+
 	public void addNotifier(HandleNotifier h)
 	{
 	}
@@ -44,6 +60,10 @@ public class OctaveSink implements HandleNotifier.Sink
 	public void propertyChanged(Property p) throws PropertyException
 	{
 		//System.out.println("OctaveSink executing: thread ID = " + Thread.currentThread().getId());
-		ref.invokeAndWait(new Object[] {p});
+		if (p.getParent() instanceof HandleObject)
+		{
+			HandleObject h = (HandleObject)p.getParent();
+			ref.invokeAndWait(new Object[] {new Double(h.getHandle())});
+		}
 	}
 }

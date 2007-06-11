@@ -18,7 +18,10 @@
 function addlistener (h, pname, fun)
 
   if (ishandle (h))
-    if (ischar (pname))
+    if (ischar (pname) || iscellstr (pname))
+      if (ischar (pname))
+        pname = {pname};
+      endif
       if (ischar (fun) || isa (fun, "function_handle"))
         __jhandles_add_listener (h, pname, fun);
       else

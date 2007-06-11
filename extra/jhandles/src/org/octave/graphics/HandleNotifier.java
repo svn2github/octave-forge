@@ -41,6 +41,10 @@ public class HandleNotifier
 		public void propertyChanged(Property p) throws PropertyException;
 	}
 
+	public HandleNotifier()
+	{
+	}
+
 	public HandleNotifier(Source source, Sink sink)
 	{
 		sources.add(source);
@@ -54,6 +58,18 @@ public class HandleNotifier
 		Iterator it = sinks.iterator();
 		while (it.hasNext())
 			((Sink)it.next()).propertyChanged(p);
+	}
+
+	public void addSink(Sink sink)
+	{
+		sinks.add(sink);
+		sink.addNotifier(this);
+	}
+
+	public void addSource(Source source)
+	{
+		sources.add(source);
+		source.addNotifier(this);
 	}
 
 	public void removeSource(Source source)

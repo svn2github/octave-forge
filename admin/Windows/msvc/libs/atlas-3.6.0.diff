@@ -1,6 +1,107 @@
+diff -ur ATLAS/config.c ATLAS-mod/config.c
+--- ATLAS/config.c	Mon Dec 22 15:06:32 2003
++++ ATLAS-mod/config.c	Thu Jun 14 12:58:21 2007
+@@ -1144,7 +1144,7 @@
+    char *wcn[4] = {"DF", "CL", "IFORT", "ICL"};
+    char *defp[4] =
+       {"c:/Program Files/Microsoft Visual Studio/DF98/BIN/DF.EXE",
+-       "c:/Program Files/Microsoft Visual Studio/VC98/BIN/CL.EXE",
++       "c:/Program Files/Microsoft Visual Studio 8/VC/BIN/CL.EXE",
+        "c:/Program Files/Intel/CPP/Compiler80/IA32/BIN/ICL.EXE",
+        "c:/Program Files/Intel/Fortran/Compiler80/IA32/BIN/IFORT.EXE"};
+ 
+@@ -1152,7 +1152,7 @@
+    if (FileIsThere(ln))
+    {
+       fprintf(stdout, "You've already got a %s:\n", ln);
+-      if (!GetIntRange(0, 0, 1, "", "0 uses it, 1 to overwrite with new"))
++      if (!GetIntRange(1, 0, 1, "", "0 uses it, 1 to overwrite with new"))
+          return(0);
+    }
+    assert(wc < WCgcc);
+@@ -1431,9 +1431,9 @@
+       assert(which != CPF77);
+       strcpy(comp, sugg);
+       if (which == CPCC)
+-         strcpy(flag, "-O2 -Oy -Op -Za -nologo");
++         strcpy(flag, "-O2 -Oy -Op -Za -MD -nologo");
+       else
+-         strcpy(flag, "-O1 -Oy -Oa -nologo");
++         strcpy(flag, "-O1 -Oy -Oa -MD -nologo");
+    }
+    else
+    {
+@@ -1677,7 +1677,7 @@
+       if (mach == IntP4)
+       {
+          strcpy(comp, sugg);
+-         strcpy(flag, "-O2 -Oy -Op -Za -nologo");
++         strcpy(flag, "-O2 -Oy -Op -Za -MD -nologo");
+       }
+    }
+    else
+@@ -3115,7 +3115,7 @@
+    }
+    if (j > 0)
+    {
+-      i = GetIntRange(1, 1, j, "", "machine number");
++      i = GetIntRange(8, 1, j, "", "machine number");
+       if (i == 1) mach = MACHOther;
+       else if (i == 2) mach = AmdAthlon;
+       else if (i == 3) mach = AmdHammer32;
+@@ -3478,13 +3478,13 @@
+       }
+    }
+    strcpy(LIBdir, "$(TOPdir)/lib/$(ARCH)");
+-   strcpy(ATLASlib, "libatlas.a");
+-   strcpy(F77BLASlib, "libf77blas.a");
+-   strcpy(CBLASlib, "libcblas.a");
+-   strcpy(PTCBLASlib, "libptcblas.a");
+-   strcpy(PTF77BLASlib, "libptf77blas.a");
+-   strcpy(ARCHIVER, "ar");
+-   strcpy(ARFLAGS, "r");
++   strcpy(ATLASlib, "libatlas.lib");
++   strcpy(F77BLASlib, "libf77blas.lib");
++   strcpy(CBLASlib, "libcblas.lib");
++   strcpy(PTCBLASlib, "libptcblas.ilb");
++   strcpy(PTF77BLASlib, "libptf77blas.lib");
++   strcpy(ARCHIVER, "ar-msvc");
++   strcpy(ARFLAGS, "--cygwin r");
+    strcpy(RANLIB, "echo");
+    L2SIZE = MAXL2SIZE;
+ 
+@@ -3625,7 +3625,7 @@
+ "If you want to just trust these default values, you can use express setup,\n");
+       fprintf(stdout,
+ "drastically reducing the amount of questions you are required to answer\n\n");
+-      GOGO = IsYes('y', "   ", "use express setup?");
++      GOGO = IsYes('n', "   ", "use express setup?");
+       fprintf(stdout, "\n\n");
+    }
+ 
+@@ -3919,7 +3919,7 @@
+       if (FileIsThere(ln))
+       {
+          DisplayFile("CONFIG/NoSearch.txt", stdout, NLINES);
+-         if ( IsYes('y', "", "Use supplied default values for install?") )
++         if ( IsYes('n', "", "Use supplied default values for install?") )
+          {
+             ATL_mprintf(2, fplog, stdout,
+                         "\n\nUnpacking Architectural defaults . . . ");
+@@ -4003,8 +4003,8 @@
+       fprintf(fpout, "   PTCBLASlib = $(LIBdir)/%s\n", PTCBLASlib);
+       fprintf(fpout, "   PTF77BLASlib = $(LIBdir)/%s\n", PTF77BLASlib);
+    }
+-   fprintf(fpout, "   LAPACKlib = $(LIBdir)/liblapack.a\n\n");
+-   fprintf(fpout, "   TESTlib = $(LIBdir)/libtstatlas.a\n");
++   fprintf(fpout, "   LAPACKlib = $(LIBdir)/liblapack.lib\n\n");
++   fprintf(fpout, "   TESTlib = $(LIBdir)/libtstatlas.lib\n");
+ 
+    fprintf(fpout, "#  -------------------------------------------\n");
+    fprintf(fpout, "#  Upper bound on largest cache size, in bytes\n");
 diff -ur ATLAS/src/blas/level2/ATL_hbmv.c ATLAS-mod/src/blas/level2/ATL_hbmv.c
---- ATLAS/src/blas/level2/ATL_hbmv.c	2003-12-22 15:08:02.000000000 +0100
-+++ ATLAS-mod/src/blas/level2/ATL_hbmv.c	2007-02-05 16:48:14.187500000 +0100
+--- ATLAS/src/blas/level2/ATL_hbmv.c	Mon Dec 22 15:08:02 2003
++++ ATLAS-mod/src/blas/level2/ATL_hbmv.c	Thu Jun 14 12:44:27 2007
 @@ -173,7 +173,7 @@
           for( k = 0; k < na; k += nb )
           {
@@ -11,8 +112,8 @@ diff -ur ATLAS/src/blas/level2/ATL_hbmv.c ATLAS-mod/src/blas/level2/ATL_hbmv.c
              ku  = K - k - 1 - kl; ku = Mmax( ku, 0 );
              gbmv0( kb, ma, kl, ku, one, A+ian*lda2, LDA, x+(ia  SHIFT), 1,
 diff -ur ATLAS/src/blas/level2/ATL_sbmv.c ATLAS-mod/src/blas/level2/ATL_sbmv.c
---- ATLAS/src/blas/level2/ATL_sbmv.c	2003-12-22 15:08:03.000000000 +0100
-+++ ATLAS-mod/src/blas/level2/ATL_sbmv.c	2007-02-05 16:48:50.468750000 +0100
+--- ATLAS/src/blas/level2/ATL_sbmv.c	Mon Dec 22 15:08:03 2003
++++ ATLAS-mod/src/blas/level2/ATL_sbmv.c	Thu Jun 14 12:44:27 2007
 @@ -173,7 +173,7 @@
           for( k = 0; k < na; k += nb )
           {

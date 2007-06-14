@@ -9,6 +9,7 @@
 #	- wget (GnuWin32)
 #	- unzip (GnuWin32)
 #	- octave-forge CVS tree (at least the admin/Windows/msvc/ directory)
+#	- cygwin with gcc (to compile ATLAS)
 #
 ###################################################################################
 
@@ -17,6 +18,7 @@
 #################
 
 INSTALL_DIR=/d/Temp/vclibs_tmp
+CYGWIN_DIR=/d/Software/cygwin
 DOWNLOAD_DIR=downloaded_packages
 WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 
@@ -117,6 +119,14 @@ if ! test -f "$tbindir/ranlib-msvc"; then
 else
   echo "installed"
 fi
+echo -n "checking for build_atlas_dll... "
+if test ! -f "$tbindir/build_atlas_dll"; then
+  echo "copying"
+  cp -f build_atlas_dll "$tbindir"
+  cp -f atl_blas.def lapack.def "$tlibdir"
+else
+  echo "installed"
+fi
 
 #######
 # f2c #
@@ -204,6 +214,40 @@ if ! test -f "$tbindir/lapack.dll"; then
     cp lapack.lib liblapack_f77.lib "$tlibdir") > /dev/null 2>&1
   rm -rf "$DOWNLOAD_DIR/lapack-3.1.0"
   if ! test -f "$tbindir/lapack.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+#########
+# ATLAS #
+#########
+
+echo -n "checking for ATLAS... "
+atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
+if test -z "$atl_dlls"; then
+  echo "no"
+  download_file atlas-3.6.0.tar.gz 'http://downloads.sourceforge.net/math-atlas/atlas3.6.0.tar.gz?modtime=1072051200&big_mirror=0'
+  echo -n "decompressing ATLAS... "
+  (cd "$DOWNLOAD_DIR" && tar xfz atlas-3.6.0.tar.gz)
+  cp libs/atlas-3.6.0.diff "$DOWNLOAD_DIR/ATLAS"
+  echo "done"
+  echo -n "compiling ATLAS... "
+  (cd "$DOWNLOAD_DIR/ATLAS" &&
+    patch -p1 < atlas-3.6.0.diff &&
+    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make xconfig && echo -n '' | ./xconfig -m mvc" &&
+	arch=`ls Make.*_* | sed -e 's/Make\.//'` &&
+	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make install arch=$arch" &&
+	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && cd lib/$arch && build_atlas_dll" &&
+	cp lib/$arch/blas.dll "$tbindir/blas_atl_$arch.dll" &&
+	cp lib/$arch/lapack.dll "$tbindir/lapack_atl_$arch.dll") > /dev/null 2>&1
+  #rm -rf "$DOWNLOAD_DIR/ATLAS"
+  atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
+  if test -z "$atl_dlls"; then
     echo "failed"
     exit -1
   else

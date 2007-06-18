@@ -121,6 +121,9 @@ public class AxesObject extends HandleObject
 	private Rectangle boundingBox;
 	protected boolean alwaysDrawBox = true;
 	Scaler sx, sy, sz, linScale, logScale;
+	private double[] x_minorTicks;
+	private double[] y_minorTicks;
+	private double[] z_minorTicks;
 
 	/* properties */
 	RadioProperty ActivePositionProperty;
@@ -144,9 +147,8 @@ public class AxesObject extends HandleObject
 	BooleanProperty XMinorGrid;
 	BooleanProperty YMinorGrid;
 	BooleanProperty ZMinorGrid;
-	LineStyleProperty XGridStyle;
-	LineStyleProperty YGridStyle;
-	LineStyleProperty ZGridStyle;
+	LineStyleProperty GridLineStyle;
+	LineStyleProperty MinorGridLineStyle;
 	DoubleArrayProperty XTick;
 	DoubleArrayProperty YTick;
 	DoubleArrayProperty ZTick;
@@ -159,6 +161,9 @@ public class AxesObject extends HandleObject
 	RadioProperty XTickLabelMode;
 	RadioProperty YTickLabelMode;
 	RadioProperty ZTickLabelMode;
+	BooleanProperty XMinorTick;
+	BooleanProperty YMinorTick;
+	BooleanProperty ZMinorTick;
 	RadioProperty NextPlot;
 	BooleanProperty Box;
 	RadioProperty TickDir;
@@ -237,9 +242,8 @@ public class AxesObject extends HandleObject
 		XMinorGrid = new BooleanProperty(this, "XMinorGrid", false);
 		YMinorGrid = new BooleanProperty(this, "YMinorGrid", false);
 		ZMinorGrid = new BooleanProperty(this, "ZMinorGrid", false);
-		XGridStyle = new LineStyleProperty(this, "XGridStyle", ":");
-		YGridStyle = new LineStyleProperty(this, "YGridStyle", ":");
-		ZGridStyle = new LineStyleProperty(this, "ZGridStyle", ":");
+		GridLineStyle = new LineStyleProperty(this, "GridLineStyle", ":");
+		MinorGridLineStyle = new LineStyleProperty(this, "MinorGridLineStyle", ":");
 		XTick = new DoubleArrayProperty(this, "XTick", new double[0], -1);
 		YTick = new DoubleArrayProperty(this, "YTick", new double[0], -1);
 		ZTick = new DoubleArrayProperty(this, "ZTick", new double[0], -1);
@@ -307,6 +311,9 @@ public class AxesObject extends HandleObject
 		XScale = new RadioProperty(this, "XScale", new String[] {"linear", "log"}, "linear");
 		YScale = new RadioProperty(this, "YScale", new String[] {"linear", "log"}, "linear");
 		ZScale = new RadioProperty(this, "ZScale", new String[] {"linear", "log"}, "linear");
+		XMinorTick = new BooleanProperty(this, "XMinorTick", false);
+		YMinorTick = new BooleanProperty(this, "YMinorTick", false);
+		ZMinorTick = new BooleanProperty(this, "ZMinorTick", false);
 
 		updatePosition();
 		autoTick();
@@ -429,6 +436,14 @@ public class AxesObject extends HandleObject
 		XScale.reset("linear");
 		YScale.reset("linear");
 		ZScale.reset("linear");
+		GridLineStyle.reset(":");
+		MinorGridLineStyle.reset(":");
+		XMinorTick.reset(new Boolean(false));
+		YMinorTick.reset(new Boolean(false));
+		ZMinorTick.reset(new Boolean(false));
+		XMinorGrid.reset(new Boolean(false));
+		YMinorGrid.reset(new Boolean(false));
+		ZMinorGrid.reset(new Boolean(false));
 
 		autoTick();
 		autoAspectRatio();
@@ -938,7 +953,7 @@ public class AxesObject extends HandleObject
 
 		if (xstate != AXE_DEPTH_DIR)
 		{
-			boolean doXGrid = XGrid.isSet() && !XGridStyle.is("none");
+			boolean doXGrid = XGrid.isSet() && !GridLineStyle.is("none");
 			double[] xticks = sx.scale(XTick.getArray());
 			String[] xticklabels = XTickLabel.getArray();
 			int wmax = 0, hmax = 0;
@@ -953,7 +968,7 @@ public class AxesObject extends HandleObject
 				// grid line
 				if (doXGrid)
 				{
-					XGridStyle.setup(gl);
+					GridLineStyle.setup(gl);
 					gl.glBegin(GL.GL_LINES);
 					gl.glVertex3d(xf, yPlaneN, zPlane);
 					gl.glVertex3d(xf, yPlane, zPlane);
@@ -1047,7 +1062,7 @@ public class AxesObject extends HandleObject
 
 		if (ystate != AXE_DEPTH_DIR)
 		{
-			boolean doYGrid = YGrid.isSet() && !YGridStyle.is("none");
+			boolean doYGrid = YGrid.isSet() && !GridLineStyle.is("none");
 			double[] yticks = sy.scale(YTick.getArray());
 			String[] yticklabels = YTickLabel.getArray();
 			int wmax = 0, hmax = 0;
@@ -1062,7 +1077,7 @@ public class AxesObject extends HandleObject
 				// grid line
 				if (doYGrid)
 				{
-					YGridStyle.setup(gl);
+					GridLineStyle.setup(gl);
 					gl.glBegin(GL.GL_LINES);
 					gl.glVertex3d(xPlaneN, yf,zPlane);
 					gl.glVertex3d(xPlane, yf, zPlane);
@@ -1156,7 +1171,7 @@ public class AxesObject extends HandleObject
 
 		if (zstate != AXE_DEPTH_DIR)
 		{
-			boolean doZGrid = ZGrid.isSet() && !ZGridStyle.is("none");
+			boolean doZGrid = ZGrid.isSet() && !GridLineStyle.is("none");
 			double[] zticks = sz.scale(ZTick.getArray());
 			int wmax = 0, hmax = 0;
 			String[] zticklabels = ZTickLabel.getArray();
@@ -1170,7 +1185,7 @@ public class AxesObject extends HandleObject
 				// grid line
 				if (doZGrid)
 				{
-					ZGridStyle.setup(gl);
+					GridLineStyle.setup(gl);
 					gl.glBegin(GL.GL_LINES);
 					gl.glVertex3d(xPlaneN, yPlane, zf);
 					gl.glVertex3d(xPlane, yPlane, zf);
@@ -1618,6 +1633,43 @@ public class AxesObject extends HandleObject
 			return ticks;
 	}
 
+	protected double[] computeMinorTicks(DoubleArrayProperty Lim, DoubleArrayProperty Tick, RadioProperty Scale)
+	{
+		double[] mticks;
+
+		if (Scale.is("linear"))
+			mticks = new double[0];
+		else
+		{
+			ArrayList tl = new ArrayList();
+			double[] lim = Lim.getArray(), ticks = Tick.getArray();
+			double v1 = lim[0], v2;
+			System.out.println("hello");
+			for (int i=0; i<=ticks.length; i++)
+			{
+				v2 = (i < ticks.length ? ticks[i] : lim[1]);
+				System.out.println(v1 + " " + v2);
+				if (v1 < v2)
+				{
+					double b = Math.pow(10, Math.floor(Math.log10(v1)));
+					if (v2 >= b*10)
+					{
+						double v = b*Math.ceil(v2/b);
+						while (v < v2)
+						{
+							tl.add(new Double(v));
+							System.out.println("minor tick: " + v);
+							v += b;
+						}
+					}
+				}
+				v1 = v2;
+			}
+			mticks = new double[tl.size()];
+		}
+		return mticks;
+	}
+
 	protected void autoTickX()
 	{
 		if (XTickMode.is("auto"))
@@ -1625,7 +1677,13 @@ public class AxesObject extends HandleObject
 			double[] ticks = computeAutoTicks(XLim, XScale);
 			autoSet(XTick, ticks);
 		}
+		autoMinorTickX();
 		autoTickLabelX();
+	}
+
+	protected void autoMinorTickX()
+	{
+		x_minorTicks = computeMinorTicks(XLim, XTick, XScale);
 	}
 
 	protected void autoTickY()

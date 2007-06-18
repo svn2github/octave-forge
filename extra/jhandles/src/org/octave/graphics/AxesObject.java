@@ -30,6 +30,59 @@ import java.util.*;
 
 public class AxesObject extends HandleObject
 {
+	public interface Scaler
+	{
+		public double scale(double x);
+		public double[] scale(double[] x);
+		public double[][] scale(double[][] x);
+		public double unscale(double x);
+		public boolean isLinear();
+	}
+
+	private class LinearScaler implements Scaler
+	{
+		public double scale(double x) { return x; }
+		public double[] scale(double[] x) { return x; }
+		public double[][] scale(double[][] x) { return x; }
+		public double unscale(double x) { return x; }
+		public boolean isLinear() { return true; }
+	}
+
+	private class LogScaler implements Scaler
+	{
+		public double scale(double x)
+		{
+			return Math.log10(x);
+		}
+
+		public double[] scale(double[] x)
+		{
+			double[] y = new double[x.length];
+			for (int i=0; i<x.length; i++)
+				y[i] = Math.log10(x[i]);
+			return y;
+		}
+
+		public double[][] scale(double[][] x)
+		{
+			double[][] y = new double[x.length][x.length > 0 ? x[0].length : 0];
+			for (int i=0; i<x.length; i++)
+				for (int j=0; j<x[0].length; j++)
+					y[i][j] = Math.log10(x[i][j]);
+			return y;
+		}
+		
+		public double unscale(double x)
+		{
+			return Math.pow(10, x);
+		}
+
+		public boolean isLinear()
+		{
+			return false;
+		}
+	}
+
 	/*
 	private double anglex;
 	private double anglez;
@@ -67,6 +120,7 @@ public class AxesObject extends HandleObject
 	private Stack zoomStack = new Stack();
 	private Rectangle boundingBox;
 	protected boolean alwaysDrawBox = true;
+	Scaler sx, sy, sz, linScale, logScale;
 
 	/* properties */
 	RadioProperty ActivePositionProperty;
@@ -135,6 +189,9 @@ public class AxesObject extends HandleObject
 	RadioProperty ZDir;
 	DoubleArrayProperty x_NormRenderTransform;
 	DoubleArrayProperty x_RenderTransform;
+	RadioProperty XScale;
+	RadioProperty YScale;
+	RadioProperty ZScale;
 
 	public AxesObject(FigureObject fig, boolean init3D)
 	{
@@ -154,6 +211,8 @@ public class AxesObject extends HandleObject
 		V = new int[4];
 
 		canvas = fig.getCanvas();
+		linScale = new LinearScaler();
+		logScale = new LogScaler();
 
 		ActivePositionProperty = new RadioProperty(this, "ActivePositionProperty", new String[] {"outerposition", "position"}, "outerposition");
 		Position = new DoubleArrayProperty(this, "Position", new double[0], -1);
@@ -245,6 +304,9 @@ public class AxesObject extends HandleObject
 		ZDir = new RadioProperty(this, "ZDir", new String[] {"normal", "reverse"}, "normal");
 		x_NormRenderTransform = new DoubleArrayProperty(this, "x_NormRenderTransform", new double[16], 16);
 		x_RenderTransform = new DoubleArrayProperty(this, "x_RenderTransform", new double[16], 16);
+		XScale = new RadioProperty(this, "XScale", new String[] {"linear", "log"}, "linear");
+		YScale = new RadioProperty(this, "YScale", new String[] {"linear", "log"}, "linear");
+		ZScale = new RadioProperty(this, "ZScale", new String[] {"linear", "log"}, "linear");
 
 		updatePosition();
 		autoTick();
@@ -294,6 +356,9 @@ public class AxesObject extends HandleObject
 		listen(XDir);
 		listen(YDir);
 		listen(ZDir);
+		listen(XScale);
+		listen(YScale);
+		listen(ZScale);
 
 		legend = null;
 		baseLine = null;
@@ -361,6 +426,9 @@ public class AxesObject extends HandleObject
 		XDir.reset("normal");
 		YDir.reset("normal");
 		ZDir.reset("normal");
+		XScale.reset("linear");
+		YScale.reset("linear");
+		ZScale.reset("linear");
 
 		autoTick();
 		autoAspectRatio();
@@ -687,9 +755,9 @@ public class AxesObject extends HandleObject
 			gl.glGetIntegerv(GL.GL_VIEWPORT, V, 0);
 		}
 	
-		double xmin = XLim.getArray()[0], xmax = XLim.getArray()[1];
-		double ymin = YLim.getArray()[0], ymax = YLim.getArray()[1];
-		double zmin = ZLim.getArray()[0], zmax = ZLim.getArray()[1];
+		double xmin = sx.scale(XLim.getArray()[0]), xmax = sx.scale(XLim.getArray()[1]);
+		double ymin = sy.scale(YLim.getArray()[0]), ymax = sy.scale(YLim.getArray()[1]);
+		double zmin = sz.scale(ZLim.getArray()[0]), zmax = sz.scale(ZLim.getArray()[1]);
 
 		double xd = (XDir.is("normal") ? 1 : -1);
 		double yd = (YDir.is("normal") ? 1 : -1);
@@ -871,14 +939,16 @@ public class AxesObject extends HandleObject
 		if (xstate != AXE_DEPTH_DIR)
 		{
 			boolean doXGrid = XGrid.isSet() && !XGridStyle.is("none");
-			double[] xticks = XTick.getArray();
+			double[] xticks = sx.scale(XTick.getArray());
 			String[] xticklabels = XTickLabel.getArray();
 			int wmax = 0, hmax = 0;
 			boolean tickAlongZ = Double.isInfinite(fy);
+			boolean isLog = XScale.is("log");
 			XColor.setup(gl);
 			for (int i=0; i<xticks.length; i++)
 			{
 				double xf = xticks[i];
+				double[] txtPos;
 
 				// grid line
 				if (doXGrid)
@@ -905,7 +975,7 @@ public class AxesObject extends HandleObject
 						gl.glVertex3d(xf, yPlaneN, zPlaneN+Math.signum(zPlaneN-zPlane)*fz*xticklen*tickdir);
 					}
 					gl.glEnd();
-					gl.glRasterPos3d(xf, yPlaneN, zPlane+Math.signum(zPlane-zPlaneN)*fz*xtickoffset);
+					txtPos = new double[] {xf, yPlaneN, zPlane+Math.signum(zPlane-zPlaneN)*fz*xtickoffset};
 				}
 				else
 				{
@@ -918,15 +988,16 @@ public class AxesObject extends HandleObject
 						gl.glVertex3d(xf, yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen*tickdir, zPlane);
 					}
 					gl.glEnd();
-					gl.glRasterPos3d(xf, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xtickoffset, zPlane);
+					txtPos = new double[] {xf, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xtickoffset, zPlane};
 				}
 
 				// tick text
 				if (i < xticklabels.length)
 				{
-					Dimension d = GLTextRenderer.draw(canvas, gl, xticklabels[i],
-										(xstate == AXE_HORZ_DIR ? 1 : (/*xv[2]*yv[2] >= 0*/ xySym ? 0 : 2)),
-										(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
+					String txt = (isLog ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
+					Dimension d = SimpleTextEngine.draw(canvas, txt, txtPos,
+									(xstate == AXE_HORZ_DIR ? 1 : (/*xv[2]*yv[2] >= 0*/ xySym ? 0 : 2)),
+									(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
 					if (d.width > wmax) wmax = d.width;
 					if (d.height > hmax) hmax = d.height;
 				}
@@ -962,7 +1033,7 @@ public class AxesObject extends HandleObject
 							p[1] += hmax;
 							break;
 					}
-					x_renderInv.transform(p[0], p[1], p[2], p, 0);
+					unTransform(p[0], p[1], p[2], p, 0);
 					xLabObj.Position.reset(new double[] {p[0], p[1], p[2]});
 					if (xLabObj.Rotation.doubleValue() != angle)
 						try { xLabObj.Rotation.set(new Double(angle)); }
@@ -977,14 +1048,16 @@ public class AxesObject extends HandleObject
 		if (ystate != AXE_DEPTH_DIR)
 		{
 			boolean doYGrid = YGrid.isSet() && !YGridStyle.is("none");
-			double[] yticks = YTick.getArray();
+			double[] yticks = sy.scale(YTick.getArray());
 			String[] yticklabels = YTickLabel.getArray();
 			int wmax = 0, hmax = 0;
 			boolean tickAlongZ = Double.isInfinite(fx);
+			boolean isLog = YScale.is("log");
 			YColor.setup(gl);
 			for (int i=0; i<yticks.length; i++)
 			{
 				double yf = yticks[i];
+				double[] txtPos;
 
 				// grid line
 				if (doYGrid)
@@ -1011,7 +1084,7 @@ public class AxesObject extends HandleObject
 						gl.glVertex3d(xPlaneN, yf, zPlaneN+Math.signum(zPlaneN-zPlane)*fz*yticklen*tickdir);
 					}
 					gl.glEnd();
-					gl.glRasterPos3d(xPlaneN, yf, zPlane+Math.signum(zPlane-zPlaneN)*fz*ytickoffset);
+					txtPos = new double[] {xPlaneN, yf, zPlane+Math.signum(zPlane-zPlaneN)*fz*ytickoffset};
 				}
 				else
 				{
@@ -1024,13 +1097,14 @@ public class AxesObject extends HandleObject
 						gl.glVertex3d(xPlane+Math.signum(xPlane-xPlaneN)*fx*yticklen*tickdir, yf, zPlane);
 					}
 					gl.glEnd();
-					gl.glRasterPos3d(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ytickoffset, yf, zPlane);
+					txtPos = new double[]{xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ytickoffset, yf, zPlane};
 				}
 
 				// tick text
 				if (i < yticklabels.length)
 				{
-					Dimension d = GLTextRenderer.draw(canvas, gl, yticklabels[i],
+					String txt = (isLog ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
+					Dimension d = SimpleTextEngine.draw(canvas, txt, txtPos,
 										(ystate == AXE_HORZ_DIR ? 1 : (/*xv[2]*yv[2] < 0*/ !xySym ? 0 : 2)),
 										(ystate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
 					if (d.width > wmax) wmax = d.width;
@@ -1068,7 +1142,7 @@ public class AxesObject extends HandleObject
 							p[1] += hmax;
 							break;
 					}
-					x_renderInv.transform(p[0], p[1], p[2], p, 0);
+					unTransform(p[0], p[1], p[2], p, 0);
 					yLabObj.Position.reset(new double[] {p[0], p[1], p[2]});
 					if (yLabObj.Rotation.doubleValue() != angle)
 						try { yLabObj.Rotation.set(new Double(angle)); }
@@ -1083,13 +1157,15 @@ public class AxesObject extends HandleObject
 		if (zstate != AXE_DEPTH_DIR)
 		{
 			boolean doZGrid = ZGrid.isSet() && !ZGridStyle.is("none");
-			double[] zticks = ZTick.getArray();
+			double[] zticks = sz.scale(ZTick.getArray());
 			int wmax = 0, hmax = 0;
 			String[] zticklabels = ZTickLabel.getArray();
+			boolean isLog = ZScale.is("log");
 			ZColor.setup(gl);
 			for (int i=0; i<zticks.length; i++)
 			{
 				double zf = zticks[i];
+				double[] txtPos;
 
 				// grid line
 				if (doZGrid)
@@ -1118,16 +1194,15 @@ public class AxesObject extends HandleObject
 							gl.glVertex3d(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen*tickdir, yPlane, zf);
 						}
 						gl.glEnd();
-						gl.glRasterPos3d(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ztickoffset, yPlane, zf);
+						txtPos = new double[] {xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ztickoffset, yPlane, zf};
 					}
 					else
 					{
 						gl.glBegin(GL.GL_LINES);
 						gl.glVertex3d(xPlaneN, yPlane, zf);
 						gl.glVertex3d(xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zf);
-
 						gl.glEnd();
-						gl.glRasterPos3d(xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*ztickoffset, zf);
+						txtPos = new double[] {xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*ztickoffset, zf};
 					}
 				}
 				else
@@ -1143,7 +1218,7 @@ public class AxesObject extends HandleObject
 							gl.glVertex3d(xPlane, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zf);
 						}
 						gl.glEnd();
-						gl.glRasterPos3d(xPlane, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*ztickoffset, zf);
+						txtPos = new double[] {xPlane, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*ztickoffset, zf};
 					}
 					else
 					{
@@ -1151,14 +1226,15 @@ public class AxesObject extends HandleObject
 						gl.glVertex3d(xPlane, yPlaneN, zf);
 						gl.glVertex3d(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen*tickdir, yPlaneN, zf);
 						gl.glEnd();
-						gl.glRasterPos3d(xPlane+Math.signum(xPlane-xPlaneN)*fx*ztickoffset, yPlaneN, zf);
+						txtPos = new double[] {xPlane+Math.signum(xPlane-xPlaneN)*fx*ztickoffset, yPlaneN, zf};
 					}
 				}
 
 				// tick text
 				if (i < zticklabels.length)
 				{
-					Dimension d = GLTextRenderer.draw(canvas, gl, zticklabels[i],
+					String txt = (isLog ? "10^{"+zticklabels[i]+"}" : zticklabels[i]);
+					Dimension d = SimpleTextEngine.draw(canvas, txt, txtPos,
 									2,
 									(zstate == AXE_VERT_DIR ? 1 : (zd*zv[2] < 0 ? 0 : 2)));
 					if (d.width > wmax) wmax = d.width;
@@ -1217,7 +1293,7 @@ public class AxesObject extends HandleObject
 							p[1] += hmax;
 							break;
 					}
-					x_renderInv.transform(p[0], p[1], p[2], p, 0);
+					unTransform(p[0], p[1], p[2], p, 0);
 					zLabObj.Position.reset(new double[] {p[0], p[1], p[2]});
 					if (zLabObj.Rotation.doubleValue() != angle)
 						try { zLabObj.Rotation.set(new Double(angle)); }
@@ -1239,7 +1315,7 @@ public class AxesObject extends HandleObject
 				// position title automatically
 				Rectangle bb = getBoundingBox();
 				double[] p = new double[3];
-				x_renderInv.transform(bb.x+bb.width/2, canvas.getHeight()-(bb.y+bb.height+10), (x_zmin+x_zmax)/2, p, 0);
+				unTransform(bb.x+bb.width/2, canvas.getHeight()-(bb.y+bb.height+10), (x_zmin+x_zmax)/2, p, 0);
 				titleObj.Position.reset(p);
 			}
 			titleObj.draw(r);
@@ -1385,41 +1461,74 @@ public class AxesObject extends HandleObject
 		autoScaleZ();
 	}
 
+	protected double[] computeAutoScale(String Lim, RadioProperty Scale, boolean isZ)
+	{
+			double[] lim;
+			String LimInclude = Lim+"Include";
+
+			if (Scale.is("linear"))
+			{
+				lim = new double[] { Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY };
+				for (int i=0; i<Children.size(); i++)
+				{
+					GraphicObject go = (GraphicObject)Children.elementAt(i);
+					if (((BooleanProperty)go.getProperty(LimInclude)).isSet())
+					{
+						double[] _lim = ((DoubleArrayProperty)go.getProperty(Lim)).getArray();
+						lim[0] = Math.min(_lim[0], lim[0]);
+						lim[1] = Math.max(_lim[1], lim[1]);
+					}
+				}
+
+				if (lim[0] > lim[1])
+				{
+					lim[0] = (isZ ? -0.5 : 0);
+					lim[1] = (isZ ? 0.5 : 1);
+				}
+				else if (lim[0] == lim[1])
+				{
+					lim[0] -= 0.5;
+					lim[1] += 0.5;
+				}
+
+				double dl = lim[1]-lim[0];
+				if (dl > 10)
+				{
+					lim[0] = Math.floor(lim[0]);
+					lim[1] = Math.ceil(lim[1]);
+				}
+			}
+			else
+			{
+				lim = new double[] { Double.POSITIVE_INFINITY, Double.MIN_VALUE };
+				for (int i=0; i<Children.size(); i++)
+				{
+					GraphicObject go = (GraphicObject)Children.elementAt(i);
+					if (((BooleanProperty)go.getProperty(LimInclude)).isSet())
+					{
+						double[] _lim = ((DoubleArrayProperty)go.getProperty(Lim)).getArray();
+						lim[0] = Math.min(_lim[2], lim[0]);
+						lim[1] = Math.max(_lim[3], lim[1]);
+					}
+				}
+
+				if (lim[0] > lim[1])
+				{
+					lim[0] = 1;
+					lim[1] = 10;
+				}
+				lim[0] = Math.pow(10, Math.floor(Math.log10(lim[0])));
+				lim[1] = Math.pow(10, Math.ceil(Math.log10(lim[1])));
+			}
+
+			return lim;
+	}
+
 	protected void autoScaleX()
 	{
 		if (XLimMode.is("auto") && Children.size() > 0)
 		{
-			double[] xlim = { Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY };
-
-			for (int i=0; i<Children.size(); i++)
-			{
-				GraphicObject go = (GraphicObject)Children.elementAt(i);
-				if (go.XLimInclude.isSet())
-				{
-					double[] _xlim = go.XLim.getArray();
-					xlim[0] = Math.min(_xlim[0], xlim[0]);
-					xlim[1] = Math.max(_xlim[1], xlim[1]);
-				}
-			}
-
-			if (xlim[0] > xlim[1])
-			{
-				xlim[0] = 0;
-				xlim[1] = 1;
-			}
-			else if (xlim[0] == xlim[1])
-			{
-				xlim[0] -= 0.5;
-				xlim[1] += 0.5;
-			}
-
-			double dx = xlim[1]-xlim[0];
-			if (dx > 10)
-			{
-				xlim[0] = Math.floor(xlim[0]);
-				xlim[1] = Math.ceil(xlim[1]);
-			}
-
+			double[] xlim = computeAutoScale("XLim", XScale, false);
 			autoSet(XLim, xlim);
 			autoTickX();
 		}
@@ -1429,37 +1538,7 @@ public class AxesObject extends HandleObject
 	{
 		if (YLimMode.is("auto") && Children.size() > 0)
 		{
-			double[] ylim = { Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY };
-
-			for (int i=0; i<Children.size(); i++)
-			{
-				GraphicObject go = (GraphicObject)Children.elementAt(i);
-				if (go.YLimInclude.isSet())
-				{
-					double[] _ylim = go.YLim.getArray();
-					ylim[0] = Math.min(_ylim[0], ylim[0]);
-					ylim[1] = Math.max(_ylim[1], ylim[1]);
-				}
-			}
-
-			if (ylim[0] > ylim[1])
-			{
-				ylim[0] = 0;
-				ylim[1] = 1;
-			}
-			else if (ylim[0] == ylim[1])
-			{
-				ylim[0] -= 0.5;
-				ylim[1] += 0.5;
-			}
-
-			double dx = ylim[1]-ylim[0];
-			if (dx > 10)
-			{
-				ylim[0] = Math.floor(ylim[0]);
-				ylim[1] = Math.ceil(ylim[1]);
-			}
-
+			double[] ylim = computeAutoScale("YLim", YScale, false);
 			autoSet(YLim, ylim);
 			autoTickY();
 		}
@@ -1469,37 +1548,7 @@ public class AxesObject extends HandleObject
 	{
 		if (ZLimMode.is("auto") && Children.size() > 0)
 		{
-			double[] zlim = { Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY };
-
-			for (int i=0; i<Children.size(); i++)
-			{
-				GraphicObject go = (GraphicObject)Children.elementAt(i);
-				if (go.ZLimInclude.isSet())
-				{
-					double[] _zlim = go.ZLim.getArray();
-					zlim[0] = Math.min(_zlim[0], zlim[0]);
-					zlim[1] = Math.max(_zlim[1], zlim[1]);
-				}
-			}
-
-			if (zlim[0] > zlim[1])
-			{
-				zlim[0] = -0.5;
-				zlim[1] = 0.5;
-			}
-			else if (zlim[0] == zlim[1])
-			{
-				zlim[0] -= 0.5;
-				zlim[1] += 0.5;
-			}
-
-			double dx = zlim[1]-zlim[0];
-			if (dx > 10)
-			{
-				zlim[0] = Math.floor(zlim[0]);
-				zlim[1] = Math.ceil(zlim[1]);
-			}
-
+			double[] zlim = computeAutoScale("ZLim", ZScale, true);
 			autoSet(ZLim, zlim);
 			autoTickZ();
 		}
@@ -1548,14 +1597,32 @@ public class AxesObject extends HandleObject
 		autoTickZ();
 	}
 
+	protected double[] computeAutoTicks(DoubleArrayProperty Lim, RadioProperty Scale)
+	{
+			double vmin = Lim.getArray()[0], vmax = Lim.getArray()[1];
+			double[] ticks;
+			if (Scale.is("linear"))
+			{
+				ticks = new double[5];
+				for (int i=0; i<ticks.length; i++)
+					ticks[i] = vmin + i * (vmax - vmin) / (ticks.length - 1);
+			}
+			else
+			{
+				int n1 = (int)Math.ceil(Math.log10(vmin)),
+				    n2 = (int)Math.floor(Math.log10(vmax));
+				ticks = new double[n2-n1+1];
+				for (int i=0; i<ticks.length; i++)
+					ticks[i] = Math.pow(10, n1+i);
+			}
+			return ticks;
+	}
+
 	protected void autoTickX()
 	{
 		if (XTickMode.is("auto"))
 		{
-			double xmin = XLim.getArray()[0], xmax = XLim.getArray()[1];
-			double[] ticks = new double[5];
-			for (int i=0; i<ticks.length; i++)
-				ticks[i] = xmin + i * (xmax - xmin) / (ticks.length - 1);
+			double[] ticks = computeAutoTicks(XLim, XScale);
 			autoSet(XTick, ticks);
 		}
 		autoTickLabelX();
@@ -1565,10 +1632,7 @@ public class AxesObject extends HandleObject
 	{
 		if (YTickMode.is("auto"))
 		{
-			double ymin = YLim.getArray()[0], ymax = YLim.getArray()[1];
-			double[] ticks = new double[5];
-			for (int i=0; i<ticks.length; i++)
-				ticks[i] = ymin + i * (ymax - ymin) / (ticks.length - 1);
+			double[] ticks = computeAutoTicks(YLim, YScale);
 			autoSet(YTick, ticks);
 		}
 		autoTickLabelY();
@@ -1578,10 +1642,7 @@ public class AxesObject extends HandleObject
 	{
 		if (ZTickMode.is("auto"))
 		{
-			double zmin = ZLim.getArray()[0], zmax = ZLim.getArray()[1];
-			double[] ticks = new double[5];
-			for (int i=0; i<ticks.length; i++)
-				ticks[i] = zmin + i * (zmax - zmin) / (ticks.length - 1);
+			double[] ticks = computeAutoTicks(ZLim, ZScale);
 			autoSet(ZTick, ticks);
 		}
 		autoTickLabelZ();
@@ -1594,40 +1655,45 @@ public class AxesObject extends HandleObject
 		autoTickLabelZ();
 	}
 
+	protected String[] computeAutoTickLabels(DoubleArrayProperty Tick, RadioProperty Scale)
+	{
+		double[] ticks = Tick.getArray();
+		String[] labels = new String[ticks.length];
+		if (Scale.is("linear"))
+			for (int i=0; i<ticks.length; i++)
+			{
+				double val = ((double)Math.round(ticks[i]*100))/100;
+				labels[i] = Double.toString(val);
+			}
+		else
+		{
+			for (int i=0; i<ticks.length; i++)
+			{
+				double v = Math.log10(ticks[i]);
+				if ((int)v == v)
+					labels[i] = Integer.toString((int)v);
+				else
+					labels[i] = Double.toString(v);
+			}
+		}
+		return labels;
+	}
+
 	protected void autoTickLabelX()
 	{
-		double[] ticks = XTick.getArray();
-		String[] labels = new String[ticks.length];
-		for (int i=0; i<ticks.length; i++)
-		{
-			double val = ((double)Math.round(ticks[i]*100))/100;
-			labels[i] = new Double(val).toString();
-		}
+		String[] labels = computeAutoTickLabels(XTick, XScale);
 		autoSet(XTickLabel, labels);
 	}
 
 	protected void autoTickLabelY()
 	{
-		double[] ticks = YTick.getArray();
-		String[] labels = new String[ticks.length];
-		for (int i=0; i<ticks.length; i++)
-		{
-			double val = ((double)Math.round(ticks[i]*100))/100;
-			labels[i] = new Double(val).toString();
-		}
+		String[] labels = computeAutoTickLabels(YTick, YScale);
 		autoSet(YTickLabel, labels);
-
 	}
 
 	protected void autoTickLabelZ()
 	{
-		double[] ticks = ZTick.getArray();
-		String[] labels = new String[ticks.length];
-		for (int i=0; i<ticks.length; i++)
-		{
-			double val = ((double)Math.round(ticks[i]*100))/100;
-			labels[i] = new Double(val).toString();
-		}
+		String[] labels = computeAutoTickLabels(ZTick, ZScale);
 		autoSet(ZTickLabel, labels);
 	}
 
@@ -1703,8 +1769,8 @@ public class AxesObject extends HandleObject
 	{
 		double[] pos1 = new double[3], pos2 = new double[3];
 
-		x_renderInv.transform((double)x1, (double)y1, (x_zmin+x_zmax)/2, pos1, 0);
-		x_renderInv.transform((double)x2, (double)y2, (x_zmin+x_zmax)/2, pos2, 0);
+		unTransform((double)x1, (double)y1, (x_zmin+x_zmax)/2, pos1, 0);
+		unTransform((double)x2, (double)y2, (x_zmin+x_zmax)/2, pos2, 0);
 		zoomStack.push(XLimMode.get());
 		zoomStack.push(XLim.get());
 		zoomStack.push(YLimMode.get());
@@ -1869,7 +1935,7 @@ public class AxesObject extends HandleObject
 		{
 			Rectangle bb = getBoundingBox();
 			p = new double[3];
-			x_renderInv.transform(bb.x+pos[0], bb.y+pos[1], pos[2], p, 0);
+			unTransform(bb.x+pos[0], bb.y+pos[1], pos[2], p, 0);
 		}
 		else
 		{
@@ -1882,7 +1948,7 @@ public class AxesObject extends HandleObject
 			if (toUnits.equalsIgnoreCase("pixels"))
 			{
 				Rectangle bb = getBoundingBox();
-				x_render.transform(p[0], p[1], p[2], p, 0);
+				transform(p[0], p[1], p[2], p, 0);
 				p[0] = Math.rint(p[0])-bb.x;
 				p[1] = Math.rint(p[1])-bb.y;
 			}
@@ -2142,10 +2208,17 @@ public class AxesObject extends HandleObject
 			Position.reset(fig.convertPosition(Position.getArray(), currentUnits, Units.getValue()));
 			currentUnits = Units.getValue();
 		}
+		else if (p == XScale)
+			autoScaleX();
+		else if (p == YScale)
+			autoScaleY();
+		else if (p == ZScale)
+			autoScaleZ();
 
 		if (autoMode == 0 && (p == XLim || p == YLim || p == ZLim ||
 			p == XLimMode || p == YLimMode || p == ZLimMode ||
-			p == XDir || p == YDir || p == ZDir || p == Position || p == OuterPosition))
+			p == XDir || p == YDir || p == ZDir || p == Position || p == OuterPosition ||
+			p == XScale || p == YScale || p == ZScale))
 		{
 			zoomStack.clear();
 			autoAspectRatio();
@@ -2180,15 +2253,37 @@ public class AxesObject extends HandleObject
 	Matrix3D x_mat2 = new Matrix3D();
 	double x_zmin, x_zmax;
 
+	public void updateScalers()
+	{
+		sx = (XScale.is("linear") ? linScale : logScale);
+		sy = (YScale.is("linear") ? linScale : logScale);
+		sz = (ZScale.is("linear") ? linScale : logScale);
+	}
+
+	public void unTransform(double x, double y, double z, double[] p, int offset)
+	{
+		x_renderInv.transform(x, y, z, p, offset);
+		p[0+offset] = sx.unscale(p[0+offset]);
+		p[1+offset] = sy.unscale(p[1+offset]);
+		p[2+offset] = sz.unscale(p[2+offset]);
+	}
+
+	public void transform(double x, double y, double z, double[] p, int offset)
+	{
+		x_render.transform(sx.scale(x), sy.scale(y), sz.scale(z), p, offset);
+	}
+
 	public void updateXFormMatrices()
 	{
+		updateScalers();
+
 		double xd = (XDir.is("normal") ? 1 : -1);
 		double yd = (YDir.is("normal") ? 1 : -1);
 		double zd = (ZDir.is("normal") ? 1 : -1);
 
-		double[] xlim = XLim.getArray();
-		double[] ylim = YLim.getArray();
-		double[] zlim = ZLim.getArray();
+		double[] xlim = sx.scale(XLim.getArray());
+		double[] ylim = sy.scale(YLim.getArray());
+		double[] zlim = sz.scale(ZLim.getArray());
 
 		double xo = xlim[xd > 0 ? 0 : 1];
 		double yo = ylim[yd > 0 ? 0 : 1];

@@ -45,13 +45,15 @@ public abstract class GraphicObject extends HandleObject
 
 		glID = glIDCounter++;
 
-		double[] d = new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
+		double[] d1 = new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
+			Double.POSITIVE_INFINITY, Double.MIN_VALUE};
+		double[] d2 = new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
 
-		XLim = new DoubleArrayProperty(this, "XLim", d, 2);
-		YLim = new DoubleArrayProperty(this, "YLim", d, 2);
-		ZLim = new DoubleArrayProperty(this, "ZLim", d, 2);
-		CLim = new DoubleArrayProperty(this, "CLim", d, 2);
-		ALim = new DoubleArrayProperty(this, "ALim", d, 2);
+		XLim = new DoubleArrayProperty(this, "XLim", d1, 4);
+		YLim = new DoubleArrayProperty(this, "YLim", d1, 4);
+		ZLim = new DoubleArrayProperty(this, "ZLim", d1, 4);
+		CLim = new DoubleArrayProperty(this, "CLim", d2, 2);
+		ALim = new DoubleArrayProperty(this, "ALim", d2, 2);
 		XLimInclude = new BooleanProperty(this, "XLimInclude", true);
 		YLimInclude = new BooleanProperty(this, "YLimInclude", true);
 		ZLimInclude = new BooleanProperty(this, "ZLimInclude", false);

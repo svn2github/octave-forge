@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.image.*;
 import javax.media.opengl.*;
 
+// TODO: remove and replace with SimpleTextEngine
 public class GLTextRenderer
 {
 	public static Dimension draw(RenderCanvas comp, GL gl, String txt, int halign, int valign)

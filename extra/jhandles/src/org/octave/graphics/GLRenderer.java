@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import java.awt.Color;
+import java.awt.image.*;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 import java.nio.ByteBuffer;
@@ -44,6 +45,7 @@ public class GLRenderer implements Renderer
 	private TreeMap alphaPrimitives;
 	private GLUtessellator tess = null;
 	private int lightSideMode = GL.GL_FRONT_AND_BACK;
+	private AxesObject.Scaler sx, sy, sz;
 
 	public GLRenderer(GLAutoDrawable d)
 	{
@@ -124,13 +126,14 @@ public class GLRenderer implements Renderer
 			(y > ymax ? 1 : 0) << 3 |
 			(z < zmin ? 1 : 0) << 4 |
 			(z > zmax ? 1 : 0) << 5 |
-			(isNaN(x, y, z) ? 0 : 1) << 6
+			(isNaNorInf(x, y, z) ? 0 : 1) << 6
 		);
 	}
 
-	public boolean isNaN(double x, double y, double z)
+	public boolean isNaNorInf(double x, double y, double z)
 	{
-		return (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z));
+		return (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z) ||
+				Double.isInfinite(x) || Double.isInfinite(y) || Double.isInfinite(z));
 	}
 
 	public void setCamera(double[] pos, double[] target)
@@ -232,9 +235,9 @@ public class GLRenderer implements Renderer
 
 	public void draw(LineObject line)
 	{
-		double[] x = line.XData.getArray();
-		double[] y = line.YData.getArray();
-		double[] z = line.ZData.getArray();
+		double[] x = sx.scale(line.XData.getArray());
+		double[] y = sy.scale(line.YData.getArray());
+		double[] z = sz.scale(line.ZData.getArray());
 		int n = Math.min(Math.min(x.length, y.length), (z.length == 0 ? Integer.MAX_VALUE : z.length));
 		int[] clip = new int[n];
 
@@ -373,7 +376,7 @@ public class GLRenderer implements Renderer
 			gl.glDisable(GL.GL_DEPTH_TEST);
 		gl.glEnable(GL.GL_ALPHA_TEST);
 		gl.glAlphaFunc(GL.GL_GREATER, 0.0f);
-		gl.glRasterPos3d(pos[0], pos[1], pos[2]);
+		gl.glRasterPos3d(sx.scale(pos[0]), sy.scale(pos[1]), sz.scale(pos[2]));
 		gl.glBitmap(0, 0, 0, 0, -xOffset, -yOffset, null, 0);
 		gl.glDrawPixels(w, h, GL.GL_ABGR_EXT, GL.GL_UNSIGNED_BYTE, data);
 		gl.glDisable(GL.GL_ALPHA_TEST);
@@ -381,6 +384,16 @@ public class GLRenderer implements Renderer
 			gl.glEnable(GL.GL_DEPTH_TEST);
 		if (hasClip != useClipping)
 			setClipping(!useClipping);
+	}
+
+	public void drawBitmap(BufferedImage img, double[] pos, int xOffset, int yOffset)
+	{
+		byte[] data = ((DataBufferByte)img.getData().getDataBuffer()).getData();
+		gl.glRasterPos3d(pos[0], pos[1], pos[2]);
+		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
+		gl.glBitmap(0, 0, 0, 0, xOffset, yOffset, null, 0);
+		gl.glBitmap(img.getWidth(), img.getHeight(), 0, 0, 0, 0, data, 0);
+		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
 	}
 
 	private class VertexData
@@ -730,10 +743,26 @@ public class GLRenderer implements Renderer
 		}
 	}
 
+	/* scale 3D points */
+	private double[][] scale(double[][] pts)
+	{
+		if (sx.isLinear() && sy.isLinear() && sz.isLinear())
+			return pts;
+
+		double[][] out = new double[pts.length][3];
+		for (int i=0; i<pts.length; i++)
+		{
+			out[i][0] = sx.scale(pts[i][0]);
+			out[i][1] = sy.scale(pts[i][1]);
+			out[i][2] = sz.scale(pts[i][2]);
+		}
+		return out;
+	}
+
 	public void draw(PatchObject patch)
 	{
 		double[][] f = patch.Faces.getMatrix();
-		double[][] v = patch.Vertices.getMatrix();
+		double[][] v = scale(patch.Vertices.getMatrix());
 		double[][] c = null;
 		double[][] n = patch.VertexNormals.getMatrix();
 		double[] a = null;
@@ -755,6 +784,17 @@ public class GLRenderer implements Renderer
 		float ds = patch.DiffuseStrength.floatValue();
 		float ss = patch.SpecularStrength.floatValue();
 		float se = patch.SpecularExponent.floatValue();
+
+		boolean[] clip = new boolean[v.length];
+		for (int i=0; i<v.length; i++)
+			clip[i] = isNaNorInf(v[i][0], v[i][1], v[i][2]);
+		boolean[] clipF = new boolean[f.length];
+		for (int i=0; i<f.length; i++)
+		{
+			clipF[i] = false;
+			for (int j=0; j<faceCount[i] && !clipF[i]; j++)
+				clipF[i] = (clipF[i] || clip[(int)f[i][j]-1]);
+		}
 
 		if (!patch.FaceColor.isSet() || !patch.EdgeColor.isSet())
 		{
@@ -821,6 +861,9 @@ public class GLRenderer implements Renderer
 						
 				for (int i=0; i<f.length; i++)
 				{
+					if (clipF[i])
+						continue;
+
 					glu.gluTessBeginPolygon(tess, vData[i][0]);
 					glu.gluTessBeginContour(tess);
 					for (int j=0; j<faceCount[i]; j++)
@@ -849,6 +892,9 @@ public class GLRenderer implements Renderer
 						
 				for (int i=0; i<f.length; i++)
 				{
+					if (clipF[i])
+						continue;
+
 					glu.gluTessBeginPolygon(tess, vData[i][0]);
 					glu.gluTessBeginContour(tess);
 					for (int j=0; j<faceCount[i]; j++)
@@ -892,6 +938,9 @@ public class GLRenderer implements Renderer
 						
 				for (int i=0; i<f.length; i++)
 				{
+					if (clipF[i])
+						continue;
+
 					glu.gluTessBeginPolygon(tess, vData[i][0]);
 					glu.gluTessBeginContour(tess);
 					for (int j=0; j<faceCount[i]; j++)
@@ -920,6 +969,9 @@ public class GLRenderer implements Renderer
 
 				for (int i=0; i<f.length; i++)
 				{
+					if (clipF[i])
+						continue;
+
 					glu.gluTessBeginPolygon(tess, vData[i][0]);
 					glu.gluTessBeginContour(tess);
 					for (int j=0; j<faceCount[i]; j++)
@@ -937,9 +989,9 @@ public class GLRenderer implements Renderer
 
 	public void draw(SurfaceObject surf)
 	{
-		double[][] x = surf.XData.getMatrix();
-		double[][] y = surf.YData.getMatrix();
-		double[][] z = surf.ZData.getMatrix();
+		double[][] x = sx.scale(surf.XData.getMatrix());
+		double[][] y = sy.scale(surf.YData.getMatrix());
+		double[][] z = sz.scale(surf.ZData.getMatrix());
 		double[][][] c = null;
 		double[][][] n = surf.VertexNormals.getMatrix3();
 		double[][] a = null;
@@ -958,6 +1010,11 @@ public class GLRenderer implements Renderer
 		final float ds = surf.DiffuseStrength.floatValue();
 		final float ss = surf.SpecularStrength.floatValue();
 		final float se = surf.SpecularExponent.floatValue();
+
+		boolean[][] clip = new boolean[z.length][z.length > 0 ? z[0].length : 0];
+		for (int i=0; i<z.length; i++)
+			for (int j=0; j<z[0].length; j++)
+				clip[i][j] = isNaNorInf(x[i][j], y[i][j], z[i][j]);
 
 		if (faceColorMode > 0 || edgeColorMode > 0)
 		{
@@ -1006,6 +1063,9 @@ public class GLRenderer implements Renderer
 				for (int i=1; i<x.length; i++)
 					for (int j=1; j<x[i].length; j++)
 					{
+						if (clip[i-1][j-1] || clip[i-1][j] || clip[i][j-1] || clip[i][j])
+							continue;
+
 						gl.glBegin(GL.GL_QUADS);
 
 						// Vertex 1
@@ -1091,6 +1151,9 @@ public class GLRenderer implements Renderer
 				for (int i=1; i<x.length; i++)
 					for (int j=1; j<x[i].length; j++)
 					{
+						if (clip[i-1][j-1] || clip[i-1][j] || clip[i][j-1] || clip[i][j])
+							continue;
+
 						final double[] xx = new double[] {x[i-1][j-1], x[i][j-1], x[i][j], x[i-1][j]};
 						final double[] yy = new double[] {y[i-1][j-1], y[i][j-1], y[i][j], y[i-1][j]};
 						final double[] zz = new double[] {z[i-1][j-1], z[i][j-1], z[i][j], z[i-1][j]};
@@ -1190,6 +1253,9 @@ public class GLRenderer implements Renderer
 				{
 					for (int j=1; j<x[i].length; j++)
 					{
+						if (clip[i][j-1] || clip[i][j])
+							continue;
+
 						gl.glBegin(GL.GL_LINES);
 
 						// Vertex 1
@@ -1234,6 +1300,9 @@ public class GLRenderer implements Renderer
 				{
 					for (int i=1; i<y.length; i++)
 					{
+						if (clip[i-1][j] || clip[i][j])
+							continue;
+
 						gl.glBegin(GL.GL_LINES);
 
 						// Vertex 1
@@ -1285,6 +1354,9 @@ public class GLRenderer implements Renderer
 				{
 					for (int j=1; j<x[i].length; j++)
 					{
+						if (clip[i][j-1] || clip[i][j])
+							continue;
+
 						final double[] xx = new double[] {x[i][j-1], x[i][j]};
 						final double[] yy = new double[] {y[i][j-1], y[i][j]};
 						final double[] zz = new double[] {z[i][j-1], z[i][j]};
@@ -1357,10 +1429,13 @@ public class GLRenderer implements Renderer
 					}
 				}
 				
-				for (int j=0; j<y.length; j++)
+				for (int j=0; j<y[0].length; j++)
 				{
-					for (int i=1; i<y[j].length; i++)
+					for (int i=1; i<y.length; i++)
 					{
+						if (clip[i-1][j] || clip[i][j])
+							continue;
+
 						final double[] xx = new double[] {x[i-1][j], x[i][j]};
 						final double[] yy = new double[] {y[i-1][j], y[i][j]};
 						final double[] zz = new double[] {z[i-1][j], z[i][j]};
@@ -1565,16 +1640,21 @@ public class GLRenderer implements Renderer
 		double ty = ((double)d.h)/d.texH;
 		double px = (x[1]-x[0])/(d.w-1);
 		double py = (y[1]-y[0])/(d.h-1);
+		double x1 = sx.scale(x[0]-px/2), x2 = sx.scale(x[1]+px/2);
+		double y1 = sy.scale(y[0]-py/2), y2 = sy.scale(y[1]+py/2);
 
-		gl.glEnable(GL.GL_TEXTURE_2D);
-		gl.glColor3d(1, 1, 1);
-		gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2d(0, 0); gl.glVertex3d(x[0]-px/2, y[0]-py/2, (zmin+zmax)/2);
-		gl.glTexCoord2d(tx, 0); gl.glVertex3d(x[1]+px/2, y[0]-py/2, (zmin+zmax)/2);
-		gl.glTexCoord2d(tx, ty); gl.glVertex3d(x[1]+px/2, y[1]+py/2, (zmin+zmax)/2);
-		gl.glTexCoord2d(0, ty); gl.glVertex3d(x[0]-px/2, y[1]+py/2, (zmin+zmax)/2);
-		gl.glEnd();
-		gl.glDisable(GL.GL_TEXTURE_2D);
+		if (!isNaNorInf(x1, y1, 0) && !isNaNorInf(x2, y2, 0))
+		{
+			gl.glEnable(GL.GL_TEXTURE_2D);
+			gl.glColor3d(1, 1, 1);
+			gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2d(0, 0); gl.glVertex3d(x1, y1, (zmin+zmax)/2);
+			gl.glTexCoord2d(tx, 0); gl.glVertex3d(x2, y1, (zmin+zmax)/2);
+			gl.glTexCoord2d(tx, ty); gl.glVertex3d(x2, y2, (zmin+zmax)/2);
+			gl.glTexCoord2d(0, ty); gl.glVertex3d(x1, y2, (zmin+zmax)/2);
+			gl.glEnd();
+			gl.glDisable(GL.GL_TEXTURE_2D);
+		}
 	}
 
 	public void setXForm(AxesObject ax)
@@ -1595,6 +1675,10 @@ public class GLRenderer implements Renderer
 		 * that previous drawing are always overdrawn (to implement layering)
 		 */
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+
+		sx = ax.sx;
+		sy = ax.sy;
+		sz = ax.sz;
 	}
 
 	public void setViewport(int width, int height)

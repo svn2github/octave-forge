@@ -72,6 +72,7 @@ public class LineObject extends GraphicObject
 	private void updateMinMax()
 	{
 		double xmin, xmax, ymin, ymax, zmin, zmax;
+		double xmin2, xmax2, ymin2, ymax2, zmin2, zmax2;
 		double[] xdata = XData.getArray();
 		double[] ydata = YData.getArray();
 		double[] zdata = ZData.getArray();
@@ -81,27 +82,46 @@ public class LineObject extends GraphicObject
 		if (n == 0)
 			return;
 
-		xmin = xdata[0]; xmax = xdata[0];
-		ymin = ydata[0]; ymax = ydata[0];
-		zmin = (hasZ ? zdata[0] : -0.5); zmax = (hasZ ? zdata[0] : 0.5);
+		xmin = ymin = xmin2 = ymin2 = Double.POSITIVE_INFINITY;
+		xmax = ymax = Double.NEGATIVE_INFINITY;
+		xmax2 = ymax2 = Double.MIN_VALUE;
+		zmin = (hasZ ? Double.POSITIVE_INFINITY : -0.5);
+		zmax = (hasZ ? Double.NEGATIVE_INFINITY : 0.5);
+		zmin2 = (hasZ ? Double.POSITIVE_INFINITY : 0.1);
+		zmax2 = (hasZ ? Double.MIN_VALUE : 1);
 
-		for (int i=1; i<n; i++)
+		for (int i=0; i<n; i++)
 		{
 			if (xdata[i] < xmin) xmin = xdata[i];
 			else if (xdata[i] > xmax) xmax = xdata[i];
+			if (xdata[i] > 0)
+			{
+				if (xdata[i] < xmin2) xmin2 = xdata[i];
+				else if (xdata[i] > xmax2) xmax2 = xdata[i];
+			}
 			if (ydata[i] < ymin) ymin = ydata[i];
 			else if (ydata[i] > ymax) ymax = ydata[i];
+			if (ydata[i] > 0)
+			{
+				if (ydata[i] < ymin2) ymin2 = ydata[i];
+				else if (ydata[i] > ymax2) ymax2 = ydata[i];
+			}
 			if (hasZ)
 			{
 				if (zdata[i] < zmin) zmin = zdata[i];
 				else if (zdata[i] > zmax) zmax = zdata[i];
+				if (zdata[i] > 0)
+				{
+					if (zdata[i] < zmin2) zmin2 = zdata[i];
+					else if (zdata[i] > zmax2) zmax2 = zdata[i];
+				}
 			}
 		}
 
-		XLim.set(new double[] {xmin, xmax}, true);
-		YLim.set(new double[] {ymin, ymax}, true);
+		XLim.set(new double[] {xmin, xmax, xmin2, xmax2}, true);
+		YLim.set(new double[] {ymin, ymax, ymin2, ymax2}, true);
 		if (hasZ)
-			ZLim.set(new double[] {zmin, zmax}, true);
+			ZLim.set(new double[] {zmin, zmax, zmin2, zmax2}, true);
 	}
 
 	/* TODO: remove

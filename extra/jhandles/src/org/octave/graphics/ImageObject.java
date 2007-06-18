@@ -38,8 +38,7 @@ public class ImageObject extends GraphicObject
 		XData = new DoubleArrayProperty(this, "XData", new double[] {1, cdata[0].length}, 2);
 		YData = new DoubleArrayProperty(this, "YData", new double[] {1, cdata.length}, 2);
 
-		XLim.reset(XData.getArray());
-		YLim.reset(YData.getArray());
+		updateMinMax();
 	}
 
 	public ImageObject(HandleObject parent, double[][] r, double[][] g, double[][] b)
@@ -59,12 +58,46 @@ public class ImageObject extends GraphicObject
 		XData = new DoubleArrayProperty(this, "XData", new double[] {1, r[0].length}, 2);
 		YData = new DoubleArrayProperty(this, "YData", new double[] {1, r.length}, 2);
 
-		XLim.reset(XData.getArray());
-		YLim.reset(YData.getArray());
+		updateMinMax();
+	}
+
+	private void updateMinMax()
+	{
+		double[] x = XData.getArray(), y = YData.getArray();
+		int h = CData.getDim(0), w = CData.getDim(1);
+		double px = (x[1]-x[0])/(w-1), py = (y[1]-y[0])/(h-1);
+		double xmin, xmax, ymin, ymax, xmin2, xmax2, ymin2, ymax2;
+
+		xmin = xmin2 = x[0]-px/2; xmax = xmax2 = x[1]+px/2;
+		ymin = ymin2 = y[0]-py/2; ymax = ymax2 = y[1]+py/2;
+		if (xmax2 <= 0)
+		{
+			xmin2 = Double.POSITIVE_INFINITY;
+			xmax2 = Double.MIN_VALUE;
+		}
+		else if (xmin2 <= 0)
+		{
+			double k = Math.ceil(0.5-x[0]/px);
+			xmin2 = x[0]+(k-0.5)*px;
+		}
+		if (ymax2 <= 0)
+		{
+			ymin2 = Double.POSITIVE_INFINITY;
+			ymax2 = Double.MIN_VALUE;
+		}
+		else if (ymin2 <= 0)
+		{
+			double k = Math.ceil(0.5-y[0]/py);
+			ymin2 = y[0]+(k-0.5)*py;
+		}
+
+		XLim.set(new double[] {xmin, xmax, xmin2, xmax2}, true);
+		YLim.set(new double[] {ymin, ymax, ymin2, ymax2}, true);
 	}
 
 	public void validate()
 	{
+		updateMinMax();
 		super.validate();
 	}
 

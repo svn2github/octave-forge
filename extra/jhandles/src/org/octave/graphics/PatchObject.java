@@ -97,31 +97,45 @@ public class PatchObject extends GraphicObject
 	private void updateMinMax()
 	{
 		double xmin, xmax, ymin, ymax, zmin, zmax, cmin, cmax;
+		double xmin2, xmax2, ymin2, ymax2, zmin2, zmax2;
 		double[][] v = Vertices.getMatrix();
+
+		xmin = ymin = zmin = Double.POSITIVE_INFINITY;
+		xmax = ymax = zmax = Double.NEGATIVE_INFINITY;
+		xmin2 = ymin2 = zmin2 = Double.POSITIVE_INFINITY;
+		xmax2 = ymax2 = zmax2 = Double.MIN_VALUE;
 
 		if (v != null && v.length > 0)
 		{
-			xmin = v[0][0]; ymin = v[0][1]; zmin = v[0][2];
-			xmax = v[0][0]; ymax = v[0][1]; zmax = v[0][2];
-			for (int i=1; i<v.length; i++)
+			for (int i=0; i<v.length; i++)
 			{
 				if (v[i][0] < xmin) xmin = v[i][0];
 				else if (v[i][0] > xmax) xmax = v[i][0];
+				if (v[i][0] > 0)
+				{
+					if (v[i][0] < xmin2) xmin2 = v[i][0];
+					else if (v[i][0] > xmax2) xmax2 = v[i][0];
+				}
 				if (v[i][1] < ymin) ymin = v[i][1];
 				else if (v[i][1] > ymax) ymax = v[i][1];
+				if (v[i][1] > 0)
+				{
+					if (v[i][1] < ymin2) ymin2 = v[i][1];
+					else if (v[i][1] > ymax2) ymax2 = v[i][1];
+				}
 				if (v[i][2] < zmin) zmin = v[i][2];
 				else if (v[i][2] > zmax) zmax = v[i][2];
+				if (v[i][2] > 0)
+				{
+					if (v[i][2] < zmin2) zmin2 = v[i][2];
+					else if (v[i][2] > zmax2) zmax2 = v[i][2];
+				}
 			}
 		}
-		else
-		{
-			xmin = ymin = zmin = Double.POSITIVE_INFINITY;
-			xmax = ymax = zmax = Double.NEGATIVE_INFINITY;
-		}
 
-		XLim.set(new double[] {xmin, xmax}, true);
-		YLim.set(new double[] {ymin, ymax}, true);
-		ZLim.set(new double[] {zmin, zmax}, true);
+		XLim.set(new double[] {xmin, xmax, xmin2, xmax2}, true);
+		YLim.set(new double[] {ymin, ymax, ymin2, ymax2}, true);
+		ZLim.set(new double[] {zmin, zmax, zmin2, zmax2}, true);
 
 		if (FaceVertexCData.getNDims() == 1 && CDataMapping.is("scaled"))
 		{

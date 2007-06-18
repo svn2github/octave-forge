@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import java.awt.*;
+import java.awt.image.*;
 import java.nio.ByteBuffer;
 
 public interface Renderer
@@ -74,6 +75,8 @@ public interface Renderer
 	
 	public void draw(ByteBuffer data, int w, int h, double[] pos, int xOffset, int yOffset,
 		boolean useClipping, boolean useZBuffer);
+
+	public void drawBitmap(BufferedImage img, double[] pos, int xOffset, int yOffset);
 	
 	public void draw(PatchObject patch);
 

@@ -46,6 +46,10 @@ public interface Renderer
 
 	public void setCamera(double[] pos, double[] target);
 
+	public void setColor(Color c);
+
+	public void setLineStyle(String s);
+
 	public void end();
 
 /*	
@@ -91,4 +95,6 @@ public interface Renderer
 	public void clear(Color c);
 
 	public void drawRubberBox(int[][] b);
+
+	public void drawSegments(java.util.List pts);
 }

@@ -908,114 +908,188 @@ public class AxesObject extends HandleObject
 		boolean xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
 		boolean boxSet = Box.isSet();
 
+		// work variables
+		java.util.List l1 = new LinkedList();
+		java.util.List l2 = new LinkedList();
+
 		// Box
 
-		LineStyleProperty.setupSolid(gl);
+		r.setLineStyle("-");
 		if (boxSet || alwaysDrawBox)
 		{
-			gl.glBegin(GL.GL_LINES);
-			XColor.setup(gl);
-			gl.glVertex3d(xPlaneN, yPlaneN, zPlane); gl.glVertex3d(xPlane, yPlaneN, zPlane);
+			// X box
+			l1.add(new Point3D(xPlaneN, yPlaneN, zPlane)); l1.add(new Point3D(xPlane, yPlaneN, zPlane));
 			if (Box.isSet())
 			{
-				gl.glVertex3d(xPlaneN, yPlane, zPlane); gl.glVertex3d(xPlane, yPlane, zPlane);
-				gl.glVertex3d(xPlaneN, yPlane, zPlaneN); gl.glVertex3d(xPlane, yPlane, zPlaneN);
-				gl.glVertex3d(xPlaneN, yPlaneN, zPlaneN); gl.glVertex3d(xPlane, yPlaneN, zPlaneN);
+				l1.add(new Point3D(xPlaneN, yPlane, zPlane)); l1.add(new Point3D(xPlane, yPlane, zPlane));
+				l1.add(new Point3D(xPlaneN, yPlane, zPlaneN)); l1.add(new Point3D(xPlane, yPlane, zPlaneN));
+				l1.add(new Point3D(xPlaneN, yPlaneN, zPlaneN)); l1.add(new Point3D(xPlane, yPlaneN, zPlaneN));
 			}
-			YColor.setup(gl);
-			gl.glVertex3d(xPlaneN, yPlaneN, zPlane); gl.glVertex3d(xPlaneN, yPlane, zPlane);
-			if (Box.isSet())
-			{
-				gl.glVertex3d(xPlane, yPlaneN, zPlane); gl.glVertex3d(xPlane, yPlane, zPlane);
-				gl.glVertex3d(xPlane, yPlaneN, zPlaneN); gl.glVertex3d(xPlane, yPlane, zPlaneN);
-				gl.glVertex3d(xPlaneN, yPlaneN, zPlaneN); gl.glVertex3d(xPlaneN, yPlane, zPlaneN);
-			}
-			ZColor.setup(gl);
-			if (xySym /*xv[2]*yv[2] >= 0*/)
-			{ gl.glVertex3d(xPlaneN, yPlane, zPlaneN); gl.glVertex3d(xPlaneN, yPlane, zPlane); }
-			else
-			{ gl.glVertex3d(xPlane, yPlaneN, zPlaneN); gl.glVertex3d(xPlane, yPlaneN, zPlane); }
-			if (Box.isSet())
-			{
-				gl.glVertex3d(xPlane, yPlane, zPlaneN); gl.glVertex3d(xPlane, yPlane, zPlane);
-				if (xySym /*xv[2]*yv[2] >= 0*/)
-				{ gl.glVertex3d(xPlane, yPlaneN, zPlaneN); gl.glVertex3d(xPlane, yPlaneN, zPlane); }
-				else
-				{ gl.glVertex3d(xPlaneN, yPlane, zPlaneN); gl.glVertex3d(xPlaneN, yPlane, zPlane); }
-				gl.glVertex3d(xPlaneN, yPlaneN, zPlaneN); gl.glVertex3d(xPlaneN, yPlaneN, zPlane);
-			}
-			gl.glEnd();
-		}
+			r.setColor(XColor.getColor());
+			r.drawSegments(l1);
+			l1.clear();
 
-		//gl.glEnable(GL.GL_LINE_STIPPLE);
+			// Y box
+			l1.add(new Point3D(xPlaneN, yPlaneN, zPlane)); l1.add(new Point3D(xPlaneN, yPlane, zPlane));
+			if (Box.isSet())
+			{
+				l1.add(new Point3D(xPlane, yPlaneN, zPlane)); l1.add(new Point3D(xPlane, yPlane, zPlane));
+				l1.add(new Point3D(xPlane, yPlaneN, zPlaneN)); l1.add(new Point3D(xPlane, yPlane, zPlaneN));
+				l1.add(new Point3D(xPlaneN, yPlaneN, zPlaneN)); l1.add(new Point3D(xPlaneN, yPlane, zPlaneN));
+			}
+			r.setColor(YColor.getColor());
+			r.drawSegments(l1);
+			l1.clear();
+
+			// Z box
+			ZColor.setup(gl);
+			if (xySym)
+			{ l1.add(new Point3D(xPlaneN, yPlane, zPlaneN)); l1.add(new Point3D(xPlaneN, yPlane, zPlane)); }
+			else
+			{ l1.add(new Point3D(xPlane, yPlaneN, zPlaneN)); l1.add(new Point3D(xPlane, yPlaneN, zPlane)); }
+			if (Box.isSet())
+			{
+				l1.add(new Point3D(xPlane, yPlane, zPlaneN)); l1.add(new Point3D(xPlane, yPlane, zPlane));
+				if (xySym)
+				{ l1.add(new Point3D(xPlane, yPlaneN, zPlaneN)); l1.add(new Point3D(xPlane, yPlaneN, zPlane)); }
+				else
+				{ l1.add(new Point3D(xPlaneN, yPlane, zPlaneN)); l1.add(new Point3D(xPlaneN, yPlane, zPlane)); }
+				l1.add(new Point3D(xPlaneN, yPlaneN, zPlaneN)); l1.add(new Point3D(xPlaneN, yPlaneN, zPlane));
+			}
+			r.setColor(ZColor.getColor());
+			r.drawSegments(l1);
+			l1.clear();
+		}
 
 		// X Grid
 
 		if (xstate != AXE_DEPTH_DIR)
 		{
 			boolean doXGrid = XGrid.isSet() && !GridLineStyle.is("none");
+			boolean doXMinorGrid = XMinorGrid.isSet() && !MinorGridLineStyle.is("none");
+			boolean doXMinorTick = XMinorTick.isSet();
 			double[] xticks = sx.scale(XTick.getArray());
+			double[] xmticks = sx.scale(x_minorTicks);
 			String[] xticklabels = XTickLabel.getArray();
 			int wmax = 0, hmax = 0;
 			boolean tickAlongZ = Double.isInfinite(fy);
-			boolean isLog = XScale.is("log");
-			XColor.setup(gl);
-			for (int i=0; i<xticks.length; i++)
+			boolean isLog = (XScale.is("log") && XTickMode.is("auto"));
+
+			r.setColor(XColor.getColor());
+
+			// grid lines
+			if (doXGrid)
 			{
-				double xf = xticks[i];
-				double[] txtPos;
-
-				// grid line
-				if (doXGrid)
+				for (int i=0; i<xticks.length; i++)
 				{
-					GridLineStyle.setup(gl);
-					gl.glBegin(GL.GL_LINES);
-					gl.glVertex3d(xf, yPlaneN, zPlane);
-					gl.glVertex3d(xf, yPlane, zPlane);
-					gl.glVertex3d(xf, yPlane, zPlaneN);
-					gl.glVertex3d(xf, yPlane, zPlane);
-					gl.glEnd();
-					LineStyleProperty.setupSolid(gl);
+					l1.add(new Point3D(xticks[i], yPlaneN, zPlane));
+					l1.add(new Point3D(xticks[i], yPlane, zPlane));
+					l1.add(new Point3D(xticks[i], yPlane, zPlaneN));
+					l1.add(new Point3D(xticks[i], yPlane, zPlane));
 				}
+				r.setLineStyle(GridLineStyle.getValue());
+				r.drawSegments(l1);
+				r.setLineStyle("-");
+				l1.clear();
+			}
 
-				// tick mark
-				if (tickAlongZ)
+			// tick marks
+			if (tickAlongZ)
+			{
+				for (int i=0; i<xticks.length; i++)
 				{
-					gl.glBegin(GL.GL_LINES);
-					gl.glVertex3d(xf, yPlaneN, zPlane);
-					gl.glVertex3d(xf, yPlaneN, zPlane+Math.signum(zPlane-zPlaneN)*fz*xticklen*tickdir);
+					l1.add(new Point3D(xticks[i], yPlaneN, zPlane));
+					l1.add(new Point3D(xticks[i], yPlaneN, zPlane+Math.signum(zPlane-zPlaneN)*fz*xticklen*tickdir));
 					if (Box.isSet() && xstate != AXE_ANY_DIR)
 					{
-						gl.glVertex3d(xf, yPlaneN, zPlaneN);
-						gl.glVertex3d(xf, yPlaneN, zPlaneN+Math.signum(zPlaneN-zPlane)*fz*xticklen*tickdir);
+						l1.add(new Point3D(xticks[i], yPlaneN, zPlaneN));
+						l1.add(new Point3D(xticks[i], yPlaneN,
+							zPlaneN+Math.signum(zPlaneN-zPlane)*fz*xticklen*tickdir));
 					}
-					gl.glEnd();
-					txtPos = new double[] {xf, yPlaneN, zPlane+Math.signum(zPlane-zPlaneN)*fz*xtickoffset};
+					l2.add(new double[] {xticks[i], yPlaneN, zPlane+Math.signum(zPlane-zPlaneN)*fz*xtickoffset});
+				}
+			}
+			else
+			{
+				for (int i=0; i<xticks.length; i++)
+				{
+					l1.add(new Point3D(xticks[i], yPlaneN, zPlane));
+					l1.add(new Point3D(xticks[i], yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xticklen*tickdir, zPlane));
+					if (Box.isSet() && xstate != AXE_ANY_DIR)
+					{
+						l1.add(new Point3D(xticks[i], yPlane, zPlane));
+						l1.add(new Point3D(xticks[i],
+							yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen*tickdir, zPlane));
+					}
+					l2.add(new double[] {xticks[i], yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xtickoffset, zPlane});
+				}
+			}
+			r.drawSegments(l1);
+			l1.clear();
+
+			// tick texts
+			for (int i=0; i<xticks.length && i<xticklabels.length; i++)
+			{
+				String txt = (isLog ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
+				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
+						(xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2)),
+						(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
+				if (d.width > wmax) wmax = d.width;
+				if (d.height > hmax) hmax = d.height;
+			}
+			l2.clear();
+
+			// minor grid lines
+			if (doXMinorGrid)
+			{
+				for (int i=0; i<x_minorTicks.length; i++)
+				{
+					l1.add(new Point3D(xmticks[i], yPlaneN, zPlane));
+					l1.add(new Point3D(xmticks[i], yPlane, zPlane));
+					l1.add(new Point3D(xmticks[i], yPlane, zPlaneN));
+					l1.add(new Point3D(xmticks[i], yPlane, zPlane));
+				}
+				r.setLineStyle(MinorGridLineStyle.getValue());
+				r.drawSegments(l1);
+				r.setLineStyle("-");
+				l1.clear();
+			}
+
+			// minor tick marks
+			if (doXMinorTick)
+			{
+				if (tickAlongZ)
+				{
+					for (int i=0; i<x_minorTicks.length; i++)
+					{
+						l1.add(new Point3D(xmticks[i], yPlaneN, zPlane));
+						l1.add(new Point3D(xmticks[i], yPlaneN,
+							zPlane+Math.signum(zPlane-zPlaneN)*fz*xticklen/2*tickdir));
+						if (Box.isSet() && xstate != AXE_ANY_DIR)
+						{
+							l1.add(new Point3D(xmticks[i], yPlaneN, zPlaneN));
+							l1.add(new Point3D(xmticks[i], yPlaneN,
+								zPlaneN+Math.signum(zPlaneN-zPlane)*fz*xticklen/2*tickdir));
+						}
+					}
 				}
 				else
 				{
-					gl.glBegin(GL.GL_LINES);
-					gl.glVertex3d(xf, yPlaneN, zPlane);
-					gl.glVertex3d(xf, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xticklen*tickdir, zPlane);
-					if (Box.isSet() && xstate != AXE_ANY_DIR)
+					for (int i=0; i<x_minorTicks.length; i++)
 					{
-						gl.glVertex3d(xf, yPlane, zPlane);
-						gl.glVertex3d(xf, yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen*tickdir, zPlane);
+						l1.add(new Point3D(xmticks[i], yPlaneN, zPlane));
+						l1.add(new Point3D(xmticks[i],
+							yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xticklen/2*tickdir, zPlane));
+						if (Box.isSet() && xstate != AXE_ANY_DIR)
+						{
+							l1.add(new Point3D(xmticks[i], yPlane, zPlane));
+							l1.add(new Point3D(xmticks[i],
+								yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen/2*tickdir, zPlane));
+						}
 					}
-					gl.glEnd();
-					txtPos = new double[] {xf, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xtickoffset, zPlane};
 				}
-
-				// tick text
-				if (i < xticklabels.length)
-				{
-					String txt = (isLog ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
-					Dimension d = SimpleTextEngine.draw(canvas, txt, txtPos,
-									(xstate == AXE_HORZ_DIR ? 1 : (/*xv[2]*yv[2] >= 0*/ xySym ? 0 : 2)),
-									(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
-					if (d.width > wmax) wmax = d.width;
-					if (d.height > hmax) hmax = d.height;
-				}
+				r.drawSegments(l1);
+				l1.clear();
 			}
 
 			// label
@@ -1063,68 +1137,130 @@ public class AxesObject extends HandleObject
 		if (ystate != AXE_DEPTH_DIR)
 		{
 			boolean doYGrid = YGrid.isSet() && !GridLineStyle.is("none");
+			boolean doYMinorGrid = YMinorGrid.isSet() && !MinorGridLineStyle.is("none");
+			boolean doYMinorTick = YMinorTick.isSet();
 			double[] yticks = sy.scale(YTick.getArray());
+			double[] ymticks = sy.scale(y_minorTicks);
 			String[] yticklabels = YTickLabel.getArray();
 			int wmax = 0, hmax = 0;
 			boolean tickAlongZ = Double.isInfinite(fx);
 			boolean isLog = YScale.is("log");
-			YColor.setup(gl);
-			for (int i=0; i<yticks.length; i++)
+			
+			r.setColor(YColor.getColor());
+
+			// grid lines
+			if (doYGrid)
 			{
-				double yf = yticks[i];
-				double[] txtPos;
-
-				// grid line
-				if (doYGrid)
+				for (int i=0; i<yticks.length; i++)
 				{
-					GridLineStyle.setup(gl);
-					gl.glBegin(GL.GL_LINES);
-					gl.glVertex3d(xPlaneN, yf,zPlane);
-					gl.glVertex3d(xPlane, yf, zPlane);
-					gl.glVertex3d(xPlane, yf, zPlaneN);
-					gl.glVertex3d(xPlane, yf, zPlane);
-					gl.glEnd();
-					LineStyleProperty.setupSolid(gl);
+					l1.add(new Point3D(xPlaneN, yticks[i],zPlane));
+					l1.add(new Point3D(xPlane, yticks[i], zPlane));
+					l1.add(new Point3D(xPlane, yticks[i], zPlaneN));
+					l1.add(new Point3D(xPlane, yticks[i], zPlane));
 				}
+				r.setLineStyle(GridLineStyle.getValue());
+				r.drawSegments(l1);
+				r.setLineStyle("-");
+				l1.clear();
+			}
 
-				// tick mark
-				if (tickAlongZ)
+			// tick marks
+			if (tickAlongZ)
+			{
+				for (int i=0; i<yticks.length; i++)
 				{
-					gl.glBegin(GL.GL_LINES);
-					gl.glVertex3d(xPlaneN, yf, zPlane);
-					gl.glVertex3d(xPlaneN, yf, zPlane+Math.signum(zPlane-zPlaneN)*fz*yticklen*tickdir);
+					l1.add(new Point3D(xPlaneN, yticks[i], zPlane));
+					l1.add(new Point3D(xPlaneN, yticks[i], zPlane+Math.signum(zPlane-zPlaneN)*fz*yticklen*tickdir));
 					if (Box.isSet() && ystate != AXE_ANY_DIR)
 					{
-						gl.glVertex3d(xPlaneN, yf, zPlaneN);
-						gl.glVertex3d(xPlaneN, yf, zPlaneN+Math.signum(zPlaneN-zPlane)*fz*yticklen*tickdir);
+						l1.add(new Point3D(xPlaneN, yticks[i], zPlaneN));
+						l1.add(new Point3D(xPlaneN, yticks[i],
+							zPlaneN+Math.signum(zPlaneN-zPlane)*fz*yticklen*tickdir));
 					}
-					gl.glEnd();
-					txtPos = new double[] {xPlaneN, yf, zPlane+Math.signum(zPlane-zPlaneN)*fz*ytickoffset};
+					l2.add(new double[] {xPlaneN, yticks[i], zPlane+Math.signum(zPlane-zPlaneN)*fz*ytickoffset});
+				}
+			}
+			else
+			{
+				for (int i=0; i<yticks.length; i++)
+				{
+					l1.add(new Point3D(xPlaneN, yticks[i], zPlane));
+					l1.add(new Point3D(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*yticklen*tickdir, yticks[i], zPlane));
+					if (Box.isSet() && ystate != AXE_ANY_DIR)
+					{
+						l1.add(new Point3D(xPlane, yticks[i], zPlane));
+						l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*yticklen*tickdir,
+							yticks[i], zPlane));
+					}
+					l2.add(new double[]{xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ytickoffset, yticks[i], zPlane});
+				}
+			}
+			r.drawSegments(l1);
+			l1.clear();
+
+			// tick texts
+			for (int i=0; i<yticks.length && i<yticklabels.length; i++)
+			{
+				String txt = (isLog ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
+				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
+						(ystate == AXE_HORZ_DIR ? 1 : (!xySym ? 0 : 2)),
+						(ystate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
+				if (d.width > wmax) wmax = d.width;
+				if (d.height > hmax) hmax = d.height;
+			}
+			l2.clear();
+
+			// minor grid lines
+			if (doYMinorGrid)
+			{
+				for (int i=0; i<y_minorTicks.length; i++)
+				{
+					l1.add(new Point3D(xPlaneN, ymticks[i],zPlane));
+					l1.add(new Point3D(xPlane, ymticks[i], zPlane));
+					l1.add(new Point3D(xPlane, ymticks[i], zPlaneN));
+					l1.add(new Point3D(xPlane, ymticks[i], zPlane));
+				}
+				r.setLineStyle(MinorGridLineStyle.getValue());
+				r.drawSegments(l1);
+				r.setLineStyle("-");
+				l1.clear();
+			}
+
+			// minor tick marks
+			if (doYMinorTick)
+			{
+				if (tickAlongZ)
+				{
+					for (int i=0; i<y_minorTicks.length; i++)
+					{
+						l1.add(new Point3D(xPlaneN, ymticks[i], zPlane));
+						l1.add(new Point3D(xPlaneN, ymticks[i],
+							zPlane+Math.signum(zPlane-zPlaneN)*fz*yticklen/2*tickdir));
+						if (Box.isSet() && ystate != AXE_ANY_DIR)
+						{
+							l1.add(new Point3D(xPlaneN, ymticks[i], zPlaneN));
+							l1.add(new Point3D(xPlaneN, ymticks[i],
+								zPlaneN+Math.signum(zPlaneN-zPlane)*fz*yticklen/2*tickdir));
+						}
+					}
 				}
 				else
 				{
-					gl.glBegin(GL.GL_LINES);
-					gl.glVertex3d(xPlaneN, yf, zPlane);
-					gl.glVertex3d(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*yticklen*tickdir, yf, zPlane);
-					if (Box.isSet() && ystate != AXE_ANY_DIR)
+					for (int i=0; i<y_minorTicks.length; i++)
 					{
-						gl.glVertex3d(xPlane, yf, zPlane);
-						gl.glVertex3d(xPlane+Math.signum(xPlane-xPlaneN)*fx*yticklen*tickdir, yf, zPlane);
+						l1.add(new Point3D(xPlaneN, ymticks[i], zPlane));
+						l1.add(new Point3D(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*yticklen/2*tickdir,
+							ymticks[i], zPlane));
+						if (Box.isSet() && ystate != AXE_ANY_DIR)
+						{
+							l1.add(new Point3D(xPlane, ymticks[i], zPlane));
+							l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*yticklen/2*tickdir,
+								ymticks[i], zPlane));
+						}
 					}
-					gl.glEnd();
-					txtPos = new double[]{xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ytickoffset, yf, zPlane};
 				}
-
-				// tick text
-				if (i < yticklabels.length)
-				{
-					String txt = (isLog ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
-					Dimension d = SimpleTextEngine.draw(canvas, txt, txtPos,
-										(ystate == AXE_HORZ_DIR ? 1 : (/*xv[2]*yv[2] < 0*/ !xySym ? 0 : 2)),
-										(ystate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
-					if (d.width > wmax) wmax = d.width;
-					if (d.height > hmax) hmax = d.height;
-				}
+				r.drawSegments(l1);
+				l1.clear();
 			}
 
 			// label
@@ -1644,28 +1780,29 @@ public class AxesObject extends HandleObject
 			ArrayList tl = new ArrayList();
 			double[] lim = Lim.getArray(), ticks = Tick.getArray();
 			double v1 = lim[0], v2;
-			System.out.println("hello");
 			for (int i=0; i<=ticks.length; i++)
 			{
 				v2 = (i < ticks.length ? ticks[i] : lim[1]);
-				System.out.println(v1 + " " + v2);
 				if (v1 < v2)
 				{
 					double b = Math.pow(10, Math.floor(Math.log10(v1)));
 					if (v2 >= b*10)
 					{
-						double v = b*Math.ceil(v2/b);
+						double v = b*(Math.floor(v1/b)+1);
 						while (v < v2)
 						{
 							tl.add(new Double(v));
-							System.out.println("minor tick: " + v);
 							v += b;
+							if (v >= 10*b)
+								b *= 10;
 						}
 					}
 				}
 				v1 = v2;
 			}
 			mticks = new double[tl.size()];
+			for (int i=0; i<mticks.length; i++)
+				mticks[i] = ((Double)tl.get(i)).doubleValue();
 		}
 		return mticks;
 	}
@@ -1693,7 +1830,13 @@ public class AxesObject extends HandleObject
 			double[] ticks = computeAutoTicks(YLim, YScale);
 			autoSet(YTick, ticks);
 		}
+		autoMinorTickY();
 		autoTickLabelY();
+	}
+
+	protected void autoMinorTickY()
+	{
+		y_minorTicks = computeMinorTicks(YLim, YTick, YScale);
 	}
 
 	protected void autoTickZ()
@@ -1713,11 +1856,22 @@ public class AxesObject extends HandleObject
 		autoTickLabelZ();
 	}
 
+	private boolean allPowerOf10(double[] ticks)
+	{
+		boolean result = true;
+		for (int i=0; i<ticks.length && result; i++)
+		{
+			double n = Math.log10(ticks[i]);
+			result = (result && (Math.floor(n) == n));
+		}
+		return result;
+	}
+
 	protected String[] computeAutoTickLabels(DoubleArrayProperty Tick, RadioProperty Scale)
 	{
 		double[] ticks = Tick.getArray();
 		String[] labels = new String[ticks.length];
-		if (Scale.is("linear"))
+		if (Scale.is("linear") || !allPowerOf10(ticks))
 			for (int i=0; i<ticks.length; i++)
 			{
 				double val = ((double)Math.round(ticks[i]*100))/100;
@@ -1728,7 +1882,7 @@ public class AxesObject extends HandleObject
 			for (int i=0; i<ticks.length; i++)
 			{
 				double v = Math.log10(ticks[i]);
-				if ((int)v == v)
+				if (Math.floor(v) == v)
 					labels[i] = Integer.toString((int)v);
 				else
 					labels[i] = Double.toString(v);
@@ -2125,11 +2279,13 @@ public class AxesObject extends HandleObject
 			else if (p == XTick)
 			{
 				XTickMode.set("manual");
+				autoMinorTickX();
 				autoTickLabelX();
 			}
 			else if (p == YTick)
 			{
 				YTickMode.set("manual");
+				autoMinorTickY();
 				autoTickLabelY();
 			}
 			else if (p == ZTick)
@@ -2267,11 +2423,20 @@ public class AxesObject extends HandleObject
 			currentUnits = Units.getValue();
 		}
 		else if (p == XScale)
+		{
+			autoSet(XMinorTick, new Boolean(XScale.is("log")));
 			autoScaleX();
+		}
 		else if (p == YScale)
+		{
+			autoSet(YMinorTick, new Boolean(YScale.is("log")));
 			autoScaleY();
+		}
 		else if (p == ZScale)
+		{
+			autoSet(ZMinorTick, new Boolean(ZScale.is("log")));
 			autoScaleZ();
+		}
 
 		if (autoMode == 0 && (p == XLim || p == YLim || p == ZLim ||
 			p == XLimMode || p == YLimMode || p == ZLimMode ||

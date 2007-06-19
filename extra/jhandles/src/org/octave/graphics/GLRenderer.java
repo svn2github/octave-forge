@@ -1730,4 +1730,36 @@ public class GLRenderer implements Renderer
 		if (!isCurrent)
 			d.getContext().release();
 	}
+
+	public void drawSegments(List pts)
+	{
+		Iterator it = pts.iterator();
+		
+		gl.glBegin(GL.GL_LINES);
+		while (it.hasNext())
+		{
+			Point3D p = (Point3D)it.next();
+			gl.glVertex3d(p.x, p.y, p.z);
+		}
+		gl.glEnd();
+	}
+
+	public void setColor(Color c)
+	{
+		gl.glColor3d(c.getRed()/255.0, c.getGreen()/255.0, c.getBlue()/255.0);
+	}
+
+	public void setLineStyle(String ls)
+	{
+		if (ls.equals(":"))
+			gl.glLineStipple(1, (short)0x8888);
+		else if (ls.equals("-"))
+			gl.glLineStipple(1, (short)0xFFFF);
+		else if (ls.equals("--"))
+			gl.glLineStipple(1, (short)0x0FFF);
+		else if (ls.equals("-."))
+			gl.glLineStipple(1, (short)0x028F);
+		else
+			gl.glLineStipple(1, (short)0x0000);
+	}
 }

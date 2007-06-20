@@ -58,6 +58,9 @@ static std::map<int,octave_value> octave_ref_map;
 static int octave_refcount = 0;
 static long octave_thread_ID = -1;
 
+static bool Vjava_convert_matrix = false;
+static bool Vjava_unsigned_conversion = true;
+
 template <class T>
 class java_local_ref
 {
@@ -111,6 +114,7 @@ typedef java_local_ref<jclass> jclass_ref;
 typedef java_local_ref<jstring> jstring_ref;
 typedef java_local_ref<jobjectArray> jobjectArray_ref;
 typedef java_local_ref<jintArray> jintArray_ref;
+typedef java_local_ref<jbyteArray> jbyteArray_ref;
 typedef java_local_ref<jdoubleArray> jdoubleArray_ref;
 
 static octave_value box (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
@@ -832,6 +836,71 @@ static octave_value box (JNIEnv* jni_env, jobject jobj, jclass jcls)
         }
     }
 
+  if (retval.is_undefined () && Vjava_convert_matrix)
+    {
+      cls = jni_env->FindClass ("org/octave/Matrix");
+      if (jni_env->IsInstanceOf (jobj, cls))
+        {
+          jmethodID mID = jni_env->GetMethodID (cls, "getDims", "()[I");
+          jintArray_ref iv (jni_env, reinterpret_cast<jintArray> (jni_env->CallObjectMethod (jobj, mID)));
+          jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), 0);
+          dim_vector dims;
+          dims.resize (jni_env->GetArrayLength (jintArray (iv)));
+          for (int i=0; i<dims.length (); i++)
+            dims(i) = iv_data[i];
+          jni_env->ReleaseIntArrayElements (jintArray (iv), iv_data, 0);
+          mID = jni_env->GetMethodID (cls, "getClassName", "()Ljava/lang/String;");
+          jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (jobj, mID)));
+          std::string s = jstring_to_string (jni_env, js);
+          if (s == "double")
+            {
+              NDArray m (dims);
+              mID = jni_env->GetMethodID (cls, "toDouble", "()[D");
+              jdoubleArray_ref dv (jni_env, reinterpret_cast<jdoubleArray> (jni_env->CallObjectMethod (jobj, mID)));
+              jni_env->GetDoubleArrayRegion (dv, 0, m.length (), m.fortran_vec ());
+              retval = m;
+            }
+          else if (s == "byte")
+            {
+              if (Vjava_unsigned_conversion)
+                {
+                  uint8NDArray m (dims);
+                  mID = jni_env->GetMethodID (cls, "toByte", "()[B");
+                  jbyteArray_ref dv (jni_env, reinterpret_cast<jbyteArray> (jni_env->CallObjectMethod (jobj, mID)));
+                  jni_env->GetByteArrayRegion (dv, 0, m.length (), (jbyte*)m.fortran_vec ());
+                  retval = m;
+                }
+              else
+                {
+                  int8NDArray m (dims);
+                  mID = jni_env->GetMethodID (cls, "toByte", "()[B");
+                  jbyteArray_ref dv (jni_env, reinterpret_cast<jbyteArray> (jni_env->CallObjectMethod (jobj, mID)));
+                  jni_env->GetByteArrayRegion (dv, 0, m.length (), (jbyte*)m.fortran_vec ());
+                  retval = m;
+                }
+            }
+          else if (s == "integer")
+            {
+              if (Vjava_unsigned_conversion)
+                {
+                  uint32NDArray m (dims);
+                  mID = jni_env->GetMethodID (cls, "toInt", "()[I");
+                  jintArray_ref dv (jni_env, reinterpret_cast<jintArray> (jni_env->CallObjectMethod (jobj, mID)));
+                  jni_env->GetIntArrayRegion (dv, 0, m.length (), (jint*)m.fortran_vec ());
+                  retval = m;
+                }
+              else
+                {
+                  int32NDArray m (dims);
+                  mID = jni_env->GetMethodID (cls, "toInt", "()[I");
+                  jintArray_ref dv (jni_env, reinterpret_cast<jintArray> (jni_env->CallObjectMethod (jobj, mID)));
+                  jni_env->GetIntArrayRegion (dv, 0, m.length (), (jint*)m.fortran_vec ());
+                  retval = m;
+                }
+            }
+        }
+    }
+
   if (retval.is_undefined ())
     {
       cls = jni_env->FindClass ("org/octave/OctaveReference");
@@ -940,7 +1009,7 @@ static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, j
       jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid));
       jobj = jni_env->NewObject (dcls, mid, dval);
     }
-  else if ((val.is_real_matrix () && (val.rows() == 1 || val.columns() == 1)) || val.is_range ())
+  else if (!Vjava_convert_matrix && ((val.is_real_matrix () && (val.rows() == 1 || val.columns() == 1)) || val.is_range ()))
     {
       Matrix m = val.matrix_value ();
       jdoubleArray dv = jni_env->NewDoubleArray (m.length ());
@@ -948,6 +1017,48 @@ static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, j
         jni_env->SetDoubleArrayRegion (dv, 0, m.length (), m.fortran_vec ());
       jobj = dv;
       jcls = jni_env->GetObjectClass (jobj);
+    }
+  else if (Vjava_convert_matrix && val.is_matrix_type () && val.is_real_type ())
+    {
+      jclass_ref mcls (jni_env, jni_env->FindClass ("org/octave/Matrix"));
+      dim_vector dims = val.dims ();
+      jintArray_ref iv (jni_env, jni_env->NewIntArray (dims.length ()));
+      jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), 0);
+      for (int i=0; i<dims.length (); i++)
+        iv_data[i] = dims(i);
+      jni_env->ReleaseIntArrayElements (jintArray (iv), iv_data, 0);
+      if (val.is_double_type ())
+        {
+          NDArray m = val.array_value ();
+          jdoubleArray_ref dv (jni_env, jni_env->NewDoubleArray (m.length ()));
+          jni_env->SetDoubleArrayRegion (jdoubleArray (dv), 0, m.length (), m.fortran_vec ());
+          jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([D[I)V");
+          jobj = jni_env->NewObject (jclass (mcls), mID, jdoubleArray (dv), jintArray (iv));
+          jcls = jni_env->GetObjectClass (jobj);
+        }
+      else if (val.is_int8_type ())
+        {
+          int8NDArray m = val.int8_array_value ();
+          jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.length ()));
+          jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.length (), (jbyte*)m.fortran_vec ());
+          jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
+          jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
+          jcls = jni_env->GetObjectClass (jobj);
+        }
+      else if (val.is_int32_type ())
+        {
+          int32NDArray m = val.int32_array_value ();
+          jintArray_ref v (jni_env, jni_env->NewIntArray (m.length ()));
+          jni_env->SetIntArrayRegion (jintArray (v), 0, m.length (), (jint*)m.fortran_vec ());
+          jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([I[I)V");
+          jobj = jni_env->NewObject (jclass (mcls), mID, jintArray (v), jintArray (iv));
+          jcls = jni_env->GetObjectClass (jobj);
+        }
+      else
+        {
+          found = 0;
+          error ("cannot convert matrix of type `%s'", val.class_name ().c_str ());
+        }
     }
   else if (val.is_empty ())
     {
@@ -1463,6 +1574,16 @@ DEFUN_DLD (java2mat, args, , "")
 DEFUN_DLD (__java__, args, , "")
 {
   return octave_value ();
+}
+
+DEFUN_DLD (java_convert_matrix, args, nargout, "")
+{
+  return SET_INTERNAL_VARIABLE (java_convert_matrix);
+}
+
+DEFUN_DLD (java_unsigned_conversion, args, nargout, "")
+{
+  return SET_INTERNAL_VARIABLE (java_unsigned_conversion);
 }
 
 JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call

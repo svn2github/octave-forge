@@ -28,9 +28,12 @@ public class PatchObject extends GraphicObject
 	private int[] faceCount;
 
 	/* Properties */
-	DoubleMatrixProperty Faces;
-	DoubleMatrixProperty Vertices;
-	DoubleMatrixProperty FaceVertexCData;
+	//DoubleMatrixProperty Faces;
+	//DoubleMatrixProperty Vertices;
+	//DoubleMatrixProperty FaceVertexCData;
+	ArrayProperty Faces;
+	ArrayProperty Vertices;
+	ArrayProperty FaceVertexCData;
 	RadioProperty CDataMapping;
 	DoubleArrayProperty FaceVertexAlphaData;
 	RadioProperty AlphaDataMapping;
@@ -54,9 +57,12 @@ public class PatchObject extends GraphicObject
 	{
 		super(parent, "patch");
 
-		Faces = new DoubleMatrixProperty(this, "Faces", null);
-		Vertices = new DoubleMatrixProperty(this, "Vertices", null);
-		FaceVertexCData = new DoubleMatrixProperty(this, "FaceVertexCData", null);
+		//Faces = new DoubleMatrixProperty(this, "Faces", null);
+		//Vertices = new DoubleMatrixProperty(this, "Vertices", null);
+		//FaceVertexCData = new DoubleMatrixProperty(this, "FaceVertexCData", null);
+		Faces = new ArrayProperty(this, "Faces", null, new String[] {"double"}, 2);
+		Vertices = new ArrayProperty(this, "Vertices", null, new String[] {"double"}, 2);
+		FaceVertexCData = new ArrayProperty(this, "FaceVertexCData", null, new String[] {"double", "byte"}, 2);
 		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"direct", "scaled"}, "scaled");
 		FaceVertexAlphaData = new DoubleArrayProperty(this, "FaceVertexAlphaData", new double[0], -1);
 		AlphaDataMapping = new RadioProperty(this, "AlphaDataMapping", new String[] {"none", "scaled", "direct"}, "scaled");
@@ -98,7 +104,7 @@ public class PatchObject extends GraphicObject
 	{
 		double xmin, xmax, ymin, ymax, zmin, zmax, cmin, cmax;
 		double xmin2, xmax2, ymin2, ymax2, zmin2, zmax2;
-		double[][] v = Vertices.getMatrix();
+		double[][] v = Vertices.asDoubleMatrix();
 
 		xmin = ymin = zmin = Double.POSITIVE_INFINITY;
 		xmax = ymax = zmax = Double.NEGATIVE_INFINITY;
@@ -137,9 +143,9 @@ public class PatchObject extends GraphicObject
 		YLim.set(new double[] {ymin, ymax, ymin2, ymax2}, true);
 		ZLim.set(new double[] {zmin, zmax, zmin2, zmax2}, true);
 
-		if (FaceVertexCData.getNDims() == 1 && CDataMapping.is("scaled"))
+		if (FaceVertexCData.getDim(1) == 1 && CDataMapping.is("scaled"))
 		{
-			double[] cdata = FaceVertexCData.getVector();
+			double[] cdata = FaceVertexCData.asDoubleVector();
 
 			if (cdata != null && cdata.length > 0)
 			{
@@ -200,7 +206,7 @@ public class PatchObject extends GraphicObject
 
 	private void updateFaceCount()
 	{
-		double[][] f = Faces.getMatrix();
+		double[][] f = Faces.asDoubleMatrix();
 
 		if (f != null)
 		{
@@ -216,8 +222,8 @@ public class PatchObject extends GraphicObject
 
 	private double[][] computeNormals()
 	{
-		double[][] f = Faces.getMatrix();
-		double[][] v = Vertices.getMatrix();
+		double[][] f = Faces.asDoubleMatrix();
+		double[][] v = Vertices.asDoubleMatrix();
 
 		if (f == null || v == null)
 			return null;
@@ -268,23 +274,12 @@ public class PatchObject extends GraphicObject
 
 	double[][] getCData()
 	{
-		if ((FaceVertexCData.getNDims() > 1 && FaceVertexCData.getDim(1) == 3)
-				|| (FaceVertexCData.getNDims() == 1 && FaceVertexCData.getDim(0) == 3
-					&& Faces.getMatrix().length != 3 && Vertices.getMatrix().length != 3))
-		{
+		if (FaceVertexCData.getDim(1) == 3)
 			/* true colors */
-			if (FaceVertexCData.getNDims() == 1)
-			{
-				double[][] c = new double[1][];
-				c[0] = FaceVertexCData.getVector();
-				return c;
-			}
-			else
-				return FaceVertexCData.getMatrix();
-		}
-		else if (FaceVertexCData.getNDims() == 1)
+			return FaceVertexCData.asDoubleMatrix();
+		else if (FaceVertexCData.getDim(1) == 1)
 			/* indexed colors */
-			return getAxes().convertCData(FaceVertexCData.getVector(), CDataMapping.getValue());
+			return getAxes().convertCData(FaceVertexCData.asDoubleVector(), CDataMapping.getValue());
 		else
 			return null;
 	}

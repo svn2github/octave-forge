@@ -17,7 +17,7 @@
 
 function [ varargout ] = __jhandles_get (h, property)
 
-  j1 = java_convert_matrix (0);
+  j1 = java_convert_matrix (1);
   j2 = java_unsigned_conversion (1);
 
   unwind_protect

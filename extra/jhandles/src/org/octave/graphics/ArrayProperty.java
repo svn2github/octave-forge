@@ -25,6 +25,10 @@ import org.octave.Matrix;
 
 public class ArrayProperty extends Property
 {
+	String[] allowedTypes;
+	int allowedDims;
+	Object cache;
+
 	public ArrayProperty(PropertySet parent, String name)
 	{
 		this(parent, name, new Matrix(new double[0], new int[] {0, 0}));
@@ -32,8 +36,16 @@ public class ArrayProperty extends Property
 
 	public ArrayProperty(PropertySet parent, String name, Matrix matrix)
 	{
+		this(parent, name, matrix, null, -1);
+	}
+
+	public ArrayProperty(PropertySet parent, String name, Matrix matrix, String[] types, int dims)
+	{
 		super(parent, name);
-		pvalue = matrix;
+		pvalue = (matrix != null ? matrix : new Matrix(new double[0], new int[] {0, 0}));
+		allowedTypes = types;
+		allowedDims = dims;
+		cache = null;
 	}
 
 	protected Object convertValue(Object array) throws PropertyException
@@ -42,7 +54,28 @@ public class ArrayProperty extends Property
 			return new Matrix(new double[0], new int[] {0, 0});
 
 		if (array instanceof Matrix)
+		{
+			Matrix m = (Matrix)array;
+			if (allowedTypes != null)
+			{
+				boolean found = false;
+				String clsName = m.getClassName();
+				for (int i=0; i<allowedTypes.length; i++)
+					if (allowedTypes[i].equals(clsName))
+					{
+						found = true;
+						break;
+					}
+				if (!found)
+					throw new PropertyException("invalid matrix class - " + clsName);
+			}
+			if (allowedDims != -1)
+			{
+				if (m.getNDims() != allowedDims)
+					throw new PropertyException("invalid matrix number of dimensions - " + m.getNDims());
+			}
 			return array;
+		}
 		else
 		{
 			try
@@ -55,6 +88,12 @@ public class ArrayProperty extends Property
 				throw new PropertyException("invalid property value - " + array.toString());
 			}
 		}
+	}
+
+	protected void setInternal(Object value) throws PropertyException
+	{
+		super.setInternal(value);
+		cache = null;
 	}
 
 	public Matrix getMatrix()
@@ -79,6 +118,46 @@ public class ArrayProperty extends Property
 
 	public String toString()
 	{
-		return pvalue.toString();
+		return ("[ " + pvalue.toString() + " ]");
+	}
+
+	public double[][] asDoubleMatrix()
+	{
+		if (cache != null)
+		{
+			try { return (double[][])cache; }
+			catch (ClassCastException e) { }
+		}
+
+		if (getClassName().equals("double"))
+		{
+			if (getNDims() == 2)
+			{
+				double[][] m = new double[getDim(0)][getDim(1)];
+				double[] data = getMatrix().toDouble();
+				int idx = 0;
+				if (data.length > 0)
+					for (int j=0; j<m[0].length; j++)
+						for (int i=0; i<m.length; i++)
+							m[i][j] = data[idx++];
+				cache = m;
+				return m;
+			}
+			else
+				System.out.println("Warning: invalid conversion of " + getName() + " to double matrix");
+		}
+		else
+			System.out.println("Warning: invalid conversion of " + getName() + " to double matrix");
+
+		return null;
+	}
+
+	public double[] asDoubleVector()
+	{
+		if (getClassName().equals("double"))
+			return getMatrix().toDouble();
+		else
+			System.out.println("Warning: invalid conversion of " + getName() + " to double vector");
+		return null;
 	}
 }

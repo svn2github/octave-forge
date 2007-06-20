@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import java.text.DecimalFormat;
+import org.octave.Matrix;
 
 public class DoubleArrayProperty extends Property
 {
@@ -43,6 +44,20 @@ public class DoubleArrayProperty extends Property
 	{
 		if (value instanceof Number)
 			return new double[] {((Number)value).doubleValue()};
+		else if (value instanceof Matrix)
+		{
+			Matrix m = (Matrix)value;
+			if (m.getClassName().equals("double"))
+			{
+				if (m.getNDims() == 1 ||
+				    (m.getNDims() == 2 && (m.getDim(0) == 1 || m.getDim(1) == 1)))
+					return m.toDouble();
+				else
+					throw new PropertyException("invalid array value - " + value.toString());
+			}
+			else
+				throw new PropertyException("invalid array value - " + value.toString());
+		}
 
 		try
 		{

@@ -704,8 +704,8 @@ public class GLRenderer implements Renderer
 
 	public void draw(PatchObject patch)
 	{
-		double[][] f = patch.Faces.getMatrix();
-		double[][] v = scale(patch.Vertices.getMatrix());
+		double[][] f = patch.Faces.asDoubleMatrix();
+		double[][] v = scale(patch.Vertices.asDoubleMatrix());
 		double[][] c = null;
 		double[][] n = patch.VertexNormals.getMatrix();
 		double[] a = null;

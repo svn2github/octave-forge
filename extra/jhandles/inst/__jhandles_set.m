@@ -17,7 +17,7 @@
 
 function __jhandles_set(h, varargin)
 
-  j1 = java_convert_matrix (0);
+  j1 = java_convert_matrix (1);
   j2 = java_unsigned_conversion (1);
 
   unwind_protect
@@ -25,7 +25,7 @@ function __jhandles_set(h, varargin)
       handle = __get_object__ (hk);
       if (! isempty (handle))
         for k = 1:2:length(varargin)
-          handle.set (varargin{k}, mat2java (varargin{k+1}));
+          handle.set (varargin{k}, varargin{k+1});
         endfor
       else
         error ("invalid handle");

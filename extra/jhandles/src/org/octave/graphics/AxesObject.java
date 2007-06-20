@@ -21,9 +21,6 @@
 
 package org.octave.graphics;
 
-// TODO: remove opengl reference
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -83,19 +80,7 @@ public class AxesObject extends HandleObject
 		}
 	}
 
-	/*
-	private double anglex;
-	private double anglez;
-	double eyedist;
-	double eyeangle;
-	*/
-	boolean autofit = true;
-	private double[] M;
-	private double[] P;
-	private int[] V;
 	private String currentUnits;
-	private int maxLight;
-	private int axeIndex;
 	protected int autoMode = 0;
 
 	RenderCanvas canvas;
@@ -124,6 +109,9 @@ public class AxesObject extends HandleObject
 	private double[] x_minorTicks;
 	private double[] y_minorTicks;
 	private double[] z_minorTicks;
+	private boolean x_logTickLabels;
+	private boolean y_logTickLabels;
+	private boolean z_logTickLabels;
 
 	/* properties */
 	RadioProperty ActivePositionProperty;
@@ -207,13 +195,6 @@ public class AxesObject extends HandleObject
 			angles = new double[] { -37.5, 30.0 };
 		else
 			angles = new double[] { 0.0, 90.0 };
-		/*
-		eyedist = 12.0;
-		eyeangle = 10.0;
-		*/
-		M = new double[16];
-		P = new double[16];
-		V = new int[4];
 
 		canvas = fig.getCanvas();
 		linScale = new LinearScaler();
@@ -554,26 +535,6 @@ public class AxesObject extends HandleObject
 		autoCamera();
 	}
 
-	void setAxeIndex(int index)
-	{
-		axeIndex = index;
-	}
-
-	public double[] getM()
-	{
-		return M;
-	}
-
-	public double[] getP()
-	{
-		return P;
-	}
-
-	public int[] getV()
-	{
-		return V;
-	}
-
 	public LegendObject makeLegend(String names[])
 	{
 		if (legend == null)
@@ -603,141 +564,6 @@ public class AxesObject extends HandleObject
 		return baseLine;
 	}
 
-	private class AxesGeometry
-	{
-		double dx, dy, dz; // axes span
-		double fx, fy, fz; // axes scaling factor
-		double az, el;     // axes rotation
-		double cx, cy, cz; // axes center location
-		double xd, yd, zd; // axes direction (-1: reverse)
-	}
-
-	private AxesGeometry getGeometry()
-	{
-		AxesGeometry g = new AxesGeometry();
-
-		double[] xlim = XLim.getArray(), ylim = YLim.getArray(), zlim = ZLim.getArray();
-		double[] angles = View.getArray();
-
-		g.dx = (xlim[1]-xlim[0]);
-		g.dy = (ylim[1]-ylim[0]);
-		g.dz = (zlim[1]-zlim[0]);
-		g.cx = (xlim[0]+xlim[1])/2;
-		g.cy = (ylim[0]+ylim[1])/2;
-		g.cz = (zlim[0]+zlim[1])/2;
-		g.az = angles[0]*Math.PI/180.0;
-		g.el = angles[1]*Math.PI/180.0;
-		
-		double[] daspect = DataAspectRatio.getArray();
-		double dmax = Math.max(Math.max(g.dx, g.dy), g.dz);
-		double damax = Math.max(Math.max(daspect[0], daspect[1]), daspect[2]);
-		
-		g.fx = (damax/daspect[0])/dmax;
-		g.fy = (damax/daspect[1])/dmax;
-		g.fz = (damax/daspect[2])/dmax;
-		
-		if (!CameraTargetMode.is("auto") || !CameraPositionMode.is("auto") ||
-		    !CameraUpVectorMode.is("auto") || !CameraViewAngleMode.is("auto"))
-		{
-			double maxD = Math.sqrt((g.dx*g.fx)*(g.dx*g.fx)+(g.dy*g.fy)*(g.dy*g.fy)+(g.dz*g.fz)*(g.dz*g.fz));
-			g.fx /= maxD;
-			g.fy /= maxD;
-			g.fz /= maxD;
-		}
-
-		g.xd = (XDir.is("reverse") ? -1 : 1);
-		g.yd = (YDir.is("reverse") ? -1 : 1);
-		g.zd = (ZDir.is("reverse") ? -1 : 1);
-
-		return g;
-	}
-
-	private void setupTransformation(GL gl)
-	{
-		GLU glu = new GLU();
-		double[] target = CameraTarget.getArray(), pos = CameraPosition.getArray(), up = CameraUpVector.getArray();
-		Rectangle bb = getBoundingBox();
-		boolean cameraAuto = (
-				CameraTargetMode.is("auto") && CameraPositionMode.is("auto") &&
-				CameraUpVectorMode.is("auto") && CameraViewAngleMode.is("auto"));
-		boolean aspectAuto = (DataAspectRatioMode.is("auto") && PlotBoxAspectRatioMode.is("auto"));
-		AxesGeometry g = getGeometry();
-		int scale_mode = 2;
-		double fact = 25;
-
-		//System.out.println(g.fx + " " + g.fx*g.dx);
-		//System.out.println(g.fy + " " + g.fy*g.dy);
-		//System.out.println(g.fz + " " + g.fz*g.dz);
-
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		// tryout
-		switch (scale_mode)
-		{
-			case 0:
-				gl.glTranslated(-0.5+(bb.width+2*bb.x)/(2.0*canvas.getWidth()), -0.5+(bb.height+2*bb.y)/(2.0*canvas.getHeight()), axeIndex*Math.sqrt(3));
-				gl.glScaled((double)bb.width/canvas.getWidth(), (double)bb.height/canvas.getHeight(), 1.0);
-				break;
-			case 1:
-				gl.glTranslated(bb.width/2.0+bb.x, bb.height/2.0+bb.y, axeIndex*Math.sqrt(3));
-				gl.glScaled((double)bb.width, (double)bb.height, 1.0);
-				break;
-			case 2:
-				gl.glTranslated(fact*(bb.width/2.0+bb.x)/canvas.getWidth(), fact*(bb.height/2.0+bb.y)/canvas.getHeight(), axeIndex*Math.sqrt(3));
-				gl.glScaled(fact*(double)bb.width/canvas.getWidth(), fact*(double)bb.height/canvas.getHeight(), 1);
-				break;
-		}
-		if (!aspectAuto || !cameraAuto)
-		{
-			if (bb.width > bb.height)
-				gl.glScaled((double)bb.height/bb.width, 1.0, 1.0);
-			else
-				gl.glScaled(1.0, (double)bb.width/bb.height, 1.0);
-		}
-		//gl.glScaled(0.5/(d*Math.tan(angle*Math.PI/360.0)), 0.5/(d*Math.tan(angle*Math.PI/360.0)), 1.0);
-		//gl.glScaled(1/f1, 1/f2, 1.0);
-		if (cameraAuto)
-		{
-			double f1 = Math.abs((g.fx*g.dx)*Math.cos(g.az))+Math.abs((g.fy*g.dy)*Math.sin(g.az));
-			double f1b = Math.abs((g.fx*g.dx)*Math.sin(g.az))+Math.abs((g.fy*g.dy)*Math.cos(g.az));
-			double f2 = Math.abs((g.fz*g.dz)*Math.cos(g.el))+Math.abs(Math.sin(g.el))*f1b;
-			//double f3 = Math.abs((g.fz*g.dz)*Math.sin(g.el))+Math.abs(Math.cos(g.el))*f1b;
-			double f3 = 1.0;
-
-			if (aspectAuto)
-				gl.glScaled(1/f1, 1/f2, 1/f3);
-			else
-			{
-				double f = Math.max(f1, f2);
-				gl.glScaled(1/f, 1/f, 1/f3);
-			}
-		}
-		glu.gluLookAt(
-			pos[0]*g.fx, pos[1]*g.fy, pos[2]*g.fz,
-			target[0]*g.fx, target[1]*g.fy, target[2]*g.fz,
-			up[0]*g.fx, up[1]*g.fy, up[2]*g.fz);
-		gl.glScaled(g.fx, g.fy, g.fz);
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, M, 0);
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		gl.glLoadIdentity();
-		// tryout
-		switch (scale_mode)
-		{
-			case 0:
-				gl.glOrtho(-0.5, 0.5, -0.5, 0.5, 0, 20);
-				break;
-			case 1:
-				gl.glOrtho(0, canvas.getWidth(), 0, canvas.getHeight(), 0, 20);
-				break;
-			case 2:
-				gl.glOrtho(0, fact, 0, fact, 0, 20);
-				break;
-		}
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, P, 0);
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glGetIntegerv(GL.GL_VIEWPORT, V, 0);
-	}
-
 	public void childValidated(HandleObject child)
 	{
 		autoScale();
@@ -757,18 +583,7 @@ public class AxesObject extends HandleObject
 
 	public void draw(Renderer r)
 	{
-		// TODO: remove
-		GL gl = ((GLRenderer)r).getGL();
-
-		if (false)
-			setupTransformation(gl);
-		else
-		{
-			r.setXForm(this);
-			gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, M, 0);
-			gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, P, 0);
-			gl.glGetIntegerv(GL.GL_VIEWPORT, V, 0);
-		}
+		r.setXForm(this);
 	
 		double xmin = sx.scale(XLim.getArray()[0]), xmax = sx.scale(XLim.getArray()[1]);
 		double ymin = sy.scale(YLim.getArray()[0]), ymax = sy.scale(YLim.getArray()[1]);
@@ -868,53 +683,41 @@ public class AxesObject extends HandleObject
 		double ztickoffset = Math.max(1.0, zticklen);
 		double tickdir = (TickDir.is("in") ? -1 : 1);
 
-		setLight(gl, false, 8);
+		// work variables
+		java.util.List l1 = new LinkedList();
+		java.util.List l2 = new LinkedList();
 
 		// Axes planes
 
 		if (!AxesColor.is("none"))
 		{
-			AxesColor.setup(gl);
-			gl.glPolygonOffset(2.5f, 2.5f);
-			gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+			r.setColor(AxesColor.getColor());
 
-			gl.glBegin(GL.GL_QUADS);
-			gl.glVertex3d(xmin, ymin, zPlane);
-			gl.glVertex3d(xmax, ymin, zPlane);
-			gl.glVertex3d(xmax, ymax, zPlane);
-			gl.glVertex3d(xmin, ymax, zPlane);
-			gl.glEnd();
+			l1.add(new Point3D(xmin, ymin, zPlane));
+			l1.add(new Point3D(xmax, ymin, zPlane));
+			l1.add(new Point3D(xmax, ymax, zPlane));
+			l1.add(new Point3D(xmin, ymax, zPlane));
 
-			gl.glBegin(GL.GL_QUADS);
-			gl.glVertex3d(xPlane, ymin, zmin);
-			gl.glVertex3d(xPlane, ymax, zmin);
-			gl.glVertex3d(xPlane, ymax, zmax);
-			gl.glVertex3d(xPlane, ymin, zmax);
-			gl.glEnd();
+			l1.add(new Point3D(xPlane, ymin, zmin));
+			l1.add(new Point3D(xPlane, ymax, zmin));
+			l1.add(new Point3D(xPlane, ymax, zmax));
+			l1.add(new Point3D(xPlane, ymin, zmax));
 
-			gl.glBegin(GL.GL_QUADS);
-			gl.glVertex3d(xmin, yPlane, zmin);
-			gl.glVertex3d(xmax, yPlane, zmin);
-			gl.glVertex3d(xmax, yPlane, zmax);
-			gl.glVertex3d(xmin, yPlane, zmax);
-			gl.glEnd();
+			l1.add(new Point3D(xmin, yPlane, zmin));
+			l1.add(new Point3D(xmax, yPlane, zmin));
+			l1.add(new Point3D(xmax, yPlane, zmax));
+			l1.add(new Point3D(xmin, yPlane, zmax));
 
-			gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+			r.drawQuads(l1, 2.5);
+			l1.clear();
 		}
 		
-		gl.glPolygonOffset(1.0f, 1.0f);
-		gl.glEnable(GL.GL_LINE_STIPPLE);
-
 		boolean xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
 		boolean boxSet = Box.isSet();
 
-		// work variables
-		java.util.List l1 = new LinkedList();
-		java.util.List l2 = new LinkedList();
-
 		// Box
 
-		r.setLineStyle("-");
+		r.setLineStyle("-", true);
 		if (boxSet || alwaysDrawBox)
 		{
 			// X box
@@ -942,7 +745,6 @@ public class AxesObject extends HandleObject
 			l1.clear();
 
 			// Z box
-			ZColor.setup(gl);
 			if (xySym)
 			{ l1.add(new Point3D(xPlaneN, yPlane, zPlaneN)); l1.add(new Point3D(xPlaneN, yPlane, zPlane)); }
 			else
@@ -973,7 +775,6 @@ public class AxesObject extends HandleObject
 			String[] xticklabels = XTickLabel.getArray();
 			int wmax = 0, hmax = 0;
 			boolean tickAlongZ = Double.isInfinite(fy);
-			boolean isLog = (XScale.is("log") && XTickMode.is("auto"));
 
 			r.setColor(XColor.getColor());
 
@@ -987,9 +788,9 @@ public class AxesObject extends HandleObject
 					l1.add(new Point3D(xticks[i], yPlane, zPlaneN));
 					l1.add(new Point3D(xticks[i], yPlane, zPlane));
 				}
-				r.setLineStyle(GridLineStyle.getValue());
+				r.setLineStyle(GridLineStyle.getValue(), true);
 				r.drawSegments(l1);
-				r.setLineStyle("-");
+				r.setLineStyle("-", true);
 				l1.clear();
 			}
 
@@ -1030,7 +831,7 @@ public class AxesObject extends HandleObject
 			// tick texts
 			for (int i=0; i<xticks.length && i<xticklabels.length; i++)
 			{
-				String txt = (isLog ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
+				String txt = (x_logTickLabels ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
 				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
 						(xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2)),
 						(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
@@ -1049,9 +850,9 @@ public class AxesObject extends HandleObject
 					l1.add(new Point3D(xmticks[i], yPlane, zPlaneN));
 					l1.add(new Point3D(xmticks[i], yPlane, zPlane));
 				}
-				r.setLineStyle(MinorGridLineStyle.getValue());
+				r.setLineStyle(MinorGridLineStyle.getValue(), true);
 				r.drawSegments(l1);
-				r.setLineStyle("-");
+				r.setLineStyle("-", true);
 				l1.clear();
 			}
 
@@ -1144,7 +945,6 @@ public class AxesObject extends HandleObject
 			String[] yticklabels = YTickLabel.getArray();
 			int wmax = 0, hmax = 0;
 			boolean tickAlongZ = Double.isInfinite(fx);
-			boolean isLog = YScale.is("log");
 			
 			r.setColor(YColor.getColor());
 
@@ -1158,9 +958,9 @@ public class AxesObject extends HandleObject
 					l1.add(new Point3D(xPlane, yticks[i], zPlaneN));
 					l1.add(new Point3D(xPlane, yticks[i], zPlane));
 				}
-				r.setLineStyle(GridLineStyle.getValue());
+				r.setLineStyle(GridLineStyle.getValue(), true);
 				r.drawSegments(l1);
-				r.setLineStyle("-");
+				r.setLineStyle("-", true);
 				l1.clear();
 			}
 
@@ -1201,7 +1001,7 @@ public class AxesObject extends HandleObject
 			// tick texts
 			for (int i=0; i<yticks.length && i<yticklabels.length; i++)
 			{
-				String txt = (isLog ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
+				String txt = (y_logTickLabels ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
 				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
 						(ystate == AXE_HORZ_DIR ? 1 : (!xySym ? 0 : 2)),
 						(ystate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
@@ -1220,9 +1020,9 @@ public class AxesObject extends HandleObject
 					l1.add(new Point3D(xPlane, ymticks[i], zPlaneN));
 					l1.add(new Point3D(xPlane, ymticks[i], zPlane));
 				}
-				r.setLineStyle(MinorGridLineStyle.getValue());
+				r.setLineStyle(MinorGridLineStyle.getValue(), true);
 				r.drawSegments(l1);
-				r.setLineStyle("-");
+				r.setLineStyle("-", true);
 				l1.clear();
 			}
 
@@ -1308,89 +1108,164 @@ public class AxesObject extends HandleObject
 		if (zstate != AXE_DEPTH_DIR)
 		{
 			boolean doZGrid = ZGrid.isSet() && !GridLineStyle.is("none");
+			boolean doZMinorGrid = ZMinorGrid.isSet() && !MinorGridLineStyle.is("none");
+			boolean doZMinorTick = ZMinorTick.isSet();
 			double[] zticks = sz.scale(ZTick.getArray());
+			double[] zmticks = sz.scale(z_minorTicks);
 			int wmax = 0, hmax = 0;
 			String[] zticklabels = ZTickLabel.getArray();
-			boolean isLog = ZScale.is("log");
-			ZColor.setup(gl);
-			for (int i=0; i<zticks.length; i++)
+
+			r.setColor(ZColor.getColor());
+
+			// grid lines
+			if (doZGrid)
 			{
-				double zf = zticks[i];
-				double[] txtPos;
-
-				// grid line
-				if (doZGrid)
+				for (int i=0; i<zticks.length; i++)
 				{
-					GridLineStyle.setup(gl);
-					gl.glBegin(GL.GL_LINES);
-					gl.glVertex3d(xPlaneN, yPlane, zf);
-					gl.glVertex3d(xPlane, yPlane, zf);
-					gl.glVertex3d(xPlane, yPlaneN, zf);
-					gl.glVertex3d(xPlane, yPlane, zf);
-					gl.glEnd();
-					LineStyleProperty.setupSolid(gl);
+					l1.add(new Point3D(xPlaneN, yPlane, zticks[i]));
+					l1.add(new Point3D(xPlane, yPlane, zticks[i]));
+					l1.add(new Point3D(xPlane, yPlaneN, zticks[i]));
+					l1.add(new Point3D(xPlane, yPlane, zticks[i]));
 				}
+				r.setLineStyle(GridLineStyle.getValue(), true);
+				r.drawSegments(l1);
+				r.setLineStyle("-", true);
+				l1.clear();
+			}
 
-				// tick mark
-				if (/*xv[2]*yv[2] >= 0*/ xySym)
-				{
-					if (Double.isInfinite(fy))
+			// tick marks
+			if (xySym)
+			{
+				if (Double.isInfinite(fy))
+					for (int i=0; i<zticks.length; i++)
 					{
-						gl.glBegin(GL.GL_LINES);
-						gl.glVertex3d(xPlaneN, yPlane, zf);
-						gl.glVertex3d(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*zticklen*tickdir, yPlane, zf);
+						l1.add(new Point3D(xPlaneN, yPlane, zticks[i]));
+						l1.add(new Point3D(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*zticklen*tickdir,
+								yPlane, zticks[i]));
 						if (Box.isSet() && zstate != AXE_ANY_DIR)
 						{
-							gl.glVertex3d(xPlane, yPlane, zf);
-							gl.glVertex3d(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen*tickdir, yPlane, zf);
+							l1.add(new Point3D(xPlane, yPlane, zticks[i]));
+							l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen*tickdir,
+									yPlane, zticks[i]));
 						}
-						gl.glEnd();
-						txtPos = new double[] {xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ztickoffset, yPlane, zf};
+						l2.add(new double[] {xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ztickoffset, yPlane, zticks[i]});
 					}
-					else
+				else
+					for (int i=0; i<zticks.length; i++)
 					{
-						gl.glBegin(GL.GL_LINES);
-						gl.glVertex3d(xPlaneN, yPlane, zf);
-						gl.glVertex3d(xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zf);
-						gl.glEnd();
-						txtPos = new double[] {xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*ztickoffset, zf};
+						l1.add(new Point3D(xPlaneN, yPlane, zticks[i]));
+						l1.add(new Point3D(xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen*tickdir,
+								zticks[i]));
+						l2.add(new double[] {xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*ztickoffset, zticks[i]});
 					}
+			}
+			else
+			{
+				if (Double.isInfinite(fx))
+					for (int i=0; i<zticks.length; i++)
+					{
+						l1.add(new Point3D(xPlane, yPlaneN, zticks[i]));
+						l1.add(new Point3D(xPlane, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*zticklen*tickdir,
+								zticks[i]));
+						if (Box.isSet() && zstate != AXE_ANY_DIR)
+						{
+							l1.add(new Point3D(xPlane, yPlane, zticks[i]));
+							l1.add(new Point3D(xPlane, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen*tickdir,
+									zticks[i]));
+						}
+						l2.add(new double[] {xPlane, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*ztickoffset, zticks[i]});
+					}
+				else
+					for (int i=0; i<zticks.length; i++)
+					{
+						l1.add(new Point3D(xPlane, yPlaneN, zticks[i]));
+						l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen*tickdir, yPlaneN,
+								zticks[i]));
+						l2.add(new double[] {xPlane+Math.signum(xPlane-xPlaneN)*fx*ztickoffset, yPlaneN, zticks[i]});
+					}
+			}
+			r.drawSegments(l1);
+			l1.clear();
+
+			// tick texts
+			for (int i=0; i<zticks.length && i<zticklabels.length; i++)
+			{
+				String txt = (z_logTickLabels ? "10^{"+zticklabels[i]+"}" : zticklabels[i]);
+				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
+						2,
+						(zstate == AXE_VERT_DIR ? 1 : (zd*zv[2] < 0 ? 0 : 2)));
+				if (d.width > wmax) wmax = d.width;
+				if (d.height > hmax) hmax = d.height;
+			}
+			l2.clear();
+
+			// minor grid lines
+			if (doZMinorGrid)
+			{
+				for (int i=0; i<z_minorTicks.length; i++)
+				{
+					l1.add(new Point3D(xPlaneN, yPlane, zmticks[i]));
+					l1.add(new Point3D(xPlane, yPlane, zmticks[i]));
+					l1.add(new Point3D(xPlane, yPlaneN, zmticks[i]));
+					l1.add(new Point3D(xPlane, yPlane, zmticks[i]));
+				}
+				r.setLineStyle(MinorGridLineStyle.getValue(), true);
+				r.drawSegments(l1);
+				r.setLineStyle("-", true);
+				l1.clear();
+			}
+
+			// minor tick marks
+			if (doZMinorTick)
+			{
+				if (xySym)
+				{
+					if (Double.isInfinite(fy))
+						for (int i=0; i<z_minorTicks.length; i++)
+						{
+							l1.add(new Point3D(xPlaneN, yPlane, zmticks[i]));
+							l1.add(new Point3D(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*zticklen/2*tickdir,
+										yPlane, zmticks[i]));
+							if (Box.isSet() && zstate != AXE_ANY_DIR)
+							{
+								l1.add(new Point3D(xPlane, yPlane, zmticks[i]));
+								l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir,
+											yPlane, zmticks[i]));
+							}
+						}
+					else
+						for (int i=0; i<z_minorTicks.length; i++)
+						{
+							l1.add(new Point3D(xPlaneN, yPlane, zmticks[i]));
+							l1.add(new Point3D(xPlaneN, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir,
+										zmticks[i]));
+						}
 				}
 				else
 				{
 					if (Double.isInfinite(fx))
-					{
-						gl.glBegin(GL.GL_LINES);
-						gl.glVertex3d(xPlane, yPlaneN, zf);
-						gl.glVertex3d(xPlane, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*zticklen*tickdir, zf);
-						if (Box.isSet() && zstate != AXE_ANY_DIR)
+						for (int i=0; i<z_minorTicks.length; i++)
 						{
-							gl.glVertex3d(xPlane, yPlane, zf);
-							gl.glVertex3d(xPlane, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zf);
+							l1.add(new Point3D(xPlane, yPlaneN, zmticks[i]));
+							l1.add(new Point3D(xPlane, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*zticklen/2*tickdir,
+										zmticks[i]));
+							if (Box.isSet() && zstate != AXE_ANY_DIR)
+							{
+								l1.add(new Point3D(xPlane, yPlane, zmticks[i]));
+								l1.add(new Point3D(xPlane, yPlane+Math.signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir,
+											zmticks[i]));
+							}
 						}
-						gl.glEnd();
-						txtPos = new double[] {xPlane, yPlaneN+Math.signum(yPlaneN-yPlane)*fy*ztickoffset, zf};
-					}
 					else
-					{
-						gl.glBegin(GL.GL_LINES);
-						gl.glVertex3d(xPlane, yPlaneN, zf);
-						gl.glVertex3d(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen*tickdir, yPlaneN, zf);
-						gl.glEnd();
-						txtPos = new double[] {xPlane+Math.signum(xPlane-xPlaneN)*fx*ztickoffset, yPlaneN, zf};
-					}
+						for (int i=0; i<z_minorTicks.length; i++)
+						{
+							l1.add(new Point3D(xPlane, yPlaneN, zmticks[i]));
+							l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir, yPlaneN,
+										zmticks[i]));
+						}
 				}
-
-				// tick text
-				if (i < zticklabels.length)
-				{
-					String txt = (isLog ? "10^{"+zticklabels[i]+"}" : zticklabels[i]);
-					Dimension d = SimpleTextEngine.draw(canvas, txt, txtPos,
-									2,
-									(zstate == AXE_VERT_DIR ? 1 : (zd*zv[2] < 0 ? 0 : 2)));
-					if (d.width > wmax) wmax = d.width;
-					if (d.height > hmax) hmax = d.height;
-				}
+				r.drawSegments(l1);
+				l1.clear();
 			}
 
 			// label
@@ -1453,9 +1328,9 @@ public class AxesObject extends HandleObject
 				zLabObj.draw(r);
 			}
 		}
-		
-		gl.glDisable(GL.GL_LINE_STIPPLE);
 
+		r.setLineStyle("-", false);
+		
 		// Title
 
 		if (!Title.isEmpty())
@@ -1472,124 +1347,42 @@ public class AxesObject extends HandleObject
 			titleObj.draw(r);
 		}
 
-		/*
-		if (false)
-		{
-			// Setup clipping planes
+		// Children
 
-			gl.glClipPlane(GL.GL_CLIP_PLANE0, new double[] { -1, 0, 0, xmax }, 0);
-			gl.glClipPlane(GL.GL_CLIP_PLANE1, new double[] { 1, 0, 0, -xmin }, 0);
-			gl.glClipPlane(GL.GL_CLIP_PLANE2, new double[] { 0, -1, 0, ymax }, 0);
-			gl.glClipPlane(GL.GL_CLIP_PLANE3, new double[] { 0, 1, 0, -ymin }, 0);
-			gl.glClipPlane(GL.GL_CLIP_PLANE4, new double[] { 0, 0, -1, zmax }, 0);
-			gl.glClipPlane(GL.GL_CLIP_PLANE5, new double[] { 0, 0, 1, -zmin }, 0);
+		Iterator it;
 
-			setClipping(gl, true);
-	
-			Iterator it;
-
-			// Do lights first
-			maxLight = 0;
-			it = Children.iterator();
-			while (it.hasNext())
-			{
-				GraphicObject obj = (GraphicObject)it.next();
-				if (obj instanceof LightObject)
-				{
-					gl.glLightfv(GL.GL_LIGHT0+maxLight, GL.GL_AMBIENT, new float[] {1.0f,1.0f,1.0f,1.0f}, 0);
-					((LightObject)obj).setLightIndex(maxLight++);
-					obj.draw(gl);
-				}
-			}
-
-			// Do other objects
-			it = Children.iterator();
-			while (it.hasNext())
-			{
-				GraphicObject obj = (GraphicObject)it.next();
-				if (!(obj instanceof LightObject))
-					obj.draw(gl);
-			}
-			
-			setClipping(gl, false);
-		}
-		else
-		{
-		*/
-			Iterator it;
-
-			// TODO: how to avoid clipping on the clip planes?
-			r.setClipBox(
+		// TODO: how to avoid clipping on the clip planes?
+		r.setClipBox(
 				xmin-0.001*(xmax-xmin), xmax+0.001*(xmax-xmin),
 				ymin-0.001*(ymax-ymin), ymax+0.001*(ymax-ymin),
 				zmin-0.001*(zmax-zmin), zmax+0.001*(zmax-zmin));
-			r.setClipping(true);
-			r.setCamera(CameraPosition.getArray(), CameraTarget.getArray());
+		r.setClipping(true);
+		r.setCamera(CameraPosition.getArray(), CameraTarget.getArray());
 
-			// Do lights first
-			it = Children.iterator();
-			while (it.hasNext())
-			{
-				GraphicObject obj = (GraphicObject)it.next();
-				if (obj.Visible.isSet() && obj instanceof LightObject)
-					obj.draw(r);
-			}
-
-			// Do other objects
-			it = Children.iterator();
-			while (it.hasNext())
-			{
-				GraphicObject obj = (GraphicObject)it.next();
-				if (obj.Visible.isSet() && !(obj instanceof LightObject))
-					obj.draw(r);
-			}
-
-			r.setClipping(false);
-		/*
+		// Do lights first
+		it = Children.iterator();
+		while (it.hasNext())
+		{
+			GraphicObject obj = (GraphicObject)it.next();
+			if (obj.Visible.isSet() && obj instanceof LightObject)
+				obj.draw(r);
 		}
-		*/
-		
+
+		// Do other objects
+		it = Children.iterator();
+		while (it.hasNext())
+		{
+			GraphicObject obj = (GraphicObject)it.next();
+			if (obj.Visible.isSet() && !(obj instanceof LightObject))
+				obj.draw(r);
+		}
+
+		r.setClipping(false);
 		r.end();
 		
 		if (zoomBox)
 		{
 			drawZoomBox(xPrev, yPrev);
-		}
-	}
-
-	void setClipping(GL gl, boolean flag)
-	{
-		if (flag)
-			for (int i=0; i<6; i++)
-				gl.glEnable(GL.GL_CLIP_PLANE0+i);
-		else
-			for (int i=0; i<6; i++)
-				gl.glDisable(GL.GL_CLIP_PLANE0+i);
-	}
-
-	boolean getClipping(GL gl)
-	{
-		return gl.glIsEnabled(GL.GL_CLIP_PLANE0);
-	}
-
-	void setLight(GL gl, boolean flag)
-	{
-		setLight(gl, flag, maxLight);
-	}
-
-	void setLight(GL gl, boolean flag, int maxLight)
-	{
-		if (flag)
-		{
-			gl.glEnable(GL.GL_LIGHTING);
-			for (int i=0; i<maxLight; i++)
-				gl.glEnable(GL.GL_LIGHT0+i);
-		}
-		else
-		{
-			gl.glDisable(GL.GL_LIGHTING);
-			for (int i=0; i<maxLight; i++)
-				gl.glDisable(GL.GL_LIGHT0+i);
 		}
 	}
 
@@ -1846,7 +1639,13 @@ public class AxesObject extends HandleObject
 			double[] ticks = computeAutoTicks(ZLim, ZScale);
 			autoSet(ZTick, ticks);
 		}
+		autoMinorTickZ();
 		autoTickLabelZ();
+	}
+
+	protected void autoMinorTickZ()
+	{
+		z_minorTicks = computeMinorTicks(ZLim, ZTick, ZScale);
 	}
 
 	protected void autoTickLabel()
@@ -1867,8 +1666,9 @@ public class AxesObject extends HandleObject
 		return result;
 	}
 
-	protected String[] computeAutoTickLabels(DoubleArrayProperty Tick, RadioProperty Scale)
+	protected boolean computeAutoTickLabels(DoubleArrayProperty Tick, RadioProperty Scale, StringArrayProperty TickLabel)
 	{
+		boolean retval = false;
 		double[] ticks = Tick.getArray();
 		String[] labels = new String[ticks.length];
 		if (Scale.is("linear") || !allPowerOf10(ticks))
@@ -1887,65 +1687,29 @@ public class AxesObject extends HandleObject
 				else
 					labels[i] = Double.toString(v);
 			}
+			retval = true;
 		}
-		return labels;
+		autoSet(TickLabel, labels);
+		return retval;
 	}
 
 	protected void autoTickLabelX()
 	{
-		String[] labels = computeAutoTickLabels(XTick, XScale);
-		autoSet(XTickLabel, labels);
+		x_logTickLabels = computeAutoTickLabels(XTick, XScale, XTickLabel);
 	}
 
 	protected void autoTickLabelY()
 	{
-		String[] labels = computeAutoTickLabels(YTick, YScale);
-		autoSet(YTickLabel, labels);
+		y_logTickLabels = computeAutoTickLabels(YTick, YScale, YTickLabel);
 	}
 
 	protected void autoTickLabelZ()
 	{
-		String[] labels = computeAutoTickLabels(ZTick, ZScale);
-		autoSet(ZTickLabel, labels);
+		z_logTickLabels = computeAutoTickLabels(ZTick, ZScale, ZTickLabel);
 	}
 
 	protected void autoCamera()
 	{
-		/* TODO: remove
-		AxesGeometry g = getGeometry();
-		double[] angles = View.getArray();
-		if (CameraTargetMode.is("auto"))
-			autoSet(CameraTarget, new double[] {g.cx, g.cy, g.cz});
-		if (CameraPositionMode.is("auto"))
-		{
-			double d = Math.sqrt(75);
-			double[] target = CameraTarget.getArray();
-			if (angles[1] == 90 || angles[1] == -90)
-				autoSet(CameraPosition, new double[] {target[0], target[1], target[2]+d*g.dz});
-			else
-			{
-				double px = target[0]*g.fx+d*Math.cos(g.el)*Math.sin(g.az);
-				double py = target[1]*g.fy-d*Math.cos(g.el)*Math.cos(g.az);
-				double pz = target[2]*g.fz+d*Math.sin(g.el);
-				autoSet(CameraPosition, new double[] {px/g.fx, py/g.fy, pz/g.fz});
-			}
-		}
-		if (CameraUpVectorMode.is("auto"))
-		{
-			if (angles[1] == 90 || angles[1] == -90)
-				autoSet(CameraUpVector,
-						new double[] {
-							-Math.sin(g.az)/g.fx,
-							Math.cos(g.az)/g.fy,
-							0
-						});
-			else
-				autoSet(CameraUpVector, new double[] {0,0,1});
-		}
-		if (CameraViewAngleMode.is("auto"))
-		{
-		}
-		*/
 		updateXFormMatrices();
 	}
 
@@ -2237,11 +2001,6 @@ public class AxesObject extends HandleObject
 		return c;
 	}
 
-	boolean hasLight()
-	{
-		return (maxLight > 0);
-	}
-
 	public void propertyChanged(Property p) throws PropertyException
 	{
 		if (autoMode == 0)
@@ -2291,6 +2050,7 @@ public class AxesObject extends HandleObject
 			else if (p == ZTick)
 			{
 				ZTickMode.set("manual");
+				autoMinorTickZ();
 				autoTickLabelZ();
 			}
 			else if (p == XTickMode)

@@ -24,7 +24,6 @@ package org.octave.graphics;
 import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.*;
-import javax.media.opengl.*;
 
 public class ColorProperty extends Property
 {
@@ -102,20 +101,6 @@ public class ColorProperty extends Property
 	public boolean is(String s)
 	{
 		return (!isSet() && pvalue != null && ((String)pvalue).equalsIgnoreCase(s));
-	}
-
-	public void setup(GL gl)
-	{
-		setup(gl, 1.0f);
-	}
-
-	public void setup(GL gl, float alpha)
-	{
-		if (isSet())
-		{
-			Color c = (Color)pvalue;
-			gl.glColor4f(c.getRed()/255.0f, c.getGreen()/255.0f, c.getBlue()/255.0f, alpha);
-		}
 	}
 
 	public double[] getArray()

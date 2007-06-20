@@ -22,7 +22,6 @@
 package org.octave.graphics;
 
 import java.awt.*;
-import javax.media.opengl.*;
 
 public class LineStyleProperty extends RadioProperty
 {
@@ -34,21 +33,6 @@ public class LineStyleProperty extends RadioProperty
 	public LineStyleProperty(PropertySet parent, String name, String style)
 	{
 		super(parent, name, new String[] {"-", ":", "--", "-.", "none", ""}, style);
-	}
-
-	public void setup(GL gl)
-	{
-		String ls = getValue();
-		if (ls.equals(":"))
-			gl.glLineStipple(1, (short)0x8888);
-		else if (ls.equals("-"))
-			gl.glLineStipple(1, (short)0xFFFF);
-		else if (ls.equals("--"))
-			gl.glLineStipple(1, (short)0x0FFF);
-		else if (ls.equals("-."))
-			gl.glLineStipple(1, (short)0x028F);
-		else
-			gl.glLineStipple(1, (short)0x0000);
 	}
 	
 	public Stroke getStroke(float width)
@@ -67,11 +51,6 @@ public class LineStyleProperty extends RadioProperty
 					new float[] {5.0f, 5.0f, 1.0f, 5.0f}, 0.0f);
 		else
 			return null;
-	}
-
-	public static void setupSolid(GL gl)
-	{
-		gl.glLineStipple(1, (short)0xFFFF);
 	}
 
 	public void setStyle(String s)

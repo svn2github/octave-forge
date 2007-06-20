@@ -48,30 +48,9 @@ public interface Renderer
 
 	public void setColor(Color c);
 
-	public void setLineStyle(String s);
+	public void setLineStyle(String s, boolean forceStippling);
 
 	public void end();
-
-/*	
-	public void addLight(Color c, double[] pos, boolean isLocal);
-
-	public void drawLine(double[] x, double[] y, double[] z, Color c, int lineStyle, float lineWidth);
-	
-	public void drawMarkers(double[] x, double[] y, double[] z, Color c, MarkerProperty.Marker m);
-	
-	public void drawTextImage(ByteBuffer data, int w, int h, double[] pos, int xOffset, int yOffset,
-		boolean useClipping, boolean useZBuffer);
-	*/
-
-	public void fillPolygon(double[] vIndex, int vmax, double[][] v, double[] c);
-	
-	public void fillPolygon(double[] vIndex, int vmax, double[][] v, double[] c,
-		double[] n, float as, float ds, float ss, float se);
-	
-	public void fillPolygon(double[] vIndex, int vmax, double[][] v, double[] c,
-		double[][] n, float as, float ds, float ss, float se);
-	
-	public void shadePolygon(double[] vIndex, int vmax, double[][] v, double[][] c);
 
 	public void draw(LineObject line);
 
@@ -97,4 +76,6 @@ public interface Renderer
 	public void drawRubberBox(int[][] b);
 
 	public void drawSegments(java.util.List pts);
+	
+	public void drawQuads(java.util.List pts, double zoffset);
 }

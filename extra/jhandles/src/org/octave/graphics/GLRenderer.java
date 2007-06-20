@@ -46,6 +46,7 @@ public class GLRenderer implements Renderer
 	private GLUtessellator tess = null;
 	private int lightSideMode = GL.GL_FRONT_AND_BACK;
 	private AxesObject.Scaler sx, sy, sz;
+	private float po = 1.0f;
 
 	public GLRenderer(GLAutoDrawable d)
 	{
@@ -78,6 +79,14 @@ public class GLRenderer implements Renderer
 			gl.glDisable(GL.GL_BLEND);
 		}
 		this.maxLight = 0;
+
+		// turn off all lights
+		for (int i=0; i<8; i++)
+			gl.glDisable(GL.GL_LIGHT0+i);
+		gl.glDisable(GL.GL_LIGHTING);
+
+		// turn off clipping
+		setClipping(false);
 	}
 
 	public void setClipping(boolean flag)
@@ -167,72 +176,6 @@ public class GLRenderer implements Renderer
 		return tess;
 	}
 
-	public void fillPolygon(double[] vIndex, int vmax, double[][] v, double[] c)
-	{
-		gl.glColor3d(c[0], c[1], c[2]);
-		gl.glBegin(GL.GL_POLYGON);
-		for (int i=0; i<vmax; i++)
-		{
-			double[] vertex = v[(int)vIndex[i]-1];
-			gl.glVertex3d(vertex[0], vertex[1], vertex[2]);
-		}
-		gl.glEnd();
-	}
-
-	public void fillPolygon(double[] vIndex, int vmax, double[][] v, double[] c,
-		double[] n, float as, float ds, float ss, float se)
-	{
-		gl.glMaterialfv(lightSideMode, GL.GL_SPECULAR,
-			new float[] {ss, ss, ss, 1}, 0);
-		gl.glMaterialf(lightSideMode, GL.GL_SHININESS, se);
-		gl.glMaterialfv(lightSideMode, GL.GL_AMBIENT,
-			new float[] {as*(float)c[0], as*(float)c[1], as*(float)c[2], 1}, 0);
-		gl.glMaterialfv(lightSideMode, GL.GL_DIFFUSE,
-			new float[] {ds*(float)c[0], ds*(float)c[1], ds*(float)c[2], 1}, 0);
-		gl.glEnable(GL.GL_LIGHTING);
-		gl.glShadeModel(GL.GL_FLAT);
-		gl.glNormal3d(n[0], n[1], n[2]);
-		fillPolygon(vIndex, vmax, v, c);
-		gl.glShadeModel(GL.GL_SMOOTH);
-		gl.glDisable(GL.GL_LIGHTING);
-	}
-
-	public void fillPolygon(double[] vIndex, int vmax, double[][] v, double[] c,
-		double[][] n, float as, float ds, float ss, float se)
-	{
-		gl.glMaterialfv(lightSideMode, GL.GL_SPECULAR,
-			new float[] {ss, ss, ss, 1}, 0);
-		gl.glMaterialf(lightSideMode, GL.GL_SHININESS, se);
-		gl.glMaterialfv(lightSideMode, GL.GL_AMBIENT,
-			new float[] {as*(float)c[0], as*(float)c[1], as*(float)c[2], 1}, 0);
-		gl.glMaterialfv(lightSideMode, GL.GL_DIFFUSE,
-			new float[] {ds*(float)c[0], ds*(float)c[1], ds*(float)c[2], 1}, 0);
-		gl.glEnable(GL.GL_LIGHTING);
-		gl.glColor3d(c[0], c[1], c[2]);
-		gl.glBegin(GL.GL_POLYGON);
-		for (int i=0; i<vmax; i++)
-		{
-			double[] vertex = v[(int)vIndex[i]-1];
-			double[] norm = n[(int)vIndex[i]-1];
-			gl.glNormal3d(norm[0], norm[1], norm[2]);
-			gl.glVertex3d(vertex[0], vertex[1], vertex[2]);
-		}
-		gl.glEnd();
-		gl.glDisable(GL.GL_LIGHTING);
-	}
-
-	public void shadePolygon(double[] vIndex, int vmax, double[][] v, double[][] c)
-	{
-		gl.glBegin(GL.GL_POLYGON);
-		for (int i=0; i<vmax; i++)
-		{
-			double[] vertex = v[(int)vIndex[i]-1], color = c[(int)vIndex[i]-1];
-			gl.glColor3d(color[0], color[1], color[2]);
-			gl.glVertex3d(vertex[0], vertex[1], vertex[2]);
-		}
-		gl.glEnd();
-	}
-
 	public void draw(LineObject line)
 	{
 		double[] x = sx.scale(line.XData.getArray());
@@ -253,10 +196,8 @@ public class GLRenderer implements Renderer
 
 		if (line.LineStyle.isSet())
 		{
-			line.LineColor.setup(gl);
-			line.LineStyle.setup(gl);
-			if (!line.LineStyle.is("-"))
-				gl.glEnable(GL.GL_LINE_STIPPLE);
+			setColor(line.LineColor.getColor());
+			setLineStyle(line.LineStyle.getValue(), false);
 			gl.glLineWidth(line.LineWidth.floatValue());
 			
 			if (z.length == 0)
@@ -320,7 +261,7 @@ public class GLRenderer implements Renderer
 			byte[] data = m.data;
 
 			gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
-			line.LineColor.setup(gl);
+			setColor(line.LineColor.getColor());
 			if (z.length == 0)
 			{
 				for (int i=0; i<n; i++)
@@ -447,6 +388,7 @@ public class GLRenderer implements Renderer
 				gl.glShadeModel(GL.GL_FLAT);
 			if (mode != GL.GL_LINE_LOOP)
 			{
+				gl.glPolygonOffset(po, po);
 				gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
 				fill = true;
 			}
@@ -674,6 +616,7 @@ public class GLRenderer implements Renderer
 										gl.glShadeModel(GL.GL_SMOOTH);
 									else
 										gl.glShadeModel(GL.GL_FLAT);
+									gl.glPolygonOffset(po, po);
 									gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
 									gl.glBegin(GL.GL_TRIANGLES);
 									for (int i=0; i<3; i++)
@@ -1052,6 +995,7 @@ public class GLRenderer implements Renderer
 				if (faceLightMode > 0)
 					gl.glEnable(GL.GL_LIGHTING);
 				gl.glShadeModel((faceColorMode == 2 || faceLightMode == 2) ? GL.GL_SMOOTH : GL.GL_FLAT);
+				gl.glPolygonOffset(po, po);
 				gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
 
 				// TODO: remove
@@ -1198,6 +1142,7 @@ public class GLRenderer implements Renderer
 										gl.glShadeModel(GL.GL_SMOOTH);
 									else
 										gl.glShadeModel(GL.GL_FLAT);
+									gl.glPolygonOffset(po, po);
 									gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
 									gl.glBegin(GL.GL_QUADS);
 									for (int i=0; i<4; i++)
@@ -1749,17 +1694,49 @@ public class GLRenderer implements Renderer
 		gl.glColor3d(c.getRed()/255.0, c.getGreen()/255.0, c.getBlue()/255.0);
 	}
 
-	public void setLineStyle(String ls)
+	public void setLineStyle(String ls, boolean forceStippling)
 	{
+		boolean solid = false;
+
 		if (ls.equals(":"))
 			gl.glLineStipple(1, (short)0x8888);
 		else if (ls.equals("-"))
+		{
 			gl.glLineStipple(1, (short)0xFFFF);
+			solid = true;
+		}
 		else if (ls.equals("--"))
 			gl.glLineStipple(1, (short)0x0FFF);
 		else if (ls.equals("-."))
-			gl.glLineStipple(1, (short)0x028F);
+			gl.glLineStipple(1, (short)0x020F);
 		else
 			gl.glLineStipple(1, (short)0x0000);
+
+		if (solid && !forceStippling)
+			gl.glDisable(GL.GL_LINE_STIPPLE);
+		else
+			gl.glEnable(GL.GL_LINE_STIPPLE);
+	}
+
+	public void drawQuads(List pts, double zoffset)
+	{
+		Iterator it = pts.iterator();
+
+		if (zoffset > 0)
+		{
+			gl.glPolygonOffset((float)zoffset, (float)zoffset);
+			gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+		}
+
+		gl.glBegin(GL.GL_QUADS);
+		while (it.hasNext())
+		{
+			Point3D p = (Point3D)it.next();
+			gl.glVertex3d(p.x, p.y, p.z);
+		}
+		gl.glEnd();
+
+		if (zoffset > 0)
+			gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
 	}
 }

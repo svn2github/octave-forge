@@ -325,14 +325,12 @@ public class FigureObject extends HandleObject
 		synchronized (Children)
 		{
 			Iterator it = Children.iterator();
-			int index = 0;
 			while (it.hasNext())
 			{
 				HandleObject hObj = (HandleObject)it.next();
 				if (hObj instanceof AxesObject)
 				{
 					AxesObject aObj = (AxesObject)hObj;
-					aObj.setAxeIndex(index++);
 					if (aObj.isValid() && (rect == null || rect.intersects(aObj.getOuterBoundingBox())))
 					{
 						aObj.draw(r);

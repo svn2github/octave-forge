@@ -17,16 +17,24 @@
 
 function __jhandles_set(h, varargin)
 
-  for hk = h
-    handle = __get_object__ (hk);
-    if (! isempty (handle))
-      for k = 1:2:length(varargin)
-        handle.set (varargin{k}, mat2java (varargin{k+1}));
-      endfor
-    else
-      error ("invalid handle");
-    endif
-  endfor
+  j1 = java_convert_matrix (0);
+  j2 = java_unsigned_conversion (1);
+
+  unwind_protect
+    for hk = h
+      handle = __get_object__ (hk);
+      if (! isempty (handle))
+        for k = 1:2:length(varargin)
+          handle.set (varargin{k}, mat2java (varargin{k+1}));
+        endfor
+      else
+        error ("invalid handle");
+      endif
+    endfor
+  unwind_protect_cleanup
+	java_convert_matrix (j1);
+	java_unsigned_conversion (j2);
+  end_unwind_protect
   
   __request_drawnow__;
 

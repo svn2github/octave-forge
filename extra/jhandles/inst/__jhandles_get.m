@@ -17,22 +17,30 @@
 
 function [ varargout ] = __jhandles_get (h, property)
 
-  handle = __get_object__ (h);
-  if (! isempty (handle))
-    if (nargin == 2)
-      varargout{1} = java2mat (handle.get (property));
-    elseif (nargout > 0)
-      names = char (handle.getNames ());
-      ret = struct([]);
-      for k = 1:length (names)
-        ret.(tolower(names{k})) = java2mat (handle.get (names{k}));
-      endfor
-      varargout{1} = ret;
-	else
-      handle.show ();
+  j1 = java_convert_matrix (0);
+  j2 = java_unsigned_conversion (1);
+
+  unwind_protect
+    handle = __get_object__ (h);
+    if (! isempty (handle))
+      if (nargin == 2)
+        varargout{1} = java2mat (handle.get (property));
+      elseif (nargout > 0)
+        names = char (handle.getNames ());
+        ret = struct([]);
+        for k = 1:length (names)
+          ret.(tolower(names{k})) = java2mat (handle.get (names{k}));
+        endfor
+        varargout{1} = ret;
+      else
+        handle.show ();
+      endif
+    else
+      error ("invalid handle");
     endif
-  else
-    error ("invalid handle");
-  endif
+  unwind_protect_cleanup
+    java_convert_matrix (j1);
+    java_unsigned_conversion (j2);
+  end_unwind_protect
 
 endfunction

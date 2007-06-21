@@ -18,11 +18,18 @@
 package org.octave;
 
 import java.nio.*;
+import java.text.DecimalFormat;
 
 public class Matrix
 {
 	private int[] dims;
 	private Buffer data;
+	private Object cache = null;
+
+	public Matrix(double[] data)
+	{
+		this(data, new int[] {1, data.length});
+	}
 
 	public Matrix(double[] data, int[] dims)
 	{
@@ -100,12 +107,38 @@ public class Matrix
 
 		String s = "";
 
-		for (int i=0; i<dims.length; i++)
-			if (i == 0)
-				s = Integer.toString(dims[i]);
-			else
-				s += (" by " + Integer.toString(dims[i]));
-		s = ("(" + s + ") array of " + getClassName());
+		if (dims.length == 2 && dims[0] == 1 && dims[1] <= 5)
+		{
+			if (data instanceof DoubleBuffer)
+			{
+				DoubleBuffer b = (DoubleBuffer)data;
+				DecimalFormat fmt = new DecimalFormat("0.0000 ");
+				for (int i=0; i<b.capacity(); i++)
+					s += fmt.format(b.get(i));
+			}
+			else if (data instanceof IntBuffer)
+			{
+				IntBuffer b = (IntBuffer)data;
+				for (int i=0; i<b.capacity(); i++)
+					s += (Integer.toString(b.get(i)) + " ");
+			}
+			else if (data instanceof ByteBuffer)
+			{
+				ByteBuffer b = (ByteBuffer)data;
+				for (int i=0; i<b.capacity(); i++)
+					s += (Byte.toString(b.get(i)) + " ");
+			}
+			s = ("[ " + s + "]");
+		}
+		else
+		{
+			for (int i=0; i<dims.length; i++)
+				if (i == 0)
+					s = Integer.toString(dims[i]);
+				else
+					s += (" by " + Integer.toString(dims[i]));
+			s = ("[ (" + s + ") array of " + getClassName() + " ]");
+		}
 
 		return s;
 	}
@@ -114,5 +147,58 @@ public class Matrix
 	{
 		System.out.println(o);
 		return o;
+	}
+
+	public boolean equals(Object value)
+	{
+		if (value instanceof Matrix)
+		{
+			Matrix m = (Matrix)value;
+			if (!java.util.Arrays.equals(dims, m.dims))
+				return false;
+			return data.equals(m.data);
+		}
+		else
+			return false;
+	}
+
+	public boolean isEmpty()
+	{
+		return (data == null || dims == null || data.capacity() == 0);
+	}
+
+	public double[] asDoubleVector()
+	{
+		if (data instanceof DoubleBuffer)
+			return toDouble();
+		else
+			System.out.println("Warning: invalid conversion to double vector");
+		return null;
+	}
+
+	public double[][] asDoubleMatrix()
+	{
+		if (cache != null)
+		{
+			try { return (double[][])cache; }
+			catch (ClassCastException e) { }
+		}
+
+		if (data instanceof DoubleBuffer && dims.length == 2)
+		{
+			double[][] m = new double[dims[0]][dims[1]];
+			double[] data = ((DoubleBuffer)this.data).array();
+			int idx = 0;
+			if (data.length > 0)
+				for (int j=0; j<m[0].length; j++)
+					for (int i=0; i<m.length; i++)
+						m[i][j] = data[idx++];
+			cache = m;
+			return m;
+		}
+		else
+			System.out.println("Warning: invalid conversion to double matrix");
+
+		return null;
 	}
 }

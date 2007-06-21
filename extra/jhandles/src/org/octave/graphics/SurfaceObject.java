@@ -22,17 +22,17 @@
 package org.octave.graphics;
 
 import java.awt.*;
+import org.octave.Matrix;
 
 public class SurfaceObject extends GraphicObject
 {
 	private boolean callListValid;
-	private boolean useCallList;
 
 	/* Properties */
-	DoubleMatrixProperty XData;
-	DoubleMatrixProperty YData;
-	DoubleMatrixProperty ZData;
-	DoubleMatrixProperty CData;
+	ArrayProperty XData;
+	ArrayProperty YData;
+	ArrayProperty ZData;
+	ArrayProperty CData;
 	RadioProperty CDataMapping;
 	ColorProperty EdgeColor;
 	ColorProperty FaceColor;
@@ -44,20 +44,19 @@ public class SurfaceObject extends GraphicObject
 	RadioProperty FaceLighting;
 	DoubleRadioProperty FaceAlpha;
 	DoubleRadioProperty EdgeAlpha;
-	DoubleMatrixProperty VertexNormals;
-	MatrixProperty AlphaData;
+	ArrayProperty VertexNormals;
+	ArrayProperty AlphaData;
 	RadioProperty AlphaDataMapping;
 
-	public SurfaceObject(HandleObject parent, double[][] xdata, double[][] ydata, double[][] zdata)
+	public SurfaceObject(HandleObject parent, Matrix xdata, Matrix ydata, Matrix zdata)
 	{
 		super(parent, "surface");
 		callListValid = false;
-		useCallList = false;
 
-		XData = new DoubleMatrixProperty(this, "XData", xdata);
-		YData = new DoubleMatrixProperty(this, "YData", ydata);
-		ZData = new DoubleMatrixProperty(this, "ZData", zdata);
-		CData = new DoubleMatrixProperty(this, "CData", zdata);
+		XData = new ArrayProperty(this, "XData", xdata, new String[] {"double"}, 2);
+		YData = new ArrayProperty(this, "YData", ydata, new String[] {"double"}, 2);
+		ZData = new ArrayProperty(this, "ZData", zdata, new String[] {"double"}, 2);
+		CData = new ArrayProperty(this, "CData", zdata, new String[] {"double"}, -1);
 		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"direct", "scaled"}, "scaled");
 		EdgeColor = new ColorProperty(this, "EdgeColor", Color.black, new String[] {"none", "flat", "interp"}, null);
 		FaceColor = new ColorProperty(this, "FaceColor", null, new String[] {"none", "flat", "interp"}, "flat");
@@ -69,8 +68,8 @@ public class SurfaceObject extends GraphicObject
 		FaceLighting = new RadioProperty(this, "FaceLighting", new String[] {"none", "flat", "gouraud", "phong"}, "none");
 		FaceAlpha = new DoubleRadioProperty(this, "FaceAlpha", 1.0, new String[] {"flat", "interp"}, null);
 		EdgeAlpha = new DoubleRadioProperty(this, "EdgeAlpha", 1.0, new String[] {"flat", "interp"}, null);
-		VertexNormals = new DoubleMatrixProperty(this, "VertexNormals", null);
-		AlphaData = new MatrixProperty(this, "AlphaData", null);
+		VertexNormals = new ArrayProperty(this, "VertexNormals", null, new String[] {"double"}, 3);
+		AlphaData = new ArrayProperty(this, "AlphaData", null, new String[] {"double", "byte"}, 2);
 		AlphaDataMapping = new RadioProperty(this, "AlphaDataMapping", new String[] {"none", "scaled", "direct"}, "scaled");
 
 		ZLimInclude.reset(new Boolean(true));
@@ -96,9 +95,9 @@ public class SurfaceObject extends GraphicObject
 		double xmin, xmax, ymin, ymax, zmin, zmax;
 		double xmin2, xmax2, ymin2, ymax2, zmin2, zmax2;
 
-		double[][] x = XData.getMatrix();
-		double[][] y = YData.getMatrix();
-		double[][] z = ZData.getMatrix();
+		double[][] x = XData.asDoubleMatrix();
+		double[][] y = YData.asDoubleMatrix();
+		double[][] z = ZData.asDoubleMatrix();
 
 		int m = Math.min(Math.min(x.length, y.length), z.length);
 		int n = (m > 0 ? Math.min(Math.min(x[0].length, y[0].length), z[0].length) : 0);
@@ -144,7 +143,7 @@ public class SurfaceObject extends GraphicObject
 		if (CData.getNDims() == 2)
 		{
 			double cmin, cmax;
-			double[][] c = CData.getMatrix();
+			double[][] c = CData.asDoubleMatrix();
 
 			cmin = c[0][0]; cmax = c[0][0];
 			for (int i=0; i<c.length; i++)
@@ -158,29 +157,19 @@ public class SurfaceObject extends GraphicObject
 			CLim.set(new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}, true);
 	}
 
-	double[][][] getVertexNormals()
+	Matrix computeNormals()
 	{
-		double[][][] n = VertexNormals.getMatrix3();
-
-		if (n == null)
-		{
-			n = computeNormals();
-			VertexNormals.reset(n);
-		}
-		return n;
-	}
-
-	double[][][] computeNormals()
-	{
-		double[][] x = XData.getMatrix();
-		double[][] y = YData.getMatrix();
-		double[][] z = ZData.getMatrix();
-		double[][][] n = new double[z.length][z[0].length][3];
+		double[][] x = XData.asDoubleMatrix();
+		double[][] y = YData.asDoubleMatrix();
+		double[][] z = ZData.asDoubleMatrix();
+		int p = z.length;
+		int q = (z.length > 0 ? z[0].length : 0);
+		double[][][] n = new double[p][q][3];
 
 		// TODO: normal computation at boundaries
-		for (int i=1; i<z.length-1; i++)
+		for (int i=1; i<p-1; i++)
 		{
-			for (int j=1; j<z[i].length-1; j++)
+			for (int j=1; j<q-1; j++)
 			{
 				n[i][j][0] = n[i][j][1] = n[i][j][2] = 0;
 				Utils.crossProduct(
@@ -202,193 +191,24 @@ public class SurfaceObject extends GraphicObject
 				n[i][j][0] /= 4;
 				n[i][j][1] /= 4;
 				n[i][j][2] /= 4;
+
 				double d = Math.sqrt(n[i][j][0]*n[i][j][0]+n[i][j][1]*n[i][j][1]+n[i][j][2]*n[i][j][2]);
+
 				n[i][j][0] /= d;
 				n[i][j][1] /= d;
 				n[i][j][2] /= d;
 			}
 		}
 
-		return n;
+		return new Matrix(n);
 	}
-
-	/* TODO: remove
-	private void drawSurface2(GL gl, double[][] x, double[][] y, double[][] z, double[][][] n, double[][] c,
-		ColorProperty color, int shadeModel, boolean useLight, boolean useFlatLight,
-		float as, float ds, float alpha)
-	{
-		if (useLight)
-			getAxes().setLight(gl, true);
-		if (alpha < 1.0f)
-			gl.glEnable(GL.GL_BLEND);
-		if (color != null)
-			if (useLight)
-			{
-				Color C = color.getColor();
-				gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT, 
-						new float[] {(as*C.getRed())/255, (as*C.getGreen())/255, (as*C.getBlue())/255, 1}, 0);
-				gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE, 
-						new float[] {(ds*C.getRed())/255, (ds*C.getGreen())/255, (ds*C.getBlue())/255, alpha}, 0);
-			}
-			else
-				color.setup(gl, alpha);
-		else
-		{
-			if (useLight)
-			{
-				gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT, new float[] {as, as, as, 1}, 0);
-				gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE, new float[] {ds, ds, ds, alpha}, 0);
-			}
-			else
-				gl.glColor4f(1, 1, 1, alpha);
-			gl.glEnable(GL.GL_TEXTURE_1D);
-		}
-		gl.glShadeModel(shadeModel);
-		gl.glBegin(GL.GL_QUADS);
-		for (int i=1; i<x.length; i++)
-		{
-			for (int j=1; j<x[i].length; j++)
-			{
-				if (useFlatLight)
-				{
-					double nx = n[i-1][j-1][0]+n[i-1][j][0]+n[i][j-1][0]+n[i][j][0];
-					double ny = n[i-1][j-1][1]+n[i-1][j][1]+n[i][j-1][0]+n[i][j][1];
-					double nz = n[i-1][j-1][2]+n[i-1][j][2]+n[i][j-1][0]+n[i][j][2];
-					double nd = Math.sqrt(nx*nx+ny*ny+nz*nz);
-					gl.glNormal3d(nx/nd, ny/nd, nz/nd);
-				}
-				else
-					gl.glNormal3d(n[i-1][j-1][0], n[i-1][j-1][1], n[i-1][j-1][2]);
-				if (color == null)
-					gl.glTexCoord1d(c[i-1][j-1]);
-				gl.glVertex3d(x[i-1][j-1], y[i-1][j-1], z[i-1][j-1]);
-
-				if (!useFlatLight)
-					gl.glNormal3d(n[i][j-1][0], n[i][j-1][1], n[i][j-1][2]);
-				if (color == null)
-					gl.glTexCoord1d(c[i][j-1]);
-				gl.glVertex3d(x[i][j-1], y[i][j-1], z[i][j-1]);
-
-				if (!useFlatLight)
-					gl.glNormal3d(n[i][j][0], n[i][j][1], n[i][j][2]);
-				if (color == null)
-					gl.glTexCoord1d(c[i][j]);
-				gl.glVertex3d(x[i][j], y[i][j], z[i][j]);
-
-				if (!useFlatLight)
-					gl.glNormal3d(n[i-1][j][0], n[i-1][j][1], n[i-1][j][2]);
-				if (color == null)
-					gl.glTexCoord1d(c[i-1][j]);
-				gl.glVertex3d(x[i-1][j], y[i-1][j], z[i-1][j]);
-			}
-		}
-		gl.glEnd();
-		gl.glDisable(GL.GL_TEXTURE_1D);
-		gl.glDisable(GL.GL_BLEND);
-		if (useLight)
-			getAxes().setLight(gl, false);
-	}
-
-	private void drawSurface(GL gl, double[][] x, double[][] y, double[][] z, double[][][] n, double[][][] c,
-		ColorProperty color, int shadeModel, boolean useLight, boolean useFlatLight,
-		float as, float ds, float alpha)
-	{
-		if (useLight)
-			getAxes().setLight(gl, true);
-		if (alpha < 1.0f)
-			gl.glEnable(GL.GL_BLEND);
-		if (color != null)
-			if (useLight)
-			{
-				Color C = color.getColor();
-				gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT, 
-						new float[] {(as*C.getRed())/255, (as*C.getGreen())/255, (as*C.getBlue())/255, 1}, 0);
-				gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE, 
-						new float[] {(ds*C.getRed())/255, (ds*C.getGreen())/255, (ds*C.getBlue())/255, alpha}, 0);
-			}
-			else
-				color.setup(gl, alpha);
-		gl.glShadeModel(shadeModel);
-		gl.glBegin(GL.GL_QUADS);
-		for (int i=1; i<x.length; i++)
-		{
-			for (int j=1; j<x[i].length; j++)
-			{
-				if (useFlatLight)
-				{
-					double nx = n[i-1][j-1][0]+n[i-1][j][0]+n[i][j-1][0]+n[i][j][0];
-					double ny = n[i-1][j-1][1]+n[i-1][j][1]+n[i][j-1][0]+n[i][j][1];
-					double nz = n[i-1][j-1][2]+n[i-1][j][2]+n[i][j-1][0]+n[i][j][2];
-					double nd = Math.sqrt(nx*nx+ny*ny+nz*nz);
-					gl.glNormal3d(nx/nd, ny/nd, nz/nd);
-				}
-				else if (useLight)
-					gl.glNormal3d(n[i-1][j-1][0], n[i-1][j-1][1], n[i-1][j-1][2]);
-				if (color == null)
-					if (useLight)
-					{
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT,
-							new float[] {as*(float)c[i-1][j-1][0], as*(float)c[i-1][j-1][1], as*(float)c[i-1][j-1][2], 1}, 0);
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE,
-							new float[] {ds*(float)c[i-1][j-1][0], ds*(float)c[i-1][j-1][1], ds*(float)c[i-1][j-1][2], alpha}, 0);
-					}
-					else
-						gl.glColor4d(c[i-1][j-1][0], c[i-1][j-1][1], c[i-1][j-1][2], alpha);
-				gl.glVertex3d(x[i-1][j-1], y[i-1][j-1], z[i-1][j-1]);
-
-				if (useLight && !useFlatLight)
-					gl.glNormal3d(n[i][j-1][0], n[i][j-1][1], n[i][j-1][2]);
-				if (color == null)
-					if (useLight)
-					{
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT,
-							new float[] {as*(float)c[i][j-1][0], as*(float)c[i][j-1][1], as*(float)c[i][j-1][2], 1}, 0);
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE,
-							new float[] {ds*(float)c[i][j-1][0], ds*(float)c[i][j-1][1], ds*(float)c[i][j-1][2], alpha}, 0);
-					}
-					else
-						gl.glColor4d(c[i][j-1][0], c[i][j-1][1], c[i][j-1][2], alpha);
-				gl.glVertex3d(x[i][j-1], y[i][j-1], z[i][j-1]);
-
-				if (useLight && !useFlatLight)
-					gl.glNormal3d(n[i][j][0], n[i][j][1], n[i][j][2]);
-				if (color == null)
-					if (useLight)
-					{
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT,
-							new float[] {as*(float)c[i][j][0], as*(float)c[i][j][1], as*(float)c[i][j][2], 1}, 0);
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE,
-							new float[] {ds*(float)c[i][j][0], ds*(float)c[i][j][1], ds*(float)c[i][j][2], alpha}, 0);
-					}
-					else
-						gl.glColor4d(c[i][j][0], c[i][j][1], c[i][j][2], alpha);
-				gl.glVertex3d(x[i][j], y[i][j], z[i][j]);
-
-				if (useLight && !useFlatLight)
-					gl.glNormal3d(n[i-1][j][0], n[i-1][j][1], n[i-1][j][2]);
-				if (color == null)
-					if (useLight)
-					{
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT,
-							new float[] {as*(float)c[i-1][j][0], as*(float)c[i-1][j][1], as*(float)c[i-1][j][2], 1}, 0);
-						gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE,
-							new float[] {ds*(float)c[i-1][j][0], ds*(float)c[i-1][j][1], ds*(float)c[i-1][j][2], alpha}, 0);
-					}
-					else
-						gl.glColor4d(c[i-1][j][0], c[i-1][j][1], c[i-1][j][2], alpha);
-				gl.glVertex3d(x[i-1][j], y[i-1][j], z[i-1][j]);
-			}
-		}
-		gl.glEnd();
-		gl.glDisable(GL.GL_BLEND);
-		if (useLight)
-			getAxes().setLight(gl, false);
-	}
-	*/
 
 	double[][][] getCData()
 	{
-		return getAxes().convertCData(CData.getMatrix(), CDataMapping.getValue());
+		if (CData.getNDims() == 2)
+			return getAxes().convertCData(CData.asDoubleMatrix(), CDataMapping.getValue());
+		else
+			return CData.asDoubleMatrix3();
 	}
 
 	double[][] getAlphaData()
@@ -396,9 +216,9 @@ public class SurfaceObject extends GraphicObject
 		if (AlphaData.getNDims() != 2)
 			return null;
 
-		if (AlphaData.getComponentType().equals(Double.TYPE))
+		if (AlphaData.getClassName().equals("double"))
 		{
-			double[][] aa = (double[][])AlphaData.getObject();
+			double[][] aa = AlphaData.asDoubleMatrix();
 
 			if (AlphaDataMapping.is("none"))
 				return aa;
@@ -436,97 +256,10 @@ public class SurfaceObject extends GraphicObject
 		return null;
 	}
 
-	/* TODO: remove
-	public void draw(GL gl)
-	{
-		if (callListValid && useCallList)
-		{
-			gl.glCallList(glID);
-			return;
-		}
-
-		double[][] x = XData.getMatrix();
-		double[][] y = YData.getMatrix();
-		double[][] z = ZData.getMatrix();
-		double[][][] n = getVertexNormals();
-
-		double[][][] c = null;
-		double[][] ci = null;
-
-		float as = AmbientStrength.floatValue(), ds = DiffuseStrength.floatValue(), ss = SpecularStrength.floatValue();
-
-		if ((!EdgeColor.isSet() && !EdgeColor.is("none")) || (!FaceColor.isSet() && !FaceColor.is("none")))
-		{
-			c = getAxes().convertCData(CData.getMatrix());
-			ci = getAxes().convertCDataToIndex(CData.getMatrix());
-		}
-
-		if (useCallList)
-			gl.glNewList(glID, GL.GL_COMPILE_AND_EXECUTE);
-
-		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SPECULAR, new float[] {ss, ss, ss, 1}, 0);
-		gl.glMaterialf(GL.GL_FRONT_AND_BACK, GL.GL_SHININESS, SpecularExponent.floatValue());
-
-		// Faces
-
-		if (!FaceColor.is("none"))
-		{
-			boolean useLight = (getAxes().hasLight() && !FaceLighting.is("none")), useFlatLight = (useLight && FaceLighting.is("flat"));
-			
-			gl.glPolygonOffset(1.0f, 1.0f);
-			gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
-			drawSurface(gl, x, y, z, n, c,
-				(FaceColor.isSet() ? FaceColor : null), (FaceColor.is("flat") ? GL.GL_FLAT : GL.GL_SMOOTH), useLight, useFlatLight,
-				as, ds, FaceAlpha.floatValue());
-			//drawSurface2(gl, x, y, z, n, ci,
-			//	(FaceColor.isSet() ? FaceColor : null), (FaceColor.is("flat") ? GL.GL_FLAT : GL.GL_SMOOTH), useLight, useFlatLight,
-			//	as, ds, FaceAlpha.floatValue());
-			gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
-		}
-
-		// Edges
-
-		if (!EdgeColor.is("none"))
-		{
-			boolean useLight = (getAxes().hasLight() && !EdgeLighting.is("none")), useFlatLight = (useLight && EdgeLighting.is("flat"));
-
-			gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
-			drawSurface(gl, x, y, z, n, c,
-				(EdgeColor.isSet() ? EdgeColor : null), (EdgeColor.is("flat") ? GL.GL_FLAT : GL.GL_SMOOTH), useLight, useFlatLight,
-				as, ds, EdgeAlpha.floatValue());
-			gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
-		}
-
-		if (useCallList)
-		{
-			callListValid = true;
-			gl.glEndList();
-		}
-	}
-	*/
-
 	public void draw(Renderer r)
 	{
 		r.draw(this);
 	}
-
-	/* TODO: remove
-	private void invalidateCallList()
-	{
-		if (useCallList)
-		{
-			GLCanvas canvas = getAxes().getCanvas();
-			boolean isCurrent = (canvas.getContext() == GLContext.getCurrent());
-
-			if (!isCurrent)
-				canvas.getContext().makeCurrent();
-			canvas.getGL().glDeleteLists(glID, 1);
-			callListValid = false;
-			if (!isCurrent)
-				canvas.getContext().release();
-		}
-	}
-	*/
 
 	public void propertyChanged(Property p) throws PropertyException
 	{

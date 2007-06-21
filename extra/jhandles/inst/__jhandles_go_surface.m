@@ -41,12 +41,20 @@ function [ h ] = __jhandles_go_surface (ax, varargin)
     [x,y] = meshgrid (x, y);
   endif
 
-  ax_obj = __get_object__ (ax);
-  surf_obj = java_new ("org.octave.graphics.SurfaceObject", ax_obj, ...
-    mat2java (x), mat2java (y), mat2java (z));
-  surf_obj.set ("facecolor", "w");
-  surf_obj.set ("edgecolor", "flat");
-  surf_obj.validate ();
+  j1 = java_convert_matrix (1);
+  j2 = java_unsigned_conversion (1);
+
+  unwind_protect
+    ax_obj = __get_object__ (ax);
+    surf_obj = java_new ("org.octave.graphics.SurfaceObject", ax_obj, ...
+      x, y, z);
+    surf_obj.set ("facecolor", "w");
+    surf_obj.set ("edgecolor", "flat");
+    surf_obj.validate ();
+  unwind_protect_cleanup
+    java_convert_matrix (j1);
+    java_unsigned_conversion (j2);
+  end_unwind_protect
 
   tmp = surf_obj.getHandle ();
   

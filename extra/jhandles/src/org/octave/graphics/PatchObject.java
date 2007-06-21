@@ -22,20 +22,18 @@
 package org.octave.graphics;
 
 import java.awt.*;
+import org.octave.Matrix;
 
 public class PatchObject extends GraphicObject
 {
 	private int[] faceCount;
 
 	/* Properties */
-	//DoubleMatrixProperty Faces;
-	//DoubleMatrixProperty Vertices;
-	//DoubleMatrixProperty FaceVertexCData;
 	ArrayProperty Faces;
 	ArrayProperty Vertices;
 	ArrayProperty FaceVertexCData;
 	RadioProperty CDataMapping;
-	DoubleArrayProperty FaceVertexAlphaData;
+	VectorProperty FaceVertexAlphaData;
 	RadioProperty AlphaDataMapping;
 	ColorProperty FaceColor;
 	ColorProperty EdgeColor;
@@ -51,20 +49,17 @@ public class PatchObject extends GraphicObject
 	DoubleProperty DiffuseStrength;
 	DoubleProperty SpecularStrength;
 	DoubleProperty SpecularExponent;
-	DoubleMatrixProperty VertexNormals;
+	ArrayProperty VertexNormals;
 
 	public PatchObject(HandleObject parent)
 	{
 		super(parent, "patch");
 
-		//Faces = new DoubleMatrixProperty(this, "Faces", null);
-		//Vertices = new DoubleMatrixProperty(this, "Vertices", null);
-		//FaceVertexCData = new DoubleMatrixProperty(this, "FaceVertexCData", null);
 		Faces = new ArrayProperty(this, "Faces", null, new String[] {"double"}, 2);
 		Vertices = new ArrayProperty(this, "Vertices", null, new String[] {"double"}, 2);
 		FaceVertexCData = new ArrayProperty(this, "FaceVertexCData", null, new String[] {"double", "byte"}, 2);
 		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"direct", "scaled"}, "scaled");
-		FaceVertexAlphaData = new DoubleArrayProperty(this, "FaceVertexAlphaData", new double[0], -1);
+		FaceVertexAlphaData = new VectorProperty(this, "FaceVertexAlphaData", new double[0], -1);
 		AlphaDataMapping = new RadioProperty(this, "AlphaDataMapping", new String[] {"none", "scaled", "direct"}, "scaled");
 		FaceColor = new ColorProperty(this, "FaceColor", Color.black, new String[] {"none", "flat", "interp"}, null);
 		EdgeColor = new ColorProperty(this, "EdgeColor", Color.black, new String[] {"none", "flat", "interp"}, null);
@@ -80,7 +75,7 @@ public class PatchObject extends GraphicObject
 		DiffuseStrength = new DoubleProperty(this, "DiffuseStrength", 0.6);
 		SpecularStrength = new DoubleProperty(this, "SpecularStrength", 0.9);
 		SpecularExponent = new DoubleProperty(this, "SpecularExponent", 10);
-		VertexNormals = new DoubleMatrixProperty(this, "VertexNormals", null);
+		VertexNormals = new ArrayProperty(this, "VertexNormals", null, new String[] {"double"}, 2);
 
 		ZLimInclude.reset(new Boolean(true));
 		CLimInclude.reset(new Boolean(true));
@@ -95,7 +90,7 @@ public class PatchObject extends GraphicObject
 	{
 		updateMinMax();
 		updateFaceCount();
-		if (VertexNormals.getNDims() == 0)
+		if (VertexNormals.getDim(0) == 0)
 			VertexNormals.reset(computeNormals());
 		super.validate();
 	}
@@ -220,7 +215,7 @@ public class PatchObject extends GraphicObject
 		}
 	}
 
-	private double[][] computeNormals()
+	private Matrix computeNormals()
 	{
 		double[][] f = Faces.asDoubleMatrix();
 		double[][] v = Vertices.asDoubleMatrix();
@@ -228,7 +223,8 @@ public class PatchObject extends GraphicObject
 		if (f == null || v == null)
 			return null;
 
-		double[][] n = new double[v.length][3];
+		int nv = v.length;
+		double[] n = new double[3*nv];
 		double[] vCount = new double[v.length];
 		int vIndex;
 
@@ -240,11 +236,11 @@ public class PatchObject extends GraphicObject
 			Utils.crossProduct(
 				v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
 				vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
-				n[(int)f[i][1]-1]);
+				n, (int)f[i][1]-1, nv);
 			Utils.crossProduct(
 				v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
 				vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
-				n[(int)f[i][0]-1]);
+				n, (int)f[i][0]-1, nv);
 			vCount[(int)f[i][0]-1]++;
 			vCount[(int)f[i][1]-1]++;
 			for (int j=2; j<faceCount[i]; j++)
@@ -254,7 +250,7 @@ public class PatchObject extends GraphicObject
 				Utils.crossProduct(
 					vp[0]-vc[0], vp[1]-vc[1], vp[2]-vc[2],
 					v1[0]-vc[0], v1[1]-vc[1], v1[2]-vc[2],
-					n[vIndex]);
+					n, vIndex, nv);
 				vCount[vIndex]++;
 				vp = vc;
 			}
@@ -263,13 +259,13 @@ public class PatchObject extends GraphicObject
 		{
 			if (vCount[i] > 0)
 			{
-				n[i][0] /= vCount[i];
-				n[i][1] /= vCount[i];
-				n[i][2] /= vCount[i];
+				n[i+0*nv] /= vCount[i];
+				n[i+1*nv] /= vCount[i];
+				n[i+2*nv] /= vCount[i];
 			}
 		}
 
-		return n;
+		return new Matrix(n, new int[] {nv, 3});
 	}
 
 	double[][] getCData()

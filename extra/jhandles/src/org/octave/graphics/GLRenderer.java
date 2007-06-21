@@ -707,7 +707,7 @@ public class GLRenderer implements Renderer
 		double[][] f = patch.Faces.asDoubleMatrix();
 		double[][] v = scale(patch.Vertices.asDoubleMatrix());
 		double[][] c = null;
-		double[][] n = patch.VertexNormals.getMatrix();
+		double[][] n = patch.VertexNormals.asDoubleMatrix();
 		double[] a = null;
 		int[] faceCount = patch.getFaceCount();
 
@@ -932,11 +932,11 @@ public class GLRenderer implements Renderer
 
 	public void draw(SurfaceObject surf)
 	{
-		double[][] x = sx.scale(surf.XData.getMatrix());
-		double[][] y = sy.scale(surf.YData.getMatrix());
-		double[][] z = sz.scale(surf.ZData.getMatrix());
+		double[][] x = sx.scale(surf.XData.asDoubleMatrix());
+		double[][] y = sy.scale(surf.YData.asDoubleMatrix());
+		double[][] z = sz.scale(surf.ZData.asDoubleMatrix());
 		double[][][] c = null;
-		double[][][] n = surf.VertexNormals.getMatrix3();
+		double[][][] n = surf.VertexNormals.asDoubleMatrix3();
 		double[][] a = null;
 		
 		final int faceColorMode = (surf.FaceColor.isSet() ? 0 : (surf.FaceColor.is("flat") ? 1 : (surf.FaceColor.is("interp") ? 2 : -1)));

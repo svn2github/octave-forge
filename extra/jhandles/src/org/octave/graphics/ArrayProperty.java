@@ -118,13 +118,18 @@ public class ArrayProperty extends Property
 		return pvalue.toString();
 	}
 
+	public double[] asDoubleVector()
+	{
+		return getMatrix().asDoubleVector();
+	}
+
 	public double[][] asDoubleMatrix()
 	{
 		return getMatrix().asDoubleMatrix();
 	}
 
-	public double[] asDoubleVector()
+	public double[][][] asDoubleMatrix3()
 	{
-		getMatrix().asDoubleVector();
+		return getMatrix().asDoubleMatrix3();
 	}
 }

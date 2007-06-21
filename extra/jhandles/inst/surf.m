@@ -58,19 +58,19 @@ function h = surf (x, y, z, varargin)
     set(ca, "view", [-37.5, 30], "box", "off", "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
-  cls = java_get ("java.lang.Double", "TYPE");
-  jx = javaArray (cls, size (z, 1), 1);
-  jy = javaArray (cls, size (z, 1), 1);
-  jz = javaArray (cls, size (z, 1), 1);
-  for k = 1:size (z, 1)
-    jx(k) = x(k,:);
-    jy(k) = y(k,:);
-    jz(k) = z(k,:);
-  endfor
+  j1 = java_convert_matrix (1);
+  j2 = java_unsigned_conversion (1);
 
-  ax_obj = __get_object__ (ca);
-  surf_obj = java_new ("org.octave.graphics.SurfaceObject", ax_obj, jx, jy, jz);
+  unwind_protect
+    ax_obj = __get_object__ (ca);
+    surf_obj = java_new ("org.octave.graphics.SurfaceObject", ax_obj, x, y, z);
+  unwind_protect_cleanup
+    java_convert_matrix (j1);
+    java_unsigned_conversion (j2);
+  end_unwind_protect
+
   tmp = surf_obj.getHandle ();
+
   if (length (varargin) > 0)
     set (tmp, varargin{:});
   else

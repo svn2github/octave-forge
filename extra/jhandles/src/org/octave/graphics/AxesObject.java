@@ -123,9 +123,12 @@ public class AxesObject extends HandleObject
 	ColorProperty XColor;
 	ColorProperty YColor;
 	ColorProperty ZColor;
-	DoubleArrayProperty XLim;
-	DoubleArrayProperty YLim;
-	DoubleArrayProperty ZLim;
+	//DoubleArrayProperty XLim;
+	//DoubleArrayProperty YLim;
+	//DoubleArrayProperty ZLim;
+	VectorProperty XLim;
+	VectorProperty YLim;
+	VectorProperty ZLim;
 	RadioProperty XLimMode;
 	RadioProperty YLimMode;
 	RadioProperty ZLimMode;
@@ -211,11 +214,14 @@ public class AxesObject extends HandleObject
 		XColor = new ColorProperty(this, "XColor", Color.black);
 		YColor = new ColorProperty(this, "YColor", Color.black);
 		ZColor = new ColorProperty(this, "ZColor", Color.black);
-		XLim = new DoubleArrayProperty(this, "XLim", new double[] {0.0, 1.0}, 2);
+		//XLim = new DoubleArrayProperty(this, "XLim", new double[] {0.0, 1.0}, 2);
+		XLim = new VectorProperty(this, "XLim", new double[] {0.0, 1.0}, 2);
 		XLimMode = new RadioProperty(this, "XLimMode", new String[] {"auto", "manual"}, "auto");
-		YLim = new DoubleArrayProperty(this, "YLim", new double[] {0.0, 1.0}, 2);
+		//YLim = new DoubleArrayProperty(this, "YLim", new double[] {0.0, 1.0}, 2);
+		YLim = new VectorProperty(this, "YLim", new double[] {0.0, 1.0}, 2);
 		YLimMode = new RadioProperty(this, "YLimMode", new String[] {"auto", "manual"}, "auto");
-		ZLim = new DoubleArrayProperty(this, "ZLim", new double[] {-0.5, 0.5}, 2);
+		//ZLim = new DoubleArrayProperty(this, "ZLim", new double[] {-0.5, 0.5}, 2);
+		ZLim = new VectorProperty(this, "ZLim", new double[] {-0.5, 0.5}, 2);
 		ZLimMode = new RadioProperty(this, "ZLimMode", new String[] {"auto", "manual"}, "auto");
 		XGrid = new BooleanProperty(this, "XGrid", false);
 		YGrid = new BooleanProperty(this, "YGrid", false);
@@ -1541,7 +1547,7 @@ public class AxesObject extends HandleObject
 		autoTickZ();
 	}
 
-	protected double[] computeAutoTicks(DoubleArrayProperty Lim, RadioProperty Scale)
+	protected double[] computeAutoTicks(VectorProperty Lim, RadioProperty Scale)
 	{
 			double vmin = Lim.getArray()[0], vmax = Lim.getArray()[1];
 			double[] ticks;
@@ -1562,7 +1568,7 @@ public class AxesObject extends HandleObject
 			return ticks;
 	}
 
-	protected double[] computeMinorTicks(DoubleArrayProperty Lim, DoubleArrayProperty Tick, RadioProperty Scale)
+	protected double[] computeMinorTicks(VectorProperty Lim, DoubleArrayProperty Tick, RadioProperty Scale)
 	{
 		double[] mticks;
 

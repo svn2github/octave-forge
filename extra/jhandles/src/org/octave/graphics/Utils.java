@@ -25,9 +25,15 @@ public class Utils
 {
 	public static void crossProduct(double ax, double ay, double az, double bx, double by, double bz, double[] res)
 	{
-		res[0] += (ay*bz-az*by);
-		res[1] += (az*bx-ax*bz);
-		res[2] += (ax*by-ay*bx);
+		crossProduct(ax, ay, az, bx, by, bz, res, 0, 1);
+	}
+
+	public static void crossProduct(double ax, double ay, double az, double bx, double by, double bz,
+			double[] res, int offset, int ldr)
+	{
+		res[offset+0*ldr] += (ay*bz-az*by);
+		res[offset+1*ldr] += (az*bx-ax*bz);
+		res[offset+2*ldr] += (ax*by-ay*bx);
 	}
 
 	public static void printCpuTime()

@@ -31,6 +31,38 @@ public class Matrix
 		this(data, new int[] {1, data.length});
 	}
 
+	public Matrix(double[][] data)
+	{
+		int m = data.length;
+		int n = (m > 0 ? data[0].length : 0);
+		int idx = 0;
+		double[] buf = new double[m*n];
+		
+		for (int j=0; j<n; j++)
+			for (int i=0; i<m; i++)
+				buf[idx++] = data[i][j];
+		this.data = DoubleBuffer.wrap(buf);
+		this.dims = new int[] {m, n};
+		this.cache = data;
+	}
+
+	public Matrix(double[][][] data)
+	{
+		int m = data.length;
+		int n = (m > 0 ? data[0].length : 0);
+		int p = (n > 0 ? data[0][0].length : 0);
+		int idx = 0;
+		double[] buf = new double[m*n*p];
+
+		for (int k=0; k<p; k++)
+			for (int j=0; j<n; j++)
+				for (int i=0; i<m; i++)
+					buf[idx++] = data[i][j][k];
+		this.data = DoubleBuffer.wrap(buf);
+		this.dims = new int[] {m, n, p};
+		this.cache = data;
+	}
+
 	public Matrix(double[] data, int[] dims)
 	{
 		this.dims = dims;

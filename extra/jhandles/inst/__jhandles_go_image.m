@@ -15,16 +15,16 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function h = image (C, varargin)
+function [ h ] = __jhandles_go_image (ax, varargin)
 
-  ax_obj = __get_object__ (gca);
-  img_obj = java_new ("org.octave.graphics.ImageObject", ax_obj,
-    mat2java(double(C(:,:,1))/255), mat2java(double(C(:,:,2))/255), mat2java(double(C(:,:,3))/255));
-  img_obj.validate();
+  ax_obj = __get_object__ (ax);
+  img_obj = java_new ("org.octave.graphics.ImageObject", ax_obj);
+  h = img_obj.getHandle ();
 
-  tmp = img_obj.getHandle();
-  if (nargout > 0)
-    h = tmp;
+  if (length (varargin) > 0)
+    set (h, varargin{:});
   endif
+
+  img_obj.validate ();
 
 endfunction

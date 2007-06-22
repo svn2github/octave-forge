@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import java.awt.*;
+import org.octave.Matrix;
 
 public class LineObject extends GraphicObject
 {
@@ -43,11 +44,16 @@ public class LineObject extends GraphicObject
 	
 	public LineObject(HandleObject parent, double[] xdata, double[] ydata, double[] zdata)
 	{
+		this(parent, new Matrix(xdata), new Matrix(ydata), new Matrix(zdata));
+	}
+
+	public LineObject(HandleObject parent, Matrix xdata, Matrix ydata, Matrix zdata)
+	{
 		super(parent, "line");
 
 		XData = new VectorProperty(this, "XData", xdata, -1);
 		YData = new VectorProperty(this, "YData", ydata, -1);
-		ZData = new VectorProperty(this, "ZData", (zdata == null ? new double[0] : zdata), -1);
+		ZData = new VectorProperty(this, "ZData", (zdata == null ? new Matrix() : zdata), -1);
 		LineColor = new ColorProperty(this, "Color", Color.blue);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
 		LineWidth = new DoubleProperty(this, "LineWidth", 1.0);
@@ -123,51 +129,6 @@ public class LineObject extends GraphicObject
 		if (hasZ)
 			ZLim.set(new double[] {zmin, zmax, zmin2, zmax2}, true);
 	}
-
-	/* TODO: remove
-	public void draw(GL gl)
-	{
-		LineColor.setup(gl);
-		LineStyle.setup(gl);
-		if (!LineStyle.is("-"))
-			gl.glEnable(GL.GL_LINE_STIPPLE);
-		gl.glLineWidth((float)LineWidth.doubleValue());
-
-		double[] xdata = XData.getArray();
-		double[] ydata = YData.getArray();
-		double[] zdata = ZData.getArray();
-
-		gl.glBegin(GL.GL_LINE_STRIP);
-		if (zdata.length > 0)
-		{
-			gl.glVertex3d(xdata[0], ydata[0], zdata[0]);
-			for (int i=1; i<xdata.length; i++)
-				gl.glVertex3d(xdata[i], ydata[i], zdata[i]);
-		}
-		else
-		{
-			gl.glVertex3d(xdata[0], ydata[0], 0.0);
-			for (int i=1; i<xdata.length; i++)
-				gl.glVertex3d(xdata[i], ydata[i], 0.0);
-		}
-		gl.glEnd();
-
-		if (Marker.isSet())
-		{
-			MarkerProperty.Marker marker = Marker.makeMarker(MarkerSize.doubleValue(), LineWidth.doubleValue());
-			if (zdata.length > 0)
-				for (int i=0; i<xdata.length; i++)
-					marker.draw(gl, xdata[i], ydata[i], zdata[i]);
-			else
-				for (int i=0; i<xdata.length; i++)
-					marker.draw(gl, xdata[i], ydata[i], 0.0);
-		}
-
-		gl.glDisable(GL.GL_LINE_STIPPLE);
-		gl.glLineWidth(1.0f);
-		gl.glLineStipple(1, (short)0xFFFF);
-	}
-	*/
 
 	public void draw(Renderer r)
 	{

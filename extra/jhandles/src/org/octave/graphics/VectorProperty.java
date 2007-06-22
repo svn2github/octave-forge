@@ -44,7 +44,7 @@ public class VectorProperty extends Property
 			pvalue = data;
 		else
 		{
-			System.out.println("Warning: assigning non-vector to vector property");
+			System.out.println("Warning: " + name + ": assigning non-vector to vector property");
 			pvalue = new Matrix(new double[0]);
 		}
 		fixedSize = size;

@@ -48,8 +48,19 @@ function [ h ] = __line__ (ax, varargin)
       endif
       others = {varargin{index:end}};
     endif
-    obj = java_new ("org.octave.graphics.LineObject", __get_object__ (ax), xdata, ydata, zdata);
+
+    j1 = java_convert_matrix (1);
+    j2 = java_unsigned_conversion (1);
+
+    unwind_protect
+      obj = java_new ("org.octave.graphics.LineObject", __get_object__ (ax), xdata, ydata, zdata);
+    unwind_protect_cleanup
+      java_convert_matrix (j1);
+      java_unsigned_conversion (j2);
+    end_unwind_protect
+
     h = obj.getHandle ();
+
     if (length (others) > 0)
       set(h, others{:});
     else

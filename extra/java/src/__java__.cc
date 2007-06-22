@@ -1045,6 +1045,15 @@ static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, j
           jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
         }
+      else if (val.is_uint8_type ())
+        {
+          uint8NDArray m = val.uint8_array_value ();
+          jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.length ()));
+          jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.length (), (jbyte*)m.fortran_vec ());
+          jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
+          jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
+          jcls = jni_env->GetObjectClass (jobj);
+        }
       else if (val.is_int32_type ())
         {
           int32NDArray m = val.int32_array_value ();

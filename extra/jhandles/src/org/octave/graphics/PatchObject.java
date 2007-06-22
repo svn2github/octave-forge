@@ -224,7 +224,7 @@ public class PatchObject extends GraphicObject
 			return null;
 
 		int nv = v.length;
-		double[] n = new double[3*nv];
+		double[][] n = new double[nv][3];
 		double[] vCount = new double[v.length];
 		int vIndex;
 
@@ -236,11 +236,11 @@ public class PatchObject extends GraphicObject
 			Utils.crossProduct(
 				v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
 				vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
-				n, (int)f[i][1]-1, nv);
+				n[(int)f[i][1]-1]);
 			Utils.crossProduct(
 				v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
 				vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
-				n, (int)f[i][0]-1, nv);
+				n[(int)f[i][0]-1]);
 			vCount[(int)f[i][0]-1]++;
 			vCount[(int)f[i][1]-1]++;
 			for (int j=2; j<faceCount[i]; j++)
@@ -250,7 +250,7 @@ public class PatchObject extends GraphicObject
 				Utils.crossProduct(
 					vp[0]-vc[0], vp[1]-vc[1], vp[2]-vc[2],
 					v1[0]-vc[0], v1[1]-vc[1], v1[2]-vc[2],
-					n, vIndex, nv);
+					n[vIndex]);
 				vCount[vIndex]++;
 				vp = vc;
 			}
@@ -259,13 +259,13 @@ public class PatchObject extends GraphicObject
 		{
 			if (vCount[i] > 0)
 			{
-				n[i+0*nv] /= vCount[i];
-				n[i+1*nv] /= vCount[i];
-				n[i+2*nv] /= vCount[i];
+				n[i][0] /= vCount[i];
+				n[i][1] /= vCount[i];
+				n[i][2] /= vCount[i];
 			}
 		}
 
-		return new Matrix(n, new int[] {nv, 3});
+		return new Matrix(n);
 	}
 
 	double[][] getCData()

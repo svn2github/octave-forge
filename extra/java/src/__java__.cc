@@ -1009,6 +1009,12 @@ static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, j
       jcls = reinterpret_cast<jclass> (jni_env->GetStaticObjectField (dcls, fid));
       jobj = jni_env->NewObject (dcls, mid, dval);
     }
+  else if (val.is_empty ())
+    {
+      jobj = 0;
+      //jcls = jni_env->FindClass ("java/lang/Object");
+      jcls = 0;
+    }
   else if (!Vjava_convert_matrix && ((val.is_real_matrix () && (val.rows() == 1 || val.columns() == 1)) || val.is_range ()))
     {
       Matrix m = val.matrix_value ();
@@ -1068,12 +1074,6 @@ static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, j
           found = 0;
           error ("cannot convert matrix of type `%s'", val.class_name ().c_str ());
         }
-    }
-  else if (val.is_empty ())
-    {
-      jobj = 0;
-      //jcls = jni_env->FindClass ("java/lang/Object");
-      jcls = 0;
     }
   else if (val.is_cellstr ())
     {

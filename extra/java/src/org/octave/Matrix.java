@@ -26,6 +26,11 @@ public class Matrix
 	private Buffer data;
 	private Object cache = null;
 
+	public Matrix()
+	{
+		this(new double[0], new int[] {0, 0});
+	}
+
 	public Matrix(double[] data)
 	{
 		this(data, new int[] {1, data.length});
@@ -162,6 +167,8 @@ public class Matrix
 			}
 			s = ("[ " + s + "]");
 		}
+		else if (dims.length == 2 && dims[0] == 0 && dims[1] == 0)
+			s = "[ ]";
 		else
 		{
 			for (int i=0; i<dims.length; i++)
@@ -202,7 +209,8 @@ public class Matrix
 	public boolean isVector()
 	{
 		return (dims.length == 1 ||
-			(dims.length == 2 && (dims[0] == 1 || dims[2] == 1)));
+			(dims.length == 2 && (dims[0] == 1 || dims[1] == 1 ||
+					      (dims[0] == 0 && dims[1] == 0))));
 	}
 
 	public int getLength()

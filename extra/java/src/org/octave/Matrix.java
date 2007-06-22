@@ -199,6 +199,17 @@ public class Matrix
 		return (data == null || dims == null || data.capacity() == 0);
 	}
 
+	public boolean isVector()
+	{
+		return (dims.length == 1 ||
+			(dims.length == 2 && (dims[0] == 1 || dims[2] == 1)));
+	}
+
+	public int getLength()
+	{
+		return data.capacity();
+	}
+
 	public double[] asDoubleVector()
 	{
 		if (data instanceof DoubleBuffer)

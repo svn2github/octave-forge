@@ -271,4 +271,30 @@ public class Matrix
 
 		return null;
 	}
+
+	public int[][] asIntMatrix()
+	{
+		if (cache != null)
+		{
+			try { return (int[][])cache; }
+			catch (ClassCastException e) { }
+		}
+
+		if (data instanceof IntBuffer && dims.length == 2)
+		{
+			int[][] m = new int[dims[0]][dims[1]];
+			int[] data = ((IntBuffer)this.data).array();
+			int idx = 0;
+			if (data.length > 0)
+				for (int j=0; j<m[0].length; j++)
+					for (int i=0; i<m.length; i++)
+						m[i][j] = data[idx++];
+			cache = m;
+			return m;
+		}
+		else
+			System.out.println("Warning: invalid conversion to integer matrix");
+
+		return null;
+	}
 }

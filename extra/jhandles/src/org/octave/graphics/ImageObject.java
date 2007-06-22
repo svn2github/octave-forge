@@ -22,43 +22,24 @@
 package org.octave.graphics;
 
 import java.awt.*;
+import org.octave.Matrix;
 
 public class ImageObject extends GraphicObject
 {
 	/* Properties */
 	VectorProperty XData;
 	VectorProperty YData;
-	MatrixProperty CData;
+	ArrayProperty CData;
 
-	public ImageObject(HandleObject parent, byte[][][] cdata)
+	public ImageObject(HandleObject parent)
 	{
 		super(parent, "image");
 
-		CData = new MatrixProperty(this, "CData", cdata);
-		XData = new VectorProperty(this, "XData", new double[] {1, cdata[0].length}, 2);
-		YData = new VectorProperty(this, "YData", new double[] {1, cdata.length}, 2);
+		CData = new ArrayProperty(this, "CData", null, new String[] {"double", "byte"}, -1);
+		XData = new VectorProperty(this, "XData", new double[] {1, 1}, 2);
+		YData = new VectorProperty(this, "YData", new double[] {1, 1}, 2);
 
-		updateMinMax();
-	}
-
-	public ImageObject(HandleObject parent, double[][] r, double[][] g, double[][] b)
-	{
-		super(parent, "image");
-
-		double[][][] buf = new double[r.length][r[0].length][3];
-		for (int i=0; i<r.length; i++)
-			for (int j=0; j<r[0].length; j++)
-			{
-				buf[i][j][0] = r[i][j];
-				buf[i][j][1] = g[i][j];
-				buf[i][j][2] = b[i][j];
-			}
-		
-		CData = new MatrixProperty(this, "CData", buf);
-		XData = new VectorProperty(this, "XData", new double[] {1, r[0].length}, 2);
-		YData = new VectorProperty(this, "YData", new double[] {1, r.length}, 2);
-
-		updateMinMax();
+		//updateMinMax();
 	}
 
 	private void updateMinMax()

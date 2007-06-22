@@ -14,6 +14,7 @@ if (file_in_path (EXEC_PATH, "jogl.jar"))
   dispatch ("__go_axes_init__", "__jhandles_go_axes_init", "any");
   dispatch ("__go_text__", "__jhandles_go_text", "any");
   dispatch ("__go_surface__", "__jhandles_go_surface", "any");
+  dispatch ("__go_image__", "__jhandles_go_image", "any");
 
   atexit ("__jhandles_exit");
 

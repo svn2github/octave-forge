@@ -27,6 +27,7 @@ import java.awt.image.*;
 import java.nio.*;
 import java.util.*;
 import javax.swing.*;
+import org.octave.Matrix;
 
 public class FigureObject extends HandleObject
 	implements WindowListener, RenderEventListener,
@@ -69,7 +70,7 @@ public class FigureObject extends HandleObject
 	VectorProperty         Alphamap;
 	CallbackProperty            CloseRequestFcn;
 	ColorProperty               /* Color */ FigColor;
-	DoubleMatrixProperty        Colormap;
+	ArrayProperty               Colormap;
 	HandleObjectListProperty    CurrentAxes;
 	StringProperty              Name;
 	RadioProperty               NextPlot;
@@ -121,7 +122,8 @@ public class FigureObject extends HandleObject
 		NumberTitle = new BooleanProperty(this, "NumberTitle", true);
 		NextPlot = new RadioProperty(this, "NextPlot", new String[] {"new", "add", "replace", "replacechildren"}, "add");
 		FigColor = new ColorProperty(this, "Color", Color.lightGray);
-		Colormap = new DoubleMatrixProperty(this, "Colormap", RootObject.getInstance().defaultColorMap());
+		Colormap = new ArrayProperty(this, "Colormap",
+			new Matrix(RootObject.getInstance().defaultColorMap()), new String[] {"double"}, 2);
 		ResizeFcn = new CallbackProperty(this, "ResizeFcn", (String)null);
 		CloseRequestFcn = new CallbackProperty(this, "CloseRequestFcn", "closereq");
 		double[] amap = new double[64];
@@ -241,7 +243,7 @@ public class FigureObject extends HandleObject
 
 	private Buffer makeColormapTextureData()
 	{
-		double[][] cmap = Colormap.getMatrix();
+		double[][] cmap = Colormap.asDoubleMatrix();
 		float[] buf = new float[cmap.length*4];
 
 		for (int i=0; i<cmap.length; i++)

@@ -113,6 +113,11 @@ public class ArrayProperty extends Property
 		return ((Matrix)pvalue).getClassName();
 	}
 
+	public boolean isType(String cls)
+	{
+		return getClassName().equals(cls);
+	}
+
 	public String toString()
 	{
 		return pvalue.toString();
@@ -131,5 +136,10 @@ public class ArrayProperty extends Property
 	public double[][][] asDoubleMatrix3()
 	{
 		return getMatrix().asDoubleMatrix3();
+	}
+
+	public int[][] asIntMatrix()
+	{
+		return getMatrix().asIntMatrix();
 	}
 }

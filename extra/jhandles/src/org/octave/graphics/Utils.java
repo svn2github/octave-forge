@@ -41,22 +41,22 @@ public class Utils
 		System.out.println(java.lang.management.ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime());
 	}
 
-	public static double[][] getAlphaData(MatrixProperty adata, RadioProperty mapping, AxesObject axes)
+	public static double[][] getAlphaData(ArrayProperty adata, RadioProperty mapping, AxesObject axes)
 	{
 		if (adata.getNDims() != 2)
 			return null;
 
 		if (mapping.is("none"))
 		{
-			if (adata.getComponentType().equals(Double.TYPE))
-				return (double[][])adata.getObject();
+			if (adata.isType("double"))
+				return adata.asDoubleMatrix();
 		}
 		else if (mapping.is("direct"))
 		{
 			double[] amap = axes.getFigure().Alphamap.getArray();
-			if (adata.getComponentType().equals(Double.TYPE))
+			if (adata.isType("double"))
 			{
-				double[][] aa = (double[][])adata.getObject();
+				double[][] aa = adata.asDoubleMatrix();
 				double[][] res = new double[aa.length][aa[0].length];
 
 				for (int i=0; i<res.length; i++)
@@ -64,9 +64,9 @@ public class Utils
 						res[i][j] = amap[(int)Math.min(Math.max(1, aa[i][j]), amap.length)-1];
 				return res;
 			}
-			else if (adata.getComponentType().equals(Integer.TYPE))
+			else if (adata.isType("integer"))
 			{
-				int[][] aa = (int[][])adata.getObject();
+				int[][] aa = adata.asIntMatrix();
 				double[][] res = new double[aa.length][aa[0].length];
 				
 				for (int i=0; i<res.length; i++)
@@ -80,9 +80,9 @@ public class Utils
 			double[] amap = axes.getFigure().Alphamap.getArray();
 			double[] alim = axes.ALim.getArray();
 
-			if (adata.getComponentType().equals(Double.TYPE))
+			if (adata.isType("double"))
 			{
-				double[][] aa = (double[][])adata.getObject();
+				double[][] aa = adata.asDoubleMatrix();
 				double[][] res = new double[aa.length][aa[0].length];
 
 				for (int i=0; i<aa.length; i++)

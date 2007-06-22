@@ -1464,51 +1464,50 @@ public class GLRenderer implements Renderer
 		return m;
 	}
 
-	private Buffer makeTexture2D(byte[][][] data, int[] dims, int[] realDims)
+	private Buffer makeTexture2D(byte[] data, int _m, int _n, int[] dims)
 	{
-		int m = nextPowerOf2(data.length);
-		int n = nextPowerOf2(data[0].length);
+		int m = nextPowerOf2(_m);
+		int n = nextPowerOf2(_n);
 		ByteBuffer buf = ByteBuffer.allocate(m*n*4);
 
-		for (int i=0; i<data.length; i++)
+		for (int i=0; i<_m; i++)
 		{
 			buf.position(i*n*4);
-			for (int j=0; j<data[0].length; j++)
+			for (int j=0; j<_n; j++)
 			{
-				buf.put(data[i][j], 0, 3);
+				buf.put(data[i+j*_m+0*_m*_n]);
+				buf.put(data[i+j*_m+1*_m*_n]);
+				buf.put(data[i+j*_m+2*_m*_n]);
 				buf.put((byte)-127);
 			}
 		}
+
 		dims[0] = m;
 		dims[1] = n;
-		realDims[0] = data.length;
-		realDims[1] = data[0].length;
 		buf.rewind();
 
 		return buf;
 	}
 
-	private Buffer makeTexture2D(double[][][] data, int[] dims, int[] realDims)
+	private Buffer makeTexture2D(double[] data, int _m, int _n, int[] dims)
 	{
-		int m = nextPowerOf2(data.length);
-		int n = nextPowerOf2(data[0].length);
+		int m = nextPowerOf2(_m);
+		int n = nextPowerOf2(_n);
 		FloatBuffer buf = FloatBuffer.allocate(m*n*4);
 
-		for (int i=0; i<data.length; i++)
+		for (int i=0; i<_m; i++)
 		{
 			buf.position(i*n*4);
-			for (int j=0; j<data[0].length; j++)
+			for (int j=0; j<_n; j++)
 			{
-				buf.put((float)data[i][j][0]);
-				buf.put((float)data[i][j][1]);
-				buf.put((float)data[i][j][2]);
+				buf.put((float)data[i+j*_m+0*_m*_n]);
+				buf.put((float)data[i+j*_m+1*_m*_n]);
+				buf.put((float)data[i+j*_m+2*_m*_n]);
 				buf.put(1.0f);
 			}
 		}
 		dims[0] = m;
 		dims[1] = n;
-		realDims[0] = data.length;
-		realDims[1] = data[0].length;
 		buf.rewind();
 
 		return buf;
@@ -1552,18 +1551,32 @@ public class GLRenderer implements Renderer
 		if (d == null)
 		{
 			Buffer texData = null;
-			int[] texDims = new int[2], dims = new int[2];
+			int[] texDims = new int[2];
+			int m = image.CData.getDim(0), n = image.CData.getDim(1);
 			int format = GL.GL_UNSIGNED_BYTE;
 
-			if (image.CData.getComponentType().equals(Byte.TYPE))
+			if (image.CData.getNDims() == 3)
 			{
-				texData = makeTexture2D((byte[][][])image.CData.getObject(), texDims, dims);
-				format = GL.GL_UNSIGNED_BYTE;
+				if (image.CData.isType("byte"))
+				{
+					texData = makeTexture2D(image.CData.getMatrix().toByte(), m, n, texDims);
+					format = GL.GL_UNSIGNED_BYTE;
+				}
+				else if (image.CData.isType("double"))
+				{
+					texData = makeTexture2D(image.CData.getMatrix().toDouble(), m, n, texDims);
+					format = GL.GL_FLOAT;
+				}
+				else
+				{
+					System.out.println("Warning: unsupported image data type");
+					return;
+				}
 			}
-			if (image.CData.getComponentType().equals(Double.TYPE))
+			else
 			{
-				texData = makeTexture2D((double[][][])image.CData.getObject(), texDims, dims);
-				format = GL.GL_FLOAT;
+				System.out.println("Warning: image with indexed colors not supported yet");
+				return;
 			}
 
 			int[] t = new int[1];
@@ -1575,7 +1588,7 @@ public class GLRenderer implements Renderer
 			gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
 			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
-			d = new ImageData(t[0], texDims[1], texDims[0], dims[1], dims[0]);
+			d = new ImageData(t[0], texDims[1], texDims[0], n, m);
 			image.setCachedData(d);
 		}
 		else

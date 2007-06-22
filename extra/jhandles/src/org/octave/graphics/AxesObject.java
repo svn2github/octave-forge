@@ -1939,7 +1939,7 @@ public class AxesObject extends HandleObject
 	double[][] convertCData(double[] cdata, String mapping)
 	{
 		double[] clim = CLim.getArray();
-		double[][] cmap = getFigure().Colormap.getMatrix();
+		double[][] cmap = getFigure().Colormap.asDoubleMatrix();
 		double[][] c = new double[cdata.length][];
 
 		if (mapping.equals("scaled"))
@@ -1965,7 +1965,7 @@ public class AxesObject extends HandleObject
 	double[][][] convertCData(double[][] cdata, String mapping)
 	{
 		double[] clim = CLim.getArray();
-		double[][] cmap = getFigure().Colormap.getMatrix();
+		double[][] cmap = getFigure().Colormap.asDoubleMatrix();
 		double[][][] c = new double[cdata.length][cdata[0].length][];
 		boolean scaled = mapping.equals("scaled");
 
@@ -1994,7 +1994,7 @@ public class AxesObject extends HandleObject
 	double[][] convertCDataToIndex(double[][] cdata)
 	{
 		double[] clim = CLim.getArray();
-		double[][] cmap = getFigure().Colormap.getMatrix();
+		double[][] cmap = getFigure().Colormap.asDoubleMatrix();
 		double[][]c = new double[cdata.length][cdata[0].length];
 
 		for (int i=0; i<cdata.length; i++)

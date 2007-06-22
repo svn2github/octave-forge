@@ -28,9 +28,9 @@ public class StemseriesObject extends GroupObject
 	DoubleProperty BaseValue;
 	MarkerProperty Marker;
 	ColorProperty StemColor;
-	DoubleArrayProperty XData;
-	DoubleArrayProperty YData;
-	DoubleArrayProperty ZData;
+	VectorProperty XData;
+	VectorProperty YData;
+	VectorProperty ZData;
 	LineStyleProperty LineStyle;
 	BooleanProperty ShowBaseLine;
 
@@ -54,9 +54,9 @@ public class StemseriesObject extends GroupObject
 		markers.LineStyle.reset("none");
 		BaseLineObject base = getAxes().getBaseLine();
 
-		XData = new DoubleArrayProperty(this, "XData", xdata, -1);
-		YData = new DoubleArrayProperty(this, "YData", ydata, -1);
-		ZData = new DoubleArrayProperty(this, "ZData", zdata, -1);
+		XData = new VectorProperty(this, "XData", xdata, -1);
+		YData = new VectorProperty(this, "YData", ydata, -1);
+		ZData = new VectorProperty(this, "ZData", zdata, -1);
 		BaseLine = new HandleObjectListProperty(this, "BaseLine", 1);
 		BaseLine.addElement(base);
 		BaseLine.setReadOnly(true);

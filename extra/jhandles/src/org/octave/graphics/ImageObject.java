@@ -26,8 +26,8 @@ import java.awt.*;
 public class ImageObject extends GraphicObject
 {
 	/* Properties */
-	DoubleArrayProperty XData;
-	DoubleArrayProperty YData;
+	VectorProperty XData;
+	VectorProperty YData;
 	MatrixProperty CData;
 
 	public ImageObject(HandleObject parent, byte[][][] cdata)
@@ -35,8 +35,8 @@ public class ImageObject extends GraphicObject
 		super(parent, "image");
 
 		CData = new MatrixProperty(this, "CData", cdata);
-		XData = new DoubleArrayProperty(this, "XData", new double[] {1, cdata[0].length}, 2);
-		YData = new DoubleArrayProperty(this, "YData", new double[] {1, cdata.length}, 2);
+		XData = new VectorProperty(this, "XData", new double[] {1, cdata[0].length}, 2);
+		YData = new VectorProperty(this, "YData", new double[] {1, cdata.length}, 2);
 
 		updateMinMax();
 	}
@@ -55,8 +55,8 @@ public class ImageObject extends GraphicObject
 			}
 		
 		CData = new MatrixProperty(this, "CData", buf);
-		XData = new DoubleArrayProperty(this, "XData", new double[] {1, r[0].length}, 2);
-		YData = new DoubleArrayProperty(this, "YData", new double[] {1, r.length}, 2);
+		XData = new VectorProperty(this, "XData", new double[] {1, r[0].length}, 2);
+		YData = new VectorProperty(this, "YData", new double[] {1, r.length}, 2);
 
 		updateMinMax();
 	}

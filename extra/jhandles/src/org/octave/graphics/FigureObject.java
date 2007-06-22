@@ -66,7 +66,7 @@ public class FigureObject extends HandleObject
 	public static final int OP_ROTATE = 2;
 
 	/* properties */
-	DoubleArrayProperty         Alphamap;
+	VectorProperty         Alphamap;
 	CallbackProperty            CloseRequestFcn;
 	ColorProperty               /* Color */ FigColor;
 	DoubleMatrixProperty        Colormap;
@@ -127,7 +127,7 @@ public class FigureObject extends HandleObject
 		double[] amap = new double[64];
 		for (int i=0; i<amap.length; i++)
 			amap[i] = ((double)i)/(amap.length-1);
-		Alphamap = new DoubleArrayProperty(this, "Alphamap", amap, -1);
+		Alphamap = new VectorProperty(this, "Alphamap", amap, -1);
 		PaperOrientation = new RadioProperty(this, "PaperOrientation", new String[] {"portrait", "landscape"}, "portrait");
 
 		updateTitle();

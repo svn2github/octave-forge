@@ -34,8 +34,19 @@ public class VectorProperty extends Property
 
 	public VectorProperty(PropertySet parent, String name, double[] data, int size)
 	{
+		this(parent, name, new Matrix(data), size);
+	}
+
+	public VectorProperty(PropertySet parent, String name, Matrix data, int size)
+	{
 		super(parent, name);
-		pvalue = new Matrix(data, new int[] {1, data.length});
+		if (data.isVector())
+			pvalue = data;
+		else
+		{
+			System.out.println("Warning: assigning non-vector to vector property");
+			pvalue = new Matrix(new double[0]);
+		}
 		fixedSize = size;
 	}
 
@@ -67,7 +78,7 @@ public class VectorProperty extends Property
 		{
 			double[] v = (value == null ?  new double[0] : (double[])value);
 			if (fixedSize == -1 || fixedSize == v.length)
-				return new Matrix(v, new int[] {1, v.length});
+				return new Matrix(v);
 			else
 				throw new PropertyException("invaild vector length - " + value.toString());
 		}

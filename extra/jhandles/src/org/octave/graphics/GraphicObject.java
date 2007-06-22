@@ -28,11 +28,11 @@ public abstract class GraphicObject extends HandleObject
 	private static int glIDCounter = 1;
 
 	/* properties */
-	DoubleArrayProperty XLim;
-	DoubleArrayProperty YLim;
-	DoubleArrayProperty ZLim;
-	DoubleArrayProperty CLim;
-	DoubleArrayProperty ALim;
+	VectorProperty XLim;
+	VectorProperty YLim;
+	VectorProperty ZLim;
+	VectorProperty CLim;
+	VectorProperty ALim;
 	BooleanProperty XLimInclude;
 	BooleanProperty YLimInclude;
 	BooleanProperty ZLimInclude;
@@ -49,11 +49,11 @@ public abstract class GraphicObject extends HandleObject
 			Double.POSITIVE_INFINITY, Double.MIN_VALUE};
 		double[] d2 = new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
 
-		XLim = new DoubleArrayProperty(this, "XLim", d1, 4);
-		YLim = new DoubleArrayProperty(this, "YLim", d1, 4);
-		ZLim = new DoubleArrayProperty(this, "ZLim", d1, 4);
-		CLim = new DoubleArrayProperty(this, "CLim", d2, 2);
-		ALim = new DoubleArrayProperty(this, "ALim", d2, 2);
+		XLim = new VectorProperty(this, "XLim", d1, 4);
+		YLim = new VectorProperty(this, "YLim", d1, 4);
+		ZLim = new VectorProperty(this, "ZLim", d1, 4);
+		CLim = new VectorProperty(this, "CLim", d2, 2);
+		ALim = new VectorProperty(this, "ALim", d2, 2);
 		XLimInclude = new BooleanProperty(this, "XLimInclude", true);
 		YLimInclude = new BooleanProperty(this, "YLimInclude", true);
 		ZLimInclude = new BooleanProperty(this, "ZLimInclude", false);

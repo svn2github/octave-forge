@@ -26,9 +26,9 @@ import java.awt.*;
 public class LineObject extends GraphicObject
 {
 	/* properties */
-	DoubleArrayProperty XData;
-	DoubleArrayProperty YData;
-	DoubleArrayProperty ZData;
+	VectorProperty XData;
+	VectorProperty YData;
+	VectorProperty ZData;
 	ColorProperty LineColor;
 	LineStyleProperty LineStyle;
 	DoubleProperty LineWidth;
@@ -45,9 +45,9 @@ public class LineObject extends GraphicObject
 	{
 		super(parent, "line");
 
-		XData = new DoubleArrayProperty(this, "XData", xdata, -1);
-		YData = new DoubleArrayProperty(this, "YData", ydata, -1);
-		ZData = new DoubleArrayProperty(this, "ZData", (zdata == null ? new double[0] : zdata), -1);
+		XData = new VectorProperty(this, "XData", xdata, -1);
+		YData = new VectorProperty(this, "YData", ydata, -1);
+		ZData = new VectorProperty(this, "ZData", (zdata == null ? new double[0] : zdata), -1);
 		LineColor = new ColorProperty(this, "Color", Color.blue);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
 		LineWidth = new DoubleProperty(this, "LineWidth", 1.0);

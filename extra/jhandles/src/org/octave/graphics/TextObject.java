@@ -42,7 +42,7 @@ public class TextObject extends GraphicObject
 	DoubleProperty Rotation;
 	RadioProperty HAlign;
 	RadioProperty VAlign;
-	DoubleArrayProperty Position;
+	VectorProperty Position;
 	BooleanProperty PositionMode;
 	RadioProperty Units;
 	ColorProperty TextColor;
@@ -63,7 +63,7 @@ public class TextObject extends GraphicObject
 		Rotation = new DoubleProperty(this, "Rotation", 0.0);
 		HAlign = new RadioProperty(this, "HorizontalAlignment", new String[] {"left", "center", "right"}, "left");
 		VAlign = new RadioProperty(this, "VerticalAlignment", new String[] {"top", "middle", "bottom", "baseline"}, "baseline");
-		Position = new DoubleArrayProperty(this, "Position", pos, 3);
+		Position = new VectorProperty(this, "Position", pos, 3);
 		PositionMode = new BooleanProperty(this, "PositionMode", true);
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "data"}, "data");
 		currentUnits = "data";

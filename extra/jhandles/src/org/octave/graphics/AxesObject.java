@@ -24,6 +24,7 @@ package org.octave.graphics;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import org.octave.Matrix;
 
 public class AxesObject extends HandleObject
 {
@@ -115,17 +116,14 @@ public class AxesObject extends HandleObject
 
 	/* properties */
 	RadioProperty ActivePositionProperty;
-	DoubleArrayProperty Position;
-	DoubleArrayProperty OuterPosition;
+	VectorProperty Position;
+	VectorProperty OuterPosition;
 	RadioProperty Units;
 	RadioProperty Projection;
 	ColorProperty AxesColor;
 	ColorProperty XColor;
 	ColorProperty YColor;
 	ColorProperty ZColor;
-	//DoubleArrayProperty XLim;
-	//DoubleArrayProperty YLim;
-	//DoubleArrayProperty ZLim;
 	VectorProperty XLim;
 	VectorProperty YLim;
 	VectorProperty ZLim;
@@ -140,9 +138,9 @@ public class AxesObject extends HandleObject
 	BooleanProperty ZMinorGrid;
 	LineStyleProperty GridLineStyle;
 	LineStyleProperty MinorGridLineStyle;
-	DoubleArrayProperty XTick;
-	DoubleArrayProperty YTick;
-	DoubleArrayProperty ZTick;
+	VectorProperty XTick;
+	VectorProperty YTick;
+	VectorProperty ZTick;
 	RadioProperty XTickMode;
 	RadioProperty YTickMode;
 	RadioProperty ZTickMode;
@@ -159,32 +157,32 @@ public class AxesObject extends HandleObject
 	BooleanProperty Box;
 	RadioProperty TickDir;
 	RadioProperty TickDirMode;
-	DoubleArrayProperty CameraTarget;
+	VectorProperty CameraTarget;
 	RadioProperty CameraTargetMode;
-	DoubleArrayProperty CameraPosition;
+	VectorProperty CameraPosition;
 	RadioProperty CameraPositionMode;
-	DoubleArrayProperty CameraUpVector;
+	VectorProperty CameraUpVector;
 	RadioProperty CameraUpVectorMode;
 	DoubleProperty CameraViewAngle;
 	RadioProperty CameraViewAngleMode;
-	DoubleArrayProperty DataAspectRatio;
+	VectorProperty DataAspectRatio;
 	RadioProperty DataAspectRatioMode;
-	DoubleArrayProperty PlotBoxAspectRatio;
+	VectorProperty PlotBoxAspectRatio;
 	RadioProperty PlotBoxAspectRatioMode;
-	DoubleArrayProperty View;
+	VectorProperty View;
 	TextProperty Title;
 	TextProperty XLabel;
 	TextProperty YLabel;
 	TextProperty ZLabel;
-	DoubleArrayProperty CLim;
+	VectorProperty CLim;
 	RadioProperty CLimMode;
-	DoubleArrayProperty ALim;
+	VectorProperty ALim;
 	RadioProperty ALimMode;
 	RadioProperty XDir;
 	RadioProperty YDir;
 	RadioProperty ZDir;
-	DoubleArrayProperty x_NormRenderTransform;
-	DoubleArrayProperty x_RenderTransform;
+	ArrayProperty x_NormRenderTransform;
+	ArrayProperty x_RenderTransform;
 	RadioProperty XScale;
 	RadioProperty YScale;
 	RadioProperty ZScale;
@@ -204,8 +202,8 @@ public class AxesObject extends HandleObject
 		logScale = new LogScaler();
 
 		ActivePositionProperty = new RadioProperty(this, "ActivePositionProperty", new String[] {"outerposition", "position"}, "outerposition");
-		Position = new DoubleArrayProperty(this, "Position", new double[0], -1);
-		OuterPosition = new DoubleArrayProperty(this, "OuterPosition", new double[] {0,0,1,1}, -1);
+		Position = new VectorProperty(this, "Position", new double[0], -1);
+		OuterPosition = new VectorProperty(this, "OuterPosition", new double[] {0,0,1,1}, -1);
 		Units = new RadioProperty(this, "Units",
 			new String[] { "pixels", "normalized" }, "normalized");
 		currentUnits = "normalized";
@@ -214,13 +212,10 @@ public class AxesObject extends HandleObject
 		XColor = new ColorProperty(this, "XColor", Color.black);
 		YColor = new ColorProperty(this, "YColor", Color.black);
 		ZColor = new ColorProperty(this, "ZColor", Color.black);
-		//XLim = new DoubleArrayProperty(this, "XLim", new double[] {0.0, 1.0}, 2);
 		XLim = new VectorProperty(this, "XLim", new double[] {0.0, 1.0}, 2);
 		XLimMode = new RadioProperty(this, "XLimMode", new String[] {"auto", "manual"}, "auto");
-		//YLim = new DoubleArrayProperty(this, "YLim", new double[] {0.0, 1.0}, 2);
 		YLim = new VectorProperty(this, "YLim", new double[] {0.0, 1.0}, 2);
 		YLimMode = new RadioProperty(this, "YLimMode", new String[] {"auto", "manual"}, "auto");
-		//ZLim = new DoubleArrayProperty(this, "ZLim", new double[] {-0.5, 0.5}, 2);
 		ZLim = new VectorProperty(this, "ZLim", new double[] {-0.5, 0.5}, 2);
 		ZLimMode = new RadioProperty(this, "ZLimMode", new String[] {"auto", "manual"}, "auto");
 		XGrid = new BooleanProperty(this, "XGrid", false);
@@ -231,9 +226,9 @@ public class AxesObject extends HandleObject
 		ZMinorGrid = new BooleanProperty(this, "ZMinorGrid", false);
 		GridLineStyle = new LineStyleProperty(this, "GridLineStyle", ":");
 		MinorGridLineStyle = new LineStyleProperty(this, "MinorGridLineStyle", ":");
-		XTick = new DoubleArrayProperty(this, "XTick", new double[0], -1);
-		YTick = new DoubleArrayProperty(this, "YTick", new double[0], -1);
-		ZTick = new DoubleArrayProperty(this, "ZTick", new double[0], -1);
+		XTick = new VectorProperty(this, "XTick", new double[0], -1);
+		YTick = new VectorProperty(this, "YTick", new double[0], -1);
+		ZTick = new VectorProperty(this, "ZTick", new double[0], -1);
 		XTickMode = new RadioProperty(this, "XTickMode", new String[] {"auto", "manual"}, "auto");
 		YTickMode = new RadioProperty(this, "YTickMode", new String[] {"auto", "manual"}, "auto");
 		ZTickMode = new RadioProperty(this, "ZTickMode", new String[] {"auto", "manual"}, "auto");
@@ -247,19 +242,19 @@ public class AxesObject extends HandleObject
 		Box = new BooleanProperty(this, "Box", (init3D ? false : true));
 		TickDir = new RadioProperty(this, "TickDir", new String[] {"in", "out"}, (init3D ? "out" : "in"));
 		TickDirMode = new RadioProperty(this, "TickDirMode", new String[] {"auto", "manual"}, "auto");
-		CameraTarget = new DoubleArrayProperty(this, "CameraTarget", new double[] {0.0,0.0,0.0}, 3);
+		CameraTarget = new VectorProperty(this, "CameraTarget", new double[] {0.0,0.0,0.0}, 3);
 		CameraTargetMode = new RadioProperty(this, "CameraTargetMode", new String[] {"auto", "manual"}, "auto");
-		CameraPosition = new DoubleArrayProperty(this, "CameraPosition", new double[] {0.0,0.0,0.0}, 3);
+		CameraPosition = new VectorProperty(this, "CameraPosition", new double[] {0.0,0.0,0.0}, 3);
 		CameraPositionMode = new RadioProperty(this, "CameraPositionMode", new String[] {"auto", "manual"}, "auto");
-		CameraUpVector = new DoubleArrayProperty(this, "CameraUpVector", new double[] {0,1,0}, 3);
+		CameraUpVector = new VectorProperty(this, "CameraUpVector", new double[] {0,1,0}, 3);
 		CameraUpVectorMode = new RadioProperty(this, "CameraUpVectorMode", new String[] {"auto", "manual"}, "auto");
 		CameraViewAngle = new DoubleProperty(this, "CameraViewAngle", 10.0);
 		CameraViewAngleMode = new RadioProperty(this, "CameraViewAngleMode", new String[] {"auto", "manual"}, "auto");
-		DataAspectRatio = new DoubleArrayProperty(this, "DataAspectRatio", new double[] {1,1,1}, 3);
+		DataAspectRatio = new VectorProperty(this, "DataAspectRatio", new double[] {1,1,1}, 3);
 		DataAspectRatioMode = new RadioProperty(this, "DataAspectRatioMode", new String[] {"auto", "manual"}, "auto");
-		PlotBoxAspectRatio = new DoubleArrayProperty(this, "PlotBoxAspectRatio", new double[] {1,1,1}, 3);
+		PlotBoxAspectRatio = new VectorProperty(this, "PlotBoxAspectRatio", new double[] {1,1,1}, 3);
 		PlotBoxAspectRatioMode = new RadioProperty(this, "PlotBoxAspectRatioMode", new String[] {"auto", "manual"}, "auto");
-		View = new DoubleArrayProperty(this, "View", angles, 2);
+		View = new VectorProperty(this, "View", angles, 2);
 		TextObject titleObj = new TextObject(null, "", new double[] {0,0,0});
 		titleObj.HAlign.reset("center");
 		titleObj.VAlign.reset("bottom");
@@ -286,15 +281,17 @@ public class AxesObject extends HandleObject
 		zLabelObj.Parent.addElement(this);
 		zLabelObj.validate();
 		ZLabel = new TextProperty(this, "ZLabel", zLabelObj);
-		CLim = new DoubleArrayProperty(this, "CLim", new double[] {0, 1}, 2);
+		CLim = new VectorProperty(this, "CLim", new double[] {0, 1}, 2);
 		CLimMode = new RadioProperty(this, "CLimMode", new String[] {"auto", "manual"}, "auto");
-		ALim = new DoubleArrayProperty(this, "ALim", new double[] {0, 1}, 2);
+		ALim = new VectorProperty(this, "ALim", new double[] {0, 1}, 2);
 		ALimMode = new RadioProperty(this, "ALimMode", new String[] {"auto", "manual"}, "auto");
 		XDir = new RadioProperty(this, "XDir", new String[] {"normal", "reverse"}, "normal");
 		YDir = new RadioProperty(this, "YDir", new String[] {"normal", "reverse"}, "normal");
 		ZDir = new RadioProperty(this, "ZDir", new String[] {"normal", "reverse"}, "normal");
-		x_NormRenderTransform = new DoubleArrayProperty(this, "x_NormRenderTransform", new double[16], 16);
-		x_RenderTransform = new DoubleArrayProperty(this, "x_RenderTransform", new double[16], 16);
+		x_NormRenderTransform = new ArrayProperty(this, "x_NormRenderTransform",
+			new Matrix(new double[16], new int[] {4, 4}), new String[] {"double"}, 2);
+		x_RenderTransform = new ArrayProperty(this, "x_RenderTransform",
+			new Matrix(new double[16], new int[] {4, 4}), new String[] {"double"}, 2);
 		XScale = new RadioProperty(this, "XScale", new String[] {"linear", "log"}, "linear");
 		YScale = new RadioProperty(this, "YScale", new String[] {"linear", "log"}, "linear");
 		ZScale = new RadioProperty(this, "ZScale", new String[] {"linear", "log"}, "linear");
@@ -1424,7 +1421,7 @@ public class AxesObject extends HandleObject
 					GraphicObject go = (GraphicObject)Children.elementAt(i);
 					if (((BooleanProperty)go.getProperty(LimInclude)).isSet())
 					{
-						double[] _lim = ((DoubleArrayProperty)go.getProperty(Lim)).getArray();
+						double[] _lim = ((VectorProperty)go.getProperty(Lim)).getArray();
 						lim[0] = Math.min(_lim[0], lim[0]);
 						lim[1] = Math.max(_lim[1], lim[1]);
 					}
@@ -1456,7 +1453,7 @@ public class AxesObject extends HandleObject
 					GraphicObject go = (GraphicObject)Children.elementAt(i);
 					if (((BooleanProperty)go.getProperty(LimInclude)).isSet())
 					{
-						double[] _lim = ((DoubleArrayProperty)go.getProperty(Lim)).getArray();
+						double[] _lim = ((VectorProperty)go.getProperty(Lim)).getArray();
 						lim[0] = Math.min(_lim[2], lim[0]);
 						lim[1] = Math.max(_lim[3], lim[1]);
 					}
@@ -1568,7 +1565,7 @@ public class AxesObject extends HandleObject
 			return ticks;
 	}
 
-	protected double[] computeMinorTicks(VectorProperty Lim, DoubleArrayProperty Tick, RadioProperty Scale)
+	protected double[] computeMinorTicks(VectorProperty Lim, VectorProperty Tick, RadioProperty Scale)
 	{
 		double[] mticks;
 
@@ -1672,7 +1669,7 @@ public class AxesObject extends HandleObject
 		return result;
 	}
 
-	protected boolean computeAutoTickLabels(DoubleArrayProperty Tick, RadioProperty Scale, StringArrayProperty TickLabel)
+	protected boolean computeAutoTickLabels(VectorProperty Tick, RadioProperty Scale, StringArrayProperty TickLabel)
 	{
 		boolean retval = false;
 		double[] ticks = Tick.getArray();
@@ -2484,7 +2481,7 @@ public class AxesObject extends HandleObject
 		x_mat2.mult(x_viewport);
 		x_mat2.mult(x_projection);
 		
-		x_NormRenderTransform.reset(x_normrender.getData());
-		x_RenderTransform.reset(x_render.getData());
+		x_NormRenderTransform.reset(new Matrix(x_normrender.getData(), new int[] {4, 4}));
+		x_RenderTransform.reset(new Matrix(x_render.getData(), new int[] {4, 4}));
 	}
 }

@@ -24,6 +24,7 @@ package org.octave.graphics;
 import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.*;
+import org.octave.Matrix;
 
 public class ColorProperty extends Property
 {
@@ -71,6 +72,17 @@ public class ColorProperty extends Property
 				else
 					throw new PropertyException("invalid color name - " + value.toString());
 			}
+		}
+		else if (value instanceof Matrix)
+		{
+			Matrix m = (Matrix)value;
+			if (m.isVector() && m.getClassName().equals("double") && m.getLength() == 3)
+			{
+				double[] cv = m.toDouble();
+				c = new Color((float)cv[0], (float)cv[1], (float)cv[2]);
+			}
+			else
+				throw new PropertyException("invalid color value - " + value.toString());
 		}
 		else
 		{

@@ -29,8 +29,8 @@ public class BarseriesObject extends GroupObject
 	/* Properties */
 	DoubleProperty BarWidth;
 	RadioProperty BarLayout;
-	DoubleArrayProperty XData;
-	DoubleArrayProperty YData;
+	VectorProperty XData;
+	VectorProperty YData;
 	DoubleProperty BaseValue;
 	HandleObjectListProperty BaseLine;
 	ColorProperty EdgeColor;
@@ -54,8 +54,8 @@ public class BarseriesObject extends GroupObject
 
 		BarWidth = new DoubleProperty(this, "BarWidth", 0.8);
 		BarLayout = new RadioProperty(this, "BarLayout", new String[] {"grouped", "stacked"}, "grouped");
-		XData = new DoubleArrayProperty(this, "XData", x, -1);
-		YData = new DoubleArrayProperty(this, "YData", y, -1);
+		XData = new VectorProperty(this, "XData", x, -1);
+		YData = new VectorProperty(this, "YData", y, -1);
 		BaseLine = new HandleObjectListProperty(this, "BaseLine", -1);
 		BaseLine.addElement(base);
 		BaseValue = new DoubleProperty(this, "BaseValue", base.BaseValue.doubleValue());

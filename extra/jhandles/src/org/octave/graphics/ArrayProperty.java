@@ -79,7 +79,7 @@ public class ArrayProperty extends Property
 			try
 			{
 				double[] v = (double[]) array;
-				return new Matrix(v, new int[] {1, v.length});
+				return new Matrix(v);
 			}
 			catch (ClassCastException e)
 			{

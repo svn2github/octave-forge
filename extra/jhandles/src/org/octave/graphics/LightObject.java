@@ -29,7 +29,7 @@ public class LightObject extends GraphicObject
 
 	/* Properties */
 	ColorProperty LightColor;
-	DoubleArrayProperty Position;
+	VectorProperty Position;
 	RadioProperty Style;
 
 	public LightObject(HandleObject parent)
@@ -37,7 +37,7 @@ public class LightObject extends GraphicObject
 		super(parent, "light");
 
 		LightColor = new ColorProperty(this, "Color", Color.white);
-		Position = new DoubleArrayProperty(this, "Position", new double[] {0,0,1}, 3);
+		Position = new VectorProperty(this, "Position", new double[] {0,0,1}, 3);
 		Style = new RadioProperty(this, "Style", new String[] {"infinite", "local"}, "infinite");
 
 		lightIndex = 0;

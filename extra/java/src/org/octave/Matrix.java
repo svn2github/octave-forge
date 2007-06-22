@@ -233,4 +233,31 @@ public class Matrix
 
 		return null;
 	}
+	
+	public double[][][] asDoubleMatrix3()
+	{
+		if (cache != null)
+		{
+			try { return (double[][][])cache; }
+			catch (ClassCastException e) { }
+		}
+
+		if (data instanceof DoubleBuffer && dims.length == 3)
+		{
+			double[][][] m = new double[dims[0]][dims[1]][dims[2]];
+			double[] data = ((DoubleBuffer)this.data).array();
+			int idx = 0;
+			if (data.length > 0)
+				for (int k=0; k<dims[2]; k++)
+					for (int j=0; j<dims[1]; j++)
+						for (int i=0; i<dims[0]; i++)
+							m[i][j][k] = data[idx++];
+			cache = m;
+			return m;
+		}
+		else
+			System.out.println("Warning: invalid conversion to double array");
+
+		return null;
+	}
 }

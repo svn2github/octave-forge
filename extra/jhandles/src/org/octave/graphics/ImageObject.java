@@ -30,6 +30,7 @@ public class ImageObject extends GraphicObject
 	VectorProperty XData;
 	VectorProperty YData;
 	ArrayProperty CData;
+	RadioProperty CDataMapping;
 
 	public ImageObject(HandleObject parent)
 	{
@@ -38,6 +39,15 @@ public class ImageObject extends GraphicObject
 		CData = new ArrayProperty(this, "CData", null, new String[] {"double", "byte"}, -1);
 		XData = new VectorProperty(this, "XData", new double[] {1, 1}, 2);
 		YData = new VectorProperty(this, "YData", new double[] {1, 1}, 2);
+		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"scaled", "direct"}, "direct");
+
+		CLimInclude.reset(new Boolean(true));
+
+		listen(CData);
+		listen(XData);
+		listen(YData);
+		listen(CDataMapping);
+		listen(getAxes().getFigure().Colormap);
 
 		//updateMinMax();
 	}
@@ -46,11 +56,11 @@ public class ImageObject extends GraphicObject
 	{
 		double[] x = XData.getArray(), y = YData.getArray();
 		int h = CData.getDim(0), w = CData.getDim(1);
-		double px = (x[1]-x[0])/(w-1), py = (y[1]-y[0])/(h-1);
+		double px = (w > 1 ? (x[1]-x[0])/(w-1) : 1), py = (h > 1 ? (y[1]-y[0])/(h-1) : 1);
 		double xmin, xmax, ymin, ymax, xmin2, xmax2, ymin2, ymax2;
 
-		xmin = xmin2 = x[0]-px/2; xmax = xmax2 = x[1]+px/2;
-		ymin = ymin2 = y[0]-py/2; ymax = ymax2 = y[1]+py/2;
+		xmin = xmin2 = x[0]-px/2; xmax = xmax2 = (w > 1 ? x[1]+px/2 : x[0]+px/2);
+		ymin = ymin2 = y[0]-py/2; ymax = ymax2 = (h > 1 ? y[1]+py/2 : y[0]+px/2);
 		if (xmax2 <= 0)
 		{
 			xmin2 = Double.POSITIVE_INFINITY;
@@ -74,6 +84,14 @@ public class ImageObject extends GraphicObject
 
 		XLim.set(new double[] {xmin, xmax, xmin2, xmax2}, true);
 		YLim.set(new double[] {ymin, ymax, ymin2, ymax2}, true);
+
+		if (CData.getNDims() == 2 && CDataMapping.is("scaled"))
+			CLim.set(new double[] {
+					CData.getMatrix().minValue(),
+					CData.getMatrix().maxValue()},
+				 true);
+		else
+			CLim.set(new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}, true);
 	}
 
 	public void validate()
@@ -85,5 +103,16 @@ public class ImageObject extends GraphicObject
 	public void draw(Renderer r)
 	{
 		r.draw(this);
+	}
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		/* invalidate cached data */
+		if (p == CData || p == CDataMapping || p.getName().equals("Colormap"))
+			setCachedData(null);
+
+		/* update limits */
+		if (p == XData || p == YData || p == CData || p == CDataMapping)
+			updateMinMax();
 	}
 }

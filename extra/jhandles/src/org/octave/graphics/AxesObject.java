@@ -1936,6 +1936,45 @@ public class AxesObject extends HandleObject
 		return p;
 	}
 
+	Matrix convertCData(Matrix cdata, String mapping)
+	{
+		double[] clim = CLim.getArray();
+		double[][] cmap = getFigure().Colormap.asDoubleMatrix();
+		boolean isScaled = mapping.equals("scaled");
+		Matrix c;
+
+		int ndims = cdata.getNDims();
+		int[] dims = new int[ndims+1];
+		for (int i=0; i<ndims; i++)
+			dims[i] = cdata.getDim(i);
+		dims[ndims] = 3;
+
+		if (cdata.getClassName().equals("double"))
+		{
+			double[] buf = cdata.toDouble();
+			int len = buf.length;
+			double[] cbuf = new double[len*3];
+
+			for (int i=0; i<len; i++)
+			{
+				int index = (isScaled ?
+						(int)Math.round((cmap.length-1)*(buf[i]-clim[0])/(clim[1]-clim[0])) :
+						(int)Math.round(buf[i]-1));
+				if (index < 0) index = 0;
+				else if (index >= cmap.length) index = cmap.length-1;
+				cbuf[i+0*len] = cmap[index][0];
+				cbuf[i+1*len] = cmap[index][1];
+				cbuf[i+2*len] = cmap[index][2];
+			}
+
+			c = new Matrix(cbuf, dims);
+		}
+		else
+			c = new Matrix();
+
+		return c;
+	}
+
 	double[][] convertCData(double[] cdata, String mapping)
 	{
 		double[] clim = CLim.getArray();

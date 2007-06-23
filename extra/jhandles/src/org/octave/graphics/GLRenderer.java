@@ -28,6 +28,7 @@ import javax.media.opengl.glu.*;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.nio.*;
+import org.octave.Matrix;
 
 public class GLRenderer implements Renderer
 {
@@ -1575,8 +1576,9 @@ public class GLRenderer implements Renderer
 			}
 			else
 			{
-				System.out.println("Warning: image with indexed colors not supported yet");
-				return;
+				Matrix c = image.getAxes().convertCData(image.CData.getMatrix(), image.CDataMapping.getValue());
+				texData = makeTexture2D(c.toDouble(), m, n, texDims);
+				format = GL.GL_FLOAT;
 			}
 
 			int[] t = new int[1];
@@ -1596,10 +1598,10 @@ public class GLRenderer implements Renderer
 
 		double tx = ((double)d.w)/d.texW;
 		double ty = ((double)d.h)/d.texH;
-		double px = (x[1]-x[0])/(d.w-1);
-		double py = (y[1]-y[0])/(d.h-1);
-		double x1 = sx.scale(x[0]-px/2), x2 = sx.scale(x[1]+px/2);
-		double y1 = sy.scale(y[0]-py/2), y2 = sy.scale(y[1]+py/2);
+		double px = (d.w > 1 ? (x[1]-x[0])/(d.w-1) : 1);
+		double py = (d.h > 1 ? (y[1]-y[0])/(d.h-1) : 1);
+		double x1 = sx.scale(x[0]-px/2), x2 = sx.scale((d.w > 1 ? x[1]+px/2 : x[0]+px/2));
+		double y1 = sy.scale(y[0]-py/2), y2 = sy.scale((d.h > 1 ? y[1]+py/2 : y[0]+py/2));
 
 		if (!isNaNorInf(x1, y1, 0) && !isNaNorInf(x2, y2, 0))
 		{

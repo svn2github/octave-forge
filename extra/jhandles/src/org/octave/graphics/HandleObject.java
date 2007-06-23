@@ -202,6 +202,8 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public void setCachedData(Renderer.CachedData d)
 	{
+		if (cachedData != null)
+			cachedData.dispose();
 		cachedData = d;
 	}
 

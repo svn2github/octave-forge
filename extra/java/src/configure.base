@@ -319,25 +319,28 @@ if test -n "$JAVAC" -a -n "$JAR"; then
                 JAVA_LIBS=-ladvapi32
             ;;
 	*)
-	    if test -d "/usr/lib/jvm/jre/lib/i386"; then
+       if test -z "$JAVA_HOME"; then
+               JAVA_HOME=/usr/lib/jvm/
+       fi
+           if test -d "${JAVA_HOME}/jre/lib/i386"; then
 	      JAVA_ARCH="i386";
-	    elif test -d "/usr/lib/jvm/jre/lib/amd64"; then
+           elif test -d "${JAVA_HOME}/jre/lib/amd64"; then
 	      JAVA_ARCH="amd64"
-	    elif test -d "/usr/lib/jvm/jre/lib/mac"; then
+           elif test -d "${JAVA_HOME}/jre/lib/mac"; then
 	      JAVA_ARCH="mac"
-	    elif test -d "/usr/lib/jvm/jre/lib/maci"; then
+           elif test -d "${JAVA_HOME}/jre/lib/maci"; then
 	      JAVA_ARCH="maci"
-	    elif test -d "/usr/lib/jvm/jre/lib/solaris"; then
+           elif test -d "${JAVA_HOME}/jre/lib/solaris"; then
 	      JAVA_ARCH="solaris"
-	    elif test -d "/usr/lib/jvm/jre/lib/solarisv9"; then
-	      JAVA_LIBS="solarisv9"
+           elif test -d "${JAVA_HOME}/jre/lib/solarisv9"; then
+             JAVA_ARCH="solarisv9"
 	    fi
 	    if test -n "$JAVA_ARCH"; then
 	      HAVE_JAVA=yes
-	      JAVA_LIBS="-L/usr/lib/jvm/jre/lib/$JAVA_ARCH -ljava"
+             JAVA_LIBS="-L${JAVA_HOME}/jre/lib/$JAVA_ARCH -ljava"
 	      WARN_JAVA="Warning LD_LIBRARY_PATH must include:
-   /usr/lib/jvm/jre/lib/$JAVA_ARCH
-   /usr/lib/jvm/jre/lib/$JAVA_ARCH/client"
+   ${JAVA_HOME}/jre/lib/$JAVA_ARCH
+   ${JAVA_HOME}/jre/lib/$JAVA_ARCH/client"
             fi
 	    ;;    
         esac

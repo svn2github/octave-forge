@@ -305,4 +305,52 @@ public class Matrix
 
 		return null;
 	}
+
+	public double minValue()
+	{
+		double val = Double.POSITIVE_INFINITY;
+
+		if (data instanceof DoubleBuffer)
+		{
+			double[] buf = ((DoubleBuffer)data).array();
+			for (int i=0; i<buf.length; i++)
+				if (buf[i] < val)
+					val = buf[i];
+		}
+		else if (data instanceof ByteBuffer)
+		{
+			byte[] buf = ((ByteBuffer)data).array();
+			for (int i=0; i<buf.length; i++)
+				if (buf[i] < val)
+					val = buf[i];
+		}
+		else
+			System.out.println("Warning: cannot compute min value for array of type `" + getClassName() + "'");
+
+		return val;
+	}
+
+	public double maxValue()
+	{
+		double val = Double.NEGATIVE_INFINITY;
+
+		if (data instanceof DoubleBuffer)
+		{
+			double[] buf = ((DoubleBuffer)data).array();
+			for (int i=0; i<buf.length; i++)
+				if (buf[i] > val)
+					val = buf[i];
+		}
+		else if (data instanceof ByteBuffer)
+		{
+			byte[] buf = ((ByteBuffer)data).array();
+			for (int i=0; i<buf.length; i++)
+				if (buf[i] > val)
+					val = buf[i];
+		}
+		else
+			System.out.println("Warning: cannot compute max value for array of type `" + getClassName() + "'");
+
+		return val;
+	}
 }

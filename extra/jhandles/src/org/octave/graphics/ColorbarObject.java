@@ -1,0 +1,234 @@
+/*
+ * jhandles 
+ *
+ * Copyright (C) 2007 Michael Goffioul 
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ *
+ */
+
+package org.octave.graphics;
+
+import java.util.*;
+import java.awt.*;
+import org.octave.Matrix;
+
+public class ColorbarObject extends AxesObject
+{
+	private AxesObject axes;
+	private Dimension size;
+
+	/* Properties */
+	RadioProperty Location;
+
+	public ColorbarObject(AxesObject axes)
+	{
+		super(axes.getFigure(), false);
+		alwaysDrawBox = false;
+
+		Location = new RadioProperty(this, "Location",
+			new String[] {
+				"North", "South", "East", "West",
+				"NorthOutside", "SouthOutside", "EastOutside", "WestOutside"},
+			"EastOutside");
+
+		ActivePositionProperty.reset("position");
+		XLimMode.reset("manual");
+		YLimMode.reset("manual");
+		ZLimMode.reset("manual");
+		XLim.reset(new double[] {0, 1});
+		YLim.reset(new double[] {0, 1});
+		ZLim.reset(new double[] {-0.5, 0.5});
+		XTickMode.reset("manual");
+		YTickMode.reset("manual");
+		ZTickMode.reset("manual");
+		XTick.reset(null);
+		YTick.reset(null);
+		ZTick.reset(null);
+		XTickLabelMode.reset("manual");
+		YTickLabelMode.reset("manual");
+		ZTickLabelMode.reset("manual");
+		XTickLabel.reset(null);
+		YTickLabel.reset(null);
+		ZTickLabel.reset(null);
+		Tag.reset("colorbar");
+
+		listen(axes.Position);
+		listen(axes.OuterPosition);
+		listen(Location);
+		
+		buildColorbar(axes);
+	}
+
+	public void buildColorbar(AxesObject axes)
+	{
+		doClear();
+		this.axes = axes;
+
+		String loc = Location.getValue().toLowerCase();
+		boolean isVertical = (loc.contains("west") || loc.contains("east"));
+
+		int nc = axes.getFigure().Colormap.getDim(0);
+		double[] cdata = new double[nc];
+		for (int i=0; i<nc; i++)
+			cdata[i] = i+1;
+
+		ImageObject img = new ImageObject(this);
+
+		if (isVertical)
+		{
+			img.CData.set(new Matrix(cdata, new int[] {nc, 1}), true);
+			img.XData.set(new double[] {1, 1}, true);
+			img.YData.set(new double[] {1, nc}, true);
+		}
+		else
+		{
+			img.CData.set(new Matrix(cdata, new int[] {1, nc}), true);
+			img.XData.set(new double[] {1, nc}, true);
+			img.YData.set(new double[] {1, 1}, true);
+		}
+		img.CDataMapping.set("direct", true);
+		img.validate();
+
+		Position.reset(new double[] {0, 0, 40.0/canvas.getWidth(), 40.0/canvas.getHeight()});
+		XLim.set(new double[] {img.XLim.elementAt(0), img.XLim.elementAt(1)}, true);
+		YLim.set(new double[] {img.YLim.elementAt(0), img.YLim.elementAt(1)}, true);
+	}
+
+	private void doClear()
+	{
+		while (Children.size() > 0)
+			Children.elementAt(0).delete();
+	}
+
+	private void doLocate()
+	{
+		double[] aPos = getFigure().convertPosition(axes.Position.getArray(), axes.Units.getValue());
+		double[] aOPos = getFigure().convertPosition(axes.OuterPosition.getArray(), axes.Units.getValue());
+		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
+		boolean outerActive = axes.ActivePositionProperty.is("outerposition");
+		int margin = 40;
+
+		String loc = Location.getValue().toLowerCase();
+		int hPos = (loc.contains("west") ? 1 : loc.contains("east") ? 2 : 0);
+		int vPos = (loc.contains("south") ? 1 : loc.contains("north") ? 2 : 0);
+		boolean outside = loc.contains("outside");
+
+		if (!outside)
+		{
+			switch (vPos)
+			{
+				case 0: /* south */
+					pos[1] = aPos[1]+margin;
+					break;
+				case 1: /* middle */
+					pos[1] = aPos[1]+(aPos[3]-pos[3])/2;
+					break;
+				case 2: /* north */
+					pos[1] = aPos[1]+aPos[3]-margin-pos[3];
+					break;
+			}
+			switch (hPos)
+			{
+				case 0: /* west */
+					pos[0] = aPos[0]+margin;
+					break;
+				case 1: /* center */
+					pos[0] = aPos[0]+(aPos[2]-pos[2])/2;
+					break;
+				case 2: /* east */
+					pos[0] = aPos[0]+aPos[2]-margin-pos[2];
+					break;
+			}
+		}
+		else
+		{
+			if (hPos != 0)
+			{
+				switch (hPos)
+				{
+					case 1: /* west */
+						if (outerActive)
+						{
+							double offset = margin+pos[2];
+							aPos[0] += offset;
+							aPos[2] -= offset;
+						}
+						pos[0] = aPos[0]-margin-pos[2];
+						break;
+					case 2: /* east */
+						if (outerActive)
+							aPos[2] -= (margin+pos[2]);
+						pos[0] = aPos[0]+aPos[2]+margin;
+						break;
+				}
+				pos[1] = aPos[1];
+				pos[3] = aPos[3];
+			}
+			else
+			{
+				switch (vPos)
+				{
+					case 1: /* south */
+						if (outerActive)
+						{
+							double offset = margin+pos[3];
+							aPos[1] += offset;
+							aPos[3] -= offset;
+						}
+						pos[1] = aPos[1]-margin-pos[3];
+						break;
+					case 2: /* north */
+						if (outerActive)
+							aPos[3] -= (margin+pos[3]);
+						pos[1] = aPos[1]+aPos[3]+margin;
+						break;
+				}
+				pos[0] = aPos[0];
+				pos[2] = aPos[2];
+			}
+		}
+
+		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
+		autoMode++;
+		axes.setInternalPosition(getFigure().convertPosition(aPos, "pixels", axes.Units.getValue()));
+		autoMode--;
+	}
+
+	void updateActivePosition()
+	{
+		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
+		pos[2] = 40.0;
+		pos[3] = 40.0;
+		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
+		doLocate();
+	}
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (!isAutoMode() && !axes.isAutoMode() && (p == axes.Position || p == axes.OuterPosition))
+			doLocate();
+		else if (p == Location)
+		{
+			autoMode++;
+			axes.updateActivePosition();
+			autoMode--;
+			buildColorbar(axes);
+			doLocate();
+		}
+		else
+			super.propertyChanged(p);
+	}
+}

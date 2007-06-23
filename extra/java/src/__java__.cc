@@ -1024,7 +1024,7 @@ static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, j
       jobj = dv;
       jcls = jni_env->GetObjectClass (jobj);
     }
-  else if (Vjava_convert_matrix && val.is_matrix_type () && val.is_real_type ())
+  else if (Vjava_convert_matrix && (val.is_matrix_type () || val.is_range()) && val.is_real_type ())
     {
       jclass_ref mcls (jni_env, jni_env->FindClass ("org/octave/Matrix"));
       dim_vector dims = val.dims ();

@@ -1698,17 +1698,20 @@ public class AxesObject extends HandleObject
 
 	protected void autoTickLabelX()
 	{
-		x_logTickLabels = computeAutoTickLabels(XTick, XScale, XTickLabel);
+		if (XTickLabelMode.is("auto"))
+			x_logTickLabels = computeAutoTickLabels(XTick, XScale, XTickLabel);
 	}
 
 	protected void autoTickLabelY()
 	{
-		y_logTickLabels = computeAutoTickLabels(YTick, YScale, YTickLabel);
+		if (YTickLabelMode.is("auto"))
+			y_logTickLabels = computeAutoTickLabels(YTick, YScale, YTickLabel);
 	}
 
 	protected void autoTickLabelZ()
 	{
-		z_logTickLabels = computeAutoTickLabels(ZTick, ZScale, ZTickLabel);
+		if (ZTickLabelMode.is("auto"))
+			z_logTickLabels = computeAutoTickLabels(ZTick, ZScale, ZTickLabel);
 	}
 
 	protected void autoCamera()

@@ -51,11 +51,11 @@ public class ColorbarObject extends AxesObject
 		XLim.reset(new double[] {0, 1});
 		YLim.reset(new double[] {0, 1});
 		ZLim.reset(new double[] {-0.5, 0.5});
-		XTickMode.reset("manual");
-		YTickMode.reset("manual");
+		//XTickMode.reset("manual");
+		//YTickMode.reset("manual");
 		ZTickMode.reset("manual");
-		XTick.reset(null);
-		YTick.reset(null);
+		//XTick.reset(null);
+		//YTick.reset(null);
 		ZTick.reset(null);
 		XTickLabelMode.reset("manual");
 		YTickLabelMode.reset("manual");

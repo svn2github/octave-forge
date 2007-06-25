@@ -233,10 +233,11 @@ static bool initialize_jvm (std::string& msg)
       strcpy (octave_path_optionString, init_octave_path.c_str ());
 
       vm_args.version = JNI_VERSION_1_2;
-      vm_args.nOptions = 2 /* 3 */;
+      vm_args.nOptions = 3 /* 3 */;
       options[0].optionString = class_path_optionString;
       options[1].optionString = octave_path_optionString;
       //options[2].optionString = "-Dsun.java2d.opengl=True";
+      options[2].optionString = "-Xrs";
       vm_args.options = options;
       vm_args.ignoreUnrecognized = false;
 

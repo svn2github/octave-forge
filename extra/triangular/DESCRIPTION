@@ -1,0 +1,11 @@
+Name: Triangular
+Version: 1.0.0
+Date: 2007-06-25
+Author: David Bateman
+Maintainer: David Bateman
+Title: Triangular.
+Description: Simple example of a user type implementing a simple matrix type for triangular matrices.
+Depends: octave (> 2.9.9)
+Autoload: no
+License: GPL version 2 or later
+Url: http://octave.sf.net

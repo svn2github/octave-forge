@@ -86,6 +86,7 @@ public class AxesObject extends HandleObject
 
 	RenderCanvas canvas;
 	LegendObject legend;
+	ColorbarObject colorbar;
 	BaseLineObject baseLine;
 
 	private final int AXE_ANY_DIR = 0;
@@ -186,6 +187,8 @@ public class AxesObject extends HandleObject
 	RadioProperty XScale;
 	RadioProperty YScale;
 	RadioProperty ZScale;
+	RadioProperty XAxisLocation;
+	RadioProperty YAxisLocation;
 
 	public AxesObject(FigureObject fig, boolean init3D)
 	{
@@ -298,6 +301,8 @@ public class AxesObject extends HandleObject
 		XMinorTick = new BooleanProperty(this, "XMinorTick", false);
 		YMinorTick = new BooleanProperty(this, "YMinorTick", false);
 		ZMinorTick = new BooleanProperty(this, "ZMinorTick", false);
+		XAxisLocation = new RadioProperty(this, "XAxisLocation", new String[] {"bottom", "top"}, "bottom");
+		YAxisLocation = new RadioProperty(this, "YAxisLocation", new String[] {"left", "right"}, "left");
 
 		updatePosition();
 		autoTick();
@@ -353,6 +358,7 @@ public class AxesObject extends HandleObject
 
 		legend = null;
 		baseLine = null;
+		colorbar = null;
 	}
 
 	public void reset(String mode)
@@ -413,6 +419,11 @@ public class AxesObject extends HandleObject
 			legend.delete();
 			legend = null;
 		}
+		if (colorbar != null)
+		{
+			colorbar.delete();
+			colorbar = null;
+		}
 		Box.reset(new Boolean(true));
 		XDir.reset("normal");
 		YDir.reset("normal");
@@ -428,6 +439,8 @@ public class AxesObject extends HandleObject
 		XMinorGrid.reset(new Boolean(false));
 		YMinorGrid.reset(new Boolean(false));
 		ZMinorGrid.reset(new Boolean(false));
+		XAxisLocation.reset("bottom");
+		YAxisLocation.reset("left");
 
 		autoTick();
 		autoAspectRatio();
@@ -460,6 +473,8 @@ public class AxesObject extends HandleObject
 		ZLabel.getText().delete();
 		if (legend != null)
 			legend.delete();
+		if (colorbar != null)
+			colorbar.delete();
 	}
 
 	public void removeChild(HandleObject child)
@@ -468,6 +483,8 @@ public class AxesObject extends HandleObject
 			baseLine = null;
 		else if (child == legend)
 			legend = null;
+		else if (child == colorbar)
+			colorbar = null;
 
 		super.removeChild(child);
 
@@ -554,6 +571,16 @@ public class AxesObject extends HandleObject
 		}
 		else
 			return legend;
+	}
+
+	public ColorbarObject makeColorbar()
+	{
+		if (colorbar == null)
+		{
+			colorbar = new ColorbarObject(this);
+			colorbar.validate();
+		}
+		return colorbar;
 	}
 
 	public BaseLineObject getBaseLine()
@@ -686,6 +713,31 @@ public class AxesObject extends HandleObject
 		double ztickoffset = Math.max(1.0, zticklen);
 		double tickdir = (TickDir.is("in") ? -1 : 1);
 
+		boolean xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
+		boolean boxSet = Box.isSet();
+
+		boolean x2Dtop = false;
+		boolean y2Dright = false;
+
+		/* 2D mode */
+		if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
+		{
+			if (XAxisLocation.is("top"))
+			{
+				double tmp = yPlane;
+				yPlane = yPlaneN;
+				yPlaneN = tmp;
+				x2Dtop = true;
+			}
+			if (YAxisLocation.is("right"))
+			{
+				double tmp = xPlane;
+				xPlane = xPlaneN;
+				xPlaneN = tmp;
+				y2Dright = true;
+			}
+		}
+
 		// work variables
 		java.util.List l1 = new LinkedList();
 		java.util.List l2 = new LinkedList();
@@ -715,8 +767,8 @@ public class AxesObject extends HandleObject
 			l1.clear();
 		}
 		
-		boolean xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
-		boolean boxSet = Box.isSet();
+		//boolean xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
+		//boolean boxSet = Box.isSet();
 
 		// Box
 
@@ -837,7 +889,7 @@ public class AxesObject extends HandleObject
 				String txt = (x_logTickLabels ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
 				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
 						(xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2)),
-						(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
+						(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 && !x2Dtop ? 2 : 0)));
 				if (d.width > wmax) wmax = d.width;
 				if (d.height > hmax) hmax = d.height;
 			}
@@ -1006,7 +1058,7 @@ public class AxesObject extends HandleObject
 			{
 				String txt = (y_logTickLabels ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
 				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
-						(ystate == AXE_HORZ_DIR ? 1 : (!xySym ? 0 : 2)),
+						(ystate == AXE_HORZ_DIR ? 1 : (!xySym || y2Dright ? 0 : 2)),
 						(ystate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
 				if (d.width > wmax) wmax = d.width;
 				if (d.height > hmax) hmax = d.height;

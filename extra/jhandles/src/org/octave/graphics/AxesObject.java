@@ -442,6 +442,7 @@ public class AxesObject extends HandleObject
 		XAxisLocation.reset("bottom");
 		YAxisLocation.reset("left");
 
+		updateActivePosition();
 		autoTick();
 		autoAspectRatio();
 		autoCamera();

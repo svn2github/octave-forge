@@ -72,6 +72,12 @@ public class ColorbarObject extends AxesObject
 		buildColorbar(axes);
 	}
 
+	public void delete()
+	{
+		super.delete();
+		axes.removeChild(this);
+	}
+
 	public void buildColorbar(AxesObject axes)
 	{
 		doClear();
@@ -92,12 +98,14 @@ public class ColorbarObject extends AxesObject
 			img.CData.set(new Matrix(cdata, new int[] {nc, 1}), true);
 			img.XData.set(new double[] {1, 1}, true);
 			img.YData.set(new double[] {1, nc}, true);
+			YAxisLocation.set(loc.contains("west") ? "left" : "right", true);
 		}
 		else
 		{
 			img.CData.set(new Matrix(cdata, new int[] {1, nc}), true);
 			img.XData.set(new double[] {1, nc}, true);
 			img.YData.set(new double[] {1, 1}, true);
+			XAxisLocation.set(loc.contains("south") ? "bottom" : "top", true);
 		}
 		img.CDataMapping.set("direct", true);
 		img.validate();

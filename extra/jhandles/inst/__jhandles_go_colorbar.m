@@ -17,8 +17,7 @@
 
 function [ h ] = __jhandles_go_colorbar (ax)
 
-  cb_obj = java_new ("org.octave.graphics.ColorbarObject", __get_object__ (ax));
-  cb_obj.validate ();
+  cb_obj = java_invoke (__get_object__ (ax), "makeColorbar");
   h = cb_obj.getHandle ();
 
 endfunction

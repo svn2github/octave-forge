@@ -189,6 +189,7 @@ public class AxesObject extends HandleObject
 	RadioProperty ZScale;
 	RadioProperty XAxisLocation;
 	RadioProperty YAxisLocation;
+	RadioProperty Layer;
 
 	public AxesObject(FigureObject fig, boolean init3D)
 	{
@@ -303,6 +304,7 @@ public class AxesObject extends HandleObject
 		ZMinorTick = new BooleanProperty(this, "ZMinorTick", false);
 		XAxisLocation = new RadioProperty(this, "XAxisLocation", new String[] {"bottom", "top"}, "bottom");
 		YAxisLocation = new RadioProperty(this, "YAxisLocation", new String[] {"left", "right"}, "left");
+		Layer = new RadioProperty(this, "Layer", new String[] {"bottom", "top"}, "bottom");
 
 		updatePosition();
 		autoTick();
@@ -441,6 +443,7 @@ public class AxesObject extends HandleObject
 		ZMinorGrid.reset(new Boolean(false));
 		XAxisLocation.reset("bottom");
 		YAxisLocation.reset("left");
+		Layer.reset("bottom");
 
 		updateActivePosition();
 		autoTick();
@@ -727,6 +730,7 @@ public class AxesObject extends HandleObject
 
 		boolean x2Dtop = false;
 		boolean y2Dright = false;
+		double zpTick = zPlane;
 
 		/* 2D mode */
 		if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
@@ -745,6 +749,8 @@ public class AxesObject extends HandleObject
 				xPlaneN = tmp;
 				y2Dright = true;
 			}
+			if (Layer.is("top"))
+				zpTick = zPlaneN;
 		}
 
 		// work variables
@@ -847,10 +853,13 @@ public class AxesObject extends HandleObject
 			{
 				for (int i=0; i<xticks.length; i++)
 				{
-					l1.add(new Point3D(xticks[i], yPlaneN, zPlane));
-					l1.add(new Point3D(xticks[i], yPlane, zPlane));
-					l1.add(new Point3D(xticks[i], yPlane, zPlaneN));
-					l1.add(new Point3D(xticks[i], yPlane, zPlane));
+					l1.add(new Point3D(xticks[i], yPlaneN, zpTick));
+					l1.add(new Point3D(xticks[i], yPlane, zpTick));
+					if (zstate != AXE_DEPTH_DIR)
+					{
+						l1.add(new Point3D(xticks[i], yPlane, zPlaneN));
+						l1.add(new Point3D(xticks[i], yPlane, zPlane));
+					}
 				}
 				r.setLineStyle(GridLineStyle.getValue(), true);
 				r.drawSegments(l1);
@@ -878,13 +887,13 @@ public class AxesObject extends HandleObject
 			{
 				for (int i=0; i<xticks.length; i++)
 				{
-					l1.add(new Point3D(xticks[i], yPlaneN, zPlane));
-					l1.add(new Point3D(xticks[i], yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xticklen*tickdir, zPlane));
+					l1.add(new Point3D(xticks[i], yPlaneN, zpTick));
+					l1.add(new Point3D(xticks[i], yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xticklen*tickdir, zpTick));
 					if (Box.isSet() && xstate != AXE_ANY_DIR)
 					{
-						l1.add(new Point3D(xticks[i], yPlane, zPlane));
+						l1.add(new Point3D(xticks[i], yPlane, zpTick));
 						l1.add(new Point3D(xticks[i],
-							yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen*tickdir, zPlane));
+							yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen*tickdir, zpTick));
 					}
 					l2.add(new double[] {xticks[i], yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xtickoffset, zPlane});
 				}
@@ -909,10 +918,13 @@ public class AxesObject extends HandleObject
 			{
 				for (int i=0; i<x_minorTicks.length; i++)
 				{
-					l1.add(new Point3D(xmticks[i], yPlaneN, zPlane));
-					l1.add(new Point3D(xmticks[i], yPlane, zPlane));
-					l1.add(new Point3D(xmticks[i], yPlane, zPlaneN));
-					l1.add(new Point3D(xmticks[i], yPlane, zPlane));
+					l1.add(new Point3D(xmticks[i], yPlaneN, zpTick));
+					l1.add(new Point3D(xmticks[i], yPlane, zpTick));
+					if (zstate != AXE_DEPTH_DIR)
+					{
+						l1.add(new Point3D(xmticks[i], yPlane, zPlaneN));
+						l1.add(new Point3D(xmticks[i], yPlane, zPlane));
+					}
 				}
 				r.setLineStyle(MinorGridLineStyle.getValue(), true);
 				r.drawSegments(l1);
@@ -942,14 +954,14 @@ public class AxesObject extends HandleObject
 				{
 					for (int i=0; i<x_minorTicks.length; i++)
 					{
-						l1.add(new Point3D(xmticks[i], yPlaneN, zPlane));
+						l1.add(new Point3D(xmticks[i], yPlaneN, zpTick));
 						l1.add(new Point3D(xmticks[i],
-							yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xticklen/2*tickdir, zPlane));
+							yPlaneN+Math.signum(yPlaneN-yPlane)*fy*xticklen/2*tickdir, zpTick));
 						if (Box.isSet() && xstate != AXE_ANY_DIR)
 						{
-							l1.add(new Point3D(xmticks[i], yPlane, zPlane));
+							l1.add(new Point3D(xmticks[i], yPlane, zpTick));
 							l1.add(new Point3D(xmticks[i],
-								yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen/2*tickdir, zPlane));
+								yPlane+Math.signum(yPlane-yPlaneN)*fy*xticklen/2*tickdir, zpTick));
 						}
 					}
 				}
@@ -1017,10 +1029,13 @@ public class AxesObject extends HandleObject
 			{
 				for (int i=0; i<yticks.length; i++)
 				{
-					l1.add(new Point3D(xPlaneN, yticks[i],zPlane));
-					l1.add(new Point3D(xPlane, yticks[i], zPlane));
-					l1.add(new Point3D(xPlane, yticks[i], zPlaneN));
-					l1.add(new Point3D(xPlane, yticks[i], zPlane));
+					l1.add(new Point3D(xPlaneN, yticks[i], zpTick));
+					l1.add(new Point3D(xPlane, yticks[i], zpTick));
+					if (zstate != AXE_DEPTH_DIR)
+					{
+						l1.add(new Point3D(xPlane, yticks[i], zPlaneN));
+						l1.add(new Point3D(xPlane, yticks[i], zPlane));
+					}
 				}
 				r.setLineStyle(GridLineStyle.getValue(), true);
 				r.drawSegments(l1);
@@ -1048,13 +1063,13 @@ public class AxesObject extends HandleObject
 			{
 				for (int i=0; i<yticks.length; i++)
 				{
-					l1.add(new Point3D(xPlaneN, yticks[i], zPlane));
-					l1.add(new Point3D(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*yticklen*tickdir, yticks[i], zPlane));
+					l1.add(new Point3D(xPlaneN, yticks[i], zpTick));
+					l1.add(new Point3D(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*yticklen*tickdir, yticks[i], zpTick));
 					if (Box.isSet() && ystate != AXE_ANY_DIR)
 					{
-						l1.add(new Point3D(xPlane, yticks[i], zPlane));
+						l1.add(new Point3D(xPlane, yticks[i], zpTick));
 						l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*yticklen*tickdir,
-							yticks[i], zPlane));
+							yticks[i], zpTick));
 					}
 					l2.add(new double[]{xPlaneN+Math.signum(xPlaneN-xPlane)*fx*ytickoffset, yticks[i], zPlane});
 				}
@@ -1079,10 +1094,13 @@ public class AxesObject extends HandleObject
 			{
 				for (int i=0; i<y_minorTicks.length; i++)
 				{
-					l1.add(new Point3D(xPlaneN, ymticks[i],zPlane));
-					l1.add(new Point3D(xPlane, ymticks[i], zPlane));
-					l1.add(new Point3D(xPlane, ymticks[i], zPlaneN));
-					l1.add(new Point3D(xPlane, ymticks[i], zPlane));
+					l1.add(new Point3D(xPlaneN, ymticks[i], zpTick));
+					l1.add(new Point3D(xPlane, ymticks[i], zpTick));
+					if (zstate != AXE_DEPTH_DIR)
+					{
+						l1.add(new Point3D(xPlane, ymticks[i], zPlaneN));
+						l1.add(new Point3D(xPlane, ymticks[i], zPlane));
+					}
 				}
 				r.setLineStyle(MinorGridLineStyle.getValue(), true);
 				r.drawSegments(l1);
@@ -1112,14 +1130,14 @@ public class AxesObject extends HandleObject
 				{
 					for (int i=0; i<y_minorTicks.length; i++)
 					{
-						l1.add(new Point3D(xPlaneN, ymticks[i], zPlane));
+						l1.add(new Point3D(xPlaneN, ymticks[i], zpTick));
 						l1.add(new Point3D(xPlaneN+Math.signum(xPlaneN-xPlane)*fx*yticklen/2*tickdir,
-							ymticks[i], zPlane));
+							ymticks[i], zpTick));
 						if (Box.isSet() && ystate != AXE_ANY_DIR)
 						{
-							l1.add(new Point3D(xPlane, ymticks[i], zPlane));
+							l1.add(new Point3D(xPlane, ymticks[i], zpTick));
 							l1.add(new Point3D(xPlane+Math.signum(xPlane-xPlaneN)*fx*yticklen/2*tickdir,
-								ymticks[i], zPlane));
+								ymticks[i], zpTick));
 						}
 					}
 				}

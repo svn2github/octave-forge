@@ -64,10 +64,12 @@ public class ColorbarObject extends AxesObject
 		YTickLabel.reset(null);
 		ZTickLabel.reset(null);
 		Tag.reset("colorbar");
+		Layer.reset("top");
 
 		listen(axes.Position);
 		listen(axes.OuterPosition);
 		listen(axes.CLim);
+		//listen(getFigure().Colormap);
 		listen(Location);
 		
 		buildColorbar(axes);
@@ -248,7 +250,7 @@ public class ColorbarObject extends AxesObject
 	{
 		if (!isAutoMode() && !axes.isAutoMode() && (p == axes.Position || p == axes.OuterPosition))
 			doLocate();
-		else if (p == Location || p == axes.CLim)
+		else if (p == Location || p == axes.CLim || p.getName().equalsIgnoreCase("colormap"))
 		{
 			autoMode++;
 			axes.updateActivePosition();

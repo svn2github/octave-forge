@@ -80,7 +80,8 @@ Fortran90 and Fortran95 code files etc. cannot be compiled when using the comman
 @item @b{Some packages from Octave--Forge's website cannot be installed.} @*
 Some of Octave--Forge's packages cannot be installed because of the reason of a missing @command{gfortran} command described before. Known packages that cannot be installed because they come with Fortran90 code files are
 @itemize @minus
-@item hallo
+@item Main repository: Optiminterp
+@item Nonfree packages: Splines
 @end itemize
 If you want to find out more information why the installation of a specific package may fail use the command @command{pkg -v <package.tar.gz>} that runs the @command{pkg} command in verbose mode. @* @*
 

@@ -130,9 +130,12 @@ public abstract class Property implements HandleNotifier.Source
 			setInternal(value);
 			if (!lockNotify)
 			{
-				Iterator it = notifierList.iterator();
-				while (it.hasNext())
-					((HandleNotifier)it.next()).propertyChanged(this);
+				synchronized(notifierList)
+				{
+					Iterator it = notifierList.iterator();
+					while (it.hasNext())
+						((HandleNotifier)it.next()).propertyChanged(this);
+				}
 			}
 			setFlag = false;
 		}
@@ -216,21 +219,30 @@ public abstract class Property implements HandleNotifier.Source
 
 	public void delete()
 	{
-		while (notifierList.size() > 0)
+		synchronized(notifierList)
 		{
-			HandleNotifier n = (HandleNotifier)notifierList.remove(0);
-			n.removeSource(this);
+			while (notifierList.size() > 0)
+			{
+				HandleNotifier n = (HandleNotifier)notifierList.remove(0);
+				n.removeSource(this);
+			}
 		}
 	}
 
 	public void addNotifier(HandleNotifier n)
 	{
-		notifierList.add(n);
+		synchronized(notifierList)
+		{
+			notifierList.add(n);
+		}
 	}
 
 	public void removeNotifier(HandleNotifier n)
 	{
-		notifierList.remove(n);
+		synchronized(notifierList)
+		{
+			notifierList.remove(n);
+		}
 	}
 
 	public static Property createProperty(PropertySet parent, String name, String type) throws PropertyException

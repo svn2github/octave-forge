@@ -1,0 +1,149 @@
+\input texinfo @c -*-texinfo-*-
+@c Copyright (c)  2007  Thomas Treichl and Paul Kienzle
+@c octaveapp.texi - A ready-to-run Mac OS X binary version of GNU Octave
+@c
+@c Permission is granted to copy, distribute and/or modify this document
+@c under the terms of the GNU Free Documentation License, Version 1.2
+@c or any later version published by the Free Software Foundation;
+@c with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+@c Texts. A copy of the license is available at the GNU website
+@c http://www.gnu.org/licenses/fdl.txt.
+
+@c %*** Start of HEADER
+@setfilename octaveapp.texi
+@settitle Octave.app - A ready-to-run Mac OS X binary version of GNU Octave
+@afourpaper
+@c @afourwide
+@c %*** End of the HEADER
+
+@c %*** Start of COPYRIGHT
+@copying
+This document is for the program Octave.app (version %VERSION%), which is a ready--to--run Mac OS X binary version of GNU Octave. @* @*
+Copyright @copyright{} 2007 Thomas Treichl and Paul Kienzle @* @*
+Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is available at the GNU website http://www.gnu.org/licenses/fdl.txt.
+@end copying
+@c %*** End of COPYRIGHT
+
+@c %*** Start of TITLEPAGE
+@titlepage
+@title Octave.app
+@subtitle A ready-to-run Mac OS X binary version of GNU Octave
+@author by Thomas Treichl and Paul Kienzle
+@subtitle @b{This document currently is under development}
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+@c %*** End of TITLEPAGE
+
+@c %*** Start of BODY
+@c @contents
+@ifnottex
+@node Top, Introduction, (dir), (dir)
+@top Octave.app - A ready-to-run Mac OS X binary version of GNU Octave
+@insertcopying
+@end ifnottex
+
+@menu
+* Introduction::                An introduction about Octave, Octave.app @dots{}
+* Requirements::                A describtion about the requirements on your Mac @dots{}
+* Installation::                A describtion about how to set up Octave.app @dots{}
+* Limitations::                 A describtion about known limitations of Octave.app @dots{}
+* FAQs::                        Some answers to frequently asked questions @dots{}
+@end menu
+
+@node  Introduction, Requirements, Top, Top
+@chapter Introduction
+GNU Octave is a high--level language, primarily intended for numerical computations. It provides a convenient command line interface for solving linear and nonlinear problems numerically, and for performing other numerical experiments using a language that is mostly compatible with Matlab. It may also be used as a batch--oriented language. For further information visit @uref{http://www.octave.org}. @* @*
+Octave.app is a ready--to--run binary version of GNU Octave. It runs on most of Apple's Mac OS X computers and comes with all the GNU libraries that are needed to run Octave.app. The application can also be expanded by downloading and installing further packages from the Octave--Forge's website at @uref{http://octave.sourceforge.net}.
+
+@node Requirements, Installation, Introduction, Top
+@chapter Requirements
+If your Apple computer comes with Motorola's PowerPC processor then you need to have installed at least Mac OS X version 10.3. Download the file @file{octave-%VERSION%-ppc.dmg} that includes the ready--to-run binary version of GNU Octave for PPC Macs. If you have a newer Apple computer that comes with an Intel processor then you need to have installed at least Mac OS X version 10.4. Download the file @file{octave-%VERSION%-ia32.dmg} that includes the ready--to--run binary version of GNU Octave for Intel Macs. @* @*
+If you want to use graphical outputs from Octave that can be made with the commands @command{plot}, @command{mesh}, @command{surf} etc. then you need to install the Gnuplot application. Gnuplot is not part of the Octave.app because it is an application that can be build and installed for its own (for further informtations visit the website @uref{http://gnuplot.sourceforge.net}).
+ @* @*
+If you want to further install Octave packages from the Octave--Forge's website @uref{http://octave.sourceforge.net} then you must install the Apple's XCode Tools from 'DVD 1 of your Mac OS X Install Discs' before. To make sure that you have installed the latest version available visit Apple's XCode Tools website @uref{http://developer.apple.com/tools/xcode}.
+
+@node  Installation, Limitations, Requirements, Top
+@chapter Installation
+Installing Octave.app is one of the most easiest things that need to be done. Just drag the Octave.app icon from the @file{octave-%VERSION%-%ARCH%.dmg} to another place of your filesystem (eg. to your desktop or even better to your applications folder) and that's it, you're done. Double--click the Octave.app to start up Octave. @* @*
+There are not installed any further files somewhere in your filesystem. Removing your Octave.app can as easily be done as the installation. Just drag the Octave.app to your Trash and the application is removed. If you're new to Octave then you may have a look at the documents that come with your Octave. These @file{*.pdf} files are installed in the docs folder of your @file{octave-%VERSION%-%ARCH%.dmg} file.
+
+@node  Limitations, FAQs, Installation, Top
+@chapter Limitations
+There are currently some known limitations when using Octave.app. These limitations need not to be reported on an Octave mailing list. But if you find other bugs or other limitations in the Octave.app respectively Octave then please report them to @email{bug-octave@@octave.org}.
+
+@itemize @bullet
+@item @b{Fortran90 code files cannot be compiled.} @*
+Fortran90 and Fortran95 code files etc. cannot be compiled when using the command @command{mkoctfile} on the command line or when using the commands @command{mkoctfile} or @command{mex} in Octave. The reason is that the program @command{f2c} has been set up in Octave.app that can just convert Fortran77 code files into C--files. The C--files are then compiled with the command @command{gcc} that comes with your Apple's XCode Tools (Install these from 'DVD 1 of your Mac OS X Install Discs'). The @command{f2c} program is one of the smallest and oldest free Fortran converters/compilers available. Setting up another Fortran compiler that can compile Fortran90 and Fortran95 code files (eg. @command{gfortran}) for all the different versions of Apple's XCode Tools and @command{gcc} versions is too difficult. We hope that @command{gfortran} somewhen becomes part of Apple's XCode Tools so that we do not need to set up @command{f2c} anymore. @* @*
+
+@item @b{Some packages from Octave--Forge's website cannot be installed.} @*
+Some of Octave--Forge's packages cannot be installed because of the reason of a missing @command{gfortran} command described before. Known packages that cannot be installed because they come with Fortran90 code files are
+@itemize @minus
+@item hallo
+@end itemize
+If you want to find out more information why the installation of a specific package may fail use the command @command{pkg -v <package.tar.gz>} that runs the @command{pkg} command in verbose mode. @* @*
+
+@item @b{No spaces in the pathname before octave.app.} @*
+Do not install Octave.app in a place of your filesystem including spaces in the pathname before Octave.app. Valid destinations eg. are @file{/Application/Octave.app} or @file{/Users/Me/Desktop/Octave.app}. Not valid destinations including spaces in the pathname eg. are @file{/Applications/Other Apps/Desktop/Octave.app} and @file{/Users/My Home/Desktop/Octave.app}. If you set up Octave.app with a not valid pathname then this might result in different errors at startup or when running the Octave application that cannot be reproduced.
+
+@end itemize
+
+@node  FAQs,  , Limitations, Top
+@chapter FAQs
+
+@itemize @bullet
+@item @b{Is there a 64--bit version of Octave.app available?} @*
+There is no 64--bit version of Octave.app available and it is not planed to build one. If you'd like to install a 64--bit version of Octave then you need to set up one for your own. A good starting point for creating such a binary would be @uref{http://wiki.octave.org/wiki.pl?OctaveForMac}. @* @*
+
+@item @b{How can I startup Octave.app?} @*
+After Octave.app has been placed to your desktop or to your applications folder or anywhere else in your filesystem tree you can double--click the Octave.app icon. This opens a new Terminal.app window and starts Octave in this new Terminal.app. Another way to open the Octave.app is to use the command @command{open} on the command line. If you installed Octave.app in your applications folder then a one time startup might look like eg.
+@example
+bash ~$ open /Applications/Octave.app
+@end example
+
+@item @b{How can I startup Octave.app with a XTerm window?} @*
+If you prefer using the application @command{xterm} instead of the Terminal.app that comes with your X11 runtime environment (Install from 'DVD 1 of your Mac OS X Install Discs') then you can set up the environment variable @var{OCTAVE_TERMINAL=X11} before starting the Octave.app. A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}. If you installed Octave.app in your applications folder then a one time startup might look like eg.
+@example
+bash ~$ export OCTAVE_TERMINAL=X11
+bash ~$ open /Applications/Octave.app
+@end example 
+
+@item @b{How can I startup Octave in a Terminal.app or an XTerm that is already running?} @*
+A modified startup script has been placed into the Octave.app that can be used to startup Octave in an already running Terminal.app or a @command{xterm} application. The place of this startup script is @code{<octave.app>/Contents/Resources/bin/octave}. If you have installed Octave.app in your applications folder then a startup in your already running Terminal.app or XTerm application might look like eg.
+@example
+bash ~$ /Applications/Octave.app/Contents/Resources/bin/octave
+@end example
+Trying to startup @command{octave-%VERSION%} will not be working because there are set up some environmental variables with the command @command{octave} for you that are not be set if you startup @command{octave-%VERSION%} directly. Another way to use Octave from the command line is to set up a link to the Octave startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
+@example
+bash ~$ sudo ln -s /usr/bin/octave /Applications/Octave.app/Contents/Resources/bin/octave
+bash ~$ octave
+@end example
+
+@item @b{How can I use mkoctfile in a Terminal.app or a XTerm that is already running?} @*
+A modified startup script has been placed into the Octave.app that can be used to run mkoctfile in an already running Terminal.app or a @command{xterm} application. The place of this startup script is @code{<octave.app>/Contents/Resources/bin/mkoctfile}. If you have installed Octave.app in your applications folder then the use of the command @command{mkoctfile} might look like eg.
+@example
+bash ~$ /Applications/Octave.app/Contents/Resources/bin/mkoctfile <file.cc>
+@end example
+Trying to use @command{mkoctfile-%VERSION%} will not be working because there are set up some environmental variables for you with the command @command{mkoctfile} that are not be set if you try to use @command{mkoctfile-%VERSION%} directly. Another way to use the command @command{mkoctfile} from the command line is to set up a link to the @command{mkoctfile} startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
+@example
+bash ~$ sudo ln -s /usr/bin/mkoctfile /Applications/Octave.app/Contents/Resources/bin/mkoctfile
+bash ~$ mkoctfile <file.cc>
+@end example
+
+@end itemize
+
+@ifhtml
+@html{}
+<hr>
+@end html
+File created with makeinfo at %DATE%
+@end ifhtml
+@c %*** End of BODY
+
+@bye
+
+@c Local Variables: 
+@c mode: texinfo
+@c TeX-master: "octaveapp"
+@c End: 

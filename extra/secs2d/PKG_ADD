@@ -6,20 +6,21 @@ if (! exist (fullfile (fileparts (mfilename ("fullpath")), "inst"), "dir"))
      addpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
   end
 
-  [status, output] = system ("which gmsh");
-  if status
-     disp(["gmsh does not seem to be present some functionalities will be disabled"]);
-  else
-     disp(["gmsh version found:"]);
-     system("gmsh --version");
-  end
+  __gmsh = file_in_path (EXEC_PATH, "gmsh")
+  if (isempty (gmsh))
+    __gmsh = file_in_path (EXEC_PATH, "gmsh.exe");
+    if (isempty (gmsh))
+      warning ("gmsh does not seem to be present some functionalities will be disabled");
+    endif
+  endif
+  clear __gmsh;
 
-
-  [status, output] = system ("which dx");
-  if status
-     disp(["dx does not seem to be present some functionalities will be disabled"]);
-  else
-     disp(["dx version found:"]);
-     system("dx -version");
-  end
+  __dx = file_in_path (EXEC_PATH, "dx")
+  if (isempty (dx))
+    __dx = file_in_path (EXEC_PATH, "dx.exe");
+    if (isempty (dx))
+      warning ("dx does not seem to be present some functionalities will be disabled");
+    endif
+  endif
+  clear __dx;
 end

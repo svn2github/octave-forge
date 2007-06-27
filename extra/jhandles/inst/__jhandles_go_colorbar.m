@@ -15,9 +15,13 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = __jhandles_go_colorbar (ax)
+function [ h ] = __jhandles_go_colorbar (ax, mode)
 
-  cb_obj = java_invoke (__get_object__ (ax), "makeColorbar");
-  h = cb_obj.getHandle ();
+  cb_obj = java_invoke (__get_object__ (ax), "makeColorbar", mode);
+  if (! isempty (cb_obj))
+    h = cb_obj.getHandle ();
+  else
+    h = [];
+  endif
 
 endfunction

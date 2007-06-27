@@ -21,6 +21,7 @@ if (file_in_path (EXEC_PATH, "jogl.jar"))
   mark_as_command shading;
   mark_as_command legend;
   mark_as_command hidden;
+  mark_as_command colorbar;
 else
   warning ("JOGL could not be found, jhandles is not loaded");
 endif

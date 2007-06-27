@@ -33,15 +33,24 @@ function [ h ] = colorbar (varargin)
     ax = gca ();
   endif
 
-  tmp = __jhandles_go_colorbar (ax);
-  if (length (varargin) > 0)
+  cflag = true;
+  if (length (varargin) > 0 && ischar (varargin{1}) && strcmp (varargin{1}, "off"))
+    cflag = false;
+  endif
+
+  tmp = __jhandles_go_colorbar (ax, cflag);
+  if (cflag && length (varargin) > 0)
     set (tmp, varargin{:});
   else
     __request_drawnow__;
   endif
 
   if (nargout > 0)
-    h = tmp;
+    if (cflag)
+      h = tmp;
+    else
+      h = [];
+    endif
   endif
 
 endfunction

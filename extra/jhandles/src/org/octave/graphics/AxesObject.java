@@ -485,7 +485,10 @@ public class AxesObject extends HandleObject
 		else if (child == legend)
 			legend = null;
 		else if (child == colorbar)
+		{
+			updateActivePosition();
 			colorbar = null;
+		}
 
 		super.removeChild(child);
 
@@ -574,12 +577,17 @@ public class AxesObject extends HandleObject
 			return legend;
 	}
 
-	public ColorbarObject makeColorbar()
+	public ColorbarObject makeColorbar(boolean mode)
 	{
-		if (colorbar == null)
+		if (colorbar == null && mode)
 		{
 			colorbar = new ColorbarObject(this);
 			colorbar.validate();
+		}
+		else if (!mode && colorbar != null)
+		{
+			colorbar.delete();
+			colorbar = null;
 		}
 		return colorbar;
 	}

@@ -67,6 +67,7 @@ public class ColorbarObject extends AxesObject
 
 		listen(axes.Position);
 		listen(axes.OuterPosition);
+		listen(axes.CLim);
 		listen(Location);
 		
 		buildColorbar(axes);
@@ -83,6 +84,7 @@ public class ColorbarObject extends AxesObject
 		doClear();
 		this.axes = axes;
 
+		double[] clim = axes.CLim.getArray();
 		String loc = Location.getValue().toLowerCase();
 		boolean isVertical = (loc.contains("west") || loc.contains("east"));
 
@@ -92,27 +94,45 @@ public class ColorbarObject extends AxesObject
 			cdata[i] = i+1;
 
 		ImageObject img = new ImageObject(this);
+		double px = (clim[1]-clim[0])/nc;
+		double low = clim[0]+px/2, high = clim[1]-px/2;
 
 		if (isVertical)
 		{
 			img.CData.set(new Matrix(cdata, new int[] {nc, 1}), true);
 			img.XData.set(new double[] {1, 1}, true);
-			img.YData.set(new double[] {1, nc}, true);
+			img.YData.set(new double[] {low, high}, true);
 			YAxisLocation.set(loc.contains("west") ? "left" : "right", true);
+			XLim.reset(new double[] {0.5, 1.5});
+			YLim.reset(clim);
+			XTick.reset(null);
+			XTickMode.reset("manual");
+			XTickLabel.reset(null);
+			XTickLabelMode.reset("manual");
+			YTickMode.reset("auto");
+			YTickLabelMode.reset("auto");
 		}
 		else
 		{
 			img.CData.set(new Matrix(cdata, new int[] {1, nc}), true);
-			img.XData.set(new double[] {1, nc}, true);
+			img.XData.set(new double[] {low, high}, true);
 			img.YData.set(new double[] {1, 1}, true);
 			XAxisLocation.set(loc.contains("south") ? "bottom" : "top", true);
+			XLim.set(clim, true);
+			YLim.set(new double[] {0.5, 1.5}, true);
+			XTickMode.reset("auto");
+			XTickLabelMode.reset("auto");
+			YTick.reset(null);
+			YTickMode.reset("manual");
+			YTickLabel.reset(null);
+			YTickLabelMode.reset("manual");
 		}
 		img.CDataMapping.set("direct", true);
 		img.validate();
 
 		Position.reset(new double[] {0, 0, 40.0/canvas.getWidth(), 40.0/canvas.getHeight()});
-		XLim.set(new double[] {img.XLim.elementAt(0), img.XLim.elementAt(1)}, true);
-		YLim.set(new double[] {img.YLim.elementAt(0), img.YLim.elementAt(1)}, true);
+		autoTickX();
+		autoTickY();
 	}
 
 	private void doClear()
@@ -228,7 +248,7 @@ public class ColorbarObject extends AxesObject
 	{
 		if (!isAutoMode() && !axes.isAutoMode() && (p == axes.Position || p == axes.OuterPosition))
 			doLocate();
-		else if (p == Location)
+		else if (p == Location || p == axes.CLim)
 		{
 			autoMode++;
 			axes.updateActivePosition();

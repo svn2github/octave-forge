@@ -190,6 +190,7 @@ public class AxesObject extends HandleObject
 	RadioProperty XAxisLocation;
 	RadioProperty YAxisLocation;
 	RadioProperty Layer;
+	BooleanProperty Key;
 
 	public AxesObject(FigureObject fig, boolean init3D)
 	{
@@ -305,6 +306,8 @@ public class AxesObject extends HandleObject
 		XAxisLocation = new RadioProperty(this, "XAxisLocation", new String[] {"bottom", "top"}, "bottom");
 		YAxisLocation = new RadioProperty(this, "YAxisLocation", new String[] {"left", "right"}, "left");
 		Layer = new RadioProperty(this, "Layer", new String[] {"bottom", "top"}, "bottom");
+		Key = new BooleanProperty(this, "Key", false);
+		Key.setVisible(false);
 
 		updatePosition();
 		autoTick();

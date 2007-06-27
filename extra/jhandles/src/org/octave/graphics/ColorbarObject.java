@@ -29,6 +29,7 @@ public class ColorbarObject extends AxesObject
 {
 	private AxesObject axes;
 	private Dimension size;
+	private boolean vertical;
 
 	/* Properties */
 	RadioProperty Location;
@@ -69,7 +70,7 @@ public class ColorbarObject extends AxesObject
 		listen(axes.Position);
 		listen(axes.OuterPosition);
 		listen(axes.CLim);
-		//listen(getFigure().Colormap);
+		listen(getFigure().Colormap);
 		listen(Location);
 		
 		buildColorbar(axes);
@@ -88,7 +89,8 @@ public class ColorbarObject extends AxesObject
 
 		double[] clim = axes.CLim.getArray();
 		String loc = Location.getValue().toLowerCase();
-		boolean isVertical = (loc.contains("west") || loc.contains("east"));
+		
+		vertical = (loc.contains("west") || loc.contains("east"));
 
 		int nc = axes.getFigure().Colormap.getDim(0);
 		double[] cdata = new double[nc];
@@ -99,7 +101,7 @@ public class ColorbarObject extends AxesObject
 		double px = (clim[1]-clim[0])/nc;
 		double low = clim[0]+px/2, high = clim[1]-px/2;
 
-		if (isVertical)
+		if (vertical)
 		{
 			img.CData.set(new Matrix(cdata, new int[] {nc, 1}), true);
 			img.XData.set(new double[] {1, 1}, true);
@@ -246,11 +248,33 @@ public class ColorbarObject extends AxesObject
 		doLocate();
 	}
 
+	private void updateImageFromColormap(Matrix m)
+	{
+		ImageObject img = (ImageObject)Children.elementAt(0);
+		int nc = m.getDim(0);
+		double[] cdata = new double[nc];
+		double[] clim = axes.CLim.getArray();
+		double px = (clim[1]-clim[0])/nc;
+
+		for (int i=0; i<nc; i++)
+			cdata[i] = i+1;
+		if (vertical)
+		{
+			img.CData.set(new Matrix(cdata, new int[] {nc, 1}), true);
+			img.YData.set(new double[] {clim[0]+px/2, clim[1]-px/2}, true);
+		}
+		else
+		{
+			img.CData.set(new Matrix(cdata, new int[] {1, nc}), true);
+			img.XData.set(new double[] {clim[0]+px/2, clim[1]-px/2}, true);
+		}
+	}
+
 	public void propertyChanged(Property p) throws PropertyException
 	{
 		if (!isAutoMode() && !axes.isAutoMode() && (p == axes.Position || p == axes.OuterPosition))
 			doLocate();
-		else if (p == Location || p == axes.CLim || p.getName().equalsIgnoreCase("colormap"))
+		else if (p == Location || p == axes.CLim)
 		{
 			autoMode++;
 			axes.updateActivePosition();
@@ -258,6 +282,8 @@ public class ColorbarObject extends AxesObject
 			buildColorbar(axes);
 			doLocate();
 		}
+		else if (p.getName().equalsIgnoreCase("colormap"))
+			updateImageFromColormap(getFigure().Colormap.getMatrix());
 		else
 			super.propertyChanged(p);
 	}

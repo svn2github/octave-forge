@@ -221,6 +221,7 @@ public abstract class Property implements HandleNotifier.Source
 	{
 		synchronized(notifierList)
 		{
+			//System.out.println("deleting: " + getName());
 			while (notifierList.size() > 0)
 			{
 				HandleNotifier n = (HandleNotifier)notifierList.remove(0);
@@ -233,6 +234,7 @@ public abstract class Property implements HandleNotifier.Source
 	{
 		synchronized(notifierList)
 		{
+			//System.out.println("addNotifier: " + getName());
 			notifierList.add(n);
 		}
 	}
@@ -241,6 +243,7 @@ public abstract class Property implements HandleNotifier.Source
 	{
 		synchronized(notifierList)
 		{
+			//System.out.println("removeNotifier: " + getName());
 			notifierList.remove(n);
 		}
 	}

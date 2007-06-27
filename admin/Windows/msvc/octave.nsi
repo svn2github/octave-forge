@@ -21,36 +21,29 @@
 
 ; Location of various components
 !ifdef CONFIG_HOME
-!define OCTAVE_ROOT "C:\Software\MSYS\local\${OCTAVE_BASE}"
-!define GNUWIN32_ROOT "C:\Software\GnuWin32"
-!define VCLIBS_ROOT "C:\Software\VCLibs"
-!define CONSOLE_ROOT "C:\Software\Console2"
-!define SCITE_ROOT "C:\Software\wscite"
-!define GNUPLOT_ROOT "C:\Software\Gnuplot4.2"
-!define OCTAVE_FORGE "C:\Sources\playground\c\octave-forge-cvs"
-!ifdef OCTAVE_CVS_VERSION
-!define OCTAVE_SRC "C:\Sources\playground\c\octave-cvs"
-!else
-!define OCTAVE_SRC "C:\Sources\playground\c\octave-${OCTAVE_SUFFIX}"
-!endif
-!define MSYS_ROOT "C:\Software\MSYS"
+!define SOFTWARE_ROOT "C:\Software"
+!define SOURCES_ROOT "C:\Sources\playground\c"
 !define VCREDIST_FILE "C:\Temp\vcredist_x86.exe"
 !else
-!define OCTAVE_ROOT "D:\Software\MSYS\local\${OCTAVE_BASE}"
-!define GNUWIN32_ROOT "D:\Software\GnuWin32"
-!define VCLIBS_ROOT "D:\Software\VCLibs"
-!define CONSOLE_ROOT "D:\Software\Console2"
-!define SCITE_ROOT "D:\Software\wscite"
-!define GNUPLOT_ROOT "D:\Software\Gnuplot4.2"
-!define OCTAVE_FORGE "D:\Sources\MixDT\playground\c\octave-forge-cvs"
-!ifdef OCTAVE_CVS_VERSION
-!define OCTAVE_SRC "D:\Sources\MixDT\playground\c\octave-cvs"
-!else
-!define OCTAVE_SRC "D:\Sources\MixDT\playground\c\octave-${OCTAVE_SUFFIX}"
-!endif
+!define SOFTWARE_ROOT "D:\Software"
+!define SOURCES_ROOT "D:\Sources\MixDT\playground\c"
 !define VCREDIST_FILE "D:\Temp\vcredist_x86.exe"
-!define MSYS_ROOT "D:\Software\MSYS"
 !endif
+
+!define MSYS_ROOT "${SOFTWARE_ROOT}\MSYS"
+!define OCTAVE_ROOT "${MSYS_ROOT}\local\${OCTAVE_BASE}"
+!define GNUWIN32_ROOT "${SOFWTARE_ROOT}\GnuWin32"
+!define VCLIBS_ROOT "${SOFTWARE_ROOT}\VCLibs"
+!define CONSOLE_ROOT "${SOFTWARE_ROOT}\Console2"
+!define SCITE_ROOT "${SOFTWARE_ROOT}\wscite"
+!define GNUPLOT_ROOT "${SOFTWARE_ROOT}\Gnuplot4.2"
+!define OCTAVE_FORGE "${SOURCES_ROOT}\octave-forge-cvs"
+!ifdef OCTAVE_CVS_VERSION
+  !define OCTAVE_SRC "${SOURCES_ROOT}\octave-cvs"
+!else
+  !define OCTAVE_SRC "${SOURCES_ROOT}\octave-${OCTAVE_SUFFIX}"
+!endif
+!define GMSH_ROOT "${SOFTWARE_ROOT}\Gmsh"
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "GNU Octave"

@@ -290,6 +290,14 @@ EOF
         echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
 		;;
+		secs2d)
+        echo "  SetOutPath \"\$INSTDIR\\bin\""
+        echo "  File \"\${GMSH_ROOT}\\gmsh.exe\""
+        echo "  SetOutPath \"\$INSTDIR\\license\""
+        echo "  File /oname=COPYRIGHT.GMSH \"\${GMSH_ROOT}\\LICENSE.txt\""
+        echo "  SetOutPath \"\$INSTDIR\\tools\\gmsh\""
+        echo "  File /r /x gmsh.exe \"\${GMSH_ROOT}\\*.*\""
+		;;
       esac
       echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
       echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""

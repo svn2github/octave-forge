@@ -1,0 +1,50 @@
+#!/bin/sh
+# Copyright (C) 2007, Thomas Treichl and Paul Kienzle
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA
+
+ROOT=${0%/script}
+
+if [ -z ${OCTAVE_TERMINAL} ]; then 
+# This is the startup procedure written as AppleScript to open a
+# Terminal.app (if the Terminal.app is not already running) and start
+# the Octave program.
+open -a /Applications/Utilities/Terminal.app
+osascript 2>&1>/dev/null <<EOF
+  tell application "Terminal"
+    activate
+    do script "${ROOT}/bin/octave"
+  end tell
+EOF
+
+# If you set the variable ${OCTAVE_TERMINAL} to "X11" then we try to
+# open the X11 environment and a XTerm with the Octave program running
+# in this XTerm instead of a shell.
+elif [ ${OCTAVE_TERMINAL} == "X11" ]; then
+  open "/Applications/Utilities/X11.app"
+  if [ -z ${DISPLAY} ]; then export DISPLAY=:0.0; fi
+  /usr/X11R6/bin/xterm -fn -adobe-courier-medium-*-*-*-14-*-*-*-*-*-*-* \
+    -e "${ROOT}/bin/octave";
+fi
+
+# Quit the Octave application immediately after startup (ie. quitting
+# it in the taskbar) because once it is started it cannot be restarted
+# a second time. If octave.app stays (eg. because of a crash) opened
+# then restarting is not possible.
+osascript 2>&1>/dev/null <<EOF
+  tell application "octave"
+    quit
+  end tell
+EOF

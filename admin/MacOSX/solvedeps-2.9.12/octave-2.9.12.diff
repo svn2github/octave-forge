@@ -1,0 +1,507 @@
+diff -u -u ./octave-2.9.12/Makeconf.in ./octave-2.9.12/Makeconf.in
+--- ./octave-2.9.12/Makeconf.in	2007-05-22 18:33:06.000000000 +0200
++++ ./octave-2.9.12/Makeconf.in	2007-06-01 22:17:41.000000000 +0200
+@@ -351,8 +351,6 @@
+ # LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PATH, ...
+ library_path_var = @library_path_var@
+ 
+-MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_LDFLAGS@
+-
+ NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
+ 
+ # The following pattern rules and the substitution functions require
+@@ -500,7 +498,7 @@
+   -e "s|%OCTAVE_CONF_LIBREADLINE%|\"${LIBREADLINE}\"|" \
+   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
+   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \
+-  -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|" \
++  -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"@MKOCTFILE_DL_LDFLAGS@\"|' \
+   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
+   -e "s|%OCTAVE_CONF_OCTLIBDIR%|\"${octlibdir}\"|" \
+   -e "s|%OCTAVE_CONF_PREFIX%|\"${prefix}\"|" \
+diff -u -u ./octave-2.9.12/configure.in ./octave-2.9.12/configure.in
+--- ./octave-2.9.12/configure.in	2007-04-26 21:00:48.000000000 +0200
++++ ./octave-2.9.12/configure.in	2007-06-01 22:20:28.000000000 +0200
+@@ -1102,7 +1102,7 @@
+   ;;
+   *-*-darwin*)
+     DL_LDFLAGS='-bundle -bundle_loader $(TOPDIR)/src/octave $(LDFLAGS)'
+-    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $(bindir)/octave-$(version)$(EXEEXT)'
++    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $$BINDIR/octave-$$OCTAVE_VERSION$$EXEEXT'
+     SH_LDFLAGS='-dynamiclib -single_module $(LDFLAGS)'
+     CXXPICFLAG=
+     CPICFLAG=
+@@ -1774,9 +1774,9 @@
+ dnl "broken shell backslash quoting" or somesuch.
+ dnl
+ case "$canonical_host_type" in
+-  *-*-darwin*)
+-    UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",g'`
+-  ;;
++  #*-*-darwin*)
++  #  UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",g'`
++  #;;
+   *)
+     UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\",g'`
+   ;;
+diff -u -u ./octave-2.9.12/mkoctfile.in ./octave-2.9.12/mkoctfile.in
+--- ./octave-2.9.12/mkoctfile.in	2007-02-16 12:14:44.000000000 +0100
++++ ./octave-2.9.12/mkoctfile.in	2007-06-01 22:17:41.000000000 +0200
+@@ -12,18 +12,21 @@
+ OCTAVE_VERSION=%OCTAVE_CONF_VERSION%
+ OCTAVE_PREFIX=%OCTAVE_CONF_PREFIX%
+ 
+-DEFAULT_OCTINCLUDEDIR=%OCTAVE_CONF_OCTINCLUDEDIR%
++DEFAULT_BINDIR=%OCTAVE_BINDIR%
+ DEFAULT_INCLUDEDIR=%OCTAVE_CONF_INCLUDEDIR%
++DEFAULT_OCTINCLUDEDIR=%OCTAVE_CONF_OCTINCLUDEDIR%
+ DEFAULT_OCTLIBDIR=%OCTAVE_CONF_OCTLIBDIR%
+ 
+ if [ -n "$OCTAVE_HOME" ]; then
+-  DEFAULT_OCTINCLUDEDIR="`echo $DEFAULT_OCTINCLUDEDIR | $SED "s,^$OCTAVE_PREFIX,$OCTAVE_HOME,"`"
++  DEFAULT_BINDIR="`echo $DEFAULT_BINDIR | $SED "s,^$OCTAVE_PREFIX,$OCTAVE_HOME,"`"
+   DEFAULT_INCLUDEDIR="`echo $DEFAULT_INCLUDEDIR | $SED "s,^$OCTAVE_PREFIX,$OCTAVE_HOME,"`"
++  DEFAULT_OCTINCLUDEDIR="`echo $DEFAULT_OCTINCLUDEDIR | $SED "s,^$OCTAVE_PREFIX,$OCTAVE_HOME,"`"
+   DEFAULT_OCTLIBDIR="`echo $DEFAULT_OCTLIBDIR | $SED "s,^$OCTAVE_PREFIX,$OCTAVE_HOME,"`"
+ fi
+ 
+-: ${OCTINCLUDEDIR=$DEFAULT_OCTINCLUDEDIR}
++: ${BINDIR=$DEFAULT_BINDIR}
+ : ${INCLUDEDIR=$DEFAULT_INCLUDEDIR}
++: ${OCTINCLUDEDIR=$DEFAULT_OCTINCLUDEDIR}
+ : ${OCTLIBDIR=$DEFAULT_OCTLIBDIR}
+ 
+ DEFAULT_INCFLAGS="-I$OCTINCLUDEDIR -I$OCTINCLUDEDIR/octave"
+@@ -36,6 +39,8 @@
+ # Default values for these variables are filled in when Octave is
+ # compiled. 
+ 
++: ${EXEEXT=%OCTAVE_CONF_EXEEXT%}
++
+ : ${CPPFLAGS=%OCTAVE_CONF_CPPFLAGS%}
+ : ${INCFLAGS=$DEFAULT_INCFLAGS}
+ : ${F2C=%OCTAVE_CONF_F2C%}
+diff -u -r1.8 SparseCmplxQR.cc
+--- ./octave-2.9.12/liboctave/SparseCmplxQR.cc	10 Apr 2007 21:13:22 -0000	1.8
++++ ./octave-2.9.12/liboctave/SparseCmplxQR.cc	2 Jun 2007 07:16:18 -0000
+@@ -27,14 +27,22 @@
+ #include "lo-error.h"
+ #include "SparseCmplxQR.h"
+ 
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER < 2)) || (CS_VER < 2))
++typedef double _Complex cs_complex_t;
++
+ // Why did g++ 4.x stl_vector.h make
+-//   OCTAVE_LOCAL_BUFFER (double _Complex, buf, n)
++//   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, n)
+ // an error ?
+ #define OCTAVE_C99_COMPLEX(buf, n) \
+   OCTAVE_LOCAL_BUFFER (double, buf ## tmp, (2 * (n))); \
+-  double _Complex *buf = reinterpret_cast<double _Complex *> (buf ## tmp);
++  cs_complex_t *buf = reinterpret_cast<cs_complex_t *> (buf ## tmp);
+ 
+-#define OCTAVE_C99_ZERO (0. + 0.iF);
++#else
++#define OCTAVE_C99_COMPLEX(buf, n) \
++  OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, (n));
++#endif
++
++#define OCTAVE_C99_ZERO (0. + 0.iF)
+ 
+ SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep 
+ (GCC_ATTR_UNUSED const SparseComplexMatrix& a, GCC_ATTR_UNUSED int order)
+@@ -49,7 +57,7 @@
+   // Prevents the methods below making a copy of the data.
+   A.p = const_cast<octave_idx_type *>(a.cidx ());
+   A.i = const_cast<octave_idx_type *>(a.ridx ());
+-  A.x = const_cast<double _Complex *>(reinterpret_cast<const double _Complex *> 
++  A.x = const_cast<cs_complex_t *>(reinterpret_cast<const cs_complex_t *> 
+ 				      (a.data ()));
+   A.nz = -1;
+   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+@@ -180,8 +188,8 @@
+   octave_idx_type b_nc = b.cols();
+   octave_idx_type nc = N->L->n;
+   octave_idx_type nr = nrows;
+-  const double _Complex *bvec = 
+-    reinterpret_cast<const double _Complex *>(b.fortran_vec());
++  const cs_complex_t *bvec = 
++    reinterpret_cast<const cs_complex_t *>(b.fortran_vec());
+   ComplexMatrix ret(b_nr,b_nc);
+   Complex *vec = ret.fortran_vec();
+   if (nr < 1 || nc < 1 || nr != b_nr)
+@@ -196,10 +204,10 @@
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (S->pinv, bvec + idx, reinterpret_cast<double _Complex *>(buf), b_nr);
++	    (S->pinv, bvec + idx, reinterpret_cast<cs_complex_t *>(buf), b_nr);
+ #else
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (b_nr, S->Pinv, bvec + idx, reinterpret_cast<double _Complex *>(buf));
++	    (b_nr, S->Pinv, bvec + idx, reinterpret_cast<cs_complex_t *>(buf));
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	  for (volatile octave_idx_type i = 0; i < nm; i++)
+@@ -207,7 +215,7 @@
+ 	      OCTAVE_QUIT;
+ 	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	      CXSPARSE_ZNAME (_happly) 
+-		(N->L, i, N->B[i], reinterpret_cast<double _Complex *>(buf));
++		(N->L, i, N->B[i], reinterpret_cast<cs_complex_t *>(buf));
+ 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	    }
+ 	  for (octave_idx_type i = 0; i < b_nr; i++)
+@@ -240,7 +248,7 @@
+       if (! q.ok ())
+ 	return ComplexMatrix();
+       x.resize(nc, b_nc);
+-      double _Complex *vec = reinterpret_cast<double _Complex *>
++      cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
+ 	(x.fortran_vec());
+       OCTAVE_C99_COMPLEX (buf, q.S()->m2);
+       OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
+@@ -254,10 +262,10 @@
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (q.S()->pinv, reinterpret_cast<double _Complex *>(Xx), buf, nr);
++	    (q.S()->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+ #else
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (nr, q.S()->Pinv, reinterpret_cast<double _Complex *>(Xx), buf);
++	    (nr, q.S()->Pinv, reinterpret_cast<cs_complex_t *>(Xx), buf);
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	  for (volatile octave_idx_type j = 0; j < nc; j++)
+@@ -285,14 +293,20 @@
+       if (! q.ok ())
+ 	return ComplexMatrix();
+       x.resize(nc, b_nc);
+-      double _Complex *vec = reinterpret_cast<double _Complex *>
++      cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
+ 	(x.fortran_vec());
+       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
+       OCTAVE_C99_COMPLEX (buf, nbuf);
+       OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++      OCTAVE_LOCAL_BUFFER (double, B, nr);
++      for (octave_idx_type i = 0; i < nr; i++)
++	B[i] = q.N()->B [i];
++#else
+       OCTAVE_LOCAL_BUFFER (Complex, B, nr);
+       for (octave_idx_type i = 0; i < nr; i++)
+ 	B[i] = conj (reinterpret_cast<Complex *>(q.N()->B) [i]);
++#endif
+       for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+ 	{
+ 	  OCTAVE_QUIT;
+@@ -303,10 +317,10 @@
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_pvec)
+-	    (q.S()->q, reinterpret_cast<double _Complex *>(Xx), buf, nr);
++	    (q.S()->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+ #else
+ 	  CXSPARSE_ZNAME (_pvec)
+-	    (nr, q.S()->Q, reinterpret_cast<double _Complex *>(Xx), buf);
++	    (nr, q.S()->Q, reinterpret_cast<cs_complex_t *>(Xx), buf);
+ #endif
+ 	  CXSPARSE_ZNAME (_utsolve) (q.N()->U, buf);
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+@@ -315,8 +329,12 @@
+ 	      OCTAVE_QUIT;
+ 	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++	      CXSPARSE_ZNAME (_happly) (q.N()->L, j, B[j], buf);
++#else
+ 	      CXSPARSE_ZNAME (_happly) 
+-		(q.N()->L, j, reinterpret_cast<double _Complex *>(B)[j], buf);
++		(q.N()->L, j, reinterpret_cast<cs_complex_t *>(B)[j], buf);
++#endif
+ 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	    }
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+@@ -372,10 +390,10 @@
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (q.S()->pinv, reinterpret_cast<double _Complex *>(Xx), buf, nr);
++	    (q.S()->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+ #else
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (nr, q.S()->Pinv, reinterpret_cast<double _Complex *>(Xx), buf);
++	    (nr, q.S()->Pinv, reinterpret_cast<cs_complex_t *>(Xx), buf);
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	  for (volatile octave_idx_type j = 0; j < nc; j++)
+@@ -389,10 +407,10 @@
+ 	  CXSPARSE_ZNAME (_usolve) (q.N()->U, buf);
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (q.S()->q, buf, reinterpret_cast<double _Complex *>(Xx), nc);
++	    (q.S()->q, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+ #else
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (nc, q.S()->Q, buf, reinterpret_cast<double _Complex *>(Xx));
++	    (nc, q.S()->Q, buf, reinterpret_cast<cs_complex_t *>(Xx));
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 
+@@ -430,9 +448,16 @@
+       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
+       OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
+       OCTAVE_C99_COMPLEX (buf, nbuf);
++
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++      OCTAVE_LOCAL_BUFFER (double, B, nr);
++      for (octave_idx_type i = 0; i < nr; i++)
++	B[i] = q.N()->B [i];
++#else
+       OCTAVE_LOCAL_BUFFER (Complex, B, nr);
+       for (octave_idx_type i = 0; i < nr; i++)
+ 	B[i] = conj (reinterpret_cast<Complex *>(q.N()->B) [i]);
++#endif
+       for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+ 	{
+ 	  OCTAVE_QUIT;
+@@ -443,10 +468,10 @@
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_pvec)
+-	    (q.S()->q, reinterpret_cast<double _Complex *>(Xx), buf, nr);
++	    (q.S()->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+ #else
+ 	  CXSPARSE_ZNAME (_pvec)
+-	    (nr, q.S()->Q, reinterpret_cast<double _Complex *>(Xx), buf);
++	    (nr, q.S()->Q, reinterpret_cast<cs_complex_t *>(Xx), buf);
+ #endif
+ 	  CXSPARSE_ZNAME (_utsolve) (q.N()->U, buf);
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+@@ -454,17 +479,21 @@
+ 	    {
+ 	      OCTAVE_QUIT;
+ 	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++	      CXSPARSE_ZNAME (_happly) (q.N()->L, j, B[j], buf);
++#else
+ 	      CXSPARSE_ZNAME (_happly) 
+-		(q.N()->L, j, reinterpret_cast<double _Complex *>(B)[j], buf);
++		(q.N()->L, j, reinterpret_cast<cs_complex_t *>(B)[j], buf);
++#endif
+ 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	    }
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_pvec) 
+-	    (q.S()->pinv, buf, reinterpret_cast<double _Complex *>(Xx), nc);
++	    (q.S()->pinv, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+ #else
+ 	  CXSPARSE_ZNAME (_pvec) 
+-	    (nc, q.S()->Pinv, buf, reinterpret_cast<double _Complex *>(Xx));
++	    (nc, q.S()->Pinv, buf, reinterpret_cast<cs_complex_t *>(Xx));
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 
+@@ -506,8 +535,8 @@
+   octave_idx_type nc = a.cols();
+   octave_idx_type b_nc = b.cols();
+   octave_idx_type b_nr = b.rows();
+-  const double _Complex *bvec = 
+-    reinterpret_cast<const double _Complex *>(b.fortran_vec());
++  const cs_complex_t *bvec = 
++    reinterpret_cast<const cs_complex_t *>(b.fortran_vec());
+   ComplexMatrix x;
+ 
+   if (nr < 1 || nc < 1 || nr != b_nr)
+@@ -519,7 +548,7 @@
+       if (! q.ok ())
+ 	return ComplexMatrix();
+       x.resize(nc, b_nc);
+-      double _Complex *vec = reinterpret_cast<double _Complex *>
++      cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
+ 	(x.fortran_vec());
+       OCTAVE_C99_COMPLEX (buf, q.S()->m2);
+       for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc; 
+@@ -560,13 +589,19 @@
+       if (! q.ok ())
+ 	return ComplexMatrix();
+       x.resize(nc, b_nc);
+-      double _Complex *vec = reinterpret_cast<double _Complex *>
++      cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
+ 	(x.fortran_vec());
+       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
+       OCTAVE_C99_COMPLEX (buf, nbuf);
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++      OCTAVE_LOCAL_BUFFER (double, B, nr);
++      for (octave_idx_type i = 0; i < nr; i++)
++	B[i] = q.N()->B [i];
++#else
+       OCTAVE_LOCAL_BUFFER (Complex, B, nr);
+       for (octave_idx_type i = 0; i < nr; i++)
+ 	B[i] = conj (reinterpret_cast<Complex *>(q.N()->B) [i]);
++#endif
+       for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc; 
+ 	   i++, idx+=nc, bidx+=b_nr)
+ 	{
+@@ -585,8 +620,12 @@
+ 	    {
+ 	      OCTAVE_QUIT;
+ 	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++	      CXSPARSE_ZNAME (_happly) (q.N()->L, j, B[j], buf);
++#else
+ 	      CXSPARSE_ZNAME (_happly) 
+-		(q.N()->L, j, reinterpret_cast<double _Complex *>(B)[j], buf);
++		(q.N()->L, j, reinterpret_cast<cs_complex_t *>(B)[j], buf);
++#endif
+ 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	    }
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+@@ -642,10 +681,10 @@
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (q.S()->pinv, reinterpret_cast<double _Complex *>(Xx), buf, nr);
++	    (q.S()->pinv, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+ #else
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (nr, q.S()->Pinv, reinterpret_cast<double _Complex *>(Xx), buf);
++	    (nr, q.S()->Pinv, reinterpret_cast<cs_complex_t *>(Xx), buf);
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	  for (volatile octave_idx_type j = 0; j < nc; j++)
+@@ -659,10 +698,10 @@
+ 	  CXSPARSE_ZNAME (_usolve) (q.N()->U, buf);
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (q.S()->q, buf, reinterpret_cast<double _Complex *>(Xx), nc);
++	    (q.S()->q, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+ #else
+ 	  CXSPARSE_ZNAME (_ipvec) 
+-	    (nc, q.S()->Q, buf, reinterpret_cast<double _Complex *>(Xx));
++	    (nc, q.S()->Q, buf, reinterpret_cast<cs_complex_t *>(Xx));
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 
+@@ -700,9 +739,15 @@
+       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
+       OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
+       OCTAVE_C99_COMPLEX (buf, nbuf);
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++      OCTAVE_LOCAL_BUFFER (double, B, nr);
++      for (octave_idx_type i = 0; i < nr; i++)
++	B[i] = q.N()->B [i];
++#else
+       OCTAVE_LOCAL_BUFFER (Complex, B, nr);
+       for (octave_idx_type i = 0; i < nr; i++)
+ 	B[i] = conj (reinterpret_cast<Complex *>(q.N()->B) [i]);
++#endif
+       for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+ 	{
+ 	  OCTAVE_QUIT;
+@@ -713,10 +758,10 @@
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_pvec)
+-	    (q.S()->q, reinterpret_cast<double _Complex *>(Xx), buf, nr);
++	    (q.S()->q, reinterpret_cast<cs_complex_t *>(Xx), buf, nr);
+ #else
+ 	  CXSPARSE_ZNAME (_pvec)
+-	    (nr, q.S()->Q, reinterpret_cast<double _Complex *>(Xx), buf);
++	    (nr, q.S()->Q, reinterpret_cast<cs_complex_t *>(Xx), buf);
+ #endif
+ 	  CXSPARSE_ZNAME (_utsolve) (q.N()->U, buf);
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+@@ -724,17 +769,21 @@
+ 	    {
+ 	      OCTAVE_QUIT;
+ 	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
++#if defined(CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
++	      CXSPARSE_ZNAME (_happly) (q.N()->L, j, B[j], buf);
++#else
+ 	      CXSPARSE_ZNAME (_happly) 
+-		(q.N()->L, j, reinterpret_cast<double _Complex *>(B)[j], buf);
++		(q.N()->L, j, reinterpret_cast<cs_complex_t *>(B)[j], buf);
++#endif
+ 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ 	    }
+ 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+ #if defined(CS_VER) && (CS_VER >= 2)
+ 	  CXSPARSE_ZNAME (_pvec) 
+-	    (q.S()->pinv, buf, reinterpret_cast<double _Complex *>(Xx), nc);
++	    (q.S()->pinv, buf, reinterpret_cast<cs_complex_t *>(Xx), nc);
+ #else
+ 	  CXSPARSE_ZNAME (_pvec) 
+-	    (nc, q.S()->Pinv, buf, reinterpret_cast<double _Complex *>(Xx));
++	    (nc, q.S()->Pinv, buf, reinterpret_cast<cs_complex_t *>(Xx));
+ #endif
+ 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+diff -u -r1.7 -r1.8
+--- ./octave-2.9.12/liboctave/oct-sparse.h	10 Jan 2007 18:20:18 -0000	1.7
++++ ./octave-2.9.12/liboctave/oct-sparse.h	24 May 2007 00:50:33 -0000	1.8
+@@ -28,10 +28,6 @@
+ #include <config.h>
+ #endif
+ 
+-#ifdef __cplusplus
+-extern "C" {
+-#endif
+-
+ #if defined (HAVE_SUITESPARSE_UMFPACK_H)
+ #include <suitesparse/umfpack.h>
+ #elif defined (HAVE_UFSPARSE_UMFPACK_H)
+@@ -103,8 +99,4 @@
+ #endif
+ #endif
+ 
+-#ifdef __cplusplus
+-}
+-#endif
+-
+ #endif
+
+diff -u -r1.5 spline.m
+--- ./octave-2.9.12/scripts/polynomial/spline.m	22 Jan 2007 17:28:17 -0000	1.5
++++ ./octave-2.9.12/scripts/polynomial/spline.m	2 Jun 2007 19:33:44 -0000
+@@ -218,22 +218,22 @@
+ %! %--------------------------------------------------------
+ %! % confirm that interpolated function matches the original
+ 
+-%!shared x,y
+-%! x = [0:10]; y = sin(x);
+-%!assert (spline(x,y,x), y);
+-%!assert (spline(x,y,x'), y');
+-%!assert (spline(x',y',x'), y');
+-%!assert (spline(x',y',x), y);
++%!shared x,y,abserr
++%! x = [0:10]; y = sin(x); abserr = 1e-14;
++%!assert (spline(x,y,x), y, abserr);
++%!assert (spline(x,y,x'), y', abserr);
++%!assert (spline(x',y',x'), y', abserr);
++%!assert (spline(x',y',x), y, abserr);
+ %!assert (isempty(spline(x',y',[])));
+ %!assert (isempty(spline(x,y,[])));
+-%!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)])
++%!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
+ %! y = cos(x) + i*sin(x);
+-%!assert ( spline(x,y,x), y )
+-%!assert ( real(spline(x,y,x)), real(y) );
+-%!assert ( real(spline(x,y,x.')), real(y).' );
+-%!assert ( real(spline(x.',y.',x.')), real(y).' );
+-%!assert ( real(spline(x.',y,x)), real(y) );
+-%!assert ( imag(spline(x,y,x)), imag(y) );
+-%!assert ( imag(spline(x,y,x.')), imag(y).' );
+-%!assert ( imag(spline(x.',y.',x.')), imag(y).' );
+-%!assert ( imag(spline(x.',y,x)), imag(y) );
++%!assert (spline(x,y,x), y, abserr)
++%!assert (real(spline(x,y,x)), real(y), abserr);
++%!assert (real(spline(x,y,x.')), real(y).', abserr);
++%!assert (real(spline(x.',y.',x.')), real(y).', abserr);
++%!assert (real(spline(x.',y,x)), real(y), abserr);
++%!assert (imag(spline(x,y,x)), imag(y), abserr);
++%!assert (imag(spline(x,y,x.')), imag(y).', abserr);
++%!assert (imag(spline(x.',y.',x.')), imag(y).', abserr);
++%!assert (imag(spline(x.',y,x)), imag(y), abserr);

@@ -1,0 +1,54 @@
+#!/bin/sh
+# Copyright (C) 2007, Thomas Treichl and Paul Kienzle
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA
+
+# Checks if mkoctfile is started from a file that is a link or if this
+# file has been taken directly to startup the mkoctfile program.
+LINK=`readlink ${0}`
+if [ -z ${LINK} ]; then
+  THIS=`cd . 2>/dev/null && pwd`
+  BASE="${0%/bin/mkoctfile}"
+  ROOT=`cd ${BASE} 2>/dev/null && pwd`
+  cd ${THIS}
+else
+  THIS=`cd . 2>/dev/null && pwd`
+  BASE=`dirname ${0}`/${LINK%/bin/mkoctfile}
+  ROOT=`cd ${BASE} 2>/dev/null && pwd`
+  cd ${THIS}
+fi # echo "BASE: ${BASE} --- ROOT: ${ROOT}"; exit
+
+# Setting up various path information variables that are needed to run
+# the "mkoctfile" command from the command line.
+OCTAVE_HOME="${ROOT}"
+PATH="${ROOT}/bin:${PATH}"
+DYLD_LIBRARY_PATH="${ROOT}/lib:${DYLD_LIBRARY_PATH}"
+DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
+
+# Setting up various path information variables that are needed to run
+# the "mkoctfile" command from the command line.
+CFLAGS="-I${ROOT}/include -I${ROOT}/include/octave-%VERSION% -arch %ARCH%"
+CFLAGS="${CFLAGS} -I${ROOT}/include/curl -I${ROOT}/include/readline"
+CPPFLAGS=${CFLAGS}
+CXXFLAGS=${CXXFLAGS}
+LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% -arch %ARCH%"
+
+# Export the variables that have been defined before so that the
+# mkoctfile program gets knowledge about them.
+export OCTAVE_HOME PATH DYLD_LIBRARY_PATH
+export CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+
+# Invoke mkoctfile, preserving spaces in all the input arguments.
+"$ROOT/bin/mkoctfile-%VERSION%" "$@"

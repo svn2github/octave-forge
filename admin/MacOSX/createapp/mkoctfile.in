@@ -25,7 +25,7 @@ if [ -z ${LINK} ]; then
   cd ${THIS}
 else
   THIS=`cd . 2>/dev/null && pwd`
-  BASE=`dirname ${0}`/${LINK%/bin/mkoctfile}
+  BASE=${LINK%/bin/mkoctfile} # `dirname ${0}`/${LINK%/bin/mkoctfile}
   ROOT=`cd ${BASE} 2>/dev/null && pwd`
   cd ${THIS}
 fi # echo "BASE: ${BASE} --- ROOT: ${ROOT}"; exit

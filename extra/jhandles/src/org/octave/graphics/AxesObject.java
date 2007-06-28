@@ -447,6 +447,8 @@ public class AxesObject extends HandleObject
 		XAxisLocation.reset("bottom");
 		YAxisLocation.reset("left");
 		Layer.reset("bottom");
+		Visible.reset(new Boolean(true));
+		Key.reset(new Boolean(false));
 
 		updateActivePosition();
 		autoTick();
@@ -771,6 +773,7 @@ public class AxesObject extends HandleObject
 		boolean x2Dtop = false;
 		boolean y2Dright = false;
 		double zpTick = zPlane;
+		boolean visible = Visible.isSet();
 
 		/* 2D mode */
 		if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
@@ -799,7 +802,7 @@ public class AxesObject extends HandleObject
 
 		// Axes planes
 
-		if (!AxesColor.is("none"))
+		if (!AxesColor.is("none") && visible)
 		{
 			r.setColor(AxesColor.getColor());
 
@@ -828,7 +831,7 @@ public class AxesObject extends HandleObject
 		// Box
 
 		r.setLineStyle("-", true);
-		if (boxSet || alwaysDrawBox)
+		if ((boxSet || alwaysDrawBox) && visible)
 		{
 			// X box
 			l1.add(new Point3D(xPlaneN, yPlaneN, zPlane)); l1.add(new Point3D(xPlane, yPlaneN, zPlane));
@@ -875,7 +878,7 @@ public class AxesObject extends HandleObject
 
 		// X Grid
 
-		if (xstate != AXE_DEPTH_DIR)
+		if (xstate != AXE_DEPTH_DIR && visible)
 		{
 			boolean doXGrid = XGrid.isSet() && !GridLineStyle.is("none");
 			boolean doXMinorGrid = XMinorGrid.isSet() && !MinorGridLineStyle.is("none");
@@ -1051,7 +1054,7 @@ public class AxesObject extends HandleObject
 
 		// Y Grid
 
-		if (ystate != AXE_DEPTH_DIR)
+		if (ystate != AXE_DEPTH_DIR && visible)
 		{
 			boolean doYGrid = YGrid.isSet() && !GridLineStyle.is("none");
 			boolean doYMinorGrid = YMinorGrid.isSet() && !MinorGridLineStyle.is("none");
@@ -1227,7 +1230,7 @@ public class AxesObject extends HandleObject
 		
 		// Z Grid
 
-		if (zstate != AXE_DEPTH_DIR)
+		if (zstate != AXE_DEPTH_DIR && visible)
 		{
 			boolean doZGrid = ZGrid.isSet() && !GridLineStyle.is("none");
 			boolean doZMinorGrid = ZMinorGrid.isSet() && !MinorGridLineStyle.is("none");

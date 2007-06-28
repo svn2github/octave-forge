@@ -993,6 +993,7 @@ public class GLRenderer implements Renderer
 				else
 					surf.setCachedData(d);
 			}
+			gl.glBindTexture(GL.GL_TEXTURE_2D, d.texID);
 		}
 
 		if (!surf.FaceColor.is("none"))

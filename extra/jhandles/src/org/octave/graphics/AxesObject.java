@@ -502,6 +502,7 @@ public class AxesObject extends HandleObject
 		autoScaleC();
 		autoAspectRatio();
 		autoCamera();
+		autoLegend();
 	}
 
 	public RenderCanvas getCanvas()
@@ -565,22 +566,57 @@ public class AxesObject extends HandleObject
 		autoCamera();
 	}
 
+	protected void autoLegend()
+	{
+		if (Key.isSet())
+		{
+			java.util.List names = new LinkedList();
+
+			synchronized(Children)
+			{
+				Iterator it = Children.iterator();
+				while (it.hasNext())
+				{
+					HandleObject o = (HandleObject)it.next();
+					if (o instanceof LineObject)
+						names.add(((LineObject)o).KeyLabel.toString());
+					else
+						names.add("");
+				}
+			}
+
+			String[] nameArray = new String[names.size()];
+			names.toArray(nameArray);
+			makeLegend(nameArray);
+		}
+	}
+
 	public LegendObject makeLegend(String names[])
 	{
-		if (legend == null)
+		if (names == null || names.length == 0)
 		{
-			legend = new LegendObject(this, names);
-			legend.validate();
+			if (legend != null)
+			{
+				legend.delete();
+				legend = null;
+			}
 		}
 		else
-			legend.buildLegend(this, names);
-		if (legend.size() == 0)
 		{
-			legend.delete();
-			return null;
+			if (legend == null)
+			{
+				legend = new LegendObject(this, names);
+				legend.validate();
+			}
+			else
+				legend.buildLegend(this, names);
+			if (legend.size() == 0)
+			{
+				legend.delete();
+				legend = null;
+			}
 		}
-		else
-			return legend;
+		return legend;
 	}
 
 	public ColorbarObject makeColorbar(boolean mode)
@@ -615,6 +651,7 @@ public class AxesObject extends HandleObject
 		autoScaleC();
 		autoAspectRatio();
 		autoCamera();
+		autoLegend();
 
 		if (child instanceof GraphicObject)
 		{

@@ -940,14 +940,18 @@ public class GLRenderer implements Renderer
 		double[][][] n = surf.VertexNormals.asDoubleMatrix3();
 		double[][] a = null;
 		
-		final int faceColorMode = (surf.FaceColor.isSet() ? 0 : (surf.FaceColor.is("flat") ? 1 : (surf.FaceColor.is("interp") ? 2 : -1)));
+		final int faceColorMode = 
+			(surf.FaceColor.isSet() ? 0 :
+			 (surf.FaceColor.is("flat") ? 1 :
+			  (surf.FaceColor.is("interp") ? 2 : 
+			   (surf.FaceColor.is("texturemap") ? 3 : -1))));
 		final int faceLightMode = (surf.FaceLighting.is("none") ? 0 : (surf.FaceLighting.is("flat") ? 1 : 2));
 		final int faceAlphaMode = (surf.FaceAlpha.isDouble() ? 0 : (surf.FaceAlpha.is("flat") ? 1 : 2));
 		final int edgeColorMode = (surf.EdgeColor.isSet() ? 0 : (surf.EdgeColor.is("flat") ? 1 : (surf.EdgeColor.is("interp") ? 2 : -1)));
 		final int edgeLightMode = (surf.EdgeLighting.is("none") ? 0 : (surf.EdgeLighting.is("flat") ? 1 : 2));
 		final int edgeAlphaMode = (surf.EdgeAlpha.isDouble() ? 0 : (surf.EdgeAlpha.is("flat") ? 1 : 2));
 
-		final double[] fcolor = surf.FaceColor.getArray();
+		final double[] fcolor = (faceColorMode == 3 ? new double[] {1, 1, 1} : surf.FaceColor.getArray());
 		final double[] ecolor = surf.EdgeColor.getArray();
 
 		final float as = surf.AmbientStrength.floatValue();
@@ -960,7 +964,7 @@ public class GLRenderer implements Renderer
 			for (int j=0; j<z[0].length; j++)
 				clip[i][j] = isNaNorInf(x[i][j], y[i][j], z[i][j]);
 
-		if (faceColorMode > 0 || edgeColorMode > 0)
+		if ((faceColorMode > 0 && faceColorMode < 3) || edgeColorMode > 0)
 		{
 			c = surf.getCData();
 		}
@@ -977,11 +981,25 @@ public class GLRenderer implements Renderer
 			gl.glMaterialf(lightSideMode, GL.GL_SHININESS, se);
 		}
 
+		TextureData d = null;
+		if (faceColorMode == 3)
+		{
+			d = (TextureData)surf.getCachedData();
+			if (d == null)
+			{
+				d = makeTextureFromCData(surf.CData, surf.CDataMapping, surf.getAxes());
+				if (d == null)
+					return;
+				else
+					surf.setCachedData(d);
+			}
+		}
+
 		if (!surf.FaceColor.is("none"))
 		{
 			if (surf.FaceAlpha.isDouble() && surf.FaceAlpha.doubleValue() == 1)
 			{
-				if (faceColorMode == 0)
+				if (faceColorMode == 0 || faceColorMode == 3)
 				{
 					gl.glColor3d(fcolor[0], fcolor[1], fcolor[2]);
 					if (faceLightMode > 0)
@@ -998,6 +1016,8 @@ public class GLRenderer implements Renderer
 				gl.glShadeModel((faceColorMode == 2 || faceLightMode == 2) ? GL.GL_SMOOTH : GL.GL_FLAT);
 				gl.glPolygonOffset(po, po);
 				gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+				if (d != null)
+					gl.glEnable(GL.GL_TEXTURE_2D);
 
 				// TODO: remove
 				//System.out.println("GL_LIGHT0 is " + gl.glIsEnabled(GL.GL_LIGHT0));
@@ -1014,7 +1034,9 @@ public class GLRenderer implements Renderer
 						gl.glBegin(GL.GL_QUADS);
 
 						// Vertex 1
-						if (faceColorMode > 0)
+						if (faceColorMode == 3)
+							gl.glTexCoord2d((j-1)*d.tCoordX/(z[i].length-1), (i-1)*d.tCoordY/(z.length-1));
+						else if (faceColorMode > 0)
 						{
 							double[] C = c[i-1][j-1];
 							gl.glColor3d(C[0], C[1], C[2]);
@@ -1031,7 +1053,9 @@ public class GLRenderer implements Renderer
 						gl.glVertex3d(x[i-1][j-1], y[i-1][j-1], z[i-1][j-1]);
 
 						// Vertex 2
-						if (faceColorMode == 2)
+						if (faceColorMode == 3)
+							gl.glTexCoord2d((j-1)*d.tCoordX/(z[i].length-1), i*d.tCoordY/(z.length-1));
+						else if (faceColorMode == 2)
 						{
 							double[] C = c[i][j-1];
 							gl.glColor3d(C[0], C[1], C[2]);
@@ -1048,7 +1072,9 @@ public class GLRenderer implements Renderer
 						gl.glVertex3d(x[i][j-1], y[i][j-1], z[i][j-1]);
 
 						// Vertex 3
-						if (faceColorMode == 2)
+						if (faceColorMode == 3)
+							gl.glTexCoord2d(j*d.tCoordX/(z[i].length-1), i*d.tCoordY/(z.length-1));
+						else if (faceColorMode == 2)
 						{
 							double[] C = c[i][j];
 							gl.glColor3d(C[0], C[1], C[2]);
@@ -1065,7 +1091,9 @@ public class GLRenderer implements Renderer
 						gl.glVertex3d(x[i][j], y[i][j], z[i][j]);
 
 						// Vertex 4
-						if (faceColorMode == 2)
+						if (faceColorMode == 3)
+							gl.glTexCoord2d(j*d.tCoordX/(z[i].length-1), (i-1)*d.tCoordY/(z.length-1));
+						else if (faceColorMode == 2)
 						{
 							double[] C = c[i-1][j];
 							gl.glColor3d(C[0], C[1], C[2]);
@@ -1085,6 +1113,8 @@ public class GLRenderer implements Renderer
 					}
 
 				gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+				if (d != null)
+					gl.glDisable(GL.GL_TEXTURE_2D);
 
 				if (faceLightMode > 0)
 					gl.glDisable(GL.GL_LIGHTING);
@@ -1514,14 +1544,15 @@ public class GLRenderer implements Renderer
 		return buf;
 	}
 
-	public class ImageData implements Renderer.CachedData
+	public class TextureData implements Renderer.CachedData
 	{
 		int texID;
 		int texW, texH;
 		int w, h;
+		double tCoordX, tCoordY;
 		GLContext context;
 
-		public ImageData(int ID, int texW, int texH, int w, int h)
+		public TextureData(int ID, int texW, int texH, int w, int h)
 		{
 			this.texID = ID;
 			this.texW = texW;
@@ -1529,6 +1560,8 @@ public class GLRenderer implements Renderer
 			this.w = w;
 			this.h = h;
 			this.context = GLContext.getCurrent();
+			this.tCoordX = ((double)w)/texW;
+			this.tCoordY = ((double)h)/texH;
 		}
 
 		public void dispose()
@@ -1543,61 +1576,69 @@ public class GLRenderer implements Renderer
 		}
 	}
 
+	public TextureData makeTextureFromCData(ArrayProperty CData, RadioProperty CDataMapping, AxesObject axes)
+	{
+		Buffer texData = null;
+		int[] texDims = new int[2];
+		int m = CData.getDim(0), n = CData.getDim(1);
+		int format = GL.GL_UNSIGNED_BYTE;
+
+		if (CData.getNDims() == 3)
+		{
+			if (CData.isType("byte"))
+			{
+				texData = makeTexture2D(CData.getMatrix().toByte(), m, n, texDims);
+				format = GL.GL_UNSIGNED_BYTE;
+			}
+			else if (CData.isType("double"))
+			{
+				texData = makeTexture2D(CData.getMatrix().toDouble(), m, n, texDims);
+				format = GL.GL_FLOAT;
+			}
+			else
+			{
+				System.out.println("Warning: unsupported data type for texture generation `" + CData.getClassName() + "'");
+				return null;
+			}
+		}
+		else
+		{
+			Matrix c = axes.convertCData(CData.getMatrix(), CDataMapping.getValue());
+			texData = makeTexture2D(c.toDouble(), m, n, texDims);
+			format = GL.GL_FLOAT;
+		}
+
+		int[] t = new int[1];
+		gl.glGenTextures(1, t, 0);
+		gl.glBindTexture(GL.GL_TEXTURE_2D, t[0]);
+		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, 4,
+				texDims[1], texDims[0], 0, GL.GL_RGBA, format, texData);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+		//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
+		//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
+		
+		return new TextureData(t[0], texDims[1], texDims[0], n, m);
+	}
+
 	public void draw(ImageObject image)
 	{
 		double[] x = image.XData.getArray();
 		double[] y = image.YData.getArray();
-		ImageData d = (ImageData)image.getCachedData();
+		TextureData d = (TextureData)image.getCachedData();
 
 		if (d == null)
 		{
-			Buffer texData = null;
-			int[] texDims = new int[2];
-			int m = image.CData.getDim(0), n = image.CData.getDim(1);
-			int format = GL.GL_UNSIGNED_BYTE;
-
-			if (image.CData.getNDims() == 3)
-			{
-				if (image.CData.isType("byte"))
-				{
-					texData = makeTexture2D(image.CData.getMatrix().toByte(), m, n, texDims);
-					format = GL.GL_UNSIGNED_BYTE;
-				}
-				else if (image.CData.isType("double"))
-				{
-					texData = makeTexture2D(image.CData.getMatrix().toDouble(), m, n, texDims);
-					format = GL.GL_FLOAT;
-				}
-				else
-				{
-					System.out.println("Warning: unsupported image data type");
-					return;
-				}
-			}
+			d = makeTextureFromCData(image.CData, image.CDataMapping, image.getAxes());
+			if (d == null)
+				return;
 			else
-			{
-				Matrix c = image.getAxes().convertCData(image.CData.getMatrix(), image.CDataMapping.getValue());
-				texData = makeTexture2D(c.toDouble(), m, n, texDims);
-				format = GL.GL_FLOAT;
-			}
-
-			int[] t = new int[1];
-			gl.glGenTextures(1, t, 0);
-			gl.glBindTexture(GL.GL_TEXTURE_2D, t[0]);
-			gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, 4,
-					texDims[1], texDims[0], 0, GL.GL_RGBA, format, texData);
-			gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-			gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
-			d = new ImageData(t[0], texDims[1], texDims[0], n, m);
-			image.setCachedData(d);
+				image.setCachedData(d);
 		}
-		else
-			gl.glBindTexture(GL.GL_TEXTURE_2D, d.texID);
+		gl.glBindTexture(GL.GL_TEXTURE_2D, d.texID);
 
-		double tx = ((double)d.w)/d.texW;
-		double ty = ((double)d.h)/d.texH;
+		double tx = d.tCoordX;
+		double ty = d.tCoordY;
 		double px = (d.w > 1 ? (x[1]-x[0])/(d.w-1) : 1);
 		double py = (d.h > 1 ? (y[1]-y[0])/(d.h-1) : 1);
 		double x1 = sx.scale(x[0]-px/2), x2 = sx.scale((d.w > 1 ? x[1]+px/2 : x[0]+px/2));

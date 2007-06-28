@@ -56,10 +56,10 @@ public class SurfaceObject extends GraphicObject
 		XData = new ArrayProperty(this, "XData", xdata, new String[] {"double"}, 2);
 		YData = new ArrayProperty(this, "YData", ydata, new String[] {"double"}, 2);
 		ZData = new ArrayProperty(this, "ZData", zdata, new String[] {"double"}, 2);
-		CData = new ArrayProperty(this, "CData", zdata, new String[] {"double"}, -1);
+		CData = new ArrayProperty(this, "CData", zdata, new String[] {"double", "byte"}, -1);
 		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"direct", "scaled"}, "scaled");
 		EdgeColor = new ColorProperty(this, "EdgeColor", Color.black, new String[] {"none", "flat", "interp"}, null);
-		FaceColor = new ColorProperty(this, "FaceColor", null, new String[] {"none", "flat", "interp"}, "flat");
+		FaceColor = new ColorProperty(this, "FaceColor", null, new String[] {"none", "flat", "interp", "texturemap"}, "flat");
 		AmbientStrength = new DoubleProperty(this, "AmbientStrength", 0.3);
 		DiffuseStrength = new DoubleProperty(this, "DiffuseStrength", 0.6);
 		SpecularStrength = new DoubleProperty(this, "SpecularStrength", 0.9);
@@ -80,6 +80,7 @@ public class SurfaceObject extends GraphicObject
 		listen(YData);
 		listen(ZData);
 		listen(CData);
+		listen(getAxes().getFigure().Colormap);
 	}
 
 	public void validate()
@@ -140,21 +141,8 @@ public class SurfaceObject extends GraphicObject
 
 	private void updateColorMinMax()
 	{
-		if (CData.getNDims() == 2)
-		{
-			double cmin, cmax;
-			double[][] c = CData.asDoubleMatrix();
-
-			cmin = c[0][0]; cmax = c[0][0];
-			for (int i=0; i<c.length; i++)
-				for (int j=0; j<c[i].length; j++)
-					if (c[i][j] < cmin) cmin = c[i][j];
-					else if (c[i][j] > cmax) cmax = c[i][j];
-
-			CLim.set(new double[] {cmin, cmax}, true);
-		}
-		else
-			CLim.set(new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}, true);
+		Matrix m = CData.getMatrix();
+		CLim.set(new double[] {m.minValue(), m.maxValue()}, true);
 	}
 
 	Matrix computeNormals()
@@ -270,5 +258,7 @@ public class SurfaceObject extends GraphicObject
 		}
 		else if (p == CData)
 			updateColorMinMax();
+		else if (p.getName().equalsIgnoreCase("colormap"))
+			setCachedData(null);
 	}
 }

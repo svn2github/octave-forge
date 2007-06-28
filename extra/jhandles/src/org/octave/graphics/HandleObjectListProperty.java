@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import java.util.*;
+import org.octave.Matrix;
 
 public class HandleObjectListProperty extends Property
 {
@@ -65,9 +66,10 @@ public class HandleObjectListProperty extends Property
 				throw new PropertyException("invalid handle value - " + h);
 			}
 		}
-		else if (cls.isArray() && cls.getComponentType().equals(Double.TYPE))
+		else if ((cls.isArray() && cls.getComponentType().equals(Double.TYPE)) ||
+			 (value instanceof Matrix && ((Matrix)value).getClassName().equals("double")))
 		{
-			double[] hv = (double[])value;
+			double[] hv = (value instanceof Matrix ? ((Matrix)value).toDouble() : (double[])value);
 			try
 			{
 				for (int i=0; i<hv.length; i++)

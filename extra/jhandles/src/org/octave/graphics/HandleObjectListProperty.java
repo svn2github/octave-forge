@@ -46,8 +46,12 @@ public class HandleObjectListProperty extends Property
 
 	protected Object convertValue(Object value) throws PropertyException
 	{
-		Class cls = value.getClass();
 		Vector v = new Vector();
+
+		if (value == null)
+			return v;
+
+		Class cls = value.getClass();
 
 		if (value instanceof Number)
 		{

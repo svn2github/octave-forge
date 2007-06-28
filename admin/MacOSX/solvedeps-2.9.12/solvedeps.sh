@@ -363,6 +363,7 @@ else
     --ppc)
       INSTDIR=${INSTDIR}-ppc
       ARCH="-arch ppc"
+      BUILDARCH="--host=powerpc-apple-darwin7.9.1"
       MACOSX_DEPLOYMENT_TARGET=10.3
 
       CC="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} gcc"
@@ -378,6 +379,7 @@ else
     --ia32)
       INSTDIR=${INSTDIR}-ia32
       ARCH=""
+      BUILDARCH=""
       MACOSX_DEPLOYMENT_TARGET=10.4
 
       CC="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} gcc"
@@ -400,7 +402,7 @@ else
   # CONFFLAGS="CC=\"${CC}\" CXX=\"${CXX}\" CPP=\"${CPP}\""
   CONFFLAGS="CFLAGS=\"${CFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\""
   CONFFLAGS="${CONFFLAGS} CXXFLAGS=\"${CXXFLAGS}\" LDFLAGS=\"${LDFLAGS}\""
-  CONFFLAGS="${CONFFLAGS} --prefix=${INSTDIR}"
+  CONFFLAGS="${CONFFLAGS} --prefix=${INSTDIR} ${BUILDARCH}"
 
   MAKE="make"
   export PATH="${INSTDIR}/bin:${PATH}"

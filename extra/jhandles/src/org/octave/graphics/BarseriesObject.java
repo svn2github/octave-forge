@@ -23,6 +23,7 @@ package org.octave.graphics;
 
 import java.util.*;
 import java.awt.*;
+import org.octave.Matrix;
 
 public class BarseriesObject extends GroupObject
 {
@@ -166,9 +167,9 @@ public class BarseriesObject extends GroupObject
 				}
 
 				patch.Vertices.set(null, true); /* just in case, to avoid computing normals in PatchObject */
-				patch.Faces.set(f, true);
-				patch.Vertices.set(v, true);
-				patch.FaceVertexCData.set(fvc, true);
+				patch.Faces.set(new Matrix(f), true);
+				patch.Vertices.set(new Matrix(v), true);
+				patch.FaceVertexCData.set(new Matrix(fvc, new int[] {fvc.length, 1}), true);
 				/* TODO: needed?
 				if (doValidate)
 					patch.validate();
@@ -226,9 +227,9 @@ public class BarseriesObject extends GroupObject
 				}
 
 				patch.Vertices.set(null, true); /* just in case, to avoid computing normals in PatchObject */
-				patch.Faces.set(f, true);
-				patch.Vertices.set(v, true);
-				patch.FaceVertexCData.set(fvc, true);
+				patch.Faces.set(new Matrix(f), true);
+				patch.Vertices.set(new Matrix(v), true);
+				patch.FaceVertexCData.set(new Matrix(fvc, new int[] {fvc.length, 1}), true);
 				/* TODO: needed?
 				if (doValidate)
 					patch.validate();

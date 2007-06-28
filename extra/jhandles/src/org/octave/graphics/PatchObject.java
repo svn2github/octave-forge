@@ -220,7 +220,7 @@ public class PatchObject extends GraphicObject
 		double[][] f = Faces.asDoubleMatrix();
 		double[][] v = Vertices.asDoubleMatrix();
 
-		if (f == null || v == null)
+		if (f == null || v == null || f.length == 0 || v.length == 0)
 			return null;
 
 		int nv = v.length;

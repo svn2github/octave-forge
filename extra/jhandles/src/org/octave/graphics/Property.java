@@ -191,7 +191,10 @@ public abstract class Property implements HandleNotifier.Source
 		catch (PropertyException e)
 		{
 			if (warn_on_exception)
+			{
 				System.out.println("WARNING: " + getName() + ".set: exception occured");
+				e.printStackTrace();
+			}
 		}
 	}
 

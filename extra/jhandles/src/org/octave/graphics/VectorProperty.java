@@ -80,7 +80,7 @@ public class VectorProperty extends Property
 			if (fixedSize == -1 || fixedSize == v.length)
 				return new Matrix(v);
 			else
-				throw new PropertyException("invaild vector length - " + value.toString());
+				throw new PropertyException("invalid vector length (" + v.length + ") - " + value.toString());
 		}
 		catch (ClassCastException e)
 		{

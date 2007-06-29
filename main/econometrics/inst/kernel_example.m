@@ -15,6 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 # kernel_example: examples of how to use kernel density and regression functions
+# requires the optim and plot packages from Octave Forge
 #
 # usage: kernel_example;
 

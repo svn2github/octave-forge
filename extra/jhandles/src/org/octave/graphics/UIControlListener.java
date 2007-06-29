@@ -23,38 +23,7 @@ package org.octave.graphics;
 
 import java.awt.*;
 
-public class FigureLayout implements LayoutManager
+public interface UIControlListener
 {
-	public FigureLayout()
-	{
-	}
-
-	/* LayoutManager interface */
-
-	public void addLayoutComponent(String name, Component comp) {}
-
-	public void layoutContainer(Container parent)
-	{
-		Component glComp = parent.getComponent(parent.getComponentCount()-1);
-		Insets ir = parent.getInsets();
-		Rectangle r = parent.getBounds();
-
-		glComp.setBounds(ir.left, ir.top, r.width-ir.left-ir.right, r.height-ir.top-ir.bottom);
-		/*
-		for (int i=parent.getComponentCount()-2; i>=0; i--)
-			parent.getComponent(i).setLocation(ir.left, ir.top);
-			*/
-	}
-
-	public Dimension minimumLayoutSize(Container parent)
-	{
-		return new Dimension(100, 100);
-	}
-
-	public Dimension preferredLayoutSize(Container parent)
-	{
-		return new Dimension(500, 400);
-	}
-
-	public void removeLayoutComponent(Component comp) {}
+	public void controlActivated(UIControlEvent event);
 }

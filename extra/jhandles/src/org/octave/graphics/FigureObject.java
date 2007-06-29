@@ -263,6 +263,11 @@ public class FigureObject extends HandleObject
 			updateTitle();
 	}
 
+	public Component getComponent()
+	{
+		return axPanel;
+	}
+
 
 	// WindowListener interface
 	

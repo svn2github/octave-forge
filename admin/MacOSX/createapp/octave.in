@@ -17,18 +17,16 @@
 
 # Checks if Octave is started from a file that is a link or if this
 # file has been taken directly to startup the Octave program.
-LINK=`readlink ${0}`
-if [ -z ${LINK} ]; then
-  THIS=`cd . 2>/dev/null && pwd`
+LINK="`readlink ${0}`"
+if [ -z "${LINK}" ]; then
   BASE="${0%/bin/octave}"
-  ROOT=`cd ${BASE} 2>/dev/null && pwd`
-  cd ${THIS}
 else
-  THIS=`cd . 2>/dev/null && pwd`
-  BASE=${LINK%/bin/octave} # `dirname ${0}`/${LINK%/bin/octave}
-  ROOT=`cd ${BASE} 2>/dev/null && pwd`
-  cd ${THIS}
-fi # echo "BASE: ${BASE} --- ROOT: ${ROOT}"; exit
+  BASE="${LINK%/bin/octave}"    #   `dirname ${0}`/${LINK%/bin/octave}
+fi 
+THIS="`cd . 2>/dev/null && pwd`"
+ROOT="`cd "${BASE}" 2>/dev/null && pwd`"
+cd "${THIS}"
+# echo "BASE: ${BASE} --- ROOT: ${ROOT}"; exit
 
 # Setting up various path information variables that are needed to
 # startup the Octave program.
@@ -39,11 +37,11 @@ DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
 
 # Setting up various path information variables that are needed to run
 # the "mkoctfile" and "mex" commands from within the Octave program.
-CFLAGS="-I${ROOT}/include -I${ROOT}/include/octave-%VERSION% -arch %ARCH%"
-CFLAGS="${CFLAGS} -I${ROOT}/include/curl -I${ROOT}/include/readline"
-CPPFLAGS=${CFLAGS}
-CXXFLAGS=${CXXFLAGS}
-LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% -arch %ARCH%"
+CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%' -arch %ARCH%"
+CFLAGS="${CFLAGS} -I'${ROOT}/include/curl' -I'${ROOT}/include/readline'"
+CPPFLAGS="${CFLAGS}"
+CXXFLAGS="${CXXFLAGS}"
+LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
 
 # Export the variables that have been defined before so that the
 # Octave program gets knowledge about them.

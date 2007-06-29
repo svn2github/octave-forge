@@ -45,10 +45,10 @@ Permission is granted to copy, distribute and/or modify this document under the 
 @end ifnottex
 
 @menu
-* Introduction::                An introduction about Octave, Octave.app @dots{}
-* Requirements::                A description about the requirements on your Mac @dots{}
-* Installation::                A description about how to set up Octave.app @dots{}
-* Limitations::                 A description about known limitations of Octave.app @dots{}
+* Introduction::                A brief description of Octave, Octave.app @dots{}
+* Requirements::                What you need to run Octave on your Mac @dots{}
+* Installation::                How to install Octave on your Mac @dots{}
+* Limitations::                 Known issues with this release @dots{}
 * FAQs::                        Some answers to frequently asked questions @dots{}
 @end menu
 
@@ -66,8 +66,8 @@ If you want to further install Octave packages from the Octave--Forge's website 
 
 @node  Installation, Limitations, Requirements, Top
 @chapter Installation
-Installing Octave.app is one of the most easiest things that need to be done. Just drag the Octave.app icon from the @file{octave-%VERSION%-%ARCH%.dmg} to another place of your filesystem (eg. to your desktop or even better to your applications folder) and that's it, you're done. Double--click the Octave.app to start up Octave. @* @*
-There are not installed any further files somewhere in your filesystem. Removing your Octave.app can as easily be done as the installation. Just drag the Octave.app to your Trash and the application is removed. If you're new to Octave then you may have a look at the documents that come with your Octave. These @file{*.pdf} files are installed in the docs folder of your @file{octave-%VERSION%-%ARCH%.dmg} file.
+Installing Octave.app is easy. Just drag the Octave.app icon from the @file{octave-%VERSION%-%ARCH%.dmg} to another place of your filesystem (eg. to your desktop or even better to your applications folder) and that's it, you're done. Double--click the Octave.app to start up Octave. @* @*
+This does not install any files elsewhere in your filesystem. To remove it, just drag the Octave.app icon to the Trash. If you're new to Octave then have a look at the documents that comes with the application.  These @file{*.pdf} files are installed in the docs folder of your @file{octave-%VERSION%-%ARCH%.dmg} file.
 
 @node  Limitations, FAQs, Installation, Top
 @chapter Limitations
@@ -83,7 +83,7 @@ Some of Octave--Forge's packages cannot be installed because of the reason of a 
 @item Main repository: Optiminterp
 @item Nonfree packages: Splines
 @end itemize
-If you want to find out more information why the installation of a specific package may fail use the command @command{pkg -v <package.tar.gz>} that runs the @command{pkg} command in verbose mode. @* @*
+If you want to find out more information why the installation fails for a specific package, use the command @command{pkg -v <package.tar.gz>} to build the package in verbose mode. @* @*
 
 @item @b{No spaces in the pathname before octave.app.} @*
 Do not install Octave.app in a place of your filesystem including spaces in the pathname before Octave.app. Valid destinations eg. are @file{/Application/Octave.app} or @file{/Users/Me/Desktop/Octave.app}. Not valid destinations including spaces in the pathname eg. are @file{/Applications/Other Apps/Desktop/Octave.app} and @file{/Users/My Home/Desktop/Octave.app}. If you set up Octave.app with a not valid pathname then this might result in different errors at startup or when running the Octave application that cannot be reproduced.
@@ -95,7 +95,7 @@ Do not install Octave.app in a place of your filesystem including spaces in the 
 
 @itemize @bullet
 @item @b{Is there a 64--bit version of Octave.app available?} @*
-There is no 64--bit version of Octave.app available and it is not planed to build one. If you'd like to install a 64--bit version of Octave then you need to set up one for your own. A good starting point for creating such a binary would be @uref{http://wiki.octave.org/wiki.pl?OctaveForMac}. @* @*
+There is no 64--bit version of Octave.app available.  A good starting point for building your own is @uref{http://wiki.octave.org/wiki.pl?OctaveForMac}. Please consider adapting the Octave.app build scripts at @uref{http://octave.sourceforge.net} in the @file{admin/MacOSX} directory so that we can easily build an release for 64-bit platforms as well. @* @*
 
 @item @b{How can I startup Octave.app?} @*
 After Octave.app has been placed to your desktop or to your applications folder or anywhere else in your filesystem tree you can double--click the Octave.app icon. This opens a new Terminal.app window and starts Octave in this new Terminal.app. Another way to open the Octave.app is to use the command @command{open} on the command line. If you installed Octave.app in your applications folder then a one time startup might look like eg.
@@ -115,7 +115,7 @@ A modified startup script has been placed into the Octave.app that can be used t
 @example
 bash ~$ /Applications/Octave.app/Contents/Resources/bin/octave
 @end example
-Trying to startup @command{octave-%VERSION%} will not be working because there are set up some environmental variables with the command @command{octave} for you that are not be set if you startup @command{octave-%VERSION%} directly. Another way to use Octave from the command line is to set up a link to the Octave startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
+Another way to use Octave from the command line is to set up a link to the Octave startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
 @example
 bash ~$ sudo ln -s /usr/bin/octave /Applications/Octave.app/Contents/Resources/bin/octave
 bash ~$ octave
@@ -126,7 +126,7 @@ A modified startup script has been placed into the Octave.app that can be used t
 @example
 bash ~$ /Applications/Octave.app/Contents/Resources/bin/mkoctfile <file.cc>
 @end example
-Trying to use @command{mkoctfile-%VERSION%} will not be working because there are set up some environmental variables for you with the command @command{mkoctfile} that are not be set if you try to use @command{mkoctfile-%VERSION%} directly. Another way to use the command @command{mkoctfile} from the command line is to set up a link to the @command{mkoctfile} startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
+Another way to use the command @command{mkoctfile} from the command line is to set up a link to the @command{mkoctfile} startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
 @example
 bash ~$ sudo ln -s /usr/bin/mkoctfile /Applications/Octave.app/Contents/Resources/bin/mkoctfile
 bash ~$ mkoctfile <file.cc>

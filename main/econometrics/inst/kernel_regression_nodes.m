@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Michael Creel <michael.creel@uab.es>
+# Copyright (C) 2006, 2007  Michael Creel <michael.creel@uab.es>
 # under the terms of the GNU General Public License.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-# Kernel regression, parallel version: do calculations on nodes
+# kernel_regression_nodes: for internal use by kernel_regression - does calculations on nodes
 
 function z = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_per_node, nslaves, debug)
 
@@ -40,19 +40,14 @@ function z = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_pe
 
 	y = data(:,1);
 	data = data(:,2:columns(data));
+	W = __kernel_weights(data, myeval, kernel);
 
-	# calculate distances
-	# note to self: loop is as fast as double kronecker with
-	# reshape. Also, simpler and safe in terms of memory.
-	z = zeros(nn,1);
-	for i = 1:nn
-		zz = data - kron(myeval(i,:), ones(n,1));
-		zz = feval(kernel, zz);
-		if (do_cv) zz(i,:) = 0; endif
-		temp = sum(zz);
-		if (temp > 0) zz = zz / temp; endif
-		z(i,:) = zz'*y;
-	endfor
+	# drop own weight for CV
+	if (do_cv) W = W - diag(diag(W)); endif
+
+
+	W = W ./ (eps + repmat(sum(W,2),1,n)); # add eps to denominator to avoid crashes
+	z = W*y;
 
 	if debug
 		printf("z on node %d: \n", myrank);

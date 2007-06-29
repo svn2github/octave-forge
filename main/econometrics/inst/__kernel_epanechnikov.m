@@ -32,5 +32,6 @@ function z = __kernel_epanechnikov(z)
 	# compute kernel
 	z  =  sumsq(z, 2);
 	z = ((1/2) / c * (K + 2) * (1 - z)) .* (z < 1);
+	z = z + eps; # avoid possible divide by zero in kernel regression
 
 endfunction

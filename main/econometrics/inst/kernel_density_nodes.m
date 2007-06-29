@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Michael Creel <michael.creel@uab.es>
+# Copyright (C) 2006, 2007  Michael Creel <michael.creel@uab.es>
 # under the terms of the GNU General Public License.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-# Kernel density, parallel version: do calculations on nodes
+# kernel_density_nodes: for internal use by kernel_density - does calculations on nodes
 
 function z = kernel_density_nodes(eval_points, data, do_cv, kernel, points_per_node, nslaves, debug)
 
@@ -38,18 +38,13 @@ function z = kernel_density_nodes(eval_points, data, do_cv, kernel, points_per_n
 	nn = rows(myeval);
 	n = rows(data);
 
-	# calculate distances
-	# note to self: loop is as fast as double kronecker with
-	# reshape. Also, simpler and safe in terms of memory.
-	z = zeros(nn,1);
-	for i = 1:nn
-		zz = data - kron(myeval(i,:), ones(n,1));
-		zz = feval(kernel, zz);
-		z(i) = sum(zz);
-		if (do_cv) z(i) = z(i) - zz(i); endif
-	endfor
-
-	if (do_cv) z = z / (n-1); else 	z = z/n; endif
+	W = __kernel_weights(data, myeval, kernel);
+	if (do_cv)
+		W = W - diag(diag(W));
+		z = sum(W,2) / (n-1);
+	else
+		z = sum(W,2) / n;
+	endif
 
 	if debug
 		printf("z on node %d: \n", myrank);

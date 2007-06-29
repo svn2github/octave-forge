@@ -17,15 +17,13 @@
 
 # Checks if Octave is started from a file that is a link or if this
 # file has been taken directly to startup the Octave program.
-LINK="`readlink ${0}`"
+LINK=`readlink "${0}"`
 if [ -z "${LINK}" ]; then
   BASE="${0%/bin/octave}"
 else
   BASE="${LINK%/bin/octave}"    #   `dirname ${0}`/${LINK%/bin/octave}
 fi 
-THIS="`cd . 2>/dev/null && pwd`"
-ROOT="`cd "${BASE}" 2>/dev/null && pwd`"
-cd "${THIS}"
+ROOT=`(cd "${BASE}" 2>/dev/null && pwd)`
 # echo "BASE: ${BASE} --- ROOT: ${ROOT}"; exit
 
 # Setting up various path information variables that are needed to

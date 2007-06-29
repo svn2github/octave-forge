@@ -17,18 +17,14 @@
 
 # Checks if mkoctfile is started from a file that is a link or if this
 # file has been taken directly to startup the mkoctfile program.
-LINK=`readlink ${0}`
+LINK=`readlink "${0}"`
 if [ -z ${LINK} ]; then
-  THIS=`cd . 2>/dev/null && pwd`
   BASE="${0%/bin/mkoctfile}"
-  ROOT=`cd ${BASE} 2>/dev/null && pwd`
-  cd ${THIS}
 else
-  THIS=`cd . 2>/dev/null && pwd`
   BASE=${LINK%/bin/mkoctfile} # `dirname ${0}`/${LINK%/bin/mkoctfile}
-  ROOT=`cd ${BASE} 2>/dev/null && pwd`
-  cd ${THIS}
 fi # echo "BASE: ${BASE} --- ROOT: ${ROOT}"; exit
+ROOT=`(cd "${BASE}" 2>/dev/null && pwd)`
+
 
 # Setting up various path information variables that are needed to run
 # the "mkoctfile" command from the command line.
@@ -39,11 +35,11 @@ DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
 
 # Setting up various path information variables that are needed to run
 # the "mkoctfile" command from the command line.
-CFLAGS="-I${ROOT}/include -I${ROOT}/include/octave-%VERSION% -arch %ARCH%"
-CFLAGS="${CFLAGS} -I${ROOT}/include/curl -I${ROOT}/include/readline"
-CPPFLAGS=${CFLAGS}
-CXXFLAGS=${CXXFLAGS}
-LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% -arch %ARCH%"
+CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%' -arch %ARCH%"
+CFLAGS="${CFLAGS} -I'${ROOT}/include/curl' -I'${ROOT}/include/readline'"
+CPPFLAGS="${CFLAGS}"
+CXXFLAGS="${CXXFLAGS}"
+LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
 
 # Export the variables that have been defined before so that the
 # mkoctfile program gets knowledge about them.

@@ -83,7 +83,7 @@ Some of Octave--Forge's packages cannot be installed because of the reason of a 
 @item Main repository: Optiminterp
 @item Nonfree packages: Splines
 @end itemize
-If you want to find out more information why the installation fails for a specific package, use the command @command{pkg -v <package.tar.gz>} to build the package in verbose mode. @* @*
+If you want to find out more information why the installation fails for a specific package, use the command @command{pkg -v install <package.tar.gz>} to build the package in verbose mode. @* @*
 
 @item @b{No spaces in the pathname before octave.app.} @*
 Do not install Octave.app in a place of your filesystem including spaces in the pathname before Octave.app. Valid destinations eg. are @file{/Application/Octave.app} or @file{/Users/Me/Desktop/Octave.app}. Not valid destinations including spaces in the pathname eg. are @file{/Applications/Other Apps/Desktop/Octave.app} and @file{/Users/My Home/Desktop/Octave.app}. If you set up Octave.app with a not valid pathname then this might result in different errors at startup or when running the Octave application that cannot be reproduced.

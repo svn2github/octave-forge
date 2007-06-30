@@ -31,6 +31,9 @@ INSTDIR=/tmp/dependencies
 
 F2CPACK=http://www.llnl.gov/casc/Overture/henshaw/software/f2c.tar.gz
 F2CDIFF=./f2c.diff
+# You can try to set up gfortran instead of f2c but it is very
+# difficult to do that. A good starting point for this would be
+# eg. http://gcc.gnu.org/wiki/GFortranBinariesMacOS.
 
 READLINEPACK=http://ftp.gnu.org/pub/gnu/readline/readline-5.2.tar.gz
 

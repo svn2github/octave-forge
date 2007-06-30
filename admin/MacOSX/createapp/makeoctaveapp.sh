@@ -20,22 +20,28 @@
 # read/write permission for installing packages with octave's 'pkg'
 # command.
 
+# This is the binary of octave that has been created. The absolute
+# path and the version number need to be given.
+OCTBIN=/tmp/dependencies-ppc/bin/octave-2.9.12
 
-OCTBIN=/tmp/dependencies-ia32/bin/octave-2.9.12
-
-# This is the temporary directory that is used for installing Octave
-# and its libraries that depend on the octave.app.
+# This is the temporary directory that is used for copying Octave and
+# its libraries that depend on the octave.app.
 TEMPDIR=/tmp/TEMPDIR
 
-DEPSDIR=/tmp/dependencies-ia32
+# This is the directory where all the dependencies have been
+# installed. Make sure that there are no other files in this directory
+# that are not needed.
+DEPSDIR=/tmp/dependencies-ppc
 
-PDFDOCS=/Users/Thomas/tmp/oct10.3/octave-2.9.12/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
-#PDFDOCS=/Users/Thomas/tmp/octaveapp/octave-2.9.12/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf}
+# These are the files that are copied into the docs directory of the
+# octave-VERSION-ARCH.dmg file. The files that are needed are
+# Octave-FAQ.pdf, octave.pdf, liboctave.pdf, refcard-a4.pdf,
+# refcard-legal.pdf and refcard-letter.pdf.
+PDFDOCS=/Users/Thomas/tmp/ppc/solvedeps-2.9.12/octave-2.9.12/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
 
-#http://gcc.gnu.org/wiki/GFortranBinariesMacOS
-
-# This is the temporary directory that is used for installing all files
-# and libraries that are then packed into the octave-VERSION.dmg file.
+# This is the temporary directory that is used for installing all
+# files and libraries that are then packed into the
+# octave-VERSION-ARCH.dmg file.
 DMGDIR=/tmp/dmgdirectory
 
 # This file can be taken to redirect the output of stdout and stderr to

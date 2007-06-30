@@ -350,7 +350,6 @@ create_octave() {
 
   echo "solvedeps.sh: Configuring ${voctavefile} ..."
   evalfailexit "./configure ${1} --enable-shared --with-f2c"
-exit
   echo "solvedeps.sh: Making ${voctavefile} ..."
   evalfailexit "${MAKE}"
   echo "solvedeps.sh: Make install ${voctavefile} ..."

@@ -135,7 +135,7 @@ bash ~$ mkoctfile <file.cc>
 @item @b{Do I have to rebuild installed packages if I move Octave.app to another place?} @*
 We did some tests and it seems that you don't need to rebuild packages if you move Octave.app to another place. If you find out that this doesn't work then please report. If you install another version of Octave.app then yes, you need to rebuild all installed packages. For this have a look at the help page of the @command{pkg} command, typing
 @example
-octave-2.9.12:1> help pkg
+octave-%VERSION%:1> help pkg
 @end example
 
 @end itemize

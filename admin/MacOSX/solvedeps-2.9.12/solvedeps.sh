@@ -25,7 +25,7 @@
 MSGFILE=/dev/stdout #/tmp/message.log # /dev/stdout
 
 # This is the name of the directory where all dependencies are
-# installed. The string "-ppc" or "-ia32" is added to the end of the
+# installed. The string "-ppc" or "-i386" is added to the end of the
 # given pathname, eg. /tmp/abc becomes /tmp/abc-pcc etc.
 INSTDIR=/tmp/dependencies
 
@@ -379,8 +379,8 @@ else
       LDFLAGS="${ARCH} -Wl,-headerpad_max_install_names,-syslibroot,/Developer/SDKs/MacOSX10.3.9.sdk -L${INSTDIR}/lib"
       ;;
 
-    --ia32)
-      INSTDIR=${INSTDIR}-ia32
+    --i386)
+      INSTDIR=${INSTDIR}-i386
       ARCH=""
       BUILDARCH=""
       MACOSX_DEPLOYMENT_TARGET=10.4

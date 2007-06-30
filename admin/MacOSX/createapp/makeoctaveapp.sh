@@ -89,7 +89,7 @@ solvedeps() {
 
 # This is the main bash routine
 if [ $# -ne 1 ]; then
-  echo "Usage: makeoctaveapp.sh --ppc|--ia32"
+  echo "Usage: makeoctaveapp.sh --ppc|--i386"
   exit 1
 else
 
@@ -101,8 +101,8 @@ else
     --ppc)
       ARCH="ppc"
       ;;
-    --ia32)
-      ARCH="ia32"
+    --i386)
+      ARCH="i386"
       ;;
     *)
       echo "makeoctaveapp.sh: Unknown option ${1}"

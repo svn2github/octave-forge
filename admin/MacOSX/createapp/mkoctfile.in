@@ -40,6 +40,7 @@ CFLAGS="${CFLAGS} -I'${ROOT}/include/curl' -I'${ROOT}/include/readline'"
 CPPFLAGS="${CFLAGS}"
 CXXFLAGS="${CXXFLAGS}"
 LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
+DL_LDFLAGS="-bundle -bundle_loader '${ROOT}/bin/octave-%VERSION%'"
 
 # Export the variables that have been defined before so that the
 # mkoctfile program gets knowledge about them.

@@ -114,6 +114,10 @@ else
   evalfailexit "if [ ! -d ${TEMPDIR} ]; then mkdir ${TEMPDIR}; fi"
   evalfailexit "rm -rf ${TEMPDIR}/*"
 
+  echo "makeoctaveapp.sh: Creating Readme.html.in file from octaveapp.texi ..."
+  evalfailexit "export LANG=en"
+  evalfailexit "makeinfo --html --no-split octaveapp.texi -o Readme.html.in"
+
   echo "makeoctaveapp.sh: Collecting Octave files ..."
   evalfailexit "install -d ${TEMPDIR}{,/bin,/include,/info,/lib,/libexec,/man,/man/man1,/share}"
   evalfailexit "cp -R -P -vp ${PREFIX}/bin/{mkoctfile,octave,octave-bug,octave-config}-${VERSION} ${TEMPDIR}/bin"

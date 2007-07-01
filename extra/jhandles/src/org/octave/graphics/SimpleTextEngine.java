@@ -47,7 +47,7 @@ class SimpleTextEngine
 				switch (buffer.charAt(start))
 				{
 				case '{': depth++; break;
-				case '}': depth--; if (depth == 0) return start;
+				case '}': depth--; if (depth == 0) return start; break;
 				default: break;
 				}
 				start++;

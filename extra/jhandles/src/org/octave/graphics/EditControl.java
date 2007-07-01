@@ -24,16 +24,13 @@ package org.octave.graphics;
 import java.awt.*;
 import java.awt.event.*;
 import org.octave.Matrix;
-import javax.swing.*;
 
-public class PushButtonControl
-	extends Button
-	implements UIControl, ActionListener, HandleNotifier.Sink
+public class EditControl extends TextField implements UIControl, ActionListener, HandleNotifier.Sink
 {
 	UIControlObject uiObj;
 	HandleNotifier n;
 
-	public PushButtonControl(UIControlObject obj)
+	public EditControl(UIControlObject obj)
 	{
 		super();
 		addActionListener(this);
@@ -41,8 +38,8 @@ public class PushButtonControl
 
 		Container parent = (Container)obj.getParentComponent();
 		double[] pos = uiObj.getPosition();
-
-		setLabel(uiObj.UIString.toString());
+		
+		setText(uiObj.UIString.toString());
 		setBackground(uiObj.BackgroundColor.getColor());
 		setForeground(uiObj.ForegroundColor.getColor());
 		pos[1] = (uiObj.getParentComponent().getHeight()-pos[1]-pos[3]);
@@ -51,7 +48,7 @@ public class PushButtonControl
 		n = new HandleNotifier();
 		n.addSink(this);
 		n.addSource(uiObj.UIString);
-		
+
 		parent.add(this, 0);
 		parent.validate();
 	}
@@ -60,8 +57,12 @@ public class PushButtonControl
 
 	public void update(int mode)
 	{
+		if ((mode & UPDATE_OBJECT) != 0)
+		{
+			uiObj.UIString.reset(getText());
+		}
 	}
-	
+
 	public Component getComponent()
 	{
 		return this;
@@ -83,12 +84,12 @@ public class PushButtonControl
 	/* HandleNotifier.Sink interface */
 
 	public void addNotifier(HandleNotifier n) {}
-	
+
 	public void removeNotifier(HandleNotifier n) {}
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
 		if (p == uiObj.UIString)
-			setLabel(uiObj.UIString.toString());
+			setText(uiObj.UIString.toString());
 	}
 }

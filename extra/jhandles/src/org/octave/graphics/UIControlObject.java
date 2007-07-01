@@ -23,8 +23,9 @@ package org.octave.graphics;
 
 import org.octave.Matrix;
 import java.awt.*;
+import java.awt.font.TextAttribute;
 
-public class UIControlObject extends HandleObject implements UIControlListener
+public class UIControlObject extends HandleObject
 {
 	private UIControl ctrl;
 	private String currentUnits;
@@ -34,13 +35,21 @@ public class UIControlObject extends HandleObject implements UIControlListener
 	CallbackProperty Callback;
 	RadioProperty Enable;
 	VectorProperty Extent;
+	RadioProperty FontAngle;
+	StringProperty FontName;
+	DoubleProperty FontSize;
+	RadioProperty FontUnits;
+	RadioProperty FontWeight;
 	ColorProperty ForegroundColor;
 	RadioProperty HorizontalAlignment;
+	DoubleProperty ListboxTop;
 	DoubleProperty Min;
 	DoubleProperty Max;
 	VectorProperty Position;
+	VectorProperty SliderStep;
 	StringProperty UIString;
 	RadioProperty Style;
+	StringProperty TooltipString;
 	RadioProperty Units;
 	VectorProperty Value;
 
@@ -52,12 +61,20 @@ public class UIControlObject extends HandleObject implements UIControlListener
 		Callback = new CallbackProperty(this, "Callback", (String)null);
 		Enable = new RadioProperty(this, "Enable", new String[] {"on", "inactive", "off"}, "on");
 		Extent = new VectorProperty(this, "Extent", new double[] {0, 0, 0, 0}, 4);
+		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
+		FontName = new StringProperty(this, "FontName", "Helvetica");
+		FontSize = new DoubleProperty(this, "FontSize", 12);
+		FontUnits = new RadioProperty(this, "FontUnits",
+			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
+		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
 		ForegroundColor = new ColorProperty(this, "ForegroundColor", Color.black);
 		HorizontalAlignment = new RadioProperty(this, "HorizontalAlignment", new String[] {"left", "center", "right"}, "center");
+		ListboxTop = new DoubleProperty(this, "ListboxTop", 1);
 		Min = new DoubleProperty(this, "Min", 0);
 		Max = new DoubleProperty(this, "Max", 1);
 		Position = new VectorProperty(this, "Position", new double[] {10, 10, 80, 25}, 4);
 		UIString = new StringProperty(this, "String", "");
+		SliderStep = new VectorProperty(this, "SliderStep", new double[] {0.01, 0.10}, 2);
 		Style = new RadioProperty(this, "Style", new String[] {
 			  "pushbutton",
 			  "togglebutton",
@@ -69,11 +86,17 @@ public class UIControlObject extends HandleObject implements UIControlListener
 			  "frame",
 			  "listbox",
 			  "popupmenu"}, "pushbutton");
+		TooltipString = new StringProperty(this, "TooltipString", "");
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized"}, "pixels");
 		Value = new VectorProperty(this, "Vector", new double[] {0}, -1);
 
 		listen(BackgroundColor);
 		listen(Enable);
+		listen(FontAngle);
+		listen(FontName);
+		listen(FontSize);
+		listen(FontUnits);
+		listen(FontWeight);
 		listen(ForegroundColor);
 		listen(HorizontalAlignment);
 		listen(Position);
@@ -101,23 +124,52 @@ public class UIControlObject extends HandleObject implements UIControlListener
 	{
 		deleteComponent();
 		currentUnits = Units.getValue();
-		ctrl = makeControl(this);
-		if (ctrl != null)
-			ctrl.addControlListener(this);
+		ctrl = makeControl();
 		super.validate();
 	}
 
-	public UIControl makeControl(UIControlObject obj)
+	public Font getFont()
 	{
-		String style = obj.Style.toString();
+		java.util.Map map = new java.util.HashMap();
+
+		map.put(TextAttribute.FAMILY, FontName.toString());
+		map.put(TextAttribute.POSTURE,
+			FontAngle.is("normal") ? TextAttribute.POSTURE_REGULAR : TextAttribute.POSTURE_OBLIQUE);
+		map.put(TextAttribute.WEIGHT,
+			FontWeight.is("normal") ? TextAttribute.WEIGHT_REGULAR :
+			FontWeight.is("light") ? TextAttribute.WEIGHT_LIGHT :
+			FontWeight.is("demi") ? TextAttribute.WEIGHT_SEMIBOLD : TextAttribute.WEIGHT_BOLD);
+		map.put(TextAttribute.SIZE, new Float(FontSize.floatValue()));
+		
+		return new Font(map);
+	}
+
+	public UIControl makeControl()
+	{
+		String style = Style.toString();
+		UIControl ctrl = null;
 
 		if (style.equalsIgnoreCase("pushbutton"))
-			return new PushButtonControl(obj);
-		else
+			ctrl = new PushButtonControl(this);
+		else if (style.equalsIgnoreCase("edit"))
 		{
-			System.out.println("Warning: UI style not supported yet: " + style);
-			return null;
+			if ((Max.doubleValue()-Min.doubleValue()) <= 1.0)
+				ctrl = new EditControl(this);
+			else
+				ctrl = new Edit2Control(this);
 		}
+		
+		if (ctrl != null)
+		{
+			Component comp = ctrl.getComponent();
+			comp.setFont(getFont());
+			if (TooltipString.toString().length() > 0)
+				UITooltipManager.getInstance().add(comp, TooltipString.toString());
+			return ctrl;
+		}
+
+		System.out.println("Warning: UI style not supported yet: " + style);
+		return null;
 	}
 
 	public double[] convertPosition(double[] pos, String units, String toUnits)
@@ -198,15 +250,38 @@ public class UIControlObject extends HandleObject implements UIControlListener
 		}
 		else if (ctrl != null)
 		{
-			if (p == Units)
+			Component comp = ctrl.getComponent();
+
+			if (p == BackgroundColor)
+				comp.setBackground(BackgroundColor.getColor());
+			else if (p == ForegroundColor)
+				comp.setForeground(ForegroundColor.getColor());
+			else if (p == Position)
+			{
+				double[] pos = getPosition();
+				pos[1] = (comp.getParent().getHeight()-pos[1]-pos[3]);
+				comp.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+			}
+			else if (p == Units)
 			{
 				double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), currentUnits, Units.getValue());
 				Position.set(pos, true);
 				currentUnits = Units.getValue();
 			}
-			else
-				ctrl.update(this);
+			else if (p == FontAngle || p == FontSize || p == FontWeight || p == FontName)
+				comp.setFont(getFont());
+			else if (p == FontUnits)
+			{
+			}
+			
 		}
+	}
+
+	public Object get(Property p)
+	{
+		if (ctrl != null)
+			ctrl.update(UIControl.UPDATE_OBJECT);
+		return super.get(p);
 	}
 
 	/* UIControlListener interface */

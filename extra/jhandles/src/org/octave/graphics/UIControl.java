@@ -25,8 +25,11 @@ import java.awt.*;
 
 public interface UIControl
 {
-	public void update(UIControlObject o);
+	public static final int UPDATE_CONTROL = 1;
+	public static final int UPDATE_OBJECT = 2;
+	public static final int UPDATE_BOTH = 4;
+
+	public void update(int mode);
 	public Component getComponent();
-	public void addControlListener(UIControlListener l);
 	public void dispose();
 }

@@ -23,34 +23,17 @@ package org.octave.graphics;
 
 import java.awt.*;
 import java.awt.event.*;
-import org.octave.Matrix;
+import javax.swing.*;
 
-public class EditControl extends TextField implements UIControl, ActionListener, HandleNotifier.Sink
+public class EditControl extends JTextField implements UIControl, ActionListener
 {
 	UIControlObject uiObj;
-	HandleNotifier n;
 
 	public EditControl(UIControlObject obj)
 	{
 		super();
 		addActionListener(this);
 		uiObj = obj;
-
-		Container parent = (Container)obj.getParentComponent();
-		double[] pos = uiObj.getPosition();
-		
-		setText(uiObj.UIString.toString());
-		setBackground(uiObj.BackgroundColor.getColor());
-		setForeground(uiObj.ForegroundColor.getColor());
-		pos[1] = (uiObj.getParentComponent().getHeight()-pos[1]-pos[3]);
-		setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
-
-		n = new HandleNotifier();
-		n.addSink(this);
-		n.addSource(uiObj.UIString);
-
-		parent.add(this, 0);
-		parent.validate();
 	}
 
 	/* UIControl interface */
@@ -68,10 +51,19 @@ public class EditControl extends TextField implements UIControl, ActionListener,
 		return this;
 	}
 
-	public void dispose()
+	public void setString(String s)
 	{
-		getParent().remove(this);
-		n.removeSink(this);
+		setText(s);
+	}
+
+	public void setAlignment(int align)
+	{
+		setHorizontalAlignment(align);
+	}
+
+	public void setTooltip(String s)
+	{
+		setToolTipText(s);
 	}
 
 	/* ActionListener interface */
@@ -79,17 +71,5 @@ public class EditControl extends TextField implements UIControl, ActionListener,
 	public void actionPerformed(ActionEvent event)
 	{
 		uiObj.controlActivated(new UIControlEvent(this));
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			setText(uiObj.UIString.toString());
 	}
 }

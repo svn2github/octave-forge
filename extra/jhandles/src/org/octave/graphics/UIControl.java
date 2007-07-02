@@ -31,5 +31,7 @@ public interface UIControl
 
 	public void update(int mode);
 	public Component getComponent();
-	public void dispose();
+	public void setString(String s);
+	public void setAlignment(int align);
+	public void setTooltip(String s);
 }

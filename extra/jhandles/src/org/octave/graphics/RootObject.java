@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import java.util.*;
+import javax.swing.UIManager;
 
 public class RootObject extends HandleObject
 {
@@ -45,6 +46,14 @@ public class RootObject extends HandleObject
 		{
 			instance = new RootObject();
 			instance.validate();
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (Exception e)
+			{
+				System.out.println("Warning: unable to initialize Swing look and feel");
+			}
 		}
 		return instance;
 	}

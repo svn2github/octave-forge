@@ -23,35 +23,27 @@ package org.octave.graphics;
 
 import java.awt.*;
 import java.awt.event.*;
-import org.octave.Matrix;
+import javax.swing.*;
+import javax.swing.text.*;
 
-public class Edit2Control extends TextArea implements UIControl, KeyListener, HandleNotifier.Sink
+public class Edit2Control extends JScrollPane implements UIControl, KeyListener
 {
 	UIControlObject uiObj;
-	HandleNotifier n;
+	JTextPane text;
 
 	public Edit2Control(UIControlObject obj)
 	{
-		super();
-		addKeyListener(this);
+		super(new JTextPane());
+		text = (JTextPane)getViewport().getView();
+		text.addKeyListener(this);
 		uiObj = obj;
 
-		Container parent = (Container)obj.getParentComponent();
-		double[] pos = uiObj.getPosition();
-
-		setText(uiObj.UIString.toString());
-		setBackground(uiObj.BackgroundColor.getColor());
-		setForeground(uiObj.ForegroundColor.getColor());
-		pos[1] = (uiObj.getParentComponent().getHeight()-pos[1]-pos[3]);
-		setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
-
-		n = new HandleNotifier();
-		n.addSink(this);
-		n.addSource(uiObj.UIString);
-
-		parent.add(this, 0);
-		parent.validate();
+		setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	}
+
+	public void setFont(Font f) { super.setFont(f); if (text != null) text.setFont(f); }
+	public void setBackground(Color c) { super.setBackground(c); if (text != null) text.setBackground(c); }
+	public void setForeground(Color c) { super.setForeground(c); if (text != null) text.setForeground(c); }
 
 	/* UIControl interface */
 
@@ -59,7 +51,7 @@ public class Edit2Control extends TextArea implements UIControl, KeyListener, Ha
 	{
 		if ((mode & UPDATE_OBJECT) != 0)
 		{
-			uiObj.UIString.reset(getText());
+			uiObj.UIString.reset(text.getText());
 		}
 	}
 
@@ -68,10 +60,29 @@ public class Edit2Control extends TextArea implements UIControl, KeyListener, Ha
 		return this;
 	}
 
-	public void dispose()
+	public void setString(String s)
 	{
-		getParent().remove(this);
-		n.removeSink(this);
+		text.setText(s);
+	}
+
+	public void setAlignment(int align)
+	{
+		MutableAttributeSet s = new SimpleAttributeSet();
+		s.addAttribute(
+			StyleConstants.Alignment,
+			new Integer(
+				(align == JTextField.LEFT ? StyleConstants.ALIGN_LEFT :
+				 align == JTextField.CENTER ? StyleConstants.ALIGN_CENTER :
+				 align == JTextField.RIGHT ? StyleConstants.ALIGN_RIGHT :
+				 StyleConstants.ALIGN_LEFT)));
+		StyledDocument doc = text.getStyledDocument();
+
+		doc.setParagraphAttributes(0, doc.getLength()+1, s, false);
+	}
+
+	public void setTooltip(String s)
+	{
+		text.setToolTipText(s);
 	}
 
 	/* KeyListener interface */
@@ -86,17 +97,7 @@ public class Edit2Control extends TextArea implements UIControl, KeyListener, Ha
 	
 	public void keyTyped(KeyEvent event)
 	{
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			setText(uiObj.UIString.toString());
+		if (event.getKeyChar() == '\n' && event.getModifiers() == InputEvent.CTRL_MASK)
+			uiObj.controlActivated(new UIControlEvent(this));
 	}
 }

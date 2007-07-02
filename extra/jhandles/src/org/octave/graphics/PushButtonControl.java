@@ -27,33 +27,16 @@ import org.octave.Matrix;
 import javax.swing.*;
 
 public class PushButtonControl
-	extends Button
-	implements UIControl, ActionListener, HandleNotifier.Sink
+	extends JButton
+	implements UIControl, ActionListener
 {
 	UIControlObject uiObj;
-	HandleNotifier n;
 
 	public PushButtonControl(UIControlObject obj)
 	{
 		super();
 		addActionListener(this);
 		uiObj = obj;
-
-		Container parent = (Container)obj.getParentComponent();
-		double[] pos = uiObj.getPosition();
-
-		setLabel(uiObj.UIString.toString());
-		setBackground(uiObj.BackgroundColor.getColor());
-		setForeground(uiObj.ForegroundColor.getColor());
-		pos[1] = (uiObj.getParentComponent().getHeight()-pos[1]-pos[3]);
-		setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
-
-		n = new HandleNotifier();
-		n.addSink(this);
-		n.addSource(uiObj.UIString);
-		
-		parent.add(this, 0);
-		parent.validate();
 	}
 
 	/* UIControl interface */
@@ -67,10 +50,18 @@ public class PushButtonControl
 		return this;
 	}
 
-	public void dispose()
+	public void setString(String s)
 	{
-		getParent().remove(this);
-		n.removeSink(this);
+		setLabel(s);
+	}
+
+	public void setAlignment(int align)
+	{
+	}
+
+	public void setTooltip(String s)
+	{
+		setToolTipText(s);
 	}
 
 	/* ActionListener interface */
@@ -78,17 +69,5 @@ public class PushButtonControl
 	public void actionPerformed(ActionEvent event)
 	{
 		uiObj.controlActivated(new UIControlEvent(this));
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-	
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			setLabel(uiObj.UIString.toString());
 	}
 }

@@ -24,10 +24,11 @@ package org.octave.graphics;
 import org.octave.Matrix;
 import java.awt.*;
 import java.awt.font.TextAttribute;
+import javax.swing.JTextField;
 
 public class UIControlObject extends HandleObject
 {
-	private UIControl ctrl;
+	private UIControlAdapter ctrl;
 	private String currentUnits;
 
 	/* Properties */
@@ -144,27 +145,40 @@ public class UIControlObject extends HandleObject
 		return new Font(map);
 	}
 
-	public UIControl makeControl()
+	public UIControlAdapter makeControl()
 	{
+		deleteComponent();
+
 		String style = Style.toString();
-		UIControl ctrl = null;
 
 		if (style.equalsIgnoreCase("pushbutton"))
-			ctrl = new PushButtonControl(this);
+			ctrl = new UIControlAdapter(new PushButtonControl(this));
 		else if (style.equalsIgnoreCase("edit"))
 		{
 			if ((Max.doubleValue()-Min.doubleValue()) <= 1.0)
-				ctrl = new EditControl(this);
+				ctrl = new UIControlAdapter(new EditControl(this));
 			else
-				ctrl = new Edit2Control(this);
+				ctrl = new UIControlAdapter(new Edit2Control(this));
 		}
 		
 		if (ctrl != null)
 		{
-			Component comp = ctrl.getComponent();
-			comp.setFont(getFont());
+			ctrl.setFont(getFont());
+			ctrl.setBackground(BackgroundColor.getColor());
+			ctrl.setForeground(ForegroundColor.getColor());
+			ctrl.setString(UIString.toString());
+			ctrl.setPosition(getPosition());
+			ctrl.setAlignment(
+					HorizontalAlignment.is("left") ? JTextField.LEFT :
+					HorizontalAlignment.is("center") ? JTextField.CENTER :
+					HorizontalAlignment.is("right") ? JTextField.RIGHT : JTextField.LEFT);
 			if (TooltipString.toString().length() > 0)
-				UITooltipManager.getInstance().add(comp, TooltipString.toString());
+				ctrl.setTooltip(TooltipString.toString());
+			
+			Container pContainer = (Container)getParentComponent();
+			pContainer.add(ctrl, 0);
+			pContainer.validate();
+
 			return ctrl;
 		}
 
@@ -176,7 +190,7 @@ public class UIControlObject extends HandleObject
 	{
 		if (ctrl != null)
 		{
-			Dimension sz = getComponent().getSize();
+			Dimension sz = ctrl.getSize();
 			double[] p;
 
 			if (units.equalsIgnoreCase("pixels"))
@@ -210,8 +224,13 @@ public class UIControlObject extends HandleObject
 
 	public double[] getPosition()
 	{
-		if (Parent.size() > 0)
-			return Parent.elementAt(0).convertPosition(Position.getArray(), Units.getValue(), "pixels");
+		Component pComp = getParentComponent();
+		if (pComp != null)
+		{
+			double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), Units.getValue(), "pixels");
+			pos[1] = (pComp.getHeight()-pos[1]-pos[3]);
+			return pos;
+		}
 		else
 		{
 			System.out.println("Warning: cannot compute position of parentless controls");
@@ -250,18 +269,12 @@ public class UIControlObject extends HandleObject
 		}
 		else if (ctrl != null)
 		{
-			Component comp = ctrl.getComponent();
-
 			if (p == BackgroundColor)
-				comp.setBackground(BackgroundColor.getColor());
+				ctrl.setBackground(BackgroundColor.getColor());
 			else if (p == ForegroundColor)
-				comp.setForeground(ForegroundColor.getColor());
+				ctrl.setForeground(ForegroundColor.getColor());
 			else if (p == Position)
-			{
-				double[] pos = getPosition();
-				pos[1] = (comp.getParent().getHeight()-pos[1]-pos[3]);
-				comp.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
-			}
+				ctrl.setPosition(getPosition());
 			else if (p == Units)
 			{
 				double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), currentUnits, Units.getValue());
@@ -269,7 +282,14 @@ public class UIControlObject extends HandleObject
 				currentUnits = Units.getValue();
 			}
 			else if (p == FontAngle || p == FontSize || p == FontWeight || p == FontName)
-				comp.setFont(getFont());
+				ctrl.setFont(getFont());
+			else if (p == HorizontalAlignment)
+				ctrl.setAlignment(
+					HorizontalAlignment.is("left") ? JTextField.LEFT :
+					HorizontalAlignment.is("center") ? JTextField.CENTER :
+					HorizontalAlignment.is("right") ? JTextField.RIGHT : JTextField.LEFT);
+			else if (p == UIString)
+				ctrl.setString(UIString.toString());
 			else if (p == FontUnits)
 			{
 			}

@@ -89,19 +89,9 @@ public class UIControlObject extends HandleObject
 			  "popupmenu"}, "pushbutton");
 		TooltipString = new StringProperty(this, "TooltipString", "");
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized"}, "pixels");
-		Value = new VectorProperty(this, "Vector", new double[] {0}, -1);
+		Value = new VectorProperty(this, "Value", new double[] {0}, -1);
 
-		listen(BackgroundColor);
-		listen(Enable);
-		listen(FontAngle);
-		listen(FontName);
-		listen(FontSize);
 		listen(FontUnits);
-		listen(FontWeight);
-		listen(ForegroundColor);
-		listen(HorizontalAlignment);
-		listen(Position);
-		listen(UIString);
 		listen(Style);
 		listen(Units);
 	}
@@ -149,41 +139,19 @@ public class UIControlObject extends HandleObject
 	{
 		deleteComponent();
 
-		String style = Style.toString();
-
-		if (style.equalsIgnoreCase("pushbutton"))
-			ctrl = new UIControlAdapter(new PushButtonControl(this));
-		else if (style.equalsIgnoreCase("edit"))
+		try { ctrl = new UIControlAdapter(this); }
+		catch (Exception e)
 		{
-			if ((Max.doubleValue()-Min.doubleValue()) <= 1.0)
-				ctrl = new UIControlAdapter(new EditControl(this));
-			else
-				ctrl = new UIControlAdapter(new Edit2Control(this));
-		}
-		
-		if (ctrl != null)
-		{
-			ctrl.setFont(getFont());
-			ctrl.setBackground(BackgroundColor.getColor());
-			ctrl.setForeground(ForegroundColor.getColor());
-			ctrl.setString(UIString.toString());
-			ctrl.setPosition(getPosition());
-			ctrl.setAlignment(
-					HorizontalAlignment.is("left") ? JTextField.LEFT :
-					HorizontalAlignment.is("center") ? JTextField.CENTER :
-					HorizontalAlignment.is("right") ? JTextField.RIGHT : JTextField.LEFT);
-			if (TooltipString.toString().length() > 0)
-				ctrl.setTooltip(TooltipString.toString());
-			
-			Container pContainer = (Container)getParentComponent();
-			pContainer.add(ctrl, 0);
-			pContainer.validate();
-
-			return ctrl;
+			System.out.println("Warning: UI style not supported yet: " + Style.toString());
+			return null;
 		}
 
-		System.out.println("Warning: UI style not supported yet: " + style);
-		return null;
+		Container pContainer = (Container)getParentComponent();
+
+		pContainer.add(ctrl, 0);
+		pContainer.validate();
+
+		return ctrl;
 	}
 
 	public double[] convertPosition(double[] pos, String units, String toUnits)
@@ -269,27 +237,12 @@ public class UIControlObject extends HandleObject
 		}
 		else if (ctrl != null)
 		{
-			if (p == BackgroundColor)
-				ctrl.setBackground(BackgroundColor.getColor());
-			else if (p == ForegroundColor)
-				ctrl.setForeground(ForegroundColor.getColor());
-			else if (p == Position)
-				ctrl.setPosition(getPosition());
-			else if (p == Units)
+			if (p == Units)
 			{
 				double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), currentUnits, Units.getValue());
 				Position.set(pos, true);
 				currentUnits = Units.getValue();
 			}
-			else if (p == FontAngle || p == FontSize || p == FontWeight || p == FontName)
-				ctrl.setFont(getFont());
-			else if (p == HorizontalAlignment)
-				ctrl.setAlignment(
-					HorizontalAlignment.is("left") ? JTextField.LEFT :
-					HorizontalAlignment.is("center") ? JTextField.CENTER :
-					HorizontalAlignment.is("right") ? JTextField.RIGHT : JTextField.LEFT);
-			else if (p == UIString)
-				ctrl.setString(UIString.toString());
 			else if (p == FontUnits)
 			{
 			}
@@ -300,7 +253,7 @@ public class UIControlObject extends HandleObject
 	public Object get(Property p)
 	{
 		if (ctrl != null)
-			ctrl.update(UIControl.UPDATE_OBJECT);
+			ctrl.update();
 		return super.get(p);
 	}
 

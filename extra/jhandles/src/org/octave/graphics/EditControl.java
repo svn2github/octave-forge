@@ -25,45 +25,52 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class EditControl extends JTextField implements UIControl, ActionListener
+public class EditControl
+	extends JTextField
+	implements UIControl, ActionListener, HandleNotifier.Sink
 {
 	UIControlObject uiObj;
+	HandleNotifier uiNotifier;
 
 	public EditControl(UIControlObject obj)
 	{
 		super();
 		addActionListener(this);
 		uiObj = obj;
+
+		setAlignment();
+		setText(obj.UIString.toString());
+
+		uiNotifier = new HandleNotifier();
+		uiNotifier.addSink(this);
+		uiNotifier.addSource(obj.UIString);
+		uiNotifier.addSource(obj.HorizontalAlignment);
+	}
+
+	public void setAlignment()
+	{
+		setHorizontalAlignment(
+			uiObj.HorizontalAlignment.is("center") ? JTextField.CENTER :
+			uiObj.HorizontalAlignment.is("left") ? JTextField.LEFT :
+			uiObj.HorizontalAlignment.is("right") ? JTextField.RIGHT :
+			JTextField.LEFT);
 	}
 
 	/* UIControl interface */
 
-	public void update(int mode)
+	public void update()
 	{
-		if ((mode & UPDATE_OBJECT) != 0)
-		{
-			uiObj.UIString.reset(getText());
-		}
+		uiObj.UIString.reset(getText());
 	}
 
-	public Component getComponent()
+	public JComponent getComponent()
 	{
 		return this;
 	}
 
-	public void setString(String s)
+	public void dispose()
 	{
-		setText(s);
-	}
-
-	public void setAlignment(int align)
-	{
-		setHorizontalAlignment(align);
-	}
-
-	public void setTooltip(String s)
-	{
-		setToolTipText(s);
+		uiNotifier.removeSink(this);
 	}
 
 	/* ActionListener interface */
@@ -71,5 +78,19 @@ public class EditControl extends JTextField implements UIControl, ActionListener
 	public void actionPerformed(ActionEvent event)
 	{
 		uiObj.controlActivated(new UIControlEvent(this));
+	}
+
+	/* HandleNotifier.Sink interface */
+
+	public void addNotifier(HandleNotifier n) {}
+
+	public void removeNotifier(HandleNotifier n) {}
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			setText(uiObj.UIString.toString());
+		else if (p == uiObj.HorizontalAlignment)
+			setAlignment();
 	}
 }

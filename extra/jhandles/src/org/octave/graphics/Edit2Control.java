@@ -26,9 +26,12 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
-public class Edit2Control extends JScrollPane implements UIControl, KeyListener
+public class Edit2Control
+	extends JScrollPane
+	implements UIControl, KeyListener, HandleNotifier.Sink
 {
 	UIControlObject uiObj;
+	HandleNotifier uiNotifier;
 	JTextPane text;
 
 	public Edit2Control(UIControlObject obj)
@@ -39,50 +42,49 @@ public class Edit2Control extends JScrollPane implements UIControl, KeyListener
 		uiObj = obj;
 
 		setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		setAlignment();
+		text.setText(obj.UIString.toString());
+		setBackground(obj.BackgroundColor.getColor());
+		setForeground(obj.ForegroundColor.getColor());
+
+		uiNotifier = new HandleNotifier();
+		uiNotifier.addSink(this);
+		uiNotifier.addSource(obj.UIString);
+		uiNotifier.addSource(obj.HorizontalAlignment);
+		uiNotifier.addSource(obj.BackgroundColor);
+		uiNotifier.addSource(obj.ForegroundColor);
 	}
 
-	public void setFont(Font f) { super.setFont(f); if (text != null) text.setFont(f); }
-	public void setBackground(Color c) { super.setBackground(c); if (text != null) text.setBackground(c); }
-	public void setForeground(Color c) { super.setForeground(c); if (text != null) text.setForeground(c); }
-
-	/* UIControl interface */
-
-	public void update(int mode)
-	{
-		if ((mode & UPDATE_OBJECT) != 0)
-		{
-			uiObj.UIString.reset(text.getText());
-		}
-	}
-
-	public Component getComponent()
-	{
-		return this;
-	}
-
-	public void setString(String s)
-	{
-		text.setText(s);
-	}
-
-	public void setAlignment(int align)
+	public void setAlignment()
 	{
 		MutableAttributeSet s = new SimpleAttributeSet();
 		s.addAttribute(
 			StyleConstants.Alignment,
 			new Integer(
-				(align == JTextField.LEFT ? StyleConstants.ALIGN_LEFT :
-				 align == JTextField.CENTER ? StyleConstants.ALIGN_CENTER :
-				 align == JTextField.RIGHT ? StyleConstants.ALIGN_RIGHT :
+				(uiObj.HorizontalAlignment.is("left") ? StyleConstants.ALIGN_LEFT :
+				 uiObj.HorizontalAlignment.is("center") ? StyleConstants.ALIGN_CENTER :
+				 uiObj.HorizontalAlignment.is("right") ? StyleConstants.ALIGN_RIGHT :
 				 StyleConstants.ALIGN_LEFT)));
 		StyledDocument doc = text.getStyledDocument();
 
 		doc.setParagraphAttributes(0, doc.getLength()+1, s, false);
 	}
 
-	public void setTooltip(String s)
+	/* UIControl interface */
+
+	public void update()
 	{
-		text.setToolTipText(s);
+		uiObj.UIString.reset(text.getText());
+	}
+
+	public JComponent getComponent()
+	{
+		return text;
+	}
+
+	public void dispose()
+	{
+		uiNotifier.removeSink(this);
 	}
 
 	/* KeyListener interface */
@@ -99,5 +101,23 @@ public class Edit2Control extends JScrollPane implements UIControl, KeyListener
 	{
 		if (event.getKeyChar() == '\n' && event.getModifiers() == InputEvent.CTRL_MASK)
 			uiObj.controlActivated(new UIControlEvent(this));
+	}
+
+	/* HandleNofitier.Sink interface */
+
+	public void addNotifier(HandleNotifier n) {}
+
+	public void removeNotifier(HandleNotifier n) {}
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			text.setText(uiObj.UIString.toString());
+		else if (p == uiObj.HorizontalAlignment)
+			setAlignment();
+		else if (p == uiObj.BackgroundColor)
+			setBackground(uiObj.BackgroundColor.getColor());
+		else if (p == uiObj.ForegroundColor)
+			setForeground(uiObj.ForegroundColor.getColor());
 	}
 }

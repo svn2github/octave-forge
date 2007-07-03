@@ -22,36 +22,69 @@
 package org.octave.graphics;
 
 import java.awt.*;
+import javax.swing.JComponent;
 
-public class UIControlAdapter extends Panel
+public class UIControlAdapter extends Panel implements HandleNotifier.Sink
 {
 	private UIControl ctrl;
+	private UIControlObject uiObj;
+	private HandleNotifier uiNotifier;
 
-	public UIControlAdapter(UIControl ctrl)
+	public UIControlAdapter(UIControlObject obj) throws IllegalArgumentException
 	{
 		super(new BorderLayout());
-		this.ctrl = ctrl;
-		add(ctrl.getComponent(), BorderLayout.CENTER);
+
+		String style = obj.Style.toString();
+
+		if (style.equalsIgnoreCase("pushbutton"))
+			this.ctrl = new PushButtonControl(obj);
+		else if (style.equalsIgnoreCase("edit"))
+		{
+			if ((obj.Max.doubleValue()-obj.Min.doubleValue()) <= 1.0)
+				this.ctrl = new EditControl(obj);
+			else
+				this.ctrl = new Edit2Control(obj);
+		}
+		else
+			throw new IllegalArgumentException("unsupported UI style `" + style + "'");
+		this.uiObj = obj;
+		init();
+		add((JComponent)ctrl, BorderLayout.CENTER);
+
+		uiNotifier = new HandleNotifier();
+		uiNotifier.addSink(this);
+		uiNotifier.addSource(obj.Position);
+		uiNotifier.addSource(obj.BackgroundColor);
+		uiNotifier.addSource(obj.ForegroundColor);
+		uiNotifier.addSource(obj.FontAngle);
+		uiNotifier.addSource(obj.FontSize);
+		uiNotifier.addSource(obj.FontName);
+		uiNotifier.addSource(obj.FontWeight);
+		uiNotifier.addSource(obj.TooltipString);
 	}
 
-	public void setForeground(Color c) { ctrl.getComponent().setForeground(c); }
-	public void setBackground(Color c) { ctrl.getComponent().setBackground(c); }
-	public void setFont(Font f) { ctrl.getComponent().setFont(f); }
-	public void setString(String s) { ctrl.setString(s); }
-	public void setAlignment(int align) { ctrl.setAlignment(align); }
-	public void setTooltip(String s) { ctrl.setTooltip(s); }
-	public void update(int mode) { ctrl.update(mode); }
+	private void init()
+	{
+		JComponent comp1 = ctrl.getComponent();
+
+		comp1.setFont(uiObj.getFont());
+		comp1.setBackground(uiObj.BackgroundColor.getColor());
+		comp1.setForeground(uiObj.ForegroundColor.getColor());
+		double[] pos = uiObj.getPosition();
+		setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+		if (uiObj.TooltipString.toString().length() > 0)
+			comp1.setToolTipText(uiObj.TooltipString.toString());
+	}
+
+	public void update() { if (ctrl != null) ctrl.update(); }
 
 	public void dispose()
 	{
+		if (ctrl != null)
+			ctrl.dispose();
 		if (getParent() != null)
 			getParent().remove(this);
-	}
-
-	public void setPosition(double[] pos)
-	{
-		setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
-		validate();
+		uiNotifier.removeSink(this);
 	}
 
 	public Component getComponent()
@@ -59,15 +92,45 @@ public class UIControlAdapter extends Panel
 		return ctrl.getComponent();
 	}
 
-	/*
-	public void update(Graphics g)
+	/* HandleNotifier.Sink interface */
+
+	public void addNotifier(HandleNotifier n)
 	{
-		System.out.println("update");
+		if (n != uiNotifier)
+			System.out.println("Warning: adding unknown notifier to UIControlAdapter object");
 	}
 
-	public void paint(Graphics g)
+	public void removeNotifier(HandleNotifier n)
 	{
-		System.out.println("paint");
+		if (n != uiNotifier)
+			System.out.println("Warning: removing unknown notifier from UIControlAdapter object");
 	}
-	*/
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (ctrl != null)
+		{
+			JComponent comp1 = ctrl.getComponent();
+
+			if (p == uiObj.BackgroundColor)
+				comp1.setBackground(uiObj.BackgroundColor.getColor());
+			else if (p == uiObj.ForegroundColor)
+				comp1.setForeground(uiObj.ForegroundColor.getColor());
+			else if (p == uiObj.Position)
+			{
+				double[] pos = uiObj.getPosition();
+				setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+				validate();
+			}
+			else if (p == uiObj.FontAngle || p == uiObj.FontSize || p == uiObj.FontWeight || p == uiObj.FontName)
+				comp1.setFont(uiObj.getFont());
+			else if (p == uiObj.TooltipString)
+			{
+				if (uiObj.TooltipString.toString().length() > 0)
+					comp1.setToolTipText(uiObj.TooltipString.toString());
+				else
+					comp1.setToolTipText(null);
+			}
+		}
+	}
 }

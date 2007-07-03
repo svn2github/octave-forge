@@ -21,17 +21,11 @@
 
 package org.octave.graphics;
 
-import java.awt.*;
+import javax.swing.JComponent;
 
 public interface UIControl
 {
-	public static final int UPDATE_CONTROL = 1;
-	public static final int UPDATE_OBJECT = 2;
-	public static final int UPDATE_BOTH = 4;
-
-	public void update(int mode);
-	public Component getComponent();
-	public void setString(String s);
-	public void setAlignment(int align);
-	public void setTooltip(String s);
+	public void update();
+	public JComponent getComponent();
+	public void dispose();
 }

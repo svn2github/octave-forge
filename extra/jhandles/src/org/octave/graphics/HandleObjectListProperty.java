@@ -90,12 +90,14 @@ public class HandleObjectListProperty extends Property
 	{
 		List l = new LinkedList();
 		Iterator it = ((Vector)pvalue).iterator();
+		boolean showAll = RootObject.getInstance().ShowHiddenHandles.isSet();
+		boolean callbackMode = RootObject.getInstance().isCallbackMode();
 
 		while (it.hasNext())
 		{
 			HandleObject hObj = (HandleObject)it.next();
-			if (hObj.HandleVisibility.is("on") ||
-					(RootObject.getInstance().isCallbackMode() && hObj.HandleVisibility.is("callback")))
+			if (showAll || hObj.HandleVisibility.is("on") ||
+					(callbackMode && hObj.HandleVisibility.is("callback")))
 				l.add(hObj);
 		}
 		return l;

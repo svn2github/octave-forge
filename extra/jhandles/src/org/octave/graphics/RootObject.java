@@ -32,12 +32,14 @@ public class RootObject extends HandleObject
 
 	/* properties */
 	HandleObjectListProperty CurrentFigure;
+	BooleanProperty ShowHiddenHandles;
 
 	private RootObject()
 	{
 		super(null, 0, "root");
 
 		CurrentFigure = new HandleObjectListProperty(this, "CurrentFigure", 1);
+		ShowHiddenHandles = new BooleanProperty(this, "ShowHiddenHandles", false);
 
 		listen(CurrentFigure);
 	}

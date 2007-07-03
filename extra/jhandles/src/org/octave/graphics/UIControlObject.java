@@ -119,22 +119,6 @@ public class UIControlObject extends HandleObject
 		super.validate();
 	}
 
-	public Font getFont()
-	{
-		java.util.Map map = new java.util.HashMap();
-
-		map.put(TextAttribute.FAMILY, FontName.toString());
-		map.put(TextAttribute.POSTURE,
-			FontAngle.is("normal") ? TextAttribute.POSTURE_REGULAR : TextAttribute.POSTURE_OBLIQUE);
-		map.put(TextAttribute.WEIGHT,
-			FontWeight.is("normal") ? TextAttribute.WEIGHT_REGULAR :
-			FontWeight.is("light") ? TextAttribute.WEIGHT_LIGHT :
-			FontWeight.is("demi") ? TextAttribute.WEIGHT_SEMIBOLD : TextAttribute.WEIGHT_BOLD);
-		map.put(TextAttribute.SIZE, new Float(FontSize.floatValue()));
-		
-		return new Font(map);
-	}
-
 	public UIControlAdapter makeControl()
 	{
 		deleteComponent();
@@ -142,7 +126,8 @@ public class UIControlObject extends HandleObject
 		try { ctrl = new UIControlAdapter(this); }
 		catch (Exception e)
 		{
-			System.out.println("Warning: UI style not supported yet: " + Style.toString());
+			System.out.println("Warning: unable to create UI control");
+			e.printStackTrace();
 			return null;
 		}
 

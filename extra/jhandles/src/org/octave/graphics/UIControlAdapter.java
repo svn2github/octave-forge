@@ -67,13 +67,14 @@ public class UIControlAdapter extends Panel implements HandleNotifier.Sink
 	{
 		JComponent comp1 = ctrl.getComponent();
 
-		comp1.setFont(uiObj.getFont());
 		comp1.setBackground(uiObj.BackgroundColor.getColor());
 		comp1.setForeground(uiObj.ForegroundColor.getColor());
 		double[] pos = uiObj.getPosition();
 		setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
 		if (uiObj.TooltipString.toString().length() > 0)
 			comp1.setToolTipText(uiObj.TooltipString.toString());
+		comp1.setFont(Utils.getFont(uiObj.FontName, uiObj.FontSize, uiObj.FontUnits,
+				uiObj.FontAngle, uiObj.FontWeight, getHeight()));
 	}
 
 	public void update() { if (ctrl != null) ctrl.update(); }
@@ -121,9 +122,13 @@ public class UIControlAdapter extends Panel implements HandleNotifier.Sink
 				double[] pos = uiObj.getPosition();
 				setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
 				validate();
+				if (uiObj.FontUnits.is("normalized"))
+					comp1.setFont(Utils.getFont(uiObj.FontName, uiObj.FontSize, uiObj.FontUnits,
+						uiObj.FontAngle, uiObj.FontWeight, getHeight()));
 			}
 			else if (p == uiObj.FontAngle || p == uiObj.FontSize || p == uiObj.FontWeight || p == uiObj.FontName)
-				comp1.setFont(uiObj.getFont());
+				comp1.setFont(Utils.getFont(uiObj.FontName, uiObj.FontSize, uiObj.FontUnits,
+					uiObj.FontAngle, uiObj.FontWeight, getHeight()));
 			else if (p == uiObj.TooltipString)
 			{
 				if (uiObj.TooltipString.toString().length() > 0)

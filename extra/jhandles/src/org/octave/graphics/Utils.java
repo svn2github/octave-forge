@@ -21,6 +21,11 @@
 
 package org.octave.graphics;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.awt.Font;
+import java.awt.font.TextAttribute;
+
 public class Utils
 {
 	public static void crossProduct(double ax, double ay, double az, double bx, double by, double bz, double[] res)
@@ -96,5 +101,33 @@ public class Utils
 		}
 
 		return null;
+	}
+	
+	public static Font getFont(StringProperty FontName, DoubleProperty FontSize,
+		RadioProperty FontUnits, RadioProperty FontAngle, RadioProperty FontWeight, double h)
+	{
+		Map map = new HashMap();
+
+		map.put(TextAttribute.FAMILY, FontName.toString());
+		map.put(TextAttribute.POSTURE,
+			FontAngle.is("normal") ? TextAttribute.POSTURE_REGULAR : TextAttribute.POSTURE_OBLIQUE);
+		map.put(TextAttribute.WEIGHT,
+			FontWeight.is("normal") ? TextAttribute.WEIGHT_REGULAR :
+			FontWeight.is("light") ? TextAttribute.WEIGHT_LIGHT :
+			FontWeight.is("demi") ? TextAttribute.WEIGHT_SEMIBOLD : TextAttribute.WEIGHT_BOLD);
+		float fs = 12;
+		if (FontUnits.is("points"))
+			fs = FontSize.floatValue();
+		else if (FontUnits.is("normalized"))
+			fs = (float)(FontSize.doubleValue()*h);
+		else if (FontUnits.is("inches"))
+			fs = FontSize.floatValue()*72;
+		else if (FontUnits.is("centimeters"))
+			fs = (FontSize.floatValue()/2.54f)*72;
+		else
+			System.out.println("Warning: ignoring FontUnits (" + FontUnits.getValue() + ")");
+		map.put(TextAttribute.SIZE, new Float(fs));
+		
+		return new Font(map);
 	}
 }

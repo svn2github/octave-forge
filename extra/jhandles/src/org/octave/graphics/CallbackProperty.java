@@ -52,12 +52,25 @@ public class CallbackProperty extends Property
 
 	public void execute(Object[] args)
 	{
-		if (pvalue != null)
+		RootObject root = RootObject.getInstance();
+
+		try
 		{
-			if (pvalue instanceof OctaveReference)
-				Octave.invokeAndWait((OctaveReference)pvalue, args);
-			else if (pvalue instanceof String)
-				Octave.evalAndWait((String)pvalue);
+			root.setCallbackMode(true);
+			if (pvalue != null)
+			{
+				if (pvalue instanceof OctaveReference)
+					Octave.invokeAndWait((OctaveReference)pvalue, args);
+				else if (pvalue instanceof String)
+					Octave.evalAndWait((String)pvalue);
+			}
+			root.setCallbackMode(false);
+		}
+		catch (Exception e)
+		{
+			root.setCallbackMode(false);
+			System.err.println("Exception occured during callback execution: " + e.toString());
+			e.printStackTrace();
 		}
 	}
 }

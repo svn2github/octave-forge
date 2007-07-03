@@ -27,6 +27,8 @@ import javax.swing.UIManager;
 public class RootObject extends HandleObject
 {
 	private static RootObject instance = null;
+	private boolean callbackMode = false;
+	private int callbackModeCount = 0;
 
 	/* properties */
 	HandleObjectListProperty CurrentFigure;
@@ -139,5 +141,28 @@ public class RootObject extends HandleObject
 				else
 					((FigureObject)CurrentFigure.elementAt(0)).activate();
 		}
+	}
+
+	public void setCallbackMode(boolean mode)
+	{
+		if (mode)
+		{
+			callbackModeCount++;
+			callbackMode = mode;
+		}
+		else
+		{
+			callbackModeCount--;
+			if (callbackModeCount <= 0)
+			{
+				callbackMode = mode;
+				callbackModeCount = 0;
+			}
+		}
+	}
+
+	public boolean isCallbackMode()
+	{
+		return callbackMode;
 	}
 }

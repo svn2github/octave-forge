@@ -86,10 +86,26 @@ public class HandleObjectListProperty extends Property
 		return v;
 	}
 
+	private List getVisibleObjects()
+	{
+		List l = new LinkedList();
+		Iterator it = ((Vector)pvalue).iterator();
+
+		while (it.hasNext())
+		{
+			HandleObject hObj = (HandleObject)it.next();
+			if (hObj.HandleVisibility.is("on") ||
+					(RootObject.getInstance().isCallbackMode() && hObj.HandleVisibility.is("callback")))
+				l.add(hObj);
+		}
+		return l;
+	}
+
 	public double[] getHandleArray()
 	{
-		double[] hList = new double[((Vector)pvalue).size()];
-		Iterator it = ((Vector)pvalue).iterator();
+		List l = getVisibleObjects();
+		double[] hList = new double[l.size()];
+		Iterator it = l.iterator();
 		int index = 0;
 
 		while (it.hasNext())
@@ -147,7 +163,7 @@ public class HandleObjectListProperty extends Property
 
 	public String toString()
 	{
-		Vector objectList = (Vector)pvalue;
+		List objectList = getVisibleObjects();
 		String buf = "[ ";
 		Iterator it = objectList.iterator();
 

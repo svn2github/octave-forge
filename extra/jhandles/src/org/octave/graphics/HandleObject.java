@@ -38,6 +38,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	/* Properties */
 	HandleObjectListProperty Children;
 	BooleanProperty Clipping;
+	RadioProperty HandleVisibility;
 	HandleObjectListProperty Parent;
 	StringProperty Tag;
 	StringProperty Type;
@@ -67,6 +68,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	{
 		Children = new HandleObjectListProperty(this, "Children", -1);
 		Clipping = new BooleanProperty(this, "Clipping", true);
+		HandleVisibility = new RadioProperty(this, "HandleVisibility", new String[] {"on", "callback", "off"}, "on");
 		Parent = new HandleObjectListProperty(this, "Parent", -1);
 		Tag = new StringProperty(this, "Tag", "");
 		Type = new StringProperty(this, "Type", type);

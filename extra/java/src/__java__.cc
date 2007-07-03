@@ -1652,6 +1652,21 @@ JNIEXPORT void JNICALL Java_org_octave_Octave_doInvoke
               octave_function *fcn = val.function_value ();
               feval (fcn, oct_args);
             }
+          else if (val.is_cell () && val.length () > 0 &&
+              (val.rows () == 1 || val.columns() == 1) &&
+              val.cell_value()(0).is_function_handle ())
+            {
+              Cell c = val.cell_value ();
+              octave_function *fcn = c(0).function_value ();
+
+              for (int i=1; i<c.length (); i++)
+                oct_args(len+i-1) = c(i);
+
+              if (! error_state)
+                feval (fcn, oct_args);
+            }
+		  else
+            error ("trying to invoke non-invocable object");
         }
     }
 }

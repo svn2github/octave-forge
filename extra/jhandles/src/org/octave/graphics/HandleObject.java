@@ -223,6 +223,12 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		return pos;
 	}
 
+	public java.awt.Component getComponent()
+	{
+		System.out.println("Warning: no component associated with " + getClass());
+		return null;
+	}
+
 	/* HandleNotifier.Sink interface */
 
 	public void addNotifier(HandleNotifier hn)

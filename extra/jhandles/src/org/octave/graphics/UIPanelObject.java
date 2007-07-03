@@ -23,43 +23,35 @@ package org.octave.graphics;
 
 import org.octave.Matrix;
 import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
-public class UIControlObject extends HandleObject
+public class UIPanelObject extends HandleObject
 {
-	private UIControlAdapter ctrl;
+	protected JPanel panel;
+	protected Panel panelWrapper;
 	private String currentUnits;
 
 	/* Properties */
 	ColorProperty BackgroundColor;
-	CallbackProperty Callback;
-	RadioProperty Enable;
-	VectorProperty Extent;
 	RadioProperty FontAngle;
 	StringProperty FontName;
 	DoubleProperty FontSize;
 	RadioProperty FontUnits;
 	RadioProperty FontWeight;
 	ColorProperty ForegroundColor;
-	RadioProperty HorizontalAlignment;
-	DoubleProperty ListboxTop;
-	DoubleProperty Min;
-	DoubleProperty Max;
+	ColorProperty HighlightColor;
 	VectorProperty Position;
-	VectorProperty SliderStep;
-	StringProperty UIString;
-	RadioProperty Style;
-	StringProperty TooltipString;
+	ColorProperty ShadowColor;
+	StringProperty Title;
+	RadioProperty TitlePosition;
 	RadioProperty Units;
-	VectorProperty Value;
 
-	public UIControlObject(HandleObject parent)
+	public UIPanelObject(HandleObject parent)
 	{
-		super(parent, "uicontrol");
+		super(parent, "uipanel");
 
 		BackgroundColor = new ColorProperty(this, "BackgroundColor", Color.lightGray);
-		Callback = new CallbackProperty(this, "Callback", (String)null);
-		Enable = new RadioProperty(this, "Enable", new String[] {"on", "inactive", "off"}, "on");
-		Extent = new VectorProperty(this, "Extent", new double[] {0, 0, 0, 0}, 4);
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
 		FontSize = new DoubleProperty(this, "FontSize", 12);
@@ -67,39 +59,25 @@ public class UIControlObject extends HandleObject
 			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
 		ForegroundColor = new ColorProperty(this, "ForegroundColor", Color.black);
-		HorizontalAlignment = new RadioProperty(this, "HorizontalAlignment", new String[] {"left", "center", "right"}, "center");
-		ListboxTop = new DoubleProperty(this, "ListboxTop", 1);
-		Min = new DoubleProperty(this, "Min", 0);
-		Max = new DoubleProperty(this, "Max", 1);
-		Position = new VectorProperty(this, "Position", new double[] {10, 10, 80, 25}, 4);
-		UIString = new StringProperty(this, "String", "");
-		SliderStep = new VectorProperty(this, "SliderStep", new double[] {0.01, 0.10}, 2);
-		Style = new RadioProperty(this, "Style", new String[] {
-			  "pushbutton",
-			  "togglebutton",
-			  "radiobutton",
-			  "checkbox",
-			  "edit",
-			  "text",
-			  "slider",
-			  "frame",
-			  "listbox",
-			  "popupmenu"}, "pushbutton");
-		TooltipString = new StringProperty(this, "TooltipString", "");
-		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized"}, "pixels");
-		Value = new VectorProperty(this, "Value", new double[] {0}, -1);
+		HighlightColor = new ColorProperty(this, "HighlightColor", Color.white);
+		Position = new VectorProperty(this, "Position", new double[] {0, 0, 1, 1}, 4);
+		ShadowColor = new ColorProperty(this, "ShadowColor", Color.gray);
+		Title = new StringProperty(this, "Title", "");
+		TitlePosition = new RadioProperty(this, "TitlePosition", new String[] {
+			"lefttop", "centertop", "righttop",
+			"leftbottom", "centerbottom", "rightbottom"}, "lefttop");
+		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized"}, "normalized");
 
 		listen(FontUnits);
-		listen(Style);
 		listen(Units);
 	}
 
 	protected void deleteComponent()
 	{
-		if (ctrl != null)
+		if (panel != null)
 		{
-			ctrl.dispose();
-			ctrl = null;
+			panel.getParent().remove(panel);
+			panel = null;
 		}
 	}
 
@@ -113,35 +91,43 @@ public class UIControlObject extends HandleObject
 	{
 		deleteComponent();
 		currentUnits = Units.getValue();
-		ctrl = makeControl();
+		makePanel();
 		super.validate();
 	}
 
-	public UIControlAdapter makeControl()
+	public void makePanel()
 	{
-		deleteComponent();
-
-		try { ctrl = new UIControlAdapter(this); }
-		catch (Exception e)
-		{
-			System.out.println("Warning: unable to create UI control");
-			e.printStackTrace();
-			return null;
-		}
+		TitledBorder border = BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(HighlightColor.getColor(), ShadowColor.getColor()),
+				Title.toString());
+		String tPos = TitlePosition.getValue().toLowerCase();
+		
+		panel = new JPanel();
+		panel.setBackground(BackgroundColor.getColor());
+		panelWrapper = new Panel(new BorderLayout());
+		double[] pos = getPosition();
+		panelWrapper.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+		panelWrapper.add(panel, BorderLayout.CENTER);
+		border.setTitleFont(Utils.getFont(FontName, FontSize, FontUnits, FontAngle, FontWeight, panelWrapper.getHeight()));
+		border.setTitleColor(ForegroundColor.getColor());
+		border.setTitlePosition(tPos.contains("bottom") ? TitledBorder.BOTTOM : TitledBorder.TOP);
+		border.setTitleJustification(
+				tPos.contains("left") ? TitledBorder.LEFT :
+				tPos.contains("center") ? TitledBorder.CENTER :
+				tPos.contains("right") ? TitledBorder.RIGHT :
+				TitledBorder.LEFT);
+		panel.setBorder(border);
 
 		Container pContainer = (Container)getParentComponent();
-
-		pContainer.add(ctrl, 0);
+		pContainer.add(panelWrapper, 0);
 		pContainer.validate();
-
-		return ctrl;
 	}
 
 	public double[] convertPosition(double[] pos, String units, String toUnits)
 	{
-		if (ctrl != null)
+		if (panel != null)
 		{
-			Dimension sz = ctrl.getSize();
+			Dimension sz = panel.getSize();
 			double[] p;
 
 			if (units.equalsIgnoreCase("pixels"))
@@ -191,10 +177,7 @@ public class UIControlObject extends HandleObject
 
 	public Component getComponent()
 	{
-		if (ctrl != null)
-			return ctrl.getComponent();
-		else
-			return null;
+		return panel;
 	}
 
 	public Component getParentComponent()
@@ -210,10 +193,7 @@ public class UIControlObject extends HandleObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
-		if (p == Style)
-		{
-		}
-		else if (ctrl != null)
+		if (panel != null)
 		{
 			if (p == Units)
 			{
@@ -224,24 +204,6 @@ public class UIControlObject extends HandleObject
 			else if (p == FontUnits)
 			{
 			}
-			
 		}
-	}
-
-	public Object get(Property p)
-	{
-		if (ctrl != null)
-			ctrl.update();
-		return super.get(p);
-	}
-
-	/* UIControlListener interface */
-
-	public void controlActivated(UIControlEvent event)
-	{
-		System.out.println("Control activated");
-		Callback.execute(new Object[] {
-			new Double(getHandle()),
-			event});
 	}
 }

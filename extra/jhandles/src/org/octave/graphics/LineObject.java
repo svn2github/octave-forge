@@ -75,6 +75,11 @@ public class LineObject extends GraphicObject
 		super.validate();
 	}
 
+	public boolean isLegendable()
+	{
+		return true;
+	}
+
 	private void updateMinMax()
 	{
 		double xmin, xmax, ymin, ymax, zmin, zmax;

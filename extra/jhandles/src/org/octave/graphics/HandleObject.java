@@ -103,7 +103,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public boolean isLegendable()
 	{
-		return true;
+		return false;
 	}
 
 	public void delete()
@@ -200,7 +200,8 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		while (it.hasNext())
 		{
 			Map.Entry entry = (Map.Entry)it.next();
-			System.out.println(entry.getKey() + " = " + entry.getValue());
+			HandleObject hObj = (HandleObject)((WeakReference)entry.getValue()).get();
+			System.out.println(entry.getKey() + " = " + hObj.getClass());
 		}
 	}
 

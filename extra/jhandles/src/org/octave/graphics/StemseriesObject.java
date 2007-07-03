@@ -89,6 +89,11 @@ public class StemseriesObject extends GroupObject
 		super.delete();
 	}
 
+	public boolean isLegendable()
+	{
+		return true;
+	}
+
 	private void updateXyzData()
 	{
 		double[] xdata = XData.getArray();

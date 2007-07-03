@@ -260,32 +260,10 @@ public class AxesObject extends HandleObject
 		PlotBoxAspectRatio = new VectorProperty(this, "PlotBoxAspectRatio", new double[] {1,1,1}, 3);
 		PlotBoxAspectRatioMode = new RadioProperty(this, "PlotBoxAspectRatioMode", new String[] {"auto", "manual"}, "auto");
 		View = new VectorProperty(this, "View", angles, 2);
-		TextObject titleObj = new TextObject(null, "", new double[] {0,0,0});
-		titleObj.HAlign.reset("center");
-		titleObj.VAlign.reset("bottom");
-		titleObj.Parent.addElement(this);
-		titleObj.validate();
-		Title = new TextProperty(this, "Title", titleObj);
-		TextObject xLabelObj = new TextObject(null, "", new double[] {0,0,0});
-		xLabelObj.HAlign.reset(init3D ? "left" : "center");
-		xLabelObj.VAlign.reset("top");
-		xLabelObj.Parent.addElement(this);
-		xLabelObj.validate();
-		XLabel = new TextProperty(this, "XLabel", xLabelObj);
-		TextObject yLabelObj = new TextObject(null, "", new double[] {0,0,0});
-		yLabelObj.HAlign.reset(init3D ? "right" : "center");
-		yLabelObj.VAlign.reset(init3D ? "top" : "bottom");
-		yLabelObj.Rotation.reset(new Double(init3D ? 0.0 : 90.0));
-		yLabelObj.Parent.addElement(this);
-		yLabelObj.validate();
-		YLabel = new TextProperty(this, "YLabel", yLabelObj);
-		TextObject zLabelObj = new TextObject(null, "", new double[] {0,0,0});
-		zLabelObj.HAlign.reset(init3D ? "right" : "center");
-		zLabelObj.VAlign.reset(init3D ? "top" : "bottom");
-		zLabelObj.Rotation.reset(new Double(init3D ? 90.0 : 0.0));
-		zLabelObj.Parent.addElement(this);
-		zLabelObj.validate();
-		ZLabel = new TextProperty(this, "ZLabel", zLabelObj);
+		Title = new TextProperty(this, "Title", makeTextObject("center", "bottom"));
+		XLabel = new TextProperty(this, "XLabel", makeTextObject((init3D ? "left" : "center"), "top"));
+		YLabel = new TextProperty(this, "YLabel", makeTextObject((init3D ? "right" : "center"), (init3D ? "top" : "bottom")));
+		ZLabel = new TextProperty(this, "ZLabel", makeTextObject((init3D ? "right" : "center"), (init3D ? "top" : "bottom")));
 		CLim = new VectorProperty(this, "CLim", new double[] {0, 1}, 2);
 		CLimMode = new RadioProperty(this, "CLimMode", new String[] {"auto", "manual"}, "auto");
 		ALim = new VectorProperty(this, "ALim", new double[] {0, 1}, 2);
@@ -366,9 +344,21 @@ public class AxesObject extends HandleObject
 		colorbar = null;
 	}
 
+	private TextObject makeTextObject(String halign, String valign)
+	{
+		TextObject txtObj = new TextObject(this, "", new double[] {0,0,0});
+		txtObj.HAlign.reset(halign);
+		txtObj.VAlign.reset(valign);
+		txtObj.HandleVisibility.reset("off");
+		txtObj.XLimInclude.reset("off");
+		txtObj.YLimInclude.reset("off");
+		txtObj.validate();
+		return txtObj;
+	}
+
 	public void reset(String mode)
 	{
-		super.deleteChildren();
+		deleteChildren();
 
 		Projection.reset("orthogonal");
 		AxesColor.reset(Color.white);
@@ -419,16 +409,6 @@ public class AxesObject extends HandleObject
 		CLimMode.reset("auto");
 		ALim.reset(new double[] {0, 1});
 		ALimMode.reset("auto");
-		if (legend != null)
-		{
-			legend.delete();
-			legend = null;
-		}
-		if (colorbar != null)
-		{
-			colorbar.delete();
-			colorbar = null;
-		}
 		Box.reset(new Boolean(true));
 		XDir.reset("normal");
 		YDir.reset("normal");
@@ -449,6 +429,11 @@ public class AxesObject extends HandleObject
 		Layer.reset("bottom");
 		Visible.reset(new Boolean(true));
 		Key.reset(new Boolean(false));
+
+		Title.reset(new Double(makeTextObject("center", "bottom").getHandle()));
+		XLabel.reset(new Double(makeTextObject("center", "top").getHandle()));
+		YLabel.reset(new Double(makeTextObject("center", "bottom").getHandle()));
+		ZLabel.reset(new Double(makeTextObject("center", "bottom").getHandle()));
 
 		updateActivePosition();
 		autoTick();
@@ -476,14 +461,16 @@ public class AxesObject extends HandleObject
 	public void deleteChildren()
 	{
 		super.deleteChildren();
-		Title.getText().delete();
-		XLabel.getText().delete();
-		YLabel.getText().delete();
-		ZLabel.getText().delete();
 		if (legend != null)
+		{
 			legend.delete();
+			legend = null;
+		}
 		if (colorbar != null)
+		{
 			colorbar.delete();
+			colorbar = null;
+		}
 	}
 
 	public void removeChild(HandleObject child)
@@ -580,10 +567,13 @@ public class AxesObject extends HandleObject
 				while (it.hasNext())
 				{
 					HandleObject o = (HandleObject)it.next();
-					if (o instanceof LineObject)
-						names.add(((LineObject)o).KeyLabel.toString());
-					else
-						names.add("");
+					if (o.isLegendable())
+					{
+						if (o instanceof LineObject)
+							names.add(((LineObject)o).KeyLabel.toString());
+						else
+							names.add("");
+					}
 				}
 			}
 
@@ -649,6 +639,9 @@ public class AxesObject extends HandleObject
 
 	public void childValidated(HandleObject child)
 	{
+		if (!isValid())
+			return;
+
 		autoScale();
 		autoScaleC();
 		autoAspectRatio();

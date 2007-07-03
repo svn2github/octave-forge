@@ -337,7 +337,6 @@ create_octave() {
   local voctavepack=${OCTAVEPACK##*/}       # echo ${voctavepack}
   local voctavefile=${voctavepack%.tar.gz*} # echo ${voctavefile}
   local voctavediff=${OCTAVEDIFF##*/}       # echo ${voctavediff}
-  local voctversion=${voctavefile##*-}      # echo ${voctversion}
 
   getsource ${OCTAVEPACK}
   unpack ${voctavepack}
@@ -380,17 +379,31 @@ else
       ARCH="-arch ppc"
       BUILDARCH="--host=powerpc-apple-darwin7.9.1"
       MACOSX_DEPLOYMENT_TARGET=10.3
-      ALLCARCH="${ARCH} -isysroot /Developer/SDKs/MacOSX10.3.9.sdk"
-      ALLDARCH="-Wl,-headerpad_max_install_names,-syslibroot,/Developer/SDKs/MacOSX10.3.9.sdk"
+
+      CC="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} gcc"
+      CXX="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} g++"
+      CPP="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} cpp"
+
+      CFLAGS="${ARCH} -isysroot /Developer/SDKs/MacOSX10.3.9.sdk -I${INSTDIR}/include"
+      CXXFLAGS="${ARCH} -isysroot /Developer/SDKs/MacOSX10.3.9.sdk -I${INSTDIR}/include"
+      CPPFLAGS="${ARCH} -isysroot /Developer/SDKs/MacOSX10.3.9.sdk -I${INSTDIR}/include"
+      LDFLAGS="${ARCH} -Wl,-headerpad_max_install_names,-syslibroot,/Developer/SDKs/MacOSX10.3.9.sdk -L${INSTDIR}/lib"
       ;;
 
     --i386)
       INSTDIR=${INSTDIR}-i386
       ARCH="-arch i386"
-      BUILDARCH="--host=i386-apple-darwin8.9.1"
+      BUILDARCH=""
       MACOSX_DEPLOYMENT_TARGET=10.4
-      ALLCARCH=""
-      ALLDARCH=""
+
+      CC="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} gcc"
+      CXX="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} g++"
+      CPP="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} cpp"
+
+      CFLAGS="${ARCH} -I${INSTDIR}/include"
+      CXXFLAGS="${ARCH} -I${INSTDIR}/include"
+      CPPFLAGS="${ARCH} -I${INSTDIR}/include"
+      LDFLAGS="${ARCH} -L${INSTDIR}/lib"
       ;;
 
     *)
@@ -400,20 +413,12 @@ else
 
   esac
 
-  MAKE="make" # MAKE="make -j 2" seems not to be working on all packages
-  CC="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} gcc"
-  CXX="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} g++"
-  CPP="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} cpp"
-
-  CFLAGS="${ALLCARCH} -I${INSTDIR}/include"
-  CXXFLAGS="${ALLCARCH} -I${INSTDIR}/include"
-  CPPFLAGS="${ALLCARCH} -I${INSTDIR}/include"
-  LDFLAGS="${ALLDARCH} -L${INSTDIR}/lib"
-
+  # CONFFLAGS="CC=\"${CC}\" CXX=\"${CXX}\" CPP=\"${CPP}\""
   CONFFLAGS="CFLAGS=\"${CFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\""
   CONFFLAGS="${CONFFLAGS} CXXFLAGS=\"${CXXFLAGS}\" LDFLAGS=\"${LDFLAGS}\""
   CONFFLAGS="${CONFFLAGS} --prefix=${INSTDIR} ${BUILDARCH}"
 
+  MAKE="make"
   export PATH="${INSTDIR}/bin:${PATH}"
 
   case "${1}" in

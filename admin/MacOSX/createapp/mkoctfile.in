@@ -18,7 +18,7 @@
 # Checks if mkoctfile is started from a file that is a link or if this
 # file has been taken directly to startup the mkoctfile program.
 LINK=`readlink "${0}"`
-if [ -z ${LINK} ]; then
+if [ -z "${LINK}" ]; then
   BASE="${0%/bin/mkoctfile}"
 else
   BASE="${LINK%/bin/mkoctfile}"
@@ -37,11 +37,12 @@ DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
 
 # Setting up various path information variables that are needed to run
 # the "mkoctfile" command from the command line.
-CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%' -arch %ARCH%"
+# CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%' -arch %ARCH%"
 CFLAGS="${CFLAGS} -I'${ROOT}/include/curl' -I'${ROOT}/include/readline'"
 CPPFLAGS="${CFLAGS}"
 CXXFLAGS="${CXXFLAGS}"
-LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
+# LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
+LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%'"
 
 # Setting up other variables that are needed to run the octave program
 # or mkoctfile.

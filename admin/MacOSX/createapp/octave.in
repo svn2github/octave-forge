@@ -37,10 +37,11 @@ DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
 
 # Setting up various path information variables that are needed to run
 # the "mkoctfile" and "mex" commands from within the Octave program.
-CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%' -arch %ARCH%"
+# CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%' -arch %ARCH%"
 CFLAGS="${CFLAGS} -I'${ROOT}/include/curl' -I'${ROOT}/include/readline'"
 CPPFLAGS="${CFLAGS}"
 CXXFLAGS="${CXXFLAGS}"
+# LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
 LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
 
 # Setting up other variables that are needed to run the octave program

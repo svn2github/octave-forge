@@ -1481,7 +1481,6 @@ public class AxesObject extends HandleObject
 				xmin-0.001*(xmax-xmin), xmax+0.001*(xmax-xmin),
 				ymin-0.001*(ymax-ymin), ymax+0.001*(ymax-ymin),
 				zmin-0.001*(zmax-zmin), zmax+0.001*(zmax-zmin));
-		r.setClipping(true);
 		r.setCamera(CameraPosition.getArray(), CameraTarget.getArray());
 
 		// Do lights first
@@ -1499,7 +1498,10 @@ public class AxesObject extends HandleObject
 		{
 			GraphicObject obj = (GraphicObject)it.next();
 			if (obj.Visible.isSet() && !(obj instanceof LightObject))
+			{
+				r.setClipping(obj.Clipping.isSet());
 				obj.draw(r);
+			}
 		}
 
 		r.setClipping(false);

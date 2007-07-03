@@ -184,16 +184,17 @@ public class GLRenderer implements Renderer
 		double[] z = sz.scale(line.ZData.getArray());
 		int n = Math.min(Math.min(x.length, y.length), (z.length == 0 ? Integer.MAX_VALUE : z.length));
 		int[] clip = new int[n];
+		int clipMask = (line.Clipping.isSet() ? 0x7F : 0x40);
 
 		if (z.length == 0)
 		{
 			double zmid = (zmin+zmax)/2;
 			for (int i=0; i<n; i++)
-				clip[i] = clipCode(x[i], y[i], zmid);
+				clip[i] = (clipCode(x[i], y[i], zmid) & clipMask);
 		}
 		else
 			for (int i=0; i<n; i++)
-				clip[i] = clipCode(x[i], y[i], z[i]);
+				clip[i] = (clipCode(x[i], y[i], z[i]) & clipMask);
 
 		if (line.LineStyle.isSet())
 		{

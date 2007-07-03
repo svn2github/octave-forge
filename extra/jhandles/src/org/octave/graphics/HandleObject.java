@@ -36,11 +36,12 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	private static HashMap handleMap = new HashMap();
 
 	/* Properties */
-	StringProperty Type;
-	StringProperty Tag;
-	ObjectProperty UserData;
 	HandleObjectListProperty Children;
+	BooleanProperty Clipping;
 	HandleObjectListProperty Parent;
+	StringProperty Tag;
+	StringProperty Type;
+	ObjectProperty UserData;
 	BooleanProperty Visible;
 
 	private static int newHandle()
@@ -64,11 +65,12 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	protected void initProperties(HandleObject parent, String type)
 	{
-		Parent = new HandleObjectListProperty(this, "Parent", -1);
-		Type = new StringProperty(this, "Type", type);
-		Tag = new StringProperty(this, "Tag", "");
-		UserData = new ObjectProperty(this, "UserData", null);
 		Children = new HandleObjectListProperty(this, "Children", -1);
+		Clipping = new BooleanProperty(this, "Clipping", true);
+		Parent = new HandleObjectListProperty(this, "Parent", -1);
+		Tag = new StringProperty(this, "Tag", "");
+		Type = new StringProperty(this, "Type", type);
+		UserData = new ObjectProperty(this, "UserData", null);
 		Visible = new BooleanProperty(this, "Visible", true);
 
 		if (parent != null)

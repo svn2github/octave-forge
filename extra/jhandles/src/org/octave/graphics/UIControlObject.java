@@ -262,6 +262,8 @@ public class UIControlObject extends HandleObject
 	public void controlActivated(UIControlEvent event)
 	{
 		System.out.println("Control activated");
-		Callback.execute();
+		Callback.execute(new Object[] {
+			new Double(getHandle()),
+			event});
 	}
 }

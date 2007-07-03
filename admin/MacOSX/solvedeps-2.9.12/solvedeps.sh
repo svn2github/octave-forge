@@ -337,6 +337,7 @@ create_octave() {
   local voctavepack=${OCTAVEPACK##*/}       # echo ${voctavepack}
   local voctavefile=${voctavepack%.tar.gz*} # echo ${voctavefile}
   local voctavediff=${OCTAVEDIFF##*/}       # echo ${voctavediff}
+  local voctversion=${voctavefile##*-}      # echo ${voctversion}
 
   getsource ${OCTAVEPACK}
   unpack ${voctavepack}

@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}] =} qfunc(@var{x})
+## @deftypefn {Function File} {[@var{y}] =} qfuncinv(@var{x})
 ##	Compute the inverse Q function.
 ## @seealso{erfc,  erf}
 ## @end deftypefn

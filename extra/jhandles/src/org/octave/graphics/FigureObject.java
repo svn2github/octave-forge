@@ -107,7 +107,7 @@ public class FigureObject extends HandleObject
 		*/
 
 		// setup axes panel
-		axPanel = new Panel(new FigureLayout());
+		axPanel = new Panel(new PositionLayout());
 		frame.add(axPanel, BorderLayout.CENTER);
 
 		// setup RenderCanvas
@@ -169,38 +169,6 @@ public class FigureObject extends HandleObject
 		//frame.dispose();
 		frame.setVisible(false);
 		EventQueue.invokeLater(new Runnable() { public void run() { frame.dispose(); } });
-	}
-
-	public double[] convertPosition(double[] pos, String units)
-	{
-		return convertPosition(pos, units, "pixels");
-	}
-
-	public double[] convertPosition(double[] pos, String units, String toUnits)
-	{
-		double[] r = null;
-
-		if (units.equalsIgnoreCase("normalized"))
-		{
-			int w = canvas.getWidth(), h = canvas.getHeight();
-			r = new double[] { pos[0]*w, pos[1]*h, pos[2]*w, pos[3]*h };
-		}
-		else if (units.equalsIgnoreCase("pixels"))
-			r = (double[])pos.clone();
-
-		if (!toUnits.equalsIgnoreCase("pixels"))
-		{
-			if (toUnits.equalsIgnoreCase("normalized"))
-			{
-				int w = canvas.getWidth(), h = canvas.getHeight();
-				r[0] /= w;
-				r[1] /= h;
-				r[2] /= w;
-				r[3] /= h;
-			}
-		}
-
-		return r;
 	}
 
 	public RenderCanvas getCanvas()

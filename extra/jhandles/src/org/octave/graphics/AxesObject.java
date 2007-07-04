@@ -506,20 +506,19 @@ public class AxesObject extends HandleObject
 
 	Rectangle getBoundingBox()
 	{
-		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
-		return new Rectangle((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
+		return new Rectangle((int)(pos[0]-1), (int)(pos[1]-1), (int)pos[2], (int)pos[3]);
 	}
 
 	Rectangle getOuterBoundingBox()
 	{
-		double[] pos = getFigure().convertPosition(OuterPosition.getArray(), Units.getValue());
-		return new Rectangle((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+		double[] pos = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", canvas.getComponent());
+		return new Rectangle((int)(pos[0]-1), (int)(pos[1]-1), (int)pos[2], (int)pos[3]);
 	}
 
 	void updatePosition()
 	{
-		FigureObject fig = getFigure();
-		double[] p = fig.convertPosition(OuterPosition.getArray(), Units.getValue());
+		double[] p = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
 			marginV = 10+2*fm.getHeight()+10+7;
@@ -528,13 +527,12 @@ public class AxesObject extends HandleObject
 		p[1] += marginV;
 		p[2] -= 2*marginH;
 		p[3] -= 2*marginV;
-		autoSet(Position, fig.convertPosition(p, "pixels", Units.getValue()));
+		autoSet(Position, Utils.convertPosition(p, "pixels", Units.getValue(), canvas.getComponent()));
 	}
 
 	void updateOuterPosition()
 	{
-		FigureObject fig = getFigure();
-		double[] p = fig.convertPosition(Position.getArray(), Units.getValue());
+		double[] p = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
 			marginV = 10+2*fm.getHeight()+10+7;
@@ -543,7 +541,7 @@ public class AxesObject extends HandleObject
 		p[1] -= marginV;
 		p[2] += 2*marginH;
 		p[3] += 2*marginV;
-		autoSet(OuterPosition, fig.convertPosition(p, "pixels", Units.getValue()));
+		autoSet(OuterPosition, Utils.convertPosition(p, "pixels", Units.getValue(), canvas.getComponent()));
 	}
 
 	void updateActivePosition()
@@ -1476,24 +1474,27 @@ public class AxesObject extends HandleObject
 				zmin-0.001*(zmax-zmin), zmax+0.001*(zmax-zmin));
 		r.setCamera(CameraPosition.getArray(), CameraTarget.getArray());
 
-		// Do lights first
-		it = Children.iterator();
-		while (it.hasNext())
+		synchronized (Children)
 		{
-			GraphicObject obj = (GraphicObject)it.next();
-			if (obj.Visible.isSet() && obj instanceof LightObject)
-				obj.draw(r);
-		}
-
-		// Do other objects
-		it = Children.iterator();
-		while (it.hasNext())
-		{
-			GraphicObject obj = (GraphicObject)it.next();
-			if (obj.Visible.isSet() && !(obj instanceof LightObject))
+			// Do lights first
+			it = Children.iterator();
+			while (it.hasNext())
 			{
-				r.setClipping(obj.Clipping.isSet());
-				obj.draw(r);
+				GraphicObject obj = (GraphicObject)it.next();
+				if (obj.Visible.isSet() && obj instanceof LightObject)
+					obj.draw(r);
+			}
+
+			// Do other objects
+			it = Children.iterator();
+			while (it.hasNext())
+			{
+				GraphicObject obj = (GraphicObject)it.next();
+				if (obj.Visible.isSet() && !(obj instanceof LightObject))
+				{
+					r.setClipping(obj.Clipping.isSet());
+					obj.draw(r);
+				}
 			}
 		}
 
@@ -2339,9 +2340,8 @@ public class AxesObject extends HandleObject
 			autoCamera();
 		else if (p == Units)
 		{
-			FigureObject fig = getFigure();
-			OuterPosition.reset(fig.convertPosition(OuterPosition.getArray(), currentUnits, Units.getValue()));
-			Position.reset(fig.convertPosition(Position.getArray(), currentUnits, Units.getValue()));
+			OuterPosition.reset(Utils.convertPosition(OuterPosition.getArray(), currentUnits, Units.getValue(), canvas.getComponent()));
+			Position.reset(Utils.convertPosition(Position.getArray(), currentUnits, Units.getValue(), canvas.getComponent()));
 			currentUnits = Units.getValue();
 		}
 		else if (p == XScale)

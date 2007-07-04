@@ -147,9 +147,9 @@ public class ColorbarObject extends AxesObject
 
 	private void doLocate()
 	{
-		double[] aPos = getFigure().convertPosition(axes.Position.getArray(), axes.Units.getValue());
-		double[] aOPos = getFigure().convertPosition(axes.OuterPosition.getArray(), axes.Units.getValue());
-		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
+		double[] aPos = Utils.convertPosition(axes.Position.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
+		double[] aOPos = Utils.convertPosition(axes.OuterPosition.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
+		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		boolean outerActive = axes.ActivePositionProperty.is("outerposition");
 		int margin = 40;
 
@@ -233,18 +233,18 @@ public class ColorbarObject extends AxesObject
 			}
 		}
 
-		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
+		Position.set(Utils.convertPosition(pos, "pixels", Units.getValue(), canvas.getComponent()), true);
 		autoMode++;
-		axes.setInternalPosition(getFigure().convertPosition(aPos, "pixels", axes.Units.getValue()));
+		axes.setInternalPosition(Utils.convertPosition(aPos, "pixels", axes.Units.getValue(), canvas.getComponent()));
 		autoMode--;
 	}
 
 	void updateActivePosition()
 	{
-		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
+		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		pos[2] = 40.0;
 		pos[3] = 40.0;
-		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
+		Position.set(Utils.convertPosition(pos, "pixels", Units.getValue(), canvas.getComponent()), true);
 		doLocate();
 	}
 

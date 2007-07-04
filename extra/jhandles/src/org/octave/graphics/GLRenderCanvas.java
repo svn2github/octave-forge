@@ -90,7 +90,8 @@ public class GLRenderCanvas extends GLCanvas
 
 	public void redraw()
 	{
-		display();
+		//display();
+		repaint();
 	}
 
 	public void addRenderEventListener(RenderEventListener l)

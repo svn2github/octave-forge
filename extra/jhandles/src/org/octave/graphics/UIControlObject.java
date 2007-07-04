@@ -62,7 +62,7 @@ public class UIControlObject extends HandleObject
 		Extent = new VectorProperty(this, "Extent", new double[] {0, 0, 0, 0}, 4);
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
-		FontSize = new DoubleProperty(this, "FontSize", 12);
+		FontSize = new DoubleProperty(this, "FontSize", 11);
 		FontUnits = new RadioProperty(this, "FontUnits",
 			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
@@ -137,51 +137,11 @@ public class UIControlObject extends HandleObject
 		return ctrl;
 	}
 
-	public double[] convertPosition(double[] pos, String units, String toUnits)
-	{
-		if (ctrl != null)
-		{
-			Dimension sz = ctrl.getSize();
-			double[] p;
-
-			if (units.equalsIgnoreCase("pixels"))
-				p = new double[] {pos[0], pos[1], pos[2], pos[3]};
-			else if (units.equalsIgnoreCase("normalized"))
-				p = new double[] {pos[0]*sz.width, pos[1]*sz.height, pos[2]*sz.width, pos[3]*sz.height};
-			else
-			{
-				System.out.println("Warning: cannot convert from `" + units + "' units");
-				p = (double[])pos.clone();
-			}
-
-			if (!toUnits.equalsIgnoreCase("pixels"))
-			{
-				if (toUnits.equalsIgnoreCase("normalized"))
-				{
-					p[0] /= sz.width;
-					p[2] /= sz.width;
-					p[1] /= sz.height;
-					p[3] /= sz.height;
-				}
-			}
-
-			return p;
-		}
-		else
-			System.out.println("Warning: cannot convert position, no control associated with this object");
-
-		return pos;
-	}
-
 	public double[] getPosition()
 	{
 		Component pComp = getParentComponent();
 		if (pComp != null)
-		{
-			double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), Units.getValue(), "pixels");
-			pos[1] = (pComp.getHeight()-pos[1]-pos[3]);
-			return pos;
-		}
+			return Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", pComp);
 		else
 		{
 			System.out.println("Warning: cannot compute position of parentless controls");
@@ -217,7 +177,7 @@ public class UIControlObject extends HandleObject
 		{
 			if (p == Units)
 			{
-				double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), currentUnits, Units.getValue());
+				double[] pos = Utils.convertPosition(Position.getArray(), currentUnits, Units.getValue(), getParentComponent());
 				Position.set(pos, true);
 				currentUnits = Units.getValue();
 			}

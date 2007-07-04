@@ -217,12 +217,6 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		return cachedData;
 	}
 
-	public double[] convertPosition(double[] pos, String units, String toUnits)
-	{
-		System.out.println("Warning: cannot convert position from " + getClass());
-		return pos;
-	}
-
 	public java.awt.Component getComponent()
 	{
 		System.out.println("Warning: no component associated with " + getClass());

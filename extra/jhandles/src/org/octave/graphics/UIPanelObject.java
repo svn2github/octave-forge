@@ -28,6 +28,23 @@ import javax.swing.border.TitledBorder;
 
 public class UIPanelObject extends HandleObject
 {
+	private class PanelWrapper extends Panel
+		implements Positionable
+	{
+		private UIPanelObject uiPanel;
+
+		public PanelWrapper(UIPanelObject uiPanel)
+		{
+			super(new BorderLayout());
+			this.uiPanel = uiPanel;
+		}
+
+		public double[] getPosition()
+		{
+			return uiPanel.getPosition();
+		}
+	}
+
 	protected JPanel panel;
 	protected Panel panelWrapper;
 	private String currentUnits;
@@ -54,7 +71,7 @@ public class UIPanelObject extends HandleObject
 		BackgroundColor = new ColorProperty(this, "BackgroundColor", Color.lightGray);
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
-		FontSize = new DoubleProperty(this, "FontSize", 12);
+		FontSize = new DoubleProperty(this, "FontSize", 11);
 		FontUnits = new RadioProperty(this, "FontUnits",
 			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
@@ -68,7 +85,18 @@ public class UIPanelObject extends HandleObject
 			"leftbottom", "centerbottom", "rightbottom"}, "lefttop");
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized"}, "normalized");
 
+		listen(BackgroundColor);
+		listen(FontAngle);
+		listen(FontName);
+		listen(FontSize);
 		listen(FontUnits);
+		listen(FontWeight);
+		listen(ForegroundColor);
+		listen(HighlightColor);
+		listen(Position);
+		listen(ShadowColor);
+		listen(Title);
+		listen(TitlePosition);
 		listen(Units);
 	}
 
@@ -76,8 +104,9 @@ public class UIPanelObject extends HandleObject
 	{
 		if (panel != null)
 		{
-			panel.getParent().remove(panel);
+			panelWrapper.getParent().remove(panelWrapper);
 			panel = null;
+			panelWrapper = null;
 		}
 	}
 
@@ -102,11 +131,9 @@ public class UIPanelObject extends HandleObject
 				Title.toString());
 		String tPos = TitlePosition.getValue().toLowerCase();
 		
-		panel = new JPanel();
+		panel = new JPanel(new PositionLayout());
 		panel.setBackground(BackgroundColor.getColor());
-		panelWrapper = new Panel(new BorderLayout());
-		double[] pos = getPosition();
-		panelWrapper.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+		panelWrapper = new PanelWrapper(this);
 		panelWrapper.add(panel, BorderLayout.CENTER);
 		border.setTitleFont(Utils.getFont(FontName, FontSize, FontUnits, FontAngle, FontWeight, panelWrapper.getHeight()));
 		border.setTitleColor(ForegroundColor.getColor());
@@ -123,51 +150,11 @@ public class UIPanelObject extends HandleObject
 		pContainer.validate();
 	}
 
-	public double[] convertPosition(double[] pos, String units, String toUnits)
-	{
-		if (panel != null)
-		{
-			Dimension sz = panel.getSize();
-			double[] p;
-
-			if (units.equalsIgnoreCase("pixels"))
-				p = new double[] {pos[0], pos[1], pos[2], pos[3]};
-			else if (units.equalsIgnoreCase("normalized"))
-				p = new double[] {pos[0]*sz.width, pos[1]*sz.height, pos[2]*sz.width, pos[3]*sz.height};
-			else
-			{
-				System.out.println("Warning: cannot convert from `" + units + "' units");
-				p = (double[])pos.clone();
-			}
-
-			if (!toUnits.equalsIgnoreCase("pixels"))
-			{
-				if (toUnits.equalsIgnoreCase("normalized"))
-				{
-					p[0] /= sz.width;
-					p[2] /= sz.width;
-					p[1] /= sz.height;
-					p[3] /= sz.height;
-				}
-			}
-
-			return p;
-		}
-		else
-			System.out.println("Warning: cannot convert position, no control associated with this object");
-
-		return pos;
-	}
-
 	public double[] getPosition()
 	{
 		Component pComp = getParentComponent();
 		if (pComp != null)
-		{
-			double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), Units.getValue(), "pixels");
-			pos[1] = (pComp.getHeight()-pos[1]-pos[3]);
-			return pos;
-		}
+			return Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", pComp);
 		else
 		{
 			System.out.println("Warning: cannot compute position of parentless controls");
@@ -195,15 +182,49 @@ public class UIPanelObject extends HandleObject
 	{
 		if (panel != null)
 		{
-			if (p == Units)
+			TitledBorder border = (TitledBorder)panel.getBorder();
+
+			if (p == BackgroundColor)
+				panel.setBackground(BackgroundColor.getColor());
+			else if (p == FontAngle || p == FontName || p == FontSize ||
+					p == FontWeight || p == FontUnits)
 			{
-				double[] pos = Parent.elementAt(0).convertPosition(Position.getArray(), currentUnits, Units.getValue());
+				border.setTitleFont(Utils.getFont(FontName, FontSize, FontUnits, FontAngle, FontWeight, panelWrapper.getHeight()));
+				panel.doLayout();
+				panel.validate();
+			}
+			else if (p == ForegroundColor)
+				border.setTitleColor(ForegroundColor.getColor());
+			else if (p == HighlightColor || p == ShadowColor)
+				border.setBorder(BorderFactory.createEtchedBorder(HighlightColor.getColor(), ShadowColor.getColor()));
+			else if (p == Position)
+			{
+				panel.getParent().doLayout();
+				panel.getParent().validate();
+			}
+			else if (p == Title)
+				border.setTitle(Title.toString());
+			else if (p == TitlePosition)
+			{
+				String loc = TitlePosition.getValue().toLowerCase();
+
+				border.setTitlePosition(loc.contains("bottom") ? TitledBorder.BOTTOM : TitledBorder.TOP);
+				border.setTitleJustification(
+						loc.contains("left") ? TitledBorder.LEFT :
+						loc.contains("center") ? TitledBorder.CENTER :
+						loc.contains("right") ? TitledBorder.RIGHT :
+						TitledBorder.LEFT);
+				panel.doLayout();
+				panel.validate();
+			}
+			else if (p == Units)
+			{
+				double[] pos = Utils.convertPosition(Position.getArray(), currentUnits, Units.getValue(), getParentComponent());
 				Position.set(pos, true);
 				currentUnits = Units.getValue();
 			}
-			else if (p == FontUnits)
-			{
-			}
+
+			panel.repaint();
 		}
 	}
 }

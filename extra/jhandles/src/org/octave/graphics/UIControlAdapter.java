@@ -24,7 +24,8 @@ package org.octave.graphics;
 import java.awt.*;
 import javax.swing.JComponent;
 
-public class UIControlAdapter extends Panel implements HandleNotifier.Sink
+public class UIControlAdapter extends Panel
+	implements HandleNotifier.Sink, Positionable
 {
 	private UIControl ctrl;
 	private UIControlObject uiObj;
@@ -119,9 +120,8 @@ public class UIControlAdapter extends Panel implements HandleNotifier.Sink
 				comp1.setForeground(uiObj.ForegroundColor.getColor());
 			else if (p == uiObj.Position)
 			{
-				double[] pos = uiObj.getPosition();
-				setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
-				validate();
+				getParent().doLayout();
+				getParent().validate();
 				if (uiObj.FontUnits.is("normalized"))
 					comp1.setFont(Utils.getFont(uiObj.FontName, uiObj.FontSize, uiObj.FontUnits,
 						uiObj.FontAngle, uiObj.FontWeight, getHeight()));
@@ -137,5 +137,12 @@ public class UIControlAdapter extends Panel implements HandleNotifier.Sink
 					comp1.setToolTipText(null);
 			}
 		}
+	}
+
+	/* Positionable interface */
+
+	public double[] getPosition()
+	{
+		return uiObj.getPosition();
 	}
 }

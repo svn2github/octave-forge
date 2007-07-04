@@ -260,9 +260,9 @@ public class LegendObject extends AxesObject
 		if (Location.is("none"))
 			return;
 
-		double[] aPos = getFigure().convertPosition(axes.Position.getArray(), axes.Units.getValue());
-		double[] aOPos = getFigure().convertPosition(axes.OuterPosition.getArray(), axes.Units.getValue());
-		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
+		double[] aPos = Utils.convertPosition(axes.Position.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
+		double[] aOPos = Utils.convertPosition(axes.OuterPosition.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
+		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		boolean outerActive = axes.ActivePositionProperty.is("outerposition");
 		int margin = 10;
 
@@ -352,58 +352,18 @@ public class LegendObject extends AxesObject
 			}
 		}
 
-		/*
-		if (Location.is("NorthEast"))
-		{
-			pos[0] = aPos[0]+aPos[2]-margin-pos[2];
-			pos[1] = aPos[1]+aPos[3]-margin-pos[3];
-		}
-		else if (Location.is("NorthWest"))
-		{
-			pos[0] = aPos[0]+margin;
-			pos[1] = aPos[1]+aPos[3]-margin-pos[3];
-		}
-		else if (Location.is("North"))
-		{
-			pos[0] = aPos[0]+(aPos[2]-pos[2])/2;
-			pos[1] = aPos[1]+aPos[3]-margin-pos[3];
-		}
-		else if (Location.is("NorthEastOutside"))
-		{
-			if (outerActive && (aPos[0]+aPos[2]+2*margin+pos[2]) > (aOPos[0]+aOPos[2]))
-			{
-				aPos[2] = aOPos[0]+aOPos[2]-2*margin-pos[2]-aPos[0];
-			}
-			pos[0] = aPos[0]+aPos[2]+margin;
-			pos[1] = aPos[1]+aPos[3]-pos[3];
-		}
-		else if (Location.is("SouthEast"))
-		{
-			pos[0] = aPos[0]+aPos[2]-margin-pos[2];
-			pos[1] = aPos[1]+margin;
-		}
-		else if (Location.is("South"))
-		{
-			pos[0] = aPos[0]+(aPos[2]-pos[2])/2;
-			pos[1] = aPos[1]+margin;
-		}
-		else if (Location.is("SouthWest"))
-		{
-		}
-		*/
-
-		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
+		Position.set(Utils.convertPosition(pos, "pixels", Units.getValue(), canvas.getComponent()), true);
 		autoMode++;
-		axes.setInternalPosition(getFigure().convertPosition(aPos, "pixels", axes.Units.getValue()));
+		axes.setInternalPosition(Utils.convertPosition(aPos, "pixels", axes.Units.getValue(), canvas.getComponent()));
 		autoMode--;
 	}
 
 	void updateActivePosition()
 	{
-		double[] pos = getFigure().convertPosition(Position.getArray(), Units.getValue());
+		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		pos[2] = size.width;
 		pos[3] = size.height;
-		Position.set(getFigure().convertPosition(pos, "pixels", Units.getValue()), true);
+		Position.set(Utils.convertPosition(pos, "pixels", Units.getValue(), canvas.getComponent()), true);
 		doLocate();
 	}
 

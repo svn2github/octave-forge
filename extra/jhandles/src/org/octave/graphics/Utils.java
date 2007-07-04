@@ -25,6 +25,10 @@ import java.util.Map;
 import java.util.HashMap;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
+import java.awt.Container;
+import java.awt.Component;
+import java.awt.Insets;
+import java.awt.Rectangle;
 
 public class Utils
 {
@@ -129,5 +133,39 @@ public class Utils
 		map.put(TextAttribute.SIZE, new Float(fs));
 		
 		return new Font(map);
+	}
+
+	public static double[] convertPosition(double[] pos, String fromUnits, String toUnits, Component parent)
+	{
+		double[] p = null;
+		boolean isContainer = (parent instanceof Container);
+
+		if (fromUnits.equalsIgnoreCase("pixels"))
+			p = (double[])pos.clone();
+		else if (fromUnits.equalsIgnoreCase("normalized"))
+		{
+			Insets ir = (isContainer ? ((Container)parent).getInsets() : new Insets(0, 0, 0, 0));
+			Rectangle r = parent.getBounds();
+			int w = r.width-ir.left-ir.right, h = r.height-ir.top-ir.bottom;
+
+			p = new double[] {pos[0]*w+1, pos[1]*h+1, pos[2]*w, pos[3]*h};
+		}
+
+		if (!toUnits.equalsIgnoreCase("pixels"))
+		{
+			if (toUnits.equalsIgnoreCase("normalized"))
+			{
+				Insets ir = (isContainer ? ((Container)parent).getInsets() : new Insets(0, 0, 0, 0));
+				Rectangle r = parent.getBounds();
+				int w = r.width-ir.left-ir.right, h = r.height-ir.top-ir.bottom;
+
+				p[0] = (p[0]-1)/w;
+				p[1] = (p[1]-1)/h;
+				p[2] /= w;
+				p[3] /= h;
+			}
+		}
+
+		return p;
 	}
 }

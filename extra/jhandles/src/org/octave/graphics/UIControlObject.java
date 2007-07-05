@@ -56,7 +56,7 @@ public class UIControlObject extends HandleObject
 	{
 		super(parent, "uicontrol");
 
-		BackgroundColor = new ColorProperty(this, "BackgroundColor", Color.lightGray);
+		BackgroundColor = new ColorProperty(this, "BackgroundColor", Utils.getBackgroundColor());
 		Callback = new CallbackProperty(this, "Callback", (String)null);
 		Enable = new RadioProperty(this, "Enable", new String[] {"on", "inactive", "off"}, "on");
 		Extent = new VectorProperty(this, "Extent", new double[] {0, 0, 0, 0}, 4);

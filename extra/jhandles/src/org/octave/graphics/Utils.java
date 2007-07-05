@@ -23,12 +23,14 @@ package org.octave.graphics;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.awt.Container;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import javax.swing.UIManager;
 
 public class Utils
 {
@@ -167,5 +169,29 @@ public class Utils
 		}
 
 		return p;
+	}
+
+	private static Color getUIColor(String name, Color def)
+	{
+		/* make sure LookAndFeel is initialized */
+		RootObject.getInstance();
+
+		try { return (Color)UIManager.get(name); }
+		catch (Exception e) { return def; }
+	}
+
+	public static Color getBackgroundColor()
+	{
+		return getUIColor("control", Color.lightGray);
+	}
+
+	public static Color getShadowColor()
+	{
+		return getUIColor("controlShadow", Color.gray);
+	}
+
+	public static Color getHighlightColor()
+	{
+		return getUIColor("controlLtHighlight", Color.white);
 	}
 }

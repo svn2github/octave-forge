@@ -87,7 +87,7 @@ public class FigureObject extends HandleObject
 		// setup window frame
 		frame = new Frame();
 		frame.setSize(600, 500);
-		frame.setBackground(Color.lightGray);
+		frame.setBackground(Utils.getBackgroundColor());
 		frame.setTitle("Figure " + fignum);
 		frame.addWindowListener(this);
 		frame.addComponentListener(this);
@@ -121,7 +121,7 @@ public class FigureObject extends HandleObject
 		Name = new StringProperty(this, "Name", "");
 		NumberTitle = new BooleanProperty(this, "NumberTitle", true);
 		NextPlot = new RadioProperty(this, "NextPlot", new String[] {"new", "add", "replace", "replacechildren"}, "add");
-		FigColor = new ColorProperty(this, "Color", Color.lightGray);
+		FigColor = new ColorProperty(this, "Color", Utils.getBackgroundColor());
 		Colormap = new ArrayProperty(this, "Colormap",
 			new Matrix(RootObject.getInstance().defaultColorMap()), new String[] {"double"}, 2);
 		ResizeFcn = new CallbackProperty(this, "ResizeFcn", (String)null);
@@ -165,9 +165,10 @@ public class FigureObject extends HandleObject
 	
 	public void delete()
 	{
+		frame.setVisible(false);
 		super.delete();
 		//frame.dispose();
-		frame.setVisible(false);
+		//frame.setVisible(false);
 		EventQueue.invokeLater(new Runnable() { public void run() { frame.dispose(); } });
 	}
 

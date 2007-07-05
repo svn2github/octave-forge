@@ -68,7 +68,7 @@ public class UIPanelObject extends HandleObject
 	{
 		super(parent, "uipanel");
 
-		BackgroundColor = new ColorProperty(this, "BackgroundColor", Color.lightGray);
+		BackgroundColor = new ColorProperty(this, "BackgroundColor", Utils.getBackgroundColor());
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
 		FontSize = new DoubleProperty(this, "FontSize", 11);
@@ -76,9 +76,9 @@ public class UIPanelObject extends HandleObject
 			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
 		ForegroundColor = new ColorProperty(this, "ForegroundColor", Color.black);
-		HighlightColor = new ColorProperty(this, "HighlightColor", Color.white);
+		HighlightColor = new ColorProperty(this, "HighlightColor", Utils.getHighlightColor());
 		Position = new VectorProperty(this, "Position", new double[] {0, 0, 1, 1}, 4);
-		ShadowColor = new ColorProperty(this, "ShadowColor", Color.gray);
+		ShadowColor = new ColorProperty(this, "ShadowColor", Utils.getShadowColor());
 		Title = new StringProperty(this, "Title", "");
 		TitlePosition = new RadioProperty(this, "TitlePosition", new String[] {
 			"lefttop", "centertop", "righttop",

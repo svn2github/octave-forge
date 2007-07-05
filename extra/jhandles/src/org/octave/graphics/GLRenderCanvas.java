@@ -110,10 +110,12 @@ public class GLRenderCanvas extends GLCanvas
 		getContext().makeCurrent();
 
 		GL gl = getGL();
-		ByteBuffer buf = ByteBuffer.allocate(getWidth()*getHeight()*4);
-		gl.glReadPixels(0, 0, getWidth(), getHeight(), GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buf);
+		ByteBuffer buf = ByteBuffer.allocate(getWidth()*getHeight()*3);
+		gl.glReadBuffer(GL.GL_FRONT);
+		gl.glReadPixels(0, 0, getWidth(), getHeight(), GL.GL_RGB, GL.GL_UNSIGNED_BYTE, buf);
+		gl.glReadBuffer(GL.GL_BACK);
 
-		BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 		img.getRaster().setDataElements(0, 0, getWidth(), getHeight(), buf.array());
 		com.sun.opengl.util.ImageUtil.flipImageVertically(img);
 

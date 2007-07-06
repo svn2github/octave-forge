@@ -22,5 +22,5 @@
 
 function y = qfunc(x)
 	if (nargin < 1); usage('qfunc(x)'); end
-	y = 0.5.*erfc(x./(sqrt(2)));
+	y = 1-normcdf(x);
 	

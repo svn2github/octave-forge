@@ -1,4 +1,5 @@
 sinclude ./Makeconf
+export LFLAGS
 
 PROGS = __java__.oct octave.jar
 
@@ -22,8 +23,8 @@ all:
 	@echo "Java support not compiled"
 endif
 
-__java__.oct: __java__.o
-	$(MKOCTFILE) -o $@ $^ $(JAVA_LIBS)
+__java__.oct: __java__.cc
+	$(MKOCTFILE) $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS)
 
 octave.jar: $(JAVA_CLASSES)
 	-rm -f $@

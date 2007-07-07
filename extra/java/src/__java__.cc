@@ -51,7 +51,9 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokat
 
 static JavaVM *jvm = 0;
 static JNIEnv *current_env = 0;
-static void* jvmLib = 0;
+
+// Need to keep hold of the shared library handle until exit.
+static octave_shlib jvm_lib;
 
 static std::map<int,octave_value> listener_map;
 static std::map<int,octave_value> octave_ref_map;
@@ -143,7 +145,7 @@ static std::string read_registry_string (const std::string& key, const std::stri
 }
 #endif
 
-static std::string get_module_path(const std::string& name, bool strip_name = true)
+static std::string get_module_path(const std::string& name, bool strip_name = true) 
 {
   std::string retval;
 
@@ -157,8 +159,10 @@ static std::string get_module_path(const std::string& name, bool strip_name = tr
       if (pos != NPOS)
         retval.resize (pos);
       else
-        retval.resize (0);
+        throw std::string("No module path in ")+retval;
     }
+  else
+    throw std::string("Could not find file ")+name;
 
   return retval;
 }
@@ -178,10 +182,11 @@ static std::string initial_java_dir (bool arch_dependent = false)
         path2.resize (pos);
     }
 
-  return (arch_dependent ? path1 : path2);
+  std::string retval = (arch_dependent ? path1 : path2);
+  return retval;
 }
 
-static std::string initial_class_path (void)
+static std::string initial_class_path ()
 {
   std::string retval = initial_java_dir ();
 
@@ -194,103 +199,85 @@ static std::string initial_class_path (void)
       if (st)
         retval = jar_file;
       else
-        retval.resize(0);
+        throw std::string("octave jar does not exist: ") + jar_file;
     }
+  else
+     throw std::string("initial java dir is empty");
 
   return retval;
 }
 
-static octave_shlib jvm_lib;
-
-static bool initialize_jvm (std::string& msg)
+static void initialize_jvm ()
 {
-  if (! jvm)
-    {
-      JavaVMInitArgs vm_args;
-      JavaVMOption options[3];
-      std::string init_class_path = initial_class_path ();
-      std::string init_octave_path = initial_java_dir (true);
-      
-      if (init_octave_path.empty())
-        {
-          msg = "failed to find path of __java__.oct";
-          return false;
-        }
-      if (init_class_path.empty())
-        {
-          msg = "failed to find path of octave.jar";
-          return false;
-        }
+  if (jvm) return;
 
-      init_class_path = "-Djava.class.path=" + init_class_path;
-      init_octave_path = "-Doctave.java.path=" + init_octave_path;
+  // Find octave.jar file
+  std::string init_class_path, init_octave_path;
+  init_class_path = initial_class_path ();
+  init_octave_path = initial_java_dir (true);
 
-      OCTAVE_LOCAL_BUFFER (char, class_path_optionString, 
-			   init_class_path.length () + 1);
-      strcpy (class_path_optionString, init_class_path.c_str ());
-      OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, 
-			   init_octave_path.length () + 1);
-      strcpy (octave_path_optionString, init_octave_path.c_str ());
+  init_class_path = "-Djava.class.path=" + init_class_path;
+  init_octave_path = "-Doctave.java.path=" + init_octave_path;
 
-      vm_args.version = JNI_VERSION_1_2;
-      vm_args.nOptions = 3 /* 3 */;
-      options[0].optionString = class_path_optionString;
-      options[1].optionString = octave_path_optionString;
-      //options[2].optionString = "-Dsun.java2d.opengl=True";
-      options[2].optionString = "-Xrs";
-      vm_args.options = options;
-      vm_args.ignoreUnrecognized = false;
+  OCTAVE_LOCAL_BUFFER (char, class_path_optionString, 
+			init_class_path.length () + 1);
+  strcpy (class_path_optionString, init_class_path.c_str ());
+  OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, 
+			init_octave_path.length () + 1);
+  strcpy (octave_path_optionString, init_octave_path.c_str ());
 
-      std::string jvm_lib_path;
+  // Set up Java VM startup args
+  JavaVMInitArgs vm_args;
+  JavaVMOption options[3];
+
+  vm_args.version = JNI_VERSION_1_2;
+  vm_args.nOptions = 3 /* 3 */;
+  options[0].optionString = class_path_optionString;
+  options[1].optionString = octave_path_optionString;
+  //options[2].optionString = "-Dsun.java2d.opengl=True";
+  options[2].optionString = "-Xrs";
+  vm_args.options = options;
+  vm_args.ignoreUnrecognized = false;
 
 #if defined (__WIN32__)
-      std::string regval = read_registry_string ("software\\javasoft\\java runtime environment", "Currentversion");
-      if (! regval.empty ())
-        {
-          regval = read_registry_string ("software\\javasoft\\java runtime environment\\" + regval, "RuntimeLib");
-          if (! regval.empty())
-            jvm_lib_path = regval;
-          else
-            msg = "unable to find Java Runtime Environment";
-        }
-      else
-        msg = "unable to find Java Runtime Environment";
 
-      if (! jvm_lib_path.empty ())
-        {
-          octave_shlib lib (jvm_lib_path);
+  // In windows, find the location of the JRE from the registry
+  // and load the symbol from the dll.
+  std::string key, value;
 
-          if (lib)
-            {
-              JNI_CreateJavaVM_t create_vm = (JNI_CreateJavaVM_t)lib.search("JNI_CreateJavaVM");
+  key = "software\\javasoft\\java runtime environment";
+  value = "Currentversion";
+  std::string regval = read_registry_string (key,value);
+  if (regval.empty ())
+    throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
 
-              if (create_vm)
-                {
-                  if (create_vm (&jvm, &current_env, &vm_args) == JNI_OK)
-                    {
-                      jvm_lib = lib;
-                      return true;
-                    }
-                  else
-                    msg = "unable to start Java VM";
-                }
-              else
-                msg = "unable to find correct entry point in JVM library";
-            }
-          else
-            msg = "unable to load Java Runtime Environment";
-        }
+  key = key + "\\" + regval;
+  value = "RuntimeLib";
+  std::string jvm_lib_path = read_registry_string (key,value);
+  if (jvm_lib_path.empty())
+    throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
+
+  octave_shlib lib (jvm_lib_path);
+  if (!lib) 
+    throw std::string("unable to load Java Runtime Environment from ")+jvm_lib_path;
+
+  JNI_CreateJavaVM_t create_vm = (JNI_CreateJavaVM_t)lib.search("JNI_CreateJavaVM");
+  if (!create_vm)
+    throw std::string("unable to find JNI_CreateJavaVM in ")+jvm_lib_path;
+
+  if (create_vm (&jvm, &current_env, &vm_args) != JNI_OK)
+    throw std::string("unable to start Java VM in ")+jvm_lib_path;
+
+  jvm_lib = lib;
+
 #else
-      if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **>(&current_env), 
-            &vm_args) == JNI_OK)
-        return true;
-      else
-        msg = "unable to start Java VM";
-#endif
-      return false;
-    }
 
-  return true;
+  // In unix rely on dynamic libraries to resolve the JRE at runtime.
+  if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **>(&current_env), 
+            &vm_args) != JNI_OK)
+    throw std::string("unable to start Java VM");
+
+#endif
 }
 
 static void terminate_jvm(void)
@@ -1326,16 +1313,18 @@ static void initialize_java (void)
 {
   if (! jvm)
     {
-      std::string msg;
-      if (initialize_jvm (msg))
+      try
         {
+          initialize_jvm ();
           octave_java::register_type ();
           command_editor::set_event_hook (java_event_hook);
           octave_thread_ID = get_current_thread_ID (current_env);
           //printf("octave thread ID=%ld\n", octave_thread_ID);
         }
-      else
-        error (msg.c_str ());
+      catch (std::string msg)
+        {
+          error (msg.c_str ());
+        }
     }
 }
 

@@ -17,19 +17,12 @@ libdir = @libdir@
 datadir = @datadir@
 infodir = @infodir@
 includedir = @includedir@
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALLOCT=octinst.sh
 
 DESTDIR =
 
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 LN_S = @LN_S@
-
-AWK = @AWK@
 
 # Most octave programs will be compiled with $(MKOCTFILE).  Those which
 # cannot use mkoctfile directly can request the flags that mkoctfile 
@@ -47,6 +40,7 @@ CXXPICFLAG = @CXXPICFLAG@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 FPICFLAG = @FPICFLAG@
+LFLAGS = @LFLAGS@
 
 OCTAVE = @OCTAVE@
 OCTAVE_VERSION = @OCTAVE_VERSION@
@@ -63,6 +57,7 @@ ALTOPATH = @altopath@
 JAVAC = @JAVAC@
 JAR = @JAR@
 JAVA_LIBS = @JAVA_LIBS@
+JAVA_INCS = @JAVA_INCS@
 HAVE_JAVA = @HAVE_JAVA@
 
 %.o: %.c ; $(MKOCTFILE) -c $<

@@ -50,19 +50,46 @@ public class CallbackProperty extends Property
 		execute(new Object[0]);
 	}
 
-	public void execute(Object[] args)
+	public void execute(final Object[] args)
 	{
-		RootObject root = RootObject.getInstance();
+		final RootObject root = RootObject.getInstance();
 
+		if (pvalue == null)
+			return;
+
+		Octave.invokeLater(new Runnable() {
+			public void run()
+			{
+				try
+				{
+					root.setCallbackMode(true);
+					if (pvalue instanceof OctaveReference)
+						Octave.doInvoke(((OctaveReference)pvalue).getID(), args);
+					else if (pvalue instanceof String)
+						Octave.doEvalString((String)pvalue);
+				}
+				catch (Exception e)
+				{
+					System.err.println("Exception occured during callback execution: " + e.toString());
+					e.printStackTrace();
+				}
+				finally
+				{
+					root.setCallbackMode(false);
+				}
+			}
+		});
+
+		/*
 		try
 		{
 			root.setCallbackMode(true);
 			if (pvalue != null)
 			{
 				if (pvalue instanceof OctaveReference)
-					Octave.invokeAndWait((OctaveReference)pvalue, args);
+					Octave.invokeLater((OctaveReference)pvalue, args);
 				else if (pvalue instanceof String)
-					Octave.evalAndWait((String)pvalue);
+					Octave.evalLater((String)pvalue);
 			}
 			root.setCallbackMode(false);
 		}
@@ -72,5 +99,6 @@ public class CallbackProperty extends Property
 			System.err.println("Exception occured during callback execution: " + e.toString());
 			e.printStackTrace();
 		}
+		*/
 	}
 }

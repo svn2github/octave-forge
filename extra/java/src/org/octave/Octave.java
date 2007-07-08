@@ -9,6 +9,7 @@ public class Octave
 
   private static Object notifyObject = null;
   private static Object[] args = null;
+  private static java.util.LinkedList invokeList = new java.util.LinkedList();
 
   public native static boolean call (String name, Object[] argin, Object[] argout);
   public native static void doInvoke(int ID, Object[] args);
@@ -29,6 +30,23 @@ public class Octave
             }
           notifyObject = null;
           args = null;
+        }
+
+      synchronized(invokeList)
+        {
+          while (invokeList.size() > 0)
+            {
+              Object obj = invokeList.remove();
+	      if (obj instanceof Runnable)
+                ((Runnable)obj).run();
+              if (obj instanceof OctaveReference)
+                {
+                  Object[] objArgs = (Object[])invokeList.remove();
+                  doInvoke(((OctaveReference)obj).getID(), objArgs);
+                }
+              else if (obj instanceof String)
+                doEvalString((String)obj);
+            }
         }
     }
 
@@ -60,6 +78,40 @@ public class Octave
               catch (InterruptedException e) {}
             }
         }
+      else
+        doEvalString(cmd);
+    }
+
+  public static void invokeLater(Runnable r)
+    {
+      if (needThreadedInvokation())
+        synchronized(invokeList)
+          {
+            invokeList.add(r);
+          }
+      else
+        r.run();
+    }
+
+  public static void invokeLater(OctaveReference ref, Object[] invokeArgs)
+    {
+      if (needThreadedInvokation())
+        synchronized(invokeList)
+          {
+            invokeList.add(ref);
+            invokeList.add(invokeArgs);
+          }
+      else
+        doInvoke(ref.getID(), invokeArgs);
+    }
+
+  public static void evalLater(String cmd)
+    {
+      if (needThreadedInvokation())
+        synchronized(invokeList)
+          {
+            invokeList.add(cmd);
+          }
       else
         doEvalString(cmd);
     }

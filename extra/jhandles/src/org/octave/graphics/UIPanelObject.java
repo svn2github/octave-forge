@@ -180,6 +180,8 @@ public class UIPanelObject extends HandleObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (panel != null)
 		{
 			TitledBorder border = (TitledBorder)panel.getBorder();

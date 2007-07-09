@@ -89,8 +89,8 @@ public class TextObject extends GraphicObject
 
 	public void validate()
 	{
-		super.validate();
 		updateMinMax();
+		super.validate();
 	}
 
 	public Rectangle getExtent()
@@ -209,6 +209,8 @@ public class TextObject extends GraphicObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == Units)
 		{
 			AxesObject ax = getAxes();

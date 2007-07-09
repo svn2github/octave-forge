@@ -2166,6 +2166,8 @@ public class AxesObject extends HandleObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (autoMode == 0)
 		{
 			if (p == XLim)

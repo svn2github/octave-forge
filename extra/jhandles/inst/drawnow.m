@@ -18,7 +18,7 @@
 function drawnow (term, file)
 
   h = get(0, 'currentfigure');
-  if (! isempty (h) && h != 0)
+  if (! isempty (h) && h != 0 && ishandle (h))
     fig = __get_object__ (h);
     if (nargin == 0)
       fig.redraw ();

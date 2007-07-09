@@ -144,8 +144,8 @@ public class StemseriesObject extends GroupObject
 
 	public void validate()
 	{
-		super.validate();
 		updateXyzData();
+		super.validate();
 	}
 
 	private LineObject getLine()
@@ -167,6 +167,8 @@ public class StemseriesObject extends GroupObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == Marker)
 			getMarkers().Marker.set(Marker.get());
 		else if (p == StemColor)

@@ -249,6 +249,8 @@ public class BarseriesObject extends GroupObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == BaseValue)
 			getBaseLine().BaseValue.set(p.get());
 		else if (p.getName().equals("BaseValue"))

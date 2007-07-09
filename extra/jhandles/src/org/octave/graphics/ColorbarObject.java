@@ -272,6 +272,8 @@ public class ColorbarObject extends AxesObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (!isAutoMode() && !axes.isAutoMode() && (p == axes.Position || p == axes.OuterPosition))
 			doLocate();
 		else if (p == Location || p == axes.CLim)
@@ -284,7 +286,5 @@ public class ColorbarObject extends AxesObject
 		}
 		else if (p.getName().equalsIgnoreCase("colormap"))
 			updateImageFromColormap(getFigure().Colormap.getMatrix());
-		else
-			super.propertyChanged(p);
 	}
 }

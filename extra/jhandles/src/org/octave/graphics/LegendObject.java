@@ -369,6 +369,8 @@ public class LegendObject extends AxesObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == EdgeColor)
 		{
 			Object c = EdgeColor.get();
@@ -410,7 +412,5 @@ public class LegendObject extends AxesObject
 			doLayout();
 			doLocate();
 		}
-		else
-			super.propertyChanged(p);
 	}
 }

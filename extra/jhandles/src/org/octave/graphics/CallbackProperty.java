@@ -21,28 +21,38 @@
 
 package org.octave.graphics;
 
-import org.octave.*;
-
 public class CallbackProperty extends Property
 {
-	CallbackProperty(PropertySet parent, String name, String cmd)
+	CallbackProperty(PropertySet parent, String name, Object cmd)
 	{
 		super(parent, name);
-		pvalue = cmd;
+		pvalue = Callback.makeCallback(cmd);
 	}
 	
-	CallbackProperty(PropertySet parent, String name, OctaveReference ref)
-	{
-		super(parent, name);
-		pvalue = ref;
-	}
-
 	protected Object convertValue(Object value) throws PropertyException
 	{
-		if (value instanceof String || value instanceof OctaveReference)
+		if (value == null)
 			return value;
+		
+		Callback cb = Callback.makeCallback(value);
+
+		if (cb != null)
+			return cb;
 		else
 			throw new PropertyException("invalid property value - " + value.toString());
+	}
+
+	protected Object getInternal()
+	{
+		Callback cb = getCallback();
+		if (cb != null)
+			return cb.get();
+		return null;
+	}
+
+	public Callback getCallback()
+	{
+		return (Callback)pvalue;
 	}
 
 	public void execute()
@@ -50,55 +60,11 @@ public class CallbackProperty extends Property
 		execute(new Object[0]);
 	}
 
-	public void execute(final Object[] args)
+	public void execute(Object[] args)
 	{
-		final RootObject root = RootObject.getInstance();
-
-		if (pvalue == null)
-			return;
-
-		Octave.invokeLater(new Runnable() {
-			public void run()
-			{
-				try
-				{
-					root.setCallbackMode(true);
-					if (pvalue instanceof OctaveReference)
-						Octave.doInvoke(((OctaveReference)pvalue).getID(), args);
-					else if (pvalue instanceof String)
-						Octave.doEvalString((String)pvalue);
-				}
-				catch (Exception e)
-				{
-					System.err.println("Exception occured during callback execution: " + e.toString());
-					e.printStackTrace();
-				}
-				finally
-				{
-					root.setCallbackMode(false);
-				}
-			}
-		});
-
-		/*
-		try
-		{
-			root.setCallbackMode(true);
-			if (pvalue != null)
-			{
-				if (pvalue instanceof OctaveReference)
-					Octave.invokeLater((OctaveReference)pvalue, args);
-				else if (pvalue instanceof String)
-					Octave.evalLater((String)pvalue);
-			}
-			root.setCallbackMode(false);
-		}
-		catch (Exception e)
-		{
-			root.setCallbackMode(false);
-			System.err.println("Exception occured during callback execution: " + e.toString());
-			e.printStackTrace();
-		}
-		*/
+		Callback cb = getCallback();
+		System.out.println("CallbackProperty.execute: " + cb);
+		if (cb != null)
+			cb.execute(args);
 	}
 }

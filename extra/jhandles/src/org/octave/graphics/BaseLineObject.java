@@ -80,6 +80,8 @@ public class BaseLineObject extends LineObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == BaseValue)
 			updateLine();
 		else if (p == Orientation)

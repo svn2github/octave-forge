@@ -251,6 +251,8 @@ public class SurfaceObject extends GraphicObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == XData || p == YData || p == ZData)
 		{
 			VertexNormals.reset(null);

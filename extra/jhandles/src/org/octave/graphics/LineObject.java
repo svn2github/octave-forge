@@ -142,6 +142,8 @@ public class LineObject extends GraphicObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == XData || p == YData || p == ZData)
 			updateMinMax();
 	}

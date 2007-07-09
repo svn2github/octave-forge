@@ -228,6 +228,8 @@ public class FigureObject extends HandleObject
 	
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == Name || p == NumberTitle)
 			updateTitle();
 	}

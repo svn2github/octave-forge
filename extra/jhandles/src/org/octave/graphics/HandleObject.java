@@ -38,6 +38,8 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	/* Properties */
 	HandleObjectListProperty Children;
 	BooleanProperty Clipping;
+	CallbackProperty CreateFcn;
+	CallbackProperty DeleteFcn;
 	RadioProperty HandleVisibility;
 	HandleObjectListProperty Parent;
 	StringProperty Tag;
@@ -53,14 +55,14 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	public HandleObject(HandleObject parent, String type)
 	{
 		handle = newHandle();
-		handleMap.put(new Integer(handle), new WeakReference(this));
+		//handleMap.put(new Integer(handle), new WeakReference(this));
 		initProperties(parent, type);
 	}
 
 	public HandleObject(HandleObject parent, int handle, String type)
 	{
 		this.handle = handle;
-		handleMap.put(new Integer(handle), new WeakReference(this));
+		//handleMap.put(new Integer(handle), new WeakReference(this));
 		initProperties(parent, type);
 	}
 
@@ -68,6 +70,8 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	{
 		Children = new HandleObjectListProperty(this, "Children", -1);
 		Clipping = new BooleanProperty(this, "Clipping", true);
+		CreateFcn = new CallbackProperty(this, "CreateFcn", (String)null);
+		DeleteFcn = new CallbackProperty(this, "DeleteFcn", (String)null);
 		HandleVisibility = new RadioProperty(this, "HandleVisibility", new String[] {"on", "callback", "off"}, "on");
 		Parent = new HandleObjectListProperty(this, "Parent", -1);
 		Tag = new StringProperty(this, "Tag", "");
@@ -108,6 +112,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public void delete()
 	{
+		removeHandleObject(getHandle());
+		DeleteFcn.execute();
+
 		super.delete();
 
 		while (notifierList.size() > 0)
@@ -120,9 +127,6 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		if (cachedData != null)
 			cachedData.dispose();
 		Parent.elementAt(0).removeChild(this);
-
-		//System.out.println("HandleObject::delete (" + getHandle() + ")");
-		removeHandleObject(getHandle());
 	}
 
 	public void addChild(HandleObject child)
@@ -151,6 +155,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 			if (parent.Children.contains(this))
 				parent.childValidated(this);
 		}
+
+		CreateFcn.execute();
+		addHandleObject(getHandle(), this);
 	}
 
 	protected void childValidated(HandleObject child)
@@ -194,6 +201,11 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		handleMap.remove(new Integer(handle));
 	}
 
+	public static void addHandleObject(int handle, HandleObject obj)
+	{
+		handleMap.put(new Integer(handle), new WeakReference(obj));
+	}
+
 	public static void listObjects()
 	{
 		Iterator it = handleMap.entrySet().iterator();
@@ -235,5 +247,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		notifierList.remove(hn);
 	}
 
-	public void propertyChanged(Property p) throws PropertyException {}
+	public void propertyChanged(Property p) throws PropertyException
+	{
+	}
 }

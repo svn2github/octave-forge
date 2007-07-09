@@ -107,6 +107,8 @@ public class ImageObject extends GraphicObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		/* invalidate cached data */
 		if (p == CData || p == CDataMapping || p.getName().equals("Colormap"))
 			setCachedData(null);

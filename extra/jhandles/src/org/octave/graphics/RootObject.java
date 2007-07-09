@@ -62,16 +62,24 @@ public class RootObject extends HandleObject
 		return instance;
 	}
 
-	public int createNewFigure()
+	public FigureObject createNewFigure()
 	{
 		return createNewFigure(getUnusedFigureNumber());
 	}
 
-	public int createNewFigure(int fignum)
+	public FigureObject createNewFigure(int fignum)
 	{
-		if (fignum > 0 && !isHandle(fignum))
-			new FigureObject(fignum);
-		return fignum;
+		if (fignum > 0)
+		{
+			if (isHandle(fignum))
+			{
+				try { return (FigureObject)getHandleObject(fignum);}
+				catch (Exception e) { return null; }
+			}
+			else
+				return new FigureObject(fignum);
+		}
+		return null;
 	}
 
 	public void removeChild(HandleObject child)
@@ -135,6 +143,8 @@ public class RootObject extends HandleObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == CurrentFigure)
 		{
 			if (CurrentFigure.size() > 0)

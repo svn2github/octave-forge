@@ -327,6 +327,8 @@ public class PatchObject extends GraphicObject
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+		super.propertyChanged(p);
+
 		if (p == Faces)
 			updateFaceCount();
 		else if (p == Vertices || p == FaceVertexCData)

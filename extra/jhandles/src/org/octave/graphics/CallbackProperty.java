@@ -63,7 +63,6 @@ public class CallbackProperty extends Property
 	public void execute(Object[] args)
 	{
 		Callback cb = getCallback();
-		System.out.println("CallbackProperty.execute: " + cb);
 		if (cb != null)
 			cb.execute(args);
 	}

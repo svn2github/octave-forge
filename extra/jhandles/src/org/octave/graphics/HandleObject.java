@@ -55,14 +55,14 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	public HandleObject(HandleObject parent, String type)
 	{
 		handle = newHandle();
-		//handleMap.put(new Integer(handle), new WeakReference(this));
+		addHandleObject(getHandle(), this);
 		initProperties(parent, type);
 	}
 
 	public HandleObject(HandleObject parent, int handle, String type)
 	{
 		this.handle = handle;
-		//handleMap.put(new Integer(handle), new WeakReference(this));
+		addHandleObject(getHandle(), this);
 		initProperties(parent, type);
 	}
 
@@ -157,7 +157,6 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		}
 
 		CreateFcn.execute();
-		addHandleObject(getHandle(), this);
 	}
 
 	protected void childValidated(HandleObject child)

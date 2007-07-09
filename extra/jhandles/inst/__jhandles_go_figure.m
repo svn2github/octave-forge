@@ -27,7 +27,7 @@ function [ f ] = __jhandles_go_figure (fnum, varargin)
   if (! isempty (f_obj))
     f = f_obj.getHandle ();
     if (length (varargin) > 0)
-      __jhandles_set(f_obj, varargin{:});
+      set (f, varargin{:});
     endif
     f_obj.validate ();
   else

@@ -21,16 +21,22 @@ function __jhandles_set(h, varargin)
   j2 = java_unsigned_conversion (1);
 
   unwind_protect
-    for hk = h
-      handle = __get_object__ (hk);
-      if (! isempty (handle))
-        for k = 1:2:length(varargin)
-          handle.set (varargin{k}, varargin{k+1});
-        endfor
-      else
-        error ("invalid handle");
-      endif
-    endfor
+    if (strcmp (class (h), "octave_java"))
+      for k = 1:2:length (varargin)
+        h.set (varargin{k}, varargin{k+1});
+      endfor
+    else
+      for hk = h
+        handle = __get_object__ (hk);
+        if (! isempty (handle))
+          for k = 1:2:length(varargin)
+            handle.set (varargin{k}, varargin{k+1});
+          endfor
+        else
+          error ("invalid handle");
+        endif
+      endfor
+    endif
   unwind_protect_cleanup
 	java_convert_matrix (j1);
 	java_unsigned_conversion (j2);

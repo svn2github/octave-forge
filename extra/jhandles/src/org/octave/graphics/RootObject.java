@@ -28,9 +28,11 @@ public class RootObject extends HandleObject
 {
 	private static RootObject instance = null;
 	private boolean callbackMode = false;
+	private LinkedList callbackObject = new LinkedList();
 	private int callbackModeCount = 0;
 
 	/* properties */
+	HandleObjectListProperty CallbackObject;
 	HandleObjectListProperty CurrentFigure;
 	BooleanProperty ShowHiddenHandles;
 
@@ -38,6 +40,7 @@ public class RootObject extends HandleObject
 	{
 		super(null, 0, "root");
 
+		CallbackObject = new HandleObjectListProperty(this, "CallbackObject", 1);
 		CurrentFigure = new HandleObjectListProperty(this, "CurrentFigure", 1);
 		ShowHiddenHandles = new BooleanProperty(this, "ShowHiddenHandles", false);
 
@@ -157,14 +160,32 @@ public class RootObject extends HandleObject
 
 	public void setCallbackMode(boolean mode)
 	{
+		setCallbackMode(mode, null);
+	}
+
+	public void setCallbackMode(boolean mode, HandleObject source)
+	{
 		if (mode)
 		{
 			callbackModeCount++;
+			if (CallbackObject.size() > 0)
+				callbackObject.addFirst(CallbackObject.elementAt(0));
+			else
+				callbackObject.addFirst(null);
+			CallbackObject.addElement(source);
 			callbackMode = mode;
 		}
 		else
 		{
 			callbackModeCount--;
+			if (callbackObject.size() > 0)
+			{
+				HandleObject obj = (HandleObject)callbackObject.removeFirst();
+				if (obj != null)
+					CallbackObject.addElement(obj);
+				else
+					CallbackObject.removeAllElements();
+			}
 			if (callbackModeCount <= 0)
 			{
 				callbackMode = mode;

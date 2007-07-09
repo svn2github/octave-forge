@@ -41,7 +41,7 @@ public class OctaveCallback extends Callback
 		this.cmd = cmd;
 	}
 
-	public void execute(Object[] args)
+	public void execute(HandleObject parent, Object[] args)
 	{
 		if (ref == null && (cmd == null || cmd.length() == 0))
 		{
@@ -51,13 +51,14 @@ public class OctaveCallback extends Callback
 
 		final RootObject root = RootObject.getInstance();
 		final Object[] theArgs = args;
+		final HandleObject theParent = parent;
 
 		Octave.invokeLater(new Runnable() {
 			public void run()
 			{
 				try
 				{
-					root.setCallbackMode(true);
+					root.setCallbackMode(true, theParent);
 					if (ref != null)
 						Octave.doInvoke(ref.getID(), theArgs);
 					else if (cmd != null && cmd.length() > 0)

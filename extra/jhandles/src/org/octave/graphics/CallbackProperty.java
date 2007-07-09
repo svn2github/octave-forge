@@ -64,6 +64,6 @@ public class CallbackProperty extends Property
 	{
 		Callback cb = getCallback();
 		if (cb != null)
-			cb.execute(args);
+			cb.execute((HandleObject)getParent(), args);
 	}
 }

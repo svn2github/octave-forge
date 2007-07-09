@@ -60,11 +60,11 @@ public abstract class Callback
 		}
 	}
 
-	public abstract void execute(Object[] args);
+	public abstract void execute(HandleObject parent, Object[] args);
 
-	public void execute()
+	public void execute(HandleObject parent)
 	{
-		execute(new Object[0]);
+		execute(parent, new Object[0]);
 	}
 
 	public static Callback makeCallback(Object obj)

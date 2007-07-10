@@ -85,4 +85,12 @@ public class OctaveCallback extends Callback
 		else
 			return cmd;
 	}
+
+	public String toString()
+	{
+		if (ref != null)
+			return ref.toString();
+		else
+			return cmd;
+	}
 }

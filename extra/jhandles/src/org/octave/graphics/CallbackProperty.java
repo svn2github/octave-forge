@@ -66,4 +66,12 @@ public class CallbackProperty extends Property
 		if (cb != null)
 			cb.execute((HandleObject)getParent(), args);
 	}
+
+	public String toString()
+	{
+		Callback cb = getCallback();
+		if (cb != null)
+			return cb.toString();
+		return "";
+	}
 }

@@ -17,10 +17,11 @@
 # Configuration #
 #################
 
-INSTALL_DIR=/d/Temp/vclibs_tmp
-CYGWIN_DIR=/d/Software/cygwin
+INSTALL_DIR=/c/Temp/vclibs_tmp
+CYGWIN_DIR=/c/Software/cygwin
 DOWNLOAD_DIR=downloaded_packages
-WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+#WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+DOATLAS=false
 
 verbose=false
 
@@ -87,7 +88,11 @@ tlibdir=$INSTALL_DIR/lib
 tincludedir=$INSTALL_DIR/include
 PATH=$tbindir:$PATH
 tdir_w32=`cd "$INSTALL_DIR" && pwd -W`
+tdir_w32_1=`echo $tdir_w32 | sed -e 's,/,\\\\,g'`
 tdir_w32=`echo $tdir_w32 | sed -e 's,/,\\\\\\\\,g'`
+
+INCLUDE="$tdir_w32_1\\include;$INCLUDE"
+LIB="$tdir_w32_1\\lib;$LIB"
 
 # Check cc-msvc
 echo -n "checking for cc-msvc.exe... "
@@ -152,11 +157,12 @@ if ! test -f "$tlibdir/f2c.lib"; then
   (cd "$DOWNLOAD_DIR" && unzip -q libf2c.zip)
   echo -n "compiling libf2c... "
   (cd "$DOWNLOAD_DIR/libf2c";
-    sed -e 's/^CFLAGS = /CFLAGS = -MD -DIEEE_COMPLEX_DIVIDE /' makefile.vc > ttt;
-    mv ttt makefile.vc;
-    sed -e 's/^extern int isatty(int);$/\/*extern int isatty(in);*\//' fio.h > ttt;
-    mv ttt fio.h;
-    nmake -f makefile.vc;
+    sed -e 's/^CFLAGS = /CFLAGS = -MD -DIEEE_COMPLEX_DIVIDE /' makefile.vc > ttt &&
+    mv ttt makefile.vc &&
+    sed -e 's/^extern int isatty(int);$/\/*extern int isatty(in);*\//' fio.h > ttt &&
+    mv ttt fio.h &&
+    nmake -f makefile.vc &&
+    cp -f f2c.h "$tincludedir" &&
     cp -f vcf2c.lib "$tlibdir/f2c.lib") > /dev/null 2>&1
   rm -rf "$DOWNLOAD_DIR/libf2c"
   if ! test -f "$tlibdir/f2c.lib"; then
@@ -227,6 +233,8 @@ fi
 # ATLAS #
 #########
 
+if $DOATLAS; then
+
 echo -n "checking for ATLAS... "
 atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
 if test -z "$atl_dlls"; then
@@ -255,6 +263,8 @@ if test -z "$atl_dlls"; then
   fi
 else
   echo "installed"
+fi
+
 fi
 
 ########

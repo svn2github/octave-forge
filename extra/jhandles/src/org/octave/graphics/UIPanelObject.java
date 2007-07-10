@@ -201,8 +201,8 @@ public class UIPanelObject extends HandleObject
 				border.setBorder(BorderFactory.createEtchedBorder(HighlightColor.getColor(), ShadowColor.getColor()));
 			else if (p == Position)
 			{
-				panel.getParent().doLayout();
-				panel.getParent().validate();
+				panelWrapper.getParent().doLayout();
+				panelWrapper.getParent().validate();
 			}
 			else if (p == Title)
 				border.setTitle(Title.toString());

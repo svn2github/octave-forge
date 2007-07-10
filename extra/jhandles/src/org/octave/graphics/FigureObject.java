@@ -67,16 +67,17 @@ public class FigureObject extends HandleObject
 	public static final int OP_ROTATE = 2;
 
 	/* properties */
-	VectorProperty         Alphamap;
+	VectorProperty              Alphamap;
 	CallbackProperty            CloseRequestFcn;
 	ColorProperty               /* Color */ FigColor;
 	ArrayProperty               Colormap;
 	HandleObjectListProperty    CurrentAxes;
+	BooleanProperty             IntegerHandle;
 	StringProperty              Name;
 	RadioProperty               NextPlot;
 	BooleanProperty             NumberTitle;
-	CallbackProperty            ResizeFcn;
 	RadioProperty               PaperOrientation;
+	CallbackProperty            ResizeFcn;
 
 	// Constructor
 
@@ -131,11 +132,13 @@ public class FigureObject extends HandleObject
 			amap[i] = ((double)i)/(amap.length-1);
 		Alphamap = new VectorProperty(this, "Alphamap", amap, -1);
 		PaperOrientation = new RadioProperty(this, "PaperOrientation", new String[] {"portrait", "landscape"}, "portrait");
+		IntegerHandle = new BooleanProperty(this, "IntegerHandle", true);
 
 		updateTitle();
 
 		listen(Name);
 		listen(NumberTitle);
+		listen(IntegerHandle);
 
 		// show window frame
 		frame.setVisible(true);
@@ -143,9 +146,19 @@ public class FigureObject extends HandleObject
 
 	// Methods
 	
+	private void updateHandle()
+	{
+		int handle = getHandle();
+		if (IntegerHandle.isSet() && handle < 0)
+			setHandle(RootObject.getInstance().getUnusedFigureNumber());
+		else if (!IntegerHandle.isSet() && handle > 0)
+			setHandle(newHandle());
+		updateTitle();
+	}
+	
 	public void validate()
 	{
-		updateTitle();
+		updateHandle();
 		super.validate();
 		activate();
 	}
@@ -232,6 +245,8 @@ public class FigureObject extends HandleObject
 
 		if (p == Name || p == NumberTitle)
 			updateTitle();
+		else if (p == IntegerHandle)
+			updateHandle();
 	}
 
 	public Component getComponent()

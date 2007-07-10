@@ -30,6 +30,7 @@ function [ f ] = __jhandles_go_figure (fnum, varargin)
       set (f, varargin{:});
     endif
     f_obj.validate ();
+	f = f_obj.getHandle ();
   else
     f = [];
   endif

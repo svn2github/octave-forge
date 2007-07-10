@@ -36,6 +36,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	private static HashMap handleMap = new HashMap();
 
 	/* Properties */
+	BooleanProperty BeingDeleted;
 	HandleObjectListProperty Children;
 	BooleanProperty Clipping;
 	CallbackProperty CreateFcn;
@@ -47,7 +48,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	ObjectProperty UserData;
 	BooleanProperty Visible;
 
-	private static int newHandle()
+	protected static int newHandle()
 	{
 		return handleSeed--;
 	}
@@ -68,6 +69,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	protected void initProperties(HandleObject parent, String type)
 	{
+		BeingDeleted = new BooleanProperty(this, "BeingDeleted", false);
 		Children = new HandleObjectListProperty(this, "Children", -1);
 		Clipping = new BooleanProperty(this, "Clipping", true);
 		CreateFcn = new CallbackProperty(this, "CreateFcn", (String)null);
@@ -84,6 +86,13 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 			Parent.addElement(parent);
 			parent.addChild(this);
 		}
+	}
+
+	protected void setHandle(int handle)
+	{
+		removeHandleObject(getHandle());
+		this.handle = handle;
+		addHandleObject(getHandle(), this);
 	}
 
 	protected void listen(Property p)
@@ -112,8 +121,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public void delete()
 	{
-		removeHandleObject(getHandle());
+		BeingDeleted.reset("on");
 		DeleteFcn.execute();
+		removeHandleObject(getHandle());
 
 		super.delete();
 

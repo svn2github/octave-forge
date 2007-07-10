@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.font.TextAttribute;
 import java.awt.Container;
 import java.awt.Component;
@@ -152,6 +153,13 @@ public class Utils
 
 			p = new double[] {pos[0]*w+1, pos[1]*h+1, pos[2]*w, pos[3]*h};
 		}
+		else if (fromUnits.equalsIgnoreCase("characters"))
+		{
+			FontMetrics fm = parent.getFontMetrics(Font.decode(""));
+			int w = fm.charWidth('x'), h = fm.getHeight();
+			
+			p = new double[] {pos[0]*w+1, pos[1]*h+1, pos[2]*w, pos[3]*h};
+		}
 
 		if (!toUnits.equalsIgnoreCase("pixels"))
 		{
@@ -160,6 +168,16 @@ public class Utils
 				Insets ir = (isContainer ? ((Container)parent).getInsets() : new Insets(0, 0, 0, 0));
 				Rectangle r = parent.getBounds();
 				int w = r.width-ir.left-ir.right, h = r.height-ir.top-ir.bottom;
+
+				p[0] = (p[0]-1)/w;
+				p[1] = (p[1]-1)/h;
+				p[2] /= w;
+				p[3] /= h;
+			}
+			else if (toUnits.equalsIgnoreCase("characters"))
+			{
+				FontMetrics fm = parent.getFontMetrics(Font.decode(""));
+				int w = fm.charWidth('x'), h = fm.getHeight();
 
 				p[0] = (p[0]-1)/w;
 				p[1] = (p[1]-1)/h;

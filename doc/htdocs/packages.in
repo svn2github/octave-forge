@@ -16,7 +16,7 @@ as a <a href="__PACKAGE__/octave-forge-bundle-20070526.tar.gz?download">single f
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
-2.9.10. For earlier versions of Octave, please use the older
+2.9.12. For earlier versions of Octave, please use the older
 <a href="__MONOLITHIC__">monolithic releases</a> of Octave-Forge.</p>
 <h2 id="main">Main repository</h2>
 <div class="package" id="audio_detailed" style="display: none;">
@@ -179,7 +179,7 @@ General</a></b></td>
    <b><a href="javascript:fold('geometry');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Geometry</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./geometry/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/geometry-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/geometry-1.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="geometry_details">
@@ -191,7 +191,7 @@ Geometry tools including convex hull, triangulation, etc.  </p>
     <b><a href="javascript:unfold('geometry');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Geometry</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./geometry/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/geometry-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/geometry-1.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -245,7 +245,7 @@ Ident</a></b></td>
    <b><a href="javascript:fold('image');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Image</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./image/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/image-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/image-1.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="image_details">
@@ -262,7 +262,7 @@ The Octave-forge Image package provides functions for reading, writing, and proc
     <b><a href="javascript:unfold('image');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Image</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./image/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/image-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/image-1.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>
@@ -960,7 +960,7 @@ Integration</a></b></td>
    <b><a href="javascript:fold('java');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
 Java</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./java/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/java-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/java-1.2.0.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="java_details">
@@ -972,6 +972,28 @@ Provides Java interface with OO-like Java objects manipulation  </p>
     <b><a href="javascript:unfold('java');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
 Java</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./java/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/java-1.2.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+</div>
+<div class="package" id="java_detailed" style="display: none;">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:fold('java');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
+Java</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./java.old/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/java-1.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="java_details">
+Provides Java interface with OO-like Java objects manipulation  </p>
+</div>
+<div class="package" id="java">
+  <table class="package"><tr>
+    <td>
+    <b><a href="javascript:unfold('java');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
+Java</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./java.old/index.html" class="package_link">details</a> |
     <a class="package_link" href="__PACKAGE__/java-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
@@ -1149,6 +1171,28 @@ Linear Algebra for Symmetric Banded Matrices.  </p>
 SymBand</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./symband/index.html" class="package_link">details</a> |
     <a class="package_link" href="__PACKAGE__/symband-1.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+</div>
+<div class="package" id="triangular_detailed" style="display: none;">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:fold('triangular');" class="package_head_link">   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>
+Triangular</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./triangular/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/triangular-1.0.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="triangular_details">
+Simple example of a user type implementing a simple matrix type for triangular matrices.  </p>
+</div>
+<div class="package" id="triangular">
+  <table class="package"><tr>
+    <td>
+    <b><a href="javascript:unfold('triangular');" class="package_head_link">    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>
+Triangular</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./triangular/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/triangular-1.0.0.tar.gz?download">download</a>
     </td>
   </tr></table>
 </div>

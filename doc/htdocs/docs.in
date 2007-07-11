@@ -31,7 +31,7 @@ on individual packages, see the package page.</p>
 <a href="texmacs.pdf">TeXmacs Interface</a> - Information on using <a href="http://www.texmacs.org/">TeXmacs</a> with octave.
 </li>
 <li><a href="octave_embed.tar.gz">Sample code for embedding octave</a></li>
-<li><a href="MIP73-isoheaders.tar.gz">Headers for compiling octave with SGI MIPSpro 7.3 compiler</a></li>
+<li><a href="MIPS73-isoheaders.tar.gz">Headers for compiling octave with SGI MIPSpro 7.3 compiler</a></li>
 <li><a href="soctcl0.1.zip">Tcl package for octcl (requires octave-forge)</a></li>
 <li><a href="oct2mat.tar.gz">Primitive oct2mat converter</a></li>
 </ul>

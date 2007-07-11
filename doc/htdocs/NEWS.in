@@ -7,6 +7,45 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>July ??, 2007</dt>
+<dd>Updated the Windows binary release to use Octave 2.9.13.</li>
+</dd>
+<dt>July ??, 2007</dt>
+<dd>
+<p>Release of Octave-forge tested against Octave 2.9.13. Many packages
+ will also function function with earlier versions of Octave 2.9.
+ Notable changes in this release include:</p>
+<ul>
+   <li>jhandles: New java based plottling and gui package based on
+   JOGL.</li>
+   <li>bim: New package for solving Diffusion Advection Reaction (DAR)
+   Partial Differential Equations based on the Finite Volume
+   Scharfetter-Gummel (FVSG) method. </li>
+   <li>msh: New package for triangular and tetrahedral meshing based
+   on GMSH</li>
+   <li>fpl: New packages containing a collection of routines to plot
+   data on unstructured triangular and tetrahedral meshes based on
+   OpenDX.</li>
+   <li>triangular: New package for an example of how to add user types
+   for Octave.</li>
+   <li>odebvp: New package for boundary value ODE problems.</li>
+   <li>econometrics: Calculate kernel weights in an oct-file for
+   performance.</li>
+   <li>java: Java package can now build correctly under Windows, Mac
+   OS X and Linux. Allow callback functions<\li>
+   <li>statistics: Fix histfit as normal_pdf now takes the variance
+   and not the deviation.</li>
+   <li>signal: Add axes to specgram. New functions barthannwin,
+   blackmanharris, bohmanwin, diric, gauspuls, gmonopuls, nuttallwin
+   and sawtooth.</li>
+   <li>comm: new functions qfunc and qfuncinv.<\li>
+   <li>Improvements in the SRPM, RPM, MSVC and Mac OS X build systems.</li>
+   <li>general bug fixes and improvements.</li>
+</ul>
+</dd>
+<dt>July 4, 2007</dt>
+<dd>Added Octave.app 2.9.12 for OS X.
+</dd>
 <dt>May 26, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.12. Many packages

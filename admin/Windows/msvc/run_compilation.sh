@@ -17,10 +17,10 @@
 # Configuration #
 #################
 
-INSTALL_DIR=/d/Temp/vclibs_tmp
-CYGWIN_DIR=/d/Software/cygwin
+INSTALL_DIR=/c/Temp/vclibs_tmp
+CYGWIN_DIR=/c/Software/cygwin
 DOWNLOAD_DIR=downloaded_packages
-WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+#WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 DOATLAS=false
 
 verbose=true
@@ -629,9 +629,9 @@ fi
 echo -n "checking for cairo... "
 if test ! -f "$tbindir/libcairo-2.dll"; then
   echo "no"
-  download_file cairo-1.2.6.tar http://cairographics.org/releases/cairo-1.2.6.tar.gz
+  download_file cairo-1.2.6.tar.gz http://cairographics.org/releases/cairo-1.2.6.tar.gz
   echo -n "decompressing cairo... "
-  (cd "$DOWNLOAD_DIR" && tar xf cairo-1.2.6.tar)
+  (cd "$DOWNLOAD_DIR" && tar xfz cairo-1.2.6.tar.gz)
   cp libs/cairo-1.2.6.diff "$DOWNLOAD_DIR/cairo-1.2.6"
   echo "done"
   echo "compiling cairo... "
@@ -658,7 +658,7 @@ fi
 ##############
 
 echo -n "checking for glib/pango... "
-if test ! -f "$tbindir/libglib-2.0-0.dll" -a -f "$tbindir/libpango-1.0-0.dll"; then
+if ! test -f "$tbindir/libglib-2.0-0.dll" -a -f "$tbindir/libpango-1.0-0.dll"; then
   echo "no"
   download_file glib-2.12.6.tar.gz ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.6.tar.gz
   echo -n "decompressing glib... "

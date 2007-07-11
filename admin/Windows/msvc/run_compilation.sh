@@ -904,3 +904,31 @@ if test ! -f "$tbindir/makeinfo.exe"; then
 else
   echo "installed"
 fi
+
+#########
+# units #
+#########
+
+echo -n "checking for units... "
+if test ! -f "$tbindir/units.exe"; then
+  echo "no"
+  download_file units-1.86.tar.gz ftp://ftp.gnu.org/gnu/units/units-1.86.tar.gz
+  echo -n "decompressing units... "
+  (cd "$DOWNLOAD_DIR" && tar xfz units-1.86.tar.gz)
+  cp libs/units-1.86.diff "$DOWNLOAD_DIR/units-1.86"
+  echo "done"
+  echo -n "compiling units... "
+  (cd "$DOWNLOAD_DIR/units-1.86" &&
+    patch -p1 < units-1.86.diff
+    nmake -f Makefile.dos
+    cp units.exe units.dat "$tbindir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/units-1.86"
+  if test ! -f "$tbindir/units.exe"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi

@@ -1206,6 +1206,7 @@ Distributions
  weibcdf weibinv weibpdf weibrnd
  wienrnd
 Descriptive statistics
+ accumarray
  max 
  min 
  mean meansq

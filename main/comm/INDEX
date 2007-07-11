@@ -157,3 +157,5 @@ Utility Functions
  istrellis
  poly2trellis
  vec2mat
+ qfunc
+ qfuncinv

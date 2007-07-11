@@ -37,12 +37,12 @@ DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
 
 # Setting up various path information variables that are needed to run
 # the "mkoctfile" and "mex" commands from within the Octave program.
-# CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%' -arch %ARCH%"
-CFLAGS="${CFLAGS} -I'${ROOT}/include/curl' -I'${ROOT}/include/readline'"
+CFLAGS="-I'${ROOT}/include/curl' -I'${ROOT}/include/readline' ${CFLAGS}"
 CPPFLAGS="${CFLAGS}"
 CXXFLAGS="${CXXFLAGS}"
-# LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
-LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' -arch %ARCH%"
+LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' ${LDFLAGS}"
+# These default include paths are set by mkoctfile-2.9.12 automatically
+# CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%'"
 
 # Setting up other variables that are needed to run the octave program
 # or mkoctfile.
@@ -56,4 +56,4 @@ export CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 export DL_LDFLAGS SED
 
 # Invoke octave, preserving spaces in all the input arguments.
-"$ROOT/bin/octave-%VERSION%" "$@"
+"${ROOT}/bin/octave-%VERSION%" "$@"

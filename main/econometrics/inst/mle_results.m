@@ -1,20 +1,20 @@
 # Copyright (C) 2003,2004,2005  Michael Creel <michael.creel@uab.es>
-#  
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-# usage: [theta, V, obj_value, infocrit] = 
+# usage: [theta, V, obj_value, infocrit] =
 #    mle_results(theta, data, model, modelargs, names, title, unscale, control)
 #
 # inputs:
@@ -24,8 +24,8 @@
 # modelargs: (cell) additional inputs needed by model. May be empty ("")
 # names: vector of parameter names, e.g., use names = str2mat("param1", "param2");
 # title: string, describes model estimated
-# unscale: (optional) cell that holds means and std. dev. of data (see scale_data) 
-# control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty (""). 
+# unscale: (optional) cell that holds means and std. dev. of data (see scale_data)
+# control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty ("").
 # nslaves: (optional) number of slaves if executed in parallel (requires MPITB)
 #
 # outputs:
@@ -37,15 +37,14 @@
 
 ##
 ## Please see mle_example for information on how to use this
- 
+
 # report results
-function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, title, unscale, control, nslaves)
+function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, mletitle, unscale, control, nslaves)
 	if nargin < 9 nslaves = 0; endif # serial by default
-	if nargin < 8
-		[theta, obj_value, convergence] = mle_estimate(theta, data, model, modelargs, "", nslaves);
-	else
-		[theta, obj_value, convergence] = mle_estimate(theta, data, model, modelargs, control, nslaves);
-	endif
+	if nargin < 8 control = {-1}; endif
+	if nargin < 6 mletitle = "Generic MLE title"; endif
+
+	[theta, obj_value, convergence] = mle_estimate(theta, data, model, modelargs, control, nslaves);
 	V = mle_variance(theta, data, model, modelargs);
 
 	# unscale results if argument has been passed
@@ -56,7 +55,7 @@ function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, model
     		endif
 	endif
 
-	[theta, V] = delta_method("parameterize", theta, {data, model, modelargs}, V);			
+	[theta, V] = delta_method("parameterize", theta, {data, model, modelargs}, V);
 
 	n = rows(data);
 	k = rows(V);
@@ -64,14 +63,14 @@ function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, model
 	if convergence == 1 convergence="Normal convergence";
   	elseif convergence == 2 convergence="No convergence";
 	elseif convergence == -1 convergence = "Max. iters. exceeded";
-	endif	
+	endif
 	printf("\n\n******************************************************\n");
-	disp(title);
+	disp(mletitle);
 	printf("\nMLE Estimation Results\n");
 	printf("BFGS convergence: %s\n\n", convergence);
 
 	printf("Average Log-L: %f\n", obj_value);
-	printf("Observations: %d\n", n);	      
+	printf("Observations: %d\n", n);
 	a =[theta, se, theta./se, 2 - 2*normal_cdf(abs(theta ./ se))];
 
 	clabels = str2mat("estimate", "st. err", "t-stat", "p-value");

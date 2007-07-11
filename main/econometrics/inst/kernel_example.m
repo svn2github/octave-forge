@@ -41,13 +41,8 @@ x = 2*x/n;
 trueline =  x + (x.^2)/2 - 3.1*(x.^3)/3 + 1.2*(x.^4)/4;
 sig = 0.5;
 y = trueline + sig*randn(n,1);
-# default bandwidth
-bandwidth = 0.45;
-# get optimal bandwidth (time consuming, uncomment if you want to try it)
-# bandwidth = kernel_optimal_bandwidth(x, y);
-# get the fit and do the plot
 tic;
-fit = kernel_regression(x, y, x, bandwidth, false, compute_nodes);
+fit = kernel_regression(x, y, x); # use the default bandwidth
 t1 = toc;
 printf("\n");
 printf("########################################################################\n");
@@ -105,7 +100,7 @@ dens = reshape(dens, gridsize, gridsize);
 printf("A rough integration under the fitted bivariate density is %f\n", sum(sum(dens))*stepsize^2);
 figure();
 surf(grid_x, grid_y, dens);
-title("Example 3: Kernel density fit: dependent bivatiate data");
+title("Example 3: Kernel density fit: dependent bivariate data");
 xlabel("true marginal density is N(0,1)");
 ylabel("true marginal density is Chi^2(3)");
 # more extensive test of parallel

@@ -18,8 +18,10 @@
 # and kernel_regression
 #
 # multivariate spherical Epanechnikov kernel
-# input: PxK matrix - P data points, each of which is in R^K
-# output: Px1 vector, input matrix passed though the kernel
+# inputs:
+# z: PxK matrix - P data points, each of which is in R^K
+# verbose: boolean - would you like to see warnings? Default no.
+#output: Px1 vector, input matrix passed though the kernel
 # other multivariate kernel functions should follow this convention
 
 function z = __kernel_epanechnikov(z)
@@ -32,6 +34,6 @@ function z = __kernel_epanechnikov(z)
 	# compute kernel
 	z  =  sumsq(z, 2);
 	z = ((1/2) / c * (K + 2) * (1 - z)) .* (z < 1);
-	z = z + eps; # avoid possible divide by zero in kernel regression
+
 
 endfunction

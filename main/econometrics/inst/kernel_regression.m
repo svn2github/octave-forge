@@ -42,9 +42,16 @@
 
 function z = kernel_regression(eval_points, depvar, condvars, bandwidth, do_cv, nslaves, debug, bandwith_matrix, kernel)
 
-	if nargin < 4; error("kernel_regression: at least 4 arguments are required"); endif
+	if nargin < 3; error("kernel_regression: at least 3 arguments are required"); endif
+
+	n = rows(condvars);
+	k = columns(condvars);
 
 	# set defaults for optional args
+
+	# bandwidth - see Li and Racine pg. 66
+	if (nargin < 4) bandwidth = (n ^ (-1/(4+k))); endif
+
 	# default ordinary density, not leave-1-out
 	if (nargin < 5)	do_cv = false; endif
 	# default serial
@@ -52,6 +59,14 @@ function z = kernel_regression(eval_points, depvar, condvars, bandwidth, do_cv, 
 	# debug or not (default)
 	if (nargin < 7)	debug = false; endif;
 	# default bandwidth matrix (up to factor of proportionality)
+
+	# scale the data and eval_points
+	z = [condvars; eval_points];
+	z = scale_data(z);
+	condvars = z(1:n,:);
+	eval_points = z(n+1: rows(z),:);
+
+
 	if (nargin < 8) bandwidth_matrix = chol(cov(condvars)); endif # default bandwidth matrix
 	# default kernel
 	if (nargin < 9) kernel = "__kernel_epanechnikov"; endif 	# default kernel

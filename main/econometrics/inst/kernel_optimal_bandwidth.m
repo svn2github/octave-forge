@@ -32,7 +32,7 @@ function bandwidth = kernel_optimal_bandwidth(data, depvar, kernel)
 	if isempty(depvar) do_density = true; endif;
 
 	# SA controls
-	ub = 1;
+	ub = 3;
 	lb = -5;
 	nt = 1;
 	ns = 1;
@@ -46,13 +46,13 @@ function bandwidth = kernel_optimal_bandwidth(data, depvar, kernel)
 	sa_control = { lb, ub, nt, ns, rt, maxevals, neps, functol, paramtol, verbosity, 1};
 
 	# bfgs controls
-	bfgs_control = {100,0,0};
+	bfgs_control = {10};
 
 	if do_density
-		bandwidth = samin("kernel_density_cvscore", {0, data, kernel}, sa_control);
+		bandwidth = samin("kernel_density_cvscore", {1, data, kernel}, sa_control);
 		bandwidth = bfgsmin("kernel_density_cvscore", {bandwidth, data, kernel}, bfgs_control);
 	else
-		bandwidth = samin("kernel_regression_cvscore", {0, data, depvar, kernel}, sa_control);
+		bandwidth = samin("kernel_regression_cvscore", {1, data, depvar, kernel}, sa_control);
 		bandwidth = bfgsmin("kernel_regression_cvscore", {bandwidth, data, depvar, kernel}, bfgs_control);
 	endif
 	bandwidth = exp(bandwidth);

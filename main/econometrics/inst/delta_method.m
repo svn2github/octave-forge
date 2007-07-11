@@ -19,7 +19,6 @@
 function [theta_transf, var_transf] = delta_method(func, theta, otherargs, vartheta)
 	theta_transf = feval(func, theta, otherargs);
 	D = numgradient(func, {theta, otherargs});
-
 	var_transf = D * vartheta * D';
 
 endfunction

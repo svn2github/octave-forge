@@ -41,8 +41,8 @@ function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, mode
 
 	if nargin < 4 modelargs = {}; endif # create placeholder if not used
 	if !iscell(modelargs) modelargs = {}; endif # default controls if receive placeholder
-	if nargin < 5 control = {Inf,0,1,1}; endif # default controls and method
-	if !iscell(control) control = {Inf,0,1,1}; endif # default controls if receive placeholder
+	if nargin < 5 control = {-1,0,1,1}; endif # default controls and method
+	if !iscell(control) control = {-1,0,1,1}; endif # default controls if receive placeholder
 	if nargin < 6 nslaves = 0; endif
 	if nslaves > 0
 		global NSLAVES PARALLEL NEWORLD TAG;

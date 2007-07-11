@@ -45,8 +45,13 @@ function z = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_pe
 	# drop own weight for CV
 	if (do_cv) W = W - diag(diag(W)); endif
 
+	den = sum(W,2);
+	if !all(den)
+		warning("kernel_regression: some evaluation points have no neighbors - increase the bandwidth");
+		den = den + eps; # avoid divide by zero
+	endif
 
-	W = W ./ (eps + repmat(sum(W,2),1,n)); # add eps to denominator to avoid crashes
+	W = W ./ (repmat(den,1,n));
 	z = W*y;
 
 	if debug

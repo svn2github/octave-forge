@@ -43,9 +43,8 @@
 function [theta, obj_value, convergence, iters] = gmm_estimate(theta, data, weight, moments, momentargs, control, nslaves)
 
 	if nargin < 5 error("gmm_estimate: 5 arguments required"); endif
-
-	if nargin < 6 control = {Inf,0,1,1}; endif # default controls
-	if !iscell(control) control = {Inf,0,1,1}; endif # default controls if receive placeholder
+	if nargin < 6 control = {-1}; endif # default controls
+	if !iscell(control) control = {-1}; endif # default controls if receive placeholder
 	if nargin < 7 nslaves = 0; endif
 
  	if nslaves > 0

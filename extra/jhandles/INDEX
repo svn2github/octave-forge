@@ -9,3 +9,6 @@ jhandles
  shading
  sphere
  uicontrol
+ ancestor
+ gcbo
+ uipanel

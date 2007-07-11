@@ -41,6 +41,12 @@ cd @NAME@-@VERSION@
 HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('build','-nodeps','-verbose','tmp','@PACKAGE@');"
 cd tmp
 tar xf @NAME@-@VERSION@.tar
+if [ -e @NAME@/on_uninstall.m ]; then
+  if [! -d @NAME@/doc ]; then
+    mkdir @NAME@/doc
+  fi
+  mv @NAME@/on_uninstall.m @NAME@/doc/on_uninstall.m.orig
+fi
 cat << EOF > @NAME@/on_uninstall.m
 function on_uninstall (desc)
   error ("Can not uninstall @NAME@-@VERSION@ installed by the RPM package manager");

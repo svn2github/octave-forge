@@ -61,7 +61,7 @@ compare: prepare_compare real_compare move_compare
 
 move_compare:
 	@for pkgdir in $(PKGDIRS); do \
-	  cp -f compare/toupload/$${pkgdir}/* $${pkgdir}; \
+	  cp -pf compare/toupload/$${pkgdir}/* $${pkgdir}; \
 	done
 
 prepare_compare:
@@ -85,28 +85,34 @@ real_compare:
 	url=`cat packages.md5 | grep "bundle" | sed -e "s/^.*\(http[^\S]*\).*$$/\1/"`; \
 	bundle=`echo $$url | sed -e "s|^.*/\(.*\).*$$|\1|"`; \
 	bundle=`echo $$bundle | sed -e "s|\?download||" -e "s|\.tar\.gz||"`; \
-	pkgs=`find $$bundle -name "*.tar.gz"`; \
-	for oldpkg in $$pkgs; do \
-	  olddir=`echo $$oldpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
-	  oldname=`echo $$olddir | sed -e "s/^\(.*\)-.*$$/\1/"`; \
-	  newpkg=`cd ..; find $(PKGDIRS) -name "$$oldname*" | sort | tail -1`; \
+	pkgs=`cd ..; find $(PKGDIRS) -name "*.tar.gz"`; \
+	for newpkg in $$pkgs; do \
 	  newdir=`echo $$newpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
-	  tar xzf $$oldpkg; \
-	  mv $$olddir $${olddir}.orig; \
-	  tar xzf ../$$newpkg; \
-	  if diff -Nrq $$olddir.orig $$newdir >& /dev/null; then \
-	    cp $$oldpkg toupload/$$newpkg; \
-	  else \
-	    cp ../$$newpkg toupload/$$newpkg; \
+	  newname=`echo $$newdir | sed -e "s/^\(.*\)-.*$$/\1/"`; \
+	  oldpkg=`find $$bundle -name "$$newname*" | sort | tail -1`; \
+	  if [ "X$${oldpkg}"X = "XX" ]; then \
+	    cp -p ../$$newpkg toupload/$$newpkg; \
+	    echo "$$newpkg is new"; \
 	    upload=yes; \
-	    oldver=`cat $${olddir}.orig/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
-	    newver=`cat $${newdir}/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
-	    if [ "$$oldver" = "$$newver" ]; then \
-	      samever=yes; \
-	      echo "*** $$newpkg differs from uploaded version but has same version"; \
+	  else \
+	    olddir=`echo $$oldpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
+	    tar xzf $$oldpkg; \
+	    mv $$olddir $${olddir}.orig; \
+	    tar xzf ../$$newpkg; \
+	    if diff -Nrq $$olddir.orig $$newdir >& /dev/null; then \
+	      cp -p $$oldpkg toupload/$$newpkg; \
 	    else \
-	      echo "$$newpkg differs from uploaded version"; \
-            fi; \
+	      cp -p ../$$newpkg toupload/$$newpkg; \
+	      upload=yes; \
+	      oldver=`cat $${olddir}.orig/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
+	      newver=`cat $${newdir}/DESCRIPTION | grep Version | sed -e "s/^.*:\s*\(.*\)\s*$$/\1/"`; \
+	      if [ "$$oldver" = "$$newver" ]; then \
+	        samever=yes; \
+	        echo "*** $$newpkg differs from uploaded version but has same version"; \
+	      else \
+	        echo "$$newpkg differs from uploaded version"; \
+              fi; \
+	    fi; \
 	  fi; \
 	  rm -fr $$olddir.orig $$newdir; \
 	done; \
@@ -119,7 +125,7 @@ real_compare:
 	else \
 	  echo "*** Please fix the version numbering noted above before proceding"; \
 	  exit -1; \
-	fi; \
+	fi;
 
 # Do nothing for the package target 
 package:

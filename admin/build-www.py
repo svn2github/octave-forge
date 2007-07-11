@@ -95,6 +95,8 @@ def create_INDEX(desc, packdir, p):
         
         ## Look for tarball in ../packages, and if it is found use it
         install_dir = wd + "install/";
+        if (not os.path.exists(install_dir)):
+            os.mkdir(install_dir);
         tarball = name_version + ".tar.gz";
         cmd = 'find ../packages -name ' + tarball + ' -prune -type f -print';
         have_tarball = None;

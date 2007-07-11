@@ -91,7 +91,7 @@ echo "done"
 tbindir=$INSTALL_DIR/bin
 tlibdir=$INSTALL_DIR/lib
 tincludedir=$INSTALL_DIR/include
-PATH=$tbindir:$PATH
+PATH=$PATH:$tbindir
 tdir_w32=`cd "$INSTALL_DIR" && pwd -W`
 tdir_w32_forward="$tdir_w32"
 tdir_w32_1=`echo $tdir_w32 | sed -e 's,/,\\\\,g'`
@@ -882,7 +882,7 @@ fi
 echo -n "checking for makeinfo... "
 if test ! -f "$tbindir/makeinfo.exe"; then
   echo "no"
-  download_file texinfo-4.8a.tar.gz http://ftp.gnu.org/gnu/texinfo/texinfo-4.8a.tar.gz
+  download_file texinfo-4.8a.tar.gz ftp://ftp.gnu.org/gnu/texinfo/texinfo-4.8a.tar.gz
   echo -n "decompressing makeinfo... "
   (cd "$DOWNLOAD_DIR" && tar xfz texinfo-4.8a.tar.gz)
   cp libs/texinfo-4.8a.diff "$DOWNLOAD_DIR/texinfo-4.8"

@@ -70,8 +70,8 @@ prepare_compare:
 	@cd compare; \
 	wget $(PACKAGES_MD5); \
 	url=`cat packages.md5 | grep "bundle" | sed -e "s/^.*\(http[^\S]*\).*$$/\1/"`; \
-	bundle=`echo $$url | sed -e "s|^.*/\(.*\).*$$|\1|"`; \
 	wget $$url; \
+	bundle=`echo $$url | sed -e "s|^.*/\(.*\).*$$|\1|"`; \
 	bundle=`echo $$bundle | sed -e "s|\?download||"`; \
 	tar xzf $$bundle;
 
@@ -82,7 +82,10 @@ real_compare:
 	for _dir in $(PKGDIRS); do \
 	  mkdir toupload/$$_dir; \
 	done; \
-	pkgs=`find $(PKGDIRS) -name "*.tar.gz"`; \
+	url=`cat packages.md5 | grep "bundle" | sed -e "s/^.*\(http[^\S]*\).*$$/\1/"`; \
+	bundle=`echo $$url | sed -e "s|^.*/\(.*\).*$$|\1|"`; \
+	bundle=`echo $$bundle | sed -e "s|\?download||" -e "s|\.tar\.gz||"`; \
+	pkgs=`find $$bundle -name "*.tar.gz"`; \
 	for oldpkg in $$pkgs; do \
 	  olddir=`echo $$oldpkg | sed -e "s|^.*/||" | sed -e "s/\.tar.*$$//"`; \
 	  oldname=`echo $$olddir | sed -e "s/^\(.*\)-.*$$/\1/"`; \
@@ -157,6 +160,8 @@ install:
 checkpkg/%: cleancheck/% mkpkg/%
 	@echo "Running test code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
+	if [ ! -d code ]; then mkdir code; fi; \
+	cd code; tar xzf ../../$(opkg); cd ..; \
 	$(TOPDIR)/admin/mktests.sh code; \
 	$(RUN_OCTAVE) --eval "pkg('unload','all');addpath(genpath([pwd(),'/code']),'-end');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('load','all');fntests" ; \
 	if [ ! -e $(TESTLOG) ]; then touch $(TESTLOG); fi ; \
@@ -166,6 +171,8 @@ checkpkg/%: cleancheck/% mkpkg/%
 icheckpkg/%: cleancheck/% mkpkg/%
 	@echo "Running demo code for $(opkg) and its dependencies" ; \
 	cd sandbox; \
+	if [ ! -d code ]; then mkdir code; fi; \
+	cd code; tar xzf ../../$(opkg); cd ..; \
 	echo 'disp("starting demos...")' > fndemos.m; \
 	for file in `grep -l '^%!demo' code/*/*/*.{cc,m}` ; do \
 	  echo "demo('$$file');" >> fndemos.m ; done
@@ -181,8 +188,6 @@ mkpkg/%:
 	@echo "Building $(opkg) and its dependencies"; \
 	cd sandbox; \
 	if [ ! -d install ]; then mkdir install; fi ; \
-	if [ ! -d code ]; then mkdir code; fi; \
-	cd code; tar xzf ../../$(opkg); cd ..; \
 	pkgs="'../$(opkg)'"; \
 	until $(RUN_OCTAVE) --eval "pkg('unload','all');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install',$$pkgs)" 2> baddeps; do \
 	  deps=`cat baddeps | grep " needs " | sed -e 's/^.*needs\s\+\(\S*\).*$$/\1/'`; \

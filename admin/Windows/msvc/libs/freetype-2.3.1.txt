@@ -10,6 +10,8 @@ Requirements:
 
 1) Apply the patch
 
+============================================================
+
 2) Open builds\win32\visualc\freetype.sln in Visual Studio
 
 3) Select "Release Multithreaded" configuration
@@ -24,6 +26,14 @@ Requirements:
    (/MD flag).
 
 6) Build freetype project
+
+============================================================
+
+2) Enter builds\win32\visualc
+
+3) vcbuild -u freetype.sln "Release Multithreaded|Win32"
+
+============================================================
 
 7) Install (copy manually):
 	. freetype6.dll into bin directory

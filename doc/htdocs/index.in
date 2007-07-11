@@ -34,10 +34,10 @@ __HEADER__([[[Octave-Forge]]])
     or <a href="developers.html">join the development team</a>.
   </p>
   <p>
-    For convenience Octave-Forge supplies pre-built installers:
+    For convenience Octave-Forge supplies pre-built installers for Octave:
     <ul>
-    <li><b><a href="__WINDOWS__">Octave Windows installer</a></b>
-    <li><b><a href="__OSX__">Octave OS X installer</a></b>
+    <li><b><a href="__WINDOWS__">Windows installer</a> (Octave and Octave-Forge)</b>
+    <li><b><a href="__OSX__">OS X installer</a> (Octave only)</b>
     </ul>
   </p>
 </div>

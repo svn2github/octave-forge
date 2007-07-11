@@ -95,7 +95,7 @@ real_compare:
 	  mv $$olddir $${olddir}.orig; \
 	  tar xzf ../$$newpkg; \
 	  if diff -Nrq $$olddir.orig $$newdir >& /dev/null; then \
-	    cp $$oldpkg toupload/$$oldpkg; \
+	    cp $$oldpkg toupload/$$newpkg; \
 	  else \
 	    cp ../$$newpkg toupload/$$newpkg; \
 	    upload=yes; \

@@ -22,62 +22,44 @@ BuildRequires:	libstdc++-devel
 BuildRequires:  %(rpm -q --qf '%%{name}' %(rpm -q -f `which mkoctfile`))
 >>BUILDREQUIRES<<
 
-%define builtpackage @NAME@-@VERSION@.tar.gz
 %define octave octave-%{octave_ver}
+%define octave_distpkg %{?_vendor:%_vendor}%{?!_vendor:distributions}
+%define pkg %(echo %{name} | sed -e "s/octave_//")
 
 %description
 @DESCRIPTION@
 
 %prep
-rm -fr @NAME@-@VERSION@
-mkdir @NAME@-@VERSION@
-cd @NAME@-@VERSION@
-cp %{_sourcedir}/@PACKAGE@ .
-chmod a+r @PACKAGE@
-mkdir tmp
+%setup -q -n %{pkg}-%{version}
 
 %build
-cd @NAME@-@VERSION@
-HOME=`pwd` %{octave} -H -q --no-site-file --eval "pkg('build','-nodeps','-verbose','tmp','@PACKAGE@');"
-cd tmp
-tar xf @NAME@-@VERSION@.tar
-if [ -e @NAME@/on_uninstall.m ]; then
-  if [! -d @NAME@/doc ]; then
-    mkdir @NAME@/doc
-  fi
-  mv @NAME@/on_uninstall.m @NAME@/doc/on_uninstall.m.orig
-fi
-cat << EOF > @NAME@/on_uninstall.m
-function on_uninstall (desc)
-  error ("Can not uninstall @NAME@-@VERSION@ installed by the RPM package manager");
-endfunction
-EOF
-tar czf ../%{builtpackage} @NAME@
+%configure
+make TMPDIR=%{_tmppath} DESTDIR=%{buildroot} DISTPKG=%{octave_distpkg}
 
 %install
-cd @NAME@-@VERSION@
 rm -rf %{buildroot}
-mkdir -p %{buildroot}%{_datadir}
-cp %{builtpackage} %{buildroot}%{_datadir}
-
-%post
-%{octave} -H -q --no-site-file --eval "warning('off','all');pkg('install','-global','%{_datadir}/%{builtpackage}')"
-rm %{_datadir}/%{builtpackage}
-
-%postun
-%{octave} -H -q --no-site-file --eval "prefix=pkg('prefix');unlink(fullfile(prefix,'@NAME@-@VERSION@','packinfo','on_uninstall.m'));pkg('uninstall','@NAME@')"
+make install TMPDIR=%{_tmppath} DESTDIR=%{buildroot} DISTPKG=%{octave_distpkg}
 
 %clean
-rm -fr %{buildroot}
+rm -rf %{buildroot}
+
+%post
+%{_datadir}/octave/packages/%{pkg}-%{version}/packinfo/dist_admin install
+
+%preun
+%{_datadir}/octave/packages/%{pkg}-%{version}/packinfo/dist_admin uninstall
+
+%postun
+%{octave} -q -H --no-site-file --eval "pkg('rebuild');"
 
 %files
 %defattr(-,root,root)
-%{_datadir}/*
+%{_datadir}/octave/packages/*
 
 %changelog
 # Changelog for packages rebuilt on stable releases (leave it first):
 %{!?_with_unstable:* %(LC_ALL=C date +"%a %b %d %Y") %{packager} %{version}-%{release}}
 %{!?_with_unstable: - rebuild of %{version}-%{rel}%{?distsuffix} for %{distversion}}
 
-* @DATE@ @MAINTAINER@ @VERSION@-1%{?distsuffix}
+* @DATE@ @MAINTAINER@ %{version}-%{rel}%{?distsuffix}
 - Automatically created from octave-forge package

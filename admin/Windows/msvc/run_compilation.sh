@@ -17,10 +17,10 @@
 # Configuration #
 #################
 
-INSTALL_DIR=/c/Temp/vclibs_tmp
-CYGWIN_DIR=/c/Software/cygwin
+INSTALL_DIR=/d/Temp/vclibs_tmp
+CYGWIN_DIR=/d/Software/cygwin
 DOWNLOAD_DIR=downloaded_packages
-#WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 DOATLAS=false
 
 verbose=true
@@ -346,22 +346,23 @@ fi
 ########
 
 echo -n "checking for GLPK... "
-if ! test -f "$tbindir/glpk49.dll"; then
+if ! test -f "$tbindir/glpk_4_19.dll"; then
   echo "no"
-  download_file glpk-4.9.tar.gz ftp://ftp.gnu.org/gnu/glpk/glpk-4.9.tar.gz
+  download_file glpk-4.19.tar.gz ftp://ftp.gnu.org/gnu/glpk/glpk-4.19.tar.gz
   echo -n "decompressing GLPK... "
-  (cd "$DOWNLOAD_DIR" && tar xfz glpk-4.9.tar.gz)
-  cp libs/glpk-4.9.diff "$DOWNLOAD_DIR/glpk-4.9"
+  (cd "$DOWNLOAD_DIR" && tar xfz glpk-4.19.tar.gz)
+  cp libs/glpk-4.19.diff "$DOWNLOAD_DIR/glpk-4.19"
   echo "done"
   echo -n "compiling GLPK... "
-  (cd "$DOWNLOAD_DIR/glpk-4.9" &&
-    patch -p1 < glpk-4.9.diff &&
-    sed -e "s,^DESTDIR =.*$,DESTDIR = $tdir_w32," w32vc8d.mak > ttt &&
-    mv ttt w32vc8d.mak &&
-    nmake -f w32vc8d.mak &&
-    nmake -f w32vc8d.mak installwin) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glpk-4.9"
-  if ! test -f "$tbindir/glpk49.dll"; then
+  (cd "$DOWNLOAD_DIR/glpk-4.19" &&
+    patch -p1 < glpk-4.19.diff &&
+	cd w32 &&
+    nmake -f Makefile_VC6_MT_DLL &&
+	cp glpk.lib "$tlibdir" &&
+	cp ../include/glpk.h "$tincludedir" &&
+	cp glpk_4_19.dll "$tbindir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/glpk-4.19"
+  if ! test -f "$tbindir/glpk_4_19.dll"; then
     echo "failed"
     exit -1
   else

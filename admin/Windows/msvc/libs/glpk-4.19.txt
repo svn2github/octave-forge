@@ -1,0 +1,20 @@
+Package: glpk
+Version: 4.19
+Home page: http://www.gnu.org/software/glpk
+Download: ftp://ftp.gnu.org/gnu/glpk/glpk-4.19.tar.gz
+License: GPL
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: none
+
+1) Apply the patch
+
+2) Enter w32\ subdirectory
+
+3) nmake -f Makefile_VC6_MT_DLL
+
+4) Install (copy manually):
+	. glpk_4_19.dll into bin directory
+	. glpk.lib into lib directory
+	. include\glpk.h into include directory

@@ -1,0 +1,81 @@
+Binary files glpk-4.19/examples/mtsamp.obj and glpk-4.19-new/examples/mtsamp.obj differ
+diff -urN glpk-4.19/w32/Makefile_VC6_MT_DLL glpk-4.19-new/w32/Makefile_VC6_MT_DLL
+--- glpk-4.19/w32/Makefile_VC6_MT_DLL	Thu Jul  5 10:00:00 2007
++++ glpk-4.19-new/w32/Makefile_VC6_MT_DLL	Thu Jul 12 09:57:10 2007
+@@ -1,6 +1,6 @@
+ # Build GLPK MT DLL with Microsoft Visual C++ 6.0
+ 
+-CFLAGS = /nologo /W3 /DGLP_TLS_CONFIG=2
++CFLAGS = /nologo /O2 /W3 /DGLP_TLS_CONFIG=2 /D_CRT_SECURE_NO_DEPRECATE
+ 
+ OBJSET = \
+ ..\src\glpapi01.obj \
+@@ -78,21 +78,28 @@
+ ..\src\glptsp.obj
+ 
+ .c.obj:
+-        cl.exe /MT $(CFLAGS) /I..\include /Fo$*.obj /c $*.c
++        cl.exe /MD $(CFLAGS) /I..\include /Fo$*.obj /c $*.c
+ 
+ all: glpk_4_19.dll glpsol.exe tspsol.exe
+ 
+-glpk_4_19.dll: $(OBJSET)
+-        cl.exe /MT /LD /Feglpk_4_19.dll ..\src\*.obj glpk_4_19.def
++glpk_4_19.dll: $(OBJSET) glpk.res
++        cl.exe /MT /LD /Feglpk_4_19.dll ..\src\*.obj glpk.res glpk_4_19.def /link /IMPLIB:glpk.lib
++	mt -outputresource:$@ -manifest $@.manifest
++
++glpk.res: glpk.rc
++	rc /fo $@ glpk.rc
+ 
+ glpsol.exe: ..\examples\glpsol.obj glpk_4_19.dll
+-        cl.exe /MT /Feglpsol.exe ..\examples\glpsol.obj glpk_4_19.lib
++        cl.exe /MT /Feglpsol.exe ..\examples\glpsol.obj glpk.lib
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ tspsol.exe: ..\examples\tspsol.obj glpk_4_19.dll
+-        cl.exe /MT /Fetspsol.exe ..\examples\tspsol.obj glpk_4_19.lib
++        cl.exe /MT /Fetspsol.exe ..\examples\tspsol.obj glpk.lib
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ mtsamp.exe: ..\examples\mtsamp.obj glpk_4_19.dll
+-        cl.exe /MT /Femtsamp.exe ..\examples\mtsamp.obj glpk_4_19.lib
++        cl.exe /MT /Femtsamp.exe ..\examples\mtsamp.obj glpk.lib
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ check: mtsamp.exe
+         .\mtsamp.exe ..\examples\plan.mps ..\examples\plan.mps
+diff -urN glpk-4.19/w32/glpk.rc glpk-4.19-new/w32/glpk.rc
+--- glpk-4.19/w32/glpk.rc	Thu Jan  1 01:00:00 1970
++++ glpk-4.19-new/w32/glpk.rc	Thu Jul 12 09:46:50 2007
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	4, 19, 0, 0
++PRODUCTVERSION	4, 19, 0, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"GNU <www.gnu.org>\0"
++			VALUE	"FileDescription",	"GNU Linear Programming Kit\0"
++			VALUE	"FileVersion",	"4.19\0"
++			VALUE	"InternalName",	"GLPK\0"
++			VALUE	"LegalCopyright",	"Copyright 2000-2007 Andrew Makhorin\0"
++			VALUE	"OriginalFilename",	"glpk_4_19.dll\0"
++			VALUE	"ProductName",	"GLPK\0"
++			VALUE	"ProductVersion",	"4.19\0"
++		END
++	END
++END

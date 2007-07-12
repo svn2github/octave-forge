@@ -118,6 +118,8 @@ pkg/%:
 	  fi; \
 	  tar -cf - $(REAL_PKG_FILES) | (cd ../$(PKGDIR)/$$name-$$ver; tar -xf -); \
 	  cd ../$(PKGDIR); \
+	  cp ../package_configure.in $$name-$$ver/configure; \
+	  cp ../package_Makefile.in $$name-$$ver/Makefile; \
 	  tar -zcf $$name-$$ver.tar.gz $$name-$$ver; \
 	  rm -fr $$name-$$ver; \
 	fi

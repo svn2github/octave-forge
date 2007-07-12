@@ -48,9 +48,11 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
+
 <dt>July ??, 2007</dt>
 <dd>Updated the Windows binary release to use Octave 2.9.13.</li>
 </dd>
+
 <dt>July ??, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.13. Many packages
@@ -84,9 +86,11 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>general bug fixes and improvements.</li>
 </ul>
 </dd>
+
 <dt>July 4, 2007</dt>
 <dd>Added Octave.app 2.9.12 for OS X.
 </dd>
+
 <dt>May 26, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.12. Many packages
@@ -173,24 +177,6 @@ package manager, the following additional changes are notable:</p>
 </ul>
 </dd>
 
-<dt>July 09, 2006</dt>
-<dd>
-<p>Octave-forge version 200607008 released. This version was the last 
-monolithic release and the first release that only supported version 
-of octave later than Octave 2.9.</p>
-<p>An abbreviated list of changes is:</p>
-<ul>
-   <li>purge functions moved to Octave and remove pre-2.9.x support.</li>
-   <li>comm: new functions pam/genqam/psk mod/demod</li>
-   <li>combinatorics: new functions for integer partitions</li>
-   <li>geometry: fix qhull problems (finally!?)</li>
-   <li>signal: new function square to generate square waves</li>
-   <li>statistics: new function hmm viterbi/generate</li>
-   <li>strings: remove regexp; api changed when moved to Octave</li>
-   <li>linear-algebra: new function for gsvd</li>
-   <li>general bug fixes and improvements</li>
-</ul>
-</dd>
 </dl>
 </div>
 __TRAILER__([[[home]]])

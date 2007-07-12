@@ -4,7 +4,8 @@ Home page: http://www.hdfgroup.org/HDF5/
 Download: ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/hdf5-1.6.5.tar.gz
 License: custom, BSD-like (ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/unpacked/COPYING)
 
-Compilation: from Visual Studio environment
+Compilation: from Visual Studio environment (alternative method: from
+Windows command shell with VS environment)
 
 Requirement: zlib
 
@@ -12,6 +13,8 @@ Requirement: zlib
 
 2) Unzip the file windows\all.zip into the parent directory of the top
    source tree
+
+======================================================================
 
 3) Open the project file proj\all\all.dsw into Visual Studio and tune
    the project hdf5dll properties to:
@@ -26,6 +29,17 @@ Requirement: zlib
 	#define H5_HAVE_FILTER_SZIP 1
 
 5) Build the project
+
+======================================================================
+
+3) Apply the patch
+
+4) Enter proj\hdf5dll directory and define VCLIBS_ROOT to the root
+   installation directory of all VC-compiled packages
+
+5) vcbuild -u hdf5dll.vcproj "Release|Win32"
+
+======================================================================
 
 6) Install (copy manually)
 	. hdf5.dll into bin directory

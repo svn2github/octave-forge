@@ -465,6 +465,45 @@ else
   echo "installed"
 fi
 
+########
+# HDF5 #
+########
+
+echo -n "checking for HDF5... "
+if test ! -f "$tbindir/hdf5.dll"; then
+  echo "no"
+  download_file hdf5-1.6.5.tar.gz ftp://ftp.hdfgroup.org/HDF5/current/src/hdf5-1.6.5.tar.gz
+  echo -n "decompressing HDF5... "
+  (cd "$DOWNLOAD_DIR" && tar xfz hdf5-1.6.5.tar.gz && mv hdf5-1.6.5 hdf5)
+  (cd "$DOWNLOAD_DIR" && unzip -q hdf5/windows/all.zip)
+  cp libs/hdf5.diff "$DOWNLOAD_DIR/hdf5"
+  echo "done"
+  echo -n "compiling HDF5... "
+  (cd "$DOWNLOAD_DIR/hdf5" &&
+    patch -p1 < hdf5.diff &&
+    cd proj/hdf5dll &&
+    vcbuild -u hdf5dll.vcproj "Release|Win32" &&
+    cp Release/hdf5.lib "$tlibdir" &&
+    cp Release/hdf5.dll "$tbindir" &&
+    cd ../../src &&
+    cp H5public.h H5Apublic.h H5ACpublic.h H5Bpublic.h H5Cpublic.h           \
+       H5Dpublic.h H5Epublic.h H5Fpublic.h H5FDpublic.h H5FDcore.h H5FDfamily.h \
+       H5FDgass.h H5FDlog.h H5FDmpi.h H5FDmpio.h H5FDmpiposix.h              \
+       H5FDmulti.h H5FDsec2.h H5FDsrb.h H5FDstdio.h H5FDstream.h             \
+       H5Gpublic.h H5HGpublic.h H5HLpublic.h H5Ipublic.h                     \
+       H5MMpublic.h H5Opublic.h H5Ppublic.h H5Rpublic.h H5Spublic.h          \
+       H5Tpublic.h H5Zpublic.h H5pubconf.h hdf5.h H5api_adpt.h "$tincludedir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/hdf5"
+  if test ! -f "$tbindir/hdf5.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
 ##########
 # libpng #
 ##########

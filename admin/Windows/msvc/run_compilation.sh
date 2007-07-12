@@ -933,3 +933,160 @@ if test ! -f "$tbindir/units.exe"; then
 else
   echo "installed"
 fi
+
+########
+# less #
+########
+
+echo -n "checking for less... "
+if test ! -f "$tbindir/less.exe"; then
+  echo "no"
+  download_file less-394.zip http://www.greenwoodsoftware.com/less/less-394.zip
+  echo -n "decompressing less... "
+  (cd "$DOWNLOAD_DIR" && unzip -q less-394.zip)
+  cp libs/less-394.diff "$DOWNLOAD_DIR/less-394"
+  echo "done"
+  echo -n "compiling less... "
+  (cd "$DOWNLOAD_DIR/less-394" &&
+    patch -p1 < less-394.diff && 
+    nmake -f Makefile.wnm &&
+    cp less.exe lesskey.exe "$tbindir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/less-394"
+  if test ! -f "$tbindir/less.exe"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+#######
+# CLN #
+#######
+
+echo -n "checking for CLN... "
+if test ! -f "$tlibdir/cln.lib"; then
+  echo "no"
+  download_file cln-1.1.13.tar.bz2 ftp://ftpthep.physik.uni-mainz.de/pub/gnu/cln-1.1.13.tar.bz2
+  echo -n "decompressing CLN... "
+  (cd "$DOWNLOAD_DIR" && tar xfj cln-1.1.13.tar.bz2)
+  cp libs/cln-1.1.13.diff "$DOWNLOAD_DIR/cln-1.1.13"
+  echo "done"
+  echo -n "compiling CLN... "
+  (cd "$DOWNLOAD_DIR/cln-1.1.13" &&
+    patch -p1 < cln-1.1.13.diff &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
+         CPPFLAGS="-DWIN32 -D_WIN32 -DASM_UNDERSCORE" AR=ar-msvc ./configure --prefix=$tdir_w32_forward &&
+    make -C src &&
+    make -C src install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/cln-1.1.13"
+  if test ! -f "$tlibdir/cln.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+#########
+# GiNaC #
+#########
+
+echo -n "checking for GiNaC... "
+if test ! -f "$tlibdir/ginac.lib"; then
+  echo "no"
+  download_file ginac-1.3.6.tar.bz2 ftp://ftpthep.physik.uni-mainz.de/pub/GiNaC/ginac-1.3.6.tar.bz2
+  echo -n "decompressing GiNaC... "
+  (cd "$DOWNLOAD_DIR" && tar xfj ginac-1.3.6.tar.bz2)
+  cp libs/ginac-1.3.6.diff "$DOWNLOAD_DIR/ginac-1.3.6"
+  echo "done"
+  echo -n "compiling GiNaC... "
+  (cd "$DOWNLOAD_DIR/ginac-1.3.6" &&
+    patch -p1 < ginac-1.3.6.diff &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
+      CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc ./configure --disable-shared \
+      --prefix=$tdir_w32_forward &&
+    make -C ginac &&
+    make -C ginsh &&
+    make -C ginac install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/ginac-1.3.6"
+  if test ! -f "$tlibdir/ginac.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+#############
+# wxWidgets #
+#############
+
+echo -n "checking for wxWidgets... "
+if test ! -f "$tlibdir/wxmsw28.lib"; then
+  echo "no"
+  download_file wxMSW-2.8.4.tar.bz2 'http://downloads.sourceforge.net/wxwindows/wxMSW-2.8.4.tar.bz2?modtime=1179491919&big_mirror=0'
+  echo -n "decompressing wxWidgets... "
+  (cd "$DOWNLOAD_DIR" && tar xfj wxMSW-2.8.4.tar.bz2)
+  cp libs/wxwidgets-2.8.0.diff "$DOWNLOAD_DIR/wxMSW-2.8.4"
+  echo "done"
+  echo -n "compiling wxWidgets... "
+  (cd "$DOWNLOAD_DIR/wxMSW-2.8.4" &&
+    patch -p1 < wxwidgets-2.8.0.diff &&
+    cd build/msw &&
+    nmake -f makefile.vc &&
+    cd ../.. &&
+    cp -r include/wx "$tincludedir" &&
+    cp lib/vc_lib/*.lib "$tlibdir" &&
+    cp lib/vc_lib/msw/wx/setup.h "$tincludedir/wx") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/wxMSW-2.8.4"
+  if test ! -f "$tlibdir/wxmsw28.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+###########
+# gnuplot #
+###########
+
+echo -n "checking for gnuplot... "
+if test ! -f "$tbindir/pgnuplot.exe"; then
+  echo "no"
+  download_file gnuplot-4.2.0.tar.gz 'http://downloads.sourceforge.net/gnuplot/gnuplot-4.2.0.tar.gz?modtime=1173003818&big_mirror=0'
+  echo -n "decompressing gnuplot... "
+  (cd "$DOWNLOAD_DIR" && tar xfz gnuplot-4.2.0.tar.gz)
+  cp libs/gnuplot-4.2.0.diff "$DOWNLOAD_DIR/gnuplot-4.2.0"
+  echo "done"
+  echo -n "compiling gnuplot... "
+  (cd "$DOWNLOAD_DIR/gnuplot-4.2.0" &&
+    patch -p1 < gnuplot-4.2.0.diff &&
+    sed -e "s,^DESTDIR =.*,DESTDIR = $tdir_w32," -e "s,^WXLOCATION =.*,WXLOCATION = $tdir_w32," \
+      -e "s,^VCLIBS_ROOT =.*,VCLIBS_ROOT = $tdir_w32," config/makefile.nt > ttt &&
+    mv ttt config/makefile.nt &&
+    cd src &&
+    nmake -f ../config/makefile.nt &&
+    nmake -f ../config/makefile.nt install &&
+    mkdir -p "$INSTALL_DIR/doc/gnuplot" &&
+    mv "$INSTALL_DIR/BUGS" "$INSTALL_DIR/Copyright" "$INSTALL_DIR/FAQ" "$INSTALL_DIR/NEWS" "$INSTALL_DIR/README" \
+      "$INSTALL_DIR/doc/gnuplot") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gnuplot-4.2.0"
+  if test ! -f "$tbindir/pgnuplot.exe"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi

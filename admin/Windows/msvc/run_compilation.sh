@@ -504,6 +504,38 @@ else
   echo "installed"
 fi
 
+########
+# glob #
+########
+
+echo -n "checking for glob... "
+if test ! -f "$tlibdir/glob.lib"; then
+  echo "no"
+  if test ! -f "$DOWNLOAD_DIR/glob.tar.gz"; then
+    echo "glob library is not downloadable and should already be present in $DOWNLOAD_DIR"
+    exit -1
+  fi
+  echo -n "decompressing glob... "
+  (cd "$DOWNLOAD_DIR" && tar xfz glob.tar.gz)
+  echo "done"
+  echo -n "compiling glob... "
+  (cd "$DOWNLOAD_DIR/glob" &&
+    autoconf && autoheader &&
+    ./configure.vc &&
+    make &&
+    cp glob.lib "$tlibdir" &&
+    cp fnmatch.h glob.h "$tincludedir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/glob"
+  if test ! -f "$tlibdir/glob.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
 ##########
 # libpng #
 ##########
@@ -1121,6 +1153,43 @@ if test ! -f "$tbindir/pgnuplot.exe"; then
       "$INSTALL_DIR/doc/gnuplot") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/gnuplot-4.2.0"
   if test ! -f "$tbindir/pgnuplot.exe"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+else
+  echo "installed"
+fi
+
+########
+# FLTK #
+########
+
+echo -n "checking for FLTK... "
+if test ! -f "$tbindir/fltkdll.dll"; then
+  echo "no"
+  download_file fltk-1.1.7-source.tar.gz 'ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/1.1.7/fltk-1.1.7-source.tar.gz'
+  echo -n "decompressing FLTK... "
+  (cd "$DOWNLOAD_DIR" && tar xfz fltk-1.1.7-source.tar.gz)
+  cp libs/fltk-1.1.7.diff "$DOWNLOAD_DIR/fltk-1.1.7"
+  echo "done"
+  echo -n "compiling FLTK... "
+  (cd "$DOWNLOAD_DIR/fltk-1.1.7" &&
+    patch -p1 < fltk-1.1.7.diff &&
+    cd vc2005 &&
+    vcbuild -u fltkdll.vcproj "Release|Win32" &&
+    vcbuild -u fltk.lib.vcproj "Release|Win32" &&
+    vcbuild -u fltkforms.vcproj "Release|Win32" &&
+    vcbuild -u fltkimages.vcproj "Release|Win32" &&
+    vcbuild -u fluid.vcproj "Release|Win32" &&
+    cp ../test/fltkdll.lib "$tlibdir" &&
+    cp ../fluid/fluid.exe "$tbindir" &&
+    mkdir -p "$tincludedir/FL" &&
+    cp ../FL/*.h ../FL/*.H "$tincludedir/FL" &&
+    cp fltkdll.dll "$tbindir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/fltk-1.1.7"
+  if test ! -f "$tbindir/fltkdll.dll"; then
     echo "failed"
     exit -1
   else

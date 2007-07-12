@@ -1,0 +1,81 @@
+diff -urN fltk-1.1.7/vc2005/fltk.rc fltk-1.1.7-new/vc2005/fltk.rc
+--- fltk-1.1.7/vc2005/fltk.rc	Thu Jan  1 01:00:00 1970
++++ fltk-1.1.7-new/vc2005/fltk.rc	Thu Jul 12 15:31:43 2007
+@@ -0,0 +1,30 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	1, 1, 7, 0
++PRODUCTVERSION	1, 1, 7, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"http://www.fltk.org\0"
++			VALUE	"FileDescription",	"Fast Light Tool Kit (FLTK)\0"
++			VALUE	"FileVersion",	"1.1.7\0"
++			VALUE	"InternalName",	"FLTK\0"
++			VALUE	"LegalCopyright",	"Copyright 1998-2006 by Bill Spitzak and others.\0"
++			VALUE	"OriginalFilename",	"fltkdll.dll\0"
++			VALUE	"ProductName",	"FLTK\0"
++			VALUE	"ProductVersion",	"1.1.7\0"
++		END
++	END
++END
+diff -urN fltk-1.1.7/vc2005/fltkdll.vcproj fltk-1.1.7-new/vc2005/fltkdll.vcproj
+--- fltk-1.1.7/vc2005/fltkdll.vcproj	Sun Nov 27 15:45:48 2005
++++ fltk-1.1.7-new/vc2005/fltkdll.vcproj	Thu Jul 12 15:32:12 2007
+@@ -48,7 +48,7 @@
+ 				Optimization="4"
+ 				InlineFunctionExpansion="2"
+ 				FavorSizeOrSpeed="2"
+-				AdditionalIncludeDirectories="..\vc2005;..,..\zlib,..\png,..\jpeg"
++				AdditionalIncludeDirectories="..\vc2005;..,$(VCLIBS_ROOT)\include"
+ 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;FL_DLL;FL_LIBRARY;WIN32;NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;VC_EXTRA_LEAN;WIN32_EXTRA_LEAN"
+ 				RuntimeLibrary="2"
+ 				UsePrecompiledHeader="0"
+@@ -73,7 +73,8 @@
+ 			/>
+ 			<Tool
+ 				Name="VCLinkerTool"
+-				AdditionalDependencies="opengl32.lib wsock32.lib comctl32.lib"
++				AdditionalDependencies="opengl32.lib wsock32.lib comctl32.lib zlib.lib jpeg.lib png.lib"
++				AdditionalLibraryDirectories="$(VCLIBS_ROOT)\lib"
+ 				OutputFile="fltkdll.dll"
+ 				Version="1.0"
+ 				LinkIncremental="1"
+@@ -206,6 +207,7 @@
+ 	<References>
+ 	</References>
+ 	<Files>
++		<File RelativePath=".\fltk.rc"></File>
+ 		<File
+ 			RelativePath="..\src\filename_absolute.cxx"
+ 			>
+diff -urN fltk-1.1.7/vc2005/fluid.vcproj fltk-1.1.7-new/vc2005/fluid.vcproj
+--- fltk-1.1.7/vc2005/fluid.vcproj	Sun Nov 27 15:45:48 2005
++++ fltk-1.1.7-new/vc2005/fluid.vcproj	Thu Jul 12 15:55:53 2007
+@@ -166,11 +166,11 @@
+ 			/>
+ 			<Tool
+ 				Name="VCLinkerTool"
+-				AdditionalDependencies="wsock32.lib comctl32.lib"
++				AdditionalDependencies="wsock32.lib comctl32.lib fltk.lib fltkimages.lib fltkforms.lib png.lib jpeg.lib"
+ 				OutputFile="../fluid/fluid.exe"
+ 				LinkIncremental="1"
+ 				SuppressStartupBanner="true"
+-				AdditionalLibraryDirectories="..\lib"
++				AdditionalLibraryDirectories="..\lib;$(VCLIBS_ROOT)\lib"
+ 				IgnoreDefaultLibraryNames="libcmt"
+ 				ProgramDatabaseFile=".\fluid___/fluid.pdb"
+ 				SubSystem="2"

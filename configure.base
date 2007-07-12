@@ -386,7 +386,7 @@ AC_SUBST(MKTEXI)
 dnl Test for the cvs2cl program
 AC_CHECK_PROGS(CVS2CL,cvs2cl cvs2cl.pl)
 
-CONFIGURE_OUTPUTS="Makeconf octinst.sh admin/Windows/msvc/makeall.sh"
+CONFIGURE_OUTPUTS="doc/macros.m4 Makeconf octinst.sh admin/Windows/msvc/makeall.sh"
 STATUS_MSG="
 octave commands will install into the following directories:
    m-files:   $mpath

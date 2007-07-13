@@ -16,7 +16,7 @@ Uscharfettergummel.oct: Uscharfettergummel.o Ubern.o
 
 %.oct:  %.o  
 	mkoctfile -s $< -o $@
-	strip -x $@
+	#strip -x $@
 
 clean:
 	$(RM) *.o core octave-core *.oct *~

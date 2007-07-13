@@ -1241,9 +1241,10 @@ if check_package octave; then
       cp libs/octave.diff "$DOWNLOAD_DIR/octave-$octave_version"
       (cd "$DOWNLOAD_DIR/octave-$octave_version" && patch -p1 < octave.diff)
     fi
+	cp mkoctfile.cc.in octave-config.cc.in "$DOWNLOAD_DIR/octave-$octave_version"
     echo "done"
   fi
-  echo "compiling octave... "
+  echo -n "compiling octave... "
   (cd "$DOWNLOAD_DIR/octave-$octave_version" &&
     sed -e 's/\(^.*SUBDIRS = .*\)doc examples$/\1 examples/' octMakefile.in > ttt &&
     mv ttt octMakefile.in &&
@@ -1267,7 +1268,14 @@ if check_package octave; then
     cp doc/interpreter/HTML/*.* "$octave_prefix/doc/HTML/interpreter" &&
     mkdir -p "$octave_prefix/doc/HTML/liboctave" &&
     cp doc/liboctave/HTML/*.* "$octave_prefix/doc/HTML/liboctave" &&
-    cp COPYING "$tlicdir/COPYING.GPL"
+    cp COPYING "$tlicdir/COPYING.GPL" &&
+	make -f octMakefile mkoctfile.exe octave-config.exe &&
+	rm -f "$octave_prefix/bin/mkoctfile*" "$octave_prefix/bin/octave-config*" &&
+	cp mkoctfile.exe "$octave_prefix/bin/mkoctfile.exe" &&
+	cp mkoctfile.exe "$octave_prefix/bin/mkoctfile-$octave_version.exe" &&
+	cp octave-config.exe "$octave_prefix/bin/octave-config.exe" &&
+	cp octave-config.exe "$octave_prefix/bin/octave-config-$octave_version.exe" &&
+	cp octaverc.win "$octave_prefix/share/octave/$octave_version/m/startup/octaverc"
     ) >&5 2>&1
   if test ! -f "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe"; then
     echo "failed"

@@ -106,7 +106,7 @@ function check_package
   if test ! -z "$packages"; then
     found=`echo "$packages" | grep -e $pack`
     if test ! -z "$found"; then
-      echo "processing $name... "
+      echo "processing $pack... "
       return 0
     fi
   fi

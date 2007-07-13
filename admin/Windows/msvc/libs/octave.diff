@@ -1,0 +1,34 @@
+Index: octMakefile.in
+===================================================================
+RCS file: /cvs/octave/octMakefile.in,v
+retrieving revision 1.219
+diff -c -p -r1.219 octMakefile.in
+*** octMakefile.in	27 Mar 2007 16:05:15 -0000	1.219
+--- octMakefile.in	13 Jul 2007 07:58:38 -0000
+*************** octave-config: octave-config.in Makeconf
+*** 81,90 ****
+--- 81,104 ----
+  	@$(do-subst-default-vals)
+  	chmod a+rx $@
+  
++ octave-config.cc: octave-config.cc.in Makeconf octMakefile
++ 	@$(do-subst-default-vals)
++ 
++ octave-config$(EXEEXT): octave-config.o
++ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
++ 	$(ALL_LDFLAGS) -o $@ octave-config.o
++ 
+  mkoctfile: mkoctfile.in Makeconf octMakefile
+  	@$(do-subst-config-vals)
+  	chmod a+rx $@
+  
++ mkoctfile.cc: mkoctfile.cc.in Makeconf octMakefile
++ 	@$(do-subst-config-vals)
++ 
++ mkoctfile$(EXEEXT): mkoctfile.o
++ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
++ 	$(ALL_LDFLAGS) -o $@ mkoctfile.o
++ 
+  run-octave: run-octave.in Makeconf octMakefile
+  	@$(do-subst-script-vals)
+  	chmod a+rx "$@"

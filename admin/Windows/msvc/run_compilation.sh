@@ -27,8 +27,9 @@ verbose=false
 packages=
 available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
-netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL"
+netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge"
 octave_version=
+of_version=
 
 ###################################################################################
 
@@ -65,6 +66,9 @@ while test $# -gt 0; do
       ;;
     --release=*)
       octave_version=`echo $1 | sed -e 's/--release=//'`
+      ;;
+    --forge=*)
+      of_version=`echo $1 | sed -e 's/--forge=//'`
       ;;
     -*)
       echo "unknown flag: $1"
@@ -274,6 +278,9 @@ if test -z "$todo_packages"; then
     if test ! -z "$octave_version"; then
       todo_check "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe" octave
     fi
+    if test ! -z "$of_version"; then
+      packages="$packages forge"
+    fi
     todo_check "$tbindir/jogl.jar" JOGL
   fi
 else
@@ -282,6 +289,10 @@ fi
 
 if test -z "$octave_version"; then
   packages=`echo $packages | sed -e 's/octave//'`
+fi
+
+if test -z "$of_version"; then
+  packages=`echo $packages | sed -e 's/forge//'`
 fi
 
 if test -z "$packages"; then
@@ -1304,6 +1315,19 @@ if check_package JOGL; then
     echo "failed"
     exit -1
   else
+    echo "done"
+  fi
+fi
+
+################
+# octave-forge #
+################
+
+if check_package forge; then
+  download_file octave-forge-bundle-$of_version.tar.gz "http://downloads.sourceforge.net/octave/octave-forge-bundle-$of_version.tar.gz?big_mirror=0"
+  if test ! -d "$DOWNLOAD_DIR/octave-forge-bundle-$of_version"; then
+    echo -n "decompressing octave-forge... "
+    (cd "$DOWNLOAD_DIR" && tar xfz octave-forge-bundle-$of_version.tar.gz)
     echo "done"
   fi
 fi

@@ -23,16 +23,14 @@ DOWNLOAD_DIR=downloaded_packages
 WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 DOATLAS=false
 
-verbose=true
+verbose=false
+packages=
+available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
+HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
+netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL"
+octave_version=
 
 ###################################################################################
-
-if $verbose; then
-  exec 5>&1
-else
-  WGET_FLAGS="$WGET_FLAGS -q"
-  exec 5>/dev/null
-fi
 
 function download_file
 {
@@ -50,6 +48,66 @@ function download_file
       echo "done"
     fi
   fi
+}
+
+todo_packages=
+
+while test $# -gt 0; do
+  case "$1" in
+    -v | --verbose)
+      verbose=true
+      ;;
+    -a | --atlas)
+      DOATLAS=true
+      ;;
+    -f | --force)
+	  todo_packages="$available_packages"
+      ;;
+    --release=*)
+      octave_version=`echo $1 | sed -e 's/--release=//'`
+      ;;
+    -*)
+      echo "unknown flag: $1"
+      exit -1
+      ;;
+    *)
+      if ! `echo $available_packages | grep -e $1 > /dev/null`; then
+        echo "unknown package: $1"
+        exit -1
+      fi
+      if test -z "$packages"; then
+        packages="$1"
+      else
+        packages="$packages $1"
+      fi
+      ;;
+  esac
+  shift
+done
+
+if $verbose; then
+  exec 5>&1
+else
+  WGET_FLAGS="$WGET_FLAGS -q"
+  exec 5>/dev/null
+fi
+
+function check_package
+{
+  pack=$1
+  if ! `echo $available_packages | grep -e $pack > /dev/null`; then
+    echo "check_package: unknown package: $pack"
+    exit -1
+  fi
+  if test ! -z "$packages"; then
+    found=`echo "$packages" | grep -e $pack`
+    if test ! -z "$found"; then
+      echo "processing $name... "
+      return 0
+    fi
+  fi
+  echo "skipping $pack... "
+  return -1
 }
 
 ###################################################################################
@@ -82,15 +140,17 @@ rm -f conftest.*
 
 # Create target directory
 echo -n "creating target directories... "
-mkdir -p $INSTALL_DIR
-mkdir -p $INSTALL_DIR/bin
-mkdir -p $INSTALL_DIR/lib
-mkdir -p $INSTALL_DIR/include
+mkdir -p "$INSTALL_DIR"
+mkdir -p "$INSTALL_DIR/bin"
+mkdir -p "$INSTALL_DIR/lib"
+mkdir -p "$INSTALL_DIR/include"
+mkdir -p "$INSTALL_DIR/license"
 echo "done"
 
-tbindir=$INSTALL_DIR/bin
-tlibdir=$INSTALL_DIR/lib
-tincludedir=$INSTALL_DIR/include
+tbindir="$INSTALL_DIR/bin"
+tlibdir="$INSTALL_DIR/lib"
+tincludedir="$INSTALL_DIR/include"
+tlicdir="$INSTALL_DIR/license"
 PATH=$PATH:$tbindir
 tdir_w32=`cd "$INSTALL_DIR" && pwd -W`
 tdir_w32_forward="$tdir_w32"
@@ -149,26 +209,109 @@ else
   echo "installed"
 fi
 
+function todo_check
+{
+  path=$1
+  name=$2
+  if ! `echo $available_packages | grep -e $name > /dev/null`; then
+    echo "todo_check: unknown package: $name"
+    exit -1
+  fi
+  echo -n "checking for $name... "
+  if test ! -f "$path"; then
+    echo "no";
+    packages="$packages $name"
+  else
+    echo "installed"
+  fi
+}
+
+if test -z "$todo_packages"; then
+  if test -z "$packages"; then
+    todo_check "$tbindir/f2c.exe" f2c
+    todo_check "$tlibdir/f2c.lib" libf2c
+    todo_check "$tbindir/blas.dll" BLAS
+    todo_check "$tbindir/lapack.dll" LAPACK
+    if $DOATLAS; then
+      echo -n "checking for ATLAS... "
+      atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
+      if test -z "$atl_dlls"; then
+        echo "no"
+        packages="$packages ATLAS"
+      else
+        echo "installed"
+      fi
+    fi
+    todo_check "$tbindir/libfftw3-3.dll" FFTW
+    todo_check "$tbindir/pcre70.dll" PCRE
+    todo_check "$tbindir/glpk_4_19.dll" GLPK
+    todo_check "$tbindir/readline.dll" readline
+    todo_check "$tbindir/zlib1.dll" zlib
+    todo_check "$tlibdir/cxsparse.lib" SuiteSparse
+    todo_check "$tbindir/hdf5.dll" HDF5
+    todo_check "$tlibdir/glob.lib" glob
+    todo_check "$tlibdir/png.lib" libpng
+    todo_check "$tbindir/arpack.dll" ARPACK
+    todo_check "$tbindir/jpeg6b.dll" libjpeg
+    todo_check "$tbindir/iconv.dll" libiconv
+    todo_check "$tbindir/intl.dll" gettext
+    todo_check "$tbindir/libcairo-2.dll" cairo
+    todo_check "$tbindir/libglib-2.0-0.dll" glib
+    todo_check "$tbindir/libpango-1.0-0.dll" pango
+    todo_check "$tbindir/freetype6.dll" freetype
+    todo_check "$tbindir/bgd.dll" libgd
+    todo_check "$tbindir/libgsl.dll" libgsl
+    todo_check "$tbindir/netcdf.dll" netcdf
+    todo_check "$tbindir/sed.exe" sed
+    todo_check "$tbindir/makeinfo.exe" makeinfo
+    todo_check "$tbindir/units.exe" units
+    todo_check "$tbindir/less.exe" less
+    todo_check "$tlibdir/cln.lib" CLN
+    todo_check "$tlibdir/ginac.lib" GiNaC
+    todo_check "$tlibdir/wxmsw28.lib" wxWidgets
+    todo_check "$tbindir/pgnuplot.exe" gnuplot
+    todo_check "$tbindir/fltkdll.dll" FLTK
+    if test ! -z "$octave_version"; then
+      todo_check "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe" octave
+    fi
+    todo_check "$tbindir/jogl.jar" JOGL
+  fi
+else
+  packages="$todo_packages"
+fi
+
+if test -z "$octave_version"; then
+  packages=`echo $packages | sed -e 's/octave//'`
+fi
+
+if test -z "$packages"; then
+  echo "nothing to do"
+  exit 0
+else
+  echo "***********************************"
+  echo "packages to install:"
+  for pack in $packages; do
+    echo "  $pack"
+  done
+  echo "***********************************"
+fi
+
 #######
 # f2c #
 #######
 
-echo -n "checking for f2c... "
-if ! test -f "$tbindir/f2c.exe"; then
-  echo "no"
+if check_package f2c; then
   download_file f2c.exe.gz http://www.netlib.org/f2c/mswin/f2c.exe.gz
+  echo -n "decompressing f2c... "
   gzip -d -c "$DOWNLOAD_DIR/f2c.exe.gz" > "$tbindir/f2c.exe"
-else
-  echo "installed"
+  echo "done"
 fi
 
 ##########
 # libf2c #
 ##########
 
-echo -n "checking for libf2c... "
-if ! test -f "$tlibdir/f2c.lib"; then
-  echo "no"
+if check_package libf2c; then
   download_file libf2c.zip http://www.netlib.org/f2c/libf2c.zip
   (cd "$DOWNLOAD_DIR" && unzip -q libf2c.zip)
   echo -n "compiling libf2c... "
@@ -187,17 +330,13 @@ if ! test -f "$tlibdir/f2c.lib"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # BLAS #
 ########
 
-echo -n "checking for BLAS... "
-if ! test -f "$tbindir/blas.dll"; then
-  echo "no"
+if check_package BLAS; then
   download_file blas.tgz http://www.netlib.org/blas/blas.tgz
   (cd "$DOWNLOAD_DIR" && tar xfz blas.tgz)
   echo -n "compiling BLAS... "
@@ -213,17 +352,13 @@ if ! test -f "$tbindir/blas.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ##########
 # LAPACK #
 ##########
 
-echo -n "checking for LAPACK... "
-if ! test -f "$tbindir/lapack.dll"; then
-  echo "no"
+if check_package LAPACK; then
   download_file lapack-lite-3.1.0.tgz http://www.netlib.org/lapack/lapack-lite-3.1.0.tgz
   echo -n "decompressing LAPACK... "
   (cd "$DOWNLOAD_DIR" && tar xfz lapack-lite-3.1.0.tgz)
@@ -241,20 +376,13 @@ if ! test -f "$tbindir/lapack.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #########
 # ATLAS #
 #########
 
-if $DOATLAS; then
-
-echo -n "checking for ATLAS... "
-atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
-if test -z "$atl_dlls"; then
-  echo "no"
+if $DOATLAS && check_package ATLAS; then
   download_file atlas-3.6.0.tar.gz 'http://downloads.sourceforge.net/math-atlas/atlas3.6.0.tar.gz?modtime=1072051200&big_mirror=0'
   echo -n "decompressing ATLAS... "
   (cd "$DOWNLOAD_DIR" && tar xfz atlas-3.6.0.tar.gz)
@@ -263,13 +391,15 @@ if test -z "$atl_dlls"; then
   echo -n "compiling ATLAS... "
   (cd "$DOWNLOAD_DIR/ATLAS" &&
     patch -p1 < atlas-3.6.0.diff &&
+    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -i &&
+	exit -1 &&
     start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make xconfig && echo -n '' | ./xconfig -c mvc" &&
 	arch=`ls Make.*_* | sed -e 's/Make\.//'` &&
 	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make install arch=$arch" &&
 	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && cd lib/$arch && build_atlas_dll" &&
 	cp lib/$arch/blas.dll "$tbindir/blas_atl_$arch.dll" &&
 	cp lib/$arch/lapack.dll "$tbindir/lapack_atl_$arch.dll") >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/ATLAS"
+  rm -rf "$DOWNLOAD_DIR/ATLAS"
   atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
   if test -z "$atl_dlls"; then
     echo "failed"
@@ -277,19 +407,13 @@ if test -z "$atl_dlls"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
-fi
-
 fi
 
 ########
 # FFTW #
 ########
 
-echo -n "checking for FFTW... "
-if ! test -f "$tbindir/libfftw3-3.dll"; then
-  echo "no"
+if check_package FFTW; then
   download_file fftw-3.1.2-dll.zip ftp://ftp.fftw.org/pub/fftw/fftw-3.1.2-dll.zip
   echo -n "decompressing FFTW... "
   (cd "$DOWNLOAD_DIR" && mkdir fftw3 && cd fftw3 && unzip -q ../fftw-3.1.2-dll.zip)
@@ -307,17 +431,13 @@ if ! test -f "$tbindir/libfftw3-3.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # PCRE #
 ########
 
-echo -n "checking for PCRE... "
-if ! test -f "$tbindir/pcre70.dll"; then
-  echo "no"
+if check_package PCRE; then
   download_file pcre-7.0.tar.gz ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.0.tar.gz
   echo -n "decompressing PCRE... "
   (cd "$DOWNLOAD_DIR" && tar xfz pcre-7.0.tar.gz)
@@ -337,17 +457,13 @@ if ! test -f "$tbindir/pcre70.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # GLPK #
 ########
 
-echo -n "checking for GLPK... "
-if ! test -f "$tbindir/glpk_4_19.dll"; then
-  echo "no"
+if check_package GLPK; then
   download_file glpk-4.19.tar.gz ftp://ftp.gnu.org/gnu/glpk/glpk-4.19.tar.gz
   echo -n "decompressing GLPK... "
   (cd "$DOWNLOAD_DIR" && tar xfz glpk-4.19.tar.gz)
@@ -368,17 +484,13 @@ if ! test -f "$tbindir/glpk_4_19.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ############
 # readline #
 ############
 
-echo -n "checking for readline... "
-if ! test -f "$tbindir/readline.dll"; then
-  echo "no"
+if check_package readline; then
   download_file readline-5.2.tar.gz ftp://ftp.gnu.org/gnu/readline/readline-5.2.tar.gz
   echo -n "decompressing readline... "
   (cd "$DOWNLOAD_DIR" && tar xfz readline-5.2.tar.gz)
@@ -400,17 +512,13 @@ if ! test -f "$tbindir/readline.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # zlib #
 ########
 
-echo -n "checking for zlib... "
-if ! test -f "$tbindir/zlib1.dll"; then
-  echo "no"
+if check_package zlib; then
   download_file zlib123.zip http://www.zlib.net/zlib123.zip
   echo -n "decompressing zlib... "
   (cd "$DOWNLOAD_DIR" && mkdir zlib && cd zlib && unzip -q ../zlib123.zip)
@@ -433,17 +541,13 @@ if ! test -f "$tbindir/zlib1.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ###############
 # SuiteSparse #
 ###############
 
-echo -n "checking for SuiteSparse... "
-if test ! -f "$tlibdir/cxsparse.lib" -o ! -d "$tincludedir/suitesparse"; then
-  echo "no"
+if check_package SuiteSparse; then
   download_file SuiteSparse-3.0.0.tar http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
   echo -n "decompressing SuiteSparse... "
   (cd "$DOWNLOAD_DIR" && tar xfz SuiteSparse-3.0.0.tar)
@@ -461,17 +565,13 @@ if test ! -f "$tlibdir/cxsparse.lib" -o ! -d "$tincludedir/suitesparse"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # HDF5 #
 ########
 
-echo -n "checking for HDF5... "
-if test ! -f "$tbindir/hdf5.dll"; then
-  echo "no"
+if check_package HDF5; then
   download_file hdf5-1.6.5.tar.gz ftp://ftp.hdfgroup.org/HDF5/current/src/hdf5-1.6.5.tar.gz
   echo -n "decompressing HDF5... "
   (cd "$DOWNLOAD_DIR" && tar xfz hdf5-1.6.5.tar.gz && mv hdf5-1.6.5 hdf5)
@@ -485,6 +585,7 @@ if test ! -f "$tbindir/hdf5.dll"; then
     vcbuild -u hdf5dll.vcproj "Release|Win32" &&
     cp Release/hdf5.lib "$tlibdir" &&
     cp Release/hdf5.dll "$tbindir" &&
+    cp ../../COPYING "$tlicdir/COPYING.HDF5" &&
     cd ../../src &&
     cp H5public.h H5Apublic.h H5ACpublic.h H5Bpublic.h H5Cpublic.h           \
        H5Dpublic.h H5Epublic.h H5Fpublic.h H5FDpublic.h H5FDcore.h H5FDfamily.h \
@@ -500,17 +601,13 @@ if test ! -f "$tbindir/hdf5.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # glob #
 ########
 
-echo -n "checking for glob... "
-if test ! -f "$tlibdir/glob.lib"; then
-  echo "no"
+if check_package glob; then
   if test ! -f "$DOWNLOAD_DIR/glob.tar.gz"; then
     echo "glob library is not downloadable and should already be present in $DOWNLOAD_DIR"
     exit -1
@@ -532,17 +629,13 @@ if test ! -f "$tlibdir/glob.lib"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ##########
 # libpng #
 ##########
 
-echo -n "checking for libpng... "
-if test ! -f "$tlibdir/png.lib"; then
-  echo "no"
+if check_package libpng; then
   download_file lpng1216.zip ftp://ftp.simplesystems.org/pub/libpng/png/src/history/lpng1216.zip
   echo -n "decompressing libpng... "
   (cd "$DOWNLOAD_DIR" && unzip -q lpng1216.zip)
@@ -568,17 +661,13 @@ AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ##########
 # ARPACK #
 ##########
 
-echo -n "checking for ARPACK... "
-if test ! -f "$tbindir/arpack.dll"; then
-  echo "no"
+if check_package ARPACK; then
   download_file arpack96.tar.gz http://www.caam.rice.edu/software/ARPACK/SRC/arpack96.tar.gz
   download_file patch.tar.gz http://www.caam.rice.edu/software/ARPACK/SRC/patch.tar.gz
   echo -n "decompressing ARPACK... "
@@ -592,23 +681,20 @@ if test ! -f "$tbindir/arpack.dll"; then
     cp arpack.dll "$tbindir" &&
     cp arpack.lib "$tlibdir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/ARPACK"
+  wget $WGET_FLAGS -O "$tlicdir/COPYING.ARPACK.doc" http://www.caam.rice.edu/software/ARPACK/RiceBSD.doc
   if ! test -f "$tbindir/arpack.dll"; then
     echo "failed"
     exit -1
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ###########
 # libjpeg #
 ###########
 
-echo -n "checking for libjpeg... "
-if test ! -f "$tbindir/jpeg6b.dll"; then
-  echo "no"
+if check_package libjpeg; then
   download_file jpeg-6b-4-src.zip 'http://downloads.sourceforge.net/gnuwin32/jpeg-6b-4-src.zip?modtime=1116176612&big_mirror=0'
   echo -n "decompressing libjpeg... "
   (cd "$DOWNLOAD_DIR" && mkdir jpeg && cd jpeg && unzip -q ../jpeg-6b-4-src.zip)
@@ -628,17 +714,13 @@ if test ! -f "$tbindir/jpeg6b.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ############
 # libiconv #
 ############
 
-echo -n "checking for libiconv... "
-if test ! -f "$tbindir/iconv.dll"; then
-  echo "no"
+if check_package libiconv; then
   download_file libiconv-1.11.tar.gz ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.11.tar.gz
   echo -n "decompressing libiconv... "
   (cd "$DOWNLOAD_DIR" && tar xfz libiconv-1.11.tar.gz)
@@ -658,17 +740,13 @@ if test ! -f "$tbindir/iconv.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ###########
 # gettext #
 ###########
 
-echo -n "checking for gettext... "
-if test ! -f "$tbindir/intl.dll"; then
-  echo "no"
+if check_package gettext; then
   download_file gettext-0.15.tar.gz ftp://ftp.belnet.be/mirror/ftp.gnu.org/gnu/gettext/gettext-0.15.tar.gz
   echo -n "decompressing gettext... "
   (cd "$DOWNLOAD_DIR" && tar xfz gettext-0.15.tar.gz)
@@ -690,17 +768,13 @@ if test ! -f "$tbindir/intl.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #########
 # cairo #
 #########
 
-echo -n "checking for cairo... "
-if test ! -f "$tbindir/libcairo-2.dll"; then
-  echo "no"
+if check_package cairo; then
   download_file cairo-1.2.6.tar.gz http://cairographics.org/releases/cairo-1.2.6.tar.gz
   echo -n "decompressing cairo... "
   (cd "$DOWNLOAD_DIR" && tar xfz cairo-1.2.6.tar.gz)
@@ -721,17 +795,13 @@ if test ! -f "$tbindir/libcairo-2.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ##############
 # glib/pango #
 ##############
 
-echo -n "checking for glib/pango... "
-if ! test -f "$tbindir/libglib-2.0-0.dll" -a -f "$tbindir/libpango-1.0-0.dll"; then
-  echo "no"
+if check_package glib || check_package pango; then
   download_file glib-2.12.6.tar.gz ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.6.tar.gz
   echo -n "decompressing glib... "
   (cd "$DOWNLOAD_DIR" && tar xfz glib-2.12.6.tar.gz)
@@ -751,44 +821,42 @@ if ! test -f "$tbindir/libglib-2.0-0.dll" -a -f "$tbindir/libpango-1.0-0.dll"; t
   else
     echo "done"
   fi
-  download_file pango-1.14.9.tar.gz ftp://ftp.gtk.org/pub/pango/1.14/pango-1.14.9.tar.gz
-  echo -n "decompressing pango... "
-  (cd "$DOWNLOAD_DIR" && tar xfz pango-1.14.9.tar.gz)
-  cp libs/pango-1.14.9.diff "$DOWNLOAD_DIR/pango-1.14.9"
-  echo "done"
-  echo "compiling pango... "
-  (cd "$DOWNLOAD_DIR/pango-1.14.9" &&
-    patch -p1 < pango-1.14.9.diff &&
-    rm -f pango/module-defs-fc.c pango/module-defs-win32.c &&
-    cd pango &&
-    nmake -f makefile.msc &&
-    cp libpango*.dll "$tbindir" &&
-    cp pango*.lib "$tlibdir" &&
-    rm -f "$tlibdir/pango*s.lib" &&
-    mkdir -p "$tincludedir/pango-1.0/pango" &&
-    cp pango.h pango-attributes.h pango-break.h pangocairo.h pango-context.h pango-coverage.h \
-       pango-engine.h pango-enum-types.h pangofc-font.h pangofc-fontmap.h pango-font.h pango-fontmap.h \
-       pango-fontset.h pango-glyph.h pango-glyph-item.h pango-item.h pango-layout.h pango-modules.h \
-       pango-renderer.h pango-script.h pango-tabs.h pango-types.h pango-utils.h pangowin32.h "$tincludedir/pango-1.0/pango") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glib-2.12.6"
-  rm -rf "$DOWNLOAD_DIR/pango-1.14.9"
-  if test ! -f "$tbindir/libpango-1.0-0.dll"; then
-    echo "failed"
-    exit -1
-  else
+  if check_package pango; then
+    download_file pango-1.14.9.tar.gz ftp://ftp.gtk.org/pub/pango/1.14/pango-1.14.9.tar.gz
+    echo -n "decompressing pango... "
+    (cd "$DOWNLOAD_DIR" && tar xfz pango-1.14.9.tar.gz)
+    cp libs/pango-1.14.9.diff "$DOWNLOAD_DIR/pango-1.14.9"
     echo "done"
+    echo "compiling pango... "
+    (cd "$DOWNLOAD_DIR/pango-1.14.9" &&
+      patch -p1 < pango-1.14.9.diff &&
+      rm -f pango/module-defs-fc.c pango/module-defs-win32.c &&
+      cd pango &&
+      nmake -f makefile.msc &&
+      cp libpango*.dll "$tbindir" &&
+      cp pango*.lib "$tlibdir" &&
+      rm -f "$tlibdir/pango*s.lib" &&
+      mkdir -p "$tincludedir/pango-1.0/pango" &&
+      cp pango.h pango-attributes.h pango-break.h pangocairo.h pango-context.h pango-coverage.h \
+         pango-engine.h pango-enum-types.h pangofc-font.h pangofc-fontmap.h pango-font.h pango-fontmap.h \
+         pango-fontset.h pango-glyph.h pango-glyph-item.h pango-item.h pango-layout.h pango-modules.h \
+         pango-renderer.h pango-script.h pango-tabs.h pango-types.h pango-utils.h pangowin32.h "$tincludedir/pango-1.0/pango") >&5 2>&1
+    rm -rf "$DOWNLOAD_DIR/pango-1.14.9"
+    if test ! -f "$tbindir/libpango-1.0-0.dll"; then
+      echo "failed"
+      exit -1
+    else
+      echo "done"
+    fi
   fi
-else
-  echo "installed"
+  rm -rf "$DOWNLOAD_DIR/glib-2.12.6"
 fi
 
 ############
 # freetype #
 ############
 
-echo -n "checking for freetype... "
-if test ! -f "$tbindir/freetype6.dll"; then
-  echo "no"
+if check_package freetype; then
   download_file freetype-2.3.1.tar.gz http://download.savannah.gnu.org/releases/freetype/freetype-2.3.1.tar.gz
   echo -n "decompressing freetype... "
   (cd "$DOWNLOAD_DIR" && tar xfz freetype-2.3.1.tar.gz)
@@ -815,17 +883,13 @@ if test ! -f "$tbindir/freetype6.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #########
 # libgd #
 #########
 
-echo -n "checking for libgd... "
-if test ! -f "$tbindir/bgd.dll"; then
-  echo "no"
+if check_package libgd; then
   download_file gd-2.0.34.tar.gz http://www.libgd.org/releases/oldreleases/gd-2.0.34.tar.gz
   echo -n "decompressing libgd... "
   (cd "$DOWNLOAD_DIR" && tar xfz gd-2.0.34.tar.gz)
@@ -838,6 +902,7 @@ if test ! -f "$tbindir/bgd.dll"; then
     sed -e "s,^FREETYPE_INC =.*,FREETYPE_INC = $tdir_w32_forward/include/freetype2," Makefile > ttt &&
     mv ttt Makefile &&
     nmake &&
+    cp ../COPYING "$tlicdir/COPYING.LIBGD" &&
     cp bgd.dll "$tbindir" &&
     cp bgd.lib "$tlibdir" &&
     cp ../*.h "$tincludedir") >&5 2>&1
@@ -848,17 +913,13 @@ if test ! -f "$tbindir/bgd.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ##########
 # libgsl #
 ##########
 
-echo -n "checking for libgsl... "
-if test ! -f "$tbindir/libgsl.dll"; then
-  echo "no"
+if check_package libgsl; then
   download_file gsl-1.8-src.zip 'http://downloads.sourceforge.net/gnuwin32/gsl-1.8-src.zip?modtime=1152659851&big_mirror=0'
   echo -n "decompressing libgsl... "
   (cd "$DOWNLOAD_DIR" && mkdir gsl && cd gsl && unzip -q ../gsl-1.8-src.zip)
@@ -882,17 +943,13 @@ if test ! -f "$tbindir/libgsl.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ##########
 # netcdf #
 ##########
 
-echo -n "checking for netcdf... "
-if test ! -f "$tbindir/netcdf.dll"; then
-  echo "no"
+if check_package netcdf; then
   download_file netcdf-3.6.1.tar.gz ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-3.6.1.tar.gz
   echo -n "decompressing netcdf... "
   (cd "$DOWNLOAD_DIR" && tar xfz netcdf-3.6.1.tar.gz)
@@ -904,6 +961,7 @@ if test ! -f "$tbindir/netcdf.dll"; then
     mv ttt libsrc/netcdf.vcproj &&
     cd libsrc &&
     vcbuild -u netcdf.vcproj "Release|Win32" &&
+    cp ../../../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
     cp Release/netcdf.lib "$tlibdir" &&
     cp ../../../libsrc/netcdf.h "$tincludedir" &&
     cp Release/netcdf.dll "$tbindir") >&5 2>&1
@@ -914,17 +972,13 @@ if test ! -f "$tbindir/netcdf.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #######
 # sed #
 #######
 
-echo -n "checking for sed... "
-if test ! -f "$tbindir/sed.exe"; then
-  echo "no"
+if check_package sed; then
   download_file sed-4.1.5.tar.gz ftp://ftp.gnu.org/gnu/sed/sed-4.1.5.tar.gz
   echo -n "decompressing sed... "
   (cd "$DOWNLOAD_DIR" && tar xfz sed-4.1.5.tar.gz)
@@ -943,17 +997,13 @@ if test ! -f "$tbindir/sed.exe"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ############
 # makeinfo #
 ############
 
-echo -n "checking for makeinfo... "
-if test ! -f "$tbindir/makeinfo.exe"; then
-  echo "no"
+if check_package makeinfo; then
   download_file texinfo-4.8a.tar.gz ftp://ftp.gnu.org/gnu/texinfo/texinfo-4.8a.tar.gz
   echo -n "decompressing makeinfo... "
   (cd "$DOWNLOAD_DIR" && tar xfz texinfo-4.8a.tar.gz)
@@ -973,17 +1023,13 @@ if test ! -f "$tbindir/makeinfo.exe"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #########
 # units #
 #########
 
-echo -n "checking for units... "
-if test ! -f "$tbindir/units.exe"; then
-  echo "no"
+if check_package units; then
   download_file units-1.86.tar.gz ftp://ftp.gnu.org/gnu/units/units-1.86.tar.gz
   echo -n "decompressing units... "
   (cd "$DOWNLOAD_DIR" && tar xfz units-1.86.tar.gz)
@@ -1001,17 +1047,13 @@ if test ! -f "$tbindir/units.exe"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # less #
 ########
 
-echo -n "checking for less... "
-if test ! -f "$tbindir/less.exe"; then
-  echo "no"
+if check_package less; then
   download_file less-394.zip http://www.greenwoodsoftware.com/less/less-394.zip
   echo -n "decompressing less... "
   (cd "$DOWNLOAD_DIR" && unzip -q less-394.zip)
@@ -1029,17 +1071,13 @@ if test ! -f "$tbindir/less.exe"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #######
 # CLN #
 #######
 
-echo -n "checking for CLN... "
-if test ! -f "$tlibdir/cln.lib"; then
-  echo "no"
+if check_package CLN; then
   download_file cln-1.1.13.tar.bz2 ftp://ftpthep.physik.uni-mainz.de/pub/gnu/cln-1.1.13.tar.bz2
   echo -n "decompressing CLN... "
   (cd "$DOWNLOAD_DIR" && tar xfj cln-1.1.13.tar.bz2)
@@ -1059,17 +1097,13 @@ if test ! -f "$tlibdir/cln.lib"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #########
 # GiNaC #
 #########
 
-echo -n "checking for GiNaC... "
-if test ! -f "$tlibdir/ginac.lib"; then
-  echo "no"
+if check_package GiNaC; then
   download_file ginac-1.3.6.tar.bz2 ftp://ftpthep.physik.uni-mainz.de/pub/GiNaC/ginac-1.3.6.tar.bz2
   echo -n "decompressing GiNaC... "
   (cd "$DOWNLOAD_DIR" && tar xfj ginac-1.3.6.tar.bz2)
@@ -1091,17 +1125,13 @@ if test ! -f "$tlibdir/ginac.lib"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 #############
 # wxWidgets #
 #############
 
-echo -n "checking for wxWidgets... "
-if test ! -f "$tlibdir/wxmsw28.lib"; then
-  echo "no"
+if check_package wxWidgets; then
   download_file wxMSW-2.8.4.tar.bz2 'http://downloads.sourceforge.net/wxwindows/wxMSW-2.8.4.tar.bz2?modtime=1179491919&big_mirror=0'
   echo -n "decompressing wxWidgets... "
   (cd "$DOWNLOAD_DIR" && tar xfj wxMSW-2.8.4.tar.bz2)
@@ -1123,17 +1153,13 @@ if test ! -f "$tlibdir/wxmsw28.lib"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ###########
 # gnuplot #
 ###########
 
-echo -n "checking for gnuplot... "
-if test ! -f "$tbindir/pgnuplot.exe"; then
-  echo "no"
+if check_package gnuplot; then
   download_file gnuplot-4.2.0.tar.gz 'http://downloads.sourceforge.net/gnuplot/gnuplot-4.2.0.tar.gz?modtime=1173003818&big_mirror=0'
   echo -n "decompressing gnuplot... "
   (cd "$DOWNLOAD_DIR" && tar xfz gnuplot-4.2.0.tar.gz)
@@ -1149,26 +1175,29 @@ if test ! -f "$tbindir/pgnuplot.exe"; then
     nmake -f ../config/makefile.nt &&
     nmake -f ../config/makefile.nt install &&
     mkdir -p "$INSTALL_DIR/doc/gnuplot" &&
+	cp "$INSTALL_DIR/Copyright" "$tlicdir/COPYING.GNUPLOT" &&
     mv "$INSTALL_DIR/BUGS" "$INSTALL_DIR/Copyright" "$INSTALL_DIR/FAQ" "$INSTALL_DIR/NEWS" "$INSTALL_DIR/README" \
       "$INSTALL_DIR/doc/gnuplot") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/gnuplot-4.2.0"
+  download_file gp420win32.zip 'http://downloads.sourceforge.net/gnuplot/gp420win32.zip?modtime=1173777723&big_mirror=0'
+  if test -f "$DOWNLOAD_DIR/gp420win32.zip"; then
+    (cd "$DOWNLOAD_DIR" && unzip -o -q -j -d "$tbindir" gp420win32.zip gnuplot/bin/wgnuplot.hlp)
+  else
+    echo "WARNING: could not get wgnuplot.hlp"
+  fi
   if test ! -f "$tbindir/pgnuplot.exe"; then
     echo "failed"
     exit -1
   else
     echo "done"
   fi
-else
-  echo "installed"
 fi
 
 ########
 # FLTK #
 ########
 
-echo -n "checking for FLTK... "
-if test ! -f "$tbindir/fltkdll.dll"; then
-  echo "no"
+if check_package FLTK; then
   download_file fltk-1.1.7-source.tar.gz 'ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/1.1.7/fltk-1.1.7-source.tar.gz'
   echo -n "decompressing FLTK... "
   (cd "$DOWNLOAD_DIR" && tar xfz fltk-1.1.7-source.tar.gz)
@@ -1183,6 +1212,7 @@ if test ! -f "$tbindir/fltkdll.dll"; then
     vcbuild -u fltkforms.vcproj "Release|Win32" &&
     vcbuild -u fltkimages.vcproj "Release|Win32" &&
     vcbuild -u fluid.vcproj "Release|Win32" &&
+    cp ../COPYING "$tlicdir/COPYING.FLTK" &&
     cp ../test/fltkdll.lib "$tlibdir" &&
     cp ../fluid/fluid.exe "$tbindir" &&
     mkdir -p "$tincludedir/FL" &&
@@ -1195,6 +1225,77 @@ if test ! -f "$tbindir/fltkdll.dll"; then
   else
     echo "done"
   fi
-else
-  echo "installed"
+fi
+
+##########
+# octave #
+##########
+
+if check_package octave; then
+  octave_prefix="$INSTALL_DIR/local/octave-$octave_version"
+  download_file octave-$octave_version.tar.bz2 ftp://ftp.octave.org/pub/octave/octave-$octave_version.tar.bz2
+  if test ! -d "$DOWNLOAD_DIR/octave-$octave_version"; then
+    echo -n "decompressing octave... "
+    (cd "$DOWNLOAD_DIR" && tar xfj octave-$octave_version.tar.bz2)
+    if test -f libs/octave.diff; then
+      cp libs/octave.diff "$DOWNLOAD_DIR/octave-$octave_version"
+      (cd "$DOWNLOAD_DIR/octave-$octave_version" && patch -p1 < octave.diff)
+    fi
+    echo "done"
+  fi
+  echo "compiling octave... "
+  (cd "$DOWNLOAD_DIR/octave-$octave_version" &&
+    sed -e 's/\(^.*SUBDIRS = .*\)doc examples$/\1 examples/' octMakefile.in > ttt &&
+    mv ttt octMakefile.in &&
+    if test ! -f "config.log"; then
+      CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
+        ./configure --build=i686-pc-msdosmsvc --prefix="$octave_prefix" \
+        --with-f2c --with-zlib=zlib
+    fi &&
+    if test ! -f "src/octave.exe"; then
+      make
+    fi &&
+    make install &&
+    mkdir -p "$octave_prefix/doc/PDF" &&
+    cp doc/faq/Octave-FAQ.pdf doc/interpreter/octave.pdf doc/interpreter/octave-a4.pdf \
+      doc/liboctave/liboctave.pdf doc/refcard/refcard-a4.pdf doc/refcard/refcard-legal.pdf \
+      doc/refcard/refcard-letter.pdf "$octave_prefix/doc/PDF" &&
+    mkdir -p "$octave_prefix/doc/HTML" &&
+    mkdir -p "$octave_prefix/doc/HTML/faq" &&
+    cp doc/faq/HTML/*.* "$octave_prefix/doc/HTML/faq" &&
+    mkdir -p "$octave_prefix/doc/HTML/interpreter" &&
+    cp doc/interpreter/HTML/*.* "$octave_prefix/doc/HTML/interpreter" &&
+    mkdir -p "$octave_prefix/doc/HTML/liboctave" &&
+    cp doc/liboctave/HTML/*.* "$octave_prefix/doc/HTML/liboctave" &&
+    cp COPYING "$tlicdir/COPYING.GPL"
+    ) >&5 2>&1
+  if test ! -f "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+########
+# JOGL #
+########
+
+if check_package JOGL; then
+  download_file jogl-1.1.0-windows-i586.zip 'http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.0/jogl-1.1.0-windows-i586.zip'
+  echo -n "decompressing JOGL... "
+  (cd "$DOWNLOAD_DIR" && unzip -q jogl-1.1.0-windows-i586.zip)
+  echo "done"
+  echo -n "installing JOGL... "
+  (cd "$DOWNLOAD_DIR/jogl-1.1.0-windows-i586" &&
+    cp lib/*.dll lib/*.jar "$tbindir" &&
+    cp COPYRIGHT.txt "$tlicdir/COPYING.JOGL" &&
+    cat LICENSE-JOGL-1.1.0.txt >> "$tlicdir/COPYING.JOGL") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/jogl-1.1.0-windows-i586"
+  if test ! -f "$tbindir/jogl.jar"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
 fi

@@ -51,8 +51,8 @@ template int assign (Array<FixedPointComplex>&, const Array<FixedPoint>&,
 template int assign (Array<FixedPointComplex>&, 
 		const Array<FixedPointComplex>&, const FixedPointComplex&);
 
-INSTANTIATE_MARRAY_FRIENDS (FixedPoint)
-INSTANTIATE_MARRAY_FRIENDS (FixedPointComplex)
+INSTANTIATE_MARRAY_FRIENDS (FixedPoint, )
+INSTANTIATE_MARRAY_FRIENDS (FixedPointComplex, )
 
 #include <octave/Array2.h>
 #include <octave/MArray2.h>
@@ -63,8 +63,8 @@ template class MArray2<FixedPoint>;
 template class Array2<FixedPointComplex>;
 template class MArray2<FixedPointComplex>;
 
-INSTANTIATE_MARRAY2_FRIENDS (FixedPoint)
-INSTANTIATE_MARRAY2_FRIENDS (FixedPointComplex)
+INSTANTIATE_MARRAY2_FRIENDS (FixedPoint, OCTAVE_FIXED_API)
+INSTANTIATE_MARRAY2_FRIENDS (FixedPointComplex, OCTAVE_FIXED_API)
 
 #include <octave/ArrayN.h>
 #include <octave/ArrayN.cc>
@@ -76,8 +76,8 @@ template class MArrayN<FixedPoint>;
 template class ArrayN<FixedPointComplex>;
 template class MArrayN<FixedPointComplex>;
 
-INSTANTIATE_MARRAYN_FRIENDS (FixedPoint)
-INSTANTIATE_MARRAYN_FRIENDS (FixedPointComplex)
+INSTANTIATE_MARRAYN_FRIENDS (FixedPoint, )
+INSTANTIATE_MARRAYN_FRIENDS (FixedPointComplex, )
 
 /*
 ;;; Local Variables: ***

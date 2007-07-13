@@ -321,14 +321,14 @@ FixedComplexNDArray elem_pow (const FixedComplexNDArray &a,
 FixedComplexNDArray elem_pow (const FixedPointComplex &a,
 			      const FixedComplexNDArray &b);
 
-NDS_CMP_OP_DECLS (FixedComplexNDArray, FixedPointComplex)
-NDS_BOOL_OP_DECLS (FixedComplexNDArray, FixedPointComplex)
+NDS_CMP_OP_DECLS (FixedComplexNDArray, FixedPointComplex, )
+NDS_BOOL_OP_DECLS (FixedComplexNDArray, FixedPointComplex, )
 
-SND_CMP_OP_DECLS (FixedPointComplex, FixedComplexNDArray)
-SND_BOOL_OP_DECLS (FixedPointComplex, FixedComplexNDArray)
+SND_CMP_OP_DECLS (FixedPointComplex, FixedComplexNDArray, )
+SND_BOOL_OP_DECLS (FixedPointComplex, FixedComplexNDArray, )
 
-NDND_CMP_OP_DECLS (FixedComplexNDArray, FixedComplexNDArray)
-NDND_BOOL_OP_DECLS (FixedComplexNDArray, FixedComplexNDArray)
+NDND_CMP_OP_DECLS (FixedComplexNDArray, FixedComplexNDArray, )
+NDND_BOOL_OP_DECLS (FixedComplexNDArray, FixedComplexNDArray, )
 
 MARRAY_FORWARD_DEFS (MArrayN, FixedComplexNDArray, FixedPointComplex)
 

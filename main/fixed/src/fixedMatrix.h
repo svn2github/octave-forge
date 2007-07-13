@@ -302,14 +302,14 @@ OCTAVE_FIXED_API FixedMatrix elem_pow (const FixedMatrix &a, const FixedPoint &b
 OCTAVE_FIXED_API FixedMatrix elem_pow (const FixedPoint &a, const FixedMatrix &b);
 
 
-MS_CMP_OP_DECLS (FixedMatrix, FixedPoint)
-MS_BOOL_OP_DECLS (FixedMatrix, FixedPoint)
+MS_CMP_OP_DECLS (FixedMatrix, FixedPoint, )
+MS_BOOL_OP_DECLS (FixedMatrix, FixedPoint, )
 
-SM_CMP_OP_DECLS (FixedPoint, FixedMatrix)
-SM_BOOL_OP_DECLS (FixedPoint, FixedMatrix)
+SM_CMP_OP_DECLS (FixedPoint, FixedMatrix, )
+SM_BOOL_OP_DECLS (FixedPoint, FixedMatrix, )
 
-MM_CMP_OP_DECLS (FixedMatrix, FixedMatrix)
-MM_BOOL_OP_DECLS (FixedMatrix, FixedMatrix)
+MM_CMP_OP_DECLS (FixedMatrix, FixedMatrix, )
+MM_BOOL_OP_DECLS (FixedMatrix, FixedMatrix, )
 
 MARRAY_FORWARD_DEFS (MArray2, FixedMatrix, FixedPoint)
 

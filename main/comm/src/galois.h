@@ -206,9 +206,9 @@ galois operator * (const galois& a, const galois& b);
 galois operator * (const galois& a, const Matrix& b);
 galois operator * (const Matrix& a, const galois& b);
 
-MM_OP_DECLS(galois, galois, galois);
-MM_OP_DECLS(galois, galois, Matrix);
-MM_OP_DECLS(galois, Matrix, galois);
+MM_OP_DECLS(galois, galois, galois, );
+MM_OP_DECLS(galois, galois, Matrix, );
+MM_OP_DECLS(galois, Matrix, galois, );
 
 #endif
 

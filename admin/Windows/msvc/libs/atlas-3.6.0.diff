@@ -84,7 +84,7 @@ diff -ur ATLAS/config.c ATLAS-mod/config.c
        {
           DisplayFile("CONFIG/NoSearch.txt", stdout, NLINES);
 -         if ( IsYes('y', "", "Use supplied default values for install?") )
-+         if ( IsYes('n', "", "Use supplied default values for install?") )
++         if ( IsYes('y', "", "Use supplied default values for install?") )
           {
              ATL_mprintf(2, fplog, stdout,
                          "\n\nUnpacking Architectural defaults . . . ");

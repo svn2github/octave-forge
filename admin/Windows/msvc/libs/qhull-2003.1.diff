@@ -1,0 +1,28 @@
+diff -ur qhull-2003.1/src/Makefile qhull-2003.1-new/src/Makefile
+--- qhull-2003.1/src/Makefile	Wed Dec 31 03:20:50 2003
++++ qhull-2003.1-new/src/Makefile	Sun Jul 15 09:59:42 2007
+@@ -43,8 +43,8 @@
+ 
+ #for Gnu's gcc compiler -O2 for optimization, -g for debugging, -Wall for check
+ #
+-CC     = gcc
+-CCOPTS1 = -O2 -ansi 
++CC     = cc-msvc
++CCOPTS1 = -O2 -ansi
+ 
+ # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
+ #CC = cc
+@@ -136,11 +136,8 @@
+ printf:
+ 	$(PRINTC) $(FILES) 
+ 
+-libqhull.a: $(OBJS)
+-	@echo if 'ar' or 'ranlib' fails, try 'make qhullx'
+-	ar r libqhull.a $(OBJS)
+-	@echo the next line may need to be removed.
+-	-test -x /bin/ranlib -o -x /usr/bin/ranlib && ranlib libqhull.a
++qhull.lib: $(OBJS)
++	ar-msvc r $@ $(OBJS)
+ 
+ # don't use ../qconvex.  Does not work on Red Hat Linux
+ qconvex: qconvex.o libqhull.a

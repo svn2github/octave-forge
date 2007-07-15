@@ -17,17 +17,17 @@
 # Configuration #
 #################
 
-INSTALL_DIR=/d/Temp/vclibs_tmp
-CYGWIN_DIR=/d/Software/cygwin
+INSTALL_DIR=/c/Temp/vclibs_tmp
+CYGWIN_DIR=/c/Software/cygwin
 DOWNLOAD_DIR=downloaded_packages
-WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+#WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 DOATLAS=false
 
 verbose=false
 packages=
 available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
-netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge"
+netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull"
 octave_version=
 of_version=
 
@@ -282,6 +282,7 @@ if test -z "$todo_packages"; then
       packages="$packages forge"
     fi
     todo_check "$tbindir/jogl.jar" JOGL
+    todo_check "$tlibdir/qhull.lib" qhull
   fi
 else
   packages="$todo_packages"
@@ -1249,10 +1250,16 @@ if check_package octave; then
     echo -n "decompressing octave... "
     (cd "$DOWNLOAD_DIR" && tar xfj octave-$octave_version.tar.bz2)
     if test -f libs/octave.diff; then
-      cp libs/octave.diff "$DOWNLOAD_DIR/octave-$octave_version"
+      cp libs/octave.diff octaverc.win "$DOWNLOAD_DIR/octave-$octave_version"
       (cd "$DOWNLOAD_DIR/octave-$octave_version" && patch -p1 < octave.diff)
     fi
-	cp mkoctfile.cc.in octave-config.cc.in "$DOWNLOAD_DIR/octave-$octave_version"
+    cp mkoctfile.cc.in octave-config.cc.in "$DOWNLOAD_DIR/octave-$octave_version"
+    config_script="$DOWNLOAD_DIR/octave-$octave_version/configure"
+    if grep 'extern "C" void exit (int);' "$config_script" 2>&1 > /dev/null; then
+      echo "Pre-processing configure script..."
+      sed -e "s/'extern \"C\" void exit (int);'/'extern \"C\" __declspec(noreturn dllimport) void exit (int);' 'extern \"C\" void exit (int);'/g" "$config_script" > configure.tmp
+      mv configure.tmp "$config_script"
+    fi
     echo "done"
   fi
   echo -n "compiling octave... "
@@ -1269,24 +1276,28 @@ if check_package octave; then
     fi &&
     make install &&
     mkdir -p "$octave_prefix/doc/PDF" &&
-    cp doc/faq/Octave-FAQ.pdf doc/interpreter/octave.pdf doc/interpreter/octave-a4.pdf \
+    for f in doc/faq/Octave-FAQ.pdf doc/interpreter/octave.pdf doc/interpreter/octave-a4.pdf \
       doc/liboctave/liboctave.pdf doc/refcard/refcard-a4.pdf doc/refcard/refcard-legal.pdf \
-      doc/refcard/refcard-letter.pdf "$octave_prefix/doc/PDF" &&
-    mkdir -p "$octave_prefix/doc/HTML" &&
-    mkdir -p "$octave_prefix/doc/HTML/faq" &&
-    cp doc/faq/HTML/*.* "$octave_prefix/doc/HTML/faq" &&
-    mkdir -p "$octave_prefix/doc/HTML/interpreter" &&
-    cp doc/interpreter/HTML/*.* "$octave_prefix/doc/HTML/interpreter" &&
-    mkdir -p "$octave_prefix/doc/HTML/liboctave" &&
-    cp doc/liboctave/HTML/*.* "$octave_prefix/doc/HTML/liboctave" &&
+      doc/refcard/refcard-letter.pdf; do
+      if test -f "$f"; then
+        cp $f "$octave_prefix/doc/PDF"
+      fi
+    done &&
+    for d in faq interpreter liboctave; do
+      if test -d "doc/$d/HTML"; then
+        mkidr -p "$octave_prefix/doc/HTML/$d"
+        cp "doc/$d/HTML/*.*" "$octave_prefix/doc/HTML/$d"
+      fi
+    done &&
     cp COPYING "$tlicdir/COPYING.GPL" &&
-	make -f octMakefile mkoctfile.exe octave-config.exe &&
-	rm -f "$octave_prefix/bin/mkoctfile*" "$octave_prefix/bin/octave-config*" &&
-	cp mkoctfile.exe "$octave_prefix/bin/mkoctfile.exe" &&
-	cp mkoctfile.exe "$octave_prefix/bin/mkoctfile-$octave_version.exe" &&
-	cp octave-config.exe "$octave_prefix/bin/octave-config.exe" &&
-	cp octave-config.exe "$octave_prefix/bin/octave-config-$octave_version.exe" &&
-	cp octaverc.win "$octave_prefix/share/octave/$octave_version/m/startup/octaverc"
+    make -f octMakefile mkoctfile.exe octave-config.exe &&
+    rm -f "$octave_prefix/bin/mkoctfile" "$octave_prefix/bin/mkoctfile-$octave_version" &&
+    rm -f "$octave_prefix/bin/octave-config" "$octave_prefix/bin/octave-config-$octave_version" &&
+    cp mkoctfile.exe "$octave_prefix/bin/mkoctfile.exe" &&
+    cp mkoctfile.exe "$octave_prefix/bin/mkoctfile-$octave_version.exe" &&
+    cp octave-config.exe "$octave_prefix/bin/octave-config.exe" &&
+    cp octave-config.exe "$octave_prefix/bin/octave-config-$octave_version.exe" &&
+    cp octaverc.win "$octave_prefix/share/octave/$octave_version/m/startup/octaverc"
     ) >&5 2>&1
   if test ! -f "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe"; then
     echo "failed"
@@ -1319,15 +1330,102 @@ if check_package JOGL; then
   fi
 fi
 
+#########
+# QHull #
+#########
+
+if check_package qhull; then
+  download_file qhull-2003.1-src.tgz http://www.qhull.org/download/qhull-2003.1-src.tgz
+  echo -n "decompressing qhull... "
+  (cd "$DOWNLOAD_DIR" && tar xfz qhull-2003.1-src.tgz)
+  cp libs/qhull-2003.1.diff "$DOWNLOAD_DIR/qhull-2003.1"
+  echo "done"
+  echo -n "compiling qhull... "
+  (cd "$DOWNLOAD_DIR/qhull-2003.1" &&
+    patch -p1 < qhull-2003.1.diff &&
+    cd src &&
+    make qhull.lib &&
+    mkdir -p "$tincludedir/qhull" &&
+    cp *.h "$tincludedir/qhull" &&
+    cp qhull.lib "$tlibdir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/qhull-2003.1"
+  if test ! -f "$tlibdir/qhull.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
 ################
 # octave-forge #
 ################
 
+function install_forge_packages
+{
+  pkgs="$1"
+  dir=$2
+  auto=$3
+  for pack in $pkgs; do
+    echo -n "checking for $pack... "
+    found=`find "$oforge_prefix" -type d -a -name "$pack-*" -maxdepth 1`
+    if test ! -z "$found"; then
+      echo "installed"
+    else
+      echo "no"
+      (cd "$DOWNLOAD_DIR/octave-forge-bundle-$of_version/$dir" &&
+        packpack=`ls $pack-*` &&
+        if test -z "$packpack"; then
+          echo "no '$pack' package found"
+          return -1
+        else
+          if test "$pack" = "java"; then
+            auto_=-auto
+          else
+            auto_=$auto
+          fi
+          "$octave_prefix/bin/octave.exe" -q -f -H --eval "page_screen_output(0); pkg install $auto_ -verbose $packpack"
+        fi)
+      found=`find "$oforge_prefix" -type d -a -name "$pack-*" -maxdepth 1`
+      if test ! -z "$found"; then
+        echo "done"
+      else
+        echo "failed"
+        return -1
+      fi
+    fi
+  done
+  return 0
+}
+
+extra_pkgs="fpl msh bim civil-engineering integration java jhandles mapping nan secs1d secs2d symband triangular tsa windows"
+main_pkgs="signal audio combinatorics communications control econometrics fixed general geometry gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix splines statistics strings struct symbolic time vrml"
+lang_pkgs="pt_br"
+nonfree_pkgs="arpack"
+
 if check_package forge; then
+  if test -z "$octave_version" || test ! -d "$INSTALL_DIR/local/octave-$octave_version"; then
+    echo "no octave installed, cannot compile octave-forge"
+    exit -1
+  fi
   download_file octave-forge-bundle-$of_version.tar.gz "http://downloads.sourceforge.net/octave/octave-forge-bundle-$of_version.tar.gz?big_mirror=0"
   if test ! -d "$DOWNLOAD_DIR/octave-forge-bundle-$of_version"; then
     echo -n "decompressing octave-forge... "
     (cd "$DOWNLOAD_DIR" && tar xfz octave-forge-bundle-$of_version.tar.gz)
     echo "done"
+  fi
+  octave_prefix="$INSTALL_DIR/local/octave-$octave_version"
+  oforge_prefix="$octave_prefix/share/octave/packages"
+  if ! install_forge_packages "$main_pkgs" main -auto; then
+    exit -1
+  fi
+  if ! install_forge_packages "$lang_pkgs" language -noauto; then
+    exit -1
+  fi
+  if ! install_forge_packages "$nonfree_pkgs" nonfree -auto; then
+    exit -1
+  fi
+  if ! install_forge_packages "$extra_pkgs" extra -noauto; then
+    exit -1
   fi
 fi

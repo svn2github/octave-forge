@@ -138,6 +138,27 @@ We did some tests and it seems that you don't need to rebuild packages if you mo
 octave-%VERSION%:1> help pkg
 @end example
 
+@item @b{How can I install a package that also depends further libraries?} @*
+There are some packages at @uref{http://octave.sourceforge.net} available that do depend other resp. further libraries that may not already be installed on your system, eg. the gsl--package, the octcdf--package and the symbolic--package. Therefore you need to download, configure, compile and install the needed library before you install the Octave package. Setting up the gsl--package can be done as explained (the other packages described before can be installed in a similar way). @* @*
+@enumerate
+@item Download a current version of the GNU scientific library from a GNU webserver, eg. @* 
+@command{bash ~$ curl -s -S ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz -o gsl-1.9.tar.gz}
+
+@item Unpack the downloaded library and change into the directory that has been created, eg. @* 
+@command{bash ~$ tar -xzf gsl-1.9.tar.gz && cd gsl-1.9}
+
+@item Configure, compile and install the library in a directory specified by @command{--prefix}, eg. @* 
+@command{bash ~$ ./configure --prefix=/usr/local && make && make install}
+
+@item Set up some needed environment variables to tell Octave.app where you installed the libraries, eg. @*
+@command{bash ~$ export CFLAGS=/usr/local/include} @*
+@command{bash ~$ export LDFLAGS=/usr/local/lib}
+
+@item Startup Octave.app and install the desired Octave-package, eg. @*
+@command{octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz} @*
+@end enumerate
+
+@* @b{Note:} You need to set up at least @command{LDFLAGS} again if you close your running Octave.app and then startup Octave.app again. The reason is that the libraries in the above example have been installed for dynamical use and therefore they are also needed if you run the Octave.app (not just for installing the gsl--package). A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}.
 @end itemize
 
 @ifhtml

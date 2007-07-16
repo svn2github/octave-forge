@@ -17,8 +17,8 @@
 # Configuration #
 #################
 
-INSTALL_DIR=/d/Temp/vclibs_tmp
-CYGWIN_DIR=/d/Software/cygwin
+INSTALL_DIR=/c/Temp/vclibs_tmp
+CYGWIN_DIR=/c/Software/cygwin
 DOWNLOAD_DIR=downloaded_packages
 WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 DOATLAS=false
@@ -27,7 +27,8 @@ verbose=false
 packages=
 available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
-netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull"
+netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
+VC"
 octave_version=
 of_version=
 do_nsi=false
@@ -239,6 +240,7 @@ function todo_check
 
 if test -z "$todo_packages"; then
   if test -z "$packages"; then
+    todo_check "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" VC
     todo_check "$tbindir/f2c.exe" f2c
     todo_check "$tlibdir/f2c.lib" libf2c
     todo_check "$tbindir/blas.dll" BLAS
@@ -318,6 +320,44 @@ else
     echo "creating installer"
   fi
   echo "***********************************"
+fi
+
+######
+# VC #
+######
+
+if check_package VC; then
+  msvc=`ls /c/WINDOWS/WinSxS/*/msvcr80.dll 2> /dev/null`
+  if test -z "$msvc"; then
+    echo "cannot find VC++ runtime libraries"
+    exit -1
+  fi
+  msvc_path=`echo $msvc | sed -e 's,/msvcr80.dll$,,'`
+  mkdir -p "$tbindir/Microsoft.VC80.CRT"
+  cp $msvc_path/*.dll "$tbindir/Microsoft.VC80.CRT"
+  cat > "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" << EOF
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Copyright © 1981-2001 Microsoft Corporation -->
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+    <noInheritable/>
+    <assemblyIdentity 
+        type="win32" 
+        name="Microsoft.VC80.CRT" 
+        version="8.0.50608.0" 
+        processorArchitecture="x86" 
+        publicKeyToken="1fc8b3b9a1e18e3b"
+    />
+    <file name="msvcr80.dll"/>
+    <file name="msvcp80.dll"/>
+    <file name="msvcm80.dll"/>
+</assembly>
+EOF
+  if test ! -f "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
 fi
 
 #######

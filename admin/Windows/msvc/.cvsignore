@@ -1,1 +1,5 @@
 makeall.sh
+octave_forge.nsi
+octave_forge_desc.nsi
+octave_main.nsi
+octave-*-setup.exe

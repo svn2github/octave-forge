@@ -17,10 +17,10 @@
 # Configuration #
 #################
 
-INSTALL_DIR=/c/Temp/vclibs_tmp
-CYGWIN_DIR=/c/Software/cygwin
+INSTALL_DIR=/d/Temp/vclibs_tmp
+CYGWIN_DIR=/d/Software/cygwin
 DOWNLOAD_DIR=downloaded_packages
-#WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 DOATLAS=false
 
 verbose=false
@@ -30,6 +30,7 @@ HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull"
 octave_version=
 of_version=
+do_nsi=false
 
 ###################################################################################
 
@@ -69,6 +70,9 @@ while test $# -gt 0; do
       ;;
     --forge=*)
       of_version=`echo $1 | sed -e 's/--forge=//'`
+      ;;
+    --nsi)
+      do_nsi=true
       ;;
     -*)
       echo "unknown flag: $1"
@@ -155,7 +159,10 @@ tbindir="$INSTALL_DIR/bin"
 tlibdir="$INSTALL_DIR/lib"
 tincludedir="$INSTALL_DIR/include"
 tlicdir="$INSTALL_DIR/license"
-PATH=$PATH:$tbindir
+# Add $tbindir to PATH, but re-add "/usr/bin" in front to be sure
+# we're using the MSYS sed version; MSVC-compiled version does not
+# accept single-quoted arguments.
+PATH=/usr/bin:$tbindir:$PATH
 tdir_w32=`cd "$INSTALL_DIR" && pwd -W`
 tdir_w32_forward="$tdir_w32"
 tdir_w32_1=`echo $tdir_w32 | sed -e 's,/,\\\\,g'`
@@ -296,15 +303,20 @@ if test -z "$of_version"; then
   packages=`echo $packages | sed -e 's/forge//'`
 fi
 
-if test -z "$packages"; then
+if ! $do_nsi && test -z "$packages"; then
   echo "nothing to do"
   exit 0
 else
   echo "***********************************"
-  echo "packages to install:"
-  for pack in $packages; do
-    echo "  $pack"
-  done
+  if test ! -z "$packages"; then
+    echo "installing packages:"
+    for pack in $packages; do
+      echo "  $pack"
+    done
+  fi
+  if $do_nsi; then
+    echo "creating installer"
+  fi
   echo "***********************************"
 fi
 
@@ -432,7 +444,7 @@ if check_package FFTW; then
   echo "done"
   echo -n "installing FFTW ..."
   (cd "$DOWNLOAD_DIR/fftw3" &&
-    cp libfftw3-3.dll "$tbindir" && 
+    cp fftw-wisdom.exe libfftw3-3.dll "$tbindir" && 
     cp fftw3.h "$tincludedir" &&
     lib -out:fftw3.lib -def:libfftw3-3.def &&
     cp fftw3.lib "$tlibdir") >&5 2>&1
@@ -1285,8 +1297,8 @@ if check_package octave; then
     done &&
     for d in faq interpreter liboctave; do
       if test -d "doc/$d/HTML"; then
-        mkidr -p "$octave_prefix/doc/HTML/$d"
-        cp "doc/$d/HTML/*.*" "$octave_prefix/doc/HTML/$d"
+        mkdir -p "$octave_prefix/doc/HTML/$d"
+        cp doc/$d/HTML/*.* "$octave_prefix/doc/HTML/$d"
       fi
     done &&
     cp COPYING "$tlicdir/COPYING.GPL" &&
@@ -1428,4 +1440,140 @@ if check_package forge; then
   if ! install_forge_packages "$extra_pkgs" extra -noauto; then
     exit -1
   fi
+fi
+
+##########################
+# NSI package generation #
+##########################
+
+function create_nsi_entries()
+{
+  pkgs=`for d in $1; do echo $d; done | sort - | sed -e ':a;N;$!ba;s/\n/\ /g'`
+  flag=$2
+  dodesc=$3
+  for packname in $pkgs; do
+    if test "$packname" = "jhandles"; then
+      continue
+    fi
+    found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
+    if test ! -z "$found"; then
+      packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
+      packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+      packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+      packinstdir=$packdesc_low-$packver
+      if test -z "$dodesc"; then
+        if test "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
+          flag_=
+        else
+          flag_=$flag
+        fi
+        echo "Section $flag_ \"$packdesc\" SEC_$packname"
+        echo "  SetOverwrite try"
+        case "$packname" in
+          image)
+            echo "  SetOutPath \"\$INSTDIR\\bin\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\jpeg6b.dll\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
+            ;;
+          octcdf)
+            echo "  SetOutPath \"\$INSTDIR\\bin\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\netcdf.dll\""
+            echo "  SetOutPath \"\$INSTDIR\\license\""
+            echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.NETCDF\""
+            ;;
+          gsl)
+            echo "  SetOutPath \"\$INSTDIR\\bin\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl.dll\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas.dll\""
+            ;;
+          arpack)
+            echo "  SetOutPath \"\$INSTDIR\\bin\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\arpack.dll\""
+            echo "  SetOutPath \"\$INSTDIR\\license\""
+			echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.ARPACK.doc\""
+            ;;
+          miscellaneous)
+            echo "  SetOutPath \"\$INSTDIR\\bin\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
+            echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
+            ;;
+          secs2d)
+            echo "  SetOutPath \"\$INSTDIR\\bin\""
+            echo "  File \"\${GMSH_ROOT}\\gmsh.exe\""
+            echo "  SetOutPath \"\$INSTDIR\\license\""
+            echo "  File /oname=COPYING.GMSH \"\${GMSH_ROOT}\\LICENSE.txt\""
+            echo "  SetOutPath \"\$INSTDIR\\tools\\gmsh\""
+            echo "  File /r /x gmsh.exe \"\${GMSH_ROOT}\\*.*\""
+            ;;
+        esac
+        echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
+        echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
+        echo "SectionEnd"
+      else
+        packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
+        echo "  !insertmacro MUI_DESCRIPTION_TEXT \${SEC_$packname} \"$packinfo\""
+      fi
+    fi
+  done
+}
+
+if $do_nsi; then
+  if test -z "$octave_version" || test ! -d "$INSTALL_DIR/local/octave-$octave_version"; then
+    echo "no octave or octave-forge installed, cannot create installer"
+    exit -1
+  fi
+  if test ! -f "/c/WINDOWS/MSYS.INI"; then
+    echo "MSYS not found"
+    exit -1
+  else
+    msys_root=`sed -n -e '/^InstallPath=/ {s/InstallPath=//;s/\\\\/\\\\\\\\/g;p;}' /c/WINDOWS/MSYS.INI`
+    if test ! -d "$msys_root"; then
+      echo "MSYS not found"
+      exit -1
+    fi
+  fi
+  jhandles_version=`find "$INSTALL_DIR/local/octave-$octave_version/share/octave/packages" -type d -a -name "jhandles-*" -maxdepth 1`
+  if test -d "$jhandles_version"; then
+    jhandles_version=`echo "$jhandles_version" | sed -e 's/.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\)$/\1/'`
+  else
+    echo "JHandles not found"
+    exit -1
+  fi
+  software_root=
+  for drive in c d; do
+    if test -d "/$drive/Software"; then
+      software_root="$drive:\\\\Software"
+    fi
+  done
+  if test ! -d "$software_root"; then
+    echo "Software directory not found"
+    exit -1
+  fi
+  echo -n "creating octave_main.nsi... "
+  sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
+    -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
+    -e "s/@SOFTWARE_ROOT@/$software_root/" octave.nsi.in > octave_main.nsi
+  echo "done"
+  echo -n "creating octave_forge.nsi... "
+  echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
+  create_nsi_entries "$main_pkgs" "" >> octave_forge.nsi
+  echo "SectionGroupEnd" >> octave_forge.nsi
+  echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
+  create_nsi_entries "$extra_pkgs" "/o" >> octave_forge.nsi
+  echo "SectionGroupEnd" >> octave_forge.nsi
+  echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
+  create_nsi_entries "$lang_pkgs" "/o" >> octave_forge.nsi
+  echo "SectionGroupEnd" >> octave_forge.nsi
+  echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
+  create_nsi_entries "$nonfree_pkgs" "" >> octave_forge.nsi
+  echo "SectionGroupEnd" >> octave_forge.nsi
+  echo "done"
+  echo -n "creating octave_forge_desc.nsi... "
+  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
+  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" > octave_forge_desc.nsi
+  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" > octave_forge_desc.nsi
+  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" > octave_forge_desc.nsi
+  create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
+  create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
+  echo "done"
 fi

@@ -28,6 +28,13 @@ ROOT=`(cd "${BASE}" 2>/dev/null && pwd)`
 # echo BASE: ${BASE}
 # echo ROOT: ${ROOT}; exit
 
+# Do some checks how Gnuplot should be opened. If $DISPLAY for X11 is
+# set and $GNUPLOT is empty then X11 should be used. Other cases can
+# be added here.
+if [ -n $DISPLAY && -z $GNUPLOT ]; then
+  export GNUTERM=x11
+fi
+
 # Setting up various path information variables that are needed to
 # startup the Octave program.
 OCTAVE_HOME="${ROOT}"
@@ -40,7 +47,7 @@ DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
 CFLAGS="-I'${ROOT}/include/curl' -I'${ROOT}/include/readline' ${CFLAGS}"
 CPPFLAGS="${CFLAGS}"
 CXXFLAGS="${CXXFLAGS}"
-LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' ${LDFLAGS}"
+LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% ${LDFLAGS}"
 # These default include paths are set by mkoctfile-2.9.12 automatically
 # CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%'"
 

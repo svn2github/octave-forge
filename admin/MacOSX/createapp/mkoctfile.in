@@ -40,7 +40,7 @@ DYLD_LIBRARY_PATH="${ROOT}/lib/octave-%VERSION%:${DYLD_LIBRARY_PATH}"
 CFLAGS="-I'${ROOT}/include/curl' -I'${ROOT}/include/readline' ${CFLAGS}"
 CPPFLAGS="${CFLAGS}"
 CXXFLAGS="${CXXFLAGS}"
-LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%' ${LDFLAGS}"
+LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% ${LDFLAGS}"
 # These default include paths are set by mkoctfile-2.9.12 automatically
 # CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%'"
 

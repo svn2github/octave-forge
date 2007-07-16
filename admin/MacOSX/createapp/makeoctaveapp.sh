@@ -16,7 +16,7 @@
 # 02110-1301 USA
 
 
-# You must install the octave.app at least on your desktop - you need
+# You must install the Octave.app at least on your desktop - you need
 # read/write permission for installing packages with octave's 'pkg'
 # command.
 
@@ -25,7 +25,7 @@
 OCTBIN=/tmp/dependencies-i386/bin/octave-2.9.12
 
 # This is the temporary directory that is used for copying Octave and
-# its libraries that depend on the octave.app.
+# its libraries that depend on the Octave.app.
 TEMPDIR=/tmp/TEMPDIR
 
 # This is the directory where all the dependencies have been
@@ -60,7 +60,7 @@ OUTFILE=/tmp/octaveapp.msg # /dev/stdout
 # Description: Evaluates the ${1} string, prints a message and exits on fail
 evalfailexit() {
   if ! ( eval "${1} 2>&1>${OUTFILE}" ); then
-    echo "makeoctaveapp.sh: Building octave.app has failed"
+    echo "makeoctaveapp.sh: Building Octave.app has failed"
     echo "The command that failed was"
     echo "  ${1}"
     exit 1
@@ -145,7 +145,7 @@ echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"
   evalfailexit "if [ ! -d ${DMGDIR} ]; then mkdir ${DMGDIR}; fi"
   evalfailexit "rm -rf ${DMGDIR}/*"
 
-  echo "makeoctaveapp.sh: Creating the octave.app ..."
+  echo "makeoctaveapp.sh: Creating the Octave.app ..."
   # This routine creates a string of the form "-f <dir1> -f <dir2>" etc.
   # of all directories in ${TEMPDIR}
   PLATYFFLAG="";
@@ -154,24 +154,24 @@ echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"
   done
   # Cf. http://www.sveinbjorn.org/Files/manpages/platypus.man.pdf about
   # which options are accepted by platypus and how it is working
-  evalfailexit "platypus -a octave.app -t shell -V ${VERSION} \
+  evalfailexit "platypus -a Octave.app -t shell -V ${VERSION} \
     -u \"John W. Eaton\" ${PLATYFFLAG} -I \"org.octave\" -R ./applicationstartup.sh.in \
-    ${DMGDIR}/octave.app" # -o TextWindow"
+    ${DMGDIR}/Octave.app" # -o TextWindow"
 
   # Workaround for the missing -i option of platypus. Install icon manually
   echo "makeoctaveapp.sh: Installing the Octave icon ..."
   evalfailexit "install -c -S -m 777 ./octave.icns \
-    ${DMGDIR}/octave.app/Contents/Resources/appIcon.icns"
+    ${DMGDIR}/Octave.app/Contents/Resources/appIcon.icns"
 
   echo "makeoctaveapp.sh: Setting variables in startup script ..."
   sed "s/%VERSION%/${VERSION}/g;s/%ARCH%/${ARCH}/g" octave.in > octave
   evalfailexit "install -c -S -m 777 octave \
-    ${DMGDIR}/octave.app/Contents/Resources/bin/octave"
+    ${DMGDIR}/Octave.app/Contents/Resources/bin/octave"
 
   echo "makeoctaveapp.sh: Setting variables in mkoctfile script ..."
   sed "s/%VERSION%/${VERSION}/g;s/%ARCH%/${ARCH}/g" mkoctfile.in > mkoctfile
   evalfailexit "install -c -S -m 777 mkoctfile \
-    ${DMGDIR}/octave.app/Contents/Resources/bin/mkoctfile"
+    ${DMGDIR}/Octave.app/Contents/Resources/bin/mkoctfile"
 
   echo "makeoctaveapp.sh: Setting variables in Readme file ..."
   sed "s/%VERSION%/${VERSION}/g;s/%ARCH%/${ARCH}/g;s/%DATE%/${DATE}/g" Readme.html.in > Readme.html

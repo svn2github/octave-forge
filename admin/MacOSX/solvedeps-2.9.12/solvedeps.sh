@@ -68,7 +68,7 @@ OCTAVEDIFF=./octave-2.9.12.diff
 # Description: Evaluates the ${1} string, prints a message and exits on fail
 evalfailexit() {
   if ( ! eval "${1} 2>&1 >${MSGFILE}" ); then
-    echo "buildoctave.sh: Building octave.app has failed"
+    echo "buildoctave.sh: Building Octave.app has failed"
     echo "The command that failed was"
     echo "  ${1}"
     exit 1

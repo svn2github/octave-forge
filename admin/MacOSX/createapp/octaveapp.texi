@@ -85,8 +85,8 @@ Some of Octave--Forge's packages cannot be installed because of the reason of a 
 @end itemize
 If you want to find out more information why the installation fails for a specific package, use the command @command{pkg -v install <package.tar.gz>} to build the package in verbose mode. @* @*
 
-@item @b{No spaces in the pathname before octave.app.} @*
-Do not install Octave.app in a place of your filesystem including spaces in the pathname before Octave.app. Valid destinations eg. are @file{/Application/Octave.app} or @file{/Users/Me/Desktop/Octave.app}. Not valid destinations including spaces in the pathname eg. are @file{/Applications/Other Apps/Octave.app} and @file{/Users/My Home/Desktop/Octave.app}. If you set up Octave.app with a not valid pathname then this might result in different errors at startup or when running the Octave application that cannot be reproduced.
+@item @b{No spaces in the pathname before Octave.app.} @*
+Do not install Octave.app in a place of your filesystem including spaces in the pathname before Octave.app. Valid destinations eg. are @file{/Application/Octave.app} or @file{/Users/Me/Desktop/Octave.app}. Not valid destinations including spaces in the pathname eg. are @file{/Applications/Other Apps/Octave.app} and @file{/Users/My Home/Desktop/Octave.app}. If you set up Octave.app with a not valid pathname then this might result in different errors at startup or when running the Octave.application that cannot be reproduced.
 
 @end itemize
 
@@ -111,7 +111,7 @@ bash ~$ open /Applications/Octave.app
 @end example 
 
 @item @b{How can I startup Octave in a Terminal.app or an XTerm that is already running?} @*
-A modified startup script has been placed into the Octave.app that can be used to startup Octave in an already running Terminal.app or a @command{xterm} application. The place of this startup script is @file{<octave.app>/Contents/Resources/bin/octave}. If you have installed Octave.app in your applications folder then a startup in your already running Terminal.app or XTerm application might look like eg.
+A modified startup script has been placed into the Octave.app that can be used to startup Octave in an already running Terminal.app or a @command{xterm} application. The place of this startup script is @file{<Octave.app>/Contents/Resources/bin/octave}. If you have installed Octave.app in your applications folder then a startup in your already running Terminal.app or XTerm application might look like eg.
 @example
 bash ~$ /Applications/Octave.app/Contents/Resources/bin/octave
 @end example
@@ -122,7 +122,7 @@ bash ~$ octave
 @end example
 
 @item @b{How can I use mkoctfile in a Terminal.app or a XTerm that is already running?} @*
-A modified startup script has been placed into the Octave.app that can be used to run mkoctfile in an already running Terminal.app or a @command{xterm} application. The place of this startup script is @file{<octave.app>/Contents/Resources/bin/mkoctfile}. If you have installed Octave.app in your applications folder then the use of the command @command{mkoctfile} might look like eg.
+A modified startup script has been placed into the Octave.app that can be used to run mkoctfile in an already running Terminal.app or a @command{xterm} application. The place of this startup script is @file{<Octave.app>/Contents/Resources/bin/mkoctfile}. If you have installed Octave.app in your applications folder then the use of the command @command{mkoctfile} might look like eg.
 @example
 bash ~$ /Applications/Octave.app/Contents/Resources/bin/mkoctfile <file.cc>
 @end example

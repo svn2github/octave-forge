@@ -39,9 +39,9 @@ elif [ ${OCTAVE_TERMINAL} == "X11" ]; then
     -e "'${ROOT}/bin/octave'";
 fi
 
-# Quit the Octave application immediately after startup (ie. quitting
+# Quit the Octave.application immediately after startup (ie. quitting
 # it in the taskbar) because once it is started it cannot be restarted
-# a second time. If octave.app stays (eg. because of a crash) opened
+# a second time. If Octave.app stays (eg. because of a crash) opened
 # then restarting is not possible.
 osascript 2>&1>/dev/null <<EOF
   tell application "octave"

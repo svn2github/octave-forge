@@ -1552,6 +1552,50 @@ fi
 # NSI package generation #
 ##########################
 
+isolated_packages="fpl bim msh secs1d secs2d"
+
+function get_nsi_additional_files()
+{
+  packname=$1
+  case "$packname" in
+    image)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\jpeg6b.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
+      ;;
+    octcdf)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\netcdf.dll\""
+      echo "  SetOutPath \"\$INSTDIR\\license\""
+      echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.NETCDF\""
+      ;;
+    gsl)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas.dll\""
+      ;;
+    arpack)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\arpack.dll\""
+      echo "  SetOutPath \"\$INSTDIR\\license\""
+      echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.ARPACK.doc\""
+      ;;
+    miscellaneous)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
+      ;;
+    secs2d)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${SOFTWARE_ROOT}\\Gmsh\\gmsh.exe\""
+      echo "  SetOutPath \"\$INSTDIR\\license\""
+      echo "  File /oname=COPYING.GMSH \"\${SOFTWARE_ROOT}\\Gmsh\\LICENSE.txt\""
+      echo "  SetOutPath \"\$INSTDIR\\tools\\gmsh\""
+      echo "  File /r /x gmsh.exe \"\${SOFTWARE_ROOT}\\Gmsh\\*.*\""
+      ;;
+  esac
+}
+
 function create_nsi_entries()
 {
   pkgs=`for d in $1; do echo $d; done | sort - | sed -e ':a;N;$!ba;s/\n/\ /g'`
@@ -1559,6 +1603,9 @@ function create_nsi_entries()
   dodesc=$3
   for packname in $pkgs; do
     if test "$packname" = "jhandles"; then
+      continue
+    fi
+    if `echo $isolated_packages | grep -e $packname > /dev/null`; then
       continue
     fi
     found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
@@ -1575,43 +1622,7 @@ function create_nsi_entries()
         fi
         echo "Section $flag_ \"$packdesc\" SEC_$packname"
         echo "  SetOverwrite try"
-        case "$packname" in
-          image)
-            echo "  SetOutPath \"\$INSTDIR\\bin\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\jpeg6b.dll\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
-            ;;
-          octcdf)
-            echo "  SetOutPath \"\$INSTDIR\\bin\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\netcdf.dll\""
-            echo "  SetOutPath \"\$INSTDIR\\license\""
-            echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.NETCDF\""
-            ;;
-          gsl)
-            echo "  SetOutPath \"\$INSTDIR\\bin\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl.dll\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas.dll\""
-            ;;
-          arpack)
-            echo "  SetOutPath \"\$INSTDIR\\bin\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\arpack.dll\""
-            echo "  SetOutPath \"\$INSTDIR\\license\""
-			echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.ARPACK.doc\""
-            ;;
-          miscellaneous)
-            echo "  SetOutPath \"\$INSTDIR\\bin\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
-            echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
-            ;;
-          secs2d)
-            echo "  SetOutPath \"\$INSTDIR\\bin\""
-            echo "  File \"\${GMSH_ROOT}\\gmsh.exe\""
-            echo "  SetOutPath \"\$INSTDIR\\license\""
-            echo "  File /oname=COPYING.GMSH \"\${GMSH_ROOT}\\LICENSE.txt\""
-            echo "  SetOutPath \"\$INSTDIR\\tools\\gmsh\""
-            echo "  File /r /x gmsh.exe \"\${GMSH_ROOT}\\*.*\""
-            ;;
-        esac
+        get_nsi_additional_files $packname
         echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
         echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
         echo "SectionEnd"
@@ -1621,6 +1632,34 @@ function create_nsi_entries()
       fi
     fi
   done
+}
+
+function create_nsi_package_file()
+{
+  packname=$1
+  found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
+  if test ! -z "$found"; then
+    echo -n "creating installer for $packname... "
+    packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
+    packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+    packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+    packinstdir=$packdesc_low-$packver
+    packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
+    packfiles=`get_nsi_additional_files $packname`
+    if test ! -z "$packfiles"; then
+      echo "$packfiles" > octave_pkg_${packname}_files.nsi
+      packfiles="!include \\\"octave_pkg_${packname}_files.nsi\\\""
+    fi
+    sed -e "s/@PACKAGE_NAME@/$packname/" \
+        -e "s/@PACKAGE_LONG_NAME@/$packdesc/" \
+        -e "s/@PACKAGE_VERSION@/$packver/" \
+        -e "s/@PACKAGE_INFO@/$packinfo/" \
+        -e "s/@OCTAVE_VERSION@/$octave_version/" \
+        -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
+	-e "s/@PACKAGE_FILES@/$packfiles/" \
+        -e "s/@SOFTWARE_ROOT@/$software_root/" octave_package.nsi.in > octave_pkg_$packname.nsi
+    echo "done"
+  fi
 }
 
 if $do_nsi; then
@@ -1682,4 +1721,7 @@ if $do_nsi; then
   create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
   create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
   echo "done"
+  for pack in $isolated_packages; do
+    create_nsi_package_file $pack
+  done
 fi

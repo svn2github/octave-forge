@@ -17,10 +17,17 @@
 # Configuration #
 #################
 
-INSTALL_DIR=/c/Temp/vclibs_tmp
-CYGWIN_DIR=/c/Software/cygwin
+machine_name=`uname -n`
+
+if test "$machine_name" = "MACROCK"; then
+  INSTALL_DIR=/c/Temp/vclibs_tmp
+  CYGWIN_DIR=/c/Software/cygwin
+else
+  INSTALL_DIR=/d/Temp/vclibs_tmp
+  CYGWIN_DIR=/d/Software/cygwin
+  WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+fi
 DOWNLOAD_DIR=downloaded_packages
-WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
 DOATLAS=false
 
 verbose=false
@@ -28,7 +35,7 @@ packages=
 available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC"
+VC octplot"
 octave_version=
 of_version=
 do_nsi=false
@@ -286,6 +293,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/fltkdll.dll" FLTK
     if test ! -z "$octave_version"; then
       todo_check "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe" octave
+      todo_check "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe" octplot
     fi
     if test ! -z "$of_version"; then
       packages="$packages forge"
@@ -1271,6 +1279,28 @@ if check_package FLTK; then
   (cd "$DOWNLOAD_DIR/fltk-1.1.7" &&
     patch -p1 < fltk-1.1.7.diff &&
     cd vc2005 &&
+    sed -e 's/@FL_MAJOR_VERSION@/1/' \
+        -e 's/@FL_MINOR_VERSION@/1/' \
+        -e 's/@FL_PATCH_VERSION@/7/' \
+	-e "s,@prefix@,$tdir_w32_forward," \
+	-e 's,@exec_prefix@,$prefix/bin,' \
+	-e 's,@bindir@,$prefix/bin,' \
+	-e 's,@includedir@,$prefix/include,' \
+	-e 's,@libdir@,$prefix/lib,' \
+	-e 's,@srcdir@,$prefix/src,' \
+	-e 's/@CC@/cc-msvc/' \
+	-e 's/@CXX@/cc-msvc/' \
+	-e 's/@CFLAGS@/-MD -DWIN32 -DFL_DLL/' \
+	-e 's/@CXXFLAGS@/-MD -DWIN32 -DFL_DLL/' \
+	-e 's/@LDFLAGS@//' \
+	-e 's/@LIBS@/-lws2_32/' \
+	-e 's/@LIBNAME@//' \
+	-e 's/@DSONAME@//' \
+	-e 's/@DSOLINK@//' \
+	-e 's/@SHAREDSUFFIX@/dll/' \
+	-e 's/^ *LIBS=/#&/' \
+	-e 's/-lfltk_gl\$SHAREDSUFFIX @GLLIB@/-lopengl32 -lglu32/' \
+	-e 's/^ *LDSTATIC=/#&/' ../fltk-config.in > "$tbindir/fltk-config" &&
     vcbuild -u fltkdll.vcproj "Release|Win32" &&
     vcbuild -u fltk.lib.vcproj "Release|Win32" &&
     vcbuild -u fltkforms.vcproj "Release|Win32" &&
@@ -1431,7 +1461,7 @@ function install_forge_packages
           echo "no '$pack' package found"
           return -1
         else
-          if test "$pack" = "java"; then
+          if test "$pack" = "java" -o "$pack" = "windows"; then
             auto_=-auto
           else
             auto_=$auto
@@ -1479,6 +1509,42 @@ if check_package forge; then
   fi
   if ! install_forge_packages "$extra_pkgs" extra -noauto; then
     exit -1
+  fi
+fi
+
+###########
+# octplot #
+###########
+
+if check_package octplot; then
+  if test -z "$octave_version" || test ! -d "$INSTALL_DIR/local/octave-$octave_version"; then
+    echo "octave not installed, cannot process octplot"
+    exit -1
+  fi
+  download_file octplot-0.4.0.tar.gz 'http://downloads.sourceforge.net/octplot/octplot-0.4.0.tar.gz?modtime=1179436297&big_mirror=0'
+  echo -n "decompressing octplot... "
+  (cd "$DOWNLOAD_DIR" && tar xfz octplot-0.4.0.tar.gz)
+  cp libs/octplot-0.4.0.diff "$DOWNLOAD_DIR/octplot-0.4.0"
+  echo "done"
+  echo -n "compiling octplot... "
+  octave_prefix="$INSTALL_DIR/local/octave-$octave_version"
+  (cd "$DOWNLOAD_DIR/octplot-0.4.0" && 
+    patch -p0 < octplot-0.4.0.diff &&
+    PATH=$octave_prefix/bin:$PATH CC=cc-msvc CXX=cc-msvc CXXFLAGS="-O2 -EHs -D_CRT_SECURE_NO_DEPRECATE" \
+      CFLAGS="-O2 -D_CRT_SECURE_NO_DEPRECATE" ./configure --build=i686-pc-msdosmsvc \
+      --with-path=$octave_prefix \
+      --with-opath=$octave_prefix/share/octplot/oct \
+      --with-mpath=$octave_prefix/share/octplot/toggle \
+      --with-octplotmpath=$octave_prefix/share/octplot/m \
+      --with-fontpath=$octave_prefix/share/octplot/fonts &&
+    PATH=$octave_prefix/bin:$PATH make &&
+    make install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/octplot-0.4.0"
+  if test ! -f "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
   fi
 fi
 

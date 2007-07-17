@@ -1,0 +1,137 @@
+Index: src/root.cpp
+===================================================================
+--- src/root.cpp	(revision 477)
++++ src/root.cpp	(working copy)
+@@ -180,6 +180,8 @@
+ 
+   if (!fpath.empty()) {
+     int pos = fpath.rfind("\\oct\\");
++    if (pos == std::string::npos)
++        pos = fpath.rfind("\\");
+     Properties["DefaultFontDir"]  = new String(fpath.substr(0, pos) + "\\fonts");
+   }
+ #endif
+Index: src/octplot_disable.m
+===================================================================
+--- src/octplot_disable.m	(revision 477)
++++ src/octplot_disable.m	(working copy)
+@@ -30,6 +30,7 @@
+ 
+   dispatch("pause","any");
+   dispatch("set","any");
++  dispatch("get","any");
+   dispatch("hold","any");
+   dispatch("gset","any");
+   dispatch("graw","any");
+Index: src/octplotapp.h
+===================================================================
+--- src/octplotapp.h	(revision 477)
++++ src/octplotapp.h	(working copy)
+@@ -46,7 +46,7 @@
+ 
+ class OctPlotApp {
+ public:
+-  ~OctPlotApp() {};
++  ~OctPlotApp();
+   static ocpl::Handle GetNewHandle(Object* NewObj) {
+     Handles[++last_handle]=NewObj;	
+     return last_handle;
+Index: src/octplot_atexit.m
+===================================================================
+--- src/octplot_atexit.m	(revision 477)
++++ src/octplot_atexit.m	(working copy)
+@@ -25,6 +25,8 @@
+ 
+ function octplot_atexit()
+   global octplot_config_info
+-  octplot_config_info.in_use = 0;
+-  octplot_command("delete",0);
++  if (octplot_config_info.in_use)
++    octplot_config_info.in_use = 0;
++    octplot_command("delete",0);
++  endif
+ endfunction
+Index: src/octplotapp.cpp
+===================================================================
+--- src/octplotapp.cpp	(revision 477)
++++ src/octplotapp.cpp	(working copy)
+@@ -52,6 +52,14 @@
+ 
+ double ocpl::nan,ocpl::inf;
+ 
++OctPlotApp::~OctPlotApp()
++{
++#ifdef _MSC_VER
++  if (_fd != 0)
++    closesocket(_fd);
++#endif
++}
++
+ Object* OctPlotApp::GetObjectD(const ocpl::Handle hnd)
+ {
+   HandleMap::iterator im = Handles.find( hnd );
+@@ -256,7 +264,7 @@
+ #ifndef _MSC_VER
+       sleep(1); // just to make sure fd is flushed  
+ #else
+-      Sleep(1000);
++      //Sleep(1000);
+ #endif
+       exit(0);
+     }
+Index: src/octplot_command.cc
+===================================================================
+--- src/octplot_command.cc	(revision 477)
++++ src/octplot_command.cc	(working copy)
+@@ -314,6 +314,9 @@
+       warning("Killed octplot");
+     }
+     ShouldWeRedraw=false;
++#ifdef _MSC_VER
++    closesocket(_socket);
++#endif
+     _socket = 0;
+   }
+   else
+Index: src/octplot_enable.m.in
+===================================================================
+--- src/octplot_enable.m.in	(revision 477)
++++ src/octplot_enable.m.in	(working copy)
+@@ -27,10 +27,11 @@
+ 
+ if( ~exist("octplot_config_info","var"))
+   global octplot_config_info
++  mdir = fileparts(mfilename("fullpath"));
+   octplot_config_info.mpath = \
+-       	"@octplotmpath@";
++       	canonicalize_file_name([mdir, '\..\m']);
+   octplot_config_info.opath = \
+-       "@opath@";
++       canonicalize_file_name([mdir, '\..\oct']);
+   octplot_config_info.version = \
+        	"@VERSION@";
+   octplot_config_info.in_use = 0;
+Index: src/Makefile.am
+===================================================================
+--- src/Makefile.am	(revision 477)
++++ src/Makefile.am	(working copy)
+@@ -48,7 +48,7 @@
+   FTGL/FTGLBitmapFont.h         FTGL/FTList.h
+ 
+ destination_SCRIPTS = \
+-  octplot_command.oct octplot_redraw.oct octplot_path.oct
++  octplot_command.oct PKG_ADD
+ 
+ EXTRA_DIST = \
+ 	octplot_command.cc octplot_dist_dir.txt \
+@@ -87,6 +87,10 @@
+ octplot_path.oct : octplot_command.oct
+ 	$(LN_S) -f octplot_command.oct octplot_path.oct
+ 
++PKG_ADD: octplot_command.oct
++	echo 'autoload ("octplot_redraw", which ("octplot_command"));' > $@
++	echo 'autoload ("octplot_path", which ("octplot_command"));' >> $@
++
+ # builtin octave functions override using dispatch
+ oset.m: set.m
+ 	$(LN_S) -f set.m oset.m

@@ -8,7 +8,7 @@
 
 ; Determine which configuration to use
 #!define ATLAS_PM
-#!define USE_OCTPLOT
+!define USE_OCTPLOT
 !define USE_OCTAVE_FORGE
 !define USE_MSYS
 
@@ -319,9 +319,11 @@ Section "Octplot" SEC_OPLOT
   SetOverwrite try
   SetOutPath "$INSTDIR\bin"
   File "${VCLIBS_ROOT}\bin\fltkdll.dll"
+  File "${VCLIBS_ROOT}\bin\jpeg6b.dll"
+  File "${VCLIBS_ROOT}\bin\libpng13.dll"
   File "${VCLIBS_ROOT}\bin\freetype6.dll"
-  SetOutPath "$INSTDIR\octplot"
-  File /r /x octplot_path.oct /x octplot_redraw.oct "${OCTAVE_ROOT}\octplot\*.*"
+  SetOutPath "$INSTDIR\share\octplot"
+  File /r "${OCTAVE_ROOT}\share\octplot\*.*"
   SetOutPath "$INSTDIR\license"
   File "${VCLIBS_ROOT}\license\COPYING.FLTK"
 SectionEnd

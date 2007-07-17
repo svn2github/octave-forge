@@ -33,7 +33,7 @@ if (exist ("edit"))
 endif
 
 # Load octplot
-oplot_path = sprintf ("%s%soctplot", octave_config_info ("prefix"), filesep);
+oplot_path = sprintf ("%s%sshare%soctplot", octave_config_info ("prefix"), filesep, filesep);
 if (exist (oplot_path, "dir"))
   addpath (sprintf ("%s%stoggle", oplot_path, filesep), "-end");
   fprintf(" - Octplot installed.\n   To enable Octplot graphic engine, use `toggle_octplot'.\n");

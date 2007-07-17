@@ -28,13 +28,6 @@ ROOT=`(cd "${BASE}" 2>/dev/null && pwd)`
 # echo BASE: ${BASE}
 # echo ROOT: ${ROOT}; exit
 
-# Do some checks how Gnuplot should be opened. If $DISPLAY for X11 is
-# set and $GNUPLOT is empty then X11 should be used. Other cases can
-# be added here.
-if [ -n $DISPLAY && -z $GNUPLOT ]; then
-  export GNUTERM=x11
-fi
-
 # Setting up various path information variables that are needed to
 # startup the Octave program.
 OCTAVE_HOME="${ROOT}"

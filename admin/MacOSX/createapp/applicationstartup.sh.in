@@ -25,7 +25,7 @@ open -a /Applications/Utilities/Terminal.app
 osascript 2>&1>/dev/null <<EOF
   tell application "Terminal"
     activate
-    do script "'${ROOT}/bin/octave'"
+    do script "exec '${ROOT}/bin/octave'"
   end tell
 EOF
 

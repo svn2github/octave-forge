@@ -42,6 +42,8 @@ octave_version=
 of_version=
 do_nsi=false
 do_nsiclean=true
+download_root="http://downloads.sourceforge.net/octave/@@?big_mirror=0"
+#download_root="http://www.geocities.com/sw286000/@@.zip"
 
 ###################################################################################
 
@@ -1564,7 +1566,7 @@ fi
 # NSI package generation #
 ##########################
 
-isolated_packages="fpl msh bim secs1d secs2d vrml"
+isolated_packages="fpl msh bim civil-engineering integration mapping nan secs1d secs2d symband triangular tsa pt_br vrml nnet"
 
 function get_nsi_additional_files()
 {
@@ -1630,7 +1632,9 @@ function create_nsi_entries()
       continue
     fi
     if `echo $isolated_packages | grep -e $packname > /dev/null`; then
-      continue
+      isolated=true
+    else
+      isolated=false
     fi
     found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
     if test ! -z "$found"; then
@@ -1640,16 +1644,30 @@ function create_nsi_entries()
           packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
           packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
           packinstdir=$packdesc_low-$packver
-          if test "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
+	  if $isolated; then
+            flag_="/o"
+          elif test "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
             flag_=
           else
             flag_=$flag
           fi
-          echo "Section $flag_ \"$packdesc\" SEC_$packname"
-          echo "  SetOverwrite try"
-          get_nsi_additional_files $packname
-          echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
-          echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
+          if $isolated; then
+            packfile="octave-$octave_version-$packname-$packver-setup.exe"
+            echo "Section $flag_ \"$packdesc *\" SEC_$packname"
+            echo "  InitPluginsDir"
+            echo "  InetLoad::load \"`echo $download_root | sed -e "s/@@/$packfile/"`\" \$PLUGINSDIR\\$packfile"
+	    echo "  Pop \$0"
+	    echo "  StrCmp \$0 \"OK\" +3 0"
+	    echo "  MessageBox MB_ICONSTOP|MB_OK \"Download error: \$0\""
+	    echo "  Abort"
+            echo "  ExecWait '\"\$PLUGINSDIR\\$packfile\" /S /D=\$INSTDIR'"
+          else
+            echo "Section $flag_ \"$packdesc\" SEC_$packname"
+            echo "  SetOverwrite try"
+            get_nsi_additional_files $packname
+            echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
+            echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
+          fi
           echo "SectionEnd"
           ;;
         1)
@@ -1679,7 +1697,7 @@ function create_nsi_package_file()
     packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
     packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
     packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
-    if test -f "release-$octave_version/octave-$packname-$packver-setup.exe"; then
+    if test -f "release-$octave_version/octave-$octave_version-$packname-$packver-setup.exe"; then
       return 0
     fi
     echo -n "creating installer for $packname... "
@@ -1715,11 +1733,11 @@ function create_nsi_package_file()
     if $do_nsiclean; then
       rm -f octave_pkg_$packname*.nsi
     fi
-    if test ! -f "octave-$packname-$packver-setup.exe"; then
+    if test ! -f "octave-$octave_version-$packname-$packver-setup.exe"; then
       echo "failed"
       return -1
     else
-      mv -f "octave-$packname-$packver-setup.exe" "release-$octave_version"
+      mv -f "octave-$octave_version-$packname-$packver-setup.exe" "release-$octave_version"
       echo "done"
       return 0
     fi

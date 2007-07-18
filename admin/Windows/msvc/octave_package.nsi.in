@@ -53,7 +53,7 @@ Page custom Autoload AutoloadEnd
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "octave-${PACKAGE_NAME}-${PACKAGE_VERSION}-setup.exe"
+OutFile "octave-${OCTAVE_VERSION}-${PACKAGE_NAME}-${PACKAGE_VERSION}-setup.exe"
 InstallDir "$PROGRAMFILES\Octave"
 #InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show

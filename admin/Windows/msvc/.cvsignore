@@ -5,3 +5,4 @@ octave_forge_deps.nsi
 octave_main.nsi
 octave_pkg_*.nsi
 octave-*-setup.exe
+release-*

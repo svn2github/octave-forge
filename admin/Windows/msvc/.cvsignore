@@ -1,6 +1,7 @@
 makeall.sh
 octave_forge.nsi
 octave_forge_desc.nsi
+octave_forge_deps.nsi
 octave_main.nsi
 octave_pkg_*.nsi
 octave-*-setup.exe

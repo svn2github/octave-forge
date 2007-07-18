@@ -536,11 +536,11 @@ noruntime:
   Pop $0
   StrCmp "" "$0" nojvm jvm
 jvm:
-  !insertmacro SetSectionFlag ${SEC_JAVA} ${SF_SELECTED}
+  !insertmacro SetSectionFlag ${SEC_java} ${SF_SELECTED}
   !insertmacro SetSectionFlag ${SEC_JHANDLES} ${SF_SELECTED}
   Goto endjvm
 nojvm:
-  !insertmacro ClearSectionFlag ${SEC_JAVA} ${SF_SELECTED}
+  !insertmacro ClearSectionFlag ${SEC_java} ${SF_SELECTED}
   !insertmacro ClearSectionFlag ${SEC_JHANDLES} ${SF_SELECTED}
 endjvm:
 !ifdef USE_MSYS
@@ -827,11 +827,39 @@ done:
   Pop $0
 FunctionEnd
 
+Var DEP_FLAG
+
+!macro CheckDependency pack1 pack2
+  Push ${pack1}
+  Push ${pack2}
+  Call CheckDependency
+!macroend
+
+Function CheckDependency
+  Exch $1
+  Exch
+  Exch $0
+  !insertmacro SectionFlagIsSet $0 ${SF_SELECTED} 0 done
+  !insertmacro SectionFlagIsSet $1 ${SF_SELECTED} done ""
+  StrCpy $DEP_FLAG 1
+  !insertmacro SetSectionFlag $1 ${SF_SELECTED}
+done:
+  Pop $0
+  Pop $1
+FunctionEnd
+
 Function componentsLeave
+  StrCpy $DEP_FLAG 0
+!ifdef USE_OCTAVE_FORGE
+  !insertmacro CheckDependency ${SEC_JHANDLES} ${SEC_java}
+  !include "octave_forge_deps.nsi"
+!endif
+  StrCmp $DEP_FLAG 0 +2
+  MessageBox MB_OK|MB_ICONINFORMATION "Some components were automatically selected to satisfy dependencies"
 !ifdef JHANDLES_VERSION
   !insertmacro SectionFlagIsSet ${SEC_JHANDLES} ${SF_SELECTED} check_jvm ""
 !endif
-  !insertmacro SectionFlagIsSet ${SEC_JAVA} ${SF_SELECTED} check_jvm done
+  !insertmacro SectionFlagIsSet ${SEC_java} ${SF_SELECTED} check_jvm done
 check_jvm:
   Call DetectJVM
   Pop $0

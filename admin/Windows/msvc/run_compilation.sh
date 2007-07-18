@@ -1552,7 +1552,7 @@ fi
 # NSI package generation #
 ##########################
 
-isolated_packages="fpl bim msh secs1d secs2d"
+isolated_packages="fpl msh bim secs1d secs2d"
 
 function get_nsi_additional_files()
 {
@@ -1596,11 +1596,23 @@ function get_nsi_additional_files()
   esac
 }
 
+function get_nsi_dependencies()
+{
+  packname=$1
+  descfile="$2"
+  sed -n -e 's/ *$//' \
+         -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
+         -e 's/^depends: //p' "$descfile" | \
+    awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
+      sed -n -e 's/^octave.*$//' \
+             -e 's/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency "\1" "\4" "\3"/p'
+}
+
 function create_nsi_entries()
 {
   pkgs=`for d in $1; do echo $d; done | sort - | sed -e ':a;N;$!ba;s/\n/\ /g'`
   flag=$2
-  dodesc=$3
+  op=$3
   for packname in $pkgs; do
     if test "$packname" = "jhandles"; then
       continue
@@ -1610,26 +1622,39 @@ function create_nsi_entries()
     fi
     found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
     if test ! -z "$found"; then
-      packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
-      packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
-      packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
-      packinstdir=$packdesc_low-$packver
-      if test -z "$dodesc"; then
-        if test "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
-          flag_=
-        else
-          flag_=$flag
-        fi
-        echo "Section $flag_ \"$packdesc\" SEC_$packname"
-        echo "  SetOverwrite try"
-        get_nsi_additional_files $packname
-        echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
-        echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
-        echo "SectionEnd"
-      else
-        packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
-        echo "  !insertmacro MUI_DESCRIPTION_TEXT \${SEC_$packname} \"$packinfo\""
-      fi
+      case $op in
+        0)
+          packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
+          packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+          packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+          packinstdir=$packdesc_low-$packver
+          if test "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
+            flag_=
+          else
+            flag_=$flag
+          fi
+          echo "Section $flag_ \"$packdesc\" SEC_$packname"
+          echo "  SetOverwrite try"
+          get_nsi_additional_files $packname
+          echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
+          echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
+          echo "SectionEnd"
+          ;;
+        1)
+          packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | \
+            sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
+          echo "  !insertmacro MUI_DESCRIPTION_TEXT \${SEC_$packname} \"$packinfo\""
+          ;;
+        2)
+          sed -n -e 's/ *$//' \
+                 -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
+                 -e 's/^depends: *//p' \
+              "$found/packinfo/DESCRIPTION" | \
+            awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
+            sed -n -e 's/^octave.*$//' \
+                   -e "s/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency \${SEC_$packname} \${SEC_\1}/p"
+          ;;
+      esac
     fi
   done
 }
@@ -1650,13 +1675,19 @@ function create_nsi_package_file()
       echo "$packfiles" > octave_pkg_${packname}_files.nsi
       packfiles="!include \\\"octave_pkg_${packname}_files.nsi\\\""
     fi
+    packdeps=`get_nsi_dependencies $packname "$found/packinfo/DESCRIPTION"`
+    if test ! -z "$packdeps"; then
+      echo "$packdeps" > octave_pkg_${packname}_deps.nsi
+      packdeps="!include \\\"octave_pkg_${packname}_deps.nsi\\\""
+    fi
     sed -e "s/@PACKAGE_NAME@/$packname/" \
         -e "s/@PACKAGE_LONG_NAME@/$packdesc/" \
         -e "s/@PACKAGE_VERSION@/$packver/" \
         -e "s/@PACKAGE_INFO@/$packinfo/" \
         -e "s/@OCTAVE_VERSION@/$octave_version/" \
         -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
-	-e "s/@PACKAGE_FILES@/$packfiles/" \
+        -e "s/@PACKAGE_FILES@/$packfiles/" \
+        -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \
         -e "s/@SOFTWARE_ROOT@/$software_root/" octave_package.nsi.in > octave_pkg_$packname.nsi
     echo "done"
   fi
@@ -1694,33 +1725,50 @@ if $do_nsi; then
     echo "Software directory not found"
     exit -1
   fi
-  echo -n "creating octave_main.nsi... "
-  sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
-    -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
-    -e "s/@SOFTWARE_ROOT@/$software_root/" octave.nsi.in > octave_main.nsi
-  echo "done"
-  echo -n "creating octave_forge.nsi... "
-  echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
-  create_nsi_entries "$main_pkgs" "" >> octave_forge.nsi
-  echo "SectionGroupEnd" >> octave_forge.nsi
-  echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
-  create_nsi_entries "$extra_pkgs" "/o" >> octave_forge.nsi
-  echo "SectionGroupEnd" >> octave_forge.nsi
-  echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
-  create_nsi_entries "$lang_pkgs" "/o" >> octave_forge.nsi
-  echo "SectionGroupEnd" >> octave_forge.nsi
-  echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
-  create_nsi_entries "$nonfree_pkgs" "" >> octave_forge.nsi
-  echo "SectionGroupEnd" >> octave_forge.nsi
-  echo "done"
-  echo -n "creating octave_forge_desc.nsi... "
-  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
-  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" > octave_forge_desc.nsi
-  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" > octave_forge_desc.nsi
-  echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" > octave_forge_desc.nsi
-  create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
-  create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
-  echo "done"
+  if test ! -f "octave_main.nsi"; then
+    echo -n "creating octave_main.nsi... "
+    sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
+      -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
+      -e "s/@SOFTWARE_ROOT@/$software_root/" octave.nsi.in > octave_main.nsi
+    echo "done"
+  fi
+  if test ! -f "octave_forge.nsi"; then
+    echo -n "creating octave_forge.nsi... "
+    echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
+    create_nsi_entries "$main_pkgs" "" 0 >> octave_forge.nsi
+    echo "SectionGroupEnd" >> octave_forge.nsi
+    echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
+    create_nsi_entries "$extra_pkgs" "/o" 0 >> octave_forge.nsi
+    echo "SectionGroupEnd" >> octave_forge.nsi
+    echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
+    create_nsi_entries "$lang_pkgs" "/o" 0 >> octave_forge.nsi
+    echo "SectionGroupEnd" >> octave_forge.nsi
+    echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
+    create_nsi_entries "$nonfree_pkgs" "" 0 >> octave_forge.nsi
+    echo "SectionGroupEnd" >> octave_forge.nsi
+    echo "done"
+  fi
+  if test ! -f "octave_forge_deps.nsi"; then
+    echo -n "creating octave_forge_deps.nsi... "
+    echo "# Dependency checking" > octave_forge_deps.nsi
+    create_nsi_entries "$main_pkgs" "" 2 >> octave_forge_deps.nsi
+    create_nsi_entries "$extra_pkgs" "" 2 >> octave_forge_deps.nsi
+    create_nsi_entries "$lang_pkgs" "" 2 >> octave_forge_deps.nsi
+    create_nsi_entries "$nonfree_pkgs" "" 2 >> octave_forge_deps.nsi
+    echo "done"
+  fi
+  if test ! -f "octave_forge_desc.nsi"; then
+    echo -n "creating octave_forge_desc.nsi... "
+    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
+    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" >> octave_forge_desc.nsi
+    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" >> octave_forge_desc.nsi
+    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" >> octave_forge_desc.nsi
+    create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
+    create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
+    create_nsi_entries "$lang_pkgs" "" 1 >> octave_forge_desc.nsi
+    create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
+    echo "done"
+  fi
   for pack in $isolated_packages; do
     create_nsi_package_file $pack
   done

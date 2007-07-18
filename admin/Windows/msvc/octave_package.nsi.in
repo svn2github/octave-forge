@@ -24,6 +24,7 @@
 !include "Sections.nsh"
 !include "WordFunc.nsh"
 !insertmacro WordReplace
+!insertmacro WordFind
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -40,6 +41,7 @@
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
+!define MUI_FINISHPAGE_TEXT "$(MUI_TEXT_FINISH_INFO_TEXT)\r\n\r\nThis package does not provide an uninstaller. To uninstall ${PRODUCT_NAME}-${PRODUCT_VERSION}, use the regular Octave package manager with the 'uninstall' command (see 'help pkg' for more information). It will also be removed if you uninstall Octave."
 !insertmacro MUI_PAGE_FINISH
 
 ; Language files
@@ -56,6 +58,7 @@ ShowUnInstDetails show
 XPStyle on
 
 Var IS_WIN2K
+Var OCTAVE_EXEC
 
 Section "${PACKAGE_LONG_NAME}" SEC_@PACKAGE_NAME@
   SetOverwrite try
@@ -63,7 +66,7 @@ Section "${PACKAGE_LONG_NAME}" SEC_@PACKAGE_NAME@
   SetOutPath "$INSTDIR\${PACKAGE_NAME}-${PACKAGE_VERSION}"
   File /r "${OCTAVE_ROOT}\share\octave\packages\${PACKAGE_NAME}-${PACKAGE_VERSION}\*"
   
-  ExecWait '"$INSTDIR\..\..\..\bin\octave.exe" -qf --eval "pkg rebuild ${PACKAGE_NAME}"'
+  ExecWait '"$OCTAVE_EXEC" -qf --eval "pkg rebuild ${PACKAGE_NAME}"'
 SectionEnd
 
 ; Section descriptions
@@ -71,18 +74,44 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_@PACKAGE_NAME@} "${PACKAGE_INFO}"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
+!macro MissingComponent compname
+  MessageBox MB_ICONSTOP|MB_OK "${PRODUCT_NAME}-${PRODUCT_VERSION} cannot be installed on this computer, because some required components$\r$\nare not present. Install the missing components and run this installer again.$\r$\n$\r$\nMissing components:  ${compname}"
+!macroend
+
+!macro CheckDependency packname packver op
+  Push "${packname}"
+  Push "${packver}"
+  Push "${op}"
+  Call CheckDependency
+  Exch $0
+  StrCmp $0 "0" 0 +6
+  StrCmp ${packver} "" 0 +3
+  !insertmacro MissingComponent "${packname}"
+  Goto +2
+  !insertmacro MissingComponent "${packname} (${op} ${packver})"
+  Abort
+  Pop $0
+!macroend
+
 Function .onInit
   ReadRegStr $INSTDIR ${PRODUCT_ROOT_KEY} "${PRODUCT_DIR_REGKEY}" Packages
   StrCmp $INSTDIR "" 0 octave_present
-  MessageBox MB_ICONSTOP|MB_OK "Octave ${OCTAVE_VERSION} not found on this system.$\r$\nThis package cannot be installed"
+  !insertmacro MissingComponent "Octave ${OCTAVE_VERSION}"
   Abort
 octave_present:
+  ReadRegStr $OCTAVE_EXEC ${PRODUCT_ROOT_KEY} "${PRODUCT_DIR_REGKEY}" ""
   Call DetectWinVer
   Call DetectAdmin
   Pop $0
   StrCmp $0 1 0 endadmin
   SetShellVarContext all
 endadmin:
+  @PACKAGE_DEPENDENCY@
+  IfFileExists "$INSTDIR\${PACKAGE_NAME}-*" 0 endinit
+  MessageBox MB_YESNOCANCEL|MB_ICONQUESTION "${PRODUCT_NAME} is already installed on this computer. The existing version must be uninstalled$\r$\nbefore running this installer. Do you want to remove the existing version?" IDYES +2 IDNO endinit
+  Abort
+  ExecWait '"$OCTAVE_EXEC" -qf --eval "pkg uninstall ${PACKAGE_NAME}"'
+endinit:
 FunctionEnd
 
 Function DetectAdmin
@@ -169,4 +198,82 @@ is_error:
 done:
   Pop $1
   Pop $0
+FunctionEnd
+
+Function CompareVersion
+  Exch $1
+  Exch
+  Exch $0
+  Push $2
+  Push $3
+  ${WordFind} "$0" "." "+1" $2
+  ${WordFind} "$1" "." "+1" $3
+  IntCmp $2 $3 0 result_1 result1
+  ${WordFind} "$0" "." "+2" $2
+  ${WordFind} "$1" "." "+2" $3
+  IntCmp $2 $3 0 result_1 result1
+  ${WordFind} "$0" "." "+3" $2
+  ${WordFind} "$1" "." "+3" $3
+  IntCmp $2 $3 result0 result_1 result1
+result_1:
+  StrCpy $1 -1
+  Goto compare_end
+result0:
+  StrCpy $1 0
+  Goto compare_end
+result1:
+  StrCpy $1 1
+compare_end:
+  Pop $3
+  Pop $2
+  Pop $0
+  Exch $1
+FunctionEnd
+
+Function CheckDependency
+  Exch $R0
+  Exch
+  Exch $1
+  Exch
+  Exch 2
+  Exch $0
+  Push $2
+  Push $3
+  FindFirst $2 $3 "$INSTDIR\$0-*"
+  StrCmp $3 "" dep_not_ok
+  StrCmp $1 "" dep_ok
+  ${WordFind} "$3" "-" "-1" $3
+  Push $3
+  Push $1
+  Call CompareVersion
+  Pop $3
+  StrCmp $R0 "<" cmp_lt
+  StrCmp $R0 "<=" cmp_le
+  StrCmp $R0 ">" cmp_gt
+  StrCmp $R0 ">=" cmp_ge
+  StrCmp $R0 "==" cmp_eq
+  Goto dep_not_ok
+cmp_lt:
+  IntCmp $3 0 dep_not_ok dep_ok dep_not_ok
+cmp_le:
+  IntCmp $3 0 dep_ok dep_ok dep_not_ok
+cmp_gt:
+  IntCmp $3 0 dep_not_ok dep_not_ok dep_ok
+cmp_ge:
+  IntCmp $3 0 dep_ok dep_not_ok dep_ok
+cmp_eq:
+  IntCmp $3 0 dep_ok dep_not_ok dep_not_ok
+dep_not_ok:
+  StrCpy $1 0
+  Goto done
+dep_ok:
+  StrCpy $1 1
+done:
+  FindClose $2
+  Pop $3
+  Pop $2
+  Pop $0
+  Exch $1
+  Exch
+  Pop $R0
 FunctionEnd

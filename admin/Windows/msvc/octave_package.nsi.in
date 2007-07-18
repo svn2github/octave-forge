@@ -37,7 +37,10 @@
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "Click Next to continue."
 !define MUI_LICENSEPAGE_BUTTON "Next >"
 !insertmacro MUI_PAGE_LICENSE "${VCLIBS_ROOT}\license\COPYING.GPL"
+; Components page
 !insertmacro MUI_PAGE_COMPONENTS
+; Autoload page
+Page custom Autoload AutoloadEnd
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
@@ -59,13 +62,18 @@ XPStyle on
 
 Var IS_WIN2K
 Var OCTAVE_EXEC
+Var IS_AUTOLOAD
 
 Section "${PACKAGE_LONG_NAME}" SEC_@PACKAGE_NAME@
   SetOverwrite try
 @PACKAGE_FILES@
-  SetOutPath "$INSTDIR\${PACKAGE_NAME}-${PACKAGE_VERSION}"
-  File /r "${OCTAVE_ROOT}\share\octave\packages\${PACKAGE_NAME}-${PACKAGE_VERSION}\*"
-  
+  SetOutPath "$INSTDIR\share\octave\packages\${PACKAGE_NAME}-${PACKAGE_VERSION}"
+  File /r /x ".autoload" "${OCTAVE_ROOT}\share\octave\packages\${PACKAGE_NAME}-${PACKAGE_VERSION}\*"
+  StrCmp $IS_AUTOLOAD 1 0 rebuild
+  FileOpen $0 "$INSTDIR\share\octave\packages\${PACKAGE_NAME}-${PACKAGE_VERSION}\packinfo\.autoload" w
+  FileWrite $0 " "
+  FileClose $0
+rebuild:
   ExecWait '"$OCTAVE_EXEC" -qf --eval "pkg rebuild ${PACKAGE_NAME}"'
 SectionEnd
 
@@ -94,7 +102,7 @@ SectionEnd
 !macroend
 
 Function .onInit
-  ReadRegStr $INSTDIR ${PRODUCT_ROOT_KEY} "${PRODUCT_DIR_REGKEY}" Packages
+  ReadRegStr $INSTDIR ${PRODUCT_ROOT_KEY} "${PRODUCT_DIR_REGKEY}" Path
   StrCmp $INSTDIR "" 0 octave_present
   !insertmacro MissingComponent "Octave ${OCTAVE_VERSION}"
   Abort
@@ -107,11 +115,22 @@ octave_present:
   SetShellVarContext all
 endadmin:
   @PACKAGE_DEPENDENCY@
-  IfFileExists "$INSTDIR\${PACKAGE_NAME}-*" 0 endinit
+  IfFileExists "$INSTDIR\share\octave\packages\${PACKAGE_NAME}-*" 0 endinit
   MessageBox MB_YESNOCANCEL|MB_ICONQUESTION "${PRODUCT_NAME} is already installed on this computer. The existing version must be uninstalled$\r$\nbefore running this installer. Do you want to remove the existing version?" IDYES +2 IDNO endinit
   Abort
   ExecWait '"$OCTAVE_EXEC" -qf --eval "pkg uninstall ${PACKAGE_NAME}"'
 endinit:
+  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "forge_autoload.ini"
+  StrCpy $IS_AUTOLOAD @PACKAGE_AUTOLOAD@
+FunctionEnd
+
+Function Autoload
+  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "forge_autoload.ini"
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "forge_autoload.ini" "Field 1" "State" $IS_AUTOLOAD
+FunctionEnd
+
+Function AutoLoadEnd
+  !insertmacro MUI_INSTALLOPTIONS_READ $IS_AUTOLOAD "forge_autoload.ini" "Field 1" "State"
 FunctionEnd
 
 Function DetectAdmin
@@ -239,7 +258,7 @@ Function CheckDependency
   Exch $0
   Push $2
   Push $3
-  FindFirst $2 $3 "$INSTDIR\$0-*"
+  FindFirst $2 $3 "$INSTDIR\share\octave\packages\$0-*"
   StrCmp $3 "" dep_not_ok
   StrCmp $1 "" dep_ok
   ${WordFind} "$3" "-" "-1" $3

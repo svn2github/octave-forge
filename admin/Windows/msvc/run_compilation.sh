@@ -22,10 +22,12 @@ machine_name=`uname -n`
 if test "$machine_name" = "MACROCK"; then
   INSTALL_DIR=/c/Temp/vclibs_tmp
   CYGWIN_DIR=/c/Software/cygwin
+  NSI_DIR=/c/Software/NSIS
 else
   INSTALL_DIR=/d/Temp/vclibs_tmp
   CYGWIN_DIR=/d/Software/cygwin
   WGET_FLAGS="-e http_proxy=http://webproxy:8123 -e ftp_proxy=http://webproxy:8123"
+  NSI_DIR=/d/Software/NSIS
 fi
 DOWNLOAD_DIR=downloaded_packages
 DOATLAS=false
@@ -39,6 +41,7 @@ VC octplot"
 octave_version=
 of_version=
 do_nsi=false
+do_nsiclean=true
 
 ###################################################################################
 
@@ -79,8 +82,17 @@ while test $# -gt 0; do
     --forge=*)
       of_version=`echo $1 | sed -e 's/--forge=//'`
       ;;
-    --nsi)
+    --nsi | --nsi=*)
       do_nsi=true
+      nsiarg=`echo $1 | sed -e 's/--nsi=//'`
+      case $nsiarg in
+        keep)
+          do_nsiclean=false
+          ;;
+        clean)
+          do_nsiclean=true
+          ;;
+      esac
       ;;
     -*)
       echo "unknown flag: $1"
@@ -1552,7 +1564,7 @@ fi
 # NSI package generation #
 ##########################
 
-isolated_packages="fpl msh bim secs1d secs2d"
+isolated_packages="fpl msh bim secs1d secs2d vrml"
 
 function get_nsi_additional_files()
 {
@@ -1585,7 +1597,7 @@ function get_nsi_additional_files()
       echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
       ;;
-    secs2d)
+    msh)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
       echo "  File \"\${SOFTWARE_ROOT}\\Gmsh\\gmsh.exe\""
       echo "  SetOutPath \"\$INSTDIR\\license\""
@@ -1602,7 +1614,7 @@ function get_nsi_dependencies()
   descfile="$2"
   sed -n -e 's/ *$//' \
          -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
-         -e 's/^depends: //p' "$descfile" | \
+         -e 's/^depends: *//p' "$descfile" | \
     awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
       sed -n -e 's/^octave.*$//' \
              -e 's/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency "\1" "\4" "\3"/p'
@@ -1664,10 +1676,14 @@ function create_nsi_package_file()
   packname=$1
   found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
   if test ! -z "$found"; then
-    echo -n "creating installer for $packname... "
     packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
     packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
     packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+    if test -f "release-$octave_version/octave-$packname-$packver-setup.exe"; then
+      return 0
+    fi
+    echo -n "creating installer for $packname... "
+    mkdir -p "release-$octave_version"
     packinstdir=$packdesc_low-$packver
     packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
     packfiles=`get_nsi_additional_files $packname`
@@ -1680,6 +1696,11 @@ function create_nsi_package_file()
       echo "$packdeps" > octave_pkg_${packname}_deps.nsi
       packdeps="!include \\\"octave_pkg_${packname}_deps.nsi\\\""
     fi
+	if test -f "$found/packinfo/.autoload"; then
+      packautoload=1
+    else
+      packautoload=0
+    fi
     sed -e "s/@PACKAGE_NAME@/$packname/" \
         -e "s/@PACKAGE_LONG_NAME@/$packdesc/" \
         -e "s/@PACKAGE_VERSION@/$packver/" \
@@ -1688,8 +1709,20 @@ function create_nsi_package_file()
         -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
         -e "s/@PACKAGE_FILES@/$packfiles/" \
         -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \
+        -e "s/@PACKAGE_AUTOLOAD@/$packautoload/" \
         -e "s/@SOFTWARE_ROOT@/$software_root/" octave_package.nsi.in > octave_pkg_$packname.nsi
-    echo "done"
+    $NSI_DIR/makensis.exe octave_pkg_$packname.nsi >&5 2>&1
+    if $do_nsiclean; then
+      rm -f octave_pkg_$packname*.nsi
+    fi
+    if test ! -f "octave-$packname-$packver-setup.exe"; then
+      echo "failed"
+      return -1
+    else
+      mv -f "octave-$packname-$packver-setup.exe" "release-$octave_version"
+      echo "done"
+      return 0
+    fi
   fi
 }
 
@@ -1725,51 +1758,71 @@ if $do_nsi; then
     echo "Software directory not found"
     exit -1
   fi
-  if test ! -f "octave_main.nsi"; then
-    echo -n "creating octave_main.nsi... "
-    sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
-      -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
-      -e "s/@SOFTWARE_ROOT@/$software_root/" octave.nsi.in > octave_main.nsi
-    echo "done"
-  fi
-  if test ! -f "octave_forge.nsi"; then
-    echo -n "creating octave_forge.nsi... "
-    echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
-    create_nsi_entries "$main_pkgs" "" 0 >> octave_forge.nsi
-    echo "SectionGroupEnd" >> octave_forge.nsi
-    echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
-    create_nsi_entries "$extra_pkgs" "/o" 0 >> octave_forge.nsi
-    echo "SectionGroupEnd" >> octave_forge.nsi
-    echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
-    create_nsi_entries "$lang_pkgs" "/o" 0 >> octave_forge.nsi
-    echo "SectionGroupEnd" >> octave_forge.nsi
-    echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
-    create_nsi_entries "$nonfree_pkgs" "" 0 >> octave_forge.nsi
-    echo "SectionGroupEnd" >> octave_forge.nsi
-    echo "done"
-  fi
-  if test ! -f "octave_forge_deps.nsi"; then
-    echo -n "creating octave_forge_deps.nsi... "
-    echo "# Dependency checking" > octave_forge_deps.nsi
-    create_nsi_entries "$main_pkgs" "" 2 >> octave_forge_deps.nsi
-    create_nsi_entries "$extra_pkgs" "" 2 >> octave_forge_deps.nsi
-    create_nsi_entries "$lang_pkgs" "" 2 >> octave_forge_deps.nsi
-    create_nsi_entries "$nonfree_pkgs" "" 2 >> octave_forge_deps.nsi
-    echo "done"
-  fi
-  if test ! -f "octave_forge_desc.nsi"; then
-    echo -n "creating octave_forge_desc.nsi... "
-    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
-    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" >> octave_forge_desc.nsi
-    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" >> octave_forge_desc.nsi
-    echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" >> octave_forge_desc.nsi
-    create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
-    create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
-    create_nsi_entries "$lang_pkgs" "" 1 >> octave_forge_desc.nsi
-    create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
-    echo "done"
+  release_dir="release-$octave_version"
+  mkdir -p "$release_dir"
+  if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
+    if test ! -f "octave_main.nsi"; then
+      echo -n "creating octave_main.nsi... "
+      sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
+        -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
+        -e "s/@SOFTWARE_ROOT@/$software_root/" octave.nsi.in > octave_main.nsi
+      echo "done"
+    fi
+    if test ! -f "octave_forge.nsi"; then
+      echo -n "creating octave_forge.nsi... "
+      echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
+      create_nsi_entries "$main_pkgs" "" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
+      create_nsi_entries "$extra_pkgs" "/o" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
+      create_nsi_entries "$lang_pkgs" "/o" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
+      create_nsi_entries "$nonfree_pkgs" "" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "done"
+    fi
+    if test ! -f "octave_forge_deps.nsi"; then
+      echo -n "creating octave_forge_deps.nsi... "
+      echo "# Dependency checking" > octave_forge_deps.nsi
+      create_nsi_entries "$main_pkgs" "" 2 >> octave_forge_deps.nsi
+      create_nsi_entries "$extra_pkgs" "" 2 >> octave_forge_deps.nsi
+      create_nsi_entries "$lang_pkgs" "" 2 >> octave_forge_deps.nsi
+      create_nsi_entries "$nonfree_pkgs" "" 2 >> octave_forge_deps.nsi
+      echo "done"
+    fi
+    if test ! -f "octave_forge_desc.nsi"; then
+      echo -n "creating octave_forge_desc.nsi... "
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" >> octave_forge_desc.nsi
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" >> octave_forge_desc.nsi
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" >> octave_forge_desc.nsi
+      create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
+      create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
+      create_nsi_entries "$lang_pkgs" "" 1 >> octave_forge_desc.nsi
+      create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
+      echo "done"
+    fi
+    if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
+      echo -n "creating installer for octave... "
+      $NSI_DIR/makensis.exe octave_main.nsi
+      if test ! -f "octave-$octave_version-setup.exe"; then
+        echo "failed"
+        exit -1
+      else
+        mv -f "octave-$octave_version-setup.exe" "$release_dir"
+        echo "done"
+      fi
+    fi
+    if $do_nsiclean; then
+      rm -f octave_main.nsi octave_forge*.nsi
+    fi
   fi
   for pack in $isolated_packages; do
-    create_nsi_package_file $pack
+    if ! create_nsi_package_file $pack; then
+      exit -1
+    fi
   done
 fi

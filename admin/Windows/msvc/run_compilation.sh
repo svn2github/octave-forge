@@ -42,8 +42,8 @@ octave_version=
 of_version=
 do_nsi=false
 do_nsiclean=true
-download_root="http://downloads.sourceforge.net/octave/@@?big_mirror=0"
-#download_root="http://www.geocities.com/sw286000/@@.zip"
+#download_root="http://downloads.sourceforge.net/octave/@@?download"
+download_root="http://www.dbateman.org/octave/hidden/@@"
 
 ###################################################################################
 
@@ -1495,7 +1495,7 @@ function install_forge_packages
 }
 
 extra_pkgs="fpl msh bim civil-engineering integration java jhandles mapping nan secs1d secs2d symband triangular tsa windows"
-main_pkgs="signal audio combinatorics communications control econometrics fixed general geometry gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix splines statistics strings struct symbolic time vrml"
+main_pkgs="signal audio combinatorics communications control econometrics fixed general geometry gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix splines statistics strings struct symbolic time"
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
 
@@ -1566,7 +1566,8 @@ fi
 # NSI package generation #
 ##########################
 
-isolated_packages="fpl msh bim civil-engineering integration mapping nan secs1d secs2d symband triangular tsa pt_br vrml nnet"
+isolated_packages="fpl msh bim civil-engineering integration mapping nan secs1d secs2d symband triangular tsa pt_br nnet"
+isolated_sizes=
 
 function get_nsi_additional_files()
 {
@@ -1622,6 +1623,17 @@ function get_nsi_dependencies()
              -e 's/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency "\1" "\4" "\3"/p'
 }
 
+function is_isolated
+{
+  pack=$1
+  for ipack in $isolated_packages; do
+    if test "$pack" = "$ipack"; then
+      return 0
+    fi
+  done
+  return -1
+}
+
 function create_nsi_entries()
 {
   pkgs=`for d in $1; do echo $d; done | sort - | sed -e ':a;N;$!ba;s/\n/\ /g'`
@@ -1631,7 +1643,7 @@ function create_nsi_entries()
     if test "$packname" = "jhandles"; then
       continue
     fi
-    if `echo $isolated_packages | grep -e $packname > /dev/null`; then
+    if is_isolated $packname; then
       isolated=true
     else
       isolated=false
@@ -1653,14 +1665,25 @@ function create_nsi_entries()
           fi
           if $isolated; then
             packfile="octave-$octave_version-$packname-$packver-setup.exe"
+            packsize=`echo "$isolated_sizes" | sed -n -e "s/.*\\$$packname:\\([0-9]\\+\\)\\$.*/\\1/p"`
             echo "Section $flag_ \"$packdesc *\" SEC_$packname"
+            echo "  AddSize $packsize"
+            echo "  ClearErrors"
+            echo "  IfFileExists \"\$EXEDIR\\$packfile\" local inet"
+            echo "local:"
+            echo "  ExecWait '\"\$EXEDIR\\$packfile\" /S /D=\$INSTDIR'"
+            echo "  Goto done"
+            echo "inet:"
             echo "  InitPluginsDir"
             echo "  InetLoad::load \"`echo $download_root | sed -e "s/@@/$packfile/"`\" \$PLUGINSDIR\\$packfile"
-	    echo "  Pop \$0"
-	    echo "  StrCmp \$0 \"OK\" +3 0"
-	    echo "  MessageBox MB_ICONSTOP|MB_OK \"Download error: \$0\""
-	    echo "  Abort"
+            echo "  Pop \$0"
+            echo "  StrCmp \$0 \"OK\" +3 0"
+            echo "  SetErrors"
+            echo "  Goto done"
             echo "  ExecWait '\"\$PLUGINSDIR\\$packfile\" /S /D=\$INSTDIR'"
+            echo "done:"
+            echo "  IfErrors 0 +2"
+            echo "  MessageBox MB_ICONSTOP|MB_OK \"Installation of package $packdesc failed\""
           else
             echo "Section $flag_ \"$packdesc\" SEC_$packname"
             echo "  SetOverwrite try"
@@ -1729,7 +1752,10 @@ function create_nsi_package_file()
         -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \
         -e "s/@PACKAGE_AUTOLOAD@/$packautoload/" \
         -e "s/@SOFTWARE_ROOT@/$software_root/" octave_package.nsi.in > octave_pkg_$packname.nsi
-    $NSI_DIR/makensis.exe octave_pkg_$packname.nsi >&5 2>&1
+    $NSI_DIR/makensis.exe octave_pkg_$packname.nsi | tee nsi.tmp >&5 2>&1
+	packsize=`sed -n -e 's,^Install data: *[0-9]\+ / \([0-9]\+\) bytes$,\1,p' nsi.tmp`
+	let "packsize = packsize / 1024"
+	rm -f nsi.tmp
     if $do_nsiclean; then
       rm -f octave_pkg_$packname*.nsi
     fi
@@ -1738,6 +1764,11 @@ function create_nsi_package_file()
       return -1
     else
       mv -f "octave-$octave_version-$packname-$packver-setup.exe" "release-$octave_version"
+	  if test -z "$isolated_sizes"; then
+        isolated_sizes="\$$packname:$packsize\$"
+      else
+        isolated_sizes="$isolated_sizes$packname:$packsize\$"
+      fi
       echo "done"
       return 0
     fi
@@ -1778,6 +1809,11 @@ if $do_nsi; then
   fi
   release_dir="release-$octave_version"
   mkdir -p "$release_dir"
+  for pack in $isolated_packages; do
+    if ! create_nsi_package_file $pack; then
+      exit -1
+    fi
+  done
   if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
     if test ! -f "octave_main.nsi"; then
       echo -n "creating octave_main.nsi... "
@@ -1838,9 +1874,4 @@ if $do_nsi; then
       rm -f octave_main.nsi octave_forge*.nsi
     fi
   fi
-  for pack in $isolated_packages; do
-    if ! create_nsi_package_file $pack; then
-      exit -1
-    fi
-  done
 fi

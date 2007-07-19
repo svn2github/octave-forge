@@ -1,0 +1,19 @@
+Package: glib
+Version: 2.12.9
+Home page: http://www.gtk.org/
+Download: ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.9.tar.gz
+License: LGPL
+
+Compilation: from Windows command shell
+
+Requirement: libiconv, gettext (libintl)
+
+
+1) Apply the patch
+
+2) nmake -f makefile.msc
+
+3) edit win32.msc set PREFIX variable to
+   the installation directory
+
+4) nmake -f makefile.msc install

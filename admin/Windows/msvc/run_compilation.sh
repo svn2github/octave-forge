@@ -861,20 +861,19 @@ fi
 #########
 
 if check_package cairo; then
-  download_file cairo-1.2.6.tar.gz http://cairographics.org/releases/cairo-1.2.6.tar.gz
+  download_file cairo-1.4.10.tar.gz http://cairographics.org/releases/cairo-1.4.10.tar.gz
   echo -n "decompressing cairo... "
-  (cd "$DOWNLOAD_DIR" && tar xfz cairo-1.2.6.tar.gz)
-  cp libs/cairo-1.2.6.diff "$DOWNLOAD_DIR/cairo-1.2.6"
+  (cd "$DOWNLOAD_DIR" && if ! tar xfz cairo-1.4.10.tar.gz; then tar xf cairo-1.4.10.tar.gz; fi)
+  cp libs/cairo-1.4.10.diff "$DOWNLOAD_DIR/cairo-1.4.10"
   echo "done"
   echo "compiling cairo... "
-  (cd "$DOWNLOAD_DIR/cairo-1.2.6" &&
-    patch -p1 < cairo-1.2.6.diff &&
-    make -f Makefile.win32 &&
-    cp src/libcairo-2.dll "$tbindir" &&
-    cp src/cairo.lib "$tlibdir" &&
-    mkdir "$tincludedir/cairo" &&
-    cp src/cairo.h src/cairo-features.h src/cairo-pdf.h src/cairo-ps.h src/cairo-svg.h src/cairo-win32.h "$tincludedir/cairo") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/cairo-1.2.6"
+  (cd "$DOWNLOAD_DIR/cairo-1.4.10" &&
+    patch -p1 < cairo-1.4.10.diff &&
+    nmake -f Makefile.win32 &&
+    sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" src/Makefile.win32 > ttt &&
+    mv ttt src/Makefile.win32 &&
+	nmake -f Makefile.win32 install-win32) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/cairo-1.4.10"
   if test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
     exit -1

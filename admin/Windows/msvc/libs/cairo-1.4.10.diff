@@ -1,0 +1,352 @@
+diff -urN cairo-1.4.10/Makefile.win32 cairo-1.4.10-new/Makefile.win32
+--- cairo-1.4.10/Makefile.win32	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.4.10-new/Makefile.win32	2007-07-20 13:22:02.112223300 +0200
+@@ -0,0 +1,51 @@
++#
++# Win32 makefile
++#
++
++CAIRO_VERSION = 1.4.10
++CAIRO_VERSION_MAJOR = 1
++CAIRO_VERSION_MINOR = 4
++CAIRO_VERSION_MICRO = 10
++
++SUBDIRS = pixman\src src
++
++TEST_SUBDIRS = test
++
++all: cairo
++	
++cairo: config.h src/cairo-features.h
++	@for %d in ($(SUBDIRS)) do @pushd %d && $(MAKE) -f Makefile.win32 && popd
++
++test: cairo
++	@list='$(TEST_SUBDIRS)'; for f in $$list ; do \
++		echo making all in $$f... ; \
++		(cd $$f ; make -f Makefile.win32) || exit 1 ; \
++		done
++	@(cd test ; make -f Makefile.win32 test)
++
++html:
++	@(cd test ; make -f Makefile.win32 html)
++
++
++clean:
++	@for %d in ($(SUBDIRS)) do @pushd %d && echo cleaning in %d && $(MAKE) -f Makefile.win32 clean && popd
++	-del /q config.h
++
++install-win32:
++	cd src
++	$(MAKE) -f Makefile.win32 install
++	cd ..
++
++config.h: Makefile.win32
++	@echo creating config.h
++	@echo #define HAVE_SIGNAL_H 1 > $@
++	@echo #define HAVE_STRING_H 1 >> $@
++	@echo #define HAVE_SYS_TYPES_H 1 >> $@
++	@echo #define HAVE_SYS_STAT_H 1 >> $@
++	@echo #define HAVE_WINDOWS_H 1 >> $@
++	@echo #define PACKAGE "Cairo" >> $@
++	@echo #define PACKAGE_NAME "cairo" >> $@
++	@echo #define PACKAGE_VERSION "1.4.10" >> $@
++	@echo #define PACKAGE_BUGREPORT "" >> $@
++	@echo #define PACKAGE_STRING "cairo-1.4.10" >> $@
++	@echo #define VERSION 1.4.10 >> $@
+diff -urN cairo-1.4.10/pixman/src/Makefile.win32 cairo-1.4.10-new/pixman/src/Makefile.win32
+--- cairo-1.4.10/pixman/src/Makefile.win32	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.4.10-new/pixman/src/Makefile.win32	2007-07-20 13:06:26.463967600 +0200
+@@ -0,0 +1,49 @@
++CFLAGS = -nologo -MD -O2
++USE_MMX = 1
++
++!ifdef USE_MMX
++libpixman_mmx_la_SOURCES = \
++	fbmmx.c		\
++	fbmmx.h
++!endif
++
++libpixman_la_SOURCES = \
++	pixman.h \
++	pixmanint.h \
++	pixman-remap.h \
++	pixman-xserver-compat.h \
++	pixregion.c \
++	pixregionint.h \
++	fbpict.h \
++	fbpict.c \
++	icblt.c \
++	icbltone.c \
++	iccolor.c \
++	icformat.c \
++	icimage.c \
++	icimage.h \
++	icpixels.c \
++	icrect.c \
++	icrop.h \
++	icstipple.c \
++	ictrap.c \
++	ictransform.c \
++	ictri.c \
++	icutil.c \
++	fbedge.c \
++	fbedgeimp.h \
++	fbtrap.c \
++	fbcompose.c \
++	renderedge.c \
++	renderedge.h \
++	$(libpixman_mmx_la_SOURCES)
++
++libpixman_la_OBJECTS = $(libpixman_la_SOURCES:.c=.obj)
++
++all: pixman.lib
++
++pixman.lib: $(libpixman_la_OBJECTS)
++	lib -out:$@ *.obj
++
++clean:
++	-del /q *.obj pixman.lib
+diff -urN cairo-1.4.10/src/Makefile.win32 cairo-1.4.10-new/src/Makefile.win32
+--- cairo-1.4.10/src/Makefile.win32	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.4.10-new/src/Makefile.win32	2007-07-20 13:19:35.128792600 +0200
+@@ -0,0 +1,164 @@
++PREFIX = D:\Software\VCLibs
++CFLAGS = -nologo -MD -O2 -DHAVE_CONFIG_H -D_CRT_SECURE_NO_DEPRECATE -DCAIRO_BUILD -I. -I.. -I../pixman/src
++LIBS = png.lib zlib.lib
++
++font_subset_sources =				\
++	cairo-cff-subset.c			\
++	cairo-truetype-subset.c			\
++	cairo-type1-fallback.c			\
++	cairo-type1-private.h			\
++	cairo-truetype-subset-private.h		\
++	cairo-scaled-font-subsets.c		\
++	cairo-scaled-font-subsets-private.h
++
++libcairo_ps_headers = cairo-ps.h
++libcairo_ps_sources = cairo-ps-surface.c cairo-ps-surface-private.h
++libcairo_font_subset_sources =	$(font_subset_sources)
++
++libcairo_pdf_headers = cairo-pdf.h
++libcairo_pdf_sources = cairo-pdf-surface.c cairo-pdf-surface-private.h \
++		       cairo-deflate-stream.c
++libcairo_font_subset_sources =	$(font_subset_sources)
++
++libcairo_png_sources = cairo-png.c
++
++libcairo_svg_headers = cairo-svg.h
++libcairo_svg_sources = cairo-svg-surface.c cairo-svg-surface-private.h
++libcairo_font_subset_sources =	$(font_subset_sources)
++
++libcairo_win32_headers = cairo-win32.h
++libcairo_win32_sources = cairo-win32-surface.c cairo-win32-private.h cairo-win32-font.c
++
++cairo_headers =				\
++	cairo.h				\
++	$(libcairo_atsui_headers)	\
++	$(libcairo_ft_headers)		\
++	$(libcairo_glitz_headers)	\
++	$(libcairo_pdf_headers)		\
++	$(libcairo_svg_headers)		\
++	$(libcairo_ps_headers)		\
++	$(libcairo_quartz_headers)	\
++	$(libcairo_win32_headers)	\
++	$(libcairo_os2_headers)		\
++	$(libcairo_beos_headers)	\
++	$(libcairo_xcb_headers)		\
++	$(libcairo_xlib_headers)	\
++	$(libcairo_xlib_xrender_headers)	\
++	$(libcairo_directfb_headers)
++
++cairoincludedir = $(includedir)/cairo
++cairoinclude_HEADERS =			\
++	cairo-deprecated.h		\
++	$(cairo_headers)
++
++nodist_cairoinclude_HEADERS =		\
++	cairo-features.h
++
++lib_LTLIBRARIES = libcairo.la
++
++libcairo_la_SOURCES =				\
++	cairo.c					\
++	cairo.h					\
++	cairo-private.h				\
++	cairo-arc.c				\
++	cairo-arc-private.h			\
++	cairo-array.c				\
++	cairo-base85-stream.c			\
++	cairo-bentley-ottmann.c			\
++	cairo-cache.c				\
++	cairo-cache-private.h			\
++	cairo-clip.c				\
++	cairo-clip-private.h			\
++	cairo-color.c				\
++	cairo-debug.c				\
++	cairo-fixed.c				\
++	cairo-font-face.c			\
++	cairo-font-options.c			\
++	cairo-freelist.c			\
++	cairo-freelist-private.h		\
++	cairo-gstate.c				\
++	cairo-gstate-private.h			\
++	cairo-hash.c				\
++	cairo-hash-private.h			\
++	cairo-hull.c				\
++	cairo-image-surface.c			\
++	cairo-lzw.c				\
++	cairo-matrix.c				\
++	cairo-mutex.c				\
++	cairo-mutex-list-private.h		\
++	cairo-mutex-private.h			\
++	cairo-mutex-type-private.h		\
++	cairo-operator.c			\
++	cairo-path.c				\
++	cairo-path-private.h			\
++	cairo-path-bounds.c			\
++	cairo-path-fill.c			\
++	cairo-path-fixed.c			\
++	cairo-path-fixed-private.h		\
++	cairo-path-stroke.c			\
++	cairo-pen.c				\
++	cairo-polygon.c				\
++	cairo-rectangle.c			\
++	cairo-region.c				\
++	cairo-scaled-font.c			\
++	cairo-scaled-font-private.h		\
++	cairo-skiplist.c			\
++	cairo-skiplist-private.h		\
++	cairo-slope.c				\
++	cairo-spline.c				\
++	cairo-stroke-style.c			\
++	cairo-surface.c				\
++	cairo-surface-fallback.c		\
++	cairo-surface-fallback-private.h	\
++	cairo-surface-private.h			\
++	cairo-traps.c				\
++	cairo-types-private.h			\
++	cairo-pattern.c				\
++	cairo-unicode.c				\
++	cairo-output-stream.c			\
++	cairo-output-stream-private.h		\
++	cairo-wideint.c				\
++	cairo-wideint-private.h			\
++	cairo-meta-surface.c			\
++	cairo-meta-surface-private.h		\
++	cairo-paginated-private.h		\
++	cairo-paginated-surface.c		\
++	cairo-paginated-surface-private.h	\
++	cairo-analysis-surface.c		\
++	cairo-analysis-surface-private.h	\
++	$(libcairo_atsui_sources)		\
++	$(libcairo_ft_sources)			\
++	$(libcairo_ps_sources)			\
++	$(libcairo_pdf_sources)			\
++	$(libcairo_png_sources)			\
++	$(libcairo_svg_sources)			\
++	$(libcairo_test_sources)		\
++	$(libcairo_font_subset_sources)		\
++	$(libcairo_xlib_sources)		\
++	$(libcairo_xcb_sources)			\
++	$(libcairo_quartz_sources)		\
++	$(libcairo_glitz_sources)		\
++	$(libcairo_win32_sources)		\
++	$(libcairo_os2_sources)			\
++	$(libcairo_directfb_sources)		\
++	cairoint.h
++
++libcairo_la_OBJECTS = $(libcairo_la_SOURCES:.c=.obj)
++
++all: libcairo-2.dll
++
++libcairo-2.dll: $(libcairo_la_OBJECTS) cairo.res
++	cl /LD /Fe$@ *.obj cairo.res ../pixman/src/pixman.lib /link /implib:cairo.lib gdi32.lib user32.lib kernel32.lib $(LIBS)
++	mt -outputresource:$@ -manifest $@.manifest
++
++clean:
++	-del /q *.obj *.manifest *.lib *.dll *.exp
++	-del /q cairo.res
++
++install:
++	-mkdir $(PREFIX)\bin
++	copy /y libcairo-2.dll $(PREFIX)\bin
++	-mkdir $(PREFIX)\lib
++	copy /y cairo.lib $(PREFIX)\lib
++	-mkdir $(PREFIX)\include\cairo
++	for %h in ($(cairoinclude_HEADERS) $(nodist_cairoinclude_HEADERS)) do copy /y %h $(PREFIX)\include\cairo
+diff -urN cairo-1.4.10/src/cairo-features.h cairo-1.4.10-new/src/cairo-features.h
+--- cairo-1.4.10/src/cairo-features.h	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.4.10-new/src/cairo-features.h	2007-07-20 11:56:12.861161800 +0200
+@@ -0,0 +1,37 @@
++/* Generated by configure.  Do not edit */
++#ifndef CAIRO_FEATURES_H
++#define CAIRO_FEATURES_H
++
++#ifdef  __cplusplus
++# define CAIRO_BEGIN_DECLS  extern "C" {
++# define CAIRO_END_DECLS    }
++#else
++# define CAIRO_BEGIN_DECLS
++# define CAIRO_END_DECLS
++#endif
++
++#ifndef cairo_public
++# ifdef CAIRO_BUILD
++#  define cairo_public __declspec(dllexport)
++# else
++#  define cairo_public __declspec(dllimport)
++# endif
++#endif
++
++#define CAIRO_VERSION_MAJOR 1
++#define CAIRO_VERSION_MINOR 4
++#define CAIRO_VERSION_MICRO 10
++
++#define CAIRO_VERSION_STRING "1.4.10"
++
++#define CAIRO_HAS_SVG_SURFACE 1
++#define CAIRO_HAS_PDF_SURFACE 1
++#define CAIRO_HAS_PS_SURFACE 1
++/*#define CAIRO_HAS_FT_FONT 1*/
++#define CAIRO_HAS_PNG_FUNCTIONS 1
++/*#define CAIRO_HAS_XLIB_XRENDER_SURFACE 1*/
++/*#define CAIRO_HAS_XLIB_SURFACE 1*/
++#define CAIRO_HAS_WIN32_FONT 1
++#define CAIRO_HAS_WIN32_SURFACE 1
++
++#endif
+diff -urN cairo-1.4.10/src/cairo.rc cairo-1.4.10-new/src/cairo.rc
+--- cairo-1.4.10/src/cairo.rc	1970-01-01 01:00:00.000000000 +0100
++++ cairo-1.4.10-new/src/cairo.rc	2007-07-20 13:13:57.654269900 +0200
+@@ -0,0 +1,31 @@
++#include <windows.h>
++
++VS_VERSION_INFO VERSIONINFO
++FILEVERSION	1, 4, 10, 0
++PRODUCTVERSION	1, 4, 10, 0
++FILEFLAGSMASK	0x3fL
++FILEFLAGS 0
++FILEOS VOS_NT_WINDOWS32
++FILETYPE VFT_APP
++FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++	BLOCK	"VarFileInfo"
++	BEGIN
++		VALUE	"Translation",	0x409,	1200
++	END
++	BLOCK	"StringFileInfo"
++	BEGIN
++		BLOCK "040904b0"
++		BEGIN
++			VALUE	"CompanyName",	"Freedesktop.org <www.freedesktop.org>\0"
++			VALUE	"FileDescription",	"Cairo: 2D vector graphics library\0"
++			VALUE	"FileVersion",	"1.4.10\0"
++			VALUE	"InternalName",	"Cairo\0"
++			VALUE	"LegalCopyright",	"Copyright © 2006 Freedesktop.org\0"
++			VALUE	"OriginalFilename",	"libcairo-2.dll\0"
++			VALUE	"ProductName",	"Cairo\0"
++			VALUE	"ProductVersion",	"1.4.10\0"
++		END
++	END
++END
++

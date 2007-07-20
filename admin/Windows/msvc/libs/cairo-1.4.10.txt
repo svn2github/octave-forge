@@ -1,0 +1,17 @@
+Package: cairo
+Version: 1.4.10
+Home page: http://cairographics.org/
+Download: http://cairographics.org/releases/cairo-1.4.10.tar.gz
+License: LGPL
+
+Compilation: from Windows command shell with VS environment
+
+Requirement: libpng, zlib
+
+1) Apply the patch
+
+2) nmake -f Makefile.win32
+
+3) edit src/Makefile.win32 and adapt PREFIX
+
+4) nmake -f Makefile.win32 install-win32

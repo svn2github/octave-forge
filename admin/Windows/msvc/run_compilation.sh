@@ -1386,6 +1386,8 @@ if check_package octave; then
     done &&
     cp COPYING "$tlicdir/COPYING.GPL" &&
 	cp NEWS THANKS README "$octave_prefix/doc" &&
+	mkdir -p "$octave_prefix/info" &&
+	cp doc/interpreter/octave.info* "$octave_prefix/info" &&
     make -f octMakefile mkoctfile.exe octave-config.exe &&
     rm -f "$octave_prefix/bin/mkoctfile" "$octave_prefix/bin/mkoctfile-$octave_version" &&
     rm -f "$octave_prefix/bin/octave-config" "$octave_prefix/bin/octave-config-$octave_version" &&

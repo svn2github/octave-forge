@@ -137,6 +137,9 @@ Section "Core" SEC_CORE
   SetOutPath "$INSTDIR\license"
   File "${VCLIBS_ROOT}\license\COPYING.GPL"
   File "${VCLIBS_ROOT}\license\COPYING.HDF5"
+  ; info files
+  SetOutPath "$INSTDIR\info"
+  File "${OCTAVE_ROOT}\info\*.*"
   ; other files
   SetOutPath "$INSTDIR\doc"
   File "${OCTAVE_ROOT}\doc\README"

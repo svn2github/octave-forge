@@ -883,59 +883,59 @@ if check_package cairo; then
   fi
 fi
 
-##############
-# glib/pango #
-##############
+########
+# glib #
+########
 
-if check_package glib || check_package pango; then
-  download_file glib-2.12.6.tar.gz ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.6.tar.gz
+if check_package glib; then
+  download_file glib-2.12.9.tar.gz ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.9.tar.gz
   echo -n "decompressing glib... "
-  (cd "$DOWNLOAD_DIR" && tar xfz glib-2.12.6.tar.gz)
-  cp libs/glib-2.12.6.diff "$DOWNLOAD_DIR/glib-2.12.6"
+  (cd "$DOWNLOAD_DIR" && tar xfz glib-2.12.9.tar.gz)
+  cp libs/glib-2.12.9.diff "$DOWNLOAD_DIR/glib-2.12.9"
   echo "done"
   echo "compiling glib... "
-  (cd "$DOWNLOAD_DIR/glib-2.12.6" &&
-    patch -p1 < glib-2.12.6.diff &&
+  (cd "$DOWNLOAD_DIR/glib-2.12.9" &&
+    patch -p1 < glib-2.12.9.diff &&
     nmake -f makefile.msc &&
-    sed -e "s/^VCLIBS_PREFIX = .*/VCLIBS_PREFIX = $tdir_w32/" build/win32/module.defs > ttt &&
-    mv ttt build/win32/module.defs &&
+    sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" win32.msc > ttt &&
+    mv ttt win32.msc &&
     nmake -f makefile.msc install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/glib-1.12.9"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
-    rm -rf "$download_dir/glib-1.12.6"
     exit -1
   else
     echo "done"
   fi
-  if check_package pango; then
-    download_file pango-1.14.9.tar.gz ftp://ftp.gtk.org/pub/pango/1.14/pango-1.14.9.tar.gz
-    echo -n "decompressing pango... "
-    (cd "$DOWNLOAD_DIR" && tar xfz pango-1.14.9.tar.gz)
-    cp libs/pango-1.14.9.diff "$DOWNLOAD_DIR/pango-1.14.9"
+fi
+
+#########
+# pango #
+#########
+
+if check_package pango; then
+  download_file pango-1.16.4.tar.gz ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
+  echo -n "decompressing pango... "
+  (cd "$DOWNLOAD_DIR" && tar xfz pango-1.16.4.tar.gz)
+  cp libs/pango-1.16.4.diff "$DOWNLOAD_DIR/pango-1.16.4"
+  echo "done"
+  echo "compiling pango... "
+  (cd "$DOWNLOAD_DIR/pango-1.16.4" &&
+    patch -p1 < pango-1.16.4.diff &&
+    rm -f pango/module-defs-fc.c pango/module-defs-win32.c &&
+    cd pango &&
+	touch pango-enum-types.* &&
+    nmake -f makefile.msc &&
+    sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" makefile.msc > ttt &&
+    mv ttt makefile.msc &&
+    nmake -f makefile.msc install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/pango-1.16.4"
+  if test ! -f "$tbindir/libpango-1.0-0.dll"; then
+    echo "failed"
+    exit -1
+  else
     echo "done"
-    echo "compiling pango... "
-    (cd "$DOWNLOAD_DIR/pango-1.14.9" &&
-      patch -p1 < pango-1.14.9.diff &&
-      rm -f pango/module-defs-fc.c pango/module-defs-win32.c &&
-      cd pango &&
-      nmake -f makefile.msc &&
-      cp libpango*.dll "$tbindir" &&
-      cp pango*.lib "$tlibdir" &&
-      rm -f "$tlibdir/pango*s.lib" &&
-      mkdir -p "$tincludedir/pango-1.0/pango" &&
-      cp pango.h pango-attributes.h pango-break.h pangocairo.h pango-context.h pango-coverage.h \
-         pango-engine.h pango-enum-types.h pangofc-font.h pangofc-fontmap.h pango-font.h pango-fontmap.h \
-         pango-fontset.h pango-glyph.h pango-glyph-item.h pango-item.h pango-layout.h pango-modules.h \
-         pango-renderer.h pango-script.h pango-tabs.h pango-types.h pango-utils.h pangowin32.h "$tincludedir/pango-1.0/pango") >&5 2>&1
-    rm -rf "$DOWNLOAD_DIR/pango-1.14.9"
-    if test ! -f "$tbindir/libpango-1.0-0.dll"; then
-      echo "failed"
-      exit -1
-    else
-      echo "done"
-    fi
   fi
-  rm -rf "$DOWNLOAD_DIR/glib-2.12.6"
 fi
 
 ############
@@ -1495,7 +1495,7 @@ function install_forge_packages
 }
 
 extra_pkgs="fpl msh bim civil-engineering integration java jhandles mapping nan secs1d secs2d symband triangular tsa windows"
-main_pkgs="signal audio combinatorics communications control econometrics fixed general geometry gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix splines statistics strings struct symbolic time"
+main_pkgs="signal audio combinatorics communications control econometrics fixed general geometry gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix sockets splines statistics strings struct symbolic time"
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
 

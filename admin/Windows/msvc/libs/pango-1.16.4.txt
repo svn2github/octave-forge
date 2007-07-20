@@ -1,0 +1,21 @@
+Package: Pango
+Version: 1.16.4
+Home page: http://www.gtk.org
+Download: ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
+License: LGPL
+
+Compilation: from Windows command shell with VS environment
+
+Requirements: glib, cairo
+
+1) Apply the patch
+
+2) Delete the files pango\module-defs-fc.c and pango\module-defs-win32.c
+
+3) Enter pango sub-directory
+
+4) nmake -f makefile.msc
+
+5) edit makefile.msc and adapt PREFIX variable
+
+6) nmake -f makefile.msc install

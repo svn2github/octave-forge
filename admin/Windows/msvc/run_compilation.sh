@@ -1385,6 +1385,7 @@ if check_package octave; then
       fi
     done &&
     cp COPYING "$tlicdir/COPYING.GPL" &&
+	cp NEWS THANKS README "$octave_prefix/doc" &&
     make -f octMakefile mkoctfile.exe octave-config.exe &&
     rm -f "$octave_prefix/bin/mkoctfile" "$octave_prefix/bin/mkoctfile-$octave_version" &&
     rm -f "$octave_prefix/bin/octave-config" "$octave_prefix/bin/octave-config-$octave_version" &&
@@ -1814,6 +1815,12 @@ if $do_nsi; then
     fi
   done
   if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
+    if test ! -f "README.txt"; then
+      echo -n "creating README.txt... "
+      sed -e "s/@OCTAVE_VERSION@/$octave_version/" README.txt.in > README.txt
+      sed -e '$d' "$INSTALL_DIR/local/octave-$octave_version/doc/NEWS" >> README.txt
+      echo "done"
+    fi
     if test ! -f "octave_main.nsi"; then
       echo -n "creating octave_main.nsi... "
       sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
@@ -1870,7 +1877,7 @@ if $do_nsi; then
       fi
     fi
     if $do_nsiclean; then
-      rm -f octave_main.nsi octave_forge*.nsi
+      rm -f octave_main.nsi octave_forge*.nsi README.txt
     fi
   fi
 fi

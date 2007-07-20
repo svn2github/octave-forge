@@ -1,0 +1,60 @@
+This package has been built against the @OCTAVE_VERSION@ version of Octave. This
+version has many new features relative to previous versions, including
+
+* integer types
+* fixed point arithmetic
+* sparse matrices
+* Linear programming code based on GLPK
+* 64-bit compilation support
+* gzipped files and stream and consequently support of Matlab v7 files
+* Matlab compatiable graphic handles
+* better support for both msvc and mingw
+* fully compatiable MEX interface
+* many many other minor features and compatibility changes
+
+Using this package for the development of OCT and MEX files:
+-----------------------------------------------------------
+
+To build OCT or MEX files from their sources requires that a compiler
+is installed. Ideally this should be the same compiler version as has
+been used to compile this package. This version of Octave has been
+compiled with Microsoft Visual C++ 8.0, which is available for free
+download from
+
+http://msdn.microsoft.com/vstudio/express/visualc/
+
+Visual C++ can not be distributed with Octave due to licensing
+restrictions on redistribution. Once Visual C++ is installed, then
+OCT files can be compiled from the Octave prompt with the "mkoctfile"
+command, whereas as MEX files can be compiled with the "mex" command.
+
+Contributing to Octave:
+----------------------
+
+There are a number of ways that you can contribute to help make Octave
+a better system. Perhaps the most important way to contribute is to
+write high-quality code for solving new problems, and to make your
+code freely available for others to use. For inspiration, we have a
+wish-list of projects (http://www.octave.org/projects.html) and
+feature requests.
+
+If you've written a useful function for Octave that you would like to
+make available for others to use, please post it to the sources
+mailing list (sources@octave.org). Messages sent to this list will be
+seen by the Octave maintainers, and will be considered for inclusion
+in future releases of Octave. The messages are also archived
+(http://www.octave.org/archive.org) , so even if the code is not
+included in a future release, it will remain available for others to
+use.
+
+If you find Octave useful, consider providing additional funding
+(http://www.octave.org/funding.html) to continue its development. Even
+a modest amount of additional funding could make a significant
+difference in the amount of time that its author can devote to
+development and support.
+
+If you cannot provide funding or contribute code, you can still help
+make Octave better and more reliable by reporting any bugs
+(http://www.octave.org/bugs.html) you find and by offering suggestions
+for ways to improve Octave.
+

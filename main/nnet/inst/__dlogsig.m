@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Michel D. Schmid     <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2007 Michel D. Schmid <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -17,22 +17,17 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} @var{a} = dpurelin (@var{n})
-## @code{dpurelin}, first derivative of purelin
-## @example
-##
-## purelin is a linear transfer function used by neural networks
-## @end example
+## @deftypefn {Function File} {}[@var{a} = __dlogsig (@var{n})
 ##
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
+## @seealso{__dpurelin,__dtansig}
 
-function a = dpurelin(n)
+## Author: Michel D. Schmid
 
-   [nRows, nColumns] = size(n);
-   a = ones(nRows,nColumns);
+
+function a = __dlogsig(n)
+  
+  a = n.*(1-n);
 
 endfunction

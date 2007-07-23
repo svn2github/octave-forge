@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid    <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2006 Michel D. Schmid   <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -17,27 +17,21 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}[@var{n} = dtansig (@var{n})
-## first derivative of @code{tansig}
-##
-## @example
-##
-## tansig is a symmetric non linear transfer function
-## used by neural networks.
-## Input n must be calculated with "n = tansig(n)".
-## @end example
-##
+## @deftypefn {Function File} {} __printMLPHeader (@var{fid})
+## @code{__printMLPHeader} saves the header of a  neural network structure
+## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
 
-## @seealso{dpurelin}
+## Author: Michel D. Schmid
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
+function __printNetworkType(fid,net)
 
-
-function a = dtansig(n)
-
-  a = 1-(n.*n);
-
+  if isfield(net,"networkType")
+    if strcmp(net.networkType,"newff")
+      fprintf(fid,"          Network type:  '%s'\n","Feed forward multi-layer network");
+    else
+      fprintf(fid,"          Network type:  '%s'\n","error: undefined network type");
+    endif
+  endif
+     
 endfunction

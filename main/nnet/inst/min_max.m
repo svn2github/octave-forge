@@ -31,14 +31,14 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function Pr = min_max(Pp)
 
   ## check number of input args
   error(nargchk(1,1,nargin))
 
-  Pr = 0; # standard return value
+  Pr = []; # returns an empty matrix
   if ismatrix(Pp)
     if isreal(Pp) # be sure, this is no complex matrix
       Pr = [min(Pp,[],2) max(Pp,[],2)];
@@ -50,4 +50,8 @@ function Pr = min_max(Pp)
   endif
 
 endfunction
+
+%!test fail("min_max(1)","Argument must be a matrix.")
+%!test fail("min_max("testString")","Argument must be a matrix")
+
 

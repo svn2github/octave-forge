@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Michel D. Schmid
+## Copyright (C) 2005 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -19,31 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} saveMLPStruct (@var{net},@var{strFileName})
 ## @code{saveStruct} saves a neural network structure to *.txt files
-##
-## @example
-##  noch nicht geschrieben
-## @end example
-##
-##
-## @noindent
-## and
-##
-## @example
-## noch nicht geschrieben
-## @end example
-##
-## @noindent
-## noch nicht geschrieben
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function saveMLPStruct(net,strFileName)
 
   ## the variable net holds the neural network structure..
-  # check if it is structure type
-  if !isstruct(net)
-    error("net is not of the type structure!")
+  # check if "net" is a structure type
+  if !__checknetstruct(net)
+    error("Structure doesn't seem to be a neural network")
   endif
 
   # open the first level file
@@ -54,14 +39,17 @@ function saveMLPStruct(net,strFileName)
   endif
 
   ## print header
-  try
+#   try            ## wird nicht mehr benötigt..
     __printMLPHeader(fid1);
-  catch
-    ## Add saveMLPStructure directory to the path and try again
-    addpath ([fileparts(mfilename()),"/saveMLPStructure"]);
-    __printMLPHeader(fid1);
-  end_try_catch
+#   catch
+#     ## Add saveMLPStructure directory to the path and try again
+#     addpath ([fileparts(mfilename()),"/saveMLPStructure"]);
+#     __printMLPHeader(fid1);
+#   end_try_catch
   
+  ## check for field "networkType"
+  __printNetworkType(fid1,net);
+
   ## check for field "numInputs"
   __printNumInputs(fid1,net);
 

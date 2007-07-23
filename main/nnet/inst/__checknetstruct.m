@@ -1,6 +1,5 @@
-## Copyright (C) 2006 Michel D. Schmid   <email: michaelschmid@users.sourceforge.net>
+## Copyright (C) 2006 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
-## This program is part of Octave.
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -37,22 +36,15 @@
 
 ## @seealso{newff,prestd,trastd}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
-## $LastChangedDate: 2006-08-20 21:47:51 +0200 (Sun, 20 Aug 2006) $
-## $Rev: 38 $
+## Author: Michel D. Schmid
 
 
 function isTrue = __checknetstruct(net)
 
   isTrue = 0;
   ## first check, if it's a structure
-  if isstruct(net)
-    if ( isfield(net,"numInputs") & isfield(net,"inputs") & isfield(net,"IW")\
-        & isfield(net,"trainFcn") )
-				isTrue = 1;
-    endif
-  else
-    return;
+  if (isstruct(net) && isfield(net,"networkType"))
+    isTrue = 1;
   endif
 
 endfunction

@@ -22,7 +22,7 @@
 ## PLEASE DON'T USE IT ELSEWHERE, it proparly won't work.
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 
 function [perf,Ee,Aa,Nn] = __calcperf(net,xx,Im,Tt)
@@ -30,11 +30,12 @@ function [perf,Ee,Aa,Nn] = __calcperf(net,xx,Im,Tt)
   ## comment:
   ## perf, net performance.. from input to output through the hidden layers
   ## Aa, output values of the hidden and last layer (output layer)
+  ## is used for NEWFF network types
 
   ## calculate bias terms
   ## must have the same number of columns like the input matrix Im
   [nRows, nColumns] = size(Im);
-  Btemp = cell(net.numLayers,1);
+  Btemp = cell(net.numLayers,1); # Btemp: bias matrix
   ones1xQ = ones(1,nColumns);
   for i= 1:net.numLayers
     Btemp{i} = net.b{i}(:,ones1xQ);
@@ -83,6 +84,8 @@ function [perf,Ee,Aa,Nn] = __calcperf(net,xx,Im,Tt)
       Aa{iLayers,1} = purelin(Nn{iLayers,1});
     case "tansig"
       Aa{iLayers,1} = tansig(Nn{iLayers,1});
+    case "logsig"
+      Aa{iLayers,1} = logsig(Nn{iLayers,1});
     otherwise
       error(["Transfer function: " net.layers{iLayers}.transferFcn " doesn't exist!"])
     endswitch

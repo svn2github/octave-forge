@@ -36,7 +36,7 @@
 
 ## @seealso{prestd, poststd}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function [Pn] = trastd(Pp,meanp,stdp)
 

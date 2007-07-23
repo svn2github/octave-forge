@@ -30,7 +30,7 @@
 ## blf - Batch weight/bias learning function,
 ##       default = "learngdm"
 ## pf  - Performance function,
-##      default = "mse".
+##       default = "mse".
 ## @end example
 ##
 ## @example
@@ -45,42 +45,43 @@
 
 ## @seealso{sim, init, train}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
-function net = newff(Pr,ss,trf,btf,blf,pf)
+function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
 
   ## initial descriptipn
-  ##  newff(Pr,ss,trf,btf,blf,pf)
+  ##  newff(Pr,ss,transfunc,trainFunc,notUsed,performFunc)
   ##  * Pr is a nx2 matrix with min and max values of standardized inputs
   ##    Pr means: p-range
   ##  * ss is a row vector, the first element describes the number
   ##    of hidden neurons, the second element describes the number
   ##    of output neurons
-  ##  * trf is a cell array of transfer function, standard is "tansig"
-  ##  * btf is the training algorithm
-  ##  * blf is the learn algorithm, won't be used in "trainlm"
-  ##  * pf is written for the performance function, standard is "mse"
+  ##  * transFunc is a cell array of transfer function, standard is "tansig"
+  ##  * trainFunc is the training algorithm
+  ##  * notUsed exist only because we have only one train algorithm which doesn't
+  ##    need a weight learning function
+  ##  * performFunc is written for the performance function, standard is "mse"
 
   ## check range of input arguments
   error(nargchk(2,6,nargin))
 
   ## set defaults
   if (nargin <3)
-    trf={"tansig"};
+    transFunc={"tansig"};
   endif
   if (nargin <4)
-    btf = "trainlm";
+    trainFunc = "trainlm";
   endif
   if (nargin <5)
-    blf = "traingdm";
+    notUsed = "noSense";
   endif
   if (nargin==5)
     ## it doesn't matter what nargin 5 is ...!
-    ## it won't be used ...
-    blf = "traingdm"
+    ## it won't be used ... it's only for matlab compatibility
+    notUsed = "noSense"
   endif
   if (nargin <6)
-    pf = "mse";
+    performFunc = "mse";
   endif
 
   ## check input args
@@ -90,7 +91,7 @@ function net = newff(Pr,ss,trf,btf,blf,pf)
   nLayers = length(ss);
 
   ## Standard architecture of neural network
-  net = __newnetwork(1,nLayers,1);
+  net = __newnetwork(1,nLayers,1,"newff");
   ## description:
   ##	first argument: number of inputs, nothing else allowed till now
   ## it's not the same like the number of neurons in this input
@@ -125,7 +126,7 @@ function net = newff(Pr,ss,trf,btf,blf,pf)
   endfor
   for iLayers = 1:nLayers
     net.layers{iLayers}.size = ss(iLayers);
-    net.layers{iLayers}.transferFcn = trf{iLayers};
+    net.layers{iLayers}.transferFcn = transFunc{iLayers};
   endfor
 
   ## define everything with "targets"
@@ -143,17 +144,17 @@ function net = newff(Pr,ss,trf,btf,blf,pf)
   endfor
 
   ## Performance
-  net.performFcn = pf;
+  net.performFcn = performFunc;
 
   ## Adaption
   for i=1:nLayers
-    net.biases{i}.learnFcn = blf;
-    net.layerWeights{i,:}.learnFcn = blf;
+#    net.biases{i}.learnFcn = blf;
+#    net.layerWeights{i,:}.learnFcn = blf;
     net.biases{i}.size = ss(i);
   endfor
 
   ## Training
-  net.trainFcn = btf; # actually, only trainlm will exist
+  net.trainFcn = trainFunc; # actually, only trainlm will exist
   net = setTrainParam(net);
   ## Initialization
   net = __init(net);
@@ -195,8 +196,8 @@ function net = newff(Pr,ss,trf,btf,blf,pf)
 # ======================================================
   function net = setTrainParam(net)
 
-    btf = net.trainFcn;
-    switch(btf)
+    trainFunc = net.trainFcn;
+    switch(trainFunc)
 
     case "trainlm"
       net.trainParam.epochs = 100;

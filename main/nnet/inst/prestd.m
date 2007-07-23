@@ -23,7 +23,7 @@
 
 ## @seealso{trastd}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function [pn,meanp,stdp,tn,meant,stdt] = prestd(Pp,Tt)
 

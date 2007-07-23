@@ -54,7 +54,7 @@
 
 ## @seealso{newff,prestd,trastd}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 ## Comments: see in "A neural network toolbox for Octave User's Guide" [4]
 ##  for variable naming... there have inputs or targets only one letter,
@@ -87,19 +87,22 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 	               muInc,muDec,muMax,show,time);
 
   ## Constants
-  shortStr = "TRAINLM";
+  shortStr = "TRAINLM";    # TODO: shortStr is longer as TRAINLM !!!!!!!!!!!
   doValidation = !isempty(VV);
   stop = "";
 
 
-  startTime = clock(); # TODO: maybe this row can be placed
+  #startTime = clock(); # TODO: maybe this row can be placed
                        # some rows later
 
   ## the weights are used in column vector format
   xx = __getx(net); # x is the variable with respect to, but no
-                  # variables with only one letter!!
+                    # variables with only one letter!!
   ## define identity matrix
   muI = eye(length(xx));                  
+
+  startTime = clock();  # if the next some tests are OK, I can delete
+                        # startTime = clock(); 9 rows above..
 
   ## calc performance of the actual net
   [perf,vE,Aa,Nn] = __calcperf(net,xx,Im,Tt);
@@ -129,7 +132,18 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 
     ## record training for later performance plot
     ## performance plot isn't available till now
-%    epochPlus1 = iEpochs+1;          ==> can be deleted ...
+    ## TODO:
+      ## first sample of code to evaluate if gnuplot is installed
+      # [stat, output] = system("gnuplot --version");
+      # strMatrix = split(output," ");
+      # if (!( strcmp(deblank(strMatrix(1,:)),"gnuplot") ))
+      # falls in diesen teil der if-abfrage gekommen wird, so
+      # ist zumindest ein gnuplot installiert...
+      
+	  ## andere VERSION, es wird angenommen, dass gnuplot installiert
+	  ## ist, andernfalls ERROR-MELDUNG erstellen...
+
+      # endif
     trainRec.perf(iEpochs+1) = perf;
     trainRec.mu(iEpochs+1) = mu;
     if (doValidation)
@@ -171,10 +185,10 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
         ## so save the new values
         xx = x1;
         net = net1;
-	Nn = N1;
-	Aa = Aa1;
-	vE = vE1;
-	perf = perf1;
+        Nn = N1;
+        Aa = Aa1;
+        vE = vE1;
+        perf = perf1;
 
         mu = mu * muDec;
         if (mu < 1e-20)   # 1e-20 is properly the hard coded parameter in MATLAB(TM)
@@ -327,8 +341,10 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
       stop = "Minimum gradient reached, performance goal was not met.";
     elseif (mu > muMax)
       stop = "Maximum MU reached, performance goal was not met.";
-    elseif (doValidation) & (VV.numFail > maxFail)
-      stop = "Validation stop.";
+    elseif (doValidation) 
+	  if (VV.numFail > maxFail)
+        stop = "Validation stop.";
+      endif
     endif
   endfunction
 

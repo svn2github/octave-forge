@@ -47,7 +47,7 @@
 
 ## @seealso{newff,prestd,trastd}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 ## Comments: see in "A neural network toolbox for Octave User's Guide" [4]
 ## for variable naming... there have inputs or targets only one letter,
@@ -115,8 +115,10 @@ function [net] = train(net,Pp,Tt,notUsed1,notUsed2,VV)
   nLayers = net.numLayers;
   Tt{nLayers,1} = Tt{1,1};
   Tt{1,1} = [];
-  VV.Tt{nLayers,1} = VV.Tt{1,1};
-  VV.Tt{1,1} = [];
+  if (!isempty(VV))
+    VV.Tt{nLayers,1} = VV.Tt{1,1};
+    VV.Tt{1,1} = [];
+  endif
 
   ## which training algorithm should be used
   switch(net.trainFcn)
@@ -174,7 +176,10 @@ function [net] = train(net,Pp,Tt,notUsed1,notUsed2,VV)
     error(nargchk(3,3,nargin));
 
     [PpRows, PpColumns] = size(Pp);
-    Pp = mat2cell(Pp,PpRows,PpColumns);
+    Pp = mat2cell(Pp,PpRows,PpColumns);    # mat2cell is the reason
+    									   # why octave-2.9.5 doesn't work
+										   # octave-2.9.x with x>=6 should be
+										   # ok
     [TtRows, TtColumns] = size(Tt);
     Tt = mat2cell(Tt,TtRows,TtColumns);
 

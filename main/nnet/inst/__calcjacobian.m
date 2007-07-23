@@ -23,7 +23,7 @@
 ## PLEASE DO NOT USE IT ELSEWEHRE, it proparly will not work!
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 
 function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
@@ -67,7 +67,7 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
   ## - n1_1 = W^1*a_1^0+b^1: the ^x factor defined the xth train data set
   ##   the _x factor defines the layer
   ## **********  this datas should be hold in Nn
-  ## **********  should be calculated in "calcperf"
+  ## **********  should be calculated in "__calcperf"
   ## **********  so Nn{1} means hidden layer
   ## **********  so Nn{2} means second hidden layer or output layer
   ## **********  and so on ...
@@ -114,11 +114,11 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
   ## define and calculate the derivative matrix dF
   ## - this is "done" by the two first derivative functions
   ##   of the transfer functions
-  ##   e.g. dpureline, dtansig and so on ...
+  ##   e.g. __dpureline, __dtansig, __dlogsig and so on ...
 
   ## calculate the sensitivity matrix tildeS
   ## start at the end layer, this means of course the output layer,
-  ## the transfer function is choosable
+  ## the transfer function is chosable
   
   ## for calculating the last layer
   ## this should happen like following:
@@ -132,40 +132,57 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
     n = Nn{iLayers}; # nLayers holds the value of the last layer...
     ## which transfer function should be used?
     if (iLayers==nLayers)
-      switch(net.layers{i}.transferFcn)
+      switch(net.layers{iLayers}.transferFcn)
         case "purelin"
-          tildeSxTemp = dpurelin(n);
+          tildeSxTemp = __dpurelin(n);
         case "tansig"
           n = tansig(n);
-          tildeSxTemp = dtansig(n);
-        otherwise
-          error("transfer function argument is not valid!")
+          tildeSxTemp = __dtansig(n);
+        case "logsig"
+          n = logsig(n);
+          tildeSxTemp = __dlogsig(n);
+        otherwise	
+          error(["transfer function argument: " net.layers{iLayers}.transferFcn  " is not valid!"])
       endswitch
       tildeSx{iLayers,1} = tildeSxTemp .* mIdentity;
       n = bias{nLayers,1};
-      switch(net.layers{i}.transferFcn)
+      switch(net.layers{iLayers}.transferFcn)
         case "purelin"
-          tildeSbxTemp = dpurelin(n);
+          tildeSbxTemp = __dpurelin(n);
         case "tansig"
           n = tansig(n);
-          tildeSbxTemp = dtansig(n);
+          tildeSbxTemp = __dtansig(n);
+        case "logsig"
+          n = logsig(n);
+          tildeSbxTemp = __dlogsig(n);
         otherwise
-          error("transfer function argument is not valid!")
+          error(["transfer function argument: " net.layers{iLayers}.transferFcn  " is not valid!"])
       endswitch
       tildeSbx{iLayers,1} = tildeSbxTemp .* mIdentity;
     endif
 
-    if iLayers<nLayers
+    if (iLayers<nLayers)
       dFx = ones(size(n));
-      nx = tansig(n);
-      dFx = dtansig(nx);
-      LWtranspose = net.LW{iLayers+1,iLayers}';
+      switch(net.layers{iLayers}.transferFcn) ######## new lines ...
+        case "purelin"
+	  nx = purelin(n);
+	  dFx = __dpurelin(nx);
+        case "tansig"         ######## new lines ...
+	  nx = tansig(n);
+	  dFx = __dtansig(nx);
+	case "logsig"    ######## new lines ...
+          nx = logsig(n);  ######## new lines ...
+	  dFx = __dlogsig(nx); ######## new lines ...
+	otherwise     ######## new lines ...
+	  error(["transfer function argument: " net.layers{iLayers}.transferFcn  " is not valid!"])######## new lines ...
+       endswitch ############# new lines ....
+	  LWtranspose = net.LW{iLayers+1,iLayers};
       if iLayers<(nLayers-1)
         mIdentity = -ones(net.layers{iLayers}.size,size(mIdentity,2));
       endif
 
       mTest = tildeSx{iLayers+1,1};
-      LWtranspose = LWtranspose * mTest;
+      LWtranspose = LWtranspose' * mTest;
       tildeSx{iLayers,1} = dFx .* LWtranspose;
       tildeSxTemp = dFx .* LWtranspose;
       tildeSbx{iLayers,1} = ones(size(nx)).*tildeSxTemp;

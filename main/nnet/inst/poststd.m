@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid   <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2006 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -23,7 +23,7 @@
 
 ## @seealso{prestd,trastd}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function [Pp,Tt] = poststd(Pn,meanp,stdp,Tn,meant,stdt)
 

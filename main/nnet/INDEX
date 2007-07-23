@@ -1,8 +1,7 @@
 nnet >> Neural Networks
 Feed forward multi-layer neural networks
- dpurelin
- dtansig
  isposint
+ logsig
  min_max
  newff
  poststd

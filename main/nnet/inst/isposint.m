@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Michel D. Schmid     <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2005 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -23,7 +23,7 @@
 ## 
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid 
 
 function f = isposint(n)
 
@@ -40,4 +40,15 @@ function f = isposint(n)
     f = 0;
   endif
 
+
 endfunction
+
+
+%!test assert(isposint(1)) # this should pass
+%!test assert(isposint(0.5),0) # should return zero
+%!test assert(isposint(-1),0) # should return zero
+%!test assert(isposint(-1.5),0) # should return zero
+%!test assert(isposint(0),0) # should return zero
+%!test fail("isposint([0 0])","Input argument must not be a vector, only scalars are allowed!")
+%!test fail("isposint('testString')","Input argument must not be a vector, only scalars are allowed!")
+

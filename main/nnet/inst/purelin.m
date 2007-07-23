@@ -22,7 +22,7 @@
 ## by neural networks
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function a = purelin(n)
 

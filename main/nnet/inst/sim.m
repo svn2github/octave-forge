@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid   <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2006 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -21,7 +21,7 @@
 ## A neural feed-forward network will be simulated
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 
 ## Comments: see in "A neural network toolbox for Octave User's Guide" [4]
@@ -70,6 +70,8 @@ function [netoutput] = sim(net,mInput)
         Aa{i,1} = tansig(Nn{i,1});
       case "purelin"
         Aa{i,1} = purelin(Nn{i,1});
+      case "logsig"
+        Aa{i,1} = logsig(Nn{i,1});
       otherwise
         error(["sim:Unknown transfer fucntion: " trf "!"]);
     endswitch

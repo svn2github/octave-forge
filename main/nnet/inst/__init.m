@@ -31,9 +31,8 @@
 ## @noindent
 ## @end deftypefn
 
-## @seealso{}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function net=__init(net)
 

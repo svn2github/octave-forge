@@ -24,9 +24,8 @@
 ## @noindent
 ## @end deftypefn
 
-## @seealso{setx}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function x = __getx(net)
 

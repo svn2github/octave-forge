@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Michel D. Schmid    <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2005 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -17,32 +17,34 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}{@var{net}} = __newnetwork(@var{numInputs},@var{numLayers},@var{numOutputs})
+## @deftypefn {Function File} {}{@var{net}} = __newnetwork(@var{numInputs},@var{numLayers},@var{numOutputs},@var{networkType})
 ## @code{__newnetwork} create a custom 'zero'-network
 ##
 ##
 ## @example
-## net = __newnetwork(numInputs,numLayers,numOutputs)
+## net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
 ##
 ## numInputs : number of input vectors, actually only 1 allowed
 ## numLayers : number of layers
 ## numOutputs: number of output vectors, actually only 1 allowed
+## networkType: e.g. feed-forward-network "newff"
 ## @end example
 ##
 ## @example
-## net = __newnetwork(1,2,1)
-##       1 input layer, two hidden layers and one output layer
+## net = __newnetwork(1,2,1,"newff")
+##       1 input layer, two hidden layers, one output layer
+##       and the network type
 ## @end example
 ##
 ## @noindent
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
-function net = __newnetwork(numInputs,numLayers,numOutputs)
+function net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
 
   ## check range of input arguments
-  error(nargchk(3,3,nargin))
+  error(nargchk(4,4,nargin))
 
   ## check input args
   if ( !isposint(numInputs) )
@@ -58,11 +60,16 @@ function net = __newnetwork(numInputs,numLayers,numOutputs)
     error("network: not enough layers are defined! ")
   endif
 
+  ## define network type
+  net.networkType = networkType;
+
   ## ZERO NETWORK
   net.numInputs = 0;
   net.numLayers = 0;
   net.numInputDelays = 0;
   net.numLayerDelays = 0;
+  # the next five parameters aren't used till now, they are used
+  # only for matlab nnet type compatibility ==> saveMLPStruct
   net.biasConnect = [];   # not used parameter till now
   net.inputConnect = [];  # not used parameter till now
   net.layerConnect = [];  # not used parameter till now
@@ -146,10 +153,7 @@ function net = __newnetwork(numInputs,numLayers,numOutputs)
 
     for iRuns=1:numLayers
       net.layers{iRuns,1}.dimension = 0;
-      net.layers{iRuns,1}.distanceFcn = "";
-      net.layers{iRuns,1}.distances = [];
       net.layers{iRuns,1}.netInputFcn = "";
-      net.layers{iRuns,1}.positions = [];
       net.layers{iRuns,1}.size = 0;
       net.layers{iRuns,1}.transferFcn = "tansig";
       net.layers{iRuns,1}.userdata = "Put your custom informations here!";

@@ -23,7 +23,7 @@
 ## to a *.txt file with identification @code{fid}.
 ## @end deftypefn
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function __printAdaptFcn(fid,net)
 

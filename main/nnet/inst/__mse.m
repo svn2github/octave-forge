@@ -29,7 +29,7 @@
 
 ## @seealso{}
 
-## Author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## Author: Michel D. Schmid
 
 function perf = __mse(E)
 

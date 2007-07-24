@@ -28,24 +28,24 @@ The variable identifiers are taken from \cite{4}. One difference is purposeful a
 \end{tabbing}
 
 \subsection{Nn}
-\textbf{Nn} is a cell array and has one entry for each layer. This means in the actual allowed network
-structure, 2 entries.\\
-In \textbf{Nn\{1,1\}} are the values for the first (and only) hidden layer. The size of this matrix depends
+\textbf{Nn} is a cell array and has one entry for each layer. In reality, this will have 2 or 3 layers.\\
+In \textbf{Nn\{1,1\}} are the values for the first hidden layer. The size of this matrix depends
 on the number of neurons used for this layer.\\
-In \textbf{Nn\{2,1\}} are the values for the output layer. The size of this matrix depends
-on the number of neurons used for this layer.\\
+In \textbf{Nn\{2,1\}} are the values for the second hidden layer or the output layer. The size of this matrix depends
+on the number of neurons used for this layer and so on ...\\
+\textbf{Nn\{x,1\}} where \textbf{x} can be $\infty$.\\
 
 \subsection{Aa}
-\textbf{Aa} is a cell array and has one entry for each layer. This means in the actual allowed network
-structure, 2 entries.\\
-In \textbf{Aa\{1,1\}} are the values for the first (and only) hidden layer. The size of this matrix depends
+\textbf{Aa} is a cell array and has one entry for each layer.\\
+In \textbf{Aa\{1,1\}} are the values for the first hidden layer. The size of this matrix depends
 on the number of neurons used for this layer.\\
-In \textbf{Aa\{2,1\}} are the values for the output layer. The size of this matrix depends
+In \textbf{Aa\{2,1\}} are the values for the second hidden layer or the output layer. The size of this matrix depends
 on the number of neurons used for this layer.\\
+See \textbf{Nn} for a more detailed description.\\
 
 \subsection{vE}
-\textbf{vE} is also a cell array which holds (till now) in the second element the error vector. It's not completly clear, why in the second element.\\
-The number of rows depends on the number of output neurons. For one output neuron, \textbf{vE} holds only one row, for 2 output neurons, this holds of course 2 rows. 
+\textbf{vE} is also a cell array which holds in the last (second) element the error vector. It's not completly clear, why in the last (second) element.\\
+The number of rows depends on the number of output neurons. For one output neuron, \textbf{vE} holds only one row, for 2 output neurons, this holds of course 2 rows, and so on. 
 
 \subsection{Jj}
 This is the short term for the Jacobi matrix.

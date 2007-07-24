@@ -39,7 +39,9 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
    blackmanharris, bohmanwin, diric, gauspuls, gmonopuls, nuttallwin
    and sawtooth.</li>
    <li>comm: new functions qfunc and qfuncinv.<\li>
+   <li>time: new function daysact.m.</li>
    <li>Improvements in the SRPM, RPM, MSVC and Mac OS X build systems.</li>
+   <li>Remove functions ported to Octave 2.9.13.</li>
    <li>general bug fixes and improvements.</li>
 </ul>
 </dd>

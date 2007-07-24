@@ -1,4 +1,4 @@
-% Präambel
+% Preambel
 \documentclass[a4paper,openany]{report}
 
 
@@ -6,14 +6,12 @@
 \usepackage[ansinew]{inputenc}
 \usepackage[T1]{fontenc}
 \RequirePackage{ifpdf}
-%\usepackage[ngerman]{babel}
-
 
 \usepackage{hyperref}
 	\hypersetup{%
-  colorlinks=true,   % aktiviert farbige Referenzen
-  pdfpagemode=None,  % PDF-Viewer startet ohne Inhaltsverzeichnis et.al.
-  pdfstartview=FitH, % PDF-Viewer benutzt beim Start bestimmte Seitenbreite
+  colorlinks=true,   % activates colored references
+  pdfpagemode=None,  % PDF-Viewer starts without content et.al.
+  pdfstartview=FitH, % PDF-Viewer uses a defined page width
   %linkbordercolor=111,
   % citebordercolor=111,
   citecolor=blue,
@@ -26,17 +24,8 @@
   \usepackage[dvips]{graphicx}
 	  \DeclareGraphicsExtensions{.eps}
 \fi
-%
-%\usepackage[pdftex]{hyperref}
-%	\hypersetup{%
-%  colorlinks=true,   % aktiviert farbige Referenzen
-%  pdfpagemode=None,  % PDF-Viewer startet ohne Inhaltsverzeichnis et.al.
-%  pdfstartview=FitH, % PDF-Viewer benutzt beim Start bestimmte Seitenbreite
-%  %linkbordercolor=111,
-%  % citebordercolor=111,
-%  citecolor=blue,
-%  linkcolor=blue}
-	
+
+\usepackage{asymptote}	
 \usepackage{fancyhdr}
 %\usepackage{supertabular}
 \usepackage{booktabs}
@@ -51,7 +40,8 @@
 %\usepackage{array}
 %\usepackage{colortbl}
 
-%%%%%%%%%%%%%%%% wird benötigt, um Farben für Latex-Seiten von Highlight zu definieren...
+%%%%%%%%%%%%%%%% will be used to defined a color scheme for
+%%%%%%%%%%%%%%%% latex pages converted with "Highlight"
 \newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.75,0,0.35}{#1}}
 \newcommand{\hlesc}[1]{\textcolor[rgb]{0.42,0.35,0.8}{#1}}
@@ -73,7 +63,7 @@
 \headheight 0truept
 \headsep 0truept
 \textheight 230truemm
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \clubpenalty = 10000
 \widowpenalty = 10000 \displaywidowpenalty = 10000
@@ -84,11 +74,8 @@
 \definecolor{brown}{rgb}{0.75,0.004,0.3}
 
 
-\renewcommand{\headrulewidth}{0pt} % keine Trennlinie
-\renewcommand{\footrulewidth}{0pt} % keine Trennlinie
-%\addtolength{\headheight}{39pt}
-
-%\setlength{\footskip}{20pt}
+\renewcommand{\headrulewidth}{0pt} % no head rule
+\renewcommand{\footrulewidth}{0pt} % no footer rule
 
 %\nointend
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,14 +87,11 @@
 \input{title2}
 
 \tableofcontents
-%\include{notations}
 \pagenumbering{arabic}
 
 \include{introduction}
-%\include{matlab/neuroToolbox}
 \include{octave/neuroToolbox/neuroToolbox}
 \include{examples/examples}
-%\include{tests/tests}
 
 \include{bibliography}
 

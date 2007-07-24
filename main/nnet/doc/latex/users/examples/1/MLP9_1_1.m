@@ -1,50 +1,34 @@
-## Copyright (C) 2006 Michel D. Schmid
+## Copyright (C) 2006 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
-## This file is part of octnnettb.
 ##
-## octnnettb is free software; you can redistribute it and/or modify it
+## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
 ##
-## octnnettb is distributed in the hope that it will be useful, but
+## This program is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with octnnettb; see the file COPYING.  If not, write to the Free
+## along with this program; see the file COPYING.  If not, write to the Free
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## This is a test to train a 9-1-1 MLP (was a real project).
-
-## author: Michel D. Schmid <michaelschmid@users.sourceforge.net> 
-## e-mail: michaelschmid@users.sourceforge.net
-
-
-## for debug purpose only
-global DEBUG = 0;
-## comments to DEBUG:
-# 0 or not exist means NO DEBUG
-# 1 means, DEBUG, write to command window
-# 2 means, DEBUG, write to files...
+## Author: Michel D. Schmid
 
 
 ## load data
-
 mData = load("mData.txt","mData");
 mData = mData.mData;
 [nRows, nColumns] = size(mData);
-# this file contains 13 columns. The first 12 columns are the inputs
-# the last column is the output
-# remove column 4, 8 and 12
-# 89 rows
+	# this file contains 13 columns.
+	# The first 12 columns are the inputs
+	# the last column is the output,
+	# remove column 4, 8 and 12!
+	# 89 rows.
 
-## first permute the whole matrix in row wise
-## this won't be used right now for debug and test purpose
-# order = randperm(nRows);
-# mData(order,:) = mData;
 
 mOutput = mData(:,end);
 mInput = mData(:,1:end-1);
@@ -53,7 +37,7 @@ mInput(:,[4 8 12]) = []; # delete column 4, 8 and 12
 ## now prepare data
 mInput = mInput';
 mOutput = mOutput';
-%mOutput = [mOutput; mOutput*4];
+
 # now split the data matrix in 3 pieces, train data, test data and validate data
 # the proportion should be about 1/2 train, 1/3 test and 1/6 validate data
 # in this neural network we have 12 weights, for each weight at least 3 train sets..
@@ -82,13 +66,14 @@ mTrainOutput = mOutput(:,1:nTrainSets);
 # one output ...
 
 # define the max and min inputs for each row
-mMinMaxElements = min_max(mTrainInputN); % input matrix with (R x 2)...
+mMinMaxElements = min_max(mTrainInputN); # input matrix with (R x 2)...
 
 ## define network
 nHiddenNeurons = 1;
 nOutputNeurons = 1;
 
-MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],{"tansig","purelin"},"trainlm","learngdm","mse");
+MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],\
+		{"tansig","purelin"},"trainlm","","mse");
 ## for test purpose, define weights by hand
 MLPnet.IW{1,1}(:) = 1.5;
 MLPnet.LW{2,1}(:) = 0.5;
@@ -96,8 +81,6 @@ MLPnet.b{1,1}(:) = 1.5;
 MLPnet.b{2,1}(:) = 0.5;
 
 saveMLPStruct(MLPnet,"MLP3test.txt");
-#disp("network structure saved, press any key to continue...")
-#pause
 
 ## define validation data new, for matlab compatibility
 VV.P = mValiInput;
@@ -106,15 +89,11 @@ VV.T = mValliOutput;
 ## standardize also the validate data
 VV.P = trastd(VV.P,cMeanInput,cStdInput);
 
-#[net,tr,out,E] = train(MLPnet,mInputN,mOutput,[],[],VV);
 [net] = train(MLPnet,mTrainInputN,mTrainOutput,[],[],VV);
-# saveMLPStruct(net,"MLP3testNachTraining.txt");
-# disp("network structure saved, press any key to continue...")
-# pause
 
-# % make preparations for net test and test MLPnet
-#     % standardise input & output test data
+# make preparations for net test and test MLPnet
+#  standardise input & output test data
 [mTestInputN] = trastd(mTestInput,cMeanInput,cStdInput);
 
-[simOut] = sim(net,mTestInputN);%,Pi,Ai,mTestOutput);
+[simOut] = sim(net,mTestInputN);
 simOut

@@ -15,13 +15,6 @@
 ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 
 */
 
-/*
-29. January 2003 - Kai Habel: first release
-
-TODO:
-* handle line terminator \r and \n\r (?) 
-*/
-
 #include "config.h"
 #include <fstream>
 #include <algorithm>
@@ -34,6 +27,14 @@ TODO:
 #include <octave/lo-ieee.h>
 
 using namespace std;
+
+void
+strip_cr (char *line)
+{
+  while (*line++ != '\0');
+  if (*--line = '\r')
+    *line = '\0';
+}
 
 bool sep_is_next(istringstream *linestrm, string sep) {
 
@@ -171,6 +172,7 @@ The lowest index value is zero.\n\
     // get first line
   file.getline(line,flen,'\n');
   do {
+    strip_cr (line);
     istringstream lstrm(line); 
     lineq = read_textline(&lstrm,sep);
     

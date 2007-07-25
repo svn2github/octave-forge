@@ -7,16 +7,13 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>July ??, 2007</dt>
-<dd>Updated the Windows binary release to use Octave 2.9.13.</li>
-</dd>
-<dt>July ??, 2007</dt>
+<dt>July 26, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.13. Many packages
  will also function function with earlier versions of Octave 2.9.
  Notable changes in this release include:</p>
 <ul>
-   <li>jhandles: New java based plottling and gui package based on
+   <li>jhandles: New java based plotting and gui package based on
    JOGL.</li>
    <li>bim: New package for solving Diffusion Advection Reaction (DAR)
    Partial Differential Equations based on the Finite Volume

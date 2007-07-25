@@ -1,4 +1,1952 @@
 # Automatically generated file --- DO NOT EDIT
+2007-07-26 01:43  adb014
+
+	* AUTHORS, doc/htdocs/NEWS.in, doc/htdocs/index.in,
+	  doc/htdocs/packages.in: final pre-release update
+
+2007-07-25 09:07  michaelschmid
+
+	* main/nnet/doc/latex/:
+	  developers/octave/functions/isposintOct.tex,
+	  developers/octave/functions/min_max.tex,
+	  developers/octave/functions/newff.tex,
+	  developers/octave/functions/poststd.tex,
+	  developers/octave/functions/prestd.tex,
+	  developers/octave/functions/sim.tex,
+	  developers/octave/functions/train.tex,
+	  developers/octave/functions/trastd.tex, users/notations.tex:
+	  Added Files:
+	   	doc/latex/developers/octave/functions/isposintOct.tex
+	   	doc/latex/developers/octave/functions/min_max.tex
+	   	doc/latex/developers/octave/functions/newff.tex
+	   	doc/latex/developers/octave/functions/poststd.tex
+	   	doc/latex/developers/octave/functions/prestd.tex
+	   	doc/latex/developers/octave/functions/sim.tex
+	   	doc/latex/developers/octave/functions/train.tex
+	   	doc/latex/developers/octave/functions/trastd.tex Removed Files:
+	   	doc/latex/users/notations.tex
+
+2007-07-24 22:49  adb014
+
+	* main/: INDEX, image/INDEX: Some indexing fixes
+
+2007-07-24 22:49  adb014
+
+	* main/image/inst/flag.m: Remove flag.m ported to octave.
+
+2007-07-24 22:06  adb014
+
+	* extra/MacOSX/Makefile: INDX removed, so remove it from Makefile
+
+2007-07-24 22:03  adb014
+
+	* extra/NaN/DESCRIPTION, extra/Windows/DESCRIPTION,
+	  extra/civil/DESCRIPTION, extra/engine/DESCRIPTION,
+	  extra/graceplot/DESCRIPTION, extra/integration/DESCRIPTION,
+	  extra/mapping/DESCRIPTION, extra/pdb/DESCRIPTION,
+	  extra/secs1d/DESCRIPTION, extra/soctcl/DESCRIPTION,
+	  extra/tsa/DESCRIPTION, extra/xraylib/DESCRIPTION,
+	  main/audio/DESCRIPTION, main/combinatorics/DESCRIPTION,
+	  main/control/DESCRIPTION, main/general/DESCRIPTION,
+	  main/gsl/DESCRIPTION, main/ident/DESCRIPTION,
+	  main/info-theory/DESCRIPTION, main/io/DESCRIPTION,
+	  main/irsa/DESCRIPTION, main/linear-algebra/DESCRIPTION,
+	  main/miscellaneous/DESCRIPTION, main/octcdf/DESCRIPTION,
+	  main/outliers/DESCRIPTION, main/parallel/DESCRIPTION,
+	  main/physical-constants/DESCRIPTION, main/plot/DESCRIPTION,
+	  main/polynomial/DESCRIPTION, main/sockets/DESCRIPTION,
+	  main/specfun/DESCRIPTION, main/special-matrix/DESCRIPTION,
+	  main/splines/DESCRIPTION, main/strings/DESCRIPTION,
+	  main/struct/DESCRIPTION, main/symbolic/DESCRIPTION,
+	  main/time/DESCRIPTION, main/zenity/DESCRIPTION,
+	  nonfree/splines/DESCRIPTION: Version numbering changes of all
+	  packages needed due to inclusion of generic Makefile/configure in
+	  all packages
+
+2007-07-24 21:21  adb014
+
+	* doc/htdocs/: NEWS.in, index.in: Pre-release doc update
+
+2007-07-24 21:20  adb014
+
+	* main/io/src/dlmread.cc: Trivial attempt to handle the CR
+	  characters for DOS text files
+
+2007-07-24 21:18  adb014
+
+	* main/time/inst/daysact.m: Add daysact.m function
+
+2007-07-24 17:13  michaelschmid
+
+	* main/nnet/doc/latex/: developers/introduction.tex,
+	  developers/neuralNetworkToolboxForOctave.tcp,
+	  developers/neuralNetworkToolboxForOctave.tex,
+	  developers/notations.tex, developers/numbering.tex,
+	  developers/title.tex, developers/octave/octave.tex,
+	  developers/tests/tests.tex,
+	  users/neuralNetworkToolboxForOctaveUsersGuide.tex,
+	  users/numbering.tex, users/title2.tex, users/examples/1/1.tex,
+	  users/examples/1/MLP9_1_1.m, users/examples/1/MLP9_1_1.tex,
+	  users/octave/octave.tex, users/octave/neuroToolbox/logsig.tex,
+	  users/octave/neuroToolbox/neuroToolbox.tex,
+	  users/octave/neuroToolbox/newff.tex,
+	  users/octave/neuroToolbox/purelin.tex,
+	  users/octave/neuroToolbox/tansig.tex: Modified Files:
+	   	doc/latex/developers/introduction.tex
+	   	doc/latex/developers/neuralNetworkToolboxForOctave.tex
+	   	doc/latex/developers/numbering.tex
+	   	doc/latex/developers/title.tex
+	   	doc/latex/developers/octave/octave.tex
+	   	doc/latex/developers/tests/tests.tex
+	   	doc/latex/users/neuralNetworkToolboxForOctaveUsersGuide.tex
+	   	doc/latex/users/numbering.tex doc/latex/users/title2.tex
+	   	doc/latex/users/examples/1/1.tex
+	   	doc/latex/users/examples/1/MLP9_1_1.m
+	   	doc/latex/users/examples/1/MLP9_1_1.tex
+	   	doc/latex/users/octave/neuroToolbox/neuroToolbox.tex
+	   	doc/latex/users/octave/neuroToolbox/newff.tex Added Files:
+	   	doc/latex/users/octave/neuroToolbox/logsig.tex
+	   	doc/latex/users/octave/neuroToolbox/purelin.tex
+	   	doc/latex/users/octave/neuroToolbox/tansig.tex Removed Files:
+	   	doc/latex/developers/neuralNetworkToolboxForOctave.tcp
+	   	doc/latex/developers/notations.tex
+	   	doc/latex/users/octave/octave.tex
+
+2007-07-24 16:58  michaelschmid
+
+	* main/nnet/doc/latex/developers/octave/functions/:
+	  isposintOct.tex, isposint_netw_privOct.tex, min_max.tex: Removed
+	   	Files: isposintOct.tex isposint_netw_privOct.tex min_max.tex
+
+2007-07-24 16:53  michaelschmid
+
+	* main/nnet/doc/latex/users/octave/neuroToolbox/graphics/:
+	  logsig.eps, logsig.pdf, logsiglogo.eps, logsiglogo.pdf,
+	  purelin.eps, purelin.pdf, purelinlogo.eps, purelinlogo.pdf,
+	  tansig.eps, tansig.pdf, tansiglogo.eps, tansiglogo.pdf: Added
+	   	Files: doc/latex/users/octave/neuroToolbox/graphics/logsig.eps
+	   	doc/latex/users/octave/neuroToolbox/graphics/logsig.pdf
+	   	doc/latex/users/octave/neuroToolbox/graphics/logsiglogo.eps
+	   	doc/latex/users/octave/neuroToolbox/graphics/logsiglogo.pdf
+	  	doc/latex/users/octave/neuroToolbox/graphics/purelin.eps
+	   	doc/latex/users/octave/neuroToolbox/graphics/purelin.pdf
+	   	doc/latex/users/octave/neuroToolbox/graphics/purelinlogo.eps
+	   	doc/latex/users/octave/neuroToolbox/graphics/purelinlogo.pdf
+	   	doc/latex/users/octave/neuroToolbox/graphics/tansig.eps
+	   	doc/latex/users/octave/neuroToolbox/graphics/tansig.pdf
+	   	doc/latex/users/octave/neuroToolbox/graphics/tansiglogo.eps
+	   	doc/latex/users/octave/neuroToolbox/graphics/tansiglogo.pdf
+
+2007-07-24 14:19  michaelschmid
+
+	* main/nnet/doc/: latex/asymptote/transferFunctions/logsig.asy,
+	  latex/asymptote/transferFunctions/logsiglogo.asy,
+	  latex/asymptote/transferFunctions/purelin.asy,
+	  latex/asymptote/transferFunctions/purelinlogo.asy,
+	  latex/asymptote/transferFunctions/tansig.asy,
+	  latex/asymptote/transferFunctions/tansiglogo.asy,
+	  latex/common/bibliography.tex, latex/common/version.tex,
+	  latex/developers/codingGuideline/codingGuideline.tex,
+	  pdf/neuralNetworkToolboxForOctaveUsersGuide.pdf: Modified Files:
+	   	doc/latex/common/bibliography.tex
+	   	doc/latex/developers/codingGuideline/codingGuideline.tex
+	   	doc/pdf/neuralNetworkToolboxForOctaveUsersGuide.pdf Added Files:
+	   	doc/latex/asymptote/transferFunctions/logsig.asy
+	  	doc/latex/asymptote/transferFunctions/logsiglogo.asy
+	   	doc/latex/asymptote/transferFunctions/purelin.asy
+	  	doc/latex/asymptote/transferFunctions/purelinlogo.asy
+	   	doc/latex/asymptote/transferFunctions/tansig.asy
+	   	doc/latex/asymptote/transferFunctions/tansiglogo.asy
+	   	doc/latex/common/version.tex
+
+2007-07-24 01:41  adb014
+
+	* main/general/inst/del2.m: Remove functions ported to Octave.
+
+2007-07-24 01:37  adb014
+
+	* main/: image/inst/autumn.m, image/inst/bone.m,
+	  image/inst/brighten.m, image/inst/cool.m, image/inst/copper.m,
+	  image/inst/hot.m, image/inst/hsv.m, image/inst/jet.m,
+	  image/inst/pink.m, image/inst/prism.m, image/inst/rainbow.m,
+	  image/inst/spring.m, image/inst/summer.m, image/inst/white.m,
+	  image/inst/winter.m, plot/inst/meshc.m, plot/inst/peaks.m,
+	  general/inst/rat.m, general/inst/rats.m: Remove functions ported
+	  to Octave.
+
+2007-07-23 20:55  michaelschmid
+
+	* main/nnet/: DESCRIPTION, INDEX, inst/__calcjacobian.m,
+	  inst/__calcperf.m, inst/__checknetstruct.m, inst/__setx.m,
+	  inst/__trainlm.m, inst/isposint.m, inst/min_max.m, inst/newff.m,
+	  inst/poststd.m, inst/prestd.m, inst/purelin.m,
+	  inst/saveMLPStruct.m, inst/sim.m, inst/tansig.m, inst/train.m,
+	  inst/trastd.m: Add logsig transfer function
+
+	  Modified Files:
+	   	DESCRIPTION INDEX inst/__calcjacobian.m inst/__calcperf.m
+	   	inst/__checknetstruct.m inst/__setx.m inst/__trainlm.m
+	   	inst/isposint.m inst/min_max.m inst/newff.m inst/poststd.m
+	   	inst/prestd.m inst/purelin.m inst/saveMLPStruct.m inst/sim.m
+	   	inst/tansig.m inst/train.m inst/trastd.m
+
+2007-07-23 20:23  michaelschmid
+
+	* main/nnet/inst/: __dlogsig.m, __dpurelin.m, __dtansig.m,
+	  __printNetworkType.m, dpurelin.m, dtansig.m, logsig.m: Added
+	    Files: __dlogsig.m __dpurelin.m __dtansig.m __printNetworkType.m
+	    logsig.m Removed Files:
+	    dpurelin.m dtansig.m
+
+2007-07-23 17:10  michaelschmid
+
+	* main/nnet/inst/__printLayerWeights.m: [no log message]
+
+2007-07-23 17:03  michaelschmid
+
+	* main/nnet/inst/: __getx.m, __init.m, __mse.m, __newnetwork.m,
+	  __printAdaptFcn.m, __printAdaptParam.m, __printB.m,
+	  __printBiasConnect.m, __printBiases.m, __printIW.m,
+	  __printInitFcn.m, __printInitParam.m, __printInputConnect.m,
+	  __printInputWeights.m, __printInputs.m, __printLW.m,
+	  __printLayerConnect.m, __printLayers.m, __printMLPHeader.m,
+	  __printNumInputDelays.m, __printNumInputs.m,
+	  __printNumLayerDelays.m, __printNumLayers.m, __printNumOutputs.m,
+	  __printNumTargets.m, __printOutputConnect.m, __printOutputs.m,
+	  __printPerformFcn.m, __printPerformParam.m,
+	  __printTargetConnect.m, __printTargets.m, __printTrainFcn.m,
+	  __printTrainParam.m:
+	  * small modifies in:
+	    __getx.m, __init.m, __mse.m __newnetwork.m
+	    and all files beginning with __print*
+
+2007-07-20 18:14  goffioul
+
+	* admin/Windows/msvc/: octave.nsi.in, run_compilation.sh: install
+	  octave info files
+
+2007-07-20 15:19  goffioul
+
+	* admin/Windows/msvc/: README.txt.in, octave.nsi.in,
+	  run_compilation.sh: generate the README file semi-automatically +
+	  install a couple of info files from octave
+
+2007-07-20 13:38  goffioul
+
+	* admin/Windows/msvc/: run_compilation.sh, libs/cairo-1.4.10.diff,
+	  libs/cairo-1.4.10.txt: upgrade to cairo-1.4.10
+
+2007-07-20 11:36  goffioul
+
+	* admin/Windows/msvc/: run_compilation.sh, libs/pango-1.16.4.diff,
+	  libs/pango-1.16.4.txt: upgrade to pango-1.16.4 and use newer
+	  pango/glib in compilation process
+
+2007-07-19 23:12  treichl
+
+	* admin/MacOSX/createapp/selfupdate.sh: Initially added.
+
+2007-07-19 17:01  goffioul
+
+	* admin/Windows/msvc/libs/: glib-2.12.9.diff, glib-2.12.9.txt:
+	  upgrade to glib-2.12.9
+
+2007-07-19 14:04  goffioul
+
+	* main/sockets/src/sockets.cc: port to Win32
+
+2007-07-19 12:09  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: use local installers if
+	  present + use size of downloaded packages in main installer + kick
+	  out vrml (FreeWRL does not exist under Windows yet)
+
+2007-07-18 23:56  cdf
+
+	* extra/msh/inst/: MSH2Mgmsh.m, MSH2Mtopprop.m: added left and
+	  right subdomain to mesh.e
+
+2007-07-18 23:52  cdf
+
+	* extra/bim/examples/SSHAPE/: run_test.m, test.m: test.m renamed to
+	  run_test.m for consistency
+
+2007-07-18 22:58  goffioul
+
+	* admin/Windows/msvc/: .cvsignore, octave_package.nsi.in,
+	  run_compilation.sh: allow to download single-package installers
+	  from the main installer
+
+2007-07-18 17:44  goffioul
+
+	* admin/Windows/msvc/octave_package.nsi.in: allow silent execution
+	  of single-package installers
+
+2007-07-18 17:32  goffioul
+
+	* admin/Windows/msvc/: forge_autoload.ini, octave.nsi.in,
+	  octave_package.nsi.in, run_compilation.sh: allow to configure
+	  autoload state in single-package installer
+
+2007-07-18 14:40  goffioul
+
+	* admin/Windows/msvc/: .cvsignore, octave.nsi.in,
+	  octave_package.nsi.in, run_compilation.sh: handle dependencies in
+	  installers (main and pkg packages)
+
+2007-07-17 19:14  goffioul
+
+	* admin/Windows/msvc/: .cvsignore, octave.nsi.in,
+	  octave_package.nsi.in, run_compilation.sh: allow to build some
+	  o-f packages into separate installers
+
+2007-07-17 18:40  treichl
+
+	* admin/MacOSX/createapp/: applicationstartup.sh.in, octave.in:
+	  Minor changes.
+
+2007-07-17 17:01  goffioul
+
+	* admin/Windows/msvc/: atlascpu.ini, octave.nsi, octave.nsi.in,
+	  octaverc.win, run_compilation.sh, libs/octplot-0.4.0.diff: add
+	  octplot compilation
+
+2007-07-16 23:13  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: FAQ update for the topic:
+	  "An Octave-package also depends other libraries that are not
+	  currently installed on a system".
+
+2007-07-16 22:10  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: add VC++ runtime libs
+	  installation
+
+2007-07-16 18:37  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: Minor change.
+
+2007-07-16 18:35  treichl
+
+	* admin/MacOSX/: createapp/applicationstartup.sh.in,
+	  createapp/makeoctaveapp.sh, createapp/octaveapp.texi,
+	  solvedeps-2.9.12/solvedeps.sh: Changed all occurences of
+	  'octave.app' to 'Octave.app'.
+
+2007-07-16 18:27  treichl
+
+	* admin/MacOSX/createapp/: mkoctfile.in, octave.in: Removed
+	  -LSingleQuotes because of an error if compiling packages.
+
+2007-07-16 17:31  goffioul
+
+	* admin/Windows/msvc/: .cvsignore, octave.nsi, octave.nsi.in,
+	  octave_msys.nsi, run_compilation.sh: automate NSI scripts
+	  creation
+
+2007-07-15 22:33  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: add Qhull and octave-forge
+	  compilation
+
+2007-07-15 22:33  goffioul
+
+	* admin/Windows/msvc/libs/qhull-2003.1.diff: add patch for Qhull
+	  library
+
+2007-07-13 17:07  goffioul
+
+	* extra/secs2d/src/Utilities/Makefile: use stripping feature of
+	  mkoctfile instead
+
+2007-07-13 17:06  adb014
+
+	* extra/java/src/configure.base: Quote shell commands to protect
+	  []. Set LFLAGS.
+
+2007-07-13 17:04  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: small bug fix
+
+2007-07-13 17:00  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: partial support for
+	  octave-forge compilation
+
+2007-07-13 16:34  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: install additional octave
+	  files (mainly for packaging)
+
+2007-07-13 16:26  goffioul
+
+	* admin/Windows/msvc/libs/octave.diff: add diff against octave
+
+2007-07-13 16:24  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: add compilation of octave,
+	  download of JOGL, installation of license file + factorize some
+	  parts
+
+2007-07-13 16:23  goffioul
+
+	* admin/Windows/msvc/libs/atlas-3.6.0.diff: use default values when
+	  compiling ATLAS
+
+2007-07-13 11:19  goffioul
+
+	* main/: comm/DESCRIPTION, comm/src/galois.h, fixed/DESCRIPTION,
+	  fixed/src/Array-f.cc, fixed/src/fixedCMatrix.h,
+	  fixed/src/fixedCNDArray.h, fixed/src/fixedMatrix.h,
+	  fixed/src/fixedNDArray.h: upgrade to newer macro API in octave
+
+2007-07-12 20:38  adb014
+
+	* admin/rpm_template.in: Use 'configure;make all;make install' code
+	  in packages to simplify RPMs
+
+2007-07-12 20:36  adb014
+
+	* doc/htdocs/: index.in, packages.in: Other doc updates
+
+2007-07-12 20:36  adb014
+
+	* configure.base, doc/doxygen_mainpage.cc, doc/macros.m4,
+	  doc/macros.m4.in: Add __OCTAVE_VERSION__ m4 macro and use in
+	  documentation
+
+2007-07-12 20:34  adb014
+
+	* Makeconf.base, packages/package_Makefile.in,
+	  packages/package_configure.in: Include Makefile/configure in
+	  packages to allow 'configure; make all; make install' work
+
+2007-07-12 16:12  goffioul
+
+	* admin/Windows/msvc/: libs/fltk-1.1.7.diff, run_compilation.sh:
+	  add FLTK compilation (end of 3rd party tools)
+
+2007-07-12 14:34  goffioul
+
+	* admin/Windows/msvc/: run_compilation.sh, libs/hdf5.diff,
+	  libs/hdf5.txt: add HDF5 compilation (with a patch)
+
+2007-07-12 12:30  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: add compilation of less,
+	  CLN, GiNaC, wxWidgets and gnuplot
+
+2007-07-12 10:12  goffioul
+
+	* admin/Windows/msvc/: run_compilation.sh, libs/glpk-4.19.diff,
+	  libs/glpk-4.19.txt: switch to GLPK 4.19
+
+2007-07-11 22:27  adb014
+
+	* extra/bim/examples/: COMSON/run.m, COMSON/run_test.m,
+	  FIUME/run.m, FIUME/run_test.m, SQUARE/run.m, SQUARE/run_test.m,
+	  SSHAPE/run.m, SSHAPE/test.m: Rename run.m example files to
+	  run_test.m so that indexing will ignore them
+
+2007-07-11 22:21  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: fix for glib/pango test
+
+2007-07-11 22:18  adb014
+
+	* extra/jhandles/INDEX, main/signal/INDEX: Indexing updates
+
+2007-07-11 22:18  adb014
+
+	* doc/htdocs/packages.in: doc update
+
+2007-07-11 22:16  adb014
+
+	* extra/triangular/doc/.cvsignore, doc/htdocs/.cvsignore: ignore
+	  some files
+
+2007-07-11 22:14  adb014
+
+	* main/fixed/DESCRIPTION: typo
+
+2007-07-11 22:11  adb014
+
+	* packages/Makefile: Reverse sense of comparsion test so that
+	  removed packages won't be marked as needing uploading
+
+2007-07-11 21:55  treichl
+
+	* admin/MacOSX/createapp/: mkoctfile.in, octave.in: Added support
+	  to feed through LDFLAGS and CFLAGS to octave resp. mkoctfile. Also
+	  removed another -arch flag in octave.in.
+
+2007-07-11 21:23  adb014
+
+	* doc/htdocs/packages.in, extra/MacOSX/DESCRIPTION,
+	  extra/secs2d/DESCRIPTION, extra/symband/DESCRIPTION,
+	  language/pt_BR/DESCRIPTION, main/comm/DESCRIPTION,
+	  main/econometrics/DESCRIPTION, main/fixed/DESCRIPTION,
+	  main/fixed/src/configure.base, main/odepkg/DESCRIPTION,
+	  main/optiminterp/DESCRIPTION, main/signal/DESCRIPTION,
+	  main/statistics/DESCRIPTION, main/vrml/DESCRIPTION,
+	  nonfree/arpack/DESCRIPTION: Update version numbers of changed
+	  packages since last release
+
+2007-07-11 21:22  adb014
+
+	* packages/Makefile: small versioning comparsion fix
+
+2007-07-11 20:35  adb014
+
+	* packages/Makefile: Don't let source code of package be installed
+	  in temporary directory till testing pass, as PKG_ADD files might
+	  cause dependency issues during the build
+
+2007-07-11 20:32  adb014
+
+	* main/optiminterp/src/: Makefile, configure.base, optiminterp.cc,
+	  optiminterp_wrapper.F90: Fix for gfortran v4.0 build with -pipe
+	  option, and fink build fixes (B.P. Abbot)
+
+2007-07-11 20:30  adb014
+
+	* extra/triangular/INDEX, main/INDEX, main/comm/INDEX,
+	  main/signal/INDEX: Index updates
+
+2007-07-11 20:26  adb014
+
+	* extra/: java/INDEX, jhandles/INDEX: Index updates
+
+2007-07-11 20:26  adb014
+
+	* admin/build-www.py: ensure the temporary install directory exists
+
+2007-07-11 20:24  adb014
+
+	* admin/rpm_template.in: Try case of existing on_install.m file
+
+2007-07-11 20:23  adb014
+
+	* doc/htdocs/: .cvsignore, NEWS.in, docs.in, index.in, packages.in:
+	  pre-release doc updates
+
+2007-07-11 16:37  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: add compilation of "units"
+	  package
+
+2007-07-11 16:32  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: put target "bin" directory
+	  at the end of PATH + use FTP to download texinfo package, to avoid
+	  auto-decompression of the file
+
+2007-07-11 16:18  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: add compilation for
+	  various packages
+
+2007-07-11 16:17  goffioul
+
+	* admin/Windows/msvc/libs/: freetype-2.3.1.diff,
+	  freetype-2.3.1.txt: update patch for easier MSVC compilation
+
+2007-07-11 12:20  pkienzle
+
+	* doc/htdocs/index.in: indicate which binaries include octave-forge
+
+2007-07-11 10:22  mcreel
+
+	* main/econometrics/inst/: __kernel_epanechnikov.m, delta_method.m,
+	  gmm_estimate.m, kernel_example.m, kernel_optimal_bandwidth.m,
+	  kernel_regression.m, kernel_regression_nodes.m, mle_estimate.m,
+	  mle_results.m, mle_variance.m, scale_data.m: Little thing here
+	  and there, mostly related to working better with Octave 2.9.x
+
+2007-07-11 06:50  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: some compilation fixes
+
+2007-07-11 04:14  pkienzle
+
+	* doc/htdocs/index.in: minor typo
+
+2007-07-10 21:20  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: fix libf2c installation
+	  and export INCLUDE and LIB for MSVC compilation
+
+2007-07-10 17:15  cdf
+
+	* extra/msh/: inst/MSH2Mgeomprop.m, inst/MSH2Mgmsh.m,
+	  inst/MSH2Mjoinstructm.m, inst/MSH2Mnodesonsides.m,
+	  inst/MSH2Mstructmesh.m, inst/MSH2Msubmesh.m, inst/MSH2Mtopprop.m,
+	  COPYING, DESCRIPTION, INDEX: first release
+
+2007-07-10 17:08  cdf
+
+	* extra/: bim/COPYING, bim/DESCRIPTION, bim/INDEX,
+	  bim/doc/tutorial.html, bim/examples/COMSON/comson.geo,
+	  bim/examples/COMSON/run.m, bim/examples/FIUME/fiume.geo,
+	  bim/examples/FIUME/run.m, bim/examples/SQUARE/quadrato.geo,
+	  bim/examples/SQUARE/run.m, bim/examples/SSHAPE/run.m,
+	  bim/examples/SSHAPE/sshape.geo, bim/inst/BIM2Aadvdiff.m,
+	  bim/inst/BIM2Areaction.m, bim/inst/BIM2Arhs.m,
+	  bim/inst/BIM2Cglobalflux.m, bim/inst/BIM2Cmeshproperties.m,
+	  bim/inst/BIM2Cpdegrad.m, bim/inst/BIM2Cunknowncoord.m,
+	  bim/inst/BIM2Cunknownsonside.m, bim/inst/BIMUbern.m,
+	  bim/inst/BIMUlogm.m, fpl/COPYING, fpl/DESCRIPTION, fpl/INDEX,
+	  fpl/inst/FPL2coloredgradient.net,
+	  fpl/inst/FPL2coloredrubbersheet.net, fpl/inst/FPL2dxappenddata.m,
+	  fpl/inst/FPL2dxoutputdata.m, fpl/inst/FPL2dxoutputtimeseries.m,
+	  fpl/inst/FPL2pdesurf.m, fpl/inst/FPL2quiver.m,
+	  fpl/inst/FPL2quiver.net, fpl/inst/FPL2showmesh.m,
+	  fpl/inst/FPL2showmesh.net: first release
+
+2007-07-10 17:03  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: UIControlObject.java,
+	  Utils.java: support "characters" unit
+
+2007-07-10 16:46  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: CallbackProperty.java,
+	  OctaveCallback.java: better visualization of CallbackProperty
+	  values
+
+2007-07-10 16:38  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_figure.m,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/HandleObject.java: add IntegerHandle
+	  property (no real handles, but "non-integer" handle are < 0)
+
+2007-07-10 13:18  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/UIPanelObject.java: fix
+	  re-position bug in uipanel
+
+2007-07-10 13:15  pkienzle
+
+	* doc/: macros.m4, htdocs/index.in: add news of OSX installer
+
+2007-07-10 11:53  goffioul
+
+	* extra/jhandles/inst/: ancestor.m, gcbo.m: implement "ancestor" +
+	  add 2nd argument to "gcbo"
+
+2007-07-10 11:30  adb014
+
+	* main/odebvp/: DESCRIPTION, inst/lfdif.m: Reorg for valid
+	  octave-forge package, texinfo-fy the function and adhere more
+	  closely to Octaves Style
+
+2007-07-09 22:22  goffioul
+
+	* extra/jhandles/: inst/gcbo.m,
+	  src/org/octave/graphics/Callback.java,
+	  src/org/octave/graphics/CallbackProperty.java,
+	  src/org/octave/graphics/OctaveCallback.java,
+	  src/org/octave/graphics/RootObject.java: implement CallbackObject
+	  property in root object + gcbo front-end function
+
+2007-07-09 19:46  sis-sou
+
+	* main/signal/inst/bohmanwin.m: Initial Commit Into CVS.
+
+2007-07-09 18:56  sis-sou
+
+	* main/signal/inst/nuttallwin.m: Initial Commit Into CVS.
+
+2007-07-09 17:26  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_figure.m,
+	  inst/__jhandles_set.m, src/org/octave/graphics/HandleObject.java:
+	  keep making handle valid in object constructor
+
+2007-07-09 17:20  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/CallbackProperty.java:
+	  remove garbage debug output
+
+2007-07-09 17:14  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_figure.m, inst/drawnow.m,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/BarseriesObject.java,
+	  src/org/octave/graphics/BaseLineObject.java,
+	  src/org/octave/graphics/Callback.java,
+	  src/org/octave/graphics/CallbackListener.java,
+	  src/org/octave/graphics/CallbackProperty.java,
+	  src/org/octave/graphics/ColorbarObject.java,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/ImageObject.java,
+	  src/org/octave/graphics/LegendObject.java,
+	  src/org/octave/graphics/LineObject.java,
+	  src/org/octave/graphics/OctaveCallback.java,
+	  src/org/octave/graphics/PatchObject.java,
+	  src/org/octave/graphics/RootObject.java,
+	  src/org/octave/graphics/StemseriesObject.java,
+	  src/org/octave/graphics/SurfaceObject.java,
+	  src/org/octave/graphics/TextObject.java,
+	  src/org/octave/graphics/UIControlObject.java,
+	  src/org/octave/graphics/UIPanelObject.java: implement CreateFcn
+	  and DeleteFcn callbacks (still unstable)
+
+2007-07-09 12:29  t-ca
+
+	* main/odebvp/: COPYING, DESCRIPTION: [no log message]
+
+2007-07-08 16:03  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: CallbackProperty.java,
+	  GLRenderCanvas.java: do not block the event queue thread when
+	  executing callbacks
+
+2007-07-08 16:02  goffioul
+
+	* extra/java/src/org/octave/Octave.java: implement queueing of
+	  invoke objects (mainly for callbacks), without blocking the calling
+	  thread
+
+2007-07-07 15:02  sis-sou
+
+	* main/signal/inst/diric.m: Initial Commit Into CVS.
+
+2007-07-07 06:04  pkienzle
+
+	* extra/java/src/: Makeconf.in, Makefile, __java__.cc,
+	  configure.base: Add support for Mac OS X builds
+
+2007-07-06 14:19  sis-sou
+
+	* main/comm/inst/qfuncinv.m: Small modification.
+
+2007-07-06 14:11  sis-sou
+
+	* main/comm/inst/qfunc.m: Using normcdf.
+
+2007-07-05 12:09  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderCanvas.java: fix
+	  image capture: drop alpha channel and read from back buffer
+
+2007-07-05 11:13  goffioul
+
+	* extra/jhandles/doc/: demoUI.png, demo2.png: add 2 screenshots
+
+2007-07-05 10:28  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: FigureObject.java,
+	  UIControlObject.java, UIPanelObject.java, Utils.java: hide figure
+	  window as soon as possible when deleting it (and avoid some race
+	  conditions) + use system colors
+
+2007-07-04 21:24  sis-sou
+
+	* main/comm/inst/qfuncinv.m: Help correction.
+
+2007-07-04 21:21  sis-sou
+
+	* main/comm/inst/qfuncinv.m: Initial Commit Into CVS.
+
+2007-07-04 21:13  sis-sou
+
+	* main/comm/inst/qfunc.m: Initial Commit into CVS.
+
+2007-07-04 17:00  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_uipanel.m, inst/uipanel.m,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/ColorbarObject.java,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/GLRenderCanvas.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/LegendObject.java,
+	  src/org/octave/graphics/PositionLayout.java,
+	  src/org/octave/graphics/Positionable.java,
+	  src/org/octave/graphics/UIControlAdapter.java,
+	  src/org/octave/graphics/UIControlObject.java,
+	  src/org/octave/graphics/UIPanelObject.java,
+	  src/org/octave/graphics/Utils.java: factorize position conversion
+	  code + implements more generic position-based layout manager +
+	  schedule redraw in OpenGL thread + provide uipanel front-end
+
+2007-07-03 23:15  treichl
+
+	* admin/MacOSX/createapp/makeoctaveapp.sh: Set language variable
+	  "LANG=en" before creating Readme.html.in file.
+
+2007-07-03 22:10  treichl
+
+	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: [no log message]
+
+2007-07-03 20:50  treichl
+
+	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: [no log message]
+
+2007-07-03 19:48  treichl
+
+	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: Added code to remove
+	  special strings like "-arch ppc" or "-isysroot <DIR>" in
+	  mkoctfile-$VERSION after octave has been built.
+
+2007-07-03 19:47  treichl
+
+	* admin/MacOSX/createapp/: mkoctfile.in, octave.in: These lines:
+	    CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%'"
+	    LDFLAGS="-L'${ROOT}/lib' -L'${ROOT}/lib/octave-%VERSION%'" are
+	  automatically set by mkoctfile-$VERSION. So they don't need to be
+	  set in mkoctfile.
+
+2007-07-03 17:30  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: HandleObject.java,
+	  UIControlObject.java, UIPanelObject.java: low-level support for
+	  uipanel objects
+
+2007-07-03 15:56  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: UIControlAdapter.java,
+	  UIControlObject.java, Utils.java: factorize Font searching code +
+	  add support for FontUnits handling in uicontrol objects
+
+2007-07-03 15:12  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  HandleObject.java, LineObject.java, StemseriesObject.java: make
+	  title/labels regular children of axes, but with no visibility
+
+2007-07-03 15:11  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/:
+	  HandleObjectListProperty.java, RootObject.java: add
+	  ShowHiddenHandles property to root object
+
+2007-07-03 13:57  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: CallbackProperty.java,
+	  HandleObject.java, HandleObjectListProperty.java,
+	  RootObject.java: add HandleVisibility property
+
+2007-07-03 13:27  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  GLRenderer.java, HandleObject.java: add Clipping property
+
+2007-07-03 12:23  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/UIControlObject.java: use
+	  same callback arguments as Matlab (handle,event)
+
+2007-07-03 12:05  goffioul
+
+	* extra/java/src/__java__.cc: allow callbacks in the form {@fun,
+	  arg0, ...}
+
+2007-07-03 11:36  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: Edit2Control.java,
+	  EditControl.java, PushButtonControl.java, UIControl.java,
+	  UIControlAdapter.java, UIControlObject.java: refactor the code by
+	  using property listeners as much as possible
+
+2007-07-02 16:54  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: Edit2Control.java,
+	  EditControl.java, PushButtonControl.java, RootObject.java,
+	  UIControl.java, UIControlAdapter.java, UIControlObject.java:
+	  rewrite using Swing components (avoid re-inventing the wheel)
+
+2007-07-01 23:27  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: Edit2Control.java,
+	  EditControl.java, PushButtonControl.java, UIControl.java,
+	  UIControlListener.java, UIControlObject.java,
+	  UITooltipManager.java: more uicontrol implementation ("edit"
+	  styled controls)
+
+2007-07-01 23:27  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/SimpleTextEngine.java:
+	  small bug fix
+
+2007-07-01 00:33  treichl
+
+	* admin/MacOSX/createapp/: mkoctfile.in, octave.in: Set up
+	  $DL_LDFLAGS and $SED.
+
+2007-06-30 19:37  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: Minor change.
+
+2007-06-30 19:36  treichl
+
+	* admin/MacOSX/createapp/: makeoctaveapp.sh, octaveapp.texi: Added
+	  description for "rebuild packages if Octave.app is moved?".
+
+2007-06-30 18:44  treichl
+
+	* admin/MacOSX/: createapp/makeoctaveapp.sh,
+	  solvedeps-2.9.12/octave-2.9.12.diff,
+	  solvedeps-2.9.12/solvedeps.sh: Minor changes.
+
+2007-06-30 16:48  treichl
+
+	* admin/MacOSX/: createapp/makeoctaveapp.sh,
+	  createapp/mkoctfile.in, createapp/octave.in,
+	  createapp/octaveapp.texi, solvedeps-2.9.12/octave-2.9.12.diff,
+	  solvedeps-2.9.12/solvedeps.sh: Some minor changes.
+
+2007-06-30 15:35  treichl
+
+	* admin/MacOSX/: createapp/makeoctaveapp.sh,
+	  solvedeps-2.9.12/solvedeps.sh: Some minor changes.
+
+2007-06-29 19:51  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: Final minor changes.
+
+2007-06-29 18:48  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: Minor changes.
+
+2007-06-29 17:03  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_uicontrol.m,
+	  inst/uicontrol.m, src/org/octave/graphics/FigureLayout.java,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/PushButtonControl.java,
+	  src/org/octave/graphics/UIControl.java,
+	  src/org/octave/graphics/UIControlEvent.java,
+	  src/org/octave/graphics/UIControlListener.java,
+	  src/org/octave/graphics/UIControlObject.java: add skeleton for
+	  uicontrol support
+
+2007-06-29 13:22  mcreel
+
+	* main/econometrics/inst/__kernel_weights.m: alternate version of
+	  weights. The good one is an oct file, for performance. This one is
+	  for reference.
+
+2007-06-29 13:18  mcreel
+
+	* main/econometrics/src/: Makefile, __kernel_weights.cc: New
+	  function for kernel weights, done as oct file for performance.
+
+2007-06-29 13:15  mcreel
+
+	* main/econometrics/inst/kernel_example.m: minor improvements
+
+2007-06-29 13:15  mcreel
+
+	* main/econometrics/inst/: __kernel_epanechnikov.m,
+	  kernel_density_cvscore.m, kernel_density_nodes.m,
+	  kernel_optimal_bandwidth.m, kernel_regression_nodes.m: new
+	  versions that split out calculation of weights (now in oct file).
+	  Other minor improvements, and proper copyrights.
+
+2007-06-29 03:31  pkienzle
+
+	* admin/MacOSX/createapp/: mkoctfile.in, octave.in, octaveapp.texi:
+	  partial support for mkoctfile on path with spaces
+
+2007-06-29 02:35  pkienzle
+
+	* admin/MacOSX/createapp/: applicationstartup.sh.in, octave.in:
+	  Initial support for paths with spaces
+
+2007-06-29 02:16  pkienzle
+
+	* admin/MacOSX/createapp/: Readme.html.in, octaveapp.texi: Minor
+	  rephrasing.
+
+2007-06-28 23:01  treichl
+
+	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: Added the BUILDARCH
+	  variable for the PPC octave.app.
+
+2007-06-28 22:08  goffioul
+
+	*
+	  extra/jhandles/src/org/octave/graphics/HandleObjectListProperty.java:
+	  allow to set HandleObjectListProperty with Matrix objects
+
+2007-06-28 22:07  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GroupObject.java: fix
+	  limits computation in group objects
+
+2007-06-28 22:07  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: BarseriesObject.java,
+	  PatchObject.java: fix barseries problems (make it work with
+	  Matrix objects)
+
+2007-06-28 22:06  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: Property.java,
+	  VectorProperty.java: add some debug info (should make possible to
+	  disable it)
+
+2007-06-28 21:26  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderer.java: fix for
+	  surface drawing in texturemap mode
+
+2007-06-28 15:33  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: reset
+	  "Key" property
+
+2007-06-28 14:55  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: GLRenderer.java,
+	  SurfaceObject.java: implement texture mapping for surface objects
+
+2007-06-28 14:54  goffioul
+
+	*
+	  extra/jhandles/src/org/octave/graphics/HandleObjectListProperty.java:
+	  fix problem with "clf" => allow to set HandleObjectListProperty to
+	  null
+
+2007-06-28 11:44  sis-sou
+
+	* main/signal/inst/sawtooth.m: Initial Commit into CVS.
+
+2007-06-28 11:05  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: implement
+	  auto-legend to support key/keylabel mechanism of octave
+
+2007-06-28 06:22  pkienzle
+
+	* admin/MacOSX/createapp/Readme.html.in: Template for the dmg
+	  readme
+
+2007-06-27 23:06  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: provide
+	  compatibility with key/keylabel mechanism (does not work, but at
+	  least avoids errors)
+
+2007-06-27 22:25  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: ColorbarObject.java,
+	  Property.java: make colorbar object to listen the figure colormap
+	  (and avoid race condition)
+
+2007-06-27 22:13  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: [no log message]
+
+2007-06-27 21:56  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: Ispell spell-checking has
+	  been done.
+
+2007-06-27 21:42  treichl
+
+	* admin/MacOSX/createapp/: mkoctfile.in, octave.in: Removed the bug
+	  if 'octave' is a link to <octave.app>/Contents/Resources/bin/octave.
+
+2007-06-27 21:00  sis-sou
+
+	* main/signal/inst/gauspuls.m: Initial Commit into CVS.
+
+2007-06-27 19:41  sis-sou
+
+	* main/signal/inst/gmonopuls.m: Initial Commit into CVS.
+
+2007-06-27 19:30  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: Initially added.
+
+2007-06-27 19:05  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  ColorbarObject.java: add Layer property to axes and use it in
+	  colorbar
+
+2007-06-27 19:04  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/Property.java: add some
+	  further synchronization gards
+
+2007-06-27 18:21  goffioul
+
+	* extra/jhandles/: PKG_ADD, inst/__jhandles_go_colorbar.m,
+	  inst/colorbar.m, src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/ColorbarObject.java: scale colorbar axes
+	  with CLim of target axes + show colorbar ticks + mark colorbar as
+	  command
+
+2007-06-27 18:17  treichl
+
+	* admin/MacOSX/createapp/: _DS_Store_Doc, _DS_Store_Main,
+	  _background.png, applicationstartup.sh.in, makeoctaveapp.sh,
+	  mkoctfile.in, octave.icns, octave.in: Initially added.
+
+2007-06-27 18:12  treichl
+
+	* admin/MacOSX/solvedeps-2.9.12/: SuiteSparse.diff, f2c.diff,
+	  octave-2.9.12.diff, solvedeps.sh: Initially added.
+
+2007-06-27 14:14  goffioul
+
+	* admin/Windows/msvc/: makeall.sh.in, octave.nsi: include gmsh in
+	  distribution together with secs2d package
+
+2007-06-27 13:19  goffioul
+
+	* extra/secs2d/PKG_ADD: fix for gmsh/dx executable lookup
+
+2007-06-27 02:58  adb014
+
+	* main/signal/inst/specgram.m: Add axes to specgram
+
+2007-06-27 02:10  adb014
+
+	* extra/secs2d/PKG_ADD: Don't use which as this won't work on
+	  Windows.. Use Octave file_on_path instead
+
+2007-06-26 23:49  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: reset
+	  axes position correctly
+
+2007-06-26 23:37  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_colorbar.m,
+	  src/org/octave/graphics/ColorbarObject.java: correct location of
+	  ticks for colorbar + make colorbar unique per axes object
+
+2007-06-26 23:36  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: add
+	  XAxisLocation and YAxisLocation property to axes objects
+
+2007-06-25 22:19  adb014
+
+	* extra/triangular/: COPYING, DESCRIPTION, INDEX, Makefile,
+	  doc/Makefile, doc/triangular.texi, inst/triangular.m,
+	  src/Makefile, src/uppertri.cc: Add example triangular matrix type
+	  to document the procedure of adding user types to Octave
+
+2007-06-25 22:09  sis-sou
+
+	* main/signal/inst/barthannwin.m: Minor corrections.
+
+2007-06-25 18:19  abarth93
+
+	* main/geometry/: DESCRIPTION, inst/griddata.m: griddata returns
+	  now NaN for location where no value can be obtained (instead of 0)
+
+2007-06-25 15:44  goffioul
+
+	* extra/java/src/__java__.cc: avoid JVM to register signal handlers
+
+2007-06-24 12:26  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_colorbar.m, inst/colorbar.m,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/ColorbarObject.java: add colorbar
+	  front-end functions
+
+2007-06-24 00:49  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: ColorbarObject.java,
+	  Property.java: add backend support for colorbar
+
+2007-06-23 23:13  goffioul
+
+	* extra/jhandles/inst/sphere.m: add sphere utility function
+
+2007-06-23 19:25  goffioul
+
+	* extra/java/src/Makefile: add Matrix.java to the archive
+
+2007-06-23 16:15  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  GLRenderer.java, HandleObject.java, ImageObject.java: implement
+	  indexed color images
+
+2007-06-23 16:14  goffioul
+
+	* extra/java/src/org/octave/Matrix.java: add convenience methods to
+	  get matrix min/max values
+
+2007-06-23 16:13  goffioul
+
+	* extra/java/src/__java__.cc: allow conversion of ranges when
+	  java_convert_matrix is enabled
+
+2007-06-23 15:41  adb014
+
+	* extra/java/src/configure.base: More generic config process (for
+	  Michael)
+
+2007-06-23 00:43  goffioul
+
+	* extra/jhandles/: inst/__line__.m,
+	  src/org/octave/graphics/LineObject.java,
+	  src/org/octave/graphics/VectorProperty.java: generalize the use
+	  of Matrix class
+
+2007-06-23 00:42  goffioul
+
+	* extra/java/src/: __java__.cc, org/octave/Matrix.java: keep
+	  []/null conversion in all cases + support empty matrix in java
+
+2007-06-23 00:15  goffioul
+
+	* extra/jhandles/inst/: __jhandles_go_image.m, image.m: use regular
+	  octave front-end for images
+
+2007-06-23 00:14  goffioul
+
+	* extra/java/src/__java__.cc: allow conversion of uint8 arrays
+
+2007-06-23 00:13  goffioul
+
+	* extra/java/src/org/octave/Matrix.java: add conversion to int[][]
+
+2007-06-23 00:12  goffioul
+
+	* extra/jhandles/: PKG_ADD, PKG_DEL,
+	  src/org/octave/graphics/ArrayProperty.java,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/DoubleMatrixProperty.java,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/ImageObject.java,
+	  src/org/octave/graphics/MatrixProperty.java,
+	  src/org/octave/graphics/Utils.java: complete conversion from
+	  [Double]MatrixProperty to ArrayProperty
+
+2007-06-22 21:58  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: ArrayProperty.java,
+	  AxesObject.java, BarseriesObject.java, ColorProperty.java,
+	  DoubleArrayProperty.java, FigureObject.java, GLTextRenderer.java,
+	  GraphicObject.java, ImageObject.java, LightObject.java,
+	  LineObject.java, PropertyListener.java, StemseriesObject.java,
+	  TextObject.java, VectorProperty.java: complete conversion from
+	  DoubleArrayProperty to VectorProperty + remove obsolete files
+
+2007-06-22 21:58  goffioul
+
+	* extra/java/src/org/octave/Matrix.java: more convenience API
+
+2007-06-22 11:05  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/PatchObject.java: revert
+	  previous change to keep code mroe readble
+
+2007-06-22 10:47  goffioul
+
+	* extra/java/src/org/octave/Matrix.java: add convenience methods
+
+2007-06-22 00:29  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_surface.m, inst/surf.m,
+	  src/org/octave/graphics/ArrayProperty.java,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/PatchObject.java,
+	  src/org/octave/graphics/SurfaceObject.java,
+	  src/org/octave/graphics/Utils.java,
+	  src/org/octave/graphics/VectorProperty.java: add VectorProperty +
+	  more conversion to new array/vector properties
+
+2007-06-22 00:04  goffioul
+
+	* extra/java/src/org/octave/Matrix.java: add convenience
+	  constructors
+
+2007-06-21 23:57  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/ArrayProperty.java: moved
+	  cache of converted java arrays to java package
+
+2007-06-21 23:56  goffioul
+
+	* extra/java/src/org/octave/Matrix.java: add cache for converted
+	  java arrays (moved from jhandles) + inline printing of small row
+	  vectors (up to 5 elements)
+
+2007-06-21 22:39  sis-sou
+
+	* main/signal/inst/blackmanharris.m: Initial Commit into CVS.
+
+2007-06-20 23:41  goffioul
+
+	* extra/jhandles/: inst/__jhandles_get.m, inst/__jhandles_set.m,
+	  src/org/octave/graphics/ArrayProperty.java,
+	  src/org/octave/graphics/DoubleArrayProperty.java,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/PatchObject.java: start using new
+	  ArrayProperty (+ some backward compatible bridge code). Expects
+	  bugs, though.
+
+2007-06-20 17:35  goffioul
+
+	* extra/jhandles/: inst/__jhandles_get.m, inst/__jhandles_set.m,
+	  src/org/octave/graphics/ArrayProperty.java: new array property,
+	  based on the new java matrix wrapper
+
+2007-06-20 16:45  goffioul
+
+	* extra/java/: PKG_ADD, src/__java__.cc,
+	  src/org/octave/Matrix.java: add java matrix wrapper for octave
+	  values
+
+2007-06-20 12:37  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  ColorProperty.java, FigureObject.java, GLRenderer.java,
+	  LineStyleProperty.java, Renderer.java: complete render/front-end
+	  separation in axes drawing + remove old code
+
+2007-06-20 00:05  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  GLRenderer.java, Renderer.java: further implementation for minor
+	  ticks/grid + more render/front-end separation in axes drawing
+
+2007-06-18 22:34  sis-sou
+
+	* main/signal/inst/barthannwin.m: Initial commit into CVS.
+
+2007-06-18 17:20  hauberg
+
+	* main/image/DESCRIPTION: Updated to 1.0.2
+
+2007-06-18 17:18  hauberg
+
+	* main/image/inst/imread.m: fix call to __magick_read__ (by Roman
+	  Stanchak)
+
+2007-06-18 17:01  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: add
+	  initial (unfinished) support for minor grid
+
+2007-06-18 14:51  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  GLRenderer.java, GLTextRenderer.java, GraphicObject.java,
+	  ImageObject.java, LineObject.java, PatchObject.java,
+	  Renderer.java, SimpleTextEngine.java, SurfaceObject.java,
+	  TextObject.java: initial support for logarithmic scales + move
+	  text engine to a re-usable location (used now by ticks as well)
+
+2007-06-15 16:58  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: small fix for ATLAS
+	  compilation
+
+2007-06-14 16:51  goffioul
+
+	* admin/Windows/msvc/: run_compilation.sh, libs/atlas-3.6.0.diff:
+	  add ATLAS compilation + updated patch for ATLAS
+
+2007-06-11 16:41  goffioul
+
+	* admin/Windows/msvc/octave.nsi: allow installation on WinXP x64
+
+2007-06-11 14:28  goffioul
+
+	* extra/jhandles/inst/__jhandles_go_areaseries.m: cleaner
+	  (portable) implementation + start using listeners to link areaseries
+	  object and the underlying patch object
+
+2007-06-11 14:26  goffioul
+
+	* extra/jhandles/: inst/__jhandles_add_listener.m,
+	  inst/addlistener.m, src/org/octave/graphics/OctaveSink.java,
+	  src/org/octave/graphics/HandleNotifier.java: allow to link a
+	  listener to more than one properties (within the same object)
+
+2007-06-11 14:25  goffioul
+
+	* extra/jhandles/inst/: __jhandles_add_property.m, addprop.m: allow
+	  adding hidden/readonly properties + support for handle and
+	  colorradio properties
+
+2007-06-11 14:23  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_hggroup.m, inst/hggroup.m,
+	  src/org/octave/graphics/GroupObject.java: add hggroup front-end +
+	  auto-scale a group objects according to its children
+
+2007-06-11 07:50  goffioul
+
+	* extra/jhandles/inst/__jhandles_go_areaseries.m: low-level support
+	  for area plots
+
+2007-06-11 07:49  goffioul
+
+	* extra/jhandles/: inst/__jhandles_add_listener.m,
+	  inst/__jhandles_add_property.m, inst/addlistener.m,
+	  inst/addprop.m,
+	  src/org/octave/graphics/DoubleMatrixProperty.java,
+	  src/org/octave/graphics/Property.java: add front-end for property
+	  and listener creation
+
+2007-06-08 15:05  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/LegendObject.java: avoid
+	  array out-of-bound exception when specifying less strings than the
+	  number of items in the axes
+
+2007-06-08 14:50  goffioul
+
+	* extra/: java/src/__java__.cc,
+	  jhandles/src/org/octave/graphics/OctaveSink.java: remove debug
+	  output
+
+2007-06-08 14:36  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/LineStyleProperty.java:
+	  support "" as valid linestyle (although Matlab does not support it)
+
+2007-06-08 14:26  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderer.java: fix bug
+	  (array out of bound) when using non-equal X/Y grid
+
+2007-06-08 13:53  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: add libpng compilation
+
+2007-06-08 11:37  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/OctaveSink.java: add some
+	  debug output (to be removed)
+
+2007-06-08 11:36  goffioul
+
+	* extra/java/src/__java__.cc:
+	  (java) thread-safe implementation
+
+2007-06-07 16:59  goffioul
+
+	* extra/java/src/__java__.cc: use java for thread-related stuffs
+	  (WARNING: code not stable yet)
+
+2007-06-07 14:10  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: use light version of
+	  LAPACK + add SuiteSparse compilation + basic doc
+
+2007-06-07 14:05  goffioul
+
+	* admin/Windows/msvc/libs/lapack.makefile: fix LAPACK makefile
+	  (command line was too long)
+
+2007-06-07 10:33  goffioul
+
+	* admin/Windows/msvc/: ChangeLog, libs/gnuplot-4.2.0.diff: include
+	  gnuplot fix for long input lines
+
+2007-06-06 22:32  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/OctaveSink.java: add
+	  initial support for graphics property listeners implemented in
+	  octave
+
+2007-06-06 22:12  adb014
+
+	* main/statistics/inst/histfit.m: normal_pdf takes the variance and
+	  not the std (For Bernado D'Auria)
+
+2007-06-06 17:01  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: first draft of global
+	  compilation script
+
+2007-06-06 17:01  goffioul
+
+	* admin/Windows/msvc/libs/readline-5.2.txt: fix installation dir
+
+2007-06-06 10:26  goffioul
+
+	* admin/Windows/msvc/mkoctfile.cc.in: support spaces in
+	  installation directory
+
+2007-06-06 10:25  goffioul
+
+	* admin/Windows/msvc/octave.nsi: fix mkoctfile-${version}.exe
+	  installation name
+
+2007-06-05 22:16  adb014
+
+	* doc/htdocs/translation.in: correct location of the octlanf script
+
+2007-06-05 22:15  adb014
+
+	* language/base/template/src/help.cc: correct package add command
+
+2007-06-05 20:58  goffioul
+
+	* admin/Windows/msvc/makeall.sh.in: accept language packages
+
+2007-06-05 16:03  goffioul
+
+	* admin/Windows/msvc/libs/: suitesparse-3.0.0.diff,
+	  suitesparse-3.0.0.txt: upgrade to SuiteSparse-3.0.0
+
+2007-06-05 11:37  goffioul
+
+	* admin/Windows/msvc/: makeall.sh.in, libs/units-1.86.diff,
+	  libs/units-1.86.txt: add compilation instructions and installer
+	  support for units-1.86
+
+2007-06-05 10:49  goffioul
+
+	* admin/Windows/msvc/ChangeLog: [no log message]
+
+2007-06-05 10:48  goffioul
+
+	* admin/Windows/msvc/mkoctfile.cc.in: export mexFunction when
+	  creating mex files
+
+2007-06-05 10:18  goffioul
+
+	* admin/Windows/msvc/mkoctfile.cc.in: add regular $libdir to the
+	  link command of mkoctfile
+
+2007-06-05 07:48  goffioul
+
+	* admin/Windows/msvc/libs/suitesparse-3.0.0.diff: add patch for
+	  SuiteSpare-3.0.0
+
+2007-06-04 22:36  adb014
+
+	* packages/Makefile: New target to build binary RPMs
+
+2007-06-04 22:34  adb014
+
+	* extra/jhandles/src/configure.base: Change search for octave.jar
+	  to allow for both global and local installs of both java and
+	  jhandles
+
+2007-06-04 22:30  adb014
+
+	* extra/java/DESCRIPTION: The  java package should be marked as
+	  autoloaded
+
+2007-06-04 22:29  adb014
+
+	* admin/make_rpm: Lower case the otave package dependencies
+
+2007-06-04 14:46  pvlanspeary
+
+	* main/signal/inst/pwelch.m:
+
+	  Additions to documentation string explain the "results" and "conf"
+	  arguments more clearly.
+
+	  Remove forcing of "fft_x .* conj(fft_y)" to real in line 731 --
+	  cross spectrum has nonzero phase.
+
+2007-06-04 06:38  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: BooleanProperty.java,
+	  ColorProperty.java, DoubleArrayProperty.java,
+	  DoubleMatrixProperty.java, DoubleProperty.java,
+	  DoubleRadioProperty.java, HandleObject.java,
+	  HandleObjectListProperty.java, LineStyleProperty.java,
+	  MarkerProperty.java, MatrixProperty.java, ObjectProperty.java,
+	  Property.java, RadioProperty.java, StringArrayProperty.java,
+	  StringProperty.java: add default constructor for (almost) all
+	  properties
+
+2007-06-04 00:14  adb014
+
+	* admin/rpm_template.in: Simplify rpm build with 'pkg build'.
+
+2007-06-03 16:44  goffioul
+
+	* admin/Windows/msvc/ChangeLog: ready for next binary package
+
+2007-06-03 16:18  goffioul
+
+	* admin/Windows/msvc/ChangeLog: [no log message]
+
+2007-06-03 16:12  goffioul
+
+	* admin/Windows/msvc/libs/readline-5.2.diff: additional support for
+	  localized systems
+
+2007-06-02 15:36  ficmatinfmag
+
+	* language/pt_BR/help/octave/: __errplot__.pt_BR, __plt1__.pt_BR,
+	  __plt2__.pt_BR, __plt2mm__.pt_BR, __plt2mv__.pt_BR,
+	  __plt2ss__.pt_BR, __plt2vm__.pt_BR, __plt2vv__.pt_BR,
+	  autoreg_matrix.pt_BR, common_size.pt_BR, contour.pt_BR,
+	  diffpara.pt_BR, errorbar.pt_BR, lcm.pt_BR, loglog.pt_BR,
+	  loglogerr.pt_BR, meshdom.pt_BR, plot.pt_BR, polar.pt_BR,
+	  rgb2hsv.pt_BR, spdiags.pt_BR, spstats.pt_BR, stft.pt_BR,
+	  xlabel.pt_BR: Brazilian portuguese translation conj.pt_BR ->
+	  adjusting first and second lines repeated image.pt_BR -> updating to
+	  english cvs version 1.4 imagesc.pt_BR -> updating to english cvs
+	  version 1.2 imshow.pt_BR -> updating to english cvs version 1.3
+
+2007-06-02 09:19  ficmatinfmag
+
+	* language/base/help/octave/: __bar__, barh, beep, bicubic, box,
+	  circshift, contour, contourc, doc, filter2, grid, hex2dec,
+	  ind2sub, int2str, is_stabilizable, logspace, mkoctfile, nchoosek,
+	  normcdf, norminv, normpdf, normrnd, pkg, plot, single, spy,
+	  sub2ind, ver: added and/or changed in octave.org-cvs
+
+2007-06-01 14:38  goffioul
+
+	* admin/Windows/msvc/octave.nsi: avoid impossible states
+
+2007-06-01 14:28  goffioul
+
+	* admin/Windows/msvc/graphics.ini: fixed typo
+
+2007-06-01 14:23  goffioul
+
+	* admin/Windows/msvc/octave.nsi: do not load initialization files
+	  on post-install execution
+
+2007-06-01 14:13  goffioul
+
+	* admin/Windows/msvc/ChangeLog: [no log message]
+
+2007-06-01 14:12  goffioul
+
+	* admin/Windows/msvc/: graphics.ini, octave.nsi, octaverc.win: add
+	  default graphics backend selection page + warn if java-based
+	  packages are selected and on JRE was detected
+
+2007-05-31 21:07  goffioul
+
+	* extra/jhandles/inst/enable_jhandles.m: remove unused file
+
+2007-05-31 17:11  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: fix
+	  zlabel positioning
+
+2007-05-31 17:04  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: add
+	  support for Z Label
+
+2007-05-31 16:44  adb014
+
+	* extra/jhandles/: PKG_ADD, inst/__bar__.m, inst/__jhandles_exit.m,
+	  inst/__jhandles_get.m, inst/__jhandles_go_axes.m,
+	  inst/__jhandles_go_axes_init.m, inst/__jhandles_go_barseries.m,
+	  inst/__jhandles_go_delete.m, inst/__jhandles_go_figure.m,
+	  inst/__jhandles_go_surface.m, inst/__jhandles_go_text.m,
+	  inst/__jhandles_ishandle.m, inst/__jhandles_set.m,
+	  inst/enable_jhandles.m, inst/jhandles_exit.m,
+	  inst/jhandles_get.m, inst/jhandles_go_axes.m,
+	  inst/jhandles_go_axes_init.m, inst/jhandles_go_barseries.m,
+	  inst/jhandles_go_delete.m, inst/jhandles_go_figure.m,
+	  inst/jhandles_go_surface.m, inst/jhandles_go_text.m,
+	  inst/jhandles_ishandle.m, inst/jhandles_set.m: Modify all uses of
+	  function names jhandles_ to __jhandles_
+
+2007-05-31 16:44  adb014
+
+	* extra/jhandles/: PKG_ADD, PKG_DEL, doc/README, inst/__bar__.m,
+	  inst/enable_jhandles.m, inst/enable_oplot.m,
+	  inst/jhandles_exit.m, inst/jhandles_get.m,
+	  inst/jhandles_go_axes.m, inst/jhandles_go_axes_init.m,
+	  inst/jhandles_go_barseries.m, inst/jhandles_go_delete.m,
+	  inst/jhandles_go_figure.m, inst/jhandles_go_surface.m,
+	  inst/jhandles_go_text.m, inst/jhandles_ishandle.m,
+	  inst/jhandles_set.m, inst/oplot_exit.m, inst/oplot_get.m,
+	  inst/oplot_go_axes.m, inst/oplot_go_axes_init.m,
+	  inst/oplot_go_barseries.m, inst/oplot_go_delete.m,
+	  inst/oplot_go_figure.m, inst/oplot_go_surface.m,
+	  inst/oplot_go_text.m, inst/oplot_ishandle.m, inst/oplot_set.m,
+	  src/.cvsignore, src/Makefile,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/BarseriesObject.java,
+	  src/org/octave/graphics/BaseLineObject.java,
+	  src/org/octave/graphics/BooleanProperty.java,
+	  src/org/octave/graphics/CallbackProperty.java,
+	  src/org/octave/graphics/ColorProperty.java,
+	  src/org/octave/graphics/DoubleArrayProperty.java,
+	  src/org/octave/graphics/DoubleMatrixProperty.java,
+	  src/org/octave/graphics/DoubleProperty.java,
+	  src/org/octave/graphics/DoubleRadioProperty.java,
+	  src/org/octave/graphics/FigureLayout.java,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/GLRenderCanvas.java,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/GLTextRenderer.java,
+	  src/org/octave/graphics/GraphicObject.java,
+	  src/org/octave/graphics/GroupObject.java,
+	  src/org/octave/graphics/HandleNotifier.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/HandleObjectListProperty.java,
+	  src/org/octave/graphics/ImageObject.java,
+	  src/org/octave/graphics/LegendObject.java,
+	  src/org/octave/graphics/LightObject.java,
+	  src/org/octave/graphics/LineObject.java,
+	  src/org/octave/graphics/LineStyleProperty.java,
+	  src/org/octave/graphics/MarkerProperty.java,
+	  src/org/octave/graphics/Matrix3D.java,
+	  src/org/octave/graphics/MatrixProperty.java,
+	  src/org/octave/graphics/ObjectProperty.java,
+	  src/org/octave/graphics/PatchObject.java,
+	  src/org/octave/graphics/Point3D.java,
+	  src/org/octave/graphics/Property.java,
+	  src/org/octave/graphics/PropertyException.java,
+	  src/org/octave/graphics/PropertyListener.java,
+	  src/org/octave/graphics/PropertySet.java,
+	  src/org/octave/graphics/RadioProperty.java,
+	  src/org/octave/graphics/RenderCanvas.java,
+	  src/org/octave/graphics/RenderEventListener.java,
+	  src/org/octave/graphics/Renderer.java,
+	  src/org/octave/graphics/RootObject.java,
+	  src/org/octave/graphics/StemseriesObject.java,
+	  src/org/octave/graphics/StringArrayProperty.java,
+	  src/org/octave/graphics/StringProperty.java,
+	  src/org/octave/graphics/SurfaceObject.java,
+	  src/org/octave/graphics/TextObject.java,
+	  src/org/octave/graphics/TextProperty.java,
+	  src/org/octave/graphics/Utils.java,
+	  src/org/octave/graphics/Vector3D.java: Modify all uses of oplot
+	  and oplt-gl to jhandles
+
+2007-05-31 16:34  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  LegendObject.java: full support for Location property of legends
+	  + various legend fixes
+
+2007-05-31 16:33  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderer.java: layer
+	  axes correctly on top of each other.
+
+2007-05-31 16:32  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/HandleObject.java: try to
+	  avoid race conditions
+
+2007-05-31 16:31  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: FigureObject.java,
+	  RootObject.java: auto-active figure windows + enable
+	  CurrentFigure tracking in RootObject
+
+2007-05-31 16:30  goffioul
+
+	* extra/jhandles/src/: .cvsignore, org/octave/graphics/.cvsignore:
+	  more files to ignore
+
+2007-05-31 11:01  goffioul
+
+	* admin/Windows/msvc/ChangeLog: [no log message]
+
+2007-05-31 10:51  goffioul
+
+	* admin/Windows/msvc/octave.nsi: also accept Windows Vista
+
+2007-05-31 10:44  goffioul
+
+	* admin/Windows/msvc/octave.nsi: change installation dir of MSVC
+	  runtime DLLs under Win2K system
+
+2007-05-30 16:49  goffioul
+
+	* admin/Windows/msvc/ChangeLog: put ChangeLog under revision
+	  control
+
+2007-05-30 16:16  goffioul
+
+	* admin/Windows/msvc/libs/: gnuplot-4.2.0.diff, gnuplot-4.2.0.txt,
+	  gnuplot-4.2.rc4.diff, gnuplot-4.2.rc4.txt: switch to official
+	  gnuplot-4.2.0 (instead of rc4)
+
+2007-05-30 15:19  goffioul
+
+	* admin/Windows/msvc/: matlab.properties.octave, octave.nsi: allow
+	  to run m-scripts from SciTE editor
+
+2007-05-30 15:04  goffioul
+
+	* admin/Windows/msvc/octave.nsi: install for all users if installer
+	  is run with admin rights
+
+2007-05-30 14:04  goffioul
+
+	* admin/Windows/msvc/octave.nsi: LibGD needs Freetype as well
+
+2007-05-30 12:53  adb014
+
+	* extra/java/PKG_DEL: Make atexit removal conditional, as earlier
+	  than 2.9.12+ it didn't exist
+
+2007-05-30 12:52  goffioul
+
+	* admin/Windows/msvc/: do_pkg_init.m, makeall.sh.in, octave.nsi:
+	  s/oplot-gl/jhandles/ + add MSYS and JVM detection in installer + do
+	  not install Console2 by default
+
+2007-05-30 10:36  goffioul
+
+	* extra/jhandles/src/: Makeconf.in, Makefile, configure.base: make
+	  it compilable under MSVC/MSYS
+
+2007-05-30 10:01  goffioul
+
+	* extra/java/: DESCRIPTION, src/__java__.cc: cosmetic change +
+	  version increase (due to Linux support)
+
+2007-05-30 09:52  goffioul
+
+	* extra/java/PKG_DEL: add PKG_DEL to undo "atexit" call
+
+2007-05-30 09:29  adb014
+
+	* admin/Windows/msvc/.cvsignore: typo
+
+2007-05-30 09:28  adb014
+
+	* extra/jhandles/src/.cvsignore, doc/htdocs/.cvsignore: ignore a
+	  few more files
+
+2007-05-29 22:47  adb014
+
+	* extra/jhandles/: COPYING, DESCRIPTION, PKG_ADD, PKG_DEL,
+	  doc/README, doc/demo.png, doc/testX.m, inst/__axis_label__.m,
+	  inst/__bar__.m, inst/__get_object__.m, inst/__line__.m,
+	  inst/bar.m, inst/bar3.m, inst/bar3h.m, inst/barh.m,
+	  inst/contour3.m, inst/drawnow.m, inst/enable_oplot.m,
+	  inst/hidden.m, inst/image.m, inst/legend.m, inst/light.m,
+	  inst/mat2java.m, inst/oplot_exit.m, inst/oplot_get.m,
+	  inst/oplot_go_axes.m, inst/oplot_go_axes_init.m,
+	  inst/oplot_go_barseries.m, inst/oplot_go_delete.m,
+	  inst/oplot_go_figure.m, inst/oplot_go_surface.m,
+	  inst/oplot_go_text.m, inst/oplot_ishandle.m, inst/oplot_set.m,
+	  inst/patch.m, inst/shading.m, inst/stem.m, inst/surf.m,
+	  src/Makeconf.in, src/Makefile, src/autogen.sh,
+	  src/configure.base, src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/BarseriesObject.java,
+	  src/org/octave/graphics/BaseLineObject.java,
+	  src/org/octave/graphics/BooleanProperty.java,
+	  src/org/octave/graphics/CallbackProperty.java,
+	  src/org/octave/graphics/ColorProperty.java,
+	  src/org/octave/graphics/DoubleArrayProperty.java,
+	  src/org/octave/graphics/DoubleMatrixProperty.java,
+	  src/org/octave/graphics/DoubleProperty.java,
+	  src/org/octave/graphics/DoubleRadioProperty.java,
+	  src/org/octave/graphics/FigureLayout.java,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/GLRenderCanvas.java,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/GLTextRenderer.java,
+	  src/org/octave/graphics/GraphicObject.java,
+	  src/org/octave/graphics/GroupObject.java,
+	  src/org/octave/graphics/HandleNotifier.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/HandleObjectListProperty.java,
+	  src/org/octave/graphics/ImageObject.java,
+	  src/org/octave/graphics/LegendObject.java,
+	  src/org/octave/graphics/LightObject.java,
+	  src/org/octave/graphics/LineObject.java,
+	  src/org/octave/graphics/LineStyleProperty.java,
+	  src/org/octave/graphics/MarkerProperty.java,
+	  src/org/octave/graphics/Matrix3D.java,
+	  src/org/octave/graphics/MatrixProperty.java,
+	  src/org/octave/graphics/ObjectProperty.java,
+	  src/org/octave/graphics/PatchObject.java,
+	  src/org/octave/graphics/Point3D.java,
+	  src/org/octave/graphics/Property.java,
+	  src/org/octave/graphics/PropertyException.java,
+	  src/org/octave/graphics/PropertyListener.java,
+	  src/org/octave/graphics/PropertySet.java,
+	  src/org/octave/graphics/RadioProperty.java,
+	  src/org/octave/graphics/RenderCanvas.java,
+	  src/org/octave/graphics/RenderEventListener.java,
+	  src/org/octave/graphics/Renderer.java,
+	  src/org/octave/graphics/RootObject.java,
+	  src/org/octave/graphics/StemseriesObject.java,
+	  src/org/octave/graphics/StringArrayProperty.java,
+	  src/org/octave/graphics/StringProperty.java,
+	  src/org/octave/graphics/SurfaceObject.java,
+	  src/org/octave/graphics/TextObject.java,
+	  src/org/octave/graphics/TextProperty.java,
+	  src/org/octave/graphics/Utils.java,
+	  src/org/octave/graphics/Vector3D.java: First commit of JHandles
+	  packages for Michael Goffioul
+
+2007-05-29 22:15  adb014
+
+	* extra/java/src/: __java__.cc, configure.base: Unix compatiable
+	  version of java bindings
+
+2007-05-29 21:19  adb014
+
+	* admin/build-www.py, admin/release.sh, doc/htdocs/ChangeLog,
+	  doc/htdocs/NEWS.in, doc/htdocs/index.in: post release doc fixes
+
+2007-05-29 16:24  goffioul
+
+	* extra/java/: DESCRIPTION, src/__java__.cc: reduce Win32-specific
+	  code by using more octave API
+
+2007-05-29 14:22  goffioul
+
+	* admin/Windows/msvc/makeall.sh.in: include arpack package into
+	  installer
+
+2007-05-29 14:14  goffioul
+
+	* nonfree/arpack/src/eigs-base.cc: MSVC does not support this type
+	  of static template instantiation (probably because it has somehow
+	  already been instantiated with different modifiers
+
+2007-05-29 13:50  goffioul
+
+	* admin/Windows/msvc/libs/: arpack.makefile, arpack.txt: Add ARPACK
+	  compilation instructions + makefile
+
+2007-05-29 13:37  goffioul
+
+	* admin/Windows/msvc/libs/libf2c.txt: fix libf2c compilation and
+	  avoid bad crash on complex division
+
+2007-05-29 10:51  goffioul
+
+	* admin/Windows/msvc/octave.nsi: Use ATLAS/SSE2 libraries by
+	  default if SSE2 detected
+
+2007-05-29 10:32  goffioul
+
+	* admin/Windows/msvc/octaverc.win: Try to detect MSYS at startup
+
+2007-05-28 22:54  goffioul
+
+	* admin/Windows/msvc/octave.nsi: bump oplot-gl version
+
+2007-05-27 12:06  goffioul
+
+	* admin/Windows/msvc/: do_pkg_init.m, makeall.sh.in, octave.nsi,
+	  octave_msys.nsi, octaverc.win: include stripped-down MSYS shell
+	  and OplotGL + package manager rebuild script at installation
+
+2007-05-26 14:18  adb014
+
+	* ChangeLog: R2007-05-26 release
+
 2007-05-26 14:16  adb014
 
 	* admin/release.sh, doc/htdocs/packages.in: pre-release doc update
@@ -2152,26 +4100,15 @@
 	* main/nnet/doc/pdf/neuralNetworkToolboxForOctaveUsersGuide.pdf:
 	  Initial commit into CVS
 
-2007-02-18 14:06  michaelschmid
-
-	* main/nnet/doc/latex/users/tests/functions/:
-	  isposint_netw_priv.tex, min_max.tex: Initial commit into CVS
-
 2007-02-18 14:03  michaelschmid
 
-	* main/nnet/doc/latex/users/: octave/neuroToolbox/min_max.tex,
-	  octave/neuroToolbox/neuroToolbox.tex,
-	  octave/neuroToolbox/saveMLPStruct.tex,
-	  octave/neuroToolbox/train.tex, octave/neuroToolbox/newff.tex,
-	  octave/neuroToolbox/sim.tex, tests/tests.tex: Initial commit into
-	  CVS
+	* main/nnet/doc/latex/users/octave/neuroToolbox/: min_max.tex,
+	  neuroToolbox.tex, saveMLPStruct.tex, train.tex, newff.tex,
+	  sim.tex: Initial commit into CVS
 
-2007-02-18 13:58  michaelschmid
+2007-02-18 14:00  michaelschmid
 
-	* main/nnet/doc/latex/users/: matlab/neuroToolbox.tex,
-	  matlab/problems.tex, octave/octave.tex,
-	  octave/functions/isposintOct.tex,
-	  octave/functions/isposint_netw_privOct.tex: Initial commit into
+	* main/nnet/doc/latex/users/octave/octave.tex: Initial commit into
 	  CVS
 
 2007-02-18 13:54  michaelschmid
@@ -2187,9 +4124,8 @@
 
 2007-02-18 13:50  michaelschmid
 
-	* main/nnet/doc/latex/developers/tests/: tests.tex,
-	  functions/isposint_netw_priv.tex, functions/min_max.tex: Initial
-	  import into CVS
+	* main/nnet/doc/latex/developers/tests/tests.tex: Initial import
+	  into CVS
 
 2007-02-18 13:46  michaelschmid
 
@@ -2200,10 +4136,8 @@
 
 2007-02-18 13:43  michaelschmid
 
-	* main/nnet/doc/latex/developers/: examples/example1.tex,
-	  examples/example2.tex, examples/examples.tex,
-	  matlab/neuroToolbox.tex, matlab/problems.tex: Initial commit into
-	  CVS
+	* main/nnet/doc/latex/developers/examples/: example1.tex,
+	  example2.tex, examples.tex: Initial commit into CVS
 
 2007-02-18 13:41  michaelschmid
 

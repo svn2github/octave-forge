@@ -1,0 +1,175 @@
+--- ./SuiteSparse/Makefile	2007-05-08 00:28:44.000000000 +0200
++++ ./SuiteSparse/Makefile	2007-06-25 22:39:26.000000000 +0200
+@@ -7,7 +7,7 @@
+ # Compile the default rules for each package
+ default:
+ 	( cd UFconfig/xerbla ; $(MAKE) )
+-	( cd metis-4.0 ; $(MAKE) )
++#	( cd metis-4.0 ; $(MAKE) )
+ 	( cd AMD ; $(MAKE) )
+ 	( cd CAMD ; $(MAKE) )
+ 	( cd COLAMD ; $(MAKE) )
+@@ -41,7 +41,7 @@
+ # Remove all files not in the original distribution
+ purge:
+ 	( cd UFconfig/xerbla ; $(MAKE) purge )
+-	( cd metis-4.0 ; $(MAKE) realclean )
++#	( cd metis-4.0 ; $(MAKE) realclean )
+ 	( cd AMD ; $(MAKE) purge )
+ 	( cd CAMD ; $(MAKE) purge )
+ 	( cd COLAMD ; $(MAKE) purge )
+@@ -61,7 +61,7 @@
+ # Remove all files not in the original distribution, but keep the libraries
+ clean:
+ 	( cd UFconfig/xerbla ; $(MAKE) clean )
+-	( cd metis-4.0 ; $(MAKE) clean )
++#	( cd metis-4.0 ; $(MAKE) clean )
+ 	( cd AMD ; $(MAKE) clean )
+ 	( cd CAMD ; $(MAKE) clean )
+ 	( cd COLAMD ; $(MAKE) clean )
+diff -u -u SuiteSparse/UFconfig/UFconfig.mk SuiteSparse/UFconfig/UFconfig.mk
+--- ./SuiteSparse/UFconfig/UFconfig.mk.orig	2007-06-25 22:30:10.000000000 +0200
++++ ./SuiteSparse/UFconfig/UFconfig.mk	2007-06-25 22:31:51.000000000 +0200
+@@ -32,8 +32,6 @@
+ # C compiler and compiler flags:  These will normally not give you optimal
+ # performance.  You should select the optimization parameters that are best
+ # for your system.  On Linux, use "CFLAGS = -O3 -fexceptions" for example.
+-CC = cc
+-CFLAGS = -O
+ 
+ # ranlib, and ar, for generating libraries
+ RANLIB = ranlib
+@@ -114,8 +112,8 @@
+ # The path is relative to where it is used, in CHOLMOD/Lib, CHOLMOD/MATLAB, etc.
+ # You may wish to use an absolute path.  METIS is optional.  Compile
+ # CHOLMOD with -DNPARTITION if you do not wish to use METIS.
+-METIS_PATH = ../../metis-4.0
+-METIS = ../../metis-4.0/libmetis.a
++# METIS_PATH = ../../metis-4.0
++# METIS = ../../metis-4.0/libmetis.a
+ 
+ # If you use CHOLMOD_CONFIG = -DNPARTITION then you must use the following
+ # options:
+@@ -193,7 +191,7 @@
+ # CFLAGS = -O3 -fexceptions \
+    	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
+-CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
++
+ # CFLAGS = -O3
+ 
+ # consider:
+@@ -252,11 +250,15 @@
+ # Macintosh
+ #------------------------------------------------------------------------------
+ 
+-# CC = gcc
+-# CFLAGS = -O3 -fno-common -no-cpp-precomp -fexceptions
+-# LIB = -lstdc++
+-# BLAS = -framework Accelerate
+-# LAPACK = -framework Accelerate
++: ${CC = $CC}
++: ${CFLAGS = $CFLAGS}
++OPTFLAGS = $(CFLAGS)
++F77 = f2c
++F77FLAGS =
++F77LIB =
++LIB = -lstdc++
++BLAS = -framework Accelerate
++LAPACK = -framework Accelerate
+ 
+ #------------------------------------------------------------------------------
+ # IBM RS 6000
+diff -u -u _SuiteSparse/CSparse/Lib/Makefile SuiteSparse/CSparse/Lib/Makefile
+--- ./SuiteSparse/CSparse/Lib/Makefile	2007-05-05 22:46:13.000000000 +0200
++++ ./SuiteSparse/CSparse/Lib/Makefile	2007-06-12 18:08:29.000000000 +0200
+@@ -1,9 +1,7 @@
+ # Modify the "-O" optimization option for best performance (-O3 on Linux):
+-CC = cc
+-CFLAGS = -O -I../Include
++include ../../UFconfig/UFconfig.mk
+ 
+-AR = ar cr
+-RANLIB = ranlib
++C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+ 
+ all: libcsparse.a
+ 
+@@ -20,7 +18,7 @@
+ $(CS): ../Include/cs.h Makefile
+ 
+ %.o: ../Source/%.c ../Include/cs.h
+-	$(CC) $(CFLAGS) -c $<
++	$(C) -c $<
+ 
+ libcsparse.a: $(CS)
+ 	$(AR) libcsparse.a $(CS)
+diff -u -u _SuiteSparse/CSparse/Makefile SuiteSparse/CSparse/Makefile
+--- ./SuiteSparse/CSparse/Makefile	2007-05-05 22:37:37.000000000 +0200
++++ ./SuiteSparse/CSparse/Makefile	2007-06-12 18:12:06.000000000 +0200
+@@ -2,9 +2,8 @@
+ 
+ C:
+ 	( cd Lib ; $(MAKE) )
+-	( cd Demo ; $(MAKE) )
+ 
+-all: C tcov
++all: C
+ 
+ library:
+ 	( cd Lib ; $(MAKE) )
+diff -u -u _SuiteSparse/CXSparse/Makefile SuiteSparse/CXSparse/Makefile
+--- ./SuiteSparse/CXSparse/Makefile	2007-05-05 22:37:37.000000000 +0200
++++ ./SuiteSparse/CXSparse/Makefile	2007-06-12 18:15:05.000000000 +0200
+@@ -2,9 +2,8 @@
+ 
+ C:
+ 	( cd Lib ; $(MAKE) )
+-	( cd Demo ; $(MAKE) )
+ 
+-all: C tcov
++all: C
+ 
+ library:
+ 	( cd Lib ; $(MAKE) )
+diff -u -u _SuiteSparse/CXSparse/Lib/Makefile SuiteSparse/CXSparse/Lib/Makefile
+--- ./SuiteSparse/CXSparse/Lib/Makefile	2007-05-05 23:03:41.000000000 +0200
++++ ./SuiteSparse/CXSparse/Lib/Makefile	2007-06-12 18:16:59.000000000 +0200
+@@ -1,10 +1,7 @@
+ # Modify the "-O" optimization option for best performance (-O3 on Linux):
+-CC = cc
+-CFLAGS = -O
+-I = -I../../UFconfig -I../Include
++include ../../UFconfig/UFconfig.mk
+ 
+-AR = ar cr
+-RANLIB = ranlib
++C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+ 
+ all: libcxsparse.a
+ 
+@@ -71,19 +68,19 @@
+ $(CS): ../Include/cs.h Makefile
+ 
+ cs_convert.o: ../Source/cs_convert.c
+-	$(CC) $(CFLAGS) $(I) -c $< -o $@
++	$(C) -c $< -o $@
+ 
+ %_di.o : ../Source/%.c
+-	$(CC) $(CFLAGS) $(I) -c $< -o $@
++	$(C) -c $< -o $@
+ 
+ %_dl.o : ../Source/%.c
+-	$(CC) $(CFLAGS) $(I) -DCS_LONG -c $< -o $@
++	$(C) -DCS_LONG -c $< -o $@
+ 
+ %_ci.o : ../Source/%.c
+-	$(CC) $(CFLAGS) $(I) -DCS_COMPLEX -c $< -o $@
++	$(C) -DCS_COMPLEX -c $< -o $@
+ 
+ %_cl.o : ../Source/%.c
+-	$(CC) $(CFLAGS) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
++	$(C) -DCS_LONG -DCS_COMPLEX -c $< -o $@
+ 
+ libcxsparse.a: $(CS)
+ 	$(AR) libcxsparse.a $(CS)

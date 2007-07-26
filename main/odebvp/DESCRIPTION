@@ -3,7 +3,7 @@ Version: 1.0.0
 Date: 2007-07-10
 Author: Tiago Charters de Azevedo
 Maintainer: Tiago Charters de Azevedo
-Title: 	Linear-difference method for linear ode's - boundary-value problem
+Title: 	Linear-difference method for linear odes - boundary-value problem
 Description:  To approximate the solution of the boundary-value problem  y''=p(x)*y' + q(x)*y + r(x), a<=x<=b, y(a)=alpha, y(b)=beta by the linear finite-diffence method.
 Categories: 	Ordinary Differential Equations
 Autoload: 	yes

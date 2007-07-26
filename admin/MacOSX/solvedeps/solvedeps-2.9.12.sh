@@ -30,7 +30,7 @@ MSGFILE=/dev/stdout #/tmp/message.log # /dev/stdout
 INSTDIR=/tmp/dependencies
 
 F2CPACK=http://www.llnl.gov/casc/Overture/henshaw/software/f2c.tar.gz
-F2CDIFF=./f2c.diff
+F2CDIFF=./f2c-19991025.diff
 # You can try to set up gfortran instead of f2c but it is very
 # difficult to do that. A good starting point for this would be
 # eg. http://gcc.gnu.org/wiki/GFortranBinariesMacOS.
@@ -52,7 +52,7 @@ CURLPACK=http://curl.haxx.se/download/curl-7.16.2.tar.gz
 GLPKPACK=http://ftp.gnu.org/gnu/glpk/glpk-4.17.tar.gz
 
 SPARSEPACK=http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
-SPARSEDIFF=./SuiteSparse.diff
+SPARSEDIFF=./SuiteSparse-3.0.0.diff
 
 OCTAVEPACK=ftp://ftp.octave.org/pub/octave/bleeding-edge/octave-2.9.12.tar.gz
 OCTAVEDIFF=./octave-2.9.12.diff
@@ -68,7 +68,7 @@ OCTAVEDIFF=./octave-2.9.12.diff
 # Description: Evaluates the ${1} string, prints a message and exits on fail
 evalfailexit() {
   if ( ! eval "${1} 2>&1 >${MSGFILE}" ); then
-    echo "buildoctave.sh: Building Octave.app has failed"
+    echo "solvedeps.sh: Building Octave.app has failed"
     echo "The command that failed was"
     echo "  ${1}"
     exit 1

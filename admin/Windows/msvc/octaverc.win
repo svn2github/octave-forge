@@ -24,6 +24,14 @@ fprintf (" - Use `pkg list' to see a list of installed packages.\n");
 
 # Load editor settings
 if (exist ("edit"))
+  home_path = edit ("get", "HOME");
+  if (exist (home_path, "dir") != 7)
+    if (! mkdir (home_path))
+      warning ("unable to create directory `%s'", home_path);
+    else
+      fprintf (" - Created directory `%s'\n", home_path);
+    endif
+  endif
   scite_path = sprintf ("%s%stools%swscite", octave_config_info ("prefix"), filesep, filesep);
   if (exist (scite_path, "dir"))
     EDITOR (sprintf ("%s%sSciTE.exe", scite_path, filesep));

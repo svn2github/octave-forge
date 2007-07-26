@@ -49,6 +49,9 @@ see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
 <dt>July 26, 2007</dt>
+<dd>Updated the Windows binary release to use Octave 2.9.13.
+</dd>
+<dt>July 26, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.13. Many packages
  will also function function with earlier versions of Octave 2.9.
@@ -83,11 +86,9 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>general bug fixes and improvements.</li>
 </ul>
 </dd>
-
 <dt>July 4, 2007</dt>
 <dd>Added Octave.app 2.9.12 for OS X.
 </dd>
-
 <dt>May 26, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.12. Many packages

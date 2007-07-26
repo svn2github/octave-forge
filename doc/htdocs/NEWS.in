@@ -8,6 +8,9 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 <div class="section">
 <dl>
 <dt>July 26, 2007</dt>
+<dd>Updated the Windows binary release to use Octave 2.9.13.
+</dd>
+<dt>July 26, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.13. Many packages
  will also function function with earlier versions of Octave 2.9.

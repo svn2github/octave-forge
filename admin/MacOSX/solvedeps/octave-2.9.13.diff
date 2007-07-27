@@ -1,0 +1,16 @@
+diff -u -u octave-2.9.13.orig/configure.in octave-2.9.13/configure.in
+--- octave-2.9.13.orig/configure.in	2007-07-25 00:53:53.000000000 +0200
++++ octave-2.9.13/configure.in	2007-07-27 21:36:33.000000000 +0200
+@@ -1786,9 +1786,9 @@
+ dnl "broken shell backslash quoting" or somesuch.
+ dnl
+ case "$canonical_host_type" in
+-  *-*-darwin*)
+-    UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",g'`
+-  ;;
++  # *-*-darwin*)
++  #   UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",g'`
++  # ;;
+   *)
+     UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\",g'`
+   ;;

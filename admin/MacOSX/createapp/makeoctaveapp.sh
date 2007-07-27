@@ -22,7 +22,7 @@
 
 # This is the binary of octave that has been created. The absolute
 # path and the version number need to be given.
-OCTBIN=/tmp/dependencies-i386/bin/octave-2.9.12
+OCTBIN=/tmp/dependencies-ppc/bin/octave-2.9.13
 
 # This is the temporary directory that is used for copying Octave and
 # its libraries that depend on the Octave.app.
@@ -31,13 +31,15 @@ TEMPDIR=/tmp/TEMPDIR
 # This is the directory where all the dependencies have been
 # installed. Make sure that there are no other files in this directory
 # that are not needed.
-DEPSDIR=/tmp/dependencies-i386
+DEPSDIR=/tmp/dependencies-ppc
 
 # These are the files that are copied into the docs directory of the
 # octave-VERSION-ARCH.dmg file. The files that are needed are
 # Octave-FAQ.pdf, octave.pdf, liboctave.pdf, refcard-a4.pdf,
 # refcard-legal.pdf and refcard-letter.pdf.
-PDFDOCS=~/tmp/i386/solvedeps-2.9.12/octave-2.9.12/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
+PDFDOCS=~/tmp/octave-ppc/solvedeps/octave-2.9.13/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
+
+OCEXTRAS=~/Savings/gnuplot-4.2.0-ppc.dmg
 
 # This is the temporary directory that is used for installing all
 # files and libraries that are then packed into the
@@ -177,15 +179,20 @@ echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"
   sed "s/%VERSION%/${VERSION}/g;s/%ARCH%/${ARCH}/g;s/%DATE%/${DATE}/g" Readme.html.in > Readme.html
   evalfailexit "install -c -S ./Readme.html     ${DMGDIR}/Readme.html"
 
-  echo "makeoctaveapp.sh: Installing the Octave docs ..."
-  evalfailexit "install -d ${DMGDIR}/doc"
-  evalfailexit "cp -R -P -vp ${PDFDOCS} ${DMGDIR}/doc"
+  echo "makeoctaveapp.sh: Installing the Octave Docs ..."
+  evalfailexit "install -d ${DMGDIR}/Doc"
+  evalfailexit "cp -R -P -vp ${PDFDOCS} ${DMGDIR}/Doc"
+
+  echo "makeoctaveapp.sh: Installing the Octave Extras ..."
+  evalfailexit "install -d ${DMGDIR}/Extras"
+  evalfailexit "cp -R -P -vp ${OCEXTRAS} ${DMGDIR}/Extras"
 
   echo "makeoctaveapp.sh: Installing image files ..."
   # sed 's/_background/.background/g' ./_DS_Store >${DMGDIR}/.DS_STORE
   evalfailexit "install -c -S ./_DS_Store_Main  ${DMGDIR}/.DS_Store"
   evalfailexit "install -c -S ./_DS_Store_Doc   ${DMGDIR}/doc/.DS_Store"
   evalfailexit "install -c -S ./_background.png ${DMGDIR}/.background.png"
+  evalfailexit "ln -s /Applications ${DMGDIR}/Applications"
   evalfailexit "rm -rf ${DMGDIR}/.Trashes"
 
   echo "makeoctaveapp.sh: Checking for an already existing octave-${VERSION}-${ARCH}.dmg ..."
@@ -199,7 +206,7 @@ echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"
   # http://forums.macrumors.com/archive/index.php/t-208278.html
   # http://jwz.livejournal.com/608927.html
   # http://lxr.mozilla.org/seamonkey/source/build/package/mac_osx/
-  # hdiutil convert -format UDRW -o conv.dmg octave-2.9.12.dmg
+  # hdiutil convert -format UDRW -o conv.dmg octave-2.9.13.dmg
   # hdiutil mount conv.dmg
 
   echo "makeoctaveapp.sh: Removing temporary directories ..."

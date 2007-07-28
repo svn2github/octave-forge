@@ -284,7 +284,7 @@ create_sparse() {
   export PREFIX=${INSTDIR}
 
   echo "solvedeps-2.9.13.sh: Applying patch ${vsparsediff} ..."
-  evalfailexit "patch -p0 < SuiteSparse.diff"
+  evalfailexit "patch -p0 < ${vsparsediff}"
 
   evalfailexit "mv SuiteSparse ${vsparsefile}"
   cd ${vsparsefile}

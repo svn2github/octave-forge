@@ -28,6 +28,12 @@ ROOT=`(cd "${BASE}" 2>/dev/null && pwd)`
 # echo BASE: ${BASE}
 # echo ROOT: ${ROOT}; exit
 
+# Check if Gnuplot.app is installed in /Applications. Other
+# directories could be added in a similiar way.
+if [ -d "/Applications/Gnuplot.app" ]; then 
+  PATH="/Applications/Gnuplot.app/Contents/Resources/bin:$PATH"
+fi
+
 # Setting up various path information variables that are needed to
 # startup the Octave program.
 OCTAVE_HOME="${ROOT}"

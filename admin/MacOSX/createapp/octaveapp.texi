@@ -141,24 +141,44 @@ octave-%VERSION%:1> help pkg
 @item @b{How can I install a package that also depends further libraries?} @*
 There are some packages at @uref{http://octave.sourceforge.net} available that do depend other resp. further libraries that may not already be installed on your system, eg. the gsl--package, the octcdf--package and the symbolic--package. Therefore you need to download, configure, compile and install the needed library before you install the Octave package. Setting up the gsl--package can be done as explained (the other packages described before can be installed in a similar way). @* @*
 @enumerate
-@item Download a current version of the GNU scientific library from a GNU webserver, eg. @* 
-@command{bash ~$ curl -s -S ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz -o gsl-1.9.tar.gz}
+@item Download a current version of the GNU scientific library from a GNU webserver, eg. @*  @* 
+@command{bash ~$ curl -s -S ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz -o gsl-1.9.tar.gz} @*  @* 
 
-@item Unpack the downloaded library and change into the directory that has been created, eg. @* 
-@command{bash ~$ tar -xzf gsl-1.9.tar.gz && cd gsl-1.9}
+@item Unpack the downloaded library and change into the directory that has been created, eg. @*  @* 
+@command{bash ~$ tar -xzf gsl-1.9.tar.gz && cd gsl-1.9} @*  @* 
 
-@item Configure, compile and install the library in a directory specified by @command{--prefix}, eg. @* 
-@command{bash ~$ ./configure --prefix=/usr/local && make && make install}
+@item Configure, compile and install the library in a directory specified by @command{--prefix}, eg. @*  @* 
+@command{bash ~$ ./configure --prefix=/usr/local && make && make install} @*  @* 
 
-@item Set up some needed environment variables to tell Octave.app where you installed the libraries, eg. @*
+@item Set up some needed environment variables to tell Octave.app where you installed the libraries, eg. @* @* 
 @command{bash ~$ export CFLAGS=/usr/local/include} @*
-@command{bash ~$ export LDFLAGS=/usr/local/lib}
+@command{bash ~$ export LDFLAGS=/usr/local/lib} @*  @* 
 
-@item Startup Octave.app and install the desired Octave-package, eg. @*
-@command{octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz} @*
+@item Startup Octave.app and install the desired Octave-package, eg. @* @* 
+@command{octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz} @* @* 
 @end enumerate
 
 @* @b{Note:} You need to set up at least @command{LDFLAGS} again if you close your running Octave.app and then startup Octave.app again. The reason is that the libraries in the above example have been installed for dynamical use and therefore they are also needed if you run the Octave.app (not just for installing the gsl--package). A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}.
+
+@item @b{Do I have to install Gnuplot.app from the @file{Extras} directory?} @*
+If you have a working Gnuplot program (at least version 4.2.0 or higher) already installed on your system and if this Gnuplot program is found from any place on the command line then there is no reason to install Gnuplot.app. Try the following example in your Terminal.app or @command{xterm} program to test if either a Gnuplot application is already found on your system or if Gnuplot.app should be installed
+
+@command{bash ~$ gnuplot}
+
+If you need to install Gnuplot.app then there are two ways to set this up: @* @*
+
+@enumerate
+@item Drag the Gnuplot.app icon from the compressed disc image to your main Applications folder. Octave.app then finds everything else automatically and starts up Gnuplot.app if desired. @* @*
+
+@item Drag the Gnuplot.app icon from the compressed disc image to another place of your filesystem. After you did that you need to create a link to the Gnuplot startup file to tell Octave.app where Gnuplot.app can be found eg. @* @*
+
+@command{bash ~$ ln -s <Gnuplot.app>/Contents/Resources/bin/gnuplot /usr/bin/gnuplot} @* @*
+After that try from any place of your filesystem if Gnuplot can be started and also if Gnuplot displays correct plots eg. @* @*
+
+@command{bash ~$ gnuplot} @*
+@command{gnuplot> plot sin(x)/x}
+@end enumerate
+
 @end itemize
 
 @ifhtml

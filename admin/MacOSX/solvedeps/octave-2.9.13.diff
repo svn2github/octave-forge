@@ -14,3 +14,15 @@ diff -u -u octave-2.9.13.orig/configure.in octave-2.9.13/configure.in
    *)
      UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\",g'`
    ;;
+diff -u -u octave-2.9.13.orig/src/Makefile.in octave-2.9.13/src/Makefile.in
+--- octave-2.9.13.orig/src/Makefile.in	2007-07-29 13:58:03.000000000 +0200
++++ octave-2.9.13/src/Makefile.in	2007-07-25 17:49:17.000000000 +0200
+@@ -248,7 +248,7 @@
+ endif
+ 
+ OCTINTERP_LINK_DEPS = \
+-  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
++  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) -lfftw3
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \

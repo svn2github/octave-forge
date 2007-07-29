@@ -22,18 +22,18 @@
 # This is the name of the file that is used for displaying outputs
 # while configuring, compiling and installing. Use /dev/stdout to
 # display all messages in the running terminal.
-MSGFILE=/dev/stdout #/tmp/message.log # /dev/stdout
+MSGFILE=/tmp/message.log # /dev/stdout
 
 # This is the name of the directory where all dependencies are
 # installed. The string "-ppc" or "-i386" is added to the end of the
 # given pathname, eg. /tmp/abc becomes /tmp/abc-pcc etc.
 INSTDIR=/tmp/dependencies
 
-F2CPACK=http://www.llnl.gov/casc/Overture/henshaw/software/f2c.tar.gz
-F2CDIFF=./f2c-19991025.diff
 # You can try to set up gfortran instead of f2c but it is very
 # difficult to do that. A good starting point for this would be
 # eg. http://gcc.gnu.org/wiki/GFortranBinariesMacOS.
+F2CPACK=http://www.llnl.gov/casc/Overture/henshaw/software/f2c.tar.gz
+F2CDIFF=./f2c-19991025.diff
 
 READLINEPACK=http://ftp.gnu.org/pub/gnu/readline/readline-5.2.tar.gz
 
@@ -63,14 +63,13 @@ OCTAVEDIFF=./octave-2.9.13.diff
 
 # Function:    evalfailexit
 # Input args:  ${1} is the string that has to be evaluated
-#              ${MSGFILE} is used for output of messages
+#              ${MSGFILE} is used for the output of messages
 # Output args: -
 # Description: Evaluates the ${1} string, prints a message and exits on fail
 evalfailexit() {
-  if ( ! eval "${1} 2>&1 >${MSGFILE}" ); then
-    echo "solvedeps-2.9.13.sh: Building Octave.app has failed"
-    echo "The command that failed was"
-    echo "  ${1}"
+  if ( ! eval "${1} 2>&1 >>${MSGFILE}" ); then
+    echo "solvedeps-2.9.13.sh: Building Octave.app has failed !!"
+    echo "solvedeps-2.9.13.sh: The command that failed was: ${1}"
     exit 1
   fi
 }
@@ -80,12 +79,12 @@ evalfailexit() {
 # Output args: -
 # Description: Downloads the source file that is given as ${1}
 getsource() {
-    # Check if we do already have downloaded the ${1}.* file
-    local vfile=${1##*/} # echo ${vfile}
-    if [ ! -f ${vfile} ]; then
-        echo "solvedeps-2.9.13.sh: Downloading \"${vfile}\" ..."
-        evalfailexit "curl -s -S ${1} -o ${vfile}"
-    fi
+  # Check if we do already have downloaded the ${1}.* file
+  local vfile=${1##*/} # echo ${vfile}
+  if [ ! -f ${vfile} ]; then
+    echo "solvedeps-2.9.13.sh: Downloading \"${vfile}\" ..."
+    evalfailexit "/usr/bin/curl -s -S ${1} -o ${vfile}"
+  fi
 }
 
 # Function:    unpack
@@ -93,17 +92,31 @@ getsource() {
 # Output args: -
 # Description: Extracts the source file that is given as ${1}
 unpack () {
-    if [ ${1##*.tar.} == "gz" ]; then
-        # We really do know that ${1}.tar.gz extracts to ${1}
-        vlocal=${1%.tar.gz}
-        if [ ! -d ${vlocal} ]; then
-            echo "solvedeps-2.9.13.sh: Extracting \"${1}\" ..."
-            evalfailexit "tar -xzf ${1}"
-        fi
-    elif [ ${1##*.} == "dmg" ]; then
-        echo "solvedeps-2.9.13.sh: No implementation for \".dmg\" at the moment"
-        exit 1
+  if [ ${1##*.tar.} == "gz" ]; then
+    # We really do know that ${1}.tar.gz extracts to ${1}
+    vlocal=${1%.tar.gz}
+    if [ ! -d ${vlocal} ]; then
+      echo "solvedeps-2.9.13.sh: Extracting \"${1}\" ..."
+      evalfailexit "tar -xzf ${1}"
     fi
+  else
+    echo "solvedeps-2.9.13.sh: Missing implementation"
+    exit 1
+  fi
+}
+
+# Function:    confmakeinst
+# Input args:  ${1} is the directory name for the sources
+#              ${2} is the extra flags for configuration
+# Output args: -
+# Description: Configures, compiles and installs a source package
+confmakeinst() {
+  echo "makegnuplotapp.sh: Configuring \"${1}\" ..."
+  evalfailexit "./configure ${2}"
+  echo "makegnuplotapp.sh: Making \"${1}\" ..."
+  evalfailexit "make"
+  echo "makegnuplotapp.sh: Installing \"${1}\" ..."
+  evalfailexit "make install"
 }
 
 ##########################################################################
@@ -144,12 +157,7 @@ create_readline () {
   getsource ${READLINEPACK}
   unpack ${vreadpack}
   cd ${vreadfile}
-  echo "solvedeps-2.9.13.sh: Configuring ${vreadfile} ..."
-  evalfailexit "./configure ${1}"
-  echo "solvedeps-2.9.13.sh: Making ${vreadfile} ..."
-  evalfailexit "${MAKE}"
-  echo "solvedeps-2.9.13.sh: Make install ${vreadfile} ..."
-  evalfailexit "make install"
+  confmakeinst "${vreadfile}" "${1}"
 }
 
 create_pcre () {
@@ -159,18 +167,15 @@ create_pcre () {
   getsource ${PCREPACK}
   unpack ${vpcrepack}
   cd ${vpcrefile}
-  echo "solvedeps-2.9.13.sh: Configuring ${vpcrefile} ..."
-  evalfailexit "./configure ${1}"
-  echo "solvedeps-2.9.13.sh: Making ${vpcrefile} ..."
-  evalfailexit "${MAKE}"
-  echo "solvedeps-2.9.13.sh: Make install ${vpcrefile} ..."
-  evalfailexit "make install"
+  confmakeinst "${vpcrefile}" "${1}"
 }
 
 create_libz () {
+
 # The link /Developer/SDKs/MacOSX10.3.9.sdk/usr/lib/libz.dylib has
 # to be removed, otherwise the SDK internal libz is found and this
 # is a bug.
+
   local vlibzpack=${LIBZPACK##*/}       # echo ${vlibzpack}
   local vlibzfile=${vlibzpack%.tar.gz*} # echo ${vlibzfile}
 
@@ -179,24 +184,22 @@ create_libz () {
 
   echo "solvedeps-2.9.13.sh: Configuring ${vlibzfile} ..."
   cd ${vlibzfile}
-  export CC=${CC}
-  export CFLAGS=${CFLAGS}
-  export PREFIX=${INSTDIR}
-  evalfailexit "./configure --shared --prefix=${INSTDIR}"
-  echo "solvedeps-2.9.13.sh: Making ${vlibzfile} ..."
-  evalfailexit "${MAKE}"
-  evalfailexit "make install"
-  echo "solvedeps-2.9.13.sh: Make install ${vlibzfile} ..."
+  export CC=${CC}; export CFLAGS=${CFLAGS}; export PREFIX=${INSTDIR}
+  confmakeinst "${vlibzfile}" "--shared --prefix=${INSTDIR}"
+
+  echo "solvedeps-2.9.13.sh: Make extra-install ${vlibzfile} ..."
   evalfailexit "install -c -S libz.a ${INSTDIR}/lib"
   evalfailexit "install -c -S crc32.h inffast.h inflate.h trees.h zutil.h ${INSTDIR}/include"
   evalfailexit "install -c -S deflate.h inffixed.h inftrees.h zconf.h zlib.h ${INSTDIR}/include"
 }
 
 create_hdf5 () {
+
 # CF. http://www.llnl.gov/visit/1.6/BUILD_NOTES_MacOSX about building
 # the hdf5 library for MacOSX - it fails but it is already enough when
-# compilation fails. Also "make -j 2" may fail with this package if
+# compilation fails. Also "make -j 2" may fails with this package if
 # cross-compiled.
+
   local vhdf5pack=${HDF5PACK##*/}            # echo ${vhdf5pack}
   local vhdf5file=${vhdf5pack%.orig.tar.gz*} # echo ${vhdf5file}
   local vhdf5diff=${HDF5DIFF##*/}            # echo ${vhdf5diff}
@@ -209,13 +212,9 @@ create_hdf5 () {
   evalfailexit "patch -p0 < ${vdiffname}"
 
   cd `echo ${vhdf5file} | sed "s/_/-/g"`
-  echo "solvedependencies.sh: Configuring ${vhdf5file} ..."
+  echo "solvedeps-2.9.13.sh: Configuring ${vhdf5file} ..."
   export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} 
-  evalfailexit "./configure CFLAGS=\"${CFLAGS}\" --prefix=${INSTDIR} --disable-cxx"
-  echo "solvedependencies.sh: Making ${vhdf5file} ..."
-  evalfailexit "make"
-  echo "solvedependencies.sh: Make install ${vhdf5file} ..."
-  evalfailexit "make install"
+  confmakeinst "${vhdf5file}" "CFLAGS=\"${CFLAGS}\" --prefix=${INSTDIR} --disable-cxx"
 }
 
 create_fftw () {
@@ -231,13 +230,9 @@ create_fftw () {
   evalfailexit "gunzip ${vfftwdiff}"
   evalfailexit "patch -p0 < ${vdiffname}"
 
-  cd `echo ${vfftwfile} | sed "s/_/-/g"`
-  echo "solvedeps-2.9.13.sh: Configuring ${vfilename} ..."
-  evalfailexit "./configure ${1} --enable-shared"
-  echo "solvedeps-2.9.13.sh: Making ${vfilename} ..."
-  evalfailexit "${MAKE}"
-  echo "solvedeps-2.9.13.sh: Make install ${vfilename} ..."
-  evalfailexit "make install"
+  vdirname=`echo ${vfftwfile} | sed "s/_/-/g"`
+  cd ${vdirname}
+  confmakeinst "${vdirname}" "${1} --enable-shared"
   cd ..
 }
 
@@ -248,12 +243,7 @@ create_curl () {
   getsource ${CURLPACK}
   unpack ${vcurlpack}
   cd ${vcurlfile}
-  echo "solvedeps-2.9.13.sh: Configuring ${vcurlfile} ..."
-  evalfailexit "./configure ${1}"
-  echo "solvedeps-2.9.13.sh: Making ${vcurlfile} ..."
-  evalfailexit "${MAKE}"
-  echo "solvedeps-2.9.13.sh: Make install ${vcurlfile} ..."
-  evalfailexit "make install"
+  confmakeinst "${vcurlfile}" "${1}"
 }
 
 create_glpk () {
@@ -263,12 +253,7 @@ create_glpk () {
   getsource ${GLPKPACK}
   unpack ${vglpkpack}
   cd ${vglpkfile}
-  echo "solvedeps-2.9.13.sh: Configuring ${vglpkfile} ..."
-  evalfailexit "./configure ${1}"
-  echo "solvedeps-2.9.13.sh: Making ${vglpkfile} ..."
-  evalfailexit "${MAKE}"
-  echo "solvedeps-2.9.13.sh: Make install ${vglpkfile} ..."
-  evalfailexit "make install"
+  confmakeinst "${vglpkfile}" "${1}"
 }
 
 create_sparse() {
@@ -348,13 +333,7 @@ create_octave() {
   echo "solvedeps-2.9.13.sh: Calling Octave's autogen.sh ..."
   cd ${voctavefile}
   evalfailexit "./autogen.sh"
-
-  echo "solvedeps-2.9.13.sh: Configuring ${voctavefile} ..."
-  evalfailexit "./configure ${1} --enable-shared --with-f2c"
-  echo "solvedeps-2.9.13.sh: Making ${voctavefile} ..."
-  evalfailexit "${MAKE}"
-  echo "solvedeps-2.9.13.sh: Make install ${voctavefile} ..."
-  evalfailexit "make install"
+  confmakeinst "${voctavefile}" "${1} --enable-shared --with-f2c"
 
   echo "solvedeps-2.9.13.sh: Removing special strings in mkoctfile-${voctversion} ..."
   sed "s:${CFLAGS}::g;s:${LDFLAGS}::g;s:${ARCH}::g" \

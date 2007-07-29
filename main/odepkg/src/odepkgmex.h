@@ -20,8 +20,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #ifndef __ODEPKGMEX__
 #define __ODEPKGMEX__ 1
 
-typedef int mwSize;
-typedef int mwIndex;
+/*
+  typedef int mwSize;
+  typedef int mwIndex;
+*/
 
 #ifndef true
 #define true 1

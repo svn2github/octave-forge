@@ -31,6 +31,8 @@ import java.awt.Container;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 import javax.swing.UIManager;
 
 public class Utils
@@ -138,17 +140,32 @@ public class Utils
 		return new Font(map);
 	}
 
+	public static Rectangle getScreenRectangle()
+	{
+		return new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+	}
+
+	public static Dimension getScreenSize()
+	{
+		return Toolkit.getDefaultToolkit().getScreenSize();
+	}
+
+	public static int getScreenResolution()
+	{
+		return Toolkit.getDefaultToolkit().getScreenResolution();
+	}
+
 	public static double[] convertPosition(double[] pos, String fromUnits, String toUnits, Component parent)
 	{
 		double[] p = null;
-		boolean isContainer = (parent instanceof Container);
+		boolean isContainer = (parent != null && parent instanceof Container);
 
 		if (fromUnits.equalsIgnoreCase("pixels"))
 			p = (double[])pos.clone();
 		else if (fromUnits.equalsIgnoreCase("normalized"))
 		{
 			Insets ir = (isContainer ? ((Container)parent).getInsets() : new Insets(0, 0, 0, 0));
-			Rectangle r = parent.getBounds();
+			Rectangle r = (parent != null ? parent.getBounds() : getScreenRectangle());
 			int w = r.width-ir.left-ir.right, h = r.height-ir.top-ir.bottom;
 
 			p = new double[] {pos[0]*w+1, pos[1]*h+1, pos[2]*w, pos[3]*h};
@@ -160,13 +177,28 @@ public class Utils
 			
 			p = new double[] {pos[0]*w+1, pos[1]*h+1, pos[2]*w, pos[3]*h};
 		}
+		else if (fromUnits.equalsIgnoreCase("points"))
+		{
+			double f = getScreenResolution()/72.0;
+			p = new double[] {pos[0]*f+1, pos[1]*f+1, pos[2]*f, pos[3]*f};
+		}
+		else if (fromUnits.equalsIgnoreCase("inches"))
+		{
+			double f = getScreenResolution();
+			p = new double[] {pos[0]*f+1, pos[1]*f+1, pos[2]*f, pos[3]*f};
+		}
+		else if (fromUnits.equalsIgnoreCase("centimeters"))
+		{
+			double f = getScreenResolution()/2.54;
+			p = new double[] {pos[0]*f+1, pos[1]*f+1, pos[2]*f, pos[3]*f};
+		}
 
 		if (!toUnits.equalsIgnoreCase("pixels"))
 		{
 			if (toUnits.equalsIgnoreCase("normalized"))
 			{
 				Insets ir = (isContainer ? ((Container)parent).getInsets() : new Insets(0, 0, 0, 0));
-				Rectangle r = parent.getBounds();
+				Rectangle r = (parent != null ? parent.getBounds() : getScreenRectangle());
 				int w = r.width-ir.left-ir.right, h = r.height-ir.top-ir.bottom;
 
 				p[0] = (p[0]-1)/w;
@@ -183,6 +215,30 @@ public class Utils
 				p[1] = (p[1]-1)/h;
 				p[2] /= w;
 				p[3] /= h;
+			}
+			else if (toUnits.equalsIgnoreCase("inches"))
+			{
+				double f = getScreenResolution();
+				p[0] = (p[0]-1)/f;
+				p[1] = (p[1]-1)/f;
+				p[2] /= f;
+				p[3] /= f;
+			}
+			else if (toUnits.equalsIgnoreCase("centimeters"))
+			{
+				double f = getScreenResolution()/2.54;
+				p[0] = (p[0]-1)/f;
+				p[1] = (p[1]-1)/f;
+				p[2] /= f;
+				p[3] /= f;
+			}
+			else if (toUnits.equalsIgnoreCase("inches"))
+			{
+				double f = getScreenResolution()/72.0;
+				p[0] = (p[0]-1)/f;
+				p[1] = (p[1]-1)/f;
+				p[2] /= f;
+				p[3] /= f;
 			}
 		}
 

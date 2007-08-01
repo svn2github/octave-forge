@@ -90,7 +90,10 @@ public class PropertySet extends TreeMap
 		{
 			Property p = (Property)it.next();
 			if (p.isVisible())
+			{
+				get(p); /* force any getter to execute */
 				System.out.println("  " + p.getName() + " = " + p);
+			}
 		}
 	}
 

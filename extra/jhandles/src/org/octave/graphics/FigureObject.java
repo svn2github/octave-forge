@@ -61,6 +61,7 @@ public class FigureObject extends HandleObject
 	private AxesObject mouseAxes = null;
 	private int mouseOp = OP_NONE;
 	private int defaultMouseOp = OP_ZOOM;
+	private String currentUnits;
 
 	public static final int OP_NONE = 0;
 	public static final int OP_ZOOM = 1;
@@ -77,7 +78,9 @@ public class FigureObject extends HandleObject
 	RadioProperty               NextPlot;
 	BooleanProperty             NumberTitle;
 	RadioProperty               PaperOrientation;
+	VectorProperty              Position;
 	CallbackProperty            ResizeFcn;
+	RadioProperty               Units;
 
 	// Constructor
 
@@ -133,12 +136,19 @@ public class FigureObject extends HandleObject
 		Alphamap = new VectorProperty(this, "Alphamap", amap, -1);
 		PaperOrientation = new RadioProperty(this, "PaperOrientation", new String[] {"portrait", "landscape"}, "portrait");
 		IntegerHandle = new BooleanProperty(this, "IntegerHandle", true);
+		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "inches", "centimeters",
+			"points", "characters"}, "pixels");
+		currentUnits = Units.getValue();
+		Position = new VectorProperty(this, "Position", new double[] {
+			frame.getX()+1, frame.getY()+1, frame.getWidth(), frame.getHeight()}, 4);
 
 		updateTitle();
 
 		listen(Name);
 		listen(NumberTitle);
 		listen(IntegerHandle);
+		listen(Position);
+		listen(Units);
 
 		// show window frame
 		frame.setVisible(true);
@@ -247,6 +257,19 @@ public class FigureObject extends HandleObject
 			updateTitle();
 		else if (p == IntegerHandle)
 			updateHandle();
+		else if (p == Position && !isAutoMode())
+		{
+			double[] pos = Utils.convertPosition(Position.getVector(), Units.getValue(), "pixels", null);
+			Dimension d = Utils.getScreenSize();
+			pos[0]--;
+			pos[1] = d.height-pos[1]-pos[3]+1;
+			frame.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+		}
+		else if (p == Units)
+		{
+			updatePosition();
+			currentUnits = Units.getValue();
+		}
 	}
 
 	public Component getComponent()
@@ -254,6 +277,12 @@ public class FigureObject extends HandleObject
 		return axPanel;
 	}
 
+	public Object get(Property p)
+	{
+		if (p == Position)
+			updatePosition();
+		return super.get(p);
+	}
 
 	// WindowListener interface
 	
@@ -403,6 +432,14 @@ public class FigureObject extends HandleObject
 
 	public void componentHidden(ComponentEvent e) {}
 	
+	private void updatePosition()
+	{
+		Dimension d = Utils.getScreenSize();
+		double[] pos = new double[] {frame.getX()+1, d.height-frame.getY()-frame.getHeight()+1,
+			frame.getWidth(), frame.getHeight()};
+		autoSet(Position, Utils.convertPosition(pos, "pixels", Units.getValue(), null));
+	}
+
 	public void componentMoved(ComponentEvent e) {}
 
 	public void componentResized(ComponentEvent e)

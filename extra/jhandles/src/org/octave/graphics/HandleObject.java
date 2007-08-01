@@ -31,6 +31,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	private Renderer.CachedData cachedData = null;
 	private boolean valid = false;
 	private List notifierList = new LinkedList();
+	protected int autoMode = 0;
 
 	private static int handleSeed = -1;
 	private static HashMap handleMap = new HashMap();
@@ -242,6 +243,18 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	{
 		System.out.println("Warning: no component associated with " + getClass());
 		return null;
+	}
+
+	protected void autoSet(Property p, Object value)
+	{
+		autoMode++;
+		p.set(value, true);
+		autoMode--;
+	}
+
+	protected boolean isAutoMode()
+	{
+		return (autoMode > 0);
 	}
 
 	/* HandleNotifier.Sink interface */

@@ -83,7 +83,8 @@ public class UIPanelObject extends HandleObject
 		TitlePosition = new RadioProperty(this, "TitlePosition", new String[] {
 			"lefttop", "centertop", "righttop",
 			"leftbottom", "centerbottom", "rightbottom"}, "lefttop");
-		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized"}, "normalized");
+		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "characters",
+			"inches", "centimeters", "points"}, "normalized");
 
 		listen(BackgroundColor);
 		listen(FontAngle);

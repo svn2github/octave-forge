@@ -113,6 +113,7 @@ public abstract class Property implements HandleNotifier.Source
 		if (setFlag)
 		{
 			System.out.println("WARNING: " + getName() + ".set (" + ((HandleObject)getParent()).getHandle() + "): recursive behavior detected, not setting");
+			Thread.dumpStack();
 			return;
 		}
 

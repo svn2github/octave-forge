@@ -86,7 +86,8 @@ public class UIControlObject extends HandleObject
 			  "listbox",
 			  "popupmenu"}, "pushbutton");
 		TooltipString = new StringProperty(this, "TooltipString", "");
-		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "characters"}, "pixels");
+		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "characters", "inches",
+			"centimeters", "points"}, "pixels");
 		Value = new VectorProperty(this, "Value", new double[] {0}, -1);
 
 		listen(FontUnits);

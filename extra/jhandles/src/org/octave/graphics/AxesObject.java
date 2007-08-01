@@ -82,7 +82,8 @@ public class AxesObject extends HandleObject
 	}
 
 	private String currentUnits;
-	protected int autoMode = 0;
+	// TODO: remove
+	//protected int autoMode = 0;
 
 	RenderCanvas canvas;
 	LegendObject legend;
@@ -210,7 +211,7 @@ public class AxesObject extends HandleObject
 		Position = new VectorProperty(this, "Position", new double[0], -1);
 		OuterPosition = new VectorProperty(this, "OuterPosition", new double[] {0,0,1,1}, -1);
 		Units = new RadioProperty(this, "Units",
-			new String[] { "pixels", "normalized" }, "normalized");
+			new String[] { "pixels", "normalized", "characters", "inches", "centimeters", "points" }, "normalized");
 		currentUnits = "normalized";
 		Projection = new RadioProperty(this, "Projection", new String[] { "orthogonal", "perspective" }, "orthogonal");
 		AxesColor = new ColorProperty(this, "Color", Color.white, new String[] {"none"}, null);
@@ -1507,6 +1508,7 @@ public class AxesObject extends HandleObject
 		}
 	}
 
+	/* TODO: remove
 	void autoSet(Property p, Object value)
 	{
 		autoMode++;
@@ -1518,6 +1520,7 @@ public class AxesObject extends HandleObject
 	{
 		return (autoMode > 0);
 	}
+	*/
 	
 	protected void autoScale()
 	{

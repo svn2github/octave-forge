@@ -88,11 +88,41 @@ public class FigureObject extends HandleObject
 	{
 		super(RootObject.getInstance(), fignum, "figure");
 
+		CurrentAxes = new HandleObjectListProperty(this, "CurrentAxes", 1);
+		Name = new StringProperty(this, "Name", "");
+		NumberTitle = new BooleanProperty(this, "NumberTitle", true);
+		NextPlot = new RadioProperty(this, "NextPlot", new String[] {"new", "add", "replace", "replacechildren"}, "add");
+		FigColor = new ColorProperty(this, "Color", Utils.getBackgroundColor());
+		Colormap = new ArrayProperty(this, "Colormap",
+			new Matrix(RootObject.getInstance().defaultColorMap()), new String[] {"double"}, 2);
+		ResizeFcn = new CallbackProperty(this, "ResizeFcn", (String)null);
+		CloseRequestFcn = new CallbackProperty(this, "CloseRequestFcn", "closereq");
+		double[] amap = new double[64];
+		for (int i=0; i<amap.length; i++)
+			amap[i] = ((double)i)/(amap.length-1);
+		Alphamap = new VectorProperty(this, "Alphamap", amap, -1);
+		PaperOrientation = new RadioProperty(this, "PaperOrientation", new String[] {"portrait", "landscape"}, "portrait");
+		IntegerHandle = new BooleanProperty(this, "IntegerHandle", true);
+		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "inches", "centimeters",
+			"points", "characters"}, "pixels");
+		currentUnits = Units.getValue();
+		Dimension d = Utils.getScreenSize();
+		Position = new VectorProperty(this, "Position", new double[] {1, d.height-500, 600, 500}, 4);
+
+		listen(Name);
+		listen(NumberTitle);
+		listen(IntegerHandle);
+		listen(Position);
+		listen(Units);
+	}
+
+	// Methods
+	
+	private void createFigure()
+	{
 		// setup window frame
 		frame = new Frame();
-		frame.setSize(600, 500);
-		frame.setBackground(Utils.getBackgroundColor());
-		frame.setTitle("Figure " + fignum);
+		frame.setBackground(FigColor.getColor());
 		frame.addWindowListener(this);
 		frame.addComponentListener(this);
 
@@ -121,40 +151,10 @@ public class FigureObject extends HandleObject
 		canvas.addMouseMotionListener(this);
 		axPanel.add(canvas.getComponent());
 
-		CurrentAxes = new HandleObjectListProperty(this, "CurrentAxes", 1);
-		Name = new StringProperty(this, "Name", "");
-		NumberTitle = new BooleanProperty(this, "NumberTitle", true);
-		NextPlot = new RadioProperty(this, "NextPlot", new String[] {"new", "add", "replace", "replacechildren"}, "add");
-		FigColor = new ColorProperty(this, "Color", Utils.getBackgroundColor());
-		Colormap = new ArrayProperty(this, "Colormap",
-			new Matrix(RootObject.getInstance().defaultColorMap()), new String[] {"double"}, 2);
-		ResizeFcn = new CallbackProperty(this, "ResizeFcn", (String)null);
-		CloseRequestFcn = new CallbackProperty(this, "CloseRequestFcn", "closereq");
-		double[] amap = new double[64];
-		for (int i=0; i<amap.length; i++)
-			amap[i] = ((double)i)/(amap.length-1);
-		Alphamap = new VectorProperty(this, "Alphamap", amap, -1);
-		PaperOrientation = new RadioProperty(this, "PaperOrientation", new String[] {"portrait", "landscape"}, "portrait");
-		IntegerHandle = new BooleanProperty(this, "IntegerHandle", true);
-		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "inches", "centimeters",
-			"points", "characters"}, "pixels");
-		currentUnits = Units.getValue();
-		Position = new VectorProperty(this, "Position", new double[] {
-			frame.getX()+1, frame.getY()+1, frame.getWidth(), frame.getHeight()}, 4);
-
 		updateTitle();
-
-		listen(Name);
-		listen(NumberTitle);
-		listen(IntegerHandle);
-		listen(Position);
-		listen(Units);
-
-		// show window frame
+		updateFramePosition();
 		frame.setVisible(true);
 	}
-
-	// Methods
 	
 	private void updateHandle()
 	{
@@ -168,11 +168,29 @@ public class FigureObject extends HandleObject
 	
 	public void validate()
 	{
+		createFigure();
 		updateHandle();
 		super.validate();
 		activate();
 	}
 	
+	private void updatePosition()
+	{
+		Dimension d = Utils.getScreenSize();
+		double[] pos = new double[] {frame.getX()+1, d.height-frame.getY()-frame.getHeight()+1,
+			frame.getWidth(), frame.getHeight()};
+		autoSet(Position, Utils.convertPosition(pos, "pixels", Units.getValue(), null));
+	}
+
+	private void updateFramePosition()
+	{
+		double[] pos = Utils.convertPosition(Position.getVector(), Units.getValue(), "pixels", null);
+		Dimension d = Utils.getScreenSize();
+		pos[0]--;
+		pos[1] = d.height-pos[1]-pos[3]+1;
+		frame.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+	}
+
 	private void updateTitle()
 	{
 		String title = (NumberTitle.isSet() ? "Figure " + getHandle() : ""), name = Name.toString();
@@ -259,11 +277,7 @@ public class FigureObject extends HandleObject
 			updateHandle();
 		else if (p == Position && !isAutoMode())
 		{
-			double[] pos = Utils.convertPosition(Position.getVector(), Units.getValue(), "pixels", null);
-			Dimension d = Utils.getScreenSize();
-			pos[0]--;
-			pos[1] = d.height-pos[1]-pos[3]+1;
-			frame.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+			updateFramePosition();
 		}
 		else if (p == Units)
 		{
@@ -432,14 +446,6 @@ public class FigureObject extends HandleObject
 
 	public void componentHidden(ComponentEvent e) {}
 	
-	private void updatePosition()
-	{
-		Dimension d = Utils.getScreenSize();
-		double[] pos = new double[] {frame.getX()+1, d.height-frame.getY()-frame.getHeight()+1,
-			frame.getWidth(), frame.getHeight()};
-		autoSet(Position, Utils.convertPosition(pos, "pixels", Units.getValue(), null));
-	}
-
 	public void componentMoved(ComponentEvent e) {}
 
 	public void componentResized(ComponentEvent e)

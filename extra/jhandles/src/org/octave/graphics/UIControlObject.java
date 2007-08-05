@@ -198,13 +198,35 @@ public class UIControlObject extends HandleObject
 		return super.get(p);
 	}
 
+	public void set(Property p, Object value) throws PropertyException
+	{
+		if (p == UIString)
+		{
+			try
+			{
+				String[] items = (String[])value;
+				if (Style.is("listbox") || Style.is("popupmenu"))
+					value = Utils.join(items, "|");
+				else if (Style.is("text") || (Style.is("edit") && (Max.doubleValue()-Min.doubleValue()) > 1))
+					value = Utils.join(items, "\n");
+				else
+					value = (items.length > 0 ? items[0] : "");
+			}
+			catch (ClassCastException e) {}
+		}
+		super.set(p, value);
+	}
+
 	/* UIControlListener interface */
 
 	public void controlActivated(UIControlEvent event)
 	{
-		System.out.println("Control activated");
-		Callback.execute(new Object[] {
-			new Double(getHandle()),
-			event});
+		if (isValid())
+		{
+			System.out.println("Control activated");
+			Callback.execute(new Object[] {
+				new Double(getHandle()),
+				event});
+		}
 	}
 }

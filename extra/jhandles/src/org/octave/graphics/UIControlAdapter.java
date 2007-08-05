@@ -46,6 +46,8 @@ public class UIControlAdapter extends Panel
 			else
 				this.ctrl = new Edit2Control(obj);
 		}
+		else if (style.equalsIgnoreCase("popupmenu"))
+			this.ctrl = new PopupMenuControl(obj);
 		else
 			throw new IllegalArgumentException("unsupported UI style `" + style + "'");
 		this.uiObj = obj;

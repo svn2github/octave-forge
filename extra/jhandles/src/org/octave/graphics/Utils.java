@@ -268,4 +268,16 @@ public class Utils
 	{
 		return getUIColor("controlLtHighlight", Color.white);
 	}
+
+	public static String join(String[] items, String sepstr)
+	{
+		String new_str = "";
+		for (int i=0; i<items.length; i++)
+		{
+			if (i != 0)
+				new_str += sepstr;
+			new_str += items[i];
+		}
+		return new_str;
+	}
 }

@@ -2034,26 +2034,57 @@ public class AxesObject extends HandleObject
 
 		if (units.equalsIgnoreCase("data"))
 			p = (double[])pos.clone();
-		else if (units.equalsIgnoreCase("pixels"))
-		{
-			Rectangle bb = getBoundingBox();
-			p = new double[3];
-			unTransform(bb.x+pos[0], bb.y+pos[1], pos[2], p, 0);
-		}
 		else
 		{
-			System.err.println("WARNING: cannot from units `" + units + "'");
-			p = (double[])pos.clone();
+			Rectangle bb = getBoundingBox();
+			double dpi = Utils.getScreenResolution();
+
+			if (units.equalsIgnoreCase("pixels"))
+				p = (double[])pos.clone();
+			else if (units.equalsIgnoreCase("normalized"))
+				p = new double[] {pos[0]*bb.width, pos[1]*bb.height, pos[2]};
+			else if (units.equalsIgnoreCase("inches"))
+				p = new double[] {pos[0]*dpi, pos[1]*dpi, pos[2]*dpi};
+			else if (units.equalsIgnoreCase("centimeters"))
+				p = new double[] {pos[0]*dpi/2.54, pos[1]*dpi/2.54, pos[2]*dpi/2.54};
+			else if (units.equalsIgnoreCase("points"))
+				p = new double[] {pos[0]*dpi/72.0, pos[1]*dpi/72.0, pos[2]*dpi/72.0};
+			else
+				p = new double[] {0, 0, 0};
+			unTransform(bb.x+p[0], bb.y+p[1], p[2], p, 0);
 		}
 
 		if (!toUnits.equalsIgnoreCase("data"))
 		{
-			if (toUnits.equalsIgnoreCase("pixels"))
+			Rectangle bb = getBoundingBox();
+			double dpi = Utils.getScreenResolution();
+
+			transform(p[0], p[1], p[2], p, 0);
+			p[0] -= bb.x;
+			p[1] -= bb.y;
+			
+			if (toUnits.equalsIgnoreCase("normalized"))
 			{
-				Rectangle bb = getBoundingBox();
-				transform(p[0], p[1], p[2], p, 0);
-				p[0] = Math.rint(p[0])-bb.x;
-				p[1] = Math.rint(p[1])-bb.y;
+				p[0] /= bb.width;
+				p[1] /= bb.height;
+			}
+			else if (toUnits.equalsIgnoreCase("inches"))
+			{
+				p[0] /= dpi;
+				p[1] /= dpi;
+				p[2] /= dpi;
+			}
+			else if (toUnits.equalsIgnoreCase("centimeters"))
+			{
+				p[0] /= dpi/2.54;
+				p[1] /= dpi/2.54;
+				p[2] /= dpi/2.54;
+			}
+			else if (toUnits.equalsIgnoreCase("points"))
+			{
+				p[0] /= dpi/72.0;
+				p[1] /= dpi/72.0;
+				p[2] /= dpi/72.0;
 			}
 		}
 

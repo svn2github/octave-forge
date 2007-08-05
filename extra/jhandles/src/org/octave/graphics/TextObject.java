@@ -65,7 +65,8 @@ public class TextObject extends GraphicObject
 		VAlign = new RadioProperty(this, "VerticalAlignment", new String[] {"top", "middle", "bottom", "baseline"}, "baseline");
 		Position = new VectorProperty(this, "Position", pos, 3);
 		PositionMode = new BooleanProperty(this, "PositionMode", true);
-		Units = new RadioProperty(this, "Units", new String[] {"pixels", "data"}, "data");
+		Units = new RadioProperty(this, "Units", new String[] {"pixels", "data", "normalized",
+			"inches", "centimeters", "points"}, "data");
 		currentUnits = "data";
 		TextColor = new ColorProperty(this, "Color", Color.black);
 		TextString = new StringProperty(this, "String", txt);
@@ -169,17 +170,28 @@ public class TextObject extends GraphicObject
 
 	protected void updateMinMax()
 	{
-		double[] p = getAxes().convertUnits(Position.getArray(), Units.getValue());
-		double xmin2 = (p[0] <= 0 ? Double.POSITIVE_INFINITY : p[0]);
-		double xmax2 = (p[0] <= 0 ? Double.MIN_VALUE : p[0]);
-		double ymin2 = (p[1] <= 0 ? Double.POSITIVE_INFINITY : p[1]);
-		double ymax2 = (p[1] <= 0 ? Double.MIN_VALUE : p[1]);
-		double zmin2 = (p[2] <= 0 ? Double.POSITIVE_INFINITY : p[2]);
-		double zmax2 = (p[2] <= 0 ? Double.MIN_VALUE : p[2]);
+		if (Units.is("data"))
+		{
+			double[] p = getAxes().convertUnits(Position.getArray(), Units.getValue());
+			double xmin2 = (p[0] <= 0 ? Double.POSITIVE_INFINITY : p[0]);
+			double xmax2 = (p[0] <= 0 ? Double.MIN_VALUE : p[0]);
+			double ymin2 = (p[1] <= 0 ? Double.POSITIVE_INFINITY : p[1]);
+			double ymax2 = (p[1] <= 0 ? Double.MIN_VALUE : p[1]);
+			double zmin2 = (p[2] <= 0 ? Double.POSITIVE_INFINITY : p[2]);
+			double zmax2 = (p[2] <= 0 ? Double.MIN_VALUE : p[2]);
 
-		XLim.set(new double[] {p[0], p[0], xmin2, xmax2}, true);
-		YLim.set(new double[] {p[1], p[1], ymin2, ymax2}, true);
-		ZLim.set(new double[] {p[2], p[2], zmin2, zmax2}, true);
+			XLim.set(new double[] {p[0], p[0], xmin2, xmax2}, true);
+			YLim.set(new double[] {p[1], p[1], ymin2, ymax2}, true);
+			ZLim.set(new double[] {p[2], p[2], zmin2, zmax2}, true);
+		}
+		else
+		{
+			double[] lims = new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
+				Double.POSITIVE_INFINITY, Double.MIN_VALUE};
+			XLim.set(lims, true);
+			YLim.set(lims, true);
+			ZLim.set(lims, true);
+		}
 	}
 
 	public void draw(Renderer renderer)

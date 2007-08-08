@@ -28,13 +28,9 @@
 %#
 %# @seealso{odepkg}
 
-%# Maintainer: Thomas Treichl
-%# Created: 20060906
-%# ChangeLog: 20060929, Thomas Treichl
-%#    As in the definitions of initial value problems as functions and
-%#    if somebody uses event functions all input and output vectors
-%#    must be column vectors by now.
-
+%# As in the definitions of initial value problems as functions and if
+%# somebody uses event functions all input and output vectors must be
+%# column vectors by now.
 function [varargout] = odephas2 (vt, vy, vflag)
 
   %# No input argument check is done for a higher processing speed

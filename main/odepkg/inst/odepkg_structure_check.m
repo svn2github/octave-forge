@@ -1,5 +1,5 @@
 %# Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# OdePkg - Package for solving ordinary differential equations with Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{odestruct} =} odepkg_structure_check (@var{odestruct})
-%# Checks the field names and the field values of the odepkg option structure @var{odestruct} and returns it again if it is valid. If an invalid field name or an invalid field value is detected then the function terminates with an error.
+%# @deftypefn {Function} {@var{odestruct} =} odepkg_structure_check (@var{odestruct}, ['@var{solver}'])
+%# Checks the field names and the field values of the OdePkg option structure @var{odestruct} and returns it if it is valid. If optionally called with a second string input argument '@var{solver}' specifying the name of a valid OdePkg solver then a higher level error detection is performed. If an invalid structure fieldname or an invalid value for an option is given then the function returns an error.
 %#
 %# Run
 %# @example
@@ -28,242 +28,266 @@
 %#
 %# @seealso{odepkg}
 
-%# Maintainer: Thomas Treichl
-%# Created: 20060809
-%# ChangeLog:
+function [vret] = odepkg_structure_check (varargin)
 
-function [vret] = odepkg_structure_check (vret)
-  if (nargin == 0) %# Check number of input arguments
-    vmsg = sprintf ('Number of input arguments must be greater than zero\n');
-    help ('odepkg_structure_check'); error (vmsg);
-  else
-    vint.fld = fieldnames (vret); vint.len = length (vint.fld);
+  %# Check the number of input arguments
+  if (nargin == 0)
+    help ('odepkg_structure_check');
+    error ('OdePkg:odepkg_structure_check:InvalidInputArgument', ...
+      'Number of input arguments must be greater than zero');
+  elseif (nargin > 2)
+    print_usage;
+  elseif (nargin == 1 && isstruct (varargin{1}))
+    vret = varargin{1};
+    vsol = '';
+    vfld = fieldnames (vret);
+    vlen = length (vfld);
+  elseif (nargin == 2 && isstruct (varargin{1}) && ischar (varargin{2}))
+    vret = varargin{1};
+    vsol = varargin{2};
+    vfld = fieldnames (vret);
+    vlen = length (vfld);
   end
 
-  for vcntarg = 1:vint.len %# Run through the number of structure field names
+  for vcntarg = 1:vlen %# Run through the number of given structure field names
 
-    switch (vint.fld{vcntarg})
+    switch (vfld{vcntarg})
 
       case 'RelTol'
-        if (isreal (vret.(vint.fld{vcntarg})) == true && ...
-            (isvector (vret.(vint.fld{vcntarg})) == true || ...
-             isscalar (vret.(vint.fld{vcntarg})) == true) && ...
-            all (vret.(vint.fld{vcntarg}) > 0) == true) %# LabMat needs 'all'?!
+        if (isnumeric (vret.(vfld{vcntarg})) && ...
+            isreal    (vret.(vfld{vcntarg})) && ...
+            all       (vret.(vfld{vcntarg}) > 0)) %# 'all' is a MatLab need
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
+	switch (vsol)
+	  case {'ode23', 'ode45', 'ode54', 'ode78'}
+	    if (~isscalar (vret.(vfld{vcntarg})) && ...
+		~isempty (vret.(vfld{vcntarg})))
+              error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+                'Value of option "RelTol" must be a scalar for solver "ode23"');
+	    end
+	  otherwise
+
+	  end
+
       case 'AbsTol'
-        if (isreal (vret.(vint.fld{vcntarg})) == true && ...
-            (isvector (vret.(vint.fld{vcntarg})) == true || ...
-             isscalar (vret.(vint.fld{vcntarg})) == true) && ...
-            all (vret.(vint.fld{vcntarg}) > 0) == true) %# LabMat needs 'all'?!
+        if (isnumeric (vret.(vfld{vcntarg})) && ...
+            isreal    (vret.(vfld{vcntarg})) && ...
+            all       (vret.(vfld{vcntarg}) > 0))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'NormControl'
-        if (strcmp (vret.(vint.fld{vcntarg}), 'on') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'off') == true)
+        if (strcmp (vret.(vfld{vcntarg}), 'on') || ...
+            strcmp (vret.(vfld{vcntarg}), 'off'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'NonNegative'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            isvector (vret.(vint.fld{vcntarg})) == true)
+        if (isempty  (vret.(vfld{vcntarg})) || ...
+            isvector (vret.(vfld{vcntarg})))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'OutputFcn'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            isa     (vret.(vfld{vcntarg}), 'function_handle'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'OutputSel'
-        if (isempty  (vret.(vint.fld{vcntarg})) == true || ...
-            isvector (vret.(vint.fld{vcntarg})) == true || ...
-            isscalar (vret.(vint.fld{vcntarg})) == true)
+        if (isempty  (vret.(vfld{vcntarg})) || ...
+            isvector (vret.(vfld{vcntarg})) || ...
+            isscalar (vret.(vfld{vcntarg})))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'Refine'
-        if (mod (vret.(vint.fld{vcntarg}), 1) == 0 && ...
-            vret.(vint.fld{vcntarg}) >= 0 && ...
-            vret.(vint.fld{vcntarg}) <= 5)
+        if (mod (vret.(vfld{vcntarg}), 1) == 0 && ...
+            vret.(vfld{vcntarg}) >= 0 && ...
+            vret.(vfld{vcntarg}) <= 5)
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'Stats'
-        if (strcmp (vret.(vint.fld{vcntarg}), 'on') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'off') == true)
+        if (strcmp (vret.(vfld{vcntarg}), 'on') || ...
+            strcmp (vret.(vfld{vcntarg}), 'off'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'InitialStep'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            (isreal (vret.(vint.fld{vcntarg})) == true && ...
-             vret.(vint.fld{vcntarg}) > 0) )
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            (isreal (vret.(vfld{vcntarg})) && ...
+             vret.(vfld{vcntarg}) > 0) )
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'MaxStep'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            (isscalar (vret.(vint.fld{vcntarg})) == true && vret.(vint.fld{vcntarg}) > 0) )
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            (isscalar (vret.(vfld{vcntarg})) && ...
+             vret.(vfld{vcntarg}) > 0) )
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'Events'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            isa     (vret.(vfld{vcntarg}), 'function_handle'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'Jacobian'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            ismatrix (vret.(vint.fld{vcntarg})) == true || ...
-            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            ismatrix (vret.(vfld{vcntarg})) || ...
+            isa (vret.(vfld{vcntarg}), 'function_handle'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'JPattern'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            issparse (vret.(vint.fld{vcntarg})) == true)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            issparse (vret.(vfld{vcntarg})))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'Vectorized'
-        if (strcmp (vret.(vint.fld{vcntarg}), 'on') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'off') == true)
+        if (strcmp (vret.(vfld{vcntarg}), 'on') || ...
+            strcmp (vret.(vfld{vcntarg}), 'off'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'Mass'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            ismatrix (vret.(vint.fld{vcntarg})) == true || ...
-            isa (vret.(vint.fld{vcntarg}), 'function_handle') == true)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            ismatrix (vret.(vfld{vcntarg})) || ...
+            isa (vret.(vfld{vcntarg}), 'function_handle'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'MStateDependence'
-        if (strcmp (vret.(vint.fld{vcntarg}), 'none') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'weak') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'strong') == true)
+        if (strcmp (vret.(vfld{vcntarg}), 'none') || ...
+            strcmp (vret.(vfld{vcntarg}), 'weak') || ...
+            strcmp (vret.(vfld{vcntarg}), 'strong'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'MvPattern'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            issparse (vret.(vint.fld{vcntarg})) == true)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            issparse (vret.(vfld{vcntarg})))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'MassSingular'
-        if (strcmp (vret.(vint.fld{vcntarg}), 'yes') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'no') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'maybe') == true)
+        if (strcmp (vret.(vfld{vcntarg}), 'yes') || ...
+            strcmp (vret.(vfld{vcntarg}), 'no') || ...
+            strcmp (vret.(vfld{vcntarg}), 'maybe'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'InitialSlope'
-        if (isempty (vret.(vint.fld{vcntarg})) == true || ...
-            isvector (vret.(vint.fld{vcntarg})) == true)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            isvector (vret.(vfld{vcntarg})))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'MaxOrder'
-        if (mod (vret.(vint.fld{vcntarg}), 1) == 0 && ...
-            vret.(vint.fld{vcntarg}) > 0 && vret.(vint.fld{vcntarg}) < 6)
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            (mod (vret.(vfld{vcntarg}), 1) == 0 && ...
+             vret.(vfld{vcntarg}) > 0 && ...
+             vret.(vfld{vcntarg}) < 6))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       case 'BDF'
-        if (strcmp (vret.(vint.fld{vcntarg}), 'on') == true || ...
-            strcmp (vret.(vint.fld{vcntarg}), 'off') == true)
+        if (strcmp (vret.(vfld{vcntarg}), 'on') || ...
+            strcmp (vret.(vfld{vcntarg}), 'off'))
         else
-          vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-            vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-          error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s" or not valid parameter value', ...
+            vfld{vcntarg});
         end
 
       otherwise
-        vmsg = sprintf ('Unknown parameter "%s" or invalid parameter value "%s"\n', ...
-          vint.fld{vcntarg}, char (vret.(vint.fld{vcntarg})));
-        error (vmsg);
+          error ('OdePkg:odepkg_structure_check:InvalidParameter', ...
+            'Unknown parameter name "%s"', ...
+            vfld{vcntarg});
+
     end %# switch
+
   end %# for
 
-  %# The following line can be uncommented for a even higher level error detection
-  %# if (vint.len ~= 21)
-  %#   vmsg = sprintf ('Number of fields in structure must match 21');
-  %#   error (vmsg);
-  %# end
+%# The following line can be uncommented for a even higher level error
+%# detection
+%# if (vlen ~= 21)
+%#   vmsg = sprintf ('Number of fields in structure must match 21');
+%#   error (vmsg);
+%# end
 
-%!test  A = odeset ('RelTol', 1e-4);         %# odeset calls odepkg_structure_check
-%!test  A = odeset ('RelTol', [1e-4, 1e-3]); %# after the options have been set
-%!error A = odeset ('RelTol', []);
+%!test  A = odeset ('RelTol', 1e-4);
+%!test  A = odeset ('RelTol', [1e-4, 1e-3]);
+%!test  A = odeset ('RelTol', []);
 %!error A = odeset ('RelTol', '1e-4');
 %!test  A = odeset ('AbsTol', 1e-4);
 %!test  A = odeset ('AbsTol', [1e-4, 1e-3]);
-%!error A = odeset ('AbsTol', []);
+%!test  A = odeset ('AbsTol', []);
 %!error A = odeset ('AbsTol', '1e-4');
 %!test  A = odeset ('NormControl', 'on');
 %!test  A = odeset ('NormControl', 'off');
@@ -271,7 +295,7 @@ function [vret] = odepkg_structure_check (vret)
 %!error A = odeset ('NormControl', '12');
 %!test  A = odeset ('NonNegative', 1);
 %!test  A = odeset ('NonNegative', [1, 2, 3]);
-%!error A = odeset ('NonNegative', []);
+%!test  A = odeset ('NonNegative', []);
 %!error A = odeset ('NonNegative', '12');
 %!test  A = odeset ('OutputFcn', @odeprint);
 %!test  A = odeset ('OutputFcn', @odeplot);
@@ -340,7 +364,7 @@ function [vret] = odepkg_structure_check (vret)
 %!test  A = odeset ('MaxOrder', 3);
 %!error A = odeset ('MaxOrder', 3.5);
 %!error A = odeset ('MaxOrder', [1, 2; 3, 4]);
-%!error A = odeset ('MaxOrder', []);
+%!test  A = odeset ('MaxOrder', []);
 %!test  A = odeset ('BDF', 'on');
 %!test  A = odeset ('BDF', 'off');
 %!error A = odeset ('BDF', [1, 2; 3, 4]);
@@ -351,14 +375,14 @@ function [vret] = odepkg_structure_check (vret)
 %! odepkg_structure_check (odeset);
 %!
 %! %----------------------------------------------------------------
-%! % Returns the checked odepkg options structure created by odeset.
+%! % Returns the checked OdePkg options structure created by odeset.
 %!demo
 %!
 %! A = odeset (); odepkg_structure_check (A);
 %!
 %! %----------------------------------------------------------------
-%! % Create the odepkg options structure A with odeset and check
-%! % it with odepkg_structure_check.
+%! % Create the OdePkg options structure A with odeset and check it 
+%! % with odepkg_structure_check.
 
 %# Local Variables: ***
 %# mode: octave ***

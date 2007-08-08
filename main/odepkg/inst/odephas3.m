@@ -28,13 +28,9 @@
 %#
 %# @seealso{odepkg}
 
-%# Maintainer: Thomas Treichl
-%# Created: 20060912
-%# ChangeLog: 20060929, Thomas Treichl
-%#    As in the definitions of initial value problems as functions
-%#    and if somebody uses event functions all input and output
-%#    vectors must be column vectors by now.
-
+%# As in the definitions of initial value problems as functions and if
+%# somebody uses event functions all input and output vectors must be
+%# column vectors by now.
 function [varargout] = odephas3 (vt, vy, vflag)
 
   %# vt and vy are always column vectors, vflag can be either 'init'

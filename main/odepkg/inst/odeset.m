@@ -21,13 +21,13 @@
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @dots{})
 %# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{newstruct})
 %#
-%# Called without return argument, creates a new ode options structure with all necessary fields and sets the values of all fields to the defaults.
+%# If called without any input argument then creates a new OdePkg options structure with all necessary fields and sets the values of all fields to default values.
 %#
-%# Called with string input arguments identifying valid odepkg structure options, creates a new odepkg options structure with all necessary fields and sets the values of the fields @var{field1}, @var{field2} etc. to the values @var{value1}, @var{value2}, etc. If an unknown option field or an invalid option value is detected then the function terminates with an error.
+%# If called with string input arguments identifying valid OdePkg options then creates a new OdePkg options structure with all necessary fields and sets the values of the fields @var{field1}, @var{field2} etc. to the values @var{value1}, @var{value2}, etc.
 %#
-%# Called with the first argument being a structure returned by @command{odeset}, overwrites all option values of the structure @var{oldstruct} in the fields @var{field1}, @var{field2}, etc. with new values @var{value1}, @var{value2}, etc. If an unknown option field or an invalid option value is detected then the function terminates with an error.
+%# If called with the first input argument being a valid OdePkg structure then overwrites all values of options of the structure @var{oldstruct} in the fields @var{field1}, @var{field2}, etc. with new values @var{value1}, @var{value2}, etc.
 %#
-%# Called with two structures, overwrites all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Any empty matrix values from @var{newstruct} are not treated. If an unknown option field or an invalid option value is detected then the function terminates with an error.
+%# If called with two valid OdePkg structures then overwrites all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Empty structure values from @var{newstruct} will not overwrite structure values from @var{oldstruct}.
 %#
 %# Run
 %# @example
@@ -37,11 +37,8 @@
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
-%#
-%# - TODO - ODESET - CLEANUP HELP TEXT FROM HERE TO HELP TEXT BUTTOM -
-%#
-%# @unnumberedsubsec Valid field names of the odepkg options structure
-%# The odepkg options structure may contain the following fields and default values if calling @command{odeset}
+
+%# The OdePkg options structure may contain the following fields and default values if calling @command{odeset}
 %#
 %# @itemize @var
 %# @item "RelTol" must be a positive scalar (default 1e-3)
@@ -67,15 +64,12 @@
 %# @item "BDF" must be "on" or "off" (default "off")
 %# @end itemize
 
-%# Maintainer: Thomas Treichl
-%# Created: 20060809
-%# ChangeLog:
-
 function [vret] = odeset (varargin)
-  %# Create and check structure(s) for ode solvers (and others)
-  vint.template = struct ...
-    ('RelTol', 1e-3, ...
-     'AbsTol', 1e-6, ...
+
+  %# Create a template OdePkg structure
+  vtemplate = struct ...
+    ('RelTol', [], ...
+     'AbsTol', [], ...
      'NormControl', 'off', ...
      'NonNegative', [], ...
      'OutputFcn', [], ...
@@ -93,66 +87,98 @@ function [vret] = odeset (varargin)
      'MvPattern', [], ...
      'MassSingular', 'maybe', ...
      'InitialSlope', [], ...
-     'MaxOrder', 5, ...
+     'MaxOrder', [], ...
      'BDF', 'off');
 
-  %# Check number and types of input arguments
+  %# Check number and types of all input arguments
   if (nargin == 0 && nargout == 1)
-    vret = vint.template; vret = odepkg_structure_check (vret); return;
+    vret = odepkg_structure_check (vtemplate);
+    return;
+
   elseif (nargin == 0)
     help ('odeset');
-    vmsg = sprintf ('Number of input arguments must be greater than zero');
-    error (vmsg);
-  elseif (length (varargin) < 2)
-    vmsg = sprintf ('odeset ("field1", "value1", ...)'); usage (vmsg);
-  elseif (ischar (varargin{1}) == true && mod (length (varargin), 2) == 0)
-    vint.nmb = 1; %# Check if the first input argument is a string (and every second)
-    for vcntarg = 1:2:length (varargin)
-      if (ischar (varargin{vcntarg}) == true)
-        vint.arg{vint.nmb} = varargin{vcntarg};
-        vint.val{vint.nmb} = varargin{vcntarg+1}; %# Second argument can be of any type
-        vint.nmb = vint.nmb + 1;
-      else, vmsg = sprintf ('Input argument number %d is no valid string', vcntarg); error (vmsg); end
-    end
-  elseif (isstruct (varargin{1}) == true && ischar (varargin{2}) == true && mod (length (varargin), 2) == 1)
-    vint.nmb = 1; vint.oldstruct = varargin{1};
-    for vcntarg = 2:2:length (varargin)
-      if (ischar (varargin{vcntarg}) == true)
-        vint.arg{vint.nmb} = varargin{vcntarg};
-        vint.val{vint.nmb} = varargin{vcntarg+1};
-        vint.nmb = vint.nmb + 1;
-      else, vmsg = sprintf ('Input argument number %d is no valid string', vcntarg); error (vmsg); end
-    end
-  elseif (isstruct (varargin{1}) == true && isstruct (varargin{2}) == true && length (varargin) == 2)
-    vint.oldstruct = varargin{1}; vint.newstruct = varargin{2};
-  else
-    vmsg = sprintf ('Check types and number of input arguments'); usage (vmsg);
-  end
+    error ('OdePkg:odeset:InvalidInputArgument', ...
+      'Number of input arguments must be greater than zero');
 
-  %# Create the vret structure with all the fields necessary
-  if (isfield (vint, 'oldstruct') == false)
-    vret = vint.template;
-    for vcntarg = 1:(vint.nmb-1), vret.(vint.arg{vcntarg}) = vint.val{vcntarg}; end
+  elseif (length (varargin) < 2)
+    usage ('odeset ("field1", "value1", ...)');
+
+  elseif (ischar (varargin{1}) && mod (length (varargin), 2) == 0)
+    %# Check if there is an odd number of input arguments. If this is
+    %# true then save all the structure names in varg and its values in
+    %# vval and increment vnmb for every option that is found.
+    vnmb = 1;
+    for vcntarg = 1:2:length (varargin)
+      if (ischar (varargin{vcntarg}))
+        varg{vnmb} = varargin{vcntarg};
+        vval{vnmb} = varargin{vcntarg+1};
+        vnmb = vnmb + 1;
+      else
+        error ('OdePkg:odeset:InvalidInputArgument', ...
+          'Input argument number %d is no valid string', vcntarg);
+      end
+    end
+
+    %# Create and return a new OdePkg structure and fill up all new
+    %# field values that have been found.
+    for vcntarg = 1:(vnmb-1)
+      vtemplate.(varg{vcntarg}) = vval{vcntarg};
+    end
+    vret = odepkg_structure_check (vtemplate);
+
+  elseif (isstruct (varargin{1}) && ischar (varargin{2}) && ...
+    mod (length (varargin), 2) == 1)
+    %# Check if there is an even number of input arguments. If this is
+    %# true then the first input argument also must be a valid OdePkg
+    %# structure. Save all the structure names in varg and its values in
+    %# vval and increment the vnmb counter for every option that is
+    %# found.
+    vnmb = 1;
+    for vcntarg = 2:2:length (varargin)
+      if (ischar (varargin{vcntarg}))
+        varg{vnmb} = varargin{vcntarg};
+        vval{vnmb} = varargin{vcntarg+1};
+        vnmb = vnmb + 1;
+      else
+        error ('OdePkg:odeset:InvalidInputArgument', ...
+          'Input argument number %d is no valid string', vcntarg);
+      end
+    end
+
+    %# Use the old OdePkg structure and fill up all new field values
+    %# that have been found.
+    vret = odepkg_structure_check (varargin{1});
+    for vcntarg = 1:(vnmb-1)
+      vret.(varg{vcntarg}) = vval{vcntarg};
+    end
     vret = odepkg_structure_check (vret);
-  elseif (isfield (vint, 'oldstruct') == true && isfield (vint, 'newstruct') == false)
-    vret = vint.oldstruct;
-    for vcntarg = 1:(vint.nmb-1), vret.(vint.arg{vcntarg}) = vint.val{vcntarg}; end
-    vret = odepkg_structure_check (vret);
-  elseif (isfield (vint, 'oldstruct') == true && isfield (vint, 'newstruct') == true)
-    vret = vint.oldstruct;
-    vint.newstruct = odepkg_structure_check (vint.newstruct);
-    vint.fld = fieldnames (vint.newstruct);
-    vint.len = length (vint.fld);
-    for vcntfld = 1:vint.len
-      if (isempty (vint.newstruct.(vint.fld{vcntfld})) == false)
-        vret.(vint.fld{vcntfld}) = vint.newstruct.(vint.fld{vcntfld});
+
+  elseif (isstruct (varargin{1}) && isstruct (varargin{2}) && ...
+    length (varargin) == 2)
+    %# Check if the two input arguments are valid OdePkg structures and
+    %# also check if there does not exist any other input argument.
+    vret = odepkg_structure_check (varargin{1});
+    vnew = odepkg_structure_check (varargin{2});
+    vfld = fieldnames (vnew);
+    vlen = length (vfld);
+    for vcntfld = 1:vlen
+      if (~isempty (vnew.(vfld{vcntfld})))
+        vret.(vfld{vcntfld}) = vnew.(vfld{vcntfld});
       end
     end
     vret = odepkg_structure_check (vret);
+
+  else
+    error ('OdePkg:odeset:InvalidInputArgument', ...
+      'Check types and number of all input arguments');
   end
 
+%# All tests that are needed to check if a correct resp. valid option
+%# has been set are implemented in odepkg_structure_check.m.
 %!test odeoptA = odeset ();
 %!test odeoptB = odeset ('AbsTol', 1e-2, 'RelTol', 1e-1);
+%!     if (odeoptB.AbsTol ~= 1e-2), error; end
+%!     if (odeoptB.RelTol ~= 1e-1), error; end
 %!test odeoptB = odeset ('AbsTol', 1e-2, 'RelTol', 1e-1);
 %!     odeoptC = odeset (odeoptB, 'NormControl', 'on');
 %!test odeoptB = odeset ('AbsTol', 1e-2, 'RelTol', 1e-1);

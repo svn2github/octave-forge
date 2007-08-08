@@ -448,6 +448,10 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   /* Handle the OdeOptions structure field: RELTOL */
   fodepkgvar (2, "OdeOptions", &vtmp);
   vtem = mxGetField (vtmp, 0, "RelTol");
+  if (mxIsEmpty (vtem)) {
+    vtem = mxCreateDoubleScalar (1.0e-6);
+    mexWarnMsgTxt ("Option \"RelTol\" not set, new value 1e-6 is used");
+  }
   if (mxIsRowVector (vtem)) vcnt = (int) mxGetN (vtem);
   else vcnt = (int) mxGetM (vtem);
   RTOL = mxMalloc (vcnt * sizeof (double));
@@ -458,6 +462,10 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   /* Handle the OdeOptions structure field: ABSTOL */
   vtem = mxGetField (vtmp, 0, "AbsTol");
+  if (mxIsEmpty (vtem)) {
+    vtem = mxCreateDoubleScalar (1.0e-6);
+    mexWarnMsgTxt ("Option \"AbsTol\" not set, new value 1e-6 is used");
+  }
   if (mxIsRowVector (vtem)) vnum = (int) mxGetN (vtem);
   else vnum = (int) mxGetM (vtem);
   ATOL = mxMalloc (vnum * sizeof (double));

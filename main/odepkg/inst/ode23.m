@@ -1,5 +1,5 @@
 %# Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# OdePkg - Package for solving ordinary differential equations with Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -35,181 +35,225 @@
 %#
 %# @seealso{odepkg}
 
-%# Maintainer: Thomas Treichl
-%# Created: 20060809
 %# ChangeLog:
 %#   20010703 the function file "ode23.m" was written by Marc Compere
-%#     under the GPL for the use with octave. This function has been
+%#     under the GPL for the use with Octave. This function has been
 %#     taken as a base for the following implementation.
 %#   20060810, Thomas Treichl
 %#     This function was adapted to the new syntax that is used by the
-%#     new odepkg for octave and is compatible to LabMat's ode23.
+%#     new OdePkg for Octave and is compatible to MatLab's ode23.
 
 function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 
-  if (nargin == 0) %# Check number and types of all input arguments
+  %# Check number and types of all input arguments
+  if (nargin == 0)
     help ('ode23');
-    vmsg = sprintf ('Number of input arguments must be greater than zero');
-    error (vmsg);
+    error ('OdePkg:ode23:InvalidInputArgument', ...
+      'Number of input arguments must be greater than zero');
+
   elseif (nargin < 3)
-    vmsg = sprintf ('[t, y] = ode23 (fun, slot, init, varargin)\n');
-    usage (vmsg);
-  elseif (isa (vfun, 'function_handle') == false)
-    vmsg = sprintf ('First input argument must be a valid function handle');
-    error (vmsg);
-  elseif (isvector (vslot) == false || length (vslot) < 2)
-    vmsg = sprintf ('Second input argument must be a valid vector');
-    error (vmsg);
-  elseif (isvector (vinit) == false || isnumeric (vinit) == false)
-    vmsg = sprintf ('Third input argument must be a valid vector');
-    error (vmsg);
+    print_usage;
+
+  elseif (~isa (vfun, 'function_handle'))
+    error ('OdePkg:ode23:InvalidInputArgument', ...
+      'First input argument must be a valid function handle');
+
+  elseif (~isvector (vslot) || length (vslot) < 2)
+    error ('OdePkg:ode23:InvalidInputArgument', ...
+      'Second input argument must be a valid vector');
+
+  elseif (~isvector (vinit) || ~isnumeric (vinit))
+    error ('OdePkg:ode23:InvalidInputArgument', ...
+      'Third input argument must be a valid vector');
+
   elseif (nargin >= 4)
-    if (isstruct (varargin{1}) == false)
-      vodeoptions = odeset; %# varargin{1:len} are pars for vfun
+
+    if (~isstruct (varargin{1}))
+      %# varargin{1:len} are parameters for vfun
+      vodeoptions = odeset;
       vfunarguments = varargin;
-    elseif (length (varargin) > 1) %# varargin{1} is vopt
-      vodeoptions = odepkg_structure_check (varargin{1});
+
+    elseif (length (varargin) > 1)
+      %# varargin{1} is an OdePkg options structure vopt
+      vodeoptions = odepkg_structure_check (varargin{1}, 'ode23');
       vfunarguments = {varargin{2:length(varargin)}};
-    else %# if (isstruct (varargin{1})) == true
-      vodeoptions = odepkg_structure_check (varargin{1});
+
+    else %# if (isstruct (varargin{1}))
+      vodeoptions = odepkg_structure_check (varargin{1}, 'ode23');
       vfunarguments = {};
+
     end
+
   else %# if (nargin == 3)
-    vodeoptions = odeset; vfunarguments = {};
+    vodeoptions = odeset; 
+    vfunarguments = {};
   end
 
-  %# Preprocessing, have a look which options have been set in vodeoptions
-  %# Notice that a row vector could always easily be created with vinit = (vinit(:))';
+  %# Preprocessing, have a look which options have been set in
+  %# vodeoptions. Check if a invalid option has been set and print
+  %# warnings.
   if (size (vslot, 1) > size (vslot, 2)), vslot = vslot'; end %# create row vector
   if (size (vinit, 1) > size (vinit, 2)), vinit = vinit'; end %# create row vector
   if (size (vslot, 2) > 2), vstepsizegiven = true;            %# Step size checking
-  else, vstepsizegiven = false; end
-
-  %# Check if any unconsidered options have been set and print warnings
-  vodetemp = odeset; %# Get the default options temporarily
+  else vstepsizegiven = false; end  
+  %# A row vector could always easily be created with vinit = (vinit(:))';
+  %# Get the default options that can be set with 'odeset' temporarily
+  vodetemp = odeset;
 
   %# Implementation of the option RelTol has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isscalar (vodeoptions.RelTol) == false)
-    error ('Option "RelTol" must be a scalar value for this solver');
-  elseif (isequal (vodeoptions.RelTol, vodetemp.RelTol) == false && ...
-      vstepsizegiven == true)
-    vmsg = strcat ('Option "RelTol" will be ignored if fixed time', ...
-      ' stamps = [t0 t1 ...] are given');
-    warning (vmsg);
+  if (isempty (vodeoptions.RelTol) && ~vstepsizegiven)
+    vodeoptions.RelTol = 1e-6;
+    warning ('OdePkg:ode23:EmptyOption', ...
+      'Option "RelTol" not set, new value %f is used', vodeoptions.RelTol);
+  elseif (~isempty (vodeoptions.RelTol) && vstepsizegiven)
+    warning ('OdePkg:ode23:UnhandledOption', ...
+      'Option "RelTol" will be ignored if fixed time stamps are given');
+  %# This implementation has been added to odepkg_structure_check.m
+  %# elseif (~isscalar (vodeoptions.RelTol) && ~vstepsizegiven)
+  %# error ('OdePkg:ode23:InvalidOption', ...
+  %#   'Option "RelTol" must be set to a scalar value for this solver');
   end
 
   %# Implementation of the option AbsTol has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isequal (vodeoptions.AbsTol, vodetemp.AbsTol) == false && ...
-      vstepsizegiven == true)
-    vmsg = strcat ('Option "AbsTol" will be ignored if fixed time', ...
-      ' stamps = [t0 t1 ...] are given');
-    warning (vmsg);
-  else, vodeoptions.AbsTol = vodeoptions.AbsTol(:); end %# create column vector
+  if (isempty (vodeoptions.AbsTol) && ~vstepsizegiven)
+    vodeoptions.AbsTol = 1e-6;
+    warning ('OdePkg:ode23:EmptyOption', ...
+      'Option "AbsTol" not set, new value %f is used', vodeoptions.AbsTol);
+  elseif (~isempty (vodeoptions.AbsTol) && vstepsizegiven)
+    warning ('OdePkg:ode23:UnhandledOption', ...
+      'Option "AbsTol" will be ignored if fixed time stamps are given');
+  else %# create column vector
+    vodeoptions.AbsTol = vodeoptions.AbsTol(:);
+  end
 
-  %# Implementation of the option NormControl has been finished. This option
-  %# can be set by the user to another value than default value.
-  if (strcmp (vodeoptions.NormControl, 'off') == true), vnormcontrol = false;
-  else, vnormcontrol = true; end
+  %# Implementation of the option NormControl has been finished. This
+  %# option can be set by the user to another value than default value.
+  if (strcmp (vodeoptions.NormControl, 'on')), vnormcontrol = true;
+  else vnormcontrol = false;
+  end
 
-  if (isequal (vodeoptions.NonNegative, vodetemp.NonNegative) == false)
-    warning ('Not yet implemented option "NonNegative" will be ignored'); end
+  %# Implementation of the option NonNegative has been finished. This
+  %# option can be set by the user to another value than default value.
+  if (~isempty (vodeoptions.NonNegative))
+    if (isempty (vodeoptions.Mass)), vhavenonnegative = true;
+    else
+      vhavenonnegative = false;
+      warning ('OdePkg:ode23:UnusedOption', ...
+        'Option "NonNegative" will be ignored if mass matrix is set');
+    end
+  else vhavenonnegative = false;
+  end
 
-  %# Implementation of the option OutputFcn has been finished. This option
-  %# can be set by the user to another value than default value.
-  if (isempty (vodeoptions.OutputFcn) == true && nargout == 0)
-    vodeoptions.OutputFcn = @odeplot; vhaveoutputfunction = true;
-  elseif (isempty (vodeoptions.OutputFcn) == true)
-    vhaveoutputfunction = false; %# default value is []
-  else, vhaveoutputfunction = true; end
+  %# Implementation of the option OutputFcn has been finished. This
+  %# option can be set by the user to another value than default value.
+  if (isempty (vodeoptions.OutputFcn) && nargout == 0)
+    vodeoptions.OutputFcn = @odeplot;
+    vhaveoutputfunction = true;
+  elseif (isempty (vodeoptions.OutputFcn)), vhaveoutputfunction = false;
+  else vhaveoutputfunction = true;
+  end
 
-  %# Implementation of the option OutputSel has been finished. This option
-  %# can be set by the user to another value than default value.
-  if (isempty (vodeoptions.OutputSel) == false), vhaveoutputselection = true;
-  else, vhaveoutputselection = false; end %# default value is []
+  %# Implementation of the option OutputSel has been finished. This
+  %# option can be set by the user to another value than default value.
+  if (~isempty (vodeoptions.OutputSel)), vhaveoutputselection = true;
+  else vhaveoutputselection = false; end
 
   %# Implementation of the option Refine has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isequal (vodeoptions.Refine, vodetemp.Refine) == false)
-    vhaverefine = true; else, vhaverefine = false; end
+  if (isequal (vodeoptions.Refine, vodetemp.Refine)), vhaverefine = true;
+  else vhaverefine = false; end
 
   %# Implementation of the option Stats has been finished. This option
   %# can be set by the user to another value than default value.
-  %# if (isequal (vodeoptions.Stats, vodetemp.Stats) == false)
-  %#   warning ('Not yet implemented option "Stats" will be ignored'); end
 
-  %# Implementation of the option InitialStep has been finished. This option
-  %# can be set by the user to another value than default value.
-  if (isequal (vodeoptions.InitialStep, vodetemp.InitialStep) == true)
+  %# Implementation of the option InitialStep has been finished. This
+  %# option can be set by the user to another value than default value.
+  if (isempty (vodeoptions.InitialStep))
     vodeoptions.InitialStep = abs (vslot(1,1) - vslot(1,2)) / 10;
     vodeoptions.InitialStep = vodeoptions.InitialStep / 10^vodeoptions.Refine;
+    warning ('OdePkg:ode23:EmptyOption', ...
+      'Option "InitialStep" not set, new value %f is used', vodeoptions.InitialStep);
   end
 
   %# Implementation of the option MaxStep has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isempty (vodeoptions.MaxStep) == true)
-    vodeoptions.MaxStep = abs (vslot(1,1) - vslot(1,length (vslot))) / 10; end
+  if (isempty (vodeoptions.MaxStep))
+    vodeoptions.MaxStep = abs (vslot(1,1) - vslot(1,length (vslot))) / 10;
+    %# vodeoptions.MaxStep = vodeoptions.MaxStep / 10^vodeoptions.Refine;
+    warning ('OdePkg:ode23:EmptyOption', ...
+      'Option "MaxStep" not set, new value %f is used', vodeoptions.MaxStep);
+  end
 
   %# Implementation of the option Events has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isequal (vodeoptions.Events, vodetemp.Events) == false)
-    vhaveeventfunction = true; %# default value is []
-  else, vhaveeventfunction = false; end
+  if (~isempty (vodeoptions.Events)), vhaveeventfunction = true;
+  else vhaveeventfunction = false; end
 
-  %# Option Jacobian will be ignored by this solver because when using an
-  %# explicite solver mechanism then no Jacobian Matrix is calculated
-  if (isequal (vodeoptions.Jacobian, vodetemp.Jacobian) == false)
-    warning ('Option "Jacobian" will be ignored by this solver'); end
-
-  %# Option JPattern will be ignored by this solver because when using an
-  %# explicite solver mechanism then no Jacobian Matrix is calculated
-  if (isequal (vodeoptions.JPattern, vodetemp.JPattern) == false)
-    warning ('Option "JPattern" will be ignored by this solver'); end
-
-  %# Option Vectorized will be ignored by this solver because when using an
-  %# explicite solver mechanism then no Jacobian Matrix is calculated
-  if (isequal (vodeoptions.Vectorized, vodetemp.Vectorized) == false)
-    warning ('Option "Vectorized" will be ignored by this solver'); end
+  %# The options 'Jacobian', 'JPattern' and 'Vectorized' will be ignored
+  %# by this solver because this solver uses an explicit Runge-Kutta
+  %# method and therefore no Jacobian calculation is necessary
+  if (~isequal (vodeoptions.Jacobian, vodetemp.Jacobian))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "Jacobian" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.JPattern, vodetemp.JPattern))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "JPattern" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.Vectorized, vodetemp.Vectorized))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "Vectorized" will be ignored by this solver');
+  end
 
   %# Implementation of the option Mass has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isempty (vodeoptions.Mass) == false && ismatrix (vodeoptions.Mass) == true)
-    vhavemasshandle = false; vmass = vodeoptions.Mass; %# constant mass matrix
-  elseif (isa (vodeoptions.Mass, 'function_handle') == true)
-    vhavemasshandle = true; %# Calculate vmass dynamically
-  else %# no real mass matrix but creating a diag-matrix of ones
+  if (~isempty (vodeoptions.Mass) && ismatrix (vodeoptions.Mass))
+    vhavemasshandle = false; vmass = vodeoptions.Mass; %# constant mass
+  elseif (isa (vodeoptions.Mass, 'function_handle'))
+    vhavemasshandle = true; %# mass defined by a function handle
+  else %# no mass matrix - creating a diag-matrix of ones for mass
     vhavemasshandle = false; vmass = diag (ones (length (vinit), 1), 0);
   end
 
   %# Implementation of the option MStateDependence has been finished.
   %# This option can be set by the user to another value than default
   %# value. 
-  if (strcmp (vodeoptions.MStateDependence, 'none') == true)
+  if (strcmp (vodeoptions.MStateDependence, 'none'))
     vmassdependence = false;
-  else, vmassdependence = true; end
+  else vmassdependence = true;
+  end
 
-  if (isequal (vodeoptions.MvPattern, vodetemp.MvPattern) == false)
-    warning ('Option "MvPattern" will be ignored by this solver'); end
+  %# Other options that are not used by this solver. Print a warning
+  %# message to tell the user that the option(s) is/are ignored.
+  if (~isequal (vodeoptions.MvPattern, vodetemp.MvPattern))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "MvPattern" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.MassSingular, vodetemp.MassSingular))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "MassSingular" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.InitialSlope, vodetemp.InitialSlope))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "InitialSlope" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.MaxOrder, vodetemp.MaxOrder))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "MaxOrder" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.BDF, vodetemp.BDF))
+    warning ('OdePkg:ode23:UnusedOption', ...
+      'Option "BDF" will be ignored by this solver');
+  end
 
-  if (isequal (vodeoptions.MassSingular, vodetemp.MassSingular) == false)
-    warning ('Option "MassSingular" will be ignored by this solver'); end
+  %# Starting the initialisation of the core solver ode23 
+  vtimestamp  = vslot(1,1);           %# timestamp = start time
+  vtimelength = length (vslot);       %# length needed if fixed steps
+  vtimestop   = vslot(1,vtimelength); %# stop time = last value
 
-  if (isequal (vodeoptions.InitialSlope, vodetemp.InitialSlope) == false)
-    warning ('Option "InitialSlope" will be ignored by this solver'); end
-
-  if (isequal (vodeoptions.MaxOrder, vodetemp.MaxOrder) == false)
-    warning ('Option "MaxOrder" will be ignored by this solver'); end
-
-  if (isequal (vodeoptions.BDF, vodetemp.BDF) == false)
-    warning ('Option "BDF" will be ignored by this solver'); end
-
-  %# Starting the initialisation of the function ode23 
-  vtimestamp = vslot(1,1);          %# timestamp = start time
-  vtimelength = length (vslot);     %# length needed if fixed steps
-  vtimestop = vslot(1,vtimelength); %# stop time = last value
-
-  if (vstepsizegiven == false)
+  if (~vstepsizegiven)
     vstepsize = vodeoptions.InitialStep;
     vminstepsize = (vtimestop - vtimestamp) / (1/eps);
   else %# If step size is given then use the fixed time steps
@@ -217,19 +261,20 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     vminstepsize = eps; %# vslot(1,2) - vslot(1,1) - eps;
   end
 
-  vretvaltime = vtimestamp;         %# first timestamp output
-  if (vhaveoutputselection == true) %# first solution output
+  vretvaltime = vtimestamp; %# first timestamp output
+  if (vhaveoutputselection) %# first solution output
     vretvalresult = vinit(vodeoptions.OutputSel);
-  else, vretvalresult = vinit; end
+  else vretvalresult = vinit;
+  end
 
   %# Initialize OutputFcn
-  if (vhaveoutputfunction == true)
+  if (vhaveoutputfunction)
     feval (vodeoptions.OutputFcn, vslot', ...
       vretvalresult', 'init', vfunarguments{:});
   end
 
   %# Initialize EventFcn
-  if (vhaveeventfunction == true)
+  if (vhaveeventfunction)
     odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
       vretvalresult', 'init', vfunarguments{:});
   end
@@ -245,7 +290,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   %# The solver main loop - stop if endpoint has been reached
   vcntloop = 2; vcntcycles = 1; vu = vinit; vk = vu' * zeros(1,3);
   vcntiter = 0; vunhandledtermination = true;
-  while ((vtimestamp < vtimestop && vstepsize >= vminstepsize) == true)
+  while ((vtimestamp < vtimestop && vstepsize >= vminstepsize))
 
     %# Hit the endpoint of the time slot exactely
     if ((vtimestamp + vstepsize) > vtimestop)
@@ -253,14 +298,14 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 
     %# Estimate the three results when using this solver
     for j = 1:3
-      if (vhavemasshandle == true)   %# Handle only the dynamic mass matrix,
-        if (vmassdependence == true) %# constant mass matrices have already
-          vmass = feval ...          %# been set before (if any)
+      if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
+        if (vmassdependence) %# constant mass matrices have already
+          vmass = feval ...  %# been set before (if any)
             (vodeoptions.Mass, vtimestamp + vc(j,1) * vstepsize, ...
              vu' + vstepsize * vk(:,1:j-1) * va(j,1:j-1)', ...
              vfunarguments{:});
-        else                %# if (vmassdependence == false)
-          vmass = feval ... %# then we only have the time argument
+        else                 %# if (vmassdependence == false)
+          vmass = feval ...  %# then we only have the time argument
             (vodeoptions.Mass, vtimestamp + vc(j,1) * vstepsize, ...
              vfunarguments{:});
         end
@@ -274,40 +319,47 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     %# Compute the 2nd and the 3rd order estimation
     y2 = vu' + vstepsize * (vk * vb2);
     y3 = vu' + vstepsize * (vk * vb3);
+    if (vhavenonnegative)
+      vu(vodeoptions.NonNegative) = abs (vu(vodeoptions.NonNegative));
+      y2(vodeoptions.NonNegative) = abs (y2(vodeoptions.NonNegative));
+      y3(vodeoptions.NonNegative) = abs (y3(vodeoptions.NonNegative));
+    end
     vSaveVUForRefine = vu;
 
     %# Calculate the absolute local truncation error and the acceptable error
-    if (vstepsizegiven == false)
-      if (vnormcontrol == false)
+    if (~vstepsizegiven)
+      if (~vnormcontrol)
         vdelta = y3 - y2;
         vtau = max (vodeoptions.RelTol * vu', vodeoptions.AbsTol);
       else
-              vdelta = norm (y3 - y2, Inf);
-              vtau = max (vodeoptions.RelTol * max (norm (vu', Inf), 1.0), vodeoptions.AbsTol);
+        vdelta = norm (y3 - y2, Inf);
+        vtau = max (vodeoptions.RelTol * max (norm (vu', Inf), 1.0), ...
+                    vodeoptions.AbsTol);
       end
     else %# if (vstepsizegiven == true)
       vdelta = 1; vtau = 2;
     end
 
     %# If the error is acceptable then update the vretval variables
-    if (all (vdelta <= vtau) == true)
+    if (all (vdelta <= vtau))
       vtimestamp = vtimestamp + vstepsize;
       vu = y3'; %# MC2001: the higher order estimation as "local extrapolation"
       vretvaltime(vcntloop,:) = vtimestamp;
-      if (vhaveoutputselection == true)
+      if (vhaveoutputselection)
         vretvalresult(vcntloop,:) = vu(vodeoptions.OutputSel);
-      else, vretvalresult(vcntloop,:) = vu; end
+      else vretvalresult(vcntloop,:) = vu;
+      end
       vcntloop = vcntloop + 1; vcntiter = 0;
 
       %# Call plot only if a valid result has been found, therefore this
       %# code fragment has moved here. Stop integration if plot function
       %# returns false
-      if (vhaveoutputfunction == true)
-        if (vhaverefine == true) %# We have a refine value, do interpolation
-          for (vcnt = 0:vodeoptions.Refine) %# Approximation between told and t
+      if (vhaveoutputfunction)
+        if (vhaverefine)                  %# Do interpolation
+          for vcnt = 0:vodeoptions.Refine %# Approximation between told and t
             vapproxtime = (vcnt + 1) * vstepsize / (vodeoptions.Refine + 2);
             vapproxvals = vSaveVUForRefine' + vapproxtime * (vk * vb3);
-            if (vhaveoutputselection == true)
+            if (vhaveoutputselection)
               vapproxvals = vapproxvals(vodeoptions.OutputSel);
             end
             feval (vodeoptions.OutputFcn, (vtimestamp - vstepsize) + vapproxtime, ...
@@ -316,19 +368,19 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
         end
         vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...
           vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
-        if (vpltret == false), vunhandledtermination = false; break; end
+        if (~vpltret), vunhandledtermination = false; break; end
       end
 
       %# Call event only if a valid result has been found, therefore this
       %# code fragment has moved here. Stop integration if veventbreak is
       %# true
-      if (vhaveeventfunction == true)
+      if (vhaveeventfunction)
         vevent = ...
           odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
             vu(:), [], vfunarguments{:});
         %# 20070222, bugfix, Calling event function does not depend on
         %# OutputSel vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
-        if (vevent{1} == true)
+        if (~vevent{1})
           vretvaltime(vcntloop-1,:) = vevent{3}(end,:);
           vretvalresult(vcntloop-1,:) = vevent{4}(end,:);
           vunhandledtermination = false; break;
@@ -337,10 +389,12 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     end %# If the error is acceptable ...
 
     %# Update the step size for the next integration step
-    if (vstepsizegiven == false)
-      vdelta = max (vdelta, eps); %# vdelta may be 0 or even negative - could be an iteration problem
-      vstepsize = min (vodeoptions.MaxStep, min (0.8 * vstepsize * (vtau ./ vdelta) .^ vpow));
-    elseif (vstepsizegiven == true)
+    if (~vstepsizegiven)
+      %# vdelta may be 0 or even negative - could be an iteration problem
+      vdelta = max (vdelta, eps); 
+      vstepsize = min (vodeoptions.MaxStep, ...
+        min (0.8 * vstepsize * (vtau ./ vdelta) .^ vpow));
+    elseif (vstepsizegiven)
       if (vcntloop < vtimelength)
         vstepsize = vslot(1,vcntloop-1) - vslot(1,vcntloop-2);
       end
@@ -352,14 +406,13 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 
     %# Stop solving because the last 1000 steps no successful valid
     %# value has been found
-    if (vcntiter >= 1000)
-      vmsg = sprintf (['Solving has not been successful. The iterative', ...
+    if (vcntiter >= 5000)
+      error (['Solving has not been successful. The iterative', ...
         ' integration loop exited at time t = %f before endpoint at', ...
         ' tend = %f was reached. This happened because the iterative', ...
         ' integration loop does not find a valid solution at this time', ...
         ' stamp. Try to reduce the value of "InitialStep" and/or', ...
         ' "MaxStep" with the command "odeset".\n'], vtimestamp, vtimestop);
-      error (vmsg);
     end
 
   end %# The main loop
@@ -367,35 +420,33 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   %# Check if integration of the ode has been successful
   if (vtimestamp < vtimestop)
     if (vunhandledtermination == true)
-      vmsg = sprintf (['Solving has not been successful. The iterative', ...
+      error (['Solving has not been successful. The iterative', ...
         ' integration loop exited at time t = %f', ...
         ' before endpoint at tend = %f was reached. This may', ...
         ' happen if the stepsize grows smaller than defined in', ...
         ' vminstepsize. Try to reduce the value of "InitialStep" and/or', ...
         ' "MaxStep" with the command "odeset".\n'], vtimestamp, vtimestop);
-      error (vmsg);
     else
-      vmsg = sprintf (['Solver has been stopped by a call of "break" in', ...
+      warning (['Solver has been stopped by a call of "break" in', ...
         ' the main iteration loop at time t = %f before endpoint at', ...
         ' tend = %f was reached. This may happen because the @odeplot', ...
         ' function returned zero or the @event function returned one.'], ...
         vtimestamp, vtimestop);
-      warning (vmsg);
     end
   end
 
   %# Postprocessing, do whatever when terminating integration algorithm
-  if (vhaveoutputfunction == true) %# Cleanup plotter
+  if (vhaveoutputfunction) %# Cleanup plotter
     feval (vodeoptions.OutputFcn, vtimestamp, ...
       vretvalresult(vcntloop-1,:)', 'done', vfunarguments{:});
   end
-  if (vhaveeventfunction == true) %# Cleanup event function handling
+  if (vhaveeventfunction)  %# Cleanup event function handling
     odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
       vretvalresult(vcntloop-1,:), 'done', vfunarguments{:});
   end
 
   %# Print additional information if option Stats is set
-  if (strcmp (vodeoptions.Stats, 'on') == true)
+  if (strcmp (vodeoptions.Stats, 'on'))
     vhavestats = true;
     vsuccess   = vcntloop-2;                    %# vcntloop from 2..end
     vfailed    = (vcntcycles-1)-(vcntloop-2)+1; %# vcntcycl from 1..end
@@ -406,19 +457,19 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     vmsg = sprintf ('Number of successful steps: %d', vsuccess); disp (vmsg);
     vmsg = sprintf ('Number of failed attempts:  %d', vfailed); disp (vmsg);
     vmsg = sprintf ('Number of function calls:   %d', vfuncalls); disp (vmsg);
-  else, vhavestats = false;
+  else vhavestats = false;
   end
 
   if (nargout == 1)                 %# Sort output variables, depends on nargout
     varargout{1}.x = vretvaltime;   %# Time stamps are saved in field x
     varargout{1}.y = vretvalresult; %# Results are saved in field y
     varargout{1}.solver = 'ode23';  %# Solver name is saved in field solver
-    if (vhaveeventfunction == true) 
+    if (vhaveeventfunction) 
       varargout{1}.ie = vevent{2};  %# Index info which event occured
       varargout{1}.xe = vevent{3};  %# Time info when an event occured
       varargout{1}.ye = vevent{4};  %# Results when an event occured
     end
-    if (vhavestats == true)
+    if (vhavestats)
       varargout{1}.stats.success = vsuccess;
       varargout{1}.stats.failed  = vfailed;    
       varargout{1}.stats.fevals  = vfuncalls;  
@@ -435,7 +486,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     varargout{3} = [];              %# LabMat doesn't accept lines like
     varargout{4} = [];              %# varargout{3} = varargout{4} = [];
     varargout{5} = [];
-    if (vhaveeventfunction == true) 
+    if (vhaveeventfunction) 
       varargout{3} = vevent{3};     %# Time info when an event occured
       varargout{4} = vevent{4};     %# Results when an event occured
       varargout{5} = vevent{2};     %# Index info which event occured
@@ -443,7 +494,6 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   %# else nothing will be returned, varargout{1} undefined
   end
 
-%# The following tests have been added to check the function's input arguments and output arguments
 %!test vsol = ode23 (@odepkg_equations_vanderpol, [0 2], [2 0]);
 %!test [vx, vy] = ode23 (@odepkg_equations_vanderpol, [0 2], [2 0]);
 %!test [vx, vy, va, vb, vc] = ode23 (@odepkg_equations_vanderpol, [0 2], [2 0]);

@@ -1,6 +1,6 @@
-function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh]=mvfreqz(B,A,C,N,Fs)
+function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
-% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF] = mvfreqz(B,A,C,N,Fs)
+% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af] = mvfreqz(B,A,C,N,Fs)
 %
 % INPUT: 
 % ======= 
@@ -36,8 +36,11 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh]=mvfreqz(B,A,C,N,
 % pCOH 	partial coherence
 % dDTF 	direct Directed Transfer function
 % ffDTF full frequency Directed Transfer Function 
-% pCOH2 partial coherence -alternative method 
-%
+% pCOH2 partial coherence - alternative method 
+% GGC	a modified version of Geweke's Granger Causality [Geweke 1982]
+%	   !!! it uses a Multivariate AR model, and computes the bivariate GGC as in [Bressler et al 2007]. 
+%	   This is not the same as using bivariate AR models and GGC as in [Bressler et al 2007]
+% Af	Frequency transform of A(z) 
 %
 % see also: FREQZ, MVFILTER, MVAR
 %
@@ -57,7 +60,11 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh]=mvfreqz(B,A,C,N,
 %       (Eds.) C. Neuper and W. Klimesch, 
 %       Progress in Brain Research: Event-related Dynamics of Brain Oscillations. 
 %       Analysis of dynamics of brain oscillations: methodological advances. Elsevier. 
-
+% Bressler S.L., Richter C.G., Chen Y., Ding M. (2007)
+%	Cortical fuctional network organization from autoregressive modelling of loal field potential oscillations.
+%	Statistics in Medicine, doi: 10.1002/sim.2935 
+% Geweke J., 1982	
+%	J.Am.Stat.Assoc., 77, 304-313.
 
 %	$Id$
 %	Copyright (C) 1996-2006 by Alois Schloegl <a.schloegl@ieee.org>	
@@ -107,6 +114,7 @@ s = exp(i*2*pi*f/Fs);
 z = i*2*pi/Fs;
 
 h=zeros(K1,K1,N);
+Af=zeros(K1,K1,N);
 g=zeros(K1,K1,N);
 S=zeros(K1,K1,N);
 S1=zeros(K1,K1,N);
@@ -114,8 +122,10 @@ DTF=zeros(K1,K1,N);
 COH=zeros(K1,K1,N);
 %COH2=zeros(K1,K1,N);
 PDC=zeros(K1,K1,N);
+%PDC3=zeros(K1,K1,N);
 PDCF = zeros(K1,K1,N);
 pCOH = zeros(K1,K1,N);
+GGC=zeros(K1,K1,N);
 invC=inv(C);
 tmp1=zeros(1,K1);
 tmp2=zeros(1,K1);
@@ -123,8 +133,8 @@ tmp2=zeros(1,K1);
 M = zeros(K1,K1,N);
 detG = zeros(N,1);
 
-D = sqrtm(C);
-iD= inv(D);
+%D = sqrtm(C);
+%iD= inv(D);
 for n=1:N,
         atmp = zeros(K1);
         for k = 1:p+1,
@@ -139,17 +149,22 @@ for n=1:N,
                 btmp = btmp + B(:,k*K1+(1-K1:0))*exp(z*(k-1)*f(n));
         end;        
         h(:,:,n)  = atmp\btmp;        
-        S(:,:,n)  = h(:,:,n)*C*h(:,:,n)';        
+        Af(:,:,n)  = atmp/btmp;        
+        S(:,:,n)  = h(:,:,n)*C*h(:,:,n)'/Fs;        
         S1(:,:,n) = h(:,:,n)*h(:,:,n)';        
         
         for k1 = 1:K1,
                 tmp = squeeze(atmp(:,k1));
                 tmp1(k1) = sqrt(tmp'*tmp);
                 tmp2(k1) = sqrt(tmp'*invC*tmp);
+
+                %tmp = squeeze(atmp(k1,:)');
+                %tmp3(k1) = sqrt(tmp'*tmp);
         end;
         
         PDCF(:,:,n) = abs(atmp)./tmp2(ones(1,K1),:);
         PDC(:,:,n)  = abs(atmp)./tmp1(ones(1,K1),:);
+        %PDC3(:,:,n) = abs(atmp)./tmp3(:,ones(1,K1));
         
         g = atmp/btmp;        
         G(:,:,n) = g'*invC*g;
@@ -171,13 +186,7 @@ for k1=1:K1;
                 ffDTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(sum(DEN,3));
                 pCOH2(k1,k2,:) = abs(G(k1,k2,:).^2)./(G(k1,k1,:).*G(k2,k2,:));
                 
-                M(k2,k1,:) = ((-1)^(k1+k2))*squeeze(G(k1,k2,:))./detG; % oder ist M = G?
-        end;
-end;
-
-for k1=1:K1;
-        for k2=1:K2;
-                pCOH(k1,k2,:) = abs(M(k1,k2,:).^2)./(M(k1,k1,:).*M(k2,k2,:));
+                %M(k2,k1,:) = ((-1)^(k1+k2))*squeeze(G(k1,k2,:))./detG; % oder ist M = G?
         end;
 end;
 
@@ -191,22 +200,26 @@ for k = 1:p,
 end;        
 
 
-if nargout<7, return; end;
-
-
-for n=1:N,
-        %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
-        M(k1,k2,n) = det(squeeze(S([1:k1-1,k1+1:K1],[1:k2-1,k2+1:K2],n)));
-end;
+if nargout<13, return; end;
 
 for k1=1:K1;
         for k2=1:K2;
-                for n=1:N,
-                        %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
-                        M(k1,k2,n) = det(squeeze(S([1:k1-1,k1+1:K1],[1:k2-1,k2+1:K2],n)));
-                end;
+		% Bivariate Granger Causality (similar to Bressler et al. 2007. )
+                %GGC(k1,k2,:) = -log(1-((C(k1,k1)*C(k2,k2)-C(k1,k2)^2)/C(k2,k2))*real(h(k1,k2).*conj(h(k1,k2)))./S(k2,k2,:));
+                GGC(k1,k2,:) = ((C(k1,k1)*C(k2,k2)-C(k1,k2)^2)/C(k2,k2))*real(h(k1,k2).*conj(h(k1,k2)))./abs(S(k2,k2,:));
         end;
 end;
+
+return;
+
+if nargout<7, return; end;
+
+for k1=1:K1;
+        for k2=1:K2;
+                M(k2,k1,:) = ((-1)^(k1+k2))*squeeze(G(k1,k2,:))./detG; % oder ist M = G?
+        end;
+end;
+
 
 for k1=1:K1;
         for k2=1:K2;

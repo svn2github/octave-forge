@@ -25,6 +25,7 @@ function h = surf (x, y, z, varargin)
       [nr, nc] = size (z);
       x = 1:nc;
       y = (1:nr)';
+      [x, y] = meshgrid (x, y);
     else
       error ("surf: argument must be a matrix");
     endif
@@ -33,7 +34,7 @@ function h = surf (x, y, z, varargin)
       if (rows (z) == length (y) && columns (z) == length (x))
         x = x(:)';
         y = y(:);
-		[x, y] = meshgrid (x, y);
+        [x, y] = meshgrid (x, y);
       else
         msg = "surf: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);

@@ -44,6 +44,7 @@ public class PopupMenuControl
 		uiNotifier = new HandleNotifier();
 		uiNotifier.addSink(this);
 		uiNotifier.addSource(obj.UIString);
+		uiNotifier.addSource(obj.Value);
 	}
 
 	private void updateItems()
@@ -58,6 +59,7 @@ public class PopupMenuControl
 
 	public void update()
 	{
+		uiObj.Value.reset(new double[] {getSelectedIndex()+1});
 	}
 	
 	public JComponent getComponent()
@@ -87,5 +89,13 @@ public class PopupMenuControl
 	{
 		if (p == uiObj.UIString)
 			updateItems();
+		else if (p == uiObj.Value)
+		{
+			if (uiObj.Value.getArray().length > 0)
+			{
+				int index = (int)uiObj.Value.getArray()[0];
+				setSelectedIndex(index-1);
+			}
+		}
 	}
 }

@@ -17,14 +17,14 @@
 ## April 18, 2005
 
 function tics(axis,pos,lab)
-
+  t=upper(axis);
   if nargin == 1
-    set (gca(), "XTickMode", "auto");
+    set (gca(), [t,"TickMode"], "auto");
   elseif nargin == 2
-    set (gca(), "XTick", pos);
+    set (gca(), [t, "Tick"], pos);
   elseif nargin == 3
-    set (gca(), "XTick", pos);
-    set (gca(), "XTickLabel", lab);
+    set (gca(), [t,"Tick"], pos);
+    set (gca(), [t,"TickLabel"], lab);
   else
     usage("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
   endif

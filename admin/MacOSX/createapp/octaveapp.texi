@@ -85,8 +85,8 @@ Some of Octave--Forge's packages cannot be installed because of the reason of a 
 @end itemize
 If you want to find out more information why the installation fails for a specific package, use the command @command{pkg -v install <package.tar.gz>} to build the package in verbose mode. @* @*
 
-@item @b{No spaces in the pathname before Octave.app.} @*
-Do not install Octave.app in a place of your filesystem including spaces in the pathname before Octave.app. Valid destinations eg. are @file{/Application/Octave.app} or @file{/Users/Me/Desktop/Octave.app}. Not valid destinations including spaces in the pathname eg. are @file{/Applications/Other Apps/Octave.app} and @file{/Users/My Home/Desktop/Octave.app}. If you set up Octave.app with a not valid pathname then this might result in different errors at startup or when running the Octave application that cannot be reproduced.
+@item @b{No spaces (and/or special characters) in the pathname before Octave.app.} @*
+Do not install Octave.app in a place of your filesystem including spaces (and/or special character, eg. '&') in the pathname before Octave.app. Valid destinations eg. are @file{/Application/Octave.app} or @file{/Users/Me/Desktop/Octave.app}. Not valid destinations including spaces in the pathname are eg. @file{/Applications/Other Apps/Octave.app} and @file{/Users/My Home/Desktop/Octave.app}. A not valid destination including special characters in the pathname is eg. @file{/Users/Me&Others/Desktop/Octave.app}. If you set up Octave.app with a not valid pathname then this might result in different errors at startup or when running the Octave application that cannot be reproduced.
 
 @end itemize
 

@@ -16,17 +16,35 @@
 ## Dmitri A. Sergatskov <dasergatskov@gmail.com>
 ## April 18, 2005
 
-function tics(axis,pos,lab)
-  t=upper(axis);
-  if nargin == 1
-    set (gca(), [t,"TickMode"], "auto");
-  elseif nargin == 2
-    set (gca(), [t, "Tick"], pos);
-  elseif nargin == 3
-    set (gca(), [t,"Tick"], pos);
-    set (gca(), [t,"TickLabel"], lab);
+## Modifications which makes the y, z axis tics work. It was set to
+## always do x axis before.
+## 2007-08-12 Russel Valentine and Peter Gustafson
+
+function tics (axis,pos,lab)
+
+  if (nargin == 0)
+    usage ("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
+  endif
+
+  t = lower (axis);
+  if (t ~= "x" && t ~= "y" && t ~= "z")
+    error ("First input argument must be one of 'x', 'y' or 'z'");
+  endif
+
+  if (nargin == 1)
+    set (gca(), [t, "tick"], []);
+    set (gca(), [t, "tickmode"], "auto");
+    set (gca(), [t, "ticklabel"], "");
+    set (gca(), [t, "ticklabelmode"], "auto");
+  elseif (nargin == 2)
+    set (gca(), [t, "tick"], pos);
+    set (gca(), [t, "ticklabel"], "");
+    set (gca(), [t, "ticklabelmode"], "auto");
+  elseif (nargin == 3)
+    set (gca(), [t, "tick"], pos);
+    set (gca(), [t, "ticklabel"], lab);
   else
-    usage("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
+    usage ("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
   endif
 
 endfunction

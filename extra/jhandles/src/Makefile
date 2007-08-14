@@ -26,7 +26,7 @@ test:
 %.jar: $(JAVA_SOURCES)
 	-rm -f $@
 	$(JAVAC) -cp '$(CLASSPATH)' -source 1.2 -target 1.2 $(JAVA_SOURCES)
-	$(JAR) cf $@ $(JAVA_DIR)/*.class
+	$(JAR) cf $@ $(JAVA_DIR)/*.class $(JAVA_DIR)/images/*
 
 clean:
 	-rm -f FILES core octave-core *~ $(JAR_FILES) $(JAVA_DIR)/*.class

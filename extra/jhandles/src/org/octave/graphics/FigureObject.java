@@ -27,12 +27,13 @@ import java.awt.image.*;
 import java.nio.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import org.octave.Matrix;
 
 public class FigureObject extends HandleObject
 	implements WindowListener, RenderEventListener,
 			   MouseListener, MouseMotionListener,
-			   ComponentListener
+			   ComponentListener, ActionListener
 {
 	private class FigurePanel extends Panel
 	{
@@ -60,7 +61,7 @@ public class FigureObject extends HandleObject
 	private AxesObject axesToUpdate = null;
 	private AxesObject mouseAxes = null;
 	private int mouseOp = OP_NONE;
-	private int defaultMouseOp = OP_ZOOM;
+	private int defaultMouseOp = OP_NONE;
 	private String currentUnits;
 
 	public static final int OP_NONE = 0;
@@ -81,6 +82,11 @@ public class FigureObject extends HandleObject
 	VectorProperty              Position;
 	CallbackProperty            ResizeFcn;
 	RadioProperty               Units;
+
+	/* toolbar */
+	JToggleButton cursorBtn;
+	JToggleButton zoomBtn;
+	JToggleButton rotateBtn;
 
 	// Constructor
 
@@ -131,14 +137,23 @@ public class FigureObject extends HandleObject
 		frame.add(tbPanel, BorderLayout.NORTH);
 
 		// dummy toolbar
-		/*
 		JToolBar tb = new JToolBar();
+		tb.setRollover(true);
 		tb.setFloatable(false);
-		tb.add(new JButton("Button 1"));
-		tb.add(new JButton("Button 2"));
-		tb.add(new JButton("Button 3"));
+		cursorBtn = new JToggleButton(Utils.loadIcon("edit"));
+		cursorBtn.setActionCommand("cursor");
+		cursorBtn.setEnabled(false);
+		cursorBtn.addActionListener(this);
+		zoomBtn = new JToggleButton(Utils.loadIcon("zoom-original"));
+		zoomBtn.setActionCommand("zoom");
+		zoomBtn.addActionListener(this);
+		rotateBtn = new JToggleButton(Utils.loadIcon("view-refresh"));
+		rotateBtn.setActionCommand("rotate");
+		rotateBtn.addActionListener(this);
+		tb.add(cursorBtn);
+		tb.add(zoomBtn);
+		tb.add(rotateBtn);
 		tbPanel.add(tb);
-		*/
 
 		// setup axes panel
 		axPanel = new Panel(new PositionLayout());
@@ -298,6 +313,14 @@ public class FigureObject extends HandleObject
 		return super.get(p);
 	}
 
+	private int commandToOp(String cmd)
+	{
+		if (cmd.equals("cursor")) return OP_NONE;
+		else if (cmd.equals("zoom")) return OP_ZOOM;
+		else if (cmd.equals("rotate")) return OP_ROTATE;
+		else return OP_NONE;
+	}
+
 	// WindowListener interface
 	
 	public void windowClosing(WindowEvent e)
@@ -381,6 +404,7 @@ public class FigureObject extends HandleObject
 
 	public void mouseClicked(MouseEvent e)
 	{
+		/*
 		if (e.getButton() == MouseEvent.BUTTON2)
 		{
 			if (defaultMouseOp == OP_ZOOM)
@@ -388,6 +412,7 @@ public class FigureObject extends HandleObject
 			else
 				defaultMouseOp = OP_ZOOM;
 		}
+		*/
 
 		if (e.getButton() == MouseEvent.BUTTON3 && mouseOp == OP_NONE && defaultMouseOp == OP_ZOOM)
 		{
@@ -455,4 +480,24 @@ public class FigureObject extends HandleObject
 	}
 	
 	public void componentShown(ComponentEvent e) {}
+
+	/* ChangeListener interface */
+
+	public void actionPerformed(ActionEvent e)
+	{
+		//System.out.println("action");
+		if (e.getSource() == cursorBtn || e.getSource() == zoomBtn || e.getSource() == rotateBtn)
+		{
+			if (e.getSource() != cursorBtn)
+				cursorBtn.setSelected(false);
+			if (e.getSource() != zoomBtn)
+				zoomBtn.setSelected(false);
+			if (e.getSource() != rotateBtn)
+				rotateBtn.setSelected(false);
+			if (((JToggleButton)e.getSource()).isSelected())
+				defaultMouseOp = commandToOp(e.getActionCommand());
+			else
+				defaultMouseOp = OP_NONE;
+		}
+	}
 }

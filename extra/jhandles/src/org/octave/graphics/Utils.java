@@ -34,6 +34,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import javax.swing.UIManager;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 public class Utils
 {
@@ -279,5 +281,10 @@ public class Utils
 			new_str += items[i];
 		}
 		return new_str;
+	}
+
+	public static Icon loadIcon(String name)
+	{
+		return new ImageIcon(Utils.class.getResource("/org/octave/graphics/images/" + name + ".png"));
 	}
 }

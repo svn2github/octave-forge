@@ -46,6 +46,7 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, std::string varnamep) :octave
   if (status != NC_NOERR)  {
     error("Error while querying variable %s: %s",
 	  get_varname().c_str(), nc_strerror(status));
+    return;
   }
 
   set_varid(varid);
@@ -123,8 +124,10 @@ void octave_ncvar::read_info() {
 
   status = nc_inq_var(get_ncid(),get_varid(),name,&nctype,&ndims,dimids,&natts);
 
-  if (status != NC_NOERR)
+  if (status != NC_NOERR) {
     error("Error while quering variable: %s",nc_strerror(status));
+    return;
+  }
 
   set_nctype(nctype);
   set_natts(natts);

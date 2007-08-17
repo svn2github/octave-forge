@@ -299,7 +299,7 @@ octave_value octave_ncfile::subsasgn(const std::string & type,
 
 };
 
-// x.v     x(idx).v     x{idx}.v
+// x.v     x(idx)     x{idx}
 
 octave_value octave_ncfile::subsref(const std::string &type,
 				    const std::list < octave_value_list > &idx)
@@ -347,6 +347,10 @@ octave_value octave_ncfile::subsref(const std::string &type,
 #   endif
 
     octave_ncvar *var = new octave_ncvar(this, name);
+
+    if (error_state) {
+      return octave_value();
+    }
 
     // determine if the variable need to be scaled
 

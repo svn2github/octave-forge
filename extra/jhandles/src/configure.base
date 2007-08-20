@@ -187,6 +187,12 @@ AC_SUBST(CXX)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(CXXPICFLAG)
 
+dnl Dynamic linker and linker flags
+DL_LD=`mkoctfile -p DL_LD`
+DL_LDFLAGS=`mkoctfile -p DL_LDFLAGS`
+AC_SUBST(DL_LD)
+AC_SUBST(DL_LDFLAGS)
+
 dnl *******************************************************************
 
 dnl Check for features of your version of mkoctfile.

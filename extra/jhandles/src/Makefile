@@ -1,6 +1,6 @@
 sinclude ./Makeconf
 
-JAR_FILES = jhandles.jar
+JAR_FILES = jhandles.jar gl2ps_java.$(SHLEXT)
 CLASSPATH = $(JOGL_JAR)${OCTAVE_PATHSEP}$(OCTAVE_JAR)
 JAVA_DIR = org/octave/graphics
 JAVA_SOURCES = $(wildcard $(addprefix $(JAVA_DIR)/, *.java))
@@ -28,5 +28,8 @@ test:
 	$(JAVAC) -cp '$(CLASSPATH)' -source 1.2 -target 1.2 $(JAVA_SOURCES)
 	$(JAR) cf $@ $(JAVA_DIR)/*.class $(JAVA_DIR)/images/*
 
+gl2ps_java.$(SHLEXT): gl2ps_java.o gl2ps.o
+	$(DL_LD) $(DL_LDFLAGS) -o $@ gl2ps_java.o gl2ps.o -lopengl32
+
 clean:
-	-rm -f FILES core octave-core *~ $(JAR_FILES) $(JAVA_DIR)/*.class
+	-rm -f FILES core octave-core *~ $(JAR_FILES) $(JAVA_DIR)/*.class *.o gl2ps_java.$(SHLEXT)

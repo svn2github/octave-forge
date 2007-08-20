@@ -48,6 +48,7 @@ public class GLRenderer implements Renderer
 	private int lightSideMode = GL.GL_FRONT_AND_BACK;
 	private AxesObject.Scaler sx, sy, sz;
 	private float po = 1.0f;
+	private boolean isGL2PS = false;
 
 	public GLRenderer(GLAutoDrawable d)
 	{
@@ -61,6 +62,11 @@ public class GLRenderer implements Renderer
 	public GL getGL()
 	{
 		return gl;
+	}
+
+	public void setGL2PS(boolean flag)
+	{
+		isGL2PS = flag;
 	}
 
 	public void end()
@@ -1771,9 +1777,17 @@ public class GLRenderer implements Renderer
 			gl.glLineStipple(1, (short)0x0000);
 
 		if (solid && !forceStippling)
+		{
 			gl.glDisable(GL.GL_LINE_STIPPLE);
+			if (isGL2PS)
+				GL2PS.gl2psDisable(GL2PS.GL2PS_LINE_STIPPLE);
+		}
 		else
+		{
 			gl.glEnable(GL.GL_LINE_STIPPLE);
+			if (isGL2PS)
+				GL2PS.gl2psEnable(GL2PS.GL2PS_LINE_STIPPLE);
+		}
 	}
 
 	public void drawQuads(List pts, double zoffset)

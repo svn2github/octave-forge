@@ -33,6 +33,7 @@ public class GLRenderCanvas extends GLCanvas
 {
 	private GLRenderer r;
 	private java.util.List rListeners;
+	private String gl2psFileName = null;
 
 	public GLRenderCanvas()
 	{
@@ -46,9 +47,28 @@ public class GLRenderCanvas extends GLCanvas
 
 	public void display(GLAutoDrawable d)
 	{
+		if (gl2psFileName != null)
+		{
+			int result;
+
+			result = GL2PS.gl2psBeginPage("Title", "JHandles", null, GL2PS.GL2PS_EPS, GL2PS.GL2PS_BSP_SORT,
+				/*GL2PS.GL2PS_SILENT|*/GL2PS.GL2PS_BEST_ROOT|GL2PS.GL2PS_USE_CURRENT_VIEWPORT|GL2PS.GL2PS_OCCLUSION_CULL,
+				GL.GL_RGBA, 0, null, 0, 0, 0, 1024*1024,
+				gl2psFileName, "");
+			r.setGL2PS(true);
+			System.out.println("gl2psBeginPage: " + result);
+		}
+
 		Iterator it = rListeners.iterator();
 		while (it.hasNext())
 			((RenderEventListener)it.next()).display(this);
+
+		if (gl2psFileName != null)
+		{
+			int result = GL2PS.gl2psEndPage();
+			r.setGL2PS(false);
+			System.out.println("gl2psEndPage: " + result);
+		}
 	}
 
 	public void init(GLAutoDrawable d)
@@ -122,5 +142,12 @@ public class GLRenderCanvas extends GLCanvas
 		getContext().release();
 
 		return img;
+	}
+
+	public void toPostScript(String filename)
+	{
+		gl2psFileName = filename;
+		display();
+		gl2psFileName = null;
 	}
 }

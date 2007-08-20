@@ -25,7 +25,7 @@ function drawnow (term, file)
     elseif (nargin == 2)
       elt = cellstr (split (term, " "));
       switch elt{1}
-      case {"png"}
+      case {"png", "postscript"}
         fig.print (elt{1}, file);
       otherwise
         error ("unsupported output format: %s", term);

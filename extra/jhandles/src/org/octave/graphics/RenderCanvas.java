@@ -40,6 +40,7 @@ public interface RenderCanvas
 	public Renderer getRenderer();
 	public Component getComponent();
 	public BufferedImage toImage();
+	public void toPostScript(String filename);
 
 	public Font getFont();
 	public FontMetrics getFontMetrics(Font fnt);

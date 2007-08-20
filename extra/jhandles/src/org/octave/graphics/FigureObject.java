@@ -84,7 +84,7 @@ public class FigureObject extends HandleObject
 	RadioProperty               Units;
 
 	/* toolbar */
-	JToggleButton cursorBtn;
+	JToggleButton editBtn;
 	JToggleButton zoomBtn;
 	JToggleButton rotateBtn;
 
@@ -140,17 +140,20 @@ public class FigureObject extends HandleObject
 		JToolBar tb = new JToolBar();
 		tb.setRollover(true);
 		tb.setFloatable(false);
-		cursorBtn = new JToggleButton(Utils.loadIcon("edit"));
-		cursorBtn.setActionCommand("cursor");
-		cursorBtn.setEnabled(false);
-		cursorBtn.addActionListener(this);
+		editBtn = new JToggleButton(Utils.loadIcon("edit"));
+		editBtn.setActionCommand("edit");
+		editBtn.setEnabled(false);
+		editBtn.setToolTipText("Edit plot");
+		editBtn.addActionListener(this);
 		zoomBtn = new JToggleButton(Utils.loadIcon("zoom-original"));
 		zoomBtn.setActionCommand("zoom");
+		zoomBtn.setToolTipText("Zoom");
 		zoomBtn.addActionListener(this);
 		rotateBtn = new JToggleButton(Utils.loadIcon("view-refresh"));
 		rotateBtn.setActionCommand("rotate");
+		rotateBtn.setToolTipText("3D roration");
 		rotateBtn.addActionListener(this);
-		tb.add(cursorBtn);
+		tb.add(editBtn);
 		tb.add(zoomBtn);
 		tb.add(rotateBtn);
 		tbPanel.add(tb);
@@ -260,10 +263,23 @@ public class FigureObject extends HandleObject
 	{
 		Color fcolor = FigColor.getColor();
 		FigColor.reset(Color.white);
-		BufferedImage img = canvas.toImage();
-		FigColor.reset(fcolor);
-		javax.imageio.ImageIO.write(img, format, new java.io.File(filename));
-		redraw();
+		try
+		{
+			if (format .equals("postscript"))
+			{
+				canvas.toPostScript(filename);
+			}
+			else
+			{
+				BufferedImage img = canvas.toImage();
+				javax.imageio.ImageIO.write(img, format, new java.io.File(filename));
+			}
+		}
+		finally
+		{
+			FigColor.reset(fcolor);
+			redraw();
+		}
 	}
 
 	private Buffer makeColormapTextureData()
@@ -315,7 +331,7 @@ public class FigureObject extends HandleObject
 
 	private int commandToOp(String cmd)
 	{
-		if (cmd.equals("cursor")) return OP_NONE;
+		if (cmd.equals("edit")) return OP_NONE;
 		else if (cmd.equals("zoom")) return OP_ZOOM;
 		else if (cmd.equals("rotate")) return OP_ROTATE;
 		else return OP_NONE;
@@ -486,10 +502,10 @@ public class FigureObject extends HandleObject
 	public void actionPerformed(ActionEvent e)
 	{
 		//System.out.println("action");
-		if (e.getSource() == cursorBtn || e.getSource() == zoomBtn || e.getSource() == rotateBtn)
+		if (e.getSource() == editBtn || e.getSource() == zoomBtn || e.getSource() == rotateBtn)
 		{
-			if (e.getSource() != cursorBtn)
-				cursorBtn.setSelected(false);
+			if (e.getSource() != editBtn)
+				editBtn.setSelected(false);
 			if (e.getSource() != zoomBtn)
 				zoomBtn.setSelected(false);
 			if (e.getSource() != rotateBtn)

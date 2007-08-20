@@ -50,6 +50,8 @@ public interface Renderer
 
 	public void setLineStyle(String s, boolean forceStippling);
 
+	public void setLineWidth(float w);
+
 	public void end();
 
 	public void draw(LineObject line);
@@ -60,6 +62,8 @@ public interface Renderer
 		boolean useClipping, boolean useZBuffer);
 
 	public void drawBitmap(BufferedImage img, double[] pos, int xOffset, int yOffset);
+
+	public void drawText(String txt, double[] pos, int halign, int valign);
 	
 	public void draw(PatchObject patch);
 

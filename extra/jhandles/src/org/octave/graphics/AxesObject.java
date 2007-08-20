@@ -192,6 +192,7 @@ public class AxesObject extends HandleObject
 	RadioProperty YAxisLocation;
 	RadioProperty Layer;
 	BooleanProperty Key;
+	DoubleProperty LineWidth;
 
 	public AxesObject(FigureObject fig, boolean init3D)
 	{
@@ -287,6 +288,7 @@ public class AxesObject extends HandleObject
 		Layer = new RadioProperty(this, "Layer", new String[] {"bottom", "top"}, "bottom");
 		Key = new BooleanProperty(this, "Key", false);
 		Key.setVisible(false);
+		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 
 		updatePosition();
 		autoTick();
@@ -823,6 +825,8 @@ public class AxesObject extends HandleObject
 		// Box
 
 		r.setLineStyle("-", true);
+		r.setLineWidth(LineWidth.floatValue());
+
 		if ((boxSet || alwaysDrawBox) && visible)
 		{
 			// X box

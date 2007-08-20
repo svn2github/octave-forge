@@ -4,7 +4,8 @@ public class GL2PS
 {
 	static
 	{
-		System.loadLibrary("gl2ps_java");
+		System.load(System.getProperty("octave.jhandles.path") + java.io.File.separator +
+			System.mapLibraryName("gl2ps_java"));
 	}
 
 	final static int GL2PS_MAJOR_VERSION = 1;
@@ -71,8 +72,11 @@ public class GL2PS
 		String filename);
 	public static native int gl2psEndPage();
 	public static native int gl2psText(String string, String fontname, int fontsize);
-	public static native int gl2psTextopt(String string, String fontname,
+	public static native int gl2psTextOpt(String string, String fontname,
 		int fontsize, int align, float angle);
 	public static native int gl2psEnable(int mode);
 	public static native int gl2psDisable(int mode);
+	public static native int gl2psBeginViewport(int[] viewport);
+	public static native int gl2psEndViewport();
+	public static native int gl2psLineWidth(float w);
 }

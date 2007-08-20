@@ -119,3 +119,28 @@ JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psDisable
 {
   return gl2psDisable(mode);
 }
+
+JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psBeginViewport
+  (JNIEnv *env, jclass cls, jintArray _viewport)
+{
+  GLint result;
+
+  WITH_JINTARRAY(viewport,
+    result = gl2psBeginViewport(viewport);
+    )
+
+  return result;
+}
+
+JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psEndViewport
+  (JNIEnv *env, jclass cls)
+{
+  return gl2psEndViewport();
+}
+
+JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psLineWidth
+  (JNIEnv *env, jclass cls, jfloat w)
+{
+  printf("gl2psLineWidth: %f\n", w);
+  return gl2psLineWidth(w);
+}

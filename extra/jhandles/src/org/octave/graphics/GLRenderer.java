@@ -49,6 +49,7 @@ public class GLRenderer implements Renderer
 	private AxesObject.Scaler sx, sy, sz;
 	private float po = 1.0f;
 	private boolean isGL2PS = false;
+	private boolean isFirst = false;
 
 	public GLRenderer(GLAutoDrawable d)
 	{
@@ -206,7 +207,7 @@ public class GLRenderer implements Renderer
 		{
 			setColor(line.LineColor.getColor());
 			setLineStyle(line.LineStyle.getValue(), false);
-			gl.glLineWidth(line.LineWidth.floatValue());
+			setLineWidth(line.LineWidth.floatValue());
 			
 			if (z.length == 0)
 			{
@@ -257,9 +258,8 @@ public class GLRenderer implements Renderer
 					gl.glEnd();
 			}
 
-			gl.glDisable(GL.GL_LINE_STIPPLE);
-			gl.glLineWidth(1.0f);
-			gl.glLineStipple(1, (short)0xFFFF);
+			setLineWidth(0.5f);
+			setLineStyle("-", false);
 		}
 
 		if (line.Marker.isSet())
@@ -343,6 +343,45 @@ public class GLRenderer implements Renderer
 		gl.glBitmap(0, 0, 0, 0, xOffset, yOffset, null, 0);
 		gl.glBitmap(img.getWidth(), img.getHeight(), 0, 0, 0, 0, data, 0);
 		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
+	}
+
+	public void drawText(String txt, double[] pos, int halign, int valign)
+	{
+		if (isGL2PS)
+		{
+			int mode = GL2PS.GL2PS_TEXT_C;
+
+			switch (valign)
+			{
+				case 0:
+					switch (halign)
+					{
+						case 0: mode = GL2PS.GL2PS_TEXT_BL; break;
+						case 1: mode = GL2PS.GL2PS_TEXT_B; break;
+						case 2: mode = GL2PS.GL2PS_TEXT_BR; break;
+					}
+					break;
+				case 1:
+					switch (halign)
+					{
+						case 0: mode = GL2PS.GL2PS_TEXT_CL; break;
+						case 1: mode = GL2PS.GL2PS_TEXT_C; break;
+						case 2: mode = GL2PS.GL2PS_TEXT_CR; break;
+					}
+					break;
+				case 2:
+					switch (halign)
+					{
+						case 0: mode = GL2PS.GL2PS_TEXT_TL; break;
+						case 1: mode = GL2PS.GL2PS_TEXT_T; break;
+						case 2: mode = GL2PS.GL2PS_TEXT_TR; break;
+					}
+					break;
+			}
+
+			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
+			GL2PS.gl2psTextOpt(txt, "Helvetica", 12, mode, 0);
+		}
 	}
 
 	private class VertexData
@@ -1670,6 +1709,18 @@ public class GLRenderer implements Renderer
 	{
 		double zmin = ax.x_zmin, zmax = ax.x_zmax;
 
+		if (isGL2PS)
+		{
+			if (!isFirst)
+				GL2PS.gl2psEndViewport();
+			isFirst = false;
+
+			int[] viewport = new int[4];
+
+			gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+			GL2PS.gl2psBeginViewport(viewport);
+		}
+
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glScaled(1, 1, -1);
@@ -1697,6 +1748,9 @@ public class GLRenderer implements Renderer
 
 	public void clear(Color c)
 	{
+		if (isGL2PS)
+			isFirst = true;
+
 		gl.glClearColor(c.getRed()/255.0f, c.getGreen()/255.0f, c.getBlue()/255.0f, 1.0f);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 	}
@@ -1788,6 +1842,13 @@ public class GLRenderer implements Renderer
 			if (isGL2PS)
 				GL2PS.gl2psEnable(GL2PS.GL2PS_LINE_STIPPLE);
 		}
+	}
+
+	public void setLineWidth(float w)
+	{
+		gl.glLineWidth(w);
+		if (isGL2PS)
+			GL2PS.gl2psLineWidth(w);
 	}
 
 	public void drawQuads(List pts, double zoffset)

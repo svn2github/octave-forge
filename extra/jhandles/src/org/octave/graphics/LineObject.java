@@ -56,7 +56,7 @@ public class LineObject extends GraphicObject
 		ZData = new VectorProperty(this, "ZData", (zdata == null ? new Matrix() : zdata), -1);
 		LineColor = new ColorProperty(this, "Color", Color.blue);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
-		LineWidth = new DoubleProperty(this, "LineWidth", 1.0);
+		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 		KeyLabel = new StringProperty(this, "KeyLabel", "");
 		Marker = new MarkerProperty(this, "Marker", "none");
 		MarkerSize = new DoubleProperty(this, "MarkerSize", 9.0);

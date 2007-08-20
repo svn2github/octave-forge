@@ -3162,6 +3162,8 @@ static GLint gl2psPrintPostScriptEndViewport(void)
 
   res = gl2psPrintPrimitives();
   gl2psPrintf("grestore\n");
+  if (gl2ps)
+    gl2ps->lastlinewidth = 1.0F;
   return res;
 }
 

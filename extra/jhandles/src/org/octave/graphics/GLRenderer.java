@@ -345,7 +345,7 @@ public class GLRenderer implements Renderer
 		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
 	}
 
-	public void drawText(String txt, double[] pos, int halign, int valign)
+	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin)
 	{
 		if (isGL2PS)
 		{
@@ -380,7 +380,7 @@ public class GLRenderer implements Renderer
 			}
 
 			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
-			GL2PS.gl2psTextOpt(txt, "Helvetica", 12, mode, 0);
+			GL2PS.gl2psTextOpt(txt, "Helvetica", 12, mode, angle, margin);
 		}
 	}
 
@@ -436,7 +436,7 @@ public class GLRenderer implements Renderer
 			if (mode != GL.GL_LINE_LOOP)
 			{
 				gl.glPolygonOffset(po, po);
-				gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+				setPolygonOffset(true);
 				fill = true;
 			}
 			else
@@ -447,7 +447,7 @@ public class GLRenderer implements Renderer
 		public void end()
 		{
 			gl.glEnd();
-			gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+			setPolygonOffset(false);
 		}
 
 		public void vertex(Object vData)
@@ -664,7 +664,7 @@ public class GLRenderer implements Renderer
 									else
 										gl.glShadeModel(GL.GL_FLAT);
 									gl.glPolygonOffset(po, po);
-									gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+									setPolygonOffset(true);
 									gl.glBegin(GL.GL_TRIANGLES);
 									for (int i=0; i<3; i++)
 									{
@@ -688,7 +688,7 @@ public class GLRenderer implements Renderer
 										gl.glVertex3d(v[i].coords[0], v[i].coords[1], v[i].coords[2]);
 									}
 									gl.glEnd();
-									gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+									setPolygonOffset(false);
 									if (lightMode > 0)
 										gl.glDisable(GL.GL_LIGHTING);
 								}
@@ -1062,7 +1062,7 @@ public class GLRenderer implements Renderer
 					gl.glEnable(GL.GL_LIGHTING);
 				gl.glShadeModel((faceColorMode == 2 || faceLightMode == 2) ? GL.GL_SMOOTH : GL.GL_FLAT);
 				gl.glPolygonOffset(po, po);
-				gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+				setPolygonOffset(true);
 				if (d != null)
 					gl.glEnable(GL.GL_TEXTURE_2D);
 
@@ -1159,7 +1159,7 @@ public class GLRenderer implements Renderer
 						gl.glEnd();
 					}
 
-				gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+				setPolygonOffset(false);
 				if (d != null)
 					gl.glDisable(GL.GL_TEXTURE_2D);
 
@@ -1221,7 +1221,7 @@ public class GLRenderer implements Renderer
 									else
 										gl.glShadeModel(GL.GL_FLAT);
 									gl.glPolygonOffset(po, po);
-									gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+									setPolygonOffset(true);
 									gl.glBegin(GL.GL_QUADS);
 									for (int i=0; i<4; i++)
 									{
@@ -1243,7 +1243,7 @@ public class GLRenderer implements Renderer
 										gl.glVertex3d(xx[i], yy[i], zz[i]);
 									}
 									gl.glEnd();
-									gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+									setPolygonOffset(false);
 									if (faceLightMode > 0)
 										gl.glDisable(GL.GL_LIGHTING);
 								}
@@ -1851,6 +1851,22 @@ public class GLRenderer implements Renderer
 			GL2PS.gl2psLineWidth(w);
 	}
 
+	private void setPolygonOffset(boolean flag)
+	{
+		if (flag)
+		{
+			gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+			if (isGL2PS)
+				GL2PS.gl2psEnable(GL2PS.GL2PS_POLYGON_OFFSET_FILL);
+		}
+		else
+		{
+			gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+			if (isGL2PS)
+				GL2PS.gl2psDisable(GL2PS.GL2PS_POLYGON_OFFSET_FILL);
+		}
+	}
+
 	public void drawQuads(List pts, double zoffset)
 	{
 		Iterator it = pts.iterator();
@@ -1858,7 +1874,7 @@ public class GLRenderer implements Renderer
 		if (zoffset > 0)
 		{
 			gl.glPolygonOffset((float)zoffset, (float)zoffset);
-			gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
+			setPolygonOffset(true);
 		}
 
 		gl.glBegin(GL.GL_QUADS);
@@ -1870,6 +1886,6 @@ public class GLRenderer implements Renderer
 		gl.glEnd();
 
 		if (zoffset > 0)
-			gl.glDisable(GL.GL_POLYGON_OFFSET_FILL);
+			setPolygonOffset(false);
 	}
 }

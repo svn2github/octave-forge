@@ -73,7 +73,7 @@ public class GL2PS
 	public static native int gl2psEndPage();
 	public static native int gl2psText(String string, String fontname, int fontsize);
 	public static native int gl2psTextOpt(String string, String fontname,
-		int fontsize, int align, float angle);
+		int fontsize, int align, float angle, float margin);
 	public static native int gl2psEnable(int mode);
 	public static native int gl2psDisable(int mode);
 	public static native int gl2psBeginViewport(int[] viewport);

@@ -477,7 +477,7 @@ int main(int argc, char **argv)
 			vars["ALL_CXXFLAGS"] += " -g";
 			vars["ALL_FFLAGS"] += " -g";
 		}
-		else if (arg == "--link_stand_alone")
+		else if (arg == "--link-stand-alone")
 		{
 			link_stand_alone = true;
 		}

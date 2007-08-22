@@ -944,6 +944,17 @@ static GL2PSstring *gl2psCopyText(GL2PSstring *t)
   text->angle = t->angle;
   text->margin = t->margin;
   text->offsetmargin = t->offsetmargin;
+  text->linewidth = t->linewidth;
+    text->linecolor[0] = t->linecolor[0];
+    text->linecolor[1] = t->linecolor[1];
+    text->linecolor[2] = t->linecolor[2];
+    text->linecolor[3] = t->linecolor[3];
+  text->linepattern = t->linepattern;
+  text->linefactor = t->linefactor;
+    text->fillcolor[0] = t->fillcolor[0];
+    text->fillcolor[1] = t->fillcolor[1];
+    text->fillcolor[2] = t->fillcolor[2];
+    text->fillcolor[3] = t->fillcolor[3];
   
   return text;
 }

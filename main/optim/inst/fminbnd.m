@@ -11,9 +11,10 @@
 ## for more details.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}] =} fminbnd(@var{f},@var{lb},@var{ub},@var{[options]},@var{P1},@var{P2}, ...)
+## @deftypefn {Function File} {[@var{x},@var{v}] =} fminbnd(@var{f},@var{lb},@var{ub},@var{[options]},@var{P1},@var{P2}, ...)
 ## 
-## Find the minimum of a scalar function with the Golden Search method.
+## Find the minimizer @var{x} of a scalar function and the corresponding
+## value @var{v} with the Golden Search method.
 ## 
 ## @strong{Inputs}
 ## @table @var 
@@ -34,8 +35,10 @@
 
 ## 2001-09-24 Andreas Helms <helms@astro.physik.uni-potsdam.de>
 ## * modified for use with functions of more than one parameter
+## 2007-08-09 Marco Caliari <mcaliari@math.unipd.it>
+## * modified in order to get optionally the value of the function
 
-function min = fminbnd(_func,lb,ub, options, varargin)
+function [min,val] = fminbnd(_func,lb,ub, options, varargin)
 
   delta = 1e-17;
   gr = (sqrt(5)-1)/2;
@@ -63,4 +66,5 @@ function min = fminbnd(_func,lb,ub, options, varargin)
     endif
   endwhile
   min = out(2);
+  val = feval(_func,out(2), varargin{:});
 endfunction

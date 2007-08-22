@@ -345,7 +345,8 @@ public class GLRenderer implements Renderer
 		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
 	}
 
-	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin)
+	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin,
+			boolean offsetmargin)
 	{
 		if (isGL2PS)
 		{
@@ -377,10 +378,18 @@ public class GLRenderer implements Renderer
 						case 2: mode = GL2PS.GL2PS_TEXT_TR; break;
 					}
 					break;
+				case 3:
+					switch (halign)
+					{
+						case 0: mode = GL2PS.GL2PS_TEXT_LL; break;
+						case 1: mode = GL2PS.GL2PS_TEXT_L; break;
+						case 2: mode = GL2PS.GL2PS_TEXT_LR; break;
+					}
+					break;
 			}
 
 			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
-			GL2PS.gl2psTextOpt(txt, "Helvetica", 12, mode, angle, margin);
+			GL2PS.gl2psTextOpt(txt, "Helvetica", 12, mode, angle, margin, offsetmargin);
 		}
 	}
 

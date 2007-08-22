@@ -183,6 +183,12 @@ typedef struct {
   GLint alignment;
   GLfloat angle;
   GLfloat margin;
+  GLboolean offsetmargin;
+  GLfloat linewidth;
+  GL2PSrgba linecolor;
+  GLushort linepattern;
+  GLint linefactor;
+  GL2PSrgba fillcolor;
 } GL2PSstring;
 
 typedef struct {
@@ -861,7 +867,9 @@ static void gl2psConvertPixmapToPNG(GL2PSimage *pixmap, GL2PSlist *png)
 /* Helper routines for text strings */
 
 static GLint gl2psAddText(GLint type, const char *str, const char *fontname, 
-                          GLshort fontsize, GLint alignment, GLfloat angle, GLfloat margin)
+                          GLshort fontsize, GLint alignment, GLfloat angle, GLfloat margin,
+                          GLboolean offsetmargin, GLfloat lwidth, GL2PSrgba lc,
+                          GLushort lpattern, GLint lfactor, GL2PSrgba fc)
 {
   GLfloat pos[4];
   GL2PSprimitive *prim;
@@ -899,6 +907,24 @@ static GLint gl2psAddText(GLint type, const char *str, const char *fontname,
   prim->data.text->alignment = alignment;
   prim->data.text->angle = angle;
   prim->data.text->margin = margin;
+  prim->data.text->offsetmargin = offsetmargin;
+  prim->data.text->linewidth = lwidth;
+  if (lwidth > 0)
+  {
+    prim->data.text->linecolor[0] = lc[0];
+    prim->data.text->linecolor[1] = lc[1];
+    prim->data.text->linecolor[2] = lc[2];
+    prim->data.text->linecolor[3] = lc[3];
+  }
+  prim->data.text->linepattern = lpattern;
+  prim->data.text->linefactor = lfactor;
+  if (fc)
+  {
+    prim->data.text->fillcolor[0] = fc[0];
+    prim->data.text->fillcolor[1] = fc[1];
+    prim->data.text->fillcolor[2] = fc[2];
+    prim->data.text->fillcolor[3] = fc[3];
+  }
 
   gl2psListAdd(gl2ps->auxprimitives, &prim);
   glPassThrough(GL2PS_TEXT_TOKEN);
@@ -916,6 +942,8 @@ static GL2PSstring *gl2psCopyText(GL2PSstring *t)
   text->fontsize = t->fontsize;
   text->alignment = t->alignment;
   text->angle = t->angle;
+  text->margin = t->margin;
+  text->offsetmargin = t->offsetmargin;
   
   return text;
 }
@@ -2719,30 +2747,50 @@ static void gl2psPrintPostScriptHeader(void)
               "/G  { 0.082 mul exch 0.6094 mul add exch 0.3086 mul add neg 1.0 add setgray } BD\n"
               "/W  { setlinewidth } BD\n");
 
-  gl2psPrintf("/FC { /SM exch def findfont exch /SH exch def SH scalefont setfont } BD\n"
+  /* text decoration (border and fill) */
+
+  gl2psPrintf("/TB { gsave 4 1 roll setrgbcolor fillState not { exch W 3 1 roll setdash } if\n"
+              "      SM neg dup SD add rmoveto currentpoint newpath moveto\n"
+              "      SW SM 2 mul add 0 rlineto\n"
+              "      0 SH SM 2 mul add rlineto\n"
+              "      SW SM 2 mul add neg 0 rlineto\n"
+              "      closepath fillState { fill } { stroke } ifelse grestore } BD\n"
+              "/SBX{ exch dup 0 gt { dup 1 and 0 gt { 5 1 roll /fillState true def TB exch } if\n"
+              "      2 and 0 gt { /fillState false def TB } if } { pop } ifelse } BD\n"
+              "/TS { SBX show } BD\n");
+
+  gl2psPrintf("/FD { gsave newpath 0 0 moveto (p) false charpath flattenpath pathbbox\n"
+              "      pop pop exch pop /SD exch def grestore } BD\n"
+              "/FC { /SO exch def /SM exch def findfont exch /SH exch def SH scalefont setfont FD } BD\n"
               "/SW { dup stringwidth pop } BD\n"
-              "/S  { FC moveto SM dup rmoveto show } BD\n"
-              "/SBC{ FC moveto 0 SM rmoveto SW -2 div 0 rmoveto show } BD\n"
-              "/SBR{ FC moveto SM neg SM rmoveto SW neg 0 rmoveto show } BD\n"
-              "/SCL{ FC moveto SM 0 rmoveto 0 SH -2 div rmoveto show } BD\n"
-              "/SCC{ FC moveto SW -2 div SH -2 div rmoveto show } BD\n"
-              "/SCR{ FC moveto SM neg 0 rmoveto SW neg SH -2 div rmoveto show } BD\n"
-              "/STL{ FC moveto SM SM neg rmoveto 0 SH neg rmoveto show } BD\n"
-              "/STC{ FC moveto 0 SM neg rmoveto SW -2 div SH neg rmoveto show } BD\n"
-              "/STR{ FC moveto SM neg dup rmoveto SW neg SH neg rmoveto show } BD\n");
+              "/S  { FC moveto SO { SM 0 rmoveto } if TS } BD\n"
+              "/SLC{ FC moveto SW -2 div 0 rmoveto TS } BD\n"
+              "/SLR{ FC moveto SO { SM neg 0 rmoveto } if SW neg 0 rmoveto TS } BD\n"
+              "/SBL{ FC moveto SO { SM dup rmoveto } if 0 SD neg rmoveto TS } BD\n"
+              "/SBC{ FC moveto SO { 0 SM rmoveto } if SW -2 div SD neg rmoveto TS } BD\n"
+              "/SBR{ FC moveto SO { SM neg SM rmoveto } if SW neg SD neg rmoveto TS } BD\n"
+              "/SCL{ FC moveto SO { SM 0 rmoveto } if 0 SH -2 div SD sub rmoveto TS } BD\n"
+              "/SCC{ FC moveto SW -2 div SH -2 div SD sub rmoveto TS } BD\n"
+              "/SCR{ FC moveto SO { SM neg 0 rmoveto } if SW neg SH -2 div SD sub rmoveto TS } BD\n"
+              "/STL{ FC moveto SO { SM SM neg rmoveto } if 0 SH neg SD sub rmoveto TS } BD\n"
+              "/STC{ FC moveto SO { 0 SM neg rmoveto } if SW -2 div SH neg SD sub rmoveto TS } BD\n"
+              "/STR{ FC moveto SO { SM neg dup rmoveto } if SW neg SH neg SD sub rmoveto TS } BD\n");
 
   /* rotated text routines: same nameanem with R appended */
 
   gl2psPrintf("/FCT { FC translate 0 0 } BD\n"
-              "/SR  { gsave FCT moveto rotate SM dup rmoveto show grestore } BD\n"  
-              "/SBCR{ gsave FCT moveto rotate 0 SM rmoveto SW -2 div 0 rmoveto show grestore } BD\n"
-              "/SBRR{ gsave FCT moveto rotate SM neg SM rmoveto SW neg 0 rmoveto show grestore } BD\n"
-              "/SCLR{ gsave FCT moveto rotate SM 0 rmoveto 0 SH -2 div rmoveto show grestore} BD\n");
-  gl2psPrintf("/SCCR{ gsave FCT moveto rotate SW -2 div SH -2 div rmoveto show grestore} BD\n"
-              "/SCRR{ gsave FCT moveto rotate SM neg 0 rmoveto SW neg SH -2 div rmoveto show grestore} BD\n"
-              "/STLR{ gsave FCT moveto rotate SM SM neg rmoveto 0 SH neg rmoveto show grestore } BD\n"
-              "/STCR{ gsave FCT moveto rotate 0 SM neg rmoveto SW -2 div SH neg rmoveto show grestore } BD\n"
-              "/STRR{ gsave FCT moveto rotate SM neg dup rmoveto SW neg SH neg rmoveto show grestore } BD\n");
+              "/SR  { gsave FCT moveto rotate SO { SM 0 rmoveto } if TS grestore } BD\n"  
+              "/SLCR{ gsave FCT moveto rotate SW -2 div 0 rmoveto TS grestore } BD\n"  
+              "/SLRR{ gsave FCT moveto rotate SO { SM neg 0 rmoveto } if SW neg 0 rmoveto TS grestore } BD\n"  
+              "/SBLR{ gsave FCT moveto rotate SO { SM dup rmoveto } if 0 SD neg rmoveto TS grestore } BD\n"  
+              "/SBCR{ gsave FCT moveto rotate SO { 0 SM rmoveto } if SW -2 div SD neg rmoveto TS grestore } BD\n"
+              "/SBRR{ gsave FCT moveto rotate SO { SM neg SM rmoveto } if SW neg SD neg rmoveto TS grestore } BD\n"
+              "/SCLR{ gsave FCT moveto rotate SO { SM 0 rmoveto } if 0 SH -2 div SD sub rmoveto TS grestore} BD\n");
+  gl2psPrintf("/SCCR{ gsave FCT moveto rotate SW -2 div SH -2 div SD sub rmoveto TS grestore} BD\n"
+              "/SCRR{ gsave FCT moveto rotate SO { SM neg 0 rmoveto } if SW neg SH -2 div SD sub rmoveto TS grestore} BD\n"
+              "/STLR{ gsave FCT moveto rotate SO { SM SM neg rmoveto } if 0 SH neg SD sub rmoveto TS grestore } BD\n"
+              "/STCR{ gsave FCT moveto rotate SO { 0 SM neg rmoveto } if SW -2 div SH neg SD sub rmoveto TS grestore } BD\n"
+              "/STRR{ gsave FCT moveto rotate SO { SM neg dup rmoveto } if SW neg SH neg SD sub rmoveto TS grestore } BD\n");
 
   gl2psPrintf("/P  { newpath 0.0 360.0 arc closepath fill } BD\n"
               "/LS { newpath moveto } BD\n"
@@ -3056,12 +3104,13 @@ static void gl2psPrintPostScriptPrimitive(void *data)
     break;
   case GL2PS_TEXT :
     gl2psPrintPostScriptColor(prim->verts[0].rgba);
-    gl2psPrintf("(%s) ", prim->data.text->str);
+    gl2psPrintf("0 (%s) ", prim->data.text->str);
     if(prim->data.text->angle)
       gl2psPrintf("%g ", prim->data.text->angle);
-    gl2psPrintf("%g %g %d /%s %g ",
+    gl2psPrintf("%g %g %d /%s %g %s ",
                 prim->verts[0].xyz[0], prim->verts[0].xyz[1],
-                prim->data.text->fontsize, prim->data.text->fontname, prim->data.text->margin);
+                prim->data.text->fontsize, prim->data.text->fontname, prim->data.text->margin,
+                prim->data.text->offsetmargin ? "true" : "false");
     switch(prim->data.text->alignment){
     case GL2PS_TEXT_C:
       gl2psPrintf(prim->data.text->angle ? "SCCR\n" : "SCC\n");
@@ -3088,9 +3137,17 @@ static void gl2psPrintPostScriptPrimitive(void *data)
       gl2psPrintf(prim->data.text->angle ? "STRR\n" : "STR\n");
       break;
     case GL2PS_TEXT_BL:
+      gl2psPrintf(prim->data.text->angle ? "SBLR\n" : "SBL\n");
+      break;
+    case GL2PS_TEXT_L:
+      gl2psPrintf(prim->data.text->angle ? "SLCR\n" : "SLC\n");
+      break;
+    case GL2PS_TEXT_LR:
+      gl2psPrintf(prim->data.text->angle ? "SLRR\n" : "SLR\n");
+      break;
+    case GL2PS_TEXT_LL:
     default:
       gl2psPrintf(prim->data.text->angle ? "SR\n" : "S\n");
-      break;
     }
     break;
   case GL2PS_SPECIAL :
@@ -5751,19 +5808,24 @@ GL2PSDLL_API GLint gl2psEndViewport(void)
 }
 
 GL2PSDLL_API GLint gl2psTextOpt(const char *str, const char *fontname, 
-                                GLshort fontsize, GLint alignment, GLfloat angle, GLfloat margin)
+                                GLshort fontsize, GLint alignment, GLfloat angle, GLfloat margin,
+                                GLboolean offsetmargin, GLfloat lwidth, GL2PSrgba lc,
+                                GLushort lpattern, GLint lfactor, GL2PSrgba fc)
 {
-  return gl2psAddText(GL2PS_TEXT, str, fontname, fontsize, alignment, angle, margin);
+  return gl2psAddText(GL2PS_TEXT, str, fontname, fontsize, alignment, angle, margin, offsetmargin,
+      0, NULL, 0xFFFF, 1, NULL);
 }
 
 GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname, GLshort fontsize)
 {
-  return gl2psAddText(GL2PS_TEXT, str, fontname, fontsize, GL2PS_TEXT_BL, 0.0F, 0.0F);
+  return gl2psAddText(GL2PS_TEXT, str, fontname, fontsize, GL2PS_TEXT_BL, 0.0F, 0.0F, GL_FALSE,
+      0, NULL, 0, 0, NULL);
 }
 
 GL2PSDLL_API GLint gl2psSpecial(GLint format, const char *str)
 {
-  return gl2psAddText(GL2PS_SPECIAL, str, "", 0, format, 0.0F, 0.0F);
+  return gl2psAddText(GL2PS_SPECIAL, str, "", 0, format, 0.0F, 0.0F, GL_FALSE,
+      0, NULL, 0, 0, NULL);
 }
 
 GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,

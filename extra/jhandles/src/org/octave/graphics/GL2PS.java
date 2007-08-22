@@ -60,6 +60,9 @@ public class GL2PS
 	final static int GL2PS_TEXT_T = 7;
 	final static int GL2PS_TEXT_TL = 8;
 	final static int GL2PS_TEXT_TR = 9;
+	final static int GL2PS_TEXT_L = 10;
+	final static int GL2PS_TEXT_LL = 11;
+	final static int GL2PS_TEXT_LR = 12;
 
 	public static native int gl2psBeginPage(
 		String title, String producer,
@@ -73,7 +76,8 @@ public class GL2PS
 	public static native int gl2psEndPage();
 	public static native int gl2psText(String string, String fontname, int fontsize);
 	public static native int gl2psTextOpt(String string, String fontname,
-		int fontsize, int align, float angle, float margin);
+		int fontsize, int align, float angle, float margin,
+		boolean offsetmargin);
 	public static native int gl2psEnable(int mode);
 	public static native int gl2psDisable(int mode);
 	public static native int gl2psBeginViewport(int[] viewport);

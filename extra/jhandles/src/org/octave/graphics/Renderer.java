@@ -63,7 +63,8 @@ public interface Renderer
 
 	public void drawBitmap(BufferedImage img, double[] pos, int xOffset, int yOffset);
 
-	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin);
+	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin,
+		boolean offsetmargin);
 	
 	public void draw(PatchObject patch);
 

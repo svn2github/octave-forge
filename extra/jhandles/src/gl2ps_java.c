@@ -96,13 +96,14 @@ JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psText
 JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psTextOpt
   (JNIEnv *env, jclass cls,
    jstring _string, jstring _fontname,
-   jint fontsize, jint align, jfloat angle, jfloat margin)
+   jint fontsize, jint align, jfloat angle, jfloat margin,
+   jboolean offsetmargin)
 {
   GLint result;
 
   WITH_JSTRING(string,
     WITH_JSTRING(fontname,
-      result = gl2psTextOpt(string, fontname, fontsize, align, angle, margin);
+      result = gl2psTextOpt(string, fontname, fontsize, align, angle, margin, offsetmargin);
       ))
 
   return result;

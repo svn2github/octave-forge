@@ -220,9 +220,9 @@ public class TextObject extends GraphicObject
 
 		/* simple text rendering, for PS print purpose: background and edge are ignored */
 		int halign = (HAlign.is("left") ? 0 : (HAlign.is("center") ? 1 : 2));
-		int valign = (VAlign.is("bottom") ? 0 : (VAlign.is("top") ? 2 : 1));
+		int valign = (VAlign.is("bottom") ? 0 : (VAlign.is("top") ? 2 : (VAlign.is("baseline") ? 3 : 1)));
 		renderer.setColor(TextColor.getColor());
-		renderer.drawText(TextString.toString(), pos, halign, valign, Rotation.floatValue(), Margin.floatValue());
+		renderer.drawText(TextString.toString(), pos, halign, valign, Rotation.floatValue(), Margin.floatValue(), false);
 	}
 
 	public void propertyChanged(Property p) throws PropertyException

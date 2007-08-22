@@ -151,6 +151,10 @@
 #define GL2PS_TEXT_T  7
 #define GL2PS_TEXT_TL 8
 #define GL2PS_TEXT_TR 9
+/* vertical alignment on font's baseline */
+#define GL2PS_TEXT_L  10
+#define GL2PS_TEXT_LL 11
+#define GL2PS_TEXT_LR 12
 
 typedef GLfloat GL2PSrgba[4];
 
@@ -171,7 +175,8 @@ GL2PSDLL_API GLint gl2psEndViewport(void);
 GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname, 
                              GLshort fontsize);
 GL2PSDLL_API GLint gl2psTextOpt(const char *str, const char *fontname, 
-                                GLshort fontsize, GLint align, GLfloat angle, GLfloat margin);
+                                GLshort fontsize, GLint align, GLfloat angle, GLfloat margin,
+                                GLboolean offsetmargin);
 GL2PSDLL_API GLint gl2psSpecial(GLint format, const char *str);
 GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
                                    GLint xorig, GLint yorig,

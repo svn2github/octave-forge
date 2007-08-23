@@ -1100,12 +1100,6 @@ public class GLRenderer implements Renderer
 				if (d != null)
 					gl.glEnable(GL.GL_TEXTURE_2D);
 
-				// TODO: remove
-				//System.out.println("GL_LIGHT0 is " + gl.glIsEnabled(GL.GL_LIGHT0));
-				//System.out.println("GL_LIGHTING is " + gl.glIsEnabled(GL.GL_LIGHTING));
-				//System.out.println("GL_CULL_FACE is " + gl.glIsEnabled(GL.GL_CULL_FACE));
-				//System.out.println("GL_NORMALIZE is " + gl.glIsEnabled(GL.GL_NORMALIZE));
-
 				for (int i=1; i<x.length; i++)
 					for (int j=1; j<x[i].length; j++)
 					{
@@ -1804,7 +1798,6 @@ public class GLRenderer implements Renderer
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		// TODO: remove (projection should be set correcty anyway)
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, 1, -1);

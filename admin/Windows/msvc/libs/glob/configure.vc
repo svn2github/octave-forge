@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# This script assumes Unix-to-MSVC compilation scripts are installed
+# on this system and available in the PATH environment variable
+
+CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc ./configure \
+	--build=i686-pc-msdosmsvc --prefix=/usr/local/glob

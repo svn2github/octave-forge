@@ -346,11 +346,14 @@ public class GLRenderer implements Renderer
 	}
 
 	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin,
-			boolean offsetmargin)
+			boolean offsetmargin, float linewidth, Color linecolor, String linepattern, Color fillcolor,
+			boolean useZBuffer)
 	{
 		if (isGL2PS)
 		{
-			int mode = GL2PS.GL2PS_TEXT_C;
+			int mode = GL2PS.GL2PS_TEXT_C, factor = 1;
+			short pattern = (short)0xFFFF;
+			float[] lc = null, fc = null;
 
 			switch (valign)
 			{
@@ -388,8 +391,30 @@ public class GLRenderer implements Renderer
 					break;
 			}
 
+			if (linecolor != null)
+				lc = new float[] {(float)linecolor.getRed()/255.0F, (float)linecolor.getGreen()/255.0F,
+					(float)linecolor.getBlue()/255.0F, 1.0F};
+			if (fillcolor != null)
+				fc = new float[] {(float)fillcolor.getRed()/255.0F, (float)fillcolor.getGreen()/255.0F,
+					(float)fillcolor.getBlue()/255.0F, 1.0F};
+
+			if (linepattern.equals("-")) pattern = (short)0xFFFF;
+			else if (linepattern.equals(":")) pattern = (short)0x8888;
+			else if (linepattern.equals("--")) pattern = (short)0x0FFF;
+			else if (linepattern.equals("-.")) pattern = (short)0x020F;
+			else
+			{
+				linewidth = 0;
+				fc = null;
+			}
+
 			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
-			GL2PS.gl2psTextOpt(txt, "Helvetica", 12, mode, angle, margin, offsetmargin);
+			if (!useZBuffer)
+				gl.glDisable(GL.GL_DEPTH_TEST);
+			GL2PS.gl2psTextOpt(txt, "Helvetica", 12, mode, angle, margin, offsetmargin,
+					linewidth, lc, pattern, factor, fc);
+			if (!useZBuffer)
+				gl.glEnable(GL.GL_DEPTH_TEST);
 		}
 	}
 

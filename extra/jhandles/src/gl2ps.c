@@ -189,6 +189,7 @@ typedef struct {
   GLushort linepattern;
   GLint linefactor;
   GL2PSrgba fillcolor;
+  GLboolean depthtest;
 } GL2PSstring;
 
 typedef struct {
@@ -909,22 +910,27 @@ static GLint gl2psAddText(GLint type, const char *str, const char *fontname,
   prim->data.text->margin = margin;
   prim->data.text->offsetmargin = offsetmargin;
   prim->data.text->linewidth = lwidth;
-  if (lwidth > 0)
+  if (lwidth > 0 && lc != NULL)
   {
     prim->data.text->linecolor[0] = lc[0];
     prim->data.text->linecolor[1] = lc[1];
     prim->data.text->linecolor[2] = lc[2];
     prim->data.text->linecolor[3] = lc[3];
   }
+  else
+    prim->data.text->linecolor[0] = -1.0F;
   prim->data.text->linepattern = lpattern;
   prim->data.text->linefactor = lfactor;
-  if (fc)
+  if (fc != NULL)
   {
     prim->data.text->fillcolor[0] = fc[0];
     prim->data.text->fillcolor[1] = fc[1];
     prim->data.text->fillcolor[2] = fc[2];
     prim->data.text->fillcolor[3] = fc[3];
   }
+  else
+    prim->data.text->fillcolor[0] = -1.0F;
+  glGetBooleanv(GL_DEPTH_TEST, &(prim->data.text->depthtest));
 
   gl2psListAdd(gl2ps->auxprimitives, &prim);
   glPassThrough(GL2PS_TEXT_TOKEN);
@@ -955,6 +961,7 @@ static GL2PSstring *gl2psCopyText(GL2PSstring *t)
     text->fillcolor[1] = t->fillcolor[1];
     text->fillcolor[2] = t->fillcolor[2];
     text->fillcolor[3] = t->fillcolor[3];
+  text->depthtest = t->depthtest;
   
   return text;
 }
@@ -1416,7 +1423,7 @@ static void gl2psDivideQuad(GL2PSprimitive *quad,
   (*t2)->verts[0] = quad->verts[0];
   (*t2)->verts[1] = quad->verts[2];
   (*t2)->verts[2] = quad->verts[3];
-  (*t1)->boundary = ((quad->boundary & 4) ? 2 : 0) | ((quad->boundary & 4) ? 2 : 0);
+  (*t2)->boundary = ((quad->boundary & 4) ? 2 : 0) | ((quad->boundary & 4) ? 2 : 0);
 }
 
 static int gl2psCompareDepth(const void *a, const void *b)
@@ -1591,6 +1598,10 @@ static void gl2psBuildBspTree(GL2PSbsptree *tree, GL2PSlist *primitives)
   for(i = 0; i < gl2psListNbr(primitives); i++){
     if(i != index){
       prim = *(GL2PSprimitive**)gl2psListPointer(primitives,i);
+      if (prim->type == GL2PS_TEXT && prim->data.text->depthtest == GL_FALSE) {
+        gl2psAddPrimitiveInList(prim, backlist);
+        continue;
+      }
       switch(gl2psSplitPrimitive(prim, tree->plane, &frontprim, &backprim)){
       case GL2PS_COINCIDENT:
         gl2psAddPrimitiveInList(prim, tree->primitives);
@@ -2760,7 +2771,7 @@ static void gl2psPrintPostScriptHeader(void)
 
   /* text decoration (border and fill) */
 
-  gl2psPrintf("/TB { gsave 4 1 roll setrgbcolor fillState not { exch W 3 1 roll setdash } if\n"
+  gl2psPrintf("/TB { gsave 4 1 roll setrgbcolor fillState not { exch W } if\n"
               "      SM neg dup SD add rmoveto currentpoint newpath moveto\n"
               "      SW SM 2 mul add 0 rlineto\n"
               "      0 SH SM 2 mul add rlineto\n"
@@ -3115,7 +3126,27 @@ static void gl2psPrintPostScriptPrimitive(void *data)
     break;
   case GL2PS_TEXT :
     gl2psPrintPostScriptColor(prim->verts[0].rgba);
-    gl2psPrintf("0 (%s) ", prim->data.text->str);
+    if (prim->data.text->linecolor[0] >= 0 || prim->data.text->fillcolor[0] >= 0)
+    {
+      int boxFlag = 0;
+      if (prim->data.text->linecolor[0] >= 0)
+      {
+        gl2psPrintPostScriptDash(prim->data.text->linepattern, prim->data.text->linefactor, "setdash");
+        gl2psPrintf("%g %g %g %g ", prim->data.text->linewidth, prim->data.text->linecolor[0],
+            prim->data.text->linecolor[1], prim->data.text->linecolor[2]);
+        boxFlag |= 2;
+      }
+      if (prim->data.text->fillcolor[0] >= 0)
+      {
+        gl2psPrintf("%g %g %g ", prim->data.text->fillcolor[0], prim->data.text->fillcolor[1],
+            prim->data.text->fillcolor[2]);
+        boxFlag |= 1;
+      }
+      gl2psPrintf("%d ", boxFlag);
+    }
+    else
+      gl2psPrintf("0 ");
+    gl2psPrintf("(%s) ", prim->data.text->str);
     if(prim->data.text->angle)
       gl2psPrintf("%g ", prim->data.text->angle);
     gl2psPrintf("%g %g %d /%s %g %s ",
@@ -5824,7 +5855,7 @@ GL2PSDLL_API GLint gl2psTextOpt(const char *str, const char *fontname,
                                 GLushort lpattern, GLint lfactor, GL2PSrgba fc)
 {
   return gl2psAddText(GL2PS_TEXT, str, fontname, fontsize, alignment, angle, margin, offsetmargin,
-      0, NULL, 0xFFFF, 1, NULL);
+      lwidth, lc, lpattern, lfactor, fc);
 }
 
 GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname, GLshort fontsize)

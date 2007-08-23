@@ -327,7 +327,8 @@ class SimpleTextEngine
 
 		// render to canvas
 		comp.getRenderer().drawBitmap(img, pos, xoff, yoff);
-		comp.getRenderer().drawText(txt, pos, halign, valign, 0, margin, true);
+		comp.getRenderer().drawText(txt, pos, halign, valign, 0, margin, true,
+				0, null, "-", null, true);
 
 		// return value
 		return new Dimension(r.width, r.height);

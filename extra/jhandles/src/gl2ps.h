@@ -176,7 +176,8 @@ GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname,
                              GLshort fontsize);
 GL2PSDLL_API GLint gl2psTextOpt(const char *str, const char *fontname, 
                                 GLshort fontsize, GLint align, GLfloat angle, GLfloat margin,
-                                GLboolean offsetmargin);
+                                GLboolean offsetmargin, GLfloat linewidth, GL2PSrgba linecolor,
+                                GLushort linepattern, GLint linefactor, GL2PSrgba fillcolor);
 GL2PSDLL_API GLint gl2psSpecial(GLint format, const char *str);
 GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
                                    GLint xorig, GLint yorig,

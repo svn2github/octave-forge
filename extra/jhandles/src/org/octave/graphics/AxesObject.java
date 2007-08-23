@@ -1481,25 +1481,40 @@ public class AxesObject extends HandleObject
 
 		synchronized (Children)
 		{
+			LinkedList objList = new LinkedList();
+
 			// Do lights first
 			it = Children.iterator();
 			while (it.hasNext())
 			{
 				GraphicObject obj = (GraphicObject)it.next();
-				if (obj.Visible.isSet() && obj instanceof LightObject)
-					obj.draw(r);
+				if (obj.Visible.isSet())
+					if (obj instanceof LightObject)
+						obj.draw(r);
+					else
+						objList.add(obj);
 			}
 
 			// Do other objects
-			it = Children.iterator();
+			it = objList.iterator();
 			while (it.hasNext())
 			{
 				GraphicObject obj = (GraphicObject)it.next();
-				if (obj.Visible.isSet() && !(obj instanceof LightObject))
+				if (!obj.hasProperty("Units") || ((RadioProperty)obj.getProperty("Units")).is("data"))
 				{
 					r.setClipping(obj.Clipping.isSet());
 					obj.draw(r);
+					it.remove();
 				}
+			}
+
+			// Final pass
+			it = objList.iterator();
+			while (it.hasNext())
+			{
+				GraphicObject obj = (GraphicObject)it.next();
+				r.setClipping(obj.Clipping.isSet());
+				obj.draw(r);
 			}
 		}
 

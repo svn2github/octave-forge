@@ -19,6 +19,11 @@ static FILE* stream = NULL;
 #define WITH_JINTARRAY(s, code) \
   JINTARRAY(s); do { code } while (0); END_JINTARRAY(s);
 
+#define JFLOATARRAY(s) jfloat* s = (_ ## s ? (*env)->GetFloatArrayElements(env, _ ## s, NULL) : NULL)
+#define END_JFLOATARRAY(s) if (s) (*env)->ReleaseFloatArrayElements(env, _ ## s, s, 0)
+#define WITH_JFLOATARRAY(s, code) \
+  JFLOATARRAY(s); do { code } while (0); END_JFLOATARRAY(s);
+
 JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psBeginPage
   (JNIEnv *env, jclass cls,
    jstring _title, jstring _producer,
@@ -97,14 +102,18 @@ JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psTextOpt
   (JNIEnv *env, jclass cls,
    jstring _string, jstring _fontname,
    jint fontsize, jint align, jfloat angle, jfloat margin,
-   jboolean offsetmargin)
+   jboolean offsetmargin, jfloat linewidth, jfloatArray _linecolor,
+   jshort linepattern, jint linefactor, jfloatArray _fillcolor)
 {
   GLint result;
 
   WITH_JSTRING(string,
     WITH_JSTRING(fontname,
-      result = gl2psTextOpt(string, fontname, fontsize, align, angle, margin, offsetmargin);
-      ))
+      WITH_JFLOATARRAY(linecolor,
+        WITH_JFLOATARRAY(fillcolor,
+          result = gl2psTextOpt(string, fontname, fontsize, align, angle, margin, offsetmargin,
+            linewidth, linecolor, linepattern, linefactor, fillcolor);
+          ))))
 
   return result;
 }

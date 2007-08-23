@@ -77,7 +77,8 @@ public class GL2PS
 	public static native int gl2psText(String string, String fontname, int fontsize);
 	public static native int gl2psTextOpt(String string, String fontname,
 		int fontsize, int align, float angle, float margin,
-		boolean offsetmargin);
+		boolean offsetmargin, float linewidth, float[] linecolor,
+		short linepattern, int linefactor, float[] fillcolor);
 	public static native int gl2psEnable(int mode);
 	public static native int gl2psDisable(int mode);
 	public static native int gl2psBeginViewport(int[] viewport);

@@ -46,7 +46,7 @@ function __jhandles_add_property (h, pname, ptype, opts, varargin)
     p = java_new ("org.octave.graphics.MarkerProperty", parent, pname, defval);
   case "doublearray"
     defval = get_default_value ("double", [], varargin{:});
-    p = java_new ("org.octave.graphics.DoubleArrayProperty", parent, pname, defval, -1);
+    p = java_new ("org.octave.graphics.ArrayProperty", parent, pname, defval);
   case "handle"
     defval = get_default_value ("double", [], varargin{:});
     p = java_new ("org.octave.graphics.HandleObjectListProperty", parent, pname, -1);

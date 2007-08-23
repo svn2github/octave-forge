@@ -2,7 +2,7 @@
 # Describtion: Makefile for the doc directory of the OdePkg
 # ChangeLog: 20070222, this Makefile was originally be created
 #    from the Makefile of the comm package. Modifications have
-#    been done to create the documentatiion of the OdePkg.
+#    been done to create the documentation of the OdePkg.
 
 sinclude ../../../Makeconf
 

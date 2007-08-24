@@ -544,9 +544,11 @@ public class GLRenderer implements Renderer
 		private boolean fill;
 		private double[] globalColor;
 		private double globalAlpha;
+		private String lineStyle;
+		private float lineWidth;
 
 		PatchTessellatorAlpha(GLRenderer r, int colorMode, int lightMode, int alphaMode,
-			double[] globalColor, double globalAlpha)
+			double[] globalColor, double globalAlpha, String lineStyle, float lineWidth)
 		{
 			this.r = r;
 			this.colorMode = colorMode;
@@ -555,6 +557,8 @@ public class GLRenderer implements Renderer
 			this.v = new VertexData[3];
 			this.globalColor = globalColor;
 			this.globalAlpha = globalAlpha;
+			this.lineStyle = lineStyle;
+			this.lineWidth = lineWidth;
 		}
 
 		public void beginData(int mode, Object pData)
@@ -617,6 +621,8 @@ public class GLRenderer implements Renderer
 							gl.glShadeModel(GL.GL_SMOOTH);
 						else
 							gl.glShadeModel(GL.GL_FLAT);
+						setLineStyle(lineStyle, false);
+						setLineWidth(lineWidth);
 						gl.glBegin(GL.GL_LINES);
 						for (int i=0; i<2; i++)
 						{
@@ -640,6 +646,8 @@ public class GLRenderer implements Renderer
 							gl.glVertex3d(v[i].coords[0], v[i].coords[1], v[i].coords[2]);
 						}
 						gl.glEnd();
+						setLineStyle("-", false);
+						setLineWidth(0.5F);
 						if (lightMode > 0)
 							gl.glDisable(GL.GL_LIGHTING);
 					}
@@ -906,7 +914,7 @@ public class GLRenderer implements Renderer
 			{
 				GLUtessellator tess = getTess(true);
 				GLUtessellatorCallback cb = new PatchTessellatorAlpha(this, faceColorMode, faceLightMode, faceAlphaMode,
-								fcolor, (faceAlphaMode == 0 ? patch.FaceAlpha.doubleValue() : 1.0));
+								fcolor, (faceAlphaMode == 0 ? patch.FaceAlpha.doubleValue() : 1.0), "-", 0.5F);
 				
 				glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN_DATA,  cb);
 				glu.gluTessCallback(tess, GLU.GLU_TESS_END,  cb);
@@ -951,6 +959,9 @@ public class GLRenderer implements Renderer
 				if (edgeLightMode > 0)
 					gl.glEnable(GL.GL_LIGHTING);
 
+				setLineStyle(patch.LineStyle.getValue(), false);
+				setLineWidth(patch.LineWidth.floatValue());
+
 				GLUtessellator tess = getTess(false);
 				GLUtessellatorCallback cb = new PatchTessellator(gl, edgeColorMode, edgeLightMode);
 						
@@ -976,6 +987,9 @@ public class GLRenderer implements Renderer
 					glu.gluTessEndPolygon(tess);
 				}
 
+				setLineStyle("-", false);
+				setLineWidth(0.5F);
+
 				if (edgeLightMode > 0)
 					gl.glDisable(GL.GL_LIGHTING);
 			}
@@ -983,7 +997,8 @@ public class GLRenderer implements Renderer
 			{
 				GLUtessellator tess = getTess(false);
 				GLUtessellatorCallback cb = new PatchTessellatorAlpha(this, edgeColorMode, edgeLightMode, edgeAlphaMode,
-								ecolor, (edgeAlphaMode == 0 ? patch.EdgeAlpha.doubleValue() : 1.0));
+								ecolor, (edgeAlphaMode == 0 ? patch.EdgeAlpha.doubleValue() : 1.0),
+								patch.LineStyle.getValue(), patch.LineWidth.floatValue());
 				
 				glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN_DATA,  cb);
 				glu.gluTessCallback(tess, GLU.GLU_TESS_END,  cb);

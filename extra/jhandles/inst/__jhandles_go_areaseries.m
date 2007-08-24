@@ -31,9 +31,11 @@ function [ h ] = __jhandles_go_areaseries (ax, X, Y, bv, varargin)
 	addprop (hh, "EdgeColor", "colorradio", "flat|interp|none", "k");
     addprop (hh, "CDataMapping", "radio", "scaled|direct", "scaled", "hidden");
 	addprop (hh, "AreaGroup", "handle", "hidden");
+	addprop (hh, "LineStyle", "linestyle", "-");
+	addprop (hh, "LineWidth", "double", 0.5);
     set (hh, "CLimInclude", true);
 	set (hh, varargin{:});
-	addlistener (hh, {"FaceColor", "EdgeColor"}, @updatePatchColor);
+	addlistener (hh, {"FaceColor", "EdgeColor", "LineStyle", "LineWidth"}, @updatePatchColor);
     addlistener (hh, {"XData", "YData", "BaseValue"}, @updatePatchData);
 	hh_v = get (hh);
     # create patch object
@@ -46,7 +48,8 @@ function [ h ] = __jhandles_go_areaseries (ax, X, Y, bv, varargin)
     endif
     fvc = k * ones (size (vv,1), 1);
     hp = patch (hh, "Faces", fv, "Vertices", vv, "FaceVertexCData", fvc, ...
-      "FaceColor", hh_v.facecolor, "EdgeColor", hh_v.edgecolor);
+      "FaceColor", hh_v.facecolor, "EdgeColor", hh_v.edgecolor, "LineStyle", hh_v.linestyle, ...
+      "LineWidth", hh_v.linewidth);
     h = [h hh];
   endfor
 
@@ -58,9 +61,11 @@ endfunction
 
 function updatePatchColor (h)
 
-  hp = get (h, "Children");
-  set (hp(1), "FaceColor", get (h, "FaceColor"), ...
-              "EdgeColor", get (h, "EdgeColor"));
+  hv = get (h);
+  set (hv.children(1), "FaceColor", hv.facecolor, ...
+                       "EdgeColor", hv.edgecolor, ...
+					   "LineStyle", hv.linestyle, ...
+					   "LineWidth", hv.linewidth);
 
 endfunction
 

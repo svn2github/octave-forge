@@ -20,54 +20,62 @@ function __jhandles_add_property (h, pname, ptype, opts, varargin)
   parent = __get_object__ (h);
   n = length (varargin);
 
-  switch (ptype)
-  case "radio"
-    if (n > 0 && ischar (varargin{1}))
-      vals = regexp (varargin{1}, "[^|]+", "match");
-      defval = get_default_value ("char", "", varargin{2:end});
-      if (! strcmp (defval, "") && ! any (strcmp (vals, defval)))
-        error ("default value for radio property must be part of possible values");
+  j1 = java_convert_matrix (1);
+  j2 = java_unsigned_conversion (1);
+
+  unwind_protect
+    switch (ptype)
+    case "radio"
+      if (n > 0 && ischar (varargin{1}))
+        vals = regexp (varargin{1}, "[^|]+", "match");
+        defval = get_default_value ("char", "", varargin{2:end});
+        if (! strcmp (defval, "") && ! any (strcmp (vals, defval)))
+          error ("default value for radio property must be part of possible values");
+        endif
+        p = java_new ("org.octave.graphics.RadioProperty", parent, pname, vals, defval);
+      else
+        error ("radio property values are missing");
       endif
-      p = java_new ("org.octave.graphics.RadioProperty", parent, pname, vals, defval);
-    else
-      error ("radio property values are missing");
-    endif
-  case "string"
-    defval = get_default_value ("char", "", varargin{:});
-    p = java_new ("org.octave.graphics.StringProperty", parent, pname, defval);
-  case "double"
-    defval = get_default_value ("double", 0, varargin{:});
-    p = java_new ("org.octave.graphics.DoubleProperty", parent, pname, defval);
-  case "linestyle"
-    defval = get_default_value ("char", "-", varargin{:});
-    p = java_new ("org.octave.graphics.LineStyleProperty", parent, pname, defval);
-  case "marker"
-    defval = get_default_value ("char", "none", varargin{:});
-    p = java_new ("org.octave.graphics.MarkerProperty", parent, pname, defval);
-  case "doublearray"
-    defval = get_default_value ("double", [], varargin{:});
-    p = java_new ("org.octave.graphics.ArrayProperty", parent, pname, defval);
-  case "handle"
-    defval = get_default_value ("double", [], varargin{:});
-    p = java_new ("org.octave.graphics.HandleObjectListProperty", parent, pname, -1);
-    for hh = defval(:)'
-      p.addElement (__get_object__ (hh));
-    endfor
-  case "colorradio"
-    if (n > 0 && ischar (varargin{1}))
-      vals = regexp (varargin{1}, "[^|]+", "match");
-      defval = get_default_value ({"char", "double"}, vals{1}, varargin{2:end});
-      if (ischar (defval) && ! any (strcmp (vals, defval)) && (length (defval) > 1 || isempty (findstr (defval, "rgbywkmc"))))
-        error ("invalid default value for colorradio property");
+    case "string"
+      defval = get_default_value ("char", "", varargin{:});
+      p = java_new ("org.octave.graphics.StringProperty", parent, pname, defval);
+    case "double"
+      defval = get_default_value ("double", 0, varargin{:});
+      p = java_new ("org.octave.graphics.DoubleProperty", parent, pname, defval);
+    case "linestyle"
+      defval = get_default_value ("char", "-", varargin{:});
+      p = java_new ("org.octave.graphics.LineStyleProperty", parent, pname, defval);
+    case "marker"
+      defval = get_default_value ("char", "none", varargin{:});
+      p = java_new ("org.octave.graphics.MarkerProperty", parent, pname, defval);
+    case "doublearray"
+      defval = get_default_value ("double", [], varargin{:});
+      p = java_new ("org.octave.graphics.ArrayProperty", parent, pname, defval);
+    case "handle"
+      defval = get_default_value ("double", [], varargin{:});
+      p = java_new ("org.octave.graphics.HandleObjectListProperty", parent, pname, -1);
+      for hh = defval(:)'
+        p.addElement (__get_object__ (hh));
+      endfor
+    case "colorradio"
+      if (n > 0 && ischar (varargin{1}))
+        vals = regexp (varargin{1}, "[^|]+", "match");
+        defval = get_default_value ({"char", "double"}, vals{1}, varargin{2:end});
+        if (ischar (defval) && ! any (strcmp (vals, defval)) && (length (defval) > 1 || isempty (findstr (defval, "rgbywkmc"))))
+          error ("invalid default value for colorradio property");
+        endif
+        p = java_new ("org.octave.graphics.ColorProperty", parent, pname, [], vals, []);
+        p.set (defval, true);
+      else
+        error ("colorradio property values are missing");
       endif
-      p = java_new ("org.octave.graphics.ColorProperty", parent, pname, [], vals, []);
-      p.set (defval, true);
-    else
-      error ("colorradio property values are missing");
-    endif
-  otherwise
-    error ("unknown property type `%s'", ptype);
-  endswitch
+    otherwise
+      error ("unknown property type `%s'", ptype);
+    endswitch
+  unwind_protect_cleanup
+    java_convert_matrix (j1);
+    java_unsigned_conversion (j2);
+  end_unwind_protect
 
   if (! opts.visible)
     p.setVisible (false);

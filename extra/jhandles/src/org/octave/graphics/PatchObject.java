@@ -68,7 +68,7 @@ public class PatchObject extends GraphicObject
 		FaceAlpha = new DoubleRadioProperty(this, "FaceAlpha", 1, new String[] {"flat", "interp"}, null);
 		EdgeAlpha = new DoubleRadioProperty(this, "EdgeAlpha", 1, new String[] {"flat", "interp"}, null);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
-		LineWidth = new DoubleProperty(this, "LineWidth", 1);
+		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 		Marker = new MarkerProperty(this, "Marker", "none");
 		MarkerSize = new DoubleProperty(this, "MarkerSize", 7.0);
 		AmbientStrength = new DoubleProperty(this, "AmbientStrength", 0.3);

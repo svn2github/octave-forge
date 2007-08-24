@@ -56,7 +56,10 @@ function [ h ] = area (varargin)
     # create areaseries object
     if (isempty (ax))
       ax = gca ();
+    else
+      axes (ax);
     endif
+    newplot ();
 	if (isempty (x))
       x = repmat ([1:size(y, 1)]', 1, size(y, 2));
 	endif

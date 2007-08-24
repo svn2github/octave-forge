@@ -216,6 +216,23 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		handleMap.put(new Integer(handle), new WeakReference(obj));
 	}
 
+	public static void shutdown()
+	{
+		LinkedList figList = new LinkedList();
+		Iterator it = handleMap.values().iterator();
+
+		while (it.hasNext())
+		{
+			WeakReference ref = (WeakReference)it.next();
+			if (ref != null && ref.get() != null && ref.get() instanceof FigureObject)
+				figList.add(ref.get());
+		}
+
+		it = figList.iterator();
+		while (it.hasNext())
+			((HandleObject)it.next()).delete();
+	}
+
 	public static void listObjects()
 	{
 		Iterator it = handleMap.entrySet().iterator();

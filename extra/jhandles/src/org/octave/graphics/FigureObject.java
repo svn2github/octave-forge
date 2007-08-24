@@ -80,7 +80,9 @@ public class FigureObject extends HandleObject
 	BooleanProperty             NumberTitle;
 	RadioProperty               PaperOrientation;
 	VectorProperty              Position;
+	NotImplProperty             Renderer;
 	CallbackProperty            ResizeFcn;
+	NotImplProperty             Toolbar;
 	RadioProperty               Units;
 
 	/* toolbar */
@@ -114,6 +116,8 @@ public class FigureObject extends HandleObject
 		currentUnits = Units.getValue();
 		Dimension d = Utils.getScreenSize();
 		Position = new VectorProperty(this, "Position", new double[] {1, d.height-500, 600, 500}, 4);
+		Renderer = new NotImplProperty(this, "Renderer", "OpenGL");
+		Toolbar = new NotImplProperty(this, "Toolbar", "figure");
 
 		listen(Name);
 		listen(NumberTitle);

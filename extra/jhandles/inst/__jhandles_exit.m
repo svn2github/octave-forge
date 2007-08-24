@@ -18,5 +18,6 @@
 function __jhandles_exit
 
   close all;
+  java_invoke ("org.octave.graphics.HandleObject", "shutdown");
 
 endfunction

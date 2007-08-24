@@ -1,5 +1,6 @@
 try
-  atexit ("jhandles_exit", false);
+  __jhandles_exit ();
+  atexit ("__jhandles_exit", false);
 catch
   warning("Failed to remove atexit command in jhandles");
 end_try_catch

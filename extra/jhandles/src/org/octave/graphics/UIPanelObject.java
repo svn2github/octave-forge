@@ -24,7 +24,7 @@ package org.octave.graphics;
 import org.octave.Matrix;
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.*;
 
 public class UIPanelObject extends HandleObject
 {
@@ -51,6 +51,7 @@ public class UIPanelObject extends HandleObject
 
 	/* Properties */
 	ColorProperty BackgroundColor;
+	RadioProperty BorderType;
 	RadioProperty FontAngle;
 	StringProperty FontName;
 	DoubleProperty FontSize;
@@ -59,6 +60,7 @@ public class UIPanelObject extends HandleObject
 	ColorProperty ForegroundColor;
 	ColorProperty HighlightColor;
 	VectorProperty Position;
+	CallbackProperty ResizeFcn;
 	ColorProperty ShadowColor;
 	StringProperty Title;
 	RadioProperty TitlePosition;
@@ -69,6 +71,8 @@ public class UIPanelObject extends HandleObject
 		super(parent, "uipanel");
 
 		BackgroundColor = new ColorProperty(this, "BackgroundColor", Utils.getBackgroundColor());
+		BorderType = new RadioProperty(this, "BorderType", new String[] {"none", "etchedin", "etchedout",
+			"beveledin", "beveledout", "line"}, "etchedin");
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
 		FontSize = new DoubleProperty(this, "FontSize", 11);
@@ -78,6 +82,7 @@ public class UIPanelObject extends HandleObject
 		ForegroundColor = new ColorProperty(this, "ForegroundColor", Color.black);
 		HighlightColor = new ColorProperty(this, "HighlightColor", Utils.getHighlightColor());
 		Position = new VectorProperty(this, "Position", new double[] {0, 0, 1, 1}, 4);
+		ResizeFcn = new CallbackProperty(this, "ResizeFcn", (String)null);
 		ShadowColor = new ColorProperty(this, "ShadowColor", Utils.getShadowColor());
 		Title = new StringProperty(this, "Title", "");
 		TitlePosition = new RadioProperty(this, "TitlePosition", new String[] {
@@ -125,10 +130,26 @@ public class UIPanelObject extends HandleObject
 		super.validate();
 	}
 
+	private Border makeBorder()
+	{
+		if (BorderType.is("etchedin"))
+			return BorderFactory.createEtchedBorder(HighlightColor.getColor(), ShadowColor.getColor());
+		else if (BorderType.is("etchedout"))
+			return BorderFactory.createEtchedBorder(EtchedBorder.RAISED, HighlightColor.getColor(), ShadowColor.getColor());
+		else if (BorderType.is("beveledin"))
+			return BorderFactory.createBevelBorder(BevelBorder.LOWERED, HighlightColor.getColor(), ShadowColor.getColor());
+		else if (BorderType.is("beveledout"))
+			return BorderFactory.createBevelBorder(BevelBorder.RAISED, HighlightColor.getColor(), ShadowColor.getColor());
+		else if (BorderType.is("line"))
+			return BorderFactory.createLineBorder(ShadowColor.getColor());
+		else
+			return BorderFactory.createEmptyBorder();
+	}
+
 	public void makePanel()
 	{
 		TitledBorder border = BorderFactory.createTitledBorder(
-				BorderFactory.createEtchedBorder(HighlightColor.getColor(), ShadowColor.getColor()),
+				makeBorder(),
 				Title.toString());
 		String tPos = TitlePosition.getValue().toLowerCase();
 		

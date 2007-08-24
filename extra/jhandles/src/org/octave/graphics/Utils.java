@@ -174,7 +174,8 @@ public class Utils
 		}
 		else if (fromUnits.equalsIgnoreCase("characters"))
 		{
-			FontMetrics fm = parent.getFontMetrics(Font.decode(""));
+			FontMetrics fm = (parent != null ? parent.getFontMetrics(Font.decode("")) :
+					Toolkit.getDefaultToolkit().getFontMetrics(Font.decode("")));
 			int w = fm.charWidth('x'), h = fm.getHeight();
 			
 			p = new double[] {pos[0]*w+1, pos[1]*h+1, pos[2]*w, pos[3]*h};
@@ -210,7 +211,8 @@ public class Utils
 			}
 			else if (toUnits.equalsIgnoreCase("characters"))
 			{
-				FontMetrics fm = parent.getFontMetrics(Font.decode(""));
+				FontMetrics fm = (parent != null ? parent.getFontMetrics(Font.decode("")) :
+						Toolkit.getDefaultToolkit().getFontMetrics(Font.decode("")));
 				int w = fm.charWidth('x'), h = fm.getHeight();
 
 				p[0] = (p[0]-1)/w;

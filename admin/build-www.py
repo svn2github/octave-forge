@@ -323,11 +323,11 @@ def main():
                     n = desc['name'].lower();
                     archiv = n + '-' + desc['version'] + '.tar.gz';
                     
-                    index.write('<div class="package" id="' + n + '_detailed" style="display: none;">\n');
+                    index.write('<div class="package" id="' + n + '">\n');
                     index.write('  <table class="package"><tr>\n');
                     index.write('    <td>\n');
-                    index.write('   <b><a href="javascript:fold(\'' + n + '\');" class="package_head_link">');
-                    index.write('   <img src="hide.png" alt="hide" style="padding-right: 0.5em; border: none;"/>\n');
+                    index.write('   <b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">');
+                    index.write('   <img src="show.png" id="'+n+'_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>\n');
                     index.write(desc['name'] + '</a></b></td>\n');
                     index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
                     index.write('/index.html" class="package_link">details</a> |\n');
@@ -335,24 +335,11 @@ def main():
                     
                     index.write('    </td>\n');
                     index.write('  </tr></table>\n');
-                    index.write('  <p id="' + n + '_details">\n');
+                    index.write('  <p id="' + n + '_detailed" style="display: none;">\n');
                     index.write(desc['description']);
                     index.write('  </p>\n');
                     index.write('</div>\n');
 
-                    index.write('<div class="package" id="' + n + '">\n');
-                    index.write('  <table class="package"><tr>\n');
-                    index.write('    <td>\n');
-                    index.write('    <b><a href="javascript:unfold(\'' + n + '\');" class="package_head_link">');
-                    index.write('    <img src="show.png" alt="show" style="padding-right: 0.5em; border: none;"/>\n');
-                    index.write(desc['name'] + '</a></b></td>\n');
-                    index.write('    <td style="text-align: right;">&raquo; <a href="' + outdir);
-                    index.write('/index.html" class="package_link">details</a> |\n');
-                    index.write('    <a class="package_link" href="__PACKAGE__/' + archiv + '?download">download</a>\n');
-                    
-                    index.write('    </td>\n');
-                    index.write('  </tr></table>\n');
-                    index.write('</div>\n');
                 except Exception, e:
                     print("Skipping " + p);
                     print(e)

@@ -42,8 +42,13 @@ function goto_url (selSelectObject)
 
 function unfold(id)
 {
-    document.getElementById(id).style.display = "none";
-    document.getElementById(id+"_detailed").style.display = "block";
+    if (document.getElementById(id+"_detailed").style.display == "none") {
+        document.getElementById(id+"_detailed").style.display = "block";
+        document.getElementById(id+"_im").src ="hide.png"
+    } else {
+        document.getElementById(id+"_detailed").style.display = "none";
+        document.getElementById(id+"_im").src ="show.png"
+    }
 }
 
 function fold(id)

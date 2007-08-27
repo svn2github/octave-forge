@@ -48,6 +48,8 @@ public class UIControlAdapter extends Panel
 		}
 		else if (style.equalsIgnoreCase("popupmenu"))
 			this.ctrl = new PopupMenuControl(obj);
+		else if (style.equalsIgnoreCase("text"))
+			this.ctrl = new TextControl(obj);
 		else
 			throw new IllegalArgumentException("unsupported UI style `" + style + "'");
 		this.uiObj = obj;
@@ -64,6 +66,7 @@ public class UIControlAdapter extends Panel
 		uiNotifier.addSource(obj.FontName);
 		uiNotifier.addSource(obj.FontWeight);
 		uiNotifier.addSource(obj.TooltipString);
+		uiNotifier.addSource(obj.Enable);
 	}
 
 	private void init()
@@ -138,6 +141,8 @@ public class UIControlAdapter extends Panel
 				else
 					comp1.setToolTipText(null);
 			}
+			else if (p == uiObj.Enable)
+				comp1.setEnabled(uiObj.Enable.is("on"));
 		}
 	}
 

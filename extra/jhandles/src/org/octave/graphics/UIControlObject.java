@@ -200,6 +200,9 @@ public class UIControlObject extends HandleObject
 
 	public void set(Property p, Object value) throws PropertyException
 	{
+		if (ctrl != null)
+			ctrl.update();
+
 		if (p == UIString)
 		{
 			try

@@ -38,7 +38,7 @@ function Q=quantile(Y,q,DIM)
 %	end;	
 
 %	$Id$
-%	Copyright (C) 1996-2003,2005,2006 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2003,2005,2006,2007 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -111,10 +111,10 @@ else
 		        t  = sort(t(~isnan(t)));
 		        n  = length(t); 
 			
-			Q(xo:D1:xo+D1*length(q)-1) = flix(t, n*q' + 0.5);
+			f  = flix([t(1);t(:);t(end)],(n+1)*q(:)+1);
+			Q(xo:D1:xo + D1*length(q) - 1) = f;
 		end;
 		end;
-
 
 	elseif 0, 	% alternative implementation 
 		sz = size(Y);

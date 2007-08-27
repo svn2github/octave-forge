@@ -52,6 +52,8 @@ public class UIControlAdapter extends Panel
 			this.ctrl = new TextControl(obj);
 		else if (style.equalsIgnoreCase("listbox"))
 			this.ctrl = new ListBoxControl(obj);
+		else if (style.equalsIgnoreCase("checkbox"))
+			this.ctrl = new CheckBoxControl(obj);
 		else
 			throw new IllegalArgumentException("unsupported UI style `" + style + "'");
 		this.uiObj = obj;

@@ -43,18 +43,18 @@ public class PositionLayout implements LayoutManager
 		{
 			Component comp = parent.getComponent(i);
 
-			if (comp instanceof RenderCanvas)
-			{
-				/* the render canvas takes up all the available space */
-				comp.setBounds(ir.left, ir.top, r.width-ir.left-ir.right, r.height-ir.top-ir.bottom);
-			}
-			else if (comp instanceof Positionable)
+			if (comp instanceof Positionable)
 			{
 				/* use Position property of the object */
 				double[] pos = ((Positionable)comp).getPosition();
 				pos[0]--;
 				pos[1] = (r.height-ir.top-ir.bottom-pos[1]-pos[3]+1);
 				comp.setBounds(ir.left+(int)pos[0], ir.top+(int)pos[1], (int)pos[2], (int)pos[3]);
+			}
+			else if (comp instanceof RenderCanvas)
+			{
+				/* the render canvas takes up all the available space */
+				comp.setBounds(ir.left, ir.top, r.width-ir.left-ir.right, r.height-ir.top-ir.bottom);
 			}
 			else
 				System.out.println("Warning: skipping layout component " + comp.toString());

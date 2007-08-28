@@ -194,9 +194,9 @@ public class AxesObject extends HandleObject
 	BooleanProperty Key;
 	DoubleProperty LineWidth;
 
-	public AxesObject(FigureObject fig, boolean init3D)
+	public AxesObject(HandleObject parent, boolean init3D)
 	{
-		super(fig, "axes");
+		super(parent, "axes");
 
 		double[] angles;
 		if (init3D)
@@ -204,7 +204,7 @@ public class AxesObject extends HandleObject
 		else
 			angles = new double[] { 0.0, 90.0 };
 
-		canvas = fig.getCanvas();
+		canvas = ((RenderCanvas.Container)parent).getCanvas();
 		linScale = new LinearScaler();
 		logScale = new LogScaler();
 
@@ -504,7 +504,7 @@ public class AxesObject extends HandleObject
 
 	public FigureObject getFigure()
 	{
-		return (FigureObject)Parent.elementAt(0);
+		return (FigureObject)getAncestor("figure");
 	}
 
 	Rectangle getBoundingBox()

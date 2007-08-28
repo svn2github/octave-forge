@@ -28,6 +28,7 @@ public class UIControlObject extends HandleObject
 {
 	private UIControlAdapter ctrl;
 	private String currentUnits;
+	private boolean flag = false;
 
 	/* Properties */
 	ColorProperty BackgroundColor;
@@ -203,7 +204,7 @@ public class UIControlObject extends HandleObject
 		if (ctrl != null)
 			ctrl.update();
 
-		if (p == UIString)
+		if (p == UIString && value != null)
 		{
 			try
 			{

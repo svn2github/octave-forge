@@ -27,6 +27,11 @@ import java.awt.event.*;
 
 public interface RenderCanvas
 {
+	public interface Container
+	{
+		public RenderCanvas getCanvas();
+	}
+
 	public void addRenderEventListener(RenderEventListener l);
 	public void removeRenderEventListener(RenderEventListener l);
 	public void addMouseListener(MouseListener l);

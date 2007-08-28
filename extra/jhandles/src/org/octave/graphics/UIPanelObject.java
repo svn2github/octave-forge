@@ -25,8 +25,10 @@ import org.octave.Matrix;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.util.Iterator;
 
 public class UIPanelObject extends HandleObject
+	implements RenderCanvas.Container, RenderEventListener
 {
 	private class PanelWrapper extends Panel
 		implements Positionable
@@ -48,6 +50,7 @@ public class UIPanelObject extends HandleObject
 	protected JPanel panel;
 	protected Panel panelWrapper;
 	private String currentUnits;
+	private RenderCanvas canvas = null;
 
 	/* Properties */
 	ColorProperty BackgroundColor;
@@ -249,6 +252,55 @@ public class UIPanelObject extends HandleObject
 			}
 
 			panel.repaint();
+		}
+	}
+
+	/* RenderCanvas.Container interface */
+
+	public RenderCanvas getCanvas()
+	{
+		if (canvas == null)
+		{
+			canvas = new GLRenderCanvas();
+			canvas.addRenderEventListener(this);
+			panel.add(canvas.getComponent());
+			panel.validate();
+		}
+
+		return canvas;
+	}
+
+	/* RenderEventListener interface */
+
+	public void reshape(RenderCanvas canvas, int x, int y, int width, int height)
+	{
+		synchronized (Children)
+		{
+			Iterator it = Children.iterator();
+			while (it.hasNext())
+			{
+				HandleObject hObj = (HandleObject)it.next();
+				if (hObj instanceof AxesObject && hObj.isValid())
+					((AxesObject)hObj).updateActivePosition();
+			}
+		}
+	}
+
+	public void display(RenderCanvas canvas)
+	{
+		Renderer r = canvas.getRenderer();
+
+		r.clear(BackgroundColor.getColor());
+
+		synchronized (Children)
+		{
+			Iterator it = Children.iterator();
+			while (it.hasNext())
+			{
+				HandleObject hObj = (HandleObject)it.next();
+				if (hObj instanceof AxesObject && hObj.isValid())
+					((AxesObject)hObj).draw(r);
+			}
 		}
 	}
 }

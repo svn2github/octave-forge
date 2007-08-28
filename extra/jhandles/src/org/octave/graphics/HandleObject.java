@@ -111,7 +111,18 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		synchronized (Children)
 		{
 			while (Children.size() > 0)
-				Children.elementAt(0).delete();
+			{
+				int len = Children.size();
+				HandleObject obj = Children.elementAt(0);
+
+				obj.delete();
+				if (Children.size() == len)
+				{
+					System.out.println("ERROR: wrong parentship in graphic object of class `" + Type.toString() + "' with child of class `" + 
+							obj.Type.toString() + "'");
+					break;
+				}
+			}
 		}
 	}
 
@@ -272,6 +283,21 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	protected boolean isAutoMode()
 	{
 		return (autoMode > 0);
+	}
+
+	public HandleObject getAncestor(String type)
+	{
+		HandleObject curr = this;
+
+		while (true)
+		{
+			if (curr.Type.toString().equalsIgnoreCase(type))
+				return curr;
+			else if (curr.Parent.size() <= 0)
+				return null;
+			else
+				curr = curr.Parent.elementAt(0);
+		}
 	}
 
 	/* HandleNotifier.Sink interface */

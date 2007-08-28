@@ -76,7 +76,7 @@ public class LegendObject extends AxesObject
 
 	public LegendObject(AxesObject axes, String[] names)
 	{
-		super(axes.getFigure(), false);
+		super(axes.Parent.elementAt(0), false);
 		alwaysDrawBox = false;
 
 		Location = new RadioProperty(this, "Location",

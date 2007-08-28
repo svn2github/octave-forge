@@ -33,7 +33,8 @@ import org.octave.Matrix;
 public class FigureObject extends HandleObject
 	implements WindowListener, RenderEventListener,
 			   MouseListener, MouseMotionListener,
-			   ComponentListener, ActionListener
+			   ComponentListener, ActionListener,
+			   RenderCanvas.Container
 {
 	private class FigurePanel extends Panel
 	{
@@ -233,11 +234,6 @@ public class FigureObject extends HandleObject
 		//frame.dispose();
 		//frame.setVisible(false);
 		EventQueue.invokeLater(new Runnable() { public void run() { frame.dispose(); } });
-	}
-
-	public RenderCanvas getCanvas()
-	{
-		return canvas;
 	}
 
 	public AxesObject getAxesForPoint(Point pt)
@@ -519,5 +515,12 @@ public class FigureObject extends HandleObject
 			else
 				defaultMouseOp = OP_NONE;
 		}
+	}
+
+	/* RenderCanvas.Container interface */
+
+	public RenderCanvas getCanvas()
+	{
+		return canvas;
 	}
 }

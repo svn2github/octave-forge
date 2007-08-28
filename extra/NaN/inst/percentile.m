@@ -32,91 +32,16 @@ function Q=percentile(Y,q,DIM)
 %    along with this program; if not, write to the Free Software
 %    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-if nargin<3,
-        DIM = [];
-end;
-if isempty(DIM),
-        DIM = min(find(size(Y)>1));
-        if isempty(DIM), DIM = 1; end;
-end;
 
+if nargin==2,
+	Q = quantile(Y,q/100); 
 
-if nargin<2,
-	help percentile
-        
+elseif nargin==3,
+	Q = quantile(Y,q/100,DIM); 
+
 else
-        SW = isstruct(Y);
-        if SW, SW = isfield(Y,'datatype'); end;
-        if SW, SW = strcmp(Y.datatype,'HISTOGRAM'); end;
-        if SW,                 
-                [yr,yc]=size(Y.H);
-                Q = repmat(nan,length(q),yc);
-                if ~isfield(Y,'N');
-                        Y.N = sum(Y.H,1);
-                end;
-                
-                for k1=1:yc,
-                        tmp=Y.H(:,k1)>0;
-                        h=full(Y.H(tmp,k1));
-                        t = Y.X(tmp,min(size(Y.X,2),k1));
-                        for k2 = 1:length(q),
-                                tmp = cumsum(h)-Y.N(k1)*q(k2)/100;
-                                if ~any(~tmp), 
-                                        Q(k2,k1) = t(find(diff(sign(tmp)))+1);
-                                else
-                                        Q(k2,k1) = mean(t(find(~tmp)+(0:1)));
-                                end;	        
-                        end
-                end;
+	help percentile
 
-                
-        elseif isnumeric(Y),
-		sz = size(Y);
-		if DIM>length(sz),
-		        sz = [sz,ones(1,DIM-length(sz))];
-		end;
-
-		D1 = prod(sz(1:DIM-1));
-		D3 = prod(sz(DIM+1:length(sz)));
-		Q  = repmat(nan,[sz(1:DIM-1),length(q),sz(DIM+1:length(sz))]);
-		for k = 0:D1-1,
-		for l = 0:D3-1,
-		        xi = k + l * D1*sz(DIM) + 1 ;
-			xo = k + l * D1*length(q) + 1;
-		        t  = Y(xi:D1:xi+D1*sz(DIM)-1);
-		        t  = sort(t(~isnan(t)));
-		        n  = length(t); 
-			
-			f  = flix([t(1);t(:);t(end)],(n+1)*q(:)/100+1);
-			Q(xo:D1:xo+D1*length(q)-1) = f;
-		end;
-		end;
-
-
-	elseif 0, 	% alternative implementation 
-		sz = size(Y);
-		sz = sz([DIM,1:DIM-1,DIM+1:length(sz)]);
-		yr = prod(sz(2:end));
-		Y  = reshape(permute(Y,[DIM,1:DIM-1,DIM+1:length(sz)]),sz(1),yr);
-			
-                N  = sum(~isnan(Y),1);
-                Y(isnan(Y)) = inf;   % making sure NaN's are at the end;
-    		Y  = sort(Y,1);
-		
-                Q  = repmat(nan,length(q),yr);
-		for k1 = 1:yr,
-                        Q(:,k1) = flix(Y(:,k1),N(k1)*q'/100 + 0.5);                	        
-                end;
-                sz(1) = length(q);
-                Q  = ipermute(reshape(Q,sz),[DIM,1:DIM-1,DIM+1:length(sz)]);
-
-
-        else
-                fprintf(2,'Error PERCENTILE: invalid input argument\n');
-                return;
-
-        end;
-        
 end;
 
 

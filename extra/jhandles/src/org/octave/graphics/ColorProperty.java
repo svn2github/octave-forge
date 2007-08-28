@@ -140,6 +140,24 @@ public class ColorProperty extends Property
 			case 'b': return Color.blue;
 			case 'w': return Color.white;
 			}
+		else
+		{
+			name = name.toLowerCase();
+			if ("white".startsWith(name))
+				return Color.white;
+			else if ("red".startsWith(name))
+				return Color.red;
+			else if ("yellow".startsWith(name))
+				return Color.yellow;
+			else if ("blue".startsWith(name))
+				return Color.blue;
+			else if ("magenta".startsWith(name))
+				return Color.magenta;
+			else if ("green".startsWith(name))
+				return Color.green;
+			else if ("cyan".startsWith(name))
+				return Color.cyan;
+		}
 
 		return null;
 	}

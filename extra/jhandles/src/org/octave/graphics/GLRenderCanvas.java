@@ -88,7 +88,7 @@ public class GLRenderCanvas extends GLCanvas
 	public void reshape(GLAutoDrawable d, int x, int y, int width, int height)
 	{
 		r.setViewport(width, height);
-		
+
 		Iterator it = rListeners.iterator();
 		while (it.hasNext())
 			((RenderEventListener)it.next()).reshape(this, x, y, width, height);

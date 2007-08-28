@@ -163,13 +163,20 @@ public class ClassHelper
         throw new NoSuchMethodException (name);
     }
 
-  public static Object invokeConstructor (String cls, Object[] args, Class[] argTypes) throws Exception
+  public static Object invokeConstructor (String cls, Object[] args, Class[] argTypes) throws Throwable
     {
       Constructor c = findConstructor (Class.forName (cls, true, loader), argTypes);
       if (c != null)
         {
-          Object result = c.newInstance (castArguments (args, argTypes, c.getParameterTypes ()));
-          return result;
+          try
+            {
+              Object result = c.newInstance (castArguments (args, argTypes, c.getParameterTypes ()));
+              return result;
+            }
+          catch (InvocationTargetException ex)
+            {
+              throw ex.getCause();
+            }
         }
       else
         throw new NoSuchMethodException (cls);

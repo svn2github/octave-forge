@@ -41,7 +41,9 @@ public class StringProperty extends Property
 
 	protected Object convertValue(Object value) throws PropertyException
 	{
-		if (value instanceof String)
+		if (value == null)
+			return "";
+		else if (value instanceof String)
 			return value;
 		else
 			throw new PropertyException("invalid property value - " + value);

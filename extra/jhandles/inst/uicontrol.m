@@ -28,6 +28,11 @@ function [ h ] = uicontrol (varargin)
         error ("invalid parent, it must be a valid handle");
       endif
     endif
+	idx = find (strcmpi ("parent", varargin(1:2:end)), 1, "first");
+    if (! isempty (idx) && length (varargin) > 2*idx)
+      parent = varargin{2*idx};
+	  varargin([2*idx-1, 2*idx]) = [];
+    endif
   endif
 
   if (mod (length (varargin), 2) == 0)

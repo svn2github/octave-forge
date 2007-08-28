@@ -32,17 +32,16 @@ function [ p ] = ancestor (h, type, toplevel)
         endif
       endif
       while (true)
-        parent = get (h, "Parent");
-        if (isempty (parent) || ! ishandle (parent))
+        if (isempty (h) || ! ishandle (h))
           break
         endif
-        if (any (strcmpi (get (parent, "type"), type)))
-          p = parent;
+        if (any (strcmpi (get (h, "type"), type)))
+          p = h;
           if (look_first)
             break
           endif
         endif
-		h = parent;
+		h = get (h, "Parent");
       endwhile
     else
       error ("`type' argument must be a string or cell array of strings");

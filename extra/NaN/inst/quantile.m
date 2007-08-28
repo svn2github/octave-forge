@@ -13,29 +13,6 @@ function Q=quantile(Y,q,DIM)
 %
 % see also: HISTO2, HISTO3, PERCENTILE
 
-% QUANTILES demonstrates how to calculate quantiles 
-%
-% q-quantile Q of data series Y 
-% (1) explicite form
-%	tmp=sort(Y);
-%	N = sum(~isnan(Y));
-%	Q = flix(tmp,N*q + 0.5);
-%
-% (2) in 1 line
-%	Q = flix(sort(Y),sum(~isnan(Y))*q + 0.5);
-%
-% (3) q-quantile Q of histogram H with bins t
-%	tmp=HISTOG>0;
-%	HISTOG=full(HISTOG(tmp));
-%	t = t(tmp);
-%	N = sum(HISTOG);
-%	tmp = cumsum(HISTOG)-N*q;
-%
-%	if ~any(~tmp), 
-%		Q(k) = t(find(diff(sign(tmp)))+1);
-%	else
-%		Q(k) = mean(t(find(~tmp)+(0:1)));
-%	end;	
 
 %	$Id$
 %	Copyright (C) 1996-2003,2005,2006,2007 by Alois Schloegl <a.schloegl@ieee.org>	
@@ -79,17 +56,38 @@ else
                         Y.N = sum(Y.H,1);
                 end;
                 
-                for k1=1:yc,
-                        tmp=Y.H(:,k1)>0;
-                        h=full(Y.H(tmp,k1));
+                for k1 = 1:yc,
+                        tmp = Y.H(:,k1)>0;
+                        h = full(Y.H(tmp,k1));
                         t = Y.X(tmp,min(size(Y.X,2),k1));
+
+			N = Y.N(k1);  
+			t2(1:2:2*length(t)) = t;
+			t2(2:2:2*length(t)) = t;
+			x2 = cumsum(h); 
+			x(1)=0; 
+			x(2:2:2*length(t)) = x2;
+			x(3:2:2*length(t)) = x2(1:end-1);
                         for k2 = 1:length(q),
-                                tmp = cumsum(h)-Y.N(k1)*q(k2);
-                                if ~any(~tmp), 
-                                        Q(k2,k1) = t(find(diff(sign(tmp)))+1);
-                                else
-                                        Q(k2,k1) = mean(t(find(~tmp)+(0:1)));
-                                end;	        
+				if (q(k2)<0) | (q(k2)>1) 	
+					Q(k2,k1) = NaN;  
+				elseif 	q(k2)==0,
+					Q(k2,k1) = t2(1);  	
+				elseif 	q(k2)==1,
+					Q(k2,k1) = t2(end);  	
+				else 	
+					n=1;
+					while (q(k2)*N > x(n)), 
+						n=n+1; 
+					end; 			
+
+					if q(k2)*N==x(n)
+						% mean of upper and lower bound 
+						Q(k2,k1) = (t2(n)+t2(n+1))/2;
+					else
+						Q(k2,k1) = t2(n);
+					end; 
+                                end; 
                         end
                 end;
 
@@ -109,30 +107,35 @@ else
 			xo = k + l * D1*length(q) + 1;
 		        t  = Y(xi:D1:xi+D1*sz(DIM)-1);
 		        t  = sort(t(~isnan(t)));
-		        n  = length(t); 
+		        N  = length(t); 
 			
-			f  = flix([t(1);t(:);t(end)],(n+1)*q(:)+1);
+			t2(1:2:2*length(t)) = t; 
+			t2(2:2:2*length(t)) = t;
+			x=floor([1:2*length(t)]/2);
+			for k2=1:length(q)
+				if (q(k2)<0) | (q(k2)>1) 	
+					f(k2) = NaN;  
+				elseif 	q(k2)==0	
+					f(k2) = t2(1);  	
+				elseif 	q(k2)==1,
+					f(k2) = t2(end);  	
+				else 	
+					n=1;
+					while (q(k2)*N > x(n)),
+						n = n+1;
+					end;
+
+					if q(k2)*N==x(n)
+						% mean of upper and lower bound 
+						f(k2) = (t2(n) + t2(n+1))/2;   
+					else
+						f(k2) = t2(n);
+					end; 
+				end; 		
+			end;
 			Q(xo:D1:xo + D1*length(q) - 1) = f;
 		end;
 		end;
-
-	elseif 0, 	% alternative implementation 
-		sz = size(Y);
-		sz = sz([DIM,1:DIM-1,DIM+1:length(sz)]);
-		yr = prod(sz(2:end));
-		Y  = reshape(permute(Y,[DIM,1:DIM-1,DIM+1:length(sz)]),sz(1),yr);
-			
-                N  = sum(~isnan(Y),1);
-                Y(isnan(Y)) = inf;   % making sure NaN's are at the end;
-    		Y  = sort(Y,1);
-		
-                Q  = repmat(nan,length(q),yr);
-		for k1 = 1:yr,
-                        Q(:,k1) = flix(Y(:,k1),N(k1)*q' + 0.5);
-                end;
-                sz(1) = length(q);
-                Q  = ipermute(reshape(Q,sz),[DIM,1:DIM-1,DIM+1:length(sz)]);
-
 
         else
                 fprintf(2,'Error QUANTILES: invalid input argument\n');

@@ -1,4 +1,4 @@
-function [MX,res,arg3,acf] = rc2ar(rC);
+function [MX,res,arg3,acf] = rc2ar(rc);
 % converts reflection coefficients into autoregressive parameters
 % uses the Durbin-Levinson recursion for multiple channels
 % function  [AR,RC,PE,ACF] = rc2ar(RC);
@@ -26,8 +26,10 @@ function [MX,res,arg3,acf] = rc2ar(rC);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	Version 2.90	last revision 10.04.2002
-%	Copyright (c) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>
+%	$Id$
+%	Copyright (c) 1996-2002,2007 by Alois Schloegl <a.schloegl@ieee.org>
+%       This function is part of the TSA-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public

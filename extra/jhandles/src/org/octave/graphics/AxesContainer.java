@@ -65,14 +65,22 @@ public abstract class AxesContainer extends HandleObject
 		return null;
 	}
 
-	public void redraw()
+	public static void redrawRecursive(HandleObject obj)
 	{
-		canvas.redraw();
+		if (obj instanceof RenderCanvas.Container)
+			((RenderCanvas.Container)obj).getCanvas().redraw();
+
+		synchronized (obj.Children)
+		{
+			Iterator it = obj.Children.iterator();
+			while (it.hasNext())
+				redrawRecursive((HandleObject)it.next());
+		}
 	}
 
-	public void redraw(AxesObject ax)
+	public void redraw()
 	{
-		canvas.redraw();
+		redrawRecursive(this);
 	}
 
 	private int getDefaultMouseOp()

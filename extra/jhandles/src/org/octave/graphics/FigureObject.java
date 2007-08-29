@@ -245,7 +245,7 @@ public class FigureObject extends AxesContainer
 		finally
 		{
 			FigColor.reset(fcolor);
-			redraw();
+			canvas.redraw();
 		}
 	}
 

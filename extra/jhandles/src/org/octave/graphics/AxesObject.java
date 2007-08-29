@@ -2037,7 +2037,7 @@ public class AxesObject extends HandleObject
 				xPrev = e.getX();
 				yPrev = e.getY();
 
-				getAxesContainer().redraw(this);
+				canvas.redraw();
 				break;
 			case FigureObject.OP_ZOOM:
 				if (zoomBox)

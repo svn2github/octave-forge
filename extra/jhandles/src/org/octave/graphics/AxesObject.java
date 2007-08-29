@@ -507,6 +507,14 @@ public class AxesObject extends HandleObject
 		return (FigureObject)getAncestor("figure");
 	}
 
+	public AxesContainer getAxesContainer()
+	{
+		if (Parent.size() > 0)
+			return (AxesContainer)Parent.elementAt(0);
+		else
+			return null;
+	}
+
 	Rectangle getBoundingBox()
 	{
 		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
@@ -2029,7 +2037,7 @@ public class AxesObject extends HandleObject
 				xPrev = e.getX();
 				yPrev = e.getY();
 
-				getFigure().redraw(this);
+				getAxesContainer().redraw(this);
 				break;
 			case FigureObject.OP_ZOOM:
 				if (zoomBox)

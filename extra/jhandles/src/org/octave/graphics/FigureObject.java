@@ -30,11 +30,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import org.octave.Matrix;
 
-public class FigureObject extends HandleObject
-	implements WindowListener, RenderEventListener,
-			   MouseListener, MouseMotionListener,
-			   ComponentListener, ActionListener,
-			   RenderCanvas.Container
+public class FigureObject extends AxesContainer
+	implements WindowListener, ComponentListener, ActionListener
 {
 	private class FigurePanel extends Panel
 	{
@@ -57,17 +54,9 @@ public class FigureObject extends HandleObject
 	private Frame frame;
 	private Panel tbPanel;
 	private Panel axPanel;
-	private RenderCanvas canvas;
 
-	private AxesObject axesToUpdate = null;
-	private AxesObject mouseAxes = null;
-	private int mouseOp = OP_NONE;
 	private int defaultMouseOp = OP_NONE;
 	private String currentUnits;
-
-	public static final int OP_NONE = 0;
-	public static final int OP_ZOOM = 1;
-	public static final int OP_ROTATE = 2;
 
 	/* properties */
 	VectorProperty              Alphamap;
@@ -95,7 +84,7 @@ public class FigureObject extends HandleObject
 
 	public FigureObject(int fignum)
 	{
-		super(RootObject.getInstance(), fignum, "figure");
+		super(RootObject.getInstance(), "figure", fignum);
 
 		CurrentAxes = new HandleObjectListProperty(this, "CurrentAxes", 1);
 		Name = new StringProperty(this, "Name", "");
@@ -168,11 +157,7 @@ public class FigureObject extends HandleObject
 		frame.add(axPanel, BorderLayout.CENTER);
 
 		// setup RenderCanvas
-		canvas = new GLRenderCanvas();
-		canvas.addRenderEventListener(this);
-		canvas.addMouseListener(this);
-		canvas.addMouseMotionListener(this);
-		axPanel.add(canvas.getComponent());
+		axPanel.add(getCanvas().getComponent());
 
 		updateTitle();
 		updateFramePosition();
@@ -236,27 +221,9 @@ public class FigureObject extends HandleObject
 		EventQueue.invokeLater(new Runnable() { public void run() { frame.dispose(); } });
 	}
 
-	public AxesObject getAxesForPoint(Point pt)
-	{
-		return (CurrentAxes.size() > 0 ? (AxesObject)CurrentAxes.elementAt(0) : null);
-	}
-
 	public void activate()
 	{
 		frame.toFront();
-	}
-
-	public void redraw()
-	{
-		axesToUpdate = null;
-		canvas.redraw();
-	}
-
-	public void redraw(AxesObject ax)
-	{
-		//axesToUpdate = ax;
-		canvas.redraw();
-		//axesToUpdate = null;
 	}
 
 	public void print(String format, String filename) throws java.io.IOException
@@ -337,6 +304,21 @@ public class FigureObject extends HandleObject
 		else return OP_NONE;
 	}
 
+	public int getMouseOp()
+	{
+		return defaultMouseOp;
+	}
+
+	protected Color getBackgroundColor()
+	{
+		return FigColor.getColor();
+	}
+
+	protected Container getEmbeddingComponent()
+	{
+		return axPanel;
+	}
+
 	// WindowListener interface
 	
 	public void windowClosing(WindowEvent e)
@@ -352,12 +334,7 @@ public class FigureObject extends HandleObject
 
 	public void windowDeactivated(WindowEvent e)
 	{
-		if (mouseOp != OP_NONE && mouseAxes != null)
-		{
-			mouseAxes.cancelOperation(mouseOp);
-			mouseAxes = null;
-			mouseOp = OP_NONE;
-		}
+		cancelMouseOperation();
 	}
 
 	public void windowClosed(WindowEvent e){}
@@ -367,121 +344,6 @@ public class FigureObject extends HandleObject
 	public void windowDeiconified(WindowEvent e){}
 
 	public void windowOpened(WindowEvent e){}
-
-	// RenderEventListener interface
-
-	public void reshape(RenderCanvas c, int x, int y, int width, int height)
-	{
-		synchronized (Children)
-		{
-			Iterator it = Children.iterator();
-			while (it.hasNext())
-			{
-				HandleObject hObj = (HandleObject)it.next();
-				if (hObj instanceof AxesObject && hObj.isValid())
-					((AxesObject)hObj).updateActivePosition();
-			}
-		}
-	}
-
-	public void display(RenderCanvas c)
-	{
-		Renderer r = c.getRenderer();
-
-		Rectangle rect = (axesToUpdate != null ? axesToUpdate.getOuterBoundingBox() : null);
-		if (rect != null)
-		{
-			/* TODO: do some clipping */
-		}
-
-		// clear background
-		r.clear(FigColor.getColor());
-		// iterate over axes objects
-		synchronized (Children)
-		{
-			Iterator it = Children.iterator();
-			while (it.hasNext())
-			{
-				HandleObject hObj = (HandleObject)it.next();
-				if (hObj instanceof AxesObject)
-				{
-					AxesObject aObj = (AxesObject)hObj;
-					if (aObj.isValid() && (rect == null || rect.intersects(aObj.getOuterBoundingBox())))
-					{
-						aObj.draw(r);
-					}
-				}
-			}
-		}
-		/* TODO: disable potential clipping */
-	}
-
-	// MouseListener interface
-
-	public void mouseClicked(MouseEvent e)
-	{
-		/*
-		if (e.getButton() == MouseEvent.BUTTON2)
-		{
-			if (defaultMouseOp == OP_ZOOM)
-				defaultMouseOp = OP_ROTATE;
-			else
-				defaultMouseOp = OP_ZOOM;
-		}
-		*/
-
-		if (e.getButton() == MouseEvent.BUTTON3 && mouseOp == OP_NONE && defaultMouseOp == OP_ZOOM)
-		{
-			AxesObject ax = getAxesForPoint(e.getPoint());
-			if (ax != null)
-				ax.unZoom();
-		}
-	}
-	
-	public void mouseEntered(MouseEvent e) {}
-
-	public void mouseExited(MouseEvent e) {}
-	
-	public void mousePressed(MouseEvent e)
-	{
-		if (mouseOp == OP_NONE)
-		{
-			// Only do something if no operation pending
-			if (e.getButton() == MouseEvent.BUTTON1)
-			{
-				mouseAxes = getAxesForPoint(e.getPoint());
-				if (mouseAxes != null)
-				{
-					mouseOp = defaultMouseOp;
-					mouseAxes.startOperation(mouseOp, e);
-				}
-			}
-		}
-	}
-	
-	public void mouseReleased(MouseEvent e)
-	{
-		if (mouseOp != OP_NONE)
-		{
-			if (e.getButton() == MouseEvent.BUTTON1)
-			{
-				if (mouseAxes != null)
-					mouseAxes.endOperation(mouseOp, e);
-				mouseAxes = null;
-				mouseOp = OP_NONE;
-			}
-		}
-	}
-
-	// MouseMotionListener interface
-	
-	public void mouseMoved(MouseEvent e) {}
-
-	public void mouseDragged(MouseEvent e)
-	{
-		if (mouseAxes != null && mouseOp != OP_NONE)
-			mouseAxes.operation(mouseOp, e);
-	}
 
 	/* ComponentListener interface */
 
@@ -515,12 +377,5 @@ public class FigureObject extends HandleObject
 			else
 				defaultMouseOp = OP_NONE;
 		}
-	}
-
-	/* RenderCanvas.Container interface */
-
-	public RenderCanvas getCanvas()
-	{
-		return canvas;
 	}
 }

@@ -27,8 +27,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.util.Iterator;
 
-public class UIPanelObject extends HandleObject
-	implements RenderCanvas.Container, RenderEventListener
+public class UIPanelObject extends AxesContainer
 {
 	private class PanelWrapper extends Panel
 		implements Positionable
@@ -50,7 +49,6 @@ public class UIPanelObject extends HandleObject
 	protected JPanel panel;
 	protected Panel panelWrapper;
 	private String currentUnits;
-	private RenderCanvas canvas = null;
 
 	/* Properties */
 	ColorProperty BackgroundColor;
@@ -71,7 +69,7 @@ public class UIPanelObject extends HandleObject
 
 	public UIPanelObject(HandleObject parent)
 	{
-		super(parent, "uipanel");
+		super(parent, "uipanel", newHandle());
 
 		BackgroundColor = new ColorProperty(this, "BackgroundColor", Utils.getBackgroundColor());
 		BorderType = new RadioProperty(this, "BorderType", new String[] {"none", "etchedin", "etchedout",
@@ -255,52 +253,13 @@ public class UIPanelObject extends HandleObject
 		}
 	}
 
-	/* RenderCanvas.Container interface */
-
-	public RenderCanvas getCanvas()
+	protected Color getBackgroundColor()
 	{
-		if (canvas == null)
-		{
-			canvas = new GLRenderCanvas();
-			canvas.addRenderEventListener(this);
-			panel.add(canvas.getComponent());
-			panel.validate();
-		}
-
-		return canvas;
+		return BackgroundColor.getColor();
 	}
 
-	/* RenderEventListener interface */
-
-	public void reshape(RenderCanvas canvas, int x, int y, int width, int height)
+	protected Container getEmbeddingComponent()
 	{
-		synchronized (Children)
-		{
-			Iterator it = Children.iterator();
-			while (it.hasNext())
-			{
-				HandleObject hObj = (HandleObject)it.next();
-				if (hObj instanceof AxesObject && hObj.isValid())
-					((AxesObject)hObj).updateActivePosition();
-			}
-		}
-	}
-
-	public void display(RenderCanvas canvas)
-	{
-		Renderer r = canvas.getRenderer();
-
-		r.clear(BackgroundColor.getColor());
-
-		synchronized (Children)
-		{
-			Iterator it = Children.iterator();
-			while (it.hasNext())
-			{
-				HandleObject hObj = (HandleObject)it.next();
-				if (hObj instanceof AxesObject && hObj.isValid())
-					((AxesObject)hObj).draw(r);
-			}
-		}
+		return panel;
 	}
 }

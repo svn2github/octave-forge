@@ -15,6 +15,22 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{parent} =} ancestor (@var{h}, @var{type})
+## @deftypefnx {Function File} {@var{parent} =} ancestor (@var{h}, @var{type}, 'toplevel')
+## Returns the first ancestor of handle object @var{h} whose type matches
+## @var{type}, where @var{type} is a character string. If @var{type} is a
+## cell array of strings, the first parent whose type matches any of the
+## given type strings is returned.
+##
+## If the handle object @var{h} is of type @var{type}, @var{h} is returned.
+##
+## If 'toplevel' is given as a 3rd argument, @code{ancestor} returns the
+## highest parent in the object hierarchy that matches the condition, instead
+## of the first (nearest) one.
+## @seealso{get, set}
+## @end deftypefn
+
 function [ p ] = ancestor (h, type, toplevel)
 
   if (nargin == 2 || nargin == 3)

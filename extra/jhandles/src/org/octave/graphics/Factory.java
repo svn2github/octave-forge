@@ -70,7 +70,7 @@ public class Factory extends PropertySet
 		// Parent
 		// Selected
 		new BooleanProperty(this, "DefaultLineSelectionHighlight", true);
-		new StringProperty(this, "DefaultLineTage", "");
+		new StringProperty(this, "DefaultLineTag", "");
 		// Type
 		// UIContextMenu
 		new ObjectProperty(this, "DefaultLineUserData", null);
@@ -97,14 +97,32 @@ public class Factory extends PropertySet
 		new RadioProperty(this, "DefaultUIControlFontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		new StringProperty(this, "DefaultUIControlFontName", "Helvetica");
 		new DoubleProperty(this, "DefaultUIControlFontSize", 11);
-		new RadioProperty(this, "DefaultUIControlFontUnits", new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
+		new RadioProperty(this, "DefaultUIControlFontUnits",
+			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
 		new RadioProperty(this, "DefaultUIControlFontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
 		new ColorProperty(this, "DefaultUIControlForegroundColor", Color.black);
 		new RadioProperty(this, "DefaultUIControlHandleVisibility", new String[] {"on", "callback", "off"}, "on");
 		new BooleanProperty(this, "DefaultUIControlHitTest", true);
-		new RadioProperty(this, "DefaultUIControlHorizontalAlignment", new String[] {"left", "center", "right"}, "left");
+		new RadioProperty(this, "DefaultUIControlHorizontalAlignment", new String[] {"left", "center", "right"}, "center");
 		new BooleanProperty(this, "DefaultUIControlInterruptible", true);
 		new CallbackProperty(this, "DefaultUIControlKeyPressFcn", (String)null);
+		// ListboxTop
+		new DoubleProperty(this, "DefaultUIControlMax", 1.0);
+		new DoubleProperty(this, "DefaultUIControlMin", 0.0);
+		// Parent
+		new VectorProperty(this, "DefaultUIControlPosition", 4, new double[] {10, 10, 80, 24});
+		// Selected
+		new BooleanProperty(this, "DefaultUIControlSelectionHighlight", true);
+		new VectorProperty(this, "DefaultUIControlSliderStep", 2, new double[] {0.01, 0.10});
+		new StringProperty(this, "DefaultUIControlString", "");
+		new RadioProperty(this, "DefaultUIControlStyle", new String[] {"pushbutton", "togglebutton", "radiobutton",
+			"checkbox", "text", "edit", "slider", "frame", "listbox", "popupmenu"}, "pushbutton");
+		new StringProperty(this, "DefaultUIControlTag", "");
+		new StringProperty(this, "DefaultUIControlTooltipString", "");
+		new RadioProperty(this, "DefaultUIControlUnits",
+			new String[] {"pixels", "normalized", "inches", "centimeters", "points", "characters"}, "pixels");
+		new ObjectProperty(this, "DefaultUIControlUserData", null);
+		new BooleanProperty(this, "DefaultUIControlVisible", true);
 	}
 
 	public static Property getDefaultProperty(String name)

@@ -59,22 +59,22 @@ public class UIControlObject extends HandleObject
 
 		BackgroundColor = new ColorProperty(this, "BackgroundColor");
 		Callback = new CallbackProperty(this, "Callback", (String)null);
-		Enable = new RadioProperty(this, "Enable", new String[] {"on", "inactive", "off"}, "on");
+		Enable = new RadioProperty(this, "Enable", new String[] {"on", "inactive", "off"});
 		Extent = new VectorProperty(this, "Extent", 4, new double[] {0, 0, 0, 0});
-		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
-		FontName = new StringProperty(this, "FontName", "Helvetica");
-		FontSize = new DoubleProperty(this, "FontSize", 11);
+		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"});
+		FontName = new StringProperty(this, "FontName");
+		FontSize = new DoubleProperty(this, "FontSize");
 		FontUnits = new RadioProperty(this, "FontUnits",
-			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
-		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
-		ForegroundColor = new ColorProperty(this, "ForegroundColor", Color.black);
-		HorizontalAlignment = new RadioProperty(this, "HorizontalAlignment", new String[] {"left", "center", "right"}, "center");
+			new String[] {"points", "normalized", "inches", "centimeters", "pixels"});
+		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"});
+		ForegroundColor = new ColorProperty(this, "ForegroundColor");
+		HorizontalAlignment = new RadioProperty(this, "HorizontalAlignment", new String[] {"left", "center", "right"});
 		ListboxTop = new DoubleProperty(this, "ListboxTop", 1);
-		Min = new DoubleProperty(this, "Min", 0);
-		Max = new DoubleProperty(this, "Max", 1);
-		Position = new VectorProperty(this, "Position", 4, new double[] {10, 10, 80, 25});
-		UIString = new StringProperty(this, "String", "");
-		SliderStep = new VectorProperty(this, "SliderStep", 2, new double[] {0.01, 0.10});
+		Min = new DoubleProperty(this, "Min");
+		Max = new DoubleProperty(this, "Max");
+		Position = new VectorProperty(this, "Position", 4);
+		UIString = new StringProperty(this, "String");
+		SliderStep = new VectorProperty(this, "SliderStep", 2);
 		Style = new RadioProperty(this, "Style", new String[] {
 			  "pushbutton",
 			  "togglebutton",
@@ -85,10 +85,10 @@ public class UIControlObject extends HandleObject
 			  "slider",
 			  "frame",
 			  "listbox",
-			  "popupmenu"}, "pushbutton");
-		TooltipString = new StringProperty(this, "TooltipString", "");
+			  "popupmenu"});
+		TooltipString = new StringProperty(this, "TooltipString");
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "characters", "inches",
-			"centimeters", "points"}, "pixels");
+			"centimeters", "points"});
 		Value = new VectorProperty(this, "Value", -1, new double[] {0});
 
 		listen(FontUnits);

@@ -85,6 +85,6 @@ catch
   warning ("unable to set default graphics backend");
 end_try_catch
 
-clear oplot_path scite_path msys_path gf
+clear oplot_path scite_path msys_path gf line
 
 fprintf ("\n");

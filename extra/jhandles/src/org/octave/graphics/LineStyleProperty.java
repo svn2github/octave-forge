@@ -25,14 +25,25 @@ import java.awt.*;
 
 public class LineStyleProperty extends RadioProperty
 {
+	protected LineStyleProperty(LineStyleProperty p)
+	{
+		super(p);
+	}
+
 	public LineStyleProperty(PropertySet parent, String name)
 	{
-		this(parent, name, "-");
+		super(parent, name, new String[] {"-", ":", "--", "-.", "none", ""});
 	}
 
 	public LineStyleProperty(PropertySet parent, String name, String style)
 	{
-		super(parent, name, new String[] {"-", ":", "--", "-.", "none", ""}, style);
+		this(parent, name);
+		this.pvalue = style;
+	}
+
+	public Property cloneProperty()
+	{
+		return new LineStyleProperty(this);
 	}
 	
 	public Stroke getStroke(float width)

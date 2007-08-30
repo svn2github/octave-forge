@@ -28,22 +28,35 @@ public class ArrayProperty extends Property
 	String[] allowedTypes;
 	int allowedDims;
 
-	public ArrayProperty(PropertySet parent, String name)
+	protected ArrayProperty(ArrayProperty p)
 	{
-		this(parent, name, new Matrix(new double[0], new int[] {0, 0}));
+		super(p);
+		this.allowedTypes = p.allowedTypes;
+		this.allowedDims = p.allowedDims;
+	}
+
+	public ArrayProperty(PropertySet parent, String name, String[] types, int dims)
+	{
+		super(parent, name);
+		allowedTypes = types;
+		allowedDims = dims;
 	}
 
 	public ArrayProperty(PropertySet parent, String name, Matrix matrix)
 	{
-		this(parent, name, matrix, null, -1);
+		this(parent, name, (String[])null, -1);
+		this.pvalue = (matrix != null ? matrix : new Matrix(new double[0], new int[] {0, 0}));
 	}
 
-	public ArrayProperty(PropertySet parent, String name, Matrix matrix, String[] types, int dims)
+	public ArrayProperty(PropertySet parent, String name, String[] types, int dims, Matrix matrix)
 	{
-		super(parent, name);
-		pvalue = (matrix != null ? matrix : new Matrix(new double[0], new int[] {0, 0}));
-		allowedTypes = types;
-		allowedDims = dims;
+		this(parent, name, types, dims);
+		this.pvalue = (matrix != null ? matrix : new Matrix(new double[0], new int[] {0, 0}));
+	}
+
+	public Property cloneProperty()
+	{
+		return new ArrayProperty(this);
 	}
 
 	protected Object convertValue(Object array) throws PropertyException

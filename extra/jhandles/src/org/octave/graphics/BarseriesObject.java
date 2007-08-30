@@ -55,13 +55,13 @@ public class BarseriesObject extends GroupObject
 
 		BarWidth = new DoubleProperty(this, "BarWidth", 0.8);
 		BarLayout = new RadioProperty(this, "BarLayout", new String[] {"grouped", "stacked"}, "grouped");
-		XData = new VectorProperty(this, "XData", x, -1);
-		YData = new VectorProperty(this, "YData", y, -1);
+		XData = new VectorProperty(this, "XData", -1, x);
+		YData = new VectorProperty(this, "YData", -1, y);
 		BaseLine = new HandleObjectListProperty(this, "BaseLine", -1);
 		BaseLine.addElement(base);
 		BaseValue = new DoubleProperty(this, "BaseValue", base.BaseValue.doubleValue());
-		EdgeColor = new ColorProperty(this, "EdgeColor", Color.black, new String[] {"none"}, null);
-		FaceColor = new ColorProperty(this, "FaceColor", null, new String[] {"none", "flat"}, "flat");
+		EdgeColor = new ColorProperty(this, "EdgeColor", new String[] {"none"}, Color.black);
+		FaceColor = new ColorProperty(this, "FaceColor", new String[] {"none", "flat"}, "flat");
 		BarGroup = new HandleObjectListProperty(this, "BarGroup", -1);
 		Horizontal = new BooleanProperty(this, "Horizontal", horizontal);
 

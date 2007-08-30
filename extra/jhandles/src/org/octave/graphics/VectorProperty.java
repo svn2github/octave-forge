@@ -27,27 +27,38 @@ public class VectorProperty extends Property
 {
 	int fixedSize;
 
-	public VectorProperty(PropertySet parent, String name)
+	protected VectorProperty(VectorProperty p)
 	{
-		this(parent, name, new double[0], -1);
+		super(p);
+		this.fixedSize = p.fixedSize;
 	}
 
-	public VectorProperty(PropertySet parent, String name, double[] data, int size)
-	{
-		this(parent, name, new Matrix(data), size);
-	}
-
-	public VectorProperty(PropertySet parent, String name, Matrix data, int size)
+	public VectorProperty(PropertySet parent, String name, int size)
 	{
 		super(parent, name);
+		this.fixedSize = size;
+	}
+
+	public VectorProperty(PropertySet parent, String name, int size, double[] data)
+	{
+		this(parent, name, size, new Matrix(data));
+	}
+
+	public VectorProperty(PropertySet parent, String name, int size, Matrix data)
+	{
+		this(parent, name, size);
 		if (data.isVector())
-			pvalue = data;
+			this.pvalue = data;
 		else
 		{
 			System.out.println("Warning: " + name + ": assigning non-vector to vector property");
-			pvalue = new Matrix(new double[0]);
+			this.pvalue = new Matrix(new double[0]);
 		}
-		fixedSize = size;
+	}
+
+	public Property cloneProperty()
+	{
+		return new VectorProperty(this);
 	}
 
 	protected Object convertValue(Object value) throws PropertyException

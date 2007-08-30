@@ -63,15 +63,15 @@ public class TextObject extends GraphicObject
 		Rotation = new DoubleProperty(this, "Rotation", 0.0);
 		HAlign = new RadioProperty(this, "HorizontalAlignment", new String[] {"left", "center", "right"}, "left");
 		VAlign = new RadioProperty(this, "VerticalAlignment", new String[] {"top", "middle", "bottom", "baseline"}, "baseline");
-		Position = new VectorProperty(this, "Position", pos, 3);
+		Position = new VectorProperty(this, "Position", 3, pos);
 		PositionMode = new BooleanProperty(this, "PositionMode", true);
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "data", "normalized",
 			"inches", "centimeters", "points"}, "data");
 		currentUnits = "data";
 		TextColor = new ColorProperty(this, "Color", Color.black);
 		TextString = new StringProperty(this, "String", txt);
-		BackgroundColor = new ColorProperty(this, "BackgroundColor", null);
-		EdgeColor = new ColorProperty(this, "EdgeColor", null);
+		BackgroundColor = new ColorProperty(this, "BackgroundColor", (Color)null);
+		EdgeColor = new ColorProperty(this, "EdgeColor", (Color)null);
 		LineWidth = new DoubleProperty(this, "LineWidth", 1.0);
 		Margin = new DoubleProperty(this, "Margin", 2.0);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");

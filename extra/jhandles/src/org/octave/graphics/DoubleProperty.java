@@ -25,15 +25,25 @@ import java.text.DecimalFormat;
 
 public class DoubleProperty extends Property
 {
+	protected DoubleProperty(DoubleProperty p)
+	{
+		super(p);
+	}
+
 	public DoubleProperty(PropertySet parent, String name)
 	{
-		this(parent, name, 0);
+		super(parent, name);
 	}
 
 	public DoubleProperty(PropertySet parent, String name, double value)
 	{
-		super(parent, name);
+		this(parent, name);
 		pvalue = new Double(value);
+	}
+
+	public Property cloneProperty()
+	{
+		return new DoubleProperty(this);
 	}
 
 	protected Object convertValue(Object val) throws PropertyException

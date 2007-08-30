@@ -38,12 +38,39 @@ public abstract class Property implements HandleNotifier.Source
 
 	private boolean setFlag = false;
 
+	protected Property(Property p)
+	{
+		this.name = p.name;
+		this.parent = null; /* do not copy parent */
+		this.visible = p.visible;
+		this.readOnly = p.readOnly;
+		this.pvalue = p.pvalue;
+	}
+
 	protected Property(PropertySet parent, String name)
 	{
 		this.name = name;
 		this.parent = parent;
-		parent.addProperty(this);
+		if (parent != null)
+		{
+			parent.addProperty(this);
+			if (parent instanceof HandleObject &&
+					!name.equalsIgnoreCase("parent") && !name.equalsIgnoreCase("type"))
+				initDefault();
+		}
 	}
+
+	protected void initDefault()
+	{
+		HandleObject parent = (HandleObject)getParent();
+		String defname = "default" + parent.getType() + name;
+		Property p = parent.getDefaultProperty(defname);
+
+		if (p != null)
+			pvalue = p.pvalue;
+	}
+
+	public abstract Property cloneProperty();
 
 	public PropertySet getParent()
 	{
@@ -149,32 +176,6 @@ public abstract class Property implements HandleNotifier.Source
 				throw new PropertyException(e);
 		}
 	}
-
-	/* TODO: remove me
-	void update(Object value)
-	{
-		boolean oldLockNotify = lockNotify;
-
-		lockNotify = true;
-		try { set(value); }
-		catch (PropertyException e) { }
-		lockNotify = oldLockNotify;
-	}
-
-	public void safeSet(Object value)
-	{
-		try { set(value); }
-		catch (PropertyException e) {}
-	}
-
-	public void setNoNotify(Object value) throws PropertyException
-	{
-		boolean oldLockNotify = lockNotify;
-		lockNotify = false;
-		set(value);
-		lockNotify = oldLockNotify;
-	}
-	*/
 
 	public void reset(Object value)
 	{

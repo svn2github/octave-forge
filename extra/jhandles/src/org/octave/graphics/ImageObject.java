@@ -36,9 +36,9 @@ public class ImageObject extends GraphicObject
 	{
 		super(parent, "image");
 
-		CData = new ArrayProperty(this, "CData", null, new String[] {"double", "byte"}, -1);
-		XData = new VectorProperty(this, "XData", new double[] {1, 1}, 2);
-		YData = new VectorProperty(this, "YData", new double[] {1, 1}, 2);
+		CData = new ArrayProperty(this, "CData", new String[] {"double", "byte"}, -1, null);
+		XData = new VectorProperty(this, "XData", 2, new double[] {1, 1});
+		YData = new VectorProperty(this, "YData", 2, new double[] {1, 1});
 		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"scaled", "direct"}, "direct");
 
 		CLimInclude.reset(new Boolean(true));

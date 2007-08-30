@@ -28,6 +28,11 @@ public class HandleObjectListProperty extends Property
 {
 	int maxCount;
 
+	protected HandleObjectListProperty(HandleObjectListProperty p)
+	{
+		super(p);
+	}
+
 	public HandleObjectListProperty(PropertySet parent, String name)
 	{
 		this(parent, name, -1);
@@ -38,6 +43,11 @@ public class HandleObjectListProperty extends Property
 		super(parent, name);
 		this.maxCount = maxCount;
 		this.pvalue = new Vector();
+	}
+
+	public Property cloneProperty()
+	{
+		return new HandleObjectListProperty(this);
 	}
 
 	protected Object getInternal()

@@ -55,18 +55,18 @@ public class PatchObject extends GraphicObject
 	{
 		super(parent, "patch");
 
-		Faces = new ArrayProperty(this, "Faces", null, new String[] {"double"}, 2);
-		Vertices = new ArrayProperty(this, "Vertices", null, new String[] {"double"}, 2);
-		FaceVertexCData = new ArrayProperty(this, "FaceVertexCData", null, new String[] {"double", "byte"}, 2);
+		Faces = new ArrayProperty(this, "Faces", new String[] {"double"}, 2, null);
+		Vertices = new ArrayProperty(this, "Vertices", new String[] {"double"}, 2, null);
+		FaceVertexCData = new ArrayProperty(this, "FaceVertexCData", new String[] {"double", "byte"}, 2, null);
 		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"direct", "scaled"}, "scaled");
-		FaceVertexAlphaData = new VectorProperty(this, "FaceVertexAlphaData", new double[0], -1);
+		FaceVertexAlphaData = new VectorProperty(this, "FaceVertexAlphaData", -1, new double[0]);
 		AlphaDataMapping = new RadioProperty(this, "AlphaDataMapping", new String[] {"none", "scaled", "direct"}, "scaled");
-		FaceColor = new ColorProperty(this, "FaceColor", Color.black, new String[] {"none", "flat", "interp"}, null);
-		EdgeColor = new ColorProperty(this, "EdgeColor", Color.black, new String[] {"none", "flat", "interp"}, null);
+		FaceColor = new ColorProperty(this, "FaceColor", new String[] {"none", "flat", "interp"}, Color.black);
+		EdgeColor = new ColorProperty(this, "EdgeColor", new String[] {"none", "flat", "interp"}, Color.black);
 		FaceLighting = new RadioProperty(this, "FaceLighting", new String[] {"none", "flat", "gouraud", "phong"}, "none");
 		EdgeLighting = new RadioProperty(this, "EdgeLighting", new String[] {"none", "flat", "gouraud", "phong"}, "none");
-		FaceAlpha = new DoubleRadioProperty(this, "FaceAlpha", 1, new String[] {"flat", "interp"}, null);
-		EdgeAlpha = new DoubleRadioProperty(this, "EdgeAlpha", 1, new String[] {"flat", "interp"}, null);
+		FaceAlpha = new DoubleRadioProperty(this, "FaceAlpha", new String[] {"flat", "interp"}, 1.0);
+		EdgeAlpha = new DoubleRadioProperty(this, "EdgeAlpha", new String[] {"flat", "interp"}, 1.0);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
 		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 		Marker = new MarkerProperty(this, "Marker", "none");
@@ -75,7 +75,7 @@ public class PatchObject extends GraphicObject
 		DiffuseStrength = new DoubleProperty(this, "DiffuseStrength", 0.6);
 		SpecularStrength = new DoubleProperty(this, "SpecularStrength", 0.9);
 		SpecularExponent = new DoubleProperty(this, "SpecularExponent", 10);
-		VertexNormals = new ArrayProperty(this, "VertexNormals", null, new String[] {"double"}, 2);
+		VertexNormals = new ArrayProperty(this, "VertexNormals", new String[] {"double"}, 2, null);
 
 		ZLimInclude.reset(new Boolean(true));
 		CLimInclude.reset(new Boolean(true));

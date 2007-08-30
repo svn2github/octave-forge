@@ -23,15 +23,25 @@ package org.octave.graphics;
 
 public class ObjectProperty extends Property
 {
+	protected ObjectProperty(ObjectProperty p)
+	{
+		super(p);
+	}
+
 	public ObjectProperty(PropertySet parent, String name)
 	{
-		this(parent, name, null);
+		super(parent, name);
 	}
 
 	public ObjectProperty(PropertySet parent, String name, Object value)
 	{
-		super(parent, name);
-		pvalue = value;
+		this(parent, name);
+		this.pvalue = value;
+	}
+
+	public Property cloneProperty()
+	{
+		return new ObjectProperty(this);
 	}
 
 	public String toString()

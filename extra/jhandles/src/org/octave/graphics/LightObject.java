@@ -37,7 +37,7 @@ public class LightObject extends GraphicObject
 		super(parent, "light");
 
 		LightColor = new ColorProperty(this, "Color", Color.white);
-		Position = new VectorProperty(this, "Position", new double[] {0,0,1}, 3);
+		Position = new VectorProperty(this, "Position", 3, new double[] {0,0,1});
 		Style = new RadioProperty(this, "Style", new String[] {"infinite", "local"}, "infinite");
 
 		lightIndex = 0;

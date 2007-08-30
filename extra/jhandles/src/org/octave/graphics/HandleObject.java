@@ -31,7 +31,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	private Renderer.CachedData cachedData = null;
 	private boolean valid = false;
 	private List notifierList = new LinkedList();
+	
 	protected int autoMode = 0;
+	protected PropertySet defaultSet = new PropertySet();
 
 	private static int handleSeed = -1;
 	private static HashMap handleMap = new HashMap();
@@ -70,23 +72,28 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	protected void initProperties(HandleObject parent, String type)
 	{
+		// These properties must be created first, in order to
+		// get correct behavior when looking for default values
+		// of properties
+		Type = new StringProperty(this, "Type", type);
+		Parent = new HandleObjectListProperty(this, "Parent", -1);
+		if (parent != null)
+			Parent.addElement(parent);
+
+		// Create other properties
 		BeingDeleted = new BooleanProperty(this, "BeingDeleted", false);
 		Children = new HandleObjectListProperty(this, "Children", -1);
 		Clipping = new BooleanProperty(this, "Clipping", true);
 		CreateFcn = new CallbackProperty(this, "CreateFcn", (String)null);
 		DeleteFcn = new CallbackProperty(this, "DeleteFcn", (String)null);
 		HandleVisibility = new RadioProperty(this, "HandleVisibility", new String[] {"on", "callback", "off"}, "on");
-		Parent = new HandleObjectListProperty(this, "Parent", -1);
 		Tag = new StringProperty(this, "Tag", "");
-		Type = new StringProperty(this, "Type", type);
 		UserData = new ObjectProperty(this, "UserData", null);
 		Visible = new BooleanProperty(this, "Visible", true);
 
+		// TODO: move this to validate() ??
 		if (parent != null)
-		{
-			Parent.addElement(parent);
 			parent.addChild(this);
-		}
 	}
 
 	protected void setHandle(int handle)
@@ -104,6 +111,22 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	public int getHandle()
 	{
 		return handle;
+	}
+
+	public String getType()
+	{
+		return (Type != null ? Type.toString() : "");
+	}
+
+	public Property getDefaultProperty(String name)
+	{
+		Property p = defaultSet.getProperty(name);
+		if (p != null)
+			return p;
+		else if (Parent.size() > 0)
+			return Parent.elementAt(0).getDefaultProperty(name);
+		else
+			return Factory.getDefaultProperty(name);
 	}
 
 	public void deleteChildren()
@@ -298,6 +321,37 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 			else
 				curr = curr.Parent.elementAt(0);
 		}
+	}
+
+	public Object get(String name) throws PropertyException
+	{
+		if (name.toLowerCase().startsWith("default"))
+		{
+			Property p = getDefaultProperty(name);
+			if (p != null)
+				return p.get();
+			throw new PropertyException("invalid default property - " + name.toLowerCase());
+		}
+		else
+			return super.get(name);
+	}
+
+	public void set(String name, Object value) throws PropertyException
+	{
+		if (name.toLowerCase().startsWith("default"))
+		{
+			Property p = getDefaultProperty(name);
+			if (p != null)
+			{
+				Property new_p = p.cloneProperty();
+				new_p.set(value);
+				defaultSet.addProperty(new_p);
+			}
+			else
+				throw new PropertyException("invalid default property - " + name.toLowerCase());
+		}
+		else
+			super.set(name, value);
 	}
 
 	/* HandleNotifier.Sink interface */

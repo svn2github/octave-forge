@@ -209,21 +209,21 @@ public class AxesObject extends HandleObject
 		logScale = new LogScaler();
 
 		ActivePositionProperty = new RadioProperty(this, "ActivePositionProperty", new String[] {"outerposition", "position"}, "outerposition");
-		Position = new VectorProperty(this, "Position", new double[0], -1);
-		OuterPosition = new VectorProperty(this, "OuterPosition", new double[] {0,0,1,1}, -1);
+		Position = new VectorProperty(this, "Position", 4, new double[] {0.13,0.11,0.775,0.815});
+		OuterPosition = new VectorProperty(this, "OuterPosition", 4, new double[] {0,0,1,1});
 		Units = new RadioProperty(this, "Units",
 			new String[] { "pixels", "normalized", "characters", "inches", "centimeters", "points" }, "normalized");
 		currentUnits = "normalized";
 		Projection = new RadioProperty(this, "Projection", new String[] { "orthogonal", "perspective" }, "orthogonal");
-		AxesColor = new ColorProperty(this, "Color", Color.white, new String[] {"none"}, null);
+		AxesColor = new ColorProperty(this, "Color", new String[] {"none"}, Color.white);
 		XColor = new ColorProperty(this, "XColor", Color.black);
 		YColor = new ColorProperty(this, "YColor", Color.black);
 		ZColor = new ColorProperty(this, "ZColor", Color.black);
-		XLim = new VectorProperty(this, "XLim", new double[] {0.0, 1.0}, 2);
+		XLim = new VectorProperty(this, "XLim", 2, new double[] {0.0, 1.0});
 		XLimMode = new RadioProperty(this, "XLimMode", new String[] {"auto", "manual"}, "auto");
-		YLim = new VectorProperty(this, "YLim", new double[] {0.0, 1.0}, 2);
+		YLim = new VectorProperty(this, "YLim", 2, new double[] {0.0, 1.0});
 		YLimMode = new RadioProperty(this, "YLimMode", new String[] {"auto", "manual"}, "auto");
-		ZLim = new VectorProperty(this, "ZLim", new double[] {-0.5, 0.5}, 2);
+		ZLim = new VectorProperty(this, "ZLim", 2, new double[] {-0.5, 0.5});
 		ZLimMode = new RadioProperty(this, "ZLimMode", new String[] {"auto", "manual"}, "auto");
 		XGrid = new BooleanProperty(this, "XGrid", false);
 		YGrid = new BooleanProperty(this, "YGrid", false);
@@ -233,9 +233,9 @@ public class AxesObject extends HandleObject
 		ZMinorGrid = new BooleanProperty(this, "ZMinorGrid", false);
 		GridLineStyle = new LineStyleProperty(this, "GridLineStyle", ":");
 		MinorGridLineStyle = new LineStyleProperty(this, "MinorGridLineStyle", ":");
-		XTick = new VectorProperty(this, "XTick", new double[0], -1);
-		YTick = new VectorProperty(this, "YTick", new double[0], -1);
-		ZTick = new VectorProperty(this, "ZTick", new double[0], -1);
+		XTick = new VectorProperty(this, "XTick", -1, new double[0]);
+		YTick = new VectorProperty(this, "YTick", -1, new double[0]);
+		ZTick = new VectorProperty(this, "ZTick", -1, new double[0]);
 		XTickMode = new RadioProperty(this, "XTickMode", new String[] {"auto", "manual"}, "auto");
 		YTickMode = new RadioProperty(this, "YTickMode", new String[] {"auto", "manual"}, "auto");
 		ZTickMode = new RadioProperty(this, "ZTickMode", new String[] {"auto", "manual"}, "auto");
@@ -249,34 +249,34 @@ public class AxesObject extends HandleObject
 		Box = new BooleanProperty(this, "Box", (init3D ? false : true));
 		TickDir = new RadioProperty(this, "TickDir", new String[] {"in", "out"}, (init3D ? "out" : "in"));
 		TickDirMode = new RadioProperty(this, "TickDirMode", new String[] {"auto", "manual"}, "auto");
-		CameraTarget = new VectorProperty(this, "CameraTarget", new double[] {0.0,0.0,0.0}, 3);
+		CameraTarget = new VectorProperty(this, "CameraTarget", 3, new double[] {0.0,0.0,0.0});
 		CameraTargetMode = new RadioProperty(this, "CameraTargetMode", new String[] {"auto", "manual"}, "auto");
-		CameraPosition = new VectorProperty(this, "CameraPosition", new double[] {0.0,0.0,0.0}, 3);
+		CameraPosition = new VectorProperty(this, "CameraPosition", 3, new double[] {0.0,0.0,0.0});
 		CameraPositionMode = new RadioProperty(this, "CameraPositionMode", new String[] {"auto", "manual"}, "auto");
-		CameraUpVector = new VectorProperty(this, "CameraUpVector", new double[] {0,1,0}, 3);
+		CameraUpVector = new VectorProperty(this, "CameraUpVector", 3, new double[] {0,1,0});
 		CameraUpVectorMode = new RadioProperty(this, "CameraUpVectorMode", new String[] {"auto", "manual"}, "auto");
 		CameraViewAngle = new DoubleProperty(this, "CameraViewAngle", 10.0);
 		CameraViewAngleMode = new RadioProperty(this, "CameraViewAngleMode", new String[] {"auto", "manual"}, "auto");
-		DataAspectRatio = new VectorProperty(this, "DataAspectRatio", new double[] {1,1,1}, 3);
+		DataAspectRatio = new VectorProperty(this, "DataAspectRatio", 3, new double[] {1,1,1});
 		DataAspectRatioMode = new RadioProperty(this, "DataAspectRatioMode", new String[] {"auto", "manual"}, "auto");
-		PlotBoxAspectRatio = new VectorProperty(this, "PlotBoxAspectRatio", new double[] {1,1,1}, 3);
+		PlotBoxAspectRatio = new VectorProperty(this, "PlotBoxAspectRatio", 3, new double[] {1,1,1});
 		PlotBoxAspectRatioMode = new RadioProperty(this, "PlotBoxAspectRatioMode", new String[] {"auto", "manual"}, "auto");
-		View = new VectorProperty(this, "View", angles, 2);
+		View = new VectorProperty(this, "View", 2, angles);
 		Title = new TextProperty(this, "Title", makeTextObject("center", "bottom"));
 		XLabel = new TextProperty(this, "XLabel", makeTextObject((init3D ? "left" : "center"), "top"));
 		YLabel = new TextProperty(this, "YLabel", makeTextObject((init3D ? "right" : "center"), (init3D ? "top" : "bottom")));
 		ZLabel = new TextProperty(this, "ZLabel", makeTextObject((init3D ? "right" : "center"), (init3D ? "top" : "bottom")));
-		CLim = new VectorProperty(this, "CLim", new double[] {0, 1}, 2);
+		CLim = new VectorProperty(this, "CLim", 2, new double[] {0, 1});
 		CLimMode = new RadioProperty(this, "CLimMode", new String[] {"auto", "manual"}, "auto");
-		ALim = new VectorProperty(this, "ALim", new double[] {0, 1}, 2);
+		ALim = new VectorProperty(this, "ALim", 2, new double[] {0, 1});
 		ALimMode = new RadioProperty(this, "ALimMode", new String[] {"auto", "manual"}, "auto");
 		XDir = new RadioProperty(this, "XDir", new String[] {"normal", "reverse"}, "normal");
 		YDir = new RadioProperty(this, "YDir", new String[] {"normal", "reverse"}, "normal");
 		ZDir = new RadioProperty(this, "ZDir", new String[] {"normal", "reverse"}, "normal");
-		x_NormRenderTransform = new ArrayProperty(this, "x_NormRenderTransform",
-			new Matrix(new double[16], new int[] {4, 4}), new String[] {"double"}, 2);
-		x_RenderTransform = new ArrayProperty(this, "x_RenderTransform",
-			new Matrix(new double[16], new int[] {4, 4}), new String[] {"double"}, 2);
+		x_NormRenderTransform = new ArrayProperty(this, "x_NormRenderTransform", new String[] {"double"}, 2,
+			new Matrix(new double[16], new int[] {4, 4}));
+		x_RenderTransform = new ArrayProperty(this, "x_RenderTransform", new String[] {"double"}, 2,
+			new Matrix(new double[16], new int[] {4, 4}));
 		XScale = new RadioProperty(this, "XScale", new String[] {"linear", "log"}, "linear");
 		YScale = new RadioProperty(this, "YScale", new String[] {"linear", "log"}, "linear");
 		ZScale = new RadioProperty(this, "ZScale", new String[] {"linear", "log"}, "linear");

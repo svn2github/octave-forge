@@ -52,16 +52,27 @@ public class MarkerProperty extends RadioProperty
 		}
 	}
 
+	protected MarkerProperty(MarkerProperty p)
+	{
+		super(p);
+	}
+
 	public MarkerProperty(PropertySet parent, String name)
 	{
-		this(parent, name, "none");
+		super(parent, name, new String[] {
+			"o", "s", "x", "+", "*", "d",
+			"^", ">", "<", "v", ".", "none"});
 	}
 
 	public MarkerProperty(PropertySet parent, String name, String marker)
 	{
-		super(parent, name, new String[] {
-			"o", "s", "x", "+", "*", "d",
-			"^", ">", "<", "v", ".", "none"}, marker);
+		this(parent, name);
+		this.pvalue = marker;
+	}
+
+	public Property cloneProperty()
+	{
+		return new MarkerProperty(this);
 	}
 
 	public void drawMarker(Graphics g, int x, int y, double markerSize)

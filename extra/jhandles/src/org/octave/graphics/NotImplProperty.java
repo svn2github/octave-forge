@@ -23,6 +23,11 @@ package org.octave.graphics;
 
 public class NotImplProperty extends ObjectProperty
 {
+	protected NotImplProperty(NotImplProperty p)
+	{
+		super(p);
+	}
+
 	public NotImplProperty(PropertySet parent, String name)
 	{
 		super(parent, name);
@@ -31,6 +36,11 @@ public class NotImplProperty extends ObjectProperty
 	public NotImplProperty(PropertySet parent, String name, Object value)
 	{
 		super(parent, name, value);
+	}
+
+	public Property cloneProperty()
+	{
+		return new NotImplProperty(this);
 	}
 
 	public Object get()

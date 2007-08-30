@@ -251,9 +251,6 @@ public class Utils
 
 	private static Color getUIColor(String name, Color def)
 	{
-		/* make sure LookAndFeel is initialized */
-		RootObject.getInstance();
-
 		try { return (Color)UIManager.get(name); }
 		catch (Exception e) { return def; }
 	}

@@ -57,10 +57,10 @@ public class UIControlObject extends HandleObject
 	{
 		super(parent, "uicontrol");
 
-		BackgroundColor = new ColorProperty(this, "BackgroundColor", Utils.getBackgroundColor());
+		BackgroundColor = new ColorProperty(this, "BackgroundColor");
 		Callback = new CallbackProperty(this, "Callback", (String)null);
 		Enable = new RadioProperty(this, "Enable", new String[] {"on", "inactive", "off"}, "on");
-		Extent = new VectorProperty(this, "Extent", new double[] {0, 0, 0, 0}, 4);
+		Extent = new VectorProperty(this, "Extent", 4, new double[] {0, 0, 0, 0});
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
 		FontSize = new DoubleProperty(this, "FontSize", 11);
@@ -72,9 +72,9 @@ public class UIControlObject extends HandleObject
 		ListboxTop = new DoubleProperty(this, "ListboxTop", 1);
 		Min = new DoubleProperty(this, "Min", 0);
 		Max = new DoubleProperty(this, "Max", 1);
-		Position = new VectorProperty(this, "Position", new double[] {10, 10, 80, 25}, 4);
+		Position = new VectorProperty(this, "Position", 4, new double[] {10, 10, 80, 25});
 		UIString = new StringProperty(this, "String", "");
-		SliderStep = new VectorProperty(this, "SliderStep", new double[] {0.01, 0.10}, 2);
+		SliderStep = new VectorProperty(this, "SliderStep", 2, new double[] {0.01, 0.10});
 		Style = new RadioProperty(this, "Style", new String[] {
 			  "pushbutton",
 			  "togglebutton",
@@ -89,7 +89,7 @@ public class UIControlObject extends HandleObject
 		TooltipString = new StringProperty(this, "TooltipString", "");
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "characters", "inches",
 			"centimeters", "points"}, "pixels");
-		Value = new VectorProperty(this, "Value", new double[] {0}, -1);
+		Value = new VectorProperty(this, "Value", -1, new double[] {0});
 
 		listen(FontUnits);
 		listen(Style);

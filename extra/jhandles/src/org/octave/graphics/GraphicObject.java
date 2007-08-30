@@ -49,11 +49,11 @@ public abstract class GraphicObject extends HandleObject
 			Double.POSITIVE_INFINITY, Double.MIN_VALUE};
 		double[] d2 = new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
 
-		XLim = new VectorProperty(this, "XLim", d1, 4);
-		YLim = new VectorProperty(this, "YLim", d1, 4);
-		ZLim = new VectorProperty(this, "ZLim", d1, 4);
-		CLim = new VectorProperty(this, "CLim", d2, 2);
-		ALim = new VectorProperty(this, "ALim", d2, 2);
+		XLim = new VectorProperty(this, "XLim", 4, d1);
+		YLim = new VectorProperty(this, "YLim", 4, d1);
+		ZLim = new VectorProperty(this, "ZLim", 4, d1);
+		CLim = new VectorProperty(this, "CLim", 2, d2);
+		ALim = new VectorProperty(this, "ALim", 2, d2);
 		XLimInclude = new BooleanProperty(this, "XLimInclude", true);
 		YLimInclude = new BooleanProperty(this, "YLimInclude", true);
 		ZLimInclude = new BooleanProperty(this, "ZLimInclude", false);

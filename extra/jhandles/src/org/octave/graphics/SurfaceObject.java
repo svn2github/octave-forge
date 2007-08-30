@@ -53,23 +53,23 @@ public class SurfaceObject extends GraphicObject
 		super(parent, "surface");
 		callListValid = false;
 
-		XData = new ArrayProperty(this, "XData", xdata, new String[] {"double"}, 2);
-		YData = new ArrayProperty(this, "YData", ydata, new String[] {"double"}, 2);
-		ZData = new ArrayProperty(this, "ZData", zdata, new String[] {"double"}, 2);
-		CData = new ArrayProperty(this, "CData", zdata, new String[] {"double", "byte"}, -1);
+		XData = new ArrayProperty(this, "XData", new String[] {"double"}, 2, xdata);
+		YData = new ArrayProperty(this, "YData", new String[] {"double"}, 2, ydata);
+		ZData = new ArrayProperty(this, "ZData", new String[] {"double"}, 2, zdata);
+		CData = new ArrayProperty(this, "CData", new String[] {"double", "byte"}, -1, zdata);
 		CDataMapping = new RadioProperty(this, "CDataMapping", new String[] {"direct", "scaled"}, "scaled");
-		EdgeColor = new ColorProperty(this, "EdgeColor", Color.black, new String[] {"none", "flat", "interp"}, null);
-		FaceColor = new ColorProperty(this, "FaceColor", null, new String[] {"none", "flat", "interp", "texturemap"}, "flat");
+		EdgeColor = new ColorProperty(this, "EdgeColor", new String[] {"none", "flat", "interp"}, Color.black);
+		FaceColor = new ColorProperty(this, "FaceColor", new String[] {"none", "flat", "interp", "texturemap"}, "flat");
 		AmbientStrength = new DoubleProperty(this, "AmbientStrength", 0.3);
 		DiffuseStrength = new DoubleProperty(this, "DiffuseStrength", 0.6);
 		SpecularStrength = new DoubleProperty(this, "SpecularStrength", 0.9);
 		SpecularExponent = new DoubleProperty(this, "SpecularExponent", 10);
 		EdgeLighting = new RadioProperty(this, "EdgeLighting", new String[] {"none", "flat", "gouraud", "phong"}, "none");
 		FaceLighting = new RadioProperty(this, "FaceLighting", new String[] {"none", "flat", "gouraud", "phong"}, "none");
-		FaceAlpha = new DoubleRadioProperty(this, "FaceAlpha", 1.0, new String[] {"flat", "interp"}, null);
-		EdgeAlpha = new DoubleRadioProperty(this, "EdgeAlpha", 1.0, new String[] {"flat", "interp"}, null);
-		VertexNormals = new ArrayProperty(this, "VertexNormals", null, new String[] {"double"}, 3);
-		AlphaData = new ArrayProperty(this, "AlphaData", null, new String[] {"double", "byte"}, 2);
+		FaceAlpha = new DoubleRadioProperty(this, "FaceAlpha", new String[] {"flat", "interp"}, 1.0);
+		EdgeAlpha = new DoubleRadioProperty(this, "EdgeAlpha", new String[] {"flat", "interp"}, 1.0);
+		VertexNormals = new ArrayProperty(this, "VertexNormals", new String[] {"double"}, 3, null);
+		AlphaData = new ArrayProperty(this, "AlphaData", new String[] {"double", "byte"}, 2, null);
 		AlphaDataMapping = new RadioProperty(this, "AlphaDataMapping", new String[] {"none", "scaled", "direct"}, "scaled");
 
 		ZLimInclude.reset(new Boolean(true));

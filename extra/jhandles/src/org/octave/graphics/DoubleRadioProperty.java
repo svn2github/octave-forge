@@ -28,18 +28,34 @@ public class DoubleRadioProperty extends Property
 {
 	private Set valueSet;
 
-	public DoubleRadioProperty(PropertySet parent, String name)
+	protected DoubleRadioProperty(DoubleRadioProperty p)
 	{
-		this(parent, name, 0, new String[0], null);
+		super(p);
+		this.valueSet = p.valueSet;
 	}
 
-	public DoubleRadioProperty(PropertySet parent, String name, double value, String[] values, String svalue)
+	public DoubleRadioProperty(PropertySet parent, String name, String[] values)
 	{
 		super(parent, name);
-		this.pvalue = (svalue != null ? (Object)svalue : new Double(value));
 		this.valueSet = Collections.synchronizedSet(new HashSet());
 		for (int i=0; i<values.length; i++)
 			this.valueSet.add(values[i]);
+	}
+
+	public DoubleRadioProperty(PropertySet parent, String name, String[] values, double value)
+	{
+		this(parent, name, values, new Double(value));
+	}
+
+	public DoubleRadioProperty(PropertySet parent, String name, String[] values, Object value)
+	{
+		this(parent, name, values);
+		this.pvalue = value;
+	}
+
+	public Property cloneProperty()
+	{
+		return new DoubleRadioProperty(this);
 	}
 
 	protected Object convertValue(Object val) throws PropertyException

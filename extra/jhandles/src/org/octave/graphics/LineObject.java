@@ -51,15 +51,15 @@ public class LineObject extends GraphicObject
 	{
 		super(parent, "line");
 
-		XData = new VectorProperty(this, "XData", xdata, -1);
-		YData = new VectorProperty(this, "YData", ydata, -1);
-		ZData = new VectorProperty(this, "ZData", (zdata == null ? new Matrix() : zdata), -1);
-		LineColor = new ColorProperty(this, "Color", Color.blue);
-		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
-		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
+		XData = new VectorProperty(this, "XData", -1, xdata);
+		YData = new VectorProperty(this, "YData", -1, ydata);
+		ZData = new VectorProperty(this, "ZData", -1, (zdata == null ? new Matrix() : zdata));
+		LineColor = new ColorProperty(this, "Color");
+		LineStyle = new LineStyleProperty(this, "LineStyle");
+		LineWidth = new DoubleProperty(this, "LineWidth");
 		KeyLabel = new StringProperty(this, "KeyLabel", "");
-		Marker = new MarkerProperty(this, "Marker", "none");
-		MarkerSize = new DoubleProperty(this, "MarkerSize", 9.0);
+		Marker = new MarkerProperty(this, "Marker");
+		MarkerSize = new DoubleProperty(this, "MarkerSize");
 
 		if (ZData.getArray().length > 0)
 			ZLimInclude.reset(new Boolean(true));

@@ -23,10 +23,20 @@ package org.octave.graphics;
 
 public class TextProperty extends Property
 {
+	protected TextProperty(TextProperty p)
+	{
+		super(p);
+	}
+
 	public TextProperty(PropertySet parent, String name, TextObject obj)
 	{
 		super(parent, name);
 		pvalue = obj;
+	}
+
+	public Property cloneProperty()
+	{
+		return new TextProperty(this);
 	}
 
 	public Object getInternal()

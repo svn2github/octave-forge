@@ -82,7 +82,7 @@ public class UIPanelObject extends AxesContainer
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
 		ForegroundColor = new ColorProperty(this, "ForegroundColor", Color.black);
 		HighlightColor = new ColorProperty(this, "HighlightColor", Utils.getHighlightColor());
-		Position = new VectorProperty(this, "Position", new double[] {0, 0, 1, 1}, 4);
+		Position = new VectorProperty(this, "Position", 4, new double[] {0, 0, 1, 1});
 		ResizeFcn = new CallbackProperty(this, "ResizeFcn", (String)null);
 		ShadowColor = new ColorProperty(this, "ShadowColor", Utils.getShadowColor());
 		Title = new StringProperty(this, "Title", "");

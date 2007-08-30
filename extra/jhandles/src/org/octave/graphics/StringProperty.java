@@ -23,15 +23,25 @@ package org.octave.graphics;
 
 public class StringProperty extends Property
 {
+	protected StringProperty(StringProperty p)
+	{
+		super(p);
+	}
+
 	public StringProperty(PropertySet parent, String name)
 	{
-		this(parent, name, "");
+		super(parent, name);
 	}
 
 	public StringProperty(PropertySet parent, String name, String value)
 	{
-		super(parent, name);
-		pvalue = value;
+		this(parent, name);
+		this.pvalue = value;
+	}
+
+	public Property cloneProperty()
+	{
+		return new StringProperty(this);
 	}
 
 	public String toString()

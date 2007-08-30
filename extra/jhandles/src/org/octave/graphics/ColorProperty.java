@@ -30,20 +30,21 @@ public class ColorProperty extends Property
 {
 	private Set valueSet;
 
+	protected ColorProperty(ColorProperty p)
+	{
+		super(p);
+		if (p.valueSet != null)
+			this.valueSet = Collections.synchronizedSet(new HashSet(p.valueSet));
+	}
+
 	public ColorProperty(PropertySet parent, String name)
 	{
-		this(parent, name, Color.black);
-	}
-
-	public ColorProperty(PropertySet parent, String name, Color color)
-	{
-		this(parent, name, color, null, null);
-	}
-
-	public ColorProperty(PropertySet parent, String name, Color color, String[] values, String value)
-	{
 		super(parent, name);
-		this.pvalue = (color != null ? (Object)color : (Object)value);
+	}
+
+	public ColorProperty(PropertySet parent, String name, String[] values)
+	{
+		this(parent, name);
 		if (values != null)
 		{
 			this.valueSet = Collections.synchronizedSet(new HashSet());
@@ -52,6 +53,23 @@ public class ColorProperty extends Property
 		}
 		else
 			this.valueSet = null;
+	}
+
+	public ColorProperty(PropertySet parent, String name, Color color)
+	{
+		this(parent, name);
+		this.pvalue = color;
+	}
+
+	public ColorProperty(PropertySet parent, String name, String[] values, Object color)
+	{
+		this(parent, name, values);
+		this.pvalue = color;
+	}
+
+	public Property cloneProperty()
+	{
+		return new ColorProperty(this);
 	}
 
 	protected Object convertValue(Object value) throws PropertyException
@@ -98,6 +116,11 @@ public class ColorProperty extends Property
 		}
 		
 		return c;
+	}
+
+	protected Object getInternal()
+	{
+		return getArray();
 	}
 
 	public Color getColor()

@@ -87,8 +87,8 @@ public class LegendObject extends AxesObject
 				"NorthEastOutside", "NorthWestOutside", "SouthEastOutside", "SouthWestOutside",
 				 "Best", "BestOutside", "none"},
 			"NorthEast");
-		EdgeColor = new ColorProperty(this, "EdgeColor", Color.black, new String[] {"none"}, null);
-		TextColor = new ColorProperty(this, "TextColor", Color.black, new String[] {"none"}, null);
+		EdgeColor = new ColorProperty(this, "EdgeColor", new String[] {"none"}, Color.black);
+		TextColor = new ColorProperty(this, "TextColor", new String[] {"none"}, Color.black);
 		String = new StringArrayProperty(this, "String", new String[0]);
 		Orientation = new RadioProperty(this, "Orientation", new String[] {"vertical", "horizontal"}, "vertical");
 

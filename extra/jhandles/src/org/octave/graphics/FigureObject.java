@@ -91,21 +91,21 @@ public class FigureObject extends AxesContainer
 		NumberTitle = new BooleanProperty(this, "NumberTitle", true);
 		NextPlot = new RadioProperty(this, "NextPlot", new String[] {"new", "add", "replace", "replacechildren"}, "add");
 		FigColor = new ColorProperty(this, "Color", Utils.getBackgroundColor());
-		Colormap = new ArrayProperty(this, "Colormap",
-			new Matrix(RootObject.getInstance().defaultColorMap()), new String[] {"double"}, 2);
+		Colormap = new ArrayProperty(this, "Colormap", new String[] {"double"}, 2,
+			new Matrix(RootObject.getInstance().defaultColorMap()));
 		ResizeFcn = new CallbackProperty(this, "ResizeFcn", (String)null);
 		CloseRequestFcn = new CallbackProperty(this, "CloseRequestFcn", "closereq");
 		double[] amap = new double[64];
 		for (int i=0; i<amap.length; i++)
 			amap[i] = ((double)i)/(amap.length-1);
-		Alphamap = new VectorProperty(this, "Alphamap", amap, -1);
+		Alphamap = new VectorProperty(this, "Alphamap", -1, amap);
 		PaperOrientation = new RadioProperty(this, "PaperOrientation", new String[] {"portrait", "landscape"}, "portrait");
 		IntegerHandle = new BooleanProperty(this, "IntegerHandle", true);
 		Units = new RadioProperty(this, "Units", new String[] {"pixels", "normalized", "inches", "centimeters",
 			"points", "characters"}, "pixels");
 		currentUnits = Units.getValue();
 		Dimension d = Utils.getScreenSize();
-		Position = new VectorProperty(this, "Position", new double[] {1, d.height-500, 600, 500}, 4);
+		Position = new VectorProperty(this, "Position", 4, new double[] {1, d.height-500, 600, 500});
 		Renderer = new NotImplProperty(this, "Renderer", "OpenGL");
 		Toolbar = new NotImplProperty(this, "Toolbar", "figure");
 

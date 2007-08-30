@@ -23,10 +23,25 @@ package org.octave.graphics;
 
 public class CallbackProperty extends Property
 {
-	CallbackProperty(PropertySet parent, String name, Object cmd)
+	protected CallbackProperty(CallbackProperty p)
+	{
+		super(p);
+	}
+
+	public CallbackProperty(PropertySet parent, String name)
 	{
 		super(parent, name);
-		pvalue = Callback.makeCallback(cmd);
+	}
+
+	public CallbackProperty(PropertySet parent, String name, Object cmd)
+	{
+		this(parent, name);
+		this.pvalue = Callback.makeCallback(cmd);
+	}
+
+	public Property cloneProperty()
+	{
+		return new CallbackProperty(this);
 	}
 	
 	protected Object convertValue(Object value) throws PropertyException

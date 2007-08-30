@@ -23,15 +23,26 @@ package org.octave.graphics;
 
 public class StringArrayProperty extends Property
 {
+	protected StringArrayProperty(StringArrayProperty p)
+	{
+		super(p);
+		this.pvalue = getArray().clone();
+	}
+
 	public StringArrayProperty(PropertySet parent, String name)
 	{
-		this(parent, name, new String[0]);
+		super(parent, name);
 	}
 
 	public StringArrayProperty(PropertySet parent, String name, String[] value)
 	{
-		super(parent, name);
-		pvalue = value;
+		this(parent, name);
+		this.pvalue = value;
+	}
+
+	public Property cloneProperty()
+	{
+		return new StringArrayProperty(this);
 	}
 
 	protected Object convertValue(Object value) throws PropertyException

@@ -39,22 +39,33 @@ public class RadioProperty extends Property
 
 	private Map valueSet;
 	//private String value;
-
-	public RadioProperty(PropertySet parent, String name)
+	
+	protected RadioProperty(RadioProperty p)
 	{
-		this(parent, name, new String[0], "");
+		super(p);
+		this.valueSet = p.valueSet;
 	}
 
-	public RadioProperty(PropertySet parent, String name, String[] values, String defaultValue)
+	public RadioProperty(PropertySet parent, String name, String[] values)
 	{
 		super(parent, name);
 		valueSet = Collections.synchronizedMap(new TreeMap(new StringComparator()));
 		for (int i=0; i<values.length; i++)
 			valueSet.put(values[i], values[i]);
+	}
+
+	public RadioProperty(PropertySet parent, String name, String[] values, String defaultValue)
+	{
+		this(parent, name, values);
 		if (valueSet.containsKey(defaultValue))
 			pvalue = defaultValue;
 		else
 			pvalue = (values.length > 0 ? values[0] : "");
+	}
+
+	public Property cloneProperty()
+	{
+		return new RadioProperty(this);
 	}
 
 	protected Object convertValue(Object value) throws PropertyException

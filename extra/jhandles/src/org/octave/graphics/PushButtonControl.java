@@ -36,6 +36,7 @@ public class PushButtonControl
 	public PushButtonControl(UIControlObject obj)
 	{
 		super();
+		setMargin(new Insets(2, 2, 2, 2));
 		addActionListener(this);
 		uiObj = obj;
 

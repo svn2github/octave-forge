@@ -72,6 +72,7 @@ public class FigureObject extends AxesContainer
 	VectorProperty              Position;
 	NotImplProperty             Renderer;
 	CallbackProperty            ResizeFcn;
+	RadioProperty               SelectionType;
 	NotImplProperty             Toolbar;
 	RadioProperty               Units;
 
@@ -108,6 +109,7 @@ public class FigureObject extends AxesContainer
 		Position = new VectorProperty(this, "Position", 4, new double[] {1, d.height-500, 600, 500});
 		Renderer = new NotImplProperty(this, "Renderer", "OpenGL");
 		Toolbar = new NotImplProperty(this, "Toolbar", "figure");
+		SelectionType = new RadioProperty(this, "SelectionType", new String[] {"normal", "extend", "alt", "open"}, "normal");
 
 		listen(Name);
 		listen(NumberTitle);
@@ -171,13 +173,12 @@ public class FigureObject extends AxesContainer
 			setHandle(RootObject.getInstance().getUnusedFigureNumber());
 		else if (!IntegerHandle.isSet() && handle > 0)
 			setHandle(newHandle());
-		updateTitle();
 	}
 	
 	public void validate()
 	{
-		createFigure();
 		updateHandle();
+		createFigure();
 		super.validate();
 		activate();
 	}
@@ -185,8 +186,9 @@ public class FigureObject extends AxesContainer
 	private void updatePosition()
 	{
 		Dimension d = Utils.getScreenSize();
-		double[] pos = new double[] {frame.getX()+1, d.height-frame.getY()-frame.getHeight()+1,
-			frame.getWidth(), frame.getHeight()};
+		Point pt = axPanel.getLocationOnScreen();
+		double[] pos = new double[] {pt.getX()+1, d.height-pt.getY()-axPanel.getHeight()+1,
+			axPanel.getWidth(), axPanel.getHeight()};
 		autoSet(Position, Utils.convertPosition(pos, "pixels", Units.getValue(), null));
 	}
 
@@ -272,7 +274,10 @@ public class FigureObject extends AxesContainer
 		if (p == Name || p == NumberTitle)
 			updateTitle();
 		else if (p == IntegerHandle)
+		{
 			updateHandle();
+			updateTitle();
+		}
 		else if (p == Position && !isAutoMode())
 		{
 			updateFramePosition();
@@ -324,7 +329,9 @@ public class FigureObject extends AxesContainer
 	public void windowClosing(WindowEvent e)
 	{
 		//this.delete();
-		CloseRequestFcn.execute();
+		CloseRequestFcn.execute(new Object[] {
+			new Double(getHandle()),
+			null});
 	}
 
 	public void windowActivated(WindowEvent e)
@@ -354,7 +361,9 @@ public class FigureObject extends AxesContainer
 	public void componentResized(ComponentEvent e)
 	{
 		//System.out.println("resized");
-		ResizeFcn.execute();
+		ResizeFcn.execute(new Object[] {
+			new Double(getHandle()),
+			null});
 	}
 	
 	public void componentShown(ComponentEvent e) {}

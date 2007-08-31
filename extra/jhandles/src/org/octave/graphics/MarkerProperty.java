@@ -27,6 +27,8 @@ import javax.media.opengl.*;
 
 public class MarkerProperty extends RadioProperty
 {
+	private static boolean done_warn = false;
+
 	public class Marker
 	{
 		byte[] data;
@@ -61,7 +63,7 @@ public class MarkerProperty extends RadioProperty
 	{
 		super(parent, name, new String[] {
 			"o", "s", "x", "+", "*", "d",
-			"^", ">", "<", "v", ".", "none"});
+			"^", ">", "<", "v", ".", "p", "h", "none"});
 	}
 
 	public MarkerProperty(PropertySet parent, String name, String marker)
@@ -168,6 +170,13 @@ public class MarkerProperty extends RadioProperty
 			xhot = yhot = size2;
 			g.drawArc(0, 0, size, size, 0, 360);
 			break;
+		case 'h':
+		case 'p':
+			if (!done_warn)
+			{
+				System.out.println("WARNING: pentagram/hexagram markers not supported, using square instead");
+				done_warn = true;
+			}
 		case 's':
 			xhot = yhot = size2;
 			g.drawRect(0, 0, size-1, size-1);

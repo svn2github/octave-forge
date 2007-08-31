@@ -23,6 +23,9 @@ function [ h ] = __jhandles_go_axes (fig, varargin)
 
   if (length (varargin) > 0)
     set (h, varargin{:});
+    if (any (strcmpi (varargin(1:2:end), "position")))
+      set(h, "activepositionproperty", "position");
+    endif
   endif
 
   ax_obj.validate ();

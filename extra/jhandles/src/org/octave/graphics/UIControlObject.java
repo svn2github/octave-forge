@@ -196,7 +196,11 @@ public class UIControlObject extends HandleObject
 	{
 		if (ctrl != null)
 			ctrl.update();
-		return super.get(p);
+
+		if (p == UIString && (Style.is("listbox") || Style.is("popupmenu")))
+			return UIString.toString().split("\\|");
+		else
+			return super.get(p);
 	}
 
 	public void set(Property p, Object value) throws PropertyException

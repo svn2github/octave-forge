@@ -41,6 +41,18 @@ public class LineObject extends GraphicObject
 	{
 		this(parent, xdata, ydata, new double[0]);
 	}
+
+	// TODO: in the end, [x|y|z]data should not be given as constructor argument
+	
+	public LineObject(HandleObject parent, double xdata, double ydata, double zdata)
+	{
+		this(parent, new double[] {xdata}, new double[] {ydata}, new double[] {zdata});
+	}
+	
+	public LineObject(HandleObject parent, double xdata, double ydata, Object zdata)
+	{
+		this(parent, new double[] {xdata}, new double[] {ydata}, new double[0]);
+	}
 	
 	public LineObject(HandleObject parent, double[] xdata, double[] ydata, double[] zdata)
 	{

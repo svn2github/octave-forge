@@ -34,15 +34,13 @@ public class ListBoxControl
 	UIControlObject uiObj;
 	HandleNotifier uiNotifier;
 	JList list;
-	DefaultListModel model;
 
 	public ListBoxControl(UIControlObject obj)
 	{
 		super();
 		uiObj = obj;
 
-		model = new DefaultListModel();
-		list = new JList(model);
+		list = new JList();
 		list.getSelectionModel().addListSelectionListener(this);
 		getViewport().setView(list);
 
@@ -65,9 +63,7 @@ public class ListBoxControl
 	private void updateItems()
 	{
 		String[] items = uiObj.UIString.toString().split("\\|");
-		model.clear();
-		for (int i=0; i<items.length; i++)
-			model.addElement(items[i]);
+		list.setListData(items);
 	}
 
 	private void updateSelectionMode()

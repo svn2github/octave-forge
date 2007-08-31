@@ -157,7 +157,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	public void delete()
 	{
 		BeingDeleted.reset("on");
-		DeleteFcn.execute();
+		DeleteFcn.execute(new Object[] {
+			new Double(getHandle()),
+			null});
 		removeHandleObject(getHandle());
 
 		super.delete();
@@ -201,7 +203,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 				parent.childValidated(this);
 		}
 
-		CreateFcn.execute();
+		CreateFcn.execute(new Object[] {
+			new Double(getHandle()),
+			null});
 	}
 
 	protected void childValidated(HandleObject child)

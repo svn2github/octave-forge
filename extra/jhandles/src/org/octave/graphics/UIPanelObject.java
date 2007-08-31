@@ -23,11 +23,13 @@ package org.octave.graphics;
 
 import org.octave.Matrix;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.util.Iterator;
 
 public class UIPanelObject extends AxesContainer
+	implements ComponentListener
 {
 	private class PanelWrapper extends Panel
 		implements Positionable
@@ -167,6 +169,7 @@ public class UIPanelObject extends AxesContainer
 				tPos.contains("right") ? TitledBorder.RIGHT :
 				TitledBorder.LEFT);
 		panel.setBorder(border);
+		panel.addComponentListener(this);
 
 		Container pContainer = (Container)getParentComponent();
 		pContainer.add(panelWrapper, 0);
@@ -228,7 +231,11 @@ public class UIPanelObject extends AxesContainer
 				panelWrapper.getParent().validate();
 			}
 			else if (p == Title)
+			{
 				border.setTitle(Title.toString());
+				panel.doLayout();
+				panel.validate();
+			}
 			else if (p == TitlePosition)
 			{
 				String loc = TitlePosition.getValue().toLowerCase();
@@ -262,4 +269,19 @@ public class UIPanelObject extends AxesContainer
 	{
 		return panel;
 	}
+
+	/* ComponentListener interface */
+
+	public void componentHidden(ComponentEvent e) {}
+	
+	public void componentMoved(ComponentEvent e) {}
+	
+	public void componentResized(ComponentEvent e)
+	{
+		ResizeFcn.execute(new Object[] {
+			new Double(getHandle()),
+			null});
+	}
+	
+	public void componentShown(ComponentEvent e) {}
 }

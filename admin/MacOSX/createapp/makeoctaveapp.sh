@@ -17,10 +17,10 @@
 
 
 # You must install the Octave.app at least on your desktop - you need
-# read/write permission for installing packages with octave's 'pkg'
+# read/write permission for installing packages with Octave's 'pkg'
 # command.
 
-# This is the binary of octave that has been created. The absolute
+# This is the binary of Octave that has been created. The absolute
 # path and the version number need to be given.
 OCTBIN=/tmp/dependencies-ppc/bin/octave-2.9.13
 
@@ -39,7 +39,7 @@ DEPSDIR=/tmp/dependencies-ppc
 # refcard-legal.pdf and refcard-letter.pdf.
 PDFDOCS=~/tmp/octave-ppc/solvedeps/octave-2.9.13/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
 
-OCEXTRAS=~/Savings/gnuplot-4.2.0-ppc.dmg
+OCEXTRAS=~/Savings/gnuplot-4.2.2-ppc.dmg
 
 # This is the temporary directory that is used for installing all
 # files and libraries that are then packed into the

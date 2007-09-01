@@ -73,6 +73,20 @@ function [v, lambda, c] = condeig (a)
     error ("condeig: a must be a square matrix");
   endif
 
+  if (issparse (a) && (nargout == 0 || nargout == 1) && exist ("svds", "file"))
+    ## Try to use svds to calculate the condition as it will typically be much 
+    ## faster than calling eig as only the smallest and largest eigenvalue are
+    ## calculated.
+    try
+      s0 = svds (a, 1, 0);
+      v = svds (a, 1) / s0;
+    catch
+      ## Caught an error as there is a singular value exactly at Zero!!
+      v = Inf;
+    end_try_catch
+    return;
+  endif
+
   # Right eigenvectors
   [v, lambda] = eig (a);
 

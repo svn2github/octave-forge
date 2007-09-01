@@ -55,7 +55,7 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Arno Onken <whyly@whyly.org>
+## Author: Arno Onken <asnelt@asnelt.org>
 ## Description: Condition numbers of eigenvalues
 
 function [v, lambda, c] = condeig (a)

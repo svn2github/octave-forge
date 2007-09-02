@@ -64,7 +64,7 @@ function __jhandles_add_property (h, pname, ptype, opts, varargin)
         if (ischar (defval) && ! any (strcmp (vals, defval)) && (length (defval) > 1 || isempty (findstr (defval, "rgbywkmc"))))
           error ("invalid default value for colorradio property");
         endif
-        p = java_new ("org.octave.graphics.ColorProperty", parent, pname, [], vals, []);
+        p = java_new ("org.octave.graphics.ColorProperty", parent, pname, vals);
         p.set (defval, true);
       else
         error ("colorradio property values are missing");

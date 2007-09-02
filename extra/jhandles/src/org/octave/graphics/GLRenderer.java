@@ -451,12 +451,19 @@ public class GLRenderer implements Renderer
 		private GL gl;
 		private VertexData v0;
 		private boolean fill;
+		private int index;
 
 		public PatchTessellator(GL gl, int colorMode, int lightMode)
+		{
+			this(gl, colorMode, lightMode, 0);
+		}
+
+		public PatchTessellator(GL gl, int colorMode, int lightMode, int index)
 		{
 			this.gl = gl;
 			this.colorMode = colorMode;
 			this.lightMode = lightMode;
+			this.index = index;
 		}
 
 		public void beginData(int mode, Object pData)
@@ -469,7 +476,7 @@ public class GLRenderer implements Renderer
 				gl.glShadeModel(GL.GL_FLAT);
 			if (mode != GL.GL_LINE_LOOP)
 			{
-				gl.glPolygonOffset(po, po);
+				gl.glPolygonOffset(po+index, po+index);
 				setPolygonOffset(true);
 				fill = true;
 			}
@@ -508,10 +515,12 @@ public class GLRenderer implements Renderer
 		public void combine(double[] coords, Object[] d, float[] w, Object[] outData)
 		{
 			VertexData v0 = (VertexData)d[0], v1 = (VertexData)d[1], v2 = (VertexData)d[2], v3 = (VertexData)d[3];
+			/*
 			System.out.println(v0);
 			System.out.println(v1);
 			System.out.println(v2);
 			System.out.println(v3);
+			*/
 			if (v0 == null || v1 == null || v2 == null || v3 == null)
 				return;
 			outData[0] = new VertexData(
@@ -883,7 +892,8 @@ public class GLRenderer implements Renderer
 					gl.glEnable(GL.GL_LIGHTING);
 
 				GLUtessellator tess = getTess(true);
-				GLUtessellatorCallback cb = new PatchTessellator(gl, faceColorMode, faceLightMode);
+				GLUtessellatorCallback cb = new PatchTessellator(gl, faceColorMode, faceLightMode,
+					patch.__Index__.intValue());
 						
 				glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN_DATA,  cb);
 				glu.gluTessCallback(tess, GLU.GLU_TESS_END,  cb);

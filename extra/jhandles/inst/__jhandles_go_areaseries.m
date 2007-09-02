@@ -49,7 +49,7 @@ function [ h ] = __jhandles_go_areaseries (ax, X, Y, bv, varargin)
     fvc = k * ones (size (vv,1), 1);
     hp = patch (hh, "Faces", fv, "Vertices", vv, "FaceVertexCData", fvc, ...
       "FaceColor", hh_v.facecolor, "EdgeColor", hh_v.edgecolor, "LineStyle", hh_v.linestyle, ...
-      "LineWidth", hh_v.linewidth);
+      "LineWidth", hh_v.linewidth, "__Index__", k-1);
     h = [h hh];
   endfor
 

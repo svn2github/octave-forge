@@ -29,6 +29,7 @@ public class PatchObject extends GraphicObject
 	private int[] faceCount;
 
 	/* Properties */
+	DoubleProperty __Index__;
 	ArrayProperty Faces;
 	ArrayProperty Vertices;
 	ArrayProperty FaceVertexCData;
@@ -76,6 +77,8 @@ public class PatchObject extends GraphicObject
 		SpecularStrength = new DoubleProperty(this, "SpecularStrength", 0.9);
 		SpecularExponent = new DoubleProperty(this, "SpecularExponent", 10);
 		VertexNormals = new ArrayProperty(this, "VertexNormals", new String[] {"double"}, 2, null);
+		__Index__ = new DoubleProperty(this, "__Index__", 0);
+		__Index__.setVisible(false);
 
 		ZLimInclude.reset(new Boolean(true));
 		CLimInclude.reset(new Boolean(true));

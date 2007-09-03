@@ -288,4 +288,16 @@ public class Utils
 	{
 		return new ImageIcon(Utils.class.getResource("/org/octave/graphics/images/" + name + ".png"));
 	}
+
+	public static boolean isNaNorInf(double x)
+	{
+		return (Double.isInfinite(x) || Double.isNaN(x));
+	}
+
+	public static boolean isNaNorInf(double x, double y, double z)
+	{
+		return (Double.isInfinite(x) || Double.isNaN(x) ||
+				Double.isInfinite(y) || Double.isNaN(y) ||
+				Double.isInfinite(z) || Double.isNaN(z));
+	}
 }

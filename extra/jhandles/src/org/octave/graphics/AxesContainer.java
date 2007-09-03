@@ -58,7 +58,8 @@ public abstract class AxesContainer extends HandleObject
 			while (it.hasNext())
 			{
 				HandleObject hObj = (HandleObject)it.next();
-				if (hObj instanceof AxesObject && hObj.isValid())
+				if (hObj instanceof AxesObject && hObj.isValid() &&
+						((AxesObject)hObj).getBoundingBox().contains(pt.x, canvas.getHeight()-pt.y))
 					return (AxesObject)hObj;
 			}
 		}

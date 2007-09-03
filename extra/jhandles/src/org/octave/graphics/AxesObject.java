@@ -765,10 +765,10 @@ public class AxesObject extends HandleObject
 
 		xticklen = yticklen = zticklen = 7;
 
-		double xtickoffset = Math.max(1.0, xticklen);
-		double ytickoffset = Math.max(1.0, yticklen);
-		double ztickoffset = Math.max(1.0, zticklen);
 		double tickdir = (TickDir.is("in") ? -1 : 1);
+		double xtickoffset = (mode2d && tickdir < 0 ? 0 : Math.max(1.0, xticklen)) + 5;
+		double ytickoffset = (mode2d && tickdir < 0 ? 0 : Math.max(1.0, yticklen)) + 5;
+		double ztickoffset = (mode2d && tickdir < 0 ? 0 : Math.max(1.0, zticklen)) + 5;
 
 		boolean xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
 		boolean boxSet = Box.isSet();

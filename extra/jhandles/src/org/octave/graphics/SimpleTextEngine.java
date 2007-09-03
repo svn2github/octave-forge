@@ -293,7 +293,7 @@ class SimpleTextEngine
 	public static Dimension draw(RenderCanvas comp, String txt, double[] pos, int halign, int valign)
 	{
 		// create internal image
-		int margin = 5;
+		int margin = 0;
 		Content content = new Content(txt);
 		Rectangle r = (Rectangle)content.layout(comp, comp.getFont()).clone();
 		r.width += 2*margin;

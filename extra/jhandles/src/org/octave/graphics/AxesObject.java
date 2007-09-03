@@ -664,6 +664,7 @@ public class AxesObject extends HandleObject
 			listen(go.YLim);
 			listen(go.ZLim);
 			listen(go.CLim);
+			listen(go.Visible);
 		}
 	}
 
@@ -1567,7 +1568,7 @@ public class AxesObject extends HandleObject
 				for (int i=0; i<Children.size(); i++)
 				{
 					GraphicObject go = (GraphicObject)Children.elementAt(i);
-					if (((BooleanProperty)go.getProperty(LimInclude)).isSet())
+					if (go.Visible.isSet() && ((BooleanProperty)go.getProperty(LimInclude)).isSet())
 					{
 						double[] _lim = ((VectorProperty)go.getProperty(Lim)).getArray();
 						lim[0] = Math.min(_lim[0], lim[0]);
@@ -2445,6 +2446,8 @@ public class AxesObject extends HandleObject
 				autoScaleZ();
 			else if (name.equals("CLim"))
 				autoScaleC();
+			else if (name.equals("Visible"))
+				autoScale();
 			autoCamera();
 		}
 	}

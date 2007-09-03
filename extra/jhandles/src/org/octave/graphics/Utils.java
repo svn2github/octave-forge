@@ -130,14 +130,14 @@ public class Utils
 		if (FontUnits.is("points"))
 			fs = FontSize.floatValue();
 		else if (FontUnits.is("normalized"))
-			fs = (float)(FontSize.doubleValue()*h);
+			fs = (float)(FontSize.doubleValue()*h*72.0/Utils.getScreenResolution());
 		else if (FontUnits.is("inches"))
 			fs = FontSize.floatValue()*72;
 		else if (FontUnits.is("centimeters"))
 			fs = (FontSize.floatValue()/2.54f)*72;
 		else
 			System.out.println("Warning: ignoring FontUnits (" + FontUnits.getValue() + ")");
-		map.put(TextAttribute.SIZE, new Float(fs));
+		map.put(TextAttribute.SIZE, new Float(Math.round(fs*Utils.getScreenResolution()/72.0)));
 		
 		return new Font(map);
 	}

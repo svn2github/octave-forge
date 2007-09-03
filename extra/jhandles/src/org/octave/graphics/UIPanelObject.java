@@ -78,7 +78,7 @@ public class UIPanelObject extends AxesContainer
 			"beveledin", "beveledout", "line"}, "etchedin");
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
-		FontSize = new DoubleProperty(this, "FontSize", 11);
+		FontSize = new DoubleProperty(this, "FontSize", 8);
 		FontUnits = new RadioProperty(this, "FontUnits",
 			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");

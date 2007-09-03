@@ -82,7 +82,7 @@ public class TextObject extends GraphicObject
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "oblique", "italic"}, "normal");
 		FontName = new StringProperty(this, "FontName", "Helvetica");
-		FontSize = new DoubleProperty(this, "FontSize", 11);
+		FontSize = new DoubleProperty(this, "FontSize", 10);
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
 		FontUnits = new RadioProperty(this, "FontUnits", new String[] {"points", "normalized", "inches",
 			"centimeters", "pixels"}, "points");
@@ -127,7 +127,7 @@ public class TextObject extends GraphicObject
 		if (EdgeColor.isSet())
 			margin += LineWidth.intValue();
 
-		Font fnt = Utils.getFont(FontName, FontSize, FontUnits, FontAngle, FontWeight, 1.0);
+		Font fnt = Utils.getFont(FontName, FontSize, FontUnits, FontAngle, FontWeight, comp.getHeight());
 
 		r = (Rectangle)content.layout(comp, fnt).clone();
 		r.x -= margin;

@@ -96,7 +96,7 @@ public class Factory extends PropertySet
 		// Extent
 		new RadioProperty(this, "DefaultUIControlFontAngle", new String[] {"normal", "italic", "oblique"}, "normal");
 		new StringProperty(this, "DefaultUIControlFontName", "Helvetica");
-		new DoubleProperty(this, "DefaultUIControlFontSize", 11);
+		new DoubleProperty(this, "DefaultUIControlFontSize", 8);
 		new RadioProperty(this, "DefaultUIControlFontUnits",
 			new String[] {"points", "normalized", "inches", "centimeters", "pixels"}, "points");
 		new RadioProperty(this, "DefaultUIControlFontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");

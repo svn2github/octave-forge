@@ -39,19 +39,24 @@ public class TextObject extends GraphicObject
 	private String currentUnits;
 
 	/* properties */
-	DoubleProperty Rotation;
-	RadioProperty HAlign;
-	RadioProperty VAlign;
-	VectorProperty Position;
-	BooleanProperty PositionMode;
-	RadioProperty Units;
-	ColorProperty TextColor;
-	StringProperty TextString;
 	ColorProperty BackgroundColor;
-	LineStyleProperty LineStyle;
+	ColorProperty TextColor /* Color */;
 	ColorProperty EdgeColor;
+	RadioProperty FontAngle;
+	StringProperty FontName;
+	DoubleProperty FontSize;
+	RadioProperty FontWeight;
+	RadioProperty FontUnits;
+	RadioProperty HAlign;
+	LineStyleProperty LineStyle;
 	DoubleProperty LineWidth;
 	DoubleProperty Margin;
+	VectorProperty Position;
+	BooleanProperty PositionMode;
+	DoubleProperty Rotation;
+	StringProperty TextString;
+	RadioProperty Units;
+	RadioProperty VAlign;
 
 	public TextObject(HandleObject parent, String txt, double[] pos)
 	{
@@ -75,6 +80,12 @@ public class TextObject extends GraphicObject
 		LineWidth = new DoubleProperty(this, "LineWidth", 1.0);
 		Margin = new DoubleProperty(this, "Margin", 2.0);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
+		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "oblique", "italic"}, "normal");
+		FontName = new StringProperty(this, "FontName", "Helvetica");
+		FontSize = new DoubleProperty(this, "FontSize", 11);
+		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
+		FontUnits = new RadioProperty(this, "FontUnits", new String[] {"points", "normalized", "inches",
+			"centimeters", "pixels"}, "points");
 
 		listen(Units);
 		listen(TextString);
@@ -86,6 +97,11 @@ public class TextObject extends GraphicObject
 		listen(LineStyle);
 		listen(LineWidth);
 		listen(Position);
+		listen(FontAngle);
+		listen(FontName);
+		listen(FontSize);
+		listen(FontWeight);
+		listen(FontUnits);
 	}
 
 	public void validate()
@@ -111,7 +127,9 @@ public class TextObject extends GraphicObject
 		if (EdgeColor.isSet())
 			margin += LineWidth.intValue();
 
-		r = (Rectangle)content.layout(comp, comp.getFont()).clone();
+		Font fnt = Utils.getFont(FontName, FontSize, FontUnits, FontAngle, FontWeight, 1.0);
+
+		r = (Rectangle)content.layout(comp, fnt).clone();
 		r.x -= margin;
 		r.y -= margin;
 		r.width += 2*margin;
@@ -160,7 +178,7 @@ public class TextObject extends GraphicObject
 			g.setStroke(oldS);
 		}
 		g.setColor(TextColor.getColor());
-		g.setFont(comp.getFont());
+		g.setFont(fnt);
 		content.render(g);
 		g.dispose();
 		com.sun.opengl.util.ImageUtil.flipImageVertically(img);
@@ -243,7 +261,8 @@ public class TextObject extends GraphicObject
 			data = null;
 		}
 		else if (p == Rotation || p == TextColor || p == BackgroundColor || p == EdgeColor ||
-				 p == Margin || p == LineStyle || p == LineWidth)
+				 p == Margin || p == LineStyle || p == LineWidth || p == FontAngle ||
+				 p == FontName || p == FontSize || p == FontWeight)
 			data = null;
 
 		if (p == Units || p == Position)

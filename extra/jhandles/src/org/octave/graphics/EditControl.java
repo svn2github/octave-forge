@@ -24,18 +24,26 @@ package org.octave.graphics;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.Document;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class EditControl
 	extends JTextField
-	implements UIControl, ActionListener, HandleNotifier.Sink
+	implements UIControl, ActionListener, HandleNotifier.Sink,
+			   DocumentListener, FocusListener
 {
 	UIControlObject uiObj;
 	HandleNotifier uiNotifier;
+
+	private boolean contentChanged = false;
 
 	public EditControl(UIControlObject obj)
 	{
 		super();
 		addActionListener(this);
+		addFocusListener(this);
+		getDocument().addDocumentListener(this);
 		uiObj = obj;
 
 		setAlignment();
@@ -78,6 +86,37 @@ public class EditControl
 	public void actionPerformed(ActionEvent event)
 	{
 		uiObj.controlActivated(new UIControlEvent(this));
+		contentChanged = false;
+	}
+
+	/* DocumentListener interface */
+
+	public void changedUpdate(DocumentEvent e) {}
+
+	public void insertUpdate(DocumentEvent e)
+	{
+		contentChanged = true;
+	}
+
+	public void removeUpdate(DocumentEvent e)
+	{
+		contentChanged = true;
+	}
+
+	/* FocusListener interface */
+
+	public void focusGained(FocusEvent e)
+	{
+		contentChanged = false;
+	}
+
+	public void focusLost(FocusEvent e)
+	{
+		if (contentChanged)
+		{
+			uiObj.controlActivated(new UIControlEvent(this));
+			contentChanged = false;
+		}
 	}
 
 	/* HandleNotifier.Sink interface */

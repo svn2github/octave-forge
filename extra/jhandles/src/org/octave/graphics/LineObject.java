@@ -115,28 +115,34 @@ public class LineObject extends GraphicObject
 
 		for (int i=0; i<n; i++)
 		{
-			if (xdata[i] < xmin) xmin = xdata[i];
-			else if (xdata[i] > xmax) xmax = xdata[i];
-			if (xdata[i] > 0)
+			if (!Utils.isNaNorInf(xdata[i]))
 			{
-				if (xdata[i] < xmin2) xmin2 = xdata[i];
-				else if (xdata[i] > xmax2) xmax2 = xdata[i];
+				if (xdata[i] < xmin) xmin = xdata[i];
+				if (xdata[i] > xmax) xmax = xdata[i];
+				if (xdata[i] > 0)
+				{
+					if (xdata[i] < xmin2) xmin2 = xdata[i];
+					if (xdata[i] > xmax2) xmax2 = xdata[i];
+				}
 			}
-			if (ydata[i] < ymin) ymin = ydata[i];
-			else if (ydata[i] > ymax) ymax = ydata[i];
-			if (ydata[i] > 0)
+			if (!Utils.isNaNorInf(ydata[i]))
 			{
-				if (ydata[i] < ymin2) ymin2 = ydata[i];
-				else if (ydata[i] > ymax2) ymax2 = ydata[i];
+				if (ydata[i] < ymin) ymin = ydata[i];
+				if (ydata[i] > ymax) ymax = ydata[i];
+				if (ydata[i] > 0)
+				{
+					if (ydata[i] < ymin2) ymin2 = ydata[i];
+					if (ydata[i] > ymax2) ymax2 = ydata[i];
+				}
 			}
-			if (hasZ)
+			if (hasZ && !Utils.isNaNorInf(zdata[i]))
 			{
 				if (zdata[i] < zmin) zmin = zdata[i];
-				else if (zdata[i] > zmax) zmax = zdata[i];
+				if (zdata[i] > zmax) zmax = zdata[i];
 				if (zdata[i] > 0)
 				{
 					if (zdata[i] < zmin2) zmin2 = zdata[i];
-					else if (zdata[i] > zmax2) zmax2 = zdata[i];
+					if (zdata[i] > zmax2) zmax2 = zdata[i];
 				}
 			}
 		}

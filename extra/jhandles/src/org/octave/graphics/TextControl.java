@@ -40,6 +40,7 @@ public class TextControl
 		setText(stringToHTML(obj.UIString.toString()));
 		setVerticalAlignment(SwingConstants.TOP);
 		setHorizontalAlignment(getAlignment());
+		setOpaque(true);
 
 		uiNotifier = new HandleNotifier();
 		uiNotifier.addSink(this);

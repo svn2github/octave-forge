@@ -112,25 +112,25 @@ public class SurfaceObject extends GraphicObject
 			for (int j=0; j<n; j++)
 			{
 				if (x[i][j] < xmin) xmin = x[i][j];
-				else if (x[i][j] > xmax) xmax = x[i][j];
+				if (x[i][j] > xmax) xmax = x[i][j];
 				if (x[i][j] > 0)
 				{
 					if (x[i][j] < xmin2) xmin2 = x[i][j];
-					else if (x[i][j] > xmax2) xmax2 = x[i][j];
+					if (x[i][j] > xmax2) xmax2 = x[i][j];
 				}
 				if (y[i][j] < ymin) ymin = y[i][j];
-				else if (y[i][j] > ymax) ymax = y[i][j];
+				if (y[i][j] > ymax) ymax = y[i][j];
 				if (y[i][j] > 0)
 				{
 					if (y[i][j] < ymin2) ymin2 = y[i][j];
-					else if (y[i][j] > ymax2) ymax2 = y[i][j];
+					if (y[i][j] > ymax2) ymax2 = y[i][j];
 				}
 				if (z[i][j] < zmin) zmin = z[i][j];
-				else if (z[i][j] > zmax) zmax = z[i][j];
+				if (z[i][j] > zmax) zmax = z[i][j];
 				if (z[i][j] > 0)
 				{
 					if (z[i][j] < zmin2) zmin2 = z[i][j];
-					else if (z[i][j] > zmax2) zmax2 = z[i][j];
+					if (z[i][j] > zmax2) zmax2 = z[i][j];
 				}
 			}
 

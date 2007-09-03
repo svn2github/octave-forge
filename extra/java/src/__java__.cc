@@ -963,6 +963,23 @@ static octave_value box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
               retval = Matrix();
           }
 	  }
+
+      if (retval.is_undefined ())
+        {
+          cls = jni_env->FindClass ("[Ljava/lang/String;");
+          if (jni_env->IsInstanceOf (jobj, cls))
+            {
+              jobjectArray jarr = reinterpret_cast<jobjectArray> (jobj);
+              int len = jni_env->GetArrayLength (jarr), cols = 0;
+              Cell m(len, 1);
+              for (int i=0; i<len; i++)
+                {
+                  jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->GetObjectArrayElement (jarr, i)));
+                  m(i) = jstring_to_string (jni_env, js);
+                }
+              retval = m;
+            }
+        }
     }
 
   if (retval.is_undefined ())

@@ -1,6 +1,6 @@
 diff -urN readline-5.2/README.msvc readline-5.2-new/README.msvc
 --- readline-5.2/README.msvc	1970-01-01 01:00:00.000000000 +0100
-+++ readline-5.2-new/README.msvc	2007-06-02 08:40:06.000000000 +0200
++++ readline-5.2-new/README.msvc	2007-09-04 20:54:36.062500000 +0200
 @@ -0,0 +1,16 @@
 +Compilation instruction under MSVC
 +----------------------------------
@@ -20,7 +20,7 @@ diff -urN readline-5.2/README.msvc readline-5.2-new/README.msvc
 +   it is more usual to install them in $prefix/bin.
 diff -urN readline-5.2/bind.c readline-5.2-new/bind.c
 --- readline-5.2/bind.c	2006-07-27 15:44:10.000000000 +0200
-+++ readline-5.2-new/bind.c	2007-06-02 08:40:06.031250000 +0200
++++ readline-5.2-new/bind.c	2007-09-04 20:54:36.078125000 +0200
 @@ -841,7 +841,7 @@
        filename = SYS_INPUTRC;
      }
@@ -32,7 +32,7 @@ diff -urN readline-5.2/bind.c readline-5.2-new/bind.c
    filename = "~/_inputrc";
 diff -urN readline-5.2/complete.c readline-5.2-new/complete.c
 --- readline-5.2/complete.c	2006-07-28 17:35:49.000000000 +0200
-+++ readline-5.2-new/complete.c	2007-06-02 08:40:06.062500000 +0200
++++ readline-5.2-new/complete.c	2007-09-04 20:54:36.109375000 +0200
 @@ -55,6 +55,66 @@
  #include "posixdir.h"
  #include "posixstat.h"
@@ -186,7 +186,7 @@ diff -urN readline-5.2/complete.c readline-5.2-new/complete.c
          {
 diff -urN readline-5.2/config.h.in readline-5.2-new/config.h.in
 --- readline-5.2/config.h.in	2006-09-12 22:02:00.000000000 +0200
-+++ readline-5.2-new/config.h.in	2007-06-02 08:40:06.093750000 +0200
++++ readline-5.2-new/config.h.in	2007-09-04 20:54:36.125000000 +0200
 @@ -257,7 +257,7 @@
  #  undef HAVE_STRCOLL
  #endif
@@ -198,7 +198,7 @@ diff -urN readline-5.2/config.h.in readline-5.2-new/config.h.in
  #else
 diff -urN readline-5.2/display.c readline-5.2-new/display.c
 --- readline-5.2/display.c	2006-09-14 20:20:12.000000000 +0200
-+++ readline-5.2-new/display.c	2007-06-02 08:40:06.140625000 +0200
++++ readline-5.2-new/display.c	2007-09-04 20:54:36.140625000 +0200
 @@ -55,6 +55,11 @@
  #include "rlprivate.h"
  #include "xmalloc.h"
@@ -386,7 +386,7 @@ diff -urN readline-5.2/display.c readline-5.2-new/display.c
  #else
 diff -urN readline-5.2/histfile.c readline-5.2-new/histfile.c
 --- readline-5.2/histfile.c	2006-03-31 22:48:43.000000000 +0200
-+++ readline-5.2-new/histfile.c	2007-06-02 08:40:06.156250000 +0200
++++ readline-5.2-new/histfile.c	2007-09-04 20:54:36.156250000 +0200
 @@ -134,7 +134,7 @@
    return_val = (char *)xmalloc (2 + home_len + 8); /* strlen(".history") == 8 */
    strcpy (return_val, home);
@@ -398,7 +398,7 @@ diff -urN readline-5.2/histfile.c readline-5.2-new/histfile.c
    strcpy (return_val + home_len + 1, ".history");
 diff -urN readline-5.2/history.c readline-5.2-new/history.c
 --- readline-5.2/history.c	2006-05-21 19:39:41.000000000 +0200
-+++ readline-5.2-new/history.c	2007-06-02 08:40:06.171875000 +0200
++++ readline-5.2-new/history.c	2007-09-04 20:54:36.171875000 +0200
 @@ -49,6 +49,10 @@
  
  #include "xmalloc.h"
@@ -412,7 +412,7 @@ diff -urN readline-5.2/history.c readline-5.2-new/history.c
  
 diff -urN readline-5.2/history.h readline-5.2-new/history.h
 --- readline-5.2/history.h	2003-07-31 14:38:44.000000000 +0200
-+++ readline-5.2-new/history.h	2007-06-02 08:40:06.203125000 +0200
++++ readline-5.2-new/history.h	2007-09-04 20:54:36.203125000 +0200
 @@ -68,93 +68,93 @@
  
  /* Begin a session in which the history functions might be used.  This
@@ -648,7 +648,7 @@ diff -urN readline-5.2/history.h readline-5.2-new/history.h
  }
 diff -urN readline-5.2/input.c readline-5.2-new/input.c
 --- readline-5.2/input.c	2006-08-16 21:15:16.000000000 +0200
-+++ readline-5.2-new/input.c	2007-06-03 16:11:38.156250000 +0200
++++ readline-5.2-new/input.c	2007-09-04 21:53:04.140625000 +0200
 @@ -61,6 +61,11 @@
  #include <stdio.h>
  #include <errno.h>
@@ -661,7 +661,31 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
  #if !defined (errno)
  extern int errno;
  #endif /* !errno */
-@@ -221,13 +226,49 @@
+@@ -102,6 +107,9 @@
+ static int pop_index, push_index;
+ static unsigned char ibuffer[512];
+ static int ibuffer_len = sizeof (ibuffer) - 1;
++#ifdef _MSC_VER
++static HANDLE tty_reader_thread = NULL;
++#endif
+ 
+ #define any_typein (push_index != pop_index)
+ 
+@@ -164,6 +172,13 @@
+   return (push_index != pop_index);
+ }
+ 
++#ifdef _MSC_VER
++DWORD WINAPI tty_reader_proc (LPVOID param)
++{
++  return getch();
++}
++#endif
++
+ /* If a character is available to be read, then read it and stuff it into
+    IBUFFER.  Otherwise, just return.  Returns number of characters read
+    (0 if none available) and -1 on error (EIO). */
+@@ -221,13 +236,67 @@
      }
  #endif /* O_NDELAY */
  
@@ -676,6 +700,7 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
 +#if defined (_MSC_VER)
 +   if (isatty (tty))
 +     {
++#if 0
 +       HANDLE hInput = _get_osfhandle (tty);
 +       INPUT_RECORD rec;
 +       DWORD evRead, waitResult;
@@ -701,6 +726,23 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
 +	     }
 +         }
 +       while (1);
++#else
++       DWORD waitResult;
++
++       if (tty_reader_thread == NULL)
++         tty_reader_thread = CreateThread (NULL, 0, tty_reader_proc, NULL, 0, NULL);
++       waitResult = WaitForMultipleObjects (1, &tty_reader_thread, FALSE, _keyboard_input_timeout/1000);
++       if (waitResult == WAIT_TIMEOUT)
++         return 0;
++       else if (waitResult == WAIT_OBJECT_0)
++         {
++           chars_avail = 1;
++           GetExitCodeThread (tty_reader_thread, (LPDWORD)&input);
++           tty_reader_thread = NULL;
++         }
++       else
++         return -1;
++#endif
 +     }
 +   else
 +     {
@@ -712,12 +754,13 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
    /* If there's nothing available, don't waste time trying to read
       something. */
    if (chars_avail <= 0)
-@@ -459,8 +500,73 @@
+@@ -459,8 +528,97 @@
      {
  #if defined (__MINGW32__)
        if (isatty (fileno (stream)))
 +#if defined (_MSC_VER)
 +        {
++#if 0
 +          INPUT_RECORD rec;
 +	  DWORD evRead;
 +	  HANDLE hInput = _get_osfhandle (fileno (stream));
@@ -778,6 +821,29 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
 +		  break;
 +	      }
 +	  } while (1);
++#else
++          if (tty_reader_thread != NULL)
++            {
++              /* this may happen after resetting the event proc to NULL
++               * while the reader thread was still running
++               */
++              DWORD waitResult;
++
++              waitResult = WaitForSingleObject (tty_reader_thread, INFINITE);
++              if (waitResult == WAIT_OBJECT_0)
++                {
++                  int ch;
++
++                  GetExitCodeThread (tty_reader_thread, (LPDWORD)&ch);
++                  tty_reader_thread = NULL;
++                  return ch;
++                }
++              else
++                return (EOF);
++            }
++          else
++            return (getch ());
++#endif
 +	}
 +#else
  	return (getch ());
@@ -788,7 +854,7 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
        if (result == sizeof (unsigned char))
 diff -urN readline-5.2/keymaps.h readline-5.2-new/keymaps.h
 --- readline-5.2/keymaps.h	2001-11-20 18:42:49.000000000 +0100
-+++ readline-5.2-new/keymaps.h	2007-06-02 08:40:06.234375000 +0200
++++ readline-5.2-new/keymaps.h	2007-09-04 20:54:36.234375000 +0200
 @@ -66,35 +66,35 @@
  #define ISKMAP 1
  #define ISMACR 2
@@ -836,7 +902,7 @@ diff -urN readline-5.2/keymaps.h readline-5.2-new/keymaps.h
  }
 diff -urN readline-5.2/nls.c readline-5.2-new/nls.c
 --- readline-5.2/nls.c	2002-10-19 04:05:50.000000000 +0200
-+++ readline-5.2-new/nls.c	2007-06-03 16:07:09.687500000 +0200
++++ readline-5.2-new/nls.c	2007-09-04 20:54:36.250000000 +0200
 @@ -44,6 +44,9 @@
  #endif
  
@@ -872,7 +938,7 @@ diff -urN readline-5.2/nls.c readline-5.2-new/nls.c
      {
 diff -urN readline-5.2/parens.c readline-5.2-new/parens.c
 --- readline-5.2/parens.c	2004-03-04 04:39:51.000000000 +0100
-+++ readline-5.2-new/parens.c	2007-06-02 08:40:06.250000000 +0200
++++ readline-5.2-new/parens.c	2007-09-04 20:54:36.265625000 +0200
 @@ -49,6 +49,10 @@
  #  include <sys/select.h>
  #endif
@@ -919,7 +985,7 @@ diff -urN readline-5.2/parens.c readline-5.2-new/parens.c
  #endif /* !HAVE_SELECT */
 diff -urN readline-5.2/readline.c readline-5.2-new/readline.c
 --- readline-5.2/readline.c	2006-08-16 21:00:36.000000000 +0200
-+++ readline-5.2-new/readline.c	2007-06-02 08:40:06.265625000 +0200
++++ readline-5.2-new/readline.c	2007-09-04 20:54:36.281250000 +0200
 @@ -220,7 +220,11 @@
  
  /* The style of `bell' notification preferred.  This can be set to NO_BELL,
@@ -944,7 +1010,7 @@ diff -urN readline-5.2/readline.c readline-5.2-new/readline.c
    _rl_keymap = xkeymap;
 diff -urN readline-5.2/readline.h readline-5.2-new/readline.h
 --- readline-5.2/readline.h	2006-08-16 21:16:59.000000000 +0200
-+++ readline-5.2-new/readline.h	2007-06-02 08:40:06.296875000 +0200
++++ readline-5.2-new/readline.h	2007-09-04 20:54:36.312500000 +0200
 @@ -63,7 +63,7 @@
  } UNDO_LIST;
  
@@ -1969,7 +2035,7 @@ diff -urN readline-5.2/readline.h readline-5.2-new/readline.h
  }
 diff -urN readline-5.2/rlstdc.h readline-5.2-new/rlstdc.h
 --- readline-5.2/rlstdc.h	2003-05-30 21:08:02.000000000 +0200
-+++ readline-5.2-new/rlstdc.h	2007-06-02 08:40:06.296875000 +0200
++++ readline-5.2-new/rlstdc.h	2007-09-04 20:54:36.328125000 +0200
 @@ -42,4 +42,14 @@
  #  endif
  #endif
@@ -1987,7 +2053,7 @@ diff -urN readline-5.2/rlstdc.h readline-5.2-new/rlstdc.h
  #endif /* !_RL_STDC_H_ */
 diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
 --- readline-5.2/support/shobj-conf	2006-04-11 15:15:43.000000000 +0200
-+++ readline-5.2-new/support/shobj-conf	2007-06-02 08:40:06.328125000 +0200
++++ readline-5.2-new/support/shobj-conf	2007-09-04 20:54:36.343750000 +0200
 @@ -482,6 +482,17 @@
  	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
  	;;
@@ -2026,7 +2092,7 @@ diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
  #
 diff -urN readline-5.2/terminal.c readline-5.2-new/terminal.c
 --- readline-5.2/terminal.c	2006-09-28 16:11:10.000000000 +0200
-+++ readline-5.2-new/terminal.c	2007-06-02 08:40:06.343750000 +0200
++++ readline-5.2-new/terminal.c	2007-09-04 20:54:36.359375000 +0200
 @@ -264,7 +264,7 @@
        if (_rl_screenwidth <= 0)
          _rl_screenwidth = wc;
@@ -2154,7 +2220,7 @@ diff -urN readline-5.2/terminal.c readline-5.2-new/terminal.c
  }
 diff -urN readline-5.2/tilde.c readline-5.2-new/tilde.c
 --- readline-5.2/tilde.c	2006-04-11 17:19:32.000000000 +0200
-+++ readline-5.2-new/tilde.c	2007-06-02 08:40:06.359375000 +0200
++++ readline-5.2-new/tilde.c	2007-09-04 20:54:36.375000000 +0200
 @@ -171,7 +171,7 @@
  
    for (i = 0; i < string_len; i++)

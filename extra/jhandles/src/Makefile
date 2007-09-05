@@ -29,7 +29,10 @@ test:
 	$(JAR) cf $@ $(JAVA_DIR)/*.class $(JAVA_DIR)/images/*
 
 gl2ps_java.$(SHLEXT): gl2ps_java.o gl2ps.o
-	$(DL_LD) $(DL_LDFLAGS) -o $@ gl2ps_java.o gl2ps.o -lopengl32
+	$(DL_LD) $(DL_LDFLAGS) -o $@ gl2ps_java.o gl2ps.o $(OPENGL_LIBS)
 
 clean:
 	-rm -f FILES core octave-core *~ $(JAR_FILES) $(JAVA_DIR)/*.class *.o gl2ps_java.$(SHLEXT)
+
+%.o: %.c
+	$(MKOCTFILE) -v -I. -c $<

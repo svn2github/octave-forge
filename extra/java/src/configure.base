@@ -355,6 +355,7 @@ if test -n "$JAVAC" -a -n "$JAR"; then
 	    fi
 	    if test -n "$JAVA_ARCH"; then
 	        HAVE_JAVA=yes
+                JAVA_INCS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
                 JAVA_LIBS="-L${JAVA_HOME}/jre/lib/$JAVA_ARCH -ljava"
 	        WARN_JAVA="Warning LD_LIBRARY_PATH must include:
    ${JAVA_HOME}/jre/lib/$JAVA_ARCH

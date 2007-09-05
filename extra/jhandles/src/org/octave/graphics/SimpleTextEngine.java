@@ -296,6 +296,10 @@ class SimpleTextEngine
 		int margin = 0;
 		Content content = new Content(txt);
 		Rectangle r = (Rectangle)content.layout(comp, comp.getFont()).clone();
+
+		if (r.width <=0 || r.height <= 0)
+			return new Dimension(0, 0);
+
 		r.width += 2*margin;
 		r.height += 2*margin;
 		BufferedImage img = new BufferedImage(r.width, r.height, BufferedImage.TYPE_BYTE_BINARY);

@@ -37,6 +37,7 @@ function [ h ] = __jhandles_go_areaseries (ax, X, Y, bv, varargin)
 	set (hh, varargin{:});
 	addlistener (hh, {"FaceColor", "EdgeColor", "LineStyle", "LineWidth"}, @updatePatchColor);
     addlistener (hh, {"XData", "YData", "BaseValue"}, @updatePatchData);
+    addlistener (hh, "ObjectDeleted", @memberDeleted);
 	hh_v = get (hh);
     # create patch object
     if (k == 1)
@@ -55,6 +56,16 @@ function [ h ] = __jhandles_go_areaseries (ax, X, Y, bv, varargin)
 
   if (! isempty (h))
     set (h, "AreaGroup", h);
+  endif
+
+endfunction
+
+function memberDeleted (h)
+
+  hlist = get (h, "AreaGroup");
+  hlist(find (hlist == h)) = [];
+  if (! isempty (hlist))
+    set (hlist, "AreaGroup", hlist);
   endif
 
 endfunction
@@ -87,7 +98,11 @@ function updatePatchData (h)
       YY += y;
     endif
     fv = [1:size(vv,1)];
-    set (hp(1), "Faces", fv, "Vertices", vv);
+	if (! isempty (hp))
+      # hp may be empty if the child patch object has
+      # been deleted explicitely
+      set (hp(1), "Faces", fv, "Vertices", vv);
+    endif
   endfor
 
 endfunction

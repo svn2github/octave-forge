@@ -23,7 +23,7 @@ package org.octave.graphics;
 
 import org.octave.*;
 
-public class OctaveSink implements HandleNotifier.Sink
+public class OctaveSink implements HandleNotifier.Sink, HandleEventSink
 {
 	private OctaveReference ref;
 
@@ -44,10 +44,14 @@ public class OctaveSink implements HandleNotifier.Sink
 			Property p = h.getProperty(pnames[i]);
 			if (p != null)
 				n.addSource(p);
+			else if (h.hasHandleEvent(pnames[i]))
+				h.addHandleEventSink(pnames[i], this);
 			else
 				System.out.println("WARNING: `" + pnames[i] + "' is not a valid property name of " + h.Type.toString());
 		}
 	}
+
+	/* HandleNotifier.Sink interface */
 
 	public void addNotifier(HandleNotifier h)
 	{
@@ -66,4 +70,17 @@ public class OctaveSink implements HandleNotifier.Sink
 			ref.invokeAndWait(new Object[] {new Double(h.getHandle())});
 		}
 	}
+
+	/* HandleEventSink interface */
+
+	public void eventOccured(HandleEvent evt)
+	{
+		HandleObject h = evt.getHandleObject();
+		if (h != null)
+			ref.invokeAndWait(new Object[] {new Double(h.getHandle()), null});
+		else
+			ref.invokeAndWait(new Object[] {null, evt});
+	}
+
+	public void sourceDeleted(Object src) {}
 }

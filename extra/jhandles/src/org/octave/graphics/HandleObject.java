@@ -30,7 +30,8 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	private int handle;
 	private Renderer.CachedData cachedData = null;
 	private boolean valid = false;
-	private List notifierList = new LinkedList();
+	private List notifierList;
+	private HandleEventSource eventSource;
 	
 	protected int autoMode = 0;
 	protected PropertySet defaultSet = new PropertySet();
@@ -58,14 +59,15 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public HandleObject(HandleObject parent, String type)
 	{
-		handle = newHandle();
-		addHandleObject(getHandle(), this);
-		initProperties(parent, type);
+		this(parent, newHandle(), type);
 	}
 
 	public HandleObject(HandleObject parent, int handle, String type)
 	{
 		this.handle = handle;
+		this.notifierList = new LinkedList();
+		this.eventSource = new HandleEventSource(this, new String[] {"ObjectDeleted"});
+
 		addHandleObject(getHandle(), this);
 		initProperties(parent, type);
 	}
@@ -157,6 +159,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	public void delete()
 	{
 		BeingDeleted.reset("on");
+		eventSource.fireEvent("ObjectDeleted");
 		DeleteFcn.execute(new Object[] {
 			new Double(getHandle()),
 			null});
@@ -169,6 +172,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 			HandleNotifier n = (HandleNotifier)notifierList.remove(0);
 			n.removeSink(this);
 		}
+		eventSource.delete();
 
 		deleteChildren();
 		if (cachedData != null)
@@ -356,6 +360,21 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 		}
 		else
 			super.set(name, value);
+	}
+
+	public void addHandleEventSink(String name, HandleEventSink sink)
+	{
+		eventSource.addHandleEventSink(name, sink);
+	}
+
+	public void removeHandleEventSink(HandleEventSink sink)
+	{
+		eventSource.removeHandleEventSink(sink);
+	}
+
+	public boolean hasHandleEvent(String name)
+	{
+		return eventSource.hasHandleEvent(name);
 	}
 
 	/* HandleNotifier.Sink interface */

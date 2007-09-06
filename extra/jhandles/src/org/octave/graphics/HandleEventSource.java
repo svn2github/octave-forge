@@ -64,9 +64,12 @@ public class HandleEventSource
 	{
 		if (eventMap.containsKey(name))
 		{
-			List l = (List)eventMap.get(sink);
+			List l = (List)eventMap.get(name);
 			if (l == null)
-				eventMap.put(name, (l = new LinkedList()));
+			{
+				l = new LinkedList();
+				eventMap.put(name, l);
+			}
 			l.add(sink);
 		}
 		else

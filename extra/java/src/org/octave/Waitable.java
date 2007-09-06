@@ -19,5 +19,5 @@ package org.octave;
 
 public interface Waitable
 {
-	public Object makeWaitObject();
+	public Object makeWaitObject(String pname);
 }

@@ -36,10 +36,6 @@ typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *a
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
   (JNIEnv *, jclass, jstring, jobjectArray, jobjectArray);
-  /*
-extern "C" JNIEXPORT void JNICALL Java_org_octave_OctListener_doInvokeListener
-  (JNIEnv *, jclass, jint, jstring, jobject);
-  */
 extern "C" JNIEXPORT void JNICALL Java_org_octave_OctaveReference_doFinalize
   (JNIEnv *, jclass, jint);
 extern "C" JNIEXPORT void JNICALL Java_org_octave_Octave_doInvoke

@@ -1,4 +1,24 @@
+/* Copyright (C) 2007 Michael Goffioul
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+*/
+
 package org.octave;
+
+import java.util.List;
+import java.util.LinkedList;
 
 public class Octave
 {
@@ -9,7 +29,8 @@ public class Octave
 
   private static Object notifyObject = null;
   private static Object[] args = null;
-  private static java.util.LinkedList invokeList = new java.util.LinkedList();
+  private static LinkedList invokeList = new LinkedList();
+  private static LinkedList waitList = new LinkedList();
 
   public native static boolean call (String name, Object[] argin, Object[] argout);
   public native static void doInvoke(int ID, Object[] args);
@@ -50,6 +71,18 @@ public class Octave
         }
     }
 
+  private static void checkWaitState()
+    {
+      if (waitList.size() > 0)
+        {
+          Object wObj = waitList.getFirst();
+          synchronized (wObj)
+            {
+              wObj.notifyAll();
+            }
+        }
+    }
+
   public static void invokeAndWait(OctaveReference ref, Object[] invokeArgs)
     {
       if (needThreadedInvokation())
@@ -58,7 +91,7 @@ public class Octave
             {
               notifyObject = ref;
               args = invokeArgs;
-              try { ref.wait(); }
+              try { checkWaitState(); ref.wait(); }
               catch (InterruptedException e) {}
             }
         }
@@ -74,7 +107,7 @@ public class Octave
             {
               notifyObject = cmd;
               args = null;
-              try { cmd.wait(); }
+              try { checkWaitState(); cmd.wait(); }
               catch (InterruptedException e) {}
             }
         }
@@ -88,6 +121,7 @@ public class Octave
         synchronized(invokeList)
           {
             invokeList.add(r);
+            checkWaitState();
           }
       else
         r.run();
@@ -100,6 +134,7 @@ public class Octave
           {
             invokeList.add(ref);
             invokeList.add(invokeArgs);
+            checkWaitState();
           }
       else
         doInvoke(ref.getID(), invokeArgs);
@@ -111,9 +146,31 @@ public class Octave
         synchronized(invokeList)
           {
             invokeList.add(cmd);
+            checkWaitState();
           }
       else
         doEvalString(cmd);
+    }
+
+  public static void waitFor(Waitable obj)
+    {
+      Object wObj = obj.makeWaitObject();
+
+      waitList.add(0, wObj);
+      synchronized (wObj)
+        {
+          while (waitList.size() > 0 && waitList.getFirst() == wObj)
+            {
+              try { wObj.wait(); }
+              catch (InterruptedException e) {}
+              checkPendingAction();
+            }
+        }
+    }
+
+  public static void releaseWaitObject(Object obj)
+    {
+      waitList.remove(obj);
     }
 
   public static Object do_test (String name, Object arg0) throws Exception

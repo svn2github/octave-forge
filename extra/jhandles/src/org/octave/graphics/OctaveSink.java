@@ -83,4 +83,9 @@ public class OctaveSink implements HandleNotifier.Sink, HandleEventSink
 	}
 
 	public void sourceDeleted(Object src) {}
+
+	public boolean executeOnce()
+	{
+		return false;
+	}
 }

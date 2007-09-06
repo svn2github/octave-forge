@@ -397,18 +397,25 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink, Wa
 
 	/* Waitable interface */
 
-	public Object makeWaitObject()
+	public Object makeWaitObject(String pname)
 	{
 		final Object waitObj = new Object();
+		final Property p = getProperty(pname);
 		HandleEventSink sink = new HandleEventSink() {
 			public void eventOccured(HandleEvent evt)
 			{
-				Octave.releaseWaitObject(waitObj);
+				if (evt.getName().equals("ObjectDeleted"))
+					Octave.releaseWaitObject(waitObj);
+				else if (evt.getName().equals("PropertyPostSet"))
+					Octave.releaseWaitObject(waitObj);
 			}
 			public void sourceDeleted(Object source) {}
+			public boolean executeOnce() { return true; }
 		};
 
 		addHandleEventSink("ObjectDeleted", sink);
+		if (p != null)
+			p.addHandleEventSink("PropertyPostSet", sink);
 
 		return waitObj;
 	}

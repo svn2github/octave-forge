@@ -53,7 +53,12 @@ public class HandleEventSource
 					HandleEvent evt = new HandleEvent(source, name);
 					Iterator it = l.iterator();
 					while (it.hasNext())
-						((HandleEventSink)it.next()).eventOccured(evt);
+					{
+						HandleEventSink sink = (HandleEventSink)it.next();
+						sink.eventOccured(evt);
+						if (sink.executeOnce())
+							it.remove();
+					}
 				}
 		}
 		else

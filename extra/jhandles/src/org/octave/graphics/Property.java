@@ -30,6 +30,7 @@ public abstract class Property implements HandleNotifier.Source
 {
 	private String name;
 	private LinkedList notifierList = new LinkedList();
+	private HandleEventSource eventSource = new HandleEventSource(this, new String[] {"PropertyPostSet"});
 	private boolean lockNotify = true;
 	private boolean readOnly = false;
 	private boolean visible = true;
@@ -164,6 +165,7 @@ public abstract class Property implements HandleNotifier.Source
 					while (it.hasNext())
 						((HandleNotifier)it.next()).propertyChanged(this);
 				}
+				eventSource.fireEvent("PropertyPostSet");
 			}
 			setFlag = false;
 		}
@@ -233,6 +235,7 @@ public abstract class Property implements HandleNotifier.Source
 				n.removeSource(this);
 			}
 		}
+		eventSource.delete();
 	}
 
 	public void addNotifier(HandleNotifier n)
@@ -251,6 +254,16 @@ public abstract class Property implements HandleNotifier.Source
 			//System.out.println("removeNotifier: " + getName());
 			notifierList.remove(n);
 		}
+	}
+
+	public void addHandleEventSink(String name, HandleEventSink sink)
+	{
+		eventSource.addHandleEventSink(name, sink);
+	}
+
+	public void removeHandleEventSink(HandleEventSink sink)
+	{
+		eventSource.removeHandleEventSink(sink);
 	}
 
 	public static Property createProperty(PropertySet parent, String name, String type) throws PropertyException

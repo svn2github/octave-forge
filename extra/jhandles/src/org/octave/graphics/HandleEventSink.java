@@ -25,4 +25,5 @@ public interface HandleEventSink
 {
 	public void eventOccured(HandleEvent evt);
 	public void sourceDeleted(Object source);
+	public boolean executeOnce();
 }

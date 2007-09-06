@@ -21,11 +21,13 @@
 
 package org.octave.graphics;
 
+import org.octave.Octave;
+import org.octave.Waitable;
 import java.util.*;
 import java.lang.ref.WeakReference;
 
 /**Base class for handle-based graphics*/
-public class HandleObject extends PropertySet implements HandleNotifier.Sink
+public class HandleObject extends PropertySet implements HandleNotifier.Sink, Waitable
 {
 	private int handle;
 	private Renderer.CachedData cachedData = null;
@@ -391,5 +393,23 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+	}
+
+	/* Waitable interface */
+
+	public Object makeWaitObject()
+	{
+		final Object waitObj = new Object();
+		HandleEventSink sink = new HandleEventSink() {
+			public void eventOccured(HandleEvent evt)
+			{
+				Octave.releaseWaitObject(waitObj);
+			}
+			public void sourceDeleted(Object source) {}
+		};
+
+		addHandleEventSink("ObjectDeleted", sink);
+
+		return waitObj;
 	}
 }

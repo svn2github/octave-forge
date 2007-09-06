@@ -53,6 +53,37 @@ public class Octave
           args = null;
         }
 
+      Object obj;
+      Object[] objArgs;
+
+      while (true)
+        {
+          obj = null;
+          objArgs = null;
+
+          synchronized (invokeList)
+            {
+              if (invokeList.size() > 0)
+                {
+                  obj = invokeList.remove();
+                  if (obj instanceof OctaveReference)
+                    objArgs = (Object[])invokeList.remove();
+                }
+            }
+
+          if (obj != null)
+            {
+              if (obj instanceof Runnable)
+                ((Runnable)obj).run();
+              else if (obj instanceof OctaveReference)
+                doInvoke(((OctaveReference)obj).getID(), objArgs);
+              else if (obj instanceof String)
+                doEvalString((String)obj);
+            }
+          else
+            break;
+        }
+      /*
       synchronized(invokeList)
         {
           while (invokeList.size() > 0)
@@ -69,6 +100,7 @@ public class Octave
                 doEvalString((String)obj);
             }
         }
+        */
     }
 
   private static void checkWaitState()

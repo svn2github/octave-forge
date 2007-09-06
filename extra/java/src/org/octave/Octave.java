@@ -202,7 +202,14 @@ public class Octave
 
   public static void releaseWaitObject(Object obj)
     {
+      boolean isCurrentWaitObject = (waitList.size() > 0 && waitList.getFirst() == obj);
+
       waitList.remove(obj);
+	  if (needThreadedInvokation() && isCurrentWaitObject)
+        synchronized (obj)
+          {
+            obj.notifyAll();
+          }
     }
 
   public static Object do_test (String name, Object arg0) throws Exception

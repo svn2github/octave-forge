@@ -1665,6 +1665,8 @@ JNIEXPORT void JNICALL Java_org_octave_Octave_doInvoke
 
       if (! error_state)
         {
+          BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
           if (val.is_function_handle ())
             {
               octave_function *fcn = val.function_value ();
@@ -1685,6 +1687,8 @@ JNIEXPORT void JNICALL Java_org_octave_Octave_doInvoke
             }
 		  else
             error ("trying to invoke non-invocable object");
+
+          END_INTERRUPT_WITH_EXCEPTIONS;
         }
     }
 }

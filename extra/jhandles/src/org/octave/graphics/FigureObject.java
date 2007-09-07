@@ -65,6 +65,7 @@ public class FigureObject extends AxesContainer
 	ArrayProperty               Colormap;
 	HandleObjectListProperty    CurrentAxes;
 	BooleanProperty             IntegerHandle;
+	CallbackProperty            KeyPressFcn;
 	StringProperty              Name;
 	RadioProperty               NextPlot;
 	BooleanProperty             NumberTitle;
@@ -73,10 +74,11 @@ public class FigureObject extends AxesContainer
 	NotImplProperty             Renderer;
 	CallbackProperty            ResizeFcn;
 	RadioProperty               SelectionType;
-	NotImplProperty             Toolbar;
+	RadioProperty               Toolbar;
 	RadioProperty               Units;
 
 	/* toolbar */
+	JToolBar figureTB;
 	JToggleButton editBtn;
 	JToggleButton zoomBtn;
 	JToggleButton rotateBtn;
@@ -108,14 +110,16 @@ public class FigureObject extends AxesContainer
 		Dimension d = Utils.getScreenSize();
 		Position = new VectorProperty(this, "Position", 4, new double[] {1, d.height-500, 600, 500});
 		Renderer = new NotImplProperty(this, "Renderer", "OpenGL");
-		Toolbar = new NotImplProperty(this, "Toolbar", "figure");
+		Toolbar = new RadioProperty(this, "Toolbar", new String[] {"none", "auto", "figure"}, "auto");
 		SelectionType = new RadioProperty(this, "SelectionType", new String[] {"normal", "extend", "alt", "open"}, "normal");
+		KeyPressFcn = new CallbackProperty(this, "KeyPressFcn", (String)null);
 
 		listen(Name);
 		listen(NumberTitle);
 		listen(IntegerHandle);
 		listen(Position);
 		listen(Units);
+		listen(Toolbar);
 	}
 
 	// Methods
@@ -133,9 +137,9 @@ public class FigureObject extends AxesContainer
 		frame.add(tbPanel, BorderLayout.NORTH);
 
 		// dummy toolbar
-		JToolBar tb = new JToolBar();
-		tb.setRollover(true);
-		tb.setFloatable(false);
+		figureTB = new JToolBar();
+		figureTB.setRollover(true);
+		figureTB.setFloatable(false);
 		editBtn = new JToggleButton(Utils.loadIcon("edit"));
 		editBtn.setActionCommand("edit");
 		editBtn.setEnabled(false);
@@ -149,10 +153,11 @@ public class FigureObject extends AxesContainer
 		rotateBtn.setActionCommand("rotate");
 		rotateBtn.setToolTipText("3D roration");
 		rotateBtn.addActionListener(this);
-		tb.add(editBtn);
-		tb.add(zoomBtn);
-		tb.add(rotateBtn);
-		tbPanel.add(tb);
+		figureTB.add(editBtn);
+		figureTB.add(zoomBtn);
+		figureTB.add(rotateBtn);
+
+		updateToolbars();
 
 		// setup axes panel
 		axPanel = new Panel(new PositionLayout());
@@ -162,8 +167,8 @@ public class FigureObject extends AxesContainer
 		axPanel.add(getCanvas().getComponent());
 
 		updateTitle();
-		updateFramePosition();
 		frame.setVisible(true);
+		updateFramePosition();
 	}
 	
 	private void updateHandle()
@@ -196,9 +201,11 @@ public class FigureObject extends AxesContainer
 	{
 		double[] pos = Utils.convertPosition(Position.getVector(), Units.getValue(), "pixels", null);
 		Dimension d = Utils.getScreenSize();
+		Insets insets = frame.getInsets();
 		pos[0]--;
 		pos[1] = d.height-pos[1]-pos[3]+1;
-		frame.setBounds((int)pos[0], (int)pos[1], (int)pos[2], (int)pos[3]);
+		frame.setBounds((int)pos[0]-insets.left, (int)pos[1]-insets.top-tbPanel.getHeight(),
+				(int)pos[2]+insets.left+insets.right, (int)pos[3]+insets.top+insets.bottom+tbPanel.getHeight());
 	}
 
 	private void updateTitle()
@@ -213,14 +220,25 @@ public class FigureObject extends AxesContainer
 		}
 		frame.setTitle(title);
 	}
+
+	public void updateToolbars()
+	{
+		if (Toolbar.is("none"))
+			tbPanel.remove(figureTB);
+		else
+			tbPanel.add(figureTB);
+		frame.validate();
+	}
 	
 	public void delete()
 	{
-		frame.setVisible(false);
+		if (frame != null && frame.isVisible())
+			frame.setVisible(false);
 		super.delete();
 		//frame.dispose();
 		//frame.setVisible(false);
-		EventQueue.invokeLater(new Runnable() { public void run() { frame.dispose(); } });
+		if (frame != null)
+			EventQueue.invokeLater(new Runnable() { public void run() { frame.dispose(); } });
 	}
 
 	public void activate()
@@ -287,6 +305,8 @@ public class FigureObject extends AxesContainer
 			updatePosition();
 			currentUnits = Units.getValue();
 		}
+		else if (p == Toolbar)
+			updateToolbars();
 	}
 
 	public Component getComponent()

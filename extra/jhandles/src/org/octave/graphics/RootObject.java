@@ -21,8 +21,10 @@
 
 package org.octave.graphics;
 
+import java.awt.*;
 import java.util.*;
 import javax.swing.UIManager;
+import org.octave.Matrix;
 
 public class RootObject extends HandleObject
 {
@@ -34,14 +36,19 @@ public class RootObject extends HandleObject
 	/* properties */
 	HandleObjectListProperty CallbackObject;
 	HandleObjectListProperty CurrentFigure;
+	ArrayProperty MonitorPositions;
 	BooleanProperty ShowHiddenHandles;
 
 	private RootObject()
 	{
 		super(null, 0, "root");
 
+		Dimension d = Utils.getScreenSize();
+
 		CallbackObject = new HandleObjectListProperty(this, "CallbackObject", 1);
 		CurrentFigure = new HandleObjectListProperty(this, "CurrentFigure", 1);
+		MonitorPositions = new ArrayProperty(this, "MonitorPositions",
+				new Matrix(new double[] {1, 1, d.width, d.height}));
 		ShowHiddenHandles = new BooleanProperty(this, "ShowHiddenHandles", false);
 
 		listen(CurrentFigure);

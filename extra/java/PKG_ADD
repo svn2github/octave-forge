@@ -7,4 +7,5 @@ autoload ("java_set", fullfile (fileparts (mfilename ("fullpath")), "__java__.oc
 autoload ("java2mat", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 autoload ("java_convert_matrix", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 autoload ("java_unsigned_conversion", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
+autoload ("java_debug", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 atexit ("java_exit");

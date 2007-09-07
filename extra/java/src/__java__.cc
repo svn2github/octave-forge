@@ -58,6 +58,7 @@ static long octave_thread_ID = -1;
 
 static bool Vjava_convert_matrix = false;
 static bool Vjava_unsigned_conversion = true;
+static bool Vjava_debug = false;
 
 template <class T>
 class java_local_ref
@@ -114,6 +115,7 @@ typedef java_local_ref<jobjectArray> jobjectArray_ref;
 typedef java_local_ref<jintArray> jintArray_ref;
 typedef java_local_ref<jbyteArray> jbyteArray_ref;
 typedef java_local_ref<jdoubleArray> jdoubleArray_ref;
+typedef java_local_ref<jthrowable> jthrowable_ref;
 
 static octave_value box (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, jclass_ref& jcls);
@@ -319,11 +321,20 @@ static std::string jstring_to_string (JNIEnv* jni_env, jobject obj)
 static octave_value check_exception (JNIEnv* jni_env)
 {
   octave_value retval;
-  if (jni_env->ExceptionCheck ())
+  jthrowable_ref ex (jni_env, jni_env->ExceptionOccurred ());
+
+  if (ex)
     {
-      error ("java exception occured");
-      jni_env->ExceptionDescribe ();
+      if (Vjava_debug)
+        jni_env->ExceptionDescribe ();
       jni_env->ExceptionClear ();
+
+      jclass_ref jcls (jni_env, jni_env->GetObjectClass (ex));
+      jmethodID mID = jni_env->GetMethodID (jcls, "toString", "()Ljava/lang/String;");
+      jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (ex, mID)));
+      std::string msg = jstring_to_string (jni_env, js);
+
+      error ("[java] %s", msg.c_str ());
     }
   else
     retval = Matrix ();
@@ -1596,6 +1607,11 @@ DEFUN_DLD (java_convert_matrix, args, nargout, "")
 DEFUN_DLD (java_unsigned_conversion, args, nargout, "")
 {
   return SET_INTERNAL_VARIABLE (java_unsigned_conversion);
+}
+
+DEFUN_DLD (java_debug, args, nargout, "")
+{
+  return SET_INTERNAL_VARIABLE (java_debug);
 }
 
 JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call

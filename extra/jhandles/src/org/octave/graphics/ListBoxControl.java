@@ -48,6 +48,7 @@ public class ListBoxControl
 		updateSelectionMode();
 		updateColors();
 		updateTop();
+		updateValue();
 
 		uiNotifier = new HandleNotifier();
 		uiNotifier.addSink(this);
@@ -64,6 +65,21 @@ public class ListBoxControl
 	{
 		String[] items = uiObj.UIString.toString().split("\\|");
 		list.setListData(items);
+	}
+
+	private void updateValue()
+	{
+		if (uiObj.Value.getArray().length > 0)
+		{
+			double[] val = uiObj.Value.getArray();
+			int[] sel = new int[val.length];
+
+			for (int i=0; i<val.length; i++)
+				sel[i] = (int)val[i]-1;
+			list.setSelectedIndices(sel);
+		}
+		else
+			list.clearSelection();
 	}
 
 	private void updateSelectionMode()
@@ -136,19 +152,7 @@ public class ListBoxControl
 		if (p == uiObj.UIString)
 			updateItems();
 		else if (p == uiObj.Value)
-		{
-			if (uiObj.Value.getArray().length > 0)
-			{
-				double[] val = uiObj.Value.getArray();
-				int[] sel = new int[val.length];
-
-				for (int i=0; i<val.length; i++)
-					sel[i] = (int)val[i]-1;
-				list.setSelectedIndices(sel);
-			}
-			else
-				list.clearSelection();
-		}
+			updateValue();
 		else if (p == uiObj.Min || p == uiObj.Max)
 			updateSelectionMode();
 		else if (p == uiObj.BackgroundColor || p == uiObj.ForegroundColor)

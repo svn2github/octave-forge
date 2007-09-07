@@ -40,6 +40,7 @@ public class PopupMenuControl
 		uiObj = obj;
 
 		updateItems();
+		updateValue();
 
 		uiNotifier = new HandleNotifier();
 		uiNotifier.addSink(this);
@@ -53,6 +54,16 @@ public class PopupMenuControl
 		removeAllItems();
 		for (int i=0; i<items.length; i++)
 			addItem(items[i]);
+	}
+
+	private void updateValue()
+	{
+		if (uiObj.Value.getArray().length > 0)
+		{
+			int index = (int)uiObj.Value.getArray()[0];
+			if (index > 0 && index <= getItemCount())
+				setSelectedIndex(index-1);
+		}
 	}
 
 	/* UIControl interface */
@@ -90,12 +101,6 @@ public class PopupMenuControl
 		if (p == uiObj.UIString)
 			updateItems();
 		else if (p == uiObj.Value)
-		{
-			if (uiObj.Value.getArray().length > 0)
-			{
-				int index = (int)uiObj.Value.getArray()[0];
-				setSelectedIndex(index-1);
-			}
-		}
+			updateValue();
 	}
 }

@@ -17,10 +17,12 @@
 
 function waitfor (h, varargin)
 
-  if (ishandle (h) && nargin >= 1 && nargin <= 3)
-    __jhandles_waitfor (h, varargin{:});
-  else
-    print_usage ();
+  if (ishandle (h))
+    if (nargin >= 1 && nargin <= 3)
+      __jhandles_waitfor (h, varargin{:});
+    else
+      print_usage ();
+    endif
   endif
 
 endfunction

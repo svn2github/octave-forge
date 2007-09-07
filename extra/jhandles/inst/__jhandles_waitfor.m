@@ -19,7 +19,7 @@ function __jhandles_waitfor (h, varargin)
 
   if (nargin == 1)
     obj = __get_object__ (h);
-    java_invoke ("org.octave.Octave", "waitFor", obj);
+	obj.waitFor(varargin{:});
   else
     error ("waiting for property not implemented yet");
   endif

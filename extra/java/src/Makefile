@@ -3,8 +3,7 @@ export LFLAGS
 
 PROGS = __java__.oct octave.jar
 
-JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctaveReference.java Matrix.java \
-		  Waitable.java
+JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctaveReference.java Matrix.java
 JAVADIR = org/octave
 
 JAVA_SOURCES = $(addprefix $(JAVADIR)/, $(JAVASRC))

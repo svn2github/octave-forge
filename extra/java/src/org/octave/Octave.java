@@ -184,10 +184,8 @@ public class Octave
         doEvalString(cmd);
     }
 
-  public static void waitFor(Waitable obj, String pname)
+  public static void waitFor(Object wObj)
     {
-      Object wObj = obj.makeWaitObject(pname);
-
       waitList.add(0, wObj);
       synchronized (wObj)
         {
@@ -200,7 +198,7 @@ public class Octave
         }
     }
 
-  public static void releaseWaitObject(Object obj)
+  public static void endWaitFor(Object obj)
     {
       boolean isCurrentWaitObject = (waitList.size() > 0 && waitList.getFirst() == obj);
 

@@ -22,12 +22,11 @@
 package org.octave.graphics;
 
 import org.octave.Octave;
-import org.octave.Waitable;
 import java.util.*;
 import java.lang.ref.WeakReference;
 
 /**Base class for handle-based graphics*/
-public class HandleObject extends PropertySet implements HandleNotifier.Sink, Waitable
+public class HandleObject extends PropertySet implements HandleNotifier.Sink
 {
 	private int handle;
 	private Renderer.CachedData cachedData = null;
@@ -379,6 +378,47 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink, Wa
 		return eventSource.hasHandleEvent(name);
 	}
 
+	public void waitFor()
+	{
+		waitFor(null, null, false);
+	}
+
+	public void waitFor(String pname)
+	{
+		waitFor(pname, null, false);
+	}
+
+	public void waitFor(String pname, Object value)
+	{
+		waitFor(pname, value, true);
+	}
+
+	private void waitFor(String pname, final Object value, final boolean hasValue)
+	{
+		final Object waitObj = new Object();
+		final Property p = (pname != null ? getProperty(pname) : null);
+
+		if (pname != null && p == null)
+			return;
+
+		HandleEventSink sink = new HandleEventSink() {
+			public void eventOccured(HandleEvent evt)
+			{
+				if (evt.getName().equals("ObjectDeleted"))
+					Octave.endWaitFor(waitObj);
+				else if (evt.getName().equals("PropertyPostSet") && !hasValue)
+					Octave.endWaitFor(waitObj);
+			}
+			public void sourceDeleted(Object source) {}
+			public boolean executeOnce() { return true; }
+		};
+
+		addHandleEventSink("ObjectDeleted", sink);
+		if (p != null)
+			p.addHandleEventSink("PropertyPostSet", sink);
+
+		Octave.waitFor(waitObj);
+	}
 	/* HandleNotifier.Sink interface */
 
 	public void addNotifier(HandleNotifier hn)
@@ -393,30 +433,5 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink, Wa
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
-	}
-
-	/* Waitable interface */
-
-	public Object makeWaitObject(String pname)
-	{
-		final Object waitObj = new Object();
-		final Property p = getProperty(pname);
-		HandleEventSink sink = new HandleEventSink() {
-			public void eventOccured(HandleEvent evt)
-			{
-				if (evt.getName().equals("ObjectDeleted"))
-					Octave.releaseWaitObject(waitObj);
-				else if (evt.getName().equals("PropertyPostSet"))
-					Octave.releaseWaitObject(waitObj);
-			}
-			public void sourceDeleted(Object source) {}
-			public boolean executeOnce() { return true; }
-		};
-
-		addHandleEventSink("ObjectDeleted", sink);
-		if (p != null)
-			p.addHandleEventSink("PropertyPostSet", sink);
-
-		return waitObj;
 	}
 }

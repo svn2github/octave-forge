@@ -16,12 +16,16 @@
 ## 02110-1301  USA
 
 function __jhandles_waitfor (h, varargin)
+  
+  j1 = java_convert_matrix (1);
+  j2 = java_unsigned_conversion (1);
 
-  if (nargin == 1)
+  unwind_protect
     obj = __get_object__ (h);
 	obj.waitFor(varargin{:});
-  else
-    error ("waiting for property not implemented yet");
-  endif
+  unwind_protect_cleanup
+    java_convert_matrix (j1);
+    java_unsigned_conversion (j2);
+  end_unwind_protect
 
 endfunction

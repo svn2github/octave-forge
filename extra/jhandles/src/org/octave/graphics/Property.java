@@ -212,6 +212,19 @@ public abstract class Property implements HandleNotifier.Source
 		lockNotify = false;
 	}
 
+	public boolean isSameValue(Object value)
+	{
+		try
+		{
+			value = convertValue(value);
+			return isEqual(value);
+		}
+		catch (PropertyException e)
+		{
+			return false;
+		}
+	}
+
 	protected boolean isEqual(Object value)
 	{
 		/*Object v = getInternal();*/

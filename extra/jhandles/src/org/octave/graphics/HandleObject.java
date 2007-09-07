@@ -400,17 +400,25 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 		if (pname != null && p == null)
 			return;
+		if (hasValue && p != null && p.isSameValue(value))
+			return;
 
 		HandleEventSink sink = new HandleEventSink() {
+			private boolean execFlag = false;
 			public void eventOccured(HandleEvent evt)
 			{
+				execFlag = false;
 				if (evt.getName().equals("ObjectDeleted"))
 					Octave.endWaitFor(waitObj);
 				else if (evt.getName().equals("PropertyPostSet") && !hasValue)
 					Octave.endWaitFor(waitObj);
+				else if (p.isSameValue(value))
+					Octave.endWaitFor(waitObj);
+				else
+					execFlag = true;
 			}
 			public void sourceDeleted(Object source) {}
-			public boolean executeOnce() { return true; }
+			public boolean executeOnce() { return !execFlag; }
 		};
 
 		addHandleEventSink("ObjectDeleted", sink);

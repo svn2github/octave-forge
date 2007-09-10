@@ -161,15 +161,21 @@ public abstract class AxesContainer extends HandleObject
 		if (mouseOp == OP_NONE)
 		{
 			// Only do something if no operation pending
-			if (e.getButton() == MouseEvent.BUTTON1)
+			AxesObject ax = getAxesForPoint(e.getPoint());
+
+			if (ax != null)
 			{
-				mouseAxes = getAxesForPoint(e.getPoint());
-				if (mouseAxes != null)
+				if (e.getButton() == MouseEvent.BUTTON1)
 				{
+					mouseAxes = ax;
 					mouseOp = getDefaultMouseOp();
 					mouseAxes.startOperation(mouseOp, e);
 				}
 			}
+			else
+				ButtonDownFcn.execute(new Object[] {
+					new Double(getHandle()),
+					null});
 		}
 	}
 	

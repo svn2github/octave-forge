@@ -42,6 +42,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	/* Properties */
 	BooleanProperty BeingDeleted;
+	CallbackProperty ButtonDownFcn;
 	HandleObjectListProperty Children;
 	BooleanProperty Clipping;
 	CallbackProperty CreateFcn;
@@ -85,6 +86,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 		// Create other properties
 		BeingDeleted = new BooleanProperty(this, "BeingDeleted", false);
+		ButtonDownFcn = new CallbackProperty(this, "ButtonDownFcn", (String)null);
 		Children = new HandleObjectListProperty(this, "Children", -1);
 		Clipping = new BooleanProperty(this, "Clipping", true);
 		CreateFcn = new CallbackProperty(this, "CreateFcn", (String)null);

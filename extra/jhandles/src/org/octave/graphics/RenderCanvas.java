@@ -42,6 +42,8 @@ public interface RenderCanvas
 	public void redraw();
 	public int getWidth();
 	public int getHeight();
+	public int getX();
+	public int getY();
 	public Renderer getRenderer();
 	public Component getComponent();
 	public BufferedImage toImage();

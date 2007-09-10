@@ -49,20 +49,50 @@ public abstract class AxesContainer extends HandleObject
 	
 	protected abstract Color getBackgroundColor();
 	protected abstract Container getEmbeddingComponent();
-	
-	public AxesObject getAxesForPoint(Point pt)
+
+	protected Point getMouseLocation(MouseEvent e)
+	{
+		Point pt = new Point(e.getPoint());
+		if (e.getSource() == canvas)
+			pt.translate(canvas.getX(), canvas.getY());
+		return pt;
+	}
+
+	public HandleObject getObjectForPoint(Point pt, int margin)
 	{
 		synchronized (Children)
 		{
 			Iterator it = Children.iterator();
+			Insets insets = getEmbeddingComponent().getInsets();
+
 			while (it.hasNext())
 			{
 				HandleObject hObj = (HandleObject)it.next();
-				if (hObj instanceof AxesObject && hObj.isValid() &&
-						((AxesObject)hObj).getBoundingBox().contains(pt.x, canvas.getHeight()-pt.y))
-					return (AxesObject)hObj;
+				if (!hObj.isValid())
+					continue;
+				if (hObj instanceof UIControlObject)
+				{
+					Rectangle r = ((UIControlObject)hObj).getBounds();
+					r.setRect(r.x-margin, r.y-margin, r.width+2*margin, r.height+2*margin);
+					if (r.contains(pt))
+						return hObj;
+				}
+				else if (hObj instanceof AxesObject)
+				{
+					Rectangle r = ((AxesObject)hObj).getBoundingBox();
+					if (r.contains(pt.x-canvas.getX(), canvas.getHeight()-pt.y+canvas.getY()))
+						return hObj;
+				}
 			}
 		}
+		return null;
+	}
+
+	public AxesObject getAxesForPoint(Point pt)
+	{
+		HandleObject obj = getObjectForPoint(pt, 0);
+		if (obj instanceof AxesObject)
+			return (AxesObject)obj;
 		return null;
 	}
 
@@ -146,7 +176,7 @@ public abstract class AxesContainer extends HandleObject
 	{
 		if (e.getButton() == MouseEvent.BUTTON3 && mouseOp == OP_NONE && getDefaultMouseOp() == OP_ZOOM)
 		{
-			AxesObject ax = getAxesForPoint(e.getPoint());
+			AxesObject ax = getAxesForPoint(getMouseLocation(e));
 			if (ax != null)
 				ax.unZoom();
 		}
@@ -161,16 +191,32 @@ public abstract class AxesContainer extends HandleObject
 		if (mouseOp == OP_NONE)
 		{
 			// Only do something if no operation pending
-			AxesObject ax = getAxesForPoint(e.getPoint());
+			Point pt = getMouseLocation(e);
+			AxesObject ax = getAxesForPoint(pt);
+			HandleObject hObj = getObjectForPoint(pt, 5);
 
-			if (ax != null)
+			if (hObj != null)
 			{
-				if (e.getButton() == MouseEvent.BUTTON1)
+				boolean doCB = false;
+
+				if (hObj instanceof AxesObject)
 				{
-					mouseAxes = ax;
-					mouseOp = getDefaultMouseOp();
-					mouseAxes.startOperation(mouseOp, e);
+					if (getDefaultMouseOp() == OP_NONE)
+						doCB = true;
+					else if (e.getButton() == MouseEvent.BUTTON1)
+					{
+						mouseAxes = (AxesObject)hObj;
+						mouseOp = getDefaultMouseOp();
+						mouseAxes.startOperation(mouseOp, e);
+					}
 				}
+				else
+					doCB = true;
+
+				if (doCB)
+					hObj.ButtonDownFcn.execute(new Object[] {
+						new Double(hObj.getHandle()),
+						null});
 			}
 			else
 				ButtonDownFcn.execute(new Object[] {

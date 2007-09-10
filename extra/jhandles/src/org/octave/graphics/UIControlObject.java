@@ -151,6 +151,11 @@ public class UIControlObject extends HandleObject
 		}
 	}
 
+	public Rectangle getBounds()
+	{
+		return (ctrl != null ? ctrl.getBounds() : new Rectangle());
+	}
+
 	public Component getComponent()
 	{
 		if (ctrl != null)

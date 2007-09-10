@@ -86,7 +86,7 @@ public abstract class GraphicObject extends HandleObject
 		super.set(p, value);
 
 		FigureObject fig = (FigureObject)getAncestor("figure");
-		fig.__Dirty__.reset(new Boolean(true));
+		fig.__Dirty__.reset("on");
 	}
 
 	public abstract void draw(Renderer r);

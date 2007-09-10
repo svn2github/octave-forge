@@ -72,6 +72,7 @@ public class FigureObject extends AxesContainer
 	RadioProperty               PaperOrientation;
 	VectorProperty              Position;
 	NotImplProperty             Renderer;
+	BooleanProperty             Resize;
 	CallbackProperty            ResizeFcn;
 	RadioProperty               SelectionType;
 	RadioProperty               Toolbar;
@@ -110,13 +111,14 @@ public class FigureObject extends AxesContainer
 			"points", "characters"}, "pixels");
 		currentUnits = Units.getValue();
 		Dimension d = Utils.getScreenSize();
-		Position = new VectorProperty(this, "Position", 4, new double[] {1, d.height-500, 600, 500});
+		Position = new VectorProperty(this, "Position", 4, new double[] {10, d.height-500, 600, 430});
 		Renderer = new NotImplProperty(this, "Renderer", "OpenGL");
 		Toolbar = new RadioProperty(this, "Toolbar", new String[] {"none", "auto", "figure"}, "auto");
 		SelectionType = new RadioProperty(this, "SelectionType", new String[] {"normal", "extend", "alt", "open"}, "normal");
 		KeyPressFcn = new CallbackProperty(this, "KeyPressFcn", (String)null);
 		__Dirty__ = new BooleanProperty(this, "__Dirty__", false);
 		__Dirty__.setVisible(false);
+		Resize = new BooleanProperty(this, "Resize", true);
 
 		listen(Name);
 		listen(NumberTitle);
@@ -124,6 +126,7 @@ public class FigureObject extends AxesContainer
 		listen(Position);
 		listen(Units);
 		listen(Toolbar);
+		listen(Resize);
 	}
 
 	// Methods
@@ -135,6 +138,7 @@ public class FigureObject extends AxesContainer
 		frame.setBackground(FigColor.getColor());
 		frame.addWindowListener(this);
 		frame.addComponentListener(this);
+		frame.setResizable(Resize.isSet());
 
 		// setup toolbar panel
 		tbPanel = new Panel(new GridLayout(1, 1));
@@ -311,6 +315,8 @@ public class FigureObject extends AxesContainer
 		}
 		else if (p == Toolbar)
 			updateToolbars();
+		else if (p == Resize)
+			frame.setResizable(Resize.isSet());
 	}
 
 	public Component getComponent()

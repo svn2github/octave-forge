@@ -77,6 +77,8 @@ public class FigureObject extends AxesContainer
 	RadioProperty               Toolbar;
 	RadioProperty               Units;
 
+	BooleanProperty __Dirty__;
+
 	/* toolbar */
 	JToolBar figureTB;
 	JToggleButton editBtn;
@@ -113,6 +115,8 @@ public class FigureObject extends AxesContainer
 		Toolbar = new RadioProperty(this, "Toolbar", new String[] {"none", "auto", "figure"}, "auto");
 		SelectionType = new RadioProperty(this, "SelectionType", new String[] {"normal", "extend", "alt", "open"}, "normal");
 		KeyPressFcn = new CallbackProperty(this, "KeyPressFcn", (String)null);
+		__Dirty__ = new BooleanProperty(this, "__Dirty__", false);
+		__Dirty__.setVisible(false);
 
 		listen(Name);
 		listen(NumberTitle);

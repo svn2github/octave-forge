@@ -81,5 +81,13 @@ public abstract class GraphicObject extends HandleObject
 			return ((GraphicObject)obj).getAxes();
 	}
 
+	public void set(Property p, Object value) throws PropertyException
+	{
+		super.set(p, value);
+
+		FigureObject fig = (FigureObject)getAncestor("figure");
+		fig.__Dirty__.reset(new Boolean(true));
+	}
+
 	public abstract void draw(Renderer r);
 }

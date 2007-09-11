@@ -34,6 +34,7 @@ public class GLRenderCanvas extends GLCanvas
 	private GLRenderer r;
 	private java.util.List rListeners;
 	private String gl2psFileName = null;
+	private boolean reshapeDone = false;
 
 	public GLRenderCanvas()
 	{
@@ -92,6 +93,14 @@ public class GLRenderCanvas extends GLCanvas
 		Iterator it = rListeners.iterator();
 		while (it.hasNext())
 			((RenderEventListener)it.next()).reshape(this, x, y, width, height);
+		
+		if (reshapeDone)
+		{
+			GL gl = getGL();
+			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+			d.swapBuffers();
+		}
+		reshapeDone = true;
 	}
 
 	public void displayChanged(GLAutoDrawable d, boolean deviceChanged, boolean modeChanged) {}

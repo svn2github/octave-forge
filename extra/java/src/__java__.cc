@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <map>
+#include <fstream>
 
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *args);
 
@@ -116,6 +117,90 @@ typedef java_local_ref<jintArray> jintArray_ref;
 typedef java_local_ref<jbyteArray> jbyteArray_ref;
 typedef java_local_ref<jdoubleArray> jdoubleArray_ref;
 typedef java_local_ref<jthrowable> jthrowable_ref;
+
+class JVMArgs
+{
+public:
+  JVMArgs ()
+    {
+      vm_args.version = JNI_VERSION_1_2;
+      vm_args.nOptions = 0;
+      vm_args.options = 0;
+      vm_args.ignoreUnrecognized = false;
+    }
+
+  ~JVMArgs ()
+    {
+      clean ();
+    }
+
+  JavaVMInitArgs* to_args ()
+    {
+      update ();
+      return &vm_args;
+    }
+
+  void add (const std::string& opt)
+    {
+      java_opts.push_back (opt);
+    }
+
+  void read_java_opts (const std::string& filename)
+    {
+      std::ifstream js (filename.c_str ());
+
+      if (! js.bad () && ! js.fail ())
+        {
+          std::string line;
+
+          while (! js.eof () && ! js.fail ())
+            {
+              std::getline (js, line);
+              if (line.length () > 2 && (line.find ("-D") == 0 || line.find ("-X") == 0))
+                java_opts.push_back (line);
+              else if (line.length () > 0 && Vjava_debug)
+                std::cerr << "invalid JVM option, skipping: " << line << std::endl;
+            }
+        }
+    }
+
+private:
+  void clean ()
+    {
+      if (vm_args.options != 0)
+        {
+          for (int i=0; i<vm_args.nOptions; i++)
+            free (vm_args.options[i].optionString);
+          free (vm_args.options);
+
+          vm_args.options = 0;
+          vm_args.nOptions = 0;
+        }
+    }
+
+  void update ()
+    {
+      clean ();
+      if (java_opts.size () > 0)
+        {
+          int index = 0;
+
+          vm_args.nOptions = java_opts.size ();
+          vm_args.options = (JavaVMOption*) malloc (sizeof (JavaVMOption) * vm_args.nOptions);
+          for (std::list<std::string>::const_iterator it = java_opts.begin (); it != java_opts.end (); ++it)
+            {
+              if (Vjava_debug)
+                std::cout << *it << std::endl;
+              vm_args.options[index++].optionString = strdup ((*it).c_str ());
+            }
+          java_opts.clear ();
+        }
+    }
+
+private:
+  JavaVMInitArgs vm_args;
+  std::list<std::string> java_opts;
+};
 
 static octave_value box (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 static int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, jclass_ref& jcls);
@@ -209,33 +294,13 @@ static void initialize_jvm ()
 {
   if (jvm) return;
 
-  // Find octave.jar file
-  std::string init_class_path, init_octave_path;
-  init_class_path = initial_class_path ();
-  init_octave_path = initial_java_dir (true);
+  JVMArgs vm_args;
 
-  init_class_path = "-Djava.class.path=" + init_class_path;
-  init_octave_path = "-Doctave.java.path=" + init_octave_path;
-
-  OCTAVE_LOCAL_BUFFER (char, class_path_optionString, 
-			init_class_path.length () + 1);
-  strcpy (class_path_optionString, init_class_path.c_str ());
-  OCTAVE_LOCAL_BUFFER (char, octave_path_optionString, 
-			init_octave_path.length () + 1);
-  strcpy (octave_path_optionString, init_octave_path.c_str ());
-
-  // Set up Java VM startup args
-  JavaVMInitArgs vm_args;
-  JavaVMOption options[3];
-
-  vm_args.version = JNI_VERSION_1_2;
-  vm_args.nOptions = 3 /* 3 */;
-  options[0].optionString = class_path_optionString;
-  options[1].optionString = octave_path_optionString;
-  //options[2].optionString = "-Dsun.java2d.opengl=True";
-  options[2].optionString = "-Xrs";
-  vm_args.options = options;
-  vm_args.ignoreUnrecognized = false;
+  vm_args.add ("-Djava.class.path=" + initial_class_path ());
+  vm_args.add ("-Doctave.java.path=" + initial_java_dir (true));
+  vm_args.add ("-Xrs");
+  vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
+  vm_args.read_java_opts (initial_java_dir (false) + file_ops::dir_sep_str + "java.opts");
 
 #if defined (__WIN32__)
 
@@ -263,7 +328,7 @@ static void initialize_jvm ()
   if (!create_vm)
     throw std::string("unable to find JNI_CreateJavaVM in ")+jvm_lib_path;
 
-  if (create_vm (&jvm, &current_env, &vm_args) != JNI_OK)
+  if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
     throw std::string("unable to start Java VM in ")+jvm_lib_path;
 
   jvm_lib = lib;
@@ -272,7 +337,7 @@ static void initialize_jvm ()
 
   // In unix rely on dynamic libraries to resolve the JRE at runtime.
   if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **>(&current_env), 
-            &vm_args) != JNI_OK)
+            vm_args.to_args ()) != JNI_OK)
     throw std::string("unable to start Java VM");
 
 #endif

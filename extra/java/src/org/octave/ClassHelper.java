@@ -21,7 +21,14 @@ import java.lang.reflect.*;
 
 public class ClassHelper
 {
-  private static OctClassLoader loader = new OctClassLoader ();
+  private static OctClassLoader loader;
+
+  static
+    {
+      loader = (ClassLoader.getSystemClassLoader() instanceof OctClassLoader ? 
+          (OctClassLoader)ClassLoader.getSystemClassLoader() :
+          new OctClassLoader());
+    }
 
   public static void addClassPath (String name) throws Exception
     {

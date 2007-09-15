@@ -12,7 +12,7 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/octave-forge-bundle-20070328.tar.gz?download">single file</a>.
+as a <a href="__PACKAGE__/octave-forge-bundle-20070821.tar.gz?download">single file</a>.
 This file is not however an octave package and the individiual
 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
@@ -103,18 +103,6 @@ General</a></b></td>
   <p id="general_detailed" style="display: none;">
 General tools for octave.  </p>
 </div>
-<div class="package" id="geometry">
-  <table class="package"><tr>
-    <td>
-   <b><a href="javascript:unfold('geometry');" class="package_head_link">   <img src="show.png" id="geometry_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
-Geometry</a></b></td>
-    <td style="text-align: right;">&raquo; <a href="./geometry/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/geometry-1.0.2.tar.gz?download">download</a>
-    </td>
-  </tr></table>
-  <p id="geometry_detailed" style="display: none;">
-Geometry tools including convex hull, triangulation, etc.  </p>
-</div>
 <div class="package" id="gsl">
   <table class="package"><tr>
     <td>
@@ -203,6 +191,18 @@ Linear-Algebra</a></b></td>
   </tr></table>
   <p id="linear-algebra_detailed" style="display: none;">
 Additional linear algebra code, including general SVD and matrix functions.  </p>
+</div>
+<div class="package" id="miscellaneous">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('miscellaneous');" class="package_head_link">   <img src="show.png" id="miscellaneous_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Miscellaneous</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./miscellaneous/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/miscellaneous-1.0.2.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="miscellaneous_detailed" style="display: none;">
+Miscellaneous tools including waitbar, xml tools, etc  </p>
 </div>
 <div class="package" id="nnet">
   <table class="package"><tr>
@@ -324,18 +324,6 @@ Plot</a></b></td>
   </tr></table>
   <p id="plot_detailed" style="display: none;">
 Additional ploting tools for Octave.  </p>
-</div>
-<div class="package" id="polynomial">
-  <table class="package"><tr>
-    <td>
-   <b><a href="javascript:unfold('polynomial');" class="package_head_link">   <img src="show.png" id="polynomial_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
-Polynomial</a></b></td>
-    <td style="text-align: right;">&raquo; <a href="./polynomial/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/polynomial-1.0.1.tar.gz?download">download</a>
-    </td>
-  </tr></table>
-  <p id="polynomial_detailed" style="display: none;">
-Additional polynomial manipulation functions.  </p>
 </div>
 <div class="package" id="signal">
   <table class="package"><tr>
@@ -492,7 +480,7 @@ A set of functions for creating simple graphical user interfaces. It is currentl
    <b><a href="javascript:unfold('bim');" class="package_head_link">   <img src="show.png" id="bim_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 BIM</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./bim/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/bim-0.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/bim-0.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="bim_detailed" style="display: none;">
@@ -564,7 +552,7 @@ Toolbox for 1-D, 2-D, and n-D Numerical Integration  </p>
    <b><a href="javascript:unfold('java');" class="package_head_link">   <img src="show.png" id="java_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Java</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./java/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/java-1.2.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/java-1.2.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="java_detailed" style="display: none;">
@@ -576,7 +564,7 @@ Provides Java interface with OO-like Java objects manipulation  </p>
    <b><a href="javascript:unfold('jhandles');" class="package_head_link">   <img src="show.png" id="jhandles_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 JHandles</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./jhandles/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/jhandles-0.2.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/jhandles-0.3.0.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="jhandles_detailed" style="display: none;">
@@ -625,7 +613,7 @@ Package for creating and managing triangular and tetrahedral meshes for Finite E
    <b><a href="javascript:unfold('nan');" class="package_head_link">   <img src="show.png" id="nan_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 NaN</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./NaN/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/nan-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/nan-1.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="nan_detailed" style="display: none;">
@@ -709,7 +697,7 @@ Simple example of a user type implementing a simple matrix type for triangular m
    <b><a href="javascript:unfold('tsa');" class="package_head_link">   <img src="show.png" id="tsa_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 TSA</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./tsa/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/tsa-3.10.2.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/tsa-3.10.3.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="tsa_detailed" style="display: none;">
@@ -740,6 +728,19 @@ Xraylib</a></b></td>
 Bindings to the Xraylib functions  </p>
 </div>
 <h2 id="language">Native Translations</h2>
+<div class="package" id="pt_br">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('pt_br');" class="package_head_link">   <img src="show.png" id="pt_br_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+pt_BR</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./pt_BR/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/pt_br-1.0.2.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="pt_br_detailed" style="display: none;">
+Brazilian Portuguese translations of the help strings of the Octave functions. 
+  </p>
+</div>
 <h2 id="nonfree">Non-free packages</h2>
 <div class="package" id="arpack">
   <table class="package"><tr>
@@ -747,7 +748,7 @@ Bindings to the Xraylib functions  </p>
    <b><a href="javascript:unfold('arpack');" class="package_head_link">   <img src="show.png" id="arpack_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Arpack</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./arpack/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/arpack-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/arpack-1.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="arpack_detailed" style="display: none;">

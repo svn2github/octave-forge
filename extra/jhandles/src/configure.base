@@ -361,8 +361,14 @@ if test -n "$JAVAC" -a -n "$JAR"; then
    ${JAVA_HOME}/jre/lib/$JAVA_ARCH/client"
           fi
           AC_CHECK_HEADER(GL/gl.h, [], AC_MSG_ERROR(Could not find OpenGL headers))
-          OF_CHECK_LIB(GL, glEnable, OPENGL_LIBS=-lGL,
-            AC_MSG_ERROR(Could not find OpenGL library))
+          OF_CHECK_LIB(GL, glEnable, OPENGL_LIBS=-lGL, [
+	    ## Invalidate the cache.
+	    $as_unset ac_cv_lib_GL_glEnable
+	    save_LDFLAGS="$LDFLAGS"
+	    LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
+	    OF_CHECK_LIB(GL, glEnable, OPENGL_LIBS="-L/usr/X11R6/lib -lGL",
+		    AC_MSG_ERROR(Could not find OpenGL library))
+	    LDFLAGS="$save_LDFLAGS"])
           ;;    
       esac
     else

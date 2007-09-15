@@ -12,3 +12,9 @@ jhandles
  ancestor
  gcbo
  uipanel
+ allchild
+ dialog
+ gcbf
+ uiresume
+ uiwait
+ waitfor

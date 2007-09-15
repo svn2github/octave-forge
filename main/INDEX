@@ -165,7 +165,7 @@ Debugging
  debug_symtab_lookups
 Installation
  mkoctfile mex tar untar zip unzip pkg
- bunzip2 gunzip unpack
+ bunzip2 gzip gunzip unpack
  compare_versions movefile 
 Profiling
  profile 
@@ -342,6 +342,7 @@ Interpreter interface
  ans 
  input_event_hook atexit 
  func2str str2func functions
+ run
 Constants
  eps 
  realmax 
@@ -420,6 +421,7 @@ Structures
  struct_contains
  struct_elements
  orderfields
+ structfun
 Lists
  list islist
  nth
@@ -435,6 +437,7 @@ Types
  int8 int16 int32 int64
  uint8 uint16 uint32 uint64 isinteger
  sizeof
+ swpabytes typecast
 Deprecated
   is_bool is_complex is_list is_stream is_struct is_global
 
@@ -451,6 +454,7 @@ Generating matrices
  meshgrid meshdom
  ndgrid
  arrayfun
+ bsxfun
 Matrix properties
  size rows columns common_size ndims
  length 
@@ -881,6 +885,7 @@ Geometry
  dsearch 
  dsearchn
  tsearch 
+ tsearchn
  convhull 
  convhulln
  voronoi 
@@ -891,6 +896,7 @@ Geometry
  rectint 
  polyarea 
  __voronoi__
+ inpolygon
 Polynomials
  cheb
  roots 
@@ -901,11 +907,13 @@ Polynomials
  residue(r,p,k)=use Bradley T. Burchett's <code><a href="ftp://ftp.mathworks.com/pub/contrib/v5/control/resid2wp.m">resid2wp</a></code>
  polyfit 
  polyder polyderiv
- polyinteg polyreduce polyout polygcd
+ polyint polyreduce polyout polygcd
 Quaternions
  quaternion
  demoquat qconj qcoordinate_plot qderiv qderivmat qinv qmult
  qtrans qtransv qtransvmat
+Deprecated
+ polyinteg
 
 calculus >> Calculus
 Integration
@@ -951,7 +959,8 @@ Line plots
  stairs 
  comet 
  feather
- line 
+ line
+ triplot 
 Business graphs
  pie 
  pie3 
@@ -1161,7 +1170,7 @@ Finance
  fv fvl irr nper npv pmt pv pvl rate vol
 
 statistics >> Statistics
-Depreciated
+Deprecated
  beta_cdf beta_inv beta_pdf beta_rnd
  binomial_cdf binomial_inv binomial_pdf binomial_rnd
  chisquare_cdf chisquare_inv chisquare_pdf chisquare_rnd
@@ -1210,6 +1219,7 @@ Descriptive statistics
  min 
  mean meansq
  median 
+ mode
  std 
  var 
  cut hist

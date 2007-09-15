@@ -30,7 +30,7 @@ public abstract class Property implements HandleNotifier.Source
 {
 	private String name;
 	private LinkedList notifierList = new LinkedList();
-	private HandleEventSource eventSource = new HandleEventSource(this, new String[] {"PropertyPostSet"});
+	private HandleEventSource eventSource = new HandleEventSource(this, new String[] {"PropertyChanged"});
 	private boolean lockNotify = true;
 	private boolean readOnly = false;
 	private boolean visible = true;
@@ -165,7 +165,7 @@ public abstract class Property implements HandleNotifier.Source
 					while (it.hasNext())
 						((HandleNotifier)it.next()).propertyChanged(this);
 				}
-				eventSource.fireEvent("PropertyPostSet");
+				eventSource.fireEvent("PropertyChanged");
 			}
 			setFlag = false;
 		}

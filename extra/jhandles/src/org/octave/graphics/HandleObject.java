@@ -412,7 +412,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 				execFlag = false;
 				if (evt.getName().equals("ObjectDeleted"))
 					Octave.endWaitFor(waitObj);
-				else if (evt.getName().equals("PropertyPostSet") && !hasValue)
+				else if (evt.getName().equals("PropertyChanged") && !hasValue)
 					Octave.endWaitFor(waitObj);
 				else if (p.isSameValue(value))
 					Octave.endWaitFor(waitObj);
@@ -425,7 +425,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 		addHandleEventSink("ObjectDeleted", sink);
 		if (p != null)
-			p.addHandleEventSink("PropertyPostSet", sink);
+			p.addHandleEventSink("PropertyChanged", sink);
 
 		Octave.waitFor(waitObj);
 	}

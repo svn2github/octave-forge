@@ -62,7 +62,7 @@ function [v, lambda, c] = condeig (a)
 
   # Check arguments
   if (nargin != 1 || nargout > 3)
-    usage ("[v, lambda, c] = condeig (a)");
+    print_usage ();
   endif
 
   if (! isempty (a) && ! ismatrix (a))

@@ -30,11 +30,11 @@ import javax.swing.event.DocumentListener;
 
 public class EditControl
 	extends JTextField
-	implements UIControl, ActionListener, HandleNotifier.Sink,
-			   DocumentListener, FocusListener
+	implements UIControl, ActionListener,
+		   DocumentListener, FocusListener
 {
 	UIControlObject uiObj;
-	HandleNotifier uiNotifier;
+	HandleEventSinkAdapter sink;
 
 	private boolean contentChanged = false;
 
@@ -49,10 +49,12 @@ public class EditControl
 		setAlignment();
 		setText(obj.UIString.toString());
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.UIString);
-		uiNotifier.addSource(obj.HorizontalAlignment);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.UIString);
+		sink.listen(obj.HorizontalAlignment);
 	}
 
 	public void setAlignment()
@@ -62,6 +64,14 @@ public class EditControl
 			uiObj.HorizontalAlignment.is("left") ? JTextField.LEFT :
 			uiObj.HorizontalAlignment.is("right") ? JTextField.RIGHT :
 			JTextField.LEFT);
+	}
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			setText(uiObj.UIString.toString());
+		else if (p == uiObj.HorizontalAlignment)
+			setAlignment();
 	}
 
 	/* UIControl interface */
@@ -78,7 +88,7 @@ public class EditControl
 
 	public void dispose()
 	{
-		uiNotifier.removeSink(this);
+		sink.dispose();
 	}
 
 	/* ActionListener interface */
@@ -117,19 +127,5 @@ public class EditControl
 			uiObj.controlActivated(new UIControlEvent(this));
 			contentChanged = false;
 		}
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			setText(uiObj.UIString.toString());
-		else if (p == uiObj.HorizontalAlignment)
-			setAlignment();
 	}
 }

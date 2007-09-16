@@ -22,14 +22,15 @@
 package org.octave.graphics;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.JComponent;
 
 public class UIControlAdapter extends Panel
-	implements HandleNotifier.Sink, Positionable
+	implements Positionable, MouseListener
 {
 	private UIControl ctrl;
 	private UIControlObject uiObj;
-	private HandleNotifier uiNotifier;
+	private HandleEventSinkAdapter sink;
 
 	public UIControlAdapter(UIControlObject obj) throws IllegalArgumentException
 	{
@@ -60,17 +61,19 @@ public class UIControlAdapter extends Panel
 		init();
 		add((JComponent)ctrl, BorderLayout.CENTER);
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.Position);
-		uiNotifier.addSource(obj.BackgroundColor);
-		uiNotifier.addSource(obj.ForegroundColor);
-		uiNotifier.addSource(obj.FontAngle);
-		uiNotifier.addSource(obj.FontSize);
-		uiNotifier.addSource(obj.FontName);
-		uiNotifier.addSource(obj.FontWeight);
-		uiNotifier.addSource(obj.TooltipString);
-		uiNotifier.addSource(obj.Enable);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.Position);
+		sink.listen(obj.BackgroundColor);
+		sink.listen(obj.ForegroundColor);
+		sink.listen(obj.FontAngle);
+		sink.listen(obj.FontName);
+		sink.listen(obj.FontSize);
+		sink.listen(obj.FontWeight);
+		sink.listen(obj.TooltipString);
+		sink.listen(obj.Enable);
 	}
 
 	private void init()
@@ -85,6 +88,8 @@ public class UIControlAdapter extends Panel
 			comp1.setToolTipText(uiObj.TooltipString.toString());
 		comp1.setFont(Utils.getFont(uiObj.FontName, uiObj.FontSize, uiObj.FontUnits,
 				uiObj.FontAngle, uiObj.FontWeight, getHeight()));
+		comp1.setEnabled(!uiObj.Enable.is("off"));
+		comp1.addMouseListener(this);
 	}
 
 	public void update() { if (ctrl != null) ctrl.update(); }
@@ -95,26 +100,12 @@ public class UIControlAdapter extends Panel
 			ctrl.dispose();
 		if (getParent() != null)
 			getParent().remove(this);
-		uiNotifier.removeSink(this);
+		sink.dispose();
 	}
 
 	public Component getComponent()
 	{
 		return ctrl.getComponent();
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n)
-	{
-		if (n != uiNotifier)
-			System.out.println("Warning: adding unknown notifier to UIControlAdapter object");
-	}
-
-	public void removeNotifier(HandleNotifier n)
-	{
-		if (n != uiNotifier)
-			System.out.println("Warning: removing unknown notifier from UIControlAdapter object");
 	}
 
 	public void propertyChanged(Property p) throws PropertyException
@@ -146,7 +137,7 @@ public class UIControlAdapter extends Panel
 					comp1.setToolTipText(null);
 			}
 			else if (p == uiObj.Enable)
-				comp1.setEnabled(uiObj.Enable.is("on"));
+				comp1.setEnabled(!uiObj.Enable.is("off"));
 		}
 	}
 
@@ -156,4 +147,54 @@ public class UIControlAdapter extends Panel
 	{
 		return uiObj.getPosition();
 	}
+
+	/* MouseListener interface */
+
+	public void mouseClicked(MouseEvent e) {}
+	
+	public void mouseEntered(MouseEvent e) {}
+	
+	public void mouseExited(MouseEvent e) {}
+	
+	public void mousePressed(MouseEvent e)
+	{
+		/*
+		boolean doCB = false;
+		String selType = "normal";
+
+		switch (e.getModifiers() & (MouseEvent.SHIFT_MASK|MouseEvent.CTRL_MASK))
+		{
+			case MouseEvent.CTRL_MASK:
+				selType = "alt";
+				break;
+			case MouseEvent.SHIFT_MASK:
+				selType = "extend";
+				break;
+			case 0:
+				if (e.getClickCount() == 2)
+					selType = "open";
+				break;
+		}
+		System.out.println(selType);
+		((FigureObject)uiObj.getAncestor("figure")).SelectionType.set(selType, true);
+
+		switch (e.getButton())
+		{
+			case MouseEvent.BUTTON2:
+			case MouseEvent.BUTTON3:
+				doCB = true;
+				break;
+			case MouseEvent.BUTTON1:
+				doCB = !uiObj.Enable.is("on");
+				break;
+		}
+
+		if (doCB)
+			uiObj.ButtonDownFcn.execute(new Object[] {
+				new Double(uiObj.getHandle()),
+				null});
+		*/
+	}
+	
+	public void mouseReleased(MouseEvent e) {}
 }

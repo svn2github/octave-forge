@@ -28,10 +28,10 @@ import javax.swing.text.*;
 
 public class Edit2Control
 	extends JScrollPane
-	implements UIControl, KeyListener, HandleNotifier.Sink
+	implements UIControl, KeyListener
 {
 	UIControlObject uiObj;
-	HandleNotifier uiNotifier;
+	HandleEventSinkAdapter sink;
 	JTextPane text;
 
 	public Edit2Control(UIControlObject obj)
@@ -47,12 +47,14 @@ public class Edit2Control
 		setBackground(obj.BackgroundColor.getColor());
 		setForeground(obj.ForegroundColor.getColor());
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.UIString);
-		uiNotifier.addSource(obj.HorizontalAlignment);
-		uiNotifier.addSource(obj.BackgroundColor);
-		uiNotifier.addSource(obj.ForegroundColor);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.UIString);
+		sink.listen(obj.HorizontalAlignment);
+		sink.listen(obj.BackgroundColor);
+		sink.listen(obj.ForegroundColor);
 	}
 
 	public void setAlignment()
@@ -70,6 +72,18 @@ public class Edit2Control
 		doc.setParagraphAttributes(0, doc.getLength()+1, s, false);
 	}
 
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			text.setText(uiObj.UIString.toString());
+		else if (p == uiObj.HorizontalAlignment)
+			setAlignment();
+		else if (p == uiObj.BackgroundColor)
+			setBackground(uiObj.BackgroundColor.getColor());
+		else if (p == uiObj.ForegroundColor)
+			setForeground(uiObj.ForegroundColor.getColor());
+	}
+
 	/* UIControl interface */
 
 	public void update()
@@ -84,7 +98,7 @@ public class Edit2Control
 
 	public void dispose()
 	{
-		uiNotifier.removeSink(this);
+		sink.dispose();
 	}
 
 	/* KeyListener interface */
@@ -101,23 +115,5 @@ public class Edit2Control
 	{
 		if (event.getKeyChar() == '\n' && event.getModifiers() == InputEvent.CTRL_MASK)
 			uiObj.controlActivated(new UIControlEvent(this));
-	}
-
-	/* HandleNofitier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			text.setText(uiObj.UIString.toString());
-		else if (p == uiObj.HorizontalAlignment)
-			setAlignment();
-		else if (p == uiObj.BackgroundColor)
-			setBackground(uiObj.BackgroundColor.getColor());
-		else if (p == uiObj.ForegroundColor)
-			setForeground(uiObj.ForegroundColor.getColor());
 	}
 }

@@ -21,46 +21,44 @@
 
 package org.octave.graphics;
 
-import org.octave.*;
+import java.util.*;
 
-public class OctaveSink implements HandleEventSink
+public class HandleEventSinkAdapter implements HandleEventSink
 {
-	private OctaveReference ref;
+	private Set sourceSet = new HashSet();
 
-	public OctaveSink(OctaveReference ref, Property p)
+	public HandleEventSinkAdapter()
 	{
-		this.ref = ref;
-		p.addHandleEventSink("PropertyChanged", this);
 	}
 
-	public OctaveSink(OctaveReference ref, HandleObject h, String[] pnames)
+	public void listen(Property p)
 	{
-		this.ref = ref;
+		listen(p, "PropertyChanged");
+	}
 
-		for (int i=0; i<pnames.length; i++)
-		{
-			Property p = h.getProperty(pnames[i]);
-			if (p != null)
-				p.addHandleEventSink("PropertyChanged", this);
-			else if (h.hasHandleEvent(pnames[i]))
-				h.addHandleEventSink(pnames[i], this);
-			else
-				System.out.println("WARNING: `" + pnames[i] + "' is not a valid property name of " + h.Type.toString());
-		}
+	public void listen(HandleEventSource source, String name)
+	{
+		source.addHandleEventSink(name, this);
+		sourceSet.add(source);
+	}
+
+	public void dispose()
+	{
+		Iterator it = sourceSet.iterator();
+		while (it.hasNext())
+			((HandleEventSource)it.next()).removeHandleEventSink(this);
 	}
 
 	/* HandleEventSink interface */
 
-	public void eventOccured(HandleEvent evt)
+	public void eventOccured(HandleEvent evt) throws PropertyException
 	{
-		HandleObject h = evt.getHandleObject();
-		if (h != null)
-			ref.invokeAndWait(new Object[] {new Double(h.getHandle()), null});
-		else
-			ref.invokeAndWait(new Object[] {null, evt});
 	}
 
-	public void sourceDeleted(Object src) {}
+	public void sourceDeleted(Object source)
+	{
+		sourceSet.remove(source);
+	}
 
 	public boolean executeOnce()
 	{

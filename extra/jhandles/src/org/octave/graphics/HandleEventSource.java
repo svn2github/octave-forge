@@ -21,89 +21,9 @@
 
 package org.octave.graphics;
 
-import java.util.*;
-
-public class HandleEventSource
+public interface HandleEventSource
 {
-	private Object source;
-	protected Map eventMap;
-
-	public HandleEventSource(Object source, String[] events)
-	{
-		this.source = source;
-		this.eventMap = Collections.synchronizedMap(new HashMap());
-
-		for (int i=0; i<events.length; i++)
-			eventMap.put(events[i], null);
-	}
-
-	public boolean hasHandleEvent(String name)
-	{
-		return eventMap.containsKey(name);
-	}
-
-	public void fireEvent(String name)
-	{
-		if (eventMap.containsKey(name))
-		{
-			LinkedList l = (LinkedList)eventMap.get(name);
-			if (l != null)
-				synchronized (l)
-				{
-					HandleEvent evt = new HandleEvent(source, name);
-					Iterator it = l.iterator();
-					while (it.hasNext())
-					{
-						HandleEventSink sink = (HandleEventSink)it.next();
-						sink.eventOccured(evt);
-						if (sink.executeOnce())
-							it.remove();
-					}
-				}
-		}
-		else
-			System.out.println("ERROR: unknown event `" + name + "' for objects of type " + source.getClass());
-	}
-
-	public void addHandleEventSink(String name, HandleEventSink sink)
-	{
-		if (eventMap.containsKey(name))
-		{
-			List l = (List)eventMap.get(name);
-			if (l == null)
-			{
-				l = new LinkedList();
-				eventMap.put(name, l);
-			}
-			l.add(sink);
-		}
-		else
-			System.out.println("ERROR: unknown event `" + name + "' for objects of type " + source.getClass());
-	}
-
-	public void removeHandleEventSink(HandleEventSink sink)
-	{
-		Iterator it = eventMap.values().iterator();
-		while (it.hasNext())
-		{
-			List l = (List)it.next();
-			if (l != null)
-				while (l.remove(sink));
-		}
-	}
-
-	public void delete()
-	{
-		Iterator it = eventMap.values().iterator();
-		while (it.hasNext())
-		{
-			List l = (List)it.next();
-			if (l != null)
-			{
-				Iterator lit = l.iterator();
-				while (lit.hasNext())
-					((HandleEventSink)lit.next()).sourceDeleted(source);
-			}
-		}
-	}
+	public boolean hasHandleEvent(String name);
+	public void addHandleEventSink(String name, HandleEventSink sink);
+	public void removeHandleEventSink(HandleEventSink sink);
 }

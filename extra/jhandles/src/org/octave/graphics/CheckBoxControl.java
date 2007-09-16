@@ -28,10 +28,10 @@ import javax.swing.*;
 
 public class CheckBoxControl
 	extends JCheckBox
-	implements UIControl, ActionListener, HandleNotifier.Sink
+	implements UIControl, ActionListener
 {
-	UIControlObject uiObj;
-	HandleNotifier uiNotifier;
+	private UIControlObject uiObj;
+	private HandleEventSinkAdapter sink;
 
 	public CheckBoxControl(UIControlObject obj)
 	{
@@ -41,10 +41,23 @@ public class CheckBoxControl
 
 		setText(obj.UIString.toString());
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.UIString);
-		uiNotifier.addSource(obj.Value);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.UIString);
+		sink.listen(obj.Value);
+	}
+
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			setText(uiObj.UIString.toString());
+		else if (p == uiObj.Value)
+		{
+			double v = uiObj.Value.getArray()[0];
+			setSelected(v == uiObj.Max.doubleValue());
+		}
 	}
 
 	/* UIControl interface */
@@ -61,7 +74,7 @@ public class CheckBoxControl
 
 	public void dispose()
 	{
-		uiNotifier.removeSink(this);
+		sink.dispose();
 	}
 
 	/* ActionListener interface */
@@ -69,22 +82,5 @@ public class CheckBoxControl
 	public void actionPerformed(ActionEvent event)
 	{
 		uiObj.controlActivated(new UIControlEvent(this));
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			setText(uiObj.UIString.toString());
-		else if (p == uiObj.Value)
-		{
-			double v = uiObj.Value.getArray()[0];
-			setSelected(v == uiObj.Max.doubleValue());
-		}
 	}
 }

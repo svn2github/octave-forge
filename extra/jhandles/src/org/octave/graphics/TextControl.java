@@ -27,10 +27,10 @@ import javax.swing.*;
 
 public class TextControl
 	extends JLabel
-	implements UIControl, HandleNotifier.Sink
+	implements UIControl
 {
-	UIControlObject uiObj;
-	HandleNotifier uiNotifier;
+	private UIControlObject uiObj;
+	private HandleEventSinkAdapter sink;
 
 	public TextControl(UIControlObject obj)
 	{
@@ -42,10 +42,12 @@ public class TextControl
 		setHorizontalAlignment(getAlignment());
 		setOpaque(true);
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.UIString);
-		uiNotifier.addSource(obj.HorizontalAlignment);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.UIString);
+		sink.listen(obj.HorizontalAlignment);
 	}
 
 	private String stringToHTML(String s)
@@ -74,6 +76,17 @@ public class TextControl
 		return SwingConstants.LEFT;
 	}
 
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.HorizontalAlignment)
+		{
+			setHorizontalAlignment(getAlignment());
+			setText(stringToHTML(uiObj.UIString.toString()));
+		}
+		else if (p == uiObj.UIString)
+			setText(stringToHTML(uiObj.UIString.toString()));
+	}
+
 	/* UIControl interface */
 
 	public void update()
@@ -87,23 +100,6 @@ public class TextControl
 
 	public void dispose()
 	{
-		uiNotifier.removeSink(this);
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.HorizontalAlignment)
-		{
-			setHorizontalAlignment(getAlignment());
-			setText(stringToHTML(uiObj.UIString.toString()));
-		}
-		else if (p == uiObj.UIString)
-			setText(stringToHTML(uiObj.UIString.toString()));
+		sink.dispose();
 	}
 }

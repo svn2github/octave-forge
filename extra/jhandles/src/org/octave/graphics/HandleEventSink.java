@@ -23,7 +23,7 @@ package org.octave.graphics;
 
 public interface HandleEventSink
 {
-	public void eventOccured(HandleEvent evt);
+	public void eventOccured(HandleEvent evt) throws PropertyException;
 	public void sourceDeleted(Object source);
 	public boolean executeOnce();
 }

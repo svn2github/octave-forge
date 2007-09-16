@@ -28,10 +28,10 @@ import javax.swing.*;
 
 public class PopupMenuControl
 	extends JComboBox
-	implements UIControl, ActionListener, HandleNotifier.Sink
+	implements UIControl, ActionListener
 {
 	UIControlObject uiObj;
-	HandleNotifier uiNotifier;
+	HandleEventSinkAdapter sink;
 
 	public PopupMenuControl(UIControlObject obj)
 	{
@@ -42,10 +42,12 @@ public class PopupMenuControl
 		updateItems();
 		updateValue();
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.UIString);
-		uiNotifier.addSource(obj.Value);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.UIString);
+		sink.listen(obj.Value);
 	}
 
 	private void updateItems()
@@ -66,6 +68,14 @@ public class PopupMenuControl
 		}
 	}
 
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			updateItems();
+		else if (p == uiObj.Value)
+			updateValue();
+	}
+
 	/* UIControl interface */
 
 	public void update()
@@ -80,7 +90,7 @@ public class PopupMenuControl
 
 	public void dispose()
 	{
-		uiNotifier.removeSink(this);
+		sink.dispose();
 	}
 
 	/* ActionListener interface */
@@ -88,19 +98,5 @@ public class PopupMenuControl
 	public void actionPerformed(ActionEvent event)
 	{
 		uiObj.controlActivated(new UIControlEvent(this));
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			updateItems();
-		else if (p == uiObj.Value)
-			updateValue();
 	}
 }

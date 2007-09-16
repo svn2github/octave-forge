@@ -26,11 +26,10 @@ import java.util.LinkedList;
 import java.util.Iterator;
 
 /**Abstract root class for any kind of property*/
-public abstract class Property implements HandleNotifier.Source
+public abstract class Property implements HandleEventSource
 {
 	private String name;
-	private LinkedList notifierList = new LinkedList();
-	private HandleEventSource eventSource = new HandleEventSource(this, new String[] {"PropertyChanged"});
+	private HandleEventSourceHelper eventSource = new HandleEventSourceHelper(this, new String[] {"PropertyChanged"});
 	private boolean lockNotify = true;
 	private boolean readOnly = false;
 	private boolean visible = true;
@@ -159,12 +158,6 @@ public abstract class Property implements HandleNotifier.Source
 			setInternal(value);
 			if (!lockNotify)
 			{
-				synchronized(notifierList)
-				{
-					Iterator it = notifierList.iterator();
-					while (it.hasNext())
-						((HandleNotifier)it.next()).propertyChanged(this);
-				}
 				eventSource.fireEvent("PropertyChanged");
 			}
 			setFlag = false;
@@ -239,44 +232,7 @@ public abstract class Property implements HandleNotifier.Source
 
 	public void delete()
 	{
-		synchronized(notifierList)
-		{
-			//System.out.println("deleting: " + getName());
-			while (notifierList.size() > 0)
-			{
-				HandleNotifier n = (HandleNotifier)notifierList.remove(0);
-				n.removeSource(this);
-			}
-		}
 		eventSource.delete();
-	}
-
-	public void addNotifier(HandleNotifier n)
-	{
-		synchronized(notifierList)
-		{
-			//System.out.println("addNotifier: " + getName());
-			notifierList.add(n);
-		}
-	}
-
-	public void removeNotifier(HandleNotifier n)
-	{
-		synchronized(notifierList)
-		{
-			//System.out.println("removeNotifier: " + getName());
-			notifierList.remove(n);
-		}
-	}
-
-	public void addHandleEventSink(String name, HandleEventSink sink)
-	{
-		eventSource.addHandleEventSink(name, sink);
-	}
-
-	public void removeHandleEventSink(HandleEventSink sink)
-	{
-		eventSource.removeHandleEventSink(sink);
 	}
 
 	public static Property createProperty(PropertySet parent, String name, String type) throws PropertyException
@@ -302,5 +258,22 @@ public abstract class Property implements HandleNotifier.Source
 				p.set(arg);
 			return p;
 		}
+	}
+
+	/* HandleEventSource interface */
+
+	public void addHandleEventSink(String name, HandleEventSink sink)
+	{
+		eventSource.addHandleEventSink(name, sink);
+	}
+
+	public void removeHandleEventSink(HandleEventSink sink)
+	{
+		eventSource.removeHandleEventSink(sink);
+	}
+
+	public boolean hasHandleEvent(String name)
+	{
+		return eventSource.hasHandleEvent(name);
 	}
 }

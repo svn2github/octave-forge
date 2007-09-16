@@ -26,13 +26,13 @@ import java.util.*;
 import java.lang.ref.WeakReference;
 
 /**Base class for handle-based graphics*/
-public class HandleObject extends PropertySet implements HandleNotifier.Sink
+public class HandleObject extends PropertySet implements HandleEventSource, HandleEventSink
 {
 	private int handle;
 	private Renderer.CachedData cachedData = null;
 	private boolean valid = false;
-	private List notifierList;
-	private HandleEventSource eventSource;
+	private HandleEventSourceHelper eventSource;
+	private Set eventSourceSet;
 	
 	protected int autoMode = 0;
 	protected PropertySet defaultSet = new PropertySet();
@@ -67,8 +67,8 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	public HandleObject(HandleObject parent, int handle, String type)
 	{
 		this.handle = handle;
-		this.notifierList = new LinkedList();
-		this.eventSource = new HandleEventSource(this, new String[] {"ObjectDeleted"});
+		this.eventSource = new HandleEventSourceHelper(this, new String[] {"ObjectDeleted"});
+		this.eventSourceSet = new HashSet();
 
 		addHandleObject(getHandle(), this);
 		initProperties(parent, type);
@@ -110,7 +110,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 	protected void listen(Property p)
 	{
-		new HandleNotifier(p, this);
+		p.addHandleEventSink("PropertyChanged", this);
+		if (p.getParent() != this)
+			eventSourceSet.add(p);
 	}
 
 	public int getHandle()
@@ -162,7 +164,8 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 	public void delete()
 	{
 		BeingDeleted.reset("on");
-		eventSource.fireEvent("ObjectDeleted");
+		try { eventSource.fireEvent("ObjectDeleted"); }
+		catch (PropertyException ex) {}
 		DeleteFcn.execute(new Object[] {
 			new Double(getHandle()),
 			null});
@@ -170,11 +173,9 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 		super.delete();
 
-		while (notifierList.size() > 0)
-		{
-			HandleNotifier n = (HandleNotifier)notifierList.remove(0);
-			n.removeSink(this);
-		}
+		Iterator it = eventSourceSet.iterator();
+		while (it.hasNext())
+			((HandleEventSource)it.next()).removeHandleEventSink(this);
 		eventSource.delete();
 
 		deleteChildren();
@@ -365,21 +366,6 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 			super.set(name, value);
 	}
 
-	public void addHandleEventSink(String name, HandleEventSink sink)
-	{
-		eventSource.addHandleEventSink(name, sink);
-	}
-
-	public void removeHandleEventSink(HandleEventSink sink)
-	{
-		eventSource.removeHandleEventSink(sink);
-	}
-
-	public boolean hasHandleEvent(String name)
-	{
-		return eventSource.hasHandleEvent(name);
-	}
-
 	public void waitFor()
 	{
 		waitFor(null, null, false);
@@ -407,7 +393,7 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 		HandleEventSink sink = new HandleEventSink() {
 			private boolean execFlag = false;
-			public void eventOccured(HandleEvent evt)
+			public void eventOccured(HandleEvent evt) throws PropertyException
 			{
 				execFlag = false;
 				if (evt.getName().equals("ObjectDeleted"))
@@ -429,19 +415,43 @@ public class HandleObject extends PropertySet implements HandleNotifier.Sink
 
 		Octave.waitFor(waitObj);
 	}
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier hn)
-	{
-		notifierList.add(hn);
-	}
-
-	public void removeNotifier(HandleNotifier hn)
-	{
-		notifierList.remove(hn);
-	}
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+	}
+	
+	/* HandleEventSource interface */
+
+	public void addHandleEventSink(String name, HandleEventSink sink)
+	{
+		eventSource.addHandleEventSink(name, sink);
+	}
+
+	public void removeHandleEventSink(HandleEventSink sink)
+	{
+		eventSource.removeHandleEventSink(sink);
+	}
+
+	public boolean hasHandleEvent(String name)
+	{
+		return eventSource.hasHandleEvent(name);
+	}
+
+	/* HandleEventSink interface */
+
+	public void eventOccured(HandleEvent evt) throws PropertyException
+	{
+		if (evt.getName().equals("PropertyChanged"))
+			propertyChanged(evt.getProperty());
+	}
+
+	public void sourceDeleted(Object source)
+	{
+		eventSourceSet.remove(source);
+	}
+
+	public boolean executeOnce()
+	{
+		return false;
 	}
 }

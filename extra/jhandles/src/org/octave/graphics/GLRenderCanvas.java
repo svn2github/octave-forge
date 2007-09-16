@@ -94,7 +94,7 @@ public class GLRenderCanvas extends GLCanvas
 		while (it.hasNext())
 			((RenderEventListener)it.next()).reshape(this, x, y, width, height);
 		
-		if (reshapeDone)
+		if (reshapeDone && !Threading.isSingleThreaded())
 		{
 			GL gl = getGL();
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);

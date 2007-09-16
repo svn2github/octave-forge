@@ -29,10 +29,10 @@ import javax.swing.event.*;
 
 public class ListBoxControl
 	extends JScrollPane
-	implements UIControl, ListSelectionListener, HandleNotifier.Sink
+	implements UIControl, ListSelectionListener
 {
 	UIControlObject uiObj;
-	HandleNotifier uiNotifier;
+	HandleEventSinkAdapter sink;
 	JList list;
 
 	public ListBoxControl(UIControlObject obj)
@@ -50,15 +50,17 @@ public class ListBoxControl
 		updateTop();
 		updateValue();
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.UIString);
-		uiNotifier.addSource(obj.Value);
-		uiNotifier.addSource(obj.Min);
-		uiNotifier.addSource(obj.Max);
-		uiNotifier.addSource(obj.BackgroundColor);
-		uiNotifier.addSource(obj.ForegroundColor);
-		uiNotifier.addSource(obj.ListboxTop);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.UIString);
+		sink.listen(obj.Value);
+		sink.listen(obj.Min);
+		sink.listen(obj.Max);
+		sink.listen(obj.BackgroundColor);
+		sink.listen(obj.ForegroundColor);
+		sink.listen(obj.ListboxTop);
 	}
 
 	private void updateItems()
@@ -108,6 +110,20 @@ public class ListBoxControl
 			*/
 	}
 
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			updateItems();
+		else if (p == uiObj.Value)
+			updateValue();
+		else if (p == uiObj.Min || p == uiObj.Max)
+			updateSelectionMode();
+		else if (p == uiObj.BackgroundColor || p == uiObj.ForegroundColor)
+			updateColors();
+		else if (p == uiObj.ListboxTop)
+			updateTop();
+	}
+
 	/* UIControl interface */
 
 	public void update()
@@ -128,7 +144,7 @@ public class ListBoxControl
 
 	public void dispose()
 	{
-		uiNotifier.removeSink(this);
+		sink.dispose();
 	}
 
 	/* ActionListener interface */
@@ -139,25 +155,5 @@ public class ListBoxControl
 		{
 			uiObj.controlActivated(new UIControlEvent(this));
 		}
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			updateItems();
-		else if (p == uiObj.Value)
-			updateValue();
-		else if (p == uiObj.Min || p == uiObj.Max)
-			updateSelectionMode();
-		else if (p == uiObj.BackgroundColor || p == uiObj.ForegroundColor)
-			updateColors();
-		else if (p == uiObj.ListboxTop)
-			updateTop();
 	}
 }

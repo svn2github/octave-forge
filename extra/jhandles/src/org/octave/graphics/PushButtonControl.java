@@ -28,10 +28,10 @@ import javax.swing.*;
 
 public class PushButtonControl
 	extends JButton
-	implements UIControl, ActionListener, HandleNotifier.Sink
+	implements UIControl, ActionListener
 {
 	UIControlObject uiObj;
-	HandleNotifier uiNotifier;
+	HandleEventSinkAdapter sink;
 
 	public PushButtonControl(UIControlObject obj)
 	{
@@ -42,9 +42,17 @@ public class PushButtonControl
 
 		setText(obj.UIString.toString());
 
-		uiNotifier = new HandleNotifier();
-		uiNotifier.addSink(this);
-		uiNotifier.addSource(obj.UIString);
+		sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{ propertyChanged(evt.getProperty()); }
+		};
+		sink.listen(obj.UIString);
+	}
+	
+	public void propertyChanged(Property p) throws PropertyException
+	{
+		if (p == uiObj.UIString)
+			setText(uiObj.UIString.toString());
 	}
 
 	/* UIControl interface */
@@ -60,7 +68,7 @@ public class PushButtonControl
 
 	public void dispose()
 	{
-		uiNotifier.removeSink(this);
+		sink.dispose();
 	}
 
 	/* ActionListener interface */
@@ -68,17 +76,5 @@ public class PushButtonControl
 	public void actionPerformed(ActionEvent event)
 	{
 		uiObj.controlActivated(new UIControlEvent(this));
-	}
-
-	/* HandleNotifier.Sink interface */
-
-	public void addNotifier(HandleNotifier n) {}
-
-	public void removeNotifier(HandleNotifier n) {}
-
-	public void propertyChanged(Property p) throws PropertyException
-	{
-		if (p == uiObj.UIString)
-			setText(uiObj.UIString.toString());
 	}
 }

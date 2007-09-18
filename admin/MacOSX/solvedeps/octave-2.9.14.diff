@@ -1,0 +1,43 @@
+diff -r -u -u octave-2.9.14.orig/configure.in octave-2.9.14/configure.in
+--- octave-2.9.14.orig/configure.in	2007-09-06 22:18:20.000000000 +0200
++++ octave-2.9.14/configure.in	2007-09-18 18:29:47.000000000 +0200
+@@ -1805,9 +1805,9 @@
+ dnl "broken shell backslash quoting" or somesuch.
+ dnl
+ case "$canonical_host_type" in
+-  *-*-darwin*)
+-    UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",g'`
+-  ;;
++  #*-*-darwin*)
++  #  UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",g'`
++  #;;
+   *)
+     UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\",g'`
+   ;;
+diff -r -u -u octave-2.9.14.orig/liboctave/dMatrix.cc octave-2.9.14/liboctave/dMatrix.cc
+--- octave-2.9.14.orig/liboctave/dMatrix.cc	2007-08-29 10:37:48.000000000 +0200
++++ octave-2.9.14/liboctave/dMatrix.cc	2007-09-18 18:35:05.000000000 +0200
+@@ -2083,7 +2083,10 @@
+ 	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
+       else
+ 	{
+-	  lwork = static_cast<octave_idx_type> (work(0));
++	  // lwork = static_cast<octave_idx_type> (work(0));
++#define mymax(a, b) ( (a)>(b) ? (a) : (b) )
++#define mymin(a, b) ( (a)<(b) ? (a) : (b) )
++          lwork = 3 * mymin(m,n) + mymax(mymax(mymax(m,n), nrhs), 2*mymin(m,n));
+ 	  work.resize (lwork);
+ 
+ 	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
+diff -r -u -u octave-2.9.14.orig/src/Makefile.in octave-2.9.14/src/Makefile.in
+--- octave-2.9.14.orig/src/Makefile.in	2007-09-17 22:47:41.000000000 +0200
++++ octave-2.9.14/src/Makefile.in	2007-09-18 18:31:27.000000000 +0200
+@@ -249,7 +249,7 @@
+ endif
+ 
+ OCTINTERP_LINK_DEPS = \
+-  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
++  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) -lfftw3
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \

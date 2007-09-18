@@ -158,7 +158,7 @@ There are some packages at @uref{http://octave.sourceforge.net} available that d
 @command{octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz} @* @* 
 @end enumerate
 
-@* @b{Note:} You need to set up at least @command{LDFLAGS} again if you close your running Octave.app and then startup Octave.app again. The reason is that the libraries in the above example have been installed for dynamical use and therefore they are also needed if you run the Octave.app (not just for installing the gsl--package). A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}.
+@* @b{Note:} You need to set up at least @command{LDFLAGS} again if you close your running Octave.app and then startup Octave.app again. The reason is that the libraries in the above example have been installed for dynamical use and therefore they are also needed if you run the Octave.app (not just for installing the gsl--package). A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}. @* @*
 
 @item @b{Do I have to install Gnuplot.app from the @file{Extras} directory?} @*
 If you have a working Gnuplot program (at least version 4.2.0 or higher) already installed on your system and if this Gnuplot program is found from any place on the command line then there is no reason to install Gnuplot.app. Try the following example in your Terminal.app or @command{xterm} program to test if either a Gnuplot application is already found on your system or if Gnuplot.app should be installed

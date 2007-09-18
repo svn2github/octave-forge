@@ -22,7 +22,7 @@
 
 # This is the binary of Octave that has been created. The absolute
 # path and the version number need to be given.
-OCTBIN=/tmp/dependencies-ppc/bin/octave-2.9.13
+OCTBIN=/tmp/dependencies-ppc/bin/octave-2.9.14
 
 # This is the temporary directory that is used for copying Octave and
 # its libraries that depend on the Octave.app.
@@ -37,7 +37,7 @@ DEPSDIR=/tmp/dependencies-ppc
 # octave-VERSION-ARCH.dmg file. The files that are needed are
 # Octave-FAQ.pdf, octave.pdf, liboctave.pdf, refcard-a4.pdf,
 # refcard-legal.pdf and refcard-letter.pdf.
-PDFDOCS=~/tmp/octave-ppc/solvedeps/octave-2.9.13/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
+PDFDOCS=~/tmp/oct-ppc/solvedeps/octave-2.9.14/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
 
 OCEXTRAS=~/Savings/gnuplot-4.2.2-ppc.dmg
 

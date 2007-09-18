@@ -71,7 +71,7 @@ public class FigureObject extends AxesContainer
 	BooleanProperty             NumberTitle;
 	RadioProperty               PaperOrientation;
 	VectorProperty              Position;
-	NotImplProperty             Renderer;
+	RadioProperty               Renderer;
 	BooleanProperty             Resize;
 	CallbackProperty            ResizeFcn;
 	RadioProperty               SelectionType;
@@ -112,7 +112,7 @@ public class FigureObject extends AxesContainer
 		currentUnits = Units.getValue();
 		Dimension d = Utils.getScreenSize();
 		Position = new VectorProperty(this, "Position", 4, new double[] {10, d.height-500, 600, 430});
-		Renderer = new NotImplProperty(this, "Renderer", "OpenGL");
+		Renderer = new RadioProperty(this, "Renderer", new String[] {"OpenGL", "Java2D"}, "OpenGL");
 		Toolbar = new RadioProperty(this, "Toolbar", new String[] {"none", "auto", "figure"}, "auto");
 		SelectionType = new RadioProperty(this, "SelectionType", new String[] {"normal", "extend", "alt", "open"}, "normal");
 		KeyPressFcn = new CallbackProperty(this, "KeyPressFcn", (String)null);

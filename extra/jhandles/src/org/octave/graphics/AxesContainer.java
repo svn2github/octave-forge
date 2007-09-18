@@ -255,8 +255,8 @@ public abstract class AxesContainer extends HandleObject
 	{
 		if (canvas == null)
 		{
-			//canvas = new GLRenderCanvas();
-			canvas = new J2DRenderCanvas();
+			canvas = new GLRenderCanvas();
+			//canvas = new J2DRenderCanvas();
 			canvas.addMouseListener(this);
 			canvas.addMouseMotionListener(this);
 			canvas.addRenderEventListener(this);

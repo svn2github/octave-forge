@@ -290,7 +290,7 @@ public class AxesObject extends HandleObject
 		Key.setVisible(false);
 		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 
-		updatePosition();
+		//updatePosition();
 		autoTick();
 		autoAspectRatio();
 		autoCamera();
@@ -557,10 +557,12 @@ public class AxesObject extends HandleObject
 
 	void updateActivePosition()
 	{
+		/*
 		if (ActivePositionProperty.is("position"))
 			updateOuterPosition();
 		else
 			updatePosition();
+			*/
 		autoCamera();
 	}
 
@@ -1482,10 +1484,7 @@ public class AxesObject extends HandleObject
 		Iterator it;
 
 		// TODO: how to avoid clipping on the clip planes?
-		r.setClipBox(
-				xmin-0.001*(xmax-xmin), xmax+0.001*(xmax-xmin),
-				ymin-0.001*(ymax-ymin), ymax+0.001*(ymax-ymin),
-				zmin-0.001*(zmax-zmin), zmax+0.001*(zmax-zmin));
+		r.setClipBox(xmin, xmax, ymin, ymax, zmin, zmax);
 		r.setCamera(CameraPosition.getArray(), CameraTarget.getArray());
 
 		synchronized (Children)

@@ -25,6 +25,7 @@ import java.awt.Component;
 import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.Image;
 import java.awt.event.*;
 import java.util.*;
 
@@ -32,27 +33,45 @@ public class J2DRenderCanvas extends Canvas implements RenderCanvas
 {
 	private List listenerList;
 	private J2DRenderer r;
+	private Image buffer;
 
 	public J2DRenderCanvas()
 	{
 		listenerList = new LinkedList();
-		r = new J2DRenderer();
+		r = new J2DRenderer(this);
 	}
 
 	public void paint(Graphics g)
 	{
-		r.setGraphics(g);
+		Graphics bufferGC = buffer.getGraphics();
+
+		r.setGraphics(bufferGC);
 
 		Iterator it = listenerList.iterator();
 		while (it.hasNext())
 			((RenderEventListener)it.next()).display(this);
 
 		r.setGraphics(null);
+		bufferGC.dispose();
+		g.drawImage(buffer, 0, 0, this);
+	}
+
+	public void update(Graphics g)
+	{
+		paint(g);
 	}
 
 	public void setBounds(int x, int y, int w, int h)
 	{
 		super.setBounds(x, y, w, h);
+		if (buffer != null)
+		{
+			buffer.flush();
+			buffer = null;
+		}
+		if (w > 0 && h > 0)
+			buffer = createImage(w, h);
+
 		Iterator it = listenerList.iterator();
 		while (it.hasNext())
 			((RenderEventListener)it.next()).reshape(this, x, y, w, h);

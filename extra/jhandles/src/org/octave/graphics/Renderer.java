@@ -73,6 +73,8 @@ public interface Renderer
 
 	public void draw(ImageObject image);
 
+	public void draw(TextObject text);
+
 	public void setXForm(AxesObject ax);
 
 	public void setViewport(int width, int height);

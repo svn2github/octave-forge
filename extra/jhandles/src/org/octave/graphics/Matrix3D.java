@@ -114,6 +114,19 @@ public class Matrix3D
 		}
 	}
 
+	public void transform(double[] x, double[] y, double[] z, int n, double[] tx, double[] ty, double[] tz)
+	{
+		double a;
+
+		for (int i=0; i<n; i++)
+		{
+			a     = data[3]*x[i]+data[7]*y[i]+data[11]*z[i]+data[15];
+			tx[i] = (data[0]*x[i]+data[4]*y[i]+data[8] *z[i]+data[12])/a;
+			ty[i] = (data[1]*x[i]+data[5]*y[i]+data[9] *z[i]+data[13])/a;
+			tz[i] = (data[2]*x[i]+data[6]*y[i]+data[10]*z[i]+data[14])/a;
+		}
+	}
+
 	public double[] getData()
 	{
 		return data;

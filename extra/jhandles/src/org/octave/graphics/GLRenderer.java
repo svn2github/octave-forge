@@ -117,6 +117,10 @@ public class GLRenderer implements Renderer
 	
 	public void setClipBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 	{
+		xmin = xmin-0.001*(xmax-xmin); xmax = xmax+0.001*(xmax-xmin);
+		ymin = ymin-0.001*(ymax-ymin); ymax = ymax+0.001*(ymax-ymin);
+		zmin = zmin-0.001*(zmax-zmin); zmax = zmax+0.001*(zmax-zmin);
+
 		gl.glClipPlane(GL.GL_CLIP_PLANE0, new double[] { -1, 0, 0, xmax }, 0);
 		gl.glClipPlane(GL.GL_CLIP_PLANE1, new double[] { 1, 0, 0, -xmin }, 0);
 		gl.glClipPlane(GL.GL_CLIP_PLANE2, new double[] { 0, -1, 0, ymax }, 0);
@@ -1756,6 +1760,11 @@ public class GLRenderer implements Renderer
 			gl.glEnd();
 			gl.glDisable(GL.GL_TEXTURE_2D);
 		}
+	}
+
+	public void draw(TextObject text)
+	{
+		text.drawAsImage(this);
 	}
 
 	public void setXForm(AxesObject ax)

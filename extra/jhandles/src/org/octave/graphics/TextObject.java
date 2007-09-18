@@ -86,6 +86,7 @@ public class TextObject extends GraphicObject
 		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
 		FontUnits = new RadioProperty(this, "FontUnits", new String[] {"points", "normalized", "inches",
 			"centimeters", "pixels"}, "points");
+		Clipping.reset("off");
 
 		listen(Units);
 		listen(TextString);
@@ -113,7 +114,13 @@ public class TextObject extends GraphicObject
 	public Rectangle getExtent()
 	{
 		RenderCanvas comp = getAxes().getCanvas();
-		return (Rectangle)content.layout(comp, comp.getFont()).clone();
+		Font fnt = Utils.getFont(FontName, FontSize, FontUnits, FontAngle, FontWeight, comp.getHeight());
+		return (Rectangle)content.layout(comp, fnt).clone();
+	}
+
+	public void render(Graphics g)
+	{
+		content.render((Graphics2D)g);
 	}
 
 	private void updateData()
@@ -212,7 +219,7 @@ public class TextObject extends GraphicObject
 		}
 	}
 
-	public void draw(Renderer renderer)
+	public void drawAsImage(Renderer renderer)
 	{
 		if (data == null)
 			updateData();
@@ -243,6 +250,11 @@ public class TextObject extends GraphicObject
 		renderer.drawText(TextString.toString(), pos, halign, valign, Rotation.floatValue(), Margin.floatValue(), false,
 				LineWidth.floatValue(), EdgeColor.getColor(), LineStyle.getValue(), BackgroundColor.getColor(),
 				dataUnits);
+	}
+
+	public void draw(Renderer renderer)
+	{
+		renderer.draw(this);
 	}
 
 	public void propertyChanged(Property p) throws PropertyException

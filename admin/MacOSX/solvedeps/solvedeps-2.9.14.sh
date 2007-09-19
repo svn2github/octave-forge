@@ -113,11 +113,11 @@ unpack () {
 # Output args: -
 # Description: Configures, compiles and installs a source package
 confmakeinst() {
-  echo "makegnuplotapp.sh: Configuring \"${1}\" ..."
+  echo "solvedeps-2.9.14.sh: Configuring \"${1}\" ..."
   evalfailexit "./configure ${2}"
-  echo "makegnuplotapp.sh: Making \"${1}\" ..."
+  echo "solvedeps-2.9.14.sh: Making \"${1}\" ..."
   evalfailexit "make"
-  echo "makegnuplotapp.sh: Installing \"${1}\" ..."
+  echo "solvedeps-2.9.14.sh: Installing \"${1}\" ..."
   evalfailexit "make install"
 }
 
@@ -219,8 +219,8 @@ create_hdf5 () {
   echo "solvedeps-2.9.14.sh: Configuring ${vhdf5file} ..."
   evalfailexit "autoreconf"
   export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} 
-  confmakeinst "${vhdf5file}" "CFLAGS=\"${CFLAGS}\" --prefix=${INSTDIR} --disable-cxx"
-#  confmakeinst "${vhdf5file}" "--prefix=${INSTDIR} --disable-cxx"
+#  confmakeinst "${vhdf5file}" "CFLAGS=\"${CFLAGS}\" --prefix=${INSTDIR} --disable-cxx"
+  confmakeinst "${vhdf5file}" "--prefix=${INSTDIR} --disable-cxx"
 }
 
 create_fftw () {
@@ -346,8 +346,8 @@ create_octave() {
   getsource ${OCTAVEPACK}
   unpack ${voctavepack}
 
-#  echo "solvedeps-2.9.14.sh: Applying patch ${voctavediff} ..."
-#  evalfailexit "patch -p0 < ${voctavediff}"
+  echo "solvedeps-2.9.14.sh: Applying patch ${voctavediff} ..."
+  evalfailexit "patch -p0 < ${voctavediff}"
 
   echo "solvedeps-2.9.14.sh: Calling Octave's autogen.sh ..."
   cd ${voctavefile}
@@ -404,9 +404,10 @@ else
       CXX="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} g++"
       CPP="MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} cpp"
 
-      CFLAGS="${ARCH} -I${INSTDIR}/include"
-      CXXFLAGS="${ARCH} -I${INSTDIR}/include"
-      CPPFLAGS="${ARCH} -I${INSTDIR}/include"
+      OPTFLAGS="-O3 -ftree-vectorize"
+      CFLAGS="${OPTFLAGS} ${ARCH} -I${INSTDIR}/include"
+      CXXFLAGS="${OPTFLAGS} ${ARCH} -I${INSTDIR}/include"
+      CPPFLAGS="${OPTFLAGS} ${ARCH} -I${INSTDIR}/include"
       LDFLAGS="${ARCH} -L${INSTDIR}/lib"
       ;;
 

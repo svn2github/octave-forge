@@ -500,24 +500,42 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   %# else nothing will be returned, varargout{1} undefined
   end
 
-%!test vx = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0]);
-%!test [vx, vy] = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0]);
-%!test [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0]);
-%!test vx = ode54 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
-%!test [vx, vy] = ode54 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
-%!test [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     vx = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy] = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     vx = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy] = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
-%!test A = odeset ('MaxStep', 2.5/50, 'RelTol', 1e-1, 'AbsTol', 1e-2); 
-%!     [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], A, 5, 2, 0.02, 0.1);
+%!function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
+%!  mu = 1;
+%!  ydot = [yvar(2); ...
+%!          mu * (1 - yvar(1)^2) * yvar(2) - yvar(1)];
+%!test
+%!  warning ("off", "OdePkg:InvalidOption");
+%!  vsol = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0]);
+%!test
+%!  [vx, vy] = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0]);
+%!test
+%!  [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0]);
+%!test
+%!  vsol = ode54 (@odepkg_equations_vanderpol, linspace (0, 0.1, 2), [2 0]);
+%!test
+%!  [vx, vy] = ode54 (@odepkg_equations_vanderpol, linspace (0, 0.1, 2), [2 0]);
+%!test
+%!  [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_vanderpol, linspace (0, 0.1, 2), [0 0]);
+%!test
+%!  A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!  vsol = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0], A);
+%!test
+%!  A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!  [vx, vy] = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0], A);
+%!test
+%!  A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!  [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0], A);
+%!test
+%!  A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!  vsol = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
+%!test
+%!  A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!  [vx, vy] = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
+%!test
+%!  A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
+%!  [vx, vy, va, vb, vc] = ode54 (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
+%!  warning ("on", "OdePkg:InvalidOption");
 
 %!demo
 %!

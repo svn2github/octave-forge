@@ -95,7 +95,7 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'NonNegative'
         if (isempty  (vret.(vfld{vcntarg})) || ...
-            isvector (vret.(vfld{vcntarg})))
+            (isnumeric (vret.(vfld{vcntarg})) && isvector (vret.(vfld{vcntarg}))))
         else
           error ('OdePkg:InvalidParameter', ...
             'Unknown parameter name "%s" or not valid parameter value', ...
@@ -113,7 +113,7 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'OutputSel'
         if (isempty  (vret.(vfld{vcntarg})) || ...
-            isvector (vret.(vfld{vcntarg})) || ...
+            (isnumeric (vret.(vfld{vcntarg})) && isvector (vret.(vfld{vcntarg}))) || ...
             isscalar (vret.(vfld{vcntarg})))
         else
           error ('OdePkg:InvalidParameter', ...
@@ -122,7 +122,8 @@ function [vret] = odepkg_structure_check (varargin)
         end
 
       case 'Refine'
-        if (mod (vret.(vfld{vcntarg}), 1) == 0 && ...
+        if (isscalar (vret.(vfld{vcntarg})) && ...
+	    mod (vret.(vfld{vcntarg}), 1) == 0 && ...
             vret.(vfld{vcntarg}) >= 0 && ...
             vret.(vfld{vcntarg}) <= 5)
         else
@@ -142,7 +143,8 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'InitialStep'
         if (isempty (vret.(vfld{vcntarg})) || ...
-            (isreal (vret.(vfld{vcntarg})) && ...
+            (isscalar (vret.(vfld{vcntarg})) && ...
+	     isreal (vret.(vfld{vcntarg})) && ...
              vret.(vfld{vcntarg}) > 0) )
         else
           error ('OdePkg:InvalidParameter', ...
@@ -300,11 +302,11 @@ function [vret] = odepkg_structure_check (varargin)
 %!error A = odeset ('NonNegative', '12');
 %!test  A = odeset ('OutputFcn', @odeprint);
 %!test  A = odeset ('OutputFcn', @odeplot);
-%!error A = odeset ('OutputFcn', []);
+%!test  A = odeset ('OutputFcn', []);
 %!error A = odeset ('OutputFcn', 'odeprint');
 %!test  A = odeset ('OutputSel', 1);
 %!test  A = odeset ('OutputSel', [1, 2, 3]);
-%!error A = odeset ('OutputSel', []);
+%!test  A = odeset ('OutputSel', []);
 %!error A = odeset ('OutputSel', '12');
 %!test  A = odeset ('Refine', 3);
 %!error A = odeset ('Refine', [1, 2, 3]);
@@ -316,19 +318,19 @@ function [vret] = odepkg_structure_check (varargin)
 %!error A = odeset ('Stats', '12');
 %!test  A = odeset ('InitialStep', 3);
 %!error A = odeset ('InitialStep', [1, 2, 3]);
-%!error A = odeset ('InitialStep', []);
-%!error A = odeset ('InitialStep', 6);
+%!test  A = odeset ('InitialStep', []);
+%!test  A = odeset ('InitialStep', 6);
 %!test  A = odeset ('MaxStep', 3);
 %!error A = odeset ('MaxStep', [1, 2, 3]);
-%!error A = odeset ('MaxStep', []);
-%!error A = odeset ('MaxStep', 6);
+%!test  A = odeset ('MaxStep', []);
+%!test  A = odeset ('MaxStep', 6);
 %!test  A = odeset ('Events', @demo);
 %!error A = odeset ('Events', 'off');
-%!error A = odeset ('Events', []);
+%!test  A = odeset ('Events', []);
 %!error A = odeset ('Events', '12');
 %!test  A = odeset ('Jacobian', @demo);
 %!test  A = odeset ('Jacobian', [1, 2; 3, 4]);
-%!error A = odeset ('Jacobian', []);
+%!test  A = odeset ('Jacobian', []);
 %!error A = odeset ('Jacobian', '12');
 %#!test  A = odeset ('JPattern', );
 %#!test  A = odeset ('JPattern', );
@@ -340,7 +342,7 @@ function [vret] = odepkg_structure_check (varargin)
 %!error A = odeset ('Vectorized', '12');
 %!test  A = odeset ('Mass', @demo);
 %!test  A = odeset ('Mass', [1, 2; 3, 4]);
-%!error A = odeset ('Mass', []);
+%!test  A = odeset ('Mass', []);
 %!error A = odeset ('Mass', '12');
 %!test  A = odeset ('MStateDependence', 'none');
 %!test  A = odeset ('MStateDependence', 'weak');
@@ -359,12 +361,12 @@ function [vret] = odepkg_structure_check (varargin)
 %!error A = odeset ('MassSingular', []);
 %!error A = odeset ('MassSingular', '12');
 %!test  A = odeset ('InitialSlope', [1, 2, 3]);
-%!error A = odeset ('InitialSlope', 1);
-%!error A = odeset ('InitialSlope', []);
-%!error A = odeset ('InitialSlope', '12');
+%!test  A = odeset ('InitialSlope', 1);
+%!test  A = odeset ('InitialSlope', []);
+%!test  A = odeset ('InitialSlope', '12');
 %!test  A = odeset ('MaxOrder', 3);
 %!error A = odeset ('MaxOrder', 3.5);
-%!error A = odeset ('MaxOrder', [1, 2; 3, 4]);
+%!test  A = odeset ('MaxOrder', [1, 2; 3, 4]);
 %!test  A = odeset ('MaxOrder', []);
 %!test  A = odeset ('BDF', 'on');
 %!test  A = odeset ('BDF', 'off');

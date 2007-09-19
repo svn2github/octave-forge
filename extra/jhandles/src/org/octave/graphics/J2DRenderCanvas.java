@@ -43,17 +43,20 @@ public class J2DRenderCanvas extends Canvas implements RenderCanvas
 
 	public void paint(Graphics g)
 	{
-		Graphics bufferGC = buffer.getGraphics();
+		if (buffer != null)
+		{
+			Graphics bufferGC = buffer.getGraphics();
 
-		r.setGraphics(bufferGC);
+			r.setGraphics(bufferGC);
 
-		Iterator it = listenerList.iterator();
-		while (it.hasNext())
-			((RenderEventListener)it.next()).display(this);
+			Iterator it = listenerList.iterator();
+			while (it.hasNext())
+				((RenderEventListener)it.next()).display(this);
 
-		r.setGraphics(null);
-		bufferGC.dispose();
-		g.drawImage(buffer, 0, 0, this);
+			r.setGraphics(null);
+			bufferGC.dispose();
+			g.drawImage(buffer, 0, 0, this);
+		}
 	}
 
 	public void update(Graphics g)

@@ -135,6 +135,41 @@ public abstract class AxesContainer extends HandleObject
 		}
 	}
 
+	private void createCanvas()
+	{
+		if (canvas != null)
+			return;
+
+		RadioProperty rp = ((FigureObject)getAncestor("figure")).Renderer;
+
+		if (rp.is("OpenGL"))
+			canvas = new GLRenderCanvas();
+		else if (rp.is("Java2D"))
+			canvas = new J2DRenderCanvas();
+
+		canvas.getComponent().setVisible(false);
+		canvas.addMouseListener(this);
+		canvas.addMouseMotionListener(this);
+		canvas.addRenderEventListener(this);
+		getEmbeddingComponent().add(canvas.getComponent());
+		getEmbeddingComponent().validate();
+		canvas.getComponent().setVisible(true);
+	}
+
+	protected void updateCanvas()
+	{
+		if (canvas != null)
+		{
+			canvas.removeMouseListener(this);
+			canvas.removeMouseMotionListener(this);
+			canvas.removeRenderEventListener(this);
+			getEmbeddingComponent().remove(canvas.getComponent());
+			getEmbeddingComponent().validate();
+			canvas = null;
+		}
+		createCanvas();
+	}
+
 	// RenderEventListener interface
 
 	public void reshape(RenderCanvas c, int x, int y, int width, int height)
@@ -254,15 +289,7 @@ public abstract class AxesContainer extends HandleObject
 	public RenderCanvas getCanvas()
 	{
 		if (canvas == null)
-		{
-			canvas = new GLRenderCanvas();
-			//canvas = new J2DRenderCanvas();
-			canvas.addMouseListener(this);
-			canvas.addMouseMotionListener(this);
-			canvas.addRenderEventListener(this);
-			getEmbeddingComponent().add(canvas.getComponent());
-			getEmbeddingComponent().validate();
-		}
+			createCanvas();
 
 		return canvas;
 	}

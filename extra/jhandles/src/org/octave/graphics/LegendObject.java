@@ -181,6 +181,7 @@ public class LegendObject extends AxesObject
 
 	private void doLayout()
 	{
+		RenderCanvas canvas = getCanvas();
 		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
 		int lineWidth = 30, margin = 5;
 		int maxWidth = 0, maxHeight = fm.getHeight()+margin;
@@ -260,6 +261,7 @@ public class LegendObject extends AxesObject
 		if (Location.is("none"))
 			return;
 
+		RenderCanvas canvas = getCanvas();
 		double[] aPos = Utils.convertPosition(axes.Position.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
 		double[] aOPos = Utils.convertPosition(axes.OuterPosition.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
 		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
@@ -360,6 +362,7 @@ public class LegendObject extends AxesObject
 
 	void updateActivePosition()
 	{
+		RenderCanvas canvas = getCanvas();
 		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		pos[2] = size.width;
 		pos[3] = size.height;

@@ -85,7 +85,6 @@ public class AxesObject extends HandleObject
 	// TODO: remove
 	//protected int autoMode = 0;
 
-	RenderCanvas canvas;
 	LegendObject legend;
 	ColorbarObject colorbar;
 	BaseLineObject baseLine;
@@ -204,7 +203,6 @@ public class AxesObject extends HandleObject
 		else
 			angles = new double[] { 0.0, 90.0 };
 
-		canvas = ((RenderCanvas.Container)parent).getCanvas();
 		linScale = new LinearScaler();
 		logScale = new LogScaler();
 
@@ -499,7 +497,7 @@ public class AxesObject extends HandleObject
 
 	public RenderCanvas getCanvas()
 	{
-		return canvas;
+		return ((AxesContainer)Parent.elementAt(0)).getCanvas();
 	}
 
 	public FigureObject getFigure()
@@ -517,18 +515,19 @@ public class AxesObject extends HandleObject
 
 	Rectangle getBoundingBox()
 	{
-		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
+		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", getCanvas().getComponent());
 		return new Rectangle((int)(pos[0]-1), (int)(pos[1]-1), (int)pos[2], (int)pos[3]);
 	}
 
 	Rectangle getOuterBoundingBox()
 	{
-		double[] pos = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", canvas.getComponent());
+		double[] pos = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", getCanvas().getComponent());
 		return new Rectangle((int)(pos[0]-1), (int)(pos[1]-1), (int)pos[2], (int)pos[3]);
 	}
 
 	void updatePosition()
 	{
+		RenderCanvas canvas = getCanvas();
 		double[] p = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
@@ -543,6 +542,7 @@ public class AxesObject extends HandleObject
 
 	void updateOuterPosition()
 	{
+		RenderCanvas canvas = getCanvas();
 		double[] p = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
@@ -674,6 +674,7 @@ public class AxesObject extends HandleObject
 	{
 		r.setXForm(this);
 	
+		RenderCanvas canvas = getCanvas();
 		double xmin = sx.scale(XLim.getArray()[0]), xmax = sx.scale(XLim.getArray()[1]);
 		double ymin = sy.scale(YLim.getArray()[0]), ymax = sy.scale(YLim.getArray()[1]);
 		double zmin = sz.scale(ZLim.getArray()[0]), zmax = sz.scale(ZLim.getArray()[1]);
@@ -1914,7 +1915,7 @@ public class AxesObject extends HandleObject
 		autoTick();
 		autoAspectRatio();
 		autoCamera();
-		canvas.redraw();
+		getCanvas().redraw();
 	}
 
 	public void unZoom()
@@ -1930,18 +1931,18 @@ public class AxesObject extends HandleObject
 			autoTick();
 			autoAspectRatio();
 			autoCamera();
-			canvas.redraw();
+			getCanvas().redraw();
 		}
 	}
 
 	private void drawZoomBox(int x, int y)
 	{
-		canvas.getRenderer().drawRubberBox(new int[][] {{xAnchor, yAnchor, x, y}});
+		getCanvas().getRenderer().drawRubberBox(new int[][] {{xAnchor, yAnchor, x, y}});
 	}
 
 	private void drawZoomBox(int x1, int y1, int x2, int y2)
 	{
-		canvas.getRenderer().drawRubberBox(new int[][]
+		getCanvas().getRenderer().drawRubberBox(new int[][]
 				{{xAnchor, yAnchor, x1, y1},
 				 {xAnchor, yAnchor, x2, y2}});
 	}
@@ -2037,7 +2038,7 @@ public class AxesObject extends HandleObject
 				xPrev = e.getX();
 				yPrev = e.getY();
 
-				canvas.redraw();
+				getCanvas().redraw();
 				break;
 			case FigureObject.OP_ZOOM:
 				if (zoomBox)
@@ -2228,6 +2229,8 @@ public class AxesObject extends HandleObject
 	public void propertyChanged(Property p) throws PropertyException
 	{
 		super.propertyChanged(p);
+		
+		RenderCanvas canvas = getCanvas();
 
 		if (autoMode == 0)
 		{
@@ -2487,6 +2490,7 @@ public class AxesObject extends HandleObject
 	{
 		updateScalers();
 
+		RenderCanvas canvas = getCanvas();
 		double xd = (XDir.is("normal") ? 1 : -1);
 		double yd = (YDir.is("normal") ? 1 : -1);
 		double zd = (ZDir.is("normal") ? 1 : -1);

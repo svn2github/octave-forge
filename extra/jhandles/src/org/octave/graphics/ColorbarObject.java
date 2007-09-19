@@ -87,6 +87,7 @@ public class ColorbarObject extends AxesObject
 		doClear();
 		this.axes = axes;
 
+		RenderCanvas canvas = getCanvas();
 		double[] clim = axes.CLim.getArray();
 		String loc = Location.getValue().toLowerCase();
 		
@@ -147,6 +148,7 @@ public class ColorbarObject extends AxesObject
 
 	private void doLocate()
 	{
+		RenderCanvas canvas = getCanvas();
 		double[] aPos = Utils.convertPosition(axes.Position.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
 		double[] aOPos = Utils.convertPosition(axes.OuterPosition.getArray(), axes.Units.getValue(), "pixels", canvas.getComponent());
 		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
@@ -241,6 +243,7 @@ public class ColorbarObject extends AxesObject
 
 	void updateActivePosition()
 	{
+		RenderCanvas canvas = getCanvas();
 		double[] pos = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		pos[2] = 40.0;
 		pos[3] = 40.0;

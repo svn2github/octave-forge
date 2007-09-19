@@ -72,6 +72,7 @@ public class FigureObject extends AxesContainer
 	RadioProperty               PaperOrientation;
 	VectorProperty              Position;
 	RadioProperty               Renderer;
+	RadioProperty               RendererMode;
 	BooleanProperty             Resize;
 	CallbackProperty            ResizeFcn;
 	RadioProperty               SelectionType;
@@ -113,6 +114,7 @@ public class FigureObject extends AxesContainer
 		Dimension d = Utils.getScreenSize();
 		Position = new VectorProperty(this, "Position", 4, new double[] {10, d.height-500, 600, 430});
 		Renderer = new RadioProperty(this, "Renderer", new String[] {"OpenGL", "Java2D"}, "OpenGL");
+		RendererMode = new RadioProperty(this, "RendererMode", new String[] {"auto", "manual"}, "auto");
 		Toolbar = new RadioProperty(this, "Toolbar", new String[] {"none", "auto", "figure"}, "auto");
 		SelectionType = new RadioProperty(this, "SelectionType", new String[] {"normal", "extend", "alt", "open"}, "normal");
 		KeyPressFcn = new CallbackProperty(this, "KeyPressFcn", (String)null);
@@ -127,6 +129,8 @@ public class FigureObject extends AxesContainer
 		listen(Units);
 		listen(Toolbar);
 		listen(Resize);
+		listen(Renderer);
+		listen(RendererMode);
 	}
 
 	// Methods
@@ -292,6 +296,11 @@ public class FigureObject extends AxesContainer
 
 		return FloatBuffer.wrap(buf);
 	}
+
+	private String getBestRenderer()
+	{
+		return "OpenGL";
+	}
 	
 	public void propertyChanged(Property p) throws PropertyException
 	{
@@ -317,6 +326,23 @@ public class FigureObject extends AxesContainer
 			updateToolbars();
 		else if (p == Resize)
 			frame.setResizable(Resize.isSet());
+		else if (p == Renderer && !isAutoMode())
+		{
+			autoSet(RendererMode, "manual");
+			updateCanvas();
+		}
+		else if (p == RendererMode && !isAutoMode())
+		{
+			if (RendererMode.is("auto"))
+			{
+				String r = getBestRenderer();
+				if (!Renderer.is(r))
+				{
+					autoSet(Renderer, getBestRenderer());
+					updateCanvas();
+				}
+			}
+		}
 	}
 
 	public Component getComponent()

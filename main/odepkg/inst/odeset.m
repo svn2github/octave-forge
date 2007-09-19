@@ -97,7 +97,7 @@ function [vret] = odeset (varargin)
 
   elseif (nargin == 0)
     help ('odeset');
-    error ('OdePkg:odeset:InvalidInputArgument', ...
+    error ('OdePkg:InvalidArgument', ...
       'Number of input arguments must be greater than zero');
 
   elseif (length (varargin) < 2)
@@ -114,7 +114,7 @@ function [vret] = odeset (varargin)
         vval{vnmb} = varargin{vcntarg+1};
         vnmb = vnmb + 1;
       else
-        error ('OdePkg:odeset:InvalidInputArgument', ...
+        error ('OdePkg:InvalidArgument', ...
           'Input argument number %d is no valid string', vcntarg);
       end
     end
@@ -140,7 +140,7 @@ function [vret] = odeset (varargin)
         vval{vnmb} = varargin{vcntarg+1};
         vnmb = vnmb + 1;
       else
-        error ('OdePkg:odeset:InvalidInputArgument', ...
+        error ('OdePkg:InvalidArgument', ...
           'Input argument number %d is no valid string', vcntarg);
       end
     end
@@ -169,7 +169,7 @@ function [vret] = odeset (varargin)
     vret = odepkg_structure_check (vret);
 
   else
-    error ('OdePkg:odeset:InvalidInputArgument', ...
+    error ('OdePkg:InvalidArgument', ...
       'Check types and number of all input arguments');
   end
 

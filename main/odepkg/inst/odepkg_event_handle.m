@@ -22,10 +22,6 @@
 %#
 %# @seealso{odepkg}
 
-%# Maintainer: Thomas Treichl
-%# Created: 20060928
-%# ChangeLog:
-
 function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
   %# vretval{1} is true or false; either to terminate or to continue
   %# vretval{2} is the index information for which event occured
@@ -45,9 +41,9 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
   %# Call the event function if an event function has been defined to
   %# initialize the internal variables of the event function an to get
   %# a value for veveold
-  if (strcmp (vflag, 'init') == true)
+  if (strcmp (vflag, 'init'))
 
-    if (isempty (varargin) == true)
+    if (isempty (varargin))
       [veveold, vterm, vdir] = feval (vevefun, vt, vy);
     else
       [veveold, vterm, vdir] = feval (vevefun, vt, vy, varargin);
@@ -65,11 +61,11 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
 
   %# Process the event, find the zero crossings either for a rising
   %# or for a falling edge
-  elseif (isempty (vflag) == true)
+  elseif (isempty (vflag))
 
     %# Call the event function if an event function has been defined to
     %# to get the value(s) veve
-    if (isempty (varargin) == true)
+    if (isempty (varargin))
       [veve, vterm, vdir] = feval (vevefun, vt, vy);
     else
       [veve, vterm, vdir] = feval (vevefun, vt, vy, varargin);
@@ -78,12 +74,12 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
 
     %# Check if one or more signs of the event function results changed
     vsignum = (sign (veveold) ~= sign (veve));
-    if (any (vsignum) == true)     %# One or more values have changed
-      vindex = find (vsignum);     %# Get the index of the changed values
+    if (any (vsignum))         %# One or more values have changed
+      vindex = find (vsignum); %# Get the index of the changed values
 
       if (any (vdir(vindex) == 0)) %# Rising or falling (both are possible)
         %# Don't change anything, keep the index
-      elseif (any (vdir(vindex) == sign (veve(vindex))) == true)
+      elseif (any (vdir(vindex) == sign (veve(vindex))))
         %# Detected rising or falling, need a new index
         vindex = find (vdir == sign (veve));
       else
@@ -92,9 +88,9 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
       end
 
       %# We create a new output values if we found a valid index 
-      if (isempty (vindex) == false)
+      if (!isempty (vindex))
         %# Change the persistent result cell array
-        vretcell{1} = any (vterm(vindex) == true);  %# Stop integration or not
+        vretcell{1} = any (vterm(vindex));    %# Stop integration or not
         vretcell{2}(vevecnt,1) = vindex(1,1); %# Take first event that occurs
         %# Calculate the time stamp when the event function returned 0 and
         %# calculate new values for the integration results, we do both by
@@ -111,21 +107,25 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
     vretval = vretcell; vyold = vy;
 
   %# Reset this event handling function
-  elseif (strcmp (vflag, 'done') == true)
+  elseif (strcmp (vflag, 'done'))
     clear ('veveold', 'vtold', 'vretcell', 'vyold', 'vevecnt');
     for vcnt = 1:4, vretcell{vcnt} = []; end
 
   end %# if (strcmp (vflag, ...) == true)
 
-%#! The only test I can imagine that could be added here is: Write
-%#! an example that uses an event function and start a solver process.
-%#! Lines like this don't work, because the function handle that would
-%#! be needed is not found by the test command.
-%#!
-%#! function [] = evetest (veve, vt, vy, vf, varargin)
-%#!  disp (vfun)
-%#! endfunction
-%#!test odepkg_event_handle (@evetest, 0.0, [0 1 2 3], 'init', 123, 456);
+%!function [veve, vterm, vdir] = feve (vt, vy, varargin)
+%!  veve  = vy(1); %# Which event component should be tread
+%!  vterm =     1; %# Terminate if an event is found
+%!  vdir  =    -1; %# In which direction, -1 for falling
+%!test 
+%!  odepkg_event_handle (@feve, 0.0, [0 1 2 3], 'init', 123, 456);
+%!test
+%!  A = odepkg_event_handle (@feve, 2.0, [0 0 3 2], '', 123, 456);
+%!  if ~(iscell (A) && isempty (A{1})), error; end
+%!  A = odepkg_event_handle (@feve, 3.0, [-1 0 3 2], '', 123, 456);
+%!  if ~(iscell (A) && A{1} == 1), error; end
+%!test
+%!  odepkg_event_handle (@feve, 4.0, [0 1 2 3], 'done', 123, 456);
 
 %# Local Variables: ***
 %# mode: octave ***

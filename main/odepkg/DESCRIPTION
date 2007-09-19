@@ -1,12 +1,12 @@
 Name: OdePkg
 Version: 0.3.3
-Date: 2007-09-15
+Date: 2007-09-19
 Author: Thomas Treichl
 Maintainer: Thomas Treichl
 Title: OdePkg.
 Description: A toolkit for Differential Equations and Initial Value Problems.
 Categories: Ordinary Differential Equations
-Depends: octave (>= 2.9.13)
+Depends: octave (>= 2.9.14)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

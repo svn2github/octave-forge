@@ -33,6 +33,7 @@ OdePkg Testsuite Functions
  odepkg_testsuite_calcmescd
  odepkg_testsuite_chemakzo
  odepkg_testsuite_hires
+ odepkg_testsuite_implrober
  odepkg_testsuite_oregonator
  odepkg_testsuite_pollution
  odepkg_testsuite_robertson

@@ -74,8 +74,11 @@ function ydot = odepkg_equations_secondorderlag (tvar, yvar, varargin)
   ydot(1,1) = yvar(2,1);
   ydot(2,1) = 1/vT1 * (- yvar(1,1) - vT2*yvar(2,1) + vK*vu);
 
-%!test [vt, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1], [0 0]);
-%!test [vt, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1], [3 2]);
+%!test
+%!  warning ("off", "OdePkg:InvalidOption");
+%!  [vt, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1], [0 0]);
+%!test
+%!  [vt, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1], [3 2]);
 
 %!demo
 %!

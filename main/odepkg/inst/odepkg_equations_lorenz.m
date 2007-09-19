@@ -33,8 +33,10 @@ function y = odepkg_equations_lorenz (t, x)
        x(1) * (28 - x(3));
        x(1) * x(2) - 8/3 * x(3)];
 
-%!test A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
-%!     [t,y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
+%!test 
+%!  warning ("off", "OdePkg:InvalidOption");
+%!  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
+%!  [t,y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
 
 %!demo
 %!

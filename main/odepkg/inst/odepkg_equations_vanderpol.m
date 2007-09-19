@@ -77,7 +77,9 @@ function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
 %#!   'NormControl', 'on', 'Stats', 'on', 'OutputFcn', @odeprint);
 %#! [x, y] = ode78 (@odepkg_equations_vanderpol, [0 300], [2 0], A, 100);
 
-%!test [vt, vy] = ode78 (@odepkg_equations_vanderpol, [0 1], [2 0]);
+%!test
+%!  warning ("off", "OdePkg:InvalidOption"); 
+%!  [vt, vy] = ode78 (@odepkg_equations_vanderpol, [0 1], [2 0]);
 
 %!demo
 %!

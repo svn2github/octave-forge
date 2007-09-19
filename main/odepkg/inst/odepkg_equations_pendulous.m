@@ -37,7 +37,9 @@ function ydot = odepkg_equations_pendulous (tvar, xvar)
   ydot = [xvar(2,1); ...
           1 / (1/3 * m * l^2) * (-b * xvar(2,1) - m * g * l/2 * sin (xvar(1,1)))];
 
-%!test [t,y] = ode45 (@odepkg_equations_pendulous, [0 5], [30*pi/180, 0]);
+%!test 
+%!  warning ("off", "OdePkg:InvalidOption");
+%!  [t,y] = ode45 (@odepkg_equations_pendulous, [0 5], [30*pi/180, 0]);
 
 %!demo
 %!

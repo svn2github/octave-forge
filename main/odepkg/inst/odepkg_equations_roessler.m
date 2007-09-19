@@ -33,8 +33,10 @@ function y = odepkg_equations_roessler (t, x)
        x(1) + 0.2 * x(2);
        0.2 + x(1) * x(3) - 5.7 * x(3)];
 
-%!test A = odeset ('MaxStep', 1e-1);
-%!     [t, y] = ode78 (@odepkg_equations_roessler, [0 70], [0.1 0.3 0.1], A);
+%!test 
+%!  warning ("off", "OdePkg:InvalidOption");
+%!  A = odeset ('MaxStep', 1e-1);
+%!  [t, y] = ode78 (@odepkg_equations_roessler, [0 70], [0.1 0.3 0.1], A);
 
 %!demo
 %!

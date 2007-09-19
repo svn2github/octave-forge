@@ -288,7 +288,7 @@ public class AxesObject extends HandleObject
 		Key.setVisible(false);
 		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 
-		//updatePosition();
+		updatePosition();
 		autoTick();
 		autoAspectRatio();
 		autoCamera();
@@ -557,12 +557,10 @@ public class AxesObject extends HandleObject
 
 	void updateActivePosition()
 	{
-		/*
 		if (ActivePositionProperty.is("position"))
 			updateOuterPosition();
 		else
 			updatePosition();
-			*/
 		autoCamera();
 	}
 

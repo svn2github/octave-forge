@@ -97,7 +97,7 @@ public class J2DRenderer implements Renderer
 		}
 
 		clipRect = new Rectangle((int)Math.round(_xmin)+1, (int)Math.round(_ymin)+1,
-				(int)Math.round(_xmax)-(int)Math.round(_xmin)-2, (int)Math.round(_ymax)-(int)Math.round(_ymin)-2);
+				(int)Math.round(_xmax)-(int)Math.round(_xmin)-1, (int)Math.round(_ymax)-(int)Math.round(_ymin)-1);
 	}
 
 	public void setCamera(double[] pos, double[] target)
@@ -193,6 +193,20 @@ public class J2DRenderer implements Renderer
 				if (index > 1)
 					g.drawPolyline(xp, yp, index);
 			}
+
+			if (!line.Marker.is("none"))
+			{
+				setColor(line.LineColor.getColor());
+				setLineStyle(line.LineStyle.getValue(), false);
+				setLineWidth(line.LineWidth.floatValue());
+
+				for (int i=0; i<n; i++)
+					if (!Utils.isNaNorInf(tx[i], ty[i], 0))
+						line.Marker.drawMarker(g,
+							(int)Math.round(tx[i]),
+							(int)Math.round(ty[i]),
+							line.MarkerSize.doubleValue());
+			}
 		}
 	}
 
@@ -285,6 +299,7 @@ public class J2DRenderer implements Renderer
 				xoff = (int)Math.round(tpos[0])+xoff;
 				yoff = (int)Math.round(tpos[1])+yoff;
 				g.translate(xoff, yoff);
+				g.setFont(canvas.getFont());
 				content.render(g);
 				g.translate(-xoff, -yoff);
 

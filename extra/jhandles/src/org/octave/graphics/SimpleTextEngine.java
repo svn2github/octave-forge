@@ -290,7 +290,7 @@ class SimpleTextEngine
 		}
 	}
 
-	public static Dimension draw(RenderCanvas comp, String txt, double[] pos, int halign, int valign)
+	public static Dimension drawAsImage(RenderCanvas comp, String txt, double[] pos, int halign, int valign)
 	{
 		// create internal image
 		int margin = 0;
@@ -331,8 +331,6 @@ class SimpleTextEngine
 
 		// render to canvas
 		comp.getRenderer().drawBitmap(img, pos, xoff, yoff);
-		comp.getRenderer().drawText(txt, pos, halign, valign, 0, margin, true,
-				0, null, "-", null, true);
 
 		// return value
 		return new Dimension(r.width, r.height);

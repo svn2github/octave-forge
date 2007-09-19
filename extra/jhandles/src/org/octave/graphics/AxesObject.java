@@ -674,7 +674,6 @@ public class AxesObject extends HandleObject
 	{
 		r.setXForm(this);
 	
-		RenderCanvas canvas = getCanvas();
 		double xmin = sx.scale(XLim.getArray()[0]), xmax = sx.scale(XLim.getArray()[1]);
 		double ymin = sy.scale(YLim.getArray()[0]), ymax = sy.scale(YLim.getArray()[1]);
 		double zmin = sz.scale(ZLim.getArray()[0]), zmax = sz.scale(ZLim.getArray()[1]);
@@ -956,7 +955,7 @@ public class AxesObject extends HandleObject
 			for (int i=0; i<xticks.length && i<xticklabels.length; i++)
 			{
 				String txt = (x_logTickLabels ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
-				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
+				Dimension d = r.drawText(txt, (double[])l2.get(i),
 						(xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2)),
 						(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 && !x2Dtop ? 2 : 0)));
 				if (d.width > wmax) wmax = d.width;
@@ -1132,7 +1131,7 @@ public class AxesObject extends HandleObject
 			for (int i=0; i<yticks.length && i<yticklabels.length; i++)
 			{
 				String txt = (y_logTickLabels ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
-				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
+				Dimension d = r.drawText(txt, (double[])l2.get(i),
 						(ystate == AXE_HORZ_DIR ? 1 : (!xySym || y2Dright ? 0 : 2)),
 						(ystate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
 				if (d.width > wmax) wmax = d.width;
@@ -1324,7 +1323,7 @@ public class AxesObject extends HandleObject
 			for (int i=0; i<zticks.length && i<zticklabels.length; i++)
 			{
 				String txt = (z_logTickLabels ? "10^{"+zticklabels[i]+"}" : zticklabels[i]);
-				Dimension d = SimpleTextEngine.draw(canvas, txt, (double[])l2.get(i),
+				Dimension d = r.drawText(txt, (double[])l2.get(i),
 						2,
 						(zstate == AXE_VERT_DIR ? 1 : (zd*zv[2] < 0 ? 0 : 2)));
 				if (d.width > wmax) wmax = d.width;
@@ -1474,7 +1473,7 @@ public class AxesObject extends HandleObject
 				// position title automatically
 				Rectangle bb = getBoundingBox();
 				double[] p = new double[3];
-				unTransform(bb.x+bb.width/2, canvas.getHeight()-(bb.y+bb.height+10), (x_zmin+x_zmax)/2, p, 0);
+				unTransform(bb.x+bb.width/2, getCanvas().getHeight()-(bb.y+bb.height+10), (x_zmin+x_zmax)/2, p, 0);
 				titleObj.Position.reset(p);
 			}
 			titleObj.draw(r);

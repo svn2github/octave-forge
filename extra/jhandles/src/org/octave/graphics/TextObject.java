@@ -242,14 +242,6 @@ public class TextObject extends GraphicObject
 		int xOffset = (int)p2.getX(), yOffset = h-(int)p2.getY();
 
 		renderer.draw(data, w, h, pos, xOffset, yOffset, false, dataUnits);
-
-		/* simple text rendering, for PS print purpose: background and edge are ignored */
-		int halign = (HAlign.is("left") ? 0 : (HAlign.is("center") ? 1 : 2));
-		int valign = (VAlign.is("bottom") ? 0 : (VAlign.is("top") ? 2 : (VAlign.is("baseline") ? 3 : 1)));
-		renderer.setColor(TextColor.getColor());
-		renderer.drawText(TextString.toString(), pos, halign, valign, Rotation.floatValue(), Margin.floatValue(), false,
-				LineWidth.floatValue(), EdgeColor.getColor(), LineStyle.getValue(), BackgroundColor.getColor(),
-				dataUnits);
 	}
 
 	public void draw(Renderer renderer)

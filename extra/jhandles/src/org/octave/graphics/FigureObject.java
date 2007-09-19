@@ -80,6 +80,7 @@ public class FigureObject extends AxesContainer
 	RadioProperty               Units;
 
 	BooleanProperty __Dirty__;
+	BooleanProperty __Antialias__;
 
 	/* toolbar */
 	JToolBar figureTB;
@@ -121,6 +122,8 @@ public class FigureObject extends AxesContainer
 		__Dirty__ = new BooleanProperty(this, "__Dirty__", false);
 		__Dirty__.setVisible(false);
 		Resize = new BooleanProperty(this, "Resize", true);
+		__Antialias__ = new BooleanProperty(this, "__Antialias__", true);
+		__Antialias__.setVisible(false);
 
 		listen(Name);
 		listen(NumberTitle);

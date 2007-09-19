@@ -52,8 +52,8 @@ public class J2DRenderer implements Renderer
 		this.g = (Graphics2D)g;
 		if (g != null)
 		{
-			this.g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			this.g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			//this.g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			//this.g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
 	}
 
@@ -210,12 +210,6 @@ public class J2DRenderer implements Renderer
 	{
 	}
 
-	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin,
-		boolean offsetmargin, float linewidth, Color linecolor, String linepattern, Color fillcolor,
-		boolean useZBuffer)
-	{
-	}
-
 	public void draw(PatchObject patch)
 	{
 	}
@@ -264,12 +258,63 @@ public class J2DRenderer implements Renderer
 		}
 	}
 
+	public Dimension drawText(String txt, double[] pos, int halign, int valign)
+	{
+		if (g != null)
+		{
+			SimpleTextEngine.Content content = new SimpleTextEngine.Content(txt);
+			Rectangle r = (Rectangle)content.layout(canvas, canvas.getFont()).clone();
+			double[] tpos = new double[4];
+
+			if (r.width > 0 && r.height > 0)
+			{
+				int xoff = 0, yoff = 0;
+
+				switch (halign)
+				{
+					case 1: xoff = -r.width/2; break;
+					case 2: xoff = -r.width; break;
+				}
+				switch (valign)
+				{
+					case 1: yoff = -r.height/2; break;
+					case 0: yoff = -r.height; break;
+				}
+
+				xForm.transform(pos[0], pos[1], pos[2], tpos, 0);
+				xoff = (int)Math.round(tpos[0])+xoff;
+				yoff = (int)Math.round(tpos[1])+yoff;
+				g.translate(xoff, yoff);
+				content.render(g);
+				g.translate(-xoff, -yoff);
+
+				return new Dimension(r.width, r.height);
+			}
+		}
+
+		return new Dimension(0, 0);
+	}
+
 	public void setXForm(AxesObject ax)
 	{
 		xForm = ax.x_render;
 		sx = ax.sx;
 		sy = ax.sy;
 		sz = ax.sz;
+
+		if (g != null)
+		{
+			boolean use_antialias = ax.getFigure().__Antialias__.isSet();
+			if (use_antialias)
+			{
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			}
+			else
+			{
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			}
+		}
 	}
 
 	public void setViewport(int width, int height)
@@ -284,6 +329,24 @@ public class J2DRenderer implements Renderer
 
 	public void drawRubberBox(int[][] b)
 	{
+		Graphics GC;
+
+		if (g != null)
+			GC = g;
+		else
+			GC = canvas.getGraphics();
+		GC.setColor(Color.lightGray);
+		GC.setXORMode(Color.white);
+		for (int i=0; i<b.length; i++)
+		{
+			int x = Math.min(b[i][0], b[i][2]), y = Math.min(b[i][1], b[i][3]);
+			int w = Math.abs(b[i][2]-b[i][0]), h = Math.abs(b[i][3]-b[i][1]);
+			GC.drawRect(x, y, w, h);
+		}
+		GC.setPaintMode();
+
+		if (g == null)
+			GC.dispose();
 	}
 	
 	/*

@@ -63,9 +63,13 @@ public interface Renderer
 
 	public void drawBitmap(BufferedImage img, double[] pos, int xOffset, int yOffset);
 
+	/*
 	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin,
 		boolean offsetmargin, float linewidth, Color linecolor, String linepattern, Color fillcolor,
 		boolean useZBuffer);
+		*/
+
+	public Dimension drawText(String txt, double[] pos, int halign, int valign);
 	
 	public void draw(PatchObject patch);
 

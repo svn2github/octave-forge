@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.image.*;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
@@ -349,7 +350,7 @@ public class GLRenderer implements Renderer
 		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
 	}
 
-	public void drawText(String txt, double[] pos, int halign, int valign, float angle, float margin,
+	private void drawGL2PSText(String txt, double[] pos, int halign, int valign, float angle, float margin,
 			boolean offsetmargin, float linewidth, Color linecolor, String linepattern, Color fillcolor,
 			boolean useZBuffer)
 	{
@@ -420,6 +421,18 @@ public class GLRenderer implements Renderer
 			if (!useZBuffer)
 				gl.glEnable(GL.GL_DEPTH_TEST);
 		}
+	}
+
+	public Dimension drawText(String txt, double[] pos, int halign, int valign)
+	{
+		Dimension dim = SimpleTextEngine.drawAsImage((RenderCanvas)d, txt, pos, halign, valign);
+		if (isGL2PS)
+		{
+			int margin = 0;
+			drawGL2PSText(txt, pos, halign, valign, 0, margin, true,
+					0, null, "-", null, true);
+		}
+		return dim;
 	}
 
 	private class VertexData
@@ -1765,6 +1778,18 @@ public class GLRenderer implements Renderer
 	public void draw(TextObject text)
 	{
 		text.drawAsImage(this);
+		if (isGL2PS)
+		{
+			double[] pos = text.getAxes().convertUnits(text.Position.getArray(), text.Units.getValue());
+			int halign = (text.HAlign.is("left") ? 0 : (text.HAlign.is("center") ? 1 : 2));
+			int valign = (text.VAlign.is("bottom") ? 0 : (text.VAlign.is("top") ? 2 :
+						(text.VAlign.is("baseline") ? 3 : 1)));
+
+			setColor(text.TextColor.getColor());
+			drawGL2PSText(text.TextString.toString(), pos, halign, valign, text.Rotation.floatValue(),
+					text.Margin.floatValue(), false, text.LineWidth.floatValue(), text.EdgeColor.getColor(),
+					text.LineStyle.getValue(), text.BackgroundColor.getColor(), text.Units.is("data"));
+		}
 	}
 
 	public void setXForm(AxesObject ax)

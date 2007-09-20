@@ -49,16 +49,20 @@ public class OctaveCallback extends Callback
 			return;
 		}
 
+		unwind(RootObject.getInstance().CallbackObject, parent);
+
 		final RootObject root = RootObject.getInstance();
 		final Object[] theArgs = args;
 		final HandleObject theParent = parent;
+		final UnwindHandleObject theUnwinder = unwinder;
 
 		Octave.invokeLater(new Runnable() {
 			public void run()
 			{
 				try
 				{
-					root.setCallbackMode(true, theParent);
+					if (theUnwinder != null)
+						theUnwinder.start();
 					if (ref != null)
 						Octave.doInvoke(ref.getID(), theArgs);
 					else if (cmd != null && cmd.length() > 0)
@@ -71,11 +75,13 @@ public class OctaveCallback extends Callback
 				}
 				finally
 				{
-					root.setCallbackMode(false);
+					if (theUnwinder != null)
+						theUnwinder.end();
 				}
 				fireCallbackExecuted();
 			}
 		});
+		unwinder = null;
 	}
 
 	public Object get()

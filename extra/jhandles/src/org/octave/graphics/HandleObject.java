@@ -22,6 +22,7 @@
 package org.octave.graphics;
 
 import org.octave.Octave;
+import java.awt.event.MouseEvent;
 import java.util.*;
 import java.lang.ref.WeakReference;
 
@@ -418,6 +419,40 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 
 	public void propertyChanged(Property p) throws PropertyException
 	{
+	}
+
+	public void doButtonDownFcn(MouseEvent e)
+	{
+		String selType = "normal";
+
+		switch (e.getButton())
+		{
+			case MouseEvent.BUTTON2:
+				selType = "extend";
+				break;
+			case MouseEvent.BUTTON3:
+				selType = "alt";
+				break;
+		}
+
+		switch (e.getModifiers() & (MouseEvent.SHIFT_MASK|MouseEvent.CTRL_MASK))
+		{
+			case MouseEvent.CTRL_MASK:
+				selType = "alt";
+				break;
+			case MouseEvent.SHIFT_MASK:
+				selType = "extend";
+				break;
+			case 0:
+				if (e.getClickCount() == 2)
+					selType = "open";
+				break;
+		}
+
+		ButtonDownFcn.unwind(((FigureObject)getAncestor("figure")).SelectionType, selType);
+		ButtonDownFcn.execute(new Object[] {
+			new Double(getHandle()),
+			null});
 	}
 	
 	/* HandleEventSource interface */

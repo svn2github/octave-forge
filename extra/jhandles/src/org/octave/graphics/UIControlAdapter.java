@@ -158,25 +158,7 @@ public class UIControlAdapter extends Panel
 	
 	public void mousePressed(MouseEvent e)
 	{
-		/*
 		boolean doCB = false;
-		String selType = "normal";
-
-		switch (e.getModifiers() & (MouseEvent.SHIFT_MASK|MouseEvent.CTRL_MASK))
-		{
-			case MouseEvent.CTRL_MASK:
-				selType = "alt";
-				break;
-			case MouseEvent.SHIFT_MASK:
-				selType = "extend";
-				break;
-			case 0:
-				if (e.getClickCount() == 2)
-					selType = "open";
-				break;
-		}
-		System.out.println(selType);
-		((FigureObject)uiObj.getAncestor("figure")).SelectionType.set(selType, true);
 
 		switch (e.getButton())
 		{
@@ -190,10 +172,7 @@ public class UIControlAdapter extends Panel
 		}
 
 		if (doCB)
-			uiObj.ButtonDownFcn.execute(new Object[] {
-				new Double(uiObj.getHandle()),
-				null});
-		*/
+			uiObj.doButtonDownFcn(e);
 	}
 	
 	public void mouseReleased(MouseEvent e) {}

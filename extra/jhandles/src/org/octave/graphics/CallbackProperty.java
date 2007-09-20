@@ -82,6 +82,13 @@ public class CallbackProperty extends Property
 			cb.execute((HandleObject)getParent(), args);
 	}
 
+	public void unwind(Property p, Object value)
+	{
+		Callback cb = getCallback();
+		if (cb != null)
+			cb.unwind(p, value);
+	}
+
 	public String toString()
 	{
 		Callback cb = getCallback();

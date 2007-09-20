@@ -249,14 +249,10 @@ public abstract class AxesContainer extends HandleObject
 					doCB = true;
 
 				if (doCB)
-					hObj.ButtonDownFcn.execute(new Object[] {
-						new Double(hObj.getHandle()),
-						null});
+					hObj.doButtonDownFcn(e);
 			}
 			else
-				ButtonDownFcn.execute(new Object[] {
-					new Double(getHandle()),
-					null});
+				doButtonDownFcn(e);
 		}
 	}
 	

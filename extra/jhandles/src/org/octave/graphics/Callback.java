@@ -28,10 +28,12 @@ import org.octave.OctaveReference;
 public abstract class Callback
 {
 	private LinkedList listenerList;
+	protected UnwindHandleObject unwinder;
 
 	public Callback()
 	{
 		listenerList = new LinkedList();
+		unwinder = null;
 	}
 
 	public void addCallbackListener(CallbackListener l)
@@ -58,6 +60,13 @@ public abstract class Callback
 			while (it.hasNext())
 				((CallbackListener)it.next()).callbackExecuted(this);
 		}
+	}
+
+	public void unwind(Property p, Object value)
+	{
+		if (unwinder == null)
+			unwinder = new UnwindHandleObject();
+		unwinder.unwind(p, value);
 	}
 
 	public abstract void execute(HandleObject parent, Object[] args);

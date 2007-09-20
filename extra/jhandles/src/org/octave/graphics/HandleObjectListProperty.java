@@ -76,6 +76,8 @@ public class HandleObjectListProperty extends Property
 				throw new PropertyException("invalid handle value - " + h);
 			}
 		}
+		else if (value instanceof HandleObject)
+			v.add(value);
 		else if ((cls.isArray() && cls.getComponentType().equals(Double.TYPE)) ||
 			 (value instanceof Matrix && ((Matrix)value).getClassName().equals("double")))
 		{

@@ -157,44 +157,8 @@ public class RootObject extends HandleObject
 		}
 	}
 
-	public void setCallbackMode(boolean mode)
-	{
-		setCallbackMode(mode, null);
-	}
-
-	public void setCallbackMode(boolean mode, HandleObject source)
-	{
-		if (mode)
-		{
-			callbackModeCount++;
-			if (CallbackObject.size() > 0)
-				callbackObject.addFirst(CallbackObject.elementAt(0));
-			else
-				callbackObject.addFirst(null);
-			CallbackObject.addElement(source);
-			callbackMode = mode;
-		}
-		else
-		{
-			callbackModeCount--;
-			if (callbackObject.size() > 0)
-			{
-				HandleObject obj = (HandleObject)callbackObject.removeFirst();
-				if (obj != null)
-					CallbackObject.addElement(obj);
-				else
-					CallbackObject.removeAllElements();
-			}
-			if (callbackModeCount <= 0)
-			{
-				callbackMode = mode;
-				callbackModeCount = 0;
-			}
-		}
-	}
-
 	public boolean isCallbackMode()
 	{
-		return callbackMode;
+		return (CallbackObject.size() > 0);
 	}
 }

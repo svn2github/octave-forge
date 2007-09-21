@@ -35,10 +35,10 @@ function val=jointentropy(XY)
        val=entropy(XY)
      else
        row=S(2);
-       col=S(1);
        for i=1:row
 	 val=val+entropy(XY(i,:));
        end
      end
      return
 end
+

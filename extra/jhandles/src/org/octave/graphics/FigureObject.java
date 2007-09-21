@@ -202,6 +202,13 @@ public class FigureObject extends AxesContainer
 		super.validate();
 		activate();
 	}
+
+	public void removeChild(HandleObject child)
+	{
+		if (CurrentAxes.size() > 0 && child == CurrentAxes.elementAt(0))
+			CurrentAxes.removeAllElements();
+		super.removeChild(child);
+	}
 	
 	private void updatePosition()
 	{

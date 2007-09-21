@@ -488,11 +488,14 @@ public class AxesObject extends HandleObject
 
 		super.removeChild(child);
 
-		autoScale();
-		autoScaleC();
-		autoAspectRatio();
-		autoCamera();
-		autoLegend();
+		if (!BeingDeleted.isSet())
+		{
+			autoScale();
+			autoScaleC();
+			autoAspectRatio();
+			autoCamera();
+			autoLegend();
+		}
 	}
 
 	public RenderCanvas getCanvas()

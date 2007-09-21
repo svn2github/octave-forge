@@ -143,15 +143,12 @@ public class LegendObject extends AxesObject
 			if (!obj.isLegendable())
 				continue;
 
-			if (obj instanceof LineObject || obj instanceof StemseriesObject)
+			if (index < names.length)
+				tmp.add(makeItemFromLine(obj, names[index++]));
+			else
 			{
-				if (index < names.length)
-					tmp.add(makeItemFromLine(obj, names[index++]));
-				else
-				{
-					index++;
-					tmp.add(makeItemFromLine(obj, "data"+index));
-				}
+				index++;
+				tmp.add(makeItemFromLine(obj, "data"+index));
 			}
 		}
 

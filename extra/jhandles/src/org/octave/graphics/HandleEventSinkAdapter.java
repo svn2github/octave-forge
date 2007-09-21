@@ -25,7 +25,7 @@ import java.util.*;
 
 public class HandleEventSinkAdapter implements HandleEventSink
 {
-	private Set sourceSet = new HashSet();
+	protected Set sourceSet = new HashSet();
 
 	public HandleEventSinkAdapter()
 	{

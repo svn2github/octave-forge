@@ -15,30 +15,30 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function addlistener (h, pname, fun, hh)
+function h = __jhandles_get_baseline (ax, bv)
 
-  if (nargin < 4)
-    hh = [];
-  elseif (!ishandle (hh))
-    error ("invalid parent handle");
-  endif
-
-  if (ishandle (h))
-    if (ischar (pname) || iscellstr (pname))
-      if (ischar (pname))
-        pname = {pname};
-      endif
-      if (ischar (fun) || isa (fun, "function_handle") ||
-        (iscell (fun) && length (fun) > 0 && isa (fun{1}, "function_handle")))
-        __jhandles_add_listener (h, pname, fun, hh);
-      else
-        error ("invalid listener type, must be a string or function handle");
-      endif
-    else
-      error ("invalid property name");
+  h = [];
+  for hh = get (ax, "children")
+    if (strcmp (get (hh, "type"), "line") && isprop (hh, "BaseValue"))
+      h = hh;
+      break;
     endif
-  else
-    error ("invalid handle");
+  endfor
+
+  if (isempty (h))
+    h = __line__ (ax, get (ax, "XLim"), [bv bv], "Color", "k", "XLimInclude", 0, "LegendInclude", 0);
+    addprop (h, "BaseValue", "double", bv);
+    addlistener (ax, "XLim", {@updateXLim, h}, h);
+    addlistener (h, "BaseValue", @updateBaseValue);
   endif
 
+endfunction
+
+function updateXLim (ax, evt, h)
+  set (h, "XData", get (ax, "XLim"));
+endfunction
+
+function updateBaseValue (h, evt)
+  bv = get (h, "BaseValue");
+  set (h, "YData", [bv bv]);
 endfunction

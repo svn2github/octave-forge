@@ -15,13 +15,18 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function __jhandles_add_listener (h, pname, fun)
+function __jhandles_add_listener (h, pname, fun, hh)
 
-  parent = __get_object__ (h);
+  source = __get_object__ (h);
+  if (! isempty (hh))
+    parent = __get_object__ (hh);
+  else
+    parent = [];
+  endif
 
   # TODO
   #   - support object listeners
   #   - fun as "string"
-  java_new ("org.octave.graphics.OctaveSink", fun, parent, pname);
+  java_new ("org.octave.graphics.OctaveSink", fun, source, pname, parent);
 
 endfunction

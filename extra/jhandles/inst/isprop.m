@@ -15,30 +15,13 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function addlistener (h, pname, fun, hh)
+function ret = isprop (h, propname)
 
-  if (nargin < 4)
-    hh = [];
-  elseif (!ishandle (hh))
-    error ("invalid parent handle");
-  endif
-
-  if (ishandle (h))
-    if (ischar (pname) || iscellstr (pname))
-      if (ischar (pname))
-        pname = {pname};
-      endif
-      if (ischar (fun) || isa (fun, "function_handle") ||
-        (iscell (fun) && length (fun) > 0 && isa (fun{1}, "function_handle")))
-        __jhandles_add_listener (h, pname, fun, hh);
-      else
-        error ("invalid listener type, must be a string or function handle");
-      endif
-    else
-      error ("invalid property name");
-    endif
-  else
-    error ("invalid handle");
-  endif
+  try
+    get (h, propname);
+    ret = 1;
+  catch
+    ret = 0;
+  end
 
 endfunction

@@ -60,7 +60,12 @@ function __jhandles_add_property (h, pname, ptype, opts, varargin)
     case "colorradio"
       if (n > 0 && ischar (varargin{1}))
         vals = regexp (varargin{1}, "[^|]+", "match");
-        defval = get_default_value ({"char", "double"}, vals{1}, varargin{2:end});
+        if (length (vals) > 0)
+          missing = vals{1};
+        else
+          missing = [0 0 0];
+        endif
+        defval = get_default_value ({"char", "double"}, missing, varargin{2:end});
         if (ischar (defval) && ! any (strcmp (vals, defval)) && (length (defval) > 1 || isempty (findstr (defval, "rgbywkmc"))))
           error ("invalid default value for colorradio property");
         endif

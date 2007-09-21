@@ -74,7 +74,8 @@ public class LineObject extends GraphicObject
 		MarkerSize = new DoubleProperty(this, "MarkerSize");
 
 		if (ZData.getArray().length > 0)
-			ZLimInclude.reset(new Boolean(true));
+			ZLimInclude.reset("on");
+		LegendInclude.reset("on");
 
 		listen(XData);
 		listen(YData);
@@ -85,11 +86,6 @@ public class LineObject extends GraphicObject
 	{
 		updateMinMax();
 		super.validate();
-	}
-
-	public boolean isLegendable()
-	{
-		return true;
 	}
 
 	private void updateMinMax()

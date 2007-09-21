@@ -38,6 +38,7 @@ public abstract class GraphicObject extends HandleObject
 	BooleanProperty ZLimInclude;
 	BooleanProperty CLimInclude;
 	BooleanProperty ALimInclude;
+	BooleanProperty LegendInclude;
 
 	public GraphicObject(HandleObject parent, String type)
 	{
@@ -59,6 +60,7 @@ public abstract class GraphicObject extends HandleObject
 		ZLimInclude = new BooleanProperty(this, "ZLimInclude", false);
 		CLimInclude = new BooleanProperty(this, "CLimInclude", false);
 		ALimInclude = new BooleanProperty(this, "ALimInclude", false);
+		LegendInclude = new BooleanProperty(this, "LegendInclude", false);
 
 		XLim.setVisible(false);
 		YLim.setVisible(false);
@@ -70,6 +72,7 @@ public abstract class GraphicObject extends HandleObject
 		ZLimInclude.setVisible(false);
 		CLimInclude.setVisible(false);
 		ALimInclude.setVisible(false);
+		LegendInclude.setVisible(false);
 	}
 
 	public AxesObject getAxes()
@@ -87,6 +90,11 @@ public abstract class GraphicObject extends HandleObject
 
 		FigureObject fig = (FigureObject)getAncestor("figure");
 		fig.__Dirty__.reset("on");
+	}
+
+	public boolean isLegendable()
+	{
+		return LegendInclude.isSet();
 	}
 
 	public abstract void draw(Renderer r);

@@ -23,35 +23,47 @@ package org.octave.graphics;
 
 import org.octave.*;
 
-public class OctaveSink implements HandleEventSink
+public class OctaveSink
 {
 	private OctaveReference ref;
+	private HandleEventSinkAdapter sink;
+	private HandleObject parent;
 
-	public OctaveSink(OctaveReference ref, Property p)
+	public OctaveSink(OctaveReference ref, HandleObject h, String[] pnames, HandleObject hp)
 	{
 		this.ref = ref;
-		p.addHandleEventSink("PropertyChanged", this);
-	}
-
-	public OctaveSink(OctaveReference ref, HandleObject h, String[] pnames)
-	{
-		this.ref = ref;
+		this.sink = new HandleEventSinkAdapter() {
+			public void eventOccured(HandleEvent evt) throws PropertyException
+			{
+				if (OctaveSink.this.parent == null || !evt.getName().equals("ObjectDeleted") ||
+						evt.getHandleObject() != OctaveSink.this.parent)
+					OctaveSink.this.doInvoke(evt);
+			}
+			public void sourceDeleted(Object source)
+			{
+				super.sourceDeleted(source);
+				if (source == OctaveSink.this.parent)
+					OctaveSink.this.dispose();
+			}
+		};
+		this.parent = (hp != null && hp != h ? hp : null);
 
 		for (int i=0; i<pnames.length; i++)
 		{
 			Property p = h.getProperty(pnames[i]);
 			if (p != null)
-				p.addHandleEventSink("PropertyChanged", this);
+				this.sink.listen(p);
 			else if (h.hasHandleEvent(pnames[i]))
-				h.addHandleEventSink(pnames[i], this);
+				this.sink.listen(h, pnames[i]);
 			else
 				System.out.println("WARNING: `" + pnames[i] + "' is not a valid property name of " + h.Type.toString());
 		}
+
+		if (this.parent != null)
+			this.sink.listen(this.parent, "ObjectDeleted");
 	}
 
-	/* HandleEventSink interface */
-
-	public void eventOccured(HandleEvent evt)
+	public void doInvoke(HandleEvent evt)
 	{
 		HandleObject h = evt.getHandleObject();
 		if (h != null)
@@ -60,10 +72,8 @@ public class OctaveSink implements HandleEventSink
 			ref.invokeAndWait(new Object[] {null, evt});
 	}
 
-	public void sourceDeleted(Object src) {}
-
-	public boolean executeOnce()
+	public void dispose()
 	{
-		return false;
+		sink.dispose();
 	}
 }

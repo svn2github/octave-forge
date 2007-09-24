@@ -8,9 +8,9 @@ SUBDIRS = src/
 .PHONY: $(SUBDIRS)
 
 pre-pkg::
-	make -C src clean
+	$(MAKE) -C src clean
 
 clean:
 	@for _dir in $(SUBDIRS); do \
-	  make -C $$_dir $(MAKECMDGOALS); \
+	  $(MAKE) -C $$_dir $(MAKECMDGOALS); \
 	done

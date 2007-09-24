@@ -14,12 +14,12 @@ SUBDIRS = doc/
 
 pre-pkg::
 	@for _dir in $(SUBDIRS); do \
-	  make -C $$_dir all; \
+	  $(MAKE) -C $$_dir all; \
 	done
 
 clean :
 	@for _dir in $(SUBDIRS); do \
-	  make -C $$_dir $(MAKECMDGOALS); \
+	  $(MAKE) -C $$_dir $(MAKECMDGOALS); \
 	done
 	$(RM) *~ octave-core
 

@@ -14,10 +14,10 @@ all: build package
 
 build:
 	@if [ -e src/Makefile ]; then \
-	   make -C src all; \
+	   $(MAKE) -C src all; \
 	fi
 
-package:
+package: build
 	@if [ -d src ]; then \
 	  cd src; \
 	  if [ -e FILES ]; then \
@@ -74,4 +74,4 @@ install:
 
 clean:
 	rm $(PACKAGE)
-	make -C src clean
+	$(MAKE) -C src clean

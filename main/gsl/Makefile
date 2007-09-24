@@ -7,12 +7,12 @@ SUBDIRS = src/
 .PHONY: $(SUBDIRS)
 
 pre-pkg::
-	make -C src clean
+	$(MAKE) -C src clean
 
 post-pkg::
-	make -C src gsl_sf.cc
+	$(MAKE) -C src gsl_sf.cc
 
 clean:
 	@for _dir in $(SUBDIRS); do \
-	  make -C $$_dir $(MAKECMDGOALS); \
+	  $(MAKE) -C $$_dir $(MAKECMDGOALS); \
 	done

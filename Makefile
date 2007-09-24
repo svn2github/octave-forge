@@ -60,7 +60,7 @@ doxygen:
 	@$(MAKE) -C doc doxygen
 
 compare:
-	make -C packages $(MAKECMDGOALS)
+	$(MAKE) -C packages $(MAKECMDGOALS)
 else
 
 .PHONY: all install srpms

@@ -7,12 +7,12 @@ IMG_HTML = $(HTML_SRC:.in=.html)
 HTDOCS_PKG = htdocs.tar.gz
 
 all: build-www doc $(HTDOCS)developers.html doxygen $(HTDOCS)javascript.js
-	make $(IMG_HTML)
-	make -k -C coda www-dist
+	$(MAKE) $(IMG_HTML)
+	$(MAKE) -k -C coda www-dist
 	if [ ! -e $(HTDOCS)coda ]; then rm -rf $(HTDOCS)coda; fi
 	tar xzCf $(HTDOCS) coda/out/coda-www.tar.gz
 	cp -f coda/out/coda-www.tar.gz $(HTDOCS)
-	make $(HTDOCS_PKG)
+	$(MAKE) $(HTDOCS_PKG)
 
 build-www:
 	@if [ -d  tmp ]; then rm -rf tmp; fi; \
@@ -51,7 +51,7 @@ clean:
 	  fi; \
 	done
 	@rm -fr $(HTDOCS)*.html $(HTDOCS)developers.in INDEX $(HTDOCS)coda $(HTDOCS)/coda-www.tar.gz .octave_hist .octave_packages $(HTDOCS)doxygen $(HTDOCS)javascript.js tmphtmlheader.html tmphtmlfooter.html tmp $(HTDOCS_PKG) *~ $(HTDOCS)/*~
-	@make -C coda clean
+	@$(MAKE) -C coda clean
 
 $(HTDOCS_PKG):
 	@tar czf $@ --exclude=CVS --exclude=\*.in htdocs 

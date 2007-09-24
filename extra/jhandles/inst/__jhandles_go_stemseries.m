@@ -80,16 +80,17 @@ function updateStemData (h, evt)
   z = get (h, "ZData");
   ch = get (h, "Children");
   bv = get (h, "BaseValue");
-  n = min ([length(x), length(y), length(z)]);
 
   x = x(:); y = y(:); z = z(:);
 
   if (isempty (z))
+    n = min ([length(x), length(y)]);
     xx = [x(1:n)'; x(1:n)'; NaN(1,n)];
     yy = [bv*ones(1,n); y(1:n)'; NaN(1,n)];
     set (ch(1), "XData", xx(:)', "YData", yy(:)');
     set (ch(2), "XData", x(1:n), "YData", y(1:n));
   else
+    n = min ([length(x), length(y), length(z)]);
     xx = [x(1:n)'; x(1:n)'; NaN(1,n)];
     yy = [y(1:n)'; y(1:n)'; NaN(1,n)];
     zz = [bv*ones(1,n); z(1:n)'; NaN(1,n)];

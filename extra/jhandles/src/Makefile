@@ -25,7 +25,7 @@ test:
 
 %.jar: $(JAVA_SOURCES)
 	-rm -f $@
-	$(JAVAC) -cp '$(CLASSPATH)' -source 1.2 -target 1.2 $(JAVA_SOURCES)
+	$(JAVAC) -cp '$(CLASSPATH)' -source 1.3 -target 1.3 $(JAVA_SOURCES)
 	$(JAR) cf $@ $(JAVA_DIR)/*.class $(JAVA_DIR)/images/*
 
 $(LIBPRE)gl2ps_java.$(SHLEXT): gl2ps_java.o gl2ps.o

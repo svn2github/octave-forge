@@ -35,7 +35,7 @@ octave.jar: $(JAVA_CLASSES)
 	$(JAR) cf $@ $(JAVA_CLASSES)
 
 $(JAVA_CLASSES): $(JAVA_SOURCES)
-	$(JAVAC) -source 1.2 -target 1.2 $(JAVA_SOURCES)
+	$(JAVAC) -source 1.3 -target 1.3 $(JAVA_SOURCES)
 
 clean:
 	-rm *.o core octave-core *.oct *~

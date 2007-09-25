@@ -27,7 +27,7 @@ __java__.oct: __java__.cc
 	if [ "X$(JAVA_ARCH)X" = "XX" ]; then \
 		$(MKOCTFILE) $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS); \
 	else \
-		$(MKOCTFILE) -DJAVA_ARCH=\\\"$(JAVA_ARCH)\\\" $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS); \
+		$(MKOCTFILE) -DJAVA_ARCH=\\\"$(JAVA_ARCH)\\\" -DJAVA_HOME=\\\"$(JAVA_HOME)\\\" $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS); \
 	fi
 
 octave.jar: $(JAVA_CLASSES)

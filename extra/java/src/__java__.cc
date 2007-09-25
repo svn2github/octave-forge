@@ -322,7 +322,7 @@ static void initialize_jvm ()
 
 #else
 
-  std::string jvm_lib_path = std::string("/usr/lib/jvm/jre/lib/")+JAVA_ARCH+"/client/libjvm.so";
+  std::string jvm_lib_path = JAVA_HOME+std::string("/jre/lib/")+JAVA_ARCH+"/client/libjvm.so";
 
 #endif
 	

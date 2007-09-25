@@ -24,7 +24,11 @@ all:
 endif
 
 __java__.oct: __java__.cc
-	$(MKOCTFILE) $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS)
+	if [ "X$(JAVA_ARCH)X" = "XX" ]; then \
+		$(MKOCTFILE) $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS); \
+	else \
+		$(MKOCTFILE) -DJAVA_ARCH=\\\"$(JAVA_ARCH)\\\" $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS); \
+	fi
 
 octave.jar: $(JAVA_CLASSES)
 	-rm -f $@

@@ -304,6 +304,7 @@ esac
 
 AC_SUBST(JAVAC)
 AC_SUBST(JAR)
+AC_SUBST(JAVA_ARCH)
 AC_SUBST(JAVA_INCS)
 AC_SUBST(JAVA_LIBS)
 AC_SUBST(HAVE_JAVA)
@@ -356,10 +357,6 @@ if test -n "$JAVAC" -a -n "$JAR"; then
 	    if test -n "$JAVA_ARCH"; then
 	        HAVE_JAVA=yes
                 JAVA_INCS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
-                JAVA_LIBS="-L${JAVA_HOME}/jre/lib/$JAVA_ARCH -ljava"
-	        WARN_JAVA="Warning LD_LIBRARY_PATH must include:
-   ${JAVA_HOME}/jre/lib/$JAVA_ARCH
-   ${JAVA_HOME}/jre/lib/$JAVA_ARCH/client"
             fi
 	    ;;    
         esac
@@ -389,9 +386,3 @@ octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
    java:        $HAVE_JAVA"
-
-if test -n "$WARN_JAVA"; then
-   STATUS_MSG="$STATUS_MSG
-
-$WARN_JAVA"
-fi

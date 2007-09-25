@@ -320,6 +320,12 @@ static void initialize_jvm ()
   if (jvm_lib_path.empty())
     throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
 
+#else
+
+  std::string jvm_lib_path = std::string("/usr/lib/jvm/jre/lib/")+JAVA_ARCH+"/client/libjvm.so";
+
+#endif
+	
   octave_shlib lib (jvm_lib_path);
   if (!lib) 
     throw std::string("unable to load Java Runtime Environment from ")+jvm_lib_path;
@@ -332,15 +338,6 @@ static void initialize_jvm ()
     throw std::string("unable to start Java VM in ")+jvm_lib_path;
 
   jvm_lib = lib;
-
-#else
-
-  // In unix rely on dynamic libraries to resolve the JRE at runtime.
-  if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **>(&current_env), 
-            vm_args.to_args ()) != JNI_OK)
-    throw std::string("unable to start Java VM");
-
-#endif
 }
 
 static void terminate_jvm(void)

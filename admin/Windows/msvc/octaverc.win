@@ -52,7 +52,7 @@ msys_path = sprintf ("%s%smsys", octave_config_info ("prefix"), filesep);
 if (! exist (msys_path, "dir"))
   msys_path = "";
   if (exist ([getenv("WINDIR"), filesep, "MSYS.INI"], "file"))
-    fid = fopen ([getenv("WINDIR"), filesep, "MSYS.INI"]);
+    fid = fopen ([getenv("WINDIR"), filesep, "MSYS.INI"], "rt");
     if (fid != -1)
       while ((line = fgetl (fid)) != -1)
         if (strncmp (line, "InstallPath=", 12))

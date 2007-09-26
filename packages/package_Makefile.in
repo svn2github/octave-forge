@@ -21,18 +21,28 @@ package: build
 	@if [ -d src ]; then \
 	  cd src; \
 	  if [ -e FILES ]; then \
-	    files=`cat FILES`; \
+	     keepfiles=`cat FILES`; \
 	  else \
-	    files=`ls *.mex *.oct 2> /dev/null`; \
+	     keepfiles=`ls *.mex *.oct 2> /dev/null`; \
 	  fi; \
-	  if [ ! -d ../inst ]; then \
-	    mkdir ../inst; \
-	  fi; \
-	  cp -rf $$files ../inst; \
-	  cd ../; \
-	fi; \
-	cd ../; \
-	tar --exclude='$(PKGDIR)/src' -czf $(PACKAGE) $(PKGDIR);
+	  allfiles=`ls 2> /dev/null`; \
+	  for _file in $$allfiles; do \
+	    if test "$$_file" = "FILES"; then \
+	      continue; \
+	    fi; \
+	    keep="no"; \
+	    for _file2 in $$keepfiles; do \
+	      if test "$$_file" = "$$_file2"; then \
+	        keep="yes"; \
+	        continue; \
+	      fi; \
+	    done; \
+	    if test "$$keep" = "no"; then \
+	      rm $$_file; \
+	    fi; \
+	  done; \
+	  cd ../../; tar -czf $(PACKAGE) $(PKGDIR); \
+	fi
 
 install:
 	@cd ../; \
@@ -43,11 +53,16 @@ install:
 	  pkgdir=`octave -H -q --no-site-file --eval "warning('off','all');pkg('install','$(PACKAGE)');l=pkg('list');disp(l{cellfun(@(x)strcmp(x.name,'$(PKG)'),l)}.dir);$$stripcmd;"`; \
 	else \
 	  shareprefix=$(DESTDIR)/`octave -H -q --no-site-file --eval "disp(fullfile(OCTAVE_HOME(),'share','octave'));"`; \
+	  libexecprefix=$(DESTDIR)/`octave -H -q --no-site-file --eval "disp(fullfile(octave_config_info('libexecdir'),'octave'));"`; \
 	  octprefix=$$shareprefix/packages; \
+	  archprefix=$$libexecprefix/packages; \
 	  if [ ! -e $$octprefix ]; then \
 	    mkdir -p $$octprefix; \
 	  fi; \
-	  pkgdir=`octave -H -q --no-site-file --eval "warning('off','all');pkg('prefix','$$octprefix');pkg('global_list',fullfile('$$shareprefix','octave_packages'));pkg('local_list',fullfile('$$shareprefix','octave_packages'));pkg('install','$(PACKAGE)');l=pkg('list');disp(l{cellfun(@(x)strcmp(x.name,'$(PKG)'),l)}.dir);$$stripcmd;"`; \
+	  if [ ! -e $$archprefix ]; then \
+	    mkdir -p $$archprefix; \
+	  fi; \
+	  pkgdir=`octave -H -q --no-site-file --eval "warning('off','all');pkg('prefix','$$octprefix','$$archprefix');pkg('global_list',fullfile('$$shareprefix','octave_packages'));pkg('local_list',fullfile('$$shareprefix','octave_packages'));pkg('install','$(PACKAGE)');l=pkg('list');disp(l{cellfun(@(x)strcmp(x.name,'$(PKG)'),l)}.dir);$$stripcmd;"`; \
 	fi; \
 	if [ "X${DISTPKG}X" != "XX" ]; then \
 	  if [ -e $$pkgdir/packinfo/on_uninstall.m ]; then \

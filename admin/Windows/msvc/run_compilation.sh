@@ -21,6 +21,7 @@ machine_name=`uname -n`
 
 if test "$machine_name" = "MACROCK"; then
   INSTALL_DIR=/c/Temp/vclibs_tmp
+  #INSTALL_DIR=/c/Software/VCLibs
   CYGWIN_DIR=/c/Software/cygwin
   NSI_DIR=/c/Software/NSIS
 else
@@ -42,8 +43,8 @@ octave_version=
 of_version=
 do_nsi=false
 do_nsiclean=true
-#download_root="http://downloads.sourceforge.net/octave/@@?download"
-download_root="http://www.dbateman.org/octave/hidden/@@"
+download_root="http://downloads.sourceforge.net/octave/@@?download"
+#download_root="http://www.dbateman.org/octave/hidden/@@"
 
 ###################################################################################
 
@@ -899,7 +900,7 @@ if check_package glib; then
     sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" win32.msc > ttt &&
     mv ttt win32.msc &&
     nmake -f makefile.msc install) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glib-1.12.9"
+  rm -rf "$DOWNLOAD_DIR/glib-2.12.9"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
     exit -1
@@ -923,10 +924,10 @@ if check_package pango; then
     patch -p1 < pango-1.16.4.diff &&
     rm -f pango/module-defs-fc.c pango/module-defs-win32.c &&
     cd pango &&
-	touch pango-enum-types.* &&
-    nmake -f makefile.msc &&
+    touch pango-enum-types.* &&
     sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" makefile.msc > ttt &&
     mv ttt makefile.msc &&
+    nmake -f makefile.msc &&
     nmake -f makefile.msc install) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/pango-1.16.4"
   if test ! -f "$tbindir/libpango-1.0-0.dll"; then
@@ -1385,9 +1386,9 @@ if check_package octave; then
       fi
     done &&
     cp COPYING "$tlicdir/COPYING.GPL" &&
-	cp NEWS THANKS README "$octave_prefix/doc" &&
-	mkdir -p "$octave_prefix/info" &&
-	cp doc/interpreter/octave.info* "$octave_prefix/info" &&
+    cp NEWS THANKS README "$octave_prefix/doc" &&
+    mkdir -p "$octave_prefix/share/info" &&
+    cp doc/interpreter/octave.info* "$octave_prefix/share/info" &&
     make -f octMakefile mkoctfile.exe octave-config.exe &&
     rm -f "$octave_prefix/bin/mkoctfile" "$octave_prefix/bin/mkoctfile-$octave_version" &&
     rm -f "$octave_prefix/bin/octave-config" "$octave_prefix/bin/octave-config-$octave_version" &&
@@ -1821,6 +1822,7 @@ if $do_nsi; then
       echo -n "creating README.txt... "
       sed -e "s/@OCTAVE_VERSION@/$octave_version/" README.txt.in > README.txt
       sed -e '$d' "$INSTALL_DIR/local/octave-$octave_version/doc/NEWS" >> README.txt
+      unix2dos README.txt
       echo "done"
     fi
     if test ! -f "octave_main.nsi"; then

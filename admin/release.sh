@@ -25,14 +25,14 @@
 ##    intend to post.  You may want to start with a fresh copy
 ##    of the repository in a separate directory.
 ##
-## 2) ./configure; make clean; make all; make check
+## 2) ./autogen.sh; ./configure; make clean; make all; make check
 ##
 ##    Fix any versioning errors identified by "make all".
 ##
 ##    Make sure it builds and at least passes its own tests on your machine 
 ##    at least.
 ##
-## 3) admin/make_index
+## 3) make www; admin/make_index
 ##
 ##    Check the list of function that are either not found or uncategorized
 ##    and fix the INDEX files accordingly.

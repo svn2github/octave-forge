@@ -47,8 +47,6 @@
 ## @seealso{contourc,line,plot}
 ## @end deftypefn
 
-## Author: shaia
-
 function retval = contour3 (varargin)
 
   [c, lev] = contourc (varargin{:});

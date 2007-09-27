@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Sissou and Paul Kienzle
+## Copyright (C) 2006 Sylvain Pelissier and Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ## @seealso{sort, sortrows}
 ## @end deftypefn
 
-## Author: Sissou <sylvain.pelissier@gmail.com> 
+## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com> 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function y = issorted(x,str)

@@ -437,7 +437,7 @@ Types
  int8 int16 int32 int64
  uint8 uint16 uint32 uint64 isinteger
  sizeof
- swpabytes typecast
+ swapbytes typecast
 Deprecated
   is_bool is_complex is_list is_stream is_struct is_global
 

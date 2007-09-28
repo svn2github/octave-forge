@@ -1,11 +1,11 @@
 
 % Example for loading a dataset from an OPeNDAP server
 
-nc = netcdf('http://asterix.rsmas.miami.edu/thredds/dodsC/atl-ops-forecast/ssh','r');
+nc = netcdf('http://hycom.coaps.fsu.edu/thredds/dodsC/atl_ops','r');
 
 lat = nc{'Latitude'}(:);
 lon = nc{'Longitude'}(:);
-time = nc{'time'}(end);
+time = nc{'MT'}(end);
 
 disp(['SSH forecast for part of the North Atlantic for ' datestr(datenum(1900,12,31) + time)]);
 
@@ -32,12 +32,12 @@ ssh(ssh == fillval) = NaN;
 
 ssh = squeeze(ssh);
 
-ncclose(nc);
-
+close(nc);
 
 colormap(hsv);
-contourf(ssh,10,2); 
+axis xy
+iamgesc(ssh); 
 
-% Octaviz would give you a much nicer plot
-%vtk_pcolor(ssh);
+% or with yapso
+% pcolor(ssh);
 

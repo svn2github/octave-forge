@@ -2,14 +2,18 @@ InformationTheory >> Information Theory
 Information Theory:
  binaryn
  bscchannel
+ condentr_seq
  conditionalentropy_XY
  conditionalentropy_YX
  entropy
+ infoentr_seq
+ infogain_seq
  jointentropy
  laverage
  marginalc
  marginalr
  mutualinformation
+ mutualinfo_seq
  redundancy
  relativeentropy
  narysource
@@ -21,3 +25,4 @@ Source Coding
  arithmetic_encode
 Example
  info-theory
+

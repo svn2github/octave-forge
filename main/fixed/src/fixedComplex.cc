@@ -25,6 +25,7 @@ Open Source Initiative (www.opensource.org)
 
 #include <complex>
 #include <cmath>
+#include <cstdlib>
 #include "int/fixed.h"
 #include "fixedComplex.h"
 

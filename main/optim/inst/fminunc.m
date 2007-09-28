@@ -92,7 +92,7 @@ opm = struct();		# minimize() options
 
 equiv = struct ("TolX"       , "utol"   , "TolFun"     , "ftol",\
 		"MaxFunEvals", "maxev"  , "MaxIter"    , "maxit",\
-		"GradObj    ", "jac"    , "Hessian"    , "hess",\
+		"GradObj"    , "jac"    , "Hessian"    , "hess",\
 		"Display"    , "verbose", "Diagnostics", "verbose",\
 		"Backend"    , "backend");
 

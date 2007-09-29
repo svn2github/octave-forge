@@ -6,17 +6,21 @@ Information Theory:
  conditionalentropy_XY
  conditionalentropy_YX
  entropy
+ hartley_entropy
  infoentr_seq
  infogain_seq
  jointentropy
+ kullback_leibler_distance
  laverage
  marginalc
  marginalr
  mutualinformation
  mutualinfo_seq
+ narysource
  redundancy
  relativeentropy
- narysource
+ renyi_entropy
+ shannon_entropy
 Source Coding
  tunstallcode
  unarydec
@@ -25,4 +29,3 @@ Source Coding
  arithmetic_encode
 Example
  info-theory
-

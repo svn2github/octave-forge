@@ -1,5 +1,22 @@
-all:
-	$(MAKE) -C Utilities all
-	cp Utilities/*.oct ../inst/Utilities
+
+ccfiles  := $(wildcard *.cc)
+octfiles := $(patsubst %.cc, %.oct, $(ccfiles) )
+objfiles := $(patsubst %.cc, %.o,   $(ccfiles) )
+
+all: $(octfiles)
+
+$(objectfile): Makefile
+
+%.o: %.cc
+	mkoctfile -c $(patsubst %.o, %.cc, $@ ) -o $@
+
+Uscharfettergummel.oct: Uscharfettergummel.o Ubern.o
+	mkoctfile -s $< Ubern.o -o $@
+	$(RM) Uscharfettergummel.o
+
+%.oct:  %.o  
+	mkoctfile -s $< -o $@
+	#strip -x $@
+
 clean:
-	$(MAKE) -C Utilities clean
+	$(RM) *.o core octave-core *.oct *~

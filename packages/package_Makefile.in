@@ -41,8 +41,9 @@ package: build
 	      rm $$_file; \
 	    fi; \
 	  done; \
-	  cd ../../; tar -czf $(PACKAGE) $(PKGDIR); \
-	fi
+	  cd ..; \
+	fi; \
+	cd ..; tar -czf $(PACKAGE) $(PKGDIR); \
 
 install:
 	@cd ../; \

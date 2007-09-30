@@ -18,30 +18,11 @@ build:
 	fi
 
 package: build
-	@if [ -d src ]; then \
-	  cd src; \
-	  if [ -e FILES ]; then \
-	     keepfiles=`cat FILES`; \
-	  else \
-	     keepfiles=`ls *.mex *.oct 2> /dev/null`; \
-	  fi; \
-	  allfiles=`ls 2> /dev/null`; \
-	  for _file in $$allfiles; do \
-	    if test "$$_file" = "FILES"; then \
-	      continue; \
-	    fi; \
-	    keep="no"; \
-	    for _file2 in $$keepfiles; do \
-	      if test "$$_file" = "$$_file2"; then \
-	        keep="yes"; \
-	        continue; \
-	      fi; \
-	    done; \
-	    if test "$$keep" = "no"; then \
-	      rm $$_file; \
-	    fi; \
-	  done; \
-	  cd ..; \
+	@if [ -e src/Makefile ]; then \
+	  mv src/Makefile src/Makefile.disable; \
+	fi; \
+	if [ -e src/configure ]; then \
+	  mv src/configure src/configure.disable; \
 	fi; \
 	cd ..; tar -czf $(PACKAGE) $(PKGDIR); \
 
@@ -63,7 +44,7 @@ install:
 	  if [ ! -e $$archprefix ]; then \
 	    mkdir -p $$archprefix; \
 	  fi; \
-	  pkgdir=`octave -H -q --no-site-file --eval "warning('off','all');pkg('prefix','$$octprefix','$$archprefix');pkg('global_list',fullfile('$$shareprefix','octave_packages'));pkg('local_list',fullfile('$$shareprefix','octave_packages'));pkg('install','$(PACKAGE)');l=pkg('list');disp(l{cellfun(@(x)strcmp(x.name,'$(PKG)'),l)}.dir);$$stripcmd;"`; \
+	  pkgdir=`octave -H -q --no-site-file --eval "warning('off','all');pkg('prefix','$$octprefix','$$archprefix');pkg('global_list',fullfile('$$shareprefix','octave_packages'));pkg('local_list',fullfile('$$shareprefix','octave_packages'));pkg('install','-nodeps','$(PACKAGE)');l=pkg('list');disp(l{cellfun(@(x)strcmp(x.name,'$(PKG)'),l)}.dir);$$stripcmd;"`; \
 	fi; \
 	if [ "X${DISTPKG}X" != "XX" ]; then \
 	  if [ -e $$pkgdir/packinfo/on_uninstall.m ]; then \

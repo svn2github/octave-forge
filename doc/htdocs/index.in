@@ -63,7 +63,10 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>signal: New functions welchwin, blackmannutall, shanwavf, mexihat
    meyeraux and morlet. Bug fix in specgram for window with an odd
    number of elements.</li>
-`  <li>geometry: Remove the geometry package that is migrate dto the
+   <li>info-theory: New functions condentr_seq, hartley_entropy,
+   infoentr_seq, infogain_seq, kullback_leibler_distance,
+   mutualinfo_seq, narysource, renyi_entropy and shannon_entropy.</li>
+   <li>geometry: Remove the geometry package that is migrate dto the
    Octave core.</li>
    <li>polynomial: Remove polyint function, migrated to the Octave core.</li>
    <li>statistics: Aligned function names and arguments for matlab

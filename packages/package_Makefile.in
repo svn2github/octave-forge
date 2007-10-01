@@ -7,7 +7,7 @@
 
 PKGDIR := $(shell pwd | sed -e 's|^.*/||')
 TMPDIR ?= /tmp
-PACKAGE := $(TMPDIR)/$(PKGDIR).tar.gz
+PACKAGE ?= $(TMPDIR)/$(PKGDIR).tar.gz
 PKG := $(shell echo $(PKGDIR) | sed -e 's|^\(.*\)-.*|\1|')
 
 all: build package

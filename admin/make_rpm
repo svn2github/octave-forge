@@ -7,6 +7,7 @@
 use strict;
 use Cwd;
 use File::Basename;
+use File::Glob;
 use Text::Wrap;
 use FileHandle;
 
@@ -23,6 +24,11 @@ mkdir($tmpdir);
 chdir($tmpdir);
 system ("tar xpzf $old_pwd/$pkg");
 system ("mv */DESCRIPTION .");
+my $noarch = "true";
+my @srcdir = <*/src>;
+if (@srcdir) {
+    $noarch = "false";
+}
 chdir($old_pwd);
 
 mkdir($rpmdir);
@@ -35,7 +41,7 @@ my %desc = parse_description ($rpmdesc, $pkg);
 my $spec = sprintf("%s/SPECS/octave_%s.spec", $rpmdir, $desc{"NAME"});
 system ("rm -rf $tmpdir");
 
-create_spec ($spec, $template, %desc);
+create_spec ($spec, $template, $noarch, %desc);
 create_srpm ($spec, $pkg, $rpmdir);
 
 sub date {
@@ -59,6 +65,7 @@ sub create_srpm {	# {{{1
 sub create_spec {	# {{{1
     my ($spec,		# The spec file to write
 	$template,	# The location of the template
+	$noarch,	# Is the package architecture dependent
 	%desc,		# The hash of the description file
 	@deps		# Array of hashs of the dependencies
 	)	= @_;
@@ -134,6 +141,34 @@ sub create_spec {	# {{{1
 		}
 	    }
 	    $_ = $depstr;
+	}
+	if ( /^>>BUILDARCH<<$/ ) {
+	    if ($noarch =~ /true/) {
+		$_ = "BuildArch:	noarch\n";
+	    } else {
+		$_ = "";
+	    }
+	}
+	if ( /^>>BUILD<<$/ ) {
+	    if ($noarch =~ /true/) {
+		$_ = "%build\n";
+	    } else {
+		$_ = "%build\nunset TERM\n%configure\nmake TMPDIR=%{_tmppath} DESTDIR=%{buildroot} DISTPKG=%{octave_distpkg}\n";
+	    }
+	}
+	if ( /^>>INSTALL<<$/ ) {
+	    if ($noarch =~ /true/) {
+		$_ = "make install PACKAGE=%{SOURCE0} TMPDIR=%{_tmppath} DESTDIR=%{buildroot} DISTPKG=%{octave_distpkg}";
+	    } else {
+		$_ = "make install TMPDIR=%{_tmppath} DESTDIR=%{buildroot} DISTPKG=%{octave_distpkg}";
+	    }
+	}
+	if ( /^>>ARCHFILES<<$/ ) {
+	    if ($noarch =~ /true/) {
+		$_ = "";
+	    } else {
+		$_ = "%{_libexecdir}/octave/packages/*\n";
+	    }
 	}
 	print OUT sprintf("%s", $_);
     }

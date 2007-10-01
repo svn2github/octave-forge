@@ -22,6 +22,8 @@ BuildRequires:	libstdc++-devel
 BuildRequires:  %(rpm -q --qf '%%{name}' %(rpm -q -f `which mkoctfile`))
 >>BUILDREQUIRES<<
 
+>>BUILDARCH<<
+
 %define octave octave-%{octave_ver}
 %define octave_distpkg %{?_vendor:%_vendor}%{?!_vendor:distributions}
 %define pkg %(echo %{name} | sed -e "s/octave_//")
@@ -32,13 +34,12 @@ BuildRequires:  %(rpm -q --qf '%%{name}' %(rpm -q -f `which mkoctfile`))
 %prep
 %setup -q -n %{pkg}-%{version}
 
-%build
-%configure
-make TMPDIR=%{_tmppath} DESTDIR=%{buildroot} DISTPKG=%{octave_distpkg}
+>>BUILD<<
 
 %install
+unset TERM
 rm -rf %{buildroot}
-make install TMPDIR=%{_tmppath} DESTDIR=%{buildroot} DISTPKG=%{octave_distpkg}
+>>INSTALL<<
 
 %clean
 rm -rf %{buildroot}
@@ -55,7 +56,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %{_datadir}/octave/packages/*
-%{_libexecdir}/octave/packages/*
+>>ARCHFILES<<
 
 %changelog
 # Changelog for packages rebuilt on stable releases (leave it first):

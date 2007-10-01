@@ -44,7 +44,8 @@ install:
 	  if [ ! -e $$archprefix ]; then \
 	    mkdir -p $$archprefix; \
 	  fi; \
-	  pkgdir=`octave -H -q --no-site-file --eval "warning('off','all');pkg('prefix','$$octprefix','$$archprefix');pkg('global_list',fullfile('$$shareprefix','octave_packages'));pkg('local_list',fullfile('$$shareprefix','octave_packages'));pkg('install','-nodeps','$(PACKAGE)');l=pkg('list');disp(l{cellfun(@(x)strcmp(x.name,'$(PKG)'),l)}.dir);$$stripcmd;"`; \
+	  octave -H -q --no-site-file --eval "warning('off','all');pkg('prefix','$$octprefix','$$archprefix');pkg('global_list',fullfile('$$shareprefix','octave_packages'));pkg('local_list',fullfile('$$shareprefix','octave_packages'));pkg('install','-nodeps','-verbose','$(PACKAGE)');"; \
+	  pkgdir=`octave -H -q --no-site-file --eval "warning('off','all');pkg('prefix','$$octprefix','$$archprefix');pkg('global_list',fullfile('$$shareprefix','octave_packages'));pkg('local_list',fullfile('$$shareprefix','octave_packages'));l=pkg('list');disp(l{cellfun(@(x)strcmp(x.name,'$(PKG)'),l)}.dir);$$stripcmd;"`; \
 	fi; \
 	if [ "X${DISTPKG}X" != "XX" ]; then \
 	  if [ -e $$pkgdir/packinfo/on_uninstall.m ]; then \

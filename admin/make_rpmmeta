@@ -31,10 +31,10 @@ sub desc_files { # {{{1 populates global array @files
 exit unless ($#desc_files >= 0);
 
 my ($dstr, $ver) = date();
-my $pkg = sprintf("octave-forge-%s-%s.tar.gz", $name, $ver);
 my $contents = get_contents($ofdir);
 my $name = $ofdir;
 $name =~ s|^.*/||;
+my $pkg = sprintf("octave-forge-%s-%s.tar.gz", $name, $ver);
 my %desc = ( 'NAME', $name, 
 	    'VERSION', $ver, 
 	    'PACKAGE', $pkg, 
@@ -78,7 +78,7 @@ sub create_srpm {	# {{{1
 	$pkg,		# The binary octave package itself
 	$rpmdir		# Where the rpm's are built
 	)	= @_;
-    system (sprintf("rpmbuild -bs --define '_topdir %s/%s' %s", cwd(), $rpmdir, $spec));
+    system (sprintf("rpmbuild -bs --define '_topdir %s' %s", $rpmdir, $spec));
 }	# 1}}}
 
 sub create_spec {	# {{{1

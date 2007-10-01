@@ -128,6 +128,7 @@ Section "Core" SEC_CORE
   SetOutPath "$INSTDIR\bin"
   File "${VCLIBS_ROOT}\bin\pcre70.dll"
   File "${VCLIBS_ROOT}\bin\readline.dll"
+  File "${VCLIBS_ROOT}\bin\ncurses.dll"
   File "${VCLIBS_ROOT}\bin\libfftw3-3.dll"
   File "${VCLIBS_ROOT}\bin\hdf5.dll"
   File "${VCLIBS_ROOT}\bin\glpk_4_19.dll"
@@ -140,6 +141,11 @@ Section "Core" SEC_CORE
   ; info files
   SetOutPath "$INSTDIR\info"
   File "${OCTAVE_ROOT}\info\*.*"
+  ; NCurses support files
+  SetOutPath "$INSTDIR\share\terminfo"
+  File /r "${VCLIBS_ROOT}\share\terminfo\*"
+  SetOutPath "$INSTDIR\share\tabset"
+  File /r "${VCLIBS_ROOT}\share\tabset\*"
   ; other files
   SetOutPath "$INSTDIR\doc"
   File "${OCTAVE_ROOT}\doc\README"
@@ -196,6 +202,7 @@ Section "Development files" SEC_DEV
   File "${VCLIBS_ROOT}\lib\lapack.lib"
   File "${VCLIBS_ROOT}\lib\fftw3.lib"
   File "${VCLIBS_ROOT}\lib\readline.lib"
+  File "${VCLIBS_ROOT}\lib\ncurses.lib"
   File "${VCLIBS_ROOT}\lib\hdf5.lib"
   File "${VCLIBS_ROOT}\lib\zlib.lib"
   File "${VCLIBS_ROOT}\lib\f2c.lib"

@@ -38,7 +38,7 @@ packages=
 available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot"
+VC octplot ncurses"
 octave_version=
 of_version=
 do_nsi=false
@@ -280,6 +280,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/libfftw3-3.dll" FFTW
     todo_check "$tbindir/pcre70.dll" PCRE
     todo_check "$tbindir/glpk_4_19.dll" GLPK
+    todo_check "$tbindir/ncurses.dll" ncurses
     todo_check "$tbindir/readline.dll" readline
     todo_check "$tbindir/zlib1.dll" zlib
     todo_check "$tlibdir/cxsparse.lib" SuiteSparse
@@ -566,6 +567,34 @@ if check_package GLPK; then
 	cp glpk_4_19.dll "$tbindir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/glpk-4.19"
   if ! test -f "$tbindir/glpk_4_19.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# ncurses #
+###########
+
+if check_package ncurses; then
+  download_file ncurses-5.6.tar.gz ftp://ftp.gnu.org/gnu/ncurse/ncurses-5.6.tar.gz
+  echo -n "decompressing ncurses... "
+  (cd "$DOWNLOAD_DIR" && tar xfz ncurses-5.6.tar.gz)
+  cp libs/ncurses-5.6.diff "$DOWNLOAD_DIR/ncurses-5.6"
+  echo "done"
+  echo "compiling ncurses... "
+  (cd "$DOWNLOAD_DIR/ncurses-5.6" &&
+    patch -p1 < ncurses-5.6.diff &&
+    CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc CFLAGS="-O2 -MD" \
+      ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALL_DIR --without-cxx-binding \
+      --without-libtool --with-shared --without-normal --without-debug &&
+    make -C include && make -C ncurses && make -C progs && make -C tack && make -C misc &&
+    make -C include install && make -C ncurses install && make -C progs install &&
+    make -C tack install && make -C misc install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/ncurses-5.6"
+  if ! test -f "$tbindir/ncurses.dll"; then
     echo "failed"
     exit -1
   else

@@ -1,6 +1,6 @@
 diff -urN readline-5.2/README.msvc readline-5.2-new/README.msvc
 --- readline-5.2/README.msvc	1970-01-01 01:00:00.000000000 +0100
-+++ readline-5.2-new/README.msvc	2007-09-04 20:54:36.062500000 +0200
++++ readline-5.2-new/README.msvc	2007-09-29 23:41:53.593750000 +0200
 @@ -0,0 +1,16 @@
 +Compilation instruction under MSVC
 +----------------------------------
@@ -20,7 +20,7 @@ diff -urN readline-5.2/README.msvc readline-5.2-new/README.msvc
 +   it is more usual to install them in $prefix/bin.
 diff -urN readline-5.2/bind.c readline-5.2-new/bind.c
 --- readline-5.2/bind.c	2006-07-27 15:44:10.000000000 +0200
-+++ readline-5.2-new/bind.c	2007-09-04 20:54:36.078125000 +0200
++++ readline-5.2-new/bind.c	2007-09-29 23:41:53.625000000 +0200
 @@ -841,7 +841,7 @@
        filename = SYS_INPUTRC;
      }
@@ -32,7 +32,7 @@ diff -urN readline-5.2/bind.c readline-5.2-new/bind.c
    filename = "~/_inputrc";
 diff -urN readline-5.2/complete.c readline-5.2-new/complete.c
 --- readline-5.2/complete.c	2006-07-28 17:35:49.000000000 +0200
-+++ readline-5.2-new/complete.c	2007-09-04 20:54:36.109375000 +0200
++++ readline-5.2-new/complete.c	2007-09-29 23:41:53.640625000 +0200
 @@ -55,6 +55,66 @@
  #include "posixdir.h"
  #include "posixstat.h"
@@ -186,7 +186,7 @@ diff -urN readline-5.2/complete.c readline-5.2-new/complete.c
          {
 diff -urN readline-5.2/config.h.in readline-5.2-new/config.h.in
 --- readline-5.2/config.h.in	2006-09-12 22:02:00.000000000 +0200
-+++ readline-5.2-new/config.h.in	2007-09-04 20:54:36.125000000 +0200
++++ readline-5.2-new/config.h.in	2007-09-29 23:41:53.656250000 +0200
 @@ -257,7 +257,7 @@
  #  undef HAVE_STRCOLL
  #endif
@@ -198,7 +198,7 @@ diff -urN readline-5.2/config.h.in readline-5.2-new/config.h.in
  #else
 diff -urN readline-5.2/display.c readline-5.2-new/display.c
 --- readline-5.2/display.c	2006-09-14 20:20:12.000000000 +0200
-+++ readline-5.2-new/display.c	2007-09-04 20:54:36.140625000 +0200
++++ readline-5.2-new/display.c	2007-09-30 01:41:59.046875000 +0200
 @@ -55,6 +55,11 @@
  #include "rlprivate.h"
  #include "xmalloc.h"
@@ -211,68 +211,31 @@ diff -urN readline-5.2/display.c readline-5.2-new/display.c
  #if !defined (strchr) && !defined (__STDC__)
  extern char *strchr (), *strrchr ();
  #endif /* !strchr && !__STDC__ */
-@@ -1001,7 +1006,7 @@
- 	      _rl_last_c_pos < PROMPT_ENDING_INDEX && local_prompt)
- #endif
- 	    {
--#if defined (__MSDOS__)
-+#if defined (__MSDOS__) || defined (_WIN32)
- 	      putc ('\r', rl_outstream);
- #else
- 	      if (_rl_term_cr)
-@@ -1436,7 +1441,7 @@
-       _rl_term_cr && lendiff > prompt_visible_length && _rl_last_c_pos > 0 &&
-       od >= lendiff && _rl_last_c_pos < PROMPT_ENDING_INDEX)
-     {
--#if defined (__MSDOS__)
-+#if defined (__MSDOS__) || defined (_WIN32)
-       putc ('\r', rl_outstream);
- #else
-       tputs (_rl_term_cr, 1, _rl_output_character_function);
-@@ -1717,6 +1722,17 @@
-      int new;
-      const char *data;
- {
+@@ -1721,6 +1726,20 @@
+   int woff;			/* number of invisible chars on current line */
+   int cpos, dpos;		/* current and desired cursor positions */
+ 
 +#if defined (_WIN32)
 +  CONSOLE_SCREEN_BUFFER_INFO     csbi;
 +  if ( (_rl_last_c_pos != new)
 +       && GetConsoleScreenBufferInfo(hStdout, &csbi) )
-+  {
-+    csbi.dwCursorPosition.X += new - _rl_last_c_pos;
-+    if ( SetConsoleCursorPosition(hStdout, csbi.dwCursorPosition) )
-+      _rl_last_c_pos = new;
-+  }
-+#else /* _WIN32 */
-+	     
-   register int i;
-   int woff;			/* number of invisible chars on current line */
-   int cpos, dpos;		/* current and desired cursor positions */
-@@ -1761,11 +1777,11 @@
-   if (dpos == 0 || CR_FASTER (dpos, _rl_last_c_pos) ||
-       (_rl_term_autowrap && i == _rl_screenwidth))
-     {
--#if defined (__MSDOS__)
-+#if defined (__MSDOS__) || defined (_WIN32)
-       putc ('\r', rl_outstream);
- #else
-       tputs (_rl_term_cr, 1, _rl_output_character_function);
--#endif /* !__MSDOS__ */
-+#endif /* !__MSDOS__ && !_WIN32 */
-       cpos = _rl_last_c_pos = 0;
-     }
- 
-@@ -1817,6 +1833,7 @@
-     _rl_backspace (cpos - dpos);
- 
-   _rl_last_c_pos = dpos;
++    {
++      csbi.dwCursorPosition.X += new - _rl_last_c_pos;
++      if ( SetConsoleCursorPosition(hStdout, csbi.dwCursorPosition) )
++        {
++          _rl_last_c_pos = new;
++          return;
++        }
++    }
 +#endif /* _WIN32 */
- }
- 
- /* PWP: move the cursor up or down. */
-@@ -1824,6 +1841,16 @@
- _rl_move_vert (to)
-      int to;
++	     
+   woff = W_OFFSET (_rl_last_v_pos, wrap_offset);
+   cpos = _rl_last_c_pos;
+ #if defined (HANDLE_MULTIBYTE)
+@@ -1826,6 +1845,20 @@
  {
+   register int delta, i;
+ 
 +#if defined (_WIN32)
 +  CONSOLE_SCREEN_BUFFER_INFO	csbi;
 +  if ( (_rl_last_v_pos != to) && (to <= _rl_screenheight)
@@ -280,30 +243,17 @@ diff -urN readline-5.2/display.c readline-5.2-new/display.c
 +  {
 +    csbi.dwCursorPosition.Y += to - _rl_last_v_pos;
 +    if ( SetConsoleCursorPosition(hStdout, csbi.dwCursorPosition) )
++    {
 +      _rl_last_v_pos = to;
++      return;
++    }
 +  }
-+#else /* !_WIN32 */
-   register int delta, i;
- 
++#endif /* !_WIN32 */
++
    if (_rl_last_v_pos == to || to > _rl_screenheight)
-@@ -1833,7 +1860,7 @@
-     {
-       for (i = 0; i < delta; i++)
- 	putc ('\n', rl_outstream);
--#if defined (__MSDOS__)
-+#if defined (__MSDOS__) || defined (_WIN32)
-       putc ('\r', rl_outstream);
- #else
-       tputs (_rl_term_cr, 1, _rl_output_character_function);
-@@ -1848,6 +1875,7 @@
-     }
+     return;
  
-   _rl_last_v_pos = to;		/* Now TO is here */
-+#endif /* _WIN32 */
- }
- 
- /* Physically print C on rl_outstream.  This is for functions which know
-@@ -2104,10 +2132,19 @@
+@@ -2104,6 +2137,15 @@
  _rl_clear_to_eol (count)
       int count;
  {
@@ -313,80 +263,48 @@ diff -urN readline-5.2/display.c readline-5.2-new/display.c
 +  {
 +    DWORD written;
 +    FillConsoleOutputCharacter(hStdout, ' ', count, csbi.dwCursorPosition, &written);
++    return;
 +  }
-+#else /* !_WIN32 */
++#endif /* !_WIN32 */
    if (_rl_term_clreol)
      tputs (_rl_term_clreol, 1, _rl_output_character_function);
    else if (count)
-     space_to_eol (count);
-+#endif /* _WIN32 */
- }
- 
- /* Clear to the end of the line using spaces.  COUNT is the minimum
-@@ -2127,10 +2164,35 @@
+@@ -2127,6 +2169,32 @@
  void
  _rl_clear_screen ()
  {
-+#if !defined (_WIN32)
-   if (_rl_term_clrpag)
-     tputs (_rl_term_clrpag, 1, _rl_output_character_function);
-   else
-     rl_crlf ();
-+#else
++#if defined (_WIN32)
 +  /* http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dllproc/base/getconsolescreenbufferinfo.asp */
 +  COORD coordScreen = { 0, 0 };
 +  DWORD cCharsWritten;
 +  CONSOLE_SCREEN_BUFFER_INFO csbi; 
 +  DWORD dwConSize;
 +
-+  if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
-+    return;
-+  dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
++  if(GetConsoleScreenBufferInfo( hStdout, &csbi ))
++  {
++    dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
 +
-+  if( !FillConsoleOutputCharacter( hStdout, (TCHAR) ' ',
-+      dwConSize, coordScreen, &cCharsWritten ))
-+    return;
-+
-+  if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
-+    return;
-+
-+  if( !FillConsoleOutputAttribute( hStdout, csbi.wAttributes,
-+      dwConSize, coordScreen, &cCharsWritten ))
-+    return;
-+
-+  SetConsoleCursorPosition( hStdout, coordScreen );
++    if(FillConsoleOutputCharacter( hStdout, (TCHAR) ' ',
++        dwConSize, coordScreen, &cCharsWritten ))
++    {
++      if(GetConsoleScreenBufferInfo( hStdout, &csbi ))
++      {
++        if(FillConsoleOutputAttribute( hStdout, csbi.wAttributes,
++            dwConSize, coordScreen, &cCharsWritten ))
++        {
++          SetConsoleCursorPosition( hStdout, coordScreen );
++          return;
++        }
++      }
++    }
++  }
 +#endif
- }
- 
- /* Insert COUNT characters from STRING to the output stream at column COL. */
-@@ -2245,7 +2307,7 @@
- {
-   if (_rl_term_cr)
-     {
--#if defined (__MSDOS__)
-+#if defined (__MSDOS__) || defined (_WIN32)
-       putc ('\r', rl_outstream);
- #else
-       tputs (_rl_term_cr, 1, _rl_output_character_function);
-@@ -2290,13 +2352,13 @@
-      the right thing happens if we have wrapped to a new screen line. */
-   if (_rl_term_cr)
-     {
--#if defined (__MSDOS__)
-+#if defined (__MSDOS__) || defined (_WIN32)
-       putc ('\r', rl_outstream);
- #else
-       tputs (_rl_term_cr, 1, _rl_output_character_function);
- #endif
-       _rl_last_c_pos = 0;
--#if defined (__MSDOS__)
-+#if defined (__MSDOS__) || defined (_WIN32)
-       space_to_eol (_rl_screenwidth);
-       putc ('\r', rl_outstream);
- #else
+   if (_rl_term_clrpag)
+     tputs (_rl_term_clrpag, 1, _rl_output_character_function);
+   else
 diff -urN readline-5.2/histfile.c readline-5.2-new/histfile.c
 --- readline-5.2/histfile.c	2006-03-31 22:48:43.000000000 +0200
-+++ readline-5.2-new/histfile.c	2007-09-04 20:54:36.156250000 +0200
++++ readline-5.2-new/histfile.c	2007-09-29 23:41:53.703125000 +0200
 @@ -134,7 +134,7 @@
    return_val = (char *)xmalloc (2 + home_len + 8); /* strlen(".history") == 8 */
    strcpy (return_val, home);
@@ -398,7 +316,7 @@ diff -urN readline-5.2/histfile.c readline-5.2-new/histfile.c
    strcpy (return_val + home_len + 1, ".history");
 diff -urN readline-5.2/history.c readline-5.2-new/history.c
 --- readline-5.2/history.c	2006-05-21 19:39:41.000000000 +0200
-+++ readline-5.2-new/history.c	2007-09-04 20:54:36.171875000 +0200
++++ readline-5.2-new/history.c	2007-09-29 23:41:53.718750000 +0200
 @@ -49,6 +49,10 @@
  
  #include "xmalloc.h"
@@ -412,7 +330,7 @@ diff -urN readline-5.2/history.c readline-5.2-new/history.c
  
 diff -urN readline-5.2/history.h readline-5.2-new/history.h
 --- readline-5.2/history.h	2003-07-31 14:38:44.000000000 +0200
-+++ readline-5.2-new/history.h	2007-09-04 20:54:36.203125000 +0200
++++ readline-5.2-new/history.h	2007-09-29 23:41:53.750000000 +0200
 @@ -68,93 +68,93 @@
  
  /* Begin a session in which the history functions might be used.  This
@@ -648,7 +566,7 @@ diff -urN readline-5.2/history.h readline-5.2-new/history.h
  }
 diff -urN readline-5.2/input.c readline-5.2-new/input.c
 --- readline-5.2/input.c	2006-08-16 21:15:16.000000000 +0200
-+++ readline-5.2-new/input.c	2007-09-04 21:53:04.140625000 +0200
++++ readline-5.2-new/input.c	2007-09-30 14:36:56.531250000 +0200
 @@ -61,6 +61,11 @@
  #include <stdio.h>
  #include <errno.h>
@@ -671,21 +589,35 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
  
  #define any_typein (push_index != pop_index)
  
-@@ -164,6 +172,13 @@
+@@ -164,6 +172,27 @@
    return (push_index != pop_index);
  }
  
 +#ifdef _MSC_VER
 +DWORD WINAPI tty_reader_proc (LPVOID param)
 +{
-+  return getch();
++  int tty = fileno (rl_instream);
++
++  if (param == NULL)
++    {
++      int result;
++      unsigned char c;
++
++      result = read (tty, &c, sizeof (unsigned char));
++      if (result == sizeof (unsigned char))
++        return c;
++      else
++        return EOF;
++    }
++  else
++    return _getch();
 +}
 +#endif
 +
  /* If a character is available to be read, then read it and stuff it into
     IBUFFER.  Otherwise, just return.  Returns number of characters read
     (0 if none available) and -1 on error (EIO). */
-@@ -221,13 +236,67 @@
+@@ -221,13 +250,69 @@
      }
  #endif /* O_NDELAY */
  
@@ -698,7 +630,7 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
  #endif
  
 +#if defined (_MSC_VER)
-+   if (isatty (tty))
++   if (isatty (tty) || 1)
 +     {
 +#if 0
 +       HANDLE hInput = _get_osfhandle (tty);
@@ -728,9 +660,11 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
 +       while (1);
 +#else
 +       DWORD waitResult;
++       int is_tty = isatty (tty);
 +
 +       if (tty_reader_thread == NULL)
-+         tty_reader_thread = CreateThread (NULL, 0, tty_reader_proc, NULL, 0, NULL);
++         tty_reader_thread = CreateThread (NULL, 0, tty_reader_proc,
++             (LPVOID)is_tty, 0, NULL);
 +       waitResult = WaitForMultipleObjects (1, &tty_reader_thread, FALSE, _keyboard_input_timeout/1000);
 +       if (waitResult == WAIT_TIMEOUT)
 +         return 0;
@@ -754,10 +688,11 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
    /* If there's nothing available, don't waste time trying to read
       something. */
    if (chars_avail <= 0)
-@@ -459,8 +528,97 @@
+@@ -459,7 +544,96 @@
      {
  #if defined (__MINGW32__)
        if (isatty (fileno (stream)))
+-	return (getch ());
 +#if defined (_MSC_VER)
 +        {
 +#if 0
@@ -842,19 +777,18 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
 +                return (EOF);
 +            }
 +          else
-+            return (getch ());
++            return (_getch ());
 +#endif
 +	}
 +#else
- 	return (getch ());
- #endif
++	return (_getch ());
 +#endif
+ #endif
        result = read (fileno (stream), &c, sizeof (unsigned char));
  
-       if (result == sizeof (unsigned char))
 diff -urN readline-5.2/keymaps.h readline-5.2-new/keymaps.h
 --- readline-5.2/keymaps.h	2001-11-20 18:42:49.000000000 +0100
-+++ readline-5.2-new/keymaps.h	2007-09-04 20:54:36.234375000 +0200
++++ readline-5.2-new/keymaps.h	2007-09-29 23:41:53.796875000 +0200
 @@ -66,35 +66,35 @@
  #define ISKMAP 1
  #define ISMACR 2
@@ -902,7 +836,7 @@ diff -urN readline-5.2/keymaps.h readline-5.2-new/keymaps.h
  }
 diff -urN readline-5.2/nls.c readline-5.2-new/nls.c
 --- readline-5.2/nls.c	2002-10-19 04:05:50.000000000 +0200
-+++ readline-5.2-new/nls.c	2007-09-04 20:54:36.250000000 +0200
++++ readline-5.2-new/nls.c	2007-09-29 23:41:53.796875000 +0200
 @@ -44,6 +44,9 @@
  #endif
  
@@ -938,7 +872,7 @@ diff -urN readline-5.2/nls.c readline-5.2-new/nls.c
      {
 diff -urN readline-5.2/parens.c readline-5.2-new/parens.c
 --- readline-5.2/parens.c	2004-03-04 04:39:51.000000000 +0100
-+++ readline-5.2-new/parens.c	2007-09-04 20:54:36.265625000 +0200
++++ readline-5.2-new/parens.c	2007-09-29 23:41:53.828125000 +0200
 @@ -49,6 +49,10 @@
  #  include <sys/select.h>
  #endif
@@ -985,7 +919,7 @@ diff -urN readline-5.2/parens.c readline-5.2-new/parens.c
  #endif /* !HAVE_SELECT */
 diff -urN readline-5.2/readline.c readline-5.2-new/readline.c
 --- readline-5.2/readline.c	2006-08-16 21:00:36.000000000 +0200
-+++ readline-5.2-new/readline.c	2007-09-04 20:54:36.281250000 +0200
++++ readline-5.2-new/readline.c	2007-09-29 23:41:53.859375000 +0200
 @@ -220,7 +220,11 @@
  
  /* The style of `bell' notification preferred.  This can be set to NO_BELL,
@@ -1010,7 +944,7 @@ diff -urN readline-5.2/readline.c readline-5.2-new/readline.c
    _rl_keymap = xkeymap;
 diff -urN readline-5.2/readline.h readline-5.2-new/readline.h
 --- readline-5.2/readline.h	2006-08-16 21:16:59.000000000 +0200
-+++ readline-5.2-new/readline.h	2007-09-04 20:54:36.312500000 +0200
++++ readline-5.2-new/readline.h	2007-09-29 23:41:53.890625000 +0200
 @@ -63,7 +63,7 @@
  } UNDO_LIST;
  
@@ -2035,7 +1969,7 @@ diff -urN readline-5.2/readline.h readline-5.2-new/readline.h
  }
 diff -urN readline-5.2/rlstdc.h readline-5.2-new/rlstdc.h
 --- readline-5.2/rlstdc.h	2003-05-30 21:08:02.000000000 +0200
-+++ readline-5.2-new/rlstdc.h	2007-09-04 20:54:36.328125000 +0200
++++ readline-5.2-new/rlstdc.h	2007-09-29 23:41:53.890625000 +0200
 @@ -42,4 +42,14 @@
  #  endif
  #endif
@@ -2053,7 +1987,7 @@ diff -urN readline-5.2/rlstdc.h readline-5.2-new/rlstdc.h
  #endif /* !_RL_STDC_H_ */
 diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
 --- readline-5.2/support/shobj-conf	2006-04-11 15:15:43.000000000 +0200
-+++ readline-5.2-new/support/shobj-conf	2007-09-04 20:54:36.343750000 +0200
++++ readline-5.2-new/support/shobj-conf	2007-09-29 23:54:57.734375000 +0200
 @@ -482,6 +482,17 @@
  	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
  	;;
@@ -2066,7 +2000,7 @@ diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
 +	SHLIB_LIBPREF=
 +	SHLIB_LIBSUFF='dll'
 +	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF)'
-+	SHLIB_LIBS='-ladvapi32 -luser32'
++	SHLIB_LIBS='-ladvapi32 -luser32 $(TERMCAP_LIB)'
 +	;;
 +
  msdos*)
@@ -2092,84 +2026,8 @@ diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
  #
 diff -urN readline-5.2/terminal.c readline-5.2-new/terminal.c
 --- readline-5.2/terminal.c	2006-09-28 16:11:10.000000000 +0200
-+++ readline-5.2-new/terminal.c	2007-09-04 20:54:36.359375000 +0200
-@@ -264,7 +264,7 @@
-       if (_rl_screenwidth <= 0)
-         _rl_screenwidth = wc;
- 
--#if !defined (__DJGPP__)
-+#if !defined (__DJGPP__) && !defined (_WIN32)
-       if (_rl_screenwidth <= 0 && term_string_buffer)
- 	_rl_screenwidth = tgetnum ("co");
- #endif
-@@ -280,7 +280,7 @@
-       if (_rl_screenheight <= 0)
-         _rl_screenheight = wr;
- 
--#if !defined (__DJGPP__)
-+#if !defined (__DJGPP__) && !defined (_WIN32)
-       if (_rl_screenheight <= 0 && term_string_buffer)
- 	_rl_screenheight = tgetnum ("li");
- #endif
-@@ -408,7 +408,7 @@
- get_term_capabilities (bp)
-      char **bp;
- {
--#if !defined (__DJGPP__)	/* XXX - doesn't DJGPP have a termcap library? */
-+#if !defined (__DJGPP__) && !defined (_WIN32)	/* XXX - doesn't DJGPP have a termcap library? */
-   register int i;
- 
-   for (i = 0; i < NUM_TC_STRINGS; i++)
-@@ -449,7 +449,11 @@
- 
-       buffer = term_string_buffer;
- 
-+#if !defined (_WIN32)
-       tgetent_ret = tgetent (term_buffer, term);
-+#else
-+      tgetent_ret = -1;
-+#endif
-     }
- 
-   if (tgetent_ret <= 0)
-@@ -513,7 +517,11 @@
-   if (!_rl_term_cr)
-     _rl_term_cr = "\r";
- 
-+#if !defined (_WIN32)
-   _rl_term_autowrap = tgetflag ("am") && tgetflag ("xn");
-+#else
-+  _rl_term_autowrap = 1;
-+#endif
- 
-   /* Allow calling application to set default height and width, using
-      rl_set_screen_size */
-@@ -528,7 +536,11 @@
- 
-   /* Check to see if this terminal has a meta key and clear the capability
-      variables if there is none. */
-+#if !defined (_WIN32)
-   term_has_meta = (tgetflag ("km") || tgetflag ("MT"));
-+#else
-+  term_has_meta = 0;
-+#endif
-   if (!term_has_meta)
-     _rl_term_mm = _rl_term_mo = (char *)NULL;
- 
-@@ -628,10 +640,12 @@
- {
-   register int i;
- 
-+#if !defined (_WIN32)
-   if (_rl_term_backspace)
-     for (i = 0; i < count; i++)
-       tputs (_rl_term_backspace, 1, _rl_output_character_function);
-   else
-+#endif
-     for (i = 0; i < count; i++)
-       putc ('\b', _rl_out_stream);
-   return 0;
-@@ -661,11 +675,16 @@
++++ readline-5.2-new/terminal.c	2007-09-29 23:51:52.593750000 +0200
+@@ -661,11 +661,16 @@
  	default:
  	  break;
  	case VISIBLE_BELL:
@@ -2186,41 +2044,9 @@ diff -urN readline-5.2/terminal.c readline-5.2-new/terminal.c
  	  /* FALLTHROUGH */
  	case AUDIBLE_BELL:
  	  fprintf (stderr, "\007");
-@@ -686,7 +705,7 @@
- void
- _rl_enable_meta_key ()
- {
--#if !defined (__DJGPP__)
-+#if !defined (__DJGPP__) && !defined (_WIN32)
-   if (term_has_meta && _rl_term_mm)
-     tputs (_rl_term_mm, 1, _rl_output_character_function);
- #endif
-@@ -696,7 +715,7 @@
- _rl_control_keypad (on)
-      int on;
- {
--#if !defined (__DJGPP__)
-+#if !defined (__DJGPP__) && !defined (_WIN32)
-   if (on && _rl_term_ks)
-     tputs (_rl_term_ks, 1, _rl_output_character_function);
-   else if (!on && _rl_term_ke)
-@@ -718,6 +737,7 @@
- _rl_set_cursor (im, force)
-      int im, force;
- {
-+#if !defined (_WIN32)
-   if (_rl_term_ve && _rl_term_vs)
-     {
-       if (force || im != rl_insert_mode)
-@@ -728,4 +748,5 @@
- 	    tputs (_rl_term_ve, 1, _rl_output_character_function);
- 	}
-     }
-+#endif
- }
 diff -urN readline-5.2/tilde.c readline-5.2-new/tilde.c
 --- readline-5.2/tilde.c	2006-04-11 17:19:32.000000000 +0200
-+++ readline-5.2-new/tilde.c	2007-09-04 20:54:36.375000000 +0200
++++ readline-5.2-new/tilde.c	2007-09-29 23:41:53.968750000 +0200
 @@ -171,7 +171,7 @@
  
    for (i = 0; i < string_len; i++)

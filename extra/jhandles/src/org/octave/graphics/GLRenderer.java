@@ -51,6 +51,8 @@ public class GLRenderer implements Renderer
 	private float po = 1.0f;
 	private boolean isGL2PS = false;
 	private boolean isFirst = false;
+	private Matrix3D xForm;
+	private double xZ1, xZ2;
 
 	public GLRenderer(GLAutoDrawable d)
 	{
@@ -267,7 +269,7 @@ public class GLRenderer implements Renderer
 			setLineStyle("-", false);
 		}
 
-		if (line.Marker.isSet())
+		if (line.Marker.isSet() && true)
 		{
 			MarkerProperty.Marker m = line.Marker.makeMarker(line.MarkerSize.doubleValue(), line.LineWidth.doubleValue()); 
 			int w = m.w, h = m.h, xhot = m.xhot, yhot = m.yhot;
@@ -301,6 +303,62 @@ public class GLRenderer implements Renderer
 			}
 			gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
 		}
+		else if (line.Marker.isSet())
+		{
+			gl.glMatrixMode(GL.GL_PROJECTION);
+			gl.glPushMatrix();
+			gl.glLoadIdentity();
+			gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, xZ1, xZ2);
+			gl.glMatrixMode(GL.GL_MODELVIEW);
+			gl.glPushMatrix();
+			setClipping(false);
+
+			int ID = makeMarkerList(line.Marker, line.MarkerSize);
+			double[] tmp = new double[4];
+
+			if (z.length == 0)
+			{
+				for (int i=0; i<n; i++)
+				{
+					if (clip[i] == 64)
+					{
+						xForm.transform(x[i], y[i], 0.0, tmp, 0);
+						gl.glLoadIdentity();
+						gl.glTranslated(tmp[0], tmp[1], -tmp[2]);
+						gl.glCallList(ID);
+					}
+				}
+			}
+			gl.glDeleteLists(ID, 1);
+
+			gl.glMatrixMode(GL.GL_MODELVIEW);
+			gl.glPopMatrix();
+			gl.glMatrixMode(GL.GL_PROJECTION);
+			gl.glPopMatrix();
+			setClipping(line.Clipping.isSet());
+		}
+	}
+
+	public int makeMarkerList(MarkerProperty p, DoubleProperty s)
+	{
+		int ID = gl.glGenLists(1);
+		double sz = s.doubleValue() * Utils.getScreenResolution() / 72.0;
+
+		gl.glNewList(ID, GL.GL_COMPILE);
+		switch (p.getValue().charAt(0))
+		{
+			case 's':
+				gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glVertex2d(-sz/2, -sz/2);
+				gl.glVertex2d(-sz/2,  sz/2);
+				gl.glVertex2d( sz/2,  sz/2);
+				gl.glVertex2d( sz/2, -sz/2);
+				gl.glEnd();
+				break;
+		}
+		gl.glEndList();
+
+		return ID;
 	}
 	
 	public void draw(LightObject light)
@@ -1808,13 +1866,17 @@ public class GLRenderer implements Renderer
 			GL2PS.gl2psBeginViewport(viewport);
 		}
 
+		xForm = ax.x_render;
+		xZ1 = zmin-(zmax-zmin)/2;
+		xZ2 = zmax+(zmax-zmin)/2;
+
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glScaled(1, 1, -1);
 		gl.glMultMatrixd(ax.x_mat1.getData(), 0);
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, zmin-(zmax-zmin)/2, zmax+(zmax-zmin)/2);
+		gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, xZ1, xZ2);
 		gl.glMultMatrixd(ax.x_mat2.getData(), 0);
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 

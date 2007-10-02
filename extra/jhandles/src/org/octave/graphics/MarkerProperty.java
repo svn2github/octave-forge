@@ -159,8 +159,8 @@ public class MarkerProperty extends RadioProperty
 		/* convert marker size from point size to pixel size */
 		markerSize = (markerSize * Utils.getScreenResolution() / 72.0);
 
-		int size = (int)markerSize, size2 = (int)(markerSize/2);
-		int size3 = (int)(markerSize/3), size23 = (int)((markerSize*2)/3);
+		int size = (int)Math.round(markerSize), size2 = (int)Math.round(markerSize/2);
+		int size3 = (int)Math.round(markerSize/3), size23 = (int)Math.round((markerSize*2)/3);
 		BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_BYTE_BINARY);
 		Graphics2D g = img.createGraphics();
 		int xhot = 0, yhot = 0;
@@ -174,7 +174,7 @@ public class MarkerProperty extends RadioProperty
 		{
 		case 'o':
 			xhot = yhot = size2;
-			g.drawArc(0, 0, size, size, 0, 360);
+			g.drawArc(0, 0, size-1, size-1, 0, 360);
 			break;
 		case 'h':
 		case 'p':

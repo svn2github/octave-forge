@@ -21,6 +21,10 @@
 ## @end deftypefn
 
 function [m] = amdemod(s,fc,fs)
+    if(nargin ~= 3)
+	usage("m = amdemod(s,fc,fs)");
+    end
+
     e = abs(s);
     [b a] = butter(5,fc./fs);
     m = filter(b,a,e);

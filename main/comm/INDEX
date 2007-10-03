@@ -50,6 +50,9 @@ Block Coding
  cyclpoly
  decode
  encode
+ egolaydec
+ egolayenc
+ egolaygen
  gen2par
  hammgen
  rsgenpoly

@@ -34,6 +34,7 @@
 #include <fstream>
 
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *args);
+typedef jint (JNICALL *JNI_GetCreatedJavaVMs_t) (JavaVM **pvm, jsize bufLen, jsize *nVMs);
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_call
   (JNIEnv *, jclass, jstring, jobjectArray, jobjectArray);
@@ -48,6 +49,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokat
 
 static JavaVM *jvm = 0;
 static JNIEnv *current_env = 0;
+static bool jvm_attached = false;
 
 // Need to keep hold of the shared library handle until exit.
 static octave_shlib jvm_lib;
@@ -294,14 +296,6 @@ static void initialize_jvm ()
 {
   if (jvm) return;
 
-  JVMArgs vm_args;
-
-  vm_args.add ("-Djava.class.path=" + initial_class_path ());
-  vm_args.add ("-Doctave.java.path=" + initial_java_dir (true));
-  vm_args.add ("-Xrs");
-  vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
-  vm_args.read_java_opts (initial_java_dir (false) + file_ops::dir_sep_str + "java.opts");
-
 #if defined (__WIN32__)
 
   // In windows, find the location of the JRE from the registry
@@ -326,17 +320,61 @@ static void initialize_jvm ()
 
 #endif
 	
+  jsize nVMs = 0;
   octave_shlib lib (jvm_lib_path);
   if (!lib) 
     throw std::string("unable to load Java Runtime Environment from ")+jvm_lib_path;
 
   JNI_CreateJavaVM_t create_vm = (JNI_CreateJavaVM_t)lib.search("JNI_CreateJavaVM");
+  JNI_GetCreatedJavaVMs_t get_vm = (JNI_GetCreatedJavaVMs_t)lib.search("JNI_GetCreatedJavaVMs");
   if (!create_vm)
     throw std::string("unable to find JNI_CreateJavaVM in ")+jvm_lib_path;
+  if (!get_vm)
+    throw std::string("unable to find JNI_GetCreatedJavaVMs in ")+jvm_lib_path;
 
-  if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
-    throw std::string("unable to start Java VM in ")+jvm_lib_path;
+  if (get_vm(&jvm, 1, &nVMs) == 0 && nVMs > 0)
+  {
+    // At least one JVM exists, try to attach to it
 
+    switch (jvm->GetEnv((void**)&current_env, JNI_VERSION_1_2))
+    {
+      case JNI_EDETACHED:
+        // Attach the current thread
+        JavaVMAttachArgs vm_args;
+        vm_args.version = JNI_VERSION_1_2;
+        vm_args.name = "octave";
+        vm_args.group = NULL;
+        if (jvm->AttachCurrentThread((void**)&current_env, &vm_args) < 0)
+          throw std::string("JVM internal error, unable to attach octave to existing JVM");
+        break;
+      case JNI_EVERSION:
+        throw std::string("JVM internal error, the required JNI version is not supported");
+        break;
+      case JNI_OK:
+        // Don't do anything, the current thread is already attached to JVM
+        break;
+    }
+
+    jvm_attached = true;
+    //printf("JVM attached\n");
+  }
+  else
+  {
+    // No JVM exists, create one
+
+    JVMArgs vm_args;
+
+    vm_args.add ("-Djava.class.path=" + initial_class_path ());
+    vm_args.add ("-Doctave.java.path=" + initial_java_dir (true));
+    vm_args.add ("-Xrs");
+    vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
+    vm_args.read_java_opts (initial_java_dir (false) + file_ops::dir_sep_str + "java.opts");
+
+    if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
+      throw std::string("unable to start Java VM in ")+jvm_lib_path;
+    //printf("JVM created\n");
+  }
+  
   jvm_lib = lib;
 }
 
@@ -344,9 +382,13 @@ static void terminate_jvm(void)
 {
   if (jvm)
     {
-      jvm->DestroyJavaVM ();
+      if (jvm_attached)
+        jvm->DetachCurrentThread ();
+      else
+        jvm->DestroyJavaVM ();
       jvm = 0;
       current_env = 0;
+      jvm_attached = false;
 
       if (jvm_lib)
         jvm_lib.close ();
@@ -1403,7 +1445,7 @@ static void initialize_java (void)
         {
           initialize_jvm ();
           octave_java::register_type ();
-          command_editor::set_event_hook (java_event_hook);
+          command_editor::add_event_hook (java_event_hook);
           octave_thread_ID = get_current_thread_ID (current_env);
           //printf("octave thread ID=%ld\n", octave_thread_ID);
         }

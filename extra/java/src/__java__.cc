@@ -228,6 +228,31 @@ static std::string read_registry_string (const std::string& key, const std::stri
     }
   return retval;
 }
+
+static std::string get_module_filename (HMODULE hMod)
+{
+  int n = 1024;
+  std::string retval(n, '\0');
+  bool found = false;
+
+  while (n < 65536)
+    {
+      int status = GetModuleFileName(hMod, &retval[0], n);
+
+      if (status < n)
+        {
+          retval.resize(n);
+          found = true;
+          break;
+        }
+      else
+        {
+          n *= 2;
+          retval.resize(n);
+        }
+    }
+  return (found ? retval : "");
+}
 #endif
 
 static std::string get_module_path(const std::string& name, bool strip_name = true) 
@@ -298,22 +323,36 @@ static void initialize_jvm ()
 
 #if defined (__WIN32__)
 
-  // In windows, find the location of the JRE from the registry
-  // and load the symbol from the dll.
-  std::string key, value;
+  HMODULE hMod = GetModuleHandle("jvm.dll");
+  std::string jvm_lib_path;
 
-  key = "software\\javasoft\\java runtime environment";
-  value = "Currentversion";
-  std::string regval = read_registry_string (key,value);
-  if (regval.empty ())
-    throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
+  if (hMod == NULL)
+  {
+    // In windows, find the location of the JRE from the registry
+    // and load the symbol from the dll.
+    std::string key, value;
 
-  key = key + "\\" + regval;
-  value = "RuntimeLib";
-  std::string jvm_lib_path = read_registry_string (key,value);
-  if (jvm_lib_path.empty())
-    throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
+    key = "software\\javasoft\\java runtime environment";
+    value = "Currentversion";
+    std::string regval = read_registry_string (key,value);
+    if (regval.empty ())
+      throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
 
+    key = key + "\\" + regval;
+    value = "RuntimeLib";
+    jvm_lib_path = read_registry_string (key,value);
+    if (jvm_lib_path.empty())
+      throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
+  }
+  else
+  {
+    // JVM seems to be already loaded, better to use that DLL instead
+    // of looking in the registry, to avoid opening a different JVM.
+    jvm_lib_path = get_module_filename(hMod);
+    if (jvm_lib_path.empty())
+      throw std::string ("unable to find Java Runtime Environment");
+  }
+  
 #else
 
   std::string jvm_lib_path = JAVA_HOME+std::string("/jre/lib/")+JAVA_ARCH+"/client/libjvm.so";

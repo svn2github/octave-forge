@@ -55,6 +55,9 @@ Block Coding
  egolaygen
  gen2par
  hammgen
+ reedmullerdec
+ reedmullerenc
+ reedmullergen
  rsgenpoly
  rsdec
  rsdecof

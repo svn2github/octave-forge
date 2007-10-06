@@ -282,18 +282,18 @@ static std::string initial_java_dir (bool arch_dependent = false)
   static std::string path1;
   static std::string path2;
 
-  if (path1.empty())
+  if (arch_dependent)
     {
-      path1 = path2 = get_module_path ("__java__.oct", true);
-
-      size_t pos = path2.rfind (file_ops::dir_sep_str);
-
-      if (pos != NPOS)
-        path2.resize (pos);
+      if (path1.empty ())
+        path1 = get_module_path ("__java__.oct", true);
+      return path1;
     }
-
-  std::string retval = (arch_dependent ? path1 : path2);
-  return retval;
+  else
+    {
+      if (path2.empty ())
+        path2 = get_module_path ("javaclasspath.m", true);
+      return path2;
+    }
 }
 
 static std::string initial_class_path ()

@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{c} =} condeig (@var{a})
 ## @deftypefnx {Function File} {[@var{v}, @var{lambda}, @var{c}] =} condeig (@var{a})
-## Computes condition numbers of the eigenvalues of a matrix. The
+## Compute condition numbers of the eigenvalues of a matrix. The
 ## condition numbers are the reciprocals of the cosines of the angles
 ## between the left and right eigenvectors.
 ##

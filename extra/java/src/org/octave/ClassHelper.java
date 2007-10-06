@@ -25,9 +25,8 @@ public class ClassHelper
 
   static
     {
-      loader = (ClassLoader.getSystemClassLoader() instanceof OctClassLoader ? 
-          (OctClassLoader)ClassLoader.getSystemClassLoader() :
-          new OctClassLoader());
+      ClassLoader l = ClassHelper.class.getClassLoader();
+      loader = (l instanceof OctClassLoader ? (OctClassLoader)l : new OctClassLoader(l));
     }
 
   public static void addClassPath (String name) throws Exception

@@ -17,6 +17,8 @@
 
 package org.octave;
 
+import java.io.File;
+
 public class OctClassLoader extends java.net.URLClassLoader
 {
   public OctClassLoader ()
@@ -33,6 +35,24 @@ public class OctClassLoader extends java.net.URLClassLoader
     {
       //System.out.println ("Looking for class " + name);
       return super.findClass (name);
+    }
+
+  protected String findLibrary (String libname)
+    {
+      // Look dynamically into java.library.path, because Sun VM does
+      // not do it (seems to cache initial java.library.path instead)
+
+      String[] paths = System.getProperty ("java.library.path").split (File.pathSeparator);
+      
+      libname = System.mapLibraryName (libname);
+      for (int i=0; i<paths.length; i++)
+        {
+          File f = new File (paths[i], libname);
+          if (f.exists ())
+            return f.getAbsolutePath();
+        }
+
+      return null;
     }
 
   public void addClassPath (String name) throws Exception

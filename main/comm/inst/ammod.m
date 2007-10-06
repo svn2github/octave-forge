@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} ammod (@var{x},@var{fc},@var{fs})
 ## Create the AM modulation of the signal x with carrier frequency fs. Where x is sample at frequency fs.
-## @seealso{erfc,erf,erfinv}
+## @seealso{amdemod,fmmod,fmdemod}
 ## @end deftypefn
 
 

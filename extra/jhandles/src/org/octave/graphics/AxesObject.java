@@ -192,6 +192,7 @@ public class AxesObject extends HandleObject
 	RadioProperty Layer;
 	BooleanProperty Key;
 	DoubleProperty LineWidth;
+	ArrayProperty ColorOrder;
 
 	public AxesObject(HandleObject parent, boolean init3D)
 	{
@@ -287,6 +288,13 @@ public class AxesObject extends HandleObject
 		Key = new BooleanProperty(this, "Key", false);
 		Key.setVisible(false);
 		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
+		ColorOrder = new ArrayProperty(this, "ColorOrder", new String[] {"double"}, 2,
+			new Matrix(
+				new double[] {
+					0,    0,  1,     0,  0.75,  0.75,  0.25,
+					0,  0.5,  0,  0.75,     0,  0.75,  0.25,
+					1,    0,  0,  0.75,  0.75,     0,  0.25},
+				new int[] {7, 3}));
 
 		updatePosition();
 		autoTick();

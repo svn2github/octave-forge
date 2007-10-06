@@ -3,7 +3,7 @@ if (file_in_path (EXEC_PATH, "jogl.jar"))
     javaaddpath (file_in_path (EXEC_PATH, "gluegen-rt.jar"));
   endif
   javaaddpath (file_in_path (EXEC_PATH, "jogl.jar"));
-  javaaddpath (fullfile (fileparts (mfilename ("fullpath")), "jhandles.jar"));
+  javaaddpath (file_in_loadpath ("jhandles.jar"));
 
   dispatch ("get", "__jhandles_get", "any");
   dispatch ("set", "__jhandles_set", "any");

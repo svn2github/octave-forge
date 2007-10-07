@@ -21,11 +21,16 @@ if [ -z ${OCTAVE_TERMINAL} ]; then
 # This is the startup procedure written as AppleScript to open a
 # Terminal.app (if the Terminal.app is not already running) and start
 # the Octave program.
-open -a /Applications/Utilities/Terminal.app
+# 20071007 removed: open -a /Applications/Utilities/Terminal.app
 osascript 2>&1>/dev/null <<EOF
-  tell application "Terminal"
+  tell application "System Events" to set ProcessList to get name of every process
+  tell application "Terminal" 
     activate
-    do script "exec '${ROOT}/bin/octave'"
+    if ProcessList contains "Terminal" then
+      do script ("exec '${ROOT}/bin/octave'")
+    else
+      do script ("exec '${ROOT}/bin/octave'") in front window
+    end if
   end tell
 EOF
 

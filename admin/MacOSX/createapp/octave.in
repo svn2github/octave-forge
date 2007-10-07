@@ -57,9 +57,13 @@ SED="/usr/bin/sed"
 
 # Export the variables that have been defined before so that the
 # Octave program gets knowledge about them.
-export OCTAVE_HOME PATH DYLD_LIBRARY_PATH
-export CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-export DL_LDFLAGS SED
+# 20071007 removed:
+#   export OCTAVE_HOME PATH DYLD_LIBRARY_PATH
+#   export CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+#   export DL_LDFLAGS SED
 
 # Invoke octave, preserving spaces in all the input arguments.
+OCTAVE_HOME="${OCTAVE_HOME}" PATH="${PATH}" DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}" \
+CFLAGS="${CFLAGS}" CPPFLAGS="${CPPFLAGS}" CXXFLAGS="${CXXFLAGS}" \
+LDFLAGS="${LDFLAGS}" DL_LDFLAGS="${DL_LDFLAGS}" SED="$SED" \
 "${ROOT}/bin/octave-%VERSION%" "$@"

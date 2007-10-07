@@ -117,7 +117,7 @@ bash ~$ /Applications/Octave.app/Contents/Resources/bin/octave
 @end example
 Another way to use Octave from the command line is to set up a link to the Octave startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
 @example
-bash ~$ sudo ln -s /Applications/Octave.app/Contents/Resources/bin/octave /usr/bin/octave
+bash ~$ sudo ln -sfv /Applications/Octave.app/Contents/Resources/bin/octave /usr/bin/octave
 bash ~$ octave
 @end example
 
@@ -128,7 +128,7 @@ bash ~$ /Applications/Octave.app/Contents/Resources/bin/mkoctfile <file.cc>
 @end example
 Another way to use the command @command{mkoctfile} from the command line is to set up a link to the @command{mkoctfile} startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
 @example
-bash ~$ sudo ln -s /Applications/Octave.app/Contents/Resources/bin/mkoctfile /usr/bin/mkoctfile
+bash ~$ sudo ln -sfv /Applications/Octave.app/Contents/Resources/bin/mkoctfile /usr/bin/mkoctfile
 bash ~$ mkoctfile <file.cc>
 @end example
 
@@ -172,7 +172,7 @@ If you need to install Gnuplot.app then there are two ways to set this up: @* @*
 
 @item Drag the Gnuplot.app icon from the compressed disc image to another place of your filesystem. After you did that you need to create a link to the Gnuplot startup file to tell Octave.app where Gnuplot.app can be found eg. @* @*
 
-@command{bash ~$ ln -s <Gnuplot.app>/Contents/Resources/bin/gnuplot /usr/bin/gnuplot} @* @*
+@command{bash ~$ ln -sfv <Gnuplot.app>/Contents/Resources/bin/gnuplot /usr/bin/gnuplot} @* @*
 After that try from any place of your filesystem if Gnuplot can be started and also if Gnuplot displays correct plots eg. @* @*
 
 @command{bash ~$ gnuplot} @*

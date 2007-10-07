@@ -292,7 +292,7 @@ def main():
     if (bundle):
         index.write('<p>For convenience, all of the packages below are available\n');
         index.write('as a <a href="__PACKAGE__/' + bundle +'?download">single file</a>.\n');
-        index.write('This file is not however an octave package and the individiual\n');
+        index.write('This file is not however an octave package and the individual\n');
         index.write('packages it contains must be installed separately</p>\n');
 
     index.write('<p>These packages are meant for versions of Octave later than version\n');

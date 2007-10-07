@@ -50,7 +50,7 @@ LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% ${LDFLAGS}"
 # These default include paths are set by mkoctfile-2.9.12 automatically
 # CFLAGS="-I'${ROOT}/include' -I'${ROOT}/include/octave-%VERSION%'"
 
-# Setting up other variables that are needed to run the octave program
+# Setting up other variables that are needed to run the Octave program
 # or mkoctfile.
 DL_LDFLAGS="-bundle -bundle_loader '${ROOT}/bin/octave-%VERSION%'"
 SED="/usr/bin/sed"
@@ -62,7 +62,7 @@ SED="/usr/bin/sed"
 #   export CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 #   export DL_LDFLAGS SED
 
-# Invoke octave, preserving spaces in all the input arguments.
+# Invoke Octave, preserving spaces in all the input arguments.
 OCTAVE_HOME="${OCTAVE_HOME}" PATH="${PATH}" DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}" \
 CFLAGS="${CFLAGS}" CPPFLAGS="${CPPFLAGS}" CXXFLAGS="${CXXFLAGS}" \
 LDFLAGS="${LDFLAGS}" DL_LDFLAGS="${DL_LDFLAGS}" SED="$SED" \

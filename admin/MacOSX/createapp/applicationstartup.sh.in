@@ -37,7 +37,7 @@ EOF
 # If you set the variable ${OCTAVE_TERMINAL} to "X11" then we try to
 # open the X11 environment and a XTerm with the Octave program running
 # in this XTerm instead of a shell.
-elif [ ${OCTAVE_TERMINAL} == "X11" ]; then
+elif [ ${OCTAVE_TERMINAL} == "x11" ]; then
   open "/Applications/Utilities/X11.app"
   if [ -z ${DISPLAY} ]; then export DISPLAY=:0.0; fi
   /usr/X11R6/bin/xterm -fn -adobe-courier-medium-*-*-*-14-*-*-*-*-*-*-* \

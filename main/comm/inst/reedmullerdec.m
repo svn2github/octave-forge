@@ -121,7 +121,7 @@ function [C,CMM]=reedmullerdec(VV,G,R,M)
      %adjust the 'V' received vector, at change of each order.
      %
      if ( prev_len ~= length(P{idx})  || idx == 1 ) %force for_ idx=1
-         v_adjust=mod(CM(idx+1:end)*Gadj(idx+1:end,:),2);
+         v_adjust=mod(CM(idx+1:end)*Gadj(idx+1:end,:),2);%effect of iterative decoding.
          Gadj(idx+1:end,:)=0;
          V=mod(V+ v_adjust,2); % + = - in GF(2).
          order = order - 1;
@@ -136,7 +136,7 @@ function [C,CMM]=reedmullerdec(VV,G,R,M)
       Si=sort(Si,'descend');
 
       %generate index elements
-      B=__binvec(0:(2.^length(Si)-1));
+      B=__binvec([0:(2.^length(Si)-1)]');
       WTS=2.^[Si-1];
       %actual index set elements.
       S=sum(B.*repmat(WTS,[2^length(Si),1]),2);
@@ -144,19 +144,18 @@ function [C,CMM]=reedmullerdec(VV,G,R,M)
       %doing the operation set difference U \ S to get SCi
       SCi=U;
       Si_diff=Si-1;
-      rmidx=[];
-      for idy=1:M
-        if( any( Si_diff==SCi(idy) ) )
-          rmidx=[rmidx, idy];
-        end
-      end
-      SCi(rmidx)=[];
-      SCi=sort(SCi,'descend');
+
+     %a matrix approach removing vector elements
+     SS_mat=repmat(S,1,M);
+     MM_mat=repmat(0:M-1,length(S),1);
+     [idx_r,idx_c]=find(SS_mat-MM_mat);
+     SCi(idx_c)=[];
+     SCi=sort(SCi,'descend');
       
       %corner case RM(r=m,m) case 
       if (length(SCi) > 0 )
         %generate the set SC,
-        B=__binvec(0:(2.^length(SCi)-1));
+        B=__binvec([0:(2.^length(SCi)-1)]');
         WTS=2.^[SCi];
         %actual index set elements.
         SC=sum(B.*repmat(WTS,[2^length(SCi),1]),2);
@@ -167,14 +166,14 @@ function [C,CMM]=reedmullerdec(VV,G,R,M)
       %
       %next compute the checksums & form the weights.
       %
-      wts=[]; %clear prev history
-      for id_el = 1:length(SC)
-        sc_el=SC(id_el);
-        elems=sc_el + S;
-        elems=elems+1; %adjust indexing
-        wt=mod(sum(V(elems)),2);%add elements of V, rx vector.
-        wts(id_el)= wt;%this is checksum
-      end
+      SC=reshape(SC,length(SC),1);
+      Srow=reshape(S,1,length(S));
+      SC_mat=repmat(SC,1,length(S));
+      S_mat=repmat(Srow,length(SC),1);
+      idx_mat=SC_mat + S_mat+1;
+      Vr=reshape(V,2^M,1);
+      Vr_mat=repmat(V,1,length(S));
+      wts=mod(sum(reshape(Vr_mat(idx_mat(:)),size(idx_mat)),2),2);
 
       %
       %do the majority logic vote.
@@ -192,11 +191,12 @@ end
 % utility functions
 %
 function bvec=__binvec(dec_vec)
+     %dec_vec=reshape(dec_vec,length(dec_vec),1); %expect col-vec
      maxlen=ceil(log2(max(dec_vec)+1));
      x=[]; bvec=zeros(length(dec_vec),maxlen);
      for idx=maxlen:-1:1
          tmp=mod(dec_vec,2);
-         bvec(:,idx)=tmp.';
+         bvec(:,idx)=tmp;
          dec_vec=(dec_vec-tmp)./2;
      end
      return
@@ -206,13 +206,7 @@ end
 % crude majority logic decoding; force the = case to 0 by default.
 %
 function wt=__majority_logic_vote(wts)
-      wt=sum(wts)-sum(1-wts);%count no of 1's - no of 0's.
-      if ( wt ~= 0 )
-         wt = (wt > 0);
-         %else
-         %wt = rand() > 0.5; %break the tie.
-	%end
-      end
+      wt=[sum(wts) > sum(1-wts)];%count no of 1's - no of 0's.
 end
 
 %

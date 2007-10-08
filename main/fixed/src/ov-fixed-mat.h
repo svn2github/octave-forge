@@ -131,8 +131,7 @@ public:
 
   octave_value convert_to_str (bool pad = false) const;
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		 bool strip_nan_and_inf);
+  bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 

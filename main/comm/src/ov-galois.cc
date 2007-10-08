@@ -396,8 +396,7 @@ octave_galois::assign (const octave_value_list& idx,
 }
 
 bool 
-octave_galois::save_ascii (std::ostream& os, bool& infnan_warned, 
-			       bool strip_nan_and_inf)
+octave_galois::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
   Matrix tmp = matrix_value ();

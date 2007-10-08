@@ -270,8 +270,7 @@ octave_fixed_complex::print_raw (std::ostream& os,
 }
 
 bool 
-octave_fixed_complex::save_ascii (std::ostream& os, bool& infnan_warned, 
-			       bool strip_nan_and_inf)
+octave_fixed_complex::save_ascii (std::ostream& os)
 {
   os << scalar.real ().getintsize () << " " 
      << scalar.imag ().getintsize () << " " 

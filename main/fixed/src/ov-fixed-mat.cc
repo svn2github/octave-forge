@@ -418,8 +418,7 @@ octave_fixed_matrix::print_raw (std::ostream& os,
 }
 
 bool 
-octave_fixed_matrix::save_ascii (std::ostream& os, bool& infnan_warned, 
-			       bool strip_nan_and_inf)
+octave_fixed_matrix::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
   os << "# ndims: " << d.length () << "\n";

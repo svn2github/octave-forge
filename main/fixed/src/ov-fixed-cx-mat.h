@@ -130,8 +130,7 @@ public:
 
   void decrement (void) { matrix -= FixedPoint(1,0,1,0); }
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		 bool strip_nan_and_inf);
+  bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 

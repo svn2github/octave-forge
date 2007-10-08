@@ -137,8 +137,7 @@ public:
   int m (void) const { return gval.m(); }
   int primpoly (void) const { return gval.primpoly(); }
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		 bool strip_nan_and_inf);
+  bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 

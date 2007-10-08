@@ -234,8 +234,7 @@ octave_fixed::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 bool 
-octave_fixed::save_ascii (std::ostream& os, bool& infnan_warned, 
-			       bool strip_nan_and_inf)
+octave_fixed::save_ascii (std::ostream& os)
 {
   os << scalar.getintsize () << " " 
      << scalar.getdecsize () << " " 

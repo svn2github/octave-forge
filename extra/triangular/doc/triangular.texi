@@ -5,7 +5,7 @@
 @settitle
 
 @titlepage
-@title  Communications Toolbox for Octave
+@title  Example C++ User Type for Octave
 @subtitle June 2007
 @author David Bateman
 @page

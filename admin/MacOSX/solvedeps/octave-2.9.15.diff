@@ -1,0 +1,11 @@
+--- octave-2.9.15.orig/src/Makefile.in	2007-10-12 23:27:29.000000000 +0200
++++ octave-2.9.15/src/Makefile.in	2007-10-13 19:05:40.000000000 +0200
+@@ -262,7 +262,7 @@
+ endif
+ 
+ OCTINTERP_LINK_DEPS = \
+-  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
++  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) -lfftw3
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \

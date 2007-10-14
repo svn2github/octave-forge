@@ -104,9 +104,9 @@ bash ~$ open /Applications/Octave.app
 @end example
 
 @item @b{How can I startup Octave.app with a XTerm window?} @*
-If you prefer using the application @command{xterm} instead of the Terminal.app that comes with your X11 runtime environment (Install from 'DVD 1 of your Mac OS X Install Discs') then you can set up the environment variable @var{OCTAVE_TERMINAL=X11} before starting the Octave.app. A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}. If you installed Octave.app in your applications folder then a one time startup might look like eg.
+If you prefer using the application @command{xterm} instead of the Terminal.app that comes with your X11 runtime environment (Install from 'DVD 1 of your Mac OS X Install Discs') then you can set up the environment variable @var{OCTAVE_TERMINAL=x11} before starting the Octave.app. A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}. If you installed Octave.app in your applications folder then a one time startup might look like eg.
 @example
-bash ~$ export OCTAVE_TERMINAL=X11
+bash ~$ export OCTAVE_TERMINAL=x11 # lower case letter 'x'
 bash ~$ open /Applications/Octave.app
 @end example 
 
@@ -185,7 +185,7 @@ After that try from any place of your filesystem if Gnuplot can be started and a
 @html{}
 <hr>
 @end html
-File created from @file{octaveapp.texi} with makeinfo at %DATE%.
+File created from @file{admin/MacOSX/createapp/octaveapp.texi} with makeinfo at %DATE%.
 @end ifhtml
 @c %*** End of BODY
 

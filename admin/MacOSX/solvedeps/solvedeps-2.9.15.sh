@@ -57,8 +57,8 @@ QHULLPACK=http://www.qhull.org/download/qhull-2003.1.tar.gz
 SPARSEPACK=http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
 SPARSEDIFF=./SuiteSparse-3.0.0.diff
 
-OCTAVEPACK=ftp://ftp.octave.org/pub/octave/bleeding-edge/octave-2.9.14.tar.gz
-OCTAVEDIFF=./octave-2.9.14.diff
+OCTAVEPACK=ftp://ftp.octave.org/pub/octave/bleeding-edge/octave-2.9.15.tar.gz
+OCTAVEDIFF=./octave-2.9.15.diff
 
 ##########################################################################
 #####                Don't modify anything downwards here            #####

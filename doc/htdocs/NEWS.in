@@ -7,9 +7,12 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>September ??, 2007</dt>
+<dt>October 14, 2007</dt>
+<dd>Updated the OS X binary release to use Octave 2.9.15.
+</dd>
+<dt>October 14, 2007</dt>
 <dd>
-<p>Release of Octave-forge tested against Octave 2.9.14. Many packages
+<p>Release of Octave-forge tested against Octave 2.9.15. Many packages
  will also function function with earlier versions of Octave 2.9.
  Notable changes in this release include:</p>
 <ul>

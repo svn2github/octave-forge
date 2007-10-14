@@ -12,8 +12,8 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/octave-forge-bundle-20070821.tar.gz?download">single file</a>.
-This file is not however an octave package and the individiual
+as a <a href="__PACKAGE__/octave-forge-bundle-20071014.tar.gz?download">single file</a>.
+This file is not however an octave package and the individual
 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
 2.9.12. For earlier versions of Octave, please use the older
@@ -570,18 +570,6 @@ JHandles</a></b></td>
   <p id="jhandles_detailed" style="display: none;">
 JHandles is a java- and openGL-based alternative graphics package for octave, providing a handle-based mechanism similar to Matlab.
   </p>
-</div>
-<div class="package" id="macosx">
-  <table class="package"><tr>
-    <td>
-   <b><a href="javascript:unfold('macosx');" class="package_head_link">   <img src="show.png" id="macosx_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
-MacOSX</a></b></td>
-    <td style="text-align: right;">&raquo; <a href="./MacOSX/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/macosx-1.0.3.tar.gz?download">download</a>
-    </td>
-  </tr></table>
-  <p id="macosx_detailed" style="display: none;">
-Provides additional functionality on Mac OS X  </p>
 </div>
 <div class="package" id="mapping">
   <table class="package"><tr>

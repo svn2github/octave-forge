@@ -143,7 +143,7 @@ Environment
  web 
  computer 
  isieee
- isunix ispc
+ isunix ispc ismac
  system
  ! = use <f>system</f><code>("command")</code>
  dump_prefs
@@ -903,6 +903,7 @@ Polynomials
  poly 
  polyval 
  polyvalm 
+ mpoles
  residue
  residue(r,p,k)=use Bradley T. Burchett's <code><a href="ftp://ftp.mathworks.com/pub/contrib/v5/control/resid2wp.m">resid2wp</a></code>
  polyfit 
@@ -1012,6 +1013,7 @@ Figure controls
  closereq
  gca gcf
  get set
+ findobj
 Axis controls
  axis
  box 

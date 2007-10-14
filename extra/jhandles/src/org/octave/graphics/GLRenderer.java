@@ -313,6 +313,9 @@ public class GLRenderer implements Renderer
 			gl.glPushMatrix();
 			setClipping(false);
 
+			setColor(line.LineColor.getColor());
+			setLineWidth(line.LineWidth.floatValue());
+
 			int ID = makeMarkerList(line.Marker, line.MarkerSize);
 			double[] tmp = new double[4];
 
@@ -330,6 +333,8 @@ public class GLRenderer implements Renderer
 				}
 			}
 			gl.glDeleteLists(ID, 1);
+
+			setLineWidth(0.5f);
 
 			gl.glMatrixMode(GL.GL_MODELVIEW);
 			gl.glPopMatrix();

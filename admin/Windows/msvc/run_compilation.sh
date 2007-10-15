@@ -579,7 +579,7 @@ fi
 ###########
 
 if check_package ncurses; then
-  download_file ncurses-5.6.tar.gz ftp://ftp.gnu.org/gnu/ncurse/ncurses-5.6.tar.gz
+  download_file ncurses-5.6.tar.gz ftp://ftp.gnu.org/gnu/ncurses/ncurses-5.6.tar.gz
   echo -n "decompressing ncurses... "
   (cd "$DOWNLOAD_DIR" && tar xfz ncurses-5.6.tar.gz)
   cp libs/ncurses-5.6.diff "$DOWNLOAD_DIR/ncurses-5.6"

@@ -18,7 +18,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 <ul>
    <li>jhandles: Significant improvement in the GUI functions and
    graphics handles compatibility, including stemseries, barseries,
-   GUI callbacks, postscript output, etc.<li>
+   GUI callbacks, postscript output, etc.</li>
    <li>java: Allow for waitfor functions in Octave. Use dlopen/dlsym
    rather than symbolic linking to the JVM in linux and OS X
    platforms.</li>

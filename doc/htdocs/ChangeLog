@@ -1,4 +1,1448 @@
 # Automatically generated file --- DO NOT EDIT
+2007-10-14 20:29  adb014
+
+	* doc/htdocs/packages.in: Final update pre-release
+
+2007-10-14 14:44  adb014
+
+	* AUTHORS, doc/htdocs/NEWS.in, doc/htdocs/index.in,
+	  doc/htdocs/packages.in, main/INDEX: Pre-release updates
+
+2007-10-14 13:24  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderer.java: set line
+	  color/width correctly for markers (disabled code)
+
+2007-10-14 10:09  treichl
+
+	* admin/MacOSX/: createapp/_DS_Store_Main, createapp/mkoctfile.in,
+	  createapp/octave.in, createapp/octaveapp.texi,
+	  solvedeps/solvedeps-2.9.15.sh: Further changes to build and pack
+	  Octave.app 2.9.15.
+
+2007-10-13 19:14  treichl
+
+	* admin/MacOSX/solvedeps/: octave-2.9.15.diff, solvedeps-2.9.15.sh:
+	  Build scripts and patch for building Octave.app 2.9.15.
+
+2007-10-11 03:27  whyly
+
+	* main/statistics/inst/: betastat.m, binostat.m, chi2stat.m,
+	  expstat.m, fstat.m, gamstat.m, geostat.m, hmmestimate.m,
+	  hmmgenerate.m, hmmviterbi.m, hygestat.m, lognstat.m, nbinstat.m,
+	  normstat.m, poisstat.m, raylcdf.m, raylinv.m, raylpdf.m,
+	  raylrnd.m, raylstat.m, tstat.m, unidstat.m, unifstat.m,
+	  wblstat.m: Get coding convention right: no space for indices.
+
+2007-10-10 22:45  treichl
+
+	* admin/MacOSX/createapp/selfupdate.sh: Script-update in the form
+	  that other users/developers can update Octave.app themselves.
+
+2007-10-09 11:24  adb014
+
+	* main/: comm/DESCRIPTION, fixed/DESCRIPTION: Recent change to
+	  fixed/comms package required that Octave >2.9.14
+
+2007-10-08 22:40  adb014
+
+	* extra/triangular/doc/triangular.texi: Minor doc fix
+
+2007-10-08 18:03  gnumuthu
+
+	* main/comm/inst/reedmullerdec.m: 10x improvement
+
+2007-10-08 14:18  adb014
+
+	* main/: comm/src/ov-galois.cc, comm/src/ov-galois.h,
+	  fixed/src/ov-fixed-complex.cc, fixed/src/ov-fixed-complex.h,
+	  fixed/src/ov-fixed-cx-mat.cc, fixed/src/ov-fixed-cx-mat.h,
+	  fixed/src/ov-fixed-mat.cc, fixed/src/ov-fixed-mat.h,
+	  fixed/src/ov-fixed.cc, fixed/src/ov-fixed.h: remove
+	  strip_nan_and_inf arg from save_ascii functions (For John Eaton)
+
+2007-10-08 12:57  adb014
+
+	* main/plot/inst/: fill.m, fill3.m, patch.m: Remove patch and fill
+	  functions from octave-forge as there is a patch command in octave
+
+2007-10-07 23:59  adb014
+
+	* main/statistics/inst/gamfit.m: Adapt gamfit to the changed gampdf
+	  interface in Octave
+
+2007-10-07 23:27  adb014
+
+	* doc/htdocs/: NEWS.in, index.in: Update docs ready for release
+
+2007-10-07 23:26  adb014
+
+	* admin/build-www.py: Fix typo
+
+2007-10-07 23:25  adb014
+
+	* extra/fpl/DESCRIPTION: Fix dependency
+
+2007-10-07 23:24  adb014
+
+	* main/comm/INDEX: Add newly added functions to INDEX
+
+2007-10-07 21:01  treichl
+
+	* admin/MacOSX/createapp/applicationstartup.sh.in: [no log message]
+
+2007-10-07 20:59  treichl
+
+	* admin/MacOSX/solvedeps/makeapp-gnuplot-4.2.2.tar.gz: Changed
+	  startup scripts.
+
+2007-10-07 18:53  treichl
+
+	* admin/MacOSX/createapp/octave.in: Fixed typo.
+
+2007-10-07 18:51  treichl
+
+	* admin/MacOSX/createapp/: applicationstartup.sh.in, octave.in,
+	  octaveapp.texi: Minor changes in the startup behaviour.
+
+2007-10-06 22:20  whyly
+
+	* main/statistics/inst/hygestat.m: Fix argument order in example.
+
+2007-10-06 19:34  sis-sou
+
+	* main/comm/inst/fmdemod.m: Initial commit into CVS.
+
+2007-10-06 19:34  sis-sou
+
+	* main/comm/inst/ammod.m: Help modifications.
+
+2007-10-06 18:28  whyly
+
+	* main/: linear-algebra/inst/condeig.m, statistics/inst/betastat.m,
+	  statistics/inst/binostat.m, statistics/inst/chi2stat.m,
+	  statistics/inst/expstat.m, statistics/inst/fstat.m,
+	  statistics/inst/gamstat.m, statistics/inst/geostat.m,
+	  statistics/inst/hmmestimate.m, statistics/inst/hmmgenerate.m,
+	  statistics/inst/hmmviterbi.m, statistics/inst/hygestat.m,
+	  statistics/inst/lognstat.m, statistics/inst/nbinstat.m,
+	  statistics/inst/normstat.m, statistics/inst/poisstat.m,
+	  statistics/inst/raylcdf.m, statistics/inst/raylinv.m,
+	  statistics/inst/raylpdf.m, statistics/inst/raylrnd.m,
+	  statistics/inst/raylstat.m, statistics/inst/tstat.m,
+	  statistics/inst/unidstat.m, statistics/inst/unifstat.m,
+	  statistics/inst/wblstat.m: The initial sentence of a doc string
+	  should be written as a command.
+
+2007-10-06 14:40  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: add
+	  ColorOrder property to axes objects
+
+2007-10-06 14:39  goffioul
+
+	* extra/jhandles/PKG_ADD: adapt to new locations used by pkg
+	  manager
+
+2007-10-06 14:15  goffioul
+
+	* extra/java/src/org/octave/: ClassHelper.java,
+	  OctClassLoader.java: reparent internal class loader such that it
+	  can find octave classes, when using an alternate boostrap class
+	  loader + make class loader use dynamic value of java.library.path to
+	  load native libraries
+
+2007-10-06 14:12  goffioul
+
+	* extra/java/src/__java__.cc: adapt to new locations used by pkg
+	  manager
+
+2007-10-06 11:02  goffioul
+
+	* extra/java/src/__java__.cc: add the possibility to use an
+	  alternate bootstrap class loader for the octave classes
+
+2007-10-05 18:13  goffioul
+
+	* extra/java/src/__java__.cc: try to use the same JVM library if it
+	  is already loaded
+
+2007-10-05 10:21  gnumuthu
+
+	* main/comm/: INDEX, inst/reedmullerdec.m, inst/reedmullerenc.m,
+	  inst/reedmullergen.m: RM(r,m) enc,dec,gen
+
+2007-10-05 07:37  sis-sou
+
+	* main/comm/inst/fmmod.m: Initial Commit Into CVS.
+
+2007-10-04 18:22  goffioul
+
+	* extra/java/src/__java__.cc: allow the java interface to be
+	  attached to an existing JVM instead of creating one
+
+2007-10-04 11:49  soender
+
+	* main/signal/inst/hilbert.m: New version of Hilbert compatble with
+	  the one in Matlab.
+
+2007-10-03 23:19  sis-sou
+
+	* main/comm/inst/amdemod.m: Arguments checking.
+
+2007-10-03 23:05  sis-sou
+
+	* main/comm/inst/amdemod.m: Initial Commit Into CVS.
+
+2007-10-03 18:07  gnumuthu
+
+	* main/comm/inst/systematize.m: dos2unix
+
+2007-10-03 18:06  gnumuthu
+
+	* main/comm/: INDEX, inst/egolaydec.m, inst/egolayenc.m,
+	  inst/egolaygen.m: Extended Golay code (24,12,3)
+
+2007-10-03 01:30  gnumuthu
+
+	* main/comm/: INDEX, inst/systematize.m: systematize: convert a
+	  generator matrix to its systematic form [I|P]
+
+2007-10-02 23:23  goffioul
+
+	* extra/jhandles/: TODO,
+	  src/org/octave/graphics/StemseriesObject.java: add TODO file +
+	  code cleanup due to implementation of stemseries in m-code
+
+2007-10-02 23:07  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: GLRenderer.java,
+	  MarkerProperty.java: small fix for o markers + experimental
+	  (disabled) code
+
+2007-10-02 00:15  opoplawski
+
+	* extra/java/: COPYING, DESCRIPTION, INDEX, PKG_ADD: Fix
+	  permissions (remove execute bit)
+
+2007-10-01 23:11  opoplawski
+
+	* packages/package_Makefile.in: Use -verbose during installs
+
+2007-10-01 23:07  adb014
+
+	* extra/NaN/src/Makefile: Fix broken Makefile
+
+2007-10-01 22:01  goffioul
+
+	* admin/Windows/msvc/octave.nsi.in: include NCurses files in the
+	  installer
+
+2007-10-01 21:56  adb014
+
+	* admin/make_rpmmeta: rpmdir is now an absolute path. Adapt
+	  location of _topdir to compensate
+
+2007-10-01 21:56  goffioul
+
+	* admin/Windows/msvc/: run_compilation.sh, libs/ncurses-5.6.diff,
+	  libs/readline-5.2.diff: include NCurses library compilation (and
+	  make readline library depend on it)
+
+2007-10-01 21:53  goffioul
+
+	* admin/Windows/msvc/ar-msvc: small fix in output filename
+	  conversion
+
+2007-10-01 21:21  adb014
+
+	* doc/htdocs/: NEWS.in, index.in: Update NEWS to be ready for a
+	  release
+
+2007-10-01 12:12  adb014
+
+	* admin/make_rpm, admin/rpm_template.in,
+	  packages/package_Makefile.in: Update SRPM build to allow for
+	  noarch packages
+
+2007-09-30 20:23  abarth93
+
+	* main/optiminterp/src/optimal_interpolation.F90: remove unused
+	  variables
+
+2007-09-30 17:22  adb014
+
+	* packages/package_Makefile.in: Add -nodeps for DISTPKG install and
+	  only move src/{Makefile,configure} in src/ rather than most files
+
+2007-09-29 19:38  gnumuthu
+
+	* main/info-theory/: INDEX, inst/hartley_entropy.m,
+	  inst/kullback_leibler_distance.m, inst/renyi_entropy.m,
+	  inst/shannon_entropy.m: kullback_leibler_distance.m
+	  shannon_entropy.m hartley_entropy.m  renyi_entropy.m, new entropy
+	  definitions
+
+2007-09-29 11:27  adb014
+
+	* packages/package_Makefile.in: Put tar in package target outside
+	  if-block (For Orion Poplawski)
+
+2007-09-29 08:37  adb014
+
+	* extra/secs2d/src/: Makefile, Ubern.cc, Ubern.h, Ucompconst.cc,
+	  Ucomplap.cc, Uscharfettergummel.cc: Reorganise src/ directory to
+	  better meet the packaging requirements of Fedora and to close
+	  resemeble the other packages
+
+2007-09-29 08:31  adb014
+
+	* extra/secs1d/src/: Makefile, Ubern.cc: [no log message]
+
+2007-09-28 16:17  abarth93
+
+	* main/octcdf/inst/example_opendap.m: update URL and plotting
+
+2007-09-28 16:01  abarth93
+
+	* main/octcdf/inst/netcdf_setup.m: no longer necessary. dispach is
+	  executed in PKG_ADD
+
+2007-09-28 11:44  adb014
+
+	* main/fixed/src/fixedComplex.cc: Add cstdlib to keep g+= 4.3 happy
+	  (For Martin Michlmayr, Debian Bug 417492)
+
+2007-09-28 11:26  adb014
+
+	* main/optim/inst/fminunc.m: Remove spacing from GradObj fieldname
+	  in equiv struct (For gail@tnp-online.de)
+
+2007-09-28 06:15  gnumuthu
+
+	* main/info-theory/: INDEX, inst/condentr_seq.m,
+	  inst/infoentr_seq.m, inst/infogain_seq.m, inst/mutualinfo_seq.m:
+	  sequence functions for Information theory
+
+2007-09-27 14:50  adb014
+
+	* doc/htdocs/packages.in, extra/jhandles/inst/contour3.m,
+	  main/comm/inst/ammod.m, main/comm/inst/qfunc.m,
+	  main/comm/inst/qfuncinv.m, main/general/inst/issorted.m,
+	  main/image/inst/bwarea.m, main/image/inst/bwperim.m,
+	  main/image/inst/label2rgb.m, main/linear-algebra/inst/bicg.m,
+	  main/optim/inst/fminsearch.m, main/signal/inst/barthannwin.m,
+	  main/signal/inst/blackmanharris.m, main/signal/inst/bohmanwin.m,
+	  main/signal/inst/diric.m, main/signal/inst/gauspuls.m,
+	  main/signal/inst/gmonopuls.m, main/signal/inst/nuttallwin.m,
+	  main/signal/inst/sawtooth.m, main/specfun/inst/Ci.m,
+	  main/specfun/inst/Si.m, main/specfun/inst/cosint.m,
+	  main/specfun/inst/dirac.m, main/specfun/inst/erfcinv.m,
+	  main/specfun/inst/erfcx.m, main/specfun/inst/expint.m,
+	  main/specfun/inst/expint_E1.m, main/specfun/inst/expint_Ei.m,
+	  main/specfun/inst/heaviside.m, main/specfun/inst/psi.m,
+	  main/specfun/inst/sinint.m, main/specfun/inst/zeta.m,
+	  main/zenity/inst/zenity_calendar.m,
+	  main/zenity/inst/zenity_message.m,
+	  main/zenity/inst/zenity_progress.m: Fix some of the author
+	  strings in teh copyrights for a better AUTHORS file
+
+2007-09-27 14:50  adb014
+
+	* main/INDEX: fix typo in INDEX
+
+2007-09-27 14:49  adb014
+
+	* extra/jhandles/INDEX: INDEX new function
+
+2007-09-27 14:49  adb014
+
+	* admin/release.sh: Minor fix to release procedure
+
+2007-09-27 14:49  adb014
+
+	* AUTHORS: Update AUTHORS file
+
+2007-09-26 23:09  sis-sou
+
+	* main/comm/inst/ammod.m: Initial Commit Into CVS.
+
+2007-09-26 22:16  adb014
+
+	* doc/htdocs/: NEWS.in, index.in: Update NEWS in preparation for
+	  new release
+
+2007-09-26 22:15  adb014
+
+	* admin/rpm_template.in, packages/package_Makefile.in: Update rpm
+	  packaging and octave-forge default Makefile for new version of pkg
+
+2007-09-26 20:58  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: small fixes
+
+2007-09-26 15:54  goffioul
+
+	* admin/Windows/msvc/octaverc.win: open file in text mode (such
+	  that fgetl returns a string without trailing \r)
+
+2007-09-26 15:11  goffioul
+
+	* admin/Windows/msvc/libs/gnuplot-4.2.0.diff: set stdin in binary
+	  mode when in non-interactive mode
+
+2007-09-25 22:07  goffioul
+
+	* extra/: java/src/Makefile, jhandles/src/Makefile: make eclipse
+	  compiler happy
+
+2007-09-25 22:03  goffioul
+
+	* extra/jhandles/src/: Makeconf.in, configure.base: check java
+	  version instead of javac version + remove unneeded link against
+	  -ljava
+
+2007-09-25 21:54  goffioul
+
+	* extra/java/src/: Makeconf.in, Makefile, __java__.cc,
+	  configure.base: use JAVA_HOME to locate JVM library
+
+2007-09-25 17:01  goffioul
+
+	* extra/java/src/: Makeconf.in, Makefile, __java__.cc,
+	  configure.base: dlopen JVM under Linux as well
+
+2007-09-25 01:36  adb014
+
+	* main/audio/DESCRIPTION, main/combinatorics/DESCRIPTION,
+	  main/comm/DESCRIPTION, main/control/DESCRIPTION,
+	  main/econometrics/DESCRIPTION, main/fixed/DESCRIPTION,
+	  main/fixed/src/configure.base, main/general/DESCRIPTION,
+	  main/gsl/DESCRIPTION, main/ident/DESCRIPTION,
+	  main/image/DESCRIPTION, main/info-theory/DESCRIPTION,
+	  main/io/DESCRIPTION, main/irsa/DESCRIPTION,
+	  main/miscellaneous/DESCRIPTION, main/nnet/DESCRIPTION,
+	  main/outliers/DESCRIPTION, main/parallel/DESCRIPTION,
+	  main/physical-constants/DESCRIPTION, main/sockets/DESCRIPTION,
+	  main/specfun/DESCRIPTION, main/special-matrix/DESCRIPTION,
+	  main/splines/DESCRIPTION, main/strings/DESCRIPTION,
+	  main/struct/DESCRIPTION, main/symbolic/DESCRIPTION,
+	  main/time/DESCRIPTION, main/vrml/DESCRIPTION,
+	  main/zenity/DESCRIPTION, nonfree/splines/DESCRIPTION,
+	  language/pt_BR/DESCRIPTION, extra/civil/DESCRIPTION,
+	  extra/MacOSX/DESCRIPTION, extra/Windows/DESCRIPTION,
+	  extra/engine/DESCRIPTION, extra/fpl/DESCRIPTION,
+	  extra/graceplot/DESCRIPTION, extra/integration/DESCRIPTION,
+	  extra/mapping/DESCRIPTION, extra/msh/DESCRIPTION,
+	  extra/pdb/DESCRIPTION, extra/secs1d/DESCRIPTION,
+	  extra/secs2d/DESCRIPTION, extra/soctcl/DESCRIPTION,
+	  extra/symband/DESCRIPTION, extra/triangular/DESCRIPTION,
+	  extra/xraylib/DESCRIPTION: Update version numbers for modified
+	  packages
+
+2007-09-24 17:51  opoplawski
+
+	* extra/xraylib/src/xraylib/src/Makefile: Don't override CFLAGS,
+	  add -fPIC
+
+2007-09-24 17:48  opoplawski
+
+	* main/sockets/src/Makefile: Use "all" for default rule
+
+2007-09-24 17:15  opoplawski
+
+	* Makefile, doc/Makefile, extra/MacOSX/Makefile,
+	  extra/secs1d/src/Makefile, extra/secs2d/src/Makefile,
+	  extra/symband/Makefile, extra/triangular/Makefile,
+	  extra/xraylib/src/Makefile, main/comm/Makefile,
+	  main/fixed/Makefile, main/gsl/Makefile, main/octcdf/Makefile,
+	  main/odepkg/Makefile, main/optim/Makefile, main/vrml/Makefile,
+	  packages/package_Makefile.in: Call make with $(MAKE) instead of
+	  make
+
+2007-09-24 17:12  opoplawski
+
+	* main/symbolic/src/autogen.sh: Call aclocal to pick up
+	  PKG_CHECK_MODULE from pkgconfig
+
+2007-09-24 17:12  opoplawski
+
+	* main/symbolic/src/: Makeconf.in, Makefile: Use PKG_CHECK_MODULE
+	  variables for ginac library
+
+2007-09-24 17:11  opoplawski
+
+	* main/symbolic/src/configure.base: Add proper quoting Use
+	  pkg-config to check for ginac library
+
+2007-09-24 16:54  gnumuthu
+
+	* main/signal/: INDEX, inst/blackmannuttall.m, inst/welchwin.m:
+	  welchwindow; fix to blackmannuttall window fcn names
+
+2007-09-24 16:45  gnumuthu
+
+	* main/signal/: INDEX, inst/blackmannuttall.m: blackman-nuttall
+	  window
+
+2007-09-24 10:51  goffioul
+
+	* extra/jhandles/inst/__jhandles_go_stemseries.m: fix error in data
+	  updating when ZData is empty
+
+2007-09-21 18:57  whyly
+
+	* main/statistics/INDEX: Index update for nbinstat and wblstat
+
+2007-09-21 17:57  gnumuthu
+
+	* main/info-theory/inst/jointentropy.m: remove unused variable
+
+2007-09-21 16:26  goffioul
+
+	* extra/jhandles/: inst/__jhandles_add_listener.m,
+	  inst/__jhandles_add_property.m, inst/__jhandles_get_baseline.m,
+	  inst/__jhandles_go_stemseries.m, inst/__parse_stem_args__.m,
+	  inst/addlistener.m, inst/isprop.m, inst/stem.m, inst/stem3.m,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/GraphicObject.java,
+	  src/org/octave/graphics/HandleEventSinkAdapter.java,
+	  src/org/octave/graphics/LegendObject.java,
+	  src/org/octave/graphics/LineObject.java,
+	  src/org/octave/graphics/OctaveSink.java: move stemseries object
+	  entirely in m-code + add stem3 implementation
+
+2007-09-20 12:34  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesContainer.java,
+	  Callback.java, CallbackProperty.java, HandleObject.java,
+	  HandleObjectListProperty.java, OctaveCallback.java,
+	  RootObject.java, UIControlAdapter.java, UnwindHandleObject.java:
+	  add unwind capability in callbacks + better support for
+	  buttondownfcn property
+
+2007-09-19 22:54  treichl
+
+	* admin/MacOSX/solvedeps/solvedeps-2.9.14.sh: Final update.
+
+2007-09-19 22:00  treichl
+
+	* main/odepkg/inst/: odepkg_equations_lorenz.m,
+	  odepkg_equations_pendulous.m, odepkg_equations_roessler.m,
+	  odepkg_equations_secondorderlag.m, odepkg_equations_vanderpol.m:
+	  Updated the test functions.
+
+2007-09-19 21:39  treichl
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m, odeget.m,
+	  odephas2.m, odephas3.m, odepkg.m, odepkg_equations_lorenz.m,
+	  odepkg_equations_pendulous.m, odepkg_equations_roessler.m,
+	  odepkg_equations_secondorderlag.m, odepkg_equations_vanderpol.m,
+	  odepkg_event_handle.m, odepkg_structure_check.m,
+	  odepkg_testsuite_calcmescd.m, odepkg_testsuite_calcscd.m,
+	  odepkg_testsuite_chemakzo.m, odepkg_testsuite_hires.m,
+	  odepkg_testsuite_implrober.m, odepkg_testsuite_oregonator.m,
+	  odepkg_testsuite_pollution.m, odepkg_testsuite_robertson.m,
+	  odepkg_testsuite_transistor.m, odeplot.m, odeprint.m, odeset.m:
+	  Changed files from 'DOS' file format to 'Unix' file format.
+
+2007-09-19 21:22  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  J2DRenderer.java, MarkerProperty.java: recompute Position of axes
+	  (suboptimal) + draw line markers
+
+2007-09-19 20:49  treichl
+
+	* main/odepkg/: DESCRIPTION, INDEX: Minor changes.
+
+2007-09-19 20:45  treichl
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m,
+	  odepkg_event_handle.m, odepkg_structure_check.m, odeset.m: Minor
+	  changes.
+
+2007-09-19 15:57  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  FigureObject.java, GLRenderer.java, J2DRenderer.java,
+	  Renderer.java, SimpleTextEngine.java, TextObject.java: implement
+	  tick text drawing in Java2D renderer + add hidden __antialias__
+	  property to figure object
+
+2007-09-19 14:49  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesContainer.java,
+	  AxesObject.java, ColorbarObject.java, FigureObject.java,
+	  J2DRenderCanvas.java, LegendObject.java: allow to switch between
+	  renderers
+
+2007-09-18 22:01  treichl
+
+	* admin/MacOSX/: createapp/_DS_Store_Main,
+	  createapp/makeoctaveapp.sh, createapp/octaveapp.texi,
+	  solvedeps/octave-2.9.14.diff, solvedeps/solvedeps-2.9.14.sh:
+	  Changes for creating Octave.app 2.9.14.
+
+2007-09-18 17:05  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesContainer.java,
+	  FigureObject.java: implement Renderer property in figure object
+	  and restore GL renderer by default
+
+2007-09-18 17:01  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesContainer.java,
+	  AxesObject.java, GLRenderer.java, J2DRenderCanvas.java,
+	  J2DRenderer.java, Matrix3D.java, Renderer.java, TextObject.java:
+	  provide (very) basic functionalities for the Java2D-based renderer
+
+2007-09-17 22:04  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: J2DRenderCanvas.java,
+	  J2DRenderer.java: unfinished implementation of a Java2D renderer
+
+2007-09-16 23:31  whyly
+
+	* main/: linear-algebra/inst/condeig.m, statistics/inst/betastat.m,
+	  statistics/inst/binostat.m, statistics/inst/chi2stat.m,
+	  statistics/inst/expstat.m, statistics/inst/fstat.m,
+	  statistics/inst/gamstat.m, statistics/inst/geostat.m,
+	  statistics/inst/hmmestimate.m, statistics/inst/hmmgenerate.m,
+	  statistics/inst/hmmviterbi.m, statistics/inst/hygestat.m,
+	  statistics/inst/lognstat.m, statistics/inst/nbinstat.m,
+	  statistics/inst/normstat.m, statistics/inst/poisstat.m,
+	  statistics/inst/raylcdf.m, statistics/inst/raylinv.m,
+	  statistics/inst/raylpdf.m, statistics/inst/raylrnd.m,
+	  statistics/inst/raylstat.m, statistics/inst/tstat.m,
+	  statistics/inst/unidstat.m, statistics/inst/unifstat.m,
+	  statistics/inst/wblstat.m: Use print_usage instead of usage.
+
+2007-09-16 21:07  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: CheckBoxControl.java,
+	  Edit2Control.java, EditControl.java, GLRenderCanvas.java,
+	  HandleEventSink.java, HandleEventSource.java,
+	  HandleNotifier.java, HandleObject.java, ListBoxControl.java,
+	  OctaveSink.java, PopupMenuControl.java, Property.java,
+	  PushButtonControl.java, TextControl.java, UIControlAdapter.java,
+	  UIControlObject.java, HandleEventSinkAdapter.java,
+	  HandleEventSourceHelper.java: switch to new event mechanism
+
+2007-09-16 19:18  whyly
+
+	* main/statistics/inst/: expstat.m, hygestat.m, nbinstat.m,
+	  normstat.m, pascal_stat.m, wblstat.m, weibstat.m: Synchronized
+	  arguments and names with octave core
+
+2007-09-15 21:44  adb014
+
+	* main/sockets/src/Makefile: Add all target to allow build process
+	  to work (For Sergei Steshenko)
+
+2007-09-15 18:04  adb014
+
+	* extra/bim/INDEX, extra/java/INDEX, extra/jhandles/INDEX,
+	  main/INDEX, main/signal/INDEX: Update INDEX files for newly added
+	  functions
+
+2007-09-15 17:47  adb014
+
+	* doc/htdocs/packages.in, extra/NaN/DESCRIPTION,
+	  extra/bim/DESCRIPTION, extra/java/DESCRIPTION,
+	  extra/jhandles/DESCRIPTION, extra/jhandles/src/configure.base,
+	  extra/tsa/DESCRIPTION, main/linear-algebra/DESCRIPTION,
+	  main/octcdf/DESCRIPTION, main/odebvp/DESCRIPTION,
+	  main/odepkg/DESCRIPTION, main/plot/DESCRIPTION,
+	  main/signal/DESCRIPTION, main/statistics/DESCRIPTION,
+	  nonfree/arpack/DESCRIPTION: Update version numbers of packages
+	  changed since last release
+
+2007-09-15 16:13  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: HandleObject.java,
+	  Property.java: use more intuitive terminology
+
+2007-09-14 21:22  treichl
+
+	* admin/MacOSX/solvedeps/makeapp-gnuplot-4.2.2.tar.gz: Added
+	  optimization flags for higher performance.
+
+2007-09-11 15:58  abarth93
+
+	* main/: optiminterp/src/.cvsignore, octcdf/src/.cvsignore: ignore
+	  temporary files
+
+2007-09-11 14:21  goffioul
+
+	* extra/java/src/org/octave/ClassHelper.java: use system class
+	  loader if it is an instance of OctClassLoader
+
+2007-09-11 14:19  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderCanvas.java: try
+	  to avoid garbage drawing when resizing
+
+2007-09-11 12:23  goffioul
+
+	* extra/java/src/__java__.cc: use more flexible mechanism to
+	  specify JVM options (through java.opts file)
+
+2007-09-10 17:03  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesContainer.java,
+	  RenderCanvas.java, UIControlObject.java: implement ButtonDownFcn
+	  for uicontrol (partially)
+
+2007-09-10 14:15  goffioul
+
+	* extra/jhandles/: inst/dialog.m,
+	  src/org/octave/graphics/AxesContainer.java,
+	  src/org/octave/graphics/HandleObject.java: add ButtonDownFcn
+	  property to figure objects (and use it dialog)
+
+2007-09-10 14:14  goffioul
+
+	* extra/jhandles/inst/: allchild.m, gcbf.m: add new functions:
+	  allchild and gcbf
+
+2007-09-10 12:49  goffioul
+
+	* extra/jhandles/: inst/dialog.m,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/GraphicObject.java: add Resize property
+	  to figure objects
+
+2007-09-10 07:16  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: FigureObject.java,
+	  GraphicObject.java: add hidden __dirty__ property to figure
+	  object
+
+2007-09-09 21:07  adb014
+
+	* nonfree/arpack/src/eigs-base.cc: Pass the info flag by reference
+	  so that no convergence is correctly flaged (For Marcin Szypowski
+
+2007-09-07 17:04  goffioul
+
+	* extra/java/src/__java__.cc: work around try/catch problem in
+	  callbacks
+
+2007-09-07 17:04  goffioul
+
+	* extra/jhandles/inst/dialog.m: add "dialog" function (not really
+	  functional yet)
+
+2007-09-07 17:03  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/FigureObject.java:
+	  implement partially Toolbar property + add dummy KeyPressFcn
+	  callback property
+
+2007-09-07 17:02  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: ListBoxControl.java,
+	  PopupMenuControl.java: use default value at initialization of
+	  popupmenu and listbox controls
+
+2007-09-07 17:02  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/RootObject.java: add
+	  MonitorPositions property to root object
+
+2007-09-07 13:09  goffioul
+
+	* extra/java/: PKG_ADD, src/__java__.cc: add some flexibility in
+	  java exception handling, controlled by new internal variable
+	  "java_debug"
+
+2007-09-07 13:04  goffioul
+
+	* extra/jhandles/inst/: uiresume.m, uiwait.m: add uiwait/uiresume
+	  functions
+
+2007-09-07 11:40  goffioul
+
+	* extra/jhandles/: inst/__jhandles_waitfor.m,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/Property.java: implement 3rd form of
+	  "waitfor": waiting for a property to equal a given value
+
+2007-09-07 11:17  goffioul
+
+	* extra/: java/src/Makefile, java/src/org/octave/Octave.java,
+	  java/src/org/octave/Waitable.java,
+	  jhandles/inst/__jhandles_waitfor.m, jhandles/inst/waitfor.m,
+	  jhandles/src/org/octave/graphics/HandleObject.java: move part of
+	  waitFor implementation to JHandles
+
+2007-09-06 17:03  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: HandleEventSink.java,
+	  HandleEventSource.java, HandleObject.java, OctaveSink.java,
+	  Property.java: allow to wait for property change
+
+2007-09-06 17:03  goffioul
+
+	* extra/java/src/org/octave/: Octave.java, Waitable.java: add
+	  argument to waitable object
+
+2007-09-06 16:49  goffioul
+
+	* extra/java/src/org/octave/Octave.java: small addition in case the
+	  waitObject is released from non-Octave thread
+
+2007-09-06 16:35  goffioul
+
+	* extra/java/src/org/octave/Octave.java: allow nested "waitfor"
+	  calls
+
+2007-09-06 16:35  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/HandleEventSource.java:
+	  fix bug in new event mechanism
+
+2007-09-06 15:33  goffioul
+
+	* extra/jhandles/: inst/__jhandles_waitfor.m, inst/waitfor.m,
+	  src/org/octave/graphics/HandleObject.java: implement first form
+	  of "waitfor" (wait only for object deletion)
+
+2007-09-06 15:32  goffioul
+
+	* extra/java/src/: Makefile, __java__.cc,
+	  org/octave/OctListener.java, org/octave/Octave.java,
+	  org/octave/OctaveReference.java, org/octave/Waitable.java:
+	  provide required mechanism to implement "waitfor" feature
+
+2007-09-06 12:16  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_areaseries.m,
+	  src/org/octave/graphics/HandleEvent.java,
+	  src/org/octave/graphics/HandleEventSink.java,
+	  src/org/octave/graphics/HandleEventSource.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/OctaveSink.java: implement new named
+	  event mechanism + add "ObjectDeleted" event + use it to keep
+	  areaseries objects in sync
+
+2007-09-06 12:14  goffioul
+
+	* extra/jhandles/inst/: bar3.m, bar3h.m: suppress output if not
+	  required
+
+2007-09-05 22:28  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/SimpleTextEngine.java:
+	  avoid exception when using empty strings as tick label
+
+2007-09-05 16:08  goffioul
+
+	* extra/jhandles/src/: Makeconf.in, Makefile, configure.base: fix
+	  compilation setup on Windows and Linux
+
+2007-09-05 15:33  goffioul
+
+	* extra/java/src/configure.base: fix compilation under Linux
+
+2007-09-05 15:32  goffioul
+
+	* extra/jhandles/src/: Makeconf.in, Makefile, configure.base: fix
+	  JHandles compilation under Linux
+
+2007-09-04 22:01  goffioul
+
+	* admin/Windows/msvc/libs/readline-5.2.diff: be more friendly with
+	  ALT-TAB sequence
+
+2007-09-03 17:01  goffioul
+
+	* extra/java/src/__java__.cc: convert String[] to cell array of
+	  strings
+
+2007-09-03 17:01  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  SimpleTextEngine.java: reduce slightly margins around labels and
+	  ticks
+
+2007-09-03 16:37  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: Factory.java,
+	  TextObject.java, UIPanelObject.java, Utils.java: change how font
+	  size is internally computed to match Matlab (use resY/72 factor)
+
+2007-09-03 16:36  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesContainer.java: apply
+	  3d-rotation/zoom to the axes object below the mouse
+
+2007-09-03 15:05  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/TextObject.java: add font
+	  information properties
+
+2007-09-03 14:23  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: LineObject.java,
+	  PatchObject.java, SurfaceObject.java, TextControl.java: compute
+	  min/max bounds correctly (was not the case for monotically
+	  decreasing data)
+
+2007-09-03 14:22  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/AxesObject.java: only
+	  include visible children when doing autoscale + perform autoscale
+	  when children visibility change
+
+2007-09-03 14:21  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/EditControl.java: fire
+	  callback of edit control whe loosing focus and content has been
+	  changed
+
+2007-09-03 14:21  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/Utils.java: add NaN/Inf
+	  test function
+
+2007-09-03 14:20  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/MarkerProperty.java: point
+	  -> pixel conversion of the marker size
+
+2007-09-03 14:19  goffioul
+
+	* extra/jhandles/inst/uicontrol.m: do not miss parent property when
+	  specified last
+
+2007-09-02 21:51  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_areaseries.m,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/PatchObject.java: use internal indexing
+	  of patch objects for correct 2D rendering
+
+2007-09-02 21:51  goffioul
+
+	* extra/jhandles/inst/__jhandles_add_property.m: use correct
+	  ColorProperty constructor
+
+2007-09-02 12:01  goffioul
+
+	* extra/jhandles/inst/ancestor.m: ancestor.m has been moved to
+	  octave
+
+2007-09-01 19:25  whyly
+
+	* main/: statistics/inst/betastat.m, statistics/inst/binostat.m,
+	  statistics/inst/chi2stat.m, statistics/inst/expstat.m,
+	  statistics/inst/fstat.m, statistics/inst/gamstat.m,
+	  statistics/inst/geostat.m, statistics/inst/hmmestimate.m,
+	  statistics/inst/hmmgenerate.m, statistics/inst/hmmviterbi.m,
+	  statistics/inst/hygestat.m, statistics/inst/lognstat.m,
+	  statistics/inst/normstat.m, statistics/inst/pascal_stat.m,
+	  statistics/inst/poisstat.m, statistics/inst/raylcdf.m,
+	  statistics/inst/raylinv.m, statistics/inst/raylpdf.m,
+	  statistics/inst/raylrnd.m, statistics/inst/raylstat.m,
+	  statistics/inst/tstat.m, statistics/inst/unidstat.m,
+	  linear-algebra/inst/condeig.m, statistics/inst/unifstat.m,
+	  statistics/inst/weibstat.m: Author contact address changed.
+
+2007-09-01 16:30  treichl
+
+	* admin/MacOSX/solvedeps/makeapp-gnuplot-4.2.2.tar.gz: Minor
+	  changes.
+
+2007-09-01 15:56  treichl
+
+	* admin/MacOSX/createapp/makeoctaveapp.sh: Minor change.
+
+2007-09-01 15:54  treichl
+
+	* admin/MacOSX/solvedeps/makeapp-gnuplot-4.2.2.tar.gz: Initially
+	  added.
+
+2007-09-01 02:38  adb014
+
+	* main/linear-algebra/inst/condeig.m: Use svds (if its installed)
+	  for nargout=0/1 and sparse matrices for speed
+
+2007-08-31 17:04  goffioul
+
+	* extra/jhandles/: inst/__jhandles_go_axes.m,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/LineObject.java,
+	  src/org/octave/graphics/ListBoxControl.java,
+	  src/org/octave/graphics/MarkerProperty.java,
+	  src/org/octave/graphics/PushButtonControl.java,
+	  src/org/octave/graphics/UIControlObject.java,
+	  src/org/octave/graphics/UIPanelObject.java,
+	  src/org/octave/graphics/Utils.java: a lot of small fixes
+
+2007-08-31 12:45  sis-sou
+
+	* main/signal/inst/shanwavf.m: Initial commit into CVS.
+
+2007-08-31 11:27  sis-sou
+
+	* main/signal/inst/morlet.m: Initial Commit into CVS.Initial Commit
+	  into CVS.
+
+2007-08-31 09:23  adb014
+
+	* main/signal/inst/specgram.m: Set default ovelap so as to avoid an
+	  error with a window with an odd number of elements (For Julien
+	  Pommier <pommier@pianoteq.com>)
+
+2007-08-30 21:58  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: Factory.java,
+	  UIControlObject.java: complete default property values for
+	  uicontrol objects
+
+2007-08-30 17:04  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: ArrayProperty.java,
+	  AxesObject.java, BarseriesObject.java, BooleanProperty.java,
+	  CallbackProperty.java, ColorProperty.java, DoubleProperty.java,
+	  DoubleRadioProperty.java, Factory.java, FigureObject.java,
+	  GraphicObject.java, HandleObject.java,
+	  HandleObjectListProperty.java, ImageObject.java,
+	  LegendObject.java, LightObject.java, LineObject.java,
+	  LineStyleProperty.java, MarkerProperty.java,
+	  NotImplProperty.java, ObjectProperty.java, PatchObject.java,
+	  Property.java, RadioProperty.java, RootObject.java,
+	  StemseriesObject.java, StringArrayProperty.java,
+	  StringProperty.java, SurfaceObject.java, TextObject.java,
+	  TextProperty.java, UIControlObject.java, UIPanelObject.java,
+	  Utils.java, VectorProperty.java: add mechanism for default values
+	  of property, similar to Matlab
+
+2007-08-30 15:19  goffioul
+
+	* admin/Windows/msvc/octaverc.win: clear "line" variable from
+	  workspace
+
+2007-08-30 11:06  goffioul
+
+	* extra/jhandles/inst/ancestor.m: add help string for ancestor
+	  (thanks to David)
+
+2007-08-29 20:38  treichl
+
+	* admin/MacOSX/solvedeps/makeapp-gnuplot-4.2.0.tar.gz: Final
+	  updates.
+
+2007-08-29 16:59  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesContainer.java,
+	  AxesObject.java, FigureObject.java: add recursive redrawing in
+	  order to redraw correctly axes objects embedded in panels
+
+2007-08-29 16:21  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesContainer.java,
+	  AxesObject.java, FigureObject.java, UIPanelObject.java: add
+	  AxesContainer class and use it for figures and uipanels
+
+2007-08-28 16:37  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  FigureObject.java, HandleObject.java, LegendObject.java,
+	  RenderCanvas.java, UIControlObject.java, UIPanelObject.java:
+	  allow to embed axes objects into uipanel objects
+
+2007-08-28 16:37  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderCanvas.java:
+	  remove extra space
+
+2007-08-28 16:36  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/PositionLayout.java: small
+	  code move
+
+2007-08-28 16:35  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/StringProperty.java:
+	  convert null into the empty string
+
+2007-08-28 16:35  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/ColorProperty.java:
+	  support long color names
+
+2007-08-28 16:34  goffioul
+
+	* extra/jhandles/inst/ancestor.m: returns given argument when the
+	  handle is of the type searched
+
+2007-08-28 16:34  goffioul
+
+	* extra/jhandles/inst/uicontrol.m: look for "Parent" property in
+	  uicontrol arguments
+
+2007-08-28 16:33  goffioul
+
+	* extra/java/src/org/octave/ClassHelper.java: more meaningful
+	  exception thrown
+
+2007-08-28 12:16  schloegl
+
+	* extra/NaN/inst/nantest.m: add test for quantile
+
+2007-08-28 12:16  schloegl
+
+	* extra/NaN/inst/percentile.m: uses quantile
+
+2007-08-28 12:15  schloegl
+
+	* extra/NaN/inst/quantile.m: arrays and histograms: q<=0,q>=1
+	  addressed, mean of upper and lower bound is returned if case of
+	  non-unique solution
+
+2007-08-28 10:05  schloegl
+
+	* extra/tsa/inst/rc2ar.m: fix typo
+
+2007-08-27 15:47  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: CheckBoxControl.java,
+	  UIControlAdapter.java: add "checkbox" uicontrol object
+
+2007-08-27 15:29  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: ListBoxControl.java,
+	  UIControlAdapter.java, UIControlObject.java: add "listbox"
+	  uicontrol objects
+
+2007-08-27 13:36  schloegl
+
+	* extra/NaN/inst/: percentile.m, quantile.m: fix for sample sample
+	  size
+
+2007-08-27 12:36  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: TextControl.java,
+	  UIControlAdapter.java: add "text" uicontrol objects
+
+2007-08-25 14:51  hauberg
+
+	* ChangeLog, admin/build-www.py, doc/javascript.jsin,
+	  doc/htdocs/packages.in: Cleaned up the javascript in
+	  packages.html
+
+2007-08-24 17:31  schloegl
+
+	* extra/NaN/inst/: percentile.m, quantile.m: add GPL licence
+
+2007-08-24 17:01  goffioul
+
+	* extra/jhandles/: PKG_DEL, inst/__jhandles_exit.m,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/HandleObject.java,
+	  src/org/octave/graphics/NotImplProperty.java,
+	  src/org/octave/graphics/UIPanelObject.java,
+	  src/org/octave/graphics/Utils.java: add dummy not-implemented
+	  property class + support BorderType property in uipanel + close all
+	  jhandles windows on jhandles exit
+
+2007-08-24 12:06  goffioul
+
+	* extra/jhandles/: inst/__jhandles_add_property.m,
+	  inst/__jhandles_go_areaseries.m,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/PatchObject.java: handle LineStyle and
+	  LineWidth property for patch and areaseries objects
+
+2007-08-24 11:25  goffioul
+
+	* extra/jhandles/inst/area.m: octave/java correcty conversion when
+	  adding properties + reset axes correctly in "area"
+
+2007-08-23 19:43  treichl
+
+	* main/odepkg/doc/Makefile: Fixed small typo.
+
+2007-08-23 17:08  goffioul
+
+	* extra/jhandles/inst/: __jhandles_add_property.m, area.m: add
+	  "area" front-end
+
+2007-08-23 16:44  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/GLRenderer.java: remove
+	  unnecessary comments
+
+2007-08-23 16:02  goffioul
+
+	* admin/Windows/msvc/libs/glob/: COPYING, ChangeLog, Makefile.in,
+	  alloca.c, autogen.sh, configure.bat, configure.in, configure.vc,
+	  fnmatch.c, fnmatch.h, glob.c, glob.h: import customized "glob"
+	  sources
+
+2007-08-23 15:05  goffioul
+
+	* extra/jhandles/src/: gl2ps.c, gl2ps.h, gl2ps_java.c,
+	  org/octave/graphics/AxesObject.java,
+	  org/octave/graphics/GL2PS.java,
+	  org/octave/graphics/GLRenderer.java,
+	  org/octave/graphics/Renderer.java,
+	  org/octave/graphics/SimpleTextEngine.java,
+	  org/octave/graphics/TextObject.java: handle box around text in PS
+	  output
+
+2007-08-22 19:45  treichl
+
+	* main/optim/inst/fminbnd.m: Marco Caliari: Return the value of the
+	  objective function at the minimizer point too.
+
+2007-08-22 17:00  goffioul
+
+	* extra/jhandles/src/gl2ps.c: small fix
+
+2007-08-22 16:58  goffioul
+
+	* extra/jhandles/src/: gl2ps.c, gl2ps.h, gl2ps_java.c,
+	  org/octave/graphics/GL2PS.java,
+	  org/octave/graphics/GLRenderer.java,
+	  org/octave/graphics/Renderer.java,
+	  org/octave/graphics/SimpleTextEngine.java,
+	  org/octave/graphics/TextObject.java: better text support in PS
+	  output
+
+2007-08-21 22:28  goffioul
+
+	* admin/Windows/msvc/mkoctfile.cc.in: fix bug with
+	  --link-stand-alone option flag
+
+2007-08-21 17:04  goffioul
+
+	* extra/jhandles/src/: gl2ps.c, gl2ps.h, gl2ps_java.c,
+	  org/octave/graphics/GL2PS.java,
+	  org/octave/graphics/GLRenderCanvas.java,
+	  org/octave/graphics/GLRenderer.java,
+	  org/octave/graphics/Renderer.java,
+	  org/octave/graphics/SimpleTextEngine.java,
+	  org/octave/graphics/TextObject.java: more PS output features
+	  (text margin + title/labels)
+
+2007-08-20 17:42  abarth93
+
+	* main/optiminterp/: DESCRIPTION, src/optimal_interpolation.F90:
+	  Fix bug in optimal_interpolation.F90 triggered gfortran 4.1.2
+	  (Fortran runtime error: dimension of return array incorrect)
+
+2007-08-20 15:59  goffioul
+
+	* extra/jhandles/: PKG_ADD, PKG_DEL, src/gl2ps.c, src/gl2ps_java.c,
+	  src/org/octave/graphics/AxesObject.java,
+	  src/org/octave/graphics/GL2PS.java,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/LineObject.java,
+	  src/org/octave/graphics/Renderer.java,
+	  src/org/octave/graphics/SimpleTextEngine.java: further PS output
+	  implementation: use 0.5 as default line width + initial text support
+	  + load JNI file from jhandles path
+
+2007-08-20 07:26  goffioul
+
+	* extra/jhandles/: inst/drawnow.m, src/Makeconf.in, src/Makefile,
+	  src/configure.base, src/gl2ps.c, src/gl2ps.h, src/gl2ps_java.c,
+	  src/org/octave/graphics/FigureObject.java,
+	  src/org/octave/graphics/GL2PS.java,
+	  src/org/octave/graphics/GLRenderCanvas.java,
+	  src/org/octave/graphics/GLRenderer.java,
+	  src/org/octave/graphics/RenderCanvas.java: add support for GL2PS
+	  and initial PS output
+
+2007-08-17 23:46  abarth93
+
+	* main/octcdf/src/: ov-ncfile.cc, ov-ncvar.cc: return gracefully if
+	  NetCDF variable does not exist
+
+2007-08-14 10:01  goffioul
+
+	* extra/jhandles/src/: Makefile,
+	  org/octave/graphics/FigureObject.java,
+	  org/octave/graphics/Utils.java,
+	  org/octave/graphics/images/edit.png,
+	  org/octave/graphics/images/view-refresh.png,
+	  org/octave/graphics/images/zoom-original.png: add toolbar with
+	  basic actions (zoom and 3D-rotation)
+
+2007-08-12 22:34  treichl
+
+	* main/plot/inst/tics.m: More changes to make tics() work for y and
+	  z axis.
+
+2007-08-12 15:47  treichl
+
+	* main/signal/inst/invfreq.m: Rolf Schirmacher,' Replaced == by
+	  strcmp() for character string comparison.'
+
+2007-08-12 15:17  treichl
+
+	* admin/MacOSX/createapp/octaveapp.texi: Added info about
+	  'Installing Octave.app in paths with special characters results in
+	  errors'.
+
+2007-08-11 12:35  treichl
+
+	* main/plot/inst/tics.m: Russel Valentine: Makes the y, z axis tics
+	  work. It was set to always do X axis before.
+
+2007-08-10 18:58  sis-sou
+
+	* main/signal/inst/meyeraux.m: Initial Commit Into CVS.
+
+2007-08-10 17:27  sis-sou
+
+	* main/signal/inst/mexihat.m: Initial commit into CVS.
+
+2007-08-10 15:38  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/PopupMenuControl.java:
+	  handle Value property in popupmenu objects
+
+2007-08-09 22:07  schloegl
+
+	* extra/tsa/inst/mvfreqz.m: add GGC (Geweke Granger Causality)
+	  measure
+
+2007-08-09 14:29  goffioul
+
+	* extra/jhandles/inst/surf.m: make surf work with a single argument
+
+2007-08-08 22:19  treichl
+
+	* main/odepkg/inst/: ode23.m, ode45.m, ode54.m, ode78.m: Updates
+	  and the implementation for the "NonNegative" option handling.
+
+2007-08-08 22:18  treichl
+
+	* main/odepkg/inst/: odephas2.m, odephas3.m,
+	  odepkg_structure_check.m, odeplot.m, odeprint.m, odeset.m:
+	  Updates and arrangements for implicit solvers.
+
+2007-08-08 22:11  treichl
+
+	* main/odepkg/inst/odepkg_testsuite_implrober.m: First implicit
+	  testsuite problem.
+
+2007-08-08 22:08  treichl
+
+	* main/odepkg/DESCRIPTION: Version number update.
+
+2007-08-08 22:08  treichl
+
+	* main/odepkg/doc/odepkg.texi: Updated.
+
+2007-08-08 21:40  treichl
+
+	* main/odepkg/src/: odepkg_mexsolver_dop853.c,
+	  odepkg_mexsolver_dopri5.c, odepkg_mexsolver_odex.c,
+	  odepkg_mexsolver_radau.c, odepkg_mexsolver_radau5.c,
+	  odepkg_mexsolver_rodas.c, odepkg_mexsolver_seulex.c: Minor
+	  changes.
+
+2007-08-06 17:56  goffioul
+
+	* admin/Windows/msvc/octaverc.win: fix bug in editor setting:
+	  EDITOR should be set before calling "edit" the first time
+
+2007-08-05 20:49  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  TextObject.java, UIControlAdapter.java, UIControlObject.java,
+	  Utils.java, PopupMenuControl.java: support more unit types for
+	  text objects + add popupmenu uicontrol
+
+2007-08-02 15:45  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: FigureLayout.java,
+	  UITooltipManager.java: remove unneeded old files
+
+2007-08-02 15:40  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/FigureObject.java: delay
+	  figure creation until object validation
+
+2007-08-01 16:12  goffioul
+
+	* extra/jhandles/src/org/octave/graphics/: AxesObject.java,
+	  FigureObject.java, HandleObject.java, Property.java,
+	  PropertySet.java, UIControlObject.java, UIPanelObject.java,
+	  Utils.java: implement "Position" property for figures + implement
+	  more units types
+
+2007-07-29 15:18  treichl
+
+	* admin/MacOSX/solvedeps/: octave-2.9.13.diff, solvedeps-2.9.13.sh:
+	  Minor preperations for the next Octave release.
+
+2007-07-29 15:05  treichl
+
+	* main/odepkg/: DESCRIPTION, src/odepkgmex.h: Minor changes.
+
+2007-07-29 14:29  treichl
+
+	* admin/MacOSX/solvedeps/makeapp-gnuplot-4.2.0.tar.gz: Build
+	  scripts for Gnuplot.app.
+
+2007-07-28 10:56  treichl
+
+	* admin/MacOSX/: createapp/octave.in, createapp/octaveapp.texi,
+	  solvedeps/solvedeps-2.9.13.sh: More changes for octave-2.9.13.
+
+2007-07-27 23:46  treichl
+
+	* admin/MacOSX/: createapp/_DS_Store_Doc, createapp/_DS_Store_Main,
+	  createapp/_background.png, createapp/makeoctaveapp.sh,
+	  solvedeps/octave-2.9.13.diff, solvedeps/solvedeps-2.9.13.sh:
+	  Ready for 2.9.13.
+
+2007-07-27 11:16  cdf
+
+	* extra/bim/inst/: BIM2Areaction.m, BIM2Arhs.m,
+	  BIM2Cunknownsonside.m: doc changes
+
+2007-07-27 11:16  cdf
+
+	* extra/bim/inst/BIM2Aboundarymass.m: boundary mass matrix assembly
+
+2007-07-27 00:06  adb014
+
+	* doc/htdocs/: ChangeLog, NEWS.in, index.in: Add news item for MSVC
+	  release
+
+2007-07-26 22:50  treichl
+
+	* admin/MacOSX/solvedeps/solvedeps-2.9.12.sh: Final update.
+
+2007-07-26 21:56  treichl
+
+	* admin/MacOSX/solvedeps/: SuiteSparse-3.0.0.diff,
+	  f2c-19991025.diff, octave-2.9.12.diff, solvedeps-2.9.12.sh:
+	  Changes because of a new release 2.9.13.
+
+2007-07-26 21:38  goffioul
+
+	* admin/Windows/msvc/octaverc.win: create ~/octave at startup
+
+2007-07-26 02:04  adb014
+
+	* main/odebvp/DESCRIPTION: Post-release fix. The ' character in the
+	  title caused a javascript error on the website
+
+2007-07-26 01:45  adb014
+
+	* ChangeLog: R2007-07-26 release
+
 2007-07-26 01:43  adb014
 
 	* AUTHORS, doc/htdocs/NEWS.in, doc/htdocs/index.in,
@@ -54,14 +1498,13 @@
 	  main/miscellaneous/DESCRIPTION, main/octcdf/DESCRIPTION,
 	  main/outliers/DESCRIPTION, main/parallel/DESCRIPTION,
 	  main/physical-constants/DESCRIPTION, main/plot/DESCRIPTION,
-	  main/polynomial/DESCRIPTION, main/sockets/DESCRIPTION,
-	  main/specfun/DESCRIPTION, main/special-matrix/DESCRIPTION,
-	  main/splines/DESCRIPTION, main/strings/DESCRIPTION,
-	  main/struct/DESCRIPTION, main/symbolic/DESCRIPTION,
-	  main/time/DESCRIPTION, main/zenity/DESCRIPTION,
-	  nonfree/splines/DESCRIPTION: Version numbering changes of all
-	  packages needed due to inclusion of generic Makefile/configure in
-	  all packages
+	  main/sockets/DESCRIPTION, main/specfun/DESCRIPTION,
+	  main/special-matrix/DESCRIPTION, main/splines/DESCRIPTION,
+	  main/strings/DESCRIPTION, main/struct/DESCRIPTION,
+	  main/symbolic/DESCRIPTION, main/time/DESCRIPTION,
+	  main/zenity/DESCRIPTION, nonfree/splines/DESCRIPTION: Version
+	  numbering changes of all packages needed due to inclusion of generic
+	  Makefile/configure in all packages
 
 2007-07-24 21:21  adb014
 
@@ -328,9 +1771,8 @@
 
 2007-07-16 18:35  treichl
 
-	* admin/MacOSX/: createapp/applicationstartup.sh.in,
-	  createapp/makeoctaveapp.sh, createapp/octaveapp.texi,
-	  solvedeps-2.9.12/solvedeps.sh: Changed all occurences of
+	* admin/MacOSX/createapp/: applicationstartup.sh.in,
+	  makeoctaveapp.sh, octaveapp.texi: Changed all occurences of
 	  'octave.app' to 'Octave.app'.
 
 2007-07-16 18:27  treichl
@@ -353,11 +1795,6 @@
 
 	* admin/Windows/msvc/libs/qhull-2003.1.diff: add patch for Qhull
 	  library
-
-2007-07-13 17:07  goffioul
-
-	* extra/secs2d/src/Utilities/Makefile: use stripping feature of
-	  mkoctfile instead
 
 2007-07-13 17:06  adb014
 
@@ -778,20 +2215,6 @@
 	* admin/MacOSX/createapp/makeoctaveapp.sh: Set language variable
 	  "LANG=en" before creating Readme.html.in file.
 
-2007-07-03 22:10  treichl
-
-	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: [no log message]
-
-2007-07-03 20:50  treichl
-
-	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: [no log message]
-
-2007-07-03 19:48  treichl
-
-	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: Added code to remove
-	  special strings like "-arch ppc" or "-isysroot <DIR>" in
-	  mkoctfile-$VERSION after octave has been built.
-
 2007-07-03 19:47  treichl
 
 	* admin/MacOSX/createapp/: mkoctfile.in, octave.in: These lines:
@@ -888,21 +2311,16 @@
 
 2007-06-30 18:44  treichl
 
-	* admin/MacOSX/: createapp/makeoctaveapp.sh,
-	  solvedeps-2.9.12/octave-2.9.12.diff,
-	  solvedeps-2.9.12/solvedeps.sh: Minor changes.
+	* admin/MacOSX/createapp/makeoctaveapp.sh: Minor changes.
 
 2007-06-30 16:48  treichl
 
-	* admin/MacOSX/: createapp/makeoctaveapp.sh,
-	  createapp/mkoctfile.in, createapp/octave.in,
-	  createapp/octaveapp.texi, solvedeps-2.9.12/octave-2.9.12.diff,
-	  solvedeps-2.9.12/solvedeps.sh: Some minor changes.
+	* admin/MacOSX/createapp/: makeoctaveapp.sh, mkoctfile.in,
+	  octave.in, octaveapp.texi: Some minor changes.
 
 2007-06-30 15:35  treichl
 
-	* admin/MacOSX/: createapp/makeoctaveapp.sh,
-	  solvedeps-2.9.12/solvedeps.sh: Some minor changes.
+	* admin/MacOSX/createapp/makeoctaveapp.sh: Some minor changes.
 
 2007-06-29 19:51  treichl
 
@@ -962,11 +2380,6 @@
 
 	* admin/MacOSX/createapp/: Readme.html.in, octaveapp.texi: Minor
 	  rephrasing.
-
-2007-06-28 23:01  treichl
-
-	* admin/MacOSX/solvedeps-2.9.12/solvedeps.sh: Added the BUILDARCH
-	  variable for the PPC octave.app.
 
 2007-06-28 22:08  goffioul
 
@@ -1090,11 +2503,6 @@
 	  _background.png, applicationstartup.sh.in, makeoctaveapp.sh,
 	  mkoctfile.in, octave.icns, octave.in: Initially added.
 
-2007-06-27 18:12  treichl
-
-	* admin/MacOSX/solvedeps-2.9.12/: SuiteSparse.diff, f2c.diff,
-	  octave-2.9.12.diff, solvedeps.sh: Initially added.
-
 2007-06-27 14:14  goffioul
 
 	* admin/Windows/msvc/: makeall.sh.in, octave.nsi: include gmsh in
@@ -1139,11 +2547,6 @@
 2007-06-25 22:09  sis-sou
 
 	* main/signal/inst/barthannwin.m: Minor corrections.
-
-2007-06-25 18:19  abarth93
-
-	* main/geometry/: DESCRIPTION, inst/griddata.m: griddata returns
-	  now NaN for location where no value can be obtained (instead of 0)
 
 2007-06-25 15:44  goffioul
 
@@ -2190,8 +3593,8 @@
 	  inst/Utilities/Uscaling.m, inst/Utilities/Uscharfettergummel3.m,
 	  inst/Utilities/Ushowgrid.cfg, inst/Utilities/Ushowgrid.net,
 	  inst/Utilities/Usubmesh.m, inst/Utilities/constants.m,
-	  inst/Utilities/constants.mat, src/Utilities/Makefile: package
-	  brought up to date with main repository before release
+	  inst/Utilities/constants.mat: package brought up to date with
+	  main repository before release
 
 2007-05-22 17:38  schloegl
 
@@ -2478,11 +3881,7 @@
 	  inst/Utilities/Ustructmesh_right.m,
 	  inst/Utilities/Usubdomains2.m, inst/Utilities/Usubmesh.m,
 	  inst/Utilities/Utemplogm.m, inst/Utilities/constants.m,
-	  inst/Utilities/constants.mat, src/Makefile,
-	  src/Utilities/Makefile, src/Utilities/Ubern.cc,
-	  src/Utilities/Ubern.h, src/Utilities/Ucompconst.cc,
-	  src/Utilities/Ucomplap.cc, src/Utilities/Uscharfettergummel.cc:
-	  added secs2d package
+	  inst/Utilities/constants.mat, src/Makefile: added secs2d package
 
 2007-04-04 22:36  cdf
 
@@ -2496,9 +3895,8 @@
 	  inst/Utilities/Ucompconst.m, inst/Utilities/Ucomplap.m,
 	  inst/Utilities/Ucompmass.m, inst/Utilities/Udriftdiffusion.m,
 	  inst/Utilities/Umediaarmonica.m,
-	  inst/Utilities/Uscharfettergummel.m, inst/Utilities/constants.m,
-	  src/Utilities/Makefile, src/Utilities/Ubern.cc: Added the secs1d
-	  package
+	  inst/Utilities/Uscharfettergummel.m, inst/Utilities/constants.m:
+	  Added the secs1d package
 
 2007-04-04 14:38  goffioul
 
@@ -2602,10 +4000,10 @@
 
 2007-03-28 20:54  adb014
 
-	* Makefile, TODO, main/geometry/DESCRIPTION, main/gsl/DESCRIPTION,
-	  main/image/DESCRIPTION, main/miscellaneous/DESCRIPTION,
-	  main/plot/DESCRIPTION, main/strings/DESCRIPTION,
-	  main/symbolic/DESCRIPTION: Update for the external dependencies
+	* Makefile, TODO, main/gsl/DESCRIPTION, main/image/DESCRIPTION,
+	  main/miscellaneous/DESCRIPTION, main/plot/DESCRIPTION,
+	  main/strings/DESCRIPTION, main/symbolic/DESCRIPTION: Update for
+	  the external dependencies
 
 2007-03-28 20:53  adb014
 
@@ -3080,11 +4478,6 @@
 	  main/general/inst/issorted.m, main/general/inst/rat.m,
 	  main/general/inst/rats.m, main/general/inst/transpose.m,
 	  main/general/inst/unvech.m, main/general/src/deref.cc,
-	  main/geometry/inst/convhull.m, main/geometry/inst/delaunay.m,
-	  main/geometry/inst/delaunay3.m, main/geometry/inst/griddata.m,
-	  main/geometry/inst/voronoi.m, main/geometry/inst/voronoin.m,
-	  main/geometry/src/__voronoi__.cc, main/geometry/src/convhulln.cc,
-	  main/geometry/src/delaunayn.cc, main/geometry/src/tsearch.cc,
 	  main/gsl/src/buildgsl_sf.sh, main/gsl/src/coupling_3j.cc,
 	  main/gsl/src/coupling_6j.cc, main/gsl/src/coupling_9j.cc,
 	  main/gsl/src/gsl_sf.cc, main/gsl/src/legendre_sphPlm_array.cc,
@@ -3239,65 +4632,65 @@
 	  main/plot/inst/patch.m, main/plot/inst/pcolor.m,
 	  main/plot/inst/pie.m, main/plot/inst/quiver.m,
 	  main/plot/inst/surf.m, main/plot/inst/surfc.m,
-	  main/polynomial/inst/polyint.m, main/signal/inst/__ellip_ws.m,
-	  main/signal/inst/__ellip_ws_min.m, main/signal/inst/__power.m,
-	  main/signal/inst/ar_psd.m, main/signal/inst/arburg.m,
-	  main/signal/inst/aryule.m, main/signal/inst/bilinear.m,
-	  main/signal/inst/boxcar.m, main/signal/inst/butter.m,
-	  main/signal/inst/buttord.m, main/signal/inst/cceps.m,
-	  main/signal/inst/cheb.m, main/signal/inst/cheb1ord.m,
-	  main/signal/inst/cheb2ord.m, main/signal/inst/chebwin.m,
-	  main/signal/inst/cheby1.m, main/signal/inst/cheby2.m,
-	  main/signal/inst/chirp.m, main/signal/inst/cohere.m,
-	  main/signal/inst/convmtx.m, main/signal/inst/cplxreal.m,
-	  main/signal/inst/cpsd.m, main/signal/inst/csd.m,
-	  main/signal/inst/czt.m, main/signal/inst/dct.m,
-	  main/signal/inst/dct2.m, main/signal/inst/dctmtx.m,
-	  main/signal/inst/decimate.m, main/signal/inst/dftmtx.m,
-	  main/signal/inst/ellip.m, main/signal/inst/ellipdemo.m,
-	  main/signal/inst/ellipord.m, main/signal/inst/filtfilt.m,
-	  main/signal/inst/filtic.m, main/signal/inst/fir1.m,
-	  main/signal/inst/fir2.m, main/signal/inst/firls.m,
-	  main/signal/inst/freqs.m, main/signal/inst/freqs_plot.m,
-	  main/signal/inst/gaussian.m, main/signal/inst/gausswin.m,
-	  main/signal/inst/grpdelay.m, main/signal/inst/hilbert.m,
-	  main/signal/inst/idct.m, main/signal/inst/idct2.m,
-	  main/signal/inst/impz.m, main/signal/inst/interp.m,
-	  main/signal/inst/invfreq.m, main/signal/inst/invfreqs.m,
-	  main/signal/inst/invfreqz.m, main/signal/inst/kaiser.m,
-	  main/signal/inst/kaiserord.m, main/signal/inst/levinson.m,
-	  main/signal/inst/mscohere.m, main/signal/inst/ncauer.m,
-	  main/signal/inst/pburg.m, main/signal/inst/polystab.m,
-	  main/signal/inst/pulstran.m, main/signal/inst/pwelch.m,
-	  main/signal/inst/pyulear.m, main/signal/inst/qp_kaiser.m,
-	  main/signal/inst/rceps.m, main/signal/inst/rectpuls.m,
-	  main/signal/inst/rectwin.m, main/signal/inst/resample.m,
-	  main/signal/inst/residued.m, main/signal/inst/residuez.m,
-	  main/signal/inst/sftrans.m, main/signal/inst/sgolay.m,
-	  main/signal/inst/sgolayfilt.m, main/signal/inst/sos2tf.m,
-	  main/signal/inst/sos2zp.m, main/signal/inst/specgram.m,
-	  main/signal/inst/tf2sos.m, main/signal/inst/tfe.m,
-	  main/signal/inst/tfestimate.m, main/signal/inst/triang.m,
-	  main/signal/inst/tripuls.m, main/signal/inst/xcorr.m,
-	  main/signal/inst/xcorr2.m, main/signal/inst/xcov.m,
-	  main/signal/inst/zp2sos.m, main/signal/inst/zplane.m,
-	  main/signal/src/remez.cc, main/specfun/inst/Ci.m,
-	  main/specfun/inst/Si.m, main/specfun/inst/cosint.m,
-	  main/specfun/inst/dirac.m, main/specfun/inst/ellipj.m,
-	  main/specfun/inst/ellipke.m, main/specfun/inst/erfcinv.m,
-	  main/specfun/inst/erfcx.m, main/specfun/inst/expint.m,
-	  main/specfun/inst/expint_E1.m, main/specfun/inst/expint_Ei.m,
-	  main/specfun/inst/heaviside.m, main/specfun/inst/lambertw.m,
-	  main/specfun/inst/psi.m, main/specfun/inst/sinint.m,
-	  main/specfun/inst/zeta.m, main/specfun/src/ellipj.cc,
-	  main/splines/inst/csape.m, main/splines/inst/csapi.m,
-	  main/splines/inst/fnder.m, main/splines/inst/fnplt.m,
-	  main/statistics/inst/anovan.m, main/statistics/inst/betastat.m,
-	  main/statistics/inst/binostat.m, main/statistics/inst/boxplot.m,
-	  main/statistics/inst/chi2stat.m, main/statistics/inst/expstat.m,
-	  main/statistics/inst/fstat.m, main/statistics/inst/gamstat.m,
-	  main/statistics/inst/geomean.m, main/statistics/inst/geostat.m,
-	  main/statistics/inst/harmmean.m, main/statistics/inst/histfit.m,
+	  main/signal/inst/__ellip_ws.m, main/signal/inst/__ellip_ws_min.m,
+	  main/signal/inst/__power.m, main/signal/inst/ar_psd.m,
+	  main/signal/inst/arburg.m, main/signal/inst/aryule.m,
+	  main/signal/inst/bilinear.m, main/signal/inst/boxcar.m,
+	  main/signal/inst/butter.m, main/signal/inst/buttord.m,
+	  main/signal/inst/cceps.m, main/signal/inst/cheb.m,
+	  main/signal/inst/cheb1ord.m, main/signal/inst/cheb2ord.m,
+	  main/signal/inst/chebwin.m, main/signal/inst/cheby1.m,
+	  main/signal/inst/cheby2.m, main/signal/inst/chirp.m,
+	  main/signal/inst/cohere.m, main/signal/inst/convmtx.m,
+	  main/signal/inst/cplxreal.m, main/signal/inst/cpsd.m,
+	  main/signal/inst/csd.m, main/signal/inst/czt.m,
+	  main/signal/inst/dct.m, main/signal/inst/dct2.m,
+	  main/signal/inst/dctmtx.m, main/signal/inst/decimate.m,
+	  main/signal/inst/dftmtx.m, main/signal/inst/ellip.m,
+	  main/signal/inst/ellipdemo.m, main/signal/inst/ellipord.m,
+	  main/signal/inst/filtfilt.m, main/signal/inst/filtic.m,
+	  main/signal/inst/fir1.m, main/signal/inst/fir2.m,
+	  main/signal/inst/firls.m, main/signal/inst/freqs.m,
+	  main/signal/inst/freqs_plot.m, main/signal/inst/gaussian.m,
+	  main/signal/inst/gausswin.m, main/signal/inst/grpdelay.m,
+	  main/signal/inst/hilbert.m, main/signal/inst/idct.m,
+	  main/signal/inst/idct2.m, main/signal/inst/impz.m,
+	  main/signal/inst/interp.m, main/signal/inst/invfreq.m,
+	  main/signal/inst/invfreqs.m, main/signal/inst/invfreqz.m,
+	  main/signal/inst/kaiser.m, main/signal/inst/kaiserord.m,
+	  main/signal/inst/levinson.m, main/signal/inst/mscohere.m,
+	  main/signal/inst/ncauer.m, main/signal/inst/pburg.m,
+	  main/signal/inst/polystab.m, main/signal/inst/pulstran.m,
+	  main/signal/inst/pwelch.m, main/signal/inst/pyulear.m,
+	  main/signal/inst/qp_kaiser.m, main/signal/inst/rceps.m,
+	  main/signal/inst/rectpuls.m, main/signal/inst/rectwin.m,
+	  main/signal/inst/resample.m, main/signal/inst/residued.m,
+	  main/signal/inst/residuez.m, main/signal/inst/sftrans.m,
+	  main/signal/inst/sgolay.m, main/signal/inst/sgolayfilt.m,
+	  main/signal/inst/sos2tf.m, main/signal/inst/sos2zp.m,
+	  main/signal/inst/specgram.m, main/signal/inst/tf2sos.m,
+	  main/signal/inst/tfe.m, main/signal/inst/tfestimate.m,
+	  main/signal/inst/triang.m, main/signal/inst/tripuls.m,
+	  main/signal/inst/xcorr.m, main/signal/inst/xcorr2.m,
+	  main/signal/inst/xcov.m, main/signal/inst/zp2sos.m,
+	  main/signal/inst/zplane.m, main/signal/src/remez.cc,
+	  main/specfun/inst/Ci.m, main/specfun/inst/Si.m,
+	  main/specfun/inst/cosint.m, main/specfun/inst/dirac.m,
+	  main/specfun/inst/ellipj.m, main/specfun/inst/ellipke.m,
+	  main/specfun/inst/erfcinv.m, main/specfun/inst/erfcx.m,
+	  main/specfun/inst/expint.m, main/specfun/inst/expint_E1.m,
+	  main/specfun/inst/expint_Ei.m, main/specfun/inst/heaviside.m,
+	  main/specfun/inst/lambertw.m, main/specfun/inst/psi.m,
+	  main/specfun/inst/sinint.m, main/specfun/inst/zeta.m,
+	  main/specfun/src/ellipj.cc, main/splines/inst/csape.m,
+	  main/splines/inst/csapi.m, main/splines/inst/fnder.m,
+	  main/splines/inst/fnplt.m, main/statistics/inst/anovan.m,
+	  main/statistics/inst/betastat.m, main/statistics/inst/binostat.m,
+	  main/statistics/inst/boxplot.m, main/statistics/inst/chi2stat.m,
+	  main/statistics/inst/expstat.m, main/statistics/inst/fstat.m,
+	  main/statistics/inst/gamstat.m, main/statistics/inst/geomean.m,
+	  main/statistics/inst/geostat.m, main/statistics/inst/harmmean.m,
+	  main/statistics/inst/histfit.m,
 	  main/statistics/inst/hmmestimate.m,
 	  main/statistics/inst/hmmgenerate.m,
 	  main/statistics/inst/hmmviterbi.m,
@@ -3471,8 +4864,7 @@
 2007-03-20 23:13  adb014
 
 	* main/: audio/src/autogen.sh, comm/src/autogen.sh,
-	  fixed/src/autogen.sh, geometry/src/autogen.sh,
-	  gsl/src/autogen.sh, image/src/autogen.sh,
+	  fixed/src/autogen.sh, gsl/src/autogen.sh, image/src/autogen.sh,
 	  linear-algebra/src/autogen.sh, miscellaneous/src/autogen.sh,
 	  octcdf/src/autogen.sh, odepkg/src/autogen.sh,
 	  optiminterp/src/autogen.sh, plot/src/autogen.sh,
@@ -3559,8 +4951,8 @@
 	  extra/engine/src/autogen.sh, extra/java/src/autogen.sh,
 	  extra/tk_octave/src/autogen.sh, main/audio/src/autogen.sh,
 	  main/comm/src/autogen.sh, main/fixed/src/autogen.sh,
-	  main/geometry/src/autogen.sh, main/gsl/src/autogen.sh,
-	  main/image/src/autogen.sh, main/linear-algebra/src/autogen.sh,
+	  main/gsl/src/autogen.sh, main/image/src/autogen.sh,
+	  main/linear-algebra/src/autogen.sh,
 	  main/miscellaneous/src/autogen.sh, main/octcdf/src/autogen.sh,
 	  main/plot/src/autogen.sh, main/strings/src/autogen.sh,
 	  main/odepkg/src/autogen.sh, main/optiminterp/src/autogen.sh,
@@ -4941,12 +6333,6 @@
 	* main/image/inst/bmpwrite.m: Print an error if more than 256
 	  colours used in the indexed map.
 
-2007-02-05 21:53  abarth93
-
-	* main/geometry/: DESCRIPTION, doc/ChangeLog, inst/griddata.m:
-	  griddata.m: xi and yi are not "meshgridded" if both are vectors of
-	  the same size (for compatibility)
-
 2007-02-05 21:05  goffioul
 
 	* admin/Windows/msvc/ar-msvc: Add cygwin path conversion (used when
@@ -5177,10 +6563,6 @@
 	* admin/Windows/msvc/libs/: libpng-1.2.16.txt, zlib.txt: Use
 	  correct license name.
 
-2007-02-01 14:26  pkienzle
-
-	* main/geometry/inst/griddata.m: Add method argument to griddata
-
 2007-02-01 14:14  pkienzle
 
 	* main/image/inst/bmpwrite.m: Document that values are in the range
@@ -5256,17 +6638,17 @@
 
 	* main/: audio/DESCRIPTION, combinatorics/DESCRIPTION,
 	  comm/DESCRIPTION, control/DESCRIPTION, econometrics/DESCRIPTION,
-	  fixed/DESCRIPTION, general/DESCRIPTION, geometry/DESCRIPTION,
-	  gsl/DESCRIPTION, ident/DESCRIPTION, image/DESCRIPTION,
-	  info-theory/DESCRIPTION, io/DESCRIPTION, irsa/DESCRIPTION,
-	  linear-algebra/DESCRIPTION, miscellaneous/DESCRIPTION,
-	  octcdf/DESCRIPTION, odepkg/DESCRIPTION, optim/DESCRIPTION,
-	  optiminterp/DESCRIPTION, parallel/DESCRIPTION, plot/DESCRIPTION,
-	  polynomial/DESCRIPTION, signal/DESCRIPTION, specfun/DESCRIPTION,
-	  special-matrix/DESCRIPTION, splines/DESCRIPTION,
-	  statistics/DESCRIPTION, strings/DESCRIPTION, struct/DESCRIPTION,
-	  symbolic/DESCRIPTION, time/DESCRIPTION, vrml/DESCRIPTION: Add
-	  Autoload field to DESCRIPTION of main/ packages
+	  fixed/DESCRIPTION, general/DESCRIPTION, gsl/DESCRIPTION,
+	  ident/DESCRIPTION, image/DESCRIPTION, info-theory/DESCRIPTION,
+	  io/DESCRIPTION, irsa/DESCRIPTION, linear-algebra/DESCRIPTION,
+	  miscellaneous/DESCRIPTION, octcdf/DESCRIPTION,
+	  odepkg/DESCRIPTION, optim/DESCRIPTION, optiminterp/DESCRIPTION,
+	  parallel/DESCRIPTION, plot/DESCRIPTION, signal/DESCRIPTION,
+	  specfun/DESCRIPTION, special-matrix/DESCRIPTION,
+	  splines/DESCRIPTION, statistics/DESCRIPTION, strings/DESCRIPTION,
+	  struct/DESCRIPTION, symbolic/DESCRIPTION, time/DESCRIPTION,
+	  vrml/DESCRIPTION: Add Autoload field to DESCRIPTION of main/
+	  packages
 
 2007-01-30 23:23  adb014
 
@@ -7235,16 +8617,6 @@
 	  various headers and implement the listen function based on winsock
 	  API.
 
-2007-01-16 06:39  goffioul
-
-	* main/geometry/src/: Makeconf.in, Makefile, configure.base,
-	  convhulln.cc: use _snprintf instead of snprintf, when required
-
-2007-01-16 06:39  goffioul
-
-	* main/geometry/src/__voronoi__.cc: replace variable size array
-	  with OCTAVE_LOCAL_BUFFER
-
 2007-01-16 06:36  goffioul
 
 	* main/plot/src/Makefile: Fix "all" target when there is no X
@@ -7507,7 +8879,7 @@
 
 2007-01-07 15:45  hauberg
 
-	* main/: general/DESCRIPTION, geometry/DESCRIPTION, io/DESCRIPTION,
+	* main/: general/DESCRIPTION, io/DESCRIPTION,
 	  miscellaneous/DESCRIPTION, special-matrix/DESCRIPTION,
 	  time/DESCRIPTION: Removed dots (.) from titles in DESCRIPTION
 
@@ -7968,31 +9340,9 @@
 	  hmmviterbi.m, raylcdf.m, raylinv.m, raylpdf.m, raylrnd.m:
 	  Replaced Wikipedia References
 
-2006-11-29 17:52  hauberg
-
-	* main/geometry/inst/inpolygon.m: Small bugfix
-
-2006-11-29 17:44  hauberg
-
-	* main/geometry/inst/inpolygon.m: Remove the need for division (and
-	  hence the division-by-zero warnings)
-
 2006-11-29 04:52  pkienzle
 
 	* main/general/inst/issorted.m: Note joint authorship
-
-2006-11-26 15:17  hauberg
-
-	* main/geometry/inst/inpolygon.m: The code now checks correctly if
-	  the points are on the polygon
-
-2006-11-26 14:16  hauberg
-
-	* main/geometry/inst/inpolygon.m: Better input checking
-
-2006-11-26 14:06  hauberg
-
-	* main/geometry/inst/inpolygon.m: Some bugfixing and two demos
 
 2006-11-26 11:47  hauberg
 
@@ -8026,10 +9376,6 @@
 
 	* main/statistics/inst/: jsucdf.m, jsupdf.m: Added the Johnson SU
 	  distribution (by Rick Niles)
-
-2006-11-15 20:48  hauberg
-
-	* main/geometry/inst/inpolygon.m: Added inpolygon by Rick A Niles
 
 2006-11-15 01:50  whyly
 
@@ -8328,9 +9674,9 @@
 	  extra/tsa/COPYING, main/audio/COPYING,
 	  main/combinatorics/COPYING, main/comm/COPYING,
 	  main/control/COPYING, main/econometrics/COPYING,
-	  main/fixed/COPYING, main/general/COPYING, main/geometry/COPYING,
-	  main/gsl/COPYING, main/ident/COPYING, main/image/COPYING,
-	  main/io/COPYING, main/irsa/COPYING, main/linear-algebra/COPYING,
+	  main/fixed/COPYING, main/general/COPYING, main/gsl/COPYING,
+	  main/ident/COPYING, main/image/COPYING, main/io/COPYING,
+	  main/irsa/COPYING, main/linear-algebra/COPYING,
 	  main/miscellaneous/COPYING, main/octcdf/COPYING,
 	  main/optim/COPYING, main/parallel/COPYING, main/plot/COPYING,
 	  main/signal/COPYING, main/specfun/COPYING, main/splines/COPYING,
@@ -8451,20 +9797,6 @@
 	* packages/Makefile: No longer have global OCTAVE_PACKAGE_PREFIX.
 	  Use the 'prefix' directive to pkg to replae it
 
-2006-10-10 01:13  adb014
-
-	* main/polynomial/DESCRIPTION: Must have Categories field
-
-2006-10-10 00:19  adb014
-
-	* main/polynomial/: COPYING, DESCRIPTION: add the minimum to allow
-	  the building of the polynmial package added by Simon
-
-2006-10-10 00:01  adb014
-
-	* main/polynomial/inst/polyint.m: texinfo help should be seperated
-	  from copyright block
-
 2006-10-09 22:33  adb014
 
 	* main/time/inst/datesplit.m: Reorganize the test codem disabling
@@ -8492,10 +9824,6 @@
 2006-10-09 21:07  gnumuthu
 
 	* main/comm/inst/riceenco.m: Corner case fixed in Rice encoder
-
-2006-10-09 20:03  sis-sou
-
-	* main/polynomial/inst/polyint.m: Initial commit into CVS.
 
 2006-10-09 18:50  gnumuthu
 
@@ -8910,18 +10238,18 @@
 	  main/control/DESCRIPTION, main/econometrics/DESCRIPTION,
 	  main/fixed/DESCRIPTION, main/fixed/doc/.cvsignore,
 	  main/fixed/doc/Makefile, main/general/DESCRIPTION,
-	  main/geometry/DESCRIPTION, main/gsl/DESCRIPTION,
-	  main/ident/DESCRIPTION, main/image/DESCRIPTION,
-	  main/info-theory/DESCRIPTION, main/io/DESCRIPTION,
-	  main/irsa/DESCRIPTION, main/linear-algebra/DESCRIPTION,
-	  main/miscellaneous/DESCRIPTION, main/odepkg/DESCRIPTION,
-	  main/optim/DESCRIPTION, main/parallel/DESCRIPTION,
-	  main/plot/DESCRIPTION, main/signal/DESCRIPTION,
-	  main/specfun/DESCRIPTION, main/special-matrix/DESCRIPTION,
-	  main/splines/DESCRIPTION, main/statistics/DESCRIPTION,
-	  main/strings/DESCRIPTION, main/struct/DESCRIPTION,
-	  main/symbolic/DESCRIPTION, main/time/DESCRIPTION,
-	  main/vrml/DESCRIPTION: Latest mega package manager update
+	  main/gsl/DESCRIPTION, main/ident/DESCRIPTION,
+	  main/image/DESCRIPTION, main/info-theory/DESCRIPTION,
+	  main/io/DESCRIPTION, main/irsa/DESCRIPTION,
+	  main/linear-algebra/DESCRIPTION, main/miscellaneous/DESCRIPTION,
+	  main/odepkg/DESCRIPTION, main/optim/DESCRIPTION,
+	  main/parallel/DESCRIPTION, main/plot/DESCRIPTION,
+	  main/signal/DESCRIPTION, main/specfun/DESCRIPTION,
+	  main/special-matrix/DESCRIPTION, main/splines/DESCRIPTION,
+	  main/statistics/DESCRIPTION, main/strings/DESCRIPTION,
+	  main/struct/DESCRIPTION, main/symbolic/DESCRIPTION,
+	  main/time/DESCRIPTION, main/vrml/DESCRIPTION: Latest mega package
+	  manager update
 
 2006-10-02 21:35  adb014
 
@@ -9198,13 +10526,12 @@
 	* README, admin/make_index, admin/make_rpm, admin/make_rpmmeta,
 	  admin/meta_template.in, admin/rpm_template.in,
 	  admin/template.ndev, extra/graceplot/DESCRIPTION,
-	  extra/soctcl/DESCRIPTION, main/geometry/DESCRIPTION,
-	  main/gsl/DESCRIPTION, main/image/DESCRIPTION,
-	  main/miscellaneous/DESCRIPTION, main/octcdf/DESCRIPTION,
-	  main/plot/DESCRIPTION, main/strings/DESCRIPTION,
-	  main/symbolic/DESCRIPTION, main/vrml/DESCRIPTION,
-	  packages/CONTENTS, packages/Makefile, packages/README: Further
-	  automatic rpm build fixes
+	  extra/soctcl/DESCRIPTION, main/gsl/DESCRIPTION,
+	  main/image/DESCRIPTION, main/miscellaneous/DESCRIPTION,
+	  main/octcdf/DESCRIPTION, main/plot/DESCRIPTION,
+	  main/strings/DESCRIPTION, main/symbolic/DESCRIPTION,
+	  main/vrml/DESCRIPTION, packages/CONTENTS, packages/Makefile,
+	  packages/README: Further automatic rpm build fixes
 
 2006-09-14 23:02  adb014
 
@@ -10424,12 +11751,8 @@
 	  extra/soctcl/Makefile, main/Makefile,
 	  main/combinatorics/.cvsignore, main/combinatorics/PKG_ADD,
 	  main/econometrics/Makefile, main/fixed/.cvsignore,
-	  main/fixed/PKG_ADD, main/general/.cvsignore,
-	  main/geometry/.cvsignore, main/geometry/AUTHORS,
-	  main/geometry/ChangeLog, main/geometry/Makefile,
-	  main/geometry/TODO, main/geometry/doc/AUTHORS,
-	  main/geometry/doc/ChangeLog, main/geometry/doc/TODO,
-	  main/gsl/.cvsignore, main/image/.cvsignore, main/image/PKG_ADD,
+	  main/fixed/PKG_ADD, main/general/.cvsignore, main/gsl/.cvsignore,
+	  main/image/.cvsignore, main/image/PKG_ADD,
 	  main/linear-algebra/.cvsignore, main/miscellaneous/.cvsignore,
 	  main/octcdf/.cvsignore, main/optim/.cvsignore,
 	  main/plot/.cvsignore, main/signal/.cvsignore,
@@ -10766,9 +12089,7 @@
 	  main/comm/src/configure.base, main/comm/src/install-sh,
 	  main/comm/src/octinst.sh.in, main/fixed/src/autogen.sh,
 	  main/fixed/src/configure.base, main/fixed/src/install-sh,
-	  main/fixed/src/octinst.sh.in, main/geometry/src/autogen.sh,
-	  main/geometry/src/configure.base, main/geometry/src/install-sh,
-	  main/geometry/src/octinst.sh.in, main/gsl/src/autogen.sh,
+	  main/fixed/src/octinst.sh.in, main/gsl/src/autogen.sh,
 	  main/gsl/src/configure.base, main/gsl/src/install-sh,
 	  main/gsl/src/octinst.sh.in, main/image/src/Makefile,
 	  main/image/src/autogen.sh, main/image/src/configure.base,
@@ -10859,19 +12180,14 @@
 
 2006-08-24 17:39  qspencer
 
-	* extra/graceplot/README, main/geometry/README,
-	  main/miscellaneous/inst/edit.m: Remove some references to
-	  LOADPATH in documentation.
+	* extra/graceplot/README, main/miscellaneous/inst/edit.m: Remove
+	  some references to LOADPATH in documentation.
 
 2006-08-24 17:07  qspencer
 
 	* extra/graceplot/toggle_grace_use.m,
 	  main/miscellaneous/inst/slurp_file.m: Update m files that use
 	  LOADPATH to use the new addpath/rmpath syntax.
-
-2006-08-24 02:04  adb014
-
-	* main/geometry/src/tsearch.cc: remove cruft of #ifdef
 
 2006-08-24 01:58  adb014
 
@@ -10897,12 +12213,6 @@
 2006-08-24 01:35  adb014
 
 	* main/combinatorics/: PKG_ADD, inst/PKG_ADD: mv PKG_ADD file
-
-2006-08-24 01:31  adb014
-
-	* main/geometry/: Makefile, src/.cvsignore, src/Makeconf.add,
-	  src/Makeconf.base, src/Makeconf.in, src/autogen.sh,
-	  src/configure.add, src/configure.base: simplify geometry package
 
 2006-08-24 01:07  adb014
 
@@ -11011,7 +12321,6 @@
 	* main/: comm/inst/.cvsignore, comm/src/.cvsignore,
 	  fixed/inst/.cvsignore, fixed/src/.cvsignore,
 	  general/inst/.cvsignore, general/src/.cvsignore,
-	  geometry/inst/.cvsignore, geometry/src/.cvsignore,
 	  gsl/src/.cvsignore, image/inst/.cvsignore, image/src/.cvsignore,
 	  io/inst/.cvsignore, io/src/.cvsignore,
 	  linear-algebra/inst/.cvsignore, linear-algebra/src/.cvsignore,
@@ -11510,21 +12819,6 @@
 	  src/replace_template.sh: Changed the directory structure to match
 	  the package system
 
-2006-08-20 14:33  hauberg
-
-	* main/geometry/: COPYING, DESCRIPTION, Makeconf.add, Makefile,
-	  __voronoi__.cc, configure.add, convhull.m, convhulln.cc,
-	  delaunay.m, delaunay3.m, delaunayn.cc, griddata.m, tsearch.cc,
-	  tsearchdemo.m, voronoi.m, voronoin.m, inst/convhull.m,
-	  inst/delaunay.m, inst/delaunay3.m, inst/griddata.m,
-	  inst/tsearchdemo.m, inst/voronoi.m, inst/voronoin.m,
-	  src/Makeconf.add, src/Makeconf.base, src/Makeconf.in,
-	  src/Makefile, src/__voronoi__.cc, src/autogen.sh,
-	  src/configure.add, src/configure.base, src/convhulln.cc,
-	  src/delaunayn.cc, src/install-sh, src/octinst.sh.in,
-	  src/tsearch.cc: Changed the directory structure to match the
-	  package system
-
 2006-08-20 14:25  hauberg
 
 	* main/general/: COPYING, DESCRIPTION, Makefile, SHA1.cc,
@@ -11766,11 +13060,6 @@
 	  - partint: calculate integer partition
 	  - partcnt: calculate number of integer partitions
 
-2006-06-06 18:32  abarth93
-
-	* main/geometry/delaunayn.cc: decompose all non-simplicial facets
-	  and change Qhull options
-
 2006-06-06 15:42  adb014
 
 	* extra/ode/: ode23.m, ode45.m: Fix for initial step size (for
@@ -11826,11 +13115,6 @@
 
 	* extra/Windows/dos.m: dos.m added to octave core
 
-2006-05-25 23:34  adb014
-
-	* main/geometry/: __voronoi__.cc, convhulln.cc, delaunayn.cc: Typo
-	  in previous change to print_usage
-
 2006-05-25 23:31  adb014
 
 	* main/fixed/: op-fcm-fcm.cc, op-fcm-fcs.cc, op-fcm-fm.cc,
@@ -11885,9 +13169,7 @@
 	  extra/tk_octave/tk_interp.cc, main/comm/gf.cc,
 	  main/fixed/fixed-var.cc, main/fixed/fixed.cc,
 	  main/fixed/examples/ffft.cc, main/fixed/examples/fixed_inc.cc,
-	  main/general/deref.cc, main/geometry/__voronoi__.cc,
-	  main/geometry/convhulln.cc, main/geometry/delaunayn.cc,
-	  main/geometry/tsearch.cc, main/gsl/coupling_3j.cc,
+	  main/general/deref.cc, main/gsl/coupling_3j.cc,
 	  main/gsl/coupling_6j.cc, main/gsl/coupling_9j.cc,
 	  main/gsl/legendre_sphPlm_array.cc, main/image/__imagemagick__.cc,
 	  main/image/bwfill.cc, main/image/conv2.cc,
@@ -11957,19 +13239,6 @@
 
 	* main/optim/leasqr.m: Initialization error in leasqr (For Thomas
 	  Weber / Debian)
-
-2006-05-05 00:42  tom_holroyd
-
-	* main/geometry/convhulln.cc:
-
-	  fixed spelling error
-
-2006-05-05 00:40  tom_holroyd
-
-	* main/geometry/convhulln.cc:
-
-	  Guarantee consistent windings and simplicial facets in all
-	  dimensions with QJ.
 
 2006-05-04 16:36  schloegl
 
@@ -12578,9 +13847,8 @@
 	  extra/tk_octave/Makefile, main/comm/.cvsignore,
 	  main/comm/Makefile, main/fixed/.cvsignore, main/fixed/Makefile,
 	  main/fixed/examples/.cvsignore, main/general/.cvsignore,
-	  main/general/Makefile, main/geometry/.cvsignore,
-	  main/gsl/.cvsignore, main/gsl/Makefile, main/image/.cvsignore,
-	  main/image/Makefile, main/io/.cvsignore,
+	  main/general/Makefile, main/gsl/.cvsignore, main/gsl/Makefile,
+	  main/image/.cvsignore, main/image/Makefile, main/io/.cvsignore,
 	  main/miscellaneous/.cvsignore, main/miscellaneous/Makefile,
 	  main/octcdf/Makefile, main/optim/.cvsignore,
 	  main/plot/.cvsignore, main/signal/.cvsignore,
@@ -13072,11 +14340,10 @@
 2005-09-08 05:19  pkienzle
 
 	* main/: general/bicubic.m, general/cumtrapz.m, general/gradient.m,
-	  general/lookup.m, general/trapz.m, geometry/convhull.m,
-	  geometry/delaunay.m, geometry/delaunay3.m, geometry/griddata.m,
-	  image/grayslice.m, image/mat2gray.m, image/medfilt2.m,
-	  plot/__plt3__.m, plot/meshc.m, plot/quiver.m, signal/xcorr.m,
-	  specfun/legendre.m: [for Bill Denney] is_vector -> isvector
+	  general/lookup.m, general/trapz.m, image/grayslice.m,
+	  image/mat2gray.m, image/medfilt2.m, plot/__plt3__.m,
+	  plot/meshc.m, plot/quiver.m, signal/xcorr.m, specfun/legendre.m:
+	  [for Bill Denney] is_vector -> isvector
 
 2005-09-08 05:12  pkienzle
 
@@ -13107,9 +14374,6 @@
 	  main/comm/scatterplot.m, main/comm/symerr.m, main/comm/wgn.m,
 	  main/econometrics/prettyprint.m, main/general/double.m,
 	  main/general/interp2.m, main/general/sortrows.m,
-	  main/geometry/convhull.m, main/geometry/delaunay.m,
-	  main/geometry/delaunay3.m, main/geometry/griddata.m,
-	  main/geometry/voronoi.m, main/geometry/voronoin.m,
 	  main/image/blkproc.m, main/image/dilate.m, main/image/erode.m,
 	  main/image/im2col.m, main/image/imnoise.m, main/image/imread.m,
 	  main/image/imwrite.m, main/image/medfilt2.m,
@@ -13340,10 +14604,6 @@
 
 	* main/statistics/mad.m: Typo
 
-2005-05-31 05:04  adb014
-
-	* main/geometry/griddata.m: fix for single/double quote issues
-
 2005-05-31 05:01  adb014
 
 	* extra/tsa/rc2ac.m: Typo
@@ -13490,19 +14750,18 @@
 	  main/audio/endpoint.cc, main/audio/wavread.m,
 	  main/audio/wavwrite.m, main/control/feedback.m,
 	  main/general/mark_for_deletion.cc, main/general/quadl.m,
-	  main/geometry/tsearchdemo.m, main/image/bwborder.m,
-	  main/image/bwlabel.m, main/image/imginfo.m, main/image/imread.m,
-	  main/image/imwrite.m, main/io/dlmread.m, main/io/textread.m,
-	  main/irsa/irsa_plotdft.m, main/linear-algebra/rref.m,
-	  main/miscellaneous/grep.m, main/miscellaneous/inz.m,
-	  main/miscellaneous/nze.m, main/miscellaneous/rotparams.m,
-	  main/miscellaneous/rotv.m, main/miscellaneous/slurp_file.m,
-	  main/optim/adsmax.m, main/optim/cdiff.m, main/optim/d2_min.m,
-	  main/optim/expdemo.m, main/optim/fzero.m, main/optim/lp_test.m,
-	  main/optim/mdsmax.m, main/optim/nelder_mead_min.m,
-	  main/optim/nmsmax.m, main/optim/test_d2_min_1.m,
-	  main/optim/test_d2_min_2.m, main/optim/test_d2_min_3.m,
-	  main/optim/test_nelder_mead_min_1.m,
+	  main/image/bwborder.m, main/image/bwlabel.m,
+	  main/image/imginfo.m, main/image/imread.m, main/image/imwrite.m,
+	  main/io/dlmread.m, main/io/textread.m, main/irsa/irsa_plotdft.m,
+	  main/linear-algebra/rref.m, main/miscellaneous/grep.m,
+	  main/miscellaneous/inz.m, main/miscellaneous/nze.m,
+	  main/miscellaneous/rotparams.m, main/miscellaneous/rotv.m,
+	  main/miscellaneous/slurp_file.m, main/optim/adsmax.m,
+	  main/optim/cdiff.m, main/optim/d2_min.m, main/optim/expdemo.m,
+	  main/optim/fzero.m, main/optim/lp_test.m, main/optim/mdsmax.m,
+	  main/optim/nelder_mead_min.m, main/optim/nmsmax.m,
+	  main/optim/test_d2_min_1.m, main/optim/test_d2_min_2.m,
+	  main/optim/test_d2_min_3.m, main/optim/test_nelder_mead_min_1.m,
 	  main/optim/test_nelder_mead_min_2.m, main/optim/test_wpolyfit.m,
 	  main/optim/wpolyfitdemo.m, main/plot/gpick.cc, main/plot/grab.cc,
 	  main/signal/bilinear.m, main/signal/butter.m,
@@ -13827,8 +15086,7 @@
 
 2005-03-01 17:33  pkienzle
 
-	* configure.base, main/geometry/configure.add,
-	  main/gsl/configure.add, main/image/configure.add,
+	* configure.base, main/gsl/configure.add, main/image/configure.add,
 	  main/miscellaneous/configure.add, main/strings/configure.add:
 	  Don't append to LIBS when checking for a function in a library
 
@@ -15342,13 +16600,12 @@
 
 2004-07-08 06:56  pkienzle
 
-	* extra/graceplot/toggle_grace_use.m, main/geometry/tsearch.cc,
-	  main/image/fftconv2.m, main/plot/print.m,
-	  main/specfun/nchoosek.m, main/strings/mat2str.m,
-	  main/strings/strmatch.m: Fix copyright strings.  Only one allowed
-	  on top line so keep the most recent there and move the rest below
-	  the license statement.  'And' copyrights still not handled
-	  correctly.
+	* extra/graceplot/toggle_grace_use.m, main/image/fftconv2.m,
+	  main/plot/print.m, main/specfun/nchoosek.m,
+	  main/strings/mat2str.m, main/strings/strmatch.m: Fix copyright
+	  strings.  Only one allowed on top line so keep the most recent there
+	  and move the rest below the license statement.  'And' copyrights
+	  still not handled correctly.
 
 2004-07-08 06:32  pkienzle
 
@@ -15626,12 +16883,6 @@
 2004-06-18 22:44  pkienzle
 
 	* main/plot/text.m: fix keyword-only form of position,string spec.
-
-2004-06-18 22:27  pkienzle
-
-	* main/geometry/: Makeconf.add, Makefile, README, __voronoi__.cc,
-	  configure.add, convhulln.cc, delaunayn.cc: Check if qh_version is
-	  needed before defining it.
 
 2004-06-18 01:10  pkienzle
 
@@ -16224,17 +17475,6 @@
 	* main/parallel/: README, connect.cc, pserver.cc, recv.cc,
 	  reval.cc, sclose.cc, send.cc, swab.h: Support endian conversion
 
-2004-03-18 15:36  rlaboiss
-
-	* main/geometry/: __voronoi__.cc, configure.add, convhulln.cc,
-	  delaunayn.cc: [RL for Dirk Eddelbuettel]
-
-	  Applied patch from Dirk for the Debian octave-forge package.  From
-	  the debian/changelog:
-
-	    * main/geometry/{convhulln,delaunayn,voronoi}.cc: Change version
-	      identifier declaration to `char *qh_version' to match libqhull5
-
 2004-03-18 09:34  persquare
 
 	* main/miscellaneous/edit.m: Fixing custom license string
@@ -16613,10 +17853,6 @@
 	* main/strings/str2double.m: support of char-arrays and cell-arrays
 	  of strings; bugs fixes: space at the end, single sign
 
-2004-01-24 18:42  rlaboiss
-
-	* main/geometry/delaunayn.cc: Dummy commit
-
 2004-01-23 09:22  schloegl
 
 	* main/strings/str2double.m: initial check-in
@@ -16840,32 +18076,10 @@
 	* main/time/: datenum.m, now.m: Fix correction from coordinated
 	  universal time to local time.
 
-2003-12-14 17:53  rlaboiss
-
-	* main/geometry/: __voronoi__.cc, convhulln.cc, delaunayn.cc:
-	  Update all the qh_version strings to the date of today.  Made them
-	  compliant to the ISO 8601 norm, i.e. the date strings are in the
-	  form YYYY-MM-DD.
-
-2003-12-14 17:42  rlaboiss
-
-	* main/geometry/: __voronoi__.cc, voronoi.m, voronoin.m: Introduced
-	  a optional argument to the voronoi* functions for passing extra
-	  options to the underlying qhull command.  Again, only minimal tests
-	  have been done.  Please, test this changes.
-
 2003-12-14 05:00  pkienzle
 
 	* main/miscellaneous/configure.add: test for octave_function(void)
 	  should now be processed correctly
-
-2003-12-13 10:37  rlaboiss
-
-	* main/geometry/: convhull.m, convhulln.cc: Extended the convhull*
-	  functions to accept an extra (string) argument containing extra
-	  options to be passed to the underlying qhull command, in the same
-	  way the delaunay* functions work now.  Also, improved the
-	  documentation strings.
 
 2003-12-12 23:19  pkienzle
 
@@ -17024,16 +18238,6 @@
 
 	* main/miscellaneous/map.m: taltman added 'map.m'
 
-2003-11-19 18:30  pkienzle
-
-	* main/geometry/convhulln.cc: Minor cleanup; check and warn if more
-	  than dim vertices for a facet.
-
-2003-11-19 15:17  pkienzle
-
-	* main/geometry/convhulln.cc: Use 'Qt' option so that it handles
-	  difficult cases.
-
 2003-11-18 18:53  pkienzle
 
 	* batch_test.m, main/image/Makeconf.add, main/image/Makefile,
@@ -17093,11 +18297,6 @@
 
 	* doc/octave-forge-home.html: Sample code for embedding octave ---
 	  doesn't belong anywhere yet
-
-2003-11-10 17:59  pkienzle
-
-	* main/geometry/griddata.m: Work around octave bug in boolean
-	  indexing
 
 2003-11-10 15:01  schloegl
 
@@ -17418,9 +18617,8 @@
 	  main/audio/clip.m, main/comm/Makefile, main/comm/galois.h,
 	  main/comm/gf.cc, main/comm/ov-galois.cc, main/comm/qaskdeco.m,
 	  main/general/interpft.m, main/general/sortrows.m,
-	  main/geometry/tsearchdemo.m, main/image/impad.m,
-	  main/image/imread.m, main/image/imwrite.m, main/io/textread.m,
-	  main/linear-algebra/rref.m, main/optim/lp.cc,
+	  main/image/impad.m, main/image/imread.m, main/image/imwrite.m,
+	  main/io/textread.m, main/linear-algebra/rref.m, main/optim/lp.cc,
 	  main/optim/test_fminunc_1.m, main/signal/pburg.m,
 	  main/signal/pyulear.m, main/signal/rectpuls.m,
 	  main/signal/tripuls.m, main/signal/xcorr2.m,
@@ -17831,14 +19029,13 @@
 
 	* extra/MacOSX/.cvsignore, extra/Windows/.cvsignore,
 	  extra/symband/.cvsignore, main/comm/.cvsignore,
-	  main/general/.cvsignore, main/geometry/.cvsignore,
-	  main/image/.cvsignore, main/optim/.cvsignore,
-	  main/plot/.cvsignore, main/signal/.cvsignore,
-	  main/specfun/.cvsignore, main/splines/.cvsignore,
-	  main/miscellaneous/.cvsignore, main/strings/.cvsignore,
-	  main/struct/.cvsignore, main/symbolic/.cvsignore: Ignore build
-	  targets when doing cvs -q update -dP --- makes it easier to notice
-	  that files have been added.
+	  main/general/.cvsignore, main/image/.cvsignore,
+	  main/optim/.cvsignore, main/plot/.cvsignore,
+	  main/signal/.cvsignore, main/specfun/.cvsignore,
+	  main/splines/.cvsignore, main/miscellaneous/.cvsignore,
+	  main/strings/.cvsignore, main/struct/.cvsignore,
+	  main/symbolic/.cvsignore: Ignore build targets when doing cvs -q
+	  update -dP --- makes it easier to notice that files have been added.
 
 2003-05-29 23:10  cgijobs
 
@@ -18326,10 +19523,9 @@
 	  admin/template.ndev, main/comm/galois.h, main/comm/gf.cc,
 	  main/comm/ov-galois.cc, main/comm/ov-galois.h,
 	  main/general/bitand.cc, main/general/isequal.m,
-	  main/geometry/tsearch.cc, main/image/bwfill.cc,
-	  main/image/bwlabel.cc, main/miscellaneous/dispatch.cc,
-	  main/miscellaneous/listen.doc, main/optim/lp.cc,
-	  main/parallel/pserver.cc, main/signal/remez.cc,
+	  main/image/bwfill.cc, main/image/bwlabel.cc,
+	  main/miscellaneous/dispatch.cc, main/miscellaneous/listen.doc,
+	  main/optim/lp.cc, main/parallel/pserver.cc, main/signal/remez.cc,
 	  main/specfun/ellipj.cc, main/strings/regexp.cc,
 	  main/struct/getfield.cc: Backport to octave-2.1.36
 
@@ -18463,10 +19659,6 @@
 	* extra/symband/SymBand.cc: Oops --- max(double,double) should
 	  return double
 
-2003-02-22 16:52  pkienzle
-
-	* main/geometry/Makefile: [no log message]
-
 2003-02-22 16:23  pkienzle
 
 	* main/miscellaneous/dispatch.cc: Warn if dispatch function changes
@@ -18475,12 +19667,6 @@
 
 	* main/comm/: galoisfield.h, gf.cc, hammgen.m, mkdoc: Fix hammgen
 	  incompatibility
-
-2003-02-22 16:04  kahacjde
-
-	* main/geometry/Makefile:
-
-	  Target griddata does not (yet?) exist
 
 2003-02-22 14:48  pkienzle
 
@@ -18629,18 +19815,9 @@
 
 	* RELEASE-NOTES: Initial notes for Feb. 2003 release
 
-2003-02-10 04:35  pkienzle
-
-	* main/geometry/delaunayn.cc: Qt is more accurate than QJ, so
-	  suggest using that instead
-
 2003-02-10 04:28  pkienzle
 
 	* batch_test.m: Add galois test
-
-2003-02-10 04:27  pkienzle
-
-	* main/geometry/Makefile: Build griddata as well.
 
 2003-02-10 04:24  pkienzle
 
@@ -18882,23 +20059,6 @@
 
 	* extra/NaN/nantest.m: matrix division test for NaN/NaN included -
 	  (identifies a problem in Matlab5.3)
-
-2002-12-27 20:26  pkienzle
-
-	* main/geometry/tsearchdemo.m: tsearch/dsearch test function
-
-2002-12-27 20:19  pkienzle
-
-	* main/geometry/griddata.m: Add some demos
-
-2002-12-27 20:18  pkienzle
-
-	* main/geometry/tsearch.cc: Find the triangle containing the point
-
-2002-12-27 20:17  pkienzle
-
-	* main/geometry/delaunay.m: Draw diagram if no return values
-	  requested
 
 2002-12-24 07:33  pkienzle
 
@@ -19284,10 +20444,6 @@
 
 	* extra/tsa/histo3.m: minor modification
 
-2002-11-15 00:17  aadler
-
-	* main/geometry/README: new file locations
-
 2002-11-14 22:38  aadler
 
 	* INSTALL.WINDOWS: mods for ATLAS
@@ -19377,7 +20533,6 @@
 
 	* extra/tk_octave/tk_entry.m, extra/tk_octave/tk_scale.m,
 	  main/general/gradient.m, main/general/ind2sub.m,
-	  main/geometry/griddata.m, main/geometry/voronoi.m,
 	  main/image/brighten.m, main/image/imhist.m, main/io/textread.m,
 	  main/optim/minimize.m, main/optim/nelder_mead_min.m: varargout
 	  changes
@@ -19670,21 +20825,6 @@
 	* extra/NaN/normpdf.m: fix compatibility to Octave 2.0.17: isinf(.)
 	  returns real(-1) not logical(-1)
 
-2002-09-26 13:06  rlaboiss
-
-	* main/geometry/: AUTHORS, delaunay.m, delaunay3.m: Make delaunay
-	  and delaunay3 functions accept an extra argument containing options
-	  to the qhull command.  This completes the changes for the delaunay*
-	  functions.  The same has to be done with voronoi and convhull.
-
-2002-09-25 20:25  rlaboiss
-
-	* main/geometry/delaunayn.cc: The delaunayn functions always call
-	  qhull with option Qbb now.  This avoid problems with inputs which
-	  are not normalized.  Also, added second argument to pass extra
-	  options to the qhull command.  This changes were approved by Kai
-	  Habel as per our email discussion on 2002-05-11.
-
 2002-09-24 21:44  schloegl
 
 	* extra/NaN/: README.TXT, moment.m, norminv.m, normpdf.m: some
@@ -19891,10 +21031,6 @@
 	* extra/NaN/: flag_implicit_significance.m, corrcoef.m:
 	  significance test modified, alpha-level can be set by
 	  flag_implicit_significance
-
-2002-08-23 05:01  pkienzle
-
-	* main/geometry/delaunay.m: Add example to the doc string.
 
 2002-08-22 17:15  kahacjde
 
@@ -20539,11 +21675,6 @@
 	* release.sh: Update main/miscellaneous/OCTAVE_FORGE_VERSION.m each
 	  release.
 
-2002-04-29 16:19  pkienzle
-
-	* main/geometry/configure.add: Clear conftest* after testing for
-	  libqhull
-
 2002-04-29 15:56  pkienzle
 
 	* main/audio/sound.m: Use ssh rather than rsh for remote playback
@@ -20611,10 +21742,6 @@
 
 	* main/optim/test_wpolyfit.m: new file
 
-2002-04-23 00:02  pkienzle
-
-	* main/geometry/: __voronoi__.cc, delaunayn.cc: Don't use cerr
-
 2002-04-23 00:00  pkienzle
 
 	* main/optim/lp.cc: use more conventional octave error handling
@@ -20631,10 +21758,6 @@
 2002-04-22 23:33  pkienzle
 
 	* INDEX: now have dos and unix functions
-
-2002-04-22 23:32  pkienzle
-
-	* main/geometry/convhulln.cc: don't use cerr for warning messages
 
 2002-04-22 23:31  pkienzle
 
@@ -20833,18 +21956,12 @@
 
 2002-04-12 22:27  pkienzle
 
-	* Makeconf.base, main/geometry/Makefile: Use mkoctfile -s to strip
-	  oct-files
+	* Makeconf.base: Use mkoctfile -s to strip oct-files
 
 2002-04-12 22:23  pkienzle
 
 	* Makefile, autogen.sh: let ./configure turn ./octinst.sh into an
 	  executable instead of make
-
-2002-04-12 22:21  pkienzle
-
-	* main/geometry/configure.add: Make it work for old and new
-	  versions of autoconf (I hope)
 
 2002-04-12 22:16  pkienzle
 
@@ -21210,8 +22327,6 @@
 	  extra/civil/nlnewmark.m, main/general/bitand.cc,
 	  main/general/bitcmp.m, main/general/bitset.m,
 	  main/general/bitshift.m, main/general/cumtrapz.m,
-	  main/geometry/__voronoi__.cc, main/geometry/convhulln.cc,
-	  main/geometry/delaunayn.cc, main/geometry/griddata.m,
 	  main/image/impad.m, main/plot/gtext.cc, main/plot/gzoom.cc,
 	  main/signal/remez.cc, main/specfun/ellipj.cc,
 	  main/splines/fnder.m, main/splines/fnplt.m,
@@ -21298,14 +22413,14 @@
 	  admin/template.ndev, admin/template.readme, extra/Makefile,
 	  extra/engine/Makefile, extra/symband/Makefile,
 	  extra/tk_octave/Makefile, main/Makefile, main/audio/Makefile,
-	  main/general/Makefile, main/geometry/Makefile,
-	  main/image/Makefile, main/linear-algebra/Makefile,
-	  main/optim/Makefile, main/plot/Makefile, main/signal/Makefile,
-	  main/specfun/Makefile, main/splines/Makefile,
-	  main/strings/Makefile, main/symbolic/Makeconf.add,
-	  main/symbolic/Makefile, main/symbolic/configure.add,
-	  nonfree/Makefile, nonfree/splines/Makefile: Makefiles more
-	  consistent; accept optional "install" target in tertiary makes
+	  main/general/Makefile, main/image/Makefile,
+	  main/linear-algebra/Makefile, main/optim/Makefile,
+	  main/plot/Makefile, main/signal/Makefile, main/specfun/Makefile,
+	  main/splines/Makefile, main/strings/Makefile,
+	  main/symbolic/Makeconf.add, main/symbolic/Makefile,
+	  main/symbolic/configure.add, nonfree/Makefile,
+	  nonfree/splines/Makefile: Makefiles more consistent; accept
+	  optional "install" target in tertiary makes
 
 2002-03-18 08:34  pkienzle
 
@@ -21424,8 +22539,8 @@
 2002-03-16 06:29  pkienzle
 
 	* configure.base, extra/tk_octave/configure.add,
-	  main/geometry/configure.add, main/symbolic/configure.add: More
-	  informative failure messages when components not found
+	  main/symbolic/configure.add: More informative failure messages
+	  when components not found
 
 2002-03-16 05:23  pkienzle
 
@@ -21494,8 +22609,8 @@
 2002-03-13 22:10  pkienzle
 
 	* autogen.sh, configure.base, extra/tk_octave/configure.add,
-	  main/geometry/configure.add, main/symbolic/configure.add:
-	  ./configure status report at end of script
+	  main/symbolic/configure.add: ./configure status report at end of
+	  script
 
 2002-03-13 20:01  pkienzle
 
@@ -21731,12 +22846,6 @@
 
 	* main/miscellaneous/edit.m: fix C++ template, correctly this time
 	  :)
-
-2002-01-07 15:27  pkienzle
-
-	* main/geometry/voronoi.m: Use unique(x,"rows") rather than the no
-	  longer available __unique_rows__ provide example limit default graph
-	  to the data set rather than the entire voronoi diagram
 
 2002-01-07 15:01  alnd
 
@@ -22086,19 +23195,10 @@
 
 	* INSTALL: Correct install problems with mex
 
-2001-10-31 20:05  pkienzle
-
-	* main/geometry/: Makefile, configure.add: Correctly check for
-	  libqhull and make sure that it builds
-
 2001-10-31 20:02  pkienzle
 
 	* main/splines/trisolve.m: m-file version of trisolve.cc for those
 	  without oct-file capabilities
-
-2001-10-31 19:50  pkienzle
-
-	* main/geometry/griddata.m: put commas in matrix constructors
 
 2001-10-31 19:15  pkienzle
 
@@ -22212,14 +23312,6 @@
 	  main/general/repmat.m, main/general/sortrows.m,
 	  main/general/sub2ind.m, main/general/transpose.m,
 	  main/general/trapz.m, main/general/unix.m, main/general/unwrap.m,
-	  main/geometry/AUTHORS, main/geometry/ChangeLog,
-	  main/geometry/Makeconf.add, main/geometry/Makefile,
-	  main/geometry/README, main/geometry/TODO,
-	  main/geometry/__voronoi__.cc, main/geometry/configure.add,
-	  main/geometry/convhull.m, main/geometry/convhulln.cc,
-	  main/geometry/delaunay.m, main/geometry/delaunay3.m,
-	  main/geometry/delaunayn.cc, main/geometry/griddata.m,
-	  main/geometry/voronoi.m, main/geometry/voronoin.m,
 	  main/ident/idplot.m, main/ident/idsim.m, main/ident/mktheta.m,
 	  main/ident/poly2th.m, main/image/Makefile, main/image/autumn.m,
 	  main/image/bone.m, main/image/brighten.m, main/image/bwborder.m,
@@ -22391,14 +23483,6 @@
 	  main/general/repmat.m, main/general/sortrows.m,
 	  main/general/sub2ind.m, main/general/transpose.m,
 	  main/general/trapz.m, main/general/unix.m, main/general/unwrap.m,
-	  main/geometry/AUTHORS, main/geometry/ChangeLog,
-	  main/geometry/Makeconf.add, main/geometry/Makefile,
-	  main/geometry/README, main/geometry/TODO,
-	  main/geometry/__voronoi__.cc, main/geometry/configure.add,
-	  main/geometry/convhull.m, main/geometry/convhulln.cc,
-	  main/geometry/delaunay.m, main/geometry/delaunay3.m,
-	  main/geometry/delaunayn.cc, main/geometry/griddata.m,
-	  main/geometry/voronoi.m, main/geometry/voronoin.m,
 	  main/ident/idplot.m, main/ident/idsim.m, main/ident/mktheta.m,
 	  main/ident/poly2th.m, main/image/Makefile, main/image/autumn.m,
 	  main/image/bone.m, main/image/brighten.m, main/image/bwborder.m,

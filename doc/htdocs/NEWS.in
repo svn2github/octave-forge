@@ -7,6 +7,9 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>October 16, 2007</dt>
+<dd>Updated Windows installer to Octave 2.9.15.
+</dd>
 <dt>October 14, 2007</dt>
 <dd>Updated the OS X binary release to use Octave 2.9.15.
 </dd>
@@ -83,6 +86,9 @@ compilation and so all Mac users are urged to update.
    <li>Remove functions ported to Octave 2.9.13.</li>
    <li>general bug fixes and improvements.</li>
 </ul>
+</dd>
+<dt>July 4, 2007</dt>
+<dd>Added Octave.app 2.9.12 for OS X.
 </dd>
 <dt>July 4, 2007</dt>
 <dd>Added Octave.app 2.9.12 for OS X.

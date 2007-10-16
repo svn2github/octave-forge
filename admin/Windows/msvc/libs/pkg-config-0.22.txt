@@ -1,0 +1,22 @@
+Package: pkg-config
+Version: 0.22
+Home page: http://pkgconfig.freedesktop.org/wiki/
+Download: http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
+License: GPL
+
+Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc
+
+Requirements: cc-msvc, ar-msvc, pkg-config
+
+1) Apply the patch
+
+2) CC=cc-msvc CXX=cc-msvc AR=ar-msvc CFLAGS="-O2 -MD" CXXFLAGS="-O2 -EHs -MD" \
+	./configure --prefix=<dir> --disable-shared
+
+   where <dir> is the target installation directory in Windows form
+   with forward slahes. For instance, to install into C:\Software\VCLibs,
+   use C:/Software/VCLibs as prefix.
+
+3) make
+
+4) make install

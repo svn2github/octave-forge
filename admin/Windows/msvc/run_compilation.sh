@@ -38,7 +38,7 @@ packages=
 available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot ncurses"
+VC octplot ncurses pkg-config"
 octave_version=
 of_version=
 do_nsi=false
@@ -316,6 +316,7 @@ if test -z "$todo_packages"; then
     fi
     todo_check "$tbindir/jogl.jar" JOGL
     todo_check "$tlibdir/qhull.lib" qhull
+    todo_check "$tbindir/pkg-config.exe" pkg-config
   fi
 else
   packages="$todo_packages"
@@ -1188,6 +1189,33 @@ if check_package less; then
   fi
 fi
 
+##############
+# pkg-config #
+##############
+
+if check_package pkg-config; then
+  download_file pkg-config-0.22.tar.gz http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
+  echo -n "decompressing pkg-config... "
+  (cd "$DOWNLOAD_DIR" && tar xfz pkg-config-0.22.tar.gz)
+  cp libs/pkg-config-0.22.diff "$DOWNLOAD_DIR/pkg-config-0.22"
+  echo "done"
+  echo -n "compiling pkg-config... "
+  (cd "$DOWNLOAD_DIR/pkg-config-0.22" &&
+    patch -p1 < pkg-config-0.22.diff &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
+         CPPFLAGS="-D_CRT_SECURE_NO_DEPRECATE" AR=ar-msvc ./configure --prefix=$tdir_w32_forward --disable-shared &&
+    make &&
+    make install &&
+	mkdir -p "$tlibdir/pkgconfig") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/pkg-config-0.22"
+  if test ! -f "$tbindir/pkg-config.exe"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
 #######
 # CLN #
 #######
@@ -1204,7 +1232,8 @@ if check_package CLN; then
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
          CPPFLAGS="-DWIN32 -D_WIN32 -DASM_UNDERSCORE" AR=ar-msvc ./configure --prefix=$tdir_w32_forward &&
     make -C src &&
-    make -C src install) >&5 2>&1
+    make -C src install &&
+	cp cln.pc "$tlibdir/pkgconfig/cln.pc") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/cln-1.1.13"
   if test ! -f "$tlibdir/cln.lib"; then
     echo "failed"
@@ -1232,7 +1261,8 @@ if check_package GiNaC; then
       --prefix=$tdir_w32_forward &&
     make -C ginac &&
     make -C ginsh &&
-    make -C ginac install) >&5 2>&1
+    make -C ginac install &&
+	make install-pkgconfigDATA) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/ginac-1.3.6"
   if test ! -f "$tlibdir/ginac.lib"; then
     echo "failed"

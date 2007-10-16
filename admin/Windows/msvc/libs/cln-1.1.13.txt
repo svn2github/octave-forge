@@ -6,7 +6,7 @@ License: GPL
 
 Compilation: from MinGW shell with VS environment + cc-msvc + ar-msvc
 
-Requirements: cc-msvc, ar-msvc
+Requirements: cc-msvc, ar-msvc, pkg-config
 
 1) Apply the patch
 
@@ -20,3 +20,6 @@ Requirements: cc-msvc, ar-msvc
 3) make -C src
 
 4) make -C src install
+
+5) install (copy manually)
+	. cln.pc in <prefix>\lib\pkgconfig

@@ -43,6 +43,7 @@ octave_version=
 of_version=
 do_nsi=false
 do_nsiclean=true
+do_octplot=false
 download_root="http://downloads.sourceforge.net/octave/@@?download"
 #download_root="http://www.dbateman.org/octave/hidden/@@"
 
@@ -96,6 +97,9 @@ while test $# -gt 0; do
           do_nsiclean=true
           ;;
       esac
+      ;;
+    --octplot)
+      do_octplot=true
       ;;
     -*)
       echo "unknown flag: $1"
@@ -193,6 +197,24 @@ tdir_w32=`echo $tdir_w32 | sed -e 's,/,\\\\\\\\,g'`
 
 INCLUDE="$tdir_w32_1\\include;$INCLUDE"
 LIB="$tdir_w32_1\\lib;$LIB"
+
+# Looking for java
+echo -n "checking for Java Development Kit... "
+jdkver=`reg query "HKLM\\\\Software\\\\JavaSoft\\\\Java Development Kit" //v CurrentVersion | sed -n -e 's/^.*REG_SZ[^0-9]*//p'`
+if test -n "$jdkver"; then
+  jdkhome=`reg query "HKLM\\\\Software\\\\JavaSoft\\\\Java Development Kit\\\\$jdkver" //v JavaHome | sed -n -e 's/^.*REG_SZ[^A-Za-z]*//p'`
+  if test -n "$jdkhome" -a -d "$jdkhome"; then
+    echo "$jdkver"
+	jdkhome_msys=`cd "$jdkhome" && pwd`
+	PATH="$jdkhome_msys/bin:$PATH"
+	INCLUDE="$jdkhome\\include;$jdkhome\\include\\win32;$INCLUDE"
+  else
+    jdkhome=
+  fi
+fi
+if test -z "$jdkhome"; then
+  echo "none"
+fi
 
 # Check cc-msvc
 echo -n "checking for cc-msvc.exe... "
@@ -309,7 +331,9 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/fltkdll.dll" FLTK
     if test ! -z "$octave_version"; then
       todo_check "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe" octave
-      todo_check "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe" octplot
+      if $do_octplot; then
+        todo_check "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe" octplot
+      fi
     fi
     if test ! -z "$of_version"; then
       packages="$packages forge"
@@ -1394,6 +1418,33 @@ if check_package FLTK; then
   fi
 fi
 
+#########
+# QHull #
+#########
+
+if check_package qhull; then
+  download_file qhull-2003.1-src.tgz http://www.qhull.org/download/qhull-2003.1-src.tgz
+  echo -n "decompressing qhull... "
+  (cd "$DOWNLOAD_DIR" && tar xfz qhull-2003.1-src.tgz)
+  cp libs/qhull-2003.1.diff "$DOWNLOAD_DIR/qhull-2003.1"
+  echo "done"
+  echo -n "compiling qhull... "
+  (cd "$DOWNLOAD_DIR/qhull-2003.1" &&
+    patch -p1 < qhull-2003.1.diff &&
+    cd src &&
+    make qhull.lib &&
+    mkdir -p "$tincludedir/qhull" &&
+    cp *.h "$tincludedir/qhull" &&
+    cp qhull.lib "$tlibdir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/qhull-2003.1"
+  if test ! -f "$tlibdir/qhull.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
 ##########
 # octave #
 ##########
@@ -1488,33 +1539,6 @@ if check_package JOGL; then
   fi
 fi
 
-#########
-# QHull #
-#########
-
-if check_package qhull; then
-  download_file qhull-2003.1-src.tgz http://www.qhull.org/download/qhull-2003.1-src.tgz
-  echo -n "decompressing qhull... "
-  (cd "$DOWNLOAD_DIR" && tar xfz qhull-2003.1-src.tgz)
-  cp libs/qhull-2003.1.diff "$DOWNLOAD_DIR/qhull-2003.1"
-  echo "done"
-  echo -n "compiling qhull... "
-  (cd "$DOWNLOAD_DIR/qhull-2003.1" &&
-    patch -p1 < qhull-2003.1.diff &&
-    cd src &&
-    make qhull.lib &&
-    mkdir -p "$tincludedir/qhull" &&
-    cp *.h "$tincludedir/qhull" &&
-    cp qhull.lib "$tlibdir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/qhull-2003.1"
-  if test ! -f "$tlibdir/qhull.lib"; then
-    echo "failed"
-    exit -1
-  else
-    echo "done"
-  fi
-fi
-
 ################
 # octave-forge #
 ################
@@ -1557,7 +1581,7 @@ function install_forge_packages
 }
 
 extra_pkgs="fpl msh bim civil-engineering integration java jhandles mapping nan secs1d secs2d symband triangular tsa windows"
-main_pkgs="signal audio combinatorics communications control econometrics fixed general geometry gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix sockets splines statistics strings struct symbolic time"
+main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix sockets splines statistics strings struct symbolic time"
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
 
@@ -1569,7 +1593,10 @@ if check_package forge; then
   download_file octave-forge-bundle-$of_version.tar.gz "http://downloads.sourceforge.net/octave/octave-forge-bundle-$of_version.tar.gz?big_mirror=0"
   if test ! -d "$DOWNLOAD_DIR/octave-forge-bundle-$of_version"; then
     echo -n "decompressing octave-forge... "
-    (cd "$DOWNLOAD_DIR" && tar xfz octave-forge-bundle-$of_version.tar.gz)
+    (cd "$DOWNLOAD_DIR" && tar xfz octave-forge-bundle-$of_version.tar.gz > /dev/null 2>&1)
+	if ! test -d "DOWNLOAD_DIR/octave-forge-bundle-$of_version"; then
+      (cd "$DOWNLOAD_DIR" && tar xf octave-forge-bundle-$of_version.tar.gz > /dev/null 2>&1)
+	fi
     echo "done"
   fi
   octave_prefix="$INSTALL_DIR/local/octave-$octave_version"
@@ -1885,10 +1912,14 @@ if $do_nsi; then
       echo "done"
     fi
     if test ! -f "octave_main.nsi"; then
+      octplot_prefix="#"
+      if $do_octplot; then
+        octplot_prefix=
+      fi
       echo -n "creating octave_main.nsi... "
       sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
         -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
-        -e "s/@SOFTWARE_ROOT@/$software_root/" octave.nsi.in > octave_main.nsi
+        -e "s/@SOFTWARE_ROOT@/$software_root/" -e "s/@HAVE_OCTPLOT@/$octplot_prefix/" octave.nsi.in > octave_main.nsi
       echo "done"
     fi
     if test ! -f "octave_forge.nsi"; then

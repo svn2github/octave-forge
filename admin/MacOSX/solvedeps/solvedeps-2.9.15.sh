@@ -220,8 +220,8 @@ create_hdf5 () {
   echo "${THISSCRIPT}: Configuring ${vhdf5file} ..."
   evalfailexit "autoreconf"
   export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} 
-#  confmakeinst "${vhdf5file}" "CFLAGS=\"${CFLAGS}\" --prefix=${INSTDIR} --disable-cxx"
-  confmakeinst "${vhdf5file}" "--prefix=${INSTDIR} --disable-cxx"
+  confmakeinst "${vhdf5file}" "CFLAGS=\"${CFLAGS}\" --prefix=${INSTDIR} --disable-cxx"
+#  confmakeinst "${vhdf5file}" "--prefix=${INSTDIR} --disable-cxx"
 }
 
 create_fftw () {

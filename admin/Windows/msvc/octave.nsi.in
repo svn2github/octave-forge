@@ -8,7 +8,7 @@
 
 ; Determine which configuration to use
 #!define ATLAS_PM
-!define USE_OCTPLOT
+@HAVE_OCTPLOT@!define USE_OCTPLOT
 !define USE_OCTAVE_FORGE
 !define USE_MSYS
 
@@ -628,7 +628,6 @@ octplot:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 6" "Flags" "NOTABSTOP"
   Goto end_octplot
 no_octplot:
-!endif
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 5" "Flags" "DISABLED"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 6" "Flags" "NOTABSTOP|DISABLED"
   !insertmacro MUI_INSTALLOPTIONS_READ $0 "graphics.ini" "Field 5" "State"
@@ -636,6 +635,9 @@ no_octplot:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 1" "State" 1
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 5" "State" 0
 end_octplot:
+!else
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Settings" "NumFields" "4"
+!endif
   !insertmacro SectionFlagIsSet ${SEC_JHANDLES} ${SF_SELECTED} jhandles no_jhandles
 jhandles:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "Flags" ""

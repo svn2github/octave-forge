@@ -1,4 +1,4 @@
-function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af]=mvfreqz(B,A,C,N,Fs)
+function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
 % [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af] = mvfreqz(B,A,C,N,Fs)
 %
@@ -29,9 +29,9 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af]=mvfreqz(B
 % OUTPUT: 
 % ======= 
 % S   	power spectrum
-% PDC 	partial directed coherence
+% PDC 	partial directed coherence [2]
 % DC  	directed coupling	
-% COH 	coherency (complex coherence)
+% COH 	coherency (complex coherence) [5]
 % DTF 	directed transfer function
 % pCOH 	partial coherence
 % dDTF 	direct Directed Transfer function
@@ -41,33 +41,40 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af]=mvfreqz(B
 %	   !!! it uses a Multivariate AR model, and computes the bivariate GGC as in [Bressler et al 2007]. 
 %	   This is not the same as using bivariate AR models and GGC as in [Bressler et al 2007]
 % Af	Frequency transform of A(z) 
+% PDCF 	partial directed coherence
+% GPDC 	generalized partial directed coherence [9]
 %
 % see also: FREQZ, MVFILTER, MVAR
 %
 % 
 % REFERENCE(S):
-% H. Liang et al. Neurocomputing, 32-33, pp.891-896, 2000. 
-% L.A. Baccala and K. Samashima, Biol. Cybern. 84,463-474, 2001. 
-% A. Korzeniewska, et al. Journal of Neuroscience Methods, 125, 195-207, 2003. 
-% Piotr J. Franaszczuk, Ph.D. and Gregory K. Bergey, M.D.
+% [1] H. Liang et al. Neurocomputing, 32-33, pp.891-896, 2000. 
+% [2] L.A. Baccala and K. Samashima, Biol. Cybern. 84,463-474, 2001. 
+% [3] A. Korzeniewska, et al. Journal of Neuroscience Methods, 125, 195-207, 2003. 
+% [4] Piotr J. Franaszczuk, Ph.D. and Gregory K. Bergey, M.D.
 % 	Fast Algorithm for Computation of Partial Coherences From Vector Autoregressive Model Coefficients
 %	World Congress 2000, Chicago. 
-% Nolte G, Bai O, Wheaton L, Mari Z, Vorbach S, Hallett M.
+% [5] Nolte G, Bai O, Wheaton L, Mari Z, Vorbach S, Hallett M.
 %	Identifying true brain interaction from EEG data using the imaginary part of coherency.
 %	Clin Neurophysiol. 2004 Oct;115(10):2292-307. 
-% Schlogl A., Supp G.
+% [6] Schlogl A., Supp G.
 %       Analyzing event-related EEG data with multivariate autoregressive parameters.
 %       (Eds.) C. Neuper and W. Klimesch, 
 %       Progress in Brain Research: Event-related Dynamics of Brain Oscillations. 
 %       Analysis of dynamics of brain oscillations: methodological advances. Elsevier. 
-% Bressler S.L., Richter C.G., Chen Y., Ding M. (2007)
+% [7] Bressler S.L., Richter C.G., Chen Y., Ding M. (2007)
 %	Cortical fuctional network organization from autoregressive modelling of loal field potential oscillations.
 %	Statistics in Medicine, doi: 10.1002/sim.2935 
-% Geweke J., 1982	
+% [8] Geweke J., 1982	
 %	J.Am.Stat.Assoc., 77, 304-313.
+% [9] L.A. Baccala, D.Y. Takahashi, K. Sameshima. 
+% 	Computer Intensive Testing for the Influence Between Time Series, 
+%	Eds. B. Schelter, M. Winterhalder, J. Timmer: 
+%	Handbook of Time Series Analysis - Recent Theoretical Developments and Applications
+%	Wiley, p.413, 2006.
 
 %	$Id$
-%	Copyright (C) 1996-2006 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2007 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
 %       http://hci.tugraz.at/schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
@@ -126,6 +133,7 @@ PDC=zeros(K1,K1,N);
 PDCF = zeros(K1,K1,N);
 pCOH = zeros(K1,K1,N);
 GGC=zeros(K1,K1,N);
+GGC2=zeros(K1,K1,N);
 invC=inv(C);
 tmp1=zeros(1,K1);
 tmp2=zeros(1,K1);
@@ -152,7 +160,7 @@ for n=1:N,
         Af(:,:,n)  = atmp/btmp;        
         S(:,:,n)  = h(:,:,n)*C*h(:,:,n)'/Fs;        
         S1(:,:,n) = h(:,:,n)*h(:,:,n)';        
-        
+        ctmp = diag(diag(C).^(-1/2))*atmp;	%% used for GPDC 
         for k1 = 1:K1,
                 tmp = squeeze(atmp(:,k1));
                 tmp1(k1) = sqrt(tmp'*tmp);
@@ -160,10 +168,14 @@ for n=1:N,
 
                 %tmp = squeeze(atmp(k1,:)');
                 %tmp3(k1) = sqrt(tmp'*tmp);
+
+                tmp = squeeze(ctmp(:,k1));
+                tmp3(k1) = sqrt(tmp'*tmp);
         end;
         
         PDCF(:,:,n) = abs(atmp)./tmp2(ones(1,K1),:);
         PDC(:,:,n)  = abs(atmp)./tmp1(ones(1,K1),:);
+        GPDC(:,:,n)  = abs(ctmp)./tmp3(ones(1,K1),:);
         %PDC3(:,:,n) = abs(atmp)./tmp3(:,ones(1,K1));
         
         g = atmp/btmp;        
@@ -181,8 +193,8 @@ for k1=1:K1;
                 %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
                 COH(k1,k2,:) = (S(k1,k2,:))./sqrt(abs(S(k1,k1,:).*S(k2,k2,:)));
                 coh(k1,k2,:) = (S1(k1,k2,:))./sqrt(abs(S1(k1,k1,:).*S1(k2,k2,:)));
-                %DTF(k1,k2,:) = sqrt(abs(h(k1,k2,:).^2))./DEN;	        
-                DTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(DEN);
+                %DTF(k1,k2,:)  = sqrt(abs(h(k1,k2,:).^2))./DEN;	        
+                DTF(k1,k2,:)   = abs(h(k1,k2,:))./sqrt(DEN);
                 ffDTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(sum(DEN,3));
                 pCOH2(k1,k2,:) = abs(G(k1,k2,:).^2)./(G(k1,k1,:).*G(k2,k2,:));
                 
@@ -205,8 +217,8 @@ if nargout<13, return; end;
 for k1=1:K1;
         for k2=1:K2;
 		% Bivariate Granger Causality (similar to Bressler et al. 2007. )
-                %GGC(k1,k2,:) = -log(1-((C(k1,k1)*C(k2,k2)-C(k1,k2)^2)/C(k2,k2))*real(h(k1,k2).*conj(h(k1,k2)))./S(k2,k2,:));
-                GGC(k1,k2,:) = ((C(k1,k1)*C(k2,k2)-C(k1,k2)^2)/C(k2,k2))*real(h(k1,k2).*conj(h(k1,k2)))./abs(S(k2,k2,:));
+                GGC(k1,k2,:) = ((C(k1,k1)*C(k2,k2)-C(k1,k2)^2)/C(k2,k2))*real(h(k1,k2,:).*conj(h(k1,k2,:)))./abs(S(k2,k2,:));
+                %GGC2(k1,k2,:) = -log(1-((C(k1,k1)*C(k2,k2)-C(k1,k2)^2)/C(k2,k2))*real(h(k1,k2,:).*conj(h(k1,k2,:)))./S(k2,k2,:));
         end;
 end;
 

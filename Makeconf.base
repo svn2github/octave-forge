@@ -120,6 +120,7 @@ pkg/%:
 	  cd ../$(PKGDIR); \
 	  cp ../package_configure.in $$name-$$ver/configure; \
 	  cp ../package_Makefile.in $$name-$$ver/Makefile; \
+	  (cd $$name-$$ver; find . -name CVS -a -type d | xargs rm -fr); \
 	  tar -zcf $$name-$$ver.tar.gz $$name-$$ver; \
 	  rm -fr $$name-$$ver; \
 	fi

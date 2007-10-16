@@ -120,7 +120,7 @@ Section "Core" SEC_CORE
   File "..\cygwin\octave.ico"
   ; octave compiled modules
   SetOutPath "$INSTDIR\libexec"
-  File /r /x "COM" "${OCTAVE_ROOT}\libexec\*.*"
+  File /r /x "packages" "${OCTAVE_ROOT}\libexec\*.*"
   ; octave script modules
   SetOutPath "$INSTDIR\share"
   File /r /x "packages" /x "octave_packages" "${OCTAVE_ROOT}\share\*.*"
@@ -139,13 +139,16 @@ Section "Core" SEC_CORE
   File "${VCLIBS_ROOT}\license\COPYING.GPL"
   File "${VCLIBS_ROOT}\license\COPYING.HDF5"
   ; info files
-  SetOutPath "$INSTDIR\info"
-  File "${OCTAVE_ROOT}\info\*.*"
+  SetOutPath "$INSTDIR\share\info"
+  File "${OCTAVE_ROOT}\share\info\*.*"
   ; NCurses support files
   SetOutPath "$INSTDIR\share\terminfo"
   File /r "${VCLIBS_ROOT}\share\terminfo\*"
   SetOutPath "$INSTDIR\share\tabset"
   File /r "${VCLIBS_ROOT}\share\tabset\*"
+  SetOutPath "$INSTDIR\bin"
+  File "${VCLIBS_ROOT}\bin\tic.exe"
+  File "${VCLIBS_ROOT}\bin\infocmp.exe"
   ; other files
   SetOutPath "$INSTDIR\doc"
   File "${OCTAVE_ROOT}\doc\README"
@@ -278,6 +281,8 @@ Section "JHandles" SEC_JHANDLES
   SetOverwrite try
   SetOutPath "$INSTDIR\share\octave\packages\jhandles-${JHANDLES_VERSION}"
   File /r "${OCTAVE_ROOT}\share\octave\packages\jhandles-${JHANDLES_VERSION}\*"
+  SetOutPath "$INSTDIR\libexec\octave\packages\jhandles-${JHANDLES_VERSION}"
+  File /r "${OCTAVE_ROOT}\libexec\octave\packages\jhandles-${JHANDLES_VERSION}\*"
   SetOutPath "$INSTDIR\bin"
   File "${VCLIBS_ROOT}\bin\jogl.jar"
   File "${VCLIBS_ROOT}\bin\jogl.dll"
@@ -350,8 +355,8 @@ Sectiongroup /e "Documentation" GRP_DOC
 
 Section "HTML" DOC_HTML
   SetOverwrite try
-  SetOutPath "$INSTDIR\doc\HTML\faq"
-  File "${OCTAVE_ROOT}\doc\HTML\faq\*.*"
+  #SetOutPath "$INSTDIR\doc\HTML\faq"
+  #File "${OCTAVE_ROOT}\doc\HTML\faq\*.*"
   SetOutPath "$INSTDIR\doc\HTML\interpreter"
   File "${OCTAVE_ROOT}\doc\HTML\interpreter\*.*"
   SetOutPath "$INSTDIR\doc\HTML\liboctave"
@@ -361,7 +366,7 @@ Section "HTML" DOC_HTML
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP\Documentation\HTML"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Documentation\HTML\Octave.lnk" "$INSTDIR\doc\HTML\interpreter\index.html"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Documentation\HTML\Octave C++ API.lnk" "$INSTDIR\doc\HTML\liboctave\index.html"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Documentation\HTML\FAQ.lnk" "$INSTDIR\doc\HTML\faq\index.html"
+  #CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Documentation\HTML\FAQ.lnk" "$INSTDIR\doc\HTML\faq\index.html"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 

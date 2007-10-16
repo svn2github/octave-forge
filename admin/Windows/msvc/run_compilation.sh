@@ -1329,14 +1329,14 @@ fi
 ###########
 
 if check_package gnuplot; then
-  download_file gnuplot-4.2.0.tar.gz 'http://downloads.sourceforge.net/gnuplot/gnuplot-4.2.0.tar.gz?modtime=1173003818&big_mirror=0'
+  download_file gnuplot-4.2.2.tar.gz 'http://downloads.sourceforge.net/gnuplot/gnuplot-4.2.2.tar.gz?modtime=1173003818&big_mirror=0'
   echo -n "decompressing gnuplot... "
-  (cd "$DOWNLOAD_DIR" && tar xfz gnuplot-4.2.0.tar.gz)
-  cp libs/gnuplot-4.2.0.diff "$DOWNLOAD_DIR/gnuplot-4.2.0"
+  (cd "$DOWNLOAD_DIR" && tar xfz gnuplot-4.2.2.tar.gz)
+  cp libs/gnuplot-4.2.2.diff "$DOWNLOAD_DIR/gnuplot-4.2.2"
   echo "done"
   echo -n "compiling gnuplot... "
-  (cd "$DOWNLOAD_DIR/gnuplot-4.2.0" &&
-    patch -p1 < gnuplot-4.2.0.diff &&
+  (cd "$DOWNLOAD_DIR/gnuplot-4.2.2" &&
+    patch -p1 < gnuplot-4.2.2.diff &&
     sed -e "s,^DESTDIR =.*,DESTDIR = $tdir_w32," -e "s,^WXLOCATION =.*,WXLOCATION = $tdir_w32," \
       -e "s,^VCLIBS_ROOT =.*,VCLIBS_ROOT = $tdir_w32," config/makefile.nt > ttt &&
     mv ttt config/makefile.nt &&
@@ -1347,10 +1347,10 @@ if check_package gnuplot; then
 	cp "$INSTALL_DIR/Copyright" "$tlicdir/COPYING.GNUPLOT" &&
     mv "$INSTALL_DIR/BUGS" "$INSTALL_DIR/Copyright" "$INSTALL_DIR/FAQ" "$INSTALL_DIR/NEWS" "$INSTALL_DIR/README" \
       "$INSTALL_DIR/doc/gnuplot") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gnuplot-4.2.0"
-  download_file gp420win32.zip 'http://downloads.sourceforge.net/gnuplot/gp420win32.zip?modtime=1173777723&big_mirror=0'
-  if test -f "$DOWNLOAD_DIR/gp420win32.zip"; then
-    (cd "$DOWNLOAD_DIR" && unzip -o -q -j -d "$tbindir" gp420win32.zip gnuplot/bin/wgnuplot.hlp)
+  rm -rf "$DOWNLOAD_DIR/gnuplot-4.2.2"
+  download_file gp422win32.zip 'http://downloads.sourceforge.net/gnuplot/gp422win32.zip?modtime=1173777723&big_mirror=0'
+  if test -f "$DOWNLOAD_DIR/gp422win32.zip"; then
+    (cd "$DOWNLOAD_DIR" && unzip -o -q -j -d "$tbindir" gp422win32.zip gnuplot/bin/wgnuplot.hlp)
   else
     echo "WARNING: could not get wgnuplot.hlp"
   fi
@@ -1581,7 +1581,7 @@ function install_forge_packages
 }
 
 extra_pkgs="fpl msh bim civil-engineering integration java jhandles mapping nan secs1d secs2d symband triangular tsa windows"
-main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot polynomial specfun special-matrix sockets splines statistics strings struct symbolic time"
+main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot specfun special-matrix sockets splines statistics strings struct symbolic time"
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
 
@@ -1779,6 +1779,10 @@ function create_nsi_entries()
             get_nsi_additional_files $packname
             echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
             echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
+            if test -d "$octave_prefix/libexec/octave/packages/$packinstdir"; then
+              echo "  SetOutPath \"\$INSTDIR\\libexec\\octave\\packages\\$packinstdir\""
+              echo "  File /r \"\${OCTAVE_ROOT}\\libexec\\octave\\packages\\$packinstdir\\*\""
+            fi
           fi
           echo "SectionEnd"
           ;;
@@ -1831,6 +1835,10 @@ function create_nsi_package_file()
     else
       packautoload=0
     fi
+	have_arch_files="#"
+	if test -d "$octave_prefix/libexec/octave/packages/$packinstdir"; then
+      have_arch_files=
+    fi
     sed -e "s/@PACKAGE_NAME@/$packname/" \
         -e "s/@PACKAGE_LONG_NAME@/$packdesc/" \
         -e "s/@PACKAGE_VERSION@/$packver/" \
@@ -1840,6 +1848,7 @@ function create_nsi_package_file()
         -e "s/@PACKAGE_FILES@/$packfiles/" \
         -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \
         -e "s/@PACKAGE_AUTOLOAD@/$packautoload/" \
+        -e "s/@HAVE_ARCH_FILES@/$have_arch_files/" \
         -e "s/@SOFTWARE_ROOT@/$software_root/" octave_package.nsi.in > octave_pkg_$packname.nsi
     $NSI_DIR/makensis.exe octave_pkg_$packname.nsi | tee nsi.tmp >&5 2>&1
 	packsize=`sed -n -e 's,^Install data: *[0-9]\+ / \([0-9]\+\) bytes$,\1,p' nsi.tmp`

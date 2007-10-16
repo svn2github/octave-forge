@@ -1,3 +1,4 @@
+mkdir (pkg ("prefix"));
 global_list = pkg ("global_list");
 global_packages = pkg ("rebuild");
 

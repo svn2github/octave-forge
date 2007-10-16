@@ -99,4 +99,4 @@ evalfailexit "mv ${PRFPATH}/bin/_mkoctfile ${PRFPATH}/bin/mkoctfile"
 
 # Let's run make check at the end of the installation process to have
 # a look how many of the tests succeed.
-evalexitfail "make check"
+evalfailexit "make check"

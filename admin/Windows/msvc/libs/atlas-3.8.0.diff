@@ -1,0 +1,24 @@
+diff -ur ATLAS/src/blas/level2/ATL_hbmv.c ATLAS-mod/src/blas/level2/ATL_hbmv.c
+--- ATLAS/src/blas/level2/ATL_hbmv.c	Mon Dec 22 15:08:02 2003
++++ ATLAS-mod/src/blas/level2/ATL_hbmv.c	Thu Jun 14 12:44:27 2007
+@@ -170,7 +170,7 @@
+          for( k = 0; k < na; k += nb )
+          {
+             kb  = na - k; kb = Mmin( kb, nb );
+-            ian = j + mb + k; ia = mb - K + k; ia = j + Mmax( ia, 0 );
++            ian = j + mb + k; ia = j + Mmax( mb - K + k, 0 );
+             ma  = ian - ia - k; kl = ma - 1;   kl = Mmax( kl, 0 );
+             ku  = K - k - 1 - kl; ku = Mmax( ku, 0 );
+             gbmv0( kb, ma, kl, ku, one, A+ian*lda2, LDA, x+(ia  SHIFT), 1,
+diff -ur ATLAS/src/blas/level2/ATL_sbmv.c ATLAS-mod/src/blas/level2/ATL_sbmv.c
+--- ATLAS/src/blas/level2/ATL_sbmv.c	Mon Dec 22 15:08:03 2003
++++ ATLAS-mod/src/blas/level2/ATL_sbmv.c	Thu Jun 14 12:44:27 2007
+@@ -170,7 +170,7 @@
+          for( k = 0; k < na; k += nb )
+          {
+             kb  = na - k; kb = Mmin( kb, nb );
+-            ian = j + mb + k; ia = mb - K + k; ia = j + Mmax( ia, 0 );
++            ian = j + mb + k; ia = j + Mmax( mb - K + k, 0 );
+             ma  = ian - ia - k; kl = ma - 1;   kl = Mmax( kl, 0 );
+             ku  = K - k - 1 - kl; ku = Mmax( ku, 0 );
+             gbmv0( kb, ma, kl, ku, one, A+ian*lda2, LDA, x+(ia  SHIFT), 1,

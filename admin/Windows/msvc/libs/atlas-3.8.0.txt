@@ -1,0 +1,45 @@
+Package: ATLAS
+Version: 3.8.0
+Home page: http://math-atlas.sourceforge.net/
+Download: http://sourceforge.net/projects/math-atlas
+License: BSD
+
+Compilation: from Cygwin shell with VS environment + cc-msvc
+
+Requirements: cc-msvc(*), lapack(*), atl_blas.def(**), lapack.def(**)
+
+Note: install the ATLAS source package in a directory without
+      spaces in it. The build process does not handle spaces
+      in directories correctly
+
+1) Apply the patch
+
+2) create build directory (for instance WinNT_P4)
+
+3) cd <build> (the directory you just created)
+
+4) ../configure -C ic cl -Fa ic '-MD -O2' -Si nocygwin 1
+
+5) make
+
+6) (cd interfaces/blas/F77/src && make lib)
+
+7) (cd interfaces/lapack/F77/src && make lib)
+
+8) cd lib
+
+9) cc-msvc -shared -o blas.dll -Wl,-def:atl_blas.def libatlas.a libcblas.a libf77blas.a -lf2c
+
+10) cc-msvc -shared -o lapack.dll -Wl,-def:lapack.def liblapack.a -lliblapack_f77 -lblas -lf2c
+
+11) Install (copy manually):
+	. blas.dll and lapack.dll into bin directory
+	. blas.lib and lapack.lib into lib directory
+
+-----------------------------------------------------------------
+
+(*)  These dependencies are required if you want to build ATLAS-based
+     BLAS/LAPACK replacement DLL's
+
+(**) These files can be found in the CVS directory of octave-forge, in
+     admin/Windows/msvc

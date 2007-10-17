@@ -279,10 +279,10 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
       vretvalresult', 'init', vfunarguments{:});
   end
 
-  vpow = 1/4;            %# See p.91 in Ascher & Petzold
+  vpow = 1/3;            %# 20071016, reported by Luis Randez
   va = [  0, 0, 0;       %# The Runge-Kutta-Fehlberg 2(3) coefficients
         1/2, 0, 0;       %# Coefficients proved on 20060827
-         -1, 2, 0];
+         -1, 2, 0];      %# See p.91 in Ascher & Petzold
   vb2 = [0; 1; 0];       %# 2nd and 3rd order
   vb3 = [1/6; 2/3; 1/6]; %# b-coefficients
   vc = sum (va, 2);

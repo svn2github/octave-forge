@@ -280,10 +280,10 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       vretvalresult', 'init', vfunarguments{:});
   end
 
-  vpow = 1/6;               %# See p.91 in Ascher & Petzold
-  va = [0, 0, 0, 0, 0, 0;   %# The Dormand-Prince 5(4) coefficients
-        1/5, 0, 0, 0, 0, 0; %# Coefficients proved on 20060827
-        3/40, 9/40, 0, 0, 0, 0;
+  vpow = 1/5;                   %# 20071016, reported by Luis Randez
+  va = [0, 0, 0, 0, 0, 0;       %# The Dormand-Prince 5(4) coefficients
+        1/5, 0, 0, 0, 0, 0;     %# Coefficients proved on 20060827
+        3/40, 9/40, 0, 0, 0, 0; %# See p.91 in Ascher & Petzold
         44/45, -56/15, 32/9, 0, 0, 0;
         19372/6561, -25360/2187, 64448/6561, -212/729, 0, 0;
         9017/3168, -355/33, 46732/5247, 49/176, -5103/18656, 0;
@@ -340,7 +340,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       else
         vdelta = norm (y5 - y4, Inf);
         vtau = max (vodeoptions.RelTol * max (norm (vu', Inf), 1.0), ...
-                    vodeoptions.AbsTol);
+          vodeoptions.AbsTol);
       end
     else %# if (vstepsizegiven == true)
       vdelta = 1; vtau = 2;

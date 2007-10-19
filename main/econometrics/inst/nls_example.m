@@ -38,23 +38,21 @@ function [obj_contrib, score] = nls_example_obj(theta, data, otherargs)
 endfunction
 
 
-####################################
+#####################################
 # define arguments for nls_estimate #
-####################################
-
+#####################################
 # starting values
 theta = zeros(3,1);
-
 # data
 data = [y, x];
-
 # name of model to estimate
 model = "nls_example_obj";
 modelargs = {}; # none required for this obj fn.
+# controls for bfgsmin - limit to 50 iters, and print final results
+control = {50,1};
 
-
-# controls for bfgsmin
-control = {50,1,1,1};
-
-printf("\n\NLS estimation example\n");
+####################################
+# do the estimation		   #
+####################################
+printf("\nNLS estimation example\n");
 [theta, obj_value, convergence] = nls_estimate(theta, data, model, modelargs, control);

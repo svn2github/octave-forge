@@ -6,7 +6,7 @@ Maintainer: Thomas Treichl
 Title: OdePkg.
 Description: A toolkit for Differential Equations and Initial Value Problems.
 Categories: Ordinary Differential Equations
-Depends: octave (>= 2.9.14)
+Depends: octave (>= 2.9.15)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

@@ -383,8 +383,8 @@ AC_SUBST(MKDOC)
 MKTEXI=$TOPDIR/admin/mktexi
 AC_SUBST(MKTEXI)
 
-dnl Test for the cvs2cl program
-AC_CHECK_PROGS(CVS2CL,cvs2cl cvs2cl.pl)
+dnl Test for the svn2cl program
+AC_CHECK_PROGS(SVN2CL,svn2cl svn2cl.pl)
 
 CONFIGURE_OUTPUTS="doc/macros.m4 Makeconf octinst.sh admin/Windows/msvc/makeall.sh"
 STATUS_MSG="
@@ -412,4 +412,4 @@ octave-forge is configured with
    mktexi:      $MKTEXI
    dvips:       $DVIPS
    dvipdf:      $DVIPDF
-   cvs2cl:      $CVS2CL"
+   svn2cl:      $SVN2CL"

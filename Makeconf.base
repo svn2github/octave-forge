@@ -67,7 +67,7 @@ MKDOC = @MKDOC@
 MKTEXI = @MKTEXI@
 TOPDIR = @TOPDIR@
 
-CVS2CL = @CVS2CL@
+SVN2CL = @SVN2CL@
 
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<
@@ -85,7 +85,7 @@ PKG_FILES = COPYING DESCRIPTION $(wildcard ChangeLog) $(wildcard INDEX) \
 	$(wildcard inst/*) $(wildcard src/*) \
 	$(wildcard doc/*) $(wildcard bin/*)
 endif
-REAL_PKG_FILES = $(filter-out %/CVS %/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
+REAL_PKG_FILES = $(filter-out %/.svn %/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
 
 pkg/%:
 	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//" | \
@@ -106,8 +106,8 @@ pkg/%:
 	if test "X$${build}X" = "XyesX"; then \
 	  mkdir ../$(PKGDIR)/$$name-$$ver; \
 	  if [ ! -f ChangeLog ]; then \
-	    if test "x$(CVS2CL)" != "x"; then \
-	      $(CVS2CL) --fsf --file ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
+	    if test "x$(SVN2CL)" != "x"; then \
+	      $(SVN2CL) --fsf --file ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
 	      if [ -f ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp ]; then \
 	        echo "# Automatically generated file --- DO NOT EDIT" | \
 	        cat - ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp > \
@@ -120,7 +120,7 @@ pkg/%:
 	  cd ../$(PKGDIR); \
 	  cp ../package_configure.in $$name-$$ver/configure; \
 	  cp ../package_Makefile.in $$name-$$ver/Makefile; \
-	  (cd $$name-$$ver; find . -name CVS -a -type d | xargs rm -fr); \
+	  (cd $$name-$$ver; find . -name .svn -a -type d | xargs rm -fr); \
 	  tar -zcf $$name-$$ver.tar.gz $$name-$$ver; \
 	  rm -fr $$name-$$ver; \
 	fi

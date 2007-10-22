@@ -2,7 +2,7 @@
 
 ## These are the steps you need to take to do a new octave-forge release.
 ## You will need:
-##    * cvs2cl.pl from http://www.red-bean.com/cvs2cl/
+##    * svn2cl.pl from http://ch.tudelft.nl/~arthur/svn2cl/
 ##    * perl, python, and the texinfo toolchain
 ##    * autoconf
 ##    * wget
@@ -18,7 +18,7 @@
 ##
 ##    Try to close out all outstanding issues.
 ##
-## 1) cvs -q update -dP
+## 1) svn status -u
 ##
 ##    Make sure you haven't forgetten to post anything.  Indexing will 
 ##    be more reliable if you don't have extra files that you don't 
@@ -37,7 +37,7 @@
 ##    Check the list of function that are either not found or uncategorized
 ##    and fix the INDEX files accordingly.
 ##
-## 4) cvs2cl.pl -f changes
+## 4) svn2cl -f changes
 ##
 ##    Generate a list of changes.  Use it to update www/NEWS.in and
 ##    www/index.in with a summary of changes.
@@ -51,15 +51,15 @@
 ##    Verify copyrights.  Look at the AUTHORS file to see which names
 ##    have been butcherd and update the corresponding sources.
 ##
-## 7) cvs commit AUTHORS, README, www/htdocs/index.in and www/htdocs/NEWS.in
+## 7) svn commit AUTHORS, README, www/htdocs/index.in and www/htdocs/NEWS.in
 ##
-## 8) cvs -q update -dP
+## 8) svn status -u
 ##
 ##    Make sure you've logged all changes to licenses and doc strings.
 ##
 ## 9) ./release.sh
 ##
-##    This is the actual release step.  It tags the CVS tree.
+##    This is the actual release step.  It tags the SVN tree.
 ##
 ## 10) Upload the webpages to sourceforge.
 ##
@@ -83,13 +83,13 @@
 ##
 ## Done.
 
-# Find the name of cvs2cl
-if which cvs2cl.pl > /dev/null 2>&1; then
-  CVS2CL="cvs2cl.pl"
-elif which cvs2cl > /dev/null 2>&1; then
-  CVS2CL="cvs2cl"
+# Find the name of svn2cl
+if which svn2cl.pl > /dev/null 2>&1; then
+  SVN2CL="svn2cl.pl"
+elif which svn2cl > /dev/null 2>&1; then
+  SVN2CL="svn2cl"
 else
-  echo "Can not find cvs2cl. Please visit http://www.red-bean.com/cvs2cl/"
+  echo "Can not find svn2cl. Please visit http://ch.tudelft.nl/~arthur/svn2cl/"
   exit -1;
 fi
 
@@ -100,7 +100,7 @@ PROJECT=octave-forge
 TAG=R`date +%Y-%m-%d`
 
 # generate the updated ChangeLog and version command
-$CVS2CL --fsf --file ChangeLog.tmp
+$SVN2CL --fsf --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
 cp -f ChangeLog doc/htdocs/ChangeLog
@@ -108,7 +108,7 @@ cp -f ChangeLog doc/htdocs/ChangeLog
 # generate the AUTHORS file
 ./admin/get_authors
 
-cvs commit -m "$TAG release" ChangeLog README AUTHORS
+svn commit -m "$TAG release" ChangeLog README AUTHORS
 
-# tag the CVS tree with the revision number
-cvs rtag -F $TAG $PROJECT
+# tag the SVN tree with the revision number
+svn copy trunk tags/$TAG

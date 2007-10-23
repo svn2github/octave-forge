@@ -107,7 +107,7 @@ pkg/%:
 	  mkdir ../$(PKGDIR)/$$name-$$ver; \
 	  if [ ! -f ChangeLog ]; then \
 	    if test "x$(SVN2CL)" != "x"; then \
-	      $(SVN2CL) --fsf --file ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
+	      $(SVN2CL) --file=../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp; \
 	      if [ -f ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp ]; then \
 	        echo "# Automatically generated file --- DO NOT EDIT" | \
 	        cat - ../$(PKGDIR)/$$name-$$ver/ChangeLog.tmp > \

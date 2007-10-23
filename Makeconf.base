@@ -85,7 +85,7 @@ PKG_FILES = COPYING DESCRIPTION $(wildcard ChangeLog) $(wildcard INDEX) \
 	$(wildcard inst/*) $(wildcard src/*) \
 	$(wildcard doc/*) $(wildcard bin/*)
 endif
-REAL_PKG_FILES = $(filter-out %/.svn %/.cvsignore %~ %/autom4te.cache, $(PKG_FILES))
+REAL_PKG_FILES = $(filter-out %/.svn %/.svnignore %~ %/autom4te.cache, $(PKG_FILES))
 
 pkg/%:
 	@ver=`grep "Version:" DESCRIPTION | sed -e "s/Version: *//" | \

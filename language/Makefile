@@ -11,7 +11,7 @@ endif
 SUBMAKEDIRS = $(dir $(wildcard */Makefile))
 NOINSTALLDIRS = base/ $(dir $(wildcard */NOINSTALL))
 BUILDDIRS = $(filter-out $(NOINSTALLDIRS), $(SUBMAKEDIRS))
-INSTALLDIRS = $(filter-out $(BUILDDIRS), $(filter-out CVS/ $(NOINSTALLDIRS), $(dir $(wildcard */.))))
+INSTALLDIRS = $(filter-out $(BUILDDIRS), $(filter-out .svn/ $(NOINSTALLDIRS), $(dir $(wildcard */.))))
 
 .PHONY: all package clean distclean $(SUBMAKEDIRS)
 

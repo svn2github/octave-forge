@@ -74,22 +74,22 @@ if test -d "$source/alternatives" -a -d "$altmpath" ; then
     if test -z "`cat $altmpath/PKG_ADD`" ; then rm $altmpath/PKG_ADD; fi
 fi
 
-# grab the data files, skipping the CVS directory
-files=`echo $source/data/* | sed -e "s/[^ ]*CVS//"`
+# grab the data files, skipping the SVN directory
+files=`echo $source/data/* | sed -e "s/[^ ]*.svn//"`
 if test -n "$files" -a "$files" != "$source/data/*" ; then
     $INSTALL -d $mpath
     $INSTALL_DATA $files $mpath
 fi
 
-# grab the executable files, skipping the CVS directory
-files=`echo $source/bin/* | sed -e "s/[^ ]*CVS//"`
+# grab the executable files, skipping the SVN directory
+files=`echo $source/bin/* | sed -e "s/[^ ]*.svn//"`
 if test -n "$files" -a "$files" != "$source/bin/*" ; then
     $INSTALL -d $xpath
     $INSTALL_PROGRAM $files $xpath
 fi
 
-# grab the script files, skipping the CVS directory
-files=`echo $source/scripts/* | sed -e "s/[^ ]*CVS//"`
+# grab the script files, skipping the SVN directory
+files=`echo $source/scripts/* | sed -e "s/[^ ]*.svn//"`
 if test -n "$files" -a "$files" != "$source/scripts/*" ; then
     $INSTALL -d $xpath
     $INSTALL_SCRIPT $files $xpath

@@ -25,9 +25,9 @@ OCTPATH="$OCTAVE_PATH:../"
 # there is one.
 EXECPATH="$PATH:"
 for f in code/* install/*; do
-    # exclude CVS directories, only include directories, skip NOINSTALL
+    # exclude SVN directories, only include directories, skip NOINSTALL
     case "$f" in
-      */CVS) ;;
+      */.svn) ;;
       *)
     if test -d $f -a ! -f $f/NOINSTALL; then 
 	OCTPATH="$ROOT/$f:$OCTPATH"

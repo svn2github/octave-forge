@@ -31,11 +31,10 @@ Unbundle octave-forge-YYYY.MM.DD.tar.gz in the SOURCE directory:
 
   tar xzf octave-forge-YYYY.MM.DD.tar.gz -C /cygdrive/c/src
 
-or use CVS:
+or use SVN:
 
   cd /cygdrive/c/src
-  cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/octave login
-  cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/octave co octave-forge
+  svn co https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge
 
 If you are using different SOURCE BUILD and DEST directories
 you will need to change octave-forge/admin/Windows/Makefile
@@ -62,9 +61,9 @@ Start in the Windows admin directory.
 
   cd /cygdrive/c/src/octave-forge/admin/Windows
 
-If using CVS, update the octave-forge version:
+If using SVN, update the octave-forge version:
 
-  (cd /cygdrive/c/src/octave-forge; cvs -q update -dP)
+  (cd /cygdrive/c/src/octave-forge; svn status -u)
 
 Set your octave version:
 

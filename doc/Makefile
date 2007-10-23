@@ -54,7 +54,7 @@ clean:
 	@$(MAKE) -C coda clean
 
 $(HTDOCS_PKG):
-	@tar czf $@ --exclude=CVS --exclude=\*.in htdocs 
+	@tar czf $@ --exclude=.svn --exclude=\*.in htdocs 
 
 package:
 

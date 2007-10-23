@@ -239,7 +239,7 @@ def create_license_html(package_name, packdir, outdir):
 
 def rm_rf(p):
     #print("Deleting " + p);
-    if (p == "./CVS"):
+    if (p == "./.svn"):
         return;
     for root, dirs, files in os.walk(p, topdown=False):
         for name in files:
@@ -316,7 +316,7 @@ def main():
         for i in range(0, len(packages)):
             p = packages[i];
             packdir = main_dir + p;
-            if (os.path.isdir(packdir) and p != "CVS"):
+            if (os.path.isdir(packdir) and p != ".svn"):
                 outdir  = "./" + p;
                 try:
                     desc = handle_package(packdir, "./htdocs/" + p, p);

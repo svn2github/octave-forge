@@ -17,7 +17,7 @@ from the following:
 This directory should be somewhere in your Tcl path, either
 because you unpacked the archive in the Tcl lib directory or
 because you set auto_path to include this directory in your
-Tcl source file.  If you are trying to install from CVS,
+Tcl source file.  If you are trying to install from SVN,
 use release.sh to generate the archive (soctcl#.#.zip and/or
 soctcl#.#.tar.gz) which you can then unpack into the Tcl lib
 directory.

@@ -10,7 +10,7 @@ of this directory. These are
 to be traversed and the source packages for these built and place in
 this directory. These are compared to the uploaded versions and the
 MD5sums of the packages are calculated. These are placed in sub-
-directories corresponding to the sub-directory name where the CVS 
+directories corresponding to the sub-directory name where the SVN 
 controlled code is found. That is main/, extra/ or nonfree/.
 
 "make check" - This will build all of the packages individually in an

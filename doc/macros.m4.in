@@ -9,7 +9,7 @@ m4_define(`__PACKAGE__',`http://downloads.sourceforge.net/octave')m4_dnl
 m4_dnl m4_define(`__PACKAGE__',`http://octave.dbateman.org/packages')m4_dnl
 m4_define(`__SUMMARY__',`__SOURCEFORGE__/projects/octave/')m4_dnl
 m4_define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')m4_dnl
-m4_define(`__CVS__',`__SOURCEFORGE__/cvs/?__GROUP_ID__')m4_dnl
+m4_define(`__SVN__',`__SOURCEFORGE__/svn/?__GROUP_ID__')m4_dnl
 m4_define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')m4_dnl
 m4_define(`__MONOLITHIC__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__MONOLITHIC_ID__')m4_dnl
 m4_define(`__WINDOWS__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__WINDOWS_ID__')m4_dnl
@@ -186,7 +186,7 @@ m4_dnl __nav_button__($1, [[[Octave-Forge News Archive]]], [[[NEWS.html]]], [[[N
  __nav_button__($1, [[[Links]]], [[[links.html]]], [[[Links]]]) &middot;
 m4_dnl __ext_nav_button__([[[__SUMMARY__]]], [[[SourceForge]]]) &middot;
 m4_dnl __ext_nav_button__([[[__DOWNLOAD__]]], [[[Download]]]) &middot;
- __ext_nav_button__([[[__CVS__]]], [[[CVS]]])
+ __ext_nav_button__([[[__SVN__]]], [[[SVN]]])
 ')m4_dnl
 m4_dnl
 m4_dnl

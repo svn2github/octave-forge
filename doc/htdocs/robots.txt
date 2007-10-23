@@ -1,4 +1,4 @@
 # robots.txt for http://octave.sourceforge.net/
 
 User-agent: *
-Disallow: /CVS/
+Disallow: /.svn/

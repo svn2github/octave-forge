@@ -32,8 +32,8 @@ changed.  For this reason we are storing the original text for the
 translation in the language source tree and updating it whenever
 Octave is released.  We will store the revision number of the base
 file in the translated file. The translator can then use e.g., 
-`"cvs diff -r1.2 filter" in the base directory to find out how filter
-has changed between version 1.2 and the current version.</p>
+`"svn diff -r4145 filter" in the base directory to find out how filter
+has changed between version 4145 and the current version.</p>
 
 <p>Translators can also add their name and email to the translated file.</p>
 
@@ -58,8 +58,7 @@ href="developers.html">developer</a></li>
 language sources:</p>
 <pre>
    $ cd <span style="color: #800000;"><i>working_directory</i></span>
-   $ export CVS_RSH=ssh
-   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave co octave-forge
+   $ svn co https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge
 </pre>
 <p>language/admin will contain administration tools to identify what
 needs to be translated, while language/base contains the strings which 
@@ -159,7 +158,7 @@ messages stored in the base translation tree.</p>
 </li>
 <li>Compare new base docs to those on the server:
 <pre>
-	cvs -q update -dp
+	svn status -u
 </pre>
 Those that have been updated since the last release will be
 marked <em>M</em>.  Those that are new will be marked <em>?</em>.
@@ -168,13 +167,13 @@ You won't be able to tell if any have been deleted.
 </li>
 <li>Inform server of new docs:
 <pre>
-	cvs add ...
+	svn add ...
 </pre>
 where <em>...</em> is the list of names marked by <em>?</em>.
 </li>
 <li>Update server with new base docs:
 <pre>
-	cvs commit
+	svn commit
 </pre>
 </li>
 </ol>

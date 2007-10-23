@@ -15,7 +15,7 @@ Repository (octave-forge) you need to</p>
 <ul>
     <li>have an account on SourceForge,</li>
     <li>be registered as an octave-forge developer,</li>
-    <li>have <a href="http://www.cvshome.org/">CVS</a>
+    <li>have <a href="http://subversion.tigris.org/">SVN</a>
         installed on the computer from which you
         will submit contributions, and</li>
     <li>have the secure shell,
@@ -31,38 +31,23 @@ to the octave-forge mailing list
 Include a bit of information about the code
 you plan to submit. 
 Finally, if your computer runs linux or
-FreeBSD, chances are good that both <tt>ssh</tt> and CVS are already 
+FreeBSD, chances are good that both <tt>ssh</tt> and SVN are already 
 installed on your system. 
 If they aren't, 
 you will need to find prebuilt packages for them or download their
 source codes and build them.</p>
 
-<h3>Create a SF home directory</h3>
-<p>
-If you've never submitted code to a SourceForge project before,
-create your home directory by
-logging onto the octave-forge account with <tt>ssh</tt>:</p>
-<pre>
-   $ ssh -l <span style="color: #800000;"><i>sflogin</i></span>  octave.cvs.sourceforge.net
-   Password:  <span style="color: #800000;"><i>your SF password</i></span>
-</pre>
-<p>Although SF will only show you a message-of-the-day screen then log
-you out, this process has the useful side effect of creating a home
-directory for you if one doesn't already exist.  Some CVS commands will fail
-if you do not have a home directory on SF.</p>
-
 <h3>Download the latest octave-forge distribution</h3>
-<p>CVS expects the 
+<p>It is expected that the 
 code you plan to submit to reside in a directory within the existing
 octave-forge directory structure.
 You will therefore need to download a copy of the latest octave-forge
 distribution to work in.  Change directories to a place you want
-to put the code, then issue the CVS <i>checkout</i>
+to put the code, then issue the SVN <i>checkout</i>
 (abreviated as 'co') command:</p>
 <pre>
    $ cd <span style="color: #800000;"><i>working_directory</i></span>
-   $ export CVS_RSH=ssh
-   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave co octave-forge
+   $ svn co https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge
 </pre>
 
 <h3>Where does your code belong?</h3>
@@ -325,17 +310,19 @@ post-pkg/%::
 
 <h3>Submit your code!</h3>
 <p>You are now ready to upload your code to the Gnu Octave Repository.
-Do this with two CVS commands--one to add a new
+Do this with two SVN commands--one to add a new
 entry for your file in the octave-forge catalog, and a second command
 to actually upload the file:</p>
 <pre>
-   $ cvs add <span style="color: #800000;"><i>files</i></span>
-   $ cvs commit <span style="color: #800000;"><i>files</i></span>
+   $ svn add <span style="color: #800000;"><i>files</i></span>
+   $ svn commit <span style="color: #800000;"><i>files</i></span>
 </pre>
+<p>The first time you run the above during a session, you will be
+requested to type your octave-forge username and password.</p>
 <p>After hitting the carriage return at the end of the commit command,
-CVS will open your default editor so that you can enter comments about
+SVN will open your default editor so that you can enter comments about
 the commit. The first time you commit a file the comment might be
-something as simple as `Initial commit into CVS.' However, for all
+something as simple as `Initial commit into SVN.' However, for all
 subsequent commits please add meaningful comments that explain why
 changes were made to the file since all comments will appear in the
 changelog.  Try to gather related changes into one commit command.</p>
@@ -349,11 +336,11 @@ changelog.  Try to gather related changes into one commit command.</p>
 octave-forge tree and do the following:</p>
 <pre>
    $ cd octave-forge/main
-   $ cvs add <span style="color: #800000;"><i>package</i></span>
-   $ cvs commit <span style="color: #800000;"><i>package</i></span>
+   $ svn add <span style="color: #800000;"><i>package</i></span>
+   $ svn commit <span style="color: #800000;"><i>package</i></span>
    $ cd <span style="color: #800000;"><i>package</i></span>
-   $ cvs add *
-   $ cvs commit *
+   $ svn add *
+   $ svn commit *
 </pre>
 
 <p>You may find it easier to use the import command, especially if your
@@ -362,20 +349,20 @@ your directory into the octave-forge tree.  Instead, change to the
 root of your package tree and enter the following:</p>
 <pre>
    $ cd <span style="color: #800000;"><i>package</i></span>
-   $ cvs -d:ext:<span style="color: #800000;"><i>sflogin</i></span>@octave.cvs.sourceforge.net:/cvsroot/octave import \
-     -m "<span style="color: #800000;"><i>package name</i></span>" octave-forge/<span style="color: #800000;"><i>main/package</i></span> <span style="color: #800000;"><i>sflogin</i></span> start
+   $ svn import <span style="color: #800000;"><i>package name</i></span> 
+     https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge/main/package
 </pre>
 
 <p>You can then fetch the new package from octave-forge as follows:</p>
 <pre>
    $ cd octave-forge
-   $ cvs -q update -d
+   $ svn status -u
 </pre>
 
-<p>From time to time, you will need to synchronize with CVS:</p>
+<p>From time to time, you will need to synchronize with SVN:</p>
 <pre>
    $ cd octave-forge
-   $ cvs -q update -d
+   $ svn status -u
 </pre>
 <p>Each file will be listed with one of the following codes:</p>
 <ul>
@@ -383,20 +370,20 @@ root of your package tree and enter the following:</p>
 <li> `M' for files you modified but didn't commit.</li>
 <li> `C' for files which have unresolvable conflicts.  Look inside the file to
 see what it was that couldn't be resolved.  It will be clearly marked, or you
-can do a cvs diff on the file to highlight the conflict.</li>
+can do a svn diff on the file to highlight the conflict.</li>
 <li> `U' for files you haven't touched but are modified on the server.</li>
 <li> `P' for files you have modified in a way consistent with the modifications
 on the server (?), e.g., because you submitted a patch for someone else to apply.</li>
 </ul>
 
-<h3>Learn more about CVS</h3>
-<p>The few CVS commands shown here just scratch the surface of this
+<h3>Learn more about SVN</h3>
+<p>The few SVN commands shown here just scratch the surface of this
 powerful versioning package.  If you become an active contributor
-you will benefit from learning more CVS commands and understanding 
-how CVS works.
+you will benefit from learning more SVN commands and understanding 
+how SVN works.
 The
-<a href="http://cvsbook.red-bean.com/cvsbook.html">
-CVS Book</a> is a great place to begin your exploration.</p>
+<a href="http://svnbook.org/">
+SVN Book</a> is a great place to begin your exploration.</p>
 
 <h3>Join the developers' mailing list</h3>
 <p>Finally, consider joining the octave-forge developer's 

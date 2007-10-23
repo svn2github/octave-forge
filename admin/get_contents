@@ -76,8 +76,8 @@ sub fill_README {  # {{{1
         }
     }
     close README;
-    warn "Use 'cvs diff ${PATH}${RM}' to determine if updates are needed.\n";
-    warn "Use 'cvs commit ${PATH}${RM}' to update README.\n";
+    warn "Use 'svn diff ${PATH}${RM}' to determine if updates are needed.\n";
+    warn "Use 'svn commit ${PATH}${RM}' to update README.\n";
 }  # 1}}}
 
 # # # # # # # 

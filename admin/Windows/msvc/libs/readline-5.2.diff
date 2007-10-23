@@ -1,6 +1,6 @@
 diff -urN readline-5.2/README.msvc readline-5.2-new/README.msvc
---- readline-5.2/README.msvc	1970-01-01 01:00:00.000000000 +0100
-+++ readline-5.2-new/README.msvc	2007-09-29 23:41:53.593750000 +0200
+--- readline-5.2/README.msvc	Thu Jan  1 00:00:00 1970
++++ readline-5.2-new/README.msvc	Tue Oct 23 17:08:40 2007
 @@ -0,0 +1,16 @@
 +Compilation instruction under MSVC
 +----------------------------------
@@ -19,8 +19,8 @@ diff -urN readline-5.2/README.msvc readline-5.2-new/README.msvc
 +   manually. Note also that the DLL will be installed in $prefix/lib, while
 +   it is more usual to install them in $prefix/bin.
 diff -urN readline-5.2/bind.c readline-5.2-new/bind.c
---- readline-5.2/bind.c	2006-07-27 15:44:10.000000000 +0200
-+++ readline-5.2-new/bind.c	2007-09-29 23:41:53.625000000 +0200
+--- readline-5.2/bind.c	Thu Jul 27 13:44:10 2006
++++ readline-5.2-new/bind.c	Tue Oct 23 17:08:40 2007
 @@ -841,7 +841,7 @@
        filename = SYS_INPUTRC;
      }
@@ -31,8 +31,8 @@ diff -urN readline-5.2/bind.c readline-5.2-new/bind.c
      return 0;
    filename = "~/_inputrc";
 diff -urN readline-5.2/complete.c readline-5.2-new/complete.c
---- readline-5.2/complete.c	2006-07-28 17:35:49.000000000 +0200
-+++ readline-5.2-new/complete.c	2007-09-29 23:41:53.640625000 +0200
+--- readline-5.2/complete.c	Fri Jul 28 15:35:49 2006
++++ readline-5.2-new/complete.c	Tue Oct 23 17:08:40 2007
 @@ -55,6 +55,66 @@
  #include "posixdir.h"
  #include "posixstat.h"
@@ -185,8 +185,8 @@ diff -urN readline-5.2/complete.c readline-5.2-new/complete.c
        else if (ISALPHA ((unsigned char)dirname[0]) && dirname[1] == ':')
          {
 diff -urN readline-5.2/config.h.in readline-5.2-new/config.h.in
---- readline-5.2/config.h.in	2006-09-12 22:02:00.000000000 +0200
-+++ readline-5.2-new/config.h.in	2007-09-29 23:41:53.656250000 +0200
+--- readline-5.2/config.h.in	Tue Sep 12 20:02:00 2006
++++ readline-5.2-new/config.h.in	Tue Oct 23 17:08:40 2007
 @@ -257,7 +257,7 @@
  #  undef HAVE_STRCOLL
  #endif
@@ -197,8 +197,8 @@ diff -urN readline-5.2/config.h.in readline-5.2-new/config.h.in
  #  define USE_VARARGS
  #else
 diff -urN readline-5.2/display.c readline-5.2-new/display.c
---- readline-5.2/display.c	2006-09-14 20:20:12.000000000 +0200
-+++ readline-5.2-new/display.c	2007-09-30 01:41:59.046875000 +0200
+--- readline-5.2/display.c	Thu Sep 14 18:20:12 2006
++++ readline-5.2-new/display.c	Tue Oct 23 17:10:00 2007
 @@ -55,6 +55,11 @@
  #include "rlprivate.h"
  #include "xmalloc.h"
@@ -302,9 +302,27 @@ diff -urN readline-5.2/display.c readline-5.2-new/display.c
    if (_rl_term_clrpag)
      tputs (_rl_term_clrpag, 1, _rl_output_character_function);
    else
+@@ -2139,7 +2207,7 @@
+      char *string;
+      int count, col;
+ {
+-#if defined (__MSDOS__) || defined (__MINGW32__)
++#if defined (__MSDOS__) || (defined (__MINGW32__) && !defined (_MSC_VER))
+   _rl_output_some_chars (string, count);
+ #else
+   /* DEBUGGING */
+@@ -2191,7 +2259,7 @@
+   if (count > _rl_screenwidth)	/* XXX */
+     return;
+ 
+-#if !defined (__MSDOS__) && !defined (__MINGW32__)
++#if (!defined (__MSDOS__) && !defined (__MINGW32__)) || defined (_MSC_VER)
+   if (_rl_term_DC && *_rl_term_DC)
+     {
+       char *buffer;
 diff -urN readline-5.2/histfile.c readline-5.2-new/histfile.c
---- readline-5.2/histfile.c	2006-03-31 22:48:43.000000000 +0200
-+++ readline-5.2-new/histfile.c	2007-09-29 23:41:53.703125000 +0200
+--- readline-5.2/histfile.c	Fri Mar 31 20:48:43 2006
++++ readline-5.2-new/histfile.c	Tue Oct 23 17:08:40 2007
 @@ -134,7 +134,7 @@
    return_val = (char *)xmalloc (2 + home_len + 8); /* strlen(".history") == 8 */
    strcpy (return_val, home);
@@ -315,8 +333,8 @@ diff -urN readline-5.2/histfile.c readline-5.2-new/histfile.c
  #else
    strcpy (return_val + home_len + 1, ".history");
 diff -urN readline-5.2/history.c readline-5.2-new/history.c
---- readline-5.2/history.c	2006-05-21 19:39:41.000000000 +0200
-+++ readline-5.2-new/history.c	2007-09-29 23:41:53.718750000 +0200
+--- readline-5.2/history.c	Sun May 21 17:39:41 2006
++++ readline-5.2-new/history.c	Tue Oct 23 17:08:40 2007
 @@ -49,6 +49,10 @@
  
  #include "xmalloc.h"
@@ -329,8 +347,8 @@ diff -urN readline-5.2/history.c readline-5.2-new/history.c
  #define DEFAULT_HISTORY_GROW_SIZE 50
  
 diff -urN readline-5.2/history.h readline-5.2-new/history.h
---- readline-5.2/history.h	2003-07-31 14:38:44.000000000 +0200
-+++ readline-5.2-new/history.h	2007-09-29 23:41:53.750000000 +0200
+--- readline-5.2/history.h	Thu Jul 31 12:38:44 2003
++++ readline-5.2-new/history.h	Tue Oct 23 17:08:40 2007
 @@ -68,93 +68,93 @@
  
  /* Begin a session in which the history functions might be used.  This
@@ -565,8 +583,8 @@ diff -urN readline-5.2/history.h readline-5.2-new/history.h
  #ifdef __cplusplus
  }
 diff -urN readline-5.2/input.c readline-5.2-new/input.c
---- readline-5.2/input.c	2006-08-16 21:15:16.000000000 +0200
-+++ readline-5.2-new/input.c	2007-09-30 14:36:56.531250000 +0200
+--- readline-5.2/input.c	Wed Aug 16 19:15:16 2006
++++ readline-5.2-new/input.c	Tue Oct 23 17:08:40 2007
 @@ -61,6 +61,11 @@
  #include <stdio.h>
  #include <errno.h>
@@ -787,8 +805,8 @@ diff -urN readline-5.2/input.c readline-5.2-new/input.c
        result = read (fileno (stream), &c, sizeof (unsigned char));
  
 diff -urN readline-5.2/keymaps.h readline-5.2-new/keymaps.h
---- readline-5.2/keymaps.h	2001-11-20 18:42:49.000000000 +0100
-+++ readline-5.2-new/keymaps.h	2007-09-29 23:41:53.796875000 +0200
+--- readline-5.2/keymaps.h	Tue Nov 20 17:42:49 2001
++++ readline-5.2-new/keymaps.h	Tue Oct 23 17:08:40 2007
 @@ -66,35 +66,35 @@
  #define ISKMAP 1
  #define ISMACR 2
@@ -835,8 +853,8 @@ diff -urN readline-5.2/keymaps.h readline-5.2-new/keymaps.h
  #ifdef __cplusplus
  }
 diff -urN readline-5.2/nls.c readline-5.2-new/nls.c
---- readline-5.2/nls.c	2002-10-19 04:05:50.000000000 +0200
-+++ readline-5.2-new/nls.c	2007-09-29 23:41:53.796875000 +0200
+--- readline-5.2/nls.c	Sat Oct 19 02:05:50 2002
++++ readline-5.2-new/nls.c	Tue Oct 23 17:08:40 2007
 @@ -44,6 +44,9 @@
  #endif
  
@@ -871,8 +889,8 @@ diff -urN readline-5.2/nls.c readline-5.2-new/nls.c
    if (t && *t && (t[0] != 'C' || t[1]) && (STREQ (t, "POSIX") == 0))
      {
 diff -urN readline-5.2/parens.c readline-5.2-new/parens.c
---- readline-5.2/parens.c	2004-03-04 04:39:51.000000000 +0100
-+++ readline-5.2-new/parens.c	2007-09-29 23:41:53.828125000 +0200
+--- readline-5.2/parens.c	Thu Mar  4 03:39:51 2004
++++ readline-5.2-new/parens.c	Tue Oct 23 17:08:40 2007
 @@ -49,6 +49,10 @@
  #  include <sys/select.h>
  #endif
@@ -893,10 +911,11 @@ diff -urN readline-5.2/parens.c readline-5.2-new/parens.c
  int rl_blink_matching_paren = 1;
  #else /* !HAVE_SELECT */
  int rl_blink_matching_paren = 0;
-@@ -138,6 +142,23 @@
+@@ -137,6 +141,23 @@
+       rl_point = match_point;
        (*rl_redisplay_function) ();
        ready = select (1, &readfds, (fd_set *)NULL, (fd_set *)NULL, &timer);
-       rl_point = orig_point;
++      rl_point = orig_point;
 +#elif defined (_WIN32)
 +      int orig_point, match_point, ready;
 +
@@ -913,13 +932,12 @@ diff -urN readline-5.2/parens.c readline-5.2-new/parens.c
 +      rl_point = match_point;
 +      (*rl_redisplay_function) ();
 +      ready = (WaitForSingleObject (GetStdHandle(STD_INPUT_HANDLE), 500) == WAIT_OBJECT_0);
-+      rl_point = orig_point;
+       rl_point = orig_point;
  #else /* !HAVE_SELECT */
        _rl_insert_char (count, invoking_key);
- #endif /* !HAVE_SELECT */
 diff -urN readline-5.2/readline.c readline-5.2-new/readline.c
---- readline-5.2/readline.c	2006-08-16 21:00:36.000000000 +0200
-+++ readline-5.2-new/readline.c	2007-09-29 23:41:53.859375000 +0200
+--- readline-5.2/readline.c	Wed Aug 16 19:00:36 2006
++++ readline-5.2-new/readline.c	Tue Oct 23 17:08:40 2007
 @@ -220,7 +220,11 @@
  
  /* The style of `bell' notification preferred.  This can be set to NO_BELL,
@@ -943,8 +961,8 @@ diff -urN readline-5.2/readline.c readline-5.2-new/readline.c
  
    _rl_keymap = xkeymap;
 diff -urN readline-5.2/readline.h readline-5.2-new/readline.h
---- readline-5.2/readline.h	2006-08-16 21:16:59.000000000 +0200
-+++ readline-5.2-new/readline.h	2007-09-29 23:41:53.890625000 +0200
+--- readline-5.2/readline.h	Wed Aug 16 19:16:59 2006
++++ readline-5.2-new/readline.h	Tue Oct 23 17:08:40 2007
 @@ -63,7 +63,7 @@
  } UNDO_LIST;
  
@@ -1968,8 +1986,8 @@ diff -urN readline-5.2/readline.h readline-5.2-new/readline.h
  #ifdef __cplusplus
  }
 diff -urN readline-5.2/rlstdc.h readline-5.2-new/rlstdc.h
---- readline-5.2/rlstdc.h	2003-05-30 21:08:02.000000000 +0200
-+++ readline-5.2-new/rlstdc.h	2007-09-29 23:41:53.890625000 +0200
+--- readline-5.2/rlstdc.h	Fri May 30 19:08:02 2003
++++ readline-5.2-new/rlstdc.h	Tue Oct 23 17:08:40 2007
 @@ -42,4 +42,14 @@
  #  endif
  #endif
@@ -1986,8 +2004,8 @@ diff -urN readline-5.2/rlstdc.h readline-5.2-new/rlstdc.h
 +
  #endif /* !_RL_STDC_H_ */
 diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
---- readline-5.2/support/shobj-conf	2006-04-11 15:15:43.000000000 +0200
-+++ readline-5.2-new/support/shobj-conf	2007-09-29 23:54:57.734375000 +0200
+--- readline-5.2/support/shobj-conf	Tue Apr 11 13:15:43 2006
++++ readline-5.2-new/support/shobj-conf	Tue Oct 23 17:08:40 2007
 @@ -482,6 +482,17 @@
  	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
  	;;
@@ -2006,10 +2024,12 @@ diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
  msdos*)
  	SHOBJ_STATUS=unsupported
  	SHLIB_STATUS=unsupported
-@@ -505,6 +516,17 @@
+@@ -503,6 +514,17 @@
+         if [ -n "$DLLVERSION" ] ; then
+ 		SHLIB_DLLVERSION="$DLLVERSION"
          fi
- 	;;
- 
++	;;
++
 +mingw*)
 +	SHOBJ_LD='$(CC)'
 +	SHOBJ_CFLAGS='-DREADLINE_DLL'
@@ -2019,14 +2039,12 @@ diff -urN readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
 +        SHLIB_LIBVERSION='.$(SHLIB_LIBSUFF)'
 +
 +	SHLIB_DOT=
-+	;;
-+
- #
- # Rely on correct gcc configuration for everything else
+ 	;;
+ 
  #
 diff -urN readline-5.2/terminal.c readline-5.2-new/terminal.c
---- readline-5.2/terminal.c	2006-09-28 16:11:10.000000000 +0200
-+++ readline-5.2-new/terminal.c	2007-09-29 23:51:52.593750000 +0200
+--- readline-5.2/terminal.c	Thu Sep 28 14:11:10 2006
++++ readline-5.2-new/terminal.c	Tue Oct 23 17:08:40 2007
 @@ -661,11 +661,16 @@
  	default:
  	  break;
@@ -2045,8 +2063,8 @@ diff -urN readline-5.2/terminal.c readline-5.2-new/terminal.c
  	case AUDIBLE_BELL:
  	  fprintf (stderr, "\007");
 diff -urN readline-5.2/tilde.c readline-5.2-new/tilde.c
---- readline-5.2/tilde.c	2006-04-11 17:19:32.000000000 +0200
-+++ readline-5.2-new/tilde.c	2007-09-29 23:41:53.968750000 +0200
+--- readline-5.2/tilde.c	Tue Apr 11 15:19:32 2006
++++ readline-5.2-new/tilde.c	Tue Oct 23 17:08:40 2007
 @@ -171,7 +171,7 @@
  
    for (i = 0; i < string_len; i++)

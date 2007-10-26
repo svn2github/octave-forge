@@ -35,7 +35,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages="f2c libf2c BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
+available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config"
@@ -287,6 +287,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" VC
     todo_check "$tbindir/f2c.exe" f2c
     todo_check "$tlibdir/f2c.lib" libf2c
+    todo_check "$tbindir/fort77" fort77
     todo_check "$tbindir/blas.dll" BLAS
     todo_check "$tbindir/lapack.dll" LAPACK
     if $DOATLAS; then
@@ -438,6 +439,30 @@ if check_package libf2c; then
     cp -f vcf2c.lib "$tlibdir/f2c.lib") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/libf2c"
   if ! test -f "$tlibdir/f2c.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# fort77 #
+##########
+
+if check_package fort77; then
+  download_file fort77-1.18.tar.gz ftp://sunsite.unc.edu/pub/Linux/devel/lang/fortran/fort77-1.18.tar.gz
+  echo -n "decompressing fort77... "
+  (cd "$DOWNLOAD_DIR" && tar xfz fort77-1.18.tar.gz)
+  echo "done"
+  echo -n "installing fort77... "
+  (cd "$DOWNLOAD_DIR/fort77-1.18" &&
+    sed -e "s/, *\"-lm\" *//" -e "s/\/lib\/cpp/\$cc -E/" -e "s/\$verbose > 1/1/" \
+      -e "s/|| 'cc'/|| 'cc-msvc'/" fort77 > ttt &&
+    mv ttt fort77 &&
+    cp fort77 "$tbindir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/fort77-1.18"
+  if ! test -f "$tbindir/fort77"; then
     echo "failed"
     exit -1
   else
@@ -1474,8 +1499,9 @@ if check_package octave; then
     mv ttt octMakefile.in &&
     if test ! -f "config.log"; then
       CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
+        F77=fort77 FFLAGS="-O2 -Wc,-MD -Wl,-subsystem:console" FLIBS=-lf2c \
         ./configure --build=i686-pc-msdosmsvc --prefix="$octave_prefix" \
-        --with-f2c --with-zlib=zlib
+        --with-zlib=zlib
     fi &&
     if test ! -f "src/octave.exe"; then
       make

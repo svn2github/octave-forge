@@ -15,12 +15,14 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}] =} qfuncinv(@var{x})
-##	Compute the inverse Q function.
+## @deftypefn {Function File} {[@var{y}] =} qfuncinv (@var{x})
+## Compute the inverse Q function.
 ## @seealso{erfc,  erf}
 ## @end deftypefn
 
 function y = qfuncinv(x)
-	if (nargin < 1); usage('qfuncinv(x)'); end
-	y = -norminv(x);
-	
+  if (nargin < 1); 
+    usage('qfuncinv(x)'); 
+  end
+  y = -norminv(x);
+endfunction

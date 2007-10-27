@@ -15,8 +15,8 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}] =} qfunc(@var{x})
-##	Compute the Q function.
+## @deftypefn {Function File} {[@var{y}] =} qfunc (@var{x})
+## Compute the Q function.
 ## @seealso{erfc,  erf}
 ## @end deftypefn
 

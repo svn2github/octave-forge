@@ -5,7 +5,7 @@
 
 @setfilename fixed.info
 
-@settitle
+@settitle Fixed Point Toolbox for Octave
 
 @titlepage
 @title  Fixed Point Toolbox for Octave

@@ -2,7 +2,7 @@
 
 @setfilename comms.info
 
-@settitle
+@settitle Communications Toolbox for Octave
 
 @titlepage
 @title  Communications Toolbox for Octave

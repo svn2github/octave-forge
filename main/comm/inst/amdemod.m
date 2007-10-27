@@ -15,8 +15,9 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{m}] =} amdemod(@var{s},@var{fc},@var{fs})
-##	Compute the amplitude demodulation of the signal S with a carrier freauency of fc and a sample frequency of fs.
+## @deftypefn {Function File} {[@var{m}] =} amdemod (@var{s}, @var{fc}, @var{fs})
+## Compute the amplitude demodulation of the signal @var{s} with a carrier 
+## frequency of @var{fc} and a sample frequency of @var{fs}.
 ## @seealso{ammod}
 ## @end deftypefn
 

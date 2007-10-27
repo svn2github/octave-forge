@@ -45,10 +45,38 @@ LIBPATH=${PRFPATH}/lib
 
 # Add the option -gdwarf-2 to CFLAGS, CPPFLAGS and CXXFLAGS if you
 # want to create a gdb version of Octave.
-CFLAGS="-O3 -ftree-vectorize -I${INCPATH} -I${INCPATH}/curl -I${INCPATH}/readline" 
-CPPFLAGS="-O3 -ftree-vectorize ${CFLAGS}"
-CXXFLAGS="-O3 -ftree-vectorize ${CFLAGS}"
-LDFLAGS="-L${LIBPATH} -L${LIBPATH}/pkgconfig"
+ARCH="-arch i386"
+
+# Here are the optimization flags that can be used on a PPC platform
+# OPTFLAGS="-O3 -ftree-vectorize -mpowerpc -faltivec -maltivec -mabi=altivec"
+# Here are the optimization flags that can be used on a i386 platform
+OPTFLAGS="-O3 -ftree-vectorize -march=i686 -mfpmath=sse,387 -fforce-addr -mieee-fp -msse3 -msse2 -msse -mmmx"
+
+# If you are running a Mac OS X 10.3 on the PPC platform then change to 
+# MACOSX_DEPLOYMENT_TARGET=10.3 
+export MACOSX_DEPLOYMENT_TARGET=10.4
+
+GCC="gcc ${ARCH} ${OPTFLAGS}"
+CPP="gcc ${ARCH} -E"
+CXX="g++ ${ARCH} ${OPTFLAGS}"
+
+# If you are running a Mac OS X 10.3 on the PPC platform then change to 
+# -isysroot /Developer/SDKs/MacOSX10.3.9.sdk and in the LDFLAGS use that
+# line -Wl,-syslibroot -Wl,/Developer/SDKs/MacOSX10.3.9.sdk
+CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -I${INCPATH} -I${INCPATH}/curl -I${INCPATH}/readline" 
+CPPFLAGS="${CFLAGS}"
+CXXFLAGS="${CFLAGS}"
+LDFLAGS="-L${LIBPATH} -L${LIBPATH}/pkgconfig -Wl,-headerpad_max_install_names -Wl,-syslibroot -Wl,/Developer/SDKs/MacOSX10.4u.sdk"
+
+# Note: another architecture flag and isysroot information here, change
+# this if you are running a Mac OS X on the PPC platform
+F77="fort77 ${OPTFLAGS}"
+FLIBS="-L${LIBPATH} -lf2c"
+FFLAGS="-Wc,-arch -Wc,i386 -Wc,-isysroot -Wc,/Developer/SDKs/MacOSX10.4u.sdk ${OPTFLAGS} -I${INCPATH} -I${INCPATH}/curl -I${INCPATH}/readline"
+
+# If you are running a Mac OS X 10.3 on the PPC platform then change to 
+# EXTRACONF="--host=powerpc-apple-darwin7.9.1"
+EXTRACONF="--host=powerpc-apple-darwin8.9.1"
 
 # I have installed the GNU tools in /usr/local/bin, that's why I need
 # to use this path. We use f2c from the current Octave.app, that's why
@@ -70,14 +98,15 @@ evalfailexit() {
 
 # Use another file for output while './configure' and 'make' and
 # 'make install', eg. MSGFILE=/tmp/mymessages.log
-MSGFILE=/dev/stdout 
+MSGFILE=/dev/stdout # /tmp/messages.log # /dev/stdout 
 
 # Rebuild the './configure' script with './autogen.sh' to make sure
 # that we have the latest changes available.
-evalfailexit "./autogen.sh"
-evalfailexit "./configure CFLAGS=\"${CFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\" \
-  CXXFLAGS=\"${CXXFLAGS}\" LDFLAGS=\"${LDFLAGS}\" --prefix=${PRFPATH} \
-  --enable-shared --with-f2c"
+# evalfailexit "./autogen.sh"
+evalfailexit "./configure CC=\"${GCC}\" CPP=\"${CPP}\" CXX=\"${CXX}\" \
+  F77=\"${F77}\" FLIBS=\"${FLIBS}\" FFLAGS=\"${FFLAGS}\" \
+  CFLAGS=\"${CFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\" CXXFLAGS=\"${CXXFLAGS}\" \
+  LDFLAGS=\"${LDFLAGS}\" --prefix=${PRFPATH} --enable-shared"
 evalfailexit "make -j 2"
 
 # This is the point of *no return*: If something goes wrong in the

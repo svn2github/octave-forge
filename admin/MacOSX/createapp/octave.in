@@ -52,9 +52,11 @@ LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% ${LDFLAGS}"
 # CFLAGS="-I${ROOT}/include -I${ROOT}/include/octave-%VERSION%"
 
 # Setting up other variables that are needed to run the Octave program
-# or mkoctfile.
+# or mkoctfile and to install packages.
 DL_LDFLAGS="-bundle -bundle_loader ${ROOT}/bin/octave-%VERSION%"
 SED="/usr/bin/sed"
+CC=`mkoctfile -p CC`
+CXX=`mkoctfile -p CXX`
 
 # Export the variables that have been defined before so that the
 # Octave program gets knowledge about them.
@@ -66,7 +68,7 @@ SED="/usr/bin/sed"
 # Invoke Octave, preserving spaces in all the input arguments.
 OCTAVE_HOME="${OCTAVE_HOME}" PATH="${PATH}" \
   DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}" \
-  CFLAGS="${CFLAGS}" CPPFLAGS="${CPPFLAGS}" \
+  CC=${CC} CXX=${CXX} CFLAGS="${CFLAGS}" CPPFLAGS="${CPPFLAGS}" \
   CXXFLAGS="${CXXFLAGS}" FFLAGS="${FFLAGS}" LDFLAGS="${LDFLAGS}" \
   DL_LDFLAGS="${DL_LDFLAGS}" SED="$SED" \
 "${ROOT}/bin/octave-%VERSION%" "$@"

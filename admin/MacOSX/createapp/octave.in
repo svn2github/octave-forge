@@ -68,7 +68,7 @@ CXX=`mkoctfile -p CXX`
 # Invoke Octave, preserving spaces in all the input arguments.
 OCTAVE_HOME="${OCTAVE_HOME}" PATH="${PATH}" \
   DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}" \
-  CC=${CC} CXX=${CXX} CFLAGS="${CFLAGS}" CPPFLAGS="${CPPFLAGS}" \
+  CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CPPFLAGS="${CPPFLAGS}" \
   CXXFLAGS="${CXXFLAGS}" FFLAGS="${FFLAGS}" LDFLAGS="${LDFLAGS}" \
   DL_LDFLAGS="${DL_LDFLAGS}" SED="$SED" \
 "${ROOT}/bin/octave-%VERSION%" "$@"

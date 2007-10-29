@@ -49,6 +49,7 @@ ARCH="-arch i386"
 
 # Here are the optimization flags that can be used on a PPC platform
 # OPTFLAGS="-O3 -ftree-vectorize -mpowerpc -faltivec -maltivec -mabi=altivec"
+
 # Here are the optimization flags that can be used on a i386 platform
 OPTFLAGS="-O3 -ftree-vectorize -march=i686 -mfpmath=sse,387 -fforce-addr -mieee-fp -msse3 -msse2 -msse -mmmx"
 

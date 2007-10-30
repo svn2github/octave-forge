@@ -16,26 +16,20 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn  {Function} ode8d (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
-%# @deftypefnx {Function} {@var{sol} =} ode8d (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
-%# @deftypefnx {Function} {@var{[t, y, [xe, ye, ie]]} =} ode8d (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
+%# @deftypefn  {Function File} {[@var{}] =} ode8d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
+%# @deftypefnx {Command} {[@var{sol}] =} ode8d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
+%# @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode8d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %#
-%# If called with no return argument, plots the solutions over time in a figure window while solving the set of equations that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} must be the time slot, @var{init} must be the states initial values, @var{opt} can optionally be the options structure that is created with the command @command{odeset} and @var{[P1, P2, @dots{}]} can optionally be all arguments that have to be passed to the function @var{fun}. If an invalid input argument is detected then the function terminates with an error.
+%# This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) or non--stiff differential algebraic equations (non--stiff DAEs) with the well known explicit Runge--Kutta method of order (8,5,3).
 %#
-%# If called with one return argument, returns the solution structure @var{sol} after solving the set of ordinary differential equations. The solution structure @var{sol} has the fields @var{x} for the steps chosen by the solver, @var{y} for the solver solutions, @var{solver} for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} of the event function if an event property is set in the option argument @var{opt}. See the description for the input arguments before. If an invalid input argument is detected then the function terminates with an error.
+%# @b{Note: The function files @file{odepkg_mexsolver_dop853} and @file{ode8d} will be removed when version 0.4.0 of OdePkg will be released. A similiar solver method is @file{ode78}, please use the @file{ode78} solver instead.}
 %#
-%# If called with more than one return argument, returns the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} of the event function if an event property is set in the option argument @var{opt}. See the description for the input arguments before. If an invalid input argument is detected then the function terminates with an error.
-%#
-%# Run
-%# @example
-%# demo ode8d
-%# @end example
-%# to see an example.
 %# @end deftypefn
-%#
 %# @seealso{odepkg}
 
 function [varargout] = ode8d (varargin)
+  warning ('Solver ode8d is deprecated and will be removed with OdePkg 0.4.0');
+  warning ('Use the very similiar solver ode78 instead.');
   if (exist ('odepkg_mexsolver_dop853') != 3)
     error ('Mex-function "odepkg_mexsolver_dop853" is not installed');
   else

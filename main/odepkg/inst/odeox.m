@@ -16,26 +16,19 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn  {Function} odeox (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
-%# @deftypefnx {Function} {@var{sol} =} odeox (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
-%# @deftypefnx {Function} {@var{[t, y, [xe, ye, ie]]} =} odeox (@var{@@fun, slot, init, [opt], [P1, P2, @dots{}]})
+%# @deftypefn  {Function File} {[@var{}] =} odeox (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
+%# @deftypefnx {Command} {[@var{sol}] =} odeox (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
+%# @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odeox (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %#
-%# If called with no return argument, plots the solutions over time in a figure window while solving the set of equations that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} must be the time slot, @var{init} must be the states initial values, @var{opt} can optionally be the options structure that is created with the command @command{odeset} and @var{[P1, P2, @dots{}]} can optionally be all arguments that have to be passed to the function @var{fun}. If an invalid input argument is detected then the function terminates with an error.
+%# This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) and non--stiff differential algebraic equations (non--stiff DAEs).
 %#
-%# If called with one return argument, returns the solution structure @var{sol} after solving the set of ordinary differential equations. The solution structure @var{sol} has the fields @var{x} for the steps chosen by the solver, @var{y} for the solver solutions, @var{solver} for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} of the event function if an event property is set in the option argument @var{opt}. See the description for the input arguments before. If an invalid input argument is detected then the function terminates with an error.
+%# @b{Note: The function files @file{odepkg_mexsolver_odex} and @file{odeox} will be removed when version 0.4.0 of OdePkg will be released. A similiar solver method does not exist in OdePkg but you can use @file{ode23, ode45, ode54} or @file{ode78} instead.}
 %#
-%# If called with more than one return argument, returns the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} of the event function if an event property is set in the option argument @var{opt}. See the description for the input arguments before. If an invalid input argument is detected then the function terminates with an error.
-%#
-%# Run
-%# @example
-%# demo odeox
-%# @end example
-%# to see an example.
 %# @end deftypefn
-%#
 %# @seealso{odepkg}
 
 function [varargout] = odeox (varargin)
+  warning ('Solver odeox is deprecated and will be removed with OdePkg 0.4.0');
   if (exist ('odepkg_mexsolver_odex') != 3)
     error ('Mex-function "odepkg_mexsolver_odex" is not installed');
   else

@@ -16,15 +16,14 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} @var{scd} = odepkg_testsuite_calcscd (@var{solution, reference, abstol, reltol})
+%# @deftypefn {Function File} {[@var{scd}] =} odepkg_testsuite_calcscd (@var{solution}, @var{reference}, @var{abstol}, @var{reltol})
 %#
-%# Returns a normalized value for the minimum number of correct digits @var{scd} that is calculated from the solution at the end of an integration interval @var{solution} and a set of reference values @var{reference}. The input arguments @var{abstol} and @var{reltol} are unused but present because of compatibility with the function @command{odepkg_testsuite_calcmescd}.
+%# If this function is called with four input arguments of type double scalar or column vector then return a normalized value for the minimum number of correct digits @var{scd} that is calculated from the solution at the end of an integration interval @var{solution} and a set of reference values @var{reference}. The input arguments @var{abstol} and @var{reltol} are unused but present because of compatibility to the function @command{odepkg_testsuite_calcmescd}.
 %# 
-%# Run
+%# Run examples with the command
 %# @example
 %# demo odepkg_testsuite_calcscd
 %# @end example
-%# to see an example.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}

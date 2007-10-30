@@ -16,21 +16,28 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{[ret]} =} odeprint (@var{t, y, flag})
-%# Displays the results of the differential equations in the octave window while solving. The first column shows the actual time stamp, the following columns show the values of the solvers for each time stamp. The return value @var{ret} depends on the input value @var{flag}. If @var{flag} is the string "init" then nothing is returned, else if @var{flag} is empty then true (resp. value 1) is returned to tell the calling solver function to continue, else if @var{flag} is the string "done" then again nothing will be returned. The input arguments @var{t} and @var{y} are the actual time stamp and the solver output. This function is an odepkg plotter function that can be set with @command{odeset}, therefore this function should never be directly called by the user. No error handling has been implemented in this function to achieve the highest processing speed.
+%# @deftypefn {Function File} {[@var{ret}] =} odeprint (@var{t}, @var{y}, @var{flag})
 %#
-%# Run
+%# Display the results of the set of differential equations in the Octave window while solving. The first column of the screen output shows the actual time stamp that is given with the input arguemtn @var{t}, the following columns show the results from the function evaluation that are given by the column vector @var{y}. The types and the values of the input parameter @var{t} and the output parameter @var{ret} depend on the input value @var{flag} that is of type string. If @var{flag} is
+%# @table @option
+%# @item  @code{"init"}
+%# then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
+%# @item  @code{""}
+%# then @var{t} must be a double scalar specifying the actual time step and the return value is true (resp. value 1),
+%# @item  @code{"done"}
+%# then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
+%# @end table
+%#
+%# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
+%#
+%# Run examples with the command
 %# @example
 %# demo odeprint
 %# @end example
-%# to see an example.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
 
-%# As in the definitions of initial value problems as functions and if
-%# somebody uses event functions all input and output vectors must be
-%# column vectors by now.
 function [varargout] = odeprint (vt, vy, vflag, varargin)
 
   %# No input argument check is done for a higher processing speed

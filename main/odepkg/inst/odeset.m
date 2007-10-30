@@ -16,24 +16,25 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn  {Function} {@var{[odestruct]} =} odeset ()
-%# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{"field1"}, @var{value1}, @dots{})
-%# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @dots{})
-%# @deftypefnx {Function} {@var{[odestruct]} =} odeset (@var{oldstruct}, @var{newstruct})
+%# @deftypefn  {Function File} {[@var{odestruct}] =} odeset ()
+%# @deftypefnx {Command}  {[@var{odestruct}] =} odeset (@var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
+%# @deftypefnx {Command}  {[@var{odestruct}] =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
+%# @deftypefnx {Command}  {[@var{odestruct}] =} odeset (@var{oldstruct}, @var{newstruct})
 %#
-%# If called without any input argument then creates a new OdePkg options structure with all necessary fields and sets the values of all fields to default values.
+%# If this function is called without an input argument then return a new OdePkg options structure array that contains all the necessary fields and sets the values of all fields to default values.
 %#
-%# If called with string input arguments identifying valid OdePkg options then creates a new OdePkg options structure with all necessary fields and sets the values of the fields @var{field1}, @var{field2} etc. to the values @var{value1}, @var{value2}, etc.
+%# If this function is called with string input arguments @var{"field1"}, @var{"field2"}, @dots{} identifying valid OdePkg options then return a new OdePkg options structure with all necessary fields and set the values of the fields @var{"field1"}, @var{"field2"}, @dots{} to the values @var{value1}, @var{value2}, @dots{}
 %#
-%# If called with the first input argument being a valid OdePkg structure then overwrites all values of options of the structure @var{oldstruct} in the fields @var{field1}, @var{field2}, etc. with new values @var{value1}, @var{value2}, etc.
+%# If this function is called with a first input argument @var{oldstruct} of type structure array then overwrite all values of the options @var{"field1"}, @var{"field2"}, @dots{} of the structure @var{oldstruct} with new values @var{value1}, @var{value2}, @dots{} and return the modified structure array.
 %#
-%# If called with two valid OdePkg structures then overwrites all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Empty structure values from @var{newstruct} will not overwrite structure values from @var{oldstruct}.
+%# If this function is called with two input argumnets @var{oldstruct} and @var{newstruct} of type structure array then overwrite all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Empty values of @var{newstruct} will not overwrite values in @var{oldstruct}.
 %#
-%# Run
+%# For a detailed explanation about valid fields and field values in an OdePkg structure aaray have a look at the @file{odepkg.pdf}, Section 'ODE/DAE/IDE options' or run the command @command{doc odepkg} to open the tutorial.
+%#
+%# Run examples with the command
 %# @example
 %# demo odeset
 %# @end example
-%# to see an example.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}

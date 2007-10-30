@@ -16,14 +16,16 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{odestruct} =} odepkg_structure_check (@var{odestruct}, ['@var{solver}'])
-%# Checks the field names and the field values of the OdePkg option structure @var{odestruct} and returns it if it is valid. If optionally called with a second string input argument '@var{solver}' specifying the name of a valid OdePkg solver then a higher level error detection is performed. If an invalid structure fieldname or an invalid value for an option is given then the function returns an error.
+%# @deftypefn {Function File} {[@var{newstruct}] =} odepkg_structure_check (@var{oldstruct}, [@var{"solver"}])
 %#
-%# Run
+%# If this function is called with one input argument of type structure array then check the field names and the field values of the OdePkg structure @var{oldstruct} and return the structure as @var{newstruct} if no error is found. Optionally if this function is called with a second input argument @var{"solver"} of type string taht specifies the name of a valid OdePkg solver then a higher level error detection is performed. The function does not modify any of the field names or field values but terminates with an error if an invalid option or value is found.
+%#
+%# This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
+%#
+%# Run examples with the command
 %# @example
 %# demo odepkg_structure_check
 %# @end example
-%# to see an example.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}

@@ -16,14 +16,14 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{ydot} =} odepkg_equations_lorenz (@var{t, y})
-%# Returns three derivatives of the ordinary differential equations (ODEs) from the Lorenz equation implementation, cf. @url{http://en.wikipedia.org/wiki/Lorenz_equation} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a scalar value with actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
+%# @deftypefn {Function File} {[@var{ydot}] =} odepkg_equations_lorenz (@var{t}, @var{y})
 %#
-%# Run
+%# Return three derivatives of the non--stiff ordinary differential equations (non--stiff ODEs) from the "Lorenz attractor" implementation, cf. @url{http://en.wikipedia.org/wiki/Lorenz_equation} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, the input argument @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a double scalar that keeps the actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
+%#
+%# Run examples with the command
 %# @example
 %# demo odepkg_equations_lorenz
 %# @end example
-%# to see an example.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}

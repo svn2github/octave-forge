@@ -16,24 +16,17 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn  {Function} odepkg_equations_vanderpol ()
-%# Displays the help text of the function and terminates with an error.
+%# @deftypefn {Function File} {[@var{ydot}] =} odepkg_equations_vanderpol (@var{t}, @var{y}, [@var{mu}])
 %#
-%# @deftypefnx {Function} {@var{ydot} =} odepkg_equations_vanderpol (@var{t, y})
-%# Returns two derivatives of the ordinary differential equations (ODEs) from the "Van der Pol" implementation, cf. @url{http://en.wikipedia.org/wiki/Van_der_Pol_oscillator} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a scalar value with actual time stamp. There is a error handling implemented in this function, ie. if an unvalid input argument is found then this function terminates with an error.
+%# Return the two derivatives of the non-stiff ordinary differential equations (non-stiff ODEs) from the "Van der Pol" implementation, cf. @url{http://en.wikipedia.org/wiki/Van_der_Pol_oscillator} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, the input argument @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a double scalar that keeps the actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
 %#
-%# Run
+%# Run examples with the command
 %# @example
 %# demo odepkg_equations_vanderpol
 %# @end example
-%# to see an example.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
-
-%# Maintainer: Thomas Treichl
-%# Created: 20060809
-%# ChangeLog:
 
 function ydot = odepkg_equations_vanderpol (tvar, yvar, varargin)
 

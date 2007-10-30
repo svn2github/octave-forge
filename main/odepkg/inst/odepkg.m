@@ -16,26 +16,20 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} odepkg ()
-%# OdePkg is part of the GNU Octave Repository (resp. the Octave-Forge project). The package includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are also included. OdePkg formerly was initiated to solve explicitly formulated ordinary differential equations (ODEs) only, but there are already improvements so that differential algebraic equations (DAEs) in explicit form can also be solved. At this time OdePkg is under development with the main target, to make a package that is mostly compatible to commercial solver products.
-%# 
-%# For further details about the OdePkg run the following command to show up the complete tutorial
+%# @deftypefn {Function File} {[@var{}] =} odepkg ()
+%#
+%# OdePkg is part of the GNU Octave Repository (resp. the Octave--Forge project). The package includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are also included. At this time OdePkg is under development with the main target to make a package that is mostly compatible to proprietary solver products.
+%#
+%# If this function is called without any input argument then open the OdePkg tutorial in the Octave window. The tutorial can also be opened with the following command
 %#
 %# @example
 %# doc odepkg
 %# @end example
 %# @end deftypefn
 
-%# Maintainer: Thomas Treichl
-%# Created:    20060912
-%# ChangeLog:  
-%#    20070108, Thomas Treichl
-%#       Completely changed the behaviour of this function.
-
-%# File will be cleaned up in the future
 function [] = odepkg (vstr)
-  %# Check number and types of all input arguments
-  if (nargin == 0)
+
+  if (nargin == 0) %# Check number and types of all input arguments
     doc ('odepkg');
   elseif (nargin > 1)
     error ('Number of input arguments must be exactly one');
@@ -44,8 +38,8 @@ function [] = odepkg (vstr)
   elseif (isa (vstr, 'function_handle') == true)
     feval (vstr);
   else
-    error ('Input argument must be a valid string or function handle');
-  end %# Check number and types of all input arguments
+    error ('Input argument must be a valid string or a valid function handle');
+  end
 
 function [] = odepkg_validate_mfiles ()
 
@@ -74,6 +68,51 @@ function [] = odepkg_validate_mfiles ()
   odepkg_testsuite_chemakzo (@odepkg_mexsolver_radau,  10^-04);
   printf ('Testing function odepkg_testsuite_chemakzo ... ');
   odepkg_testsuite_chemakzo (@odepkg_mexsolver_seulex, 10^-04);
+
+function [] = odepkg_internal_helpextract ()
+
+  vfun = {'odepkg', ...
+          'ode23', 'ode45', 'ode54', 'ode78', ...
+          'ode5d', 'ode8d', 'odeox', ...
+          'ode2r', 'ode5r', 'oders', 'odesx', ...
+          'odeget', 'odeset', ...
+          'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
+          'odepkg_structure_check', 'odepkg_event_handle', ...
+          'odepkg_equations_lorenz', 'odepkg_equations_pendulous', ...
+          'odepkg_equations_roessler', 'odepkg_equations_secondorderlag', ...
+          'odepkg_equations_vanderpol', ...
+          'odepkg_testsuite_calcscd', 'odepkg_testsuite_calcmescd', ...
+	  'odepkg_testsuite_chemakzo', 'odepkg_testsuite_hires', ...
+	  'odepkg_testsuite_implrober', ...
+	  'odepkg_testsuite_oregonator', 'odepkg_testsuite_pollution', ...
+	  'odepkg_testsuite_robertson', 'odepkg_testsuite_transistor', ...
+	  };
+  vfun = sort (vfun);
+
+  [vout, vmsg] = fopen ('../doc/mfunref.texi', 'w');
+  if ~(isempty (vmsg)), error (vmsg); end
+  for vcnt = 1:length (vfun)
+    if (exist (vfun{vcnt}, 'file'))
+      [vfid, vmsg] = fopen (which (vfun{vcnt}), 'r');
+      if ~(isempty (vmsg)), error (vmsg); end
+      while (true)
+        vlin = fgets (vfid);
+        if ~(ischar (vlin)), break; end
+        if (regexp (vlin, '^(%# -\*- texinfo -\*-)'))
+	  while (~isempty (regexp (vlin, '^(%#)')) && ...
+		  isempty (regexp (vlin, '^(%# @end deftypefn)')))
+	    vlin = fgets (vfid);
+	    if (length (vlin) > 3), fprintf (vout, '%s', vlin(4:end));
+            else fprintf (vout, '%s', vlin(3:end));
+            end
+          end
+          fprintf (vout, '\n');
+        end
+      end
+      fclose (vfid);
+    end
+  end
+  fclose (vout);
 
 function [] = odepkg_performance_mathires ()
   vfun = {@ode113, @ode23, @ode45, ...

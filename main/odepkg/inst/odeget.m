@@ -16,29 +16,25 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn  {Function} {@var{ret} =} odeget (@var{odestruct}, @var{name}, @var{[default]})
-%# @deftypefnx {Function} {@var{ret} =} odeget (@var{odestruct}, @var{@{names@}}, @var{[@{defaults@}]})
+%# @deftypefn  {Function File} {[@var{value}] =} odeget (@var{odestruct}, @var{option}, [@var{default}])
+%# @deftypefnx {Command} {[@var{values}] =} odeget (@var{odestruct}, @{@var{opt1}, @var{opt2}, @dots{}@}, [@{@var{def1}, @var{def2}, @dots{}@}])
 %#
-%# The first form returns the option value @var{ret} that is specified by the option name @var{name} from the odepkg option structure @var{odestruct}. Optionally the default value @var{default} is returned if this option was not manually set in @var{odestruct}. If an invalid input argument is detected then the function terminates with an error.
+%# If this function is called with two input arguments and the first input argument @var{odestruct} is of type structure array and the second input argument @var{option} is of type string then return the option value @var{value} that is specified by the option name @var{option} in the OdePkg option structure @var{odestruct}. Optionally if this function is called with a third input argument then return the default value @var{default} if @var{option} is not set in the structure @var{odestruct}.
 %#
-%# The second form returns the option values as a cell array @var{ret} in that order that is specified by the cell array of option names @var{@{names@}} from the odepkg option structure @var{odestruct}. Optionally the default value from the cell array @var{@{defaults@}} is returned that depends on that option that was not manually set in @var{odestruct}. If an invalid input argument is detected then the function terminates with an error.
+%# If this function is called with two input arguments and the first input argument @var{odestruct} is of type structure array and the second input argument @var{option} is of type cell array of strings then return the option values @var{values} that are specified by the option names @var{opt1}, @var{opt2}, @dots{} in the OdePkg option structure @var{odestruct}. Optionally if this function is called with a third input argument of type cell array then return the default value @var{def1} if @var{opt1} is not set in the structure @var{odestruct}, @var{def2} if @var{opt2} is not set in the structure @var{odestruct}, @dots{}
 %#
-%# Run
+%# Run examples with the command
 %# @example
 %# demo odeget
 %# @end example
-%# to see an example.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
 
-%# Maintainer: Thomas Treichl
-%# Created: 20060809
-%# ChangeLog: 20061022, Thomas Treichl
-%#    Changed help text. We cannot create a function of the form 
-%#    odeget (@var{odestruct}, @var{name1}, @var{name2}) because we
-%#    would get a mismatch with function form 1 like described above.
-
+%# Note: 20061022, Thomas Treichl
+%#   We cannot create a function of the form odeget (@var{odestruct},
+%#   @var{name1}, @var{name2}) because we would get a mismatch with
+%#   the function form 1 like described above.
 
 function [vret] = odeget (varargin)
 

@@ -16,13 +16,29 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function} {@var{sol} =} odepkg_event_handle (@var{@@fun, time, y, flag, [P1, P2, @dots{}]})
-%# Evaluates the event function that is specified by the function handle @var{@@fun}. This function is an odepkg internal helper function, therefore this function should never be directly called by a user. No error handling has been implemented in this function to achieve the highest processing speed.
+%# @deftypefn {Function File} {[@var{sol}] =} odepkg_event_handle (@var{@@fun}, @var{time}, @var{y}, @var{flag}, [@var{par1}, @var{par2}, @dots{}])
+%#
+%# Return the solution of the event function that is specified as the first input argument @var{@@fun} in form of a function handle. The second input argument @var{time} is of type double scalar and specifies the time of the event evaluation, the third input argument @var{y} is of type double column vector and specifies the solutions, the third input argument @var{flag} is of type string and can be of the form 
+%# @table @option
+%# @item  @code{"init"}
+%# then initialize internal persistent variables of the function @command{odepkg_event_handle} and return an empty cell array of size 4,
+%# @item  @code{"calc"}
+%# then do the evaluation of the event function and return the solution @var{sol} as type cell array of size 4,
+%# @item  @code{"done"}
+%# then cleanup internal variables of the function @command{odepkg_event_handle} and return an empty cell array of size 4.
+%# @end table
+%# Optionally if further input arguments @var{par1}, @var{par2}, @dots{} of any type are given then pass these parameters through @command{odepkg_event_handle} to the event function.
+%#
+%# This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
 
 function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
+
+  %# No error handling has been implemented in this function to achieve
+  %# the highest performance available.
+
   %# vretval{1} is true or false; either to terminate or to continue
   %# vretval{2} is the index information for which event occured
   %# vretval{3} is the time information column vector

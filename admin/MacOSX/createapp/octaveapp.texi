@@ -139,6 +139,7 @@ If you set up Octave.app with a not valid pathname then this might result in dif
 * I set up Gnuplot.app but it doesn't interact with Octave.app::  
 * How can I install a package that also depends further libraries?::  
 * How can I install the gsl--package from Octave--Forge that also depends further libraries?::  
+* How can I install the symbolic--package from Octave--Forge that also depends further libraries?::  
 @end menu
 
 @node Is there a 64--bit version of Octave.app available?, How can I startup Octave.app?, General FAQ, General FAQ
@@ -228,9 +229,8 @@ then there is something going wrong on your system. There may exist and old @fil
 @unnumberedsubsec How can I install another package that also depends further libraries?
 There are some packages at @uref{http://octave.sourceforge.net} available that do depend other resp. further libraries that may not already be installed on your system, eg. the @file{gsl}--package, the @file{octcdf}--package and the @file{symbolic}--package. Therefore you need to download, configure, compile and install the needed library before you install the Octave package. Examples are shown in the next sections.
 
-@node How can I install the gsl--package from Octave--Forge that also depends further libraries?,  , How can I install a package that also depends further libraries?, General FAQ
+@node How can I install the gsl--package from Octave--Forge that also depends further libraries?, How can I install the symbolic--package from Octave--Forge that also depends further libraries?, How can I install a package that also depends further libraries?, General FAQ
 @unnumberedsubsec How can I install the gsl--package from Octave--Forge that also depends further libraries?
-
 As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package.
 @enumerate
 @item Download a current version of the GNU scientific library from a GNU webserver, eg.
@@ -242,7 +242,7 @@ bash ~$ curl -s -S ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz -o gsl-1.9.tar.gz
 bash ~$ tar -xzf gsl-1.9.tar.gz
 bash ~$ cd gsl-1.9
 @end example
-@item Configure, compile and install the library for the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
+@item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
 @example
 bash ~$ ./configure --prefix=/Applications/Octave.app/Contents/Resources
 bash ~$ make
@@ -251,6 +251,50 @@ bash ~$ make install
 @item Startup Octave.app and install the desired Octave-package, eg.
 @example
 octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz
+@end example
+@end enumerate
+
+@node How can I install the symbolic--package from Octave--Forge that also depends further libraries?,  , How can I install the gsl--package from Octave--Forge that also depends further libraries?, General FAQ
+@unnumberedsubsec How can I install the symbolic--package from Octave--Forge that also depends further libraries?
+As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package.
+@enumerate
+@item Download a current version of the CLN --- Class Library for Numbers, eg.
+@example
+bash ~$ curl -s -S ftp://ftpthep.physik.uni-mainz.de/pub/gnu/cln-1.1.9.tar.bz2 \
+  -o cln-1.1.9.tar.bz2
+@end example
+@item Unpack the downloaded library and change into the directory that has been created, eg.
+@example
+bash ~$ tar -xjf cln-1.1.9.tar.bz2
+bash ~$ cd cln-1.1.9
+@end example
+@item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
+@example
+bash ~$ ./configure --prefix=/Applications/Octave.app/Contents/Resources
+bash ~$ make
+bash ~$ make install
+@end example
+@item Download a current version of the GiNaC (GiNaC is Not a CAS), eg.
+@example
+bash ~$ curl -s -S ftp://ftpthep.physik.uni-mainz.de/pub/GiNaC/ginac-1.4.0.tar.bz2 \
+  -o ginac-1.4.0.tar.bz2
+@end example
+@item Unpack the downloaded library and change into the directory that has been created, eg.
+@example
+bash ~$ tar -xjf ginac-1.4.0.tar.bz2
+bash ~$ cd ginac-1.4.0
+@end example
+@item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
+@example
+bash ~$ ./configure CLN_CFLAGS="-I/Applications/Octave.app/Contents/Resources/include" \
+  CLN_LIBS="-L/Applications/Octave.app/Contents/Resources/lib" \
+  --prefix=/Applications/Octave.app/Contents/Resources
+bash ~$ make
+bash ~$ make install
+@end example
+@item Startup Octave.app and install the desired Octave-package, eg.
+@example
+octave-2.9.12:1> pkg install symbolic-1.0.3.tar.gz
 @end example
 @end enumerate
 

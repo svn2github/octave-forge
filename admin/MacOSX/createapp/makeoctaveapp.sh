@@ -22,7 +22,7 @@
 
 # This is the binary of Octave that has been created. The absolute
 # path and the version number need to be given.
-OCTBIN=/tmp/dependencies-ppc/bin/octave-2.9.14
+OCTBIN=/tmp/dependencies-i386/bin/octave-2.9.16
 
 # This is the temporary directory that is used for copying Octave and
 # its libraries that depend on the Octave.app.
@@ -31,15 +31,15 @@ TEMPDIR=/tmp/TEMPDIR
 # This is the directory where all the dependencies have been
 # installed. Make sure that there are no other files in this directory
 # that are not needed.
-DEPSDIR=/tmp/dependencies-ppc
+DEPSDIR=/tmp/dependencies-i386
 
 # These are the files that are copied into the docs directory of the
 # octave-VERSION-ARCH.dmg file. The files that are needed are
 # Octave-FAQ.pdf, octave.pdf, liboctave.pdf, refcard-a4.pdf,
 # refcard-legal.pdf and refcard-letter.pdf.
-PDFDOCS=~/tmp/oct-ppc/solvedeps/octave-2.9.14/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
+PDFDOCS=~/tmp/oct-i386/solvedeps/octave-2.9.16/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
 
-OCEXTRAS=~/Savings/gnuplot-4.2.2-ppc.dmg
+OCEXTRAS=~/Savings/gnuplot-4.2.2-i386.dmg
 
 # This is the temporary directory that is used for installing all
 # files and libraries that are then packed into the
@@ -199,7 +199,7 @@ echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"
   evalfailexit "rm -rf ./octave-${VERSION}-${ARCH}.dmg" 
 
   echo "makeoctaveapp.sh: Packing dmg compressed disk ..."
-  evalfailexit "hdiutil create -volname octave-${VERSION} -fs HFS+ \
+  evalfailexit "hdiutil create -volname octave.app.dmg -fs HFS+ \
     -srcfolder ${DMGDIR} ./octave-${VERSION}-${ARCH}.dmg"
 
   # Some references that tell us how to set up the background image for the dmg

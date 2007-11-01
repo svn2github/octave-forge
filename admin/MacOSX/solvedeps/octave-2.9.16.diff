@@ -1,0 +1,76 @@
+diff -r -u octave-2.9.16.orig/configure.in octave-2.9.16/configure.in
+--- octave-2.9.16.orig/configure.in	2007-10-31 22:26:39.000000000 +0100
++++ octave-2.9.16/configure.in	2007-11-01 10:59:44.000000000 +0100
+@@ -761,18 +761,18 @@
+ (eval "$ac_compile"; eval "$ac_link") 2>&AS_MESSAGE_LOG_FD
+ AC_LANG_POP(Fortran 77)
+ LIBS="$XLIBS"
+-case "`./conftest$ac_exeext`" in
+-  *succeeded*)
+-  AC_MSG_RESULT(yes)
+-;;
+-  *)
+-  AC_MSG_RESULT(no)
+-  AC_MSG_WARN([Your BLAS library was apparently compiled with a Fortran])
+-  AC_MSG_WARN([compiler that uses a different calling convention from])
+-  AC_MSG_WARN([the one used by the selected compiler, $F77.])
+-  AC_MSG_ERROR([You must correct this problem before building Octave.])
+-;;
+-esac
++#case "`./conftest$ac_exeext`" in
++#  *succeeded*)
++#  AC_MSG_RESULT(yes)
++#;;
++#  *)
++#  AC_MSG_RESULT(no)
++#  AC_MSG_WARN([Your BLAS library was apparently compiled with a Fortran])
++#  AC_MSG_WARN([compiler that uses a different calling convention from])
++#  AC_MSG_WARN([the one used by the selected compiler, $F77.])
++#  AC_MSG_ERROR([You must correct this problem before building Octave.])
++#;;
++#esac
+ 
+ # Check for AMD library
+ AMD_LIBS=
+diff -r -u octave-2.9.16.orig/scripts/pkg/pkg.m octave-2.9.16/scripts/pkg/pkg.m
+--- octave-2.9.16.orig/scripts/pkg/pkg.m	2007-10-26 18:09:12.000000000 +0200
++++ octave-2.9.16/scripts/pkg/pkg.m	2007-11-01 11:00:41.000000000 +0100
+@@ -1019,12 +1019,21 @@
+     src = fullfile (packdir, "src");
+     ## configure
+     if (exist (fullfile (src, "configure"), "file"))
++      flags = "";
++      if (isempty (getenv ("CC")))
++        flags = strcat (flags, " CC=\"", octave_config_info ("CC"), "\"");
++      endif
++      if (isempty (getenv ("CXX")))
++        flags = strcat (flags, " CXX=\"", octave_config_info ("CXX"), "\"");
++      endif
++      if (isempty (getenv ("AR")))
++        flags = strcat (flags, " AR=\"", octave_config_info ("AR"), "\"");
++      endif
++      if (isempty (getenv ("RANLIB")))
++        flags = strcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
++      endif
+       [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
+-					 desc.dir, "\"",
+-					 " CC=", octave_config_info ("CC"),
+-					 " CXX=", octave_config_info ("CXX"),
+-					 " AR=", octave_config_info ("AR"),
+-					 " RANLIB=", octave_config_info ("RANLIB")));
++                                        desc.dir, "\"", flags));
+       if (status != 0)
+ 	rm_rf (desc.dir);
+ 	error ("the configure script returned the following error: %s", output);
+diff -r -u octave-2.9.16.orig/src/Makefile.in octave-2.9.16/src/Makefile.in
+--- octave-2.9.16.orig/src/Makefile.in	2007-10-31 15:53:15.000000000 +0100
++++ octave-2.9.16/src/Makefile.in	2007-11-01 11:01:40.000000000 +0100
+@@ -262,7 +262,7 @@
+ endif
+ 
+ OCTINTERP_LINK_DEPS = \
+-  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
++  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) -lfftw3
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \

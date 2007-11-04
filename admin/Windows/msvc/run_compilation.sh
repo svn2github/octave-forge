@@ -1495,13 +1495,17 @@ if check_package octave; then
   fi
   echo -n "compiling octave... "
   (cd "$DOWNLOAD_DIR/octave-$octave_version" &&
-    sed -e 's/\(^.*SUBDIRS = .*\)doc examples$/\1 examples/' octMakefile.in > ttt &&
-    mv ttt octMakefile.in &&
+    #sed -e 's/\(^.*SUBDIRS = .*\)doc examples$/\1 examples/' octMakefile.in > ttt &&
+    #mv ttt octMakefile.in &&
     if test ! -f "config.log"; then
       CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
         F77=fort77 FFLAGS="-O2 -Wc,-MD -Wl,-subsystem:console" FLIBS=-lf2c \
         ./configure --build=i686-pc-msdosmsvc --prefix="$octave_prefix" \
-        --with-zlib=zlib
+        --with-zlib=zlib &&
+        (cd doc &&
+          make conf.texi &&
+          sed -e 's,/\([a-z]\)/,\1:/,' conf.texi > ttt &&
+          mv ttt conf.texi)
     fi &&
     if test ! -f "src/octave.exe"; then
       make

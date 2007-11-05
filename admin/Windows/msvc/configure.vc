@@ -23,6 +23,6 @@ case $1 in
 esac
 
 PATH=$OCTAVE_ROOT/bin:$PATH \
-	CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc \
+	CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc F77=fc-msvc \
 	./configure --build=i686-pc-msdosmsvc --prefix=$OCTAVE_ROOT \
 		    --with-path=$OCTAVE_ROOT/share/octave/packages

@@ -578,7 +578,7 @@ int main(int argc, char **argv)
 	for (it=f77files.begin(); it!=f77files.end(); ++it)
 	{
 		string f = *it, b = basename(f);
-		if (!vars["F2C"].empty())
+		if (!vars["F2C"].empty() && vars["F2C"] != "@F2C@")
 		{
 			string c = b + ".c";
 			cfiles.push_back(c);

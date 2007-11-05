@@ -38,7 +38,7 @@ packages=
 available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot ncurses pkg-config"
+VC octplot ncurses pkg-config fc-msvc"
 octave_version=
 of_version=
 do_nsi=false
@@ -342,6 +342,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/jogl.jar" JOGL
     todo_check "$tlibdir/qhull.lib" qhull
     todo_check "$tbindir/pkg-config.exe" pkg-config
+    todo_check "$tbindir/fc-msvc.exe" fc-msvc
   fi
 else
   packages="$todo_packages"
@@ -595,6 +596,23 @@ if check_package PCRE; then
   else
     echo "done"
   fi
+fi
+
+###########
+# fc-msvc #
+###########
+
+if check_package fc-msvc; then
+  echo -n "compiling fc-msvc... "
+  cl -nologo -MD -O2 -EHs fc-msvc.cc pcre.lib
+  mt -outputresource:fc-msvc.exe -manifest fc-msvc.exe.manifest
+  if ! test -f fc-msvc.exe; then
+    echo "failed to compile fc-msvc.exe"
+    exit -1
+  fi
+  mv -f fc-msvc.exe "$tbindir"
+  rm -f fc-msvc.obj fc-msvc.exe.manifest
+  echo "done"
 fi
 
 ########

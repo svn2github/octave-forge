@@ -19,6 +19,15 @@ if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
   PAGER_FLAGS ('-P"-- less ?pB(%pB\%):--. (f)orward, (b)ack, (q)uit$"');
 endif
 
+## This appears here instead of in the pkg/PKG_ADD file so that --norc
+## will also skip automatic loading of packages.
+
+pkg ("load", "auto");
+
+###########################################
+## Windows binary package specific setup ##
+###########################################
+
 # Some information messages
 fprintf (" - Use `pkg list' to see a list of installed packages.\n");
 

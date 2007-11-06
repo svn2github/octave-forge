@@ -7,6 +7,12 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>November 06, 2007</dt>
+<dd>Updated Windows installer to Octave 2.9.16.
+</dd>
+<dt>November 2, 2007</dt>
+<dd>Updated the OS X binary release to use Octave 2.9.16.
+</dd>
 <dt>October 16, 2007</dt>
 <dd>Updated Windows installer to Octave 2.9.15.
 </dd>

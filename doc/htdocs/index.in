@@ -48,6 +48,12 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
+<dt>November 06, 2007</dt>
+<dd>Updated Windows installer to Octave 2.9.16.
+</dd>
+<dt>November 2, 2007</dt>
+<dd>Updated the OS X binary release to use Octave 2.9.16.
+</dd>
 <dt>October 16, 2007</dt>
 <dd>Updated Windows installer to Octave 2.9.15.
 </dd>

@@ -1,20 +1,20 @@
 # Copyright (C) 2003,2004,2005  Michael Creel <michael.creel@uab.es>
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-# usage: [theta, V, obj_value] = 
+# usage: [theta, V, obj_value] =
 #  gmm_results(theta, data, weight, moments, momentargs, names, title, unscale, control, nslaves)
 #
 # inputs:
@@ -29,8 +29,8 @@
 #             e.g., names = str2mat("param1", "param2");
 #      title: string, describes model estimated
 #    unscale: (optional) cell that holds means and std. dev. of data
-#             (see scale_data) 
-#    control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty (""). 
+#             (see scale_data)
+#    control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty ("").
 #    nslaves: (optional) number of slaves if executed in parallel
 #             (requires MPITB)
 #
@@ -44,9 +44,9 @@
 
 
 function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momentargs, names, title, unscale, control, nslaves)
-	
+
   if nargin < 10 nslaves = 0; endif # serial by default
-	
+
 	if nargin < 9
 		[theta, obj_value, convergence] = gmm_estimate(theta, data, weight, moments, momentargs, "", nslaves);
 	else
@@ -61,24 +61,23 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 		convergence="Normal convergence";
 	else
 		convergence="No convergence";
-	endif	
-	
+	endif
+
 	V = gmm_variance(theta, data, weight, moments, momentargs);
 
 	# unscale results if argument has been passed
 	# this puts coefficients into scale corresponding to the original data
-	if nargin > 7 
+	if nargin > 7
 		if iscell(unscale)
 			[theta, V] = unscale_parameters(theta, V, unscale);
 		endif
 	endif
 
-	[theta, V] = delta_method("parameterize", theta, {data, moments, momentargs}, V);			
+	[theta, V] = delta_method("parameterize", theta, {data, moments, momentargs}, V);
 
-	n = rows(data);
 	k = rows(theta);
 	se = sqrt(diag(V));
-	
+
 	printf("\n\n******************************************************\n");
 	disp(title);
 	printf("\nGMM Estimation Results\n");
@@ -87,7 +86,7 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 	printf("Observations: %d\n", n);
 
 	junk = "X^2 test";
-	df = rows(weight) - rows(theta);
+	df = n - k;
 	if df > 0
 		clabels = str2mat("Value","df","p-value");
 		a = [n*obj_value, df, 1 - chisquare_cdf(n*obj_value, df)];
@@ -95,13 +94,13 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 		prettyprint(a, junk, clabels);
 	else
 		disp("\nExactly identified, no spec. test");
-	end;	
+	end;
 
-	# results for parameters				
+	# results for parameters
 	a =[theta, se, theta./se, 2 - 2*normal_cdf(abs(theta ./ se))];
 	clabels = str2mat("estimate", "st. err", "t-stat", "p-value");
 	printf("\n");
 	prettyprint(a, names, clabels);
-	
+
 	printf("******************************************************\n");
 endfunction

@@ -168,13 +168,14 @@ ColumnVector lbfgs_recursion(const int memory, const Matrix sigmas, const Matrix
 // __bisectionstep: fallback stepsize method if __newtonstep fails
 int __bisectionstep(double &step, double &obj, const std::string f, const octave_value_list f_args, const ColumnVector dx, const int minarg, const int verbose)
 {
-	double obj_0, a;
+	double obj_0, improvement, improvement_0, a;
 	int found_improvement;
 
 	ColumnVector x (f_args(minarg - 1).column_vector_value());
 
 	// initial values
 	obj_0 = obj;
+	improvement_0 = 0;
 	a = 1.0;
 	found_improvement = 0;
 
@@ -199,15 +200,20 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 		obj = obj_0;
 		return found_improvement;
 	}
-	// now keep going until we no longer improve, or reach max trials
-	while (a > 2*DBL_EPSILON)
-	{
+	// now keep going until rate of improvement is too low, or reach max trials
+	while (a > 2*DBL_EPSILON) {
 		a = 0.5*a;
 		__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
 		// if improved, record new best and try another step
-		if (obj < obj_0) obj_0 = obj;
-		else
-		{
+		if (obj < obj_0) {
+			improvement = obj_0 - obj;
+			if (improvement > 0.5*improvement_0) {
+				improvement_0 = improvement;
+				obj_0 = obj;
+			}
+			else break;
+		}
+		else {
 			a = a / 0.5; // put it back to best found
 			break;
 		}

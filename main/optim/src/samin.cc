@@ -291,7 +291,7 @@ Example: see samin_example\n\
 	f_return = feval(obj_fn, f_args);
 	f = f_return(0).double_value();
 	fopt = f; // give it something to compare to
-	func_evals = 1; // total function evaluations (limited by maxeval)
+	func_evals = 0; // total function evaluations (limited by maxeval)
 	details(0,0) = func_evals;
 	details(0,1) = t;
 	details(0,2) = fopt;
@@ -317,6 +317,7 @@ Example: see samin_example\n\
 					rand_draw = octave_rand::scalar();
 					xp(h) = x(h) + (2.0 * rand_draw - 1.0) * bounds(h);
 					if((xp(h) < lb(h)) || (xp(h) > ub(h))) {
+						rand_draw = octave_rand::scalar(); // change 07-Nov-2007: avoid correlation with hitting bounds
 						xp(h) = lb(h) + (ub(h) - lb(h)) * rand_draw;
 						lnobds = lnobds + 1;
 					}
@@ -434,16 +435,16 @@ Example: see samin_example\n\
 				if (verbosity >= 1) {
 					printf("\n================================================\n");
 					printf("SAMIN results\n\n");
-					if (converge == 1) printf("Normal convergence\n\n");
+					if (converge == 1) printf("==> Normal convergence <==\n\n");
 					if (converge == 2)
 					{
-						printf("WARNING: Last point satisfies convergence criteria,\n");
+						printf("==> WARNING <==: Last point satisfies convergence criteria,\n");
 						printf("but is near boundary of parameter space.\n");
 						printf("%f \% of last round evaluations were out-of-bounds.\n", 100*lnobds/(nup+ndown+nrej));
 						printf("Expand bounds and re-run, unless this is a constrained minimization.\n\n");
 					}
-					printf("Convergence tolerances: Func. tol. %e	Param. tol. %e\n", functol, paramtol);
-					printf("Obj. fn. value %f\n\n", fopt);
+					printf("Convergence tolerances:\nFunction: %e\nParameters: %e\n", functol, paramtol);
+					printf("\nObjective function value at minimum: %f\n\n", fopt);
 					printf("	   parameter	    search width\n");
 					for(i = 0; i < n; i++) printf("%20f%20f\n", xopt(i), bounds(i));
 					printf("================================================\n");

@@ -1,0 +1,68 @@
+diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x *.res curl-7.16.4-orig/lib/Makefile.m32 curl-7.16.4/lib/Makefile.m32
+--- curl-7.16.4-orig/lib/Makefile.m32	Fri Jul  6 22:13:24 2007
++++ curl-7.16.4/lib/Makefile.m32	Thu Sep  6 21:56:24 2007
+@@ -21,11 +21,11 @@
+ 
+ ARES_LIB = ../ares
+ 
+-CC = gcc
++CC = mingw32-gcc
+ AR = ar
+ RM = rm -f
+ RANLIB = ranlib
+-STRIP = strip -g
++STRIP = strip $(STRIP_FLAGS)
+ 
+ ########################################################
+ ## Nothing more to do below this line!
+@@ -70,7 +70,7 @@
+ libcurl_a_LIBRARIES = libcurl.a
+ libcurl_a_DEPENDENCIES = $(strip $(CSOURCES) $(HHEADERS))
+ 
+-all: libcurl.a libcurl.dll libcurldll.a
++all: libcurl.a libcurl.dll libcurl.dll.a
+ 
+ libcurl.a: $(libcurl_a_OBJECTS) $(libcurl_a_DEPENDENCIES)
+ 	$(RM) libcurl.a
+@@ -82,9 +82,9 @@
+ 
+ # remove the last line above to keep debug info
+ 
+-libcurl.dll libcurldll.a: $(libcurl_a_OBJECTS) $(RESOURCE)
++libcurl.dll libcurl.dll.a: $(libcurl_a_OBJECTS) $(RESOURCE)
+ 	$(RM) $@
+-	$(CC) -s -shared -Wl,--out-implib,libcurldll.a -o libcurl.dll \
++	$(CC) -s -shared -Wl,--out-implib,libcurl.dll.a -o libcurl.dll \
+ 	  $(libcurl_a_OBJECTS) $(RESOURCE) $(DLL_LIBS) -lws2_32 -lwinmm
+ 
+ # remove the above '-s' to keep debug info
+diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x *.res curl-7.16.4-orig/src/Makefile.m32 curl-7.16.4/src/Makefile.m32
+--- curl-7.16.4-orig/src/Makefile.m32	Fri Jul  6 22:13:24 2007
++++ curl-7.16.4/src/Makefile.m32	Thu Sep  6 21:56:59 2007
+@@ -21,13 +21,13 @@
+ 
+ ARES_LIB = ../ares
+ 
+-CC = gcc
++CC = mingw32-gcc
+ CFLAGS = -g -O2
+ LDFLAGS =
+ RC = windres
+ RCFLAGS = --include-dir=../include -O COFF -i
+ RM = rm -f
+-STRIP = strip -s
++STRIP = strip $(STRIP_FLAGS)
+ 
+ # We may need these someday
+ # PERL = perl
+@@ -42,8 +42,8 @@
+ 
+ curl_PROGRAMS = curl.exe
+ ifdef DYN
+-  curl_DEPENDENCIES = ../lib/libcurldll.a ../lib/libcurl.dll
+-  curl_LDADD = -L../lib -lcurldll
++  curl_DEPENDENCIES = ../lib/libcurl.dll.a ../lib/libcurl.dll
++  curl_LDADD = -L../lib -lcurl
+ else
+   curl_DEPENDENCIES = ../lib/libcurl.a
+   curl_LDADD = -L../lib -lcurl

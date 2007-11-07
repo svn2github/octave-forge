@@ -1,0 +1,91 @@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def -x *.out lapack-3.1.1-orig/SRC/Makefile lapack-3.1.1/SRC/Makefile
+--- lapack-3.1.1-orig/SRC/Makefile	Fri Feb 23 22:33:05 2007
++++ lapack-3.1.1/SRC/Makefile	Fri Jun 15 21:42:37 2007
+@@ -288,7 +288,7 @@
+    zupmtr.o izmax1.o dzsum1.o zstemr.o \
+    zcgesv.o zlag2c.o clag2z.o
+ 
+-all: ../$(LAPACKLIB)
++all: ../$(LAPACKLIB) ../lapack.dll
+ 
+ ALLOBJ=$(SLASRC) $(DLASRC) $(CLASRC) $(ZLASRC) $(SCLAUX) $(DZLAUX)	\
+ 	$(ALLAUX)
+@@ -297,6 +297,14 @@
+ 	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+ 	$(RANLIB) $@
+ 
++../lapack.dll : ../$(LAPACKLIB)
++	mingw32-g77 -shared $(SHARED_FLAGS) -o $@ \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--output-def,$(basename $<).def \
++		-Wl,--no-whole-archive -lblas
++	strip $(STRIP_FLAGS) $@
++	
+ single: $(SLASRC) $(ALLAUX) $(SCLAUX) 
+ 	$(ARCH) $(ARCHFLAGS) ../$(LAPACKLIB) $(SLASRC) $(ALLAUX) \
+ 	$(SCLAUX)
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def -x *.out lapack-3.1.1-orig/make.inc lapack-3.1.1/make.inc
+--- lapack-3.1.1-orig/make.inc	Thu Jan  1 01:00:00 1970
++++ lapack-3.1.1/make.inc	Fri Jun 15 22:06:38 2007
+@@ -0,0 +1,60 @@
++####################################################################
++#  LAPACK make include file.                                       #
++#  LAPACK, Version 3.1.1                                           #
++#  February 2007                                                   #
++####################################################################
++#
++# See the INSTALL/ directory for more examples.
++#
++SHELL = /bin/sh
++#
++#  The machine (platform) identifier to append to the library names
++#
++PLAT = 
++#  
++#  Modify the FORTRAN and OPTS definitions to refer to the
++#  compiler and desired compiler options for your machine.  NOOPT
++#  refers to the compiler options desired when NO OPTIMIZATION is
++#  selected.  Define LOADER and LOADOPTS to refer to the loader and 
++#  desired load options for your machine.
++#
++FORTRAN  = mingw32-g77 
++OPTS     = -funroll-all-loops -O3
++DRVOPTS  = $(OPTS)
++NOOPT    =
++LOADER   = mingw32-g77
++LOADOPTS =
++SHARED_FLAGS = -Wl,--export-all-symbols
++
++#
++# Timer for the SECOND and DSECND routines
++#
++# Default : SECOND and DSECND will use a call to the EXTERNAL FUNCTION ETIME
++TIMER    = EXT_ETIME
++# For RS6K : SECOND and DSECND will use a call to the EXTERNAL FUNCTION ETIME_
++# TIMER    = EXT_ETIME_
++# For gfortran compiler: SECOND and DSECND will use a call to the INTERNAL FUNCTION ETIME
++# TIMER    = INT_ETIME 
++# If your Fortran compiler does not provide etime (like Nag Fortran Compiler, etc...)
++# SECOND and DSECND will use a call to the INTERNAL FUNCTION CPU_TIME 
++# TIMER    = INT_CPU_TIME
++# If neither of this works...you can use the NONE value... In that case, SECOND and DSECND will always return 0
++# TIMER     = NONE
++#
++#  The archiver and the flag(s) to use when building archive (library)
++#  If you system has no ranlib, set RANLIB = echo.
++#
++ARCH     = ar
++ARCHFLAGS= cr
++RANLIB   = ranlib
++#
++#  The location of the libraries to which you will link.  (The 
++#  machine-specific, optimized BLAS library should be used whenever
++#  possible.)
++#
++BLASLIBDIR   = 
++BLASLIB      = -lblas -lcblas
++LAPACKLIB    = liblapack$(PLAT).a
++TMGLIB       = tmglib$(PLAT).a
++EIGSRCLIB    = eigsrc$(PLAT).a
++LINSRCLIB    = linsrc$(PLAT).a

@@ -1,0 +1,75 @@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def cblas-orig/makefile.in cblas/makefile.in
+--- cblas-orig/makefile.in	Thu Jan  1 01:00:00 1970
++++ cblas/makefile.in	Fri Jun 15 21:34:00 2007
+@@ -0,0 +1,52 @@
++#
++# Makefile.MINGW32
++#
++#
++# If you compile, change the name to Makefile.in.
++#
++#
++ 
++#-----------------------------------------------------------------------------
++# Shell
++#-----------------------------------------------------------------------------
++
++SHELL = /bin/sh
++
++#-----------------------------------------------------------------------------
++# Platform
++#-----------------------------------------------------------------------------
++
++PLAT = MINGW32
++
++#-----------------------------------------------------------------------------
++# Libraries and includes
++#-----------------------------------------------------------------------------
++
++BLLIBDIR = 
++BLLIB = $(BLLIBDIR)/libblas.dll.a
++CBDIR = $(BUILDDIR)
++CBLIBDIR = $(CBDIR)/lib/$(PLAT)
++CBLIB = $(CBLIBDIR)/libcblas.a
++
++#-----------------------------------------------------------------------------
++# Compilers
++#-----------------------------------------------------------------------------
++
++CC = mingw32-gcc
++FC = mingw32-g77
++LOADER = mingw32-gcc
++
++#-----------------------------------------------------------------------------
++# Flags for Compilers
++#-----------------------------------------------------------------------------
++
++CFLAGS = -O3 -DADD_
++FFLAGS = -O3  
++
++#-----------------------------------------------------------------------------
++# Archive programs and flags
++#-----------------------------------------------------------------------------
++
++ARCH = ar
++ARCHFLAGS = r
++RANLIB = echo
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def cblas-orig/src/Makefile cblas/src/Makefile
+--- cblas-orig/src/Makefile	Mon Mar 15 21:11:03 1999
++++ cblas/src/Makefile	Fri Jun 15 21:37:54 2007
+@@ -234,7 +234,14 @@
+ all: $(alev)  
+ 	$(ARCH) $(ARCHFLAGS)  $(CBLIB) $(alev) 
+ 	$(RANLIB) $(CBLIB)
+-
++	$(CC) -shared -o $(CBLIBDIR)/cblas.dll \
++		-Wl,--enable-auto-import \
++		-Wl,--allow-multiple-definition \
++		-Wl,--whole-archive $(CBLIB) \
++		-Wl,--out-implib=$(basename $(CBLIB)).dll.a \
++		-Wl,--output-def=$(basename $(CBLIB)).def \
++		-Wl,--no-whole-archive -lblas
++	strip $(STRIP_FLAGS) $(CBLIBDIR)/cblas.dll
+ 
+ .SUFFIXES: .o .c .f
+ 

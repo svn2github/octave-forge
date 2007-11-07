@@ -1,0 +1,20 @@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def jpeg-6b-orig/makefile.cfg jpeg-6b/makefile.cfg
+--- jpeg-6b-orig/makefile.cfg	Sat Mar 21 20:08:57 1998
++++ jpeg-6b/makefile.cfg	Sun Jun 17 23:18:31 2007
+@@ -133,7 +133,15 @@
+ TROBJECTS= jpegtran.$(O) rdswitch.$(O) cdjpeg.$(O) transupp.$(O)
+ 
+ 
+-all: @A2K_DEPS@ libjpeg.$(A) cjpeg djpeg jpegtran rdjpgcom wrjpgcom
++all: @A2K_DEPS@ libjpeg.$(A) cjpeg djpeg jpegtran rdjpgcom wrjpgcom libjpeg.dll
++
++libjpeg.dll : libjpeg.a
++	$(CC) -shared -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--whole-archive $< \
++	-Wl,--out-implib=$(basename $<).dll.a \
++	-Wl,--no-whole-archive
++	strip $(STRIP_FLAGS) $@
+ 
+ # Special compilation rules to support ansi2knr and libtool.
+ .SUFFIXES: .lo .la

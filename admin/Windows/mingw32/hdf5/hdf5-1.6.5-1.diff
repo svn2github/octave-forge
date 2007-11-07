@@ -1,0 +1,388 @@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/c++/config/commence.in hdf5-1.6.5/c++/config/commence.in
+--- hdf5-1.6.5-orig/c++/config/commence.in	Sat Oct 29 18:10:33 2005
++++ hdf5-1.6.5/c++/config/commence.in	Wed Jun 27 20:38:46 2007
+@@ -46,7 +46,7 @@
+ INSTALL=@INSTALL@
+ INSTALL_PROGRAM=@INSTALL_PROGRAM@
+ INSTALL_DATA=@INSTALL_DATA@
+-TIME=time
++#TIME=time
+ TRACE=:
+ 
+ ## Installation points
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/c++/config/i686-pc-mingw32 hdf5-1.6.5/c++/config/i686-pc-mingw32
+--- hdf5-1.6.5-orig/c++/config/i686-pc-mingw32	Thu Jan  1 01:00:00 1970
++++ hdf5-1.6.5/c++/config/i686-pc-mingw32	Wed Jun 27 20:38:46 2007
+@@ -0,0 +1,17 @@
++#							-*- shell-script -*-
++
++# Copyright by the Board of Trustees of the University of Illinois.
++# All rights reserved.
++#
++# This file is part of HDF5.  The full HDF5 copyright notice, including
++# terms governing use, modification, and redistribution, is contained in
++# the files COPYING and Copyright.html.  COPYING can be found at the root
++# of the source code distribution tree; Copyright.html can be found at the
++# root level of an installed copy of the electronic HDF5 document set and
++# is linked from the top-level documents page.  It can also be found at
++# http://hdf.ncsa.uiuc.edu/HDF5/doc/Copyright.html.  If you do not have
++# access to either file, you may request a copy from hdfhelp@ncsa.uiuc.edu.
++
++# This is the same as linux-gnulibc1
++
++. $srcdir/config/linux-gnulibc1 
+\ No newline at end of file
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/c++/src/Makefile.in hdf5-1.6.5/c++/src/Makefile.in
+--- hdf5-1.6.5-orig/c++/src/Makefile.in	Mon Feb 21 00:16:31 2005
++++ hdf5-1.6.5/c++/src/Makefile.in	Wed Jun 27 22:25:02 2007
+@@ -30,7 +30,18 @@
+ CPPFLAGS=-I. -I$(hdf5_builddir) -I$(hdf5_srcdir) @CPPFLAGS@
+ 
+ ## This is our main target
+-LIB=libhdf5_cpp.la
++LIB=libhdf5_cpp.la 
++LIBSHARED=.libs/hdf5_cpp.dll
++
++$(LIBSHARED) : $(LIB)
++	$(CXX) -shared -o $@ \
++	  -Wl,--enable-auto-import \
++	  -Wl,--export-all-symbols \
++	  -Wl,--whole-archive .libs/libhdf5_cpp.a \
++	  -Wl,--out-implib=.libs/libhdf5_cpp.dll.a \
++	  -Wl,--output-def=.libs/libhdf5_cpp.def \
++	  -Wl,--no-whole-archive $(LDFLAGS) $(LIBS) -L$(top_builddir)/src/.libs -lhdf5
++	strip $(STRIP_FLAGS) $@
+ 
+ ## Source and object files for the library
+ LIB_SRC=H5Exception.cpp H5IdComponent.cpp H5Library.cpp H5Attribute.cpp		\
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/config/commence.in hdf5-1.6.5/config/commence.in
+--- hdf5-1.6.5-orig/config/commence.in	Fri Oct 28 22:15:26 2005
++++ hdf5-1.6.5/config/commence.in	Wed Jun 27 20:38:46 2007
+@@ -49,7 +49,7 @@
+ RUNSERIAL=@RUNSERIAL@
+ RUNPARALLEL=@RUNPARALLEL@
+ RUNTEST=$(RUNSERIAL)
+-TIME=time
++#TIME=time
+ TRACE=:
+ 
+ ## Installation points
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/config/conclude.in hdf5-1.6.5/config/conclude.in
+--- hdf5-1.6.5-orig/config/conclude.in	Fri Oct 28 22:15:26 2005
++++ hdf5-1.6.5/config/conclude.in	Wed Jun 27 22:14:40 2007
+@@ -20,7 +20,7 @@
+ ## This is the target for the library described in the main body of the
+ ## makefile.
+ ##
+-lib: $(LIB)
++lib: $(LIB) $(LIBSHARED)
+ $(LIB) __no_library__: $(LIB_OBJ)
+ 	@$(LT_LINK_LIB) -o $@ $(CFLAGS) $(LIB_OBJ) $(LDFLAGS) $(LIBS)
+ 	@for d in X $(SUBDIRS); do                                      \
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/config/i686-pc-mingw32 hdf5-1.6.5/config/i686-pc-mingw32
+--- hdf5-1.6.5-orig/config/i686-pc-mingw32	Thu Jan  1 01:00:00 1970
++++ hdf5-1.6.5/config/i686-pc-mingw32	Wed Jun 27 20:38:46 2007
+@@ -0,0 +1,36 @@
++#							-*- shell-script -*-
++#
++# Copyright by the Board of Trustees of the University of Illinois.
++# All rights reserved.
++#
++# This file is part of HDF5.  The full HDF5 copyright notice, including
++# terms governing use, modification, and redistribution, is contained in
++# the files COPYING and Copyright.html.  COPYING can be found at the root
++# of the source code distribution tree; Copyright.html can be found at the
++# root level of an installed copy of the electronic HDF5 document set and
++# is linked from the top-level documents page.  It can also be found at
++# http://hdf.ncsa.uiuc.edu/HDF5/doc/Copyright.html.  If you do not have
++# access to either file, you may request a copy from hdfhelp@ncsa.uiuc.edu.
++
++
++# This file is part of the HDF5 build script.  It is processed shortly
++# after configure starts and defines, among other things, flags for
++# the various compile modes.
++#
++# See BlankForm in this directory for details.
++
++# The default compiler is `gcc'.
++if test -z "$CC"; then
++   CC=gcc
++   CC_BASENAME=gcc
++fi
++
++# Figure out GNU C compiler flags
++. $srcdir/config/gnu-flags
++
++# Figure out PGI C compiler flags
++. $srcdir/config/pgi-flags
++
++# Figure out Intel C compiler flags
++. $srcdir/config/intel-flags
++
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/perform/zip_perf.c hdf5-1.6.5/perform/zip_perf.c
+--- hdf5-1.6.5-orig/perform/zip_perf.c	Sat Aug 13 17:54:27 2005
++++ hdf5-1.6.5/perform/zip_perf.c	Wed Jun 27 20:38:46 2007
+@@ -28,7 +28,9 @@
+ #include <fcntl.h>
+ #include <math.h>
+ #include <sys/time.h>
++#if !defined __MINGW32__
+ #include <sys/uio.h>
++#endif
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/src/H5FDsec2.c hdf5-1.6.5/src/H5FDsec2.c
+--- hdf5-1.6.5-orig/src/H5FDsec2.c	Sat Aug 13 22:58:27 2005
++++ hdf5-1.6.5/src/H5FDsec2.c	Wed Jun 27 20:40:18 2007
+@@ -101,7 +101,7 @@
+  */
+ /* adding for windows NT file system support. */
+ 
+-#ifdef H5_HAVE_LSEEK64
++#if defined H5_HAVE_LSEEK64
+ #   define file_offset_t	off64_t
+ #   define file_seek		lseek64
+ #   define file_truncate	ftruncate64
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/src/H5FDstdio.c hdf5-1.6.5/src/H5FDstdio.c
+--- hdf5-1.6.5-orig/src/H5FDstdio.c	Sat Aug 13 22:58:31 2005
++++ hdf5-1.6.5/src/H5FDstdio.c	Wed Jun 27 21:04:13 2007
+@@ -133,7 +133,7 @@
+ #define REGION_OVERFLOW(A,Z)	(ADDR_OVERFLOW(A) || SIZE_OVERFLOW(Z) || \
+     HADDR_UNDEF==(A)+(Z) || (file_offset_t)((A)+(Z))<(file_offset_t)(A))
+ 
+-#ifdef H5_HAVE_LSEEK64
++#if defined H5_HAVE_LSEEK64 && !defined(__MINGW32__)
+ #   define file_offset_t	off64_t
+ #   define file_truncate	ftruncate64
+ #elif defined (WIN32) && !defined(__MWERKS__)
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/src/H5FDstream.c hdf5-1.6.5/src/H5FDstream.c
+--- hdf5-1.6.5-orig/src/H5FDstream.c	Tue Oct 11 20:12:42 2005
++++ hdf5-1.6.5/src/H5FDstream.c	Wed Jun 27 20:38:47 2007
+@@ -55,7 +55,11 @@
+ #ifdef H5_HAVE_SYS_SOCKET_H
+ #include <sys/socket.h>               /* socket stuff                        */
+ #endif
++#ifdef __WIN32__
++#include <winsock2.h>                 /* gethostbyname                       */
++#else
+ #include <netdb.h>                    /* gethostbyname                       */
++#endif
+ #include <netinet/in.h>               /* socket stuff                        */
+ #ifdef H5_HAVE_NETINET_TCP_H
+ #include <netinet/tcp.h>              /* socket stuff                        */
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/src/H5Omtime.c hdf5-1.6.5/src/H5Omtime.c
+--- hdf5-1.6.5-orig/src/H5Omtime.c	Mon Sep 12 08:03:26 2005
++++ hdf5-1.6.5/src/H5Omtime.c	Wed Jun 27 23:12:46 2007
+@@ -205,10 +205,15 @@
+ 		 (p[2]-'0')*10 + (p[3]-'0') - 1900;
+     tm.tm_mon = (p[4]-'0')*10 + (p[5]-'0') - 1;
+     tm.tm_mday = (p[6]-'0')*10 + (p[7]-'0');
++    #ifdef __MINGW32__
++    tm.tm_hour = (p[8]-'0')*10 + (p[9]-'0') + 1;
++    #else
+     tm.tm_hour = (p[8]-'0')*10 + (p[9]-'0');
++    #endif
+     tm.tm_min = (p[10]-'0')*10 + (p[11]-'0');
+     tm.tm_sec = (p[12]-'0')*10 + (p[13]-'0');
+     tm.tm_isdst = -1; /*figure it out*/
++
+     if ((time_t)-1==(the_time=HDmktime(&tm)))
+ 	HGOTO_ERROR(H5E_OHDR, H5E_CANTINIT, NULL, "badly formatted modification time message");
+ 
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/src/H5private.h hdf5-1.6.5/src/H5private.h
+--- hdf5-1.6.5-orig/src/H5private.h	Sat Oct 22 20:38:08 2005
++++ hdf5-1.6.5/src/H5private.h	Wed Jun 27 20:38:47 2007
+@@ -25,6 +25,10 @@
+ #ifndef _H5private_H
+ #define _H5private_H
+ 
++#if defined(__WIN32__) && !defined WIN32
++#define WIN32
++#endif
++
+ #include "H5public.h"		/* Include Public Definitions		*/
+ 
+ /* include the pthread header */
+@@ -141,7 +145,11 @@
+ 
+ #ifdef WIN32
+ 
++#ifdef __MINGW32__
++#define WIN32_LEAN_AND_MEAN
++#else
+ #define VC_EXTRALEAN		/*Exclude rarely-used stuff from Windows headers */
++#endif
+ #include <windows.h>
+ 
+ #endif /*WIN32*/
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/src/Makefile.in hdf5-1.6.5/src/Makefile.in
+--- hdf5-1.6.5-orig/src/Makefile.in	Mon Aug  8 20:41:51 2005
++++ hdf5-1.6.5/src/Makefile.in	Wed Jun 27 22:15:59 2007
+@@ -25,6 +25,17 @@
+ 
+ ## This is our main target, but also remove the settings file when cleaning.
+ LIB=libhdf5.la
++LIBSHARED=.libs/hdf5.dll
++
++$(LIBSHARED) : libhdf5.la
++	$(CXX) -shared -o $@ \
++      -Wl,--enable-auto-import \
++	  -Wl,--export-all-symbols \
++	  -Wl,--whole-archive .libs/libhdf5.a \
++	  -Wl,--out-implib=.libs/libhdf5.dll.a \
++	  -Wl,--output-def=.libs/libhdf5.def \
++	  -Wl,--no-whole-archive $(LDFLAGS) $(LIBS)
++	strip $(STRIP_FLAGS) $@
+ 
+ ## libhdf5.settings is generated during configure. Remove it when distclean.
+ DISTCLEAN=libhdf5.settings
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/gifconv/Makefile.in hdf5-1.6.5/tools/gifconv/Makefile.in
+--- hdf5-1.6.5-orig/tools/gifconv/Makefile.in	Wed Dec 29 16:31:31 2004
++++ hdf5-1.6.5/tools/gifconv/Makefile.in	Wed Jun 27 23:49:24 2007
+@@ -31,7 +31,7 @@
+ 
+ ## These are our main targets: library and tools.
+ ##
+-LIBTOOLS=../lib/libh5tools.la
++LIBTOOLS=../lib/.libs/libh5tools.la
+ LIBHDF5=$(top_builddir)/src/libhdf5.la
+ 
+ PUB_PROGS= gif2h5 h52gif
+@@ -65,9 +65,9 @@
+ $(PROGS): $(LIBTOOLS) $(LIBHDF5)
+ 
+ gif2h5: gif2hdf.lo gif2mem.lo decompress.lo gifread.lo writehdf.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ gif2hdf.lo gif2mem.lo decompress.lo gifread.lo writehdf.lo  $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	$(CC) $(CFLAGS) -o $@ -mconsole gif2hdf.o gif2mem.o decompress.o gifread.o writehdf.o  $(LDFLAGS) $(LIBS)  ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h52gif: hdf2gif.lo hdfgifwr.lo readhdf.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ hdf2gif.lo hdfgifwr.lo readhdf.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	$(CC) $(CFLAGS) -o $@ -mconsole hdf2gif.o hdfgifwr.o readhdf.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ @CONCLUDE@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/h5diff/Makefile.in hdf5-1.6.5/tools/h5diff/Makefile.in
+--- hdf5-1.6.5-orig/tools/h5diff/Makefile.in	Tue Apr 20 02:19:09 2004
++++ hdf5-1.6.5/tools/h5diff/Makefile.in	Wed Jun 27 23:49:39 2007
+@@ -51,7 +51,7 @@
+ ##
+ PROG_SRC= h5diff_main.c  testh5diff_attr.c testh5diff_basic.c testh5diff_dset.c testh5diff_util.c testh5diff_main.c
+ PROG_OBJ=$(PROG_SRC:.c=.lo)
+-OBJS= h5diff_main.lo
++OBJS= h5diff_main.o
+ TEST_OBJS=testh5diff_attr.lo testh5diff_basic.lo testh5diff_dset.lo testh5diff_util.lo testh5diff_main.lo
+ 
+ PRIVATE_HDR=testh5diff.h
+@@ -71,7 +71,7 @@
+ $(PROGS): $(LIBTOOLS) $(LIBHDF5)
+ 
+ h5diff: $(OBJS)
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ $(OBJS) $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	$(CC) $(CFLAGS) -mconsole -o $@ $(OBJS) $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h5difftst: $(TEST_OBJS)
+ 	@$(LT_LINK_EXE) $(CFLAGS) -o $@ $(TEST_OBJS)  $(LIBTOOLS)  $(LIBHDF5) $(LDFLAGS) $(LIBS)
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/h5dump/Makefile.in hdf5-1.6.5/tools/h5dump/Makefile.in
+--- hdf5-1.6.5-orig/tools/h5dump/Makefile.in	Wed Sep  8 22:42:09 2004
++++ hdf5-1.6.5/tools/h5dump/Makefile.in	Wed Jun 27 23:48:38 2007
+@@ -78,7 +78,7 @@
+ $(PROGS): $(LIBTOOLS) $(LIBHDF5)
+ 
+ h5dump: h5dump.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5dump.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	$(CC) $(CFLAGS) -mconsole -o $@ h5dump.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h5dumpgentest: h5dumpgentest.lo
+ 	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5dumpgentest.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/h5import/Makefile.in hdf5-1.6.5/tools/h5import/Makefile.in
+--- hdf5-1.6.5-orig/tools/h5import/Makefile.in	Wed Dec 29 16:31:35 2004
++++ hdf5-1.6.5/tools/h5import/Makefile.in	Wed Jun 27 23:49:48 2007
+@@ -65,7 +65,7 @@
+ $(PROGS): $(LIBTOOLS) $(LIBHDF5)
+ 
+ h5import: h5import.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5import.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -o $@ h5import.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h5importtest: h5importtest.lo
+ 	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5importtest.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/h5jam/Makefile.in hdf5-1.6.5/tools/h5jam/Makefile.in
+--- hdf5-1.6.5-orig/tools/h5jam/Makefile.in	Fri Oct  8 23:29:20 2004
++++ hdf5-1.6.5/tools/h5jam/Makefile.in	Wed Jun 27 23:50:25 2007
+@@ -77,19 +77,19 @@
+ $(PROGS): $(LIBTOOLS) $(LIBHDF5)
+ 
+ h5jam: h5jam.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5jam.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ h5jam.lo $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h5unjam: h5unjam.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5unjam.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ h5unjam.lo $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h5jamgentest: h5jamgentest.lo
+ 	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5jamgentest.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
+ 
+ tellub: tellub.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ tellub.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ tellub.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ getub: getub.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ getub.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ getub.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ check-all: check 
+ 
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/h5ls/Makefile.in hdf5-1.6.5/tools/h5ls/Makefile.in
+--- hdf5-1.6.5-orig/tools/h5ls/Makefile.in	Wed Dec 29 16:31:41 2004
++++ hdf5-1.6.5/tools/h5ls/Makefile.in	Wed Jun 27 23:50:30 2007
+@@ -58,6 +58,6 @@
+ $(PROGS): $(LIBTOOLS) $(LIBHDF5)
+ 
+ h5ls: h5ls.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5ls.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ h5ls.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ @CONCLUDE@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/h5repack/Makefile.in hdf5-1.6.5/tools/h5repack/Makefile.in
+--- hdf5-1.6.5-orig/tools/h5repack/Makefile.in	Wed Dec 29 16:31:43 2004
++++ hdf5-1.6.5/tools/h5repack/Makefile.in	Wed Jun 27 23:50:40 2007
+@@ -75,7 +75,7 @@
+ $(PROGS): $(LIBTOOLS) $(LIBHDF5)
+ 
+ h5repack: $(OBJS)
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ $(OBJS)  $(LIBTOOLS)  $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ $(OBJS:.lo=.o)  $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h5repacktst: $(TEST_OBJS)
+ 	@$(LT_LINK_EXE) $(CFLAGS) -o $@ $(TEST_OBJS)  $(LIBTOOLS)  $(LIBHDF5) $(LDFLAGS) $(LIBS)
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/misc/Makefile.in hdf5-1.6.5/tools/misc/Makefile.in
+--- hdf5-1.6.5-orig/tools/misc/Makefile.in	Sun Oct 30 21:02:54 2005
++++ hdf5-1.6.5/tools/misc/Makefile.in	Wed Jun 27 23:51:31 2007
+@@ -71,12 +71,12 @@
+ 	@true
+ 
+ h5debug: h5debug.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5debug.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ h5debug.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ h5redeploy: h5redeploy.in
+ 	$(CP) $(srcdir)/$@.in $@
+ 
+ h5repart: h5repart.lo
+-	@$(LT_LINK_EXE) $(CFLAGS) -o $@ h5repart.lo $(LIBTOOLS) $(LIBHDF5) $(LDFLAGS) $(LIBS)
++	@$(CC) $(CFLAGS) -mconsole -o $@ h5repart.o $(LDFLAGS) $(LIBS) ../lib/.libs/libh5tools.a -L$(top_builddir)/src/.libs -lhdf5
+ 
+ @CONCLUDE@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def hdf5-1.6.5-orig/tools/misc/h5repart.c hdf5-1.6.5/tools/misc/h5repart.c
+--- hdf5-1.6.5-orig/tools/misc/h5repart.c	Sat Aug 13 23:06:24 2005
++++ hdf5-1.6.5/tools/misc/h5repart.c	Wed Jun 27 20:38:47 2007
+@@ -208,7 +208,7 @@
+     int		dst_is_family;		/*is dst name a family name?	*/
+     int		dst_membno=0;		/*destination member number	*/
+ 
+-#if defined(WIN32) && ! defined (__MWERKS__)
++#if defined(WIN32) && ! defined (__MWERKS__) && !defined(__MINGW32__)
+     _int64	left_overs=0;		/*amount of zeros left over	*/
+     _int64	src_offset=0;		/*offset in source member	*/
+     _int64	dst_offset=0;		/*offset in destination member	*/

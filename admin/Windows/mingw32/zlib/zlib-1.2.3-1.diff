@@ -1,0 +1,62 @@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def zlib-1.2.3-orig/win32/Makefile.gcc zlib-1.2.3/win32/Makefile.gcc
+--- zlib-1.2.3-orig/win32/Makefile.gcc	Sat Aug  2 05:49:00 2003
++++ zlib-1.2.3/win32/Makefile.gcc	Fri Jun 15 21:20:19 2007
+@@ -25,12 +25,12 @@
+ 
+ STATICLIB = libz.a
+ SHAREDLIB = zlib1.dll
+-IMPLIB    = libzdll.a
++IMPLIB    = libz.dll.a
+ 
+ #LOC = -DASMV
+ #LOC = -DDEBUG -g
+ 
+-CC = gcc
++CC = mingw32-gcc
+ CFLAGS = $(LOC) -O3 -Wall
+ 
+ AS = $(CC)
+@@ -78,10 +78,14 @@
+ 
+ $(IMPLIB): $(SHAREDLIB)
+ 
+-$(SHAREDLIB): win32/zlib.def $(OBJS) $(OBJA) zlibrc.o
+-	dllwrap --driver-name $(CC) --def win32/zlib.def \
+-	  --implib $(IMPLIB) -o $@ $(OBJS) $(OBJA) zlibrc.o
+-	strip $@
++$(SHAREDLIB): $(STATICLIB) zlibrc.o
++	$(CC) -shared -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--whole-archive $^ \
++	-Wl,--out-implib=$(basename $<).dll.a \
++	-Wl,--output-def=$(basename $<).def \
++	-Wl,--no-whole-archive
++	strip $(STRIP_FLAGS) $@
+ 
+ example: example.o $(STATICLIB)
+ 	$(LD) $(LDFLAGS) -o $@ example.o $(STATICLIB)
+@@ -104,12 +108,14 @@
+ .PHONY: install uninstall clean
+ 
+ install: zlib.h zconf.h $(LIB)
+-	-@if not exist $(INCLUDE_PATH)/nul mkdir $(INCLUDE_PATH)
+-	-@if not exist $(LIBRARY_PATH)/nul mkdir $(LIBRARY_PATH)
++	-mkdir -p $(INCLUDE_PATH)
++	-mkdir -p $(LIBRARY_PATH)
++	-mkdir -p $(SHAREDLIB_PATH)
+ 	-$(INSTALL) zlib.h $(INCLUDE_PATH)
+ 	-$(INSTALL) zconf.h $(INCLUDE_PATH)
+ 	-$(INSTALL) $(STATICLIB) $(LIBRARY_PATH)
+ 	-$(INSTALL) $(IMPLIB) $(LIBRARY_PATH)
++	-$(INSTALL) $(SHAREDLIB) $(SHAREDLIB_PATH) 
+ 
+ uninstall:
+ 	-$(RM) $(INCLUDE_PATH)/zlib.h
+@@ -124,6 +130,7 @@
+ 	-$(RM) *.o
+ 	-$(RM) *.exe
+ 	-$(RM) foo.gz
++	-$(RM) *.def
+ 
+ adler32.o: zlib.h zconf.h
+ compress.o: zlib.h zconf.h

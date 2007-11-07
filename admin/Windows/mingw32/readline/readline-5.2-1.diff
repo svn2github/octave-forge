@@ -1,0 +1,2143 @@
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/README.msvc readline-5.2/README.msvc
+--- readline-5.2-orig/README.msvc	Thu Jan  1 01:00:00 1970
++++ readline-5.2/README.msvc	Sun Jun 10 18:52:51 2007
+@@ -0,0 +1,16 @@
++Compilation instruction under MSVC
++----------------------------------
++
++The compilation under MSVC is based on the MSYS shell (http://www.mingw.org)
++and the Unix-to-MSVC compilation scripts package (http://www.octave.org). It
++is assumed that those components are properly installed. The following set
++of instructions is intended to be executed from a fully-setup MSYS shell.
++
++1) "CC=cc-msvc CXX=cc-msvc ./configure --build=i686-pc-msdosmsvc --prefix=/whatever/you/want"
++
++2) "make shared" (compilation only supported for DLL version of the libraries)
++
++3) "make install-shared". Note that this installation will not install the
++   import libraries (readline.lib and history.lib), you'll have the copy them
++   manually. Note also that the DLL will be installed in $prefix/lib, while
++   it is more usual to install them in $prefix/bin.
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/bind.c readline-5.2/bind.c
+--- readline-5.2-orig/bind.c	Thu Jul 27 15:44:10 2006
++++ readline-5.2/bind.c	Sun Jun 10 18:52:51 2007
+@@ -841,7 +841,7 @@
+       filename = SYS_INPUTRC;
+     }
+ 
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+   if (_rl_read_init_file (filename, 0) == 0)
+     return 0;
+   filename = "~/_inputrc";
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/complete.c readline-5.2/complete.c
+--- readline-5.2-orig/complete.c	Fri Jul 28 17:35:49 2006
++++ readline-5.2/complete.c	Sun Jun 10 18:52:51 2007
+@@ -55,6 +55,66 @@
+ #include "posixdir.h"
+ #include "posixstat.h"
+ 
++#if defined (_WIN32) && ! defined (HAVE_DIRENT_H)
++#include <windows.h>
++
++struct direct {
++	char *d_name;
++	int d_namlen;
++};
++
++typedef struct {
++	HANDLE hnd;
++	WIN32_FIND_DATA fd;
++	int dirty;
++	struct direct d;
++	const char* current;
++} DIR;
++
++DIR* opendir(const char *name)
++{
++	DIR *d = (DIR*)malloc(sizeof(DIR));
++	static char buffer[MAX_PATH];
++
++	strncpy(buffer, name, MAX_PATH);
++	strncat(buffer, "\\*", MAX_PATH);
++	d->current = buffer;
++	d->hnd = FindFirstFile(buffer, &(d->fd));
++	if (d->hnd == INVALID_HANDLE_VALUE)
++		return NULL;
++	d->dirty = 1;
++	return d;
++}
++
++void rewinddir(DIR* d)
++{
++	if (d->hnd != INVALID_HANDLE_VALUE)
++		FindClose(d->hnd);
++	d->hnd = FindFirstFile(d->current, &(d->fd));
++	d->dirty = 1;
++}
++
++void closedir(DIR *d)
++{
++	if (d->hnd != INVALID_HANDLE_VALUE)
++		FindClose(d->hnd);
++	free(d);
++}
++
++struct direct* readdir(DIR *d)
++{
++	if (!d->dirty)
++	{
++		if (!FindNextFile(d->hnd, &(d->fd)))
++			return NULL;
++	}
++	d->d.d_name = d->fd.cFileName;
++	d->d.d_namlen = strlen(d->fd.cFileName);
++	d->dirty = 0;
++	return &(d->d);
++}
++#endif /* _WIN32 */
++
+ /* System-specific feature definitions and include files. */
+ #include "rldefs.h"
+ #include "rlmbutil.h"
+@@ -154,7 +214,7 @@
+ int _rl_print_completions_horizontally;
+ 
+ /* Non-zero means that case is not significant in filename completion. */
+-#if defined (__MSDOS__) && !defined (__DJGPP__)
++#if (defined (__MSDOS__) || defined (_WIN32)) && !defined (__DJGPP__)
+ int _rl_completion_case_fold = 1;
+ #else
+ int _rl_completion_case_fold;
+@@ -540,7 +600,7 @@
+     return (pathname);
+ 
+   temp = strrchr (pathname, '/');
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+   if (temp == 0 && ISALPHA ((unsigned char)pathname[0]) && pathname[1] == ':')
+     temp = pathname + 1;
+ #endif
+@@ -1836,7 +1896,12 @@
+   return (char *)NULL;
+ #else /* !__WIN32__ && !__OPENNT) */
+   static char *username = (char *)NULL;
++#ifndef _WIN32
+   static struct passwd *entry;
++#else
++  char user_name[128];
++  unsigned user_len;
++#endif
+   static int namelen, first_char, first_char_loc;
+   char *value;
+ 
+@@ -1849,9 +1914,12 @@
+ 
+       username = savestring (&text[first_char_loc]);
+       namelen = strlen (username);
++#ifndef _WIN32
+       setpwent ();
++#endif
+     }
+ 
++#if !defined (_WIN32)
+ #if defined (HAVE_GETPWENT)
+   while (entry = getpwent ())
+     {
+@@ -1881,6 +1949,21 @@
+ 
+       return (value);
+     }
++#else /* !_WIN32 */
++  if (GetUserName (user_name, &user_len))
++    {
++      if (namelen == 0 || (!strnicmp (username, user_name, namelen)))
++	{
++	  value = (char *)xmalloc (2 + strlen (user_name));
++	  *value = *text;
++	  strcpy (value + first_char_loc, user_name);
++	  if (first_char == '~')
++	    rl_filename_completion_desired = 1;
++	  return (value);
++	}
++    }
++  return ((char *)NULL);
++#endif /* _WIN32 */
+ #endif /* !__WIN32__ && !__OPENNT */
+ }
+ 
+@@ -1923,7 +2006,7 @@
+ 
+       temp = strrchr (dirname, '/');
+ 
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       /* special hack for //X/... */
+       if (dirname[0] == '/' && dirname[1] == '/' && ISALPHA ((unsigned char)dirname[2]) && dirname[3] == '/')
+         temp = strrchr (dirname + 3, '/');
+@@ -1934,7 +2017,7 @@
+ 	  strcpy (filename, ++temp);
+ 	  *temp = '\0';
+ 	}
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       /* searches from current directory on the drive */
+       else if (ISALPHA ((unsigned char)dirname[0]) && dirname[1] == ':')
+         {
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/config.h.in readline-5.2/config.h.in
+--- readline-5.2-orig/config.h.in	Tue Sep 12 22:02:00 2006
++++ readline-5.2/config.h.in	Sun Jun 10 18:52:51 2007
+@@ -257,7 +257,7 @@
+ #  undef HAVE_STRCOLL
+ #endif
+ 
+-#if defined (__STDC__) && defined (HAVE_STDARG_H)
++#if (defined (__STDC__) || defined (_WIN32)) && defined (HAVE_STDARG_H)
+ #  define PREFER_STDARG
+ #  define USE_VARARGS
+ #else
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/display.c readline-5.2/display.c
+--- readline-5.2-orig/display.c	Thu Sep 14 20:20:12 2006
++++ readline-5.2/display.c	Sun Jun 10 18:52:51 2007
+@@ -55,6 +55,11 @@
+ #include "rlprivate.h"
+ #include "xmalloc.h"
+ 
++#if defined (_WIN32)
++#include <windows.h>
++#define hStdout GetStdHandle(STD_OUTPUT_HANDLE)
++#endif
++
+ #if !defined (strchr) && !defined (__STDC__)
+ extern char *strchr (), *strrchr ();
+ #endif /* !strchr && !__STDC__ */
+@@ -1001,7 +1006,7 @@
+ 	      _rl_last_c_pos < PROMPT_ENDING_INDEX && local_prompt)
+ #endif
+ 	    {
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+ 	      putc ('\r', rl_outstream);
+ #else
+ 	      if (_rl_term_cr)
+@@ -1436,7 +1441,7 @@
+       _rl_term_cr && lendiff > prompt_visible_length && _rl_last_c_pos > 0 &&
+       od >= lendiff && _rl_last_c_pos < PROMPT_ENDING_INDEX)
+     {
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       putc ('\r', rl_outstream);
+ #else
+       tputs (_rl_term_cr, 1, _rl_output_character_function);
+@@ -1717,6 +1722,17 @@
+      int new;
+      const char *data;
+ {
++#if defined (_WIN32)
++  CONSOLE_SCREEN_BUFFER_INFO     csbi;
++  if ( (_rl_last_c_pos != new)
++       && GetConsoleScreenBufferInfo(hStdout, &csbi) )
++  {
++    csbi.dwCursorPosition.X += new - _rl_last_c_pos;
++    if ( SetConsoleCursorPosition(hStdout, csbi.dwCursorPosition) )
++      _rl_last_c_pos = new;
++  }
++#else /* _WIN32 */
++	     
+   register int i;
+   int woff;			/* number of invisible chars on current line */
+   int cpos, dpos;		/* current and desired cursor positions */
+@@ -1761,11 +1777,11 @@
+   if (dpos == 0 || CR_FASTER (dpos, _rl_last_c_pos) ||
+       (_rl_term_autowrap && i == _rl_screenwidth))
+     {
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       putc ('\r', rl_outstream);
+ #else
+       tputs (_rl_term_cr, 1, _rl_output_character_function);
+-#endif /* !__MSDOS__ */
++#endif /* !__MSDOS__ && !_WIN32 */
+       cpos = _rl_last_c_pos = 0;
+     }
+ 
+@@ -1817,6 +1833,7 @@
+     _rl_backspace (cpos - dpos);
+ 
+   _rl_last_c_pos = dpos;
++#endif /* _WIN32 */
+ }
+ 
+ /* PWP: move the cursor up or down. */
+@@ -1824,6 +1841,16 @@
+ _rl_move_vert (to)
+      int to;
+ {
++#if defined (_WIN32)
++  CONSOLE_SCREEN_BUFFER_INFO	csbi;
++  if ( (_rl_last_v_pos != to) && (to <= _rl_screenheight)
++       && GetConsoleScreenBufferInfo(hStdout, &csbi) )
++  {
++    csbi.dwCursorPosition.Y += to - _rl_last_v_pos;
++    if ( SetConsoleCursorPosition(hStdout, csbi.dwCursorPosition) )
++      _rl_last_v_pos = to;
++  }
++#else /* !_WIN32 */
+   register int delta, i;
+ 
+   if (_rl_last_v_pos == to || to > _rl_screenheight)
+@@ -1833,7 +1860,7 @@
+     {
+       for (i = 0; i < delta; i++)
+ 	putc ('\n', rl_outstream);
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       putc ('\r', rl_outstream);
+ #else
+       tputs (_rl_term_cr, 1, _rl_output_character_function);
+@@ -1848,6 +1875,7 @@
+     }
+ 
+   _rl_last_v_pos = to;		/* Now TO is here */
++#endif /* _WIN32 */
+ }
+ 
+ /* Physically print C on rl_outstream.  This is for functions which know
+@@ -2104,10 +2132,19 @@
+ _rl_clear_to_eol (count)
+      int count;
+ {
++#if defined (_WIN32)
++  CONSOLE_SCREEN_BUFFER_INFO	csbi;
++  if (GetConsoleScreenBufferInfo(hStdout, &csbi))
++  {
++    DWORD written;
++    FillConsoleOutputCharacter(hStdout, ' ', count, csbi.dwCursorPosition, &written);
++  }
++#else /* !_WIN32 */
+   if (_rl_term_clreol)
+     tputs (_rl_term_clreol, 1, _rl_output_character_function);
+   else if (count)
+     space_to_eol (count);
++#endif /* _WIN32 */
+ }
+ 
+ /* Clear to the end of the line using spaces.  COUNT is the minimum
+@@ -2127,10 +2164,35 @@
+ void
+ _rl_clear_screen ()
+ {
++#if !defined (_WIN32)
+   if (_rl_term_clrpag)
+     tputs (_rl_term_clrpag, 1, _rl_output_character_function);
+   else
+     rl_crlf ();
++#else
++  /* http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dllproc/base/getconsolescreenbufferinfo.asp */
++  COORD coordScreen = { 0, 0 };
++  DWORD cCharsWritten;
++  CONSOLE_SCREEN_BUFFER_INFO csbi; 
++  DWORD dwConSize;
++
++  if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
++    return;
++  dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
++
++  if( !FillConsoleOutputCharacter( hStdout, (TCHAR) ' ',
++      dwConSize, coordScreen, &cCharsWritten ))
++    return;
++
++  if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
++    return;
++
++  if( !FillConsoleOutputAttribute( hStdout, csbi.wAttributes,
++      dwConSize, coordScreen, &cCharsWritten ))
++    return;
++
++  SetConsoleCursorPosition( hStdout, coordScreen );
++#endif
+ }
+ 
+ /* Insert COUNT characters from STRING to the output stream at column COL. */
+@@ -2245,7 +2307,7 @@
+ {
+   if (_rl_term_cr)
+     {
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       putc ('\r', rl_outstream);
+ #else
+       tputs (_rl_term_cr, 1, _rl_output_character_function);
+@@ -2290,13 +2352,13 @@
+      the right thing happens if we have wrapped to a new screen line. */
+   if (_rl_term_cr)
+     {
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       putc ('\r', rl_outstream);
+ #else
+       tputs (_rl_term_cr, 1, _rl_output_character_function);
+ #endif
+       _rl_last_c_pos = 0;
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       space_to_eol (_rl_screenwidth);
+       putc ('\r', rl_outstream);
+ #else
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/histfile.c readline-5.2/histfile.c
+--- readline-5.2-orig/histfile.c	Fri Mar 31 22:48:43 2006
++++ readline-5.2/histfile.c	Sun Jun 10 18:52:51 2007
+@@ -134,7 +134,7 @@
+   return_val = (char *)xmalloc (2 + home_len + 8); /* strlen(".history") == 8 */
+   strcpy (return_val, home);
+   return_val[home_len] = '/';
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+   strcpy (return_val + home_len + 1, "_history");
+ #else
+   strcpy (return_val + home_len + 1, ".history");
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/history.c readline-5.2/history.c
+--- readline-5.2-orig/history.c	Sun May 21 19:39:41 2006
++++ readline-5.2/history.c	Sun Jun 10 18:52:51 2007
+@@ -49,6 +49,10 @@
+ 
+ #include "xmalloc.h"
+ 
++#if defined (_WIN32)
++#define snprintf _snprintf
++#endif
++
+ /* The number of slots to increase the_history by. */
+ #define DEFAULT_HISTORY_GROW_SIZE 50
+ 
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/history.h readline-5.2/history.h
+--- readline-5.2-orig/history.h	Thu Jul 31 14:38:44 2003
++++ readline-5.2/history.h	Sun Jun 10 18:52:51 2007
+@@ -68,93 +68,93 @@
+ 
+ /* Begin a session in which the history functions might be used.  This
+    just initializes the interactive variables. */
+-extern void using_history PARAMS((void));
++READLINE_API void using_history PARAMS((void));
+ 
+ /* Return the current HISTORY_STATE of the history. */
+-extern HISTORY_STATE *history_get_history_state PARAMS((void));
++READLINE_API HISTORY_STATE *history_get_history_state PARAMS((void));
+ 
+ /* Set the state of the current history array to STATE. */
+-extern void history_set_history_state PARAMS((HISTORY_STATE *));
++READLINE_API void history_set_history_state PARAMS((HISTORY_STATE *));
+ 
+ /* Manage the history list. */
+ 
+ /* Place STRING at the end of the history list.
+    The associated data field (if any) is set to NULL. */
+-extern void add_history PARAMS((const char *));
++READLINE_API void add_history PARAMS((const char *));
+ 
+ /* Change the timestamp associated with the most recent history entry to
+    STRING. */
+-extern void add_history_time PARAMS((const char *));
++READLINE_API void add_history_time PARAMS((const char *));
+ 
+ /* A reasonably useless function, only here for completeness.  WHICH
+    is the magic number that tells us which element to delete.  The
+    elements are numbered from 0. */
+-extern HIST_ENTRY *remove_history PARAMS((int));
++READLINE_API HIST_ENTRY *remove_history PARAMS((int));
+ 
+ /* Free the history entry H and return any application-specific data
+    associated with it. */
+-extern histdata_t free_history_entry PARAMS((HIST_ENTRY *));
++READLINE_API histdata_t free_history_entry PARAMS((HIST_ENTRY *));
+ 
+ /* Make the history entry at WHICH have LINE and DATA.  This returns
+    the old entry so you can dispose of the data.  In the case of an
+    invalid WHICH, a NULL pointer is returned. */
+-extern HIST_ENTRY *replace_history_entry PARAMS((int, const char *, histdata_t));
++READLINE_API HIST_ENTRY *replace_history_entry PARAMS((int, const char *, histdata_t));
+ 
+ /* Clear the history list and start over. */
+-extern void clear_history PARAMS((void));
++READLINE_API void clear_history PARAMS((void));
+ 
+ /* Stifle the history list, remembering only MAX number of entries. */
+-extern void stifle_history PARAMS((int));
++READLINE_API void stifle_history PARAMS((int));
+ 
+ /* Stop stifling the history.  This returns the previous amount the
+    history was stifled by.  The value is positive if the history was
+    stifled, negative if it wasn't. */
+-extern int unstifle_history PARAMS((void));
++READLINE_API int unstifle_history PARAMS((void));
+ 
+ /* Return 1 if the history is stifled, 0 if it is not. */
+-extern int history_is_stifled PARAMS((void));
++READLINE_API int history_is_stifled PARAMS((void));
+ 
+ /* Information about the history list. */
+ 
+ /* Return a NULL terminated array of HIST_ENTRY which is the current input
+    history.  Element 0 of this list is the beginning of time.  If there
+    is no history, return NULL. */
+-extern HIST_ENTRY **history_list PARAMS((void));
++READLINE_API HIST_ENTRY **history_list PARAMS((void));
+ 
+ /* Returns the number which says what history element we are now
+    looking at.  */
+-extern int where_history PARAMS((void));
++READLINE_API int where_history PARAMS((void));
+   
+ /* Return the history entry at the current position, as determined by
+    history_offset.  If there is no entry there, return a NULL pointer. */
+-extern HIST_ENTRY *current_history PARAMS((void));
++READLINE_API HIST_ENTRY *current_history PARAMS((void));
+ 
+ /* Return the history entry which is logically at OFFSET in the history
+    array.  OFFSET is relative to history_base. */
+-extern HIST_ENTRY *history_get PARAMS((int));
++READLINE_API HIST_ENTRY *history_get PARAMS((int));
+ 
+ /* Return the timestamp associated with the HIST_ENTRY * passed as an
+    argument */
+-extern time_t history_get_time PARAMS((HIST_ENTRY *));
++READLINE_API time_t history_get_time PARAMS((HIST_ENTRY *));
+ 
+ /* Return the number of bytes that the primary history entries are using.
+    This just adds up the lengths of the_history->lines. */
+-extern int history_total_bytes PARAMS((void));
++READLINE_API int history_total_bytes PARAMS((void));
+ 
+ /* Moving around the history list. */
+ 
+ /* Set the position in the history list to POS. */
+-extern int history_set_pos PARAMS((int));
++READLINE_API int history_set_pos PARAMS((int));
+ 
+ /* Back up history_offset to the previous history entry, and return
+    a pointer to that entry.  If there is no previous entry, return
+    a NULL pointer. */
+-extern HIST_ENTRY *previous_history PARAMS((void));
++READLINE_API HIST_ENTRY *previous_history PARAMS((void));
+ 
+ /* Move history_offset forward to the next item in the input_history,
+    and return the a pointer to that entry.  If there is no next entry,
+    return a NULL pointer. */
+-extern HIST_ENTRY *next_history PARAMS((void));
++READLINE_API HIST_ENTRY *next_history PARAMS((void));
+ 
+ /* Searching the history list. */
+ 
+@@ -164,45 +164,45 @@
+    current_history () is the history entry, and the value of this function
+    is the offset in the line of that history entry that the string was
+    found in.  Otherwise, nothing is changed, and a -1 is returned. */
+-extern int history_search PARAMS((const char *, int));
++READLINE_API int history_search PARAMS((const char *, int));
+ 
+ /* Search the history for STRING, starting at history_offset.
+    The search is anchored: matching lines must begin with string.
+    DIRECTION is as in history_search(). */
+-extern int history_search_prefix PARAMS((const char *, int));
++READLINE_API int history_search_prefix PARAMS((const char *, int));
+ 
+ /* Search for STRING in the history list, starting at POS, an
+    absolute index into the list.  DIR, if negative, says to search
+    backwards from POS, else forwards.
+    Returns the absolute index of the history element where STRING
+    was found, or -1 otherwise. */
+-extern int history_search_pos PARAMS((const char *, int, int));
++READLINE_API int history_search_pos PARAMS((const char *, int, int));
+ 
+ /* Managing the history file. */
+ 
+ /* Add the contents of FILENAME to the history list, a line at a time.
+    If FILENAME is NULL, then read from ~/.history.  Returns 0 if
+    successful, or errno if not. */
+-extern int read_history PARAMS((const char *));
++READLINE_API int read_history PARAMS((const char *));
+ 
+ /* Read a range of lines from FILENAME, adding them to the history list.
+    Start reading at the FROM'th line and end at the TO'th.  If FROM
+    is zero, start at the beginning.  If TO is less than FROM, read
+    until the end of the file.  If FILENAME is NULL, then read from
+    ~/.history.  Returns 0 if successful, or errno if not. */
+-extern int read_history_range PARAMS((const char *, int, int));
++READLINE_API int read_history_range PARAMS((const char *, int, int));
+ 
+ /* Write the current history to FILENAME.  If FILENAME is NULL,
+    then write the history list to ~/.history.  Values returned
+    are as in read_history ().  */
+-extern int write_history PARAMS((const char *));
++READLINE_API int write_history PARAMS((const char *));
+ 
+ /* Append NELEMENT entries to FILENAME.  The entries appended are from
+    the end of the list minus NELEMENTs up to the end of the list. */
+-extern int append_history PARAMS((int, const char *));
++READLINE_API int append_history PARAMS((int, const char *));
+ 
+ /* Truncate the history file, leaving only the last NLINES lines. */
+-extern int history_truncate_file PARAMS((const char *, int));
++READLINE_API int history_truncate_file PARAMS((const char *, int));
+ 
+ /* History expansion. */
+ 
+@@ -218,12 +218,12 @@
+ 
+   If an error ocurred in expansion, then OUTPUT contains a descriptive
+   error message. */
+-extern int history_expand PARAMS((char *, char **));
++READLINE_API int history_expand PARAMS((char *, char **));
+ 
+ /* Extract a string segment consisting of the FIRST through LAST
+    arguments present in STRING.  Arguments are broken up as in
+    the shell. */
+-extern char *history_arg_extract PARAMS((int, int, const char *));
++READLINE_API char *history_arg_extract PARAMS((int, int, const char *));
+ 
+ /* Return the text of the history event beginning at the current
+    offset into STRING.  Pass STRING with *INDEX equal to the
+@@ -231,33 +231,33 @@
+    DELIMITING_QUOTE is a character that is allowed to end the string
+    specification for what to search for in addition to the normal
+    characters `:', ` ', `\t', `\n', and sometimes `?'. */
+-extern char *get_history_event PARAMS((const char *, int *, int));
++READLINE_API char *get_history_event PARAMS((const char *, int *, int));
+ 
+ /* Return an array of tokens, much as the shell might.  The tokens are
+    parsed out of STRING. */
+-extern char **history_tokenize PARAMS((const char *));
++READLINE_API char **history_tokenize PARAMS((const char *));
+ 
+ /* Exported history variables. */
+-extern int history_base;
+-extern int history_length;
+-extern int history_max_entries;
+-extern char history_expansion_char;
+-extern char history_subst_char;
+-extern char *history_word_delimiters;
+-extern char history_comment_char;
+-extern char *history_no_expand_chars;
+-extern char *history_search_delimiter_chars;
+-extern int history_quotes_inhibit_expansion;
++READLINE_API int history_base;
++READLINE_API int history_length;
++READLINE_API int history_max_entries;
++READLINE_API char history_expansion_char;
++READLINE_API char history_subst_char;
++READLINE_API char *history_word_delimiters;
++READLINE_API char history_comment_char;
++READLINE_API char *history_no_expand_chars;
++READLINE_API char *history_search_delimiter_chars;
++READLINE_API int history_quotes_inhibit_expansion;
+ 
+-extern int history_write_timestamps;
++READLINE_API int history_write_timestamps;
+ 
+ /* Backwards compatibility */
+-extern int max_input_history;
++READLINE_API int max_input_history;
+ 
+ /* If set, this function is called to decide whether or not a particular
+    history expansion should be treated as a special case for the calling
+    application and not expanded. */
+-extern rl_linebuf_func_t *history_inhibit_expansion_function;
++READLINE_API rl_linebuf_func_t *history_inhibit_expansion_function;
+ 
+ #ifdef __cplusplus
+ }
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/input.c readline-5.2/input.c
+--- readline-5.2-orig/input.c	Wed Aug 16 21:15:16 2006
++++ readline-5.2/input.c	Sun Jun 10 18:52:51 2007
+@@ -61,6 +61,11 @@
+ #include <stdio.h>
+ #include <errno.h>
+ 
++#if defined (_MSC_VER)
++#include <windows.h>
++#undef FIONREAD
++#endif
++
+ #if !defined (errno)
+ extern int errno;
+ #endif /* !errno */
+@@ -221,13 +226,49 @@
+     }
+ #endif /* O_NDELAY */
+ 
+-#if defined (__MINGW32__)
++#if defined (__MINGW32__) && !defined (_MSC_VER)
+   /* Use getch/_kbhit to check for available console input, in the same way
+      that we read it normally. */
+    chars_avail = isatty (tty) ? _kbhit () : 0;
+    result = 0;
+ #endif
+ 
++#if defined (_MSC_VER)
++   if (isatty (tty))
++     {
++       HANDLE hInput = _get_osfhandle (tty);
++       INPUT_RECORD rec;
++       DWORD evRead, waitResult;
++
++       do
++         {
++	   waitResult = WaitForSingleObject(hInput, _keyboard_input_timeout/1000);
++	   if (waitResult == WAIT_TIMEOUT)
++	     return (0);
++	   else if (waitResult == WAIT_OBJECT_0)
++	     {
++	       if (PeekConsoleInput(hInput, &rec, 1, &evRead) && evRead == 1)
++	       {
++	         if (rec.EventType == KEY_EVENT && rec.Event.KeyEvent.bKeyDown)
++		   {
++	             chars_avail = 1;
++		     result = 0;
++		     break;
++		   }
++		 else
++		   ReadConsoleInput(hInput, &rec, 1, &evRead);
++	       }
++	     }
++         }
++       while (1);
++     }
++   else
++     {
++       chars_avail = 0;
++       result = 0;
++     }
++#endif
++
+   /* If there's nothing available, don't waste time trying to read
+      something. */
+   if (chars_avail <= 0)
+@@ -459,7 +500,61 @@
+     {
+ #if defined (__MINGW32__)
+       if (isatty (fileno (stream)))
++#if defined (_MSC_VER)
++        {
++          INPUT_RECORD rec;
++	  DWORD evRead;
++	  HANDLE hInput = _get_osfhandle (fileno (stream));
++
++	  do {
++            if (!ReadConsoleInput(hInput, &rec, 1, &evRead) || evRead != 1)
++	      return EOF;
++	    switch (rec.EventType)
++	      {
++	        case KEY_EVENT:
++		  if (rec.Event.KeyEvent.bKeyDown &&
++		      (rec.Event.KeyEvent.wVirtualKeyCode < VK_SHIFT ||
++		       rec.Event.KeyEvent.wVirtualKeyCode > VK_MENU))
++		    {
++		      if (rec.Event.KeyEvent.uChar.AsciiChar)
++		        return rec.Event.KeyEvent.uChar.AsciiChar;
++		      else
++		        switch (rec.Event.KeyEvent.wVirtualKeyCode)
++			  {
++			    case VK_UP:
++			      rl_execute_next ('H');
++			      return 0340;
++			    case VK_DOWN:
++			      rl_execute_next ('P');
++			      return 0340;
++			    case VK_RIGHT:
++			      rl_execute_next ('M');
++			      return 0340;
++			    case VK_LEFT:
++			      rl_execute_next ('K');
++			      return 0340;
++			    case VK_HOME:
++			      rl_execute_next ('G');
++			      return 0340;
++			    case VK_END:
++			      rl_execute_next ('O');
++			      return 0340;
++			    case VK_DELETE:
++			      rl_execute_next ('S');
++			      return 0340;
++			    default:
++			      break;
++			  }
++		    }
++		  break;
++		default:
++		  break;
++	      }
++	  } while (1);
++	}
++#else
+ 	return (getch ());
++#endif
+ #endif
+       result = read (fileno (stream), &c, sizeof (unsigned char));
+ 
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/keymaps.h readline-5.2/keymaps.h
+--- readline-5.2-orig/keymaps.h	Tue Nov 20 18:42:49 2001
++++ readline-5.2/keymaps.h	Sun Jun 10 18:52:51 2007
+@@ -66,35 +66,35 @@
+ #define ISKMAP 1
+ #define ISMACR 2
+ 
+-extern KEYMAP_ENTRY_ARRAY emacs_standard_keymap, emacs_meta_keymap, emacs_ctlx_keymap;
+-extern KEYMAP_ENTRY_ARRAY vi_insertion_keymap, vi_movement_keymap;
++READLINE_API KEYMAP_ENTRY_ARRAY emacs_standard_keymap, emacs_meta_keymap, emacs_ctlx_keymap;
++READLINE_API KEYMAP_ENTRY_ARRAY vi_insertion_keymap, vi_movement_keymap;
+ 
+ /* Return a new, empty keymap.
+    Free it with free() when you are done. */
+-extern Keymap rl_make_bare_keymap PARAMS((void));
++READLINE_API Keymap rl_make_bare_keymap PARAMS((void));
+ 
+ /* Return a new keymap which is a copy of MAP. */
+-extern Keymap rl_copy_keymap PARAMS((Keymap));
++READLINE_API Keymap rl_copy_keymap PARAMS((Keymap));
+ 
+ /* Return a new keymap with the printing characters bound to rl_insert,
+    the lowercase Meta characters bound to run their equivalents, and
+    the Meta digits bound to produce numeric arguments. */
+-extern Keymap rl_make_keymap PARAMS((void));
++READLINE_API Keymap rl_make_keymap PARAMS((void));
+ 
+ /* Free the storage associated with a keymap. */
+-extern void rl_discard_keymap PARAMS((Keymap));
++READLINE_API void rl_discard_keymap PARAMS((Keymap));
+ 
+ /* These functions actually appear in bind.c */
+ 
+ /* Return the keymap corresponding to a given name.  Names look like
+    `emacs' or `emacs-meta' or `vi-insert'.  */
+-extern Keymap rl_get_keymap_by_name PARAMS((const char *));
++READLINE_API Keymap rl_get_keymap_by_name PARAMS((const char *));
+ 
+ /* Return the current keymap. */
+-extern Keymap rl_get_keymap PARAMS((void));
++READLINE_API Keymap rl_get_keymap PARAMS((void));
+ 
+ /* Set the current keymap to MAP. */
+-extern void rl_set_keymap PARAMS((Keymap));
++READLINE_API void rl_set_keymap PARAMS((Keymap));
+ 
+ #ifdef __cplusplus
+ }
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/parens.c readline-5.2/parens.c
+--- readline-5.2-orig/parens.c	Thu Mar  4 04:39:51 2004
++++ readline-5.2/parens.c	Sun Jun 10 18:52:51 2007
+@@ -49,6 +49,10 @@
+ #  include <sys/select.h>
+ #endif
+ 
++#if defined (_WIN32)
++#include <windows.h>
++#endif
++
+ #if defined (HAVE_STRING_H)
+ #  include <string.h>
+ #else /* !HAVE_STRING_H */
+@@ -66,7 +70,7 @@
+ 
+ /* Non-zero means try to blink the matching open parenthesis when the
+    close parenthesis is inserted. */
+-#if defined (HAVE_SELECT)
++#if defined (HAVE_SELECT) || defined (_WIN32)
+ int rl_blink_matching_paren = 1;
+ #else /* !HAVE_SELECT */
+ int rl_blink_matching_paren = 0;
+@@ -137,6 +141,23 @@
+       rl_point = match_point;
+       (*rl_redisplay_function) ();
+       ready = select (1, &readfds, (fd_set *)NULL, (fd_set *)NULL, &timer);
++      rl_point = orig_point;
++#elif defined (_WIN32)
++      int orig_point, match_point, ready;
++
++      rl_insert (1, invoking_key);
++      (*rl_redisplay_function) ();
++      match_point =
++        find_matching_open (rl_line_buffer, rl_point - 2, invoking_key);
++
++      /* Emacs might message or ring the bell here, but I don't. */
++      if (match_point < 0)
++        return -1;
++
++      orig_point = rl_point;
++      rl_point = match_point;
++      (*rl_redisplay_function) ();
++      ready = (WaitForSingleObject (GetStdHandle(STD_INPUT_HANDLE), 500) == WAIT_OBJECT_0);
+       rl_point = orig_point;
+ #else /* !HAVE_SELECT */
+       _rl_insert_char (count, invoking_key);
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/readline.c readline-5.2/readline.c
+--- readline-5.2-orig/readline.c	Wed Aug 16 21:00:36 2006
++++ readline-5.2/readline.c	Sun Jun 10 18:52:51 2007
+@@ -220,7 +220,11 @@
+ 
+ /* The style of `bell' notification preferred.  This can be set to NO_BELL,
+    AUDIBLE_BELL, or VISIBLE_BELL. */
++#if defined (_WIN32)
++int _rl_bell_preference = VISIBLE_BELL;
++#else
+ int _rl_bell_preference = AUDIBLE_BELL;
++#endif
+      
+ /* String inserted into the line by rl_insert_comment (). */
+ char *_rl_comment_begin;
+@@ -1120,6 +1124,9 @@
+   rl_bind_keyseq_if_unbound ("\340P", rl_get_next_history);
+   rl_bind_keyseq_if_unbound ("\340M", rl_forward_char);
+   rl_bind_keyseq_if_unbound ("\340K", rl_backward_char);
++  rl_bind_keyseq_if_unbound ("\340G", rl_beg_of_line);
++  rl_bind_keyseq_if_unbound ("\340O", rl_end_of_line);
++  rl_bind_keyseq_if_unbound ("\340S", rl_delete);
+ #endif
+ 
+   _rl_keymap = xkeymap;
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/readline.h readline-5.2/readline.h
+--- readline-5.2-orig/readline.h	Wed Aug 16 21:16:59 2006
++++ readline-5.2/readline.h	Sun Jun 10 18:52:51 2007
+@@ -63,7 +63,7 @@
+ } UNDO_LIST;
+ 
+ /* The current undo list for RL_LINE_BUFFER. */
+-extern UNDO_LIST *rl_undo_list;
++READLINE_API UNDO_LIST *rl_undo_list;
+ 
+ /* The data structure for mapping textual names to code addresses. */
+ typedef struct _funmap {
+@@ -71,7 +71,7 @@
+   rl_command_func_t *function;
+ } FUNMAP;
+ 
+-extern FUNMAP **funmap;
++READLINE_API FUNMAP **funmap;
+ 
+ /* **************************************************************** */
+ /*								    */
+@@ -80,195 +80,195 @@
+ /* **************************************************************** */
+ 
+ /* Bindable commands for numeric arguments. */
+-extern int rl_digit_argument PARAMS((int, int));
+-extern int rl_universal_argument PARAMS((int, int));
++READLINE_API int rl_digit_argument PARAMS((int, int));
++READLINE_API int rl_universal_argument PARAMS((int, int));
+ 
+ /* Bindable commands for moving the cursor. */
+-extern int rl_forward_byte PARAMS((int, int));
+-extern int rl_forward_char PARAMS((int, int));
+-extern int rl_forward PARAMS((int, int));
+-extern int rl_backward_byte PARAMS((int, int));
+-extern int rl_backward_char PARAMS((int, int));
+-extern int rl_backward PARAMS((int, int));
+-extern int rl_beg_of_line PARAMS((int, int));
+-extern int rl_end_of_line PARAMS((int, int));
+-extern int rl_forward_word PARAMS((int, int));
+-extern int rl_backward_word PARAMS((int, int));
+-extern int rl_refresh_line PARAMS((int, int));
+-extern int rl_clear_screen PARAMS((int, int));
+-extern int rl_arrow_keys PARAMS((int, int));
++READLINE_API int rl_forward_byte PARAMS((int, int));
++READLINE_API int rl_forward_char PARAMS((int, int));
++READLINE_API int rl_forward PARAMS((int, int));
++READLINE_API int rl_backward_byte PARAMS((int, int));
++READLINE_API int rl_backward_char PARAMS((int, int));
++READLINE_API int rl_backward PARAMS((int, int));
++READLINE_API int rl_beg_of_line PARAMS((int, int));
++READLINE_API int rl_end_of_line PARAMS((int, int));
++READLINE_API int rl_forward_word PARAMS((int, int));
++READLINE_API int rl_backward_word PARAMS((int, int));
++READLINE_API int rl_refresh_line PARAMS((int, int));
++READLINE_API int rl_clear_screen PARAMS((int, int));
++READLINE_API int rl_arrow_keys PARAMS((int, int));
+ 
+ /* Bindable commands for inserting and deleting text. */
+-extern int rl_insert PARAMS((int, int));
+-extern int rl_quoted_insert PARAMS((int, int));
+-extern int rl_tab_insert PARAMS((int, int));
+-extern int rl_newline PARAMS((int, int));
+-extern int rl_do_lowercase_version PARAMS((int, int));
+-extern int rl_rubout PARAMS((int, int));
+-extern int rl_delete PARAMS((int, int));
+-extern int rl_rubout_or_delete PARAMS((int, int));
+-extern int rl_delete_horizontal_space PARAMS((int, int));
+-extern int rl_delete_or_show_completions PARAMS((int, int));
+-extern int rl_insert_comment PARAMS((int, int));
++READLINE_API int rl_insert PARAMS((int, int));
++READLINE_API int rl_quoted_insert PARAMS((int, int));
++READLINE_API int rl_tab_insert PARAMS((int, int));
++READLINE_API int rl_newline PARAMS((int, int));
++READLINE_API int rl_do_lowercase_version PARAMS((int, int));
++READLINE_API int rl_rubout PARAMS((int, int));
++READLINE_API int rl_delete PARAMS((int, int));
++READLINE_API int rl_rubout_or_delete PARAMS((int, int));
++READLINE_API int rl_delete_horizontal_space PARAMS((int, int));
++READLINE_API int rl_delete_or_show_completions PARAMS((int, int));
++READLINE_API int rl_insert_comment PARAMS((int, int));
+ 
+ /* Bindable commands for changing case. */
+-extern int rl_upcase_word PARAMS((int, int));
+-extern int rl_downcase_word PARAMS((int, int));
+-extern int rl_capitalize_word PARAMS((int, int));
++READLINE_API int rl_upcase_word PARAMS((int, int));
++READLINE_API int rl_downcase_word PARAMS((int, int));
++READLINE_API int rl_capitalize_word PARAMS((int, int));
+ 
+ /* Bindable commands for transposing characters and words. */
+-extern int rl_transpose_words PARAMS((int, int));
+-extern int rl_transpose_chars PARAMS((int, int));
++READLINE_API int rl_transpose_words PARAMS((int, int));
++READLINE_API int rl_transpose_chars PARAMS((int, int));
+ 
+ /* Bindable commands for searching within a line. */
+-extern int rl_char_search PARAMS((int, int));
+-extern int rl_backward_char_search PARAMS((int, int));
++READLINE_API int rl_char_search PARAMS((int, int));
++READLINE_API int rl_backward_char_search PARAMS((int, int));
+ 
+ /* Bindable commands for readline's interface to the command history. */
+-extern int rl_beginning_of_history PARAMS((int, int));
+-extern int rl_end_of_history PARAMS((int, int));
+-extern int rl_get_next_history PARAMS((int, int));
+-extern int rl_get_previous_history PARAMS((int, int));
++READLINE_API int rl_beginning_of_history PARAMS((int, int));
++READLINE_API int rl_end_of_history PARAMS((int, int));
++READLINE_API int rl_get_next_history PARAMS((int, int));
++READLINE_API int rl_get_previous_history PARAMS((int, int));
+ 
+ /* Bindable commands for managing the mark and region. */
+-extern int rl_set_mark PARAMS((int, int));
+-extern int rl_exchange_point_and_mark PARAMS((int, int));
++READLINE_API int rl_set_mark PARAMS((int, int));
++READLINE_API int rl_exchange_point_and_mark PARAMS((int, int));
+ 
+ /* Bindable commands to set the editing mode (emacs or vi). */
+-extern int rl_vi_editing_mode PARAMS((int, int));
+-extern int rl_emacs_editing_mode PARAMS((int, int));
++READLINE_API int rl_vi_editing_mode PARAMS((int, int));
++READLINE_API int rl_emacs_editing_mode PARAMS((int, int));
+ 
+ /* Bindable commands to change the insert mode (insert or overwrite) */
+-extern int rl_overwrite_mode PARAMS((int, int));
++READLINE_API int rl_overwrite_mode PARAMS((int, int));
+ 
+ /* Bindable commands for managing key bindings. */
+-extern int rl_re_read_init_file PARAMS((int, int));
+-extern int rl_dump_functions PARAMS((int, int));
+-extern int rl_dump_macros PARAMS((int, int));
+-extern int rl_dump_variables PARAMS((int, int));
++READLINE_API int rl_re_read_init_file PARAMS((int, int));
++READLINE_API int rl_dump_functions PARAMS((int, int));
++READLINE_API int rl_dump_macros PARAMS((int, int));
++READLINE_API int rl_dump_variables PARAMS((int, int));
+ 
+ /* Bindable commands for word completion. */
+-extern int rl_complete PARAMS((int, int));
+-extern int rl_possible_completions PARAMS((int, int));
+-extern int rl_insert_completions PARAMS((int, int));
+-extern int rl_menu_complete PARAMS((int, int));
++READLINE_API int rl_complete PARAMS((int, int));
++READLINE_API int rl_possible_completions PARAMS((int, int));
++READLINE_API int rl_insert_completions PARAMS((int, int));
++READLINE_API int rl_menu_complete PARAMS((int, int));
+ 
+ /* Bindable commands for killing and yanking text, and managing the kill ring. */
+-extern int rl_kill_word PARAMS((int, int));
+-extern int rl_backward_kill_word PARAMS((int, int));
+-extern int rl_kill_line PARAMS((int, int));
+-extern int rl_backward_kill_line PARAMS((int, int));
+-extern int rl_kill_full_line PARAMS((int, int));
+-extern int rl_unix_word_rubout PARAMS((int, int));
+-extern int rl_unix_filename_rubout PARAMS((int, int));
+-extern int rl_unix_line_discard PARAMS((int, int));
+-extern int rl_copy_region_to_kill PARAMS((int, int));
+-extern int rl_kill_region PARAMS((int, int));
+-extern int rl_copy_forward_word PARAMS((int, int));
+-extern int rl_copy_backward_word PARAMS((int, int));
+-extern int rl_yank PARAMS((int, int));
+-extern int rl_yank_pop PARAMS((int, int));
+-extern int rl_yank_nth_arg PARAMS((int, int));
+-extern int rl_yank_last_arg PARAMS((int, int));
++READLINE_API int rl_kill_word PARAMS((int, int));
++READLINE_API int rl_backward_kill_word PARAMS((int, int));
++READLINE_API int rl_kill_line PARAMS((int, int));
++READLINE_API int rl_backward_kill_line PARAMS((int, int));
++READLINE_API int rl_kill_full_line PARAMS((int, int));
++READLINE_API int rl_unix_word_rubout PARAMS((int, int));
++READLINE_API int rl_unix_filename_rubout PARAMS((int, int));
++READLINE_API int rl_unix_line_discard PARAMS((int, int));
++READLINE_API int rl_copy_region_to_kill PARAMS((int, int));
++READLINE_API int rl_kill_region PARAMS((int, int));
++READLINE_API int rl_copy_forward_word PARAMS((int, int));
++READLINE_API int rl_copy_backward_word PARAMS((int, int));
++READLINE_API int rl_yank PARAMS((int, int));
++READLINE_API int rl_yank_pop PARAMS((int, int));
++READLINE_API int rl_yank_nth_arg PARAMS((int, int));
++READLINE_API int rl_yank_last_arg PARAMS((int, int));
+ /* Not available unless __CYGWIN__ is defined. */
+ #ifdef __CYGWIN__
+-extern int rl_paste_from_clipboard PARAMS((int, int));
++READLINE_API int rl_paste_from_clipboard PARAMS((int, int));
+ #endif
+ 
+ /* Bindable commands for incremental searching. */
+-extern int rl_reverse_search_history PARAMS((int, int));
+-extern int rl_forward_search_history PARAMS((int, int));
++READLINE_API int rl_reverse_search_history PARAMS((int, int));
++READLINE_API int rl_forward_search_history PARAMS((int, int));
+ 
+ /* Bindable keyboard macro commands. */
+-extern int rl_start_kbd_macro PARAMS((int, int));
+-extern int rl_end_kbd_macro PARAMS((int, int));
+-extern int rl_call_last_kbd_macro PARAMS((int, int));
++READLINE_API int rl_start_kbd_macro PARAMS((int, int));
++READLINE_API int rl_end_kbd_macro PARAMS((int, int));
++READLINE_API int rl_call_last_kbd_macro PARAMS((int, int));
+ 
+ /* Bindable undo commands. */
+-extern int rl_revert_line PARAMS((int, int));
+-extern int rl_undo_command PARAMS((int, int));
++READLINE_API int rl_revert_line PARAMS((int, int));
++READLINE_API int rl_undo_command PARAMS((int, int));
+ 
+ /* Bindable tilde expansion commands. */
+-extern int rl_tilde_expand PARAMS((int, int));
++READLINE_API int rl_tilde_expand PARAMS((int, int));
+ 
+ /* Bindable terminal control commands. */
+-extern int rl_restart_output PARAMS((int, int));
+-extern int rl_stop_output PARAMS((int, int));
++READLINE_API int rl_restart_output PARAMS((int, int));
++READLINE_API int rl_stop_output PARAMS((int, int));
+ 
+ /* Miscellaneous bindable commands. */
+-extern int rl_abort PARAMS((int, int));
+-extern int rl_tty_status PARAMS((int, int));
++READLINE_API int rl_abort PARAMS((int, int));
++READLINE_API int rl_tty_status PARAMS((int, int));
+ 
+ /* Bindable commands for incremental and non-incremental history searching. */
+-extern int rl_history_search_forward PARAMS((int, int));
+-extern int rl_history_search_backward PARAMS((int, int));
+-extern int rl_noninc_forward_search PARAMS((int, int));
+-extern int rl_noninc_reverse_search PARAMS((int, int));
+-extern int rl_noninc_forward_search_again PARAMS((int, int));
+-extern int rl_noninc_reverse_search_again PARAMS((int, int));
++READLINE_API int rl_history_search_forward PARAMS((int, int));
++READLINE_API int rl_history_search_backward PARAMS((int, int));
++READLINE_API int rl_noninc_forward_search PARAMS((int, int));
++READLINE_API int rl_noninc_reverse_search PARAMS((int, int));
++READLINE_API int rl_noninc_forward_search_again PARAMS((int, int));
++READLINE_API int rl_noninc_reverse_search_again PARAMS((int, int));
+ 
+ /* Bindable command used when inserting a matching close character. */
+-extern int rl_insert_close PARAMS((int, int));
++READLINE_API int rl_insert_close PARAMS((int, int));
+ 
+ /* Not available unless READLINE_CALLBACKS is defined. */
+-extern void rl_callback_handler_install PARAMS((const char *, rl_vcpfunc_t *));
+-extern void rl_callback_read_char PARAMS((void));
+-extern void rl_callback_handler_remove PARAMS((void));
++READLINE_API void rl_callback_handler_install PARAMS((const char *, rl_vcpfunc_t *));
++READLINE_API void rl_callback_read_char PARAMS((void));
++READLINE_API void rl_callback_handler_remove PARAMS((void));
+ 
+ /* Things for vi mode. Not available unless readline is compiled -DVI_MODE. */
+ /* VI-mode bindable commands. */
+-extern int rl_vi_redo PARAMS((int, int));
+-extern int rl_vi_undo PARAMS((int, int));
+-extern int rl_vi_yank_arg PARAMS((int, int));
+-extern int rl_vi_fetch_history PARAMS((int, int));
+-extern int rl_vi_search_again PARAMS((int, int));
+-extern int rl_vi_search PARAMS((int, int));
+-extern int rl_vi_complete PARAMS((int, int));
+-extern int rl_vi_tilde_expand PARAMS((int, int));
+-extern int rl_vi_prev_word PARAMS((int, int));
+-extern int rl_vi_next_word PARAMS((int, int));
+-extern int rl_vi_end_word PARAMS((int, int));
+-extern int rl_vi_insert_beg PARAMS((int, int));
+-extern int rl_vi_append_mode PARAMS((int, int));
+-extern int rl_vi_append_eol PARAMS((int, int));
+-extern int rl_vi_eof_maybe PARAMS((int, int));
+-extern int rl_vi_insertion_mode PARAMS((int, int));
+-extern int rl_vi_movement_mode PARAMS((int, int));
+-extern int rl_vi_arg_digit PARAMS((int, int));
+-extern int rl_vi_change_case PARAMS((int, int));
+-extern int rl_vi_put PARAMS((int, int));
+-extern int rl_vi_column PARAMS((int, int));
+-extern int rl_vi_delete_to PARAMS((int, int));
+-extern int rl_vi_change_to PARAMS((int, int));
+-extern int rl_vi_yank_to PARAMS((int, int));
+-extern int rl_vi_rubout PARAMS((int, int));
+-extern int rl_vi_delete PARAMS((int, int));
+-extern int rl_vi_back_to_indent PARAMS((int, int));
+-extern int rl_vi_first_print PARAMS((int, int));
+-extern int rl_vi_char_search PARAMS((int, int));
+-extern int rl_vi_match PARAMS((int, int));
+-extern int rl_vi_change_char PARAMS((int, int));
+-extern int rl_vi_subst PARAMS((int, int));
+-extern int rl_vi_overstrike PARAMS((int, int));
+-extern int rl_vi_overstrike_delete PARAMS((int, int));
+-extern int rl_vi_replace PARAMS((int, int));
+-extern int rl_vi_set_mark PARAMS((int, int));
+-extern int rl_vi_goto_mark PARAMS((int, int));
++READLINE_API int rl_vi_redo PARAMS((int, int));
++READLINE_API int rl_vi_undo PARAMS((int, int));
++READLINE_API int rl_vi_yank_arg PARAMS((int, int));
++READLINE_API int rl_vi_fetch_history PARAMS((int, int));
++READLINE_API int rl_vi_search_again PARAMS((int, int));
++READLINE_API int rl_vi_search PARAMS((int, int));
++READLINE_API int rl_vi_complete PARAMS((int, int));
++READLINE_API int rl_vi_tilde_expand PARAMS((int, int));
++READLINE_API int rl_vi_prev_word PARAMS((int, int));
++READLINE_API int rl_vi_next_word PARAMS((int, int));
++READLINE_API int rl_vi_end_word PARAMS((int, int));
++READLINE_API int rl_vi_insert_beg PARAMS((int, int));
++READLINE_API int rl_vi_append_mode PARAMS((int, int));
++READLINE_API int rl_vi_append_eol PARAMS((int, int));
++READLINE_API int rl_vi_eof_maybe PARAMS((int, int));
++READLINE_API int rl_vi_insertion_mode PARAMS((int, int));
++READLINE_API int rl_vi_movement_mode PARAMS((int, int));
++READLINE_API int rl_vi_arg_digit PARAMS((int, int));
++READLINE_API int rl_vi_change_case PARAMS((int, int));
++READLINE_API int rl_vi_put PARAMS((int, int));
++READLINE_API int rl_vi_column PARAMS((int, int));
++READLINE_API int rl_vi_delete_to PARAMS((int, int));
++READLINE_API int rl_vi_change_to PARAMS((int, int));
++READLINE_API int rl_vi_yank_to PARAMS((int, int));
++READLINE_API int rl_vi_rubout PARAMS((int, int));
++READLINE_API int rl_vi_delete PARAMS((int, int));
++READLINE_API int rl_vi_back_to_indent PARAMS((int, int));
++READLINE_API int rl_vi_first_print PARAMS((int, int));
++READLINE_API int rl_vi_char_search PARAMS((int, int));
++READLINE_API int rl_vi_match PARAMS((int, int));
++READLINE_API int rl_vi_change_char PARAMS((int, int));
++READLINE_API int rl_vi_subst PARAMS((int, int));
++READLINE_API int rl_vi_overstrike PARAMS((int, int));
++READLINE_API int rl_vi_overstrike_delete PARAMS((int, int));
++READLINE_API int rl_vi_replace PARAMS((int, int));
++READLINE_API int rl_vi_set_mark PARAMS((int, int));
++READLINE_API int rl_vi_goto_mark PARAMS((int, int));
+ 
+ /* VI-mode utility functions. */
+-extern int rl_vi_check PARAMS((void));
+-extern int rl_vi_domove PARAMS((int, int *));
+-extern int rl_vi_bracktype PARAMS((int));
++READLINE_API int rl_vi_check PARAMS((void));
++READLINE_API int rl_vi_domove PARAMS((int, int *));
++READLINE_API int rl_vi_bracktype PARAMS((int));
+ 
+-extern void rl_vi_start_inserting PARAMS((int, int, int));
++READLINE_API void rl_vi_start_inserting PARAMS((int, int, int));
+ 
+ /* VI-mode pseudo-bindable commands, used as utility functions. */
+-extern int rl_vi_fWord PARAMS((int, int));
+-extern int rl_vi_bWord PARAMS((int, int));
+-extern int rl_vi_eWord PARAMS((int, int));
+-extern int rl_vi_fword PARAMS((int, int));
+-extern int rl_vi_bword PARAMS((int, int));
+-extern int rl_vi_eword PARAMS((int, int));
++READLINE_API int rl_vi_fWord PARAMS((int, int));
++READLINE_API int rl_vi_bWord PARAMS((int, int));
++READLINE_API int rl_vi_eWord PARAMS((int, int));
++READLINE_API int rl_vi_fword PARAMS((int, int));
++READLINE_API int rl_vi_bword PARAMS((int, int));
++READLINE_API int rl_vi_eword PARAMS((int, int));
+ 
+ /* **************************************************************** */
+ /*								    */
+@@ -278,187 +278,187 @@
+ 
+ /* Readline functions. */
+ /* Read a line of input.  Prompt with PROMPT.  A NULL PROMPT means none. */
+-extern char *readline PARAMS((const char *));
++READLINE_API char *readline PARAMS((const char *));
+ 
+-extern int rl_set_prompt PARAMS((const char *));
+-extern int rl_expand_prompt PARAMS((char *));
++READLINE_API int rl_set_prompt PARAMS((const char *));
++READLINE_API int rl_expand_prompt PARAMS((char *));
+ 
+-extern int rl_initialize PARAMS((void));
++READLINE_API int rl_initialize PARAMS((void));
+ 
+ /* Undocumented; unused by readline */
+-extern int rl_discard_argument PARAMS((void));
++READLINE_API int rl_discard_argument PARAMS((void));
+ 
+ /* Utility functions to bind keys to readline commands. */
+-extern int rl_add_defun PARAMS((const char *, rl_command_func_t *, int));
+-extern int rl_bind_key PARAMS((int, rl_command_func_t *));
+-extern int rl_bind_key_in_map PARAMS((int, rl_command_func_t *, Keymap));
+-extern int rl_unbind_key PARAMS((int));
+-extern int rl_unbind_key_in_map PARAMS((int, Keymap));
+-extern int rl_bind_key_if_unbound PARAMS((int, rl_command_func_t *));
+-extern int rl_bind_key_if_unbound_in_map PARAMS((int, rl_command_func_t *, Keymap));
+-extern int rl_unbind_function_in_map PARAMS((rl_command_func_t *, Keymap));
+-extern int rl_unbind_command_in_map PARAMS((const char *, Keymap));
+-extern int rl_bind_keyseq PARAMS((const char *, rl_command_func_t *));
+-extern int rl_bind_keyseq_in_map PARAMS((const char *, rl_command_func_t *, Keymap));
+-extern int rl_bind_keyseq_if_unbound PARAMS((const char *, rl_command_func_t *));
+-extern int rl_bind_keyseq_if_unbound_in_map PARAMS((const char *, rl_command_func_t *, Keymap));
+-extern int rl_generic_bind PARAMS((int, const char *, char *, Keymap));
++READLINE_API int rl_add_defun PARAMS((const char *, rl_command_func_t *, int));
++READLINE_API int rl_bind_key PARAMS((int, rl_command_func_t *));
++READLINE_API int rl_bind_key_in_map PARAMS((int, rl_command_func_t *, Keymap));
++READLINE_API int rl_unbind_key PARAMS((int));
++READLINE_API int rl_unbind_key_in_map PARAMS((int, Keymap));
++READLINE_API int rl_bind_key_if_unbound PARAMS((int, rl_command_func_t *));
++READLINE_API int rl_bind_key_if_unbound_in_map PARAMS((int, rl_command_func_t *, Keymap));
++READLINE_API int rl_unbind_function_in_map PARAMS((rl_command_func_t *, Keymap));
++READLINE_API int rl_unbind_command_in_map PARAMS((const char *, Keymap));
++READLINE_API int rl_bind_keyseq PARAMS((const char *, rl_command_func_t *));
++READLINE_API int rl_bind_keyseq_in_map PARAMS((const char *, rl_command_func_t *, Keymap));
++READLINE_API int rl_bind_keyseq_if_unbound PARAMS((const char *, rl_command_func_t *));
++READLINE_API int rl_bind_keyseq_if_unbound_in_map PARAMS((const char *, rl_command_func_t *, Keymap));
++READLINE_API int rl_generic_bind PARAMS((int, const char *, char *, Keymap));
+ 
+-extern char *rl_variable_value PARAMS((const char *));
+-extern int rl_variable_bind PARAMS((const char *, const char *));
++READLINE_API char *rl_variable_value PARAMS((const char *));
++READLINE_API int rl_variable_bind PARAMS((const char *, const char *));
+ 
+ /* Backwards compatibility, use rl_bind_keyseq_in_map instead. */
+-extern int rl_set_key PARAMS((const char *, rl_command_func_t *, Keymap));
++READLINE_API int rl_set_key PARAMS((const char *, rl_command_func_t *, Keymap));
+ 
+ /* Backwards compatibility, use rl_generic_bind instead. */
+-extern int rl_macro_bind PARAMS((const char *, const char *, Keymap));
++READLINE_API int rl_macro_bind PARAMS((const char *, const char *, Keymap));
+ 
+ /* Undocumented in the texinfo manual; not really useful to programs. */
+-extern int rl_translate_keyseq PARAMS((const char *, char *, int *));
+-extern char *rl_untranslate_keyseq PARAMS((int));
++READLINE_API int rl_translate_keyseq PARAMS((const char *, char *, int *));
++READLINE_API char *rl_untranslate_keyseq PARAMS((int));
+ 
+-extern rl_command_func_t *rl_named_function PARAMS((const char *));
+-extern rl_command_func_t *rl_function_of_keyseq PARAMS((const char *, Keymap, int *));
++READLINE_API rl_command_func_t *rl_named_function PARAMS((const char *));
++READLINE_API rl_command_func_t *rl_function_of_keyseq PARAMS((const char *, Keymap, int *));
+ 
+-extern void rl_list_funmap_names PARAMS((void));
+-extern char **rl_invoking_keyseqs_in_map PARAMS((rl_command_func_t *, Keymap));
+-extern char **rl_invoking_keyseqs PARAMS((rl_command_func_t *));
++READLINE_API void rl_list_funmap_names PARAMS((void));
++READLINE_API char **rl_invoking_keyseqs_in_map PARAMS((rl_command_func_t *, Keymap));
++READLINE_API char **rl_invoking_keyseqs PARAMS((rl_command_func_t *));
+  
+-extern void rl_function_dumper PARAMS((int));
+-extern void rl_macro_dumper PARAMS((int));
+-extern void rl_variable_dumper PARAMS((int));
++READLINE_API void rl_function_dumper PARAMS((int));
++READLINE_API void rl_macro_dumper PARAMS((int));
++READLINE_API void rl_variable_dumper PARAMS((int));
+ 
+-extern int rl_read_init_file PARAMS((const char *));
+-extern int rl_parse_and_bind PARAMS((char *));
++READLINE_API int rl_read_init_file PARAMS((const char *));
++READLINE_API int rl_parse_and_bind PARAMS((char *));
+ 
+ /* Functions for manipulating keymaps. */
+-extern Keymap rl_make_bare_keymap PARAMS((void));
+-extern Keymap rl_copy_keymap PARAMS((Keymap));
+-extern Keymap rl_make_keymap PARAMS((void));
+-extern void rl_discard_keymap PARAMS((Keymap));
+-
+-extern Keymap rl_get_keymap_by_name PARAMS((const char *));
+-extern char *rl_get_keymap_name PARAMS((Keymap));
+-extern void rl_set_keymap PARAMS((Keymap));
+-extern Keymap rl_get_keymap PARAMS((void));
++READLINE_API Keymap rl_make_bare_keymap PARAMS((void));
++READLINE_API Keymap rl_copy_keymap PARAMS((Keymap));
++READLINE_API Keymap rl_make_keymap PARAMS((void));
++READLINE_API void rl_discard_keymap PARAMS((Keymap));
++
++READLINE_API Keymap rl_get_keymap_by_name PARAMS((const char *));
++READLINE_API char *rl_get_keymap_name PARAMS((Keymap));
++READLINE_API void rl_set_keymap PARAMS((Keymap));
++READLINE_API Keymap rl_get_keymap PARAMS((void));
+ /* Undocumented; used internally only. */
+-extern void rl_set_keymap_from_edit_mode PARAMS((void));
+-extern char *rl_get_keymap_name_from_edit_mode PARAMS((void));
++READLINE_API void rl_set_keymap_from_edit_mode PARAMS((void));
++READLINE_API char *rl_get_keymap_name_from_edit_mode PARAMS((void));
+ 
+ /* Functions for manipulating the funmap, which maps command names to functions. */
+-extern int rl_add_funmap_entry PARAMS((const char *, rl_command_func_t *));
+-extern const char **rl_funmap_names PARAMS((void));
++READLINE_API int rl_add_funmap_entry PARAMS((const char *, rl_command_func_t *));
++READLINE_API const char **rl_funmap_names PARAMS((void));
+ /* Undocumented, only used internally -- there is only one funmap, and this
+    function may be called only once. */
+-extern void rl_initialize_funmap PARAMS((void));
++READLINE_API void rl_initialize_funmap PARAMS((void));
+ 
+ /* Utility functions for managing keyboard macros. */
+-extern void rl_push_macro_input PARAMS((char *));
++READLINE_API void rl_push_macro_input PARAMS((char *));
+ 
+ /* Functions for undoing, from undo.c */
+-extern void rl_add_undo PARAMS((enum undo_code, int, int, char *));
+-extern void rl_free_undo_list PARAMS((void));
+-extern int rl_do_undo PARAMS((void));
+-extern int rl_begin_undo_group PARAMS((void));
+-extern int rl_end_undo_group PARAMS((void));
+-extern int rl_modifying PARAMS((int, int));
++READLINE_API void rl_add_undo PARAMS((enum undo_code, int, int, char *));
++READLINE_API void rl_free_undo_list PARAMS((void));
++READLINE_API int rl_do_undo PARAMS((void));
++READLINE_API int rl_begin_undo_group PARAMS((void));
++READLINE_API int rl_end_undo_group PARAMS((void));
++READLINE_API int rl_modifying PARAMS((int, int));
+ 
+ /* Functions for redisplay. */
+-extern void rl_redisplay PARAMS((void));
+-extern int rl_on_new_line PARAMS((void));
+-extern int rl_on_new_line_with_prompt PARAMS((void));
+-extern int rl_forced_update_display PARAMS((void));
+-extern int rl_clear_message PARAMS((void));
+-extern int rl_reset_line_state PARAMS((void));
+-extern int rl_crlf PARAMS((void));
++READLINE_API void rl_redisplay PARAMS((void));
++READLINE_API int rl_on_new_line PARAMS((void));
++READLINE_API int rl_on_new_line_with_prompt PARAMS((void));
++READLINE_API int rl_forced_update_display PARAMS((void));
++READLINE_API int rl_clear_message PARAMS((void));
++READLINE_API int rl_reset_line_state PARAMS((void));
++READLINE_API int rl_crlf PARAMS((void));
+ 
+ #if defined (USE_VARARGS) && defined (PREFER_STDARG)
+-extern int rl_message (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
++READLINE_API int rl_message (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
+ #else
+-extern int rl_message ();
++READLINE_API int rl_message ();
+ #endif
+ 
+-extern int rl_show_char PARAMS((int));
++READLINE_API int rl_show_char PARAMS((int));
+ 
+ /* Undocumented in texinfo manual. */
+-extern int rl_character_len PARAMS((int, int));
++READLINE_API int rl_character_len PARAMS((int, int));
+ 
+ /* Save and restore internal prompt redisplay information. */
+-extern void rl_save_prompt PARAMS((void));
+-extern void rl_restore_prompt PARAMS((void));
++READLINE_API void rl_save_prompt PARAMS((void));
++READLINE_API void rl_restore_prompt PARAMS((void));
+ 
+ /* Modifying text. */
+-extern void rl_replace_line PARAMS((const char *, int));
+-extern int rl_insert_text PARAMS((const char *));
+-extern int rl_delete_text PARAMS((int, int));
+-extern int rl_kill_text PARAMS((int, int));
+-extern char *rl_copy_text PARAMS((int, int));
++READLINE_API void rl_replace_line PARAMS((const char *, int));
++READLINE_API int rl_insert_text PARAMS((const char *));
++READLINE_API int rl_delete_text PARAMS((int, int));
++READLINE_API int rl_kill_text PARAMS((int, int));
++READLINE_API char *rl_copy_text PARAMS((int, int));
+ 
+ /* Terminal and tty mode management. */
+-extern void rl_prep_terminal PARAMS((int));
+-extern void rl_deprep_terminal PARAMS((void));
+-extern void rl_tty_set_default_bindings PARAMS((Keymap));
+-extern void rl_tty_unset_default_bindings PARAMS((Keymap));
+-
+-extern int rl_reset_terminal PARAMS((const char *));
+-extern void rl_resize_terminal PARAMS((void));
+-extern void rl_set_screen_size PARAMS((int, int));
+-extern void rl_get_screen_size PARAMS((int *, int *));
+-extern void rl_reset_screen_size PARAMS((void));
++READLINE_API void rl_prep_terminal PARAMS((int));
++READLINE_API void rl_deprep_terminal PARAMS((void));
++READLINE_API void rl_tty_set_default_bindings PARAMS((Keymap));
++READLINE_API void rl_tty_unset_default_bindings PARAMS((Keymap));
++
++READLINE_API int rl_reset_terminal PARAMS((const char *));
++READLINE_API void rl_resize_terminal PARAMS((void));
++READLINE_API void rl_set_screen_size PARAMS((int, int));
++READLINE_API void rl_get_screen_size PARAMS((int *, int *));
++READLINE_API void rl_reset_screen_size PARAMS((void));
+ 
+-extern char *rl_get_termcap PARAMS((const char *));
++READLINE_API char *rl_get_termcap PARAMS((const char *));
+ 
+ /* Functions for character input. */
+-extern int rl_stuff_char PARAMS((int));
+-extern int rl_execute_next PARAMS((int));
+-extern int rl_clear_pending_input PARAMS((void));
+-extern int rl_read_key PARAMS((void));
+-extern int rl_getc PARAMS((FILE *));
+-extern int rl_set_keyboard_input_timeout PARAMS((int));
++READLINE_API int rl_stuff_char PARAMS((int));
++READLINE_API int rl_execute_next PARAMS((int));
++READLINE_API int rl_clear_pending_input PARAMS((void));
++READLINE_API int rl_read_key PARAMS((void));
++READLINE_API int rl_getc PARAMS((FILE *));
++READLINE_API int rl_set_keyboard_input_timeout PARAMS((int));
+ 
+ /* `Public' utility functions . */
+-extern void rl_extend_line_buffer PARAMS((int));
+-extern int rl_ding PARAMS((void));
+-extern int rl_alphabetic PARAMS((int));
++READLINE_API void rl_extend_line_buffer PARAMS((int));
++READLINE_API int rl_ding PARAMS((void));
++READLINE_API int rl_alphabetic PARAMS((int));
+ 
+ /* Readline signal handling, from signals.c */
+-extern int rl_set_signals PARAMS((void));
+-extern int rl_clear_signals PARAMS((void));
+-extern void rl_cleanup_after_signal PARAMS((void));
+-extern void rl_reset_after_signal PARAMS((void));
+-extern void rl_free_line_state PARAMS((void));
++READLINE_API int rl_set_signals PARAMS((void));
++READLINE_API int rl_clear_signals PARAMS((void));
++READLINE_API void rl_cleanup_after_signal PARAMS((void));
++READLINE_API void rl_reset_after_signal PARAMS((void));
++READLINE_API void rl_free_line_state PARAMS((void));
+  
+-extern int rl_set_paren_blink_timeout PARAMS((int));
++READLINE_API int rl_set_paren_blink_timeout PARAMS((int));
+ 
+ /* Undocumented. */
+-extern int rl_maybe_save_line PARAMS((void));
+-extern int rl_maybe_unsave_line PARAMS((void));
+-extern int rl_maybe_replace_line PARAMS((void));
++READLINE_API int rl_maybe_save_line PARAMS((void));
++READLINE_API int rl_maybe_unsave_line PARAMS((void));
++READLINE_API int rl_maybe_replace_line PARAMS((void));
+ 
+ /* Completion functions. */
+-extern int rl_complete_internal PARAMS((int));
+-extern void rl_display_match_list PARAMS((char **, int, int));
++READLINE_API int rl_complete_internal PARAMS((int));
++READLINE_API void rl_display_match_list PARAMS((char **, int, int));
+ 
+-extern char **rl_completion_matches PARAMS((const char *, rl_compentry_func_t *));
+-extern char *rl_username_completion_function PARAMS((const char *, int));
+-extern char *rl_filename_completion_function PARAMS((const char *, int));
++READLINE_API char **rl_completion_matches PARAMS((const char *, rl_compentry_func_t *));
++READLINE_API char *rl_username_completion_function PARAMS((const char *, int));
++READLINE_API char *rl_filename_completion_function PARAMS((const char *, int));
+ 
+-extern int rl_completion_mode PARAMS((rl_command_func_t *));
++READLINE_API int rl_completion_mode PARAMS((rl_command_func_t *));
+ 
+ #if 0
+ /* Backwards compatibility (compat.c).  These will go away sometime. */
+-extern void free_undo_list PARAMS((void));
+-extern int maybe_save_line PARAMS((void));
+-extern int maybe_unsave_line PARAMS((void));
+-extern int maybe_replace_line PARAMS((void));
+-
+-extern int ding PARAMS((void));
+-extern int alphabetic PARAMS((int));
+-extern int crlf PARAMS((void));
+-
+-extern char **completion_matches PARAMS((char *, rl_compentry_func_t *));
+-extern char *username_completion_function PARAMS((const char *, int));
+-extern char *filename_completion_function PARAMS((const char *, int));
++READLINE_API void free_undo_list PARAMS((void));
++READLINE_API int maybe_save_line PARAMS((void));
++READLINE_API int maybe_unsave_line PARAMS((void));
++READLINE_API int maybe_replace_line PARAMS((void));
++
++READLINE_API int ding PARAMS((void));
++READLINE_API int alphabetic PARAMS((int));
++READLINE_API int crlf PARAMS((void));
++
++READLINE_API char **completion_matches PARAMS((char *, rl_compentry_func_t *));
++READLINE_API char *username_completion_function PARAMS((const char *, int));
++READLINE_API char *filename_completion_function PARAMS((const char *, int));
+ #endif
+ 
+ /* **************************************************************** */
+@@ -468,136 +468,136 @@
+ /* **************************************************************** */
+ 
+ /* The version of this incarnation of the readline library. */
+-extern const char *rl_library_version;		/* e.g., "4.2" */
+-extern int rl_readline_version;			/* e.g., 0x0402 */
++READLINE_API const char *rl_library_version;		/* e.g., "4.2" */
++READLINE_API int rl_readline_version;			/* e.g., 0x0402 */
+ 
+ /* True if this is real GNU readline. */
+-extern int rl_gnu_readline_p;
++READLINE_API int rl_gnu_readline_p;
+ 
+ /* Flags word encapsulating the current readline state. */
+-extern int rl_readline_state;
++READLINE_API int rl_readline_state;
+ 
+ /* Says which editing mode readline is currently using.  1 means emacs mode;
+    0 means vi mode. */
+-extern int rl_editing_mode;
++READLINE_API int rl_editing_mode;
+ 
+ /* Insert or overwrite mode for emacs mode.  1 means insert mode; 0 means
+    overwrite mode.  Reset to insert mode on each input line. */
+-extern int rl_insert_mode;
++READLINE_API int rl_insert_mode;
+ 
+ /* The name of the calling program.  You should initialize this to
+    whatever was in argv[0].  It is used when parsing conditionals. */
+-extern const char *rl_readline_name;
++READLINE_API const char *rl_readline_name;
+ 
+ /* The prompt readline uses.  This is set from the argument to
+    readline (), and should not be assigned to directly. */
+-extern char *rl_prompt;
++READLINE_API char *rl_prompt;
+ 
+ /* The line buffer that is in use. */
+-extern char *rl_line_buffer;
++READLINE_API char *rl_line_buffer;
+ 
+ /* The location of point, and end. */
+-extern int rl_point;
+-extern int rl_end;
++READLINE_API int rl_point;
++READLINE_API int rl_end;
+ 
+ /* The mark, or saved cursor position. */
+-extern int rl_mark;
++READLINE_API int rl_mark;
+ 
+ /* Flag to indicate that readline has finished with the current input
+    line and should return it. */
+-extern int rl_done;
++READLINE_API int rl_done;
+ 
+ /* If set to a character value, that will be the next keystroke read. */
+-extern int rl_pending_input;
++READLINE_API int rl_pending_input;
+ 
+ /* Non-zero if we called this function from _rl_dispatch().  It's present
+    so functions can find out whether they were called from a key binding
+    or directly from an application. */
+-extern int rl_dispatching;
++READLINE_API int rl_dispatching;
+ 
+ /* Non-zero if the user typed a numeric argument before executing the
+    current function. */
+-extern int rl_explicit_arg;
++READLINE_API int rl_explicit_arg;
+ 
+ /* The current value of the numeric argument specified by the user. */
+-extern int rl_numeric_arg;
++READLINE_API int rl_numeric_arg;
+ 
+ /* The address of the last command function Readline executed. */
+-extern rl_command_func_t *rl_last_func;
++READLINE_API rl_command_func_t *rl_last_func;
+ 
+ /* The name of the terminal to use. */
+-extern const char *rl_terminal_name;
++READLINE_API const char *rl_terminal_name;
+ 
+ /* The input and output streams. */
+-extern FILE *rl_instream;
+-extern FILE *rl_outstream;
++READLINE_API FILE *rl_instream;
++READLINE_API FILE *rl_outstream;
+ 
+ /* If non-zero, Readline gives values of LINES and COLUMNS from the environment
+    greater precedence than values fetched from the kernel when computing the
+    screen dimensions. */
+-extern int rl_prefer_env_winsize;
++READLINE_API int rl_prefer_env_winsize;
+ 
+ /* If non-zero, then this is the address of a function to call just
+    before readline_internal () prints the first prompt. */
+-extern rl_hook_func_t *rl_startup_hook;
++READLINE_API rl_hook_func_t *rl_startup_hook;
+ 
+ /* If non-zero, this is the address of a function to call just before
+    readline_internal_setup () returns and readline_internal starts
+    reading input characters. */
+-extern rl_hook_func_t *rl_pre_input_hook;
++READLINE_API rl_hook_func_t *rl_pre_input_hook;
+       
+ /* The address of a function to call periodically while Readline is
+    awaiting character input, or NULL, for no event handling. */
+-extern rl_hook_func_t *rl_event_hook;
++READLINE_API rl_hook_func_t *rl_event_hook;
+ 
+ /* The address of the function to call to fetch a character from the current
+    Readline input stream */
+-extern rl_getc_func_t *rl_getc_function;
++READLINE_API rl_getc_func_t *rl_getc_function;
+ 
+-extern rl_voidfunc_t *rl_redisplay_function;
++READLINE_API rl_voidfunc_t *rl_redisplay_function;
+ 
+-extern rl_vintfunc_t *rl_prep_term_function;
+-extern rl_voidfunc_t *rl_deprep_term_function;
++READLINE_API rl_vintfunc_t *rl_prep_term_function;
++READLINE_API rl_voidfunc_t *rl_deprep_term_function;
+ 
+ /* Dispatch variables. */
+-extern Keymap rl_executing_keymap;
+-extern Keymap rl_binding_keymap;
++READLINE_API Keymap rl_executing_keymap;
++READLINE_API Keymap rl_binding_keymap;
+ 
+ /* Display variables. */
+ /* If non-zero, readline will erase the entire line, including any prompt,
+    if the only thing typed on an otherwise-blank line is something bound to
+    rl_newline. */
+-extern int rl_erase_empty_line;
++READLINE_API int rl_erase_empty_line;
+ 
+ /* If non-zero, the application has already printed the prompt (rl_prompt)
+    before calling readline, so readline should not output it the first time
+    redisplay is done. */
+-extern int rl_already_prompted;
++READLINE_API int rl_already_prompted;
+ 
+ /* A non-zero value means to read only this many characters rather than
+    up to a character bound to accept-line. */
+-extern int rl_num_chars_to_read;
++READLINE_API int rl_num_chars_to_read;
+ 
+ /* The text of a currently-executing keyboard macro. */
+-extern char *rl_executing_macro;
++READLINE_API char *rl_executing_macro;
+ 
+ /* Variables to control readline signal handling. */
+ /* If non-zero, readline will install its own signal handlers for
+    SIGINT, SIGTERM, SIGQUIT, SIGALRM, SIGTSTP, SIGTTIN, and SIGTTOU. */
+-extern int rl_catch_signals;
++READLINE_API int rl_catch_signals;
+ 
+ /* If non-zero, readline will install a signal handler for SIGWINCH
+    that also attempts to call any calling application's SIGWINCH signal
+    handler.  Note that the terminal is not cleaned up before the
+    application's signal handler is called; use rl_cleanup_after_signal()
+    to do that. */
+-extern int rl_catch_sigwinch;
++READLINE_API int rl_catch_sigwinch;
+ 
+ /* Completion variables. */
+ /* Pointer to the generator function for completion_matches ().
+    NULL means to use rl_filename_completion_function (), the default
+    filename completer. */
+-extern rl_compentry_func_t *rl_completion_entry_function;
++READLINE_API rl_compentry_func_t *rl_completion_entry_function;
+ 
+ /* If rl_ignore_some_completions_function is non-NULL it is the address
+    of a function to call after all of the possible matches have been
+@@ -605,7 +605,7 @@
+    The function is called with one argument; a NULL terminated array
+    of (char *).  If your function removes any of the elements, they
+    must be free()'ed. */
+-extern rl_compignore_func_t *rl_ignore_some_completions_function;
++READLINE_API rl_compignore_func_t *rl_ignore_some_completions_function;
+ 
+ /* Pointer to alternative function to create matches.
+    Function is called with TEXT, START, and END.
+@@ -614,46 +614,46 @@
+    If this function exists and returns NULL then call the value of
+    rl_completion_entry_function to try to match, otherwise use the
+    array of strings returned. */
+-extern rl_completion_func_t *rl_attempted_completion_function;
++READLINE_API rl_completion_func_t *rl_attempted_completion_function;
+ 
+ /* The basic list of characters that signal a break between words for the
+    completer routine.  The initial contents of this variable is what
+    breaks words in the shell, i.e. "n\"\\'`@$>". */
+-extern const char *rl_basic_word_break_characters;
++READLINE_API const char *rl_basic_word_break_characters;
+ 
+ /* The list of characters that signal a break between words for
+    rl_complete_internal.  The default list is the contents of
+    rl_basic_word_break_characters.  */
+-extern /*const*/ char *rl_completer_word_break_characters;
++READLINE_API /*const*/ char *rl_completer_word_break_characters;
+ 
+ /* Hook function to allow an application to set the completion word
+    break characters before readline breaks up the line.  Allows
+    position-dependent word break characters. */
+-extern rl_cpvfunc_t *rl_completion_word_break_hook;
++READLINE_API rl_cpvfunc_t *rl_completion_word_break_hook;
+ 
+ /* List of characters which can be used to quote a substring of the line.
+    Completion occurs on the entire substring, and within the substring   
+    rl_completer_word_break_characters are treated as any other character,
+    unless they also appear within this list. */
+-extern const char *rl_completer_quote_characters;
++READLINE_API const char *rl_completer_quote_characters;
+ 
+ /* List of quote characters which cause a word break. */
+-extern const char *rl_basic_quote_characters;
++READLINE_API const char *rl_basic_quote_characters;
+ 
+ /* List of characters that need to be quoted in filenames by the completer. */
+-extern const char *rl_filename_quote_characters;
++READLINE_API const char *rl_filename_quote_characters;
+ 
+ /* List of characters that are word break characters, but should be left
+    in TEXT when it is passed to the completion function.  The shell uses
+    this to help determine what kind of completing to do. */
+-extern const char *rl_special_prefixes;
++READLINE_API const char *rl_special_prefixes;
+ 
+ /* If non-zero, then this is the address of a function to call when
+    completing on a directory name.  The function is called with
+    the address of a string (the current directory name) as an arg.  It
+    changes what is displayed when the possible completions are printed
+    or inserted. */
+-extern rl_icppfunc_t *rl_directory_completion_hook;
++READLINE_API rl_icppfunc_t *rl_directory_completion_hook;
+ 
+ /* If non-zero, this is the address of a function to call when completing
+    a directory name.  This function takes the address of the directory name
+@@ -662,7 +662,7 @@
+    when the possible completions are printed or inserted.  It is called
+    before rl_directory_completion_hook.  I'm not happy with how this works
+    yet, so it's undocumented. */
+-extern rl_icppfunc_t *rl_directory_rewrite_hook;
++READLINE_API rl_icppfunc_t *rl_directory_rewrite_hook;
+ 
+ /* Backwards compatibility with previous versions of readline. */
+ #define rl_symbolic_link_hook rl_directory_completion_hook
+@@ -674,70 +674,70 @@
+    where MATCHES is the array of strings that matched, NUM_MATCHES is the
+    number of strings in that array, and MAX_LENGTH is the length of the
+    longest string in that array. */
+-extern rl_compdisp_func_t *rl_completion_display_matches_hook;
++READLINE_API rl_compdisp_func_t *rl_completion_display_matches_hook;
+ 
+ /* Non-zero means that the results of the matches are to be treated
+    as filenames.  This is ALWAYS zero on entry, and can only be changed
+    within a completion entry finder function. */
+-extern int rl_filename_completion_desired;
++READLINE_API int rl_filename_completion_desired;
+ 
+ /* Non-zero means that the results of the matches are to be quoted using
+    double quotes (or an application-specific quoting mechanism) if the
+    filename contains any characters in rl_word_break_chars.  This is
+    ALWAYS non-zero on entry, and can only be changed within a completion
+    entry finder function. */
+-extern int rl_filename_quoting_desired;
++READLINE_API int rl_filename_quoting_desired;
+ 
+ /* Set to a function to quote a filename in an application-specific fashion.
+    Called with the text to quote, the type of match found (single or multiple)
+    and a pointer to the quoting character to be used, which the function can
+    reset if desired. */
+-extern rl_quote_func_t *rl_filename_quoting_function;
++READLINE_API rl_quote_func_t *rl_filename_quoting_function;
+ 
+ /* Function to call to remove quoting characters from a filename.  Called
+    before completion is attempted, so the embedded quotes do not interfere
+    with matching names in the file system. */
+-extern rl_dequote_func_t *rl_filename_dequoting_function;
++READLINE_API rl_dequote_func_t *rl_filename_dequoting_function;
+ 
+ /* Function to call to decide whether or not a word break character is
+    quoted.  If a character is quoted, it does not break words for the
+    completer. */
+-extern rl_linebuf_func_t *rl_char_is_quoted_p;
++READLINE_API rl_linebuf_func_t *rl_char_is_quoted_p;
+ 
+ /* Non-zero means to suppress normal filename completion after the
+    user-specified completion function has been called. */
+-extern int rl_attempted_completion_over;
++READLINE_API int rl_attempted_completion_over;
+ 
+ /* Set to a character describing the type of completion being attempted by
+    rl_complete_internal; available for use by application completion
+    functions. */
+-extern int rl_completion_type;
++READLINE_API int rl_completion_type;
+ 
+ /* Up to this many items will be displayed in response to a
+    possible-completions call.  After that, we ask the user if she
+    is sure she wants to see them all.  The default value is 100. */
+-extern int rl_completion_query_items;
++READLINE_API int rl_completion_query_items;
+ 
+ /* Character appended to completed words when at the end of the line.  The
+    default is a space.  Nothing is added if this is '\0'. */
+-extern int rl_completion_append_character;
++READLINE_API int rl_completion_append_character;
+ 
+ /* If set to non-zero by an application completion function,
+    rl_completion_append_character will not be appended. */
+-extern int rl_completion_suppress_append;
++READLINE_API int rl_completion_suppress_append;
+ 
+ /* Set to any quote character readline thinks it finds before any application
+    completion function is called. */
+-extern int rl_completion_quote_character;
++READLINE_API int rl_completion_quote_character;
+ 
+ /* Set to a non-zero value if readline found quoting anywhere in the word to
+    be completed; set before any application completion function is called. */
+-extern int rl_completion_found_quote;
++READLINE_API int rl_completion_found_quote;
+ 
+ /* If non-zero, the completion functions don't append any closing quote.
+    This is set to 0 by rl_complete_internal and may be changed by an
+    application-specific completion function. */
+-extern int rl_completion_suppress_quote;
++READLINE_API int rl_completion_suppress_quote;
+ 
+ /* If non-zero, a slash will be appended to completed filenames that are
+    symbolic links to directory names, subject to the value of the
+@@ -748,14 +748,14 @@
+    rl_complete_internal before any application-specific completion
+    function is called, so without that function doing anything, the user's
+    preferences are honored. */
+-extern int rl_completion_mark_symlink_dirs;
++READLINE_API int rl_completion_mark_symlink_dirs;
+ 
+ /* If non-zero, then disallow duplicates in the matches. */
+-extern int rl_ignore_completion_duplicates;
++READLINE_API int rl_ignore_completion_duplicates;
+ 
+ /* If this is non-zero, completion is (temporarily) inhibited, and the
+    completion character will be inserted as any other. */
+-extern int rl_inhibit_completion;
++READLINE_API int rl_inhibit_completion;
+ 
+ /* Input error; can be returned by (*rl_getc_function) if readline is reading
+    a top-level command (RL_ISSTATE (RL_STATE_READCMD)). */
+@@ -843,8 +843,8 @@
+   char reserved[64];
+ };
+ 
+-extern int rl_save_state PARAMS((struct readline_state *));
+-extern int rl_restore_state PARAMS((struct readline_state *));
++READLINE_API int rl_save_state PARAMS((struct readline_state *));
++READLINE_API int rl_restore_state PARAMS((struct readline_state *));
+ 
+ #ifdef __cplusplus
+ }
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/rlstdc.h readline-5.2/rlstdc.h
+--- readline-5.2-orig/rlstdc.h	Fri May 30 21:08:02 2003
++++ readline-5.2/rlstdc.h	Sun Jun 10 18:52:51 2007
+@@ -42,4 +42,14 @@
+ #  endif
+ #endif
+ 
++#if defined (_WIN32)
++# if defined (READLINE_DLL)
++#  define READLINE_API __declspec(dllexport)
++# else
++#  define READLINE_API __declspec(dllimport)
++# endif
++#else
++# define READLINE_API extern
++#endif
++
+ #endif /* !_RL_STDC_H_ */
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/shlib/Makefile.in readline-5.2/shlib/Makefile.in
+--- readline-5.2-orig/shlib/Makefile.in	Fri Aug 12 05:56:10 2005
++++ readline-5.2/shlib/Makefile.in	Fri Jun 15 22:28:11 2007
+@@ -165,10 +165,12 @@
+ $(SHARED_READLINE):	$(SHARED_OBJ)
+ 	$(RM) $@
+ 	$(SHOBJ_LD) ${SHOBJ_LDFLAGS} ${SHLIB_XLDFLAGS} -o $@ $(SHARED_OBJ) $(SHLIB_LIBS)
++	strip $(STRIP_FLAGS) $@
+ 
+ $(SHARED_HISTORY):	$(SHARED_HISTOBJ) xmalloc.so
+ 	$(RM) $@
+ 	$(SHOBJ_LD) ${SHOBJ_LDFLAGS} ${SHLIB_XLDFLAGS} -o $@ $(SHARED_HISTOBJ) xmalloc.so $(SHLIB_LIBS)
++	strip $(STRIP_FLAGS) $@
+ 
+ # Since tilde.c is shared between readline and bash, make sure we compile 
+ # it with the right flags when it's built as part of readline
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/support/shobj-conf readline-5.2/support/shobj-conf
+--- readline-5.2-orig/support/shobj-conf	Tue Apr 11 15:15:43 2006
++++ readline-5.2/support/shobj-conf	Sun Jun 10 18:52:51 2007
+@@ -482,6 +482,17 @@
+ 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+ 	;;
+ 
++msdosmsvc-cc*)
++	SHOBJ_LD='$(CC)'
++	SHOBJ_CFLAGS='-MD -D__MINGW32__ -DREADLINE_DLL'
++	SHOBJ_LDFLAGS='-shared -g'
++
++	SHLIB_LIBPREF=
++	SHLIB_LIBSUFF='dll'
++	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF)'
++	SHLIB_LIBS='-ladvapi32 -luser32'
++	;;
++
+ msdos*)
+ 	SHOBJ_STATUS=unsupported
+ 	SHLIB_STATUS=unsupported
+@@ -503,6 +514,17 @@
+         if [ -n "$DLLVERSION" ] ; then
+ 		SHLIB_DLLVERSION="$DLLVERSION"
+         fi
++	;;
++
++mingw*)
++	SHOBJ_LD='$(CC)'
++	SHOBJ_CFLAGS='-DREADLINE_DLL'
++        SHOBJ_LDFLAGS='-shared -Wl,--enable-auto-import -Wl,--enable-auto-image-base -Wl,--export-all -Wl,--out-implib=$(@:.dll=.a)'
++        SHLIB_LIBPREF='lib'
++        SHLIB_LIBSUFF='dll'
++        SHLIB_LIBVERSION='.$(SHLIB_LIBSUFF)'
++
++	SHLIB_DOT=
+ 	;;
+ 
+ #
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/terminal.c readline-5.2/terminal.c
+--- readline-5.2-orig/terminal.c	Thu Sep 28 16:11:10 2006
++++ readline-5.2/terminal.c	Sun Jun 10 18:52:51 2007
+@@ -264,7 +264,7 @@
+       if (_rl_screenwidth <= 0)
+         _rl_screenwidth = wc;
+ 
+-#if !defined (__DJGPP__)
++#if !defined (__DJGPP__) && !defined (_WIN32)
+       if (_rl_screenwidth <= 0 && term_string_buffer)
+ 	_rl_screenwidth = tgetnum ("co");
+ #endif
+@@ -280,7 +280,7 @@
+       if (_rl_screenheight <= 0)
+         _rl_screenheight = wr;
+ 
+-#if !defined (__DJGPP__)
++#if !defined (__DJGPP__) && !defined (_WIN32)
+       if (_rl_screenheight <= 0 && term_string_buffer)
+ 	_rl_screenheight = tgetnum ("li");
+ #endif
+@@ -408,7 +408,7 @@
+ get_term_capabilities (bp)
+      char **bp;
+ {
+-#if !defined (__DJGPP__)	/* XXX - doesn't DJGPP have a termcap library? */
++#if !defined (__DJGPP__) && !defined (_WIN32)	/* XXX - doesn't DJGPP have a termcap library? */
+   register int i;
+ 
+   for (i = 0; i < NUM_TC_STRINGS; i++)
+@@ -449,7 +449,11 @@
+ 
+       buffer = term_string_buffer;
+ 
++#if !defined (_WIN32)
+       tgetent_ret = tgetent (term_buffer, term);
++#else
++      tgetent_ret = -1;
++#endif
+     }
+ 
+   if (tgetent_ret <= 0)
+@@ -513,7 +517,11 @@
+   if (!_rl_term_cr)
+     _rl_term_cr = "\r";
+ 
++#if !defined (_WIN32)
+   _rl_term_autowrap = tgetflag ("am") && tgetflag ("xn");
++#else
++  _rl_term_autowrap = 1;
++#endif
+ 
+   /* Allow calling application to set default height and width, using
+      rl_set_screen_size */
+@@ -528,7 +536,11 @@
+ 
+   /* Check to see if this terminal has a meta key and clear the capability
+      variables if there is none. */
++#if !defined (_WIN32)
+   term_has_meta = (tgetflag ("km") || tgetflag ("MT"));
++#else
++  term_has_meta = 0;
++#endif
+   if (!term_has_meta)
+     _rl_term_mm = _rl_term_mo = (char *)NULL;
+ 
+@@ -628,10 +640,12 @@
+ {
+   register int i;
+ 
++#if !defined (_WIN32)
+   if (_rl_term_backspace)
+     for (i = 0; i < count; i++)
+       tputs (_rl_term_backspace, 1, _rl_output_character_function);
+   else
++#endif
+     for (i = 0; i < count; i++)
+       putc ('\b', _rl_out_stream);
+   return 0;
+@@ -661,11 +675,16 @@
+ 	default:
+ 	  break;
+ 	case VISIBLE_BELL:
++#if defined (_WIN32)
++	  //MessageBeep(MB_OK);
++	  break;
++#else
+ 	  if (_rl_visible_bell)
+ 	    {
+ 	      tputs (_rl_visible_bell, 1, _rl_output_character_function);
+ 	      break;
+ 	    }
++#endif
+ 	  /* FALLTHROUGH */
+ 	case AUDIBLE_BELL:
+ 	  fprintf (stderr, "\007");
+@@ -686,7 +705,7 @@
+ void
+ _rl_enable_meta_key ()
+ {
+-#if !defined (__DJGPP__)
++#if !defined (__DJGPP__) && !defined (_WIN32)
+   if (term_has_meta && _rl_term_mm)
+     tputs (_rl_term_mm, 1, _rl_output_character_function);
+ #endif
+@@ -696,7 +715,7 @@
+ _rl_control_keypad (on)
+      int on;
+ {
+-#if !defined (__DJGPP__)
++#if !defined (__DJGPP__) && !defined (_WIN32)
+   if (on && _rl_term_ks)
+     tputs (_rl_term_ks, 1, _rl_output_character_function);
+   else if (!on && _rl_term_ke)
+@@ -718,6 +737,7 @@
+ _rl_set_cursor (im, force)
+      int im, force;
+ {
++#if !defined (_WIN32)
+   if (_rl_term_ve && _rl_term_vs)
+     {
+       if (force || im != rl_insert_mode)
+@@ -728,4 +748,5 @@
+ 	    tputs (_rl_term_ve, 1, _rl_output_character_function);
+ 	}
+     }
++#endif
+ }
+diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/tilde.c readline-5.2/tilde.c
+--- readline-5.2-orig/tilde.c	Tue Apr 11 17:19:32 2006
++++ readline-5.2/tilde.c	Sun Jun 10 18:52:51 2007
+@@ -171,7 +171,7 @@
+ 
+   for (i = 0; i < string_len; i++)
+     {
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+       if (string[i] == '/' || string[i] == '\\' /* || !string[i] */)
+ #else
+       if (string[i] == '/' /* || !string[i] */)
+@@ -271,7 +271,7 @@
+   int i;
+ 
+   ret = (char *)xmalloc (strlen (fname));
+-#if defined (__MSDOS__)
++#if defined (__MSDOS__) || defined (_WIN32)
+   for (i = 1; fname[i] && fname[i] != '/' && fname[i] != '\\'; i++)
+ #else
+   for (i = 1; fname[i] && fname[i] != '/'; i++)

@@ -1,0 +1,21 @@
+diff -urN regex-2.5.1-orig/Makefile.in regex-2.5.1/Makefile.in
+--- regex-2.5.1-orig/Makefile.in	Mon May  7 21:28:28 2007
++++ regex-2.5.1/Makefile.in	Fri Jun 22 09:37:03 2007
+@@ -56,7 +56,7 @@
+ ZIPCMD = @ZIPCMD@
+ ZIPEXT = @ZIPEXT@
+ 
+-all: libgnurx-$(DLLVERSION).dll libgnurx.dll.a libregex.a @GNURX_LIB@
++all: libgnurx-$(DLLVERSION).dll libgnurx.dll.a libregex.dll.a @GNURX_LIB@
+ 
+ Makefile: config.status Makefile.in
+ 	./config.status
+@@ -69,7 +69,7 @@
+ libgnurx-$(DLLVERSION).dll libgnurx.dll.a: $(OBJECTS)
+ 	$(CC) $(CFLAGS) -shared -o libgnurx-$(DLLVERSION).dll $(LDFLAGS) $(OBJECTS)
+ 
+-libregex.a: libgnurx.dll.a
++libregex.dll.a: libgnurx.dll.a
+ 	cp -p libgnurx.dll.a $@
+ 
+ gnurx.lib: libgnurx-$(DLLVERSION).dll

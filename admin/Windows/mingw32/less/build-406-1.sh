@@ -63,6 +63,7 @@ uninstall() {
 }
 
 all() {
+  download
   unpack
   applypatch
   build

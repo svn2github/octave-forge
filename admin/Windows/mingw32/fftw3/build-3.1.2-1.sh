@@ -62,6 +62,7 @@ uninstall() {
 }
 
 all() {
+  download
   unpack
   conf
   build

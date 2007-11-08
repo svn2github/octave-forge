@@ -97,6 +97,7 @@ install_pkg() {
 }
 
 all() {
+  download
   unpack
   applypatch
   conf

@@ -19,13 +19,13 @@ PKGNAME=${PKG}-${VER}
 # Full package name including revision
 FULLPKG=${PKGNAME}-${REL}
 # Name of the source code package
-SRCPKG=${PKGNAME}
+SRCPKG=${PKG}-lite-${VER}
 # Name of the patch file
 PATCHFILE=${FULLPKG}.diff
 # Name of the source code file
-SRCFILE=${PKGNAME}.tgz
+SRCFILE=${PKG}-lite-${VER}.tgz
 # Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
+SRCDIR=${TOPDIR}/${PKG}-lite-${VER}
 
 # The directory we build the source code in
 BUILDDIR=${SRCDIR}
@@ -58,6 +58,7 @@ uninstall() {
 }
 
 all() {
+  download
   unpack
   applypatch
   build

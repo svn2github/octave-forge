@@ -16,7 +16,7 @@ INSTALL_LIB=${PREFIX}/${INSTALLDIR_LIB}
 INSTALL_INCLUDE=${PREFIX}/${INSTALLDIR_INCLUDE}
 
 # Make the installed include files/libraries available in GCC'S search path
-export CPATH=${INSTALL_INCLUDE}
+export CPATH="${INSTALL_INCLUDE}"
 export LIBRARY_PATH=${INSTALL_LIB}
 
 # programs
@@ -35,7 +35,7 @@ download_core() {
 }
 
 download() {
-( donwload ${URL} )
+( download_core ${URL} )
 }
 
 # unpack source code

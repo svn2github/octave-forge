@@ -36,6 +36,8 @@ INSTALLDIR_INCLUDE=include/curl
 # --- load common functions ---
 source ../common.sh
 
+export ZLIB_PATH=${PREFIX}/include
+
 # Locally overridden functions with adaptions to current package
 # (Typically when using specific makefiles, and specific install/uninstall instructions)
 
@@ -63,6 +65,7 @@ uninstall() {
 }
 
 all() {
+  download
   unpack
   applypatch
   build

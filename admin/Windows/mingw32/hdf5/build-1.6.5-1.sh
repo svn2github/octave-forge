@@ -100,6 +100,7 @@ uninstall() {
 }
 
 all() {
+  download
   unpack
   applypatch
   conf

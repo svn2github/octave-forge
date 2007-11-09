@@ -26,6 +26,10 @@ function [ndata] = bsc(data,p)
 		error('p muste be a positive scalar less than one');
 		exit;
 	end
+	if(any(data(:) ~= floor(data(:))) || any(data(:) > 1) || any(data(:) < 0))
+		error('data must be a binary sequence');
+		exit;
+	end
 	
 	ndata = data;
 	ndata(find(data == 0)) = randsrc(size(ndata(find(data == 0)),1),size(ndata(find(data == 0)),2),[-1 -2;1-p p]);

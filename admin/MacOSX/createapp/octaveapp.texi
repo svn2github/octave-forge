@@ -66,7 +66,7 @@ Octave.app is a ready--to--run binary version of GNU Octave. It runs on most of 
 @node Requirements, Installation, Introduction, Top
 @chapter Requirements
 If your Apple computer comes with Motorola's PowerPC processor then you need to have installed at least Mac OS X version 10.3. Download the file @file{octave-%VERSION%-ppc.dmg} that includes the ready--to--run binary version of GNU Octave for PPC Macs. If you have an Apple computer that comes with an Intel processor then you need to have installed at least Mac OS X version 10.4. Download the file @file{octave-%VERSION%-i386.dmg} that includes the ready--to--run binary version of GNU Octave for Intel Macs. @* @*
-If you want to use graphical outputs from Octave that can be made with the commands @command{plot}, @command{mesh}, @command{surf} etc. then you need to install the GnuPlot application. GnuPlot is not part of the Octave.app because it is an application that can be build and installed for its own (for further information visit the website @uref{http://gnuplot.sourceforge.net}).
+If you want to use graphical outputs from Octave that can be made with the commands @command{plot}, @command{mesh}, @command{surf} etc. then you need to install the Gnuplot application. Gnuplot is not part of the Octave.app because it is an application that can be build and installed for its own (for further information visit the website @uref{http://gnuplot.sourceforge.net}).
  @* @*
 If you want to further install Octave packages from the Octave--Forge's website @uref{http://octave.sourceforge.net} then you must install the Apple's XCode Tools from 'DVD 1 of your Mac OS X Install Discs' before. To make sure that you have installed the latest version available visit Apple's XCode Tools website @uref{http://developer.apple.com/tools/xcode}.
 
@@ -135,7 +135,7 @@ If you set up Octave.app with a not valid pathname then this might result in dif
 * How can I startup Octave in a Terminal.app or a XTerm that is already running? ::  
 * How can I use mkoctfile in a Terminal.app or a XTerm that is already running?::  
 * Do I have to rebuild installed packages if I move Octave.app to another place?::  
-* Do I have to install GnuPlot.app from the Extras directory?::  
+* Do I have to install Gnuplot.app from the Extras directory?::  
 * I set up Gnuplot.app but it doesn't interact with Octave.app::  
 * How can I install a package that also depends further libraries?::  
 * How can I install the gsl--package from Octave--Forge that also depends further libraries?::  
@@ -185,36 +185,36 @@ bash ~$ sudo ln -sfv /Applications/Octave.app/Contents/Resources/bin/mkoctfile /
 bash ~$ mkoctfile <file.cc>
 @end example
 
-@node Do I have to rebuild installed packages if I move Octave.app to another place?, Do I have to install GnuPlot.app from the Extras directory?, How can I use mkoctfile in a Terminal.app or a XTerm that is already running?, General FAQ
+@node Do I have to rebuild installed packages if I move Octave.app to another place?, Do I have to install Gnuplot.app from the Extras directory?, How can I use mkoctfile in a Terminal.app or a XTerm that is already running?, General FAQ
 @unnumberedsubsec Do I have to rebuild installed packages if I move Octave.app to another place?
 We did some tests and it seems that you don't need to rebuild packages if you move Octave.app to another place. If you find out that this doesn't work then please report this information to @email{octave-dev@@lists.sourceforge.net}. If you install another version of Octave.app then yes, you need to rebuild all installed packages. For this have a look at the help page of the @command{pkg} command, typing
 @example
 octave-%VERSION%:1> help pkg
 @end example
 
-@node Do I have to install GnuPlot.app from the Extras directory?, I set up Gnuplot.app but it doesn't interact with Octave.app, Do I have to rebuild installed packages if I move Octave.app to another place?, General FAQ
-@unnumberedsubsec Do I have to install GnuPlot.app from the Extras directory?
-If you have a working GnuPlot program (at least version 4.2.0 or higher) already installed on your system and if this GnuPlot program is found from any place on the command line then there is no reason to install GnuPlot.app. Try the following example in your Terminal.app or XTerm program to test if either a GnuPlot application is already found on your system or if GnuPlot.app should be installed
+@node Do I have to install Gnuplot.app from the Extras directory?, I set up Gnuplot.app but it doesn't interact with Octave.app, Do I have to rebuild installed packages if I move Octave.app to another place?, General FAQ
+@unnumberedsubsec Do I have to install Gnuplot.app from the Extras directory?
+If you have a working Gnuplot program (at least version 4.2.0 or higher) already installed on your system and if this Gnuplot program is found from any place on the command line then there is no reason to install Gnuplot.app. Try the following example in your Terminal.app or XTerm program to test if either a Gnuplot application is already found on your system or if Gnuplot.app should be installed
 @example
 bash ~$ gnuplot
 @end example
-If you need to install GnuPlot.app then there are two ways to set this up: @* @*
+If you need to install Gnuplot.app then there are two ways to set this up: @* @*
 
 @enumerate a
-@item Drag the GnuPlot.app icon from the compressed disc image to your main Applications folder. Octave.app then automatically finds everything needed and starts GnuPlot.app if desired. @* @*
+@item Drag the Gnuplot.app icon from the compressed disc image to your main Applications folder. Octave.app then automatically finds everything needed and starts Gnuplot.app if desired. @* @*
 
-@item Drag the GnuPlot.app icon from the compressed disc image to another place of your filesystem. After you did that you need to create a link to the GnuPlot startup file to tell Octave.app where GnuPlot.app can be found eg.
+@item Drag the Gnuplot.app icon from the compressed disc image to another place of your filesystem. After you did that you need to create a link to the Gnuplot startup file to tell Octave.app where Gnuplot.app can be found eg.
 @example
-bash ~$ ln -sfv <GnuPlot.app>/Contents/Resources/bin/gnuplot /usr/bin/gnuplot
+bash ~$ ln -sfv <Gnuplot.app>/Contents/Resources/bin/gnuplot /usr/bin/gnuplot
 @end example
-After that try from any place of your filesystem if GnuPlot can be started and also if GnuPlot displays correct plots eg.
+After that try from any place of your filesystem if Gnuplot can be started and also if Gnuplot displays correct plots eg.
 @example
-bash ~$ gnuplot        # GnuPlot.app is started
+bash ~$ gnuplot        # Gnuplot.app is started
 gnuplot> plot sin(x)/x # A figure window shows a nice sine wave
 @end example
 @end enumerate
 
-@node I set up Gnuplot.app but it doesn't interact with Octave.app, How can I install a package that also depends further libraries?, Do I have to install GnuPlot.app from the Extras directory?, General FAQ
+@node I set up Gnuplot.app but it doesn't interact with Octave.app, How can I install a package that also depends further libraries?, Do I have to install Gnuplot.app from the Extras directory?, General FAQ
 @unnumberedsubsec I set up Gnuplot.app but it doesn't interact with Octave.app, what can I do?
 If you see an Octave output of the form
 @example

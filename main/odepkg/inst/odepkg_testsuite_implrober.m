@@ -33,10 +33,10 @@ function vret = odepkg_testsuite_implrober (vhandle, vrtol)
   %# Check number and types of all input arguments
   if (nargin ~= 2)
     help  ('odepkg_testsuite_implrober');
-    error ('OdePkg:odepkg_testsuite_implrober:InvalidInputArgument', ...
+    error ('OdePkg:InvalidInputArgument', ...
 	   'Number of input arguments must be exactly two');
   elseif (~isa (vhandle, 'function_handle') || ~isscalar (vrtol))
-    usage ('odepkg_testsuite_implrober (@solver, reltol)');
+    print_usage;
   end
 
   vret{1} = vhandle; %# The name for the solver that is used
@@ -51,21 +51,17 @@ function vret = odepkg_testsuite_implrober (vhandle, vrtol)
   %# Setting the integration algorithm options
   vstart = 0;    %# The point of time when solving is started
   vstop  = 1e11; %# The point of time when solving is stoped
-  [vinity, vinityd]  = odepkg_testsuite_implroberinit; %# The initial values
-  %# Cf. note for mass matrix below at commented out function definition
-  %# vmass  = odepkg_testsuite_implrobermass; %# The mass matrix
+  [vinity, vinityd] = odepkg_testsuite_implroberinit; %# The initial values
 
   vopt = odeset ('Refine', 0, 'RelTol', vret{2}, 'AbsTol', vret{3}, ...
     'InitialStep', vret{4}, 'Stats', 'on', 'NormControl', 'off', ...
-    'Jacobian', @odepkg_testsuite_implroberjac, ... %# 'Mass', vmass
-    'MaxStep', vstop-vstart);
+    'Jacobian', @odepkg_testsuite_implroberjac, 'MaxStep', vstop-vstart);
+    %# 'OutputFcn', @odeplot);
 
   %# Calculate the algorithm, start timer and do solving
   tic; vsol = feval (vhandle, @odepkg_testsuite_implroberfun, ...
     [vstart, vstop], vinity, vinityd', vopt);
-  vsol.x(end)
-  vsol.y(:,end)
-  vret{12} = toc;                    %# The value for the elapsed time
+  vret{12} = toc;                       %# The value for the elapsed time
   vref = odepkg_testsuite_implroberref; %# Get the reference solution vector
   if (max (size (vsol.y(end,:))) == max (size (vref))), vlst = vsol.y(end,:);
   elseif (max (size (vsol.y(:,end))) == max (size (vref))), vlst = vsol.y(:,end);
@@ -84,26 +80,26 @@ function vret = odepkg_testsuite_implrober (vhandle, vrtol)
   vret{11} = vsol.stats.ndecomps; %# The value for LU decompositions
 
 %#function odepkg_testsuite_implrober ()
-%#  A = odeset ('RelTol', 1e-4, ... %# MATLAB ode15i needs 1e-6 to be stable
+%#  A = odeset ('RelTol', 1e-4, ... %# proprietary ode15i needs 1e-6 to be stable
 %#             'AbsTol', [1e-6, 1e-10, 1e-6], ...
 %#             'Jacobian', @odepkg_testsuite_implroberjac);
 %#  [y0, yd0] = odepkg_testsuite_implroberinit;
-%#  ode15i (@odepkg_testsuite_implroberfun, [0, 1e11], y0, yd0', A)
+%#  odebdi (@odepkg_testsuite_implroberfun, [0, 1e11], y0, yd0', A)
 %#  [y0, yd0] = odepkg_testsuite_implroberinit;
-%#  ode15i (@odepkg_testsuite_implroberfun, [0, 1e11], y0, yd0')
+%#  odebdi (@odepkg_testsuite_implroberfun, [0, 1e11], y0, yd0')
 
-%# Returns the results for the for the implicit ROBERTSON problem
+%# Return the results for the for the implicit ROBERTSON problem
 function res = odepkg_testsuite_implroberfun (t, y, yd, varargin)
   res(1,1) = -0.04 * y(1) + 1e4 * y(2) * y(3) - yd(1);
   res(2,1) =  0.04 * y(1) - 1e4 * y(2) * y(3) - 3e7 * y(2)^2 - yd(2);
   res(3,1) =  y(1) + y(2) + y(3) - 1;
 
-%# Returns the INITIAL values for the implicit ROBERTSON problem
+%# Return the INITIAL values for the implicit ROBERTSON problem
 function [y0, yd0] = odepkg_testsuite_implroberinit ()
   y0 = [1, 0, 0];
   yd0 = [-4e-2, 4e-2, 0];
 
-%# Returns the JACOBIAN matrix for the implicit ROBERTSON problem
+%# Return the JACOBIAN matrix for the implicit ROBERTSON problem
 function [dfdy, dfdyd] = odepkg_testsuite_implroberjac (t, y, yd, varargin)
   dfdy(1,1)  = -0.04;
   dfdy(1,2)  =  1e4 * y(3);
@@ -125,7 +121,7 @@ function [dfdy, dfdyd] = odepkg_testsuite_implroberjac (t, y, yd, varargin)
 %# function mass = odepkg_testsuite_implrobermass (t, y, varargin)
 %#   mass =  [1, 0, 0; 0, 1, 0; 0, 0, 0];
 
-%# Returns the REFERENCE values for the implicit ROBERTSON problem
+%# Return the REFERENCE values for the implicit ROBERTSON problem
 function y = odepkg_testsuite_implroberref ()
   y(1) =  0.20833401497012e-07;
   y(2) =  0.83333607703347e-13;

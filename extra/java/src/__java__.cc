@@ -487,28 +487,54 @@ static octave_value check_exception (JNIEnv* jni_env)
 static jclass find_octave_class (JNIEnv *jni_env, char *name)
 {
   static std::string class_loader;
+  static jclass uiClass = 0;
+ 
   jclass jcls = jni_env->FindClass (name);
 
   if (jcls == 0)
     {
       jni_env->ExceptionClear ();
 
-      if (class_loader.empty ())
+      if (! uiClass)
         {
-          jclass_ref syscls (jni_env, jni_env->FindClass ("java/lang/System"));
-          jmethodID mID = jni_env->GetStaticMethodID (syscls, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
-          jstring_ref js (jni_env, jni_env->NewStringUTF ("octave.class.loader"));
-          js = reinterpret_cast<jstring> (jni_env->CallStaticObjectMethod (syscls, mID, jstring (js)));
-          class_loader = jstring_to_string (jni_env, jstring (js));
-          std::replace (class_loader.begin(), class_loader.end (), '.', '/');
+          if (class_loader.empty ())
+            {
+              jclass_ref syscls (jni_env, jni_env->FindClass ("java/lang/System"));
+              jmethodID mID = jni_env->GetStaticMethodID (syscls, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
+              jstring_ref js (jni_env, jni_env->NewStringUTF ("octave.class.loader"));
+              js = reinterpret_cast<jstring> (jni_env->CallStaticObjectMethod (syscls, mID, jstring (js)));
+              class_loader = jstring_to_string (jni_env, jstring (js));
+              std::replace (class_loader.begin(), class_loader.end (), '.', '/');
+            }
+
+          jclass_ref uicls (jni_env, jni_env->FindClass (class_loader.c_str ()));
+
+          if (! uicls)
+            {
+              jni_env->ExceptionClear ();
+
+              /* Try the netbeans way */
+              std::replace (class_loader.begin(), class_loader.end (), '/', '.');
+              jclass_ref jcls2 (jni_env, jni_env->FindClass ("org/openide/util/Lookup"));
+              jmethodID mID = jni_env->GetStaticMethodID (jcls2, "getDefault", "()Lorg/openide/util/Lookup;");
+              jobject_ref lObj (jni_env, jni_env->CallStaticObjectMethod (jcls2, mID));
+              mID = jni_env->GetMethodID (jcls2, "lookup", "(Ljava/lang/Class;)Ljava/lang/Object;");
+              jclass_ref cLoaderCls (jni_env, jni_env->FindClass ("java/lang/ClassLoader"));
+              jobject_ref cLoader (jni_env, jni_env->CallObjectMethod (lObj, mID, jclass (cLoaderCls)));
+              mID = jni_env->GetMethodID (cLoaderCls, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+              jstring_ref js (jni_env, jni_env->NewStringUTF (class_loader.c_str ()));
+              uicls = reinterpret_cast<jclass> (jni_env->CallObjectMethod (cLoader, mID, jstring (js)));
+            }
+
+          if (uicls)
+            uiClass = jni_env->NewGlobalRef (jclass (uicls));
         }
 
-      jclass_ref uicls (jni_env, jni_env->FindClass (class_loader.c_str ()));
-      if (uicls)
+      if (uiClass)
         {
-          jmethodID mID = jni_env->GetStaticMethodID (uicls, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+          jmethodID mID = jni_env->GetStaticMethodID (uiClass, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
           jstring_ref js (jni_env, jni_env->NewStringUTF (name));
-          jcls = reinterpret_cast<jclass> (jni_env->CallStaticObjectMethod (uicls, mID, jstring (js)));
+          jcls = reinterpret_cast<jclass> (jni_env->CallStaticObjectMethod (uiClass, mID, jstring (js)));
         }
     }
   return jcls;

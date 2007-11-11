@@ -67,19 +67,8 @@ public class ArrayProperty extends Property
 		if (array instanceof Matrix)
 		{
 			Matrix m = (Matrix)array;
-			if (allowedTypes != null)
-			{
-				boolean found = false;
-				String clsName = m.getClassName();
-				for (int i=0; i<allowedTypes.length; i++)
-					if (allowedTypes[i].equals(clsName))
-					{
-						found = true;
-						break;
-					}
-				if (!found)
-					throw new PropertyException("invalid matrix class - " + clsName);
-			}
+			if (!isAllowedType(m.getClassName()))
+				throw new PropertyException("invalid matrix class - " + m.getClassName());
 			if (allowedDims != -1)
 			{
 				if (m.getNDims() != allowedDims)
@@ -87,6 +76,11 @@ public class ArrayProperty extends Property
 			}
 			return array;
 		}
+		/*
+		else if (array instanceof Number)
+		{
+		}
+		*/
 		else
 		{
 			try
@@ -129,6 +123,28 @@ public class ArrayProperty extends Property
 	public boolean isType(String cls)
 	{
 		return getClassName().equals(cls);
+	}
+
+	public boolean isAllowedType(String cls)
+	{
+		if (allowedTypes != null)
+		{
+			for (int i=0; i<allowedTypes.length; i++)
+				if (allowedTypes[i].equals(cls))
+					return true;
+			return false;
+		}
+		return true;
+	}
+
+	public boolean isEmpty()
+	{
+		if (pvalue == null)
+			return true;
+		for (int i=0; i<getNDims(); i++)
+			if (getDim(i) > 0)
+				return false;
+		return true;
 	}
 
 	public String toString()

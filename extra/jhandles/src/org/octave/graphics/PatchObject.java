@@ -51,6 +51,10 @@ public class PatchObject extends GraphicObject
 	DoubleProperty SpecularStrength;
 	DoubleProperty SpecularExponent;
 	ArrayProperty VertexNormals;
+	ArrayProperty XData;
+	ArrayProperty YData;
+	ArrayProperty ZData;
+	ArrayProperty CData;
 
 	public PatchObject(HandleObject parent)
 	{
@@ -79,6 +83,10 @@ public class PatchObject extends GraphicObject
 		VertexNormals = new ArrayProperty(this, "VertexNormals", new String[] {"double"}, 2, null);
 		__Index__ = new DoubleProperty(this, "__Index__", 0);
 		__Index__.setVisible(false);
+		XData = new ArrayProperty(this, "XData", new String[] {"double"}, 2, null);
+		YData = new ArrayProperty(this, "YData", new String[] {"double"}, 2, null);
+		ZData = new ArrayProperty(this, "ZData", new String[] {"double"}, 2, null);
+		CData = new ArrayProperty(this, "CData", new String[] {"double"}, -1, null);
 
 		ZLimInclude.reset(new Boolean(true));
 		CLimInclude.reset(new Boolean(true));
@@ -87,12 +95,20 @@ public class PatchObject extends GraphicObject
 		listen(Faces);
 		listen(Vertices);
 		listen(FaceVertexCData);
+		listen(XData);
+		listen(YData);
+		listen(ZData);
+		listen(CData);
 	}
 
 	public void validate()
 	{
-		updateMinMax();
+		if (!Faces.isEmpty() && !Vertices.isEmpty())
+			updateXYZData();
+		else
+			updateFVData();
 		updateFaceCount();
+		updateMinMax();
 		if (VertexNormals.getDim(0) == 0)
 			VertexNormals.reset(computeNormals());
 		super.validate();
@@ -167,6 +183,111 @@ public class PatchObject extends GraphicObject
 		}
 
 		CLim.set(new double[] {cmin, cmax}, true);
+	}
+
+	private void updateXYZData()
+	{
+		if (Faces.isEmpty() || Vertices.isEmpty())
+			return;
+
+		int m, n, idx; /* X/Y/Z data size */
+		double[][] f = Faces.asDoubleMatrix();
+		double[][] v = Vertices.asDoubleMatrix();
+
+		n = Faces.getDim(0);
+		m = Faces.getDim(1);
+
+		double[] x = new double[m*n];
+		double[] y = new double[m*n];
+		double[] z = new double[m*n];
+		idx = 0;
+
+		for (int j=0; j<n; j++)
+		{
+			int i;
+			for (i=0; i<m && !Double.isNaN(f[j][i]); i++, idx++)
+			{
+				int vidx = (int)f[j][i]-1;
+				if (vidx < 0 || vidx >= v.length)
+					return;
+				x[idx] = v[vidx][0];
+				y[idx] = v[vidx][1];
+				z[idx] = v[vidx][2];
+			}
+			for (; i<m; i++, idx++)
+			{
+				x[idx] = Double.NaN;
+				y[idx] = Double.NaN;
+				z[idx] = Double.NaN;
+			}
+		}
+
+		int[] dims = new int[] {m, n};
+		autoSet(XData, new Matrix(x, dims));
+		autoSet(YData, new Matrix(y, dims));
+		autoSet(ZData, new Matrix(z, dims));
+	}
+
+	/*
+	private void updateCData()
+	{
+		if (FaceVertexCData.isEmpty())
+			return;
+
+		double[][] fv = FaceVertexCData.asDoubleMatrix();
+		int m = Faces.getDim(1), n = Faces.getDim(0);
+	}
+	*/
+
+	private boolean checkXYZData()
+	{
+		if (XData.isEmpty() || YData.isEmpty() || ZData.isEmpty())
+			return false;
+
+		if (XData.getNDims() != YData.getNDims() || XData.getNDims() != ZData.getNDims())
+			return false;
+
+		for (int i=0; i<XData.getNDims(); i++)
+			if (XData.getDim(i) != YData.getDim(i) || XData.getDim(i) != ZData.getDim(i))
+				return false;
+
+		return true;
+	}
+
+	private void updateFVData()
+	{
+		if (!checkXYZData())
+			return;
+
+		int n = XData.getDim(1), m = XData.getDim(0);
+		double[][] x = XData.asDoubleMatrix();
+		double[][] y = YData.asDoubleMatrix();
+		double[][] z = ZData.asDoubleMatrix();
+
+		double[] f = new double[m*n];
+		double[] v = new double[3*m*n];
+		int vidx = 0;
+
+		for (int j=0; j<n; j++)
+		{
+			int i;
+			for (i=0; i<m; i++)
+			{
+				if (Double.isNaN(x[i][j]) || Double.isNaN(y[i][j]) ||
+				    Double.isNaN(z[i][j]))
+					break;
+				f[i*n+j] = vidx+1;
+				v[vidx]       = x[i][j];
+				v[vidx+n*m]   = y[i][j];
+				v[vidx+2*n*m] = z[i][j];
+				vidx++;
+			}
+			for (; i<m; i++)
+				f[i*n+j] = Double.NaN;
+		}
+
+		autoSet(Faces, new Matrix(f, new int[] {n, m}));
+		autoSet(Vertices, new Matrix(v, new int[] {n*m, 3}));
 	}
 
 	private boolean checkConsistency()
@@ -332,12 +453,27 @@ public class PatchObject extends GraphicObject
 	{
 		super.propertyChanged(p);
 
-		if (p == Faces)
-			updateFaceCount();
-		else if (p == Vertices || p == FaceVertexCData)
-			updateMinMax();
-
-		if (p == Faces || p == Vertices)
-			VertexNormals.set(computeNormals());
+		if (!isAutoMode())
+		{
+			if (p == XData || p == YData || p == ZData)
+			{
+				updateFVData();
+				updateFaceCount();
+				updateMinMax();
+				VertexNormals.set(computeNormals());
+			}
+			else if (p == Faces || p == Vertices || p == FaceVertexCData)
+			{
+				if (p == Faces)
+					updateFaceCount();
+				if (p == Vertices || p == FaceVertexCData)
+					updateMinMax();
+				if (p == Faces || p == Vertices)
+				{
+					VertexNormals.set(computeNormals());
+					updateXYZData();
+				}
+			}
+		}
 	}
 }

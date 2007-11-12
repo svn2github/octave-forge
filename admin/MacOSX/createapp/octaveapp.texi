@@ -244,14 +244,13 @@ bash ~$ curl -s -S ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz -o gsl-1.9.tar.gz
 @end example
 @item Unpack the downloaded library and change into the directory that has been created, eg.
 @example
-bash ~$ tar -xzf gsl-1.9.tar.gz
-bash ~$ cd gsl-1.9
+bash:~$ tar -xzf gsl-1.9.tar.gz
+bash:~$ cd gsl-1.9
 @end example
 @item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
 @example
-bash ~$ ./configure --prefix=/Applications/Octave.app/Contents/Resources
-bash ~$ make
-bash ~$ make install
+bash:~/gsl-1.9$ ./configure --prefix=/Applications/Octave.app/Contents/Resources
+bash:~/gsl-1.9$ make && make install
 @end example
 @item Startup Octave.app and install the desired Octave--package, eg.
 @example
@@ -261,41 +260,59 @@ octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz
 
 @node How can I install the symbolic--package from Octave--Forge that also depends further libraries?, How can I install the Arpack--package from Octave--Forge that also depends further libraries?, How can I install the gsl--package from Octave--Forge that also depends further libraries?, General FAQ
 @unnumberedsubsec How can I install the symbolic--package from Octave--Forge that also depends further libraries?
-As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package.
+@b{Note:} First you should know here that you need very new versions of the developer programs 'flex', 'bison', 'gawk' and 'automake' to be able to install all the dependencies of this package (the versions that xome with your Mac won't be working). Let's also say that you have set up these programs in the directory /usr/local/bin then you need to download, configure, compile and install the needed library before you install the Octave--Forge package.
 @enumerate
+@item Download a current version of the pkg--config software, eg.
+@example
+bash:~$ curl -s -S http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz \
+  -o pkg-config-0.22.tar.gz
+@end example
+@item Unpack the downloaded library and change into the directory that has been created, eg.
+@example
+bash:~$ tar -xzf pkg-config-0.22.tar.gz
+bash:~$ cd pkg-config-0.22
+bash:~/pkg-config-0.22$
+@end example
+@item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
+@example
+bash:~/pkg-config-0.22$ ./configure --prefix=/Applications/Octave.app/Contents/Resources
+bash:~/pkg-config-0.22$ make && make install
+@end example
 @item Download a current version of the CLN --- Class Library for Numbers, eg.
 @example
-bash ~$ curl -s -S ftp://ftpthep.physik.uni-mainz.de/pub/gnu/cln-1.1.9.tar.bz2 \
+bash:~$ curl -s -S ftp://ftpthep.physik.uni-mainz.de/pub/gnu/cln-1.1.9.tar.bz2 \
   -o cln-1.1.9.tar.bz2
 @end example
 @item Unpack the downloaded library and change into the directory that has been created, eg.
 @example
-bash ~$ tar -xjf cln-1.1.9.tar.bz2
-bash ~$ cd cln-1.1.9
+bash:~$ tar -xjf cln-1.1.9.tar.bz2
+bash:~$ cd cln-1.1.9
+bash:~/cln-1.1.9$
 @end example
 @item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
 @example
-bash ~$ ./configure --prefix=/Applications/Octave.app/Contents/Resources
-bash ~$ make
-bash ~$ make install
+bash:~/cln-1.1.9$ PATH=/Applications/Octave.app/Contents/Resources/bin:{$PATH} \
+  ./configure --prefix=/Applications/Octave.app/Contents/Resources
+bash:~/cln-1.1.9$ make && make install
 @end example
 @item Download a current version of the GiNaC (GiNaC is Not a CAS), eg.
 @example
-bash ~$ curl -s -S ftp://ftpthep.physik.uni-mainz.de/pub/GiNaC/ginac-1.4.0.tar.bz2 \
+bash:~$ curl -s -S ftp://ftpthep.physik.uni-mainz.de/pub/GiNaC/ginac-1.4.0.tar.bz2 \
   -o ginac-1.4.0.tar.bz2
 @end example
 @item Unpack the downloaded library and change into the directory that has been created, eg.
 @example
-bash ~$ tar -xjf ginac-1.4.0.tar.bz2
-bash ~$ cd ginac-1.4.0
+bash:~$ tar -xjf ginac-1.4.0.tar.bz2
+bash:~$ cd ginac-1.4.0
+bash:~/ginac-1.4.0$
 @end example
 @item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
 @example
-bash ~$ ./configure CLN_CFLAGS="-I/Applications/Octave.app/Contents/Resources/include" \
-  CLN_LIBS="-L/Applications/Octave.app/Contents/Resources/lib" \
-  --prefix=/Applications/Octave.app/Contents/Resources
-bash ~$ make
-bash ~$ make install
+bash:~/ginac-1.4.0$ PATH=/usr/local/bin:/Applications/Octave.app/Contents/Resources/bin:{$PATH} \
+  ./configure --prefix=/Applications/Octave.app/Contents/Resources \
+  CFLAGS="-I/Applications/Octave.app/Contents/Resources/include" \
+  LDFLAGS="-L/Applications/Octave.app/Contents/Resources/lib"
+bash:~/ginac-1.4.0$ PATH=/usr/local/bin:$PATH make && make install
 @end example
 @item Startup Octave.app and install the desired Octave--package, eg.
 @example
@@ -305,7 +322,7 @@ octave-2.9.12:1> pkg install symbolic-1.0.3.tar.gz
 
 @node How can I install the Arpack--package from Octave--Forge that also depends further libraries?,  , How can I install the symbolic--package from Octave--Forge that also depends further libraries?, General FAQ
 @unnumberedsubsec How can I install the Arpack--package from Octave--Forge that also depends further libraries?
-As described previously you need to download, configure, compile and install the needed arpack--library before you install the Octave--Forge package.
+As described previously you need to download, configure, compile and install the needed ARPACK--software before you install the Octave--Forge package.
 @enumerate
 @item Download a current version of the ARPACK--software and the patch that is available, eg.
 @example
@@ -323,19 +340,24 @@ bash:~/ARPACK$
 @end example
 @item Edit the file ARmake.inc and change the values of the following variables in a similiar way, eg.
 @example
-home = $(HOME)/ARPACK # this is the location of your current ARPACK directory that has been created
+ # this is the location of your current ARPACK directory that has been created
+home = $(HOME)/ARPACK
 
-PLAT = MAC            # this actually only results in the name of the created libarpack_$@{PLAT@}.a
+# this actually only results in the name of the created libarpack_$@{PLAT@}.a
+PLAT = MAC
 
-FFLAGS = -O           # remove the option -cg89 that is not compatible with fort77
+# remove the option -cg89 that is not compatible with fort77
+FFLAGS = -O
 
-FC = PATH=/Applications/Octave.app/Contents/Resources/bin:$@{PATH@}\ # use backslashes here
-        /Applications/Octave.app/Contents/Resources/bin/fort77\    # and use tabulators at
-        -I/Applications/Octave.app/Contents/Resources/include      # the line-beginnings
+# use backslashes without spaces here and use tabulators at the beginnings of the lines              
+FC = PATH=/Applications/Octave.app/Contents/Resources/bin:$@{PATH@}\
+        /Applications/Octave.app/Contents/Resources/bin/fort77\
+        -I/Applications/Octave.app/Contents/Resources/include
 
+# make is in the directory /usr/bin not in /bin
 MAKE = /usr/bin/make
 @end example
-@item Compile the ARPACK--package and change the name of the created shared library @file{libarpack_$@{PLAT@}.a} into @file{libarpack.a}. Then move the new file into the @file{lib} directory of Octave.app, eg.
+@item Compile the ARPACK--software and change the name of the created static library @file{libarpack_MAC.a} into @file{libarpack.a}. Then move the renamed static library into the @file{lib} directory of Octave.app, eg.
 @example
 bash:~/ARPACK$ make lib
 bash:~/ARPACK$ mv libarpack_MAC.a libarpack.a

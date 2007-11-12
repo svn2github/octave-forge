@@ -37,35 +37,13 @@ public class LineObject extends GraphicObject
 	MarkerProperty Marker;
 	DoubleProperty MarkerSize;
 
-	public LineObject(HandleObject parent, double[] xdata, double[] ydata)
-	{
-		this(parent, xdata, ydata, new double[0]);
-	}
-
-	// TODO: in the end, [x|y|z]data should not be given as constructor argument
-	
-	public LineObject(HandleObject parent, double xdata, double ydata, double zdata)
-	{
-		this(parent, new double[] {xdata}, new double[] {ydata}, new double[] {zdata});
-	}
-	
-	public LineObject(HandleObject parent, double xdata, double ydata, Object zdata)
-	{
-		this(parent, new double[] {xdata}, new double[] {ydata}, new double[0]);
-	}
-	
-	public LineObject(HandleObject parent, double[] xdata, double[] ydata, double[] zdata)
-	{
-		this(parent, new Matrix(xdata), new Matrix(ydata), new Matrix(zdata));
-	}
-
-	public LineObject(HandleObject parent, Matrix xdata, Matrix ydata, Matrix zdata)
+	public LineObject(HandleObject parent)
 	{
 		super(parent, "line");
 
-		XData = new VectorProperty(this, "XData", -1, xdata);
-		YData = new VectorProperty(this, "YData", -1, ydata);
-		ZData = new VectorProperty(this, "ZData", -1, (zdata == null ? new Matrix() : zdata));
+		XData = new VectorProperty(this, "XData", -1);
+		YData = new VectorProperty(this, "YData", -1);
+		ZData = new VectorProperty(this, "ZData", -1);
 		LineColor = new ColorProperty(this, "Color");
 		LineStyle = new LineStyleProperty(this, "LineStyle");
 		LineWidth = new DoubleProperty(this, "LineWidth");

@@ -588,7 +588,10 @@ public class GLRenderer implements Renderer
 			}
 			if (lightMode > 0 && (firstVertex || lightMode == 2))
 				gl.glNormal3d(v.normal[0], v.normal[1], v.normal[2]);
-			gl.glVertex3d(v.coords[0], v.coords[1], v.coords[2]);
+			if (v.coords.length > 2)
+				gl.glVertex3d(v.coords[0], v.coords[1], v.coords[2]);
+			else
+				gl.glVertex2d(v.coords[0], v.coords[1]);
 			firstVertex = false;
 		}
 
@@ -732,7 +735,10 @@ public class GLRenderer implements Renderer
 							}
 							if (lightMode == 2)
 								gl.glNormal3d(v[i].normal[0], v[i].normal[1], v[i].normal[2]);
-							gl.glVertex3d(v[i].coords[0], v[i].coords[1], v[i].coords[2]);
+							if (v[i].coords.length > 2)
+								gl.glVertex3d(v[i].coords[0], v[i].coords[1], v[i].coords[2]);
+							else
+								gl.glVertex2d(v[i].coords[0], v[i].coords[1]);
 						}
 						gl.glEnd();
 						setLineStyle("-", false);
@@ -816,7 +822,10 @@ public class GLRenderer implements Renderer
 										}
 										if (lightMode == 2)
 											gl.glNormal3d(v[i].normal[0], v[i].normal[1], v[i].normal[2]);
-										gl.glVertex3d(v[i].coords[0], v[i].coords[1], v[i].coords[2]);
+										if (v[i].coords.length > 2)
+											gl.glVertex3d(v[i].coords[0], v[i].coords[1], v[i].coords[2]);
+										else
+											gl.glVertex2d(v[i].coords[0], v[i].coords[1]);
 									}
 									gl.glEnd();
 									setPolygonOffset(false);
@@ -867,15 +876,18 @@ public class GLRenderer implements Renderer
 	/* scale 3D points */
 	private double[][] scale(double[][] pts)
 	{
-		if (sx.isLinear() && sy.isLinear() && sz.isLinear())
+		boolean has_z = (pts.length > 0 && pts[0].length > 2);
+
+		if (sx.isLinear() && sy.isLinear() && (!has_z || sz.isLinear()))
 			return pts;
 
-		double[][] out = new double[pts.length][3];
+		double[][] out = new double[pts.length][(has_z ? 3 : 2)];
 		for (int i=0; i<pts.length; i++)
 		{
 			out[i][0] = sx.scale(pts[i][0]);
 			out[i][1] = sy.scale(pts[i][1]);
-			out[i][2] = sz.scale(pts[i][2]);
+			if (has_z)
+				out[i][2] = sz.scale(pts[i][2]);
 		}
 		return out;
 	}
@@ -888,6 +900,8 @@ public class GLRenderer implements Renderer
 		double[][] n = patch.VertexNormals.asDoubleMatrix();
 		double[] a = null;
 		int[] faceCount = patch.getFaceCount();
+
+		boolean has_z = (v.length > 0 && v[0].length > 2);
 
 		boolean hasFaceColor = false;
 		boolean hasFaceAlpha = false;
@@ -907,8 +921,12 @@ public class GLRenderer implements Renderer
 		float se = patch.SpecularExponent.floatValue();
 
 		boolean[] clip = new boolean[v.length];
-		for (int i=0; i<v.length; i++)
-			clip[i] = isNaNorInf(v[i][0], v[i][1], v[i][2]);
+		if (has_z)
+			for (int i=0; i<v.length; i++)
+				clip[i] = isNaNorInf(v[i][0], v[i][1], v[i][2]);
+		else
+			for (int i=0; i<v.length; i++)
+				clip[i] = isNaNorInf(v[i][0], v[i][1], 0);
 		boolean[] clipF = new boolean[f.length];
 		for (int i=0; i<f.length; i++)
 		{
@@ -974,6 +992,7 @@ public class GLRenderer implements Renderer
 				GLUtessellator tess = getTess(true);
 				GLUtessellatorCallback cb = new PatchTessellator(gl, faceColorMode, faceLightMode,
 					patch.__Index__.intValue());
+				double[] vv = new double[3];
 						
 				glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN_DATA,  cb);
 				glu.gluTessCallback(tess, GLU.GLU_TESS_END,  cb);
@@ -991,7 +1010,11 @@ public class GLRenderer implements Renderer
 					for (int j=0; j<faceCount[i]; j++)
 					{
 						int index = (int)f[i][j]-1;
-						glu.gluTessVertex(tess, v[index], 0, vData[i][j]);
+						vv[0] = v[index][0];
+						vv[1] = v[index][1];
+						if (has_z)
+							vv[2] = v[index][2];
+						glu.gluTessVertex(tess, vv, 0, vData[i][j]);
 					}
 					glu.gluTessEndContour(tess);
 					glu.gluTessEndPolygon(tess);
@@ -1005,6 +1028,7 @@ public class GLRenderer implements Renderer
 				GLUtessellator tess = getTess(true);
 				GLUtessellatorCallback cb = new PatchTessellatorAlpha(this, faceColorMode, faceLightMode, faceAlphaMode,
 								fcolor, (faceAlphaMode == 0 ? patch.FaceAlpha.doubleValue() : 1.0), "-", 0.5F);
+				double[] vv = new double[3];
 				
 				glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN_DATA,  cb);
 				glu.gluTessCallback(tess, GLU.GLU_TESS_END,  cb);
@@ -1022,7 +1046,11 @@ public class GLRenderer implements Renderer
 					for (int j=0; j<faceCount[i]; j++)
 					{
 						int index = (int)f[i][j]-1;
-						glu.gluTessVertex(tess, v[index], 0, vData[i][j]);
+						vv[0] = v[index][0];
+						vv[1] = v[index][1];
+						if (has_z)
+							vv[2] = v[index][2];
+						glu.gluTessVertex(tess, vv, 0, vData[i][j]);
 					}
 					glu.gluTessEndContour(tess);
 					glu.gluTessEndPolygon(tess);
@@ -1054,6 +1082,7 @@ public class GLRenderer implements Renderer
 
 				GLUtessellator tess = getTess(false);
 				GLUtessellatorCallback cb = new PatchTessellator(gl, edgeColorMode, edgeLightMode);
+				double[] vv = new double[3];
 						
 				glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN_DATA,  cb);
 				glu.gluTessCallback(tess, GLU.GLU_TESS_END,  cb);
@@ -1071,7 +1100,11 @@ public class GLRenderer implements Renderer
 					for (int j=0; j<faceCount[i]; j++)
 					{
 						int index = (int)f[i][j]-1;
-						glu.gluTessVertex(tess, v[index], 0, vData[i][j]);
+						vv[0] = v[index][0];
+						vv[1] = v[index][1];
+						if (has_z)
+							vv[2] = v[index][2];
+						glu.gluTessVertex(tess, vv, 0, vData[i][j]);
 					}
 					glu.gluTessEndContour(tess);
 					glu.gluTessEndPolygon(tess);
@@ -1089,6 +1122,7 @@ public class GLRenderer implements Renderer
 				GLUtessellatorCallback cb = new PatchTessellatorAlpha(this, edgeColorMode, edgeLightMode, edgeAlphaMode,
 								ecolor, (edgeAlphaMode == 0 ? patch.EdgeAlpha.doubleValue() : 1.0),
 								patch.LineStyle.getValue(), patch.LineWidth.floatValue());
+				double[] vv = new double[3];
 				
 				glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN_DATA,  cb);
 				glu.gluTessCallback(tess, GLU.GLU_TESS_END,  cb);
@@ -1106,7 +1140,11 @@ public class GLRenderer implements Renderer
 					for (int j=0; j<faceCount[i]; j++)
 					{
 						int index = (int)f[i][j]-1;
-						glu.gluTessVertex(tess, v[index], 0, vData[i][j]);
+						vv[0] = v[index][0];
+						vv[1] = v[index][1];
+						if (has_z)
+							vv[2] = v[index][2];
+						glu.gluTessVertex(tess, vv, 0, vData[i][j]);
 					}
 					glu.gluTessEndContour(tess);
 					glu.gluTessEndPolygon(tess);

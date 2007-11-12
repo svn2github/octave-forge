@@ -29,11 +29,12 @@ public class BaseLineObject extends LineObject
 
 	public BaseLineObject(HandleObject parent, double value)
 	{
-		super(parent, new double[] {0, 0}, new double[] {value, value});
+		super(parent);
 
 		BaseValue = new DoubleProperty(this, "BaseValue", value);
 		Orientation = new RadioProperty(this, "Orientation", new String[] {"X", "Y"}, "X");
 		XLimInclude.reset(new Boolean(false));
+		YData.reset(new double[] {value, value});
 
 		Orientation.setVisible(false);
 

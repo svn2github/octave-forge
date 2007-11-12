@@ -76,11 +76,16 @@ public class ArrayProperty extends Property
 			}
 			return array;
 		}
-		/*
 		else if (array instanceof Number)
 		{
+			Number n = (Number)array;
+			if (n instanceof Double && isAllowedType("double"))
+				return new Matrix(new double[] {n.doubleValue()}, new int[] {1, 1});
+			else if (n instanceof Byte && isAllowedType("byte"))
+				return new Matrix(new byte[] {n.byteValue()}, new int[] {1, 1});
+			else
+				throw new PropertyException("invalid data type - " + n.getClass().toString());
 		}
-		*/
 		else
 		{
 			try

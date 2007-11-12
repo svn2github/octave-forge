@@ -47,12 +47,12 @@ public class LegendObject extends AxesObject
 			item.text.TextColor.reset(TextColor.get());
 			item.text.validate();
 
-			item.line = new LineObject(this, new double[] {0, 0}, new double[] {0, 0});
+			item.line = new LineObject(this);
 			item.line.LineColor.reset(line.get("Color"));
 			item.line.LineStyle.reset(line.get("LineStyle"));
 			item.line.validate();
 
-			item.marker = new LineObject(this, new double[] {0, 0}, new double[] {0, 0});
+			item.marker = new LineObject(this);
 			item.marker.LineColor.reset(line.get("Color"));
 			item.marker.LineStyle.reset("none");
 			item.marker.Marker.reset(line.get("Marker"));

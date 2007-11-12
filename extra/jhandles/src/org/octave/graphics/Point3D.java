@@ -48,7 +48,8 @@ public class Point3D
 	{
 		x += p[0];
 		y += p[1];
-		z += p[2];
+		if (p.length > 2)
+			z += p[2];
 	}
 
 	public void add(double _x, double _y, double _z)
@@ -69,7 +70,8 @@ public class Point3D
 	{
 		x -= p[0];
 		y -= p[1];
-		z -= p[2];
+		if (p.length > 2)
+			z -= p[2];
 	}
 
 	public double norm()
@@ -84,7 +86,7 @@ public class Point3D
 
 	public double dot(double[] p)
 	{
-		return (x*p[0]+y*p[1]+z*p[2]);
+		return (x*p[0]+y*p[1]+(p.length > 2 ? z*p[2] : 0));
 	}
 
 	public void scale(double s)

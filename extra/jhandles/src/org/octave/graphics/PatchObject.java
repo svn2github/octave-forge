@@ -107,6 +107,10 @@ public class PatchObject extends GraphicObject
 			updateXYZData();
 		else
 			updateFVData();
+		if (!FaceVertexCData.isEmpty())
+			updateCData();
+		else if (!CData.isEmpty())
+			updateFVCData();
 		updateFaceCount();
 		updateMinMax();
 		if (VertexNormals.getDim(0) == 0)
@@ -125,8 +129,12 @@ public class PatchObject extends GraphicObject
 		xmin2 = ymin2 = zmin2 = Double.POSITIVE_INFINITY;
 		xmax2 = ymax2 = zmax2 = Double.MIN_VALUE;
 
+		boolean has_z = false;
+
 		if (v != null && v.length > 0)
 		{
+			has_z = v[0].length > 2;
+
 			for (int i=0; i<v.length; i++)
 			{
 				if (v[i][0] < xmin) xmin = v[i][0];
@@ -143,19 +151,23 @@ public class PatchObject extends GraphicObject
 					if (v[i][1] < ymin2) ymin2 = v[i][1];
 					if (v[i][1] > ymax2) ymax2 = v[i][1];
 				}
-				if (v[i][2] < zmin) zmin = v[i][2];
-				if (v[i][2] > zmax) zmax = v[i][2];
-				if (v[i][2] > 0)
+				if (has_z)
 				{
-					if (v[i][2] < zmin2) zmin2 = v[i][2];
-					if (v[i][2] > zmax2) zmax2 = v[i][2];
+					if (v[i][2] < zmin) zmin = v[i][2];
+					if (v[i][2] > zmax) zmax = v[i][2];
+					if (v[i][2] > 0)
+					{
+						if (v[i][2] < zmin2) zmin2 = v[i][2];
+						if (v[i][2] > zmax2) zmax2 = v[i][2];
+					}
 				}
 			}
 		}
 
 		XLim.set(new double[] {xmin, xmax, xmin2, xmax2}, true);
 		YLim.set(new double[] {ymin, ymax, ymin2, ymax2}, true);
-		ZLim.set(new double[] {zmin, zmax, zmin2, zmax2}, true);
+		if (has_z)
+			ZLim.set(new double[] {zmin, zmax, zmin2, zmax2}, true);
 
 		if (FaceVertexCData.getDim(1) == 1 && CDataMapping.is("scaled"))
 		{
@@ -193,13 +205,14 @@ public class PatchObject extends GraphicObject
 		int m, n, idx; /* X/Y/Z data size */
 		double[][] f = Faces.asDoubleMatrix();
 		double[][] v = Vertices.asDoubleMatrix();
+		boolean has_z = (v.length > 0 && v[0].length > 2);
 
 		n = Faces.getDim(0);
 		m = Faces.getDim(1);
 
 		double[] x = new double[m*n];
 		double[] y = new double[m*n];
-		double[] z = new double[m*n];
+		double[] z = (has_z ? new double[m*n] : null);
 		idx = 0;
 
 		for (int j=0; j<n; j++)
@@ -212,43 +225,133 @@ public class PatchObject extends GraphicObject
 					return;
 				x[idx] = v[vidx][0];
 				y[idx] = v[vidx][1];
-				z[idx] = v[vidx][2];
+				if (has_z)
+					z[idx] = v[vidx][2];
 			}
 			for (; i<m; i++, idx++)
 			{
 				x[idx] = Double.NaN;
 				y[idx] = Double.NaN;
-				z[idx] = Double.NaN;
+				if (has_z)
+					z[idx] = Double.NaN;
 			}
 		}
 
 		int[] dims = new int[] {m, n};
 		autoSet(XData, new Matrix(x, dims));
 		autoSet(YData, new Matrix(y, dims));
-		autoSet(ZData, new Matrix(z, dims));
+		if (has_z)
+			autoSet(ZData, new Matrix(z, dims));
 	}
 
-	/*
 	private void updateCData()
 	{
-		if (FaceVertexCData.isEmpty())
+		if (FaceVertexCData.isEmpty() || Faces.isEmpty() || Vertices.isEmpty())
 			return;
 
 		double[][] fv = FaceVertexCData.asDoubleMatrix();
-		int m = Faces.getDim(1), n = Faces.getDim(0);
+		int nf = Faces.getDim(0), nv = Vertices.getDim(0), nfv = FaceVertexCData.getDim(0);
+		boolean is_true_color = (FaceVertexCData.getDim(1) == 3);
+
+		Matrix m = null;
+
+		if (nfv == nf)
+		{
+			// per-face color specification
+			if (is_true_color)
+			{
+				double[] c = new double[nf*3];
+				int[] dims = new int[] {1, nf, 3};
+
+				for (int i=0; i<fv.length; i++)
+				{
+					c[i]      = fv[i][0];
+					c[i+nf]   = fv[i][1];
+					c[i+2*nf] = fv[i][2];
+				}
+
+				m = new Matrix(c, dims);
+			}
+			else
+			{
+				double[] c = new double[nf];
+				int[] dims = new int[] {1, nf};
+
+				for (int i=0; i<fv.length; i++)
+					c[i] = fv[i][0];
+
+				m = new Matrix(c, dims);
+			}
+		}
+		else if (nfv == nv)
+		{
+			double[][] f = Faces.asDoubleMatrix();
+			double[][] v = Vertices.asDoubleMatrix();
+
+			// per-vertex color specification
+			if (is_true_color)
+			{
+				int cx = Faces.getDim(1);
+				double[] c = new double[nf*cx*3];
+				int[] dims = new int[] {cx, nf, 3};
+			
+				for (int j=0; j<nf; j++)
+				{
+					int idx = j*cx;
+					for (int i=0; i<cx && !Double.isNaN(f[j][i]); i++, idx++)
+					{
+						int vidx = (int)f[j][i]-1;
+						if (vidx < 0 || vidx >= v.length)
+							return;
+						c[idx]         = fv[vidx][0];
+						c[idx+nf*cx]   = fv[vidx][1];
+						c[idx+2*nf*cx] = fv[vidx][2];
+					}
+				}
+
+				m = new Matrix(c, dims);
+			}
+			else
+			{
+				int cx = Faces.getDim(1);
+				double[] c = new double[nf*cx];
+				int[] dims = new int[] {cx, nf};
+			
+				for (int j=0; j<nf; j++)
+				{
+					int idx = j*cx;
+					for (int i=0; i<cx && !Double.isNaN(f[j][i]); i++, idx++)
+					{
+						int vidx = (int)f[j][i]-1;
+						if (vidx < 0 || vidx >= v.length)
+							return;
+						c[idx] = fv[vidx][0];
+					}
+				}
+
+				m = new Matrix(c, dims);
+			}
+		}
+		else if (nfv == 1)
+		{
+		}
+
+		if (m != null)
+			autoSet(CData, m);
 	}
-	*/
 
 	private boolean checkXYZData()
 	{
-		if (XData.isEmpty() || YData.isEmpty() || ZData.isEmpty())
+		boolean has_z = !ZData.isEmpty();
+
+		if (XData.isEmpty() || YData.isEmpty())
 			return false;
 
-		if (XData.getNDims() != YData.getNDims() || XData.getNDims() != ZData.getNDims())
+		if (XData.getNDims() != YData.getNDims() || (has_z && XData.getNDims() != ZData.getNDims()))
 			return false;
 
 		for (int i=0; i<XData.getNDims(); i++)
-			if (XData.getDim(i) != YData.getDim(i) || XData.getDim(i) != ZData.getDim(i))
+			if (XData.getDim(i) != YData.getDim(i) || (has_z && XData.getDim(i) != ZData.getDim(i)))
 				return false;
 
 		return true;
@@ -262,10 +365,11 @@ public class PatchObject extends GraphicObject
 		int n = XData.getDim(1), m = XData.getDim(0);
 		double[][] x = XData.asDoubleMatrix();
 		double[][] y = YData.asDoubleMatrix();
-		double[][] z = ZData.asDoubleMatrix();
+		boolean has_z = !ZData.isEmpty();
+		double[][] z = (has_z ? ZData.asDoubleMatrix() : null);
 
 		double[] f = new double[m*n];
-		double[] v = new double[3*m*n];
+		double[] v = new double[(has_z ? 3 : 2)*m*n];
 		int vidx = 0;
 
 		for (int j=0; j<n; j++)
@@ -274,20 +378,65 @@ public class PatchObject extends GraphicObject
 			for (i=0; i<m; i++)
 			{
 				if (Double.isNaN(x[i][j]) || Double.isNaN(y[i][j]) ||
-				    Double.isNaN(z[i][j]))
+				    (has_z && Double.isNaN(z[i][j])))
 					break;
 				f[i*n+j] = vidx+1;
 				v[vidx]       = x[i][j];
 				v[vidx+n*m]   = y[i][j];
-				v[vidx+2*n*m] = z[i][j];
+				if (has_z)
+					v[vidx+2*n*m] = z[i][j];
 				vidx++;
 			}
 			for (; i<m; i++)
+			{
 				f[i*n+j] = Double.NaN;
+				v[vidx]       = Double.NaN;
+				v[vidx+n*m]   = Double.NaN;
+				if (has_z)
+					v[vidx+2*n*m] = Double.NaN;
+				vidx++;
+			}
 		}
 
 		autoSet(Faces, new Matrix(f, new int[] {n, m}));
-		autoSet(Vertices, new Matrix(v, new int[] {n*m, 3}));
+		autoSet(Vertices, new Matrix(v, new int[] {n*m, (has_z ? 3 : 2)}));
+	}
+
+	private void updateFVCData()
+	{
+		if (!checkXYZData() || CData.isEmpty())
+			return;
+
+		boolean is_true_color = (CData.getNDims() == 3 && CData.getDim(2) == 3);
+		Matrix m = null;
+
+		if (CData.getDim(0) == 1)
+		{
+			// pre-face color specification
+			int nf = CData.getDim(1);
+			double[] cd = CData.asDoubleVector();
+			double[] c = (double[])cd.clone();
+
+			if (is_true_color)
+				m = new Matrix(c, new int[] {nf, 3});
+			else
+				m = new Matrix(c, new int[] {nf, 1});
+		}
+		else
+		{
+			// per-vertex color specification
+			double[] cd = CData.asDoubleVector();
+			double[] c = (double[])cd.clone();
+			int cn = XData.getDim(0)*XData.getDim(1);
+
+			if (is_true_color)
+				m = new Matrix(c, new int[] {cn, 3});
+			else
+				m = new Matrix(c, new int[] {cn, 1});
+		}
+
+		if (m != null)
+			autoSet(FaceVertexCData, m);
 	}
 
 	private boolean checkConsistency()
@@ -347,6 +496,7 @@ public class PatchObject extends GraphicObject
 		if (f == null || v == null || f.length == 0 || v.length == 0)
 			return null;
 
+		boolean has_z = (v[0].length > 2);
 		int nv = v.length;
 		double[][] n = new double[nv][3];
 		double[] vCount = new double[v.length];
@@ -357,24 +507,44 @@ public class PatchObject extends GraphicObject
 			if (faceCount[i] <= 2)
 				continue;
 			double[] v1 = v[(int)f[i][0]-1], vp = v[(int)f[i][1]-1], vc = v[(int)f[i][2]-1];
-			Utils.crossProduct(
-				v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
-				vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
-				n[(int)f[i][1]-1]);
-			Utils.crossProduct(
-				v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
-				vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
-				n[(int)f[i][0]-1]);
+			if (has_z)
+			{
+				Utils.crossProduct(
+					v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
+					vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
+					n[(int)f[i][1]-1]);
+				Utils.crossProduct(
+					v1[0]-vp[0], v1[1]-vp[1], v1[2]-vp[2],
+					vc[0]-vp[0], vc[1]-vp[1], vc[2]-vp[2],
+					n[(int)f[i][0]-1]);
+			}
+			else
+			{
+				Utils.crossProduct(
+					v1[0]-vp[0], v1[1]-vp[1], 0,
+					vc[0]-vp[0], vc[1]-vp[1], 0,
+					n[(int)f[i][1]-1]);
+				Utils.crossProduct(
+					v1[0]-vp[0], v1[1]-vp[1], 0,
+					vc[0]-vp[0], vc[1]-vp[1], 0,
+					n[(int)f[i][0]-1]);
+			}
 			vCount[(int)f[i][0]-1]++;
 			vCount[(int)f[i][1]-1]++;
 			for (int j=2; j<faceCount[i]; j++)
 			{
 				vIndex = (int)(f[i][j]-1);
 				vc = v[vIndex];
-				Utils.crossProduct(
-					vp[0]-vc[0], vp[1]-vc[1], vp[2]-vc[2],
-					v1[0]-vc[0], v1[1]-vc[1], v1[2]-vc[2],
-					n[vIndex]);
+				if (has_z)
+					Utils.crossProduct(
+						vp[0]-vc[0], vp[1]-vc[1], vp[2]-vc[2],
+						v1[0]-vc[0], v1[1]-vc[1], v1[2]-vc[2],
+						n[vIndex]);
+				else
+					Utils.crossProduct(
+						vp[0]-vc[0], vp[1]-vc[1], 0,
+						v1[0]-vc[0], v1[1]-vc[1], 0,
+						n[vIndex]);
 				vCount[vIndex]++;
 				vp = vc;
 			}
@@ -455,12 +625,13 @@ public class PatchObject extends GraphicObject
 
 		if (!isAutoMode())
 		{
-			if (p == XData || p == YData || p == ZData)
+			if (p == XData || p == YData || p == ZData || p == CData)
 			{
 				updateFVData();
 				updateFaceCount();
 				updateMinMax();
 				VertexNormals.set(computeNormals());
+				updateFVCData();
 			}
 			else if (p == Faces || p == Vertices || p == FaceVertexCData)
 			{
@@ -473,6 +644,7 @@ public class PatchObject extends GraphicObject
 					VertexNormals.set(computeNormals());
 					updateXYZData();
 				}
+				updateCData();
 			}
 		}
 	}

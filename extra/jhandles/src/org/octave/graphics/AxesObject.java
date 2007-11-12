@@ -676,6 +676,10 @@ public class AxesObject extends HandleObject
 			listen(go.ZLim);
 			listen(go.CLim);
 			listen(go.Visible);
+
+			Property p = go.getProperty("KeyLabel");
+			if (p != null)
+				listen(p);
 		}
 	}
 
@@ -2458,6 +2462,8 @@ public class AxesObject extends HandleObject
 				autoScaleC();
 			else if (name.equals("Visible"))
 				autoScale();
+			else if (name.equals("KeyLabel") && Key.isSet())
+				autoLegend();
 			autoCamera();
 		}
 	}

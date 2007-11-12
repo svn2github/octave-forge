@@ -15,5 +15,7 @@ dispatch ("__go_axes_init__", "any");
 dispatch ("__go_text__", "any");
 dispatch ("__go_surface__", "any");
 dispatch ("__go_image__", "any");
+dispatch ("__go_patch__", "any");
+dispatch ("__go_line__", "any");
 
 java_invoke ("java.lang.System", "clearProperty", "octave.jhandles.path");

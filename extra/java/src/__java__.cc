@@ -527,7 +527,7 @@ static jclass find_octave_class (JNIEnv *jni_env, char *name)
             }
 
           if (uicls)
-            uiClass = jni_env->NewGlobalRef (jclass (uicls));
+            uiClass = reinterpret_cast<jclass> (jni_env->NewGlobalRef (jclass (uicls)));
         }
 
       if (uiClass)

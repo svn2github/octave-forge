@@ -65,16 +65,20 @@ Octave.app is a ready--to--run binary version of GNU Octave. It runs on most of 
 
 @node Requirements, Installation, Introduction, Top
 @chapter Requirements
-If your Apple computer comes with Motorola's PowerPC processor then you need to have installed at least Mac OS X version 10.3. Download the file @file{octave-%VERSION%-ppc.dmg} that includes the ready--to--run binary version of GNU Octave for PPC Macs. If you have an Apple computer that comes with an Intel processor then you need to have installed at least Mac OS X version 10.4. Download the file @file{octave-%VERSION%-i386.dmg} that includes the ready--to--run binary version of GNU Octave for Intel Macs. @* @*
+If your Apple computer comes with Motorola's PowerPC processor then you need to have installed at least Mac OS X version 10.3. Download the file @file{octave-%VERSION%-ppc.dmg} that includes the ready--to--run binary version of GNU Octave for PPC Macs. If you have an Apple computer that comes with an Intel processor then you need to have installed at least Mac OS X version 10.4. Download the file @file{octave-%VERSION%-i386.dmg} that includes the ready--to--run binary version of GNU Octave for Intel Macs.
+
 If you want to use graphical outputs from Octave that can be made with the commands @command{plot}, @command{mesh}, @command{surf} etc. then you need to install the Gnuplot application. Gnuplot is not part of the Octave.app because it is an application that can be build and installed for its own (for further information visit the website @uref{http://gnuplot.sourceforge.net}).
- @* @*
+
 If you want to further install Octave packages from the Octave--Forge's website @uref{http://octave.sourceforge.net} then you must install the Apple's XCode Tools from 'DVD 1 of your Mac OS X Install Discs' before. To make sure that you have installed the latest version available visit Apple's XCode Tools website @uref{http://developer.apple.com/tools/xcode}.
 
 @node  Installation, Limitations, Requirements, Top
 @chapter Installation
-Installing Octave.app is easy. Just drag the Octave.app icon from the @file{octave-%VERSION%-%ARCH%.dmg} package to another place of your filesystem (eg. to your desktop or even better to your applications folder) and that's it, you're done. Double--click the Octave.app icon to start up Octave.
+Installing Octave.app is easy. Just drag the Octave.app icon from the @file{octave-%VERSION%-%ARCH%.dmg} package to another place of your filesystem (eg. to your desktop or even better to your applications folder) and that's it, you're done. This drag'n--drop does not install any files elsewhere in your filesystem. Double--click the Octave.app icon to start up Octave.
 
-This drag'n--drop does not install any files elsewhere in your filesystem. To remove Octave.app completely, just drag the Octave.app icon and drop it over the Trash. If you're new to Octave then have a look at the documents that come with the application. They are installed in the docs folder of your @file{octave-%VERSION%-%ARCH%.dmg} file.
+If you also want to create plots on your Desktop or if you want to create plots that are saved as an image file then it is recommended that you place Gnuplot.app into your Applications folder (cf. section FAQ of this Readme.html file about 'Do I have to install GnuPlot.app from the Extras directory?'). Gnuplot can be found as an extra binary package in the Extras directory of @file{octave-%VERSION%-%ARCH%.dmg}.
+
+To remove Octave.app completely, just drag the Octave.app icon and drop it over the Trash. If you're new to Octave then have a look at the documents that come with the application. They are installed in the docs folder of your @file{octave-%VERSION%-%ARCH%.dmg} file.
+
 @node  Limitations, FAQ, Installation, Top
 @chapter Limitations
 There are currently some known limitations when using Octave.app. These limitations need not to be reported on an Octave mailing list. But if you find other bugs or other limitations in the Octave.app respectively Octave then please report them to @email{octave-dev@@lists.sourceforge.net}.
@@ -140,6 +144,7 @@ If you set up Octave.app with a not valid pathname then this might result in dif
 * How can I install a package that also depends further libraries?::  
 * How can I install the gsl--package from Octave--Forge that also depends further libraries?::  
 * How can I install the symbolic--package from Octave--Forge that also depends further libraries?::  
+* How can I install the Arpack--package from Octave--Forge that also depends further libraries?::  
 @end menu
 
 @node Is there a 64--bit version of Octave.app available?, How can I startup Octave.app?, General FAQ, General FAQ
@@ -248,13 +253,13 @@ bash ~$ ./configure --prefix=/Applications/Octave.app/Contents/Resources
 bash ~$ make
 bash ~$ make install
 @end example
-@item Startup Octave.app and install the desired Octave-package, eg.
+@item Startup Octave.app and install the desired Octave--package, eg.
 @example
 octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz
 @end example
 @end enumerate
 
-@node How can I install the symbolic--package from Octave--Forge that also depends further libraries?,  , How can I install the gsl--package from Octave--Forge that also depends further libraries?, General FAQ
+@node How can I install the symbolic--package from Octave--Forge that also depends further libraries?, How can I install the Arpack--package from Octave--Forge that also depends further libraries?, How can I install the gsl--package from Octave--Forge that also depends further libraries?, General FAQ
 @unnumberedsubsec How can I install the symbolic--package from Octave--Forge that also depends further libraries?
 As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package.
 @enumerate
@@ -292,9 +297,53 @@ bash ~$ ./configure CLN_CFLAGS="-I/Applications/Octave.app/Contents/Resources/in
 bash ~$ make
 bash ~$ make install
 @end example
-@item Startup Octave.app and install the desired Octave-package, eg.
+@item Startup Octave.app and install the desired Octave--package, eg.
 @example
 octave-2.9.12:1> pkg install symbolic-1.0.3.tar.gz
+@end example
+@end enumerate
+
+@node How can I install the Arpack--package from Octave--Forge that also depends further libraries?,  , How can I install the symbolic--package from Octave--Forge that also depends further libraries?, General FAQ
+@unnumberedsubsec How can I install the Arpack--package from Octave--Forge that also depends further libraries?
+As described previously you need to download, configure, compile and install the needed arpack--library before you install the Octave--Forge package.
+@enumerate
+@item Download a current version of the ARPACK--software and the patch that is available, eg.
+@example
+bash ~$ curl -s -S http://www.caam.rice.edu/software/ARPACK/SRC/arpack96.tar.Z \
+  -o arpack96.tar.Z
+bash ~$ curl -s -S http://www.caam.rice.edu/software/ARPACK/SRC/patch.tar.Z \
+  -o patch.tar.Z
+@end example
+@item Unpack the downloaded files, patch the codes and change into the directory that has been created, eg.
+@example
+bash:~$ tar -xzf arpack96.tar.Z
+bash:~$ tar -xzf patch.tar.Z
+bash:~$ cd ARPACK
+bash:~/ARPACK$
+@end example
+@item Edit the file ARmake.inc and change the values of the following variables in a similiar way, eg.
+@example
+home = $(HOME)/ARPACK # this is the location of your current ARPACK directory that has been created
+
+PLAT = MAC            # this actually only results in the name of the created libarpack_$@{PLAT@}.a
+
+FFLAGS = -O           # remove the option -cg89 that is not compatible with fort77
+
+FC = PATH=/Applications/Octave.app/Contents/Resources/bin:$@{PATH@}\ # use backslashes here
+        /Applications/Octave.app/Contents/Resources/bin/fort77\    # and use tabulators at
+        -I/Applications/Octave.app/Contents/Resources/include      # the line-beginnings
+
+MAKE = /usr/bin/make
+@end example
+@item Compile the ARPACK--package and change the name of the created shared library @file{libarpack_$@{PLAT@}.a} into @file{libarpack.a}. Then move the new file into the @file{lib} directory of Octave.app, eg.
+@example
+bash:~/ARPACK$ make lib
+bash:~/ARPACK$ mv libarpack_MAC.a libarpack.a
+bash:~/ARPACK$ mv libarpack.a /Applications/Octave.app/Contents/Resources/lib
+@end example
+@item Startup Octave.app and install the desired Octave--package, eg.
+@example
+octave-2.9.16:1> pkg install arpack-1.0.2.tar.gz
 @end example
 @end enumerate
 
@@ -322,7 +371,7 @@ Yes, in general the most Octave developers are subscribed to all of the Octave a
 @itemize
 @item The Octave--Forge packages @file{Optiminterp} and @file{Spline-gcvspl} cannot be installed with Octave.app because of the Fortran90 code files. If you want to help making these packages available then maybe it would be an idea to talk to the maintainers of these two packages if it would be possible in general to backport the F90 code files into F77 code files though that these packages can also be installed on even more platforms like Octave.app.@* @*
 
-@item The Octave--Forge package @file{MacOSX} needs a maintainer. The documentation that comes with that package is very "out-of-date" and maybe the one or the other function could need an update (or also even not). The install scripts could be improved, eg. if a GNU/Linux user tries to install this package then@dots{} @b{Note:} we got the ismac() function with Octave 2.9.16.@* @*
+@item The Octave--Forge package @file{MacOSX} needs a maintainer. The documentation that comes with that package is very "out--of--date" and maybe the one or the other function could need an update (or also even not). The install scripts could be improved, eg. if a GNU/Linux user tries to install this package then@dots{} @b{Note:} we got the ismac() function with Octave 2.9.16.@* @*
 
 @item Help is needed to port the Octave--Forge package @file{Java} and the package @file{JHandles} to Mac OS X (they currently don't work with any of Mac OS X's binary versions of Octave). Read about some started discussions here@*
 @url{http://www.nabble.com/Need-for-JHandles-Linux-tester-tf4017520.html#a11480385}@*

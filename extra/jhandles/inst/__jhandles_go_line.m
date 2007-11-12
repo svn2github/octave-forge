@@ -15,30 +15,25 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = patch (varargin)
+function [ h ] = __jhandles_go_line (ax, varargin)
 
-  idx = 1;
+  j1 = java_convert_matrix (1);
+  j2 = java_unsigned_conversion (1);
 
-  if (nargin > 1 && ishandle (varargin{1}))
-    ax = varargin{1};
-    idx = idx+1;
-  else
-    ax = gca;
-  endif
+  unwind_protect
+    obj = java_new ("org.octave.graphics.LineObject", __get_object__ (ax));
+  unwind_protect_cleanup
+    java_convert_matrix (j1);
+    java_unsigned_conversion (j2);
+  end_unwind_protect
 
-  ax_obj = __get_object__ (ax);
+  h = obj.getHandle ();
 
-  p_obj = java_new ("org.octave.graphics.PatchObject", ax_obj);
-  tmp = p_obj.getHandle ();
-  if (length (varargin) >= idx)
-    set (tmp, varargin{idx:end});
+  if (length (varargin) > 0)
+    set(h, varargin{:});
   else
     __request_drawnow__;
   endif
-  p_obj.validate ();
-
-  if (nargout > 0)
-    h = tmp;
-  endif
+  obj.validate ();
 
 endfunction

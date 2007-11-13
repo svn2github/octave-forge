@@ -346,13 +346,13 @@ home = $(HOME)/ARPACK
 # this actually only results in the name of the created libarpack_$@{PLAT@}.a
 PLAT = MAC
 
-# remove the option -cg89 that is not compatible with fort77
-FFLAGS = -O
-
-# use backslashes without spaces here and use tabulators at the beginnings of the lines              
+# use backslashes without spaces here and use tabulators at the beginning of the lines              
 FC = PATH=/Applications/Octave.app/Contents/Resources/bin:$@{PATH@}\
         /Applications/Octave.app/Contents/Resources/bin/fort77\
         -I/Applications/Octave.app/Contents/Resources/include
+
+# remove the option -cg89 that is not compatible with fort77
+FFLAGS = -O
 
 # make is in the directory /usr/bin not in /bin
 MAKE = /usr/bin/make

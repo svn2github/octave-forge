@@ -38,7 +38,7 @@ packages=
 available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot ncurses pkg-config fc-msvc"
+VC octplot ncurses pkg-config fc-msvc libcurl"
 octave_version=
 of_version=
 do_nsi=false
@@ -65,6 +65,22 @@ function download_file
       echo "done"
     fi
   fi
+}
+
+function unpack_file
+{
+  filename=$1
+  tarflag=
+  case $filename in
+    *.tar.gz | *.tgz)
+      tarflag=z
+      ;;
+    *.tar.bz2)
+      tarflag=j
+      ;;
+  esac
+  (cd "$DOWNLOAD_DIR" &&
+    tar xf$tarflag $filename)
 }
 
 todo_packages=
@@ -100,6 +116,9 @@ while test $# -gt 0; do
       ;;
     --octplot)
       do_octplot=true
+      ;;
+	--prefix=*)
+      INSTALL_DIR=`echo $1 | sed -e 's/--prefix=//'`
       ;;
     -*)
       echo "unknown flag: $1"
@@ -343,6 +362,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/qhull.lib" qhull
     todo_check "$tbindir/pkg-config.exe" pkg-config
     todo_check "$tbindir/fc-msvc.exe" fc-msvc
+    todo_check "$tbindir/libcurl.dll" libcurl
   fi
 else
   packages="$todo_packages"
@@ -1481,6 +1501,35 @@ if check_package qhull; then
     cp qhull.lib "$tlibdir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/qhull-2003.1"
   if test ! -f "$tlibdir/qhull.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# libcurl #
+###########
+
+curlver=7.16.4
+if check_package libcurl; then
+  download_file curl-$curlver.tar.bz2 http://curl.haxx.se/download/curl-$curlver.tar.bz2
+  echo -n "decompressing libcurl... "
+  unpack_file curl-$curlver.tar.bz2
+  echo "done"
+  echo -n "compiling libcurl... "
+  (cd "$DOWNLOAD_DIR/curl-$curlver" &&
+    for mf in lib/Makefile.vc8 src/Makefile.vc8; do
+      sed -e "s/libcurl_imp/libcurl/g" -e "s/zdll\.lib/zlib.lib/g" $mf > ttt &&
+      mv ttt $mf
+    done
+    nmake VC=vc8 vc-dll-zlib-dll &&
+    cp lib/libcurl.dll "$tbindir" &&
+    cp lib/libcurl.lib "$tlibdir" &&
+    mkdir "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/curl-$curlver"
+  if test ! -f "$tbindir/libcurl.dll"; then
     echo "failed"
     exit -1
   else

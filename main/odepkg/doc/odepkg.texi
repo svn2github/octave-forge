@@ -10,9 +10,6 @@
 @c Texts.  A copy of the license is included in the section entitled "GNU
 @c Free Documentation License".
 
-@c You can build a one file html document with the command
-@c LANGUAGE=en C:\Treichl\bin\texinfo\bin\makeinfo.exe --html --no-split odepkg.texi
-
 @c %*** Start of HEADER
 @setfilename odepkg.info
 @settitle OdePkg - A package for solving differential equations with Octave
@@ -55,8 +52,8 @@ Documentation License".
 * Beginner's Guide::            Manual for users that are completely new to OdePkg
 * User's Guide::                Manual for users that are already familiar with OdePkg
 * Programmer's Guide::          Manual for users that want to make changes to OdePkg
-* Appendix::                    The GNU Free Documentation License of this document              
-* Function Index::              
+* Appendix::                    The GNU Free Documentation License of this document
+* Function Index::              Reference of all functions from this package
 @end menu
 
 @c %*** Start of first chapter: Beginner's Guide
@@ -69,7 +66,7 @@ The ``Beginner's Guide'' is intended for new users who want to solve differentia
 * OdePkg history and roadmap::  From the initial release until now 
 * Installation and deinstallation::  Setting up OdePkg on your system
 * Reporting Bugs::              Writing comments and bugs
-* First tests and demos::       The --foo-- example and others
+* First tests and demos::       The 'foo' example and others
 @end menu
 
 @node About OdePkg, OdePkg history and roadmap, Beginner's Guide, Beginner's Guide
@@ -91,9 +88,9 @@ OdePkg formerly was initiated to solve explicitly formulated ordinary differenti
 @item OdePkg Version 0.2.x
 @tab The main work along version 0.2.x was making the interface functions for the non--stiff and stiff solvers from Ernst Hairer and Gerhard Wanner enough stable so that they could be compiled and installed by default. Wrapper functions have been added to the package with help texts and tests (eg. @command{ode2r}, @command{ode5r}, @command{oders} etc.). Six testsuite functions have been added for performance tests of the different solvers (@command{odepkg_testsuite_chemakzo}, @command{odepkg_testsuite_oregonator}, @command{odepkg_testsuite_transistor}, etc.).
 @item @b{(current)} Version 0.3.x
-@tab Ongoing work with this manual. Jeff Cash released his solvers under the GPL, first tests are done to include these solvers within OdePkg. With version 0.3.4 of OdePkg new interface functions are created based on Octave's C++DLD interface to achieve a better performance. The first IDE--solver @file{mebdfi.f} appeared and that is interfaced by @file{odepkg_octsolver.mebdfi.cc}. Porting the mex--file solvers to Octave's C++DLD interface.
+@tab Ongoing work with this manual. Jeff Cash released his solvers under the GPL, first tests are done to include these solvers within OdePkg. With version 0.3.4 of OdePkg new interface functions are created based on Octave's C++DLD interface to achieve a better performance. The first IDE solver @file{mebdfi.f} appeared and that is interfaced by @file{odepkg_octsolver.mebdfi.cc}. Porting the mex--file solvers to Octave's C++DLD interface.
 @item @b{(future)} Version 0.4.x
-@tab Ongoing work with this manual. Fetching and adding the DASRT IDE--solver from Netlib.
+@tab Ongoing work with this manual. Fetching and adding the DASRT IDE solver from Netlib.
 @item @b{(future)} Version 0.5.x
 @tab (Maybe) Adding a last type of solvers (DDE) to OdePkg.
 @item @b{(future)} Version 0.6.x
@@ -253,7 +250,7 @@ or
 A = odeset ('OutputFcn', @@odeprint, 'AbsTol', 1e-5);
 ode45 (@@newfoo, [0 5], [0 0], A, 2.0, 5.0, 10.0);
 @end example
-The options structure @command{A} that can be set up with with the command @command{odeset} must always be the fourth input argument when using the ODE--solvers and the DAE--solvers but if you are using an IDE--solver then @command{A} must be the fifth input argument (cf. @ref{Solver families}). The various options that can be set with the command @command{odeset} are described in @ref{ODE/DAE/IDE options}.
+The options structure @command{A} that can be set up with with the command @command{odeset} must always be the fourth input argument when using the ODE solvers and the DAE solvers but if you are using an IDE solver then @command{A} must be the fifth input argument (cf. @ref{Solver families}). The various options that can be set with the command @command{odeset} are described in @ref{ODE/DAE/IDE options}.
 
 Further examples have also been implemented within OdePkg. These example files and functions are of the form @command{odepkg_equations_*}. Different testsuite examples have been added to the OdePkg that are stored in files with filenames @command{odepkg_testsuite_*}.
 
@@ -307,7 +304,7 @@ ODE problems in general are of the form
 @ifnothtml
 @math{y'(t) = f(t,y)}
 @end ifnothtml
-where @math{y'(t)} may be a scalar or vector of state variables. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the last time step of the set of ordinary differential equations. If the problem is non-stiff then the @ref{M--file Runge--Kutta solvers} can be used to solve such kind of differential equation problems but if the problem is stiff then it is recommended to use the @ref{Mex--file Hairer--Wanner solvers}.
+where @math{y'(t)} may be a scalar or vector of state variables. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the last time step of the set of ordinary differential equations. If the problem is non--stiff then the @ref{M--file Runge--Kutta solvers} can be used to solve such kind of differential equation problems but if the problem is stiff then it is recommended to use the @ref{Mex--file Hairer--Wanner solvers}.
 
 @node DAE problems, IDE problems, ODE problems, Differential Equation Problems
 @subsection DAE problems
@@ -320,7 +317,7 @@ DAE problems in general are of the form
 @ifnothtml
 @math{M(t,y) \cdot y'(t) = f(t,y)}
 @end ifnothtml
-where @math{y'(t)} may be a scalar or vector of state variables. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of ordinary differential equations. The variable @math{M(t,y)} is the squared mass matrix that may depend on @math{y} and @math{t}. If it does not depend on time then it can be defined as a constant matrix or a function. If it does depend on time then it must be defined as a function. Use the command @command{odeset} to pass the mass matrix information to the solver function (cf. @ref{ODE/DAE/IDE options}). If the problem is non-stiff then the @ref{M--file Runge--Kutta solvers} can be used to solve such kind of differential equation problems but if the problem is stiff then it is recommended to use the @ref{Mex--file Hairer--Wanner solvers}.
+where @math{y'(t)} may be a scalar or vector of state variables. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of differential algebraic equations. The variable @math{M(t,y)} is the squared @i{singular} mass matrix that may depend on @math{y} and @math{t}. If @math{M(t,y)} is not @i{singular} then the set of equations from above can normally also be written as an ODE problem. If it does not depend on time then it can be defined as a constant matrix or a function. If it does depend on time then it must be defined as a function. Use the command @command{odeset} to pass the mass matrix information to the solver function (cf. @ref{ODE/DAE/IDE options}). If the problem is non--stiff then the @ref{M--file Runge--Kutta solvers} can be used to solve such kind of differential equation problems but if the problem is stiff then it is recommended to use the @ref{Mex--file Hairer--Wanner solvers}.
 
 @node IDE problems,  , DAE problems, Differential Equation Problems
 @subsection IDE problems
@@ -350,7 +347,7 @@ Performance tests have also been added to the OdePkg. Some of these performance 
 
 @node M--file Runge--Kutta solvers, Mex--file Hairer--Wanner solvers, Solver families, Solver families
 @subsection M--file Runge--Kutta solvers
-The M--file Runge--Kutta solvers are written in the Octave interpreter language and are stored as @file{*.m} files. There have been implemented four different solvers with a very similiar structure, ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}@footnote{The descriptions for these Runge--Kutta solvers have been taken from the help texts of the initial m--file Runge--Kutta solvers that were written by Marc Compere, he also pointed out that ''a relevant discussion on step size choice can be found on page 90ff in U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations and Differential-Agebraic Equations, Society for Industrial and Applied Mathematics (SIAM), Philadelphia, 1998''.}.
+The M--file Runge--Kutta solvers are written in the Octave interpreter language and are stored as @file{*.m} files. There have been implemented four different solvers with a very similiar structure, ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}@footnote{The descriptions for these Runge--Kutta solvers have been taken from the help texts of the initial m--file Runge--Kutta solvers that were written by Marc Compere, he also pointed out that ''a relevant discussion on step size choice can be found on page 90ff in U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations and Differential--Agebraic Equations, Society for Industrial and Applied Mathematics (SIAM), Philadelphia, 1998''.}.
 
 The order of all of the following Runge--Kutta methods is the order of the local truncation error, which is the principle error term in the portion of the Taylor series expansion that gets dropped, or intentionally truncated. This is different from the local error which is the difference between the estimated solution and the actual, or true solution. The local error is used in stepsize selection and may be approximated by the difference between two estimates of different order,
 @ifhtml
@@ -407,8 +404,8 @@ To provide a shorter name to access these solver functions also wrapper function
 The mex--file Hairer--Wanner solvers have been added to the OdePkg to also solve stiff ordinary differential equations that cannot be solved with one of the m--file Runge--Kutta solvers. The following table gives an overview about which solver can be used for the different kind of problems.
 
 @float
-@multitable {ODE--Problem} {Solver name} {Wrapper file} {@file{odepkg_mexsolver_seulex.c}} {Fortran file}
-@headitem ODE--Problem @tab Solver name @tab Wrapper file @tab Interface file @tab Fortran file
+@multitable {ODE Problem} {Solver name} {Wrapper file} {@file{odepkg_mexsolver_seulex.c}} {Fortran file}
+@headitem ODE Problem @tab Solver name @tab Wrapper file @tab Interface file @tab Fortran file
 @item (@b{deprecated}) Non--stiff @tab DOPRI5 @tab @file{ode5d.m} @tab @file{odepkg_mexsolver_dopri5.c} @tab @file{dopri5.f}
 @item (@b{deprecated}) Non--stiff @tab DOP853 @tab @file{ode8d.m} @tab @file{odepkg_mexsolver_dop853.c} @tab @file{dop853.f}
 @item (@b{deprecated}) Non--stiff @tab ODEX   @tab @file{odeox.m} @tab @file{odepkg_mexsolver_odex.c} @tab @file{odex.f}

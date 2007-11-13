@@ -380,7 +380,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/comp_parse.c ncurses-5.6-new/ncurses/tinfo/c
 --- ncurses-5.6/ncurses/tinfo/comp_parse.c	2006-07-08 20:55:14.000000000 +0200
 +++ ncurses-5.6-new/ncurses/tinfo/comp_parse.c	2007-10-01 20:58:59.156250000 +0200
 @@ -56,11 +56,11 @@
- MODULE_ID("$Id$")
+ MODULE_ID("$Id: ncurses-5.6.diff 4075 2007-10-01 19:56:26Z goffioul $")
  
  static void sanity_check2(TERMTYPE *, bool);
 -NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype2) (TERMTYPE *, bool) = sanity_check2;
@@ -512,7 +512,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/lib_print.c ncurses-5.6-new/ncurses/tinfo/li
 +#define sleep(x) Sleep(x*1000)
 +#endif
 +
- MODULE_ID("$Id$")
+ MODULE_ID("$Id: ncurses-5.6.diff 4075 2007-10-01 19:56:26Z goffioul $")
  
  NCURSES_EXPORT(int)
 diff -urN ncurses-5.6/ncurses/tty/lib_tstp.c ncurses-5.6-new/ncurses/tty/lib_tstp.c
@@ -1491,7 +1491,7 @@ diff -urN ncurses-5.6/progs/tailor.h ncurses-5.6-new/progs/tailor.h
 + * The target dependent functions should be defined in tailor.c.
 + */
 +
-+/* $Id$ */
++/* $Id: ncurses-5.6.diff 4075 2007-10-01 19:56:26Z goffioul $ */
 +
 +#if defined(__MSDOS__) && !defined(MSDOS)
 +#  define MSDOS
@@ -1909,7 +1909,7 @@ diff -urN ncurses-5.6/progs/tput.c ncurses-5.6-new/progs/tput.c
 +#include "getopt.c"
 +#endif
 +
- MODULE_ID("$Id$")
+ MODULE_ID("$Id: ncurses-5.6.diff 4075 2007-10-01 19:56:26Z goffioul $")
  
  #define PUTS(s)		fputs(s, stdout)
 diff -urN ncurses-5.6/progs/tset.c ncurses-5.6-new/progs/tset.c
@@ -1917,7 +1917,7 @@ diff -urN ncurses-5.6/progs/tset.c ncurses-5.6-new/progs/tset.c
 +++ ncurses-5.6-new/progs/tset.c	2007-10-01 21:27:33.609375000 +0200
 @@ -105,13 +105,21 @@
  
- MODULE_ID("$Id$")
+ MODULE_ID("$Id: ncurses-5.6.diff 4075 2007-10-01 19:56:26Z goffioul $")
  
 +#ifdef _MSC_VER
 +extern __declspec(dllimport) char **environ;
@@ -1960,7 +1960,7 @@ diff -urN ncurses-5.6/tack/init.c ncurses-5.6-new/tack/init.c
 +#include <windows.h>
 +#endif
  
- MODULE_ID("$Id$")
+ MODULE_ID("$Id: ncurses-5.6.diff 4075 2007-10-01 19:56:26Z goffioul $")
  
 @@ -258,7 +261,11 @@
  	   of this, I allow the terminal some time to catch up.

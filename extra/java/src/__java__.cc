@@ -352,14 +352,17 @@ static void initialize_jvm ()
     if (jvm_lib_path.empty())
       throw std::string ("unable to find Java Runtime Environment");
   }
-  
+
 #else
 
   std::string jvm_lib_path = JAVA_HOME+std::string("/jre/lib/")+JAVA_ARCH+"/client/libjvm.so";
 
 #endif
-	
+
   jsize nVMs = 0;
+
+# if !defined (__APPLE__) && !defined (__MACH__)
+
   octave_shlib lib (jvm_lib_path);
   if (!lib) 
     throw std::string("unable to load Java Runtime Environment from ")+jvm_lib_path;
@@ -372,6 +375,17 @@ static void initialize_jvm ()
     throw std::string("unable to find JNI_GetCreatedJavaVMs in ")+jvm_lib_path;
 
   if (get_vm(&jvm, 1, &nVMs) == 0 && nVMs > 0)
+
+#else
+
+  // FIXME: There exists a problem on the Mac platform that
+  //   octave_shlib lib (jvm_lib_path)
+  // doesn't work with 'not-bundled' *.oct files.
+
+  if (JNI_GetCreatedJavaVMs(&jvm, 1, &nVMs) == 0 && nVMs > 0)
+
+#endif
+
   {
     // At least one JVM exists, try to attach to it
 
@@ -409,12 +423,24 @@ static void initialize_jvm ()
     vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
     vm_args.read_java_opts (initial_java_dir (false) + file_ops::dir_sep_str + "java.opts");
 
+# if !defined (__APPLE__) && !defined (__MACH__)
+
     if (create_vm (&jvm, &current_env, vm_args.to_args ()) != JNI_OK)
       throw std::string("unable to start Java VM in ")+jvm_lib_path;
     //printf("JVM created\n");
   }
   
   jvm_lib = lib;
+
+#else
+
+  if (JNI_CreateJavaVM (&jvm, reinterpret_cast<void **>(&current_env),
+                       vm_args.to_args ()) != JNI_OK)
+      throw std::string("unable to start Java VM in ")+jvm_lib_path;
+
+  }
+
+#endif
 }
 
 static void terminate_jvm(void)

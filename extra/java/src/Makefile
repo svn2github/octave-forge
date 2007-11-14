@@ -40,3 +40,6 @@ $(JAVA_CLASSES): $(JAVA_SOURCES)
 clean:
 	-rm *.o core octave-core *.oct *~
 	-rm octave.jar $(JAVA_CLASSES) FILES
+
+distclean realclean : clean
+	-rm -r configure config.status config.log autom4te.cache Makeconf

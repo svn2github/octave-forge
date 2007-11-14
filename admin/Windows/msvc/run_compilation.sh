@@ -1527,6 +1527,7 @@ if check_package libcurl; then
     nmake VC=vc8 vc-dll-zlib-dll &&
     cp lib/libcurl.dll "$tbindir" &&
     cp lib/libcurl.lib "$tlibdir" &&
+	cp COPYING "$tlicdir/COPYING.CURL" &&
     mkdir "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/curl-$curlver"
   if test ! -f "$tbindir/libcurl.dll"; then

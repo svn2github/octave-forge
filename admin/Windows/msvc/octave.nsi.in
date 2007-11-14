@@ -134,10 +134,12 @@ Section "Core" SEC_CORE
   File "${VCLIBS_ROOT}\bin\glpk_4_19.dll"
   File "${VCLIBS_ROOT}\bin\fftw-wisdom.exe"
   File "${VCLIBS_ROOT}\bin\zlib1.dll"
+  File "${VCLIBS_ROOT}\bin\libcurl.dll"
   ; licenses
   SetOutPath "$INSTDIR\license"
   File "${VCLIBS_ROOT}\license\COPYING.GPL"
   File "${VCLIBS_ROOT}\license\COPYING.HDF5"
+  File "${VCLIBS_ROOT}\license\COPYING.CURL"
   ; info files
   SetOutPath "$INSTDIR\share\info"
   File "${OCTAVE_ROOT}\share\info\*.*"

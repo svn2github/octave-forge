@@ -99,6 +99,12 @@ public class VectorProperty extends Property
 		}
 	}
 
+	public boolean isEmpty()
+	{
+		double[] v = getVector();
+		return (v == null || v.length <= 0);
+	}
+
 	public double[] getVector()
 	{
 		return ((Matrix)pvalue).toDouble();

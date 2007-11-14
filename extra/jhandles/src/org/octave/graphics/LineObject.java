@@ -136,6 +136,9 @@ public class LineObject extends GraphicObject
 	{
 		super.propertyChanged(p);
 
+		if (p == ZData)
+			ZLimInclude.reset((ZData.isEmpty() ? "off" : "on"));
+
 		if (p == XData || p == YData || p == ZData)
 			updateMinMax();
 	}

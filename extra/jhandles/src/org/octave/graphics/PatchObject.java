@@ -628,10 +628,10 @@ public class PatchObject extends GraphicObject
 			if (p == XData || p == YData || p == ZData || p == CData)
 			{
 				updateFVData();
+				updateFVCData();
 				updateFaceCount();
 				updateMinMax();
 				VertexNormals.set(computeNormals());
-				updateFVCData();
 			}
 			else if (p == Faces || p == Vertices || p == FaceVertexCData)
 			{

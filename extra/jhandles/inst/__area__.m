@@ -15,7 +15,7 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = __jhandles_go_areaseries (ax, X, Y, bv, varargin)
+function [ h ] = __area__ (ax, X, Y, bv, varargin)
 
   h = [];
 

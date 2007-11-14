@@ -27,7 +27,7 @@
 
 
 
-octave_ncfile::octave_ncfile(string filenamep, string open_mode):octave_base_value()
+octave_ncfile::octave_ncfile(string filenamep, string open_mode, string format):octave_base_value()
 {
   int status;
   int omode = NC_NOWRITE;
@@ -78,9 +78,16 @@ octave_ncfile::octave_ncfile(string filenamep, string open_mode):octave_base_val
 
   }
   else {
-#   ifdef OCTCDF_64BIT_OFFSET 
-    omode = omode | NC_64BIT_OFFSET;
-#   endif
+    if (format == "64bit-offset") {
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "64bit-offset" << std::endl;
+#     endif
+      omode = omode | NC_64BIT_OFFSET;
+    } else {
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "classic (32bit-offset)" << std::endl;
+#     endif
+    }
 
     status = nc_create(nf->filename.c_str(), omode, &(nf->ncid));
 

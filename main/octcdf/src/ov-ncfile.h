@@ -43,7 +43,7 @@ public:
 #    endif
   }
 
-  octave_ncfile(string filenamep, string open_mode);
+  octave_ncfile(string filenamep, string open_mode, string format="classic");
 
   OV_REP_TYPE *clone(void) const { return new octave_ncfile(*this); }
   //OV_REP_TYPE *clone(void) const { return (octave_base_value*)this; }

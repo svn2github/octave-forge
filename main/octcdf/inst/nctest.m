@@ -241,3 +241,11 @@ endfunction
 %! assert(ncname(v),'new_name');
 %! ncclose(nf);
 %! delete(filename);
+
+%!# Test 64bit-offset function
+%!test
+%! filename = [tmpnam '-octcdf.nc'];
+%! nf = netcdf(filename,'c','64bit-offset');
+%! ncclose(nf);
+%! delete(filename);
+

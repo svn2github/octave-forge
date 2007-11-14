@@ -78,6 +78,7 @@ void check_args_string(std::string funname, octave_value_list args) {
 DEFUN_DLD(netcdf, args,, 
 "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{nc} = } netcdf(@var{filename},@var{mode}) \n\
+@deftypefnx {Loadable Function} {@var{nc} = } netcdf(@var{filename},@var{mode},@var{format}) \n\
 open or create a netcdf file given by @var{filename}. This function returns a netcdf file object. Possible values of @var{mode} are: \n\
 @itemize \n\
 @item \"r\", \"nowrite\": \
@@ -89,24 +90,38 @@ creates a new file and possibly overwrites existing data sets. \n\
 @item \"nc\", \"noclobber\": \
 creates a new file but an existing data sets in the netcdf file cannot be overwritten.\n\
 @end itemize \n\
+When a new file is created, the @var{format} can be specified: \n\
+@itemize \n\
+@item \"classic\": \
+The default format subjected to the limitation described in http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/NetCDF-Classic-Format-Limitations.html \n\
+@item \"64bit-offset\": \
+For large file and data sets. This format was introduced in NetCDF 3.6.0. \n\
+@end itemize \n\
 @end deftypefn\n\
 @seealso{ncclose}\n")
 {
+  string format;
+  //
+
   if (! netcdf_type_loaded )
     load_netcdf_type ();
 
-  if (args.length() != 2) {
+  if (args.length() != 2 && args.length() != 3 ) {
       print_usage ();
       return octave_value();
   }
 
   check_args_string("netcdf",args);
 
+  if (args.length() == 3)
+    format = args(2).string_value();
+  else
+    format = "classic";
+
   if (error_state)
     return octave_value();
 
-
-  octave_ncfile *nc = new octave_ncfile(args(0).string_value(), args(1).string_value());
+  octave_ncfile *nc = new octave_ncfile(args(0).string_value(), args(1).string_value(),format);
 
   if (error_state) {
     delete nc;
@@ -707,7 +722,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   // octave arrays have at least 2 dimensions
   // while NetCDF arrays can have only 1 dimensions
 
-  int ndim = max(ncndim,2);
+  //int ndim = max(ncndim,2);
 
   int i = 0;
   std::list<Range>::const_iterator it;

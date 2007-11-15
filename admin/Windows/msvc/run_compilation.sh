@@ -52,6 +52,7 @@ download_root="http://downloads.sourceforge.net/octave/@@?download"
 # packages are version-independent)
 pcrever=7.4
 curlver=7.16.4
+libpngver=1.2.23
 
 ###################################################################################
 
@@ -867,12 +868,13 @@ fi
 ##########
 
 if check_package libpng; then
-  download_file lpng1216.zip ftp://ftp.simplesystems.org/pub/libpng/png/src/history/lpng1216.zip
+  pngver=`echo $libpngver | sed -e "s/\.//g"`
+  download_file lpng$pngver.zip ftp://ftp.simplesystems.org/pub/libpng/png/src/lpng$pngver.zip
   echo -n "decompressing libpng... "
-  (cd "$DOWNLOAD_DIR" && unzip -q lpng1216.zip)
+  (cd "$DOWNLOAD_DIR" && unzip -q lpng$pngver.zip)
   echo "done"
   echo -n "compiling libpng... "
-  (cd "$DOWNLOAD_DIR/lpng1216/projects/visualc71" &&
+  (cd "$DOWNLOAD_DIR/lpng$pngver/projects/visualc71" &&
     sed -e 's/{2D4F8105-7D21-454C-9932-B47CAB71A5C0} = {2D4F8105-7D21-454C-9932-B47CAB71A5C0}//' libpng.sln > ttt &&
     mv ttt libpng.sln &&
     sed -e "s/\([  ]*\)AdditionalIncludeDirectories=\".*\"$/\1AdditionalIncludeDirectories=\"..\\\\..;$tdir_w32\\\\include\"/" \
@@ -882,10 +884,10 @@ ImportLibrary=\"\$(TargetDir)png.lib\"\\
 AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
     mv ttt libpng.vcproj &&
     vcbuild -u libpng.vcproj 'DLL Release|Win32' &&
-    cp Win32_DLL_Release/libpng13.dll "$tbindir" &&
+    cp Win32_DLL_Release/libpng*.dll "$tbindir" &&
     cp Win32_DLL_Release/png.lib "$tlibdir" &&
     cp ../../png.h ../../pngconf.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/lpng1216"
+  rm -rf "$DOWNLOAD_DIR/lpng$pngver"
   if test ! -f "$tlibdir/png.lib"; then
     echo "failed"
     exit -1

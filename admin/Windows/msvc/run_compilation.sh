@@ -10,6 +10,7 @@
 #	- unzip (GnuWin32)
 #	- octave-forge CVS tree (at least the admin/Windows/msvc/ directory)
 #	- cygwin with gcc (to compile ATLAS)
+#   - CMake (to compile some specific packages)
 #
 ###################################################################################
 
@@ -46,6 +47,11 @@ do_nsiclean=true
 do_octplot=false
 download_root="http://downloads.sourceforge.net/octave/@@?download"
 #download_root="http://www.dbateman.org/octave/hidden/@@"
+
+# Package versions (the build instructions for those
+# packages are version-independent)
+pcrever=7.4
+curlver=7.16.4
 
 ###################################################################################
 
@@ -162,6 +168,15 @@ function check_package
   fi
   echo "skipping $pack... "
   return -1
+}
+
+function check_cmake
+{
+  cmake=`which cmake.exe`
+  if test -z "$cmake"; then
+    echo "CMake not found in PATH"
+    exit -1
+  fi
 }
 
 ###################################################################################
@@ -320,7 +335,7 @@ if test -z "$todo_packages"; then
       fi
     fi
     todo_check "$tbindir/libfftw3-3.dll" FFTW
-    todo_check "$tbindir/pcre70.dll" PCRE
+    todo_check "$tbindir/pcre.dll" PCRE
     todo_check "$tbindir/glpk_4_19.dll" GLPK
     todo_check "$tbindir/ncurses.dll" ncurses
     todo_check "$tbindir/readline.dll" readline
@@ -597,20 +612,32 @@ fi
 ########
 
 if check_package PCRE; then
-  download_file pcre-7.0.tar.gz ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.0.tar.gz
+  check_cmake
+  download_file pcre-$pcrever.tar.bz2 ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$pcrever.tar.bz2
   echo -n "decompressing PCRE... "
-  (cd "$DOWNLOAD_DIR" && tar xfz pcre-7.0.tar.gz)
+  unpack_file pcre-$pcrever.tar.bz2
   echo "done"
   echo -n "compiling PCRE... "
-  cp libs/pcre-7.0.diff "$DOWNLOAD_DIR/pcre-7.0"
-  (cd "$DOWNLOAD_DIR/pcre-7.0" &&
-    patch -p1 < pcre-7.0.diff &&
-    nmake -f Makefile.vc &&
-    cp pcre70.dll "$tbindir" &&
-    cp pcre.lib "$tlibdir" &&
-    cp pcre.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/pcre-7.0"
-  if ! test -f "$tbindir/pcre70.dll"; then
+  cp libs/pcre.rc.in "$DOWNLOAD_DIR/pcre-$pcrever"
+  pcre_major=`echo $pcrever | sed -e 's/\..*//'`
+  pcre_minor=`echo $pcrever | sed -e 's/.*\.//'`
+  pcre_copyright=`grep -e '^Copyright' "$DOWNLOAD_DIR/pcre-$pcrever/LICENCE" | head -n 1`
+  (cd "$DOWNLOAD_DIR/pcre-$pcrever" &&
+    sed -e "s/@PCRE_MAJOR@/$pcre_major/" \
+	    -e "s/@PCRE_MINOR@/$pcre_minor/" \
+		-e "s/@PCRE_COPYRIGHT@/$pcre_copyright/" pcre.rc.in > pcre.rc &&
+    sed -e "s/SET(PCRE_SOURCES/SET(PCRE_SOURCES pcre.rc/" CMakeLists.txt > ttt &&
+	mv ttt CMakeLists.txt &&
+	cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS:BOOL=ON \
+                               -D PCRE_NEWLINE:STRING=ANYCRLF \
+                               -D PCRE_SUPPORT_UNICODE_PROPERTIES:BOOL=ON \
+                               -D PCRE_BUILD_PCRECPP:BOOL=OFF \
+                               -D CMAKE_BUILD_TYPE:STRING=Release \
+                               -D "CMAKE_INSTALL_PREFIX:STRING=$tdir_w32_forward" . &&
+    nmake &&
+    nmake install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/pcre-$pcrever"
+  if ! test -f "$tbindir/pcre.dll"; then
     echo "failed"
     exit -1
   else
@@ -1512,7 +1539,6 @@ fi
 # libcurl #
 ###########
 
-curlver=7.16.4
 if check_package libcurl; then
   download_file curl-$curlver.tar.bz2 http://curl.haxx.se/download/curl-$curlver.tar.bz2
   echo -n "decompressing libcurl... "

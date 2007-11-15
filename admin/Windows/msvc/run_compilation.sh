@@ -1595,7 +1595,7 @@ if check_package octave; then
     #mv ttt octMakefile.in &&
     if test ! -f "config.log"; then
       CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
-        F77=fort77 FFLAGS="-O2 -Wc,-MD -Wl,-subsystem:console" FLIBS=-lf2c \
+        F77=fc-msvc FFLAGS="-O2" \
         ./configure --build=i686-pc-msdosmsvc --prefix="$octave_prefix" \
         --with-zlib=zlib &&
         (cd doc &&

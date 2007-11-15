@@ -126,7 +126,7 @@ Section "Core" SEC_CORE
   File /r /x "packages" /x "octave_packages" "${OCTAVE_ROOT}\share\*.*"
   ; support libraries and executables
   SetOutPath "$INSTDIR\bin"
-  File "${VCLIBS_ROOT}\bin\pcre70.dll"
+  File "${VCLIBS_ROOT}\bin\pcre.dll"
   File "${VCLIBS_ROOT}\bin\readline.dll"
   File "${VCLIBS_ROOT}\bin\ncurses.dll"
   File "${VCLIBS_ROOT}\bin\libfftw3-3.dll"
@@ -400,7 +400,6 @@ Section "Tools" SEC_TOOLS
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
   File "${VCLIBS_ROOT}\bin\less.exe"
-  ;File "${VCLIBS_ROOT}\bin\pcre70.dll"
   File "${VCLIBS_ROOT}\bin\sed.exe"
   File "${VCLIBS_ROOT}\bin\iconv.dll"
   File "${VCLIBS_ROOT}\bin\intl.dll"

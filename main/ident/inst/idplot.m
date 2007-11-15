@@ -14,8 +14,13 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-## usage: idplot(z, idx, dT, outputs, shape)
-## Plot inputs and ouputs defined by the system z.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} idplot (@var{z}, @var{idx}, @var{dT}, @var{outputs}, @var{shape})
+## 
+## Plot inputs and ouputs defined by the system z. Other inputs are 
+## optional.
+## @end deftypefn
+## @seealso{idsim}
 
 function idplot(z, idx, dT, outputs, shape)
 

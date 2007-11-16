@@ -734,6 +734,7 @@ if check_package GLPK; then
         -e "s,^glpk\.dll:,glpk.dll: glpk.res," \
         -e "s,/Feglpk\.dll,/Feglpk.dll glpk.res," Makefile_VC6_MT_DLL > Makefile &&
     nmake &&
+	mt "-outputresource:glpk.dll;2" -manifest glpk.dll.manifest &&
 	cp glpk.lib "$tlibdir" &&
 	cp ../include/glpk.h "$tincludedir" &&
 	cp glpk.dll "$tbindir") >&5 2>&1

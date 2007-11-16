@@ -12,7 +12,7 @@ MKMEXFILE = mkoctfile --mex # $(DEVELOPERDEFS)
 TGZUNPACK = tar -xzf        # "tar -xzvf" to see what happens
 PATCHPROG = patch -p0       # For patching the Fortran codes
 
-EXTERNALDIRS  = hairer
+EXTERNALDIRS  = hairer cash
 EXTERNALPACKS = $(patsubst %, %.tgz,  $(EXTERNALDIRS))
 EXTERNALDIFFS = $(patsubst %, %.diff, $(EXTERNALDIRS))
 
@@ -97,16 +97,20 @@ install :
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/odepkg
 
 $(EXTERNALDIRS) :
-	@echo "Unpacking external packages: $(EXTERNALPACKS)"; \
-	$(TGZUNPACK) $(EXTERNALPACKS)
-	@echo "Patching external packages: $(EXTERNALDIFFS)"; \
-	$(PATCHPROG) <$(EXTERNALDIFFS)
+	@for i in $(EXTERNALPACKS); do \
+	  echo "Unpacking external packages: $$i"; \
+	  $(TGZUNPACK) $$i; \
+	done
+	@for j in $(EXTERNALDIFFS); do \
+	  $(PATCHPROG) <$$j; \
+	done
 
 clean :
 	@echo "Cleaning..."; \
 	$(RM) -fr $(ODEPKGDELETES)
 
 distclean realclean : clean
+	@echo "Really cleaning..."; \
 	$(RM) -r configure config.status config.log autom4te.cache Makeconf
 
 dist : all

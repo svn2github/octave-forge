@@ -54,6 +54,7 @@ pcrever=7.4
 curlver=7.16.4
 libpngver=1.2.23
 glpkver=4.23
+gslver=1.10
 
 ###################################################################################
 
@@ -1208,24 +1209,58 @@ fi
 # libgsl #
 ##########
 
+#if check_package libgsl; then
+#  download_file gsl-1.8-src.zip 'http://downloads.sourceforge.net/gnuwin32/gsl-1.8-src.zip?modtime=1152659851&big_mirror=0'
+#  echo -n "decompressing libgsl... "
+#  (cd "$DOWNLOAD_DIR" && mkdir gsl && cd gsl && unzip -q ../gsl-1.8-src.zip)
+#  echo "done"
+#  echo -n "compiling libgsl... "
+#  (cd "$DOWNLOAD_DIR/gsl/src/gsl/1.8/gsl-1.8/VC8" &&
+#    sed -e 's,ImportLibrary=.*,ImportLibrary="$(TargetDir)gsl.lib",' -e 's,<Files>,<Files><File RelativePath="..\\..\\version.c"></File>,' \
+#      libgsl/libgsl.vcproj > ttt &&
+#    mv ttt libgsl/libgsl.vcproj &&
+#    sed -e 's,ImportLibrary=.*,ImportLibrary="$(TargetDir)gslcblas.lib",' libgslcblas/libgslcblas.vcproj > ttt &&
+#    mv ttt libgslcblas/libgslcblas.vcproj &&
+#    vcbuild -u libgsl.sln "Release-DLL|Win32" &&
+#    mkdir -p "$tincludedir/gsl" &&
+#    cp ../gsl/gsl_*.h "$tincludedir/gsl" &&
+#    cp libgsl/Release-DLL/gsl.lib libgslcblas/Release-DLL/gslcblas.lib "$tlibdir" &&
+#    cp libgsl/Release-DLL/libgsl.dll libgslcblas/Release-DLL/libgslcblas.dll "$tbindir") >&5 2>&1
+#  rm -rf "$DOWNLOAD_DIR/gsl"
+#  if test ! -f "$tbindir/libgsl.dll"; then
+#    echo "failed"
+#    exit -1
+#  else
+#    echo "done"
+#  fi
+#fi
+
 if check_package libgsl; then
-  download_file gsl-1.8-src.zip 'http://downloads.sourceforge.net/gnuwin32/gsl-1.8-src.zip?modtime=1152659851&big_mirror=0'
+  download_file gsl-$gslver.tar.gz ftp://ftp.gnu.org/gnu/gsl/gsl-$gslver.tar.gz
   echo -n "decompressing libgsl... "
-  (cd "$DOWNLOAD_DIR" && mkdir gsl && cd gsl && unzip -q ../gsl-1.8-src.zip)
+  unpack_file gsl-$gslver.tar.gz
   echo "done"
   echo -n "compiling libgsl... "
-  (cd "$DOWNLOAD_DIR/gsl/src/gsl/1.8/gsl-1.8/VC8" &&
-    sed -e 's,ImportLibrary=.*,ImportLibrary="$(TargetDir)gsl.lib",' -e 's,<Files>,<Files><File RelativePath="..\\..\\version.c"></File>,' \
-      libgsl/libgsl.vcproj > ttt &&
-    mv ttt libgsl/libgsl.vcproj &&
-    sed -e 's,ImportLibrary=.*,ImportLibrary="$(TargetDir)gslcblas.lib",' libgslcblas/libgslcblas.vcproj > ttt &&
-    mv ttt libgslcblas/libgslcblas.vcproj &&
-    vcbuild -u libgsl.sln "Release-DLL|Win32" &&
-    mkdir -p "$tincludedir/gsl" &&
-    cp ../gsl/gsl_*.h "$tincludedir/gsl" &&
-    cp libgsl/Release-DLL/gsl.lib libgslcblas/Release-DLL/gslcblas.lib "$tlibdir" &&
-    cp libgsl/Release-DLL/libgsl.dll libgslcblas/Release-DLL/libgslcblas.dll "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gsl"
+  (cd "$DOWNLOAD_DIR/gsl-$gslver" &&
+    for m in */Makefile.in; do
+      perl -i~ -pe 's|^(lib.*la_OBJECTS = *\$\((.*)\))$|libobjects=\$($2:.lo=.o)\nmklibobjects: \$(libobjects)\nborg:\n\t\@echo \$(addprefix \$(subdir)/,\$(libobjects))\n$1|' $m
+      if ! grep -e '^mklibobjects' $m > /dev/null; then
+        echo "mklibobjects: all" >> $m
+        echo "borg:" >> $m
+        echo "	@echo" >> $m
+      fi
+      echo "Processed $m"
+    done &&
+    echo "mklibobjects: mklibobjects-recursive" >> Makefile.in &&
+    echo "borg:" >> Makefile.in &&
+    echo "	@for d in \$(SUBDIRS); do \\" >> Makefile.in &&
+    echo "	  cd \$\$d && \$(MAKE) -s borg && cd .. ; \\" >> Makefile.in &&
+    echo "	done" >> Makefile.in
+    perl -i~ -pe 's|^RECURSIVE_TARGETS =|RECURSIVE_TARGETS = mklibobjects-recursive|' Makefile.in &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -DGSL_DLL -DDLL_EXPORT -D__STDC__" \
+      ./configure --prefix="$INSTALL_DIR" --disable-static
+    ) >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/gsl-$gslver"
   if test ! -f "$tbindir/libgsl.dll"; then
     echo "failed"
     exit -1

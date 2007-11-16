@@ -1,0 +1,227 @@
+diff -u -u cash.orig/mebdfi.f cash/mebdfi.f
+--- cash.orig/mebdfi.f	2007-11-16 19:00:20.000000000 +0100
++++ cash/mebdfi.f	2007-11-16 19:04:18.000000000 +0100
+@@ -353,7 +353,7 @@
+ C     ..
+       IF (IDID.EQ.1) THEN
+          IF (N.LE.0) THEN
+-            WRITE (LOUT,9020) N
++C            WRITE (LOUT,9020) N
+             IDID = -4
+             
+          ELSE
+@@ -375,12 +375,12 @@
+             
+             IF (LWORK.LT.(I11-1)) THEN
+                IDID = -11
+-               WRITE (LOUT,9000) I11 - 1
++C               WRITE (LOUT,9000) I11 - 1
+             ENDIF
+             
+             IF (LIWORK.LT.N+14) THEN
+                IDID = -12
+-               WRITE (LOUT,9010) N+14
++C               WRITE (LOUT,9010) N+14
+             END IF
+             
+          END IF
+@@ -505,14 +505,14 @@
+ C        NOT FIRST CALL BUT PARAMETERS RESET
+          H = HO
+          IF(H.LT.EPSJAC/100.0D+0) THEN
+-            WRITE(6,9160)
++C            WRITE(6,9160)
+             IDID = -7
+             RETURN
+          ENDIF
+          T0 = T
+          IF ((T-TOUT)*H.GE.0.0D+0) THEN
+ C           HAVE OVERSHOT TOUT
+-            WRITE (LOUT,9080) T,TOUT,H
++C            WRITE (LOUT,9080) T,TOUT,H
+             CALL INTERP(N,JSTART,H,T,Y,TOUT,Y0)
+             HO = H
+             T0 = TOUT
+@@ -540,7 +540,7 @@
+ C        CHECK THE ARGUMENTS THAT WERE PASSED FOR CORRECTNESS
+          IF (IDID.NE.1) THEN
+ C           VALUE OF IDID NOT ALLOWED
+-            WRITE (LOUT,9070) IDID
++C            WRITE (LOUT,9070) IDID
+             IDID = -4
+          END IF
+ 
+@@ -549,7 +549,7 @@
+          DO 1 I=1,NN
+             IF (RTOL(I).LT.0.0D+0) THEN
+ C           ILLEGAL VALUE FOR RELATIVE ERROR TOLERENCE
+-               WRITE (LOUT,9040)
++C               WRITE (LOUT,9040)
+                IDID = -4
+             END IF
+  1       CONTINUE
+@@ -559,13 +559,13 @@
+          DO 2 I=1,NN
+             IF (ATOL(I).LT.0.0D+0) THEN
+ C           ILLEGAL ABSOLUTE ERROR TOLERANCE
+-               WRITE(LOUT,9045)
++C               WRITE(LOUT,9045)
+                IDID=-4
+             ENDIF
+  2       CONTINUE
+          IF(ITOL.EQ.1.AND.RTOL(1).EQ.0) THEN
+ C           ILLEGAL ERROR TOLERANCE
+-            WRITE(LOUT,9040)
++C            WRITE(LOUT,9040)
+             IDID = -4
+          ENDIF
+          IF(ITOL.NE.1) THEN
+@@ -581,7 +581,7 @@
+                   VHOLD = DMAX1(RTOL(I),ATOL(I))
+                ENDIF
+                IF(VHOLD.LE.0.0D+0) THEN
+-                  WRITE(LOUT,9040)
++C                  WRITE(LOUT,9040)
+                   IDID = -4
+                ENDIF
+  3          CONTINUE
+@@ -589,39 +589,39 @@
+ 
+          IF (N.LE.0) THEN
+ C           ILLEGAL VALUE FOR THE NUMBER OF EQUATIONS
+-            WRITE (LOUT,9050)
++C            WRITE (LOUT,9050)
+             IDID = -4
+          END IF
+ 
+          IF ((T0-TOUT)*HO.GE.0.0D+0) THEN
+ C           PARAMETERS FOR INTEGRATION ARE ILLEGAL
+-            WRITE (LOUT,9060)
++C            WRITE (LOUT,9060)
+             IDID = -4
+          END IF
+ 
+          IF ((MF.NE.21).AND.(MF.NE.22).AND.(MF.NE.23).AND.(MF.NE.24))
+      +   THEN
+ C           ILLEGAL VALUE FOR METHOD FLAG
+-            WRITE (LOUT,9090) MF
++C            WRITE (LOUT,9090) MF
+             IDID = -4
+          END IF
+ 
+          IF(ITOL.LT.1.OR.ITOL.GT.5) THEN
+ C           ILLEGAL VALUE FOR ERROR CONTROL PARAMETER
+-            WRITE (LOUT,9110)
++C            WRITE (LOUT,9110)
+             IDID=-4
+          ENDIF
+ 
+          IF(MAXDER.LT.1.OR.MAXDER.GT.7) THEN
+ C        ILLEGAL VALUE FOR MAXIMUM ORDER
+-            WRITE(LOUT,9120)
++C            WRITE(LOUT,9120)
+             IDID = -4
+          ENDIF
+ 
+          IF(NIND1.EQ.0)  NIND1=N
+          IF(NIND1 + NIND2 + NIND3 .NE. N) THEN
+ C    SUM OF VARIABLES OF DIFFERENT INDEX SHOULD BE N.
+-            WRITE(LOUT,9140)
++C            WRITE(LOUT,9140)
+             IDID = -4
+          ENDIF
+ 
+@@ -658,7 +658,7 @@
+ C     <  TAKE A STEP  >
+ C     <<<<<<<<<<<<<<<<<
+  20   IF ((T+H).EQ.T) THEN
+-         WRITE (LOUT,9000)
++C         WRITE (LOUT,9000)
+       END IF
+       CALL STIFF(H,HMAX,HMIN,JSTART,KFLAG,MF,MBND,
+      +    NIND1,NIND2,NIND3,T,TOUT,TEND,Y,YPRIME,N,
+@@ -682,12 +682,12 @@
+ 
+       ELSE IF (KGO.EQ.3) THEN
+ C        ERROR REQUIREMENT SMALLER THAN CAN BE HANDLED FOR THIS PROBLEM
+-         WRITE (LOUT,9010) T,H
++C         WRITE (LOUT,9010) T,H
+          GO TO 70
+ 
+       ELSE IF (KGO.EQ.4) THEN
+ C        COULD NOT ACHIEVE CONVERGENCE WITH HMIN
+-         WRITE (LOUT,9030) T
++C         WRITE (LOUT,9030) T
+          GO TO 60
+ 
+       END IF
+@@ -715,7 +715,7 @@
+          KGO=5
+          KLAG=4
+ c   TOO MUCH WORK
+-         WRITE(LOUT,9130)
++C         WRITE(LOUT,9130)
+          IDID = -6
+          GOTO 70
+       END IF
+@@ -785,7 +785,7 @@
+  60   CONTINUE
+       IF (NHCUT.EQ.10) THEN
+ C        HAVE REDUCED H TEN TIMES
+-         WRITE (LOUT,9100)
++C         WRITE (LOUT,9100)
+          GO TO 70
+ 
+       END IF
+@@ -2699,7 +2699,7 @@
+       IF(ITOL .EQ. 1) D = D/(RTOL(1)**2)
+       IF ((D*DMIN1(ONE,2.0D+0*CRATE1)).LE.BND) GO TO 360
+       IF (M3STEP.EQ.4) THEN
+-c         WRITE (LOUT,9000)
++C         WRITE (LOUT,9000)
+          IJUS=1
+          RED=0.5D+0
+ C    ****  step 3 fails
+@@ -2708,7 +2708,7 @@
+       END IF
+ 
+       M3STEP = M3STEP + 1
+-c      IF(IERR.NE.0) GOTO 8000
++C      IF(IERR.NE.0) GOTO 8000
+       GO TO 300
+ 
+  330  KFAIL = KFAIL - 1
+@@ -3098,12 +3098,12 @@
+ C     TRY AGAIN WITH UPDATED PARTIALS
+ C
+  8000 if (ierr .ne. 0) then
+-         write(*,1975)
++C         write(*,1975)
+  1975    FORMAT (/,/,'IERR IS NON-ZERO BECAUSE OF AN ILLEGAL FUNCTION
+      +CALL')         
+          h= h/2         
+          IF(H.LT.EPSJAC/100.0D+0) THEN
+-            WRITE(6,9161)
++C            WRITE(6,9161)
+  9161       FORMAT (/,/,'STEPSIZE IS TOO SMALL')
+             IDID = -7
+             RETURN
+@@ -3111,7 +3111,7 @@
+          T= TOLD
+          IF ((T-TOUT)*H.GE.0.0D+0) THEN
+ C           HAVE OVERSHOT TOUT
+-            WRITE (LOUT,*) T,TOUT,H
++C            WRITE (LOUT,*) T,TOUT,H
+             CALL INTERP(N,JSTART,H,T,Y,TOUT,Y0)
+             HO = H
+             T0 = TOUT
+@@ -3836,7 +3836,7 @@
+ * Comment out this if block if EMIN is ok
+          IF( IWARN ) THEN
+             FIRST = .TRUE.
+-            WRITE( 6, FMT = 9999 )LEMIN
++C            WRITE( 6, FMT = 9999 )LEMIN
+          END IF
+ ***
+ *
+Only in cash: mebdfi.f~

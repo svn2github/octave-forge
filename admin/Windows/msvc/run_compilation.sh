@@ -1252,13 +1252,19 @@ if check_package libgsl; then
       echo "Processed $m"
     done &&
     echo "mklibobjects: mklibobjects-recursive" >> Makefile.in &&
+    echo "mklibobjects-am:" >> Makefile.in &&
     echo "borg:" >> Makefile.in &&
     echo "	@for d in \$(SUBDIRS); do \\" >> Makefile.in &&
     echo "	  cd \$\$d && \$(MAKE) -s borg && cd .. ; \\" >> Makefile.in &&
     echo "	done" >> Makefile.in
     perl -i~ -pe 's|^RECURSIVE_TARGETS =|RECURSIVE_TARGETS = mklibobjects-recursive|' Makefile.in &&
     CC=cc-msvc CFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -DGSL_DLL -DDLL_EXPORT -D__STDC__" \
-      ./configure --prefix="$INSTALL_DIR" --disable-static
+      ./configure --prefix="$INSTALL_DIR" --disable-static &&
+    make mklibobjects &&
+    (make borg) | xargs lib -OUT:gsl_symbols.lib &&
+    echo "EXPORTS" > gsl.def &&
+    nm gsl_symbols.lib | grep -e '[0-9]\+ T ' | sed -e 's/[0-9]\+ T _//' >> gsl.def &&
+    (make borg) | xargs link -DLL -OUT:libgsl.dll -DEF:gsl.def -IMPLIB:gsl.lib
     ) >&5 2>&1
   #rm -rf "$DOWNLOAD_DIR/gsl-$gslver"
   if test ! -f "$tbindir/libgsl.dll"; then

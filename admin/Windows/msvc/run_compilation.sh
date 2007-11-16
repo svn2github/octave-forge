@@ -53,6 +53,7 @@ download_root="http://downloads.sourceforge.net/octave/@@?download"
 pcrever=7.4
 curlver=7.16.4
 libpngver=1.2.23
+glpkver=4.23
 
 ###################################################################################
 
@@ -178,6 +179,55 @@ function check_cmake
     echo "CMake not found in PATH"
     exit -1
   fi
+}
+
+function create_module_rc
+{
+  module_name=$1
+  module_version=$2
+  module_filename=$3
+  module_company="$4"
+  module_desc="$5"
+  module_copyright="$6"
+  module_major=`echo $module_version | sed -e "s/\..*//"`
+  module_minor=`echo $module_version | sed -e "s/^[^.]*\.//" -e "s/\..*//"`
+  module_patch=`echo $module_version | sed -e "s/.*\.//"`
+  if test "$module_minor" = "$module_patch"; then
+    module_patch=0
+  fi
+  cat <<EOF
+#define WINDOWS_LEAN_AND_MEAN
+#include <windows.h>
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION		$module_major, $module_minor, $module_patch, 0
+PRODUCTVERSION	$module_major, $module_minor, $module_patch, 0
+FILEFLAGSMASK	0x3fL
+FILEFLAGS 0
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+	BLOCK	"VarFileInfo"
+	BEGIN
+		VALUE	"Translation",	0x409,	1200
+	END
+	BLOCK	"StringFileInfo"
+	BEGIN
+		BLOCK "040904b0"
+		BEGIN
+			VALUE	"CompanyName",	"$module_company\\0"
+			VALUE	"FileDescription",	"$module_desc\\0"
+			VALUE	"FileVersion",	"$module_version\\0"
+			VALUE	"InternalName",	"$module_name\\0"
+			VALUE	"LegalCopyright",	"$module_copyright\\0"
+			VALUE	"OriginalFilename",	"$module_filename\\0"
+			VALUE	"ProductName",	"$module_name\\0"
+			VALUE	"ProductVersion",	"$module_version\\0"
+		END
+	END
+END
+EOF
 }
 
 ###################################################################################
@@ -337,7 +387,7 @@ if test -z "$todo_packages"; then
     fi
     todo_check "$tbindir/libfftw3-3.dll" FFTW
     todo_check "$tbindir/pcre.dll" PCRE
-    todo_check "$tbindir/glpk_4_19.dll" GLPK
+    todo_check "$tbindir/glpk.dll" GLPK
     todo_check "$tbindir/ncurses.dll" ncurses
     todo_check "$tbindir/readline.dll" readline
     todo_check "$tbindir/zlib1.dll" zlib
@@ -619,14 +669,11 @@ if check_package PCRE; then
   unpack_file pcre-$pcrever.tar.bz2
   echo "done"
   echo -n "compiling PCRE... "
-  cp libs/pcre.rc.in "$DOWNLOAD_DIR/pcre-$pcrever"
-  pcre_major=`echo $pcrever | sed -e 's/\..*//'`
-  pcre_minor=`echo $pcrever | sed -e 's/.*\.//'`
+  pcre_desc="Perl Compatible Regular Expression Library"
+  pcre_company="Philip Hazel <ph10@cam.ac.uk>"
   pcre_copyright=`grep -e '^Copyright' "$DOWNLOAD_DIR/pcre-$pcrever/LICENCE" | head -n 1`
   (cd "$DOWNLOAD_DIR/pcre-$pcrever" &&
-    sed -e "s/@PCRE_MAJOR@/$pcre_major/" \
-	    -e "s/@PCRE_MINOR@/$pcre_minor/" \
-		-e "s/@PCRE_COPYRIGHT@/$pcre_copyright/" pcre.rc.in > pcre.rc &&
+    create_module_rc PCRE $pcrever pcre.dll "$pcre_company" "$pcre_desc" "$pcre_copyright" > pcre.rc &&
     sed -e "s/SET(PCRE_SOURCES/SET(PCRE_SOURCES pcre.rc/" CMakeLists.txt > ttt &&
 	mv ttt CMakeLists.txt &&
 	cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS:BOOL=ON \
@@ -668,21 +715,30 @@ fi
 ########
 
 if check_package GLPK; then
-  download_file glpk-4.19.tar.gz ftp://ftp.gnu.org/gnu/glpk/glpk-4.19.tar.gz
+  download_file glpk-$glpkver.tar.gz ftp://ftp.gnu.org/gnu/glpk/glpk-$glpkver.tar.gz
   echo -n "decompressing GLPK... "
-  (cd "$DOWNLOAD_DIR" && tar xfz glpk-4.19.tar.gz)
-  cp libs/glpk-4.19.diff "$DOWNLOAD_DIR/glpk-4.19"
+  unpack_file glpk-$glpkver.tar.gz
   echo "done"
   echo -n "compiling GLPK... "
-  (cd "$DOWNLOAD_DIR/glpk-4.19" &&
-    patch -p1 < glpk-4.19.diff &&
-	cd w32 &&
-    nmake -f Makefile_VC6_MT_DLL &&
+  (cd "$DOWNLOAD_DIR/glpk-$glpkver/w32" &&
+    glpk_company="GNU <www.gnu.org>" &&
+    glpk_desc=`grep -e '^DESCRIPTION' glpk_*.def | sed -e 's/^DESCRIPTION \+//' -e 's/"//g'` &&
+    glpk_copyright=`grep -e '^Copyright' ../README | head -n 1 | sed -e 's/,$//'` &&
+    create_module_rc GLPK $glpkver glpk.dll "$glpk_company" "$glpk_desc" "$glpk_copyright" > glpk.rc &&
+    sed -e "s,^LIBRARY \+glpk_.*$,LIBRARY glpk," glpk_*.def > glpk.def &&
+    sed -e "s,/MT,/MD,g" \
+        -e "s,^CFLAGS \+=,CFLAGS = /O2," \
+        -e "s,glpk_.*\.dll,glpk.dll,g" \
+        -e "s,glpk_.*\.lib,glpk.lib,g" \
+        -e "s,glpk_.*\.def,glpk.def,g" \
+        -e "s,^glpk\.dll:,glpk.dll: glpk.res," \
+        -e "s,/Feglpk\.dll,/Feglpk.dll glpk.res," Makefile_VC6_MT_DLL > Makefile &&
+    nmake &&
 	cp glpk.lib "$tlibdir" &&
 	cp ../include/glpk.h "$tincludedir" &&
-	cp glpk_4_19.dll "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glpk-4.19"
-  if ! test -f "$tbindir/glpk_4_19.dll"; then
+	cp glpk.dll "$tbindir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/glpk-$glpkver"
+  if ! test -f "$tbindir/glpk.dll"; then
     echo "failed"
     exit -1
   else

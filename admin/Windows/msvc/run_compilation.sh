@@ -55,6 +55,7 @@ curlver=7.16.4
 libpngver=1.2.23
 glpkver=4.23
 gslver=1.10
+netcdfver=3.6.1
 
 ###################################################################################
 
@@ -1294,12 +1295,12 @@ fi
 ##########
 
 if check_package netcdf; then
-  download_file netcdf-3.6.1.tar.gz ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-3.6.1.tar.gz
+  download_file netcdf-$netcdfver.tar.gz ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-$netcdfver.tar.gz
   echo -n "decompressing netcdf... "
-  (cd "$DOWNLOAD_DIR" && tar xfz netcdf-3.6.1.tar.gz)
+  unpack_file netcdf-$netcdfver.tar.gz
   echo "done"
   echo -n "compiling netcdf... "
-  (cd "$DOWNLOAD_DIR/netcdf-3.6.1" &&
+  (cd "$DOWNLOAD_DIR/netcdf-$netcdfver" &&
     cd src/win32/NET &&
     sed -e 's/RuntimeLibrary=.*/RuntimeLibrary="2"/' libsrc/netcdf.vcproj > ttt &&
     mv ttt libsrc/netcdf.vcproj &&
@@ -1309,7 +1310,7 @@ if check_package netcdf; then
     cp Release/netcdf.lib "$tlibdir" &&
     cp ../../../libsrc/netcdf.h "$tincludedir" &&
     cp Release/netcdf.dll "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/netcdf-3.6.1"
+  rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
   if test ! -f "$tbindir/netcdf.dll"; then
     echo "failed"
     exit -1

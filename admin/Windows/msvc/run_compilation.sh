@@ -755,15 +755,22 @@ fi
 if check_package ncurses; then
   download_file ncurses-5.6.tar.gz ftp://ftp.gnu.org/gnu/ncurses/ncurses-5.6.tar.gz
   echo -n "decompressing ncurses... "
-  (cd "$DOWNLOAD_DIR" && tar xfz ncurses-5.6.tar.gz)
+  unpack_file ncurses-5.6.tar.gz
   cp libs/ncurses-5.6.diff "$DOWNLOAD_DIR/ncurses-5.6"
   echo "done"
   echo "compiling ncurses... "
   (cd "$DOWNLOAD_DIR/ncurses-5.6" &&
     patch -p1 < ncurses-5.6.diff &&
+    ncurses_copyright=`grep -e '^-- Copyright' README | head -n 1 | sed -e "s/-- //" -e "s/ *--$//"` &&
+    create_module_rc Ncurses 5.6 ncurses.dll "Free Software Foundation (http://www.fsf.org)" \
+      "New Curses Library" "$ncurses_copyright" > ncurses/ncurses.rc &&
     CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc CFLAGS="-O2 -MD" \
       ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALL_DIR --without-cxx-binding \
       --without-libtool --with-shared --without-normal --without-debug &&
+    sed -e "s/^SHARED_OBJS =/SHARED_OBJS = ncurses.res/" ncurses/Makefile > ttt &&
+    mv ttt ncurses/Makefile &&
+    echo "ncurses.res: ncurses.rc" >> ncurses/Makefile &&
+    echo "	rc -fo \$@ \$<" >> ncurses/Makefile &&
     make -C include && make -C ncurses && make -C progs && make -C tack && make -C misc &&
     make -C include install && make -C ncurses install && make -C progs install &&
     make -C tack install && make -C misc install) >&5 2>&1
@@ -1242,6 +1249,8 @@ if check_package libgsl; then
   echo "done"
   echo -n "compiling libgsl... "
   (cd "$DOWNLOAD_DIR/gsl-$gslver" &&
+    create_module_rc GSL $gslver libgsl.dll "Free Software Foundation (http://www.fsf.org)" \
+      "GNU Scientific Library" "Copyright (C) 2000, 2007 Free Software Foundation" > gsl.rc
     for m in */Makefile.in; do
       perl -i~ -pe 's|^(lib.*la_OBJECTS = *\$\((.*)\))$|libobjects=\$($2:.lo=.o)\nmklibobjects: \$(libobjects)\nborg:\n\t\@echo \$(addprefix \$(subdir)/,\$(libobjects))\n$1|' $m
       if ! grep -e '^mklibobjects' $m > /dev/null; then
@@ -1264,9 +1273,14 @@ if check_package libgsl; then
     (make borg) | xargs lib -OUT:gsl_symbols.lib &&
     echo "EXPORTS" > gsl.def &&
     nm gsl_symbols.lib | grep -e '[0-9]\+ T ' | sed -e 's/[0-9]\+ T _//' >> gsl.def &&
-    (make borg) | xargs link -DLL -OUT:libgsl.dll -DEF:gsl.def -IMPLIB:gsl.lib
-    ) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/gsl-$gslver"
+    rc -fo gsl.res gsl.rc &&
+    (make borg) | xargs link -DLL -OUT:libgsl.dll -DEF:gsl.def -IMPLIB:gsl.lib gsl.res &&
+    mt "-outputresource:libgsl.dll;2" -manifest libgsl.dll.manifest &&
+    cp libgsl.dll "$tbindir" &&
+    cp gsl.lib "$tlibdir" &&
+    mkdir -p "$tincludedir/gsl" &&
+    cp gsl/*.h "$tincludedir/gsl") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gsl-$gslver"
   if test ! -f "$tbindir/libgsl.dll"; then
     echo "failed"
     exit -1

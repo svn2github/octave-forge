@@ -1653,7 +1653,7 @@ if check_package octave; then
       CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
         F77=fc-msvc FFLAGS="-O2" \
         ./configure --build=i686-pc-msdosmsvc --prefix="$octave_prefix" \
-        --with-zlib=zlib &&
+        --with-zlib=zlib --with-curl=libcurl &&
         (cd doc &&
           make conf.texi &&
           sed -e 's,/\([a-z]\)/,\1:/,' conf.texi > ttt &&

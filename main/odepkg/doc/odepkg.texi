@@ -22,7 +22,7 @@
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.2 or
 any later version published by the Free Software Foundation; with no
-Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
 copy of the license is included in the section entitled "GNU Free
 Documentation License".
 @end copying
@@ -88,9 +88,9 @@ OdePkg formerly was initiated to solve explicitly formulated ordinary differenti
 @item OdePkg Version 0.2.x
 @tab The main work along version 0.2.x was making the interface functions for the non--stiff and stiff solvers from Ernst Hairer and Gerhard Wanner enough stable so that they could be compiled and installed by default. Wrapper functions have been added to the package with help texts and tests (eg. @command{ode2r}, @command{ode5r}, @command{oders} etc.). Six testsuite functions have been added for performance tests of the different solvers (@command{odepkg_testsuite_chemakzo}, @command{odepkg_testsuite_oregonator}, @command{odepkg_testsuite_transistor}, etc.).
 @item @b{(current)} Version 0.3.x
-@tab Ongoing work with this manual. Jeff Cash released his solvers under the GPL, first tests are done to include these solvers within OdePkg. With version 0.3.4 of OdePkg new interface functions are created based on Octave's C++DLD interface to achieve a better performance. The first IDE solver @file{mebdfi.f} appeared and that is interfaced by @file{odepkg_octsolver.mebdfi.cc}. Porting the mex--file solvers to Octave's C++DLD interface.
+@tab Fixed some bugs along version 0.3.x. Thanks to Jeff Cash, who released his Fortran @command{mebdfX} solvers under the GNU GPL V2 after some discussion. The first IDE solver @command{odebdi} appeared that is an interface function for Cash's @command{mebdfi} core Fortran solver. With version 0.3.5 of OdePkg a first new interface function was created based on Octave's C++DLD interface to achieve the highest performance available. Added more examples and testsuite functions (eg. @command{odepkg_equations_ilorenz}, @command{odepkg_testsuite_implakzo}, @command{odepkg_testsuite_implrober}). Ongoing work with this manual. 
 @item @b{(future)} Version 0.4.x
-@tab Ongoing work with this manual. Fetching and adding the DASRT IDE solver from Netlib.
+@tab Ongoing work with this manual. Porting all present Mex--file solvers to Octave's C++DLD interface. Fetching and adding the DASRT IDE solver from Netlib.
 @item @b{(future)} Version 0.5.x
 @tab (Maybe) Adding a last type of solvers (DDE) to OdePkg.
 @item @b{(future)} Version 0.6.x
@@ -98,7 +98,7 @@ OdePkg formerly was initiated to solve explicitly formulated ordinary differenti
 @item @b{(future)} Version 0.7.x
 @tab (Maybe) Final release before version 1.0.0.
 @item @b{(future)} Version 1.0.0
-@tab Completed OdePkg release 1.0.0 with m--solvers and DLD--solvers.
+@tab Completed OdePkg release 1.0.0 with M--solvers and DLD--solvers.
 @end multitable
 
 @node Installation and deinstallation, Reporting Bugs, OdePkg history and roadmap, Beginner's Guide
@@ -185,7 +185,7 @@ Next the numerical values for the constants need to be defined, ie.
 @ifnothtml
 @math{C_1 = 2.0}, @math{C_2 = 5.0}, @math{C_3 = 10.0}.
 @end ifnothtml
-This set of ordinary differential equations can now be written as an Octave m--file function like
+This set of ordinary differential equations can now be written as an Octave M--file function like
 @example
 function vdy = foo (vt, vy, varargin)
   vdy(1,1) = vy(2);
@@ -194,7 +194,7 @@ endfunction
 @end example
 It can be seen that this ODEs do not depend on time nevertheless the first input argument of this function needs to be defined as the time argument followed by a integrated state argument @command{vy} as the second input argument and a variable size input argument @command{varargin} that can be used to set up user defined constants or control variables.
 
-As it is known that @command{foo} is a set of @slanted{ordinary} differential equations we can choose one of the four m--file Runge--Kutta solvers (cf. @ref{Solver families}). It is also known that the time period of interest may be between
+As it is known that @command{foo} is a set of @slanted{ordinary} differential equations we can choose one of the four M--file Runge--Kutta solvers (cf. @ref{Solver families}). It is also known that the time period of interest may be between
 @ifhtml
 @example
 @math{t0 = 0.0}
@@ -266,7 +266,7 @@ in the Octave command window where @command{fcnname} is the name of the function
 @example
 doc odepkg
 @end example
-for opening this manual in the texinfo reader of the octave command window.
+for opening this manual in the texinfo reader of the Octave command window.
 
 @c %*** End of first chapter: Beginner's Guide
 
@@ -277,9 +277,11 @@ for opening this manual in the texinfo reader of the octave command window.
 The ``User's Guide'' is intended for trained users who already do know in principal how to solve differential equations with the GNU Octave language and OdePkg. In this chapter it will be explained which problems can be solved with OdePkg in @ref{Differential Equation Problems}, which solvers can be used for the different kind of problems in @ref{Solver families} and which options can be set for the optimization of the solving process in @ref{ODE/DAE/IDE options}.
 
 @menu
-* Differential Equation Problems::  Problems to be solved with OdePkg
-* Solver families::             Different kind of solvers
-* ODE/DAE/IDE options::         Options that can be set
+* Differential Equation Problems::  The different kind of problems that can be solved with OdePkg
+* Solver families::             The different kind of solvers within OdePkg
+* ODE/DAE/IDE options::         The options that can be set for a solving process
+* M--File Function Reference::  The description about all @file{*.m}-file functions
+* DLD Function Reference::      The description about all @file{*.oct}-file functions
 @end menu
 
 @node Differential Equation Problems, Solver families, User's Guide, User's Guide
@@ -339,15 +341,15 @@ In this section different kind of solvers are explained that have been implement
 Performance tests have also been added to the OdePkg. Some of these performance results have been added to section @ref{ODE solver performances}.
 
 @menu
-* M--file Runge--Kutta solvers::  ODE solvers written as m--files
-* Mex--file Hairer--Wanner solvers::  DAE solvers written as C--Mex files
-* Other solvers::               Not implemented by now
-* ODE solver performances::     Cross Platform performance tests
+* M--file Runge--Kutta solvers::  The ODE solvers written in form of @file{*.m} files
+* Mex--file Hairer--Wanner solvers::  The DAE solvers written in form of @file{*.c} files
+* Oct--file backward differentiation algorithm solvers::  The DAE and IDE solvers written in form of @file{*.cc} files
+* ODE solver performances::     Cross math-engine performance tests
 @end menu
 
 @node M--file Runge--Kutta solvers, Mex--file Hairer--Wanner solvers, Solver families, Solver families
 @subsection M--file Runge--Kutta solvers
-The M--file Runge--Kutta solvers are written in the Octave interpreter language and are stored as @file{*.m} files. There have been implemented four different solvers with a very similiar structure, ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}@footnote{The descriptions for these Runge--Kutta solvers have been taken from the help texts of the initial m--file Runge--Kutta solvers that were written by Marc Compere, he also pointed out that ''a relevant discussion on step size choice can be found on page 90ff in U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations and Differential--Agebraic Equations, Society for Industrial and Applied Mathematics (SIAM), Philadelphia, 1998''.}.
+The M--file Runge--Kutta solvers are written in the Octave interpreter language and are stored as @file{*.m} files. There have been implemented four different solvers with a very similiar structure, ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}@footnote{The descriptions for these Runge--Kutta solvers have been taken from the help texts of the initial M--file Runge--Kutta solvers that were written by Marc Compere, he also pointed out that ''a relevant discussion on step size choice can be found on page 90ff in U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations and Differential--Agebraic Equations, Society for Industrial and Applied Mathematics (SIAM), Philadelphia, 1998''.}.
 
 The order of all of the following Runge--Kutta methods is the order of the local truncation error, which is the principle error term in the portion of the Taylor series expansion that gets dropped, or intentionally truncated. This is different from the local error which is the difference between the estimated solution and the actual, or true solution. The local error is used in stepsize selection and may be approximated by the difference between two estimates of different order,
 @ifhtml
@@ -393,7 +395,7 @@ Integrates a system of non--stiff ordinary differential equations (non-stiff ODE
 
 @end table
 
-@node Mex--file Hairer--Wanner solvers, Other solvers, M--file Runge--Kutta solvers, Solver families
+@node Mex--file Hairer--Wanner solvers, Oct--file backward differentiation algorithm solvers, M--file Runge--Kutta solvers, Solver families
 @subsection Mex--file Hairer--Wanner solvers
 The mex--file Hairer--Wanner solvers are written in Fortran (hosted at @url{http://www.unige.ch/~hairer}) and have been added to the OdePkg as a compressed file with the name @file{hairer.tgz}. The licence of these solvers is a modified BSD license (without advertising clause) and can be found as @file{licence.txt} file in the @file{hairer.tgz} package and therefore the Fortran files are GPL compatible. Papers and other details about these solvers can be found at the host adress.
 
@@ -401,7 +403,7 @@ Interface functions for these solvers have been created and have been added to t
 
 To provide a shorter name to access these solver functions also wrapper functions have been added that do link to the interface functions, eg. the command @command{oderd} links to the interface functions @command{odepkg_mexsolver_radau} and should do exactly the same. Another reason of adding wrapper functions was that help texts, demos and tests cannot be added to the @file{odepkg_mexsolver_xxx.c} files. For accessing the help texts, demos and tests for one of these solvers you should therefore always use the name of the wrapper function, eg. @command{help oderd}.
 
-The mex--file Hairer--Wanner solvers have been added to the OdePkg to also solve stiff ordinary differential equations that cannot be solved with one of the m--file Runge--Kutta solvers. The following table gives an overview about which solver can be used for the different kind of problems.
+The mex--file Hairer--Wanner solvers have been added to the OdePkg to also solve stiff ordinary differential equations that cannot be solved with one of the M--file Runge--Kutta solvers. The following table gives an overview about which solver can be used for the different kind of problems.
 
 @float
 @multitable {ODE Problem} {Solver name} {Wrapper file} {@file{odepkg_mexsolver_seulex.c}} {Fortran file}
@@ -417,15 +419,18 @@ The mex--file Hairer--Wanner solvers have been added to the OdePkg to also solve
 @caption{Overview about Fortran, Interface and Wrapper files for Hairer--Wanner solvers.}
 @end float
 
-@node Other solvers, ODE solver performances, Mex--file Hairer--Wanner solvers, Solver families
-@subsection Other solvers
-@c The solvers from Jeff Cash http://www.ma.ic.ac.uk/~jcash have not been added to the OdePkg because it seems that there may exist some unfixed bugs. Modified solver files with bug fixes can be found at http://pitagora.dm.uniba.it/~testset, but the disclaimer's part of this site is not clear and maybe the modified solver files are not GNU--GPL compatible.
+@node Oct--file backward differentiation algorithm solvers, ODE solver performances, Mex--file Hairer--Wanner solvers, Solver families
+@subsection Oct--file backward differentiation algorithm solvers
+The Fortran solver files @file{mebdfi.f} and @file{TODO} from Jeff Cash (cf. @url{http://www.ma.ic.ac.uk/~jcash} and @uref{http://pitagora.dm.uniba.it/~testset}) have been added to the OdePkg because they have been released under the GNU GPL V2 license. The interfaces to these solvers within OdePkg are TODO.
+
+@c @node Other solvers, ODE solver performances, Oct--file backward differentiation algorithm solvers, Solver families
+@c @subsection Other solvers
 
 @c The people from the University of Bari at http://pitagora.dm.uniba.it/~testset created the solvers BIMD and GAMD. But like before the disclaimer's part of this internet site is not clear and maybe they are not GNU--GPL compatible.
 
 @c The OdePack solvers from http://www.netlib.org/odepack have not been added to OdePkg, because the question is not answered if they are really needed from somebody. Other solvers from http://www.netlib.org/ode have not been added because of the same reason.
 
-@node ODE solver performances,  , Other solvers, Solver families
+@node ODE solver performances,  , Oct--file backward differentiation algorithm solvers, Solver families
 @subsection ODE solver performances
 
 @smallexample
@@ -497,76 +502,99 @@ octave:1> odepkg ('odepkg_performance_octavechemakzo');
 -----------------------------------------------------------------------------------------
 @end smallexample
 
-@node ODE/DAE/IDE options,  , Solver families, User's Guide
+@node ODE/DAE/IDE options, M--File Function Reference, Solver families, User's Guide
 @section ODE/DAE/IDE options
 @cindex ODE/DAE/IDE options
-The default values of odeset can be displayed if odeset is called without any input argument and one output argument argument, eg. the following way
+The default values of an OdePkg options structure can be displayed with the command @command{odeset}. If @command{odeset} is called without any input argument and one output argument then a OdePkg options structure with default values is created, eg.
 @example
 A = odeset ();
 disp (A);
 @end example
+Other values than default values can also be set with the command @command{odeset}. The function description of the command @command{odeset} can be found in the @ref{M--File Function Reference}. The values that can be set with this command are
 
 @table @samp
 @item RelTol
-The option @option{RelTol} is used to set the relative error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalized it may be of the form @math{e(t) = max (RelTol^T y(t), AbsTol)}. Run
+The option @option{RelTol} is used to set the relative error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalized it may be of the form
+@ifhtml
+@example
+@math{e(t) = max (RelTol^T y(t), AbsTol)}
+@end example
+@end ifhtml
+@ifnothtml
+@math{e(t) = max (RelTol^T y(t), AbsTol)}.
+@end ifnothtml
+Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('RelTol', 1, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('RelTol', 1e-10, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{RelTol}.@*
 
 @item AbsTol
-The option @option{AbsTol} is used to set the absolute error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalized it may be of the form @math{e(t) = max (RelTol^T y(t), AbsTol)}. Run
+The option @option{AbsTol} is used to set the absolute error tolerance for the error estimation of the solver while solving. It can either be a positive scalar or a vector with every element of the vector being a positive scalar (this depends on the solver that is used). The definite error estimation equation also depends on the solver that is used, but generalized it may be of the form
+@ifhtml
+@example
+@math{e(t) = max (RelTol^T y(t), AbsTol)}
+@end example
+@end ifhtml
+@ifnothtml
+@math{e(t) = max (RelTol^T y(t), AbsTol)}.
+@end ifnothtml
+Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('AbsTol', 1e-3, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('AbsTol', 1e-10, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{AbsTol}.@*
 
 @item NormControl
-The option @option{NormControl} is used to set the type of error tolerance calculation of the solver while solving. It can either be the string @command{'on'} or @command{'off'}. At the time the solver starts the initialization procedure a warning message may be displayed if the solver will ignore the @command{'on'} setting of this option because of an unhandled resp. missing implementation. The definite error estimation equation if set @command{'on'} also depends on the solver that is used, but generalized it may be of the form @math{e(t) = max (RelTol^T max ( norm (y(t), Inf)), AbsTol)}. Run
+The option @option{NormControl} is used to set the type of error tolerance calculation of the solver while solving. It can either be the string @command{'on'} or @command{'off'}. At the time the solver starts the initialization procedure a warning message may be displayed if the solver will ignore the @command{'on'} setting of this option because of an unhandled resp. missing implementation. The definite error estimation equation if set @command{'on'} also depends on the solver that is used, but generalized it may be of the form
+@ifhtml
+@example
+@math{e(t) = max (RelTol^T max (norm (y(t), Inf)), AbsTol)}
+@end example
+@end ifhtml
+@ifnothtml
+@math{e(t) = max (RelTol^T max (norm (y(t), Inf)), AbsTol)}.
+@end ifnothtml
+Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('NormControl', 'on', 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('NormControl', 'off', 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{NormControl}.@*
 
 @item MaxStep
-The option @option{MaxStep} is used to set the maximum step size for the solver that is used while solving. It can only be a positive scalar. By default this value is set internally by every solver and also may be different when using different solvers. Run
+The option @option{MaxStep} is used to set the maximum step size for the solver that is used while solving. It can only be a positive scalar. By default this value is set internally by every solver and also may be different when using different solvers. Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('MaxStep', 10, 'OutputFcn', @@odeprint);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('MaxStep', 1e-1, 'OutputFcn', @@odeprint);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{MaxStep}.@*
 
 @item InitialStep
-The option @option{InitialStep} is used to set the initial first step size for the solver. It can only be a positive scalar. By default this value is set internally by every solver and also may be different when using different solvers. Run
+The option @option{InitialStep} is used to set the initial first step size for the solver. It can only be a positive scalar. By default this value is set internally by every solver and also may be different when using different solvers. Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('InitialStep', 1, 'OutputFcn', @@odeprint);
 ode78 (@@odepkg_equations_vanderpol, [0 1], [2 0], A);
 B = odeset ('InitialStep', 1e-5, 'OutputFcn', @@odeprint);
 ode78 (@@odepkg_equations_vanderpol, [0 1], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{InitialStep}.@*
 
 @item InitialSlope
 The option @option{InitialSlope} is not handled by any of the solvers by now.@*
 
 @item OutputFcn
-The option @option{OutputFcn} can be used to set up an output function for displaying the results of the solver while solving. It must be a function handle to a valid function. There are four predefined output functions available with OdePkg. @command{odeprint} prints the actual time values and results in the octave window while solving, @command{odeplot} plots the results over time in a new figure window while solving, @command{odephas2} plots the first result over the second result as a two--dimensional plot while solving and @command{odephas3} plots the first result over the second result over the third result as a three--dimensional plot while solving. Run
+The option @option{OutputFcn} can be used to set up an output function for displaying the results of the solver while solving. It must be a function handle to a valid function. There are four predefined output functions available with OdePkg. @command{odeprint} prints the actual time values and results in the Octave window while solving, @command{odeplot} plots the results over time in a new figure window while solving, @command{odephas2} plots the first result over the second result as a two--dimensional plot while solving and @command{odephas3} plots the first result over the second result over the third result as a three--dimensional plot while solving. Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('OutputFcn', @@odeprint);
 ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], A);
 @end example
-to see the effect of using an output function with the option @option{OutputFcn}. User defined output functions can also be used. A typical framework for a self--made output function may then be of the form
+User defined output functions can also be used. A typical framework for a self--made output function may then be of the form
 @example
 function [vret] = odeoutput (vt, vy, vdeci, varargin)
   switch vdeci
@@ -579,50 +607,46 @@ function [vret] = odeoutput (vt, vy, vdeci, varargin)
   endswitch
 endfunction
 @end example
-The output function @command{odeplot} is also set automatically if the solver calculation routine is called without any output argument. Run
+The output function @command{odeplot} is also set automatically if the solver calculation routine is called without any output argument. Evaluate the following example for the visualization of the effect if this option is not set and no output argument is given
 @example
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0]);
 @end example
-to see an example.@*
 
 @item Refine
-The option @option{Refine} is used to set the interpolation factor that is used to increase the quality for the output values if an output function is also set with the option @option{OutputFcn}. It can only be a integer value @math{0<=Refine<=5}. Run
+The option @option{Refine} is used to set the interpolation factor that is used to increase the quality for the output values if an output function is also set with the option @option{OutputFcn}. It can only be a integer value @math{0<=Refine<=5}. Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('Refine', 0, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('Refine', 3, 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{Refine}.@*
 
 @item OutputSel
-The option @option{OutputSel} is used to set the components for which output has to be performed if an output function is also set with the option @option{OutputFcn}. It can only be a vector of integer values. Run
+The option @option{OutputSel} is used to set the components for which output has to be performed if an output function is also set with the option @option{OutputFcn}. It can only be a vector of integer values. Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('OutputSel', [1, 2], 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], A);
 B = odeset ('OutputSel', [2], 'OutputFcn', @@odeplot);
 ode78 (@@odepkg_equations_vanderpol, [0 20], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{OutputSel}.@*
 
 @item Stats
-The option @option{Stats} is used to print cost statistics about the solving process after solving has been finished. It can either be the string @command{'on'} or @command{'off'}. Run
+The option @option{Stats} is used to print cost statistics about the solving process after solving has been finished. It can either be the string @command{'on'} or @command{'off'}. Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('Stats', 'off');
 [a, b] = ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], A);
 B = odeset ('Stats', 'on');
 [c, d] = ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], B);
 @end example
-to see the effect of using different values for the option @option{Stats}. The cost statistics can also be obtained if the solver calculation routine is called with one output argument. The cost statistics then are in the output structure in field @option{stats}. Run
+The cost statistics can also be obtained if the solver calculation routine is called with one output argument. The cost statistics then are in the field @option{stats} of the output arguemnt structure. Evaluate the following example for the visualization of the effect if this option is set
 @example
 A = odeset ('Stats', 'on');
 B = ode78 (@@odepkg_equations_vanderpol, [0 2], [2 0], A);
 disp (B);
 @end example
-to see an example.@*
 
 @item Jacobian
-The option @option{Jacobian} can be used to set up an external Jacobian function or Jacobian matrix for DAE solvers to achieve faster and better results (ODE Runge--Kutta solvers do not need to handle a Jacobian function handle or Jacobian matrix). It must either be a function handle to a valid function or a full constant matrix of size squared the dimension of the set of differential equations. Run
+The option @option{Jacobian} can be used to set up an external Jacobian function or Jacobian matrix for DAE solvers to achieve faster and better results (ODE Runge--Kutta solvers do not need to handle a Jacobian function handle or Jacobian matrix). It must either be a function handle to a valid function or a full constant matrix of size squared the dimension of the set of differential equations. User defined Jacobian functions must have the form @samp{function [vjac] = fjac (vt, vy, varargin)}. Evaluate the following example for the visualization of the effect if this option is set
 @example
 function vdy = fpol (vt, vy, varargin)
   vdy = [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
@@ -638,7 +662,6 @@ B = odepkg_mexsolver_radau (@@fpol, [0 20], [2 0], A);
 C = odeset ('Jacobian', @@fjac, 'Stats', 'on');
 D = odepkg_mexsolver_radau (@@fpol, [0 20], [2 0], C);
 @end example
-to see the effect of using an Jacobian function with the option @option{Jacobian}. User defined Jacobian functions must have the form as described before (ie. @samp{function vr = fjac (vt, vy, varargin)}.@*
 
 @item JPattern
 The option @option{JPattern} is not handled by any of the solvers by now.@*
@@ -647,7 +670,7 @@ The option @option{JPattern} is not handled by any of the solvers by now.@*
 The option @option{Vectorized} is not handled by any of the solvers by now.@*
 
 @item Mass 
-The option @option{Mass} can be used to set up an external Mass function or Mass matrix for solving DAE problems. It depends on the solver that is used if @option{Mass} is supported or not. It must either be a function handle to a valid function or a full constant matrix of size squared the dimension of the set of differential equations. Run
+The option @option{Mass} can be used to set up an external Mass function or Mass matrix for solving DAE problems. It depends on the solver that is used if @option{Mass} is supported or not. It must either be a function handle to a valid function or a full constant matrix of size squared the dimension of the set of differential equations. User defined Jacobian functions must have the form @samp{function vmas = fmas (vt, vy, varargin)}. Evaluate the following example for the visualization of the effect if this option is set
 @example
 function vdy = frob (t, y, varargin)
   vdy(1,1) = -0.04*y(1)+1e4*y(2)*y(3);
@@ -662,10 +685,9 @@ endfunction
 A = odeset ('Mass', @@fmas);
 B = oderd (@@frob, [0 1e8], [1 0 0], A);
 @end example
-to see the effect of using a Mass function with the option @option{Mass}. User defined Mass functions must have the form as described before (ie. @samp{function vmas = fmas (vt, vy, varargin)}.@*
 
 @item MStateDependence
-The option @option{MStateDependence} can be used to set up the type of the external Mass function for solving DAE problems if a Mass function handle is set with the option @option{Mass}. It depends on the solver that is used if @option{MStateDependence} is supported or not. It must be a string of the form @command{'none'}, @command{'weak'} or @command{'strong'}. Run
+The option @option{MStateDependence} can be used to set up the type of the external Mass function for solving DAE problems if a Mass function handle is set with the option @option{Mass}. It depends on the solver that is used if @option{MStateDependence} is supported or not. It must be a string of the form @command{'none'}, @command{'weak'} or @command{'strong'}. Evaluate the following example for the visualization of the effect if this option is set
 @example
 function vdy = frob (vt, vy, varargin)
   vdy(1,1) = -0.04*vy(1)+1e4*vy(2)*vy(3);
@@ -680,7 +702,7 @@ endfunction
 A = odeset ('Mass', @@fmas, 'MStateDependence', 'none');
 B = oderd (@@frob, [0 1e8], [1 0 0], A);
 @end example
-to see the effect of using a Mass function with the option @option{MStateDependence}. User defined Mass functions must have the form as described before (ie. @samp{function vmas = fmas (vt, varargin)} if the option @option{MStateDependence} was set to @command{'none'}, otherwise the user defined Mass function must have the form @samp{function vmas = fmas (vt, vy, varargin)} if the option @option{MStateDependence} was set to either @command{'weak'} or @command{'strong'}.@*
+User defined Mass functions must have the form as described before (ie. @samp{function vmas = fmas (vt, varargin)} if the option @option{MStateDependence} was set to @command{'none'}, otherwise the user defined Mass function must have the form @samp{function vmas = fmas (vt, vy, varargin)} if the option @option{MStateDependence} was set to either @command{'weak'} or @command{'strong'}.@*
 
 @item MvPattern
 The option @option{MvPattern} is not handled by any of the solvers by now.@*
@@ -689,7 +711,7 @@ The option @option{MvPattern} is not handled by any of the solvers by now.@*
 The option @option{MassSingular} is not handled by any of the solvers by now.@*
 
 @item NonNegative
-The option @option{NonNegative} can be used to set single solution variables to zero even if their real solution would be a negative value. It must be a vector describing the positions in the solution vector for which the option @option{NonNegative} should be used. Run
+The option @option{NonNegative} can be used to set single solution variables to zero even if their real solution would be a negative value. It must be a vector describing the positions in the solution vector for which the option @option{NonNegative} should be used. Evaluate the following example for the visualization of the effect if this option is set
 @example
 vfun = @@(vt,vy) -abs(vy);
 vopt = odeset ('NonNegative', [1]);
@@ -700,10 +722,9 @@ vopt = odeset ('NonNegative', [1]);
 subplot (2,1,1); plot (vt1, vy1);
 subplot (2,1,2); plot (vt2, vy2);
 @end example
-to see the effect of not using the option @option{NonNegative} in the upper subplot and if using the option @option{NonNegative} in the lower suplot.@*
 
 @item Events
-The option @option{Events} can be used to set up an Event function, ie. the Event function can be used to find zero crossings in one of the results. It must either be a function handle to a valid function. Run
+The option @option{Events} can be used to set up an Event function, ie. the Event function can be used to find zero crossings in one of the results. It must either be a function handle to a valid function. Evaluate the following example for the visualization of the effect if this option is set
 @example
 function vdy = fbal (vt, vy, varargin)
   vdy(1,1) =  vy(2)+3; 
@@ -720,14 +741,40 @@ A = odeset ('Events', @@feve);
 B = ode78 (@@fbal, [0 1.5], [1 3], A);
 plot (B.x, B.y(:,1));
 @end example
-to see the effect of using an Events function with the option @option{Events}.@*
 
 @item MaxOrder
-The option @option{MaxOrder} is not handled by any of the solvers by now.@*
+The option @option{MaxOrder} can be used to set the maximum order of the backward differentiation algorithm of the @command{odebdi} solver. It must be a scalar integer value between @math{1} and @math{7}. Evaluate the following example for the visualization of the effect if this option is set
+@example
+function res = fwei (t, y, yp, varargin)
+  res = t * y^2 * yp^3 - y^3 * yp^2 + t * yp * (t^2 + 1) - t^2 * y;
+endfunction
+
+function [dy, dyp] = fjac (t, y, yp, varargin)
+  dy = 2 * t * y * yp^3 - 3 * y^2 * yp^2 - t^2;
+  dyp = 3 * t * y^2 * yp^2 - 2 * y^3 * yp + t * (t^2 + 1);
+endfunction
+
+A = odeset ('AbsTol', 1e-6, 'RelTol', 1e-6, 'Jacobian', @@fjac, ...
+	    'Stats', 'on', 'MaxOrder', 1, 'BDF', 'on')
+B = odeset (A, 'MaxOrder', 5)
+C = odebdi (@@fwei, [1 10], 1.2257, 0.8165, A);
+D = odebdi (@@fwei, [1 10], 1.2257, 0.8165, B);
+plot (C.x, C.y, 'bo-', D.x, D.y, 'rx:');
+@end example
 
 @item BDF
-The option @option{BDF} is not handled by any of the solvers by now.
+The option @option{BDF} is currently only supported by the @command{odebdi} solver. Using this solver the option @option{BDF} will automatically be set @command{'on'} even if it was set @command{'off'} before because the @command{odebdi} solver uses the backward differentiation formula.
 @end table
+
+@node M--File Function Reference, DLD Function Reference, ODE/DAE/IDE options, User's Guide
+@section M--File Function Reference
+@cindex M--File Function Reference
+@include mfunref.texi
+
+@node DLD Function Reference,  , M--File Function Reference, User's Guide
+@section DLD Function Reference
+@cindex DLD Function Reference
+@c @include dldfunref.texi
 
 @c %*** End of second chapter: User's Guide
 
@@ -737,19 +784,13 @@ The option @option{BDF} is not handled by any of the solvers by now.
 @cindex Programmer's Guide
 
 @menu
-* M-File Function Reference::   
-* C-Mex Function Reference::    
+* C++ Function Reference::      
 @end menu
 
-@node M-File Function Reference, C-Mex Function Reference, Programmer's Guide, Programmer's Guide
-@section M--File Function Reference
-@cindex M--File Function Reference
-@include mfunref.texi
-
-@node C-Mex Function Reference,  , M-File Function Reference, Programmer's Guide
-@section C--Mex Function Reference
-@cindex C--Mex Function Reference
-@c @include odepkgmex.texi
+@node C++ Function Reference,  , Programmer's Guide, Programmer's Guide
+@section C++ Function Reference
+@cindex C++ Function Reference
+@c @include ccfunref.texi
 
 @c %*** End of second chapter: Programmer's Guide
 

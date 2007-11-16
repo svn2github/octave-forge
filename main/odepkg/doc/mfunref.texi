@@ -200,6 +200,16 @@ doc odepkg
 @end example
 @end deftypefn
 
+@deftypefn {Function File} {[@var{res}] =} odepkg_equations_ilorenz (@var{t}, @var{y}, var{yd})
+
+Return three residuals of the implicit ordinary differential equations (IDEs) from the "Lorenz attractor" implementation, cf. @url{http://en.wikipedia.org/wiki/Lorenz_equation} for further details. The output argument @var{res} is a column vector and contains the residuals, @var{y} is a column vector that contains the integration results from the previous integration step, @var{yd} is a column vector that contains the derivatives of the last integration step and @var{t} is a scalar value with the actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
+
+Run examples with the command
+@example
+demo odepkg_equations_ilorenz
+@end example
+@end deftypefn
+
 @deftypefn {Function File} {[@var{ydot}] =} odepkg_equations_lorenz (@var{t}, @var{y})
 
 Return three derivatives of the non--stiff ordinary differential equations (non--stiff ODEs) from the "Lorenz attractor" implementation, cf. @url{http://en.wikipedia.org/wiki/Lorenz_equation} for further details. The output argument @var{ydot} is a column vector and contains the derivatives, the input argument @var{y} also is a column vector that contains the integration results from the previous integration step and @var{t} is a double scalar that keeps the actual time stamp. There is no error handling implemented in this function to achieve the highest performance available.
@@ -315,6 +325,16 @@ If this function is called with two input arguments and the first input argument
 Run examples with the command
 @example
 demo odepkg_testsuite_hires
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {[@var{solution}] =} odepkg_testsuite_implakzo (@var{@@solver}, @var{reltol})
+
+If this function is called with two input arguments and the first input argument @var{@@solver} is a function handle describing an OdePkg solver and the second input argument @var{reltol} is a double scalar describing the relative error tolerance then return a cell array @var{solution} with performance informations about the chemical AKZO Nobel testsuite of implicit differential algebraic equations after solving (IDE--test).
+
+Run examples with the command
+@example
+demo odepkg_testsuite_implakzo
 @end example
 @end deftypefn
 

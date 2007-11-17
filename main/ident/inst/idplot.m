@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} idplot (@var{z}, @var{idx}, @var{dT}, @var{outputs}, @var{shape})
 ## 
-## Plot inputs and ouputs defined by the system z. Other inputs are 
+## Plot inputs and ouputs defined by the system @var{z}. Other inputs are 
 ## optional.
 ## @end deftypefn
 ## @seealso{idsim}

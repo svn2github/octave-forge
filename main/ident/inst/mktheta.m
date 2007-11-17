@@ -14,11 +14,16 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-## th = mktheta(a,b)
-## Create a theta structure from the IIR system Ay = Bx.  See poly2th
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {} {mktheta (@var{a}, @var{b})}
+##
+## Create a theta structure from the IIR system @code{Ay = Bx}.  See  poly2th
 ## for details on the theta structure.
 ##
-## See also poly2th, idsim
+## @end deftypefn
+## @seealso {poly2th, idsim}
+
 function th=mktheta(a,b)
   th=poly2th(a,b);
 endfunction

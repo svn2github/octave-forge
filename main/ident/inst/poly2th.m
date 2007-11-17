@@ -14,22 +14,24 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-## th = poly2th(a,b,c,d,f,v,T)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} {poly2th (@var{a}, @var{b}, @var{c}, @var{d}, @var{f}, @var{v}, @var{T})}
+##
 ## Represent the generalized Multi-Input, Single-Output (MISO) system
 ## defined as follows:
 ##
-##                      / B_i(q)        \     C(q)
-## A_j(q)y(t) =   sum   | ------ u_i(t) | +   ---- e_j(t) 
-##              1<i<=bn \ F_i(q)        /     D(q)
 ##
+## @math{ A_j(q)y(t) = \sum_{i=1}^{bn} \left( \frac{B_i(q)}{F_i(q)} u_i(t) \right) + \frac{C(q)}{D(q)}e_j(t)}
+## where 
 ## e is white noise
 ## u is the input signal
 ## y is the output signal
 ##
-## v is the variance on the noise (default is 1)
-## T is the sampling interval (default is 1)
+## @var{v} is the variance on the noise (default is 1)
+## @var{T} is the sampling interval (default is 1)
 ##
-## See also: mktheta, idsim
+## @end deftypefn
+## @seealso {mktheta, idsim}
 
 ## TODO: incorporate delays: if system is discrete (T>0), then delay for
 ## TODO: input i is the number of leading zeros in b(:,i)

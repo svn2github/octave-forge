@@ -14,17 +14,18 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-## usage: y = idsim([u e], th)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} {idsim ([@var{u} @var{e}], @var{th})}
 ##
-## Simulate the effects of the MISO system defined by th.
-##
-## e is the noise in the input.  It is scaled by sqrt(v), where v is 
+## Simulate the effects of the MISO system defined by @var{th}.
+## @var{e} is the noise in the input.  It is scaled by @math{sqrt(v)}, where @var{v} is 
 ## the noise variance given when you created the model, so for proper 
-## effect, e should have mean 0 and variance 1.
+## effect, @var{e} should have mean 0 and variance 1.
 ##
-## If e is not given, then a noise free simulation is run.
+## If @var{e} is not given, then a noise free simulation is run.
 ##
-## See also: poly2th, idplot
+## @end deftypefn
+## @seealso {poly2th, idplot}
 
 function y = idsim(u, th)
 

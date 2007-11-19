@@ -1,0 +1,77 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-orig/Makefile lapack-lite-3.1.1/Makefile
+--- lapack-lite-3.1.1-orig/Makefile	Mon Feb 26 18:20:49 2007
++++ lapack-lite-3.1.1/Makefile	Mon Nov  5 15:01:54 2007
+@@ -22,6 +22,12 @@
+ 
+ lapacklib:	lapack_install
+ 	( cd SRC; $(MAKE) )
++	$(F77) -shared -o lapack.dll \
++	  -Wl,--export-all-symbols \
++	  -Wl,--out-implib=lapack.dll.a \
++	  -Wl,--whole-archive lapack.a \
++	  -Wl,--no-whole-archive -lblas
++	$(STRIP) $(STRIP_FLAGS) lapack.dll
+ 
+ tmglib:
+ 	( cd TESTING/MATGEN; $(MAKE) )
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-orig/make.inc lapack-lite-3.1.1/make.inc
+--- lapack-lite-3.1.1-orig/make.inc	Thu Jan  1 00:00:00 1970
++++ lapack-lite-3.1.1/make.inc	Mon Nov  5 14:50:35 2007
+@@ -0,0 +1,57 @@
++####################################################################
++#  LAPACK make include file.                                       #
++#  LAPACK, Version 3.1.1                                           #
++#  February 2007                                                   #
++####################################################################
++#
++# See the INSTALL/ directory for more examples.
++#
++SHELL = /bin/sh
++#
++#  The machine (platform) identifier to append to the library names
++#
++PLAT = 
++#  
++#  Modify the FORTRAN and OPTS definitions to refer to the
++#  compiler and desired compiler options for your machine.  NOOPT
++#  refers to the compiler options desired when NO OPTIMIZATION is
++#  selected.  Define LOADER and LOADOPTS to refer to the loader and 
++#  desired load options for your machine.
++#
++FORTRAN  = $(F77) 
++OPTS     = -funroll-all-loops -O3
++DRVOPTS  = $(OPTS)
++NOOPT    =
++LOADER   = $(F77)
++LOADOPTS = 
++#
++# Timer for the SECOND and DSECND routines
++#
++# Default : SECOND and DSECND will use a call to the EXTERNAL FUNCTION ETIME
++# TIMER    = EXT_ETIME
++# For RS6K : SECOND and DSECND will use a call to the EXTERNAL FUNCTION ETIME_
++# TIMER    = EXT_ETIME_
++# For gfortran compiler: SECOND and DSECND will use a call to the INTERNAL FUNCTION ETIME
++# TIMER    = INT_ETIME 
++# If your Fortran compiler does not provide etime (like Nag Fortran Compiler, etc...)
++# SECOND and DSECND will use a call to the INTERNAL FUNCTION CPU_TIME 
++TIMER    = INT_CPU_TIME
++# If neither of this works...you can use the NONE value... In that case, SECOND and DSECND will always return 0
++# TIMER     = NONE
++#
++#  The archiver and the flag(s) to use when building archive (library)
++#  If you system has no ranlib, set RANLIB = echo.
++#
++ARCH     = ar
++ARCHFLAGS= cr
++RANLIB   = ranlib
++#
++#  The location of the libraries to which you will link.  (The 
++#  machine-specific, optimized BLAS library should be used whenever
++#  possible.)
++#
++BLASLIB      = -lblas
++LAPACKLIB    = lapack$(PLAT).a
++TMGLIB       = tmglib$(PLAT).a
++EIGSRCLIB    = eigsrc$(PLAT).a
++LINSRCLIB    = linsrc$(PLAT).a

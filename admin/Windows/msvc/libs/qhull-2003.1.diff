@@ -8,7 +8,7 @@ diff -ur qhull-2003.1/src/Makefile qhull-2003.1-new/src/Makefile
 -CC     = gcc
 -CCOPTS1 = -O2 -ansi 
 +CC     = cc-msvc
-+CCOPTS1 = -O2 -ansi
++CCOPTS1 = -MD -O2 -ansi
  
  # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
  #CC = cc

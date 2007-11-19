@@ -783,7 +783,7 @@ if check_package ncurses; then
     patch -p1 < ncurses-5.6.diff &&
     ncurses_copyright=`grep -e '^-- Copyright' README | head -n 1 | sed -e "s/-- //" -e "s/ *--$//"` &&
     create_module_rc Ncurses 5.6 ncurses.dll "Free Software Foundation (http://www.fsf.org)" \
-      "New Curses Library" "$ncurses_copyright" > ncurses/ncurses.rc &&
+      "GNU New Curses Library" "$ncurses_copyright" > ncurses/ncurses.rc &&
     CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc CFLAGS="-O2 -MD" \
       ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALL_DIR --without-cxx-binding \
       --without-libtool --with-shared --without-normal --without-debug &&
@@ -816,6 +816,13 @@ if check_package readline; then
   echo "compiling readline... "
   (cd "$DOWNLOAD_DIR/readline-5.2" &&
     patch -p1 < readline-5.2.diff &&
+    rl_copyright=`grep -e '^/\* \+Copyright' readline.c | sed -e "s,/\* \+,,"` &&
+    create_module_rc Readline 5.2 readline.dll "Free Software Foundation (http://www.fsf.org)" \
+      "GNU Readline Library" "$rl_copyright" > readline.rc &&
+    sed -e "s/^SHARED_OBJ =/SHARED_OBJ = readline.res/" shlib/Makefile.in > ttt &&
+    mv ttt shlib/Makefile.in &&
+    echo "readline.res: readline.rc" >> shlib/Makefile.in &&
+    echo "	rc -fo \$@ \$<" >> shlib/Makefile.in &&
     CC=cc-msvc CXX=cc-msvc ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALLDIR &&
     make shared &&
     make install-shared DESTDIR=$INSTALL_DIR &&

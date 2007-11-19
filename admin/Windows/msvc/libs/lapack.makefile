@@ -38,6 +38,9 @@ $(LIB_DEFFILE): $(DEF_FILES)
 
 $(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
 	@echo $(OBJECTS) > link.tmp
+	@if test -f lapack.res; then \
+		echo lapack.res >> link.tmp ; \
+	fi
 	$(CC) -shared -o $@ @link.tmp -lf2c -lblas -Wl,-def:$(LIB_DEFFILE)
 	@rm -f link.tmp
 

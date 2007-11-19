@@ -50,6 +50,7 @@ download_root="http://downloads.sourceforge.net/octave/@@?download"
 
 # Package versions (the build instructions for those
 # packages are version-independent)
+lapackver=3.1.1
 pcrever=7.4
 curlver=7.16.4
 libpngver=1.2.23
@@ -193,8 +194,8 @@ function create_module_rc
   module_copyright="$6"
   module_major=`echo $module_version | sed -e "s/\..*//"`
   module_minor=`echo $module_version | sed -e "s/^[^.]*\.//" -e "s/\..*//"`
-  module_patch=`echo $module_version | sed -e "s/.*\.//"`
-  if test "$module_minor" = "$module_patch"; then
+  module_patch=`echo $module_version | sed -n -e "s/[0-9]\+\.[0-9]\+\.//p"`
+  if test -z "$module_patch"; then
     module_patch=0
   fi
   cat <<EOF
@@ -466,15 +467,19 @@ fi
 ######
 
 if check_package VC; then
-  msvc=`ls /c/WINDOWS/WinSxS/*/msvcr80.dll 2> /dev/null`
+  msvc=`ls /c/WINDOWS/WinSxS/*/msvcr80.dll 2> /dev/null | tail -n 1`
   if test -z "$msvc"; then
     echo "cannot find VC++ runtime libraries"
     exit -1
   fi
   msvc_path=`echo $msvc | sed -e 's,/msvcr80.dll$,,'`
+  msvc_name=`echo $msvc_path | sed -e 's,.*/,,'`
   mkdir -p "$tbindir/Microsoft.VC80.CRT"
   cp $msvc_path/*.dll "$tbindir/Microsoft.VC80.CRT"
-  cat > "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" << EOF
+  if true; then
+    cp "/c/WINDOWS/WinSxS/Manifests/$msvc_name.manifest" "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest"
+  else
+    cat > "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" << EOF
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!-- Copyright © 1981-2001 Microsoft Corporation -->
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
@@ -491,11 +496,13 @@ if check_package VC; then
     <file name="msvcm80.dll"/>
 </assembly>
 EOF
+  fi
   if test ! -f "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest"; then
     echo "failed"
     exit -1
   else
-    echo "done"
+    msvc_ver=`grep "version=" "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" | tail -n 1 | sed -e "s/.*version=\"\([^ ]*\)\".*/\1/"`
+    echo "done (using version $msvc_ver)"
   fi
 fi
 
@@ -564,11 +571,18 @@ fi
 ########
 
 if check_package BLAS; then
-  download_file blas.tgz http://www.netlib.org/blas/blas.tgz
+  download_file blas.tgz ftp://ftp.netlib.org/blas/blas.tgz
+  unpack_file blas.tgz
   (cd "$DOWNLOAD_DIR" && tar xfz blas.tgz)
   echo -n "compiling BLAS... "
   cp libs/blas.makefile "$DOWNLOAD_DIR/BLAS"
   (cd "$DOWNLOAD_DIR/BLAS" &&
+    sed -e "s/^OBJECTS =/OBJECTS = blas.res/" blas.makefile > ttt &&
+    mv ttt blas.makefile &&
+    echo "blas.res: blas.rc" >> blas.makefile &&
+    echo "	rc -fo \$@ \$<" >> blas.makefile &&
+    create_module_rc BLAS 1.0 blas.dll "Netlib (http://www.netlib.org)" \
+      "BLAS F77 Reference Implementation" "Public Domain" > blas.rc &&
     make -f blas.makefile && 
     cp blas.dll "$tbindir" &&
     cp blas.lib "$tlibdir") >&5 2>&1
@@ -586,17 +600,22 @@ fi
 ##########
 
 if check_package LAPACK; then
-  download_file lapack-lite-3.1.0.tgz http://www.netlib.org/lapack/lapack-lite-3.1.0.tgz
+  download_file lapack-lite-$lapackver.tgz ftp://ftp.netlib.org/lapack/lapack-lite-$lapackver.tgz
   echo -n "decompressing LAPACK... "
-  (cd "$DOWNLOAD_DIR" && tar xfz lapack-lite-3.1.0.tgz)
+  unpack_file lapack-lite-$lapackver.tgz
   echo "done"
   echo -n "compiling LAPACK... "
-  cp libs/lapack.makefile "$DOWNLOAD_DIR/lapack-3.1.0/SRC"
-  (cd "$DOWNLOAD_DIR/lapack-3.1.0/SRC" &&
-    make -f lapack.makefile && 
+  cp libs/lapack.makefile "$DOWNLOAD_DIR/lapack-lite-$lapackver/SRC"
+  (cd "$DOWNLOAD_DIR/lapack-lite-$lapackver/SRC" &&
+    lapack_copyright=`grep -e '^Copyright' ../COPYING | head -n 1`
+    create_module_rc LAPACK $lapackver lapack.dll "Netlib (http://www.netlib.org)" \
+      "Lapack F77 Reference Implementation" "$lapack_copyright" > lapack.rc &&
+    rc -fo lapack.res lapack.rc &&
+    make -f lapack.makefile &&
     cp lapack.dll "$tbindir" &&
-    cp lapack.lib liblapack_f77.lib "$tlibdir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/lapack-3.1.0"
+    cp lapack.lib liblapack_f77.lib "$tlibdir" &&
+    cp ../COPYING "$tlicdir/COPYING.LAPACK") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/lapack-lite-$lapackver"
   if ! test -f "$tbindir/lapack.dll"; then
     echo "failed"
     exit -1

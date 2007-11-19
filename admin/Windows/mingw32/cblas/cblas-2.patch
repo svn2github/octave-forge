@@ -1,0 +1,74 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/makefile.in cblas/makefile.in
+--- cblas-orig/makefile.in	Thu Jan  1 00:00:00 1970
++++ cblas/makefile.in	Tue Nov  6 09:08:17 2007
+@@ -0,0 +1,53 @@
++#
++# Makefile.LINUX
++#
++#
++# If you compile, change the name to Makefile.in.
++#
++#
++ 
++#-----------------------------------------------------------------------------
++# Shell
++#-----------------------------------------------------------------------------
++
++SHELL = /bin/sh
++
++#-----------------------------------------------------------------------------
++# Platform
++#-----------------------------------------------------------------------------
++
++PLAT = MINGW32
++
++#-----------------------------------------------------------------------------
++# Libraries and includs
++#-----------------------------------------------------------------------------
++ 
++BLLIB = -lblas
++CBDIR = $(TOPDIR)/$(SRCDIR)
++CBLIBDIR = $(CBDIR)/lib/$(PLAT)
++CBLIB = $(CBLIBDIR)/libcblas.a
++CBLIBDLL=$(CBLIBDIR)/cblas.dll
++IMPLIB=$(CBLIBDIR)/libcblas.dll.a
++
++#-----------------------------------------------------------------------------
++# Compilers
++#-----------------------------------------------------------------------------
++
++#CC = gcc
++FC = $(F77)
++LOADER = $(FC)
++
++#-----------------------------------------------------------------------------
++# Flags for Compilers
++#-----------------------------------------------------------------------------
++
++CFLAGS = -O3 -DADD_ $(GCC_ARCH_FLAGS)
++FFLAGS = -O3  
++
++#-----------------------------------------------------------------------------
++# Archive programs and flags
++#-----------------------------------------------------------------------------
++
++ARCH = ar
++ARCHFLAGS = r
++RANLIB = echo
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/src/Makefile cblas/src/Makefile
+--- cblas-orig/src/Makefile	Mon Mar 15 20:11:03 1999
++++ cblas/src/Makefile	Mon Nov  5 14:08:23 2007
+@@ -234,6 +234,13 @@
+ all: $(alev)  
+ 	$(ARCH) $(ARCHFLAGS)  $(CBLIB) $(alev) 
+ 	$(RANLIB) $(CBLIB)
++	$(F77) -shared -o $(CBLIBDLL) \
++	  -Wl,--export-all-symbols \
++	  -Wl,--allow-multiple-definition \
++	  -Wl,--out-implib=$(IMPLIB) \
++	  -Wl,--whole-archive $(CBLIB) \
++	  -Wl,--no-whole-archive $(BLLIB)
++	$(STRIP) $(STRIP_FLAGS) $(CBLIBDLL)
+ 
+ 
+ .SUFFIXES: .o .c .f

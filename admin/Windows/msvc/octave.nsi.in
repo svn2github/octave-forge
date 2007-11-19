@@ -235,6 +235,8 @@ Section "Generic" SEC_LA_GEN
   SetOverwrite try
   File /oname=blas.dll "${VCLIBS_ROOT}\bin\blas.dll"
   File /oname=lapack.dll "${VCLIBS_ROOT}\bin\lapack.dll"
+  SetOutPath "$INSTDIR\license"
+  File "${VCLIBS_ROOT}\license\COPYING.LAPACK"
 SectionEnd
 
 Section /o "P4/SSE2" SEC_LA_P4SSE2

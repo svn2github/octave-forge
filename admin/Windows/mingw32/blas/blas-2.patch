@@ -1,0 +1,53 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def blas-orig/makefile.mingw32 blas/makefile.mingw32
+--- blas-orig/makefile.mingw32	Thu Jan  1 00:00:00 1970
++++ blas/makefile.mingw32	Mon Nov  5 13:45:23 2007
+@@ -0,0 +1,49 @@
++LIBTARGET = blas.dll
++
++FFLAGS = -O3 -funroll-all-loops
++
++FSOURCES = $(wildcard *.f)
++OBJECTS = $(patsubst %.f,%.o, $(FSOURCES))
++
++DEF_FILES = $(patsubst %.f,%.def, $(FSOURCES))
++LIB_DEFFILE = $(patsubst %.dll,%.def, $(LIBTARGET))
++
++all: $(LIBTARGET)
++
++.SUFFIXES: .f .c .o .def
++
++%.o : %.f
++	$(F77) $(FFLAGS) -o $@ -c $<
++
++%.def : %.f
++	@echo "Making $@"
++	@sed -n \
++	     -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
++	     -e 's/^\(      \|	\)\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$$/\3_/p' < $< > $@
++
++$(LIB_DEFFILE): $(DEF_FILES)
++	echo "EXPORTS" > $@
++	cat $(DEF_FILES) >> $@
++
++$(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
++	$(F77) -shared -o $@ $(OBJECTS) \
++		-Wl,--out-implib,libblas.dll.a \
++		-Wl,--output-def,libblas.def \
++		-Wl,--export-all-symbols \
++		-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
++
++OTHER_CLEANFILES = $(patsubst %.dll, %.exp, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.ilk, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.lib, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.pdb, $(LIBTARGET))
++
++clean:
++	$(RM) $(OBJECTS) $(CSOURCES)
++	$(RM) $(DEF_FILES) $(LIB_DEFFILE)
++	$(RM) $(LIBTARGET) $(OTHER_CLEANFILES)
++
++install: blas.dll
++	cp blas.dll $(BINARY_PATH)
++	cp libblas.dll.a $(LIBRARY_PATH)
++	cp libblas.def $(LIBRARY_PATH)/lib

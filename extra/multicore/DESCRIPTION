@@ -1,0 +1,13 @@
+Name: MULTICORE
+Version: 0.2
+Date: 2007-11-13
+Author: Markus Buehren, mb_matlab@gmx.de
+Maintainer: Markus Buehren, Chuong Nguyen and the Octave Community
+Title: Parallel Processing on Multiple Cores
+Description: An Octave-forge package providing functions for
+ parallel processing on multiple cores.
+Categories: parallel processing, distributed computing, multiple core
+Depends: octave (>= 2.9.12)
+Autoload: yes
+License: GPL version 2 or later
+Url: http://octave.sf.net

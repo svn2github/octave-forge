@@ -1,0 +1,43 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak mingw-libgnurx-2.5.1-orig/Makefile.in mingw-libgnurx-2.5.1/Makefile.in
+--- mingw-libgnurx-2.5.1-orig/Makefile.in	Mon May  7 21:28:28 2007
++++ mingw-libgnurx-2.5.1/Makefile.in	Fri Nov  9 19:57:28 2007
+@@ -56,7 +56,7 @@
+ ZIPCMD = @ZIPCMD@
+ ZIPEXT = @ZIPEXT@
+ 
+-all: libgnurx-$(DLLVERSION).dll libgnurx.dll.a libregex.a @GNURX_LIB@
++all: gnurx.dll libregex.a @GNURX_LIB@
+ 
+ Makefile: config.status Makefile.in
+ 	./config.status
+@@ -66,11 +66,12 @@
+ 
+ $(OBJECTS): Makefile
+ 
+-libgnurx-$(DLLVERSION).dll libgnurx.dll.a: $(OBJECTS)
+-	$(CC) $(CFLAGS) -shared -o libgnurx-$(DLLVERSION).dll $(LDFLAGS) $(OBJECTS)
++gnurx.dll: $(OBJECTS)
++	$(CC) $(CFLAGS) -shared -o $@ $(LDFLAGS) $(OBJECTS)
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+-libregex.a: libgnurx.dll.a
+-	cp -p libgnurx.dll.a $@
++libregex.a: $(OBJECTS)
++	$(AR) cru $@ $(OBJECTS)
+ 
+ gnurx.lib: libgnurx-$(DLLVERSION).dll
+ 	$(MSVCLIB) -def:libgnurx.def -out:gnurx.lib
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak mingw-libgnurx-2.5.1-orig/configure mingw-libgnurx-2.5.1/configure
+--- mingw-libgnurx-2.5.1-orig/configure	Mon May  7 21:52:26 2007
++++ mingw-libgnurx-2.5.1/configure	Fri Nov  9 19:41:58 2007
+@@ -2392,8 +2392,8 @@
+ 
+   CC_QUALIFIED="$CC $CC_QUALIFIED"
+ 
+-  LDFLAGS="$LDFLAGS -Wl,--enable-auto-image-base -Wl,--out-implib,libgnurx.dll.a"
+-  test -n "${GNURX_LIB}" && LDFLAGS="$LDFLAGS -Wl,--output-def,libgnurx.def"
++  LDFLAGS="$LDFLAGS -Wl,--enable-auto-image-base -Wl,--out-implib,libregex.dll.a"
++  test -n "${GNURX_LIB}" && LDFLAGS="$LDFLAGS -Wl,--output-def,libregex.def"
+             ac_config_files="$ac_config_files Makefile"
+ 
+   cat >confcache <<\_ACEOF

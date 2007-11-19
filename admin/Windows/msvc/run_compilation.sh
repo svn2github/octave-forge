@@ -996,12 +996,18 @@ if check_package ARPACK; then
   download_file arpack96.tar.gz http://www.caam.rice.edu/software/ARPACK/SRC/arpack96.tar.gz
   download_file patch.tar.gz http://www.caam.rice.edu/software/ARPACK/SRC/patch.tar.gz
   echo -n "decompressing ARPACK... "
-  (cd "$DOWNLOAD_DIR" && tar xfz arpack96.tar.gz)
-  (cd "$DOWNLOAD_DIR" && tar xfz patch.tar.gz)
+  unpack_file arpack96.tar.gz
+  unpack_file patch.tar.gz
   cp libs/arpack.makefile "$DOWNLOAD_DIR/ARPACK"
   echo "done"
   echo -n "compiling ARPACK... "
   (cd "$DOWNLOAD_DIR/ARPACK" &&
+    sed -e "s/^OBJECTS =/OBJECTS = arpack.res/" arpack.makefile > ttt &&
+    mv ttt arpack.makefile &&
+    echo "arpack.res: arpack.rc" >> arpack.makefile &&
+    echo "	rc -fo \$@ \$<" >> arpack.makefile &&
+    create_module_rc ARPACK 96.0 arpack.dll "Rice University (http://www.caam.rice.edu)" \
+      "ARPACK Library for Large-Scale Eigenvalues Problems" "Copyright (©) 2001, Rice University" > arpack.rc &&
     make -f arpack.makefile && 
     cp arpack.dll "$tbindir" &&
     cp arpack.lib "$tlibdir") >&5 2>&1

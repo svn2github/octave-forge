@@ -15,7 +15,7 @@ diff -urN less-394/Makefile.wnm less-394-mod/Makefile.wnm
  
  LD = link
 -LIBS = user32.lib
-+LIBS = user32.lib pcre.lib
++LIBS = user32.lib pcre.lib pcreposix.lib
  
  #### End of system configuration section. ####
  

@@ -1,0 +1,32 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak qhull-2003.1-orig/src/Makefile qhull-2003.1/src/Makefile
+--- qhull-2003.1-orig/src/Makefile	Wed Dec 31 03:20:50 2003
++++ qhull-2003.1/src/Makefile	Tue Nov 13 07:15:29 2007
+@@ -43,8 +43,8 @@
+ 
+ #for Gnu's gcc compiler -O2 for optimization, -g for debugging, -Wall for check
+ #
+-CC     = gcc
+-CCOPTS1 = -O2 -ansi 
++#CC     = gcc
++CCOPTS1 = $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS)
+ 
+ # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
+ #CC = cc
+@@ -80,6 +80,17 @@
+ 		qdelau_f.htm qhalf.htm qvoronoi.htm qvoron_f.htm rbox.htm 
+ 
+ all: rbox qconvex qdelaunay qhalf qvoronoi qhull
++
++lib: libqhull.a qhull.dll
++
++qhull.dll : libqhull.a
++	$(CC) -shared -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--enable-runtime-pseudo-reloc \
++	-Wl,--out-implib=$(<:.a=.dll.a) \
++	-Wl,--whole-archive $< \
++	-Wl,--no-whole-archive
++	strip $(STRIP_FLAGS) $@
+ 
+ unix.o:   qhull.h user.h mem.h
+ qconvex.o:   qhull.h user.h mem.h

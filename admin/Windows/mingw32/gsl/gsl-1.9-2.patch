@@ -1,0 +1,36 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gsl-1.9-orig/Makefile.in gsl-1.9/Makefile.in
+--- gsl-1.9-orig/Makefile.in	Tue Feb 20 13:09:18 2007
++++ gsl-1.9/Makefile.in	Thu Nov  8 14:46:23 2007
+@@ -258,7 +258,7 @@
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = gsl.pc
+ EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.ac THANKS BUGS SUPPORT gsl.spec.in gsl.m4 test_gsl_histogram.sh
+-lib_LTLIBRARIES = libgsl.la
++lib_LTLIBRARIES = libgsl.la gsl.dll gslcblas.dll
+ libgsl_la_SOURCES = version.c
+ libgsl_la_LIBADD = $(SUBLIBS)
+ libgsl_la_LDFLAGS = -version-info $(GSL_LT_VERSION)
+@@ -363,6 +363,23 @@
+ 	done
+ libgsl.la: $(libgsl_la_OBJECTS) $(libgsl_la_DEPENDENCIES) 
+ 	$(LINK) -rpath $(libdir) $(libgsl_la_LDFLAGS) $(libgsl_la_OBJECTS) $(libgsl_la_LIBADD) $(LIBS)
++
++gsl.dll : libgsl.la
++	$(CC) -shared -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--whole-archive ./.libs/libgsl.a \
++	-Wl,--out-implib=libgsl.dll.a \
++	-Wl,--no-whole-archive -lcblas -lblas
++	strip $(STRIP_FLAGS) $@
++
++gslcblas.dll : libgsl.la
++	$(CC) -shared -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--whole-archive ./cblas/.libs/libgslcblas.a \
++	-Wl,--out-implib=libgslcblas.dll.a \
++	-Wl,--no-whole-archive -lcblas -lblas
++	strip $(STRIP_FLAGS) $@
++
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
+ 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"

@@ -26,7 +26,7 @@ function [x fval] = fminsearch(funfun, X0, options, grad, varargin)
 	if (nargin == 0); usage('[x fval] = fminsearch(funfun, X0, options, grad, varargin)'); end
 	if (nargin < 3); options=[]; end
 	if (nargin < 4); grad=[]; end
-	if (nargin < 5); varargin=[]; end
-	x = fmins(funfun, X0, options, grad, varargin);
-	fval = feval(funfun,x);
+	if (nargin < 5); varargin={}; end
+	x = fmins(funfun, X0, options, grad, varargin{:});
+	fval = feval(funfun, x, varargin{:});
 endfunction;

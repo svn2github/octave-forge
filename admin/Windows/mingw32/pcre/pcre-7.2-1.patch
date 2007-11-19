@@ -1,0 +1,32 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak pcre-7.2-orig/configure pcre-7.2/configure
+--- pcre-7.2-orig/configure	Tue Jun 19 13:26:09 2007
++++ pcre-7.2/configure	Tue Nov  6 09:49:13 2007
+@@ -21330,11 +21330,11 @@
+ # The extra LDFLAGS for each particular library
+ # (Note: The libpcre*_version bits are m4 variables, assigned above)
+ 
+-EXTRA_LIBPCRE_LDFLAGS="$NO_UNDEFINED -version-info 0:1:0"
++EXTRA_LIBPCRE_LDFLAGS="$NO_UNDEFINED -version-info 7:2:0"
+ 
+-EXTRA_LIBPCREPOSIX_LDFLAGS="$NO_UNDEFINED -version-info 0:0:0"
++EXTRA_LIBPCREPOSIX_LDFLAGS="$NO_UNDEFINED -version-info 7:2:0"
+ 
+-EXTRA_LIBPCRECPP_LDFLAGS="$NO_UNDEFINED $EXPORT_ALL_SYMBOLS -version-info 0:0:0"
++EXTRA_LIBPCRECPP_LDFLAGS="$NO_UNDEFINED $EXPORT_ALL_SYMBOLS -version-info 7:2:0"
+ 
+ 
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak pcre-7.2-orig/pcreposix.h pcre-7.2/pcreposix.h
+--- pcre-7.2-orig/pcreposix.h	Wed Apr  4 14:04:40 2007
++++ pcre-7.2/pcreposix.h	Tue Nov  6 09:35:34 2007
+@@ -111,8 +111,8 @@
+ 
+ #ifdef _WIN32
+ #  ifndef PCREPOSIX_STATIC
+-#    define PCREPOSIX_EXP_DECL extern __declspec(dllimport)
+-#    define PCREPOSIX_EXP_DEFN  __declspec(dllimport)
++#    define PCREPOSIX_EXP_DECL extern __declspec(dllexport)
++#    define PCREPOSIX_EXP_DEFN  __declspec(dllexport)
+ #  endif
+ #endif
+ 

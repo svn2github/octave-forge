@@ -867,7 +867,7 @@ fi
 if check_package SuiteSparse; then
   download_file SuiteSparse-3.0.0.tar http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
   echo -n "decompressing SuiteSparse... "
-  (cd "$DOWNLOAD_DIR" && tar xfz SuiteSparse-3.0.0.tar)
+  unpack_file SuiteSparse-3.0.0.tar
   cp libs/suitesparse-3.0.0.diff "$DOWNLOAD_DIR/SuiteSparse"
   echo "done"
   echo "compiling SuiteSpase... "

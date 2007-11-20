@@ -711,7 +711,7 @@ The option @option{MvPattern} is not handled by any of the solvers by now.@*
 The option @option{MassSingular} is not handled by any of the solvers by now.@*
 
 @item NonNegative
-The option @option{NonNegative} can be used to set single solution variables to zero even if their real solution would be a negative value. It must be a vector describing the positions in the solution vector for which the option @option{NonNegative} should be used. Evaluate the following example for the visualization of the effect if this option is set
+The option @option{NonNegative} can be used to set solution variables to zero even if their real solution would be a negative value. It must be a vector describing the positions in the solution vector for which the option @option{NonNegative} should be used. Evaluate the following example for the visualization of the effect if this option is set
 @example
 vfun = @@(vt,vy) -abs(vy);
 vopt = odeset ('NonNegative', [1]);

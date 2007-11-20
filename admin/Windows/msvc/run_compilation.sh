@@ -857,6 +857,7 @@ if check_package zlib; then
     mt -outputresource:zlib1.dll -manifest zlib1.dll.manifest &&
     cp zlib1.dll "$tbindir" &&
     cp zlib.lib "$tlibdir" &&
+    cp zlib.lib "$tlibdir/z.lib" &&
     cp zlib.h zconf.h "$tincludedir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/zlib"
   if ! test -f "$tbindir/zlib1.dll"; then
@@ -984,8 +985,9 @@ AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
     cp Win32_DLL_Release/libpng*.dll "$tbindir" &&
     cp Win32_DLL_Release/png.lib "$tlibdir" &&
     cp ../../png.h ../../pngconf.h "$tincludedir" &&
-    mkdir -p "$tlibdir/pkconfig" &&
-    cp libpng.pc "$tlibdir/pkgconfig") >&5 2>&1
+    mkdir -p "$tlibdir/pkgconfig" &&
+    cp libpng.pc "$tlibdir/pkgconfig" &&
+    cp libpng.pc "$tlibdir/pkgconfig/libpng12.pc") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/lpng$pngver"
   if test ! -f "$tlibdir/png.lib"; then
     echo "failed"

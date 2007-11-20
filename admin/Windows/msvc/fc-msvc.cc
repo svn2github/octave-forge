@@ -168,6 +168,12 @@ int main (int argc, char **_argv)
 	bool keep_c = false;
 	int retcode;
 
+	if (cc == "fc-msvc")
+	{
+		// Recursive call: this case can happen when called from configure script
+		cc = "cc-msvc";
+	}
+
 	for (int i=1; i<argc; i++)
 	{
 		char *carg = _argv[i];

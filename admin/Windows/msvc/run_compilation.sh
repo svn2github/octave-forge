@@ -56,7 +56,7 @@ curlver=7.16.4
 libpngver=1.2.23
 glpkver=4.23
 gslver=1.10
-netcdfver=3.6.1
+netcdfver=3.6.2
 
 ###################################################################################
 
@@ -408,7 +408,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/freetype6.dll" freetype
     todo_check "$tbindir/bgd.dll" libgd
     todo_check "$tbindir/libgsl.dll" libgsl
-    todo_check "$tbindir/netcdf.dll" netcdf
+    todo_check "$tlibdir/netcdf.lib" netcdf
     todo_check "$tbindir/sed.exe" sed
     todo_check "$tbindir/makeinfo.exe" makeinfo
     todo_check "$tbindir/units.exe" units
@@ -1333,17 +1333,45 @@ if check_package netcdf; then
   echo "done"
   echo -n "compiling netcdf... "
   (cd "$DOWNLOAD_DIR/netcdf-$netcdfver" &&
-    cd src/win32/NET &&
-    sed -e 's/RuntimeLibrary=.*/RuntimeLibrary="2"/' libsrc/netcdf.vcproj > ttt &&
-    mv ttt libsrc/netcdf.vcproj &&
-    cd libsrc &&
-    vcbuild -u netcdf.vcproj "Release|Win32" &&
-    cp ../../../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
-    cp Release/netcdf.lib "$tlibdir" &&
-    cp ../../../libsrc/netcdf.h "$tincludedir" &&
-    cp Release/netcdf.dll "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
-  if test ! -f "$tbindir/netcdf.dll"; then
+    if test -d "src/win32/NET"; then
+      cd src/win32/NET &&
+      sed -e 's/RuntimeLibrary=.*/RuntimeLibrary="2"/' libsrc/netcdf.vcproj > ttt &&
+      mv ttt libsrc/netcdf.vcproj &&
+      cd libsrc &&
+      vcbuild -u netcdf.vcproj "Release|Win32" &&
+      cp ../../../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
+      cp Release/netcdf.lib "$tlibdir" &&
+      cp ../../../libsrc/netcdf.h "$tincludedir" &&
+      cp Release/netcdf.dll "$tbindir"
+    else
+      CC=cc-msvc CXX=cc-msvc CFLAGS="-O2 -MD" CXXFLAGS="-O2 -MD -EHs" F77=fc-msvc FC=fc-msvc \
+        CPPFLAGS="-D_CRT_SECURE_NO_DEPRECATE -DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+        ./configure --prefix="$tdir_w32_forward" --enable-c-only --enable-dll --enable-shared \
+        --disable-static &&
+      sed -e 's/-Wl,--output-def,.*$//' \
+          -e 's/^libnetcdf_la_OBJECTS =/libnetcdf_la_OBJECTS = netcdf.o/' libsrc/Makefile > ttt &&
+      mv ttt libsrc/Makefile &&
+      echo "netcdf.o: netcdf.rc" >> libsrc/Makefile &&
+      echo "	rc -fo \$@ \$<"    >> libsrc/Makefile &&
+      netcdf_copyright=`grep -e '^Copyright' COPYRIGHT | head -n 1` &&
+      create_module_rc NetCDF $netcdfver libnetcdf-4.dll "University Corporation for Atmospheric Research/Unidata" \
+        "Unidata network Common Data Form Library" "$netcdf_copyright" > libsrc/netcdf.rc &&
+      sed -e 's/^deplibs_check_method=.*$/deplibs_check_method="pass_all"/' \
+          -e 's,\\\?`cygpath[^`]*`,,g' \
+          -e 's,/OUT:,-OUT:,g' \
+          -e 's,-link -dll,-shared,g' libtool > ttt &&
+      mv ttt libtool &&
+      echo "#define ssize_t int" >> config.h &&
+      echo "#include <malloc.h>" >> config.h &&
+      cd libsrc &&
+      make &&
+      cp ../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
+      cp .libs/libnetcdf*.lib "$tlibdir/netcdf.lib" &&
+      cp netcdf.h "$tincludedir" &&
+      cp .libs/libnetcdf*.dll "$tbindir"
+    fi) >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
+  if test ! -f "$tlibdir/netcdf.lib"; then
     echo "failed"
     exit -1
   else

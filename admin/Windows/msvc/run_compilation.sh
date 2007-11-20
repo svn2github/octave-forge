@@ -976,9 +976,16 @@ ImportLibrary=\"\$(TargetDir)png.lib\"\\
 AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
     mv ttt libpng.vcproj &&
     vcbuild -u libpng.vcproj 'DLL Release|Win32' &&
+	sed -e "s,^prefix=.*$,prefix=$tdir_w32_forward," \
+        -e "s,@exec_prefix@,\${prefix}," \
+        -e "s,@libdir@,\${exec_prefix}/lib," \
+        -e "s,^includedir=.*$,includedir=\${prefix}/include," \
+        -e "s,-lpng[0-9]\+,-lpng," ../../scripts/libpng.pc.in > libpng.pc &&
     cp Win32_DLL_Release/libpng*.dll "$tbindir" &&
     cp Win32_DLL_Release/png.lib "$tlibdir" &&
-    cp ../../png.h ../../pngconf.h "$tincludedir") >&5 2>&1
+    cp ../../png.h ../../pngconf.h "$tincludedir" &&
+    mkdir -p "$tlibdir/pkconfig" &&
+    cp libpng.pc "$tlibdir/pkgconfig") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/lpng$pngver"
   if test ! -f "$tlibdir/png.lib"; then
     echo "failed"

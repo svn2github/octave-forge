@@ -57,6 +57,8 @@ libpngver=1.2.23
 glpkver=4.23
 gslver=1.10
 netcdfver=3.6.2
+cairover=1.4.10
+glibver=2.14.3
 
 ###################################################################################
 
@@ -231,6 +233,23 @@ BEGIN
 	END
 END
 EOF
+}
+
+function post_process_libtool
+{
+  sed -e 's,/OUT:,-OUT:,g' \
+      -e 's,^\([^=]*\)=.*cygpath.*$,\1="",g' \
+      -e 's,-link -dll,-shared,g' \
+      -e 's/^wl=.*$/wl="-Wl,"/' \
+      -e 's/^deplibs_check_method=.*$/deplibs_check_method="pass_all"/' \
+      -e 's,^archive_expsym_cmds=.*$,,' \
+      -e 's,^archive_cmds=.*$,\0,p' \
+      -e 's,^archive_cmds=\(.*\)$,archive_expsym_cmds=\1,' \
+      -e '/^archive_expsym_cmds=/ {s,-shared,-shared ${wl}-def:\\$export_symbols,;}' \
+      -e '/^library_names_spec=/ {s, \\$libname\.lib,,;}' \
+      -e 's/S_IXUSR/S_IEXEC/g' \
+      -e "s,^postinstall_cmds=.*$,postinstall_cmds='name=\`echo \\\\\$file | sed -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`~implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`~\$install_prog \$dir/\$implibname \$destdir/\$name.lib~test -d \$destdir/../bin || mkdir -p \$destdir/../bin~mv -f \$destdir/\$dlname \$destdir/../bin'," libtool > ttt &&
+      mv ttt libtool
 }
 
 ###################################################################################
@@ -1115,19 +1134,29 @@ fi
 #########
 
 if check_package cairo; then
-  download_file cairo-1.4.10.tar.gz http://cairographics.org/releases/cairo-1.4.10.tar.gz
+  download_file cairo-$cairover.tar.gz http://cairographics.org/releases/cairo-$cairover.tar.gz
   echo -n "decompressing cairo... "
-  (cd "$DOWNLOAD_DIR" && if ! tar xfz cairo-1.4.10.tar.gz; then tar xf cairo-1.4.10.tar.gz; fi)
-  cp libs/cairo-1.4.10.diff "$DOWNLOAD_DIR/cairo-1.4.10"
+  (cd "$DOWNLOAD_DIR" && if ! tar xfz cairo-$cairover.tar.gz; then tar xf cairo-$cairover.tar.gz; fi)
   echo "done"
   echo "compiling cairo... "
-  (cd "$DOWNLOAD_DIR/cairo-1.4.10" &&
-    patch -p1 < cairo-1.4.10.diff &&
-    nmake -f Makefile.win32 &&
-    sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" src/Makefile.win32 > ttt &&
-    mv ttt src/Makefile.win32 &&
-	nmake -f Makefile.win32 install-win32) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/cairo-1.4.10"
+  (cd "$DOWNLOAD_DIR/cairo-$cairover" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ax_cv_c_float_words_bigendian=no \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s|^libcairo_la_LDFLAGS =|libcairo_la_LDFLAGS = -Wl,cairo.res|" \
+        -e "s|^libcairo_la_OBJECTS =|libcairo_la_OBJECTS = cairo.res|" \
+        -e "s|-lgdi32|-luser32 -lgdi32|" src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    echo "cairo.res: cairo.rc" >> src/Makefile &&
+    echo "	rc -fo \$@ \$<"    >> src/Makefile &&
+    create_module_rc Cairo $cairover libcairo-2.dll "Freedesktop.org <www.freedesktop.org>" \
+      "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > cairo.rc &&
+    make &&
+    make install &&
+    rm -f "$tlibdir/libcairo.la") >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/cairo-$cairover"
   if test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
     exit -1
@@ -1141,19 +1170,33 @@ fi
 ########
 
 if check_package glib; then
-  download_file glib-2.12.9.tar.gz ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.9.tar.gz
+  glibroot=`echo $glibver | sed -e 's/\.[0-9]\+$//'`
+  download_file glib-$glibver.tar.gz ftp://ftp.gtk.org/pub/glib/$glibroot/glib-$glibver.tar.gz
   echo -n "decompressing glib... "
-  (cd "$DOWNLOAD_DIR" && tar xfz glib-2.12.9.tar.gz)
-  cp libs/glib-2.12.9.diff "$DOWNLOAD_DIR/glib-2.12.9"
+  unpack_file glib-$glibver.tar.gz
   echo "done"
   echo "compiling glib... "
-  (cd "$DOWNLOAD_DIR/glib-2.12.9" &&
-    patch -p1 < glib-2.12.9.diff &&
-    nmake -f makefile.msc &&
-    sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" win32.msc > ttt &&
-    mv ttt win32.msc &&
-    nmake -f makefile.msc install) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glib-2.12.9"
+  (cd "$DOWNLOAD_DIR/glib-$glibver" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      PCRE_CFLAGS=" " PCRE_LIBS=-lpcre \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
+      --with-threads=win32 --with-pcre=system &&
+    post_process_libtool &&
+    echo "#define HAVE_DIRENT_H 1" >> config.h &&
+    sed -e "s/-lws2_32/-luser32 -ladvapi32 -lshell32 -L. -ldirent -lws2_32/" glib/Makefile > ttt &&
+      mv ttt glib/Makefile &&
+    sed -e "s/G_THREAD_LIBS_EXTRA =/G_THREAD_LIBS_EXTRA = -luser32/" gthread/Makefile > ttt &&
+      mv ttt gthread/Makefile &&
+    sed -e "s/^.*G_ATOMIC_OP_MEMORY_BARRIER_NEEDED.*$//" glibconfig.h > ttt &&
+      mv ttt glibconfig.h &&
+    (cd build/win32/dirent &&
+      cl -O2 -MD -I. -c *.c &&
+      lib -out:dirent.lib *.obj &&
+      cp dirent.h dirent.lib ../../../glib) &&
+    make &&
+    make install) >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/glib-$glibver"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
     exit -1
@@ -1257,32 +1300,6 @@ fi
 ##########
 # libgsl #
 ##########
-
-#if check_package libgsl; then
-#  download_file gsl-1.8-src.zip 'http://downloads.sourceforge.net/gnuwin32/gsl-1.8-src.zip?modtime=1152659851&big_mirror=0'
-#  echo -n "decompressing libgsl... "
-#  (cd "$DOWNLOAD_DIR" && mkdir gsl && cd gsl && unzip -q ../gsl-1.8-src.zip)
-#  echo "done"
-#  echo -n "compiling libgsl... "
-#  (cd "$DOWNLOAD_DIR/gsl/src/gsl/1.8/gsl-1.8/VC8" &&
-#    sed -e 's,ImportLibrary=.*,ImportLibrary="$(TargetDir)gsl.lib",' -e 's,<Files>,<Files><File RelativePath="..\\..\\version.c"></File>,' \
-#      libgsl/libgsl.vcproj > ttt &&
-#    mv ttt libgsl/libgsl.vcproj &&
-#    sed -e 's,ImportLibrary=.*,ImportLibrary="$(TargetDir)gslcblas.lib",' libgslcblas/libgslcblas.vcproj > ttt &&
-#    mv ttt libgslcblas/libgslcblas.vcproj &&
-#    vcbuild -u libgsl.sln "Release-DLL|Win32" &&
-#    mkdir -p "$tincludedir/gsl" &&
-#    cp ../gsl/gsl_*.h "$tincludedir/gsl" &&
-#    cp libgsl/Release-DLL/gsl.lib libgslcblas/Release-DLL/gslcblas.lib "$tlibdir" &&
-#    cp libgsl/Release-DLL/libgsl.dll libgslcblas/Release-DLL/libgslcblas.dll "$tbindir") >&5 2>&1
-#  rm -rf "$DOWNLOAD_DIR/gsl"
-#  if test ! -f "$tbindir/libgsl.dll"; then
-#    echo "failed"
-#    exit -1
-#  else
-#    echo "done"
-#  fi
-#fi
 
 if check_package libgsl; then
   download_file gsl-$gslver.tar.gz ftp://ftp.gnu.org/gnu/gsl/gsl-$gslver.tar.gz

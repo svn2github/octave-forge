@@ -84,7 +84,7 @@ while test $# -gt 0; do
   if test "x$archive_file" == "x"; then
     archive_file="$1"
     # converts libxxx.a to xxx.lib
-    archive_file=`echo $archive_file | sed 's/lib\([^\.\/]*\)\.a/\1.lib/'`
+    archive_file=`echo $archive_file | sed 's/\(.*\)lib\([^\.\/]*\)\.a/\1\2.lib/'`
   else
     files="$files $1"
   fi
@@ -105,8 +105,12 @@ fi
 
 case $cmd in
   extract)
+    if test -z "$files"; then
+      files=`lib -nologo -list $archive_file`
+    fi
     for f in $files; do
-      lib -extract:$f -out:$f $archive_file
+      of=`echo $f | sed -e 's,.*[\\/],,'`
+      lib -nologo -extract:$f -out:$of $archive_file
     done
     ;;
   list)

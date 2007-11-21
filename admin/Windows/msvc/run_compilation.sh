@@ -1188,12 +1188,13 @@ if check_package glib; then
       mv ttt glib/Makefile &&
     sed -e "s/G_THREAD_LIBS_EXTRA =/G_THREAD_LIBS_EXTRA = -luser32/" gthread/Makefile > ttt &&
       mv ttt gthread/Makefile &&
-    sed -e "s/^.*G_ATOMIC_OP_MEMORY_BARRIER_NEEDED.*$//" glibconfig.h > ttt &&
-      mv ttt glibconfig.h &&
     (cd build/win32/dirent &&
       cl -O2 -MD -I. -c *.c &&
       lib -out:dirent.lib *.obj &&
       cp dirent.h dirent.lib ../../../glib) &&
+    make glibconfig.h &&
+    sed -e "s/^.*G_ATOMIC_OP_MEMORY_BARRIER_NEEDED.*$//" glibconfig.h > ttt &&
+      mv ttt glibconfig.h &&
     make &&
     make install) >&5 2>&1
   #rm -rf "$DOWNLOAD_DIR/glib-$glibver"

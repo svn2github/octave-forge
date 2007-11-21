@@ -1,0 +1,118 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/Makefile.mingw32 less-406/Makefile.mingw32
+--- less-406-orig/Makefile.mingw32	Thu Jan  1 01:00:00 1970
++++ less-406/Makefile.mingw32	Fri Nov  9 20:17:04 2007
+@@ -0,0 +1,74 @@
++# Makefile for less.
++# Windows version
++# mingw32 gcc
++
++#### Start of system configuration section. ####
++# 
++# Borland's make knows its own location in the
++# filesystem.
++#
++
++#CC = mingw32-gcc
++#LIBDIR = $(MAKEDIR)\..\lib
++
++CFLAGS = $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS)
++LDFLAGS = -mconsole
++LD = $(CC)
++#LIBS = ${LIBDIR}\import32.lib ${LIBDIR}\cw32.lib
++LIBS = -lpcre -lregex
++
++#### End of system configuration section. ####
++
++# 
++# This rule allows us to supply the necessary -D options
++# in addition to whatever the user asks for.
++# 
++.c.o:
++	${CC} -c -I. ${CPPFLAGS} ${CFLAGS} $<
++
++OBJ =	main.o screen.o brac.o ch.o charset.o cmdbuf.o command.o \
++	decode.o edit.o filename.o forwback.o help.o ifile.o \
++	input.o jump.o line.o linenum.o lsystem.o \
++	mark.o optfunc.o option.o opttbl.o os.o output.o \
++	position.o prompt.o search.o signal.o tags.o \
++	ttyin.o version.o regexp.o
++
++all: less.exe lesskey.exe lessecho.exe
++
++# 
++# This is really horrible, but the command line is too long for 
++# MS-DOS if we try to link ${OBJ}.
++# 
++less.exe: ${OBJ}
++	${CC} ${LDFLAGS} -o $@ ${OBJ} ${LIBS}
++	strip $(STRIP_FLAGS) $@
++
++lesskey.exe: lesskey.o version.o
++	${CC} ${LDFLAGS} -o $@ $^ ${LIBS}
++	strip $(STRIP_FLAGS) $@
++
++lessecho.exe: lessecho.o version.o
++	${CC} ${LDFLAGS} -o $@ $^ ${LIBS}
++	strip $(STRIP_FLAGS) $@
++
++defines.h: defines.wn
++	-rm defines.h
++	-cp defines.wn defines.h
++
++${OBJ}: less.h defines.h funcs.h cmd.h
++
++clean:
++	-rm *.o
++	-rm *.il? 
++	-rm *.tds 
++	-rm defines.h
++
++spotless: clean
++	-rm less.exe
++	-rm lesskey.exe
++	-rm lessecho.exe
++
++realclean: spotless
++
++distclean: spotless
++
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/defines.wn less-406/defines.wn
+--- less-406-orig/defines.wn	Sat Jun 16 00:06:23 2007
++++ less-406/defines.wn	Fri Nov  9 20:03:30 2007
+@@ -200,9 +200,10 @@
+ /* #undef HAVE_POSIX_REGCOMP */
+ /* #undef HAVE_RE_COMP */
+ /* #undef HAVE_REGCMP */
+-#define HAVE_V8_REGCOMP 1
++/* #define HAVE_V8_REGCOMP 1 */
+ /* #undef NO_REGEX */
+-#define HAVE_REGEXEC2 1
++/* #define HAVE_REGEXEC2 1 */
++#define HAVE_PCRE 1
+ 
+ /* Define HAVE_VOID if your compiler supports the "void" type. */
+ #define HAVE_VOID 1
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/lglob.h less-406/lglob.h
+--- less-406-orig/lglob.h	Sat Jun 16 00:06:24 2007
++++ less-406/lglob.h	Fri Nov  9 20:03:30 2007
+@@ -57,7 +57,7 @@
+ 					char ext[_MAX_EXT];	\
+ 					int handle;
+ #else
+-#if MSDOS_COMPILER==WIN32C && defined(_MSC_VER)
++#if MSDOS_COMPILER==WIN32C &&( defined(_MSC_VER) || defined(__MINGW32__) )
+ 
+ #define	GLOB_FIRST_NAME(filename,fndp,h) h = _findfirst(filename, fndp)
+ #define	GLOB_FIRST_FAILED(handle)	((handle) == -1)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/lsystem.c less-406/lsystem.c
+--- less-406-orig/lsystem.c	Sun Jun 17 18:56:04 2007
++++ less-406/lsystem.c	Fri Nov  9 20:03:30 2007
+@@ -20,7 +20,7 @@
+ 
+ #if MSDOS_COMPILER
+ #include <dos.h>
+-#ifdef _MSC_VER
++#if defined(_MSC_VER) || defined(__MINGW32__) 
+ #include <direct.h>
+ #define setdisk(n) _chdrive((n)+1)
+ #else

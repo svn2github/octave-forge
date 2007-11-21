@@ -1,0 +1,11 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h sed-4.1.5-orig/sed/Makefile.in sed-4.1.5/sed/Makefile.in
+--- sed-4.1.5-orig/sed/Makefile.in	Fri Feb  3 10:24:35 2006
++++ sed-4.1.5/sed/Makefile.in	Fri Nov  9 20:24:43 2007
+@@ -279,6 +279,7 @@
+ sed$(EXEEXT): $(sed_OBJECTS) $(sed_DEPENDENCIES) 
+ 	@rm -f sed$(EXEEXT)
+ 	$(LINK) $(sed_LDFLAGS) $(sed_OBJECTS) $(sed_LDADD) $(LIBS)
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)

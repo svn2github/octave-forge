@@ -1,0 +1,280 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/AMD/Lib/GNUmakefile suitesparse/AMD/Lib/GNUmakefile
+--- suitesparse-orig/AMD/Lib/GNUmakefile	Sun May  6 12:32:19 2007
++++ suitesparse/AMD/Lib/GNUmakefile	Thu Nov  8 09:58:17 2007
+@@ -2,7 +2,7 @@
+ # AMD Makefile for compiling on Unix systems (for GNU make only)
+ #-------------------------------------------------------------------------------
+ 
+-default: ../Lib/libamd.a
++default: ../Lib/libamd.a ../Lib/amd.dll
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+@@ -46,6 +46,13 @@
+ ../Lib/libamd.a: amd_global.o $(AMDI) $(AMDL)
+ 	$(AR) ../Lib/libamd.a $^
+ 	- $(RANLIB) ../Lib/libamd.a
++
++../Lib/amd.dll : ../Lib/libamd.a
++	$(CC) -shared -o $@ \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ #-------------------------------------------------------------------------------
+ # compile the Fortran versions and the libamdf77.a library
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CAMD/Lib/GNUmakefile suitesparse/CAMD/Lib/GNUmakefile
+--- suitesparse-orig/CAMD/Lib/GNUmakefile	Sat May  5 14:29:25 2007
++++ suitesparse/CAMD/Lib/GNUmakefile	Thu Nov  8 09:58:43 2007
+@@ -2,7 +2,7 @@
+ # CAMD Makefile for compiling on Unix systems (for GNU make only)
+ #-------------------------------------------------------------------------------
+ 
+-default: libcamd.a
++default: libcamd.a camd.dll
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+@@ -46,6 +46,13 @@
+ libcamd.a: camd_global.o $(CAMDI) $(CAMDL)
+ 	$(AR) libcamd.a $^
+ 	- $(RANLIB) libcamd.a
++
++camd.dll : libcamd.a
++	$(CC) -shared -o $@ \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ #-------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CCOLAMD/Lib/Makefile suitesparse/CCOLAMD/Lib/Makefile
+--- suitesparse-orig/CCOLAMD/Lib/Makefile	Sat May  5 13:59:13 2007
++++ suitesparse/CCOLAMD/Lib/Makefile	Thu Nov  8 09:58:55 2007
+@@ -2,7 +2,7 @@
+ # CCOLAMD Makefile
+ #-------------------------------------------------------------------------------
+ 
+-default: libccolamd.a
++default: libccolamd.a ccolamd.dll
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+@@ -18,6 +18,13 @@
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c -DDLONG -o ccolamd_l.o
+ 	$(AR) libccolamd.a ccolamd.o ccolamd_l.o ccolamd_global.o
++
++ccolamd.dll : libccolamd.a
++	$(CC) -shared -o $@ \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ ccode: libccolamd.a
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CHOLMOD/Lib/Makefile suitesparse/CHOLMOD/Lib/Makefile
+--- suitesparse-orig/CHOLMOD/Lib/Makefile	Sat May  5 14:36:56 2007
++++ suitesparse/CHOLMOD/Lib/Makefile	Thu Nov  8 09:59:09 2007
+@@ -10,7 +10,7 @@
+ 
+ C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG)
+ 
+-all: libcholmod.a
++all: libcholmod.a cholmod.dll
+ 
+ library: libcholmod.a
+ 
+@@ -112,6 +112,13 @@
+ libcholmod.a: $(OBJ)
+ 	$(AR) libcholmod.a $(OBJ)
+ 	$(RANLIB) libcholmod.a
++
++cholmod.dll : libcholmod.a
++	$(CC) -shared -o $@ -L../../AMD/Lib -L../../COLAMD/Lib \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive -lamd -lcolamd $(LAPACK) $(BLAS)
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ $(OBJ): $(INC)
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/COLAMD/Lib/Makefile suitesparse/COLAMD/Lib/Makefile
+--- suitesparse-orig/COLAMD/Lib/Makefile	Sat May  5 13:41:47 2007
++++ suitesparse/COLAMD/Lib/Makefile	Thu Nov  8 09:59:18 2007
+@@ -2,7 +2,7 @@
+ # COLAMD Makefile
+ #-------------------------------------------------------------------------------
+ 
+-default: libcolamd.a
++default: libcolamd.a colamd.dll
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+@@ -18,6 +18,13 @@
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c
+ 	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c -DDLONG -o colamd_l.o
+ 	$(AR) libcolamd.a colamd.o colamd_l.o colamd_global.o
++
++colamd.dll : libcolamd.a
++	$(CC) -shared -o $@ \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ ccode: libcolamd.a
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CSparse/Lib/Makefile suitesparse/CSparse/Lib/Makefile
+--- suitesparse-orig/CSparse/Lib/Makefile	Sat May  5 20:46:13 2007
++++ suitesparse/CSparse/Lib/Makefile	Thu Nov  8 09:59:29 2007
+@@ -1,11 +1,11 @@
+ # Modify the "-O" optimization option for best performance (-O3 on Linux):
+-CC = cc
+-CFLAGS = -O -I../Include
++#CC = cc
++CFLAGS_ADD = -I../Include
+ 
+ AR = ar cr
+ RANLIB = ranlib
+ 
+-all: libcsparse.a
++all: libcsparse.a csparse.dll
+ 
+ CS = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o cs_cumsum.o \
+ 	cs_droptol.o cs_dropzeros.o cs_dupl.o cs_entry.o \
+@@ -20,11 +20,18 @@
+ $(CS): ../Include/cs.h Makefile
+ 
+ %.o: ../Source/%.c ../Include/cs.h
+-	$(CC) $(CFLAGS) -c $<
++	$(CC) $(CFLAGS) $(CFLAGS_ADD) -c $<
+ 
+ libcsparse.a: $(CS)
+ 	$(AR) libcsparse.a $(CS)
+ 	$(RANLIB) libcsparse.a
++
++csparse.dll : libcsparse.a
++	$(CC) -shared -o $@ \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ clean:
+ 	rm -f *.o
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CXSparse/Lib/Makefile suitesparse/CXSparse/Lib/Makefile
+--- suitesparse-orig/CXSparse/Lib/Makefile	Sat May  5 21:03:41 2007
++++ suitesparse/CXSparse/Lib/Makefile	Thu Nov  8 09:59:41 2007
+@@ -1,12 +1,12 @@
+ # Modify the "-O" optimization option for best performance (-O3 on Linux):
+-CC = cc
+-CFLAGS = -O
++#CC = cc
++#CFLAGS = -O
+ I = -I../../UFconfig -I../Include
+ 
+ AR = ar cr
+ RANLIB = ranlib
+ 
+-all: libcxsparse.a
++all: libcxsparse.a cxsparse.dll
+ 
+ CS_SOURCE = cs_add.c cs_amd.c cs_chol.c cs_cholsol.c cs_counts.c cs_cumsum.c \
+ 	cs_droptol.c cs_dropzeros.c cs_dupl.c cs_entry.c \
+@@ -88,6 +88,13 @@
+ libcxsparse.a: $(CS)
+ 	$(AR) libcxsparse.a $(CS)
+ 	$(RANLIB) libcxsparse.a
++
++cxsparse.dll : libcxsparse.a
++	$(CC) -shared -o $@ \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ clean:
+ 	rm -f *.o
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UFconfig/UFconfig.mk suitesparse/UFconfig/UFconfig.mk
+--- suitesparse-orig/UFconfig/UFconfig.mk	Thu May 10 13:46:08 2007
++++ suitesparse/UFconfig/UFconfig.mk	Thu Nov  8 09:21:35 2007
+@@ -32,8 +32,8 @@
+ # C compiler and compiler flags:  These will normally not give you optimal
+ # performance.  You should select the optimization parameters that are best
+ # for your system.  On Linux, use "CFLAGS = -O3 -fexceptions" for example.
+-CC = cc
+-CFLAGS = -O
++#CC = cc
++CFLAGS = $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS)
+ 
+ # ranlib, and ar, for generating libraries
+ RANLIB = ranlib
+@@ -44,8 +44,8 @@
+ MV = mv -f
+ 
+ # Fortran compiler (not normally required)
+-F77 = f77
+-F77FLAGS = -O
++#F77 = f77
++F77FLAGS = $(GCC_OPT_FLAGS)
+ F77LIB =
+ 
+ # C and Fortran libraries
+@@ -85,7 +85,8 @@
+ # BLAS = -lgoto -lgfortran -lgfortranbegin
+ 
+ # This is probably slow ... it might connect to the Standard Reference BLAS:
+-BLAS = -lblas -lgfortran -lgfortranbegin
++#BLAS = -lblas -lgfortran -lgfortranbegin
++BLAS = -lblas
+ LAPACK = -llapack
+ 
+ # The BLAS might not contain xerbla, an error-handling routine for LAPACK and
+@@ -176,7 +177,7 @@
+ # -DNSUNPERF	    for Solaris only.  If defined, do not use the Sun
+ #			Performance Library
+ 
+-CHOLMOD_CONFIG =
++CHOLMOD_CONFIG = -DNPARTITION
+ 
+ #------------------------------------------------------------------------------
+ # Linux
+@@ -193,7 +194,7 @@
+ # CFLAGS = -O3 -fexceptions \
+    	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
+-CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
++# CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+ # CFLAGS = -O3
+ 
+ # consider:
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UMFPACK/Lib/GNUmakefile suitesparse/UMFPACK/Lib/GNUmakefile
+--- suitesparse-orig/UMFPACK/Lib/GNUmakefile	Sun May  6 12:31:22 2007
++++ suitesparse/UMFPACK/Lib/GNUmakefile	Thu Nov  8 09:59:54 2007
+@@ -2,7 +2,7 @@
+ # UMFPACK Makefile for compiling on Unix systems (for GNU Make)
+ #-------------------------------------------------------------------------------
+ 
+-default: ../Lib/libumfpack.a
++default: ../Lib/libumfpack.a ../Lib/umfpack.dll
+ 
+ include ../../UFconfig/UFconfig.mk
+ 
+@@ -246,6 +246,13 @@
+ ../Lib/libumfpack.a: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
+ 	$(AR) ../Lib/libumfpack.a $^
+ 	- $(RANLIB) ../Lib/libumfpack.a
++
++../Lib/umfpack.dll : ../Lib/libumfpack.a
++	$(CC) -shared -o $@ -L../../AMD/Lib \
++		-Wl,--whole-archive $< \
++		-Wl,--out-implib,$(basename $<).dll.a \
++		-Wl,--no-whole-archive -lamd $(BLAS)
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
+ #-------------------------------------------------------------------------------
+ # Remove all but the files in the original distribution

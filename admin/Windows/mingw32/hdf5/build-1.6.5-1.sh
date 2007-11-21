@@ -1,36 +1,40 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds hdf5.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=hdf5
-# Version of the package
+# Version of Package
 VER=1.6.5
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.gz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.gz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${TOPDIR}/.build_mingw32_${VER}-${REL}
-MKPATCHFLAGS=""
-INSTHEADERS="H5ACpublic.h    H5Dpublic.h     H5FDstream.h     H5MMpublic.h \
+# URL of source code file
+URL=""
+
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header files to be installed
+INSTALL_HEADERS="H5ACpublic.h    H5Dpublic.h     H5FDstream.h     H5MMpublic.h \
 hdf5.h \
 H5Apublic.h     H5Opublic.h \
 H5Epublic.h     H5Ppublic.h \
@@ -46,66 +50,79 @@ H5FDpublic.h    H5api_adpt.h \
 H5FDsec2.h      H5Ipublic.h      \
 H5FDsrb.h       H5public.h \
 H5FDstdio.h     "
-INSTHEADERS_CPP="H5AbstractDs.h  H5DxferProp.h   H5FaccProp.h     H5Object.h \
-H5EnumType.h    H5FcreatProp.h   H5ArrayType.h   H5File.h         \
-H5AtomType.h    H5Exception.h   H5FloatType.h    H5PredType.h \
-H5Attribute.h   H5PropList.h    H5Classes.h     H5Group.h        \
-H5CommonFG.h    H5StrType.h     H5CompType.h    \
-H5Cpp.h         H5IdComponent.h  H5VarLenType.h H5Include.h      \
-H5DataSet.h     H5IntType.h      H5DataSpace.h   \
-H5CppDoc.h      H5DataType.h    \
-H5DcreatProp.h  H5Library.h"
-INSTHEADERS_HL="H5TA.h  H5IM.h           H5LT.h           "
-INSTHEADERS_BUILD="H5pubconf.h      "
-INSTALLDIR_INCLUDE=
+INSTALL_HEADERS_HL="H5TA.h  H5IM.h           H5LT.h           "
+INSTALL_HEADERS_BUILD="H5pubconf.h      "
 
-# --- load common functions ---
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 
-conf() {
-(
-   mkdirs;
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CFLAGS=-O3 CXX=mingw32-g++ CXXFLAGS=-O3 CPPFLAGS="" --prefix=${PREFIX} --srcdir=${SRCDIR} --disable-stream-vfd --enable-cxx LDFLAGS=-lws2_32
-)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+# IMPORTANT !!
+#  DISABLE OPTIMIZATION FLAGS with GCC
+#  Othewise the checks for HW number conversions FAIL
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     LDFLAGS="${LDFLAGS} -lws2_32" \
+     CPPFLAGS="" \
+     CXXFLAGS="" \
+     CFLAGS="" \
+     --prefix="${PREFIX}" \
+     --disable-stream-vfd \
+     --disable-fortran \
+     --disable-cxx \
+     --enable-static \
+     --enable-shared
+   )
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/src/.libs/hdf5.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/src/.libs/libhdf5.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/c++/src/.libs/hdf5_cpp.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/c++/src/.libs/libhdf5_cpp.dll.a ${INSTALL_LIB}
-  for a in ${INSTHEADERS}; do cp ${CP_FLAGS} ${SRCDIR}/src/$a ${INSTALL_INCLUDE}; done
-  for a in ${INSTHEADERS_CPP}; do cp ${CP_FLAGS} ${SRCDIR}/c++/src/$a ${INSTALL_INCLUDE}; done
-  for a in ${INSTHEADERS_HL}; do cp ${CP_FLAGS} ${SRCDIR}/hl/src/$a ${INSTALL_INCLUDE}; done
-  for a in ${INSTHEADERS_BUILD}; do cp ${CP_FLAGS} ${BUILDDIR}/src/$a ${INSTALL_INCLUDE}; done
-)
+install()
+{
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/hdf5.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libhdf5.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libhdf5.a ${STATICLIBRARY_PATH}
+
+   for a in ${INSTALL_HEADERS};       do ${CP} ${CP_FLAGS} ${SRCDIR}/src/$a ${INCLUDE_PATH}; done
+   for a in ${INSTALL_HEADERS_HL};    do ${CP} ${CP_FLAGS} ${SRCDIR}/hl/src/$a ${INCLUDE_PATH}; done
+   for a in ${INSTALL_HEADERS_BUILD}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/src/$a ${INCLUDE_PATH}; done
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/hdf5.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libhdf5.dll.a
-  rm ${RM_FLAGS} ${INSTALL_BIN}/hdf5_cpp.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libhdf5_cpp.dll.a
-  for a in ${INSTHEADERS}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-  for a in ${INSTHEADERS_CPP}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-  for a in ${INSTHEADERS_HL}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-  for a in ${INSTHEADERS_BUILD}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-)
-}
-
-all() {
-  download
-  unpack
-  applypatch
-  conf
-  build
-  install
-}
-main $*
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/hdf5.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libhdf5.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libhdf5.a
    
+   for a in ${INSTALL_HEADERS};       do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+   for a in ${INSTALL_HEADERS_HL};    do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+   for a in ${INSTALL_HEADERS_BUILD}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+}
+
+check_pre()
+{ 
+  SRCDIR=`pwd -W`/${SRCDIR}/test
+  export SRCDIR
+  PATH=${PATH}:${TOPDIR}/${BUILDDIR}/src/.libs
+  HDF5_NOCLEANUP=1
+}
+
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
+}
+
+main $*

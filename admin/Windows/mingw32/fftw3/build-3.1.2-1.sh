@@ -1,72 +1,96 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds fftw3.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=fftw
-# Version of the package
+# Version of Package
 VER=3.1.2
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://www.fftw.org/fftw-3.1.2.tar.gz
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.gz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${SRCPKG}.tar.gz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${TOPDIR}/.build_mingw32
-MKPATCHFLAGS=""
+# URL of source code file
+URL="http://www.fftw.org/fftw-3.1.2.tar.gz"
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header files to be installed
+INSTALL_HEADERS=""
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-(
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CXX=mingw32-g++ F77=mingw32-g77 --prefix=${PREFIX} --srcdir=${SRCDIR} --enable-shared --enable-portable-binary
-)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     LDFLAGS="${LDFLAGS}" \
+     --prefix="${PREFIX}" \
+     --enable-portable-binary \
+     --enable-shared \
+     --enable-static 
+   )
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/libfftw3-3.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/libfftw3.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${SRCDIR}/api/fftw3.h ${INSTALL_INCLUDE}
-  strip ${STRIP_FLAGS} ${INSTALL_BIN}/libfftw3-3.dll
-)
+build_post() {
+   ${STRIP} ${STRIP_FLAGS} ${BUILDDIR}/.libs/fftw3.dll
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/libfftw3-3.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libfftw3.dll.a
-  rm ${RM_FLAGS} ${INSTALL_INCLUDE}/fftw3.h
-)
+install()
+{
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/fftw3.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libfftw3.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libfftw3.a ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/tools/.libs/fftw-wisdom.exe ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/api/fftw3.h ${INCLUDE_PATH}
 }
 
-all() {
-  download
-  unpack
-  conf
-  build
-  install
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/fftw3.dll
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/fft-wisdom.exe
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfftw3.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libfftw3.a
+   ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/fftw3.h
 }
+
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
+}
+
 main $*
-   

@@ -1,6 +1,6 @@
-diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def gsl-1.9-orig/Makefile.in gsl-1.9/Makefile.in
---- gsl-1.9-orig/Makefile.in	Tue Feb 20 14:09:18 2007
-+++ gsl-1.9/Makefile.in	Mon Aug  6 20:31:54 2007
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gsl-1.9-orig/Makefile.in gsl-1.9/Makefile.in
+--- gsl-1.9-orig/Makefile.in	Tue Feb 20 13:09:18 2007
++++ gsl-1.9/Makefile.in	Thu Nov  8 14:46:23 2007
 @@ -258,7 +258,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = gsl.pc

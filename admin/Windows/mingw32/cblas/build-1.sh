@@ -1,63 +1,59 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds cblas.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=cblas
-# Version of the package
+# Version of Package
 VER=
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://www.netlib.org/blas/blast-forum/cblas.tgz
+# Name&Version of Package
+PKGVER=${PKG}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tgz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tgz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-export BUILDDIR=${SRCDIR}
+# URL of source code file
+URL="http://www.netlib.org/blas/blast-forum/cblas.tgz"
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+# Directory the lib is built in
+BUILDDIR=${SRCDIR}
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+DIFF_FLAGS="-x *.def"
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
-
-build() {
-( cd ${BUILDDIR} && make alllib )
+build() 
+{
+   ( cd ${BUILDDIR} && make alllib )
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/cblas.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/libcblas.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/libcblas.def ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/src/{cblas.h,cblas_f77.h} ${INSTALL_INCLUDE}
-
-)
+install()
+{
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/cblas.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/libcblas.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/libcblas.a ${STATICLIBRARY_PATH}
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/cblas.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libcblas.dll.a
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libcblas.def
-  rm ${RM_FLAGS} ${INSTALL_INCLUDE}/{cblas.h,cblas_f77.h}
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/cblas.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libcblas.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libcblas.a
 }
 
 all() {
@@ -67,5 +63,5 @@ all() {
   build
   install
 }
+
 main $*
-   

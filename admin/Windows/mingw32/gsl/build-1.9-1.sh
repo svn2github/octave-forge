@@ -1,37 +1,43 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds gsl.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=gsl
-# Version of the package
+# Version of Package
 VER=1.9
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://gd.tuwien.ac.at/gnu/gnusrc/gsl/gsl-1.9.tar.gz
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.gz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.gz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${TOPDIR}/.build_mingw32
-MKPATCHFLAGS=""
-#INSTHEADERS="gsl_math.h gsl_pow_int.h gsl_nan.h gsl_machine.h gsl_mode.h gsl_precision.h gsl_types.h gsl_version.h"
-INSTHEADERS="
+# URL of source code file
+URL="http://gd.tuwien.ac.at/gnu/gnusrc/gsl/gsl-1.9.tar.gz"
+
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header directory 
+INCLUDE_DIR=include/gsl
+
+# header files to be installed
+INSTALL_HEADERS="
 blas/gsl_blas.h
 blas/gsl_blas_types.h
 block/gsl_block.h
@@ -249,49 +255,57 @@ wavelet/gsl_wavelet.h
 wavelet/gsl_wavelet2d.h
 "
 
-INSTALLDIR_INCLUDE=include/gsl
-
-# --- load common functions ---
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-(
-   mkdirs;
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CFLAGS=-O3 CPPFLAGS="" --prefix=${PREFIX} --srcdir=${SRCDIR}
-)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     LDFLAGS="${LDFLAGS}" \
+     --prefix="${PREFIX}" 
+   )
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/gsl.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/libgsl.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/gslcblas.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/libgslcblas.dll.a ${INSTALL_LIB}
-  for a in ${INSTHEADERS}; do cp ${CP_FLAGS} ${SRCDIR}/$a ${INSTALL_INCLUDE}; done
-)
+install_pre() { if [ ! -e ${INCLUDE_PATH} ]; then mkdir -p ${INCLUDE_PATH}; fi; }
+
+install()
+{
+  install_pre
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/{gsl.dll,gslcblas.dll} ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/{libgsl,libgslcblas}.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgsl.a ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/cblas/.libs/libgslcblas.a ${STATICLIBRARY_PATH}
+   for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
+  install_post
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/gsl.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libgsl.dll.a
-  rm ${RM_FLAGS} ${INSTALL_BIN}/gslcblas.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libgslcblas.dll.a
-  for a in ${INSTHEADERS}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/{gsl,gslcblas}.all
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/{libgsl,libgslcblas}.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/{libgsl,libgslcblas}.a
+   for a in ${INSTALL_HEADERS}; do ${Rm} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
 }
 
-all() {
-  download
-  unpack
-  applypatch
-  conf
-  build
-  install
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
 }
+
 main $*
-   

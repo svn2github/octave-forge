@@ -1,6 +1,6 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def gmp-4.2.1-orig/Makefile.in gmp-4.2.1/Makefile.in
---- gmp-4.2.1-orig/Makefile.in	Thu May  4 18:50:17 2006
-+++ gmp-4.2.1/Makefile.in	Thu Jun 21 19:12:16 2007
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gmp-4.2.1-orig/Makefile.in gmp-4.2.1/Makefile.in
+--- gmp-4.2.1-orig/Makefile.in	Thu May  4 16:50:17 2006
++++ gmp-4.2.1/Makefile.in	Thu Nov  8 10:10:21 2007
 @@ -739,6 +739,7 @@
  	done
  libgmp.la: $(libgmp_la_OBJECTS) $(libgmp_la_DEPENDENCIES) 
@@ -9,9 +9,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def gmp-4.2.1-orig/Makefile.in gm
  libgmpxx.la: $(libgmpxx_la_OBJECTS) $(libgmpxx_la_DEPENDENCIES) 
  	$(CXXLINK) -rpath $(libdir) $(libgmpxx_la_LDFLAGS) $(libgmpxx_la_OBJECTS) $(libgmpxx_la_LIBADD) $(LIBS)
  libmp.la: $(libmp_la_OBJECTS) $(libmp_la_DEPENDENCIES) 
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def gmp-4.2.1-orig/configure gmp-4.2.1/configure
---- gmp-4.2.1-orig/configure	Thu May  4 18:50:26 2006
-+++ gmp-4.2.1/configure	Thu Jun 21 18:52:56 2007
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gmp-4.2.1-orig/configure gmp-4.2.1/configure
+--- gmp-4.2.1-orig/configure	Thu May  4 16:50:26 2006
++++ gmp-4.2.1/configure	Thu Nov  8 10:10:21 2007
 @@ -13130,7 +13130,7 @@
        ;;
      mingw*)

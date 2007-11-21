@@ -46,7 +46,7 @@ COLAMD_INCLUDES="colamd.h"
 CCOLAMD_INCLUDES="ccolamd.h"
 CXSPARSE_INCLUDES="cs.h"
 
-source ../gcc42_common.sh
+source ../common.sh
 
 build() {
 (
@@ -76,15 +76,29 @@ clean() {
 
 install_lib_core() {
 (
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/$1/lib/$1.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/$1/lib/$1.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/$1/lib/lib$1.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/$1/lib/lib$1.a ${STATICLIBRARY_PATH}
+)
+}
+
+uninstall_lib_core() {
+(
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/$1.dll 
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/lib$1.dll.a 
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/lib$1.a 
 )
 }
 
 install_header_core() {
 (
   for a in $2; do ${CP} ${CP_FLAGS} ${BUILDDIR}/$1/Include/${a} ${INCLUDE_PATH}; done
+)
+}
+
+uninstall_header_core() {
+(
+  for a in $2; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/${a}; done
 )
 }
 
@@ -118,9 +132,25 @@ install()
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/lapack.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/liblapack.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/liblapack.a
+   # Install the libs
+   uninstall_lib_core amd
+   uninstall_lib_core camd
+   uninstall_lib_core ccolamd
+   uninstall_lib_core colamd
+   uninstall_lib_core csparse
+   uninstall_lib_core cxsparse
+   uninstall_lib_core cholmod
+   uninstall_lib_core umfpack
+   
+   # Install the headers
+   uninstall_header_core UMFPACK "${UMFPACK_INCLUDES}"
+   uninstall_header_core CHOLMOD "${CHOLMOD_INCLUDES}"
+   uninstall_header_core AMD "${AMD_INCLUDES}"
+   uninstall_header_core CAMD "${CAMD_INCLUDES}"
+   uninstall_header_core COLAMD "${COLAMD_INCLUDES}"
+   uninstall_header_core CCOLAMD "${CCOLAMD_INCLUDES}"
+   uninstall_header_core CXSPARSE "${CXSPARSE_INCLUDES}"
+   ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/UFconfig.h
 }
 
 all() {

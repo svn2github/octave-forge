@@ -1,73 +1,63 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds less.exe 
-
-# Name of the package we're building
+# Name of package
 PKG=less
-# Version of the package
+# Version of Package
 VER=406
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://www.greenwoodsoftware.com/less/less-406.tar.gz
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.gz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.gz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
+# URL of source code file
+URL="http://www.greenwoodsoftware.com/less/less-406.tar.gz"
+
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+# Directory the lib is built in
 BUILDDIR=${SRCDIR}
-MKPATCHFLAGS="-x defines.h"
-#INSTHEADERS="png.h pngconf.h"
-#INSTALLDIR_INCLUDE=include
 
-# --- load common functions ---
+# Make file to use
+MAKEFILE="Makefile.mingw32"
+
+# Additional DIFF Flags for generating diff file
+DIFF_FLAGS="-x defines.h"
+
+# header files to be installed
+INSTALL_HEADERS=""
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
 
-conf() {
-( echo nothting to be configured! )
+install()
+{
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/less.exe ${BINARY_PATH}
 }
 
-build() {
-(
-  cd ${BUILDDIR} && make -f Makefile.mingw32
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/less.exe
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/less.exe ${INSTALL_BIN}
-)
+all()
+{
+   download
+   unpack
+   applypatch
+   build
+   install
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/less.exe
-)
-}
-
-all() {
-  download
-  unpack
-  applypatch
-  build
-  install
-}
 main $*
-   

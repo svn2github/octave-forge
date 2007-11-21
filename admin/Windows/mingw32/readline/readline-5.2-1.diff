@@ -1,6 +1,6 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/README.msvc readline-5.2/README.msvc
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/README.msvc readline-5.2/README.msvc
 --- readline-5.2-orig/README.msvc	Thu Jan  1 01:00:00 1970
-+++ readline-5.2/README.msvc	Sun Jun 10 18:52:51 2007
++++ readline-5.2/README.msvc	Mon Nov 12 22:00:21 2007
 @@ -0,0 +1,16 @@
 +Compilation instruction under MSVC
 +----------------------------------
@@ -18,9 +18,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/README.msvc
 +   import libraries (readline.lib and history.lib), you'll have the copy them
 +   manually. Note also that the DLL will be installed in $prefix/lib, while
 +   it is more usual to install them in $prefix/bin.
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/bind.c readline-5.2/bind.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/bind.c readline-5.2/bind.c
 --- readline-5.2-orig/bind.c	Thu Jul 27 15:44:10 2006
-+++ readline-5.2/bind.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/bind.c	Mon Nov 12 22:00:21 2007
 @@ -841,7 +841,7 @@
        filename = SYS_INPUTRC;
      }
@@ -30,9 +30,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/bind.c read
    if (_rl_read_init_file (filename, 0) == 0)
      return 0;
    filename = "~/_inputrc";
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/complete.c readline-5.2/complete.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/complete.c readline-5.2/complete.c
 --- readline-5.2-orig/complete.c	Fri Jul 28 17:35:49 2006
-+++ readline-5.2/complete.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/complete.c	Mon Nov 12 22:00:21 2007
 @@ -55,6 +55,66 @@
  #include "posixdir.h"
  #include "posixstat.h"
@@ -184,9 +184,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/complete.c 
        /* searches from current directory on the drive */
        else if (ISALPHA ((unsigned char)dirname[0]) && dirname[1] == ':')
          {
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/config.h.in readline-5.2/config.h.in
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/config.h.in readline-5.2/config.h.in
 --- readline-5.2-orig/config.h.in	Tue Sep 12 22:02:00 2006
-+++ readline-5.2/config.h.in	Sun Jun 10 18:52:51 2007
++++ readline-5.2/config.h.in	Mon Nov 12 22:00:21 2007
 @@ -257,7 +257,7 @@
  #  undef HAVE_STRCOLL
  #endif
@@ -196,9 +196,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/config.h.in
  #  define PREFER_STDARG
  #  define USE_VARARGS
  #else
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/display.c readline-5.2/display.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/display.c readline-5.2/display.c
 --- readline-5.2-orig/display.c	Thu Sep 14 20:20:12 2006
-+++ readline-5.2/display.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/display.c	Mon Nov 12 22:00:22 2007
 @@ -55,6 +55,11 @@
  #include "rlprivate.h"
  #include "xmalloc.h"
@@ -384,9 +384,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/display.c r
        space_to_eol (_rl_screenwidth);
        putc ('\r', rl_outstream);
  #else
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/histfile.c readline-5.2/histfile.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/histfile.c readline-5.2/histfile.c
 --- readline-5.2-orig/histfile.c	Fri Mar 31 22:48:43 2006
-+++ readline-5.2/histfile.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/histfile.c	Mon Nov 12 22:00:22 2007
 @@ -134,7 +134,7 @@
    return_val = (char *)xmalloc (2 + home_len + 8); /* strlen(".history") == 8 */
    strcpy (return_val, home);
@@ -396,9 +396,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/histfile.c 
    strcpy (return_val + home_len + 1, "_history");
  #else
    strcpy (return_val + home_len + 1, ".history");
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/history.c readline-5.2/history.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/history.c readline-5.2/history.c
 --- readline-5.2-orig/history.c	Sun May 21 19:39:41 2006
-+++ readline-5.2/history.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/history.c	Mon Nov 12 22:00:22 2007
 @@ -49,6 +49,10 @@
  
  #include "xmalloc.h"
@@ -410,9 +410,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/history.c r
  /* The number of slots to increase the_history by. */
  #define DEFAULT_HISTORY_GROW_SIZE 50
  
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/history.h readline-5.2/history.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/history.h readline-5.2/history.h
 --- readline-5.2-orig/history.h	Thu Jul 31 14:38:44 2003
-+++ readline-5.2/history.h	Sun Jun 10 18:52:51 2007
++++ readline-5.2/history.h	Mon Nov 12 22:00:22 2007
 @@ -68,93 +68,93 @@
  
  /* Begin a session in which the history functions might be used.  This
@@ -646,9 +646,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/history.h r
  
  #ifdef __cplusplus
  }
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/input.c readline-5.2/input.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/input.c readline-5.2/input.c
 --- readline-5.2-orig/input.c	Wed Aug 16 21:15:16 2006
-+++ readline-5.2/input.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/input.c	Mon Nov 12 22:00:22 2007
 @@ -61,6 +61,11 @@
  #include <stdio.h>
  #include <errno.h>
@@ -774,9 +774,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/input.c rea
  #endif
        result = read (fileno (stream), &c, sizeof (unsigned char));
  
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/keymaps.h readline-5.2/keymaps.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/keymaps.h readline-5.2/keymaps.h
 --- readline-5.2-orig/keymaps.h	Tue Nov 20 18:42:49 2001
-+++ readline-5.2/keymaps.h	Sun Jun 10 18:52:51 2007
++++ readline-5.2/keymaps.h	Mon Nov 12 22:00:22 2007
 @@ -66,35 +66,35 @@
  #define ISKMAP 1
  #define ISMACR 2
@@ -822,9 +822,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/keymaps.h r
  
  #ifdef __cplusplus
  }
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/parens.c readline-5.2/parens.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/parens.c readline-5.2/parens.c
 --- readline-5.2-orig/parens.c	Thu Mar  4 04:39:51 2004
-+++ readline-5.2/parens.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/parens.c	Mon Nov 12 22:00:22 2007
 @@ -49,6 +49,10 @@
  #  include <sys/select.h>
  #endif
@@ -869,9 +869,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/parens.c re
        rl_point = orig_point;
  #else /* !HAVE_SELECT */
        _rl_insert_char (count, invoking_key);
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/readline.c readline-5.2/readline.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/readline.c readline-5.2/readline.c
 --- readline-5.2-orig/readline.c	Wed Aug 16 21:00:36 2006
-+++ readline-5.2/readline.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/readline.c	Mon Nov 12 22:00:22 2007
 @@ -220,7 +220,11 @@
  
  /* The style of `bell' notification preferred.  This can be set to NO_BELL,
@@ -894,9 +894,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/readline.c 
  #endif
  
    _rl_keymap = xkeymap;
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/readline.h readline-5.2/readline.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/readline.h readline-5.2/readline.h
 --- readline-5.2-orig/readline.h	Wed Aug 16 21:16:59 2006
-+++ readline-5.2/readline.h	Sun Jun 10 18:52:51 2007
++++ readline-5.2/readline.h	Mon Nov 12 22:00:22 2007
 @@ -63,7 +63,7 @@
  } UNDO_LIST;
  
@@ -1919,9 +1919,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/readline.h 
  
  #ifdef __cplusplus
  }
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/rlstdc.h readline-5.2/rlstdc.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/rlstdc.h readline-5.2/rlstdc.h
 --- readline-5.2-orig/rlstdc.h	Fri May 30 21:08:02 2003
-+++ readline-5.2/rlstdc.h	Sun Jun 10 18:52:51 2007
++++ readline-5.2/rlstdc.h	Mon Nov 12 22:00:22 2007
 @@ -42,4 +42,14 @@
  #  endif
  #endif
@@ -1937,9 +1937,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/rlstdc.h re
 +#endif
 +
  #endif /* !_RL_STDC_H_ */
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/shlib/Makefile.in readline-5.2/shlib/Makefile.in
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/shlib/Makefile.in readline-5.2/shlib/Makefile.in
 --- readline-5.2-orig/shlib/Makefile.in	Fri Aug 12 05:56:10 2005
-+++ readline-5.2/shlib/Makefile.in	Fri Jun 15 22:28:11 2007
++++ readline-5.2/shlib/Makefile.in	Mon Nov 12 22:00:22 2007
 @@ -165,10 +165,12 @@
  $(SHARED_READLINE):	$(SHARED_OBJ)
  	$(RM) $@
@@ -1953,9 +1953,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/shlib/Makef
  
  # Since tilde.c is shared between readline and bash, make sure we compile 
  # it with the right flags when it's built as part of readline
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/support/shobj-conf readline-5.2/support/shobj-conf
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/support/shobj-conf readline-5.2/support/shobj-conf
 --- readline-5.2-orig/support/shobj-conf	Tue Apr 11 15:15:43 2006
-+++ readline-5.2/support/shobj-conf	Sun Jun 10 18:52:51 2007
++++ readline-5.2/support/shobj-conf	Mon Nov 12 22:04:46 2007
 @@ -482,6 +482,17 @@
  	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
  	;;
@@ -1983,8 +1983,8 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/support/sho
 +mingw*)
 +	SHOBJ_LD='$(CC)'
 +	SHOBJ_CFLAGS='-DREADLINE_DLL'
-+        SHOBJ_LDFLAGS='-shared -Wl,--enable-auto-import -Wl,--enable-auto-image-base -Wl,--export-all -Wl,--out-implib=$(@:.dll=.a)'
-+        SHLIB_LIBPREF='lib'
++        SHOBJ_LDFLAGS='-shared -Wl,--enable-auto-import -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--out-implib=$(@:.dll=.dll.a)'
++        SHLIB_LIBPREF=
 +        SHLIB_LIBSUFF='dll'
 +        SHLIB_LIBVERSION='.$(SHLIB_LIBSUFF)'
 +
@@ -1992,9 +1992,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/support/sho
  	;;
  
  #
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/terminal.c readline-5.2/terminal.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/terminal.c readline-5.2/terminal.c
 --- readline-5.2-orig/terminal.c	Thu Sep 28 16:11:10 2006
-+++ readline-5.2/terminal.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/terminal.c	Mon Nov 12 22:00:22 2007
 @@ -264,7 +264,7 @@
        if (_rl_screenwidth <= 0)
          _rl_screenwidth = wc;
@@ -2120,9 +2120,9 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/terminal.c 
      }
 +#endif
  }
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def readline-5.2-orig/tilde.c readline-5.2/tilde.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/tilde.c readline-5.2/tilde.c
 --- readline-5.2-orig/tilde.c	Tue Apr 11 17:19:32 2006
-+++ readline-5.2/tilde.c	Sun Jun 10 18:52:51 2007
++++ readline-5.2/tilde.c	Mon Nov 12 22:00:22 2007
 @@ -171,7 +171,7 @@
  
    for (i = 0; i < string_len; i++)

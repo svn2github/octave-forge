@@ -1,77 +1,83 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds sed.exe 
-
-# Name of the package we're building
+# Name of package
 PKG=sed
-# Version of the package
+# Version of Package
 VER=4.1.5
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.gz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.gz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${TOPDIR}/.build_mingw32
-MKPATCHFLAGS="-x defines.h"
-#INSTHEADERS="png.h pngconf.h"
-#INSTALLDIR_INCLUDE=include
+# URL of source code file
+URL=""
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+DIFF_FLAGS="-x defines.h"
+
+# header files to be installed
+INSTALL_HEADERS=""
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-(
-   mkdirs;
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CFLAGS=-O3 CPPFLAGS="" CXX=mingw32-g++ CXXFLAGS=-O3 --prefix=${PREFIX} --srcdir=${SRCDIR} --disable-nls --with-gnu-ld --with-included-gettext --without-included-regex
-)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     LDFLAGS="${LDFLAGS}" \
+     CPPFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="" \
+     CFLAGS="" \
+     --prefix="${PREFIX}" \
+     --disable-nls --with-gnu-ld --with-included-gettext --without-included-regex
+   )
 }
 
-#build() {
-#(
-#  cd ${BUILDDIR} && make -f Makefile.mingw32
-#)
-#}
-
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/sed/sed.exe ${INSTALL_BIN}
-)
+install()
+{
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/sed/sed.exe ${BINARY_PATH}
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/sed.exe
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/sed.exe
 }
 
-all() {
-  download
-  unpack
-  applypatch
-  conf
-  build
-  install
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
 }
+
 main $*
-   

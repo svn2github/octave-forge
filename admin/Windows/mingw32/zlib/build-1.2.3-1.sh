@@ -1,74 +1,41 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds zlib.dll 
-# for zlib version 1.2.3
-
-# Name of the package we're building
+# Name of package
 PKG=zlib
-# Version of the package
+# Version of Package
 VER=1.2.3
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://www.gzip.org/zlib/zlib-1.2.3.tar.bz2
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# installation prefix
-PREFIX=/usr/local
-
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.bz2
+TAR_TYPE=j
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.bz2
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
+# URL of source code file
+URL="http://www.gzip.org/zlib/zlib-1.2.3.tar.bz2"
+
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extraced to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+# Directory the lib is built in
 BUILDDIR=${SRCDIR}
 
-# --- load common functions ---
+# Make file to use
+MAKEFILE=win32/Makefile.gcc
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
-build() {
-(cd ${SRCDIR} && make -f win32/Makefile.gcc)
-}
+check_pre() { MAKEFILE=""; }
 
-clean() {
-(cd ${SRCDIR} && make -f win32/Makefile.gcc clean)
-}
+echo ${PREFIX}
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/zlib1.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/libz.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/zlib.h ${BUILDDIR}/zconf.h ${INSTALL_INCLUDE}
-)
-}
-
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/zlib1.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libz.dll.a
-  rm ${RM_FLAGS} ${INSTALL_INCLUDE}/zlib.h ${INSTALL_INCLUDE}/zconf.h
-)
-}
-
-all() {
-  download
-  unpack
-  applypatch
-  build
-  install
-}
 main $*

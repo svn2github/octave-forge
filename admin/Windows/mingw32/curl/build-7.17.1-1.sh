@@ -40,20 +40,21 @@ DIFF_FLAGS="-x ca-bundle.h -x libcurl.res"
 INSTALL_HEADERS="curl.h curlver.h easy.h mprintf.h multi.h stdcheaders.h types.h"
 INCLUDE_DIR=include/curl
 
-source ../gcc42_common.sh
+source ../common.sh
 
 #mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 
 build() 
 {
    export ZLIB_PATH=${LIBRARY_PATH}
+   echo ${CPATH}
    ( cd ${BUILDDIR} && make -f Makefile.m32 ZLIB=1 )
 }
 
 install()
 {
    install_pre
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/curl.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/curl.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libcurl.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libcurl.a ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/include/curl/$a ${INCLUDE_PATH}; done
@@ -62,10 +63,19 @@ install()
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/curl.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/curl.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libcurl.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libcurl.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+}
+
+all()
+{
+   download
+   unpack
+   applypatch
+   build
+   install
 }
 
 main $*

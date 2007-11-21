@@ -1,75 +1,45 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds blas.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=blas
-# Version of the package
+# Version of Package
 VER=
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://www.netlib.org/blas/blas.tgz
+# Name&Version of Package
+PKGVER=${PKG}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# installation prefix
-PREFIX=/usr/local
-
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tgz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tgz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
+# URL of source code file
+URL="http://www.netlib.org/blas/blas.tgz"
+
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extraced to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+# Directory the lib is built in
 BUILDDIR=${SRCDIR}
 
-# --- load common functions ---
+# Make file to use
+MAKEFILE=makefile.mingw32
+
+# Additional DIFF Flags for generating diff file
+DIFF_FLAGS="-x *.def"
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
-
-unpack() {
-(
-   mkdir -p ${PKGNAME} && cd ${PKGNAME} && tar xzvf ${TOPDIR}/${SRCFILE};
-)
-}
-
-
-build() {
-( cd ${SRCDIR} && make -f makefile.mingw )
-}
-
-clean() {
-( cd ${SRCDIR} && make -f makefile.mingw clean )
-}
-
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/blas.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/libblas.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/libblas.def ${INSTALL_LIB}
-)
-}
-
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/blas.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libblas.dll.a
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libblas.def
-)
-}
+# BLAS is packed NOT in a subdirectory, so we must manually create one...
+unpack_pre() { mkdir ${SRCDIR} && cd ${SRCDIR}; }
+unpack_post() { cd ..; }
 
 all() {
   download
@@ -78,5 +48,5 @@ all() {
   build
   install
 }
+
 main $*
-   

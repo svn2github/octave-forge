@@ -1,35 +1,20 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def blas-orig/makefile.mingw blas/makefile.mingw
---- blas-orig/makefile.mingw	Thu Jan  1 01:00:00 1970
-+++ blas/makefile.mingw	Fri Jun 15 21:27:39 2007
-@@ -0,0 +1,66 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def blas-orig/makefile.mingw32 blas/makefile.mingw32
+--- blas-orig/makefile.mingw32	Thu Jan  1 01:00:00 1970
++++ blas/makefile.mingw32	Tue Nov 20 19:48:28 2007
+@@ -0,0 +1,48 @@
 +LIBTARGET = blas.dll
 +
-+CXX = mingw32-g++
-+# CFLAGS = -MD -O2
-+
-+# F2C = f2c
-+
-+F77 = mingw32-g77
 +FFLAGS = -O3 -funroll-all-loops
 +
 +FSOURCES = $(wildcard *.f)
-+# CSOURCES = $(patsubst %.f,%.c, $(FSOURCES))
 +OBJECTS = $(patsubst %.f,%.o, $(FSOURCES))
 +
 +DEF_FILES = $(patsubst %.f,%.def, $(FSOURCES))
 +LIB_DEFFILE = $(patsubst %.dll,%.def, $(LIBTARGET))
 +
-+PREFIX=/usr/local
-+
 +all: $(LIBTARGET)
 +
 +.SUFFIXES: .f .c .o .def
-+
-+#%.c : %.f
-+#	$(F2C) < $< > $@
-+
-+#%.o : %.c
-+#	$(CC) $(CFLAGS) -o $@ -c $<
 +
 +%.o : %.f
 +	$(F77) $(FFLAGS) -o $@ -c $<
@@ -44,13 +29,13 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def blas-orig/makefile.mingw blas
 +	echo "EXPORTS" > $@
 +	cat $(DEF_FILES) >> $@
 +
-+$(LIBTARGET): $(OBJECTS)
++$(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
 +	$(F77) -shared -o $@ $(OBJECTS) \
 +		-Wl,--out-implib,libblas.dll.a \
 +		-Wl,--output-def,libblas.def \
 +		-Wl,--export-all-symbols \
 +		-Wl,--no-whole-archive
-+	strip $(STRIP_FLAGS) blas.dll
++	$(STRIP) $(STRIP_FLAGS) $@
 +
 +OTHER_CLEANFILES = $(patsubst %.dll, %.exp, $(LIBTARGET)) \
 +		   $(patsubst %.dll, %.ilk, $(LIBTARGET)) \
@@ -63,8 +48,5 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def blas-orig/makefile.mingw blas
 +	$(RM) $(LIBTARGET) $(OTHER_CLEANFILES)
 +
 +install: blas.dll
-+	mkdir -p $(PREFIX)/bin
-+	mkdir -p $(PREFIX)/lib
-+	cp blas.dll $(PREFIX)/bin
-+	cp libblas.dll.a $(PREFIX)/lib
-+	cp libblas.def $(PREFIX)/lib
++	cp blas.dll $(SHAREDLIB_PATH)
++	cp libblas.dll.a $(LIBRARY_PATH)

@@ -1,29 +1,51 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def glpk-4.17-orig/src/Makefile.in glpk-4.17/src/Makefile.in
---- glpk-4.17-orig/src/Makefile.in	Sat May 26 10:00:00 2007
-+++ glpk-4.17/src/Makefile.in	Thu Jun 28 22:00:49 2007
-@@ -187,7 +187,7 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak glpk-4.17-orig/examples/Makefile.in glpk-4.17/examples/Makefile.in
+--- glpk-4.17-orig/examples/Makefile.in	Sat May 26 10:00:00 2007
++++ glpk-4.17/examples/Makefile.in	Fri Nov  9 05:59:00 2007
+@@ -170,7 +170,7 @@
+ target_alias = @target_alias@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
- INCLUDES = -I../include
+-INCLUDES = -I../include
++INCLUDES = -I$(top_srcdir)/include
+ LDADD = ../src/libglpk.la
+ glpsol_SOURCES = glpsol.c
+ tspsol_SOURCES = tspsol.c
+@@ -459,7 +459,7 @@
+ 
+ 
+ check: glpsol$(EXEEXT)
+-	./glpsol$(EXEEXT) --mps ./plan.mps
++	./glpsol$(EXEEXT) --mps $(srcdir)/plan.mps
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak glpk-4.17-orig/src/Makefile.in glpk-4.17/src/Makefile.in
+--- glpk-4.17-orig/src/Makefile.in	Sat May 26 10:00:00 2007
++++ glpk-4.17/src/Makefile.in	Fri Nov  9 05:42:34 2007
+@@ -186,8 +186,8 @@
+ target_alias = @target_alias@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-INCLUDES = -I../include
 -lib_LTLIBRARIES = libglpk.la
++INCLUDES = -I$(top_srcdir)/include
 +lib_LTLIBRARIES = libglpk.la glpk.dll
  libglpk_la_LDFLAGS = -version-info 2:0:2
  libglpk_la_SOURCES = \
  glpapi01.c \
-@@ -322,6 +322,16 @@
+@@ -322,6 +322,15 @@
  	done
  libglpk.la: $(libglpk_la_OBJECTS) $(libglpk_la_DEPENDENCIES) 
  	$(libglpk_la_LINK) -rpath $(libdir) $(libglpk_la_OBJECTS) $(libglpk_la_LIBADD) $(LIBS)
 +
-+	glpk.dll : libglpk.la
++glpk.dll : libglpk.la
 +	$(CC) -shared -o $@ \
-+	  -Wl,--enable-auto-import \
 +	  -Wl,--export-all-symbols \
 +	  -Wl,--whole-archive .libs/libglpk.a \
 +	  -Wl,--out-implib=libglpk.dll.a \
 +	  -Wl,--output-def=libglpk.def \
 +	  -Wl,--no-whole-archive $(LIBS)
-+	strip $(STRIP_FLAGS) $@
++	$(STRIP) $(STRIP_FLAGS) $@
  
  mostlyclean-compile:
  	-rm -f *.$(OBJEXT)

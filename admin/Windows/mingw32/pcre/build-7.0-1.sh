@@ -1,83 +1,99 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds pcre.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=pcre
-# Version of the package
+# Version of Package
 VER=7.0
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://downloads.sourceforge.net/pcre/pcre-7.0.tar.bz2
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.bz2
+TAR_TYPE=j
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.bz2
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${TOPDIR}/.build_mingw32_${VER}-${REL}
-MKPATCHFLAGS=""
-INSTHEADERS="pcre.h"
-INSTALLDIR_INCLUDE=
+# URL of source code file
+URL="http://downloads.sourceforge.net/pcre/pcre-7.0.tar.bz2"
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header files to be installed
+INSTALL_HEADERS="pcre_stringpiece.h"
+INSTALL_HEADERS2="pcre_scanner.h pcre.h"
+INCLUDE_DIR=include/pcre
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-(
-   mkdirs;
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CFLAGS=-O3 CXX=mingw32-g++ CXXFLAGS=-O3 CPPFLAGS="" --prefix=${PREFIX} --srcdir=${SRCDIR} --enable-utf8 --enable-unicode-properties --enable-newline-is-any
-)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     LDFLAGS="${LDFLAGS}" \
+     --prefix=${PREFIX} \
+     --enable-shared --enable-static \
+     --enable-unicode-properties \
+     --enable-newline-is-any \
+     --enable-newline-is-anycrlf \
+     --disable-cxx
+   )
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/pcre.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/pcrecpp.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/pcreposix.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/libpcre.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/libpcrecpp.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/libpcreposix.dll.a ${INSTALL_LIB}
-  for a in ${INSTHEADERS}; do cp ${CP_FLAGS} ${SRCDIR}/$a ${INSTALL_INCLUDE}; done
-)
+
+install()
+{
+   install_pre;
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/pcre.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libpcre.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libpcre.a ${STATICLIBRARY_PATH}
+   for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/$a ${INCLUDE_PATH}; done
+   for a in ${INSTALL_HEADERS2}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
+   install_post;
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/pcre.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libpcre.dll.a
-  rm ${RM_FLAGS} ${INSTALL_BIN}/pcrecpp.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libpcrecpp.dll.a
-  rm ${RM_FLAGS} ${INSTALL_BIN}/pcreposix.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libpcreposix.dll.a
-  for a in ${INSTHEADERS}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/pcre.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpcre.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libpcre.a
+   for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+   for a in ${INSTALL_HEADERS2}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
 }
 
-all() {
-  download
-  unpack
-  applypatch
-  conf
-  build
-  install
+all()
+{
+   download
+   unpack
+#   applypatch
+   mkdirs
+   conf
+   build
+   install
 }
+
 main $*
-   

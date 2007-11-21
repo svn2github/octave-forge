@@ -1,7 +1,7 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def -x Makefile -x config.log -x configure -x config.status -x config.h glob-1.0-orig/Makefile.in glob-1.0/Makefile.in
---- glob-1.0-orig/Makefile.in	Wed Sep 14 11:57:57 2005
-+++ glob-1.0/Makefile.in	Fri Jun 15 22:17:29 2007
-@@ -40,12 +40,21 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak glob-orig/Makefile.in glob/Makefile.in
+--- glob-orig/Makefile.in	Wed Sep 14 09:57:57 2005
++++ glob/Makefile.in	Tue Nov  6 12:15:38 2007
+@@ -40,11 +40,19 @@
  RANLIB = @RANLIB@
  
  .PHONY: all
@@ -11,31 +11,20 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def -x Makefile -x config.log -x 
  libglob.a: glob.o fnmatch.o $(ALLOCA)
  	$(AR) $(ARFLAGS) $@ glob.o fnmatch.o $(ALLOCA)
  	$(RANLIB) $@
- 
-+glob.dll : libglob.a
-+	$(CC) -shared -o $@ \
-+		-Wl,--export-all-symbols \
-+		-Wl,--whole-archive $< \
-+		-Wl,--out-implib,$(basename $<).dll.a \
-+		-Wl,--output-def,$(basename $<).def \
-+		-Wl,--no-whole-archive 
-+	strip $(STRIP_FLAGS) $@
 +
++glob.dll: libglob.a
++	$(CC) -shared -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--out-implib=libglob.dll.a \
++	-Wl,--whole-archive $< \
++	-Wl,--no-whole-archive
++	$(STRIP) $(STRIP_FLAGS) $@
+ 
  # For some reason, Unix make wants the dependencies on the source files.
  # Otherwise it refuses to use an implicit rule!
- # And, get this: it doesn't work to use $(srcdir)/foo.c!!
-@@ -58,7 +67,7 @@
- 
- .PHONY: clean maintainer-clean glob-clean glob-maintainer-clean distclean
- clean glob-clean:
--	-rm -f libglob.a *.o core
-+	-rm -f libglob.a *.o core glob.dll
- 
- distclean glob-maintainer-clean: clean
- 	-rm -f Makefile config.status config.cache config.h config.log
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def -x Makefile -x config.log -x configure -x config.status -x config.h glob-1.0-orig/glob.c glob-1.0/glob.c
---- glob-1.0-orig/glob.c	Wed Sep 14 11:57:57 2005
-+++ glob-1.0/glob.c	Sun Jun 10 17:00:37 2007
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak glob-orig/glob.c glob/glob.c
+--- glob-orig/glob.c	Wed Sep 14 09:57:57 2005
++++ glob/glob.c	Tue Nov  6 12:10:52 2007
 @@ -506,7 +506,11 @@
      }
  

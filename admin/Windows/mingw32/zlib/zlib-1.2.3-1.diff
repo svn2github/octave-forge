@@ -1,7 +1,8 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def zlib-1.2.3-orig/win32/Makefile.gcc zlib-1.2.3/win32/Makefile.gcc
+Binary files zlib-1.2.3-orig/foo.gz and zlib-1.2.3/foo.gz differ
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak zlib-1.2.3-orig/win32/Makefile.gcc zlib-1.2.3/win32/Makefile.gcc
 --- zlib-1.2.3-orig/win32/Makefile.gcc	Sat Aug  2 05:49:00 2003
-+++ zlib-1.2.3/win32/Makefile.gcc	Fri Jun 15 21:20:19 2007
-@@ -25,12 +25,12 @@
++++ zlib-1.2.3/win32/Makefile.gcc	Tue Nov 20 19:38:34 2007
+@@ -25,13 +25,12 @@
  
  STATICLIB = libz.a
  SHAREDLIB = zlib1.dll
@@ -12,11 +13,12 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def zlib-1.2.3-orig/win32/Makefil
  #LOC = -DDEBUG -g
  
 -CC = gcc
-+CC = mingw32-gcc
- CFLAGS = $(LOC) -O3 -Wall
+-CFLAGS = $(LOC) -O3 -Wall
++CFLAGS = $(LOC) -O3 -Wall $(GCC_ARCH_FLAGS)
  
  AS = $(CC)
-@@ -78,10 +78,14 @@
+ ASFLAGS = $(LOC) -Wall
+@@ -78,10 +77,15 @@
  
  $(IMPLIB): $(SHAREDLIB)
  
@@ -24,18 +26,19 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def zlib-1.2.3-orig/win32/Makefil
 -	dllwrap --driver-name $(CC) --def win32/zlib.def \
 -	  --implib $(IMPLIB) -o $@ $(OBJS) $(OBJA) zlibrc.o
 -	strip $@
-+$(SHAREDLIB): $(STATICLIB) zlibrc.o
-+	$(CC) -shared -o $@ \
-+	-Wl,--export-all-symbols \
-+	-Wl,--whole-archive $^ \
-+	-Wl,--out-implib=$(basename $<).dll.a \
-+	-Wl,--output-def=$(basename $<).def \
-+	-Wl,--no-whole-archive
++$(SHAREDLIB): $(STATICLIB)
++	$(CC) -shared \
++	  -o $@ \
++	  -Wl,--out-implib=$(IMPLIB) \
++	  win32/zlib.def \
++	  -Wl,--whole-archive $< \
++	  -Wl,--no-whole-archive \
++	  -Wl,-s
 +	strip $(STRIP_FLAGS) $@
  
  example: example.o $(STATICLIB)
  	$(LD) $(LDFLAGS) -o $@ example.o $(STATICLIB)
-@@ -104,12 +108,14 @@
+@@ -104,18 +108,21 @@
  .PHONY: install uninstall clean
  
  install: zlib.h zconf.h $(LIB)
@@ -46,17 +49,18 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def zlib-1.2.3-orig/win32/Makefil
 +	-mkdir -p $(SHAREDLIB_PATH)
  	-$(INSTALL) zlib.h $(INCLUDE_PATH)
  	-$(INSTALL) zconf.h $(INCLUDE_PATH)
- 	-$(INSTALL) $(STATICLIB) $(LIBRARY_PATH)
+-	-$(INSTALL) $(STATICLIB) $(LIBRARY_PATH)
++	-$(INSTALL) $(STATICLIB) $(STATICLIBRARY_PATH)
  	-$(INSTALL) $(IMPLIB) $(LIBRARY_PATH)
 +	-$(INSTALL) $(SHAREDLIB) $(SHAREDLIB_PATH) 
  
  uninstall:
  	-$(RM) $(INCLUDE_PATH)/zlib.h
-@@ -124,6 +130,7 @@
- 	-$(RM) *.o
- 	-$(RM) *.exe
- 	-$(RM) foo.gz
-+	-$(RM) *.def
+ 	-$(RM) $(INCLUDE_PATH)/zconf.h
+-	-$(RM) $(LIBRARY_PATH)/$(STATICLIB)
++	-$(RM) $(STATICLIBRARY_PATH)/$(STATICLIB)
+ 	-$(RM) $(LIBRARY_PATH)/$(IMPLIB)
++	-$(RM) $(SHAREDLIB_PATH)/$(SHAREDLIB)
  
- adler32.o: zlib.h zconf.h
- compress.o: zlib.h zconf.h
+ clean:
+ 	-$(RM) $(STATICLIB)

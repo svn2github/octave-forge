@@ -1,82 +1,97 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds readline.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=readline
-# Version of the package
+# Version of Package
 VER=5.2
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.gz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.gz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${TOPDIR}/.build_mingw32
-MKPATCHFLAGS=""
-INSTHEADERS="readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h rlconf.h rltypedefs.h"
-INSTALLDIR_INCLUDE=include/readline
+# URL of source code file
+URL=""
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+DIFF_FLAGS=""
+
+# header files to be installed
+INSTALL_HEADERS="readline.h chardefs.h keymaps.h history.h tilde.h rlstdc.h rlconf.h rltypedefs.h"
+INCLUDE_DIR=include/readline
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-(
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CXX=mingw32-g++ --prefix=${PREFIX} --srcdir=${SRCDIR}
-)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     LDFLAGS="${LDFLAGS}" \
+     CPPFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall -D_WIN32" \
+     CXXFLAGS="" \
+     CFLAGS="" \
+     --prefix="${PREFIX}"
+     )
 }
 
-build() {
-( cd ${BUILDDIR} && make shared )
+build()
+{
+  build_pre
+  ( cd ${BUILDDIR} && make shared );
+  build_post
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/shlib/libreadline.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/shlib/libreadline.a ${INSTALL_LIB}/libreadline.dll.a
-  cp ${CP_FLAGS} ${BUILDDIR}/shlib/libhistory.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/shlib/libhistory.a ${INSTALL_LIB}/libhistory.dll.a
-  for a in ${INSTHEADERS}; do cp ${CP_FLAGS} ${SRCDIR}/$a ${INSTALL_INCLUDE}; done
-)
+install()
+{
+   install_pre
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{readline,history}.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{readline,history}.dll.a ${LIBRARY_PATH}
+   for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
+   install_post
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/libreadline.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libreadline.dll.a
-  rm ${RM_FLAGS} ${INSTALL_BIN}/libhistory.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libhistory.dll.a
-  for a in ${INSTHEADERS}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/{readline,history}.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/{readline,history}.dll.a
+   for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
 }
 
-all() {
-  download
-  unpack
-  applypatch
-  conf
-  build
-  install
+
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
 }
+
 main $*
-   

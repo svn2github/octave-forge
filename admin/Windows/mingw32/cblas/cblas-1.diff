@@ -1,9 +1,9 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def cblas-orig/makefile.in cblas/makefile.in
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/makefile.in cblas/makefile.in
 --- cblas-orig/makefile.in	Thu Jan  1 01:00:00 1970
-+++ cblas/makefile.in	Fri Jun 15 21:34:00 2007
-@@ -0,0 +1,52 @@
++++ cblas/makefile.in	Tue Nov 20 19:51:19 2007
+@@ -0,0 +1,53 @@
 +#
-+# Makefile.MINGW32
++# Makefile.LINUX
 +#
 +#
 +# If you compile, change the name to Makefile.in.
@@ -25,26 +25,27 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def cblas-orig/makefile.in cblas/
 +#-----------------------------------------------------------------------------
 +# Libraries and includes
 +#-----------------------------------------------------------------------------
-+
-+BLLIBDIR = 
-+BLLIB = $(BLLIBDIR)/libblas.dll.a
-+CBDIR = $(BUILDDIR)
++ 
++BLLIB = -lblas
++CBDIR = $(TOPDIR)/$(SRCDIR)
 +CBLIBDIR = $(CBDIR)/lib/$(PLAT)
 +CBLIB = $(CBLIBDIR)/libcblas.a
++CBLIBDLL=$(CBLIBDIR)/cblas.dll
++IMPLIB=$(CBLIBDIR)/libcblas.dll.a
 +
 +#-----------------------------------------------------------------------------
 +# Compilers
 +#-----------------------------------------------------------------------------
 +
-+CC = mingw32-gcc
-+FC = mingw32-g77
-+LOADER = mingw32-gcc
++#CC = gcc
++FC = $(F77)
++LOADER = $(FC)
 +
 +#-----------------------------------------------------------------------------
 +# Flags for Compilers
 +#-----------------------------------------------------------------------------
 +
-+CFLAGS = -O3 -DADD_
++CFLAGS = -O3 -DADD_ $(GCC_ARCH_FLAGS)
 +FFLAGS = -O3  
 +
 +#-----------------------------------------------------------------------------
@@ -54,22 +55,20 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def cblas-orig/makefile.in cblas/
 +ARCH = ar
 +ARCHFLAGS = r
 +RANLIB = echo
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def cblas-orig/src/Makefile cblas/src/Makefile
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/src/Makefile cblas/src/Makefile
 --- cblas-orig/src/Makefile	Mon Mar 15 21:11:03 1999
-+++ cblas/src/Makefile	Fri Jun 15 21:37:54 2007
-@@ -234,7 +234,14 @@
++++ cblas/src/Makefile	Tue Nov 20 19:51:19 2007
+@@ -234,6 +234,13 @@
  all: $(alev)  
  	$(ARCH) $(ARCHFLAGS)  $(CBLIB) $(alev) 
  	$(RANLIB) $(CBLIB)
--
-+	$(CC) -shared -o $(CBLIBDIR)/cblas.dll \
-+		-Wl,--enable-auto-import \
-+		-Wl,--allow-multiple-definition \
-+		-Wl,--whole-archive $(CBLIB) \
-+		-Wl,--out-implib=$(basename $(CBLIB)).dll.a \
-+		-Wl,--output-def=$(basename $(CBLIB)).def \
-+		-Wl,--no-whole-archive -lblas
-+	strip $(STRIP_FLAGS) $(CBLIBDIR)/cblas.dll
++	$(F77) -shared -o $(CBLIBDLL) \
++	  -Wl,--export-all-symbols \
++	  -Wl,--allow-multiple-definition \
++	  -Wl,--out-implib=$(IMPLIB) \
++	  -Wl,--whole-archive $(CBLIB) \
++	  -Wl,--no-whole-archive $(BLLIB)
++	$(STRIP) $(STRIP_FLAGS) $(CBLIBDLL)
+ 
  
  .SUFFIXES: .o .c .f
- 

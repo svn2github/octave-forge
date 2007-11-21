@@ -1,6 +1,6 @@
-diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-406-orig/Makefile.mingw32 less-406/Makefile.mingw32
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/Makefile.mingw32 less-406/Makefile.mingw32
 --- less-406-orig/Makefile.mingw32	Thu Jan  1 01:00:00 1970
-+++ less-406/Makefile.mingw32	Wed Aug  8 22:49:43 2007
++++ less-406/Makefile.mingw32	Tue Nov 20 21:21:46 2007
 @@ -0,0 +1,74 @@
 +# Makefile for less.
 +# Windows version
@@ -12,14 +12,14 @@ diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-40
 +# filesystem.
 +#
 +
-+CC = mingw32-gcc
++#CC = mingw32-gcc
 +#LIBDIR = $(MAKEDIR)\..\lib
 +
-+CFLAGS = -O3 
++CFLAGS = $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS)
 +LDFLAGS = -mconsole
-+LD = mingw32-gcc
++LD = $(CC)
 +#LIBS = ${LIBDIR}\import32.lib ${LIBDIR}\cw32.lib
-+LIBS = -lpcre
++LIBS = -lpcre -lregex
 +
 +#### End of system configuration section. ####
 +
@@ -76,9 +76,9 @@ diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-40
 +
 +distclean: spotless
 +
-diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-406-orig/defines.wn less-406/defines.wn
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/defines.wn less-406/defines.wn
 --- less-406-orig/defines.wn	Sat Jun 16 00:06:23 2007
-+++ less-406/defines.wn	Wed Aug  8 22:51:03 2007
++++ less-406/defines.wn	Tue Nov 20 21:21:46 2007
 @@ -200,9 +200,10 @@
  /* #undef HAVE_POSIX_REGCOMP */
  /* #undef HAVE_RE_COMP */
@@ -92,9 +92,9 @@ diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-40
  
  /* Define HAVE_VOID if your compiler supports the "void" type. */
  #define HAVE_VOID 1
-diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-406-orig/lglob.h less-406/lglob.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/lglob.h less-406/lglob.h
 --- less-406-orig/lglob.h	Sat Jun 16 00:06:24 2007
-+++ less-406/lglob.h	Wed Aug  8 21:55:03 2007
++++ less-406/lglob.h	Tue Nov 20 21:21:46 2007
 @@ -57,7 +57,7 @@
  					char ext[_MAX_EXT];	\
  					int handle;
@@ -104,9 +104,9 @@ diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-40
  
  #define	GLOB_FIRST_NAME(filename,fndp,h) h = _findfirst(filename, fndp)
  #define	GLOB_FIRST_FAILED(handle)	((handle) == -1)
-diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-406-orig/lsystem.c less-406/lsystem.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/lsystem.c less-406/lsystem.c
 --- less-406-orig/lsystem.c	Sun Jun 17 18:56:04 2007
-+++ less-406/lsystem.c	Wed Aug  8 21:57:07 2007
++++ less-406/lsystem.c	Tue Nov 20 21:21:46 2007
 @@ -20,7 +20,7 @@
  
  #if MSDOS_COMPILER
@@ -116,3 +116,15 @@ diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def -x defines.h less-40
  #include <direct.h>
  #define setdisk(n) _chdrive((n)+1)
  #else
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/search.c less-406/search.c
+--- less-406-orig/search.c	Sun Jun 17 18:56:04 2007
++++ less-406/search.c	Tue Nov 20 21:22:21 2007
+@@ -28,7 +28,7 @@
+ #endif
+ #endif
+ #if HAVE_PCRE
+-#include <pcre.h>
++#include <pcre/pcre.h>
+ #endif
+ #if HAVE_RE_COMP
+ char *re_comp();

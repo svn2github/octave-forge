@@ -1,84 +1,86 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds zlib.dll 
-# for zlib version 1.2.3
-
-# Name of the package we're building
+# Name of package
 PKG=glob
-# Version of the package
+# Version of Package
 VER=1.0
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://www.dbateman.org/octave/glob-1.0.tar.bz2
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# installation prefix
-PREFIX=/usr/local
-
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.bz2
+TAR_TYPE=j
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.bz2
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${SRCDIR}
-MKPATCHFLAGS="-x Makefile -x config.log -x configure -x config.status -x config.h"
+# URL of source code file
+URL="http://www.dbateman.org/octave/glob-1.0.tar.bz2"
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header files to be installed
+INSTALL_HEADERS="glob.h fnmatch.h"
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-( cd ${SRCDIR} && ./configure CC=mingw32-gcc CPPFLAGS=-O3 CFLAGS="" )
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     LDFLAGS="${LDFLAGS}" \
+     --prefix=${PREFIX}
+   )
 }
 
-build() {
-(cd ${SRCDIR} && make )
+install()
+{
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/glob.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/libglob.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/libglob.a ${STATICLIBRARY_PATH}
+   for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
 }
 
-clean() {
-(cd ${SRCDIR} && make distclean)
-}
-
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/glob.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/libglob.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/libglob.def ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/glob.h ${BUILDDIR}/fnmatch.h ${INSTALL_INCLUDE}
-)
-}
-
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/glob.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libglob.dll.a
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libglob.def
-  rm ${RM_FLAGS} ${INSTALL_INCLUDE}/glob.h ${INSTALL_INCLUDE}/fnmatch.h
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glob.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglob.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libglob.a
+   for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
 }
 
 all() {
   download
   unpack
   applypatch
+  mkdirs
   conf
   build
   install
 }
+
 main $*
-   

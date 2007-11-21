@@ -1,75 +1,86 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds gmp.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=gmp
-# Version of the package
+# Version of Package
 VER=4.2.1
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://ftp.sunet.se/pub/gnu/gmp/gmp-4.2.1.tar.bz2
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.bz2
+TAR_TYPE=j
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.bz2
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=${TOPDIR}/.build_mingw32
-MKPATCHFLAGS=""
-INSTHEADERS=""
-INSTHEADERS_BUILD=""
+# URL of source code file
+URL="http://ftp.sunet.se/pub/gnu/gmp/gmp-4.2.1.tar.bz2"
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd -W | sed -e 's+\([a-z]\):/+/\1/+'`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header files to be installed
+INSTALL_HEADERS=""
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-(
-   mkdirs;
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CFLAGS=-O3 CPPFLAGS="" CXX=mingw32-g++ CXXFLAGS=-O3 --prefix=${PREFIX} --srcdir=${SRCDIR} --enable-shared --disable-static
-)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=../${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     LDFLAGS="${LDFLAGS}" \
+     --prefix="${PREFIX}" \
+     --disable-static \
+     --enable-shared
+   )
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/gmp.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/.libs/libgmp.dll.a ${INSTALL_LIB}
-  cp ${CP_FLAGS} ${BUILDDIR}/gmp.h ${INSTALL_INCLUDE}
-)
+install()
+{
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/gmp.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgmp.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gmp.h ${INCLUDE_PATH}
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/gmp.dll 
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libgmp.dll.a
-  rm ${RM_FLAGS} ${INSTALL_INCLUDE}/gmp.h
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gmp.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libgmp.dll.a
+   ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/gmp.h
 }
 
 all() {
   download
   unpack
   applypatch
+  mkdirs
   conf
   build
   install
 }
+
 main $*
-   

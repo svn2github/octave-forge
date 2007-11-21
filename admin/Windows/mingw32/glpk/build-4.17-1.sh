@@ -1,75 +1,88 @@
-#! /bin/sh
+#! /usr/bin/sh
 
-# this script downloads, patches and builds glpk.dll 
-
-# Name of the package we're building
+# Name of package
 PKG=glpk
-# Version of the package
+# Version of Package
 VER=4.17
-# Release No
+# Release of (this patched) package
 REL=1
-# URL to source code
-URL=http://gd.tuwien.ac.at/gnu/gnusrc/glpk/glpk-4.17.tar.gz
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
 
-# ---------------------------
-# The directory this script is located
-TOPDIR=`pwd`
-# Name of the source package
-PKGNAME=${PKG}-${VER}
-# Full package name including revision
-FULLPKG=${PKGNAME}-${REL}
-# Name of the source code package
-SRCPKG=${PKGNAME}
-# Name of the patch file
+# Name of source file
+SRCFILE=${PKGVER}.tar.gz
+TAR_TYPE=z
+# Name of Patch file
 PATCHFILE=${FULLPKG}.diff
-# Name of the source code file
-SRCFILE=${PKGNAME}.tar.gz
-# Directory where the source code is located
-SRCDIR=${TOPDIR}/${PKGNAME}
 
-# The directory we build the source code in
-BUILDDIR=.build_mingw32_${VER}-${REL}
-MKPATCHFLAGS=""
-INSTHEADERS="glpk.h"
-INSTALLDIR_INCLUDE=
+# URL of source code file
+URL="http://gd.tuwien.ac.at/gnu/gnusrc/glpk/glpk-4.17.tar.gz"
 
-# --- load common functions ---
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header files to be installed
+INSTALL_HEADERS=""
+INCLUDE_DIR=include/glpk
+
 source ../common.sh
 
-# Locally overridden functions with adaptions to current package
-# (Typically when using specific makefiles, and specific install/uninstall instructions)
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-conf() {
-(
-   mkdirs;
-   cd ${BUILDDIR} && ${SRCDIR}/configure CC=mingw32-gcc CFLAGS=-O3 CPPFLAGS="-I${SRCDIR}/include" --prefix=${PREFIX} --srcdir=${SRCDIR}
-)
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=../${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     LDFLAGS="${LDFLAGS}" \
+     --prefix="${PREFIX}"
+   )
 }
 
-install() {
-(
-  mkinstalldirs;
-  cp ${CP_FLAGS} ${BUILDDIR}/src/glpk.dll ${INSTALL_BIN}
-  cp ${CP_FLAGS} ${BUILDDIR}/src/libglpk.dll.a ${INSTALL_LIB}
-  for a in ${INSTHEADERS}; do cp ${CP_FLAGS} ${SRCDIR}/include/$a ${INSTALL_INCLUDE}; done
-)
+install()
+{
+   install_pre
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/glpk.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/libglpk.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/include/glpk.h ${INCLUDE_PATH}
+   install_post
 }
 
-uninstall() {
-( 
-  rm ${RM_FLAGS} ${INSTALL_BIN}/glpk.dll
-  rm ${RM_FLAGS} ${INSTALL_LIB}/libglpk.dll.a
-  for a in ${INSTHEADERS}; do rm ${RM_FLAGS} ${INSTALL_INLUDE}/$a; done
-)
+uninstall()
+{
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glpk.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglpk.dll.a
+   ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/glpk.h
 }
 
-all() {
-  download
-  unpack
-  applypatch
-  conf
-  build
-  install
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
 }
+
 main $*
-   

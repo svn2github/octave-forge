@@ -133,10 +133,27 @@ static string quote_quotes(const string& s)
 	return result;
 }
 
+static bool read_stdin(const char *filename)
+{
+	char buf[1024];
+	int n;
+	FILE *fout = fopen(filename, "wb");
+
+	if (fout == NULL)
+	{
+		cerr << filename << ": cannot open file for writing" << endl;
+		return false;
+	}
+	while ((n = fread(buf, 1, 1024, stdin)) > 0)
+		fwrite(buf, 1, n, fout);
+	fclose(fout);
+	return true;
+}
+
 int main(int argc, char **argv)
 {
 	string clopt, linkopt, cllinkopt, sourcefile, objectfile, optarg, prog, exefile;
-	bool gotparam, dodepend, exeoutput, doshared, debug = false;
+	bool gotparam, dodepend, exeoutput, doshared, debug = false, read_from_stdin;
 
 	prog = "cl";
 	clopt = "-nologo";
@@ -149,6 +166,7 @@ int main(int argc, char **argv)
 	exeoutput = true;
 	exefile = "";
 	doshared = false;
+	read_from_stdin = false;
 
 	if (argc == 1)
 	{
@@ -185,6 +203,10 @@ int main(int argc, char **argv)
 				clopt += " -E -c";
 			}
 		}
+		else if (arg == "-P")
+		{
+			clopt += " -EP";
+		}
 		else if (arg == "-ansi")
 		{
 			clopt += " -Za";
@@ -211,6 +233,15 @@ int main(int argc, char **argv)
 			clopt += " -LD";
 			linkopt += " -DLL";
 			doshared = true;
+		}
+		else if (arg == "-mwindows")
+		{
+			linkopt += " -subsystem:windows";
+		}
+		else if (arg == "-O2" || arg == "-MD")
+		{
+			// do not pass those to the linker
+			clopt += (" " + arg);
 		}
 		else if (starts_with(arg, "-I"))
 		{
@@ -329,6 +360,18 @@ int main(int argc, char **argv)
 			clopt += " " + quote_path(arg);
 			sourcefile = arg;
 		}
+		else if (ends_with(arg, ".dll"))
+		{
+			// trying to link against a DLL: convert to .lib file, keeping the same basename
+			string libarg = (" " + arg.substr(0, arg.length()-4) + ".lib");
+			clopt += libarg;
+			linkopt += libarg;
+		}
+		else if (arg == "-")
+		{
+			// read source file from stdin
+			read_from_stdin = true;
+		}
 		else
 		{
 			clopt += " " + quote_quotes(arg);
@@ -345,6 +388,17 @@ int main(int argc, char **argv)
 	{
 		cerr << "ERROR: dependency generation only possible for source file" << endl;
 		return 1;
+	}
+
+	if (read_from_stdin)
+	{
+		sourcefile = "cc-msvc-tmp.c";
+		if (!read_stdin(sourcefile.c_str()))
+		{
+			unlink(sourcefile.c_str());
+			return 1;
+		}
+		clopt += (" " + sourcefile);
 	}
 
 	if (!exeoutput && !sourcefile.empty() && objectfile.empty())
@@ -445,6 +499,9 @@ int main(int argc, char **argv)
 					_unlink((exefile + ".manifest").c_str());
 			}
 		}
+
+		if (read_from_stdin)
+			unlink(sourcefile.c_str());
 
 		return cmdresult;
 	}

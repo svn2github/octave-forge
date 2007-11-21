@@ -1152,11 +1152,10 @@ if check_package cairo; then
     echo "cairo.res: cairo.rc" >> src/Makefile &&
     echo "	rc -fo \$@ \$<"    >> src/Makefile &&
     create_module_rc Cairo $cairover libcairo-2.dll "Freedesktop.org <www.freedesktop.org>" \
-      "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > cairo.rc &&
+      "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > src/cairo.rc &&
     make &&
-    make install &&
-    rm -f "$tlibdir/libcairo.la") >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/cairo-$cairover"
+    make install) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/cairo-$cairover"
   if test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
     exit -1
@@ -1197,7 +1196,7 @@ if check_package glib; then
       mv ttt glibconfig.h &&
     make &&
     make install) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/glib-$glibver"
+  rm -rf "$DOWNLOAD_DIR/glib-$glibver"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
     exit -1

@@ -59,6 +59,8 @@ gslver=1.10
 netcdfver=3.6.2
 cairover=1.4.10
 glibver=2.14.3
+pangover=1.19.0
+ftver=2.3.5
 
 ###################################################################################
 
@@ -182,7 +184,7 @@ function check_cmake
   cmake=`which cmake.exe`
   if test -z "$cmake"; then
     echo "CMake not found in PATH"
-    exit -1
+    return -1
   fi
 }
 
@@ -237,6 +239,11 @@ EOF
 
 function post_process_libtool
 {
+  if test -z "$1"; then
+    ltfile=libtool
+  else
+    ltfile="$1"
+  fi
   sed -e 's,/OUT:,-OUT:,g' \
       -e 's,^\([^=]*\)=.*cygpath.*$,\1="",g' \
       -e 's,-link -dll,-shared,g' \
@@ -249,8 +256,8 @@ function post_process_libtool
       -e '/^library_names_spec=/ {s, \\$libname\.lib,,;}' \
       -e 's/S_IXUSR/S_IEXEC/g' \
       -e 's/^old_archive_from_new_cmds=.*$/old_archive_from_new_cmds=""/' \
-      -e "s,^postinstall_cmds=.*$,postinstall_cmds='name=\`echo \\\\\$file | sed -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`~implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`~\$install_prog \$dir/\$implibname \$destdir/\$name.lib~test -d \$destdir/../bin || mkdir -p \$destdir/../bin~mv -f \$destdir/\$dlname \$destdir/../bin'," libtool > ttt &&
-      mv ttt libtool
+      -e "s,^postinstall_cmds=.*$,postinstall_cmds='name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`~implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`~\$install_prog \$dir/\$implibname \$destdir/\$name.lib~test -d \$destdir/../bin || mkdir -p \$destdir/../bin~mv -f \$destdir/\$dlname \$destdir/../bin'," "$ltfile" > ttt &&
+      mv ttt "$ltfile"
 }
 
 ###################################################################################
@@ -425,7 +432,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/libcairo-2.dll" cairo
     todo_check "$tbindir/libglib-2.0-0.dll" glib
     todo_check "$tbindir/libpango-1.0-0.dll" pango
-    todo_check "$tbindir/freetype6.dll" freetype
+    todo_check "$tlibdir/freetype.lib" freetype
     todo_check "$tbindir/bgd.dll" libgd
     todo_check "$tbindir/libgsl.dll" libgsl
     todo_check "$tlibdir/netcdf.lib" netcdf
@@ -708,14 +715,13 @@ if check_package PCRE; then
   echo -n "decompressing PCRE... "
   unpack_file pcre-$pcrever.tar.bz2
   echo "done"
-  check_cmake
   echo -n "compiling PCRE... "
   pcre_desc="Perl Compatible Regular Expression Library"
   pcre_company="Philip Hazel <ph10@cam.ac.uk>"
   pcre_copyright=`grep -e '^Copyright' "$DOWNLOAD_DIR/pcre-$pcrever/LICENCE" | head -n 1`
   (cd "$DOWNLOAD_DIR/pcre-$pcrever" &&
     create_module_rc PCRE $pcrever pcre.dll "$pcre_company" "$pcre_desc" "$pcre_copyright" > pcre.rc &&
-    if false; then
+    if false && check_cmake; then
       sed -e "s/SET(PCRE_SOURCES/SET(PCRE_SOURCES pcre.rc/" CMakeLists.txt > ttt &&
         mv ttt CMakeLists.txt &&
       cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS:BOOL=ON \
@@ -740,7 +746,8 @@ if check_package PCRE; then
       echo "pcre.res: pcre.rc"  >> Makefile &&
       echo "	rc -fo \$@ \$<" >> Makefile &&
       make &&
-      make install
+      make install &&
+	  rm -f "$tlibdir/libpcre*.la"
     fi) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/pcre-$pcrever"
   if ! test -f "$tlibdir/pcre.lib"; then
@@ -1172,7 +1179,8 @@ if check_package cairo; then
     create_module_rc Cairo $cairover libcairo-2.dll "Freedesktop.org <www.freedesktop.org>" \
       "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > src/cairo.rc &&
     make &&
-    make install) >&5 2>&1
+    make install &&
+	rm -f "$tlibdir/libcairo*.la") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/cairo-$cairover"
   if test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
@@ -1196,7 +1204,6 @@ if check_package glib; then
   (cd "$DOWNLOAD_DIR/glib-$glibver" &&
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      PCRE_CFLAGS=" " PCRE_LIBS=-lpcre \
       ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
       --with-threads=win32 --with-pcre=system &&
     post_process_libtool &&
@@ -1213,7 +1220,8 @@ if check_package glib; then
     sed -e "s/^.*G_ATOMIC_OP_MEMORY_BARRIER_NEEDED.*$//" glibconfig.h > ttt &&
       mv ttt glibconfig.h &&
     make &&
-    make install) >&5 2>&1
+    make install &&
+	rm -f "$tlibdir/libglib*.la" "$tlibdir/libgmodule*.la" "$tlibdir/libgthread*.la" "$tlibdir/libgobject*.la") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/glib-$glibver"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
@@ -1228,22 +1236,20 @@ fi
 #########
 
 if check_package pango; then
-  download_file pango-1.16.4.tar.gz ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
+  pangoroot=`echo $pangover | sed -e 's/\.[0-9]\+$//'`
+  download_file pango-$pangover.tar.gz ftp://ftp.gtk.org/pub/pango/$pangoroot/pango-$pangover.tar.bz2
   echo -n "decompressing pango... "
-  (cd "$DOWNLOAD_DIR" && tar xfz pango-1.16.4.tar.gz)
-  cp libs/pango-1.16.4.diff "$DOWNLOAD_DIR/pango-1.16.4"
+  unpack_file pango-$pangover.tar.bz2
   echo "done"
   echo "compiling pango... "
-  (cd "$DOWNLOAD_DIR/pango-1.16.4" &&
-    patch -p1 < pango-1.16.4.diff &&
-    rm -f pango/module-defs-fc.c pango/module-defs-win32.c &&
-    cd pango &&
-    touch pango-enum-types.* &&
-    sed -e "s/^PREFIX = .*/PREFIX = $tdir_w32/" makefile.msc > ttt &&
-    mv ttt makefile.msc &&
-    nmake -f makefile.msc &&
-    nmake -f makefile.msc install) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/pango-1.16.4"
+  (cd "$DOWNLOAD_DIR/pango-$pangover" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
+      --with-threads=win32 --with-pcre=system &&
+    post_process_libtool &&
+    true) >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/pango-$pangover"
   if test ! -f "$tbindir/libpango-1.0-0.dll"; then
     echo "failed"
     exit -1
@@ -1257,27 +1263,38 @@ fi
 ############
 
 if check_package freetype; then
-  download_file freetype-2.3.1.tar.gz http://download.savannah.gnu.org/releases/freetype/freetype-2.3.1.tar.gz
+  download_file freetype-$ftver.tar.bz2 http://download.savannah.gnu.org/releases/freetype/freetype-$ftver.tar.bz2
   echo -n "decompressing freetype... "
-  (cd "$DOWNLOAD_DIR" && tar xfz freetype-2.3.1.tar.gz)
-  cp libs/freetype-2.3.1.diff "$DOWNLOAD_DIR/freetype-2.3.1"
-  cp libs/freetype-config "$DOWNLOAD_DIR/freetype-2.3.1"
+  unpack_file freetype-$ftver.tar.bz2
   echo "done"
   echo -n "compiling freetype... "
-  (cd "$DOWNLOAD_DIR/freetype-2.3.1" &&
-    patch -p1 < freetype-2.3.1.diff &&
-    cd builds/win32/visualc &&
-    vcbuild -u freetype.sln "Release Multithreaded|Win32" &&
-    cd ../../.. &&
-    cp objs/release_mt/freetype6.dll "$tbindir" &&
-    cp objs/release_mt/freetype.lib "$tlibdir" &&
-    cp include/ft2build.h "$tincludedir" &&
-    mkdir -p "$tincludedir/freetype2" &&
-    cp -r include/freetype "$tincludedir/freetype2" &&
-    rm -rf "$tincludedir/freetype2/freetype/internal" &&
-    sed -e "s,^prefix=.*,prefix=$tdir_w32_forward," freetype-config > "$tbindir/freetype-config") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/freetype-2.3.1"
-  if test ! -f "$tbindir/freetype6.dll"; then
+  (cd "$DOWNLOAD_DIR/freetype-$ftver" &&
+    create_module_rc FreeType $ftver libfreetype-6.dll "Freetype.org <www.freetype.org>" \
+      "FreeType 2 Font Engine Library" "`grep -A 2 -e '^Copyright' README | tr \\\\n ' '`" > freetype.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+	post_process_libtool builds/unix/libtool &&
+    sed -e "/^TOP_DIR/ {s/pwd/pwd -W/;}" builds/unix/unix-def.mk > ttt &&
+      mv ttt builds/unix/unix-def.mk &&
+	sed -e 's/^LDFLAGS \+:=/LDFLAGS := -Wl,freetype.res/' builds/unix/unix-cc.mk > ttt &&
+      mv ttt builds/unix/unix-cc.mk &&
+    sed -e '/define \+FT_EXPORT/ {p; c\
+\#ifdef FT2_BUILD_LIBRARY\
+\# define FT_EXPORT(x)     __declspec(dllexport) x\
+\# define FT_EXPORT_VAR(x) __declspec(dllexport) x\
+\#else\
+\# define FT_EXPORT(x)     __declspec(dllimport) x\
+\# define FT_EXPORT_VAR(x) __declspec(dllimport) x\
+\#endif
+;}' include/freetype/config/ftoption.h > ttt &&
+      mv ttt include/freetype/config/ftoption.h &&
+    rc -fo freetype.res freetype.rc &&
+    make &&
+    make install &&
+    rm -f "$tlibdir/libfreetype*.la") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/freetype-$ftver"
+  if test ! -f "$tlibdir/freetype.lib"; then
     echo "failed"
     exit -1
   else
@@ -1407,7 +1424,8 @@ if check_package netcdf; then
       cd libsrc &&
       make &&
       make install &&
-      cp ../COPYRIGHT "$tlicdir/COPYING.NETCDF"
+      cp ../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
+	  rm -f "$tlibdir/libnetcdf*.la"
     fi) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
   if test ! -f "$tlibdir/netcdf.lib"; then

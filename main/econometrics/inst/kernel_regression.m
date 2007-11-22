@@ -22,25 +22,25 @@
 # inputs:
 #	eval_points: PxK matrix of points at which to calculate the density
 #	dev_var: Nx1 vector of observations of the dependent variable
-# 	condvars: NxK matrix. N observations on the K conditioning variables.
+# 	data: NxK matrix of data points
 #	bandwidth: positive scalar, the smoothing parameter. The fit
 # 		is more smooth as the bandwidth increases.
-#	do_cv: bool (optional). default false. If true, calculate leave-1-out
-#		density for cross validation
-#	nslaves: int (optional, default 0). Number of compute nodes for parallel evaluation
-#	debug: bool (optional, default false). show results on compute nodes if doing
-#		 parallel run
-#	bandwith_matrix (optional): nonsingular KxK matrix. Rotates data.
-# 		Default is Choleski decomposition of inverse of covariance,
+#	kernel (optional): string. Name of the kernel function. Default is
+#		Gaussian kernel.
+#	prewhiten bool (optional): default false. If true, rotate data
+# 		using Choleski decomposition of inverse of covariance,
 #		to approximate independence after the transformation, which
 #		makes a product kernel a reasonable choice.
-#	kernel (optional): string. Name of the kernel function. Default is radial
-#		symmetric Epanechnikov kernel.
+#	do_cv: bool (optional). default false. If true, calculate leave-1-out
+#		 density for cross validation
+#	computenodes: int (optional, default 0). Number of compute nodes for parallel evaluation
+#	debug: bool (optional, default false). show results on compute nodes if doing
+#		a parallel run
 # outputs:
 #	fit: Px1 vector: the fitted value at each of the P evaluation points.
 #
 
-function z = kernel_regression(eval_points, depvar, condvars, bandwidth, do_cv, nslaves, debug, bandwith_matrix, kernel)
+function z = kernel_regression(eval_points, depvar, condvars, bandwidth, kernel, prewhiten, do_cv, computenodes, debug)
 
 	if nargin < 3; error("kernel_regression: at least 3 arguments are required"); endif
 
@@ -48,34 +48,22 @@ function z = kernel_regression(eval_points, depvar, condvars, bandwidth, do_cv, 
 	k = columns(condvars);
 
 	# set defaults for optional args
+	if (nargin < 4) bandwidth = (n ^ (-1/(4+k))); endif	# bandwidth - see Li and Racine pg. 66
+	if (nargin < 5) kernel = "__kernel_normal"; endif 	# what kernel?
+	if (nargin < 6) prewhiten = false; endif 		# automatic prewhitening?
+	if (nargin < 7)	do_cv = false; endif 			# ordinary or leave-1-out
+	if (nargin < 8)	computenodes = 0; endif			# parallel?
+	if (nargin < 9)	debug = false; endif;			# debug?
 
-	# bandwidth - see Li and Racine pg. 66
-	if (nargin < 4) bandwidth = (n ^ (-1/(4+k))); endif
-
-	# default ordinary density, not leave-1-out
-	if (nargin < 5)	do_cv = false; endif
-	# default serial
-	if (nargin < 6)	nslaves = 0; endif
-	# debug or not (default)
-	if (nargin < 7)	debug = false; endif;
-	# default bandwidth matrix (up to factor of proportionality)
-
-	# scale the data and eval_points
-	z = [condvars; eval_points];
-	z = scale_data(z);
-	condvars = z(1:n,:);
-	eval_points = z(n+1: rows(z),:);
-
-
-	if (nargin < 8) bandwidth_matrix = chol(cov(condvars)); endif # default bandwidth matrix
-	# default kernel
-	if (nargin < 9) kernel = "__kernel_epanechnikov"; endif 	# default kernel
 
 	nn = rows(eval_points);
 	n = rows(depvar);
 
-	# Inverse bandwidth matrix H_inv
-	H = bandwidth_matrix*bandwidth;
+	if prewhiten
+		H = bandwidth*chol(cov(convars));
+ 	else
+		H = bandwidth;
+	endif
 	H_inv = inv(H);
 
 	# weight by inverse bandwidth matrix
@@ -88,28 +76,28 @@ function z = kernel_regression(eval_points, depvar, condvars, bandwidth, do_cv, 
 	global PARALLEL NSLAVES NEWORLD NSLAVES TAG
 	PARALLEL = 0;
 
-	if nslaves > 0
+	if computenodes > 0
 		PARALLEL = 1;
-		NSLAVES = nslaves;
-		LAM_Init(nslaves, debug);
+		NSLAVES = computenodes;
+		LAM_Init(computenodes, debug);
 	endif
 
 	if !PARALLEL # ordinary serial version
 		points_per_node = nn; # do the all on this node
-		z = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_per_node, nslaves, debug);
+		z = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_per_node, computenodes, debug);
 	else # parallel version
 		z = zeros(nn,1);
 		points_per_node = floor(nn/(NSLAVES + 1)); # number of obsns per slave
 		# The command that the slave nodes will execute
-		cmd=['z_on_node = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_per_node, nslaves, debug); ',...
+		cmd=['z_on_node = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_per_node, computenodes, debug); ',...
 		'MPI_Send(z_on_node, 0, TAG, NEWORLD);'];
 
 		# send items to slaves
 
-		NumCmds_Send({"eval_points", "data", "do_cv", "kernel", "points_per_node", "nslaves", "debug","cmd"}, {eval_points, data, do_cv, kernel, points_per_node, nslaves, debug, cmd});
+		NumCmds_Send({"eval_points", "data", "do_cv", "kernel", "points_per_node", "computenodes", "debug","cmd"}, {eval_points, data, do_cv, kernel, points_per_node, computenodes, debug, cmd});
 
 		# evaluate last block on master while slaves are busy
-		z_on_node = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_per_node, nslaves, debug);
+		z_on_node = kernel_regression_nodes(eval_points, data, do_cv, kernel, points_per_node, computenodes, debug);
 		startblock = NSLAVES*points_per_node + 1;
 		endblock = nn;
 		z(startblock:endblock,:) = z(startblock:endblock,:) + z_on_node;

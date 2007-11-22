@@ -121,15 +121,22 @@ static string quote_path(const string& s)
 
 static string quote_quotes(const string& s)
 {
-	if (s.find('"') == string::npos)
-		return s;
-	
 	string result;
-	for (int i=0; i<s.length(); i++)
-		if (s[i] == '"')
-			result += "\\\"";
-		else
-			result.push_back(s[i]);
+
+	if (s.find('"') != string::npos)
+	{
+		for (int i=0; i<s.length(); i++)
+			if (s[i] == '"')
+				result += "\\\"";
+			else
+				result.push_back(s[i]);
+	}
+	else
+		result = s;
+
+	if (result.find_first_of("&<>()@^|") != string::npos)
+		result = "\"" + result + "\"";
+
 	return result;
 }
 

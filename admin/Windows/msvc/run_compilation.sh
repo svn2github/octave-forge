@@ -39,7 +39,7 @@ packages=
 available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot ncurses pkg-config fc-msvc libcurl"
+VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig"
 octave_version=
 of_version=
 do_nsi=false
@@ -61,6 +61,7 @@ cairover=1.4.10
 glibver=2.14.3
 pangover=1.19.0
 ftver=2.3.5
+libxml2ver=2.6.30
 
 ###################################################################################
 
@@ -432,6 +433,8 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/libcairo-2.dll" cairo
     todo_check "$tbindir/libglib-2.0-0.dll" glib
     todo_check "$tbindir/libpango-1.0-0.dll" pango
+    todo_check "$tlibdir/xml2.lib" libxml2
+    #todo_check "$tlibdir/fontconfig.lib" fontconfig
     todo_check "$tlibdir/freetype.lib" freetype
     todo_check "$tbindir/bgd.dll" libgd
     todo_check "$tbindir/libgsl.dll" libgsl
@@ -1246,11 +1249,84 @@ if check_package pango; then
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
       ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
-      --with-threads=win32 --with-pcre=system &&
+      --with-included-modules=basic-win32 --with-dynamic-modules=no &&
     post_process_libtool &&
+    sed -e 's/-lgdi32/-luser32 -lgdi32/' \
+        -e '/^noinst_DATA/ {s/pangoft2[^ ]*\.lib//;}' pango/Makefile > ttt &&
+      mv ttt pango/Makefile &&
+    sed -e 's,/pango/pango-querymodules,/pango/.libs/pango-querymodules,' modules/Makefile > ttt &&
+      mv ttt modules/Makefile &&
+    make &&
+    make install &&
     true) >&5 2>&1
   #rm -rf "$DOWNLOAD_DIR/pango-$pangover"
   if test ! -f "$tbindir/libpango-1.0-0.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# libxml2 #
+###########
+
+if check_package libxml2; then
+  download_file libxml2-$libxml2ver.tar.gz ftp://xmlsoft.org/libxml2/libxml2-$libxml2ver.tar.gz
+  echo -n "decompressing libxml2... "
+  unpack_file libxml2-$libxml2ver.tar.gz
+  echo "done"
+  echo "compiling libxml2... "
+  (cd "$DOWNLOAD_DIR/libxml2-$libxml2ver" &&
+    create_module_rc libxml2 $libxml2ver "libxml2-2.dll" "XmlSoft (www.xmlsoft.org)" \
+      "XML Parser and Toolkit Library" "`grep -e '^ *Copyright' Copyright | head -n 1 | sed -e 's/^ *//'`" > xml2.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s/^libxml2_la_LDFLAGS =/libxml2_la_LDFLAGS = -Wl,-export:trio_snprintf -Wl,xml2.res/" Makefile > ttt &&
+      mv ttt Makefile &&
+    rc -fo xml2.res xml2.rc &&
+    make &&
+    make install &&
+    rm -f "$tlibdir/libxml2.la" &&
+    true) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/libxml2-$libxml2ver"
+  if test ! -f "$tlibdir/xml2.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##############
+# fontconfig #
+##############
+
+if check_package fontconfig; then
+  download_file fontconfig-$fontconfigver.tar.gz ftp://xmlsoft.org/fontconfig/fontconfig-$fontconfigver.tar.gz
+  echo -n "decompressing fontconfig... "
+  unpack_file fontconfig-$fontconfigver.tar.gz
+  echo "done"
+  echo "compiling fontconfig... "
+  (cd "$DOWNLOAD_DIR/fontconfig-$fontconfigver" &&
+    create_module_rc FontConfig $fontconfigver "libfontconfig-2.dll" "Freedesktop (www.freedesktop.org)" \
+      "Font Configuration Library" "`grep -e '^ *Copyright' COPYING | head -n 1 | sed -e 's/^ *//'`" > fontconfig.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s/^libfontconfig_la_LDFLAGS =/libfontconfig_la_LDFLAGS = -Wl,fontconfig.res/" Makefile > ttt &&
+      mv ttt Makefile &&
+    rc -fo fontconfig.res fontconfig.rc &&
+    make &&
+    make install &&
+    rm -f "$tlibdir/libfontconfig.la" &&
+    true) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
+  if test ! -f "$tlibdir/fontconfig.lib"; then
     echo "failed"
     exit -1
   else

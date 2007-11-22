@@ -248,6 +248,7 @@ function post_process_libtool
       -e '/^archive_expsym_cmds=/ {s,-shared,-shared ${wl}-def:\\$export_symbols,;}' \
       -e '/^library_names_spec=/ {s, \\$libname\.lib,,;}' \
       -e 's/S_IXUSR/S_IEXEC/g' \
+      -e 's/^old_archive_from_new_cmds=.*$/old_archive_from_new_cmds=""/' \
       -e "s,^postinstall_cmds=.*$,postinstall_cmds='name=\`echo \\\\\$file | sed -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`~implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`~\$install_prog \$dir/\$implibname \$destdir/\$name.lib~test -d \$destdir/../bin || mkdir -p \$destdir/../bin~mv -f \$destdir/\$dlname \$destdir/../bin'," libtool > ttt &&
       mv ttt libtool
 }
@@ -408,7 +409,7 @@ if test -z "$todo_packages"; then
       fi
     fi
     todo_check "$tbindir/libfftw3-3.dll" FFTW
-    todo_check "$tbindir/pcre.dll" PCRE
+    todo_check "$tlibdir/pcre.lib" PCRE
     todo_check "$tbindir/glpk.dll" GLPK
     todo_check "$tbindir/ncurses.dll" ncurses
     todo_check "$tbindir/readline.dll" readline
@@ -703,29 +704,46 @@ fi
 ########
 
 if check_package PCRE; then
-  check_cmake
   download_file pcre-$pcrever.tar.bz2 ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$pcrever.tar.bz2
   echo -n "decompressing PCRE... "
   unpack_file pcre-$pcrever.tar.bz2
   echo "done"
+  check_cmake
   echo -n "compiling PCRE... "
   pcre_desc="Perl Compatible Regular Expression Library"
   pcre_company="Philip Hazel <ph10@cam.ac.uk>"
   pcre_copyright=`grep -e '^Copyright' "$DOWNLOAD_DIR/pcre-$pcrever/LICENCE" | head -n 1`
   (cd "$DOWNLOAD_DIR/pcre-$pcrever" &&
     create_module_rc PCRE $pcrever pcre.dll "$pcre_company" "$pcre_desc" "$pcre_copyright" > pcre.rc &&
-    sed -e "s/SET(PCRE_SOURCES/SET(PCRE_SOURCES pcre.rc/" CMakeLists.txt > ttt &&
-	mv ttt CMakeLists.txt &&
-	cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS:BOOL=ON \
-                               -D PCRE_NEWLINE:STRING=ANYCRLF \
-                               -D PCRE_SUPPORT_UNICODE_PROPERTIES:BOOL=ON \
-                               -D PCRE_BUILD_PCRECPP:BOOL=OFF \
-                               -D CMAKE_BUILD_TYPE:STRING=Release \
-                               -D "CMAKE_INSTALL_PREFIX:STRING=$tdir_w32_forward" . &&
-    nmake &&
-    nmake install) >&5 2>&1
+    if false; then
+      sed -e "s/SET(PCRE_SOURCES/SET(PCRE_SOURCES pcre.rc/" CMakeLists.txt > ttt &&
+        mv ttt CMakeLists.txt &&
+      cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS:BOOL=ON \
+            -D PCRE_NEWLINE:STRING=ANYCRLF \
+            -D PCRE_SUPPORT_UNICODE_PROPERTIES:BOOL=ON \
+            -D PCRE_BUILD_PCRECPP:BOOL=OFF \
+            -D CMAKE_BUILD_TYPE:STRING=Release \
+            -D "CMAKE_INSTALL_PREFIX:STRING=$tdir_w32_forward" . &&
+      nmake &&
+      nmake install
+    else
+      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+        ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
+        --disable-cpp --enable-unicode-properties --enable-newline-is-anycrlf &&
+      post_process_libtool &&
+      sed -e 's/^return !isdirectory(filename) *$/\0;/' pcregrep.c > ttt &&
+        mv ttt pcregrep.c &&
+      sed -e 's/libpcre_la_LDFLAGS =/libpcre_la_LDFLAGS = -Wl,pcre.res/' \
+          -e 's/libpcre_la_OBJECTS =/libpcre_la_OBJECTS = pcre.res/' Makefile > ttt &&
+        mv ttt Makefile &&
+      echo "pcre.res: pcre.rc"  >> Makefile &&
+      echo "	rc -fo \$@ \$<" >> Makefile &&
+      make &&
+      make install
+    fi) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/pcre-$pcrever"
-  if ! test -f "$tbindir/pcre.dll"; then
+  if ! test -f "$tlibdir/pcre.lib"; then
     echo "failed"
     exit -1
   else
@@ -1370,33 +1388,28 @@ if check_package netcdf; then
       cp ../../../libsrc/netcdf.h "$tincludedir" &&
       cp Release/netcdf.dll "$tbindir"
     else
-      CC=cc-msvc CXX=cc-msvc CFLAGS="-O2 -MD" CXXFLAGS="-O2 -MD -EHs" F77=fc-msvc FC=fc-msvc \
-        CPPFLAGS="-D_CRT_SECURE_NO_DEPRECATE -DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
         ./configure --prefix="$tdir_w32_forward" --enable-c-only --enable-dll --enable-shared \
         --disable-static &&
+      post_process_libtool &&
       sed -e 's/-Wl,--output-def,.*$//' \
-          -e 's/^libnetcdf_la_OBJECTS =/libnetcdf_la_OBJECTS = netcdf.o/' libsrc/Makefile > ttt &&
+          -e 's/^libnetcdf_la_LDFLAGS =/libnetcdf_la_LDFLAGS = -Wl,netcdf.res/' \
+          -e 's/^libnetcdf_la_OBJECTS =/libnetcdf_la_OBJECTS = netcdf.res/' libsrc/Makefile > ttt &&
       mv ttt libsrc/Makefile &&
-      echo "netcdf.o: netcdf.rc" >> libsrc/Makefile &&
+      echo "netcdf.res: netcdf.rc" >> libsrc/Makefile &&
       echo "	rc -fo \$@ \$<"    >> libsrc/Makefile &&
       netcdf_copyright=`grep -e '^Copyright' COPYRIGHT | head -n 1` &&
       create_module_rc NetCDF $netcdfver libnetcdf-4.dll "University Corporation for Atmospheric Research/Unidata" \
         "Unidata network Common Data Form Library" "$netcdf_copyright" > libsrc/netcdf.rc &&
-      sed -e 's/^deplibs_check_method=.*$/deplibs_check_method="pass_all"/' \
-          -e 's,\\\?`cygpath[^`]*`,,g' \
-          -e 's,/OUT:,-OUT:,g' \
-          -e 's,-link -dll,-shared,g' libtool > ttt &&
-      mv ttt libtool &&
       echo "#define ssize_t int" >> config.h &&
       echo "#include <malloc.h>" >> config.h &&
       cd libsrc &&
       make &&
-      cp ../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
-      cp .libs/libnetcdf*.lib "$tlibdir/netcdf.lib" &&
-      cp netcdf.h "$tincludedir" &&
-      cp .libs/libnetcdf*.dll "$tbindir"
+      make install &&
+      cp ../COPYRIGHT "$tlicdir/COPYING.NETCDF"
     fi) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
+  rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
   if test ! -f "$tlibdir/netcdf.lib"; then
     echo "failed"
     exit -1

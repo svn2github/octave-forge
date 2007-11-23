@@ -63,6 +63,8 @@ pangover=1.19.0
 ftver=2.3.5
 libxml2ver=2.6.30
 fontconfigver=2.5.0
+gdver=2.0.35
+hdf5ver=1.6.5
 
 ###################################################################################
 
@@ -257,6 +259,8 @@ function post_process_libtool
       -e '/^archive_expsym_cmds=/ {s,-shared,-shared ${wl}-def:\\$export_symbols,;}' \
       -e '/^library_names_spec=/ {s, \\$libname\.lib,,;}' \
       -e 's/S_IXUSR/S_IEXEC/g' \
+      -e 's/^reload_flag=.*$/reload_flag=""/' \
+      -e 's/^reload_cmds=.*$/reload_cmds="lib -OUT:\\$output\\$reload_objs"/' \
       -e 's/^old_archive_from_new_cmds=.*$/old_archive_from_new_cmds=""/' \
       -e "s,^postinstall_cmds=.*$,postinstall_cmds='name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`~implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`~\$install_prog \$dir/\$implibname \$destdir/\$name.lib~test -d \$destdir/../bin || mkdir -p \$destdir/../bin~mv -f \$destdir/\$dlname \$destdir/../bin'," "$ltfile" > ttt &&
       mv ttt "$ltfile"
@@ -311,6 +315,7 @@ tdir_w32=`cd "$INSTALL_DIR" && pwd -W`
 tdir_w32_forward="$tdir_w32"
 tdir_w32_1=`echo $tdir_w32 | sed -e 's,/,\\\\,g'`
 tdir_w32=`echo $tdir_w32 | sed -e 's,/,\\\\\\\\,g'`
+tlibdir_quoted="${tlibdir// /\\ }"
 
 INCLUDE="$tdir_w32_1\\include;$INCLUDE"
 LIB="$tdir_w32_1\\lib;$LIB"
@@ -419,12 +424,12 @@ if test -z "$todo_packages"; then
     fi
     todo_check "$tbindir/libfftw3-3.dll" FFTW
     todo_check "$tlibdir/pcre.lib" PCRE
-    todo_check "$tbindir/glpk.dll" GLPK
+    todo_check "$tlibdir/glpk.lib" GLPK
     todo_check "$tbindir/ncurses.dll" ncurses
     todo_check "$tbindir/readline.dll" readline
     todo_check "$tbindir/zlib1.dll" zlib
     todo_check "$tlibdir/cxsparse.lib" SuiteSparse
-    todo_check "$tbindir/hdf5.dll" HDF5
+    todo_check "$tlibdir/hdf5.lib" HDF5
     todo_check "$tlibdir/glob.lib" glob
     todo_check "$tlibdir/png.lib" libpng
     todo_check "$tbindir/arpack.dll" ARPACK
@@ -437,8 +442,8 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/xml2.lib" libxml2
     #todo_check "$tlibdir/fontconfig.lib" fontconfig
     todo_check "$tlibdir/freetype.lib" freetype
-    todo_check "$tbindir/bgd.dll" libgd
-    todo_check "$tbindir/libgsl.dll" libgsl
+    todo_check "$tlibdir/gd.lib" libgd
+    todo_check "$tlibdir/gsl.lib" libgsl
     todo_check "$tlibdir/netcdf.lib" netcdf
     todo_check "$tbindir/sed.exe" sed
     todo_check "$tbindir/makeinfo.exe" makeinfo
@@ -751,7 +756,7 @@ if check_package PCRE; then
       echo "	rc -fo \$@ \$<" >> Makefile &&
       make &&
       make install &&
-	  rm -f "$tlibdir/libpcre*.la"
+	  rm -f $tlibdir_quoted/libpcre*.la
     fi) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/pcre-$pcrever"
   if ! test -f "$tlibdir/pcre.lib"; then
@@ -789,26 +794,34 @@ if check_package GLPK; then
   unpack_file glpk-$glpkver.tar.gz
   echo "done"
   echo -n "compiling GLPK... "
-  (cd "$DOWNLOAD_DIR/glpk-$glpkver/w32" &&
+  (cd "$DOWNLOAD_DIR/glpk-$glpkver" &&
     glpk_company="GNU <www.gnu.org>" &&
-    glpk_desc=`grep -e '^DESCRIPTION' glpk_*.def | sed -e 's/^DESCRIPTION \+//' -e 's/"//g'` &&
-    glpk_copyright=`grep -e '^Copyright' ../README | head -n 1 | sed -e 's/,$//'` &&
-    create_module_rc GLPK $glpkver glpk.dll "$glpk_company" "$glpk_desc" "$glpk_copyright" > glpk.rc &&
-    sed -e "s,^LIBRARY \+glpk_.*$,LIBRARY glpk," glpk_*.def > glpk.def &&
-    sed -e "s,/MT,/MD,g" \
-        -e "s,^CFLAGS \+=,CFLAGS = /O2," \
-        -e "s,glpk_.*\.dll,glpk.dll,g" \
-        -e "s,glpk_.*\.lib,glpk.lib,g" \
-        -e "s,glpk_.*\.def,glpk.def,g" \
-        -e "s,^glpk\.dll:,glpk.dll: glpk.res," \
-        -e "s,/Feglpk\.dll,/Feglpk.dll glpk.res," Makefile_VC6_MT_DLL > Makefile &&
-    nmake &&
-	mt "-outputresource:glpk.dll;2" -manifest glpk.dll.manifest &&
-	cp glpk.lib "$tlibdir" &&
-	cp ../include/glpk.h "$tincludedir" &&
-	cp glpk.dll "$tbindir") >&5 2>&1
+    glpk_desc=`grep -e '^DESCRIPTION' w32/glpk_*.def | sed -e 's/^DESCRIPTION \+//' -e 's/"//g'` &&
+    glpk_copyright=`grep -e '^Copyright' README | head -n 1 | sed -e 's/,$//'` &&
+    create_module_rc GLPK $glpkver glpk.dll "$glpk_company" "$glpk_desc" "$glpk_copyright" > src/glpk.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__STDC__" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e 's/^libglpk_la_LDFLAGS =/libglpk_la_LDFLAGS = -Wl,glpk.res -Wl,-def:glpk.def -no-undefined/' \
+        -e 's/^libglpk\.la:/libglpk.la: glpk.res glpk.def/' src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    (cat >> src/Makefile <<\EOF
+glpk.res: glpk.rc
+	rc -fo $@ $<
+glpk.def: $(libglpk_la_OBJECTS)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	@nm $(addprefix .libs/, $(libglpk_la_OBJECTS:.lo=.o)) | \
+	  sed -n -e 's/^[0-9a-fA-F]\+ T _\([^         ]*\).*$$/\1/p' \
+	         -e 's/^[0-9a-fA-F]\+ [BDGS] _\([^         ]*\).*$$/\1 DATA/p' >> $@
+EOF
+      ) &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libglpk.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/glpk-$glpkver"
-  if ! test -f "$tbindir/glpk.dll"; then
+  if ! test -f "$tlibdir/glpk.lib"; then
     echo "failed"
     exit -1
   else
@@ -945,30 +958,51 @@ fi
 ########
 
 if check_package HDF5; then
-  download_file hdf5-1.6.5.tar.gz ftp://ftp.hdfgroup.org/HDF5/current/src/hdf5-1.6.5.tar.gz
+  download_file hdf5-$hdf5ver.tar.gz ftp://ftp.hdfgroup.org/HDF5/current/src/hdf5-$hdf5ver.tar.gz
   echo -n "decompressing HDF5... "
-  (cd "$DOWNLOAD_DIR" && tar xfz hdf5-1.6.5.tar.gz && mv hdf5-1.6.5 hdf5)
-  (cd "$DOWNLOAD_DIR" && unzip -q hdf5/windows/all.zip)
-  cp libs/hdf5.diff "$DOWNLOAD_DIR/hdf5"
+  unpack_file hdf5-$hdf5ver.tar.gz
   echo "done"
   echo -n "compiling HDF5... "
-  (cd "$DOWNLOAD_DIR/hdf5" &&
-    patch -p1 < hdf5.diff &&
-    cd proj/hdf5dll &&
-    vcbuild -u hdf5dll.vcproj "Release|Win32" &&
-    cp Release/hdf5.lib "$tlibdir" &&
-    cp Release/hdf5.dll "$tbindir" &&
-    cp ../../COPYING "$tlicdir/COPYING.HDF5" &&
-    cd ../../src &&
-    cp H5public.h H5Apublic.h H5ACpublic.h H5Bpublic.h H5Cpublic.h           \
-       H5Dpublic.h H5Epublic.h H5Fpublic.h H5FDpublic.h H5FDcore.h H5FDfamily.h \
-       H5FDgass.h H5FDlog.h H5FDmpi.h H5FDmpio.h H5FDmpiposix.h              \
-       H5FDmulti.h H5FDsec2.h H5FDsrb.h H5FDstdio.h H5FDstream.h             \
-       H5Gpublic.h H5HGpublic.h H5HLpublic.h H5Ipublic.h                     \
-       H5MMpublic.h H5Opublic.h H5Ppublic.h H5Rpublic.h H5Spublic.h          \
-       H5Tpublic.h H5Zpublic.h H5pubconf.h hdf5.h H5api_adpt.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/hdf5"
-  if test ! -f "$tbindir/hdf5.dll"; then
+  (cd "$DOWNLOAD_DIR/hdf5-$hdf5ver" &&
+    if false; then
+      patch -p1 < hdf5.diff &&
+      cd proj/hdf5dll &&
+      vcbuild -u hdf5dll.vcproj "Release|Win32" &&
+      cp Release/hdf5.lib "$tlibdir" &&
+      cp Release/hdf5.dll "$tbindir" &&
+      cp ../../COPYING "$tlicdir/COPYING.HDF5" &&
+      cd ../../src &&
+      cp H5public.h H5Apublic.h H5ACpublic.h H5Bpublic.h H5Cpublic.h           \
+         H5Dpublic.h H5Epublic.h H5Fpublic.h H5FDpublic.h H5FDcore.h H5FDfamily.h \
+         H5FDgass.h H5FDlog.h H5FDmpi.h H5FDmpio.h H5FDmpiposix.h              \
+         H5FDmulti.h H5FDsec2.h H5FDsrb.h H5FDstdio.h H5FDstream.h             \
+         H5Gpublic.h H5HGpublic.h H5HLpublic.h H5Ipublic.h                     \
+         H5MMpublic.h H5Opublic.h H5Ppublic.h H5Rpublic.h H5Spublic.h          \
+         H5Tpublic.h H5Zpublic.h H5pubconf.h hdf5.h H5api_adpt.h "$tincludedir"
+    else
+      create_module_rc HDF5 $hdf5ver libhdf5-0.dll "University of Illinois" \
+        "NCSA Hierarchical Data Format (HDF) Library" \
+        "Copyright by the Board of Trustees of the University of Illinois." > src/hdf5.rc &&
+      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D_HDF5DLL_" AR=ar-msvc RANLIB=ranlib-msvc \
+        ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+      post_process_libtool &&
+      sed -e '/^postinstall_cmds=/ {s/\$name/\\$name/; s/\$implibname/\\$implibname/;}' libtool > ttt
+        mv ttt libtool &&
+      sed -e 's/\$(LIB)/$(HLIB)/g' \
+          -e 's/^LIB=/HLIB=/g' \
+          -e 's/^LDFLAGS=/LDFLAGS= -no-undefined -Wl,hdf5.res/' src/Makefile > ttt &&
+        mv ttt src/Makefile &&
+      sed -e '/^#ifdef \+H5_HAVE_STREAM.*$/ {p; c\
+#define EWOULDBLOCK WSAEWOULDBLOCK
+;}' src/H5FDstream.c > ttt &&
+        mv ttt src/H5FDstream.c &&
+      rc -fo hdf5.res hdf5.rc &&
+      make &&
+      make install
+    fi) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/hdf5-$hdf5ver"
+  if test ! -f "$tlibdir/hdf5.lib"; then
     echo "failed"
     exit -1
   else
@@ -1184,7 +1218,7 @@ if check_package cairo; then
       "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > src/cairo.rc &&
     make &&
     make install &&
-	rm -f "$tlibdir/libcairo*.la") >&5 2>&1
+	rm -f $tlibdir_quoted/libcairo*.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/cairo-$cairover"
   if test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
@@ -1225,7 +1259,8 @@ if check_package glib; then
       mv ttt glibconfig.h &&
     make &&
     make install &&
-	rm -f "$tlibdir/libglib*.la" "$tlibdir/libgmodule*.la" "$tlibdir/libgthread*.la" "$tlibdir/libgobject*.la") >&5 2>&1
+	rm -f $tlibdir_quoted/libglib*.la $tlibdir_quoted/libgmodule*.la \
+      $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/glib-$glibver"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
@@ -1250,7 +1285,7 @@ if check_package pango; then
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
       ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
-      --with-included-modules=basic-win32 --with-dynamic-modules=no &&
+      --with-included-modules=basic-win32 --with-dynamic-modules=no --enable-explicit-deps=no &&
     post_process_libtool &&
     sed -e 's/-lgdi32/-luser32 -lgdi32/' \
         -e 's/^\(libpangocairo.*_la_LDFLAGS =\)/\1 -Wl,pangocairo-win32-res.o/' \
@@ -1263,9 +1298,9 @@ if check_package pango; then
         -e 's/pangoft2/pangocairo/g' pango/pangoft2.rc > pango/pangocairo.rc &&
     rc -fo pango/pangocairo-win32-res.o pango/pangocairo.rc &&
     make &&
-    make install
-    rm -f "$tlibdir/libpango*.la") >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/pango-$pangover"
+    make install &&
+    rm -f $tlibdir_quoted/libpango*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/pango-$pangover"
   if test ! -f "$tbindir/libpango-1.0-0.dll"; then
     echo "failed"
     exit -1
@@ -1293,11 +1328,14 @@ if check_package libxml2; then
     post_process_libtool &&
     sed -e "s/^libxml2_la_LDFLAGS =/libxml2_la_LDFLAGS = -Wl,-export:trio_snprintf -Wl,xml2.res/" Makefile > ttt &&
       mv ttt Makefile &&
+    sed -e 's/\(^.*defined *(__MINGW32__).*$\)/\1 || defined(_MSC_VER)/' nanoftp.c > ttt &&
+      mv ttt nanoftp.c &&
+    sed -e 's/\(^.*defined *(__MINGW32__).*$\)/\1 || defined(_MSC_VER)/' nanohttp.c > ttt &&
+      mv ttt nanohttp.c &&
     rc -fo xml2.res xml2.rc &&
     make &&
     make install &&
-    rm -f "$tlibdir/libxml2.la" &&
-    true) >&5 2>&1
+    rm -f $tlibdir_quoted/libxml2.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/libxml2-$libxml2ver"
   if test ! -f "$tlibdir/xml2.lib"; then
     echo "failed"
@@ -1374,7 +1412,7 @@ if check_package freetype; then
     rc -fo freetype.res freetype.rc &&
     make &&
     make install &&
-    rm -f "$tlibdir/libfreetype*.la") >&5 2>&1
+    rm -f $tlibdir_quoted/libfreetype*.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/freetype-$ftver"
   if test ! -f "$tlibdir/freetype.lib"; then
     echo "failed"
@@ -1389,24 +1427,35 @@ fi
 #########
 
 if check_package libgd; then
-  download_file gd-2.0.34.tar.gz http://www.libgd.org/releases/oldreleases/gd-2.0.34.tar.gz
+  download_file gd-$gdver.tar.bz2 http://www.libgd.org/releases/oldreleases/gd-$gdver.tar.bz2
   echo -n "decompressing libgd... "
-  (cd "$DOWNLOAD_DIR" && tar xfz gd-2.0.34.tar.gz)
-  cp libs/gd-2.0.34.diff "$DOWNLOAD_DIR/gd-2.0.34"
+  unpack_file gd-$gdver.tar.bz2
   echo "done"
   echo -n "compiling libgd... "
-  (cd "$DOWNLOAD_DIR/gd-2.0.34" &&
-    patch -p1 < gd-2.0.34.diff &&
-    cd windows &&
-    sed -e "s,^FREETYPE_INC =.*,FREETYPE_INC = $tdir_w32_forward/include/freetype2," Makefile > ttt &&
-    mv ttt Makefile &&
-    nmake &&
-    cp ../COPYING "$tlicdir/COPYING.LIBGD" &&
-    cp bgd.dll "$tbindir" &&
-    cp bgd.lib "$tlibdir" &&
-    cp ../*.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gd-2.0.34"
-  if test ! -f "$tbindir/bgd.dll"; then
+  (cd "$DOWNLOAD_DIR/gd-$gdver" &&
+    gd_company="`sed -n -e 's/^ *VALUE \+"CompanyName" *, *"\([^"\\]*\)\\\\0".*$/\1/p' windows/libgd.rc`" &&
+    gd_copyright="`sed -n -e 's/^ *VALUE \+"LegalCopyright" *, *"\([^"\\]*\)\\\\0".*$/\1/p' windows/libgd.rc`" &&
+    create_module_rc LIBGD $gdver libgd-2.dll "$gd_company" \
+      "GD - Graphics Creation Library" "$gd_copyright" > libgd.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__STDC__ -DMSWIN32 -DBGDWIN32" \
+	  AR=ar-msvc RANLIB=ranlib-msvc \
+	  ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+	post_process_libtool &&
+    sed -e 's/^libgd_la_LDFLAGS =/libgd_la_LDFLAGS = -Wl,libgd.res -no-undefined/' \
+        -e 's/^libgd\.la:/libgd.la: libgd.res/' Makefile > ttt &&
+      mv ttt Makefile &&
+    (cat >> Makefile << \EOF
+libgd.res: libgd.rc
+	rc -fo $@ $<
+EOF
+      ) &&
+	touch -r aclocal.m4 configure.ac &&
+    make &&
+    make install &&
+    cp COPYING "$tlicdir/COPYING.LIBGD") >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/gd-$gdver"
+  if test ! -f "$tlibdir/gd.lib"; then
     echo "failed"
     exit -1
   else
@@ -1425,39 +1474,51 @@ if check_package libgsl; then
   echo "done"
   echo -n "compiling libgsl... "
   (cd "$DOWNLOAD_DIR/gsl-$gslver" &&
-    create_module_rc GSL $gslver libgsl.dll "Free Software Foundation (http://www.fsf.org)" \
+    create_module_rc GSL $gslver libgsl-0.dll "Free Software Foundation (http://www.fsf.org)" \
       "GNU Scientific Library" "Copyright (C) 2000, 2007 Free Software Foundation" > gsl.rc
-    for m in */Makefile.in; do
-      perl -i~ -pe 's|^(lib.*la_OBJECTS = *\$\((.*)\))$|libobjects=\$($2:.lo=.o)\nmklibobjects: \$(libobjects)\nborg:\n\t\@echo \$(addprefix \$(subdir)/,\$(libobjects))\n$1|' $m
-      if ! grep -e '^mklibobjects' $m > /dev/null; then
-        echo "mklibobjects: all" >> $m
-        echo "borg:" >> $m
-        echo "	@echo" >> $m
-      fi
-      echo "Processed $m"
-    done &&
-    echo "mklibobjects: mklibobjects-recursive" >> Makefile.in &&
-    echo "mklibobjects-am:" >> Makefile.in &&
-    echo "borg:" >> Makefile.in &&
-    echo "	@for d in \$(SUBDIRS); do \\" >> Makefile.in &&
-    echo "	  cd \$\$d && \$(MAKE) -s borg && cd .. ; \\" >> Makefile.in &&
-    echo "	done" >> Makefile.in
-    perl -i~ -pe 's|^RECURSIVE_TARGETS =|RECURSIVE_TARGETS = mklibobjects-recursive|' Makefile.in &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -DGSL_DLL -DDLL_EXPORT -D__STDC__" \
-      ./configure --prefix="$INSTALL_DIR" --disable-static &&
-    make mklibobjects &&
-    (make borg) | xargs lib -OUT:gsl_symbols.lib &&
-    echo "EXPORTS" > gsl.def &&
-    nm gsl_symbols.lib | grep -e '[0-9]\+ T ' | sed -e 's/[0-9]\+ T _//' >> gsl.def &&
-    rc -fo gsl.res gsl.rc &&
-    (make borg) | xargs link -DLL -OUT:libgsl.dll -DEF:gsl.def -IMPLIB:gsl.lib gsl.res &&
-    mt "-outputresource:libgsl.dll;2" -manifest libgsl.dll.manifest &&
-    cp libgsl.dll "$tbindir" &&
-    cp gsl.lib "$tlibdir" &&
-    mkdir -p "$tincludedir/gsl" &&
-    cp gsl/*.h "$tincludedir/gsl") >&5 2>&1
+    create_module_rc GSLCBLAS $gslver libgslcblas-0.dll "Free Software Foundation (http://www.fsf.org)" \
+      "GSL CBLAS Implementation" "Copyright (C) 2000, 2007 Free Software Foundation" > cblas/gslcblas.rc
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -DGSL_DLL -D__STDC__" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e 's/^libgsl_la_LDFLAGS =/libgsl_la_LDFLAGS = -Wl,gsl.res -Wl,-def:gsl.def/' \
+        -e 's/^libgsl\.la:/libgsl.la: gsl.res gsl.def/' Makefile > ttt &&
+      mv ttt Makefile &&
+    (cat >> Makefile <<\EOF
+gsl.res: gsl.rc
+	rc -fo $@ $<
+gsl.def: $(libgsl_la_OBJECTS) $(SUBLIBS)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	@sublibs=; for lib in $(SUBLIBS); do \
+	    sublibs="$$sublibs `dirname $$lib`/.libs/`sed -n -e "s/old_library='\(.*\)'/\1/p" $$lib`"; \
+	  done;\
+	nm $(addprefix .libs/, $(libgsl_la_OBJECTS:.lo=.o)) $$sublibs | \
+	  sed -n -e 's/^[0-9a-fA-F]\+ T _\([^         ]*\).*$$/\1/p' \
+	         -e 's/^[0-9a-fA-F]\+ [BDGS] _\([^         ]*\).*$$/\1 DATA/p' >> $@
+EOF
+      ) &&
+    sed -e 's/^libgslcblas_la_LDFLAGS =/libgslcblas_la_LDFLAGS = -Wl,gslcblas.res -Wl,-def:gslcblas.def/' \
+        -e 's/^libgslcblas\.la:/libgslcblas.la: gslcblas.res gslcblas.def/' cblas/Makefile > ttt &&
+      mv ttt cblas/Makefile &&
+    (cat >> cblas/Makefile <<\EOF
+gslcblas.res: gslcblas.rc
+	rc -fo $@ $<
+gslcblas.def: $(libgslcblas_la_OBJECTS)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	  @nm $(addprefix .libs/, $(libgslcblas_la_OBJECTS:.lo=.o)) | \
+	    sed -n -e 's/^[0-9a-fA-F]\+ T _\([^   ]*\).*$$/\1/p' >> $@
+EOF
+      ) &&
+    sed -e 's/[^ ]*memcpy[^ ]*//' utils/Makefile > ttt &&
+      mv ttt utils/Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgsl*.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/gsl-$gslver"
-  if test ! -f "$tbindir/libgsl.dll"; then
+  if test ! -f "$tlibdir/gsl.lib"; then
     echo "failed"
     exit -1
   else
@@ -1507,7 +1568,7 @@ if check_package netcdf; then
       make &&
       make install &&
       cp ../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
-	  rm -f "$tlibdir/libnetcdf*.la"
+	  rm -f $tlibdir_quoted/libnetcdf*.la
     fi) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
   if test ! -f "$tlibdir/netcdf.lib"; then

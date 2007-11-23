@@ -62,6 +62,7 @@ glibver=2.14.3
 pangover=1.19.0
 ftver=2.3.5
 libxml2ver=2.6.30
+fontconfigver=2.5.0
 
 ###################################################################################
 
@@ -1240,7 +1241,7 @@ fi
 
 if check_package pango; then
   pangoroot=`echo $pangover | sed -e 's/\.[0-9]\+$//'`
-  download_file pango-$pangover.tar.gz ftp://ftp.gtk.org/pub/pango/$pangoroot/pango-$pangover.tar.bz2
+  download_file pango-$pangover.tar.bz2 ftp://ftp.gtk.org/pub/pango/$pangoroot/pango-$pangover.tar.bz2
   echo -n "decompressing pango... "
   unpack_file pango-$pangover.tar.bz2
   echo "done"
@@ -1252,13 +1253,18 @@ if check_package pango; then
       --with-included-modules=basic-win32 --with-dynamic-modules=no &&
     post_process_libtool &&
     sed -e 's/-lgdi32/-luser32 -lgdi32/' \
-        -e '/^noinst_DATA/ {s/pangoft2[^ ]*\.lib//;}' pango/Makefile > ttt &&
+        -e 's/^\(libpangocairo.*_la_LDFLAGS =\)/\1 -Wl,pangocairo-win32-res.o/' \
+        -e '/^noinst_DATA/ {s/pangoft2[^ ]*\.lib//;}' \
+        -e '/^install-ms-lib/ {s/pangoft2[^ ]*\.lib//;}' pango/Makefile > ttt &&
       mv ttt pango/Makefile &&
     sed -e 's,/pango/pango-querymodules,/pango/.libs/pango-querymodules,' modules/Makefile > ttt &&
       mv ttt modules/Makefile &&
+    sed -e 's/PangoFT2/PangoCairo/g' \
+        -e 's/pangoft2/pangocairo/g' pango/pangoft2.rc > pango/pangocairo.rc &&
+    rc -fo pango/pangocairo-win32-res.o pango/pangocairo.rc &&
     make &&
-    make install &&
-    true) >&5 2>&1
+    make install
+    rm -f "$tlibdir/libpango*.la") >&5 2>&1
   #rm -rf "$DOWNLOAD_DIR/pango-$pangover"
   if test ! -f "$tbindir/libpango-1.0-0.dll"; then
     echo "failed"
@@ -1306,7 +1312,7 @@ fi
 ##############
 
 if check_package fontconfig; then
-  download_file fontconfig-$fontconfigver.tar.gz ftp://xmlsoft.org/fontconfig/fontconfig-$fontconfigver.tar.gz
+  download_file fontconfig-$fontconfigver.tar.gz http://fontconfig.org/release/fontconfig-$fontconfigver.tar.gz
   echo -n "decompressing fontconfig... "
   unpack_file fontconfig-$fontconfigver.tar.gz
   echo "done"
@@ -1325,7 +1331,7 @@ if check_package fontconfig; then
     make install &&
     rm -f "$tlibdir/libfontconfig.la" &&
     true) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
+  #rm -rf "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
   if test ! -f "$tlibdir/fontconfig.lib"; then
     echo "failed"
     exit -1

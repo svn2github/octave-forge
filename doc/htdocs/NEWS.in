@@ -7,17 +7,20 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>November 11, 2007</dt>
+<dd>Updated the OS X binary release to Octave.app 2.9.17.
+</dd>
 <dt>November 06, 2007</dt>
 <dd>Updated Windows installer to Octave 2.9.16.
 </dd>
 <dt>November 2, 2007</dt>
-<dd>Updated the OS X binary release to use Octave 2.9.16.
+<dd>Updated the OS X binary release to Octave.app 2.9.16.
 </dd>
 <dt>October 16, 2007</dt>
 <dd>Updated Windows installer to Octave 2.9.15.
 </dd>
 <dt>October 14, 2007</dt>
-<dd>Updated the OS X binary release to use Octave 2.9.15.
+<dd>Updated the OS X binary release to Octave.app 2.9.15.
 </dd>
 <dt>October 14, 2007</dt>
 <dd>
@@ -51,7 +54,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </ul>
 </dd>
 <dt>September 21, 2007</dt>
-<dd>Updated the OS X binary release to use Octave 2.9.14. There are
+<dd>Updated the OS X binary release to Octave.app 2.9.14. There are
 significant speed improvements in this release, due to an improved
 compilation and so all Mac users are urged to update.
 </dd>

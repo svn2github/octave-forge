@@ -18,10 +18,9 @@
 
 ok = 1;				# Remains set if all ok. Set to 0 otherwise
 cnt = 0;			# Test counter
-page_screen_output = 0;
-page_output_immediately = 1;
-do_fortran_indexing = 1;
-warn_fortran_indexing = 0;
+more off;
+page_screen_output (0);
+page_output_immediately (1);
 
 if ! exist ("verbose"), verbose = 0; end
 

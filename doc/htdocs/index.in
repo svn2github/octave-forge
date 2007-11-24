@@ -37,7 +37,7 @@ __HEADER__([[[Octave-Forge]]])
     For convenience Octave-Forge supplies pre-built installers for Octave:
     <ul>
     <li><b><a href="__WINDOWS__">Windows installer</a> (Octave and Octave-Forge)</b>
-    <li><b><a href="__OSX__">OS X installer</a> (Octave only)</b>
+    <li><b><a href="__OSX__">Octave.app for Mac OS X</a></b> Octave.app is a ready to run binary version of GNU Octave. It runs on most of Apple's Mac OS X computers and comes with all the free libraries that are needed. The application can also be expanded by downloading and installing further packages as described before.
     </ul>
   </p>
 </div>

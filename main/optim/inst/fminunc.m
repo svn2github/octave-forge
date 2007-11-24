@@ -42,7 +42,7 @@
 ## This function is a front-end to minimize().
 function [x,fval,flag,out,df,d2f] = fminunc (fun,x0,opt,varargin)
 
-if nargin < 3, opt = setfield (); end
+if nargin < 3, opt = struct (); end
 if nargin > 3, 
   args = list (x0, varargin{:});
 else 

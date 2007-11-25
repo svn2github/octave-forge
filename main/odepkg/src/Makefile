@@ -88,16 +88,16 @@ ODEPKGMXFILES = $(DOPRI5MXFILES) $(DOP853MXFILES) $(ODEXMXFILES) \
 ODEPKGDELETES = $(ODEPKGOBJECTS) $(ODEPKGMXFILES) *~ octave-core \
   $(EXTERNALDIRS) $(SOLVEROBJECTS) $(SOLVEROCTFILE)
 
-%.o : %.f
-	@if  [ `$(MKOCTFILE) -p F77` == "gfortran" ]; then \
-	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
-	elif [ `$(MKOCTFILE) -p F77` == "g95" ]; then \
-	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
-	elif [ `$(MKOCTFILE) -p F77` == "fort77" ]; then \
-	  $(MKOCTFILE) -c $< -o $@ ; \
-	else \
-	  $(MKOCTFILE) -c $< -o $@ ; \
-	fi
+%.o : %.f ; $(MKOCTFILE) -c $< -o $@
+#	@if  [ `$(MKOCTFILE) -p F77` == "gfortran" ]; then \
+#	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
+#	elif [ `$(MKOCTFILE) -p F77` == "g95" ]; then \
+#	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
+#	elif [ `$(MKOCTFILE) -p F77` == "fort77" ]; then \
+#	  $(MKOCTFILE) -c $< -o $@ ; \
+#	else \
+#	  $(MKOCTFILE) -c $< -o $@ ; \
+#	fi
 
 %.o : %.c ; $(MKOCTFILE) -c $< -o $@
 %.mex : %.o ; $(MKMEXFILE) $^ -o $@

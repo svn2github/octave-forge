@@ -387,7 +387,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
             vu(:), [], vfunarguments{:});
         %# 20070222, bugfix, Calling event function does not depend on
         %# OutputSel vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
-        if (~vevent{1})
+        if (~isempty (vevent{1}) && vevent{1} == 1)
           vretvaltime(vcntloop-1,:) = vevent{3}(end,:);
           vretvalresult(vcntloop-1,:) = vevent{4}(end,:);
           vunhandledtermination = false; break;

@@ -1,20 +1,29 @@
 # Filename:    Makefile
-# Describtion: Makefile for the src directory of the OdePkg
-# ChangeLog: 20070222, this Makefile was originally be created
-#    from the Makefile of the comm package. Modifications have
-#    been done to create the source codes of the OdePkg.
+# Description: Makefile for the src directory of the OdePkg
+# ChangeLog: 20070222, this Makefile was originally be created from
+#    the Makefile of the 'communication' package. Modifications have
+#    been made to create binaries from the source codes of the OdePkg.
 
 sinclude Makeconf # This is ok, David changed this line
 
 DEVELOPERDEFS = -Wall -W -Wshadow -D__ODEPKGDEBUG__
 
+MKOCTFILE = mkoctfile # change the mkoctfile command if necessary
 MKMEXFILE = mkoctfile --mex # $(DEVELOPERDEFS)
-TGZUNPACK = tar -xzf        # "tar -xzvf" to see what happens
-PATCHPROG = patch -p0       # For patching the Fortran codes
+TGZUNPACK = tar -xzf # "tar -xzvf" to print some output
+PATCHPROG = patch -p0 # Needed to patch the Fortran codes
 
 EXTERNALDIRS  = hairer cash
 EXTERNALPACKS = $(patsubst %, %.tgz,  $(EXTERNALDIRS))
 EXTERNALDIFFS = $(patsubst %, %.diff, $(EXTERNALDIRS))
+
+SOLVERSOURCES = odepkg_octsolver_mebdfi.cc
+SOLVERDEPENDS = odepkg_auxiliary_functions.cc
+SOLVEREXTERNS = cash/mebdfi.f
+SOLVEROBJECTS = $(patsubst %.cc, %.o, $(SOLVERSOURCES)) \
+	 	$(patsubst %.cc, %.o, $(SOLVERDEPENDS)) \
+		$(patsubst %.f, %.o,  $(SOLVEREXTERNS))
+SOLVEROCTFILE = odepkg_dldsolver_functions.oct
 
 DOPRI5SOURCES = odepkg_mexsolver_dopri5.c
 DOPRI5DEPENDS = odepkgmex.c odepkgext.c
@@ -76,14 +85,28 @@ ODEPKGOBJECTS = $(DOPRI5OBJECTS) $(DOP853OBJECTS) $(ODEXOBJECTS) \
   $(RADAUOBJECTS) $(RADAU5OBJECTS) $(RODASOBJECTS) $(SEULEXOBJECTS)
 ODEPKGMXFILES = $(DOPRI5MXFILES) $(DOP853MXFILES) $(ODEXMXFILES) \
   $(RADAUMXFILES) $(RADAU5MXFILES) $(RODASMXFILES) $(SEULEXMXFILES)
-ODEPKGDELETES = $(ODEPKGOBJECTS) $(ODEPKGMXFILES) *~ octave-core $(EXTERNALDIRS)
+ODEPKGDELETES = $(ODEPKGOBJECTS) $(ODEPKGMXFILES) *~ octave-core \
+  $(EXTERNALDIRS) $(SOLVEROBJECTS) $(SOLVEROCTFILE)
 
-%.o : %.f ; $(MKMEXFILE) -c $< -o $@
-%.o : %.c ; $(MKMEXFILE) -c $< -o $@
+%.o : %.f
+	@if  [ `$(MKOCTFILE) -p F77` == "gfortran" ]; then \
+	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
+	elif [ `$(MKOCTFILE) -p F77` == "g95" ]; then \
+	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
+	elif [ `$(MKOCTFILE) -p F77` == "fort77" ]; then \
+	  $(MKOCTFILE) -c $< -o $@ ; \
+	else \
+	  $(MKOCTFILE) -c $< -o $@ ; \
+	fi
+
+%.o : %.c ; $(MKOCTFILE) -c $< -o $@
 %.mex : %.o ; $(MKMEXFILE) $^ -o $@
+%.o : %.cc ; $(MKOCTFILE) -c $< -o $@
 
+all : $(EXTERNALDIRS) $(SOLVEROCTFILE) $(ODEPKGOBJECTS) $(ODEPKGMXFILES)
 
-all : $(EXTERNALDIRS) $(ODEPKGOBJECTS) $(ODEPKGMXFILES)
+$(SOLVEROCTFILE) : $(EXTERNALDIRS) $(SOLVEROBJECTS)
+	$(MKOCTFILE) $(SOLVEROBJECTS) -o $(SOLVEROCTFILE)
 
 $(DOPRI5MXFILES) : $(DOPRI5OBJECTS)
 $(DOP853MXFILES) : $(DOP853OBJECTS)
@@ -102,7 +125,7 @@ $(EXTERNALDIRS) :
 	  $(TGZUNPACK) $$i; \
 	done
 	@for j in $(EXTERNALDIFFS); do \
-	  $(PATCHPROG) <$$j; \
+	  $(PATCHPROG) < $$j; \
 	done
 
 clean :
@@ -110,7 +133,7 @@ clean :
 	$(RM) -fr $(ODEPKGDELETES)
 
 distclean realclean : clean
-	@echo "Really cleaning..."; \
+	@echo "Really Cleaning..."; \
 	$(RM) -r configure config.status config.log autom4te.cache Makeconf
 
 dist : all

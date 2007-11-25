@@ -37,27 +37,36 @@ function res = odepkg_equations_ilorenz (t, y, yd)
 	 y(1) * (28 - y(3)) - yd(2);
 	 y(1) * y(2) - 8/3 * y(3) - yd(3)];
 
-%#!test A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
-%#!     [t,y] = odebdi (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
+%!test
+%!  if (!strcmp (which ("odepkg_mexsolver_rodas"), ""))
+%!    warning ("off", "OdePkg:InvalidOption");
+%!    A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
+%!    [vt, vy] = odebdi (@odepkg_equations_ilorenz, [0 25], 
+%!                       [3 15 1], [120 81 42.333333], A);
+%#!    assert (vt(end,:), 25, 1e-3);
+%#!    assert (vy(end,:), [9.626662, 13.572730, 23.811914], 1e-3);
+%!    warning ("on", "OdePkg:InvalidOption");
+%!  endif
 
-%#!demo
-%#!
-%#! A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
-%#! [t, y] = odebdi (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
-%#!
-%#! subplot (2, 2, 1); grid ('on'); plot (t, y(:,1), '-b;f_x(t);', ...
-%#!    t, y(:,2), '-g;f_y(t);', t, y(:,3), '-r;f_z(t);');
-%#! subplot (2, 2, 2); grid ('on'); plot (y(:,1), y(:,2), '-b;f_{xyz}(x, y);');
-%#! subplot (2, 2, 3); grid ('on'); plot (y(:,2), y(:,3), '-b;f_{xyz}(y, z);');
-%#! subplot (2, 2, 4); grid ('on'); plot3 (y(:,1), y(:,2), y(:,3), ...
-%#!    '-b;f_{xyz}(x, y, z);');
-%#!
-%#! % -------------------------------------------------------------------------
-%#! % The upper left subfigure shows the three results of the integration over
-%#! % time. The upper right subfigure shows the force f in a two dimensional 
-%#! % (x,y) plane as well as the lower left subfigure shows the force in the
-%#! % (y,z) plane. The three dimensional force is plotted in the lower right
-%#! % subfigure.
+%!demo
+%!
+%! A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
+%! [t, y] = odebdi (@odepkg_equations_ilorenz, [0 25], 
+%!                  [3 15 1], [120 81 42.333333], A);
+%!
+%! subplot (2, 2, 1); grid ('on'); plot (t, y(:,1), '-b;f_x(t);', ...
+%!    t, y(:,2), '-g;f_y(t);', t, y(:,3), '-r;f_z(t);');
+%! subplot (2, 2, 2); grid ('on'); plot (y(:,1), y(:,2), '-b;f_{xyz}(x, y);');
+%! subplot (2, 2, 3); grid ('on'); plot (y(:,2), y(:,3), '-b;f_{xyz}(y, z);');
+%! subplot (2, 2, 4); grid ('on'); plot3 (y(:,1), y(:,2), y(:,3), ...
+%!    '-b;f_{xyz}(x, y, z);');
+%!
+%! % -------------------------------------------------------------------------
+%! % The upper left subfigure shows the three results of the integration over
+%! % time. The upper right subfigure shows the force f in a two dimensional 
+%! % (x,y) plane as well as the lower left subfigure shows the force in the
+%! % (y,z) plane. The three dimensional force is plotted in the lower right
+%! % subfigure.
 
 %# Local Variables: ***
 %# mode: octave ***

@@ -126,10 +126,10 @@ $(EXTERNALDIRS) :
 
 clean :
 	@echo "Cleaning..."; \
-	$(RM) -fr $(ODEPKGDELETES)
+	$(RM) -rf $(ODEPKGDELETES)
 
 distclean realclean : clean
 	@echo "Really Cleaning..."; \
-	$(RM) -r configure config.status config.log autom4te.cache Makeconf
+	$(RM) -rf configure config.status config.log autom4te.cache Makeconf
 
 dist : all

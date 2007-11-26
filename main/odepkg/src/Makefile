@@ -8,12 +8,12 @@ sinclude Makeconf # This is ok, David changed this line
 
 DEVELOPERDEFS = -Wall -W -Wshadow -D__ODEPKGDEBUG__
 
-# MKOCTFILE = $(MKOCTFILE) is already be defined in Makeconf
+# MKOCTFILE = $(MKOCTFILE) has already been defined in Makeconf
 MKMEXFILE = $(MKOCTFILE) --mex
-ifneq ($(strip $(findstring fort77,$(F77))),fort77)
-  MKF77FILE = FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE)
+ifeq (fort77,$(findstring fort77,$(F77)))
+  MKF77FILE = FFLAGS="$(FFLAGS)" $(MKOCTFILE)
 else
-  MKF77FILE = FFLAGS="${FFLAGS}" $(MKOCTFILE)
+  MKF77FILE = FFLAGS="-fno-automatic $(FFLAGS)" $(MKOCTFILE)
 endif
 
 TGZUNPACK = tar -xzf  # "tar -xzvf" to print some output

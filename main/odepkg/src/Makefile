@@ -8,9 +8,15 @@ sinclude Makeconf # This is ok, David changed this line
 
 DEVELOPERDEFS = -Wall -W -Wshadow -D__ODEPKGDEBUG__
 
-MKOCTFILE = mkoctfile # change the mkoctfile command if necessary
-MKMEXFILE = mkoctfile --mex # $(DEVELOPERDEFS)
-TGZUNPACK = tar -xzf # "tar -xzvf" to print some output
+# MKOCTFILE = $(MKOCTFILE) is already be defined in Makeconf
+MKMEXFILE = $(MKOCTFILE) --mex
+ifneq ($(strip $(findstring fort77,$(F77))),fort77)
+  MKF77FILE = FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE)
+else
+  MKF77FILE = FFLAGS="${FFLAGS}" $(MKOCTFILE)
+endif
+
+TGZUNPACK = tar -xzf  # "tar -xzvf" to print some output
 PATCHPROG = patch -p0 # Needed to patch the Fortran codes
 
 EXTERNALDIRS  = hairer cash
@@ -88,17 +94,7 @@ ODEPKGMXFILES = $(DOPRI5MXFILES) $(DOP853MXFILES) $(ODEXMXFILES) \
 ODEPKGDELETES = $(ODEPKGOBJECTS) $(ODEPKGMXFILES) *~ octave-core \
   $(EXTERNALDIRS) $(SOLVEROBJECTS) $(SOLVEROCTFILE)
 
-%.o : %.f ; $(MKOCTFILE) -c $< -o $@
-#	@if  [ `$(MKOCTFILE) -p F77` == "gfortran" ]; then \
-#	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
-#	elif [ `$(MKOCTFILE) -p F77` == "g95" ]; then \
-#	  FFLAGS="-fno-automatic ${FFLAGS}" $(MKOCTFILE) -c $< -o $@ ; \
-#	elif [ `$(MKOCTFILE) -p F77` == "fort77" ]; then \
-#	  $(MKOCTFILE) -c $< -o $@ ; \
-#	else \
-#	  $(MKOCTFILE) -c $< -o $@ ; \
-#	fi
-
+%.o : %.f ; $(MKF77FILE) -c $< -o $@
 %.o : %.c ; $(MKOCTFILE) -c $< -o $@
 %.mex : %.o ; $(MKMEXFILE) $^ -o $@
 %.o : %.cc ; $(MKOCTFILE) -c $< -o $@
